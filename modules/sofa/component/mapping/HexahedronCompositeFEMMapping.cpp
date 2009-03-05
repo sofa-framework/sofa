@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/mapping/HomogenizedEdgeBasedMapping.inl>
+#include <sofa/component/mapping/HexahedronCompositeFEMMapping.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/componentmodel/behavior/MappedModel.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
@@ -37,7 +37,7 @@ namespace component
 namespace mapping
 {
 
-SOFA_DECL_CLASS(HomogenizedEdgeBasedMapping)
+SOFA_DECL_CLASS(HexahedronCompositeFEMMapping)
 
 using namespace defaulttype;
 using namespace core;
@@ -45,24 +45,24 @@ using namespace core::componentmodel::behavior;
 
 
 // Register in the Factory
-int HomogenizedEdgeBasedMappingClass = core::RegisterObject("Set the point to the center of mass of the DOFs it is attached to")
+int HexahedronCompositeFEMMappingClass = core::RegisterObject("Set the point to the center of mass of the DOFs it is attached to")
 #ifndef SOFA_FLOAT
-        .add< HomogenizedEdgeBasedMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3dTypes> > > >()
-        .add< HomogenizedEdgeBasedMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> > > >()
-        .add< HomogenizedEdgeBasedMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> > > >()
+        .add< HexahedronCompositeFEMMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3dTypes> > > >()
+        .add< HexahedronCompositeFEMMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> > > >()
+        .add< HexahedronCompositeFEMMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> > > >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< HomogenizedEdgeBasedMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes> > > >()
-        .add< HomogenizedEdgeBasedMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> > > >()
-        .add< HomogenizedEdgeBasedMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> > > >()
+        .add< HexahedronCompositeFEMMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes> > > >()
+        .add< HexahedronCompositeFEMMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> > > >()
+        .add< HexahedronCompositeFEMMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> > > >()
 #endif
 //
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-        .add< HomogenizedEdgeBasedMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3dTypes> > > >()
-        .add< HomogenizedEdgeBasedMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes> > > >()
-        .add< HomogenizedEdgeBasedMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3dTypes> > > >()
-        .add< HomogenizedEdgeBasedMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3fTypes> > > >()
+        .add< HexahedronCompositeFEMMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3dTypes> > > >()
+        .add< HexahedronCompositeFEMMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes> > > >()
+        .add< HexahedronCompositeFEMMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3dTypes> > > >()
+        .add< HexahedronCompositeFEMMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3fTypes> > > >()
 #endif
 #endif
         ;
@@ -70,22 +70,22 @@ int HomogenizedEdgeBasedMappingClass = core::RegisterObject("Set the point to th
 
 
 #ifndef SOFA_FLOAT
-template class HomogenizedEdgeBasedMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3dTypes> > >;
-template class HomogenizedEdgeBasedMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> > >;
-template class HomogenizedEdgeBasedMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> > >;
+template class HexahedronCompositeFEMMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3dTypes> > >;
+template class HexahedronCompositeFEMMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> > >;
+template class HexahedronCompositeFEMMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> > >;
 #endif
 #ifndef SOFA_DOUBLE
-template class HomogenizedEdgeBasedMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes> > >;
-template class HomogenizedEdgeBasedMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> > >;
-template class HomogenizedEdgeBasedMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> > >;
+template class HexahedronCompositeFEMMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes> > >;
+template class HexahedronCompositeFEMMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> > >;
+template class HexahedronCompositeFEMMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> > >;
 #endif
 //
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class HomogenizedEdgeBasedMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes> > >;
-template class HomogenizedEdgeBasedMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3dTypes> > >;
-template class HomogenizedEdgeBasedMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3fTypes> > >;
-template class HomogenizedEdgeBasedMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3dTypes> > >;
+template class HexahedronCompositeFEMMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes> > >;
+template class HexahedronCompositeFEMMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3dTypes> > >;
+template class HexahedronCompositeFEMMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3fTypes> > >;
+template class HexahedronCompositeFEMMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3dTypes> > >;
 #endif
 #endif
 ;

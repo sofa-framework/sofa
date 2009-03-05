@@ -22,22 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_HomogenizedHEXAHEDRONFEMFORCEFIELD_H
-#define SOFA_COMPONENT_FORCEFIELD_HomogenizedHEXAHEDRONFEMFORCEFIELD_H
+#ifndef SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONCOMPOSITEFEMFORCEFIELD_H
+#define SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONCOMPOSITEFEMFORCEFIELD_H
 
 
 #include <sofa/component/forcefield/NonUniformHexahedronFEMForceFieldAndMass.h>
-
-
-// #include <sofa/component/container/MechanicalObject.h>
-
-
-// #include <sofa/component/mapping/BarycentricMapping.h>
-// #include <sofa/component/mapping/HomogenizedMapping.h>
-
-// #include <sofa/component/mapping/IdentityMapping.h>
-// #include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
-// #include <sofa/component/topology/MeshTopology.h>
 
 
 
@@ -65,7 +54,7 @@ using namespace sofa::defaulttype;
 using sofa::helper::vector;
 
 template<class DataTypes>
-class HomogenizedHexahedronFEMForceFieldAndMass : public NonUniformHexahedronFEMForceFieldAndMass<DataTypes>
+class HexahedronCompositeFEMForceFieldAndMass : public NonUniformHexahedronFEMForceFieldAndMass<DataTypes>
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
@@ -95,19 +84,12 @@ public:
     typedef Mat<8*3, 8*3, Real> Weight;
 
 
-// 		typedef core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalStateT;
-// 		typedef core::componentmodel::behavior::MechanicalMapping<MechanicalStateT, MechanicalStateT > MechanicalMappingT;
-// 		typedef mapping::HomogenizedMapping< MechanicalMappingT > MappingT;
-// // 		typedef mapping::BarycentricMapping< MechanicalMappingT > MappingT;
-// // 		typedef mapping::IdentityMapping< MechanicalMappingT > IdentityMappingT;
-// 		typedef MechanicalObject<DataTypes> MechanicalObjectT;
-
 
 public:
 
 
 
-    HomogenizedHexahedronFEMForceFieldAndMass():HexahedronFEMForceFieldAndMassT()
+    HexahedronCompositeFEMForceFieldAndMass():HexahedronFEMForceFieldAndMassT()
     {
         _homogenizationMethod = initData(&this->_homogenizationMethod,0,"homogenizationMethod","0->static, 1->constrained static, 2->modal analysis");
         _finestToCoarse = initData(&this->_finestToCoarse,false,"finestToCoarse","Does the homogenization is done directly from the finest level to the coarse one?");
@@ -123,7 +105,7 @@ public:
     virtual void init();
     virtual void reinit()
     {
-        serr<<"WARNING : homogenized mechanical properties can't be updated, changes on mechanical properties (young, poisson, density) are not taken into account."<<sendl;
+        serr<<"WARNING : composite mechanical properties can't be updated, changes on mechanical properties (young, poisson, density) are not taken into account."<<sendl;
         if(_drawSize.getValue()==-1)
             _drawSize.setValue( (float)((this->_sparseGrid->getMax()[0]-this->_sparseGrid->getMin()[0]) * .004f) );
     }
@@ -145,8 +127,8 @@ public:
 
     void findFinestChildren( helper::vector<int>& finestChildren, const int elementIndice,  int level=0);
     void computeMechanicalMatricesDirectlyFromTheFinestToCoarse( ElementStiffness &K, ElementMass &M, const int elementIndice);
-    void computeMechanicalMatricesIterativly( ElementStiffness &K, ElementMass &M, const int elementIndice,  int level);
-    void computeMechanicalMatricesIterativlyWithRamifications( ElementStiffness &K, ElementMass &M, const int elementIndice,  int level);
+    void computeMechanicalMatricesRecursively( ElementStiffness &K, ElementMass &M, const int elementIndice,  int level);
+    void computeMechanicalMatricesRecursivelyWithRamifications( ElementStiffness &K, ElementMass &M, const int elementIndice,  int level);
 
     /// multiply all weights for all levels and go to the finest level to obtain the final weights from the coarsest to the finest directly
     void computeFinalWeights( const Weight &W, const int coarseElementIndice, const int elementIndice,  int level);
@@ -157,9 +139,6 @@ public:
 //         virtual void computeMechanicalMatricesByCondensation( ElementStiffness &K, ElementMass &M, const int elementIndice,  int level);
     virtual void computeMechanicalMatricesByCondensation( );
 
-
-// 		MechanicalObjectT* _finestDOF; // the nodes of the finest virtual level
-// 		MappingT* _mapping; // the homogenized from the true DOFs to the finest DOFs
 
 
     helper::vector< helper::vector<Weight> > _weights;

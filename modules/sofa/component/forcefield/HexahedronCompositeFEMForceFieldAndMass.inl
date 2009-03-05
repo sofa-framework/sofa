@@ -22,23 +22,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_HomogenizedHEXAHEDRONFEMFORCEFIELD_INL
-#define SOFA_COMPONENT_FORCEFIELD_HomogenizedHEXAHEDRONFEMFORCEFIELD_INL
+#ifndef SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONCOMPOSITEFEMFORCEFIELD_INL
+#define SOFA_COMPONENT_FORCEFIELD_HEXAHEDRONCOMPOSITEFEMFORCEFIELD_INL
 
-#include <sofa/component/forcefield/HomogenizedHexahedronFEMForceFieldAndMass.h>
+#include <sofa/component/forcefield/HexahedronCompositeFEMForceFieldAndMass.h>
 
 
 #include <sofa/component/linearsolver/NewMatMatrix.h>
 #include <sofa/component/topology/SparseGridMultipleTopology.h>
-// #include <sofa/simulation/tree/GNode.h>
 
-// #include <sofa/simulation/common/InitVisitor.h>
-// #include <sofa/simulation/common/UpdateContextVisitor.h>
 
-// #include <sofa/core/Mapping.h>
-// #include <sofa/core/componentmodel/behavior/MappedModel.h>
-// #include <sofa/core/componentmodel/behavior/State.h>
-// #include <sofa/component/visualmodel/VisualModelImpl.h>
 
 #include <sofa/simulation/common/Simulation.h>
 #include <iomanip>
@@ -68,44 +61,10 @@ using namespace sofa::defaulttype;
 using topology::SparseGridTopology;
 using namespace linearsolver;
 
-// 	  template <class DataTypes>
-// 	  const int HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::IndicesOf_FineHexa_FineNode_forXYZAssemblingOrder[27][2]=
-// 	  {
-// 		  { 0  , 0 }, // tranche z=0
-// 		  { 0 , 1 },
-// 		  { 1 , 1 },
-// 		  {  2,0  },
-// 		  {  2, 1 },
-// 		  {  3, 1 },
-// 		  {  2, 3 },
-// 		  {  2, 2 },
-// 		  {  3, 2 },
-//
-// 		  { 0  , 4 }, // z=1
-// 		  { 0 , 5 },
-// 		  { 1 , 5 },
-// 		  {  2,4  },
-// 		  {  2, 5 },
-// 		  {  3, 5 },
-// 		  {  2, 7 },
-// 		  {  2, 6 },
-// 		  {  3, 6 },
-//
-// 		  { 4  , 4 }, // z=2
-// 		  { 4 , 5 },
-// 		  { 5 , 5 },
-// 		  {  6,4  },
-// 		  {  6, 5 },
-// 		  {  7, 5 },
-// 		  {  6, 7 },
-// 		  {  6, 6 },
-// 		  {  7, 6 }
-// 	  };
-
 
 
 template <class DataTypes>
-const int HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::FineHexa_FineNode_IndiceForAssembling[8][8]=
+const int HexahedronCompositeFEMForceFieldAndMass<DataTypes>::FineHexa_FineNode_IndiceForAssembling[8][8]=
 {
     // for an (fine elem, fine vertex) given -> what position in the assembled matrix
     {  0,  1,  4, 3,  9, 10,  13, 12},
@@ -119,47 +78,11 @@ const int HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::FineHexa_FineNod
 };
 
 
-/*
-	template <class DataTypes>
-	const bool HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::IS_CONSTRAINED[8][8]=
-	{
-      // for an (fine elem, fine vertex) given -> what position in the assembled matrix
-		{  1, 0, 0, 0, 0, 0, 0, 0},
-		{  0, 1, 0, 0, 0, 0, 0, 0},
-		{  0, 0, 0, 1, 0, 0, 0, 0},
-		{  0, 0, 1, 0, 0, 0, 0, 0},
-		{  0, 0, 0, 0, 1, 0, 0, 0},
-		{  0, 0, 0, 0, 0, 1, 0, 0},
-		{  0, 0, 0, 0, 0, 0, 0, 1},
-		{  0, 0, 0, 0, 0, 0, 1, 0},
-	};
-
-
-
-
-
-// 		{0,	1,	2,	3,	4,	5,	6,	7,	8,	9,	10,	11,	 12,13,	14,	15,	16,	17,	18,	 19,	20,	21,	22,	23,	24,	25,	26},
-// 		{0,	0,	1,	1,	2,	3,	3,	4,	2,	5,	6,	7	,8,	9,	10,	11,	12,	13,	4	,14,	5,	15,	16,	17,	7,	18,	6}
-
-	template <class DataTypes>
-	const int HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::FineHexa_FineNode_IndiceForCutAssembling[8][8]=
-	{
-      // for an (fine elem, fine vertex) given -> what position in the assembled matrix
-		{  0,  0,  2, 1,  5, 6,  9, 8},
-		{  0, 1, 3, 2, 6, 7, 10, 9},
-		{  1, 2,  4, 3,  8, 9,  12, 11},
-		{  2, 3, 2, 4, 9, 10, 13, 12},
-		{  5, 6,  9, 8 ,  4, 14,  16, 15},
-		{  6, 7, 10, 9, 14, 5, 17, 16},
-		{  8, 9,  12, 11,  15, 16,  18, 7},
-		{  9, 10, 13, 12, 16, 17, 6, 18}
-	};
-	*/
 
 
 
 template <class DataTypes>
-const bool HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::IS_CONSTRAINED_27[27] =
+const bool HexahedronCompositeFEMForceFieldAndMass<DataTypes>::IS_CONSTRAINED_27[27] =
 {
     1,0,1, 0,0,0, 1,0,1, //tranche devant
     0,0,0, 0,0,0, 0,0,0,  //milieu
@@ -168,19 +91,19 @@ const bool HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::IS_CONSTRAINED_
 
 
 template <class DataTypes>
-const int HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::FineHexa_FineNode_IndiceForCutAssembling_27[27]=
+const int HexahedronCompositeFEMForceFieldAndMass<DataTypes>::FineHexa_FineNode_IndiceForCutAssembling_27[27]=
 {0,	0,	1,	1,	2,	3,	3,	4,	2,	5,	6,	7	,8,	9,	10,	11,	12,	13,	4	,14,	5,	15,	16,	17,	7,	18,	6};
 
 
 
 template <class DataTypes>
-const int HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::CoarseToFine[8]=
+const int HexahedronCompositeFEMForceFieldAndMass<DataTypes>::CoarseToFine[8]=
 { 0, 2, 8, 6, 18, 20, 26, 24 };
 
 
 
 template <class DataTypes>
-const int HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::WEIGHT_MASK[27*3][8*3]=
+const int HexahedronCompositeFEMForceFieldAndMass<DataTypes>::WEIGHT_MASK[27*3][8*3]=
 {
     {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
     {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -266,7 +189,7 @@ const int HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::WEIGHT_MASK[27*3
 };
 
 template <class DataTypes>
-const int HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::WEIGHT_MASK_CROSSED[27*3][8*3]=
+const int HexahedronCompositeFEMForceFieldAndMass<DataTypes>::WEIGHT_MASK_CROSSED[27*3][8*3]=
 {
     {1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
     {0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -352,7 +275,7 @@ const int HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::WEIGHT_MASK_CROS
 };
 
 template <class DataTypes>
-const int HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::WEIGHT_MASK_CROSSED_DIFF[27*3][8*3]=
+const int HexahedronCompositeFEMForceFieldAndMass<DataTypes>::WEIGHT_MASK_CROSSED_DIFF[27*3][8*3]=
 {
     {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
     {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
@@ -440,7 +363,7 @@ const int HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::WEIGHT_MASK_CROS
 
 
 template <class DataTypes>
-const float HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::MIDDLE_INTERPOLATION[27][8]=
+const float HexahedronCompositeFEMForceFieldAndMass<DataTypes>::MIDDLE_INTERPOLATION[27][8]=
 {
     {1,0,0,0,0,0,0,0},
     {0.5,0.5,0,0,0,0,0,0},
@@ -475,7 +398,7 @@ const float HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::MIDDLE_INTERPO
 
 // linked with MIDDLE_INTERPOLATION: in which axes do we want the interpolatio? (0->all, 1->x, 2->y, 3->z)
 template <class DataTypes>
-const int HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::MIDDLE_AXES[27]=
+const int HexahedronCompositeFEMForceFieldAndMass<DataTypes>::MIDDLE_AXES[27]=
 {
     0,   	1,          	0,
     2,  		3,		        2,
@@ -493,7 +416,7 @@ const int HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::MIDDLE_AXES[27]=
 
 
 template <class DataTypes>
-const int HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::FINE_ELEM_IN_COARSE_IN_ASS_FRAME[8][8]=
+const int HexahedronCompositeFEMForceFieldAndMass<DataTypes>::FINE_ELEM_IN_COARSE_IN_ASS_FRAME[8][8]=
 {
     {0,1,4,3,9,10,13,12},
     {1,2,5,4,10,11,14,13},
@@ -507,7 +430,7 @@ const int HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::FINE_ELEM_IN_COA
 
 
 template <class DataTypes>
-const float HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::RIGID_STIFFNESS[8*3][8*3]=
+const float HexahedronCompositeFEMForceFieldAndMass<DataTypes>::RIGID_STIFFNESS[8*3][8*3]=
 {
     {(float)2.26667e+11,(float)4.25e+10,(float)4.25e+10,(float)-5.66667e+10,(float)-4.25e+10,(float)-4.25e+10,(float)-7.08333e+10,(float)-4.25e+10,(float)-2.125e+10,(float)2.83333e+10,(float)4.25e+10,(float)2.125e+10,(float)2.83333e+10,(float)2.125e+10,(float)4.25e+10,(float)-7.08333e+10,(float)-2.125e+10,(float)-4.25e+10,(float)-5.66667e+10,(float)-2.125e+10,(float)-2.125e+10,(float)-2.83333e+10,(float)2.125e+10,(float)2.125e+10},
     {(float)4.25e+10,(float)2.26667e+11,(float)4.25e+10,(float)4.25e+10,(float)2.83333e+10,(float)2.125e+10,(float)-4.25e+10,(float)-7.08333e+10,(float)-2.125e+10,(float)-4.25e+10,(float)-5.66667e+10,(float)-4.25e+10,(float)2.125e+10,(float)2.83333e+10,(float)4.25e+10,(float)2.125e+10,(float)-2.83333e+10,(float)2.125e+10,(float)-2.125e+10,(float)-5.66667e+10,(float)-2.125e+10,(float)-2.125e+10,(float)-7.08333e+10,(float)-4.25e+10},
@@ -536,86 +459,12 @@ const float HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::RIGID_STIFFNES
 };
 
 template <class DataTypes>
-void HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::init()
+void HexahedronCompositeFEMForceFieldAndMass<DataTypes>::init()
 {
 
-// 		  serr<<"HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::init()"<<sendl;
+// 		  serr<<"HexahedronCompositeFEMForceFieldAndMass<DataTypes>::init()"<<sendl;
     // init topology, virtual levels, calls computeMechanicalMatricesByCondensation, handles masses
     NonUniformHexahedronFEMForceFieldAndMassT::init();
-
-
-
-//         // create dynamically a sub-graph in order to have a better homogenized mapping
-//         // the idea is to non-uniformly maps the finest dofs into the coarse level
-//         // and then really maps others dofs (visual, collision) into the finest dofs (by a classic barycentricMapping for example)
-//         if( this->_nbVirtualFinerLevels.getValue()!= 0)
-//         {
-//
-//
-//
-//           // TODO: create new gnode with mechanicalstate containing the finest nodes and a mapping contening the non linear mapping
-//           GNode* parentGNode = dynamic_cast<GNode*>( this->getContext()); // the actual node
-//
-//           GNode* newGNode = new GNode(); // the new sub-graph
-//
-//           newGNode->setName("automatically created for homogenized mapping");
-//           newGNode->setShowBehaviorModels(true);
-//           newGNode->setShowVisualModels(true);
-//           newGNode->setShowMappings(true);
-//           newGNode->setShowMechanicalMappings(true);
-//           newGNode->setShowForceFields(true);
-//           newGNode->setShowInteractionForceFields(true);
-//
-//
-//           _finestDOF = new MechanicalObjectT();
-//           _finestDOF->setName("finest dofs");
-//           newGNode->addObject( _finestDOF );
-//
-//           _mapping = new MappingT( this->mstate,_finestDOF);
-//           _mapping->setName("homogenized mapping for the finest dofs");
-//           newGNode->addObject( _mapping );
-//
-//           newGNode->addObject( this->_sparseGrid->_virtualFinerLevels[this->_sparseGrid->getNbVirtualFinerLevels()-this->_nbVirtualFinerLevels.getValue()] );
-//
-//
-//           // move all children gnodes downstair this new gnode
-//           vector< GNode*> gNodes;
-//           for(GNode::ChildIterator it = parentGNode->child.begin(); it != parentGNode->child.end(); ++it)
-//           {
-//             gNodes.push_back( *it );
-//           }
-//           for(unsigned i=0;i<gNodes.size();++i)
-//           {
-//             newGNode->moveChild( gNodes[i] );
-//
-// 			for(GNode::ObjectIterator it = gNodes[i]->object.begin(); it != gNodes[i]->object.end(); ++it)
-// 			{
-// // 				serr<<(*it)->getTypeName()<<sendl;
-//
-// 				//since previous mapping are moved (but already initialize bu create(...) fonction, we have to manually map the fromModel with the new created dofs
-//
-// 				if( core::Mapping< core::componentmodel::behavior::State<DataTypes>,core::componentmodel::behavior::MappedModel<ExtVec3fTypes> >* map = dynamic_cast<core::Mapping<core::componentmodel::behavior::State<DataTypes>,core::componentmodel::behavior::MappedModel<ExtVec3fTypes> > *>(*it) )
-// 				{
-// 					// VISUAL MAPPING
-// 					map->setModels( _finestDOF, dynamic_cast<core::componentmodel::behavior::MappedModel<ExtVec3fTypes>*>(map->getTo()) );
-// // 					serr<<"core::Mapping<DataTypes,MappedModel* "<<map->getName()<<sendl;
-// 				}
-// 				else if( MechanicalMappingT* map = dynamic_cast<MechanicalMappingT*>(*it) )
-// 				{
-// 					//MECHANICAL MAPPING
-// 					map->setModels( _finestDOF, dynamic_cast<MechanicalStateT*>(map->getTo()) );
-// // 					serr<<"MechanicalMappingT* "<<map->getName()<<sendl;
-// 				}
-// 			}
-//           }
-//
-//
-//
-//           // really add the new gnode in the graph
-//           parentGNode->addChild(newGNode);
-//
-//
-//         }
 
 
     if(_drawSize.getValue()==-1)
@@ -635,8 +484,9 @@ void HomogenizedHexahedronFEMForceFieldAndMass<DataTypes>::init()
 
 
 template<class T>
-void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesByCondensation( )
+void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesByCondensation( )
 {
+    // serr<<"HexahedronCompositeFEMForceFieldAndMass::computeMechanicalMatricesByCondensation"<<sendl;
     if( this->_nbVirtualFinerLevels.getValue() == 0 )
     {
         for (unsigned int i=0; i<this->_indexedElements->size(); ++i)
@@ -686,7 +536,7 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesByCo
         if( _useRamification.getValue() && sparseGridRamification )
         {
             for (unsigned int i=0; i<this->_indexedElements->size(); ++i)
-                computeMechanicalMatricesIterativlyWithRamifications( (*this->_elementStiffnesses.beginEdit())[i], (*this->_elementMasses.beginEdit())[i], i, 0 );
+                computeMechanicalMatricesRecursivelyWithRamifications( (*this->_elementStiffnesses.beginEdit())[i], (*this->_elementMasses.beginEdit())[i], i, 0 );
 
 
             for (unsigned int i=0; i<this->_indexedElements->size(); ++i)
@@ -704,7 +554,7 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesByCo
         else
         {
             for (unsigned int i=0; i<this->_indexedElements->size(); ++i)
-                computeMechanicalMatricesIterativly( (*this->_elementStiffnesses.beginEdit())[i], (*this->_elementMasses.beginEdit())[i], i, 0 );
+                computeMechanicalMatricesRecursively( (*this->_elementStiffnesses.beginEdit())[i], (*this->_elementMasses.beginEdit())[i], i, 0 );
 
             for (unsigned int i=0; i<this->_indexedElements->size(); ++i)
             {
@@ -738,7 +588,7 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesByCo
 // 						sum += _finalWeights[0].second[i][j];
 // 					}
 // 					if( fabs(sum-1.0)>1.0e-3 )
-// 						serr<<"WARNING HomogenizedHexahedronFEMForceFieldAndMass _finalWeights sum != 1  "<<sum<<sendl;
+// 						serr<<"WARNING HexahedronCompositeFEMForceFieldAndMass _finalWeights sum != 1  "<<sum<<sendl;
 // 				}
 
 
@@ -757,8 +607,9 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesByCo
 
 
 template<class T>
-void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesDirectlyFromTheFinestToCoarse( ElementStiffness &K, ElementMass &M, const int elementIndice)
+void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirectlyFromTheFinestToCoarse( ElementStiffness &K, ElementMass &M, const int elementIndice)
 {
+    serr<<"computeMechanicalMatricesDirectlyFromTheFinestToCoarse"<<endl;
     helper::vector<int> finestChildren;
 
     //find them
@@ -1224,7 +1075,7 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesDire
 // 								case 3: // a coarse node
 // 									break;
 // 					default:
-// 						serr<<"HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesDirectlyFromTheFinestToCoarse   ERROR  WEIGHT_MASK"<<sendl;
+// 						serr<<"HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirectlyFromTheFinestToCoarse   ERROR  WEIGHT_MASK"<<sendl;
 //  				}
 //
 // 			}
@@ -1327,7 +1178,7 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesDire
 
 
 template<class T>
-void HomogenizedHexahedronFEMForceFieldAndMass<T>::findFinestChildren( helper::vector<int>& finestChildren, const int elementIndice, int level)
+void HexahedronCompositeFEMForceFieldAndMass<T>::findFinestChildren( helper::vector<int>& finestChildren, const int elementIndice, int level)
 {
     if (level == this->_nbVirtualFinerLevels.getValue())
     {
@@ -1355,9 +1206,9 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::findFinestChildren( helper::v
 
 
 template<class T>
-void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIterativly( ElementStiffness &K, ElementMass &M, const int elementIndice,  int level)
+void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecursively( ElementStiffness &K, ElementMass &M, const int elementIndice,  int level)
 {
-    // 		  NonUniformHexahedronFEMForceFieldAndMassT::computeMechanicalMatricesByCondensation(K,M,elementIndice,level);
+    //  serr<<"HexahedronCompositeFEMForceFieldAndMass::computeMechanicalMatricesRecursively"<<sendl;
 
 
     if (level == this->_nbVirtualFinerLevels.getValue())
@@ -1384,22 +1235,20 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
 
         finerChildren = sparseGrid->_hierarchicalCubeMap[elementIndice];
 
-
         helper::fixed_array<ElementStiffness,8> finerK;
         helper::fixed_array<ElementMass,8> finerM;
+
 
         for ( int i=0; i<8; ++i) //for 8 virtual finer element
         {
             if (finerChildren[i] != -1)
             {
-                computeMechanicalMatricesIterativly(finerK[i], finerM[i], finerChildren[i], level+1);
+                computeMechanicalMatricesRecursively(finerK[i], finerM[i], finerChildren[i], level+1);
             }
 
 // 			serr<<"K "<<i<<" : "<<finerK[i]<<sendl;
 
         }
-
-
 
 
 //           serr<<"\n***LEVEL "<<level<<"    element "<<elementIndice<<sendl;
@@ -1781,9 +1630,9 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
 
 
 template<class T>
-void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIterativlyWithRamifications( ElementStiffness &K, ElementMass &M, const int elementIndice,  int level)
+void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecursivelyWithRamifications( ElementStiffness &K, ElementMass &M, const int elementIndice,  int level)
 {
-//         		 serr<<"\n\nNonUniformHexahedronFEMForceFieldAndMassT::computeMechanicalMatricesIterativlyWithRamifications(K,M,"<<elementIndice<<" "<<level<<""<<sendl;
+    //serr<<"computeMechanicalMatricesRecursivelyWithRamifications(K,M,"<<elementIndice<<" "<<level<<""<<sendl;
 
 
     if (level == this->_nbVirtualFinerLevels.getValue())
@@ -1833,7 +1682,7 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
 
             for(unsigned j=0; j<finerChildrenRamificationOriginal[i].size(); ++j) // for all finer elements
             {
-                computeMechanicalMatricesIterativlyWithRamifications(finerK[i][j], finerM[i][j], finerChildrenRamificationOriginal[i][j], level+1);
+                computeMechanicalMatricesRecursivelyWithRamifications(finerK[i][j], finerM[i][j], finerChildrenRamificationOriginal[i][j], level+1);
 
                 const SparseGridTopology::Hexa& finehexa = finerSparseGrid->getHexa( finerChildrenRamificationOriginal[i][j] );
                 for( int k=0; k<8; ++k) //fine nodes
@@ -2521,7 +2370,7 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeMechanicalMatricesIter
 
 
 template<class T>
-void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeFinalWeights( const Weight &W, const int coarseElementIndice, const int elementIndice,  int level)
+void HexahedronCompositeFEMForceFieldAndMass<T>::computeFinalWeights( const Weight &W, const int coarseElementIndice, const int elementIndice,  int level)
 {
 // 		  for(int i=0;i<level*3;++i)serr<<" ";
 // 		  serr<<"computeFinalWeights "<<elementIndice<<"  "<<level<<sendl;
@@ -2560,7 +2409,7 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeFinalWeights( const We
 
 
 template<class T>
-void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeFinalWeightsRamification( const Weight &W, const int coarseElementIndice, const int elementIndice,  int level)
+void HexahedronCompositeFEMForceFieldAndMass<T>::computeFinalWeightsRamification( const Weight &W, const int coarseElementIndice, const int elementIndice,  int level)
 {
 // 		  for(int i=0;i<level*3;++i)serr<<" ";
 // 		  serr<<"computeFinalWeights "<<elementIndice<<"  "<<level<<sendl;
@@ -2599,10 +2448,8 @@ void HomogenizedHexahedronFEMForceFieldAndMass<T>::computeFinalWeightsRamificati
 
 
 template<class T>
-void HomogenizedHexahedronFEMForceFieldAndMass<T>::draw()
+void HexahedronCompositeFEMForceFieldAndMass<T>::draw()
 {
-
-
     if (!this->getContext()->getShowForceFields()) return;
     if (!this->mstate) return;
     if (this->getContext()->getShowWireFrame()) return;

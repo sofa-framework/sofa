@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_HomogenizedMAPPING_H
-#define SOFA_COMPONENT_MAPPING_HomogenizedMAPPING_H
+#ifndef SOFA_COMPONENT_MAPPING_HexahedronCompositeFEMMapping_H
+#define SOFA_COMPONENT_MAPPING_HexahedronCompositeFEMMapping_H
 
 #include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
@@ -32,7 +32,7 @@
 #include <sofa/defaulttype/Mat.h>
 
 #include <sofa/component/topology/SparseGridTopology.h>
-#include <sofa/component/forcefield/HomogenizedHexahedronFEMForceFieldAndMass.h>
+#include <sofa/component/forcefield/HexahedronCompositeFEMForceFieldAndMass.h>
 
 namespace sofa
 {
@@ -50,7 +50,7 @@ using namespace sofa::core::componentmodel::behavior;
 using namespace sofa::defaulttype;
 
 template <class BasicMapping>
-class HomogenizedMapping : public BasicMapping, public virtual core::objectmodel::BaseObject
+class HexahedronCompositeFEMMapping : public BasicMapping, public virtual core::objectmodel::BaseObject
 {
 public:
     typedef BasicMapping Inherit;
@@ -67,21 +67,21 @@ public:
     typedef typename OutCoord::value_type Real;
 
     typedef topology::SparseGridTopology SparseGridTopologyT;
-    typedef typename forcefield::HomogenizedHexahedronFEMForceFieldAndMass<typename In::DataTypes> HomogenizedHexahedronFEMForceFieldAndMassT;
+    typedef typename forcefield::HexahedronCompositeFEMForceFieldAndMass<typename In::DataTypes> HexahedronCompositeFEMForceFieldAndMassT;
 
 
     typedef Mat<3,8*3> Weight;
-    typedef typename HomogenizedHexahedronFEMForceFieldAndMassT::Transformation Transformation;
+    typedef typename HexahedronCompositeFEMForceFieldAndMassT::Transformation Transformation;
     typedef helper::fixed_array< InCoord, 8 > Nodes;
 
 
-    HomogenizedMapping ( In* from, Out* to ): Inherit ( from, to )
+    HexahedronCompositeFEMMapping ( In* from, Out* to ): Inherit ( from, to )
     {
 // 		_method = initData(&this->_method,0,"method","0: auto, 1: coarseNodes->surface, 2: coarseNodes->finestNodes->surface");
         _alreadyInit=false;
     }
 
-    virtual ~HomogenizedMapping() {}
+    virtual ~HexahedronCompositeFEMMapping() {}
 
     virtual void init();
 
@@ -124,7 +124,7 @@ protected :
     // necessary objects
     SparseGridTopologyT* _sparseGrid;
     SparseGridTopologyT* _finestSparseGrid;
-    HomogenizedHexahedronFEMForceFieldAndMassT* _forcefield;
+    HexahedronCompositeFEMForceFieldAndMassT* _forcefield;
 
 };
 
