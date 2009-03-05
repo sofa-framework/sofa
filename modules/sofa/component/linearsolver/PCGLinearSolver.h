@@ -30,7 +30,7 @@
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/helper/map.h>
 
-#define DISPLAY_TIME
+//#define DISPLAY_TIME
 
 #include <math.h>
 
@@ -63,6 +63,7 @@ public:
     Data<double> f_smallDenominatorThreshold;
     Data<bool> f_verbose;
     Data<int> f_refresh;
+    Data<bool> use_precond;
     Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
     std::vector<sofa::core::componentmodel::behavior::LinearSolver*> preconditioners;
 
@@ -72,11 +73,13 @@ public:
         , f_smallDenominatorThreshold( initData(&f_smallDenominatorThreshold,1e-5,"threshold","minimum value of the denominator in the conjugate Gradient solution") )
         , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
         , f_refresh( initData(&f_refresh,"refresh","Refresh iterations") )
+        , use_precond( initData(&use_precond,true,"precond","Use preconditioners") )
         , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
     {
         f_graph.setWidget("graph");
         f_graph.setReadOnly(true);
         iteration = 0;
+        no_precond = false;
 #ifdef DISPLAY_TIME
         timeStamp = 1.0 / (double)CTime::getRefTicksPerSec();
 #endif
@@ -87,8 +90,10 @@ public:
     void setSystemMBKMatrix(double mFact=0.0, double bFact=0.0, double kFact=0.0);
     //void setSystemRHVector(VecId v);
     //void setSystemLHVector(VecId v);
+
 private :
     int iteration;
+    bool no_precond;
 #ifdef DISPLAY_TIME
     double time1;
     double time2;

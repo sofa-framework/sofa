@@ -79,17 +79,22 @@ void PCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(double mFact, double b
     time3 = (double) CTime::getTime();
 #endif
 
-    if (iteration<=0)
+    no_precond = use_precond.getValue();
+
+    if (no_precond)
     {
-        for (unsigned int i=0; i<this->preconditioners.size(); ++i)
+        if (iteration<=0)
         {
-            preconditioners[i]->setSystemMBKMatrix(mFact,bFact,kFact);
+            for (unsigned int i=0; i<this->preconditioners.size(); ++i)
+            {
+                preconditioners[i]->setSystemMBKMatrix(mFact,bFact,kFact);
+            }
+            iteration = f_refresh.getValue();
         }
-        iteration = f_refresh.getValue();
-    }
-    else
-    {
-        iteration--;
+        else
+        {
+            iteration--;
+        }
     }
 
 #ifdef DISPLAY_TIME
@@ -169,7 +174,7 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
 #ifdef DISPLAY_TIME
         double tmp;
 #endif
-        if (this->preconditioners.size()==0)
+        if (this->preconditioners.size()==0 || (!no_precond))
         {
             z = r;
         }

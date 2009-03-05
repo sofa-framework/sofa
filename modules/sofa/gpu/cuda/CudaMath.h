@@ -336,6 +336,38 @@ public:
     {
         return x*v.x+y*v.y+z*v.z;
     }
+    __device__ matrix3<real> operator*(matrix3<real> v)
+    {
+        matrix3<real> r;
+        r.x.x = x.x * v.x.x + x.y * v.y.x + x.z * v.z.x;
+        r.x.y = x.x * v.x.y + x.y * v.y.y + x.z * v.z.y;
+        r.x.z = x.x * v.x.z + x.y * v.y.z + x.z * v.z.z;
+
+        r.y.x = y.x * v.x.x + y.y * v.y.x + y.z * v.z.x;
+        r.y.y = y.x * v.x.y + y.y * v.y.y + y.z * v.z.y;
+        r.y.z = y.x * v.x.z + y.y * v.y.z + y.z * v.z.z;
+
+        r.z.x = z.x * v.x.x + z.y * v.y.x + z.z * v.z.x;
+        r.z.y = z.x * v.x.y + z.y * v.y.y + z.z * v.z.y;
+        r.z.z = z.x * v.x.z + z.y * v.y.z + z.z * v.z.z;
+        return r;
+    }
+    __device__ matrix3<real> mulT(matrix3<real> v)
+    {
+        matrix3<real> r;
+        r.x.x = x.x * v.x.x + y.x * v.y.x + z.x * v.z.x;
+        r.x.y = x.x * v.x.y + y.x * v.y.y + z.x * v.z.y;
+        r.x.z = x.x * v.x.z + y.x * v.y.z + z.x * v.z.z;
+
+        r.y.x = x.y * v.x.x + y.y * v.y.x + z.y * v.z.x;
+        r.y.y = x.y * v.x.y + y.y * v.y.y + z.y * v.z.y;
+        r.y.z = x.y * v.x.z + y.y * v.y.z + z.y * v.z.z;
+
+        r.z.x = x.z * v.x.x + y.z * v.y.x + z.z * v.z.x;
+        r.z.y = x.z * v.x.y + y.z * v.y.y + z.z * v.z.y;
+        r.z.z = x.z * v.x.z + y.z * v.y.z + z.z * v.z.z;
+        return r;
+    }
     __device__ real mulX(CudaVec3<real> v)
     {
         return dot(x,v);
@@ -348,29 +380,29 @@ public:
     {
         return dot(z,v);
     }
-    __device__ void readAoS(const real* data)
+    __device__ void readAoS(const real* data, int bsize = blockDim.x)
     {
-        x.x=*data; data+=blockDim.x;
-        x.y=*data; data+=blockDim.x;
-        x.z=*data; data+=blockDim.x;
-        y.x=*data; data+=blockDim.x;
-        y.y=*data; data+=blockDim.x;
-        y.z=*data; data+=blockDim.x;
-        z.x=*data; data+=blockDim.x;
-        z.y=*data; data+=blockDim.x;
-        z.z=*data; data+=blockDim.x;
+        x.x=*data; data+=bsize;
+        x.y=*data; data+=bsize;
+        x.z=*data; data+=bsize;
+        y.x=*data; data+=bsize;
+        y.y=*data; data+=bsize;
+        y.z=*data; data+=bsize;
+        z.x=*data; data+=bsize;
+        z.y=*data; data+=bsize;
+        z.z=*data; data+=bsize;
     }
-    __device__ void writeAoS(real* data)
+    __device__ void writeAoS(real* data, int bsize = blockDim.x)
     {
-        *data=x.x; data+=blockDim.x;
-        *data=x.y; data+=blockDim.x;
-        *data=x.z; data+=blockDim.x;
-        *data=y.x; data+=blockDim.x;
-        *data=y.y; data+=blockDim.x;
-        *data=y.z; data+=blockDim.x;
-        *data=z.x; data+=blockDim.x;
-        *data=z.y; data+=blockDim.x;
-        *data=z.z; data+=blockDim.x;
+        *data=x.x; data+=bsize;
+        *data=x.y; data+=bsize;
+        *data=x.z; data+=bsize;
+        *data=y.x; data+=bsize;
+        *data=y.y; data+=bsize;
+        *data=y.z; data+=bsize;
+        *data=z.x; data+=bsize;
+        *data=z.y; data+=bsize;
+        *data=z.z; data+=bsize;
     }
 };
 
