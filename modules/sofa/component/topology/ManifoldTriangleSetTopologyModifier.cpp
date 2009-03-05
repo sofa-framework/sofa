@@ -55,6 +55,19 @@ void ManifoldTriangleSetTopologyModifier::init()
 }
 
 
+void ManifoldTriangleSetTopologyModifier::reinit()
+{
+    if(!(m_triSwap.getValue()).empty() && this->getContext()->getAnimate())
+    {
+        edgeSwap (m_triSwap.getValue()[0], m_triSwap.getValue()[1]);
+
+        propagateTopologicalChanges();
+
+    }
+
+}
+
+
 
 bool ManifoldTriangleSetTopologyModifier::removePrecondition(sofa::helper::vector< unsigned int >& items)
 {
@@ -312,7 +325,8 @@ void ManifoldTriangleSetTopologyModifier::reorderEdgeForRemoving()
 
     }
 
-    m_modificationsEdge.clear();
+    if(!m_modificationsEdge.empty())
+        m_modificationsEdge.clear();
 }
 
 
@@ -351,7 +365,7 @@ void ManifoldTriangleSetTopologyModifier::Debug() //To be removed when release i
 
     std::cout << "ManifoldTriangleSetTopologyModifier::Debug()" << std::endl;
 
-    for (unsigned int i = 0; i < m_container->getNbPoints(); i++)
+    for (int i = 0; i < m_container->getNbPoints(); i++)
     {
         std::cout << "vertex: " << i << " => Triangles:  " << m_container->getTriangleVertexShellForModification(i) << std::endl;
     }
@@ -363,7 +377,7 @@ void ManifoldTriangleSetTopologyModifier::Debug() //To be removed when release i
 
     for (unsigned int i = 0; i < m_container->getNumberOfEdges(); i++)
     {
-        //	  std::cout << "vertex: " << i << " => Edges:  " << m_container->getEdgeVertexShellForModification(i) << std::endl;
+        std::cout << "vertex: " << i << " => Edges:  " << m_container->getEdgeVertexShellForModification(i) << std::endl;
     }
 #endif
 }
@@ -662,6 +676,99 @@ void ManifoldTriangleSetTopologyModifier::addPostProcessing(const sofa::helper::
 
 }
 
+
+bool ManifoldTriangleSetTopologyModifier::edgeSwap(const TriangleID& indexTri1, const TriangleID& indexTri2)
+{
+
+    sofa::helper::vector < unsigned int > listVertex;
+    Edge commonEdge;
+    int commonEdgeIndex;
+    unsigned int cpt = 0;
+    bool test = true;
+
+    Triangle vertexTriangle1 = m_container->getTriangleArray()[indexTri1];
+    for (unsigned int i = 0; i < 3; i++)
+        listVertex.push_back(vertexTriangle1[i]);
+
+    Triangle vertexTriangle2 = m_container->getTriangleArray()[indexTri2];
+    for (unsigned int i = 0; i <3; i++)
+    {
+        test =true;
+        for (unsigned int j = 0; j <3; j++)
+        {
+            if (vertexTriangle2[i] == listVertex[j])
+            {
+                commonEdge[cpt] = vertexTriangle2[i];
+                cpt++;
+                test = false;
+                break;
+            }
+        }
+
+        if (test)
+            listVertex.push_back(vertexTriangle2[i]);
+    }
+
+
+    if (commonEdge[0] < commonEdge[1])
+        commonEdgeIndex = m_container->getEdgeIndex(commonEdge[0], commonEdge[1]);
+    else
+        commonEdgeIndex = m_container->getEdgeIndex(commonEdge[1], commonEdge[0]);
+
+    if (commonEdgeIndex == -1 || listVertex.size() > 4)
+    {
+        std::cout << "Error: edgeSwap: the two input triangles are not adjacent" << std::endl;
+        return false;
+    }
+
+
+    sofa::helper::vector< Triangle > triToAdd;
+
+    int edgeInTri1 = m_container->getEdgeIndexInTriangle ( m_container->getEdgeTriangleShell (indexTri1), commonEdgeIndex);
+    int edgeInTri2 = m_container->getEdgeIndexInTriangle ( m_container->getEdgeTriangleShell (indexTri2), commonEdgeIndex);
+
+    Triangle newTri;
+
+    newTri[0] = vertexTriangle1[ edgeInTri1 ];
+    newTri[1] = vertexTriangle1[ (edgeInTri1+1)%3 ];
+    newTri[2] = vertexTriangle2[ edgeInTri2 ];
+    triToAdd.push_back (newTri);
+
+    newTri[0] = vertexTriangle2[ edgeInTri2 ];
+    newTri[1] = vertexTriangle2[ (edgeInTri2+1)%3 ];
+    newTri[2] = vertexTriangle1[ edgeInTri1 ];
+    triToAdd.push_back (newTri);
+
+    std::cout << "Triangles to ADD: " << triToAdd << std::endl;
+
+    //add new....
+    //create event?
+    addSingleTriangleProcess (triToAdd[0]);
+
+    //create event?
+    addSingleTriangleProcess (triToAdd[1]);
+
+    //propagate event?
+
+
+    sofa::helper::vector < TriangleID>  new_triangles_id;
+    new_triangles_id.push_back (m_container->getNbTriangles()-2);
+    new_triangles_id.push_back (m_container->getNbTriangles()-1);
+
+    addTrianglesWarning(2, triToAdd, new_triangles_id);
+
+    //removing anciens...
+    sofa::helper::vector< unsigned int > triToRemove;
+    triToRemove.push_back(indexTri1);
+    triToRemove.push_back(indexTri2);
+
+    removeTriangles(triToRemove, true, true);
+
+    //reordonner topology around vertices....
+    m_container->reorderingTopologyOnROI (listVertex);
+
+    return true;
+}
 
 
 } // namespace topology

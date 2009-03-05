@@ -51,11 +51,15 @@ class SOFA_COMPONENT_CONTAINER_API ManifoldTriangleSetTopologyModifier : public 
 public:
     ManifoldTriangleSetTopologyModifier()
         : TriangleSetTopologyModifier()
-    { }
+    {
+        m_triSwap=this->initData(&m_triSwap,  "swap 2 triangles by their index", "Debug : Test swap function (only while animate).");
+    }
 
     virtual ~ManifoldTriangleSetTopologyModifier() {}
 
     virtual void init();
+
+    virtual void reinit();
 
     /**\brief PreCondition to fulfill before removing triangles. In this class topology should stay manifold.
     * This function call private functions to test the topology: createFutureModifications(), testRemoveModifications().
@@ -70,14 +74,18 @@ public:
 
 
 
-    virtual bool addPrecondition (const sofa::helper::vector <Triangle> &triangles);
+    virtual bool addPrecondition (const sofa::helper::vector <Triangle>& triangles);
 
 
-    virtual void addPostProcessing(const sofa::helper::vector <Triangle> &triangles);
+    virtual void addPostProcessing(const sofa::helper::vector <Triangle>& triangles);
 
-
+    bool edgeSwap (const TriangleID& indexTri1, const TriangleID& indexTri2);
 
     virtual void Debug(); // TO BE REMOVED WHEN CLASS IS SURE.
+
+protected:
+
+    Data< sofa::helper::vector< unsigned int> > m_triSwap;
 
 private:
 
