@@ -213,6 +213,12 @@ protected:
      */
     void reorderingEdge(const unsigned int edgeIndex);
 
+    void reorderingTriangleVertexShell (const unsigned int vertexIndex);
+
+    void reorderingEdgeVertexShell (const unsigned int vertexIndex);
+
+    void reorderingTopologyOnROI (const sofa::helper::vector <unsigned int>& listVertex);
+
 
 };
 
