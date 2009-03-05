@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- See http://wiki.sofa-framework.org/mediawiki/index.php/TutorialCollisionCubeObstacle.scn -->
+<!-- See http://wiki.sofa-framework.org/wiki/TutorialCollisionCubeObstacle.scn -->
 <Node name="root" dt="0.01" gravity="0 -9.81 0" showBehavior="1" showCollision="1">
   <!-- Basic Components to perform the collision detection -->
   <CollisionPipeline/>
