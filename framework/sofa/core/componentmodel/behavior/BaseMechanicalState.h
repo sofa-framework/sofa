@@ -412,21 +412,15 @@ public:
     virtual void writeDx(std::ostream &out)=0;
     /// @}
 
+    /// Find mechanical particles hit by the given ray.
+    /// A mechanical particle is defined as a 2D or 3D, position or rigid DOF
+    /// Returns false if this object does not support picking
+    virtual bool pickParticles(double /*rayOx*/, double /*rayOy*/, double /*rayOz*/, double /*rayDx*/, double /*rayDy*/, double /*rayDz*/, double /*radius0*/, double /*dRadius*/,
+            std::multimap< double, std::pair<sofa::core::componentmodel::behavior::BaseMechanicalState*, int> >& /*particles*/)
+    {
+        return false;
+    }
 };
-
-// inline std::ostream& operator<<(std::ostream& o, const BaseMechanicalState::VecId& v)
-// {
-//     switch (v.type)
-//     {
-//     case BaseMechanicalState::VecId::V_NULL: o << "vNull"; break;
-//     case BaseMechanicalState::VecId::V_COORD: o << "vCoord"; break;
-//     case BaseMechanicalState::VecId::V_DERIV: o << "vDeriv"; break;
-//     case BaseMechanicalState::VecId::V_CONST: o << "vConst"; break;
-//     default: o << "vUNKNOWN"; break;
-//     }
-//     o << '[' << v.index << ']';
-//     return o;
-// }
 
 inline std::ostream& operator << ( std::ostream& out, const BaseMechanicalState::VecId& v )
 {

@@ -40,6 +40,8 @@
 #include <sofa/core/componentmodel/behavior/Constraint.h>
 //#include <sofa/defaulttype/BaseMatrix.h>
 //#include <sofa/defaulttype/BaseVector.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/helper/map.h>
 #include <iostream>
 using std::cerr;
 using std::endl;
@@ -1367,7 +1369,30 @@ public:
 #endif
 };
 
+/** Find mechanical particles hit by the given ray.
+ *
+ *  A mechanical particle is defined as a 2D or 3D, position or rigid DOF
+ *  which is linked to the free mechanical DOFs by mechanical mappings
+ */
+class SOFA_SIMULATION_COMMON_API MechanicalPickParticlesVisitor : public MechanicalVisitor
+{
+public:
+    defaulttype::Vec3d rayOrigin, rayDirection;
+    double radius0, dRadius;
+    std::multimap< double, std::pair<sofa::core::componentmodel::behavior::BaseMechanicalState*, int> > particles;
+    MechanicalPickParticlesVisitor(const defaulttype::Vec3d& origin, const defaulttype::Vec3d& direction, double r0=0.001, double dr=0.0)
+        : rayOrigin(origin), rayDirection(direction), radius0(r0), dRadius(dr)
+    {
+    }
 
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
+    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalPickParticles"; }
+};
 
 } // namespace simulation
 

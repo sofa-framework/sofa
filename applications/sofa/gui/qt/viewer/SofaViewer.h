@@ -55,6 +55,7 @@
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
+#include <sofa/core/componentmodel/collision/Pipeline.h>
 #include <sofa/component/collision/RayPickInteractor.h>
 
 //instruments handling
@@ -292,6 +293,8 @@ protected:
                 interactor->setName("mouse");
                 if (groot)
                 {
+                    if (!groot->get<core::componentmodel::collision::Pipeline>(core::objectmodel::BaseContext::SearchRoot))
+                        interactor->useCollisions.setValue(false);
                     simulation::Node* child = simulation::getSimulation()->newNode("mouse");
                     groot->addChild(child);
 

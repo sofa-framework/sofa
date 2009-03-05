@@ -1044,6 +1044,32 @@ Visitor::Result MechanicalAddSeparateGravityVisitor::fwdMass(simulation::Node* n
     return RESULT_CONTINUE;
 }
 
+
+Visitor::Result MechanicalPickParticlesVisitor::fwdMechanicalState(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalState* mm)
+{
+    ctime_t t0 = beginProcess(node, mm);
+    std::cout << "Picking particles on state " << mm->getName() << " within radius " << radius0 << " + dist * " << dRadius << std::endl;
+    mm->pickParticles(rayOrigin[0], rayOrigin[1], rayOrigin[2], rayDirection[0], rayDirection[1], rayDirection[2], radius0, dRadius, particles);
+    endProcess(node, mm, t0);
+    return RESULT_CONTINUE;
+}
+
+Visitor::Result MechanicalPickParticlesVisitor::fwdMappedMechanicalState(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalState* mm)
+{
+    if (node->mechanicalMapping  && !node->mechanicalMapping->isMechanical())
+        return RESULT_PRUNE;
+    ctime_t t0 = beginProcess(node, mm);
+    mm->pickParticles(rayOrigin[0], rayOrigin[1], rayOrigin[2], rayDirection[0], rayDirection[1], rayDirection[2], radius0, dRadius, particles);
+    endProcess(node, mm, t0);
+    return RESULT_CONTINUE;
+}
+Visitor::Result MechanicalPickParticlesVisitor::fwdMechanicalMapping(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalMapping* map)
+{
+    if (!map->isMechanical())
+        return RESULT_PRUNE;
+    return RESULT_CONTINUE;
+}
+
 } // namespace simulation
 
 } // namespace sofa
