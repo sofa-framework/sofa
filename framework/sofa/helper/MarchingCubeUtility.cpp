@@ -375,7 +375,8 @@ const int MarchingCubeTriTable[256][16] =
 
 MarchingCubeUtility::MarchingCubeUtility()
     : cubeStep ( 1 ), convolutionSize ( 1 ),
-      dataResolution ( 0,0,0 ), dataVoxelSize ( 1.0f,1.0f,1.0f )
+      dataResolution ( 0,0,0 ), dataVoxelSize ( 1.0f,1.0f,1.0f ),
+      maxIsoValue( 0xFFFFFFFF)
 {
 // // Computes non trivial faces.
 // int nonTrivialFaces[256];
@@ -416,9 +417,9 @@ void MarchingCubeUtility::vertexInterp ( Vector3 &p, const float isolevel,
     float mu = ( isolevel - valp1 ) / ( valp2 - valp1 );
     p = p1 + ( p2 - p1 ) * mu;
     p = ( ( p + Vector3 ( 1.0f, 1.0f, 1.0f ) ) *0.5f ).linearProduct ( dataVoxelSize.linearProduct ( dataResolution ) ) + dataVoxelSize/2.0;
-    p[0] = ( int ) ( p[0]*PRECISION ) /PRECISION;
-    p[1] = ( int ) ( p[1]*PRECISION ) /PRECISION;
-    p[2] = ( int ) ( p[2]*PRECISION ) /PRECISION;
+    p[0] = ( int ) round( p[0]*PRECISION ) /PRECISION;
+    p[1] = ( int ) round( p[1]*PRECISION ) /PRECISION;
+    p[2] = ( int ) round( p[2]*PRECISION ) /PRECISION;
 }
 
 
@@ -434,37 +435,45 @@ void MarchingCubeUtility::initCell ( GridCell& cell, const Vec3i& coord, const u
 
     cell.pos[0]=vcurf.linearProduct ( gridStep )-Vector3 ( 1.0f,1.0f,1.0f );
     Vec3i valPos0=coord.linearProduct ( dataGridStep );
-    cell.val[0]=data[valPos0[0] + valPos0[1]*dataResolution[0] + valPos0[2]*dataResolution[0]*dataResolution[1]];
+    cell.val[0]=(( valPos0[0] > roi.min[0]) && ( valPos0[1] > roi.min[1]) && ( valPos0[2] > roi.min[2]) && ( valPos0[0] < roi.max[0]-1) && ( valPos0[1] < roi.max[1]-1) && ( valPos0[2] < roi.max[2]-1))?data[valPos0[0] + valPos0[1]*dataResolution[0] + valPos0[2]*dataResolution[0]*dataResolution[1]]:0;
+    if( cell.val[0] > maxIsoValue) cell.val[0] = 0;
 
     Vec3i valPos;
 
     cell.pos[1]=cell.pos[0]+Vector3 ( gridStep[0], 0, 0 );
     valPos=valPos0+Vec3i ( dataGridStep[0], 0, 0 );
-    cell.val[1]=data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]];
+    cell.val[1]=(( valPos[0] > roi.min[0]) && ( valPos[1] > roi.min[1]) && ( valPos[2] > roi.min[2]) && ( valPos[0] < roi.max[0]-1) && ( valPos[1] < roi.max[1]-1) && ( valPos[2] < roi.max[2]-1))?data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]]:0;
+    if( cell.val[1] > maxIsoValue) cell.val[1] = 0;
 
     cell.pos[2]=cell.pos[0]+Vector3 ( gridStep[0], gridStep[1], 0 );
     valPos=valPos0+Vec3i ( dataGridStep[0], dataGridStep[1], 0 );
-    cell.val[2]=data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]];
+    cell.val[2]=(( valPos[0] > roi.min[0]) && ( valPos[1] > roi.min[1]) && ( valPos[2] > roi.min[2]) && ( valPos[0] < roi.max[0]-1) && ( valPos[1] < roi.max[1]-1) && ( valPos[2] < roi.max[2]-1))?data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]]:0;
+    if( cell.val[2] > maxIsoValue) cell.val[2] = 0;
 
     cell.pos[3]=cell.pos[0]+Vector3 ( 0, gridStep[1], 0 );
     valPos=valPos0+Vec3i ( 0, dataGridStep[1], 0 );
-    cell.val[3]=data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]];
+    cell.val[3]=(( valPos[0] > roi.min[0]) && ( valPos[1] > roi.min[1]) && ( valPos[2] > roi.min[2]) && ( valPos[0] < roi.max[0]-1) && ( valPos[1] < roi.max[1]-1) && ( valPos[2] < roi.max[2]-1))?data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]]:0;
+    if( cell.val[3] > maxIsoValue) cell.val[3] = 0;
 
     cell.pos[4]=cell.pos[0]+Vector3 ( 0, 0, gridStep[2] );
     valPos=valPos0+Vec3i ( 0, 0, dataGridStep[2] );
-    cell.val[4]=data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]];
+    cell.val[4]=(( valPos[0] > roi.min[0]) && ( valPos[1] > roi.min[1]) && ( valPos[2] > roi.min[2]) && ( valPos[0] < roi.max[0]-1) && ( valPos[1] < roi.max[1]-1) && ( valPos[2] < roi.max[2]-1))?data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]]:0;
+    if( cell.val[4] > maxIsoValue) cell.val[4] = 0;
 
     cell.pos[5]=cell.pos[0]+Vector3 ( gridStep[0], 0, gridStep[2] );
     valPos=valPos0+Vec3i ( dataGridStep[0], 0, dataGridStep[2] );
-    cell.val[5]=data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]];
+    cell.val[5]=(( valPos[0] > roi.min[0]) && ( valPos[1] > roi.min[1]) && ( valPos[2] > roi.min[2]) && ( valPos[0] < roi.max[0]-1) && ( valPos[1] < roi.max[1]-1) && ( valPos[2] < roi.max[2]-1))?data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]]:0;
+    if( cell.val[5] > maxIsoValue) cell.val[5] = 0;
 
     cell.pos[6]=cell.pos[0]+Vector3 ( gridStep[0], gridStep[1], gridStep[2] );
     valPos=valPos0+Vec3i ( dataGridStep[0], dataGridStep[1], dataGridStep[2] );
-    cell.val[6]=data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]];
+    cell.val[6]=(( valPos[0] > roi.min[0]) && ( valPos[1] > roi.min[1]) && ( valPos[2] > roi.min[2]) && ( valPos[0] < roi.max[0]-1) && ( valPos[1] < roi.max[1]-1) && ( valPos[2] < roi.max[2]-1))?data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]]:0;
+    if( cell.val[6] > maxIsoValue) cell.val[6] = 0;
 
     cell.pos[7]=cell.pos[0]+Vector3 ( 0, gridStep[1], gridStep[2] );
     valPos=valPos0+Vec3i ( 0, dataGridStep[1], dataGridStep[2] );
-    cell.val[7]=data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]];
+    cell.val[7]=(( valPos[0] > roi.min[0]) && ( valPos[1] > roi.min[1]) && ( valPos[2] > roi.min[2]) && ( valPos[0] < roi.max[0]-1) && ( valPos[1] < roi.max[1]-1) && ( valPos[2] < roi.max[2]-1))?data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]]:0;
+    if( cell.val[7] > maxIsoValue) cell.val[7] = 0;
 }
 
 /*
@@ -595,18 +604,14 @@ void MarchingCubeUtility::propagateFrom ( const Vec3i coord,
 
         if ( generatedCubes.find ( cubeCoord ) != generatedCubes.end() ) continue;
         // If we touch the border, STOP propagating !
-        bool onTheBorder = false;
-        for ( vector<set<Vec3i> >::const_iterator itBorders = borders.begin(); itBorders != borders.end(); itBorders++ )
-            if ( itBorders->find ( cubeCoord ) != itBorders->end() )
-                onTheBorder = true;
-        if ( onTheBorder ) continue;
+        if ( borders.find ( cubeCoord ) != borders.end() ) continue;
 
         GridCell cell;
         initCell ( cell, cubeCoord, data, gridStep, dataGridStep );
 
         int numvert = polygonise ( cell, cubeConf, isolevel, mesh, map_vertices, vertices );
 
-        if ( triangleIndexInRegularGrid ) updateTriangleInRegularGridVector ( *triangleIndexInRegularGrid, cubeCoord, cell, gridSize, numvert / 3 );
+        if ( triangleIndexInRegularGrid ) updateTriangleInRegularGridVector ( *triangleIndexInRegularGrid, cubeCoord, cell, numvert / 3 );
 
         // Propagate
         generatedCubes.insert ( cubeCoord ); // spaceIndex cube has been polygonized
@@ -724,7 +729,7 @@ void MarchingCubeUtility::run ( unsigned char *_data, const float isolevel,
 
                 int numvert = polygonise ( cell, cubeConf, isolevel, mesh, map_vertices, vertices );
 
-                if ( triangleIndexInRegularGrid ) updateTriangleInRegularGridVector ( *triangleIndexInRegularGrid, Vec3i ( i, j, k ), cell, gridSize, numvert / 3 );
+                if ( triangleIndexInRegularGrid ) updateTriangleInRegularGridVector ( *triangleIndexInRegularGrid, Vec3i ( i, j, k ), cell, numvert / 3 );
             }
 
     if (smooth)
@@ -764,29 +769,22 @@ void MarchingCubeUtility::run ( unsigned char *data, const float isolevel,
 
 
 
-void MarchingCubeUtility::setBordersFromRealCoords ( const vector<set<Vector3> >& borders )
+void MarchingCubeUtility::setBordersFromRealCoords ( const set<Vector3>& borders )
 {
     this->borders.clear();
+    Vector3 gridSize = dataVoxelSize * cubeStep;
+    gridSize = Vector3 ( 1.0 / gridSize[0], 1.0 / gridSize[1], 1.0 / gridSize[2] );
 
-    Vector3 gridGraphicSize = dataVoxelSize.linearProduct ( dataResolution );
-    gridGraphicSize = Vector3 ( 1.0 / gridGraphicSize[0], 1.0 / gridGraphicSize[1], 1.0 / gridGraphicSize[2] );
-    Vector3 gridSize = Vector3 ( dataResolution /cubeStep );
-
-    for ( vector<set<Vector3> >::const_iterator itBorders = borders.begin(); itBorders != borders.end(); itBorders++ )
+    for ( set<Vector3>::const_iterator it = borders.begin(); it != borders.end(); it++ )
     {
-        set<Vec3i> border;
-        for ( set<Vector3>::const_iterator it = itBorders->begin(); it != itBorders->end(); it++ )
-        {
-            Vec3i cube = ( ( ( *it ) - ( dataVoxelSize/2.0 ) ).linearProduct ( gridGraphicSize ) ).linearProduct ( gridSize );
-            border.insert ( cube );
-            assert ( cube[0] >= 0 );
-            assert ( cube[1] >= 0 );
-            assert ( cube[2] >= 0 );
-            assert ( cube[0] < gridSize[0] );
-            assert ( cube[1] < gridSize[1] );
-            assert ( cube[2] < gridSize[2] );
-        }
-        this->borders.push_back ( border );
+        Vec3i cube = ( ( *it ) - ( dataVoxelSize/2.0 ) ).linearProduct ( gridSize );
+        this->borders.insert ( cube );
+        assert ( cube[0] >= 0 );
+        assert ( cube[1] >= 0 );
+        assert ( cube[2] >= 0 );
+        assert ( cube[0] < dataResolution[0] );
+        assert ( cube[1] < dataResolution[1] );
+        assert ( cube[2] < dataResolution[2] );
     }
 }
 
@@ -851,13 +849,11 @@ void MarchingCubeUtility::findSeeds ( vector<Vec3i>& seeds, const float isoValue
 void MarchingCubeUtility::findSeedsFromRealCoords ( vector<Vec3i>& mCubeCoords, const vector<Vector3>& realCoords ) const
 {
     mCubeCoords.clear();
-    Vector3 gridGraphicSize = dataVoxelSize.linearProduct ( dataResolution );
-    gridGraphicSize = Vector3 ( 1.0 / gridGraphicSize[0], 1.0 / gridGraphicSize[1], 1.0 / gridGraphicSize[2] );
-    Vector3 gridSize = Vector3 ( dataResolution /cubeStep );
+    Vector3 gridSize = Vector3 ( 1.0 / dataVoxelSize[0]*cubeStep, 1.0 / dataVoxelSize[1]*cubeStep, 1.0 / dataVoxelSize[2]*cubeStep );
 
     for ( vector<Vector3>::const_iterator it = realCoords.begin(); it != realCoords.end(); it++ )
     {
-        Vec3i seed = ( ( ( *it ) - ( dataVoxelSize/2.0 ) ).linearProduct ( gridGraphicSize ) ).linearProduct ( gridSize );
+        Vec3i seed = ( ( *it ) - ( dataVoxelSize/2.0 ) ).linearProduct ( gridSize );
         mCubeCoords.push_back ( seed );
         assert ( seed[0] >= 0 );
         assert ( seed[1] >= 0 );
@@ -870,17 +866,17 @@ void MarchingCubeUtility::findSeedsFromRealCoords ( vector<Vec3i>& mCubeCoords, 
 
 
 
-void MarchingCubeUtility::updateTriangleInRegularGridVector ( helper::vector< helper::vector<unsigned int /*regular grid space index*/> >& triangleIndexInRegularGrid, const Vec3i& coord, const GridCell& cell, const Vec3i& gridSize, unsigned int nbTriangles ) const
+void MarchingCubeUtility::updateTriangleInRegularGridVector ( helper::vector< helper::vector<unsigned int /*regular grid space index*/> >& triangleIndexInRegularGrid, const Vec3i& coord, const GridCell& cell, unsigned int nbTriangles ) const
 {
     vector<unsigned int> voxels;
-    if ( cell.val[0] ) voxels.push_back ( ( coord[0]+0 ) + ( coord[1]+0 ) *gridSize[0] + ( coord[2]+0 ) *gridSize[0]*gridSize[1] ); //les voxels occupes ds ce cube
-    if ( cell.val[1] ) voxels.push_back ( ( coord[0]+1 ) + ( coord[1]+0 ) *gridSize[0] + ( coord[2]+0 ) *gridSize[0]*gridSize[1] ); //les voxels occupes ds ce cube
-    if ( cell.val[3] ) voxels.push_back ( ( coord[0]+0 ) + ( coord[1]+1 ) *gridSize[0] + ( coord[2]+0 ) *gridSize[0]*gridSize[1] ); //les voxels occupes ds ce cube
-    if ( cell.val[2] ) voxels.push_back ( ( coord[0]+1 ) + ( coord[1]+1 ) *gridSize[0] + ( coord[2]+0 ) *gridSize[0]*gridSize[1] ); //les voxels occupes ds ce cube
-    if ( cell.val[4] ) voxels.push_back ( ( coord[0]+0 ) + ( coord[1]+0 ) *gridSize[0] + ( coord[2]+1 ) *gridSize[0]*gridSize[1] ); //les voxels occupes ds ce cube
-    if ( cell.val[5] ) voxels.push_back ( ( coord[0]+1 ) + ( coord[1]+0 ) *gridSize[0] + ( coord[2]+1 ) *gridSize[0]*gridSize[1] ); //les voxels occupes ds ce cube
-    if ( cell.val[7] ) voxels.push_back ( ( coord[0]+0 ) + ( coord[1]+1 ) *gridSize[0] + ( coord[2]+1 ) *gridSize[0]*gridSize[1] ); //les voxels occupes ds ce cube
-    if ( cell.val[6] ) voxels.push_back ( ( coord[0]+1 ) + ( coord[1]+1 ) *gridSize[0] + ( coord[2]+1 ) *gridSize[0]*gridSize[1] ); //les voxels occupes ds ce cube
+    if ( cell.val[0] ) voxels.push_back ( ( coord[0]+0 ) + ( coord[1]+0 ) *dataResolution[0] + ( coord[2]+0 ) *dataResolution[0]*dataResolution[1] ); //les voxels occupes ds ce cube
+    if ( cell.val[1] ) voxels.push_back ( ( coord[0]+1 ) + ( coord[1]+0 ) *dataResolution[0] + ( coord[2]+0 ) *dataResolution[0]*dataResolution[1] ); //les voxels occupes ds ce cube
+    if ( cell.val[3] ) voxels.push_back ( ( coord[0]+0 ) + ( coord[1]+1 ) *dataResolution[0] + ( coord[2]+0 ) *dataResolution[0]*dataResolution[1] ); //les voxels occupes ds ce cube
+    if ( cell.val[2] ) voxels.push_back ( ( coord[0]+1 ) + ( coord[1]+1 ) *dataResolution[0] + ( coord[2]+0 ) *dataResolution[0]*dataResolution[1] ); //les voxels occupes ds ce cube
+    if ( cell.val[4] ) voxels.push_back ( ( coord[0]+0 ) + ( coord[1]+0 ) *dataResolution[0] + ( coord[2]+1 ) *dataResolution[0]*dataResolution[1] ); //les voxels occupes ds ce cube
+    if ( cell.val[5] ) voxels.push_back ( ( coord[0]+1 ) + ( coord[1]+0 ) *dataResolution[0] + ( coord[2]+1 ) *dataResolution[0]*dataResolution[1] ); //les voxels occupes ds ce cube
+    if ( cell.val[7] ) voxels.push_back ( ( coord[0]+0 ) + ( coord[1]+1 ) *dataResolution[0] + ( coord[2]+1 ) *dataResolution[0]*dataResolution[1] ); //les voxels occupes ds ce cube
+    if ( cell.val[6] ) voxels.push_back ( ( coord[0]+1 ) + ( coord[1]+1 ) *dataResolution[0] + ( coord[2]+1 ) *dataResolution[0]*dataResolution[1] ); //les voxels occupes ds ce cube
 
     for ( unsigned int i = 0; i < nbTriangles; i++ )
     {
@@ -900,7 +896,6 @@ void MarchingCubeUtility::findConnectedVoxels ( sofa::helper::set<unsigned int>&
     int maxX = bboxMax[0]-1;
     int maxY = bboxMax[1]-1;
     int maxZ = bboxMax[2]-1;
-    Vec3i gridSize = Vec3i ( dataResolution /cubeStep );
 
     std::stack<Vec3i> voxelsToTest;
     voxelsToTest.push( from);
@@ -910,7 +905,7 @@ void MarchingCubeUtility::findConnectedVoxels ( sofa::helper::set<unsigned int>&
         Vec3i coord = voxelsToTest.top();
         voxelsToTest.pop();
 
-        unsigned int index = coord[0] + coord[1]*gridSize[0] + coord[2]*gridSize[0]*gridSize[1];
+        unsigned int index = coord[0] + coord[1]*dataResolution[0] + coord[2]*dataResolution[0]*dataResolution[1];
 
         if ( connectedVoxels.find ( index ) != connectedVoxels.end() ) continue;
 

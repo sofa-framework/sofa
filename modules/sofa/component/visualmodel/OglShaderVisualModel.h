@@ -41,6 +41,10 @@ public:
 
     void init();
     void initVisual();
+
+    // handle topological changes
+    virtual void handleTopologyChange();
+    void computeRestNormals();
 };
 
 } //namespace visualmodel

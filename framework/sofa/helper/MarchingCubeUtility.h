@@ -62,6 +62,7 @@ public:
     void setDataResolution ( const Vec3i   &resolution )
     {
         dataResolution = resolution;
+        setROI( Vec3i ( 0, 0, 0 ), resolution );
         setBoundingBox ( Vec3i ( 0, 0, 0 ), resolution );
     }
 
@@ -80,6 +81,32 @@ public:
         this->convolutionSize = convolutionSize;
     }
 
+    /// Set the bounding box from real coords to apply mCube localy.
+    void setBoundingBoxFromRealCoords ( const Vector3& min, const Vector3& max )
+    {
+        Vector3 gridSize = dataVoxelSize * cubeStep;
+        gridSize = Vector3 ( 1.0 / gridSize[0], 1.0 / gridSize[1], 1.0 / gridSize[2] );
+
+        Vec3i bbMin = ( min - ( dataVoxelSize/2.0 ) ).linearProduct ( gridSize );
+        Vec3i bbMax = ( max - ( dataVoxelSize/2.0 ) ).linearProduct ( gridSize );
+        setBoundingBox( min, max);
+    }
+
+
+    /// Set the bounding box (in the data space) to apply mCube localy.
+    void setROI ( const Vec3i& min, const Vec3i& max )
+    {
+        this->roi.min = min;
+        this->roi.max = max;
+        if ( roi.min[0] < 0 ) roi.min[0] = 0;
+        if ( roi.min[1] < 0 ) roi.min[1] = 0;
+        if ( roi.min[2] < 0 ) roi.min[2] = 0;
+        if ( roi.max[0] > dataResolution[0] )roi.max[0] = dataResolution[0];
+        if ( roi.max[1] > dataResolution[1] )roi.max[1] = dataResolution[1];
+        if ( roi.max[2] > dataResolution[2] )roi.max[2] = dataResolution[2];
+    }
+
+
     /// Set the bounding box (in the data space) to apply mCube localy.
     void setBoundingBox ( const Vec6i& roi )
     {
@@ -93,16 +120,18 @@ public:
     {
         this->bbox.min = min;
         this->bbox.max = max;
-        assert ( bbox.min[0] >= 0 );
-        assert ( bbox.min[1] >= 0 );
-        assert ( bbox.min[2] >= 0 );
-        assert ( bbox.max[0] <= dataResolution[0] );
-        assert ( bbox.max[1] <= dataResolution[1] );
-        assert ( bbox.max[2] <= dataResolution[2] );
+        if ( bbox.min[0] < 0 ) bbox.min[0] = 0;
+        if ( bbox.min[1] < 0 ) bbox.min[1] = 0;
+        if ( bbox.min[2] < 0 ) bbox.min[2] = 0;
+        if ( bbox.max[0] > dataResolution[0] )bbox.max[0] = dataResolution[0];
+        if ( bbox.max[1] > dataResolution[1] )bbox.max[1] = dataResolution[1];
+        if ( bbox.max[2] > dataResolution[2] )bbox.max[2] = dataResolution[2];
     }
 
+    void setMaxIsoValue( float value) { maxIsoValue = value;};
+
     /// Set the border to localy remesh from real coords
-    void setBordersFromRealCoords ( const vector<sofa::helper::set<Vector3> >& borders );
+    void setBordersFromRealCoords ( const sofa::helper::set<Vector3>& borders );
 
 
     /// given a set of data (size of the data and size of the marching cube beeing defined previously),
@@ -151,7 +180,7 @@ private:
 
     inline bool testGrid ( const float v, const float isolevel ) const;
 
-    inline void updateTriangleInRegularGridVector ( helper::vector< helper::vector<unsigned int /*regular grid space index*/> >& triangleIndexInRegularGrid, const Vec3i& coord, const GridCell& cell, const Vec3i& gridSize, unsigned int nbTriangles ) const;
+    inline void updateTriangleInRegularGridVector ( helper::vector< helper::vector<unsigned int /*regular grid space index*/> >& triangleIndexInRegularGrid, const Vec3i& coord, const GridCell& cell, unsigned int nbTriangles ) const;
 
     int polygonise ( const GridCell &grid, int& cubeConf, const float isolevel,
             sofa::helper::vector< PointID > &triangles,
@@ -186,10 +215,12 @@ private:
 private:
     unsigned int  cubeStep;
     unsigned int  convolutionSize;
+    float maxIsoValue; // if you want to limit between two iso-value.
     Vec3i     dataResolution;
     Vector3     dataVoxelSize;
-    BoundingBox bbox;
-    vector<set<Vec3i> > borders;
+    BoundingBox bbox; //bbox used to remesh
+    BoundingBox roi; // Set value to 0 on this limit to always obtain manifold mesh. (Set to dataResolution by default but can be changed for ROI)
+    set<Vec3i> borders;
 };
 
 extern SOFA_HELPER_API const int MarchingCubeEdgeTable[256];
