@@ -22,10 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_HomogenizedMAPPING_INL
-#define SOFA_COMPONENT_MAPPING_HomogenizedMAPPING_INL
+#ifndef SOFA_COMPONENT_MAPPING_HexahedronCompositeFEMMapping_INL
+#define SOFA_COMPONENT_MAPPING_HexahedronCompositeFEMMapping_INL
 
-#include <sofa/component/mapping/HomogenizedMapping.h>
+#include <sofa/component/mapping/HexahedronCompositeFEMMapping.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/gl/template.h>
@@ -54,7 +54,7 @@ using namespace sofa::defaulttype;
 
 
 template <class BasicMapping>
-void HomogenizedMapping<BasicMapping>::init()
+void HexahedronCompositeFEMMapping<BasicMapping>::init()
 {
     if(_alreadyInit) return;
     _alreadyInit=true;
@@ -63,7 +63,7 @@ void HomogenizedMapping<BasicMapping>::init()
     _sparseGrid = dynamic_cast<SparseGridTopologyT*> (this->fromModel->getContext()->getTopology());
     if(!_sparseGrid)
     {
-        serr<<"HomogenizedMapping can only be used with a SparseGridTopology"<<sendl;
+        serr<<"HexahedronCompositeFEMMapping can only be used with a SparseGridTopology"<<sendl;
         exit(0);
     }
 
@@ -71,7 +71,7 @@ void HomogenizedMapping<BasicMapping>::init()
     this->fromModel->getContext()->get(_forcefield);
     if(!_forcefield)
     {
-        serr<<"HomogenizedMapping can only be used with a HomogenizedHexahedronFEMForceFieldAndMass"<<sendl;
+        serr<<"HexahedronCompositeFEMMapping can only be used with a HexahedronCompositeFEMForceFieldAndMass"<<sendl;
         exit(0);
     }
 
@@ -161,10 +161,10 @@ void HomogenizedMapping<BasicMapping>::init()
                 _finestBarycentricCoord[i] = std::pair<int,helper::fixed_array<Real,8> >(elementIdx, baryCoefs);
             }
             else
-                serr<<"HomogenizedMapping::init()   error finding the corresponding finest cube of vertex "<<_p0[i]<<sendl;
+                serr<<"HexahedronCompositeFEMMapping::init()   error finding the corresponding finest cube of vertex "<<_p0[i]<<sendl;
         }
 // 		else
-// 			serr<<"HomogenizedMapping::init()   error finding the corresponding coarse cube of vertex "<<_p0[i]<<sendl;
+// 			serr<<"HexahedronCompositeFEMMapping::init()   error finding the corresponding coarse cube of vertex "<<_p0[i]<<sendl;
     }
 
 
@@ -234,7 +234,7 @@ void HomogenizedMapping<BasicMapping>::init()
 
 
 template <class BasicMapping>
-void HomogenizedMapping<BasicMapping>::apply ( OutVecCoord& out, const InVecCoord& in )
+void HexahedronCompositeFEMMapping<BasicMapping>::apply ( OutVecCoord& out, const InVecCoord& in )
 {
 
 
@@ -310,7 +310,7 @@ void HomogenizedMapping<BasicMapping>::apply ( OutVecCoord& out, const InVecCoor
 
 
 template <class BasicMapping>
-void HomogenizedMapping<BasicMapping>::applyJ ( OutVecDeriv& out, const InVecDeriv& in )
+void HexahedronCompositeFEMMapping<BasicMapping>::applyJ ( OutVecDeriv& out, const InVecDeriv& in )
 {
     // les deplacements des noeuds grossiers
     helper::vector< Vec< 24 >  > coarseDisplacements( _sparseGrid->getNbHexas() );
@@ -361,7 +361,7 @@ void HomogenizedMapping<BasicMapping>::applyJ ( OutVecDeriv& out, const InVecDer
 
 
 template <class BasicMapping>
-void HomogenizedMapping<BasicMapping>::applyJT ( InVecDeriv& out, const OutVecDeriv& in )
+void HexahedronCompositeFEMMapping<BasicMapping>::applyJT ( InVecDeriv& out, const OutVecDeriv& in )
 {
     // les forces des noeuds fins
     helper::vector< InDeriv > fineForces( _finestWeights.size() );
@@ -400,7 +400,7 @@ void HomogenizedMapping<BasicMapping>::applyJT ( InVecDeriv& out, const OutVecDe
 
 
 template <class BasicMapping>
-void HomogenizedMapping<BasicMapping>::draw()
+void HexahedronCompositeFEMMapping<BasicMapping>::draw()
 {
     if (!this->getShow()) return;
 
@@ -420,7 +420,7 @@ void HomogenizedMapping<BasicMapping>::draw()
 
 
 // template <class BasicMapping>
-// typename HomogenizedMapping<BasicMapping>::InCoord HomogenizedMapping<BasicMapping>::computeTranslation( const SparseGridTopologyT::Hexa& hexa, unsigned idx )
+// typename HexahedronCompositeFEMMapping<BasicMapping>::InCoord HexahedronCompositeFEMMapping<BasicMapping>::computeTranslation( const SparseGridTopologyT::Hexa& hexa, unsigned idx )
 // {
 // 	InCoord bary;
 // 	for(int j=0;j<8;++j)

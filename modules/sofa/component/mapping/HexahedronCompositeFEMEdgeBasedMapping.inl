@@ -22,10 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_HomogenizedEdgeBasedMapping_INL
-#define SOFA_COMPONENT_MAPPING_HomogenizedEdgeBasedMapping_INL
+#ifndef SOFA_COMPONENT_MAPPING_HexahedronCompositeFEMEdgeBasedMapping_INL
+#define SOFA_COMPONENT_MAPPING_HexahedronCompositeFEMEdgeBasedMapping_INL
 
-#include <sofa/component/mapping/HomogenizedEdgeBasedMapping.h>
+#include <sofa/component/mapping/HexahedronCompositeFEMEdgeBasedMapping.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/core/componentmodel/behavior/MechanicalMapping.inl>
@@ -53,7 +53,7 @@ using namespace sofa::defaulttype;
 
 
 template <class BasicMapping>
-const int HomogenizedEdgeBasedMapping<BasicMapping>::EDGES[12][3]=
+const int HexahedronCompositeFEMEdgeBasedMapping<BasicMapping>::EDGES[12][3]=
 {
     {0,1,0},
     {3,2,0},
@@ -73,7 +73,7 @@ const int HomogenizedEdgeBasedMapping<BasicMapping>::EDGES[12][3]=
 
 
 template <class BasicMapping>
-void HomogenizedEdgeBasedMapping<BasicMapping>::init()
+void HexahedronCompositeFEMEdgeBasedMapping<BasicMapping>::init()
 {
     if(this->_alreadyInit) return;
 
@@ -113,7 +113,7 @@ void HomogenizedEdgeBasedMapping<BasicMapping>::init()
             _coarseBarycentricCoord[i][coarsehexa[7]] = (Real)((1-coefs[0]) * (coefs[1]) * (coefs[2]));
         }
         else
-            cerr<<"HomogenizedEdgeBasedMapping::init()   error finding the corresponding coarest cube of vertex "<<this->_qFine0[i]<<sendl;
+            cerr<<"HexahedronCompositeFEMEdgeBasedMapping::init()   error finding the corresponding coarest cube of vertex "<<this->_qFine0[i]<<sendl;
     }
 
 
@@ -180,7 +180,7 @@ void HomogenizedEdgeBasedMapping<BasicMapping>::init()
 
 
 template <class BasicMapping>
-void HomogenizedEdgeBasedMapping<BasicMapping>::apply ( OutVecCoord& out, const InVecCoord& in )
+void HexahedronCompositeFEMEdgeBasedMapping<BasicMapping>::apply ( OutVecCoord& out, const InVecCoord& in )
 {
     for(int i=0; i<this->_sparseGrid->getNbHexas(); ++i)
         this->_rotations[i] = this->_forcefield->getRotation(i);
@@ -192,7 +192,7 @@ void HomogenizedEdgeBasedMapping<BasicMapping>::apply ( OutVecCoord& out, const 
     {
         InCoord e = in[ _edges[i][1] ] - in[ _edges[i][0] ];
         Real n = (Real)e.norm();
-        if( n==0.0 ) serr<<"HomogenizedEdgeBasedMapping apply div 0"<<sendl;
+        if( n==0.0 ) serr<<"HexahedronCompositeFEMEdgeBasedMapping apply div 0"<<sendl;
         elongations[i] = (Real)((n -_size0[_edges[i][2]])/2.0f);
         directions[i] = e/n;
     }

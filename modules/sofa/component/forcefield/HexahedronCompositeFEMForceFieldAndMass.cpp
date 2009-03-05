@@ -22,16 +22,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MAPPING_HomogenizedEdgeBasedMapping_H
-#define SOFA_COMPONENT_MAPPING_HomogenizedEdgeBasedMapping_H
+#include <sofa/component/forcefield/HexahedronCompositeFEMForceFieldAndMass.inl>
+#include <sofa/core/componentmodel/behavior/ForceField.inl>
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/core/ObjectFactory.h>
+//#include <typeinfo>
 
-#include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/helper/vector.h>
-
-#include <sofa/defaulttype/Mat.h>
-
-#include <sofa/component/mapping/HomogenizedMapping.h>
 
 namespace sofa
 {
@@ -39,67 +35,33 @@ namespace sofa
 namespace component
 {
 
-
-namespace mapping
+namespace forcefield
 {
 
-
-
-using namespace sofa::core::componentmodel::behavior;
 using namespace sofa::defaulttype;
 
-template <class BasicMapping>
-class HomogenizedEdgeBasedMapping : public HomogenizedMapping<BasicMapping>
-{
-public:
-    typedef HomogenizedMapping<BasicMapping> Inherit;
-    typedef typename Inherit::In In;
-    typedef typename Inherit::Out Out;
-    typedef typename Out::Coord OutCoord;
-    typedef typename Out::Deriv OutDeriv;
-    typedef typename Out::VecCoord OutVecCoord;
-    typedef typename Out::VecDeriv OutVecDeriv;
-    typedef typename In::Real InReal;
-    typedef typename In::Coord InCoord;
-    typedef typename In::Deriv InDeriv;
-    typedef typename In::VecCoord InVecCoord;
-    typedef typename In::VecDeriv InVecDeriv;
-    typedef typename OutCoord::value_type Real;
-    typedef typename Inherit::Weight Weight;
+SOFA_DECL_CLASS(HexahedronCompositeFEMForceFieldAndMass)
 
+// Register in the Factory
+int HexahedronCompositeFEMForceFieldAndMassClass = core::RegisterObject("Non uniform Hexahedral finite elements")
+#ifndef SOFA_FLOAT
+        .add< HexahedronCompositeFEMForceFieldAndMass<Vec3dTypes> >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< HexahedronCompositeFEMForceFieldAndMass<Vec3fTypes> >()
+#endif
+        ;
 
-    using Inherit::sout;
-    using Inherit::serr;
-    using Inherit::sendl;
+#ifndef SOFA_FLOAT
+template class HexahedronCompositeFEMForceFieldAndMass<Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class HexahedronCompositeFEMForceFieldAndMass<Vec3fTypes>;
+#endif
 
-
-    HomogenizedEdgeBasedMapping ( In* from, Out* to ): Inherit ( from, to )
-    {
-    }
-
-    virtual ~HomogenizedEdgeBasedMapping() {}
-
-    virtual void init();
-
-    virtual void apply ( OutVecCoord& out, const InVecCoord& in );
-
-
-
-protected :
-
-
-    static const int EDGES[12][3]; // 2 indices + dir (0=x,1=y,2=z)
-    typedef helper::fixed_array<int,3> Edge;// 2 indices + dir (0=x,1=y,2=z)
-    helper::vector< Edge > _edges;
-    helper::vector<std::map<int,Real> > _weightsEdge; // for each fine nodes -> list of edges with coef
-    InCoord _size0;
-    helper::vector< std::map< int, Real > > _coarseBarycentricCoord; // barycentric coordinates for each fine points into the coarse elements (coarse nodes idx + weights)
-};
-
-} // namespace mapping
+} // namespace forcefield
 
 } // namespace component
 
 } // namespace sofa
 
-#endif
