@@ -39,6 +39,7 @@
 #include <string.h>
 #include <set>
 
+
 namespace sofa
 {
 
@@ -417,9 +418,9 @@ void MarchingCubeUtility::vertexInterp ( Vector3 &p, const float isolevel,
     float mu = ( isolevel - valp1 ) / ( valp2 - valp1 );
     p = p1 + ( p2 - p1 ) * mu;
     p = ( ( p + Vector3 ( 1.0f, 1.0f, 1.0f ) ) *0.5f ).linearProduct ( dataVoxelSize.linearProduct ( dataResolution ) ) + dataVoxelSize/2.0;
-    p[0] = ( int ) round( p[0]*PRECISION ) /PRECISION;
-    p[1] = ( int ) round( p[1]*PRECISION ) /PRECISION;
-    p[2] = ( int ) round( p[2]*PRECISION ) /PRECISION;
+    p[0] = ( int ) helper::round( p[0]*PRECISION ) /PRECISION;
+    p[1] = ( int ) helper::round( p[1]*PRECISION ) /PRECISION;
+    p[2] = ( int ) helper::round( p[2]*PRECISION ) /PRECISION;
 }
 
 

@@ -175,6 +175,13 @@ inline void shft3(double &a, double &b, double &c, const double d)
     c=d;
 }
 
+template<class T>
+inline const T round(const T& x)
+{
+    return (x<0?ceil(x-0.5):floor(x+0.5));
+}
+
+
 
 //inline void printerror( const char* msg )
 //{
