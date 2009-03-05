@@ -260,8 +260,15 @@ void TetrahedronSetTopologyContainer::createTriangleSetArray()
             {
                 // triangle not in triangleMap so create a new one
                 tr = helper::make_array<unsigned int>(v[0], v[1], v[2]);
-                triangleMap[tr] = triangleMap.size();
-                m_triangle.push_back(tr);
+                if (triangleMap.find(tr) == triangleMap.end())
+                {
+                    triangleMap[tr] = m_triangle.size();
+                    m_triangle.push_back(tr);
+                }
+                else
+                {
+                    serr << "ERROR: duplicate triangle " << tr << " in tetra " << i <<" : " << t << sendl;
+                }
             }
         }
     }
@@ -340,7 +347,7 @@ void TetrahedronSetTopologyContainer::createTetrahedronTriangleShellArray ()
 
     for (unsigned int i=0; i<m_tetrahedron.size(); ++i)
     {
-        // adding edge i in the edge shell of both points
+        // adding tetrahedron i in the shell of all neighbors triangles
         for (unsigned int j=0; j<4; ++j)
         {
             m_tetrahedronTriangleShell[ m_tetrahedronTriangle[i][j] ].push_back( i );

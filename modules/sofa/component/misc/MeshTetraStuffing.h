@@ -34,11 +34,18 @@
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/component/component.h>
 
+#include <sofa/helper/map.h>
+
 namespace sofa
 {
 
 namespace component
 {
+
+/**
+ *  \brief Create a tetrahedral volume mesh from a surface, using the algorithm from F. Labelle and J.R. Shewchuk, "Isosurface Stuffing: Fast Tetrahedral Meshes with Good Dihedral Angles", SIGGRAPH 2007.
+ *
+ */
 
 class SOFA_COMPONENT_MISC_API MeshTetraStuffing : public virtual core::objectmodel::BaseObject
 {
@@ -67,6 +74,11 @@ public:
     Data<SeqTriangles> inputTriangles;
     Data<SeqPoints> outputPoints;
     Data<SeqTetras> outputTetras;
+
+    Data< Real > alphaLong;
+    Data< Real > alphaShort;
+    Data< bool > bSnapPoints;
+    Data< bool > bSplitTetras;
     Data< bool > bDraw;
 
     Real cellsize;
@@ -83,10 +95,19 @@ public:
 
     helper::vector<int> pInside;
     helper::vector< helper::fixed_array<Real,EDGESHELL> > eBDist;
+    std::map<std::pair<int,int>, int> splitPoints;
 
     SeqPoints rays;
     SeqPoints intersections;
     SeqPoints insides;
+    SeqPoints snaps;
+    SeqPoints diags;
+
+    void addTetra(SeqTetras& outT, SeqPoints& outP, int p1, int p2, int p3, int p4);
+    int getSplitPoint(int from, int to);
+
+    /// Should the diagonal of abcd should be bd instead of ac ?
+    bool flipDiag(const SeqPoints& outP, int a, int b, int c, int d, int e=-1);
 
 };
 
