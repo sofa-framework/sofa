@@ -24,6 +24,7 @@
  ******************************************************************************/
 #include "BglCollisionGroupManager.h"
 #include "BglSolverMerger.h"
+#include "BglSimulation.h"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/CollisionModel.h>
 // #include <sofa/helper/system/config.h>
@@ -124,7 +125,7 @@ void BglCollisionGroupManager::createGroups(core::objectmodel::BaseContext* scen
     for (it=groupSet.begin(); it!=groupSet.end(); it++)
     {
 //             std::cerr << "Setting : " << it->first->getName()  << " with " << (*(it->second))->getName() << "\n";
-        simu->setSolverOfCollisionGroup(it->first,*(it->second));
+        simu->graphManager.setSolverOfCollisionGroup(it->first,*(it->second));
     }
 
     // now that the groups are final, attach contacts' response
@@ -154,7 +155,7 @@ simulation::Node* BglCollisionGroupManager::getIntegrationNode(core::CollisionMo
     simulation::bgl::BglSimulation *currentSimulation = dynamic_cast<simulation::bgl::BglSimulation*>(simulation::getSimulation());
     assert(currentSimulation);
 
-    std::set< simulation::Node*> &nodeSolvers = currentSimulation->nodeSolvers;
+    std::set< simulation::Node*> &nodeSolvers = currentSimulation->graphManager.getSolverNode();
     while (true)
     {
         //Verify is the current node contains at least a solver

@@ -39,8 +39,7 @@
 #define dfv_adapter_h
 
 #include <boost/graph/depth_first_search.hpp>
-#include "BglSimulation.h"
-#include "BglNode.h"
+#include "BglGraphManager.h"
 #include <sofa/simulation/common/Visitor.h>
 
 namespace sofa
@@ -57,7 +56,7 @@ The criterion is embedded within the dfv_adapter.
 The usual method discover_vertex is replaced by operator(), used by the bgl to evaluate if the visit must be pruned.
 Operator () calls visitor->processNodeTopDown and returns true iff this method has returned RESULT_PRUNE.
 
-The BglSimulation::H_vertex_node_map is used to get the sofa::simulation::Node associated with a bgl vertex.
+The BglGraphManager::H_vertex_node_map is used to get the sofa::simulation::Node associated with a bgl vertex.
 
 	@author The SOFA team </www.sofa-framework.org>
 */
@@ -66,14 +65,14 @@ class dfv_adapter : public boost::dfs_visitor<>
 public:
     sofa::simulation::Visitor* visitor;
 
-    BglSimulation *scene;
+    BglGraphManager *graphManager;
 
-    typedef BglSimulation::Hgraph Graph; ///< BGL graph to traverse
+    typedef BglGraphManager::Hgraph Graph; ///< BGL graph to traverse
     typedef Graph::vertex_descriptor Vertex;
 
-    BglSimulation::H_vertex_node_map& systemMap;      ///< access the System*
+    BglGraphManager::H_vertex_node_map& systemMap;      ///< access the System*
 
-    dfv_adapter( sofa::simulation::Visitor* v, BglSimulation *simu,  BglSimulation::H_vertex_node_map& s );
+    dfv_adapter( sofa::simulation::Visitor* v, BglGraphManager *simu,  BglGraphManager::H_vertex_node_map& s );
 
     ~dfv_adapter();
 

@@ -40,7 +40,7 @@
 
 #include <boost/graph/breadth_first_search.hpp>
 #include "BglNode.h"
-#include "BglSimulation.h"
+#include "BglGraphManager.h"
 #include <sofa/simulation/common/Visitor.h>
 
 namespace sofa
@@ -60,10 +60,10 @@ class bfs_adapter : public boost::bfs_visitor<>
 public:
     sofa::simulation::Visitor* visitor;
 
-    typedef BglSimulation::Hgraph Graph; ///< BGL graph to traverse
-    BglSimulation::H_vertex_node_map& systemMap;      ///< access the System*
+    typedef BglGraphManager::Hgraph Graph; ///< BGL graph to traverse
+    BglGraphManager::H_vertex_node_map& systemMap;      ///< access the System*
 
-    bfs_adapter( sofa::simulation::Visitor* v, BglSimulation::H_vertex_node_map& s );
+    bfs_adapter( sofa::simulation::Visitor* v, BglGraphManager::H_vertex_node_map& s );
 
     ~bfs_adapter();
 

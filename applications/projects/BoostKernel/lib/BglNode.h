@@ -38,10 +38,10 @@
 #ifndef BglNode_h
 #define BglNode_h
 
+#include "BglGraphManager.h"
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/Visitor.h>
 #include <sofa/core/objectmodel/BaseNode.h>
-#include "BglSimulation.h"
 #include <sofa/core/objectmodel/ClassInfo.h>
 #include <sofa/helper/vector.h>
 
@@ -62,17 +62,18 @@ sofa::simulation::Node as a node of a BGL scene graph.
 
 	@author Francois Faure in The SOFA team </www.sofa-framework.org>
 */
+
 class BglNode : public sofa::simulation::Node
 {
 public:
     typedef sofa::simulation::Visitor Visitor;
 
-    BglNode(BglSimulation* s,const std::string& name);
+    BglNode(BglGraphManager* s,const std::string& name);
     /**
     \param sg the SOFA scene containing a bgl graph
     \param n the node of the bgl graph corresponding to this
     */
-    BglNode(BglSimulation* s, BglSimulation::Hgraph* g,  BglSimulation::Hvertex n, const std::string& name="" );
+    BglNode(BglGraphManager* s, BglGraphManager::Hgraph* g,  BglGraphManager::Hvertex n, const std::string& name="" );
     ~BglNode();
 
     /** Perform a scene graph traversal with the given Visitor, starting from this node.
@@ -129,6 +130,7 @@ public:
 
     /// Find all the Nodes pointing
     helper::vector< BglNode* > getParents();
+    helper::vector< BglNode* > getChildren();
 
 
 
@@ -147,10 +149,10 @@ public:
 
 
     /// return the mechanical graph of the scene it belongs to
-    BglSimulation::Hgraph &getGraph() { return *graph;};
+    BglGraphManager::Hgraph &getGraph() { return *graph;};
 
     /// return the id of the node in the mechanical graph
-    BglSimulation::Hvertex getVertexId() { return vertexId;};
+    BglGraphManager::Hvertex getVertexId() { return vertexId;};
 
 
     /// Called during initialization to corectly propagate the visual context to the children
@@ -167,9 +169,9 @@ public:
 
 
 
-    BglSimulation* scene;              ///< the scene the node belongs to
-    BglSimulation::Hgraph* graph;      ///< the mechanical graph of the scene it belongs to
-    BglSimulation::Hvertex vertexId;  ///< its id in the mechanical graph
+    BglGraphManager* graphManager;              ///< the scene the node belongs to
+    BglGraphManager::Hgraph* graph;      ///< the mechanical graph of the scene it belongs to
+    BglGraphManager::Hvertex vertexId;  ///< its id in the mechanical graph
 
 };
 
