@@ -123,23 +123,23 @@ void BoxROI<DataTypes>::draw()
 {
     if (!this->getContext()->getShowBehaviorModels())
         return;
-    const VecCoord& x = *x0;
+    //const VecCoord& x = *x0;
 
     if( _drawSize.getValue() == 0) // old classical drawing by points
     {
-        glColor4f (1,0.5,0.5,1);
-        glDisable (GL_LIGHTING);
-        glPointSize(10);
+        //glColor4f (1,0.5,0.5,1);
+        //glDisable (GL_LIGHTING);
+        //glPointSize(10);
 
-        glBegin (GL_POINTS);
-        const SetIndex& indices = f_indices.getValue();
-        for (typename SetIndex::const_iterator it = indices.begin();
-                it != indices.end();
-                ++it)
-        {
-            gl::glVertexT(x[*it]);
-        }
-        glEnd();
+        //glBegin (GL_POINTS);
+        //const SetIndex& indices = f_indices.getValue();
+        //for (typename SetIndex::const_iterator it = indices.begin();
+        //    it != indices.end();
+        //    ++it)
+        //{
+        //    gl::glVertexT(x[*it]);
+        //}
+        //glEnd();
 
         ///draw the constraint boxes
         glBegin(GL_LINES);
@@ -181,21 +181,21 @@ void BoxROI<DataTypes>::draw()
         }
         glEnd();
     }
-    else // new drawing by spheres
-    {
-        glColor4f (1.0f,0.35f,0.35f,1.0f);
-        glEnable(GL_LIGHTING);
-        glEnable(GL_COLOR_MATERIAL);
-        const SetIndex& indices = f_indices.getValue();
-        for (typename SetIndex::const_iterator it = indices.begin();
-                it != indices.end();
-                ++it)
-        {
-            helper::gl::drawSphere( x[*it], (float)_drawSize.getValue() );
-        }
-        glDisable(GL_LIGHTING);
-        glDisable(GL_COLOR_MATERIAL);
-    }
+    //else // new drawing by spheres
+    //{
+    //    glColor4f (1.0f,0.35f,0.35f,1.0f);
+    //    glEnable(GL_LIGHTING);
+    //    glEnable(GL_COLOR_MATERIAL);
+    //    const SetIndex& indices = f_indices.getValue();
+    //    for (typename SetIndex::const_iterator it = indices.begin();
+    //        it != indices.end();
+    //        ++it)
+    //    {
+    //        helper::gl::drawSphere( x[*it], (float)_drawSize.getValue() );
+    //    }
+    //    glDisable(GL_LIGHTING);
+    //    glDisable(GL_COLOR_MATERIAL);
+    //}
 }
 
 template <class DataTypes>
