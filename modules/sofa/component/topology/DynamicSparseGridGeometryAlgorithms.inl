@@ -56,7 +56,7 @@ unsigned int DynamicSparseGridGeometryAlgorithms<DataTypes>::getTopoIndexFromReg
     std::map< unsigned int, BaseMeshTopology::HexaID>::iterator it = topoContainer->idInRegularGrid2IndexInTopo.find( index);
     if( it == topoContainer->idInRegularGrid2IndexInTopo.end())
     {
-        cerr << "DynamicSparseGridGeometryAlgorithms<DataTypes>::getTopoIndexFromRegularGridIndex(): Warning ! unexisting index given !" << endl;
+        cerr << "DynamicSparseGridGeometryAlgorithms<DataTypes>::getTopoIndexFromRegularGridIndex(): Warning ! unexisting given index " << index << " !" << endl;
     }
     return it->second;
 }
@@ -68,29 +68,29 @@ int DynamicSparseGridGeometryAlgorithms<DataTypes>::findNearestElementInRestPos(
     distance = 1e10;
 
     Vec3i resolution = topoContainer->resolution.getValue();
-    Vec3i tmp = Vec3i( (int)(pos[0] / topoContainer->voxelSize[0]), (int)(pos[1] / topoContainer->voxelSize[1]), (int)(pos[2] / topoContainer->voxelSize[2]));
+    Vec3i currentIndex = Vec3i( (int)(pos[0] / topoContainer->voxelSize[0]), (int)(pos[1] / topoContainer->voxelSize[1]), (int)(pos[2] / topoContainer->voxelSize[2]));
 
     // Projection sur la bbox si l'element est en dehors.
-    if( tmp[0] < 0) tmp[0] = 0;
-    if( tmp[1] < 0) tmp[1] = 0;
-    if( tmp[2] < 0) tmp[2] = 0;
-    if( tmp[0] > resolution[0]) tmp[0] = resolution[0];
-    if( tmp[1] > resolution[1]) tmp[1] = resolution[1];
-    if( tmp[2] > resolution[2]) tmp[2] = resolution[2];
+    if( currentIndex[0] < 0) currentIndex[0] = 0;
+    if( currentIndex[1] < 0) currentIndex[1] = 0;
+    if( currentIndex[2] < 0) currentIndex[2] = 0;
+    if( currentIndex[0] > resolution[0]) currentIndex[0] = resolution[0];
+    if( currentIndex[1] > resolution[1]) currentIndex[1] = resolution[1];
+    if( currentIndex[2] > resolution[2]) currentIndex[2] = resolution[2];
 
     const std::map< unsigned int, BaseMeshTopology::HexaID>& regular2topo = topoContainer->idInRegularGrid2IndexInTopo;
     unsigned int regularGridIndex;
     std::map< unsigned int, BaseMeshTopology::HexaID>::const_iterator it;
     for( int k = 0; k < 3; k++)
     {
-        if((((int)tmp[2])-1+k < 0) || (tmp[2]-1+k > resolution[2])) continue;
+        if((((int)currentIndex[2])-1+k < 0) || (currentIndex[2]-1+k > resolution[2])) continue;
         for( int j = 0; j < 3; j++)
         {
-            if((((int)tmp[1])-1+j < 0) || (tmp[1]-1+j > resolution[1])) continue;
+            if((((int)currentIndex[1])-1+j < 0) || (currentIndex[1]-1+j > resolution[1])) continue;
             for( int i = 0; i < 3; i++)
             {
-                if((((int)tmp[0])-1+i < 0) || (tmp[0]-1+i > resolution[0])) continue;
-                regularGridIndex = (tmp[0]-1+i) + (tmp[1]-1+j)*resolution[0] + (tmp[2]-1+k)*resolution[0]*resolution[1];
+                if((((int)currentIndex[0])-1+i < 0) || (currentIndex[0]-1+i > resolution[0])) continue;
+                regularGridIndex = (currentIndex[0]-1+i) + (currentIndex[1]-1+j)*resolution[0] + (currentIndex[2]-1+k)*resolution[0]*resolution[1];
                 it = regular2topo.find( regularGridIndex);
                 if( it != regular2topo.end())
                 {
@@ -108,6 +108,7 @@ int DynamicSparseGridGeometryAlgorithms<DataTypes>::findNearestElementInRestPos(
     {
         // Dans le cas de projection ou autre.... il se peut que la zone ciblée ne contienne pas d'hexas, il faut alors tous les parcourrir.
         std::cout << "DynamicSparseGridGeometryAlgorithms<DataTypes>::findNearestElementInRestPos(). Index non trouvé. Recherche dans tous les hexas ! (ceci nuit gravement aux perfs. vérifier les 'pos' données en entrée)." << std::endl;
+        //std::cout << "pos: " << pos << ", currentIndex: " << currentIndex << ", et regular index: " << regularGridIndex << std::endl;
         return HexahedronSetGeometryAlgorithms<DataTypes>::findNearestElementInRestPos( pos, baryC, distance);
     }
 

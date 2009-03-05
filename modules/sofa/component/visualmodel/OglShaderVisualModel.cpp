@@ -13,8 +13,9 @@
 #include <sofa/component/topology/QuadSetTopologyChange.h>
 #include <sofa/component/topology/TetrahedronSetTopologyChange.h>
 #include <sofa/component/topology/HexahedronSetTopologyChange.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/component/topology/PointSetGeometryAlgorithms.h>
 #include <sofa/simulation/common/Node.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {
@@ -91,6 +92,69 @@ void OglShaderVisualModel::initVisual()
 
     }
 }
+
+void OglShaderVisualModel::handleTopologyChange()
+{
+    VisualModelImpl::handleTopologyChange();
+
+    //TODO// update the rest position when inserting a point. Then, call computeNormals() to update the attributes.
+    // Not done here because we don't have the rest position of the model.
+    // For the moment, the only class using dynamic topology is HexaToTriangleTopologicalMapping which update itself the attributes... TODO !
+}
+
+
+
+void OglShaderVisualModel::computeRestNormals()
+{
+    if (vertNormIdx.empty())
+    {
+        ResizableExtVector<Coord>& vrestpos = * ( vrestpositions.beginEdit() );
+        int nbn = vrestpos.size();
+//    serr << "nb of visual vertices"<<nbn<<sendl;
+//    serr << "nb of visual triangles"<<triangles.size()<<sendl;
+
+        ResizableExtVector<Coord>& restNormals = * ( vrestnormals.beginEdit() );
+
+        restNormals.resize(nbn);
+        for (int i = 0; i < nbn; i++)
+            restNormals[i].clear();
+
+        for (unsigned int i = 0; i < triangles.size() ; i++)
+        {
+
+            const Coord  v1 = vrestpos[triangles[i][0]];
+            const Coord  v2 = vrestpos[triangles[i][1]];
+            const Coord  v3 = vrestpos[triangles[i][2]];
+            Coord n = cross(v2-v1, v3-v1);
+
+            n.normalize();
+            restNormals[triangles[i][0]] += n;
+            restNormals[triangles[i][1]] += n;
+            restNormals[triangles[i][2]] += n;
+        }
+        for (unsigned int i = 0; i < quads.size() ; i++)
+        {
+            const Coord & v1 = vrestpos[quads[i][0]];
+            const Coord & v2 = vrestpos[quads[i][1]];
+            const Coord & v3 = vrestpos[quads[i][2]];
+            const Coord & v4 = vrestpos[quads[i][3]];
+            Coord n1 = cross(v2-v1, v4-v1);
+            Coord n2 = cross(v3-v2, v1-v2);
+            Coord n3 = cross(v4-v3, v2-v3);
+            Coord n4 = cross(v1-v4, v3-v4);
+            n1.normalize(); n2.normalize(); n3.normalize(); n4.normalize();
+            restNormals[quads[i][0]] += n1;
+            restNormals[quads[i][1]] += n2;
+            restNormals[quads[i][2]] += n3;
+            restNormals[quads[i][3]] += n4;
+        }
+        for (unsigned int i = 0; i < restNormals.size(); i++)
+        {
+            restNormals[i].normalize();
+        }
+    }
+}
+
 
 } //namespace visualmodel
 
