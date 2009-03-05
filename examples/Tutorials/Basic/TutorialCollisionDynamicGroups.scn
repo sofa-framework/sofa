@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- See http://wiki.sofa-framework.org/mediawiki/index.php/TutorialCollisionMultipleGroupsSolver.scn -->
+<!-- See http://wiki.sofa-framework.org/wiki/TutorialCollisionMultipleGroupsSolver.scn -->
 <Node name="root" dt="0.01" gravity="0 0 -9.81" showForceFields="1" showCollisionModels="1">
   <!-- Basic Components to perform the collision detection -->
   <CollisionPipeline/>
