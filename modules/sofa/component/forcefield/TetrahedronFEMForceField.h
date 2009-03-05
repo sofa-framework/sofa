@@ -150,6 +150,12 @@ public:
     //For a faster contact handling with simplified compliance
     void getRotation(Transformation& R, unsigned int nodeIdx);
 
+    void getRotations(VecReal& vecR)
+    {
+        vecR.resize(_indexedElements->size()*9);
+        for (unsigned int i=0; i<_indexedElements->size(); ++i)
+            getRotation(*(Transformation*)&(vecR[i*9]),i);
+    }
 
     DataPtr< VecCoord > f_initialPoints; ///< the intial positions of the points
     int method;

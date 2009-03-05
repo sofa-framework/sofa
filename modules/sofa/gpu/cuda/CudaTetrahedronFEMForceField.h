@@ -63,6 +63,7 @@ public:
     typedef TetrahedronFEMForceFieldInternalData<DataTypes> Data;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::VecReal VecReal;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
@@ -185,12 +186,12 @@ public:
     /// Varying data associated with each element
     struct GPUElementState
     {
-        /// rotation matrix
-        Mat<3,3,Real> Rt;
+        /// transposed rotation matrix
+        Real Rt[3][3][BSIZE];
         /// current internal stress
-        Vec<6,Real> S;
+        //Vec<6,Real> S;
         /// unused value to align to 64 bytes
-        Real dummy;
+        //Real dummy;
     };
 
     /// Varying data associated with each element
@@ -199,6 +200,8 @@ public:
         Vec<4,Real> fA,fB,fC,fD;
     };
 
+    gpu::cuda::CudaVector<GPUElementState> initState;
+    gpu::cuda::CudaVector<int> rotationIdx;
     gpu::cuda::CudaVector<GPUElementState> state;
     gpu::cuda::CudaVector<GPUElementForce> eforce;
     int nbElement; ///< number of elements
@@ -213,11 +216,13 @@ public:
     {
         elems.clear();
         state.clear();
+        initState.clear();
+        rotationIdx.clear();
         eforce.clear();
         velems.clear();
         nbElement = nbe;
         elems.resize((nbe+BSIZE-1)/BSIZE);
-        state.resize(nbe);
+        state.resize((nbe+BSIZE-1)/BSIZE);
         eforce.resize(nbe);
         vertex0 = v0;
         nbVertex = nbv;
@@ -292,6 +297,7 @@ public:
     static void reinit(Main* m);
     static void addForce(Main* m, VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/);
     static void addDForce (Main* m, VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
+    static void getRotations(Main* m, VecReal& rotations);
 };
 
 //
@@ -302,6 +308,7 @@ public:
 #define CudaTetrahedronFEMForceField_DeclMethods(T) \
     template<> void TetrahedronFEMForceField< T >::reinit(); \
     template<> void TetrahedronFEMForceField< T >::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v); \
+    template<> void TetrahedronFEMForceField< T >::getRotations(VecReal& vecR); \
     template<> void TetrahedronFEMForceField< T >::addDForce(VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
 
 CudaTetrahedronFEMForceField_DeclMethods(gpu::cuda::CudaVec3fTypes);
