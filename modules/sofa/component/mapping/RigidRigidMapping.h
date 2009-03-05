@@ -128,6 +128,54 @@ protected:
     bool getShow(const core::componentmodel::behavior::BaseMechanicalMapping* m) const { return m->getContext()->getShowMechanicalMappings(); }
 };
 
+
+
+using core::Mapping;
+using core::componentmodel::behavior::MechanicalMapping;
+using core::componentmodel::behavior::MappedModel;
+using core::componentmodel::behavior::State;
+using core::componentmodel::behavior::MechanicalState;
+
+using sofa::defaulttype::Vec2dTypes;
+using sofa::defaulttype::Vec3dTypes;
+using sofa::defaulttype::Vec2fTypes;
+using sofa::defaulttype::Vec3fTypes;
+using sofa::defaulttype::ExtVec2fTypes;
+using sofa::defaulttype::ExtVec3fTypes;
+using sofa::defaulttype::Rigid2dTypes;
+using sofa::defaulttype::Rigid3dTypes;
+using sofa::defaulttype::Rigid2fTypes;
+using sofa::defaulttype::Rigid3fTypes;
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_RIGIDRIGIDMAPPING_CPP)
+#pragma warning(disable : 4231)
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_MAPPING_API RigidRigidMapping< MechanicalMapping<MechanicalState<Rigid3dTypes>, MechanicalState<Rigid3dTypes> > >;
+extern template class SOFA_COMPONENT_MAPPING_API RigidRigidMapping< Mapping< State<Rigid3dTypes>, MechanicalState<Rigid3dTypes> > >;
+extern template class SOFA_COMPONENT_MAPPING_API RigidRigidMapping< Mapping< State<Rigid3dTypes>, MappedModel<Rigid3dTypes> > >;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_MAPPING_API RigidRigidMapping< MechanicalMapping<MechanicalState<Rigid3fTypes>, MechanicalState<Rigid3fTypes> > >;
+extern template class SOFA_COMPONENT_MAPPING_API RigidRigidMapping< Mapping< State<Rigid3fTypes>, MechanicalState<Rigid3fTypes> > >;
+extern template class SOFA_COMPONENT_MAPPING_API RigidRigidMapping< Mapping< State<Rigid3fTypes>, MappedModel<Rigid3fTypes> > >;
+#endif
+
+#ifndef SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_MAPPING_API RigidRigidMapping< Mapping< State<Rigid3dTypes>, MechanicalState<Rigid3fTypes> > >;
+extern template class SOFA_COMPONENT_MAPPING_API RigidRigidMapping< Mapping< State<Rigid3fTypes>, MechanicalState<Rigid3dTypes> > >;
+extern template class SOFA_COMPONENT_MAPPING_API RigidRigidMapping< Mapping< State<Rigid3dTypes>, MappedModel<Rigid3fTypes> > >;
+extern template class SOFA_COMPONENT_MAPPING_API RigidRigidMapping< Mapping< State<Rigid3fTypes>, MappedModel<Rigid3dTypes> > >;
+#endif
+#endif
+#endif
+
+
+
+
+
+
+
 } // namespace mapping
 
 } // namespace component

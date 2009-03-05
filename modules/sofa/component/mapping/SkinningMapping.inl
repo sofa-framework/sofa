@@ -26,8 +26,6 @@
 #define SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_INL
 
 #include <sofa/component/mapping/SkinningMapping.h>
-#include <sofa/defaulttype/VecTypes.h>
-#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/helper/io/SphereLoader.h>
 #include <sofa/helper/io/Mesh.h>
