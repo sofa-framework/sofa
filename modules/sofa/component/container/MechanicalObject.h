@@ -235,7 +235,7 @@ public:
     /** \brief Compute the values attached to a new point.
      *
      */
-    void computeNewPoint( const unsigned int i, const sofa::helper::vector< double >& m_x);
+//	void computeNewPoint( const unsigned int i, const sofa::helper::vector< double >& m_x);
 
     // Force the position of a point (and force its velocity to zero value)
     void forcePointPosition( const unsigned int i, const sofa::helper::vector< double >& m_x);

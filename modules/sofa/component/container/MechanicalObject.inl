@@ -118,7 +118,6 @@ MechanicalObject<DataTypes>::MechanicalObject()
     setVecDeriv(VecId::freeVelocity().index, this->vfree);
 
     //setVecDeriv(VecId::acceleration().index, this->dx);
-
     /*    cerr<<"MechanicalObject<DataTypes>::MechanicalObject, x.size() = "<<x->size()<<endl;
       cerr<<"MechanicalObject<DataTypes>::MechanicalObject, v.size() = "<<v->size()<<endl;*/
 }
@@ -203,21 +202,19 @@ void MechanicalObject<DataTypes>::parse ( BaseObjectDescription* arg )
         filename.setValue(std::string("")); //clear the field filename: When we save the scene, we don't need anymore the filename
     }
 
-    unsigned int size0 = getX()->size();
+//      unsigned int size0 = getX()->size();
     Inherited::parse(arg);
-    if (arg->getAttribute("size")!=NULL)
-    {
-        resize( atoi(arg->getAttribute("size")) );
-    }
-    else if (getX()->size() != size0)
-        resize( getX()->size() );
-
-    //obj->parseTransform(arg);
-    if (arg->getAttribute("scale")!=NULL)
-    {
-        scale.setValue((SReal)atof(arg->getAttribute("scale")));
-        //applyScale(scale.getValue());
-    }
+//      if (arg->getAttribute("size")!=NULL) {
+//        resize( atoi(arg->getAttribute("size")) );
+//      }
+//      else if (getX()->size() != size0)
+//        resize( getX()->size() );
+//
+//      //obj->parseTransform(arg);
+//      if (arg->getAttribute("scale")!=NULL) {
+//	scale.setValue((SReal)atof(arg->getAttribute("scale")));
+//	//applyScale(scale.getValue());
+//      }
     if (arg->getAttribute("rx")!=NULL || arg->getAttribute("ry")!=NULL || arg->getAttribute("rz")!=NULL)
     {
         rotation.setValue(Vector3((SReal)(atof(arg->getAttribute("rx","0.0"))),(SReal)(atof(arg->getAttribute("ry","0.0"))),(SReal)(atof(arg->getAttribute("rz","0.0")))));
@@ -774,28 +771,27 @@ void MechanicalObject<DataTypes>::computeWeightedValue( const unsigned int i, co
 }
 
 
-template <class DataTypes>
-void MechanicalObject<DataTypes>::computeNewPoint( const unsigned int i, const sofa::helper::vector< double >& m_x)
-{
-    this->resize(i+1);
-
-    Vec<3,Real> pos(m_x[0], m_x[1], m_x[2]);
-    Vec<3,Real> restpos(pos);
-
-    Quaternion q=helper::Quater<SReal>::createQuaterFromEuler( Vec<3,SReal>(rotation.getValue()[0],rotation.getValue()[1],rotation.getValue()[2]));
-    pos = q.rotate(pos*scale.getValue());
-    pos += translation.getValue();
-
-    restpos = q.rotate(restpos*restScale.getValue());
-    restpos += translation.getValue();
-
-    DataTypes::set((*getX())[i], pos[0], pos[1], pos[2]);
-    DataTypes::set((*getXfree())[i], pos[0], pos[1], pos[2]);
-    DataTypes::set((*getX0())[i], restpos[0],restpos[1],restpos[2]);
-
-    if (reset_position != NULL)
-        DataTypes::set((*reset_position)[i], pos[0], pos[1], pos[2]);
-}
+//	template <class DataTypes>
+//    void MechanicalObject<DataTypes>::computeNewPoint( const unsigned int i, const sofa::helper::vector< double >& m_x)
+//	{
+//                  this->resize(i+1);
+//		  Vec<3,Real> pos(m_x[0], m_x[1], m_x[2]);
+//		  Vec<3,Real> restpos(pos);
+//
+//		  Quaternion q=helper::Quater<SReal>::createQuaterFromEuler( Vec<3,SReal>(rotation.getValue()[0],rotation.getValue()[1],rotation.getValue()[2]));
+//		  pos = q.rotate(pos*scale.getValue());
+//		  pos += translation.getValue();
+//
+//		  restpos = q.rotate(restpos*restScale.getValue());
+//		  restpos += translation.getValue();
+//
+//		  DataTypes::set((*getX())[i], pos[0], pos[1], pos[2]);
+//		  DataTypes::set((*getXfree())[i], pos[0], pos[1], pos[2]);
+//		  DataTypes::set((*getX0())[i], restpos[0],restpos[1],restpos[2]);
+//
+//		  if (reset_position != NULL)
+//		    DataTypes::set((*reset_position)[i], pos[0], pos[1], pos[2]);
+//	}
 
 // Force the position of a point (and force its velocity to zero value)
 template <class DataTypes>
@@ -984,7 +980,6 @@ void MechanicalObject<DataTypes>::init()
     *this->xfree = *x;
 
     //Rest position
-
     if (x0->size() == 0)
     {
         *x0 = *x;
@@ -998,6 +993,12 @@ void MechanicalObject<DataTypes>::init()
 
     initialized = true;
 
+    f_X->endEdit();
+    f_V->endEdit();
+    f_F->endEdit();
+    f_Dx->endEdit();
+    f_Xfree->endEdit();
+    f_Vfree->endEdit();
     f_X0->endEdit();
 }
 
@@ -1227,6 +1228,7 @@ void MechanicalObject<DataTypes>::setVecConst(unsigned int index, VecConst* v)
 template<class DataTypes>
 typename MechanicalObject<DataTypes>::VecCoord* MechanicalObject<DataTypes>::getVecCoord(unsigned int index)
 {
+
     if (index>=vectorsCoord.size())
         vectorsCoord.resize(index+1);
     if (vectorsCoord[index]==NULL)

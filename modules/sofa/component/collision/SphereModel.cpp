@@ -103,14 +103,14 @@ void SphereModel::init()
 {
     this->CollisionModel::init();
     mstate = dynamic_cast< core::componentmodel::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
-
+    serr << mstate->getName() << sendl;
     if (mstate==NULL)
     {
         serr<<"SphereModel requires a Vec3 Mechanical Model" << sendl;
         return;
     }
 
-    if (!filename.getValue().empty())
+    if (radius.getValue().empty() && !filename.getValue().empty())
     {
         load(filename.getValue().c_str());
     }
