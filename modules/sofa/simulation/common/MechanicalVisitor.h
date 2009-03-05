@@ -1392,6 +1392,12 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalPickParticles"; }
+
+#ifdef DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+    }
+#endif
 };
 
 } // namespace simulation
