@@ -36,7 +36,6 @@
 //
 //
 #include "BglNode.h"
-#include "BglSimulation.h"
 #include "GetObjectsVisitor.h"
 
 
@@ -72,22 +71,22 @@ namespace simulation
 namespace bgl
 {
 
-BglNode::BglNode(BglSimulation* s,const std::string& name)
-    : sofa::simulation::Node(name), scene(s), graph(NULL)
+BglNode::BglNode(BglGraphManager* s,const std::string& name)
+    : sofa::simulation::Node(name), graphManager(s), graph(NULL)
 {
 
 }
 
-BglNode::BglNode(BglSimulation* s, BglSimulation::Hgraph *g,  BglSimulation::Hvertex n, const std::string& name)
-    : sofa::simulation::Node(name), scene(s), graph(g), vertexId(n)
+BglNode::BglNode(BglGraphManager* s, BglGraphManager::Hgraph *g,  BglGraphManager::Hvertex n, const std::string& name)
+    : sofa::simulation::Node(name), graphManager(s), graph(g), vertexId(n)
 {
 
 }
 
 BglNode::~BglNode()
 {
-    //std::cerr << "Destruction of Node this : " << this->getName() << " ; " << scene->h_node_vertex_map[this] << " DELETED\n";
-    scene->deleteNode(this);
+    //std::cerr << "Destruction of Node this : " << this->getName() << " ; " << graphManager->h_node_vertex_map[this] << " DELETED\n";
+    graphManager->deleteNode(this);
 }
 
 
@@ -104,23 +103,29 @@ bool BglNode::addObject(BaseObject* obj)
 {
     if (sofa::core::componentmodel::behavior::BaseMechanicalMapping* mm = dynamic_cast<sofa::core::componentmodel::behavior::BaseMechanicalMapping*>(obj))
     {
-        scene->setMechanicalMapping(this,mm);
+        Node *from=(Node*)mm->getMechFrom()->getContext();
+        Node *to=(Node*)mm->getMechTo()->getContext();
+        graphManager->addEdge(from, to);
     }
     else if (sofa::core::componentmodel::behavior::InteractionForceField* iff = dynamic_cast<sofa::core::componentmodel::behavior::InteractionForceField*>(obj))
     {
-        scene->setContactResponse(this,iff);
+        graphManager->addInteraction( (Node*)iff->getMechModel1()->getContext(),
+                (Node*)iff->getMechModel2()->getContext(),
+                iff);
     }
     else if (sofa::core::componentmodel::behavior::InteractionConstraint* ic = dynamic_cast<sofa::core::componentmodel::behavior::InteractionConstraint*>(obj))
     {
-        scene->setContactResponse(this,ic);
+        graphManager->addInteraction( (Node*)ic->getMechModel1()->getContext(),
+                (Node*)ic->getMechModel2()->getContext(),
+                ic);
     }
     else if (sofa::core::componentmodel::behavior::MasterSolver* ms = dynamic_cast<sofa::core::componentmodel::behavior::MasterSolver*>(obj))
     {
-        scene->addSolver(ms,this);
+        graphManager->addSolver(ms,this);
     }
     else if (sofa::core::componentmodel::behavior::OdeSolver* odes = dynamic_cast<sofa::core::componentmodel::behavior::OdeSolver*>(obj))
     {
-        scene->addSolver(odes,this);
+        graphManager->addSolver(odes,this);
     }
     return Node::addObject(obj);
 }
@@ -129,17 +134,20 @@ bool BglNode::removeObject(core::objectmodel::BaseObject* obj)
 {
     if (sofa::core::componentmodel::behavior::BaseMechanicalMapping* mm = dynamic_cast<sofa::core::componentmodel::behavior::BaseMechanicalMapping*>(obj))
     {
-        scene->resetMechanicalMapping(this,mm);
+        Node *from=(Node*)mm->getMechFrom()->getContext();
+        Node *to=(Node*)mm->getMechTo()->getContext();
+
+        graphManager->removeEdge(from, to);
         Node::removeObject(obj);
         return true;
     }
     else if (sofa::core::componentmodel::behavior::InteractionForceField* iff = dynamic_cast<sofa::core::componentmodel::behavior::InteractionForceField*>(obj))
     {
-        scene->resetContactResponse(this,iff);
+        graphManager->removeInteraction(iff);
     }
     else if (sofa::core::componentmodel::behavior::InteractionConstraint* ic = dynamic_cast<sofa::core::componentmodel::behavior::InteractionConstraint*>(obj))
     {
-        scene->resetContactResponse(this,ic);
+        graphManager->removeInteraction(ic);
     }
     return Node::removeObject(obj);
 }
@@ -147,40 +155,18 @@ bool BglNode::removeObject(core::objectmodel::BaseObject* obj)
 void BglNode::addChild(Node* c)
 {
 //         std::cerr << "addChild : of "<< this->getName() << "@" << this << " and " <<  c->getName() << "@" << c << "\n";
-    scene->addNode(this,dynamic_cast<BglNode*>(c));
+    graphManager->addNode(this,dynamic_cast<BglNode*>(c));
 }
 
 void BglNode::removeChild(Node* c)
 {
 //         std::cerr << "deleteChild : of "<< this->getName() << "@" << this << " and " <<  c->getName() << "@" << c << "\n";
-    scene->deleteNode(c);
+    graphManager->deleteNode(c);
 }
 
 void BglNode::moveChild(Node* c)
 {
-    std::cerr << "moveChild : " << c << "\n";
-    //We have to remove all the in-edges pointing to the node "c", and add c as a child of this current node
-    if (BglNode *bglNode = dynamic_cast< BglNode* >(c))
-    {
-        BglSimulation::Hvertex childId =bglNode->getVertexId();
-        BglSimulation::Rvertex childIdR=scene->r_node_vertex_map[bglNode];
-        BglSimulation::Hgraph::in_edge_iterator in_i, in_end;
-        BglSimulation::Hgraph &g=bglNode->getGraph();
-        //Find all in-edges from the graph
-        for (tie(in_i, in_end) = boost::in_edges(childId, g); in_i != in_end; ++in_i)
-        {
-            BglSimulation::Hedge e=*in_i;
-            BglSimulation::Hvertex src=source(e, g);
-            //Remove previous edges
-            boost::clear_vertex(childId, scene->hgraph);
-            boost::remove_vertex(childId, scene->hgraph);
-
-            boost::clear_vertex(childIdR, scene->rgraph);
-            boost::remove_vertex(childIdR, scene->rgraph);
-        }
-
-        scene->addHedge(vertexId, childId);
-    }
+    std::cerr << "NOT IMPLEMENTED YET moveChild : " << c << "\n";
 }
 
 
@@ -189,13 +175,30 @@ helper::vector< BglNode* > BglNode::getParents()
 {
     helper::vector< BglNode* > p;
     if (!graph) return p;
-    BglSimulation::Hgraph::in_edge_iterator in_i, in_end;
+    BglGraphManager::Hgraph::in_edge_iterator in_i, in_end;
     //Find all in-edges from the graph
     for (tie(in_i, in_end) = boost::in_edges(vertexId, *graph); in_i != in_end; ++in_i)
     {
-        BglSimulation::Hedge e=*in_i;
-        BglSimulation::Hvertex src=source(e, *graph);
-        p.push_back(static_cast<BglNode*>(scene->h_vertex_node_map[src]));
+        BglGraphManager::Hedge e=*in_i;
+        BglGraphManager::Hvertex src=source(e, *graph);
+        p.push_back(static_cast<BglNode*>(graphManager->getNodeFromHvertex(src)));
+    }
+    return p;
+}
+
+/// Find all the Nodes pointing
+helper::vector< BglNode* > BglNode::getChildren()
+{
+    helper::vector< BglNode* > p;
+    if (!graph) return p;
+    BglGraphManager::Hgraph::out_edge_iterator out_i, out_end;
+    //Find all in-edges from the graph
+    for (tie(out_i, out_end) = boost::out_edges(vertexId, *graph); out_i != out_end; ++out_i)
+    {
+        BglGraphManager::Hedge e=*out_i;
+        BglGraphManager::Hvertex src=source(e, *graph);
+        Node *n=graphManager->getNodeFromHvertex(src);
+        if (n) p.push_back(static_cast<BglNode*>(n));
     }
     return p;
 }
@@ -256,17 +259,17 @@ void BglNode::doExecuteVisitor( Visitor* vis )
     //cerr<<"BglNode::doExecuteVisitor( simulation::tree::Visitor* action)"<<endl;
 
     boost::vector_property_map<boost::default_color_type> colors( boost::num_vertices(*graph) );
-    //boost::queue<BglSimulation::Hvertex> queue;
+    //boost::queue<BglGraphManager::Hvertex> queue;
 
     /*    boost::breadth_first_search(
           graph,
           boost::vertex(this->vertexId, *graph),
           queue,
-          bfs_adapter(vis,scene->h_vertex_node_map),
+          bfs_adapter(vis,graphManager->h_vertex_node_map),
           colors
           );*/
 
-    dfv_adapter dfv(vis,scene, scene->h_vertex_node_map);
+    dfv_adapter dfv(vis,graphManager, graphManager->h_vertex_node_map);
     boost::depth_first_visit(
         *graph,
         boost::vertex(this->vertexId, *graph),
@@ -283,17 +286,17 @@ void BglNode::doExecuteVisitor( Visitor* vis )
 /// Note that the template wrapper method should generally be used to have the correct return type,
 void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir) const
 {
-    if (std::find(scene->nodeToAdd.begin(),scene->nodeToAdd.end(),this) != scene->nodeToAdd.end()) return NULL;//std::cerr << "ERROR !!!!!\n";
+    if (graphManager->isNodeCreated(this)) return NULL;//std::cerr << "ERROR !!!!!\n";
     GetObjectVisitor getobj(class_info);
     getobj.setTags(tags);
     if ( dir == SearchDown )
     {
 //              std::cerr << "Search Down ";
-        boost::vector_property_map<boost::default_color_type> colors( boost::num_vertices(scene->hgraph) );
-        dfv_adapter dfv( &getobj,  scene, scene->h_vertex_node_map );
+        boost::vector_property_map<boost::default_color_type> colors( boost::num_vertices(graphManager->hgraph) );
+        dfv_adapter dfv( &getobj,  graphManager, graphManager->h_vertex_node_map );
         boost::depth_first_visit(
-            scene->hgraph,
-            boost::vertex(this->vertexId, scene->hgraph),
+            graphManager->hgraph,
+            boost::vertex(this->vertexId, graphManager->hgraph),
             dfv,
             colors,
             dfv
@@ -302,12 +305,12 @@ void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
     else if (dir== SearchUp )
     {
 //              std::cerr << "Search Up ";
-        boost::vector_property_map<boost::default_color_type> colors( boost::num_vertices(scene->rgraph) );
-        dfv_adapter dfv( &getobj, scene, scene->r_vertex_node_map );
-        BglSimulation::Rvertex thisvertex = scene->convertHvertex2Rvertex(this->vertexId);
+        boost::vector_property_map<boost::default_color_type> colors( boost::num_vertices(graphManager->rgraph) );
+        dfv_adapter dfv( &getobj, graphManager, graphManager->r_vertex_node_map );
+        BglGraphManager::Rvertex thisvertex = graphManager->convertHvertex2Rvertex(this->vertexId);
         boost::depth_first_visit(
-            scene->rgraph,
-            boost::vertex(thisvertex, scene->rgraph),
+            graphManager->rgraph,
+            boost::vertex(thisvertex, graphManager->rgraph),
             dfv,
             colors,
             dfv
@@ -316,7 +319,7 @@ void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
     else if (dir== SearchRoot )
     {
 //              std::cerr << "Search Root ";
-        scene->dfv( scene->masterVertex, getobj );
+        graphManager->dfv( graphManager->getMasterVertex(), getobj );
     }
     else    // Local
     {
@@ -357,11 +360,11 @@ void BglNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, G
     getobjs.setTags(tags);
     if ( dir == SearchDown )
     {
-        boost::vector_property_map<boost::default_color_type> colors( boost::num_vertices(scene->hgraph) );
-        dfv_adapter dfv( &getobjs, scene, scene->h_vertex_node_map );
+        boost::vector_property_map<boost::default_color_type> colors( boost::num_vertices(graphManager->hgraph) );
+        dfv_adapter dfv( &getobjs, graphManager, graphManager->h_vertex_node_map );
         boost::depth_first_visit(
-            scene->hgraph,
-            boost::vertex(this->vertexId, scene->hgraph),
+            graphManager->hgraph,
+            boost::vertex(this->vertexId, graphManager->hgraph),
             dfv,
             colors,
             dfv
@@ -369,12 +372,12 @@ void BglNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, G
     }
     else if (dir== SearchUp )
     {
-        boost::vector_property_map<boost::default_color_type> colors( boost::num_vertices(scene->rgraph) );
-        dfv_adapter dfv( &getobjs, scene, scene->r_vertex_node_map );
-        BglSimulation::Rvertex thisvertex = scene->r_node_vertex_map[scene->h_vertex_node_map[this->vertexId]];
+        boost::vector_property_map<boost::default_color_type> colors( boost::num_vertices(graphManager->rgraph) );
+        dfv_adapter dfv( &getobjs, graphManager, graphManager->r_vertex_node_map );
+        BglGraphManager::Rvertex thisvertex = graphManager->convertHvertex2Rvertex(this->vertexId);
         boost::depth_first_visit(
-            scene->rgraph,
-            boost::vertex(thisvertex, scene->rgraph),
+            graphManager->rgraph,
+            boost::vertex(thisvertex, graphManager->rgraph),
             dfv,
             colors,
             dfv
@@ -382,7 +385,7 @@ void BglNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, G
     }
     else if (dir== SearchRoot )
     {
-        scene->dfv( scene->masterVertex, getobjs );
+        graphManager->dfv( graphManager->getMasterVertex(), getobjs );
     }
     else    // Local
     {

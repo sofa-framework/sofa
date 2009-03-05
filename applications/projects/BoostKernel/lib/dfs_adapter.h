@@ -39,7 +39,7 @@
 #define dfs_adapter_h
 
 #include <boost/graph/depth_first_search.hpp>
-#include "BglSimulation.h"
+#include "BglGraphManager.h"
 #include "BglNode.h"
 #include <sofa/simulation/common/Visitor.h>
 
@@ -52,7 +52,7 @@ namespace bgl
 
 /**
 Adapt a sofa visitor to a depth-first search in a bgl graph encoding the mechanical mapping hierarchy.
-The BglSimulation::H_vertex_node_map is used to get the sofa::simulation::Node associated with a bgl vertex.
+The BglGraphManager::H_vertex_node_map is used to get the sofa::simulation::Node associated with a bgl vertex.
 
 	@author The SOFA team </www.sofa-framework.org>
 */
@@ -61,12 +61,12 @@ class dfs_adapter : public boost::dfs_visitor<>
 public:
     sofa::simulation::Visitor* visitor;
 
-    typedef BglSimulation::Hgraph Graph; ///< BGL graph to traverse
+    typedef BglGraphManager::Hgraph Graph; ///< BGL graph to traverse
     typedef Graph::vertex_descriptor Vertex;
 
-    BglSimulation::H_vertex_node_map& systemMap;      ///< access the System*
+    BglGraphManager::H_vertex_node_map& systemMap;      ///< access the System*
 
-    dfs_adapter( sofa::simulation::Visitor* v, BglSimulation::H_vertex_node_map& s );
+    dfs_adapter( sofa::simulation::Visitor* v, BglGraphManager::H_vertex_node_map& s );
 
     ~dfs_adapter();
 
