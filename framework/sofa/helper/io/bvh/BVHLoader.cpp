@@ -45,6 +45,7 @@ BVHJoint *BVHLoader::load(const char *filename)
 
     if (file)
     {
+        BVHJoint::lastId = 0;
         BVHJoint *retBVHJoint = NULL;
         char buf[256];
 
