@@ -28,17 +28,19 @@ const double FlowVisualModel<DataTypes>::STREAMLINE_NUMBER_OF_POINTS_BY_TRIANGLE
 
 template <class DataTypes>
 FlowVisualModel<DataTypes>::FlowVisualModel()
-    :meanEdgeLength(0.0)
+    :m_tetraTopo(NULL), m_tetraGeo(NULL), meanEdgeLength(0.0)
+    ,tag2D(initData(&tag2D, (std::string) "", "tag2D", "Set tag which defines 2D mesh"))
+    ,tag3D(initData(&tag3D, (std::string) "", "tag3D", "Set tag which defines 3D mesh"))
     ,showVelocityLines(initData(&showVelocityLines, bool(true), "showVelocityLines", "Show velocities lines"))
     ,viewVelocityFactor(initData(&viewVelocityFactor, double(0.001), "viewVelocityFactor", "Set factor for velocity arrows"))
-    ,velocityMin(initData(&velocityMin, double(-1.0), "velocityMin", "Set the minimum value of velocity for drawing,"))
+    ,velocityMin(initData(&velocityMin, double(-1.0), "velocityMin", "Set the minimum value of velocity for drawing"))
     ,velocityMax(initData(&velocityMax, double(1.0), "velocityMax", "Set the maximum value of velocity for drawing"))
     ,showStreamLines(initData(&showStreamLines, bool(true), "showStreamLines", "Set stream lines"))
     ,streamlineSeeds(initData(&streamlineSeeds, helper::vector<Coord>(), "streamlineSeeds", "Set streamlineSeeds for Stream Lines"))
     ,streamlineMaxNumberOfPoints(initData(&streamlineMaxNumberOfPoints, (unsigned int) 50 , "streamlineMaxNumberOfPoints", "Set the maximum number of points for each stream line"))
     ,streamlineDtNumberOfPointsPerTriangle(initData(&streamlineDtNumberOfPointsPerTriangle, (double) 5.0 , "streamlineDtNumberOfPointsPerTriangle", "Set the number of points for each step (equals ~ a triangle)"))
-
     ,showColorScale(initData(&showColorScale, bool(true), "showColorScale", "Set color scale"))
+    ,showTetras(initData(&showTetras, bool(false), "showTetras", "Show Tetras"))
 {
 
 }
@@ -54,19 +56,68 @@ void FlowVisualModel<DataTypes>::init()
 {
     sofa::core::objectmodel::BaseContext* context = this->getContext();
 
-    fstate = context->core::objectmodel::BaseContext::get<FluidState>();
-    if (!fstate)
-        std::cerr << "WARNING: FlowVisualModel has no binding FluidState" <<endl;
+    //locate necessary objects with tags
+    core::objectmodel::TagSet::const_iterator tagIt = this->getTags().begin();
 
-    this->getContext()->get(m_triTopo);
+    core::objectmodel::Tag tag2D("2D");
+    core::objectmodel::Tag tag3D("3D");
 
-    if (m_triTopo == NULL)
-        std::cerr << "WARNING: FlowVisualModel has no binding TriangleSetTopology" <<endl;
+    context->core::objectmodel::BaseContext::get(fstate3D, tag3D, core::objectmodel::BaseContext::SearchRoot);
+    //3D
+    if (!fstate3D)
+    {
+        std::cerr << "WARNING: FlowVisualModel has no binding FluidState3D, will considerer 2D model" <<endl;
+    }
+    else
+    {
+        this->getContext()->get (m_tetraTopo, tag3D,core::objectmodel::BaseContext::SearchRoot);
 
-    this->getContext()->get(m_triGeo);
+        if (m_tetraTopo == NULL)
+        {
+            std::cerr << "WARNING: FlowVisualModel has no binding TetrahedraSetTopology" <<endl;
+            return;
+        }
+        else
+        {
+            this->getContext()->get (m_tetraGeo, tag3D, core::objectmodel::BaseContext::SearchRoot);
+            if (m_tetraGeo == NULL)
+            {
+                std::cerr << "WARNING: FlowVisualModel has no binding TetrahedraSetGeometry" <<endl;
+                return;
+            }
+        }
+        this->getContext()->get(shader, tag3D,core::objectmodel::BaseContext::SearchRoot);
+        if(!shader)
+        {
+            std::cerr << "WARNING: FlowVisualModel has no binding Shader ; no volumic rendering" <<endl;
+        }
+    }
 
-    if (m_triGeo == NULL)
-        std::cerr << "WARNING: FlowVisualModel has no binding TriangleSetGeometry" <<endl;
+    context->core::objectmodel::BaseContext::get(fstate2D, tag2D, core::objectmodel::BaseContext::SearchRoot);
+
+    //FluidState2D
+    if (!fstate2D)
+    {
+        std::cerr << "WARNING: FlowVisualModel has no binding FluidState2D" <<endl;
+        return;
+    }
+    else
+    {
+
+        this->getContext()->get (m_triTopo, tag2D,core::objectmodel::BaseContext::SearchRoot);
+        if (m_triTopo == NULL)
+        {
+            std::cerr << "WARNING: FlowVisualModel has no binding TriangleSetTopology" <<endl;
+            return;
+        }
+
+        this->getContext()->get (m_triGeo, tag2D,core::objectmodel::BaseContext::SearchRoot);
+        if (m_triGeo == NULL)
+        {
+            std::cerr << "WARNING: FlowVisualModel has no binding TriangleSetGeometry" <<endl;
+            return;
+        }
+    }
 
     reinit();
 
@@ -75,32 +126,47 @@ void FlowVisualModel<DataTypes>::init()
 template <class DataTypes>
 void FlowVisualModel<DataTypes>::initVisual()
 {
+    const BaseMeshTopology::SeqEdges& edges = m_triTopo->getEdges();
+
+    for (unsigned int i=0 ; i<edges.size() ; i++)
+        meanEdgeLength += m_triGeo->computeEdgeLength(i);
+    meanEdgeLength /= edges.size();
 
 }
 
 template <class DataTypes>
 void FlowVisualModel<DataTypes>::reinit()
 {
-//	unsigned int seedsSize = streamlineSeeds.getValue().size();
-//	streamLines.resize(seedSize);
-    //fill flags to false
-    meanEdgeLength = 0.0;
-    int size = m_triTopo->getNbEdges();
-    for (int i=0 ; i<size ; i++)
-        meanEdgeLength += m_triGeo->computeEdgeLength(i);
-    meanEdgeLength /= size;
+
+}
+
+template <class DataTypes>
+unsigned int FlowVisualModel<DataTypes>::getIndexClosestPoint(const VecCoord &x, typename DataTypes::Coord p)
+{
+    unsigned int indexClosestPoint = 0;
+    double dist = (p - x[0]).norm();
+    for (unsigned int i=1 ; i<x.size() ; i++)
+    {
+        double d = (p - x[i]).norm();
+        if (d < dist)
+        {
+            indexClosestPoint = i;
+            dist = d;
+        }
+    }
+    return indexClosestPoint;
 }
 
 template <class DataTypes>
 bool FlowVisualModel<DataTypes>::isInDomain(unsigned int index, typename DataTypes::Coord p)
 {
-    const VecCoord& x = *this->fstate->getX();
-
     //test if p is in the mesh
     //1-find closest point from seed to mesh
     bool found = false;
     BaseMeshTopology::TriangleID triangleID = BaseMeshTopology::InvalidID;
     helper::vector<BaseMeshTopology::TriangleID> triangles;
+    //const VecCoord& x = *this->fstate2D->getV();
+
     unsigned int indTest;
 
     if (x.size() > 0)
@@ -108,17 +174,7 @@ bool FlowVisualModel<DataTypes>::isInDomain(unsigned int index, typename DataTyp
         //if a triangle was not already found, test all the points
         if (streamLines[index].currentTriangleID == BaseMeshTopology::InvalidID)
         {
-            unsigned int indexClosestPoint = 0;
-            double dist = (p - x[0]).norm();
-            for (unsigned int i=1 ; i<x.size() ; i++)
-            {
-                double d = (p - x[i]).norm();
-                if (d < dist)
-                {
-                    indexClosestPoint = i;
-                    dist = d;
-                }
-            }
+            unsigned int indexClosestPoint = getIndexClosestPoint(*this->fstate2D->getX(), p);
 
             //2-get its TriangleShell
             triangles = m_triTopo->getTriangleVertexShell(indexClosestPoint);
@@ -169,9 +225,9 @@ bool FlowVisualModel<DataTypes>::isInDomain(unsigned int index, typename DataTyp
             }
         }
     }
+
     if (found)
         streamLines[index].currentTriangleID = triangleID;
-
 
     return found;
 }
@@ -179,7 +235,8 @@ bool FlowVisualModel<DataTypes>::isInDomain(unsigned int index, typename DataTyp
 template <class DataTypes>
 typename DataTypes::Coord FlowVisualModel<DataTypes>::interpolateVelocity(unsigned int index, Coord p, bool &atEnd)
 {
-    const VecCoord& v = *this->fstate->getV();
+    //const VecCoord& v = *this->fstate2D->getV();
+    const VecCoord& v = velocityAtVertex;
 
     if (!isInDomain(index,p))
     {
@@ -203,7 +260,7 @@ typename DataTypes::Coord FlowVisualModel<DataTypes>::interpolateVelocity(unsign
 
     //velocitySeed = Coord(0.0,0.0,0.0);
     //Coord velocitySeed = (v[t[0]]*coeff0 + v[t[1]]*coeff1 + v[t[2]]*coeff2)/(coeff0 + coeff1+ coeff2) ;
-    //Coord velocitySeed2 = v[streamLines[index].currentTriangleID];
+    Coord velocitySeed2 = v[streamLines[index].currentTriangleID];
 
     //std::cout << velocitySeed << " " << velocitySeed2 << std::endl;
 
@@ -235,22 +292,123 @@ void FlowVisualModel<DataTypes>::computeStreamLine(unsigned int index, unsigned 
 }
 
 template <class DataTypes>
+void FlowVisualModel<DataTypes>::interpolateVelocityAtVertices()
+{
+    unsigned int indexClosestPoint;
+    unsigned int nbPoints =  m_triTopo->getNbPoints();
+    helper::vector<unsigned int> weight;
+
+    velocityAtVertex.resize(nbPoints);
+    weight.resize(nbPoints);
+    std::fill( weight.begin(), weight.end(), 0 );
+    std::fill( velocityAtVertex.begin(), velocityAtVertex.end(), Coord() );
+
+    core::componentmodel::topology::BaseMeshTopology::SeqTriangles triangles =  m_triTopo->getTriangles();
+
+    if (!m_tetraTopo)
+    {
+        VecDeriv& v2d = *this->fstate2D->getV();
+
+        for(unsigned int i=0 ; i<triangles.size() ; i++)
+        {
+            core::componentmodel::topology::BaseMeshTopology::Triangle t = (triangles[i]);
+            for(unsigned int j=0 ; j<3 ; j++)
+            {
+                velocityAtVertex[t[j]] += v2d[i];
+                weight[t[j]]++;
+            }
+        }
+        for(unsigned int i=0 ; i<nbPoints ; i++)
+        {
+            velocityAtVertex[i] /= weight[i];
+        }
+    }
+    else
+    {
+        VecDeriv& v3d = *this->fstate3D->getV();
+
+        for (unsigned int i=0 ; i<nbPoints ; i++)
+        {
+            Coord p = m_triGeo->getPointPosition(i);
+            indexClosestPoint = getIndexClosestPoint(*this->fstate3D->getX(), p);
+
+            helper::vector<BaseMeshTopology::TetraID> tetras = m_tetraTopo->getTetraVertexShell(indexClosestPoint);
+            //VecCoord ptetras;
+            for (unsigned int j=0 ; j<tetras.size() ; j++)
+            {
+                velocityAtVertex[i] += v3d[tetras[j]];
+                weight[i]++;
+            }
+            velocityAtVertex[i] /= weight[i];
+        }
+
+    }
+
+
+}
+
+template <class DataTypes>
+void FlowVisualModel<DataTypes>::drawTetra()
+{
+    VecCoord& tetrasX = *this->fstate3D->getX();
+
+    //glEnable (GL_BLEND);
+    //glDepthMask(GL_FALSE);
+    //glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+
+
+    if(shader)
+        shader->start();
+    //Tetra
+    if(m_tetraTopo)
+    {
+        //draw tetrahedra
+        core::componentmodel::topology::BaseMeshTopology::SeqTetras tetrahedra=  m_tetraTopo->getTetras();
+        //	glPointSize(10.0);
+        for (unsigned int i=0 ; i<tetrahedra.size() ; i++)
+        {
+            glBegin(GL_LINES_ADJACENCY_EXT);
+            //		glBegin(GL_POINTS);
+            for(core::componentmodel::topology::BaseMeshTopology::SeqTetras::const_iterator it = tetrahedra.begin() ; it != tetrahedra.end() ; it++)
+            {
+                for (unsigned int j=0 ; j< 4 ; j++)
+                {
+                    Coord v = tetrasX[(*it)[j]];
+                    glColor4f(1.0,1.0,1.0,1.0);
+                    //glColor4f(j%3,(j+1)%3,(j+2)%3,1.0);
+                    glVertex3f((GLfloat)v[0], (GLfloat)v[1], (GLfloat)v[2]);
+
+                }
+            }
+            glEnd();
+        }
+    }
+    if(shader)
+        shader->stop();
+
+    glDisable(GL_BLEND);
+    glDepthMask(GL_TRUE);
+
+}
+
+template <class DataTypes>
 void FlowVisualModel<DataTypes>::draw()
 {
     if (!getContext()->getShowVisualModels()) return;
 
     glDisable(GL_LIGHTING);
-    VecDeriv& v = *this->fstate->getV();
-    //VecCoord& y = *this->fstate->getX();
+    interpolateVelocityAtVertices();
+    //VecCoord& x = *this->fstate2D->getX();
 
-    double vmax2 = v[0].norm2();
-    double vmin = v[0].norm();
+    double vmax2 = velocityAtVertex[0].norm2();
+    double vmin = velocityAtVertex[0].norm();
 
     //search vmax
-    for (unsigned int i=1 ; i<v.size() ; i++)
+    for (unsigned int i=1 ; i<velocityAtVertex.size() ; i++)
     {
-        if (v[i].norm2() > vmax2)
-            vmax2=v[i].norm2();
+        if (velocityAtVertex[i].norm2() > vmax2)
+            vmax2=velocityAtVertex[i].norm2();
     }
 
     double vmax = (velocityMax.getValue() < sqrt(vmax2)) ? sqrt(vmax2) : velocityMax.getValue();
@@ -258,183 +416,173 @@ void FlowVisualModel<DataTypes>::draw()
     if (velocityMin.getValue() < 0.0)
     {
         //search vmin
-        for (unsigned int i=1 ; i<v.size() ; i++)
+        for (unsigned int i=1 ; i<velocityAtVertex.size() ; i++)
         {
-            if (v[i].norm() < vmin)
-                vmin=v[i].norm();
+            if (velocityAtVertex[i].norm() < vmin)
+                vmin=velocityAtVertex[i].norm();
         }
+        if (vmin < 0.0) vmin = 0.0;
     }
     else vmin = velocityMin.getValue();
 
-
-    core::componentmodel::topology::BaseMeshTopology::SeqTriangles triangles =  m_triTopo->getTriangles();
-
-    unsigned int nbPoints =  m_triTopo->getNbPoints();
-
-    helper::vector<Vec3f> colors;
-    helper::vector<unsigned int> weight;
-
-    colors.resize(nbPoints);
-    weight.resize(nbPoints);
-    std::fill( weight.begin(), weight.end(), 0 );
-
-    //accumulate v/colors
-    for(unsigned int i=0 ; i<triangles.size() ; i++)
     {
-        core::componentmodel::topology::BaseMeshTopology::Triangle t = (triangles[i]);
-        for(unsigned int j=0 ; j<3 ; j++)
+        core::componentmodel::topology::BaseMeshTopology::SeqTriangles triangles =  m_triTopo->getTriangles();
+
+        unsigned int indColor0, indColor1, indColor2;
+        //VecCoord& x = *this->fstate->getX();
+        x.clear();
+        x.resize(0);
+
+        //Show colored triangles
+        glBegin(GL_TRIANGLES);
+        for(unsigned int i=0 ; i<triangles.size() ; i++)
         {
-            unsigned int indColor = 0;
-            if((vmax-vmin) > 0.0 && i < v.size())
-                indColor = (unsigned int)(64* ((v[i].norm()-vmin)/(vmax-vmin)));
-            else indColor = 0;
+            core::componentmodel::topology::BaseMeshTopology::Triangle t = (triangles[i]);
 
-            colors[t[j]]+= ColorMap[indColor];
-            weight[t[j]]++;
-        }
-    }
-    //VecCoord& x = *this->fstate->getX();
-    x.clear();
-    x.resize(0);
+            Coord p0 = m_triGeo->getPointPosition(t[0]);
+            Coord p1 = m_triGeo->getPointPosition(t[1]);
+            Coord p2 = m_triGeo->getPointPosition(t[2]);
 
-    //Show colored triangles
-    glBegin(GL_TRIANGLES);
-    for(unsigned int i=0 ; i<triangles.size() ; i++)
-    {
-        core::componentmodel::topology::BaseMeshTopology::Triangle t = (triangles[i]);
+            //compute barycenter of each triangle
+            Coord pb;
+            pb[0] = (p0[0] + p1[0] + p2[0])/3;
+            pb[1] = (p0[1] + p1[1] + p2[1])/3;
+            pb[2] = (p0[2] + p1[2] + p2[2])/3;
+            x.push_back(pb);
 
-        Coord p0 = m_triGeo->getPointPosition(t[0]);
-        Coord p1 = m_triGeo->getPointPosition(t[1]);
-        Coord p2 = m_triGeo->getPointPosition(t[2]);
-
-        //compute barycenter of each triangle
-        Coord pb;
-        pb[0] = (p0[0] + p1[0] + p2[0])/3;
-        pb[1] = (p0[1] + p1[1] + p2[1])/3;
-        pb[2] = (p0[2] + p1[2] + p2[2])/3;
-        x.push_back(pb);
-
-        glColor3fv((colors[t[0]]/weight[t[0]]).ptr() );
-        glVertex3f((GLfloat)p0[0], (GLfloat)p0[1], (GLfloat)p0[2]);
-        glColor3fv((colors[t[1]]/weight[t[1]]).ptr() );
-        glVertex3f((GLfloat)p1[0], (GLfloat)p1[1], (GLfloat)p1[2]);
-        glColor3fv((colors[t[2]]/weight[t[2]]).ptr() );
-        glVertex3f((GLfloat)p2[0], (GLfloat)p2[1], (GLfloat)p2[2]);
-    }
-    glEnd();
-
-    //Show Velocity
-    if (showVelocityLines.getValue())
-    {
-        glBegin(GL_LINES);
-        for(unsigned int i=0 ; i<v.size() ; i++)
-        {
-            if (v[i].norm() > 0.0 && vmax > 0.0)
+            if((vmax-vmin) > 0.0)
             {
-                Coord p0 = x[i];
-                Coord p1 = x[i] + v[i]/vmax*viewVelocityFactor.getValue();
-
-                glColor3f(1.0,1.0,1.0);
-                glVertex3f((GLfloat)p0[0], (GLfloat)p0[1], (GLfloat)p0[2]);
-                glColor3f(1.0,1.0,1.0);
-                glVertex3f((GLfloat)p1[0], (GLfloat)p1[1], (GLfloat)p1[2]);
+                indColor0 = (unsigned int)(64* ((velocityAtVertex[t[0]].norm()-vmin)/(vmax-vmin)));
+                indColor1 = (unsigned int)(64* ((velocityAtVertex[t[1]].norm()-vmin)/(vmax-vmin)));
+                indColor2 = (unsigned int)(64* ((velocityAtVertex[t[2]].norm()-vmin)/(vmax-vmin)));
             }
+            else indColor0 = indColor1 = indColor2 = 0;
+            glColor3f(ColorMap[indColor0][0], ColorMap[indColor0][1], ColorMap[indColor0][2]);
+            glVertex3f((GLfloat)p0[0], (GLfloat)p0[1], (GLfloat)p0[2]);
+            glColor3f(ColorMap[indColor1][0], ColorMap[indColor1][1], ColorMap[indColor1][2]);
+            glVertex3f((GLfloat)p1[0], (GLfloat)p1[1], (GLfloat)p1[2]);
+            glColor3f(ColorMap[indColor2][0], ColorMap[indColor2][1], ColorMap[indColor2][2]);
+            glVertex3f((GLfloat)p2[0], (GLfloat)p2[1], (GLfloat)p2[2]);
         }
         glEnd();
-    }
 
-    //Draw StreamLines
-    if (showStreamLines.getValue())
-    {
-        helper::vector<Coord> seeds = streamlineSeeds.getValue();
-        unsigned int seedsSize = streamlineSeeds.getValue().size();
-        streamLines.clear();
-        streamLines.resize(seedsSize);
+        VecCoord& x2D = *this->fstate2D->getX();
 
-        for (unsigned int i=0 ; i<seedsSize ; i++)
+        //Show Velocity
+        if (showVelocityLines.getValue())
         {
-            double dtStreamLine = (meanEdgeLength / vmax) * (1.0/streamlineDtNumberOfPointsPerTriangle.getValue());
-            streamLines[i].currentTriangleID = BaseMeshTopology::InvalidID;
-            computeStreamLine(i,streamlineMaxNumberOfPoints.getValue(), dtStreamLine) ;
-            glLineWidth(2);
-            glBegin(GL_LINE_STRIP);
-            for(unsigned int j=0 ; j<streamLines[i].positions.size() ; j++)
+            glBegin(GL_LINES);
+            for(unsigned int i=0 ; i<velocityAtVertex.size() ; i++)
             {
-                glColor3f(1.0,1.0,1.0);
-                glVertex3f((GLfloat) streamLines[i].positions[j][0], (GLfloat) streamLines[i].positions[j][1], (GLfloat) streamLines[i].positions[j][2]);
+                if (velocityAtVertex[i].norm() > 0.0 && vmax > 0.0)
+                {
+                    Coord p0 = x2D[i];
+                    Coord p1 = x2D[i] + velocityAtVertex[i]/vmax*viewVelocityFactor.getValue();
+
+                    glColor3f(1.0,1.0,1.0);
+                    glVertex3f((GLfloat)p0[0], (GLfloat)p0[1], (GLfloat)p0[2]);
+                    glColor3f(1.0,1.0,1.0);
+                    glVertex3f((GLfloat)p1[0], (GLfloat)p1[1], (GLfloat)p1[2]);
+                }
+            }
+            glEnd();
+        }
+
+        //Draw StreamLines
+        if (showStreamLines.getValue())
+        {
+            helper::vector<Coord> seeds = streamlineSeeds.getValue();
+            unsigned int seedsSize = streamlineSeeds.getValue().size();
+            streamLines.clear();
+            streamLines.resize(seedsSize);
+
+            for (unsigned int i=0 ; i<seedsSize ; i++)
+            {
+                double dtStreamLine = (meanEdgeLength / vmax) * (1.0/streamlineDtNumberOfPointsPerTriangle.getValue());
+                streamLines[i].currentTriangleID = BaseMeshTopology::InvalidID;
+                computeStreamLine(i,streamlineMaxNumberOfPoints.getValue(), dtStreamLine) ;
+                glLineWidth(2);
+                glBegin(GL_LINE_STRIP);
+                for(unsigned int j=0 ; j<streamLines[i].positions.size() ; j++)
+                {
+                    glColor3f(1.0,1.0,1.0);
+                    glVertex3f((GLfloat) streamLines[i].positions[j][0], (GLfloat) streamLines[i].positions[j][1], (GLfloat) streamLines[i].positions[j][2]);
+                }
+                glEnd();
+
+            }
+        }
+
+        if (showTetras.getValue())
+            drawTetra();
+
+        //Draw color scale
+        if (showColorScale.getValue())
+        {
+            double xMargin = 50.0;
+            double yMargin = 20.0;
+            GLint currentViewport[4];
+            glGetIntegerv(GL_VIEWPORT, currentViewport);
+            Vec2d scaleSize = Vec2d(20, 200);
+            Vec2d scalePosition = Vec2d(currentViewport[2] - xMargin - scaleSize[0], currentViewport[3] - yMargin - scaleSize[1]);
+
+            glMatrixMode(GL_PROJECTION);
+            glPushMatrix();
+            glLoadIdentity();
+            gluOrtho2D(0,currentViewport[2],0,currentViewport[3]);
+            glDisable(GL_DEPTH_TEST);
+            glMatrixMode(GL_MODELVIEW);
+            glPushMatrix();
+            glLoadIdentity();
+
+            double step = scaleSize[1]/64;
+            glBegin(GL_QUADS);
+            for (unsigned int i=0 ; i<63 ; i++)
+            {
+                glColor3dv(ColorMap[i].ptr());
+                glVertex2d(scalePosition[0], scalePosition[1] + i*step);
+                glVertex2d(scalePosition[0] + scaleSize[0], scalePosition[1] + i*step);
+                glColor3dv(ColorMap[i+1].ptr());
+                glVertex2d(scalePosition[0] + scaleSize[0], scalePosition[1] + (i+1)*step);
+                glVertex2d(scalePosition[0], scalePosition[1] + (i+1)*step);
             }
             glEnd();
 
-        }
-    }
+            //Draw color scale values
+            unsigned int NUMBER_OF_VALUES = 10;
+            glColor3f(1.0,1.0,1.0);
+            step = scaleSize[1]/(NUMBER_OF_VALUES - 1);
+            double stepValue = (vmax-vmin)/(NUMBER_OF_VALUES - 1);
+            double textScaleSize = 0.06;
+            double xMarginWithScale = 5;
 
-    //Draw color scale
-    if (showColorScale.getValue())
-    {
-        double xMargin = 50.0;
-        double yMargin = 20.0;
-        GLint currentViewport[4];
-        glGetIntegerv(GL_VIEWPORT, currentViewport);
-        Vec2d scaleSize = Vec2d(20, 200);
-        Vec2d scalePosition = Vec2d(currentViewport[2] - xMargin - scaleSize[0], currentViewport[3] - yMargin - scaleSize[1]);
-
-        glMatrixMode(GL_PROJECTION);
-        glPushMatrix();
-        glLoadIdentity();
-        gluOrtho2D(0,currentViewport[2],0,currentViewport[3]);
-        glDisable(GL_DEPTH_TEST);
-        glMatrixMode(GL_MODELVIEW);
-        glPushMatrix();
-        glLoadIdentity();
-
-        double step = scaleSize[1]/64;
-        glBegin(GL_QUADS);
-        for (unsigned int i=0 ; i<63 ; i++)
-        {
-            glColor3dv(ColorMap[i].ptr());
-            glVertex2d(scalePosition[0], scalePosition[1] + i*step);
-            glVertex2d(scalePosition[0] + scaleSize[0], scalePosition[1] + i*step);
-            glColor3dv(ColorMap[i+1].ptr());
-            glVertex2d(scalePosition[0] + scaleSize[0], scalePosition[1] + (i+1)*step);
-            glVertex2d(scalePosition[0], scalePosition[1] + (i+1)*step);
-        }
-        glEnd();
-
-        //Draw color scale values
-        unsigned int NUMBER_OF_VALUES = 10;
-        glColor3f(1.0,1.0,1.0);
-        step = scaleSize[1]/(NUMBER_OF_VALUES - 1);
-        double stepValue = (vmax-vmin)/(NUMBER_OF_VALUES - 1);
-        double textScaleSize = 0.06;
-        double xMarginWithScale = 5;
-
-        for (unsigned int i=0 ; i<NUMBER_OF_VALUES  ; i++)
-        {
-            glPushMatrix();
-            glTranslatef(scalePosition[0] + scaleSize[0] + xMarginWithScale, scalePosition[1] + i*step, 0);
-            glScalef(textScaleSize, textScaleSize, textScaleSize);
-            double intpart;
-            double decpart = modf((vmin + i*stepValue), &intpart);
-            std::ostringstream oss;
-            oss << intpart << "." << (ceil(decpart*100));
-            std::string tmp = oss.str();
-
-
-            const char* s = tmp.c_str();
-            while(*s)
+            for (unsigned int i=0 ; i<NUMBER_OF_VALUES  ; i++)
             {
-                glutStrokeCharacter(GLUT_STROKE_ROMAN, *s);
-                s++;
+                glPushMatrix();
+                glTranslatef(scalePosition[0] + scaleSize[0] + xMarginWithScale, scalePosition[1] + i*step, 0);
+                glScalef(textScaleSize, textScaleSize, textScaleSize);
+                double intpart;
+                double decpart = modf((vmin + i*stepValue), &intpart);
+                std::ostringstream oss;
+                oss << intpart << "." << (ceil(decpart*100));
+                std::string tmp = oss.str();
+
+
+                const char* s = tmp.c_str();
+                while(*s)
+                {
+                    glutStrokeCharacter(GLUT_STROKE_ROMAN, *s);
+                    s++;
+                }
+                glPopMatrix();
             }
+
             glPopMatrix();
+            glMatrixMode(GL_PROJECTION);
+            glPopMatrix();
+            glMatrixMode(GL_MODELVIEW);
         }
-
-        glPopMatrix();
-        glMatrixMode(GL_PROJECTION);
-        glPopMatrix();
-        glMatrixMode(GL_MODELVIEW);
     }
-
 
 }
 

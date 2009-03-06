@@ -14,9 +14,13 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/component/topology/ManifoldTriangleSetTopologyContainer.h>
+#include <sofa/component/topology/ManifoldTetrahedronSetTopologyContainer.h>
 #include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
 #include <sofa/component/topology/TriangleSetGeometryAlgorithms.inl>
+#include <sofa/component/topology/TetrahedronSetGeometryAlgorithms.h>
+#include <sofa/component/topology/TetrahedronSetGeometryAlgorithms.inl>
 #include <sofa/helper/gl/BasicShapes.h>
+#include <sofa/core/Shader.h>
 namespace sofa
 {
 
@@ -114,18 +118,29 @@ class SOFA_COMPONENT_VISUALMODEL_API FlowVisualModel : public core::VisualModel
     };
 
 protected:
-    FluidState* fstate;
+    FluidState* fstate2D;
+    FluidState* fstate3D;
     topology::ManifoldTriangleSetTopologyContainer* m_triTopo;
     topology::TriangleSetGeometryAlgorithms<DataTypes>* m_triGeo;
+    topology::ManifoldTetrahedronSetTopologyContainer* m_tetraTopo;
+    topology::TetrahedronSetGeometryAlgorithms<DataTypes>* m_tetraGeo;
+    //draw tetrahedra
+    core::Shader* shader;
+
     VecCoord x;
+    VecCoord velocityAtVertex;
     helper::vector<StreamLine> streamLines;
     double meanEdgeLength;
 
+    unsigned int getIndexClosestPoint(const VecCoord &x, Coord p);
     bool isInDomain(unsigned int index,Coord p);
     Coord interpolateVelocity(unsigned int index, Coord p, bool &atEnd);
+    void interpolateVelocityAtVertices();
 
 public:
     static const double STREAMLINE_NUMBER_OF_POINTS_BY_TRIANGLE;
+
+    Data<std::string> tag2D, tag3D;
 
     Data<bool> showVelocityLines;
     Data<double> viewVelocityFactor;
@@ -136,6 +151,7 @@ public:
     Data<unsigned int> streamlineMaxNumberOfPoints;
     Data<double> streamlineDtNumberOfPointsPerTriangle;
     Data<bool> showColorScale;
+    Data<bool> showTetras;
     FlowVisualModel();
     virtual ~FlowVisualModel();
 
@@ -143,6 +159,7 @@ public:
     void reinit();
     void initVisual();
     void draw();
+    void drawTetra();
     void computeStreamLine(unsigned int index, unsigned int maxNbPoints, double dt);
 
 };
