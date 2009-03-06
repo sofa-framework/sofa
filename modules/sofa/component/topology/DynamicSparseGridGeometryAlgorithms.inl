@@ -45,7 +45,7 @@ void DynamicSparseGridGeometryAlgorithms<DataTypes>::init()
     this->getContext()->get ( topoContainer );
     if ( !topoContainer )
     {
-        cerr << "Hexa2TriangleTopologicalMapping::buildTriangleMesh(). Error: can't find the mapping on the triangular topology." << endl;
+        serr << "Hexa2TriangleTopologicalMapping::buildTriangleMesh(). Error: can't find the mapping on the triangular topology." << sendl;
         exit(0);
     }
 }
@@ -56,7 +56,7 @@ unsigned int DynamicSparseGridGeometryAlgorithms<DataTypes>::getTopoIndexFromReg
     std::map< unsigned int, BaseMeshTopology::HexaID>::iterator it = topoContainer->idInRegularGrid2IndexInTopo.find( index);
     if( it == topoContainer->idInRegularGrid2IndexInTopo.end())
     {
-        cerr << "DynamicSparseGridGeometryAlgorithms<DataTypes>::getTopoIndexFromRegularGridIndex(): Warning ! unexisting given index " << index << " !" << endl;
+        serr << "DynamicSparseGridGeometryAlgorithms<DataTypes>::getTopoIndexFromRegularGridIndex(): Warning ! unexisting given index " << index << " !" << sendl;
     }
     return it->second;
 }
@@ -107,7 +107,7 @@ int DynamicSparseGridGeometryAlgorithms<DataTypes>::findNearestElementInRestPos(
     if( index == -1)
     {
         // Dans le cas de projection ou autre.... il se peut que la zone ciblée ne contienne pas d'hexas, il faut alors tous les parcourrir.
-        std::cout << "DynamicSparseGridGeometryAlgorithms<DataTypes>::findNearestElementInRestPos(). Index non trouvé. Recherche dans tous les hexas ! (ceci nuit gravement aux perfs. vérifier les 'pos' données en entrée)." << std::endl;
+        //std::cout << "DynamicSparseGridGeometryAlgorithms<DataTypes>::findNearestElementInRestPos(). Index not found => Search in all the hexas ! SLOW." << std::endl;
         //std::cout << "pos: " << pos << ", currentIndex: " << currentIndex << ", et regular index: " << regularGridIndex << std::endl;
         return HexahedronSetGeometryAlgorithms<DataTypes>::findNearestElementInRestPos( pos, baryC, distance);
     }

@@ -27,7 +27,6 @@
 #define _OGL_ATTRIBUTE_H_
 
 #include <sofa/core/VisualModel.h>
-#include <sofa/component/visualmodel/OglShader.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/component/visualmodel/OglModel.h>
 #include <sofa/component/visualmodel/OglShader.h>
@@ -59,12 +58,16 @@ public:
     // if attributes are not static, need to update buffer
     bool updateABO();
 
-    DataTypes* beginEdit();
+    ResizableExtVector<DataTypes>* beginEdit();
     void endEdit();
-    void setValue( const DataTypes& value);
+    const ResizableExtVector<DataTypes>& getValue() const;
+    void setValue( const ResizableExtVector<DataTypes>& value);
     void enable();
     void disable();
     virtual void draw();
+
+    // handle topological changes
+    virtual void handleTopologyChange();
 
 protected:
     // attribute buffer object identity
@@ -75,12 +78,14 @@ protected:
 
     unsigned int usage;
 
-    Data<DataTypes> value;
+    Data<ResizableExtVector<DataTypes> > value;
+
+    sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
 };
 
 
 /** FLOAT ATTRIBUTE **/
-class SOFA_COMPONENT_VISUALMODEL_API OglFloatAttribute : public OglAttribute<1, GL_FLOAT, ResizableExtVector<float> >
+class SOFA_COMPONENT_VISUALMODEL_API OglFloatAttribute : public OglAttribute<1, GL_FLOAT, float>
 {
 public:
     OglFloatAttribute() {};
@@ -88,7 +93,7 @@ public:
 
 };
 
-class SOFA_COMPONENT_VISUALMODEL_API OglFloat2Attribute : public OglAttribute<2, GL_FLOAT, ResizableExtVector<Vec<2, float> > >
+class SOFA_COMPONENT_VISUALMODEL_API OglFloat2Attribute : public OglAttribute<2, GL_FLOAT, Vec<2, float> >
 {
 public:
     OglFloat2Attribute() {};
@@ -96,7 +101,7 @@ public:
 
 };
 
-class SOFA_COMPONENT_VISUALMODEL_API OglFloat3Attribute : public OglAttribute<3, GL_FLOAT, ResizableExtVector<Vec<3, float> > >
+class SOFA_COMPONENT_VISUALMODEL_API OglFloat3Attribute : public OglAttribute<3, GL_FLOAT, Vec<3, float> >
 {
 public:
     OglFloat3Attribute() {};
@@ -104,7 +109,7 @@ public:
 
 };
 
-class SOFA_COMPONENT_VISUALMODEL_API OglFloat4Attribute : public OglAttribute<4, GL_FLOAT, ResizableExtVector<Vec<4, float> > >
+class SOFA_COMPONENT_VISUALMODEL_API OglFloat4Attribute : public OglAttribute<4, GL_FLOAT, Vec<4, float> >
 {
 public:
     OglFloat4Attribute() {};
@@ -116,7 +121,7 @@ public:
 
 
 /** INT ATTRIBUTE **/
-class SOFA_COMPONENT_VISUALMODEL_API OglIntAttribute : public OglAttribute<1, GL_INT, ResizableExtVector<int> >
+class SOFA_COMPONENT_VISUALMODEL_API OglIntAttribute : public OglAttribute<1, GL_INT, int>
 {
 public:
     OglIntAttribute() {};
@@ -124,7 +129,7 @@ public:
 
 };
 
-class SOFA_COMPONENT_VISUALMODEL_API OglInt2Attribute : public OglAttribute<2, GL_INT, ResizableExtVector<Vec<2, int> > >
+class SOFA_COMPONENT_VISUALMODEL_API OglInt2Attribute : public OglAttribute<2, GL_INT, Vec<2, int> >
 {
 public:
     OglInt2Attribute() {};
@@ -132,7 +137,7 @@ public:
 
 };
 
-class SOFA_COMPONENT_VISUALMODEL_API OglInt3Attribute : public OglAttribute<3, GL_INT, ResizableExtVector<Vec<3, int> > >
+class SOFA_COMPONENT_VISUALMODEL_API OglInt3Attribute : public OglAttribute<3, GL_INT, Vec<3, int> >
 {
 public:
     OglInt3Attribute() {};
@@ -140,7 +145,7 @@ public:
 
 };
 
-class SOFA_COMPONENT_VISUALMODEL_API OglInt4Attribute : public OglAttribute<4, GL_INT, ResizableExtVector<Vec<4, int> > >
+class SOFA_COMPONENT_VISUALMODEL_API OglInt4Attribute : public OglAttribute<4, GL_INT, Vec<4, int> >
 {
 public:
     OglInt4Attribute() {};
@@ -152,7 +157,7 @@ public:
 
 
 /** UNSIGNED INT ATTRIBUTE **/
-class SOFA_COMPONENT_VISUALMODEL_API OglUIntAttribute : public OglAttribute<1, GL_UNSIGNED_INT, ResizableExtVector<unsigned int> >
+class SOFA_COMPONENT_VISUALMODEL_API OglUIntAttribute : public OglAttribute<1, GL_UNSIGNED_INT, unsigned int>
 {
 public:
     OglUIntAttribute() {};
@@ -160,7 +165,7 @@ public:
 
 };
 
-class SOFA_COMPONENT_VISUALMODEL_API OglUInt2Attribute : public OglAttribute<2, GL_UNSIGNED_INT, ResizableExtVector<Vec<2, unsigned int> > >
+class SOFA_COMPONENT_VISUALMODEL_API OglUInt2Attribute : public OglAttribute<2, GL_UNSIGNED_INT, Vec<2, unsigned int> >
 {
 public:
     OglUInt2Attribute() {};
@@ -168,7 +173,7 @@ public:
 
 };
 
-class SOFA_COMPONENT_VISUALMODEL_API OglUInt3Attribute : public OglAttribute<3, GL_UNSIGNED_INT, ResizableExtVector<Vec<3, unsigned int> > >
+class SOFA_COMPONENT_VISUALMODEL_API OglUInt3Attribute : public OglAttribute<3, GL_UNSIGNED_INT, Vec<3, unsigned int> >
 {
 public:
     OglUInt3Attribute() {};
@@ -176,7 +181,7 @@ public:
 
 };
 
-class SOFA_COMPONENT_VISUALMODEL_API OglUInt4Attribute : public OglAttribute<4, GL_UNSIGNED_INT, ResizableExtVector<Vec<4, unsigned int> > >
+class SOFA_COMPONENT_VISUALMODEL_API OglUInt4Attribute : public OglAttribute<4, GL_UNSIGNED_INT, Vec<4, unsigned int> >
 {
 public:
     OglUInt4Attribute() {};
@@ -184,17 +189,6 @@ public:
 
 };
 
-/*
-      typedef OglAttribute<1, GL_INT, Vec<1, int> > OglIntAttribute;
-      typedef OglAttribute<2, GL_INT, Vec<2, int> > OglInt2Attribute;
-      typedef OglAttribute<3, GL_INT, Vec<3, int> > OglInt3Attribute;
-      typedef OglAttribute<4, GL_INT, Vec<4, int> > OglInt4Attribute;
-
-      typedef OglAttribute<1, GL_UNSIGNED_INT, Vec<1, unsigned int> > OglUIntAttribute;
-      typedef OglAttribute<2, GL_UNSIGNED_INT, Vec<2, unsigned int> > OglUInt2Attribute;
-      typedef OglAttribute<3, GL_UNSIGNED_INT, Vec<3, unsigned int> > OglUInt3Attribute;
-      typedef OglAttribute<4, GL_UNSIGNED_INT, Vec<4, unsigned int> > OglUInt4Attribute;
-*/
 }
 
 }
