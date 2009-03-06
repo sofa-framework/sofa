@@ -142,6 +142,9 @@ void MeshTetraStuffing::init()
 
     outP.resize(gsize[0]*gsize[1]*gsize[2] + hsize[0]*hsize[1]*hsize[2]);
 
+    sout << "Grid 1 size " << gsize[0] << "x" << gsize[1] << "x" << gsize[2] << ", total " << gsize[0]*gsize[1]*gsize[2] << sendl;
+    sout << "Grid 2 size " << hsize[0] << "x" << hsize[1] << "x" << hsize[2] << ", total " << hsize[0]*hsize[1]*hsize[2] << sendl;
+
     ph0 = gsize[0]*gsize[1]*gsize[2];
     int p = 0;
     for (int z=0; z<gsize[2]; ++z)
@@ -155,6 +158,7 @@ void MeshTetraStuffing::init()
                 outP[p] = h0 + Point(x*cellsize,y*cellsize,z*cellsize);
 
     int nbp = outP.size();
+    sout << "nbp = " << nbp << sendl;
 
     pInside.resize(nbp);
     eBDist.resize(nbp);
@@ -431,8 +435,8 @@ void MeshTetraStuffing::init()
                 int p2 = getEdgePoint2(p,e);
                 if (p2 == -1) continue;
                 if (pInside[p2] <= 0) continue; // look for inside points
-                sout << "Creating cut point between " << p << " and " << p2 << " at " << eBDist[p][e] << sendl;
                 int newP = outP.size();
+                sout << "Creating cut point " << newP << " between " << p << " and " << p2 << " at " << eBDist[p][e] << sendl;
                 outP.push_back( outP[p] + (outP[p2]-outP[p]) * (eBDist[p][e]) );
                 splitPoints[std::make_pair(p,p2)]=newP;
             }
@@ -446,6 +450,9 @@ void MeshTetraStuffing::init()
         for (int y=0; y<gsize[1]; ++y,++ph)
             for (int x=0; x<gsize[0]; ++x,++p,++ph)
             {
+                //p = x + gsize[0] * (y + gsize[1] * (z));
+                //ph = ph0 + x + hsize[0] * (y + hsize[1] * (z));
+                //std::cout << "P " <<x<< ","<<y<<","<<z<<std::endl;
                 if (x > 0)
                 {
                     // edge in X axis
@@ -455,7 +462,7 @@ void MeshTetraStuffing::init()
                     {
                         int p3 = hshell[i];
                         int p4 = hshell[(i+1)%4];
-                        addTetra(outT, outP, p,p2,p3,p4);
+                        addTetra(outT, outP, p,p2,p4,p3, __LINE__);
                     }
                 }
                 if (y > 0)
@@ -467,19 +474,19 @@ void MeshTetraStuffing::init()
                     {
                         int p3 = hshell[i];
                         int p4 = hshell[(i+1)%4];
-                        addTetra(outT, outP, p,p2,p3,p4);
+                        addTetra(outT, outP, p,p2,p4,p3, __LINE__);
                     }
                 }
                 if (z > 0)
                 {
-                    // edge in X axis
+                    // edge in Z axis
                     int p2 = p - gsize01;
                     int hshell[4] = {ph, ph + 1, ph + 1 + hsize[0], ph + hsize[0]};
                     for (int i=0; i<4; ++i)
                     {
                         int p3 = hshell[i];
                         int p4 = hshell[(i+1)%4];
-                        addTetra(outT, outP, p,p2,p3,p4);
+                        addTetra(outT, outP, p,p2,p4,p3, __LINE__);
                     }
                 }
             }
@@ -546,8 +553,67 @@ void MeshTetraStuffing::init()
     outputTetras.endEdit();
 }
 
-void MeshTetraStuffing::addTetra(SeqTetras& outT, SeqPoints& outP, int p1, int p2, int p3, int p4)
+void MeshTetraStuffing::addFinalTetra(SeqTetras& outT, SeqPoints& outP, int p1, int p2, int p3, int p4, bool flip, int line)
 {
+    if (flip)
+    {
+        int tmp = p3; p3 = p4; p4 = tmp;
+    }
+    Point a = outP[p2] - outP[p1];
+    Point b = outP[p3] - outP[p1];
+    Point c = outP[p4] - outP[p1];
+    Real vol6 = a*(b.cross(c));
+    if (vol6 < 0)
+    {
+        sout << __FILE__ << "(" << line << "): WARNING: final tetra " << p1 << " " << p2 << " " << p3 << " " << p4 << " is inverted." << sendl;
+        int tmp = p3; p3 = p4; p4 = tmp;
+    }
+    //else if (line >= 677)
+    //{
+    //    sout << __FILE__ << "(" << line << "): final tetra " << p1 << " " << p2 << " " << p3 << " " << p4 << " is ok." << sendl;
+    //}
+    outT.push_back(Tetra(p1,p2,p3,p4));
+}
+
+bool MeshTetraStuffing::needFlip(int p1, int p2, int p3, int p4, int q1, int q2, int q3, int q4)
+{
+    bool flip = false;
+    // make the smallest indice the first vertex
+    while(p1 > p2 || p1 > p3 || p1 > p4)
+    {
+        int tmp = p1; p1 = p2; p2 = p3; p3 = p4; p4 = tmp; flip = !flip;
+    }
+    while(q1 > q2 || q1 > q3 || q1 > q4)
+    {
+        int tmp = q1; q1 = q2; q2 = q3; q3 = q4; q4 = tmp; flip = !flip;
+    }
+    // make the second smallest indice the second vertex
+    while(p2 > p3 || p2 > p4)
+    {
+        int tmp = p2; p2 = p3; p3 = p4; p4 = tmp; //flip = !flip;
+    }
+    while(q2 > q3 || q2 > q4)
+    {
+        int tmp = q2; q2 = q3; q3 = q4; q4 = tmp; //flip = !flip;
+    }
+    // the tetras are flipped if the last edge is flipped
+    if (p3 == q4) flip = !flip;
+    return flip;
+}
+
+void MeshTetraStuffing::addTetra(SeqTetras& outT, SeqPoints& outP, int p1, int p2, int p3, int p4, int line)
+{
+    {
+        Point a = outP[p2] - outP[p1];
+        Point b = outP[p3] - outP[p1];
+        Point c = outP[p4] - outP[p1];
+        Real vol6 = a*(b.cross(c));
+        if (vol6 < 0)
+        {
+            sout << "MeshTetraStuffing("<<line<<"): WARNING: grid tetra " << p1 << " " << p2 << " " << p3 << " " << p4 << " is inverted." << sendl;
+            int tmp = p3; p3 = p4; p4 = tmp;
+        }
+    }
     int in1 = pInside[p1];
     int in2 = pInside[p2];
     int in3 = pInside[p3];
@@ -563,7 +629,7 @@ void MeshTetraStuffing::addTetra(SeqTetras& outT, SeqPoints& outP, int p1, int p
     if (npos == 0 && nneg > 0) return ; // no tetra
     if (nneg == 0 || !bSplitTetras.getValue()) // full tetra
     {
-        outT.push_back(Tetra(p1,p2,p3,p4));
+        addFinalTetra(outT,outP, p1,p2,p3,p4, false,__LINE__);
     }
     else if (npos == 1)
     {
@@ -573,7 +639,7 @@ void MeshTetraStuffing::addTetra(SeqTetras& outT, SeqPoints& outP, int p1, int p
         if (in2 < 0) p2 = getSplitPoint(p2,p0);
         if (in3 < 0) p3 = getSplitPoint(p3,p0);
         if (in4 < 0) p4 = getSplitPoint(p4,p0);
-        outT.push_back(Tetra(p1,p2,p3,p4));
+        addFinalTetra(outT,outP, p1,p2,p3,p4, false,__LINE__);
     }
     else if (npos == 2 && nneg == 1)
     {
@@ -581,16 +647,17 @@ void MeshTetraStuffing::addTetra(SeqTetras& outT, SeqPoints& outP, int p1, int p
         int p0 = pzero[0];
         int cut1 = getSplitPoint(pneg[0],ppos[0]);
         int cut2 = getSplitPoint(pneg[0],ppos[1]);
-        bool flip = flipDiag(outP, ppos[0],ppos[1],cut2,cut1,pneg[0]);
-        if (!flip)
+        bool flipD = flipDiag(outP, ppos[0],ppos[1],cut2,cut1,pneg[0]);
+        bool flipT = needFlip(p0, ppos[0], ppos[1], pneg[0], p1,p2,p3,p4);
+        if (!flipD)
         {
-            outT.push_back(Tetra(p0,ppos[0],ppos[1],cut2));
-            outT.push_back(Tetra(p0,ppos[0],cut2,cut1));
+            addFinalTetra(outT,outP, p0,ppos[0],ppos[1],cut2, flipT,__LINE__);
+            addFinalTetra(outT,outP, p0,ppos[0],cut2,cut1, flipT,__LINE__);
         }
         else
         {
-            outT.push_back(Tetra(p0,ppos[0],ppos[1],cut1));
-            outT.push_back(Tetra(p0,ppos[1],cut2,cut1));
+            addFinalTetra(outT,outP, p0,ppos[0],ppos[1],cut1, flipT,__LINE__);
+            addFinalTetra(outT,outP, p0,ppos[1],cut2,cut1, flipT,__LINE__);
         }
     }
     else if (npos == 2 && nneg == 2)
@@ -601,17 +668,19 @@ void MeshTetraStuffing::addTetra(SeqTetras& outT, SeqPoints& outP, int p1, int p
         int cut4 = getSplitPoint(pneg[1],ppos[1]);
         bool flipA = flipDiag(outP, ppos[0],ppos[1],cut2,cut1,pneg[0]);
         bool flipB = flipDiag(outP, ppos[0],ppos[1],cut4,cut3,pneg[1]);
+        bool flipT = needFlip(ppos[0],ppos[1],pneg[0],pneg[1], p1,p2,p3,p4);
         if (!flipA && flipB)
         {
-            outT.push_back(Tetra(ppos[0],ppos[1],cut2,cut3));
-            outT.push_back(Tetra(ppos[0],cut2,cut1,cut3));
-            outT.push_back(Tetra(ppos[1],cut2,cut3,cut4));
+            addFinalTetra(outT,outP, ppos[0],ppos[1],cut2,cut3, flipT,__LINE__);
+            addFinalTetra(outT,outP, ppos[0],cut2,cut1,cut3, flipT,__LINE__);
+            addFinalTetra(outT,outP, ppos[1],cut2,cut3,cut4, flipT,__LINE__);
         }
         else if (flipA && !flipB)
         {
-            outT.push_back(Tetra(ppos[0],ppos[1],cut1,cut3));
-            outT.push_back(Tetra(ppos[1],cut2,cut1,cut3));
-            outT.push_back(Tetra(ppos[0],cut1,cut3,cut4));
+            //bool flipT = needFlip(ppos[1],pneg[0],ppos[0],pneg[1], p1,p2,p3,p4);
+            addFinalTetra(outT,outP, ppos[0],ppos[1],cut1,cut4, flipT,__LINE__);
+            addFinalTetra(outT,outP, ppos[1],cut1,cut4,cut2, flipT,__LINE__);
+            addFinalTetra(outT,outP, ppos[0],cut1,cut3,cut4, flipT,__LINE__);
         }
         else
         {
@@ -639,11 +708,12 @@ void MeshTetraStuffing::addTetra(SeqTetras& outT, SeqPoints& outP, int p1, int p
         if (!flip1 && flip2)    pc0 = cut2;
         else if (!flip2 && flip3)    pc0 = cut3;
         else /* (!flip3 && flip1) */ pc0 = cut1;
-        outT.push_back(Tetra(pp0, cut1, cut2, cut3));
-        outT.push_back(Tetra(pc0, ppos[0], ppos[1], ppos[2]));
-        if (flip1 == flip2)    outT.push_back(Tetra(ppos[1], cut2, pp0, pc0));
-        else if (flip2 == flip3)    outT.push_back(Tetra(ppos[2], cut3, pp0, pc0));
-        else /* (flip2 == flip3) */ outT.push_back(Tetra(ppos[0], cut1, pp0, pc0));
+        bool flipT = needFlip(pneg[0],ppos[0],ppos[1],ppos[2], p1,p2,p3,p4);
+        addFinalTetra(outT,outP, pp0, cut1, cut3, cut2, flipT,__LINE__);
+        addFinalTetra(outT,outP, pc0, ppos[0], ppos[1], ppos[2], flipT,__LINE__);
+        if (flip1 == flip2)    addFinalTetra(outT,outP, ppos[1], cut2, pp0, pc0, needFlip(ppos[1],pneg[0],pp0,(pp0 == ppos[0] ? ppos[2] : ppos[0]), p1,p2,p3,p4),__LINE__);
+        else if (flip2 == flip3)    addFinalTetra(outT,outP, ppos[2], cut3, pp0, pc0, needFlip(ppos[2],pneg[0],pp0,(pp0 == ppos[0] ? ppos[1] : ppos[0]), p1,p2,p3,p4),__LINE__);
+        else /* (flip2 == flip3) */ addFinalTetra(outT,outP, ppos[0], cut1, pp0, pc0, needFlip(ppos[0],pneg[0],pp0,(pp0 == ppos[1] ? ppos[2] : ppos[1]), p1,p2,p3,p4),__LINE__);
     }
 }
 
@@ -713,6 +783,7 @@ int MeshTetraStuffing::getSplitPoint(int from, int to)
     if (it != splitPoints.end()) return it->second;
     it = splitPoints.find(std::make_pair(to, from));
     if (it != splitPoints.end()) return it->second;
+    serr << "ERROR: cut point between " << from << " and " << to << " not found." << sendl;
     return from;
 }
 

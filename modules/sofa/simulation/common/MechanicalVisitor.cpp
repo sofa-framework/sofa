@@ -1048,7 +1048,7 @@ Visitor::Result MechanicalAddSeparateGravityVisitor::fwdMass(simulation::Node* n
 Visitor::Result MechanicalPickParticlesVisitor::fwdMechanicalState(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalState* mm)
 {
     ctime_t t0 = beginProcess(node, mm);
-    std::cout << "Picking particles on state " << mm->getName() << " within radius " << radius0 << " + dist * " << dRadius << std::endl;
+    //std::cout << "Picking particles on state " << mm->getName() << " within radius " << radius0 << " + dist * " << dRadius << std::endl;
     mm->pickParticles(rayOrigin[0], rayOrigin[1], rayOrigin[2], rayDirection[0], rayDirection[1], rayDirection[2], radius0, dRadius, particles);
     endProcess(node, mm, t0);
     return RESULT_CONTINUE;
