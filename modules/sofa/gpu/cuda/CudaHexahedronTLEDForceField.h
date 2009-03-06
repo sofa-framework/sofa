@@ -59,32 +59,9 @@ public:
     typedef component::topology::MeshTopology::Hexa Element;
     typedef component::topology::MeshTopology::SeqHexas VecElement;
 
-    /** Static data associated with each element
-    */
-    struct GPUElement
-    {
-        /// @name index of the 8 connected vertices
-        /// @{
-        int v[8];
-        /// @}
-    };
-
-    CudaVector<GPUElement> elems;
-
-    /// Varying data associated with each element
-    struct GPUElementState
-    {
-        int dummy[8];
-    };
-
-    CudaVector<GPUElementState> state;
-
-    int nbVertex; ///< number of vertices to process to compute all elements
-    int nbElementPerVertex; ///< max number of elements connected to a vertex
-    /// Index of elements attached to each points (layout per bloc of NBLOC vertices, with first element of each vertex, then second
-    /// element, etc). Note that each integer is actually equat the the index of the element * 8 + the index of this vertex inside
-    /// the element.
-    CudaVector<int> velems;
+    int nbVertex; // number of vertices
+    int nbElems; //  number of elements
+    int nbElementPerVertex; // max number of elements connected to a vertex
 
     /// Material properties
     Data<Real> poissonRatio;
@@ -102,7 +79,7 @@ public:
     void init();
     void reinit();
     void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/);
-    void addDForce (VecDeriv& df, const VecDeriv& dx);
+    void addDForce (VecDeriv& /*df*/, const VecDeriv& /*dx*/);
     double getPotentialEnergy(const VecCoord&) { return 0.0; }
 
     /// Compute lambda and mu based on the Young modulus and Poisson ratio
@@ -121,38 +98,6 @@ public:
 
 protected:
 
-    void init(int nbe, int nbv, int nbelemperv)
-    {
-        elems.resize(nbe);
-        state.resize(nbe);
-        nbVertex = nbv;
-        nbElementPerVertex = nbelemperv;
-//         int nbloc = (nbVertex+BSIZE-1)/BSIZE;
-//         velems.resize(nbloc*nbElementPerVertex*BSIZE);
-//         for (unsigned int i=0; i<velems.size(); i++)
-//         {
-//             velems[i] = 0;
-//         }
-    }
-
-//     void setV(int vertex, int num, int index)
-//     {
-//         int bloc = vertex/BSIZE;
-//         int b_x  = vertex%BSIZE;
-//         velems[ bloc*BSIZE*nbElementPerVertex // start of the bloc
-//               + num*BSIZE                     // offset to the element
-//               + b_x                           // offset to the vertex
-//               ] = index+1;
-//     }
-
-    void setE(int i, const Element& indices)
-    {
-        GPUElement& e = elems[i];
-        for (unsigned int j=0; j<indices.size(); j++)
-        {
-            e.v[j] = indices[j];
-        }
-    }
 };
 
 } // namespace cuda
