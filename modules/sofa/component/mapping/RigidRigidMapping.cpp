@@ -62,7 +62,6 @@ int RigidRigidMappingClass = core::RegisterObject("Set the positions and velocit
 #ifndef SOFA_DOUBLE
         .add< RigidRigidMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Rigid3fTypes> > > >()
         .add< RigidRigidMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Rigid3dTypes> > > >()
-        .add< RigidRigidMapping< MechanicalMapping< MechanicalState<RigidTypes>, MechanicalState<RigidTypes> > > >()
         .add< RigidRigidMapping< Mapping< State<Rigid3dTypes>, MappedModel<Rigid3fTypes> > > >()
         .add< RigidRigidMapping< Mapping< State<Rigid3fTypes>, MappedModel<Rigid3dTypes> > > >()
 #endif
