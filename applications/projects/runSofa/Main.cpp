@@ -119,9 +119,10 @@ int main(int argc, char** argv)
     if (fileName.empty())
     {
         fileName = "Demos/liver.scn";
-        std::cerr << loadRecent << " test \n";
+
         if (loadRecent) // try to reload the latest scene
         {
+            std::string scenes = "config/Sofa.ini";
             scenes = sofa::helper::system::DataRepository.getFile( scenes );
             std::ifstream mrulist(scenes.c_str());
             std::getline(mrulist,fileName);
