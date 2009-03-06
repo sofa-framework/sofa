@@ -5,9 +5,9 @@
   <EulerImplicitSolver name="EulerImplicit" />
   <CGLinearSolver name="CG Solver" />
 
-  <Object type="MechanicalObject" name="RigidDOF" template="Rigid" dz="1"/>
+  <Object type="MechanicalObject" name="RigidDOF" template="Rigid" dz="1" rotation="90 0 -90"/>
 
-  <UniformMass name="Mass" totalmass="1" />
+  <UniformMass name="Mass" filename="BehaviorModels/dragon.rigid" />
 
   <Node name="DragonVisual">
 
@@ -26,21 +26,6 @@
     <PlaneForceField name="Wall" normal="0 -1 0" d="-4" stiffness="100" damping="1" draw="1" color="1 1 1" />
 
     <RigidMapping name="RigidMapping2" object1="../../RigidDOF" object2="DragonParticles" />
-
-  </Node>
-
-  <Node name="Cube">
-
-    <MechanicalObject name="CubeParticles" template="Vec3d"
-		    position="0 0 1  1 0 1  0 1 1  1 1 1  0 0 2  1 0 2  0 1 2  1 1 2" />
-    <MeshTopology name="Topology" hexas="0 4 6 2 1 5 7 3" />
-  
-    <MeshSpringForceField name="Springs" stiffness="100" damping="1" />
-
-    <PlaneForceField name="Floor" normal="0 0.2 1" stiffness="100" damping="1" draw="1" />
-    <PlaneForceField name="Wall" normal="0 -1 0" d="-4" stiffness="100" damping="1" draw="1" color="1 1 1" />
-
-    <RigidMapping name="RigidMapping3" object1="../../RigidDOF" object2="CubeParticles" />
 
   </Node>
 
