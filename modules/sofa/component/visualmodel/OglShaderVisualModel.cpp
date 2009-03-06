@@ -112,7 +112,6 @@ void OglShaderVisualModel::handleTopologyChange()
 void OglShaderVisualModel::computeRestNormals()
 {
     const ResizableExtVector<Coord>& vrestpos = vrestpositions.getValue();
-    int nbn = vrestpos.size();
     ResizableExtVector<Coord>& restNormals = * ( vrestnormals.beginEdit() );
 
     for (unsigned int i = 0; i < triangles.size() ; i++)
