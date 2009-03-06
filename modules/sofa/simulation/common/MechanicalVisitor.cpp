@@ -1063,7 +1063,7 @@ Visitor::Result MechanicalPickParticlesVisitor::fwdMappedMechanicalState(simulat
     endProcess(node, mm, t0);
     return RESULT_CONTINUE;
 }
-Visitor::Result MechanicalPickParticlesVisitor::fwdMechanicalMapping(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalMapping* map)
+Visitor::Result MechanicalPickParticlesVisitor::fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map)
 {
     if (!map->isMechanical())
         return RESULT_PRUNE;

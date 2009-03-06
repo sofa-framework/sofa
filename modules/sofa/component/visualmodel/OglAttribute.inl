@@ -88,7 +88,7 @@ bool OglAttribute< size, type, DataTypes>::updateABO()
         std::cerr << "OglAttribute : Unknown error when updating attribute indices buffer "<< std::endl;
         return false;
     }
-    const DataTypes& val = value.getValue();
+    const ResizableExtVector<DataTypes>& val = value.getValue();
     memcpy(attrib_bo, &(val[0]), val.size()*sizeof(val[0]));
     glUnmapBuffer(GL_ARRAY_BUFFER);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
