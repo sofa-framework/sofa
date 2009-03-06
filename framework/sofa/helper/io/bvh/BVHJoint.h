@@ -107,6 +107,7 @@ public:
     char* getName();
     BVHOffset* getOffset();
 
+    static int lastId;
 
 private:
     BVHOffset *offset;
@@ -119,7 +120,6 @@ private:
     char name[128];
     bool endSite;
     int id;
-    static int lastId;
 
     // Transformation matrix in the global frame
     double matrix[16];
