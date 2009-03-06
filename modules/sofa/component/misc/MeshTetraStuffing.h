@@ -103,11 +103,15 @@ public:
     SeqPoints snaps;
     SeqPoints diags;
 
-    void addTetra(SeqTetras& outT, SeqPoints& outP, int p1, int p2, int p3, int p4);
+    void addTetra(SeqTetras& outT, SeqPoints& outP, int p1, int p2, int p3, int p4, int line=0);
+    void addFinalTetra(SeqTetras& outT, SeqPoints& outP, int p1, int p2, int p3, int p4, bool flip=false, int line=0);
     int getSplitPoint(int from, int to);
 
     /// Should the diagonal of abcd should be bd instead of ac ?
     bool flipDiag(const SeqPoints& outP, int a, int b, int c, int d, int e=-1);
+
+    /// Is the two given vertices order flipped
+    bool needFlip(int p1, int p2, int p3, int p4, int q1, int q2, int q3, int q4);
 
 };
 
