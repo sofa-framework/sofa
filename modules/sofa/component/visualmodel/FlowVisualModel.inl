@@ -365,11 +365,14 @@ void FlowVisualModel<DataTypes>::drawTetra()
     {
         //draw tetrahedra
         core::componentmodel::topology::BaseMeshTopology::SeqTetras tetrahedra=  m_tetraTopo->getTetras();
-        //	glPointSize(10.0);
+        glPointSize(10.0);
         for (unsigned int i=0 ; i<tetrahedra.size() ; i++)
         {
+#ifdef GL_LINES_ADJACENCY_EXT
             glBegin(GL_LINES_ADJACENCY_EXT);
-            //		glBegin(GL_POINTS);
+#else
+            glBegin(GL_POINTS);
+#endif
             for(core::componentmodel::topology::BaseMeshTopology::SeqTetras::const_iterator it = tetrahedra.begin() ; it != tetrahedra.end() ; it++)
             {
                 for (unsigned int j=0 ; j< 4 ; j++)
