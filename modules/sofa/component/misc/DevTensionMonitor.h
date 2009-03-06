@@ -84,6 +84,15 @@ public:
         }
     }
 
+    virtual std::string getTemplateName() const
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const DevTensionMonitor<TDataTypes>* = NULL)
+    {
+        return TDataTypes::Name();
+    }
 protected:
 
     core::componentmodel::behavior::MechanicalState<DataTypes> *mstate;
