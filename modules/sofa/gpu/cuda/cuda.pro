@@ -77,7 +77,7 @@ HEADERS += mycuda.h \
            CudaSpatialGridContainer.inl \
            CudaVisualModel.h \
            CudaVisualModel.inl \
-           CudaTestForceField.cu \
+           CudaTestForceField.h \
            CudaTetrahedralVisualModel.h \
            CudaTetrahedralVisualModel.inl
 
