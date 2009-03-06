@@ -131,6 +131,7 @@ protected:
     VecCoord velocityAtVertex;
     helper::vector<StreamLine> streamLines;
     double meanEdgeLength;
+    double vmax, vmin;
 
     unsigned int getIndexClosestPoint(const VecCoord &x, Coord p);
     bool isInDomain(unsigned int index,Coord p);
@@ -140,7 +141,7 @@ protected:
 public:
     static const double STREAMLINE_NUMBER_OF_POINTS_BY_TRIANGLE;
 
-    Data<std::string> tag2D, tag3D;
+    Data<std::string> m_tag2D, m_tag3D;
 
     Data<bool> showVelocityLines;
     Data<double> viewVelocityFactor;

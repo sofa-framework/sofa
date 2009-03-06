@@ -29,8 +29,8 @@ const double FlowVisualModel<DataTypes>::STREAMLINE_NUMBER_OF_POINTS_BY_TRIANGLE
 template <class DataTypes>
 FlowVisualModel<DataTypes>::FlowVisualModel()
     :m_tetraTopo(NULL), m_tetraGeo(NULL), meanEdgeLength(0.0)
-    ,tag2D(initData(&tag2D, (std::string) "", "tag2D", "Set tag which defines 2D mesh"))
-    ,tag3D(initData(&tag3D, (std::string) "", "tag3D", "Set tag which defines 3D mesh"))
+    ,m_tag2D(initData(&m_tag2D, (std::string) "", "tag2D", "Set tag which defines 2D mesh"))
+    ,m_tag3D(initData(&m_tag3D, (std::string) "", "tag3D", "Set tag which defines 3D mesh"))
     ,showVelocityLines(initData(&showVelocityLines, bool(true), "showVelocityLines", "Show velocities lines"))
     ,viewVelocityFactor(initData(&viewVelocityFactor, double(0.001), "viewVelocityFactor", "Set factor for velocity arrows"))
     ,velocityMin(initData(&velocityMin, double(-1.0), "velocityMin", "Set the minimum value of velocity for drawing"))
@@ -59,8 +59,8 @@ void FlowVisualModel<DataTypes>::init()
     //locate necessary objects with tags
     core::objectmodel::TagSet::const_iterator tagIt = this->getTags().begin();
 
-    core::objectmodel::Tag tag2D("2D");
-    core::objectmodel::Tag tag3D("3D");
+    core::objectmodel::Tag tag2D(m_tag2D.getValue());
+    core::objectmodel::Tag tag3D(m_tag3D.getValue());
 
     context->core::objectmodel::BaseContext::get(fstate3D, tag3D, core::objectmodel::BaseContext::SearchRoot);
     //3D
@@ -197,7 +197,7 @@ bool FlowVisualModel<DataTypes>::isInDomain(unsigned int index, typename DataTyp
         else
         {
             //test if the new point is still in the current triangle
-            if((found = m_triGeo->isPointInsideTriangle(streamLines[index].currentTriangleID, false, p, indTest)) )
+            if((found = m_triGeo->isPointInTriangle(streamLines[index].currentTriangleID, false, p, indTest)) )
             {
                 triangleID = streamLines[index].currentTriangleID;
             }
@@ -235,9 +235,6 @@ bool FlowVisualModel<DataTypes>::isInDomain(unsigned int index, typename DataTyp
 template <class DataTypes>
 typename DataTypes::Coord FlowVisualModel<DataTypes>::interpolateVelocity(unsigned int index, Coord p, bool &atEnd)
 {
-    //const VecCoord& v = *this->fstate2D->getV();
-    const VecCoord& v = velocityAtVertex;
-
     if (!isInDomain(index,p))
     {
         atEnd = true;
@@ -253,14 +250,14 @@ typename DataTypes::Coord FlowVisualModel<DataTypes>::interpolateVelocity(unsign
     {
         unsigned int ind = (*it);
         distCoeff = 1/(p-x[ind]).norm2();
-        velocitySeed += v[ind]*distCoeff;
+        velocitySeed += velocityAtVertex[ind]*distCoeff;
         sumDistCoeff += distCoeff;
     }
     velocitySeed /= sumDistCoeff;
 
     //velocitySeed = Coord(0.0,0.0,0.0);
     //Coord velocitySeed = (v[t[0]]*coeff0 + v[t[1]]*coeff1 + v[t[2]]*coeff2)/(coeff0 + coeff1+ coeff2) ;
-    Coord velocitySeed2 = v[streamLines[index].currentTriangleID];
+    Coord velocitySeed2 = velocityAtVertex[streamLines[index].currentTriangleID];
 
     //std::cout << velocitySeed << " " << velocitySeed2 << std::endl;
 
@@ -351,9 +348,9 @@ template <class DataTypes>
 void FlowVisualModel<DataTypes>::drawTetra()
 {
     VecCoord& tetrasX = *this->fstate3D->getX();
-
+    VecDeriv& v3d = *this->fstate3D->getV();
     //glEnable (GL_BLEND);
-    //glDepthMask(GL_FALSE);
+
     //glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
     //glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
@@ -368,23 +365,38 @@ void FlowVisualModel<DataTypes>::drawTetra()
         glPointSize(10.0);
         for (unsigned int i=0 ; i<tetrahedra.size() ; i++)
         {
-#ifdef GL_LINES_ADJACENCY_EXT
+            /*
+            #ifdef GL_LINES_ADJACENCY_EXT
             glBegin(GL_LINES_ADJACENCY_EXT);
-#else
+            #else
             glBegin(GL_POINTS);
-#endif
-            for(core::componentmodel::topology::BaseMeshTopology::SeqTetras::const_iterator it = tetrahedra.begin() ; it != tetrahedra.end() ; it++)
-            {
-                for (unsigned int j=0 ; j< 4 ; j++)
-                {
-                    Coord v = tetrasX[(*it)[j]];
-                    glColor4f(1.0,1.0,1.0,1.0);
-                    //glColor4f(j%3,(j+1)%3,(j+2)%3,1.0);
-                    glVertex3f((GLfloat)v[0], (GLfloat)v[1], (GLfloat)v[2]);
+            #endif
 
-                }
+            for (unsigned int j=0 ; j< 4 ; j++)
+            {
+            	Coord v = tetrasX[(*it)[j]];
+            	glColor4f(1.0,1.0,1.0,1.0);
+            	//glColor4f(j%3,(j+1)%3,(j+2)%3,1.0);
+            	glVertex3f((GLfloat)v[0], (GLfloat)v[1], (GLfloat)v[2]);
+
             }
+
             glEnd();
+            */
+            const BaseMeshTopology::Tetra tetra = m_tetraTopo->getTetra(i);
+            Coord center(0.0,0.0,0.0);
+
+            for (unsigned int j=0 ; j< 4 ; j++)
+            {
+                Coord v = tetrasX[tetra[j]];
+                center += v*0.25;
+            }
+            glBegin(GL_LINES);
+            glColor3f(0.0,1.0,0.0);
+            glVertex3f(center[0], center[1],center[2]);
+            glVertex3f(center[0] + v3d[i][0]/vmax* viewVelocityFactor.getValue(), center[1] + v3d[i][1]/vmax* viewVelocityFactor.getValue(),center[2]+ v3d[i][2]/vmax* viewVelocityFactor.getValue());
+            glEnd();
+
         }
     }
     if(shader)
@@ -399,13 +411,13 @@ template <class DataTypes>
 void FlowVisualModel<DataTypes>::draw()
 {
     if (!getContext()->getShowVisualModels()) return;
-
+    glDepthMask(GL_TRUE);
     glDisable(GL_LIGHTING);
     interpolateVelocityAtVertices();
     //VecCoord& x = *this->fstate2D->getX();
 
     double vmax2 = velocityAtVertex[0].norm2();
-    double vmin = velocityAtVertex[0].norm();
+    vmin = velocityAtVertex[0].norm();
 
     //search vmax
     for (unsigned int i=1 ; i<velocityAtVertex.size() ; i++)
@@ -414,7 +426,7 @@ void FlowVisualModel<DataTypes>::draw()
             vmax2=velocityAtVertex[i].norm2();
     }
 
-    double vmax = (velocityMax.getValue() < sqrt(vmax2)) ? sqrt(vmax2) : velocityMax.getValue();
+    vmax = (velocityMax.getValue() < sqrt(vmax2)) ? sqrt(vmax2) : velocityMax.getValue();
 
     if (velocityMin.getValue() < 0.0)
     {
@@ -431,7 +443,7 @@ void FlowVisualModel<DataTypes>::draw()
     {
         core::componentmodel::topology::BaseMeshTopology::SeqTriangles triangles =  m_triTopo->getTriangles();
 
-        unsigned int indColor0, indColor1, indColor2;
+        int indColor0, indColor1, indColor2;
         //VecCoord& x = *this->fstate->getX();
         x.clear();
         x.resize(0);
@@ -455,9 +467,16 @@ void FlowVisualModel<DataTypes>::draw()
 
             if((vmax-vmin) > 0.0)
             {
-                indColor0 = (unsigned int)(64* ((velocityAtVertex[t[0]].norm()-vmin)/(vmax-vmin)));
-                indColor1 = (unsigned int)(64* ((velocityAtVertex[t[1]].norm()-vmin)/(vmax-vmin)));
-                indColor2 = (unsigned int)(64* ((velocityAtVertex[t[2]].norm()-vmin)/(vmax-vmin)));
+                indColor0 = (int)(64* ((velocityAtVertex[t[0]].norm()-vmin)/(vmax-vmin)));
+                indColor1 = (int)(64* ((velocityAtVertex[t[1]].norm()-vmin)/(vmax-vmin)));
+                indColor2 = (int)(64* ((velocityAtVertex[t[2]].norm()-vmin)/(vmax-vmin)));
+                if (indColor0 < 0) indColor0 = 0;
+                if (indColor1 < 0) indColor1 = 0;
+                if (indColor2 < 0) indColor2 = 0;
+                if (indColor0 >= 64) indColor0 = 63;
+                if (indColor1 >= 64) indColor1 = 63;
+                if (indColor2 >= 64) indColor2 = 63;
+
             }
             else indColor0 = indColor1 = indColor2 = 0;
             glColor3f(ColorMap[indColor0][0], ColorMap[indColor0][1], ColorMap[indColor0][2]);
@@ -504,6 +523,10 @@ void FlowVisualModel<DataTypes>::draw()
                 double dtStreamLine = (meanEdgeLength / vmax) * (1.0/streamlineDtNumberOfPointsPerTriangle.getValue());
                 streamLines[i].currentTriangleID = BaseMeshTopology::InvalidID;
                 computeStreamLine(i,streamlineMaxNumberOfPoints.getValue(), dtStreamLine) ;
+                glPointSize(10.0);
+                glBegin(GL_POINTS);
+                glVertex3f(seeds[i][0], seeds[i][1], seeds[i][2]);
+                glEnd();
                 glLineWidth(2);
                 glBegin(GL_LINE_STRIP);
                 for(unsigned int j=0 ; j<streamLines[i].positions.size() ; j++)
@@ -579,7 +602,7 @@ void FlowVisualModel<DataTypes>::draw()
                 }
                 glPopMatrix();
             }
-
+            glEnable(GL_DEPTH_TEST);
             glPopMatrix();
             glMatrixMode(GL_PROJECTION);
             glPopMatrix();
