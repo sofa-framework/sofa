@@ -97,13 +97,12 @@ bool TetrahedronSetGeometryAlgorithms< DataTypes >::isPointInTetrahedron(const T
     const Vec<3,Real> t2(p[t[2]][0], p[t[2]][1], p[t[2]][2]);
     const Vec<3,Real> t3(p[t[3]][0], p[t[3]][1], p[t[3]][2]);
 
-    double volume = tripleProduct(t1-t0, t2-t0, t3-t0);
     double v0 = tripleProduct(t1-pTest, t2-pTest, t3-pTest);
     double v1 = tripleProduct(pTest-t0, t2-t0, t3-t0);
     double v2 = tripleProduct(t1-t0, pTest-t0, t3-t0);
     double v3 = tripleProduct(t1-t0, t2-t0, pTest-t0);
 
-    return (v0 * volume > ZERO) && (v1 * volume > ZERO) && (v2 * volume > ZERO) && (v3 * volume > ZERO);
+    return (v0 > -ZERO) && (v1 > -ZERO) && (v2 > -ZERO) && (v3 > -ZERO);
 }
 
 template< class DataTypes>

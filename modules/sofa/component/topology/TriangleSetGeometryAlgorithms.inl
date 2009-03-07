@@ -360,6 +360,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isPointInsideTriangle(const Tri
         const Vec<3,Real>& p,
         unsigned int &ind_t_test) const
 {
+    const double ZERO = -1e-12;
     const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
     const Triangle &t=this->m_topology->getTriangle(ind_t);
 
@@ -395,7 +396,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isPointInsideTriangle(const Tri
         double v_12 = (double) ((ptest-p1)*(n_12));
         double v_20 = (double) ((ptest-p2)*(n_20));
 
-        bool is_inside = (v_01 > 0.0) && (v_12 > 0.0) && (v_20 > 0.0);
+        bool is_inside = (v_01 > ZERO) && (v_12 > ZERO) && (v_20 > ZERO);
 
         if(is_tested && (!is_inside))
         {
@@ -496,7 +497,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isPointInTriangle(const Triangl
         const Vec<3,Real>& p,
         unsigned int &ind_t_test) const
 {
-    const double ZERO = 1e-6;
+    const double ZERO = 1e-12;
     const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
     const Triangle &t=this->m_topology->getTriangle(ind_t);
 
@@ -534,7 +535,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isPointInTriangle(const Triangl
         double v_20 = (double) ((ptest-p2)*(n_20));
 
         //bool is_inside = (v_01 > 0.0) && (v_12 > 0.0) && (v_20 > 0.0);
-        bool is_inside = (v_01 >= -ZERO) && (v_12 >= -ZERO) && (v_20 >= -ZERO);
+        bool is_inside = (v_01 > -ZERO) && (v_12 > -ZERO) && (v_20 >= -ZERO);
 
         if(is_tested && (!is_inside))
         {
