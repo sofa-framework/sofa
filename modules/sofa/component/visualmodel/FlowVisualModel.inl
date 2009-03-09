@@ -59,66 +59,86 @@ void FlowVisualModel<DataTypes>::init()
     //locate necessary objects with tags
     core::objectmodel::TagSet::const_iterator tagIt = this->getTags().begin();
 
-    core::objectmodel::Tag tag2D(m_tag2D.getValue());
-    core::objectmodel::Tag tag3D(m_tag3D.getValue());
+    core::objectmodel::Tag triangles(m_tag2D.getValue());
+    core::objectmodel::Tag tetras(m_tag3D.getValue());
+    core::objectmodel::Tag geometry("geometry");
+    core::objectmodel::Tag state("state");
 
-    context->core::objectmodel::BaseContext::get(fstate3D, tag3D, core::objectmodel::BaseContext::SearchRoot);
-    //3D
-    if (!fstate3D)
+    core::objectmodel::TagSet trianglesTS(triangles);
+    core::objectmodel::TagSet tetraTS(tetras);
+    core::objectmodel::TagSet tetraStateTS(tetras);
+    core::objectmodel::TagSet tetraGeometryTS(tetras);
+    tetraStateTS.insert(state);
+    tetraGeometryTS.insert(geometry);
+
+
+    triangleGeometry = NULL;
+    tetraGeometry = NULL;
+
+    this->getContext()->get(tetraGeometry, tetraGeometryTS, core::objectmodel::BaseContext::SearchRoot);
+    //TetraGeometry
+    if (!tetraGeometry)
     {
-        std::cerr << "WARNING: FlowVisualModel has no binding FluidState3D, will considerer 2D model" <<endl;
+        std::cerr << "WARNING: FlowVisualModel has no binding TetraGeometry, will considerer 2D model" <<endl;
     }
     else
     {
-        this->getContext()->get (m_tetraTopo, tag3D,core::objectmodel::BaseContext::SearchRoot);
-
-        if (m_tetraTopo == NULL)
+        this->getContext()->get(tetraCenters, tetraStateTS, core::objectmodel::BaseContext::SearchRoot);
+        if (!tetraCenters)
         {
-            std::cerr << "WARNING: FlowVisualModel has no binding TetrahedraSetTopology" <<endl;
+            std::cerr << "WARNING: FlowVisualModel has no binding FluidState" <<endl;
             return;
         }
         else
         {
-            this->getContext()->get (m_tetraGeo, tag3D, core::objectmodel::BaseContext::SearchRoot);
-            if (m_tetraGeo == NULL)
+            this->getContext()->get (m_tetraTopo, tetraTS,core::objectmodel::BaseContext::SearchRoot);
+            if (m_tetraTopo == NULL)
             {
-                std::cerr << "WARNING: FlowVisualModel has no binding TetrahedraSetGeometry" <<endl;
+                std::cerr << "WARNING: FlowVisualModel has no binding TetrahedraSetTopology" <<endl;
                 return;
             }
+            else
+            {
+                this->getContext()->get (m_tetraGeo, tetraTS, core::objectmodel::BaseContext::SearchRoot);
+                if (m_tetraGeo == NULL)
+                {
+                    std::cerr << "WARNING: FlowVisualModel has no binding TetrahedraSetGeometry" <<endl;
+                    return;
+                }
+            }
         }
-        this->getContext()->get(shader, tag3D,core::objectmodel::BaseContext::SearchRoot);
+        this->getContext()->get(shader, tetraTS,core::objectmodel::BaseContext::SearchRoot);
         if(!shader)
         {
             std::cerr << "WARNING: FlowVisualModel has no binding Shader ; no volumic rendering" <<endl;
         }
     }
 
-    context->core::objectmodel::BaseContext::get(fstate2D, tag2D, core::objectmodel::BaseContext::SearchRoot);
+    this->getContext()->get(triangleGeometry, trianglesTS, core::objectmodel::BaseContext::SearchRoot);
 
-    //FluidState2D
-    if (!fstate2D)
+    //TriangleGeometry
+    if (!triangleGeometry)
     {
-        std::cerr << "WARNING: FlowVisualModel has no binding FluidState2D" <<endl;
+        std::cerr << "WARNING: FlowVisualModel has no binding TriangleGeometry" <<endl;
         return;
     }
     else
     {
 
-        this->getContext()->get (m_triTopo, tag2D,core::objectmodel::BaseContext::SearchRoot);
+        this->getContext()->get (m_triTopo, trianglesTS,core::objectmodel::BaseContext::SearchRoot);
         if (m_triTopo == NULL)
         {
             std::cerr << "WARNING: FlowVisualModel has no binding TriangleSetTopology" <<endl;
             return;
         }
 
-        this->getContext()->get (m_triGeo, tag2D,core::objectmodel::BaseContext::SearchRoot);
+        this->getContext()->get (m_triGeo, trianglesTS,core::objectmodel::BaseContext::SearchRoot);
         if (m_triGeo == NULL)
         {
             std::cerr << "WARNING: FlowVisualModel has no binding TriangleSetGeometry" <<endl;
             return;
         }
     }
-
     reinit();
 
 }
@@ -131,6 +151,11 @@ void FlowVisualModel<DataTypes>::initVisual()
     for (unsigned int i=0 ; i<edges.size() ; i++)
         meanEdgeLength += m_triGeo->computeEdgeLength(i);
     meanEdgeLength /= edges.size();
+
+    if (tetraCenters)
+    {
+        (*this->tetraCenters->getV()).resize((*this->tetraCenters->getX()).size());
+    }
 
 }
 
@@ -165,7 +190,7 @@ bool FlowVisualModel<DataTypes>::isInDomain(unsigned int index, typename DataTyp
     bool found = false;
     BaseMeshTopology::TriangleID triangleID = BaseMeshTopology::InvalidID;
     helper::vector<BaseMeshTopology::TriangleID> triangles;
-    //const VecCoord& x = *this->fstate2D->getV();
+    //const VecCoord& x = *this->triangleGeometry->getV();
 
     unsigned int indTest;
 
@@ -174,7 +199,7 @@ bool FlowVisualModel<DataTypes>::isInDomain(unsigned int index, typename DataTyp
         //if a triangle was not already found, test all the points
         if (streamLines[index].currentTriangleID == BaseMeshTopology::InvalidID)
         {
-            unsigned int indexClosestPoint = getIndexClosestPoint(*this->fstate2D->getX(), p);
+            unsigned int indexClosestPoint = getIndexClosestPoint(*this->triangleGeometry->getX(), p);
 
             //2-get its TriangleShell
             triangles = m_triTopo->getTriangleVertexShell(indexClosestPoint);
@@ -293,7 +318,9 @@ void FlowVisualModel<DataTypes>::interpolateVelocityAtVertices()
 {
     unsigned int indexClosestPoint;
     unsigned int nbPoints =  m_triTopo->getNbPoints();
-    helper::vector<unsigned int> weight;
+    helper::vector<double> weight;
+    VecDeriv& v2d = *this->tetraGeometry->getV();
+    VecDeriv& x3d = *this->tetraCenters->getX();
 
     velocityAtVertex.resize(nbPoints);
     weight.resize(nbPoints);
@@ -301,10 +328,9 @@ void FlowVisualModel<DataTypes>::interpolateVelocityAtVertices()
     std::fill( velocityAtVertex.begin(), velocityAtVertex.end(), Coord() );
 
     core::componentmodel::topology::BaseMeshTopology::SeqTriangles triangles =  m_triTopo->getTriangles();
-
     if (!m_tetraTopo)
     {
-        VecDeriv& v2d = *this->fstate2D->getV();
+        VecDeriv& v2d = *this->triangleGeometry->getV();
 
         for(unsigned int i=0 ; i<triangles.size() ; i++)
         {
@@ -322,23 +348,31 @@ void FlowVisualModel<DataTypes>::interpolateVelocityAtVertices()
     }
     else
     {
-        VecDeriv& v3d = *this->fstate3D->getV();
-
-        for (unsigned int i=0 ; i<nbPoints ; i++)
+        VecDeriv& v3d = *this->tetraCenters->getV();
+        if (v3d.size() > 0)
         {
-            Coord p = m_triGeo->getPointPosition(i);
-            indexClosestPoint = getIndexClosestPoint(*this->fstate3D->getX(), p);
-
-            helper::vector<BaseMeshTopology::TetraID> tetras = m_tetraTopo->getTetraVertexShell(indexClosestPoint);
-            //VecCoord ptetras;
-            for (unsigned int j=0 ; j<tetras.size() ; j++)
+            //Loop for each vertex of the triangle mesh
+            for (unsigned int i=0 ; i<nbPoints ; i++)
             {
-                velocityAtVertex[i] += v3d[tetras[j]];
-                weight[i]++;
-            }
-            velocityAtVertex[i] /= weight[i];
-        }
+                Coord pTriangle = m_triGeo->getPointPosition(i);
+                //Search the closest vertex of the volumetric mesh
+                indexClosestPoint = getIndexClosestPoint(*this->tetraGeometry->getX(), pTriangle);
 
+                //get the TetraShell
+                helper::vector<BaseMeshTopology::TetraID> tetras = m_tetraTopo->getTetraVertexShell(indexClosestPoint);
+                //Loop for each tetra of the shell
+                for (unsigned int j=0 ; j<tetras.size() ; j++)
+                {
+                    //compute weight according of the distance between the triangle vertex and the closest tetra vertex
+                    double distCoeff = (pTriangle-x3d[tetras[j]]).norm2();
+                    velocityAtVertex[i] += v3d[tetras[j]] * distCoeff;
+                    weight[i]+= distCoeff;
+                }
+
+                //Normalize velocity per vertex
+                velocityAtVertex[i] /= weight[i];
+            }
+        }
     }
 
 
@@ -347,8 +381,8 @@ void FlowVisualModel<DataTypes>::interpolateVelocityAtVertices()
 template <class DataTypes>
 void FlowVisualModel<DataTypes>::drawTetra()
 {
-    VecCoord& tetrasX = *this->fstate3D->getX();
-    VecDeriv& v3d = *this->fstate3D->getV();
+    VecCoord& tetrasX = *this->tetraGeometry->getX();
+    VecDeriv& v3d = *this->tetraGeometry->getV();
     //glEnable (GL_BLEND);
 
     //glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
@@ -413,8 +447,9 @@ void FlowVisualModel<DataTypes>::draw()
     if (!getContext()->getShowVisualModels()) return;
     glDepthMask(GL_TRUE);
     glDisable(GL_LIGHTING);
+
     interpolateVelocityAtVertices();
-    //VecCoord& x = *this->fstate2D->getX();
+    //VecCoord& x = *this->triangleGeometry->getX();
 
     double vmax2 = velocityAtVertex[0].norm2();
     vmin = velocityAtVertex[0].norm();
@@ -447,6 +482,11 @@ void FlowVisualModel<DataTypes>::draw()
         //VecCoord& x = *this->fstate->getX();
         x.clear();
         x.resize(0);
+
+        if (getContext()->getShowWireFrame())
+        {
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        }
 
         //Show colored triangles
         glBegin(GL_TRIANGLES);
@@ -488,7 +528,12 @@ void FlowVisualModel<DataTypes>::draw()
         }
         glEnd();
 
-        VecCoord& x2D = *this->fstate2D->getX();
+        if (getContext()->getShowWireFrame())
+        {
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        }
+
+        VecCoord& x2D = *this->triangleGeometry->getX();
 
         //Show Velocity
         if (showVelocityLines.getValue())
