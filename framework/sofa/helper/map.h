@@ -41,10 +41,13 @@ namespace std
 template<class K, class T>
 std::ostream& operator<< ( std::ostream& o, const std::map<K,T>& m )
 {
-    for (typename std::map<K,T>::const_iterator it = m.begin(); it != m.end(); ++it)
+    typename std::map<K,T>::const_iterator it=m.begin();
+    o << it->first << " " << it->second; it++;
+    for ( ; it != m.end() ; ++it)
     {
-        o << it->first << " " << it->second << "\n";
+        o << "\n" << it->first << " " << it->second;
     }
+
     return o;
 }
 
