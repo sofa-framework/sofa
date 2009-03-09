@@ -98,7 +98,7 @@ void HexahedronSetTopologyContainer::loadFromMeshLoader(sofa::component::MeshLoa
 void HexahedronSetTopologyContainer::createHexahedronSetArray()
 {
 #ifndef NDEBUG
-    sout << "Error. [HexahedronSetTopologyContainer::createHexahedronSetArray] This method must be implemented by a child topology." << endl;
+    serr << "Error. [createHexahedronSetArray] This method must be implemented by a child topology." << sendl;
 #endif
 }
 
