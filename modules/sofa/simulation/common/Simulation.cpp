@@ -87,18 +87,18 @@ void Simulation::print ( Node* root )
 }
 
 /// Print all object in the graph
-void Simulation::printXML ( Node* root, const char* fileName )
+void Simulation::printXML ( Node* root, const char* fileName, bool compact )
 {
     if ( !root ) return;
     if ( fileName!=NULL )
     {
         std::ofstream out ( fileName );
-        XMLPrintVisitor print ( out );
+        XMLPrintVisitor print ( out,compact );
         root->execute ( print );
     }
     else
     {
-        XMLPrintVisitor print ( std::cout );
+        XMLPrintVisitor print ( std::cout,compact );
         root->execute ( print );
     }
 }

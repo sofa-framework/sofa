@@ -46,7 +46,7 @@ protected:
     std::ostream& m_out;
     int level;
 public:
-    XMLPrintVisitor(std::ostream& out) : m_out(out), level(0) {}
+    XMLPrintVisitor(std::ostream& out, bool c=false) : m_out(out),level(0), compact(c) {}
 
     template<class T>
     void processObject(T obj);
@@ -59,6 +59,9 @@ public:
     virtual Result processNodeTopDown(simulation::Node* node);
     virtual void processNodeBottomUp(simulation::Node* node);
     virtual const char* getClassName() const { return "XMLPrintVisitor"; }
+protected:
+    //Print in compact mode or expanded mode
+    bool compact;
 };
 
 } // namespace simulation

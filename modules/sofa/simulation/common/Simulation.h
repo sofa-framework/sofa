@@ -52,7 +52,7 @@ public:
     virtual void print(Node* root);
 
     /// Print all object in the graph in XML format
-    virtual void printXML(Node* root, const char* fileName=0);
+    virtual void printXML(Node* root, const char* fileName=0, bool compact=false);
 
     /// Initialize the objects
     virtual void init(Node* root);

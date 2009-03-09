@@ -66,14 +66,20 @@ void XMLPrintVisitor::processObject(T obj)
     if (!templatename.empty())
         m_out << " template=\"" << xmlencode(templatename) << "\"";
 
-    m_out << ">\n";
+    if (!compact) m_out << ">\n";
 
-    obj->xmlWriteDatas( m_out, level+1 );
+    obj->xmlWriteDatas( m_out, level+1, compact );
 
-
-    for (int i=0; i<level; i++)
-        m_out << "\t";
-    m_out << "</" << xmlencode(classname)  <<">" << std::endl;
+    if (compact)
+    {
+        m_out << "/>" << std::endl;
+    }
+    else
+    {
+        for (int i=0; i<level; i++)
+            m_out << "\t";
+        m_out << "</" << xmlencode(classname)  <<">" << std::endl;
+    }
 }
 
 void XMLPrintVisitor::processBaseObject(core::objectmodel::BaseObject* obj)
