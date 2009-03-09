@@ -62,10 +62,10 @@ void TriangleSetTopologyModifier::addTriangleProcess(Triangle t)
     sofa::helper::vector <Triangle> triangles;
     triangles.push_back(t);
 
-    if (addPrecondition(triangles))
+    if (addTrianglesPreconditions(triangles))// Test if the topology will still fullfil the conditions if this triangles is added.
     {
-        addSingleTriangleProcess(t);
-        addPostProcessing(triangles);
+        addSingleTriangleProcess(t); // add the triangle
+        addTrianglesPostProcessing(triangles); // Apply postprocessing to arrange the topology.
     }
     else
     {
@@ -76,20 +76,16 @@ void TriangleSetTopologyModifier::addTriangleProcess(Triangle t)
 
 void TriangleSetTopologyModifier::addTrianglesProcess(const sofa::helper::vector< Triangle > &triangles)
 {
-    if (addPrecondition(triangles))
+    if (addTrianglesPreconditions(triangles)) // Test if the topology will still fullfil the conditions if these triangles are added.
     {
-        //	   std::cout << " prepare ajout" << std::endl;
         m_container->m_triangle.reserve(m_container->m_triangle.size() + triangles.size());
 
         for(unsigned int i=0; i<triangles.size(); ++i)
         {
-            // std::cout << " ajout du triangle n : "<< i << std::endl;
-            addSingleTriangleProcess(triangles[i]);
+            addSingleTriangleProcess(triangles[i]); //add triangle one by one.
         }
 
-        //	  std::cout << " avant post processing" << std::endl;
-        addPostProcessing(triangles);
-        //	  std::cout << " apres post processing" << std::endl;
+        addTrianglesPostProcessing(triangles); // Apply postprocessing to arrange the topology.
     }
     else
     {
@@ -233,9 +229,9 @@ void TriangleSetTopologyModifier::removeItems(sofa::helper::vector< unsigned int
         }
     }
 
-    if (removePrecondition(items))
+    if (removeTrianglesPreconditions(items)) // Test if the topology will still fullfil the conditions if these triangles are removed.
     {
-        removeTriangles(items, true, true);
+        removeTriangles(items, true, true); // remove triangles
     }
     else
     {
@@ -371,7 +367,7 @@ void TriangleSetTopologyModifier::removeTrianglesProcess(const sofa::helper::vec
     }
 
 
-    removePostProcessing(edgeToBeRemoved, vertexToBeRemoved);
+    removeTrianglesPostProcessing(edgeToBeRemoved, vertexToBeRemoved); // Arrange the current topology.
 
     if(!edgeToBeRemoved.empty())
     {
@@ -521,14 +517,29 @@ void TriangleSetTopologyModifier::renumberPoints( const sofa::helper::vector<uns
 }
 
 
-bool TriangleSetTopologyModifier::removePrecondition(sofa::helper::vector< unsigned int >& items)
+bool TriangleSetTopologyModifier::removeTrianglesPreconditions(const sofa::helper::vector< unsigned int >& items)
 {
-
     (void)items;
-
     return true;
 }
 
+void TriangleSetTopologyModifier::removeTrianglesPostProcessing(const sofa::helper::vector< unsigned int >& edgeToBeRemoved, const sofa::helper::vector< unsigned int >& vertexToBeRemoved )
+{
+    (void)vertexToBeRemoved;
+    (void)edgeToBeRemoved;
+}
+
+
+bool TriangleSetTopologyModifier::addTrianglesPreconditions(const sofa::helper::vector <Triangle>& triangles)
+{
+    (void)triangles;
+    return true;
+}
+
+void TriangleSetTopologyModifier::addTrianglesPostProcessing(const sofa::helper::vector <Triangle>& triangles)
+{
+    (void)triangles;
+}
 
 } // namespace topology
 

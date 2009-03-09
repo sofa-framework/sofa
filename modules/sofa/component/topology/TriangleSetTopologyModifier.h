@@ -76,17 +76,22 @@ public:
             const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
             const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs) ;
 
-    /** \brief Add a triangle.
+    /** \brief add a triangle to the topology.
      */
-    void addTriangleProcess(Triangle e);
-
     void addSingleTriangleProcess (Triangle t);
 
-    /** \brief Actually Add some triangles to this topology.
-     *
+    /** \brief Add some triangles. Test precondition and apply:
+     * TriangleSetTopologyModifier::addSingleTriangleProcess
+     * TriangleSetTopologyModifier::addTrianglesPostProcessing
      * \sa addTrianglesWarning
      */
     virtual void addTrianglesProcess(const sofa::helper::vector< Triangle > &triangles);
+
+    /** \brief Add a triangle. Test precondition and apply:
+     * TriangleSetTopologyModifier::addSingleTriangleProcess
+     * TriangleSetTopologyModifier::addTrianglesPostProcessing
+     */
+    void addTriangleProcess(Triangle e);
 
     /** \brief Add some points to this topology.
      *
@@ -123,9 +128,6 @@ public:
      * \sa addEdgesWarning
      */
     void addEdgesProcess(const sofa::helper::vector< Edge > &edges);
-
-
-
 
 
     /** \brief Generic method to remove a list of items.
@@ -166,9 +168,6 @@ public:
             const bool removeIsolatedPoints=false);
 
 
-
-
-
     /** \brief Remove a subset of edges
      *
      * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removeEdgesWarning before calling removeEdgesProcess.
@@ -193,13 +192,6 @@ public:
             const bool removeDOF = true);
 
 
-
-
-
-
-
-
-
     /** \brief Reorder this topology.
      *
      * Important : the points are actually renumbered in the mechanical object's state vectors iff (renumberDOF == true)
@@ -210,34 +202,39 @@ public:
             const bool renumberDOF = true);
 
 
-
     /** \brief Generic method for points renumbering
      */
     virtual void renumberPoints( const sofa::helper::vector<unsigned int> &index,
             const sofa::helper::vector<unsigned int> &inv_index);
 
-    /** \brief Precondition to fulfill before removing triangles. No preconditions are needed in this class. This function should be inplemented in children classes.
-    *
-     */
-    virtual bool removePrecondition(sofa::helper::vector< unsigned int >& items);
 
-    /**\brief: Postprocessing to apply to the triangle topology. Nothing is needed in this class. This function should be inplemented in children classes.
-    *
+protected:
+
+    /** \brief Precondition to fulfill before removing triangles. No preconditions are needed in this class. This function should be inplemented in children classes.
+     *
      */
-    virtual void removePostProcessing(const sofa::helper::vector< unsigned int >& edgeToBeRemoved, const sofa::helper::vector< unsigned int >& vertexToBeRemoved )
-    {(void)vertexToBeRemoved; (void)edgeToBeRemoved;};
+    virtual bool removeTrianglesPreconditions(const sofa::helper::vector< unsigned int >& items);
+
+
+    /**\brief: Postprocessing to apply to topology triangles. Nothing to do in this class. This function should be inplemented in children classes.
+     *
+     */
+    virtual void removeTrianglesPostProcessing(const sofa::helper::vector< unsigned int >& edgeToBeRemoved, const sofa::helper::vector< unsigned int >& vertexToBeRemoved );
 
 
     virtual void Debug() {}; // TO BE REMOVED WHEN MANIFOLD MODIFIER IS SURE.
 
 
-    virtual bool addPrecondition (const sofa::helper::vector <Triangle> &triangles)
-    {
-        (void)triangles;
-        return true;
-    };
+    /** \brief Precondition to fulfill before adding triangles. No preconditions are needed in this class. This function should be inplemented in children classes.
+     *
+     */
+    virtual bool addTrianglesPreconditions(const sofa::helper::vector <Triangle>& triangles);
 
-    virtual void addPostProcessing(const sofa::helper::vector <Triangle> &triangles) {(void)triangles;};
+
+    /**\brief: Postprocessing to apply to topology triangles. Nothing to do in this class. This function should be inplemented in children classes.
+     *
+     */
+    virtual void addTrianglesPostProcessing(const sofa::helper::vector <Triangle>& triangles);
 
 private:
     TriangleSetTopologyContainer*	m_container;

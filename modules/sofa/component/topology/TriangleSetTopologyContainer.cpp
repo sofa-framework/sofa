@@ -25,6 +25,9 @@
 #include <sofa/component/topology/TriangleSetTopologyContainer.h>
 
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/component/container/MechanicalObject.inl>
+#include <sofa/helper/gl/glText.inl>
+
 
 #include <sofa/component/container/MeshLoader.h>
 
@@ -49,6 +52,7 @@ TriangleSetTopologyContainer::TriangleSetTopologyContainer()
     : EdgeSetTopologyContainer()
     , d_triangle(initDataPtr(&d_triangle, &m_triangle, "triangles", "List of triangle indices"))
 {
+
 }
 
 TriangleSetTopologyContainer::TriangleSetTopologyContainer(const sofa::helper::vector< Triangle > &triangles )
@@ -609,6 +613,11 @@ void TriangleSetTopologyContainer::clear()
     clearTriangleEdges();
     clearTriangles();
     EdgeSetTopologyContainer::clear();
+}
+
+
+void TriangleSetTopologyContainer::draw()
+{
 }
 
 

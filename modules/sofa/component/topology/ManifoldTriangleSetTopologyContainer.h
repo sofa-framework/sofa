@@ -68,7 +68,7 @@ public:
 
     virtual void clear();
 
-    /** \brief Checks if the topology is coherent
+    /** \brief Checks if the topology is coherent.
      *
      * The function TriangleSetTopologyContainer::CheckTopology() Check if the shell arrays are coherent
      * from on to the other.
@@ -82,7 +82,7 @@ public:
      correspondant edge are in oriented in counterclockwise direction in this triangle.
      And in the clockwise direction in the second triangle (if this one exist).
      *
-    */
+     */
     virtual bool checkTopology() const;
 
 
@@ -93,8 +93,9 @@ public:
     /** \brief: Given a Triangle and a Vertex i, returns the next adjacent triangle to the first one
      * in the counterclockwise direction around the ith vertex.
      *
-     * return -1 if there is no adjacent triangle in this direction.
-     * return -2 if the vertex does not belongs to this Triangle or if there is an other error.
+     * @param unsigned int, unsigned int
+     * @return -1 if there is no adjacent triangle in this direction.
+     * @return -2 if the vertex does not belongs to this Triangle or if there is an other error.
      */
     int getNextTriangleVertexShell(PointID vertexIndex, TriangleID triangleIndex);
 
@@ -102,16 +103,16 @@ public:
     /** \brief: Given a Triangle and a Vertex i, returns the next adjacent triangle to this first one
      * in the clockwise direction around the ith vertex.
      *
-     * return -1 if there is no adjacent triangle in this direction
-     * return -2 if the vertex does not belongs to this Triangle or if there is an other error.
+     * @return -1 if there is no adjacent triangle in this direction
+     * @return -2 if the vertex does not belongs to this Triangle or if there is an other error.
      */
     int getPreviousTriangleVertexShell(PointID vertexIndex, TriangleID triangleIndex);
 
 
     /** \brief: Given a Triangle and a Edge i, returns the other adjacent triangle to the ith edge.
      *
-     * return -1 if there is only one triangle adjacent to this edge.
-     * return -2 if the edge does not belongs to this Triangle or if there is an other error.
+     * @return -1 if there is only one triangle adjacent to this edge.
+     * @return -2 if the edge does not belongs to this Triangle or if there is an other error.
      */
     int getOppositeTriangleEdgeShell(EdgeID edgeIndex, TriangleID triangleIndex);
 
@@ -133,16 +134,19 @@ public:
      */
     int getPreviousEdgeVertexShell(PointID vertexIndex, EdgeID edgeIndex);
 
+
     /** \brief: Return a vector of TriangleID which are on a border. I.e which have at least
      * one edge not adjacent to an other Triangle.
      * To Do: For the moment use TriangleEdgeShellArray(), check if has to be reimplemented in an other way
      */
     sofa::helper::vector <TriangleID> getTrianglesBorder();
 
+
     /** \brief: Return a vector of EdgeID which are on a border. I.e which are adjacent to only one Triangle.
      * To Do: For the moment use TriangleEdgeShellArray(), check if has to be reimplemented in an other way
      */
     sofa::helper::vector <EdgeID> getEdgesBorder();
+
 
     /** \brief: Return a vector of PointID which are on a border. I.e which are adjacent to only one Triangle.
      * To Do: For the moment use TriangleEdgeShellArray(), check if has to be reimplemented in an other way
@@ -191,34 +195,48 @@ protected:
     virtual void createTriangleEdgeShellArray();
 
 
-    /** \brief Returns a non-const triangle vertex shell given a vertex index for subsequent modification
-     *
-     */
-    sofa::helper::vector< unsigned int > &getTriangleVertexShellForModification(const unsigned int vertexIndex);
-
-    /** \brief Returns a non-const triangle edge shell given the index of an edge for subsequent modification
-     *
-     */
-    sofa::helper::vector< unsigned int > &getTriangleEdgeShellForModification(const unsigned int edgeIndex);
-
-    /** \brief Returns a non-const edge vertex shell given the index of an vertex for subsequent modification
-     *
-     */
-    sofa::helper::vector< unsigned int > &getEdgeVertexShellForModification(const unsigned int vertexIndex);
-
-
     /** \brief: Reorder the vertex in the array of a given edge. In order to be in the oriented in the right direction
      * regarding the first triangle of m_triangleEdgeShellArray[ edgeIndex ].
      *
      */
     void reorderingEdge(const unsigned int edgeIndex);
 
+
+    /** \brief: Reorder the triangle vertex array around a given vertex.
+     *
+     */
     void reorderingTriangleVertexShell (const unsigned int vertexIndex);
 
+
+    /** \brief: Reorder the edge vertex array around a given vertex.
+     *
+     */
     void reorderingEdgeVertexShell (const unsigned int vertexIndex);
 
+
+    /** \brief: Reorder the three shell arrays around a list of given vertices.
+     *
+     */
     void reorderingTopologyOnROI (const sofa::helper::vector <unsigned int>& listVertex);
 
+private:
+
+    /** \brief Returns a non-const triangle vertex shell given a vertex index for subsequent modification
+     *
+     */
+    sofa::helper::vector< unsigned int > &getTriangleVertexShellForModification(const unsigned int vertexIndex);
+
+
+    /** \brief Returns a non-const triangle edge shell given the index of an edge for subsequent modification
+     *
+     */
+    sofa::helper::vector< unsigned int > &getTriangleEdgeShellForModification(const unsigned int edgeIndex);
+
+
+    /** \brief Returns a non-const edge vertex shell given the index of an vertex for subsequent modification
+     *
+     */
+    sofa::helper::vector< unsigned int > &getEdgeVertexShellForModification(const unsigned int vertexIndex);
 
 };
 
