@@ -104,6 +104,8 @@ template <class DataTypes>
 class SOFA_COMPONENT_VISUALMODEL_API FlowVisualModel : public core::VisualModel
 {
     typedef typename core::componentmodel::behavior::MechanicalState<DataTypes> FluidState;
+    typedef typename core::componentmodel::behavior::MechanicalState<DataTypes> TetraGeometry;
+    typedef typename core::componentmodel::behavior::MechanicalState<DataTypes> TriangleGeometry;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
@@ -118,8 +120,10 @@ class SOFA_COMPONENT_VISUALMODEL_API FlowVisualModel : public core::VisualModel
     };
 
 protected:
-    FluidState* fstate2D;
-    FluidState* fstate3D;
+    TriangleGeometry* triangleGeometry;
+    TetraGeometry* tetraGeometry;
+    FluidState* tetraCenters;
+
     topology::ManifoldTriangleSetTopologyContainer* m_triTopo;
     topology::TriangleSetGeometryAlgorithms<DataTypes>* m_triGeo;
     topology::ManifoldTetrahedronSetTopologyContainer* m_tetraTopo;
