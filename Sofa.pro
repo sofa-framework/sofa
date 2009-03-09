@@ -39,6 +39,12 @@ contains(DEFINES,SOFA_HAVE_COLLADADOM){
 	SUBDIRS -= extlibs/LML
 }
 
+#CSParse
+
+contains(DEFINES,SOFA_HAVE_CSPARSE){
+	SUBDIRS += extlibs/csparse
+}
+
 SUBDIRS += framework
 SUBDIRS += modules
 SUBDIRS += applications
@@ -97,6 +103,13 @@ contains(DEFINES,SOFA_HAVE_BOOST) {
 }
 else {
   message( "|  BOOST libraries: DISABLED")
+}
+
+contains(DEFINES,SOFA_HAVE_CSPARSE) {
+  message( "|  CSPARSE libraries : ENABLED")
+}
+else {
+  message( "|  CSPARSE libraries : DISABLED")
 }
 
 contains(DEFINES,SOFA_XML_PARSER_TINYXML) {

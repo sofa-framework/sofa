@@ -699,6 +699,7 @@ public:
         }
         else
         {
+            //std::cout << /* this->Name()  <<  */"("<<rowSize()<<","<<colSize()<<"): sparse row("<<i<<") = 0 and col("<<i<<") = 0"<<std::endl;
             // Here we assume the matrix is symmetric
             int bi=0; split_row_index(i, bi);
             compress();
@@ -715,11 +716,11 @@ public:
                     if (j != i)
                     {
                         // non diagonal bloc
-                        Bloc* b = wbloc(i,j,false);
+                        Bloc* b = wbloc(j,i,false);
                         if (b)
                         {
                             for (int bj = 0; bj < NL; ++bj)
-                                traits::v(*b, bi, bj) = 0;
+                                traits::v(*b, bj, bi) = 0;
                         }
                     }
                 }
