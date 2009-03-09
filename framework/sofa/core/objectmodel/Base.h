@@ -64,6 +64,12 @@ public:
     /// Name of the object.
     Data<std::string> name;
 
+    /// @name debug
+    ///   Methods related to debugging
+    ///@{
+    Data<bool> f_printLog;
+
+
     /// Accessor to the object name
     std::string getName() const;
 
@@ -153,14 +159,11 @@ public:
     /// Write the current field values to the given map of name -> value pairs
     void writeDatas (std::map<std::string,std::string*>& str);
 
-    /// Write the current field values to the given text output stream
-    void writeDatas (std::ostream& out);
-
     /// Write the current Node values to the given XML output stream
     void xmlWriteNodeDatas (std::ostream& out, unsigned level);
 
     /// Write the current field values to the given XML output stream
-    void xmlWriteDatas (std::ostream& out, unsigned level);
+    void xmlWriteDatas (std::ostream& out, unsigned level, bool compact);
 
     /// Find a field given its name, if not found, the index is the size of the vector
     BaseData* findField( const char* name ) const
@@ -278,6 +281,7 @@ public:
     sofa::helper::system::SofaOStream sendl;
     std::ostringstream               &serr;
     std::ostringstream               &sout;
+
 
 protected:
 

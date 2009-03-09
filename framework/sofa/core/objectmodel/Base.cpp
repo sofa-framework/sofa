@@ -55,9 +55,11 @@ namespace objectmodel
 
 using std::string;
 
-Base::Base():serr(*(sendl.serr)), sout(*(sendl.sout))
+Base::Base():sendl(f_printLog.getValue())
+    , serr(*(sendl.serr)), sout(*(sendl.sout))
 {
     name = initData(&name,std::string("unnamed"),"name","object name");
+    f_printLog = initData( &f_printLog, false, "printLog", "if true, print logs at run-time");
 }
 
 Base::~Base()
@@ -430,16 +432,6 @@ void  Base::writeDatas ( std::map<std::string,std::string*>& args )
     }
 }
 
-void  Base::writeDatas ( std::ostream& out )
-{
-//     for( std::map<string,BaseData*>::const_iterator a=m_fieldMap.begin(), aend=m_fieldMap.end(); a!=aend; ++a ) {
-    for (unsigned int i=0; i<m_fieldVec.size(); i++)
-    {
-        BaseData* field = m_fieldVec[ i ].second;
-        if( field->isSet() && !field->getValueString().empty())
-            out << "<Attribute " << m_fieldVec[ i ].first << "=\""<< field->getValueString() << "\"/>";
-    }
-}
 
 void Base::xmlWriteNodeDatas (std::ostream& out, unsigned level )
 {
@@ -448,34 +440,43 @@ void Base::xmlWriteNodeDatas (std::ostream& out, unsigned level )
         BaseData* field = m_fieldVec[ i ].second;
         if( field->isSet() && !field->getValueString().empty())
         {
-            for (unsigned l=0; i!=0 && l<level; l++)
-                out << "\t";
+            for (unsigned l=0; i!=0 && l<level; l++)        out << "\t";
             out << m_fieldVec[ i ].first << "=\""<< field->getValueString() << "\" \n";
         }
     }
 }
-void  Base::xmlWriteDatas ( std::ostream& out, unsigned level )
+void  Base::xmlWriteDatas ( std::ostream& out, unsigned level, bool compact )
 {
 //     for( std::map<string,BaseData*>::const_iterator a=m_fieldMap.begin(), aend=m_fieldMap.end(); a!=aend; ++a ) {
-    for (unsigned int i=0; i<m_fieldVec.size(); i++)
+    if (compact)
     {
-        BaseData* field = m_fieldVec[ i ].second;
-        if( field->isSet() && !field->getValueString().empty())
+        for (unsigned int i=0; i<m_fieldVec.size(); i++)
         {
-            for (unsigned l=0; l<level; l++)
-                out << "\t";
-            out << "<Attribute type=\"" << m_fieldVec[ i ].first << "\">\n" ;
+            BaseData* field = m_fieldVec[ i ].second;
+            if( field->isSet() && !field->getValueString().empty())
+                out << " " << m_fieldVec[ i ].first << "=\""<< field->getValueString() << "\"";
+        }
+    }
+    else
+    {
+        for (unsigned int i=0; i<m_fieldVec.size(); i++)
+        {
+            BaseData* field = m_fieldVec[ i ].second;
+            if( field->isSet() && !field->getValueString().empty())
+            {
+                for (unsigned l=0; l<level; l++) out << "\t";
+                out << "<Attribute type=\"" << m_fieldVec[ i ].first << "\">\n" ;
 
-            for (unsigned l=0; l<=level; l++)
-                out << "\t";
-            out  << "<Data value=\"" << field->getValueString() << "\"/>\n";
+                for (unsigned l=0; l<=level; l++) out << "\t";
+                out  << "<Data value=\"" << field->getValueString() << "\"/>\n";
 
-            for (unsigned l=0; l<level; l++)
-                out << "\t";
-            out << "</Attribute>\n";
+                for (unsigned l=0; l<level; l++) out << "\t";
+                out << "</Attribute>\n";
+            }
         }
     }
 }
+
 } // namespace objectmodel
 
 } // namespace core

@@ -49,7 +49,7 @@ public:
         return out;
     }
 
-    SofaOStream();
+    SofaOStream(const bool &output);
 
     ~SofaOStream()
     {
@@ -59,9 +59,6 @@ public:
 
     std::string getWarnings() const;
     std::string getOutputs() const;
-
-    void setOutputConsole(bool *v) {outputConsole=v;}
-    bool isOutputConsole() {return (!outputConsole) || (*outputConsole);}
 
     void clearWarnings();
     void clearOutputs();
@@ -74,7 +71,7 @@ public:
     std::ostringstream *serr;
     std::ostringstream *sout;
 protected:
-    bool *outputConsole; //Need to output the stream into the console
+    const bool &outputConsole; //Need to output the stream into the console
     std::string warnings;
     std::string outputs;
 };
