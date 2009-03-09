@@ -61,7 +61,7 @@ void DynamicSparseGridTopologyContainer::loadFromMeshLoader ( sofa::component::M
     sofa::component::VoxelGridLoader* voxelGridLoader = dynamic_cast< sofa::component::VoxelGridLoader*> ( loader );
     if ( !voxelGridLoader )
     {
-        cerr << "DynamicSparseGridTopologyContainer::loadFromMeshLoader(): The loader used is not a VoxelGridLoader ! You must use it for this topology." << endl;
+        this->serr << "DynamicSparseGridTopologyContainer::loadFromMeshLoader(): The loader used is not a VoxelGridLoader ! You must use it for this topology." << this->sendl;
         exit(0);
     }
 
