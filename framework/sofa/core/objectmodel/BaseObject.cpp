@@ -47,13 +47,11 @@ namespace objectmodel
 BaseObject::BaseObject()
     : Base()
     , f_listening(initData( &f_listening, false, "listening", "if true, handle the events, otherwise ignore the events"))
-    , f_printLog(initData( &f_printLog, false, "printLog", "if true, print logs at run-time"))
     , f_tags(initData( &f_tags, "tags", "list of the subsets the objet belongs to"))
     , context_(NULL)
 /*        , m_isListening(false)
         , m_printLog(false)*/
 {
-    sendl.setOutputConsole(f_printLog.beginEdit()); f_printLog.endEdit();
 }
 
 BaseObject::~BaseObject()

@@ -38,7 +38,7 @@ namespace helper
 namespace system
 {
 
-SofaOStream::SofaOStream():outputConsole(NULL)
+SofaOStream::SofaOStream(const bool &output):outputConsole(output)
 {
     serr = new std::ostringstream();
     sout = new std::ostringstream();
@@ -57,7 +57,7 @@ void SofaOStream::processStream(std::ostream& out)
     else if (out == *sout)
     {
         *sout << "\n";
-        if (isOutputConsole()) std::cout<< "[" << nameComponent << "(" << nameClass << ")]: "<< sout->str();
+        if (outputConsole) std::cout<< "[" << nameComponent << "(" << nameClass << ")]: "<< sout->str();
         outputs += sout->str();
         sout->str("");
     }
@@ -72,7 +72,6 @@ std::string SofaOStream::getOutputs() const
 {
     return outputs;
 }
-
 
 void SofaOStream::clearWarnings() {warnings.clear();}
 void SofaOStream::clearOutputs() {outputs.clear();}

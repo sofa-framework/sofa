@@ -157,11 +157,6 @@ public:
 
     ///@}
 
-    /// @name debug
-    ///   Methods related to debugging
-    ///@{
-    Data<bool> f_printLog;
-
     /**
      *  \brief Render internal data of this object, for debugging purposes.
      */
