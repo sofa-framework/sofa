@@ -48,10 +48,11 @@ extern "C"
 {
     void CudaTetrahedronTLEDForceField3f_addForce(float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int viscoelasticity, unsigned int anisotropy, const void* x, const void* x0, void* f);
     void InitGPU_TetrahedronTLED(int* NodesPerElement, float* DhC0, float* DhC1, float* DhC2, float* Volume, int* FCrds, int valence, int nbVertex, int nbElements);
-    void InitGPU_TetrahedronVisco(float * Ai, float * Av, int Ni, int Nv, int nbElements);
-    void InitGPU_TetrahedronAniso(void);
+    void InitGPU_TetrahedronVisco(float * Ai, float * Av, int Ni, int Nv);
+    void InitGPU_TetrahedronAniso(float* A);
     void ClearGPU_TetrahedronTLED(void);
     void ClearGPU_TetrahedronVisco(void);
+    void ClearGPU_TetrahedronAniso(void);
 }
 
 CudaTetrahedronTLEDForceField::CudaTetrahedronTLEDForceField()
@@ -61,6 +62,7 @@ CudaTetrahedronTLEDForceField::CudaTetrahedronTLEDForceField()
     , timestep(initData(&timestep,(Real)0.001,"timestep","Simulation timestep"))
     , viscoelasticity(initData(&viscoelasticity,(unsigned int)0,"viscoelasticity","Viscoelasticity flag"))
     , anisotropy(initData(&anisotropy,(unsigned int)0,"anisotropy","Anisotropy flag"))
+    , preferredDirection(initData(&preferredDirection, "preferredDirection","Transverse isotropy direction"))
 {
 }
 
@@ -70,6 +72,10 @@ CudaTetrahedronTLEDForceField::~CudaTetrahedronTLEDForceField()
     if (viscoelasticity.getValue())
     {
         ClearGPU_TetrahedronVisco();
+    }
+    if (anisotropy.getValue())
+    {
+        ClearGPU_TetrahedronAniso();
     }
 }
 
@@ -249,24 +255,6 @@ void CudaTetrahedronTLEDForceField::reinit()
         }
     }
 
-//     for (int i = 0; i < nbElems; i++)
-//     {
-//         for (int j = 0; j<4; j++)
-//         {
-//             sout << DhC0[4*i+j] << " " ;
-//         }
-//         sout << sendl;
-//     }
-
-//     for (int i = 0; i < nbVertex; i++)
-//     {
-//         for (int val = 0; val<nbElementPerVertex; val++)
-//         {
-//             sout << "(" << FCrds[ 2*nbElementPerVertex * i + 2*val ] << "," << FCrds[ 2*nbElementPerVertex * i + 2*val+1 ] << ") ";
-//         }
-//         sout << sendl;
-//     }
-
     /** Initialise GPU textures with the precomputed array for the TLED algorithm
      */
     InitGPU_TetrahedronTLED(NodesPerElement, DhC0, DhC1, DhC2, Volume, FCrds, nbElementPerVertex, nbVertex, nbElems);
@@ -320,15 +308,28 @@ void CudaTetrahedronTLEDForceField::reinit()
             }
         }
 
-        InitGPU_TetrahedronVisco(Ai, Av, Ni, Nv, nbElems);
+        InitGPU_TetrahedronVisco(Ai, Av, Ni, Nv);
         delete [] Ai; delete [] Av;
     }
 
-    /** Initialise GPU textures with the precomputed array needed for anisotropic formulation
+    /**
+     * Initialisation of precomputed arrays needed for the anisotropic formulation
      */
     if (anisotropy.getValue())
     {
-        InitGPU_TetrahedronAniso();
+        // Stores the preferred direction for each element (used with transverse isotropic formulation)
+        float* A = new float[3*inputElems.size()];
+
+        Vec3f a = preferredDirection.getValue();
+        for (unsigned int i = 0; i<inputElems.size(); i++)
+        {
+            A[3*i] =   a[0];
+            A[3*i+1] = a[1];
+            A[3*i+2] = a[2];
+        }
+
+        // Stores the precomputed information on GPU
+        InitGPU_TetrahedronAniso(A);
     }
 
     /// Set up Lame coefficients
