@@ -126,11 +126,17 @@ void* GNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, con
         else dir = SearchDown; // we are the root, search down from here.
     }
     void *result = NULL;
+
     for (ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
     {
-        result = class_info.dynamicCast(*it);
-        if (result != NULL && (tags.empty() || (*it)->getTags().includes(tags))) break;
+        if (tags.empty() || (*it)->getTags().includes(tags))
+        {
+            result = class_info.dynamicCast(*it);
+            if (result != NULL)
+                break;
+        }
     }
+
     if (result == NULL)
     {
         switch(dir)
@@ -152,6 +158,7 @@ void* GNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, con
             break;
         }
     }
+
     return result;
 }
 
