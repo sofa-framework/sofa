@@ -70,9 +70,10 @@ public:
     float Lambda, Mu;
 
     /// TLED configuration
-    Data<Real> timestep;
-    Data<unsigned int> viscoelasticity;
-    Data<unsigned int> anisotropy;
+    Data<Real> timestep;    // time step of the simulation
+    Data<unsigned int> viscoelasticity; // flag to enable viscoelasticity
+    Data<unsigned int> anisotropy;      // flag to enable transverse isotropy
+    Data<Vec3f> preferredDirection;     // uniform preferred direction for transverse isotropy
 
     CudaHexahedronTLEDForceField();
     virtual ~CudaHexahedronTLEDForceField();

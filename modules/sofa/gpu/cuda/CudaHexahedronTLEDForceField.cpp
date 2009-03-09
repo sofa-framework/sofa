@@ -47,10 +47,11 @@ extern "C"
 {
     void CudaHexahedronTLEDForceField3f_addForce(float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int viscoelasticity, unsigned int anisotropy, const void* x, const void* x0, void* f);
     void InitGPU_TLED(int* NodesPerElement, float* DhC0, float* DhC1, float* DhC2, float* DetJ, float* HG, int* FCrds, int valence, int nbVertex, int nbElements);
-    void InitGPU_Visco(float * Ai, float * Av, int Ni, int Nv, int nbElements);
-    void InitGPU_Aniso(void);
+    void InitGPU_Visco(float * Ai, float * Av, int Ni, int Nv);
+    void InitGPU_Aniso(float* A);
     void ClearGPU_TLED(void);
     void ClearGPU_Visco(void);
+    void ClearGPU_Aniso(void);
 }
 
 CudaHexahedronTLEDForceField::CudaHexahedronTLEDForceField()
@@ -60,6 +61,7 @@ CudaHexahedronTLEDForceField::CudaHexahedronTLEDForceField()
     , timestep(initData(&timestep,(Real)0.001,"timestep","Simulation timestep"))
     , viscoelasticity(initData(&viscoelasticity,(unsigned int)0,"viscoelasticity","Viscoelasticity flag"))
     , anisotropy(initData(&anisotropy,(unsigned int)0,"anisotropy","Anisotropy flag"))
+    , preferredDirection(initData(&preferredDirection, "preferredDirection","Transverse isotropy direction"))
 {
 }
 
@@ -69,6 +71,10 @@ CudaHexahedronTLEDForceField::~CudaHexahedronTLEDForceField()
     if (viscoelasticity.getValue())
     {
         ClearGPU_Visco();
+    }
+    if (anisotropy.getValue())
+    {
+        ClearGPU_Aniso();
     }
 }
 
@@ -122,8 +128,9 @@ void CudaHexahedronTLEDForceField::reinit()
     std::cout << "CudaHexahedronTLEDForceField: " << nbElems << " elements, " << nbVertex << " nodes, max " << nbElementPerVertex << " elements per node" << std::endl;
 
 
-    /** Precomputations
-    */
+    /**
+     * Precomputations
+     */
     std::cout << "CudaHexahedronTLEDForceField: precomputations..." << std::endl;
 
     const VecCoord& x = *this->mstate->getX();
@@ -213,14 +220,16 @@ void CudaHexahedronTLEDForceField::reinit()
         }
     }
 
-    /** Initialise GPU textures with the precomputed array for the TLED algorithm
+    /**
+     * Initialise GPU textures with the precomputed array for the TLED algorithm
      */
     InitGPU_TLED(NodesPerElement, DhC0, DhC1, DhC2, DetJ, HourglassControl, FCrds, nbElementPerVertex, nbVertex, nbElems);
     delete [] NodesPerElement; delete [] DhC0; delete [] DhC1; delete [] DhC2; delete [] index;
     delete [] DetJ; delete [] FCrds; delete [] HourglassControl;
 
 
-    /** Initialise GPU textures with the precomputed array needed for viscoelastic formulation
+    /**
+     * Initialise GPU textures with the precomputed array needed for viscoelastic formulation
      */
     if (viscoelasticity.getValue())
     {
@@ -266,15 +275,28 @@ void CudaHexahedronTLEDForceField::reinit()
             }
         }
 
-        InitGPU_Visco(Ai, Av, Ni, Nv, nbElems);
+        InitGPU_Visco(Ai, Av, Ni, Nv);
         delete [] Ai; delete [] Av;
     }
 
-    /** Initialise GPU textures with the precomputed array needed for anisotropic formulation
+    /**
+     * Initialisation of precomputed arrays needed for the anisotropic formulation
      */
     if (anisotropy.getValue())
     {
-        InitGPU_Aniso();
+        // Stores the preferred direction for each element (used with transverse isotropic formulation)
+        float* A = new float[3*inputElems.size()];
+
+        Vec3f a = preferredDirection.getValue();
+        for (unsigned int i = 0; i<inputElems.size(); i++)
+        {
+            A[3*i] =   a[0];
+            A[3*i+1] = a[1];
+            A[3*i+2] = a[2];
+        }
+
+        // Stores the precomputed information on GPU
+        InitGPU_Aniso(A);
     }
 
 

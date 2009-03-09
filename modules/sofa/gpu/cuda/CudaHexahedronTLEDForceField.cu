@@ -43,10 +43,11 @@ extern "C"
 {
     void CudaHexahedronTLEDForceField3f_addForce(float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int viscoelasticity, unsigned int anisotropy, const void* x, const void* x0, void* f);
     void InitGPU_TLED(int* NodesPerElement, float* DhC0, float* DhC1, float* DhC2, float* DetJ, float* HG, int* FCrds, int valence, int nbVertex, int nbElements);
-    void InitGPU_Visco(float * Ai, float * Av, int Ni, int Nv, int nbElements);
-    void InitGPU_Aniso(void);
+    void InitGPU_Visco(float * Ai, float * Av, int Ni, int Nv);
+    void InitGPU_Aniso(float* A);
     void ClearGPU_TLED(void);
     void ClearGPU_Visco(void);
+    void ClearGPU_Aniso(void);
 }
 
 //////////////////////
@@ -60,9 +61,8 @@ extern "C"
 static __constant__ float Ai_gpu[2];
 static __constant__ float Av_gpu[2];
 
-// A few constants used for the transversely isotropy
-static __constant__ int Eta_gpu;       // Material constant
-static __constant__ float A_gpu[6];    // Structure tensor defining the preferred material direction
+// A material constant used for the transversely isotropy
+static __constant__ int Eta_gpu;
 
 /// References on textures
 // TLED first kernel
@@ -75,6 +75,9 @@ static texture <float4, 1, cudaReadModeElementType> texDisp;
 
 // Hourglass control
 static texture <float4, 1, cudaReadModeElementType> texHG;
+
+// Constant used with anisotropic formulations
+static texture <float4, 1, cudaReadModeElementType> texA;
 
 // Viscoelasticity
 static texture <float4, 1, cudaReadModeElementType> texDi1;
@@ -118,6 +121,9 @@ static float4* F7_gpu = 0;
 // Displacements
 static float4* Disp = 0;
 
+// Array that contains the preferred direction for each element (transverse isotropy)
+static float4* A_gpu = 0;
+
 // Viscoelasticity
 static float4 * Di1_gpu = 0;
 static float4 * Di2_gpu = 0;
@@ -126,15 +132,11 @@ static float4 * Dv2_gpu = 0;
 
 
 
-/**
- * Protopypes
- */
-
-// Function to be called from the device to compute forces from stresses
-// => allows to save registers by recomputing the deformation gradient
+/// Protopypes
 __device__ float4 computeForce_hex(const int node, const float4 Dh0_a, const float4 Dh0_b, const float4 Dh1_a, const float4 Dh1_b, const float4 Dh2_a, const float4 Dh2_b, const float3 Node1Disp, const float3 Node2Disp, const float3 Node3Disp, const float3 Node4Disp, const float3 Node5Disp, const float3 Node6Disp, const float3 Node7Disp, const float3 Node8Disp, const float * SPK, const int tid);
 
-__device__ float4 getDisp(const int NodeID);
+/// A few global constants
+static int sizeNodesInt, sizeElsFloat, sizeElsInt;
 
 #define USE_TEXTURE
 
@@ -197,6 +199,9 @@ static void setX0(const void* x0)
 
 #endif
 
+/**
+ * This version is valid for hexahedral meshes and uses an elastic formulation
+ */
 __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel0(float Lambda, float Mu, int nbElem, float4* F0_gpu, float4* F1_gpu, float4* F2_gpu, float4* F3_gpu, float4* F4_gpu, float4* F5_gpu, float4* F6_gpu, float4* F7_gpu)
 {
     int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
@@ -367,6 +372,9 @@ __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel0(float Lambda, f
 
 }
 
+/**
+ * This version is valid for hexahedral meshes and uses a transversely isotropic and elastic formulation
+ */
 __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel1(float Lambda, float Mu, int nbElem, float4* F0_gpu, float4* F1_gpu, float4* F2_gpu, float4* F3_gpu, float4* F4_gpu, float4* F5_gpu, float4* F6_gpu, float4* F7_gpu)
 {
     int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
@@ -469,7 +477,11 @@ __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel1(float Lambda, f
         float J23 = __powf(J, -(float)2/3);   // J23 = J^(-2/3)
         float x1 = J23*Mu;
         // Bracketed term is I4 = A:C
-        float x2 = J23*(A_gpu[0]*C11+A_gpu[1]*C22+A_gpu[2]*C33+2*A_gpu[3]*C12+2*A_gpu[4]*C23+2*A_gpu[5]*C13) - 1;
+
+        // Reads the preferred direction
+        float4 a = tex1Dfetch(texA, index);
+
+        float x2 = J23*(a.x*a.x*C11 + a.y*a.y*C22 + a.z*a.z*C33 + 2*a.x*a.y*C12 + 2*a.y*a.z*C23 + 2*a.x*a.z*C13) - 1;
         float x3 = J23*Eta_gpu*x2;
         float x4 = __fdividef(-(Eta_gpu*x2*(x2+1)+ x1*(C11+C22+C33)), 3.0f);
         float K = Lambda + __fdividef(2*Mu, 3.0f);
@@ -477,12 +489,12 @@ __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel1(float Lambda, f
 
         /// Elastic component of the response (isochoric part + volumetric part)
         float SiE11, SiE12, SiE13, SiE22, SiE23, SiE33;
-        SiE11 = x3*A_gpu[0] + x4*Ci11 + x1;
-        SiE22 = x3*A_gpu[1] + x4*Ci22 + x1;
-        SiE33 = x3*A_gpu[2] + x4*Ci33 + x1;
-        SiE12 = x3*A_gpu[3] + x4*Ci12;
-        SiE23 = x3*A_gpu[4] + x4*Ci23;
-        SiE13 = x3*A_gpu[5] + x4*Ci13;
+        SiE11 = x3*a.x*a.x + x4*Ci11 + x1;
+        SiE22 = x3*a.y*a.y + x4*Ci22 + x1;
+        SiE33 = x3*a.z*a.z + x4*Ci33 + x1;
+        SiE12 = x3*a.x*a.y + x4*Ci12;
+        SiE23 = x3*a.y*a.z + x4*Ci23;
+        SiE13 = x3*a.x*a.z + x4*Ci13;
 
         float SvE11, SvE12, SvE13, SvE22, SvE23, SvE33;
         SvE11 = x5*Ci11;
@@ -540,6 +552,9 @@ __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel1(float Lambda, f
 
 }
 
+/**
+ * This version is valid for hexahedral meshes and uses a viscoelastic formulation based on separated isochoric and volumetric terms. The model is isotropic.
+ */
 __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel2(float Lambda, float Mu, int nbElem, float4 * Di1, float4 * Di2, float4 * Dv1, float4 * Dv2, float4* F0_gpu, float4* F1_gpu, float4* F2_gpu, float4* F3_gpu, float4* F4_gpu, float4* F5_gpu, float4* F6_gpu, float4* F7_gpu)
 {
     int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
@@ -755,6 +770,9 @@ __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel2(float Lambda, f
 
 }
 
+/**
+ * This version is valid for hexahedral meshes and uses an viscoelastic and anisotropic formulation
+ */
 __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel3(float Lambda, float Mu, int nbElem, float4 * Di1, float4 * Di2, float4 * Dv1, float4 * Dv2, float4* F0_gpu, float4* F1_gpu, float4* F2_gpu, float4* F3_gpu, float4* F4_gpu, float4* F5_gpu, float4* F6_gpu, float4* F7_gpu)
 {
     int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
@@ -857,7 +875,11 @@ __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel3(float Lambda, f
         float J23 = __powf(J, -(float)2/3);   // J23 = J^(-2/3)
         float x1 = J23*Mu;
         // Bracketed term is I4 = A:C
-        float x2 = J23*(A_gpu[0]*C11+A_gpu[1]*C22+A_gpu[2]*C33+2*A_gpu[3]*C12+2*A_gpu[4]*C23+2*A_gpu[5]*C13) - 1;
+
+        // Reads the preferred direction
+        float4 a = tex1Dfetch(texA, index);
+
+        float x2 = J23*(a.x*a.x*C11 + a.y*a.y*C22 + a.z*a.z*C33 + 2*a.x*a.y*C12 + 2*a.y*a.z*C23 + 2*a.x*a.z*C13) - 1;
         float x3 = J23*Eta_gpu*x2;
         float x4 = __fdividef(-(Eta_gpu*x2*(x2+1)+ x1*(C11+C22+C33)), 3.0f);
         float K = Lambda + __fdividef(2*Mu, 3.0f);
@@ -865,12 +887,12 @@ __global__ void CudaHexahedronTLEDForceField3f_calcForce_kernel3(float Lambda, f
 
         /// Elastic component of the response (isochoric part + volumetric part)
         float SiE11, SiE12, SiE13, SiE22, SiE23, SiE33;
-        SiE11 = x3*A_gpu[0] + x4*Ci11 + x1;
-        SiE22 = x3*A_gpu[1] + x4*Ci22 + x1;
-        SiE33 = x3*A_gpu[2] + x4*Ci33 + x1;
-        SiE12 = x3*A_gpu[3] + x4*Ci12;
-        SiE23 = x3*A_gpu[4] + x4*Ci23;
-        SiE13 = x3*A_gpu[5] + x4*Ci13;
+        SiE11 = x3*a.x*a.x + x4*Ci11 + x1;
+        SiE22 = x3*a.y*a.y + x4*Ci22 + x1;
+        SiE33 = x3*a.z*a.z + x4*Ci33 + x1;
+        SiE12 = x3*a.x*a.y + x4*Ci12;
+        SiE23 = x3*a.y*a.z + x4*Ci23;
+        SiE13 = x3*a.x*a.z + x4*Ci13;
 
         float SvE11, SvE12, SvE13, SvE22, SvE23, SvE33;
         SvE11 = x5*Ci11;
@@ -1210,15 +1232,15 @@ __global__ void CudaHexahedronTLEDForceField3f_addForce_kernel(int nbVertex, uns
 //////////////////////
 
 
-/** Initialise GPU textures with the precomputed arrays for the TLED algorithm
+/**
+ * Initialise GPU textures with the precomputed arrays for the TLED algorithm
  */
 void InitGPU_TLED(int* NodesPerElement, float* DhC0, float* DhC1, float* DhC2, float* DetJ, float* HG, int* FCrds, int valence, int nbVertex, int nbElements)
 {
     /// Sizes in bytes of different arrays
-//     int sizeNodesFloat = nbVertex*sizeof(float);
-    int sizeNodesInt = nbVertex*sizeof(int);
-    int sizeElsFloat = nbElements*sizeof(float);
-    int sizeElsInt = nbElements*sizeof(int);
+    sizeNodesInt = nbVertex*sizeof(int);
+    sizeElsFloat = nbElements*sizeof(float);
+    sizeElsInt = nbElements*sizeof(int);
 
     /// List of nodes for each element
     cudaChannelFormatDesc channelDesc = cudaCreateChannelDesc(32, 32, 32, 32, cudaChannelFormatKindSigned);
@@ -1298,13 +1320,14 @@ void InitGPU_TLED(int* NodesPerElement, float* DhC0, float* DhC1, float* DhC2, f
     mycudaMemcpyHostToDevice(FCrds_gpu, FCrds, 2*sizeNodesInt*valence);
     cudaBindTexture(0, texFCrds, FCrds_gpu, channelDesc);
 
-    myprintf("Initialisation GPU for TLED succeeded\n");
+    myprintf("Initialisation GPU for TLED: %s\n", cudaGetErrorString( cudaGetLastError()) );
 
 }
 
-/** Initialise GPU textures with the precomputed arrays for the viscoelastic formulation
+/**
+ * Initialise GPU textures with the precomputed arrays for the viscoelastic formulation
  */
-void InitGPU_Visco(float * Ai, float * Av, int Ni, int Nv, int nbElements)
+void InitGPU_Visco(float * Ai, float * Av, int Ni, int Nv)
 {
     /// Constants A and B for isochoric part
     if (Ni !=0)
@@ -1322,54 +1345,50 @@ void InitGPU_Visco(float * Ai, float * Av, int Ni, int Nv, int nbElements)
     cudaChannelFormatDesc channelDesc = cudaCreateChannelDesc(32, 32, 32, 32, cudaChannelFormatKindFloat);
     if (Ni != 0)
     {
-        mycudaMalloc((void**)&Di1_gpu, 4*nbElements*sizeof(float));
-        cudaMemset(Di1_gpu, 0, 4*nbElements*sizeof(float));
+        mycudaMalloc((void**)&Di1_gpu, 4*sizeElsFloat);
+        cudaMemset(Di1_gpu, 0, 4*sizeElsFloat);
         cudaBindTexture(0, texDi1, Di1_gpu, channelDesc);
 
-        mycudaMalloc((void**)&Di2_gpu, 4*nbElements*sizeof(float));
-        cudaMemset(Di2_gpu, 0, 4*nbElements*sizeof(float));
+        mycudaMalloc((void**)&Di2_gpu, 4*sizeElsFloat);
+        cudaMemset(Di2_gpu, 0, 4*sizeElsFloat);
         cudaBindTexture(0, texDi2, Di2_gpu, channelDesc);
     }
 
     /// Rate-dependant stress (volumetric part)
     if (Nv != 0)
     {
-        mycudaMalloc((void**)&Dv1_gpu, 4*nbElements*sizeof(float));
-        cudaMemset(Dv1_gpu, 0, 4*nbElements*sizeof(float));
+        mycudaMalloc((void**)&Dv1_gpu, 4*sizeElsFloat);
+        cudaMemset(Dv1_gpu, 0, 4*sizeElsFloat);
         cudaBindTexture(0, texDv1, Dv1_gpu, channelDesc);
 
-        mycudaMalloc((void**)&Dv2_gpu, 4*nbElements*sizeof(float));
-        cudaMemset(Dv2_gpu, 0, 4*nbElements*sizeof(float));
+        mycudaMalloc((void**)&Dv2_gpu, 4*sizeElsFloat);
+        cudaMemset(Dv2_gpu, 0, 4*sizeElsFloat);
         cudaBindTexture(0, texDv2, Dv2_gpu, channelDesc);
     }
 
-    myprintf("Initialisation GPU for viscoelasticity succeeded\n");
+    myprintf("Initialisation GPU for viscoelasticity: %s\n", cudaGetErrorString( cudaGetLastError()) );
 }
 
-/** Initialise GPU textures with the precomputed arrays for the anisotropic formulation
+/**
+ * Initialise GPU textures with the precomputed arrays for the anisotropic formulation
  */
-void InitGPU_Aniso(void)
+void InitGPU_Aniso(float* A)
 {
     // A material constant
     int Eta = 13136;    // 13136 liver
     cudaMemcpyToSymbol("Eta_gpu", &Eta, sizeof(int));
 
-    // The structure tensor (a defines the preferred material direction)
-    float a[3] = {0, 0.707f, 0.707f};
-//     float a[3] = {0.0f, 1.0f, 0.0f};
-    float A[6];
-    A[0] = a[0]*a[0];    // A(1,1)
-    A[1] = a[1]*a[1];    // A(2,2)
-    A[2] = a[2]*a[2];    // A(3,3)
-    A[3] = a[0]*a[1];    // A(1,2)
-    A[4] = a[1]*a[2];    // A(2,3)
-    A[5] = a[0]*a[2];    // A(1,3)
-    cudaMemcpyToSymbol(A_gpu, A, 6*sizeof(float), 0, cudaMemcpyHostToDevice);
+    // Preferred direction for each element (transverse isotropy)
+    cudaChannelFormatDesc channelDesc = cudaCreateChannelDesc(32, 32, 32, 32, cudaChannelFormatKindFloat);
+    mycudaMalloc((void**)&A_gpu, 4*sizeElsFloat);
+    cudaMemcpy((void*)A_gpu, (void*)A, 4*sizeElsFloat, cudaMemcpyHostToDevice);
+    cudaBindTexture(0, texA, A_gpu, channelDesc);
 
-    myprintf("Initialisation GPU for anisotropy succeeded\n");
+    myprintf("Initialisation GPU for anisotropy: %s\n", cudaGetErrorString( cudaGetLastError()) );
 }
 
-/** Delete all the precomputed arrays allocated for the TLED
+/**
+ * Delete all the precomputed arrays allocated for the TLED
  */
 void ClearGPU_TLED(void)
 {
@@ -1391,10 +1410,11 @@ void ClearGPU_TLED(void)
 
     mycudaFree(Disp);
 
-    myprintf("Memory on GPU for TLED cleared\n");
+    myprintf("Cleaning of memory on GPU for TLED: %s\n", cudaGetErrorString( cudaGetLastError()) );
 }
 
-/** Delete all the precomputed arrays allocated for the viscoelasticity formulation
+/**
+ * Delete all the precomputed arrays allocated for the viscoelasticity formulation
  */
 void ClearGPU_Visco(void)
 {
@@ -1403,7 +1423,17 @@ void ClearGPU_Visco(void)
     mycudaFree(Dv1_gpu);
     mycudaFree(Dv2_gpu);
 
-    myprintf("Memory on GPU for viscoelasticity cleared\n");
+    myprintf("Cleaning of memory on GPU for viscoelasticity: %s\n", cudaGetErrorString( cudaGetLastError()) );
+}
+
+/**
+ * Delete all the precomputed arrays allocated for the viscoelasticity formulation
+ */
+void ClearGPU_Aniso(void)
+{
+    mycudaFree(A_gpu);
+
+    myprintf("Cleaning of memory on GPU for anisotropy: %s\n", cudaGetErrorString( cudaGetLastError()) );
 }
 
 void CudaHexahedronTLEDForceField3f_addForce(float Lambda, float Mu, unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, unsigned int viscoelasticity, unsigned int anisotropy, const void* x, const void* x0, void* f)
@@ -1414,7 +1444,8 @@ void CudaHexahedronTLEDForceField3f_addForce(float Lambda, float Mu, unsigned in
     dim3 threads1(BSIZE,1);
     dim3 grid1((nbElem+BSIZE-1)/BSIZE,1);
 
-    /** Pick the right formulation based on the binary value of ab (with a = boolean for viscoelasticity and b = boolean for anisotropy)
+    /**
+     * Pick the right formulation based on the binary value of ab (with a = boolean for viscoelasticity and b = boolean for anisotropy)
      */
     switch(2*viscoelasticity + anisotropy)
     {
