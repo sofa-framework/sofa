@@ -45,15 +45,14 @@ int PointSetTopologyContainerClass = core::RegisterObject("Point set topology co
         ;
 
 PointSetTopologyContainer::PointSetTopologyContainer(int npoints)
-    : nbPoints(npoints)
-    , d_nbPoints(initDataPtr(&d_nbPoints, &nbPoints, "nbPoints", "Number of points"))
+    : nbPoints(initData(&nbPoints, (unsigned int )npoints, "nbPoints", "Number of points"))
     , d_initPoints(initDataPtr(&d_initPoints, &initPoints, "points", "Initial position of points"))
 {
 }
 
 void PointSetTopologyContainer::setNbPoints(int n)
 {
-    nbPoints = n;
+    nbPoints.setValue(n);
 }
 
 bool PointSetTopologyContainer::checkTopology() const
@@ -63,15 +62,15 @@ bool PointSetTopologyContainer::checkTopology() const
 
 void PointSetTopologyContainer::clear()
 {
-    nbPoints = 0;
+    nbPoints.setValue(0);
     initPoints.clear();
 }
 
 void PointSetTopologyContainer::addPoint(double px, double py, double pz)
 {
     initPoints.push_back(InitTypes::Coord((SReal)px, (SReal)py, (SReal)pz));
-    if (initPoints.size() > (unsigned)nbPoints)
-        nbPoints = initPoints.size();
+    if (initPoints.size() > nbPoints.getValue())
+        nbPoints.setValue(initPoints.size());
 }
 
 bool PointSetTopologyContainer::hasPos() const
@@ -108,10 +107,10 @@ void PointSetTopologyContainer::init()
     core::componentmodel::topology::TopologyContainer::init();
 
     d_initPoints.getValue(); // make sure initPoints is up to date
-    if (nbPoints == 0 && !initPoints.empty())
-        nbPoints = initPoints.size();
+    if (nbPoints.getValue() == 0 && !initPoints.empty())
+        nbPoints.setValue(initPoints.size());
 
-    if(nbPoints == 0)
+    if(nbPoints.getValue() == 0)
     {
         sofa::component::MeshLoader* loader;
         this->getContext()->get(loader);
@@ -125,27 +124,28 @@ void PointSetTopologyContainer::init()
 
 void PointSetTopologyContainer::loadFromMeshLoader(sofa::component::MeshLoader* loader)
 {
-    nbPoints = loader->getNbPoints();
+    if (!initPoints.empty()) return;
+    nbPoints.setValue( loader->getNbPoints() );
 }
 
 void PointSetTopologyContainer::addPoints(const unsigned int nPoints)
 {
-    nbPoints += nPoints;
+    nbPoints.setValue( nbPoints.getValue() + nPoints);
 }
 
 void PointSetTopologyContainer::removePoints(const unsigned int nPoints)
 {
-    nbPoints -= nPoints;
+    nbPoints.setValue(nbPoints.getValue() - nPoints);
 }
 
 void PointSetTopologyContainer::addPoint()
 {
-    ++nbPoints;
+    nbPoints.setValue(nbPoints.getValue()+1);
 }
 
 void PointSetTopologyContainer::removePoint()
 {
-    --nbPoints;
+    nbPoints.setValue(nbPoints.getValue()-1);
 }
 
 } // namespace topology

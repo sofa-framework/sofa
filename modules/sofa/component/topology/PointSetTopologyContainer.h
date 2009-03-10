@@ -90,7 +90,7 @@ public:
     /** \brief Returns the number of vertices in this topology.
     *
     */
-    int getNbPoints() const { return (int)nbPoints; }
+    int getNbPoints() const { return (int)nbPoints.getValue(); }
     void setNbPoints(int n);
     virtual bool hasPos() const;
     virtual double getPX(int i) const;
@@ -102,8 +102,7 @@ protected:
     virtual void loadFromMeshLoader(sofa::component::MeshLoader* loader);
 
 protected:
-    unsigned int nbPoints;
-    DataPtr<unsigned int> d_nbPoints;
+    Data<unsigned int> nbPoints;
 
 private:
     typedef defaulttype::Vec3Types InitTypes;

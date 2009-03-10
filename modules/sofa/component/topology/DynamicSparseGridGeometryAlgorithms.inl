@@ -45,7 +45,7 @@ void DynamicSparseGridGeometryAlgorithms<DataTypes>::init()
     this->getContext()->get ( topoContainer );
     if ( !topoContainer )
     {
-        serr << "Hexa2TriangleTopologicalMapping::buildTriangleMesh(). Error: can't find the mapping on the triangular topology." << sendl;
+        serr << "buildTriangleMesh(). Error: can't find the mapping on the triangular topology." << sendl;
         exit(0);
     }
 }
@@ -53,10 +53,10 @@ void DynamicSparseGridGeometryAlgorithms<DataTypes>::init()
 template < class DataTypes >
 unsigned int DynamicSparseGridGeometryAlgorithms<DataTypes>::getTopoIndexFromRegularGridIndex ( unsigned int index )
 {
-    std::map< unsigned int, BaseMeshTopology::HexaID>::iterator it = topoContainer->idInRegularGrid2IndexInTopo.find( index);
-    if( it == topoContainer->idInRegularGrid2IndexInTopo.end())
+    std::map< unsigned int, BaseMeshTopology::HexaID>::const_iterator it = topoContainer->idInRegularGrid2IndexInTopo.getValue().find( index);
+    if( it == topoContainer->idInRegularGrid2IndexInTopo.getValue().end())
     {
-        serr << "DynamicSparseGridGeometryAlgorithms<DataTypes>::getTopoIndexFromRegularGridIndex(): Warning ! unexisting given index " << index << " !" << sendl;
+        serr << "getTopoIndexFromRegularGridIndex(): Warning ! unexisting given index " << index << " !" << sendl;
     }
     return it->second;
 }
@@ -68,8 +68,9 @@ int DynamicSparseGridGeometryAlgorithms<DataTypes>::findNearestElementInRestPos(
     distance = 1e10;
 
     Vec3i resolution = topoContainer->resolution.getValue();
-    Vec3i currentIndex = Vec3i( (int)(pos[0] / topoContainer->voxelSize[0]), (int)(pos[1] / topoContainer->voxelSize[1]), (int)(pos[2] / topoContainer->voxelSize[2]));
+    Vec3i currentIndex = Vec3i( (int)(pos[0] / topoContainer->voxelSize.getValue()[0]), (int)(pos[1] / topoContainer->voxelSize.getValue()[1]), (int)(pos[2] / topoContainer->voxelSize.getValue()[2]));
 
+//        std::cout << "Find Nearest : " << pos << " ; " << baryC << " distance " << distance << " : " << resolution << " : resolution " << currentIndex << " : currentIndex\n";
     // Projection sur la bbox si l'element est en dehors.
     if( currentIndex[0] < 0) currentIndex[0] = 0;
     if( currentIndex[1] < 0) currentIndex[1] = 0;
@@ -78,7 +79,7 @@ int DynamicSparseGridGeometryAlgorithms<DataTypes>::findNearestElementInRestPos(
     if( currentIndex[1] > resolution[1]) currentIndex[1] = resolution[1];
     if( currentIndex[2] > resolution[2]) currentIndex[2] = resolution[2];
 
-    const std::map< unsigned int, BaseMeshTopology::HexaID>& regular2topo = topoContainer->idInRegularGrid2IndexInTopo;
+    const std::map< unsigned int, BaseMeshTopology::HexaID>& regular2topo = topoContainer->idInRegularGrid2IndexInTopo.getValue();
     unsigned int regularGridIndex;
     std::map< unsigned int, BaseMeshTopology::HexaID>::const_iterator it;
     for( int k = 0; k < 3; k++)
@@ -91,10 +92,12 @@ int DynamicSparseGridGeometryAlgorithms<DataTypes>::findNearestElementInRestPos(
             {
                 if((((int)currentIndex[0])-1+i < 0) || (currentIndex[0]-1+i > resolution[0])) continue;
                 regularGridIndex = (currentIndex[0]-1+i) + (currentIndex[1]-1+j)*resolution[0] + (currentIndex[2]-1+k)*resolution[0]*resolution[1];
+//              std::cout << regularGridIndex << " Regular Grid Index\n";
                 it = regular2topo.find( regularGridIndex);
                 if( it != regular2topo.end())
                 {
                     const Real d = computeElementRestDistanceMeasure(it->second, pos);
+//                std::cout << "Distance : " << d << "\n";
                     if(d<distance)
                     {
                         distance = d;
@@ -107,7 +110,7 @@ int DynamicSparseGridGeometryAlgorithms<DataTypes>::findNearestElementInRestPos(
     if( index == -1)
     {
         // Dans le cas de projection ou autre.... il se peut que la zone ciblée ne contienne pas d'hexas, il faut alors tous les parcourrir.
-        std::cerr << "findNearestElementInRestPos(). Index not found" << std::endl;
+        std::cerr << "DynamicSparseGridGeometryAlgorithms<DataTypes>::findNearestElementInRestPos(). Index not found" << std::endl;
         //std::cout << "DynamicSparseGridGeometryAlgorithms<DataTypes>::findNearestElementInRestPos(). Index not found => Search in all the hexas ! SLOW." << std::endl;
         //std::cout << "pos: " << pos << ", currentIndex: " << currentIndex << ", et regular index: " << regularGridIndex << std::endl;
         return HexahedronSetGeometryAlgorithms<DataTypes>::findNearestElementInRestPos( pos, baryC, distance);

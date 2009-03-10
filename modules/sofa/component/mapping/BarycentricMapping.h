@@ -765,6 +765,10 @@ protected:
     topology::HexahedronSetGeometryAlgorithms<In>*	_geomAlgo;
 
 public:
+    BarycentricMapperHexahedronSetTopology()
+        : TopologyBarycentricMapper<In,Out>(NULL),_container(NULL),_geomAlgo(NULL)
+    {}
+
     BarycentricMapperHexahedronSetTopology(topology::HexahedronSetTopologyContainer* topology)
         : TopologyBarycentricMapper<In,Out>(topology),
           _container(topology),
@@ -792,6 +796,8 @@ public:
     // handle topology changes in the To topology
     virtual void handlePointEvents(std::list< const core::componentmodel::topology::TopologyChange *>::const_iterator,
             std::list< const core::componentmodel::topology::TopologyChange *>::const_iterator);
+    bool isEmpty() {return this->map.getValue().empty();}
+    void setTopology(topology::HexahedronSetTopologyContainer* _topology) {this->topology = _topology; _container=_topology;}
 
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperHexahedronSetTopology<In, Out> &b )
     {
@@ -852,15 +858,19 @@ protected:
 
     typedef TopologyBarycentricMapper<InDataTypes,OutDataTypes> Mapper;
     typedef BarycentricMapperRegularGridTopology<InDataTypes, OutDataTypes> RegularGridMapper;
+    typedef BarycentricMapperHexahedronSetTopology<InDataTypes, OutDataTypes> HexaMapper;
 
     Mapper* mapper;
-    DataPtr<  RegularGridMapper >* f_grid;
+    DataPtr< RegularGridMapper >* f_grid;
+    DataPtr< HexaMapper >* f_hexaMapper;
 public:
     BarycentricMapping(In* from, Out* to)
         : Inherit(from, to), mapper(NULL)
         , f_grid (new DataPtr< RegularGridMapper >( new RegularGridMapper( NULL ),"Regular Grid Mapping"))
+        , f_hexaMapper (new DataPtr< HexaMapper >( new HexaMapper(  ),"Hexahedron Mapper"))
     {
         this->addField( f_grid, "gridmap");	f_grid->beginEdit();
+        this->addField( f_hexaMapper, "hexamap");	f_hexaMapper->beginEdit();
     }
 
     BarycentricMapping(In* from, Out* to, Mapper* mapper)
@@ -870,6 +880,11 @@ public:
         {
             f_grid = new DataPtr< RegularGridMapper >( m,"Regular Grid Mapping");
             this->addField( f_grid, "gridmap");	f_grid->beginEdit();
+        }
+        else if (HexaMapper* m = dynamic_cast< HexaMapper* >(mapper))
+        {
+            f_hexaMapper = new DataPtr< HexaMapper >( m,"Hexahedron Mapper");
+            this->addField( f_hexaMapper, "hexamap");	f_hexaMapper->beginEdit();
         }
     }
 

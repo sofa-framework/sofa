@@ -61,7 +61,7 @@ HexahedronSetTopologyContainer::HexahedronSetTopologyContainer(const sofa::helpe
         for(unsigned int j=0; j<8; ++j)
         {
             int a = m_hexahedron[i][j];
-            if (a >= (int)nbPoints) nbPoints = a+1;
+            if (a >= getNbPoints()) nbPoints.setValue(a+1);
         }
     }
 }
@@ -71,14 +71,14 @@ void HexahedronSetTopologyContainer::addHexa( int a, int b, int c, int d, int e,
     d_hexahedron.beginEdit();
     m_hexahedron.push_back(Hexahedron(a,b,c,d,e,f,g,h));
     d_hexahedron.endEdit();
-    if (a >= (int)nbPoints) nbPoints = a+1;
-    if (b >= (int)nbPoints) nbPoints = b+1;
-    if (c >= (int)nbPoints) nbPoints = c+1;
-    if (d >= (int)nbPoints) nbPoints = d+1;
-    if (e >= (int)nbPoints) nbPoints = e+1;
-    if (f >= (int)nbPoints) nbPoints = f+1;
-    if (g >= (int)nbPoints) nbPoints = g+1;
-    if (h >= (int)nbPoints) nbPoints = h+1;
+    if (a >= getNbPoints()) nbPoints.setValue(a+1);
+    if (b >= getNbPoints()) nbPoints.setValue(b+1);
+    if (c >= getNbPoints()) nbPoints.setValue(c+1);
+    if (d >= getNbPoints()) nbPoints.setValue(d+1);
+    if (e >= getNbPoints()) nbPoints.setValue(e+1);
+    if (f >= getNbPoints()) nbPoints.setValue(f+1);
+    if (g >= getNbPoints()) nbPoints.setValue(g+1);
+    if (h >= getNbPoints()) nbPoints.setValue(h+1);
 }
 
 void HexahedronSetTopologyContainer::init()
@@ -89,6 +89,7 @@ void HexahedronSetTopologyContainer::init()
 void HexahedronSetTopologyContainer::loadFromMeshLoader(sofa::component::MeshLoader* loader)
 {
     // load points
+    if (!m_hexahedron.empty()) return;
     PointSetTopologyContainer::loadFromMeshLoader(loader);
     d_hexahedron.beginEdit();
     loader->getHexas(m_hexahedron);

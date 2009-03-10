@@ -60,7 +60,7 @@ QuadSetTopologyContainer::QuadSetTopologyContainer(const sofa::helper::vector< Q
         for(unsigned int j=0; j<4; ++j)
         {
             int a = m_quad[i][j];
-            if (a >= (int)nbPoints) nbPoints = a+1;
+            if (a >= getNbPoints()) nbPoints.setValue(a+1);
         }
     }
 }
@@ -70,10 +70,10 @@ void QuadSetTopologyContainer::addQuad( int a, int b, int c, int d )
     d_quad.beginEdit();
     m_quad.push_back(Quad(a,b,c,d));
     d_quad.endEdit();
-    if (a >= (int)nbPoints) nbPoints = a+1;
-    if (b >= (int)nbPoints) nbPoints = b+1;
-    if (c >= (int)nbPoints) nbPoints = c+1;
-    if (d >= (int)nbPoints) nbPoints = d+1;
+    if (a >= getNbPoints()) nbPoints.setValue(a+1);
+    if (b >= getNbPoints()) nbPoints.setValue(b+1);
+    if (c >= getNbPoints()) nbPoints.setValue(c+1);
+    if (d >= getNbPoints()) nbPoints.setValue(d+1);
 }
 
 void QuadSetTopologyContainer::init()
@@ -84,6 +84,7 @@ void QuadSetTopologyContainer::init()
 void QuadSetTopologyContainer::loadFromMeshLoader(sofa::component::MeshLoader* loader)
 {
     // load points
+    if (!m_quad.empty()) return;
     PointSetTopologyContainer::loadFromMeshLoader(loader);
     d_quad.beginEdit();
     loader->getQuads(m_quad);

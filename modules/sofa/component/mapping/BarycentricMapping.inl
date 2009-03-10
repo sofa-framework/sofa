@@ -813,12 +813,17 @@ template <class In, class Out>
 void BarycentricMapperHexahedronSetTopology<In,Out>::init ( const typename Out::VecCoord& out,
         const typename In::VecCoord& /*in*/ )
 {
+
+
     _container->getContext()->get ( _geomAlgo );
 
     if ( _geomAlgo == NULL )
     {
         std::cerr << "Error [BarycentricMapperHexahedronSetTopology::init] cannot find GeometryAlgorithms component." << std::endl;
     }
+
+    if ( !map.getValue().empty() ) return;
+
 
     clear ( out.size() );
 
@@ -857,7 +862,8 @@ void BarycentricMapping<BasicMapping>::createMapperFromTopology ( BaseMeshTopolo
         if ( t1 != NULL )
         {
             typedef BarycentricMapperHexahedronSetTopology<InDataTypes, OutDataTypes> HexahedronSetMapper;
-            mapper = new HexahedronSetMapper ( t1 );
+            f_hexaMapper->beginEdit()->setTopology ( t1 );
+            mapper = f_hexaMapper->beginEdit();
         }
         else
         {
@@ -911,7 +917,7 @@ void BarycentricMapping<BasicMapping>::createMapperFromTopology ( BaseMeshTopolo
             else
             {
                 f_grid->beginEdit()->setTopology ( t2 );
-                this->mapper = f_grid->beginEdit();
+                mapper = f_grid->beginEdit();
             }
 
         }
@@ -947,7 +953,6 @@ void BarycentricMapping<BasicMapping>::init()
             createMapperFromTopology ( topology_from );
         }
     }
-
 
     if ( mapper != NULL )
     {

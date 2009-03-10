@@ -72,9 +72,10 @@ EdgeSetTopologyContainer::EdgeSetTopologyContainer(const sofa::helper::vector< E
         for(unsigned int j=0; j<2; ++j)
         {
             int a = m_edge[i][j];
-            if (a >= (int)nbPoints) nbPoints = a+1;
+            if (a >= (int)getNbPoints()) nbPoints.setValue(a+1);
         }
     }
+    serr << "Constructor" << sendl;
 }
 
 void EdgeSetTopologyContainer::init()
@@ -85,6 +86,7 @@ void EdgeSetTopologyContainer::init()
 void EdgeSetTopologyContainer::loadFromMeshLoader(sofa::component::MeshLoader* loader)
 {
     // load points
+    if (!m_edge.empty()) return;
     PointSetTopologyContainer::loadFromMeshLoader(loader);
     d_edge.beginEdit();
     loader->getEdges(m_edge);
@@ -93,11 +95,12 @@ void EdgeSetTopologyContainer::loadFromMeshLoader(sofa::component::MeshLoader* l
 
 void EdgeSetTopologyContainer::addEdge(int a, int b)
 {
+    serr << "ADD EDGE" << sendl;
     d_edge.beginEdit();
     m_edge.push_back(Edge(a,b));
     d_edge.endEdit();
-    if (a >= (int)nbPoints) nbPoints = a+1;
-    if (b >= (int)nbPoints) nbPoints = b+1;
+    if (a >= getNbPoints()) nbPoints.setValue(a+1);
+    if (b >= getNbPoints()) nbPoints.setValue(b+1);
 }
 
 void EdgeSetTopologyContainer::createEdgeVertexShellArray()
@@ -116,7 +119,6 @@ void EdgeSetTopologyContainer::createEdgeVertexShellArray()
     }
 
     m_edgeVertexShell.resize( getNbPoints() );
-
     for (unsigned int edge=0; edge<m_edge.size(); ++edge)
     {
         // adding edge in the edge shell of both points
