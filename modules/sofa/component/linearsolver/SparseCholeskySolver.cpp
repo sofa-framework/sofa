@@ -106,14 +106,17 @@ void SparseCholeskySolver<TMatrix,TVector>::invert(Matrix& M)
     A.x = (double *) &(A_x[0]);				// numerical values, size nzmax
     A.nz = -1;							// # of entries in triplet matrix, -1 for compressed-col
     cs_dropzeros( &A );
+
+    //M.check_matrix();
+    //CompressedRowSparseMatrix<double>::check_matrix(-1 /*A.nzmax*/,A.m,A.n,A.p,A.i,A.x);
     //sout << "diag =";
     //for (int i=0;i<A.n;++i) sout << " " << M.element(i,i);
     //sout << sendl;
-    sout << "SparseCholeskySolver: start factorization, n = " << A.n << " nnz = " << A.p[A.n] << sendl;
+    //sout << "SparseCholeskySolver: start factorization, n = " << A.n << " nnz = " << A.p[A.n] << sendl;
     tmp = (double *) cs_malloc (A.n, sizeof (double)) ;
     S = cs_schol (&A, order) ;		/* ordering and symbolic analysis */
     N = cs_chol (&A, S) ;		/* numeric Cholesky factorization */
-    sout << "SparseCholeskySolver: factorization complete, nnz = " << N->L->p[N->L->n] << sendl;
+    //sout << "SparseCholeskySolver: factorization complete, nnz = " << N->L->p[N->L->n] << sendl;
 }
 
 SOFA_DECL_CLASS(SparseCholeskySolver)

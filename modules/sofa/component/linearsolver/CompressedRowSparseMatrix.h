@@ -878,6 +878,92 @@ public:
         static std::string name = std::string("CompressedRowSparseMatrix") + std::string(traits::Name());
         return name.c_str();
     }
+
+    bool check_matrix()
+    {
+        return check_matrix(
+                this->getColsValue().size(),
+                this->rowBSize(),
+                this->colBSize(),
+                (int *) &(this->getRowBegin()[0]),
+                (int *) &(this->getColsIndex()[0]),
+                (double *) &(this->getColsValue()[0])
+                );
+    }
+
+    static bool check_matrix(
+        int nzmax,// nb values
+        int m,// number of row
+        int n,// number of columns
+        int * a_p,// column pointers (size n+1) or col indices (size nzmax)
+        int * a_i,// row indices, size nzmax
+        double * a_x// numerical values, size nzmax
+    )
+    {
+        // check ap, size m beecause ther is at least the diagonal value wich is different of 0
+        if (a_p[0]!=0)
+        {
+            std::cerr << "CompressedRowSparseMatrix:First value of row indices (a_p) should be 0" << std::endl;
+            return false;
+        }
+
+        for (int i=1; i<=m; i++)
+        {
+            if (a_p[i]<=a_p[i-1])
+            {
+                std::cerr << "CompressedRowSparseMatrix:Row (a_p) indices are not sorted indice " << i-1 << " : " << a_p[i-1] << " , " << i << " : " << a_p[i] << std::endl;
+                return false;
+            }
+        }
+        if (nzmax == -1)
+        {
+            nzmax = a_p[m];
+        }
+        else if (a_p[m]!=nzmax)
+        {
+            std::cerr << "CompressedRowSparseMatrix:Last value of row indices (a_p) should be " << nzmax << " and is " << a_p[m] << std::endl;
+            return false;
+        }
+
+
+        int k=1;
+        for (int i=0; i<nzmax; i++)
+        {
+            i++;
+            for (; i<a_p[k]; i++)
+            {
+                if (a_i[i] <= a_i[i-1])
+                {
+                    std::cerr << "CompressedRowSparseMatrix:Column (a_i) indices are not sorted indice " << i-1 << " : " << a_i[i-1] << " , " << i << " : " << a_p[i] << std::endl;
+                    return false;
+                }
+                if (a_i[i]<0 || a_i[i]>=n)
+                {
+                    std::cerr << "CompressedRowSparseMatrix:Column (a_i) indices are not correct " << i << " : " << a_i[i] << std::endl;
+                    return false;
+                }
+            }
+            k++;
+        }
+
+        for (int i=0; i<nzmax; i++)
+        {
+            if (a_x[i]==0)
+            {
+                std::cerr << "CompressedRowSparseMatrix:Warning , matrix contains 0 , indice " << i << std::endl;
+                return false;
+            }
+        }
+
+        if (n!=m)
+        {
+            std::cerr << "CompressedRowSparseMatrix:the matrix is not square" << std::endl;
+            return false;
+        }
+
+        std::cerr << "Check_matrix passed succefull" << std::endl;
+        return true;
+    }
 };
 
 #ifdef SPARSEMATRIX_CHECK
