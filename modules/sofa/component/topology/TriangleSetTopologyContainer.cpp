@@ -60,15 +60,19 @@ TriangleSetTopologyContainer::TriangleSetTopologyContainer(const sofa::helper::v
     , m_triangle( triangles )
     , d_triangle(initDataPtr(&d_triangle, &m_triangle, "triangles", "List of triangle indices"))
 {
+
+    serr << getNbPoints() << "Constructor" << sendl;
     for (unsigned int i=0; i<m_triangle.size(); ++i)
     {
         for(unsigned int j=0; j<3; ++j)
         {
             int a = m_triangle[i][j];
-            if (a >= (int)nbPoints)
-                nbPoints = a+1;
+            if (a >= getNbPoints())
+                nbPoints.setValue(a+1);
         }
     }
+
+    serr << "Constructor" << sendl;
 }
 
 void TriangleSetTopologyContainer::addTriangle( int a, int b, int c )
@@ -76,9 +80,11 @@ void TriangleSetTopologyContainer::addTriangle( int a, int b, int c )
     d_triangle.beginEdit();
     m_triangle.push_back(Triangle(a,b,c));
     d_triangle.endEdit();
-    if (a >= (int)nbPoints) nbPoints = a+1;
-    if (b >= (int)nbPoints) nbPoints = b+1;
-    if (c >= (int)nbPoints) nbPoints = c+1;
+    if (a >= getNbPoints()) nbPoints.setValue(a+1);
+    if (b >= getNbPoints()) nbPoints.setValue(b+1);
+    if (c >= getNbPoints()) nbPoints.setValue(c+1);
+
+    serr << "ADD TRIANGLE" << sendl;
 }
 
 void TriangleSetTopologyContainer::init()
@@ -89,10 +95,13 @@ void TriangleSetTopologyContainer::init()
 void TriangleSetTopologyContainer::loadFromMeshLoader(sofa::component::MeshLoader* loader)
 {
     // load points
-    PointSetTopologyContainer::loadFromMeshLoader(loader);
-    d_triangle.beginEdit();
-    loader->getTriangles(m_triangle);
-    d_triangle.endEdit();
+    if (m_triangle.empty())
+    {
+        PointSetTopologyContainer::loadFromMeshLoader(loader);
+        d_triangle.beginEdit();
+        loader->getTriangles(m_triangle);
+        d_triangle.endEdit();
+    }
 }
 
 void TriangleSetTopologyContainer::createTriangleSetArray()

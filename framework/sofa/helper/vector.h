@@ -219,6 +219,34 @@ inline std::istream& vector<int, std::allocator<int> >::read( std::istream& in )
     return in;
 }
 
+/// Output stream
+/// Specialization for writing vectors of unsigned char
+template<>
+inline std::ostream& vector<unsigned char, std::allocator<unsigned char> >::write(std::ostream& os) const
+{
+    if( this->size()>0 )
+    {
+        for( unsigned int i=0; i<this->size()-1; ++i ) os<<(int)(*this)[i]<<" ";
+        os<<(int)(*this)[this->size()-1];
+    }
+    return os;
+}
+
+/// Inpu stream
+/// Specialization for writing vectors of unsigned char
+template<>
+inline std::istream&  vector<unsigned char, std::allocator<unsigned char> >::read(std::istream& in)
+{
+    int t;
+    this->clear();
+    while(in>>t)
+    {
+        this->push_back((unsigned char)t);
+    }
+    if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
+    return in;
+}
+
 /// Input stream
 /// Specialization for reading vectors of int and unsigned int using "A-B" notation for all integers between A and B
 template<>

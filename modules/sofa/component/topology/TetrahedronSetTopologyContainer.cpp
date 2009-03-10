@@ -68,7 +68,7 @@ TetrahedronSetTopologyContainer::TetrahedronSetTopologyContainer(const sofa::hel
         for(unsigned int j=0; j<4; ++j)
         {
             int a = m_tetrahedron[i][j];
-            if (a >= (int)nbPoints) nbPoints = a+1;
+            if (a >= getNbPoints()) nbPoints.setValue(a+1);
         }
     }
 }
@@ -106,10 +106,10 @@ void TetrahedronSetTopologyContainer::addTetra( int a, int b, int c, int d )
     d_tetrahedron.beginEdit();
     m_tetrahedron.push_back(Tetra(a,b,c,d));
     d_tetrahedron.endEdit();
-    if (a >= (int)nbPoints) nbPoints = a+1;
-    if (b >= (int)nbPoints) nbPoints = b+1;
-    if (c >= (int)nbPoints) nbPoints = c+1;
-    if (d >= (int)nbPoints) nbPoints = d+1;
+    if (a >= getNbPoints()) nbPoints.setValue(a+1);
+    if (b >= getNbPoints()) nbPoints.setValue(b+1);
+    if (c >= getNbPoints()) nbPoints.setValue(c+1);
+    if (d >= getNbPoints()) nbPoints.setValue(d+1);
 }
 
 void TetrahedronSetTopologyContainer::init()
@@ -122,7 +122,7 @@ void TetrahedronSetTopologyContainer::init()
             for(unsigned int j=0; j<4; ++j)
             {
                 int a = m_tetrahedron[i][j];
-                if (a >= (int)nbPoints) nbPoints = a+1;
+                if (a >= getNbPoints()) nbPoints.setValue(a+1);
             }
         }
     }

@@ -27,7 +27,7 @@
 
 #include <sofa/component/topology/HexahedronSetTopologyContainer.h>
 #include <sofa/component/topology/HexahedronData.h>
-#include <map>
+#include <sofa/helper/map.h>
 
 namespace sofa
 {
@@ -49,12 +49,12 @@ public:
 
     Data< Vec3i> resolution;
 
-    sofa::helper::vector<unsigned char> valuesIndexedInRegularGrid; // dense. valeurs dans toute la grille.
+    Data< sofa::helper::vector<unsigned char> > valuesIndexedInRegularGrid; // dense. valeurs dans toute la grille.
     HexahedronData<unsigned char> valuesIndexedInTopology; // pas dense. uniquement la ou il y a des hexas.
 
-    sofa::helper::vector<BaseMeshTopology::HexaID> idxInRegularGrid;
-    std::map< unsigned int, BaseMeshTopology::HexaID> idInRegularGrid2IndexInTopo;
-    defaulttype::Vector3 voxelSize;
+    Data< sofa::helper::vector<BaseMeshTopology::HexaID> > idxInRegularGrid;
+    Data< std::map< unsigned int, BaseMeshTopology::HexaID> > idInRegularGrid2IndexInTopo;
+    Data< defaulttype::Vector3 > voxelSize;
 
     DynamicSparseGridTopologyContainer();
     DynamicSparseGridTopologyContainer ( const sofa::helper::vector< Hexahedron > &hexahedra );
