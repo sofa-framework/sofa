@@ -22,16 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_DATAENGINE_H
-#define SOFA_CORE_OBJECTMODEL_DATAENGINE_H
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
-#include <sofa/core/core.h>
-#include <sofa/core/objectmodel/DDGNode.h>
-#include <list>
+#include <sofa/core/objectmodel/DataEngine.h>
 
 namespace sofa
 {
@@ -42,25 +34,12 @@ namespace core
 namespace objectmodel
 {
 
-/**
- *  \brief from a set of Data inputs computes a set of Data outputs
- *
- */
-class SOFA_CORE_API DataEngine : public DDGNode
-{
-public:
+DataEngine::DataEngine() {}
 
-    /// Constructor
-    DataEngine();
-
-    /// Destructor. Do nothing
-    virtual ~DataEngine();
-};
+DataEngine::~DataEngine() {}
 
 } // namespace objectmodel
 
 } // namespace core
 
 } // namespace sofa
-
-#endif
