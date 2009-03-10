@@ -87,6 +87,16 @@ void DDGNode::delOutput(DDGNode* n)
     n->inputs.remove(this);
 }
 
+std::list<DDGNode*> DDGNode::getInputs()
+{
+    return inputs;
+}
+
+std::list<DDGNode*> DDGNode::getOutputs()
+{
+    return outputs;
+}
+
 } // namespace objectmodel
 
 } // namespace core
