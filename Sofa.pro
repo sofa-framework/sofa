@@ -45,6 +45,22 @@ contains(DEFINES,SOFA_HAVE_CSPARSE){
 	SUBDIRS += extlibs/csparse
 }
 
+contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
+
+#METIS
+
+contains(DEFINES,SOFA_EXTLIBS_METIS){
+	SUBDIRS += extlibs/metis
+}
+
+#TAUCS
+
+contains(DEFINES,SOFA_EXTLIBS_TAUCS){
+	SUBDIRS += extlibs/taucs
+}
+
+} # END SOFA_DEV
+
 SUBDIRS += framework
 SUBDIRS += modules
 SUBDIRS += applications
@@ -105,13 +121,6 @@ else {
   message( "|  BOOST libraries: DISABLED")
 }
 
-contains(DEFINES,SOFA_HAVE_CSPARSE) {
-  message( "|  CSPARSE libraries : ENABLED")
-}
-else {
-  message( "|  CSPARSE libraries : DISABLED")
-}
-
 contains(DEFINES,SOFA_XML_PARSER_TINYXML) {
   message( "|  TinyXML parser: ENABLED")
 }
@@ -152,6 +161,28 @@ contains(DEFINES,SOFA_PML) {
 }
 else {
   message( "|  PML/LML support: DISABLED")
+}
+
+
+contains(DEFINES,SOFA_HAVE_CSPARSE) {
+  message( "|  CSPARSE library : ENABLED")
+}
+else {
+  message( "|  CSPARSE library : DISABLED")
+}
+
+contains(DEFINES,SOFA_HAVE_METIS) {
+  message( "|  METIS library : ENABLED")
+}
+else {
+  message( "|  METIS library : DISABLED")
+}
+
+contains(DEFINES,SOFA_HAVE_TAUCS) {
+  message( "|  TAUCS library : ENABLED")
+}
+else {
+  message( "|  TAUCS library : DISABLED")
 }
 
 
