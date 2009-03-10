@@ -30,7 +30,7 @@
 #endif
 
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/core/objectmodel/DDGNode.h>
+#include <sofa/core/objectmodel/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/objectmodel/XDataPtr.h>
@@ -51,7 +51,7 @@ using namespace core::objectmodel;
 /** Keep fixed all the particles located inside a given box.
 */
 template <class DataTypes>
-class BoxROI : public virtual core::objectmodel::DDGNode, public virtual core::objectmodel::BaseObject
+class BoxROI : public virtual core::objectmodel::DataEngine, public virtual core::objectmodel::BaseObject
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;

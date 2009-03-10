@@ -22,14 +22,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_DDGNODE_H
-#define SOFA_CORE_OBJECTMODEL_DDGNODE_H
+#ifndef SOFA_CORE_OBJECTMODEL_DATAENGINE_H
+#define SOFA_CORE_OBJECTMODEL_DATAENGINE_H
 
 #if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
 #pragma once
 #endif
 
 #include <sofa/core/core.h>
+#include <sofa/core/objectmodel/DDGNode.h>
 #include <list>
 
 namespace sofa
@@ -45,51 +46,15 @@ namespace objectmodel
  *  \brief Abstract base to manage data dependencies. BaseData and DataEngine inherites from this class
  *
  */
-class SOFA_CORE_API DDGNode
+class SOFA_CORE_API DataEngine : public DDGNode
 {
 public:
 
     /// Constructor
-    DDGNode():dirty(false) {}
+    DataEngine() {}
 
     /// Destructor. Do nothing
-    virtual ~DDGNode();
-
-    /// Update the value of Datas
-    virtual void update() = 0;
-
-    /// True if the Data has been modified
-    virtual void setDirty();
-
-    /// Set dirty flag to false
-    void cleanDirty();
-
-    /// Returns true if the DDGNode has been modified. Otherwise returns false
-    bool isDirty();
-
-    /// Add a new input to this node
-    void addInput(DDGNode* n);
-
-    /// Remove an input from this node
-    void delInput(DDGNode* n);
-
-    /// Add a new output to this node
-    void addOutput(DDGNode* n);
-
-    /// Remove an output from this node
-    void delOutput(DDGNode* n);
-
-    /// Get the list of inputs for this DDGNode
-    std::list<DDGNode*> getInputs();
-
-    /// Get the list of outputs for this DDGNode
-    std::list<DDGNode*> getOutputs();
-
-protected:
-
-    std::list<DDGNode*> inputs;
-    std::list<DDGNode*> outputs;
-    bool dirty;
+    virtual ~DataEngine() {}
 };
 
 } // namespace objectmodel
