@@ -12,6 +12,9 @@ DEFINES += use_namespace
 
 SOURCES = \    
         csparse.c \
+        ldl.c \
 
 HEADERS = \
         csparse.h \
+        ldl.h \
+        UFconfig.h \
