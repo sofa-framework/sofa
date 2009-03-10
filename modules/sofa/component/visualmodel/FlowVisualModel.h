@@ -133,6 +133,7 @@ protected:
 
     VecCoord x;
     VecCoord velocityAtVertex;
+    helper::vector<double> normAtVertex;
     helper::vector<StreamLine> streamLines;
     double meanEdgeLength;
     double vmax, vmin;
