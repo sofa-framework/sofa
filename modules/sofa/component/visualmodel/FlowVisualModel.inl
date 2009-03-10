@@ -54,7 +54,7 @@ FlowVisualModel<DataTypes>::~FlowVisualModel()
 template <class DataTypes>
 void FlowVisualModel<DataTypes>::init()
 {
-    sofa::core::objectmodel::BaseContext* context = this->getContext();
+    //sofa::core::objectmodel::BaseContext* context = this->getContext();
 
     //locate necessary objects with tags
     core::objectmodel::TagSet::const_iterator tagIt = this->getTags().begin();
@@ -71,7 +71,7 @@ void FlowVisualModel<DataTypes>::init()
     tetraStateTS.insert(state);
     tetraGeometryTS.insert(geometry);
 
-
+    tetraCenters = NULL;
     triangleGeometry = NULL;
     tetraGeometry = NULL;
 
@@ -265,7 +265,7 @@ typename DataTypes::Coord FlowVisualModel<DataTypes>::interpolateVelocity(unsign
         atEnd = true;
         return Coord();
     }
-
+    VecDeriv& v2d = *this->triangleGeometry->getV();
     helper::vector<BaseMeshTopology::TriangleID> triangles;
     double distCoeff=0.0;
     double sumDistCoeff=0.0;
@@ -275,14 +275,14 @@ typename DataTypes::Coord FlowVisualModel<DataTypes>::interpolateVelocity(unsign
     {
         unsigned int ind = (*it);
         distCoeff = 1/(p-x[ind]).norm2();
-        velocitySeed += velocityAtVertex[ind]*distCoeff;
+        velocitySeed += v2d[ind]*distCoeff;
         sumDistCoeff += distCoeff;
     }
     velocitySeed /= sumDistCoeff;
 
     //velocitySeed = Coord(0.0,0.0,0.0);
     //Coord velocitySeed = (v[t[0]]*coeff0 + v[t[1]]*coeff1 + v[t[2]]*coeff2)/(coeff0 + coeff1+ coeff2) ;
-    Coord velocitySeed2 = velocityAtVertex[streamLines[index].currentTriangleID];
+    //Coord velocitySeed2 = velocityAtVertex[streamLines[index].currentTriangleID];
 
     //std::cout << velocitySeed << " " << velocitySeed2 << std::endl;
 
@@ -319,13 +319,14 @@ void FlowVisualModel<DataTypes>::interpolateVelocityAtVertices()
     unsigned int indexClosestPoint;
     unsigned int nbPoints =  m_triTopo->getNbPoints();
     helper::vector<double> weight;
-    VecDeriv& v2d = *this->tetraGeometry->getV();
-    VecDeriv& x3d = *this->tetraCenters->getX();
-
+//	VecDeriv& v2d = *this->tetraGeometry->getV();
     velocityAtVertex.resize(nbPoints);
+    normAtVertex.resize(nbPoints);
     weight.resize(nbPoints);
+
     std::fill( weight.begin(), weight.end(), 0 );
     std::fill( velocityAtVertex.begin(), velocityAtVertex.end(), Coord() );
+    std::fill( normAtVertex.begin(), normAtVertex.end(), 0.0 );
 
     core::componentmodel::topology::BaseMeshTopology::SeqTriangles triangles =  m_triTopo->getTriangles();
     if (!m_tetraTopo)
@@ -338,39 +339,100 @@ void FlowVisualModel<DataTypes>::interpolateVelocityAtVertices()
             for(unsigned int j=0 ; j<3 ; j++)
             {
                 velocityAtVertex[t[j]] += v2d[i];
+                normAtVertex[t[j]] += v2d[i].norm();
                 weight[t[j]]++;
             }
         }
         for(unsigned int i=0 ; i<nbPoints ; i++)
         {
             velocityAtVertex[i] /= weight[i];
+            normAtVertex[i] /= weight[i];
         }
+
     }
     else
     {
+        VecDeriv& x3d = *this->tetraCenters->getX();
         VecDeriv& v3d = *this->tetraCenters->getV();
         if (v3d.size() > 0)
         {
             //Loop for each vertex of the triangle mesh
             for (unsigned int i=0 ; i<nbPoints ; i++)
             {
+                float averageEdgeLength=0.0;
+                //helper::set<BaseMeshTopology::TetraID> tetrasShell;
                 Coord pTriangle = m_triGeo->getPointPosition(i);
                 //Search the closest vertex of the volumetric mesh
                 indexClosestPoint = getIndexClosestPoint(*this->tetraGeometry->getX(), pTriangle);
 
-                //get the TetraShell
-                helper::vector<BaseMeshTopology::TetraID> tetras = m_tetraTopo->getTetraVertexShell(indexClosestPoint);
-                //Loop for each tetra of the shell
-                for (unsigned int j=0 ; j<tetras.size() ; j++)
+                //get the TetraShell of the closest Point
+                helper::vector<BaseMeshTopology::TetraID> closestTetraShell = m_tetraTopo->getTetraVertexShell(indexClosestPoint);
+
+                //helper::vector<BaseMeshTopology::Tetra> tetras = m_tetraTopo->getTetras();
+                unsigned int t, closestTetra = 0;
+                bool found = false;
+                for(t=0 ; t<closestTetraShell.size() && !found; t++)
                 {
-                    //compute weight according of the distance between the triangle vertex and the closest tetra vertex
-                    double distCoeff = (pTriangle-x3d[tetras[j]]).norm2();
-                    velocityAtVertex[i] += v3d[tetras[j]] * distCoeff;
-                    weight[i]+= distCoeff;
+                    found = m_tetraGeo->isPointInTetrahedron(closestTetraShell[t], pTriangle);
+                    if (found)
+                    {
+                        closestTetra = closestTetraShell[t];
+                        Coord points[4];
+                        averageEdgeLength = 0.0;
+                        m_tetraGeo->getTetrahedronVertexCoordinates(closestTetra, points);
+
+                        averageEdgeLength += (points[0] - points[1]).norm();
+                        averageEdgeLength += (points[0] - points[2]).norm();
+                        averageEdgeLength += (points[0] - points[3]).norm();
+                        averageEdgeLength += (points[1] - points[2]).norm();
+                        averageEdgeLength += (points[1] - points[3]).norm();
+                        averageEdgeLength += (points[2] - points[3]).norm();
+                        averageEdgeLength /= 6.0;
+
+                    }
                 }
 
-                //Normalize velocity per vertex
-                velocityAtVertex[i] /= weight[i];
+
+                if (found)
+                {
+                    helper::vector<unsigned int> tetrasShell;
+                    m_tetraGeo->getTetraInBall(closestTetra , averageEdgeLength, tetrasShell);
+                    //std::cout << "T= " << closestTetraShell[t] << std::endl;
+                    //std::cout << "Shell " << tetrasShell << std::endl;
+                    //helper::vector<BaseMeshTopology::TetraID> closestTetra = m_tetraTopo->getTetraVertexShell(indexClosestPoint);
+                    //now, get the tetraShell of the tetrahedron
+
+                    //and insert all vertices of each tetrahedron into a set
+                    //for (unsigned int j=0 ; j<closestTetra ;j++)
+                    //{
+                    //	helper::vector<BaseMeshTopology::TetraID> tetraNeighborhood = m_tetraTopo->getTetraVertexShell(closestTetra[j]);
+                    //	verticesShell.insert(tetraNeighborhood);
+                    //}
+
+                    //Finally, loop over all vertices of the set and compute velocities
+                    for (unsigned int j = 0; j<tetrasShell.size() ; j++)
+                    {
+                        //compute weight according of the distance between the triangle vertex and the closest tetra vertex
+                        unsigned int index = tetrasShell[j];
+                        double distCoeff = (pTriangle-x3d[index]).norm2();
+                        velocityAtVertex[i] += v3d[index] * distCoeff;
+                        normAtVertex[i] += v3d[index].norm() * distCoeff;
+                        weight[i]+= distCoeff;
+                        weight[i]=1.0;
+
+                    }
+
+                    //Normalize velocity per vertex
+                    velocityAtVertex[i] /= weight[i];
+                    normAtVertex[i] /= weight[i];
+
+
+                }
+                else
+                {
+                    velocityAtVertex[i] = Coord();
+                    normAtVertex[i] = 0.0;
+                }
             }
         }
     }
@@ -507,9 +569,9 @@ void FlowVisualModel<DataTypes>::draw()
 
             if((vmax-vmin) > 0.0)
             {
-                indColor0 = (int)(64* ((velocityAtVertex[t[0]].norm()-vmin)/(vmax-vmin)));
-                indColor1 = (int)(64* ((velocityAtVertex[t[1]].norm()-vmin)/(vmax-vmin)));
-                indColor2 = (int)(64* ((velocityAtVertex[t[2]].norm()-vmin)/(vmax-vmin)));
+                indColor0 = (int)(64* ((normAtVertex[t[0]]-vmin)/(vmax-vmin)));
+                indColor1 = (int)(64* ((normAtVertex[t[1]]-vmin)/(vmax-vmin)));
+                indColor2 = (int)(64* ((normAtVertex[t[2]]-vmin)/(vmax-vmin)));
                 if (indColor0 < 0) indColor0 = 0;
                 if (indColor1 < 0) indColor1 = 0;
                 if (indColor2 < 0) indColor2 = 0;
@@ -534,24 +596,45 @@ void FlowVisualModel<DataTypes>::draw()
         }
 
         VecCoord& x2D = *this->triangleGeometry->getX();
+        VecCoord& v2D = *this->triangleGeometry->getV();
 
         //Show Velocity
         if (showVelocityLines.getValue())
         {
             glBegin(GL_LINES);
-            for(unsigned int i=0 ; i<velocityAtVertex.size() ; i++)
+            if (!m_tetraTopo)
             {
-                if (velocityAtVertex[i].norm() > 0.0 && vmax > 0.0)
+                for(unsigned int i=0 ; i<x.size() ; i++)
                 {
-                    Coord p0 = x2D[i];
-                    Coord p1 = x2D[i] + velocityAtVertex[i]/vmax*viewVelocityFactor.getValue();
+                    if (vmax > 0.0)
+                    {
+                        Coord p0 = x[i];
+                        Coord p1 = x[i] + v2D[i]/vmax*viewVelocityFactor.getValue();
 
-                    glColor3f(1.0,1.0,1.0);
-                    glVertex3f((GLfloat)p0[0], (GLfloat)p0[1], (GLfloat)p0[2]);
-                    glColor3f(1.0,1.0,1.0);
-                    glVertex3f((GLfloat)p1[0], (GLfloat)p1[1], (GLfloat)p1[2]);
+                        glColor3f(1.0,1.0,1.0);
+                        glVertex3f((GLfloat)p0[0], (GLfloat)p0[1], (GLfloat)p0[2]);
+                        glColor3f(1.0,1.0,1.0);
+                        glVertex3f((GLfloat)p1[0], (GLfloat)p1[1], (GLfloat)p1[2]);
+                    }
                 }
             }
+            else
+            {
+                for(unsigned int i=0 ; i<x2D.size() ; i++)
+                {
+                    if (vmax > 0.0)
+                    {
+                        Coord p0 = x2D[i];
+                        Coord p1 = x2D[i] + velocityAtVertex[i]/vmax*viewVelocityFactor.getValue();
+
+                        glColor3f(1.0,1.0,1.0);
+                        glVertex3f((GLfloat)p0[0], (GLfloat)p0[1], (GLfloat)p0[2]);
+                        glColor3f(1.0,1.0,1.0);
+                        glVertex3f((GLfloat)p1[0], (GLfloat)p1[1], (GLfloat)p1[2]);
+                    }
+                }
+            }
+
             glEnd();
         }
 
