@@ -7,17 +7,17 @@
 	<!--<Object type="CollisionGroup" />-->
 	<Node name="Liver" depend="topo dofs">
 		<!--<Object type="CGImplicit" iterations="25"/>-->
-		<EulerImplicit name="cg_odesolver" printLog="false" tags="M" />
-		<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" tags="M" />
+		<EulerImplicit name="cg_odesolver" printLog="false"  />
+		<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9"  />
         	<MeshLoader name="meshLoader" filename="mesh/liver.msh"/>
 		<!-- Container for the tetrahedra-->
 		<TetrahedronSetTopologyContainer name="topo" />
-		<MechanicalObject name="dofs" tags="M" />
+		<MechanicalObject name="dofs"  />
 		<!-- Algorithms: used in DiagonalMass to compute the mass -->
 		<TetrahedronSetGeometryAlgorithms name="GeomAlgo"  />
-		<DiagonalMass massDensity="1" name="computed using mass density" tags="M" />
-		<TetrahedralCorotationalFEMForceField name="FEM" youngModulus="500" poissonRatio="0.3" computeGlobalMatrix="false" method="large" tags="M" />
-                <FixedConstraint name="FixedConstraint" indices="3 39 64" tags="M" />
+		<DiagonalMass massDensity="1" name="computed using mass density"  />
+		<TetrahedralCorotationalFEMForceField name="FEM" youngModulus="500" poissonRatio="0.3" computeGlobalMatrix="false" method="large"  />
+                <FixedConstraint name="FixedConstraint" indices="3 39 64"  />
 
 		<Node name="Visu">
 		<!-- Using material contained in liver-smooth.obj -->
@@ -26,8 +26,8 @@
 		</Node>
 		<Node name="Surf">
 			<Sphere name="CollisionModel" filename="mesh/liver.sph" />
-			<MechanicalObject tags="M" />
-			<BarycentricMapping name="sphere mapping" tags="M" />
+			<MechanicalObject  />
+			<BarycentricMapping name="sphere mapping"  />
 		</Node>
 	</Node>
 </Node>
