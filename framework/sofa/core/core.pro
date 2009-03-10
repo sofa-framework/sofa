@@ -101,6 +101,7 @@ SOURCES +=  \
 	  objectmodel/DDGNode.cpp \
           objectmodel/DetachNodeEvent.cpp \
           objectmodel/Event.cpp \
+          objectmodel/DataEngine.cpp \
           objectmodel/DataPtr.cpp \
 	  objectmodel/JoystickEvent.cpp \
           objectmodel/KeypressedEvent.cpp \
