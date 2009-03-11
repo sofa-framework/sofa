@@ -45,7 +45,6 @@ extern "C"
     void UniformMassCuda3f1_accFromF(unsigned int size, float mass, void* a, const void* f);
     void UniformMassCuda3f1_addForce(unsigned int size, const float *mg, void* f);
 
-#ifdef SOFA_DEV
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
     void UniformMassCuda3d_addMDx(unsigned int size, double mass, void* res, const void* dx);
@@ -57,7 +56,6 @@ extern "C"
     void UniformMassCuda3d1_addForce(unsigned int size, const double *mg, void* f);
 
 #endif // SOFA_GPU_CUDA_DOUBLE
-#endif // SOFA_DEV
 
 }
 
@@ -252,7 +250,6 @@ void UniformMassCuda3f1_addForce(unsigned int size, const float *mg, void* f)
     UniformMassCuda3t1_addForce_kernel<float><<< grid, threads >>>(size, CudaVec3<float>::make(mg[0],mg[1],mg[2]), (CudaVec4<float>*)f);
 }
 
-#ifdef SOFA_DEV
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
 void UniformMassCuda3d_addMDx(unsigned int size, double mass, void* res, const void* dx)
@@ -306,7 +303,6 @@ void UniformMassCuda3d1_addForce(unsigned int size, const double *mg, void* f)
 }
 
 #endif // SOFA_GPU_CUDA_DOUBLE
-#endif // SOFA_DEV
 
 #if defined(__cplusplus) && CUDA_VERSION < 2000
 } // namespace cuda

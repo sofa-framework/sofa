@@ -48,7 +48,6 @@ extern "C"
     void CudaVisualModelCuda3f1_calcQNormals(unsigned int nbElem, unsigned int nbVertex, const void* elems, void* fnormals, const void* x);
     void CudaVisualModelCuda3f1_calcVNormals(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* velems, void* vnormals, const void* fnormals, const void* x);
 
-#ifdef SOFA_DEV
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
     void CudaVisualModelCuda3d_calcTNormals(unsigned int nbElem, unsigned int nbVertex, const void* elems, void* fnormals, const void* x);
@@ -60,7 +59,6 @@ extern "C"
     void CudaVisualModelCuda3d1_calcVNormals(unsigned int nbElem, unsigned int nbVertex, unsigned int nbElemPerVertex, const void* velems, void* vnormals, const void* fnormals, const void* x);
 
 #endif // SOFA_GPU_CUDA_DOUBLE
-#endif // SOFA_DEV
 }
 
 //////////////////////
@@ -452,7 +450,6 @@ void CudaVisualModelCuda3f1_calcVNormals(unsigned int nbElem, unsigned int nbVer
 }
 
 
-#ifdef SOFA_DEV
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
 void CudaVisualModelCuda3d_calcTNormals(unsigned int nbElem, unsigned int nbVertex, const void* elems, void* fnormals, const void* x)
@@ -502,7 +499,6 @@ void CudaVisualModelCuda3d1_calcVNormals(unsigned int nbElem, unsigned int nbVer
 }
 
 #endif // SOFA_GPU_CUDA_DOUBLE
-#endif // SOFA_DEV
 
 #if defined(__cplusplus) && CUDA_VERSION < 2000
 } // namespace cuda

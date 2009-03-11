@@ -111,7 +111,6 @@ typedef CudaVec2<float> CudaVec2f;
 typedef CudaVec3<float> CudaVec3f;
 typedef CudaVec4<float> CudaVec4f;
 
-#ifdef SOFA_DEV
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
 class __align__(8) double3
@@ -192,7 +191,6 @@ typedef CudaVec3<double> CudaVec3d;
 typedef CudaVec4<double> CudaVec4d;
 
 #endif // SOFA_GPU_CUDA_DOUBLE
-#endif // SOFA_DEV
 
 template<class real>
 __device__ CudaVec3<real> operator+(CudaVec3<real> a, CudaVec3<real> b)

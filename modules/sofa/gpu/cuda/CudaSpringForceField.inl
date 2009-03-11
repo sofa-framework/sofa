@@ -57,7 +57,6 @@ extern "C"
     void StiffSpringForceFieldCuda3f1_addDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f, const void* dx, const void* x, const void* dfdx, double factor);
     void StiffSpringForceFieldCuda3f1_addExternalDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f1, const void* dx1, const void* x1, const void* dx2, const void* x2, const void* dfdx, double factor);
 
-#ifdef SOFA_DEV
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
     void SpringForceFieldCuda3d_addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f, const void* x, const void* v);
@@ -75,7 +74,6 @@ extern "C"
     void StiffSpringForceFieldCuda3d1_addExternalDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f1, const void* dx1, const void* x1, const void* dx2, const void* x2, const void* dfdx, double factor);
 
 #endif // SOFA_GPU_CUDA_DOUBLE
-#endif // SOFA_DEV
 
 } // extern "C"
 
@@ -116,7 +114,6 @@ public:
     {   StiffSpringForceFieldCuda3f1_addExternalDForce(nbVertex, nbSpringPerVertex, springs, f1, dx1, x1, dx2, x2, dfdx, factor); }
 };
 
-#ifdef SOFA_DEV
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
 template<>
@@ -156,7 +153,6 @@ public:
 };
 
 #endif // SOFA_GPU_CUDA_DOUBLE
-#endif // SOFA_DEV
 
 } // namespace cuda
 
@@ -417,14 +413,12 @@ void SpringForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
 CudaSpringForceField_ImplMethods(gpu::cuda::CudaVec3fTypes);
 CudaSpringForceField_ImplMethods(gpu::cuda::CudaVec3f1Types);
 
-#ifdef SOFA_DEV
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
 CudaSpringForceField_ImplMethods(gpu::cuda::CudaVec3dTypes);
 CudaSpringForceField_ImplMethods(gpu::cuda::CudaVec3d1Types);
 
 #endif // SOFA_GPU_CUDA_DOUBLE
-#endif // SOFA_DEV
 
 #undef CudaSpringForceField_ImplMethods
 

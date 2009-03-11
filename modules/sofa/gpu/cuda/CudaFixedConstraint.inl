@@ -44,7 +44,6 @@ extern "C"
     void FixedConstraintCuda3f1_projectResponseContiguous(unsigned int size, void* dx);
     void FixedConstraintCuda3f1_projectResponseIndexed(unsigned int size, const void* indices, void* dx);
 
-#ifdef SOFA_DEV
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
     void FixedConstraintCuda3d_projectResponseContiguous(unsigned int size, void* dx);
@@ -53,7 +52,6 @@ extern "C"
     void FixedConstraintCuda3d1_projectResponseIndexed(unsigned int size, const void* indices, void* dx);
 
 #endif // SOFA_GPU_CUDA_DOUBLE
-#endif // SOFA_DEV
 }
 
 } // namespace cuda
@@ -221,7 +219,6 @@ void FixedConstraintInternalData<gpu::cuda::CudaVec3f1Types>::projectResponse(Ma
         FixedConstraintCuda3f1_projectResponseIndexed(data.cudaIndices.size(), data.cudaIndices.deviceRead(), dx.deviceWrite());
 }
 
-#ifdef SOFA_DEV
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
 template <>
@@ -249,7 +246,6 @@ void FixedConstraintInternalData<gpu::cuda::CudaVec3d1Types>::projectResponse(Ma
 }
 
 #endif // SOFA_GPU_CUDA_DOUBLE
-#endif // SOFA_DEV
 
 // I know using macros is bad design but this is the only way not to repeat the code for all CUDA types
 #define CudaFixedConstraint_ImplMethods(T) \
@@ -265,14 +261,12 @@ void FixedConstraintInternalData<gpu::cuda::CudaVec3d1Types>::projectResponse(Ma
 CudaFixedConstraint_ImplMethods(gpu::cuda::CudaVec3fTypes);
 CudaFixedConstraint_ImplMethods(gpu::cuda::CudaVec3f1Types);
 
-#ifdef SOFA_DEV
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
 CudaFixedConstraint_ImplMethods(gpu::cuda::CudaVec3dTypes);
 CudaFixedConstraint_ImplMethods(gpu::cuda::CudaVec3d1Types);
 
 #endif // SOFA_GPU_CUDA_DOUBLE
-#endif // SOFA_DEV
 
 #undef CudaFixedConstraint_ImplMethods
 

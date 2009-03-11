@@ -1217,8 +1217,6 @@ inline const char* CudaRigid3fTypes::Name()
 }
 
 
-#ifdef SOFA_DEV
-
 // support for double precision
 //#define SOFA_GPU_CUDA_DOUBLE
 
@@ -1262,8 +1260,6 @@ inline const char* CudaRigid3dTypes::Name()
     return "CudaRigid3d";
 }
 #endif
-
-#endif // SOFA_DEV
 
 
 
