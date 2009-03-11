@@ -40,13 +40,21 @@
 
 namespace boost {
 
-#if BOOST_WORKAROUND(__BORLANDC__, < 0x600)
+#if defined( __CODEGEARC__ )
+BOOST_TT_AUX_BOOL_TRAIT_DEF1(is_member_pointer,T,__is_member_pointer(T))
+#elif BOOST_WORKAROUND(__BORLANDC__, < 0x600)
 BOOST_TT_AUX_BOOL_TRAIT_DEF1(is_member_pointer,T,false)
 BOOST_TT_AUX_BOOL_TRAIT_PARTIAL_SPEC1_2(typename T,typename U,is_member_pointer,U T::*,true)
 
 #elif !defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION)
 BOOST_TT_AUX_BOOL_TRAIT_DEF1(is_member_pointer,T,::boost::is_member_function_pointer<T>::value)
 BOOST_TT_AUX_BOOL_TRAIT_PARTIAL_SPEC1_2(typename T,typename U,is_member_pointer,U T::*,true)
+
+#if !BOOST_WORKAROUND(__MWERKS__,<=0x3003)
+BOOST_TT_AUX_BOOL_TRAIT_PARTIAL_SPEC1_2(typename T,typename U,is_member_pointer,U T::*const,true)
+BOOST_TT_AUX_BOOL_TRAIT_PARTIAL_SPEC1_2(typename T,typename U,is_member_pointer,U T::*volatile,true)
+BOOST_TT_AUX_BOOL_TRAIT_PARTIAL_SPEC1_2(typename T,typename U,is_member_pointer,U T::*const volatile,true)
+#endif
 
 #else // no partial template specialization
 

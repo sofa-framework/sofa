@@ -385,7 +385,7 @@ namespace boost {
         if (*ui != *vi) {
           for (tie(ci, ci_end) = vertices(g); ci != ci_end; ++ci) 
             put(color, *ci, Color::white());
-          if (! is_reachable(*ui, *vi, color))
+          if (! is_reachable(*ui, *vi, g, color))
             return false;
         }
     return true;

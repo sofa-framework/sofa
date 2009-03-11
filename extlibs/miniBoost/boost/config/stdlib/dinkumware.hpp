@@ -78,6 +78,11 @@
 #  define BOOST_NO_STD_ITERATOR_TRAITS
 #endif
 
+//
+// No std::unordered_* containers yet:
+//
+#define BOOST_NO_STD_UNORDERED
+
 #if defined(__ICL) && (__ICL < 800) && defined(_CPPLIB_VER) && (_CPPLIB_VER <= 310)
 // Intel C++ chokes over any non-trivial use of <locale>
 // this may be an overly restrictive define, but regex fails without it:

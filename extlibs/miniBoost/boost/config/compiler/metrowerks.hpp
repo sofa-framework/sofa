@@ -42,6 +42,7 @@
 #   if(__MWERKS__ <= 0x3206) || !defined(BOOST_STRICT_CONFIG) // 9.5
 #     define BOOST_NO_MEMBER_TEMPLATE_FRIENDS
 #     define BOOST_NO_IS_ABSTRACT
+#     define BOOST_NO_INITIALIZER_LISTS
 #    endif
 
 #if !__option(wchar_type)
@@ -78,6 +79,13 @@
 #   endif
 #else
 #  define BOOST_COMPILER_VERSION __MWERKS__
+#endif
+
+//
+// C++0x features
+//
+#if __MWERKS__ > 0x3206 && __option(rvalue_refs)
+#  define BOOST_HAS_RVALUE_REFS
 #endif
 
 #define BOOST_COMPILER "Metrowerks CodeWarrior C++ version " BOOST_STRINGIZE(BOOST_COMPILER_VERSION)

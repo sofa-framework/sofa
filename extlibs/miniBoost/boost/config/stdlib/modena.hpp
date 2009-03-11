@@ -21,6 +21,10 @@
 #ifndef MSIPL_WCHART
 #define BOOST_NO_STD_WSTRING
 #endif
+//
+// We never have the new C++0x unordered containers:
+//
+#define BOOST_NO_STD_UNORDERED
 
 #define BOOST_STDLIB "Modena C++ standard library"
 

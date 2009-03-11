@@ -2,7 +2,7 @@
 //  (C) Copyright Jens Maurer 2001 - 2003. 
 //  (C) Copyright David Abrahams 2002. 
 //  (C) Copyright Toon Knapen 2003. 
-//  (C) Copyright Boris Gubenko 2006.
+//  (C) Copyright Boris Gubenko 2006 - 2007.
 //  Use, modification and distribution are subject to the 
 //  Boost Software License, Version 1.0. (See accompanying file 
 //  LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -23,6 +23,8 @@
 
 #if !(defined(__HP_aCC) || !defined(_INCLUDE__STDC_A1_SOURCE))
 #  define BOOST_NO_SWPRINTF
+#endif
+#if defined(__HP_aCC) && !defined(_INCLUDE__STDC_A1_SOURCE)
 #  define BOOST_NO_CWCTYPE
 #endif
 
@@ -72,7 +74,9 @@
 #  define BOOST_HAS_SIGACTION
 #endif
 #ifndef BOOST_HAS_NRVO 
-#  define BOOST_HAS_NRVO
+#  ifndef __parisc
+#    define BOOST_HAS_NRVO
+#  endif
 #endif
 #ifndef BOOST_HAS_LOG1P 
 #  define BOOST_HAS_LOG1P
@@ -80,6 +84,4 @@
 #ifndef BOOST_HAS_EXPM1
 #  define BOOST_HAS_EXPM1
 #endif
-
-
 

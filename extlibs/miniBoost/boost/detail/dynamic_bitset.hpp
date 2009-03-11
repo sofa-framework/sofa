@@ -1,7 +1,7 @@
-// --------------------------------------------------
+// -----------------------------------------------------------
 //
-// (C) Copyright Chuck Allison and Jeremy Siek 2001 - 2002.
-// (C) Copyright Gennaro Prota                 2003 - 2004.
+//   Copyright (c) 2001-2002 Chuck Allison and Jeremy Siek
+//        Copyright (c) 2003-2006, 2008 Gennaro Prota
 //
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
@@ -9,21 +9,18 @@
 //
 // -----------------------------------------------------------
 
-//  See http://www.boost.org/libs/dynamic_bitset for documentation.
-
-
 #ifndef BOOST_DETAIL_DYNAMIC_BITSET_HPP
 #define BOOST_DETAIL_DYNAMIC_BITSET_HPP
 
-#include <cstddef> // for std::size_t
+#include <cstddef>
 #include "boost/config.hpp"
 #include "boost/detail/workaround.hpp"
-//#include "boost/static_assert.hpp" // gps
 
 
 namespace boost {
 
   namespace detail {
+  namespace dynamic_bitset_impl {
 
     // Gives (read-)access to the object representation
     // of an object of type T (3.9p4). CANNOT be used
@@ -35,16 +32,41 @@ namespace boost {
         return static_cast<const unsigned char *>(static_cast<const void *>(p));
     }
 
+    template<typename T, int amount, int width /* = default */>
+    struct shifter
+    {
+        static void left_shift(T & v) {
+            amount >= width ? (v = 0)
+                : (v >>= BOOST_DYNAMIC_BITSET_WRAP_CONSTANT(amount));
+        }
+    };
 
     // ------- count function implementation --------------
 
-    namespace dynamic_bitset_count_impl {
-
     typedef unsigned char byte_type;
 
-    enum mode { access_by_bytes, access_by_blocks };
+    // These two entities
+    //
+    //     enum mode { access_by_bytes, access_by_blocks };
+    //     template <mode> struct mode_to_type {};
+    //
+    // were removed, since the regression logs (as of 24 Aug 2008)
+    // showed that several compilers had troubles with recognizing
+    //
+    //   const mode m = access_by_bytes
+    //
+    // as a constant expression
+    //
+    // * So, we'll use bool, instead of enum *.
+    //
+    template <bool value>
+    struct value_to_type
+    {
+        value_to_type() {}
+    };
+    const bool access_by_bytes = true;
+    const bool access_by_blocks = false;
 
-    template <mode> struct mode_to_type {};
 
     // the table: wrapped in a class template, so
     // that it is only instantiated if/when needed
@@ -79,7 +101,7 @@ namespace boost {
      template <typename Iterator>
      inline std::size_t do_count(Iterator first, std::size_t length,
                                  int /*dummy param*/,
-                                 mode_to_type<access_by_bytes>* )
+                                 value_to_type<access_by_bytes>* )
      {
          std::size_t num = 0;
          if (length)
@@ -103,7 +125,7 @@ namespace boost {
      //
      template <typename Iterator, typename ValueType>
      inline std::size_t do_count(Iterator first, std::size_t length, ValueType,
-                                 mode_to_type<access_by_blocks>*)
+                                 value_to_type<access_by_blocks>*)
      {
          std::size_t num = 0;
          while (length){
@@ -121,8 +143,6 @@ namespace boost {
          return num;
      }
 
-
-    } // dynamic_bitset_count_impl
     // -------------------------------------------------------
 
 
@@ -131,7 +151,7 @@ namespace boost {
     //
     //   size_type(-1) / sizeof(T)
     //
-    // from vector<>::max_size. This tries to get out more
+    // from vector<>::max_size. This tries to get more
     // meaningful info.
     //
     template <typename T>
@@ -150,16 +170,57 @@ namespace boost {
 
     // for static_asserts
     template <typename T>
-    struct dynamic_bitset_allowed_block_type {
-        enum { value = (T(-1) > 0) }; // ensure T has no sign
+    struct allowed_block_type {
+        enum { value = T(-1) > 0 }; // ensure T has no sign
     };
 
     template <>
-    struct dynamic_bitset_allowed_block_type<bool> {
+    struct allowed_block_type<bool> {
         enum { value = false };
     };
 
 
+    template <typename T>
+    struct is_numeric {
+        enum { value = false };
+    };
+
+#   define BOOST_dynamic_bitset_is_numeric(x)       \
+                template<>                          \
+                struct is_numeric< x > {            \
+                    enum { value = true };          \
+                }                                /**/
+
+    BOOST_dynamic_bitset_is_numeric(bool);
+    BOOST_dynamic_bitset_is_numeric(char);
+
+#if !defined(BOOST_NO_INTRINSIC_WCHAR_T)
+    BOOST_dynamic_bitset_is_numeric(wchar_t);
+#endif
+
+    BOOST_dynamic_bitset_is_numeric(signed char);
+    BOOST_dynamic_bitset_is_numeric(short int);
+    BOOST_dynamic_bitset_is_numeric(int);
+    BOOST_dynamic_bitset_is_numeric(long int);
+
+    BOOST_dynamic_bitset_is_numeric(unsigned char);
+    BOOST_dynamic_bitset_is_numeric(unsigned short);
+    BOOST_dynamic_bitset_is_numeric(unsigned int);
+    BOOST_dynamic_bitset_is_numeric(unsigned long);
+
+#if defined(BOOST_HAS_LONG_LONG)
+    BOOST_dynamic_bitset_is_numeric(::boost::long_long_type);
+    BOOST_dynamic_bitset_is_numeric(::boost::ulong_long_type);
+#endif
+
+    // intentionally omitted
+    //BOOST_dynamic_bitset_is_numeric(float);
+    //BOOST_dynamic_bitset_is_numeric(double);
+    //BOOST_dynamic_bitset_is_numeric(long double);
+
+#undef BOOST_dynamic_bitset_is_numeric
+
+  } // dynamic_bitset_impl
   } // namespace detail
 
 } // namespace boost

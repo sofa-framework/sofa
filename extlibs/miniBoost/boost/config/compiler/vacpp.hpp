@@ -1,7 +1,7 @@
 //  (C) Copyright John Maddock 2001 - 2003. 
 //  (C) Copyright Toon Knapen 2001 - 2003. 
 //  (C) Copyright Lie-Quan Lee 2001. 
-//  (C) Copyright Markus Schöpflin 2002 - 2003. 
+//  (C) Copyright Markus Schoepflin 2002 - 2003. 
 //  (C) Copyright Beman Dawes 2002 - 2003. 
 //  Use, modification and distribution are subject to the 
 //  Boost Software License, Version 1.0. (See accompanying file 
@@ -27,6 +27,7 @@
 
 #if (__IBMCPP__ <= 600) || !defined(BOOST_STRICT_CONFIG)
 #  define BOOST_NO_POINTER_TO_MEMBER_TEMPLATE_PARAMETERS
+#  define BOOST_NO_INITIALIZER_LISTS
 #endif
 
 //
@@ -51,6 +52,9 @@
 #     error "Unknown compiler version - please run the configure tests and report the results"
 #  endif
 #endif
+
+// Some versions of the compiler have issues with default arguments on partial specializations
+#define BOOST_NO_PARTIAL_SPECIALIZATION_IMPLICIT_DEFAULT_ARGS
 
 
 

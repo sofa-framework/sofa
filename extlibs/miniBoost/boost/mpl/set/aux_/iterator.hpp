@@ -2,7 +2,7 @@
 #ifndef BOOST_MPL_SET_AUX_ITERATOR_HPP_INCLUDED
 #define BOOST_MPL_SET_AUX_ITERATOR_HPP_INCLUDED
 
-// Copyright Aleksey Gurtovoy 2003-2004
+// Copyright Aleksey Gurtovoy 2003-2007
 // Copyright David Abrahams 2003-2004
 //
 // Distributed under the Boost Software License, Version 1.0. 
@@ -11,9 +11,9 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Source: /cvsroot/boost/boost/boost/mpl/set/aux_/iterator.hpp,v $
-// $Date: 2005/06/18 22:03:09 $
-// $Revision: 1.4 $
+// $Id: iterator.hpp 49267 2008-10-11 06:19:02Z agurtovoy $
+// $Date: 2008-10-11 02:19:02 -0400 (Sat, 11 Oct 2008) $
+// $Revision: 49267 $
 
 #include <boost/mpl/set/aux_/set0.hpp>
 #include <boost/mpl/has_key.hpp>
@@ -26,21 +26,26 @@
 
 namespace boost { namespace mpl {
 
-// used by 's_iter_impl'
+// used by 's_iter_get'
 template< typename Set, typename Tail > struct s_iter;
+
+template< typename Set, typename Tail > struct s_iter_get
+    : eval_if< 
+          has_key< Set,typename Tail::item_type_ >
+        , identity< s_iter<Set,Tail> >
+        , next< s_iter<Set,Tail> >
+        >
+{
+};
 
 template< typename Set, typename Tail > struct s_iter_impl
 {
     typedef Tail                        tail_;
     typedef forward_iterator_tag        category;
-    typedef typename Tail::item_::type  type;
+    typedef typename Tail::item_type_   type;
 
 #if defined(BOOST_NO_TEMPLATE_PARTIAL_SPECIALIZATION)
-    typedef typename eval_if< 
-          has_key< Set,typename Tail::next_::type >
-        , identity< s_iter<Set,typename Tail::next_> >
-        , next< s_iter<Set,typename Tail::next_> >
-        >::type next;        
+    typedef typename s_iter_get< Set,typename Tail::base >::type next;
 #endif
 };
 
@@ -48,11 +53,7 @@ template< typename Set, typename Tail > struct s_iter_impl
 
 template< typename Set, typename Tail > 
 struct next< s_iter<Set,Tail> >
-    : eval_if< 
-          has_key< Set,typename Tail::next_::type >
-        , identity< s_iter<Set,typename Tail::next_> >
-        , next< s_iter<Set,typename Tail::next_> >
-        >
+    : s_iter_get< Set,typename Tail::base >
 {
 };
 

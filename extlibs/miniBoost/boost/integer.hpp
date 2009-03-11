@@ -34,7 +34,7 @@ namespace boost
   template< int Category > struct int_least_helper {}; // default is empty
 
   //  specializatons: 1=long, 2=int, 3=short, 4=signed char,
-  //     6=unsigned long, 7=unsigned int, 8=unsigned short, 9=unsigned long
+  //     6=unsigned long, 7=unsigned int, 8=unsigned short, 9=unsigned char
   //  no specializations for 0 and 5: requests for a type > long are in error
   template<> struct int_least_helper<1> { typedef long least; };
   template<> struct int_least_helper<2> { typedef int least; };

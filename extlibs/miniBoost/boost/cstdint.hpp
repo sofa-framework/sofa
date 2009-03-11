@@ -36,7 +36,7 @@
       // this is triggered with GCC, because it defines __cplusplus < 199707L
 #     define BOOST_NO_INT64_T
 #   endif 
-# elif defined(__FreeBSD__) || defined(__IBMCPP__)
+# elif defined(__FreeBSD__) || defined(__IBMCPP__) || defined(_AIX)
 #   include <inttypes.h>
 # else
 #   include <stdint.h>

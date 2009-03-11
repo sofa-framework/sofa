@@ -32,6 +32,10 @@
 #  define BOOST_HAS_HASH
 #  define BOOST_HAS_SLIST
 #endif
+//
+// We never have the new C++0x unordered containers:
+//
+#define BOOST_NO_STD_UNORDERED
 
 //
 // Intrinsic type_traits support.

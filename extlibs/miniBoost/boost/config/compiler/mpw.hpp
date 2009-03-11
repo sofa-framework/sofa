@@ -32,6 +32,8 @@
 #  define BOOST_NO_LIMITS_COMPILE_TIME_CONSTANTS
 
 #  define BOOST_NO_STD_ALLOCATOR /* actually a bug with const reference overloading */
+
+#  define BOOST_NO_INITIALIZER_LISTS
 #endif
 
 //

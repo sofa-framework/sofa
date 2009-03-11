@@ -61,6 +61,9 @@
 #  endif
 #endif
 
+#if defined(_STLPORT_VERSION) && (_STLPORT_VERSION < 0x500)
+#  define BOOST_NO_STD_UNORDERED
+#endif
 //
 // Without member template support enabled, their are no template
 // iterate constructors, and no std::allocator:
@@ -98,8 +101,10 @@
 //
 // We always have SGI style hash_set, hash_map, and slist:
 //
+#ifndef _STLP_NO_EXTENSIONS
 #define BOOST_HAS_HASH
 #define BOOST_HAS_SLIST
+#endif
 
 //
 // STLport does a good job of importing names into namespace std::,

@@ -42,10 +42,10 @@
 #  error Unknown machine endianness detected.
 # endif
 # define BOOST_BYTE_ORDER __BYTE_ORDER
-#elif defined(_BIG_ENDIAN)
+#elif defined(_BIG_ENDIAN) && !defined(_LITTLE_ENDIAN)
 # define BOOST_BIG_ENDIAN
 # define BOOST_BYTE_ORDER 4321
-#elif defined(_LITTLE_ENDIAN)
+#elif defined(_LITTLE_ENDIAN) && !defined(_BIG_ENDIAN)
 # define BOOST_LITTLE_ENDIAN
 # define BOOST_BYTE_ORDER 1234
 #elif defined(__sparc) || defined(__sparc__) \
@@ -61,7 +61,7 @@
    || defined(_M_ALPHA) || defined(__amd64) \
    || defined(__amd64__) || defined(_M_AMD64) \
    || defined(__x86_64) || defined(__x86_64__) \
-   || defined(_M_X64)
+   || defined(_M_X64) || defined(__bfin__)
 
 # define BOOST_LITTLE_ENDIAN
 # define BOOST_BYTE_ORDER 1234
