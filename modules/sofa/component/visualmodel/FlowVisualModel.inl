@@ -154,8 +154,82 @@ void FlowVisualModel<DataTypes>::initVisual()
 
     if (tetraCenters)
     {
-        (*this->tetraCenters->getV()).resize((*this->tetraCenters->getX()).size());
+        unsigned int nbPoints = m_triTopo->getNbPoints();
+        unsigned int nbTetras = (*this->tetraCenters->getX()).size();
+        (*this->tetraCenters->getV()).resize(nbTetras);
+        tetraShellPerTriangleVertex.resize(nbPoints);
+        tetraSize.resize(nbTetras);
+        std::fill(tetraSize.begin(), tetraSize.end(), 0.0);
+
+        //Store some data
+
+        //Loop for each vertex of the triangle mesh
+        for (unsigned int i=0 ; i<nbPoints ; i++)
+        {
+            std::cout << "Precomputing neighborhood information : " << (float)i/(float)nbPoints*100.0f << "%." << '\xd';
+            //helper::set<BaseMeshTopology::TetraID> tetrasShell;
+            Coord pTriangle = m_triGeo->getPointPosition(i);
+            //Search the closest vertex of the volumetric mesh
+            unsigned int indexClosestPoint = getIndexClosestPoint(*this->tetraGeometry->getX(), pTriangle);
+
+            //get the TetraShell of the closest Point
+            helper::vector<BaseMeshTopology::TetraID> closestTetraShell = m_tetraTopo->getTetraVertexShell(indexClosestPoint);
+
+            //helper::vector<BaseMeshTopology::Tetra> tetras = m_tetraTopo->getTetras();
+            unsigned int t, closestTetra = 0;
+            bool found = false;
+            for(t=0 ; t<closestTetraShell.size() && !found; t++)
+            {
+                found = m_tetraGeo->isPointInTetrahedron(closestTetraShell[t], pTriangle);
+                if (found)
+                {
+                    closestTetra = closestTetraShell[t];
+                }
+            }
+
+
+            //the point is outside all the tetra, so we look for the closest one
+            if (!found)
+            {
+                float minDist = 1e10;
+                float dist = 0.0;
+                for(t=0 ; t<closestTetraShell.size() ; t++)
+                {
+                    Coord c = m_tetraGeo->computeTetrahedronCenter(t);
+                    dist =(pTriangle - c).norm();
+
+                    if  (dist < minDist )
+                    {
+                        minDist = dist;
+                        closestTetra = t;
+                    }
+                }
+            }
+
+
+            Coord points[4];
+            m_tetraGeo->getTetrahedronVertexCoordinates(closestTetra, points);
+
+            if (! (tetraSize[closestTetra] > 0.0) )
+            {
+                Coord c = m_tetraGeo->computeTetrahedronCenter(closestTetra);
+                for (unsigned int p=0; p<4 ; p++)
+                {
+                    float dist = (points[p] - c).norm();
+                    if( dist > tetraSize[closestTetra])
+                        tetraSize[closestTetra] = dist;
+                }
+            }
+
+            helper::vector<unsigned int> tetrasShell;
+            m_tetraGeo->getTetraInBall(closestTetra , tetraSize[closestTetra] * 1.2f, tetrasShell);
+
+            tetraShellPerTriangleVertex[i] = tetrasShell;
+
+        }
+        std::cout << std::endl;
     }
+
 
 }
 
@@ -316,7 +390,6 @@ void FlowVisualModel<DataTypes>::computeStreamLine(unsigned int index, unsigned 
 template <class DataTypes>
 void FlowVisualModel<DataTypes>::interpolateVelocityAtVertices()
 {
-    unsigned int indexClosestPoint;
     unsigned int nbPoints =  m_triTopo->getNbPoints();
     helper::vector<double> weight;
 //	VecDeriv& v2d = *this->tetraGeometry->getV();
@@ -359,74 +432,23 @@ void FlowVisualModel<DataTypes>::interpolateVelocityAtVertices()
             //Loop for each vertex of the triangle mesh
             for (unsigned int i=0 ; i<nbPoints ; i++)
             {
-                float averageEdgeLength=0.0;
-                //helper::set<BaseMeshTopology::TetraID> tetrasShell;
                 Coord pTriangle = m_triGeo->getPointPosition(i);
-                //Search the closest vertex of the volumetric mesh
-                indexClosestPoint = getIndexClosestPoint(*this->tetraGeometry->getX(), pTriangle);
 
-                //get the TetraShell of the closest Point
-                helper::vector<BaseMeshTopology::TetraID> closestTetraShell = m_tetraTopo->getTetraVertexShell(indexClosestPoint);
-
-                //helper::vector<BaseMeshTopology::Tetra> tetras = m_tetraTopo->getTetras();
-                unsigned int t, closestTetra = 0;
-                bool found = false;
-                for(t=0 ; t<closestTetraShell.size() && !found; t++)
+                //Finally, loop over all vertices of the set and compute velocities
+                for (unsigned int j = 0; j<tetraShellPerTriangleVertex[i].size() ; j++)
                 {
-                    found = m_tetraGeo->isPointInTetrahedron(closestTetraShell[t], pTriangle);
-                    if (found)
-                    {
-                        closestTetra = closestTetraShell[t];
-                        Coord points[4];
-                        averageEdgeLength = 0.0;
-                        m_tetraGeo->getTetrahedronVertexCoordinates(closestTetra, points);
-
-                        averageEdgeLength += (points[0] - points[1]).norm();
-                        averageEdgeLength += (points[0] - points[2]).norm();
-                        averageEdgeLength += (points[0] - points[3]).norm();
-                        averageEdgeLength += (points[1] - points[2]).norm();
-                        averageEdgeLength += (points[1] - points[3]).norm();
-                        averageEdgeLength += (points[2] - points[3]).norm();
-                        averageEdgeLength /= 6.0;
-
-                    }
+                    //compute weight according of the distance between the triangle vertex and the closest tetra vertex
+                    unsigned int index = (tetraShellPerTriangleVertex[i])[j];
+                    double distCoeff = (pTriangle-x3d[index]).norm2();
+                    velocityAtVertex[i] += v3d[index] * distCoeff;
+                    normAtVertex[i] += v3d[index].norm() * distCoeff;
+                    weight[i]+= distCoeff;
                 }
-
-
-                if (found)
+                //Normalize velocity per vertex
+                if (weight[i] > 0.0)
                 {
-                    helper::vector<unsigned int> tetrasShell;
-                    m_tetraGeo->getTetraInBall(closestTetra , averageEdgeLength, tetrasShell);
-                    //std::cout << "T= " << closestTetraShell[t] << std::endl;
-                    //std::cout << "Shell " << tetrasShell << std::endl;
-                    //helper::vector<BaseMeshTopology::TetraID> closestTetra = m_tetraTopo->getTetraVertexShell(indexClosestPoint);
-                    //now, get the tetraShell of the tetrahedron
-
-                    //and insert all vertices of each tetrahedron into a set
-                    //for (unsigned int j=0 ; j<closestTetra ;j++)
-                    //{
-                    //	helper::vector<BaseMeshTopology::TetraID> tetraNeighborhood = m_tetraTopo->getTetraVertexShell(closestTetra[j]);
-                    //	verticesShell.insert(tetraNeighborhood);
-                    //}
-
-                    //Finally, loop over all vertices of the set and compute velocities
-                    for (unsigned int j = 0; j<tetrasShell.size() ; j++)
-                    {
-                        //compute weight according of the distance between the triangle vertex and the closest tetra vertex
-                        unsigned int index = tetrasShell[j];
-                        double distCoeff = (pTriangle-x3d[index]).norm2();
-                        velocityAtVertex[i] += v3d[index] * distCoeff;
-                        normAtVertex[i] += v3d[index].norm() * distCoeff;
-                        weight[i]+= distCoeff;
-                        weight[i]=1.0;
-
-                    }
-
-                    //Normalize velocity per vertex
                     velocityAtVertex[i] /= weight[i];
                     normAtVertex[i] /= weight[i];
-
-
                 }
                 else
                 {
@@ -436,8 +458,6 @@ void FlowVisualModel<DataTypes>::interpolateVelocityAtVertices()
             }
         }
     }
-
-
 }
 
 template <class DataTypes>

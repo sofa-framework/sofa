@@ -133,6 +133,8 @@ protected:
 
     VecCoord x;
     VecCoord velocityAtVertex;
+    helper::vector< helper::vector<unsigned int> >  tetraShellPerTriangleVertex;
+    helper::vector< float > tetraSize;
     helper::vector<double> normAtVertex;
     helper::vector<StreamLine> streamLines;
     double meanEdgeLength;
