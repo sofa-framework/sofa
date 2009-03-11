@@ -153,7 +153,6 @@ public:
 };
 
 
-#ifdef SOFA_DEV
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
 // no support for texturing with double yet...
@@ -280,6 +279,5 @@ public:
 */
 
 #endif // SOFA_GPU_CUDA_DOUBLE
-#endif // SOFA_DEV
 
 #endif

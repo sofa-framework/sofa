@@ -71,7 +71,6 @@ extern "C"
     int MechanicalObjectCudaVec3f1_vDotTmpSize(unsigned int size);
     void MechanicalObjectCudaVec3f1_vDot(unsigned int size, float* res, const void* a, const void* b, void* tmp, float* cputmp);
 
-#ifdef SOFA_DEV
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
     void MechanicalObjectCudaVec3d_vAssign(unsigned int size, void* res, const void* a);
@@ -106,7 +105,6 @@ extern "C"
     void MechanicalObjectCudaVec3d1_vDot(unsigned int size, double* res, const void* a, const void* b, void* tmp, double* cputmp);
 
 #endif // SOFA_GPU_CUDA_DOUBLE
-#endif // SOFA_DEV
 
 } // extern "C"
 
@@ -186,7 +184,6 @@ public:
     {   MechanicalObjectCudaVec3f1_vDot(size, res, a, b, tmp, cputmp); }
 };
 
-#ifdef SOFA_DEV
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
 template<>
@@ -266,7 +263,6 @@ public:
 };
 
 #endif // SOFA_GPU_CUDA_DOUBLE
-#endif // SOFA_DEV
 
 } // namespace cuda
 
@@ -713,14 +709,12 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
 CudaMechanicalObject_ImplMethods(gpu::cuda::CudaVec3fTypes);
 CudaMechanicalObject_ImplMethods(gpu::cuda::CudaVec3f1Types);
 
-#ifdef SOFA_DEV
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
 CudaMechanicalObject_ImplMethods(gpu::cuda::CudaVec3dTypes);
 CudaMechanicalObject_ImplMethods(gpu::cuda::CudaVec3d1Types);
 
 #endif // SOFA_GPU_CUDA_DOUBLE
-#endif // SOFA_DEV
 
 #undef CudaMechanicalObject_ImplMethods
 

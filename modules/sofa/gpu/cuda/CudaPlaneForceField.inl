@@ -46,7 +46,6 @@ extern "C"
     void PlaneForceFieldCuda3f1_addForce(unsigned int size, GPUPlane<float>* plane, void* penetration, void* f, const void* x, const void* v);
     void PlaneForceFieldCuda3f1_addDForce(unsigned int size, GPUPlane<float>* plane, const void* penetration, void* f, const void* dx); //, const void* dfdx);
 
-#ifdef SOFA_DEV
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
     void PlaneForceFieldCuda3d_addForce(unsigned int size, GPUPlane<double>* plane, void* penetration, void* f, const void* x, const void* v);
@@ -56,7 +55,6 @@ extern "C"
     void PlaneForceFieldCuda3d1_addDForce(unsigned int size, GPUPlane<double>* plane, const void* penetration, void* f, const void* dx); //, const void* dfdx);
 
 #endif // SOFA_GPU_CUDA_DOUBLE
-#endif // SOFA_DEV
 
 }
 
@@ -118,7 +116,6 @@ void PlaneForceField<gpu::cuda::CudaVec3f1Types>::addDForce(VecDeriv& df, const 
     data.plane.stiffness = (Real)stiff;
 }
 
-#ifdef SOFA_DEV
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
 template <>
@@ -167,7 +164,6 @@ void PlaneForceField<gpu::cuda::CudaVec3d1Types>::addDForce(VecDeriv& df, const 
 }
 
 #endif // SOFA_GPU_CUDA_DOUBLE
-#endif // SOFA_DEV
 
 } // namespace forcefield
 

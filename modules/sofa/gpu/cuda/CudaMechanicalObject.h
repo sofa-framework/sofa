@@ -86,14 +86,12 @@ public:
 CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec3fTypes);
 CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec3f1Types);
 
-#ifdef SOFA_DEV
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
 CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec3dTypes);
 CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec3d1Types);
 
 #endif // SOFA_GPU_CUDA_DOUBLE
-#endif // SOFA_DEV
 
 #undef CudaMechanicalObject_DeclMethods
 

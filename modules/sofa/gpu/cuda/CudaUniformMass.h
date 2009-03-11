@@ -73,7 +73,6 @@ void UniformMass<gpu::cuda::CudaVec3f1Types, float>::addForce(VecDeriv& f, const
 template <>
 bool UniformMass<gpu::cuda::CudaVec3f1Types, float>::addBBox(double* minBBox, double* maxBBox);
 
-#ifdef SOFA_DEV
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
 // -- Mass interface
@@ -111,7 +110,6 @@ template <>
 bool UniformMass<gpu::cuda::CudaVec3d1Types, double>::addBBox(double* minBBox, double* maxBBox);
 
 #endif // SOFA_GPU_CUDA_DOUBLE
-#endif // SOFA_DEV
 
 } // namespace mass
 

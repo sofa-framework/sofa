@@ -77,7 +77,6 @@ void PlaneForceField<gpu::cuda::CudaVec3f1Types>::addForce (VecDeriv& f, const V
 template <>
 void PlaneForceField<gpu::cuda::CudaVec3f1Types>::addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
 
-#ifdef SOFA_DEV
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
 template <>
@@ -93,7 +92,6 @@ template <>
 void PlaneForceField<gpu::cuda::CudaVec3d1Types>::addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
 
 #endif // SOFA_GPU_CUDA_DOUBLE
-#endif // SOFA_DEV
 
 } // namespace forcefield
 

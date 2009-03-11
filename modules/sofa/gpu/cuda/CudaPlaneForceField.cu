@@ -56,7 +56,6 @@ extern "C"
     void PlaneForceFieldCuda3f1_addForce(unsigned int size, GPUPlane3f* plane, float* penetration, void* f, const void* x, const void* v);
     void PlaneForceFieldCuda3f1_addDForce(unsigned int size, GPUPlane3f* plane, const float* penetration, void* f, const void* dx); //, const void* dfdx);
 
-#ifdef SOFA_DEV
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
     void PlaneForceFieldCuda3d_addForce(unsigned int size, GPUPlane3d* plane, double* penetration, void* f, const void* x, const void* v);
@@ -66,7 +65,6 @@ extern "C"
     void PlaneForceFieldCuda3d1_addDForce(unsigned int size, GPUPlane3d* plane, const double* penetration, void* f, const void* dx); //, const void* dfdx);
 
 #endif // SOFA_GPU_CUDA_DOUBLE
-#endif // SOFA_DEV
 }
 
 //////////////////////
@@ -269,7 +267,6 @@ void PlaneForceFieldCuda3f1_addDForce(unsigned int size, GPUPlane3f* plane, cons
     PlaneForceFieldCuda3t1_addDForce_kernel<float><<< grid, threads >>>(size, *plane, penetration, (CudaVec4<float>*)df, (const CudaVec4<float>*)dx);
 }
 
-#ifdef SOFA_DEV
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
 void PlaneForceFieldCuda3d_addForce(unsigned int size, GPUPlane3d* plane, double* penetration, void* f, const void* x, const void* v)
@@ -301,7 +298,6 @@ void PlaneForceFieldCuda3d1_addDForce(unsigned int size, GPUPlane3d* plane, cons
 }
 
 #endif // SOFA_GPU_CUDA_DOUBLE
-#endif // SOFA_DEV
 
 #if defined(__cplusplus) && CUDA_VERSION < 2000
 } // namespace cuda

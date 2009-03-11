@@ -74,14 +74,12 @@ public:
 CudaFixedConstraint_DeclMethods(gpu::cuda::CudaVec3fTypes);
 CudaFixedConstraint_DeclMethods(gpu::cuda::CudaVec3f1Types);
 
-#ifdef SOFA_DEV
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
 CudaFixedConstraint_DeclMethods(gpu::cuda::CudaVec3dTypes);
 CudaFixedConstraint_DeclMethods(gpu::cuda::CudaVec3d1Types);
 
 #endif // SOFA_GPU_CUDA_DOUBLE
-#endif // SOFA_DEV
 
 #undef CudaFixedConstraint_DeclMethods
 

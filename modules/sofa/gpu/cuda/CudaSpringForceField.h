@@ -154,14 +154,12 @@ public:
 CudaSpringForceField_DeclMethods(gpu::cuda::CudaVec3fTypes);
 CudaSpringForceField_DeclMethods(gpu::cuda::CudaVec3f1Types);
 
-#ifdef SOFA_DEV
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
 CudaSpringForceField_DeclMethods(gpu::cuda::CudaVec3dTypes);
 CudaSpringForceField_DeclMethods(gpu::cuda::CudaVec3d1Types);
 
 #endif // SOFA_GPU_CUDA_DOUBLE
-#endif // SOFA_DEV
 
 #undef CudaSpringForceField_DeclMethods
 

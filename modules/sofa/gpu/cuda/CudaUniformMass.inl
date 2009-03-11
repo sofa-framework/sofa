@@ -48,7 +48,6 @@ extern "C"
     void UniformMassCuda3f1_accFromF(unsigned int size, float mass, void* a, const void* f);
     void UniformMassCuda3f1_addForce(unsigned int size, const float *mg, void* f);
 
-#ifdef SOFA_DEV
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
     void UniformMassCuda3d_addMDx(unsigned int size, double mass, void* res, const void* dx);
@@ -60,7 +59,6 @@ extern "C"
     void UniformMassCuda3d1_addForce(unsigned int size, const double *mg, void* f);
 
 #endif // SOFA_GPU_CUDA_DOUBLE
-#endif // SOFA_DEV
 }
 
 } // namespace cuda
@@ -206,7 +204,6 @@ void UniformMass<gpu::cuda::CudaRigid3fTypes, Rigid3fMass>::draw()
 }
 
 
-#ifdef SOFA_DEV
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
 // -- Mass interface
@@ -340,7 +337,6 @@ void UniformMass<gpu::cuda::CudaRigid3dTypes, Rigid3dMass>::draw()
 }
 
 #endif // SOFA_GPU_CUDA_DOUBLE
-#endif // SOFA_DEV
 
 } // namespace mass
 

@@ -42,7 +42,6 @@ extern "C"
     void FixedConstraintCuda3f1_projectResponseContiguous(unsigned int size, void* dx);
     void FixedConstraintCuda3f1_projectResponseIndexed(unsigned int size, const void* indices, void* dx);
 
-#ifdef SOFA_DEV
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
     void FixedConstraintCuda3d_projectResponseContiguous(unsigned int size, void* dx);
@@ -51,7 +50,6 @@ extern "C"
     void FixedConstraintCuda3d1_projectResponseIndexed(unsigned int size, const void* indices, void* dx);
 
 #endif // SOFA_GPU_CUDA_DOUBLE
-#endif // SOFA_DEV
 
 }
 
@@ -145,7 +143,6 @@ void FixedConstraintCuda3f1_projectResponseIndexed(unsigned int size, const void
     FixedConstraintCuda3t1_projectResponseIndexed_kernel<float><<< grid, threads >>>(size, (const int*)indices, (CudaVec4<float>*)dx);
 }
 
-#ifdef SOFA_DEV
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
 void FixedConstraintCuda3d_projectResponseContiguous(unsigned int size, void* dx)
@@ -183,7 +180,6 @@ void FixedConstraintCuda3d1_projectResponseIndexed(unsigned int size, const void
 }
 
 #endif // SOFA_GPU_CUDA_DOUBLE
-#endif // SOFA_DEV
 
 #if defined(__cplusplus) && CUDA_VERSION < 2000
 } // namespace cuda

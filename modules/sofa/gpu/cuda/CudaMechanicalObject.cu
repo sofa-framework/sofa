@@ -69,7 +69,6 @@ extern "C"
     int MechanicalObjectCudaVec3f1_vDotTmpSize(unsigned int size);
     void MechanicalObjectCudaVec3f1_vDot(unsigned int size, float* res, const void* a, const void* b, void* tmp, float* cputmp);
 
-#ifdef SOFA_DEV
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
     void MechanicalObjectCudaVec3d_vAssign(unsigned int size, void* res, const void* a);
@@ -104,7 +103,6 @@ extern "C"
     void MechanicalObjectCudaVec3d1_vDot(unsigned int size, double* res, const void* a, const void* b, void* tmp, double* cputmp);
 
 #endif // SOFA_GPU_CUDA_DOUBLE
-#endif // SOFA_DEV
 }
 
 //////////////////////
@@ -1165,7 +1163,6 @@ void MechanicalObjectCudaVec3f1_vDot(unsigned int size, float* res, const void* 
 }
 
 
-#ifdef SOFA_DEV
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
 void MechanicalObjectCudaVec3d_vAssign(unsigned int size, void* res, const void* a)
@@ -1467,7 +1464,6 @@ void MechanicalObjectCudaVec3d1_vDot(unsigned int size, double* res, const void*
 }
 
 #endif // SOFA_GPU_CUDA_DOUBLE
-#endif // SOFA_DEV
 
 #if defined(__cplusplus) && CUDA_VERSION < 2000
 } // namespace cuda

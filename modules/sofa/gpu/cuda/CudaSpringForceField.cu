@@ -53,7 +53,6 @@ extern "C"
     void StiffSpringForceFieldCuda3f1_addExternalDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f1, const void* dx1, const void* x1, const void* dx2, const void* x2, const void* dfdx, double factor);
 
 
-#ifdef SOFA_DEV
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
     void SpringForceFieldCuda3d_addForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f, const void* x, const void* v);
@@ -71,7 +70,6 @@ extern "C"
     void StiffSpringForceFieldCuda3d1_addExternalDForce(unsigned int nbVertex, unsigned int nbSpringPerVertex, const void* springs, void* f1, const void* dx1, const void* x1, const void* dx2, const void* x2, const void* dfdx, double factor);
 
 #endif // SOFA_GPU_CUDA_DOUBLE
-#endif // SOFA_DEV
 
 }
 
@@ -1331,7 +1329,6 @@ void StiffSpringForceFieldCuda3f1_addExternalDForce(unsigned int size, unsigned 
     StiffSpringForceFieldCuda3t1_addDForce_kernel<float><<< grid, threads >>>(nbSpringPerVertex, (const GPUSpring*)springs, (CudaVec4<float>*)f1, (const CudaVec4<float>*)dx1, (const CudaVec4<float>*)x1, (const CudaVec4<float>*)dx2, (const CudaVec4<float>*)x2, (const float*)dfdx, (float)factor);
 }
 
-#ifdef SOFA_DEV
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
 void SpringForceFieldCuda3d_addForce(unsigned int size, unsigned int nbSpringPerVertex, const void* springs, void* f, const void* x, const void* v)
@@ -1449,7 +1446,6 @@ void StiffSpringForceFieldCuda3d1_addExternalDForce(unsigned int size, unsigned 
 }
 
 #endif // SOFA_GPU_CUDA_DOUBLE
-#endif // SOFA_DEV
 
 #if defined(__cplusplus) && CUDA_VERSION < 2000
 } // namespace cuda

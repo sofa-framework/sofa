@@ -314,14 +314,12 @@ public:
 CudaTetrahedronFEMForceField_DeclMethods(gpu::cuda::CudaVec3fTypes);
 CudaTetrahedronFEMForceField_DeclMethods(gpu::cuda::CudaVec3f1Types);
 
-#ifdef SOFA_DEV
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
 CudaTetrahedronFEMForceField_DeclMethods(gpu::cuda::CudaVec3dTypes);
 CudaTetrahedronFEMForceField_DeclMethods(gpu::cuda::CudaVec3d1Types);
 
 #endif // SOFA_GPU_CUDA_DOUBLE
-#endif // SOFA_DEV
 
 #undef CudaTetrahedronFEMForceField_DeclMethods
 

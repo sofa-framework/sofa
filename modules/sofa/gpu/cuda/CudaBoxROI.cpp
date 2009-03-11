@@ -39,12 +39,10 @@ namespace engine
 
 template class BoxROI<gpu::cuda::CudaVec3fTypes>;
 template class BoxROI<gpu::cuda::CudaVec3f1Types>;
-#ifdef SOFA_DEV
 #ifdef SOFA_GPU_CUDA_DOUBLE
 template class BoxROI<gpu::cuda::CudaVec3dTypes>;
 template class BoxROI<gpu::cuda::CudaVec3d1Types>;
 #endif // SOFA_GPU_CUDA_DOUBLE
-#endif // SOFA_DEV
 
 } // namespace engine
 
@@ -61,12 +59,10 @@ SOFA_DECL_CLASS(CudaBoxROI)
 int BoxROICudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< component::engine::BoxROI<CudaVec3fTypes> >()
         .add< component::engine::BoxROI<CudaVec3f1Types> >()
-#ifdef SOFA_DEV
 #ifdef SOFA_GPU_CUDA_DOUBLE
         .add< component::engine::BoxROI<CudaVec3dTypes> >()
         .add< component::engine::BoxROI<CudaVec3d1Types> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
-#endif // SOFA_DEV
         ;
 
 } // namespace cuda
