@@ -73,14 +73,9 @@ public:
 
     inline bool setParentValue(BaseData* parent)
     {
-        TData<T>* tData = dynamic_cast< TData<T>* >(parent);
-        if (tData)
-        {
-            value() = tData->value();
-            BaseData::setDirty();
-            return true;
-        }
-        return false;
+        updateFromParentValue(parent);
+        BaseData::setDirty();
+        return true;
     }
 
     const T& virtualGetValue() const
@@ -123,6 +118,19 @@ public:
     }
 
 protected:
+
+
+    inline bool updateFromParentValue(BaseData* parent)
+    {
+        TData<T>* tData = dynamic_cast< TData<T>* >(parent);
+        if (tData)
+        {
+            value() = tData->value();
+            return true;
+        }
+        return false;
+    }
+
     virtual const T& value() const = 0;
     virtual T& value() = 0;
 };
