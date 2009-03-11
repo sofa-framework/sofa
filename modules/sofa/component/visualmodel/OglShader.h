@@ -174,6 +174,7 @@ public:
     OglShaderElement();
     virtual ~OglShaderElement() { };
     virtual void init();
+    const std::string getId() const {return id.getValue();};
     void setID( std::string str ) { *(id.beginEdit()) = str; id.endEdit();};
     void setIndexShader( unsigned int index) { *(indexShader.beginEdit()) = index; indexShader.endEdit();};
 

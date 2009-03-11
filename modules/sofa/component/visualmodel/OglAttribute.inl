@@ -23,9 +23,10 @@ using namespace sofa::component::topology;
 
 template < int size, unsigned int type, class DataTypes>
 OglAttribute< size, type, DataTypes>::OglAttribute() :
-    OglShaderElement(),
-    _abo ( -1 ),
-    usage( GL_STATIC_DRAW)
+    OglShaderElement()
+    , _abo ( -1 )
+    , usage( GL_STATIC_DRAW)
+    ,value( initData(&value, "value", "internal Data"))
 {
     _topology = NULL;
 }
