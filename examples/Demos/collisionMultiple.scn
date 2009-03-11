@@ -6,7 +6,7 @@
 	<Object type="CollisionGroup" name="Group" />
 	<Node name="Torus">	
 		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
-		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
+		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" template="SparseMatrix" />
 		<Object type="MechanicalObject" dx="0" dy="20" dz="29" rz="64"/>
 		<Object type="UniformMass" totalmass="10"/>
 		<Object type="RegularGrid"
@@ -30,6 +30,7 @@
 			<Object type="BarycentricMapping" />
 		</Node>
 	</Node>
+<!--
 	<Node name="Dragon">
 		<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
 		<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
@@ -96,6 +97,7 @@
 			<Object type="BarycentricMapping" />
 		</Node>
 	</Node>
+-->
 	<Node name="Floor">
                 <Object type="MeshLoader" name="meshLoader" filename="mesh/floor2b.obj"/>
 		<Object type="Mesh" />

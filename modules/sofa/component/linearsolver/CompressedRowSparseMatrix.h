@@ -479,6 +479,126 @@ public:
         compressed = true;
     }
 
+    // filtering-out part of a matrix
+    typedef bool filter_fn    (int   i  , int   j  , Bloc& val, const Bloc&   ref  );
+    static bool       nonzeros(int /*i*/, int /*j*/, Bloc& val, const Bloc& /*ref*/) { return (!traits::empty(val)); }
+    static bool       nonsmall(int /*i*/, int /*j*/, Bloc& val, const Bloc&   ref  )
+    {
+        for (int bi = 0; bi < NL; ++bi)
+            for (int bj = 0; bj < NC; ++bj)
+                if (helper::rabs(traits::v(val, bi, bj)) >= ref) return true;
+        return false;
+    }
+    static bool upper         (int   i  , int   j  , Bloc& val, const Bloc& /*ref*/)
+    {
+        if (NL>1 && i*NL == j*NC)
+        {
+            for (int bi = 1; bi < NL; ++bi)
+                for (int bj = 0; bj < bi; ++bj)
+                    traits::v(val, bi, bj) = 0;
+        }
+        return i*NL <= j*NC;
+    }
+    static bool lower         (int   i  , int   j  , Bloc& val, const Bloc& /*ref*/)
+    {
+        if (NL>1 && i*NL == j*NC)
+        {
+            for (int bi = 0; bi < NL-1; ++bi)
+                for (int bj = bi+1; bj < NC; ++bj)
+                    traits::v(val, bi, bj) = 0;
+        }
+        return i*NL >= j*NC;
+    }
+    static bool upper_nonzeros(int   i  , int   j  , Bloc& val, const Bloc&   ref  ) { return upper(i,j,val,ref) && nonzeros(i,j,val,ref); }
+    static bool lower_nonzeros(int   i  , int   j  , Bloc& val, const Bloc&   ref  ) { return lower(i,j,val,ref) && nonzeros(i,j,val,ref); }
+    static bool upper_nonsmall(int   i  , int   j  , Bloc& val, const Bloc&   ref  ) { return upper(i,j,val,ref) && nonsmall(i,j,val,ref); }
+    static bool lower_nonsmall(int   i  , int   j  , Bloc& val, const Bloc&   ref  ) { return lower(i,j,val,ref) && nonsmall(i,j,val,ref); }
+
+    void filterValues(Matrix& M, filter_fn* filter = &nonzeros, const Bloc& ref = Bloc())
+    {
+        M.compress();
+        nRow = M.rowSize();
+        nCol = M.colSize();
+        nBlocRow = M.rowBSize();
+        nBlocCol = M.colBSize();
+        rowIndex.clear();
+        rowBegin.clear();
+        colsIndex.clear();
+        colsValue.clear();
+        compressed = true;
+        btemp.clear();
+        rowIndex.reserve(M.rowIndex.size());
+        rowBegin.reserve(M.rowBegin.size());
+        colsIndex.reserve(M.colsIndex.size());
+        colsValue.reserve(M.colsValue.size());
+
+        int vid = 0;
+        for (unsigned int rowId = 0; rowId < M.rowIndex.size(); ++rowId)
+        {
+            int i = M.rowIndex[rowId];
+            rowIndex.push_back(i);
+            rowBegin.push_back(vid);
+            Range rowRange(M.rowBegin[rowId], M.rowBegin[rowId+1]);
+            for (int xj = rowRange.begin(); xj < rowRange.end(); ++xj)
+            {
+                int j = M.colsIndex[xj];
+                Bloc b = M.colsValue[xj];
+                if ((*filter)(i,j,b,ref))
+                {
+                    colsIndex.push_back(j);
+                    colsValue.push_back(b);
+                    ++vid;
+                }
+            }
+            if (rowBegin.back() == vid) // row was empty
+            {
+                rowIndex.pop_back();
+                rowBegin.pop_back();
+            }
+        }
+        rowBegin.push_back(vid); // end of last row
+    }
+
+    void copyNonZeros(Matrix& M)
+    {
+        filterValues(M, nonzeros);
+    }
+
+    void copyNonSmall(Matrix& M, const Bloc& ref)
+    {
+        filterValues(M, nonzeros, ref);
+    }
+
+    void copyUpper(Matrix& M)
+    {
+        filterValues(M, upper);
+    }
+
+    void copyLower(Matrix& M)
+    {
+        filterValues(M, lower);
+    }
+
+    void copyUpperNonZeros(Matrix& M)
+    {
+        filterValues(M, upper_nonzeros);
+    }
+
+    void copyLowerNonZeros(Matrix& M)
+    {
+        filterValues(M, lower_nonzeros);
+    }
+
+    void copyUpperNonSmall(Matrix& M, const Bloc& ref)
+    {
+        filterValues(M, upper_nonsmall, ref);
+    }
+
+    void copyLowerNonSmall(Matrix& M, const Bloc& ref)
+    {
+        filterValues(M, lower_nonsmall, ref);
+    }
+
     const Bloc& bloc(int i, int j) const
     {
         static Bloc empty;
