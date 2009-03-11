@@ -33,6 +33,12 @@
 #include <sofa/helper/map.h>
 #include <math.h>
 
+// include all headers included in taucs.h to fix errors on macx
+#include <complex.h>
+#include <assert.h>
+#include <float.h>
+#include <stdlib.h>
+
 extern "C" {
 #include <taucs.h>
 }
