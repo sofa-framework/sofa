@@ -119,26 +119,28 @@ public:
     /// This can be used to efficiently detect changes
     int getCounter() const { return m_counter; }
 
+    /// Set for this Data the value of its parent value
+    virtual bool setParentValue(BaseData* parent) = 0;
+
     /// Update the value of this Data
     void update()
     {
         dirty = false;
         for(std::list<DDGNode*>::iterator it=inputs.begin(); it!=inputs.end(); ++it)
         {
-            if (setParentValue(dynamic_cast<BaseData*>(*it)))
-                break;
             if ((*it)->isDirty())
             {
                 (*it)->update();
-                (*it)->cleanDirty();
             }
+            if (updateFromParentValue(dynamic_cast<BaseData*>(*it)))
+                break;
         }
     }
 
-    /// Set for this Data the value of its parent value
-    virtual bool setParentValue(BaseData* parent) = 0;
-
 protected:
+
+    /// Update this Data from the value of its parent
+    virtual bool updateFromParentValue(BaseData* parent) = 0;
 
     /// Help message
     const char* help;
