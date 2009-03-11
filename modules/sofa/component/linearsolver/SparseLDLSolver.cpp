@@ -71,9 +71,9 @@ template<class TMatrix, class TVector>
 void SparseLDLSolver<TMatrix,TVector>::solve (Matrix& /*M*/, Vector& z, Vector& r)
 {
     z = r;
-    ldl_lsolve (n, z.ptr(), Lp.data(), Li.data(), Lx.data()) ;
-    ldl_dsolve (n, z.ptr(), D.data()) ;
-    ldl_ltsolve (n, z.ptr(), Lp.data(), Li.data(), Lx.data()) ;
+    ldl_lsolve (n, z.ptr(), &Lp[0], &Li[0], &Lx[0]) ;
+    ldl_dsolve (n, z.ptr(), &D[0]) ;
+    ldl_ltsolve (n, z.ptr(), &Lp[0], &Li[0], &Lx[0]) ;
 
 }
 
@@ -96,11 +96,11 @@ void SparseLDLSolver<TMatrix,TVector>::invert(Matrix& M)
     Flag.resize(n);
     Pattern.resize(n);
 
-    ldl_symbolic (n, A_p.data(), A_i.data(), Lp.data(), Parent.data(), Lnz.data(), Flag.data(), NULL, NULL) ;
+    ldl_symbolic (n, &A_p[0], &A_i[0], &Lp[0], &Parent[0], &Lnz[0], &Flag[0], NULL, NULL) ;
 
     Lx.resize(Lp[n]);
     Li.resize(Lp[n]);
-    ldl_numeric (n, A_p.data(), A_i.data(), A_x.data(), Lp.data(), Parent.data(), Lnz.data(), Li.data(), Lx.data(), D.data(), Y.data(), Pattern.data(),Flag.data(), NULL, NULL) ;
+    ldl_numeric (n, &A_p[0], &A_i[0], &A_x[0], &Lp[0], &Parent[0], &Lnz[0], &Li[0], &Lx[0], &D[0], &Y[0], &Pattern[0], &Flag[0], NULL, NULL) ;
 }
 
 SOFA_DECL_CLASS(SparseLDLSolver)
