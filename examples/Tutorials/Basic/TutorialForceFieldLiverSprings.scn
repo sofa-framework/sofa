@@ -4,10 +4,8 @@
 <Node 	name="root" 
 	gravity="0 -9.81 0" 
 	dt="0.02" 
-	showBehaviorModels="0" 
-	showCollisionModels="0" 
-	showMappings="0" 
-	showForceFields="0" 
+        showVisualModels="0"
+	showForceFields="1" 
 	 >
 	<DefaultPipeline name="CollisionPipeline" verbose="0"/>
 	<BruteForceDetection name="N2"/>
@@ -18,8 +16,9 @@
 		 >
 		<EulerImplicitSolver name="cg_odesolver" printLog="0"/>
 		<CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09"/>
-		<MeshTopology name="mesh" fileTopology="mesh/liver-smooth.obj"/>
+		<MeshTopology name="mesh" fileTopology="mesh/liver.msh"/>
 		<MechanicalObject template="Vec3d" name="dofs"/>
+		<MeshSpringForceField template="Vec3d" name="Springs" stiffness="4500"/>
 		<UniformMass template="Vec3d" name="mass"/>
 		<FixedConstraint template="Vec3d" name="FixedConstraint" indices="3 39 64"/>
 		<Node 	name="Visu" 
@@ -35,6 +34,5 @@
 			<MechanicalObject template="Vec3d" name="default0"/>
 			<BarycentricMapping template="MechanicalMapping&lt;Vec3d,Vec3d&gt;" name="sphere mapping"/>
 		</Node>
-		<MeshSpringForceField template="Vec3d" name="Springs" stiffness="250"/>
 	</Node>
 </Node>
