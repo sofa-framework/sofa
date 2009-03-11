@@ -58,6 +58,7 @@ public:
     typedef sofa::core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
 
     Data< helper::vector<std::string> > f_options;
+    Data<bool> f_symmetric;
 
     Data<bool> f_verbose;
     Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
@@ -68,6 +69,7 @@ public:
     void invert(Matrix& M);
 
 protected:
+    Matrix Mfiltered;
     void* factorization;
     taucs_ccs_matrix matrix_taucs;
 };
