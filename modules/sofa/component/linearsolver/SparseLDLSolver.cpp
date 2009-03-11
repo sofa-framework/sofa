@@ -103,6 +103,70 @@ void SparseLDLSolver<TMatrix,TVector>::invert(Matrix& M)
     ldl_numeric (n, &A_p[0], &A_i[0], &A_x[0], &Lp[0], &Parent[0], &Lnz[0], &Li[0], &Lx[0], &D[0], &Y[0], &Pattern[0], &Flag[0], NULL, NULL) ;
 }
 
+template<class TMatrix, class TVector>
+bool SparseLDLSolver<TMatrix,TVector>::readFile(std::istream& in)
+{
+    std::cout << "Read SparseLDLSolver" << std::endl;
+
+    std::string s = "SparseLDLSolver\n";
+
+    //in >> ss;
+    in >> s;
+    if (s.compare("SparseLDLSolver\n"))
+    {
+        std::cout << "File not contain a SparseLDLSolver" << std::endl;
+        return false;
+    }
+
+    in >> n;
+
+    in >> A_x;
+    in >> A_i;
+    in >> A_p;
+    in >> D;
+    in >> Parent;
+    in >> Lnz;
+    in >> Flag;
+    in >> Pattern;
+
+    in >> Lp;
+
+    in >> Lx;
+    in >> Li;
+
+    return true;
+}
+
+template<class TMatrix, class TVector>
+bool SparseLDLSolver<TMatrix,TVector>::writeFile(std::ostream& out)
+{
+    std::cout << "Write SparseLDLSolver" << std::endl;
+
+    std::string s = "SparseLDLSolver\n";
+
+    out << s;
+
+    out << n;
+
+    out << A_x;
+    out << A_i;
+    out << A_p;
+
+    out << D;
+    out << Y;
+    out << Parent;
+    out << Lnz;
+    out << Flag;
+    out << Pattern;
+
+    out << Lp;
+
+    out << Lx;
+    out << Li;
+
+    return true;
+}
+
 SOFA_DECL_CLASS(SparseLDLSolver)
 
 int SparseLDLSolverClass = core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm")

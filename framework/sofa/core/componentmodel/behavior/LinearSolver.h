@@ -113,6 +113,12 @@ public:
     /// Get the linear system inverse matrix, or NULL if this solver does not build it
     virtual defaulttype::BaseMatrix* getSystemInverseBaseMatrix() { return NULL; }
 
+    /// Read the Matrix solver from a file
+    virtual bool readFile(std::istream& /*in*/) { return false;}
+
+    /// Read the Matrix solver from a file
+    virtual bool writeFile(std::ostream& /*out*/) {return false;}
+
 protected:
 };
 
