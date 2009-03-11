@@ -95,8 +95,12 @@ void DynamicSparseGridTopologyContainer::loadFromMeshLoader ( sofa::component::M
 
     // init values in regular grid. (dense).
     viirg.resize( dataSize);
-    for( int i = 0; i < dataSize; i++)
-        viirg[i] = data[i];
+    //for( int i = 0; i < dataSize; i++)
+    //  viirg[i] = data[i];
+    for( unsigned int i = 0; i < iirg.size(); ++i)
+    {
+        viirg[iirg[i]] = 255;
+    }
 
     // init values in topo. (pas dense).
     viit.resize( iirg.size());
