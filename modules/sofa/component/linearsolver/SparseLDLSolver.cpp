@@ -58,64 +58,49 @@ SparseLDLSolver<TMatrix,TVector>::SparseLDLSolver()
     : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
     , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
     , f_tol( initData(&f_tol,0.001,"tolerance","tolerance of factorization") )
-    , S(NULL), N(NULL), tmp(NULL)
 {
     f_graph.setWidget("graph");
     f_graph.setReadOnly(true);
 }
 
 template<class TMatrix, class TVector>
-SparseLDLSolver<TMatrix,TVector>::~SparseLDLSolver()
-{
-    if (S) cs_sfree (S);
-    if (N) cs_nfree (N);
-    if (tmp) cs_free (tmp);
-}
+SparseLDLSolver<TMatrix,TVector>::~SparseLDLSolver() {}
 
 
 template<class TMatrix, class TVector>
 void SparseLDLSolver<TMatrix,TVector>::solve (Matrix& /*M*/, Vector& z, Vector& r)
 {
-    int n = A.n;
+    z = r;
+    ldl_lsolve (n, z.ptr(), Lp.data(), Li.data(), Lx.data()) ;
+    ldl_dsolve (n, z.ptr(), D.data()) ;
+    ldl_ltsolve (n, z.ptr(), Lp.data(), Li.data(), Lx.data()) ;
 
-    cs_ipvec (n, N->Pinv, r.ptr(), tmp) ;	/* x = P*b */
-    cs_lsolve (N->L, tmp) ;		/* x = L\x */
-    cs_usolve (N->U, tmp) ;		/* x = U\x */
-    cs_ipvec (n, S->Q, tmp, z.ptr()) ;	/* b = Q*x */
 }
 
 template<class TMatrix, class TVector>
 void SparseLDLSolver<TMatrix,TVector>::invert(Matrix& M)
 {
-    int order = -1; //?????
-
-    if (S) cs_sfree(S);
-    if (N) cs_nfree(N);
-    if (tmp) cs_free(tmp);
     M.compress();
-    //remplir A avec M
-    A.nzmax = M.getColsValue().size();	// maximum number of entries
-    A.m = M.rowBSize();					// number of rows
-    A.n = M.colBSize();					// number of columns
-    A_p = M.getRowBegin();
-    A.p = (int *) &(A_p[0]);							// column pointers (size n+1) or col indices (size nzmax)
-    A_i = M.getColsIndex();
-    A.i = (int *) &(A_i[0]);							// row indices, size nzmax
-    A_x = M.getColsValue();
-    A.x = (double *) &(A_x[0]);				// numerical values, size nzmax
-    A.nz = -1;							// # of entries in triplet matrix, -1 for compressed-col
-    cs_dropzeros( &A );
 
-    //M.check_matrix();
-    //CompressedRowSparseMatrix<double>::check_matrix(-1 /*A.nzmax*/,A.m,A.n,A.p,A.i,A.x);
-    //sout << "diag =";
-    //for (int i=0;i<A.n;++i) sout << " " << M.element(i,i);
-    //sout << sendl;
-    //sout << "SparseCholeskySolver: start factorization, n = " << A.n << " nnz = " << A.p[A.n] << sendl;
-    tmp = (double *) cs_malloc (A.n, sizeof (double)) ;
-    S = cs_sqr (&A, order, 0) ;		/* ordering and symbolic analysis */
-    N = cs_lu (&A, S, f_tol.getValue()) ;		/* numeric LU factorization */
-    //sout << "SparseCholeskySolver: factorization complete, nnz = " << N->L->p[N->L->n] << sendl;
+    //remplir A avec M
+    n = M.colBSize();					// number of columns
+    A_p = M.getRowBegin();
+    A_i = M.getColsIndex();
+    A_x = M.getColsValue();
+
+    D.resize(n);
+    Y.resize(n);
+    Lp.resize(n+1);
+    Parent.resize(n);
+    Lnz.resize(n);
+    Flag.resize(n);
+    Pattern.resize(n);
+
+    ldl_symbolic (n, A_p.data(), A_i.data(), Lp.data(), Parent.data(), Lnz.data(), Flag.data(), NULL, NULL) ;
+
+    Lx.resize(Lp[n]);
+    Li.resize(Lp[n]);
+    ldl_numeric (n, A_p.data(), A_i.data(), A_x.data(), Lp.data(), Parent.data(), Lnz.data(), Li.data(), Lx.data(), D.data(), Y.data(), Pattern.data(),Flag.data(), NULL, NULL) ;
 }
 
 SOFA_DECL_CLASS(SparseLDLSolver)

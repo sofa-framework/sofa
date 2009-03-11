@@ -32,7 +32,7 @@
 #include <sofa/component/linearsolver/FullMatrix.h>
 #include <sofa/helper/map.h>
 #include <math.h>
-#include <csparse.h>
+#include <ldl.h>
 
 namespace sofa
 {
@@ -63,13 +63,9 @@ public:
     void invert(Matrix& M);
 
 private :
-    css *S;
-    csn *N;
-    cs A;
-    helper::vector<int> A_i, A_p;
-    helper::vector<double> A_x;
-    double * tmp;
-
+    int n;
+    helper::vector<double> A_x,Lx,D,Y;
+    helper::vector<int> A_i,A_p, Li,Lp,Parent,Lnz,Flag,Pattern;
 };
 
 } // namespace linearsolver
