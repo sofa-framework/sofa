@@ -119,6 +119,75 @@ void SparseCholeskySolver<TMatrix,TVector>::invert(Matrix& M)
     //sout << "SparseCholeskySolver: factorization complete, nnz = " << N->L->p[N->L->n] << sendl;
 }
 
+template<class TMatrix, class TVector>
+bool SparseCholeskySolver<TMatrix,TVector>::readFile(std::istream& in)
+{
+    std::cout << "Read SparseCholeskySolver" << std::endl;
+    /*
+    	std::string s = "SparseCholeskySolver\n";
+
+    	//in >> ss;
+    	in >> s;
+    	if (s.compare("SparseCholeskySolver\n")) {
+    		std::cout << "File not contain a SparseLDLSolver" << std::endl;
+    		return false;
+    	}
+
+    	in >> A.n;
+
+    	in >> A_x;
+    	in >> A_i;
+    	in >> A_p;
+    	in >> D;
+    	in >> Parent;
+    	in >> Lnz;
+    	in >> Flag;
+    	in >> Pattern;
+
+    	in >> Lp;
+
+    	in >> Lx;
+    	in >> Li;
+
+    	return true;
+    	*/
+    return false;
+}
+
+template<class TMatrix, class TVector>
+bool SparseCholeskySolver<TMatrix,TVector>::writeFile(std::ostream& out)
+{
+    std::string s = "SparseCholeskySolver\n";
+    out << s;
+    /*
+    	out << A.n;
+
+    	FullVector<double> v;
+
+
+    	for (int i=0;i<n;i++) v[i]
+
+
+    	out << A_i;
+    	out << A_p;
+
+    	out << D;
+    	out << Y;
+    	out << Parent;
+    	out << Lnz;
+    	out << Flag;
+    	out << Pattern;
+
+    	out << Lp;
+
+    	out << Lx;
+    	out << Li;
+
+    	return true;
+    	*/
+    return false;
+}
+
 SOFA_DECL_CLASS(SparseCholeskySolver)
 
 int SparseCholeskySolverClass = core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm")
