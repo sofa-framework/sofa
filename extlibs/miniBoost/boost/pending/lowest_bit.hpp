@@ -1,20 +1,20 @@
-// -------------------------------------
+// -----------------------------------------------------------
 // lowest_bit.hpp
 //
 //           Position of the lowest bit 'on'
 //
-//       (C) Copyright Gennaro Prota 2003 - 2004.
+//         Copyright (c) 2003-2004, 2008 Gennaro Prota
 //
 // Distributed under the Boost Software License, Version 1.0.
 //    (See accompanying file LICENSE_1_0.txt or copy at
 //          http://www.boost.org/LICENSE_1_0.txt)
 //
-// ------------------------------------------------------
+// -----------------------------------------------------------
 
 #ifndef BOOST_LOWEST_BIT_HPP_GP_20030301
 #define BOOST_LOWEST_BIT_HPP_GP_20030301
 
-#include <cassert>
+#include <assert.h>
 #include "boost/pending/integer_log2.hpp"
 
 

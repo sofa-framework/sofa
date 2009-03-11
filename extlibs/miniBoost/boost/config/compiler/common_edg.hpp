@@ -43,6 +43,11 @@
 #   define BOOST_FUNCTION_SCOPE_USING_DECLARATION_BREAKS_ADL
 #endif 
 
+#if (__EDG_VERSION__ <= 310) || !defined(BOOST_STRICT_CONFIG)
+// No support for initializer lists
+#  define BOOST_NO_INITIALIZER_LISTS
+#endif
+
 // See also kai.hpp which checks a Kai-specific symbol for EH
 # if !defined(__KCC) && !defined(__EXCEPTIONS)
 #     define BOOST_NO_EXCEPTIONS

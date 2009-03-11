@@ -10,9 +10,9 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Source: /cvsroot/boost/boost/boost/mpl/aux_/overload_names.hpp,v $
-// $Date: 2004/10/13 18:23:20 $
-// $Revision: 1.2 $
+// $Id: overload_names.hpp 49267 2008-10-11 06:19:02Z agurtovoy $
+// $Date: 2008-10-11 02:19:02 -0400 (Sat, 11 Oct 2008) $
+// $Revision: 49267 $
 
 #include <boost/mpl/aux_/ptr_to_ref.hpp>
 #include <boost/mpl/aux_/config/operators.hpp>

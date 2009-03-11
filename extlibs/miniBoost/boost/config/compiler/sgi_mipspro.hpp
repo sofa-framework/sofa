@@ -17,6 +17,12 @@
 // if no threading API is detected.
 //
 #define BOOST_HAS_THREADS
+#define BOOST_NO_TWO_PHASE_NAME_LOOKUP
+
+#undef BOOST_NO_SWPRINTF
+#undef BOOST_DEDUCED_TYPENAME
+
+#define BOOST_NO_INITIALIZER_LISTS
 //
 // version check:
 // probably nothing to do here?

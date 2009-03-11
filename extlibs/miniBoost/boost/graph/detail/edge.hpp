@@ -49,7 +49,7 @@ namespace boost {
       //  protected:
       property_type* m_eproperty;
     };
-    
+
     template <class D, class V>
     inline bool
     operator==(const detail::edge_desc_impl<D,V>& a, 
@@ -63,6 +63,36 @@ namespace boost {
                const detail::edge_desc_impl<D,V>& b)
     {
       return ! (a.get_property() == b.get_property());
+    }
+
+    // Order edges according to the address of their property object
+    template <class D, class V>
+    inline bool
+    operator<(const detail::edge_desc_impl<D,V>& a, 
+               const detail::edge_desc_impl<D,V>& b)
+    {
+      return a.get_property() < b.get_property();
+    }
+    template <class D, class V>
+    inline bool
+    operator<=(const detail::edge_desc_impl<D,V>& a, 
+               const detail::edge_desc_impl<D,V>& b)
+    {
+      return a.get_property() <= b.get_property();
+    }
+    template <class D, class V>
+    inline bool
+    operator>(const detail::edge_desc_impl<D,V>& a, 
+               const detail::edge_desc_impl<D,V>& b)
+    {
+      return a.get_property() > b.get_property();
+    }
+    template <class D, class V>
+    inline bool
+    operator>=(const detail::edge_desc_impl<D,V>& a, 
+               const detail::edge_desc_impl<D,V>& b)
+    {
+      return a.get_property() >= b.get_property();
     }
 
   } //namespace detail

@@ -1,8 +1,8 @@
 
-#ifndef BOOST_MPL_MAX_HPP_INCLUDED
-#define BOOST_MPL_MAX_HPP_INCLUDED
+#ifndef BOOST_MPL_MIN_MAX_HPP_INCLUDED
+#define BOOST_MPL_MIN_MAX_HPP_INCLUDED
 
-// Copyright Aleksey Gurtovoy 2000-2004
+// Copyright Aleksey Gurtovoy 2000-2008
 //
 // Distributed under the Boost Software License, Version 1.0. 
 // (See accompanying file LICENSE_1_0.txt or copy at 
@@ -10,9 +10,9 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Source: /cvsroot/boost/boost/boost/mpl/min_max.hpp,v $
-// $Date: 2004/09/02 15:40:41 $
-// $Revision: 1.2 $
+// $Id: min_max.hpp 49267 2008-10-11 06:19:02Z agurtovoy $
+// $Date: 2008-10-11 02:19:02 -0400 (Sat, 11 Oct 2008) $
+// $Revision: 49267 $
 
 #include <boost/mpl/less.hpp>
 #include <boost/mpl/if.hpp>
@@ -43,4 +43,4 @@ BOOST_MPL_AUX_NA_SPEC(2, max)
 
 }}
 
-#endif // BOOST_MPL_MAX_HPP_INCLUDED
+#endif // BOOST_MPL_MIN_MAX_HPP_INCLUDED

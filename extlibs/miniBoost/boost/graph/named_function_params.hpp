@@ -284,6 +284,27 @@ namespace boost {
       return Params(c, *this);
     }
 
+    template <typename VertexInvar>
+    bgl_named_params<VertexInvar, vertex_invariant1_t, self>
+    vertex_invariant1(const VertexInvar& c) const {
+      typedef bgl_named_params<VertexInvar, vertex_invariant1_t, self> Params;
+      return Params(c, *this);
+    }
+
+    template <typename VertexInvar>
+    bgl_named_params<VertexInvar, vertex_invariant2_t, self>
+    vertex_invariant2(const VertexInvar& c) const {
+      typedef bgl_named_params<VertexInvar, vertex_invariant2_t, self> Params;
+      return Params(c, *this);
+    }
+
+    template <typename VertexMaxInvar>
+    bgl_named_params<VertexMaxInvar, vertex_max_invariant_t, self>
+    vertex_max_invariant(const VertexMaxInvar& c) const {
+      typedef bgl_named_params<VertexMaxInvar, vertex_max_invariant_t, self> Params;
+      return Params(c, *this);
+    }
+
     template <typename VertexDisplacement>
     bgl_named_params<VertexDisplacement, vertex_displacement_t, self>
     displacement_map(const VertexDisplacement& c) const {
@@ -544,6 +565,27 @@ namespace boost {
   bgl_named_params<VertexInvar, vertex_invariant_t>
   vertex_invariant(const VertexInvar& c) {
     typedef bgl_named_params<VertexInvar, vertex_invariant_t> Params;
+    return Params(c);
+  }
+
+  template <typename VertexInvar>
+  bgl_named_params<VertexInvar, vertex_invariant1_t>
+  vertex_invariant1(const VertexInvar& c) {
+    typedef bgl_named_params<VertexInvar, vertex_invariant1_t> Params;
+    return Params(c);
+  }
+
+  template <typename VertexInvar>
+  bgl_named_params<VertexInvar, vertex_invariant2_t>
+  vertex_invariant2(const VertexInvar& c) {
+    typedef bgl_named_params<VertexInvar, vertex_invariant2_t> Params;
+    return Params(c);
+  }
+
+  template <typename VertexMaxInvar>
+  bgl_named_params<VertexMaxInvar, vertex_max_invariant_t>
+  vertex_max_invariant(const VertexMaxInvar& c) {
+    typedef bgl_named_params<VertexMaxInvar, vertex_max_invariant_t> Params;
     return Params(c);
   }
 

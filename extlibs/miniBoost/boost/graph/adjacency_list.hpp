@@ -17,6 +17,9 @@
 #include <list>
 #include <set>
 
+// TODO: Deprecating this requires some cooperation from Boost.Config. It's not
+// a good idea to just refuse the inclusion because it could break otherwise
+// functioning code.
 #if !defined BOOST_NO_HASH
 #  ifdef BOOST_HASH_SET_HEADER
 #    include BOOST_HASH_SET_HEADER
@@ -36,11 +39,15 @@
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/graph_selectors.hpp>
 #include <boost/property_map.hpp>
-#include <boost/pending/ct_if.hpp>
+#include <boost/mpl/if.hpp>
+#include <boost/mpl/and.hpp>
+#include <boost/mpl/not.hpp>
+#include <boost/mpl/bool.hpp>
 #include <boost/graph/detail/edge.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/detail/workaround.hpp>
 #include <boost/graph/properties.hpp>
+#include <boost/graph/named_graph.hpp>
 
 namespace boost {
 
@@ -238,12 +245,12 @@ namespace boost {
   namespace detail {
     template <class Directed> struct is_random_access { 
       enum { value = false};
-      typedef false_type type;
+      typedef mpl::false_ type;
     };
     template <>
     struct is_random_access<vecS> { 
       enum { value = true }; 
-      typedef true_type type;
+      typedef mpl::true_ type;
     };
 
   } // namespace detail
@@ -259,7 +266,8 @@ namespace boost {
 
   template <class OutEdgeListS = vecS,
             class VertexListS = vecS,
-            class DirectedS = directedS>
+            class DirectedS = directedS,
+            class EdgeListS = listS>
   struct adjacency_list_traits
   {
     typedef typename detail::is_random_access<VertexListS>::type
@@ -267,9 +275,9 @@ namespace boost {
     typedef typename DirectedS::is_bidir_t is_bidir;
     typedef typename DirectedS::is_directed_t is_directed;
 
-    typedef typename boost::ct_if_t<is_bidir,
+    typedef typename mpl::if_<is_bidir,
       bidirectional_tag,
-      typename boost::ct_if_t<is_directed,
+      typename mpl::if_<is_directed,
         directed_tag, undirected_tag
       >::type
     >::type directed_category;
@@ -278,10 +286,26 @@ namespace boost {
       edge_parallel_category;
 
     typedef void* vertex_ptr;
-    typedef typename boost::ct_if_t<is_rand_access,
+    typedef typename mpl::if_<is_rand_access,
       std::size_t, vertex_ptr>::type vertex_descriptor;
     typedef detail::edge_desc_impl<directed_category, vertex_descriptor>
       edge_descriptor;
+
+    typedef std::size_t vertices_size_type;
+
+  private:
+    // Logic to figure out the edges_size_type
+    struct dummy {};
+    typedef typename container_gen<EdgeListS, dummy>::type EdgeContainer;
+    typedef typename DirectedS::is_bidir_t BidirectionalT;
+    typedef typename DirectedS::is_directed_t DirectedT;
+    typedef typename mpl::and_<DirectedT, 
+      typename mpl::not_<BidirectionalT>::type >::type on_edge_storage;
+  public:
+    typedef typename mpl::if_<on_edge_storage,
+       std::size_t, typename EdgeContainer::size_type
+    >::type edges_size_type;
+
   };
 
 } // namespace boost
@@ -313,7 +337,14 @@ namespace boost {
 #else
       VertexProperty, EdgeProperty,
 #endif
-      GraphProperty, EdgeListS>::type
+      GraphProperty, EdgeListS>::type,
+      // Support for named vertices
+      public graph::maybe_named_graph<
+        adjacency_list<OutEdgeListS,VertexListS,DirectedS,
+                       VertexProperty,EdgeProperty,GraphProperty,EdgeListS>,
+        typename adjacency_list_traits<OutEdgeListS, VertexListS, DirectedS,
+                                       EdgeListS>::vertex_descriptor,
+        VertexProperty>
   {
 #if !defined(BOOST_GRAPH_NO_BUNDLED_PROPERTIES)
     typedef typename detail::retag_property_list<vertex_bundle_t,
@@ -335,10 +366,10 @@ namespace boost {
       edge_property_type;
 
     // The types that are actually bundled
-    typedef typename ct_if<(is_same<maybe_vertex_bundled, no_property>::value),
+    typedef typename mpl::if_c<(is_same<maybe_vertex_bundled, no_property>::value),
                            no_vertex_bundle,
                            maybe_vertex_bundled>::type vertex_bundled;
-    typedef typename ct_if<(is_same<maybe_edge_bundled, no_property>::value),
+    typedef typename mpl::if_c<(is_same<maybe_edge_bundled, no_property>::value),
                            no_edge_bundle,
                            maybe_edge_bundled>::type edge_bundled;
 #else
@@ -412,6 +443,12 @@ namespace boost {
       adjacency_list tmp(x);
       x = *this;
       *this = tmp;
+    }
+
+    void clear()
+    {
+      this->clearing_graph();
+      Base::clear();
     }
 
 #ifndef BOOST_GRAPH_NO_BUNDLED_PROPERTIES

@@ -20,6 +20,11 @@
 #include <boost/limits.hpp>
 #include <boost/graph/detail/is_same.hpp>
 
+#if BOOST_WORKAROUND(BOOST_MSVC, < 1300)
+// Stay out of the way of the concept checking class
+# define Graph Graph_
+#endif
+
 namespace boost {
 
   // This is a bit more convenient than std::numeric_limits because
@@ -265,5 +270,10 @@ namespace boost {
     }
 
 } /* namespace boost */
+
+#if BOOST_WORKAROUND(BOOST_MSVC, < 1300)
+// Stay out of the way of the concept checking class
+# undef Graph
+#endif
 
 #endif

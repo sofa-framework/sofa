@@ -40,7 +40,7 @@
        // initialized in-class.
        //    >> Assertion:   (../links/dbg_cstabs.cc, line 611)
        //         while processing ../test.cpp at line 0.
-       // (Jens Maurer according to Gottfried Ganßauge 04 Mar 2002)
+       // (Jens Maurer according to Gottfried Ganssauge 04 Mar 2002)
 #      define BOOST_NO_INCLASS_MEMBER_INITIALIZATION
 
        // SunPro 5.3 has better support for partial specialization,
@@ -69,6 +69,18 @@
 #      define BOOST_NO_IS_ABSTRACT
 #    endif
 
+//
+// Issues that effect all known versions:
+//
+#define BOOST_NO_TWO_PHASE_NAME_LOOKUP
+#define BOOST_NO_ADL_BARRIER
+#define BOOST_NO_INITIALIZER_LISTS
+
+#if(__SUNPRO_CC >= 0x590) 
+#  define BOOST_HAS_LONG_LONG
+#endif
+
+
 #define BOOST_COMPILER "Sun compiler version " BOOST_STRINGIZE(__SUNPRO_CC)
 
 //
@@ -78,8 +90,8 @@
 #error "Compiler not supported or configured - please reconfigure"
 #endif
 //
-// last known and checked version is 0x570:
-#if (__SUNPRO_CC > 0x580)
+// last known and checked version is 0x590:
+#if (__SUNPRO_CC > 0x590)
 #  if defined(BOOST_ASSERT_CONFIG)
 #     error "Unknown compiler version - please run the configure tests and report the results"
 #  endif

@@ -39,6 +39,12 @@
 #  endif
 #endif
 
+#if BOOST_WORKAROUND(BOOST_MSVC, < 1300)
+// Stay out of the way of concept checking class templates
+# define Container Container_
+# define AssociativeContainer AssociativeContainer_
+#endif
+
 // The content of this file is in 'graph_detail' because otherwise
 // there will be name clashes with 
 // sandbox/boost/sequence_algo/container_traits.hpp
@@ -409,5 +415,11 @@ namespace boost { namespace graph_detail {
   }
 
 }} // namespace boost::graph_detail
+
+#if BOOST_WORKAROUND(BOOST_MSVC, < 1300)
+// Stay out of the way of concept checking class templates
+# undef Container
+# undef AssociativeContainer
+#endif
 
 #endif // BOOST_GRAPH_DETAIL_CONTAINER_TRAITS_H

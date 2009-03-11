@@ -75,6 +75,12 @@ namespace boost {
 #endif  
   };
 
+  template <class Tag2>
+  inline detail::error_property_not_found
+  get_property_value(const no_property& p, Tag2) {
+    return detail::error_property_not_found();
+  }
+
   template <class Tag1, class Tag2, class T1, class Base>
   inline typename property_value<property<Tag1,T1,Base>, Tag2>::type& 
   get_property_value(property<Tag1,T1,Base>& p, Tag2 tag2) {

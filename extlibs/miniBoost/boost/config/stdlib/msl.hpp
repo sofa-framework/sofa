@@ -45,6 +45,10 @@
 #  define BOOST_NO_STD_USE_FACET
 #  define BOOST_HAS_TWO_ARG_USE_FACET
 #endif
+//
+// We never have the new C++0x unordered containers:
+//
+#define BOOST_NO_STD_UNORDERED
 
 
 #define BOOST_STDLIB "Metrowerks Standard Library version " BOOST_STRINGIZE(__MSL_CPP__)

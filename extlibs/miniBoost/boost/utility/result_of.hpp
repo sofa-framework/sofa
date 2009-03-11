@@ -15,6 +15,8 @@
 #include <boost/preprocessor.hpp>
 #include <boost/detail/workaround.hpp>
 #include <boost/mpl/has_xxx.hpp>
+#include <boost/mpl/if.hpp>
+#include <boost/mpl/bool.hpp>
 
 #ifndef BOOST_RESULT_OF_NUM_ARGS
 #  define BOOST_RESULT_OF_NUM_ARGS 10
@@ -29,28 +31,48 @@ namespace detail {
 
 BOOST_MPL_HAS_XXX_TRAIT_DEF(result_type)
 
-template<typename F, typename FArgs, bool HasResultType> struct get_result_of;
-
-template<typename F, typename FArgs>
-struct get_result_of<F, FArgs, true>
-{
-  typedef typename F::result_type type;
-};
-
-template<typename F, typename FArgs>
-struct get_result_of<F, FArgs, false>
-{
-  typedef typename F::template result<FArgs>::type type;
-};
+template<typename F, typename FArgs, bool HasResultType> struct result_of_impl;
 
 template<typename F>
-struct get_result_of<F, F(void), false>
+struct result_of_void_impl
 {
   typedef void type;
 };
 
+template<typename R>
+struct result_of_void_impl<R (*)(void)>
+{
+  typedef R type;
+};
+
+template<typename R>
+struct result_of_void_impl<R (&)(void)>
+{
+  typedef R type;
+};
+
 template<typename F, typename FArgs>
-struct result_of : get_result_of<F, FArgs, (has_result_type<F>::value)> {};
+struct result_of_impl<F, FArgs, true>
+{
+  typedef typename F::result_type type;
+};
+
+template<typename FArgs>
+struct is_function_with_no_args : mpl::false_ {};
+
+template<typename F>
+struct is_function_with_no_args<F(void)> : mpl::true_ {};
+
+template<typename F, typename FArgs>
+struct result_of_nested_result : F::template result<FArgs>
+{};
+
+template<typename F, typename FArgs>
+struct result_of_impl<F, FArgs, false>
+  : mpl::if_<is_function_with_no_args<FArgs>,
+	     result_of_void_impl<F>,
+	     result_of_nested_result<F, FArgs> >::type
+{};
 
 } // end namespace detail
 

@@ -43,6 +43,10 @@
 #   define BOOST_FUNCTION_SCOPE_USING_DECLARATION_BREAKS_ADL
 #   define BOOST_NO_IS_ABSTRACT
 #elif __GNUC__ == 3
+#  if defined (__PATHSCALE__)
+#     define BOOST_NO_TWO_PHASE_NAME_LOOKUP
+#     define BOOST_NO_IS_ABSTRACT
+#  endif
    //
    // gcc-3.x problems:
    //
@@ -54,6 +58,12 @@
 #  if __GNUC_MINOR__ < 4
 #     define BOOST_NO_IS_ABSTRACT
 #  endif
+#endif
+#if __GNUC__ < 4
+//
+// All problems to gcc-3.x and earlier here:
+//
+#define BOOST_NO_TWO_PHASE_NAME_LOOKUP
 #endif
 
 #ifndef __EXCEPTIONS
@@ -81,8 +91,55 @@
 #if __GNUC__ > 3 || ( __GNUC__ == 3 && __GNUC_MINOR__ >= 1 )
 #define BOOST_HAS_NRVO
 #endif
+//
+// RTTI and typeinfo detection is possible post gcc-4.3:
+//
+#if __GNUC__ * 100 + __GNUC_MINOR__ >= 403
+#  ifndef __GXX_RTTI
+#     define BOOST_NO_TYPEID
+#     define BOOST_NO_RTTI
+#  endif
+#endif
 
-#define BOOST_COMPILER "GNU C++ version " __VERSION__
+//
+// C++0x features
+//
+#if __GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ > 2)
+// C++0x features are only enabled when -std=c++0x or -std=gnu++0x are
+// passed on the command line, which in turn defines
+// __GXX_EXPERIMENTAL_CXX0X__. 
+#  if defined(__GXX_EXPERIMENTAL_CXX0X__)
+#    define BOOST_HAS_STATIC_ASSERT
+#    define BOOST_HAS_VARIADIC_TMPL
+#    define BOOST_HAS_RVALUE_REFS
+#    define BOOST_HAS_DECLTYPE
+#  endif
+#endif
+
+#if !defined(__GXX_EXPERIMENTAL_CXX0X__) || __GNUC__ < 4 || (__GNUC__ == 4 && __GNUC_MINOR__ < 4)
+#  define BOOST_NO_INITIALIZER_LISTS
+#endif
+
+//
+// Potential C++0x features
+//
+
+// Variadic templates compiler: 
+//   http://www.generic-programming.org/~dgregor/cpp/variadic-templates.html
+#ifdef __VARIADIC_TEMPLATES
+#  define BOOST_HAS_VARIADIC_TMPL
+#endif
+
+// ConceptGCC compiler:
+//   http://www.generic-programming.org/software/ConceptGCC/
+#ifdef __GXX_CONCEPTS__
+#  define BOOST_HAS_CONCEPTS
+#  define BOOST_COMPILER "ConceptGCC version " __VERSION__
+#endif
+
+#ifndef BOOST_COMPILER
+#  define BOOST_COMPILER "GNU C++ version " __VERSION__
+#endif
 
 //
 // versions check:
@@ -91,8 +148,8 @@
 #  error "Compiler not configured - please reconfigure"
 #endif
 //
-// last known and checked version is 4.0 (Pre-release):
-#if (__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 0))
+// last known and checked version is 4.3 (Pre-release):
+#if (__GNUC__ > 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ > 3))
 #  if defined(BOOST_ASSERT_CONFIG)
 #     error "Unknown compiler version - please run the configure tests and report the results"
 #  else

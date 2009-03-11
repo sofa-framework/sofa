@@ -10,9 +10,9 @@
 //
 // See http://www.boost.org/libs/mpl for documentation.
 
-// $Source: /cvsroot/boost/boost/boost/mpl/find_if.hpp,v $
-// $Date: 2004/09/02 15:40:41 $
-// $Revision: 1.10 $
+// $Id: find_if.hpp 49274 2008-10-11 07:22:05Z agurtovoy $
+// $Date: 2008-10-11 03:22:05 -0400 (Sat, 11 Oct 2008) $
+// $Revision: 49274 $
 
 #include <boost/mpl/aux_/find_if_pred.hpp>
 #include <boost/mpl/arg.hpp>
@@ -34,7 +34,7 @@ struct find_if
     typedef typename iter_fold_if<
           Sequence
         , void
-        , arg<1> // ignore
+        , mpl::arg<1> // ignore
         , protect< aux::find_if_pred<Predicate> >
         >::type result_;
 
