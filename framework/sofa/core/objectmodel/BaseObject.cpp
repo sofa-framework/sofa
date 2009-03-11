@@ -80,7 +80,7 @@ void BaseObject::parse( BaseObjectDescription* arg )
                     std::string objectName;
                     std::string dataName;
 
-                    BaseObject* obj;
+                    BaseObject* obj = NULL;
 
                     /* if '.' not found, try to find the data in the current object */
                     if (posPath == 0 && posDot == std::string::npos)
@@ -101,7 +101,46 @@ void BaseObject::parse( BaseObjectDescription* arg )
                             objectName = valueString.substr(1,posDot-1);
                             dataName = valueString.substr(posDot+1);
                         }
-                        obj = getContext()->get<BaseObject>(objectName);
+
+                        if (objectName[0] == '[')
+                        {
+                            if (objectName[objectName.size()-1] != ']')
+                            {
+                                serr<<"ERROR: Missing ']' in at the end of "<< objectName << sendl;
+                                break;
+                            }
+
+                            objectName = objectName.substr(1, objectName.size()-2);
+
+                            if (objectName.empty())
+                            {
+                                serr<<"ERROR: Missing object level between [] in : " << val << sendl;
+                                break;
+                            }
+
+                            int objectLevel = atoi(objectName.c_str());
+                            helper::vector<BaseObject*> objects;
+                            getContext()->get<BaseObject>(&objects, BaseContext::Local);
+
+                            helper::vector<BaseObject*>::iterator it;
+
+                            for(it = objects.begin(); it != objects.end(); ++it)
+                            {
+                                if ((*it) == this)
+                                {
+                                    it += objectLevel;
+                                    if ((*it) != NULL)
+                                    {
+                                        obj = (*it);
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            obj = getContext()->get<BaseObject>(objectName);
+                        }
 
                         if (obj == NULL)
                         {
