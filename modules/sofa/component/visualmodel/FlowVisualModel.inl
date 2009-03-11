@@ -392,7 +392,7 @@ void FlowVisualModel<DataTypes>::interpolateVelocityAtVertices()
 {
     unsigned int nbPoints =  m_triTopo->getNbPoints();
     helper::vector<double> weight;
-//	VecDeriv& v2d = *this->tetraGeometry->getV();
+//	const VecDeriv& v2d = *this->tetraGeometry->getV();
     velocityAtVertex.resize(nbPoints);
     normAtVertex.resize(nbPoints);
     weight.resize(nbPoints);
@@ -401,10 +401,10 @@ void FlowVisualModel<DataTypes>::interpolateVelocityAtVertices()
     std::fill( velocityAtVertex.begin(), velocityAtVertex.end(), Coord() );
     std::fill( normAtVertex.begin(), normAtVertex.end(), 0.0 );
 
-    core::componentmodel::topology::BaseMeshTopology::SeqTriangles triangles =  m_triTopo->getTriangles();
+    const core::componentmodel::topology::BaseMeshTopology::SeqTriangles& triangles =  m_triTopo->getTriangles();
     if (!m_tetraTopo)
     {
-        VecDeriv& v2d = *this->triangleGeometry->getV();
+        const VecDeriv& v2d = *this->triangleGeometry->getV();
 
         for(unsigned int i=0 ; i<triangles.size() ; i++)
         {
@@ -425,14 +425,15 @@ void FlowVisualModel<DataTypes>::interpolateVelocityAtVertices()
     }
     else
     {
-        VecDeriv& x3d = *this->tetraCenters->getX();
-        VecDeriv& v3d = *this->tetraCenters->getV();
+        const VecDeriv& x3d = *this->tetraCenters->getX();
+        const VecDeriv& v3d = *this->tetraCenters->getV();
+        const VecDeriv& p3d = *this->triangleGeometry->getX();
         if (v3d.size() > 0)
         {
             //Loop for each vertex of the triangle mesh
             for (unsigned int i=0 ; i<nbPoints ; i++)
             {
-                Coord pTriangle = m_triGeo->getPointPosition(i);
+                Coord pTriangle = p3d[i]; //m_triGeo->getPointPosition(i);
 
                 //Finally, loop over all vertices of the set and compute velocities
                 for (unsigned int j = 0; j<tetraShellPerTriangleVertex[i].size() ; j++)
@@ -463,8 +464,8 @@ void FlowVisualModel<DataTypes>::interpolateVelocityAtVertices()
 template <class DataTypes>
 void FlowVisualModel<DataTypes>::drawTetra()
 {
-    VecCoord& tetrasX = *this->tetraGeometry->getX();
-    VecDeriv& v3d = *this->tetraGeometry->getV();
+    const VecCoord& tetrasX = *this->tetraGeometry->getX();
+    const VecDeriv& v3d = *this->tetraGeometry->getV();
     //glEnable (GL_BLEND);
 
     //glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
@@ -477,7 +478,7 @@ void FlowVisualModel<DataTypes>::drawTetra()
     if(m_tetraTopo)
     {
         //draw tetrahedra
-        core::componentmodel::topology::BaseMeshTopology::SeqTetras tetrahedra=  m_tetraTopo->getTetras();
+        const core::componentmodel::topology::BaseMeshTopology::SeqTetras& tetrahedra=  m_tetraTopo->getTetras();
         glPointSize(10.0);
         for (unsigned int i=0 ; i<tetrahedra.size() ; i++)
         {
@@ -499,7 +500,7 @@ void FlowVisualModel<DataTypes>::drawTetra()
 
             glEnd();
             */
-            const BaseMeshTopology::Tetra tetra = m_tetraTopo->getTetra(i);
+            const BaseMeshTopology::Tetra tetra = tetrahedra[i];
             Coord center(0.0,0.0,0.0);
 
             for (unsigned int j=0 ; j< 4 ; j++)
