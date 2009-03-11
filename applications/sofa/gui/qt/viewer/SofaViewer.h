@@ -127,7 +127,7 @@ public:
         std::string file = filename ? sofa::helper::system::SetDirectory::GetFileName(filename) : std::string();
         std::string screenshotPrefix=sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + std::string( "/share/screenshots/" ) + file + std::string("_");
         capture.setPrefix(screenshotPrefix);
-        sceneFileName=filename;
+        sceneFileName = filename ? filename : std::string("default.scn");
         groot = scene;
         initTexturesDone = false;
         sceneBBoxIsValid = false;
