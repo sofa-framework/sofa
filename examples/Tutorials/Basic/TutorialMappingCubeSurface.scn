@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<!-- See http://wiki.sofa-framework.org/wiki/TutorialBasicCube -->
+<!-- See http://wiki.sofa-framework.org/wiki/TutorialMappingCubeSurface -->
 <Node name="root" dt="0.01" gravity="0 0 -9.81" showBehavior="1">
 
   <EulerImplicitSolver name="EulerImplicit" />
