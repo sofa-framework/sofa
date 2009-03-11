@@ -3,7 +3,7 @@
 SVN="svn --non-interactive"
 
 if [ $# -ne 6 ]; then
-echo USAGE: $# $0 source_url source_rev0 source_rev1 source_dir dest_dir tmp_dir
+echo USAGE: $0 source_url source_rev0 source_rev1 source_dir dest_dir tmp_dir
 exit 1
 fi
 echo "WARNING: This script will delete part of the files in the $4 and $5 directories."
