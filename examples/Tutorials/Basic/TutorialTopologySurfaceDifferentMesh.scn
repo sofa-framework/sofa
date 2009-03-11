@@ -15,7 +15,7 @@
     <EulerImplicitSolver name="cg_odesolver" printLog="0"/>
     <CGLinearSolver name="linear solver" template="GraphScattered" iterations="40" tolerance="1e-09" threshold="1e-09"/>
 
-    <MeshTopology name="Static Mesh" fileTopology="/home/epernod/projects/sofa-dev/trunk/Sofa/share/mesh/square3.msh"/>
+    <MeshTopology name="Static Mesh" fileTopology="mesh/square3.msh"/>
     <MeshSpringForceField name="Springs" template="Vec3d"/>
     <TriangularFEMForceField name="FEM" template="Vec3d" method="large" poissonRatio="0.3" youngModulus="60"/>
 
@@ -47,7 +47,7 @@
     <CGLinearSolver name="linear solver" template="GraphScattered" iterations="40" tolerance="1e-09" threshold="1e-09"/>
 
 
-    <TriangleSetTopologyContainer name="Topology Container" fileTopology="/home/epernod/projects/sofa-dev/trunk/Sofa/share/mesh/square3.msh" />
+    <TriangleSetTopologyContainer name="Topology Container" fileTopology="mesh/square3.msh" />
     <TriangleSetTopologyModifier name="Topology Modifier"/>
     <TriangleSetTopologyAlgorithms template="Vec3d" name="Topology Algorithms"/>
     <TriangleSetGeometryAlgorithms template="Vec3d" name="Geometry Algorithms"/>
