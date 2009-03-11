@@ -85,7 +85,7 @@ void BoxROI<DataTypes>::update()
 {
     dirty = false;
     helper::vector<Vec6>& vb = *(boxes.beginEdit());
-    std::cout << "update()" << std::endl;
+
     for (unsigned int bi=0; bi<vb.size(); ++bi)
     {
         if (vb[bi][0] > vb[bi][3]) std::swap(vb[bi][0],vb[bi][3]);
