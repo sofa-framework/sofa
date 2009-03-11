@@ -183,6 +183,23 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const TetraID
 
     Real d = (pa-pb)*(pa-pb);
 
+    getTetraInBall(ind_ta, d, indices);
+}
+
+/// Finds the indices of all tetrahedra in the ball of center ind_ta and of radius dist(ind_ta, ind_tb)
+template<class DataTypes>
+void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const TetraID ind_ta, Real r,
+        sofa::helper::vector<unsigned int> &indices) const
+{
+    Real d = r;
+    const Tetrahedron &ta=this->m_topology->getTetra(ind_ta);
+    const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
+    const typename DataTypes::Coord& ca=(vect_c[ta[0]]+vect_c[ta[1]]+vect_c[ta[2]]+vect_c[ta[3]])*0.25;
+    Vec<3,Real> pa;
+    pa[0] = (Real) (ca[0]);
+    pa[1] = (Real) (ca[1]);
+    pa[2] = (Real) (ca[2]);
+
     unsigned int t_test=ind_ta;
     indices.push_back(t_test);
 
@@ -254,6 +271,7 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const TetraID
 
     return;
 }
+
 
 /// Write the current mesh into a msh file
 template <typename DataTypes>
