@@ -66,6 +66,7 @@ public:
     ~BoxROI();
 
     void init();
+    void reinit();
 
     void update();
 
