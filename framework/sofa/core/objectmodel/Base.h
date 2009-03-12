@@ -278,9 +278,9 @@ public:
     /// Accessor to the map containing all the aliases of this object
     std::multimap< std::string, BaseData* > getAliases() { return m_aliasData; }
 
-    sofa::helper::system::SofaOStream sendl;
-    std::ostringstream               &serr;
-    std::ostringstream               &sout;
+    mutable sofa::helper::system::SofaOStream sendl;
+    mutable std::ostringstream               &serr;
+    mutable std::ostringstream               &sout;
 
 
 protected:
