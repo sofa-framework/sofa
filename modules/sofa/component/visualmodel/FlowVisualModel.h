@@ -139,8 +139,8 @@ class SOFA_COMPONENT_VISUALMODEL_API FlowVisualModel : public core::VisualModel
     struct StreamLine
     {
         helper::vector<Coord> positions;
-        core::componentmodel::topology::BaseMeshTopology::TriangleID currentTriangleID;
-        helper::set<core::componentmodel::topology::BaseMeshTopology::TriangleID> trianglesAroundLastPoint;
+        unsigned int currentPrimitiveID;
+        helper::set<unsigned int> primitivesAroundLastPoint;
     };
 
 protected:
@@ -155,8 +155,9 @@ protected:
     //draw tetrahedra
     core::Shader* shader;
 
-    VecCoord x;
-    VecCoord velocityAtVertex;
+    VecCoord triangleCenters;
+    VecDeriv velocityAtVertex;
+    helper::vector<bool> isPointInTetra;
     helper::vector< helper::vector<unsigned int> >  tetraShellPerTriangleVertex;
     helper::vector< float > tetraSize;
     helper::vector<double> normAtVertex;
@@ -166,6 +167,7 @@ protected:
 
     unsigned int getIndexClosestPoint(const VecCoord &x, Coord p);
     bool isInDomain(unsigned int index,Coord p);
+    bool isInDomainT(unsigned int index,Coord p);
     Coord interpolateVelocity(unsigned int index, Coord p, bool &atEnd);
     void interpolateVelocityAtVertices();
 
@@ -184,6 +186,8 @@ public:
     Data<double> streamlineDtNumberOfPointsPerTriangle;
     Data<bool> showColorScale;
     Data<bool> showTetras;
+    Data<float> minAlpha;
+    Data<float> maxAlpha;
     FlowVisualModel();
     virtual ~FlowVisualModel();
 
@@ -191,6 +195,7 @@ public:
     void reinit();
     void initVisual();
     void draw();
+    void drawTransparent();
     void drawTetra();
     void computeStreamLine(unsigned int index, unsigned int maxNbPoints, double dt);
 

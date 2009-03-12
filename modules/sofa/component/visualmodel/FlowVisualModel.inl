@@ -65,6 +65,8 @@ FlowVisualModel<DataTypes>::FlowVisualModel()
     ,streamlineDtNumberOfPointsPerTriangle(initData(&streamlineDtNumberOfPointsPerTriangle, (double) 5.0 , "streamlineDtNumberOfPointsPerTriangle", "Set the number of points for each step (equals ~ a triangle)"))
     ,showColorScale(initData(&showColorScale, bool(true), "showColorScale", "Set color scale"))
     ,showTetras(initData(&showTetras, bool(false), "showTetras", "Show Tetras"))
+    ,minAlpha(initData(&minAlpha, float(0.2), "minAlpha", "Minimum alpha value for triangles"))
+    ,maxAlpha(initData(&maxAlpha, float(0.8), "maxAlpha", "Maximum alpha value for triangles"))
 {
 
 }
@@ -182,8 +184,11 @@ void FlowVisualModel<DataTypes>::initVisual()
         unsigned int nbTetras = (*this->tetraCenters->getX()).size();
         (*this->tetraCenters->getV()).resize(nbTetras);
         tetraShellPerTriangleVertex.resize(nbPoints);
+        isPointInTetra.resize(nbPoints);
         tetraSize.resize(nbTetras);
         std::fill(tetraSize.begin(), tetraSize.end(), 0.0);
+        std::fill(isPointInTetra.begin(), isPointInTetra.end(), true);
+
 
         //Store some data
 
@@ -215,6 +220,7 @@ void FlowVisualModel<DataTypes>::initVisual()
             //the point is outside all the tetra, so we look for the closest one
             if (!found)
             {
+                isPointInTetra[i] = false;
                 float minDist = 1e10;
                 float dist = 0.0;
                 for(t=0 ; t<closestTetraShell.size() ; t++)
@@ -246,7 +252,7 @@ void FlowVisualModel<DataTypes>::initVisual()
             }
 
             helper::vector<unsigned int> tetrasShell;
-            m_tetraGeo->getTetraInBall(closestTetra , tetraSize[closestTetra] * 1.2f, tetrasShell);
+            m_tetraGeo->getTetraInBall(closestTetra , tetraSize[closestTetra] * 5.0f, tetrasShell);
 
             tetraShellPerTriangleVertex[i] = tetrasShell;
 
@@ -281,28 +287,101 @@ unsigned int FlowVisualModel<DataTypes>::getIndexClosestPoint(const VecCoord &x,
 }
 
 template <class DataTypes>
+bool FlowVisualModel<DataTypes>::isInDomainT(unsigned int index, typename DataTypes::Coord p)
+{
+    //test if p is in the mesh
+    //1-find closest point from seed to mesh
+    bool found = false;
+    unsigned int tetraID = BaseMeshTopology::InvalidID;
+    helper::vector<BaseMeshTopology::TetraID> tetras;
+    const VecCoord& centers = *this->tetraGeometry->getX();
+
+    if (centers.size() > 0)
+    {
+        //if a triangle was not already found, test all the points
+        if (streamLines[index].currentPrimitiveID == BaseMeshTopology::InvalidID)
+        {
+            unsigned int indexClosestPoint = getIndexClosestPoint(centers, p);
+            //2-get its TriangleShell
+            tetras = m_tetraTopo->getTetraVertexShell(indexClosestPoint);
+            //3-check if the seed is in one of these triangles
+            streamLines[index].primitivesAroundLastPoint.clear();
+            for (unsigned int i=0 ; i<tetras.size() ; i++)
+            {
+                if (!found)
+                {
+                    if ( (found = m_tetraGeo->isPointInTetrahedron(tetras[i], p)) )
+                    {
+                        tetraID = tetras[i];
+                    }
+                }
+
+                //fill the set of triangles
+                streamLines[index].primitivesAroundLastPoint.insert(tetras[i]);
+            }
+        }
+        else
+        {
+            //test if the new point is still in the current triangle
+            if((found = m_tetraGeo->isPointInTetrahedron(streamLines[index].currentPrimitiveID, p)) )
+            {
+                tetraID = streamLines[index].currentPrimitiveID;
+            }
+            //find the new triangle (if any) and compute the new triangles set
+            else
+            {
+                streamLines[index].primitivesAroundLastPoint.clear();
+                const BaseMeshTopology::Tetra& currentTetra = m_tetraTopo->getTetra(streamLines[index].currentPrimitiveID);
+
+                for (unsigned int i=0 ; i<3; i++)
+                {
+                    tetras = m_tetraTopo->getTetraVertexShell(currentTetra[i]);
+                    for (unsigned int i=0 ; i<tetras.size() ; i++)
+                    {
+                        if (!found)
+                        {
+                            if ( (found = m_tetraGeo->isPointInTetrahedron(tetras[i], p)) )
+                            {
+                                tetraID = tetras[i];
+                            }
+                        }
+                        streamLines[index].primitivesAroundLastPoint.insert(tetras[i]);
+                    }
+                }
+            }
+        }
+    }
+
+    if (found)
+        streamLines[index].currentPrimitiveID = tetraID;
+
+    return found;
+}
+
+template <class DataTypes>
 bool FlowVisualModel<DataTypes>::isInDomain(unsigned int index, typename DataTypes::Coord p)
 {
     //test if p is in the mesh
     //1-find closest point from seed to mesh
     bool found = false;
-    BaseMeshTopology::TriangleID triangleID = BaseMeshTopology::InvalidID;
+    unsigned int triangleID = BaseMeshTopology::InvalidID;
     helper::vector<BaseMeshTopology::TriangleID> triangles;
     //const VecCoord& x = *this->triangleGeometry->getV();
 
+
     unsigned int indTest;
 
-    if (x.size() > 0)
+    if (triangleCenters.size() > 0)
     {
         //if a triangle was not already found, test all the points
-        if (streamLines[index].currentTriangleID == BaseMeshTopology::InvalidID)
+        if (streamLines[index].currentPrimitiveID == BaseMeshTopology::InvalidID)
         {
             unsigned int indexClosestPoint = getIndexClosestPoint(*this->triangleGeometry->getX(), p);
 
             //2-get its TriangleShell
             triangles = m_triTopo->getTriangleVertexShell(indexClosestPoint);
             //3-check if the seed is in one of these triangles
-            streamLines[index].trianglesAroundLastPoint.clear();
+            streamLines[index].primitivesAroundLastPoint.clear();
             for (unsigned int i=0 ; i<triangles.size() ; i++)
             {
                 if (!found)
@@ -314,21 +393,21 @@ bool FlowVisualModel<DataTypes>::isInDomain(unsigned int index, typename DataTyp
                 }
 
                 //fill the set of triangles
-                streamLines[index].trianglesAroundLastPoint.insert(triangles[i]);
+                streamLines[index].primitivesAroundLastPoint.insert(triangles[i]);
             }
         }
         else
         {
             //test if the new point is still in the current triangle
-            if((found = m_triGeo->isPointInTriangle(streamLines[index].currentTriangleID, false, p, indTest)) )
+            if((found = m_triGeo->isPointInTriangle(streamLines[index].currentPrimitiveID, false, p, indTest)) )
             {
-                triangleID = streamLines[index].currentTriangleID;
+                triangleID = streamLines[index].currentPrimitiveID;
             }
             //find the new triangle (if any) and compute the new triangles set
             else
             {
-                streamLines[index].trianglesAroundLastPoint.clear();
-                const BaseMeshTopology::Triangle& currentTriangle = m_triTopo->getTriangle(streamLines[index].currentTriangleID);
+                streamLines[index].primitivesAroundLastPoint.clear();
+                const BaseMeshTopology::Triangle& currentTriangle = m_triTopo->getTriangle(streamLines[index].currentPrimitiveID);
 
                 for (unsigned int i=0 ; i<3; i++)
                 {
@@ -342,7 +421,7 @@ bool FlowVisualModel<DataTypes>::isInDomain(unsigned int index, typename DataTyp
                                 triangleID = triangles[i];
                             }
                         }
-                        streamLines[index].trianglesAroundLastPoint.insert(triangles[i]);
+                        streamLines[index].primitivesAroundLastPoint.insert(triangles[i]);
                     }
                 }
             }
@@ -350,7 +429,7 @@ bool FlowVisualModel<DataTypes>::isInDomain(unsigned int index, typename DataTyp
     }
 
     if (found)
-        streamLines[index].currentTriangleID = triangleID;
+        streamLines[index].currentPrimitiveID = triangleID;
 
     return found;
 }
@@ -358,31 +437,46 @@ bool FlowVisualModel<DataTypes>::isInDomain(unsigned int index, typename DataTyp
 template <class DataTypes>
 typename DataTypes::Coord FlowVisualModel<DataTypes>::interpolateVelocity(unsigned int index, Coord p, bool &atEnd)
 {
-    if (!isInDomain(index,p))
+    VecDeriv* velocities;
+    VecCoord* geometry;
+
+    if (!m_tetraTopo)
     {
-        atEnd = true;
-        return Coord();
+        velocities = &(*this->triangleGeometry->getV());
+        geometry = &(triangleCenters);
+
+        if (!isInDomain(index,p))
+        {
+            atEnd = true;
+            return Coord();
+        }
     }
-    VecDeriv& v2d = *this->triangleGeometry->getV();
-    helper::vector<BaseMeshTopology::TriangleID> triangles;
+    else
+    {
+        velocities = &(*this->tetraCenters->getV());
+        geometry = &(*this->tetraCenters->getX());
+
+        if (!isInDomainT(index,p))
+        {
+            atEnd = true;
+            return Coord();
+        }
+    }
+
     double distCoeff=0.0;
     double sumDistCoeff=0.0;
     Coord velocitySeed;
 
-    for(helper::set<BaseMeshTopology::TriangleID>::iterator it = streamLines[index].trianglesAroundLastPoint.begin() ; it != streamLines[index].trianglesAroundLastPoint.end() ; it++)
+    for(helper::set<unsigned int>::iterator it = streamLines[index].primitivesAroundLastPoint.begin() ; it != streamLines[index].primitivesAroundLastPoint.end() ; it++)
     {
         unsigned int ind = (*it);
-        distCoeff = 1/(p-x[ind]).norm2();
-        velocitySeed += v2d[ind]*distCoeff;
+        distCoeff = 1/(p-(*geometry)[ind]).norm2();
+        velocitySeed += (*velocities)[ind]*distCoeff;
         sumDistCoeff += distCoeff;
     }
     velocitySeed /= sumDistCoeff;
 
-    //velocitySeed = Coord(0.0,0.0,0.0);
-    //Coord velocitySeed = (v[t[0]]*coeff0 + v[t[1]]*coeff1 + v[t[2]]*coeff2)/(coeff0 + coeff1+ coeff2) ;
-    //Coord velocitySeed2 = velocityAtVertex[streamLines[index].currentTriangleID];
-
-    //std::cout << velocitySeed << " " << velocitySeed2 << std::endl;
+//	std::cout << p << " : " << velocitySeed << std::endl;
 
     return velocitySeed;
 }
@@ -393,7 +487,6 @@ void FlowVisualModel<DataTypes>::computeStreamLine(unsigned int index, unsigned 
     StreamLine &streamLine = streamLines[index];
     streamLines[index].positions.clear();
 
-    core::componentmodel::topology::BaseMeshTopology::Triangle t;
     Coord currentPos = streamlineSeeds.getValue()[index];
     bool finished = false;
 
@@ -409,6 +502,7 @@ void FlowVisualModel<DataTypes>::computeStreamLine(unsigned int index, unsigned 
         Coord nextPosition = currentPos + v2*dt;
         currentPos = nextPosition;
     }
+
 }
 
 template <class DataTypes>
@@ -451,24 +545,31 @@ void FlowVisualModel<DataTypes>::interpolateVelocityAtVertices()
     {
         const VecDeriv& x3d = *this->tetraCenters->getX();
         const VecDeriv& v3d = *this->tetraCenters->getV();
-        const VecDeriv& p3d = *this->triangleGeometry->getX();
+        const VecDeriv& p2d = *this->triangleGeometry->getX();
         if (v3d.size() > 0)
         {
             //Loop for each vertex of the triangle mesh
             for (unsigned int i=0 ; i<nbPoints ; i++)
             {
-                Coord pTriangle = p3d[i]; //m_triGeo->getPointPosition(i);
+                Coord pTriangle = p2d[i]; //m_triGeo->getPointPosition(i);
 
                 //Finally, loop over all vertices of the set and compute velocities
                 for (unsigned int j = 0; j<tetraShellPerTriangleVertex[i].size() ; j++)
                 {
                     //compute weight according of the distance between the triangle vertex and the closest tetra vertex
                     unsigned int index = (tetraShellPerTriangleVertex[i])[j];
-                    double distCoeff = (pTriangle-x3d[index]).norm2();
+                    double distCoeff = 1.0/(pTriangle-x3d[index]).norm2();
+                    weight[i]+= distCoeff;
+                    if (!isPointInTetra[i])
+                        distCoeff = distCoeff*distCoeff;
+
                     velocityAtVertex[i] += v3d[index] * distCoeff;
                     normAtVertex[i] += v3d[index].norm() * distCoeff;
-                    weight[i]+= distCoeff;
                 }
+
+                //		if (!isPointInTetra[i])
+                //			weight[i] = exp((weight[i]*weight[i]));
+
                 //Normalize velocity per vertex
                 if (weight[i] > 0.0)
                 {
@@ -480,6 +581,7 @@ void FlowVisualModel<DataTypes>::interpolateVelocityAtVertices()
                     velocityAtVertex[i] = Coord();
                     normAtVertex[i] = 0.0;
                 }
+
             }
         }
     }
@@ -552,11 +654,11 @@ template <class DataTypes>
 void FlowVisualModel<DataTypes>::draw()
 {
     if (!getContext()->getShowVisualModels()) return;
+
     glDepthMask(GL_TRUE);
     glDisable(GL_LIGHTING);
-
+    const core::componentmodel::topology::BaseMeshTopology::SeqTriangles triangles =  m_triTopo->getTriangles();
     interpolateVelocityAtVertices();
-    //VecCoord& x = *this->triangleGeometry->getX();
 
     double vmax2 = velocityAtVertex[0].norm2();
     vmin = velocityAtVertex[0].norm();
@@ -568,7 +670,7 @@ void FlowVisualModel<DataTypes>::draw()
             vmax2=velocityAtVertex[i].norm2();
     }
 
-    vmax = (velocityMax.getValue() < sqrt(vmax2)) ? sqrt(vmax2) : velocityMax.getValue();
+    vmax = (velocityMax.getValue());// < sqrt(vmax2)) ? sqrt(vmax2) : velocityMax.getValue();
 
     if (velocityMin.getValue() < 0.0)
     {
@@ -582,13 +684,121 @@ void FlowVisualModel<DataTypes>::draw()
     }
     else vmin = velocityMin.getValue();
 
+    triangleCenters.clear();
+    triangleCenters.resize(0);
+    for(unsigned int i=0 ; i<triangles.size() ; i++)
     {
-        core::componentmodel::topology::BaseMeshTopology::SeqTriangles triangles =  m_triTopo->getTriangles();
+        const core::componentmodel::topology::BaseMeshTopology::Triangle t = (triangles[i]);
+
+        Coord p0 = m_triGeo->getPointPosition(t[0]);
+        Coord p1 = m_triGeo->getPointPosition(t[1]);
+        Coord p2 = m_triGeo->getPointPosition(t[2]);
+
+        //compute barycenter of each triangle
+        Coord pb;
+        pb[0] = (p0[0] + p1[0] + p2[0])/3;
+        pb[1] = (p0[1] + p1[1] + p2[1])/3;
+        pb[2] = (p0[2] + p1[2] + p2[2])/3;
+        triangleCenters.push_back(pb);
+    }
+
+
+    const VecCoord& x2D = *this->triangleGeometry->getX();
+    const VecCoord& v2D = *this->triangleGeometry->getV();
+
+    //Show Velocity
+    if (showVelocityLines.getValue())
+    {
+        glBegin(GL_LINES);
+        if (!m_tetraTopo)
+        {
+            for(unsigned int i=0 ; i<triangleCenters.size() ; i++)
+            {
+                if (vmax > 0.0)
+                {
+                    Coord p0 = triangleCenters[i];
+                    Coord p1 = triangleCenters[i] + v2D[i]/vmax*viewVelocityFactor.getValue();
+
+                    glColor3f(1.0,1.0,1.0);
+                    glVertex3f((GLfloat)p0[0], (GLfloat)p0[1], (GLfloat)p0[2]);
+                    glColor3f(1.0,1.0,1.0);
+                    glVertex3f((GLfloat)p1[0], (GLfloat)p1[1], (GLfloat)p1[2]);
+                }
+            }
+        }
+        else
+        {
+            for(unsigned int i=0 ; i<x2D.size() ; i++)
+            {
+                if (vmax > 0.0)
+                {
+                    Coord p0 = x2D[i];
+                    Coord p1 = x2D[i] + velocityAtVertex[i]/vmax*viewVelocityFactor.getValue();
+
+                    glColor3f(1.0,1.0,1.0);
+                    glVertex3f((GLfloat)p0[0], (GLfloat)p0[1], (GLfloat)p0[2]);
+                    glColor3f(1.0,1.0,1.0);
+                    glVertex3f((GLfloat)p1[0], (GLfloat)p1[1], (GLfloat)p1[2]);
+                }
+            }
+        }
+
+        glEnd();
+    }
+
+    //Draw StreamLines
+    if (showStreamLines.getValue())
+    {
+        helper::vector<Coord> seeds = streamlineSeeds.getValue();
+        unsigned int seedsSize = streamlineSeeds.getValue().size();
+        streamLines.clear();
+        streamLines.resize(seedsSize);
+
+        for (unsigned int i=0 ; i<seedsSize ; i++)
+        {
+            double dtStreamLine = (meanEdgeLength / vmax) * (1.0/streamlineDtNumberOfPointsPerTriangle.getValue());
+            streamLines[i].currentPrimitiveID = BaseMeshTopology::InvalidID;
+            computeStreamLine(i,streamlineMaxNumberOfPoints.getValue(), dtStreamLine) ;
+            glPointSize(10.0);
+            glColor3f(1.0,1.0,1.0);
+            glBegin(GL_POINTS);
+            glVertex3f(seeds[i][0], seeds[i][1], seeds[i][2]);
+            glEnd();
+            glLineWidth(3);
+            glBegin(GL_LINE_STRIP);
+            for(unsigned int j=0 ; j<streamLines[i].positions.size() ; j++)
+            {
+                glVertex3f((GLfloat) streamLines[i].positions[j][0], (GLfloat) streamLines[i].positions[j][1], (GLfloat) streamLines[i].positions[j][2]);
+            }
+            glEnd();
+            glLineWidth(1);
+        }
+    }
+
+    if (showTetras.getValue())
+        drawTetra();
+
+}
+
+template <class DataTypes>
+void FlowVisualModel<DataTypes>::drawTransparent()
+{
+    if (!getContext()->getShowVisualModels()) return;
+    glDepthMask(GL_TRUE);
+    glDisable(GL_LIGHTING);
+    const core::componentmodel::topology::BaseMeshTopology::SeqTriangles triangles =  m_triTopo->getTriangles();
+    glEnable (GL_BLEND);
+
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    //VecCoord& x = *this->triangleGeometry->getX();
+
+
+    {
 
         int indColor0, indColor1, indColor2;
         //VecCoord& x = *this->fstate->getX();
-        x.clear();
-        x.resize(0);
+
 
         if (getContext()->getShowWireFrame())
         {
@@ -596,22 +806,15 @@ void FlowVisualModel<DataTypes>::draw()
         }
 
         //Show colored triangles
+
         glBegin(GL_TRIANGLES);
         for(unsigned int i=0 ; i<triangles.size() ; i++)
         {
-            core::componentmodel::topology::BaseMeshTopology::Triangle t = (triangles[i]);
+            const core::componentmodel::topology::BaseMeshTopology::Triangle t = (triangles[i]);
 
             Coord p0 = m_triGeo->getPointPosition(t[0]);
             Coord p1 = m_triGeo->getPointPosition(t[1]);
             Coord p2 = m_triGeo->getPointPosition(t[2]);
-
-            //compute barycenter of each triangle
-            Coord pb;
-            pb[0] = (p0[0] + p1[0] + p2[0])/3;
-            pb[1] = (p0[1] + p1[1] + p2[1])/3;
-            pb[2] = (p0[2] + p1[2] + p2[2])/3;
-            x.push_back(pb);
-
             if((vmax-vmin) > 0.0)
             {
                 indColor0 = (int)(64* ((normAtVertex[t[0]]-vmin)/(vmax-vmin)));
@@ -626,11 +829,16 @@ void FlowVisualModel<DataTypes>::draw()
 
             }
             else indColor0 = indColor1 = indColor2 = 0;
-            glColor3f(ColorMap[indColor0][0], ColorMap[indColor0][1], ColorMap[indColor0][2]);
+
+            float alpha0 = minAlpha.getValue() +  (maxAlpha.getValue() - minAlpha.getValue())*(indColor0/63.0);
+            float alpha1 = minAlpha.getValue() +  (maxAlpha.getValue() - minAlpha.getValue())*(indColor1/63.0);
+            float alpha2 = minAlpha.getValue() +  (maxAlpha.getValue() - minAlpha.getValue())*(indColor2/63.0);
+
+            glColor4f(ColorMap[indColor0][0], ColorMap[indColor0][1], ColorMap[indColor0][2], alpha0);
             glVertex3f((GLfloat)p0[0], (GLfloat)p0[1], (GLfloat)p0[2]);
-            glColor3f(ColorMap[indColor1][0], ColorMap[indColor1][1], ColorMap[indColor1][2]);
+            glColor4f(ColorMap[indColor1][0], ColorMap[indColor1][1], ColorMap[indColor1][2], alpha1);
             glVertex3f((GLfloat)p1[0], (GLfloat)p1[1], (GLfloat)p1[2]);
-            glColor3f(ColorMap[indColor2][0], ColorMap[indColor2][1], ColorMap[indColor2][2]);
+            glColor4f(ColorMap[indColor2][0], ColorMap[indColor2][1], ColorMap[indColor2][2], alpha2);
             glVertex3f((GLfloat)p2[0], (GLfloat)p2[1], (GLfloat)p2[2]);
         }
         glEnd();
@@ -639,81 +847,6 @@ void FlowVisualModel<DataTypes>::draw()
         {
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         }
-
-        VecCoord& x2D = *this->triangleGeometry->getX();
-        VecCoord& v2D = *this->triangleGeometry->getV();
-
-        //Show Velocity
-        if (showVelocityLines.getValue())
-        {
-            glBegin(GL_LINES);
-            if (!m_tetraTopo)
-            {
-                for(unsigned int i=0 ; i<x.size() ; i++)
-                {
-                    if (vmax > 0.0)
-                    {
-                        Coord p0 = x[i];
-                        Coord p1 = x[i] + v2D[i]/vmax*viewVelocityFactor.getValue();
-
-                        glColor3f(1.0,1.0,1.0);
-                        glVertex3f((GLfloat)p0[0], (GLfloat)p0[1], (GLfloat)p0[2]);
-                        glColor3f(1.0,1.0,1.0);
-                        glVertex3f((GLfloat)p1[0], (GLfloat)p1[1], (GLfloat)p1[2]);
-                    }
-                }
-            }
-            else
-            {
-                for(unsigned int i=0 ; i<x2D.size() ; i++)
-                {
-                    if (vmax > 0.0)
-                    {
-                        Coord p0 = x2D[i];
-                        Coord p1 = x2D[i] + velocityAtVertex[i]/vmax*viewVelocityFactor.getValue();
-
-                        glColor3f(1.0,1.0,1.0);
-                        glVertex3f((GLfloat)p0[0], (GLfloat)p0[1], (GLfloat)p0[2]);
-                        glColor3f(1.0,1.0,1.0);
-                        glVertex3f((GLfloat)p1[0], (GLfloat)p1[1], (GLfloat)p1[2]);
-                    }
-                }
-            }
-
-            glEnd();
-        }
-
-        //Draw StreamLines
-        if (showStreamLines.getValue())
-        {
-            helper::vector<Coord> seeds = streamlineSeeds.getValue();
-            unsigned int seedsSize = streamlineSeeds.getValue().size();
-            streamLines.clear();
-            streamLines.resize(seedsSize);
-
-            for (unsigned int i=0 ; i<seedsSize ; i++)
-            {
-                double dtStreamLine = (meanEdgeLength / vmax) * (1.0/streamlineDtNumberOfPointsPerTriangle.getValue());
-                streamLines[i].currentTriangleID = BaseMeshTopology::InvalidID;
-                computeStreamLine(i,streamlineMaxNumberOfPoints.getValue(), dtStreamLine) ;
-                glPointSize(10.0);
-                glBegin(GL_POINTS);
-                glVertex3f(seeds[i][0], seeds[i][1], seeds[i][2]);
-                glEnd();
-                glLineWidth(2);
-                glBegin(GL_LINE_STRIP);
-                for(unsigned int j=0 ; j<streamLines[i].positions.size() ; j++)
-                {
-                    glColor3f(1.0,1.0,1.0);
-                    glVertex3f((GLfloat) streamLines[i].positions[j][0], (GLfloat) streamLines[i].positions[j][1], (GLfloat) streamLines[i].positions[j][2]);
-                }
-                glEnd();
-
-            }
-        }
-
-        if (showTetras.getValue())
-            drawTetra();
 
         //Draw color scale
         if (showColorScale.getValue())
@@ -782,6 +915,7 @@ void FlowVisualModel<DataTypes>::draw()
             glMatrixMode(GL_MODELVIEW);
         }
     }
+    glDisable (GL_BLEND);
 
 }
 
