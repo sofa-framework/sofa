@@ -79,6 +79,11 @@ void BoxROI<DataTypes>::init()
     }
 }
 
+template <class DataTypes>
+void BoxROI<DataTypes>::reinit()
+{
+    update();
+}
 
 template <class DataTypes>
 void BoxROI<DataTypes>::update()
@@ -94,7 +99,6 @@ void BoxROI<DataTypes>::update()
     }
 
     SetIndex& indices = *(f_indices.beginEdit());
-
     indices.clear();
     for( unsigned i=0; i<x0->size(); ++i )
     {
