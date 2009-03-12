@@ -78,6 +78,7 @@ echo
 echo ========== Merge r$SVN_REVA:$SVN_REVB, ignoring conflicts ==========
 echo
 
+echo $SVN merge --accept theirs-full -r $SVN_REVA:$SVN_REVB $SVN_URL
 $SVN merge --accept theirs-full -r $SVN_REVA:$SVN_REVB $SVN_URL || read -p "Press Enter to continue, or Ctrl-C to cancel." || exit 1
 
 echo
@@ -97,7 +98,7 @@ function svncopy_process_dir {
     elif [ ! -d "$DEST/$1" ]; then
         C_URL=`LC_ALL=C $SVN info $SOURCE/$1 | awk '$1=="URL:" { print $2 }'`
         C_REV=`LC_ACC=C $SVN info $SOURCE/$1 | awk '$1=="Last" && $2=="Changed" && $3=="Rev:" { print $4 }'`
-        echo Copy directory $1 '@' $C_REV
+        echo Copy directory $1 '@' $C_REV from $C_URL
         $SVN cp $C_URL'@'$C_REV "$DEST/$1" || read -p "Press Enter to continue, or Ctrl-C to cancel." || exit 1
     else
 	cd "$SOURCE/$1"
@@ -112,9 +113,9 @@ function svncopy_process_dir {
 		    echo "The directory will be removed, but the file will only be created in a later commit." >&2
 		    $SVN rm --force "$DEST/$2$f" || read -p "Press Enter to continue, or Ctrl-C to cancel." || exit 1
 		elif [ ! -f "$DEST/$2$f" ]; then
-		    C_URL=`LC_ALL=C $SVN info $SOURCE/$1 | awk '$1=="URL:" { print $2 }'`
-		    C_REV=`LC_ALL=C $SVN info $SOURCE/$1 | awk '$1=="Last" && $2=="Changed" && $3=="Rev:" { print $4 }'`
-		    echo Copy file $1 '@' $C_REV
+		    C_URL=`LC_ALL=C $SVN info $SOURCE/$2$f | awk '$1=="URL:" { print $2 }'`
+		    C_REV=`LC_ALL=C $SVN info $SOURCE/$2$f | awk '$1=="Last" && $2=="Changed" && $3=="Rev:" { print $4 }'`
+		    echo Copy file $2$f '@' $C_REV from $C_URL
 		    $SVN cp $C_URL'@'$C_REV "$DEST/$2$f" || read -p "Press Enter to continue, or Ctrl-C to cancel." || exit 1
 		fi
 	    fi
