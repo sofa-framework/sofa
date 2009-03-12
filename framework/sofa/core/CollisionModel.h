@@ -330,7 +330,11 @@ public:
 
     /// If not zero, ID of a group containing this model. No collision can occur between collision
     /// models of the same group (allowing the same object to have multiple collision models)
-    int getGroup() { return group.getValue(); }
+    int getGroup() const { return group.getValue(); }
+
+    /// Set ID of group of this model. No collision can occur between collision
+    /// models of the same group (allowing the same object to have multiple collision models)
+    void setGroup(const int groupId) { group.setValue(groupId); }
 
     /// @}
 
