@@ -128,8 +128,6 @@ public:
         if ( bbox.max[2] > dataResolution[2] )bbox.max[2] = dataResolution[2];
     }
 
-    void setMaxIsoValue( float value) { maxIsoValue = value;};
-
     /// Set the border to localy remesh from real coords
     void setBordersFromRealCoords ( const sofa::helper::set<Vector3>& borders );
 
@@ -217,7 +215,6 @@ private:
     unsigned int  convolutionSize;
     Vec3i     dataResolution;
     Vector3     dataVoxelSize;
-    float maxIsoValue; // if you want to limit between two iso-value.
     BoundingBox bbox; //bbox used to remesh
     BoundingBox roi; // Set value to 0 on this limit to always obtain manifold mesh. (Set to dataResolution by default but can be changed for ROI)
     set<Vec3i> borders;
