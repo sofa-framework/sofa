@@ -101,8 +101,9 @@ echo
 function code_process_dir {
     cd "$1"
     echo "Entering $PWD"
-    for f in *.h *.hpp *.hxx *.inl *.cpp *.c *.cu *.cxx; do
+    for f in *.h *.hpp *.hxx *.inl *.cuh *.cpp *.cxx *.c *.cu; do
 	let nsrc+=1
+	if grep -q 'SOFA_DEV' $f; then
 	$SCRIPTS/filter-code.awk < $f > $f.new
 	if [ $(wc -c < $f) != $(wc -c < $f.new) ]; then
 	    nl=$(($(wc -l < $f)-$(wc -l < $f.new)))
@@ -112,6 +113,7 @@ function code_process_dir {
 	    cat $f.new > $f
 	fi
 	rm -f $f.new
+	fi
     done
     for f in *; do
 	if [ -d "$f" ]; then

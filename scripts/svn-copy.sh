@@ -27,7 +27,8 @@ cd $2 || exit 1
 DEST=$PWD
 echo "DEST:" $DEST
 cd -
-if [ $# -gt 2]; then
+TMPD=$PWD
+if [ $# -gt 2 ]; then
 cd $3 || exit 1
 TMPD=$PWD
 cd -
