@@ -48,7 +48,7 @@ void DynamicSparseGridTopologyModifier::init()
     this->getContext()->get ( m_DynContainer );
     if ( ! m_DynContainer )
     {
-        std::cerr << "ERROR in DynamicSparseGridTopologyModifier::init(): DynamicSparseGridTopologyContainer was not found !" << std::endl;
+        serr << "ERROR in DynamicSparseGridTopologyModifier::init(): DynamicSparseGridTopologyContainer was not found !" << sendl;
     }
 }
 
