@@ -108,11 +108,11 @@ bool SparseLDLSolver<TMatrix,TVector>::readFile(std::istream& in)
 {
     std::cout << "Read SparseLDLSolver" << std::endl;
 
-    std::string s = "SparseLDLSolver\n";
+    std::string s;
 
-    //in >> ss;
     in >> s;
-    if (s.compare("SparseLDLSolver\n"))
+
+    if (! s.compare("SparseLDLSolver"))
     {
         std::cout << "File not contain a SparseLDLSolver" << std::endl;
         return false;
@@ -120,19 +120,18 @@ bool SparseLDLSolver<TMatrix,TVector>::readFile(std::istream& in)
 
     in >> n;
 
-    in >> A_x;
-    in >> A_i;
-    in >> A_p;
-    in >> D;
-    in >> Parent;
-    in >> Lnz;
-    in >> Flag;
-    in >> Pattern;
-
-    in >> Lp;
-
-    in >> Lx;
-    in >> Li;
+    A_x.read(in);
+    A_i.read(in);
+    A_p.read(in);
+    D.read(in);
+    Y.read(in);
+    Parent.read(in);
+    Lnz.read(in);
+    Flag.read(in);
+    Pattern.read(in);
+    Lp.read(in);
+    Lx.read(in);
+    Li.read(in);
 
     return true;
 }
@@ -142,27 +141,24 @@ bool SparseLDLSolver<TMatrix,TVector>::writeFile(std::ostream& out)
 {
     std::cout << "Write SparseLDLSolver" << std::endl;
 
-    std::string s = "SparseLDLSolver\n";
+    std::string s = "SparseLDLSolver";
 
-    out << s;
+    out << s << endl;
 
-    out << n;
+    out << n << endl;
 
-    out << A_x;
-    out << A_i;
-    out << A_p;
-
-    out << D;
-    out << Y;
-    out << Parent;
-    out << Lnz;
-    out << Flag;
-    out << Pattern;
-
-    out << Lp;
-
-    out << Lx;
-    out << Li;
+    A_x.write(out);
+    A_i.write(out);
+    A_p.write(out);
+    D.write(out);
+    Y.write(out);
+    Parent.write(out);
+    Lnz.write(out);
+    Flag.write(out);
+    Pattern.write(out);
+    Lp.write(out);
+    Lx.write(out);
+    Li.write(out);
 
     return true;
 }

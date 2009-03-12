@@ -123,69 +123,81 @@ template<class TMatrix, class TVector>
 bool SparseCholeskySolver<TMatrix,TVector>::readFile(std::istream& in)
 {
     std::cout << "Read SparseCholeskySolver" << std::endl;
-    /*
-    	std::string s = "SparseCholeskySolver\n";
 
-    	//in >> ss;
-    	in >> s;
-    	if (s.compare("SparseCholeskySolver\n")) {
-    		std::cout << "File not contain a SparseLDLSolver" << std::endl;
-    		return false;
-    	}
+    std::string s;
 
-    	in >> A.n;
+    in >> s;
 
-    	in >> A_x;
-    	in >> A_i;
-    	in >> A_p;
-    	in >> D;
-    	in >> Parent;
-    	in >> Lnz;
-    	in >> Flag;
-    	in >> Pattern;
+    if (! s.compare("SparseCholeskySolver"))
+    {
+        std::cout << "File not contain a SparseCholeskySolver" << std::endl;
+        return false;
+    }
 
-    	in >> Lp;
+    // read A
+    in >> A.nzmax;
+    in >> A.m;
+    in >> A.n;
 
-    	in >> Lx;
-    	in >> Li;
+    A_x.read(in);
+    A_i.read(in);
+    A_p.read(in);
 
-    	return true;
-    	*/
-    return false;
+    in >> A.nz;
+
+    // read Pinv
+    //S->Pinv = (int *) cs_malloc(A.n,sizeof(int));
+    //in.read((char *)S->Pinv,A.n * sizeof(int));
+
+    //read N->L
+    in >> N->L->nzmax;
+    in >> N->L->m;
+    in >> N->L->n;
+
+    N->L->p = (int *) cs_malloc(N->L->n+1,sizeof(int));
+    N->L->i = (int *) cs_malloc(N->L->nzmax,sizeof(int));
+    N->L->x = (double *) cs_malloc(N->L->nzmax,sizeof(double));
+
+    in.read((char *) N->L->p,(N->L->n+1) * sizeof(int));
+    in.read((char *) N->L->i,N->L->nzmax * sizeof(int));
+    in.read((char *) N->L->x,N->L->nzmax * sizeof(double));
+
+    in >> N->L->nz;
+
+    return true;
 }
 
 template<class TMatrix, class TVector>
 bool SparseCholeskySolver<TMatrix,TVector>::writeFile(std::ostream& out)
 {
-    std::string s = "SparseCholeskySolver\n";
-    out << s;
-    /*
-    	out << A.n;
+    std::cout << "Write SparseCholeskySolver" << std::endl;
 
-    	FullVector<double> v;
+    std::string s = "SparseCholeskySolver";
+    out << s << endl;
 
+    // save A
+    out << A.nzmax << endl;
+    out << A.m << endl;
+    out << A.n << endl;
 
-    	for (int i=0;i<n;i++) v[i]
+    A_x.write(out);
+    A_i.write(out);
+    A_p.write(out);
+    out << A.nz << endl;
 
+    // save Pinv
+    //out.write((char *) S->Pinv,A.n * sizeof(int));
 
-    	out << A_i;
-    	out << A_p;
+    //save N->L
+    out << N->L->nzmax << endl;
+    out << N->L->m << endl;
+    out << N->L->n << endl;
+    out.write((char *) N->L->p,(N->L->n+1) * sizeof(int));
+    out.write((char *) N->L->i,N->L->nzmax * sizeof(int));
+    out.write((char *) N->L->x,N->L->nzmax * sizeof(double));
+    out << N->L->nz << endl;
 
-    	out << D;
-    	out << Y;
-    	out << Parent;
-    	out << Lnz;
-    	out << Flag;
-    	out << Pattern;
-
-    	out << Lp;
-
-    	out << Lx;
-    	out << Li;
-
-    	return true;
-    	*/
-    return false;
+    return true;
 }
 
 SOFA_DECL_CLASS(SparseCholeskySolver)
