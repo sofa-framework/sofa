@@ -109,8 +109,6 @@ public:
         return DataTypes::Name();
     }
 
-    virtual void parse(core::objectmodel::BaseObjectDescription* arg);
-
 
 protected:
     behavior::MechanicalState<DataTypes> *mstate;
