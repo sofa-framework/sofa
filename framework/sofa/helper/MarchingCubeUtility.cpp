@@ -651,7 +651,9 @@ void MarchingCubeUtility::run ( unsigned char *_data, const sofa::helper::vector
     for ( sofa::helper::vector< Vec3i >::const_iterator it = seeds.begin(); it != seeds.end(); it++ )
     {
         Vec3i voxel = *it;
-        propagateFrom ( *it, data, isolevel, mesh, vertices, generatedCubes, map_vertices, triangleIndexInRegularGrid );
+        if ( ( voxel[0] >= bbox.min[0]-1 ) && ( voxel[1] >= bbox.min[1]-1 ) && ( voxel[2] >= bbox.min[2]-1 ) &&
+                ( voxel[0] <= bbox.max[0] ) && ( voxel[1] <= bbox.max[1] ) && ( voxel[2] <= bbox.max[2] ) )
+            propagateFrom ( *it, data, isolevel, mesh, vertices, generatedCubes, map_vertices, triangleIndexInRegularGrid );
     }
     if (smooth)
         delete [] data;
