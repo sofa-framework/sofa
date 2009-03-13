@@ -875,6 +875,7 @@ protected:
     DataPtr< RegularGridMapper >* f_grid;
     DataPtr< HexaMapper >* f_hexaMapper;
 
+    BarycentricMapperDynamicTopology* dynamicMapper;
 
 public:
 
@@ -933,10 +934,8 @@ public:
 
     void draw();
 
-
     void getJ(unsigned int Idx, sofa::helper::vector< double > &factor, sofa::helper::vector< unsigned int > &indices) {mapper->getJ(Idx,factor,indices);}
-    // handle topological changes
-    virtual void handleTopologyChange();
+
     // handle topology changes depending on the topology
     virtual void handleTopologyChange(core::componentmodel::topology::Topology* t);
 

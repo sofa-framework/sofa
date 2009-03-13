@@ -904,6 +904,8 @@ void BarycentricMapping<BasicMapping>::createMapperFromTopology ( BaseMeshTopolo
                 }
             }
         }
+        if(mapper != NULL)
+            dynamicMapper = dynamic_cast<BarycentricMapperDynamicTopology*> ( mapper );
     }
     else
     {
@@ -3004,7 +3006,6 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
                     pos[2] = map.getValue()[j].baryCoords[2];
 
                     // find nearest cell and barycentric coords
-                    // TODO: avoid searching in all Hexa for each point
                     Real distance = 1e10;
                     int index = _geomAlgo->findNearestElementInRestPos ( pos, coefs, distance );
 
@@ -3130,52 +3131,24 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handlePointEvents ( std::li
     map.handleTopologyEvents ( itBegin, itEnd );
 }
 
-template <class BasicMapping>
-void BarycentricMapping<BasicMapping>::handleTopologyChange()
-{
-    BarycentricMapperDynamicTopology* topoMapper = dynamic_cast<BarycentricMapperDynamicTopology*> ( mapper );
-
-    if ( topoMapper != NULL )
-    {
-        // handle changes in the From topology
-        topoMapper->handleTopologyChange();
-
-        // handle changes in the To topology
-        if ( topology_to != NULL )
-        {
-            if ( topology_to->firstChange() != topology_to->lastChange() ) // may not be necessary
-            {
-                const std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itBegin = topology_to->firstChange();
-                const std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itEnd = topology_to->lastChange();
-
-                topoMapper->handlePointEvents ( itBegin, itEnd );
-            }
-        }
-    }
-}
-
 // handle topology changes depending on the topology
 template <class BasicMapping>
 void BarycentricMapping<BasicMapping>::handleTopologyChange ( core::componentmodel::topology::Topology* t )
 {
-    BarycentricMapperDynamicTopology* topoMapper = dynamic_cast<BarycentricMapperDynamicTopology*> ( mapper );
-    if ( topoMapper != NULL )
-    {
-        if ( ( t == topology_to ) && ( topology_to != NULL ) )
-        {
-            if ( topology_to->firstChange() != topology_to->lastChange() ) // may not be necessary
-            {
-                const std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itBegin = topology_to->firstChange();
-                const std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itEnd = topology_to->lastChange();
+    if ( dynamicMapper == NULL )
+        return;
 
-                topoMapper->handlePointEvents ( itBegin, itEnd );
-            }
-        }
-        else
-        {
-            // handle changes in the From topology
-            topoMapper->handleTopologyChange();
-        }
+    if(t == topology_from )
+    {
+        // handle changes in the From topology
+        dynamicMapper->handleTopologyChange();
+    }
+    else if(t == topology_to)
+    {
+        const std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itBegin = topology_to->firstChange();
+        const std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itEnd = topology_to->lastChange();
+
+        dynamicMapper->handlePointEvents ( itBegin, itEnd );
     }
 }
 
