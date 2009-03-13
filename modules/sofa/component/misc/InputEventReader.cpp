@@ -59,7 +59,7 @@ InputEventReader::InputEventReader()
 void InputEventReader::init()
 {
 #ifdef __linux__
-    if((fd = open(filename.getValue().c_str(), O_RDONLY)) < 0)
+    if((fd = open(filename.getFullPath().c_str(), O_RDONLY)) < 0)
         sout << "ERROR: impossible to open the file: " << filename.getValue() << sendl;
 #endif
 }

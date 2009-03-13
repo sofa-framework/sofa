@@ -110,7 +110,7 @@ void RigidRigidMapping<BasicMapping>::init()
 {
 
     if (!fileRigidRigidMapping.getValue().empty())
-        this->load(fileRigidRigidMapping.getValue().c_str());
+        this->load(fileRigidRigidMapping.getFullPath().c_str());
 
     if (this->points.getValue().empty() && this->toModel!=NULL)
     {

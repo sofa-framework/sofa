@@ -129,7 +129,7 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::init()
 
     //Load Gray scale density from RAW file
 
-    std::string path = densityFile.getValue();
+    std::string path = densityFile.getFullPath();
 
     if (!densityFile.getValue().empty() && sofa::helper::system::DataRepository.findFile(path))
     {

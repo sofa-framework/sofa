@@ -55,7 +55,7 @@ namespace misc
 class SOFA_COMPONENT_MISC_API WriteState: public core::objectmodel::BaseObject
 {
 public:
-    Data < std::string > f_filename;
+    sofa::core::objectmodel::DataFileName f_filename;
     Data < bool > f_writeX;
     Data < bool > f_writeV;
     Data < double > f_interval;

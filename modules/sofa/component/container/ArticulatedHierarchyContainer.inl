@@ -210,7 +210,7 @@ void ArticulatedHierarchyContainer::init ()
 {
     simulation::tree::GNode* context = dynamic_cast<simulation::tree::GNode *>(this->getContext()); // access to current node
 
-    std::string file = filename.getValue();
+    std::string file = filename.getFullPath();
     if ( sofa::helper::system::DataRepository.findFile (file) )
     {
 

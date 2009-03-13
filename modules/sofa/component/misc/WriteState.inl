@@ -27,6 +27,7 @@
 
 #include <sofa/component/misc/WriteState.h>
 #include <sofa/simulation/common/Node.h>
+#include <sofa/core/objectmodel/DataFileName.h>
 
 #include <fstream>
 
@@ -81,7 +82,7 @@ void WriteState::init()
     }
     ///////////// end of the tests.
 
-    const std::string& filename = f_filename.getValue();
+    const std::string& filename = f_filename.getFullPath();
     if (!filename.empty())
     {
 // 	    std::ifstream infile(filename.c_str());

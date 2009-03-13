@@ -30,6 +30,7 @@
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/component/contextobject/CoordinateSystem.h>
 #include <sofa/defaulttype/BaseVector.h>
+#include <sofa/core/objectmodel/DataFileName.h>
 
 namespace sofa
 {
@@ -56,7 +57,7 @@ public:
 //protected:
     Data<MassType> mass;    ///< the mass of each particle
     Data<double> totalMass; ///< if >0 : total mass of this body
-    Data<std::string> filenameMass; ///< a .rigid file to automatically load the inertia matrix and other parameters
+    sofa::core::objectmodel::DataFileName filenameMass; ///< a .rigid file to automatically load the inertia matrix and other parameters
     /// to display the center of gravity of the system
     Data< bool > showCenterOfGravity;
     Data< float > showAxisSize;

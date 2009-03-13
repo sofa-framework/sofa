@@ -27,6 +27,7 @@
 
 
 #include <sofa/component/forcefield/NonUniformHexahedronFEMForceFieldAndMass.h>
+#include <sofa/core/objectmodel/DataFileName.h>
 
 namespace sofa
 {
@@ -88,9 +89,9 @@ public:
 public:
 
     NonUniformHexahedronFEMForceFieldDensity():NonUniformHexahedronFEMForceFieldAndMass<DataTypes>()
+        ,densityFile(core::objectmodel::Base::initData(&this->densityFile,"densityFile","RAW File containing gray scale density"))
+        ,dimensionDensityFile(core::objectmodel::Base::initData(&this->dimensionDensityFile, "dimensionDensityFile", "dimension of the RAW file"))
     {
-        densityFile=initData(&this->densityFile,"densityFile","RAW File containing gray scale density");
-        dimensionDensityFile = initData(&this->dimensionDensityFile, "dimensionDensityFile", "dimension of the RAW file");
     }
 
     void init();
@@ -99,7 +100,7 @@ public:
     void drawSphere(double r, int lats, int longs, const Coord &pos);
 
 protected:
-    Data< std::string > densityFile;
+    sofa::core::objectmodel::DataFileName densityFile;
     Data< Vec<3,unsigned int> > dimensionDensityFile;
     vector< vector < vector<unsigned char > > >voxels;
 // 	  vector< int > stiffnessFactor;

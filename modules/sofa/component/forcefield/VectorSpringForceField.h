@@ -32,6 +32,7 @@
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/component/topology/EdgeData.h>
 #include <sofa/component/topology/TopologyChangedEvent.h>
+#include <sofa/core/objectmodel/DataFileName.h>
 
 #include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
 #include <sofa/component/topology/EdgeSetTopologyModifier.h>
@@ -101,7 +102,7 @@ protected:
     sofa::component::topology::EdgeData<Spring> springArray;
 
     /// the filename where to load the spring information
-    Data<std::string> m_filename;
+    sofa::core::objectmodel::DataFileName m_filename;
     /// By default, assume that all edges have the same stiffness
     Data<double> m_stiffness;
     /// By default, assume that all edges have the same viscosity

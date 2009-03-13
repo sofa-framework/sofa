@@ -333,7 +333,7 @@ void Simulation::dumpState ( Node* root, std::ofstream& out )
 void Simulation::initGnuplot ( Node* root )
 {
     if ( !root ) return;
-    InitGnuplotVisitor v(gnuplotDirectory.getValue());
+    InitGnuplotVisitor v(gnuplotDirectory.getFullPath());
     root->execute( v );
 }
 

@@ -107,14 +107,14 @@ void RigidDistanceGridCollisionModel::init()
     if (scale.getValue()!=1.0) std::cout<<" scale="<<scale.getValue();
     if (box.getValue()[0][0]<box.getValue()[1][0]) std::cout<<" bbox=<"<<box.getValue()[0]<<">-<"<<box.getValue()[0]<<">";
     std::cout << std::endl;
-    grid = DistanceGrid::loadShared(fileRigidDistanceGrid.getValue(), scale.getValue(), nx.getValue(),ny.getValue(),nz.getValue(),box.getValue()[0],box.getValue()[1]);
+    grid = DistanceGrid::loadShared(fileRigidDistanceGrid.getFullPath(), scale.getValue(), nx.getValue(),ny.getValue(),nz.getValue(),box.getValue()[0],box.getValue()[1]);
 
     resize(1);
     elems[0].grid = grid;
     if (grid && !dumpfilename.getValue().empty())
     {
         std::cout << "RigidDistanceGridCollisionModel: dump grid to "<<dumpfilename.getValue()<<std::endl;
-        grid->save(dumpfilename.getValue());
+        grid->save(dumpfilename.getFullPath());
     }
     std::cout << "< RigidDistanceGridCollisionModel::init()"<<std::endl;
 }
@@ -425,7 +425,7 @@ void FFDDistanceGridCollisionModel::init()
     if (grid && !dumpfilename.getValue().empty())
     {
         std::cout << "FFDDistanceGridCollisionModel: dump grid to "<<dumpfilename.getValue()<<std::endl;
-        grid->save(dumpfilename.getValue());
+        grid->save(dumpfilename.getFullPath());
     }
     /// place points in ffd elements
     int nbp = grid->meshPts.size();
