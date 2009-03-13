@@ -53,7 +53,7 @@ namespace visualmodel
  */
 
 template<class DataTypes>
-class SOFA_COMPONENT_VISUALMODEL_API OglVariable : public core::VisualModel, public OglShaderElement
+class OglVariable : public core::VisualModel, public OglShaderElement
 {
 protected:
     Data< DataTypes > value;
