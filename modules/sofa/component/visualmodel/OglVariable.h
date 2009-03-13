@@ -52,25 +52,25 @@ namespace visualmodel
  *   - float[], vec2[], vec3[], vec4[];
  */
 
+template<class DataTypes>
 class SOFA_COMPONENT_VISUALMODEL_API OglVariable : public core::VisualModel, public OglShaderElement
 {
-private:
-
+protected:
+    Data< DataTypes > value;
 public:
-    OglVariable() { };
+    OglVariable():value(initData(&value, DataTypes(), "value", "Set Uniform Value")) { };
     virtual ~OglVariable() { };
 
+
+    void setValue( const DataTypes& v) {value.setValue(v);}
     virtual void init() { OglShaderElement::init(); };
     virtual void initVisual() { }
     virtual void reinit() { init(); initVisual(); }
 };
 
 /** SINGLE INT VARIABLE **/
-class SOFA_COMPONENT_VISUALMODEL_API OglIntVariable : public OglVariable
+class SOFA_COMPONENT_VISUALMODEL_API OglIntVariable : public OglVariable< int>
 {
-private:
-    Data<int> value;
-
 public:
     OglIntVariable();
     virtual ~OglIntVariable() { };
@@ -78,10 +78,8 @@ public:
     void initVisual();
 };
 
-class SOFA_COMPONENT_VISUALMODEL_API OglInt2Variable : public OglVariable
+class SOFA_COMPONENT_VISUALMODEL_API OglInt2Variable : public OglVariable<defaulttype::Vec<2, int> >
 {
-private:
-    Data<defaulttype::Vec<2, int> > value;
 
 public:
     OglInt2Variable();
@@ -90,11 +88,8 @@ public:
     void initVisual();
 };
 
-class SOFA_COMPONENT_VISUALMODEL_API OglInt3Variable : public OglVariable
+class SOFA_COMPONENT_VISUALMODEL_API OglInt3Variable : public OglVariable<defaulttype::Vec<3, int> >
 {
-private:
-    Data<defaulttype::Vec<3, int> > value;
-
 public:
     OglInt3Variable();
     virtual ~OglInt3Variable() { };
@@ -102,11 +97,8 @@ public:
     void initVisual();
 };
 
-class SOFA_COMPONENT_VISUALMODEL_API OglInt4Variable : public OglVariable
+class SOFA_COMPONENT_VISUALMODEL_API OglInt4Variable : public OglVariable<defaulttype::Vec<4, int> >
 {
-private:
-    Data<defaulttype::Vec<4, int> > value;
-
 public:
     OglInt4Variable();
     virtual ~OglInt4Variable() { };
@@ -116,11 +108,8 @@ public:
 
 /** SINGLE FLOAT VARIABLE **/
 
-class SOFA_COMPONENT_VISUALMODEL_API OglFloatVariable : public OglVariable
+class SOFA_COMPONENT_VISUALMODEL_API OglFloatVariable : public OglVariable<float>
 {
-private:
-    Data<float> value;
-
 public:
     OglFloatVariable();
     virtual ~OglFloatVariable() { };
@@ -128,11 +117,8 @@ public:
     void initVisual();
 };
 
-class SOFA_COMPONENT_VISUALMODEL_API OglFloat2Variable : public OglVariable
+class SOFA_COMPONENT_VISUALMODEL_API OglFloat2Variable : public OglVariable<defaulttype::Vec2f>
 {
-private:
-    Data<defaulttype::Vec2f> value;
-
 public:
     OglFloat2Variable();
     virtual ~OglFloat2Variable() { };
@@ -140,11 +126,8 @@ public:
     void initVisual();
 };
 
-class SOFA_COMPONENT_VISUALMODEL_API OglFloat3Variable : public OglVariable
+class SOFA_COMPONENT_VISUALMODEL_API OglFloat3Variable : public OglVariable<defaulttype::Vec3f>
 {
-private:
-    Data<defaulttype::Vec3f> value;
-
 public:
     OglFloat3Variable();
     virtual ~OglFloat3Variable() { };
@@ -152,11 +135,8 @@ public:
     void initVisual();
 };
 
-class SOFA_COMPONENT_VISUALMODEL_API OglFloat4Variable : public OglVariable
+class SOFA_COMPONENT_VISUALMODEL_API OglFloat4Variable : public OglVariable<defaulttype::Vec4f>
 {
-private:
-    Data<defaulttype::Vec4f> value;
-
 public:
     OglFloat4Variable();
     virtual ~OglFloat4Variable() { };
@@ -165,11 +145,8 @@ public:
 };
 
 /** INT VECTOR VARIABLE **/
-class SOFA_COMPONENT_VISUALMODEL_API OglIntVectorVariable : public OglVariable
+class SOFA_COMPONENT_VISUALMODEL_API OglIntVectorVariable : public OglVariable<helper::vector<GLint> >
 {
-protected:
-    Data<helper::vector<GLint> > iv;
-
 public:
     OglIntVectorVariable();
     virtual ~OglIntVectorVariable() { };
@@ -210,11 +187,8 @@ public:
 };
 
 /** FLOAT VECTOR VARIABLE **/
-class SOFA_COMPONENT_VISUALMODEL_API OglFloatVectorVariable : public OglVariable
+class SOFA_COMPONENT_VISUALMODEL_API OglFloatVectorVariable : public OglVariable<helper::vector<float> >
 {
-protected:
-    Data<helper::vector<float> > fv;
-
 public:
     OglFloatVectorVariable();
     virtual ~OglFloatVectorVariable() { };
