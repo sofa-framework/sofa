@@ -649,25 +649,9 @@ void MarchingCubeUtility::run ( unsigned char *_data, const sofa::helper::vector
 
     for ( sofa::helper::vector< Vec3i >::const_iterator it = seeds.begin(); it != seeds.end(); it++ )
     {
-        sofa::helper::vector< PointID > tmpMesh(mesh);
-        //sofa::helper::vector< PointID >::iterator it_mesh;
-        //for ( it_mesh = mesh.begin(); it_mesh !=mesh.end() ; it_mesh++ )
-        //tmpMesh.push_back ( *it_mesh );
-
-        sofa::helper::vector< Vector3> tmpVertices(vertices);
-        //sofa::helper::vector< Vector3>::iterator it_vertices;
-        //for ( it_vertices=vertices.begin() ; it_vertices!= vertices.end() ; it_vertices++)
-        //tmpVertices.push_back ( *it_vertices );
-
         Vec3i voxel = *it;
-        if ( ( tmpMesh.size() == mesh.size() ) && ( voxel[0] >= 0 ) && ( voxel[1] >= 0 ) && ( voxel[2] >= 0 ) )
-            propagateFrom ( voxel, data, isolevel, tmpMesh, tmpVertices, generatedCubes, triangleIndexInRegularGrid );
-
-        for ( sofa::helper::vector< PointID >::iterator it2 = tmpMesh.begin() +mesh.size(); it2 != tmpMesh.end(); it2++ )
-            mesh.push_back ( *it2 );
-
-        for ( sofa::helper::vector< Vector3 >::iterator it3 = tmpVertices.begin() +vertices.size(); it3 != tmpVertices.end(); it3++ )
-            vertices.push_back ( *it3 );
+        if ( ( voxel[0] >= bbox.min[0] ) && ( voxel[1] >= bbox.min[1] ) && ( voxel[2] >= bbox.min[2] ) && ( voxel[0] < bbox.max[0] ) && ( voxel[1] < bbox.max[1] ) && ( voxel[2] < bbox.max[2] ) )
+            propagateFrom ( *it, data, isolevel, mesh, vertices, generatedCubes, triangleIndexInRegularGrid );
     }
     if (smooth)
         delete [] data;
