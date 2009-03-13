@@ -28,6 +28,7 @@
 #include <sofa/core/CollisionModel.h>
 #include <sofa/component/container/MechanicalObject.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/component/component.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <vector>
@@ -80,8 +81,6 @@ public:
 
     virtual void init();
 
-    virtual void parse(BaseObjectDescription* arg);
-
     // -- CollisionModel interface
 
     virtual void resize(int size);
@@ -112,7 +111,7 @@ protected:
     Data< VecReal > radius;
     Data< SReal > defaultRadius;
 
-    Data< std::string > filename;
+    sofa::core::objectmodel::DataFileName filename;
 
     class Loader;
 };
