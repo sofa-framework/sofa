@@ -97,11 +97,6 @@ public:
 
     //	void disable(); //useless now that points are saved in a Data
 
-    void parse(core::objectmodel::BaseObjectDescription* arg)
-    {
-        this->Inherit::parse(arg);
-    }
-
     void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
 
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );

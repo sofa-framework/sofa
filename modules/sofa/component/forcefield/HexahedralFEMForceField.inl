@@ -91,11 +91,6 @@ void HexahedralFEMForceField<DataTypes>::FHexahedronCreationFunction (int hexahe
     }
 }
 
-template<class DataTypes>
-void HexahedralFEMForceField<DataTypes>::parse(core::objectmodel::BaseObjectDescription* arg)
-{
-    this->core::componentmodel::behavior::ForceField<DataTypes>::parse(arg);
-}
 
 template <class DataTypes> void HexahedralFEMForceField<DataTypes>::handleTopologyChange()
 {

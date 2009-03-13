@@ -32,6 +32,7 @@
 #include <sofa/helper/gl/GLSLShader.h>
 #include <sofa/helper/gl/Texture.h>
 #include <sofa/component/visualmodel/OglShader.h>
+#include <sofa/core/objectmodel/DataFileName.h>
 
 namespace sofa
 {
@@ -88,7 +89,7 @@ protected:
 class SOFA_COMPONENT_VISUALMODEL_API OglTexture2D : public OglTexture
 {
 private:
-    Data<std::string> texture2DFilename;
+    sofa::core::objectmodel::DataFileName texture2DFilename;
     Data<bool> repeat;
     helper::gl::Texture* texture2D;
 
@@ -98,8 +99,8 @@ public:
     OglTexture2D();
     virtual ~OglTexture2D();
 
-    void parse(core::objectmodel::BaseObjectDescription* arg);
     void initVisual();
+    void init();
     void reinit() { };
 
     void bind();

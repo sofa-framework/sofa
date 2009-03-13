@@ -161,6 +161,7 @@ protected:
 
     Data< TexCoord >  scaleTex;
     Data< TexCoord >  translationTex;
+
     Vec3f bbox[2];
 
     virtual void internalDraw()
