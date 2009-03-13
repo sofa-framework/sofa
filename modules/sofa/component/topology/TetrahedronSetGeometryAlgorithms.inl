@@ -195,10 +195,107 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const TetraID
     const Tetrahedron &ta=this->m_topology->getTetra(ind_ta);
     const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
     const typename DataTypes::Coord& ca=(vect_c[ta[0]]+vect_c[ta[1]]+vect_c[ta[2]]+vect_c[ta[3]])*0.25;
+
     Vec<3,Real> pa;
     pa[0] = (Real) (ca[0]);
     pa[1] = (Real) (ca[1]);
     pa[2] = (Real) (ca[2]);
+
+    unsigned int t_test=ind_ta;
+    indices.push_back(t_test);
+
+    std::map<unsigned int, unsigned int> IndexMap;
+    IndexMap.clear();
+    IndexMap[t_test]=0;
+
+    sofa::helper::vector<unsigned int> ind2test;
+    ind2test.push_back(t_test);
+    sofa::helper::vector<unsigned int> ind2ask;
+    ind2ask.push_back(t_test);
+
+    while(ind2test.size()>0)
+    {
+        ind2test.clear();
+        for (unsigned int t=0; t<ind2ask.size(); t++)
+        {
+            unsigned int ind_t = ind2ask[t];
+            sofa::component::topology::TetrahedronTriangles adjacent_triangles = this->m_topology->getTriangleTetraShell(ind_t);
+
+            for (unsigned int i=0; i<adjacent_triangles.size(); i++)
+            {
+                sofa::helper::vector< unsigned int > tetras_to_remove = this->m_topology->getTetraTriangleShell(adjacent_triangles[i]);
+
+                if(tetras_to_remove.size()==2)
+                {
+                    if(tetras_to_remove[0]==ind_t)
+                    {
+                        t_test=tetras_to_remove[1];
+                    }
+                    else
+                    {
+                        t_test=tetras_to_remove[0];
+                    }
+
+                    std::map<unsigned int, unsigned int>::iterator iter_1 = IndexMap.find(t_test);
+                    if(iter_1 == IndexMap.end())
+                    {
+                        IndexMap[t_test]=0;
+
+                        const Tetrahedron &tc=this->m_topology->getTetra(t_test);
+                        const typename DataTypes::Coord& cc = (vect_c[tc[0]]
+                                + vect_c[tc[1]]
+                                + vect_c[tc[2]]
+                                + vect_c[tc[3]]) * 0.25;
+                        Vec<3,Real> pc;
+                        pc[0] = (Real) (cc[0]);
+                        pc[1] = (Real) (cc[1]);
+                        pc[2] = (Real) (cc[2]);
+
+                        Real d_test = (pa-pc)*(pa-pc);
+
+                        if(d_test<d)
+                        {
+                            ind2test.push_back(t_test);
+                            indices.push_back(t_test);
+                        }
+                    }
+                }
+            }
+        }
+
+        ind2ask.clear();
+        for (unsigned int t=0; t<ind2test.size(); t++)
+        {
+            ind2ask.push_back(ind2test[t]);
+        }
+    }
+
+    return;
+}
+
+/// Finds the indices of all tetrahedra in the ball of center c and of radius r
+template<class DataTypes>
+void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const Coord& c, Real r,
+        sofa::helper::vector<unsigned int> &indices) const
+{
+    TetraID ind_ta = core::componentmodel::topology::BaseMeshTopology::InvalidID;
+    Vec<3,Real> pa;
+    pa[0] = (Real) (c[0]);
+    pa[1] = (Real) (c[1]);
+    pa[2] = (Real) (c[2]);
+    for(int i = 0; i < this->m_topology->getNbTetras(); ++i)
+    {
+        if(isPointInTetrahedron(i, pa))
+        {
+            ind_ta = i;
+            break;
+        }
+    }
+    if(ind_ta == core::componentmodel::topology::BaseMeshTopology::InvalidID)
+        std::cout << "ERROR: Can't find the seed" << std::endl;
+    Real d = r;
+//		const Tetrahedron &ta=this->m_topology->getTetra(ind_ta);
+    const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
 
     unsigned int t_test=ind_ta;
     indices.push_back(t_test);

@@ -94,7 +94,8 @@ public:
     /// finds the indices of all tetrahedra in the ball of center ind_ta and of radius dist(ind_ta, ind_tb)
     void getTetraInBall(const TetraID ind_ta, Real r,
             sofa::helper::vector<unsigned int> &indices) const;
-
+    void getTetraInBall(const Coord& c, Real r,
+            sofa::helper::vector<unsigned int> &indices) const;
     /** \brief Write the current mesh into a msh file
     */
     void writeMSHfile(const char *filename) const;
