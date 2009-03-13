@@ -983,7 +983,7 @@ const MeshTopology::QuadEdges& MeshTopology::getEdgeQuadShell(QuadID i)
 
 const MeshTopology::TetraEdges& MeshTopology::getEdgeTetraShell(TetraID i)
 {
-    if (!m_edgeTetraShell.empty() || i > m_edgeTetraShell.size()-1)
+    if (m_edgeTetraShell.empty() || i > m_edgeTetraShell.size()-1)
         createEdgeTetraShellArray();
     return m_edgeTetraShell[i];
 }
