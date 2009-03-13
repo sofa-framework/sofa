@@ -1561,21 +1561,22 @@ void MeshTopology::updateEdges()
                     e=Edge(v1,v2);
                 else
                     e=Edge(v2,v1);
+
+                ite=edgeMap.find(e);
+                if (ite==edgeMap.end())
+                {
+                    // edge not in edgeMap so create a new one
+                    edgeIndex=seqEdges.getValue().size();
+                    edgeMap[e]=edgeIndex;
+                    seqEdges.beginEdit()->push_back(e);
+                    seqEdges.endEdit();
+                }
+                else
+                {
+                    edgeIndex=(*ite).second;
+                }
+                //m_edgeTetraShell[i][j]=edgeIndex;
             }
-            ite=edgeMap.find(e);
-            if (ite==edgeMap.end())
-            {
-                // edge not in edgeMap so create a new one
-                edgeIndex=seqEdges.getValue().size();
-                edgeMap[e]=edgeIndex;
-                seqEdges.beginEdit()->push_back(e);
-                seqEdges.endEdit();
-            }
-            else
-            {
-                edgeIndex=(*ite).second;
-            }
-            //m_edgeTetraShell[i][j]=edgeIndex;
         }
 
         const SeqHexas& hexas = getHexas(); // do not use seqHexas directly as it might not be up-to-date
@@ -1598,21 +1599,22 @@ void MeshTopology::updateEdges()
                     e=Edge(v1,v2);
                 else
                     e=Edge(v2,v1);
+
+                ite=edgeMap.find(e);
+                if (ite==edgeMap.end())
+                {
+                    // edge not in edgeMap so create a new one
+                    edgeIndex=seqEdges.getValue().size();
+                    edgeMap[e]=edgeIndex;
+                    seqEdges.beginEdit()->push_back(e);
+                    seqEdges.endEdit();
+                }
+                else
+                {
+                    edgeIndex=(*ite).second;
+                }
+                //m_edgeHexaShell[i][j]=edgeIndex;
             }
-            ite=edgeMap.find(e);
-            if (ite==edgeMap.end())
-            {
-                // edge not in edgeMap so create a new one
-                edgeIndex=seqEdges.getValue().size();
-                edgeMap[e]=edgeIndex;
-                seqEdges.beginEdit()->push_back(e);
-                seqEdges.endEdit();
-            }
-            else
-            {
-                edgeIndex=(*ite).second;
-            }
-            //m_edgeHexaShell[i][j]=edgeIndex;
         }
     }
     else if (hasSurface())
