@@ -76,7 +76,7 @@ template <class BasicMapping>
 BarycentricMapping<BasicMapping>::BarycentricMapping ( In* from, Out* to, BaseMeshTopology * topology )
     : Inherit ( from, to ), mapper ( NULL )
 #ifdef SOFA_DEV
-    , sleeping(initData(&sleeping, false, "sleeping", "is the mapping sleeping (not computed)"))
+    , sleeping(core::objectmodel::Base::initData(&sleeping, false, "sleeping", "is the mapping sleeping (not computed)"))
 #endif
 {
     createMapperFromTopology ( topology );

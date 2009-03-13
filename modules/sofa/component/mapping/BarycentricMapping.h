@@ -864,11 +864,6 @@ public:
     using Inherit::serr;
     using Inherit::sendl;
 
-#ifdef SOFA_DEV
-    //--- partial mapping test
-    Data<bool> sleeping;
-    //--
-#endif
 
 protected:
 
@@ -882,12 +877,18 @@ protected:
 
 
 public:
+
+#ifdef SOFA_DEV
+    //--- partial mapping test
+    Data<bool> sleeping;
+#endif
+
     BarycentricMapping(In* from, Out* to)
         : Inherit(from, to), mapper(NULL)
         , f_grid (new DataPtr< RegularGridMapper >( new RegularGridMapper( NULL ),"Regular Grid Mapping"))
         , f_hexaMapper (new DataPtr< HexaMapper >( new HexaMapper(  ),"Hexahedron Mapper"))
 #ifdef SOFA_DEV
-        , sleeping(initData(&sleeping, false, "sleeping", "is the mapping sleeping (not computed)"))
+        , sleeping(core::objectmodel::Base::initData(&sleeping, false, "sleeping", "is the mapping sleeping (not computed)"))
 #endif
     {
         this->addField( f_grid, "gridmap");	f_grid->beginEdit();
@@ -897,7 +898,7 @@ public:
     BarycentricMapping(In* from, Out* to, Mapper* mapper)
         : Inherit(from, to), mapper(mapper)
 #ifdef SOFA_DEV
-        , sleeping(initData(&sleeping, false, "sleeping", "is the mapping sleeping (not computed)"))
+        , sleeping(core::objectmodel::Base::initData(&sleeping, false, "sleeping", "is the mapping sleeping (not computed)"))
 #endif
     {
         if (RegularGridMapper* m = dynamic_cast< RegularGridMapper* >(mapper))
