@@ -569,11 +569,11 @@ void MarchingCubeUtility::propagateFrom ( const Vec3i coord,
         sofa::helper::vector< PointID >& mesh,
         sofa::helper::vector< Vector3 >& vertices,
         sofa::helper::set<Vec3i>& generatedCubes,
+        std::map< Vector3, PointID>& map_vertices,
         helper::vector< helper::vector<unsigned int> >* triangleIndexInRegularGrid
                                         ) const
 {
-    std::map< Vector3, PointID> map_vertices;
-    for ( unsigned int i = 0; i < vertices.size(); i++ )
+    for ( unsigned int i = map_vertices.size(); i < vertices.size(); i++ )
         map_vertices.insert ( std::make_pair ( vertices[i], i ) );
 
     Vec3i bboxMin = Vec3i ( bbox.min / cubeStep );
@@ -625,9 +625,10 @@ void MarchingCubeUtility::run ( unsigned char *_data, const sofa::helper::vector
         sofa::helper::vector< Vector3>& vertices,
         helper::vector< helper::vector<unsigned int> >*triangleIndexInRegularGrid ) const
 {
+
     Vec3i gridSize = Vec3i ( dataResolution[0]/cubeStep, dataResolution[1]/cubeStep, dataResolution[2]/cubeStep );
     sofa::helper::set<Vec3i> generatedCubes;
-
+    std::map< Vector3, PointID> map_vertices;
 
     unsigned int datasize = dataResolution[0]*dataResolution[1]*dataResolution[2];
     if ( datasize == 0 )
@@ -651,7 +652,8 @@ void MarchingCubeUtility::run ( unsigned char *_data, const sofa::helper::vector
     {
         Vec3i voxel = *it;
         if ( ( voxel[0] >= bbox.min[0] ) && ( voxel[1] >= bbox.min[1] ) && ( voxel[2] >= bbox.min[2] ) && ( voxel[0] < bbox.max[0] ) && ( voxel[1] < bbox.max[1] ) && ( voxel[2] < bbox.max[2] ) )
-            propagateFrom ( *it, data, isolevel, mesh, vertices, generatedCubes, triangleIndexInRegularGrid );
+            propagateFrom ( *it, data, isolevel, mesh, vertices, generatedCubes, map_vertices, triangleIndexInRegularGrid );
+
     }
     if (smooth)
         delete [] data;
