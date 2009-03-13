@@ -27,6 +27,7 @@
 
 #include <string>
 #include <sofa/core/VisualModel.h>
+#include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/componentmodel/behavior/MappedModel.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec.h>
@@ -152,8 +153,8 @@ protected:
 
 
 
-    Data< std::string > fileMesh;
-    Data< std::string > texturename;
+    sofa::core::objectmodel::DataFileName fileMesh;
+    sofa::core::objectmodel::DataFileName texturename;
     Data< Vector3 > translation;
     Data< Vector3 > rotation;
     Data< SReal > scale;

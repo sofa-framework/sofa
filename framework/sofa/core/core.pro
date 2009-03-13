@@ -73,6 +73,7 @@ HEADERS += \
           objectmodel/ContextObject.h \
           objectmodel/Data.h \
           objectmodel/DataEngine.h \
+          objectmodel/DataFileName.h \
 	  objectmodel/DDGNode.h \
           objectmodel/DetachNodeEvent.h \
           objectmodel/Event.h \
@@ -102,6 +103,7 @@ SOURCES +=  \
           objectmodel/DetachNodeEvent.cpp \
           objectmodel/Event.cpp \
           objectmodel/DataEngine.cpp \
+          objectmodel/DataFileName.cpp \
           objectmodel/DataPtr.cpp \
 	  objectmodel/JoystickEvent.cpp \
           objectmodel/KeypressedEvent.cpp \
