@@ -886,7 +886,9 @@ public:
         : Inherit(from, to), mapper(NULL)
         , f_grid (new DataPtr< RegularGridMapper >( new RegularGridMapper( NULL ),"Regular Grid Mapping"))
         , f_hexaMapper (new DataPtr< HexaMapper >( new HexaMapper(  ),"Hexahedron Mapper"))
+#ifdef SOFA_DEV
         , sleeping(initData(&sleeping, false, "sleeping", "is the mapping sleeping (not computed)"))
+#endif
     {
         this->addField( f_grid, "gridmap");	f_grid->beginEdit();
         this->addField( f_hexaMapper, "hexamap");	f_hexaMapper->beginEdit();
@@ -894,7 +896,9 @@ public:
 
     BarycentricMapping(In* from, Out* to, Mapper* mapper)
         : Inherit(from, to), mapper(mapper)
+#ifdef SOFA_DEV
         , sleeping(initData(&sleeping, false, "sleeping", "is the mapping sleeping (not computed)"))
+#endif
     {
         if (RegularGridMapper* m = dynamic_cast< RegularGridMapper* >(mapper))
         {
