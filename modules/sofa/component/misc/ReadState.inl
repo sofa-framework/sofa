@@ -69,7 +69,7 @@ void ReadState::reset()
     mmodel = dynamic_cast< sofa::core::componentmodel::behavior::BaseMechanicalState* >(this->getContext()->getMechanicalState());
     if (infile)
         delete infile;
-    const std::string& filename = f_filename.getValue();
+    const std::string& filename = f_filename.getFullPath();
     if (!filename.empty())
     {
         infile = new std::ifstream(filename.c_str());

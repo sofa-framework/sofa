@@ -33,6 +33,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/objectmodel/DataFileName.h>
 
 namespace sofa
 {
@@ -462,13 +463,13 @@ protected:
     bool modified;
 
     // Input data parameters
-    Data< std::string > fileCudaRigidDistanceGrid;
+    sofa::core::objectmodel::DataFileName fileCudaRigidDistanceGrid;
     Data< double > scale;
     Data< helper::fixed_array<CudaDistanceGrid::Coord,2> > box;
     Data< int > nx;
     Data< int > ny;
     Data< int > nz;
-    Data< std::string > dumpfilename;
+    sofa::core::objectmodel::DataFileName dumpfilename;
 
     core::componentmodel::behavior::MechanicalState<RigidTypes>* rigid;
 

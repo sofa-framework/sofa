@@ -29,6 +29,7 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
+#include <sofa/core/objectmodel/DataFileName.h>
 
 namespace sofa
 {
@@ -71,7 +72,7 @@ public:
 
 private:
 
-    Data<std::string> filename; ///< file in which the events are stored.
+    sofa::core::objectmodel::DataFileName filename; ///< file in which the events are stored.
     Data<bool> inverseSense; ///< inverse the sense of the mouvement
 //	Data<double> timeout;
     int fd; ///< desciptor to open and read the file.

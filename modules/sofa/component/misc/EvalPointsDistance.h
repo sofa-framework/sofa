@@ -30,6 +30,7 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/Event.h>
+#include <sofa/core/objectmodel/DataFileName.h>
 
 #include <fstream>
 
@@ -61,7 +62,7 @@ public:
     /// Rendering of lines between associated points (activation)
     Data < bool > f_draw;
     /// Output file name
-    Data < std::string > f_filename;
+    sofa::core::objectmodel::DataFileName f_filename;
     /// Period between outputs
     Data < double > f_period;
     /// Computed distances (mean, min, max, standard deviation)

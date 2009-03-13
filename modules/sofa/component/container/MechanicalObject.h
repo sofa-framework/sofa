@@ -35,6 +35,8 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
+#include <sofa/core/objectmodel/DataFileName.h>
+
 #include <vector>
 #include <assert.h>
 #include <fstream>
@@ -96,7 +98,7 @@ protected:
     Data< Vector3 > translation;
     Data< Vector3> rotation;
     Data< SReal > scale;
-    Data< std::string > filename;
+    sofa::core::objectmodel::DataFileName filename;
     Data< bool> ignoreLoader;
 
     /// @name Integration-related data

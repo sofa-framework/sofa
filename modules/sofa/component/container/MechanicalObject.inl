@@ -59,7 +59,13 @@ using namespace sofa::core::componentmodel::topology;
 using namespace sofa::defaulttype;
 template <class DataTypes>
 MechanicalObject<DataTypes>::MechanicalObject()
-    : x(new VecCoord), v(new VecDeriv), f(new VecDeriv), dx(new VecDeriv), x0(new VecCoord),reset_position(NULL), v0(NULL), xfree(new VecCoord), vfree(new VecDeriv), c(new VecConst), vsize(0), m_gnuplotFileX(NULL), m_gnuplotFileV(NULL)
+    : x(new VecCoord), v(new VecDeriv), f(new VecDeriv), dx(new VecDeriv), x0(new VecCoord),reset_position(NULL), v0(NULL), xfree(new VecCoord), vfree(new VecDeriv), c(new VecConst)
+    , translation(core::objectmodel::Base::initData(&translation, Vector3(), "translation", "Translation of the DOFs"))
+    , rotation(core::objectmodel::Base::initData(&rotation, Vector3(), "rotation", "Rotation of the DOFs"))
+    , scale(core::objectmodel::Base::initData(&scale, (SReal)1.0, "scale", "Scale of the DOFs"))
+    , filename(core::objectmodel::Base::initData(&filename, std::string(""), "filename", "File corresponding to the Mechanical Object", false))
+    , ignoreLoader(core::objectmodel::Base::initData(&ignoreLoader, (bool) false, "ignoreLoader", "Is the Mechanical Object do not use a loader"))
+    , vsize(0), m_gnuplotFileX(NULL), m_gnuplotFileV(NULL)
     , f_X ( new XDataPtr<DataTypes>(&x,  "position coordinates of the degrees of freedom") )
     , f_V ( new VDataPtr<DataTypes>(&v,  "velocity coordinates of the degrees of freedom") )
     , f_F ( new VDataPtr<DataTypes>(&f,  "f vector of the degrees of freedom") )
@@ -67,7 +73,9 @@ MechanicalObject<DataTypes>::MechanicalObject()
     , f_Xfree ( new XDataPtr<DataTypes>(&xfree,  "free position coordinates of the degrees of freedom") )
     , f_Vfree ( new VDataPtr<DataTypes>(&vfree,  "free velocity coordinates of the degrees of freedom") )
     , f_X0( new XDataPtr<DataTypes>(&x0, "rest position coordinates of the degrees of freedom") )
-
+    , restScale(core::objectmodel::Base::initData(&restScale, (SReal)1.0, "restScale","optional scaling of rest position coordinates (to simulated pre-existing internal tension)"))
+    , debugViewIndices(core::objectmodel::Base::initData(&debugViewIndices, (bool) false, "debugViewIndices", "Debug : view indices"))
+    , debugViewIndicesScale(core::objectmodel::Base::initData(&debugViewIndicesScale, (float) 0.0001, "debugViewIndicesScale", "Debug : scale for view indices"))
 {
     //HACK
     if (!restScale.isSet())
@@ -90,16 +98,6 @@ MechanicalObject<DataTypes>::MechanicalObject()
     f_Vfree->init();
     f_X0->init();
 
-
-
-    restScale = this->initData(&restScale, (SReal)1.0, "restScale","optional scaling of rest position coordinates (to simulated pre-existing internal tension)");
-    translation=this->initData(&translation, Vector3(), "translation", "Translation of the DOFs");
-    rotation=this->initData(&rotation, Vector3(), "rotation", "Rotation of the DOFs");
-    scale=this->initData(&scale, (SReal)1.0, "scale", "Scale of the DOFs");
-    filename=this->initData(&filename, std::string(""), "filename", "File corresponding to the Mechanical Object", false);
-    ignoreLoader=this->initData(&ignoreLoader, (bool) false, "ignoreLoader", "Is the Mechanical Object do not use a loader");
-    debugViewIndices=this->initData(&debugViewIndices, (bool) false, "debugViewIndices", "Debug : view indices");
-    debugViewIndicesScale=this->initData(&debugViewIndicesScale, (float) 0.0001, "debugViewIndicesScale", "Debug : scale for view indices");
 
     /*    x = new VecCoord;
       v = new VecDeriv;*/
@@ -198,7 +196,7 @@ void MechanicalObject<DataTypes>::parse ( BaseObjectDescription* arg )
     }
     if (!filename.getValue().empty())
     {
-        load(filename.getValue().c_str());
+        load(filename.getFullPath().c_str());
         filename.setValue(std::string("")); //clear the field filename: When we save the scene, we don't need anymore the filename
     }
 

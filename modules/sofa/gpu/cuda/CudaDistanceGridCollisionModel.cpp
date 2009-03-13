@@ -488,14 +488,14 @@ void CudaRigidDistanceGridCollisionModel::init()
     if (scale.getValue()!=1.0) std::cout<<" scale="<<scale.getValue();
     if (box.getValue()[0][0]<box.getValue()[1][0]) std::cout<<" bbox=<"<<box.getValue()[0]<<">-<"<<box.getValue()[0]<<">";
     std::cout << std::endl;
-    grid = CudaDistanceGrid::loadShared(fileCudaRigidDistanceGrid.getValue(), scale.getValue(), nx.getValue(),ny.getValue(),nz.getValue(),box.getValue()[0],box.getValue()[1]);
+    grid = CudaDistanceGrid::loadShared(fileCudaRigidDistanceGrid.getFullPath(), scale.getValue(), nx.getValue(),ny.getValue(),nz.getValue(),box.getValue()[0],box.getValue()[1]);
 
     resize(1);
     elems[0].grid = grid;
     if (grid && !dumpfilename.getValue().empty())
     {
         std::cout << "CudaRigidDistanceGridCollisionModel: dump grid to "<<dumpfilename.getValue()<<std::endl;
-        grid->save(dumpfilename.getValue());
+        grid->save(dumpfilename.getFullPath());
     }
     std::cout << "< CudaRigidDistanceGridCollisionModel::init()"<<std::endl;
 }

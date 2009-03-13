@@ -82,7 +82,7 @@ void EvalPointsDistance<DataTypes>::init()
     if (!mstate1 || !mstate2)
         return;
 
-    const std::string& filename = f_filename.getValue();
+    const std::string& filename = f_filename.getFullPath();
     if (!filename.empty())
     {
         outfile = new std::ofstream(filename.c_str());

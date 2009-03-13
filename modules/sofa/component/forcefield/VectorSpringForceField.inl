@@ -185,7 +185,7 @@ void VectorSpringForceField<DataTypes>::bwdInit()
         if (!m_filename.getValue().empty())
         {
             // load the springs from a file
-            load(( const char *)(m_filename.getValue().c_str()));
+            load(( const char *)(m_filename.getFullPath().c_str()));
             return;
         }
 

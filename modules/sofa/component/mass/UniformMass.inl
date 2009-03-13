@@ -98,7 +98,7 @@ void UniformMass<DataTypes, MassType>::reinit()
 template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::init()
 {
-    loadRigidMass(filenameMass.getValue());
+    loadRigidMass(filenameMass.getFullPath());
     if (filenameMass.getValue().empty()) filenameMass.setDisplayed(false);
     this->core::componentmodel::behavior::Mass<DataTypes>::init();
     reinit();

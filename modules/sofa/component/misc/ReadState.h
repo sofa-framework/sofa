@@ -33,6 +33,7 @@
 #include <sofa/simulation/common/AnimateEndEvent.h>
 #include <sofa/simulation/common/Visitor.h>
 #include <sofa/component/component.h>
+#include <sofa/core/objectmodel/DataFileName.h>
 
 #include <fstream>
 
@@ -51,7 +52,7 @@ class SOFA_COMPONENT_MISC_API ReadState: public core::objectmodel::BaseObject
 {
 public:
 
-    Data < std::string > f_filename;
+    sofa::core::objectmodel::DataFileName f_filename;
     Data < double > f_interval;
     Data < double > f_shift;
     Data < bool > f_loop;
