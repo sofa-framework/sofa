@@ -208,6 +208,7 @@ private:
             sofa::helper::vector< PointID >& triangles,
             sofa::helper::vector< Vector3 >& vertices,
             sofa::helper::set<Vec3i>& generatedCubes,
+            std::map< Vector3, PointID>& map_vertices,
             helper::vector< helper::vector<unsigned int> >* triangleIndexInRegularGrid = NULL ) const;
 
 private:
