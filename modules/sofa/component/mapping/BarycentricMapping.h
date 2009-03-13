@@ -150,6 +150,11 @@ public:
     virtual void applyJT( typename In::VecConst& out, const typename Out::VecConst& in ) = 0;
     virtual void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in) = 0;
 
+    //-- test mapping partiel
+    virtual void applyOnePoint( const unsigned int& /*hexaId*/, typename Out::VecCoord& /*out*/, const typename In::VecCoord& /*in*/)
+    {};
+    //--
+
     virtual void clear( int reserve=0 ) =0;
 
     // TODO: make it pure virtual. Get the barycentric coefficients and the coordinates of the parents of a given mapped dof.
@@ -791,6 +796,10 @@ public:
     void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
     void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
+    //-- test mapping partiel
+    void applyOnePoint( const unsigned int& hexaId, typename Out::VecCoord& out, const typename In::VecCoord& in);
+    //--
+
     // handle topology changes in the From topology
     virtual void handleTopologyChange();
     // handle topology changes in the To topology
@@ -854,6 +863,13 @@ public:
     using Inherit::sout;
     using Inherit::serr;
     using Inherit::sendl;
+
+#ifdef SOFA_DEV
+    //--- partial mapping test
+    Data<bool> sleeping;
+    //--
+#endif
+
 protected:
 
     typedef TopologyBarycentricMapper<InDataTypes,OutDataTypes> Mapper;
@@ -863,11 +879,14 @@ protected:
     Mapper* mapper;
     DataPtr< RegularGridMapper >* f_grid;
     DataPtr< HexaMapper >* f_hexaMapper;
+
+
 public:
     BarycentricMapping(In* from, Out* to)
         : Inherit(from, to), mapper(NULL)
         , f_grid (new DataPtr< RegularGridMapper >( new RegularGridMapper( NULL ),"Regular Grid Mapping"))
         , f_hexaMapper (new DataPtr< HexaMapper >( new HexaMapper(  ),"Hexahedron Mapper"))
+        , sleeping(initData(&sleeping, false, "sleeping", "is the mapping sleeping (not computed)"))
     {
         this->addField( f_grid, "gridmap");	f_grid->beginEdit();
         this->addField( f_hexaMapper, "hexamap");	f_hexaMapper->beginEdit();
@@ -875,6 +894,7 @@ public:
 
     BarycentricMapping(In* from, Out* to, Mapper* mapper)
         : Inherit(from, to), mapper(mapper)
+        , sleeping(initData(&sleeping, false, "sleeping", "is the mapping sleeping (not computed)"))
     {
         if (RegularGridMapper* m = dynamic_cast< RegularGridMapper* >(mapper))
         {

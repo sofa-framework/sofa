@@ -75,6 +75,9 @@ using namespace sofa::defaulttype;
 template <class BasicMapping>
 BarycentricMapping<BasicMapping>::BarycentricMapping ( In* from, Out* to, BaseMeshTopology * topology )
     : Inherit ( from, to ), mapper ( NULL )
+#ifdef SOFA_DEV
+    , sleeping(initData(&sleeping, false, "sleeping", "is the mapping sleeping (not computed)"))
+#endif
 {
     createMapperFromTopology ( topology );
 }
@@ -852,8 +855,15 @@ void BarycentricMapping<BasicMapping>::createMapperFromTopology ( BaseMeshTopolo
 {
     mapper = NULL;
 
+    helper::vector<core::componentmodel::topology::TopologyContainer*> vecTopoCont2;// = dynamic_cast<core::componentmodel::topology::TopologyContainer*>(fromModel);
+    this->fromModel->getContext()->get<core::componentmodel::topology::TopologyContainer,helper::vector<core::componentmodel::topology::TopologyContainer*> > ( &vecTopoCont2);
+
     core::componentmodel::topology::TopologyContainer* topoCont2;
-    this->fromModel->getContext()->get ( topoCont2 );
+    for ( helper::vector<core::componentmodel::topology::TopologyContainer*>::iterator it = vecTopoCont2.begin(); it != vecTopoCont2.end(); it++)
+    {
+        if( (*it)->getContext()->getMechanicalState() == fromModel)
+        {topoCont2 = *it; break;}
+    }
 
     if ( topoCont2!=NULL )
     {
@@ -970,7 +980,11 @@ void BarycentricMapping<BasicMapping>::init()
 template <class BasicMapping>
 void BarycentricMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    if ( mapper!=NULL ) mapper->apply ( out, in );
+    if (
+#ifdef SOFA_DEV
+        sleeping.getValue()==false &&
+#endif
+        mapper!=NULL ) mapper->apply ( out, in );
 }
 
 template <class In, class Out>
@@ -1240,11 +1254,41 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::apply ( typename Out::VecCo
     }
 }
 
+
+//-- test mapping partiel
+template <class In, class Out>
+void BarycentricMapperHexahedronSetTopology<In,Out>::applyOnePoint( const unsigned int& hexaPointId,typename Out::VecCoord& out, const typename In::VecCoord& in )
+{
+    //out.resize ( map.getValue().size() );
+    const sofa::helper::vector<topology::Hexahedron>& cubes = this->topology->getHexas();
+    const Real fx = map.getValue()[hexaPointId].baryCoords[0];
+    const Real fy = map.getValue()[hexaPointId].baryCoords[1];
+    const Real fz = map.getValue()[hexaPointId].baryCoords[2];
+    int index = map.getValue()[hexaPointId].in_index;
+    const topology::Hexahedron& cube = cubes[index];
+    out[hexaPointId] = in[cube[0]] * ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) )
+            + in[cube[1]] * ( ( fx ) * ( 1-fy ) * ( 1-fz ) )
+            + in[cube[3]] * ( ( 1-fx ) * ( fy ) * ( 1-fz ) )
+            + in[cube[2]] * ( ( fx ) * ( fy ) * ( 1-fz ) )
+            + in[cube[4]] * ( ( 1-fx ) * ( 1-fy ) * ( fz ) )
+            + in[cube[5]] * ( ( fx ) * ( 1-fy ) * ( fz ) )
+            + in[cube[7]] * ( ( 1-fx ) * ( fy ) * ( fz ) )
+            + in[cube[6]] * ( ( fx ) * ( fy ) * ( fz ) );
+}
+//--
+
 template <class BasicMapping>
 void BarycentricMapping<BasicMapping>::applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
-    out.resize ( this->toModel->getX()->size() );
-    if ( mapper!=NULL ) mapper->applyJ ( out, in );
+#ifdef SOFA_DEV
+    if ( sleeping.getValue()==false)
+    {
+#endif
+        out.resize ( this->toModel->getX()->size() );
+        if ( mapper!=NULL ) mapper->applyJ ( out, in );
+#ifdef SOFA_DEV
+    }
+#endif
 }
 
 
@@ -1514,7 +1558,11 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::applyJ ( typename Out::VecD
 template <class BasicMapping>
 void BarycentricMapping<BasicMapping>::applyJT ( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
-    if ( mapper!=NULL ) mapper->applyJT ( out, in );
+    if (
+#ifdef SOFA_DEV
+        sleeping.getValue()==false &&
+#endif
+        mapper!=NULL ) mapper->applyJT ( out, in );
 }
 
 
@@ -2330,7 +2378,11 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::draw ( const typename Out::
 template <class BasicMapping>
 void BarycentricMapping<BasicMapping>::applyJT ( typename In::VecConst& out, const typename Out::VecConst& in )
 {
-    if ( mapper!=NULL )
+    if (
+#ifdef SOFA_DEV
+        sleeping.getValue()==false &&
+#endif
+        mapper!=NULL )
     {
         mapper->applyJT ( out, in );
     }
@@ -2931,6 +2983,7 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::handleTopologyChange()
 template <class In, class Out>
 void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
 {
+
     if ( this->topology->firstChange() == this->topology->lastChange() )
         return;
 
