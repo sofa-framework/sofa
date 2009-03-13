@@ -70,14 +70,14 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
 
     if (arg->getAttribute("castshadow")!=NULL)
         obj->setCastShadow(atoi(arg->getAttribute("castshadow"))!=0);
-
-    std::string file;
-    file=(arg->getAttribute("texturename",""));
-    if (!file.empty())
-    {
-        texturename.setValue( sofa::helper::system::DataRepository.getFile ( file ));
-    }
-
+    /*
+        std::string file;
+         file=(arg->getAttribute("texturename",""));
+         if (!file.empty())
+         {
+              texturename.setValue( sofa::helper::system::DataRepository.getFile ( file ));
+         }
+    */
 
     if (arg->getAttribute("flip")!=NULL)
     {
@@ -441,7 +441,7 @@ void VisualModelImpl::applyUVScale(const double scaleU, const double scaleV)
 void VisualModelImpl::init()
 {
 
-    load(fileMesh.getValue(), "", texturename.getValue());
+    load(fileMesh.getFullPath(), "", texturename.getFullPath());
     _topology = getContext()->getMeshTopology();
 
     field_vertices.beginEdit();
