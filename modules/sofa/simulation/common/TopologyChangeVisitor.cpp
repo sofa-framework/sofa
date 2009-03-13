@@ -44,14 +44,18 @@ using namespace sofa::core;
 
 void TopologyChangeVisitor::processTopologyChange(core::objectmodel::BaseObject* obj)
 {
+    printComment("processTopologyChange");
+    simulation::Node* node=(simulation::Node*)obj->getContext();
+    ctime_t t0=begin(node,obj);
     obj->handleTopologyChange(source);
+    end(node,obj,t0);
 }
 
 Visitor::Result TopologyChangeVisitor::processNodeTopDown(simulation::Node* node)
 {
     //if (!root) root = node;
     bool is_TopologicalMapping = false;
-
+    printComment("updateTopologicalMappingTopDown");
     for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
     {
         sofa::core::componentmodel::topology::TopologicalMapping* obj = dynamic_cast<sofa::core::componentmodel::topology::TopologicalMapping*>(*it);
@@ -61,8 +65,10 @@ Visitor::Result TopologyChangeVisitor::processNodeTopDown(simulation::Node* node
             if(obj->propagateFromInputToOutputModel() && obj->getFrom() == source)  //node != root){ // the propagation of topological changes comes (at least) from a father node, not from a brother
             {
 
+                ctime_t t0=begin(node,obj);
                 obj->updateTopologicalMappingTopDown(); // update the specific TopologicalMapping
                 is_TopologicalMapping = true;
+                end(node,obj,t0);
             }
         }
     }

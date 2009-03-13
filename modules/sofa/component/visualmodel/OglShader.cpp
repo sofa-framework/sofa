@@ -89,7 +89,7 @@ void OglShader::init()
 {
 
     ///Vertex filenames parsing
-    std::string tempStr = vertFilename.getValue();
+    std::string tempStr = vertFilename.getFullPath();
     std::string file;
     const std::string SEPARATOR = ";";
     unsigned long int pos = 0;
@@ -123,7 +123,7 @@ void OglShader::init()
 
     ///Fragment filenames parsing
     pos = oldPos = 0;
-    tempStr = fragFilename.getValue();
+    tempStr = fragFilename.getFullPath();
 
     pos = tempStr.find(SEPARATOR, oldPos);
 
@@ -153,7 +153,7 @@ void OglShader::init()
 
     ///Geometry filenames parsing
     pos = oldPos = 0;
-    tempStr = geoFilename.getValue();
+    tempStr = geoFilename.getFullPath();
 
     if (geoFilename.getValue() == "" )
     {

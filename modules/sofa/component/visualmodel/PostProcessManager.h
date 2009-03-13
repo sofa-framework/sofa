@@ -35,6 +35,8 @@
 #include <sofa/core/VisualManager.h>
 #include <sofa/helper/gl/FrameBufferObject.h>
 #include <sofa/component/visualmodel/OglShader.h>
+#include <sofa/core/objectmodel/DataFileName.h>
+
 namespace sofa
 {
 
@@ -56,9 +58,9 @@ private:
 
 public:
     ///Files where vertex shader is defined
-    Data<std::string> vertFilename;
+    sofa::core::objectmodel::DataFileName vertFilename;
     ///Files where fragment shader is defined
-    Data<std::string> fragFilename;
+    sofa::core::objectmodel::DataFileName fragFilename;
 
     PostProcessManager();
     virtual ~PostProcessManager();

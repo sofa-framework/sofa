@@ -43,6 +43,7 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/GLSLShader.h>
 #include <sofa/component/component.h>
+#include <sofa/core/objectmodel/DataFileName.h>
 
 namespace sofa
 {
@@ -73,11 +74,11 @@ public:
     Data<bool> passive;
 
     ///Files where vertex shader is defined
-    Data<std::string> vertFilename;
+    sofa::core::objectmodel::DataFileName vertFilename;
     ///Files where fragment shader is defined
-    Data<std::string> fragFilename;
+    sofa::core::objectmodel::DataFileName fragFilename;
     ///Files where geometry shader is defined
-    Data<std::string> geoFilename;
+    sofa::core::objectmodel::DataFileName geoFilename;
 
     ///Describes the input type of primitive if geometry shader is used
     Data<int> geometryInputType;
