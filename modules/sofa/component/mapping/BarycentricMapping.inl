@@ -855,15 +855,8 @@ void BarycentricMapping<BasicMapping>::createMapperFromTopology ( BaseMeshTopolo
 {
     mapper = NULL;
 
-    helper::vector<core::componentmodel::topology::TopologyContainer*> vecTopoCont2;// = dynamic_cast<core::componentmodel::topology::TopologyContainer*>(fromModel);
-    this->fromModel->getContext()->get<core::componentmodel::topology::TopologyContainer,helper::vector<core::componentmodel::topology::TopologyContainer*> > ( &vecTopoCont2);
-
     core::componentmodel::topology::TopologyContainer* topoCont2;
-    for ( helper::vector<core::componentmodel::topology::TopologyContainer*>::iterator it = vecTopoCont2.begin(); it != vecTopoCont2.end(); it++)
-    {
-        if( (*it)->getContext()->getMechanicalState() == fromModel)
-        {topoCont2 = *it; break;}
-    }
+    this->fromModel->getContext()->get ( topoCont2 );
 
     if ( topoCont2!=NULL )
     {
