@@ -89,16 +89,6 @@ void SphereModel::resize(int size)
     }
 }
 
-void SphereModel::parse(BaseObjectDescription* arg)
-{
-    this->core::CollisionModel::parse(arg);
-
-    if (arg->getAttribute("filename"))
-    {
-        filename.setValue(arg->getAttribute("filename"));
-    }
-}
-
 void SphereModel::init()
 {
     this->CollisionModel::init();
@@ -111,7 +101,7 @@ void SphereModel::init()
 
     if (radius.getValue().empty() && !filename.getValue().empty())
     {
-        load(filename.getValue().c_str());
+        load(filename.getFullPath().c_str());
     }
     else
     {

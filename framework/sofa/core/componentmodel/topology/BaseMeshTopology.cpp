@@ -245,7 +245,7 @@ bool BaseMeshTopology::load(const char* filename)
         serr << "Mesh \""<< filename <<"\" not found"<< sendl;
         return false;
     }
-    this->fileTopology.setValue( meshFilename );
+    this->fileTopology.setValue( filename );
     DefaultMeshTopologyLoader loader(this);
     if (!loader.load(meshFilename.c_str()))
     {

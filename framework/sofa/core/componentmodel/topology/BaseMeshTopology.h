@@ -32,6 +32,7 @@
 #include <string>
 #include <iostream>
 #include <sofa/core/componentmodel/topology/Topology.h>
+#include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/vector.h>
 
@@ -303,7 +304,7 @@ public:
 
 protected:
 
-    Data< std::string > fileTopology;
+    sofa::core::objectmodel::DataFileName fileTopology;
 };
 
 } // namespace topology
