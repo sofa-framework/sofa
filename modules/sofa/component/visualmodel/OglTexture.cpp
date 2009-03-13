@@ -129,31 +129,12 @@ OglTexture2D::~OglTexture2D()
     if (!texture2D)delete texture2D;
 }
 
-void OglTexture2D::parse(core::objectmodel::BaseObjectDescription* arg)
+void OglTexture2D::init()
 {
-    helper::system::FileRepository fp;
-    if (arg->getAttribute("texture2DFilename"))
-    {
-        texture2DFilename.setValue( arg->getAttribute("texture2DFilename") );
-    }
-    img = helper::io::Image::Create(texture2DFilename.getValue());
-
-    if (arg->getAttribute("id"))
-    {
-        id.setValue( arg->getAttribute("id") );
-    }
-
-    if (arg->getAttribute("textureUnit"))
-    {
-        textureUnit.setValue( atoi(arg->getAttribute("textureUnit") ) );
-    }
-
-    if (arg->getAttribute("repeat"))
-    {
-        repeat.setValue( ( arg->getAttribute("repeat") != NULL ) );
-    }
+    if (!texture2DFilename.getValue().empty())
+        img = helper::io::Image::Create(texture2DFilename.getFullPath().c_str());
+    OglTexture::init();
 }
-
 void OglTexture2D::initVisual()
 {
     OglTexture::initVisual();

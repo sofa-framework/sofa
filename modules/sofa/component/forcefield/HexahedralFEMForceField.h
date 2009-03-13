@@ -167,8 +167,6 @@ public:
         _coef[7][2]=1;
     }
 
-    void parse(core::objectmodel::BaseObjectDescription* arg);
-
     void setPoissonRatio(Real val) { this->f_poissonRatio.setValue(val); }
 
     void setYoungModulus(Real val) { this->f_youngModulus.setValue(val); }

@@ -74,12 +74,6 @@ template<class DataTypes> const int HexahedronFEMForceField<DataTypes>::_indices
 // template<class DataTypes> const int HexahedronFEMForceField<DataTypes>::_indices[8] = {4,5,7,6,0,1,3,2};
 #endif
 
-template<class DataTypes>
-void HexahedronFEMForceField<DataTypes>::parse(core::objectmodel::BaseObjectDescription* arg)
-{
-    this->core::componentmodel::behavior::ForceField<DataTypes>::parse(arg);
-
-}
 
 template <class DataTypes>
 void HexahedronFEMForceField<DataTypes>::init()
