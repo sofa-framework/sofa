@@ -134,21 +134,21 @@ HEADERS += \
 	   	CudaFrictionContact.h \
         CudaTetrahedronTLEDForceField.h \
        	CudaHexahedronTLEDForceField.h \
-	CudaTetrahedronSuperTLEDForceField.h \
+		CudaTetrahedronSuperTLEDForceField.h \
        	CudaUncoupledConstraintCorrection.h
 
 SOURCES += \
-                CudaBoxROI.cpp  \
-                CudaBTDLinearSolver.cpp  \
+        CudaBoxROI.cpp  \
+        CudaBTDLinearSolver.cpp  \
 	   	CudaLCP.cpp \
        	CudaMasterContactSolver.cpp \
        	CudaSpatialGridContainer.cpp \
 	   	CudaUnilateralInteractionConstraint.cpp \
-	   	CudaPrecomputedConstraintCorrectionPreconditioner.cpp \
+	   	CudaPrecomputedConstraintCorrectionPreconditioner.cpp \  	
 	   	CudaFrictionContact.cpp \
      	CudaTetrahedronTLEDForceField.cpp \
        	CudaHexahedronTLEDForceField.cpp \
-	CudaTetrahedronSuperTLEDForceField.cpp \
+		CudaTetrahedronSuperTLEDForceField.cpp \
        	CudaUncoupledConstraintCorrection.cpp
 
 CUDA_SOURCES += \
@@ -159,6 +159,16 @@ CUDA_SOURCES += \
        	CudaTetrahedronTLEDForceField.cu \
        	CudaHexahedronTLEDForceField.cu \
 	CudaTetrahedronSuperTLEDForceField.cu
+
+contains(DEFINES,SOFA_HAVE_BOOST){
+contains(DEFINES,SOFA_HAVE_CSPARSE){
+HEADERS += \
+	   	CudaUpdatePrecomputedPreconditioner.h \
+	   	
+SOURCES += \	
+		CudaUpdatePrecomputedPreconditioner.cpp
+}
+}
 
 HEADERS += radixsort.cuh radixsort_kernel.cu
 CUDA_SOURCES += radixsort.cu
