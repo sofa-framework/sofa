@@ -769,6 +769,8 @@ protected:
     topology::HexahedronSetTopologyContainer*		_container;
     topology::HexahedronSetGeometryAlgorithms<In>*	_geomAlgo;
 
+    std::set<int>	_invalidIndex;
+
 public:
     BarycentricMapperHexahedronSetTopology()
         : TopologyBarycentricMapper<In,Out>(NULL),_container(NULL),_geomAlgo(NULL)
