@@ -33,6 +33,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/Mat.h>
+#include <sofa/component/component.h>
 
 
 // corotational tetrahedron from
@@ -277,7 +278,6 @@ protected:
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_TETRAHEDRONFEMFORCEFIELD_CPP)
-#pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
 extern template class SOFA_COMPONENT_FORCEFIELD_API TetrahedronFEMForceField<defaulttype::Vec3dTypes>;
 #endif

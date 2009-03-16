@@ -40,6 +40,7 @@ int main(int argc, char** argv)
 {
     glutInit(&argc,argv);
     QApplication* application = new QApplication(argc, argv);
+    (void)application;
 
     sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
 
