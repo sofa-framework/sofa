@@ -193,6 +193,32 @@ const BaseMeshTopology::QuadHexas& BaseMeshTopology::getHexaQuadShell(QuadID)
     return empty;
 }
 
+
+/// Returns the set of triangles on the border of the triangulation
+const sofa::helper::vector <BaseMeshTopology::TriangleID>& BaseMeshTopology::getTrianglesOnBorder()
+{
+    std::cerr << "WARNING: "<<this->getClassName()<<"::getTrianglesOnBorder unsupported."<<std::endl;
+    static sofa::helper::vector <BaseMeshTopology::TriangleID> empty;
+    return empty;
+}
+
+/// Returns the set of edges on the border of the triangulation
+const sofa::helper::vector <BaseMeshTopology::EdgeID>& BaseMeshTopology::getEdgesOnBorder()
+{
+    std::cerr << "WARNING: "<<this->getClassName()<<"::getEdgesOnBorder unsupported."<<std::endl;
+    static sofa::helper::vector <BaseMeshTopology::EdgeID> empty;
+    return empty;
+}
+
+/// Returns the set of points on the border of the triangulation
+const sofa::helper::vector <BaseMeshTopology::PointID>& BaseMeshTopology::getPointsOnBorder()
+{
+    std::cerr << "WARNING: "<<this->getClassName()<<"::getPointsOnBorder unsupported."<<std::endl;
+    static sofa::helper::vector <BaseMeshTopology::PointID> empty;
+    return empty;
+}
+
+
 void BaseMeshTopology::init()
 {
 }
