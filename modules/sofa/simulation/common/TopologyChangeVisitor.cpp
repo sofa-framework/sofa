@@ -44,7 +44,9 @@ using namespace sofa::core;
 
 void TopologyChangeVisitor::processTopologyChange(core::objectmodel::BaseObject* obj)
 {
-    printComment("processTopologyChange");
+#ifdef DUMP_VISITOR_INFO
+    simulation::Visitor::printComment("processTopologyChange");
+#endif
     simulation::Node* node=(simulation::Node*)obj->getContext();
     ctime_t t0=begin(node,obj);
     obj->handleTopologyChange(source);
@@ -55,7 +57,9 @@ Visitor::Result TopologyChangeVisitor::processNodeTopDown(simulation::Node* node
 {
     //if (!root) root = node;
     bool is_TopologicalMapping = false;
-    printComment("updateTopologicalMappingTopDown");
+#ifdef DUMP_VISITOR_INFO
+    simulation::Visitor::printComment("updateTopologicalMappingTopDown");
+#endif
     for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
     {
         sofa::core::componentmodel::topology::TopologicalMapping* obj = dynamic_cast<sofa::core::componentmodel::topology::TopologicalMapping*>(*it);
