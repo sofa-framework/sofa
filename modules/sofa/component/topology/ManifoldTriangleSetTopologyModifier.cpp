@@ -161,7 +161,8 @@ void ManifoldTriangleSetTopologyModifier::createRemovingEdgesFutureModifications
 bool ManifoldTriangleSetTopologyModifier::testRemovingModifications()
 {
     std::map< unsigned int, sofa::helper::vector<unsigned int> >::iterator it;
-    sofa::helper::vector <PointID> border = m_container->getPointsBorder();
+    m_container->createElementsOnBorder();
+    const sofa::helper::vector <PointID>& border = m_container->getPointsOnBorder();
 
     unsigned int connexite;
     bool bord;
