@@ -73,7 +73,7 @@ protected:
     * @see createRemovingEdgesFutureModifications()
     * @see testRemovingModifications().
     */
-    virtual bool removeTrianglesPreconditions(sofa::helper::vector< unsigned int >& items);
+    virtual bool removeTrianglesPreconditions(const sofa::helper::vector< unsigned int >& items);
 
     /**\brief Postprocessing to apply to the triangle topology. In this class topology should stay manifold.
     * These functions reorder the triangles around each vertex where triangles have been deleted.
@@ -171,7 +171,7 @@ private:
      * m_modifications[0] = vertex index number.
      * m_modifications[i>0] = 0 (no change) or 1 (remove m_triangleVertexShell[ m_modifications[0] ][i+1])
      */
-    void createRemovingTrianglesFutureModifications(sofa::helper::vector< unsigned int >& items);
+    void createRemovingTrianglesFutureModifications(const sofa::helper::vector< unsigned int >& items);
 
 
     /** Test the modifications to apply around one vertex. After removing triangles, only one connexe composante
