@@ -131,23 +131,25 @@ public:
     EdgeID getPreviousEdgeVertexShell(PointID vertexIndex, EdgeID edgeIndex);
 
 
-    /** \brief: Return a vector of TriangleID which are on a border. I.e which have at least
-     * one edge not adjacent to an other Triangle.
-     * To Do: For the moment use TriangleEdgeShellArray(), check if has to be reimplemented in an other way
+    /** \brief: Return a vector of TriangleID which are on a border.
+     * @see createElementsOnBorder()
      */
-    sofa::helper::vector <TriangleID> getTrianglesBorder();
+    const sofa::helper::vector <TriangleID>& getTrianglesOnBorder();
 
 
-    /** \brief: Return a vector of EdgeID which are on a border. I.e which are adjacent to only one Triangle.
-     * To Do: For the moment use TriangleEdgeShellArray(), check if has to be reimplemented in an other way
+    /** \brief: Return a vector of EdgeID which are on a border.
+     * @see createElementsOnBorder()
      */
-    sofa::helper::vector <EdgeID> getEdgesBorder();
+    const sofa::helper::vector <EdgeID>& getEdgesOnBorder();
 
 
-    /** \brief: Return a vector of PointID which are on a border. I.e which are adjacent to only one Triangle.
-     * To Do: For the moment use TriangleEdgeShellArray(), check if has to be reimplemented in an other way
+    /** \brief: Return a vector of PointID which are on a border.
+     * @see createElementsOnBorder()
      */
-    sofa::helper::vector <PointID> getPointsBorder();
+    const sofa::helper::vector <PointID>& getPointsOnBorder();
+
+
+    bool hasBorderElementLists() const;
 
 protected:
 
@@ -190,8 +192,27 @@ protected:
      */
     virtual void createTriangleEdgeShellArray();
 
+    /** \brief: Create element lists which are on topology border:
+     * - A vector of TriangleID @see m_trianglesOnBorder. ( I.e which have at least: one edge not adjacent
+     to an other Triangle)
+     * - A vector of EdgeID @see m_edgesOnBorder. (I.e which are adjacent to only one Triangle)
+     * - A vector of PointID @see m_pointsOnBorder. (I.e which are part of only one Triangle)
+     * To Do: For the moment use TriangleEdgeShellArray() in the container. To be moved in a mapping class
+     */
+    void createElementsOnBorder();
+
 
 private:
+
+    /// Set of triangle indices on topology border
+    sofa::helper::vector <TriangleID> m_trianglesOnBorder;
+
+    /// Set of edge indices on topology border
+    sofa::helper::vector <EdgeID> m_edgesOnBorder;
+
+    /// Set of point indices on topology border
+    sofa::helper::vector <PointID> m_pointsOnBorder;
+
 
     /** \brief Returns a non-const triangle vertex shell given a vertex index for subsequent modification
      *
