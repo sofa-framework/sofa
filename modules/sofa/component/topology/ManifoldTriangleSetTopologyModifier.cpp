@@ -161,7 +161,6 @@ void ManifoldTriangleSetTopologyModifier::createRemovingEdgesFutureModifications
 bool ManifoldTriangleSetTopologyModifier::testRemovingModifications()
 {
     std::map< unsigned int, sofa::helper::vector<unsigned int> >::iterator it;
-    m_container->createElementsOnBorder();
     const sofa::helper::vector <PointID>& border = m_container->getPointsOnBorder();
 
     unsigned int connexite;
@@ -237,6 +236,9 @@ void ManifoldTriangleSetTopologyModifier::removeTrianglesPostProcessing(const so
     updateRemovingModifications( edgeToBeRemoved, vertexToBeRemoved); // Update the modifications regarding isolate edges and vertex
 
     reorderEdgeForRemoving(); // reorder edges according to the triangleEdgeShellArray. Needed for edges on the "new" border.
+
+    if (m_container->hasBorderElementLists()) // Update the list of border elements if it has been created before modifications
+        m_container->createElementsOnBorder();
 }
 
 
@@ -666,6 +668,9 @@ void ManifoldTriangleSetTopologyModifier::addTrianglesPostProcessing(const sofa:
 
 
     m_Addmodifications.clear();
+
+    if (m_container->hasBorderElementLists()) // Update the list of border elements if it has been created before modifications
+        m_container->createElementsOnBorder();
 }
 
 
