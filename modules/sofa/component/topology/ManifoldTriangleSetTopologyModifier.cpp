@@ -64,7 +64,7 @@ void ManifoldTriangleSetTopologyModifier::reinit()
 }
 
 
-bool ManifoldTriangleSetTopologyModifier::removeTrianglesPreconditions(sofa::helper::vector< unsigned int >& items)
+bool ManifoldTriangleSetTopologyModifier::removeTrianglesPreconditions(const sofa::helper::vector< unsigned int >& items)
 {
     createRemovingTrianglesFutureModifications (items); // Create the map of modification for triangles
     createRemovingEdgesFutureModifications (items); // Create the map of modification for the edges
@@ -74,7 +74,7 @@ bool ManifoldTriangleSetTopologyModifier::removeTrianglesPreconditions(sofa::hel
 
 
 
-void ManifoldTriangleSetTopologyModifier::createRemovingTrianglesFutureModifications(sofa::helper::vector< unsigned int >& items)
+void ManifoldTriangleSetTopologyModifier::createRemovingTrianglesFutureModifications(const sofa::helper::vector< unsigned int >& items)
 {
     Triangle vertexTriangle;
     sofa::helper::vector<unsigned int> triangleVertexShell;
