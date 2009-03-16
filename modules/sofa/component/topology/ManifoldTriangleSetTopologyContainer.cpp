@@ -24,12 +24,7 @@
 ******************************************************************************/
 #include <sofa/component/topology/ManifoldTriangleSetTopologyContainer.h>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/component/container/MechanicalObject.inl>
-//#include <sofa/defaulttype/VecTypes.h>
-
-#include <sofa/component/container/MeshLoader.h>
-//#include <sofa/helper/gl/template.h>
-#include <sofa/helper/gl/glText.inl>
+//#include <sofa/component/container/MeshLoader.h>
 
 namespace sofa
 {
@@ -666,7 +661,7 @@ void ManifoldTriangleSetTopologyContainer::createTriangleEdgeShellArray()
 
 
 
-int ManifoldTriangleSetTopologyContainer::getNextTriangleVertexShell(PointID vertexIndex, TriangleID triangleIndex)
+TriangleID ManifoldTriangleSetTopologyContainer::getNextTriangleVertexShell(PointID vertexIndex, TriangleID triangleIndex)
 {
 
     if(!hasTriangleVertexShell())	// this method should only be called when the shell array exists
@@ -739,7 +734,7 @@ int ManifoldTriangleSetTopologyContainer::getNextTriangleVertexShell(PointID ver
 
 
 
-int ManifoldTriangleSetTopologyContainer::getPreviousTriangleVertexShell(PointID vertexIndex, TriangleID triangleIndex)
+TriangleID ManifoldTriangleSetTopologyContainer::getPreviousTriangleVertexShell(PointID vertexIndex, TriangleID triangleIndex)
 {
 
     if(!hasTriangleVertexShell())	// this method should only be called when the shell array exists
@@ -812,7 +807,7 @@ int ManifoldTriangleSetTopologyContainer::getPreviousTriangleVertexShell(PointID
 
 
 
-int ManifoldTriangleSetTopologyContainer::getOppositeTriangleEdgeShell(EdgeID edgeIndex, TriangleID triangleIndex)
+TriangleID ManifoldTriangleSetTopologyContainer::getOppositeTriangleEdgeShell(EdgeID edgeIndex, TriangleID triangleIndex)
 {
 
     if(!hasTriangleEdgeShell())	// this method should only be called when the shell array exists
@@ -877,7 +872,7 @@ int ManifoldTriangleSetTopologyContainer::getOppositeTriangleEdgeShell(EdgeID ed
 
 
 
-int ManifoldTriangleSetTopologyContainer::getNextEdgeVertexShell(PointID vertexIndex, EdgeID edgeIndex)
+EdgeID ManifoldTriangleSetTopologyContainer::getNextEdgeVertexShell(PointID vertexIndex, EdgeID edgeIndex)
 {
 
     if(!hasEdgeVertexShell())	// this method should only be called when the shell array exists
@@ -973,7 +968,7 @@ int ManifoldTriangleSetTopologyContainer::getNextEdgeVertexShell(PointID vertexI
 
 
 
-int ManifoldTriangleSetTopologyContainer::getPreviousEdgeVertexShell(PointID vertexIndex, EdgeID edgeIndex)
+EdgeID ManifoldTriangleSetTopologyContainer::getPreviousEdgeVertexShell(PointID vertexIndex, EdgeID edgeIndex)
 {
 
     if(!hasEdgeVertexShell())	// this method should only be called when the shell array exists
@@ -1267,207 +1262,6 @@ sofa::helper::vector< unsigned int > &ManifoldTriangleSetTopologyContainer::getE
     return m_edgeVertexShell[i];
 }
 
-
-
-
-
-void ManifoldTriangleSetTopologyContainer::reorderingEdge(const unsigned int edgeIndex)
-{
-
-    if(hasEdges() && hasTriangleEdgeShell())
-    {
-        Edge the_edge = m_edge[edgeIndex];
-        unsigned int triangleIndex, edgeIndexInTriangle;
-        TriangleEdges TriangleEdgeArray;
-        Triangle TriangleVertexArray;
-
-        if (m_triangleEdgeShell[edgeIndex].empty())
-        {
-#ifndef NDEBUG
-            std::cout << "Warning. [ManifoldTriangleSetTopologyContainer::reorderingEdge]: shells required have not beeen created " << std::endl;
-            return;
-#endif
-        }
-
-        triangleIndex = m_triangleEdgeShell[edgeIndex][0];
-        TriangleEdgeArray = getTriangleEdge( triangleIndex);
-        TriangleVertexArray = m_triangle[triangleIndex];
-
-        edgeIndexInTriangle = getEdgeIndexInTriangle(TriangleEdgeArray, edgeIndex);
-
-        m_edge[edgeIndex][0] = TriangleVertexArray[ (edgeIndexInTriangle+1)%3 ];
-        m_edge[edgeIndex][1] = TriangleVertexArray[ (edgeIndexInTriangle+2)%3 ];
-
-    }
-    else
-    {
-#ifndef NDEBUG
-        std::cout << "Warning. [ManifoldTriangleSetTopologyContainer::reorderingEdge]: shells required have not beeen created " << std::endl;
-#endif
-    }
-
-}
-
-
-void ManifoldTriangleSetTopologyContainer::reorderingTriangleVertexShell (const unsigned int vertexIndex)
-{
-    std::cout << "ManifoldTriangleSetTopologyContainer::reorderingTriangleVertexShell()" << std::endl;
-    //To be added eventually
-    (void)vertexIndex;
-}
-
-
-void ManifoldTriangleSetTopologyContainer::reorderingEdgeVertexShell (const unsigned int vertexIndex)
-{
-    std::cout << "ManifoldTriangleSetTopologyContainer::reorderingEdgeVertexShell()" << std::endl;
-    //To be added eventually
-    (void)vertexIndex;
-}
-
-
-void ManifoldTriangleSetTopologyContainer::reorderingTopologyOnROI (const sofa::helper::vector <unsigned int>& listVertex)
-{
-
-    //To use this function, all shells sould have already been created.
-
-    //Finding edges concerned
-    for (unsigned int vertexIndex = 0; vertexIndex < listVertex.size(); vertexIndex++)
-    {
-        sofa::helper::vector <unsigned int>& edgeVertexShell = getEdgeVertexShellForModification( listVertex[vertexIndex] );
-        sofa::helper::vector <unsigned int>& triangleVertexShell = getTriangleVertexShellForModification( listVertex[vertexIndex] );
-
-        sofa::helper::vector <unsigned int>::iterator it;
-        sofa::helper::vector < sofa::helper::vector <unsigned int> > vertexTofind;
-
-        sofa::helper::vector <unsigned int> goodEdgeShell;
-        sofa::helper::vector <unsigned int> goodTriangleShell;
-
-        unsigned int firstVertex =0;
-        unsigned int secondVertex =0;
-        unsigned int cpt = 0;
-
-
-        vertexTofind.resize (triangleVertexShell.size());
-
-
-        // Path to follow creation
-        for (unsigned int triangleIndex = 0; triangleIndex < triangleVertexShell.size(); triangleIndex++)
-        {
-            Triangle vertexTriangle = m_triangle[ triangleVertexShell[triangleIndex] ];
-
-            vertexTofind[triangleIndex].push_back( vertexTriangle[ ( getVertexIndexInTriangle(vertexTriangle, listVertex[vertexIndex] )+1 )%3 ]);
-            vertexTofind[triangleIndex].push_back( vertexTriangle[ ( getVertexIndexInTriangle(vertexTriangle, listVertex[vertexIndex] )+2 )%3 ]);
-        }
-
-        firstVertex = vertexTofind[0][0];
-        secondVertex = vertexTofind[0][1];
-
-        goodTriangleShell.push_back(triangleVertexShell[0]);
-        goodEdgeShell.push_back(edgeVertexShell[0]);
-
-
-        bool testFind = false;
-        bool reverse = false;
-        cpt = 0;
-
-        // Start following path
-        for (unsigned int triangleIndex = 1; triangleIndex < triangleVertexShell.size(); triangleIndex++)
-        {
-            for (unsigned int pathIndex = 1; pathIndex < triangleVertexShell.size(); pathIndex++)
-            {
-
-                if (vertexTofind[pathIndex][0] == secondVertex)
-                {
-                    goodTriangleShell.push_back(triangleVertexShell[pathIndex]);
-
-                    int the_edge = getEdgeIndex ( listVertex [vertexIndex], vertexTofind[pathIndex][0]);
-                    if (the_edge == -1)
-                        the_edge = getEdgeIndex ( vertexTofind[pathIndex][0], listVertex [vertexIndex]);
-                    goodEdgeShell.push_back(the_edge);
-
-                    secondVertex = vertexTofind[pathIndex][1];
-
-                    testFind = true;
-                    break;
-                }
-            }
-
-            if (!testFind) //tetra has not be found, this mean we reach a border, we reverse the method
-            {
-                reverse = true;
-                break;
-            }
-
-            cpt++;
-            testFind =false;
-        }
-
-        // Reverse path following methode
-        if(reverse)
-        {
-#ifndef NDEBUG
-            std::cout << "shell on border: "<< vertexIndex << std::endl;
-#endif
-            for (unsigned int triangleIndex = cpt+1; triangleIndex<triangleVertexShell.size(); triangleIndex++)
-            {
-                for (unsigned int pathIndex = 0; pathIndex<triangleVertexShell.size(); pathIndex++)
-                {
-
-                    if (vertexTofind[pathIndex][1] == firstVertex)
-                    {
-                        goodTriangleShell.insert (goodTriangleShell.begin(),triangleVertexShell[pathIndex]);
-
-                        int the_edge = getEdgeIndex ( listVertex [vertexIndex], vertexTofind[pathIndex][1]);
-                        if (the_edge == -1)
-                            the_edge = getEdgeIndex ( vertexTofind[pathIndex][1], listVertex [vertexIndex]);
-                        goodEdgeShell.insert (goodEdgeShell.begin(),the_edge);
-
-                        firstVertex = vertexTofind[pathIndex][0];
-                        break;
-                    }
-                }
-            }
-        }
-
-        for (unsigned int i = 0; i<vertexTofind.size(); i++)
-        {
-            for (unsigned int j = vertexIndex; j <listVertex.size(); j++)
-            {
-                if (vertexTofind[i][0] == listVertex[j])
-                {
-                    int the_edge = getEdgeIndex ( listVertex [vertexIndex], listVertex [j]);
-
-                    if (the_edge == -1)
-                        the_edge = getEdgeIndex ( listVertex [j], listVertex [vertexIndex]);
-
-                    reorderingEdge (the_edge);
-                }
-            }
-        }
-
-
-        if (edgeVertexShell.size() != triangleVertexShell.size()) //border case
-        {
-            unsigned int vertex = vertexTofind[triangleVertexShell.size()-1][1];
-            int the_edge = getEdgeIndex ( listVertex [vertexIndex], vertex);
-
-            if (the_edge == -1)
-                the_edge = getEdgeIndex ( vertex, listVertex [vertexIndex]);
-
-            goodEdgeShell.push_back(the_edge);
-
-            reorderingEdge(the_edge);
-        }
-
-
-        edgeVertexShell = goodEdgeShell;
-        goodEdgeShell.clear();
-        vertexTofind.clear();
-
-        triangleVertexShell = goodTriangleShell;
-        goodTriangleShell.clear();
-    }
-}
 
 } // namespace topology
 
