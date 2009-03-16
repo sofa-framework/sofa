@@ -52,6 +52,7 @@ function svncopy_process_dir {
     elif [ ! -d "$DEST/$1" ]; then
         echo Copy and SVN add directory $1
         cp -prf "$SOURCE/$1" "$DEST/$1" || read -p "Press Enter to continue, or Ctrl-C to cancel." || exit 1
+	find "$DEST/$1" -name .svn -prune -exec rm -rf '{}' ';'
         $SVN add "$DEST/$1" || read -p "Press Enter to continue, or Ctrl-C to cancel." || exit 1
     else
 	cd "$SOURCE/$1"
