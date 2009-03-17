@@ -676,73 +676,124 @@ void SparseGridTopology::voxelizeTriangleMesh(helper::io::Mesh* mesh,
     //             }
 
 
-    for(int i=0; i<regularGrid.getNbHexas(); ++i) // all possible cubes (even empty)
+
+
+    const helper::vector< Vector3 >& vertices = mesh->getVertices();
+    const unsigned int vertexSize = vertices.size();
+    helper::vector< int > verticesHexa(vertexSize);
+    helper::vector< bool > facetDone;
+    Vector3 delta = (regularGrid.getDx() + regularGrid.getDy() + regularGrid.getDz()) / 2;
+
+    // Compute the grid element for each mesh vertex
+    for (unsigned int i = 0; i < vertexSize; ++i)
     {
-        Hexa c = regularGrid.getHexaCopy(i);
-        CubeCorners corners;
-        for(int j=0; j<8; ++j)
-            corners[j] = regularGrid.getPoint( c[j] );
-
-        //               CubeForIntersection cubeForIntersection( corners );
-        //
-        //               for(std::set< SegmentForIntersection,ltSegmentForIntersection >::iterator it=segmentsForIntersection.begin();it!=segmentsForIntersection.end();++it)
-        //                 {
-        //                   if(intersectionSegmentBox( *it, cubeForIntersection ))
-        //                   {
-        //                     _types.push_back(BOUNDARY);
-        // 					regularGridTypes[i]=BOUNDARY;
-        //
-        //                     for(int k=0;k<8;++k)
-        //                       cubeCornerPositionIndiceMap[corners[k]] = 0;
-        //
-        // 					cubeCorners.push_back(corners);
-        // 					_indicesOfRegularCubeInSparseGrid[i] = cubeCorners.size()-1;
-        //
-        //                     break;
-        //                   }
-        //                 }
-
-#ifdef SOFA_NEW_HEXA
-        Vector3 cubeDiagonal = corners[6] - corners[0];
-#else
-        Vector3 cubeDiagonal = corners[7] - corners[0];
-#endif
-        Vector3 cubeCenter = corners[0] + cubeDiagonal*.5;
-
-
-        bool notAlreadyIntersected = true;
-
-        const helper::vector< helper::vector < helper::vector <int> > >& facets = mesh->getFacets();
-        const helper::vector<Vector3>& vertices = mesh->getVertices();
-        for (unsigned int f=0; f<facets.size() && notAlreadyIntersected; f++)
+        const Vector3& vertex = vertices[i];
+        int index = regularGrid.findHexa(vertex);
+        if (index > 0)
+            regularGridTypes[index] = BOUNDARY;
+        if (index == -1)
         {
-            const helper::vector<int>& facet = facets[f][0];
-            for (unsigned int j=2; j<facet.size()&& notAlreadyIntersected; j++) // Triangularize
+            Vector3 vertex2 = vertex;
+            const Vector3 gmin = regularGrid.getMin();
+            const Vector3 gmax = regularGrid.getMax();
+
+            if (vertex2[0] < gmin[0])
+                vertex2[0] = gmin[0];
+            else if (vertex2[0] > gmax[0])
+                vertex2[0] = gmax[0] - delta[0];
+
+            if (vertex2[1] < gmin[1])
+                vertex2[1] = gmin[1];
+            else if (vertex2[1] > gmax[1])
+                vertex2[1] = gmax[1] - delta[1];
+
+            if (vertex2[2] < gmin[2])
+                vertex2[2] = gmin[2];
+            else if (vertex2[2] > gmax[2])
+                vertex2[2] = gmax[2] - delta[2];
+
+            index = regularGrid.findHexa(vertex2);
+        }
+
+        verticesHexa[i] = index;
+    }
+
+
+    // For each triangle, compute BBox and test each element in bb if needed
+    const helper::vector< helper::vector < helper::vector <int> > >& facets = mesh->getFacets();
+
+    for (unsigned int f=0; f<facets.size(); f++)
+    {
+        const helper::vector<int>& facet = facets[f][0];
+        for (unsigned int j=2; j<facet.size(); j++) // Triangularize
+        {
+            int c0 = verticesHexa[facet[0]];
+            int c1 = verticesHexa[facet[j-1]];
+            int c2 = verticesHexa[facet[j]];
+            if((c0==c1)&&(c0==c2)&&(c0!=-1)) // All vertices in same box discard now if possible
             {
-                const Vector3& A = vertices[facet[0]];
-                const Vector3& B = vertices[facet[j-1]];
-                const Vector3& C = vertices[facet[j]];
+                if(regularGridTypes[c0]==BOUNDARY)
+                    continue;
+            }
+            // Compute box
+            const Vector3 i0 = regularGrid.getCubeCoordinate(c0);
+            const Vector3 i1 = regularGrid.getCubeCoordinate(c1);
+            const Vector3 i2 = regularGrid.getCubeCoordinate(c2);
+            const Vector3 iMin(std::min(i0[0],std::min(i1[0],i2[0])),
+                    std::min(i0[1],std::min(i1[1],i2[1])),
+                    std::min(i0[2],std::min(i1[2],i2[2])));
+            const Vector3 iMax(std::max(i0[0],std::max(i1[0],i2[0])),
+                    std::max(i0[1],std::max(i1[1],i2[1])),
+                    std::max(i0[2],std::max(i1[2],i2[2])));
 
-                // Scale the triangle to the unit cube matching
-                float points[3][3];
-                for (unsigned short w=0; w<3; ++w)
+            for(unsigned int x=(unsigned int)iMin[0]; x<=(unsigned int)iMax[0]; ++x)
+            {
+                for(unsigned int y=(unsigned int)iMin[1]; y<=(unsigned int)iMax[y]; ++y)
                 {
-                    points[0][w] = (float) ((A[w]-cubeCenter[w])/cubeDiagonal[w]);
-                    points[1][w] = (float) ((B[w]-cubeCenter[w])/cubeDiagonal[w]);
-                    points[2][w] = (float) ((C[w]-cubeCenter[w])/cubeDiagonal[w]);
-                }
+                    for(unsigned int z=(unsigned int)iMin[2]; z<=(unsigned int)iMax[2]; ++z)
+                    {
+                        // if already inserted discard
+                        unsigned int index = regularGrid.getCubeIndex(x,y,z);
+                        if(regularGridTypes[index]==BOUNDARY)
+                            continue;
 
-                float normal[3];
-                helper::polygon_cube_intersection::get_polygon_normal(normal,3,points);
+                        Hexa c = regularGrid.getHexaCopy(i);
+                        CubeCorners corners;
+                        for(int k=0; k<8; ++k)
+                            corners[k] = regularGrid.getPoint( c[k] );
+#ifdef SOFA_NEW_HEXA
+                        Vector3 cubeDiagonal = corners[6] - corners[0];
+#else
+                        Vector3 cubeDiagonal = corners[7] - corners[0];
+#endif
+                        Vector3 cubeCenter = corners[0] + cubeDiagonal*.5;
 
-                if (helper::polygon_cube_intersection::fast_polygon_intersects_cube(3,points,normal,0,0))
-                {
-                    regularGridTypes[i]=BOUNDARY;
-                    notAlreadyIntersected=false;
+                        const Vector3& A = vertices[facet[0]];
+                        const Vector3& B = vertices[facet[j-1]];
+                        const Vector3& C = vertices[facet[j]];
+
+                        // Scale the triangle to the unit cube matching
+                        float points[3][3];
+                        for (unsigned short w=0; w<3; ++w)
+                        {
+                            points[0][w] = (float) ((A[w]-cubeCenter[w])/cubeDiagonal[w]);
+                            points[1][w] = (float) ((B[w]-cubeCenter[w])/cubeDiagonal[w]);
+                            points[2][w] = (float) ((C[w]-cubeCenter[w])/cubeDiagonal[w]);
+                        }
+
+                        float normal[3];
+                        helper::polygon_cube_intersection::get_polygon_normal(normal,3,points);
+
+                        if (helper::polygon_cube_intersection::fast_polygon_intersects_cube(3,points,normal,0,0))
+                        {
+                            regularGridTypes[index]=BOUNDARY;
+                        }
+                    }
                 }
             }
         }
     }
+
 
 
     // TODO: regarder les cellules pleines, et les ajouter
