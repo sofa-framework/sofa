@@ -757,7 +757,7 @@ void SparseGridTopology::voxelizeTriangleMesh(helper::io::Mesh* mesh,
                         if(regularGridTypes[index]==BOUNDARY)
                             continue;
 
-                        Hexa c = regularGrid.getHexaCopy(i);
+                        Hexa c = regularGrid.getHexaCopy(index);
                         CubeCorners corners;
                         for(int k=0; k<8; ++k)
                             corners[k] = regularGrid.getPoint( c[k] );
