@@ -36,10 +36,11 @@
 #include <qwidget.h>
 #include <qpainter.h>
 #include <qtable.h>
-typedef QTableWidget QTable;
-typedef QTableWidgetItem QTableItem;
+typedef QTable QTableWidget;
+typedef QTableItem QTableWidgetItem;
 #endif
 
+#include <vector>
 
 namespace sofa
 {

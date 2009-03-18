@@ -121,7 +121,11 @@ ChartsWidget::ChartsWidget(QWidget *parent): QWidget(parent)
 
 void ChartsWidget::clear()
 {
+#ifdef SOFA_QT4
     int rows=table->rowCount();
+#else
+    int rows=table->numRows();
+#endif
     for (int i=0; i<rows; ++i) table->removeRow(0);
     pie->clear();
 }
@@ -133,7 +137,11 @@ void ChartsWidget::setChart( std::vector< dataTime >& value, unsigned int s)
     selection=s;
     for (unsigned int i=0; i<value.size() && i<selection; ++i)
     {
+#ifdef SOFA_QT4
         table->insertRow(i);
+#else
+        table->insertRows(i);
+#endif
 
         QColor color(100*(i%6 == 2)+255*(i%6 == 0 || i%6 == 3 || i%6 == 4)/(1+(0.4*i/6)),
                 100*(i%6 == 2)+255*(i%6 == 1 || i%6 == 3 || i%6 == 5)/(1+(0.4*i/6)),
@@ -164,16 +172,16 @@ void ChartsWidget::setChart( std::vector< dataTime >& value, unsigned int s)
         item->setFlags(Qt::NoItemFlags);
         itemTime->setFlags(Qt::NoItemFlags);
 #else
-        QTableWidgetItem *item = new QTableWidgetItem(table);
+        QTableWidgetItem *item = new QTableWidgetItem(table, QTableItem::Never);
         QPixmap p(10,10); p.fill(color);
         item->setPixmap(p);
-        QTableWidgetItem *itemTime = new QTableWidgetItem(table);
+        QTableWidgetItem *itemTime = new QTableWidgetItem(table, QTableItem::Never);
         item->setText(text);
         table->setItem(i,0, item);
         itemTime->setText(time);
         table->setItem(i,1, itemTime);
-        item->setEnabled(false);
-        itemTime->setEnabled(false);
+//               item->setEnabled(false);
+//               itemTime->setEnabled(false);
 #endif
     }
     this->update();
