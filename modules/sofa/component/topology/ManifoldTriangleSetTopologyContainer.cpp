@@ -661,7 +661,7 @@ void ManifoldTriangleSetTopologyContainer::createTriangleEdgeShellArray()
 
 
 
-TriangleID ManifoldTriangleSetTopologyContainer::getNextTriangleVertexShell(PointID vertexIndex, TriangleID triangleIndex)
+int ManifoldTriangleSetTopologyContainer::getNextTriangleVertexShell(PointID vertexIndex, TriangleID triangleIndex)
 {
 
     if(!hasTriangleVertexShell())	// this method should only be called when the shell array exists
@@ -734,7 +734,7 @@ TriangleID ManifoldTriangleSetTopologyContainer::getNextTriangleVertexShell(Poin
 
 
 
-TriangleID ManifoldTriangleSetTopologyContainer::getPreviousTriangleVertexShell(PointID vertexIndex, TriangleID triangleIndex)
+int ManifoldTriangleSetTopologyContainer::getPreviousTriangleVertexShell(PointID vertexIndex, TriangleID triangleIndex)
 {
 
     if(!hasTriangleVertexShell())	// this method should only be called when the shell array exists
@@ -807,7 +807,7 @@ TriangleID ManifoldTriangleSetTopologyContainer::getPreviousTriangleVertexShell(
 
 
 
-TriangleID ManifoldTriangleSetTopologyContainer::getOppositeTriangleEdgeShell(EdgeID edgeIndex, TriangleID triangleIndex)
+int ManifoldTriangleSetTopologyContainer::getOppositeTriangleEdgeShell(EdgeID edgeIndex, TriangleID triangleIndex)
 {
 
     if(!hasTriangleEdgeShell())	// this method should only be called when the shell array exists
@@ -872,7 +872,7 @@ TriangleID ManifoldTriangleSetTopologyContainer::getOppositeTriangleEdgeShell(Ed
 
 
 
-EdgeID ManifoldTriangleSetTopologyContainer::getNextEdgeVertexShell(PointID vertexIndex, EdgeID edgeIndex)
+int ManifoldTriangleSetTopologyContainer::getNextEdgeVertexShell(PointID vertexIndex, EdgeID edgeIndex)
 {
 
     if(!hasEdgeVertexShell())	// this method should only be called when the shell array exists
@@ -968,7 +968,7 @@ EdgeID ManifoldTriangleSetTopologyContainer::getNextEdgeVertexShell(PointID vert
 
 
 
-EdgeID ManifoldTriangleSetTopologyContainer::getPreviousEdgeVertexShell(PointID vertexIndex, EdgeID edgeIndex)
+int ManifoldTriangleSetTopologyContainer::getPreviousEdgeVertexShell(PointID vertexIndex, EdgeID edgeIndex)
 {
 
     if(!hasEdgeVertexShell())	// this method should only be called when the shell array exists
