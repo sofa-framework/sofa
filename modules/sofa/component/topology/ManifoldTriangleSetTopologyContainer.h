@@ -93,7 +93,7 @@ public:
      * @return -1 if there is no adjacent triangle in this direction.
      * @return -2 if the vertex does not belongs to this Triangle or if there is an other error.
      */
-    TriangleID getNextTriangleVertexShell(PointID vertexIndex, TriangleID triangleIndex);
+    int getNextTriangleVertexShell(PointID vertexIndex, TriangleID triangleIndex);
 
 
     /** \brief: Given a Triangle and a Vertex i, returns the next adjacent triangle to this first one
@@ -102,7 +102,7 @@ public:
      * @return -1 if there is no adjacent triangle in this direction
      * @return -2 if the vertex does not belongs to this Triangle or if there is an other error.
      */
-    TriangleID getPreviousTriangleVertexShell(PointID vertexIndex, TriangleID triangleIndex);
+    int getPreviousTriangleVertexShell(PointID vertexIndex, TriangleID triangleIndex);
 
 
     /** \brief: Given a Triangle and a Edge i, returns the other adjacent triangle to the ith edge.
@@ -110,7 +110,7 @@ public:
      * @return -1 if there is only one triangle adjacent to this edge.
      * @return -2 if the edge does not belongs to this Triangle or if there is an other error.
      */
-    TriangleID getOppositeTriangleEdgeShell(EdgeID edgeIndex, TriangleID triangleIndex);
+    int getOppositeTriangleEdgeShell(EdgeID edgeIndex, TriangleID triangleIndex);
 
 
     /** \brief: Given a Edge and a Vertex i, returns the next edge containing the ith vertex
@@ -119,7 +119,7 @@ public:
      * return -1 if there is adjacent no triangle in this direction
      * return -2 if the vertex does not belongs to the edge or if there is an other error.
      */
-    EdgeID getNextEdgeVertexShell(PointID vertexIndex, EdgeID edgeIndex);
+    int getNextEdgeVertexShell(PointID vertexIndex, EdgeID edgeIndex);
 
 
     /** \brief: Given a Edge and a Vertex i, returns the next edge containing the ith vertex
@@ -128,7 +128,7 @@ public:
      * return -1 if there is no triangle in this direction
      * return -2 if the vertex does not belongs to the edge or if there is an other error.
      */
-    EdgeID getPreviousEdgeVertexShell(PointID vertexIndex, EdgeID edgeIndex);
+    int getPreviousEdgeVertexShell(PointID vertexIndex, EdgeID edgeIndex);
 
 
     /** \brief: Return a vector of TriangleID which are on a border.
