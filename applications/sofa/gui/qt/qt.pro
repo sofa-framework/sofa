@@ -54,6 +54,7 @@ HEADERS += viewer/SofaViewer.h \
            WindowVisitor.h \
            FileManagement.h \
            SofaPluginManager.h \
+           PieWidget.h \
            ImageQt.h
 
 SOURCES += Main.cpp \
@@ -74,6 +75,7 @@ SOURCES += Main.cpp \
            WindowVisitor.cpp \
            FileManagement.cpp \
            SofaPluginManager.cpp \
+           PieWidget.cpp \
            ImageQt.cpp
 
 
