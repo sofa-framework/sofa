@@ -44,7 +44,7 @@ using namespace core::componentmodel::behavior;
 SOFA_DECL_CLASS(ArticulatedSystemMapping)
 
 // Register in the Factory
-int ArticulatedSystemMappingClass = core::RegisterObject("")
+int ArticulatedSystemMappingClass = core::RegisterObject("Mapping between a set of 6D DOF's and a set of angles (µ) using an articulated hierarchy container. ")
 
 #ifndef SOFA_FLOAT
         .add< ArticulatedSystemMapping< MechanicalMapping< MechanicalState<Vec1dTypes>, MechanicalState<Rigid3dTypes> > > >()
