@@ -1084,14 +1084,21 @@ void QtGLViewer::wheelEvent(QWheelEvent* e)
 
 void QtGLViewer::moveRayPickInteractor(int eventX, int eventY)
 {
-    Vec3d p0, px, py, pz;
-    gluUnProject(eventX, visualParameters.viewport[3]-1-(eventY), 0, lastModelviewMatrix, lastProjectionMatrix, visualParameters.viewport, &(p0[0]), &(p0[1]), &(p0[2]));
-    gluUnProject(eventX+1, visualParameters.viewport[3]-1-(eventY), 0, lastModelviewMatrix, lastProjectionMatrix, visualParameters.viewport, &(px[0]), &(px[1]), &(px[2]));
-    gluUnProject(eventX, visualParameters.viewport[3]-1-(eventY+1), 0, lastModelviewMatrix, lastProjectionMatrix, visualParameters.viewport, &(py[0]), &(py[1]), &(py[2]));
-    gluUnProject(eventX, visualParameters.viewport[3]-1-(eventY), 1, lastModelviewMatrix, lastProjectionMatrix, visualParameters.viewport, &(pz[0]), &(pz[1]), &(pz[2]));
+    Vec3d p0, px, py, pz, px1, py1;
+    gluUnProject(eventX,   visualParameters.viewport[3]-1-(eventY),   0,   lastModelviewMatrix, lastProjectionMatrix, visualParameters.viewport, &(p0[0]),  &(p0[1]),  &(p0[2]));
+    gluUnProject(eventX+1, visualParameters.viewport[3]-1-(eventY),   0,   lastModelviewMatrix, lastProjectionMatrix, visualParameters.viewport, &(px[0]),  &(px[1]),  &(px[2]));
+    gluUnProject(eventX,   visualParameters.viewport[3]-1-(eventY+1), 0,   lastModelviewMatrix, lastProjectionMatrix, visualParameters.viewport, &(py[0]),  &(py[1]),  &(py[2]));
+    gluUnProject(eventX,   visualParameters.viewport[3]-1-(eventY),   0.1, lastModelviewMatrix, lastProjectionMatrix, visualParameters.viewport, &(pz[0]),  &(pz[1]),  &(pz[2]));
+    gluUnProject(eventX+1, visualParameters.viewport[3]-1-(eventY),   0.1, lastModelviewMatrix, lastProjectionMatrix, visualParameters.viewport, &(px1[0]), &(px1[1]), &(px1[2]));
+    gluUnProject(eventX,   visualParameters.viewport[3]-1-(eventY+1), 0,   lastModelviewMatrix, lastProjectionMatrix, visualParameters.viewport, &(py1[0]), &(py1[1]), &(py1[2]));
+    px1 -= pz;
+    py1 -= pz;
     px -= p0;
     py -= p0;
     pz -= p0;
+    double r0 = sqrt(px.norm2() + py.norm2());
+    double r1 = sqrt(px1.norm2() + py1.norm2());
+    r1 = r0 + (r1-r0) / pz.norm();
     px.normalize();
     py.normalize();
     pz.normalize();
@@ -1111,9 +1118,8 @@ void QtGLViewer::moveRayPickInteractor(int eventX, int eventY)
     transform[2][3] = p0[2];
     Mat3x3d mat; mat = transform;
     Quat q; q.fromMatrix(mat);
-
-    //std::cout << p0[0]<<' '<<p0[1]<<' '<<p0[2] << " -> " << pz[0]<<' '<<pz[1]<<' '<<pz[2] << std::endl;
     interactor->newPosition(p0, q, transform);
+    interactor->setRayRadius(r0, r1);
 }
 
 // -------------------------------------------------------------------

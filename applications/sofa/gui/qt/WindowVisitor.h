@@ -29,14 +29,20 @@
 
 #include "VisitorGUI.h"
 
+#include "PieWidget.h"
+
 #ifdef SOFA_QT4
 #include <Q3ListViewItem>
 #include <Q3TextDrag>
 #include <QPixmap>
+#include <QTableWidget>
+#include <QComboBox>
 #else
 #include <qlistview.h>
 #include <qdragobject.h>
 #include <qpixmap.h>
+#include <qtable.h>
+#include <qcombobox.h>
 #endif
 
 
@@ -59,12 +65,19 @@ class WindowVisitor: public VisitorGUI
 {
     Q_OBJECT
 public:
-    enum typeComponent {NODE, COMMENT, COMPONENT, OTHER};
+    enum componentType {NODE, COMMENT, COMPONENT, VECTOR, OTHER};
     WindowVisitor();
 
     void collapseNode(Q3ListViewItem* item);
     void expandNode(Q3ListViewItem* item);
+
+    void setCharts(std::vector< dataTime >&latestC, std::vector< dataTime >&maxTC, std::vector< dataTime >&totalC,
+            std::vector< dataTime >&latestV, std::vector< dataTime >&maxTV, std::vector< dataTime >&totalV);
+
+
 public slots:
+    void setCurrentCharts(int);
+
 #ifdef SOFA_QT4
     void rightClick(Q3ListViewItem *, const QPoint &, int );
 #else
@@ -72,18 +85,62 @@ public slots:
 #endif
     void collapseNode();
     void expandNode();
-    static QPixmap* getPixmap(typeComponent t) {return icons[t];}
+
+    static componentType getComponentType(std::string name)
+    {
+        if (name == "Node")
+            return NODE;
+        else if (name == "Component")
+            return COMPONENT;
+        else if (name == "Vector")
+            return VECTOR;
+        else
+            return OTHER;
+    }
+
+    static QPixmap* getPixmap(componentType t) {return icons[t];}
+
     void closeEvent( QCloseEvent* )
     {
         emit(WindowVisitorClosed(false));
         hide();
     }
+
+
 public slots:
-    void clearGraph() {graphView->clear();}
+    void clearGraph()
+    {
+        graphView->clear();
+        chartsComponent->clear();
+        chartsVisitor->clear();
+
+        componentsTime.clear();
+        componentsTimeMax.clear();
+        componentsTimeTotal.clear();
+
+
+        visitorsTime.clear();
+        visitorsTimeMax.clear();
+        visitorsTimeTotal.clear();
+    }
+
 signals:
     void WindowVisitorClosed(bool);
 protected:
     static QPixmap *icons[OTHER+1];
+
+    std::vector< dataTime > componentsTime;
+    std::vector< dataTime > visitorsTime;
+
+    std::vector< dataTime > componentsTimeTotal;
+    std::vector< dataTime > visitorsTimeTotal;
+
+    std::vector< dataTime > componentsTimeMax;
+    std::vector< dataTime > visitorsTimeMax;
+
+    ChartsWidget *chartsComponent;
+    ChartsWidget *chartsVisitor;
+    QComboBox *typeOfCharts;
 };
 }
 }

@@ -8,7 +8,7 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>615</width>
+            <width>800</width>
             <height>453</height>
         </rect>
     </property>
@@ -19,7 +19,14 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QListView" row="0" column="0">
+        <widget class="QSplitter" row="0" column="0">
+          <property name="name">
+            <cstring>splitterStats</cstring>
+          </property>
+          <property name="orientation">
+            <enum>Horizontal</enum>
+          </property>
+          <widget class="QListView" row="0" column="0">
             <column>
                 <property name="text">
                     <string>Graph</string>
@@ -67,6 +74,7 @@
             <property name="name">
                 <cstring>graphView</cstring>
             </property>
+          </widget>
         </widget>
         <widget class="QPushButton" row="1" column="0">
             <property name="name">

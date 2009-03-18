@@ -24,29 +24,22 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GRAPHVISITOR_H
-#define SOFA_GRAPHVISITOR_H
+
+#ifndef SOFA_PIEWIDGET_H
+#define SOFA_PIEWIDGET_H
 
 #ifdef SOFA_QT4
-#include <Q3ListView>
-#include <Q3ListViewItem>
-#include <Q3TextDrag>
-#include <QPixmap>
+#include <QWidget>
+#include <QPainter>
+#include <QTableWidget>
 #else
-#include <qlistview.h>
-#include <qdragobject.h>
-#include <qpixmap.h>
+#include <qwidget.h>
+#include <qpainter.h>
+#include <qtable.h>
+typedef QTableWidget QTable;
+typedef QTableWidgetItem QTableItem;
 #endif
 
-#include "WindowVisitor.h"
-#include "PieWidget.h"
-
-//Tinyxml library
-#include <tinyxml.h>
-#include <tinystr.h>
-
-#include <iostream>
-#include <set>
 
 namespace sofa
 {
@@ -57,56 +50,56 @@ namespace gui
 namespace qt
 {
 
-#ifndef SOFA_QT4
-typedef QListView Q3ListView;
-typedef QListViewItem Q3ListViewItem;
-#endif
+struct  dataTime
+{
+    dataTime(double t, std::string n, std::string ty=std::string()):time(t), name(n), type(ty) {}
+    bool operator== (const dataTime& other)
+    {
+        return name == other.name && type == other.type;
+    }
+    double time;
+    std::string name;
+    std::string type;
+};
 
 
-class GraphVisitor
+
+
+class PieWidget: public QWidget
 {
 public:
-    GraphVisitor(WindowVisitor *w) { window=w; graph=w->graphView; totalTimeMax=-1;}
-    Q3ListViewItem *addNode(Q3ListViewItem *parent,Q3ListViewItem *elementAbove, std::string info);
-    Q3ListViewItem *addComment(Q3ListViewItem *element, Q3ListViewItem *elementAbove, std::string comment);
-    void addInformation(Q3ListViewItem *element, std::string name, std::string info);
-    void addTime(Q3ListViewItem *element, std::string info);
+    PieWidget(QWidget *parent);
 
-    bool load(std::string &file);
+    void paintEvent( QPaintEvent* );
 
-    void setGraph(Q3ListView* g) {graph = g;}
-    void clear() {graph->clear();}
-
-    double getTotalTime(TiXmlNode* node);
-
-
+    void setChart( std::vector< dataTime >& value, unsigned int s);
+    void clear();
 protected:
-    void openTime           ( TiXmlNode* element, Q3ListViewItem* item);
-    void openAttribute      ( TiXmlElement* element, Q3ListViewItem* item);
-    Q3ListViewItem* openNode( TiXmlNode* node, Q3ListViewItem* parent, Q3ListViewItem* elementAbove);
+    std::vector< dataTime > data;
 
-    Q3ListView *graph;
-    WindowVisitor *window;
-
+    unsigned int selection;
     double totalTime;
-    double totalTimeMax;
-
-    std::vector<double> timeComponentsBelow;
-    int level;
-
-    std::vector< dataTime > componentsTime;
-    std::vector< dataTime > visitorsTime;
-
-    std::vector< dataTime > componentsTimeTotal;
-    std::vector< dataTime > visitorsTimeTotal;
-
-    std::vector< dataTime > componentsTimeMax;
-    std::vector< dataTime > visitorsTimeMax;
-
-    std::vector< std::string > visitedNode;
+    int sizePie;
 };
-}
-}
-}
 
+class ChartsWidget: public QWidget
+{
+public:
+    ChartsWidget(QWidget *parent);
+
+
+    void setChart( std::vector< dataTime >& value, unsigned int s);
+    void clear();
+protected:
+
+    unsigned int selection;
+
+    PieWidget* pie;
+    QTableWidget *table;
+};
+
+
+}
+}
+}
 #endif

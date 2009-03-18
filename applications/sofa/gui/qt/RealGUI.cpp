@@ -27,6 +27,7 @@
 #include <sofa/gui/qt/RealGUI.h>
 #include <sofa/gui/qt/ImageQt.h>
 
+
 #ifdef SOFA_GUI_QTOGREVIEWER
 #include <sofa/gui/qt/viewer/qtogre/QtOgreViewer.h>
 #endif
@@ -108,6 +109,7 @@
 
 #include <GenGraphForm.h>
 
+#include <stdio.h>
 
 
 namespace sofa
@@ -609,7 +611,7 @@ void RealGUI::init()
     windowTraceVisitor->graphView->setSorting(-1);
     windowTraceVisitor->hide();
     connect(windowTraceVisitor, SIGNAL(WindowVisitorClosed(bool)), this->exportVisitorCheckbox, SLOT(setChecked(bool)));
-    handleTraceVisitor = new GraphVisitor(windowTraceVisitor->graphView);
+    handleTraceVisitor = new GraphVisitor(windowTraceVisitor);
 
     //--------
     pluginManager = new SofaPluginManager;
@@ -1396,6 +1398,7 @@ void RealGUI::stopDumpVisitor()
         m_dumpVisitorStream=0;
         //Creation of the graph
         if (!handleTraceVisitor->load(pathDumpVisitor)) std::cerr<< "Error while processing dumpVisitor.xml\n";
+        ::remove(pathDumpVisitor.c_str());
     }
 #endif
 }

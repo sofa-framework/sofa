@@ -25,7 +25,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "GraphVisitor.h"
-#include "WindowVisitor.h"
 
 #include <sstream>
 
@@ -33,6 +32,8 @@
 #include <tinyxmlerror.cpp>
 #include <tinystr.cpp>
 #include <tinyxmlparser.cpp>
+
+#include <algorithm>
 
 #ifndef SOFA_QT4
 typedef QListViewItem Q3ListViewItem;
@@ -46,6 +47,7 @@ namespace gui
 namespace qt
 {
 
+bool cmpTime(const dataTime &a, const dataTime &b) { return a.time > b.time;};
 bool GraphVisitor::load(std::string &file)
 {
     //Open it using TinyXML
@@ -63,7 +65,30 @@ bool GraphVisitor::load(std::string &file)
 
     totalTime = getTotalTime(pElem);
 
+    componentsTime.clear();
+    visitorsTime.clear();
+
+
     openNode( pElem, NULL, NULL);
+
+
+    std::sort(componentsTime.begin(),componentsTime.end(),cmpTime);
+    std::sort(visitorsTime.begin(),visitorsTime.end(),cmpTime);
+
+    std::sort(componentsTimeTotal.begin(),componentsTimeTotal.end(),cmpTime);
+    std::sort(visitorsTimeTotal.begin(),visitorsTimeTotal.end(),cmpTime);
+
+
+    if (totalTimeMax<totalTime)
+    {
+        totalTimeMax=totalTime;
+        componentsTimeMax=componentsTime;
+        visitorsTimeMax=visitorsTime;
+    }
+
+    //        window->pieChart->setChart(visitorsTime, visitorsTime.size());
+    window->setCharts(componentsTime,componentsTimeMax,componentsTimeTotal,
+            visitorsTime,visitorsTimeMax,visitorsTimeTotal);
     return true;
 }
 
@@ -82,17 +107,81 @@ void GraphVisitor::openAttribute      ( TiXmlElement* element, Q3ListViewItem* i
     }
 
 }
-void GraphVisitor::openTime      ( TiXmlElement* element, Q3ListViewItem* item)
+
+
+
+void GraphVisitor::openTime      ( TiXmlNode* node, Q3ListViewItem* item)
 {
+    TiXmlElement* element=node->ToElement();
     if (!element) return;
     TiXmlAttribute* attribute=element->FirstAttribute();
     std::string valueOfAttribute(attribute->Value());
-    double time = 100.0*atof(valueOfAttribute.c_str())/totalTime;
+    double timeSec=atof(valueOfAttribute.c_str());
+    double time = 100.0*timeSec/totalTime;
     std::ostringstream s;
     s.setf(std::ios::fixed, std::ios::floatfield);
     s.precision(3);
 
     s << time << "%";
+
+    TiXmlNode* parent = node->Parent();
+    if (parent)
+    {
+        std::string nodeType = parent->Value();
+        if (nodeType == "Component")
+        {
+            TiXmlAttribute* attribute=parent->ToElement()->FirstAttribute();
+            std::string componentName, componentType;
+            while (attribute)
+            {
+                std::string nameOfAttribute(attribute->Name());
+                std::string valueOfAttribute(attribute->Value());
+                if (nameOfAttribute=="name")
+                    componentName=valueOfAttribute;
+                else if (nameOfAttribute=="type")
+                    componentType=valueOfAttribute;
+                attribute=attribute->Next();
+            }
+            if (std::find(visitedNode.begin(), visitedNode.end(), componentName) == visitedNode.end())
+            {
+                dataTime t(timeSec-timeComponentsBelow[timeComponentsBelow.size()-1]
+                        , componentType, componentName);
+
+                std::vector< dataTime >::iterator it=std::find(componentsTime.begin(),componentsTime.end(),t);
+                if (it != componentsTime.end()) it->time += t.time;
+                else componentsTime.push_back(t);
+
+
+                it=std::find(componentsTimeTotal.begin(),componentsTimeTotal.end(),t);
+                if (it != componentsTimeTotal.end()) it->time += t.time;
+                else componentsTimeTotal.push_back(t);
+
+
+                visitedNode.push_back(componentName);
+            }
+        }
+        else
+        {
+            if (std::find(visitedNode.begin(), visitedNode.end(),nodeType) == visitedNode.end())
+            {
+                dataTime t(timeSec// -timeComponentsBelow[timeComponentsBelow.size()-1]
+                        , nodeType);
+                std::vector< dataTime >::iterator it=std::find(visitorsTime.begin(),visitorsTime.end(),t);
+                if (it != visitorsTime.end()) it->time += timeSec;
+                else visitorsTime.push_back(t);
+
+                it=std::find(visitorsTimeTotal.begin(),visitorsTimeTotal.end(),t);
+                if (it != visitorsTimeTotal.end()) it->time += t.time;
+                else visitorsTimeTotal.push_back(t);
+
+
+                visitedNode.push_back(nodeType);
+            }
+        }
+    }
+
+    timeComponentsBelow[timeComponentsBelow.size()-1] = timeSec;
+
     addTime(item,  s.str());
 }
 
@@ -116,6 +205,7 @@ Q3ListViewItem* GraphVisitor::openNode( TiXmlNode* node, Q3ListViewItem* parent,
 {
     if (!node) return NULL;
 
+    unsigned int sizeVisitedNode=visitedNode.size();
     std::string nameOfNode=node->Value();
     int typeOfNode=node->Type();
     Q3ListViewItem *graphNode=NULL;
@@ -127,7 +217,7 @@ Q3ListViewItem* GraphVisitor::openNode( TiXmlNode* node, Q3ListViewItem* parent,
     case TiXmlNode::ELEMENT:
         if (nameOfNode == "Time")
         {
-            openTime( node->ToElement(), parent);
+            openTime( node, parent);
         }
         else
         {
@@ -154,10 +244,19 @@ Q3ListViewItem* GraphVisitor::openNode( TiXmlNode* node, Q3ListViewItem* parent,
     }
 
     Q3ListViewItem *element=NULL;
+    timeComponentsBelow.push_back(0);
+
     for ( TiXmlNode* child = node->FirstChild(); child != 0; child = child->NextSibling())
     {
         element = openNode( child, graphNode, element);
     }
+    double t=timeComponentsBelow.back();
+
+    timeComponentsBelow.pop_back();
+
+    if (!timeComponentsBelow.empty()) timeComponentsBelow[timeComponentsBelow.size()-1] += t;
+
+    if (sizeVisitedNode != visitedNode.size()) visitedNode.resize(sizeVisitedNode);
     return graphNode;
 }
 
@@ -176,12 +275,8 @@ Q3ListViewItem *GraphVisitor::addNode(Q3ListViewItem *parent, Q3ListViewItem *el
         //Add a child to a node
         item=new Q3ListViewItem(parent,elementAbove, QString(name.c_str()));
     }
-    if (name == "Node")
-        item->setPixmap(0,*WindowVisitor::getPixmap(WindowVisitor::NODE));
-    else if (name == "Component")
-        item->setPixmap(0,*WindowVisitor::getPixmap(WindowVisitor::COMPONENT));
-    else if (name != "Vector")
-        item->setPixmap(0,*WindowVisitor::getPixmap(WindowVisitor::OTHER));
+    QPixmap*  icon=WindowVisitor::getPixmap(WindowVisitor::getComponentType(name));
+    if (icon) item->setPixmap(0,*icon);
     item->setMultiLinesEnabled(true);
     return item;
 }
@@ -226,6 +321,7 @@ Q3ListViewItem *GraphVisitor::addComment(Q3ListViewItem *element,Q3ListViewItem 
     result->setMultiLinesEnabled(true);
     return result;
 }
+
 
 }
 }

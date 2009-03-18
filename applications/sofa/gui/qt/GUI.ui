@@ -357,10 +357,10 @@
                                         <cstring>exportVisitorCheckbox</cstring>
                                     </property>
                                     <property name="text">
-                                        <string>export visitor execution</string>
+                                        <string>Trace Visitor and Component execution</string>
                                     </property>
                                     <property name="toolTip" stdset="0">
-                                        <string>Create a xml description of the execution of the visitors</string>
+                                        <string>Open a Dialog showing a trace of the execution and time spent</string>
                                     </property>
                                 </widget>
                                 <widget class="QLabel">
