@@ -128,7 +128,7 @@ WindowVisitor::WindowVisitor()
 #ifdef SOFA_QT4
     QWidget *statsWidget=new QWidget(splitterStats);
 #else
-    QWidget *statsWidget=new QWidget(this);
+    QWidget *statsWidget=new QWidget(splitterStats);
 #endif
 
     QGridLayout *statsLayout=new QGridLayout(statsWidget);

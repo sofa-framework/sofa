@@ -32,6 +32,7 @@
 #include <QStringList>
 #include <QHeaderView>
 #include <QSplitter>
+#include <Qt>
 #else
 #include <qheader.h>
 #include <qlayout.h>
@@ -173,19 +174,17 @@ void ChartsWidget::setChart( std::vector< dataTime >& value, unsigned int s)
         itemTime->setFlags(Qt::NoItemFlags);
 #else
         QTableWidgetItem *item = new QTableWidgetItem(table, QTableItem::Never);
-        QPixmap p(10,10); p.fill(color);
+        QPixmap p(20,20); p.fill(color);
         item->setPixmap(p);
         QTableWidgetItem *itemTime = new QTableWidgetItem(table, QTableItem::Never);
         item->setText(text);
         table->setItem(i,0, item);
         itemTime->setText(time);
         table->setItem(i,1, itemTime);
-//               item->setEnabled(false);
-//               itemTime->setEnabled(false);
+        table->adjustColumn(0);
 #endif
     }
-    this->update();
-    this->repaint();
+    pie->repaint();
 
 }
 
