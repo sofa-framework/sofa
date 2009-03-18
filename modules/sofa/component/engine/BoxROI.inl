@@ -51,7 +51,8 @@ BoxROI<DataTypes>::BoxROI()
     : x0(new VecCoord)
     , boxes( initData( &boxes, "box", "DOFs in the box defined by xmin,ymin,zmin, xmax,ymax,zmax are fixed") )
     , f_X0( new XDataPtr<DataTypes>(&x0, "rest position coordinates of the degrees of freedom") )
-    , f_indices( initData(&f_indices,"indices","Indices of the fixed points") )
+    , f_indices( initData(&f_indices,"indices","Indices of the points contained in the ROI") )
+    , f_triangle_indices( initData(&f_triangle_indices,"triangle_indices","Indices of the triagles contained in the ROI") )
     , _drawSize( initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
 {
     boxes.beginEdit()->push_back(Vec6(0,0,0,1,1,1));
@@ -64,12 +65,16 @@ BoxROI<DataTypes>::BoxROI()
     addOutput(&f_indices);
     f_indices.beginEdit()->push_back(0);
     f_indices.endEdit();
+
+    addOutput(&f_triangle_indices);
+    f_triangle_indices.beginEdit()->push_back(0);
+    f_triangle_indices.endEdit();
 }
 
 template <class DataTypes>
 void BoxROI<DataTypes>::init()
 {
-    if (x0->empty())
+    if (!findField("rest_position")->isSet())
     {
         BaseData* parent = mstate->findField("rest_position");
         f_X0->setParentValue(parent);
@@ -77,6 +82,22 @@ void BoxROI<DataTypes>::init()
         f_X0->setReadOnly(true);
         *x0 = f_X0->getValue();
     }
+}
+
+template <class DataTypes>
+bool BoxROI<DataTypes>::containsTriangle(const Vec6& b, unsigned int index)
+{
+    const BaseMeshTopology::Triangle& triangle = topology->getTriangle(index);
+    Real x=0.0,y=0.0,z=0.0;
+    for (unsigned int i=0; i<triangle.size(); ++i)
+    {
+        DataTypes::get(x,y,z,(*x0)[triangle[i]]);
+        if(!(x >= b[0] && x <= b[3] && y >= b[1] && y <= b[4] && z >= b[2] && z <= b[5]))
+        {
+            return false;
+        }
+    }
+    return true;
 }
 
 template <class DataTypes>
@@ -98,8 +119,11 @@ void BoxROI<DataTypes>::update()
         if (vb[bi][2] > vb[bi][5]) std::swap(vb[bi][2],vb[bi][5]);
     }
 
+    boxes.endEdit();
+
     SetIndex& indices = *(f_indices.beginEdit());
     indices.clear();
+
     for( unsigned i=0; i<x0->size(); ++i )
     {
         Real x=0.0,y=0.0,z=0.0;
@@ -116,7 +140,26 @@ void BoxROI<DataTypes>::update()
     }
 
     f_indices.endEdit();
-    boxes.endEdit();
+
+    if (topology)
+    {
+        SetTriangle& triangleIndices = *(f_triangle_indices.beginEdit());
+        triangleIndices.clear();
+
+        const BaseMeshTopology::SeqTriangles& triangles = topology->getTriangles();
+        for(unsigned int i=0; i<triangles.size(); ++i)
+        {
+            for (unsigned int bi=0; bi<vb.size(); ++bi)
+            {
+                const Vec6& b=vb[bi];
+                if (containsTriangle(b, i))
+                {
+                    triangleIndices.push_back(i);
+                }
+            }
+        }
+        f_triangle_indices.endEdit();
+    }
 }
 
 template <class DataTypes>
