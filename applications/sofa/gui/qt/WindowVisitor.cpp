@@ -38,6 +38,7 @@
 #include <qmessagebox.h>
 #include <qpainter.h>
 #include <qlayout.h>
+#include <qsplitter.h>
 #endif
 
 
@@ -124,10 +125,14 @@ WindowVisitor::WindowVisitor()
     icons[COMPONENT] = new QPixmap(*img[COMPONENT]);
     icons[OTHER]   = new QPixmap(*img[OTHER]  );
 
+#ifdef SOFA_QT4
+    QWidget *statsWidget=new QWidget(splitterStats);
+#else
     QWidget *statsWidget=new QWidget(this);
+#endif
+
     QGridLayout *statsLayout=new QGridLayout(statsWidget);
 
-    splitterStats->addWidget(statsWidget);
 
 
     typeOfCharts = new QComboBox(statsWidget);
@@ -138,9 +143,10 @@ WindowVisitor::WindowVisitor()
 
 
 #ifdef SOFA_QT4
+    splitterStats->addWidget(statsWidget);
     typeOfCharts->insertItems(0,list);
 #else
-    typeOfCharts->insertItems(list,0);
+    typeOfCharts->insertStringList(list,0);
 #endif
 
     chartsComponent=new ChartsWidget(statsWidget);
