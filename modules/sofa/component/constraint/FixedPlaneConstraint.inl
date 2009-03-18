@@ -30,6 +30,7 @@
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {
@@ -106,8 +107,8 @@ void FixedPlaneConstraint<DataTypes>::projectResponse(VecDeriv& res)
         /// only constraint one projection of the displacement to be zero
         res[*it]-= dir*dot(res[*it],dir);
     }
-
 }
+
 template <class DataTypes>
 void FixedPlaneConstraint<DataTypes>::setDirection(Coord dir)
 {
@@ -180,6 +181,21 @@ void FixedPlaneConstraint<DataTypes>::draw()
     glEnd();
 }
 
+#ifndef SOFA_FLOAT
+template <>
+void FixedPlaneConstraint<Rigid3dTypes>::projectResponse(Rigid3dTypes::VecDeriv& /*res*/);
+
+template <>
+bool FixedPlaneConstraint<Rigid3dTypes>::isPointInPlane(Rigid3dTypes::Coord /*p*/);
+#endif
+
+#ifndef SOFA_DOUBLE
+template <>
+void FixedPlaneConstraint<Rigid3fTypes>::projectResponse(VecDeriv& /*res*/);
+
+template <>
+bool FixedPlaneConstraint<Rigid3fTypes>::isPointInPlane(Coord /*p*/);
+#endif
 
 } // namespace constraint
 
