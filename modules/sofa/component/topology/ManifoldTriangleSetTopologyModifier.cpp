@@ -61,6 +61,12 @@ void ManifoldTriangleSetTopologyModifier::reinit()
     {
         edgeSwapProcess (m_triSwap.getValue());
     }
+
+    if(m_swapMesh.getValue() && this->getContext()->getAnimate())
+    {
+        swapRemeshing();
+    }
+
 }
 
 
@@ -359,7 +365,7 @@ void ManifoldTriangleSetTopologyModifier::updateRemovingModifications (const sof
 
 void ManifoldTriangleSetTopologyModifier::Debug() //To be removed when release is sure
 {
-#ifndef NDEBUG
+    //#ifndef NDEBUG
 
     std::cout << "ManifoldTriangleSetTopologyModifier::Debug()" << std::endl;
 
@@ -373,11 +379,19 @@ void ManifoldTriangleSetTopologyModifier::Debug() //To be removed when release i
         std::cout << "edge: " << i << " => Triangles:  " << m_container->getTriangleEdgeShellForModification(i) << std::endl;
     }
 
-    for (unsigned int i = 0; i < m_container->getNumberOfEdges(); i++)
+    for (unsigned int i = 0; i < m_container->getNbPoints(); i++)
     {
         std::cout << "vertex: " << i << " => Edges:  " << m_container->getEdgeVertexShellForModification(i) << std::endl;
     }
-#endif
+
+    for (int i = 0; i < m_container->getNumberOfEdges(); i++)
+    {
+        std::cout << "edge: " << i << " => Vertex:  " << m_container->getEdgeArray()[i] << std::endl;
+    }
+
+
+
+    //#endif
 }
 
 
@@ -628,10 +642,10 @@ void ManifoldTriangleSetTopologyModifier::addTrianglesPostProcessing(const sofa:
                     cpt++;
                     //		std::cout << "edgeShellTmp[i]: "<< edgeShellTmp[i] << std::endl;
                     //m_triangleEdgeShell:
-                    //	sofa::helper::vector <unsigned int> &triangleEdgeShell = m_container->getTriangleEdgeShellForModification(edgeShellTmp[i]);
-                    //	unsigned int tmp = triangleEdgeShell[0];
-                    //	triangleEdgeShell[0] = triangleEdgeShell[1];
-                    //	triangleEdgeShell[1] = tmp;
+                    sofa::helper::vector <unsigned int> &triangleEdgeShell = m_container->getTriangleEdgeShellForModification(edgeShellTmp[i]);
+                    unsigned int tmp = triangleEdgeShell[0];
+                    triangleEdgeShell[0] = triangleEdgeShell[1];
+                    triangleEdgeShell[1] = tmp;
                 }
                 else
                 {
@@ -682,6 +696,7 @@ void ManifoldTriangleSetTopologyModifier::edgeSwapProcess (const sofa::helper::v
     {
         edgeSwap(listEdges[i]);
         propagateTopologicalChanges();
+        Debug();
     }
 }
 
@@ -984,14 +999,29 @@ void ManifoldTriangleSetTopologyModifier::reorderingTopologyOnROI (const sofa::h
 
         if (edgeVertexShell.size() != triangleVertexShell.size()) //border case
         {
-            unsigned int vertex = vertexTofind[triangleVertexShell.size()-1][1];
-            int the_edge = m_container->getEdgeIndex ( listVertex [vertexIndex], vertex);
+            bool edgeFind = false;
+            int the_edge;
 
-            if (the_edge == -1)
-                the_edge = m_container->getEdgeIndex ( vertex, listVertex [vertexIndex]);
+            for (unsigned int i = 0; i < edgeVertexShell.size(); i++)
+            {
+                edgeFind = false;
+                for (unsigned int j = 0; j < goodEdgeShell.size(); j++)
+                {
+                    if (edgeVertexShell[i] == goodEdgeShell[j])
+                    {
+                        edgeFind = true;
+                        break;
+                    }
+                }
+
+                if(!edgeFind)
+                {
+                    the_edge = edgeVertexShell[i];
+                    break;
+                }
+            }
 
             goodEdgeShell.push_back(the_edge);
-
             reorderingEdge(the_edge);
         }
 
@@ -1006,6 +1036,83 @@ void ManifoldTriangleSetTopologyModifier::reorderingTopologyOnROI (const sofa::h
 }
 
 
+void ManifoldTriangleSetTopologyModifier::swapRemeshing()
+{
+    std::cout << "ManifoldTriangleSetTopologyModifier::swapRemeshing()"<<std::endl;
+    // All the mesh is about to be remeshed by swaping edges. So passing a simple list.
+    sofa::helper::vector <EdgeID> listEdges;
+    for(unsigned int i = 0; i<m_container->getNumberOfEdges(); i++)
+        listEdges.push_back (i);
+
+    swapRemeshing(listEdges);
+}
+
+
+void ManifoldTriangleSetTopologyModifier::swapRemeshing(sofa::helper::vector <EdgeID>& listEdges)
+{
+    std::cout << "ManifoldTriangleSetTopologyModifier::swapRemeshing(liste....)"<<std::endl;
+
+    std::cout << "list Edges: " << listEdges <<std::endl;
+
+    sofa::helper::vector <EdgeID> edgeToSwap;
+    bool allDone = false;
+
+    //	while (!allDone)
+    //	{
+    allDone = true;
+    for (unsigned int edgeIndex = 0; edgeIndex<listEdges.size() ; edgeIndex++)
+    {
+        std::cout << "edge: " << listEdges[edgeIndex] << std::endl;
+
+        const sofa::helper::vector <TriangleID>& shell = m_container->getTriangleEdgeShellArray()[listEdges[edgeIndex]];
+
+        if (shell.size() == 2)
+        {
+            sofa::helper::vector <unsigned int> listVertex;
+            TriangleID indexTri1, indexTri2;
+
+            indexTri1 = shell[0];
+            indexTri2 = shell[1];
+
+            int edgeInTri1 = m_container->getEdgeIndexInTriangle ( m_container->getEdgeTriangleShell (indexTri1), listEdges[edgeIndex]);
+            int edgeInTri2 = m_container->getEdgeIndexInTriangle ( m_container->getEdgeTriangleShell (indexTri2), listEdges[edgeIndex]);
+            Triangle vertexTriangle1 = m_container->getTriangleArray()[indexTri1];
+            Triangle vertexTriangle2 = m_container->getTriangleArray()[indexTri2];
+
+            listVertex.push_back( vertexTriangle1[edgeInTri1] );
+            listVertex.push_back( vertexTriangle2[edgeInTri2] );
+            listVertex.push_back( vertexTriangle1[ (edgeInTri1+1)%3 ] );
+            listVertex.push_back( vertexTriangle2[ (edgeInTri2+1)%3 ] );
+
+            int sum = 0;
+            std::cout << "somme: " << sum << std::endl;
+            sum = (m_container->getTriangleVertexShellArray()[ listVertex[0] ]).size();
+            std::cout << "somme: " << sum << std::endl;
+            sum += (m_container->getTriangleVertexShellArray()[ listVertex[1] ]).size();
+            std::cout << "somme: " << sum << std::endl;
+            sum -= (m_container->getTriangleVertexShellArray()[ listVertex[2] ]).size();
+            std::cout << "somme: " << sum << std::endl;
+            sum -= (m_container->getTriangleVertexShellArray()[ listVertex[3] ]).size();
+
+            std::cout << "somme: " << sum << std::endl;
+            //	      sum = abs (sum);
+            //	      std::cout << "somme abs: " << sum << std::endl;
+
+            if (sum <= -2)
+            {
+                edgeToSwap.push_back (listEdges[edgeIndex]);
+                edgeSwap (listEdges[edgeIndex]);
+                propagateTopologicalChanges();
+                allDone = false;
+            }
+        }
+    }
+
+
+    std::cout <<"edges to swap: " << edgeToSwap << std::endl;
+    //	  edgeSwapProcess (edgeToSwap);
+    //}
+}
 
 
 } // namespace topology
