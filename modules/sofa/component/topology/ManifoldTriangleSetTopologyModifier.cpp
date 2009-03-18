@@ -379,12 +379,12 @@ void ManifoldTriangleSetTopologyModifier::Debug() //To be removed when release i
         std::cout << "edge: " << i << " => Triangles:  " << m_container->getTriangleEdgeShellForModification(i) << std::endl;
     }
 
-    for (unsigned int i = 0; i < m_container->getNbPoints(); i++)
+    for (int i = 0; i < m_container->getNbPoints(); i++)
     {
         std::cout << "vertex: " << i << " => Edges:  " << m_container->getEdgeVertexShellForModification(i) << std::endl;
     }
 
-    for (int i = 0; i < m_container->getNumberOfEdges(); i++)
+    for (unsigned int i = 0; i < m_container->getNumberOfEdges(); i++)
     {
         std::cout << "edge: " << i << " => Vertex:  " << m_container->getEdgeArray()[i] << std::endl;
     }
@@ -696,7 +696,7 @@ void ManifoldTriangleSetTopologyModifier::edgeSwapProcess (const sofa::helper::v
     {
         edgeSwap(listEdges[i]);
         propagateTopologicalChanges();
-        Debug();
+        //	  Debug();
     }
 }
 
@@ -916,7 +916,11 @@ void ManifoldTriangleSetTopologyModifier::reorderingTopologyOnROI (const sofa::h
         secondVertex = vertexTofind[0][1];
 
         goodTriangleShell.push_back(triangleVertexShell[0]);
-        goodEdgeShell.push_back(edgeVertexShell[0]);
+
+        int the_edge = m_container->getEdgeIndex ( listVertex [vertexIndex], vertexTofind[0][0]);
+        if (the_edge == -1)
+            the_edge = m_container->getEdgeIndex ( vertexTofind[0][0], listVertex [vertexIndex]);
+        goodEdgeShell.push_back(the_edge);
 
 
         bool testFind = false;
@@ -958,7 +962,7 @@ void ManifoldTriangleSetTopologyModifier::reorderingTopologyOnROI (const sofa::h
         if(reverse)
         {
 #ifndef NDEBUG
-            std::cout << "shell on border: "<< vertexIndex << std::endl;
+            std::cout << "shell on border: "<< listVertex[vertexIndex] << std::endl;
 #endif
             for (unsigned int triangleIndex = cpt+1; triangleIndex<triangleVertexShell.size(); triangleIndex++)
             {
@@ -1000,7 +1004,7 @@ void ManifoldTriangleSetTopologyModifier::reorderingTopologyOnROI (const sofa::h
         if (edgeVertexShell.size() != triangleVertexShell.size()) //border case
         {
             bool edgeFind = false;
-            int the_edge;
+            int the_edge = -1;
 
             for (unsigned int i = 0; i < edgeVertexShell.size(); i++)
             {
@@ -1021,8 +1025,17 @@ void ManifoldTriangleSetTopologyModifier::reorderingTopologyOnROI (const sofa::h
                 }
             }
 
-            goodEdgeShell.push_back(the_edge);
-            reorderingEdge(the_edge);
+            if (the_edge != -1)
+            {
+                goodEdgeShell.push_back(the_edge);
+                reorderingEdge(the_edge);
+            }
+            else
+            {
+#ifndef NDEBUG
+                std::cout << "Error: reorderingTopologyOnROI: vertex "<< listVertex[vertexIndex] << "is on the border but last edge not found." <<std::endl;
+#endif
+            }
         }
 
 
@@ -1052,8 +1065,6 @@ void ManifoldTriangleSetTopologyModifier::swapRemeshing(sofa::helper::vector <Ed
 {
     std::cout << "ManifoldTriangleSetTopologyModifier::swapRemeshing(liste....)"<<std::endl;
 
-    std::cout << "list Edges: " << listEdges <<std::endl;
-
     sofa::helper::vector <EdgeID> edgeToSwap;
     bool allDone = false;
 
@@ -1062,8 +1073,6 @@ void ManifoldTriangleSetTopologyModifier::swapRemeshing(sofa::helper::vector <Ed
     allDone = true;
     for (unsigned int edgeIndex = 0; edgeIndex<listEdges.size() ; edgeIndex++)
     {
-        std::cout << "edge: " << listEdges[edgeIndex] << std::endl;
-
         const sofa::helper::vector <TriangleID>& shell = m_container->getTriangleEdgeShellArray()[listEdges[edgeIndex]];
 
         if (shell.size() == 2)
@@ -1085,18 +1094,10 @@ void ManifoldTriangleSetTopologyModifier::swapRemeshing(sofa::helper::vector <Ed
             listVertex.push_back( vertexTriangle2[ (edgeInTri2+1)%3 ] );
 
             int sum = 0;
-            std::cout << "somme: " << sum << std::endl;
             sum = (m_container->getTriangleVertexShellArray()[ listVertex[0] ]).size();
-            std::cout << "somme: " << sum << std::endl;
             sum += (m_container->getTriangleVertexShellArray()[ listVertex[1] ]).size();
-            std::cout << "somme: " << sum << std::endl;
             sum -= (m_container->getTriangleVertexShellArray()[ listVertex[2] ]).size();
-            std::cout << "somme: " << sum << std::endl;
             sum -= (m_container->getTriangleVertexShellArray()[ listVertex[3] ]).size();
-
-            std::cout << "somme: " << sum << std::endl;
-            //	      sum = abs (sum);
-            //	      std::cout << "somme abs: " << sum << std::endl;
 
             if (sum <= -2)
             {
