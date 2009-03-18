@@ -144,7 +144,7 @@ void GraphVisitor::openTime      ( TiXmlNode* node, Q3ListViewItem* item)
             }
             if (std::find(visitedNode.begin(), visitedNode.end(), componentName) == visitedNode.end())
             {
-                dataTime t(timeSec-timeComponentsBelow[timeComponentsBelow.size()-1]
+                dataTime t(timeSec-timeComponentsBelow.back()
                         , componentType, componentName);
 
                 std::vector< dataTime >::iterator it=std::find(componentsTime.begin(),componentsTime.end(),t);
@@ -164,7 +164,7 @@ void GraphVisitor::openTime      ( TiXmlNode* node, Q3ListViewItem* item)
         {
             if (std::find(visitedNode.begin(), visitedNode.end(),nodeType) == visitedNode.end())
             {
-                dataTime t(timeSec// -timeComponentsBelow[timeComponentsBelow.size()-1]
+                dataTime t(timeSec
                         , nodeType);
                 std::vector< dataTime >::iterator it=std::find(visitorsTime.begin(),visitorsTime.end(),t);
                 if (it != visitorsTime.end()) it->time += timeSec;
@@ -180,7 +180,7 @@ void GraphVisitor::openTime      ( TiXmlNode* node, Q3ListViewItem* item)
         }
     }
 
-    timeComponentsBelow[timeComponentsBelow.size()-1] = timeSec;
+    timeComponentsBelow.back() = timeSec;
 
     addTime(item,  s.str());
 }
@@ -254,7 +254,7 @@ Q3ListViewItem* GraphVisitor::openNode( TiXmlNode* node, Q3ListViewItem* parent,
 
     timeComponentsBelow.pop_back();
 
-    if (!timeComponentsBelow.empty()) timeComponentsBelow[timeComponentsBelow.size()-1] += t;
+    if (!timeComponentsBelow.empty()) timeComponentsBelow.back() += t;
 
     if (sizeVisitedNode != visitedNode.size()) visitedNode.resize(sizeVisitedNode);
     return graphNode;

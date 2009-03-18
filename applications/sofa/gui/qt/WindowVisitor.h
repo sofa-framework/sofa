@@ -104,6 +104,7 @@ public slots:
     {
         emit(WindowVisitorClosed(false));
         hide();
+        clearGraph();
     }
 
 
