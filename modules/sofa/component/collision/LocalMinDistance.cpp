@@ -57,7 +57,7 @@ typedef BaseMeshTopology::PointID			PointID;
 
 SOFA_DECL_CLASS(LocalMinDistance)
 
-int LocalMinDistanceClass = core::RegisterObject("TODO-LocalMinDistance")
+int LocalMinDistanceClass = core::RegisterObject("A set of methods to compute (for constraint methods) if two primitives are close enougth to consider they collide")
         .add< LocalMinDistance >()
         ;
 

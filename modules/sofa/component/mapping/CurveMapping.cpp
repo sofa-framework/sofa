@@ -58,7 +58,7 @@ using namespace core::componentmodel::behavior;
 SOFA_DECL_CLASS(CurveMapping)
 
 // Register in the Factory
-int CurveMappingClass = core::RegisterObject("")
+int CurveMappingClass = core::RegisterObject("Mapping allowing one or more rigid objects follow a trajectory determined by a set of points")
 
 #ifndef SOFA_FLOAT
         .add< CurveMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Rigid3dTypes> > > >()

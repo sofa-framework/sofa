@@ -133,7 +133,7 @@ void ArticulatedHierarchyBVHController::applyController(void)
 SOFA_DECL_CLASS(ArticulatedHierarchyBVHController)
 
 // Register in the Factory
-int ArticulatedHierarchyBVHControllerClass = core::RegisterObject("")
+int ArticulatedHierarchyBVHControllerClass = core::RegisterObject("Implements a handler that controls the values of the articulations of an articulated hierarchy container using a .bvh file.")
         .add< ArticulatedHierarchyBVHController >()
         ;
 } // namespace controller

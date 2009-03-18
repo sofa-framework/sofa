@@ -36,7 +36,7 @@ using namespace sofa::defaulttype;
 
 SOFA_DECL_CLASS(UncoupledConstraintCorrection)
 
-int UncoupledConstraintCorrectionClass = core::RegisterObject("")
+int UncoupledConstraintCorrectionClass = core::RegisterObject("Component computing contact forces within a simulated body using the compliance method.")
 
         .add< UncoupledConstraintCorrection<Vec1Types> >()
         .add< UncoupledConstraintCorrection<Rigid3Types> >()

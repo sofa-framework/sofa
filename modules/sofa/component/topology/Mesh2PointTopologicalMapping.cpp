@@ -54,7 +54,7 @@ using namespace sofa::core::componentmodel::topology;
 SOFA_DECL_CLASS ( Mesh2PointTopologicalMapping )
 
 // Register in the Factory
-int Mesh2PointTopologicalMappingClass = core::RegisterObject ( "" )
+int Mesh2PointTopologicalMappingClass = core::RegisterObject ( "This class maps any mesh primitive (point, edge, triangle...) into a point using a relative position from the primitive" )
         .add< Mesh2PointTopologicalMapping >()
         ;
 
