@@ -76,6 +76,9 @@ int main(int argc, char** argv)
     bool        startAnim = false;
     bool        printFactory = false;
     bool        loadRecent = false;
+    std::string dimension="800x600";
+    bool fullScreen = false;
+
     std::string gui = sofa::gui::SofaGUI::GetGUIName();
     std::vector<std::string> plugins;
     std::vector<std::string> files;
@@ -90,6 +93,8 @@ int main(int argc, char** argv)
     .option(&gui,'g',"gui",gui_help.c_str())
     .option(&plugins,'l',"load","load given plugins")
     .option(&loadRecent,'r',"recent","load most recently opened file")
+    .option(&dimension,'d',"dimension","width and height of the viewer")
+    .option(&fullScreen,'f',"fullScreen","start in full screen")
     (argc,argv);
 
     if(gui!="batch")
@@ -136,6 +141,7 @@ int main(int argc, char** argv)
         //return 1;
     }
 
+
     if (int err=sofa::gui::SofaGUI::createGUI(groot,fileName.c_str()))
         return err;
 
@@ -152,8 +158,6 @@ int main(int argc, char** argv)
 
     if (startAnim)
         groot->setAnimate(true);
-
-
 
     //=======================================
     // Run the main loop
@@ -174,6 +178,18 @@ int main(int argc, char** argv)
     }
     else
     {
+        //=======================================
+        //Dimension Option
+        std::string::size_type separator=dimension.find_first_of('x');
+        if (separator != std::string::npos)
+        {
+            std::string stringWidth=dimension;
+            stringWidth.resize(separator);
+            std::string stringHeight=dimension.substr(dimension.size()-separator);
+            sofa::gui::SofaGUI::CurrentGUI()->setDimension(atoi(stringWidth.c_str()), atoi(stringHeight.c_str()));
+        }
+
+        if (fullScreen) sofa::gui::SofaGUI::CurrentGUI()->setFullScreen();
         if (int err=sofa::gui::SofaGUI::MainLoop(groot,fileName.c_str()))
             return err;
         groot = dynamic_cast<sofa::simulation::tree::GNode*>( sofa::gui::SofaGUI::CurrentSimulation() );
