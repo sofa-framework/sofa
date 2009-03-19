@@ -240,7 +240,10 @@ SofaModeler::SofaModeler()
     const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->primaryScreen());
     this->move(  ( screen.width()- this->width()  ) / 2,  ( screen.height() - this->height()) / 2  );
 
-    GraphSupport->resize(300,550);
+    GraphSupport->resize(200,550);
+
+    Library->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
+    SofaComponents->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
 };
 
 
@@ -824,7 +827,7 @@ void SofaModeler::searchText(const QString& text)
     unsigned int displayed=0;
 
     std::multimap< QWidget*, std::pair< QPushButton*, QComboBox*> >::iterator itMap;
-    for (int p=0; p<(int)pages.size(); ++p)
+    for (unsigned int p=0; p<pages.size(); ++p)
     {
         QWidget* page=pages[p].begin()->first;
         const unsigned int numComponents=pages[p].size();
@@ -872,8 +875,8 @@ void SofaModeler::searchText(const QString& text)
     }
 
     displayComponents = displayed;
-    changeLibraryLabel(SofaComponents->currentIndex());
 
+    changeLibraryLabel(SofaComponents->currentIndex());
     SofaComponents->update();
 }
 

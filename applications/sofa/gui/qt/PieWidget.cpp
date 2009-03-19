@@ -187,9 +187,9 @@ void ChartsWidget::setChart( std::vector< dataTime >& value, unsigned int s)
         itemTime->setText(time);
         table->setItem(i,2, itemTime);
         table->resizeColumnToContents(1);
-        itemColor->setFlags(Qt::NoItemFlags);
-        item->setFlags(Qt::NoItemFlags);
-        itemTime->setFlags(Qt::NoItemFlags);
+        itemColor->setFlags(0);
+        item->setFlags(0);
+        itemTime->setFlags(0);
 #else
         QTableWidgetItem *item = new QTableWidgetItem(table, QTableItem::Never);
         QPixmap p(20,20); p.fill(color);
