@@ -1073,6 +1073,14 @@ void RealGUI::setScene ( Node* groot, const char* filename )
 
 }
 
+void RealGUI::setDimension ( int w, int h )
+{
+    resize(w,h);
+}
+void RealGUI::setFullScreen ()
+{
+    showFullScreen();
+}
 void RealGUI::changeInstrument(int id)
 {
     std::cout << "Activation instrument "<<id<<std::endl;

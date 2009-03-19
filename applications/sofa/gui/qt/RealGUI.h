@@ -129,6 +129,8 @@ public:
     virtual void fileOpen(std::string filename); //, int TYPE=NORMAL);
     virtual void fileOpenSimu(std::string filename); //, int TYPE=NORMAL);
     virtual void setScene(Node* groot, const char* filename=NULL);
+    virtual void setDimension(int w, int h);
+    virtual void setFullScreen();
     virtual void setTitle( std::string windowTitle );
 
     //public slots:
