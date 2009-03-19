@@ -39,6 +39,8 @@
 #include <qsplitter.h>
 #endif
 
+
+
 namespace sofa
 {
 
@@ -48,12 +50,32 @@ namespace gui
 namespace qt
 {
 
+std::vector< defaulttype::Vec<3,int> > PieWidget::colorArray;
+
+defaulttype::Vec<3,int> PieWidget::getColor(int i)
+{
+    defaulttype::Vec<3,int> res=PieWidget::colorArray[i%PieWidget::colorArray.size()];
+    float factor=1.0/(1.0+(0.3*(i/PieWidget::colorArray.size())));
+    res[0] = (int)(res[0]*factor);
+    res[1] = (int)(res[1]*factor);
+    res[2] = (int)(res[2]*factor);
+    return res;
+}
+
 PieWidget::PieWidget(QWidget *parent): QWidget(parent)
 {
+    if (PieWidget::colorArray.empty())
+    {
+        colorArray.push_back(  defaulttype::Vec<3,int>(250,125,70) );
+        colorArray.push_back(  defaulttype::Vec<3,int>(120,220,110) );
+        colorArray.push_back(  defaulttype::Vec<3,int>(215,90,215) );
+        colorArray.push_back(  defaulttype::Vec<3,int>(255,210,40) );
+        colorArray.push_back(  defaulttype::Vec<3,int>(75,210,210) );
+    }
 }
 void PieWidget::paintEvent( QPaintEvent* )
 {
-    sizePie = std::min(this->width(),this->height())*0.95;
+    sizePie = (int)(std::min(this->width(),this->height())*0.95);
     if (data.empty()) return;
 
     QPainter p( this );
@@ -65,12 +87,10 @@ void PieWidget::paintEvent( QPaintEvent* )
 
     for (unsigned int i=0; i<data.size() && i<selection; ++i)
     {
-        QColor color(100*(i%6 == 2)+255*(i%6 == 0 || i%6 == 3 || i%6 == 4)/(1+(0.4*i/6)),
-                100*(i%6 == 2)+255*(i%6 == 1 || i%6 == 3 || i%6 == 5)/(1+(0.4*i/6)),
-                255*(i%6 == 2 || i%6 == 4 || i%6 == 5)/(1+(0.4*i/6)));
-
+        defaulttype::Vec<3,int> c=PieWidget::getColor(i);
+        QColor color(c[0],c[1],c[2]);
         p.setBrush(color);
-        int spanAngle=16*360*data[i].time/totalTime;
+        int spanAngle=(int)(16*360*data[i].time/totalTime);
         p.drawPie(initDraw,initDraw,sizePie,sizePie,startAngle,spanAngle);
         startAngle+= spanAngle;
     }
@@ -143,10 +163,8 @@ void ChartsWidget::setChart( std::vector< dataTime >& value, unsigned int s)
 #else
         table->insertRows(i);
 #endif
-
-        QColor color(100*(i%6 == 2)+255*(i%6 == 0 || i%6 == 3 || i%6 == 4)/(1+(0.4*i/6)),
-                100*(i%6 == 2)+255*(i%6 == 1 || i%6 == 3 || i%6 == 5)/(1+(0.4*i/6)),
-                255*(i%6 == 2 || i%6 == 4 || i%6 == 5)/(1+(0.4*i/6)));
+        defaulttype::Vec<3,int> c=PieWidget::getColor(i);
+        QColor color(c[0],c[1],c[2]);
 
         QString text(value[i].name.c_str());
         QString time= QString::number(value[i].time);

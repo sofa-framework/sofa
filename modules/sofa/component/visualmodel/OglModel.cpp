@@ -470,7 +470,7 @@ void OglModel::updateBuffers()
             //Update VBO & IBO
             else
             {
-                std::cout << triangles.size() <<  " " << quads.size() << std::endl;
+// 				std::cout << triangles.size() <<  " " << quads.size() << std::endl;
 
                 if(oldVerticesSize != vertices.size())
                     initVertexBuffer();

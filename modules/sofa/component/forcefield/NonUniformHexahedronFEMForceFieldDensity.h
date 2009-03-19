@@ -89,8 +89,8 @@ public:
 public:
 
     NonUniformHexahedronFEMForceFieldDensity():NonUniformHexahedronFEMForceFieldAndMass<DataTypes>()
-        ,densityFile(core::objectmodel::Base::initData(&this->densityFile,"densityFile","RAW File containing gray scale density"))
-        ,dimensionDensityFile(core::objectmodel::Base::initData(&this->dimensionDensityFile, "dimensionDensityFile", "dimension of the RAW file"))
+        ,densityFile(core::objectmodel::Base::initData(&densityFile,"densityFile","RAW File containing gray scale density"))
+        ,dimensionDensityFile(core::objectmodel::Base::initData(&dimensionDensityFile, "dimensionDensityFile", "dimension of the RAW file"))
     {
     }
 
