@@ -153,7 +153,7 @@ void OglModel::internalDraw()
             xforms[i].writeOpenGlMatrix(matrix);
             glPushMatrix();
             glMultMatrixf(matrix);
-            if(VBOGenDone)
+            if(VBOGenDone && useVBO.getValue())
             {
                 if (!triangles.empty())
                 {
@@ -196,7 +196,7 @@ void OglModel::internalDraw()
 
         //glutWireCube( 3 );
 
-        if (VBOGenDone)
+        if (VBOGenDone && useVBO.getValue())
         {
             if (!triangles.empty())
             {
@@ -394,6 +394,7 @@ bool OglModel::updateVertexBuffer()
     GLvoid* pos_bo = NULL;
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
     pos_bo = (GLvoid*) glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
 
     if(pos_bo == NULL)
@@ -409,6 +410,7 @@ bool OglModel::updateVertexBuffer()
 
     glUnmapBuffer(GL_ARRAY_BUFFER);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+
     return true;
 }
 
@@ -426,6 +428,7 @@ bool OglModel::updateTrianglesIndicesBuffer()
     memcpy(pos_bo, &(triangles[0]), triangles.size()*sizeof(triangles[0]));
     glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
     return true;
 }
 
@@ -443,6 +446,7 @@ bool OglModel::updateQuadsIndicesBuffer()
     memcpy(pos_bo, &(quads[0]), quads.size()*sizeof(quads[0]));
     glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+
     return true;
 }
 
@@ -457,6 +461,7 @@ void OglModel::updateBuffers()
                 createVertexBuffer();
                 //Index Buffer Object
                 //Triangles indices
+                std::cout << triangles.size() <<  " " << quads.size() << std::endl;
                 if(triangles.size() > 0)
                     createTrianglesIndicesBuffer();
                 //Quads indices
@@ -466,6 +471,8 @@ void OglModel::updateBuffers()
             //Update VBO & IBO
             else
             {
+                std::cout << triangles.size() <<  " " << quads.size() << std::endl;
+
                 if(oldVerticesSize != vertices.size())
                     initVertexBuffer();
                 else
