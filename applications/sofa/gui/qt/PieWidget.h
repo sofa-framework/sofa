@@ -41,6 +41,7 @@ typedef QTableItem QTableWidgetItem;
 #endif
 
 #include <vector>
+#include <sofa/defaulttype/Vec.h>
 
 namespace sofa
 {
@@ -73,12 +74,15 @@ struct  dataTime
 class PieWidget: public QWidget
 {
 public:
+
     PieWidget(QWidget *parent);
 
     void paintEvent( QPaintEvent* );
 
     void setChart( std::vector< dataTime >& value, unsigned int s);
     void clear();
+    static defaulttype::Vec<3,int> getColor(int i);
+    static std::vector< defaulttype::Vec<3,int> > colorArray;
 protected:
     std::vector< dataTime > data;
 
