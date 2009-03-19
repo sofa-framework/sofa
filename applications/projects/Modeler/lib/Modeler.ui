@@ -193,6 +193,24 @@
     </item>
   </menubar>
   <toolbars>
+    <toolbar dock="2">
+        <property name="name">
+            <cstring>toolBar</cstring>
+        </property>
+        <property name="label">
+            <string>Tools</string>
+        </property>
+        <action name="fileNewTabAction"/>
+        <action name="fileClearTabAction"/>
+        <action name="fileOpenAction"/>
+        <separator/>
+        <action name="editUndoAction"/>
+        <action name="editRedoAction"/>
+        <action name="editCutAction"/>
+        <action name="editCopyAction"/>
+        <action name="editPasteAction"/>
+        <separator/>
+    </toolbar>
   </toolbars>
   <actions>
     <action>

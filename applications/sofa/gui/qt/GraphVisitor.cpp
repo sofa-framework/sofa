@@ -131,7 +131,7 @@ void GraphVisitor::openTime      ( TiXmlNode* node, Q3ListViewItem* item)
         if (nodeType == "Component")
         {
             TiXmlAttribute* attribute=parent->ToElement()->FirstAttribute();
-            std::string componentName, componentType;
+            std::string componentName, componentType, componentPtr;
             while (attribute)
             {
                 std::string nameOfAttribute(attribute->Name());
@@ -140,13 +140,13 @@ void GraphVisitor::openTime      ( TiXmlNode* node, Q3ListViewItem* item)
                     componentName=valueOfAttribute;
                 else if (nameOfAttribute=="type")
                     componentType=valueOfAttribute;
+                else if (nameOfAttribute=="ptr")
+                    componentPtr=valueOfAttribute;
                 attribute=attribute->Next();
             }
             if (std::find(visitedNode.begin(), visitedNode.end(), componentName) == visitedNode.end())
             {
-                dataTime t(timeSec-timeComponentsBelow.back()
-                        , componentType, componentName);
-
+                dataTime t(timeSec-timeComponentsBelow.back(), componentType, componentName, componentPtr);
                 std::vector< dataTime >::iterator it=std::find(componentsTime.begin(),componentsTime.end(),t);
                 if (it != componentsTime.end()) it->time += t.time;
                 else componentsTime.push_back(t);
@@ -164,8 +164,7 @@ void GraphVisitor::openTime      ( TiXmlNode* node, Q3ListViewItem* item)
         {
             if (std::find(visitedNode.begin(), visitedNode.end(),nodeType) == visitedNode.end())
             {
-                dataTime t(timeSec
-                        , nodeType);
+                dataTime t(timeSec, nodeType);
                 std::vector< dataTime >::iterator it=std::find(visitorsTime.begin(),visitorsTime.end(),t);
                 if (it != visitorsTime.end()) it->time += timeSec;
                 else visitorsTime.push_back(t);
@@ -303,11 +302,14 @@ void GraphVisitor::addInformation(Q3ListViewItem *element, std::string name, std
         }
         else
         {
-            QString nameQt = element->text(2) + QString("\n") + QString( name.c_str());
-            QString infoQt = element->text(3) + QString("\n") + QString( info.c_str());
+            if (name != "ptr")
+            {
+                QString nameQt = element->text(2) + QString("\n") + QString( name.c_str());
+                QString infoQt = element->text(3) + QString("\n") + QString( info.c_str());
 
-            element->setText(2, nameQt);
-            element->setText(3, infoQt);
+                element->setText(2, nameQt);
+                element->setText(3, infoQt);
+            }
         }
     }
 }

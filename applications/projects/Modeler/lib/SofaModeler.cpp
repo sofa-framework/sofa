@@ -111,6 +111,8 @@ SofaModeler::SofaModeler()
 
     runInSofaAction->addTo(runSofaMenu);
 
+    runInSofaAction->addTo(toolBar);
+
     runSofaMenu->insertItem("Change Sofa Binary...", this, SLOT( changeSofaBinary()));
     sofaBinary=std::string();
 
@@ -469,6 +471,10 @@ void SofaModeler::fileSaveAs()
     QString s = sofa::gui::qt::getSaveFileName ( this, QString(path.c_str()), "Scenes (*.scn *.xml)", "save file dialog", "Choose where the scene will be saved" );
     if ( s.length() >0 )
     {
+
+        std::string extension=sofa::helper::system::SetDirectory::GetExtension(s.ascii());
+        if (extension.empty()) s+=QString(".scn");
+
         fileSave ( s.ascii() );
 //  	    if (graph->getFilename().empty())
 //  	      {
