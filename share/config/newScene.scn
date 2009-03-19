@@ -1,4 +1,4 @@
-<Node name="Root"  dt="0.02" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0">
+<Node name="Root"  dt="0.02" showAll="1">
 <!-- when creating a new scene from the GUI -->
 	<CollisionPipeline name="DefaultCollisionPipeline" depth="6" verbose="0" draw="0"/>
 	<BruteForceDetection name="Detection" />

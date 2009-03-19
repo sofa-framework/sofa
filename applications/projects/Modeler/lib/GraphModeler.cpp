@@ -692,7 +692,11 @@ void GraphModeler::saveNode(Q3ListViewItem* item)
 
     QString s = sofa::gui::qt::getSaveFileName ( this, NULL, "Scenes (*.scn *.xml)", "save file dialog", "Choose where the scene will be saved" );
     if ( s.length() >0 )
+    {
+        std::string extension=sofa::helper::system::SetDirectory::GetExtension(s.ascii());
+        if (extension.empty()) s+=QString(".scn");
         saveNode(node, s.ascii());
+    }
 }
 
 void GraphModeler::saveNode(GNode* node, std::string file)

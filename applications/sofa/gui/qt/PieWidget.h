@@ -53,14 +53,18 @@ namespace qt
 
 struct  dataTime
 {
-    dataTime(double t, std::string n, std::string ty=std::string()):time(t), name(n), type(ty) {}
+    dataTime(double t,
+            std::string n,
+            std::string ty=std::string(),std::string address=std::string()):time(t), name(n), type(ty), ptr(address) {}
     bool operator== (const dataTime& other)
     {
-        return name == other.name && type == other.type;
+        if (ptr.empty()) return  name == other.name;
+        else return ptr == other.ptr;
     }
     double time;
     std::string name;
     std::string type;
+    std::string ptr;
 };
 
 
