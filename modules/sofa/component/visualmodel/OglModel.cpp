@@ -461,7 +461,6 @@ void OglModel::updateBuffers()
                 createVertexBuffer();
                 //Index Buffer Object
                 //Triangles indices
-                std::cout << triangles.size() <<  " " << quads.size() << std::endl;
                 if(triangles.size() > 0)
                     createTrianglesIndicesBuffer();
                 //Quads indices
