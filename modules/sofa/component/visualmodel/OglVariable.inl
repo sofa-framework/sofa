@@ -22,6 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#ifndef SOFA_COMPONENT_VISUALMODEL_OGLVARIABLE_INL
+#define SOFA_COMPONENT_VISUALMODEL_OGLVARIABLE_INL
+
 #include <sofa/component/visualmodel/OglVariable.h>
 #include <sofa/core/ObjectFactory.h>
 
@@ -34,267 +37,42 @@ namespace component
 namespace visualmodel
 {
 
-OglIntVariable::OglIntVariable()
+
+template<class DataTypes>
+OglVariable<DataTypes>::OglVariable()
+    : value(initData(&value, DataTypes(), "value", "Set Uniform Value"))
 {
-
+    addAlias(&value, "values"); // some variable types hold multiple values, so we authorize both names for this attribute
 }
 
-OglInt2Variable::OglInt2Variable()
+template<class DataTypes>
+OglVariable<DataTypes>::~OglVariable()
 {
-
 }
 
-OglInt3Variable::OglInt3Variable()
+template<class DataTypes>
+void OglVariable<DataTypes>::init()
 {
-
+    OglShaderElement::init();
 }
 
-OglInt4Variable::OglInt4Variable()
+template<class DataTypes>
+void OglVariable<DataTypes>::initVisual()
 {
-
+    core::VisualModel::initVisual();
 }
 
-void OglIntVariable::initVisual()
+template<class DataTypes>
+void OglVariable<DataTypes>::reinit()
 {
-    shader->setInt(indexShader.getValue(), id.getValue().c_str(), value.getValue());
+    init();
+    initVisual();
 }
 
+} // namespace visualmodel
 
-void OglInt2Variable::initVisual()
-{
-    shader->setInt2(indexShader.getValue(), id.getValue().c_str(), value.getValue()[0], value.getValue()[1]);
-}
+} // namespace component
 
-void OglInt3Variable::initVisual()
-{
-    shader->setInt3(indexShader.getValue(), id.getValue().c_str(), value.getValue()[0], value.getValue()[1], value.getValue()[2]);
-}
+} // namespace sofa
 
-void OglInt4Variable::initVisual()
-{
-    shader->setInt4(indexShader.getValue(), id.getValue().c_str(), value.getValue()[0], value.getValue()[1], value.getValue()[2], value.getValue()[3]);
-}
-
-
-OglFloatVariable::OglFloatVariable()
-{
-
-}
-
-OglFloat2Variable::OglFloat2Variable()
-{
-
-}
-
-OglFloat3Variable::OglFloat3Variable()
-{
-
-}
-
-OglFloat4Variable::OglFloat4Variable()
-{
-
-}
-
-void OglFloatVariable::initVisual()
-{
-    shader->setFloat(indexShader.getValue(), id.getValue().c_str(), value.getValue());
-}
-
-
-void OglFloat2Variable::initVisual()
-{
-    shader->setFloat2(indexShader.getValue(), id.getValue().c_str(), value.getValue()[0], value.getValue()[1]);
-}
-
-void OglFloat3Variable::initVisual()
-{
-    shader->setFloat3(indexShader.getValue(), id.getValue().c_str(), value.getValue()[0], value.getValue()[1], value.getValue()[2]);
-}
-
-void OglFloat4Variable::initVisual()
-{
-    shader->setFloat4(indexShader.getValue(), id.getValue().c_str(), value.getValue()[0], value.getValue()[1], value.getValue()[2], value.getValue()[3]);
-}
-
-
-OglIntVectorVariable::OglIntVectorVariable()
-{
-
-}
-
-OglIntVector2Variable::OglIntVector2Variable()
-{
-
-}
-
-OglIntVector3Variable::OglIntVector3Variable()
-{
-
-}
-
-OglIntVector4Variable::OglIntVector4Variable()
-{
-
-}
-
-
-void OglIntVectorVariable::init()
-{
-    OglVariable<helper::vector<GLint> >::init();
-}
-
-void OglIntVector2Variable::init()
-{
-    OglIntVectorVariable::init();
-    helper::vector<GLint> temp = value.getValue();
-    if (value.getValue().size() %2 != 0)
-    {
-        serr << "The number of values is not even ; padding with one zero" << sendl;
-        temp.push_back(0);
-        value.setValue(temp);
-
-    }
-}
-
-void OglIntVector3Variable::init()
-{
-    OglIntVectorVariable::init();
-    helper::vector<GLint> temp = value.getValue();
-
-    if (value.getValue().size() %3 != 0)
-    {
-        serr << "The number of values is not a multiple of 3 ; padding with zero(s)" << sendl;
-        while (value.getValue().size() %3 != 0)
-            temp.push_back(0);
-        value.setValue(temp);
-    }
-}
-
-void OglIntVector4Variable::init()
-{
-    OglIntVectorVariable::init();
-    helper::vector<GLint> temp = value.getValue();
-
-    if (value.getValue().size() %4 != 0)
-    {
-        serr << "The number of values is not a multiple of 4 ; padding with zero(s)" << sendl;
-        while (value.getValue().size() %4 != 0)
-            temp.push_back(0);
-        value.setValue(temp);
-    }
-}
-
-void OglIntVectorVariable::initVisual()
-{
-    shader->setIntVector(indexShader.getValue(), id.getValue().c_str(), value.getValue().size(), &(value.getValue()[0]));
-}
-
-void OglIntVector2Variable::initVisual()
-{
-    shader->setIntVector2(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/2, &(value.getValue()[0]));
-}
-
-void OglIntVector3Variable::initVisual()
-{
-    shader->setIntVector3(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/3, &(value.getValue()[0]));
-}
-
-void OglIntVector4Variable::initVisual()
-{
-    shader->setIntVector4(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/4, &(value.getValue()[0]));
-}
-
-
-OglFloatVectorVariable::OglFloatVectorVariable()
-{
-
-}
-
-OglFloatVector2Variable::OglFloatVector2Variable()
-{
-
-}
-
-OglFloatVector3Variable::OglFloatVector3Variable()
-{
-
-}
-
-OglFloatVector4Variable::OglFloatVector4Variable()
-{
-
-}
-
-
-void OglFloatVectorVariable::init()
-{
-    OglVariable<helper::vector<float> >::init();
-}
-
-void OglFloatVector2Variable::init()
-{
-    OglFloatVectorVariable::init();
-    helper::vector<float> temp = value.getValue();
-    if (value.getValue().size() %2 != 0)
-    {
-        serr << "The number of values is not even ; padding with one zero" << sendl;
-        temp.push_back(0.0);
-        value.setValue(temp);
-    }
-}
-
-void OglFloatVector3Variable::init()
-{
-    OglFloatVectorVariable::init();
-    helper::vector<float> temp = value.getValue();
-
-    if (value.getValue().size() %3 != 0)
-    {
-        serr << "The number of values is not a multiple of 3 ; padding with zero(s)" << sendl;
-        while (value.getValue().size() %3 != 0)
-            temp.push_back(0.0);
-        value.setValue(temp);
-    }
-}
-
-void OglFloatVector4Variable::init()
-{
-    OglFloatVectorVariable::init();
-    helper::vector<float> temp = value.getValue();
-
-    if (value.getValue().size() %4 != 0)
-    {
-        serr << "The number of values is not a multiple of 4 ; padding with zero(s)" << sendl;
-        while (value.getValue().size() %4 != 0)
-            temp.push_back(0.0);
-        value.setValue(temp);
-    }
-}
-
-void OglFloatVectorVariable::initVisual()
-{
-    shader->setFloatVector(indexShader.getValue(), id.getValue().c_str(), value.getValue().size(), &(value.getValue()[0]));
-}
-
-void OglFloatVector2Variable::initVisual()
-{
-    shader->setFloatVector2(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/2, &(value.getValue()[0]));
-}
-
-void OglFloatVector3Variable::initVisual()
-{
-    shader->setFloatVector3(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/3, &(value.getValue()[0]));
-}
-
-void OglFloatVector4Variable::initVisual()
-{
-    shader->setFloatVector4(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/4, &(value.getValue()[0]));
-}
-
-
-}
-
-}
-
-}
+#endif // SOFA_COMPONENT_VISUALMODEL_OGLVARIABLE_H
