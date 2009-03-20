@@ -14,12 +14,8 @@
 
 		<Object type="QuadularBendingSprings" name="FEM-Bend" stiffness="3000" damping="1.0"/> 
 		<Object type="DiagonalMass" massDensity="0.5" />
-		<Object type="FixedConstraint" indices="12 15" />
-	
-		<Node name="Visu">
-			<Object type="OglModel" name="Visual" color="red" />
-			<Object type="IdentityMapping" object1="../../Quads" object2="Visual" />
-		</Node>	
+		<!--<Object type="FixedConstraint" indices="12 15" />-->
+		<BoxConstraint box="0 3 0 0 3 0 3 3 0 3 3 0" />
 
 		<Node name="T">
 			<include href="Objects/TriangleSetTopology.xml" />
@@ -28,6 +24,11 @@
           		<Object type="TriangularFEMForceField" name="FEM" youngModulus="1000" poissonRatio="0.3" method="large" />
 			<Object type="TriangularBendingSprings" name="FEM-Bend" stiffness="3000" damping="1.0"/>		
 			<Object type="TriangleSet"/>							
+	
+			<Node name="Visu">
+				<Object type="OglModel" name="Visual" color="red" />
+				<Object type="IdentityMapping" object1="../../../Quads" object2="Visual" />
+			</Node>	
 		</Node>
 	</Node>
 </Node>

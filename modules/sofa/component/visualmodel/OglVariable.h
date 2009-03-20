@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef OGLVARIABLE_H_
-#define OGLVARIABLE_H_
+#ifndef SOFA_COMPONENT_VISUALMODEL_OGLVARIABLE_H
+#define SOFA_COMPONENT_VISUALMODEL_OGLVARIABLE_H
 
 #include <sofa/core/VisualModel.h>
 #include <sofa/core/objectmodel/BaseObject.h>
@@ -45,7 +45,7 @@ namespace visualmodel
  *
  *  This is an abstract class which pass a value to an uniform
  *  variable defined into the shader.
- *  At the moment, following types have been supported :
+ *  At the moment, following types are supported :
  *   - int, ivec2, ivec3, ivec4;
  *   - float, vec2, vec3, vec4;
  *   - int[], ivec2[], ivec3[], ivec4[];
@@ -58,14 +58,13 @@ class OglVariable : public core::VisualModel, public OglShaderElement
 protected:
     Data< DataTypes > value;
 public:
-    OglVariable():value(initData(&value, DataTypes(), "value", "Set Uniform Value")) { };
-    virtual ~OglVariable() { };
+    OglVariable();
+    virtual ~OglVariable();
 
-
-    void setValue( const DataTypes& v) {value.setValue(v);}
-    virtual void init() { OglShaderElement::init(); };
-    virtual void initVisual() { }
-    virtual void reinit() { init(); initVisual(); }
+    void setValue( const DataTypes& v ) { value.setValue(v); }
+    void init();
+    void initVisual();
+    void reinit();
 };
 
 /** SINGLE INT VARIABLE **/
@@ -73,7 +72,7 @@ class SOFA_COMPONENT_VISUALMODEL_API OglIntVariable : public OglVariable< int>
 {
 public:
     OglIntVariable();
-    virtual ~OglIntVariable() { };
+    virtual ~OglIntVariable() { }
 
     void initVisual();
 };
@@ -83,7 +82,7 @@ class SOFA_COMPONENT_VISUALMODEL_API OglInt2Variable : public OglVariable<defaul
 
 public:
     OglInt2Variable();
-    virtual ~OglInt2Variable() { };
+    virtual ~OglInt2Variable() { }
 
     void initVisual();
 };
@@ -92,7 +91,7 @@ class SOFA_COMPONENT_VISUALMODEL_API OglInt3Variable : public OglVariable<defaul
 {
 public:
     OglInt3Variable();
-    virtual ~OglInt3Variable() { };
+    virtual ~OglInt3Variable() { }
 
     void initVisual();
 };
@@ -101,7 +100,7 @@ class SOFA_COMPONENT_VISUALMODEL_API OglInt4Variable : public OglVariable<defaul
 {
 public:
     OglInt4Variable();
-    virtual ~OglInt4Variable() { };
+    virtual ~OglInt4Variable() { }
 
     void initVisual();
 };
@@ -112,7 +111,7 @@ class SOFA_COMPONENT_VISUALMODEL_API OglFloatVariable : public OglVariable<float
 {
 public:
     OglFloatVariable();
-    virtual ~OglFloatVariable() { };
+    virtual ~OglFloatVariable() { }
 
     void initVisual();
 };
@@ -121,7 +120,7 @@ class SOFA_COMPONENT_VISUALMODEL_API OglFloat2Variable : public OglVariable<defa
 {
 public:
     OglFloat2Variable();
-    virtual ~OglFloat2Variable() { };
+    virtual ~OglFloat2Variable() { }
 
     void initVisual();
 };
@@ -130,7 +129,7 @@ class SOFA_COMPONENT_VISUALMODEL_API OglFloat3Variable : public OglVariable<defa
 {
 public:
     OglFloat3Variable();
-    virtual ~OglFloat3Variable() { };
+    virtual ~OglFloat3Variable() { }
 
     void initVisual();
 };
@@ -139,7 +138,7 @@ class SOFA_COMPONENT_VISUALMODEL_API OglFloat4Variable : public OglVariable<defa
 {
 public:
     OglFloat4Variable();
-    virtual ~OglFloat4Variable() { };
+    virtual ~OglFloat4Variable() { }
 
     void initVisual();
 };
@@ -149,7 +148,7 @@ class SOFA_COMPONENT_VISUALMODEL_API OglIntVectorVariable : public OglVariable<h
 {
 public:
     OglIntVectorVariable();
-    virtual ~OglIntVectorVariable() { };
+    virtual ~OglIntVectorVariable() { }
 
     virtual void init();
     virtual void initVisual();
@@ -160,7 +159,7 @@ class SOFA_COMPONENT_VISUALMODEL_API OglIntVector2Variable : public OglIntVector
 
 public:
     OglIntVector2Variable();
-    virtual ~OglIntVector2Variable() { };
+    virtual ~OglIntVector2Variable() { }
 
     virtual void init();
     virtual void initVisual();
@@ -170,7 +169,7 @@ class SOFA_COMPONENT_VISUALMODEL_API OglIntVector3Variable : public OglIntVector
 {
 public:
     OglIntVector3Variable();
-    virtual ~OglIntVector3Variable() { };
+    virtual ~OglIntVector3Variable() { }
 
     virtual void init();
     virtual void initVisual();
@@ -180,7 +179,7 @@ class SOFA_COMPONENT_VISUALMODEL_API OglIntVector4Variable : public OglIntVector
 {
 public:
     OglIntVector4Variable();
-    virtual ~OglIntVector4Variable() { };
+    virtual ~OglIntVector4Variable() { }
 
     virtual void init();
     virtual void initVisual();
@@ -191,7 +190,7 @@ class SOFA_COMPONENT_VISUALMODEL_API OglFloatVectorVariable : public OglVariable
 {
 public:
     OglFloatVectorVariable();
-    virtual ~OglFloatVectorVariable() { };
+    virtual ~OglFloatVectorVariable() { }
 
     virtual void init();
     virtual void initVisual();
@@ -201,7 +200,7 @@ class SOFA_COMPONENT_VISUALMODEL_API OglFloatVector2Variable : public OglFloatVe
 {
 public:
     OglFloatVector2Variable();
-    virtual ~OglFloatVector2Variable() { };
+    virtual ~OglFloatVector2Variable() { }
 
     virtual void init();
     virtual void initVisual();
@@ -211,7 +210,7 @@ class SOFA_COMPONENT_VISUALMODEL_API OglFloatVector3Variable : public OglFloatVe
 {
 public:
     OglFloatVector3Variable();
-    virtual ~OglFloatVector3Variable() { };
+    virtual ~OglFloatVector3Variable() { }
 
     virtual void init();
     virtual void initVisual();
@@ -221,16 +220,16 @@ class SOFA_COMPONENT_VISUALMODEL_API OglFloatVector4Variable : public OglFloatVe
 {
 public:
     OglFloatVector4Variable();
-    virtual ~OglFloatVector4Variable() { };
+    virtual ~OglFloatVector4Variable() { }
 
     virtual void init();
     virtual void initVisual();
 };
 
-}
+} // namespace visualmodel
 
-}
+} // namespace component
 
-}
+} // namespace sofa
 
-#endif /*OGLVARIABLE_H_*/
+#endif // SOFA_COMPONENT_VISUALMODEL_OGLVARIABLE_H
