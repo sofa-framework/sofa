@@ -37,8 +37,6 @@ namespace controller
 void NullForceFeedback::init()
 {
     this->ForceFeedback::init();
-    OmniDriver* driver = context->get<OmniDriver>();
-    sout << "init NullForceFeedback" << driver << " done " << sendl;
 };
 
 void NullForceFeedback::computeForce(double /*x*/, double /*y*/, double /*z*/, double /*u*/, double /*v*/, double /*w*/, double /*q*/, double& fx, double& fy, double& fz)

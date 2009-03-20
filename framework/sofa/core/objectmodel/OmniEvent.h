@@ -54,19 +54,14 @@ public:
      */
     typedef enum
     {
-        Button1=0,
-        Button2
+        Button1=1,
+        Button2=2
     } State;
 
-
     /**
      * @brief Constructor.
      */
-    OmniEvent(State state, double posX, double posY, double posZ);
-    /**
-     * @brief Constructor.
-     */
-    OmniEvent(State state, Vector3 position, Quat orientation, bool button);
+    OmniEvent(const unsigned int id, const Vector3& position, const Quat& orientation, const unsigned char button);
 
     /**
      * @brief Destructor.
@@ -76,22 +71,17 @@ public:
     /**
      * @brief Get the PHANTOM® X coordinate
      */
-    double getPosX(void) const {return m_posX;};
+    double getPosX(void) const {return m_position[0];};
 
     /**
      * @brief Get the PHANTOM® Y coordinate
      */
-    double getPosY(void) const {return m_posY;};
+    double getPosY(void) const {return m_position[1];};
 
     /**
      * @brief Get the PHANTOM® Z coordinate
      */
-    double getPosZ(void) const {return m_posZ;};
-
-    /**
-     * @brief Get the PHANTOM® state.
-     */
-    State getState(void) const {return m_state;};
+    double getPosZ(void) const {return m_position[2];};
 
     /**
      * @brief Get the PHANTOM® coordinates.
@@ -106,15 +96,16 @@ public:
     /**
      * @brief Get the PHANTOM® button state.
      */
-    bool getButton(void) const {return m_button;}
+    unsigned char getButtonState() const {return m_buttonState;}
+
+    bool getButton(const int id = 0) const {return (bool) ((m_buttonState >> id) & 1);}
 
 private:
 
-    State m_state; ///< SensAble PHANTOM® buttons state on the event propagation.
-    double m_posX, m_posY, m_posZ; ///< SensAble PHANTOM® coordinates.
-    Vector3 m_position;///< SensAble PHANTOM® coordinates in a Vec3d type.
-    Quat m_orientation;///< SensAble PHANTOM® orientation.
-    bool m_button;
+    unsigned char	m_deviceId;
+    Vector3 m_position; ///< SensAble PHANTOM® coordinates in a Vec3d type.
+    Quat m_orientation; ///< SensAble PHANTOM® orientation.
+    unsigned char m_buttonState;
 };
 
 } // namespace objectmodel

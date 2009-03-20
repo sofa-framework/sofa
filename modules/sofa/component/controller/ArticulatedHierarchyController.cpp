@@ -47,7 +47,7 @@
 
 #include <sofa/simulation/common/Node.h>
 
-#include <cctype>
+// #include <cctype>
 
 namespace sofa
 {

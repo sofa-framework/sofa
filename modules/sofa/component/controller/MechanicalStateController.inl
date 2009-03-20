@@ -94,31 +94,11 @@ void MechanicalStateController<DataTypes>::applyController()
         {
 //			if(mState->getXfree())
             {
-//				(*mState->getXfree())[0].getCenter()[0] = (Real)omniX;
-//			//	(*mState->getX())[0].getCenter()[0] = omniX;
-//				(*mState->getXfree())[0].getCenter()[1] = (Real)omniY;
-//			//	(*mSt ate->getX())[0].getCenter()[1] = omniY;
-//				(*mState->getXfree())[0].getCenter()[2] = (Real)omniZ;
-//			//	(*mState->getX())[0].getCenter()[2] = omniZ;
-
                 (*mState->getXfree())[0].getCenter() = position;
                 (*mState->getX())[0].getCenter() = position;
 
-//				(*mState->getXfree())[0].getOrientation()[0] = 0.0;
-//				(*mState->getXfree())[0].getOrientation()[1] = 0.0;
-//				(*mState->getXfree())[0].getOrientation()[2] = 0.0;
-//				(*mState->getXfree())[0].getOrientation()[3] = 1.0;
-
                 (*mState->getXfree())[0].getOrientation() = orientation;
-
-//				(*mState->getX())[0].getOrientation()[0] = 0.0;
-//				(*mState->getX())[0].getOrientation()[1] = 0.0;
-//				(*mState->getX())[0].getOrientation()[2] = 0.0;
-//				(*mState->getX())[0].getOrientation()[3] = 1.0;
-
                 (*mState->getX())[0].getOrientation() = orientation;
-
-
             }
         }
         omni = false;
@@ -218,16 +198,10 @@ void MechanicalStateController<DataTypes>::onOmniEvent(core::objectmodel::OmniEv
 
     omni = true;
     buttonOmni = oev->getButton();
-    omniX = oev->getPosX();
-    omniY = oev->getPosY();
-    omniZ = oev->getPosZ();
     position = oev->getPosition();
     orientation = oev->getOrientation();
     applyController();
     omni = false;
-
-
-
 }
 
 
