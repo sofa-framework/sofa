@@ -7,13 +7,18 @@ declare -a results
 counter=0
 
 #---------------------------------------------------------------------------
-echo Touch files containing option \"$1\" inside ${defaultDirectories[@]}
+echo Touch files containing option \"$*\" inside ${defaultDirectories[@]}
+
+for options in $*
+do
+    pattern="-e $options $pattern"
+done
 
 for dir in $(seq 0 $((${#defaultDirectories[@]} - 1)))
 do
 
     echo "   "Searching in ${defaultDirectories[$dir]}
-    result=$(rgrep $1 ${defaultDirectories[$dir]} --include=*.h --include=*.inl --include=*.cpp -l)
+    result=$(rgrep $pattern ${defaultDirectories[$dir]} --include=*.h --include=*.inl --include=*.cpp -l)
     for file in $result
     do
         echo "      "found in $file
