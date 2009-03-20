@@ -447,7 +447,6 @@ void ManifoldTriangleSetTopologyContainer::createEdgeVertexShellArray()
 
 void ManifoldTriangleSetTopologyContainer::createTriangleVertexShellArray ()
 {
-
     if(!hasTriangles()) // this method should only be called when triangles exist
     {
 #ifndef NDEBUG
@@ -501,7 +500,7 @@ void ManifoldTriangleSetTopologyContainer::createTriangleVertexShellArray ()
         }
     }
 
-
+    // General loop for m_triangleVertexShell creation
     for (unsigned int vertexIndex = 0; vertexIndex < nbrVertices; ++vertexIndex)
     {
         it1 = map_NextVertex[vertexIndex].begin();
@@ -511,11 +510,11 @@ void ManifoldTriangleSetTopologyContainer::createTriangleVertexShellArray ()
         {
             it2 = map_PreviousVertex[vertexIndex].find((*it1).first);
 
-            if (it2 == map_PreviousVertex[vertexIndex].end())
+            if (it2 == map_PreviousVertex[vertexIndex].end()) //it2 didn't find the it1 correspondant element in his map, means it's a border
             {
                 firstVertex = (*it1).first;
                 break;
-            }
+            }//else we are not on a border. we keep the initialised value for firstVertex
         }
         m_triangleVertexShell[vertexIndex].push_back(map_Triangles[vertexIndex][firstVertex]);
         cpt=1;
@@ -524,13 +523,13 @@ void ManifoldTriangleSetTopologyContainer::createTriangleVertexShellArray ()
         {
             it2 = map_NextVertex[vertexIndex].find(firstVertex);
 
-            if ((*it2).first == (*it1).first && it2 == map_NextVertex[vertexIndex].end())
+            if (((*it2).first == firstVertex) && (it2 == map_NextVertex[vertexIndex].end()))
             {
                 // Contour has been done without reaching the end of the map
                 break;
             }
-
             firstVertex = (*it2).second;
+
             m_triangleVertexShell[vertexIndex].push_back(map_Triangles[vertexIndex][firstVertex]);
             cpt++;
         }
@@ -543,11 +542,9 @@ void ManifoldTriangleSetTopologyContainer::createTriangleVertexShellArray ()
 #endif
         }
     }
-
     map_Triangles.clear();
     map_NextVertex.clear();
     map_PreviousVertex.clear();
-
 }
 
 
