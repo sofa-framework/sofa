@@ -6,16 +6,18 @@ include($${SOFA_DIR}/sofa.cfg)
 
 TARGET = sofagpucuda$$LIBSUFFIX
 CONFIG += $$CONFIGLIBRARIES
-#CONFIG -= dynamiclib
-#CONFIG += staticlib
+
+CONFIG -= staticlib
+CONFIG += dll
+
+DEFINES += SOFA_BUILD_GPU_CUDA
+
 LIBS += $$SOFA_FRAMEWORK_LIBS
 LIBS += -lsofasimulation$$LIBSUFFIX
 LIBS += -lsofatree$$LIBSUFFIX
 contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 LIBS += -lsofaautomatescheduler$$LIBSUFFIX
 } # END SOFA_DEV
-LIBS += -lsofasimulation$$LIBSUFFIX
-LIBS += -lsofatree$$LIBSUFFIX
 LIBS += -lsofacomponentbase$$LIBSUFFIX
 LIBS += -lsofacomponentmastersolver$$LIBSUFFIX
 LIBS += -lsofacomponentfem$$LIBSUFFIX
@@ -38,6 +40,7 @@ LIBS += -lsofacomponent$$LIBSUFFIX
 LIBS += $$SOFA_EXT_LIBS
 
 HEADERS += mycuda.h \
+           gpucuda.h \
            CudaTypes.h \
 	   CudaTypesBase.h \
            CudaCommon.h \
@@ -82,6 +85,7 @@ HEADERS += mycuda.h \
            CudaTetrahedralVisualModel.inl
 
 SOURCES += mycuda.cpp \
+           CudaBoxROI.cpp  \
            CudaMechanicalObject.cpp \
            CudaUniformMass.cpp \
            CudaFixedConstraint.cpp \
@@ -138,7 +142,6 @@ HEADERS += \
        	CudaUncoupledConstraintCorrection.h
 
 SOURCES += \
-        CudaBoxROI.cpp  \
         CudaBTDLinearSolver.cpp  \
 	   	CudaLCP.cpp \
        	CudaMasterContactSolver.cpp \

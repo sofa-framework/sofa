@@ -25,6 +25,7 @@
 #ifndef MYCUDA_H
 #define MYCUDA_H
 
+#include "gpucuda.h"
 #include <string.h>
 
 #if defined(__cplusplus)
@@ -37,29 +38,29 @@ namespace cuda
 #endif
 
 extern "C" {
-    extern int mycudaInit(int device=-1);
-    extern void mycudaMalloc(void **devPtr, size_t size);
-    extern void mycudaMallocPitch(void **devPtr, size_t* pitch, size_t width, size_t height);
-    extern void mycudaFree(void *devPtr);
-    extern void mycudaMallocHost(void **hostPtr, size_t size);
-    extern void mycudaFreeHost(void *hostPtr);
-//extern void mycudaMemcpy(void *dst, const void *src, size_t count, enum cudaMemcpyKind kind);
-    extern void mycudaMemcpyHostToDevice(void *dst, const void *src, size_t count);
-    extern void mycudaMemcpyDeviceToDevice(void *dst, const void *src, size_t count);
-    extern void mycudaMemcpyDeviceToHost(void *dst, const void *src, size_t count);
-    extern void mycudaMemcpyHostToDevice2D(void *dst, size_t dpitch, const void *src, size_t spitch, size_t width, size_t height);
-    extern void mycudaMemcpyDeviceToDevice2D(void *dst, size_t dpitch, const void *src, size_t spitch, size_t width, size_t height);
-    extern void mycudaMemcpyDeviceToHost2D(void *dst, size_t dpitch, const void *src, size_t spitch, size_t width, size_t height);
+    extern int SOFA_GPU_CUDA_API mycudaInit(int device=-1);
+    extern void SOFA_GPU_CUDA_API mycudaMalloc(void **devPtr, size_t size);
+    extern void SOFA_GPU_CUDA_API mycudaMallocPitch(void **devPtr, size_t* pitch, size_t width, size_t height);
+    extern void SOFA_GPU_CUDA_API mycudaFree(void *devPtr);
+    extern void SOFA_GPU_CUDA_API mycudaMallocHost(void **hostPtr, size_t size);
+    extern void SOFA_GPU_CUDA_API mycudaFreeHost(void *hostPtr);
+//extern void SOFA_GPU_CUDA_API mycudaMemcpy(void *dst, const void *src, size_t count, enum cudaMemcpyKind kind);
+    extern void SOFA_GPU_CUDA_API mycudaMemcpyHostToDevice(void *dst, const void *src, size_t count);
+    extern void SOFA_GPU_CUDA_API mycudaMemcpyDeviceToDevice(void *dst, const void *src, size_t count);
+    extern void SOFA_GPU_CUDA_API mycudaMemcpyDeviceToHost(void *dst, const void *src, size_t count);
+    extern void SOFA_GPU_CUDA_API mycudaMemcpyHostToDevice2D(void *dst, size_t dpitch, const void *src, size_t spitch, size_t width, size_t height);
+    extern void SOFA_GPU_CUDA_API mycudaMemcpyDeviceToDevice2D(void *dst, size_t dpitch, const void *src, size_t spitch, size_t width, size_t height);
+    extern void SOFA_GPU_CUDA_API mycudaMemcpyDeviceToHost2D(void *dst, size_t dpitch, const void *src, size_t spitch, size_t width, size_t height);
 
-    extern void mycudaGLRegisterBufferObject(int id);
-    extern void mycudaGLUnregisterBufferObject(int id);
+    extern void SOFA_GPU_CUDA_API mycudaGLRegisterBufferObject(int id);
+    extern void SOFA_GPU_CUDA_API mycudaGLUnregisterBufferObject(int id);
 
-    extern void mycudaGLMapBufferObject(void** ptr, int id);
-    extern void mycudaGLUnmapBufferObject(int id);
+    extern void SOFA_GPU_CUDA_API mycudaGLMapBufferObject(void** ptr, int id);
+    extern void SOFA_GPU_CUDA_API mycudaGLUnmapBufferObject(int id);
 
-    extern void mycudaLogError(const char* err, const char* src);
-    extern int myprintf(const char* fmt, ...);
-    extern const char* mygetenv(const char* name);
+    extern void SOFA_GPU_CUDA_API mycudaLogError(const char* err, const char* src);
+    extern int SOFA_GPU_CUDA_API myprintf(const char* fmt, ...);
+    extern const char* SOFA_GPU_CUDA_API mygetenv(const char* name);
 
     enum MycudaVerboseLevel
     {
@@ -69,7 +70,7 @@ extern "C" {
         LOG_TRACE = 3
     };
 
-    extern MycudaVerboseLevel mycudaVerboseLevel;
+    extern MycudaVerboseLevel SOFA_GPU_CUDA_API mycudaVerboseLevel;
 }
 
 
