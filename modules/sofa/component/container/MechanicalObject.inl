@@ -59,7 +59,7 @@ using namespace sofa::core::componentmodel::topology;
 using namespace sofa::defaulttype;
 template <class DataTypes>
 MechanicalObject<DataTypes>::MechanicalObject()
-    : x(new VecCoord), v(new VecDeriv), f(new VecDeriv), dx(new VecDeriv), x0(new VecCoord),reset_position(NULL), v0(NULL), xfree(new VecCoord), vfree(new VecDeriv), c(new VecConst)
+    : x(new VecCoord), v(new VecDeriv), f(new VecDeriv), externalForces(new VecDeriv), dx(new VecDeriv), x0(new VecCoord),reset_position(NULL), v0(NULL), xfree(new VecCoord), vfree(new VecDeriv), c(new VecConst)
     , translation(core::objectmodel::Base::initData(&translation, Vector3(), "translation", "Translation of the DOFs"))
     , rotation(core::objectmodel::Base::initData(&rotation, Vector3(), "rotation", "Rotation of the DOFs"))
     , scale(core::objectmodel::Base::initData(&scale, (SReal)1.0, "scale", "Scale of the DOFs"))
@@ -69,6 +69,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     , f_X ( new XDataPtr<DataTypes>(&x,  "position coordinates of the degrees of freedom") )
     , f_V ( new VDataPtr<DataTypes>(&v,  "velocity coordinates of the degrees of freedom") )
     , f_F ( new VDataPtr<DataTypes>(&f,  "f vector of the degrees of freedom") )
+    , f_externalF ( new VDataPtr<DataTypes>(&externalForces,  "externalForces vector of the degrees of freedom") )
     , f_Dx ( new VDataPtr<DataTypes>(&dx,  "dx vector of the degrees of freedom") )
     , f_Xfree ( new XDataPtr<DataTypes>(&xfree,  "free position coordinates of the degrees of freedom") )
     , f_Vfree ( new VDataPtr<DataTypes>(&vfree,  "free velocity coordinates of the degrees of freedom") )
@@ -84,6 +85,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     this->addField(f_X, "position");
     this->addField(f_V, "velocity");
     this->addField(f_F, "force");
+    this->addField(f_F, "externalForce");
     this->addField(f_Dx, "derivX");
     this->addField(f_Xfree, "free_position");
     this->addField(f_Vfree, "free_velocity");
@@ -93,6 +95,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     f_X->init();
     f_V->init();
     f_F->init();
+    f_externalF->init();
     f_Dx->init();
     f_Xfree->init();
     f_Vfree->init();
@@ -102,7 +105,6 @@ MechanicalObject<DataTypes>::MechanicalObject()
     /*    x = new VecCoord;
       v = new VecDeriv;*/
     internalForces = f; // = new VecDeriv;
-    externalForces = new VecDeriv;
     //dx = new VecDeriv;
 
     // default size is 1
@@ -231,7 +233,6 @@ void MechanicalObject<DataTypes>::parse ( BaseObjectDescription* arg )
 template <class DataTypes>
 MechanicalObject<DataTypes>::~MechanicalObject()
 {
-    delete externalForces;
     if (reset_position!=NULL)
         delete reset_position;
     //if (x0!=NULL)
