@@ -341,6 +341,40 @@ void OglModel::initVertexBuffer()
             NULL,
             GL_DYNAMIC_DRAW);
 
+
+    updateVertexBuffer();
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
+
+
+void OglModel::initTrianglesIndicesBuffer()
+{
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
+
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, triangles.size()*sizeof(triangles[0]), NULL, GL_DYNAMIC_DRAW);
+    updateTrianglesIndicesBuffer();
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
+void OglModel::initQuadsIndicesBuffer()
+{
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, quads.size()*sizeof(quads[0]), NULL, GL_DYNAMIC_DRAW);
+    updateQuadsIndicesBuffer();
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+}
+
+void OglModel::updateVertexBuffer()
+{
+    unsigned int positionsBufferSize, normalsBufferSize, textureCoordsBufferSize = 0;
+    positionsBufferSize = (vertices.size()*sizeof(vertices[0]));
+    normalsBufferSize = (vnormals.size()*sizeof(vnormals[0]));
+    if (tex)
+        textureCoordsBufferSize = vtexcoords.size() * sizeof(vtexcoords[0]);
+
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
     //Positions
     glBufferSubData(GL_ARRAY_BUFFER,
             0,
@@ -360,94 +394,22 @@ void OglModel::initVertexBuffer()
                 textureCoordsBufferSize,
                 vtexcoords.getData());
     }
-
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 }
 
-
-void OglModel::initTrianglesIndicesBuffer()
+void OglModel::updateTrianglesIndicesBuffer()
 {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
-
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, triangles.size()*sizeof(triangles[0]), NULL, GL_DYNAMIC_DRAW);
     glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, triangles.size()*sizeof(triangles[0]), &triangles[0]);
-
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void OglModel::initQuadsIndicesBuffer()
+void OglModel::updateQuadsIndicesBuffer()
 {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, quads.size()*sizeof(quads[0]), NULL, GL_DYNAMIC_DRAW);
     glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, quads.size()*sizeof(quads[0]), &quads[0]);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-}
-
-bool OglModel::updateVertexBuffer()
-{
-    unsigned int positionsBufferSize, normalsBufferSize, textureCoordsBufferSize = 0;
-    positionsBufferSize = (vertices.size()*sizeof(vertices[0]));
-    normalsBufferSize = (vnormals.size()*sizeof(vnormals[0]));
-    if (tex)
-        textureCoordsBufferSize = vtexcoords.size() * sizeof(vtexcoords[0]);
-
-    GLvoid* pos_bo = NULL;
-
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-
-    pos_bo = (GLvoid*) glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-
-    if(pos_bo == NULL)
-    {
-        std::cerr << "OglModel : Unknown error when updating vertex buffer "<< std::endl;
-        return false;
-    }
-
-    memcpy((char*) pos_bo, vertices.getData(), positionsBufferSize);
-    memcpy((char*) pos_bo + (positionsBufferSize) , vnormals.getData(), normalsBufferSize);
-    if (tex)
-        memcpy((char*) pos_bo + positionsBufferSize + normalsBufferSize , vtexcoords.getData(), textureCoordsBufferSize);
-
-    glUnmapBuffer(GL_ARRAY_BUFFER);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-
-    return true;
-}
-
-bool OglModel::updateTrianglesIndicesBuffer()
-{
-    GLvoid* pos_bo = NULL;
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
-    pos_bo = (GLvoid*) glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY);
-
-    if(pos_bo == NULL)
-    {
-        std::cerr << "OglModel : Unknown error when updating triangles indices buffer "<< std::endl;
-        return false;
-    }
-    memcpy(pos_bo, &(triangles[0]), triangles.size()*sizeof(triangles[0]));
-    glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-    return true;
-}
-
-bool OglModel::updateQuadsIndicesBuffer()
-{
-    GLvoid* pos_bo = NULL;
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
-    pos_bo = (GLvoid*) glMapBuffer(GL_ELEMENT_ARRAY_BUFFER, GL_WRITE_ONLY);
-
-    if(pos_bo == NULL)
-    {
-        std::cerr << "OglModel : Unknown error when updating quads indices buffer "<< std::endl;
-        return false;
-    }
-    memcpy(pos_bo, &(quads[0]), quads.size()*sizeof(quads[0]));
-    glUnmapBuffer(GL_ELEMENT_ARRAY_BUFFER);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-
-    return true;
 }
 
 void OglModel::updateBuffers()
@@ -470,8 +432,6 @@ void OglModel::updateBuffers()
             //Update VBO & IBO
             else
             {
-// 				std::cout << triangles.size() <<  " " << quads.size() << std::endl;
-
                 if(oldVerticesSize != vertices.size())
                     initVertexBuffer();
                 else
