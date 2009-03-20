@@ -28,8 +28,10 @@
 #include <sofa/core/componentmodel/behavior/LinearSolver.h>
 #include <sofa/component/linearsolver/MatrixLinearSolver.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
-#include <sofa/component/linearsolver/SparseMatrix.h>
 #include <sofa/component/linearsolver/FullMatrix.h>
+#include <sofa/component/linearsolver/SparseMatrix.h>
+#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
+#include <sofa/component/component.h>
 #include <sofa/helper/map.h>
 #include <math.h>
 #include <csparse.h>
@@ -72,6 +74,10 @@ private :
     helper::vector<double> A_x;
     double * tmp;
 };
+
+#if defined(WIN32) && !defined(SOFA_BUILD_COMPONENT_LINEARSOLVER)
+extern template class SOFA_COMPONENT_LINEARSOLVER_API SparseCholeskySolver< CompressedRowSparseMatrix<double>,FullVector<double> >;
+#endif
 
 } // namespace linearsolver
 

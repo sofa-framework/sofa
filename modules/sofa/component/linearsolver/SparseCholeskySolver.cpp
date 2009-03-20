@@ -27,13 +27,9 @@
 // Copyright: See COPYING file that comes with this distribution
 #include <sofa/component/linearsolver/SparseCholeskySolver.h>
 #include <sofa/core/ObjectFactory.h>
-#include <iostream>
-#include "sofa/helper/system/thread/CTime.h"
-#include <sofa/core/objectmodel/BaseContext.h>
-#include <sofa/core/componentmodel/behavior/LinearSolver.h>
-#include <math.h>
 #include <sofa/helper/system/thread/CTime.h>
-#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
+#include <iostream>
+#include <math.h>
 
 namespace sofa
 {
@@ -206,6 +202,8 @@ int SparseCholeskySolverClass = core::RegisterObject("Linear system solver using
         .add< SparseCholeskySolver< CompressedRowSparseMatrix<double>,FullVector<double> > >(true)
         .addAlias("SparseCholeskySolverAlias")
         ;
+
+template class SOFA_COMPONENT_LINEARSOLVER_API SparseCholeskySolver< CompressedRowSparseMatrix<double>,FullVector<double> >;
 
 } // namespace linearsolver
 

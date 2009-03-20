@@ -2,6 +2,7 @@
 
 SOFA_DIR = ../../../..
 TEMPLATE = lib
+DEFINES += SOFA_BUILD_GPU_CUDA
 include($${SOFA_DIR}/sofa.cfg)
 
 TARGET = sofagpucuda$$LIBSUFFIX
@@ -9,8 +10,6 @@ CONFIG += $$CONFIGLIBRARIES
 
 CONFIG -= staticlib
 CONFIG += dll
-
-DEFINES += SOFA_BUILD_GPU_CUDA
 
 LIBS += $$SOFA_FRAMEWORK_LIBS
 LIBS += -lsofasimulation$$LIBSUFFIX
