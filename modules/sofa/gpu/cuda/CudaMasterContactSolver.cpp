@@ -212,13 +212,13 @@ void CudaMasterContactSolver<real>::computeInitialGuess()
             {
                 if (_mu>0.0)
                 {
-                    _f[3*c  ] = _PreviousContactList[pc].F.x();
-                    _f[3*c+1] = _PreviousContactList[pc].F.y();
-                    _f[3*c+2] = _PreviousContactList[pc].F.z();
+                    _f[3*c  ] = (real)_PreviousContactList[pc].F.x();
+                    _f[3*c+1] = (real)_PreviousContactList[pc].F.y();
+                    _f[3*c+2] = (real)_PreviousContactList[pc].F.z();
                 }
                 else
                 {
-                    _f[c] =  _PreviousContactList[pc].F.x();
+                    _f[c] =  (real)_PreviousContactList[pc].F.x();
                 }
             }
         }
@@ -373,15 +373,15 @@ void CudaMasterContactSolver<real>::step(double dt)
     else
     {
 #endif
-        real error = 0.0;
+        double error = 0.0;
 
         if (_mu > 0.0)
         {
-            error = sofa::gpu::cuda::CudaLCP<real>::CudaNlcp_gaussseidel(useGPU_d.getValue(),_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), _f.getCudaVector(), _mu,_tol, _maxIt);
+            error = sofa::gpu::cuda::CudaLCP<real>::CudaNlcp_gaussseidel(useGPU_d.getValue(),_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), _f.getCudaVector(), _mu,(real)_tol, _maxIt);
         }
         else
         {
-            error = sofa::gpu::cuda::CudaLCP<real>::CudaGaussSeidelLCP1(useGPU_d.getValue(),_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), _f.getCudaVector(), _tol, _maxIt);
+            error = sofa::gpu::cuda::CudaLCP<real>::CudaGaussSeidelLCP1(useGPU_d.getValue(),_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), _f.getCudaVector(), (real)_tol, _maxIt);
         }
 
         if (error > _tol) sout << "No convergence in gaussSeidelLCP1 : error = " << error << sendl;

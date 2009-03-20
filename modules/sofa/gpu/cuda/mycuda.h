@@ -59,8 +59,8 @@ extern "C" {
     extern void SOFA_GPU_CUDA_API mycudaGLUnmapBufferObject(int id);
 
     extern void SOFA_GPU_CUDA_API mycudaLogError(const char* err, const char* src);
-    extern int SOFA_GPU_CUDA_API myprintf(const char* fmt, ...);
-    extern const char* SOFA_GPU_CUDA_API mygetenv(const char* name);
+    extern int myprintf(const char* fmt, ...);
+    extern const char* mygetenv(const char* name);
 
     enum MycudaVerboseLevel
     {
