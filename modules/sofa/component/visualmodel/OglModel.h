@@ -88,9 +88,9 @@ public:
     void initVertexBuffer();
     void initTrianglesIndicesBuffer();
     void initQuadsIndicesBuffer();
-    bool updateVertexBuffer();
-    bool updateTrianglesIndicesBuffer();
-    bool updateQuadsIndicesBuffer();
+    void updateVertexBuffer();
+    void updateTrianglesIndicesBuffer();
+    void updateQuadsIndicesBuffer();
 };
 
 typedef sofa::defaulttype::Vec<3,GLfloat> GLVec3f;
