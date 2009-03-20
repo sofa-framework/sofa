@@ -78,13 +78,13 @@ protected:
     VecCoord* x;
     VecDeriv* v;
     VecDeriv* f;
+    VecDeriv* internalForces;
+    VecDeriv* externalForces;
     VecDeriv* dx;
     VecCoord* x0;
     VecCoord* reset_position;
 
     VecDeriv* v0;
-    VecDeriv* internalForces;
-    VecDeriv* externalForces;
     VecCoord* xfree; // stores the position of the mechanical objet after a free movement (p.e. gravity action)
     VecDeriv* vfree; // stores the velocity of the mechanical objet after a free movement (p.e. gravity action)
 
@@ -138,6 +138,7 @@ public:
     XDataPtr<DataTypes>* const f_X;
     VDataPtr<DataTypes>* const f_V;
     VDataPtr<DataTypes>* const f_F;
+    VDataPtr<DataTypes>* const f_externalF;
     VDataPtr<DataTypes>* const f_Dx;
     XDataPtr<DataTypes>* const f_Xfree;
     VDataPtr<DataTypes>* const f_Vfree;
@@ -152,7 +153,7 @@ public:
     virtual VecCoord* getX()  { f_X->beginEdit(); return x;  }
     virtual VecDeriv* getV()  { f_V->beginEdit(); return v;  }
     virtual VecDeriv* getF()  { f_F->beginEdit(); return f;  }
-    virtual VecDeriv* getExternalForces()  { return externalForces;  }
+    virtual VecDeriv* getExternalForces()  { f_externalF->beginEdit(); return externalForces;  }
     virtual VecDeriv* getDx() { f_Dx->beginEdit(); return dx; }
     virtual VecConst* getC() { return c;}
     virtual VecCoord* getXfree() { f_Xfree->beginEdit(); return xfree; }
