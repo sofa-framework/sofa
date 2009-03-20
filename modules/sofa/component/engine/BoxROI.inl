@@ -48,56 +48,31 @@ using namespace core::objectmodel;
 
 template <class DataTypes>
 BoxROI<DataTypes>::BoxROI()
-    : x0(new VecCoord)
-    , boxes( initData( &boxes, "box", "DOFs in the box defined by xmin,ymin,zmin, xmax,ymax,zmax are fixed") )
-    , f_X0( new XDataPtr<DataTypes>(&x0, "rest position coordinates of the degrees of freedom") )
+    : boxes( initData(&boxes, "box", "Box defined by xmin,ymin,zmin, xmax,ymax,zmax") )
+    , f_X0( initData (&f_X0, "rest_position", "Rest position coordinates of the degrees of freedom") )
     , f_indices( initData(&f_indices,"indices","Indices of the points contained in the ROI") )
-    , f_triangle_indices( initData(&f_triangle_indices,"triangle_indices","Indices of the triagles contained in the ROI") )
-    , _drawSize( initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
+    , _drawSize( initData(&_drawSize,0.0,"drawSize","0 -> point based rendering") )
 {
     boxes.beginEdit()->push_back(Vec6(0,0,0,1,1,1));
     boxes.endEdit();
 
-    addInput(f_X0);
-    this->addField(f_X0,"rest_position");
-    f_X0->init();
+    addInput(&f_X0);
 
     addOutput(&f_indices);
     f_indices.beginEdit()->push_back(0);
     f_indices.endEdit();
-
-    addOutput(&f_triangle_indices);
-    f_triangle_indices.beginEdit()->push_back(0);
-    f_triangle_indices.endEdit();
 }
 
 template <class DataTypes>
 void BoxROI<DataTypes>::init()
 {
-    if (!findField("rest_position")->isSet())
+    if (!f_X0.isSet())
     {
         BaseData* parent = mstate->findField("rest_position");
-        f_X0->setParentValue(parent);
-        parent->addOutput(f_X0);
-        f_X0->setReadOnly(true);
-        *x0 = f_X0->getValue();
+        f_X0.setParentValue(parent);
+        parent->addOutput(&f_X0);
+        f_X0.setReadOnly(true);
     }
-}
-
-template <class DataTypes>
-bool BoxROI<DataTypes>::containsTriangle(const Vec6& b, unsigned int index)
-{
-    const BaseMeshTopology::Triangle& triangle = topology->getTriangle(index);
-    Real x=0.0,y=0.0,z=0.0;
-    for (unsigned int i=0; i<triangle.size(); ++i)
-    {
-        DataTypes::get(x,y,z,(*x0)[triangle[i]]);
-        if(!(x >= b[0] && x <= b[3] && y >= b[1] && y <= b[4] && z >= b[2] && z <= b[5]))
-        {
-            return false;
-        }
-    }
-    return true;
 }
 
 template <class DataTypes>
@@ -124,6 +99,8 @@ void BoxROI<DataTypes>::update()
     SetIndex& indices = *(f_indices.beginEdit());
     indices.clear();
 
+    const VecCoord* x0 = &f_X0.getValue();
+
     for( unsigned i=0; i<x0->size(); ++i )
     {
         Real x=0.0,y=0.0,z=0.0;
@@ -140,62 +117,22 @@ void BoxROI<DataTypes>::update()
     }
 
     f_indices.endEdit();
-
-    if (topology)
-    {
-        SetTriangle& triangleIndices = *(f_triangle_indices.beginEdit());
-        triangleIndices.clear();
-
-        const BaseMeshTopology::SeqTriangles& triangles = topology->getTriangles();
-        for(unsigned int i=0; i<triangles.size(); ++i)
-        {
-            for (unsigned int bi=0; bi<vb.size(); ++bi)
-            {
-                const Vec6& b=vb[bi];
-                if (containsTriangle(b, i))
-                {
-                    triangleIndices.push_back(i);
-                }
-            }
-        }
-        f_triangle_indices.endEdit();
-    }
 }
-
-template <class DataTypes>
-BoxROI<DataTypes>::~BoxROI()
-{}
 
 template <class DataTypes>
 void BoxROI<DataTypes>::draw()
 {
     if (!this->getContext()->getShowBehaviorModels())
         return;
-    //const VecCoord& x = *x0;
 
     if( _drawSize.getValue() == 0) // old classical drawing by points
     {
-        //glColor4f (1,0.5,0.5,1);
-        //glDisable (GL_LIGHTING);
-        //glPointSize(10);
-
-        //glBegin (GL_POINTS);
-        //const SetIndex& indices = f_indices.getValue();
-        //for (typename SetIndex::const_iterator it = indices.begin();
-        //    it != indices.end();
-        //    ++it)
-        //{
-        //    gl::glVertexT(x[*it]);
-        //}
-        //glEnd();
-
-        ///draw the constraint boxes
+        ///draw the boxes
         glBegin(GL_LINES);
         const helper::vector<Vec6>& vb=boxes.getValue();
         for (unsigned int bi=0; bi<vb.size(); ++bi)
         {
             const Vec6& b=vb[bi];
-            //const Vec6& b=box.getValue();
             const Real& Xmin=b[0];
             const Real& Xmax=b[3];
             const Real& Ymin=b[1];
@@ -229,21 +166,6 @@ void BoxROI<DataTypes>::draw()
         }
         glEnd();
     }
-    //else // new drawing by spheres
-    //{
-    //    glColor4f (1.0f,0.35f,0.35f,1.0f);
-    //    glEnable(GL_LIGHTING);
-    //    glEnable(GL_COLOR_MATERIAL);
-    //    const SetIndex& indices = f_indices.getValue();
-    //    for (typename SetIndex::const_iterator it = indices.begin();
-    //        it != indices.end();
-    //        ++it)
-    //    {
-    //        helper::gl::drawSphere( x[*it], (float)_drawSize.getValue() );
-    //    }
-    //    glDisable(GL_LIGHTING);
-    //    glDisable(GL_COLOR_MATERIAL);
-    //}
 }
 
 template <class DataTypes>
@@ -253,7 +175,6 @@ bool BoxROI<DataTypes>::addBBox(double* minBBox, double* maxBBox)
     for (unsigned int bi=0; bi<vb.size(); ++bi)
     {
         const Vec6& b=vb[bi];
-        //const Vec6& b=box.getValue();
         if (b[0] < minBBox[0]) minBBox[0] = b[0];
         if (b[1] < minBBox[1]) minBBox[1] = b[1];
         if (b[2] < minBBox[2]) minBBox[2] = b[2];
