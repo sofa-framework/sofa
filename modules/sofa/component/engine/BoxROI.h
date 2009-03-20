@@ -34,7 +34,6 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
-#include <sofa/core/objectmodel/XDataPtr.h>
 #include <sofa/component/topology/PointSubset.h>
 
 namespace sofa
@@ -50,8 +49,9 @@ using namespace core::componentmodel::behavior;
 using namespace core::componentmodel::topology;
 using namespace core::objectmodel;
 
-/** Keep fixed all the particles located inside a given box.
-*/
+/**
+ * This class find all the points located inside a given box.
+ */
 template <class DataTypes>
 class BoxROI : public virtual core::objectmodel::DataEngine, public virtual core::objectmodel::BaseObject
 {
@@ -60,26 +60,15 @@ public:
     typedef typename DataTypes::Real Real;
     typedef defaulttype::Vec<6,Real> Vec6;
     typedef topology::PointSubset SetIndex;
-    typedef helper::vector<BaseMeshTopology::TriangleID> SetTriangle;
-
-    enum Element
-    {
-        POINT = 0,
-        EDGE,
-        TRIANGLE,
-        QUAD,
-        TETRA,
-        HEXA,
-        NB_ELEMENTS
-    };
 
 public:
 
     BoxROI();
 
-    ~BoxROI();
+    ~BoxROI() {}
 
     void init();
+
     void reinit();
 
     void update();
@@ -87,8 +76,6 @@ public:
     void draw();
 
     bool addBBox(double* minBBox, double* maxBBox);
-
-    bool containsTriangle(const Vec6& box, unsigned int index);
 
     /// this constraint is holonomic
     bool isHolonomic() {return true;}
@@ -111,7 +98,6 @@ public:
         if (context)
         {
             obj->mstate = dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState());
-            obj->topology = dynamic_cast<BaseMeshTopology*>(context->getMeshTopology());
         }
     }
 
@@ -125,14 +111,11 @@ public:
         return DataTypes::Name();
     }
 
-    VecCoord* x0;
     Data< helper::vector<Vec6> > boxes;
-    XDataPtr<DataTypes>* const f_X0;
+    Data<VecCoord> f_X0;
     Data<SetIndex> f_indices;
-    Data<SetTriangle> f_triangle_indices;
     Data<double> _drawSize;
     MechanicalState<DataTypes>* mstate;
-    BaseMeshTopology* topology;
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_ENGINE_BOXROI_CPP)
