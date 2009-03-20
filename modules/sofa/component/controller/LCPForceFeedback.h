@@ -26,14 +26,18 @@
 #define SOFA_COMPONENT_CONTROLLER_LCPFORCEFEEDBACK_H
 
 #include <sofa/component/controller/ForceFeedback.h>
-#include <sofa/component/controller/OmniDriver.h>
-#include <sofa/component/mastersolver/MasterContactSolver.h>
+#include <sofa/component/container/MechanicalObject.h>
 
 namespace sofa
 {
 
 namespace component
 {
+namespace odesolver
+{
+class MasterContactSolver;
+class LCP;
+}
 
 namespace controller
 {
@@ -50,12 +54,13 @@ public:
     Data<double> forceCoef;
     virtual void computeForce(double x, double y, double z, double u, double v, double w, double q, double& fx, double& fy, double& fz);
 
-    LCPForceFeedback() :
-        forceCoef(initData(&forceCoef, 0.03, "forceCoef","multiply haptic force by this coef.")) {};
+    LCPForceFeedback()
+        : forceCoef(initData(&forceCoef, 0.03, "forceCoef","multiply haptic force by this coef."))
+    {}
 
 protected:
     component::odesolver::LCP* lcp;
-    core::componentmodel::behavior::MechanicalState<Rigid3dTypes> *mState; ///< The omni try to follow this mechanical state.
+    core::componentmodel::behavior::MechanicalState<defaulttype::Rigid3dTypes> *mState; ///< The omni try to follow this mechanical state.
     sofa::component::odesolver::MasterContactSolver* mastersolver;
 };
 

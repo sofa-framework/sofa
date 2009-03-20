@@ -26,12 +26,13 @@
 #define SOFA_COMPONENT_CONTROLLER_ENSLAVEMENTFORCEFEEDBACK_H
 
 #include <sofa/component/controller/ForceFeedback.h>
-#include <sofa/component/controller/OmniDriver.h>
-#include <sofa/core/CollisionModel.h>
-#include <sofa/simulation/common/Node.h>
+
+#include <sofa/component/container/MechanicalObject.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
 {
+namespace core { class CollisionModel; }
 
 namespace component
 {
@@ -47,12 +48,17 @@ class EnslavementForceFeedback : public sofa::component::controller::ForceFeedba
 {
 
 public:
-    void init();
+    EnslavementForceFeedback();
+    virtual ~EnslavementForceFeedback();
+
+    virtual void init();
 
     virtual void computeForce(double x, double y, double z, double u, double v, double w, double q, double& fx, double& fy, double& fz);
 
 protected:
-    core::componentmodel::behavior::MechanicalState<Rigid3dTypes> *mState; ///< The omni try to follow this mechanical state.
+    Data<double>	stiffness;
+
+    core::componentmodel::behavior::MechanicalState<defaulttype::Rigid3dTypes> *mState; ///< The omni try to follow this mechanical state.
     sofa::helper::vector<core::CollisionModel*> collisionModels;
 };
 

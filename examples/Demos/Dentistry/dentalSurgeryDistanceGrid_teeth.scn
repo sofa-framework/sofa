@@ -75,7 +75,7 @@
 		<Object type="CGLinearSolver" name="linear solver" iterations="25" tolerance="1e-10" threshold="10e-10" /> 
 		<Object type="MechanicalObject" name="instrumentState" template="Rigid" position="0 -4 0  0 0 0 1"/>
 		<Object type="UniformMass" name="mass" totalmass="0.05" />
-		<Object type="EnslavementForceFeedback" activate="true"/> <!-- ADDED : Compute a force-feedback for the device -->
+		<Object type="EnslavementForceFeedback" activate="true" stiffness="3.0"/> <!-- ADDED : Compute a force-feedback for the device -->
 		<Node name="VisualModel" >
 			<Object type="OglModel" name="InstrumentVisualModel" fileMesh="data/mesh/dental_instrument.obj" color="1.0 0.2 0.2 1.0" dz="-3.5" dx="0.3" />
 			<Object type="RigidMapping" name="MM->VM mapping" object1="instrumentState" object2="InstrumentVisualModel" />

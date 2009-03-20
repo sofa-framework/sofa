@@ -35,28 +35,13 @@ namespace core
 namespace objectmodel
 {
 
-
-OmniEvent::OmniEvent(State state, double posX, double posY, double posZ)
+OmniEvent::OmniEvent(const unsigned int id, const Vector3& position, const Quat& orientation, const unsigned char button)
     : sofa::core::objectmodel::Event()
-    , m_state(state)
-    , m_posX(posX)
-    , m_posY(posY)
-    , m_posZ(posZ)
-{
-
-}
-
-OmniEvent::OmniEvent(State state, Vector3 position, Quat orientation, bool button)
-    : sofa::core::objectmodel::Event()
-    , m_state(state)
+    , m_deviceId(id)
     , m_position(position)
     , m_orientation(orientation)
-    , m_button(button)
-{
-    m_posX = position[0];
-    m_posY = position[1];
-    m_posZ = position[2];
-}
+    , m_buttonState(button)
+{}
 
 OmniEvent::~OmniEvent()
 {

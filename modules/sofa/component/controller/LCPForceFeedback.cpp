@@ -24,8 +24,11 @@
 ******************************************************************************/
 #include <sofa/component/controller/LCPForceFeedback.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/component/mastersolver/MasterContactSolver.h>
+#include <sofa/helper/LCPcalc.h>
 
 using namespace std;
+using namespace sofa::defaulttype;
 
 namespace sofa
 {
@@ -38,13 +41,10 @@ namespace controller
 void LCPForceFeedback::init()
 {
     this->ForceFeedback::init();
-    OmniDriver* driver = context->get<OmniDriver>();
 
 //	BaseObject* object2 = static_cast<BaseObject*>(context->getObject(classid(sofa::component::odesolver::MasterContactSolver)));
 
     mastersolver = context->get<sofa::component::odesolver::MasterContactSolver>();
-
-    driver->setForceFeedback(this);
 
     mState = dynamic_cast<MechanicalState<Rigid3dTypes> *> (this->getContext()->getMechanicalState());
     if (!mState)
@@ -56,7 +56,7 @@ void LCPForceFeedback::init()
 
     lcp = mastersolver->getLCP();
 
-    sout << "init LCPForceFeedback " << driver << " done " << sendl;
+    sout << "init LCPForceFeedback done " << sendl;
 };
 
 void LCPForceFeedback::computeForce(double x, double y, double z, double /*u*/, double /*v*/, double /*w*/, double /*q*/, double& fx, double& fy, double& fz)

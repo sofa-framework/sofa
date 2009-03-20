@@ -46,8 +46,6 @@
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
 
-#include <iostream>
-
 
 namespace sofa
 {

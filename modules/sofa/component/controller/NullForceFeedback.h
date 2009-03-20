@@ -26,8 +26,6 @@
 #define SOFA_COMPONENT_CONTROLLER_NULLFORCEFEEDBACK_H
 
 #include <sofa/component/controller/ForceFeedback.h>
-#include <sofa/component/controller/OmniDriver.h>
-
 
 namespace sofa
 {

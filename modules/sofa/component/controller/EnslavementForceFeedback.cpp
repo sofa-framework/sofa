@@ -25,7 +25,10 @@
 #include <sofa/component/controller/EnslavementForceFeedback.h>
 #include <sofa/core/ObjectFactory.h>
 
+#include <sofa/core/CollisionModel.h>
+
 using namespace std;
+using namespace sofa::defaulttype;
 
 namespace sofa
 {
@@ -34,36 +37,48 @@ namespace component
 namespace controller
 {
 
+EnslavementForceFeedback::EnslavementForceFeedback()
+    : ForceFeedback(),
+      stiffness(initData(&stiffness, 1.0, "stiffness", "Penalty stiffness"))
+{}
+
+EnslavementForceFeedback::~EnslavementForceFeedback()
+{}
+
 void EnslavementForceFeedback::init()
 {
     this->ForceFeedback::init();
-    OmniDriver* driver = context->get<OmniDriver>();
-    sout << "init EnslavementForceFeedback" << driver << " done " << sendl;
 
-    driver->setForceFeedback(this);
-
-    mState = dynamic_cast<MechanicalState<Rigid3dTypes> *> (this->getContext()->getMechanicalState());
+    mState = dynamic_cast<MechanicalState<Rigid3dTypes> *> (context->getMechanicalState());
     if (!mState)
         serr << "EnslavementForceFeedback has no binding MechanicalState" << sendl;
+
+    // fetch all collision models in the scene starting from this node
     simulation::Node* context = dynamic_cast<simulation::Node*>(getContext());
-    context->getTreeObjects<core::CollisionModel>(&collisionModels);
+    if(context)
+        context->getTreeObjects<core::CollisionModel>(&collisionModels);
 }
 
-void EnslavementForceFeedback::computeForce(double x, double y, double z, double /*u*/, double /*v*/, double /*w*/, double /*q*/, double& fx, double& fy, double& fz)
+void EnslavementForceFeedback::computeForce(double x, double y, double z,
+        double /*u*/, double /*v*/, double /*w*/, double /*q*/,
+        double& fx, double& fy, double& fz)
 {
     if (f_activate.getValue())
     {
         for (unsigned int i=0; i<collisionModels.size(); i++)
         {
+            // find first contact and generate a force proportional to the difference of Phantom position and
+            // contact position on object surface
             if (collisionModels[i]->getNumberOfContacts() > 0)
             {
                 double mx = (*mState->getX())[0].getCenter()[0];
                 double my = (*mState->getX())[0].getCenter()[1];
                 double mz = (*mState->getX())[0].getCenter()[2];
 
-                fx = 3.0 * (mx - 	x);
-                fy = 3.0 * (my - y);
-                fz = 3.0 * (mz - z);
+                const double& s = stiffness.getValue();
+                fx = s * (mx - x);
+                fy = s * (my - y);
+                fz = s * (mz - z);
                 return;
             }
         }
