@@ -52,7 +52,7 @@ using namespace sofa::core;
  * This class, called Hexa2TetraTopologicalMapping, is a specific implementation of the interface TopologicalMapping where :
  *
  * INPUT TOPOLOGY = HexahedronSetTopology
- * OUTPUT TOPOLOGY = TetrahedronSetTopology, as the boundary of the INPUT TOPOLOGY
+ * OUTPUT TOPOLOGY = TetrahedronSetTopology
  *
  * Tetra2TriangleTopologicalMapping class is templated by the pair (INPUT TOPOLOGY, OUTPUT TOPOLOGY)
  *
