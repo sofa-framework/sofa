@@ -60,15 +60,20 @@ void Visitor::printInfo(const core::objectmodel::BaseContext* context, bool dirD
         std::string info;
         if (dirDown)
         {
-            for (unsigned int i=0; i<Visitor::depthLevel; ++i) info += "\t";
             info += "<Node name=\"" + context->getName() + "\">\n";
             Visitor::depthLevel++;
+            initNodeTime.push_back(CTime::getRefTime());
         }
         else
         {
             Visitor::depthLevel--;
-            for (unsigned int i=0; i<Visitor::depthLevel; ++i) info +="\t";
-            info+= "</Node>\n";
+            ctime_t tSpent=initNodeTime.back();
+            initNodeTime.pop_back();
+            if (!initNodeTime.empty()) initNodeTime.back()+=getTimeSpent(tSpent,CTime::getRefTime());
+            std::ostringstream s;
+            s << "<Time value=\"" << getTimeSpent(tSpent,CTime::getRefTime()) << "\" />\n";
+
+            info+= s.str()+"</Node>\n";
         }
         dumpInfo(info);
         return;
@@ -85,7 +90,6 @@ void Visitor::printInfo(const core::objectmodel::BaseContext* context, bool dirD
 
         initVisitTime = CTime::getRefTime();
 
-        for (unsigned int i=0; i<Visitor::depthLevel; ++i) info+= "\t";
         info +="<" + std::string(this->getClassName());
         if (!infos.empty())
         {
@@ -94,9 +98,9 @@ void Visitor::printInfo(const core::objectmodel::BaseContext* context, bool dirD
         info+= ">\n";
 
         Visitor::depthLevel++;
-        for (unsigned int i=0; i<Visitor::depthLevel; ++i)info+= "\t";
         info+= "<Node name=\"" + NodeName + "\">\n";
         Visitor::depthLevel++;
+        initNodeTime.push_back(CTime::getRefTime());
         dumpInfo(info);
     }
     else
@@ -108,17 +112,18 @@ void Visitor::printInfo(const core::objectmodel::BaseContext* context, bool dirD
             if (enteringBase)
             {
                 Visitor::depthLevel--;
-                for (unsigned int i=0; i<Visitor::depthLevel; ++i) s << "\t";
+                ctime_t tSpent=initNodeTime.back();
+                initNodeTime.pop_back();
+                if (!initNodeTime.empty()) initNodeTime.back()+=getTimeSpent(tSpent,CTime::getRefTime());;
+                s << "<Time value=\"" << getTimeSpent(tSpent,CTime::getRefTime()) << "\" />\n";
                 s << "</Node>\n";
             }
             Visitor::depthLevel--;
 
 
 
-            for (unsigned int i=0; i<Visitor::depthLevel; ++i) s<< "\t";
             s << "<Time value=\"" << getTimeSpent(initVisitTime,CTime::getRefTime()) << "\" />\n";
 
-            for (unsigned int i=0; i<Visitor::depthLevel; ++i) s<< "\t";
             s << "</" + std::string(this->getClassName()) + ">\n";
             dumpInfo(s.str());
         }
@@ -135,7 +140,6 @@ void Visitor::printComment(const std::string &s)
     {
         std::string info;
         info+= "<!--";
-//       for (unsigned int i=0;i<Visitor::depthLevel;++i)info+="\t";
         info+=  s + " -->\n";
         dumpInfo(info);
     }
@@ -154,7 +158,6 @@ simulation::Node::ctime_t Visitor::begin(simulation::Node* node, core::objectmod
     {
 
         std::ostringstream info;
-        for (unsigned int i=0; i<depthLevel; ++i) info << "\t";
 
 
         info<< "<Component type=\"" << obj->getClassName() << "\" name=\"" << obj->getName() << "\" ptr=\"" << obj << "\" >\n";
@@ -178,10 +181,8 @@ void Visitor::end(simulation::Node* node, core::objectmodel::BaseObject* obj, ct
         std::string info;
 
         std::ostringstream s;
-        for (unsigned int i=0; i<depthLevel; ++i) info += "\t";
         s << "<Time value=\"" << getTimeSpent(initComponentTime,CTime::getRefTime()) << "\" />\n";
         info += s.str();
-        for (unsigned int i=0; i<depthLevel; ++i) info += "\t";
         info += "</Component>\n";
         dumpInfo(info);
     }

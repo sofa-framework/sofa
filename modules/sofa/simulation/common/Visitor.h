@@ -239,7 +239,7 @@ protected:
 
     ctime_t initVisitTime;
     ctime_t initComponentTime;
-    /*         std::list<ctime_t> initComponentTime; */
+    std::vector< ctime_t > initNodeTime;
 public:
     static void startDumpVisitor(std::ostream *s, double time)
     {
