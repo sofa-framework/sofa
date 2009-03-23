@@ -162,7 +162,7 @@ void GraphVisitor::openTime      ( TiXmlNode* node, Q3ListViewItem* item)
         }
         else
         {
-            if (std::find(visitedNode.begin(), visitedNode.end(),nodeType) == visitedNode.end())
+            if (nodeType != "Node" && std::find(visitedNode.begin(), visitedNode.end(),nodeType) == visitedNode.end())
             {
                 dataTime t(timeSec, nodeType);
                 std::vector< dataTime >::iterator it=std::find(visitorsTime.begin(),visitorsTime.end(),t);
