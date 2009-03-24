@@ -1,0 +1,184 @@
+
+/******************************************************************************
+ *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+ *                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+ *                                                                             *
+ * This program is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU General Public License as published by the Free  *
+ * Software Foundation; either version 2 of the License, or (at your option)   *
+ * any later version.                                                          *
+ *                                                                             *
+ * This program is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
+ * more details.                                                               *
+ *                                                                             *
+ * You should have received a copy of the GNU General Public License along     *
+ * with this program; if not, write to the Free Software Foundation, Inc., 51  *
+ * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.                   *
+ *******************************************************************************
+ *                            SOFA :: Applications                             *
+ *                                                                             *
+ * Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
+ * H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
+ * M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
+
+#ifndef SOFA_SOFACONFIGURATION_H
+#define SOFA_SOFACONFIGURATION_H
+
+#include <qlayout.h>
+#ifdef SOFA_QT4
+#include <QMainWindow>
+#include <QCheckBox>
+#include <QLabel>
+#include <QLineEdit>
+#else
+#include <qmainwindow.h>
+#include <qcheckbox.h>
+#include <qlabel.h>
+#include <qlineedit.h>
+#endif
+
+#include <iostream>
+#include <set>
+#include <vector>
+
+namespace sofa
+{
+
+namespace gui
+{
+
+namespace qt
+{
+
+enum TYPE_CONDITION {OPTION,ARCHI};
+
+class CONDITION
+{
+public:
+    CONDITION(TYPE_CONDITION t, bool p, std::string o):type(t),presence(p),option(o)
+    {}
+    bool operator== (const CONDITION& other)
+    {
+        return type==other.type &&
+                presence == other.presence &&
+                option   == other.option;
+    }
+    bool operator!= (const CONDITION& other)
+    {
+        return type!=other.type ||
+                presence != other.presence ||
+                option   != other.option;
+    }
+    TYPE_CONDITION type;
+    bool presence;
+    std::string option;
+};
+
+
+class DEFINES
+{
+public:
+    DEFINES(bool b, std::string n, std::string d, std::string c, bool t):value(b),name(n),description(d), category(c), typeOption(t)
+    {
+    };
+
+    bool operator== (const DEFINES& other)
+    {
+        if (typeOption)
+            return name == other.name;
+        else
+            return name == other.name && description == other.description;
+    }
+
+
+    void addConditions(std::vector< CONDITION > c) {conditions=c;}
+
+    bool value;
+    std::string name;
+    std::string description;
+    std::string category;
+    std::vector< CONDITION > conditions;
+
+    bool typeOption;
+};
+
+
+class ConfigWidget: public QWidget
+{
+    Q_OBJECT
+public:
+    bool getValue() {return check->isChecked();}
+
+    ConfigWidget(QWidget *parent, DEFINES &d);
+    DEFINES &option;
+
+public slots:
+    void updateValue(bool);
+
+signals:
+    void modified();
+protected:
+    QHBoxLayout *layout;
+    QCheckBox *check;
+};
+
+class TextConfigWidget: public ConfigWidget
+{
+    Q_OBJECT
+public:
+
+    TextConfigWidget(QWidget *parent, DEFINES &d);
+
+
+public slots:
+    void updateValue(const QString&);
+protected:
+    QLineEdit *description;
+};
+
+
+class OptionConfigWidget: public ConfigWidget
+{
+    Q_OBJECT
+public:
+
+    OptionConfigWidget(QWidget *parent, DEFINES &d);
+protected:
+    QLabel *description;
+};
+
+
+class SofaConfiguration : public QMainWindow
+{
+
+    Q_OBJECT
+public :
+
+    SofaConfiguration(std::string path, std::vector< DEFINES >& config);
+    ~SofaConfiguration() {};
+
+    bool getValue(CONDITION &option);
+
+    void processCondition(QWidget *w, CONDITION &c);
+public slots:
+
+    void updateOptions();
+    void updateConditions();
+    void saveConfiguration();
+protected:
+    std::string path;
+    std::vector< DEFINES >& data;
+    std::vector< ConfigWidget *> options;
+    std::set< QWidget *> optionsModified;
+
+    QLineEdit *projectVC;
+};
+}
+}
+}
+#endif
