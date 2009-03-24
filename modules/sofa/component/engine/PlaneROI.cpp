@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_ENGINE_BOXROI_CPP
-#include <sofa/component/engine/BoxROI.inl>
+#define SOFA_COMPONENT_ENGINE_PLANEROI_CPP
+#include <sofa/component/engine/PlaneROI.inl>
 #include <sofa/core/componentmodel/behavior/Constraint.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
@@ -38,22 +38,22 @@ namespace component
 namespace engine
 {
 
-SOFA_DECL_CLASS(BoxROI)
+SOFA_DECL_CLASS(PlaneROI)
 
-int BoxROIClass = core::RegisterObject("Find the points inside a given box")
+int PlaneROIClass = core::RegisterObject("Find the points inside a given plane")
 #ifndef SOFA_FLOAT
-        .add< BoxROI<Vec3dTypes> >()
+        .add< PlaneROI<Vec3dTypes> >()
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-        .add< BoxROI<Vec3fTypes> >()
+        .add< PlaneROI<Vec3fTypes> >()
 #endif //SOFA_DOUBLE
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_ENGINE_API BoxROI<Vec3dTypes>;
+template class SOFA_COMPONENT_ENGINE_API PlaneROI<Vec3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_ENGINE_API BoxROI<Vec3fTypes>;
+template class SOFA_COMPONENT_ENGINE_API PlaneROI<Vec3fTypes>;
 #endif //SOFA_DOUBLE
 
 
