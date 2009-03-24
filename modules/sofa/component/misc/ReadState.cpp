@@ -41,6 +41,31 @@ using namespace defaulttype;
 int ReadStateClass = core::RegisterObject("Read State vectors from file at each timestep")
         .add< ReadState >();
 
+ReadStateCreator::ReadStateCreator()
+    : sceneName("")
+#ifdef SOFA_HAVE_ZLIB
+    , extension(".txt.gz")
+#else
+    , extension(".txt")
+#endif
+    , createInMapping(false)
+    , init(true)
+    , counterReadState(0)
+{
+}
+
+ReadStateCreator::ReadStateCreator(const std::string &n, bool _createInMapping, bool i, int c)
+    : sceneName(n)
+#ifdef SOFA_HAVE_ZLIB
+    , extension(".txt.gz")
+#else
+    , extension(".txt")
+#endif
+    , createInMapping(_createInMapping)
+    , init(i)
+    , counterReadState(c)
+{
+}
 
 //Create a Read State component each time a mechanical state is found
 simulation::Visitor::Result ReadStateCreator::processNodeTopDown( simulation::Node* gnode)
@@ -66,7 +91,7 @@ void ReadStateCreator::addReadState(sofa::core::componentmodel::behavior::BaseMe
         }
 
         std::ostringstream ofilename;
-        ofilename << sceneName << "_" << counterReadState << "_" << ms->getName()  << "_mstate.txt" ;
+        ofilename << sceneName << "_" << counterReadState << "_" << ms->getName()  << "_mstate" << extension ;
 
         rs->f_filename.setValue(ofilename.str());  rs->f_listening.setValue(false); //Desactivated only called by extern functions
         if (init) rs->init();

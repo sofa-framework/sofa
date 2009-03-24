@@ -71,43 +71,28 @@ void CompareState::handleEvent(sofa::core::objectmodel::Event* event)
 //-------------------------------- processCompareState------------------------------------
 void CompareState::processCompareState()
 {
-    if (infile && mmodel)
+    double time = getContext()->getTime() + f_shift.getValue();
+    time += getContext()->getDt() * 0.001;
+    //lastTime = time+0.00001;
+    std::vector<std::string> validLines;
+    if (!this->readNext(time, validLines)) return;
+    for (std::vector<std::string>::iterator it=validLines.begin(); it!=validLines.end(); ++it)
     {
-        double time = getContext()->getTime() /*+ f_shift.getValue()*/;
-        lastTime = time+0.00001;
-        std::vector<std::string> validLines;
-        std::string line, cmd;
-        while (nextTime <= lastTime && !infile->eof())
+        std::istringstream str(*it);
+        std::string cmd;
+        str >> cmd;
+        double currentError=0;
+        if (cmd == "X=")
         {
-            getline(*infile, line);
-            std::istringstream str(line);
-            str >> cmd;
-            if (cmd == "T=")
-            {
-                str >> nextTime;
-                if (nextTime <= time) validLines.clear();
-            }
-
-            if (nextTime <= time) validLines.push_back(line);
+            currentError = mmodel->compareX(str);
+            totalError_X +=currentError;
+            dofError_X +=currentError/(double)this->mmodel->getSize();
         }
-        for (std::vector<std::string>::iterator it=validLines.begin(); it!=validLines.end(); ++it)
+        else if (cmd == "V=")
         {
-            std::istringstream str(*it);
-            cmd.clear();
-            str >> cmd;
-            double currentError=0;
-            if (cmd == "X=")
-            {
-                currentError = mmodel->compareX(str);
-                totalError_X +=currentError;
-                dofError_X +=currentError/(double)this->mmodel->getSize();
-            }
-            else if (cmd == "V=")
-            {
-                currentError = mmodel->compareV(str);
-                totalError_V +=currentError;
-                dofError_V += currentError/(double)this->mmodel->getSize();
-            }
+            currentError = mmodel->compareV(str);
+            totalError_V +=currentError;
+            dofError_V += currentError/(double)this->mmodel->getSize();
         }
     }
 }
@@ -117,6 +102,31 @@ void CompareState::processCompareState()
 
 
 
+CompareStateCreator::CompareStateCreator()
+    : sceneName("")
+#ifdef SOFA_HAVE_ZLIB
+    , extension(".txt.gz")
+#else
+    , extension(".txt")
+#endif
+    , createInMapping(false)
+    , init(true)
+    , counterCompareState(0)
+{
+}
+
+CompareStateCreator::CompareStateCreator(const std::string &n, bool i, int c)
+    : sceneName(n)
+#ifdef SOFA_HAVE_ZLIB
+    , extension(".txt.gz")
+#else
+    , extension(".txt")
+#endif
+    , createInMapping(false)
+    , init(i)
+    , counterCompareState(c)
+{
+}
 
 //Create a Compare State component each time a mechanical state is found
 simulation::Visitor::Result CompareStateCreator::processNodeTopDown( simulation::Node* gnode)
@@ -145,7 +155,7 @@ void CompareStateCreator::addCompareState(sofa::core::componentmodel::behavior::
         }
 
         std::ostringstream ofilename;
-        ofilename << sceneName << "_" << counterCompareState << "_" << ms->getName()  << "_mstate.txt" ;
+        ofilename << sceneName << "_" << counterCompareState << "_" << ms->getName()  << "_mstate" << extension ;
 
         rs->f_filename.setValue(ofilename.str());  rs->f_listening.setValue(false); //Desactivated only called by extern functions
         if (init) rs->init();

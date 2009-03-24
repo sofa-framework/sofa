@@ -45,6 +45,34 @@ int WriteStateClass = core::RegisterObject("Write State vectors to file at each 
 
 
 
+WriteStateCreator::WriteStateCreator()
+    : sceneName("")
+#ifdef SOFA_HAVE_ZLIB
+    , extension(".txt.gz")
+#else
+    , extension(".txt")
+#endif
+    , recordX(true)
+    , recordV(true)
+    , createInMapping(false)
+    , counterWriteState(0)
+{
+}
+
+WriteStateCreator::WriteStateCreator(const std::string &n, bool _recordX, bool _recordV, bool _createInMapping, int c)
+    : sceneName(n)
+#ifdef SOFA_HAVE_ZLIB
+    , extension(".txt.gz")
+#else
+    , extension(".txt")
+#endif
+    , recordX(_recordX)
+    , recordV(_recordV)
+    , createInMapping(_createInMapping)
+    , counterWriteState(c)
+{
+}
+
 
 //Create a Write State component each time a mechanical state is found
 simulation::Visitor::Result WriteStateCreator::processNodeTopDown( simulation::Node* gnode)
@@ -74,7 +102,7 @@ void WriteStateCreator::addWriteState(sofa::core::componentmodel::behavior::Base
         }
 
         std::ostringstream ofilename;
-        ofilename << sceneName << "_" << counterWriteState << "_" << ms->getName()  << "_mstate.txt" ;
+        ofilename << sceneName << "_" << counterWriteState << "_" << ms->getName()  << "_mstate" << extension ;
 
         ws->f_filename.setValue(ofilename.str()); ws->init(); ws->f_listening.setValue(true);  //Activated at init
 

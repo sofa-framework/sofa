@@ -29,6 +29,7 @@
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
 
+#include <string.h>
 #include <sstream>
 
 namespace sofa
@@ -47,7 +48,12 @@ ReadState::ReadState()
     , f_loop( initData(&f_loop, false, "loop", "set to 'true' to re-read the file when reaching the end"))
     , mmodel(NULL)
     , infile(NULL)
+#ifdef SOFA_HAVE_ZLIB
+    , gzfile(NULL)
+#endif
     , nextTime(0)
+    , lastTime(0)
+    , loopTime(0)
 {
     this->f_listening.setValue(true);
 }
@@ -56,6 +62,10 @@ ReadState::~ReadState()
 {
     if (infile)
         delete infile;
+#ifdef SOFA_HAVE_ZLIB
+    if (gzfile)
+        gzclose(gzfile);
+#endif
 }
 
 void ReadState::init()
@@ -68,9 +78,34 @@ void ReadState::reset()
 {
     mmodel = dynamic_cast< sofa::core::componentmodel::behavior::BaseMechanicalState* >(this->getContext()->getMechanicalState());
     if (infile)
+    {
         delete infile;
+        infile = NULL;
+    }
+#ifdef SOFA_HAVE_ZLIB
+    if (gzfile)
+    {
+        gzclose(gzfile);
+        gzfile = NULL;
+    }
+#endif
+
     const std::string& filename = f_filename.getFullPath();
-    if (!filename.empty())
+    if (filename.empty())
+    {
+        serr << "ERROR: empty filename"<<sendl;
+    }
+#ifdef SOFA_HAVE_ZLIB
+    else if (filename.size() >= 3 && filename.substr(filename.size()-3)==".gz")
+    {
+        gzfile = gzopen(filename.c_str(),"r");
+        if( !gzfile )
+        {
+            serr << "Error opening compressed file "<<filename<<sendl;
+        }
+    }
+#endif
+    else
     {
         infile = new std::ifstream(filename.c_str());
         if( !infile->is_open() )
@@ -99,7 +134,7 @@ void ReadState::handleEvent(sofa::core::objectmodel::Event* event)
 
 void ReadState::setTime(double time)
 {
-    if (time < nextTime) {reset(); nextTime=0.0;}
+    if (time < nextTime) {reset(); nextTime=0.0; loopTime=0.0; }
 }
 
 void ReadState::processReadState(double time)
@@ -109,58 +144,103 @@ void ReadState::processReadState(double time)
     processReadState();
 }
 
+bool ReadState::readNext(double time, std::vector<std::string>& validLines)
+{
+    if (!mmodel) return false;
+    if (!infile
+#ifdef SOFA_HAVE_ZLIB
+        && !gzfile
+#endif
+       )
+        return false;
+    lastTime = time;
+    validLines.clear();
+    std::string line, cmd;
+    while (nextTime <= time)
+    {
+#ifdef SOFA_HAVE_ZLIB
+        if (gzfile)
+        {
+            if (gzeof(gzfile))
+            {
+                if (!f_loop.getValue())
+                    break;
+                gzrewind(gzfile);
+                loopTime = nextTime;
+            }
+            //getline(gzfile, line);
+            line.clear();
+            char buf[4097];
+            buf[0] = '\0';
+            while (gzgets(gzfile,buf,sizeof(buf))!=NULL && buf[0])
+            {
+                int l = strlen(buf);
+                if (buf[l-1] == '\n')
+                {
+                    buf[l-1] = '\0';
+                    line += buf;
+                    break;
+                }
+                else
+                {
+                    line += buf;
+                    buf[0] = '\0';
+                }
+            }
+        }
+        else
+#endif
+            if (infile)
+            {
+                if (infile->eof())
+                {
+                    if (!f_loop.getValue())
+                        break;
+                    infile->clear();
+                    infile->seekg(0);
+                    loopTime = nextTime;
+                }
+                getline(*infile, line);
+            }
+        //sout << "line= "<<line<<sendl;
+        std::istringstream str(line);
+        str >> cmd;
+        if (cmd == "T=")
+        {
+            str >> nextTime;
+            nextTime += loopTime;
+            //sout << "next time: " << nextTime << sendl;
+            if (nextTime <= time)
+                validLines.clear();
+        }
+
+        if (nextTime <= time)
+            validLines.push_back(line);
+    }
+    return true;
+}
+
 void ReadState::processReadState()
 {
-    static double totalTime = 0.0;
+    double time = getContext()->getTime() + f_shift.getValue();
+    std::vector<std::string> validLines;
+    if (!readNext(time, validLines)) return;
     bool updated = false;
-
-    if (infile && mmodel)
+    for (std::vector<std::string>::iterator it=validLines.begin(); it!=validLines.end(); ++it)
     {
-        double time = getContext()->getTime() + f_shift.getValue();
-        lastTime = time;
-        std::vector<std::string> validLines;
-        std::string line, cmd;
-        while (nextTime <= time && !infile->eof())
+        std::istringstream str(*it);
+        std::string cmd;
+        str >> cmd;
+        if (cmd == "X=")
         {
-            getline(*infile, line);
-            //sout << "line= "<<line<<sendl;
-            std::istringstream str(line);
-            str >> cmd;
-            if (cmd == "T=")
-            {
-                str >> nextTime;
-                nextTime += totalTime;
-                if (nextTime <= time)
-                    validLines.clear();
-            }
-
-            if (nextTime <= time)
-                validLines.push_back(line);
+            mmodel->readX(str);
+            updated = true;
         }
-
-        for (std::vector<std::string>::iterator it=validLines.begin(); it!=validLines.end(); ++it)
+        else if (cmd == "V=")
         {
-            std::istringstream str(*it);
-            cmd.clear();
-            str >> cmd;
-            if (cmd == "X=")
-            {
-                mmodel->readX(str);
-                updated = true;
-            }
-            else if (cmd == "V=")
-            {
-                mmodel->readV(str);
-                updated = true;
-            }
+            mmodel->readV(str);
+            updated = true;
         }
-    }
-
-    if (f_loop.getValue() && infile->eof())
-    {
-        infile->clear();
-        infile->seekg(0);
-        totalTime = nextTime;
     }
 
     if (updated)
