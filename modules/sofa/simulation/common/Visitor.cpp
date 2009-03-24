@@ -69,7 +69,6 @@ void Visitor::printInfo(const core::objectmodel::BaseContext* context, bool dirD
             Visitor::depthLevel--;
             ctime_t tSpent=initNodeTime.back();
             initNodeTime.pop_back();
-            if (!initNodeTime.empty()) initNodeTime.back()+=getTimeSpent(tSpent,CTime::getRefTime());
             std::ostringstream s;
             s << "<Time value=\"" << getTimeSpent(tSpent,CTime::getRefTime()) << "\" />\n";
 
@@ -114,7 +113,6 @@ void Visitor::printInfo(const core::objectmodel::BaseContext* context, bool dirD
                 Visitor::depthLevel--;
                 ctime_t tSpent=initNodeTime.back();
                 initNodeTime.pop_back();
-                if (!initNodeTime.empty()) initNodeTime.back()+=getTimeSpent(tSpent,CTime::getRefTime());;
                 s << "<Time value=\"" << getTimeSpent(tSpent,CTime::getRefTime()) << "\" />\n";
                 s << "</Node>\n";
             }

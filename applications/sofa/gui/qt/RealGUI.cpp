@@ -1390,8 +1390,8 @@ void RealGUI::startDumpVisitor()
     Node* groot = viewer->getScene();
     if (groot && this->exportVisitorCheckbox->isOn())
     {
-        m_dumpVisitorStream = new std::ofstream(pathDumpVisitor.c_str());
-        Visitor::startDumpVisitor(m_dumpVisitorStream, groot->getTime());
+        m_dumpVisitorStream.str("");
+        Visitor::startDumpVisitor(&m_dumpVisitorStream, groot->getTime());
     }
 #endif
 }
@@ -1401,12 +1401,11 @@ void RealGUI::stopDumpVisitor()
     if (this->exportVisitorCheckbox->isOn())
     {
         Visitor::stopDumpVisitor();
-        m_dumpVisitorStream->flush();
-        delete m_dumpVisitorStream;
-        m_dumpVisitorStream=0;
+        m_dumpVisitorStream.flush();
         //Creation of the graph
-        if (!handleTraceVisitor->load(pathDumpVisitor)) std::cerr<< "Error while processing dumpVisitor.xml\n";
-        ::remove(pathDumpVisitor.c_str());
+        std::string xmlDoc=m_dumpVisitorStream.str();
+        handleTraceVisitor->load(xmlDoc);
+        m_dumpVisitorStream.str("");
     }
 #endif
 }

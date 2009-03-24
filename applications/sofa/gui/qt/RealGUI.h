@@ -243,7 +243,7 @@ protected:
 
     bool m_dumpState;
     std::ofstream* m_dumpStateStream;
-    std::ofstream* m_dumpVisitorStream;
+    std::ostringstream m_dumpVisitorStream;
     bool m_exportGnuplot;
     bool _animationOBJ; int _animationOBJcounter;// save a succession of .obj indexed by _animationOBJcounter
     bool m_displayComputationTime;

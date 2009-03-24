@@ -51,9 +51,8 @@ bool cmpTime(const dataTime &a, const dataTime &b) { return a.time > b.time;};
 bool GraphVisitor::load(std::string &file)
 {
     //Open it using TinyXML
-    TiXmlDocument doc(file.c_str());
-    bool loadOk = doc.LoadFile();
-    if (!loadOk) return false;
+    TiXmlDocument doc;
+    doc.Parse(file.c_str());
 
     TiXmlHandle hDoc(&doc);
     TiXmlNode* pElem;
