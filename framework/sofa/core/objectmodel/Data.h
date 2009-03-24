@@ -32,6 +32,7 @@
 #endif
 
 #include <sofa/core/objectmodel/BaseData.h>
+#include <sofa/core/core.h>
 #include <stdlib.h>
 #include <string>
 #include <sstream>
@@ -242,38 +243,24 @@ protected:
     }
 };
 
+#if defined(WIN32) && !defined(SOFA_CORE_OBJECTMODEL_DATA_CPP)
+
+extern template class SOFA_CORE_API TData< std::string >;
+extern template class SOFA_CORE_API Data< std::string >;
+extern template class SOFA_CORE_API TData< bool >;
+extern template class SOFA_CORE_API Data< bool >;
+
+#endif
+
 /// Specialization for reading strings
 template<>
-inline
-bool TData<std::string>::read( std::string& str )
-{
-    value() = str;
-    ++m_counter;
-    BaseData::setDirty();
-    return true;
-}
+bool TData<std::string>::read( std::string& str );
+
 
 /// Specialization for reading booleans
 template<>
-inline
-bool TData<bool>::read( std::string& str )
-{
-    if (str.empty())
-        return false;
+bool TData<bool>::read( std::string& str );
 
-    if (str[0] == 'T' || str[0] == 't')
-        value() = true;
-    else if (str[0] == 'F' || str[0] == 'f')
-        value() = false;
-    else if ((str[0] >= '0' && str[0] <= '9') || str[0] == '-')
-        value() = (atoi(str.c_str()) != 0);
-    else
-        return false;
-
-    ++m_counter;
-    BaseData::setDirty();
-    return true;
-}
 
 /// General case for printing default value
 template<class T>
@@ -299,6 +286,7 @@ std::string TData<T>::getValueTypeString() const
 {
     return BaseData::typeName(&value());
 }
+
 
 } // namespace objectmodel
 

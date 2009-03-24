@@ -99,6 +99,7 @@ SOURCES +=  \
           objectmodel/BaseObjectDescription.cpp \
           objectmodel/ClassInfo.cpp \
           objectmodel/Context.cpp \
+		  objectmodel/Data.cpp \
 	  objectmodel/DDGNode.cpp \
           objectmodel/DetachNodeEvent.cpp \
           objectmodel/Event.cpp \
