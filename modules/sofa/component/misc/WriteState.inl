@@ -30,6 +30,7 @@
 #include <sofa/core/objectmodel/DataFileName.h>
 
 #include <fstream>
+#include <sstream>
 
 namespace sofa
 {
@@ -54,6 +55,9 @@ WriteState::WriteState()
     , f_keperiod( initData(&f_keperiod, 0.0, "keperiod", "set the period to measure the kinetic energy increase"))
     , mmodel(NULL)
     , outfile(NULL)
+#ifdef SOFA_HAVE_ZLIB
+    , gzfile(NULL)
+#endif
     , nextTime(0)
     , lastTime(0)
     , kineticEnergyThresholdReached(false)
@@ -68,6 +72,10 @@ WriteState::~WriteState()
 {
     if (outfile)
         delete outfile;
+#ifdef SOFA_HAVE_ZLIB
+    if (gzfile)
+        gzclose(gzfile);
+#endif
 }
 
 
@@ -91,6 +99,17 @@ void WriteState::init()
 // 		serr << "ERROR: file "<<filename<<" already exists. Remove it to record new motion."<<sendl;
 // 	      }
 // 	    else
+#ifdef SOFA_HAVE_ZLIB
+        if (filename.size() >= 3 && filename.substr(filename.size()-3)==".gz")
+        {
+            gzfile = gzopen(filename.c_str(),"w");
+            if( !gzfile )
+            {
+                serr << "Error creating compressed file "<<filename<<sendl;
+            }
+        }
+        else
+#endif
         {
             outfile = new std::ofstream(filename.c_str());
             if( !outfile->is_open() )
@@ -118,91 +137,113 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
 {
     if (/* simulation::AnimateBeginEvent* ev = */ dynamic_cast<simulation::AnimateBeginEvent*>(event))
     {
+        if (!mmodel) return;
+        if (!outfile
+#ifdef SOFA_HAVE_ZLIB
+            && !gzfile
+#endif
+           )
+            return;
 
-        if (outfile && mmodel)
+        if (kineticEnergyThresholdReached)
+            return;
+
+        double time = getContext()->getTime();
+        // the time to measure the increase of energy is reached
+        if (f_stopAt.getValue())
         {
-            if (!kineticEnergyThresholdReached)
+            if (time > timeToTestEnergyIncrease)
             {
-                double time = getContext()->getTime();
-                // the time to measure the increase of energy is reached
-                if (f_stopAt.getValue())
+                simulation::Node *gnode = dynamic_cast<simulation::Node *>(this->getContext());
+                if (!gnode->mass)
                 {
-                    if (time > timeToTestEnergyIncrease)
-                    {
-                        simulation::Node *gnode = dynamic_cast<simulation::Node *>(this->getContext());
-                        if (!gnode->mass)
-                        {
-                            // Error: the mechanical model has no mass
-                            serr << "Error: Kinetic energy can not be computed. The mass for " << mmodel->getName() << " has no been defined" << sendl;
-                            exit(-1);
-                        }
-                        else
-                        {
-                            // computes the energy increase
-                            if (fabs(gnode->mass->getKineticEnergy() - savedKineticEnergy) < f_stopAt.getValue())
-                            {
-                                sout << "WriteState has been stopped. Kinetic energy threshold has been reached" << sendl;
-                                kineticEnergyThresholdReached = true;
-                            }
-                            else
-                            {
-                                // save the last energy measured
-                                savedKineticEnergy = gnode->mass->getKineticEnergy();
-                                // increase the period to measure the energy
-                                timeToTestEnergyIncrease+=f_keperiod.getValue();
-                            }
-                        }
-                    }
-                }
-
-                if (nextTime<f_time.getValue().size())
-                {
-                    // store the actual time instant
-                    lastTime = f_time.getValue()[nextTime];
-                    if (time >= lastTime) // if the time simulation is >= that the actual time instant
-                    {
-                        // write the X state
-                        (*outfile) << "T= "<< time << "\n";
-                        if (f_writeX.getValue())
-                        {
-                            (*outfile) << "  X= ";
-                            mmodel->writeX(*outfile);
-                            (*outfile) << "\n";
-                        }
-                        //write the V state
-                        if (f_writeV.getValue())
-                        {
-                            (*outfile) << "  V= ";
-                            mmodel->writeV(*outfile);
-                            (*outfile) << "\n";
-                        }
-                        outfile->flush();
-                        nextTime++;
-                    }
+                    // Error: the mechanical model has no mass
+                    serr << "Error: Kinetic energy can not be computed. The mass for " << mmodel->getName() << " has no been defined" << sendl;
+                    exit(-1);
                 }
                 else
                 {
-                    // write the state using a period
-                    if (time >= (lastTime + f_period.getValue()))
+                    // computes the energy increase
+                    if (fabs(gnode->mass->getKineticEnergy() - savedKineticEnergy) < f_stopAt.getValue())
                     {
-                        (*outfile) << "T= "<< time << "\n";
-                        if (f_writeX.getValue())
-                        {
-                            (*outfile) << "  X= ";
-                            mmodel->writeX(*outfile);
-                            (*outfile) << "\n";
-                        }
-                        if (f_writeV.getValue())
-                        {
-                            (*outfile) << "  V= ";
-                            mmodel->writeV(*outfile);
-                            (*outfile) << "\n";
-                        }
-                        outfile->flush();
-                        lastTime += f_period.getValue();
+                        sout << "WriteState has been stopped. Kinetic energy threshold has been reached" << sendl;
+                        kineticEnergyThresholdReached = true;
+                    }
+                    else
+                    {
+                        // save the last energy measured
+                        savedKineticEnergy = gnode->mass->getKineticEnergy();
+                        // increase the period to measure the energy
+                        timeToTestEnergyIncrease+=f_keperiod.getValue();
                     }
                 }
             }
+        }
+        bool writeCurrent = false;
+        if (nextTime<f_time.getValue().size())
+        {
+            // store the actual time instant
+            lastTime = f_time.getValue()[nextTime];
+            if (time >= lastTime) // if the time simulation is >= that the actual time instant
+            {
+                writeCurrent = true;
+                nextTime++;
+            }
+        }
+        else
+        {
+            // write the state using a period
+            if (time >= (lastTime + f_period.getValue()))
+            {
+                writeCurrent = true;
+                lastTime += f_period.getValue();
+            }
+        }
+        if (writeCurrent)
+        {
+#ifdef SOFA_HAVE_ZLIB
+            if (gzfile)
+            {
+                // write the X state
+                std::ostringstream str;
+                str << "T= "<< time << "\n";
+                if (f_writeX.getValue())
+                {
+                    str << "  X= ";
+                    mmodel->writeX(str);
+                    str << "\n";
+                }
+                //write the V state
+                if (f_writeV.getValue())
+                {
+                    str << "  V= ";
+                    mmodel->writeV(str);
+                    str << "\n";
+                }
+                gzputs(gzfile, str.str().c_str());
+                gzflush(gzfile, Z_SYNC_FLUSH);
+            }
+            else
+#endif
+                if (outfile)
+                {
+                    // write the X state
+                    (*outfile) << "T= "<< time << "\n";
+                    if (f_writeX.getValue())
+                    {
+                        (*outfile) << "  X= ";
+                        mmodel->writeX(*outfile);
+                        (*outfile) << "\n";
+                    }
+                    //write the V state
+                    if (f_writeV.getValue())
+                    {
+                        (*outfile) << "  V= ";
+                        mmodel->writeV(*outfile);
+                        (*outfile) << "\n";
+                    }
+                    outfile->flush();
+                }
         }
     }
 }

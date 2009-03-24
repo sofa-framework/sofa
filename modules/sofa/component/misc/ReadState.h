@@ -35,6 +35,10 @@
 #include <sofa/component/component.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
+#ifdef SOFA_HAVE_ZLIB
+#include <zlib.h>
+#endif
+
 #include <fstream>
 
 namespace sofa
@@ -60,8 +64,12 @@ public:
 protected:
     core::componentmodel::behavior::BaseMechanicalState* mmodel;
     std::ifstream* infile;
+#ifdef SOFA_HAVE_ZLIB
+    gzFile gzfile;
+#endif
     double nextTime;
     double lastTime;
+    double loopTime;
 public:
     ReadState();
 
@@ -77,6 +85,9 @@ public:
 
     void processReadState();
     void processReadState(double time);
+
+    /// Read the next values in the file corresponding to the last timestep before the given time
+    bool readNext(double time, std::vector<std::string>& lines);
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
@@ -96,8 +107,8 @@ public:
 class SOFA_COMPONENT_MISC_API ReadStateCreator: public Visitor
 {
 public:
-    ReadStateCreator():sceneName(""), createInMapping(false), counterReadState(0) {}
-    ReadStateCreator(std::string &n, bool _createInMapping, bool i=true, int c=0 ): sceneName(n), createInMapping(_createInMapping), init(i) , counterReadState(c) {}
+    ReadStateCreator();
+    ReadStateCreator(const std::string &n, bool _createInMapping, bool i=true, int c=0 );
     virtual Result processNodeTopDown( simulation::Node*  );
 
     void setSceneName(std::string &n) { sceneName = n;}
@@ -106,6 +117,7 @@ public:
 protected:
     void addReadState(sofa::core::componentmodel::behavior::BaseMechanicalState *ms, simulation::Node* gnode);
     std::string sceneName;
+    std::string extension;
     bool createInMapping;
     bool init;
     int counterReadState; //avoid to have two same files if two mechanical objects has the same name
