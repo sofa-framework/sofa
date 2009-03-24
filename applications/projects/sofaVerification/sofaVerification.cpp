@@ -52,6 +52,8 @@ void apply(std::vector< std::string> &files, unsigned int iterations, bool reini
     for (unsigned int i=0; i<files.size(); ++i)
     {
         groot = dynamic_cast< sofa::simulation::tree::GNode* >( sofa::simulation::getSimulation()->load(files[i].c_str()));
+        sofa::simulation::tree::getSimulation()->init(groot);
+
         if (groot == NULL)
         {
             std::cerr << "CANNOT open " << files[i] << " !\n";
@@ -121,7 +123,7 @@ int main(int argc, char** argv)
     bool reinit=false;
 
 
-
+    sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
 
     sofa::helper::parse(&files, "This is a SOFA verification. To use it, specify in the command line a \".ini\" file containing the path to the scenes you want to test. ")
     .option(&reinit,'r',"reinit","Recreate the references state files")
