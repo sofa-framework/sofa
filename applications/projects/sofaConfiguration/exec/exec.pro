@@ -9,7 +9,7 @@ DESTDIR = $$SOFA_DIR/bin
 CONFIG += $$CONFIGPROJECTGUI 
 LIBS += $$SOFA_GUI_LIBS
 LIBS += $$SOFA_LIBS
-LIBS += -lsofaconfiguration$$LIBSUFFIX
+LIBS += -lwidgetconfiguration$$LIBSUFFIX
 
 macx : {
 	CONFIG +=app_bundle
