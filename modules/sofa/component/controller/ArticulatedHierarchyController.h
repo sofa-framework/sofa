@@ -105,7 +105,7 @@ public:
     /**
      * @brief begin animation callback. Called at the beginning of each time step.
      */
-    void onBeginAnimationStep(void);
+    void onBeginAnimationStep(const double dt);
     //@}
 
     /**

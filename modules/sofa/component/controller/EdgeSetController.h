@@ -108,7 +108,7 @@ public:
     /**
      * @brief Begin Animation event callback.
      */
-    virtual void onBeginAnimationStep();
+    virtual void onBeginAnimationStep(const double dt);
 
     //@}
 

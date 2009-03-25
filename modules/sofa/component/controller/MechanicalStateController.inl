@@ -207,7 +207,7 @@ void MechanicalStateController<DataTypes>::onOmniEvent(core::objectmodel::OmniEv
 
 
 template <class DataTypes>
-void MechanicalStateController<DataTypes>::onBeginAnimationStep()
+void MechanicalStateController<DataTypes>::onBeginAnimationStep(const double /*dt*/)
 {
     applyController();
 }

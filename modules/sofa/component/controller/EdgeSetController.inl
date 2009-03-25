@@ -221,7 +221,7 @@ void EdgeSetController<DataTypes>::onKeyPressedEvent(core::objectmodel::Keypress
 
 
 template <class DataTypes>
-void EdgeSetController<DataTypes>::onBeginAnimationStep()
+void EdgeSetController<DataTypes>::onBeginAnimationStep(const double /*dt*/)
 {
     applyController();
 }
