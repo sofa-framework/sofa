@@ -100,9 +100,9 @@ public:
 
     Data<bool> _oldMethod;
 
-    using core::objectmodel::Base::serr;
-    using core::objectmodel::Base::sout;
-    using core::objectmodel::Base::sendl;
+    using HexahedralFEMForceFieldAndMass<DataTypes>::serr;
+    using HexahedralFEMForceFieldAndMass<DataTypes>::sout;
+    using HexahedralFEMForceFieldAndMass<DataTypes>::sendl;
 
     NonUniformHexahedralFEMForceFieldAndMass();
 
