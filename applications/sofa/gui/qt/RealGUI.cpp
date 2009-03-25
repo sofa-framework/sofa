@@ -614,6 +614,13 @@ void RealGUI::init()
     handleTraceVisitor = new GraphVisitor(windowTraceVisitor);
 
     //--------
+    descriptionScene = new QDialog(this);
+    descriptionScene->resize(400,400);
+    QVBoxLayout *descriptionLayout = new QVBoxLayout(descriptionScene);
+    htmlPage = new QTextBrowser(descriptionScene);
+    descriptionLayout->addWidget(htmlPage);
+    connect(htmlPage, SIGNAL(sourceChanged(const QUrl&)), this, SLOT(changeHtmlPage(const QUrl&)));
+    //--------
     pluginManager = new SofaPluginManager;
     pluginManager->hide();
     //*********************************************************************************************************************************
@@ -1015,6 +1022,24 @@ void RealGUI::setScene ( Node* groot, const char* filename )
     {
         updateRecentlyOpened(filename);
         setTitle ( filename );
+        std::string extension=sofa::helper::system::SetDirectory::GetExtension(filename);
+        std::string htmlFile=filename; htmlFile.resize(htmlFile.size()-extension.size()-1);
+        htmlFile+=".html";
+        if (sofa::helper::system::DataRepository.findFile (htmlFile))
+        {
+            descriptionScene->show();
+            htmlPage->setSource(QUrl(QString(htmlFile.c_str())));
+        }
+        else
+        {
+            htmlPage->setSource(QUrl(QString()));
+            descriptionScene->hide();
+        }
+    }
+    else
+    {
+        htmlPage->setSource(QUrl(QString()));
+        descriptionScene->hide();
     }
 
     if (tabInstrument!= NULL)
@@ -1987,9 +2012,16 @@ void RealGUI::dropEvent(QDropEvent* event)
     else  	                                    fileOpen(filename);
 }
 
+
+void RealGUI::changeHtmlPage( const QUrl& u)
+{
+    std::string path=u.path().ascii();
+    std::string extension=sofa::helper::system::SetDirectory::GetExtension(path.c_str());
+    if (extension == "xml" || extension == "scn") fileOpen(path);
+}
+
 void RealGUI::updateViewerParameters()
 {
-// 	viewer->setBackgroundColour(atof(background[0]->text().ascii()),atof(background[1]->text().ascii()),atof(background[2]->text().ascii()));
     gui->viewer->getQWidget()->update();
 }
 

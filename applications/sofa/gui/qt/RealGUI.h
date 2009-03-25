@@ -2,8 +2,8 @@
 *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
 *                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
 *                                                                             *
-* This program is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU General Public License as published by the Free  *
+* This program is free software; you can redistribute it and/or modify it     **
+ under the terms of the GNU General Public License as published by the Free  *
 * Software Foundation; either version 2 of the License, or (at your option)   *
 * any later version.                                                          *
 *                                                                             *
@@ -62,6 +62,8 @@
 #include <Q3TextDrag>
 #include <Q3PopupMenu>
 #include <QLibrary>
+#include <QTextBrowser>
+#include <QUrl>
 typedef Q3ListViewItem QListViewItem;
 typedef QStackedWidget QWidgetStack;
 typedef Q3PopupMenu QPopupMenu;
@@ -75,6 +77,8 @@ typedef QTextDrag Q3TextDrag;
 #include <qslider.h>
 #include <qpopupmenu.h>
 #include <qlibrary.h>
+#include <qtextbrowser.h>
+#include <qurl.h>
 #endif
 
 
@@ -185,6 +189,7 @@ public slots:
     void updateBackgroundColour();
     void updateBackgroundImage();
 
+    void changeHtmlPage( const QUrl&);
     void changeInstrument(int);
 
     void clearGraph();
@@ -347,6 +352,8 @@ private:
     WindowVisitor* windowTraceVisitor;
     GraphVisitor* handleTraceVisitor;
     SofaPluginManager* pluginManager;
+    QDialog* descriptionScene;
+    QTextBrowser* htmlPage;
 
 };
 
