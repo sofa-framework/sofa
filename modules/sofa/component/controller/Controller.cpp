@@ -72,11 +72,11 @@ void Controller::handleEvent(core::objectmodel::Event *event)
 {
     if (dynamic_cast<sofa::simulation::AnimateBeginEvent *>(event))
     {
-        onBeginAnimationStep();
+        onBeginAnimationStep((static_cast<sofa::simulation::AnimateBeginEvent *> (event))->getDt());
     }
     else if (dynamic_cast<sofa::simulation::AnimateEndEvent *>(event))
     {
-        onEndAnimationStep();
+        onEndAnimationStep((static_cast<sofa::simulation::AnimateEndEvent *> (event))->getDt());
     }
     else if (dynamic_cast<sofa::core::objectmodel::KeypressedEvent *>(event))
     {

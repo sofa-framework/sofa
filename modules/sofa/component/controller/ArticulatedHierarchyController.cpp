@@ -303,7 +303,7 @@ void ArticulatedHierarchyController::onMouseEvent(core::objectmodel::MouseEvent 
 
 
 
-void ArticulatedHierarchyController::onBeginAnimationStep()
+void ArticulatedHierarchyController::onBeginAnimationStep(const double /*dt*/)
 {
     applyController();
 }
