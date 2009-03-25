@@ -893,7 +893,6 @@ bool RealGUI::setViewer ( const char* name )
 
 void RealGUI::fileOpen ( std::string filename )
 {
-
     if ( sofa::helper::system::DataRepository.findFile (filename) )
         filename = sofa::helper::system::DataRepository.getFile ( filename );
     else
@@ -1027,18 +1026,22 @@ void RealGUI::setScene ( Node* groot, const char* filename )
         htmlFile+=".html";
         if (sofa::helper::system::DataRepository.findFile (htmlFile))
         {
+            htmlFile = sofa::helper::system::DataRepository.getFile (htmlFile);
+#ifdef WIN32
+            htmlFile = "file:///"+htmlFile;
+#endif
             descriptionScene->show();
             htmlPage->setSource(QUrl(QString(htmlFile.c_str())));
         }
         else
         {
-            htmlPage->setSource(QUrl(QString()));
+            htmlPage->clear();
             descriptionScene->hide();
         }
     }
     else
     {
-        htmlPage->setSource(QUrl(QString()));
+        htmlPage->clear();
         descriptionScene->hide();
     }
 
@@ -2016,6 +2019,10 @@ void RealGUI::dropEvent(QDropEvent* event)
 void RealGUI::changeHtmlPage( const QUrl& u)
 {
     std::string path=u.path().ascii();
+#ifdef WIN32
+    path = path.substr(1);
+#endif
+    path  = sofa::helper::system::DataRepository.getFile(path);
     std::string extension=sofa::helper::system::SetDirectory::GetExtension(path.c_str());
     if (extension == "xml" || extension == "scn") fileOpen(path);
 }
