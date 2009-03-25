@@ -589,7 +589,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCon
     helper::vector<unsigned int>	fineElements;
     _multilevelTopology->getHexaChildren(elementIndex, fineElements);
 
-    helper::vector<bool> fineChildren((unsigned int) coarseNodeSize*coarseNodeSize*coarseNodeSize, false);
+    helper::vector<bool> fineChildren((int) coarseNodeSize*coarseNodeSize*coarseNodeSize, false);
 
     for(unsigned int i=0; i<fineElements.size(); ++i)
     {
@@ -632,7 +632,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCon
             ElementStiffness K_tmp;
             ElementMass M_tmp;
             Real mass_tmp = 0;
-            helper::vector<bool> children_tmp((unsigned int) nextNodeSize*nextNodeSize*nextNodeSize, false);
+            helper::vector<bool> children_tmp((int) nextNodeSize*nextNodeSize*nextNodeSize, false);
 
             int i_min(0), i_max(nodeSize), j_min(0), j_max(nodeSize), k_min(0), k_max(nodeSize);
             switch(i)
