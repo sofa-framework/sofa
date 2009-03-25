@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_BOXROI_INL
-#define SOFA_COMPONENT_ENGINE_BOXROI_INL
+#ifndef SOFA_COMPONENT_ENGINE_PLANEROI_INL
+#define SOFA_COMPONENT_ENGINE_PLANEROI_INL
 
 #if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
 #pragma once
@@ -136,7 +136,7 @@ void PlaneROI<DataTypes>::update()
             {
                 if ( fabs(dot(pv0, plane2)) <= length && fabs(dot(pv1, plane3)) <= length )
                 {
-                    if (dot(pv0, vdepth) >= (-depth/2) && dot(pv0, vdepth) <= (depth/2) )
+                    if ( fabs(dot(pv0, vdepth)) <= fabs(depth/2) )
                     {
                         indices.push_back(i);
                         break;
