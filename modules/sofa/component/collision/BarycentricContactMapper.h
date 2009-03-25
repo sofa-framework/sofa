@@ -572,6 +572,7 @@ public:
 
 
 #if defined(WIN32) && !defined(SOFA_BUILD_COMPONENT_COLLISION)
+extern template class SOFA_COMPONENT_COLLISION_API BaseContactMapper<defaulttype::Vec3Types>;
 extern template class SOFA_COMPONENT_COLLISION_API ContactMapper<SphereModel>;
 extern template class SOFA_COMPONENT_COLLISION_API ContactMapper<SphereTreeModel>;
 extern template class SOFA_COMPONENT_COLLISION_API ContactMapper<PointModel>;
@@ -585,6 +586,13 @@ extern template class SOFA_COMPONENT_COLLISION_API ContactMapper<FFDDistanceGrid
 } // namespace collision
 
 } // namespace component
+
+#if defined(WIN32) && !defined(SOFA_BUILD_COMPONENT_COLLISION)
+namespace helper
+{
+extern template class SOFA_COMPONENT_COLLISION_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Vec3Types>, core::CollisionModel* >;
+} // namespace helper
+#endif
 
 } // namespace sofa
 
