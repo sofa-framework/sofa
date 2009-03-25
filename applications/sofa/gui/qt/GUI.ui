@@ -195,7 +195,7 @@
                                     <cstring>screenshotButton</cstring>
                                 </property>
                                 <property name="text">
-                                    <string>Save &amp;Caption</string>
+                                    <string>Save S&amp;creenshot</string>
                                 </property>
                                 <property name="accel">
                                     <string>Alt+C</string>
