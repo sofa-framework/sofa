@@ -35,6 +35,7 @@
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/component/topology/PointSubset.h>
+#include <sofa/defaulttype/Vec3Types.h>
 
 namespace sofa
 {
