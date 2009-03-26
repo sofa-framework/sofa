@@ -26,7 +26,7 @@
 #include <sofa/simulation/common/VisualVisitor.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
 #include <sofa/simulation/common/Simulation.h>
 #endif
 namespace sofa
@@ -41,7 +41,7 @@ void Visitor::execute(sofa::core::objectmodel::BaseContext* c)
 {
     c->executeVisitor(this);
 }
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
 unsigned int Visitor::depthLevel=0;
 simulation::Node::ctime_t Visitor::initDumpTime;
 bool Visitor::printActivated=false;
@@ -146,12 +146,12 @@ void Visitor::printComment(const std::string &s)
 /// Optional helper method to call before handling an object if not using the for_each method.
 /// It currently takes care of time logging, but could be extended (step-by-step execution for instance)
 simulation::Node::ctime_t Visitor::begin(simulation::Node* node, core::objectmodel::BaseObject*
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
         obj
 #endif
                                         )
 {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     if (printActivated)
     {
 
@@ -172,7 +172,7 @@ simulation::Node::ctime_t Visitor::begin(simulation::Node* node, core::objectmod
 void Visitor::end(simulation::Node* node, core::objectmodel::BaseObject* obj, ctime_t t0)
 {
     node->endTime(t0, getCategoryName(), obj);
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     if (printActivated)
     {
         Visitor::depthLevel--;

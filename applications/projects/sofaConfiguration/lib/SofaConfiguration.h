@@ -35,11 +35,13 @@
 #include <QCheckBox>
 #include <QLabel>
 #include <QLineEdit>
+#include <QDir>
 #else
 #include <qmainwindow.h>
 #include <qcheckbox.h>
 #include <qlabel.h>
 #include <qlineedit.h>
+#include <qdir.h>
 #endif
 
 #include <iostream>
@@ -165,6 +167,8 @@ public :
     bool getValue(CONDITION &option);
 
     void processCondition(QWidget *w, CONDITION &c);
+    void processDirectory(const QString &dir);
+    void processFile(const QFileInfo &info);
 public slots:
 
     void updateOptions();

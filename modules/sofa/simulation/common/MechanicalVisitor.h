@@ -192,7 +192,7 @@ public:
     ctime_t beginProcess(simulation::Node* node, core::objectmodel::BaseObject* obj);
     void endProcess(simulation::Node* node, core::objectmodel::BaseObject* obj, ctime_t t0);
 
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     virtual void setReadWriteVectors()=0;
     virtual void addReadVector(VecId &id) {readVector.push_back(id);}
     virtual void addWriteVector(VecId &id) {writeVector.push_back(id);}
@@ -215,7 +215,7 @@ public:
     VecId& v;
     MechanicalVAvailVisitor(VecId& v) : v(v)
     {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
@@ -230,7 +230,7 @@ public:
     {
         return false;
     }
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
         addReadWriteVector(v);
@@ -246,7 +246,7 @@ public:
     VecId v;
     MechanicalVAllocVisitor(VecId v) : v(v)
     {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
@@ -261,7 +261,7 @@ public:
     {
         return true;
     }
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
         addReadWriteVector(v);
@@ -276,7 +276,7 @@ public:
     VecId v;
     MechanicalVFreeVisitor(VecId v) : v(v)
     {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
@@ -291,7 +291,7 @@ public:
     {
         return true;
     }
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
     }
@@ -310,7 +310,7 @@ public:
     MechanicalVOpVisitor(VecId v, VecId a = VecId::null(), VecId b = VecId::null(), double f=1.0)
         : v(v), a(a), b(b), f(f)
     {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
@@ -362,7 +362,7 @@ public:
     {
         return true;
     }
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
         if (a!=VecId::null()) addReadVector(a);
@@ -386,7 +386,7 @@ public:
     MechanicalVMultiOpVisitor(const VMultiOp& o)
         : ops(o)
     {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
@@ -402,7 +402,7 @@ public:
     {
         return true;
     }
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
         for (unsigned int i=0; i<ops.size(); ++i)
@@ -418,7 +418,7 @@ public:
     void setVMultiOp(VMultiOp &o)
     {
         ops = o;
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
@@ -435,7 +435,7 @@ public:
     double* total;
     MechanicalVDotVisitor(VecId a, VecId b, double* t) : a(a), b(b), total(t)
     {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
@@ -463,7 +463,7 @@ public:
     /// Parallel code
     virtual void processNodeBottomUp(simulation::Node* /*node*/, LocalStorage* stack);
 
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
         addReadVector(a);
@@ -483,7 +483,7 @@ public:
     VecId dx;
     MechanicalPropagateDxVisitor(VecId dx) : dx(dx)
     {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
@@ -502,7 +502,7 @@ public:
     {
         return true;
     }
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
         addWriteVector(dx);
@@ -519,7 +519,7 @@ public:
     VecId dx,f;
     MechanicalPropagateDxAndResetForceVisitor(VecId dx, VecId f) : dx(dx), f(f)
     {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
@@ -537,7 +537,7 @@ public:
     {
         return true;
     }
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
         addWriteVector(dx);
@@ -566,7 +566,7 @@ public:
     {
         return true;
     }
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
         addWriteVector(x);
@@ -597,7 +597,7 @@ public:
     {
         return true;
     }
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
         addWriteVector(x);
@@ -614,7 +614,7 @@ public:
     VecId dx, v;
     MechanicalPropagateAndAddDxVisitor(VecId dx = VecId::dx(), VecId v =VecId::velocity()) : dx(dx) , v(v)
     {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
@@ -633,7 +633,7 @@ public:
     {
         return true;
     }
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
         addWriteVector(dx);
@@ -655,7 +655,7 @@ public:
     MechanicalAddMDxVisitor(VecId res, VecId dx=VecId(), double factor = 1.0)
         : res(res), dx(dx), factor(factor)
     {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
@@ -681,7 +681,7 @@ public:
     {
         return true;
     }
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
         addReadVector(res);
@@ -705,7 +705,7 @@ public:
     VecId f;
     MechanicalAccFromFVisitor(VecId a, VecId f) : a(a), f(f)
     {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
@@ -722,7 +722,7 @@ public:
     {
         return true;
     }
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
         addWriteVector(a);
@@ -759,7 +759,7 @@ public:
     {
         return true;
     }
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
         addWriteVector(x);
@@ -802,7 +802,7 @@ public:
     {
         return true;
     }
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
         addWriteVector(x);
@@ -825,7 +825,7 @@ public:
     VecId v;
     MechanicalPropagateFreePositionVisitor(double time=0, VecId x = VecId::freePosition(), VecId v = VecId::freeVelocity()): t(time), x(x), v(v)
     {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
@@ -844,7 +844,7 @@ public:
     {
         return true;
     }
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
         addWriteVector(x);
@@ -865,7 +865,7 @@ public:
 
     MechanicalResetForceVisitor(VecId res, bool onlyMapped = false) : res(res), onlyMapped(onlyMapped)
     {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
@@ -887,7 +887,7 @@ public:
     {
         return true;
     }
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
         addWriteVector(res);
@@ -906,7 +906,7 @@ public:
 
     MechanicalComputeForceVisitor(VecId res, bool accumulate = true) : res(res), accumulate(accumulate)
     {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
@@ -932,7 +932,7 @@ public:
     {
         return true;
     }
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
         addWriteVector(res);
@@ -951,7 +951,7 @@ public:
     bool accumulate; ///< Accumulate everything back to the DOFs through the mappings
     MechanicalComputeDfVisitor(VecId res, bool useV=false, bool accumulate=true) : res(res), useV(useV), accumulate(accumulate)
     {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
@@ -978,7 +978,7 @@ public:
     {
         return true;
     }
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
         addWriteVector(res);
@@ -1004,7 +1004,7 @@ public:
     MechanicalAddMBKdxVisitor(VecId res, double mFactor, double bFactor, double kFactor, bool useV=false, bool accumulate = true)
         : res(res), mFactor(mFactor), bFactor(bFactor), kFactor(kFactor), useV(useV), accumulate(accumulate)
     {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
@@ -1023,7 +1023,7 @@ public:
     {
         return true;
     }
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
         addWriteVector(res);
@@ -1037,7 +1037,7 @@ public:
     //VecId res;
     MechanicalResetConstraintVisitor(/*VecId res*/) //: res(res)
     {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
@@ -1055,7 +1055,7 @@ public:
     {
         return true;
     }
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
     }
@@ -1075,7 +1075,7 @@ public:
 
     MechanicalAccumulateLMConstraint()
     {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     };
@@ -1098,7 +1098,7 @@ public:
     {
         return false;
     }
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
     }
@@ -1114,7 +1114,7 @@ public:
     MechanicalAccumulateConstraint(unsigned int &_contactId)
         :contactId(_contactId)
     {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
@@ -1131,7 +1131,7 @@ public:
     {
         return false;
     }
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
     }
@@ -1151,7 +1151,7 @@ public:
     double **W;
     MechanicalApplyConstraintsVisitor(VecId res, double **W = NULL) : res(res), W(W)
     {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
@@ -1169,7 +1169,7 @@ public:
     {
         return true;
     }
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
         addReadWriteVector(res);
@@ -1186,7 +1186,7 @@ public:
     MechanicalBeginIntegrationVisitor (double dt)
         : dt(dt)
     {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
@@ -1202,7 +1202,7 @@ public:
     {
         return true;
     }
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
     }
@@ -1218,7 +1218,7 @@ public:
     MechanicalEndIntegrationVisitor (double dt)
         : dt(dt)
     {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
@@ -1234,7 +1234,7 @@ public:
     {
         return true;
     }
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
     }
@@ -1250,7 +1250,7 @@ public:
     MechanicalIntegrationVisitor (double dt)
         : dt(dt)
     {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
@@ -1268,7 +1268,7 @@ public:
     {
         return true;
     }
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
     }
@@ -1283,7 +1283,7 @@ class SOFA_SIMULATION_COMMON_API MechanicalComputeComplianceVisitor : public Mec
 public:
     MechanicalComputeComplianceVisitor( double **W):_W(W)
     {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
@@ -1294,7 +1294,7 @@ public:
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalComputeComplianceVisitor"; }
 
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
     }
@@ -1313,7 +1313,7 @@ public:
     VecId res;
     MechanicalComputeContactForceVisitor(VecId res) : res(res)
     {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
@@ -1330,7 +1330,7 @@ public:
     {
         return true;
     }
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
         addReadWriteVector(res);
@@ -1349,7 +1349,7 @@ public:
     VecId res;
     MechanicalAddSeparateGravityVisitor(double dt, VecId res) : dt(dt), res(res)
     {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
@@ -1361,7 +1361,7 @@ public:
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalAddSeparateGravityVisitor"; }
     virtual std::string getInfos() const { std::string name= "["+res.getName()+"]"; return name; }
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
         addReadWriteVector(res);
@@ -1393,7 +1393,7 @@ public:
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalPickParticles"; }
 
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
     }

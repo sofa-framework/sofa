@@ -37,7 +37,6 @@
 #include <qgroupbox.h>
 #include <qtoolbox.h>
 #include <qpushbutton.h>
-#include <qdir.h>
 #include <qprocess.h>
 typedef QProcess Q3Process;
 #endif
@@ -319,29 +318,142 @@ void SofaConfiguration::saveConfiguration()
 
     out.close();
 
+
     std::set< QWidget *>::iterator it;
     if (!optionsModified.empty())
     {
+        std::vector<QString> listDir;
+        listDir.push_back(QString("/applications"));
+        listDir.push_back(QString("/modules"));
+        listDir.push_back(QString("/framework"));
+        listDir.push_back(QString("/extlibs"));
+
+        std::set< QWidget *>::iterator it;
+        for (it=optionsModified.begin(); it!=optionsModified.end(); it++)
+            std::cout << "Touch file containing option \"" <<(*it)->name() << "\" ";
+        std::cout << "in [ ";
+        for (unsigned int i=0; i<listDir.size(); ++i)
+            std::cout << listDir[i].ascii() << " ";
+        std::cout << "]" << std::endl;
+
+
+        for (unsigned int i=0; i<listDir.size(); ++i)
+        {
+            std::cout << "   Searching in " << listDir[i].ascii() << "\n";
+            processDirectory(listDir[i]);
+        }
+
+
         QStringList argv;
 #ifndef WIN32
-        argv << QString(path.c_str()) + QString("/./touchAllFilesContainingString.sh");
+#if SOFA_QT4
+        argv << QString("qmake-qt4");
+#else
+        argv << QString("qmake");
+#endif
 #else
         argv << QString(path.c_str()) + QString("/") + QString(projectVC->text());
 #endif
-        for (it=optionsModified.begin(); it!=optionsModified.end(); it++)
-        {
-            argv << QString((*it)->name());
-        }
         Q3Process *p = new Q3Process(argv,this);
         p->setCommunication(0);
         p->setWorkingDirectory(QDir(QString(path.c_str())));
         p->start();
 
-
         optionsModified.clear();
     }
 }
 
+void SofaConfiguration::processDirectory(const QString &dir)
+{
+
+    QDir d(QString(path.c_str())+dir);
+
+    d.setFilter( QDir::Dirs | QDir::Hidden | QDir::NoSymLinks );
+
+    std::vector< QString > subDir;
+
+    const QFileInfoList &listDirectories =
+#ifdef SOFA_QT4
+        d.entryInfoList();
+    for (int j = 0; j < listDirectories.size(); ++j)
+    {
+        QFileInfo fileInfo=listDirectories.at(j);
+#else
+        *(d.entryInfoList());
+    QFileInfoListIterator it( listDirectories );
+    while ( (fi = itFile.current()) != 0 )
+    {
+        QFileInfo fileInfo=*(itFile.current());
+#endif
+        subDir.push_back(fileInfo.fileName());
+#ifndef SOFA_QT4
+        ++itFile;
+#endif
+    }
+
+    QStringList filters; filters << "*.cpp" << "*.h" << "*.inl";
+    d.setNameFilters(filters);
+    d.setFilter( QDir::Files | QDir::Hidden | QDir::NoSymLinks );
+
+
+    std::vector< QString > filesInside;
+
+
+    const QFileInfoList &listFiles =
+#ifdef SOFA_QT4
+        d.entryInfoList();
+    for (int j = 0; j < listFiles.size(); ++j)
+    {
+        QFileInfo fileInfo=listFiles.at(j);
+#else
+        *(d.entryInfoList(filter));
+    QFileInfoListIterator it( listFiles );
+    while ( (fi = itFile.current()) != 0 )
+    {
+        QFileInfo fileInfo=*(itFile.current());
+#endif
+        filesInside.push_back(fileInfo.fileName());
+        processFile(fileInfo);
+#ifndef SOFA_QT4
+        ++itFile;
+#endif
+    }
+
+    for (unsigned int i=0; i<subDir.size(); ++i)
+    {
+        if (subDir[i].left(1) == QString(".")) continue;
+        if (subDir[i] == QString("OBJ"))       continue;
+
+        QString nextDir=dir+QString("/")+subDir[i];
+        processDirectory(nextDir);
+    }
+}
+
+void SofaConfiguration::processFile(const QFileInfo &info)
+{
+    std::fstream file;
+    file.open(info.absFilePath(), std::ios::in | std::ios::out);
+    std::string line;
+    while (std::getline(file, line))
+    {
+        std::set< QWidget *>::iterator it;
+        for (it=optionsModified.begin(); it!=optionsModified.end(); it++)
+        {
+            std::string option((*it)->name());
+            if (line.find(option.c_str()) != std::string::npos)
+            {
+                //Touch the file
+                file.seekg(0);
+                char space; file.get(space);
+                file.seekg(0);
+                file.put(space);
+                std::cout << "      found in " << info.absFilePath().ascii() << std::endl;
+                return;
+            }
+        }
+    }
+    file.close();
+}
 }
 }
 }

@@ -55,7 +55,7 @@ public:
     MechanicalGetConstraintResolutionVisitor(std::vector<core::componentmodel::behavior::ConstraintResolution*>& res, unsigned int offset = 0)
         : _res(res),_offset(offset)
     {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
         //serr<<"creation of the visitor"<<sendl;
@@ -71,7 +71,7 @@ public:
         return RESULT_CONTINUE;
     }
 
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
     }
@@ -87,7 +87,7 @@ public:
     MechanicalSetConstraint(unsigned int &_contactId)
         :contactId(_contactId)
     {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
@@ -109,7 +109,7 @@ public:
     {
         return false;
     }
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
     }
@@ -124,7 +124,7 @@ class SOFA_COMPONENT_MASTERSOLVER_API MechanicalAccumulateConstraint2 : public s
 public:
     MechanicalAccumulateConstraint2()
     {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
@@ -144,7 +144,7 @@ public:
     {
         return false;
     }
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
     }

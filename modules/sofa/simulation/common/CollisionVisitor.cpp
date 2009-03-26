@@ -39,84 +39,84 @@ Visitor::Result CollisionVisitor::processNodeTopDown(simulation::Node* node)
 }
 
 void CollisionVisitor::processCollisionPipeline(simulation::Node*
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
         node
 #endif
         , core::componentmodel::collision::Pipeline* obj)
 {
     //std::cerr<<"CollisionVisitor::processCollisionPipeline"<<std::endl;
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     printComment("computeCollisionReset");
     ctime_t t0=begin(node, obj);
 #endif
     obj->computeCollisionReset();
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     end(node, obj,t0);
 #endif
 
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     printComment("computeCollisionDetection");
     t0=begin(node, obj);
 #endif
     obj->computeCollisionDetection();
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     end(node, obj,t0);
 #endif
 
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     printComment("computeCollisionResponse");
     t0=begin(node, obj);
 #endif
     obj->computeCollisionResponse();
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     end(node, obj,t0);
 #endif
 }
 
 void CollisionResetVisitor::processCollisionPipeline(simulation::Node*
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
         node
 #endif
         , core::componentmodel::collision::Pipeline* obj)
 {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     printComment("computeCollisionReset");
     ctime_t t0=begin(node, obj);
 #endif
     obj->computeCollisionReset();
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     end(node, obj,t0);
 #endif
 }
 
 void CollisionDetectionVisitor::processCollisionPipeline(simulation::Node*
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
         node
 #endif
         , core::componentmodel::collision::Pipeline* obj)
 {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     printComment("computeCollisionDetection");
     ctime_t t0=begin(node, obj);
 #endif
     obj->computeCollisionDetection();
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     end(node, obj,t0);
 #endif
 }
 
 void CollisionResponseVisitor::processCollisionPipeline(simulation::Node*
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
         node
 #endif
         , core::componentmodel::collision::Pipeline* obj)
 {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     printComment("computeCollisionResponse");
     ctime_t t0=begin(node, obj);
 #endif
     obj->computeCollisionResponse();
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     end(node, obj,t0);
 #endif
 }

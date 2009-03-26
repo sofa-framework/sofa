@@ -131,7 +131,7 @@ public:
 
         for( nb_iter=1; nb_iter<=f_maxIter.getValue(); nb_iter++ )
         {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
             std::ostringstream comment;
             comment << "Iteration : " << nb_iter;
             simulation::Visitor::printComment(comment.str());

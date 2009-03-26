@@ -34,7 +34,7 @@
 #include <sofa/helper/set.h>
 #include <iostream>
 
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
 #include <sofa/helper/system/thread/CTime.h>
 #endif
 
@@ -50,7 +50,7 @@ class LocalStorage;
 class SOFA_SIMULATION_COMMON_API Visitor
 {
 public:
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     typedef sofa::helper::system::thread::CTime CTime;
 
     Visitor() {enteringBase=NULL; infoPrinted=false; }
@@ -193,7 +193,7 @@ public:
     /// Alias for context->executeVisitor(this)
     void execute(core::objectmodel::BaseContext*);
     ctime_t begin(simulation::Node* node, core::objectmodel::BaseObject*
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
             obj
 #endif
                  );
@@ -221,7 +221,7 @@ public:
     Visitor& addTag(Tag t) { subsetsToManage.insert(t); return *this; }
     Visitor& removeTag(Tag t) { subsetsToManage.erase(t); return *this; }
 
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     //DEBUG Purposes
     static double getTimeSpent(ctime_t initTime, ctime_t endTime)
     {

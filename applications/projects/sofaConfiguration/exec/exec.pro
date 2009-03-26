@@ -7,8 +7,6 @@ include($${SOFA_DIR}/sofa.cfg)
 TARGET = sofaConfiguration$$SUFFIX
 DESTDIR = $$SOFA_DIR/bin
 CONFIG += $$CONFIGPROJECTGUI 
-LIBS += $$SOFA_GUI_LIBS
-LIBS += $$SOFA_LIBS
 LIBS += -lwidgetconfiguration$$LIBSUFFIX
 
 macx : {

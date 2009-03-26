@@ -162,7 +162,7 @@ void MechanicalVisitor::processNodeBottomUp(simulation::Node* node)
             this->bwdOdeSolver(node, node->solver[i]);
     }
 }
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
 void MechanicalVisitor::printReadVectors(core::componentmodel::behavior::BaseMechanicalState* mm, std::string &info)
 {
     if (!mm || !readVector.size() || !Visitor::printActivated) return;
@@ -305,7 +305,7 @@ void MechanicalVisitor::printWriteVectors(simulation::Node* node, core::objectmo
 simulation::Node::ctime_t MechanicalVisitor::beginProcess(simulation::Node* node, core::objectmodel::BaseObject* obj)
 {
     ctime_t t=begin(node, obj);
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     printReadVectors(node, obj);
 #endif
     return t;
@@ -313,7 +313,7 @@ simulation::Node::ctime_t MechanicalVisitor::beginProcess(simulation::Node* node
 
 void MechanicalVisitor::endProcess(simulation::Node* node, core::objectmodel::BaseObject* obj, ctime_t t0)
 {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     printWriteVectors(node, obj);
 #endif
     return end(node, obj, t0);
@@ -565,7 +565,7 @@ Visitor::Result MechanicalAccFromFVisitor::fwdMass(simulation::Node* node, core:
 #ifdef SOFA_SUPPORT_MAPPED_MASS
 MechanicalPropagatePositionAndVelocityVisitor::MechanicalPropagatePositionAndVelocityVisitor(double t, VecId x, VecId v, VecId a) : t(t), x(x), v(v), a(a)
 {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     setReadWriteVectors();
 #endif
     //cerr<<"::MechanicalPropagatePositionAndVelocityVisitor"<<endl;
@@ -573,7 +573,7 @@ MechanicalPropagatePositionAndVelocityVisitor::MechanicalPropagatePositionAndVel
 #else
 MechanicalPropagatePositionAndVelocityVisitor::MechanicalPropagatePositionAndVelocityVisitor(double t, VecId x, VecId v) : t(t), x(x), v(v)
 {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     setReadWriteVectors();
 #endif
     //cerr<<"::MechanicalPropagatePositionAndVelocityVisitor"<<endl;
@@ -582,7 +582,7 @@ MechanicalPropagatePositionAndVelocityVisitor::MechanicalPropagatePositionAndVel
 
 MechanicalPropagatePositionVisitor::MechanicalPropagatePositionVisitor(double t, VecId x) : t(t), x(x)
 {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     setReadWriteVectors();
 #endif
     //cerr<<"::MechanicalPropagatePositionAndVelocityVisitor"<<endl;

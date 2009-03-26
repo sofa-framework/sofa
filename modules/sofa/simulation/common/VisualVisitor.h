@@ -78,7 +78,7 @@ public:
     virtual void processObject(simulation::Node* node, core::objectmodel::BaseObject* o);
     virtual void bwdVisualModel(simulation::Node* node, core::VisualModel* vm);
     virtual const char* getClassName() const { return "VisualDrawVisitor"; }
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     virtual void printInfo(const core::objectmodel::BaseContext*,bool )  {return;}
 #endif
 };
