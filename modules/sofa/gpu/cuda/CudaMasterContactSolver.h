@@ -102,7 +102,7 @@ public:
     VecId force;
     MechanicalResetContactForceVisitor()
     {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
@@ -118,7 +118,7 @@ public:
         ms->resetForce();
         return RESULT_CONTINUE;
     }
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
     }
@@ -132,7 +132,7 @@ public:
     VecId force;
     MechanicalApplyContactForceVisitor(double *f):_f(f)
     {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
@@ -147,7 +147,7 @@ public:
         ms->applyContactForce(_f);
         return RESULT_CONTINUE;
     }
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
     }
@@ -170,7 +170,7 @@ public:
     {
         real * data = ((CudaBaseVector<real> *) v)->getCudaVector().hostWrite();
         _v = new FullVector<real>(data,0);
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
@@ -181,7 +181,7 @@ public:
         c->getConstraintValue(_v /*, _numContacts*/);
         return RESULT_CONTINUE;
     }
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
     }
@@ -196,7 +196,7 @@ class CudaMechanicalGetConstraintValueVisitor : public simulation::MechanicalVis
 public:
     CudaMechanicalGetConstraintValueVisitor(defaulttype::BaseVector * v): _v(v)
     {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
@@ -206,7 +206,7 @@ public:
         c->getConstraintValue(_v);
         return RESULT_CONTINUE;
     }
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
     }
@@ -221,7 +221,7 @@ public:
     MechanicalGetContactIDVisitor(long *id, unsigned int offset = 0)
         : _id(id),_offset(offset)
     {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
@@ -232,7 +232,7 @@ public:
         return RESULT_CONTINUE;
     }
 
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
     }

@@ -133,7 +133,7 @@ void Simulation::animate ( Node* root, double dt )
     if ( root->getMultiThreadSimulation() )
         return;
 
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printComment(std::string("Begin Step"));
 #endif
     {
@@ -174,7 +174,7 @@ void Simulation::animate ( Node* root, double dt )
         root->execute ( act );
     }
     root->execute<VisualUpdateVisitor>();
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printComment(std::string("End Step"));
 #endif
 }

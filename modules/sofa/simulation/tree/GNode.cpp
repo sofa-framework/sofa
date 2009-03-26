@@ -324,7 +324,7 @@ const sofa::helper::vector< core::objectmodel::BaseNode* > GNode::getChildren() 
 /// This method bypass the actionScheduler of this node if any.
 void GNode::doExecuteVisitor(simulation::Visitor* action)
 {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     action->setNode(this);
     action->printInfo(getContext(), true);
 #endif
@@ -345,7 +345,7 @@ void GNode::doExecuteVisitor(simulation::Visitor* action)
         }
         action->processNodeBottomUp(this);
 
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
         action->printInfo(getContext(), false);
 #endif
         actionStack.pop();
@@ -381,7 +381,7 @@ void GNode::doExecuteVisitor(simulation::Visitor* action)
         }
 
         action->processNodeBottomUp(this);
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
         action->printInfo(getContext(), false);
 #endif
     }

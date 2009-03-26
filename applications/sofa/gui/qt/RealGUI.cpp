@@ -602,7 +602,7 @@ void RealGUI::init()
 
 
 
-#ifndef DUMP_VISITOR_INFO
+#ifndef SOFA_DUMP_VISITOR_INFO
     //Remove option to see visitor trace
     this->exportVisitorCheckbox->hide();
 #endif
@@ -1414,7 +1414,7 @@ void RealGUI::setGUI ( void )
 
 void RealGUI::startDumpVisitor()
 {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     Node* groot = viewer->getScene();
     if (groot && this->exportVisitorCheckbox->isOn())
     {
@@ -1425,7 +1425,7 @@ void RealGUI::startDumpVisitor()
 }
 void RealGUI::stopDumpVisitor()
 {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     if (this->exportVisitorCheckbox->isOn())
     {
         Visitor::stopDumpVisitor();
