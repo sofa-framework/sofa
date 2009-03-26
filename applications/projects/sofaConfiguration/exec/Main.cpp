@@ -27,10 +27,8 @@
  ******************************************************************************/
 #include <iostream>
 #include <fstream>
+#include <stdlib.h>
 
-
-#include <sofa/helper/system/FileRepository.h>
-#include <sofa/helper/system/SetDirectory.h>
 
 #include "../lib/SofaConfiguration.h"
 
@@ -281,20 +279,64 @@ void parse(std::ifstream &in, std::vector<DEFINES>  &listOptions)
         }
 
     }
-
-//         std::vector<DEFINES>::const_iterator it;
-//         for (it=listOptions.begin();it != listOptions.end(); it++)
-//           {
-//             std::cerr << "[" << it->category << "] " << it->value << " --> " << it->name << " : \n\t" << it->description << std::endl;
-//             for (unsigned int i=0;i<it->conditions.size();++i)
-//               std::cerr << it->conditions[i].option << " ";
-//             std::cerr << " = CONDITIONs\n";
-//           }
 }
+
+//Copy/Paste of the content of helper/system/SetDirectory.cpp
+// Get the full path of the current process. The given filename should be the value of argv[0].
+std::string GetProcessFullPath(const char* filename)
+{
+#if defined (WIN32)
+    if (!filename || !filename[0])
+    {
+        //return __argv[0];
+        int n=0;
+        LPWSTR wpath = *CommandLineToArgvW(GetCommandLineW(),&n);
+        if (wpath)
+        {
+            char path[1024];
+            memset(path,0,sizeof(path));
+            wcstombs(path, wpath, sizeof(path)-1);
+            //std::cout << "Current process: "<<path<<std::endl;
+            if (path[0]) return path;
+        }
+    }
+    /// \TODO use GetCommandLineW and/or CommandLineToArgvW. This is however not strictly necessary, as argv[0] already contains the full path in most cases.
+#elif defined (__linux__)
+    if (!filename || filename[0]!='/')
+    {
+        char path[1024];
+        memset(path,0,sizeof(path));
+        readlink("/proc/self/exe",path,sizeof(path)-1);
+// 		std::cout << "Current process: "<< path <<std::endl;
+        if (path[0])
+            return path;
+        else
+            std::cout << "ERROR: can't get current process path..." << std::endl;
+    }
+#elif defined (__APPLE__)
+    if (!filename || filename[0]!='/')
+    {
+        char path[1024];
+        unsigned int size;
+        _NSGetExecutablePath( path, &size );
+// 		std::cout << "Current process path: "<<path<<std::endl;
+
+        return path;
+    }
+#endif
+
+    return std::string();
+}
+
+
 
 int main(int argc, char** argv)
 {
-    std::string file = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str());
+
+    std::string file=GetProcessFullPath(argv[0]);
+    std::size_t bin = file.find("bin");
+    file.resize(bin-1);
+    std::cerr << file << "\n";
     std::ifstream sofa_default((file+"/sofa-default.cfg").c_str());
     std::ifstream sofa_local((file+"/sofa-local.cfg").c_str());
 
@@ -316,7 +358,7 @@ int main(int argc, char** argv)
 
     QApplication* application = new QApplication(argc, argv);
     sofa::gui::qt::SofaConfiguration* config = new sofa::gui::qt::SofaConfiguration(file,listOptions);
-    application->setMainWidget(config);
+//   application->setMainWidget(config);
     config->show();
 
     return application->exec();

@@ -1,14 +1,16 @@
- 
 SOFA_DIR=../../../..
+
+!isEmpty(QT): QT += qt3support 
+
 TEMPLATE = app
 
-include($${SOFA_DIR}/sofa.cfg)
+QMAKE_LIBDIR = ../lib
 
 TARGET = sofaConfiguration$$SUFFIX
 DESTDIR = $$SOFA_DIR/bin
 CONFIG += $$CONFIGPROJECTGUI 
 LIBS += -lwidgetconfiguration$$LIBSUFFIX
-LIBS += -lsofahelper$$LIBSUFFIX
+
 
 macx : {
 	CONFIG +=app_bundle
