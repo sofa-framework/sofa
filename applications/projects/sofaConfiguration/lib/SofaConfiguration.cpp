@@ -375,24 +375,27 @@ void SofaConfiguration::processDirectory(const QString &dir)
     const QFileInfoList &listDirectories =
 #ifdef SOFA_QT4
         d.entryInfoList();
+    QStringList filters; filters << "*.cpp" << "*.h" << "*.inl";
+    d.setNameFilters(filters);
     for (int j = 0; j < listDirectories.size(); ++j)
     {
         QFileInfo fileInfo=listDirectories.at(j);
 #else
         *(d.entryInfoList());
-    QFileInfoListIterator it( listDirectories );
-    while ( (fi = itFile.current()) != 0 )
+    QString filters="*.cpp *.h *.inl";
+    d.setNameFilter(filters);
+    QFileInfoListIterator itDir( listDirectories );
+    while ( (itDir.current()) != 0 )
     {
-        QFileInfo fileInfo=*(itFile.current());
+
+        QFileInfo fileInfo=*(itDir.current());
 #endif
         subDir.push_back(fileInfo.fileName());
 #ifndef SOFA_QT4
-        ++itFile;
+        ++itDir;
 #endif
     }
 
-    QStringList filters; filters << "*.cpp" << "*.h" << "*.inl";
-    d.setNameFilters(filters);
     d.setFilter( QDir::Files | QDir::Hidden | QDir::NoSymLinks );
 
 
@@ -406,9 +409,9 @@ void SofaConfiguration::processDirectory(const QString &dir)
     {
         QFileInfo fileInfo=listFiles.at(j);
 #else
-        *(d.entryInfoList(filter));
-    QFileInfoListIterator it( listFiles );
-    while ( (fi = itFile.current()) != 0 )
+        *(d.entryInfoList());
+    QFileInfoListIterator itFile( listFiles );
+    while ( (itFile.current()) != 0 )
     {
         QFileInfo fileInfo=*(itFile.current());
 #endif
