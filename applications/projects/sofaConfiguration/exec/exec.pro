@@ -8,6 +8,7 @@ TARGET = sofaConfiguration$$SUFFIX
 DESTDIR = $$SOFA_DIR/bin
 CONFIG += $$CONFIGPROJECTGUI 
 LIBS += -lwidgetconfiguration$$LIBSUFFIX
+LIBS += -lsofahelper$$LIBSUFFIX
 
 macx : {
 	CONFIG +=app_bundle
