@@ -29,6 +29,17 @@
 #include <fstream>
 #include <stdlib.h>
 
+#ifndef WIN32
+#include <unistd.h>
+#else
+#include <windows.h>
+#include <direct.h>
+#endif
+#if defined (__APPLE__)
+#include <sys/param.h>
+#include <mach-o/dyld.h>
+#endif
+
 
 #include "../lib/SofaConfiguration.h"
 
