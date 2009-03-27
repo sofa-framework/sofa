@@ -1019,7 +1019,13 @@ void MechanicalObject<DataTypes>::reinit()
     if (rotation.getValue()[0]!=0.0 || rotation.getValue()[1]!=0.0 || rotation.getValue()[2]!=0.0)
     {
         this->applyRotation(rotation.getValue()[0],rotation.getValue()[1],rotation.getValue()[2]);
-//  	p0 = q.rotate(p0);
+
+        if (grid)
+        {
+            serr << "Warning ! MechanicalObject initial rotation is not applied to its grid topology\n";
+            serr << "Regular grid topologies rotations are unsupported.\n";
+            //  p0 = q.rotate(p0);
+        }
     }
 
     if (translation.getValue()[0]!=0.0 || translation.getValue()[1]!=0.0 || translation.getValue()[2]!=0.0)
