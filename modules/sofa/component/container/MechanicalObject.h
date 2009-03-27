@@ -98,6 +98,8 @@ protected:
     Data< Vector3 > translation;
     Data< Vector3> rotation;
     Data< SReal > scale;
+    Data< Vector3 > translation2;
+    Data< Vector3> rotation2;
     sofa::core::objectmodel::DataFileName filename;
     Data< bool> ignoreLoader;
 

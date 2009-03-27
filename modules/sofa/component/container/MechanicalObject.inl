@@ -63,6 +63,8 @@ MechanicalObject<DataTypes>::MechanicalObject()
     , translation(core::objectmodel::Base::initData(&translation, Vector3(), "translation", "Translation of the DOFs"))
     , rotation(core::objectmodel::Base::initData(&rotation, Vector3(), "rotation", "Rotation of the DOFs"))
     , scale(core::objectmodel::Base::initData(&scale, (SReal)1.0, "scale", "Scale of the DOFs"))
+    , translation2(core::objectmodel::Base::initData(&translation2, Vector3(), "translation2", "Translation of the DOFs, applied after the rest position has been computed"))
+    , rotation2(core::objectmodel::Base::initData(&rotation2, Vector3(), "rotation2", "Rotation of the DOFs, applied the after the rest position has been computed"))
     , filename(core::objectmodel::Base::initData(&filename, std::string(""), "filename", "File corresponding to the Mechanical Object", false))
     , ignoreLoader(core::objectmodel::Base::initData(&ignoreLoader, (bool) false, "ignoreLoader", "Is the Mechanical Object do not use a loader"))
     , vsize(0), m_gnuplotFileX(NULL), m_gnuplotFileV(NULL)
@@ -226,6 +228,14 @@ void MechanicalObject<DataTypes>::parse ( BaseObjectDescription* arg )
     {
         translation.setValue(Vector3((Real)atof(arg->getAttribute("dx","0.0")), (Real)atof(arg->getAttribute("dy","0.0")), (Real)atof(arg->getAttribute("dz","0.0"))));
         //applyTranslation(translation.getValue()[0],translation.getValue()[1],translation.getValue()[2]);
+    }
+    if (arg->getAttribute("rx2")!=NULL || arg->getAttribute("ry2")!=NULL || arg->getAttribute("rz2")!=NULL)
+    {
+        rotation2.setValue(Vector3((SReal)(atof(arg->getAttribute("rx2","0.0"))),(SReal)(atof(arg->getAttribute("ry2","0.0"))),(SReal)(atof(arg->getAttribute("rz2","0.0")))));
+    }
+    if (arg->getAttribute("dx2")!=NULL || arg->getAttribute("dy2")!=NULL || arg->getAttribute("dz2")!=NULL)
+    {
+        translation2.setValue(Vector3((Real)atof(arg->getAttribute("dx2","0.0")), (Real)atof(arg->getAttribute("dy2","0.0")), (Real)atof(arg->getAttribute("dz2","0.0"))));
     }
 
 }
@@ -988,6 +998,17 @@ void MechanicalObject<DataTypes>::init()
             for (unsigned int i=0; i<x0->size(); i++)
                 (*x0)[i] *= s;
         }
+    }
+
+
+    if (rotation2.getValue()[0]!=0.0 || rotation2.getValue()[1]!=0.0 || rotation2.getValue()[2]!=0.0)
+    {
+        this->applyRotation(rotation2.getValue()[0],rotation2.getValue()[1],rotation2.getValue()[2]);
+    }
+
+    if (translation2.getValue()[0]!=0.0 || translation2.getValue()[1]!=0.0 || translation2.getValue()[2]!=0.0)
+    {
+        this->applyTranslation( translation2.getValue()[0],translation2.getValue()[1],translation2.getValue()[2]);
     }
 
     initialized = true;
