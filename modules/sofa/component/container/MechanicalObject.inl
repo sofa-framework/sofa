@@ -1022,8 +1022,8 @@ void MechanicalObject<DataTypes>::reinit()
 
         if (grid)
         {
-            serr << "Warning ! MechanicalObject initial rotation is not applied to its grid topology\n";
-            serr << "Regular grid topologies rotations are unsupported.\n";
+            this->serr << "Warning ! MechanicalObject initial rotation is not applied to its grid topology"<<this->sendl;
+            this->serr << "Regular grid topologies rotations are unsupported."<<this->sendl;
             //  p0 = q.rotate(p0);
         }
     }
