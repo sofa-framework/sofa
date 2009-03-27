@@ -388,9 +388,6 @@ public:
     /// Add data stored in a BaseVector to a local mechanical vector of the MechanicalState
     virtual void addBaseVectorToState(VecId , defaulttype::BaseVector *, unsigned int &) = 0;
 
-    /// Add data stored in memory to a local mechanical vector of the MechanicalState
-    virtual void addDataToState(VecId , const SReal *, unsigned int &) = 0;
-
     /// Update offset index during the subgraph traversal
     virtual void setOffset(unsigned int &) = 0;
 
