@@ -435,37 +435,37 @@ void MarchingCubeUtility::initCell ( GridCell& cell, const Vec3i& coord, const u
 
     cell.pos[0]=vcurf.linearProduct ( gridStep )-Vector3 ( 1.0f,1.0f,1.0f );
     Vec3i valPos0=coord.linearProduct ( dataGridStep );
-    cell.val[0]=(float)((( valPos0[0] > roi.min[0]) && ( valPos0[1] > roi.min[1]) && ( valPos0[2] > roi.min[2]) && ( valPos0[0] < roi.max[0]-1) && ( valPos0[1] < roi.max[1]-1) && ( valPos0[2] < roi.max[2]-1))?data[valPos0[0] + valPos0[1]*dataResolution[0] + valPos0[2]*dataResolution[0]*dataResolution[1]]:0);
+    cell.val[0]=(float)((( valPos0[0] >= roi.min[0]) && ( valPos0[1] >= roi.min[1]) && ( valPos0[2] >= roi.min[2]) && ( valPos0[0] < roi.max[0]) && ( valPos0[1] < roi.max[1]) && ( valPos0[2] < roi.max[2]))?data[valPos0[0] + valPos0[1]*dataResolution[0] + valPos0[2]*dataResolution[0]*dataResolution[1]]:0);
 
     Vec3i valPos;
 
     cell.pos[1]=cell.pos[0]+Vector3 ( gridStep[0], 0, 0 );
     valPos=valPos0+Vec3i ( dataGridStep[0], 0, 0 );
-    cell.val[1]=(float)((( valPos[0] > roi.min[0]) && ( valPos[1] > roi.min[1]) && ( valPos[2] > roi.min[2]) && ( valPos[0] < roi.max[0]-1) && ( valPos[1] < roi.max[1]-1) && ( valPos[2] < roi.max[2]-1))?data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]]:0);
+    cell.val[1]=(float)((( valPos[0] >= roi.min[0]) && ( valPos[1] >= roi.min[1]) && ( valPos[2] >= roi.min[2]) && ( valPos[0] < roi.max[0]) && ( valPos[1] < roi.max[1]) && ( valPos[2] < roi.max[2]))?data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]]:0);
 
     cell.pos[2]=cell.pos[0]+Vector3 ( gridStep[0], gridStep[1], 0 );
     valPos=valPos0+Vec3i ( dataGridStep[0], dataGridStep[1], 0 );
-    cell.val[2]=(float)((( valPos[0] > roi.min[0]) && ( valPos[1] > roi.min[1]) && ( valPos[2] > roi.min[2]) && ( valPos[0] < roi.max[0]-1) && ( valPos[1] < roi.max[1]-1) && ( valPos[2] < roi.max[2]-1))?data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]]:0);
+    cell.val[2]=(float)((( valPos[0] >= roi.min[0]) && ( valPos[1] >= roi.min[1]) && ( valPos[2] >= roi.min[2]) && ( valPos[0] < roi.max[0]) && ( valPos[1] < roi.max[1]) && ( valPos[2] < roi.max[2]))?data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]]:0);
 
     cell.pos[3]=cell.pos[0]+Vector3 ( 0, gridStep[1], 0 );
     valPos=valPos0+Vec3i ( 0, dataGridStep[1], 0 );
-    cell.val[3]=(float)((( valPos[0] > roi.min[0]) && ( valPos[1] > roi.min[1]) && ( valPos[2] > roi.min[2]) && ( valPos[0] < roi.max[0]-1) && ( valPos[1] < roi.max[1]-1) && ( valPos[2] < roi.max[2]-1))?data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]]:0);
+    cell.val[3]=(float)((( valPos[0] >= roi.min[0]) && ( valPos[1] >= roi.min[1]) && ( valPos[2] >= roi.min[2]) && ( valPos[0] < roi.max[0]) && ( valPos[1] < roi.max[1]) && ( valPos[2] < roi.max[2]))?data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]]:0);
 
     cell.pos[4]=cell.pos[0]+Vector3 ( 0, 0, gridStep[2] );
     valPos=valPos0+Vec3i ( 0, 0, dataGridStep[2] );
-    cell.val[4]=(float)((( valPos[0] > roi.min[0]) && ( valPos[1] > roi.min[1]) && ( valPos[2] > roi.min[2]) && ( valPos[0] < roi.max[0]-1) && ( valPos[1] < roi.max[1]-1) && ( valPos[2] < roi.max[2]-1))?data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]]:0);
+    cell.val[4]=(float)((( valPos[0] >= roi.min[0]) && ( valPos[1] >= roi.min[1]) && ( valPos[2] >= roi.min[2]) && ( valPos[0] < roi.max[0]) && ( valPos[1] < roi.max[1]) && ( valPos[2] < roi.max[2]))?data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]]:0);
 
     cell.pos[5]=cell.pos[0]+Vector3 ( gridStep[0], 0, gridStep[2] );
     valPos=valPos0+Vec3i ( dataGridStep[0], 0, dataGridStep[2] );
-    cell.val[5]=(float)((( valPos[0] > roi.min[0]) && ( valPos[1] > roi.min[1]) && ( valPos[2] > roi.min[2]) && ( valPos[0] < roi.max[0]-1) && ( valPos[1] < roi.max[1]-1) && ( valPos[2] < roi.max[2]-1))?data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]]:0);
+    cell.val[5]=(float)((( valPos[0] >= roi.min[0]) && ( valPos[1] >= roi.min[1]) && ( valPos[2] >= roi.min[2]) && ( valPos[0] < roi.max[0]) && ( valPos[1] < roi.max[1]) && ( valPos[2] < roi.max[2]))?data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]]:0);
 
     cell.pos[6]=cell.pos[0]+Vector3 ( gridStep[0], gridStep[1], gridStep[2] );
     valPos=valPos0+Vec3i ( dataGridStep[0], dataGridStep[1], dataGridStep[2] );
-    cell.val[6]=(float)((( valPos[0] > roi.min[0]) && ( valPos[1] > roi.min[1]) && ( valPos[2] > roi.min[2]) && ( valPos[0] < roi.max[0]-1) && ( valPos[1] < roi.max[1]-1) && ( valPos[2] < roi.max[2]-1))?data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]]:0);
+    cell.val[6]=(float)((( valPos[0] >= roi.min[0]) && ( valPos[1] >= roi.min[1]) && ( valPos[2] >= roi.min[2]) && ( valPos[0] < roi.max[0]) && ( valPos[1] < roi.max[1]) && ( valPos[2] < roi.max[2]))?data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]]:0);
 
     cell.pos[7]=cell.pos[0]+Vector3 ( 0, gridStep[1], gridStep[2] );
     valPos=valPos0+Vec3i ( 0, dataGridStep[1], dataGridStep[2] );
-    cell.val[7]=(float)((( valPos[0] > roi.min[0]) && ( valPos[1] > roi.min[1]) && ( valPos[2] > roi.min[2]) && ( valPos[0] < roi.max[0]-1) && ( valPos[1] < roi.max[1]-1) && ( valPos[2] < roi.max[2]-1))?data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]]:0);
+    cell.val[7]=(float)((( valPos[0] >= roi.min[0]) && ( valPos[1] >= roi.min[1]) && ( valPos[2] >= roi.min[2]) && ( valPos[0] < roi.max[0]) && ( valPos[1] < roi.max[1]) && ( valPos[2] < roi.max[2]))?data[valPos[0] + valPos[1]*dataResolution[0] + valPos[2]*dataResolution[0]*dataResolution[1]]:0);
 }
 
 /*
@@ -608,12 +608,12 @@ void MarchingCubeUtility::propagateFrom ( const Vec3i coord,
         // Propagate
         generatedCubes.insert ( cubeCoord ); // spaceIndex cube has been polygonized
 
-        if ( ( MarchingCubeFaceTable[cubeConf] &  1 ) && ( cubeCoord[2] > bboxMin[2] ) ) { cubesToGenerate.push ( cubeCoord + Vec3i ( 0, 0,-1 ) );}
-        if ( ( MarchingCubeFaceTable[cubeConf] &  2 ) && ( cubeCoord[2] < bboxMax[2]-2 ) ) { cubesToGenerate.push ( cubeCoord + Vec3i ( 0, 0, 1 ) );}
-        if ( ( MarchingCubeFaceTable[cubeConf] &  4 ) && ( cubeCoord[0] < bboxMax[0]-2 ) ) { cubesToGenerate.push ( cubeCoord + Vec3i ( 1, 0, 0 ) );}
-        if ( ( MarchingCubeFaceTable[cubeConf] &  8 ) && ( cubeCoord[0] > bboxMin[0] ) ) { cubesToGenerate.push ( cubeCoord + Vec3i ( -1, 0, 0 ) );}
-        if ( ( MarchingCubeFaceTable[cubeConf] & 16 ) && ( cubeCoord[1] > bboxMin[1] ) ) { cubesToGenerate.push ( cubeCoord + Vec3i ( 0,-1, 0 ) );}
-        if ( ( MarchingCubeFaceTable[cubeConf] & 32 ) && ( cubeCoord[1] < bboxMax[1]-2 ) ) { cubesToGenerate.push ( cubeCoord + Vec3i ( 0, 1, 0 ) );}
+        if ( ( MarchingCubeFaceTable[cubeConf] &  1 ) && ( cubeCoord[2] >= bboxMin[2] ) ) { cubesToGenerate.push ( cubeCoord + Vec3i ( 0, 0,-1 ) );}
+        if ( ( MarchingCubeFaceTable[cubeConf] &  2 ) && ( cubeCoord[2] <= bboxMax[2]-2 ) ) { cubesToGenerate.push ( cubeCoord + Vec3i ( 0, 0, 1 ) );}
+        if ( ( MarchingCubeFaceTable[cubeConf] &  4 ) && ( cubeCoord[0] <= bboxMax[0]-2 ) ) { cubesToGenerate.push ( cubeCoord + Vec3i ( 1, 0, 0 ) );}
+        if ( ( MarchingCubeFaceTable[cubeConf] &  8 ) && ( cubeCoord[0] >= bboxMin[0] ) ) { cubesToGenerate.push ( cubeCoord + Vec3i ( -1, 0, 0 ) );}
+        if ( ( MarchingCubeFaceTable[cubeConf] & 16 ) && ( cubeCoord[1] >= bboxMin[1] ) ) { cubesToGenerate.push ( cubeCoord + Vec3i ( 0,-1, 0 ) );}
+        if ( ( MarchingCubeFaceTable[cubeConf] & 32 ) && ( cubeCoord[1] <= bboxMax[1]-2 ) ) { cubesToGenerate.push ( cubeCoord + Vec3i ( 0, 1, 0 ) );}
     }
 }
 
