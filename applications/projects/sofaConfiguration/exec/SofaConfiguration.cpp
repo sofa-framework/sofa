@@ -343,24 +343,23 @@ void SofaConfiguration::saveConfiguration()
             processDirectory(listDir[i]);
         }
 
-
-        QStringList argv;
+    }
+    QStringList argv;
 #ifndef WIN32
 #if SOFA_QT4
-        argv << QString("qmake-qt4");
+    argv << QString("qmake-qt4");
 #else
-        argv << QString("qmake");
+    argv << QString("qmake");
 #endif
 #else
-        argv << QString(path.c_str()) + QString("/") + QString(projectVC->text());
+    argv << QString(path.c_str()) + QString("/") + QString(projectVC->text());
 #endif
-        Q3Process *p = new Q3Process(argv,this);
-        p->setCommunication(0);
-        p->setWorkingDirectory(QDir(QString(path.c_str())));
-        p->start();
+    Q3Process *p = new Q3Process(argv,this);
+    p->setCommunication(0);
+    p->setWorkingDirectory(QDir(QString(path.c_str())));
+    p->start();
 
-        optionsModified.clear();
-    }
+    optionsModified.clear();
 }
 
 void SofaConfiguration::processDirectory(const QString &dir)
