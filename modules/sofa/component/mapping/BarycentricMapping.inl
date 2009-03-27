@@ -967,7 +967,7 @@ void BarycentricMapping<BasicMapping>::init()
 
     if ( mapper != NULL )
     {
-        mapper->init ( *this->toModel->getX(), *this->fromModel->getX() );
+        mapper->init ( *((const Out *)this->toModel)->getX(), *((const In *)this->fromModel)->getX() );
     }
     else
     {
