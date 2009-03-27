@@ -911,52 +911,6 @@ void MechanicalObject<DataTypes>::addBaseVectorToState(VecId dest, defaulttype::
 }
 
 
-#ifndef SOFA_FLOAT
-template <>
-void MechanicalObject<defaulttype::Rigid3dTypes>::addDataToState(VecId dest, const SReal *src, unsigned int &offset);
-#endif
-#ifndef SOFA_DOUBLE
-template <>
-void MechanicalObject<defaulttype::Rigid3fTypes>::addDataToState(VecId dest, const SReal *src, unsigned int &offset);
-#endif
-template <class DataTypes>
-void MechanicalObject<DataTypes>::addDataToState(VecId dest, const SReal *src, unsigned int &offset)
-{
-    if (dest.type == VecId::V_COORD)
-    {
-        VecCoord* vDest = getVecCoord(dest.index);
-        const unsigned int coordDim = DataTypeInfo<Coord>::size();
-
-        for (unsigned int i=0; i<vDest->size(); i++)
-        {
-            for (unsigned int j=0; j<coordDim; j++)
-            {
-                Real tmp;
-                DataTypeInfo<Coord>::getValue((*vDest)[i],j,tmp);
-                DataTypeInfo<Coord>::setValue((*vDest)[i], j, tmp + src[offset + i * coordDim + j]);
-            }
-        }
-
-        offset += vDest->size() * coordDim;
-    }
-    else
-    {
-        VecDeriv* vDest = getVecDeriv(dest.index);
-        const unsigned int derivDim = DataTypeInfo<Deriv>::size();
-
-        for (unsigned int i=0; i<vDest->size(); i++)
-            for (unsigned int j=0; j<derivDim; j++)
-            {
-                Real tmp;
-                DataTypeInfo<Deriv>::getValue((*vDest)[i],j,tmp);
-                DataTypeInfo<Deriv>::setValue((*vDest)[i], j, tmp + src[offset + i * derivDim + j]);
-            }
-
-        offset += vDest->size() * derivDim;
-    }
-}
-
-
 template <class DataTypes>
 void MechanicalObject<DataTypes>::addDxToCollisionModel()
 {
