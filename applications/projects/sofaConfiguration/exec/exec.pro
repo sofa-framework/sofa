@@ -1,15 +1,17 @@
 SOFA_DIR=../../../..
 
-!isEmpty(QT): QT += qt3support 
+!isEmpty(QT): DEFINES += SOFA_QT4
+
+contains(DEFINES, SOFA_QT4){
+QT += qt3support 
+}
 
 TEMPLATE = app
 
 QMAKE_LIBDIR = ../lib
 
-TARGET = sofaConfiguration$$SUFFIX
+TARGET = sofaConfiguration
 DESTDIR = $$SOFA_DIR/bin
-CONFIG += $$CONFIGPROJECTGUI 
-LIBS += -lwidgetconfiguration$$LIBSUFFIX
 
 
 macx : {
@@ -31,5 +33,6 @@ macx {
 
 !macx : RC_FILE = sofa.rc
 
-SOURCES = Main.cpp
-HEADERS = 
+SOURCES = Main.cpp \
+          SofaConfiguration.cpp           
+HEADERS = SofaConfiguration.h

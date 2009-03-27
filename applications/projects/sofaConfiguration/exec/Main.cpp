@@ -41,7 +41,7 @@
 #endif
 
 
-#include "../lib/SofaConfiguration.h"
+#include "SofaConfiguration.h"
 
 #include <vector>
 #include <set>
