@@ -184,7 +184,7 @@ void NewmarkImplicitSolver::solve(double dt, sofa::core::componentmodel::behavio
         serr<<"NewmarkImplicitSolver, final v = "<< newVel <<sendl;
     }
 
-#ifdef SOFA_HAVE_LAPACK
+#ifdef SOFA_HAVE_EIGEN2
     applyConstraints();
 #endif
 

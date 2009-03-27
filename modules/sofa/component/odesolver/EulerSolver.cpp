@@ -99,7 +99,7 @@ void EulerSolver::solve(double dt)
 
 
 
-#ifdef SOFA_HAVE_LAPACK
+#ifdef SOFA_HAVE_EIGEN2
     if (constraintAcc.getValue())
     {
         solveConstraint(VecId::dx());
@@ -112,7 +112,7 @@ void EulerSolver::solve(double dt)
     {
         vel.peq(acc,dt);
 
-#ifdef SOFA_HAVE_LAPACK
+#ifdef SOFA_HAVE_EIGEN2
         if (constraintVel.getValue())
         {
             solveConstraint(VecId::velocity());
@@ -120,7 +120,7 @@ void EulerSolver::solve(double dt)
 #endif
         pos.peq(vel,dt);
 
-#ifdef SOFA_HAVE_LAPACK
+#ifdef SOFA_HAVE_EIGEN2
         if (constraintPos.getValue())
         {
             solveConstraint(VecId::position(),!constraintVel.getValue());
@@ -132,7 +132,7 @@ void EulerSolver::solve(double dt)
     {
         pos.peq(vel,dt);
 
-#ifdef SOFA_HAVE_LAPACK
+#ifdef SOFA_HAVE_EIGEN2
         bool propagateCorrectOfPositionOnVelocity = !constraintVel.getValue();
         solveConstraint(VecId::position(), propagateCorrectOfPositionOnVelocity);
         if (propagateCorrectOfPositionOnVelocity)
@@ -149,7 +149,7 @@ void EulerSolver::solve(double dt)
 
         vel.peq(acc,dt);
 
-#ifdef SOFA_HAVE_LAPACK
+#ifdef SOFA_HAVE_EIGEN2
         if (constraintVel.getValue())
         {
             solveConstraint(VecId::velocity());
@@ -174,7 +174,7 @@ void EulerSolver::solve(double dt)
         vmop.execute(this->getContext());
 
 
-#ifdef SOFA_HAVE_LAPACK
+#ifdef SOFA_HAVE_EIGEN2
         applyConstraints();
 #endif
 

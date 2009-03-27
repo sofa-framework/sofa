@@ -136,7 +136,7 @@ public:
     }
 
     //Constraint resolution using Lapack
-#ifdef SOFA_HAVE_LAPACK
+#ifdef SOFA_HAVE_EIGEN2
 
     Data<bool> constraintAcc;
     Data<bool> constraintVel;

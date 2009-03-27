@@ -116,7 +116,7 @@ void RungeKutta2Solver::solve(double dt)
     }
 #endif
 
-#ifdef SOFA_HAVE_LAPACK
+#ifdef SOFA_HAVE_EIGEN2
     applyConstraints();
 #endif
 
