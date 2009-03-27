@@ -473,6 +473,8 @@ void FFDDistanceGridCollisionModel::init()
             elems[c].elem = e;
 #ifdef SOFA_NEW_HEXA
             core::componentmodel::topology::BaseMeshTopology::Hexa cube = ffdGrid->getHexaCopy(e);
+            { int t = cube[2]; cube[2] = cube[3]; cube[3] = t; }
+            { int t = cube[6]; cube[6] = cube[7]; cube[7] = t; }
 #else
             core::componentmodel::topology::BaseMeshTopology::Cube cube = ffdGrid->getCubeCopy(e);
 #endif
@@ -546,9 +548,17 @@ void FFDDistanceGridCollisionModel::updateGrid()
         {
             int e = cube.elem;
             DistanceGrid::Coord center;
+#ifdef SOFA_NEW_HEXA
+            core::componentmodel::topology::BaseMeshTopology::Hexa c = cubeCorners[e];
+            { int t = c[2]; c[2] = c[3]; c[3] = t; }
+            { int t = c[6]; c[6] = c[7]; c[7] = t; }
+#else
+            core::componentmodel::topology::BaseMeshTopology::Cube c = cubeCorners[e];
+#endif
+
             for (int j=0; j<8; j++)
             {
-                cube.corners[j] = x[cubeCorners[e][j]];
+                cube.corners[j] = x[c[j]];
                 center += cube.corners[j];
             }
             cube.center = center * 0.125f;
@@ -670,20 +680,22 @@ void FFDDistanceGridCollisionModel::draw(int index)
     glLineWidth(2);
     glPointSize(5);
     {
-        for (int j=0; j<3; j++)
-        {
-            glBegin(GL_LINE_STRIP);
-            for (int r=0; r<=16; r++)
+        /*
+            for (int j=0; j<3; j++)
             {
-                SReal c = cube.radius*(SReal)cos(r*M_PI/8);
-                SReal s = cube.radius*(SReal)sin(r*M_PI/8);
-                sofa::defaulttype::Vec<3, SReal> p = cube.center;
-                p[j] += c;
-                p[(j+1)%3] += s;
-                helper::gl::glVertexT(p);
+                glBegin(GL_LINE_STRIP);
+                for (int r=0;r<=16;r++)
+                {
+                    SReal c = cube.radius*(SReal)cos(r*M_PI/8);
+                    SReal s = cube.radius*(SReal)sin(r*M_PI/8);
+        			sofa::defaulttype::Vec<3, SReal> p = cube.center;
+                    p[j] += c;
+                    p[(j+1)%3] += s;
+                    helper::gl::glVertexT(p);
+                }
+                glEnd();
             }
-            glEnd();
-        }
+        */
         glBegin(GL_POINTS);
         {
             helper::gl::glVertexT(cube.center);
@@ -1406,12 +1418,12 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
                             }
                         }
                     }
-            std::cout << "Triangle "<<pts[pt0]<<"-"<<pts[pt1]<<"-"<<pts[pt2]<<" crossed "<<nedges<<" edges within <"<<ix0<<" "<<iy0<<" "<<iz0<<">-<"<<ix1-1<<" "<<iy1-1<<" "<<iz1-1<<" "<<">."<<std::endl;
+            //std::cout << "Triangle "<<pts[pt0]<<"-"<<pts[pt1]<<"-"<<pts[pt2]<<" crossed "<<nedges<<" edges within <"<<ix0<<" "<<iy0<<" "<<iz0<<">-<"<<ix1-1<<" "<<iy1-1<<" "<<iz1-1<<" "<<">."<<std::endl;
         }
     }
 
     // Update known points neighbors
-    std::cout << "FMM: Update known points neighbors."<<std::endl;
+    //std::cout << "FMM: Update known points neighbors."<<std::endl;
 
     for (int z=0, ind=0; z<nz; z++)
         for (int y=0; y<ny; y++)
@@ -1488,7 +1500,7 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
             }
 
     // March through the heap
-    std::cout << "FMM: March through the heap." << std::endl;
+    //std::cout << "FMM: March through the heap." << std::endl;
     while (fmm_heap_size > 0)
     {
         int ind = fmm_pop();
@@ -1597,7 +1609,7 @@ void DistanceGrid::calcDistance(sofa::helper::io::Mesh* mesh, double scale)
     }
 
     // Finalize distances
-    std::cout << "FMM: Finalize distances."<<std::endl;
+    //std::cout << "FMM: Finalize distances."<<std::endl;
     int nbin = 0;
     for (int z=0, ind=0; z<nz; z++)
         for (int y=0; y<ny; y++)
