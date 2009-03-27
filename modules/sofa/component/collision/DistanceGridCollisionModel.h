@@ -32,6 +32,7 @@
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/component/topology/RegularGridTopology.h>
 #include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/component/topology/SparseGridTopology.h>
 
 namespace sofa
 {
@@ -750,7 +751,10 @@ protected:
     sofa::core::objectmodel::DataFileName dumpfilename;
 
     core::componentmodel::behavior::MechanicalState<Vec3Types>* ffd;
-    topology::RegularGridTopology* ffdGrid;
+    core::componentmodel::topology::BaseMeshTopology* ffdMesh;
+    //topology::RegularGridTopology* ffdGrid;
+    topology::RegularGridTopology* ffdRGrid;
+    topology::SparseGridTopology* ffdSGrid;
 
     void updateGrid();
 public:
@@ -766,12 +770,12 @@ public:
     ~FFDDistanceGridCollisionModel();
 
     core::componentmodel::behavior::MechanicalState<DataTypes>* getDeformModel() { return ffd; }
-    topology::RegularGridTopology* getDeformGrid() { return ffdGrid; }
+    core::componentmodel::topology::BaseMeshTopology* getDeformGrid() { return ffdMesh; }
 
     // alias used by ContactMapper
 
     core::componentmodel::behavior::MechanicalState<DataTypes>* getMechanicalState() { return ffd; }
-    topology::RegularGridTopology* getMeshTopology() { return ffdGrid; }
+    core::componentmodel::topology::BaseMeshTopology* getMeshTopology() { return ffdMesh; }
 
     void init();
 
