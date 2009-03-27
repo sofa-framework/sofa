@@ -152,6 +152,60 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::addBaseVectorToState(VecId des
         offset += vDest->size() * derivDim;
     }
 };
+
+template <> SOFA_COMPONENT_CONTAINER_API
+void MechanicalObject<defaulttype::Rigid3dTypes>::addDataToState(VecId dest, const SReal *src, unsigned int &offset)
+{
+    if (dest.type == VecId::V_COORD)
+    {
+        VecCoord* vDest = getVecCoord(dest.index);
+        const unsigned int coordDim = DataTypeInfo<Coord>::size();
+
+        for (unsigned int i=0; i<vDest->size(); i++)
+        {
+            for (unsigned int j=0; j<3; j++)
+            {
+                Real tmp;
+                DataTypeInfo<Coord>::getValue((*vDest)[i],j,tmp);
+                DataTypeInfo<Coord>::setValue((*vDest)[i],j,tmp + src[offset + i * coordDim + j]);
+            }
+
+            helper::Quater<double> q_src;
+            helper::Quater<double> q_dest;
+            for (unsigned int j=0; j<4; j++)
+            {
+                Real tmp;
+                DataTypeInfo<Coord>::getValue((*vDest)[i],j+3,tmp);
+                q_dest[j]=tmp;
+                q_src[j]=src[offset + i * coordDim + j+3];
+            }
+            //q_dest = q_dest*q_src;
+            q_dest = q_src*q_dest;
+            for (unsigned int j=0; j<4; j++)
+            {
+                Real tmp=q_dest[j];
+                DataTypeInfo<Coord>::setValue((*vDest)[i], j+3, tmp);
+            }
+        }
+
+        offset += vDest->size() * coordDim;
+    }
+    else
+    {
+        VecDeriv* vDest = getVecDeriv(dest.index);
+        const unsigned int derivDim = DataTypeInfo<Deriv>::size();
+        for (unsigned int i=0; i<vDest->size(); i++)
+        {
+            for (unsigned int j=0; j<derivDim; j++)
+            {
+                Real tmp;
+                DataTypeInfo<Deriv>::getValue((*vDest)[i],j,tmp);
+                DataTypeInfo<Deriv>::setValue((*vDest)[i], j, tmp + src[offset + i * derivDim + j]);
+            }
+        }
+        offset += vDest->size() * derivDim;
+    }
+};
 // template <>
 //     bool MechanicalObject<Vec1dTypes>::addBBox(double* /*minBBox*/, double* /*maxBBox*/)
 // {
@@ -225,6 +279,59 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::addBaseVectorToState(VecId des
     }
 };
 
+template <> SOFA_COMPONENT_CONTAINER_API
+void MechanicalObject<defaulttype::Rigid3fTypes>::addDataToState(VecId dest, const SReal *src, unsigned int &offset)
+{
+    if (dest.type == VecId::V_COORD)
+    {
+        VecCoord* vDest = getVecCoord(dest.index);
+        const unsigned int coordDim = DataTypeInfo<Coord>::size();
+
+        for (unsigned int i=0; i<vDest->size(); i++)
+        {
+            for (unsigned int j=0; j<3; j++)
+            {
+                Real tmp;
+                DataTypeInfo<Coord>::getValue((*vDest)[i],j,tmp);
+                DataTypeInfo<Coord>::setValue((*vDest)[i],j,tmp + src[offset + i * coordDim + j]);
+            }
+
+            helper::Quater<double> q_src;
+            helper::Quater<double> q_dest;
+            for (unsigned int j=0; j<4; j++)
+            {
+                Real tmp;
+                DataTypeInfo<Coord>::getValue((*vDest)[i],j+3,tmp);
+                q_dest[j]=tmp;
+                q_src[j]=src[offset + i * coordDim + j+3];
+            }
+            //q_dest = q_dest*q_src;
+            q_dest = q_src*q_dest;
+            for (unsigned int j=0; j<4; j++)
+            {
+                Real tmp=q_dest[j];
+                DataTypeInfo<Coord>::setValue((*vDest)[i], j+3, tmp);
+            }
+        }
+
+        offset += vDest->size() * coordDim;
+    }
+    else
+    {
+        VecDeriv* vDest = getVecDeriv(dest.index);
+        const unsigned int derivDim = DataTypeInfo<Deriv>::size();
+        for (unsigned int i=0; i<vDest->size(); i++)
+        {
+            for (unsigned int j=0; j<derivDim; j++)
+            {
+                Real tmp;
+                DataTypeInfo<Deriv>::getValue((*vDest)[i],j,tmp);
+                DataTypeInfo<Deriv>::setValue((*vDest)[i], j, tmp + src[offset + i * derivDim + j]);
+            }
+        }
+        offset += vDest->size() * derivDim;
+    }
+};
 // template <>
 //     bool MechanicalObject<Vec1fTypes>::addBBox(double* /*minBBox*/, double* /*maxBBox*/)
 // {

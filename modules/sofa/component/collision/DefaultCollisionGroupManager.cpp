@@ -393,7 +393,7 @@ SolverSet SolverMerger::merge(core::componentmodel::behavior::OdeSolver* solver1
 {
     static SolverMerger instance;
     SolverSet obj=instance.solverDispatcher.go(*solver1, *solver2);
-#ifdef SOFA_HAVE_LAPACK
+#ifdef SOFA_HAVE_EIGEN2
     obj.first->constraintAcc.setValue( (solver1->constraintAcc.getValue() || solver2->constraintAcc.getValue() ) );
     obj.first->constraintVel.setValue( (solver1->constraintVel.getValue() || solver2->constraintVel.getValue() ) );
     obj.first->constraintPos.setValue( (solver1->constraintPos.getValue() || solver2->constraintPos.getValue() ) );

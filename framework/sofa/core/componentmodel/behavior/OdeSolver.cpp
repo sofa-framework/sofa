@@ -41,7 +41,7 @@ namespace behavior
 {
 
 OdeSolver::OdeSolver()
-#ifdef SOFA_HAVE_LAPACK
+#ifdef SOFA_HAVE_EIGEN2
     :
     constraintAcc( initData( &constraintAcc, false, "constraintAcc", "Constraint the acceleration")),
     constraintVel( initData( &constraintVel, false, "constraintVel", "Constraint the velocity")),

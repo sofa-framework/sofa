@@ -102,7 +102,7 @@ void ComplianceEulerSolver::solve(double dt)
     computeAcc(getTime(), acc, pos, vel);
     vel.eq(vel);
     vel.peq(acc,dt);
-#ifdef SOFA_HAVE_LAPACK
+#ifdef SOFA_HAVE_EIGEN2
     if (constraintVel.getValue())
     {
         solveConstraint(VecId::velocity());
@@ -110,7 +110,7 @@ void ComplianceEulerSolver::solve(double dt)
 #endif
     pos.eq(pos);
     pos.peq(vel,dt);
-#ifdef SOFA_HAVE_LAPACK
+#ifdef SOFA_HAVE_EIGEN2
     if (constraintPos.getValue())
     {
         solveConstraint(VecId::position(), !constraintVel.getValue());

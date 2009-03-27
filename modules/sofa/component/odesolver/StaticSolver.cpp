@@ -87,7 +87,7 @@ void StaticSolver::solve(double dt)
     pos.peq( x );
 
 
-#ifdef SOFA_HAVE_LAPACK
+#ifdef SOFA_HAVE_EIGEN2
     applyConstraints();
 #endif
     /*    serr<<"StaticSolver::solve, new pos = "<<pos<<sendl;*/

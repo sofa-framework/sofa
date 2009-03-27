@@ -151,7 +151,7 @@ void EulerImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior:
         serr<<"EulerImplicitSolver, final v = "<< newVel <<sendl;
     }
 
-#ifdef SOFA_HAVE_LAPACK
+#ifdef SOFA_HAVE_EIGEN2
     applyConstraints();
 #endif
 
