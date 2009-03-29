@@ -27,8 +27,9 @@
 
 #include <sofa/core/componentmodel/collision/BroadPhaseDetection.h>
 #include <sofa/core/componentmodel/collision/NarrowPhaseDetection.h>
-#include <sofa/component/component.h>
 #include <sofa/core/CollisionElement.h>
+#include <sofa/component/component.h>
+#include <sofa/component/collision/CubeModel.h>
 #include <sofa/defaulttype/Vec.h>
 #include <set>
 
@@ -52,11 +53,20 @@ private:
     sofa::helper::vector<core::CollisionModel*> collisionModels;
     Data<bool> bDraw;
 
+    Data< helper::fixed_array<Vector3,2> > box;
+
+    CubeModel* boxModel;
+
 public:
 
     BruteForceDetection();
 
+    ~BruteForceDetection();
+
     void setDraw(bool val) { bDraw.setValue(val); }
+
+    void init();
+    void reinit();
 
     void addCollisionModel (core::CollisionModel *cm);
     void addCollisionPair (const std::pair<core::CollisionModel*, core::CollisionModel*>& cmPair);
