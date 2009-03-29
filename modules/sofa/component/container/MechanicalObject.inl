@@ -935,6 +935,15 @@ void MechanicalObject<DataTypes>::init()
     if (getX()->size() != (std::size_t)vsize || getV()->size() != (std::size_t)vsize)
     {
         // X and/or V where user-specified
+        // copy the last specified velocity to all points
+        if (getV()->size() >= 1 && getV()->size() < getX()->size())
+        {
+            unsigned int i = getV()->size();
+            Deriv v1 = (*getV())[i-1];
+            getV()->resize(getX()->size());
+            while (i < getV()->size())
+                (*getV())[i++] = v1;
+        }
         resize(getX()->size()>getV()->size()?getX()->size():getV()->size());
     }
     else if (getX()->size() <= 1)
@@ -955,6 +964,15 @@ void MechanicalObject<DataTypes>::init()
 
                 //std::cout<<"Setting "<<nbp<<" points from MeshLoader. " <<std::endl;
 
+                // copy the last specified velocity to all points
+                if (getV()->size() >= 1 && getV()->size() < (unsigned)nbp)
+                {
+                    unsigned int i = getV()->size();
+                    Deriv v1 = (*getV())[i-1];
+                    getV()->resize(nbp);
+                    while (i < getV()->size())
+                        (*getV())[i++] = v1;
+                }
                 this->resize(nbp);
                 for (int i=0; i<nbp; i++)
                 {
@@ -970,6 +988,15 @@ void MechanicalObject<DataTypes>::init()
                 {
                     int nbp = _topology->getNbPoints();
                     //std::cout<<"Setting "<<nbp<<" points from topology. " << this->getName() << " topo : " << _topology->getName() <<std::endl;
+                    // copy the last specified velocity to all points
+                    if (getV()->size() >= 1 && getV()->size() < (unsigned)nbp)
+                    {
+                        unsigned int i = getV()->size();
+                        Deriv v1 = (*getV())[i-1];
+                        getV()->resize(nbp);
+                        while (i < getV()->size())
+                            (*getV())[i++] = v1;
+                    }
                     this->resize(nbp);
                     for (int i=0; i<nbp; i++)
                     {
