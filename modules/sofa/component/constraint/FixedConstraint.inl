@@ -225,6 +225,7 @@ void FixedConstraint<DataTypes>::draw()
 {
     if (!getContext()->
         getShowBehaviorModels()) return;
+    if (!this->isActive()) return;
     const VecCoord& x = *this->mstate->getX();
     //serr<<"FixedConstraint<DataTypes>::draw(), x.size() = "<<x.size()<<sendl;
 
