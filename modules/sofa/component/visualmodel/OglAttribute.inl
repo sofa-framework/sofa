@@ -78,24 +78,20 @@ void OglAttribute< size, type, DataTypes>::initVisual ()
 {
     const ResizableExtVector<DataTypes>& data = value.getValue();
     unsigned int totalSize = data.size() *sizeof ( data[0] );
-
+    std::cout << "Size : " << totalSize << std::endl;
     glBindBuffer ( GL_ARRAY_BUFFER, _abo );
-
     glBufferData ( GL_ARRAY_BUFFER,
             totalSize,
             NULL,
             usage );
-
     // Fill the buffer
     glBufferSubData ( GL_ARRAY_BUFFER,
             0,
             totalSize,
             data.getData() );
-
     _index = shader->getAttribute ( 0, id.getValue().c_str() );
 
     enable();
-
     glBindBuffer(GL_ARRAY_BUFFER,0);
 
 }
@@ -106,6 +102,7 @@ bool OglAttribute< size, type, DataTypes>::updateABO()
 {
     GLvoid* attrib_bo = NULL;
     glBindBuffer(GL_ARRAY_BUFFER, _abo);
+
     attrib_bo = (GLvoid*) glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
 
     if(attrib_bo == NULL)
@@ -166,15 +163,21 @@ void OglAttribute< size, type, DataTypes>::disable()
     glDisableVertexAttribArray ( _index );
 }
 
-
-
 template < int size, unsigned int type, class DataTypes>
-void OglAttribute< size, type, DataTypes>::draw()
+void OglAttribute< size, type, DataTypes>::fwdDraw(Pass)
 {
-    glEnableVertexAttribArray ( _index );
-    glVertexAttribPointer ( _index, size, type, GL_FALSE, 0, (void*)(&value.getValue()[0]));
+    glBindBuffer(GL_ARRAY_BUFFER, _abo);
+    enable();
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
+template < int size, unsigned int type, class DataTypes>
+void OglAttribute< size, type, DataTypes>::bwdDraw(Pass)
+{
+    glBindBuffer(GL_ARRAY_BUFFER, _abo);
+    disable();
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+}
 
 template < int size, unsigned int type, class DataTypes>
 void OglAttribute< size, type, DataTypes>::reinit()
