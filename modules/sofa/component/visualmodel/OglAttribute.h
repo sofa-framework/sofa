@@ -64,7 +64,8 @@ public:
     void setValue( const ResizableExtVector<DataTypes>& value);
     void enable();
     void disable();
-    virtual void draw();
+    virtual void bwdDraw(Pass);
+    virtual void fwdDraw(Pass);
 
     // handle topological changes
     virtual void handleTopologyChange();

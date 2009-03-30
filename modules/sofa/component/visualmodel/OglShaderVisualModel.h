@@ -66,6 +66,9 @@ public:
     void init();
     void initVisual();
 
+    virtual void bwdDraw(Pass);
+    virtual void fwdDraw(Pass);
+
     // handle topological changes
     virtual void handleTopologyChange();
     void computeRestNormals();
