@@ -365,7 +365,8 @@ int main(int argc, char** argv)
     sofa_default.close();
     sofa_local.close();
 
-    QApplication* application = new QApplication(argc, argv);
+    QApplication* application;
+    application = new QApplication(argc, argv);
     sofa::gui::qt::SofaConfiguration* config = new sofa::gui::qt::SofaConfiguration(file,listOptions);
 //   application->setMainWidget(config);
     config->show();

@@ -13,6 +13,9 @@ QMAKE_LIBDIR = ../lib
 TARGET = sofaConfiguration
 DESTDIR = $$SOFA_DIR/bin
 
+win32{
+LIBS += -lshell32
+}
 
 macx : {
 	CONFIG +=app_bundle
