@@ -351,14 +351,14 @@ void SofaConfiguration::saveConfiguration()
 #else
     argv << QString("qmake");
 #endif
-#else
-    argv << QString(path.c_str()) + QString("/") + QString(projectVC->text());
-#endif
     Q3Process *p = new Q3Process(argv,this);
     p->setCommunication(0);
     p->setWorkingDirectory(QDir(QString(path.c_str())));
     p->start();
-
+#else
+    QString cmd("cd /d \""+ QString(path.c_str())+ "\" && \""+QString(projectVC->text())+"\"");
+    system(cmd.ascii());
+#endif
     optionsModified.clear();
 }
 
