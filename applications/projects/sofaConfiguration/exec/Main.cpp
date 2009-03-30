@@ -34,6 +34,7 @@
 #else
 #include <windows.h>
 #include <direct.h>
+#include <shellapi.h>
 #endif
 #if defined (__APPLE__)
 #include <sys/param.h>
@@ -336,7 +337,7 @@ std::string GetProcessFullPath(const char* filename)
     }
 #endif
 
-    return std::string();
+    return filename;
 }
 
 
@@ -350,7 +351,6 @@ int main(int argc, char** argv)
     std::cerr << file << "\n";
     std::ifstream sofa_default((file+"/sofa-default.cfg").c_str());
     std::ifstream sofa_local((file+"/sofa-local.cfg").c_str());
-
     std::vector<DEFINES>  listOptions;
 
     parse(sofa_default, listOptions);
@@ -362,15 +362,12 @@ int main(int argc, char** argv)
         parse(sofa_local, listOptions);
     }
 
-
     sofa_default.close();
     sofa_local.close();
-
 
     QApplication* application = new QApplication(argc, argv);
     sofa::gui::qt::SofaConfiguration* config = new sofa::gui::qt::SofaConfiguration(file,listOptions);
 //   application->setMainWidget(config);
     config->show();
-
     return application->exec();
 }

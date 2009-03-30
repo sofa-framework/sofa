@@ -326,7 +326,7 @@ void SofaConfiguration::saveConfiguration()
         listDir.push_back(QString("/applications"));
         listDir.push_back(QString("/modules"));
         listDir.push_back(QString("/framework"));
-        listDir.push_back(QString("/extlibs"));
+        //listDir.push_back(QString("/extlibs"));
 
         std::set< QWidget *>::iterator it;
         for (it=optionsModified.begin(); it!=optionsModified.end(); it++)

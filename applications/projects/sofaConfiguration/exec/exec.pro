@@ -1,7 +1,9 @@
 SOFA_DIR=../../../..
+include($${SOFA_DIR}/sofa.cfg)
 
 !isEmpty(QT): DEFINES += SOFA_QT4
 
+CONFIG += $$CONFIGPROJECTGUI 
 contains(DEFINES, SOFA_QT4){
 QT += qt3support 
 }
