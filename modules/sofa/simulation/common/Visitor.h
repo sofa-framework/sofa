@@ -233,13 +233,11 @@ protected:
     static bool printActivated;          //bool to know if the stream is opened or not
     static unsigned int depthLevel;      //Level in the hierarchy
     static ctime_t initDumpTime;
+    static std::vector< ctime_t > initNodeTime;
 
     core::objectmodel::Base* enteringBase;
     bool infoPrinted;
 
-    ctime_t initVisitTime;
-    ctime_t initComponentTime;
-    std::vector< ctime_t > initNodeTime;
 public:
     static void startDumpVisitor(std::ostream *s, double time)
     {
@@ -259,8 +257,12 @@ public:
         printActivated=false;
         depthLevel=0;
     };
+
+    typedef std::vector< std::pair< std::string,std::string > > TRACE_ARGUMENT;
     static void dumpInfo( const std::string &info) { if (printActivated) {(*outputVisitor) << info; outputVisitor->flush();}}
     static void printComment(const std::string &s) ;
+    static void printNode(const std::string &type, const std::string &name=std::string(), const TRACE_ARGUMENT &arguments=TRACE_ARGUMENT() ) ;
+    static void printCloseNode(const std::string &type) ;
     static unsigned int getLevel() {return depthLevel;};
     static void resetLevel() {depthLevel=0;};
     virtual void printInfo(const core::objectmodel::BaseContext* context, bool dirDown);
