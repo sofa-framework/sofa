@@ -62,6 +62,7 @@ protected:
     Data<Vector3> color;
     Data<float> zNear;
     Data<float> zFar;
+    Data<GLuint> shadowTextureSize;
     GLint lightID;
 
     helper::gl::FrameBufferObject shadowFBO;
