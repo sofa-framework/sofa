@@ -29,19 +29,21 @@
 #ifndef SOFA_SOFACONFIGURATION_H
 #define SOFA_SOFACONFIGURATION_H
 
-#include <qlayout.h>
+
 #ifdef SOFA_QT4
 #include <QMainWindow>
 #include <QCheckBox>
 #include <QLabel>
 #include <QLineEdit>
 #include <QDir>
+#include <QLayout>
 #else
 #include <qmainwindow.h>
 #include <qcheckbox.h>
 #include <qlabel.h>
 #include <qlineedit.h>
 #include <qdir.h>
+#include <qlayout.h>
 #endif
 
 #include <iostream>
