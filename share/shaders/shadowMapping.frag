@@ -1,10 +1,11 @@
 varying vec3 normal;
 
+varying vec4 ambientGlobal;
 #ifdef SHADOW_LIGHT0
 uniform int shadowActive0;
 uniform sampler2DShadow shadowTexture0;
 varying vec4 shadowTexCoord0;
-varying vec4 diffuse,ambientGlobal, ambient;
+varying vec4 diffuse;
 varying vec3 lightDir,halfVector;
 varying float dist;
 #endif
@@ -13,7 +14,7 @@ varying float dist;
 uniform int shadowActive1;
 uniform sampler2DShadow shadowTexture1;
 varying vec4 shadowTexCoord1;
-varying vec4 diffuse1,ambientGlobal1, ambient1;
+varying vec4 diffuse1;
 varying vec3 lightDir1,halfVector1;
 varying float dist1;
 #endif
@@ -22,7 +23,7 @@ varying float dist1;
 void main()
 {
 
-	vec4 final_color = vec4(0.0,0.0,0.0,0.0);
+	vec4 final_color = ambientGlobal;
 	bool hasLight = false;
 	vec3 n,halfV;
 	float NdotL,NdotHV;
@@ -36,7 +37,7 @@ void main()
 
 #ifdef SHADOW_LIGHT0
 	hasLight = true;
-	vec4 color = ambientGlobal;
+	vec4 color = vec4(0.0,0.0,0.0,0.0);
 
 	/* compute the dot product between normal and ldir */
 	NdotL = max(dot(n,normalize(lightDir)),0.0);
@@ -53,7 +54,7 @@ void main()
 					gl_LightSource[0].linearAttenuation * dist +
 					gl_LightSource[0].quadraticAttenuation * dist * dist);
 
-			color += att * (diffuse * NdotL + ambient) ;
+			color += att * (diffuse * NdotL) ;
 
 			halfV = normalize(halfVector);
 			NdotHV = max(dot(n,halfV),0.0);
@@ -64,7 +65,7 @@ void main()
 #endif
 #ifdef SHADOW_LIGHT1
 	hasLight = true;
-	vec4 color1 = ambientGlobal1;
+	vec4 color1 = vec4(0.0,0.0,0.0,0.0);
 
 	/* compute the dot product between normal and ldir */
 	NdotL = max(dot(n,normalize(lightDir1)),0.0);
@@ -81,7 +82,7 @@ void main()
 					gl_LightSource[1].linearAttenuation * dist1 +
 					gl_LightSource[1].quadraticAttenuation * dist1 * dist1);
 
-			color1 += att * (diffuse1 * NdotL + ambient1) ;
+			color1 += att * (diffuse1 * NdotL) ;
 
 			halfV = normalize(halfVector1);
 			NdotHV = max(dot(n,halfV),0.0);

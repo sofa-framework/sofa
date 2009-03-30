@@ -71,6 +71,7 @@ Light::Light()
     : color(initData(&color, (Vector3) Vector3(1,1,1), "color", "Set the color of the light"))
     , zNear(initData(&zNear, (float) 4.0, "zNear", "Set minimum distance for view field"))
     , zFar(initData(&zFar, (float) 50.0, "zFar", "Set minimum distance for view field"))
+    , shadowTextureSize (initData(&shadowTextureSize, (GLuint) 0, "shadowTextureSize", "Set size for shadow texture "))
 
 {
     lightID = 0;
@@ -155,23 +156,27 @@ void Light::computeShadowMapSize()
     GLint windowWidth = viewport[2];
     GLint windowHeight = viewport[3];
 
-    //Get the size of the shadow map
-    if (windowWidth >= 1024 && windowHeight >= 1024)
+    if (shadowTextureSize.getValue() == 0)
     {
-        shadowTexWidth = shadowTexHeight = 1024;
+        //Get the size of the shadow map
+        if (windowWidth >= 1024 && windowHeight >= 1024)
+        {
+            shadowTexWidth = shadowTexHeight = 1024;
+        }
+        else if (windowWidth >= 512 && windowHeight >= 512)
+        {
+            shadowTexWidth = shadowTexHeight = 512;
+        }
+        else if (windowWidth >= 256 && windowHeight >= 256)
+        {
+            shadowTexWidth = shadowTexHeight = 256;
+        }
+        else
+        {
+            shadowTexWidth = shadowTexHeight = 128;
+        }
     }
-    else if (windowWidth >= 512 && windowHeight >= 512)
-    {
-        shadowTexWidth = shadowTexHeight = 512;
-    }
-    else if (windowWidth >= 256 && windowHeight >= 256)
-    {
-        shadowTexWidth = shadowTexHeight = 256;
-    }
-    else
-    {
-        shadowTexWidth = shadowTexHeight = 128;
-    }
+    else shadowTexWidth = shadowTexHeight = shadowTextureSize.getValue();
 }
 
 

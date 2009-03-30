@@ -1,16 +1,17 @@
 
 varying vec3 normal;
 
+varying vec4 ambientGlobal;
 #ifdef SHADOW_LIGHT0
 varying vec4 shadowTexCoord0;
-varying vec4 diffuse,ambientGlobal, ambient;
+varying vec4 diffuse;
 varying vec3 lightDir,halfVector;
 varying float dist;
 #endif
 
 #ifdef SHADOW_LIGHT1
 varying vec4 shadowTexCoord1;
-varying vec4 diffuse1,ambientGlobal1, ambient1;
+varying vec4 diffuse1;
 varying vec3 lightDir1,halfVector1;
 varying float dist1;
 #endif
@@ -27,6 +28,8 @@ void main()
 	OpenGL specification, the light is stored in eye space.*/
 	ecPos = gl_ModelViewMatrix * gl_Vertex;
 
+	ambientGlobal = gl_LightModel.ambient * gl_FrontMaterial.ambient;
+
 #ifdef SHADOW_LIGHT0
 
 	aux = vec3(gl_LightSource[0].position-ecPos);
@@ -40,8 +43,7 @@ void main()
 
 	/* Compute the diffuse, ambient and globalAmbient terms */
 	diffuse = gl_FrontMaterial.diffuse * gl_LightSource[0].diffuse;
-	ambient = gl_FrontMaterial.ambient * gl_LightSource[0].ambient;
-	ambientGlobal = gl_LightModel.ambient * gl_FrontMaterial.ambient;
+	ambientGlobal += gl_FrontMaterial.ambient * gl_LightSource[0].ambient;
 
 	shadowTexCoord0 = gl_TextureMatrix[0] * gl_ModelViewMatrix * gl_Vertex;
 #endif
@@ -62,8 +64,7 @@ void main()
 
 	/* Compute the diffuse, ambient and globalAmbient terms */
 	diffuse1 = gl_FrontMaterial.diffuse * gl_LightSource[1].diffuse;
-	ambient1 = gl_FrontMaterial.ambient * gl_LightSource[1].ambient;
-	ambientGlobal1 = gl_LightModel.ambient * gl_FrontMaterial.ambient;
+	ambientGlobal += gl_FrontMaterial.ambient * gl_LightSource[1].ambient;
 
 	shadowTexCoord1 = gl_TextureMatrix[1] * gl_ModelViewMatrix * gl_Vertex;
 #endif
