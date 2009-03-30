@@ -155,6 +155,7 @@ void OglAttribute< size, type, DataTypes>::enable()
     glBindBuffer(GL_ARRAY_BUFFER, _abo);
     glEnableVertexAttribArray ( _index );
     glVertexAttribPointer ( _index, size, type, GL_FALSE, 0, ( char* ) NULL + 0 );
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 
