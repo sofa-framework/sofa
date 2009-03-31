@@ -1473,7 +1473,7 @@ void RealGUI::step()
 
 
         //groot->setLogTime(true);
-        simulation::getSimulation()->animate ( groot );
+        simulation::getSimulation()->animate ( groot, groot->getDt() );
 
         if ( m_dumpState )
             simulation::getSimulation()->dumpState ( groot, *m_dumpStateStream );
