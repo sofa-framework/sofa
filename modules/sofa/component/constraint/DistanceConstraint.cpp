@@ -68,7 +68,7 @@ template class DistanceConstraint<Rigid3fTypes>;
 
 #ifndef SOFA_FLOAT
 template<>
-Rigid3dTypes::Deriv DistanceConstraint<Rigid3dTypes>::getDirection(const Edge &e, const VecCoord &x1, const VecCoord &x2)
+Rigid3dTypes::Deriv DistanceConstraint<Rigid3dTypes>::getDirection(const Edge &e, const VecCoord &x1, const VecCoord &x2) const
 {
     Vector3 V12=(x2[e[1]].getCenter() - x1[e[0]].getCenter()); V12.normalize();
     return Deriv(V12, Vector3());
@@ -100,7 +100,7 @@ void DistanceConstraint<Rigid3dTypes>::draw()
 
 #ifndef SOFA_DOUBLE
 template<>
-Rigid3fTypes::Deriv DistanceConstraint<Rigid3fTypes>::getDirection(const Edge &e, const VecCoord &x1, const VecCoord &x2)
+Rigid3fTypes::Deriv DistanceConstraint<Rigid3fTypes>::getDirection(const Edge &e, const VecCoord &x1, const VecCoord &x2) const
 {
     Vector3 V12=(x2[e[1]].getCenter() - x1[e[0]].getCenter()); V12.normalize();
     return Deriv(V12, Vector3());

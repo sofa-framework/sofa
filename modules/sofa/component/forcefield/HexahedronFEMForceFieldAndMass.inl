@@ -141,7 +141,6 @@ void HexahedronFEMForceFieldAndMass<DataTypes>::reinit( )
 }
 
 
-
 template<class DataTypes>
 void HexahedronFEMForceFieldAndMass<DataTypes>::computeElementMasses(  )
 {

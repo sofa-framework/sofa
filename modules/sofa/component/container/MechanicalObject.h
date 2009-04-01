@@ -73,6 +73,8 @@ public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::SparseVecDeriv SparseVecDeriv;
     typedef typename DataTypes::VecConst VecConst;
+    typedef typename std::map<unsigned int, Deriv>::const_iterator ConstraintIterator;
+    typedef typename core::componentmodel::behavior::BaseMechanicalState::ConstraintBlock ConstraintBlock;
 
 protected:
     VecCoord* x;
@@ -270,6 +272,9 @@ public:
     /// Add data stored in a BaseVector to a local mechanical vector of the MechanicalState
     virtual void addBaseVectorToState(VecId , defaulttype::BaseVector *, unsigned int &);
 
+    /// Add data stored in a Vector (whose size is smaller or equal to the State vector)  to a local mechanical vector of the MechanicalState
+    virtual void addVectorToState(VecId , defaulttype::BaseVector *, unsigned int &);
+
     /// Update offset index during the subgraph traversal
     virtual void setOffset(unsigned int &);
 
@@ -277,10 +282,8 @@ public:
 
 
 
-    /// Express the constraint J as a dense matrix
-    virtual void buildConstraintMatrix(const sofa::helper::vector<unsigned int> &constraintId, const double factor, defaulttype::BaseMatrix& m,unsigned int numConstraint,  unsigned int offset);
-
-    virtual void computeConstraintProjection(const sofa::helper::vector<unsigned int> &constraintId, VecId Id, defaulttype::BaseVector& v, unsigned int offset);
+    /// Express the matrix L in term of block of matrices, using the indices of the lines in the VecConst container
+    virtual std::list<ConstraintBlock> constraintBlocks( const std::list<unsigned int> &indices, double factor ) const;
 
     void setFilename(std::string s) {filename.setValue(s);};
     void setTranslation(double dx,double dy,double dz) {translation.setValue(Vector3(dx,dy,dz));};

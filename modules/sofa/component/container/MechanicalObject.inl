@@ -41,6 +41,8 @@
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/Simulation.h>
 
+#include <sofa/component/linearsolver/FullMatrix.h>
+
 #include <assert.h>
 #include <iostream>
 
@@ -909,6 +911,57 @@ void MechanicalObject<DataTypes>::addBaseVectorToState(VecId dest, defaulttype::
         offset += vDest->size() * derivDim;
     }
 }
+
+
+#ifndef SOFA_FLOAT
+template <>
+void MechanicalObject<defaulttype::Rigid3dTypes>::addVectorToState(VecId dest, defaulttype::BaseVector *src, unsigned int &offset);
+#endif
+#ifndef SOFA_DOUBLE
+template <>
+void MechanicalObject<defaulttype::Rigid3fTypes>::addVectorToState(VecId dest, defaulttype::BaseVector *src, unsigned int &offset);
+#endif
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::addVectorToState(VecId dest, defaulttype::BaseVector *src, unsigned int &offset)
+{
+
+    if (dest.type == VecId::V_COORD)
+    {
+        VecCoord* vDest = getVecCoord(dest.index);
+        const unsigned int coordDim = DataTypeInfo<Coord>::size();
+        const unsigned int nbEntries = src->size()/coordDim;
+        for (unsigned int i=0; i<nbEntries; i++)
+        {
+            for (unsigned int j=0; j<coordDim; ++j)
+            {
+                Real tmp;
+                DataTypeInfo<Coord>::getValue((*vDest)[i+offset],j,tmp);
+                DataTypeInfo<Coord>::setValue((*vDest)[i+offset],j, tmp + src->element(i*coordDim+j));
+            }
+        }
+        offset += nbEntries;
+    }
+    else
+    {
+        VecDeriv* vDest = getVecDeriv(dest.index);
+
+        const unsigned int derivDim = DataTypeInfo<Deriv>::size();
+        const unsigned int nbEntries = src->size()/derivDim;
+        for (unsigned int i=0; i<nbEntries; i++)
+        {
+            for (unsigned int j=0; j<derivDim; ++j)
+            {
+                Real tmp;
+                DataTypeInfo<Deriv>::getValue((*vDest)[i+offset],j,tmp);
+                DataTypeInfo<Deriv>::setValue((*vDest)[i+offset],j, tmp + src->element(i*derivDim+j));
+            }
+        }
+        offset += nbEntries;
+    }
+
+}
+
 
 
 template <class DataTypes>
@@ -2062,87 +2115,89 @@ sofa::helper::vector<unsigned int>& MechanicalObject<DataTypes>::getConstraintId
     return constraintId;
 }
 
-
-template <>
-void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::buildConstraintMatrix(const sofa::helper::vector<unsigned int> &constraintId, const double factor, defaulttype::BaseMatrix& m,unsigned int numConstraint, unsigned int offset);
-
-
 template <class DataTypes>
-void MechanicalObject<DataTypes>::buildConstraintMatrix(const sofa::helper::vector<unsigned int> &constraintId, const double factor, defaulttype::BaseMatrix& m,unsigned int numConstraint, unsigned int offset)
+std::list<core::componentmodel::behavior::BaseMechanicalState::ConstraintBlock> MechanicalObject<DataTypes>::constraintBlocks( const std::list<unsigned int> &indices, double factor ) const
 {
-    const VecConst& c = *getC();
-    unsigned int dimension=DataTypeInfo< Deriv >::size();
-    if (m.colSize()!=this->getSize()*dimension) m.resize(numConstraint, this->getSize()*dimension);
+    using sofa::component::linearsolver::FullMatrix;
+    std::list<ConstraintBlock> block;
+    const unsigned int dimensionDeriv=defaulttype::DataTypeInfo< Deriv >::size();
 
-    typename std::map< unsigned int, Deriv>::const_iterator it;
-    for (unsigned int i=0; i<constraintId.size(); ++i)
+    //Construct the arrays of iterator to explorate the different constraints
+    ConstraintIterator *itConstraint    = new ConstraintIterator[indices.size()];
+    ConstraintIterator *itConstraintEnd = new ConstraintIterator[indices.size()];
     {
-        for (it=c[ constraintId[i] ].getData().begin(); it!=c[ constraintId[i] ].getData().end(); it++)
+        unsigned int i=0;
+        for (std::list<unsigned int>::const_iterator it=indices.begin() ; it != indices.end(); it++,i++)
         {
-            unsigned int dof=it->first;
-            Deriv v=it->second;
-            for (unsigned int d=0; d<dimension; ++d)  m.add(i+offset,dimension*dof+d, factor*v[d]);
+            itConstraint[i]    = (*c)[*it].getData().begin();
+            itConstraintEnd[i] = (*c)[*it].getData().end();
         }
     }
-}
 
-template <class DataTypes>
-void MechanicalObject<DataTypes>::computeConstraintProjection(const sofa::helper::vector<unsigned int> &constraintId, VecId Id, defaulttype::BaseVector& vec,unsigned int offset)
-{
-
-    const VecConst& c   = *getC();
-    if (Id==VecId::velocity())
+    //Constructing a list of block: each block will have as many rows as indices of constraint
+    int minDof=-1;
+    bool stopCondition=false;
+    while (!stopCondition)
     {
-        const VecDeriv& v   = *getV();
-        typename std::map< unsigned int, Deriv>::const_iterator it;
-        for (unsigned int i=0; i<constraintId.size(); ++i)
+        //Vector containing the list of indices to store in the new block
+        std::vector< unsigned int > vecDofsInBlock;
+        //We find the minimum dof
+        for (unsigned int constraintId=0; constraintId<indices.size(); ++constraintId)
         {
-            double value=0;
-            for (it=c[ constraintId[i] ].getData().begin(); it!=c[ constraintId[i] ].getData().end(); it++)
+            //For the constraint i, if it has not been fully explorated
+            if (itConstraint[constraintId] != itConstraintEnd[constraintId])
             {
-                unsigned int dof=it->first;
-                Deriv direction=it->second;
-                value+=v[dof]*direction;
+                if ( (minDof<0) || //First entrance
+                        minDof>(int)itConstraint[constraintId]->first)
+                {
+                    vecDofsInBlock.clear();
+                    vecDofsInBlock.push_back(constraintId);
+                    minDof=itConstraint[constraintId]->first;
+                }
+                else if (minDof==(int)itConstraint[constraintId]->first)
+                {
+                    vecDofsInBlock.push_back(constraintId);
+                }
             }
-            vec.add(i+offset,value);
         }
-    }
-    else if (Id==VecId::dx())
-    {
-        const VecDeriv& acc = *getDx();
-        typename std::map< unsigned int, Deriv>::const_iterator it;
-        for (unsigned int i=0; i<constraintId.size(); ++i)
-        {
-            double value=0;
-            for (it=c[ constraintId[i] ].getData().begin(); it!=c[ constraintId[i] ].getData().end(); it++)
-            {
-                unsigned int dof=it->first;
-                Deriv direction=it->second;
-                value+=acc[dof]*direction;
-            }
-            vec.add(i+offset,value);
-        }
-    }
-    else if (Id==VecId::position())
-    {
-        std::cerr << "Does Nothing!\n";
-//       const VecCoord& pos = *getX();
-//       for (unsigned int i=0;i<constraintId.size();++i)
-// 	{
-// 	  double value=0;
-// 	  for (unsigned int j=0;j<c[ constraintId[i] ].size();++j)
-// 	    {
-// 	      unsigned int dof=c[ constraintId[i] ][j].index;
-// 	      Deriv direction=c[ constraintId[i] ][j].data;
-// 	      value+=pos[dof]*direction;
-// 	    }
-// 	  vec.add(i+offset,value);
-// 	}
-    }
-}
-template <>
-void MechanicalObject<defaulttype::LaparoscopicRigid3Types>::computeConstraintProjection(const sofa::helper::vector<unsigned int> &, VecId , defaulttype::BaseVector&, unsigned int  );
 
+        //Create a new block knowing the constraints to consider (vecDofsInBlock)
+        FullMatrix<SReal> *m=new FullMatrix<SReal>(indices.size(), dimensionDeriv);
+        for (unsigned int i=0; i<vecDofsInBlock.size(); ++i)
+        {
+            //data is the value in the map for the dof "minDof"
+            Deriv data=itConstraint[ vecDofsInBlock[i] ]->second;
+            for (unsigned int dimension=0; dimension<dimensionDeriv; ++dimension)
+            {
+                SReal value; defaulttype::DataTypeInfo< Deriv >::getValue(data, dimension, value);
+                m->set(vecDofsInBlock[i], dimension, factor*value );
+            }
+        }
+        block.push_back( ConstraintBlock(minDof, m) );
+
+
+
+        //prepare for next loop
+        for (unsigned int constraintUsed=0; constraintUsed<vecDofsInBlock.size(); ++constraintUsed)
+            itConstraint[ vecDofsInBlock[constraintUsed] ]++;
+
+        minDof = -1;
+        vecDofsInBlock.clear();
+
+
+        //Stop Condition: we have explorated all the entries of the SparseConstraint
+        //If one remains unexplored, we continue
+        stopCondition=true;
+        for (unsigned int cId=0; cId<indices.size() && stopCondition; ++cId)
+        {
+            stopCondition = (itConstraint[cId] == itConstraintEnd[cId]);
+        }
+    }
+    delete [] itConstraint;
+    delete [] itConstraintEnd;
+
+    return block;
+}
 
 
 template <class DataTypes>

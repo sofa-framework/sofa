@@ -113,7 +113,8 @@ public:
     /// Add Mass contribution to global Matrix assembling
     void addMToMatrix(defaulttype::BaseMatrix * mat, double mFact, unsigned int &offset);
 
-    double getElementMass(unsigned int index);
+    double getElementMass(unsigned int index) const;
+    void getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const;
 
 protected:
     MassType diagonalMass( const Real& m ); ///< return a diagonal matrix mass with value m on all the diagonal

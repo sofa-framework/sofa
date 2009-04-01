@@ -313,6 +313,8 @@ void DiagonalMass<DataTypes, MassType>::addMDx(VecDeriv& res, const VecDeriv& dx
     }
 }
 
+
+
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::accFromF(VecDeriv& a, const VecDeriv& f)
 {
@@ -366,11 +368,22 @@ void DiagonalMass<DataTypes, MassType>::addMToMatrix(defaulttype::BaseMatrix * m
 
 
 template <class DataTypes, class MassType>
-double DiagonalMass<DataTypes, MassType>::getElementMass(unsigned int index)
+double DiagonalMass<DataTypes, MassType>::getElementMass(unsigned int index) const
 {
     return (SReal)(f_mass.getValue()[index]);
 }
 
+
+//TODO: special case for Rigid Mass
+template <class DataTypes, class MassType>
+void DiagonalMass<DataTypes, MassType>::getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const
+{
+    static unsigned int dimension = defaulttype::DataTypeInfo<Coord>::size();
+    if (m->rowSize() != dimension || m->colSize() != dimension) m->resize(dimension,dimension);
+
+    m->clear();
+    for (unsigned int i=0; i<dimension; ++i)m->set(i,i,f_mass.getValue()[index]);
+}
 
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::handleTopologyChange()

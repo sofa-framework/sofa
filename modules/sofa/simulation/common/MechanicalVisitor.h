@@ -510,6 +510,41 @@ public:
 #endif
 };
 
+/** V is propagated to all the layers through the mappings.
+ */
+class SOFA_SIMULATION_COMMON_API MechanicalPropagateVVisitor : public MechanicalVisitor
+{
+public:
+    VecId v;
+    MechanicalPropagateVVisitor(VecId _v) : v(_v)
+    {
+#ifdef SOFA_DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    }
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalPropagateVVisitor"; }
+    virtual std::string getInfos() const
+    {
+        std::string name="["+v.getName()+"]"; return name;
+    }
+    /// Specify whether this action can be parallelized.
+    virtual bool isThreadSafe() const
+    {
+        return true;
+    }
+#ifdef SOFA_DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+        addWriteVector(v);
+    }
+#endif
+};
+
 
 /** Same as MechanicalPropagateDxVisitor followed by MechanicalResetForceVisitor
  */
@@ -560,6 +595,8 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalPropagateXVisitor"; }
+    virtual std::string getInfos() const { std::string name= "X["+x.getName()+"]"; return name;}
+
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
@@ -1092,7 +1129,7 @@ public:
     virtual void clear() {datasC.clear();}
     virtual ConstraintData &getConstraint(unsigned int i) {return datasC[i];}
     virtual unsigned int numConstraintDatas() {return datasC.size();}
-
+    virtual void setId(core::componentmodel::behavior::BaseLMConstraint::ConstId i) {id=i;}
 
     virtual bool isThreadSafe() const
     {
@@ -1105,7 +1142,9 @@ public:
 #endif
 
 protected:
+    core::componentmodel::behavior::BaseLMConstraint::ConstId id;
     std::vector< ConstraintData > datasC;
+
 };
 
 class SOFA_SIMULATION_COMMON_API MechanicalAccumulateConstraint : public MechanicalVisitor

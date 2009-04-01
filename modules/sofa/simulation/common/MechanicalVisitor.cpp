@@ -447,6 +447,35 @@ Visitor::Result MechanicalPropagateDxVisitor::fwdMechanicalMapping(simulation::N
     endProcess(node, map, t0);
     return RESULT_CONTINUE;
 }
+Visitor::Result MechanicalPropagateVVisitor::fwdMechanicalState(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalState* mm)
+{
+    ctime_t t0 = beginProcess(node, mm);
+    mm->setV(v);
+    endProcess(node, mm, t0);
+    return RESULT_CONTINUE;
+}
+Visitor::Result MechanicalPropagateVVisitor::fwdMechanicalMapping(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalMapping* map)
+{
+    ctime_t t0 = beginProcess(node, map);
+    map->propagateV();
+    endProcess(node, map, t0);
+    return RESULT_CONTINUE;
+}
+Visitor::Result MechanicalPropagateXVisitor::fwdMechanicalState(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalState* mm)
+{
+    ctime_t t0 = beginProcess(node, mm);
+    mm->setX(x);
+    endProcess(node, mm, t0);
+    return RESULT_CONTINUE;
+}
+Visitor::Result MechanicalPropagateXVisitor::fwdMechanicalMapping(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalMapping* map)
+{
+    ctime_t t0 = beginProcess(node, map);
+    map->propagateX();
+    endProcess(node, map, t0);
+    return RESULT_CONTINUE;
+}
+
 
 Visitor::Result MechanicalPropagateDxAndResetForceVisitor::fwdMechanicalState(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalState* mm)
 {
@@ -469,21 +498,6 @@ Visitor::Result MechanicalPropagateDxAndResetForceVisitor::fwdMappedMechanicalSt
     ctime_t t0 = beginProcess(node, mm);
     mm->resetForce();
     endProcess(node, mm, t0);
-    return RESULT_CONTINUE;
-}
-
-Visitor::Result MechanicalPropagateXVisitor::fwdMechanicalState(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalState* mm)
-{
-    ctime_t t0 = beginProcess(node, mm);
-    mm->setX(x);
-    endProcess(node, mm, t0);
-    return RESULT_CONTINUE;
-}
-Visitor::Result MechanicalPropagateXVisitor::fwdMechanicalMapping(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalMapping* map)
-{
-    ctime_t t0 = beginProcess(node, map);
-    map->propagateX();
-    endProcess(node, map, t0);
     return RESULT_CONTINUE;
 }
 
@@ -892,7 +906,7 @@ Visitor::Result MechanicalAccumulateLMConstraint::fwdLMConstraint(simulation::No
 {
 
     ctime_t t0 = beginProcess(node, c);
-    c->writeConstraintEquations();
+    c->writeConstraintEquations(id);
 
     datasC.push_back(ConstraintData());
     ConstraintData &entry=datasC[datasC.size()-1];
