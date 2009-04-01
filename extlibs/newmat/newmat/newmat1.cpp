@@ -4,12 +4,6 @@
 
 //#define WANT_STREAM
 
-#ifndef __GNUC__
-#error fish
-#elif (__GNUC_MINOR__==2) && defined(SOFA_DEV) && !defined(SOFA_GPU_CUDA)
-#error fish
-#endif
-
 #include "newmat.h"
 
 #ifdef use_namespace
