@@ -4,21 +4,12 @@
 
 //#define WANT_STREAM
 
-#ifndef SOFA_DEV
-#warning fish1
-#warning fish2
-#warning fish3
-#warning fish4
-#warning fish5
-#warning fish6
-#warning fish7
-#warning fish8
-#warning fish9
-#warning fish10
-#else
 #ifndef __GNUC__
 #error fish
-#endif
+#elif defined(__APPLE__)
+#error fish
+#elif (__GNUC_MINOR__>0) && (__GNUC_MINOR__<3)
+#error fish
 #endif
 
 #include "newmat.h"
