@@ -240,5 +240,3 @@ else {
 }
 
 message( "======================================")
-
-SUBDIRS = extlibs/newmat
