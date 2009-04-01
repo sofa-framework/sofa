@@ -62,8 +62,7 @@ BaseLMConstraint::constraintGroup* BaseLMConstraint::addGroupConstraint( ConstId
 
 void BaseLMConstraint::getIndicesUsed(ConstId Id, std::vector< unsigned int > &used0,std::vector< unsigned int > &used1)
 {
-
-    std::vector< BaseLMConstraint::constraintGroup > &constraints=constraintId[Id];
+    const std::vector< BaseLMConstraint::constraintGroup > &constraints=constraintId[Id];
     for (unsigned int idxGroupConstraint=0; idxGroupConstraint<constraints.size(); ++idxGroupConstraint)
     {
         const std::vector< unsigned int > &iUsed0= constraints[idxGroupConstraint].getIndicesUsed0();
@@ -71,27 +70,17 @@ void BaseLMConstraint::getIndicesUsed(ConstId Id, std::vector< unsigned int > &u
         const std::vector< unsigned int > &iUsed1= constraints[idxGroupConstraint].getIndicesUsed1();
         used1.insert(used1.end(),iUsed1.begin(), iUsed1.end());
     }
-
 }
-void BaseLMConstraint::getExpectedValues(ConstId Id, std::vector< double > &expected)
+void BaseLMConstraint::getCorrections(ConstId Id, std::vector<SReal>& c)
 {
-    std::vector< BaseLMConstraint::constraintGroup > &constraints=constraintId[Id];
+    const std::vector< BaseLMConstraint::constraintGroup > &constraints=constraintId[Id];
     for (unsigned int idxGroupConstraint=0; idxGroupConstraint<constraints.size(); ++idxGroupConstraint)
     {
-        const std::vector< double> &val= constraints[idxGroupConstraint].getExpectedValues();
-        expected.insert(expected.end(),val.begin(), val.end());
+        const std::vector<SReal>& correction=constraints[idxGroupConstraint].getCorrections();
+        c.insert(c.end(), correction.begin(), correction.end());
     }
 }
 
-void BaseLMConstraint::getExpectedValuesType(ConstId Id, std::vector< ValueId > &t)
-{
-    std::vector< BaseLMConstraint::constraintGroup > &constraints=constraintId[Id];
-    for (unsigned int idxGroupConstraint=0; idxGroupConstraint<constraints.size(); ++idxGroupConstraint)
-    {
-        const std::vector< ValueId> &val= constraints[idxGroupConstraint].getExpectedValuesType();
-        t.insert(t.end(),val.begin(), val.end());
-    }
-}
 }
 }
 }

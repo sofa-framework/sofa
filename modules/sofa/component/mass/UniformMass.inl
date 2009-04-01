@@ -95,6 +95,10 @@ void UniformMass<DataTypes, MassType>::reinit()
         this->totalMass.setValue(  this->mstate->getX()->size()*this->mass.getValue());
     }
 }
+
+
+
+
 template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::init()
 {
@@ -323,9 +327,20 @@ void UniformMass<DataTypes, MassType>::addMToMatrix(defaulttype::BaseMatrix * ma
 
 
 template <class DataTypes, class MassType>
-double UniformMass<DataTypes, MassType>::getElementMass(unsigned int )
+double UniformMass<DataTypes, MassType>::getElementMass(unsigned int ) const
 {
     return (double)(mass.getValue());
+}
+
+//TODO: special case for Rigid Mass
+template <class DataTypes, class MassType>
+void UniformMass<DataTypes, MassType>::getElementMass(unsigned int /* index */, defaulttype::BaseMatrix *m) const
+{
+    static unsigned int dimension = defaulttype::DataTypeInfo<Coord>::size();
+    if (m->rowSize() != dimension || m->colSize() != dimension) m->resize(dimension,dimension);
+
+    m->clear();
+    for (unsigned int i=0; i<dimension; ++i) m->set(i,i,mass.getValue());
 }
 
 

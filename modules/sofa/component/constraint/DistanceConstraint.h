@@ -69,6 +69,7 @@ public:
 
 
     typedef typename core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
+    typedef core::componentmodel::behavior::BaseLMConstraint::ConstId ConstId;
 
     using core::componentmodel::behavior::LMConstraint<DataTypes,DataTypes>::sout;
     using core::componentmodel::behavior::LMConstraint<DataTypes,DataTypes>::serr;
@@ -92,7 +93,8 @@ public:
     // -- Constraint interface
     void init();
     void reinit();
-    void writeConstraintEquations();
+    void writeConstraintEquations(ConstId id);
+
     double getError();
 
 
@@ -109,9 +111,9 @@ public:
 
 protected :
     ///Compute the length of an edge given the vector of coordinates corresponding
-    double lengthEdge(const Edge &e, const VecCoord &x1,const VecCoord &x2);
+    double lengthEdge(const Edge &e, const VecCoord &x1,const VecCoord &x2) const;
     ///Compute the direction of the constraint
-    Deriv getDirection(const Edge &e, const VecCoord &x1, const VecCoord &x2);
+    Deriv getDirection(const Edge &e, const VecCoord &x1, const VecCoord &x2) const;
     void updateRestLength();
 
     // Base Components of the current context
@@ -128,6 +130,5 @@ protected :
 } // namespace component
 
 } // namespace sofa
-
 
 #endif

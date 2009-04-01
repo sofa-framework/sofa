@@ -126,81 +126,25 @@ void Mass<DataTypes>::exportGnuplot(double time)
     }
 }
 
-
-
-template<class DataTypes>
-void Mass<DataTypes>::buildSystemMatrix(defaulttype::BaseMatrix &invM_Jtrans , defaulttype::BaseMatrix & A ,
-        const sofa::helper::vector< sofa::helper::vector<unsigned int>  >& constraintId ,
-        const sofa::helper::vector< double >  factor ,
-        const sofa::helper::vector< unsigned int > offset,
-        const defaulttype::BaseVector &FixedPoints)
+/// return the mass relative to the DOF #index
+template <class DataTypes>
+double Mass<DataTypes>::getElementMass(unsigned int ) const
 {
+    serr<<"getElementMass with Scalar not yet implemented"<<sendl;
+    return 0.0;
+}
+//TODO: special case for Rigid Mass
+template <class DataTypes>
+void Mass<DataTypes>::getElementMass(unsigned int , defaulttype::BaseMatrix *m) const
+{
+    static unsigned int dimension = defaulttype::DataTypeInfo<Coord>::size();
+    if (m->rowSize() != dimension || m->colSize() != dimension) m->resize(dimension,dimension);
 
-    //constraintId is a vector of vector, as the first dimension corresponds to the cosntraint components, and the second, the indices of the line of the VecConst
-    const unsigned int dimension=defaulttype::DataTypeInfo< Deriv >::size();
-    const unsigned int numDofs=this->mstate->getSize();
-    const VecConst& c = *this->mstate->getC();
-
-
-    if (invM_Jtrans.rowSize()*invM_Jtrans.colSize() == 0)
-        invM_Jtrans.resize(numDofs*dimension,A.rowSize());
-
-    typedef typename std::map< unsigned int, Deriv>::const_iterator constraintIterator;
-    //Filling the sparse matrices
-    //For all the constraint components found in the scene graph
-    for (unsigned int system=0; system<constraintId.size(); ++system)
-    {
-        //For all the equations written by these constraints
-        for (unsigned int n1=0; n1<constraintId[system].size(); ++n1)
-        {
-            //We read the non null entries of the SparseVector
-            SparseVecDeriv sc1 = c[constraintId[system][n1]];
-            for (constraintIterator it1=sc1.getData().begin(); it1!=sc1.getData().end(); it1++)
-            {
-                unsigned int dof=it1->first;
-                Deriv v=it1->second;
-                double invMassElement=1.0/this->getElementMass(dof);
-
-
-                //Building M^-1.J^T
-                //For the moment, M is considered as diagonal. Null term corresponds to FixedPoints
-                for (unsigned int d=0; d<dimension; ++d)
-                {
-                    invM_Jtrans.add(dof*dimension+d,
-                            offset[system]+n1,
-                            v[d]*factor[system]*FixedPoints.element(dof)*invMassElement);
-                }
-
-
-                //Accumulating A=J.M^-1.J^T
-                for (unsigned int system2=0; system2<constraintId.size(); ++system2)
-                {
-                    for (unsigned int n2=0; n2<constraintId[system2].size(); ++n2)
-                    {
-                        SparseVecDeriv sc2 = c[constraintId[system2][n2]];
-                        SReal value=sc1.getDataAt(dof)*sc2.getDataAt(dof)*factor[system]*factor[system2]*FixedPoints.element(dof)*invMassElement;
-                        A.add(n1+offset[system],n2+offset[system2],value);
-                    }
-                }
-            }
-        }
-    }
+    m->clear();
+    serr<<"getElementMass with Matrix not yet implemented"<<sendl;
 }
 
-template<class DataTypes>
-void Mass<DataTypes>::buildInvMassDenseMatrix(defaulttype::BaseMatrix &m)
-{
-    unsigned int dimension=defaulttype::DataTypeInfo< Coord >::size();
-    unsigned int numDofs=this->mstate->getSize();
-    m.resize(dimension*numDofs,dimension*numDofs);
-    for (unsigned int i=0; i<numDofs; ++i)
-    {
-        for (unsigned int j=0; j<dimension; ++j)
-        {
-            m.set(i*dimension+j,i*dimension+j,1.0/this->getElementMass(i));
-        }
-    }
-}
+
 
 } // namespace behavior
 

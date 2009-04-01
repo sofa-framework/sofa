@@ -157,13 +157,8 @@ public:
     virtual void addGravityToV(double dt)=0;
 
 
-    virtual void buildSystemMatrix(defaulttype::BaseMatrix &/* invM_Jtrans */, defaulttype::BaseMatrix &/* A */,
-            const sofa::helper::vector< sofa::helper::vector<unsigned int>  >&/* constraintId */,
-            const sofa::helper::vector< double > /* factor */,
-            const sofa::helper::vector< unsigned int > /* offset */,
-            const defaulttype::BaseVector& /* FixedPoints */);
-
-    virtual void buildInvMassDenseMatrix(defaulttype::BaseMatrix &m);
+    virtual double getElementMass(unsigned int) const;
+    virtual void getElementMass(unsigned int , defaulttype::BaseMatrix *m) const;
 
 protected:
     /// stream to export Kinematic, Potential and Mechanical Energy to gnuplot files

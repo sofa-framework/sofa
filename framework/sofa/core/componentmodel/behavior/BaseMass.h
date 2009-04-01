@@ -87,15 +87,12 @@ public:
     virtual void addGravityToV(double dt)=0;
 
     /// return the mass relative to the DOF #index
-    virtual double getElementMass(unsigned int index)=0;
+    virtual double getElementMass(unsigned int index)const =0;
+    /// return the matrix relative to the DOF #index
+    virtual void getElementMass(unsigned int index, defaulttype::BaseMatrix *m)const =0;
 
     /// @}
-    virtual void buildSystemMatrix(defaulttype::BaseMatrix &/* invM_Jtrans */, defaulttype::BaseMatrix &/* A */,
-            const sofa::helper::vector< sofa::helper::vector<unsigned int>  >&/* constraintId */,
-            const sofa::helper::vector< double > /* factor */,
-            const sofa::helper::vector< unsigned int > /* offset */,
-            const defaulttype::BaseVector& /* FixedPoints */) {};
-    virtual void buildInvMassDenseMatrix(defaulttype::BaseMatrix &) {};
+    virtual bool isDiagonal() {return false;}
 
     /// Member specifying if the gravity is added separately to the DOFs velocities (in solve method),
     /// or if is added with the other forces(addForceMethod)

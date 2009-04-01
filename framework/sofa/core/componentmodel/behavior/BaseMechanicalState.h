@@ -90,6 +90,7 @@ public:
 
     /// functions that allows to have access to the geometry without a template class : not efficient
     virtual int getSize() const { return 0; }
+    virtual unsigned int getDimension() const { return 0; }
     virtual double getPX(int /*i*/) const { return 0.0; }
     virtual double getPY(int /*i*/) const { return 0.0; }
     virtual double getPZ(int /*i*/) const { return 0.0; }
@@ -255,11 +256,21 @@ public:
         }
     };
 
-    /// Express the constraint J as a dense matrix
-    virtual void buildConstraintMatrix(const sofa::helper::vector<unsigned int> &/*constraintId*/, const double /* factor */, defaulttype::BaseMatrix& /*m*/, unsigned int /* numConstraint */, unsigned int /* offset */) {};
+    class ConstraintBlock
+    {
+    public:
+        ConstraintBlock( unsigned int c, defaulttype::BaseMatrix *m):column(c),matrix(m) {}
 
-    /// Compute the violation of the constraint and store them in a vector
-    virtual void computeConstraintProjection(const sofa::helper::vector<unsigned int> &/*constraintId*/, VecId /* Id */, defaulttype::BaseVector& /*v*/,  unsigned int /* offset */) {};
+        unsigned int getColumn() const {return column;}
+        const defaulttype::BaseMatrix &getMatrix() const {return *matrix;};
+        defaulttype::BaseMatrix *getMatrix() {return matrix;};
+    protected:
+        unsigned int column;
+        defaulttype::BaseMatrix *matrix;
+    };
+
+    /// Express the matrix L in term of block of matrices, using the indices of the lines in the VecConst container
+    virtual std::list<ConstraintBlock> constraintBlocks( const std::list<unsigned int> &/* indices */, double /* factor */) const {return std::list<ConstraintBlock>();};
 
     /// Increment the index of the given VecId, so that all 'allocated' vectors in this state have a lower index
     virtual void vAvail(VecId& v) = 0;
@@ -387,6 +398,9 @@ public:
 
     /// Add data stored in a BaseVector to a local mechanical vector of the MechanicalState
     virtual void addBaseVectorToState(VecId , defaulttype::BaseVector *, unsigned int &) = 0;
+
+    /// Add data stored in a Vector (whose size is smaller or equal to the State vector)  to a local mechanical vector of the MechanicalState
+    virtual void addVectorToState(VecId , defaulttype::BaseVector *, unsigned int &) = 0;
 
     /// Update offset index during the subgraph traversal
     virtual void setOffset(unsigned int &) = 0;

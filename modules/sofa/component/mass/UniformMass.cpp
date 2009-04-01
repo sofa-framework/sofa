@@ -296,17 +296,17 @@ double UniformMass<Rigid2dTypes,Rigid2dMass>::getPotentialEnergy( const Rigid2dT
     return e;
 }
 
-template <> SOFA_COMPONENT_MASS_API
-double UniformMass<Rigid3dTypes,Rigid3dMass>::getElementMass(unsigned int )
-{
-    return (mass.getValue().mass);
-}
+// template <> SOFA_COMPONENT_MASS_API
+//     double UniformMass<Rigid3dTypes,Rigid3dMass>::getElementMass(unsigned int ) const
+// {
+//   return (mass.getValue().mass);
+// }
 
-template <> SOFA_COMPONENT_MASS_API
-sofa::defaulttype::Vector3::value_type UniformMass<Rigid2dTypes,Rigid2dMass>::getElementMass(unsigned int )
-{
-    return (mass.getValue().mass);
-}
+// template <> SOFA_COMPONENT_MASS_API
+//     sofa::defaulttype::Vector3::value_type UniformMass<Rigid2dTypes,Rigid2dMass>::getElementMass(unsigned int ) const
+// {
+//   return (mass.getValue().mass);
+// }
 
 
 template <> SOFA_COMPONENT_MASS_API
@@ -575,18 +575,18 @@ double UniformMass<Rigid2fTypes,Rigid2fMass>::getPotentialEnergy( const Rigid2fT
     return e;
 }
 
-template <> SOFA_COMPONENT_MASS_API
-double UniformMass<Rigid3fTypes,Rigid3fMass>::getElementMass(unsigned int )
-{
-    return (double)(mass.getValue().mass);
-}
+// template <> SOFA_COMPONENT_MASS_API
+// double UniformMass<Rigid3fTypes,Rigid3fMass>::getElementMass(unsigned int ) const
+// {
+//   return (double)(mass.getValue().mass);
+// }
 
 
-template <>
-double UniformMass<Rigid2fTypes,Rigid2fMass>::getElementMass(unsigned int )
-{
-    return (double)(mass.getValue().mass);
-}
+// template <> SOFA_COMPONENT_MASS_API
+//     double UniformMass<Rigid2fTypes,Rigid2fMass>::getElementMass(unsigned int ) const
+// {
+//   return (double)(mass.getValue().mass);
+// }
 
 template <> SOFA_COMPONENT_MASS_API
 void UniformMass<Vec6fTypes, float>::draw()

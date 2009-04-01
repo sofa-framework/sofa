@@ -29,6 +29,7 @@
 
 #include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
 #include <sofa/core/componentmodel/behavior/State.h>
+#include <sofa/defaulttype/DataTypeInfo.h>
 
 namespace sofa
 {
@@ -88,6 +89,7 @@ public:
 
     virtual ~MechanicalState() { }
 
+    virtual unsigned int getDimension() const { return defaulttype::DataTypeInfo<Coord>::size(); }
     /// Return the free-motion velocity vector (read-write access).
     virtual VecDeriv* getVfree() = 0;
     /// Return the current velocity vector (read-write access).
