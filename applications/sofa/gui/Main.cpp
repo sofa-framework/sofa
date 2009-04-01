@@ -52,36 +52,36 @@ SOFA_LINK_CLASS(OgreGUI)
 
 
 // ligne 1 et 3
-#ifdef __GNUC__ 4
-#ifdef __GNUC__MINOR__ 2
-int fish
-#endif
-#endif
-
-#ifndef SOFA_DEV
-int fish
-#endif
-
-#ifdef __APPLE__
-int fish
-#endif
+//#ifdef __GNUC__ 4
+//    #ifdef __GNUC__MINOR__ 2
+//        int fish
+//    #endif
+//#endif
+//
+//#ifndef SOFA_DEV
+//    int fish
+//#endif
+//
+//#ifdef __APPLE__
+//    int fish
+//#endif
 
 // ligne 2
-//#ifdef __GNUC__ 4
-//    #ifdef __GNUC__MINOR__ 3
-//        int fish
-//    #endif
-//#endif
-//
-//#ifdef __GNUC__ 4
-//    #ifdef __GNUC__MINOR__ 1
-//        int fish
-//    #endif
-//#endif
-//
-//#ifdef SOFA_GPU_CUDA
-//        int fish
-//#endif
+#ifdef __GNUC__ 4
+#ifdef __GNUC__MINOR__ 3
+int fish
+#endif
+#endif
+
+#ifdef __GNUC__ 4
+#ifdef __GNUC__MINOR__ 1
+int fish
+#endif
+#endif
+
+#ifdef SOFA_GPU_CUDA
+int fish
+#endif
 
 
 
