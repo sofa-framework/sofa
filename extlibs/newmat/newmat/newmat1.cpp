@@ -4,6 +4,23 @@
 
 //#define WANT_STREAM
 
+#ifndef SOFA_DEV
+#warning fish1
+#warning fish2
+#warning fish3
+#warning fish4
+#warning fish5
+#warning fish6
+#warning fish7
+#warning fish8
+#warning fish9
+#warning fish10
+#else
+#ifndef __GNUC__
+#error fish
+#endif
+#endif
+
 #include "newmat.h"
 
 #ifdef use_namespace
