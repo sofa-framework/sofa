@@ -166,6 +166,16 @@ public:
 
     defaulttype::Vec<3,Real> toEulerVector() const;
 
+
+    /*! Returns the slerp interpolation of Quaternions \p a and \p b, at time \p t.
+
+     \p t should range in [0,1]. Result is \p a when \p t=0 and \p b when \p t=1.
+
+     When \p allowFlip is \c true (default) the slerp interpolation will always use the "shortest path"
+     between the Quaternions' orientations, by "flipping" the source Quaternion if needed (see
+     negate()). */
+    void slerp(const Quater& a, const Quater& b, float t, bool allowFlip=true);
+
     // A useful function, builds a rotation matrix in Matrix based on
     // given quaternion.
 

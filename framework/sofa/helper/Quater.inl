@@ -478,6 +478,44 @@ defaulttype::Vec<3,Real> Quater<Real>::toEulerVector() const
     return v;
 }
 
+/*! Returns the slerp interpolation of Quaternions \p a and \p b, at time \p t.
+
+ \p t should range in [0,1]. Result is \p a when \p t=0 and \p b when \p t=1.
+
+ When \p allowFlip is \c true (default) the slerp interpolation will always use the "shortest path"
+ between the Quaternions' orientations, by "flipping" the source Quaternion if needed (see
+ negate()). */
+template<class Real>
+void Quater<Real>::slerp(const Quater& a, const Quater& b, float t, bool allowFlip)
+{
+    float cosAngle =  a[0]*b[0] + a[1]*b[1] + a[2]*b[2] + a[3]*b[3];
+
+    float c1, c2;
+    // Linear interpolation for close orientations
+    if ((1.0 - fabs(cosAngle)) < 0.01)
+    {
+        c1 = 1.0 - t;
+        c2 = t;
+    }
+    else
+    {
+        // Spherical interpolation
+        float angle    = acos(fabs(cosAngle));
+        float sinAngle = sin(angle);
+        c1 = sin(angle * (1.0 - t)) / sinAngle;
+        c2 = sin(angle * t) / sinAngle;
+    }
+
+    // Use the shortest path
+    if (allowFlip && (cosAngle < 0.0))
+        c1 = -c1;
+
+    _q[0] = c1*a[0] + c2*b[0];
+    _q[1] = c1*a[1] + c2*b[1];
+    _q[2] = c1*a[2] + c2*b[2];
+    _q[4] = c1*a[3] + c2*b[3];
+}
+
 ///// Output quaternion
 //template<class Real>
 //    std::ostream& operator<<(std::ostream& out, Quater<Real> Q)
