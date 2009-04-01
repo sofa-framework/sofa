@@ -513,7 +513,7 @@ void Quater<Real>::slerp(const Quater& a, const Quater& b, float t, bool allowFl
     _q[0] = c1*a[0] + c2*b[0];
     _q[1] = c1*a[1] + c2*b[1];
     _q[2] = c1*a[2] + c2*b[2];
-    _q[4] = c1*a[3] + c2*b[3];
+    _q[3] = c1*a[3] + c2*b[3];
 }
 
 ///// Output quaternion
