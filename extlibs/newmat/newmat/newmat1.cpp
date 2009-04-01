@@ -6,9 +6,7 @@
 
 #ifndef __GNUC__
 #error fish
-#elif defined(__APPLE__)
-#error fish
-#elif (__GNUC_MINOR__>0) && (__GNUC_MINOR__<3)
+#elif (__GNUC_MINOR__==2) && defined(SOFA_DEV) && !defined(SOFA_GPU_CUDA)
 #error fish
 #endif
 
