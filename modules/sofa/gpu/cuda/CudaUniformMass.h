@@ -56,7 +56,7 @@ template <>
 double UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::Rigid3fMass>::getPotentialEnergy( const VecCoord& x );
 
 template <>
-double UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::Rigid3fMass>::getElementMass(unsigned int );
+double UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::Rigid3fMass>::getElementMass(unsigned int ) const;
 
 template <>
 void UniformMass<gpu::cuda::CudaRigid3fTypes, Rigid3fMass>::draw();
@@ -92,7 +92,7 @@ template <>
 double UniformMass<gpu::cuda::CudaRigid3dTypes,sofa::defaulttype::Rigid3dMass>::getPotentialEnergy( const VecCoord& x );
 
 template <>
-double UniformMass<gpu::cuda::CudaRigid3dTypes,sofa::defaulttype::Rigid3dMass>::getElementMass(unsigned int );
+double UniformMass<gpu::cuda::CudaRigid3dTypes,sofa::defaulttype::Rigid3dMass>::getElementMass(unsigned int ) const;
 
 template <>
 void UniformMass<gpu::cuda::CudaRigid3dTypes, Rigid3dMass>::draw();
