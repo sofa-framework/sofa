@@ -74,7 +74,7 @@ public:
 
     virtual ~PrecomputedConstraintCorrection();
 
-    virtual void init();
+    virtual void bwdInit();
 
     /// Retrieve the associated MechanicalState
     behavior::MechanicalState<DataTypes>* getMState() { return mstate; }
