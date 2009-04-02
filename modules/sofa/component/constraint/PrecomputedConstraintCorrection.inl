@@ -86,9 +86,8 @@ PrecomputedConstraintCorrection<DataTypes>::~PrecomputedConstraintCorrection()
 //////////////////////////////////////////////////////////////////////////
 
 template<class DataTypes>
-void PrecomputedConstraintCorrection<DataTypes>::init()
+void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 {
-
     f_rotations.beginEdit();
     f_restRotations.beginEdit();
     mstate = dynamic_cast< behavior::MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
@@ -195,7 +194,10 @@ void PrecomputedConstraintCorrection<DataTypes>::init()
 
         for(unsigned int f = 0 ; f < nbNodes ; f++)
         {
-            sout << "inverse cols node : " << f << sendl;
+            std::cout.precision(2);
+            std::cout << "Precomputing constraint correction : " << std::fixed << (float)f/(float)nbNodes*100.0f << " %   " << '\xd';
+            std::cout.flush();
+            //  serr << "inverse cols node : " << f << sendl;
             Deriv unitary_force;
 
             for (unsigned int i=0; i<dof_on_node; i++)
