@@ -154,6 +154,8 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
             sout << "use CGImplicitSolver " << sendl;
         else if(EulerSolver && linearSolver)
             sout << "use EulerImplicitSolver &  CGLinearSolver" << sendl;
+        else if(EulerSolver)
+            sout << "use EulerImplicitSolver" << sendl;
         else
         {
             serr<<"PrecomputedContactCorrection must be associated with CGImplicitSolver or EulerImplicitSolver+CGLinearSolver for the precomputation\nNo Precomputation" << sendl;
@@ -175,7 +177,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
             odeSolver->f_maxIter.setValue(500);
             odeSolver->f_smallDenominatorThreshold.setValue(1e-35);
         }
-        else/* if(linearSolver) */
+        else if(linearSolver)
         {
             buf_tolerance = (double) linearSolver->f_tolerance.getValue();
             buf_maxIter   = (int) linearSolver->f_maxIter.getValue();
@@ -254,7 +256,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
             odeSolver->f_maxIter.setValue(buf_maxIter);
             odeSolver->f_smallDenominatorThreshold.setValue(buf_threshold);
         }
-        else/* if(linearSolver) */
+        else if(linearSolver)
         {
             linearSolver->f_tolerance.setValue(buf_tolerance);
             linearSolver->f_maxIter.setValue(buf_maxIter);
