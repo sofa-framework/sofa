@@ -50,6 +50,7 @@ template <class DataTypes>
 Spiral<DataTypes>::Spiral()
     : f_X0( initData (&f_X0, "rest_position", "Rest position coordinates of the degrees of freedom") )
     , f_X( initData (&f_X, "position", "Position coordinates of the degrees of freedom") )
+    , curvature( initData (&curvature, Real(0.2),"curvature", "Spiral curvature factor") )
 {
     addInput(&f_X0);
     addOutput(&f_X);
@@ -76,7 +77,6 @@ void Spiral<DataTypes>::update()
     const VecCoord x0 = f_X0.getValue();
     VecCoord* x = f_X.beginEdit();
     x->clear();
-    Real angle = 0.60;
 
     for( unsigned i=0; i<x0.size(); ++i )
     {
@@ -86,7 +86,7 @@ void Spiral<DataTypes>::update()
         // l'(t) = a sqrt(1+t²)
         // l = a/2 (t sqrt(1+t²) + asinh(t))
         // l = a/2 (t sqrt(1+t²) + asinh(t))
-        Real A = 0.2;
+        Real A = curvature.getValue();
         Real l = (t0 > 0 ? t0 : -t0);
         Real t = sqrt(l);
         // t = t - l(t)/l'(t)
