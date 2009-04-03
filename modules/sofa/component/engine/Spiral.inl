@@ -95,7 +95,7 @@ void Spiral<DataTypes>::update()
 #ifndef WIN32
             Real l_t = A/2 * ( t * sqrt(1+t*t) + asinh(t) );
 #else
-            Real l_t = A/2 * ( t * sqrt(1+t*t) );
+            Real l_t = A/2 * ( t * sqrt(1+t*t) + log(t + sqrt(t * t + 1)));
 #endif
 
             Real dl_t = A * sqrt(1+t*t);
