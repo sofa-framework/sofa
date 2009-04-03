@@ -110,7 +110,7 @@ bool MeshTopologyLoader::loadObj(const char *filename)
             for (unsigned int j=2; j<facet.size(); j++)
                 addTriangle(facet[0],facet[j-1],facet[j]);
         }
-
+#if 0
         // Add edges
         if (facet.size()>2)
         {
@@ -132,6 +132,7 @@ bool MeshTopologyLoader::loadObj(const char *filename)
                 }
             }
         }
+#endif
     }
 
     delete mesh;
