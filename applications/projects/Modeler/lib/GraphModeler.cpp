@@ -459,7 +459,9 @@ GNode *GraphModeler::buildNodeFromBaseElement(GNode *node,xml::BaseElement *elem
     {
         //We can't use the parent node, as it is null
         if (!node) return NULL;
+        delete newNode;
         newNode = node;
+
     }
     else
     {
@@ -485,6 +487,7 @@ GNode *GraphModeler::buildNodeFromBaseElement(GNode *node,xml::BaseElement *elem
             templatename = it->getAttribute(templateAttribute, "");
             ClassInfo *info = getCreatorComponent(it->getType());
             BaseObject *newComponent=addComponent(newNode, info, templatename, saveHistory,displayWarning);
+            if (!newComponent) continue;
             configureElement(newComponent, it);
             Q3ListViewItem* itemGraph = graphListener->items[newComponent];
 
@@ -1052,12 +1055,15 @@ bool GraphModeler::editPaste(std::string path)
 {
     if (selectedItem())
     {
+        Q3ListViewItem *last=selectedItem();
+        while(last->nextSibling()) last=last->nextSibling();
         GNode *node = getGNode(selectedItem());
         loadNode(node, path);
         Q3ListViewItem *pasteItem=selectedItem();
         Q3ListViewItem *insertedItem=selectedItem();
         while(insertedItem->nextSibling()) insertedItem=insertedItem->nextSibling();
-        initItem(insertedItem, pasteItem);
+        //Something has been add to the graph
+        if (insertedItem != last)  initItem(insertedItem, pasteItem);
     }
     return selectedItem();
 }
