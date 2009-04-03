@@ -40,7 +40,7 @@ namespace engine
 
 SOFA_DECL_CLASS(Spiral)
 
-int SpiralClass = core::RegisterObject("")
+int SpiralClass = core::RegisterObject("This class truns on spiral any topological model")
 #ifndef SOFA_FLOAT
         .add< Spiral<Vec3dTypes> >()
 #endif //SOFA_FLOAT

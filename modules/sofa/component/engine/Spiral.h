@@ -35,6 +35,7 @@
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/component/topology/PointSubset.h>
+#include <sofa/defaulttype/Vec3Types.h>
 
 namespace sofa
 {
@@ -50,6 +51,7 @@ using namespace core::componentmodel::topology;
 using namespace core::objectmodel;
 
 /**
+ * This class turns on spiral any topological model
  */
 template <class DataTypes>
 class Spiral : public virtual core::objectmodel::DataEngine, public virtual core::objectmodel::BaseObject
@@ -86,6 +88,7 @@ public:
 
     Data<VecCoord> f_X0;
     Data<VecCoord> f_X;
+    Data<Real> curvature;
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_ENGINE_BOXROI_CPP)
