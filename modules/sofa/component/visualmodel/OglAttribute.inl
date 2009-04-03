@@ -78,7 +78,6 @@ void OglAttribute< size, type, DataTypes>::initVisual ()
 {
     const ResizableExtVector<DataTypes>& data = value.getValue();
     unsigned int totalSize = data.size() *sizeof ( data[0] );
-    std::cout << "Size : " << totalSize << std::endl;
     glBindBuffer ( GL_ARRAY_BUFFER, _abo );
     glBufferData ( GL_ARRAY_BUFFER,
             totalSize,
@@ -93,27 +92,28 @@ void OglAttribute< size, type, DataTypes>::initVisual ()
 
     enable();
     glBindBuffer(GL_ARRAY_BUFFER,0);
-
 }
 
 
 template < int size, unsigned int type, class DataTypes>
 bool OglAttribute< size, type, DataTypes>::updateABO()
 {
-    GLvoid* attrib_bo = NULL;
-    glBindBuffer(GL_ARRAY_BUFFER, _abo);
+    const ResizableExtVector<DataTypes>& data = value.getValue();
+    unsigned int totalSize = data.size() *sizeof ( data[0] );
+    glBindBuffer ( GL_ARRAY_BUFFER, _abo );
+    glBufferData ( GL_ARRAY_BUFFER,
+            totalSize,
+            NULL,
+            usage );
+    // Fill the buffer
+    glBufferSubData ( GL_ARRAY_BUFFER,
+            0,
+            totalSize,
+            data.getData() );
+    _index = shader->getAttribute ( 0, id.getValue().c_str() );
 
-    attrib_bo = (GLvoid*) glMapBuffer(GL_ARRAY_BUFFER, GL_WRITE_ONLY);
-
-    if(attrib_bo == NULL)
-    {
-        std::cerr << "OglAttribute : Unknown error when updating attribute indices buffer "<< std::endl;
-        return false;
-    }
-    const ResizableExtVector<DataTypes>& val = value.getValue();
-    memcpy(attrib_bo, &(val[0]), val.size()*sizeof(val[0]));
-    glUnmapBuffer(GL_ARRAY_BUFFER);
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    enable();
+    glBindBuffer(GL_ARRAY_BUFFER,0);
     return true;
 }
 
@@ -203,6 +203,7 @@ void OglAttribute< size, type, DataTypes>::handleTopologyChange()
             {
                 //sout << "INFO_print : Vis - ENDING_EVENT" << sendl;
                 updateVisual();
+                updateABO();
                 break;
             }
 
