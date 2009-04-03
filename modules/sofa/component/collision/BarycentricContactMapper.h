@@ -77,6 +77,7 @@ public:
     virtual void resize(int size) = 0;
     virtual int addPoint(const Coord& c, int index, Real& r) = 0;
     virtual void update() = 0;
+    virtual void updateXfree() = 0;
 
     typedef helper::Factory< std::string, BaseContactMapper<DataTypes>, core::CollisionModel* > ContactMapperFactory;
     static BaseContactMapper<DataTypes>* Create(core::CollisionModel* model, const std::string& name = std::string("default"))
@@ -142,6 +143,14 @@ public:
         if (mapping!=NULL)
         {
             mapping->updateMapping();
+        }
+    }
+
+    void updateXfree()
+    {
+        if (mapping!=NULL)
+        {
+            mapping->propagateXfree();
         }
     }
 };
@@ -249,6 +258,14 @@ public:
             mapping->updateMapping();
         }
     }
+
+    void updateXfree()
+    {
+        if (mapping!=NULL)
+        {
+            mapping->propagateXfree();
+        }
+    }
 };
 
 /// Specialization of IdentityContactMapper when mapping to the same DataTypes, as no mapping is required in this case
@@ -295,6 +312,10 @@ public:
     }
 
     void update()
+    {
+    }
+
+    void updateXfree()
     {
     }
 };
@@ -399,6 +420,14 @@ public:
         if (mapping!=NULL)
         {
             mapping->updateMapping();
+        }
+    }
+
+    void updateXfree()
+    {
+        if (mapping!=NULL)
+        {
+            mapping->propagateXfree();
         }
     }
 
@@ -550,6 +579,19 @@ public:
                 needInit = false;
             }
             mapping->updateMapping();
+        }
+    }
+
+    void updateXfree()
+    {
+        if (mapping!=NULL)
+        {
+            if (needInit)
+            {
+                mapping->init();
+                needInit = false;
+            }
+            mapping->propagateXfree();
         }
     }
 

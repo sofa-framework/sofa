@@ -160,7 +160,12 @@ public:
 
     virtual void applyConstraint(unsigned int & /*contactId*/);
 
-    virtual void addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord Pfree = Coord(), Coord Qfree = Coord(), long id=0);
+    virtual void addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord Pfree, Coord Qfree, long id=0);
+
+    void addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, long id=0)
+    {
+        addContact(mu, norm, P, Q, contactDistance, m1, m2, (*getObject2()->getXfree())[m2], (*getObject1()->getXfree())[m1], id);
+    }
 
     virtual void getConstraintValue(defaulttype::BaseVector *, bool freeMotion);
 

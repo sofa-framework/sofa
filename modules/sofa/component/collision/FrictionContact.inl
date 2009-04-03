@@ -76,7 +76,6 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::cleanup()
 }
 
 
-#ifdef DETECTIONOUTPUT_FREEMOTION
 template < class TCollisionModel1, class TCollisionModel2 >
 void FrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(OutputVector* o)
 {
@@ -125,6 +124,8 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(Out
     mapper2.resize(size);
     int i = 0;
     const double d0 = intersectionMethod->getContactDistance() + model1->getProximity() + model2->getProximity(); // - 0.001;
+    std::vector< std::pair< std::pair<int, int>, double > > mappedContacts;
+    mappedContacts.resize(contacts.size());
     for (std::vector<DetectionOutput*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++, i++)
     {
         DetectionOutput* o = *it;
@@ -140,26 +141,65 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(Out
         index1 = mapper1.addPoint(o->point[0], index1, r1);
         // Create mapping for second point
         index2 = mapper2.addPoint(o->point[1], index2, r2);
+        double distance = d0 + r1 + r2;
+
+        mappedContacts[i].first.first = index1;
+        mappedContacts[i].first.second = index2;
+        mappedContacts[i].second = distance;
+    }
+
+    // Update mappings
+    mapper1.update();
+    mapper1.updateXfree();
+    mapper2.update();
+    mapper2.updateXfree();
+    i=0;
+    for (std::vector<DetectionOutput*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++, i++)
+    {
+        DetectionOutput* o = *it;
+        int index1 = mappedContacts[i].first.first;
+        int index2 = mappedContacts[i].first.second;
+        double distance = mappedContacts[i].second;
+#if 0
+        std::cout << "P0     = " << (*c->getObject1()->getX())[index1];
+        if (((*c->getObject1()->getX())[index1] - o->point[0]).norm() > 1.0e-10) std::cout << " ( " << (*c->getObject1()->getX())[index1] - o->point[0] << " )";
+        std::cout << std::endl;
+        std::cout << "P0free = " << (*c->getObject1()->getXfree())[index1];
+#ifdef DETECTIONOUTPUT_FREEMOTION
+        if (((*c->getObject1()->getXfree())[index1] - o->freePoint[0]).norm() > 1.0e-10) std::cout << " ( " << (*c->getObject1()->getXfree())[index1] - o->freePoint[0] << " )";
+        std::cout << std::endl;
+#else
+        if (((*c->getObject1()->getXfree())[index1] - o->point[0]).norm() > 1.0e-10) std::cout << " ( " << (*c->getObject1()->getXfree())[index1] - o->point[0] << " )";
+        std::cout << std::endl;
+#endif
+
+        std::cout << "P1     = " << (*c->getObject2()->getX())[index2];
+        if (((*c->getObject2()->getX())[index2] - o->point[1]).norm() > 1.0e-10) std::cout << " ( " << (*c->getObject2()->getX())[index2] - o->point[2] << " )";
+        std::cout << std::endl;
+        std::cout << "P1free = " << (*c->getObject2()->getXfree())[index2];
+#ifdef DETECTIONOUTPUT_FREEMOTION
+        if (((*c->getObject2()->getXfree())[index2] - o->freePoint[1]).norm() > 1.0e-10) std::cout << " ( " << (*c->getObject2()->getXfree())[index2] - o->freePoint[1] << " )";
+        std::cout << std::endl;
+#else
+        if (((*c->getObject2()->getXfree())[index2] - o->point[1]).norm() > 1.0e-10) std::cout << " ( " << (*c->getObject2()->getXfree())[index2] - o->point[1] << " )";
+        std::cout << std::endl;
+#endif
+#endif
+
         // Checks if friction is considered
         if (mu < 0.0 || mu > 1.0)
             serr << endl << "Error: mu has to take values between 0.0 and 1.0" << endl;
 
-        double distance = d0 + r1 + r2;
         // Polynome de Cantor de N� sur N bijectif f(x,y)=((x+y)^2+3x+y)/2
         long index = cantorPolynomia(cantorPolynomia(index1, index2),id);
-        c->addContact(mu, o->normal, o->point[1], o->point[0], distance, index1, index2, o->freePoint[1], o->freePoint[0], index);
+//#ifdef DETECTIONOUTPUT_FREEMOTION
+//		c->addContact(mu, o->normal, o->point[1], o->point[0], distance, index1, index2, o->freePoint[1], o->freePoint[0], index);
+//#else
+        // as we called updateXfree on the mappings, the contact class can now use the Xfree value of the contact points instead of relying on the collision detection method to fill freePoint[0] and freePoint[1]
+        c->addContact(mu, o->normal, o->point[1], o->point[0], distance, index1, index2, index);
+//#endif
     }
-    // Update mappings
-    mapper1.update();
-    mapper2.update();
 }
-#else
-template < class TCollisionModel1, class TCollisionModel2 >
-void FrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(OutputVector*)
-{
-    serr << endl << "ERROR: FrictionContact requires DETECTIONOUTPUT_FREEMOTION to be defined in DetectionOutput.h" << endl;
-}
-#endif
 
 template < class TCollisionModel1, class TCollisionModel2 >
 void FrictionContact<TCollisionModel1,TCollisionModel2>::createResponse(core::objectmodel::BaseContext* group)
