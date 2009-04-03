@@ -92,7 +92,9 @@ void Spiral<DataTypes>::update()
         // t = t - l(t)/l'(t)
         for (int n=0; n<10; ++n)
         {
+#ifndef WIN32
             Real l_t = A/2 * ( t * sqrt(1+t*t) + asinh(t) );
+#endif
             Real dl_t = A * sqrt(1+t*t);
             t = t - (l_t - l) / dl_t;
         }
