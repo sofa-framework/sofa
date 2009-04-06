@@ -130,6 +130,7 @@ contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 
 HEADERS += \
 	   	CudaLCP.h \
+	   	CudaMatrixUtils.h \
        	CudaMasterContactSolver.h \
 	   	CudaBTDLinearSolver.h \
 	   	CudaUnilateralInteractionConstraint.h \
