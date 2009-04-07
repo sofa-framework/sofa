@@ -426,7 +426,7 @@ void FFDDistanceGridCollisionModel::init()
     if (scale.getValue()!=1.0) std::cout<<" scale="<<scale.getValue();
     if (box.getValue()[0][0]<box.getValue()[1][0]) std::cout<<" bbox=<"<<box.getValue()[0]<<">-<"<<box.getValue()[0]<<">";
     std::cout << std::endl;
-    grid = DistanceGrid::loadShared(fileFFDDistanceGrid.getValue(), scale.getValue(), nx.getValue(),ny.getValue(),nz.getValue(),box.getValue()[0],box.getValue()[1]);
+    grid = DistanceGrid::loadShared(fileFFDDistanceGrid.getFullPath(), scale.getValue(), nx.getValue(),ny.getValue(),nz.getValue(),box.getValue()[0],box.getValue()[1]);
     if (grid && !dumpfilename.getValue().empty())
     {
         std::cout << "FFDDistanceGridCollisionModel: dump grid to "<<dumpfilename.getValue()<<std::endl;

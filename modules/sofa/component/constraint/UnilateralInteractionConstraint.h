@@ -167,6 +167,11 @@ public:
         addContact(mu, norm, P, Q, contactDistance, m1, m2, (*getObject2()->getXfree())[m2], (*getObject1()->getXfree())[m1], id);
     }
 
+    void addContact(double mu, Deriv norm, Real contactDistance, int m1, int m2, long id=0)
+    {
+        addContact(mu, norm, (*getObject2()->getX())[m2], (*getObject1()->getX())[m1], contactDistance, m1, m2, (*getObject2()->getXfree())[m2], (*getObject1()->getXfree())[m1], id);
+    }
+
     virtual void getConstraintValue(defaulttype::BaseVector *, bool freeMotion);
 
     virtual void getConstraintId(long* id, unsigned int &offset);

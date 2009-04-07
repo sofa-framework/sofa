@@ -48,11 +48,10 @@ using simulation::Node;
 template < class TCollisionModel1, class TCollisionModel2 >
 FrictionContact<TCollisionModel1,TCollisionModel2>::FrictionContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
     : model1(model1), model2(model2), intersectionMethod(intersectionMethod), c(NULL), parent(NULL)
+    , mu (initData(&mu, 0.1, "mu", "friction coefficient (0 for frictionless contacts)"))
 {
     mapper1.setCollisionModel(model1);
     mapper2.setCollisionModel(model2);
-
-    mu = 0.1;
 }
 
 template < class TCollisionModel1, class TCollisionModel2 >
@@ -84,6 +83,12 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(Out
     const double minDist2 = 0.00000001f;
     std::vector<DetectionOutput*> contacts;
     contacts.reserve(outputs.size());
+
+    const double mu = this->mu.getValue();
+    // Checks if friction is considered
+    if (mu < 0.0 || mu > 1.0)
+        serr << sendl << "Error: mu has to take values between 0.0 and 1.0" << sendl;
+
 
     int SIZE = outputs.size();
 
@@ -186,17 +191,14 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(Out
 #endif
 #endif
 
-        // Checks if friction is considered
-        if (mu < 0.0 || mu > 1.0)
-            serr << endl << "Error: mu has to take values between 0.0 and 1.0" << endl;
-
         // Polynome de Cantor de N� sur N bijectif f(x,y)=((x+y)^2+3x+y)/2
-        long index = cantorPolynomia(cantorPolynomia(index1, index2),id);
+        long index = cantorPolynomia(o->id /*cantorPolynomia(index1, index2)*/,id);
 //#ifdef DETECTIONOUTPUT_FREEMOTION
 //		c->addContact(mu, o->normal, o->point[1], o->point[0], distance, index1, index2, o->freePoint[1], o->freePoint[0], index);
 //#else
         // as we called updateXfree on the mappings, the contact class can now use the Xfree value of the contact points instead of relying on the collision detection method to fill freePoint[0] and freePoint[1]
-        c->addContact(mu, o->normal, o->point[1], o->point[0], distance, index1, index2, index);
+        //c->addContact(mu, o->normal, o->point[1], o->point[0], distance, index1, index2, index);
+        c->addContact(mu, o->normal, distance, index1, index2, index);
 //#endif
     }
 }
