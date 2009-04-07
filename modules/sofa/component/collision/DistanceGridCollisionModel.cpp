@@ -386,6 +386,7 @@ FFDDistanceGridCollisionModel::FFDDistanceGridCollisionModel()
     , nz( initData( &nz, 64, "nz", "number of values on Z axis") )
     , dumpfilename( initData( &dumpfilename, "dumpfilename","write distance grid to specified file"))
     , usePoints( initData( &usePoints, true, "usePoints", "use mesh vertices for collision detection"))
+    , singleContact( initData( &singleContact, false, "singleContact", "keep only the deepest contact in each cell"))
 {
     ffd = NULL;
     ffdMesh = NULL;
@@ -456,6 +457,9 @@ void FFDDistanceGridCollisionModel::init()
             p.index = i;
             p.bary = bary;
             elems[elem].points.push_back(p);
+            GCoord n = grid->grad(p0);
+            n.normalize();
+            elems[elem].normals.push_back(n);
         }
     }
     /// fill other data and remove inactive elements
@@ -598,9 +602,12 @@ void FFDDistanceGridCollisionModel::DeformedCube::updatePoints()
     if (!pointsUpdated)
     {
         deformedPoints.resize(points.size());
+        deformedNormals.resize(points.size());
         for (unsigned int i=0; i<points.size(); i++)
         {
             deformedPoints[i] = deform(points[i].bary);
+            deformedNormals[i] = deformDir(points[i].bary, normals[i]);
+            deformedNormals[i].normalize();
         }
         pointsUpdated = true;
     }
@@ -716,6 +723,16 @@ void FFDDistanceGridCollisionModel::draw(int index)
         for (unsigned int j=0; j<cube.deformedPoints.size(); j++)
             helper::gl::glVertexT(cube.deformedPoints[j]);
         glEnd();
+        if (this->getContext()->getShowNormals())
+        {
+            glBegin(GL_LINES);
+            for (unsigned int j=0; j<cube.deformedNormals.size(); j++)
+            {
+                helper::gl::glVertexT(cube.deformedPoints[j]);
+                helper::gl::glVertexT(cube.deformedPoints[j] + cube.deformedNormals[j]);
+            }
+            glEnd();
+        }
     }
     glPointSize(1);
 }
