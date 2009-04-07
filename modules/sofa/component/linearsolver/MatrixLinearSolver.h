@@ -161,18 +161,24 @@ MatrixLinearSolver<Matrix,Vector>::~MatrixLinearSolver()
 template<class Matrix, class Vector>
 void MatrixLinearSolver<Matrix,Vector>::resetSystem()
 {
-    if (systemMatrix) systemMatrix->clear();
+    if (!frozen)
+    {
+        if (systemMatrix) systemMatrix->clear();
+        needInvert = true;
+    }
     if (systemRHVector) systemRHVector->clear();
     if (systemLHVector) systemLHVector->clear();
     solutionVecId = VecId();
-    needInvert = true;
 }
 
 template<class Matrix, class Vector>
 void MatrixLinearSolver<Matrix,Vector>::resizeSystem(int n)
 {
-    if (!systemMatrix) systemMatrix = createMatrix();
-    systemMatrix->resize(n,n);
+    if (!frozen)
+    {
+        if (!systemMatrix) systemMatrix = createMatrix();
+        systemMatrix->resize(n,n);
+    }
     if (!systemRHVector) systemRHVector = createVector();
     systemRHVector->resize(n);
     if (!systemLHVector) systemLHVector = createVector();
@@ -183,14 +189,17 @@ void MatrixLinearSolver<Matrix,Vector>::resizeSystem(int n)
 template<class Matrix, class Vector>
 void MatrixLinearSolver<Matrix,Vector>::setSystemMBKMatrix(double mFact, double bFact, double kFact)
 {
-    unsigned int nbRow=0, nbCol=0;
-    //MechanicalGetMatrixDimensionVisitor(nbRow, nbCol).execute( getContext() );
-    this->getMatrixDimension(&nbRow, &nbCol);
-    resizeSystem(nbRow);
-    systemMatrix->clear();
-    unsigned int offset = 0;
-    //MechanicalAddMBK_ToMatrixVisitor(systemMatrix, mFact, bFact, kFact, offset).execute( getContext() );
-    this->addMBK_ToMatrix(systemMatrix, mFact, bFact, kFact, offset);
+    if (!this->frozen)
+    {
+        unsigned int nbRow=0, nbCol=0;
+        //MechanicalGetMatrixDimensionVisitor(nbRow, nbCol).execute( getContext() );
+        this->getMatrixDimension(&nbRow, &nbCol);
+        resizeSystem(nbRow);
+        systemMatrix->clear();
+        unsigned int offset = 0;
+        //MechanicalAddMBK_ToMatrixVisitor(systemMatrix, mFact, bFact, kFact, offset).execute( getContext() );
+        this->addMBK_ToMatrix(systemMatrix, mFact, bFact, kFact, offset);
+    }
 }
 
 template<class Matrix, class Vector>
