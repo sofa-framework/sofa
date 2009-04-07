@@ -98,7 +98,7 @@ protected:
     constraint::UnilateralInteractionConstraint<Vec3Types>* c;
     core::objectmodel::BaseContext* parent;
 
-    double mu;
+    Data<double> mu;
 
 public:
 

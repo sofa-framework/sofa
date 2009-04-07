@@ -140,7 +140,7 @@ float Mesh::calcDist(Vec3f pos) const
 	    Vec3f n;
 	    if (it->second.f1>=0) n+=getFN(it->second.f1);
 	    if (it->second.f2>=0) n+=getFN(it->second.f2);
-	    std::cerr << "P="<<Vec2i(i,it->first)<<" dir="<<dir<<" n="<<n
+	    std::cerr << "P="<<Vec2i(i,it->first)<<" dir="<<dir<<" f=" << it->second.f1 << "," << it->second.f2 << " n="<<n
 		      << " p0="<<getPP(i)<< " p1="<<getPP(it->first)
 		      <<" a="<<a<<"("<<a/dir.norm2()<<")";
 	  }

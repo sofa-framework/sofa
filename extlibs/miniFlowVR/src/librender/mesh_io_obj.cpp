@@ -305,7 +305,7 @@ public:
     return true;    
   }
 
-  Vec3i readPoint(const char** c) //, int& index)
+    Vec3i readPoint(const char** c, bool simple) //, int& index)
   {
     //Vec3f v_p;
     //Vec2f v_t;
@@ -322,7 +322,8 @@ public:
     {
       ++(*c);
       it = strtol(*c,(char**)c,10); if (it<0) it += t_vt.size();
-      if ((unsigned)it>=t_vt.size())
+      if (simple) it = 0;
+      else if ((unsigned)it>=t_vt.size())
       {
         std::cerr << "Incorrect texcoord "<<it<<std::endl;
         it = 0;
@@ -332,7 +333,8 @@ public:
     {
       ++(*c);
       in = strtol(*c,(char**)c,10); if (in<0) in += t_vn.size();
-      if ((unsigned)in>=t_vn.size())
+      if (simple) in = 0;
+      else if ((unsigned)in>=t_vn.size())
       {
         std::cerr << "Incorrect normal "<<in<<std::endl;
         in = 0;
@@ -390,6 +392,11 @@ public:
 	int len = 0;
 	sscanf(filter,"<%f,%f,%f>-<%f,%f,%f>%n",&bb.a[0],&bb.a[1],&bb.a[2],&bb.b[0],&bb.b[1],&bb.b[2],&len);
 	filter+=len;
+    }
+    bool simple=false;
+    if (filter && std::string(filter)=="simple")
+    {
+	simple = true;
     }
 
     std::string gname = "default";
@@ -483,18 +490,24 @@ public:
 	  break;
 	case 't': // texture
 	  ++c;
-	  v2.x() = (float)strtod(skip(c),(char**)&c); //+0.5f/4096;
-	  v2.y() = (float)strtod(skip(c),(char**)&c); //+0.5f/4096;
-	  t_vt.push_back(v2);
-	  mesh->setAttrib(Mesh::MESH_POINTS_TEXCOORD,true);
+	  if (!simple)
+	  {
+	      v2.x() = (float)strtod(skip(c),(char**)&c); //+0.5f/4096;
+	      v2.y() = (float)strtod(skip(c),(char**)&c); //+0.5f/4096;
+	      t_vt.push_back(v2);
+	      mesh->setAttrib(Mesh::MESH_POINTS_TEXCOORD,true);
+	  }
 	  break;
 	case 'n': // normal
 	  ++c;
-	  v3.x() = (float)strtod(skip(c),(char**)&c);
-	  v3.y() = (float)strtod(skip(c),(char**)&c);
-	  v3.z() = (float)strtod(skip(c),(char**)&c);
-	  t_vn.push_back(v3);
-	  mesh->setAttrib(Mesh::MESH_POINTS_NORMAL,true);
+	  if (!simple)
+	  {
+	      v3.x() = (float)strtod(skip(c),(char**)&c);
+	      v3.y() = (float)strtod(skip(c),(char**)&c);
+	      v3.z() = (float)strtod(skip(c),(char**)&c);
+	      t_vn.push_back(v3);
+	      mesh->setAttrib(Mesh::MESH_POINTS_NORMAL,true);
+	  }
 	  break;
 	}
 	break;
@@ -506,12 +519,12 @@ public:
 	{
 	  if (inc)
 	  {
-	    fp0 = readPoint(&c);
-	    fp1 = readPoint(&c);
+	      fp0 = readPoint(&c, simple);
+	      fp1 = readPoint(&c, simple);
 	    c = skip(c);
 	    while (*c != '\n' && *c!='\0' && *c!='\r')
 	    {
-	      fp2 = readPoint(&c);
+		fp2 = readPoint(&c, simple);
 
 	      if (bb.isEmpty() || (bb.in(t_v[fp0[0]]) && bb.in(t_v[fp1[0]]) && bb.in(t_v[fp2[0]])))
 	      {
@@ -539,8 +552,11 @@ public:
 	break;
       case 's':
 	++c;
-	smoothgroup = atoi(skip(c));
-	//std::cout << "smooth group "<<smoothgroup << std::endl;
+	if (!simple)
+	{
+	    smoothgroup = atoi(skip(c));
+	    //std::cout << "smooth group "<<smoothgroup << std::endl;
+	}
 	break;
       case 'u':
 	if (!strncmp(c,"usemtl",6))
