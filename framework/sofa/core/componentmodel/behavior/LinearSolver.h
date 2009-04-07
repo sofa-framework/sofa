@@ -119,7 +119,15 @@ public:
     /// Read the Matrix solver from a file
     virtual bool writeFile(std::ostream& /*out*/) {return false;}
 
+    /// Ask the solver to no longer update the system matrix
+    virtual void freezeSystemMatrix() { frozen = true; }
+
+    /// Ask the solver to no update the system matrix at the next iteration
+    virtual void updateSystemMatrix() { frozen = false; }
+
 protected:
+
+    bool frozen;
 };
 
 } // namespace behavior

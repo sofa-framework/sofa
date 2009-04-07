@@ -135,6 +135,32 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         const Vec3d gravity_zero(0.0,0.0,0.0);
         this->getContext()->setGravityInWorld(gravity_zero);
 
+        CGImplicitSolver* odeSolver;
+        EulerImplicitSolver* EulerSolver;
+        CGLinearSolver<GraphScatteredMatrix,GraphScatteredVector>* CGlinearSolver;
+        core::componentmodel::behavior::LinearSolver* linearSolver;
+
+        this->getContext()->get(odeSolver);
+        this->getContext()->get(EulerSolver);
+        this->getContext()->get(CGlinearSolver);
+        this->getContext()->get(linearSolver);
+
+        if(odeSolver)
+            sout << "use CGImplicitSolver " << sendl;
+        else if(EulerSolver && CGlinearSolver)
+            sout << "use EulerImplicitSolver &  CGLinearSolver" << sendl;
+        else if(EulerSolver && linearSolver)
+            sout << "use EulerImplicitSolver &  LinearSolver" << sendl;
+        else if(EulerSolver)
+            sout << "use EulerImplicitSolver" << sendl;
+        else
+        {
+            serr<<"PrecomputedContactCorrection must be associated with CGImplicitSolver or EulerImplicitSolver+LinearSolver for the precomputation\nNo Precomputation" << sendl;
+            return;
+        }
+
+
+
         //complianceLoaded = true;
         VecDeriv& force = *mstate->getExternalForces();
         force.clear();
@@ -142,32 +168,10 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         //v.clear();
         //v.resize(v0.size());//computeDf
 
-        CGImplicitSolver* odeSolver;
-        EulerImplicitSolver* EulerSolver;
-        CGLinearSolver<GraphScatteredMatrix,GraphScatteredVector>* linearSolver;
-
-        this->getContext()->get(odeSolver);
-        this->getContext()->get(EulerSolver);
-        this->getContext()->get(linearSolver);
-
-        if(odeSolver)
-            sout << "use CGImplicitSolver " << sendl;
-        else if(EulerSolver && linearSolver)
-            sout << "use EulerImplicitSolver &  CGLinearSolver" << sendl;
-        else if(EulerSolver)
-            sout << "use EulerImplicitSolver" << sendl;
-        else
-        {
-            serr<<"PrecomputedContactCorrection must be associated with CGImplicitSolver or EulerImplicitSolver+CGLinearSolver for the precomputation\nNo Precomputation" << sendl;
-            return;
-        }
-
-
-
 
         ///////////////////////// CHANGE THE PARAMETERS OF THE SOLVER /////////////////////////////////
-        double buf_tolerance, buf_threshold;
-        int	   buf_maxIter;
+        double buf_tolerance=0, buf_threshold=0;
+        int	   buf_maxIter=0;
         if(odeSolver)
         {
             buf_tolerance = (double) odeSolver->f_tolerance.getValue();
@@ -177,14 +181,14 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
             odeSolver->f_maxIter.setValue(500);
             odeSolver->f_smallDenominatorThreshold.setValue(1e-35);
         }
-        else if(linearSolver)
+        else if(CGlinearSolver)
         {
-            buf_tolerance = (double) linearSolver->f_tolerance.getValue();
-            buf_maxIter   = (int) linearSolver->f_maxIter.getValue();
-            buf_threshold = (double) linearSolver->f_smallDenominatorThreshold.getValue();
-            linearSolver->f_tolerance.setValue(1e-20);
-            linearSolver->f_maxIter.setValue(500);
-            linearSolver->f_smallDenominatorThreshold.setValue(1e-35);
+            buf_tolerance = (double) CGlinearSolver->f_tolerance.getValue();
+            buf_maxIter   = (int) CGlinearSolver->f_maxIter.getValue();
+            buf_threshold = (double) CGlinearSolver->f_smallDenominatorThreshold.getValue();
+            CGlinearSolver->f_tolerance.setValue(1e-20);
+            CGlinearSolver->f_maxIter.setValue(500);
+            CGlinearSolver->f_smallDenominatorThreshold.setValue(1e-35);
         }
         ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -217,6 +221,8 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
                 //serr<<"pos0 set"<<sendl;
 
 
+
+                double fact = 1.0;
                 //odeSolver->computeContactForce(force);
 
                 if(odeSolver)
@@ -228,18 +234,21 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
                 {
                     //serr<<"EulerSolver"<<sendl;
                     EulerSolver->solve(dt, core::componentmodel::behavior::BaseMechanicalState::VecId::position(), core::componentmodel::behavior::BaseMechanicalState::VecId::velocity());
+                    if (linearSolver)
+                        linearSolver->freezeSystemMatrix(); // do not recompute the matrix for the rest of the precomputation
                 }
 
                 //serr<<"solve reussi"<<sendl;
 
                 velocity = *mstate->getV();
+                fact /= unitary_force[i];
                 //serr<<"getV : "<<velocity<<sendl;
                 for (unsigned int v=0; v<nbNodes; v++)
                 {
 
                     for (unsigned int j=0; j<dof_on_node; j++)
                     {
-                        appCompliance[(v*dof_on_node+j)*nbCols + (f*dof_on_node+i) ] = velocity[v][j] / unitary_force[i];
+                        appCompliance[(v*dof_on_node+j)*nbCols + (f*dof_on_node+i) ] = fact * velocity[v][j];
                     }
                 }
                 //serr<<"put in appComp"<<sendl;
@@ -247,6 +256,9 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
             unitary_force.clear();
             force[f] = unitary_force;
         }
+        if (linearSolver)
+            linearSolver->updateSystemMatrix(); // do not recompute the matrix for the rest of the precomputation
+
         ///////////////////////// RESET PARAMETERS AT THEIR PREVIOUS VALUE /////////////////////////////////
         // gravity is reset at its previous value
         this->getContext()->setGravityInWorld(gravity);
@@ -256,11 +268,11 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
             odeSolver->f_maxIter.setValue(buf_maxIter);
             odeSolver->f_smallDenominatorThreshold.setValue(buf_threshold);
         }
-        else if(linearSolver)
+        else if(CGlinearSolver)
         {
-            linearSolver->f_tolerance.setValue(buf_tolerance);
-            linearSolver->f_maxIter.setValue(buf_maxIter);
-            linearSolver->f_smallDenominatorThreshold.setValue(buf_threshold);
+            CGlinearSolver->f_tolerance.setValue(buf_tolerance);
+            CGlinearSolver->f_maxIter.setValue(buf_maxIter);
+            CGlinearSolver->f_smallDenominatorThreshold.setValue(buf_threshold);
         }
         ///////////////////////////////////////////////////////////////////////////////////////////////
         std::ofstream compFileOut(ss.str().c_str(), std::fstream::out | std::fstream::binary);

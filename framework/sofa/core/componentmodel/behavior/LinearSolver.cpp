@@ -39,6 +39,7 @@ namespace behavior
 {
 
 LinearSolver::LinearSolver()
+    : frozen(false)
 {}
 
 LinearSolver::~LinearSolver()
