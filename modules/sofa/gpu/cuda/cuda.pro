@@ -143,7 +143,7 @@ HEADERS += \
 
 SOURCES += \
         CudaBTDLinearSolver.cpp  \
-	   	#CudaLinearSolverConstraintCorrection.cpp \
+	   	CudaLinearSolverConstraintCorrection.cpp \
 	   	CudaLCP.cpp \
        	CudaMasterContactSolver.cpp \
        	CudaSpatialGridContainer.cpp \

@@ -53,7 +53,8 @@ using namespace sofa::component::odesolver;
 template<class DataTypes>
 LinearSolverConstraintCorrection<DataTypes>::LinearSolverConstraintCorrection(behavior::MechanicalState<DataTypes> *mm)
     : wire_optimization(initData(&wire_optimization, false, "wire_optimization", "constraints are reordered along a wire-like topology (from tip to base)"))
-    ,mstate(mm), odesolver(NULL), linearsolver(NULL)
+    , solverName(initData(&solverName, std::string(""), "solverName", "name of the constraint solver"))
+    , mstate(mm), odesolver(NULL), linearsolver(NULL)
 {
 }
 
@@ -76,7 +77,8 @@ void LinearSolverConstraintCorrection<DataTypes>::init()
 //     odesolver = c->get< behavior::OdeSolver >();
 //     linearsolver = c->get< behavior::LinearSolver >();
     odesolver=getOdeSolver(c);
-    linearsolver=getLinearSolver(c);
+    if (solverName.getValue() == "") linearsolver=getLinearSolver(c);
+    else linearsolver=getLinearSolverByName(c,solverName.getValue());
     if (odesolver == NULL)
     {
         serr << "LinearSolverConstraintCorrection: ERROR no OdeSolver found."<<sendl;

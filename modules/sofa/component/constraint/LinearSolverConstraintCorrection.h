@@ -59,6 +59,21 @@ extern inline behavior::LinearSolver* getLinearSolver(objectmodel::BaseContext* 
     return context->get<behavior::LinearSolver>();
 }
 
+extern inline behavior::LinearSolver* getLinearSolverByName(objectmodel::BaseContext* context,std::string name)
+{
+    std::vector<sofa::core::componentmodel::behavior::LinearSolver*> solvers;
+    context->get<behavior::LinearSolver>(&solvers);
+
+    for (unsigned int i=0; i<solvers.size(); ++i)
+    {
+
+        if (solvers[i]->getName() == name)
+        {
+            return solvers[i];
+        }
+    }
+    return NULL;
+}
 
 /**
  *  \brief Component computing contact forces within a simulated body using the compliance method.
@@ -81,6 +96,7 @@ public:
 
     typedef typename DataTypes::SparseVecDeriv Const;
 
+
     LinearSolverConstraintCorrection(behavior::MechanicalState<DataTypes> *mm = NULL);
 
     virtual ~LinearSolverConstraintCorrection();
@@ -97,6 +113,7 @@ public:
 
     // new API for non building the constraint system during solving process //
     Data< bool > wire_optimization;
+    Data <std::string> solverName;
 
     void verify_constraints();
 
