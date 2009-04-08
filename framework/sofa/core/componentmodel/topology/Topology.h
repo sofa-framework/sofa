@@ -54,6 +54,7 @@ enum TopologyChangeType
     POINTSINDICESSWAP,  ///< For PointsIndicesSwap class.
     POINTSADDED,        ///< For PointsAdded class.
     POINTSREMOVED,      ///< For PointsRemoved class.
+    POINTSMOVED,        ///< For PointsMoved class.
     POINTSRENUMBERING,  ///< For PointsRenumbering class.
 
     EDGESADDED,         ///< For EdgesAdded class.

@@ -326,6 +326,19 @@ void MechanicalObject<DataTypes>::handleStateChange()
             resize( prevSizeMechObj - tab.size() );
             break;
         }
+        case core::componentmodel::topology::POINTSMOVED: //TODO: check if should handle velocity and force change to be more general.
+        {
+            const sofa::helper::vector<unsigned int> indicesList = ( static_cast <const PointsMoved *> (*itBegin))->indicesList;
+            const sofa::helper::vector< Vec<3,double> > coordsList = ( static_cast <const PointsMoved *> (*itBegin))->coordList;
+
+            for (unsigned int i = 0; i<indicesList.size(); ++i)
+            {
+                DataTypes::set((*getX0())[ indicesList[i] ], coordsList[i][0], coordsList[i][1], coordsList[i][2]);
+                DataTypes::set((*getX())[ indicesList[i] ], coordsList[i][0], coordsList[i][1], coordsList[i][2]);
+            }
+
+            break;
+        }
         case core::componentmodel::topology::POINTSRENUMBERING:
         {
             const sofa::helper::vector<unsigned int> &tab = ( static_cast< const PointsRenumbering * >( *itBegin ) )->getIndexArray();

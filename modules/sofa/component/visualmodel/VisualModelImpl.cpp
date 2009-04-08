@@ -1186,6 +1186,12 @@ void VisualModelImpl::handleTopologyChange()
 
         }
 
+        case core::componentmodel::topology::POINTSMOVED:
+        {
+            updateVisual();
+            break;
+        }
+
         default:
             // Ignore events that are not Triangle  related.
             break;
