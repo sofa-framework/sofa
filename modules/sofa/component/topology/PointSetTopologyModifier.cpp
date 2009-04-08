@@ -102,6 +102,25 @@ void PointSetTopologyModifier::addPointsWarning(const unsigned int nPoints,
 }
 
 
+void PointSetTopologyModifier::movePointsProcess (const sofa::helper::vector <unsigned int>& id,
+        const sofa::helper::vector< sofa::defaulttype::Vec<3,double> >& coords,
+        const bool moveDOF)
+{
+
+    if(moveDOF)
+    {
+        PointsMoved *ev = new PointsMoved(id, coords);
+        addStateChange(ev);
+        propagateStateChanges();
+    }
+
+    // Warning that vertices just been moved
+    PointsMoved *ev2 = new PointsMoved(id, coords);
+    this->addTopologyChange(ev2);
+}
+
+
+
 void PointSetTopologyModifier::removePointsWarning(sofa::helper::vector<unsigned int> &indices,
         const bool removeDOF)
 {

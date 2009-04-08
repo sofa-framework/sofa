@@ -105,6 +105,14 @@ public:
     virtual void removePointsProcess(const sofa::helper::vector<unsigned int> &indices,
             const bool removeDOF = true);
 
+    /** \brief move input points indices to input new coords. Also propagate event
+     *
+     * @param list of indices to move
+     * @param the correspondant new coords where to move them.
+     */
+    virtual void movePointsProcess (const sofa::helper::vector <unsigned int>& id,
+            const sofa::helper::vector < sofa::defaulttype::Vec<3,double> >& coords,
+            const bool moveDOF = true);
 
     /** \brief Sends a message to warn that points are about to be reordered.
     *
