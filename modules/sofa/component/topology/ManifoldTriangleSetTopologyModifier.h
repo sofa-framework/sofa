@@ -65,6 +65,32 @@ public:
     virtual void Debug(); // TO BE REMOVED WHEN CLASS IS SURE.
 
 
+    /** \brief Add and remove a subset of triangles. Eventually remove isolated edges and vertices
+     *
+     * This function is a complete workflow using differents methods of this class:
+     * \sa TriangleSetTopologyModifier::removeTrianglesWarning
+     * \sa TriangleSetTopologyModifier::removeTrianglesProcess
+     * \sa TriangleSetTopologyModifier::addTrianglesProcess
+     * \sa TriangleSetTopologyModifier::addTrianglesWarning
+     * \sa reorderingTopologyOnROI
+     * And not the Manifold ones. The interest is to allow intermediate non manifold topology.
+     * WARNING: There are no test incusring the modification will keep the topology manifold.
+     *
+     * @param nTri2Add - number of triangles to add.
+     * @param triangles2Add - list of Triangle to add.
+     * @param trianglesIndexList - List of their index.
+     * @param ancestors - list of ancestors to these new triangles.
+     * @param baryCoefs - their barycoefs related to these ancestors.
+     * @param trianglesIndex2remove - List of triangle indices to remove.
+     */
+    virtual void addRemoveTriangles (const unsigned int nTri2Add,
+            const sofa::helper::vector< Triangle >& triangles2Add,
+            const sofa::helper::vector< unsigned int >& trianglesIndex2Add,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
+            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs,
+            sofa::helper::vector< unsigned int >& trianglesIndex2remove);
+
+
     /** \brief: Swap a list of edges.
      *
      */

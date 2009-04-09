@@ -168,6 +168,30 @@ public:
             const bool removeIsolatedPoints=false);
 
 
+    /** \brief Add and remove a subset of triangles. Eventually remove isolated edges and vertices
+     *
+     * This function is a complete workflow using differents methods of this class:
+     * \sa removeTrianglesWarning
+     * \sa removeTrianglesProcess
+     * \sa addTrianglesProcess
+     * \sa addTrianglesWarning
+     *
+     * @param nTri2Add - number of triangles to add.
+     * @param triangles2Add - list of Triangle to add.
+     * @param trianglesIndexList - List of their index.
+     * @param ancestors - list of ancestors to these new triangles.
+     * @param baryCoefs - their barycoefs related to these ancestors.
+     * @param trianglesIndex2remove - List of triangle indices to remove.
+     */
+    virtual void addRemoveTriangles(const unsigned int nTri2Add,
+            const sofa::helper::vector< Triangle >& triangles2Add,
+            const sofa::helper::vector< unsigned int >& trianglesIndex2Add,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
+            const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs,
+            sofa::helper::vector< unsigned int >& trianglesIndex2remove);
+
+
+
     /** \brief Remove a subset of edges
      *
      * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removeEdgesWarning before calling removeEdgesProcess.

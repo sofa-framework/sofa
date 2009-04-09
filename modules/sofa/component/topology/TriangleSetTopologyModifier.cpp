@@ -229,6 +229,7 @@ void TriangleSetTopologyModifier::removeTriangles(sofa::helper::vector< unsigned
         const bool removeIsolatedEdges,
         const bool removeIsolatedPoints)
 {
+
     for (unsigned int i = 0; i < triangles.size(); i++)
     {
         if( triangles[i] >= m_container->m_triangle.size())
@@ -517,6 +518,31 @@ void TriangleSetTopologyModifier::renumberPoints( const sofa::helper::vector<uns
 
     m_container->checkTopology();
 }
+
+
+
+void TriangleSetTopologyModifier::addRemoveTriangles( const unsigned int nTri2Add,
+        const sofa::helper::vector< Triangle >& triangles2Add,
+        const sofa::helper::vector< unsigned int >& trianglesIndex2Add,
+        const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
+        const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs,
+        sofa::helper::vector< unsigned int >& trianglesIndex2remove)
+{
+
+    // Create all the triangles registered to be created
+    this->addTrianglesProcess(triangles2Add); // WARNING called after the creation process by the method "addTrianglesProcess"
+
+    // Warn for the creation of all the triangles registered to be created
+    this->addTrianglesWarning (nTri2Add, triangles2Add, trianglesIndex2Add, ancestors, baryCoefs);
+
+    // Propagate the topological changes *** not necessary ??
+    //m_modifier->propagateTopologicalChanges();
+
+    // Remove all the triangles registered to be removed
+    this->removeTriangles(trianglesIndex2remove, true, true); // (WARNING then PROPAGATION) called before the removal process by the method "removeTriangles"
+
+}
+
 
 
 bool TriangleSetTopologyModifier::removeTrianglesPreconditions(const sofa::helper::vector< unsigned int >& items)
