@@ -688,6 +688,103 @@ void ManifoldTriangleSetTopologyModifier::addTrianglesPostProcessing(const sofa:
 }
 
 
+void ManifoldTriangleSetTopologyModifier::addRemoveTriangles (const unsigned int nTri2Add,
+        const sofa::helper::vector< Triangle >& triangles2Add,
+        const sofa::helper::vector< unsigned int >& trianglesIndex2Add,
+        const sofa::helper::vector< sofa::helper::vector< unsigned int > > & ancestors,
+        const sofa::helper::vector< sofa::helper::vector< double > >& baryCoefs,
+        sofa::helper::vector< unsigned int >& trianglesIndex2remove)
+{
+    // I - Create ROI to remesh: step 1/2
+    sofa::helper::vector <unsigned int> vertexROI2Remesh;
+
+    // Look for every vertices concerned by the modifications
+    for (unsigned int i = 0; i <trianglesIndex2remove.size(); i++)
+    {
+        Triangle new_tri = m_container->getTriangleArray()[ trianglesIndex2remove[i] ];
+        for (unsigned int j = 0; j <3; j++)
+        {
+            vertexROI2Remesh.push_back (new_tri[j]); // these index vertex could change due to removing point.... TODO??
+        }
+    }
+
+
+    // II - Add the triangles
+    for (unsigned int i = 0; i <nTri2Add; i++)
+    {
+        // Use the most low level function to add triangle. I.e without any preliminary test.
+        TriangleSetTopologyModifier::addSingleTriangleProcess (triangles2Add[i]);
+    }
+
+    // Warn for the creation of all the triangles registered to be created
+    TriangleSetTopologyModifier::addTrianglesWarning (nTri2Add, triangles2Add, trianglesIndex2Add, ancestors, baryCoefs);
+
+
+    // III - removes the triangles
+
+    // add the topological changes in the queue
+    TriangleSetTopologyModifier::removeTrianglesWarning (trianglesIndex2remove);
+
+    // inform other objects that the triangles are going to be removed
+    propagateTopologicalChanges();
+
+    // now destroy the old triangles.
+    TriangleSetTopologyModifier::removeTrianglesProcess (trianglesIndex2remove ,true, true);
+
+
+    // IV - Create ROI to remesh: step 2/2
+
+    sofa::helper::vector <unsigned int> trianglesFinalList;
+    trianglesFinalList = trianglesIndex2Add;
+
+    std::sort( trianglesIndex2remove.begin(), trianglesIndex2remove.end(), std::greater<unsigned int>() );
+
+    // Update the list of triangles (removing triangles change the index order)
+    for (unsigned int i = 0; i<trianglesIndex2remove.size(); i++)
+    {
+        trianglesFinalList[trianglesFinalList.size()-1-i] = trianglesIndex2remove[i];
+    }
+
+    // Look for every vertices concerned by the modifications
+    for (unsigned int i = 0; i <nTri2Add; i++)
+    {
+        Triangle new_tri = m_container->getTriangleArray()[ trianglesFinalList[i] ];
+        for (unsigned int j = 0; j <3; j++)
+        {
+            vertexROI2Remesh.push_back (new_tri[j]);
+        }
+    }
+
+
+    reorderingTopologyOnROI (vertexROI2Remesh);
+
+    bool topo = m_container->checkTopology();
+
+    if (!topo) //IN DEVELOPMENT
+    {
+        std::cout <<" ouch " << std::endl;
+        //on repasse une couche:
+        sofa::helper::vector <unsigned int> monster;
+        for (int i = 0; i <m_container->getNbPoints(); i++)
+            monster.push_back (i);
+
+
+        reorderingTopologyOnROI (monster);
+        topo = m_container->checkTopology();
+    }
+
+
+#ifndef NDEBUG
+    if(!topo)
+        sout << "Error. [ManifoldTriangleSetTopologyModifier::addRemoveTriangles] The topology is not any more Manifold." << endl;
+#endif
+
+}
+
+
+
+
+
 
 void ManifoldTriangleSetTopologyModifier::edgeSwapProcess (const sofa::helper::vector <EdgeID>& listEdges)
 {
@@ -887,6 +984,32 @@ void ManifoldTriangleSetTopologyModifier::reorderingTopologyOnROI (const sofa::h
     //Finding edges concerned
     for (unsigned int vertexIndex = 0; vertexIndex < listVertex.size(); vertexIndex++)
     {
+        bool doublon = false;
+
+        // Avoid doublon
+        for(unsigned int i = 0; i<vertexIndex; i++)
+        {
+            if (listVertex[i] == listVertex[vertexIndex]) //means this new vertex has already been treated
+            {
+                doublon = true;
+                break;
+            }
+        }
+
+        if (doublon)
+            continue;
+
+        // Check if the vertex really exist
+        if ( (int)listVertex[ vertexIndex ] >= m_container->getNbPoints())
+        {
+#ifndef NDEBUG
+            std::cout << "Warning. [ManifoldTriangleSetTopologyModifier::reorderingTopologyOnROI]: vertex: "<< listVertex[ vertexIndex ] << " is out of bound" << std::endl;
+#endif
+            continue;
+        }
+
+        // Start processing:
+
         sofa::helper::vector <unsigned int>& edgeVertexShell = m_container->getEdgeVertexShellForModification( listVertex[vertexIndex] );
         sofa::helper::vector <unsigned int>& triangleVertexShell = m_container->getTriangleVertexShellForModification( listVertex[vertexIndex] );
 
