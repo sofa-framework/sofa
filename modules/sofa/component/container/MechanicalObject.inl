@@ -326,15 +326,41 @@ void MechanicalObject<DataTypes>::handleStateChange()
             resize( prevSizeMechObj - tab.size() );
             break;
         }
-        case core::componentmodel::topology::POINTSMOVED: //TODO: check if should handle velocity and force change to be more general.
+        case core::componentmodel::topology::POINTSMOVED:
         {
             const sofa::helper::vector<unsigned int> indicesList = ( static_cast <const PointsMoved *> (*itBegin))->indicesList;
-            const sofa::helper::vector< Vec<3,double> > coordsList = ( static_cast <const PointsMoved *> (*itBegin))->coordList;
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > > ancestors = ( static_cast< const PointsMoved * >( *itBegin ) )->ancestorsList;
+            const sofa::helper::vector< sofa::helper::vector< double > > coefs     = ( static_cast< const PointsMoved * >( *itBegin ) )->baryCoefsList;
 
-            for (unsigned int i = 0; i<indicesList.size(); ++i)
+
+            if (ancestors.size() != indicesList.size() || ancestors.empty())
             {
-                DataTypes::set((*getX0())[ indicesList[i] ], coordsList[i][0], coordsList[i][1], coordsList[i][2]);
-                DataTypes::set((*getX())[ indicesList[i] ], coordsList[i][0], coordsList[i][1], coordsList[i][2]);
+                this->serr << "Error ! MechanicalObject::POINTSMOVED topological event, bad inputs (inputs don't share the same size or are empty)."<<this->sendl;
+                break;
+            }
+
+            sofa::helper::vector <sofa::helper::vector <double> > coefs2;
+            coefs2.resize (coefs.size());
+
+
+            for (unsigned int i = 0; i<ancestors.size(); ++i)
+            {
+                coefs2[i].resize(ancestors[i].size());
+
+                for (unsigned int j = 0; j < ancestors[i].size(); ++j)
+                {
+                    // constructng default coefs if none were defined
+                    if (coefs == (const sofa::helper::vector< sofa::helper::vector< double > >)0 || coefs[i].size() == 0)
+                        coefs2[i][j] = 1.0f / ancestors[i].size();
+                    else
+                        coefs2[i][j] = coefs[i][j];
+                }
+            }
+
+
+            for (unsigned int i = 0; i < indicesList.size(); ++i)
+            {
+                computeWeightedValue( indicesList[i], ancestors[i], coefs2[i] );
             }
 
             break;

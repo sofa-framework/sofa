@@ -111,7 +111,8 @@ public:
      * @param the correspondant new coords where to move them.
      */
     virtual void movePointsProcess (const sofa::helper::vector <unsigned int>& id,
-            const sofa::helper::vector < sofa::defaulttype::Vec<3,double> >& coords,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
+            const sofa::helper::vector< sofa::helper::vector< double > >& coefs,
             const bool moveDOF = true);
 
     /** \brief Sends a message to warn that points are about to be reordered.

@@ -103,19 +103,19 @@ void PointSetTopologyModifier::addPointsWarning(const unsigned int nPoints,
 
 
 void PointSetTopologyModifier::movePointsProcess (const sofa::helper::vector <unsigned int>& id,
-        const sofa::helper::vector< sofa::defaulttype::Vec<3,double> >& coords,
+        const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
+        const sofa::helper::vector< sofa::helper::vector< double > >& coefs,
         const bool moveDOF)
 {
-
     if(moveDOF)
     {
-        PointsMoved *ev = new PointsMoved(id, coords);
+        PointsMoved *ev = new PointsMoved(id, ancestors, coefs);
         addStateChange(ev);
         propagateStateChanges();
     }
 
     // Warning that vertices just been moved
-    PointsMoved *ev2 = new PointsMoved(id, coords);
+    PointsMoved *ev2 = new PointsMoved(id, ancestors, coefs);
     this->addTopologyChange(ev2);
 }
 
