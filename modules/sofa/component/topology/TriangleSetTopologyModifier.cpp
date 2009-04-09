@@ -220,24 +220,8 @@ void TriangleSetTopologyModifier::addEdgesProcess(const sofa::helper::vector< Ed
 
 void TriangleSetTopologyModifier::removeItems(sofa::helper::vector< unsigned int >& items)
 {
-    for (unsigned int i = 0; i < items.size(); i++)
-    {
-        if( items[i] >= m_container->m_triangle.size())
-        {
-            std::cout << "Error: TriangleSetTopologyModifier::removeTriangles: Triangle: "<< items[i] <<" is out of bound" << std::endl;
-            return;
-        }
-    }
 
-    if (removeTrianglesPreconditions(items)) // Test if the topology will still fullfil the conditions if these triangles are removed.
-    {
-        removeTriangles(items, true, true); // remove triangles
-    }
-    else
-    {
-        std::cout << " TriangleSetTopologyModifier::removeItems(), preconditions for removal are not fullfil. " << std::endl;
-    }
-
+    removeTriangles(items, true, true); // remove triangles
 }
 
 
@@ -245,14 +229,32 @@ void TriangleSetTopologyModifier::removeTriangles(sofa::helper::vector< unsigned
         const bool removeIsolatedEdges,
         const bool removeIsolatedPoints)
 {
-    /// add the topological changes in the queue
-    removeTrianglesWarning(triangles);
-    // inform other objects that the triangles are going to be removed
-    propagateTopologicalChanges();
-    // now destroy the old triangles.
-    removeTrianglesProcess(  triangles ,removeIsolatedEdges, removeIsolatedPoints);
+    for (unsigned int i = 0; i < triangles.size(); i++)
+    {
+        if( triangles[i] >= m_container->m_triangle.size())
+        {
+            std::cout << "Error: TriangleSetTopologyModifier::removeTriangles: Triangle: "<< triangles[i] <<" is out of bound" << std::endl;
+            return;
+        }
+    }
 
-    m_container->checkTopology();
+
+    if (removeTrianglesPreconditions(triangles)) // Test if the topology will still fullfil the conditions if these triangles are removed.
+    {
+        /// add the topological changes in the queue
+        removeTrianglesWarning(triangles);
+        // inform other objects that the triangles are going to be removed
+        propagateTopologicalChanges();
+        // now destroy the old triangles.
+        removeTrianglesProcess(  triangles ,removeIsolatedEdges, removeIsolatedPoints);
+
+        m_container->checkTopology();
+    }
+    else
+    {
+        std::cout << " TriangleSetTopologyModifier::removeItems(), preconditions for removal are not fullfil. " << std::endl;
+    }
+
 }
 
 
