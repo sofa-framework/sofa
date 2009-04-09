@@ -52,8 +52,7 @@ namespace odesolver
 /*
 LCP::LCP(unsigned int mxC) : maxConst(mxC), tol(0.00001), numItMax(1000), useInitialF(true), mu(0.0), dim(0), lok(false)
 {
-	 W.resize(maxConst,maxConst);
-    A.resize(maxConst,2*maxConst+1);
+	W.resize(maxConst,maxConst);
     dFree.resize(maxConst);
     f.resize(2*maxConst+1);
 }
@@ -76,7 +75,7 @@ using namespace helper::system::thread;
 using namespace core::componentmodel::behavior;
 
 
-static unsigned MAX_NUM_CONSTRAINTS=1024;
+static unsigned MAX_NUM_CONSTRAINTS=2048;
 //#define DISPLAY_TIME
 
 template<class real>
@@ -453,7 +452,7 @@ void CudaMasterContactSolver<real>::step(double dt)
 SOFA_DECL_CLASS(CudaMasterContactSolver)
 
 int CudaMasterContactSolverClass = core::RegisterObject("Cuda Constraint solver")
-        .add< CudaMasterContactSolver<float> >()
+        .add< CudaMasterContactSolver<float> >(true)
         .add< CudaMasterContactSolver<double> >()
         ;
 
