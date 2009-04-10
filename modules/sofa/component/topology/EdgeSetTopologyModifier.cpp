@@ -728,6 +728,63 @@ void EdgeSetTopologyModifier::resortCuthillMckee(sofa::helper::vector<int>& inve
 }
 
 
+
+
+void EdgeSetTopologyModifier::movePointsProcess (const sofa::helper::vector <unsigned int>& id,
+        const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
+        const sofa::helper::vector< sofa::helper::vector< double > >& coefs,
+        const bool moveDOF)
+{
+
+    // Step 1/2 - Physically move all dof
+    PointSetTopologyModifier::movePointsProcess (id, ancestors, coefs);
+
+    // Step 2/2 - Refresh all edges concerned by these moves
+    (void)moveDOF;
+    unsigned int nbrVertex = id.size();
+    bool doublet;
+    sofa::helper::vector<unsigned int> edgeVertexShell2Move;
+    sofa::helper::vector< Edge > edgeArray;
+
+    // Creating list of edges to refresh
+    for (unsigned int i = 0; i<nbrVertex; ++i)
+    {
+        const sofa::helper::vector <unsigned int>& edgeVertexShell = m_container->getEdgeVertexShellArray()[ id[i] ];
+
+        for (unsigned int j = 0; j<edgeVertexShell.size(); ++j)
+        {
+            doublet = false;
+
+            for (unsigned int k =0; k<edgeVertexShell2Move.size(); ++k) //Avoid double
+            {
+                if (edgeVertexShell2Move[k] == edgeVertexShell[j])
+                {
+                    doublet = true;
+                    break;
+                }
+            }
+
+            if(!doublet)
+                edgeVertexShell2Move.push_back (edgeVertexShell[j]);
+
+        }
+    }
+
+    std::sort( edgeVertexShell2Move.begin(), edgeVertexShell2Move.end(), std::greater<unsigned int>() );
+
+    // Creating the corresponding array of edges
+    for (unsigned int i = 0; i<edgeVertexShell2Move.size(); i++)
+    {
+        edgeArray.push_back (m_container->getEdgeArray()[ edgeVertexShell2Move[i] ]);
+    }
+
+    // Warning that edges just been moved
+    EdgesMoved *ev2 = new EdgesMoved (edgeVertexShell2Move, edgeArray);
+    this->addTopologyChange(ev2);
+}
+
+
+
 } // namespace topology
 
 } // namespace component

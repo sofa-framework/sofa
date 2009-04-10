@@ -59,10 +59,12 @@ enum TopologyChangeType
 
     EDGESADDED,         ///< For EdgesAdded class.
     EDGESREMOVED,       ///< For EdgesRemoved class.
-    EDGESRENUMBERING,    ///< For EdgesRenumbering class.
+    EDGESMOVED,         ///< For EdgesMoved class.
+    EDGESRENUMBERING,   ///< For EdgesRenumbering class.
 
     TRIANGLESADDED,     ///< For TrianglesAdded class.
     TRIANGLESREMOVED,   ///< For TrianglesRemoved class.
+    TRIANGLESMOVED,     ///< For TrianglesMoved class.
     TRIANGLESRENUMBERING, ///< For TrianglesRenumbering class.
 
     TETRAHEDRAADDED,     ///< For TrianglesAdded class.

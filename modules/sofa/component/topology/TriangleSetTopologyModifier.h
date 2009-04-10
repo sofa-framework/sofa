@@ -232,6 +232,20 @@ public:
             const sofa::helper::vector<unsigned int> &inv_index);
 
 
+    /** \brief Move input points indices to input new coords.
+     * Also propagate event and update edgeVertexShell and triangleVertexShell for data handling.
+     *
+     * @param id : list of indices to move
+     * @param : ancestors list of ancestors to define relative new position
+     * @param coefs : barycoef to locate new coord relatively to ancestors.
+     * @moveDOF bool allowing the move (default true)
+     */
+    virtual void movePointsProcess (const sofa::helper::vector <unsigned int>& id,
+            const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
+            const sofa::helper::vector< sofa::helper::vector< double > >& coefs,
+            const bool moveDOF = true);
+
+
 protected:
 
     /** \brief Precondition to fulfill before removing triangles. No preconditions are needed in this class. This function should be inplemented in children classes.
