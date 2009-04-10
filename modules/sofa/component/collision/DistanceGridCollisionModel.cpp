@@ -480,7 +480,7 @@ void FFDDistanceGridCollisionModel::init()
                 elems[c].points.swap(elems[e].points); // move the list of points to the new
             elems[c].elem = e;
 #ifdef SOFA_NEW_HEXA
-            core::componentmodel::topology::BaseMeshTopology::Hexa cube = (ffdRGrid ? ffdRGrid->getHexaCopy(e) : ffdSGrid->getHexa(e));;
+            core::componentmodel::topology::BaseMeshTopology::Hexa cube = (ffdRGrid ? ffdRGrid->getHexaCopy(e) : ffdSGrid->getHexa(e));
             { int t = cube[2]; cube[2] = cube[3]; cube[3] = t; }
             { int t = cube[6]; cube[6] = cube[7]; cube[7] = t; }
 #else
@@ -496,6 +496,39 @@ void FFDDistanceGridCollisionModel::init()
         }
     }
     resize(c);
+
+    /// compute neighbors
+    helper::vector<std::set<int> > shells;
+    shells.resize(ffdMesh->getNbPoints());
+    for (unsigned i = 0; i < elems.size(); ++i)
+    {
+        int e = elems[i].elem;
+#ifdef SOFA_NEW_HEXA
+        core::componentmodel::topology::BaseMeshTopology::Hexa cube = (ffdRGrid ? ffdRGrid->getHexaCopy(e) : ffdSGrid->getHexa(e));
+        { int t = cube[2]; cube[2] = cube[3]; cube[3] = t; }
+        { int t = cube[6]; cube[6] = cube[7]; cube[7] = t; }
+#else
+        core::componentmodel::topology::BaseMeshTopology::Cube cube = (ffdRGrid ? ffdRGrid->getCubeCopy(e) : ffdSGrid->getCube(e));
+#endif
+        for (int j=0; j<8; ++j)
+            shells[cube[j]].insert(i);
+    }
+
+    for (unsigned i = 0; i < elems.size(); ++i)
+    {
+        int e = elems[i].elem;
+#ifdef SOFA_NEW_HEXA
+        core::componentmodel::topology::BaseMeshTopology::Hexa cube = (ffdRGrid ? ffdRGrid->getHexaCopy(e) : ffdSGrid->getHexa(e));
+        { int t = cube[2]; cube[2] = cube[3]; cube[3] = t; }
+        { int t = cube[6]; cube[6] = cube[7]; cube[7] = t; }
+#else
+        core::componentmodel::topology::BaseMeshTopology::Cube cube = (ffdRGrid ? ffdRGrid->getCubeCopy(e) : ffdSGrid->getCube(e));
+#endif
+        for (int j=0; j<8; ++j)
+            elems[i].neighbors.insert(shells[cube[j]].begin(), shells[cube[j]].end());
+        elems[i].neighbors.erase(i);
+    }
+
     std::cout << "FFDDistanceGridCollisionModel: "<<c<<" active cubes."<<std::endl;
     std::cout << "< FFDDistanceGridCollisionModel::init()"<<std::endl;
 }
@@ -504,6 +537,20 @@ void FFDDistanceGridCollisionModel::resize(int s)
 {
     this->core::CollisionModel::resize(s);
     elems.resize(s);
+}
+
+bool FFDDistanceGridCollisionModel::canCollideWithElement(int index, CollisionModel* model2, int index2)
+{
+    if (model2 != this) return true;
+    if (!this->bSelfCollision.getValue()) return true;
+    //if (this->getContext() != model2->getContext()) return true;
+    //if (model2 == this)
+    {
+        //sout << "ffd self test "<<index<<" - "<<index2<<sendl;
+        if (index >= index2) return false;
+        if (elems[index].neighbors.count(index2)) return false;
+        return true;
+    }
 }
 
 void FFDDistanceGridCollisionModel::setGrid(DistanceGrid* surf, int index)
