@@ -32,6 +32,6 @@
 		<Object type="MechanicalObject" template="CudaVec3f"/>
 		<Object type="UniformMass" totalmass="0.216" />
 		<Object type="BoxConstraint" box="-0.020 -0.020 -0.001 0.020 0.020 .001" fixAll="0" />
-        <Object type="CudaTetrahedronSuperTLEDForceField" name="FEM" youngModulus="60000" poissonRatio="0.49" viscoelasticity="0" anisotropy="0" preferredDirection="0 0.707 0.707"/>
+        <Object type="CudaTetrahedronTLEDForceField" name="FEM" youngModulus="60000" poissonRatio="0.49" viscoelasticity="0" anisotropy="0" preferredDirection="0 0.707 0.707"/>
 	</Node>
 </Node>
