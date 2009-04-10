@@ -606,6 +606,7 @@ public:
         DistanceGrid* grid;
         DeformedCube() : grid(NULL) {}
         int elem; ///< Index of the corresponding element in the topology
+        std::set<int> neighbors; ///< Index of the neighbors (used for self-collisions)
         struct Point
         {
             GCoord bary; ///< Barycentric coordinates
@@ -800,6 +801,8 @@ public:
 
     /// Create or update the bounding volume hierarchy.
     void computeBoundingTree(int maxDepth=0);
+
+    bool canCollideWithElement(int index, CollisionModel* model2, int index2);
 
     void draw(int index);
 
