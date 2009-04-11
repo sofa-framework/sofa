@@ -37,8 +37,16 @@ namespace simulation
 
 
 
-void Visitor::execute(sofa::core::objectmodel::BaseContext* c)
+void Visitor::execute(sofa::core::objectmodel::BaseContext* c, bool doPrefetch)
 {
+    if (doPrefetch)
+    {
+        prefetching = true;
+        sofa::core::objectmodel::BaseObject::setPrefetching(true);
+        c->executeVisitor(this);
+        prefetching = false;
+        sofa::core::objectmodel::BaseObject::setPrefetching(false);
+    }
     c->executeVisitor(this);
 }
 #ifdef SOFA_DUMP_VISITOR_INFO

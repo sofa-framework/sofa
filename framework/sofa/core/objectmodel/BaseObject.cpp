@@ -296,6 +296,24 @@ void BaseObject::removeTag(Tag t)
     f_tags.endEdit();
 }
 
+#ifdef WIN32
+__declspec(thread)
+#else
+__thread
+#endif
+bool tls_prefetching = false;
+
+void BaseObject::setPrefetching(bool b)
+{
+    tls_prefetching = b;
+}
+
+bool isPrefetching()
+{
+    return tls_prefetching;
+}
+
+
 } // namespace objectmodel
 
 } // namespace core

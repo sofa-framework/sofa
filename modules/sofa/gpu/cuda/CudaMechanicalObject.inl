@@ -695,6 +695,8 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
 
 // I know using macros is bad design but this is the only way not to repeat the code for all CUDA types
 #define CudaMechanicalObject_ImplMethods(T) \
+    template<> bool MechanicalObject< T >::canPrefetch() const \
+    { return true; } \
     template<> void MechanicalObject< T >::accumulateForce() \
     { data.accumulateForce(this); } \
     template<> void MechanicalObject< T >::vOp(VecId v, VecId a, VecId b, double f) \

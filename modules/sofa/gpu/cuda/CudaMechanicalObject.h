@@ -66,6 +66,7 @@ public:
 
     /// Temporary storate for dot product operation
     VecDeriv tmpdot;
+    double dotres;
 
     static void accumulateForce(Main* m);
     static void vAlloc(Main* m, VecId v);
@@ -77,6 +78,7 @@ public:
 
 // I know using macros is bad design but this is the only way not to repeat the code for all CUDA types
 #define CudaMechanicalObject_DeclMethods(T) \
+    template<> bool MechanicalObject< T >::canPrefetch() const; \
     template<> void MechanicalObject< T >::accumulateForce(); \
     template<> void MechanicalObject< T >::vOp(VecId v, VecId a, VecId b, double f); \
     template<> void MechanicalObject< T >::vMultiOp(const VMultiOp& ops); \
