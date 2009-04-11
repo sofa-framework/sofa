@@ -65,7 +65,15 @@ The default behavior of the fwd* and bwd* is to do nothing. Derived actions typi
 */
 class SOFA_SIMULATION_COMMON_API MechanicalVisitor : public Visitor
 {
+protected:
+    bool prefetching;
 public:
+
+    MechanicalVisitor() : prefetching(false) {}
+
+    //virtual void execute(core::objectmodel::BaseContext* node, bool doPrefetch) { Visitor::execute(node, doPrefetch); }
+    //virtual void execute(core::objectmodel::BaseContext* node) { Visitor::execute(node, true); }
+
     typedef sofa::core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
 
     /// Return a class name for this visitor

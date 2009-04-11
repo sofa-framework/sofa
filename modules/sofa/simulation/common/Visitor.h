@@ -49,11 +49,13 @@ class LocalStorage;
 /// Base class for visitors propagated recursively through the scenegraph
 class SOFA_SIMULATION_COMMON_API Visitor
 {
+protected:
+    bool prefetching;
 public:
 #ifdef SOFA_DUMP_VISITOR_INFO
     typedef sofa::helper::system::thread::CTime CTime;
 
-    Visitor() {enteringBase=NULL; infoPrinted=false; }
+    Visitor() { prefetching = false; enteringBase=NULL; infoPrinted=false; }
 #endif
     virtual ~Visitor() {}
     typedef simulation::Node::ctime_t ctime_t;
@@ -166,6 +168,7 @@ public:
     // or if no tag is set to the visitor
     bool testTags(core::objectmodel::BaseObject* obj)
     {
+        if (prefetching && !obj->canPrefetch()) return false;
         if(subsetsToManage.empty())
             return true;
         else
@@ -191,7 +194,8 @@ public:
 
 
     /// Alias for context->executeVisitor(this)
-    void execute(core::objectmodel::BaseContext*);
+    virtual void execute(core::objectmodel::BaseContext* node, bool doPrefetch);
+    virtual void execute(core::objectmodel::BaseContext* node) { execute(node, false); }
     ctime_t begin(simulation::Node* node, core::objectmodel::BaseObject*
 #ifdef SOFA_DUMP_VISITOR_INFO
             obj

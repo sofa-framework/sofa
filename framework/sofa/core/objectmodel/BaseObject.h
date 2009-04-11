@@ -192,6 +192,11 @@ public:
 
     /// @}
 
+    virtual bool canPrefetch() const { return false; }
+
+    static void setPrefetching(bool b);
+    static bool isPrefetching();
+
 protected:
     BaseContext* context_;
 };
