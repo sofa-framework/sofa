@@ -298,7 +298,7 @@ void BaseObject::removeTag(Tag t)
 
 #ifdef WIN32
 __declspec(thread)
-#else
+#elif !defined(__APPLE__)
 __thread
 #endif
 bool tls_prefetching = false;
