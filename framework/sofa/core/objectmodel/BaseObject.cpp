@@ -308,7 +308,7 @@ void BaseObject::setPrefetching(bool b)
     tls_prefetching = b;
 }
 
-bool isPrefetching()
+bool BaseObject::isPrefetching()
 {
     return tls_prefetching;
 }

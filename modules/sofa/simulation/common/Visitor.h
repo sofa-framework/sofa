@@ -54,9 +54,15 @@ protected:
 public:
 #ifdef SOFA_DUMP_VISITOR_INFO
     typedef sofa::helper::system::thread::CTime CTime;
-
-    Visitor() { prefetching = false; enteringBase=NULL; infoPrinted=false; }
 #endif
+
+    Visitor()
+        : prefetching(false)
+    {
+#ifdef SOFA_DUMP_VISITOR_INFO
+        enteringBase=NULL; infoPrinted=false;
+#endif
+    }
     virtual ~Visitor() {}
     typedef simulation::Node::ctime_t ctime_t;
 
