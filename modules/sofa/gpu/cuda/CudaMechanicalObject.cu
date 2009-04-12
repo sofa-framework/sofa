@@ -53,6 +53,18 @@ extern "C"
     void MechanicalObjectCudaVec3f_vOp2(unsigned int size, void* res1, const void* a1, const void* b1, float f1, void* res2, const void* a2, const void* b2, float f2);
     int MechanicalObjectCudaVec3f_vDotTmpSize(unsigned int size);
     void MechanicalObjectCudaVec3f_vDot(unsigned int size, float* res, const void* a, const void* b, void* tmp, float* cputmp);
+
+
+    struct VDotOp
+    {
+        const void* a;
+        const void* b;
+        int size;
+    };
+
+    int MultiMechanicalObjectCudaVec3f_vDotTmpSize(unsigned int n, VDotOp* ops);
+    void MultiMechanicalObjectCudaVec3f_vDot(unsigned int n, VDotOp* ops, double* results, void* tmp, float* cputmp);
+
     void MechanicalObjectCudaVec3f1_vAssign(unsigned int size, void* res, const void* a);
     void MechanicalObjectCudaVec3f1_vClear(unsigned int size, void* res);
     void MechanicalObjectCudaVec3f1_vMEq(unsigned int size, void* res, float f);
@@ -857,6 +869,73 @@ __global__ void MechanicalObjectCudaVec_vSum_kernel(int n, real* res, const real
     if (tid == 0) res[blockIdx.x] = sdata[0];
 }
 
+enum { MULTI_VDOT_NMAX = 64 };
+__constant__ VDotOp multiVDotOps[MULTI_VDOT_NMAX];
+
+//template<unsigned int blockSize>
+__global__ void MultiMechanicalObjectCudaVec_vDot_kernel(unsigned int nops, float* allres)
+{
+    extern __shared__ float fdata[];
+    const int n = multiVDotOps[blockIdx.y].size;
+    const float* a = (const float*) multiVDotOps[blockIdx.y].a;
+    const float* b = (const float*) multiVDotOps[blockIdx.y].b;
+
+//    __shared__ float fdata[blockSize];
+    unsigned int tid = threadIdx.x;
+
+    unsigned int i = blockIdx.x*(blockSize) + tid;
+    unsigned int gridSize = gridDim.x*(blockSize);
+    fdata[tid] = 0;
+    while (i < n) { fdata[tid] += a[i] * b[i]; i += gridSize; }
+    __syncthreads();
+#if blockSize >= 512
+    //if (blockSize >= 512)
+    {
+        if (tid < 256) { fdata[tid] += fdata[tid + 256]; } __syncthreads();
+    }
+#endif
+#if blockSize >= 256
+    //if (blockSize >= 256)
+    {
+        if (tid < 128) { fdata[tid] += fdata[tid + 128]; } __syncthreads();
+    }
+#endif
+#if blockSize >= 128
+    //if (blockSize >= 128)
+    {
+        if (tid < 64) { fdata[tid] += fdata[tid + 64]; } __syncthreads();
+    }
+#endif
+    if (tid < 32)
+    {
+#if blockSize >= 64
+        //if (blockSize >= 64)
+        fdata[tid] += fdata[tid + 32];
+#endif
+#if blockSize >= 32
+        //if (blockSize >= 32)
+        fdata[tid] += fdata[tid + 16];
+#endif
+#if blockSize >= 16
+        //if (blockSize >= 16)
+        fdata[tid] += fdata[tid + 8];
+#endif
+#if blockSize >= 8
+        //if (blockSize >= 8)
+        fdata[tid] += fdata[tid + 4];
+#endif
+#if blockSize >= 4
+        //if (blockSize >= 4)
+        fdata[tid] += fdata[tid + 2];
+#endif
+#if blockSize >= 2
+        //if (blockSize >= 2)
+        fdata[tid] += fdata[tid + 1];
+#endif
+    }
+    if (tid == 0) allres[umul24(blockIdx.y,gridDim.x) + blockIdx.x] = fdata[0];
+}
+
 #undef blockSize
 
 //////////////////////
@@ -1162,6 +1241,79 @@ void MechanicalObjectCudaVec3f1_vDot(unsigned int size, float* res, const void* 
     }
 }
 
+
+int MultiMechanicalObjectCudaVec3f_vDotTmpSize(unsigned int n, VDotOp* ops)
+{
+    int totalblocs = 0;
+    for (unsigned int i0 = 0; i0 < n; i0 += MULTI_VDOT_NMAX)
+    {
+        int n2 = (n-i0 > MULTI_VDOT_NMAX) ? MULTI_VDOT_NMAX : n-i0;
+        int maxnblocs = 0;
+        for (unsigned int i = i0; i < i0+n2; ++i)
+        {
+            int size = ops[i].size*3;
+            int nblocs = (size+RED_BSIZE-1)/RED_BSIZE;
+            if (nblocs > 256) nblocs = 256;
+            if (nblocs > maxnblocs) maxnblocs = nblocs;
+        }
+        totalblocs += maxnblocs * n2;
+    }
+    //sofa::gpu::cuda::myprintf("multivdot: %d blocs for %d operations\n", totalblocs, n);
+    return totalblocs;
+}
+
+void MultiMechanicalObjectCudaVec3f_vDot(unsigned int n, VDotOp* ops, double* results, void* tmp, float* cputmp)
+{
+    if (n==0) return;
+    int totalblocs = 0;
+    for (unsigned int i0 = 0; i0 < n; i0 += MULTI_VDOT_NMAX)
+    {
+        int n2 = (n-i0 > MULTI_VDOT_NMAX) ? MULTI_VDOT_NMAX : n-i0;
+        int maxnblocs = 0;
+        VDotOp* ops2 = ops + i0;
+        for (unsigned int i = 0; i < n2; ++i)
+        {
+            ops2[i].size *= 3;
+            int nblocs = (ops2[i].size+RED_BSIZE-1)/RED_BSIZE;
+            if (nblocs > 256) nblocs = 256;
+            if (nblocs > maxnblocs) maxnblocs = nblocs;
+        }
+        cudaMemcpyToSymbol(multiVDotOps, ops2, n2 * sizeof(VDotOp), 0, cudaMemcpyHostToDevice);
+        dim3 threads(RED_BSIZE,1);
+        dim3 grid(maxnblocs,n2);
+        //sofa::gpu::cuda::myprintf("multivdot: %dx%d grid\n", grid.x, grid.y);
+        MultiMechanicalObjectCudaVec_vDot_kernel /*<float>*/ <<< grid, threads , RED_BSIZE * sizeof(float) >>>(n2, ((float*)tmp) + totalblocs);
+        totalblocs += maxnblocs * n2;
+    }
+    cudaMemcpy(cputmp,tmp,totalblocs*sizeof(float),cudaMemcpyDeviceToHost);
+
+    totalblocs = 0;
+    for (unsigned int i0 = 0; i0 < n; i0 += MULTI_VDOT_NMAX)
+    {
+        int n2 = (n-i0 > MULTI_VDOT_NMAX) ? MULTI_VDOT_NMAX : n-i0;
+        int maxnblocs = 0;
+        VDotOp* ops2 = ops + i0;
+        for (unsigned int i = 0; i < n2; ++i)
+        {
+            int nblocs = (ops2[i].size+RED_BSIZE-1)/RED_BSIZE;
+            if (nblocs > 256) nblocs = 256;
+            if (nblocs > maxnblocs) maxnblocs = nblocs;
+        }
+        for (unsigned int i = 0; i < n2; ++i)
+        {
+            int nblocs = (ops2[i].size+RED_BSIZE-1)/RED_BSIZE;
+            if (nblocs > 256) nblocs = 256;
+            double r = 0.0;
+            float* rtmp = cputmp + totalblocs + i*maxnblocs;
+            for (int b=0; b<nblocs; b++)
+                r+=rtmp[b];
+            results[i0+i] = r;
+        }
+        totalblocs += maxnblocs * n2;
+    }
+    for (unsigned int i = 0; i < n; ++i)
+        ops[i].size /= 3;
+}
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
