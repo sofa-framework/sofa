@@ -55,6 +55,17 @@ extern "C"
     void MechanicalObjectCudaVec3f_vOp2(unsigned int size, void* res1, const void* a1, const void* b1, float f1, void* res2, const void* a2, const void* b2, float f2);
     int MechanicalObjectCudaVec3f_vDotTmpSize(unsigned int size);
     void MechanicalObjectCudaVec3f_vDot(unsigned int size, float* res, const void* a, const void* b, void* tmp, float* cputmp);
+
+    struct VDotOp
+    {
+        const void* a;
+        const void* b;
+        int size;
+    };
+
+    int MultiMechanicalObjectCudaVec3f_vDotTmpSize(unsigned int n, VDotOp* ops);
+    void MultiMechanicalObjectCudaVec3f_vDot(unsigned int n, VDotOp* ops, double* results, void* tmp, float* cputmp);
+
     void MechanicalObjectCudaVec3f1_vAssign(unsigned int size, void* res, const void* a);
     void MechanicalObjectCudaVec3f1_vClear(unsigned int size, void* res);
     void MechanicalObjectCudaVec3f1_vMEq(unsigned int size, void* res, float f);
@@ -144,6 +155,11 @@ public:
     {   return MechanicalObjectCudaVec3f_vDotTmpSize(size); }
     static void vDot(unsigned int size, float* res, const void* a, const void* b, void* tmp, float* cputmp)
     {   MechanicalObjectCudaVec3f_vDot(size, res, a, b, tmp, cputmp); }
+    static bool supportMultiVDot() { return mycudaMultiOpMax>0; }
+    static int multiVDotTmpSize(unsigned int n, VDotOp* ops)
+    {   return MultiMechanicalObjectCudaVec3f_vDotTmpSize(n, ops); }
+    static void multiVDot(unsigned int n, VDotOp* ops, double* results, void* tmp, float* cputmp)
+    {   MultiMechanicalObjectCudaVec3f_vDot(n, ops, results, tmp, cputmp); }
 };
 
 template<>
@@ -182,6 +198,11 @@ public:
     {   return MechanicalObjectCudaVec3f1_vDotTmpSize(size); }
     static void vDot(unsigned int size, float* res, const void* a, const void* b, void* tmp, float* cputmp)
     {   MechanicalObjectCudaVec3f1_vDot(size, res, a, b, tmp, cputmp); }
+    static bool supportMultiVDot() { return false; }
+    static int multiVDotTmpSize(unsigned int, VDotOp*)
+    {   return 0; }
+    static void multiVDot(unsigned int, VDotOp*, double*, void*, float*)
+    {}
 };
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
@@ -222,6 +243,11 @@ public:
     {   return MechanicalObjectCudaVec3d_vDotTmpSize(size); }
     static void vDot(unsigned int size, double* res, const void* a, const void* b, void* tmp, double* cputmp)
     {   MechanicalObjectCudaVec3d_vDot(size, res, a, b, tmp, cputmp); }
+    static bool supportMultiVDot() { return false; }
+    static int multiVDotTmpSize(unsigned int, VDotOp*)
+    {   return 0; }
+    static void multiVDot(unsigned int, VDotOp*, double*, void*, double*)
+    {}
 };
 
 template<>
@@ -260,6 +286,11 @@ public:
     {   return MechanicalObjectCudaVec3d1_vDotTmpSize(size); }
     static void vDot(unsigned int size, double* res, const void* a, const void* b, void* tmp, double* cputmp)
     {   MechanicalObjectCudaVec3d1_vDot(size, res, a, b, tmp, cputmp); }
+    static bool supportMultiVDot() { return false; }
+    static int multiVDotTmpSize(unsigned int, VDotOp*)
+    {   return 0; }
+    static void multiVDot(unsigned int, VDotOp*, double*, void*, double*)
+    {}
 };
 
 #endif // SOFA_GPU_CUDA_DOUBLE
@@ -639,8 +670,77 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
 }
 
 template<class TCoord, class TDeriv, class TReal>
-double MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::vDot(Main* m, VecId a, VecId b)
+double MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::vDot(Main* m, VecId a, VecId b, bool prefetch)
 {
+    if (prefetch)
+    {
+        if (!Kernels::supportMultiVDot()) return 0.0; // no kernel available for combining multiple operations
+        m->data.preVDot.a = a;
+        m->data.preVDot.b = b;
+        if (a.type == VecId::V_COORD && b.type == VecId::V_COORD)
+            m->data.preVDot.size = m->getVecCoord(a.index)->size();
+        else if (a.type == VecId::V_DERIV && b.type == VecId::V_DERIV)
+            m->data.preVDot.size = m->getVecDeriv(a.index)->size();
+        else return 0.0; // invalid operation -> ignore prefetching
+        if (m->data.preVDot.size == 0) return 0.0; // empty operation -> ignore prefetching
+
+        m->data.preVDot.id = m->data.preVDot.objects().size();
+        m->data.preVDot.objects().push_back(m);
+        return 0.0;
+    }
+    else if (m->data.preVDot.id >= 0)
+    {
+        helper::vector<Main*>& objects = m->data.preVDot.objects();
+        if (!objects.empty())
+        {
+            if (objects.size() == 1)
+            {
+                // only one object -> use regular kernel
+                m->data.preVDot.id = -1;
+            }
+            else //if (objects.size() > 1)
+            {
+                //std::cout << "PREFETCH VDOT: " << m->data.preVDot.objects().size() << " objects" << std::endl;
+                helper::vector<VDotOp> ops(objects.size());
+                helper::vector<double> results(objects.size());
+                for (unsigned int i=0; i<objects.size(); ++i)
+                {
+                    VecId a = objects[i]->data.preVDot.a;
+                    VecId b = objects[i]->data.preVDot.b;
+                    ops[i].a = (a.type == VecId::V_COORD) ? objects[i]->getVecCoord(a.index)->deviceRead() : objects[i]->getVecDeriv(a.index)->deviceRead();
+                    ops[i].b = (b.type == VecId::V_COORD) ? objects[i]->getVecCoord(b.index)->deviceRead() : objects[i]->getVecDeriv(b.index)->deviceRead();
+                    ops[i].size = objects[i]->data.preVDot.size;
+                    results[i] = 0.0;
+                }
+                unsigned int nmax = (unsigned int)mycudaMultiOpMax;
+                for (unsigned int i0 = 0; i0 < ops.size();)
+                {
+                    unsigned int n = (ops.size()-i0 > nmax) ? nmax : ops.size()-i0;
+                    int tmpsize = Kernels::multiVDotTmpSize(n, &(ops[i0]));
+                    if (tmpsize == 0)
+                    {
+                        Kernels::multiVDot(n, &(ops[i0]), &(results[i0]), NULL, NULL);
+                    }
+                    else
+                    {
+                        m->data.tmpdot.fastResize(tmpsize);
+                        Kernels::multiVDot(n, &(ops[i0]), &(results[i0]), m->data.tmpdot.deviceWrite(), (Real*)(&(m->data.tmpdot.getCached(0))));
+                    }
+                    i0 += n;
+                }
+                for (unsigned int i=0; i<objects.size(); ++i)
+                {
+                    objects[i]->data.preVDot.result = results[i];
+                }
+            }
+            objects.clear();
+        }
+        if (m->data.preVDot.id != -1) // prefetching was done
+        {
+            m->data.preVDot.id = -1;
+            return m->data.preVDot.result;
+        }
+    }
     Real r = 0.0f;
     if (a.type == VecId::V_COORD && b.type == VecId::V_COORD)
     {
@@ -704,7 +804,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
     template<> void MechanicalObject< T >::vMultiOp(const VMultiOp& ops) \
     { data.vMultiOp(this, ops); } \
     template<> double MechanicalObject< T >::vDot(VecId a, VecId b) \
-    { return data.vDot(this, a, b); } \
+    { return data.vDot(this, a, b, this->isPrefetching()); }				    \
     template<> void MechanicalObject< T >::resetForce() \
     { data.resetForce(this); }
 

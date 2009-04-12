@@ -66,13 +66,34 @@ public:
 
     /// Temporary storate for dot product operation
     VecDeriv tmpdot;
-    double dotres;
+
+    template<class T>
+    class PrefetchOp : public T
+    {
+    public:
+        int id; ///< ID in multi-operation, or -1 if inactive
+        static helper::vector < Main* >& objects()
+        {
+            static helper::vector < Main* > v;
+            return v;
+        }
+        PrefetchOp() : id(-1) {}
+    };
+
+    struct VDot
+    {
+        VecId a;
+        VecId b;
+        int size;
+        double result;
+    };
+    PrefetchOp<VDot> preVDot;
 
     static void accumulateForce(Main* m);
     static void vAlloc(Main* m, VecId v);
     static void vOp(Main* m, VecId v, VecId a, VecId b, double f);
     static void vMultiOp(Main* m, const VMultiOp& ops);
-    static double vDot(Main* m, VecId a, VecId b);
+    static double vDot(Main* m, VecId a, VecId b, bool prefetch = false);
     static void resetForce(Main* m);
 };
 
