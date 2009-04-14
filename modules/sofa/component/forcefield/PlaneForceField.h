@@ -91,6 +91,8 @@ public:
         planeNormal.setValue(n);
     }
 
+    virtual bool canPrefetch() const { return false; }
+
     void setPlane(const Deriv& normal, Real d)
     {
         Real n = normal.norm();
