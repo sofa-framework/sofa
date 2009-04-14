@@ -48,6 +48,12 @@ namespace forcefield
 using namespace sofa::defaulttype;
 using sofa::helper::vector;
 
+template<class DataTypes>
+class HexahedronFEMForceFieldInternalData
+{
+public:
+};
+
 /** Compute Finite Element forces based on hexahedral elements.
  *
  * Corotational hexahedron from
@@ -137,6 +143,9 @@ protected:
     static const int _indices[8]; ///< indices ordering is different than in topology node
 #endif
 
+    HexahedronFEMForceFieldInternalData<DataTypes> *data;
+    friend class HexahedronFEMForceFieldInternalData<DataTypes>;
+
 public:
 
 
@@ -159,6 +168,7 @@ public:
         , _sparseGrid(NULL)
         , _indexedElements(NULL)
         , _initialPoints(initData(&_initialPoints,"initialPoints", "Initial Position"))
+        , data(new HexahedronFEMForceFieldInternalData<DataTypes>())
         , f_method(initData(&f_method,std::string("large"),"method","\"large\" or \"polar\" displacements"))
         , f_poissonRatio(initData(&f_poissonRatio,(Real)0.45f,"poissonRatio",""))
         , f_youngModulus(initData(&f_youngModulus,(Real)5000,"youngModulus",""))
