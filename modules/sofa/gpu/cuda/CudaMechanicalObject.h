@@ -89,9 +89,19 @@ public:
     };
     PrefetchOp<VDot> preVDot;
 
+    struct VOp
+    {
+        VecId v;
+        VecId a;
+        VecId b;
+        double f;
+        int size;
+    };
+    PrefetchOp< helper::vector<VOp> > preVOp;
+
     static void accumulateForce(Main* m);
     static void vAlloc(Main* m, VecId v);
-    static void vOp(Main* m, VecId v, VecId a, VecId b, double f);
+    static void vOp(Main* m, VecId v, VecId a, VecId b, double f, bool prefetch = false);
     static void vMultiOp(Main* m, const VMultiOp& ops);
     static double vDot(Main* m, VecId a, VecId b, bool prefetch = false);
     static void resetForce(Main* m);

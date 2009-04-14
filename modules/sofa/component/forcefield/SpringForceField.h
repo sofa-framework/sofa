@@ -121,6 +121,8 @@ public:
     SpringForceField(MechanicalState* object1, MechanicalState* object2, SReal _ks=100.0, SReal _kd=5.0);
     SpringForceField(SReal _ks=100.0, SReal _kd=5.0);
 
+    virtual bool canPrefetch() const { return false; }
+
     virtual void parse(core::objectmodel::BaseObjectDescription* arg);
 
     bool load(const char *filename);

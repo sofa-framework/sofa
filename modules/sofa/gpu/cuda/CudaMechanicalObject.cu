@@ -65,6 +65,27 @@ extern "C"
     int MultiMechanicalObjectCudaVec3f_vDotTmpSize(unsigned int n, VDotOp* ops);
     void MultiMechanicalObjectCudaVec3f_vDot(unsigned int n, VDotOp* ops, double* results, void* tmp, float* cputmp);
 
+
+    struct VOpF
+    {
+        void* res;
+        const void* a;
+        const void* b;
+        float f;
+        int size;
+    };
+
+    struct VOpD
+    {
+        void* res;
+        const void* a;
+        const void* b;
+        double f;
+        int size;
+    };
+
+    void MultiMechanicalObjectCudaVec3f_vOp(unsigned int n, VOpF* ops);
+
     void MechanicalObjectCudaVec3f1_vAssign(unsigned int size, void* res, const void* a);
     void MechanicalObjectCudaVec3f1_vClear(unsigned int size, void* res);
     void MechanicalObjectCudaVec3f1_vMEq(unsigned int size, void* res, float f);
@@ -583,6 +604,72 @@ __global__ void MechanicalObjectCudaVec3t1_vOp_kernel(int size, CudaVec4<real>* 
     }
 }
 
+enum { MULTI_VOP_NMAX = 128 };
+__constant__ VOpF multiVOpsF[MULTI_VOP_NMAX];
+
+__global__ void MultiMechanicalObjectCudaVec1f_vOp_kernel(int nthreads)
+{
+    const int size = multiVOpsF[blockIdx.y].size;
+    float* res = (float*) multiVOpsF[blockIdx.y].res;
+    const float* a = (const float*) multiVOpsF[blockIdx.y].a;
+    const float* b = (const float*) multiVOpsF[blockIdx.y].b;
+    const float f = multiVOpsF[blockIdx.y].f;
+    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+    while (index + nthreads < size)
+    {
+        res[index] = a[index] + b[index] * f;
+        index += nthreads;
+        res[index] = a[index] + b[index] * f;
+        index += nthreads;
+    }
+    if (index < size)
+    {
+        res[index] = a[index] + b[index] * f;
+        //index += nthreads;
+    }
+}
+
+__global__ void MultiMechanicalObjectCudaVec1f_vPEq_kernel(int nthreads)
+{
+    const int size = multiVOpsF[blockIdx.y].size;
+    float* res = (float*) multiVOpsF[blockIdx.y].res;
+    const float* b = (const float*) multiVOpsF[blockIdx.y].b;
+    const float f = multiVOpsF[blockIdx.y].f;
+    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+    while (index + nthreads < size)
+    {
+        res[index] += b[index] * f;
+        index += nthreads;
+        res[index] += b[index] * f;
+        index += nthreads;
+    }
+    if (index < size)
+    {
+        res[index] += b[index] * f;
+        //index += nthreads;
+    }
+}
+
+__global__ void MultiMechanicalObjectCudaVec1f_vMPEq_kernel(int nthreads)
+{
+    const int size = multiVOpsF[blockIdx.y].size;
+    float* res = (float*) multiVOpsF[blockIdx.y].res;
+    const float* a = (const float*) multiVOpsF[blockIdx.y].a;
+    const float f = multiVOpsF[blockIdx.y].f;
+    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+    while (index + nthreads < size)
+    {
+        res[index] = a[index] + res[index] * f;
+        index += nthreads;
+        res[index] = a[index] + res[index] * f;
+        index += nthreads;
+    }
+    if (index < size)
+    {
+        res[index] = a[index] + res[index] * f;
+        //index += nthreads;
+    }
+}
 
 template<class real>
 __global__ void MechanicalObjectCudaVec1t_vOp2_kernel(int size, real* res1, const real* a1, const real* b1, real f1, real* res2, const real* a2, const real* b2, real f2)
@@ -1313,6 +1400,63 @@ void MultiMechanicalObjectCudaVec3f_vDot(unsigned int n, VDotOp* ops, double* re
     }
     for (unsigned int i = 0; i < n; ++i)
         ops[i].size /= 3;
+}
+
+void MultiMechanicalObjectCudaVec3f_vOp(unsigned int n, VOpF* ops)
+{
+    if (n==0) return;
+#if 0
+    {
+        for (unsigned int i = 0; i < n; ++i)
+            MechanicalObjectCudaVec3f_vOp(ops[i].size, ops[i].res, ops[i].a, ops[i].b, ops[i].f);
+        return;
+    }
+#endif
+    int totalblocs = 0;
+    for (unsigned int i0 = 0; i0 < n; i0 += MULTI_VOP_NMAX)
+    {
+        int n2 = (n-i0 > MULTI_VOP_NMAX) ? MULTI_VOP_NMAX : n-i0;
+        int maxnblocs = 0;
+        VOpF* ops2 = ops + i0;
+        for (unsigned int i = 0; i < n2; ++i)
+        {
+            ops2[i].size *= 3;
+            int nblocs = (ops2[i].size+BSIZE-1)/BSIZE;
+            if (nblocs > 256) nblocs = 256;
+            if (nblocs > maxnblocs) maxnblocs = nblocs;
+        }
+        cudaMemcpyToSymbol(multiVOpsF, ops2, n2 * sizeof(VOpF), 0, cudaMemcpyHostToDevice);
+        dim3 threads(BSIZE,1);
+        dim3 grid(maxnblocs,n2);
+
+        // check for simplified operations
+        int nPEq = 0;
+        int nMPEq = 0;
+        for (unsigned int i = 0; i < n2; ++i)
+        {
+            if (ops2[i].res == ops2[i].a) ++nPEq;
+            if (ops2[i].res == ops2[i].b) ++nMPEq;
+        }
+
+        if (sofa::gpu::cuda::mycudaVerboseLevel >= sofa::gpu::cuda::LOG_TRACE)
+        {
+            if (nPEq == n2)
+                sofa::gpu::cuda::myprintf("multivop(PEq): %dx%d grid\n", grid.x, grid.y);
+            else if (nMPEq == n2)
+                sofa::gpu::cuda::myprintf("multivop(MPEq): %dx%d grid\n", grid.x, grid.y);
+            else
+                sofa::gpu::cuda::myprintf("multivop: %dx%d grid\n", grid.x, grid.y);
+        }
+        if (nPEq == n2)
+            MultiMechanicalObjectCudaVec1f_vPEq_kernel<<< grid, threads >>>(grid.x*BSIZE);
+        else if (nMPEq == n2)
+            MultiMechanicalObjectCudaVec1f_vMPEq_kernel<<< grid, threads >>>(grid.x*BSIZE);
+        else
+            MultiMechanicalObjectCudaVec1f_vOp_kernel<<< grid, threads >>>(grid.x*BSIZE);
+        totalblocs += maxnblocs * n2;
+        for (unsigned int i = 0; i < n2; ++i)
+            ops2[i].size /= 3;
+    }
 }
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
