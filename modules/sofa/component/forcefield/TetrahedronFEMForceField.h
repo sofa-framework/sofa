@@ -192,6 +192,8 @@ public:
         , f_assembling(initDataPtr(&f_assembling,&_assembling,"assembling",""))
     {}
 
+    virtual bool canPrefetch() const { return false; }
+
     void parse(core::objectmodel::BaseObjectDescription* arg);
 
     void setPoissonRatio(Real val) { this->f_poissonRatio.setValue(val); }

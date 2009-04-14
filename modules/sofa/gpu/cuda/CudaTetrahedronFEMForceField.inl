@@ -47,6 +47,35 @@ extern "C"
 
     void TetrahedronFEMForceFieldCuda3f_getRotations(unsigned int nbElem, unsigned int nbVertex, const void* initState, const void* state, const void* rotationIdx, void* rotations);
 
+    struct TetraFEMForceOp
+    {
+        unsigned int nbElem;
+        unsigned int nbVertex;
+        unsigned int nbElemPerVertex;
+        const void* elems;
+        void* rotations;
+        void* eforce;
+        const void* velems;
+        void* f;
+        const void* x;
+        const void* v;
+    };
+
+    struct TetraFEMDForceOp
+    {
+        unsigned int nbElem;
+        unsigned int nbVertex;
+        unsigned int nbElemPerVertex;
+        const void* elems;
+        const void* rotations;
+        void* eforce;
+        const void* velems;
+        void* df;
+        const void* dx;
+    };
+
+    void MultiTetrahedronFEMForceFieldCuda3f_addForce(int n, TetraFEMForceOp* ops);
+    void MultiTetrahedronFEMForceFieldCuda3f_addDForce(int n, TetraFEMDForceOp* ops, double factor);
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
@@ -72,6 +101,13 @@ public:
     {   TetrahedronFEMForceFieldCuda3f_addDForce(nbElem, nbVertex, nbElemPerVertex, elems, state, eforce, velems, df, dx, factor); }
     static void getRotations(unsigned int nbElem, unsigned int nbVertex, const void* initState, const void* state, const void* rotationIdx, void* rotations)
     {   TetrahedronFEMForceFieldCuda3f_getRotations(nbElem, nbVertex, initState, state, rotationIdx, rotations); }
+
+    static bool supportMultiAddForce() { return mycudaMultiOpMax>0; }
+    static void multiAddForce(int n, TetraFEMForceOp* ops)
+    {    MultiTetrahedronFEMForceFieldCuda3f_addForce(n, ops); }
+    static bool supportMultiAddDForce() { return mycudaMultiOpMax>0; }
+    static void multiAddDForce(int n, TetraFEMDForceOp* ops, double factor)
+    {    MultiTetrahedronFEMForceFieldCuda3f_addDForce(n, ops, factor); }
 };
 
 template<>
@@ -84,6 +120,13 @@ public:
     {   TetrahedronFEMForceFieldCuda3f1_addDForce(nbElem, nbVertex, nbElemPerVertex, elems, state, eforce, velems, df, dx, factor); }
     static void getRotations(unsigned int nbElem, unsigned int nbVertex, const void* initState, const void* state, const void* rotationIdx, void* rotations)
     {   TetrahedronFEMForceFieldCuda3f_getRotations(nbElem, nbVertex, initState, state, rotationIdx, rotations); }
+
+    static bool supportMultiAddForce() { return false; }
+    static void multiAddForce(int, TetraFEMForceOp*)
+    {}
+    static bool supportMultiAddDForce() { return false; }
+    static void multiAddDForce(int, TetraFEMDForceOp*, double)
+    {}
 };
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
@@ -98,6 +141,13 @@ public:
     {   TetrahedronFEMForceFieldCuda3d_addDForce(nbElem, nbVertex, nbElemPerVertex, elems, state, eforce, velems, df, dx, factor); }
     static void getRotations(unsigned int nbElem, unsigned int nbVertex, const void* initState, const void* state, const void* rotationIdx, void* rotations)
     {   TetrahedronFEMForceFieldCuda3d_getRotations(nbElem, nbVertex, initState, state, rotationIdx, rotations); }
+
+    static bool supportMultiAddForce() { return false; }
+    static void multiAddForce(int, TetraFEMForceOp*)
+    {}
+    static bool supportMultiAddDForce() { return false; }
+    static void multiAddDForce(int, TetraFEMDForceOp*, double)
+    {}
 };
 
 template<>
@@ -110,6 +160,13 @@ public:
     {   TetrahedronFEMForceFieldCuda3d1_addDForce(nbElem, nbVertex, nbElemPerVertex, elems, state, eforce, velems, df, dx, factor); }
     static void getRotations(unsigned int nbElem, unsigned int nbVertex, const void* initState, const void* state, const void* rotationIdx, void* rotations)
     {   TetrahedronFEMForceFieldCuda3d_getRotations(nbElem, nbVertex, initState, state, rotationIdx, rotations); }
+
+    static bool supportMultiAddForce() { return false; }
+    static void multiAddForce(int, TetraFEMForceOp*)
+    {}
+    static bool supportMultiAddDForce() { return false; }
+    static void multiAddDForce(int, TetraFEMDForceOp*, double)
+    {}
 };
 
 #endif // SOFA_GPU_CUDA_DOUBLE
@@ -202,7 +259,7 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
 }
 
 template<class TCoord, class TDeriv, class TReal>
-void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addForce(Main* m, VecDeriv& f, const VecCoord& x, const VecDeriv& v)
+void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addForce(Main* m, VecDeriv& f, const VecCoord& x, const VecDeriv& v, bool prefetch)
 {
     if (m->needUpdateTopology)
     {
@@ -228,6 +285,45 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
 #endif // SOFA_DEV
 
     f.resize(x.size());
+
+    if (prefetch)
+    {
+        if (!Kernels::supportMultiAddForce()) return;
+        ForceOp op;
+        op.nbElem = data.size();
+        op.nbVertex = data.nbVertex;
+        op.nbElemPerVertex = data.nbElementPerVertex;
+        op.elems = data.elems.deviceRead();
+        op.rotations = data.state.deviceWrite();
+        op.eforce = data.eforce.deviceWrite();
+        op.velems = data.velems.deviceRead();
+        op.f = (      Deriv*)f.deviceWrite() + data.vertex0;
+        op.x = (const Coord*)x.deviceRead()  + data.vertex0;
+        op.v = (const Deriv*)v.deviceRead()  + data.vertex0;
+        m->data.preForceOpID = m->data.opsForce().size();
+        m->data.opsForce().push_back(op);
+        return;
+    }
+    else if (data.preForceOpID != -1)
+    {
+        helper::vector<ForceOp>& ops = data.opsForce();
+        if (ops.size() == 1)
+        {
+            ops.clear();
+            data.preForceOpID = -1;
+        }
+        else if (ops.size() > 1)
+        {
+            Kernels::multiAddForce(ops.size(), &(ops[0]));
+            ops.clear();
+        }
+        if (data.preForceOpID != -1)
+        {
+            data.preForceOpID = -1;
+            return;
+        }
+    }
+
     Kernels::addForce(
         data.size(),
         data.nbVertex,
@@ -296,10 +392,46 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
 }
 
 template<class TCoord, class TDeriv, class TReal>
-void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addDForce (Main* m, VecDeriv& df, const VecDeriv& dx, double kFactor, double /*bFactor*/)
+void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addDForce (Main* m, VecDeriv& df, const VecDeriv& dx, double kFactor, double /*bFactor*/, bool prefetch)
 {
     Data& data = m->data;
     df.resize(dx.size());
+    if (prefetch)
+    {
+        if (!Kernels::supportMultiAddDForce()) return;
+        DForceOp op;
+        op.nbElem = data.size();
+        op.nbVertex = data.nbVertex;
+        op.nbElemPerVertex = data.nbElementPerVertex;
+        op.elems = data.elems.deviceRead();
+        op.rotations = data.state.deviceRead();
+        op.eforce = data.eforce.deviceWrite();
+        op.velems = data.velems.deviceRead();
+        op.df = (      Deriv*)df.deviceWrite() + data.vertex0;
+        op.dx = (const Deriv*)dx.deviceRead()  + data.vertex0;
+        m->data.preDForceOpID = m->data.opsDForce().size();
+        m->data.opsDForce().push_back(op);
+        return;
+    }
+    else if (data.preDForceOpID != -1)
+    {
+        helper::vector<DForceOp>& ops = data.opsDForce();
+        if (ops.size() == 1)
+        {
+            ops.clear();
+            data.preDForceOpID = -1;
+        }
+        else if (ops.size() > 1)
+        {
+            Kernels::multiAddDForce(ops.size(), &(ops[0]), kFactor);
+            ops.clear();
+        }
+        if (data.preDForceOpID != -1)
+        {
+            data.preDForceOpID = -1;
+            return;
+        }
+    }
     Kernels::addDForce(
         data.size(),
         data.nbVertex,
@@ -315,8 +447,9 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
 
 
 template<class TCoord, class TDeriv, class TReal>
-void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::getRotations(Main* m, VecReal& rotations)
+void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::getRotations(Main* m, VecReal& rotations, bool prefetch)
 {
+    if (prefetch) return;
     Data& data = m->data;
     if (data.initState.empty())
     {
@@ -353,14 +486,16 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
 
 // I know using macros is bad design but this is the only way not to repeat the code for all CUDA types
 #define CudaTetrahedronFEMForceField_ImplMethods(T) \
+    template<> bool TetrahedronFEMForceField< T >::canPrefetch() const \
+    { return true; }						       \
     template<> void TetrahedronFEMForceField< T >::reinit() \
     { data.reinit(this); } \
     template<> void TetrahedronFEMForceField< T >::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v) \
-    { data.addForce(this, f, x, v); } \
+    { data.addForce(this, f, x, v, this->isPrefetching()); }		\
     template<> void TetrahedronFEMForceField< T >::addDForce(VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor) \
-    { data.addDForce(this, df, dx, kFactor, bFactor); } \
+    { data.addDForce(this, df, dx, kFactor, bFactor, this->isPrefetching()); } \
 	template<> void TetrahedronFEMForceField< T >::getRotations(VecReal& rotations) \
-	{ data.getRotations(this, rotations); }
+	{ data.getRotations(this, rotations, this->isPrefetching()); }
 
 CudaTetrahedronFEMForceField_ImplMethods(gpu::cuda::CudaVec3fTypes);
 CudaTetrahedronFEMForceField_ImplMethods(gpu::cuda::CudaVec3f1Types);
