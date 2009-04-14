@@ -86,6 +86,14 @@ extern "C"
 
     void MultiMechanicalObjectCudaVec3f_vOp(unsigned int n, VOpF* ops);
 
+    struct VClearOp
+    {
+        void* res;
+        int size;
+    };
+
+    void MultiMechanicalObjectCudaVec3f_vClear(unsigned int n, VClearOp* ops);
+
     void MechanicalObjectCudaVec3f1_vAssign(unsigned int size, void* res, const void* a);
     void MechanicalObjectCudaVec3f1_vClear(unsigned int size, void* res);
     void MechanicalObjectCudaVec3f1_vMEq(unsigned int size, void* res, float f);
@@ -184,6 +192,9 @@ public:
     static bool supportMultiVOp() { return mycudaMultiOpMax>0; }
     static void multiVOp(unsigned int n, VOp* ops)
     {   MultiMechanicalObjectCudaVec3f_vOp(n, ops); }
+    static bool supportMultiVClear() { return mycudaMultiOpMax>0; }
+    static void multiVClear(unsigned int n, VClearOp* ops)
+    {   MultiMechanicalObjectCudaVec3f_vClear(n, ops); }
 };
 
 template<>
@@ -231,6 +242,9 @@ public:
     static bool supportMultiVOp() { return false /*mycudaMultiOpMax>0*/; }
     static void multiVOp(unsigned int /*n*/, VOp* /*ops*/)
     {   /*MultiMechanicalObjectCudaVec3f1_vOp(n, ops);*/ }
+    static bool supportMultiVClear() { return false; }
+    static void multiVClear(unsigned int, VClearOp*)
+    {}
 };
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
@@ -280,6 +294,9 @@ public:
     static bool supportMultiVOp() { return false /*mycudaMultiOpMax>0*/; }
     static void multiVOp(unsigned int /*n*/, VOp* /*ops*/)
     {   /*MultiMechanicalObjectCudaVec3d_vOp(n, ops);*/ }
+    static bool supportMultiVClear() { return false; }
+    static void multiVClear(unsigned int, VClearOp*)
+    {}
 };
 
 template<>
@@ -327,6 +344,9 @@ public:
     static bool supportMultiVOp() { return false /*mycudaMultiOpMax>0*/; }
     static void multiVOp(unsigned int /*n*/, VOp* /*ops*/)
     {   /*MultiMechanicalObjectCudaVec3d1_vOp(n, ops);*/ }
+    static bool supportMultiVClear() { return false; }
+    static void multiVClear(unsigned int, VClearOp*)
+    {}
 };
 
 #endif // SOFA_GPU_CUDA_DOUBLE
@@ -341,8 +361,9 @@ namespace component
 using namespace gpu::cuda;
 
 template<class TCoord, class TDeriv, class TReal>
-void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::accumulateForce(Main* m)
+void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::accumulateForce(Main* m, bool prefetch)
 {
+    if (prefetch) return;
     if (!m->externalForces->empty())
     {
         Kernels::vAssign(m->externalForces->size(), m->f->deviceWrite(), m->externalForces->deviceRead());
@@ -673,8 +694,9 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
 }
 
 template<class TCoord, class TDeriv, class TReal>
-void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::vMultiOp(Main* m, const VMultiOp& ops)
+void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::vMultiOp(Main* m, const VMultiOp& ops, bool prefetch)
 {
+    if (prefetch) return;
     // optimize common integration case: v += a*dt, x += v*dt
     if (ops.size() == 2 && ops[0].second.size() == 2 && ops[0].first == ops[0].second[0].first && ops[0].first.type == VecId::V_DERIV && ops[0].second[1].first.type == VecId::V_DERIV
         && ops[1].second.size() == 2 && ops[1].first == ops[1].second[0].first && ops[0].first == ops[1].second[1].first && ops[1].first.type == VecId::V_COORD)
@@ -882,9 +904,48 @@ double MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TR
 }
 
 template<class TCoord, class TDeriv, class TReal>
-void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::resetForce(Main* m)
+void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::resetForce(Main* m, bool prefetch)
 {
     VecDeriv& f= *m->getF();
+    if (f.size() == 0) return;
+    if (prefetch)
+    {
+        if (!Kernels::supportMultiVClear()) return; // no kernel available for combining multiple operations
+        m->data.preVResetForce.size = f.size();
+        m->data.preVResetForce.id = m->data.preVResetForce.objects().size();
+        m->data.preVResetForce.objects().push_back(m);
+        return;
+    }
+    else if (m->data.preVResetForce.id >= 0)
+    {
+        helper::vector<Main*>& objects = m->data.preVResetForce.objects();
+        if (!objects.empty())
+        {
+            if (objects.size() == 1)
+            {
+                // only one operation -> use regular kernel
+                m->data.preVResetForce.id = -1;
+            }
+            else
+            {
+                int nops = objects.size();
+                helper::vector< VClearOp > ops(nops);
+                for (unsigned int i=0; i<objects.size(); ++i)
+                {
+                    Main* o = objects[i];
+                    ops[i].res = o->getF()->deviceWrite();
+                    ops[i].size = o->data.preVResetForce.size;
+                }
+                Kernels::multiVClear(nops, &(ops[0]));
+            }
+            objects.clear();
+        }
+        if (m->data.preVResetForce.id != -1) // prefetching was done
+        {
+            m->data.preVResetForce.id = -1;
+            return;
+        }
+    }
     Kernels::vClear(f.size(), f.deviceWrite());
 }
 
@@ -893,15 +954,15 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
     template<> bool MechanicalObject< T >::canPrefetch() const \
     { return true; } \
     template<> void MechanicalObject< T >::accumulateForce() \
-    { data.accumulateForce(this); } \
+    { data.accumulateForce(this, this->isPrefetching()); } \
     template<> void MechanicalObject< T >::vOp(VecId v, VecId a, VecId b, double f) \
     { data.vOp(this, v, a, b, f, this->isPrefetching()); }		\
     template<> void MechanicalObject< T >::vMultiOp(const VMultiOp& ops) \
-    { data.vMultiOp(this, ops); } \
+    { data.vMultiOp(this, ops, this->isPrefetching()); } \
     template<> double MechanicalObject< T >::vDot(VecId a, VecId b) \
     { return data.vDot(this, a, b, this->isPrefetching()); }				    \
     template<> void MechanicalObject< T >::resetForce() \
-    { data.resetForce(this); }
+    { data.resetForce(this, this->isPrefetching()); }
 
 CudaMechanicalObject_ImplMethods(gpu::cuda::CudaVec3fTypes);
 CudaMechanicalObject_ImplMethods(gpu::cuda::CudaVec3f1Types);

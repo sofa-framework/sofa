@@ -99,12 +99,18 @@ public:
     };
     PrefetchOp< helper::vector<VOp> > preVOp;
 
-    static void accumulateForce(Main* m);
+    struct VResetForce
+    {
+        int size;
+    };
+    PrefetchOp< VResetForce > preVResetForce;
+
+    static void accumulateForce(Main* m, bool prefetch = false);
     static void vAlloc(Main* m, VecId v);
     static void vOp(Main* m, VecId v, VecId a, VecId b, double f, bool prefetch = false);
-    static void vMultiOp(Main* m, const VMultiOp& ops);
+    static void vMultiOp(Main* m, const VMultiOp& ops, bool prefetch = false);
     static double vDot(Main* m, VecId a, VecId b, bool prefetch = false);
-    static void resetForce(Main* m);
+    static void resetForce(Main* m, bool prefetch = false);
 };
 
 // I know using macros is bad design but this is the only way not to repeat the code for all CUDA types

@@ -41,6 +41,9 @@ namespace cuda
 template<class DataTypes>
 class CudaKernelsTetrahedronFEMForceField;
 
+struct TetraFEMForceOp;
+struct TetraFEMDForceOp;
+
 } // namespace cuda
 
 } // namespace gpu
@@ -211,7 +214,7 @@ public:
     /// Index of elements attached to each points (layout per bloc of NBLOC vertices, with first element of each vertex, then second element, etc)
     /// Note that each integer is actually equat the the index of the element * 4 + the index of this vertex inside the tetrahedron.
     gpu::cuda::CudaVector<int> velems;
-    TetrahedronFEMForceFieldInternalData() : nbElement(0), vertex0(0), nbVertex(0), nbElementPerVertex(0) {}
+    TetrahedronFEMForceFieldInternalData() : nbElement(0), vertex0(0), nbVertex(0), nbElementPerVertex(0), preForceOpID(-1), preDForceOpID(-1) {}
     void init(int nbe, int v0, int nbv, int nbelemperv)
     {
         elems.clear();
@@ -295,9 +298,30 @@ public:
     }
 
     static void reinit(Main* m);
-    static void addForce(Main* m, VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/);
-    static void addDForce (Main* m, VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
-    static void getRotations(Main* m, VecReal& rotations);
+    static void addForce(Main* m, VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/, bool prefetch);
+    static void addDForce (Main* m, VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor, bool prefetch);
+    static void getRotations(Main* m, VecReal& rotations, bool prefetch);
+
+
+    typedef gpu::cuda::TetraFEMForceOp ForceOp;
+    int preForceOpID;
+
+    static helper::vector<ForceOp>& opsForce()
+    {
+        static helper::vector<ForceOp> v;
+        return v;
+    }
+
+    typedef gpu::cuda::TetraFEMDForceOp DForceOp;
+    int preDForceOpID;
+
+    static helper::vector<DForceOp>& opsDForce()
+    {
+        static helper::vector<DForceOp> v;
+        return v;
+    }
+
+
 };
 
 //
@@ -306,6 +330,7 @@ public:
 
 // I know using macros is bad design but this is the only way not to repeat the code for all CUDA types
 #define CudaTetrahedronFEMForceField_DeclMethods(T) \
+    template<> bool TetrahedronFEMForceField< T >::canPrefetch() const; \
     template<> void TetrahedronFEMForceField< T >::reinit(); \
     template<> void TetrahedronFEMForceField< T >::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v); \
     template<> void TetrahedronFEMForceField< T >::getRotations(VecReal& vecR); \

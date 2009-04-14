@@ -86,6 +86,14 @@ extern "C"
 
     void MultiMechanicalObjectCudaVec3f_vOp(unsigned int n, VOpF* ops);
 
+    struct VClearOp
+    {
+        void* res;
+        int size;
+    };
+
+    void MultiMechanicalObjectCudaVec3f_vClear(unsigned int n, VClearOp* ops);
+
     void MechanicalObjectCudaVec3f1_vAssign(unsigned int size, void* res, const void* a);
     void MechanicalObjectCudaVec3f1_vClear(unsigned int size, void* res);
     void MechanicalObjectCudaVec3f1_vMEq(unsigned int size, void* res, float f);
@@ -1025,6 +1033,30 @@ __global__ void MultiMechanicalObjectCudaVec_vDot_kernel(unsigned int nops, floa
 
 #undef blockSize
 
+
+enum { MULTI_VCLEAR_NMAX = 64 };
+__constant__ VClearOp multiVClearOps[MULTI_VCLEAR_NMAX];
+
+template<class real>
+__global__ void MultiMechanicalObjectCudaVec_vClear_kernel(int nthreads)
+{
+    const int size = multiVClearOps[blockIdx.y].size;
+    float* res = (float*) multiVClearOps[blockIdx.y].res;
+    int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
+    while (index + nthreads < size)
+    {
+        res[index] = (real)0.0f;
+        index += nthreads;
+        res[index] = (real)0.0f;
+        index += nthreads;
+    }
+    if (index < size)
+    {
+        res[index] = (real)0.0f;
+        //index += nthreads;
+    }
+}
+
 //////////////////////
 // CPU-side methods //
 //////////////////////
@@ -1047,7 +1079,7 @@ void MechanicalObjectCudaVec3f1_vAssign(unsigned int size, void* res, const void
 
 void MechanicalObjectCudaVec3f_vClear(unsigned int size, void* res)
 {
-    dim3 threads(BSIZE,1);
+    //dim3 threads(BSIZE,1);
     //dim3 grid((size+BSIZE-1)/BSIZE,1);
     //MechanicalObjectCudaVec3t_vClear_kernel<float><<< grid, threads >>>(size, (CudaVec3<real>*)res);
     //dim3 grid((3*size+BSIZE-1)/BSIZE,1);
@@ -1453,6 +1485,35 @@ void MultiMechanicalObjectCudaVec3f_vOp(unsigned int n, VOpF* ops)
             MultiMechanicalObjectCudaVec1f_vMPEq_kernel<<< grid, threads >>>(grid.x*BSIZE);
         else
             MultiMechanicalObjectCudaVec1f_vOp_kernel<<< grid, threads >>>(grid.x*BSIZE);
+        totalblocs += maxnblocs * n2;
+        for (unsigned int i = 0; i < n2; ++i)
+            ops2[i].size /= 3;
+    }
+}
+
+
+void MultiMechanicalObjectCudaVec3f_vClear(unsigned int n, VClearOp* ops)
+{
+    if (n==0) return;
+    int totalblocs = 0;
+    for (unsigned int i0 = 0; i0 < n; i0 += MULTI_VCLEAR_NMAX)
+    {
+        int n2 = (n-i0 > MULTI_VOP_NMAX) ? MULTI_VCLEAR_NMAX : n-i0;
+        int maxnblocs = 0;
+        VClearOp* ops2 = ops + i0;
+        for (unsigned int i = 0; i < n2; ++i)
+        {
+            ops2[i].size *= 3;
+            int nblocs = (ops2[i].size+BSIZE-1)/BSIZE;
+            if (nblocs > 256) nblocs = 256;
+            if (nblocs > maxnblocs) maxnblocs = nblocs;
+        }
+        cudaMemcpyToSymbol(multiVClearOps, ops2, n2 * sizeof(VClearOp), 0, cudaMemcpyHostToDevice);
+        dim3 threads(BSIZE,1);
+        dim3 grid(maxnblocs,n2);
+        if (sofa::gpu::cuda::mycudaVerboseLevel >= sofa::gpu::cuda::LOG_TRACE)
+            sofa::gpu::cuda::myprintf("multivclear: %dx%d grid\n", grid.x, grid.y);
+        MultiMechanicalObjectCudaVec_vClear_kernel<float><<< grid, threads >>>(grid.x*BSIZE);
         totalblocs += maxnblocs * n2;
         for (unsigned int i = 0; i < n2; ++i)
             ops2[i].size /= 3;
