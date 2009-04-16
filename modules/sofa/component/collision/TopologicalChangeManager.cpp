@@ -267,8 +267,8 @@ bool TopologicalChangeManager::incisionTriangleSetTopology(sofa::core::component
 
 
 
-    const Vec<3,double>& a= incision.a_init;
-    const Vec<3,double>& b= incision.b_init;
+    Vec<3,double>& a= incision.a_init;
+    Vec<3,double>& b= incision.b_init;
 
     const unsigned int &ind_ta = incision.ind_ta_init;
     unsigned int &ind_tb = incision.ind_tb_init;
