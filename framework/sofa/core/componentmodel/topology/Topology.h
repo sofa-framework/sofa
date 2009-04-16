@@ -83,6 +83,19 @@ enum TopologyChangeType
 };
 
 
+/// The enumeration used to give unique identifiers to Topological objects.
+enum TopologyObjectType
+{
+    POINT,
+    EDGE,
+    TRIANGLE,
+    QUAD,
+    TETRAHEDRON,
+    HEXAHEDRON
+};
+
+
+
 /** \brief Base class to indicate a topology change occurred.
 *
 * All topological changes taking place in a given BaseTopology will issue a TopologyChange in the
