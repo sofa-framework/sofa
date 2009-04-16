@@ -752,11 +752,27 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(const sofa
 }
 
 template<class DataTypes>
-int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, const Coord& a, unsigned int pb, const Coord& b,
-        const sofa::helper::vector<TriangleID>& triangles_list, const sofa::helper::vector<EdgeID>& edges_list,
-        const sofa::helper::vector<double>& coords_list, sofa::helper::vector<EdgeID>& new_edges)
+int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Coord& a, unsigned int pb, Coord& b,
+        sofa::helper::vector<TriangleID>& triangles_list, sofa::helper::vector<EdgeID>& edges_list,
+        sofa::helper::vector<double>& coords_list, sofa::helper::vector<EdgeID>& new_edges, bool snap)
 {
     std::cout << "TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath" << std::endl;
+
+
+    //////// STEP 1 : MODIFY PATH IF SNAP = TRUE (don't change border case here)
+    (void)snap;
+
+    /*	sofa::helper::vector< double > points2Snap;
+    if (snap)
+    {
+      SnapAlongPath (triangles_list, edges_list, coords_list, points2Snap);
+      }*/
+
+
+
+
+
+
 
     unsigned int nb_edges = edges_list.size();
     sofa::helper::vector< sofa::helper::vector< PointID > > p_ancestors; p_ancestors.reserve(nb_edges+2);
@@ -984,6 +1000,225 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, co
     return p_ancestors.size();
 }
 
+
+
+template<class DataTypes>
+void TriangleSetTopologyAlgorithms<DataTypes>::SnapAlongPath (sofa::helper::vector< sofa::core::componentmodel::topology::TopologyObjectType>& topoPath_list,
+        sofa::helper::vector<unsigned int>& indices_list, sofa::helper::vector< Vec<3, double> >& coords_list,
+        sofa::helper::vector< sofa::helper::vector<double> >& points2Snap)
+{
+
+    std::cout << "TriangleSetTopologyAlgorithms::SnapAlongPath()" << std::endl;
+
+    std::cout << "*** Inputs: ***" << std::endl;
+    std::cout << "topoPath_list: " << topoPath_list << std::endl;
+    std::cout << "indices_list: " << indices_list << std::endl;
+    std::cout << "coords_list: " << coords_list << std::endl;
+    std::cout << "****************" << std::endl;
+
+    std::map <PointID, sofa::helper::vector<unsigned int> > map_point2snap;
+    std::map <PointID, sofa::helper::vector<unsigned int> >::iterator it;
+    std::map <PointID, Vec<3,double> > map_point2bary;
+    float epsilon = 0.25;
+
+    //// STEP 1 - First loop to find concerned points
+    for (unsigned int i = 0; i < indices_list.size(); i++)
+    {
+        switch ( topoPath_list[i] )
+        {
+            // New case to handle other topological object can be added.
+            // Default: if object is a POINT , nothing has to be done.
+
+        case core::componentmodel::topology::EDGE:
+        {
+            PointID Vertex2Snap;
+
+            if ( coords_list[i][0] < epsilon )  // This point has to be snaped
+            {
+                Vertex2Snap = m_container->getEdge(indices_list[i])[0];
+                it = map_point2snap.find (Vertex2Snap);
+            }
+            else if ( coords_list[i][0] > (1.0 - epsilon) )
+            {
+                Vertex2Snap = m_container->getEdge(indices_list[i])[1];
+                it = map_point2snap.find (Vertex2Snap);
+            }
+            else
+            {
+                break;
+            }
+
+            if (it == map_point2snap.end()) // First time this point is encounter
+            {
+                map_point2snap[Vertex2Snap] = sofa::helper::vector <unsigned int> ();
+                map_point2bary[Vertex2Snap] = Vec<3,double> ();
+            }
+
+            break;
+        }
+        case core::componentmodel::topology::TRIANGLE:  // TODO: NOT TESTED YET!
+        {
+            PointID Vertex2Snap;
+            Vec<3, double>& barycoord = coords_list[i];
+            bool TriFind = false;
+
+            for (unsigned int j = 0; j < 3; j++)
+            {
+                if ( barycoord[j] > (1.0 - epsilon) )  // This point has to be snaped
+                {
+                    Vertex2Snap = m_container->getTriangleArray()[indices_list[i]][j];
+                    it = map_point2snap.find (Vertex2Snap);
+                    TriFind = true;
+                    break;
+                }
+            }
+
+            if ( TriFind && (it == map_point2snap.end()) ) // First time this point is encounter
+            {
+                map_point2snap[Vertex2Snap] = sofa::helper::vector <unsigned int> ();
+                map_point2bary[Vertex2Snap] = Vec<3,double> ();
+            }
+
+            break;
+        }
+        default:
+            break;
+        }
+    }
+
+
+    //// STEP 2 - Test if snaping is needed
+    if (map_point2snap.empty())
+    {
+        std::cout << "EXIT" << std::endl;  // TODO: remove this
+        return;
+    }
+
+    typename DataTypes::VecCoord& coords = *(m_geometryAlgorithms->getDOF()->getX());
+
+
+    //// STEP 3 - Second loop necessary to find object on the neighborhood of a snaped point
+    for (unsigned int i = 0; i < indices_list.size(); i++)
+    {
+        switch ( topoPath_list[i] )
+        {
+        case core::componentmodel::topology::POINT:
+        {
+            if ( map_point2snap.find (indices_list[i]) != map_point2snap.end() )
+            {
+                map_point2snap[ indices_list[i] ].push_back(i);
+
+                for (unsigned int j = 0; j<3; j++)
+                    map_point2bary[ indices_list[i] ][j] += coords[ indices_list[i] ][j];
+            }
+            break;
+        }
+        case core::componentmodel::topology::EDGE:
+        {
+            Edge theEdge = m_container->getEdge(indices_list[i]);
+            bool PointFind = false;
+
+            for (unsigned int indEdge = 0; indEdge < 2; indEdge++)
+            {
+                PointID thePoint = theEdge[ indEdge ];
+                if ( map_point2snap.find (thePoint) != map_point2snap.end() )
+                {
+                    PointFind = true;
+                    map_point2snap[ thePoint ].push_back(i);
+                    // Compute new position.
+                    // Step 1/3: Compute real coord of incision point on the edge
+                    const Vec<3,double>& coord_bary = m_geometryAlgorithms->computeBaryEdgePoint (theEdge[(indEdge+1)%2], thePoint, coords_list[i][0]);
+
+                    // Step 2/3: Sum the different incision point position.
+                    for (unsigned int j = 0; j<3; j++)
+                        map_point2bary[ thePoint ][j] += coord_bary[j];
+                }
+
+                if (PointFind)
+                    break;
+            }
+            break;
+        }
+        case core::componentmodel::topology::TRIANGLE: // TODO: NOT TESTED YET!
+        {
+            Triangle theTriangle = m_container->getTriangleArray()[indices_list[i]];
+            bool PointFind = false;
+
+            for (unsigned int indTri = 0; indTri < 3; indTri++)
+            {
+                PointID thePoint = theTriangle[ indTri ];
+                if ( map_point2snap.find (thePoint) != map_point2snap.end() )
+                {
+                    PointFind = true;
+                    map_point2snap[ thePoint ].push_back(i);
+                    // TODO: check if it is the good function (optional: add comments in header...)
+                    const sofa::helper::vector< double >& coord_bary = m_geometryAlgorithms->computeTriangleBarycoefs (indices_list[i], coords_list[i]);
+
+                    for (unsigned int j = 0; j<3; j++)
+                        map_point2bary[ thePoint ][j] += coord_bary[j];
+                }
+
+                if (PointFind)
+                    break;
+            }
+            break;
+        }
+        default:
+            break;
+        }
+    }
+
+
+    //// STEP 4 - Compute new coordinates of point to be snaped, and inform path that point has to be snaped
+    sofa::helper::vector<unsigned int> field2remove;
+    points2Snap.resize (map_point2snap.size());
+    unsigned int cpt = 0;
+
+    for (it = map_point2snap.begin(); it != map_point2snap.end(); ++it)
+    {
+        points2Snap[ cpt ].push_back ((*it).first); // points2Snap[X][0] => id point to snap
+
+        unsigned int size = ((*it).second).size();
+        Vec<3,double> newCoords;
+
+        // Step 3/3: Compute mean value of all incision point position.
+        for (unsigned int j = 0; j<3; j++)
+        {
+            points2Snap[ cpt ].push_back ( map_point2bary[(*it).first][j]/size ); // points2Snap[X][1 2 3] => real coord of point to snap
+        }
+
+        cpt++;
+
+        // Change enum of the first object to snap to POINT, change id and label it as snaped
+        topoPath_list[ ((*it).second)[0]] = core::componentmodel::topology::POINT;
+        indices_list[ ((*it).second)[0]] = (*it).first;
+        coords_list[ ((*it).second)[0]][0] = -1.0;
+
+        // If more objects are concerned, remove them from the path  (need to stock and get out of the loop to delete them)
+        if (size > 1 )
+            for (unsigned int i = 1; i <size; i++)
+                field2remove.push_back ((*it).second[i]);
+    }
+
+
+    //// STEP 5 - Modify incision path
+    //TODO: verify that one object can't be snaped and considered at staying at the same time
+    sort (field2remove.begin(), field2remove.end());
+
+    for (unsigned int i = 1; i <= field2remove.size(); i++) //Delete in reverse order
+    {
+        topoPath_list.erase (topoPath_list.begin()+field2remove[field2remove.size()-i]);
+        indices_list.erase (indices_list.begin()+1+field2remove[field2remove.size()-i]);
+        coords_list.erase (coords_list.begin()+field2remove[field2remove.size()-i]);
+    }
+
+    return;
+}
+
+
+
+
+
 /** \brief Duplicates the given edges. Only works if at least the first or last point is adjacent to a border.
  * @returns true if the incision succeeded.
  */
@@ -1202,6 +1437,8 @@ bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::h
 
     return true;
 }
+
+
 
 // Duplicate the given edge. Only works of at least one of its points is adjacent to a border.
 template<class DataTypes>
