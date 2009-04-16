@@ -77,17 +77,17 @@ public:
     virtual void reinit();
 
     /** \brief  Moves and fixes the two closest points of two triangles to their median point
-    */
+     */
     bool Suture2Points(unsigned int ind_ta, unsigned int ind_tb, unsigned int &ind1, unsigned int &ind2);
 
     /** \brief Removes triangles along the list of points (ind_edge,coord) intersected by the vector from point a to point b and the triangular mesh
-    */
+     */
     void RemoveAlongTrianglesList(const sofa::defaulttype::Vec<3,double>& a,
             const sofa::defaulttype::Vec<3,double>& b,
             const unsigned int ind_ta, const unsigned int ind_tb);
 
     /** \brief Incises along the list of points (ind_edge,coord) intersected by the sequence of input segments (list of input points) and the triangular mesh
-    */
+     */
     void InciseAlongLinesList(const sofa::helper::vector< sofa::defaulttype::Vec<3,double> >& input_points,
             const sofa::helper::vector< unsigned int > &input_triangles);
 
@@ -98,12 +98,23 @@ public:
 
 
     /** \brief Split triangles to create edges along a path given as a the list of existing edges and triangles crossed by it.
-        Each end of the path is given either by an existing point or a point inside the first/last triangle. If the first/last triangle is (TriangleID)-1, it means that to path crosses the boundary of the surface.
+     * Each end of the path is given either by an existing point or a point inside the first/last triangle. If the first/last triangle is (TriangleID)-1, it means that to path crosses the boundary of the surface.
      * @returns the indice of the end point, or -1 if the incision failed.
      */
-    virtual int SplitAlongPath(unsigned int pa, const Coord& a, unsigned int pb, const Coord& b,
-            const sofa::helper::vector<TriangleID>& triangles_list, const sofa::helper::vector<EdgeID>& edges_list,
-            const sofa::helper::vector<double>& coords_list, sofa::helper::vector<EdgeID>& new_edges);
+    virtual int SplitAlongPath(unsigned int pa, Coord& a, unsigned int pb, Coord& b,
+            sofa::helper::vector<TriangleID>& triangles_list, sofa::helper::vector<EdgeID>& edges_list,
+            sofa::helper::vector<double>& coords_list, sofa::helper::vector<EdgeID>& new_edges, bool snap = true);
+
+
+
+    /*void SnapAlongPath (sofa::helper::vector<TriangleID>& triangles_list, sofa::helper::vector<EdgeID>& edges_list,
+      sofa::helper::vector<double>& coords_list, sofa::helper::vector<double>& points2Snap);*/
+
+    void SnapAlongPath (sofa::helper::vector< sofa::core::componentmodel::topology::TopologyObjectType>& topoPath_list,
+            sofa::helper::vector<unsigned int>& indices_list, sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list,
+            sofa::helper::vector< sofa::helper::vector<double> >& points2Snap);
+
+
 
     /** \brief Duplicates the given edges. Only works if at least the first or last point is adjacent to a border.
      * @returns true if the incision succeeded.
@@ -117,6 +128,9 @@ public:
         else return t[2];
     }
 
+
+
+
 protected:
     Data< sofa::helper::vector< unsigned int> > m_listTriRemove;
     Data< sofa::helper::vector< Triangle> > m_listTriAdd;
@@ -125,6 +139,8 @@ private:
     TriangleSetTopologyContainer*				m_container;
     TriangleSetTopologyModifier*				m_modifier;
     TriangleSetGeometryAlgorithms< DataTypes >*		m_geometryAlgorithms;
+
+
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_TOPOLOGY_TRIANGLESETTOPOLOGYALGORITHMS_CPP)
