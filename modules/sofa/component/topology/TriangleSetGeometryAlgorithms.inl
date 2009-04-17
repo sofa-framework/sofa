@@ -1535,6 +1535,71 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
     return (is_reached && is_validated && is_intersected); // b is in triangle indexed by ind_t_current
 }
 
+
+
+template <typename DataTypes>
+bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (const sofa::defaulttype::Vec<3,double>& a, const sofa::defaulttype::Vec<3,double>& b,
+        const unsigned int ind_ta, unsigned int& ind_tb,// A verifier pourquoi la ref!
+        sofa::helper::vector< sofa::core::componentmodel::topology::TopologyObjectType>& topoPath_list,
+        sofa::helper::vector<unsigned int>& indices_list,
+        sofa::helper::vector< Vec<3, double> >& coords_list) const
+{
+    //// QUICK FIX TO USE THE NEW PATH DECLARATION (WITH ONLY EDGES COMING FROM PREVIOUS FUNCTION)
+    //// ** TODO: create the real function handle different objects intersection **
+
+    // Output declarations
+    sofa::helper::vector<unsigned int> triangles_list;
+    sofa::helper::vector<unsigned int> edges_list;
+    sofa::helper::vector< double > coordsEdge_list;
+    bool is_on_boundary = false;
+    bool pathOK;
+
+    // using old function:
+    pathOK = this->computeIntersectedPointsList (a, b, ind_ta, ind_tb, triangles_list, edges_list, coordsEdge_list, is_on_boundary);
+    if (pathOK)
+    {
+        // creating new declaration path:
+        Vec<3,double> baryCoords;
+
+        // 1 - First point a (for the moment: always a point in a triangle)
+        topoPath_list.push_back (core::componentmodel::topology::TRIANGLE);
+        indices_list.push_back (ind_ta);
+        sofa::helper::vector< double > coefs_a = computeTriangleBarycoefs (ind_ta, a);
+        for (unsigned int i = 0; i<3; i++)
+            baryCoords[i]=coefs_a[i];
+
+        coords_list.push_back (baryCoords);
+
+        // 2 - All edges intersected (only edges for now)
+        for (unsigned int i = 0; i< edges_list.size(); i++)
+        {
+            topoPath_list.push_back (core::componentmodel::topology::EDGE);
+            indices_list.push_back (edges_list[i]);
+
+            baryCoords[0] = coordsEdge_list[i];
+            baryCoords[1] = 0.0; // or 1 - coordsEdge_list[i] ??
+            baryCoords[2] = 0.0;
+
+            coords_list.push_back (baryCoords);
+        }
+
+        // 3 - Last point b (for the moment: always a point in a triangle)
+        topoPath_list.push_back (core::componentmodel::topology::TRIANGLE);
+        indices_list.push_back (ind_tb);
+        sofa::helper::vector< double > coefs_b = computeTriangleBarycoefs (ind_tb, b);
+        for (unsigned int i = 0; i<3; i++)
+            baryCoords[i]=coefs_b[i];
+
+        coords_list.push_back (baryCoords);
+    }
+
+    return pathOK;
+}
+
+
+
+
+
 /// Get the triangle in a given direction from a point.
 template <typename DataTypes>
 int TriangleSetGeometryAlgorithms<DataTypes>::getTriangleInDirection(PointID p, const sofa::defaulttype::Vec<3,double>& dir) const
