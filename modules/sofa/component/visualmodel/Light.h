@@ -76,6 +76,7 @@ protected:
 
     void computeShadowMapSize();
 public:
+    Data<bool> enableShadow;
 
     Light();
     virtual ~Light();

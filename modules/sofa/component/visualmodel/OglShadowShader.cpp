@@ -80,23 +80,9 @@ void OglShadowShader::initShaders(unsigned int numberOfLights)
     std::string tempFragment="";
     std::string tempVertex="";
 
-    for (unsigned int i=0 ; i<numberOfLights ; i++)
-    {
-        vertexFilenames.push_back( PATH_TO_SHADOW_VERTEX_SHADERS );
-        fragmentFilenames.push_back( PATH_TO_SHADOW_FRAGMENT_SHADERS );
-        shaderVector.push_back(new sofa::helper::gl::GLSLShader());
-    }
-    for (unsigned int i=0 ; i<numberOfLights ; i++)
-    {
-        for (unsigned int j=0 ; j<numberOfLights ; j++)
-        {
-            //if (i==0)
-            this->addDefineMacro(i,std::string("SHADOW_LIGHT0"), std::string("1"));
-            //if (i==0)
-            this->addDefineMacro(i,std::string("SHADOW_LIGHT1"), std::string("1"));
-        }
-
-    }
+    vertexFilenames.push_back( PATH_TO_SHADOW_VERTEX_SHADERS );
+    fragmentFilenames.push_back( PATH_TO_SHADOW_FRAGMENT_SHADERS );
+    shaderVector.push_back(new sofa::helper::gl::GLSLShader());
 }
 
 }//namespace visualmodel

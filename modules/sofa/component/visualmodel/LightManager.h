@@ -64,7 +64,7 @@ namespace visualmodel
 class SOFA_COMPONENT_VISUALMODEL_API LightManager : public core::VisualManager
 {
 private:
-    static const unsigned int MAX_NUMBER_OF_LIGHTS = GL_MAX_LIGHTS;
+    static const unsigned int MAX_NUMBER_OF_LIGHTS = /*GL_MAX_LIGHTS*/ 3 ;
     std::vector<Light*> lights;
     bool shadowEnabled;
 
