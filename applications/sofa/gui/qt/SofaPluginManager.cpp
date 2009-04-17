@@ -128,10 +128,11 @@ void SofaPluginManager::addLibrary()
 {
     //get the lib to load
 #if defined (__APPLE__)
-    //BUG? : MacOS does not want to filter $.sylib
-    QString sfile = getOpenFileName ( this, NULL, "*", "load library dialog",  "Choose the component library to load" );
+    QString sfile = getOpenFileName ( this, NULL, "dynamic library (*.sylib*)", "load library dialog",  "Choose the component library to load" );
+#elif defined (WIN32)
+    QString sfile = getOpenFileName ( this, NULL, "dynamic library (*.sll)", "load library dialog",  "Choose the component library to load" );
 #else
-    QString sfile = getOpenFileName ( this, NULL, "dynamic library (*.sll *.sso *.sylib)", "load library dialog",  "Choose the component library to load" );
+    QString sfile = getOpenFileName ( this, NULL, "dynamic library (*.sso)", "load library dialog",  "Choose the component library to load" );
 #endif
     if(sfile=="")
         return;
