@@ -75,7 +75,7 @@ void OglShadowShader::init()
     turnOn.setValue(true);
 }
 
-void OglShadowShader::initShaders(unsigned int numberOfLights)
+void OglShadowShader::initShaders(unsigned int /* numberOfLights */)
 {
     std::string tempFragment="";
     std::string tempVertex="";
