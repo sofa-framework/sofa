@@ -72,7 +72,7 @@ Light::Light()
     , zNear(initData(&zNear, (float) 4.0, "zNear", "Set minimum distance for view field"))
     , zFar(initData(&zFar, (float) 50.0, "zFar", "Set minimum distance for view field"))
     , shadowTextureSize (initData(&shadowTextureSize, (GLuint) 0, "shadowTextureSize", "Set size for shadow texture "))
-
+    , enableShadow(initData(&enableShadow, (bool) true, "enableShadow", "Enable Shadow from this light"))
 {
     lightID = 0;
 }

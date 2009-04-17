@@ -1,20 +1,16 @@
+#define MAX_NUMBER_OF_LIGHTS 3
 
 varying vec3 normal;
-
 varying vec4 ambientGlobal;
-#ifdef SHADOW_LIGHT0
-varying vec4 shadowTexCoord0;
-varying vec4 diffuse;
-varying vec3 lightDir,halfVector;
-varying float dist;
-#endif
 
-#ifdef SHADOW_LIGHT1
-varying vec4 shadowTexCoord1;
-varying vec4 diffuse1;
-varying vec3 lightDir1,halfVector1;
-varying float dist1;
-#endif
+//0 -> disabled, 1 -> only lighting, 2 -> lighting & shadow
+uniform int lightFlag[MAX_NUMBER_OF_LIGHTS];
+
+varying vec4 shadowTexCoord[MAX_NUMBER_OF_LIGHTS];
+varying vec4 diffuse[MAX_NUMBER_OF_LIGHTS];
+varying vec3 lightDir[MAX_NUMBER_OF_LIGHTS];
+varying vec3 halfVector[MAX_NUMBER_OF_LIGHTS];
+varying float dist[MAX_NUMBER_OF_LIGHTS];
 
 void main()
 {
@@ -30,44 +26,26 @@ void main()
 
 	ambientGlobal = gl_LightModel.ambient * gl_FrontMaterial.ambient;
 
-#ifdef SHADOW_LIGHT0
+	for (int i=0 ; i<MAX_NUMBER_OF_LIGHTS ;i++)
+	{
+		if (lightFlag[i] > 0)
+		{
+			aux = vec3(gl_LightSource[i].position-ecPos);
+			lightDir[i] = (aux);
 
-	aux = vec3(gl_LightSource[0].position-ecPos);
-	lightDir = /*normalize*/(aux);
+			/* compute the distance to the light source to a varying variable*/
+			dist[i] = length(aux);
 
-	/* compute the distance to the light source to a varying variable*/
-	dist = length(aux);
+			/* Normalize the halfVector to pass it to the fragment shader */
+			halfVector[i] = normalize(gl_LightSource[i].halfVector.xyz);
 
-	/* Normalize the halfVector to pass it to the fragment shader */
-	halfVector = normalize(gl_LightSource[0].halfVector.xyz);
+			/* Compute the diffuse, ambient and globalAmbient terms */
+			diffuse[i] = gl_FrontMaterial.diffuse * gl_LightSource[i].diffuse;
+			ambientGlobal += gl_FrontMaterial.ambient * gl_LightSource[i].ambient;
 
-	/* Compute the diffuse, ambient and globalAmbient terms */
-	diffuse = gl_FrontMaterial.diffuse * gl_LightSource[0].diffuse;
-	ambientGlobal += gl_FrontMaterial.ambient * gl_LightSource[0].ambient;
-
-	shadowTexCoord0 = gl_TextureMatrix[0] * gl_ModelViewMatrix * gl_Vertex;
-#endif
-
-	///////////////////
-#ifdef SHADOW_LIGHT1
-
-	/* now normalize the light's direction. Note that according to the
-	OpenGL specification, the light is stored in eye space.*/
-	aux = vec3(gl_LightSource[1].position-ecPos);
-	lightDir1 = /*normalize*/(aux);
-
-	/* compute the distance to the light source to a varying variable*/
-	dist1 = length(aux);
-
-	/* Normalize the halfVector to pass it to the fragment shader */
-	halfVector1 = normalize(gl_LightSource[1].halfVector.xyz);
-
-	/* Compute the diffuse, ambient and globalAmbient terms */
-	diffuse1 = gl_FrontMaterial.diffuse * gl_LightSource[1].diffuse;
-	ambientGlobal += gl_FrontMaterial.ambient * gl_LightSource[1].ambient;
-
-	shadowTexCoord1 = gl_TextureMatrix[1] * gl_ModelViewMatrix * gl_Vertex;
-#endif
+			shadowTexCoord[i] = gl_TextureMatrix[i] * gl_ModelViewMatrix * gl_Vertex;
+		}
+	}
 
 	//////
 	gl_Position = ftransform();

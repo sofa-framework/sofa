@@ -62,7 +62,6 @@ int LightManagerClass = core::RegisterObject("LightManager")
 LightManager::LightManager()
     :shadowEnabled(false)
     ,debugViewDepthBuffer(initData(&debugViewDepthBuffer, (bool) false, "debugViewDepthBuffer", "DEBUG : View the buffer depth as seen by the light(s)"))
-
 {
 
 }
@@ -139,6 +138,9 @@ void LightManager::fwdDraw(Pass)
 {
     if (shadowShader  && !debugViewDepthBuffer.getValue())
     {
+        int* lightFlag = new int[MAX_NUMBER_OF_LIGHTS];
+        int* shadowTextureID = new int [MAX_NUMBER_OF_LIGHTS];
+
         glEnable(GL_LIGHTING);
         for (unsigned int i=0 ; i < lights.size() ; i++)
         {
@@ -146,31 +148,32 @@ void LightManager::fwdDraw(Pass)
             glEnable(GL_TEXTURE_2D);
             glBindTexture(GL_TEXTURE_2D, lights[i]->getShadowTexture());
 
-            std::ostringstream oss;
-            oss << "shadowActive" ;
-            oss << i;
+            lightFlag[i] = 1;
 
-            if (shadowEnabled)
+            if (shadowEnabled && lights[i]->enableShadow.getValue())
             {
-                shadowShader->setInt(shadowShader->getCurrentIndex() , oss.str().c_str() , 1);
-                oss.clear();
-
-                std::ostringstream oss1;
-                oss1 << "shadowTexture" ;
-                oss1 << i;
-                shadowShader->setInt(shadowShader->getCurrentIndex() , oss1.str().c_str() , i);
+                lightFlag[i] = 2;
+                shadowTextureID[i] = i;
             }
-            else
-                shadowShader->setInt(shadowShader->getCurrentIndex() , oss.str().c_str() , 0);
 
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, GL_COMPARE_R_TO_TEXTURE_ARB);
             glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
             makeShadowMatrix(i);
         }
+        for (unsigned int i = lights.size() ; i< MAX_NUMBER_OF_LIGHTS ; i++)
+        {
+            lightFlag[i] = 0;
+            shadowTextureID[i] = -1;
+        }
+
+        shadowShader->setIntVector(shadowShader->getCurrentIndex() , "lightFlag" , MAX_NUMBER_OF_LIGHTS, lightFlag);
+        shadowShader->setIntVector(shadowShader->getCurrentIndex() , "shadowTexture" , MAX_NUMBER_OF_LIGHTS, shadowTextureID);
 
         shadowShader->start();
 
+        delete lightFlag;
+        delete shadowTextureID;
 
     }
 
