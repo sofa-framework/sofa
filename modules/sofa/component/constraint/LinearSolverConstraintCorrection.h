@@ -62,11 +62,10 @@ extern inline behavior::LinearSolver* getLinearSolver(objectmodel::BaseContext* 
 extern inline behavior::LinearSolver* getLinearSolverByName(objectmodel::BaseContext* context,std::string name)
 {
     std::vector<sofa::core::componentmodel::behavior::LinearSolver*> solvers;
-    context->get<behavior::LinearSolver>(&solvers);
+    context->get<behavior::LinearSolver>(&solvers,objectmodel::BaseContext::SearchDown);
 
     for (unsigned int i=0; i<solvers.size(); ++i)
     {
-
         if (solvers[i]->getName() == name)
         {
             return solvers[i];
@@ -138,8 +137,8 @@ public:
             return false;
         if( getOdeSolver(context)==NULL )
             return false;
-        if( getLinearSolver(context)==NULL )
-            return false;
+        //if( getLinearSolver(context)==NULL )
+        //	return false;
 //         if (context->get<behavior::OdeSolver>() == NULL)
 //             return false;
 // 		if (context->get<behavior::LinearSolver>() == NULL)
