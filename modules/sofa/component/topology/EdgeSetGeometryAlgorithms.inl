@@ -169,10 +169,11 @@ sofa::helper::vector< double > EdgeSetGeometryAlgorithms<DataTypes>::compute2Poi
     const typename DataTypes::Coord& c1 = vect_c[ind_p2];
 
     Vec<3,double> a; DataTypes::get(a[0], a[1], a[2], c0);
-    Vec<3,double> b; DataTypes::get(a[0], a[1], a[2], c1);
+    Vec<3,double> b; DataTypes::get(b[0], b[1], b[2], c1);
 
     double dis = (b - a).norm();
     double coef_a, coef_b;
+
 
     if(dis < ZERO)
     {
@@ -191,6 +192,7 @@ sofa::helper::vector< double > EdgeSetGeometryAlgorithms<DataTypes>::compute2Poi
     return baryCoefs;
 
 }
+
 
 /// Write the current mesh into a msh file
 template <typename DataTypes>
@@ -269,6 +271,60 @@ sofa::helper::vector< double > compute_2points_barycoefs(const Vec& p, const Vec
 
     return baryCoefs;
 }
+
+
+template<class DataTypes>
+sofa::helper::vector< double > EdgeSetGeometryAlgorithms<DataTypes>::computePointProjectionOnEdge (const EdgeID edgeIndex, const sofa::defaulttype::Vec<3,double> coord_c)
+{
+
+    // Compute projection point coordinate H following the formula : AB*AX = ||AB||.||AH||
+    //
+    //            X                          - Compute vector orthogonal to (ABX), then vector collinear to (XH)
+    //          / .                          - Solve the equation system of straight lines intersection
+    //        /   .                          - Compute H real coordinates
+    //      /     .                          - Compute H bary coef on AB
+    //    /       .
+    //   A ------ H -------------B
+
+
+    Coord coord_AB[2];
+    Edge theEdge = this->m_topology->getEdge (edgeIndex);
+    getEdgeVertexCoordinates (edgeIndex, coord_AB);
+
+    sofa::defaulttype::Vec<3,double> a; DataTypes::get(a[0], a[1], a[2], coord_AB[0]);
+    sofa::defaulttype::Vec<3,double> b; DataTypes::get(b[0], b[1], b[2], coord_AB[1]);
+    sofa::defaulttype::Vec<3,double> c = coord_c;
+    sofa::defaulttype::Vec<3,double> h;
+
+    sofa::defaulttype::Vec<3,double> AB;
+    sofa::defaulttype::Vec<3,double> AC;
+
+    for (unsigned int i = 0; i<3; i++)
+    {
+        AB[i] = b[i] - a[i];
+        AC[i] = c[i] - a[i];
+    }
+
+    sofa::defaulttype::Vec<3,double> ortho_ABC = cross (AB, AC);
+    sofa::defaulttype::Vec<3,double> coef_XH = cross (ortho_ABC, AB);
+
+
+    // solving system:
+    double coef_lambda = AB[0] - ( AB[1]*coef_XH[0]/coef_XH[1] );
+    double lambda = ( c[0] - a[0] + (a[1] - c[1])*coef_XH[0]/coef_XH[1])*1/coef_lambda;
+    //double alpha = ( a[1] + lambda * AB[1] - c[1] ) * 1/coef_XH[1];
+
+    for (unsigned int i = 0; i<3; i++)
+        h[i] = a[i] + lambda * AB[i];
+
+
+    sofa::helper::vector< double > barycoord = compute2PointsBarycoefs(h, theEdge[0], theEdge[1]);
+
+    return barycoord;
+
+}
+
+
 } // namespace topology
 
 } // namespace component
