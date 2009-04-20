@@ -195,8 +195,11 @@
             <string>Tools</string>
         </property>
         <action name="fileNewTabAction"/>
+        <action name="fileCloseTabAction"/>
+        <separator/>
         <action name="fileClearTabAction"/>
         <action name="fileOpenAction"/>
+        <action name="fileSaveAction"/>
         <separator/>
         <action name="editUndoAction"/>
         <action name="editRedoAction"/>
@@ -227,6 +230,9 @@
     <action>
       <property name="name">
         <cstring>fileCloseTabAction</cstring>
+      </property>
+      <property name="iconSet">
+        <iconset>imageClose</iconset>
       </property>
       <property name="text">
         <string>Close Tab</string>
@@ -509,6 +515,9 @@
     </action>
   </actions>
   <images>
+    <image name="imageClose">
+        <data format="PNG" length="482">89504e470d0a1a0a0000000d49484452000000100000001008060000001ff3ff61000001a949444154388da593c14a1b511486bf3b8e74aea3a4d31aa4992c350f505c44b4d06e0abe4396bad487b14b5de61d5caa2008ae946e4aba34691ba621c4818cc324f7b8c8cc386370211eb8309c7bcfc739fff907de18ea79a20d3e7000ec028d34dd014e811f2de8bd0868c31e70d4f47d5dd11a0110c118c3fd43c4f5df7f1170d8829339401bf63e3acef166bdceff20200c4326c620c08265b1ecba7cf03c6efb7d0671bc9f4154a1eddfdfd7d7f59fbb3ba23846a07400de2d2ef2696d8d8b6e3702365ad0b3d2bb8366ada607414014c73445d812c90b7744d811214a1206c3219bd5aa4e752203ecae68cd7d18e64500db226ccb53c600a3f1186ddba422e7808612619ace7ca9e696c3b9520830957ca806809d3d10114cf63d575ed643cc533eeba0333582655908f045e611df524d94529819a153049c860f11cbae4b01ceb9529c15c61160c571184f26303356798d5feb75ddedf78992a4b43e6126a063dbf89ec7551094d798daf3f0671050ab56a9b82e2a15cd002845456b7cef3dbf462398b9b19777904566e5cfabab7ac95e0001411081719270331cbe6ce502e4553fd39be31149cabd605aca08bf0000000049454e44ae426082</data>
+    </image>
     <image name="image0">
       <data format="PNG" length="191">89504e470d0a1a0a0000000d4948445200000016000000160806000000c4b46c3b0000008649444154388ded95310a80300c457fa543aed0dd25d025050fa087f61a2ede274e3ad5b6a438087d9025d0974f0814f80897e969c7db8729d754d5d7020089520d9015d7101170e4a2dc5bc41c19e40904c2711e8acc5a4c89b77543984331b929715a120884ddefafc94d62e78a076113df97511b66da710b433cc4435ca0e70769f5fd840bdc132aa6f1f644fe0000000049454e44ae426082</data>
     </image>

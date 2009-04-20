@@ -438,11 +438,11 @@ template<class T> STRUCT_DATA_VAR(CLASS, 3, "Hard Stiffness Translation", "Hard 
 template<class T> STRUCT_DATA_VAR(CLASS, 4, "Soft Stiffness Rotation", "Soft Ks Rot", typename data_type::Real, softStiffnessRot);
 template<class T> STRUCT_DATA_VAR(CLASS, 5, "Hard Stiffness Rotation", "Hard Ks Rot", typename data_type::Real, hardStiffnessRot);
 template<class T> STRUCT_DATA_VAR(CLASS, 6, "Damping", "Kd", typename data_type::Real, kd);
-template<class T> STRUCT_DATA_VAR(CLASS, 7, "Min Angle X", "Min Angle X", typename data_type::Real, limitAngles[0]);
-template<class T> STRUCT_DATA_VAR(CLASS, 8, "Max Angle Y", "Max Angle Y", typename data_type::Real, limitAngles[1]);
-template<class T> STRUCT_DATA_VAR(CLASS, 9, "Min Angle Z", "Min Angle Z", typename data_type::Real, limitAngles[2]);
-template<class T> STRUCT_DATA_VAR(CLASS, 10, "Max Angle X", "Max Angle X", typename data_type::Real, limitAngles[3]);
-template<class T> STRUCT_DATA_VAR(CLASS, 11, "Min Angle Y", "Min Angle Y", typename data_type::Real, limitAngles[4]);
+template<class T> STRUCT_DATA_VAR(CLASS, 7,  "Min Angle X", "Min Angle X", typename data_type::Real, limitAngles[0]);
+template<class T> STRUCT_DATA_VAR(CLASS, 8,  "Max Angle X", "Max Angle X", typename data_type::Real, limitAngles[1]);
+template<class T> STRUCT_DATA_VAR(CLASS, 9,  "Min Angle Y", "Min Angle Y", typename data_type::Real, limitAngles[2]);
+template<class T> STRUCT_DATA_VAR(CLASS, 10, "Max Angle Y", "Max Angle Y", typename data_type::Real, limitAngles[3]);
+template<class T> STRUCT_DATA_VAR(CLASS, 11, "Min Angle Z", "Min Angle Z", typename data_type::Real, limitAngles[4]);
 template<class T> STRUCT_DATA_VAR(CLASS, 12, "Max Angle Z", "Max Angle Z", typename data_type::Real, limitAngles[5]);
 
 template<class T>
