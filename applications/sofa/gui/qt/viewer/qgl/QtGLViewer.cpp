@@ -414,79 +414,9 @@ void QtGLViewer::Display3DText(float x, float y, float z, char* string)
 void QtGLViewer::DrawAxis(double xpos, double ypos, double zpos,
         double arrowSize)
 {
-    float	fontScale	= (float) (arrowSize / 600.0);
-
-    Enable<GL_DEPTH_TEST> depth;
-    Enable<GL_LIGHTING> lighting;
-    Enable<GL_COLOR_MATERIAL> colorMat;
-
-    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    glShadeModel(GL_SMOOTH);
-
-    // --- Draw the "X" axis in red
     glPushMatrix();
-    glColor3f(1.0, 0.0, 0.0);
-    glTranslated(xpos, ypos, zpos);
-    glRotatef(90.0f, 0.0, 1.0, 0.0);
-    gluCylinder(_tube, arrowSize / 50.0, arrowSize / 50.0, arrowSize, 10, 10);
-    glTranslated(0.0, 0.0, arrowSize);
-    gluCylinder(_arrow, arrowSize / 15.0, 0.0, arrowSize / 5.0, 10, 10);
-    // ---- Display a "X" near the tip of the arrow
-    glTranslated(-0.5 * fontScale * (double)
-            glutStrokeWidth(GLUT_STROKE_ROMAN, 88),
-            arrowSize / 15.0, arrowSize /
-            5.0);
-    glLineWidth(3.0);
-    glScalef(fontScale, fontScale, fontScale);
-    glutStrokeCharacter(GLUT_STROKE_ROMAN, 88);
-    glScalef(1.0f / fontScale, 1.0f / fontScale, 1.0f / fontScale);
-    glLineWidth(1.0f);
-    // --- Undo transforms
-    glTranslated(-xpos, -ypos, -zpos);
-    glPopMatrix();
-
-    // --- Draw the "Y" axis in green
-    glPushMatrix();
-    glColor3f(0.0, 1.0, 0.0);
-    glTranslated(xpos, ypos, zpos);
-    glRotatef(-90.0f, 1.0, 0.0, 0.0);
-    gluCylinder(_tube, arrowSize / 50.0, arrowSize / 50.0, arrowSize, 10, 10);
-    glTranslated(0.0, 0.0, arrowSize);
-    gluCylinder(_arrow, arrowSize / 15.0, 0.0, arrowSize / 5.0, 10, 10);
-    // ---- Display a "Y" near the tip of the arrow
-    glTranslated(-0.5 * fontScale * (double)
-            glutStrokeWidth(GLUT_STROKE_ROMAN, 89),
-            arrowSize / 15.0, arrowSize /
-            5.0);
-    glLineWidth(3.0);
-    glScalef(fontScale, fontScale, fontScale);
-    glutStrokeCharacter(GLUT_STROKE_ROMAN, 89);
-    glScalef(1.0f / fontScale, 1.0f / fontScale, 1.0f / fontScale);
-    glLineWidth(1.0);
-    // --- Undo transforms
-    glTranslated(-xpos, -ypos, -zpos);
-    glPopMatrix();
-
-    // --- Draw the "Z" axis in blue
-    glPushMatrix();
-    glColor3f(0.0, 0.0, 1.0);
-    glTranslated(xpos, ypos, zpos);
-    glRotatef(0.0f, 1.0, 0.0, 0.0);
-    gluCylinder(_tube, arrowSize / 50.0, arrowSize / 50.0, arrowSize, 10, 10);
-    glTranslated(0.0, 0.0, arrowSize);
-    gluCylinder(_arrow, arrowSize / 15.0, 0.0, arrowSize / 5.0, 10, 10);
-    // ---- Display a "Z" near the tip of the arrow
-    glTranslated(-0.5 * fontScale * (double)
-            glutStrokeWidth(GLUT_STROKE_ROMAN, 90),
-            arrowSize / 15.0, arrowSize /
-            5.0);
-    glLineWidth(3.0);
-    glScalef(fontScale, fontScale, fontScale);
-    glutStrokeCharacter(GLUT_STROKE_ROMAN, 90);
-    glScalef(1.0f / fontScale, 1.0f / fontScale, 1.0f / fontScale);
-    glLineWidth(1.0);
-    // --- Undo transforms
-    glTranslated(-xpos, -ypos, -zpos);
+    glTranslatef(xpos, ypos,zpos);
+    QGLViewer::drawAxis(arrowSize);
     glPopMatrix();
 }
 
@@ -763,7 +693,12 @@ void QtGLViewer::DisplayOBJs()
         simulation::getSimulation()->draw(groot, &visualParameters);
         if (_axis)
         {
-            DrawAxis(0.0, 0.0, 0.0, 10.0);
+            this->setSceneBoundingBox(qglviewer::Vec(visualParameters.minBBox[0], visualParameters.minBBox[1], visualParameters.minBBox[2]),
+                    qglviewer::Vec(visualParameters.maxBBox[0], visualParameters.maxBBox[1], visualParameters.maxBBox[2]));
+
+            //DrawAxis(0.0, 0.0, 0.0, 10.0);
+            DrawAxis(0.0, 0.0, 0.0, this->sceneRadius());
+
             if (visualParameters.minBBox[0] < visualParameters.maxBBox[0])
                 DrawBox(visualParameters.minBBox.ptr(), visualParameters.maxBBox.ptr());
         }
