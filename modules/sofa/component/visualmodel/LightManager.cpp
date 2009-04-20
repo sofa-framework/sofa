@@ -138,8 +138,8 @@ void LightManager::fwdDraw(Pass)
 {
     if (shadowShader  && !debugViewDepthBuffer.getValue())
     {
-        int* lightFlag = new int[MAX_NUMBER_OF_LIGHTS];
-        int* shadowTextureID = new int [MAX_NUMBER_OF_LIGHTS];
+        GLint* lightFlag = new GLint[MAX_NUMBER_OF_LIGHTS];
+        GLint* shadowTextureID = new GLint [MAX_NUMBER_OF_LIGHTS];
 
         glEnable(GL_LIGHTING);
         for (unsigned int i=0 ; i < lights.size() ; i++)
