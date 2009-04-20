@@ -179,27 +179,6 @@ QtGLViewer::QtGLViewer(QWidget* parent, const char* name)
       _mapView = NULL;
       sphViewer = NULL;
     */
-    _arrow = gluNewQuadric();
-    gluQuadricDrawStyle(_arrow, GLU_FILL);
-    gluQuadricOrientation(_arrow, GLU_OUTSIDE);
-    gluQuadricNormals(_arrow, GLU_SMOOTH);
-
-    _tube = gluNewQuadric();
-    gluQuadricDrawStyle(_tube, GLU_FILL);
-    gluQuadricOrientation(_tube, GLU_OUTSIDE);
-    gluQuadricNormals(_tube, GLU_SMOOTH);
-
-    _sphere = gluNewQuadric();
-    gluQuadricDrawStyle(_sphere, GLU_FILL);
-    gluQuadricOrientation(_sphere, GLU_OUTSIDE);
-    gluQuadricNormals(_sphere, GLU_SMOOTH);
-
-    _disk = gluNewQuadric();
-    gluQuadricDrawStyle(_disk, GLU_FILL);
-    gluQuadricOrientation(_disk, GLU_OUTSIDE);
-    gluQuadricNormals(_disk, GLU_SMOOTH);
-
-
 
     //////////////////////
 
@@ -343,6 +322,27 @@ void QtGLViewer::init(void)
         //glEnable(GL_LIGHTING);
         glEnable(GL_LIGHT0);
         //glEnable(GL_COLOR_MATERIAL);
+
+        //init Quadrics
+        _arrow = gluNewQuadric();
+        gluQuadricDrawStyle(_arrow, GLU_FILL);
+        gluQuadricOrientation(_arrow, GLU_OUTSIDE);
+        gluQuadricNormals(_arrow, GLU_SMOOTH);
+
+        _tube = gluNewQuadric();
+        gluQuadricDrawStyle(_tube, GLU_FILL);
+        gluQuadricOrientation(_tube, GLU_OUTSIDE);
+        gluQuadricNormals(_tube, GLU_SMOOTH);
+
+        _sphere = gluNewQuadric();
+        gluQuadricDrawStyle(_sphere, GLU_FILL);
+        gluQuadricOrientation(_sphere, GLU_OUTSIDE);
+        gluQuadricNormals(_sphere, GLU_SMOOTH);
+
+        _disk = gluNewQuadric();
+        gluQuadricDrawStyle(_disk, GLU_FILL);
+        gluQuadricOrientation(_disk, GLU_OUTSIDE);
+        gluQuadricNormals(_disk, GLU_SMOOTH);
 
         // change status so we only do this stuff once
         initialized = true;
