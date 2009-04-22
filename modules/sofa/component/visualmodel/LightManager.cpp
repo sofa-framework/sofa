@@ -149,6 +149,7 @@ void LightManager::fwdDraw(Pass)
             glBindTexture(GL_TEXTURE_2D, lights[i]->getShadowTexture());
 
             lightFlag[i] = 1;
+            shadowTextureID[i] = 0;
 
             if (shadowEnabled && lights[i]->enableShadow.getValue())
             {
@@ -157,23 +158,26 @@ void LightManager::fwdDraw(Pass)
             }
 
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, GL_COMPARE_R_TO_TEXTURE_ARB);
+
             glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
             makeShadowMatrix(i);
         }
+
         for (unsigned int i = lights.size() ; i< MAX_NUMBER_OF_LIGHTS ; i++)
         {
             lightFlag[i] = 0;
-            shadowTextureID[i] = -1;
+            shadowTextureID[i] = 0;
         }
 
         shadowShader->setIntVector(shadowShader->getCurrentIndex() , "lightFlag" , MAX_NUMBER_OF_LIGHTS, lightFlag);
         shadowShader->setIntVector(shadowShader->getCurrentIndex() , "shadowTexture" , MAX_NUMBER_OF_LIGHTS, shadowTextureID);
 
-        shadowShader->start();
-
         delete lightFlag;
         delete shadowTextureID;
+
+        shadowShader->start();
+
 
     }
 
@@ -183,6 +187,9 @@ void LightManager::bwdDraw(Pass)
     if (shadowShader && shadowEnabled)
     {
         shadowShader->stop();
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, 0);
     }
 }
 

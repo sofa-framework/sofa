@@ -59,16 +59,16 @@ using sofa::defaulttype::Vector3;
 class SOFA_COMPONENT_VISUALMODEL_API Light : public virtual sofa::core::VisualModel
 {
 protected:
+    GLint lightID;
+    GLuint shadowTexWidth, shadowTexHeight;
+
     Data<Vector3> color;
     Data<float> zNear;
     Data<float> zFar;
     Data<GLuint> shadowTextureSize;
-    GLint lightID;
+
 
     helper::gl::FrameBufferObject shadowFBO;
-    GLuint shadowTexWidth, shadowTexHeight;
-    //GLuint shadowTexture;
-    //GLuint shadowFBO;
     GLuint debugVisualShadowTexture;
 
     GLfloat lightMatProj[16];

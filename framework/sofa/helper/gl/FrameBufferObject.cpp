@@ -51,7 +51,14 @@ FrameBufferObject::FrameBufferObject()
 
 FrameBufferObject::~FrameBufferObject()
 {
+    destroy();
+}
 
+void FrameBufferObject::destroy()
+{
+    glDeleteTextures( 1, &depthTexture );
+    glDeleteTextures( 1, &colorTexture );
+    glDeleteFramebuffers( 1, &id );
 }
 
 void FrameBufferObject::init(unsigned int width, unsigned height)
@@ -64,8 +71,10 @@ void FrameBufferObject::init(unsigned int width, unsigned height)
         glGenFramebuffersEXT(1, &id);
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, id);
         createDepthBuffer();
+        initDepthBuffer();
         glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_TEXTURE_2D, depthTexture, 0);
         createColorBuffer();
+        initColorBuffer();
         glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, colorTexture, 0);
 
         glDrawBuffer(GL_BACK);
@@ -74,9 +83,6 @@ void FrameBufferObject::init(unsigned int width, unsigned height)
         //debug
         //if (glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT) == GL_FRAMEBUFFER_COMPLETE_EXT)
         //	std::cout << "FBO OK" << std::endl;
-
-
-
 
         /*
         switch(glCheckFramebufferStatusEXT(GL_FRAMEBUFFER_EXT))
@@ -98,10 +104,10 @@ void FrameBufferObject::init(unsigned int width, unsigned height)
 
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 
-
         initialized=true;
     }
-
+    else
+        setSize(width, height);
 }
 
 void FrameBufferObject::start()
@@ -116,7 +122,6 @@ void FrameBufferObject::start()
 
 void FrameBufferObject::stop()
 {
-
     if (initialized)
         glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
 
@@ -141,13 +146,8 @@ void FrameBufferObject::setSize(unsigned int width, unsigned height)
         this->width = width;
         this->height = height;
 
-        //glGenFramebuffersEXT(1, &id);
         initDepthBuffer();
-        //glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_TEXTURE_2D, depthTexture, 0);
         initColorBuffer();
-        //glFramebufferTexture2DEXT(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, colorTexture, 0);
-        //glBindFramebufferEXT(GL_FRAMEBUFFER_EXT, 0);
-
     }
 }
 
@@ -156,7 +156,6 @@ void FrameBufferObject::createDepthBuffer()
     //Depth Texture
     glEnable(GL_TEXTURE_2D);
     glGenTextures(1, &depthTexture);
-    initDepthBuffer();
 }
 
 void FrameBufferObject::createColorBuffer()
@@ -164,7 +163,6 @@ void FrameBufferObject::createColorBuffer()
     //Color Texture
     glEnable(GL_TEXTURE_2D);
     glGenTextures(1, &colorTexture);
-    initColorBuffer();
 }
 
 void FrameBufferObject::initDepthBuffer()
