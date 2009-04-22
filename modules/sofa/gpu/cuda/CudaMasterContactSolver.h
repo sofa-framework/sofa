@@ -39,7 +39,6 @@
 
 //#define CHECK 0.01
 #define DISPLAY_TIME
-#define DISPLAY_INFO
 
 namespace sofa
 {
@@ -252,6 +251,10 @@ public:
 #ifdef CHECK
     Data<bool> check_gpu;
 #endif
+#ifdef DISPLAY_TIME
+    Data<bool> print_info;
+#endif
+
     Data<bool> initial_guess;
     Data < double > tol;
     Data < int > maxIt;
@@ -285,7 +288,6 @@ private:
 #ifdef CHECK
     CudaBaseVector<real> f_check;
 #endif
-
     typedef struct
     {
         Vector3 n;

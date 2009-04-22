@@ -85,6 +85,9 @@ CudaMasterContactSolver<real>::CudaMasterContactSolver()
 #ifdef CHECK
     ,check_gpu(initData(&check_gpu, true, "checkGPU", "verification of lcp error"))
 #endif
+#ifdef DISPLAY_TIME
+    ,print_info(initData(&print_info, true, "print_info", "Print infos"))
+#endif
     ,initial_guess(initData(&initial_guess, true, "initial_guess","activate LCP results history to improve its resolution performances."))
     ,tol( initData(&tol, 0.001, "tolerance", ""))
     ,maxIt( initData(&maxIt, 1000, "maxIt", ""))
@@ -266,7 +269,6 @@ void CudaMasterContactSolver<real>::step(double dt)
     CTime *timer;
     double timeScale = 1.0 / (double)CTime::getRefTicksPerSec();
     timer = new CTime();
-    sout<<"********* Start Iteration : " << _numConstraints << " contacts *********" <<sendl;
     double time_Free_Motion = (double) timer->getTime();
 #endif
 
@@ -421,20 +423,21 @@ void CudaMasterContactSolver<real>::step(double dt)
 #ifdef DISPLAY_TIME
     double total = time_Free_Motion + time_computeCollision + time_build_LCP + time_solve_LCP + time_contactCorrections;
 
-    sout<<"Free Motion\t" << time_Free_Motion <<" ms \t| " << time_Free_Motion*100.0/total << "%" <<sendl;
-    sout<<"ComputeCollision\t" << time_computeCollision <<" ms \t| " << time_computeCollision*100.0/total << "%"  <<sendl;
-    sout<<"Build_LCP\t" << time_build_LCP <<" ms \t| " << time_build_LCP*100.0/total << "%"  <<sendl;
-    sout<<"Solve_LCP\t" << time_solve_LCP <<" ms \t| " << time_solve_LCP*100.0/total << "%"  <<sendl;
-    sout<<"ContactCorrections\t" << time_contactCorrections <<" ms \t| " << time_contactCorrections*100.0/total << "%"  <<sendl;
-#endif
+    if (this->print_info.getValue())
+    {
+        sout<<"********* Start Iteration : " << _numConstraints << " contacts *********" <<sendl;
+        sout<<"Free Motion\t" << time_Free_Motion <<" ms \t| " << time_Free_Motion*100.0/total << "%" <<sendl;
+        sout<<"ComputeCollision\t" << time_computeCollision <<" ms \t| " << time_computeCollision*100.0/total << "%"  <<sendl;
+        sout<<"Build_LCP\t" << time_build_LCP <<" ms \t| " << time_build_LCP*100.0/total << "%"  <<sendl;
+        sout<<"Solve_LCP\t" << time_solve_LCP <<" ms \t| " << time_solve_LCP*100.0/total << "%"  <<sendl;
+        sout<<"ContactCorrections\t" << time_contactCorrections <<" ms \t| " << time_contactCorrections*100.0/total << "%"  <<sendl;
 
+        unsigned nbNnul = 0;
+        unsigned sz = _W.colSize() * _W.rowSize();
+        for (unsigned j=0; j<sz; j++) if (_W.getCudaMatrix().hostRead()[j]==0.0) nbNnul++;
 
-#ifdef DISPLAY_INFO
-    unsigned nbNnul = 0;
-    unsigned sz = _W.colSize() * _W.rowSize();
-    for (unsigned j=0; j<sz; j++) if (_W.getCudaMatrix().hostRead()[j]==0.0) nbNnul++;
-
-    sout<<"Sparsity =  " << ((double) (((double) nbNnul * 100.0) / ((double)sz))) <<"%" <<sendl;
+        sout<<"Sparsity =  " << ((double) (((double) nbNnul * 100.0) / ((double)sz))) <<"%" <<sendl;
+    }
 #endif
 
     //switch lcp
