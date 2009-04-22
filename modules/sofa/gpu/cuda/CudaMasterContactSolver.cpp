@@ -264,11 +264,10 @@ void CudaMasterContactSolver<real>::step(double dt)
     context = dynamic_cast<simulation::Node *>(this->getContext()); // access to current node
 #ifdef DISPLAY_TIME
     CTime *timer;
-    double time = 0.0;
     double timeScale = 1.0 / (double)CTime::getRefTicksPerSec();
     timer = new CTime();
-    time = (double) timer->getTime();
     sout<<"********* Start Iteration : " << _numConstraints << " contacts *********" <<sendl;
+    double time_Free_Motion = (double) timer->getTime();
 #endif
 
     // Update the BehaviorModels
@@ -292,17 +291,16 @@ void CudaMasterContactSolver<real>::step(double dt)
     simulation::MechanicalVOpVisitor(dx_id).execute( context);
 
 #ifdef DISPLAY_TIME
-    sout<<" Free Motion " << ( (double) timer->getTime() - time)*timeScale <<" ms" <<sendl;
-
-    time = (double) timer->getTime();
+    time_Free_Motion = ((double) timer->getTime() - time_Free_Motion)*timeScale;
+    double time_computeCollision = (double) timer->getTime();
 #endif
 
     // Collision detection and response creation
     computeCollision();
 
 #ifdef DISPLAY_TIME
-    sout<<" computeCollision " << ( (double) timer->getTime() - time)*timeScale <<" ms" <<sendl;
-    time = (double) timer->getTime();
+    time_computeCollision = ((double) timer->getTime() - time_computeCollision)*timeScale;
+    double time_build_LCP = (double) timer->getTime();
 #endif
 //	MechanicalResetContactForceVisitor().execute(context);
 
@@ -315,8 +313,8 @@ void CudaMasterContactSolver<real>::step(double dt)
     build_LCP();
 
 #ifdef DISPLAY_TIME
-    sout<<" build_LCP " << ( (double) timer->getTime() - time)*timeScale<<" ms" <<sendl;
-    time = (double) timer->getTime();
+    time_build_LCP = ((double) timer->getTime() - time_build_LCP)*timeScale;
+    double time_solve_LCP = (double) timer->getTime();
 #endif
 
     double _tol = tol.getValue();
@@ -390,8 +388,8 @@ void CudaMasterContactSolver<real>::step(double dt)
 #endif
 
 #ifdef DISPLAY_TIME
-    sout<<" solve_LCP" <<( (double) timer->getTime() - time)*timeScale<<" ms" <<sendl;
-    time = (double) timer->getTime();
+    time_solve_LCP = ((double) timer->getTime() - time_solve_LCP)*timeScale;
+    double time_contactCorrections = (double) timer->getTime();
 #endif
 
     if (initial_guess.getValue())
@@ -416,10 +414,28 @@ void CudaMasterContactSolver<real>::step(double dt)
         cc->resetContactForce();
     }
 #ifdef DISPLAY_TIME
-    sout<<" contactCorrections" <<( (double) timer->getTime() - time)*timeScale <<" ms" <<sendl;
-    //sout << "<<<<<< End display MasterContactSolver time." << sendl;
+    time_contactCorrections = ((double) timer->getTime() - time_contactCorrections)*timeScale;
 #endif
 
+
+#ifdef DISPLAY_TIME
+    double total = time_Free_Motion + time_computeCollision + time_build_LCP + time_solve_LCP + time_contactCorrections;
+
+    sout<<"Free Motion\t" << time_Free_Motion <<" ms \t| " << time_Free_Motion*100.0/total << "%" <<sendl;
+    sout<<"ComputeCollision\t" << time_computeCollision <<" ms \t| " << time_computeCollision*100.0/total << "%"  <<sendl;
+    sout<<"Build_LCP\t" << time_build_LCP <<" ms \t| " << time_build_LCP*100.0/total << "%"  <<sendl;
+    sout<<"Solve_LCP\t" << time_solve_LCP <<" ms \t| " << time_solve_LCP*100.0/total << "%"  <<sendl;
+    sout<<"ContactCorrections\t" << time_contactCorrections <<" ms \t| " << time_contactCorrections*100.0/total << "%"  <<sendl;
+#endif
+
+
+#ifdef DISPLAY_INFO
+    unsigned nbNnul = 0;
+    unsigned sz = _W.colSize() * _W.rowSize();
+    for (unsigned j=0; j<sz; j++) if (_W.getCudaMatrix().hostRead()[j]==0.0) nbNnul++;
+
+    sout<<"Sparsity =  " << ((double) (((double) nbNnul * 100.0) / ((double)sz))) <<"%" <<sendl;
+#endif
 
     //switch lcp
     //sout << "switch lcp : " << lcp << endl;
