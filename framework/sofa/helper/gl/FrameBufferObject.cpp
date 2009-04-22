@@ -58,7 +58,7 @@ void FrameBufferObject::destroy()
 {
     glDeleteTextures( 1, &depthTexture );
     glDeleteTextures( 1, &colorTexture );
-    glDeleteFramebuffers( 1, &id );
+    glDeleteFramebuffersEXT( 1, &id );
 }
 
 void FrameBufferObject::init(unsigned int width, unsigned height)
