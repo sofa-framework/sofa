@@ -37,6 +37,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/FileRepository.h>
 
+#include <sofa/component/visualmodel/LightManager.h>
 
 namespace sofa
 {
@@ -83,6 +84,11 @@ void OglShadowShader::initShaders(unsigned int /* numberOfLights */)
     vertexFilenames.push_back( PATH_TO_SHADOW_VERTEX_SHADERS );
     fragmentFilenames.push_back( PATH_TO_SHADOW_FRAGMENT_SHADERS );
     shaderVector.push_back(new sofa::helper::gl::GLSLShader());
+
+    std::ostringstream oss;
+    oss << LightManager::MAX_NUMBER_OF_LIGHTS;
+
+    this->addDefineMacro(0,std::string("MAX_NUMBER_OF_LIGHTS"), oss.str());
 }
 
 }//namespace visualmodel

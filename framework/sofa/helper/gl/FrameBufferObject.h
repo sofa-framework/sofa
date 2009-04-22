@@ -57,6 +57,7 @@ public:
     virtual ~FrameBufferObject();
 
     void init(unsigned int width, unsigned height);
+    void destroy();
 
     void start();
     void stop();
