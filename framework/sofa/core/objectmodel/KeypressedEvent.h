@@ -52,6 +52,7 @@ public:
     /// Return the key pressed
     char getKey() const;
 
+    virtual const char* getClassName() const { return "KeypressedEvent"; }
 protected:
     /// Store the key
     char m_char;

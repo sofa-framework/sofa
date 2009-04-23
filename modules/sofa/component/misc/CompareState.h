@@ -92,6 +92,7 @@ public:
     void setSceneName(std::string &n) { sceneName = n; }
     void setCounter(int c) { counterCompareState = c; }
     void setCreateInMapping(bool b) { createInMapping=b; }
+    virtual const char* getClassName() const { return "CompareStateCreator"; }
 
 protected:
     void addCompareState(sofa::core::componentmodel::behavior::BaseMechanicalState *ms, simulation::Node* gnode);
@@ -111,6 +112,7 @@ public:
     double getTotalError() { return error; }
     double getErrorByDof() { return errorByDof; }
     unsigned int getNumCompareState() { return numCompareState; }
+    virtual const char* getClassName() const { return "CompareStateResult"; }
 protected:
     double error;
     double errorByDof;

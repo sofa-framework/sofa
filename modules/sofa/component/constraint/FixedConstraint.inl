@@ -215,7 +215,7 @@ void FixedConstraint<DataTypes>::applyInvMassConstraint(defaulttype::BaseVector 
     //     const unsigned int N = Deriv::size();
     if (f_fixAll.getValue())
     {
-        for (unsigned i=0; i<this->mstate->getSize(); i++ )
+        for (int i=0; i < this->mstate->getSize(); i++ )
         {
             vec->clear(offset + i);
         }

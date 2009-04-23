@@ -119,6 +119,7 @@ public:
     void setRecordV(bool b) {recordV=b;}
     void setCreateInMapping(bool b) { createInMapping=b; }
     void setCounter(int c) { counterWriteState = c; }
+    virtual const char* getClassName() const { return "WriteStateCreator"; }
 protected:
     std::string sceneName;
     std::string extension;
@@ -139,6 +140,7 @@ public:
 
     bool getState() const { return state; }
     void setState(bool active) { state=active; }
+    virtual const char* getClassName() const { return "WriteStateActivator"; }
 protected:
     void changeStateWriter(sofa::component::misc::WriteState *ws);
 
