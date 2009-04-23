@@ -104,7 +104,7 @@ public:
     sofa::helper::vector< double > compute2PointsBarycoefs(const Vec<3,double> &p, unsigned int ind_p1, unsigned int ind_p2) const;
 
     /// compute the projection coordinate of a point x on the edge i
-    sofa::helper::vector< double > computePointProjectionOnEdge (const EdgeID i, const sofa::defaulttype::Vec<3,double> coord_x);
+    sofa::helper::vector< double > computePointProjectionOnEdge (const EdgeID i, sofa::defaulttype::Vec<3,double> coord_x);
 
 
     void writeMSHfile(const char *filename) const;
