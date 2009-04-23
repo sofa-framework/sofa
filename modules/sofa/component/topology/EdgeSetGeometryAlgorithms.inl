@@ -274,10 +274,10 @@ sofa::helper::vector< double > compute_2points_barycoefs(const Vec& p, const Vec
 
 
 template<class DataTypes>
-sofa::helper::vector< double > EdgeSetGeometryAlgorithms<DataTypes>::computePointProjectionOnEdge (const EdgeID edgeIndex, const sofa::defaulttype::Vec<3,double> coord_c)
+sofa::helper::vector< double > EdgeSetGeometryAlgorithms<DataTypes>::computePointProjectionOnEdge (const EdgeID edgeIndex, sofa::defaulttype::Vec<3,double> coord_c)
 {
 
-    // Compute projection point coordinate H following the formula : AB*AX = ||AB||.||AH||
+    // Compute projection point coordinate H using parametric straight lines equations.
     //
     //            X                          - Compute vector orthogonal to (ABX), then vector collinear to (XH)
     //          / .                          - Solve the equation system of straight lines intersection
@@ -308,20 +308,42 @@ sofa::helper::vector< double > EdgeSetGeometryAlgorithms<DataTypes>::computePoin
     sofa::defaulttype::Vec<3,double> ortho_ABC = cross (AB, AC);
     sofa::defaulttype::Vec<3,double> coef_XH = cross (ortho_ABC, AB);
 
+    int indAB = -1; int indXH = -1;
+
+    // testing if vector composante are not null:
+    bool test = false;
+    for (unsigned int i=0; i<3; i++)
+    {
+        if ( (AB[i] > 0.001) || (AB[i] < -0.001) )
+        {
+            indAB = i;
+            for (unsigned int j = 0; j<3; j++)
+                if ( (coef_XH[j] > 0.001) || (coef_XH[j] < -0.001) && (j != i))
+                {
+                    indXH = j;
+                    test = true;
+                    break;
+                }
+        }
+
+        if (test)
+            break;
+    }
+
+    if ((indAB == -1) || (indXH == -1))
+        std::cout << "Error: EdgeSetGeometryAlgorithms::computePointProjectionOnEdge, vector director is null." << std::endl;
 
     // solving system:
-    double coef_lambda = AB[0] - ( AB[1]*coef_XH[0]/coef_XH[1] );
-    double lambda = ( c[0] - a[0] + (a[1] - c[1])*coef_XH[0]/coef_XH[1])*1/coef_lambda;
+    double coef_lambda = AB[indAB] - ( AB[indXH]*coef_XH[indAB]/coef_XH[indXH] );
+
+    double lambda = ( c[indAB] - a[indAB] + (a[indXH] - c[indXH])*coef_XH[indAB]/coef_XH[indXH])*1/coef_lambda;
     //double alpha = ( a[1] + lambda * AB[1] - c[1] ) * 1/coef_XH[1];
 
     for (unsigned int i = 0; i<3; i++)
         h[i] = a[i] + lambda * AB[i];
 
-
     sofa::helper::vector< double > barycoord = compute2PointsBarycoefs(h, theEdge[0], theEdge[1]);
-
     return barycoord;
-
 }
 
 
