@@ -89,7 +89,8 @@ public:
 
     virtual ~MechanicalState() { }
 
-    virtual unsigned int getDimension() const { return defaulttype::DataTypeInfo<Coord>::size(); }
+    virtual unsigned int getCoordDimension() const { return defaulttype::DataTypeInfo<Coord>::size(); }
+    virtual unsigned int getDerivDimension() const { return defaulttype::DataTypeInfo<Deriv>::size(); }
     /// Return the free-motion velocity vector (read-write access).
     virtual VecDeriv* getVfree() = 0;
     /// Return the current velocity vector (read-write access).

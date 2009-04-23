@@ -2168,8 +2168,9 @@ std::list<core::componentmodel::behavior::BaseMechanicalState::ConstraintBlock> 
         unsigned int i=0;
         for (std::list<unsigned int>::const_iterator it=indices.begin() ; it != indices.end(); it++,i++)
         {
-            itConstraint[i]    = (*c)[*it].getData().begin();
-            itConstraintEnd[i] = (*c)[*it].getData().end();
+            const unsigned int idx=*it;
+            itConstraint[i]    = (*c)[idx].getData().begin();
+            itConstraintEnd[i] = (*c)[idx].getData().end();
         }
     }
 
