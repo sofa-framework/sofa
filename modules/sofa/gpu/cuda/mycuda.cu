@@ -168,7 +168,7 @@ int mycudaInit(int device)
 #if CUDA_VERSION >= 2010
         myprintf("CUDA:  %d : \"%s\", %d MB, %d cores at %.3f GHz, revision %d.%d",i,dev.name, dev.totalGlobalMem/(1024*1024), dev.multiProcessorCount*8, dev.clockRate * 1e-6f, dev.major, dev.minor);
         if (dev.kernelExecTimeoutEnabled)
-            myprintf(" timeout %d s", dev.kernelExecTimeoutEnabled);
+            myprintf(", timeout enabled", dev.kernelExecTimeoutEnabled);
         myprintf("\n");
 #elif CUDA_VERSION >= 2000
         myprintf("CUDA:  %d : \"%s\", %d MB, %d cores at %.3f GHz, revision %d.%d\n",i,dev.name, dev.totalGlobalMem/(1024*1024), dev.multiProcessorCount*8, dev.clockRate * 1e-6f, dev.major, dev.minor);
