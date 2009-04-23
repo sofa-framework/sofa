@@ -318,7 +318,7 @@ sofa::helper::vector< double > EdgeSetGeometryAlgorithms<DataTypes>::computePoin
         {
             indAB = i;
             for (unsigned int j = 0; j<3; j++)
-                if ( (coef_XH[j] > 0.001) || (coef_XH[j] < -0.001) && (j != i))
+                if ( (coef_XH[j] > 0.001 || coef_XH[j] < -0.001) && (j != i))
                 {
                     indXH = j;
                     test = true;
