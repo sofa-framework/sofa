@@ -248,7 +248,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
                     for (unsigned int j=0; j<dof_on_node; j++)
                     {
-                        appCompliance[(v*dof_on_node+j)*nbCols + (f*dof_on_node+i) ] = fact * velocity[v][j];
+                        appCompliance[(v*dof_on_node+j)*nbCols + (f*dof_on_node+i) ] = (Real)(fact * velocity[v][j]);
                     }
                 }
                 //serr<<"put in appComp"<<sendl;

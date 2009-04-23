@@ -100,6 +100,7 @@ public:
 
     bool getButton(const int id = 0) const {return (bool) ((m_buttonState >> id) & 1);}
 
+    virtual const char* getClassName() const { return "OmniEvent"; }
 private:
 
     unsigned char	m_deviceId;

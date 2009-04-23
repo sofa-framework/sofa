@@ -492,9 +492,9 @@ void Quater<Real>::slerp(const Quater& a, const Quater& b, float t, bool allowFl
 
     float c1, c2;
     // Linear interpolation for close orientations
-    if ((1.0 - fabs(cosAngle)) < 0.01)
+    if ((1.0f - fabs(cosAngle)) < 0.01)
     {
-        c1 = 1.0 - t;
+        c1 = 1.0f - t;
         c2 = t;
     }
     else
@@ -502,12 +502,12 @@ void Quater<Real>::slerp(const Quater& a, const Quater& b, float t, bool allowFl
         // Spherical interpolation
         float angle    = acos(fabs(cosAngle));
         float sinAngle = sin(angle);
-        c1 = sin(angle * (1.0 - t)) / sinAngle;
+        c1 = sin(angle * (1.0f - t)) / sinAngle;
         c2 = sin(angle * t) / sinAngle;
     }
 
     // Use the shortest path
-    if (allowFlip && (cosAngle < 0.0))
+    if (allowFlip && (cosAngle < 0.0f))
         c1 = -c1;
 
     _q[0] = c1*a[0] + c2*b[0];

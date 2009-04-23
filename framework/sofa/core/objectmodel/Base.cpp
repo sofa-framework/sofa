@@ -433,7 +433,7 @@ void  Base::writeDatas ( std::map<std::string,std::string*>& args )
 }
 
 
-void Base::xmlWriteNodeDatas (std::ostream& out, unsigned level )
+void Base::xmlWriteNodeDatas (std::ostream& out, unsigned /*level*/ )
 {
     for (unsigned int i=0; i<m_fieldVec.size(); i++)
     {

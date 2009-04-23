@@ -111,6 +111,7 @@ public:
         float getValue() const;
         //@}
 
+        virtual const char* getClassName() const { return "AxisEvent"; }
     private:
         const int	m_index;	///< The index of the axis
         const float	m_value;	///< The value of the xais
@@ -144,6 +145,7 @@ public:
          */
         bool getButton(const int) const;
 
+        virtual const char* getClassName() const { return "ButtonEvent"; }
 
     private:
         bool m_buttons[32]; ///< Current State of the whole Joystick Buttons
@@ -206,6 +208,7 @@ public:
         State getState() const;
         //@}
 
+        virtual const char* getClassName() const { return "HatEvent"; }
     private:
 
         const int	m_index;	///< The index of the hat
@@ -272,6 +275,7 @@ public:
      */
     virtual ~JoystickEvent();
 
+    virtual const char* getClassName() const { return "JoystickEvent"; }
 protected:
 
     std::vector< AxisEvent* > axisEvents; ///< State of the Analogic Pad

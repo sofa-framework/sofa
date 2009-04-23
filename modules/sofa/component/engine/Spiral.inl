@@ -109,9 +109,9 @@ void Spiral<DataTypes>::update()
         Vec<3, Real> v(r*cos(a), r*sin(a), x0[i].z());
         Vec<3, Real> n(- A*sin(t) - A*t*cos(t), A*cos(t) - A*t*sin(t), 0);
         n.normalize();
-        if (a > - M_PI/2 && a < M_PI_2 && n.y() > 0.8)
+        if (a > - M_PI/2 && a < M_PI_2 && n.y() > 0.8f)
         {
-            n.y() = 0.8;
+            n.y() = 0.8f;
             n.x() = -sqrt(1-n.y()*n.y());
         }
         v += n * x0[i].y();

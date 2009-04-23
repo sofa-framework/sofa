@@ -52,6 +52,7 @@ public:
     /// Return the key released
     char getKey() const;
 
+    virtual const char* getClassName() const { return "KeyreleasedEvent"; }
 protected:
     /// Store the key
     char m_char;

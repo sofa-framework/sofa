@@ -57,6 +57,7 @@ public:
 
     bool contains(BaseObject* o) const;
 
+    virtual const char* getClassName() const { return "DetachNodeEvent"; }
 protected:
     BaseNode* node;
 };

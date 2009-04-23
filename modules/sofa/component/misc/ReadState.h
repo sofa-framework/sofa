@@ -114,6 +114,7 @@ public:
     void setSceneName(std::string &n) { sceneName = n;}
     void setCounter(int c) {counterReadState = c;};
     void setCreateInMapping(bool b) {createInMapping=b;}
+    virtual const char* getClassName() const { return "ReadStateCreator"; }
 protected:
     void addReadState(sofa::core::componentmodel::behavior::BaseMechanicalState *ms, simulation::Node* gnode);
     std::string sceneName;
@@ -131,6 +132,7 @@ public:
 
     bool getState() const {return state;};
     void setState(bool active) {state=active;};
+    virtual const char* getClassName() const { return "ReadStateActivator"; }
 protected:
     void changeStateReader(sofa::component::misc::ReadState *ws);
 
@@ -145,6 +147,7 @@ public:
 
     double getTime() const { return time; }
     void setTime(double _time) { time=_time; }
+    virtual const char* getClassName() const { return "ReadStateModifier"; }
 protected:
     void changeTimeReader(sofa::component::misc::ReadState *rs) { rs->processReadState(time); }
 

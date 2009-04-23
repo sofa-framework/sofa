@@ -121,13 +121,13 @@ public:
     }
 
     /// number of lines
-    real getNbLines() const
+    int getNbLines() const
     {
         return L;
     }
 
     /// number of colums
-    real getNbCols() const
+    int getNbCols() const
     {
         return C;
     }
