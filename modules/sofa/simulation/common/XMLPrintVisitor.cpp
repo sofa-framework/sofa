@@ -109,8 +109,6 @@ Visitor::Result XMLPrintVisitor::processNodeTopDown(simulation::Node* node)
     ++level;
     node->xmlWriteNodeDatas(m_out,level);
 
-    for (int i=0; i<level; i++)
-        m_out << "\t";
     m_out << " >\n";
 
     if (node->mechanicalMapping != NULL)

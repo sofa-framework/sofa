@@ -55,7 +55,7 @@ namespace mass
 
 // template<class Vec> void readVec1(Vec& vec, const char* str);
 
-template <class DataTypes, class MassType>
+template <class DataTypes, class t_MassType>
 class DiagonalMass : public core::componentmodel::behavior::Mass<DataTypes>, public virtual core::objectmodel::BaseObject
 {
 public:
@@ -65,6 +65,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
+    typedef t_MassType MassType;
 
     typedef sofa::component::topology::PointData<MassType> VecMass;
     typedef helper::vector<MassType> MassVector;

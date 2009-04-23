@@ -90,7 +90,8 @@ public:
 
     /// functions that allows to have access to the geometry without a template class : not efficient
     virtual int getSize() const { return 0; }
-    virtual unsigned int getDimension() const { return 0; }
+    virtual unsigned int getCoordDimension() const { return 0; }
+    virtual unsigned int getDerivDimension() const { return 0; }
     virtual double getPX(int /*i*/) const { return 0.0; }
     virtual double getPY(int /*i*/) const { return 0.0; }
     virtual double getPZ(int /*i*/) const { return 0.0; }
