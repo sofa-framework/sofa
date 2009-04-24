@@ -90,6 +90,19 @@ void BarycentricLagrangianMultiplierContact<TCollisionModel1,TCollisionModel2>::
     }
 
     int size = contacts.size();
+
+    if (size)
+    {
+        //Activate the Mechanical Mapping
+        sofa::simulation::Node *c1=static_cast<sofa::simulation::Node *>(model1->getContext());
+        sofa::simulation::Node *c2=static_cast<sofa::simulation::Node *>(model2->getContext());
+
+        core::componentmodel::behavior::BaseMechanicalMapping *m;
+        c1->get(m, core::objectmodel::BaseContext::Local); if (m) m->setMechanical(true);
+        c2->get(m, core::objectmodel::BaseContext::Local); if (m) m->setMechanical(true);
+    }
+
+
     ff->clear(size);
     mapper1.resize(size);
     mapper2.resize(size);

@@ -104,6 +104,12 @@ public:
         return this->f_isMechanical.getValue();
     }
 
+    /// Determine if this mapping should only be used as a regular mapping instead of a mechanical mapping.
+    void setMechanical(bool b)
+    {
+        this->f_isMechanical.setValue(b);
+    }
+
     /// Propagate position from the source model to the destination model.
     ///
     /// If the MechanicalMapping can be represented as a matrix J, this method computes
