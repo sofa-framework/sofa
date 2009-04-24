@@ -37,8 +37,8 @@ using namespace defaulttype;
 using namespace sofa::helper;
 using simulation::Node;
 
-unsigned int Identifier::cpt=0;
-std::list<unsigned int> Identifier::availableId;
+sofa::core::componentmodel::collision::DetectionOutput::ContactId Identifier::cpt=0;
+std::list<sofa::core::componentmodel::collision::DetectionOutput::ContactId> Identifier::availableId;
 
 SOFA_DECL_CLASS(FrictionContact)
 

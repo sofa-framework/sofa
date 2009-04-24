@@ -192,7 +192,7 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(Out
 #endif
 
         // Polynome de Cantor de N� sur N bijectif f(x,y)=((x+y)^2+3x+y)/2
-        collision::DetectionOutput::ContactId index = cantorPolynomia(o->id /*cantorPolynomia(index1, index2)*/,id);
+        long index = cantorPolynomia(o->id /*cantorPolynomia(index1, index2)*/,id);
 //#ifdef DETECTIONOUTPUT_FREEMOTION
 //		c->addContact(mu, o->normal, o->point[1], o->point[0], distance, index1, index2, o->freePoint[1], o->freePoint[0], index);
 //#else
