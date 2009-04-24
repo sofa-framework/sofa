@@ -65,9 +65,9 @@ public:
     }
 
 protected:
-    static unsigned int cpt;
-    unsigned int id;
-    static std::list<unsigned int> availableId;
+    static sofa::core::componentmodel::collision::DetectionOutput::ContactId cpt;
+    sofa::core::componentmodel::collision::DetectionOutput::ContactId id;
+    static std::list<sofa::core::componentmodel::collision::DetectionOutput::ContactId> availableId;
 };
 
 
@@ -116,7 +116,7 @@ public:
     void removeResponse();
 };
 
-long cantorPolynomia(unsigned long x, unsigned long y)
+long cantorPolynomia(sofa::core::componentmodel::collision::DetectionOutput::ContactId x, sofa::core::componentmodel::collision::DetectionOutput::ContactId y)
 {
     // Polynome de Cantor de N� sur N bijectif f(x,y)=((x+y)^2+3x+y)/2
     return ((x+y)*(x+y)+3*x+y)/2;

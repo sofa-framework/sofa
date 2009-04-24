@@ -488,7 +488,7 @@ defaulttype::Vec<3,Real> Quater<Real>::toEulerVector() const
 template<class Real>
 void Quater<Real>::slerp(const Quater& a, const Quater& b, float t, bool allowFlip)
 {
-    float cosAngle =  a[0]*b[0] + a[1]*b[1] + a[2]*b[2] + a[3]*b[3];
+    float cosAngle =  (float)(a[0]*b[0] + a[1]*b[1] + a[2]*b[2] + a[3]*b[3]);
 
     float c1, c2;
     // Linear interpolation for close orientations
