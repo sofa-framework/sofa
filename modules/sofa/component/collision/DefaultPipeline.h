@@ -43,6 +43,7 @@ class SOFA_COMPONENT_COLLISION_API DefaultPipeline : public sofa::simulation::Pi
 public:
     Data<bool> bVerbose;
     Data<bool> bDraw;
+    Data<bool> bOptimizationMapping;
     Data<int> depth;
 
     DefaultPipeline();
