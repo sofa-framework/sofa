@@ -286,6 +286,30 @@ sofa::helper::vector< unsigned int > &EdgeSetTopologyContainer::getEdgeVertexShe
     return m_edgeVertexShell[i];
 }
 
+
+const sofa::helper::vector< PointID > EdgeSetTopologyContainer::getAdjacentVertices (PointID i)
+{
+    const VertexEdges& shell = getEdgeVertexShell(i);
+    sofa::helper::vector< PointID > adjacentVertices;
+
+
+    for (unsigned int j = 0; j<shell.size(); j++)
+    {
+        Edge theEdge = m_edge[ shell[j] ];
+        if ( theEdge[0] == i)
+            adjacentVertices.push_back ( theEdge[1] );
+        else
+            adjacentVertices.push_back ( theEdge[0] );
+    }
+
+    return adjacentVertices;
+
+}
+
+
+
+
+
 bool EdgeSetTopologyContainer::hasEdges() const
 {
     return !m_edge.empty();

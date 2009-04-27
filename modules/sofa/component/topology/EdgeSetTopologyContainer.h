@@ -76,6 +76,12 @@ public:
     */
     virtual const VertexEdges& getEdgeVertexShell(PointID i);
 
+    /** \brief Returns the adjacents dof of the ith DOF.
+     * @param i, index of dof
+     */
+    virtual const sofa::helper::vector< PointID > getAdjacentVertices (PointID i);
+
+
     /** \brief Returns the index of the edge joining vertex v1 and vertex v2; returns -1 if no edge exists
     *
     */
