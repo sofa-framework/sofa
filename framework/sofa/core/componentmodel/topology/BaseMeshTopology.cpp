@@ -194,6 +194,26 @@ const BaseMeshTopology::QuadHexas& BaseMeshTopology::getHexaQuadShell(QuadID)
 }
 
 
+/// Returns the set of vertices adjacent to a given vertex (i.e. sharing an edge)
+const BaseMeshTopology::VertexVertices BaseMeshTopology::getVertexVertexShell(PointID i)
+{
+    const SeqEdges& edges = getEdges();
+    const VertexEdges& shell = getEdgeVertexShell(i);
+    VertexVertices adjacentVertices;
+
+    for (unsigned int j = 0; j<shell.size(); j++)
+    {
+        Edge theEdge = edges[ shell[j] ];
+        if ( theEdge[0] == i )
+            adjacentVertices.push_back ( theEdge[1] );
+        else
+            adjacentVertices.push_back ( theEdge[0] );
+    }
+
+    return adjacentVertices;
+}
+
+
 /// Returns the set of triangles on the border of the triangulation
 const sofa::helper::vector <BaseMeshTopology::TriangleID>& BaseMeshTopology::getTrianglesOnBorder()
 {

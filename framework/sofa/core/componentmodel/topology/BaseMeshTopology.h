@@ -105,6 +105,7 @@ public:
 
     /// dynamic-size neighbors arrays
     /// @{
+    typedef vector<PointID>			VertexVertices;
     typedef vector<EdgeID>			VertexEdges;
     typedef vector<TriangleID>			VertexTriangles;
     typedef vector<QuadID>			VertexQuads;
@@ -192,6 +193,10 @@ public:
     virtual const EdgeHexas& getHexaEdgeShell(EdgeID i);
     /// Returns the set of hexahedra adjacent to a given quad.
     virtual const QuadHexas& getHexaQuadShell(QuadID i);
+
+    /// Returns the set of vertices adjacent to a given vertex (i.e. sharing an edge)
+    virtual const VertexVertices getVertexVertexShell(PointID i);
+
     /// @}
 
 
