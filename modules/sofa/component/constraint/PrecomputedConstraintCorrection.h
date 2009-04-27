@@ -113,11 +113,22 @@ public:
 
 protected:
     behavior::MechanicalState<DataTypes> *mstate;
-    //Vec3DTypes specific menber !
-    Real* appCompliance;
+
+    struct InverseStorage
+    {
+        Real* data;
+        int nbref;
+        InverseStorage() : data(NULL), nbref(0) {}
+    };
+
+    InverseStorage* invM;
+    const Real* appCompliance;
+
+    InverseStorage* getInverse(std::string name);
+
     unsigned int nbRows, nbCols, dof_on_node, nbNodes;
-    int *_indexNodeSparseCompliance;
-    std::vector<Deriv> _sparseCompliance;
+    helper::vector<int> _indexNodeSparseCompliance;
+    helper::vector<Deriv> _sparseCompliance;
     Real Fbuf[6], DXbuf;
 
 
