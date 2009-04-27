@@ -114,10 +114,9 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::loadRigidMass(std::string filename)
                     {
                         if (!strcmp(cmd,"inrt"))
                         {
-                            for (int i = 0; i < 9; i++)
-                            {
-                                result=fscanf(file, "%lf", &(m.inertiaMatrix.ptr()[i]));
-                            }
+                            for (int i = 0; i < 3; i++)
+                                for (int j = 0; j < 3; j++)
+                                    result=fscanf(file, "%lf", &(m.inertiaMatrix[i][j]));
                         }
                         else if (!strcmp(cmd,"cntr") || !strcmp(cmd,"center") )
                         {
@@ -423,10 +422,9 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::loadRigidMass(std::string filename)
                     {
                         if (!strcmp(cmd,"inrt"))
                         {
-                            for (int i = 0; i < 9; i++)
-                            {
-                                result=fscanf(file, "%f", &(m.inertiaMatrix.ptr()[i]));
-                            }
+                            for (int i = 0; i < 3; i++)
+                                for (int j = 0; j < 3; j++)
+                                    result=fscanf(file, "%f", &(m.inertiaMatrix[i][j]));
                         }
                         else if (!strcmp(cmd,"cntr"))
                         {
