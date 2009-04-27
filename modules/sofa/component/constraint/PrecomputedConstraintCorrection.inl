@@ -368,7 +368,7 @@ void PrecomputedConstraintCorrection<DataTypes>::getCompliance(defaulttype::Base
     std::list<int> activeDof;
     for(unsigned int c1 = 0; c1 < numConstraints; c1++)
     {
-        ConstraintIterator itConstraint;
+        CConstraintIterator itConstraint;
         for (itConstraint=constraints[c1].getData().begin(); itConstraint!=constraints[c1].getData().end(); itConstraint++)
         {
             unsigned int dof = itConstraint->first;
@@ -402,12 +402,11 @@ void PrecomputedConstraintCorrection<DataTypes>::getCompliance(defaulttype::Base
             indexCurColConst = mstate->getConstraintId()[curColConst];
 
             Vbuf.clear();
-            ConstraintIterator itConstraint;
+            CConstraintIterator itConstraint;
             for (itConstraint=constraints[curColConst].getData().begin(); itConstraint!=constraints[curColConst].getData().end(); itConstraint++)
             {
                 unsigned int dof = itConstraint->first;
-                Deriv n = itConstraint->second;
-                const Deriv& n2 = n;
+                const Deriv n2 = itConstraint->second;
                 offset = dof_on_node*(NodeIdx * nbCols +  dof);
 
                 for (ii=0; ii<dof_on_node; ii++)
@@ -432,11 +431,8 @@ void PrecomputedConstraintCorrection<DataTypes>::getCompliance(defaulttype::Base
         ConstraintIterator itConstraint;
         for (itConstraint=constraints[curRowConst].getData().begin(); itConstraint!=constraints[curRowConst].getData().end(); itConstraint++)
         {
-            unsigned int dof = itConstraint->first;
-            Deriv n = itConstraint->second;
-
-            const int NodeIdx  = dof;
-            const Deriv& n1 = n;
+            const int NodeIdx = itConstraint->first;
+            const Deriv n1 = itConstraint->second;
 
             unsigned int temp =(unsigned int) _indexNodeSparseCompliance[NodeIdx];
 
@@ -499,14 +495,14 @@ void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const default
         if (fC1 != 0.0)
         {
 
-            ConstraintIterator itConstraint;
+            CConstraintIterator itConstraint;
             for (itConstraint=constraints[c1].getData().begin(); itConstraint!=constraints[c1].getData().end(); itConstraint++)
             {
                 unsigned int dof = itConstraint->first;
-                Deriv n = itConstraint->second;
+                const Deriv n = itConstraint->second;
                 //on ne fait pas passer les forces du repere courant a celui initial ?
                 // <-non, car elles ont deja ete tournees car on utilise une reference dans getCompliance !!!
-                const Deriv& temp =  n * fC1;
+                Deriv temp = n * fC1;
                 force[dof] += temp;
                 activeDof.push_back(dof);
             }
@@ -729,13 +725,13 @@ void PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::rotateConstraints
         for (itConstraint=constraints[curRowConst].getData().begin(); itConstraint!=constraints[curRowConst].getData().end(); itConstraint++)
         {
             unsigned int dof = itConstraint->first;
-            Deriv n = itConstraint->second;
+            Deriv& n = itConstraint->second;
             const int localRowNodeIdx = dof;
             Transformation Ri;
             forceField->getRotation(Ri, localRowNodeIdx);
             Ri.transpose();
             // on passe les normales du repere global au repere local
-            const Deriv& n_i = Ri * n;
+            Deriv n_i = Ri * n;
             n.x() =  n_i.x();
             n.y() =  n_i.y();
             n.z() =  n_i.z();
@@ -769,7 +765,7 @@ void PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>::rotateConstrain
         for (itConstraint=constraints[curRowConst].getData().begin(); itConstraint!=constraints[curRowConst].getData().end(); itConstraint++)
         {
             unsigned int dof = itConstraint->first;
-            Deriv n = itConstraint->second;
+            Deriv& n = itConstraint->second;
             const int localRowNodeIdx = dof;
             Quat q;
             if (_restRotations)
@@ -886,13 +882,13 @@ void PrecomputedConstraintCorrection<defaulttype::Vec3fTypes>::rotateConstraints
         for (itConstraint=constraints[curRowConst].getData().begin(); itConstraint!=constraints[curRowConst].getData().end(); itConstraint++)
         {
             unsigned int dof = itConstraint->first;
-            Deriv n = itConstraint->second;
+            Deriv& n = itConstraint->second;
             const int localRowNodeIdx = dof;
             Transformation Ri;
             forceField->getRotation(Ri, localRowNodeIdx);
             Ri.transpose();
             // on passe les normales du repere global au repere local
-            const Deriv& n_i = Ri * n;
+            Deriv n_i = Ri * n;
             n.x() =  n_i.x();
             n.y() =  n_i.y();
             n.z() =  n_i.z();
@@ -925,7 +921,7 @@ void PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>::rotateConstrain
         for (itConstraint=constraints[curRowConst].getData().begin(); itConstraint!=constraints[curRowConst].getData().end(); itConstraint++)
         {
             unsigned int dof = itConstraint->first;
-            Deriv n = itConstraint->second;
+            Deriv& n = itConstraint->second;
             const int localRowNodeIdx = dof;
             Quat q;
             if (_restRotations)
