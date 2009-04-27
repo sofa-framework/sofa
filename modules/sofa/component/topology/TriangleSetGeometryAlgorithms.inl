@@ -1546,6 +1546,7 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (co
 {
     //// QUICK FIX TO USE THE NEW PATH DECLARATION (WITH ONLY EDGES COMING FROM PREVIOUS FUNCTION)
     //// ** TODO: create the real function handle different objects intersection **
+    // QUICK FIX for fracture: border points (a and b) can be a point.
 
     // Output declarations
     sofa::helper::vector<unsigned int> triangles_list;
@@ -1553,22 +1554,40 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (co
     sofa::helper::vector< double > coordsEdge_list;
     bool is_on_boundary = false;
     bool pathOK;
+    bool isOnPoint = false;
 
     // using old function:
     pathOK = this->computeIntersectedPointsList (a, b, ind_ta, ind_tb, triangles_list, edges_list, coordsEdge_list, is_on_boundary);
+
     if (pathOK)
     {
         // creating new declaration path:
         Vec<3,double> baryCoords;
 
         // 1 - First point a (for the moment: always a point in a triangle)
-        topoPath_list.push_back (core::componentmodel::topology::TRIANGLE);
-        indices_list.push_back (ind_ta);
         sofa::helper::vector< double > coefs_a = computeTriangleBarycoefs (ind_ta, a);
+
+        for (unsigned int i = 0; i<3; i++)
+        {
+            if (coefs_a[i] > 0.9999)
+            {
+                topoPath_list.push_back (core::componentmodel::topology::POINT);
+                indices_list.push_back (this->m_topology->getTriangle (ind_ta)[i]);
+                isOnPoint = true;
+                break;
+            }
+        }
+
+        if (!isOnPoint)
+        {
+            topoPath_list.push_back (core::componentmodel::topology::TRIANGLE);
+            indices_list.push_back (ind_ta);
+        }
         for (unsigned int i = 0; i<3; i++)
             baryCoords[i]=coefs_a[i];
 
         coords_list.push_back (baryCoords);
+        isOnPoint = false;
 
         // 2 - All edges intersected (only edges for now)
         for (unsigned int i = 0; i< edges_list.size(); i++)
@@ -1584,9 +1603,22 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (co
         }
 
         // 3 - Last point b (for the moment: always a point in a triangle)
-        topoPath_list.push_back (core::componentmodel::topology::TRIANGLE);
-        indices_list.push_back (ind_tb);
         sofa::helper::vector< double > coefs_b = computeTriangleBarycoefs (ind_tb, b);
+
+        for (unsigned int i = 0; i<3; i++)
+            if (coefs_b[i] > 0.9999 )
+            {
+                topoPath_list.push_back (core::componentmodel::topology::POINT);
+                indices_list.push_back (this->m_topology->getTriangle (ind_tb)[i]);
+                isOnPoint = true;
+                break;
+            }
+
+        if (!isOnPoint)
+        {
+            topoPath_list.push_back (core::componentmodel::topology::TRIANGLE);
+            indices_list.push_back (ind_tb);
+        }
         for (unsigned int i = 0; i<3; i++)
             baryCoords[i]=coefs_b[i];
 
