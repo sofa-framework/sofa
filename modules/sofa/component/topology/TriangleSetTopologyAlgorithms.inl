@@ -1,5 +1,5 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+*       Sofa, Simulation Open-Framework Architecture, version 1.0 beta 4      *
 *                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
 *                                                                             *
 * This library is free software; you can redistribute it and/or modify it     *
@@ -751,201 +751,680 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(const sofa
     }
 }
 
+
+
 template<class DataTypes>
 int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Coord& a, unsigned int pb, Coord& b,
-        sofa::helper::vector<TriangleID>& triangles_list, sofa::helper::vector<EdgeID>& edges_list,
-        sofa::helper::vector<double>& coords_list, sofa::helper::vector<EdgeID>& new_edges, bool snap)
+        sofa::helper::vector< sofa::core::componentmodel::topology::TopologyObjectType>& topoPath_list,
+        sofa::helper::vector<unsigned int>& indices_list,
+        sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list,
+        sofa::helper::vector<EdgeID>& new_edges, double epsilonSnapPath, double epsilonSnapBorder)
 {
-    std::cout << "TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath" << std::endl;
+    //std::cout << "TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath" << std::endl;
+    //////// STEP 1.a : MODIFY PATH IF SNAP = TRUE (don't change border case here if they are near an edge)
+
+    if (indices_list.empty()) return 0;
+    sofa::helper::vector< sofa::helper::vector<double> > points2Snap;
+    //	double epsilon = 0.25; // to change to an input for snaping
+
+    if (epsilonSnapPath != 0.0)
+        SnapAlongPath (topoPath_list, indices_list, coords_list, epsilonSnapPath, points2Snap);
+
+    //std::cout << "topoPath_list: " << topoPath_list << std::endl;
+    //std::cout << "indices_list: " << indices_list << std::endl;
+    //std::cout << "coords_list: " << coords_list << std::endl;
 
 
-    //////// STEP 1 : MODIFY PATH IF SNAP = TRUE (don't change border case here)
-    (void)snap;
+    //STEP 1.b : Modify border case path if snap = true
+    if (epsilonSnapBorder != 0.0)
+        SnapBorderPath (pa, a, pb, b, topoPath_list, indices_list, coords_list, epsilonSnapBorder, points2Snap);
 
-    /*	sofa::helper::vector< double > points2Snap;
-    if (snap)
-    {
-      SnapAlongPath (triangles_list, edges_list, coords_list, points2Snap);
-      }*/
+    /*
+    std::cout << "*********************************" << std::endl;
+    std::cout << "pa:  " << pa << " => " << a << std::endl;
+    std::cout << "pb:  " << pb << " => " << b << std::endl;
+    std::cout << "topoPath_list: " << topoPath_list << std::endl;
+    std::cout << "indices_list: " << indices_list << std::endl;
+    std::cout << "coords_list: " << coords_list << std::endl;
+    std::cout << "points2Snap: " << points2Snap << std::endl;
+    std::cout << "*********************************" << std::endl;
+    */
 
 
+    // Output declarations:
 
-
-
-
-
-    unsigned int nb_edges = edges_list.size();
-    sofa::helper::vector< sofa::helper::vector< PointID > > p_ancestors; p_ancestors.reserve(nb_edges+2);
-    sofa::helper::vector< sofa::helper::vector< double > > p_baryCoefs; p_baryCoefs.reserve(nb_edges+2);
+    unsigned int nb_points = indices_list.size();
+    sofa::helper::vector< sofa::helper::vector< PointID > > p_ancestors; p_ancestors.reserve(nb_points);// WARNING
+    sofa::helper::vector< sofa::helper::vector< double > > p_baryCoefs; p_baryCoefs.reserve(nb_points);
     PointID next_point = m_container->getNbPoints();
     TriangleID next_triangle = m_container->getNbTriangles();
-    if (triangles_list.empty()) return 0;
     sofa::helper::vector< PointID > new_edge_points; // new points created on each edge
     sofa::helper::vector< Triangle > new_triangles;
     sofa::helper::vector< TriangleID > new_triangles_id;
     sofa::helper::vector< TriangleID > removed_triangles;
+    sofa::helper::vector< sofa::helper::vector< TriangleID > >  triangles_ancestors;
+    sofa::helper::vector< sofa::helper::vector< double > >  triangles_barycoefs;
 
     //////// STEP 1 : Create points
 
-    //// STEP 1a : Create start point if necessary
-
-    if (pa == (PointID)-1 && triangles_list.front() != (TriangleID)-1)
+    for (unsigned int i = 0; i < nb_points; i++)
     {
-        // first point is inside a triangle
-        Triangle t = m_container->getTriangle(triangles_list.front());
+
         p_ancestors.resize(p_ancestors.size()+1);
         sofa::helper::vector< PointID >& ancestors = p_ancestors.back();
         p_baryCoefs.resize(p_baryCoefs.size()+1);
         sofa::helper::vector< double >& baryCoefs = p_baryCoefs.back();
-        ancestors.push_back(t[0]);
-        ancestors.push_back(t[1]);
-        ancestors.push_back(t[2]);
-        Vec<3, double> p; p = a;
-        baryCoefs = m_geometryAlgorithms->compute3PointsBarycoefs(p, t[0], t[1], t[2]);
-        std::cout << "Creating first point in triangle "<<triangles_list.front()<<" barycoefs "<<baryCoefs<<std::endl;
-        pa = (next_point); ++next_point;
-    }
 
-    //// STEP 1b : Create a point on each crossed edge
 
-    for (unsigned int i = 0; i < nb_edges; ++i)
-    {
-        Edge e = m_container->getEdge(edges_list[i]);
-        p_ancestors.resize(p_ancestors.size()+1);
-        sofa::helper::vector< PointID >& ancestors = p_ancestors.back();
-        p_baryCoefs.resize(p_baryCoefs.size()+1);
-        sofa::helper::vector< double >& baryCoefs = p_baryCoefs.back();
-        ancestors.push_back(e[0]);
-        ancestors.push_back(e[1]);
-        baryCoefs.push_back(1.0 - coords_list[i]);
-        baryCoefs.push_back(coords_list[i]);
-        new_edge_points.push_back(next_point); ++next_point;
-    }
-
-    //// STEP 1c : Create last point if necessary
-
-    if (pb == (PointID)-1 && triangles_list.back() != (TriangleID)-1)
-    {
-        // last point is inside a triangle
-        Triangle t = m_container->getTriangle(triangles_list.back());
-        p_ancestors.resize(p_ancestors.size()+1);
-        sofa::helper::vector< PointID >& ancestors = p_ancestors.back();
-        p_baryCoefs.resize(p_baryCoefs.size()+1);
-        sofa::helper::vector< double >& baryCoefs = p_baryCoefs.back();
-        ancestors.push_back(t[0]);
-        ancestors.push_back(t[1]);
-        ancestors.push_back(t[2]);
-        Vec<3, double> p; p = b;
-        baryCoefs = m_geometryAlgorithms->compute3PointsBarycoefs(p, t[0], t[1], t[2]);
-        std::cout << "Creating last point in triangle "<<triangles_list.back()<<" barycoefs "<<baryCoefs<<std::endl;
-        pb = (next_point); ++next_point;
-    }
-
-    //// STEP 2 : Create new triangles, spliting old ones along the new path
-
-    for (unsigned int i = 0; i < triangles_list.size() ; ++i)
-    {
-        TriangleID tid = triangles_list[i];
-        if (tid == (TriangleID) -1) continue;
-        Triangle t = m_container->getTriangle(tid);
-        // The triangle can be split either :
-        // 1- between a vertex and the opposite edge (creating 2 triangles),
-        // 2- between two edges (creating 3 triangles),
-        // 3- between an inside point and an edge (creating 4 triangles),
-        // 4- or between two inside points (creating 5 triangles).
-        // The last case is currently not handled.
-        if (i == 0 || i == triangles_list.size()-1)
+        switch ( topoPath_list[i] )
         {
-            // point + edge case (1 or 3)
-            PointID p = (i == 0) ? pa : pb;
-            EdgeID e = (i == 0) ? edges_list.front() : edges_list.back();
-            PointID split_p = (i == 0) ? new_edge_points.front() : new_edge_points.back();
-            Edge edge = m_container->getEdge(e);
-            // find the corner opposite the given edge
-            int corner;
-            for (corner = 0; corner < 3 && (edge[0]==t[corner] || edge[1]==t[corner]); ++corner) {}
-            if (corner == 3)
-            {
-                this->serr << "ERROR: Degenerate triangle " << tid << " : " << t << this->sendl;
-                continue;
-            }
-            if (p != t[corner])
-            {
-                // case 3 : create two triangles linking p with the corner
-                new_triangles.push_back(Triangle(p, t[corner], t[(corner+1)%3]));
-                new_triangles_id.push_back(next_triangle++);
-                new_triangles.push_back(Triangle(p, t[(corner+2)%3], t[corner]));
-                new_triangles_id.push_back(next_triangle++);
-            }
-            // create two triangles linking p with the splitted edge
-            new_triangles.push_back(Triangle(p, t[(corner+1)%3], split_p));
-            new_triangles_id.push_back(next_triangle++);
-            new_triangles.push_back(Triangle(p, split_p, t[(corner+2)%3]));
-            new_triangles_id.push_back(next_triangle++);
-        }
-        else
+
+        case core::componentmodel::topology::POINT:
         {
-            PointID p1 = new_edge_points[i-1];
-            EdgeID e1 = edges_list[i-1];
-            Edge edge1 = m_container->getEdge(e1);
-            Vec<3,double> pos1 = m_geometryAlgorithms->computeBaryEdgePoint(edge1, coords_list[i-1]);
-            PointID p2 = new_edge_points[i];
-            EdgeID e2 = edges_list[i];
-            Edge edge2 = m_container->getEdge(e2);
-            Vec<3,double> pos2 = m_geometryAlgorithms->computeBaryEdgePoint(edge2, coords_list[i]);
-            // find the corner common to the two edges
-            int corner;
-            for (corner = 0; corner < 3 && ((edge1[0]!=t[corner] && edge1[1]!=t[corner]) || (edge2[0]!=t[corner] && edge2[1]!=t[corner])); ++corner) {}
-            if (corner == 3)
-            {
-                this->serr << "ERROR: triangle " << tid << " ( " << t << " ) does not contain edges " << e1 << " ( " << edge1 << " ) and " << e2 << " ( " << edge2 << " )." << this->sendl;
-                continue;
-            }
-            PointID p = t[corner];
-            // reorder the indices within each edge to put the common corner first
-            if (edge1[0] != p)
-            {
-                edge1[1] = edge1[0];
-                edge1[0] = p;
-            }
-            if (edge2[0] != p)
-            {
-                edge2[1] = edge2[0];
-                edge2[0] = p;
-            }
-            // swap the edges so that the edge1 is the first edge after p in the order of the triangle indices
-            if (edge1[1] != t[(corner+1)%3])
-            {
-                EdgeID t_e = e1; e1 = e2; e2 = t_e;
-                Edge t_edge = edge1; edge1 = edge2; edge2 = t_edge;
-                PointID t_p = p1; p1 = p2; p2 = t_p;
-                Vec<3, double> t_pos = pos1; pos1 = pos2; pos2 = t_pos;
-            }
+            // qlq chose a faire?
+            new_edge_points.push_back(indices_list[i]);
 
-            // Create the triangle around p
-            new_triangles.push_back(Triangle(p, p1, p2));
-            new_triangles_id.push_back(next_triangle++);
-
-            // Triangularize the remaining quad according to the delaunay criteria
-            Vec<3,double> pos_e1; pos_e1 = m_geometryAlgorithms->getPointPosition(edge1[1]);
-            Vec<3,double> pos_e2; pos_e2 = m_geometryAlgorithms->getPointPosition(edge2[1]);
-            if (m_geometryAlgorithms->isQuadDeulaunayOriented(pos1, pos_e1, pos_e2, pos2))
-            {
-                new_triangles.push_back(Triangle(edge1[1], edge2[1], p1));
-                new_triangles_id.push_back(next_triangle++);
-                new_triangles.push_back(Triangle(p2, p1, edge2[1]));
-                new_triangles_id.push_back(next_triangle++);
-            }
-            else
-            {
-                new_triangles.push_back(Triangle(edge2[1], p2, edge1[1]));
-                new_triangles_id.push_back(next_triangle++);
-                new_triangles.push_back(Triangle(p1, edge1[1], p2));
-                new_triangles_id.push_back(next_triangle++);
-            }
+            p_ancestors.resize(p_ancestors.size()-1);
+            p_baryCoefs.resize(p_baryCoefs.size()-1);
+            break;
         }
-        removed_triangles.push_back(tid);
+
+        case core::componentmodel::topology::EDGE:
+        {
+            Edge theEdge = m_container->getEdge(indices_list[i]);
+            ancestors.push_back(theEdge[0]);
+            ancestors.push_back(theEdge[1]);
+
+            baryCoefs.push_back(1.0 - coords_list[i][0]);
+            baryCoefs.push_back(coords_list[i][0]);
+
+            new_edge_points.push_back(next_point);
+            ++next_point;
+            break;
+        }
+        case core::componentmodel::topology::TRIANGLE:
+        {
+
+            Triangle theTriangle = m_container->getTriangle(indices_list[i]);
+            //std::cout << "the triangle: " <<theTriangle << std::endl;
+
+            ancestors.push_back(theTriangle[0]);
+            ancestors.push_back(theTriangle[1]);
+            ancestors.push_back(theTriangle[2]);
+
+            baryCoefs.push_back(coords_list[i][0]);
+            baryCoefs.push_back(coords_list[i][1]);
+            baryCoefs.push_back(coords_list[i][2]);
+
+            new_edge_points.push_back(next_point);// hum...? pour les edges to split
+            ++next_point;
+            break;
+        }
+        default:
+            break;
+
+        }
     }
+    /*
+    std::cout << "*********************************" << std::endl;
+    std::cout << "new_edge_points: " << new_edge_points << std::endl;
+    std::cout << "nb new points: " << p_ancestors.size() << std::endl;
+    std::cout << "ancestors: " << p_ancestors << std::endl;
+    std::cout << "baryCoefs: " << p_baryCoefs << std::endl;
+    std::cout << "*********************************" << std::endl;
+    */
+
+
+    // STEP 2: Computing triangles along path
+
+    for (unsigned int i = 0; i<indices_list.size()-1; ++i)
+    {
+        //std::cout << "*** Iteration: " << i << " *** " << std::endl;
+
+        unsigned int firstObject = indices_list[i];
+
+        switch ( topoPath_list[i] )
+        {
+        case core::componentmodel::topology::POINT:
+        {
+            PointID thePointFirst = firstObject;
+
+            switch ( topoPath_list[i+1] )
+            {
+            case core::componentmodel::topology::POINT: // Triangle to create: 0 / Triangle to remove: 0
+            {
+                //std::cout << "-- POINT::POINT => " << topoPath_list[i] << " , " << topoPath_list[i+1] << std::endl;
+                PointID thePointSecond = indices_list[i+1];
+                sofa::helper::vector <unsigned int> edgevertexshell = m_container->getEdgeVertexShell (thePointSecond);
+                bool test = false;
+
+                for (unsigned int j = 0; j <edgevertexshell.size(); j++)
+                {
+                    Edge e = m_container->getEdge (edgevertexshell[j]);
+
+                    if ( (e[0] == thePointSecond) && (e[1] == thePointFirst) || (e[1] == thePointSecond) && (e[0] == thePointFirst))
+                    {
+                        test = true;
+                        break;
+                    }
+                }
+                if(!test)
+                    std::cout << " Error: SplitAlongPath: error in POINT::EDGE case, the edge between these points has not been found." << std::endl;
+
+                break;
+            }
+            case core::componentmodel::topology::EDGE: // Triangle to create: 2 / Triangle to remove: 1
+            {
+                //std::cout << "-- POINT::EDGE => " << topoPath_list[i] << " , " << topoPath_list[i+1] << std::endl;
+                EdgeID edgeIDSecond = indices_list[i+1];
+                Edge theEdgeSecond = m_container->getEdge(edgeIDSecond);
+                TriangleID triId;
+                Triangle tri;
+
+                sofa::helper::vector <unsigned int> triangleedgeshell = m_container->getTriangleEdgeShell (edgeIDSecond);
+
+                for (unsigned int j = 0; j<triangleedgeshell.size(); j++)
+                {
+                    triId = triangleedgeshell[j];
+                    tri = m_container->getTriangle (triangleedgeshell[j]);
+
+                    if ( (tri[0] == thePointFirst) || (tri[1] == thePointFirst) || (tri[2] == thePointFirst) )
+                    {
+                        triangles_ancestors.resize (triangles_ancestors.size()+2);
+                        triangles_barycoefs.resize (triangles_barycoefs.size()+2);
+
+                        triangles_ancestors[triangles_ancestors.size()-2].push_back (triId);
+                        triangles_barycoefs[triangles_barycoefs.size()-2].push_back (0.5); //that is the question... ??
+                        triangles_ancestors[triangles_ancestors.size()-1].push_back (triId);
+                        triangles_barycoefs[triangles_barycoefs.size()-1].push_back (0.5);
+
+                        break;
+                    }
+                }
+
+                int vertxInTriangle = m_container->getVertexIndexInTriangle (tri, thePointFirst);
+
+                if (vertxInTriangle == -1)
+                    std::cout << " Error: SplitAlongPath: error in triangle in POINT::EDGE case" << std::endl;
+
+                new_triangles.push_back (Triangle ( tri[vertxInTriangle], new_edge_points[i+1] , tri[(vertxInTriangle+2)%3]));
+                new_triangles_id.push_back(next_triangle++);
+                new_triangles.push_back (Triangle ( tri[vertxInTriangle], tri[(vertxInTriangle+1)%3],  new_edge_points[i+1]));
+                new_triangles_id.push_back(next_triangle++);
+
+                removed_triangles.push_back(triId);
+
+                break;
+            }
+            case core::componentmodel::topology::TRIANGLE: // Triangle to create: 3 / Triangle to remove: 1
+            {
+                //std::cout << "-- POINT::TRIANGLE => " << topoPath_list[i] << " , " << topoPath_list[i+1] << std::endl;
+                TriangleID triangleIDSecond = indices_list[i+1];
+                Triangle theTriangleSecond = m_container->getTriangle(triangleIDSecond);
+
+                triangles_ancestors.resize (triangles_ancestors.size()+3);
+                triangles_barycoefs.resize (triangles_barycoefs.size()+3);
+
+                for (unsigned int j = 0; j<3; j++)
+                {
+                    triangles_ancestors[triangles_ancestors.size()-j-1].push_back (triangleIDSecond);
+                    triangles_barycoefs[triangles_barycoefs.size()-j-1].push_back (1/3); // ??
+                }
+
+                new_triangles.push_back (Triangle ( theTriangleSecond[0], theTriangleSecond[1], new_edge_points[i+1]));
+                new_triangles_id.push_back(next_triangle++);
+                new_triangles.push_back (Triangle ( theTriangleSecond[1], theTriangleSecond[2], new_edge_points[i+1]));
+                new_triangles_id.push_back(next_triangle++);
+                new_triangles.push_back (Triangle ( theTriangleSecond[2], theTriangleSecond[0], new_edge_points[i+1]));
+                new_triangles_id.push_back(next_triangle++);
+
+                removed_triangles.push_back(triangleIDSecond);
+
+                break;
+            }
+            default:
+                break;
+
+            }
+            break;
+        }
+
+        case core::componentmodel::topology::EDGE:
+        {
+            PointID p1 = new_edge_points[i];
+            EdgeID edgeIDFirst = firstObject;
+            Edge theEdgeFirst = m_container->getEdge(firstObject);
+            Vec<3,double> pos1 = m_geometryAlgorithms->computeBaryEdgePoint(theEdgeFirst, coords_list[i][0]);
+
+            switch ( topoPath_list[i+1] )
+            {
+
+            case core::componentmodel::topology::POINT: // Triangle to create: 2 / Triangle to remove: 1
+            {
+                //std::cout << "-- EDGE::POINT => " << topoPath_list[i] << " , " << topoPath_list[i+1] << std::endl;
+                PointID thePointSecond = indices_list[i+1];
+
+                TriangleID triId;
+                Triangle tri;
+
+                sofa::helper::vector <unsigned int> triangleedgeshell = m_container->getTriangleEdgeShell (edgeIDFirst);
+
+                for (unsigned int j = 0; j<triangleedgeshell.size(); j++)
+                {
+                    triId = triangleedgeshell[j];
+                    tri = m_container->getTriangle (triangleedgeshell[j]);
+
+                    if ( (tri[0] == thePointSecond) || (tri[1] == thePointSecond) || (tri[2] == thePointSecond) )
+                    {
+                        triangles_ancestors.resize (triangles_ancestors.size()+2);
+                        triangles_barycoefs.resize (triangles_barycoefs.size()+2);
+
+                        triangles_ancestors[triangles_ancestors.size()-2].push_back (triId);
+                        triangles_barycoefs[triangles_barycoefs.size()-2].push_back (0.5); //that is the question... ??
+                        triangles_ancestors[triangles_ancestors.size()-1].push_back (triId);
+                        triangles_barycoefs[triangles_barycoefs.size()-1].push_back (0.5);
+
+                        break;
+                    }
+                }
+
+                int vertxInTriangle = m_container->getVertexIndexInTriangle (tri, thePointSecond);
+
+                if (vertxInTriangle == -1)
+                    std::cout << " Error: SplitAlongPath: error in triangle in EDGE::POINT case" << std::endl;
+
+                new_triangles.push_back (Triangle ( thePointSecond, p1 , tri[(vertxInTriangle+2)%3]));
+                new_triangles_id.push_back(next_triangle++);
+                new_triangles.push_back (Triangle ( thePointSecond, tri[(vertxInTriangle+1)%3],  p1));
+                new_triangles_id.push_back(next_triangle++);
+
+                removed_triangles.push_back(triId);
+
+                break;
+            }
+            case core::componentmodel::topology::EDGE: // Triangle to create: 3 / Triangle to remove: 1
+            {
+                //std::cout << "-- EDGE::EDGE => " << topoPath_list[i] << " , " << topoPath_list[i+1] << std::endl;
+                PointID p2 = new_edge_points[i+1];
+                EdgeID edgeIDSecond = indices_list[i+1];
+                Edge theEdgeSecond = m_container->getEdge(edgeIDSecond);
+                Vec<3,double> pos2 = m_geometryAlgorithms->computeBaryEdgePoint(theEdgeSecond, coords_list[i+1][0]);
+
+                TriangleID triId;
+                Triangle tri;
+
+                sofa::helper::vector <unsigned int> triangleedgeshell = m_container->getTriangleEdgeShell (edgeIDFirst);
+
+                for (unsigned int j = 0; j<triangleedgeshell.size(); j++)
+                {
+                    triId = triangleedgeshell[j];
+                    tri = m_container->getTriangle (triangleedgeshell[j]);
+                    const TriangleEdges triedge = m_container->getTriangleEdge (triangleedgeshell[j]);
+
+                    if ( (triedge[0] == edgeIDSecond) || (triedge[1] == edgeIDSecond) || (triedge[2] == edgeIDSecond) )
+                    {
+                        triangles_ancestors.resize (triangles_ancestors.size()+3);
+                        triangles_barycoefs.resize (triangles_barycoefs.size()+3);
+
+                        for (unsigned int k = 0; k<3; k++)
+                        {
+                            triangles_ancestors[triangles_ancestors.size()-k-1].push_back (triId);
+                            triangles_barycoefs[triangles_barycoefs.size()-k-1].push_back (1/3); // ??
+                        }
+                        break;
+                    }
+                }
+
+
+                // Find common corner and find incision direction in triangle
+                unsigned int cornerInEdge1 = ((theEdgeFirst[0] == theEdgeSecond[0]) || (theEdgeFirst[0] == theEdgeSecond[1])) ? 0 : 1;
+                int vertxInTriangle = m_container->getVertexIndexInTriangle (tri, theEdgeFirst[cornerInEdge1]);
+
+                PointID vertexOrder[5]; //corner, p1, tri+1, tri+2, p2
+                vertexOrder[0] = theEdgeFirst[cornerInEdge1]; vertexOrder[2] = tri[ (vertxInTriangle+1)%3 ]; vertexOrder[3] = tri[ (vertxInTriangle+2)%3 ];
+                Vec<3,double> posOrder[4];
+
+                if ( tri[ (vertxInTriangle+1)%3 ] == theEdgeFirst[ (cornerInEdge1+1)%2 ] )
+                {
+                    vertexOrder[1] = p1; vertexOrder[4] = p2;
+                    posOrder[0] = pos1; posOrder[3] = pos2;
+                    posOrder[1] = m_geometryAlgorithms->getPointPosition( tri[ (vertxInTriangle+1)%3 ] );
+                    posOrder[2] = m_geometryAlgorithms->getPointPosition( tri[ (vertxInTriangle+2)%3 ] );
+                }
+                else
+                {
+                    vertexOrder[1] = p2; vertexOrder[4] = p1;
+                    posOrder[0] = pos2; posOrder[3] = pos1;
+                    posOrder[1] = m_geometryAlgorithms->getPointPosition( tri[ (vertxInTriangle+2)%3 ] );
+                    posOrder[2] = m_geometryAlgorithms->getPointPosition( tri[ (vertxInTriangle+1)%3 ] );
+                }
+
+                // Create the triangle around corner
+                new_triangles.push_back(Triangle(vertexOrder[0], vertexOrder[1], vertexOrder[4]));
+                new_triangles_id.push_back(next_triangle++);
+
+
+                // Triangularize the remaining quad according to the delaunay criteria
+                if (m_geometryAlgorithms->isQuadDeulaunayOriented(posOrder[0], posOrder[1], posOrder[2], posOrder[3]))
+                {
+                    new_triangles.push_back(Triangle(vertexOrder[1], vertexOrder[2], vertexOrder[3]));
+                    new_triangles_id.push_back(next_triangle++);
+                    new_triangles.push_back(Triangle(vertexOrder[4], vertexOrder[1], vertexOrder[3]));
+                    new_triangles_id.push_back(next_triangle++);
+                }
+                else
+                {
+                    new_triangles.push_back(Triangle(vertexOrder[1], vertexOrder[2], vertexOrder[4]));
+                    new_triangles_id.push_back(next_triangle++);
+                    new_triangles.push_back(Triangle(vertexOrder[2], vertexOrder[3], vertexOrder[4]));
+                    new_triangles_id.push_back(next_triangle++);
+                }
+
+                removed_triangles.push_back(triId);
+                break;
+            }
+            case core::componentmodel::topology::TRIANGLE: // Triangle to create: 4 / Triangle to remove: 1
+            {
+                //std::cout << "-- EDGE::TRIANGLE => " << topoPath_list[i] << " , " << topoPath_list[i+1] << std::endl;
+                PointID p2 = new_edge_points[i+1];
+                TriangleID triangleIDSecond = indices_list[i+1];
+                Triangle theTriangleSecond = m_container->getTriangle(triangleIDSecond);
+
+                const TriangleEdges triedge = m_container->getTriangleEdge (triangleIDSecond);
+                int edgeInTriangle = m_container->getEdgeIndexInTriangle (triedge, edgeIDFirst);
+
+                if (edgeInTriangle == -1)
+                    std::cout << " Error: SplitAlongPath: error in triangle in EDGE::TRIANGLE case" << std::endl;
+
+                triangles_ancestors.resize (triangles_ancestors.size()+4);
+                triangles_barycoefs.resize (triangles_barycoefs.size()+4);
+
+                for (unsigned int j = 0; j<4; j++)
+                {
+                    triangles_ancestors[triangles_ancestors.size()-j-1].push_back (triangleIDSecond);
+                    triangles_barycoefs[triangles_barycoefs.size()-j-1].push_back (1/4); // ??
+                }
+
+
+                // create two triangles linking p with the corner
+                new_triangles.push_back (Triangle ( p2, theTriangleSecond[edgeInTriangle], theTriangleSecond[(edgeInTriangle+1)%3]));
+                new_triangles_id.push_back(next_triangle++);
+                new_triangles.push_back (Triangle ( p2, theTriangleSecond[(edgeInTriangle+2)%3], theTriangleSecond[edgeInTriangle]));
+                new_triangles_id.push_back(next_triangle++);
+
+
+                // create two triangles linking p with the splitted edge
+                new_triangles.push_back (Triangle ( p2, theTriangleSecond[(edgeInTriangle+1)%3], p1));
+                new_triangles_id.push_back(next_triangle++);
+                new_triangles.push_back (Triangle ( p2, p1, theTriangleSecond[(edgeInTriangle+2)%3]));
+                new_triangles_id.push_back(next_triangle++);
+
+                removed_triangles.push_back(triangleIDSecond);
+                break;
+
+            }
+            default:
+                break;
+
+            }
+            break;
+        }
+        case core::componentmodel::topology::TRIANGLE:
+        {
+            Triangle theTriangleFirst = m_container->getTriangle(firstObject);
+            TriangleID triangleIDFirst = indices_list[i];
+            PointID p1 = new_edge_points[i];
+            PointID p2 = new_edge_points[i+1];
+
+            switch ( topoPath_list[i+1] )
+            {
+            case core::componentmodel::topology::POINT: // Triangle to create: 3 / Triangle to remove: 1
+            {
+                //std::cout << "-- TRIANGLE::POINT => " << topoPath_list[i] << " , " << topoPath_list[i+1] << std::endl;
+                //PointID thePointSecond = indices_list[i+1];
+
+                triangles_ancestors.resize (triangles_ancestors.size()+3);
+                triangles_barycoefs.resize (triangles_barycoefs.size()+3);
+
+                for (unsigned int j = 0; j<3; j++)
+                {
+                    triangles_ancestors[triangles_ancestors.size()-j-1].push_back (triangleIDFirst);
+                    triangles_barycoefs[triangles_barycoefs.size()-j-1].push_back (1/3); // ??
+                }
+
+                new_triangles.push_back (Triangle ( p1, theTriangleFirst[0], theTriangleFirst[1]));
+                new_triangles_id.push_back(next_triangle++);
+                new_triangles.push_back (Triangle ( p1, theTriangleFirst[1], theTriangleFirst[2]));
+                new_triangles_id.push_back(next_triangle++);
+                new_triangles.push_back (Triangle ( p1, theTriangleFirst[2], theTriangleFirst[0]));
+                new_triangles_id.push_back(next_triangle++);
+
+                removed_triangles.push_back(triangleIDFirst);
+
+                break;
+            }
+            case core::componentmodel::topology::EDGE: // Triangle to create: 4 / Triangle to remove: 1
+            {
+                //std::cout << "-- TRIANGLE::EDGE => " << topoPath_list[i] << " , " << topoPath_list[i+1] << std::endl;
+                EdgeID edgeIDSecond = indices_list[i+1];
+                Edge theEdgeSecond = m_container->getEdge(edgeIDSecond);
+
+                const TriangleEdges triedge = m_container->getTriangleEdge (triangleIDFirst);
+                int edgeInTriangle = m_container->getEdgeIndexInTriangle (triedge, edgeIDSecond);
+
+                if (edgeInTriangle == -1)
+                    std::cout << " Error: SplitAlongPath: error in triangle in TRIANGLE::EDGE case" << std::endl;
+
+                triangles_ancestors.resize (triangles_ancestors.size()+4);
+                triangles_barycoefs.resize (triangles_barycoefs.size()+4);
+
+                for (unsigned int j = 0; j<4; j++)
+                {
+                    triangles_ancestors[triangles_ancestors.size()-j-1].push_back (triangleIDFirst);
+                    triangles_barycoefs[triangles_barycoefs.size()-j-1].push_back (1/4); // ??
+                }
+
+                //	  std::cout << "triangle1: " << p1 <<" - " << theTriangleFirst[edgeInTriangle] << " - " << theTriangleFirst[(edgeInTriangle+1)%3] << std::endl;
+                //std::cout << "triangle2: " << p1 <<" - " << theTriangleFirst[(edgeInTriangle+2)%3] << " - " << theTriangleFirst[edgeInTriangle] << std::endl;
+                //std::cout << "triangle3: " << p1 <<" - " << theTriangleFirst[(edgeInTriangle+1)%3] << " - " << p2 << std::endl;
+                //std::cout << "triangle4: " << p1 <<" - " << p2 << " - " << theTriangleFirst[(edgeInTriangle+2)%3] << std::endl;
+
+                // create two triangles linking p with the corner
+                new_triangles.push_back (Triangle ( p1, theTriangleFirst[edgeInTriangle], theTriangleFirst[(edgeInTriangle+1)%3]));
+                new_triangles_id.push_back(next_triangle++);
+                new_triangles.push_back (Triangle ( p1, theTriangleFirst[(edgeInTriangle+2)%3], theTriangleFirst[edgeInTriangle]));
+                new_triangles_id.push_back(next_triangle++);
+
+
+                // create two triangles linking p with the splitted edge
+                new_triangles.push_back (Triangle ( p1, theTriangleFirst[(edgeInTriangle+1)%3], p2));
+                new_triangles_id.push_back(next_triangle++);
+                new_triangles.push_back (Triangle ( p1, p2, theTriangleFirst[(edgeInTriangle+2)%3]));
+                new_triangles_id.push_back(next_triangle++);
+
+                removed_triangles.push_back(triangleIDFirst);
+                break;
+            }
+            case core::componentmodel::topology::TRIANGLE: // Triangle to create: 5 / Triangle to remove: 1
+            {
+                //std::cout << "-- TRIANGLE::TRIANGLE => " << topoPath_list[i] << " , " << topoPath_list[i+1] << std::endl;
+                TriangleID triangleIDSecond = indices_list[i+1];
+
+                //Triangle theTriangleSecond = m_container->getTriangle(triangleIDSecond);
+
+                if (triangleIDSecond != triangleIDFirst)
+                    std::cout << " Error: SplitAlongPath: incision not in the mesh plan not supported yet, in TRIANGLE::TRIANGLE case" << std::endl;
+
+                triangles_ancestors.resize (triangles_ancestors.size()+5);
+                triangles_barycoefs.resize (triangles_barycoefs.size()+5);
+
+                for (unsigned int j = 0; j<5; j++)
+                {
+                    triangles_ancestors[triangles_ancestors.size()-j-1].push_back (triangleIDFirst);
+                    triangles_barycoefs[triangles_barycoefs.size()-j-1].push_back (1/5); // ??
+                }
+
+
+                PointID quad[2][4];
+                PointID Tri1[3];
+                double tmp1 = 0.0; unsigned int cornerP1[3]= {0,0,0};
+                double tmp2 = 0.0; unsigned int cornerP2[3]= {0,0,0};
+
+                for (unsigned int j = 0; j<3;  j++) // find first corners
+                {
+                    if (coords_list[i][j] > tmp1)
+                    {
+                        tmp1 = coords_list[i][j];
+                        cornerP1[0] = j;
+                    }
+
+                    if (coords_list[i+1][j] > tmp2)
+                    {
+                        tmp2 = coords_list[i+1][j];
+                        cornerP2[0] = j;
+                    }
+                }
+
+                // sort other corners by decreasing barycoef
+                if (coords_list[i][ (cornerP1[0]+1)%3 ] > coords_list[i][ (cornerP1[0]+2)%3 ])
+                {
+                    cornerP1[1] = (cornerP1[0]+1)%3;
+                    cornerP1[2] = (cornerP1[0]+2)%3;
+                }
+                else
+                {
+                    cornerP1[1] = (cornerP1[0]+2)%3;
+                    cornerP1[2] = (cornerP1[0]+1)%3;
+                }
+
+                if (coords_list[i+1][ (cornerP2[0]+1)%3 ] > coords_list[i+1][ (cornerP2[0]+2)%3 ])
+                {
+                    cornerP2[1] = (cornerP2[0]+1)%3;
+                    cornerP2[2] = (cornerP2[0]+2)%3;
+                }
+                else
+                {
+                    cornerP2[1] = (cornerP2[0]+2)%3;
+                    cornerP2[2] = (cornerP2[0]+1)%3;
+                }
+
+
+
+                if (cornerP1[0] != cornerP2[0])
+                {
+                    int cornerP1InTriangle = m_container->getVertexIndexInTriangle (theTriangleFirst, cornerP1[0]);
+                    int cornerP2InTriangle = m_container->getVertexIndexInTriangle (theTriangleFirst, cornerP2[0]);
+
+                    if ( cornerP1InTriangle == -1 || cornerP2InTriangle == -1)
+                        std::cout << " Error: SplitAlongPath: problem in finding corners in triangle, in TRIANGLE::TRIANGLE case" << std::endl;
+
+
+                    if ( (cornerP1InTriangle+1)%3 == cornerP2InTriangle ) // in the right direction
+                    {
+                        quad[0][0] = p1; quad[0][1] = theTriangleFirst[cornerP1InTriangle];
+                        quad[0][3] = p2; quad[0][2] = theTriangleFirst[cornerP2InTriangle];
+
+                        if (coords_list[i][(cornerP1InTriangle+2)%3] > coords_list[i+1][(cornerP1InTriangle+2)%3]) // second quad in other direction
+                        {
+                            quad[1][0] = p2; quad[1][1] = theTriangleFirst[(cornerP1InTriangle+1)%3];
+                            quad[1][3] = p1; quad[1][2] = theTriangleFirst[(cornerP1InTriangle+2)%3];
+                            Tri1[0] = p1; Tri1[1] =  theTriangleFirst[(cornerP1InTriangle+2)%3]; Tri1[2] =  theTriangleFirst[cornerP1InTriangle];
+                        }
+                        else
+                        {
+                            quad[1][0] = p2; quad[1][1] = theTriangleFirst[(cornerP1InTriangle+2)%3];
+                            quad[1][3] = p1; quad[1][2] = theTriangleFirst[cornerP1InTriangle];
+                            Tri1[0] =  p2; Tri1[1] = theTriangleFirst[(cornerP1InTriangle+1)%3]; Tri1[2] = theTriangleFirst[(cornerP1InTriangle+2)%3];
+                        }
+                    }
+                    else     // switch order due to incision direction
+                    {
+                        quad[0][0] = p2; quad[0][1] = theTriangleFirst[cornerP2InTriangle];
+                        quad[0][3] = p1; quad[0][2] = theTriangleFirst[cornerP1InTriangle];
+
+                        if (coords_list[i][(cornerP2InTriangle+2)%3] > coords_list[i+1][(cornerP2InTriangle+2)%3]) // second quad in other direction
+                        {
+                            quad[1][0] = p1; quad[1][1] = theTriangleFirst[(cornerP1InTriangle+1)%3];
+                            quad[1][3] = p2; quad[1][2] = theTriangleFirst[(cornerP1InTriangle+2)%3];
+                            Tri1[0] = p1; Tri1[1] = theTriangleFirst[cornerP1InTriangle]; Tri1[2] = theTriangleFirst[(cornerP1InTriangle+1)%3];
+                        }
+                        else
+                        {
+                            quad[1][0] = p1; quad[1][1] = theTriangleFirst[cornerP1InTriangle];
+                            quad[1][3] = p2; quad[1][2] = theTriangleFirst[(cornerP1InTriangle+1)%3];
+                            Tri1[0] = p2; Tri1[1] = theTriangleFirst[(cornerP1InTriangle+1)%3]; Tri1[2] = theTriangleFirst[(cornerP1InTriangle+2)%3];
+                        }
+                    }
+                }
+                else
+                {
+                    unsigned int closest, second;
+                    int cornerInTriangle;
+
+                    if (tmp1 > tmp2)
+                    {
+                        closest = p1; second = p2;
+                        cornerInTriangle = m_container->getVertexIndexInTriangle (theTriangleFirst, cornerP1[0]);
+                    }
+                    else
+                    {
+                        closest = p2; second = p1;
+                        cornerInTriangle = m_container->getVertexIndexInTriangle (theTriangleFirst, cornerP2[0]);
+                    }
+
+                    quad[0][0] = closest; quad[0][1] = theTriangleFirst[cornerInTriangle];
+                    quad[0][3] = second; quad[0][2] = theTriangleFirst[(cornerInTriangle+1)%3];
+
+                    quad[1][0] = second; quad[1][1] = theTriangleFirst[(cornerInTriangle+2)%3];
+                    quad[1][3] = closest; quad[1][2] = theTriangleFirst[cornerInTriangle];
+
+                    Tri1[0] = second; Tri1[1] = theTriangleFirst[(cornerInTriangle+1)%3]; Tri1[2] = theTriangleFirst[(cornerInTriangle+2)%3];
+                }
+
+
+                new_triangles.push_back(Triangle(Tri1[0], Tri1[1], Tri1[2]));
+                new_triangles_id.push_back(next_triangle++);
+
+                // Triangularize the remaining quad according to the delaunay criteria
+                for (unsigned int j = 0; j<2; j++)
+                {
+                    Vec<3,double> pos[4];
+                    for (unsigned int k = 0; k<4; k++)
+                        pos[k]= m_geometryAlgorithms->getPointPosition(quad[i][k]);
+
+                    if (m_geometryAlgorithms->isQuadDeulaunayOriented(pos[0], pos[1], pos[2], pos[3]))
+                    {
+                        new_triangles.push_back(Triangle(quad[i][1], quad[i][2], quad[i][0]));
+                        new_triangles_id.push_back(next_triangle++);
+                        new_triangles.push_back(Triangle(quad[i][3], quad[i][0], quad[i][2]));
+                        new_triangles_id.push_back(next_triangle++);
+                    }
+                    else
+                    {
+                        new_triangles.push_back(Triangle(quad[i][2], quad[i][3], quad[i][1]));
+                        new_triangles_id.push_back(next_triangle++);
+                        new_triangles.push_back(Triangle(quad[i][0], quad[i][1], quad[i][3]));
+                        new_triangles_id.push_back(next_triangle++);
+                    }
+                }
+
+                removed_triangles.push_back(triangleIDFirst);
+                break;
+            }
+            default:
+                break;
+            }
+            break;
+        }
+
+        default:
+            break;
+        }
+    }
+
+
+    //	std::cout << "***************************" << std::endl;
+
 
     // FINAL STEP : Apply changes
 
@@ -954,6 +1433,21 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
 
     // Warn for the creation of all the points registered to be created
     m_modifier->addPointsWarning(p_ancestors.size(), p_ancestors, p_baryCoefs);
+
+
+    //Add and remove triangles lists
+    //		m_modifier->addRemoveTriangles (new_triangles.size(), new_triangles, new_triangles_id, triangles_ancestors, triangles_barycoefs, removed_triangles);
+
+    /*
+    for (unsigned int i = 0; i < new_triangles.size(); i++)
+    {
+      std::cout << "TriangleID: " << new_triangles_id[i] << " => " << new_triangles[i] << std::endl;
+    }
+
+    std::cout << "***************************" << std::endl;
+    std::cout << "Triangles to remove: " << removed_triangles << std::endl;
+    */
+
 
     // Create all the triangles registered to be created
     m_modifier->addTrianglesProcess(new_triangles); // WARNING called after the creation process by the method "addTrianglesProcess"
@@ -971,32 +1465,20 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
     //m_modifier->propagateTopologicalChanges();
 
 
-    for (unsigned int i = 0; i < triangles_list.size() ; ++i)
+    for (unsigned int i = 0; i < new_edge_points.size()-1; ++i)
     {
-        TriangleID tid = triangles_list[i];
-        if (tid == (TriangleID) -1) continue;
-        PointID p1, p2;
-        if (i == 0)
-        {
-            p1 = pa;
-            p2 = new_edge_points.front();
-        }
-        else if (i == triangles_list.size()-1)
-        {
-            p1 = new_edge_points.back();
-            p2 = pb;
-        }
-        else
-        {
-            p1 = new_edge_points[i-1];
-            p2 = new_edge_points[i];
-        }
-        EdgeID e = m_container->getEdgeIndex(p1, p2);
+        EdgeID e = m_container->getEdgeIndex(new_edge_points[i], new_edge_points[i+1]);
+
         if (e == (EdgeID)-1)
-            this->serr << "ERROR: Edge " << p1 << " - " << p2 << " NOT FOUND." << this->sendl;
+            e = m_container->getEdgeIndex(new_edge_points[i+1], new_edge_points[i]);
+
+        if (e == (EdgeID)-1)
+            this->serr << "ERROR: Edge " << new_edge_points[i] << " - " << new_edge_points[i+1] << " NOT FOUND." << this->sendl;
         else
             new_edges.push_back(e);
     }
+    //std::cout << "new_edges: " << new_edges << std::endl;
+    //std::cout << "END splitAlongPAth" << std::endl;
     return p_ancestors.size();
 }
 
@@ -1005,21 +1487,21 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
 template<class DataTypes>
 void TriangleSetTopologyAlgorithms<DataTypes>::SnapAlongPath (sofa::helper::vector< sofa::core::componentmodel::topology::TopologyObjectType>& topoPath_list,
         sofa::helper::vector<unsigned int>& indices_list, sofa::helper::vector< Vec<3, double> >& coords_list,
-        sofa::helper::vector< sofa::helper::vector<double> >& points2Snap)
+        double epsilonSnapPath, sofa::helper::vector< sofa::helper::vector<double> >& points2Snap)
 {
 
-    std::cout << "TriangleSetTopologyAlgorithms::SnapAlongPath()" << std::endl;
-
+    //std::cout << "TriangleSetTopologyAlgorithms::SnapAlongPath()" << std::endl;
+    /*
     std::cout << "*** Inputs: ***" << std::endl;
     std::cout << "topoPath_list: " << topoPath_list << std::endl;
     std::cout << "indices_list: " << indices_list << std::endl;
     std::cout << "coords_list: " << coords_list << std::endl;
     std::cout << "****************" << std::endl;
-
+    */
     std::map <PointID, sofa::helper::vector<unsigned int> > map_point2snap;
     std::map <PointID, sofa::helper::vector<unsigned int> >::iterator it;
     std::map <PointID, Vec<3,double> > map_point2bary;
-    float epsilon = 0.25;
+    double epsilon = epsilonSnapPath;
 
     //// STEP 1 - First loop to find concerned points
     for (unsigned int i = 0; i < indices_list.size(); i++)
@@ -1036,11 +1518,14 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapAlongPath (sofa::helper::vect
             if ( coords_list[i][0] < epsilon )  // This point has to be snaped
             {
                 Vertex2Snap = m_container->getEdge(indices_list[i])[0];
+                //std::cout << "if: m_container->getEdge(indices_list[i])" << std::endl;
                 it = map_point2snap.find (Vertex2Snap);
             }
             else if ( coords_list[i][0] > (1.0 - epsilon) )
             {
                 Vertex2Snap = m_container->getEdge(indices_list[i])[1];
+                //std::cout << "else: m_container->getEdge(indices_list[i])" << std::endl;
+
                 it = map_point2snap.find (Vertex2Snap);
             }
             else
@@ -1050,6 +1535,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapAlongPath (sofa::helper::vect
 
             if (it == map_point2snap.end()) // First time this point is encounter
             {
+                //std::cout << "Edge: vertex: " << Vertex2Snap<<std::endl;
                 map_point2snap[Vertex2Snap] = sofa::helper::vector <unsigned int> ();
                 map_point2bary[Vertex2Snap] = Vec<3,double> ();
             }
@@ -1064,7 +1550,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapAlongPath (sofa::helper::vect
 
             for (unsigned int j = 0; j < 3; j++)
             {
-                if ( barycoord[j] > (1.0 - epsilon) )  // This point has to be snaped
+                if ( barycoord[j] > (1.0 - epsilon/2) )  // This point has to be snaped
                 {
                     Vertex2Snap = m_container->getTriangleArray()[indices_list[i]][j];
                     it = map_point2snap.find (Vertex2Snap);
@@ -1075,6 +1561,8 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapAlongPath (sofa::helper::vect
 
             if ( TriFind && (it == map_point2snap.end()) ) // First time this point is encounter
             {
+                //std::cout << "Triangle: vertex: " << Vertex2Snap<<std::endl;
+
                 map_point2snap[Vertex2Snap] = sofa::helper::vector <unsigned int> ();
                 map_point2bary[Vertex2Snap] = Vec<3,double> ();
             }
@@ -1085,6 +1573,11 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapAlongPath (sofa::helper::vect
             break;
         }
     }
+
+    //std::cout << "Point to snap: " ;
+    for (unsigned int i = 0; i < map_point2snap.size(); i++)
+        std::cout << i << " ";
+    std::cout << std::endl;
 
 
     //// STEP 2 - Test if snaping is needed
@@ -1147,7 +1640,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapAlongPath (sofa::helper::vect
             for (unsigned int indTri = 0; indTri < 3; indTri++)
             {
                 PointID thePoint = theTriangle[ indTri ];
-                if ( map_point2snap.find (thePoint) != map_point2snap.end() )
+                if ( (map_point2snap.find (thePoint) != map_point2snap.end()) && (coords_list[i][indTri] > (1-epsilon/2))) //TODO come back to this condition
                 {
                     PointFind = true;
                     map_point2snap[ thePoint ].push_back(i);
@@ -1169,11 +1662,18 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapAlongPath (sofa::helper::vect
     }
 
 
+    /*std::cout << "Point to snap + object concerned " ;
+    for (it = map_point2snap.begin(); it != map_point2snap.end(); ++it)
+      std::cout << "Point to snap: "<< (*it).first << " => " << (*it).second << std::endl;
+    */
+
+
+
     //// STEP 4 - Compute new coordinates of point to be snaped, and inform path that point has to be snaped
     sofa::helper::vector<unsigned int> field2remove;
     points2Snap.resize (map_point2snap.size());
     unsigned int cpt = 0;
-
+    //std::cout <<"start moving point" << std::endl;
     for (it = map_point2snap.begin(); it != map_point2snap.end(); ++it)
     {
         points2Snap[ cpt ].push_back ((*it).first); // points2Snap[X][0] => id point to snap
@@ -1200,7 +1700,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapAlongPath (sofa::helper::vect
                 field2remove.push_back ((*it).second[i]);
     }
 
-
+    //std::cout <<"start suppression" << std::endl;
     //// STEP 5 - Modify incision path
     //TODO: verify that one object can't be snaped and considered at staying at the same time
     sort (field2remove.begin(), field2remove.end());
@@ -1208,15 +1708,124 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapAlongPath (sofa::helper::vect
     for (unsigned int i = 1; i <= field2remove.size(); i++) //Delete in reverse order
     {
         topoPath_list.erase (topoPath_list.begin()+field2remove[field2remove.size()-i]);
-        indices_list.erase (indices_list.begin()+1+field2remove[field2remove.size()-i]);
+        indices_list.erase (indices_list.begin()+field2remove[field2remove.size()-i]);
         coords_list.erase (coords_list.begin()+field2remove[field2remove.size()-i]);
     }
+
+    //std::cout <<"END snaping" << std::endl;
 
     return;
 }
 
 
+template<class DataTypes>
+void TriangleSetTopologyAlgorithms<DataTypes>::SnapBorderPath (unsigned int pa, Coord& a, unsigned int pb, Coord& b,
+        sofa::helper::vector< sofa::core::componentmodel::topology::TopologyObjectType>& topoPath_list,
+        sofa::helper::vector<unsigned int>& indices_list,
+        sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list, double epsilonSnapBorder,
+        sofa::helper::vector< sofa::helper::vector<double> >& points2Snap)
+{
 
+    //std::cout << "TriangleSetTopologyAlgorithms::SnapBorderPath" << std::endl;
+
+    bool snap_a = false;
+    bool snap_b = false;
+    double epsilon = epsilonSnapBorder;
+
+    // Test if point has not already been snap on a point
+    for (unsigned int i = 0; i <points2Snap.size(); i++)
+    {
+        if (points2Snap[i][0] == pa)
+            snap_a = true;
+        else if (points2Snap[i][0] == pb)
+            snap_b = true;
+
+        if (snap_a & snap_b)
+            break;
+    }
+
+    //std::cout <<"snap_a: " << snap_a << std::endl;
+    //std::cout <<"snap_b: " << snap_b << std::endl;
+
+    // Test if point need to be snap on an edge
+    if (!snap_a  && topoPath_list[0] == core::componentmodel::topology::TRIANGLE) // this means a is not close to a point, but could be close to an edge
+    {
+        for (unsigned int i = 0; i<3; i++)
+        {
+            if (coords_list[0][i] < epsilon)
+            {
+                const EdgeID theEdge = m_container->getTriangleEdge ( indices_list[0])[i];
+
+                if( (m_container->getTriangleEdgeShell (theEdge)).size() > 1)
+                    break;
+
+                if ((indices_list[1] == theEdge) && (topoPath_list[1] == core::componentmodel::topology::EDGE)) // Only keep this one? or need to projection?
+                {
+                    topoPath_list.erase (topoPath_list.begin());
+                    indices_list.erase (indices_list.begin());
+                    coords_list.erase (coords_list.begin());
+                    break;
+                }
+                else // need to create this point by projection
+                {
+                    sofa::defaulttype::Vec<3,double> thePoint; DataTypes::get(thePoint[0], thePoint[1], thePoint[2], a);
+
+                    sofa::helper::vector< double > new_coord =  m_geometryAlgorithms->computePointProjectionOnEdge (theEdge, thePoint);
+                    topoPath_list[0] = core::componentmodel::topology::EDGE;
+                    //std::cout << "new_coord: " << new_coord << std::endl;
+                    //std::cout << "thePoint: " << thePoint << std::endl;
+                    //std::cout << "theEdge: " << theEdge << std::endl;
+
+                    indices_list[0] = theEdge;
+                    coords_list[0][0] = new_coord[1];  // not the same order as barycoef in the incision path
+                    coords_list[0][1] = new_coord[0];
+                    coords_list[0][2] = 0.0;
+                    break;
+                    //std::cout <<" end assignment" << std::endl;
+                }
+            }
+        }
+    }
+    //std::cout <<" end 1er loop" << std::endl;
+
+
+    // Same for last point
+    if (!snap_b  && topoPath_list.back() == core::componentmodel::topology::TRIANGLE) // this means a is not close to a point, but could be close to an edge
+    {
+        for (unsigned int i = 0; i<3; i++)
+        {
+            if (coords_list.back()[i] < epsilon)
+            {
+                const EdgeID theEdge = m_container->getTriangleEdge ( indices_list.back())[i];
+
+                if( (m_container->getTriangleEdgeShell (theEdge)).size() > 1)
+                    break;
+
+                if ((indices_list[indices_list.size()-2] == theEdge) && (topoPath_list[topoPath_list.size()-2] == core::componentmodel::topology::EDGE)) // Only keep this one? or need to projection?
+                {
+                    topoPath_list.pop_back();
+                    indices_list.pop_back();
+                    coords_list.pop_back();
+                    break;
+                }
+                else
+                {
+                    sofa::defaulttype::Vec<3,double> thePoint; DataTypes::get(thePoint[0], thePoint[1], thePoint[2], b);
+                    sofa::helper::vector< double > new_coord =  m_geometryAlgorithms->computePointProjectionOnEdge (theEdge, thePoint);
+                    topoPath_list.back() = core::componentmodel::topology::EDGE;
+                    indices_list.back() = theEdge;
+                    coords_list.back()[0] = new_coord[1];
+                    coords_list.back()[1] = new_coord[0];
+                    coords_list.back()[2] = 0.0;
+                    break;
+                }
+            }
+        }
+    }
+    //std::cout <<" end snapBorder " << std::endl;
+    return;
+
+}
 
 
 /** \brief Duplicates the given edges. Only works if at least the first or last point is adjacent to a border.
@@ -1225,6 +1834,8 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapAlongPath (sofa::helper::vect
 template<class DataTypes>
 bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::helper::vector<unsigned int>& edges, sofa::helper::vector<unsigned int>& new_points, sofa::helper::vector<unsigned int>& end_points)
 {
+    //std::cout << " TriangleSetTopologyAlgorithms::InciseAlongEdgeList" << std::endl;
+
     sofa::helper::vector< sofa::helper::vector< PointID > > p_ancestors;
     sofa::helper::vector< sofa::helper::vector< double > > p_baryCoefs;
     PointID next_point = m_container->getNbPoints();
@@ -1435,6 +2046,7 @@ bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::h
     // Propagate the topological changes *** not necessary
     //m_modifier->propagateTopologicalChanges();
 
+    //std::cout << "end incise" << std::endl;
     return true;
 }
 
