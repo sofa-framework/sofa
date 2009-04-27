@@ -51,8 +51,8 @@ namespace component
 
 namespace constraint
 {
-#define	MAX_NUM_CONSTRAINT_PER_NODE 10000
-#define EPS_UNITARY_FORCE 0.01
+//#define	MAX_NUM_CONSTRAINT_PER_NODE 10000
+//#define EPS_UNITARY_FORCE 0.01
 
 using namespace sofa::component::odesolver;
 using namespace sofa::component::linearsolver;
@@ -65,18 +65,16 @@ PrecomputedConstraintCorrection<DataTypes>::PrecomputedConstraintCorrection(beha
     , _restRotations(false)
     , f_restRotations(initDataPtr(&f_restRotations,&_restRotations,"restDeformations",""))
     , mstate(mm)
+    , invM(NULL)
     , appCompliance(NULL)
-    , _indexNodeSparseCompliance(NULL)
 {
 }
 
 template<class DataTypes>
 PrecomputedConstraintCorrection<DataTypes>::~PrecomputedConstraintCorrection()
 {
-    if(appCompliance != NULL)
-        delete [] appCompliance;
-    if(_indexNodeSparseCompliance != NULL)
-        delete [] _indexNodeSparseCompliance;
+    if(invM && (--invM->nbref) == 0)
+        delete [] invM->data;
 }
 
 
@@ -84,6 +82,15 @@ PrecomputedConstraintCorrection<DataTypes>::~PrecomputedConstraintCorrection()
 //////////////////////////////////////////////////////////////////////////
 //   Precomputation of the Constraint Correction for all type of data
 //////////////////////////////////////////////////////////////////////////
+
+template<class DataTypes>
+typename PrecomputedConstraintCorrection<DataTypes>::InverseStorage* PrecomputedConstraintCorrection<DataTypes>::getInverse(std::string name)
+{
+    static std::map<std::string, InverseStorage> registry;
+    InverseStorage* m = &(registry[name]);
+    ++m->nbref;
+    return m;
+}
 
 template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
@@ -106,198 +113,210 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
     nbRows = nbNodes*dof_on_node;
     nbCols = nbNodes*dof_on_node;
     sout << "size : " << nbRows << " " << nbCols << sendl;
-    appCompliance = new Real[nbRows * nbCols];
+    //appCompliance = new Real[nbRows * nbCols];
 
 
     double dt = this->getContext()->getDt();
 
     std::stringstream ss;
 
-    ss << this->getContext()->getName() << ".comp";
+    ss << this->getContext()->getName() << "-" << nbRows << "-" << dt <<".comp";
 
-    std::ifstream compFileIn(ss.str().c_str(), std::ifstream::binary);
+    invM = getInverse(ss.str());
 
-    sout << "try to open : " << ss.str() << endl;
-
-    if(compFileIn.good())
+    if (invM->data == NULL)
     {
-        sout << "file open : " << ss.str() << " compliance being loaded" << endl;
-        //complianceLoaded = true;
-        compFileIn.read((char*)appCompliance, nbCols * nbRows*sizeof(double));
-        compFileIn.close();
-    }
-    else
-    {
-        sout << "can not open : " << ss.str() << " compliance being built" << endl;
+        invM->data = new Real[nbRows * nbCols];
 
-        // for the intial computation, the gravity has to be put at 0
-        const Vec3d gravity = this->getContext()->getGravityInWorld();
-        const Vec3d gravity_zero(0.0,0.0,0.0);
-        this->getContext()->setGravityInWorld(gravity_zero);
+        std::ifstream compFileIn(ss.str().c_str(), std::ifstream::binary);
 
-        CGImplicitSolver* odeSolver;
-        EulerImplicitSolver* EulerSolver;
-        CGLinearSolver<GraphScatteredMatrix,GraphScatteredVector>* CGlinearSolver;
-        core::componentmodel::behavior::LinearSolver* linearSolver;
+        sout << "try to open : " << ss.str() << endl;
 
-        this->getContext()->get(odeSolver);
-        this->getContext()->get(EulerSolver);
-        this->getContext()->get(CGlinearSolver);
-        this->getContext()->get(linearSolver);
-
-        if(odeSolver)
-            sout << "use CGImplicitSolver " << sendl;
-        else if(EulerSolver && CGlinearSolver)
-            sout << "use EulerImplicitSolver &  CGLinearSolver" << sendl;
-        else if(EulerSolver && linearSolver)
-            sout << "use EulerImplicitSolver &  LinearSolver" << sendl;
-        else if(EulerSolver)
-            sout << "use EulerImplicitSolver" << sendl;
+        if(compFileIn.good())
+        {
+            sout << "file open : " << ss.str() << " compliance being loaded" << endl;
+            //complianceLoaded = true;
+            compFileIn.read((char*)invM->data, nbCols * nbRows*sizeof(double));
+            compFileIn.close();
+        }
         else
         {
-            serr<<"PrecomputedContactCorrection must be associated with CGImplicitSolver or EulerImplicitSolver+LinearSolver for the precomputation\nNo Precomputation" << sendl;
-            return;
-        }
+            sout << "can not open : " << ss.str() << " compliance being built" << endl;
 
+            // for the intial computation, the gravity has to be put at 0
+            const Vec3d gravity = this->getContext()->getGravityInWorld();
+            const Vec3d gravity_zero(0.0,0.0,0.0);
+            this->getContext()->setGravityInWorld(gravity_zero);
 
+            CGImplicitSolver* odeSolver;
+            EulerImplicitSolver* EulerSolver;
+            CGLinearSolver<GraphScatteredMatrix,GraphScatteredVector>* CGlinearSolver;
+            core::componentmodel::behavior::LinearSolver* linearSolver;
 
-        //complianceLoaded = true;
-        VecDeriv& force = *mstate->getExternalForces();
-        force.clear();
-        force.resize(nbNodes);
-        //v.clear();
-        //v.resize(v0.size());//computeDf
+            this->getContext()->get(odeSolver);
+            this->getContext()->get(EulerSolver);
+            this->getContext()->get(CGlinearSolver);
+            this->getContext()->get(linearSolver);
 
-
-        ///////////////////////// CHANGE THE PARAMETERS OF THE SOLVER /////////////////////////////////
-        double buf_tolerance=0, buf_threshold=0;
-        int	   buf_maxIter=0;
-        if(odeSolver)
-        {
-            buf_tolerance = (double) odeSolver->f_tolerance.getValue();
-            buf_maxIter   = (int) odeSolver->f_maxIter.getValue();
-            buf_threshold = (double) odeSolver->f_smallDenominatorThreshold.getValue();
-            odeSolver->f_tolerance.setValue(1e-20);
-            odeSolver->f_maxIter.setValue(500);
-            odeSolver->f_smallDenominatorThreshold.setValue(1e-35);
-        }
-        else if(CGlinearSolver)
-        {
-            buf_tolerance = (double) CGlinearSolver->f_tolerance.getValue();
-            buf_maxIter   = (int) CGlinearSolver->f_maxIter.getValue();
-            buf_threshold = (double) CGlinearSolver->f_smallDenominatorThreshold.getValue();
-            CGlinearSolver->f_tolerance.setValue(1e-20);
-            CGlinearSolver->f_maxIter.setValue(500);
-            CGlinearSolver->f_smallDenominatorThreshold.setValue(1e-35);
-        }
-        ///////////////////////////////////////////////////////////////////////////////////////////////
-
-        VecDeriv& velocity = *mstate->getV();
-        VecCoord& pos=*mstate->getX();
-        VecCoord& pos0=*mstate->getX0();
-
-
-
-        for(unsigned int f = 0 ; f < nbNodes ; f++)
-        {
-            std::cout.precision(2);
-            std::cout << "Precomputing constraint correction : " << std::fixed << (float)f/(float)nbNodes*100.0f << " %   " << '\xd';
-            std::cout.flush();
-            //  serr << "inverse cols node : " << f << sendl;
-            Deriv unitary_force;
-
-            for (unsigned int i=0; i<dof_on_node; i++)
+            if(odeSolver)
+                sout << "use CGImplicitSolver " << sendl;
+            else if(EulerSolver && CGlinearSolver)
+                sout << "use EulerImplicitSolver &  CGLinearSolver" << sendl;
+            else if(EulerSolver && linearSolver)
+                sout << "use EulerImplicitSolver &  LinearSolver" << sendl;
+            else if(EulerSolver)
+                sout << "use EulerImplicitSolver" << sendl;
+            else
             {
-                unitary_force.clear();
-                //serr<<"dof n:"<<i<<sendl;
-                unitary_force[i]=1.0;
-                force[f] = unitary_force;
-                ////// reset Position and Velocities ///////
-                velocity.clear();
-                velocity.resize(nbNodes);
-                for (unsigned int n=0; n<nbNodes; n++)
-                    pos[n] = pos0[n];
-                ////////////////////////////////////////////
-                //serr<<"pos0 set"<<sendl;
-
-
-
-                double fact = 1.0;
-                //odeSolver->computeContactForce(force);
-
-                if(odeSolver)
-                {
-                    //serr<<"odeSolver"<<sendl;
-                    odeSolver->solve(dt);
-                }
-                else if(EulerSolver)
-                {
-                    //serr<<"EulerSolver"<<sendl;
-                    EulerSolver->solve(dt, core::componentmodel::behavior::BaseMechanicalState::VecId::position(), core::componentmodel::behavior::BaseMechanicalState::VecId::velocity());
-                    if (linearSolver)
-                        linearSolver->freezeSystemMatrix(); // do not recompute the matrix for the rest of the precomputation
-                }
-
-                //serr<<"solve reussi"<<sendl;
-
-                velocity = *mstate->getV();
-                fact /= unitary_force[i];
-                //serr<<"getV : "<<velocity<<sendl;
-                for (unsigned int v=0; v<nbNodes; v++)
-                {
-
-                    for (unsigned int j=0; j<dof_on_node; j++)
-                    {
-                        appCompliance[(v*dof_on_node+j)*nbCols + (f*dof_on_node+i) ] = (Real)(fact * velocity[v][j]);
-                    }
-                }
-                //serr<<"put in appComp"<<sendl;
+                serr<<"PrecomputedContactCorrection must be associated with CGImplicitSolver or EulerImplicitSolver+LinearSolver for the precomputation\nNo Precomputation" << sendl;
+                return;
             }
-            unitary_force.clear();
-            force[f] = unitary_force;
-        }
-        if (linearSolver)
-            linearSolver->updateSystemMatrix(); // do not recompute the matrix for the rest of the precomputation
 
-        ///////////////////////// RESET PARAMETERS AT THEIR PREVIOUS VALUE /////////////////////////////////
-        // gravity is reset at its previous value
-        this->getContext()->setGravityInWorld(gravity);
-        if(odeSolver)
-        {
-            odeSolver->f_tolerance.setValue(buf_tolerance);
-            odeSolver->f_maxIter.setValue(buf_maxIter);
-            odeSolver->f_smallDenominatorThreshold.setValue(buf_threshold);
+
+
+            //complianceLoaded = true;
+            VecDeriv& force = *mstate->getExternalForces();
+            force.clear();
+            force.resize(nbNodes);
+            //v.clear();
+            //v.resize(v0.size());//computeDf
+
+
+            ///////////////////////// CHANGE THE PARAMETERS OF THE SOLVER /////////////////////////////////
+            double buf_tolerance=0, buf_threshold=0;
+            int	   buf_maxIter=0;
+            if(odeSolver)
+            {
+                buf_tolerance = (double) odeSolver->f_tolerance.getValue();
+                buf_maxIter   = (int) odeSolver->f_maxIter.getValue();
+                buf_threshold = (double) odeSolver->f_smallDenominatorThreshold.getValue();
+                odeSolver->f_tolerance.setValue(1e-20);
+                odeSolver->f_maxIter.setValue(500);
+                odeSolver->f_smallDenominatorThreshold.setValue(1e-35);
+            }
+            else if(CGlinearSolver)
+            {
+                buf_tolerance = (double) CGlinearSolver->f_tolerance.getValue();
+                buf_maxIter   = (int) CGlinearSolver->f_maxIter.getValue();
+                buf_threshold = (double) CGlinearSolver->f_smallDenominatorThreshold.getValue();
+                CGlinearSolver->f_tolerance.setValue(1e-20);
+                CGlinearSolver->f_maxIter.setValue(500);
+                CGlinearSolver->f_smallDenominatorThreshold.setValue(1e-35);
+            }
+            ///////////////////////////////////////////////////////////////////////////////////////////////
+
+            VecDeriv& velocity = *mstate->getV();
+            VecCoord& pos=*mstate->getX();
+            VecCoord& pos0=*mstate->getX0();
+
+
+
+            for(unsigned int f = 0 ; f < nbNodes ; f++)
+            {
+                std::cout.precision(2);
+                std::cout << "Precomputing constraint correction : " << std::fixed << (float)f/(float)nbNodes*100.0f << " %   " << '\xd';
+                std::cout.flush();
+                //  serr << "inverse cols node : " << f << sendl;
+                Deriv unitary_force;
+
+                for (unsigned int i=0; i<dof_on_node; i++)
+                {
+                    unitary_force.clear();
+                    //serr<<"dof n:"<<i<<sendl;
+                    unitary_force[i]=1.0;
+                    force[f] = unitary_force;
+                    ////// reset Position and Velocities ///////
+                    velocity.clear();
+                    velocity.resize(nbNodes);
+                    for (unsigned int n=0; n<nbNodes; n++)
+                        pos[n] = pos0[n];
+                    ////////////////////////////////////////////
+                    //serr<<"pos0 set"<<sendl;
+
+
+
+                    double fact = 1.0;
+                    //odeSolver->computeContactForce(force);
+
+                    if(odeSolver)
+                    {
+                        //serr<<"odeSolver"<<sendl;
+                        odeSolver->solve(dt);
+                    }
+                    else if(EulerSolver)
+                    {
+                        //serr<<"EulerSolver"<<sendl;
+                        EulerSolver->solve(dt, core::componentmodel::behavior::BaseMechanicalState::VecId::position(), core::componentmodel::behavior::BaseMechanicalState::VecId::velocity());
+                        if (linearSolver)
+                            linearSolver->freezeSystemMatrix(); // do not recompute the matrix for the rest of the precomputation
+                    }
+
+                    //serr<<"solve reussi"<<sendl;
+
+                    velocity = *mstate->getV();
+                    fact /= unitary_force[i];
+                    //serr<<"getV : "<<velocity<<sendl;
+                    for (unsigned int v=0; v<nbNodes; v++)
+                    {
+
+                        for (unsigned int j=0; j<dof_on_node; j++)
+                        {
+                            invM->data[(v*dof_on_node+j)*nbCols + (f*dof_on_node+i) ] = (Real)(fact * velocity[v][j]);
+                        }
+                    }
+                    //serr<<"put in appComp"<<sendl;
+                }
+                unitary_force.clear();
+                force[f] = unitary_force;
+            }
+            if (linearSolver)
+                linearSolver->updateSystemMatrix(); // do not recompute the matrix for the rest of the precomputation
+
+            ///////////////////////// RESET PARAMETERS AT THEIR PREVIOUS VALUE /////////////////////////////////
+            // gravity is reset at its previous value
+            this->getContext()->setGravityInWorld(gravity);
+            if(odeSolver)
+            {
+                odeSolver->f_tolerance.setValue(buf_tolerance);
+                odeSolver->f_maxIter.setValue(buf_maxIter);
+                odeSolver->f_smallDenominatorThreshold.setValue(buf_threshold);
+            }
+            else if(CGlinearSolver)
+            {
+                CGlinearSolver->f_tolerance.setValue(buf_tolerance);
+                CGlinearSolver->f_maxIter.setValue(buf_maxIter);
+                CGlinearSolver->f_smallDenominatorThreshold.setValue(buf_threshold);
+            }
+            ///////////////////////////////////////////////////////////////////////////////////////////////
+            std::ofstream compFileOut(ss.str().c_str(), std::fstream::out | std::fstream::binary);
+            compFileOut.write((char*)invM->data, nbCols * nbRows*sizeof(double));
+            compFileOut.close();
         }
-        else if(CGlinearSolver)
-        {
-            CGlinearSolver->f_tolerance.setValue(buf_tolerance);
-            CGlinearSolver->f_maxIter.setValue(buf_maxIter);
-            CGlinearSolver->f_smallDenominatorThreshold.setValue(buf_threshold);
-        }
-        ///////////////////////////////////////////////////////////////////////////////////////////////
-        std::ofstream compFileOut(ss.str().c_str(), std::fstream::out | std::fstream::binary);
-        compFileOut.write((char*)appCompliance, nbCols * nbRows*sizeof(double));
-        compFileOut.close();
     }
 
+    appCompliance = invM->data;
+
     // Optimisation for the computation of W
-    _indexNodeSparseCompliance = new int[v0.size()];
-    _sparseCompliance.resize(v0.size()*MAX_NUM_CONSTRAINT_PER_NODE);
+    _indexNodeSparseCompliance.resize(v0.size());
+    //_sparseCompliance.resize(v0.size()*MAX_NUM_CONSTRAINT_PER_NODE);
 
 
     ////  debug print 100 first row and column of the matrix
-    sout << "Matrix compliance" ;
-
-    for (unsigned int i=0; i<10 && i<nbCols; i++)
+    if (this->f_printLog.getValue())
     {
-        sout << sendl;
-        for (unsigned int j=0; j<10 && j<nbCols; j++)
-        {
-            sout <<" \t "<< appCompliance[j*nbCols + i];
-        }
-    }
+        sout << "Matrix compliance" ;
 
-    sout << sendl;
+        for (unsigned int i=0; i<10 && i<nbCols; i++)
+        {
+            sout << sendl;
+            for (unsigned int j=0; j<10 && j<nbCols; j++)
+            {
+                sout <<" \t "<< appCompliance[j*nbCols + i];
+            }
+        }
+
+        sout << sendl;
+    }
     ////sout << "quit init "  << endl;
 
     //sout << "----------- Test Quaternions --------------" << sendl;
@@ -392,6 +411,7 @@ void PrecomputedConstraintCorrection<DataTypes>::getCompliance(defaulttype::Base
 
     //////////////////////////////////////////
     //std::vector<Deriv> sparseCompliance;
+    _sparseCompliance.resize(activeDof.size()*numConstraints);
     std::list<int>::iterator IterateurListe;
     for(IterateurListe=activeDof.begin(); IterateurListe!=activeDof.end(); IterateurListe++)
     {
