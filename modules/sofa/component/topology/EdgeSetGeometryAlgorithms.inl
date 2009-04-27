@@ -305,8 +305,8 @@ sofa::helper::vector< double > EdgeSetGeometryAlgorithms<DataTypes>::computePoin
         AC[i] = c[i] - a[i];
     }
 
-    sofa::defaulttype::Vec<3,double> ortho_ABC = cross (AB, AC);
-    sofa::defaulttype::Vec<3,double> coef_XH = cross (ortho_ABC, AB);
+    sofa::defaulttype::Vec<3,double> ortho_ABC = cross (AB, AC)*1000;
+    sofa::defaulttype::Vec<3,double> coef_XH = cross (ortho_ABC, AB)*1000;
 
     int indAB = -1; int indXH = -1;
 
@@ -314,7 +314,7 @@ sofa::helper::vector< double > EdgeSetGeometryAlgorithms<DataTypes>::computePoin
     bool test = false;
     for (unsigned int i=0; i<3; i++)
     {
-        if ( (AB[i] > 0.001) || (AB[i] < -0.001) )
+        if ( (AB[i] > 0.0001) || (AB[i] < -0.0001) )
         {
             indAB = i;
             for (unsigned int j = 0; j<3; j++)
@@ -343,6 +343,7 @@ sofa::helper::vector< double > EdgeSetGeometryAlgorithms<DataTypes>::computePoin
         h[i] = a[i] + lambda * AB[i];
 
     sofa::helper::vector< double > barycoord = compute2PointsBarycoefs(h, theEdge[0], theEdge[1]);
+
     return barycoord;
 }
 
