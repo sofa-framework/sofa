@@ -81,12 +81,12 @@ static unsigned MAX_NUM_CONSTRAINTS=2048;
 template<class real>
 CudaMasterContactSolver<real>::CudaMasterContactSolver()
     :
-    useGPU_d(initData(&useGPU_d,8, "useGPU", "compute LCP using GPU"))
+    useGPU_d(initData(&useGPU_d,-1, "useGPU", "compute LCP using GPU"))
 #ifdef CHECK
     ,check_gpu(initData(&check_gpu, true, "checkGPU", "verification of lcp error"))
 #endif
 #ifdef DISPLAY_TIME
-    ,print_info(initData(&print_info, true, "print_info", "Print infos"))
+    ,print_info(initData(&print_info, false, "print_info", "Print infos"))
 #endif
     ,initial_guess(initData(&initial_guess, true, "initial_guess","activate LCP results history to improve its resolution performances."))
     ,tol( initData(&tol, 0.001, "tolerance", ""))

@@ -71,7 +71,7 @@ public :
 
     SReal element(int i, int j) const
     {
-        return m[i][j];
+        return m[j][i];
     }
 
     const T* operator[] ( int i ) const
@@ -90,7 +90,7 @@ public :
         }
     }
 
-    void set(int j, int i, double v)
+    void set(int i, int j, double v)
     {
 #ifdef DEBUG_BASE
         if ((j>=rowSize()) || (i>=colSize()))
@@ -102,7 +102,7 @@ public :
         m[j][i] = (T)v;
     }
 
-    void add(int j, int i, double v)
+    void add(int i, int j, double v)
     {
 #ifdef DEBUG_BASE
         if ((j>=rowSize()) || (i>=colSize()))
