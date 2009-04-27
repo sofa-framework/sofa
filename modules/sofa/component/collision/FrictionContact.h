@@ -119,7 +119,7 @@ public:
 long cantorPolynomia(sofa::core::componentmodel::collision::DetectionOutput::ContactId x, sofa::core::componentmodel::collision::DetectionOutput::ContactId y)
 {
     // Polynome de Cantor de N� sur N bijectif f(x,y)=((x+y)^2+3x+y)/2
-    return ((x+y)*(x+y)+3*x+y)/2;
+    return (long)(((x+y)*(x+y)+3*x+y)/2);
 }
 
 } // collision

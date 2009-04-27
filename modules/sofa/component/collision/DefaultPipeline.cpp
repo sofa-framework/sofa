@@ -60,7 +60,7 @@ int DefaultPipelineClass = core::RegisterObject("The default collision detection
 DefaultPipeline::DefaultPipeline()
     : bVerbose(initData(&bVerbose, false, "verbose","Display current step information"))
     , bDraw(initData(&bDraw, false, "draw","Draw detected collisions"))
-    , bOptimizationMapping(initData(&bOptimizationMapping, true, "optimizationMapping","Turns MechanicalMappings into regular Mappings if no Collision Response is applied to the mapped dof"))
+    , bOptimizationMapping(initData(&bOptimizationMapping, false, "optimizationMapping","Turns MechanicalMappings into regular Mappings if no Collision Response is applied to the mapped dof"))
     , depth(initData(&depth, 6, "depth","Max depth of bounding trees"))
 {
 }
