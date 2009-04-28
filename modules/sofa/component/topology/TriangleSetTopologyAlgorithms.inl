@@ -1426,6 +1426,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
     //	std::cout << "***************************" << std::endl;
 
 
+
     // FINAL STEP : Apply changes
 
     // Create all the points registered to be created
@@ -1816,6 +1817,9 @@ bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::h
     sofa::helper::vector< Triangle > new_triangles;
     sofa::helper::vector< TriangleID > new_triangles_id;
     sofa::helper::vector< TriangleID > removed_triangles;
+    sofa::helper::vector< sofa::helper::vector< TriangleID > >  triangles_ancestors;
+    sofa::helper::vector< sofa::helper::vector< double > >  triangles_barycoefs;
+
 
     int nbEdges = edges.size();
     if (nbEdges == 0) return true;
@@ -1993,6 +1997,13 @@ bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::h
             new_triangles.push_back(t);
             new_triangles_id.push_back(next_triangle++);
             removed_triangles.push_back(tid);
+
+            // Taking into account ancestors for adding triangles
+            triangles_ancestors.resize (triangles_ancestors.size()+1);
+            triangles_barycoefs.resize (triangles_barycoefs.size()+1);
+
+            triangles_ancestors[triangles_ancestors.size()-1].push_back (tid);
+            triangles_barycoefs[triangles_barycoefs.size()-1].push_back (1.0); //that is the question... ??
         }
     }
 
@@ -2004,20 +2015,8 @@ bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::h
     // Warn for the creation of all the points registered to be created
     m_modifier->addPointsWarning(p_ancestors.size(), p_ancestors, p_baryCoefs);
 
-    // Create all the triangles registered to be created
-    m_modifier->addTrianglesProcess(new_triangles); // WARNING called after the creation process by the method "addTrianglesProcess"
-
-    // Warn for the creation of all the triangles registered to be created
-    m_modifier->addTrianglesWarning(new_triangles.size(), new_triangles, new_triangles_id);
-
-    // Propagate the topological changes *** not necessary
-    m_modifier->propagateTopologicalChanges();
-
-    // Remove all the triangles registered to be removed
-    m_modifier->removeTriangles(removed_triangles, true, true); // (WARNING then PROPAGATION) called before the removal process by the method "removeTriangles"
-
-    // Propagate the topological changes *** not necessary
-    //m_modifier->propagateTopologicalChanges();
+    //Add and remove triangles lists
+    m_modifier->addRemoveTriangles (new_triangles.size(), new_triangles, new_triangles_id, triangles_ancestors, triangles_barycoefs, removed_triangles);
 
     //std::cout << "end incise" << std::endl;
     return true;

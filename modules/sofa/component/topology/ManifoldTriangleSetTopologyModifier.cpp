@@ -903,7 +903,6 @@ void ManifoldTriangleSetTopologyModifier::edgeSwap(const EdgeID& edgeIndex)
 
 void ManifoldTriangleSetTopologyModifier::reorderingEdge(const unsigned int edgeIndex)
 {
-
     if(m_container->hasEdges() && m_container->hasTriangleEdgeShell())
     {
         Edge the_edge = m_container->m_edge[edgeIndex];
@@ -918,11 +917,9 @@ void ManifoldTriangleSetTopologyModifier::reorderingEdge(const unsigned int edge
             return;
 #endif
         }
-
         triangleIndex = m_container->m_triangleEdgeShell[edgeIndex][0];
         TriangleEdgeArray = m_container->getTriangleEdge( triangleIndex);
         TriangleVertexArray = m_container->m_triangle[triangleIndex];
-
         edgeIndexInTriangle = m_container->getEdgeIndexInTriangle(TriangleEdgeArray, edgeIndex);
 
         m_container->m_edge[edgeIndex][0] = TriangleVertexArray[ (edgeIndexInTriangle+1)%3 ];
