@@ -120,11 +120,19 @@ protected:
         int nbref;
         InverseStorage() : data(NULL), nbref(0) {}
     };
-
+    std::string invName;
     InverseStorage* invM;
     const Real* appCompliance;
 
-    InverseStorage* getInverse(std::string name);
+    static std::map<std::string, InverseStorage>& getInverseMap()
+    {
+        static std::map<std::string, InverseStorage> registry;
+        return registry;
+    }
+
+    static InverseStorage* getInverse(std::string name);
+
+    static void releaseInverse(std::string name, InverseStorage* inv);
 
     unsigned int nbRows, nbCols, dof_on_node, nbNodes;
     helper::vector<int> _indexNodeSparseCompliance;
