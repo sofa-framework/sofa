@@ -33,6 +33,7 @@
 #define FLOWVISUALMODEL_INL_
 
 #include "FlowVisualModel.h"
+#include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/system/glut.h>
 
 namespace sofa
@@ -89,10 +90,12 @@ void FlowVisualModel<DataTypes>::init()
     core::objectmodel::Tag tetras(m_tag3D.getValue());
     core::objectmodel::Tag geometry("geometry");
     core::objectmodel::Tag state("state");
+    core::objectmodel::Tag surface("surface");
 
     core::objectmodel::TagSet trianglesTS(triangles);
     core::objectmodel::TagSet tetraTS(tetras);
     core::objectmodel::TagSet tetraStateTS(tetras);
+    core::objectmodel::TagSet tetraSurfaceTS(surface);
     core::objectmodel::TagSet tetraGeometryTS(tetras);
     tetraStateTS.insert(state);
     tetraGeometryTS.insert(geometry);
@@ -109,6 +112,12 @@ void FlowVisualModel<DataTypes>::init()
     }
     else
     {
+        this->getContext()->get(surfaceVolume, tetraSurfaceTS, core::objectmodel::BaseContext::SearchRoot);
+        if (!surfaceVolume)
+        {
+            std::cerr << "WARNING: FlowVisualModel has no surface" <<endl;
+        }
+
         this->getContext()->get(tetraCenters, tetraStateTS, core::objectmodel::BaseContext::SearchRoot);
         if (!tetraCenters)
         {
@@ -189,9 +198,8 @@ void FlowVisualModel<DataTypes>::initVisual()
         std::fill(tetraSize.begin(), tetraSize.end(), 0.0);
         std::fill(isPointInTetra.begin(), isPointInTetra.end(), true);
 
-
         //Store some data
-
+        //** Tetra Shell of Each Triangle Vertex **//
         //Loop for each vertex of the triangle mesh
         for (unsigned int i=0 ; i<nbPoints ; i++)
         {
@@ -225,13 +233,13 @@ void FlowVisualModel<DataTypes>::initVisual()
                 float dist = 0.0;
                 for(t=0 ; t<closestTetraShell.size() ; t++)
                 {
-                    Coord c = m_tetraGeo->computeTetrahedronCenter(t);
+                    Coord c = m_tetraGeo->computeTetrahedronCenter(closestTetraShell[t]);
                     dist =(pTriangle - c).norm();
 
                     if  (dist < minDist )
                     {
                         minDist = dist;
-                        closestTetra = t;
+                        closestTetra = closestTetraShell[t];
                     }
                 }
             }
@@ -258,9 +266,22 @@ void FlowVisualModel<DataTypes>::initVisual()
 
         }
         std::cout << std::endl;
+
+        // Store neighborhood for Each Tetra Vertex //
+        const VecCoord& tetraGeometryPoints = *this->tetraGeometry->getX();
+        unsigned int nbTetraPoints = tetraGeometryPoints.size();
+        tetraShellPerTetraVertex.resize(nbTetraPoints);
+        for (unsigned int i=0 ; i<nbTetraPoints ; i++)
+        {
+            std::cout << "Precomputing tetra neighborhood : " << (float)i/(float)nbTetraPoints*100.0f << "%." << '\xd';
+            Coord pTetra = m_tetraGeo->getPointPosition(i);
+            //get the TetraShell of Point
+            helper::vector<BaseMeshTopology::TetraID> tetraShell = m_tetraTopo->getTetraVertexShell(i);
+
+            tetraShellPerTetraVertex[i] = tetraShell;
+        }
+        std::cout << std::endl;
     }
-
-
 }
 
 template <class DataTypes>
@@ -506,18 +527,18 @@ void FlowVisualModel<DataTypes>::computeStreamLine(unsigned int index, unsigned 
 }
 
 template <class DataTypes>
-void FlowVisualModel<DataTypes>::interpolateVelocityAtVertices()
+void FlowVisualModel<DataTypes>::interpolateVelocityAtTriangleVertices()
 {
     unsigned int nbPoints =  m_triTopo->getNbPoints();
     helper::vector<double> weight;
 //	const VecDeriv& v2d = *this->tetraGeometry->getV();
-    velocityAtVertex.resize(nbPoints);
-    normAtVertex.resize(nbPoints);
+    velocityAtTriangleVertex.resize(nbPoints);
+    normAtTriangleVertex.resize(nbPoints);
     weight.resize(nbPoints);
 
     std::fill( weight.begin(), weight.end(), 0 );
-    std::fill( velocityAtVertex.begin(), velocityAtVertex.end(), Coord() );
-    std::fill( normAtVertex.begin(), normAtVertex.end(), 0.0 );
+    std::fill( velocityAtTriangleVertex.begin(), velocityAtTriangleVertex.end(), Coord() );
+    std::fill( normAtTriangleVertex.begin(), normAtTriangleVertex.end(), 0.0 );
 
     const core::componentmodel::topology::BaseMeshTopology::SeqTriangles& triangles =  m_triTopo->getTriangles();
     if (!m_tetraTopo)
@@ -529,15 +550,15 @@ void FlowVisualModel<DataTypes>::interpolateVelocityAtVertices()
             core::componentmodel::topology::BaseMeshTopology::Triangle t = (triangles[i]);
             for(unsigned int j=0 ; j<3 ; j++)
             {
-                velocityAtVertex[t[j]] += v2d[i];
-                normAtVertex[t[j]] += v2d[i].norm();
+                velocityAtTriangleVertex[t[j]] += v2d[i];
+                normAtTriangleVertex[t[j]] += v2d[i].norm();
                 weight[t[j]]++;
             }
         }
         for(unsigned int i=0 ; i<nbPoints ; i++)
         {
-            velocityAtVertex[i] /= weight[i];
-            normAtVertex[i] /= weight[i];
+            velocityAtTriangleVertex[i] /= weight[i];
+            normAtTriangleVertex[i] /= weight[i];
         }
 
     }
@@ -563,8 +584,8 @@ void FlowVisualModel<DataTypes>::interpolateVelocityAtVertices()
                     if (!isPointInTetra[i])
                         distCoeff = distCoeff*distCoeff;
 
-                    velocityAtVertex[i] += v3d[index] * distCoeff;
-                    normAtVertex[i] += v3d[index].norm() * distCoeff;
+                    velocityAtTriangleVertex[i] += v3d[index] * distCoeff;
+                    normAtTriangleVertex[i] += v3d[index].norm() * distCoeff;
                 }
 
                 //		if (!isPointInTetra[i])
@@ -573,15 +594,67 @@ void FlowVisualModel<DataTypes>::interpolateVelocityAtVertices()
                 //Normalize velocity per vertex
                 if (weight[i] > 0.0)
                 {
-                    velocityAtVertex[i] /= weight[i];
-                    normAtVertex[i] /= weight[i];
+                    velocityAtTriangleVertex[i] /= weight[i];
+                    normAtTriangleVertex[i] /= weight[i];
                 }
                 else
                 {
-                    velocityAtVertex[i] = Coord();
-                    normAtVertex[i] = 0.0;
+                    velocityAtTriangleVertex[i] = Coord();
+                    normAtTriangleVertex[i] = 0.0;
                 }
 
+            }
+        }
+    }
+}
+
+
+template <class DataTypes>
+void FlowVisualModel<DataTypes>::interpolateVelocityAtTetraVertices()
+{
+    unsigned int nbPoints =  m_tetraTopo->getNbPoints();
+    helper::vector<double> weight;
+
+    velocityAtTetraVertex.resize(nbPoints);
+    normAtTetraVertex.resize(nbPoints);
+    weight.resize(nbPoints);
+
+    std::fill( weight.begin(), weight.end(), 0 );
+    std::fill( velocityAtTetraVertex.begin(), velocityAtTetraVertex.end(), Coord() );
+    std::fill( normAtTetraVertex.begin(), normAtTetraVertex.end(), 0.0 );
+
+//	const core::componentmodel::topology::BaseMeshTopology::SeqTriangles& triangles =  m_triTopo->getTriangles();
+
+    const VecDeriv& tetraCentersVelocities = *this->tetraCenters->getV();
+    const VecDeriv& tetraCentersPositions = *this->tetraCenters->getX();
+    const VecDeriv& tetraGeometryPositions = *this->tetraGeometry->getX();
+
+    if (tetraCentersVelocities.size() > 0)
+    {
+        for (unsigned int i = 0 ; i<nbPoints ; i++)
+        {
+            Coord pTetra = tetraGeometryPositions[i];
+
+            for (unsigned int j = 0; j<tetraShellPerTetraVertex[i].size() ; j++)
+            {
+                //compute weight according of the distance between the tetra vertex and the tetra centers
+                unsigned int index = (tetraShellPerTetraVertex[i])[j];
+                double distCoeff = 1.0/(pTetra-tetraCentersPositions[index]).norm2();
+                weight[i]+= distCoeff;
+
+                velocityAtTetraVertex[i] += tetraCentersVelocities[index] * distCoeff;
+                normAtTetraVertex[i] += tetraCentersVelocities[index].norm() * distCoeff;
+            }
+            //Normalize velocity per vertex
+            if (weight[i] > 0.0)
+            {
+                velocityAtTetraVertex[i] /= weight[i];
+                normAtTetraVertex[i] /= weight[i];
+            }
+            else
+            {
+                velocityAtTetraVertex[i] = Coord();
+                normAtTetraVertex[i] = 0.0;
             }
         }
     }
@@ -590,54 +663,137 @@ void FlowVisualModel<DataTypes>::interpolateVelocityAtVertices()
 template <class DataTypes>
 void FlowVisualModel<DataTypes>::drawTetra()
 {
-    const VecCoord& tetrasX = *this->tetraGeometry->getX();
-    const VecDeriv& v3d = *this->tetraGeometry->getV();
+    // const VecCoord& tetrasX = *this->tetraGeometry->getX();
+//	const VecDeriv& v3d = *this->tetraGeometry->getV();
     //glEnable (GL_BLEND);
 
     //glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
     //glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-
+    std::vector< Vector3 > points[4];
+    std::vector< Vec<4, float> >colors[4];
+    Vec<4, float> colorsTemp[4];
+    int indColors[4];
+    const VecCoord& x = *this->tetraGeometry->getX();
 
     if(shader)
         shader->start();
     //Tetra
     if(m_tetraTopo)
     {
+        interpolateVelocityAtTetraVertices();
+
         //draw tetrahedra
         const core::componentmodel::topology::BaseMeshTopology::SeqTetras& tetrahedra=  m_tetraTopo->getTetras();
-        glPointSize(10.0);
-        for (unsigned int i=0 ; i<tetrahedra.size() ; i++)
+        /*
+        		for (unsigned int i=0 ; i<tetrahedra.size() ; i++)
+        		{
+
+        			unsigned int a = tetrahedra[i][0];
+        			unsigned int b = tetrahedra[i][1];
+        			unsigned int c = tetrahedra[i][2];
+        			unsigned int d = tetrahedra[i][3];
+        			Coord center = (x[a]+x[b]+x[c]+x[d])*0.125;
+        //			Coord pa = (x[a]+center)*(Real)0.666667;
+        //			Coord pb = (x[b]+center)*(Real)0.666667;
+        //			Coord pc = (x[c]+center)*(Real)0.666667;
+        //			Coord pd = (x[d]+center)*(Real)0.666667;
+
+        			Coord pa = (x[a]);
+        			Coord pb = (x[b]);
+        			Coord pc = (x[c]);
+        			Coord pd = (x[d]);
+
+        			points[0].push_back(pa);
+        			points[0].push_back(pb);
+        			points[0].push_back(pc);
+
+        			points[1].push_back(pb);
+        			points[1].push_back(pc);
+        			points[1].push_back(pd);
+
+        			points[2].push_back(pc);
+        			points[2].push_back(pd);
+        			points[2].push_back(pa);
+
+        			points[3].push_back(pd);
+        			points[3].push_back(pa);
+        			points[3].push_back(pb);
+
+        			if((maximumVelocityAtTriangleVertex-minimumVelocityAtTriangleVertex) > 0.0)
+        			{
+        				for (unsigned int j=0;j<4;j++)
+        				{
+        					indColors[j] = (int)(64* ((normAtTetraVertex[tetrahedra[i][j]]-minimumVelocityAtTriangleVertex)/(maximumVelocityAtTriangleVertex-minimumVelocityAtTriangleVertex)));
+        					if (indColors[j] < 0) indColors[j] = 0;
+        					if (indColors[j] >= 64) indColors[j] = 63;
+        				}
+        			}
+        			else indColors[0] = indColors[0] = indColors[2] = indColors[3] = 0;
+
+        			for (unsigned int j=0;j<4;j++)
+        			{
+        				for (unsigned int rgb=0;rgb<3;rgb++)
+        				{
+        					colorsTemp[j][rgb] = ColorMap[indColors[j]][rgb];
+        				}
+        				colorsTemp[j][3] =  minAlpha.getValue() +  (maxAlpha.getValue() - minAlpha.getValue())*(indColors[j]/63.0);
+        			}
+
+        			colors[0].push_back(colorsTemp[0]);
+        			colors[0].push_back(colorsTemp[1]);
+        			colors[0].push_back(colorsTemp[2]);
+
+        			colors[1].push_back(colorsTemp[1]);
+        			colors[1].push_back(colorsTemp[2]);
+        			colors[1].push_back(colorsTemp[3]);
+
+        			colors[2].push_back(colorsTemp[2]);
+        			colors[2].push_back(colorsTemp[3]);
+        			colors[2].push_back(colorsTemp[0]);
+
+        			colors[3].push_back(colorsTemp[3]);
+        			colors[3].push_back(colorsTemp[0]);
+        			colors[3].push_back(colorsTemp[1]);
+        		}
+        //		simulation::getSimulation()->DrawUtility.drawTriangles(points[0], colors[0]);
+        //		simulation::getSimulation()->DrawUtility.drawTriangles(points[1], colors[1]);
+        //		simulation::getSimulation()->DrawUtility.drawTriangles(points[2], colors[2]);
+        //		simulation::getSimulation()->DrawUtility.drawTriangles(points[3], colors[3]);
+        */
+        core::componentmodel::topology::BaseMeshTopology::SeqTetras::const_iterator it;
+        Coord v;
+        unsigned int i;
+        for(it = tetrahedra.begin(), i=0; it != tetrahedra.end() ; it++, i++)
         {
-            /*
-            #ifdef GL_LINES_ADJACENCY_EXT
+
+#ifdef GL_LINES_ADJACENCY_EXT
             glBegin(GL_LINES_ADJACENCY_EXT);
-            #else
+#else
             glBegin(GL_POINTS);
-            #endif
+#endif
 
             for (unsigned int j=0 ; j< 4 ; j++)
             {
-            	Coord v = tetrasX[(*it)[j]];
-            	glColor4f(1.0,1.0,1.0,1.0);
-            	//glColor4f(j%3,(j+1)%3,(j+2)%3,1.0);
-            	glVertex3f((GLfloat)v[0], (GLfloat)v[1], (GLfloat)v[2]);
+                if((maximumVelocityAtTriangleVertex-minimumVelocityAtTriangleVertex) > 0.0)
+                {
+                    indColors[j] = (int)(64* ((normAtTetraVertex[tetrahedra[i][j]]-minimumVelocityAtTriangleVertex)/(maximumVelocityAtTriangleVertex-minimumVelocityAtTriangleVertex)));
+                    if (indColors[j] < 0) indColors[j] = 0;
+                    if (indColors[j] >= 64) indColors[j] = 63;
+                }
+                else indColors[j] = 0;
+
+                for (unsigned int rgb=0; rgb<3; rgb++)
+                {
+                    colorsTemp[j][rgb] = ColorMap[indColors[j]][rgb];
+                }
+                colorsTemp[j][3] =  minAlpha.getValue() +  (maxAlpha.getValue() - minAlpha.getValue())*(indColors[j]/63.0);
+
+                v = x[(*it)[j]];
+                glColor4fv(colorsTemp[j].ptr());
+                glVertex3f((GLfloat)v[0], (GLfloat)v[1], (GLfloat)v[2]);
 
             }
 
-            glEnd();
-            */
-            const BaseMeshTopology::Tetra tetra = tetrahedra[i];
-            Coord center(0.0,0.0,0.0);
-
-            for (unsigned int j=0 ; j< 4 ; j++)
-            {
-                Coord v = tetrasX[tetra[j]];
-                center += v*0.25;
-            }
-            glBegin(GL_LINES);
-            glColor3f(0.0,1.0,0.0);
-            glVertex3f(center[0], center[1],center[2]);
-            glVertex3f(center[0] + v3d[i][0]/vmax* viewVelocityFactor.getValue(), center[1] + v3d[i][1]/vmax* viewVelocityFactor.getValue(),center[2]+ v3d[i][2]/vmax* viewVelocityFactor.getValue());
             glEnd();
 
         }
@@ -658,32 +814,34 @@ void FlowVisualModel<DataTypes>::draw()
     glDepthMask(GL_TRUE);
     glDisable(GL_LIGHTING);
     const core::componentmodel::topology::BaseMeshTopology::SeqTriangles triangles =  m_triTopo->getTriangles();
-    interpolateVelocityAtVertices();
+    minimumVelocityAtTriangleVertex =  velocityMin.getValue();
+    maximumVelocityAtTriangleVertex =  velocityMax.getValue();
+    interpolateVelocityAtTriangleVertices();
+    /*
+        double maximumVelocityAtTriangleVertex2 = velocityAtTriangleVertex[0].norm2();
+    	minimumVelocityAtTriangleVertex = velocityAtTriangleVertex[0].norm();
 
-    double vmax2 = velocityAtVertex[0].norm2();
-    vmin = velocityAtVertex[0].norm();
+    	//search maximumVelocityAtTriangleVertex
+    	for (unsigned int i=1 ; i<velocityAtTriangleVertex.size() ; i++)
+    	{
+    		if (velocityAtTriangleVertex[i].norm2() > maximumVelocityAtTriangleVertex2)
+    			maximumVelocityAtTriangleVertex2=velocityAtTriangleVertex[i].norm2();
+    	}
 
-    //search vmax
-    for (unsigned int i=1 ; i<velocityAtVertex.size() ; i++)
-    {
-        if (velocityAtVertex[i].norm2() > vmax2)
-            vmax2=velocityAtVertex[i].norm2();
-    }
+    	maximumVelocityAtTriangleVertex = (velocityMax.getValue());// < sqrt(maximumVelocityAtTriangleVertex2)) ? sqrt(maximumVelocityAtTriangleVertex2) : velocityMax.getValue();
 
-    vmax = (velocityMax.getValue());// < sqrt(vmax2)) ? sqrt(vmax2) : velocityMax.getValue();
-
-    if (velocityMin.getValue() < 0.0)
-    {
-        //search vmin
-        for (unsigned int i=1 ; i<velocityAtVertex.size() ; i++)
-        {
-            if (velocityAtVertex[i].norm() < vmin)
-                vmin=velocityAtVertex[i].norm();
-        }
-        if (vmin < 0.0) vmin = 0.0;
-    }
-    else vmin = velocityMin.getValue();
-
+    	if (velocityMin.getValue() < 0.0)
+    	{
+    		//search minimumVelocityAtTriangleVertex
+    		for (unsigned int i=1 ; i<velocityAtTriangleVertex.size() ; i++)
+    		{
+    			if (velocityAtTriangleVertex[i].norm() < minimumVelocityAtTriangleVertex)
+    				minimumVelocityAtTriangleVertex=velocityAtTriangleVertex[i].norm();
+    		}
+    		if (minimumVelocityAtTriangleVertex < 0.0) minimumVelocityAtTriangleVertex = 0.0;
+    	}
+    	else minimumVelocityAtTriangleVertex = velocityMin.getValue();
+    */
     triangleCenters.clear();
     triangleCenters.resize(0);
     for(unsigned int i=0 ; i<triangles.size() ; i++)
@@ -710,18 +868,17 @@ void FlowVisualModel<DataTypes>::draw()
     if (showVelocityLines.getValue())
     {
         glBegin(GL_LINES);
+        glColor3f(0.5,0.5,0.5);
         if (!m_tetraTopo)
         {
             for(unsigned int i=0 ; i<triangleCenters.size() ; i++)
             {
-                if (vmax > 0.0)
+                if (maximumVelocityAtTriangleVertex > 0.0)
                 {
                     Coord p0 = triangleCenters[i];
-                    Coord p1 = triangleCenters[i] + v2D[i]/vmax*viewVelocityFactor.getValue();
+                    Coord p1 = triangleCenters[i] + v2D[i]/maximumVelocityAtTriangleVertex*viewVelocityFactor.getValue();
 
-                    glColor3f(1.0,1.0,1.0);
                     glVertex3f((GLfloat)p0[0], (GLfloat)p0[1], (GLfloat)p0[2]);
-                    glColor3f(1.0,1.0,1.0);
                     glVertex3f((GLfloat)p1[0], (GLfloat)p1[1], (GLfloat)p1[2]);
                 }
             }
@@ -730,14 +887,12 @@ void FlowVisualModel<DataTypes>::draw()
         {
             for(unsigned int i=0 ; i<x2D.size() ; i++)
             {
-                if (vmax > 0.0)
+                if (maximumVelocityAtTriangleVertex > 0.0)
                 {
                     Coord p0 = x2D[i];
-                    Coord p1 = x2D[i] + velocityAtVertex[i]/vmax*viewVelocityFactor.getValue();
+                    Coord p1 = x2D[i] + velocityAtTriangleVertex[i]/maximumVelocityAtTriangleVertex*viewVelocityFactor.getValue();
 
-                    glColor3f(1.0,1.0,1.0);
                     glVertex3f((GLfloat)p0[0], (GLfloat)p0[1], (GLfloat)p0[2]);
-                    glColor3f(1.0,1.0,1.0);
                     glVertex3f((GLfloat)p1[0], (GLfloat)p1[1], (GLfloat)p1[2]);
                 }
             }
@@ -756,7 +911,7 @@ void FlowVisualModel<DataTypes>::draw()
 
         for (unsigned int i=0 ; i<seedsSize ; i++)
         {
-            double dtStreamLine = (meanEdgeLength / vmax) * (1.0/streamlineDtNumberOfPointsPerTriangle.getValue());
+            double dtStreamLine = (meanEdgeLength / maximumVelocityAtTriangleVertex) * (1.0/streamlineDtNumberOfPointsPerTriangle.getValue());
             streamLines[i].currentPrimitiveID = BaseMeshTopology::InvalidID;
             computeStreamLine(i,streamlineMaxNumberOfPoints.getValue(), dtStreamLine) ;
             glPointSize(10.0);
@@ -775,16 +930,13 @@ void FlowVisualModel<DataTypes>::draw()
         }
     }
 
-    if (showTetras.getValue())
-        drawTetra();
-
 }
 
 template <class DataTypes>
 void FlowVisualModel<DataTypes>::drawTransparent()
 {
     if (!getContext()->getShowVisualModels()) return;
-    glDepthMask(GL_TRUE);
+    glDepthMask(GL_FALSE);
     glDisable(GL_LIGHTING);
     const core::componentmodel::topology::BaseMeshTopology::SeqTriangles triangles =  m_triTopo->getTriangles();
     glEnable (GL_BLEND);
@@ -815,11 +967,11 @@ void FlowVisualModel<DataTypes>::drawTransparent()
             Coord p0 = m_triGeo->getPointPosition(t[0]);
             Coord p1 = m_triGeo->getPointPosition(t[1]);
             Coord p2 = m_triGeo->getPointPosition(t[2]);
-            if((vmax-vmin) > 0.0)
+            if((maximumVelocityAtTriangleVertex-minimumVelocityAtTriangleVertex) > 0.0)
             {
-                indColor0 = (int)(64* ((normAtVertex[t[0]]-vmin)/(vmax-vmin)));
-                indColor1 = (int)(64* ((normAtVertex[t[1]]-vmin)/(vmax-vmin)));
-                indColor2 = (int)(64* ((normAtVertex[t[2]]-vmin)/(vmax-vmin)));
+                indColor0 = (int)(64* ((normAtTriangleVertex[t[0]]-minimumVelocityAtTriangleVertex)/(maximumVelocityAtTriangleVertex-minimumVelocityAtTriangleVertex)));
+                indColor1 = (int)(64* ((normAtTriangleVertex[t[1]]-minimumVelocityAtTriangleVertex)/(maximumVelocityAtTriangleVertex-minimumVelocityAtTriangleVertex)));
+                indColor2 = (int)(64* ((normAtTriangleVertex[t[2]]-minimumVelocityAtTriangleVertex)/(maximumVelocityAtTriangleVertex-minimumVelocityAtTriangleVertex)));
                 if (indColor0 < 0) indColor0 = 0;
                 if (indColor1 < 0) indColor1 = 0;
                 if (indColor2 < 0) indColor2 = 0;
@@ -842,6 +994,10 @@ void FlowVisualModel<DataTypes>::drawTransparent()
             glVertex3f((GLfloat)p2[0], (GLfloat)p2[1], (GLfloat)p2[2]);
         }
         glEnd();
+
+
+        if (showTetras.getValue())
+            drawTetra();
 
         if (getContext()->getShowWireFrame())
         {
@@ -871,10 +1027,10 @@ void FlowVisualModel<DataTypes>::drawTransparent()
             glBegin(GL_QUADS);
             for (unsigned int i=0 ; i<63 ; i++)
             {
-                glColor3dv(ColorMap[i].ptr());
+                glColor3fv(ColorMap[i].ptr());
                 glVertex2d(scalePosition[0], scalePosition[1] + i*step);
                 glVertex2d(scalePosition[0] + scaleSize[0], scalePosition[1] + i*step);
-                glColor3dv(ColorMap[i+1].ptr());
+                glColor3fv(ColorMap[i+1].ptr());
                 glVertex2d(scalePosition[0] + scaleSize[0], scalePosition[1] + (i+1)*step);
                 glVertex2d(scalePosition[0], scalePosition[1] + (i+1)*step);
             }
@@ -882,10 +1038,10 @@ void FlowVisualModel<DataTypes>::drawTransparent()
 
             //Draw color scale values
             unsigned int NUMBER_OF_VALUES = 10;
-            glColor3f(1.0,1.0,1.0);
+            glColor3f(0.5,0.5, 0.5);
             step = scaleSize[1]/(NUMBER_OF_VALUES - 1);
-            double stepValue = (vmax-vmin)/(NUMBER_OF_VALUES - 1);
-            double textScaleSize = 0.06;
+            double stepValue = (maximumVelocityAtTriangleVertex-minimumVelocityAtTriangleVertex)/(NUMBER_OF_VALUES - 1);
+            double textScaleSize = 0.085;
             double xMarginWithScale = 5;
 
             for (unsigned int i=0 ; i<NUMBER_OF_VALUES  ; i++)
@@ -894,7 +1050,7 @@ void FlowVisualModel<DataTypes>::drawTransparent()
                 glTranslatef(scalePosition[0] + scaleSize[0] + xMarginWithScale, scalePosition[1] + i*step, 0);
                 glScalef(textScaleSize, textScaleSize, textScaleSize);
                 double intpart;
-                double decpart = modf((vmin + i*stepValue), &intpart);
+                double decpart = modf((minimumVelocityAtTriangleVertex + i*stepValue), &intpart);
                 std::ostringstream oss;
                 oss << intpart << "." << (ceil(decpart*100));
                 std::string tmp = oss.str();
@@ -916,7 +1072,7 @@ void FlowVisualModel<DataTypes>::drawTransparent()
         }
     }
     glDisable (GL_BLEND);
-
+    glDepthMask(GL_TRUE);
 }
 
 

@@ -56,72 +56,72 @@ namespace visualmodel
 
 //static unsigned int COLORMAP_SIZE;
 
-static defaulttype::Vec3d ColorMap[64] =
+static defaulttype::Vec3f ColorMap[64] =
 {
-    defaulttype::Vec3d( 0.0,        0.0,       0.5625 ),
-    defaulttype::Vec3d( 0.0,        0.0,       0.625  ),
-    defaulttype::Vec3d( 0.0,        0.0,       0.6875 ),
-    defaulttype::Vec3d( 0.0,        0.0,         0.75 ),
-    defaulttype::Vec3d( 0.0,        0.0,       0.8125 ),
-    defaulttype::Vec3d( 0.0,        0.0,        0.875 ),
-    defaulttype::Vec3d( 0.0,        0.0,       0.9375 ),
-    defaulttype::Vec3d( 0.0,        0.0,          1.0 ),
-    defaulttype::Vec3d( 0.0,     0.0625,          1.0 ),
-    defaulttype::Vec3d( 0.0,      0.125,          1.0 ),
-    defaulttype::Vec3d( 0.0,     0.1875,          1.0 ),
-    defaulttype::Vec3d( 0.0,       0.25,          1.0 ),
-    defaulttype::Vec3d( 0.0,     0.3125,          1.0 ),
-    defaulttype::Vec3d( 0.0,      0.375,          1.0 ),
-    defaulttype::Vec3d( 0.0,     0.4375,          1.0 ),
-    defaulttype::Vec3d( 0.0,        0.5,          1.0 ),
-    defaulttype::Vec3d( 0.0,     0.5625,          1.0 ),
-    defaulttype::Vec3d( 0.0,      0.625,          1.0 ),
-    defaulttype::Vec3d( 0.0,     0.6875,          1.0 ),
-    defaulttype::Vec3d( 0.0,       0.75,          1.0 ),
-    defaulttype::Vec3d( 0.0,     0.8125,          1.0 ),
-    defaulttype::Vec3d( 0.0,     0.875,           1.0 ),
-    defaulttype::Vec3d( 0.0,     0.9375,          1.0 ),
-    defaulttype::Vec3d( 0.0,        1.0,          1.0 ),
-    defaulttype::Vec3d( 0.0625,     1.0,          1.0 ),
-    defaulttype::Vec3d( 0.125,      1.0,       0.9375 ),
-    defaulttype::Vec3d( 0.1875,     1.0,        0.875 ),
-    defaulttype::Vec3d( 0.25,       1.0,       0.8125 ),
-    defaulttype::Vec3d( 0.3125,     1.0,         0.75 ),
-    defaulttype::Vec3d( 0.375,      1.0,       0.6875 ),
-    defaulttype::Vec3d( 0.4375,     1.0,        0.625 ),
-    defaulttype::Vec3d( 0.5,        1.0,       0.5625 ),
-    defaulttype::Vec3d( 0.5625,     1.0,          0.5 ),
-    defaulttype::Vec3d( 0.625,      1.0,       0.4375 ),
-    defaulttype::Vec3d( 0.6875,     1.0,        0.375 ),
-    defaulttype::Vec3d( 0.75,       1.0,       0.3125 ),
-    defaulttype::Vec3d( 0.8125,     1.0,         0.25 ),
-    defaulttype::Vec3d( 0.875,      1.0,       0.1875 ),
-    defaulttype::Vec3d( 0.9375,     1.0,        0.125 ),
-    defaulttype::Vec3d( 1.0,        1.0,       0.0625 ),
-    defaulttype::Vec3d( 1.0,        1.0,          0.0 ),
-    defaulttype::Vec3d( 1.0,       0.9375,        0.0 ),
-    defaulttype::Vec3d( 1.0,        0.875,        0.0 ),
-    defaulttype::Vec3d( 1.0,       0.8125,        0.0 ),
-    defaulttype::Vec3d( 1.0,         0.75,        0.0 ),
-    defaulttype::Vec3d( 1.0,       0.6875,        0.0 ),
-    defaulttype::Vec3d( 1.0,        0.625,        0.0 ),
-    defaulttype::Vec3d( 1.0,       0.5625,        0.0 ),
-    defaulttype::Vec3d( 1.0,          0.5,        0.0 ),
-    defaulttype::Vec3d( 1.0,       0.4375,        0.0 ),
-    defaulttype::Vec3d( 1.0,        0.375,        0.0 ),
-    defaulttype::Vec3d( 1.0,       0.3125,        0.0 ),
-    defaulttype::Vec3d( 1.0,         0.25,        0.0 ),
-    defaulttype::Vec3d( 1.0,       0.1875,        0.0 ),
-    defaulttype::Vec3d( 1.0,        0.125,        0.0 ),
-    defaulttype::Vec3d( 1.0,       0.0625,        0.0 ),
-    defaulttype::Vec3d( 1.0,          0.0,        0.0 ),
-    defaulttype::Vec3d( 0.9375,       0.0,        0.0 ),
-    defaulttype::Vec3d( 0.875,        0.0,        0.0 ),
-    defaulttype::Vec3d( 0.8125,       0.0,        0.0 ),
-    defaulttype::Vec3d( 0.75,         0.0,        0.0 ),
-    defaulttype::Vec3d( 0.6875,       0.0,        0.0 ),
-    defaulttype::Vec3d( 0.625,        0.0,        0.0 ),
-    defaulttype::Vec3d( 0.5625,       0.0,        0.0 )
+    defaulttype::Vec3f( 0.0,        0.0,       0.5625 ),
+    defaulttype::Vec3f( 0.0,        0.0,       0.625  ),
+    defaulttype::Vec3f( 0.0,        0.0,       0.6875 ),
+    defaulttype::Vec3f( 0.0,        0.0,         0.75 ),
+    defaulttype::Vec3f( 0.0,        0.0,       0.8125 ),
+    defaulttype::Vec3f( 0.0,        0.0,        0.875 ),
+    defaulttype::Vec3f( 0.0,        0.0,       0.9375 ),
+    defaulttype::Vec3f( 0.0,        0.0,          1.0 ),
+    defaulttype::Vec3f( 0.0,     0.0625,          1.0 ),
+    defaulttype::Vec3f( 0.0,      0.125,          1.0 ),
+    defaulttype::Vec3f( 0.0,     0.1875,          1.0 ),
+    defaulttype::Vec3f( 0.0,       0.25,          1.0 ),
+    defaulttype::Vec3f( 0.0,     0.3125,          1.0 ),
+    defaulttype::Vec3f( 0.0,      0.375,          1.0 ),
+    defaulttype::Vec3f( 0.0,     0.4375,          1.0 ),
+    defaulttype::Vec3f( 0.0,        0.5,          1.0 ),
+    defaulttype::Vec3f( 0.0,     0.5625,          1.0 ),
+    defaulttype::Vec3f( 0.0,      0.625,          1.0 ),
+    defaulttype::Vec3f( 0.0,     0.6875,          1.0 ),
+    defaulttype::Vec3f( 0.0,       0.75,          1.0 ),
+    defaulttype::Vec3f( 0.0,     0.8125,          1.0 ),
+    defaulttype::Vec3f( 0.0,     0.875,           1.0 ),
+    defaulttype::Vec3f( 0.0,     0.9375,          1.0 ),
+    defaulttype::Vec3f( 0.0,        1.0,          1.0 ),
+    defaulttype::Vec3f( 0.0625,     1.0,          1.0 ),
+    defaulttype::Vec3f( 0.125,      1.0,       0.9375 ),
+    defaulttype::Vec3f( 0.1875,     1.0,        0.875 ),
+    defaulttype::Vec3f( 0.25,       1.0,       0.8125 ),
+    defaulttype::Vec3f( 0.3125,     1.0,         0.75 ),
+    defaulttype::Vec3f( 0.375,      1.0,       0.6875 ),
+    defaulttype::Vec3f( 0.4375,     1.0,        0.625 ),
+    defaulttype::Vec3f( 0.5,        1.0,       0.5625 ),
+    defaulttype::Vec3f( 0.5625,     1.0,          0.5 ),
+    defaulttype::Vec3f( 0.625,      1.0,       0.4375 ),
+    defaulttype::Vec3f( 0.6875,     1.0,        0.375 ),
+    defaulttype::Vec3f( 0.75,       1.0,       0.3125 ),
+    defaulttype::Vec3f( 0.8125,     1.0,         0.25 ),
+    defaulttype::Vec3f( 0.875,      1.0,       0.1875 ),
+    defaulttype::Vec3f( 0.9375,     1.0,        0.125 ),
+    defaulttype::Vec3f( 1.0,        1.0,       0.0625 ),
+    defaulttype::Vec3f( 1.0,        1.0,          0.0 ),
+    defaulttype::Vec3f( 1.0,       0.9375,        0.0 ),
+    defaulttype::Vec3f( 1.0,        0.875,        0.0 ),
+    defaulttype::Vec3f( 1.0,       0.8125,        0.0 ),
+    defaulttype::Vec3f( 1.0,         0.75,        0.0 ),
+    defaulttype::Vec3f( 1.0,       0.6875,        0.0 ),
+    defaulttype::Vec3f( 1.0,        0.625,        0.0 ),
+    defaulttype::Vec3f( 1.0,       0.5625,        0.0 ),
+    defaulttype::Vec3f( 1.0,          0.5,        0.0 ),
+    defaulttype::Vec3f( 1.0,       0.4375,        0.0 ),
+    defaulttype::Vec3f( 1.0,        0.375,        0.0 ),
+    defaulttype::Vec3f( 1.0,       0.3125,        0.0 ),
+    defaulttype::Vec3f( 1.0,         0.25,        0.0 ),
+    defaulttype::Vec3f( 1.0,       0.1875,        0.0 ),
+    defaulttype::Vec3f( 1.0,        0.125,        0.0 ),
+    defaulttype::Vec3f( 1.0,       0.0625,        0.0 ),
+    defaulttype::Vec3f( 1.0,          0.0,        0.0 ),
+    defaulttype::Vec3f( 0.9375,       0.0,        0.0 ),
+    defaulttype::Vec3f( 0.875,        0.0,        0.0 ),
+    defaulttype::Vec3f( 0.8125,       0.0,        0.0 ),
+    defaulttype::Vec3f( 0.75,         0.0,        0.0 ),
+    defaulttype::Vec3f( 0.6875,       0.0,        0.0 ),
+    defaulttype::Vec3f( 0.625,        0.0,        0.0 ),
+    defaulttype::Vec3f( 0.5625,       0.0,        0.0 )
 };
 
 template <class DataTypes>
@@ -130,6 +130,7 @@ class SOFA_COMPONENT_VISUALMODEL_API FlowVisualModel : public core::VisualModel
     typedef typename core::componentmodel::behavior::MechanicalState<DataTypes> FluidState;
     typedef typename core::componentmodel::behavior::MechanicalState<DataTypes> TetraGeometry;
     typedef typename core::componentmodel::behavior::MechanicalState<DataTypes> TriangleGeometry;
+
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
@@ -147,6 +148,7 @@ protected:
     TriangleGeometry* triangleGeometry;
     TetraGeometry* tetraGeometry;
     FluidState* tetraCenters;
+    core::componentmodel::behavior::MechanicalState<DataTypes>* surfaceVolume;
 
     topology::ManifoldTriangleSetTopologyContainer* m_triTopo;
     topology::TriangleSetGeometryAlgorithms<DataTypes>* m_triGeo;
@@ -156,20 +158,25 @@ protected:
     core::Shader* shader;
 
     VecCoord triangleCenters;
-    VecDeriv velocityAtVertex;
+    VecDeriv velocityAtTriangleVertex;
+    VecDeriv velocityAtTetraVertex;
     helper::vector<bool> isPointInTetra;
     helper::vector< helper::vector<unsigned int> >  tetraShellPerTriangleVertex;
+    helper::vector< helper::vector<unsigned int> >  tetraShellPerTetraVertex;
     helper::vector< float > tetraSize;
-    helper::vector<double> normAtVertex;
+    helper::vector<double> normAtTriangleVertex;
+    helper::vector<double> normAtTetraVertex;
     helper::vector<StreamLine> streamLines;
     double meanEdgeLength;
-    double vmax, vmin;
+    double maximumVelocityAtTriangleVertex, minimumVelocityAtTriangleVertex;
+    double maximumVelocityAtTetraVertex, minimumVelocityAtTetraVertex;
 
     unsigned int getIndexClosestPoint(const VecCoord &x, Coord p);
     bool isInDomain(unsigned int index,Coord p);
     bool isInDomainT(unsigned int index,Coord p);
     Coord interpolateVelocity(unsigned int index, Coord p, bool &atEnd);
-    void interpolateVelocityAtVertices();
+    void interpolateVelocityAtTriangleVertices();
+    void interpolateVelocityAtTetraVertices();
 
 public:
     static const double STREAMLINE_NUMBER_OF_POINTS_BY_TRIANGLE;
