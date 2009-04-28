@@ -111,8 +111,8 @@ CudaMasterContactSolver<real>::CudaMasterContactSolver()
     constraintGroups.endEdit();
 
     _numPreviousContact=0;
-    _PreviousContactList = (contactBuf *)malloc(MAX_NUM_CONSTRAINTS * sizeof(contactBuf));
-    _cont_id_list = (long *)malloc(MAX_NUM_CONSTRAINTS * sizeof(long));
+    _PreviousContactList.resize(MAX_NUM_CONSTRAINTS * sizeof(contactBuf));
+    _cont_id_list.resize(MAX_NUM_CONSTRAINTS * sizeof(long));
 }
 
 template<class real>
@@ -136,6 +136,9 @@ void CudaMasterContactSolver<real>::build_LCP()
     simulation::MechanicalAccumulateConstraint(_numConstraints).execute(context);
     _mu = mu.getValue();
 
+    _realNumConstraints = _numConstraints;
+    if (_mu>0.0) _numConstraints = ((_numConstraints+47)/48) * 48;
+    else _numConstraints = ((_numConstraints+15)/16) * 16;
 
     //sout<<" accumulateConstraint_done "  <<sendl;
 
@@ -144,11 +147,8 @@ void CudaMasterContactSolver<real>::build_LCP()
         serr<<endl<<"Error in CudaMasterContactSolver, maximum number of contacts exceeded, "<< _numConstraints/3 <<" contacts detected"<<endl;
         MAX_NUM_CONSTRAINTS=MAX_NUM_CONSTRAINTS+MAX_NUM_CONSTRAINTS;
 
-        free(_PreviousContactList);
-        free(_cont_id_list);
-
-        _PreviousContactList = (contactBuf *)malloc(MAX_NUM_CONSTRAINTS * sizeof(contactBuf));
-        _cont_id_list = (long *)malloc(MAX_NUM_CONSTRAINTS * sizeof(long));
+        _PreviousContactList.resize(MAX_NUM_CONSTRAINTS * sizeof(contactBuf));
+        _cont_id_list.resize(MAX_NUM_CONSTRAINTS * sizeof(long));
     }
 
 
@@ -170,6 +170,12 @@ void CudaMasterContactSolver<real>::build_LCP()
     CudaMechanicalGetConstraintValueVisitor(&_dFree).execute(context);
 //	simulation::MechanicalComputeComplianceVisitor(_W).execute(context);
 
+    for (unsigned i=_realNumConstraints; i<_numConstraints; i++)
+    {
+        _W.set(i,i,1.0);
+        _dFree.set(i,0.0);
+    }
+
 //sout<<" computeCompliance in "  << constraintCorrections.size()<< " constraintCorrections" <<sendl;
 
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
@@ -181,7 +187,7 @@ void CudaMasterContactSolver<real>::build_LCP()
 
     if (initial_guess.getValue())
     {
-        MechanicalGetContactIDVisitor(_cont_id_list).execute(context);
+        MechanicalGetContactIDVisitor(_cont_id_list.data()).execute(context);
         computeInitialGuess();
     }
 }
@@ -426,11 +432,11 @@ void CudaMasterContactSolver<real>::step(double dt)
     if (this->print_info.getValue())
     {
         sout<<"********* Start Iteration : " << _numConstraints << " contacts *********" <<sendl;
-        sout<<"Free Motion\t" << time_Free_Motion <<" ms \t| " << time_Free_Motion*100.0/total << "%" <<sendl;
-        sout<<"ComputeCollision\t" << time_computeCollision <<" ms \t| " << time_computeCollision*100.0/total << "%"  <<sendl;
-        sout<<"Build_LCP\t" << time_build_LCP <<" ms \t| " << time_build_LCP*100.0/total << "%"  <<sendl;
-        sout<<"Solve_LCP\t" << time_solve_LCP <<" ms \t| " << time_solve_LCP*100.0/total << "%"  <<sendl;
-        sout<<"ContactCorrections\t" << time_contactCorrections <<" ms \t| " << time_contactCorrections*100.0/total << "%"  <<sendl;
+        sout<<"Free Motion\t" << time_Free_Motion <<" s \t| " << time_Free_Motion*100.0/total << "%" <<sendl;
+        sout<<"ComputeCollision\t" << time_computeCollision <<" s \t| " << time_computeCollision*100.0/total << "%"  <<sendl;
+        sout<<"Build_LCP\t" << time_build_LCP <<" s \t| " << time_build_LCP*100.0/total << "%"  <<sendl;
+        sout<<"Solve_LCP\t" << time_solve_LCP <<" s \t| " << time_solve_LCP*100.0/total << "%"  <<sendl;
+        sout<<"ContactCorrections\t" << time_contactCorrections <<" s \t| " << time_contactCorrections*100.0/total << "%"  <<sendl;
 
         unsigned nbNnul = 0;
         unsigned sz = _W.colSize() * _W.rowSize();
