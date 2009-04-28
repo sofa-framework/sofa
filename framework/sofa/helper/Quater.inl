@@ -607,7 +607,7 @@ template<class Real>
 Quater<Real> Quater<Real>::createQuaterFromFrame(const defaulttype::Vec<3, Real> &lox, const defaulttype::Vec<3, Real> &loy,const defaulttype::Vec<3, Real> &loz)
 {
     Quater<Real> q;
-    sofa::defaulttype::Mat3x3d m;
+    sofa::defaulttype::Mat<3,3, Real> m;
 
     for (unsigned int i=0 ; i<3 ; i++)
     {
