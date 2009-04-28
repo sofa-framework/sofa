@@ -902,7 +902,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
                 {
                     Edge e = m_container->getEdge (edgevertexshell[j]);
 
-                    if ( (e[0] == thePointSecond) && (e[1] == thePointFirst) || (e[1] == thePointSecond) && (e[0] == thePointFirst))
+                    if ( ((e[0] == thePointSecond) && (e[1] == thePointFirst)) || ((e[1] == thePointSecond) && (e[0] == thePointFirst)))
                     {
                         test = true;
                         break;
