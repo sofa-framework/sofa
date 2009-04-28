@@ -51,12 +51,36 @@ class ManifoldTriangleSetTopologyAlgorithms : public TriangleSetTopologyAlgorith
 
 public:
 
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::Coord Coord;
+
+
     ManifoldTriangleSetTopologyAlgorithms(): TriangleSetTopologyAlgorithms<DataTypes>()
     {}
 
     virtual ~ManifoldTriangleSetTopologyAlgorithms() {}
 
     virtual void init();
+
+
+    /** \brief Split triangles to create edges along a path given as a the list of existing edges and triangles crossed by it.
+     * Each end of the path is given either by an existing point or a point inside the first/last triangle. If the first/last triangle is (TriangleID)-1, it means that to path crosses the boundary of the surface.
+     * @returns the indice of the end point, or -1 if the incision failed.
+     */
+    virtual int SplitAlongPath(unsigned int pa, Coord& a, unsigned int pb, Coord& b,
+            sofa::helper::vector< sofa::core::componentmodel::topology::TopologyObjectType>& topoPath_list,
+            sofa::helper::vector<unsigned int>& indices_list,
+            sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list,
+            sofa::helper::vector<EdgeID>& new_edges, double epsilonSnapPath = 0.0, double epsilonSnapBorder = 0.0);
+
+
+    /** \brief Duplicates the given edges. Only works if at least the first or last point is adjacent to a border.
+     * @returns true if the incision succeeded.
+     */
+    virtual bool InciseAlongEdgeList(const sofa::helper::vector<unsigned int>& edges, sofa::helper::vector<unsigned int>& new_points, sofa::helper::vector<unsigned int>& end_points);
+
+
 
 private:
     ManifoldTriangleSetTopologyContainer*		              m_container;

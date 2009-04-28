@@ -109,7 +109,7 @@ public:
 
 
 
-    /*void SnapAlongPath (sofa::helper::vector<TriangleID>& triangles_list, sofa::helper::vector<EdgeID>& edges_list,
+    /* void SnapAlongPath (sofa::helper::vector<TriangleID>& triangles_list, sofa::helper::vector<EdgeID>& edges_list,
       sofa::helper::vector<double>& coords_list, sofa::helper::vector<double>& points2Snap);*/
 
     void SnapAlongPath (sofa::helper::vector< sofa::core::componentmodel::topology::TopologyObjectType>& topoPath_list,

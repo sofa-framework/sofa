@@ -151,6 +151,17 @@ public:
 
     bool hasBorderElementLists() const;
 
+
+    /** \brief: Create element lists which are on topology border:
+     * - A vector of TriangleID @see m_trianglesOnBorder. ( I.e which have at least: one edge not adjacent
+     to an other Triangle)
+     * - A vector of EdgeID @see m_edgesOnBorder. (I.e which are adjacent to only one Triangle)
+     * - A vector of PointID @see m_pointsOnBorder. (I.e which are part of only one Triangle)
+     * To Do: For the moment use TriangleEdgeShellArray() in the container. To be moved in a mapping class
+     */
+    void createElementsOnBorder();
+
+
 protected:
 
     /** \brief Creates the EdgeSet array.
@@ -191,15 +202,6 @@ protected:
      *
      */
     virtual void createTriangleEdgeShellArray();
-
-    /** \brief: Create element lists which are on topology border:
-     * - A vector of TriangleID @see m_trianglesOnBorder. ( I.e which have at least: one edge not adjacent
-     to an other Triangle)
-     * - A vector of EdgeID @see m_edgesOnBorder. (I.e which are adjacent to only one Triangle)
-     * - A vector of PointID @see m_pointsOnBorder. (I.e which are part of only one Triangle)
-     * To Do: For the moment use TriangleEdgeShellArray() in the container. To be moved in a mapping class
-     */
-    void createElementsOnBorder();
 
 
 private:
