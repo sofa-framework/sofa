@@ -458,6 +458,21 @@ Quater<Real> Quater<Real>::axisToQuat(defaulttype::Vec<3,Real> a, Real phi)
     return *this;
 }
 
+/// Given a quaternion, compute an axis and angle
+template<class Real>
+void Quater<Real>::quatToAxis(defaulttype::Vec<3,Real> & a, Real &phi)
+{
+    const double  sine  = sin( acos(_q[3]) );
+
+    if (!sine)
+        a = defaulttype::Vec<3,Real>(0.0,1.0,0.0);
+    else
+        a = defaulttype::Vec<3,Real>(_q[0],_q[1],_q[2])/ sine;
+
+    phi =  acos(_q[3]) * 2.0 ;
+}
+
+
 template<class Real>
 defaulttype::Vec<3,Real> Quater<Real>::toEulerVector() const
 {
@@ -523,6 +538,86 @@ void Quater<Real>::slerp(const Quater& a, const Quater& b, float t, bool allowFl
 //	return (out << "(" << Q._q[0] << "," << Q._q[1] << "," << Q._q[2] << ","
 //				<< Q._q[3] << ")");
 //}
+
+template<class Real>
+Quater<Real> Quater<Real>::slerp(Quater<Real> &q1, Real t)
+{
+    Quater<Real> q0_1;
+    for (unsigned int i = 0 ; i<3 ; i++)
+        q0_1[i] = -_q[i];
+
+    q0_1[3] = _q[3];
+
+    q0_1 = q1 * q0_1;
+
+    defaulttype::Vec<3,Real> axis, temp;
+    Real angle;
+
+    q0_1.quatToAxis(axis, angle);
+
+    temp = axis * sin(t * angle);
+    for (unsigned int i = 0 ; i<3 ; i++)
+        q0_1[i] = temp[i];
+
+    q0_1[3] = cos(t * angle);
+    q0_1 = q0_1 * (*this);
+    return q0_1;
+}
+
+// Given an axis and angle, compute quaternion.
+template<class Real>
+Quater<Real> Quater<Real>::slerp2(Quater<Real> &q1, Real t)
+{
+    // quaternion to return
+    Quater<Real> qm;
+
+    // Calculate angle between them.
+    double cosHalfTheta = _q[3] * q1[3] + _q[0] * q1[0] + _q[1] * q1[1] + _q[2] * q1[2];
+    // if qa=qb or qa=-qb then theta = 0 and we can return qa
+    if (fabs(cosHalfTheta) >= 1.0)
+    {
+        qm[3] = _q[3]; qm[0] = _q[0]; qm[1] = _q[1]; qm[2] = _q[2];
+        return qm;
+    }
+    // Calculate temporary values.
+    double halfTheta = acos(cosHalfTheta);
+    double sinHalfTheta = sqrt(1.0 - cosHalfTheta*cosHalfTheta);
+    // if theta = 180 degrees then result is not fully defined
+    // we could rotate around any axis normal to qa or qb
+    if (fabs(sinHalfTheta) < 0.001)  // fabs is floating point absolute
+    {
+        qm[3] = (_q[3] * 0.5 + q1[3] * 0.5);
+        qm[0] = (_q[0] * 0.5 + q1[0] * 0.5);
+        qm[1] = (_q[1] * 0.5 + q1[1] * 0.5);
+        qm[2] = (_q[2] * 0.5 + q1[2] * 0.5);
+        return qm;
+    }
+    double ratioA = sin((1 - t) * halfTheta) / sinHalfTheta;
+    double ratioB = sin(t * halfTheta) / sinHalfTheta;
+    //calculate Quaternion.
+    qm[3] = (_q[3] * ratioA + q1[3] * ratioB);
+    qm[0] = (_q[0] * ratioA + q1[0] * ratioB);
+    qm[1] = (_q[1] * ratioA + q1[1] * ratioB);
+    qm[2] = (_q[2] * ratioA + q1[2] * ratioB);
+    return qm;
+
+}
+
+template<class Real>
+Quater<Real> Quater<Real>::createQuaterFromFrame(const defaulttype::Vec<3, Real> &lox, const defaulttype::Vec<3, Real> &loy,const defaulttype::Vec<3, Real> &loz)
+{
+    Quater<Real> q;
+    sofa::defaulttype::Mat3x3d m;
+
+    for (unsigned int i=0 ; i<3 ; i++)
+    {
+        m[i][0] = lox[i];
+        m[i][1] = loy[i];
+        m[i][2] = loz[i];
+    }
+    q.fromMatrix(m);
+    return q;
+}
 
 /// Print quaternion (C style)
 template<class Real>
