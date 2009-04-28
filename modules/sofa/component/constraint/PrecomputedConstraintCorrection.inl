@@ -73,8 +73,7 @@ PrecomputedConstraintCorrection<DataTypes>::PrecomputedConstraintCorrection(beha
 template<class DataTypes>
 PrecomputedConstraintCorrection<DataTypes>::~PrecomputedConstraintCorrection()
 {
-    if(invM && (--invM->nbref) == 0)
-        delete [] invM->data;
+    releaseInverse(invName, invM);
 }
 
 
@@ -86,10 +85,22 @@ PrecomputedConstraintCorrection<DataTypes>::~PrecomputedConstraintCorrection()
 template<class DataTypes>
 typename PrecomputedConstraintCorrection<DataTypes>::InverseStorage* PrecomputedConstraintCorrection<DataTypes>::getInverse(std::string name)
 {
-    static std::map<std::string, InverseStorage> registry;
+    std::map<std::string, InverseStorage>& registry = getInverseMap();
     InverseStorage* m = &(registry[name]);
     ++m->nbref;
     return m;
+}
+
+template<class DataTypes>
+void PrecomputedConstraintCorrection<DataTypes>::releaseInverse(std::string name, InverseStorage* inv)
+{
+    if (inv == NULL) return;
+    std::map<std::string, InverseStorage>& registry = getInverseMap();
+    if (--inv->nbref == 0)
+    {
+        if (inv->data) delete[] inv->data;
+        registry.erase(name);
+    }
 }
 
 template<class DataTypes>
@@ -122,26 +133,27 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
     ss << this->getContext()->getName() << "-" << nbRows << "-" << dt <<".comp";
 
-    invM = getInverse(ss.str());
+    invName = ss.str();
+    invM = getInverse(invName);
 
     if (invM->data == NULL)
     {
         invM->data = new Real[nbRows * nbCols];
 
-        std::ifstream compFileIn(ss.str().c_str(), std::ifstream::binary);
+        std::ifstream compFileIn(invName.c_str(), std::ifstream::binary);
 
-        sout << "try to open : " << ss.str() << endl;
+        sout << "try to open : " << invName << endl;
 
         if(compFileIn.good())
         {
-            sout << "file open : " << ss.str() << " compliance being loaded" << endl;
+            sout << "file open : " << invName << " compliance being loaded" << endl;
             //complianceLoaded = true;
             compFileIn.read((char*)invM->data, nbCols * nbRows*sizeof(double));
             compFileIn.close();
         }
         else
         {
-            sout << "can not open : " << ss.str() << " compliance being built" << endl;
+            sout << "can not open : " << invName << " compliance being built" << endl;
 
             // for the intial computation, the gravity has to be put at 0
             const Vec3d gravity = this->getContext()->getGravityInWorld();
@@ -288,7 +300,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
                 CGlinearSolver->f_smallDenominatorThreshold.setValue(buf_threshold);
             }
             ///////////////////////////////////////////////////////////////////////////////////////////////
-            std::ofstream compFileOut(ss.str().c_str(), std::fstream::out | std::fstream::binary);
+            std::ofstream compFileOut(invName.c_str(), std::fstream::out | std::fstream::binary);
             compFileOut.write((char*)invM->data, nbCols * nbRows*sizeof(double));
             compFileOut.close();
         }
@@ -356,12 +368,6 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
 
 
-}
-
-template<>
-PrecomputedConstraintCorrection<defaulttype::Vec3Types>::~PrecomputedConstraintCorrection()
-{
-    delete [] appCompliance;
 }
 
 
