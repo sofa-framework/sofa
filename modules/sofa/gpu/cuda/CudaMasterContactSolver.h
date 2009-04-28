@@ -280,6 +280,7 @@ private:
     void build_LCP();
 
     unsigned int _numConstraints;
+    unsigned int _realNumConstraints;
     double _mu;
     simulation::Node *context;
 
@@ -298,9 +299,9 @@ private:
 
     } contactBuf;
 
-    contactBuf *_PreviousContactList;
+    std::vector<contactBuf> _PreviousContactList;
     unsigned int _numPreviousContact;
-    long *_cont_id_list;
+    std::vector<long> _cont_id_list;
 };
 
 } // namespace odesolver
