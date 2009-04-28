@@ -102,9 +102,9 @@ void TriangleModel::init()
     getContext()->get<TopologicalMapping>( &topoVec, core::objectmodel::BaseContext::SearchRoot );
     _higher_topo = _topology;
     _higher_mstate = mstate;
-    while ( _topoMapping )
+    bool found = false;
+    while ( !found )
     {
-        bool found = false;
         for( vector<TopologicalMapping*>::iterator it = topoVec.begin(); it != topoVec.end(); it++)
         {
             if( (*it)->getTo() == _higher_topo)
@@ -118,10 +118,10 @@ void TriangleModel::init()
                 //					_higher_mstate = dynamic_cast< sofa::simulation::Node* > (_higher_topo->getContext())->mechanicalState;
             }
         }
-        if( !found) break;
     }
     if ( _topoMapping && !_higher_topo ) { serr << "Topological Mapping " << _topoMapping->getName() << " returns a from topology equals to NULL." << sendl; return;}
     else if ( _higher_topo != _topology ) sout << "Using the " << _higher_topo->getClassName() << " \"" << _higher_topo->getName() << "\" to compute the bounding trees." << sendl;
+    else sout << "Keeping the " << _higher_topo->getClassName() << " \"" << _higher_topo->getName() << "\" to compute the bounding trees." << sendl;
 
     //sout << "INFO_print : Col - init TRIANGLE " << sendl;
     sout << "TriangleModel: initially "<<_topology->getNbTriangles()<<" triangles." << sendl;
@@ -624,8 +624,7 @@ void TriangleModel::computeBoundingTree(int maxDepth)
 
     needsUpdate=false;
     Vector3 minElem, maxElem;
-    //const VecCoord& x = *this->mstate->getX();
-    const VecCoord& x = *_higher_mstate->getX();
+    const VecCoord& x = *this->mstate->getX();
 
     const bool calcNormals = computeNormals.getValue();
 
