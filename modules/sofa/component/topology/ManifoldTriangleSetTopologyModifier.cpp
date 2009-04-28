@@ -759,26 +759,21 @@ void ManifoldTriangleSetTopologyModifier::addRemoveTriangles (const unsigned int
     reorderingTopologyOnROI (vertexROI2Remesh);
 
     bool topo = m_container->checkTopology();
-
-    if (!topo) //IN DEVELOPMENT
+    if (!topo) //IN DEVELOPMENT (probably only in NDEBUG
     {
-        std::cout <<" ouch " << std::endl;
-        //on repasse une couche:
-        sofa::helper::vector <unsigned int> monster;
+        std::cout <<"WARNING. [ManifoldTriangleSetTopologyModifier::addRemoveTriangles] The topology wasn't manifold after reordering the ROI. Reordering the whole triangulation." << std::endl;
+
+        sofa::helper::vector <unsigned int> allmesh;
         for (int i = 0; i <m_container->getNbPoints(); i++)
-            monster.push_back (i);
+            allmesh.push_back (i);
 
-
-        reorderingTopologyOnROI (monster);
-        topo = m_container->checkTopology();
+        reorderingTopologyOnROI (allmesh);
     }
 
-
 #ifndef NDEBUG
-    if(!topo)
+    if(!m_container->checkTopology())
         sout << "Error. [ManifoldTriangleSetTopologyModifier::addRemoveTriangles] The topology is not any more Manifold." << endl;
 #endif
-
 }
 
 
@@ -852,37 +847,36 @@ void ManifoldTriangleSetTopologyModifier::edgeSwap(const EdgeID& edgeIndex)
 {
 
     sofa::helper::vector < unsigned int > listVertex;
-    sofa::helper::vector< Triangle > triToAdd;
-    TriangleID indexTri1, indexTri2;
+    sofa::helper::vector< Triangle > triToAdd; triToAdd.resize (2);
+    sofa::helper::vector< TriangleID > triToAddID; triToAddID.resize (2);
+    sofa::helper::vector< sofa::helper::vector< unsigned int > > ancestors; ancestors.resize(2);
+    sofa::helper::vector< sofa::helper::vector< double > > baryCoefs; baryCoefs.resize (2);
+    sofa::helper::vector< TriangleID > trianglesIndex2remove; trianglesIndex2remove.resize(2);
 
-    const sofa::helper::vector <unsigned int>& shell = m_container->getTriangleEdgeShellArray()[edgeIndex];
+    trianglesIndex2remove = m_container->getTriangleEdgeShellArray()[edgeIndex];
 
-    if(shell.size()>2)
+    if(trianglesIndex2remove.size()>2)
     {
         std::cout << "Error: edgeSwap: the topology is not manifold around the input edge: "<< edgeIndex << std::endl;
         return;
     }
-    else if (shell.size() == 1)
+    else if (trianglesIndex2remove.size() == 1)
     {
         std::cout << "Error: edgeSwap: the edge: "<< edgeIndex << " is on the border of the mesh. Swaping this edge is impossible" << std::endl;
         return;
     }
 
-
-    indexTri1 = shell[0];
-    indexTri2 = shell[1];
-
-    int edgeInTri1 = m_container->getEdgeIndexInTriangle ( m_container->getEdgeTriangleShell (indexTri1), edgeIndex);
-    int edgeInTri2 = m_container->getEdgeIndexInTriangle ( m_container->getEdgeTriangleShell (indexTri2), edgeIndex);
-    Triangle vertexTriangle1 = m_container->getTriangleArray()[indexTri1];
-    Triangle vertexTriangle2 = m_container->getTriangleArray()[indexTri2];
+    int edgeInTri1 = m_container->getEdgeIndexInTriangle ( m_container->getEdgeTriangleShell (trianglesIndex2remove[0]), edgeIndex);
+    int edgeInTri2 = m_container->getEdgeIndexInTriangle ( m_container->getEdgeTriangleShell (trianglesIndex2remove[1]), edgeIndex);
+    Triangle vertexTriangle1 = m_container->getTriangle (trianglesIndex2remove[0]);
+    Triangle vertexTriangle2 = m_container->getTriangle (trianglesIndex2remove[1]);
 
     Triangle newTri;
 
     newTri[0] = vertexTriangle1[ edgeInTri1 ];
     newTri[1] = vertexTriangle1[ (edgeInTri1+1)%3 ];
     newTri[2] = vertexTriangle2[ edgeInTri2 ];
-    triToAdd.push_back (newTri);
+    triToAdd[0] = newTri;
 
     listVertex.push_back (newTri[0]);
     listVertex.push_back (newTri[1]);
@@ -891,35 +885,19 @@ void ManifoldTriangleSetTopologyModifier::edgeSwap(const EdgeID& edgeIndex)
     newTri[0] = vertexTriangle2[ edgeInTri2 ];
     newTri[1] = vertexTriangle2[ (edgeInTri2+1)%3 ];
     newTri[2] = vertexTriangle1[ edgeInTri1 ];
-    triToAdd.push_back (newTri);
+    triToAdd[1] = newTri;
 
     listVertex.push_back (newTri[1]);
 
-    //add new....
-    //create event?
-    addSingleTriangleProcess (triToAdd[0]);
+    for (unsigned int i = 0; i <2; i++)
+    {
+        ancestors[i].push_back (trianglesIndex2remove[0]); baryCoefs[i].push_back (0.5);
+        ancestors[i].push_back (trianglesIndex2remove[1]); baryCoefs[i].push_back (0.5);
+    }
+    triToAddID[0] = m_container->getNbTriangles();
+    triToAddID[1] = m_container->getNbTriangles()+1;
 
-    //create event?
-    addSingleTriangleProcess (triToAdd[1]);
-
-    //propagate event?
-
-
-    sofa::helper::vector < TriangleID>  new_triangles_id;
-    new_triangles_id.push_back (m_container->getNbTriangles()-2);
-    new_triangles_id.push_back (m_container->getNbTriangles()-1);
-
-    addTrianglesWarning(2, triToAdd, new_triangles_id);
-
-    //removing previous...
-    sofa::helper::vector< unsigned int > triToRemove;
-    triToRemove.push_back(indexTri1);
-    triToRemove.push_back(indexTri2);
-
-    removeTriangles(triToRemove, true, true);
-
-    //reordonner topology around vertices....
-    reorderingTopologyOnROI (listVertex);
+    addRemoveTriangles (triToAdd.size(), triToAdd, triToAddID, ancestors, baryCoefs, trianglesIndex2remove);
 }
 
 
