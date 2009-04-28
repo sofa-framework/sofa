@@ -30,6 +30,8 @@
 #include <sofa/component/topology/TriangleData.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/component/topology/Hexa2TriangleTopologicalMapping.h>
+#include <sofa/component/topology/MultilevelHexa2TriangleTopologicalMapping.h>
 
 #include <map>
 
@@ -43,6 +45,7 @@ namespace collision
 {
 
 using namespace sofa::defaulttype;
+using namespace sofa::component::topology;
 
 class TriangleModel;
 
@@ -134,6 +137,10 @@ protected:
     int meshRevision;
 
     sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
+
+    BaseMeshTopology* _higher_topo;
+    core::componentmodel::behavior::MechanicalState<Vec3Types>* _higher_mstate;
+    //core::componentmodel::behavior::BaseMechanicalState* _higher_mstate;
 
 public:
 
