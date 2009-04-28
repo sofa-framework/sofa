@@ -25,7 +25,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/io/MeshTopologyLoader.h>
-#include <sofa/helper/io/Mesh.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/defaulttype/Vec.h>
 
@@ -65,7 +64,7 @@ static bool readLine(char* buf, int size, FILE* f)
 
 bool MeshTopologyLoader::loadObj(const char *filename)
 {
-    helper::io::Mesh* mesh = helper::io::Mesh::Create(filename);
+    mesh = helper::io::Mesh::Create(filename);
     if (mesh==NULL)
         return false;
 
@@ -135,7 +134,7 @@ bool MeshTopologyLoader::loadObj(const char *filename)
 #endif
     }
 
-    delete mesh;
+//    delete mesh;
     return true;
 }
 

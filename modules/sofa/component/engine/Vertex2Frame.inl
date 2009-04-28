@@ -16,63 +16,56 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                              SOFA :: Framework                              *
+*                               SOFA :: Modules                               *
 *                                                                             *
-* Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
-* H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
-* M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_IO_MESHTOPOLOGYLOADER_H
-#define SOFA_HELPER_IO_MESHTOPOLOGYLOADER_H
+#ifndef SOFA_COMPONENT_ENGINE_VERTEX2FRAME_INL
+#define SOFA_COMPONENT_ENGINE_VERTEX2FRAME_INL
 
-#include <stdio.h>
-#include <sofa/helper/helper.h>
-#include <sofa/helper/io/Mesh.h>
+#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
+#pragma once
+#endif
+
+#include <sofa/component/engine/Vertex2Frame.h>
 
 namespace sofa
 {
 
-namespace helper
+namespace component
 {
 
-namespace io
+namespace engine
 {
 
-class SOFA_HELPER_API MeshTopologyLoader
+
+template <class DataTypes>
+Vertex2Frame<DataTypes>::Vertex2Frame():
+    vertices(initData(&vertices,"vertices","Vertices of the mesh loaded"))
+    , texCoords(initData(&texCoords,"texCoords","TexCoords of the mesh loaded"))
+    , normals(initData(&normals,"normals","Normals of the mesh loaded"))
+    , facets(initData(&facets,"facets","Facets of the mesh loaded"))
+    , frames( initData (&frames, "frames", "Frames at output") )
 {
-public:
-    MeshTopologyLoader():mesh(NULL) {}
-    virtual ~MeshTopologyLoader() {}
-    bool load(const char *filename);
-    virtual void setNbPoints(int /*n*/) {}
-    virtual void setNbLines(int /*n*/) {}
-    virtual void setNbEdges(int /*n*/) {}
-    virtual void setNbTriangles(int /*n*/) {}
-    virtual void setNbQuads(int /*n*/) {}
-    virtual void setNbTetras(int /*n*/) {}
-    virtual void setNbCubes(int /*n*/) {}
-    virtual void addPoint(double /*px*/, double /*py*/, double /*pz*/) {}
-    virtual void addLine(int /*p1*/, int /*p2*/) {}
-    virtual void addTriangle(int /*p1*/, int /*p2*/, int /*p3*/) {}
-    virtual void addQuad(int /*p1*/, int /*p2*/, int /*p3*/, int /*p4*/) {}
-    virtual void addTetra(int /*p1*/, int /*p2*/, int /*p3*/, int /*p4*/) {}
-    virtual void addCube(int /*p1*/, int /*p2*/, int /*p3*/, int /*p4*/, int /*p5*/, int /*p6*/, int /*p7*/, int /*p8*/) {}
-private:
-    bool loadObj(const char *filename);
-    bool loadMeshFile(const char *filename);
+    addInput(&vertices);
+    addInput(&texCoords);
+    addInput(&normals);
+    addInput(&facets);
 
-    bool loadGmsh(FILE *, const int);
-    bool loadXsp(FILE *, bool);
-    bool loadMesh(FILE *);
-protected:
-    helper::io::Mesh* mesh;
-};
+    addOutput(&frames);
+}
 
-} // namespace io
+template <class DataTypes>
+void Vertex2Frame<DataTypes>::update()
+{
+    dirty = false;
+}
 
-} // namespace helper
+} // namespace engine
+
+} // namespace component
 
 } // namespace sofa
 

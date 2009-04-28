@@ -16,64 +16,51 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                              SOFA :: Framework                              *
+*                               SOFA :: Modules                               *
 *                                                                             *
-* Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
-* H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
-* M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_IO_MESHTOPOLOGYLOADER_H
-#define SOFA_HELPER_IO_MESHTOPOLOGYLOADER_H
-
-#include <stdio.h>
-#include <sofa/helper/helper.h>
-#include <sofa/helper/io/Mesh.h>
+#define SOFA_COMPONENT_ENGINE_VERTEX2FRAME_CPP
+#include <sofa/component/engine/Vertex2Frame.inl>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/component/component.h>
 
 namespace sofa
 {
 
-namespace helper
+namespace component
 {
 
-namespace io
+namespace engine
 {
 
-class SOFA_HELPER_API MeshTopologyLoader
-{
-public:
-    MeshTopologyLoader():mesh(NULL) {}
-    virtual ~MeshTopologyLoader() {}
-    bool load(const char *filename);
-    virtual void setNbPoints(int /*n*/) {}
-    virtual void setNbLines(int /*n*/) {}
-    virtual void setNbEdges(int /*n*/) {}
-    virtual void setNbTriangles(int /*n*/) {}
-    virtual void setNbQuads(int /*n*/) {}
-    virtual void setNbTetras(int /*n*/) {}
-    virtual void setNbCubes(int /*n*/) {}
-    virtual void addPoint(double /*px*/, double /*py*/, double /*pz*/) {}
-    virtual void addLine(int /*p1*/, int /*p2*/) {}
-    virtual void addTriangle(int /*p1*/, int /*p2*/, int /*p3*/) {}
-    virtual void addQuad(int /*p1*/, int /*p2*/, int /*p3*/, int /*p4*/) {}
-    virtual void addTetra(int /*p1*/, int /*p2*/, int /*p3*/, int /*p4*/) {}
-    virtual void addCube(int /*p1*/, int /*p2*/, int /*p3*/, int /*p4*/, int /*p5*/, int /*p6*/, int /*p7*/, int /*p8*/) {}
-private:
-    bool loadObj(const char *filename);
-    bool loadMeshFile(const char *filename);
+using namespace sofa::defaulttype;
 
-    bool loadGmsh(FILE *, const int);
-    bool loadXsp(FILE *, bool);
-    bool loadMesh(FILE *);
-protected:
-    helper::io::Mesh* mesh;
-};
+SOFA_DECL_CLASS(Vertex2Frame)
 
-} // namespace io
+int Vertex2FrameClass = core::RegisterObject("")
+#ifndef SOFA_FLOAT
+        .add< Vertex2Frame<Rigid3dTypes> >()
+#endif //SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+        .add< Vertex2Frame<Rigid3fTypes> >()
+#endif //SOFA_DOUBLE
+        ;
 
-} // namespace helper
+#ifndef SOFA_FLOAT
+template class SOFA_COMPONENT_ENGINE_API Vertex2Frame<Rigid3dTypes>;
+#endif //SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+template class SOFA_COMPONENT_ENGINE_API Vertex2Frame<Rigid3fTypes>;
+#endif //SOFA_DOUBLE
+
+
+} // namespace constraint
+
+} // namespace component
 
 } // namespace sofa
 
-#endif
