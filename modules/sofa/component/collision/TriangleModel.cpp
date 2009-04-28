@@ -96,33 +96,6 @@ void TriangleModel::init()
         return;
     }
 
-    // Test if _topology depend on an higher topology (to compute Bounding Tree faster) and get it
-    TopologicalMapping* _topoMapping = NULL;
-    vector<TopologicalMapping*> topoVec;
-    getContext()->get<TopologicalMapping>( &topoVec, core::objectmodel::BaseContext::SearchRoot );
-    _higher_topo = _topology;
-    _higher_mstate = mstate;
-    bool found = false;
-    while ( !found )
-    {
-        for( vector<TopologicalMapping*>::iterator it = topoVec.begin(); it != topoVec.end(); it++)
-        {
-            if( (*it)->getTo() == _higher_topo)
-            {
-                found = true;
-                _topoMapping = *it;
-                _higher_topo = _topoMapping->getFrom();
-                if( !_higher_topo) break;
-                sofa::simulation::Node* node = static_cast< sofa::simulation::Node* > (_higher_topo->getContext());
-                _higher_mstate = dynamic_cast< core::componentmodel::behavior::MechanicalState<Vec3Types>* > (node->getMechanicalState());
-                //					_higher_mstate = dynamic_cast< sofa::simulation::Node* > (_higher_topo->getContext())->mechanicalState;
-            }
-        }
-    }
-    if ( _topoMapping && !_higher_topo ) { serr << "Topological Mapping " << _topoMapping->getName() << " returns a from topology equals to NULL." << sendl; return;}
-    else if ( _higher_topo != _topology ) sout << "Using the " << _higher_topo->getClassName() << " \"" << _higher_topo->getName() << "\" to compute the bounding trees." << sendl;
-    else sout << "Keeping the " << _higher_topo->getClassName() << " \"" << _higher_topo->getName() << "\" to compute the bounding trees." << sendl;
-
     //sout << "INFO_print : Col - init TRIANGLE " << sendl;
     sout << "TriangleModel: initially "<<_topology->getNbTriangles()<<" triangles." << sendl;
     triangles = &_topology->getTriangles();
@@ -628,16 +601,14 @@ void TriangleModel::computeBoundingTree(int maxDepth)
 
     const bool calcNormals = computeNormals.getValue();
 
-    if (maxDepth == 0) // There is no hierarchy
+    if (maxDepth == 0)
     {
-        if (empty()) // If empty, let cubeModel empty
+        // no hierarchy
+        if (empty())
             cubeModel->resize(0);
         else
         {
-            // Else, reconstruct cubeModel
             cubeModel->resize(1);
-
-            // First, compute the min and max elements
             minElem = x[0];
             maxElem = x[0];
             for (unsigned i=1; i<x.size(); i++)
@@ -650,8 +621,6 @@ void TriangleModel::computeBoundingTree(int maxDepth)
                 if (pt1[2] > maxElem[2]) maxElem[2] = pt1[2];
                 else if (pt1[2] < minElem[2]) minElem[2] = pt1[2];
             }
-
-            // Then, compute the normals
             if (calcNormals)
                 for (int i=0; i<size; i++)
                 {
@@ -660,22 +629,38 @@ void TriangleModel::computeBoundingTree(int maxDepth)
                     const Vector3& pt2 = x[t.p2Index()];
                     const Vector3& pt3 = x[t.p3Index()];
 
+                    /*for (int c = 0; c < 3; c++)
+                    {
+                        if (i==0)
+                        {
+                    	minElem[c] = pt1[c];
+                    	maxElem[c] = pt1[c];
+                        }
+                        else
+                        {
+                    	if (pt1[c] > maxElem[c]) maxElem[c] = pt1[c];
+                    	else if (pt1[c] < minElem[c]) minElem[c] = pt1[c];
+                        }
+                        if (pt2[c] > maxElem[c]) maxElem[c] = pt2[c];
+                        else if (pt2[c] < minElem[c]) minElem[c] = pt2[c];
+                        if (pt3[c] > maxElem[c]) maxElem[c] = pt3[c];
+                        else if (pt3[c] < minElem[c]) minElem[c] = pt3[c];
+                    }*/
+
+                    // Also recompute normal vector
                     t.n() = cross(pt2-pt1,pt3-pt1);
                     t.n().normalize();
 
                 }
-
-            // Finaly, add the new computed cube to the tree
             cubeModel->setLeafCube(0, std::make_pair(this->begin(),this->end()), minElem, maxElem); // define the bounding box of the current triangle
         }
     }
-    else // If there is a hierarchy
+    else
     {
 
         cubeModel->resize(size);  // size = number of triangles
         if (!empty())
         {
-            // Compute the min and max elements
             for (int i=0; i<size; i++)
             {
                 Triangle t(this,i);
