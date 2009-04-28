@@ -191,6 +191,10 @@ public:
     // the given vector) and an angle about which to rotate.  The angle is
     // expressed in radians.
     Quater axisToQuat(defaulttype::Vec<3,Real> a, Real phi);
+    void quatToAxis(defaulttype::Vec<3,Real> & a, Real &phi);
+
+
+    Quater createQuaterFromFrame(const defaulttype::Vec<3, Real> &lox, const defaulttype::Vec<3, Real> &loy,const defaulttype::Vec<3, Real> &loz);
 
     /// Create using rotation vector (axis*angle) given in parent coordinates
     template<class V>
@@ -253,6 +257,8 @@ public:
 
     // Print the quaternion (C style)
     void print();
+    Quater<Real> slerp(Quater<Real> &q1, Real t);
+    Quater<Real> slerp2(Quater<Real> &q1, Real t);
 
     void operator+=(const Quater& q2);
     void operator*=(const Quater& q2);
