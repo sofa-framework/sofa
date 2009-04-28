@@ -669,8 +669,6 @@ void FlowVisualModel<DataTypes>::drawTetra()
 
     //glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
     //glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-    std::vector< Vector3 > points[4];
-    std::vector< Vec<4, float> >colors[4];
     Vec<4, float> colorsTemp[4];
     int indColors[4];
     const VecCoord& x = *this->tetraGeometry->getX();
