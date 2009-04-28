@@ -1436,34 +1436,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
 
 
     //Add and remove triangles lists
-    //		m_modifier->addRemoveTriangles (new_triangles.size(), new_triangles, new_triangles_id, triangles_ancestors, triangles_barycoefs, removed_triangles);
-
-    /*
-    for (unsigned int i = 0; i < new_triangles.size(); i++)
-    {
-      std::cout << "TriangleID: " << new_triangles_id[i] << " => " << new_triangles[i] << std::endl;
-    }
-
-    std::cout << "***************************" << std::endl;
-    std::cout << "Triangles to remove: " << removed_triangles << std::endl;
-    */
-
-
-    // Create all the triangles registered to be created
-    m_modifier->addTrianglesProcess(new_triangles); // WARNING called after the creation process by the method "addTrianglesProcess"
-
-    // Warn for the creation of all the triangles registered to be created
-    m_modifier->addTrianglesWarning(new_triangles.size(), new_triangles, new_triangles_id);
-
-    // Propagate the topological changes *** not necessary
-    m_modifier->propagateTopologicalChanges();
-
-    // Remove all the triangles registered to be removed
-    m_modifier->removeTriangles(removed_triangles, true, true); // (WARNING then PROPAGATION) called before the removal process by the method "removeTriangles"
-
-    // Propagate the topological changes *** not necessary
-    //m_modifier->propagateTopologicalChanges();
-
+    m_modifier->addRemoveTriangles (new_triangles.size(), new_triangles, new_triangles_id, triangles_ancestors, triangles_barycoefs, removed_triangles);
 
     for (unsigned int i = 0; i < new_edge_points.size()-1; ++i)
     {
