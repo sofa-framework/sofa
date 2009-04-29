@@ -390,23 +390,28 @@ void PrecomputedConstraintCorrection<DataTypes>::getCompliance(defaulttype::Base
 
 
     /////////// Which node are involved with the contact ?/////
-    std::list<int> activeDof;
+    //std::list<int> activeDof;
+    for (unsigned int i=0; i<_indexNodeSparseCompliance.size(); ++i)
+        _indexNodeSparseCompliance[i] = -1;
     for(unsigned int c1 = 0; c1 < numConstraints; c1++)
     {
         CConstraintIterator itConstraint;
         for (itConstraint=constraints[c1].getData().begin(); itConstraint!=constraints[c1].getData().end(); itConstraint++)
         {
             unsigned int dof = itConstraint->first;
-            activeDof.push_back(dof);
+            //activeDof.push_back(dof);
+            _indexNodeSparseCompliance[dof]=0;
         }
     }
     //unsigned int numNodes1 = activeDof.size();
     //sout<< "numNodes : avant = "<<numNodes1;
-    activeDof.sort();
-    activeDof.unique();
+    //activeDof.sort();
+    //activeDof.unique();
     //	unsigned int numNodes = activeDof.size();
     //sout<< " apres = "<<numNodes<<sendl;
-
+    int nActiveDof = 0;
+    for (unsigned int i=0; i<_indexNodeSparseCompliance.size(); ++i)
+        if (_indexNodeSparseCompliance[i]==0) ++nActiveDof;
 
     ////////////////////////////////////////////////////////////
     unsigned int offset, offset2;
@@ -417,11 +422,14 @@ void PrecomputedConstraintCorrection<DataTypes>::getCompliance(defaulttype::Base
 
     //////////////////////////////////////////
     //std::vector<Deriv> sparseCompliance;
-    _sparseCompliance.resize(activeDof.size()*numConstraints);
-    std::list<int>::iterator IterateurListe;
-    for(IterateurListe=activeDof.begin(); IterateurListe!=activeDof.end(); IterateurListe++)
+    _sparseCompliance.resize(nActiveDof*numConstraints);
+    //std::list<int>::iterator IterateurListe;
+    //for(IterateurListe=activeDof.begin();IterateurListe!=activeDof.end();IterateurListe++)
+    //  {
+    //  int NodeIdx = (*IterateurListe);
+    for (int NodeIdx = 0; NodeIdx < (int)_indexNodeSparseCompliance.size(); ++NodeIdx)
     {
-        int NodeIdx = (*IterateurListe);
+        if (_indexNodeSparseCompliance[NodeIdx] == -1) continue;
         _indexNodeSparseCompliance[NodeIdx]=it;
         for(curColConst = 0; curColConst < numConstraints; curColConst++)
         {
@@ -1031,6 +1039,180 @@ void PrecomputedConstraintCorrection<defaulttype::Vec1fTypes>::rotateResponse()
 
 #endif
 
+
+
+
+// new API for non building the constraint system during solving process //
+
+template<class DataTypes>
+void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(double * f, std::list<int>& /*renumbering*/)
+{
+    constraint_force = f;
+    VecConst& constraints = *mstate->getC();
+    localConstraintId = &(mstate->getConstraintId());
+    unsigned int numConstraints = constraints.size();
+
+    /////////// The constraints on the same nodes are gathered //////////////////////
+    //gatherConstraints();
+    /////////////////////////////////////////////////////////////////////////////////
+
+    /////////// The constraints are modified using a rotation value at each node/////
+    if(_rotations)
+        rotateConstraints();
+    /////////////////////////////////////////////////////////////////////////////////
+
+
+    /////////// Which node are involved with the contact ?/////
+    std::list<int> activeDof;
+    for(unsigned int c1 = 0; c1 < numConstraints; c1++)
+    {
+        CConstraintIterator itConstraint;
+        for (itConstraint=constraints[c1].getData().begin(); itConstraint!=constraints[c1].getData().end(); itConstraint++)
+        {
+            unsigned int dof = itConstraint->first;
+            activeDof.push_back(dof);
+        }
+    }
+    //unsigned int numNodes1 = activeDof.size();
+    //sout<< "numNodes : avant = "<<numNodes1;
+    activeDof.sort();
+    activeDof.unique();
+    //	unsigned int numNodes = activeDof.size();
+    //sout<< " apres = "<<numNodes<<sendl;
+
+
+    ////////////////////////////////////////////////////////////
+    unsigned int offset, offset2;
+    unsigned int ii,jj, curRowConst, curColConst, it;
+    Deriv Vbuf;
+    //int indexCurColConst, indexCurRowConst;
+    it=0;
+
+    //////////////////////////////////////////
+    //std::vector<Deriv> sparseCompliance;
+    _sparseCompliance.resize(activeDof.size()*numConstraints);
+    std::list<int>::iterator IterateurListe;
+    for(IterateurListe=activeDof.begin(); IterateurListe!=activeDof.end(); IterateurListe++)
+    {
+        int NodeIdx = (*IterateurListe);
+        _indexNodeSparseCompliance[NodeIdx]=it;
+        for(curColConst = 0; curColConst < numConstraints; curColConst++)
+        {
+            //indexCurColConst = mstate->getConstraintId()[curColConst];
+
+            Vbuf.clear();
+            CConstraintIterator itConstraint;
+            for (itConstraint=constraints[curColConst].getData().begin(); itConstraint!=constraints[curColConst].getData().end(); itConstraint++)
+            {
+                unsigned int dof = itConstraint->first;
+                const Deriv n2 = itConstraint->second;
+                offset = dof_on_node*(NodeIdx * nbCols +  dof);
+
+                for (ii=0; ii<dof_on_node; ii++)
+                {
+                    offset2 = offset+ii*nbCols;
+                    for (jj=0; jj<dof_on_node; jj++)
+                    {
+                        Vbuf[ii] += appCompliance[offset2 + jj] * n2[jj];
+                    }
+                }
+            }
+            _sparseCompliance[it]=Vbuf;
+            it++;
+        }
+    }
+
+    id_to_localIndex.clear();
+    for(unsigned int i=0; i<numConstraints; ++i)
+    {
+        unsigned int c = (*localConstraintId)[i];
+        if (c >= id_to_localIndex.size()) id_to_localIndex.resize(c+1,-1);
+        if (id_to_localIndex[c] != -1)
+            serr << "duplicate entry in constraints for id " << c << " : " << id_to_localIndex[c] << " + " << i << sendl;
+        id_to_localIndex[c] = i;
+    }
+
+    localW.resize(numConstraints,numConstraints);
+
+    for(curRowConst = 0; curRowConst < numConstraints; curRowConst++)
+    {
+        //indexCurRowConst = mstate->getConstraintId()[curRowConst];//global index of constraint
+
+        ConstraintIterator itConstraint;
+        for (itConstraint=constraints[curRowConst].getData().begin(); itConstraint!=constraints[curRowConst].getData().end(); itConstraint++)
+        {
+            const int NodeIdx = itConstraint->first;
+            const Deriv n1 = itConstraint->second;
+
+            unsigned int temp =(unsigned int) _indexNodeSparseCompliance[NodeIdx];
+            for(curColConst = curRowConst; curColConst < numConstraints; curColConst++)
+            {
+                //indexCurColConst = mstate->getConstraintId()[curColConst];
+                double w = _sparseCompliance[temp + curColConst]*n1;
+                //W[indexCurRowConst][indexCurColConst] += w;
+                //sout << "W("<<indexCurRowConst<<","<<indexCurColConst<<") = "<<w<<sendl;
+                //W->add(indexCurRowConst, indexCurColConst, w);
+                //if (indexCurRowConst != indexCurColConst)
+                //  W->add(indexCurColConst, indexCurRowConst, w);
+                localW.add(curRowConst, curColConst, w);
+                if (curRowConst != curColConst)
+                    localW.add(curColConst, curRowConst, w);
+            }
+        }
+        /*
+        //Compliance matrix is symetric ?
+        for(unsigned int curColConst = curRowConst+1; curColConst < numConstraints; curColConst++)
+        {
+        int indexCurColConst = mstate->getConstraintId()[curColConst];
+        W[indexCurColConst][indexCurRowConst] = W[indexCurRowConst][indexCurColConst];
+        }
+        */
+    }
+}
+
+template<class DataTypes>
+bool PrecomputedConstraintCorrection<DataTypes>::hasConstraintNumber(int index)
+{
+    return ((std::size_t)index) < id_to_localIndex.size() && id_to_localIndex[index] >= 0;
+}
+
+template<class DataTypes>
+void PrecomputedConstraintCorrection<DataTypes>::addConstraintDisplacement(double *d, int begin,int end)
+{
+    unsigned int numConstraints = localConstraintId->size();
+    for (int id_=begin; id_<=end; id_++)
+    {
+        int c = id_to_localIndex[id_];
+        double dc = d[id_];
+        for (unsigned int j=0; j<numConstraints; ++j)
+            dc += localW.element(c,j) * constraint_force[(*localConstraintId)[j]];
+        d[id_] = dc;
+    }
+}
+
+template<class DataTypes>
+void PrecomputedConstraintCorrection<DataTypes>::setConstraintDForce(double *df, int begin, int end, bool update)
+{
+}
+
+template<class DataTypes>
+void PrecomputedConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, int begin, int end)
+{
+    for (int id1=begin; id1<=end; id1++)
+    {
+        int c1 = id_to_localIndex[id1];
+        for (int id2= id1; id2<=end; id2++)
+        {
+            int c2 = id_to_localIndex[id2];
+            Real w = localW.element(c1,c2);
+            W->add(id1, id2, w);
+            if (id1 != id2)
+                W->add(id2, id1, w);
+        }
+    }
+}
+
+/////////////////////////////////////////////////////////////////////////////////
 
 
 } // namespace collision

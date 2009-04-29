@@ -29,6 +29,7 @@
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/component/forcefield/TetrahedronFEMForceField.h>
 
+#include <sofa/component/linearsolver/FullMatrix.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
 
@@ -89,6 +90,20 @@ public:
 
 
     virtual void resetContactForce();
+
+
+    // new API for non building the constraint system during solving process //
+
+    virtual void resetForUnbuiltResolution(double * f, std::list<int>& /*renumbering*/)  ;
+
+    virtual bool hasConstraintNumber(int index) ;  // virtual ???
+
+    virtual void addConstraintDisplacement(double *d, int begin,int end) ;
+
+    virtual void setConstraintDForce(double *df, int begin, int end, bool update) ;
+
+    virtual void getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, int begin, int end) ;
+    /////////////////////////////////////////////////////////////////////////////////
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
@@ -154,10 +169,13 @@ protected:
     //Deriv **_sparseCompliance;
 
 
-
-
-
-
+    // new :  for non building the constraint system during solving process //
+    //VecDeriv constraint_disp, constraint_force;
+    //std::list<int> constraint_dofs;		// list of indices of each point which is involve with constraint
+    helper::vector<int> id_to_localIndex;	// table that gives the local index of a constraint given its id
+    sofa::helper::vector<unsigned int>* localConstraintId;
+    linearsolver::FullMatrix<Real> localW;
+    double* constraint_force;
 
 };
 
