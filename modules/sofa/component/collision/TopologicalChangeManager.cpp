@@ -265,7 +265,6 @@ void TopologicalChangeManager::removeItemsFromCollisionModel(sofa::core::Collisi
 bool TopologicalChangeManager::incisionTriangleSetTopology(sofa::core::componentmodel::topology::BaseMeshTopology* _topology)
 {
 
-
     //Incision in triangles from point a to point b
 
     // Mechanical coord of points a & b:
@@ -281,6 +280,13 @@ bool TopologicalChangeManager::incisionTriangleSetTopology(sofa::core::component
     unsigned int &ind_tb = incision.ind_tb_init;
 
     bool is_prepared=!((a[0]==b[0] && a[1]==b[1] && a[2]==b[2]) || (incision.ind_ta_init == incision.ind_tb_init));
+
+    /*  std::cout << "*********************" << std::endl;
+    std::cout << "a: " << a_last << " => " << a << " in triangle: " << ind_ta << std::endl;
+    std::cout << "b: " << b_last << " => " << b << " in triangle: " << ind_tb << std::endl;
+    std::cout << "*********************" << std::endl;
+    */
+
 
     if(is_prepared)
     {
@@ -312,22 +318,31 @@ bool TopologicalChangeManager::incisionTriangleSetTopology(sofa::core::component
 
         if (!ok)
         {
-            std::cerr << "ERROR in computeIntersectedPointsList" << std::endl;
-            return true;
+            std::cout << "ERROR in computeIntersectedPointsList" << std::endl;
+            return false;
         }
+        /*
+        std::cout << "*********************" << std::endl;
+        std::cout << "a: " << a_last << " => " << a << " in triangle: " << ind_ta << std::endl;
+        std::cout << "b: " << b_last << " => " << b << " in triangle: " << ind_tb << std::endl;
+        std::cout << "*********************" << std::endl;
+        */
+
 
         sofa::helper::vector< unsigned int > new_edges;
 
         //triangleAlg->SplitAlongPath(a_last, a, b_last, b, triangles_list, edges_list, coords_list, new_edges);
         triangleAlg->SplitAlongPath(a_last, a, b_last, b, topoPath_list, indices_list, coords2_list, new_edges, 0.1, 0.1);
 
+        //mettre a jour a et b en cas de snaping!!!!!!
+
         //std::cout << "new edges : " << new_edges << std::endl;
 
         sofa::helper::vector<unsigned int> new_points;
         sofa::helper::vector<unsigned int> end_points;
 
-        triangleAlg->InciseAlongEdgeList(new_edges, new_points, end_points);
-        //a_last = end_points.back();
+        bool is_fully_cut = triangleAlg->InciseAlongEdgeList(new_edges, new_points, end_points);
+        a_last = end_points.back();
 
         triangleMod->propagateTopologicalChanges();
 
@@ -340,7 +355,7 @@ bool TopologicalChangeManager::incisionTriangleSetTopology(sofa::core::component
 
         initiateIncision(); //reinitiate values for next cutting TO DO: change this
 
-        return false; //is_fully_cut;
+        return is_fully_cut;
     }
     else
     {
@@ -360,14 +375,15 @@ bool TopologicalChangeManager::incisionCollisionModel(sofa::core::CollisionEleme
     return false;
 }
 
+
 bool TopologicalChangeManager::incisionTriangleModel(sofa::core::CollisionElementIterator elem2, Vector3& pos,
         const bool firstInput, const bool isCut)
 {
+
     Triangle triangle(elem2);
     TriangleModel* model2 = triangle.getCollisionModel();
 
     // Test if a TopologicalMapping (by default from TetrahedronSetTopology to TriangleSetTopology) exists :
-
     bool is_TopologicalMapping = false;
 
     sofa::core::componentmodel::topology::BaseMeshTopology* topo_curr;
@@ -380,35 +396,30 @@ bool TopologicalChangeManager::incisionTriangleModel(sofa::core::CollisionElemen
     for(unsigned int i=0; i<listObject.size(); ++i)
     {
         //sout << "INFO : name of Node = " << (listObject[i])->getName() <<  sendl;
-
         if (dynamic_cast<sofa::core::componentmodel::topology::TopologicalMapping *>(listObject[i])!= NULL)
         {
             is_TopologicalMapping=true;
         }
-
     }
 
     // try to catch the topology associated to the detected object (a TriangleSetTopology is expected)
-
     sofa::component::topology::TriangleSetTopologyContainer* triangleCont;
     topo_curr->getContext()->get(triangleCont);
 
-    if(!is_TopologicalMapping)
+    if(!is_TopologicalMapping) // no TopologicalMapping
     {
-        // no TopologicalMapping
-
         if (triangleCont) // TriangleSetTopologyContainer
         {
-            if (firstInput)
+            if (firstInput) // initialise first point of contact from the incisionCollisionModel
             {
                 incision.a_init[0] = pos[0];
                 incision.a_init[1] = pos[1];
                 incision.a_init[2] = pos[2];
                 incision.ind_ta_init = elem2.getIndex();
 
-                incision.is_first_cut = true;
+                incision.is_first_cut = true; // first incision                      //encore necessaire??
             }
-            else if (isCut)
+            else if (isCut) // if it is not the first contact
             {
                 incision.b_init[0] = pos[0];
                 incision.b_init[1] = pos[1];
@@ -416,41 +427,38 @@ bool TopologicalChangeManager::incisionTriangleModel(sofa::core::CollisionElemen
 
                 incision.ind_tb_init = elem2.getIndex();
 
-                if(incisionTriangleSetTopology(topo_curr))
+                bool incision_ok = incisionTriangleSetTopology(topo_curr);
+
+                // Compute the number of connected components
+                sofa::helper::vector<unsigned int> components_init;
+                sofa::helper::vector<unsigned int>& components = components_init;
+
+                sofa::component::topology::EdgeSetTopologyContainer* edgeCont;
+                topo_curr->getContext()->get(edgeCont);
+
+                int num = edgeCont->getNumberConnectedComponents(components);
+                std::cout << "Number of connected components : " << num << std::endl;
+                //sofa::helper::vector<int>::size_type i;
+                //for (i = 0; i != components.size(); ++i)
+                //  sout << "Vertex " << i <<" is in component " << components[i] << endl;
+
+
+                if(incision_ok)  //switch data b to a, in order to continue incision.
                 {
                     // full cut
+                    //std::cout << "passe la" << std::endl;
+
                     incision.a_init[0] = pos[0];
                     incision.a_init[1] = pos[1];
                     incision.a_init[2] = pos[2];
                     incision.ind_ta_init = elem2.getIndex();
-
-                    sofa::helper::vector<unsigned int> components_init;
-                    sofa::helper::vector<unsigned int>& components = components_init;
-
-                    sofa::component::topology::EdgeSetTopologyContainer* edgeCont;
-                    topo_curr->getContext()->get(edgeCont);
-
-                    int num = edgeCont->getNumberConnectedComponents(components);
-                    std::cout << "Number of connected components : " << num << std::endl;
-                    //sofa::helper::vector<int>::size_type i;
-                    //for (i = 0; i != components.size(); ++i)
-                    //  sout << "Vertex " << i <<" is in component " << components[i] << endl;
                 }
                 else
                 {
-                    sofa::helper::vector<unsigned int> components_init;
-                    sofa::helper::vector<unsigned int>& components = components_init;
-
-                    sofa::component::topology::EdgeSetTopologyContainer* edgeCont;
-                    topo_curr->getContext()->get(edgeCont);
-
-                    int num = edgeCont->getNumberConnectedComponents(components);
-                    std::cout << "Number of connected components : " << num << std::endl;
-                    //sofa::helper::vector<int>::size_type i;
-                    //for (i = 0; i != components.size(); ++i)
-                    //  sout << "Vertex " << i <<" is in component " << components[i] << endl;
+                    // Je sais pas pourquoi encore mais...
                     return true; // change state to ATTACHED;
                 }
+
             }
         }
     }
