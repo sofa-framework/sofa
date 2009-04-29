@@ -91,7 +91,7 @@ protected:
     CollisionModel1* model1;
     CollisionModel2* model2;
     Intersection* intersectionMethod;
-
+    bool selfCollision; ///< true if model1==model2 (in this case, only mapper1 is used)
     ContactMapper<CollisionModel1,DataTypes1> mapper1;
     ContactMapper<CollisionModel2,DataTypes2> mapper2;
 

@@ -50,8 +50,9 @@ FrictionContact<TCollisionModel1,TCollisionModel2>::FrictionContact(CollisionMod
     : model1(model1), model2(model2), intersectionMethod(intersectionMethod), c(NULL), parent(NULL)
     , mu (initData(&mu, 0.1, "mu", "friction coefficient (0 for frictionless contacts)"))
 {
+    selfCollision = ((core::CollisionModel*)model1 == (core::CollisionModel*)model2);
     mapper1.setCollisionModel(model1);
-    mapper2.setCollisionModel(model2);
+    if (!selfCollision) mapper2.setCollisionModel(model2);
 }
 
 template < class TCollisionModel1, class TCollisionModel2 >
@@ -70,7 +71,7 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::cleanup()
         parent = NULL;
         c = NULL;
         mapper1.cleanup();
-        mapper2.cleanup();
+        if (!selfCollision) mapper2.cleanup();
     }
 }
 
@@ -89,20 +90,20 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(Out
     if (mu < 0.0 || mu > 1.0)
         serr << sendl << "Error: mu has to take values between 0.0 and 1.0" << sendl;
 
-
     int SIZE = outputs.size();
 
-    if (SIZE)
-    {
-        //Activate the Mechanical Mapping
-        sofa::simulation::Node *c1=static_cast<sofa::simulation::Node *>(model1->getContext());
-        sofa::simulation::Node *c2=static_cast<sofa::simulation::Node *>(model2->getContext());
+    /*
+            if (SIZE)
+              {
+                //Activate the Mechanical Mapping
+                sofa::simulation::Node *c1=static_cast<sofa::simulation::Node *>(model1->getContext());
+                sofa::simulation::Node *c2=static_cast<sofa::simulation::Node *>(model2->getContext());
 
-        core::componentmodel::behavior::BaseMechanicalMapping *m;
-        c1->get(m, core::objectmodel::BaseContext::Local); if (m) m->setMechanical(true);
-        c2->get(m, core::objectmodel::BaseContext::Local); if (m) m->setMechanical(true);
-    }
-
+                core::componentmodel::behavior::BaseMechanicalMapping *m;
+                c1->get(m, core::objectmodel::BaseContext::Local); if (m) m->setMechanical(true);
+                c2->get(m, core::objectmodel::BaseContext::Local); if (m) m->setMechanical(true);
+              }
+    */
     for (int cpt=0; cpt<SIZE; cpt++)
     {
         DetectionOutput* o = &outputs[cpt];
@@ -129,15 +130,19 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(Out
         // Get the mechanical model from mapper1 to fill the constraint vector
         MechanicalState1* mmodel1 = mapper1.createMapping();
         // Get the mechanical model from mapper2 to fill the constraints vector
-        MechanicalState2* mmodel2 = mapper2.createMapping();
+        MechanicalState2* mmodel2 = selfCollision ? mmodel1 : mapper2.createMapping();
         c = new constraint::UnilateralInteractionConstraint<Vec3Types>(mmodel1, mmodel2);
         c->setName( getName() );
     }
 
     int size = contacts.size();
     c->clear(size);
-    mapper1.resize(size);
-    mapper2.resize(size);
+    if (selfCollision) mapper1.resize(2*size);
+    else
+    {
+        mapper1.resize(size);
+        mapper2.resize(size);
+    }
     int i = 0;
     const double d0 = intersectionMethod->getContactDistance() + model1->getProximity() + model2->getProximity(); // - 0.001;
     std::vector< std::pair< std::pair<int, int>, double > > mappedContacts;
@@ -156,7 +161,7 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(Out
         // Create mapping for first point
         index1 = mapper1.addPoint(o->point[0], index1, r1);
         // Create mapping for second point
-        index2 = mapper2.addPoint(o->point[1], index2, r2);
+        index2 = selfCollision ? mapper1.addPoint(o->point[1], index2, r2) : mapper2.addPoint(o->point[1], index2, r2);
         double distance = d0 + r1 + r2;
 
         mappedContacts[i].first.first = index1;
@@ -167,8 +172,8 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(Out
     // Update mappings
     mapper1.update();
     mapper1.updateXfree();
-    mapper2.update();
-    mapper2.updateXfree();
+    if (!selfCollision) mapper2.update();
+    if (!selfCollision) mapper2.updateXfree();
     i=0;
     for (std::vector<DetectionOutput*>::const_iterator it = contacts.begin(); it!=contacts.end(); it++, i++)
     {
