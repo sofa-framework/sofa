@@ -82,9 +82,6 @@ template<class real>
 CudaMasterContactSolver<real>::CudaMasterContactSolver()
     :
     useGPU_d(initData(&useGPU_d,-1, "useGPU", "compute LCP using GPU"))
-#ifdef CHECK
-    ,check_gpu(initData(&check_gpu, true, "checkGPU", "verification of lcp error"))
-#endif
 #ifdef DISPLAY_TIME
     ,print_info(initData(&print_info, false, "print_info", "Print infos"))
 #endif
@@ -347,53 +344,48 @@ void CudaMasterContactSolver<real>::step(double dt)
 
     if (! initial_guess.getValue()) _f.clear();
 
+    double error = 0.0;
+
 #ifdef CHECK
-    if (check_gpu.getValue())
+    real t1,t2;
+
+    if (_mu > 0.0)
     {
-        real t1,t2;
+        f_check.resize(_numConstraints,MBSIZE);
+        for (unsigned i=0; i<_numConstraints; i++) f_check[i] = _f[i];
+        t2 = sofa::gpu::cuda::CudaLCP<real>::CudaNlcp_gaussseidel(useGPU_d.getValue(),_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), f_check.getCudaVector(), _mu,_tol, _maxIt);
 
-        if (_mu > 0.0)
-        {
-            f_check.resize(_numConstraints,MBSIZE);
-            for (unsigned i=0; i<_numConstraints; i++) f_check[i] = _f[i];
-            t2 = sofa::gpu::cuda::CudaLCP<real>::CudaNlcp_gaussseidel(useGPU_d.getValue(),_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), f_check.getCudaVector(), _mu,_tol, _maxIt);
-
-            t1 = sofa::gpu::cuda::CudaLCP<real>::CudaNlcp_gaussseidel(0,_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), _f.getCudaVector(), _mu,_tol, _maxIt);
-        }
-        else
-        {
-            f_check.resize(_numConstraints);
-            for (unsigned i=0; i<_numConstraints; i++) f_check[i] = _f[i];
-            t2 = sofa::gpu::cuda::CudaLCP<real>::CudaGaussSeidelLCP1(useGPU_d.getValue(),_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), f_check.getCudaVector(), _tol, _maxIt);
-
-            t1 = sofa::gpu::cuda::CudaLCP<real>::CudaGaussSeidelLCP1(0,_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), _f.getCudaVector(), _tol, _maxIt);
-        }
-
-        if ((t1-t2>CHECK) || (t1-t2<-CHECK))
-        {
-            sout << "Error(" << useGPU_d.getValue() << ") dim(" << _numConstraints << ") : (cpu," << t1 << ") (gpu,(" << t2 << ")" << sendl;
-        }
-
+        t1 = sofa::gpu::cuda::CudaLCP<real>::CudaNlcp_gaussseidel(0,_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), _f.getCudaVector(), _mu,_tol, _maxIt);
     }
     else
     {
-#endif
-        double error = 0.0;
+        f_check.resize(_numConstraints);
+        for (unsigned i=0; i<_numConstraints; i++) f_check[i] = _f[i];
+        t2 = sofa::gpu::cuda::CudaLCP<real>::CudaGaussSeidelLCP1(useGPU_d.getValue(),_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), f_check.getCudaVector(), _tol, _maxIt);
 
-        if (_mu > 0.0)
+        t1 = sofa::gpu::cuda::CudaLCP<real>::CudaGaussSeidelLCP1(0,_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), _f.getCudaVector(), _tol, _maxIt);
+    }
+
+    for (unsigned i=0; i<f_check.size(); i++)
+    {
+        if ((f_check.element(i)-_f.element(i)>CHECK) || (f_check.element(i)-_f.element(i)<-CHECK))
         {
-            error = sofa::gpu::cuda::CudaLCP<real>::CudaNlcp_gaussseidel(useGPU_d.getValue(),_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), _f.getCudaVector(), _mu,(real)_tol, _maxIt);
+            std::cerr << "Error(" << useGPU_d.getValue() << ") dim(" << _numConstraints << ") elmt(" << i << ") : (cpu," << f_check.element(i) << ") (gpu,(" << _f.element(i) << ")" << std::endl;
         }
-        else
-        {
-            error = sofa::gpu::cuda::CudaLCP<real>::CudaGaussSeidelLCP1(useGPU_d.getValue(),_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), _f.getCudaVector(), (real)_tol, _maxIt);
-        }
+    }
 
-        if (error > _tol) sout << "No convergence in gaussSeidelLCP1 : error = " << error << sendl;
-
-#ifdef CHECK
+#else
+    if (_mu > 0.0)
+    {
+        error = sofa::gpu::cuda::CudaLCP<real>::CudaNlcp_gaussseidel(useGPU_d.getValue(),_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), _f.getCudaVector(), _mu,(real)_tol, _maxIt);
+    }
+    else
+    {
+        error = sofa::gpu::cuda::CudaLCP<real>::CudaGaussSeidelLCP1(useGPU_d.getValue(),_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), _f.getCudaVector(), (real)_tol, _maxIt);
     }
 #endif
+
+    if (error > _tol) sout << "No convergence in gaussSeidelLCP1 : error = " << error << sendl;
 
 #ifdef DISPLAY_TIME
     time_solve_LCP = ((double) timer->getTime() - time_solve_LCP)*timeScale;
