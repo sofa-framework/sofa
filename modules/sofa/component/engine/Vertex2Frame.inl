@@ -30,6 +30,7 @@
 #endif
 
 #include <sofa/component/engine/Vertex2Frame.h>
+#include <sofa/defaulttype/Quat.h>
 
 namespace sofa
 {
@@ -40,6 +41,7 @@ namespace component
 namespace engine
 {
 
+using namespace sofa::defaulttype;
 
 template <class DataTypes>
 Vertex2Frame<DataTypes>::Vertex2Frame():
@@ -61,6 +63,40 @@ template <class DataTypes>
 void Vertex2Frame<DataTypes>::update()
 {
     dirty = false;
+
+    const helper::vector<Vector3>& fVertices = vertices.getValue();
+    const helper::vector<Vector3>& fNormals = normals.getValue();
+    unsigned int nbVertices = fVertices.size();
+
+    if (nbVertices <= 0 || fNormals.size() <=0)
+    {
+        serr << "Vertex2Frame : no vertices or normals found..." << sendl;
+        return ;
+    }
+
+    VecCoord& fFrames = *(frames.beginEdit());
+    fFrames.resize(nbVertices);
+
+    for (unsigned int i=0 ; i<nbVertices ; i++)
+    {
+        Quat q;
+        Vector3 zAxis = fNormals[i];
+        zAxis.normalize();
+        Vector3 xAxis;
+        Vector3 yAxis(1.0, 0.0, 0.0);
+        if ( dot(yAxis, zAxis) > 0.99 )
+            yAxis = Vector3(0.0, 0.0, 1.0);
+
+        xAxis = yAxis.cross(zAxis);
+        xAxis.normalize();
+        yAxis = zAxis.cross(xAxis);
+        yAxis.normalize();
+
+        fFrames[i].getOrientation() = q.createQuaterFromFrame(xAxis, yAxis, zAxis);
+        fFrames[i].getCenter() = fVertices[i];
+    }
+
+    frames.endEdit();
 }
 
 } // namespace engine
