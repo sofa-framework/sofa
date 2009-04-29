@@ -779,7 +779,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
     if (epsilonSnapBorder != 0.0)
         SnapBorderPath (pa, a, pb, b, topoPath_list, indices_list, coords_list, epsilonSnapBorder, points2Snap);
 
-    /*
+
     std::cout << "*********************************" << std::endl;
     std::cout << "pa:  " << pa << " => " << a << std::endl;
     std::cout << "pb:  " << pb << " => " << b << std::endl;
@@ -788,7 +788,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
     std::cout << "coords_list: " << coords_list << std::endl;
     std::cout << "points2Snap: " << points2Snap << std::endl;
     std::cout << "*********************************" << std::endl;
-    */
+
 
 
     // Output declarations:
@@ -1754,6 +1754,12 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapBorderPath (unsigned int pa, 
                     coords_list[0][0] = new_coord[1];  // not the same order as barycoef in the incision path
                     coords_list[0][1] = new_coord[0];
                     coords_list[0][2] = 0.0;
+
+                    Edge theEdgeFirst = m_container->getEdge(theEdge);
+                    Vec<3,double> pos1 = m_geometryAlgorithms->computeBaryEdgePoint(theEdgeFirst, new_coord[1]);
+                    for (unsigned int j = 0; j<3; j++)
+                        a[j]=pos1[j];
+
                     break;
                     //std::cout <<" end assignment" << std::endl;
                 }
@@ -1791,6 +1797,12 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapBorderPath (unsigned int pa, 
                     coords_list.back()[0] = new_coord[1];
                     coords_list.back()[1] = new_coord[0];
                     coords_list.back()[2] = 0.0;
+
+                    Edge theEdgeLast = m_container->getEdge(theEdge);
+                    Vec<3,double> pos1 = m_geometryAlgorithms->computeBaryEdgePoint(theEdgeLast, new_coord[1]);
+                    for (unsigned int j = 0; j<3; j++)
+                        a[j]=pos1[j];
+
                     break;
                 }
             }
