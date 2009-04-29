@@ -289,6 +289,7 @@ protected:
     /// bool to allow the display of the 2 parts of springs torsions
     Data<bool> showLawfulTorsion;
     Data<bool> showExtraTorsion;
+    Data<float> showFactorSize;
 
     JointSpringForceFieldInternalData<DataTypes> data;
 
