@@ -45,12 +45,13 @@ namespace engine
 using namespace core::componentmodel::behavior;
 
 /**
- * This class gets as inputs the vertices, texCoords, normals and facets of any mesh and computes as output a rigid position
+ * This class gets as inputs the vertices, texCoords, normals and facets of any mesh and returns as output a rigid position
  */
 template <class DataTypes>
 class Vertex2Frame : public virtual core::objectmodel::DataEngine, public virtual core::objectmodel::BaseObject
 {
 public:
+    typedef typename DataTypes::Real Real;
     typedef typename DataTypes::VecCoord VecCoord;
 
 public:
