@@ -248,9 +248,6 @@ class CudaMasterContactSolver : public sofa::simulation::MasterSolverImpl//, pub
 {
 public:
     Data<int> useGPU_d;
-#ifdef CHECK
-    Data<bool> check_gpu;
-#endif
 #ifdef DISPLAY_TIME
     Data<bool> print_info;
 #endif
