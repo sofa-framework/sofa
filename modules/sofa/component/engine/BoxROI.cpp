@@ -43,17 +43,21 @@ SOFA_DECL_CLASS(BoxROI)
 int BoxROIClass = core::RegisterObject("Find the points inside a given box")
 #ifndef SOFA_FLOAT
         .add< BoxROI<Vec3dTypes> >()
+        .add< BoxROI<Rigid3dTypes> >()
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
         .add< BoxROI<Vec3fTypes> >()
+        .add< BoxROI<Rigid3fTypes> >()
 #endif //SOFA_DOUBLE
         ;
 
 #ifndef SOFA_FLOAT
 template class SOFA_COMPONENT_ENGINE_API BoxROI<Vec3dTypes>;
+template class SOFA_COMPONENT_ENGINE_API BoxROI<Rigid3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
 template class SOFA_COMPONENT_ENGINE_API BoxROI<Vec3fTypes>;
+template class SOFA_COMPONENT_ENGINE_API BoxROI<Rigid3fTypes>;
 #endif //SOFA_DOUBLE
 
 
