@@ -348,7 +348,7 @@ int main(int argc, char** argv)
     std::string file=GetProcessFullPath(argv[0]);
     std::size_t bin = file.find("bin");
     file.resize(bin-1);
-    std::cerr << file << "\n";
+
     std::ifstream sofa_default((file+"/sofa-default.cfg").c_str());
     std::ifstream sofa_local((file+"/sofa-local.cfg").c_str());
     std::vector<DEFINES>  listOptions;
