@@ -119,7 +119,6 @@ void DefaultPipeline::doCollisionDetection(const sofa::helper::vector<core::Coll
         sofa::helper::vector<CollisionModel*>::const_iterator it;
         const sofa::helper::vector<CollisionModel*>::const_iterator itEnd = collisionModels.end();
         int nActive = 0;
-        bool desactivateMapping=true;
 
         for (it = collisionModels.begin(); it != itEnd; it++)
         {

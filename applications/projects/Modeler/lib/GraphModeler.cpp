@@ -670,6 +670,15 @@ void GraphModeler::updatePresetNode(xml::BaseElement &elem, std::string meshFile
     if (elem.presenceAttribute(std::string("fileMesh")))     elem.setAttribute(std::string("fileMesh"),     meshFile.c_str());
     if (elem.presenceAttribute(std::string("fileTopology"))) elem.setAttribute(std::string("fileTopology"), meshFile.c_str());
 
+    if (elem.presenceAttribute(std::string("dx2"))) elem.setAttribute(std::string("dx2"), translation[0].c_str());
+    if (elem.presenceAttribute(std::string("dy2"))) elem.setAttribute(std::string("dy2"), translation[1].c_str());
+    if (elem.presenceAttribute(std::string("dz2"))) elem.setAttribute(std::string("dz2"), translation[2].c_str());
+
+    if (elem.presenceAttribute(std::string("rx2"))) elem.setAttribute(std::string("rx2"), rotation[0].c_str());
+    if (elem.presenceAttribute(std::string("ry2"))) elem.setAttribute(std::string("ry2"), rotation[1].c_str());
+    if (elem.presenceAttribute(std::string("rz2"))) elem.setAttribute(std::string("rz2"), rotation[2].c_str());
+
+
     if (elem.presenceAttribute(std::string("dx"))) elem.setAttribute(std::string("dx"), translation[0].c_str());
     if (elem.presenceAttribute(std::string("dy"))) elem.setAttribute(std::string("dy"), translation[1].c_str());
     if (elem.presenceAttribute(std::string("dz"))) elem.setAttribute(std::string("dz"), translation[2].c_str());

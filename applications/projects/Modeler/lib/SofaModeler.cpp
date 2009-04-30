@@ -279,7 +279,7 @@ void SofaModeler::fileOpen()
 
 void SofaModeler::clearTab()
 {
-    fileNew();
+    if (graph)	fileNew();
 }
 
 
