@@ -768,18 +768,35 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
     //	double epsilon = 0.25; // to change to an input for snaping
 
     if (epsilonSnapPath != 0.0)
+    {
         SnapAlongPath (topoPath_list, indices_list, coords_list, epsilonSnapPath, points2Snap);
 
-    //std::cout << "topoPath_list: " << topoPath_list << std::endl;
-    //std::cout << "indices_list: " << indices_list << std::endl;
-    //std::cout << "coords_list: " << coords_list << std::endl;
+        for (unsigned int i = 0; i<points2Snap.size(); i++)
+        {
+            // compute coef from coord to ancestors
+            //m_modifier->movePointsProcess (points2Snap[i][0], const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
+            //const sofa::helper::vector< sofa::helper::vector< double > >& coefs,
+        }
+
+        if (!points2Snap.empty())
+        {
+            if (points2Snap[0][0] == pa)
+                for (unsigned int j = 0; j<3; j++)
+                    a[j] = points2Snap[0][j+1];
+
+            if (points2Snap[points2Snap.size()-1][0] == pb)
+                for (unsigned int j = 0; j<3; j++)
+                    b[j] = points2Snap[points2Snap.size()-1][j+1];
+        }
+
+    }
 
 
     //STEP 1.b : Modify border case path if snap = true
     if (epsilonSnapBorder != 0.0)
         SnapBorderPath (pa, a, pb, b, topoPath_list, indices_list, coords_list, epsilonSnapBorder, points2Snap);
 
-
+    /*
     std::cout << "*********************************" << std::endl;
     std::cout << "pa:  " << pa << " => " << a << std::endl;
     std::cout << "pb:  " << pb << " => " << b << std::endl;
@@ -788,7 +805,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
     std::cout << "coords_list: " << coords_list << std::endl;
     std::cout << "points2Snap: " << points2Snap << std::endl;
     std::cout << "*********************************" << std::endl;
-
+    */
 
 
     // Output declarations:
@@ -1516,7 +1533,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapAlongPath (sofa::helper::vect
 
             break;
         }
-        case core::componentmodel::topology::TRIANGLE:  // TODO: NOT TESTED YET!
+        case core::componentmodel::topology::TRIANGLE:
         {
             PointID Vertex2Snap;
             Vec<3, double>& barycoord = coords_list[i];
@@ -1524,7 +1541,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapAlongPath (sofa::helper::vect
 
             for (unsigned int j = 0; j < 3; j++)
             {
-                if ( barycoord[j] > (1.0 - epsilon/2) )  // This point has to be snaped
+                if ( barycoord[j] > (1.0 - epsilon) )  // This point has to be snaped
                 {
                     Vertex2Snap = m_container->getTriangleArray()[indices_list[i]][j];
                     it = map_point2snap.find (Vertex2Snap);
@@ -1548,16 +1565,15 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapAlongPath (sofa::helper::vect
         }
     }
 
-    //std::cout << "Point to snap: " ;
+    /*	std::cout << "Point to snap: " ;
     for (unsigned int i = 0; i < map_point2snap.size(); i++)
-        std::cout << i << " ";
+      std::cout << i << " ";
     std::cout << std::endl;
-
+    */
 
     //// STEP 2 - Test if snaping is needed
     if (map_point2snap.empty())
     {
-        std::cout << "EXIT" << std::endl;  // TODO: remove this
         return;
     }
 
@@ -1606,7 +1622,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapAlongPath (sofa::helper::vect
             }
             break;
         }
-        case core::componentmodel::topology::TRIANGLE: // TODO: NOT TESTED YET!
+        case core::componentmodel::topology::TRIANGLE:
         {
             Triangle theTriangle = m_container->getTriangleArray()[indices_list[i]];
             bool PointFind = false;
@@ -1614,7 +1630,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapAlongPath (sofa::helper::vect
             for (unsigned int indTri = 0; indTri < 3; indTri++)
             {
                 PointID thePoint = theTriangle[ indTri ];
-                if ( (map_point2snap.find (thePoint) != map_point2snap.end()) && (coords_list[i][indTri] > (1-epsilon/2))) //TODO come back to this condition
+                if ( (map_point2snap.find (thePoint) != map_point2snap.end()) && (coords_list[i][indTri] > (1-epsilon)))
                 {
                     PointFind = true;
                     map_point2snap[ thePoint ].push_back(i);
@@ -1635,8 +1651,8 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapAlongPath (sofa::helper::vect
         }
     }
 
-
-    /*std::cout << "Point to snap + object concerned " ;
+    /*
+    std::cout << "Point to snap + object concerned " ;
     for (it = map_point2snap.begin(); it != map_point2snap.end(); ++it)
       std::cout << "Point to snap: "<< (*it).first << " => " << (*it).second << std::endl;
     */
@@ -1686,7 +1702,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapAlongPath (sofa::helper::vect
         coords_list.erase (coords_list.begin()+field2remove[field2remove.size()-i]);
     }
 
-    //std::cout <<"END snaping" << std::endl;
+    //	std::cout <<"END snaping" << std::endl;
 
     return;
 }
