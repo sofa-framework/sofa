@@ -63,7 +63,9 @@ void RepulsiveSpringForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2, 
             Real forceIntensity = (Real)(springs[i].ks*elongation+springs[i].kd*elongationVelocity);
             Deriv force = u*forceIntensity;
             f1[a]+=force;
+            this->mstate1->forceMask.insertEntry(a);
             f2[b]-=force;
+            this->mstate2->forceMask.insertEntry(b);
 
             Mat& m = this->dfdx[i];
             Real tgt = forceIntensity * inverseLength;

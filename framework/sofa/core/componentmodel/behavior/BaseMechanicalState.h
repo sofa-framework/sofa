@@ -304,20 +304,10 @@ public:
             else if (!use)        inUse=UNUSED; //Desactivate if one component is not using it
         }
 
-        /** Test if the mask is active. We put a threshold to verify that we have a low number of particles to filter.
-         * If too many particles are used, we desactivate the filter.
-         * @param size total number of particles. With it, we can verify that the threshold previously described is respected.
-         **/
-        bool isInUse(unsigned int size=0) const
+        /// Test if the mask is active.
+        bool isInUse() const
         {
-            if (inUse == UNUSED) return false;
-            else
-            {
-                if (size == 0) return true;
-                // If more than 50% of the indices are used, we don't filter anymore, and use the classical approach
-                else if (indices.size()/((float)size) > 0.5f) return false;
-                else return true;
-            }
+            return (inUse != UNUSED);
         }
 
         void clear() {indices.clear(); inUse=DEFAULT;}

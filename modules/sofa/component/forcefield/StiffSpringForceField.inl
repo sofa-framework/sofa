@@ -68,7 +68,9 @@ void StiffSpringForceField<DataTypes>::addSpringForce( double& potentialEnergy, 
         Real forceIntensity = (Real)(spring.ks*elongation+spring.kd*elongationVelocity);
         Deriv force = u*forceIntensity;
         f1[a]+=force;
+        this->mstate1->forceMask.insertEntry(a);
         f2[b]-=force;
+        this->mstate2->forceMask.insertEntry(b);
 
 
         Mat& m = this->dfdx[i];

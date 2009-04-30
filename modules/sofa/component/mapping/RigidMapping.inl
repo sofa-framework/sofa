@@ -323,68 +323,163 @@ void RigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const type
     unsigned int cptOut;
     unsigned int val;
 
-    switch (repartition.getValue().size())
+
+    if ( !maskTo || !(maskTo->isInUse()) )
     {
-    case 0:
-        if (indexFromEnd.getValue())
+        switch (repartition.getValue().size())
         {
-            v = in[in.size() - 1 - index.getValue()].getVCenter();
-            omega = in[in.size() - 1 - index.getValue()].getVOrientation();
-        }
-        else
-        {
-            v = in[index.getValue()].getVCenter();
-            omega = in[index.getValue()].getVOrientation();
-        }
+        case 0:
+            if (indexFromEnd.getValue())
+            {
+                v = in[in.size() - 1 - index.getValue()].getVCenter();
+                omega = in[in.size() - 1 - index.getValue()].getVOrientation();
+            }
+            else
+            {
+                v = in[index.getValue()].getVCenter();
+                omega = in[index.getValue()].getVOrientation();
+            }
 
-        for(unsigned int i=0; i<pts.size(); i++)
-        {
-            // out = J in
-            // J = [ I -OM^ ]
-            out[i] =  v - cross(rotatedPoints[i],omega);
-        }
-        break;
-    case 1:
-        val = repartition.getValue()[0];
-        cptOut=0;
-
-        for (unsigned int ifrom=0 ; ifrom<in.size() ; ifrom++)
-        {
-            v = in[ifrom].getVCenter();
-            omega = in[ifrom].getVOrientation();
-
-            for(unsigned int ito=0; ito<val; ito++)
+            for(unsigned int i=0; i<pts.size(); i++)
             {
                 // out = J in
                 // J = [ I -OM^ ]
-                out[cptOut] =  v - cross(rotatedPoints[cptOut],omega);
-                cptOut++;
+                out[i] =  v - cross(rotatedPoints[i],omega);
             }
-        }
-        break;
-    default:
-        if (repartition.getValue().size() != in.size())
-        {
-            serr<<"Error : mapping dofs repartition is not correct"<<sendl;
-            return;
-        }
+            break;
+        case 1:
+            val = repartition.getValue()[0];
+            cptOut=0;
 
-        cptOut=0;
-
-        for (unsigned int ifrom=0 ; ifrom<in.size() ; ifrom++)
-        {
-            v = in[ifrom].getVCenter();
-            omega = in[ifrom].getVOrientation();
-
-            for(unsigned int ito=0; ito<repartition.getValue()[ifrom]; ito++)
+            for (unsigned int ifrom=0 ; ifrom<in.size() ; ifrom++)
             {
+                v = in[ifrom].getVCenter();
+                omega = in[ifrom].getVOrientation();
+
+                for(unsigned int ito=0; ito<val; ito++)
+                {
+                    // out = J in
+                    // J = [ I -OM^ ]
+                    out[cptOut] =  v - cross(rotatedPoints[cptOut],omega);
+                    cptOut++;
+                }
+            }
+            break;
+        default:
+            if (repartition.getValue().size() != in.size())
+            {
+                serr<<"Error : mapping dofs repartition is not correct"<<sendl;
+                return;
+            }
+
+            cptOut=0;
+
+            for (unsigned int ifrom=0 ; ifrom<in.size() ; ifrom++)
+            {
+                v = in[ifrom].getVCenter();
+                omega = in[ifrom].getVOrientation();
+
+                for(unsigned int ito=0; ito<repartition.getValue()[ifrom]; ito++)
+                {
+                    // out = J in
+                    // J = [ I -OM^ ]
+                    out[cptOut] =  v - cross(rotatedPoints[cptOut],omega);
+                    cptOut++;
+                }
+            }
+            break;
+        }
+
+    }
+    else
+    {
+        switch (repartition.getValue().size())
+        {
+        case 0:
+        {
+            if (indexFromEnd.getValue())
+            {
+                v = in[in.size() - 1 - index.getValue()].getVCenter();
+                omega = in[in.size() - 1 - index.getValue()].getVOrientation();
+            }
+            else
+            {
+                v = in[index.getValue()].getVCenter();
+                omega = in[index.getValue()].getVOrientation();
+            }
+
+            typedef core::componentmodel::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+            const ParticleMask::InternalStorage &indices=maskTo->getEntries();
+
+            ParticleMask::InternalStorage::const_iterator it;
+            for (it=indices.begin(); it!=indices.end(); it++)
+            {
+                const int i=(int)(*it);
+
                 // out = J in
                 // J = [ I -OM^ ]
-                out[cptOut] =  v - cross(rotatedPoints[cptOut],omega);
-                cptOut++;
+                out[i] =  v - cross(rotatedPoints[i],omega);
             }
+            break;
         }
-        break;
+        case 1:
+        {
+            val = repartition.getValue()[0];
+            cptOut=0;
+
+            typedef core::componentmodel::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+            const ParticleMask::InternalStorage &indices=maskTo->getEntries();
+
+            for (unsigned int ifrom=0 ; ifrom<in.size() ; ifrom++)
+            {
+                v = in[ifrom].getVCenter();
+                omega = in[ifrom].getVOrientation();
+
+                for(unsigned int ito=0; ito<val; ito++)
+                {
+                    // out = J in
+                    // J = [ I -OM^ ]
+                    if (indices.find( cptOut) != indices.end())
+                    {
+                        out[cptOut] =  v - cross(rotatedPoints[cptOut],omega);
+                    }
+                    cptOut++;
+                }
+            }
+            break;
+        }
+        default:
+        {
+            if (repartition.getValue().size() != in.size())
+            {
+                serr<<"Error : mapping dofs repartition is not correct"<<sendl;
+                return;
+            }
+
+            cptOut=0;
+
+            typedef core::componentmodel::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+            const ParticleMask::InternalStorage &indices=maskTo->getEntries();
+
+            for (unsigned int ifrom=0 ; ifrom<in.size() ; ifrom++)
+            {
+                v = in[ifrom].getVCenter();
+                omega = in[ifrom].getVOrientation();
+
+                for(unsigned int ito=0; ito<repartition.getValue()[ifrom]; ito++)
+                {
+                    // out = J in
+                    // J = [ I -OM^ ]
+                    if (indices.find( cptOut) != indices.end())
+                    {
+                        out[cptOut] =  v - cross(rotatedPoints[cptOut],omega);
+                    }
+                    cptOut++;
+                }
+            }
+            break;
+        }
+        }
     }
 
 }
@@ -396,77 +491,180 @@ void RigidMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const type
     unsigned int val;
     unsigned int cpt;
     const VecCoord& pts = this->getPoints();
-    switch(repartition.getValue().size())
+
+
+    if (  !maskTo || !(maskTo->isInUse()) )
     {
-    case 0 :
-        for(unsigned int i=0; i<pts.size(); i++)
+        switch(repartition.getValue().size())
         {
-            // out = Jt in
-            // Jt = [ I     ]
-            //      [ -OM^t ]
-            // -OM^t = OM^
-
-            Deriv f = in[i];
-            //serr<<"RigidMapping<BasicMapping>::applyJT, f = "<<f<<sendl;
-            v += f;
-            omega += cross(rotatedPoints[i],f);
-            //serr<<"RigidMapping<BasicMapping>::applyJT, new v = "<<v<<sendl;
-            //serr<<"RigidMapping<BasicMapping>::applyJT, new omega = "<<omega<<sendl;
-        }
-
-        if (indexFromEnd.getValue())
-        {
-            out[out.size() - 1 - index.getValue()].getVCenter() += v;
-            out[out.size() - 1 - index.getValue()].getVOrientation() += omega;
-        }
-        else
-        {
-            out[index.getValue()].getVCenter() += v;
-            out[index.getValue()].getVOrientation() += omega;
-        }
-
-        break;
-    case 1 :
-        val = repartition.getValue()[0];
-        cpt=0;
-        for(unsigned int ito=0; ito<out.size(); ito++)
-        {
-            v=Deriv();
-            omega=Deriv();
-            for(unsigned int i=0; i<val; i++)
+        case 0 :
+            for(unsigned int i=0; i<pts.size(); i++)
             {
-                Deriv f = in[cpt];
-                v += f;
-                omega += cross(rotatedPoints[cpt],f);
-                cpt++;
-            }
-            out[ito].getVCenter() += v;
-            out[ito].getVOrientation() += omega;
-        }
-        break;
-    default :
-        if (repartition.getValue().size() != out.size())
-        {
-            serr<<"Error : mapping dofs repartition is not correct"<<sendl;
-            return;
-        }
+                // out = Jt in
+                // Jt = [ I     ]
+                //      [ -OM^t ]
+                // -OM^t = OM^
 
-        cpt=0;
-        for(unsigned int ito=0; ito<out.size(); ito++)
-        {
-            v=Deriv();
-            omega=Deriv();
-            for(unsigned int i=0; i<repartition.getValue()[ito]; i++)
-            {
-                Deriv f = in[cpt];
+                Deriv f = in[i];
+                //serr<<"RigidMapping<BasicMapping>::applyJT, f = "<<f<<sendl;
                 v += f;
-                omega += cross(rotatedPoints[cpt],f);
-                cpt++;
+                omega += cross(rotatedPoints[i],f);
+                //serr<<"RigidMapping<BasicMapping>::applyJT, new v = "<<v<<sendl;
+                //serr<<"RigidMapping<BasicMapping>::applyJT, new omega = "<<omega<<sendl;
             }
-            out[ito].getVCenter() += v;
-            out[ito].getVOrientation() += omega;
+
+            if (indexFromEnd.getValue())
+            {
+                out[out.size() - 1 - index.getValue()].getVCenter() += v;
+                out[out.size() - 1 - index.getValue()].getVOrientation() += omega;
+            }
+            else
+            {
+                out[index.getValue()].getVCenter() += v;
+                out[index.getValue()].getVOrientation() += omega;
+            }
+
+            break;
+        case 1 :
+            val = repartition.getValue()[0];
+            cpt=0;
+            for(unsigned int ito=0; ito<out.size(); ito++)
+            {
+                v=Deriv();
+                omega=Deriv();
+                for(unsigned int i=0; i<val; i++)
+                {
+                    Deriv f = in[cpt];
+                    v += f;
+                    omega += cross(rotatedPoints[cpt],f);
+                    cpt++;
+                }
+                out[ito].getVCenter() += v;
+                out[ito].getVOrientation() += omega;
+            }
+            break;
+        default :
+            if (repartition.getValue().size() != out.size())
+            {
+                serr<<"Error : mapping dofs repartition is not correct"<<sendl;
+                return;
+            }
+
+            cpt=0;
+            for(unsigned int ito=0; ito<out.size(); ito++)
+            {
+                v=Deriv();
+                omega=Deriv();
+                for(unsigned int i=0; i<repartition.getValue()[ito]; i++)
+                {
+                    Deriv f = in[cpt];
+                    v += f;
+                    omega += cross(rotatedPoints[cpt],f);
+                    cpt++;
+                }
+                out[ito].getVCenter() += v;
+                out[ito].getVOrientation() += omega;
+            }
+            break;
+        }
+    }
+    else
+    {
+        switch(repartition.getValue().size())
+        {
+        case 0 :
+        {
+            typedef core::componentmodel::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+            const ParticleMask::InternalStorage &indices=maskTo->getEntries();
+
+            ParticleMask::InternalStorage::const_iterator it;
+            for (it=indices.begin(); it!=indices.end(); it++)
+            {
+                const int i=(int)(*it);
+                // out = Jt in
+                // Jt = [ I     ]
+                //      [ -OM^t ]
+                // -OM^t = OM^
+
+                Deriv f = in[i];
+                //serr<<"RigidMapping<BasicMapping>::applyJT, f = "<<f<<sendl;
+                v += f;
+                omega += cross(rotatedPoints[i],f);
+                //serr<<"RigidMapping<BasicMapping>::applyJT, new v = "<<v<<sendl;
+                //serr<<"RigidMapping<BasicMapping>::applyJT, new omega = "<<omega<<sendl;
+            }
+
+            if (indexFromEnd.getValue())
+            {
+                out[out.size() - 1 - index.getValue()].getVCenter() += v;
+                out[out.size() - 1 - index.getValue()].getVOrientation() += omega;
+            }
+            else
+            {
+                out[index.getValue()].getVCenter() += v;
+                out[index.getValue()].getVOrientation() += omega;
+            }
+
+            break;
+        }
+        case 1 :
+        {
+            val = repartition.getValue()[0];
+            cpt=0;
+            typedef core::componentmodel::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+            const ParticleMask::InternalStorage &indices=maskTo->getEntries();
+
+            for(unsigned int ito=0; ito<out.size(); ito++)
+            {
+                v=Deriv();
+                omega=Deriv();
+                for(unsigned int i=0; i<val; i++)
+                {
+                    if (indices.find(cpt) != indices.end())
+                    {
+                        Deriv f = in[cpt];
+                        v += f;
+                        omega += cross(rotatedPoints[cpt],f);
+                    }
+                    cpt++;
+                }
+                out[ito].getVCenter() += v;
+                out[ito].getVOrientation() += omega;
+            }
+            break;
+        }
+        default :
+        {
+            if (repartition.getValue().size() != out.size())
+            {
+                serr<<"Error : mapping dofs repartition is not correct"<<sendl;
+                return;
+            }
+
+            cpt=0;
+            typedef core::componentmodel::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+            const ParticleMask::InternalStorage &indices=maskTo->getEntries();
+
+            for(unsigned int ito=0; ito<out.size(); ito++)
+            {
+                v=Deriv();
+                omega=Deriv();
+                for(unsigned int i=0; i<repartition.getValue()[ito]; i++)
+                {
+                    if (indices.find(cpt) != indices.end())
+                    {
+                        Deriv f = in[cpt];
+                        v += f;
+                        omega += cross(rotatedPoints[cpt],f);
+                    }
+                    cpt++;
+                }
+                out[ito].getVCenter() += v;
+                out[ito].getVOrientation() += omega;
+            }
         }
         break;
+        }
     }
 
 }
@@ -527,15 +725,78 @@ void RigidMapping<BaseMapping>::applyJT( typename In::VecConst& out, const typen
         direction.getVCenter() = n;
         direction.getVOrientation() = omega_n;
 
-        // for rigid model, there's only the center of mass as application point (so only one vector for each constraint)
-        if (indexFromEnd.getValue())
+        switch(repartition.getValue().size())
         {
-            out[outSize+i].insert(out.size() - 1 - index.getValue(), direction); // 0 = index of the center of mass
+        case 0 :
+            // for rigid model, there's only the center of mass as application point (so only one vector for each constraint)
+            if (indexFromEnd.getValue())
+            {
+                out[outSize+i].insert(out.size() - 1 - index.getValue(), direction); // 0 = index of the center of mass
+            }
+            else
+            {
+                out[outSize+i].insert(index.getValue(), direction); // 0 = index of the center of mass
+            }
+            break;
+        case 1:
+            serr << "applyJT with repartition NOT SUPPORTED YET" << sendl;
+            break;
+        default:
+            serr << "applyJT with repartition NOT SUPPORTED YET" << sendl;
+            break;
         }
-        else
+    }
+}
+
+template <class BaseMapping>
+void RigidMapping<BaseMapping>::applyJT( core::componentmodel::behavior::BaseMechanicalState::ParticleMask& out, const core::componentmodel::behavior::BaseMechanicalState::ParticleMask& in )
+{
+
+    typedef core::componentmodel::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+    const ParticleMask::InternalStorage &indices=in.getEntries();
+
+    ParticleMask::InternalStorage::const_iterator it;
+
+    switch(repartition.getValue().size())
+    {
+    case 0 :
+    {
+        if (indices.size()) out.insertEntry(index.getValue());
+        return;
+        break;
+    }
+    case 1 :
+    {
+        const unsigned int val = repartition.getValue()[0];
+        for (it=indices.begin(); it!=indices.end(); it++)
         {
-            out[outSize+i].insert(index.getValue(), direction); // 0 = index of the center of mass
+            const unsigned int idx=(*it);
+            if (idx < val)
+            {
+                out.insertEntry(index.getValue());
+                return;
+            }
         }
+        break;
+    }
+    default:
+    {
+        unsigned cpt=0;
+        unsigned idxRigid=0;
+        unsigned int numSubDiv = repartition.getValue().size();
+        for (it=indices.begin(); it!=indices.end(); it++)
+        {
+            const unsigned int index=(*it);
+            while (index > cpt && idxRigid < numSubDiv)
+            {
+                cpt += repartition.getValue()[idxRigid];
+                idxRigid++;
+            }
+
+            out.insertEntry(idxRigid);
+        }
+        break;
+    }
     }
 }
 
