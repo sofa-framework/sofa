@@ -187,7 +187,7 @@ template <class BasicMapping>
 void IdentityMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
     //const unsigned int N = Deriv::size() < InDeriv::size() ? Deriv::size() : InDeriv::size();
-    for(unsigned int i=0; i<out.size(); i++)
+    for(unsigned int i=0; i<in.size(); i++)
     {
         //for (unsigned int j=0;j < N;++j)
         //    out[i][j] += (Real)in[i][j];
