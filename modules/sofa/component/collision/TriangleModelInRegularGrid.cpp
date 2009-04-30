@@ -92,8 +92,6 @@ void TriangleModelInRegularGrid::computeBoundingTree ( int )
     Vector3 minElem, maxElem;
     const VecCoord& x = *_higher_mstate->getX();
 
-    const bool calcNormals = computeNormals.getValue();
-
     // no hierarchy
     if ( empty() )
         cubeModel->resize ( 0 );
