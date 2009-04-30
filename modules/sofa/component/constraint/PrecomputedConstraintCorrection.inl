@@ -38,6 +38,7 @@
 #include <sofa/component/linearsolver/SparseMatrix.h>
 #include <sofa/component/linearsolver/CGLinearSolver.h>
 
+#include <sofa/component/container/RotationFinder.h>
 
 //#include <glib.h>
 #include <sstream>
@@ -737,17 +738,27 @@ void PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::rotateConstraints
     simulation::Node *node = dynamic_cast<simulation::Node *>(getContext());
 
     sofa::component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3dTypes>* forceField = NULL;
+    RotationFinder<defaulttype::Vec3dTypes>* rotationFinder = NULL;
+
     if (node != NULL)
     {
         //		core::componentmodel::behavior::BaseForceField* _forceField = node->forceField[1];
         forceField = node->get<component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3dTypes> > ();
+        if (forceField == NULL)
+        {
+            rotationFinder = node->get<RotationFinder<defaulttype::Vec3dTypes> > ();
+            if (rotationFinder == NULL)
+            {
+                sout << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";
+                return;
+            }
+        }
     }
     else
     {
-        sout << "No rotation defined : only defined for TetrahedronFEMForceField !";
+        sout << "Error getting context in method: PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::rotateConstraints()";
         return;
     }
-
 
     //sout << "start rotating normals " << g_timer_elapsed(timer, &micro) << sendl;
     //	int sizemax=0;
@@ -762,7 +773,16 @@ void PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::rotateConstraints
             Deriv& n = itConstraint->second;
             const int localRowNodeIdx = dof;
             Transformation Ri;
-            forceField->getRotation(Ri, localRowNodeIdx);
+            if (forceField != NULL)
+            {
+                forceField->getRotation(Ri, localRowNodeIdx);
+            }
+            else // rotationFinder has been defined
+            {
+                std::cout << "rotateConstraints in" << std::endl;
+                Ri = rotationFinder->getRotations()[localRowNodeIdx];
+                std::cout << "rotateConstraints out" << std::endl;
+            }
             Ri.transpose();
             // on passe les normales du repere global au repere local
             Deriv n_i = Ri * n;
@@ -833,21 +853,40 @@ void PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::rotateResponse()
     simulation::Node *node = dynamic_cast<simulation::Node *>(getContext());
 
     sofa::component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3dTypes>* forceField = NULL;
+    RotationFinder<defaulttype::Vec3dTypes>* rotationFinder = NULL;
+
     if (node != NULL)
     {
         //		core::componentmodel::behavior::BaseForceField* _forceField = node->forceField[1];
         forceField = node->get<component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3dTypes> > ();
+        if (forceField == NULL)
+        {
+            rotationFinder = node->get<RotationFinder<defaulttype::Vec3dTypes> > ();
+            if (rotationFinder == NULL)
+            {
+                sout << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";
+                return;
+            }
+        }
     }
     else
     {
-        sout << "No rotation defined  !";
+        sout << "Error getting context in method: PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::rotateConstraints()";
         return;
     }
+
     VecDeriv& dx = *mstate->getDx();
     for(unsigned int j = 0; j < dx.size(); j++)
     {
         Transformation Rj;
-        forceField->getRotation(Rj, j);
+        if (forceField != NULL)
+        {
+            forceField->getRotation(Rj, j);
+        }
+        else // rotationFinder has been defined
+        {
+            Rj = rotationFinder->getRotations()[j];
+        }
         // on passe les deplacements du repere local au repere global
         const Deriv& temp = Rj * dx[j];
         dx[j] = temp;
@@ -894,17 +933,26 @@ void PrecomputedConstraintCorrection<defaulttype::Vec3fTypes>::rotateConstraints
     simulation::Node *node = dynamic_cast<simulation::Node *>(getContext());
 
     sofa::component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3fTypes>* forceField = NULL;
+    RotationFinder<defaulttype::Vec3fTypes>* rotationFinder = NULL;
+
     if (node != NULL)
     {
-        //		core::componentmodel::behavior::BaseForceField* _forceField = node->forceField[1];
         forceField = node->get<component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3fTypes> > ();
+        if (forceField == NULL)
+        {
+            rotationFinder = node->get<RotationFinder<defaulttype::Vec3fTypes> > ();
+            if (rotationFinder == NULL)
+            {
+                sout << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";
+                return;
+            }
+        }
     }
     else
     {
-        sout << "No rotation defined : only defined for TetrahedronFEMForceField !";
+        sout << "Error getting context in method: PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::rotateConstraints()";
         return;
     }
-
 
     //sout << "start rotating normals " << g_timer_elapsed(timer, &micro) << sendl;
     //	int sizemax=0;
@@ -919,7 +967,14 @@ void PrecomputedConstraintCorrection<defaulttype::Vec3fTypes>::rotateConstraints
             Deriv& n = itConstraint->second;
             const int localRowNodeIdx = dof;
             Transformation Ri;
-            forceField->getRotation(Ri, localRowNodeIdx);
+            if (forceField != NULL)
+            {
+                forceField->getRotation(Ri, localRowNodeIdx);
+            }
+            else // rotationFinder has been defined
+            {
+                Ri = rotationFinder->getRotations()[localRowNodeIdx];
+            }
             Ri.transpose();
             // on passe les normales du repere global au repere local
             Deriv n_i = Ri * n;
@@ -987,21 +1042,40 @@ void PrecomputedConstraintCorrection<defaulttype::Vec3fTypes>::rotateResponse()
     simulation::Node *node = dynamic_cast<simulation::Node *>(getContext());
 
     sofa::component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3fTypes>* forceField = NULL;
+    RotationFinder<defaulttype::Vec3fTypes>* rotationFinder = NULL;
+
     if (node != NULL)
     {
         //		core::componentmodel::behavior::BaseForceField* _forceField = node->forceField[1];
         forceField = node->get<component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3fTypes> > ();
+        if (forceField == NULL)
+        {
+            rotationFinder = node->get<RotationFinder<defaulttype::Vec3fTypes> > ();
+            if (rotationFinder == NULL)
+            {
+                sout << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";
+                return;
+            }
+        }
     }
     else
     {
-        sout << "No rotation defined  !";
+        sout << "Error getting context in method: PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::rotateConstraints()";
         return;
     }
+
     VecDeriv& dx = *mstate->getDx();
     for(unsigned int j = 0; j < dx.size(); j++)
     {
         Transformation Rj;
-        forceField->getRotation(Rj, j);
+        if (forceField != NULL)
+        {
+            forceField->getRotation(Rj, j);
+        }
+        else // rotationFinder has been defined
+        {
+            Rj = rotationFinder->getRotations()[j];
+        }
         // on passe les deplacements du repere local au repere global
         const Deriv& temp = Rj * dx[j];
         dx[j] = temp;

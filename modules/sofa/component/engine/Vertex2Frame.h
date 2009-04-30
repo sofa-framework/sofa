@@ -60,6 +60,8 @@ public:
 
     ~Vertex2Frame() {}
 
+    void reinit();
+
     void update();
 
     virtual std::string getTemplateName() const

@@ -60,6 +60,12 @@ Vertex2Frame<DataTypes>::Vertex2Frame():
 }
 
 template <class DataTypes>
+void Vertex2Frame<DataTypes>::reinit()
+{
+    update();
+}
+
+template <class DataTypes>
 void Vertex2Frame<DataTypes>::update()
 {
     dirty = false;
