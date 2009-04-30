@@ -95,7 +95,6 @@ protected:
 
     // contacts from previous frame
     sofa::helper::vector<Contact> prevContacts;
-
 public:
 
     PenalityContactForceField(MechanicalState* object1, MechanicalState* object2)
@@ -124,6 +123,7 @@ public:
             helper::vector< unsigned int > &triangle,
             helper::vector< unsigned int > &index_point) ;
 
+    virtual bool useMask() {return true;}
 
     void draw();
 };

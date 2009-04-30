@@ -92,18 +92,6 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(Out
 
     int SIZE = outputs.size();
 
-    /*
-            if (SIZE)
-              {
-                //Activate the Mechanical Mapping
-                sofa::simulation::Node *c1=static_cast<sofa::simulation::Node *>(model1->getContext());
-                sofa::simulation::Node *c2=static_cast<sofa::simulation::Node *>(model2->getContext());
-
-                core::componentmodel::behavior::BaseMechanicalMapping *m;
-                c1->get(m, core::objectmodel::BaseContext::Local); if (m) m->setMechanical(true);
-                c2->get(m, core::objectmodel::BaseContext::Local); if (m) m->setMechanical(true);
-              }
-    */
     for (int cpt=0; cpt<SIZE; cpt++)
     {
         DetectionOutput* o = &outputs[cpt];

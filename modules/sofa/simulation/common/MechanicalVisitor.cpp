@@ -330,12 +330,14 @@ Visitor::Result MechanicalIntegrationVisitor::fwdOdeSolver(simulation::Node* nod
 
     //cerr<<"MechanicalIntegrationVisitor::fwdOdeSolver start solve obj"<<endl;
     obj->solve(dt);
+// 	cerr<<"MechanicalIntegrationVisitor::fwdOdeSolver endVisitor ok"<<endl;
+
     //cerr<<"MechanicalIntegrationVisitor::fwdOdeSolver end solve obj"<<endl;
     obj->propagatePositionAndVelocity(nextTime,core::componentmodel::behavior::OdeSolver::VecId::position(),core::componentmodel::behavior::OdeSolver::VecId::velocity());
 
     MechanicalEndIntegrationVisitor endVisitor(dt);
     node->execute(&endVisitor);
-// 	cerr<<"MechanicalIntegrationVisitor::fwdOdeSolver endVisitor ok"<<endl;
+
     endProcess(node, obj, t0);
     return RESULT_PRUNE;
 }
@@ -802,7 +804,8 @@ Visitor::Result MechanicalComputeForceVisitor::fwdForceField(simulation::Node* n
 
 void MechanicalComputeForceVisitor::bwdMechanicalMapping(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalMapping* map)
 {
-    //cerr<<"MechanicalComputeForceVisitor::bwdMechanicalMapping "<<map->getName()<<endl;
+//       cerr<<"MechanicalComputeForceVisitor::bwdMechanicalMapping "<<map->getName()<<endl;
+    map->accumulateMask();
     if (accumulate)
     {
         ctime_t t0 = beginProcess(node, map);

@@ -60,7 +60,6 @@ int DefaultPipelineClass = core::RegisterObject("The default collision detection
 DefaultPipeline::DefaultPipeline()
     : bVerbose(initData(&bVerbose, false, "verbose","Display current step information"))
     , bDraw(initData(&bDraw, false, "draw","Draw detected collisions"))
-    , bOptimizationMapping(initData(&bOptimizationMapping, false, "optimizationMapping","Turns MechanicalMappings into regular Mappings if no Collision Response is applied to the mapped dof"))
     , depth(initData(&depth, 6, "depth","Max depth of bounding trees"))
 {
 }
@@ -122,31 +121,10 @@ void DefaultPipeline::doCollisionDetection(const sofa::helper::vector<core::Coll
         int nActive = 0;
         bool desactivateMapping=true;
 
-        if( bOptimizationMapping.getValue())
-        {
-            for (it = collisionModels.begin(); it != itEnd; it++)
-            {
-                if (RayModel* rayPick = dynamic_cast< RayModel* >(*it))
-                {
-                    desactivateMapping = ((CollisionModel*)rayPick)->getSize() == 0;
-                    break;
-                }
-            }
-        }
         for (it = collisionModels.begin(); it != itEnd; it++)
         {
             VERBOSE(sout << "DefaultPipeline::doCollisionDetection, consider model "<<(*it)->getName()<<sendl);
             if (!(*it)->isActive()) continue;
-
-            if( bOptimizationMapping.getValue())
-            {
-                //Desactivate all the Mechanical Mapping
-                sofa::simulation::Node *c1=static_cast<sofa::simulation::Node *>((*it)->getContext());
-
-                core::componentmodel::behavior::BaseMechanicalMapping *m;
-                c1->get(m, core::objectmodel::BaseContext::Local);
-                if (m) m->setMechanical(!desactivateMapping);
-            }
 
             if (continuous)
                 (*it)->computeContinuousBoundingTree(dt, depth.getValue());

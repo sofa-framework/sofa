@@ -32,6 +32,7 @@
 #include <sofa/core/Mapping.h>
 #include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
 #include <sofa/core/componentmodel/behavior/MappedModel.h>
+#include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -148,6 +149,7 @@ public:
     virtual void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) = 0;
     virtual void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in ) = 0;
     virtual void applyJT( typename In::VecConst& out, const typename Out::VecConst& in ) = 0;
+    virtual void applyJT( core::componentmodel::behavior::BaseMechanicalState::ParticleMask& /* out */, const core::componentmodel::behavior::BaseMechanicalState::ParticleMask& /* in */ ) {};
     virtual void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in) = 0;
 
     //-- test mapping partiel
@@ -226,9 +228,15 @@ protected:
     sofa::helper::vector< MappingData2D >  map2d;
     sofa::helper::vector< MappingData3D >  map3d;
 
+    core::componentmodel::behavior::BaseMechanicalState::ParticleMask *maskFrom;
+    core::componentmodel::behavior::BaseMechanicalState::ParticleMask *maskTo;
+
 public:
-    BarycentricMapperMeshTopology(core::componentmodel::topology::BaseMeshTopology* topology)
-        : TopologyBarycentricMapper<In,Out>(topology)
+    BarycentricMapperMeshTopology(core::componentmodel::topology::BaseMeshTopology* topology,
+            core::componentmodel::behavior::BaseMechanicalState::ParticleMask *_maskFrom,
+            core::componentmodel::behavior::BaseMechanicalState::ParticleMask *_maskTo)
+        : TopologyBarycentricMapper<In,Out>(topology),
+          maskFrom(_maskFrom), maskTo(_maskTo)
     {}
 
     virtual ~BarycentricMapperMeshTopology() {}
@@ -254,6 +262,7 @@ public:
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
     void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
+    void applyJT( core::componentmodel::behavior::BaseMechanicalState::ParticleMask& out, const core::componentmodel::behavior::BaseMechanicalState::ParticleMask& in );
     void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
     void getJ(unsigned int Idx, sofa::helper::vector< double > &factor, sofa::helper::vector< unsigned int > &indices);
@@ -330,10 +339,14 @@ public:
 protected:
     sofa::helper::vector<CubeData> map;
     topology::RegularGridTopology* topology;
-
+    core::componentmodel::behavior::BaseMechanicalState::ParticleMask *maskFrom;
+    core::componentmodel::behavior::BaseMechanicalState::ParticleMask *maskTo;
 public:
-    BarycentricMapperRegularGridTopology(topology::RegularGridTopology* topology)
-        : Inherit(topology),topology(topology)
+    BarycentricMapperRegularGridTopology(topology::RegularGridTopology* topology,
+            core::componentmodel::behavior::BaseMechanicalState::ParticleMask *_maskFrom,
+            core::componentmodel::behavior::BaseMechanicalState::ParticleMask *_maskTo)
+        : Inherit(topology),topology(topology),
+          maskFrom(_maskFrom), maskTo(_maskTo)
     {}
 
     virtual ~BarycentricMapperRegularGridTopology() {}
@@ -342,6 +355,8 @@ public:
 
     bool isEmpty() {return this->map.size() == 0;}
     void setTopology(topology::RegularGridTopology* _topology) {this->topology = _topology;}
+    void setMaskFrom(core::componentmodel::behavior::BaseMechanicalState::ParticleMask *m) {maskFrom = m;}
+    void setMaskTo  (core::componentmodel::behavior::BaseMechanicalState::ParticleMask *m) {maskTo = m;}
     topology::RegularGridTopology *getTopology() {return dynamic_cast<topology::RegularGridTopology *>(this->topology);}
 
     int addPointInCube(const int cubeIndex, const SReal* baryCoords);
@@ -351,6 +366,7 @@ public:
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
     void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
+    void applyJT( core::componentmodel::behavior::BaseMechanicalState::ParticleMask& out, const core::componentmodel::behavior::BaseMechanicalState::ParticleMask& in );
     void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperRegularGridTopology<In, Out> &b )
@@ -385,10 +401,15 @@ public:
 protected:
     sofa::helper::vector<CubeData> map;
     topology::SparseGridTopology* topology;
+    core::componentmodel::behavior::BaseMechanicalState::ParticleMask *maskFrom;
+    core::componentmodel::behavior::BaseMechanicalState::ParticleMask *maskTo;
 public:
-    BarycentricMapperSparseGridTopology(topology::SparseGridTopology* topology)
+    BarycentricMapperSparseGridTopology(topology::SparseGridTopology* topology,
+            core::componentmodel::behavior::BaseMechanicalState::ParticleMask *_maskFrom,
+            core::componentmodel::behavior::BaseMechanicalState::ParticleMask *_maskTo)
         : TopologyBarycentricMapper<In,Out>(topology),
-          topology(topology)
+          topology(topology),
+          maskFrom(_maskFrom), maskTo(_maskTo)
     {}
 
     virtual ~BarycentricMapperSparseGridTopology() {}
@@ -403,6 +424,7 @@ public:
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
     void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
+    void applyJT( core::componentmodel::behavior::BaseMechanicalState::ParticleMask& out, const core::componentmodel::behavior::BaseMechanicalState::ParticleMask& in );
     void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperSparseGridTopology<In, Out> &b )
@@ -457,12 +479,17 @@ protected:
     topology::PointData< MappingData >  map;
     topology::EdgeSetTopologyContainer*			_container;
     topology::EdgeSetGeometryAlgorithms<In>*	_geomAlgo;
+    core::componentmodel::behavior::BaseMechanicalState::ParticleMask *maskFrom;
+    core::componentmodel::behavior::BaseMechanicalState::ParticleMask *maskTo;
 
 public:
-    BarycentricMapperEdgeSetTopology(topology::EdgeSetTopologyContainer* topology)
+    BarycentricMapperEdgeSetTopology(topology::EdgeSetTopologyContainer* topology,
+            core::componentmodel::behavior::BaseMechanicalState::ParticleMask *_maskFrom,
+            core::componentmodel::behavior::BaseMechanicalState::ParticleMask *_maskTo)
         : TopologyBarycentricMapper<In,Out>(topology),
           _container(topology),
-          _geomAlgo(NULL)
+          _geomAlgo(NULL),
+          maskFrom(_maskFrom), maskTo(_maskTo)
     {}
 
     virtual ~BarycentricMapperEdgeSetTopology() {}
@@ -478,6 +505,7 @@ public:
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
     void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
+    void applyJT( core::componentmodel::behavior::BaseMechanicalState::ParticleMask& out, const core::componentmodel::behavior::BaseMechanicalState::ParticleMask& in );
     void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
     // handle topology changes in the From topology
@@ -536,12 +564,17 @@ protected:
     topology::PointData< MappingData >		map;
     topology::TriangleSetTopologyContainer*			_container;
     topology::TriangleSetGeometryAlgorithms<In>*	_geomAlgo;
+    core::componentmodel::behavior::BaseMechanicalState::ParticleMask *maskFrom;
+    core::componentmodel::behavior::BaseMechanicalState::ParticleMask *maskTo;
 
 public:
-    BarycentricMapperTriangleSetTopology(topology::TriangleSetTopologyContainer* topology)
+    BarycentricMapperTriangleSetTopology(topology::TriangleSetTopologyContainer* topology,
+            core::componentmodel::behavior::BaseMechanicalState::ParticleMask *_maskFrom,
+            core::componentmodel::behavior::BaseMechanicalState::ParticleMask *_maskTo)
         : TopologyBarycentricMapper<In,Out>(topology),
           _container(topology),
-          _geomAlgo(NULL)
+          _geomAlgo(NULL),
+          maskFrom(_maskFrom), maskTo(_maskTo)
     {}
 
     virtual ~BarycentricMapperTriangleSetTopology() {}
@@ -557,6 +590,7 @@ public:
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
     void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
+    void applyJT( core::componentmodel::behavior::BaseMechanicalState::ParticleMask& out, const core::componentmodel::behavior::BaseMechanicalState::ParticleMask& in );
     void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
     // handle topology changes in the From topology
@@ -615,12 +649,17 @@ protected:
     topology::PointData< MappingData >  map;
     topology::QuadSetTopologyContainer*			_container;
     topology::QuadSetGeometryAlgorithms<In>*	_geomAlgo;
+    core::componentmodel::behavior::BaseMechanicalState::ParticleMask *maskFrom;
+    core::componentmodel::behavior::BaseMechanicalState::ParticleMask *maskTo;
 
 public:
-    BarycentricMapperQuadSetTopology(topology::QuadSetTopologyContainer* topology)
+    BarycentricMapperQuadSetTopology(topology::QuadSetTopologyContainer* topology,
+            core::componentmodel::behavior::BaseMechanicalState::ParticleMask *_maskFrom,
+            core::componentmodel::behavior::BaseMechanicalState::ParticleMask *_maskTo)
         : TopologyBarycentricMapper<In,Out>(topology),
           _container(topology),
-          _geomAlgo(NULL)
+          _geomAlgo(NULL),
+          maskFrom(_maskFrom), maskTo(_maskTo)
     {}
 
     virtual ~BarycentricMapperQuadSetTopology() {}
@@ -636,6 +675,7 @@ public:
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
     void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
+    void applyJT( core::componentmodel::behavior::BaseMechanicalState::ParticleMask& out, const core::componentmodel::behavior::BaseMechanicalState::ParticleMask& in );
     void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
     // handle topology changes in the From topology
@@ -691,12 +731,17 @@ protected:
     topology::PointData< MappingData >  map;
     topology::TetrahedronSetTopologyContainer*			_container;
     topology::TetrahedronSetGeometryAlgorithms<In>*	_geomAlgo;
+    core::componentmodel::behavior::BaseMechanicalState::ParticleMask *maskFrom;
+    core::componentmodel::behavior::BaseMechanicalState::ParticleMask *maskTo;
 
 public:
-    BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* topology)
+    BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* topology,
+            core::componentmodel::behavior::BaseMechanicalState::ParticleMask *_maskFrom,
+            core::componentmodel::behavior::BaseMechanicalState::ParticleMask *_maskTo)
         : TopologyBarycentricMapper<In,Out>(topology),
           _container(topology),
-          _geomAlgo(NULL)
+          _geomAlgo(NULL),
+          maskFrom(_maskFrom), maskTo(_maskTo)
     {}
 
     virtual ~BarycentricMapperTetrahedronSetTopology() {}
@@ -711,6 +756,7 @@ public:
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
     void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
+    void applyJT( core::componentmodel::behavior::BaseMechanicalState::ParticleMask& out, const core::componentmodel::behavior::BaseMechanicalState::ParticleMask& in );
     void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
     // handle topology changes in the From topology
@@ -770,16 +816,22 @@ protected:
     topology::HexahedronSetGeometryAlgorithms<In>*	_geomAlgo;
 
     std::set<int>	_invalidIndex;
+    core::componentmodel::behavior::BaseMechanicalState::ParticleMask *maskFrom;
+    core::componentmodel::behavior::BaseMechanicalState::ParticleMask *maskTo;
 
 public:
     BarycentricMapperHexahedronSetTopology()
-        : TopologyBarycentricMapper<In,Out>(NULL),_container(NULL),_geomAlgo(NULL)
+        : TopologyBarycentricMapper<In,Out>(NULL),_container(NULL),_geomAlgo(NULL),
+          maskFrom(NULL), maskTo(NULL)
     {}
 
-    BarycentricMapperHexahedronSetTopology(topology::HexahedronSetTopologyContainer* topology)
+    BarycentricMapperHexahedronSetTopology(topology::HexahedronSetTopologyContainer* topology,
+            core::componentmodel::behavior::BaseMechanicalState::ParticleMask *_maskFrom,
+            core::componentmodel::behavior::BaseMechanicalState::ParticleMask *_maskTo)
         : TopologyBarycentricMapper<In,Out>(topology),
           _container(topology),
-          _geomAlgo(NULL)
+          _geomAlgo(NULL),
+          maskFrom(_maskFrom), maskTo(_maskTo)
     {}
 
     virtual ~BarycentricMapperHexahedronSetTopology() {}
@@ -796,6 +848,7 @@ public:
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
     void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
+    void applyJT( core::componentmodel::behavior::BaseMechanicalState::ParticleMask& out, const core::componentmodel::behavior::BaseMechanicalState::ParticleMask& in );
     void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
     //-- test mapping partiel
@@ -809,7 +862,8 @@ public:
             std::list< const core::componentmodel::topology::TopologyChange *>::const_iterator);
     bool isEmpty() {return this->map.getValue().empty();}
     void setTopology(topology::HexahedronSetTopologyContainer* _topology) {this->topology = _topology; _container=_topology;}
-
+    void setMaskFrom(core::componentmodel::behavior::BaseMechanicalState::ParticleMask *m) {maskFrom = m;}
+    void setMaskTo(core::componentmodel::behavior::BaseMechanicalState::ParticleMask *m) {maskTo = m;}
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperHexahedronSetTopology<In, Out> &b )
     {
         unsigned int size_vec;
@@ -888,7 +942,7 @@ public:
 
     BarycentricMapping(In* from, Out* to)
         : Inherit(from, to), mapper(NULL)
-        , f_grid (new DataPtr< RegularGridMapper >( new RegularGridMapper( NULL ),"Regular Grid Mapping"))
+        , f_grid (new DataPtr< RegularGridMapper >( new RegularGridMapper( NULL,NULL,NULL ),"Regular Grid Mapping"))
         , f_hexaMapper (new DataPtr< HexaMapper >( new HexaMapper(  ),"Hexahedron Mapper"))
 #ifdef SOFA_DEV
         , sleeping(core::objectmodel::Base::initData(&sleeping, false, "sleeping", "is the mapping sleeping (not computed)"))
@@ -933,6 +987,8 @@ public:
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
 
     void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
+
+    void applyJT( core::componentmodel::behavior::BaseMechanicalState::ParticleMask& /* out */, const core::componentmodel::behavior::BaseMechanicalState::ParticleMask& /* in */ );
 
     void draw();
 

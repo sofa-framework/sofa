@@ -69,7 +69,10 @@ template<class DataTypes>
 void ForceField<DataTypes>::addForce()
 {
     if (mstate)
+    {
+        mstate->forceMask.setInUse(this->useMask());
         addForce(*mstate->getF(), *mstate->getX(), *mstate->getV());
+    }
 }
 
 template<class DataTypes>

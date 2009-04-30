@@ -65,6 +65,8 @@ public:
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
+    typedef core::componentmodel::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+
 //     using sofa::core::objectmodel::Data;
 
     PairInteractionForceField(MechanicalState<DataTypes> *mm1 = NULL, MechanicalState<DataTypes> *mm2 = NULL);
@@ -259,6 +261,9 @@ protected:
     sofa::core::objectmodel::Data< std::string > _object2;
     MechanicalState<DataTypes> *mstate1;
     MechanicalState<DataTypes> *mstate2;
+
+    ParticleMask *mask1;
+    ParticleMask *mask2;
 };
 
 #if defined(WIN32) && !defined(SOFA_BUILD_CORE)

@@ -51,7 +51,7 @@ template<class DataTypes>
 PairInteractionForceField<DataTypes>::PairInteractionForceField(MechanicalState<DataTypes> *mm1, MechanicalState<DataTypes> *mm2)
     : _object1(initData(&_object1, "object1", "First object in interaction")),
       _object2(initData(&_object2, "object2", "Second object in interaction")),
-      mstate1(mm1), mstate2(mm2)
+      mstate1(mm1), mstate2(mm2), mask1(NULL), mask2(NULL)
 {
 }
 
@@ -106,6 +106,7 @@ BaseMechanicalState*  PairInteractionForceField<DataTypes>::getMState(sofa::core
 template<class DataTypes>
 void PairInteractionForceField<DataTypes>::init()
 {
+
     InteractionForceField::init();
     if (mstate1 == NULL || mstate2 == NULL)
     {
@@ -162,6 +163,8 @@ void PairInteractionForceField<DataTypes>::init()
         }
     }
 
+    this->mask1 = &mstate1->forceMask;
+    this->mask2 = &mstate2->forceMask;
 }
 
 template<class DataTypes>

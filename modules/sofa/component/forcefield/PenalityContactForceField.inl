@@ -54,6 +54,7 @@ void PenalityContactForceField<DataTypes>::clear(int reserve)
     contacts.endEdit();
 }
 
+
 template<class DataTypes>
 void PenalityContactForceField<DataTypes>::addContact(int m1, int m2, int index1, int index2, const Deriv& norm, Real dist, Real ks, Real mu_s, Real mu_v, int oldIndex)
 {
@@ -86,6 +87,8 @@ void PenalityContactForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2, 
 {
     f1.resize(x1.size());
     f2.resize(x2.size());
+
+
     for (unsigned int i=0; i<contacts.getValue().size(); i++)
     {
         Contact& c = (*contacts.beginEdit())[i];
@@ -95,8 +98,12 @@ void PenalityContactForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2, 
         {
             Real fN = c.ks * c.pen;
             Deriv force = -c.norm*fN;
+
             f1[c.m1]+=force;
+            if (this->mask1) this->mask1->insertEntry(c.m1);
+
             f2[c.m2]-=force;
+            if (this->mask2) this->mask2->insertEntry(c.m2);
         }
     }
     contacts.endEdit();

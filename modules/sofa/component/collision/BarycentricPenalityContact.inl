@@ -79,20 +79,10 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
         MechanicalState2* mstate2 = mapper2.createMapping();
         ff = new ResponseForceField(mstate1,mstate2);
         ff->setName( getName() );
+        ff->init();
     }
 
     int insize = outputs.size();
-
-    if (insize)
-    {
-        //Activate the Mechanical Mapping
-        sofa::simulation::Node *c1=static_cast<sofa::simulation::Node *>(model1->getContext());
-        sofa::simulation::Node *c2=static_cast<sofa::simulation::Node *>(model2->getContext());
-
-        core::componentmodel::behavior::BaseMechanicalMapping *m;
-        c1->get(m, core::objectmodel::BaseContext::Local); if (m) m->setMechanical(true);
-        c2->get(m, core::objectmodel::BaseContext::Local); if (m) m->setMechanical(true);
-    }
 
     // old index for each contact
     // >0 indicate preexisting contact
