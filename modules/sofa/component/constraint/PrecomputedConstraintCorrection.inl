@@ -1263,7 +1263,7 @@ void PrecomputedConstraintCorrection<DataTypes>::addConstraintDisplacement(doubl
 }
 
 template<class DataTypes>
-void PrecomputedConstraintCorrection<DataTypes>::setConstraintDForce(double *df, int begin, int end, bool update)
+void PrecomputedConstraintCorrection<DataTypes>::setConstraintDForce(double */*df*/, int /*begin*/, int /*end*/, bool /*update*/)
 {
 }
 
