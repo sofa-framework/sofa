@@ -171,9 +171,13 @@ template<class DataTypes>
 void PairInteractionForceField<DataTypes>::addForce()
 {
     if (mstate1 && mstate2)
+    {
+        mstate1->forceMask.setInUse(this->useMask());
+        mstate2->forceMask.setInUse(this->useMask());
         addForce(*mstate1->getF(), *mstate2->getF(),
                 *mstate1->getX(), *mstate2->getX(),
                 *mstate1->getV(), *mstate2->getV());
+    }
     else serr<<"PairInteractionForceField<DataTypes>::addForce(), mstate missing"<<sendl;
 }
 

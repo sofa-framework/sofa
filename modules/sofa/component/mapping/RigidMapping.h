@@ -76,6 +76,10 @@ public:
     Data< bool > useX0;
     Data< bool > indexFromEnd;
 
+    core::componentmodel::behavior::BaseMechanicalState::ParticleMask* maskFrom;
+    core::componentmodel::behavior::BaseMechanicalState::ParticleMask* maskTo;
+
+
     RigidMapping ( In* from, Out* to )
         : Inherit ( from, to ),
           points ( initData ( &points,"initialPoints", "Local Coordinates of the points" ) ),
@@ -86,6 +90,12 @@ public:
           repartition ( initData ( &repartition,"repartition","number of dest dofs per entry dof" ) )
     {
         addAlias(&fileRigidMapping,"filename");
+        maskFrom = NULL;
+        if (core::componentmodel::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *>(from))
+            maskFrom = &stateFrom->forceMask;
+        maskTo = NULL;
+        if (core::componentmodel::behavior::BaseMechanicalState *stateTo = dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *>(to))
+            maskTo = &stateTo->forceMask;
     }
 
     virtual ~RigidMapping()
@@ -105,6 +115,8 @@ public:
     virtual void applyJT ( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
 
     void applyJT ( typename In::VecConst& out, const typename Out::VecConst& in );
+
+    void applyJT( core::componentmodel::behavior::BaseMechanicalState::ParticleMask& /* out */, const core::componentmodel::behavior::BaseMechanicalState::ParticleMask& /* in */ );
 
     void draw();
 
