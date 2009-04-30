@@ -1282,17 +1282,44 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
     double coord_t=0.0;
     double coord_k=0.0;
     double coord_k_test=0.0;
-
-    Vec<3,double> p_current=a;
-    unsigned int ind_t_current=ind_ta;
-
-    unsigned int ind_edge;
-    unsigned int ind_index;
-    unsigned int ind_triangle = ind_ta;
-
     double dist_min=0.0;
 
+    Vec<3,double> p_current=a;
+    TriangleID ind_t_current=ind_ta;
+    EdgeID ind_edge;
+    PointID ind_index;
+    TriangleID ind_triangle = ind_ta;
+
     is_intersected=computeSegmentTriangleIntersection(false, p_current, b, (const unsigned int) ind_t_current, indices, coord_t, coord_k);
+
+    // In case the ind_t is not the good one.
+    if (!is_intersected)
+    {
+        sofa::helper::vector< double > bary_triCoef = computeTriangleBarycoefs (ind_t_current, p_current);
+        PointID theVertex = 0;
+
+        for (unsigned int j = 0; j<3; j++)
+            if ( bary_triCoef[j] == 1)
+            {
+                theVertex = j;
+                break;
+            }
+
+        const Triangle &t=this->m_topology->getTriangle(ind_t_current);
+        const sofa::helper::vector< unsigned int >& shell = this->m_topology->getTriangleVertexShell (t[theVertex]);
+
+        for (unsigned int i = 0; i<shell.size(); i++)
+        {
+            if (shell [i] != ind_t_current)
+                is_intersected=computeSegmentTriangleIntersection(false, p_current, b, shell[i], indices, coord_t, coord_k);
+
+            if (is_intersected)
+            {
+                ind_t_current = shell[i];
+                break;
+            }
+        }
+    }
 
     coord_k_test=coord_k;
     dist_min=(b-a)*(b-a);
@@ -1321,9 +1348,12 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
         p_t_aux[1] = (Real) (c_t_current[1]);
         p_t_aux[2] = (Real) (c_t_current[2]);
 
+
+
+
         if(coord_t==0.0 || coord_t==1.0) // current point indexed by ind_t_current is on a vertex
         {
-            //sout << "INFO_print : INPUT ON A VERTEX !!!" <<  sendl;
+            //std::cout << "INFO_print : INPUT ON A VERTEX !!!" <<  std::endl;
 
             if(coord_t==0.0)
             {
@@ -1427,6 +1457,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
             if (this->m_topology->getNbEdges()>0)
             {
                 sofa::helper::vector< unsigned int > shell =(sofa::helper::vector< unsigned int >) (this->m_topology->getTriangleEdgeShell(ind_edge));
+
                 ind_triangle=shell[0];
                 unsigned int i=0;
 
@@ -1533,6 +1564,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
     }
 
     return (is_reached && is_validated && is_intersected); // b is in triangle indexed by ind_t_current
+
 }
 
 
