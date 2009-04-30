@@ -270,8 +270,65 @@ public:
         defaulttype::BaseMatrix *matrix;
     };
 
+
     /// Express the matrix L in term of block of matrices, using the indices of the lines in the VecConst container
     virtual std::list<ConstraintBlock> constraintBlocks( const std::list<unsigned int> &/* indices */, double /* factor */) const {return std::list<ConstraintBlock>();};
+
+    /// Utility to store only the modified indices of a mapped dof.
+    /// This should allow to optimize the propagation of the forces from a mechanical state mapped, used as a collision model, to the independent dofs.
+    /// It is used during the applyJ and applyJT process of the MechanicalMappings.
+    /// Forcefields which acts only on a little number of particles should activate the mask (by redefining the method bool useMask()) and add entries in the particle mask
+    class ParticleMask
+    {
+    public:
+        enum USAGE {DEFAULT, USED, UNUSED};
+        typedef std::set< unsigned int > InternalStorage;
+        ParticleMask():inUse(DEFAULT) {};
+
+        /// Insert an entry in the mask
+        void insertEntry(unsigned int index)
+        {
+            indices.insert(index);
+        }
+
+
+        const std::set< unsigned int > &getEntries() const {return indices;};
+        std::set< unsigned int > &getEntries() {return indices;};
+
+        /// Activate the mask. By default, the mask state is set to "DEFAULT".
+        /// It means that if no component change the current state, the mask will be used.
+        /// If one component desactivate the filter, it won't be used at all during the time step, even if other components desire to use it.
+        void setInUse(bool use)
+        {
+            if (inUse == DEFAULT) inUse=(use?USED:UNUSED);
+            else if (!use)        inUse=UNUSED; //Desactivate if one component is not using it
+        }
+
+        /** Test if the mask is active. We put a threshold to verify that we have a low number of particles to filter.
+         * If too many particles are used, we desactivate the filter.
+         * @param size total number of particles. With it, we can verify that the threshold previously described is respected.
+         **/
+        bool isInUse(unsigned int size=0) const
+        {
+            if (inUse == UNUSED) return false;
+            else
+            {
+                if (size == 0) return true;
+                // If more than 50% of the indices are used, we don't filter anymore, and use the classical approach
+                else if (indices.size()/((float)size) > 0.5f) return false;
+                else return true;
+            }
+        }
+
+        void clear() {indices.clear(); inUse=DEFAULT;}
+
+    protected:
+        std::set< unsigned int> indices;
+        USAGE inUse;
+    };
+
+    /// Mask to filter the particles. Used inside MechanicalMappings inside applyJ and applyJT methods.
+    ParticleMask forceMask;
 
     /// Increment the index of the given VecId, so that all 'allocated' vectors in this state have a lower index
     virtual void vAvail(VecId& v) = 0;

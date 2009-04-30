@@ -44,7 +44,7 @@ namespace behavior
 
 template<class DataTypes1, class DataTypes2>
 MixedInteractionForceField<DataTypes1, DataTypes2>::MixedInteractionForceField(MechanicalState<DataTypes1> *mm1, MechanicalState<DataTypes2> *mm2)
-    : mstate1(mm1), mstate2(mm2)
+    : mstate1(mm1), mstate2(mm2), mask1(NULL), mask2(NULL)
 {
 }
 
@@ -57,6 +57,8 @@ template<class DataTypes1, class DataTypes2>
 void MixedInteractionForceField<DataTypes1, DataTypes2>::init()
 {
     InteractionForceField::init();
+    this->mask1 = &mstate1->forceMask;
+    this->mask2 = &mstate2->forceMask;
 }
 
 template<class DataTypes1, class DataTypes2>

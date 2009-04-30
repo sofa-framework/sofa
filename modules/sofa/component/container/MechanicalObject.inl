@@ -1333,6 +1333,7 @@ void MechanicalObject<DataTypes>::endIntegration(Real /*dt*/)
 {
     this->f = this->externalForces;
     this->externalForces->clear();
+    this->forceMask.clear();
 }
 
 template <class DataTypes>

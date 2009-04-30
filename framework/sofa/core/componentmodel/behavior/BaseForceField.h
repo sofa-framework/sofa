@@ -157,6 +157,12 @@ public:
     // TEMPORARY there... allow to get from the ForceField the fractured Edge index
     // When its computation is in the forcefield itself
     virtual int getFracturedEdge() {return -1;};
+
+    /// If the forcefield is applied only on a subset of particles.
+    /// That way, we can optimize the time spent to transfer forces through the mechanical mappings
+    /// Desactivated by default. The forcefields using only a subset of particles should activate the mask,
+    /// and during addForce(), insert the indices of the particles modified
+    virtual bool useMask() {return false;}
 };
 
 } // namespace behavior

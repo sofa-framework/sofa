@@ -116,6 +116,7 @@ protected:
             const sofa::helper::vector< unsigned int > &ancestors,
             const sofa::helper::vector< double >& coefs);
 
+    bool usingMask;
 public:
 
     sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
@@ -174,6 +175,7 @@ public:
         springArray.endEdit();
     }
 
+    bool useMask() {return true;}
     void addSpring(int m1, int m2, SReal ks, SReal kd, Coord restVector);
 
     /// forward declaration of the loader class used to read spring information from file

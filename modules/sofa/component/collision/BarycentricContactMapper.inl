@@ -74,7 +74,7 @@ typename BarycentricContactMapper<TCollisionModel,DataTypes>::MMechanicalState* 
     MMechanicalState* mstate = new MMechanicalObject; child->addObject(mstate);
     //mapping = new MMapping(model->getMechanicalState(), mstate, model->getMeshTopology());
     //mapper = mapping->getMapper();
-    mapper = new mapping::BarycentricMapperMeshTopology<InDataTypes, typename BarycentricContactMapper::DataTypes>(model->getMeshTopology());
+    mapper = new mapping::BarycentricMapperMeshTopology<InDataTypes, typename BarycentricContactMapper::DataTypes>(model->getMeshTopology(), &model->getMechanicalState()->forceMask, &mstate->forceMask);
     mapping = new MMapping(model->getMechanicalState(), mstate, mapper);
     child->addObject(mapping);
     return mstate;
