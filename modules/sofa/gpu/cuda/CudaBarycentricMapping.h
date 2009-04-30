@@ -57,10 +57,12 @@ protected:
     topology::RegularGridTopology* topology;
     void calcMapT();
 public:
-    BarycentricMapperRegularGridTopology(topology::RegularGridTopology* topology)
+    BarycentricMapperRegularGridTopology(topology::RegularGridTopology* topology, core::componentmodel::behavior::BaseMechanicalState::ParticleMask *, core::componentmodel::behavior::BaseMechanicalState::ParticleMask *)
         : Inherit(topology)
         , maxNOut(0), topology(topology)
     {}
+    void setMaskFrom(core::componentmodel::behavior::BaseMechanicalState::ParticleMask *) {}
+    void setMaskTo  (core::componentmodel::behavior::BaseMechanicalState::ParticleMask *) {}
 
     void clear(int reserve=0);
 
@@ -122,13 +124,15 @@ protected:
     void setMap(int outIndex, int j, int inIndex, Real val);
     void calcMapT();
 public:
-    BarycentricMapperMeshTopology(core::componentmodel::topology::BaseMeshTopology* topology)
+    BarycentricMapperMeshTopology(core::componentmodel::topology::BaseMeshTopology* topology, core::componentmodel::behavior::BaseMechanicalState::ParticleMask *, core::componentmodel::behavior::BaseMechanicalState::ParticleMask *)
         : Inherit(topology)
         , maxNIn(0), maxNOut(0), insize(0), size(0), topology(topology)
     {
         if (topology==NULL || topology->getNbHexas()==0) maxNIn = 4;
         else maxNIn = 8;
     }
+    void setMaskFrom(core::componentmodel::behavior::BaseMechanicalState::ParticleMask *) {}
+    void setMaskTo  (core::componentmodel::behavior::BaseMechanicalState::ParticleMask *) {}
 
     void clear(int reserve=0);
 
