@@ -738,7 +738,7 @@ void PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::rotateConstraints
     simulation::Node *node = dynamic_cast<simulation::Node *>(getContext());
 
     sofa::component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3dTypes>* forceField = NULL;
-    RotationFinder<defaulttype::Vec3dTypes>* rotationFinder = NULL;
+    sofa::component::container::RotationFinder<defaulttype::Vec3dTypes>* rotationFinder = NULL;
 
     if (node != NULL)
     {
@@ -746,7 +746,7 @@ void PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::rotateConstraints
         forceField = node->get<component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3dTypes> > ();
         if (forceField == NULL)
         {
-            rotationFinder = node->get<RotationFinder<defaulttype::Vec3dTypes> > ();
+            rotationFinder = node->get<component::container::RotationFinder<defaulttype::Vec3dTypes> > ();
             if (rotationFinder == NULL)
             {
                 sout << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";
@@ -779,9 +779,7 @@ void PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::rotateConstraints
             }
             else // rotationFinder has been defined
             {
-                std::cout << "rotateConstraints in" << std::endl;
                 Ri = rotationFinder->getRotations()[localRowNodeIdx];
-                std::cout << "rotateConstraints out" << std::endl;
             }
             Ri.transpose();
             // on passe les normales du repere global au repere local
@@ -853,7 +851,7 @@ void PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::rotateResponse()
     simulation::Node *node = dynamic_cast<simulation::Node *>(getContext());
 
     sofa::component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3dTypes>* forceField = NULL;
-    RotationFinder<defaulttype::Vec3dTypes>* rotationFinder = NULL;
+    sofa::component::container::RotationFinder<defaulttype::Vec3dTypes>* rotationFinder = NULL;
 
     if (node != NULL)
     {
@@ -861,7 +859,7 @@ void PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::rotateResponse()
         forceField = node->get<component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3dTypes> > ();
         if (forceField == NULL)
         {
-            rotationFinder = node->get<RotationFinder<defaulttype::Vec3dTypes> > ();
+            rotationFinder = node->get<component::container::RotationFinder<defaulttype::Vec3dTypes> > ();
             if (rotationFinder == NULL)
             {
                 sout << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";
@@ -933,14 +931,14 @@ void PrecomputedConstraintCorrection<defaulttype::Vec3fTypes>::rotateConstraints
     simulation::Node *node = dynamic_cast<simulation::Node *>(getContext());
 
     sofa::component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3fTypes>* forceField = NULL;
-    RotationFinder<defaulttype::Vec3fTypes>* rotationFinder = NULL;
+    sofa::component::container::RotationFinder<defaulttype::Vec3fTypes>* rotationFinder = NULL;
 
     if (node != NULL)
     {
         forceField = node->get<component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3fTypes> > ();
         if (forceField == NULL)
         {
-            rotationFinder = node->get<RotationFinder<defaulttype::Vec3fTypes> > ();
+            rotationFinder = node->get<component::container::RotationFinder<defaulttype::Vec3fTypes> > ();
             if (rotationFinder == NULL)
             {
                 sout << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";
@@ -1042,7 +1040,7 @@ void PrecomputedConstraintCorrection<defaulttype::Vec3fTypes>::rotateResponse()
     simulation::Node *node = dynamic_cast<simulation::Node *>(getContext());
 
     sofa::component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3fTypes>* forceField = NULL;
-    RotationFinder<defaulttype::Vec3fTypes>* rotationFinder = NULL;
+    sofa::component::container::RotationFinder<defaulttype::Vec3fTypes>* rotationFinder = NULL;
 
     if (node != NULL)
     {
@@ -1050,7 +1048,7 @@ void PrecomputedConstraintCorrection<defaulttype::Vec3fTypes>::rotateResponse()
         forceField = node->get<component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3fTypes> > ();
         if (forceField == NULL)
         {
-            rotationFinder = node->get<RotationFinder<defaulttype::Vec3fTypes> > ();
+            rotationFinder = node->get<component::container::RotationFinder<defaulttype::Vec3fTypes> > ();
             if (rotationFinder == NULL)
             {
                 sout << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";

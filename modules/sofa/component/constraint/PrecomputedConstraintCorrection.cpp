@@ -22,7 +22,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_CONSTRAINT_PRECOMPUTEDCONSTRAINTCORRECTION_CPP
 #include "PrecomputedConstraintCorrection.inl"
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
@@ -53,17 +52,17 @@ int ContactCorrectionClass = core::RegisterObject("Component computing contact f
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_CONSTRAINT_API PrecomputedConstraintCorrection<Vec3dTypes>;
+template class PrecomputedConstraintCorrection<Vec3dTypes>;
 //     template class PrecomputedConstraintCorrection<Vec2dTypes>;
-template class SOFA_COMPONENT_CONSTRAINT_API PrecomputedConstraintCorrection<Vec1dTypes>;
-template class SOFA_COMPONENT_CONSTRAINT_API PrecomputedConstraintCorrection<Rigid3dTypes>;
+template class PrecomputedConstraintCorrection<Vec1dTypes>;
+template class PrecomputedConstraintCorrection<Rigid3dTypes>;
 //     template class PrecomputedConstraintCorrection<Rigid2dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_CONSTRAINT_API PrecomputedConstraintCorrection<Vec3fTypes>;
+template class PrecomputedConstraintCorrection<Vec3fTypes>;
 //     template class PrecomputedConstraintCorrection<Vec2fTypes>;
-template class SOFA_COMPONENT_CONSTRAINT_API PrecomputedConstraintCorrection<Vec1fTypes>;
-template class SOFA_COMPONENT_CONSTRAINT_API PrecomputedConstraintCorrection<Rigid3fTypes>;
+template class PrecomputedConstraintCorrection<Vec1fTypes>;
+template class PrecomputedConstraintCorrection<Rigid3fTypes>;
 //     template class PrecomputedConstraintCorrection<Rigid2fTypes>;
 #endif
 
