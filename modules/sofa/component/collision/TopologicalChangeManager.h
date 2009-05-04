@@ -74,9 +74,6 @@ public:
     /// Handles Cutting (activated only for a triangular topology), using global variables to register the two last input points
     bool incisionCollisionModel(sofa::core::CollisionElementIterator, Vector3&, bool, bool);
 
-    /// Temporary solution to allow consecutif cuts
-    void initiateIncision();
-
 protected:
 
 private:

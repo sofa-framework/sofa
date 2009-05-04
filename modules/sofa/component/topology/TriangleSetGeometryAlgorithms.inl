@@ -1262,9 +1262,10 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
 // Computes the list of points (edge,coord) intersected by the segment from point a to point b
 // and the triangular mesh
 template<class DataTypes>
-bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(const Vec<3,double>& a,
+bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(const PointID last_point,
+        const Vec<3,double>& a,
         const Vec<3,double>& b,
-        const unsigned int ind_ta,
+        unsigned int& ind_ta,
         unsigned int& ind_tb,
         sofa::helper::vector< unsigned int > &triangles_list,
         sofa::helper::vector<unsigned int> &edges_list,
@@ -1293,33 +1294,41 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
     is_intersected=computeSegmentTriangleIntersection(false, p_current, b, (const unsigned int) ind_t_current, indices, coord_t, coord_k);
 
     // In case the ind_t is not the good one.
-    if (!is_intersected)
+    if (!is_intersected || indices[0] == last_point || indices[1] == last_point )
     {
-        sofa::helper::vector< double > bary_triCoef = computeTriangleBarycoefs (ind_t_current, p_current);
-        PointID theVertex = 0;
+        //std::cout << "passe la" << std::endl;
 
-        for (unsigned int j = 0; j<3; j++)
-            if ( bary_triCoef[j] == 1)
-            {
-                theVertex = j;
-                break;
-            }
-
-        const Triangle &t=this->m_topology->getTriangle(ind_t_current);
-        const sofa::helper::vector< unsigned int >& shell = this->m_topology->getTriangleVertexShell (t[theVertex]);
+        const sofa::helper::vector< unsigned int >& shell = this->m_topology->getTriangleVertexShell (last_point);
+        //std::cout << "shell: " << shell << std::endl;
 
         for (unsigned int i = 0; i<shell.size(); i++)
         {
             if (shell [i] != ind_t_current)
                 is_intersected=computeSegmentTriangleIntersection(false, p_current, b, shell[i], indices, coord_t, coord_k);
 
-            if (is_intersected)
+            //std::cout << "indices: " << indices << std::endl;
+            //std::cout << "last_point: " << last_point << std::endl;
+
+            if (is_intersected && indices[0] != last_point && indices[1] != last_point)
             {
                 ind_t_current = shell[i];
+                ind_ta = ind_t_current;
                 break;
             }
         }
     }
+
+    /*
+      std::cout << "*********************************" << std::endl;
+      std::cout << "ind_t_current: " << ind_t_current << std::endl;
+      std::cout << "p_current: " << p_current << std::endl;
+      std::cout << "coord_t: " << coord_t << std::endl;
+      std::cout << "coord_k: " << coord_k << std::endl;
+      std::cout << "indices: " << indices << std::endl;
+      std::cout << "last_point: " << last_point << std::endl;
+      std::cout << "is_intersected: "<< is_intersected << std::endl;
+      std::cout << "*********************************" << std::endl;
+    */
 
     coord_k_test=coord_k;
     dist_min=(b-a)*(b-a);
@@ -1353,8 +1362,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
 
         if(coord_t==0.0 || coord_t==1.0) // current point indexed by ind_t_current is on a vertex
         {
-            //std::cout << "INFO_print : INPUT ON A VERTEX !!!" <<  std::endl;
-
+            //	std::cout << "INFO_print : INPUT ON A VERTEX !!!" <<  std::endl;
             if(coord_t==0.0)
             {
                 ind_index=indices[0];
@@ -1465,7 +1473,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
 
                 unsigned int ind_from = ind_t_current;
 
-                if(shell.size()>1) // at leat one neighbor triangle which is not indexed by ind_t_current
+                if(shell.size()>0) // at leat one neighbor triangle which is not indexed by ind_t_current
                 {
                     is_on_boundary=false;
 
@@ -1527,6 +1535,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
                         i=i+1;
                     }
 
+
                     is_intersected=is_test_init;
                 }
                 else
@@ -1570,8 +1579,9 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
 
 
 template <typename DataTypes>
-bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (const sofa::defaulttype::Vec<3,double>& a, const sofa::defaulttype::Vec<3,double>& b,
-        const unsigned int ind_ta, unsigned int& ind_tb,// A verifier pourquoi la ref!
+bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (const PointID last_point,
+        const sofa::defaulttype::Vec<3,double>& a, const sofa::defaulttype::Vec<3,double>& b,
+        unsigned int& ind_ta, unsigned int& ind_tb,// A verifier pourquoi la ref!
         sofa::helper::vector< sofa::core::componentmodel::topology::TopologyObjectType>& topoPath_list,
         sofa::helper::vector<unsigned int>& indices_list,
         sofa::helper::vector< Vec<3, double> >& coords_list) const
@@ -1589,7 +1599,7 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (co
     bool isOnPoint = false;
 
     // using old function:
-    pathOK = this->computeIntersectedPointsList (a, b, ind_ta, ind_tb, triangles_list, edges_list, coordsEdge_list, is_on_boundary);
+    pathOK = this->computeIntersectedPointsList (last_point, a, b, ind_ta, ind_tb, triangles_list, edges_list, coordsEdge_list, is_on_boundary);
 
     if (pathOK)
     {
@@ -1597,29 +1607,25 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (co
         Vec<3,double> baryCoords;
 
         // 1 - First point a (for the moment: always a point in a triangle)
-        sofa::helper::vector< double > coefs_a = computeTriangleBarycoefs (ind_ta, a);
-
-        for (unsigned int i = 0; i<3; i++)
+        if (last_point != (unsigned int)-1)
         {
-            if (coefs_a[i] > 0.9999)
-            {
-                topoPath_list.push_back (core::componentmodel::topology::POINT);
-                indices_list.push_back (this->m_topology->getTriangle (ind_ta)[i]);
-                isOnPoint = true;
-                break;
-            }
+            topoPath_list.push_back (core::componentmodel::topology::POINT);
+            indices_list.push_back (last_point);
+            const typename DataTypes::VecCoord& realC = *(this->object->getX());
+            for (unsigned int i = 0; i<3; i++)
+                baryCoords[i]=realC[last_point][i];
         }
-
-        if (!isOnPoint)
+        else
         {
+            sofa::helper::vector< double > coefs_a = computeTriangleBarycoefs (ind_ta, a);
             topoPath_list.push_back (core::componentmodel::topology::TRIANGLE);
             indices_list.push_back (ind_ta);
+            for (unsigned int i = 0; i<3; i++)
+                baryCoords[i]=coefs_a[i];
         }
-        for (unsigned int i = 0; i<3; i++)
-            baryCoords[i]=coefs_a[i];
 
         coords_list.push_back (baryCoords);
-        isOnPoint = false;
+
 
         // 2 - All edges intersected (only edges for now)
         for (unsigned int i = 0; i< edges_list.size(); i++)
