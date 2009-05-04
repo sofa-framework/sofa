@@ -94,6 +94,7 @@ void SparseTAUCSSolver<TMatrix,TVector>::invert(Matrix& M)
         Mfiltered.copyNonZeros(M);
         sout << "Filtered M, nnz = " << Mfiltered.getRowBegin().back() << sendl;
     }
+    Mfiltered.fullRows();
     matrix_taucs.n = Mfiltered.rowSize();
     matrix_taucs.m = Mfiltered.colSize();
     matrix_taucs.flags = get_taucs_flags<Real>();

@@ -479,6 +479,29 @@ public:
         compressed = true;
     }
 
+    /// Make sure all rows have an entry even if they are empty
+    void fullRows()
+    {
+        compress();
+        if ((int)rowIndex.size() >= nRow) return;
+        oldRowIndex.swap(rowIndex);
+        oldRowBegin.swap(rowBegin);
+        rowIndex.resize(nRow);
+        rowBegin.resize(nRow+1);
+        for (int i=0; i<nRow; ++i) rowIndex[i] = i;
+        int j = 0;
+        int b = 0;
+        for (unsigned int i=0; i<oldRowIndex.size(); ++i)
+        {
+            b = oldRowBegin[i];
+            for (; j<=oldRowIndex[i]; ++j)
+                rowBegin[j] = b;
+        }
+        b = oldRowBegin[oldRowBegin.size()-1];
+        for (; j<=nRow; ++j)
+            rowBegin[j] = b;
+    }
+
     // filtering-out part of a matrix
     typedef bool filter_fn    (int   i  , int   j  , Bloc& val, const Bloc&   ref  );
     static bool       nonzeros(int /*i*/, int /*j*/, Bloc& val, const Bloc& /*ref*/) { return (!traits::empty(val)); }
