@@ -193,9 +193,10 @@ public:
     /** \brief Computes the list of points (ind_edge,coord) intersected by the segment from point a to point b and the triangular mesh
      *
      */
-    bool computeIntersectedPointsList(const sofa::defaulttype::Vec<3,double>& a,
+    bool computeIntersectedPointsList(const PointID last_point,
+            const sofa::defaulttype::Vec<3,double>& a,
             const sofa::defaulttype::Vec<3,double>& b,
-            const unsigned int ind_ta, unsigned int& ind_tb,
+            unsigned int& ind_ta, unsigned int& ind_tb,
             sofa::helper::vector< unsigned int > &triangles_list,
             sofa::helper::vector< unsigned int > &edges_list,
             sofa::helper::vector< double >& coords_list,
@@ -208,8 +209,9 @@ public:
      * @return List of barycentric coordinate defining the position of the intersection in each object
      * (i.e 0 coord for a point, 1 for and edge and 3 for a triangle).
      */
-    bool computeIntersectedObjectsList (const sofa::defaulttype::Vec<3,double>& a, const sofa::defaulttype::Vec<3,double>& b,
-            const unsigned int ind_ta, unsigned int& ind_tb,// A verifier pourquoi la ref!
+    bool computeIntersectedObjectsList (const PointID last_point,
+            const sofa::defaulttype::Vec<3,double>& a, const sofa::defaulttype::Vec<3,double>& b,
+            unsigned int& ind_ta, unsigned int& ind_tb,
             sofa::helper::vector< sofa::core::componentmodel::topology::TopologyObjectType>& topoPath_list,
             sofa::helper::vector<unsigned int>& indices_list,
             sofa::helper::vector< Vec<3, double> >& coords_list) const;

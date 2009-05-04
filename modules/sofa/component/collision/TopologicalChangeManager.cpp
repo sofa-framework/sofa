@@ -273,6 +273,8 @@ bool TopologicalChangeManager::incisionTriangleSetTopology(sofa::core::component
 
     // Point Indices
     unsigned int& a_last = incision.a_last_init;
+    if(incision.is_first_cut)
+        a_last = (unsigned int)-1;
     unsigned int& b_last = incision.b_last_init;
 
     // Triangle Indices
@@ -280,7 +282,6 @@ bool TopologicalChangeManager::incisionTriangleSetTopology(sofa::core::component
     unsigned int &ind_tb = incision.ind_tb_init;
 
     bool is_prepared=!((a[0]==b[0] && a[1]==b[1] && a[2]==b[2]) || (incision.ind_ta_init == incision.ind_tb_init));
-
 
     if(is_prepared)
     {
@@ -300,8 +301,15 @@ bool TopologicalChangeManager::incisionTriangleSetTopology(sofa::core::component
         sofa::helper::vector< Vec<3, double> > coords2_list;
         //bool is_on_boundary = false;
 
+        //std::cout << "*********************" << std::endl;
+        //std::cout << "a: " << a_last << " => " << a << " in triangle: " << ind_ta << std::endl;
+        //std::cout << "b: " << b_last << " => " << b << " in triangle: " << ind_tb << std::endl;
+        //std::cout << "*********************" << std::endl;
+
+
+
         //    bool ok = triangleGeo->computeIntersectedPointsList(a, b, ind_ta, ind_tb, triangles_list, edges_list, coords_list, is_on_boundary);
-        bool ok = triangleGeo->computeIntersectedObjectsList(a, b, ind_ta, ind_tb, topoPath_list, indices_list, coords2_list);
+        bool ok = triangleGeo->computeIntersectedObjectsList(a_last, a, b, ind_ta, ind_tb, topoPath_list, indices_list, coords2_list);
 
         //std::cout << "NEW PATH" << std::endl;
         //std::cout << "theenum:  " << topoPath_list << std::endl;
@@ -320,9 +328,8 @@ bool TopologicalChangeManager::incisionTriangleSetTopology(sofa::core::component
         sofa::helper::vector< unsigned int > new_edges;
 
         //triangleAlg->SplitAlongPath(a_last, a, b_last, b, triangles_list, edges_list, coords_list, new_edges);
-        triangleAlg->SplitAlongPath(a_last, a, b_last, b, topoPath_list, indices_list, coords2_list, new_edges, 0.1, 0.1);
-
-        //mettre a jour a et b en cas de snaping!!!!!!
+        triangleAlg->SplitAlongPath(a_last, a, b_last, b, topoPath_list, indices_list, coords2_list, new_edges, 0.1, 0.25);
+        //std::cout << "** split along path done **" << std::endl;
 
         //std::cout << "new edges : " << new_edges << std::endl;
 
@@ -330,7 +337,9 @@ bool TopologicalChangeManager::incisionTriangleSetTopology(sofa::core::component
         sofa::helper::vector<unsigned int> end_points;
 
         bool is_fully_cut = triangleAlg->InciseAlongEdgeList(new_edges, new_points, end_points);
-        //a_last = end_points.back();
+        //std::cout << "** incise along path done **" << std::endl;
+        if (!end_points.empty())
+            incision.a_last_init = end_points.back();
 
         triangleMod->propagateTopologicalChanges();
 
@@ -340,8 +349,6 @@ bool TopologicalChangeManager::incisionTriangleSetTopology(sofa::core::component
         triangleMod->propagateTopologicalChanges();
 
         incision.is_first_cut = false;
-
-        initiateIncision(); //reinitiate values for next cutting TO DO: change this
 
         return is_fully_cut;
     }
@@ -457,14 +464,6 @@ bool TopologicalChangeManager::incisionTriangleModel(sofa::core::CollisionElemen
     }
 
     return false;
-}
-
-void TopologicalChangeManager::initiateIncision()
-{
-    incision.a_last_init = (unsigned int)-1;
-    incision.b_last_init = (unsigned int)-1;
-    incision.ind_ta_init = (unsigned int)-1;
-    incision.ind_tb_init = (unsigned int)-1;
 }
 
 } // namespace collision
