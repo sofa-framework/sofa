@@ -50,8 +50,11 @@ void TriangleModelInRegularGrid::init()
 {
     TriangleModel::init();
 
-    if( !mstate) { serr << "TriangleModel requires a Vec3 Mechanical Model" << sendl; return;}
-    if (!_topology) { serr << "TriangleModel requires a BaseMeshTopology" << sendl; return;}
+    _topology = this->getContext()->getMeshTopology();
+    mstate = dynamic_cast< core::componentmodel::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
+
+    if( !mstate) { serr << "TriangleModelInRegularGrid requires a Vec3 Mechanical Model" << sendl; return;}
+    if (!_topology) { serr << "TriangleModelInRegularGrid requires a BaseMeshTopology" << sendl; return;}
 
     // Test if _topology depend on an higher topology (to compute Bounding Tree faster) and get it
     TopologicalMapping* _topoMapping = NULL;
