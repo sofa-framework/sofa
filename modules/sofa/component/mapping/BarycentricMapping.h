@@ -149,7 +149,6 @@ public:
     virtual void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) = 0;
     virtual void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in ) = 0;
     virtual void applyJT( typename In::VecConst& out, const typename Out::VecConst& in ) = 0;
-    virtual void applyJT( core::componentmodel::behavior::BaseMechanicalState::ParticleMask& /* out */, const core::componentmodel::behavior::BaseMechanicalState::ParticleMask& /* in */ ) {};
     virtual void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in) = 0;
 
     //-- test mapping partiel
@@ -159,9 +158,6 @@ public:
 
     virtual void clear( int reserve=0 ) =0;
 
-    // TODO: make it pure virtual. Get the barycentric coefficients and the coordinates of the parents of a given mapped dof.
-    virtual void getJ(unsigned int /*Idx*/, sofa::helper::vector< double > &/*factor*/, sofa::helper::vector< unsigned int > &/*indices*/)
-    {std::cerr<< "getJ NOT implemented yet\n"; };
 
     //Nothing to do
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapper< In, Out > & ) {return in;}
@@ -262,10 +258,7 @@ public:
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
     void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
-    void applyJT( core::componentmodel::behavior::BaseMechanicalState::ParticleMask& out, const core::componentmodel::behavior::BaseMechanicalState::ParticleMask& in );
     void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
-
-    void getJ(unsigned int Idx, sofa::helper::vector< double > &factor, sofa::helper::vector< unsigned int > &indices);
 
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperMeshTopology<In, Out> &b )
     {
@@ -366,7 +359,6 @@ public:
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
     void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
-    void applyJT( core::componentmodel::behavior::BaseMechanicalState::ParticleMask& out, const core::componentmodel::behavior::BaseMechanicalState::ParticleMask& in );
     void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperRegularGridTopology<In, Out> &b )
@@ -424,7 +416,6 @@ public:
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
     void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
-    void applyJT( core::componentmodel::behavior::BaseMechanicalState::ParticleMask& out, const core::componentmodel::behavior::BaseMechanicalState::ParticleMask& in );
     void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
     inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperSparseGridTopology<In, Out> &b )
@@ -505,7 +496,6 @@ public:
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
     void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
-    void applyJT( core::componentmodel::behavior::BaseMechanicalState::ParticleMask& out, const core::componentmodel::behavior::BaseMechanicalState::ParticleMask& in );
     void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
     // handle topology changes in the From topology
@@ -590,7 +580,6 @@ public:
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
     void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
-    void applyJT( core::componentmodel::behavior::BaseMechanicalState::ParticleMask& out, const core::componentmodel::behavior::BaseMechanicalState::ParticleMask& in );
     void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
     // handle topology changes in the From topology
@@ -675,7 +664,6 @@ public:
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
     void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
-    void applyJT( core::componentmodel::behavior::BaseMechanicalState::ParticleMask& out, const core::componentmodel::behavior::BaseMechanicalState::ParticleMask& in );
     void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
     // handle topology changes in the From topology
@@ -756,7 +744,6 @@ public:
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
     void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
-    void applyJT( core::componentmodel::behavior::BaseMechanicalState::ParticleMask& out, const core::componentmodel::behavior::BaseMechanicalState::ParticleMask& in );
     void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
     // handle topology changes in the From topology
@@ -848,7 +835,6 @@ public:
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
     void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
-    void applyJT( core::componentmodel::behavior::BaseMechanicalState::ParticleMask& out, const core::componentmodel::behavior::BaseMechanicalState::ParticleMask& in );
     void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
     //-- test mapping partiel
@@ -988,11 +974,7 @@ public:
 
     void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
 
-    void applyJT( core::componentmodel::behavior::BaseMechanicalState::ParticleMask& /* out */, const core::componentmodel::behavior::BaseMechanicalState::ParticleMask& /* in */ );
-
     void draw();
-
-    void getJ(unsigned int Idx, sofa::helper::vector< double > &factor, sofa::helper::vector< unsigned int > &indices) {mapper->getJ(Idx,factor,indices);}
 
     // handle topology changes depending on the topology
     virtual void handleTopologyChange(core::componentmodel::topology::Topology* t);

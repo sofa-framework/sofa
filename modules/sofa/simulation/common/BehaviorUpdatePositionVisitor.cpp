@@ -30,9 +30,11 @@ namespace sofa
 namespace simulation
 {
 
-void BehaviorUpdatePositionVisitor::processBehaviorModel(simulation::Node* /*node */, core::BehaviorModel* b)
+void BehaviorUpdatePositionVisitor::processBehaviorModel(simulation::Node* n, core::BehaviorModel* b)
 {
+    simulation::Node::ctime_t t0=begin(n, b);
     b->updatePosition(dt);
+    end(n, b, t0);
 }
 
 

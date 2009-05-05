@@ -116,8 +116,6 @@ public:
 
     void applyJT ( typename In::VecConst& out, const typename Out::VecConst& in );
 
-    void applyJT( core::componentmodel::behavior::BaseMechanicalState::ParticleMask& /* out */, const core::componentmodel::behavior::BaseMechanicalState::ParticleMask& /* in */ );
-
     void draw();
 
     void clear ( int reserve=0 );

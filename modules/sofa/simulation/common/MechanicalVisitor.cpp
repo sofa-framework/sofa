@@ -712,11 +712,18 @@ Visitor::Result MechanicalPropagatePositionAndVelocityVisitor::fwdMechanicalStat
 Visitor::Result MechanicalPropagatePositionAndVelocityVisitor::fwdMechanicalMapping(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalMapping* map)
 {
     ctime_t t0 = beginProcess(node, map);
+    map->getMechFrom()->forceMask.activate(false);
+    map->getMechTo()->forceMask.activate(false);
+
     map->propagateX();
     map->propagateV();
 #ifdef SOFA_SUPPORT_MAPPED_MASS
     map->propagateA();
 #endif
+
+    map->getMechFrom()->forceMask.activate(true);
+    map->getMechTo()->forceMask.activate(true);
+
     endProcess(node, map, t0);
     return RESULT_CONTINUE;
 }
@@ -805,7 +812,6 @@ Visitor::Result MechanicalComputeForceVisitor::fwdForceField(simulation::Node* n
 void MechanicalComputeForceVisitor::bwdMechanicalMapping(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalMapping* map)
 {
 //       cerr<<"MechanicalComputeForceVisitor::bwdMechanicalMapping "<<map->getName()<<endl;
-    map->accumulateMask();
     if (accumulate)
     {
         ctime_t t0 = beginProcess(node, map);

@@ -495,6 +495,7 @@ void RigidMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const type
 
     if (  !maskTo || !(maskTo->isInUse()) )
     {
+        if (maskTo) maskFrom->setInUse(false);
         switch(repartition.getValue().size())
         {
         case 0 :
@@ -598,11 +599,13 @@ void RigidMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const type
             {
                 out[out.size() - 1 - index.getValue()].getVCenter() += v;
                 out[out.size() - 1 - index.getValue()].getVOrientation() += omega;
+                maskFrom->insertEntry(out.size() - 1 - index.getValue());
             }
             else
             {
                 out[index.getValue()].getVCenter() += v;
                 out[index.getValue()].getVOrientation() += omega;
+                maskFrom->insertEntry(index.getValue());
             }
 
             break;
@@ -630,6 +633,7 @@ void RigidMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const type
                 }
                 out[ito].getVCenter() += v;
                 out[ito].getVOrientation() += omega;
+                maskFrom->insertEntry(ito);
             }
             break;
         }
@@ -661,6 +665,7 @@ void RigidMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const type
                 }
                 out[ito].getVCenter() += v;
                 out[ito].getVOrientation() += omega;
+                maskFrom->insertEntry(ito);
             }
         }
         break;
@@ -745,58 +750,6 @@ void RigidMapping<BaseMapping>::applyJT( typename In::VecConst& out, const typen
             serr << "applyJT with repartition NOT SUPPORTED YET" << sendl;
             break;
         }
-    }
-}
-
-template <class BaseMapping>
-void RigidMapping<BaseMapping>::applyJT( core::componentmodel::behavior::BaseMechanicalState::ParticleMask& out, const core::componentmodel::behavior::BaseMechanicalState::ParticleMask& in )
-{
-
-    typedef core::componentmodel::behavior::BaseMechanicalState::ParticleMask ParticleMask;
-    const ParticleMask::InternalStorage &indices=in.getEntries();
-
-    ParticleMask::InternalStorage::const_iterator it;
-
-    switch(repartition.getValue().size())
-    {
-    case 0 :
-    {
-        if (indices.size()) out.insertEntry(index.getValue());
-        return;
-        break;
-    }
-    case 1 :
-    {
-        const unsigned int val = repartition.getValue()[0];
-        for (it=indices.begin(); it!=indices.end(); it++)
-        {
-            const unsigned int idx=(*it);
-            if (idx < val)
-            {
-                out.insertEntry(index.getValue());
-                return;
-            }
-        }
-        break;
-    }
-    default:
-    {
-        unsigned cpt=0;
-        unsigned idxRigid=0;
-        unsigned int numSubDiv = repartition.getValue().size();
-        for (it=indices.begin(); it!=indices.end(); it++)
-        {
-            const unsigned int index=(*it);
-            while (index > cpt && idxRigid < numSubDiv)
-            {
-                cpt += repartition.getValue()[idxRigid];
-                idxRigid++;
-            }
-
-            out.insertEntry(idxRigid);
-        }
-        break;
-    }
     }
 }
 
