@@ -133,7 +133,61 @@ int OglFloatVector4VariableClass = core::RegisterObject("OglFloatVector4Variable
         .add< OglFloatVector4Variable >()
         ;
 
+/** FLOAT VECTOR VARIABLE **/
+SOFA_DECL_CLASS(OglMatrix2Variable)
+SOFA_DECL_CLASS(OglMatrix3Variable)
+SOFA_DECL_CLASS(OglMatrix4Variable)
+SOFA_DECL_CLASS(OglMatrix2x3Variable)
+SOFA_DECL_CLASS(OglMatrix3x2Variable)
+SOFA_DECL_CLASS(OglMatrix2x4Variable)
+SOFA_DECL_CLASS(OglMatrix4x2Variable)
+SOFA_DECL_CLASS(OglMatrix3x4Variable)
+SOFA_DECL_CLASS(OglMatrix4x3Variable)
 
+//Register OglMatrix2Variable in the Object Factory
+int OglMatrix2VariableClass = core::RegisterObject("OglMatrix2Variable")
+        .add< OglMatrix2Variable >()
+        ;
+
+//Register OglMatrix3Variable in the Object Factory
+int OglMatrix3VariableClass = core::RegisterObject("OglMatrix3Variable")
+        .add< OglMatrix3Variable >()
+        ;
+
+//Register OglMatrix4Variable in the Object Factory
+int OglMatrix4VariableClass = core::RegisterObject("OglMatrix4Variable")
+        .add< OglMatrix4Variable >()
+        ;
+
+//Register OglMatrix2x3Variable in the Object Factory
+int OglMatrix2x3VariableClass = core::RegisterObject("OglMatrix2x3Variable")
+        .add< OglMatrix2x3Variable >()
+        ;
+
+//Register OglMatrix3x2Variable in the Object Factory
+int OglMatrix3x2VariableClass = core::RegisterObject("OglMatrix3x2Variable")
+        .add< OglMatrix3x2Variable >()
+        ;
+
+//Register OglMatrix2x4Variable in the Object Factory
+int OglMatrix2x4VariableClass = core::RegisterObject("OglMatrix2x4Variable")
+        .add< OglMatrix2x4Variable >()
+        ;
+
+//Register OglMatrix4x2Variable in the Object Factory
+int OglMatrix4x2VariableClass = core::RegisterObject("OglMatrix4x2Variable")
+        .add< OglMatrix4x2Variable >()
+        ;
+
+//Register OglMatrix2x4Variable in the Object Factory
+int OglMatrix3x4VariableClass = core::RegisterObject("OglMatrix3x4Variable")
+        .add< OglMatrix3x4Variable >()
+        ;
+
+//Register OglMatrix4x3Variable in the Object Factory
+int OglMatrix4x3VariableClass = core::RegisterObject("OglMatrix4x3Variable")
+        .add< OglMatrix4x3Variable >()
+        ;
 
 
 
@@ -396,6 +450,232 @@ void OglFloatVector4Variable::initVisual()
 }
 
 
+//// Matrix /////
+OglMatrix2Variable::OglMatrix2Variable()
+{
+
+}
+
+void OglMatrix2Variable::init()
+{
+    OglVariable<helper::vector<float> >::init();
+
+    helper::vector<float> temp = value.getValue();
+
+    if (value.getValue().size() %4 != 0)
+    {
+        serr << "The number of values is not a multiple of 4 ; padding with zero(s)" << sendl;
+        while (value.getValue().size() %4 != 0)
+            temp.push_back(0.0);
+        value.setValue(temp);
+    }
+}
+
+void OglMatrix2Variable::initVisual()
+{
+    shader->setMatrix2(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/4, transpose.getValue(), &(value.getValue()[0]));
+}
+
+OglMatrix3Variable::OglMatrix3Variable()
+{
+
+}
+
+void OglMatrix3Variable::init()
+{
+    OglMatrix2Variable::init();
+
+    helper::vector<float> temp = value.getValue();
+
+    if (value.getValue().size() %9 != 0)
+    {
+        serr << "The number of values is not a multiple of 9 ; padding with zero(s)" << sendl;
+        while (value.getValue().size() %9 != 0)
+            temp.push_back(0.0);
+        value.setValue(temp);
+    }
+}
+
+void OglMatrix3Variable::initVisual()
+{
+    shader->setMatrix3(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/9, transpose.getValue(), &(value.getValue()[0]));
+}
+
+OglMatrix4Variable::OglMatrix4Variable()
+{
+
+}
+
+void OglMatrix4Variable::init()
+{
+    OglMatrix2Variable::init();
+
+    helper::vector<float> temp = value.getValue();
+
+    if (value.getValue().size() %16 != 0)
+    {
+        serr << "The number of values is not a multiple of 16 ; padding with zero(s)" << sendl;
+        while (value.getValue().size() %16 != 0)
+            temp.push_back(0.0);
+        value.setValue(temp);
+    }
+}
+
+void OglMatrix4Variable::initVisual()
+{
+    shader->setMatrix4(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/16, transpose.getValue(), &(value.getValue()[0]));
+}
+
+OglMatrix2x3Variable::OglMatrix2x3Variable()
+{
+
+}
+
+void OglMatrix2x3Variable::init()
+{
+    OglMatrix2Variable::init();
+
+    helper::vector<float> temp = value.getValue();
+
+    if (value.getValue().size() %6 != 0)
+    {
+        serr << "The number of values is not a multiple of 6 ; padding with zero(s)" << sendl;
+        while (value.getValue().size() %6 != 0)
+            temp.push_back(0.0);
+        value.setValue(temp);
+    }
+}
+
+void OglMatrix2x3Variable::initVisual()
+{
+    shader->setMatrix2x3(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/6, transpose.getValue(), &(value.getValue()[0]));
+}
+
+
+OglMatrix3x2Variable::OglMatrix3x2Variable()
+{
+
+}
+
+void OglMatrix3x2Variable::init()
+{
+    OglMatrix2Variable::init();
+
+    helper::vector<float> temp = value.getValue();
+
+    if (value.getValue().size() %6 != 0)
+    {
+        serr << "The number of values is not a multiple of 6 ; padding with zero(s)" << sendl;
+        while (value.getValue().size() %6 != 0)
+            temp.push_back(0.0);
+        value.setValue(temp);
+    }
+}
+
+void OglMatrix3x2Variable::initVisual()
+{
+    shader->setMatrix3x2(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/6, transpose.getValue(), &(value.getValue()[0]));
+}
+
+OglMatrix2x4Variable::OglMatrix2x4Variable()
+{
+
+}
+
+void OglMatrix2x4Variable::init()
+{
+    OglMatrix2Variable::init();
+
+    helper::vector<float> temp = value.getValue();
+
+    if (value.getValue().size() %8 != 0)
+    {
+        serr << "The number of values is not a multiple of 8 ; padding with zero(s)" << sendl;
+        while (value.getValue().size() %8 != 0)
+            temp.push_back(0.0);
+        value.setValue(temp);
+    }
+}
+
+void OglMatrix2x4Variable::initVisual()
+{
+    shader->setMatrix2x4(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/8, transpose.getValue(), &(value.getValue()[0]));
+}
+
+OglMatrix4x2Variable::OglMatrix4x2Variable()
+{
+
+}
+
+void OglMatrix4x2Variable::init()
+{
+    OglMatrix2Variable::init();
+
+    helper::vector<float> temp = value.getValue();
+
+    if (value.getValue().size() %8 != 0)
+    {
+        serr << "The number of values is not a multiple of 8 ; padding with zero(s)" << sendl;
+        while (value.getValue().size() %8 != 0)
+            temp.push_back(0.0);
+        value.setValue(temp);
+    }
+}
+
+void OglMatrix4x2Variable::initVisual()
+{
+    shader->setMatrix4x2(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/8, transpose.getValue(), &(value.getValue()[0]));
+}
+
+OglMatrix3x4Variable::OglMatrix3x4Variable()
+{
+
+}
+
+void OglMatrix3x4Variable::init()
+{
+    OglMatrix2Variable::init();
+
+    helper::vector<float> temp = value.getValue();
+
+    if (value.getValue().size() %12 != 0)
+    {
+        serr << "The number of values is not a multiple of 12 ; padding with zero(s)" << sendl;
+        while (value.getValue().size() %12 != 0)
+            temp.push_back(0.0);
+        value.setValue(temp);
+    }
+}
+
+void OglMatrix3x4Variable::initVisual()
+{
+    shader->setMatrix3x4(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/12, transpose.getValue(), &(value.getValue()[0]));
+}
+
+OglMatrix4x3Variable::OglMatrix4x3Variable()
+{
+
+}
+
+void OglMatrix4x3Variable::init()
+{
+    OglMatrix2Variable::init();
+
+    helper::vector<float> temp = value.getValue();
+
+    if (value.getValue().size() %12 != 0)
+    {
+        serr << "The number of values is not a multiple of 12 ; padding with zero(s)" << sendl;
+        while (value.getValue().size() %12 != 0)
+            temp.push_back(0.0);
+        value.setValue(temp);
+    }
+}
+
+void OglMatrix4x3Variable::initVisual()
+{
+    shader->setMatrix4x3(indexShader.getValue(), id.getValue().c_str(), value.getValue().size()/12, transpose.getValue(), &(value.getValue()[0]));
+}
 
 }
 

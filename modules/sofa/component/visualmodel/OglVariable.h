@@ -28,6 +28,7 @@
 #include <sofa/core/VisualModel.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/component/visualmodel/OglShader.h>
 
@@ -221,6 +222,101 @@ class SOFA_COMPONENT_VISUALMODEL_API OglFloatVector4Variable : public OglFloatVe
 public:
     OglFloatVector4Variable();
     virtual ~OglFloatVector4Variable() { }
+
+    virtual void init();
+    virtual void initVisual();
+};
+
+/** Matrix VARIABLE **/
+class SOFA_COMPONENT_VISUALMODEL_API OglMatrix2Variable : public OglVariable<helper::vector<float> >
+{
+public:
+    Data<bool> transpose;
+
+    OglMatrix2Variable();
+    virtual ~OglMatrix2Variable() { }
+
+    void setValue( const bool& v ) { transpose.setValue(v); }
+
+    virtual void init();
+    virtual void initVisual();
+};
+
+class SOFA_COMPONENT_VISUALMODEL_API OglMatrix3Variable : public OglMatrix2Variable
+{
+public:
+    OglMatrix3Variable();
+    virtual ~OglMatrix3Variable() { }
+
+    virtual void init();
+    virtual void initVisual();
+};
+
+class SOFA_COMPONENT_VISUALMODEL_API OglMatrix4Variable : public OglMatrix2Variable
+{
+public:
+    OglMatrix4Variable();
+    virtual ~OglMatrix4Variable() { }
+
+    virtual void init();
+    virtual void initVisual();
+};
+
+class SOFA_COMPONENT_VISUALMODEL_API OglMatrix2x3Variable : public OglMatrix2Variable
+{
+public:
+    OglMatrix2x3Variable();
+    virtual ~OglMatrix2x3Variable() { }
+
+    virtual void init();
+    virtual void initVisual();
+};
+
+class SOFA_COMPONENT_VISUALMODEL_API OglMatrix3x2Variable : public OglMatrix2Variable
+{
+public:
+    OglMatrix3x2Variable();
+    virtual ~OglMatrix3x2Variable() { }
+
+    virtual void init();
+    virtual void initVisual();
+};
+
+class SOFA_COMPONENT_VISUALMODEL_API OglMatrix2x4Variable : public OglMatrix2Variable
+{
+public:
+    OglMatrix2x4Variable();
+    virtual ~OglMatrix2x4Variable() { }
+
+    virtual void init();
+    virtual void initVisual();
+};
+
+class SOFA_COMPONENT_VISUALMODEL_API OglMatrix4x2Variable : public OglMatrix2Variable
+{
+public:
+    OglMatrix4x2Variable();
+    virtual ~OglMatrix4x2Variable() { }
+
+    virtual void init();
+    virtual void initVisual();
+};
+
+class SOFA_COMPONENT_VISUALMODEL_API OglMatrix3x4Variable : public OglMatrix2Variable
+{
+public:
+    OglMatrix3x4Variable();
+    virtual ~OglMatrix3x4Variable() { }
+
+    virtual void init();
+    virtual void initVisual();
+};
+
+class SOFA_COMPONENT_VISUALMODEL_API OglMatrix4x3Variable : public OglMatrix2Variable
+{
+public:
+    OglMatrix4x3Variable();
+    virtual ~OglMatrix4x3Variable() { }
 
     virtual void init();
     virtual void initVisual();

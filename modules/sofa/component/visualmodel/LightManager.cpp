@@ -60,8 +60,7 @@ int LightManagerClass = core::RegisterObject("LightManager")
         ;
 
 LightManager::LightManager()
-    :shadowEnabled(false)
-    ,debugViewDepthBuffer(initData(&debugViewDepthBuffer, (bool) false, "debugViewDepthBuffer", "DEBUG : View the buffer depth as seen by the light(s)"))
+    :shadowEnabled(initData(&shadowEnabled, (bool) false, "shadowEnabled", "Enable Shadow in the scene"))
 {
 
 }
@@ -74,24 +73,26 @@ LightManager::~LightManager()
 void LightManager::init()
 {
     sofa::core::objectmodel::BaseContext* context = this->getContext();
-    shadowShader = context->core::objectmodel::BaseContext::get<sofa::component::visualmodel::OglShadowShader>();
+    context->get<sofa::component::visualmodel::OglShadowShader, sofa::helper::vector<sofa::component::visualmodel::OglShadowShader*> >(&shadowShaders, core::objectmodel::BaseContext::SearchDown);
 
-    if (!shadowShader)
+    if (shadowShaders.empty())
     {
-        std::cerr << "LightManager: OglShadowShader not found ; shadow will be disabled."<< std::endl;
-        shadowEnabled = false;
+        std::cerr << "LightManager: No OglShadowShaders found ; shadow will be disabled."<< std::endl;
+        shadowEnabled.setValue(false);
         return;
     }
+
+    for(unsigned int i=0 ; i<shadowShaders.size() ; i++)
+        shadowShaders[i]->initShaders(lights.size());
+
 }
 
 
 void LightManager::initVisual()
 {
-    if (shadowShader)
-    {
-        shadowShader->initShaders(lights.size());
-        shadowShader->initVisual();
-    }
+    for(unsigned int i=0 ; i<shadowShaders.size() ; i++)
+        shadowShaders[i]->initVisual();
+
 
     for (std::vector<Light*>::iterator itl = lights.begin(); itl != lights.end() ; itl++)
     {
@@ -136,11 +137,12 @@ void LightManager::makeShadowMatrix(unsigned int i)
 
 void LightManager::fwdDraw(Pass)
 {
-    if (shadowShader  && !debugViewDepthBuffer.getValue())
-    {
-        GLint* lightFlag = new GLint[MAX_NUMBER_OF_LIGHTS];
-        GLint* shadowTextureID = new GLint [MAX_NUMBER_OF_LIGHTS];
+    GLint* lightFlag = new GLint[MAX_NUMBER_OF_LIGHTS];
+    GLint* shadowTextureID = new GLint [MAX_NUMBER_OF_LIGHTS];
+    GLfloat* lightModelViewProjectionMatrices = new GLfloat [MAX_NUMBER_OF_LIGHTS*16];
 
+    if (!shadowShaders.empty())
+    {
         glEnable(GL_LIGHTING);
         for (unsigned int i=0 ; i < lights.size() ; i++)
         {
@@ -151,7 +153,7 @@ void LightManager::fwdDraw(Pass)
             lightFlag[i] = 1;
             shadowTextureID[i] = 0;
 
-            if (shadowEnabled && lights[i]->enableShadow.getValue())
+            if (shadowEnabled.getValue() && lights[i]->enableShadow.getValue())
             {
                 lightFlag[i] = 2;
                 shadowTextureID[i] = i;
@@ -168,29 +170,37 @@ void LightManager::fwdDraw(Pass)
         {
             lightFlag[i] = 0;
             shadowTextureID[i] = 0;
+
+            for(unsigned int j=0 ; j<4; j++)
+                for(unsigned int k=0 ; k<4; k++)
+                    lightModelViewProjectionMatrices[16*i+j*4+k] = 0.0;
         }
 
-        shadowShader->setIntVector(shadowShader->getCurrentIndex() , "lightFlag" , MAX_NUMBER_OF_LIGHTS, lightFlag);
-        shadowShader->setIntVector(shadowShader->getCurrentIndex() , "shadowTexture" , MAX_NUMBER_OF_LIGHTS, shadowTextureID);
-
-        delete lightFlag;
-        delete shadowTextureID;
-
-        shadowShader->start();
-
+        for(unsigned int i=0 ; i<shadowShaders.size() ; i++)
+        {
+            shadowShaders[i]->setIntVector(shadowShaders[i]->getCurrentIndex() , "lightFlag" , MAX_NUMBER_OF_LIGHTS, lightFlag);
+            shadowShaders[i]->setIntVector(shadowShaders[i]->getCurrentIndex() , "shadowTexture" , MAX_NUMBER_OF_LIGHTS, shadowTextureID);
+            //shadowShader->start();
+        }
 
     }
 
+    delete lightFlag;
+    delete shadowTextureID;
+    delete lightModelViewProjectionMatrices;
 }
+
 void LightManager::bwdDraw(Pass)
 {
-    if (shadowShader && shadowEnabled)
-    {
-        shadowShader->stop();
+    if (shadowEnabled.getValue())
+        for(unsigned int i=0 ; i<shadowShaders.size() ; i++)
+        {
+            //shadowShaders[i]->stop();
 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, 0);
-    }
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_2D, 0);
+        }
+
 }
 
 void LightManager::draw()
@@ -203,54 +213,6 @@ void LightManager::draw()
         (*itl)->drawLight();
         id++;
     }
-    /*
-    #ifdef SOFA_DEV_SHADOW
-    	if (shadowShader && debugViewDepthBuffer.getValue())
-    	{
-    		//shadowShader.stop();
-
-    		GLint		viewport[4];
-    		glGetIntegerv(GL_VIEWPORT, viewport);
-
-    		//SHOW Depth texture
-
-    		glClearColor(0.0f, 0.0f, 0.2f, 0.5f);
-    		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	// Clear Screen And Depth Buffer
-    		glDisable(GL_LIGHTING);
-    		glEnable(GL_TEXTURE_2D);
-
-    		glColor4f(1.0f,1.0f,1.0f,1.0f);
-    		for (unsigned int i=0 ; i < lights.size() ; i++)
-    		{
-    			glBindTexture(GL_TEXTURE_2D, lights[i]->getShadowTexture());
-    #if defined(GL_ARB_shadow)
-    			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE_ARB, GL_NONE);
-    			glTexParameteri(GL_TEXTURE_2D, GL_DEPTH_TEXTURE_MODE_ARB, GL_LUMINANCE);
-    #endif
-
-    			glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-
-    			glPushMatrix();
-    			glTranslatef(i,0.0,0.0);
-    			glBegin(GL_QUADS);
-    			// Front Face
-    			glNormal3f( 0.0f, 0.0f, 1.0);
-    			glTexCoord2f(0.0f, 0.0f); glVertex3f(-0.5f, -0.5,  0.0);
-    			glTexCoord2f(1.0f, 0.0f); glVertex3f( 0.5, -0.5,  0.0);
-    			glTexCoord2f(1.0f, 1.0f); glVertex3f( 0.5,  0.5,  0.0);
-    			glTexCoord2f(0.0f, 1.0f); glVertex3f(-0.5,  0.5,  0.0);
-    			glEnd();
-    			glPopMatrix();
-
-    		}
-    		glBindTexture(GL_TEXTURE_2D, 0);
-    	    glEnable(GL_DEPTH_TEST);
-    	    glEnable(GL_LIGHTING);
-
-    	    //shadowShader.start();
-    	}
-    #endif
-    */
 }
 
 void LightManager::clear()
@@ -272,18 +234,19 @@ void LightManager::preDrawScene(VisualParameters* vp)
 {
     for (std::vector<Light*>::iterator itl = lights.begin(); itl != lights.end() ; itl++)
     {
-        if(shadowEnabled)
+        if(shadowEnabled.getValue())
         {
             (*itl)->preDrawShadow();
 
             simulation::VisualDrawVisitor vdv( core::VisualModel::Std );
+
             vdv.execute ( getContext() );
         }
     }
 
     for (std::vector<Light*>::iterator itl = lights.begin(); itl != lights.end() ; itl++)
     {
-        if(shadowEnabled)
+        if(shadowEnabled.getValue())
         {
             (*itl)->postDrawShadow();
         }
@@ -311,10 +274,11 @@ void LightManager::handleEvent(sofa::core::objectmodel::Event* event)
 
         case 'l':
         case 'L':
-            if (shadowShader)
+            if (!shadowShaders.empty())
             {
-                shadowEnabled = !shadowEnabled;
-                std::cout << "Shadows : "<<(shadowEnabled?"ENABLED":"DISABLED")<<std::endl;
+                bool b = shadowEnabled.getValue();
+                shadowEnabled.setValue(!b);
+                std::cout << "Shadows : "<<(shadowEnabled.getValue()?"ENABLED":"DISABLED")<<std::endl;
             }
             break;
         }

@@ -65,19 +65,19 @@ class SOFA_COMPONENT_VISUALMODEL_API LightManager : public core::VisualManager
 {
 private:
     std::vector<Light*> lights;
-    bool shadowEnabled;
+    Data<bool> shadowEnabled;
 
-    OglShadowShader* shadowShader;
+    //OglShadowShader* shadowShader;
+    helper::vector<OglShadowShader*> shadowShaders;
     void makeShadowMatrix(unsigned int i);
 
 public:
 #ifndef __APPLE__
-    static const unsigned int MAX_NUMBER_OF_LIGHTS = /*GL_MAX_LIGHTS*/ 5 ;
+    static const unsigned int MAX_NUMBER_OF_LIGHTS = /*GL_MAX_LIGHTS*/ 2 ;
 #else
     static const unsigned int MAX_NUMBER_OF_LIGHTS = /*GL_MAX_LIGHTS*/ 3 ;
 #endif
 
-    Data<bool> debugViewDepthBuffer;
     LightManager();
     virtual ~LightManager();
 
