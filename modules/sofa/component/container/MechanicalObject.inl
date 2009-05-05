@@ -41,6 +41,10 @@
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/Simulation.h>
 
+#ifdef SOFA_DUMP_VISITOR_INFO
+#include <sofa/simulation/common/Visitor.h>
+#endif
+
 #include <sofa/component/linearsolver/FullMatrix.h>
 
 #include <assert.h>
@@ -1326,13 +1330,22 @@ template <class DataTypes>
 void MechanicalObject<DataTypes>::beginIntegration(Real /*dt*/)
 {
     this->f = this->internalForces;
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printNode("resetForce");
+#endif
+    resetForce();
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printCloseNode("resetForce");
+#endif
 }
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::endIntegration(Real /*dt*/)
 {
     this->f = this->externalForces;
+
     this->externalForces->clear();
+
     this->forceMask.clear();
 }
 
@@ -1341,8 +1354,22 @@ void MechanicalObject<DataTypes>::accumulateForce()
 {
     if (!this->externalForces->empty())
     {
-        for (unsigned int i=0; i < this->externalForces->size(); i++)
-            (*this->f)[i] += (*this->externalForces)[i];
+        if (!this->forceMask.isInUse())
+        {
+            for (unsigned int i=0; i < this->externalForces->size(); i++)
+                (*this->f)[i] += (*this->externalForces)[i];
+        }
+        else
+        {
+            typedef core::componentmodel::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+            const ParticleMask::InternalStorage &indices=this->forceMask.getEntries();
+            ParticleMask::InternalStorage::const_iterator it;
+            for (it=indices.begin(); it!=indices.end(); it++)
+            {
+                const int i=(*it);
+                (*this->f)[i] += (*this->externalForces)[i];
+            }
+        }
     }
 }
 
@@ -2111,8 +2138,22 @@ template <class DataTypes>
 void MechanicalObject<DataTypes>::resetForce()
 {
     VecDeriv& f= *getF();
-    for( unsigned i=0; i<f.size(); ++i )
-        f[i] = Deriv();
+    this->forceMask.activate(true);
+    if (!this->forceMask.isInUse())
+    {
+        for( unsigned i=0; i<f.size(); ++i )
+            f[i] = Deriv();
+    }
+    else
+    {
+        typedef core::componentmodel::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+        const ParticleMask::InternalStorage &indices=this->forceMask.getEntries();
+        ParticleMask::InternalStorage::const_iterator it;
+        for (it=indices.begin(); it!=indices.end(); it++)
+        {
+            f[(*it)] = Deriv();
+        }
+    }
 }
 
 template <class DataTypes>

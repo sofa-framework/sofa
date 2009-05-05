@@ -281,9 +281,8 @@ public:
     class ParticleMask
     {
     public:
-        enum USAGE {DEFAULT, USED, UNUSED};
         typedef std::set< unsigned int > InternalStorage;
-        ParticleMask():inUse(DEFAULT) {};
+        ParticleMask():inUse(true), activated(true) {};
 
         /// Insert an entry in the mask
         void insertEntry(unsigned int index)
@@ -292,29 +291,36 @@ public:
         }
 
 
-        const std::set< unsigned int > &getEntries() const {return indices;};
-        std::set< unsigned int > &getEntries() {return indices;};
+        const InternalStorage &getEntries() const {return indices;};
+        InternalStorage &getEntries() {return indices;};
 
         /// Activate the mask. By default, the mask state is set to "DEFAULT".
         /// It means that if no component change the current state, the mask will be used.
         /// If one component desactivate the filter, it won't be used at all during the time step, even if other components desire to use it.
         void setInUse(bool use)
         {
-            if (inUse == DEFAULT) inUse=(use?USED:UNUSED);
-            else if (!use)        inUse=UNUSED; //Desactivate if one component is not using it
+            if (inUse) inUse=use;
+            else if (!use)     inUse=false; //Desactivate if one component is not using it
+        }
+        /// Allows to desactivate the usage of the mask. Typically, it is used when it is needed to propagate at the end of the integration, the position and velocity.
+        /// Different from inUse, because a mask desactivated can be re-activated.
+        void activate(bool a)
+        {
+            activated = a;
         }
 
         /// Test if the mask is active.
         bool isInUse() const
         {
-            return (inUse != UNUSED);
+            return activated && inUse;
         }
 
-        void clear() {indices.clear(); inUse=DEFAULT;}
+        void clear() {indices.clear(); inUse=true; activated=true;}
 
     protected:
-        std::set< unsigned int> indices;
-        USAGE inUse;
+        InternalStorage indices;
+        bool inUse;
+        bool activated;
     };
 
     /// Mask to filter the particles. Used inside MechanicalMappings inside applyJ and applyJT methods.

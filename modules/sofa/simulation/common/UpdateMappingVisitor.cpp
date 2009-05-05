@@ -31,17 +31,37 @@ namespace sofa
 namespace simulation
 {
 
-void UpdateMappingVisitor::processMapping(simulation::Node*, core::BaseMapping* obj)
+void UpdateMappingVisitor::processMapping(simulation::Node* n, core::BaseMapping* obj)
 {
+    simulation::Node::ctime_t t0=begin(n, obj);
     obj->updateMapping();
+    end(n, obj, t0);
 }
 
-void UpdateMappingVisitor::processMechanicalMapping(simulation::Node*, core::componentmodel::behavior::BaseMechanicalMapping* obj)
+void UpdateMappingVisitor::processMechanicalMapping(simulation::Node* n, core::componentmodel::behavior::BaseMechanicalMapping* obj)
 {
     if (!obj->isMechanical())
     {
+        simulation::Node::ctime_t t0=begin(n, obj);
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+        if (printActivated)      printNode("propagateX");
+#endif
         obj->propagateX();
+#ifdef SOFA_DUMP_VISITOR_INFO
+        if (printActivated)      printCloseNode("propagateX");
+#endif
+
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+        if (printActivated)      printNode("propagateV");
+#endif
         obj->propagateV();
+#ifdef SOFA_DUMP_VISITOR_INFO
+        if (printActivated)      printCloseNode("propagateV");
+#endif
+
+        end(n, obj, t0);
     }
 }
 
