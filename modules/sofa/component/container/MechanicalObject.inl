@@ -1347,22 +1347,22 @@ void MechanicalObject<DataTypes>::accumulateForce()
 {
     if (!this->externalForces->empty())
     {
-        if (!this->forceMask.isInUse())
+//           if (!this->forceMask.isInUse())
         {
             for (unsigned int i=0; i < this->externalForces->size(); i++)
                 (*this->f)[i] += (*this->externalForces)[i];
         }
-        else
-        {
-            typedef core::componentmodel::behavior::BaseMechanicalState::ParticleMask ParticleMask;
-            const ParticleMask::InternalStorage &indices=this->forceMask.getEntries();
-            ParticleMask::InternalStorage::const_iterator it;
-            for (it=indices.begin(); it!=indices.end(); it++)
-            {
-                const int i=(*it);
-                (*this->f)[i] += (*this->externalForces)[i];
-            }
-        }
+//           else
+//             {
+//               typedef core::componentmodel::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+//               const ParticleMask::InternalStorage &indices=this->forceMask.getEntries();
+//               ParticleMask::InternalStorage::const_iterator it;
+//               for (it=indices.begin();it!=indices.end();it++)
+//                 {
+//                   const int i=(*it);
+//                   (*this->f)[i] += (*this->externalForces)[i];
+//                 }
+//             }
     }
 }
 
@@ -2131,21 +2131,21 @@ template <class DataTypes>
 void MechanicalObject<DataTypes>::resetForce()
 {
     VecDeriv& f= *getF();
-    if (!this->forceMask.isInUse())
+//       if (!this->forceMask.isInUse())
     {
         for( unsigned i=0; i<f.size(); ++i )
             f[i] = Deriv();
     }
-    else
-    {
-        typedef core::componentmodel::behavior::BaseMechanicalState::ParticleMask ParticleMask;
-        const ParticleMask::InternalStorage &indices=this->forceMask.getEntries();
-        ParticleMask::InternalStorage::const_iterator it;
-        for (it=indices.begin(); it!=indices.end(); it++)
-        {
-            f[(*it)] = Deriv();
-        }
-    }
+//       else
+//         {
+//           typedef core::componentmodel::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+//           const ParticleMask::InternalStorage &indices=this->forceMask.getEntries();
+//           ParticleMask::InternalStorage::const_iterator it;
+//           for (it=indices.begin();it!=indices.end();it++)
+//             {
+//               f[(*it)] = Deriv();
+//             }
+//         }
 }
 
 template <class DataTypes>
