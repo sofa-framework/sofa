@@ -169,13 +169,7 @@ public:
     }
 
 
-    static std::string templateName(const Mapping<TIn, TOut>* = NULL)
-    {
-        //if (In::Name() == std::string("MechanicalState"))
-        //  return std::string("MechanicalMapping<")+TIn::DataTypes::Name() + std::string(",") + TOut::DataTypes::Name() + std::string(">");
-        //else
-        return std::string("Mapping<")+TIn::DataTypes::Name() + std::string(",") + TOut::DataTypes::Name() + std::string(">");
-    }
+    static std::string templateName(const Mapping<TIn, TOut>* = NULL);
 
 protected:
     /// If true, display the mapping

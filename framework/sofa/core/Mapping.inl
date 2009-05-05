@@ -115,6 +115,12 @@ void Mapping<In,Out>::updateMapping()
     }
 }
 
+template <class In, class Out>
+std::string Mapping<In,Out>::templateName(const Mapping<In, Out>* /*mapping*/)
+{
+    return std::string("Mapping<")+In::DataTypes::Name() + std::string(",") + Out::DataTypes::Name() + std::string(">");
+}
+
 } // namespace core
 
 } // namespace sofa
