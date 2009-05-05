@@ -118,6 +118,19 @@ public:
     void SetFloatVector4(GLint variable, GLsizei count, const float *value);
     /// @}
 
+    /// Below are functions to set a matrix
+    /// @{
+    void SetMatrix2(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
+    void SetMatrix3(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
+    void SetMatrix4(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
+    void SetMatrix2x3(GLint location,GLsizei count,GLboolean transpose, const GLfloat *value);
+    void SetMatrix3x2(GLint location,GLsizei count,GLboolean transpose, const GLfloat *value);
+    void SetMatrix2x4(GLint location,GLsizei count,GLboolean transpose, const GLfloat *value);
+    void SetMatrix4x2(GLint location,GLsizei count,GLboolean transpose, const GLfloat *value);
+    void SetMatrix3x4(GLint location,GLsizei count,GLboolean transpose, const GLfloat *value);
+    void SetMatrix4x3(GLint location,GLsizei count,GLboolean transpose, const GLfloat *value);
+    /// @}
+
 
     /// These 2 functions turn on and off our shader
     /// @{

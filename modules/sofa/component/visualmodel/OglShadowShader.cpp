@@ -60,6 +60,7 @@ const std::string OglShadowShader::PATH_TO_SHADOW_VERTEX_SHADERS = "shaders/shad
 const std::string OglShadowShader::PATH_TO_SHADOW_FRAGMENT_SHADERS = "shaders/shadowMapping.frag";
 
 OglShadowShader::OglShadowShader()
+    :test(initData(&test, (int) 0, "test", "test"))
 {
 
 
@@ -72,7 +73,7 @@ OglShadowShader::~OglShadowShader()
 
 void OglShadowShader::init()
 {
-    passive.setValue(true);
+    passive.setValue(false);
     turnOn.setValue(true);
 }
 
@@ -89,6 +90,7 @@ void OglShadowShader::initShaders(unsigned int /* numberOfLights */)
     oss << LightManager::MAX_NUMBER_OF_LIGHTS;
 
     this->addDefineMacro(0,std::string("MAX_NUMBER_OF_LIGHTS"), oss.str());
+
 }
 
 }//namespace visualmodel

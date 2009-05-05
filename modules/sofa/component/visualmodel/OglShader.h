@@ -141,6 +141,16 @@ public:
     void setFloatVector3(const unsigned int index, const char* name, int count, const float* f);
     void setFloatVector4(const unsigned int index, const char* name, int count, const float* f);
 
+    void setMatrix2(const unsigned int index, const char* name, int count, bool transpose, const float* f);
+    void setMatrix3(const unsigned int index, const char* name, int count, bool transpose, const float* f);
+    void setMatrix4(const unsigned int index, const char* name, int count, bool transpose, const float* f);
+    void setMatrix2x3(const unsigned int index, const char* name, int count, bool transpose, const float* f);
+    void setMatrix3x2(const unsigned int index, const char* name, int count, bool transpose, const float* f);
+    void setMatrix2x4(const unsigned int index, const char* name, int count, bool transpose, const float* f);
+    void setMatrix4x2(const unsigned int index, const char* name, int count, bool transpose, const float* f);
+    void setMatrix3x4(const unsigned int index, const char* name, int count, bool transpose, const float* f);
+    void setMatrix4x3(const unsigned int index, const char* name, int count, bool transpose, const float* f);
+
     GLint getAttribute(const unsigned int index, const char* name);
     GLint getUniform(const unsigned int index, const char* name);
 
