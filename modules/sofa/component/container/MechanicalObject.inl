@@ -1330,13 +1330,6 @@ template <class DataTypes>
 void MechanicalObject<DataTypes>::beginIntegration(Real /*dt*/)
 {
     this->f = this->internalForces;
-#ifdef SOFA_DUMP_VISITOR_INFO
-    simulation::Visitor::printNode("resetForce");
-#endif
-    resetForce();
-#ifdef SOFA_DUMP_VISITOR_INFO
-    simulation::Visitor::printCloseNode("resetForce");
-#endif
 }
 
 template <class DataTypes>
@@ -2138,7 +2131,6 @@ template <class DataTypes>
 void MechanicalObject<DataTypes>::resetForce()
 {
     VecDeriv& f= *getF();
-    this->forceMask.activate(true);
     if (!this->forceMask.isInUse())
     {
         for( unsigned i=0; i<f.size(); ++i )

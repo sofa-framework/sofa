@@ -100,10 +100,10 @@ void PenalityContactForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2, 
             Deriv force = -c.norm*fN;
 
             f1[c.m1]+=force;
-            if (this->mask1) this->mask1->insertEntry(c.m1);
+            this->mask1->insertEntry(c.m1);
 
             f2[c.m2]-=force;
-            if (this->mask2) this->mask2->insertEntry(c.m2);
+            this->mask2->insertEntry(c.m2);
         }
     }
     contacts.endEdit();
