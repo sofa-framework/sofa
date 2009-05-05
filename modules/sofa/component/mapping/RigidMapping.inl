@@ -324,7 +324,7 @@ void RigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const type
     unsigned int val;
 
 
-    if ( !maskTo || !(maskTo->isInUse()) )
+    if (!(maskTo->isInUse()) )
     {
         switch (repartition.getValue().size())
         {
@@ -493,9 +493,9 @@ void RigidMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const type
     const VecCoord& pts = this->getPoints();
 
 
-    if (  !maskTo || !(maskTo->isInUse()) )
+    if ( !(maskTo->isInUse()) )
     {
-        if (maskTo) maskFrom->setInUse(false);
+        maskFrom->setInUse(false);
         switch(repartition.getValue().size())
         {
         case 0 :
