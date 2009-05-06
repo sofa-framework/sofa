@@ -563,14 +563,15 @@ int MarchingCubeUtility::polygonise ( const GridCell &grid, int& cubeConf, float
 
 
 
-void MarchingCubeUtility::propagateFrom ( const Vec3i coord,
+void MarchingCubeUtility::propagateFrom ( const sofa::helper::vector<Vec3i>& coord,
         unsigned char* data,
         const float isolevel,
         sofa::helper::vector< PointID >& mesh,
         sofa::helper::vector< Vector3 >& vertices,
         sofa::helper::set<Vec3i>& generatedCubes,
         std::map< Vector3, PointID>& map_vertices,
-        helper::vector< helper::vector<unsigned int> >* triangleIndexInRegularGrid
+        helper::vector< helper::vector<unsigned int> >* triangleIndexInRegularGrid,
+        bool propagate
                                         ) const
 {
     for ( unsigned int i = map_vertices.size(); i < vertices.size(); i++ )
@@ -586,7 +587,13 @@ void MarchingCubeUtility::propagateFrom ( const Vec3i coord,
 
     Vec3i cubeCoord, nextCube;
     stack<Vec3i> cubesToGenerate; // Stack of cubes to generate.
-    cubesToGenerate.push ( coord ); // Adds the first non-trivial cube.
+    for( sofa::helper::vector<Vec3i>::const_iterator it = coord.begin(); it != coord.end(); it++)
+    {
+        const Vec3i& voxel = *it;
+        if ( ( voxel[0] >= bbox.min[0]-1 ) && ( voxel[1] >= bbox.min[1]-1 ) && ( voxel[2] >= bbox.min[2]-1 ) &&
+                ( voxel[0] <= bbox.max[0] ) && ( voxel[1] <= bbox.max[1] ) && ( voxel[2] <= bbox.max[2] ) )
+            cubesToGenerate.push ( *it ); // Adds the first non-trivial cube.
+    }
 
     int cubeConf;
     while ( !cubesToGenerate.empty() )
@@ -605,15 +612,18 @@ void MarchingCubeUtility::propagateFrom ( const Vec3i coord,
 
         if ( triangleIndexInRegularGrid ) updateTriangleInRegularGridVector ( *triangleIndexInRegularGrid, cubeCoord, cell, numvert / 3 );
 
-        // Propagate
-        generatedCubes.insert ( cubeCoord ); // spaceIndex cube has been polygonized
+        if( propagate)
+        {
+            // Propagate
+            generatedCubes.insert ( cubeCoord ); // spaceIndex cube has been polygonized
 
-        if ( ( MarchingCubeFaceTable[cubeConf] &  1 ) && ( cubeCoord[2] >= bboxMin[2] ) ) { cubesToGenerate.push ( cubeCoord + Vec3i ( 0, 0,-1 ) );}
-        if ( ( MarchingCubeFaceTable[cubeConf] &  2 ) && ( cubeCoord[2] <= bboxMax[2]-2 ) ) { cubesToGenerate.push ( cubeCoord + Vec3i ( 0, 0, 1 ) );}
-        if ( ( MarchingCubeFaceTable[cubeConf] &  4 ) && ( cubeCoord[0] <= bboxMax[0]-2 ) ) { cubesToGenerate.push ( cubeCoord + Vec3i ( 1, 0, 0 ) );}
-        if ( ( MarchingCubeFaceTable[cubeConf] &  8 ) && ( cubeCoord[0] >= bboxMin[0] ) ) { cubesToGenerate.push ( cubeCoord + Vec3i ( -1, 0, 0 ) );}
-        if ( ( MarchingCubeFaceTable[cubeConf] & 16 ) && ( cubeCoord[1] >= bboxMin[1] ) ) { cubesToGenerate.push ( cubeCoord + Vec3i ( 0,-1, 0 ) );}
-        if ( ( MarchingCubeFaceTable[cubeConf] & 32 ) && ( cubeCoord[1] <= bboxMax[1]-2 ) ) { cubesToGenerate.push ( cubeCoord + Vec3i ( 0, 1, 0 ) );}
+            if ( ( MarchingCubeFaceTable[cubeConf] &  1 ) && ( cubeCoord[2] >= bboxMin[2] ) ) { cubesToGenerate.push ( cubeCoord + Vec3i ( 0, 0,-1 ) );}
+            if ( ( MarchingCubeFaceTable[cubeConf] &  2 ) && ( cubeCoord[2] <= bboxMax[2]-2 ) ) { cubesToGenerate.push ( cubeCoord + Vec3i ( 0, 0, 1 ) );}
+            if ( ( MarchingCubeFaceTable[cubeConf] &  4 ) && ( cubeCoord[0] <= bboxMax[0]-2 ) ) { cubesToGenerate.push ( cubeCoord + Vec3i ( 1, 0, 0 ) );}
+            if ( ( MarchingCubeFaceTable[cubeConf] &  8 ) && ( cubeCoord[0] >= bboxMin[0] ) ) { cubesToGenerate.push ( cubeCoord + Vec3i ( -1, 0, 0 ) );}
+            if ( ( MarchingCubeFaceTable[cubeConf] & 16 ) && ( cubeCoord[1] >= bboxMin[1] ) ) { cubesToGenerate.push ( cubeCoord + Vec3i ( 0,-1, 0 ) );}
+            if ( ( MarchingCubeFaceTable[cubeConf] & 32 ) && ( cubeCoord[1] <= bboxMax[1]-2 ) ) { cubesToGenerate.push ( cubeCoord + Vec3i ( 0, 1, 0 ) );}
+        }
     }
 }
 
@@ -623,7 +633,8 @@ void MarchingCubeUtility::run ( unsigned char *_data, const sofa::helper::vector
         const float isolevel,
         sofa::helper::vector< PointID >& mesh,
         sofa::helper::vector< Vector3>& vertices,
-        helper::vector< helper::vector<unsigned int> >*triangleIndexInRegularGrid ) const
+        helper::vector< helper::vector<unsigned int> >*triangleIndexInRegularGrid,
+        bool propagate ) const
 {
 
     Vec3i gridSize = Vec3i ( dataResolution[0]/cubeStep, dataResolution[1]/cubeStep, dataResolution[2]/cubeStep );
@@ -648,13 +659,7 @@ void MarchingCubeUtility::run ( unsigned char *_data, const sofa::helper::vector
         data = _data;
     }
 
-    for ( sofa::helper::vector< Vec3i >::const_iterator it = seeds.begin(); it != seeds.end(); it++ )
-    {
-        Vec3i voxel = *it;
-        if ( ( voxel[0] >= bbox.min[0]-1 ) && ( voxel[1] >= bbox.min[1]-1 ) && ( voxel[2] >= bbox.min[2]-1 ) &&
-                ( voxel[0] <= bbox.max[0] ) && ( voxel[1] <= bbox.max[1] ) && ( voxel[2] <= bbox.max[2] ) )
-            propagateFrom ( *it, data, isolevel, mesh, vertices, generatedCubes, map_vertices, triangleIndexInRegularGrid );
-    }
+    propagateFrom ( seeds, data, isolevel, mesh, vertices, generatedCubes, map_vertices, triangleIndexInRegularGrid, propagate );
     if (smooth)
         delete [] data;
 }

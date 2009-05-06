@@ -147,7 +147,8 @@ public:
             const float isolevel,
             sofa::helper::vector< PointID > &triangles,
             sofa::helper::vector< Vector3>  &vertices,
-            helper::vector< helper::vector<unsigned int> > *triangleIndexInRegularGrid = NULL ) const;
+            helper::vector< helper::vector<unsigned int> > *triangleIndexInRegularGrid = NULL,
+            bool propagate = true ) const;
 
     /// given a set of data (size of the data and size of the marching cube beeing defined previously),
     /// we construct a Sofa mesh.
@@ -203,13 +204,14 @@ private:
     void smoothData ( unsigned char *data ) const;
 
     /// Propagate the triangulation surface creation from a cell.
-    void propagateFrom ( const Vec3i coord,
+    void propagateFrom ( const sofa::helper::vector<Vec3i>& coord,
             unsigned char* data, const float isolevel,
             sofa::helper::vector< PointID >& triangles,
             sofa::helper::vector< Vector3 >& vertices,
             sofa::helper::set<Vec3i>& generatedCubes,
             std::map< Vector3, PointID>& map_vertices,
-            helper::vector< helper::vector<unsigned int> >* triangleIndexInRegularGrid = NULL ) const;
+            helper::vector< helper::vector<unsigned int> >* triangleIndexInRegularGrid = NULL,
+            bool propagate = true ) const;
 
 private:
     unsigned int  cubeStep;
