@@ -60,7 +60,7 @@ public:
      */
     BaseData( const char* h, bool isDisplayed=true, bool isReadOnly=false )
         : help(h), group(""), widget("")
-        , m_counter(0), m_isDisplayed(isDisplayed), m_isReadOnly(isReadOnly)/*, parent(NULL), writer(NULL)*/
+        , m_counter(0), m_isDisplayed(isDisplayed), m_isReadOnly(isReadOnly), m_isPersistent(true)/*, parent(NULL), writer(NULL)*/
     {}
 
     /// Base destructor
@@ -110,10 +110,15 @@ public:
     /// True if the Data will be readable only in the GUI
     bool isReadOnly() const { return m_isReadOnly; }
 
+    /// True if the Data contain persistent information
+    bool isPersistent() const { return m_isPersistent; }
+
     /// Can dynamically change the status of a Data, by making it appear or disappear
     void setDisplayed(bool b) {m_isDisplayed = b;}
     /// Can dynamically change the status of a Data, by making it readOnly
     void setReadOnly(bool b) {m_isReadOnly = b;}
+    /// Can dynamically change the status of a Data, by making it persistent
+    void setPersistent(bool b) {m_isPersistent = b;}
 
     /// Return the number of changes since creation
     /// This can be used to efficiently detect changes
@@ -154,7 +159,8 @@ protected:
     bool m_isDisplayed;
     /// True if the Data will be readable only in the GUI
     bool m_isReadOnly;
-
+    /// True if the Data contain persistent information
+    bool m_isPersistent;
     /// Helper method to decode the type name to a more readable form if possible
     static std::string decodeTypeName(const std::type_info& t);
 

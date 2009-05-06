@@ -438,7 +438,7 @@ void Base::xmlWriteNodeDatas (std::ostream& out, unsigned /*level*/ )
     for (unsigned int i=0; i<m_fieldVec.size(); i++)
     {
         BaseData* field = m_fieldVec[ i ].second;
-        if( field->isSet() && !field->getValueString().empty())
+        if(  field->isPersistent() && field->isSet() && !field->getValueString().empty())
         {
             out << m_fieldVec[ i ].first << "=\""<< field->getValueString() << "\" ";
         }
@@ -452,7 +452,7 @@ void  Base::xmlWriteDatas ( std::ostream& out, unsigned level, bool compact )
         for (unsigned int i=0; i<m_fieldVec.size(); i++)
         {
             BaseData* field = m_fieldVec[ i ].second;
-            if( field->isSet() && !field->getValueString().empty())
+            if( field->isPersistent() && field->isSet() && !field->getValueString().empty())
                 out << " " << m_fieldVec[ i ].first << "=\""<< field->getValueString() << "\"";
         }
     }
@@ -461,7 +461,7 @@ void  Base::xmlWriteDatas ( std::ostream& out, unsigned level, bool compact )
         for (unsigned int i=0; i<m_fieldVec.size(); i++)
         {
             BaseData* field = m_fieldVec[ i ].second;
-            if( field->isSet() && !field->getValueString().empty())
+            if( field->isPersistent() && field->isSet() && !field->getValueString().empty())
             {
                 for (unsigned l=0; l<level; l++) out << "\t";
                 out << "<Attribute type=\"" << m_fieldVec[ i ].first << "\">\n" ;
