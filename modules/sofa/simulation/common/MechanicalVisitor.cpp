@@ -787,6 +787,7 @@ Visitor::Result MechanicalResetForceVisitor::fwdMappedMechanicalState(simulation
 Visitor::Result MechanicalComputeForceVisitor::fwdMechanicalState(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalState* mm)
 {
     ctime_t t0 = beginProcess(node, mm);
+    mm->forceMask.activate(true);
     mm->setF(res);
     mm->accumulateForce();
     endProcess(node, mm, t0);
@@ -795,6 +796,7 @@ Visitor::Result MechanicalComputeForceVisitor::fwdMechanicalState(simulation::No
 Visitor::Result MechanicalComputeForceVisitor::fwdMappedMechanicalState(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalState* mm)
 {
     ctime_t t0 = beginProcess(node, mm);
+    mm->forceMask.activate(true);
     mm->accumulateForce();
     endProcess(node, mm, t0);
     return RESULT_CONTINUE;
