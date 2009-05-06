@@ -78,6 +78,13 @@ SkinningMapping<BasicMapping>::SkinningMapping ( In* from, Out* to )
     , wheighting ( WEIGHT_INVDIST )
     , interpolation ( INTERPOLATION_LINEAR )
 {
+    maskFrom = NULL;
+    if (core::componentmodel::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *>(from))
+        maskFrom = &stateFrom->forceMask;
+    maskTo = NULL;
+    if (core::componentmodel::behavior::BaseMechanicalState *stateTo = dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *>(to))
+        maskTo = &stateTo->forceMask;
+
 }
 
 template <class BasicMapping>
@@ -376,11 +383,15 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
             out[i] = Coord();
             for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
             {
+
+                const int idx=nbRefs.getValue() *i+m;
+                const int idxReps=m_reps[idx];
+
                 // Save rotated points for applyJ/JT
-                rotatedPoints[nbRefs.getValue() *i+m] = in[m_reps[nbRefs.getValue() *i+m] ].getOrientation().rotate ( initPos[nbRefs.getValue() *i+m] );
+                rotatedPoints[idx] = in[idxReps].getOrientation().rotate ( initPos[idx] );
 
                 // And add each reference frames contributions to the new position out[i]
-                out[i] += ( in[m_reps[nbRefs.getValue() *i+m] ].getCenter() + rotatedPoints[nbRefs.getValue() *i+m] ) * m_coefs[nbRefs.getValue() *i+m];
+                out[i] += ( in[idxReps ].getCenter() + rotatedPoints[idx] ) * m_coefs[idx];
             }
         }
         break;
@@ -393,15 +404,17 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
             DualQuat dq;
             for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
             {
+                const int idx=nbRefs.getValue() *i+m;
+                const int idxReps=m_reps[idx];
                 // Create a rigid transformation from global frame to "in" frame.
-                DualQuat dqi ( in[m_reps[nbRefs.getValue() *i+m] ].getCenter(),
-                        in[m_reps[nbRefs.getValue() *i+m] ].getOrientation() );
+                DualQuat dqi ( in[idxReps].getCenter(),
+                        in[idxReps].getOrientation() );
 
                 // Save rotated points for applyJ/JT
-                rotatedPoints[nbRefs.getValue() *i+m] = dqi.transform ( initPos[ nbRefs.getValue() *i+m] );
+                rotatedPoints[idx] = dqi.transform ( initPos[idx] );
 
                 // Blend all the transformations
-                dq += dqi * m_coefs[nbRefs.getValue() *i+m];
+                dq += dqi * m_coefs[idx];
             }
             dq.normalize(); // Normalize it
             out[i] = dq.transform ( initBlendedPos[i] ); // And apply it
@@ -421,14 +434,42 @@ void SkinningMapping<BasicMapping>::applyJ ( typename Out::VecDeriv& out, const 
 
     Deriv v,omega;
     out.resize ( initPos.size() / nbRefs.getValue() );
-    for ( unsigned int i=0; i<out.size(); i++ )
+
+    if (!(maskTo->isInUse()) )
     {
-        out[i] = Deriv();
-        for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
+        for ( unsigned int i=0; i<out.size(); i++ )
         {
-            v = in[m_reps[nbRefs.getValue() *i+m]].getVCenter();
-            omega = in[m_reps[nbRefs.getValue() *i+m]].getVOrientation();
-            out[i] += ( v - cross ( rotatedPoints[nbRefs.getValue() *i+m],omega ) ) * m_coefs[nbRefs.getValue() *i+m];
+            out[i] = Deriv();
+            for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
+            {
+                const int idx=nbRefs.getValue() *i+m;
+                const int idxReps=m_reps[idx];
+
+                v = in[idxReps].getVCenter();
+                omega = in[idxReps].getVOrientation();
+                out[i] += ( v - cross ( rotatedPoints[idx],omega ) ) * m_coefs[idx];
+            }
+        }
+    }
+    else
+    {
+        typedef core::componentmodel::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+        const ParticleMask::InternalStorage &indices=maskTo->getEntries();
+
+        ParticleMask::InternalStorage::const_iterator it;
+        for (it=indices.begin(); it!=indices.end(); it++)
+        {
+            const int i=(int)(*it);
+            out[i] = Deriv();
+            for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
+            {
+                const int idx=nbRefs.getValue() *i+m;
+                const int idxReps=m_reps[idx];
+
+                v = in[idxReps].getVCenter();
+                omega = in[idxReps].getVOrientation();
+                out[i] += ( v - cross ( rotatedPoints[idx],omega ) ) * m_coefs[idx];
+            }
         }
     }
 }
@@ -440,17 +481,48 @@ void SkinningMapping<BasicMapping>::applyJT ( typename In::VecDeriv& out, const 
     const sofa::helper::vector<double>& m_coefs = coefs.getValue();
 
     Deriv v,omega;
-    for ( unsigned int i=0; i<in.size(); i++ )
+    if ( !(maskTo->isInUse()) )
     {
-        for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
+        maskFrom->setInUse(false);
+        for ( unsigned int i=0; i<in.size(); i++ )
         {
-            Deriv f = in[i];
-            v = f;
-            omega = cross ( rotatedPoints[nbRefs.getValue() *i+m],f );
-            out[m_reps[nbRefs.getValue() *i+m] ].getVCenter() += v * m_coefs[nbRefs.getValue() *i+m];
-            out[m_reps[nbRefs.getValue() *i+m] ].getVOrientation() += omega * m_coefs[nbRefs.getValue() *i+m];
+            for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
+            {
+                Deriv f = in[i];
+                v = f;
+                const int idx=nbRefs.getValue() *i+m;
+                const int idxReps=m_reps[idx];
+                omega = cross ( rotatedPoints[idx],f );
+                out[idxReps].getVCenter() += v * m_coefs[idx];
+                out[idxReps].getVOrientation() += omega * m_coefs[idx];
+            }
         }
     }
+    else
+    {
+
+        typedef core::componentmodel::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+        const ParticleMask::InternalStorage &indices=maskTo->getEntries();
+
+        ParticleMask::InternalStorage::const_iterator it;
+        for (it=indices.begin(); it!=indices.end(); it++)
+        {
+            const int i=(int)(*it);
+            for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
+            {
+                Deriv f = in[i];
+                v = f;
+                const int idx=nbRefs.getValue() *i+m;
+                const int idxReps=m_reps[idx];
+                omega = cross ( rotatedPoints[idx],f );
+                out[idxReps].getVCenter() += v * m_coefs[idx];
+                out[idxReps].getVOrientation() += omega * m_coefs[idx];
+
+                maskFrom->insertEntry(idxReps);
+            }
+        }
+    }
+
 }
 
 template <class BasicMapping>

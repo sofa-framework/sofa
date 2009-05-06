@@ -349,6 +349,8 @@ public:
         springs.endEdit();
     }
 
+    bool useMask() {return true;}
+
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_JOINTSPRINGFORCEFIELD_CPP)

@@ -1321,9 +1321,9 @@ void BarycentricMapperMeshTopology<In,Out>::applyJ ( typename Out::VecDeriv& out
 
 
 
-    if ( !maskTo || !(maskTo->isInUse()) )
+    if ( !(maskTo->isInUse()) )
     {
-        if (maskTo) maskFrom->setInUse(false);
+        maskFrom->setInUse(false);
         // 1D elements
         {
             for ( unsigned int i=0; i<map1d.size(); i++ )
@@ -1509,9 +1509,9 @@ void BarycentricMapperMeshTopology<In,Out>::applyJ ( typename Out::VecDeriv& out
 template <class In, class Out>
 void BarycentricMapperRegularGridTopology<In,Out>::applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
-    if ( !maskTo || !(maskTo->isInUse()) )
+    if ( !(maskTo->isInUse()) )
     {
-        if (maskTo) maskFrom->setInUse(false);
+        maskFrom->setInUse(false);
         for ( unsigned int i=0; i<map.size(); i++ )
         {
 #ifdef SOFA_NEW_HEXA
@@ -1586,10 +1586,10 @@ void BarycentricMapperRegularGridTopology<In,Out>::applyJ ( typename Out::VecDer
 template <class In, class Out>
 void BarycentricMapperSparseGridTopology<In,Out>::applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
-    if ( !maskTo || !(maskTo->isInUse()) )
+    if ( !(maskTo->isInUse()) )
     {
 
-        if (maskTo) maskFrom->setInUse(false);
+        maskFrom->setInUse(false);
         for ( unsigned int i=0; i<map.size(); i++ )
         {
 #ifdef SOFA_NEW_HEXA
@@ -1667,10 +1667,10 @@ void BarycentricMapperEdgeSetTopology<In,Out>::applyJ ( typename Out::VecDeriv& 
 
     out.resize ( map.getValue().size() );
     const sofa::helper::vector<topology::Edge>& edges = this->topology->getEdges();
-    if ( !maskTo || !(maskTo->isInUse()) )
+    if ( !(maskTo->isInUse()) )
     {
 
-        if (maskTo) maskFrom->setInUse(false);
+        maskFrom->setInUse(false);
         for ( unsigned int i=0; i<map.getValue().size(); i++ )
         {
             const Real fx = map.getValue()[i].baryCoords[0];
@@ -1706,10 +1706,10 @@ void BarycentricMapperTriangleSetTopology<In,Out>::applyJ ( typename Out::VecDer
     const sofa::helper::vector<topology::Triangle>& triangles = this->topology->getTriangles();
 
 
-    if ( !maskTo || !(maskTo->isInUse()) )
+    if ( !(maskTo->isInUse()) )
     {
 
-        if (maskTo) maskFrom->setInUse(false);
+        maskFrom->setInUse(false);
         for ( unsigned int i=0; i<map.getValue().size(); i++ )
         {
             const Real fx = map.getValue()[i].baryCoords[0];
@@ -1750,9 +1750,9 @@ void BarycentricMapperQuadSetTopology<In,Out>::applyJ ( typename Out::VecDeriv& 
     const sofa::helper::vector<topology::Quad>& quads = this->topology->getQuads();
 
 
-    if ( !maskTo || !(maskTo->isInUse()) )
+    if ( !(maskTo->isInUse()) )
     {
-        if (maskTo) maskFrom->setInUse(false);
+        maskFrom->setInUse(false);
         for ( unsigned int i=0; i<map.getValue().size(); i++ )
         {
             const Real fx = map.getValue()[i].baryCoords[0];
@@ -1795,9 +1795,9 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::applyJ ( typename Out::Vec
     const sofa::helper::vector<topology::Tetrahedron>& tetras = this->topology->getTetras();
 
 
-    if ( !maskTo || !(maskTo->isInUse()) )
+    if (!(maskTo->isInUse()) )
     {
-        if (maskTo) maskFrom->setInUse(false);
+        maskFrom->setInUse(false);
         for ( unsigned int i=0; i<map.getValue().size(); i++ )
         {
             const Real fx = map.getValue()[i].baryCoords[0];
@@ -1841,9 +1841,9 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::applyJ ( typename Out::VecD
     const sofa::helper::vector<topology::Hexahedron>& cubes = this->topology->getHexas();
 
 
-    if ( !maskTo || !(maskTo->isInUse()) )
+    if (!(maskTo->isInUse()) )
     {
-        if (maskTo) maskFrom->setInUse(false);
+        maskFrom->setInUse(false);
         for ( unsigned int i=0; i<map.getValue().size(); i++ )
         {
             const Real fx = map.getValue()[i].baryCoords[0];

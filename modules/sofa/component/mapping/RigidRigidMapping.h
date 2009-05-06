@@ -78,6 +78,10 @@ public:
     Data<double> axisLength;
     Data< bool > indexFromEnd;
 
+    core::componentmodel::behavior::BaseMechanicalState::ParticleMask* maskFrom;
+    core::componentmodel::behavior::BaseMechanicalState::ParticleMask* maskTo;
+
+
     RigidRigidMapping(In* from, Out* to)
         : Inherit(from, to),
           points(initData(&points, "initialPoints", "Initial position of the points")),
@@ -88,6 +92,12 @@ public:
           indexFromEnd( initData ( &indexFromEnd,false,"indexFromEnd","input DOF index starts from the end of input DOFs vector") )
     {
         addAlias(&fileRigidRigidMapping,"filename");
+        maskFrom = NULL;
+        if (core::componentmodel::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *>(from))
+            maskFrom = &stateFrom->forceMask;
+        maskTo = NULL;
+        if (core::componentmodel::behavior::BaseMechanicalState *stateTo = dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *>(to))
+            maskTo = &stateTo->forceMask;
     }
 
     virtual ~RigidRigidMapping()
