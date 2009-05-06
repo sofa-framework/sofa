@@ -95,6 +95,7 @@ private:
         unsigned int ind_tb_init;
 
         bool is_first_cut;
+        bool is_cut_completed;
 
         unsigned int b_last_init;
         sofa::helper::vector< unsigned int > b_p12_last_init;

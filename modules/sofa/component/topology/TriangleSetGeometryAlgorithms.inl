@@ -664,6 +664,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isQuadDeulaunayOriented(const V
         const sofa::defaulttype::Vec<3,double>& q3,
         const sofa::defaulttype::Vec<3,double>& q4) const
 {
+    //TODO: consider case with one vertex being inside the triangle fromed by the 3 others vertices.
     Vec<3,double> G = (q1+q2+q3)/3.0;
 
     if((G-q2)*(G-q2) <= (G-q4)*(G-q4))
@@ -1033,6 +1034,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
 
     if(norm_v_normal != 0.0)
     {
+
         v_normal/=norm_v_normal;
 
         Vec<3,Real> v_ab = pb-pa;
@@ -1067,7 +1069,6 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
             if(!is_full_01)
             {
                 /// Test of edge (p0,p1) :
-
                 s_t = (p0-p1)*n_proj;
                 s_k = (pa-pb_proj)*n_01;
 
@@ -1123,6 +1124,8 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
 
                 is_validated = is_validated || is_initialized;
             }
+
+
 
             if(!is_full_12)
             {
@@ -1185,6 +1188,8 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
                 is_validated = is_validated || is_initialized;
             }
 
+
+
             if(!is_full_20)
             {
                 /// Test of edge (p2,p0) :
@@ -1241,9 +1246,10 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
 
                     is_initialized = true;
                 }
-
                 is_validated = is_validated || is_initialized;
             }
+
+
         }
         else
         {
@@ -1271,6 +1277,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
         sofa::helper::vector<unsigned int> &edges_list,
         sofa::helper::vector< double >& coords_list, bool& is_on_boundary) const
 {
+
     bool is_validated=true;
     bool is_intersected=true;
 
@@ -1290,24 +1297,18 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
     EdgeID ind_edge;
     PointID ind_index;
     TriangleID ind_triangle = ind_ta;
-
     is_intersected=computeSegmentTriangleIntersection(false, p_current, b, (const unsigned int) ind_t_current, indices, coord_t, coord_k);
 
     // In case the ind_t is not the good one.
-    if (!is_intersected || indices[0] == last_point || indices[1] == last_point )
+    if ( (!is_intersected || indices[0] == last_point || indices[1] == last_point) && (last_point != (unsigned int)-1))
     {
-        //std::cout << "passe la" << std::endl;
 
         const sofa::helper::vector< unsigned int >& shell = this->m_topology->getTriangleVertexShell (last_point);
-        //std::cout << "shell: " << shell << std::endl;
 
         for (unsigned int i = 0; i<shell.size(); i++)
         {
             if (shell [i] != ind_t_current)
                 is_intersected=computeSegmentTriangleIntersection(false, p_current, b, shell[i], indices, coord_t, coord_k);
-
-            //std::cout << "indices: " << indices << std::endl;
-            //std::cout << "last_point: " << last_point << std::endl;
 
             if (is_intersected && indices[0] != last_point && indices[1] != last_point)
             {
@@ -1362,7 +1363,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
 
         if(coord_t==0.0 || coord_t==1.0) // current point indexed by ind_t_current is on a vertex
         {
-            //	std::cout << "INFO_print : INPUT ON A VERTEX !!!" <<  std::endl;
+            //std::cout << "INFO_print : INPUT ON A VERTEX !!!" <<  std::endl;
             if(coord_t==0.0)
             {
                 ind_index=indices[0];

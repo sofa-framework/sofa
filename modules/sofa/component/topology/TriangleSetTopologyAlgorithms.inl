@@ -1276,16 +1276,6 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
                     break;
                 }
 
-                triangles_ancestors.resize (triangles_ancestors.size()+5);
-                triangles_barycoefs.resize (triangles_barycoefs.size()+5);
-
-                for (unsigned int j = 0; j<5; j++)
-                {
-                    triangles_ancestors[triangles_ancestors.size()-j-1].push_back (triangleIDFirst);
-                    triangles_barycoefs[triangles_barycoefs.size()-j-1].push_back (1/5); // ??
-                }
-
-
                 PointID quad[2][4];
                 PointID Tri1[3];
                 double tmp1 = 0.0; unsigned int cornerP1[3]= {0,0,0};
@@ -1330,18 +1320,22 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
                 }
 
 
-
                 if (cornerP1[0] != cornerP2[0])
                 {
-                    int cornerP1InTriangle = m_container->getVertexIndexInTriangle (theTriangleFirst, cornerP1[0]);
-                    int cornerP2InTriangle = m_container->getVertexIndexInTriangle (theTriangleFirst, cornerP2[0]);
+                    //int cornerP1InTriangle = m_container->getVertexIndexInTriangle (theTriangleFirst, cornerP1[0]);
+                    //int cornerP2InTriangle = m_container->getVertexIndexInTriangle (theTriangleFirst, cornerP2[0]);
+                    unsigned int cornerP1InTriangle = cornerP1[0];
 
+                    unsigned int cornerP2InTriangle = cornerP2[0];
+
+
+                    /*
                     if ( cornerP1InTriangle == -1 || cornerP2InTriangle == -1)
                     {
-                        std::cout << " Error: SplitAlongPath: problem in finding corners in triangle, in TRIANGLE::TRIANGLE case" << std::endl;
-                        break;
+                      std::cout << " Error: SplitAlongPath: problem in finding corners in triangle, in TRIANGLE::TRIANGLE case" << std::endl;
+                      break;
                     }
-
+                    */
 
                     if ( (cornerP1InTriangle+1)%3 == cornerP2InTriangle ) // in the right direction
                     {
@@ -1388,12 +1382,12 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
                     if (tmp1 > tmp2)
                     {
                         closest = p1; second = p2;
-                        cornerInTriangle = m_container->getVertexIndexInTriangle (theTriangleFirst, cornerP1[0]);
+                        cornerInTriangle = cornerP1[0];
                     }
                     else
                     {
                         closest = p2; second = p1;
-                        cornerInTriangle = m_container->getVertexIndexInTriangle (theTriangleFirst, cornerP2[0]);
+                        cornerInTriangle = cornerP2[0];
                     }
 
                     quad[0][0] = closest; quad[0][1] = theTriangleFirst[cornerInTriangle];
@@ -1405,34 +1399,57 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
                     Tri1[0] = second; Tri1[1] = theTriangleFirst[(cornerInTriangle+1)%3]; Tri1[2] = theTriangleFirst[(cornerInTriangle+2)%3];
                 }
 
-
                 new_triangles.push_back(Triangle(Tri1[0], Tri1[1], Tri1[2]));
                 new_triangles_id.push_back(next_triangle++);
 
                 // Triangularize the remaining quad according to the delaunay criteria
+                typename DataTypes::VecCoord& coords = *(m_geometryAlgorithms->getDOF()->getX());
                 for (unsigned int j = 0; j<2; j++)
                 {
                     Vec<3,double> pos[4];
                     for (unsigned int k = 0; k<4; k++)
-                        pos[k]= m_geometryAlgorithms->getPointPosition(quad[i][k]);
+                    {
+                        if (quad[j][k] == p1)
+                            for (unsigned int u = 0; u<3; u++)
+                                for (unsigned int v = 0; v<3; v++)
+                                    pos[k][v] = pos[k][v] + coords[theTriangleFirst[u]][v]*coords_list[i][u];
+                        else if (quad[j][k] == p2)
+                            for (unsigned int u = 0; u<3; u++)
+                                for (unsigned int v = 0; v<3; v++)
+                                    pos[k][v] = pos[k][v] + coords[theTriangleFirst[u]][v]*coords_list[i+1][u];
+                        else
+                            pos[k]= coords[quad[j][k]];
+
+                    }
+
 
                     if (m_geometryAlgorithms->isQuadDeulaunayOriented(pos[0], pos[1], pos[2], pos[3]))
                     {
-                        new_triangles.push_back(Triangle(quad[i][1], quad[i][2], quad[i][0]));
+                        new_triangles.push_back(Triangle(quad[j][1], quad[j][2], quad[j][0]));
                         new_triangles_id.push_back(next_triangle++);
-                        new_triangles.push_back(Triangle(quad[i][3], quad[i][0], quad[i][2]));
+                        new_triangles.push_back(Triangle(quad[j][3], quad[j][0], quad[j][2]));
                         new_triangles_id.push_back(next_triangle++);
                     }
                     else
                     {
-                        new_triangles.push_back(Triangle(quad[i][2], quad[i][3], quad[i][1]));
+                        new_triangles.push_back(Triangle(quad[j][2], quad[j][3], quad[j][1]));
                         new_triangles_id.push_back(next_triangle++);
-                        new_triangles.push_back(Triangle(quad[i][0], quad[i][1], quad[i][3]));
+                        new_triangles.push_back(Triangle(quad[j][0], quad[j][1], quad[j][3]));
                         new_triangles_id.push_back(next_triangle++);
                     }
                 }
 
+                triangles_ancestors.resize (triangles_ancestors.size()+5);
+                triangles_barycoefs.resize (triangles_barycoefs.size()+5);
+
+                for (unsigned int j = 0; j<5; j++)
+                {
+                    triangles_ancestors[triangles_ancestors.size()-j-1].push_back (triangleIDFirst);
+                    triangles_barycoefs[triangles_barycoefs.size()-j-1].push_back (1/5); // ??
+                }
+
                 removed_triangles.push_back(triangleIDFirst);
+
                 break;
             }
             default:
@@ -1736,7 +1753,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapAlongPath (sofa::helper::vect
         coords_list.erase (coords_list.begin()+field2remove[field2remove.size()-i]);
     }
 
-    //	std::cout <<"END snaping" << std::endl;
+    //std::cout <<"END snaping" << std::endl;
 
     return;
 }
@@ -1916,7 +1933,7 @@ bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::h
         }
     }
 
-    this->sout << "Points on the path: " << init_points << this->sendl;
+    this->serr << "Points on the path: " << init_points << this->sendl;
 
     sofa::helper::vector< std::pair<TriangleID,TriangleID> > init_triangles;
     for (int i=0; i<nbEdges; ++i)
@@ -1924,7 +1941,7 @@ bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::h
         const sofa::helper::vector<TriangleID>& shell = m_container->getTriangleEdgeShell(edges[i]);
         if (shell.size() != 2)
         {
-            this->serr << "ERROR: cannot split an edge with " << shell.size() << "!=2 attached triangles." << this->sendl;
+            this->serr << "ERROR: cannot split an edge with " << shell.size() << "!=2 attached triangles. Around edge: " << edges[i] << this->sendl;
             return false;
         }
         init_triangles.push_back(std::make_pair(shell[0],shell[1]));
@@ -1932,15 +1949,15 @@ bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::h
 
     bool beginOnBorder = (m_container->getTriangleVertexShell(init_points.front()).size() < m_container->getEdgeVertexShell(init_points.front()).size());
     bool endOnBorder = (m_container->getTriangleVertexShell(init_points.back()).size() < m_container->getEdgeVertexShell(init_points.back()).size());
-    if (!beginOnBorder && !endOnBorder && nbEdges == 1)
+    /*if (!beginOnBorder && !endOnBorder && nbEdges == 1)
     {
-        this->serr << "ERROR: cannot split a single edge not on the border." << this->sendl;
-        return false;
-    }
+      this->serr << "ERROR: cannot split a single edge not on the border." << this->sendl;
+      return false;
+      }*/
 
     if (!beginOnBorder) end_points.push_back(init_points.front());
     if (!endOnBorder) end_points.push_back(init_points.back());
-    this->sout << "End points : " << end_points << this->sendl;
+
 
     /// STEP 1: Create the new points corresponding the one of the side of the now separated edges
     int first_new_point = beginOnBorder ? 0 : 1;
@@ -1963,6 +1980,7 @@ bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::h
     // STEP 2: Find all triangles that need to be attached to the new points
     std::set<TriangleID> updatedTriangles;
 
+    //TODO : WARNING THERE SEEMS TO BE A SEG FAULT HERE
     TriangleID t0 = m_container->getTriangleEdgeShell(edges[0])[0];
     if (beginOnBorder)
     {
@@ -1987,7 +2005,6 @@ bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::h
     }
 
     // STEP 2b: Find the triangles linking each edge to the next, by starting from the last triangle, rotate around each point until the next point is reached
-
     for (int i = 0 ; i < nbEdges-1 ; ++i)
     {
         PointID p1 = init_points[i];
@@ -2001,6 +2018,7 @@ bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::h
             PointID p2 = getOtherPointInTriangle(t, p0, p1);
             if (p2 == pnext) break;
             EdgeID e = m_container->getEdgeIndex(p0, p2);
+
             const sofa::core::componentmodel::topology::BaseMeshTopology::EdgeTriangles& etri = m_container->getTriangleEdgeShell(e);
             if (etri.size() < 2) break; // border or non-manifold edge
             if (etri[0] == tid)
@@ -2011,7 +2029,6 @@ bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::h
         }
         t0 = tid;
     }
-
     if (endOnBorder)
     {
         // STEP 2c: Find the triangles linking the last edge to the border
@@ -2035,7 +2052,6 @@ bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::h
     }
 
     // STEP 3: Create new triangles by replacing indices of split points in the list of triangles to update
-
     for (std::set<TriangleID>::const_iterator it = updatedTriangles.begin(), itend = updatedTriangles.end(); it != itend; ++it)
     {
         TriangleID tid = *it;
@@ -2070,7 +2086,6 @@ bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::h
     }
 
     // FINAL STEP : Apply changes
-
     // Create all the points registered to be created
     m_modifier->addPointsProcess(p_ancestors.size());
 
