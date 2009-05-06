@@ -67,11 +67,19 @@ public:
     typedef typename OutDataTypes::VecCoord OutVecCoord;
     typedef typename OutDataTypes::VecDeriv OutVecDeriv;
 
+    core::componentmodel::behavior::BaseMechanicalState::ParticleMask* maskFrom;
+    core::componentmodel::behavior::BaseMechanicalState::ParticleMask* maskTo;
     //enum { N=((int)Deriv::static_size < (int)InDeriv::static_size ? (int)Deriv::static_size : (int)InDeriv::static_size) };
 
     IdentityMapping(In* from, Out* to)
         : Inherit(from, to)
     {
+        maskFrom = NULL;
+        if (core::componentmodel::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *>(from))
+            maskFrom = &stateFrom->forceMask;
+        maskTo = NULL;
+        if (core::componentmodel::behavior::BaseMechanicalState *stateTo = dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *>(to))
+            maskTo = &stateTo->forceMask;
     }
 
     virtual ~IdentityMapping()
