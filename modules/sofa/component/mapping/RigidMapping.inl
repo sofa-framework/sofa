@@ -323,9 +323,9 @@ void RigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const type
     unsigned int cptOut;
     unsigned int val;
 
-
     if (!(maskTo->isInUse()) )
     {
+        maskFrom->setInUse(false);
         switch (repartition.getValue().size())
         {
         case 0:
@@ -393,10 +393,12 @@ void RigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const type
     }
     else
     {
+        typedef core::componentmodel::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+        const ParticleMask::InternalStorage &indices=maskTo->getEntries();
+        ParticleMask::InternalStorage::const_iterator it=indices.begin();
         switch (repartition.getValue().size())
         {
         case 0:
-        {
             if (indexFromEnd.getValue())
             {
                 v = in[in.size() - 1 - index.getValue()].getVCenter();
@@ -408,48 +410,37 @@ void RigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const type
                 omega = in[index.getValue()].getVOrientation();
             }
 
-            typedef core::componentmodel::behavior::BaseMechanicalState::ParticleMask ParticleMask;
-            const ParticleMask::InternalStorage &indices=maskTo->getEntries();
-
-            ParticleMask::InternalStorage::const_iterator it;
-            for (it=indices.begin(); it!=indices.end(); it++)
+            for(unsigned int i=0; i<pts.size() && it != indices.end(); i++)
             {
-                const int i=(int)(*it);
-
+                const unsigned int idx=(*it);
+                if (idx != i) continue;
                 // out = J in
                 // J = [ I -OM^ ]
                 out[i] =  v - cross(rotatedPoints[i],omega);
+                it++;
             }
             break;
-        }
         case 1:
-        {
             val = repartition.getValue()[0];
             cptOut=0;
-
-            typedef core::componentmodel::behavior::BaseMechanicalState::ParticleMask ParticleMask;
-            const ParticleMask::InternalStorage &indices=maskTo->getEntries();
 
             for (unsigned int ifrom=0 ; ifrom<in.size() ; ifrom++)
             {
                 v = in[ifrom].getVCenter();
                 omega = in[ifrom].getVOrientation();
 
-                for(unsigned int ito=0; ito<val; ito++)
+                for(unsigned int ito=0; ito<val && it != indices.end(); ito++,cptOut++)
                 {
+                    const unsigned int idx=(*it);
+                    if (idx != cptOut) continue;
                     // out = J in
                     // J = [ I -OM^ ]
-                    if (indices.find( cptOut) != indices.end())
-                    {
-                        out[cptOut] =  v - cross(rotatedPoints[cptOut],omega);
-                    }
-                    cptOut++;
+                    out[cptOut] =  v - cross(rotatedPoints[cptOut],omega);
+                    it++;
                 }
             }
             break;
-        }
         default:
-        {
             if (repartition.getValue().size() != in.size())
             {
                 serr<<"Error : mapping dofs repartition is not correct"<<sendl;
@@ -458,27 +449,22 @@ void RigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const type
 
             cptOut=0;
 
-            typedef core::componentmodel::behavior::BaseMechanicalState::ParticleMask ParticleMask;
-            const ParticleMask::InternalStorage &indices=maskTo->getEntries();
-
             for (unsigned int ifrom=0 ; ifrom<in.size() ; ifrom++)
             {
                 v = in[ifrom].getVCenter();
                 omega = in[ifrom].getVOrientation();
 
-                for(unsigned int ito=0; ito<repartition.getValue()[ifrom]; ito++)
+                for(unsigned int ito=0; ito<repartition.getValue()[ifrom] && it != indices.end(); ito++,cptOut++)
                 {
+                    const unsigned int idx=(*it);
+                    if (idx != cptOut) continue;
                     // out = J in
                     // J = [ I -OM^ ]
-                    if (indices.find( cptOut) != indices.end())
-                    {
-                        out[cptOut] =  v - cross(rotatedPoints[cptOut],omega);
-                    }
-                    cptOut++;
+                    out[cptOut] =  v - cross(rotatedPoints[cptOut],omega);
+                    it++;
                 }
             }
             break;
-        }
         }
     }
 
@@ -495,7 +481,7 @@ void RigidMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const type
 
     if ( !(maskTo->isInUse()) )
     {
-        maskFrom->setInUse(false);
+        //maskFrom->setInUse(false);
         switch(repartition.getValue().size())
         {
         case 0 :
@@ -514,15 +500,15 @@ void RigidMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const type
                 //serr<<"RigidMapping<BasicMapping>::applyJT, new omega = "<<omega<<sendl;
             }
 
-            if (indexFromEnd.getValue())
-            {
-                out[out.size() - 1 - index.getValue()].getVCenter() += v;
-                out[out.size() - 1 - index.getValue()].getVOrientation() += omega;
-            }
-            else
+            if (!indexFromEnd.getValue())
             {
                 out[index.getValue()].getVCenter() += v;
                 out[index.getValue()].getVOrientation() += omega;
+            }
+            else
+            {
+                out[out.size() - 1 - index.getValue()].getVCenter() += v;
+                out[out.size() - 1 - index.getValue()].getVOrientation() += omega;
             }
 
             break;
@@ -571,17 +557,16 @@ void RigidMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const type
     }
     else
     {
+        typedef core::componentmodel::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+        const ParticleMask::InternalStorage &indices=maskTo->getEntries();
+
+        ParticleMask::InternalStorage::const_iterator it=indices.begin();
         switch(repartition.getValue().size())
         {
         case 0 :
-        {
-            typedef core::componentmodel::behavior::BaseMechanicalState::ParticleMask ParticleMask;
-            const ParticleMask::InternalStorage &indices=maskTo->getEntries();
-
-            ParticleMask::InternalStorage::const_iterator it;
-            for (it=indices.begin(); it!=indices.end(); it++)
+            for(; it!=indices.end(); it++)
             {
-                const int i=(int)(*it);
+                const int i=(*it);
                 // out = Jt in
                 // Jt = [ I     ]
                 //      [ -OM^t ]
@@ -595,50 +580,42 @@ void RigidMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const type
                 //serr<<"RigidMapping<BasicMapping>::applyJT, new omega = "<<omega<<sendl;
             }
 
-            if (indexFromEnd.getValue())
-            {
-                out[out.size() - 1 - index.getValue()].getVCenter() += v;
-                out[out.size() - 1 - index.getValue()].getVOrientation() += omega;
-                maskFrom->insertEntry(out.size() - 1 - index.getValue());
-            }
-            else
+            if (!indexFromEnd.getValue())
             {
                 out[index.getValue()].getVCenter() += v;
                 out[index.getValue()].getVOrientation() += omega;
                 maskFrom->insertEntry(index.getValue());
             }
+            else
+            {
+                out[out.size() - 1 - index.getValue()].getVCenter() += v;
+                out[out.size() - 1 - index.getValue()].getVOrientation() += omega;
+                maskFrom->insertEntry(out.size() - 1 - index.getValue());
+            }
 
             break;
-        }
         case 1 :
-        {
             val = repartition.getValue()[0];
             cpt=0;
-            typedef core::componentmodel::behavior::BaseMechanicalState::ParticleMask ParticleMask;
-            const ParticleMask::InternalStorage &indices=maskTo->getEntries();
-
             for(unsigned int ito=0; ito<out.size(); ito++)
             {
                 v=Deriv();
                 omega=Deriv();
-                for(unsigned int i=0; i<val; i++)
+                for(unsigned int i=0; i<val && it != indices.end(); i++, cpt++)
                 {
-                    if (indices.find(cpt) != indices.end())
-                    {
-                        Deriv f = in[cpt];
-                        v += f;
-                        omega += cross(rotatedPoints[cpt],f);
-                    }
-                    cpt++;
+                    const unsigned int idx=(*it);
+                    if (idx != cpt) continue;
+                    Deriv f = in[cpt];
+                    v += f;
+                    omega += cross(rotatedPoints[cpt],f);
+                    it++;
                 }
                 out[ito].getVCenter() += v;
                 out[ito].getVOrientation() += omega;
                 maskFrom->insertEntry(ito);
             }
             break;
-        }
         default :
-        {
             if (repartition.getValue().size() != out.size())
             {
                 serr<<"Error : mapping dofs repartition is not correct"<<sendl;
@@ -646,29 +623,24 @@ void RigidMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const type
             }
 
             cpt=0;
-            typedef core::componentmodel::behavior::BaseMechanicalState::ParticleMask ParticleMask;
-            const ParticleMask::InternalStorage &indices=maskTo->getEntries();
-
             for(unsigned int ito=0; ito<out.size(); ito++)
             {
                 v=Deriv();
                 omega=Deriv();
-                for(unsigned int i=0; i<repartition.getValue()[ito]; i++)
+                for(unsigned int i=0; i<repartition.getValue()[ito] && it != indices.end(); i++, cpt++)
                 {
-                    if (indices.find(cpt) != indices.end())
-                    {
-                        Deriv f = in[cpt];
-                        v += f;
-                        omega += cross(rotatedPoints[cpt],f);
-                    }
-                    cpt++;
+                    const unsigned int idx=(*it);
+                    if (idx != cpt) continue;
+                    Deriv f = in[cpt];
+                    v += f;
+                    omega += cross(rotatedPoints[cpt],f);
+                    it++;
                 }
                 out[ito].getVCenter() += v;
                 out[ito].getVOrientation() += omega;
                 maskFrom->insertEntry(ito);
             }
-        }
-        break;
+            break;
         }
     }
 

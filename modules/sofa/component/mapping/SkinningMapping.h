@@ -84,6 +84,9 @@ protected:
     sofa::helper::vector<Coord> initBlendedPos; // pos: point coord in  the blended reference frames, where i=0..n ( + 1 for the blended reference frame)
     sofa::helper::vector<Coord> rotatedPoints;
 
+    core::componentmodel::behavior::BaseMechanicalState::ParticleMask* maskFrom;
+    core::componentmodel::behavior::BaseMechanicalState::ParticleMask* maskTo;
+
     Data<sofa::helper::vector<unsigned int> > repartition;
     Data<sofa::helper::vector<double> >  coefs;
     Data<unsigned int> nbRefs;
