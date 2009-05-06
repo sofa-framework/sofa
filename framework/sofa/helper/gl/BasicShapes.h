@@ -117,6 +117,19 @@ void drawSphere(const V& center, const float& rad, const int subd1=8, const int 
 // 		delete sphere;
 }
 
+template <typename V>
+void drawWireSphere(const V& center, const float& rad, const int subd1=8, const int subd2=8)
+{
+    GLUquadricObj*	sphere = gluNewQuadric();
+    gluQuadricDrawStyle(sphere, GLU_LINE);
+    gluQuadricOrientation(sphere, GLU_OUTSIDE);
+    glPushMatrix();
+    helper::gl::glTranslateT( center );
+    gluSphere(sphere,2.0*rad,subd1,subd2);
+    glPopMatrix();
+// 		delete sphere;
+}
+
 
 }
 }
