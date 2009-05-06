@@ -1483,14 +1483,14 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
             //std::cout << "passe la: points2Snap[0][0]" << std::endl;
 
             for (unsigned int j = 0; j<3; j++)
-                a[j] = points2Snap[0][j+1];
+                a[j] = (float)points2Snap[0][j+1];
         }
 
         if (topoPath_list[topoPath_list.size()-1] == core::componentmodel::topology::POINT)
         {
             //std::cout << "passe la: points2Snap[size-1][0]" << std::endl;
             for (unsigned int j = 0; j<3; j++)
-                b[j] = points2Snap[points2Snap.size()-1][j+1];
+                b[j] = (float)points2Snap[points2Snap.size()-1][j+1];
         }
 
         for (unsigned int i = 0; i<points2Snap.size(); i++)
@@ -1825,7 +1825,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapBorderPath (unsigned int pa, 
                     Edge theEdgeFirst = m_container->getEdge(theEdge);
                     Vec<3,double> pos1 = m_geometryAlgorithms->computeBaryEdgePoint(theEdgeFirst, new_coord[1]);
                     for (unsigned int j = 0; j<3; j++)
-                        a[j]=pos1[j];
+                        a[j]=(float)pos1[j];
 
                     break;
                     //std::cout <<" end assignment" << std::endl;
@@ -1868,7 +1868,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapBorderPath (unsigned int pa, 
                     Edge theEdgeLast = m_container->getEdge(theEdge);
                     Vec<3,double> pos1 = m_geometryAlgorithms->computeBaryEdgePoint(theEdgeLast, new_coord[1]);
                     for (unsigned int j = 0; j<3; j++)
-                        a[j]=pos1[j];
+                        a[j]=(float)pos1[j];
 
                     break;
                 }
