@@ -91,7 +91,7 @@ public:
     Data<Real> curvature;
 };
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_ENGINE_BOXROI_CPP)
+#if defined(WIN32) && !defined(SOFA_COMPONENT_ENGINE_SPIRAL_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
 template class SOFA_COMPONENT_ENGINE_API Spiral<defaulttype::Vec3dTypes>;
