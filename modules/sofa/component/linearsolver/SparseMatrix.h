@@ -347,6 +347,48 @@ public:
         return res;
     }
 
+    template<class Real2>
+    void mul(SparseMatrix<T>* res, const SparseMatrix<Real2>& m) const
+    {
+        res->resize(rowSize(), m.colSize());
+        for (LineConstIterator itl = begin(), itlend=end(); itl!=itlend; ++itl)
+        {
+            const int this_line = itl->first;
+            for (LElementConstIterator ite = itl->second.begin(), iteend=itl->second.end(); ite!=iteend; ++ite)
+            {
+                Real v = ite->second;
+                const typename SparseMatrix<Real2>::Line& ml = m[ite->first];
+                for (typename SparseMatrix<Real2>::LElementConstIterator ite2 = ml.begin(), ite2end=ml.end(); ite2!=ite2end; ++ite2)
+                {
+                    Real2 v2 = ite2->second;
+                    const int m_col = ite2->first;
+                    res->add(this_line, m_col, (Real)(v*v2));
+                }
+            }
+        }
+    }
+
+    template<class Real2>
+    void addmul(SparseMatrix<T>* res, const SparseMatrix<Real2>& m) const
+    {
+        //res->resize(rowSize(), m.colSize());
+        for (LineConstIterator itl = begin(), itlend=end(); itl!=itlend; ++itl)
+        {
+            const int this_line = itl->first;
+            for (LElementConstIterator ite = itl->second.begin(), iteend=itl->second.end(); ite!=iteend; ++ite)
+            {
+                Real v = ite->second;
+                const typename SparseMatrix<Real2>::Line& ml = m[ite->first];
+                for (typename SparseMatrix<Real2>::LElementConstIterator ite2 = ml.begin(), ite2end=ml.end(); ite2!=ite2end; ++ite2)
+                {
+                    Real2 v2 = ite2->second;
+                    const int m_col = ite2->first;
+                    res->add(this_line, m_col, (Real)(v*v2));
+                }
+            }
+        }
+    }
+
     friend std::ostream& operator << (std::ostream& out, const SparseMatrix<T>& v )
     {
         int nx = v.colSize();
