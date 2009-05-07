@@ -50,6 +50,12 @@
                 <property name="name">
                     <cstring>layout6</cstring>
                 </property>
+                <property name="minimumSize">
+                  <size>
+                    <width>200</width>
+                    <height>400</height>
+                  </size>
+                </property>
                 <vbox>
                     <property name="name">
                         <cstring>unnamed</cstring>
@@ -570,7 +576,7 @@
                                     </property>
                                     <property name="minimumSize">
                                         <size>
-                                            <width>120</width>
+                                            <width>20</width>
                                             <height>0</height>
                                         </size>
                                     </property>
