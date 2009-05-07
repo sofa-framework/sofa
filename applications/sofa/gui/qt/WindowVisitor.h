@@ -127,6 +127,9 @@ public slots:
 
 signals:
     void WindowVisitorClosed(bool);
+public:
+
+    QWidget *statsWidget;
 protected:
     static QPixmap *icons[OTHER+1];
 

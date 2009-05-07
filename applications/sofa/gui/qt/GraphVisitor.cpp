@@ -37,6 +37,10 @@
 
 #ifndef SOFA_QT4
 typedef QListViewItem Q3ListViewItem;
+typedef QValueList QList;
+#include <qvaluelist.h>
+#else
+#include <QList>
 #endif
 namespace sofa
 {
@@ -88,6 +92,16 @@ bool GraphVisitor::load(std::string &file)
     //        window->pieChart->setChart(visitorsTime, visitorsTime.size());
     window->setCharts(componentsTime,componentsTimeMax,componentsTimeTotal,
             visitorsTime,visitorsTimeMax,visitorsTimeTotal);
+
+    if (!initSize)
+    {
+        const int sizeLeft = window->graphView->columnWidth(0)+window->graphView->columnWidth(1)+7;
+        QList< int > listSize;
+        listSize << sizeLeft
+                << window->statsWidget->width()-(sizeLeft-window->graphView->width());
+        window->splitterStats->setSizes(listSize);
+        initSize=true;
+    }
     return true;
 }
 
