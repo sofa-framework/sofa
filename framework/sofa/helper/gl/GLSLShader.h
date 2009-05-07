@@ -123,12 +123,21 @@ public:
     void SetMatrix2(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
     void SetMatrix3(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
     void SetMatrix4(GLint location, GLsizei count, GLboolean transpose, const GLfloat *value);
+#ifdef GL_VERSION_2_1
     void SetMatrix2x3(GLint location,GLsizei count,GLboolean transpose, const GLfloat *value);
     void SetMatrix3x2(GLint location,GLsizei count,GLboolean transpose, const GLfloat *value);
     void SetMatrix2x4(GLint location,GLsizei count,GLboolean transpose, const GLfloat *value);
     void SetMatrix4x2(GLint location,GLsizei count,GLboolean transpose, const GLfloat *value);
     void SetMatrix3x4(GLint location,GLsizei count,GLboolean transpose, const GLfloat *value);
     void SetMatrix4x3(GLint location,GLsizei count,GLboolean transpose, const GLfloat *value);
+#else
+    void SetMatrix2x3(GLint location,GLsizei count,GLboolean transpose, const GLfloat *value) { std::cout << "SetMatrix2x3 not supported ." << std::endl;}
+    void SetMatrix3x2(GLint location,GLsizei count,GLboolean transpose, const GLfloat *value) { std::cout << "SetMatrix3x2 not supported ." << std::endl;}
+    void SetMatrix2x4(GLint location,GLsizei count,GLboolean transpose, const GLfloat *value) { std::cout << "SetMatrix2x4 not supported ." << std::endl;};
+    void SetMatrix4x2(GLint location,GLsizei count,GLboolean transpose, const GLfloat *value) { std::cout << "SetMatrix4x2 not supported ." << std::endl;};
+    void SetMatrix3x4(GLint location,GLsizei count,GLboolean transpose, const GLfloat *value) { std::cout << "SetMatrix3x4 not supported ." << std::endl;};
+    void SetMatrix4x3(GLint location,GLsizei count,GLboolean transpose, const GLfloat *value) { std::cout << "SetMatrix4x3 not supported ." << std::endl;};
+#endif
     /// @}
 
 

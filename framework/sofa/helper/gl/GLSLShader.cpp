@@ -249,13 +249,15 @@ void GLSLShader::SetFloatVector4(GLint variable, GLsizei count, const float *val
 void GLSLShader::SetMatrix2(GLint variable, GLsizei count, GLboolean transpose, const GLfloat *value) { if (variable!=-1) glUniformMatrix2fv(variable, count, transpose, value);   }
 void GLSLShader::SetMatrix3(GLint variable, GLsizei count, GLboolean transpose, const GLfloat *value) { if (variable!=-1) glUniformMatrix3fv(variable, count, transpose, value);   }
 void GLSLShader::SetMatrix4(GLint variable, GLsizei count, GLboolean transpose, const GLfloat *value) { if (variable!=-1) glUniformMatrix4fv(variable, count, transpose, value);   }
+
+#ifdef GL_VERSION_2_1
 void GLSLShader::SetMatrix2x3(GLint variable,GLsizei count,GLboolean transpose, const GLfloat *value) { if (variable!=-1) glUniformMatrix2x3fv(variable, count, transpose, value);   }
 void GLSLShader::SetMatrix3x2(GLint variable,GLsizei count,GLboolean transpose, const GLfloat *value) { if (variable!=-1) glUniformMatrix3x2fv(variable, count, transpose, value);   }
 void GLSLShader::SetMatrix2x4(GLint variable,GLsizei count,GLboolean transpose, const GLfloat *value) { if (variable!=-1) glUniformMatrix2x4fv(variable, count, transpose, value);   }
 void GLSLShader::SetMatrix4x2(GLint variable,GLsizei count,GLboolean transpose, const GLfloat *value) { if (variable!=-1) glUniformMatrix4x2fv(variable, count, transpose, value);   }
 void GLSLShader::SetMatrix3x4(GLint variable,GLsizei count,GLboolean transpose, const GLfloat *value) { if (variable!=-1) glUniformMatrix3x4fv(variable, count, transpose, value);   }
 void GLSLShader::SetMatrix4x3(GLint variable,GLsizei count,GLboolean transpose, const GLfloat *value) { if (variable!=-1) glUniformMatrix4x3fv(variable, count, transpose, value);   }
-
+#endif
 
 // These 2 functions turn on and off our shader
 void GLSLShader::TurnOn()	{ if (m_hProgramObject) glUseProgramObjectARB(m_hProgramObject); }
