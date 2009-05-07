@@ -325,7 +325,6 @@ void RigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const type
 
     if (!(maskTo->isInUse()) )
     {
-        maskFrom->setInUse(false);
         switch (repartition.getValue().size())
         {
         case 0:
@@ -481,7 +480,7 @@ void RigidMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const type
 
     if ( !(maskTo->isInUse()) )
     {
-        //maskFrom->setInUse(false);
+        maskFrom->setInUse(false);
         switch(repartition.getValue().size())
         {
         case 0 :

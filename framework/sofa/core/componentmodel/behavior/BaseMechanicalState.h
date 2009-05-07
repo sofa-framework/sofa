@@ -309,12 +309,17 @@ public:
             activated = a;
         }
 
-        /// Test if the mask is active.
+        /// Test if the mask can be used
         bool isInUse() const
         {
             return activated && inUse;
         }
 
+        /// Test if the mask is active.
+        bool isActive() const
+        {
+            return activated;
+        }
         void clear() {indices.clear(); inUse=true; activated=true;}
 
     protected:

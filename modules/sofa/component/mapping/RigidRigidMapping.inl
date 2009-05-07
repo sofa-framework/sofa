@@ -247,7 +247,6 @@ void RigidRigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& childVeloc
 
     if ( !(maskTo->isInUse()) )
     {
-        maskFrom->setInUse(false);
         switch (repartition.getValue().size())
         {
         case 0:
