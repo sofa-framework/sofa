@@ -66,7 +66,7 @@ typedef QListViewItem Q3ListViewItem;
 class GraphVisitor
 {
 public:
-    GraphVisitor(WindowVisitor *w) { window=w; graph=w->graphView; totalTimeMax=-1;}
+    GraphVisitor(WindowVisitor *w) { window=w; graph=w->graphView; totalTimeMax=-1; initSize=false;}
     Q3ListViewItem *addNode(Q3ListViewItem *parent,Q3ListViewItem *elementAbove, std::string info);
     Q3ListViewItem *addComment(Q3ListViewItem *element, Q3ListViewItem *elementAbove, std::string comment);
     void addInformation(Q3ListViewItem *element, std::string name, std::string info);
@@ -104,6 +104,8 @@ protected:
     std::vector< dataTime > visitorsTimeMax;
 
     std::vector< std::string > visitedNode;
+
+    bool initSize;
 };
 }
 }

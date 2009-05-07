@@ -126,14 +126,12 @@ WindowVisitor::WindowVisitor()
     icons[OTHER]   = new QPixmap(*img[OTHER]  );
 
 #ifdef SOFA_QT4
-    QWidget *statsWidget=new QWidget(splitterStats);
+    statsWidget=new QWidget(splitterStats);
 #else
-    QWidget *statsWidget=new QWidget(splitterStats);
+    statsWidget=new QWidget(splitterStats);
 #endif
 
     QGridLayout *statsLayout=new QGridLayout(statsWidget);
-
-
 
     typeOfCharts = new QComboBox(statsWidget);
     QStringList list;
@@ -155,6 +153,8 @@ WindowVisitor::WindowVisitor()
     statsLayout->addWidget(typeOfCharts,0,0);
     statsLayout->addWidget(chartsComponent,1,0);
     statsLayout->addWidget(chartsVisitor,2,0);
+
+
 
     connect(typeOfCharts, SIGNAL(activated(int)), this, SLOT(setCurrentCharts(int)));
 }
