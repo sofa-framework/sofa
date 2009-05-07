@@ -38,7 +38,6 @@
 #ifndef SOFA_QT4
 #include <qvaluelist.h>
 typedef QListViewItem Q3ListViewItem;
-typedef QValueList QList;
 #else
 #include <QList>
 #endif
@@ -96,7 +95,11 @@ bool GraphVisitor::load(std::string &file)
     if (!initSize)
     {
         const int sizeLeft = window->graphView->columnWidth(0)+window->graphView->columnWidth(1)+7;
+#ifdef SOFA_QT4
         QList< int > listSize;
+#else
+        QValueList< int > listSize;
+#endif
         listSize << sizeLeft
                 << window->statsWidget->width()-(sizeLeft-window->graphView->width());
         window->splitterStats->setSizes(listSize);
