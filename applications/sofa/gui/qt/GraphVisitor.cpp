@@ -36,9 +36,9 @@
 #include <algorithm>
 
 #ifndef SOFA_QT4
+#include <qvaluelist.h>
 typedef QListViewItem Q3ListViewItem;
 typedef QValueList QList;
-#include <qvaluelist.h>
 #else
 #include <QList>
 #endif
