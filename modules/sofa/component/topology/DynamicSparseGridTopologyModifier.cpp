@@ -41,7 +41,6 @@ int DynamicSparseGridTopologyModifierClass = core::RegisterObject ( "Hexahedron 
         .add< DynamicSparseGridTopologyModifier >();
 
 
-
 void DynamicSparseGridTopologyModifier::init()
 {
     HexahedronSetTopologyModifier::init();
@@ -50,8 +49,8 @@ void DynamicSparseGridTopologyModifier::init()
     {
         serr << "ERROR in DynamicSparseGridTopologyModifier::init(): DynamicSparseGridTopologyContainer was not found !" << sendl;
     }
+    everRenumbered = false;
 }
-
 
 
 //TODO// find a solution for this case !!!! Modifier can not access to the DOF and can not compute the indices of the added hexas.
@@ -83,7 +82,17 @@ void DynamicSparseGridTopologyModifier::addHexahedraProcess ( const sofa::helper
     m_DynContainer->idxInRegularGrid.endEdit();
 }
 
-void DynamicSparseGridTopologyModifier::removeHexahedraWarning ( sofa::helper::vector<unsigned int> &hexahedra )
+
+void DynamicSparseGridTopologyModifier::removeHexahedraProcess( const sofa::helper::vector<unsigned int> &indices, const bool removeIsolatedItems)
+{
+    if( !everRenumbered) renumberAttributes( indices);
+    everRenumbered = false;
+
+    HexahedronSetTopologyModifier::removeHexahedraProcess( indices, removeIsolatedItems);
+}
+
+
+void DynamicSparseGridTopologyModifier::renumberAttributes( const sofa::helper::vector<unsigned int> &hexahedra )
 {
     helper::vector<BaseMeshTopology::HexaID>& iirg = *m_DynContainer->idxInRegularGrid.beginEdit();
 
@@ -120,8 +129,8 @@ void DynamicSparseGridTopologyModifier::removeHexahedraWarning ( sofa::helper::v
 
     m_DynContainer->idInRegularGrid2IndexInTopo.endEdit();
     m_DynContainer->idxInRegularGrid.endEdit();
-    HexahedronSetTopologyModifier::removeHexahedraWarning ( hexahedra );
 
+    everRenumbered = true;
 }
 
 } // namespace topology

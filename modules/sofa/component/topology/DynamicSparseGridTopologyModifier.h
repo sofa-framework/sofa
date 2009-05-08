@@ -65,15 +65,24 @@ public:
     */
     virtual void addHexahedraProcess ( const sofa::helper::vector< Hexahedron > &hexahedra, const sofa::helper::vector< unsigned int> &indices );
 
-    /** \brief Sends a message to warn that some hexahedra are about to be deleted.
+    /** \brief Remove a subset of hexahedra
     *
-    * \sa removeHexahedraProcess
+    * Elements corresponding to these points are removed form the mechanical object's state vectors.
     *
-    * Important : parameter indices is not const because it is actually sorted from the highest index to the lowest one.
+    * Important : some structures might need to be warned BEFORE the points are actually deleted, so always use method removeEdgesWarning before calling removeEdgesProcess.
+    * \sa removeHexahedraWarning
+    * @param removeIsolatedItems if true remove isolated quads, edges and vertices
     */
-    virtual void removeHexahedraWarning ( sofa::helper::vector<unsigned int> &hexahedra );
+    virtual void removeHexahedraProcess(const sofa::helper::vector<unsigned int>&indices, const bool removeIsolatedItems = false);
+
+    /** \brief Renumber the attributes of this class
+    *
+    * This method is automatically called in removeHexahedraProcess() if the user has not ever called it.
+    */
+    void renumberAttributes( const sofa::helper::vector<unsigned int> &hexahedra );
 
 private:
+    bool everRenumbered;
     DynamicSparseGridTopologyContainer* m_DynContainer;
 };
 
