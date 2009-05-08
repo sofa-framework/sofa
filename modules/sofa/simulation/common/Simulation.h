@@ -110,6 +110,10 @@ public:
 
     /// Number of mechanical steps within an animation step
     Data<unsigned> numMechSteps;
+
+    /// Number of steps of simulation
+    unsigned nbSteps;
+
     sofa::core::objectmodel::DataFileName gnuplotDirectory;
 
     helper::vector< Node* > instruments;
