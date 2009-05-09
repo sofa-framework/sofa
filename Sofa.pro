@@ -61,6 +61,17 @@ contains(DEFINES,SOFA_HAVE_COLLADADOM){
 	SUBDIRS -= extlibs/LML
 }
 
+#FISHPACK
+contains(DEFINES,SOFA_HAVE_FISHPACK){
+	SUBDIRS += extlibs/fftpack
+	SUBDIRS += extlibs/fishpack
+}
+
+# MUPARSER
+contains(DEFINES,MUPARSER){
+	SUBDIRS += extlibs/muparser
+}
+
 SUBDIRS += framework
 SUBDIRS += modules
 SUBDIRS += applications
