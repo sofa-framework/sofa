@@ -72,7 +72,6 @@ void StiffSpringForceField<DataTypes>::addSpringForce( double& potentialEnergy, 
         f2[b]-=force;
         this->mstate2->forceMask.insertEntry(b);
 
-
         Mat& m = this->dfdx[i];
         Real tgt = forceIntensity * inverseLength;
         for( int j=0; j<N; ++j )

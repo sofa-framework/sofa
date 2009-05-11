@@ -99,6 +99,8 @@ MechanicalObject<DataTypes>::MechanicalObject()
     this->addField(f_Vfree, "free_velocity");
     this->addField(f_X0,"rest_position");
 
+    //Desactivate the Filter. MechanicalObjects created during the collision response must not use the filter as it will be empty
+    this->forceMask.activate(false);
 
     f_X->init();
     f_V->init();

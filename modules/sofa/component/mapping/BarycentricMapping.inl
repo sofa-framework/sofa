@@ -1307,6 +1307,7 @@ void BarycentricMapping<BasicMapping>::applyJ ( typename Out::VecDeriv& out, con
 template <class In, class Out>
 void BarycentricMapperMeshTopology<In,Out>::applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
+
     out.resize ( map1d.size() +map2d.size() +map3d.size() );
     const sofa::core::componentmodel::topology::BaseMeshTopology::SeqLines& lines = this->topology->getLines();
     const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles& triangles = this->topology->getTriangles();
@@ -1318,92 +1319,194 @@ void BarycentricMapperMeshTopology<In,Out>::applyJ ( typename Out::VecDeriv& out
     const sofa::core::componentmodel::topology::BaseMeshTopology::SeqCubes& cubes = this->topology->getCubes();
 #endif
 
-    // 1D elements
+    if ( !(maskTo->isInUse()) )
     {
-        for ( unsigned int i=0; i<map1d.size(); i++ )
+        // 1D elements
         {
-            const Real fx = map1d[i].baryCoords[0];
-            int index = map1d[i].in_index;
+            for ( unsigned int i=0; i<map1d.size(); i++ )
             {
-                const sofa::core::componentmodel::topology::BaseMeshTopology::Line& line = lines[index];
-                out[i] = in[line[0]] * ( 1-fx )
-                        + in[line[1]] * fx;
+                const Real fx = map1d[i].baryCoords[0];
+                int index = map1d[i].in_index;
+                {
+                    const sofa::core::componentmodel::topology::BaseMeshTopology::Line& line = lines[index];
+                    out[i] = in[line[0]] * ( 1-fx )
+                            + in[line[1]] * fx;
+                }
+            }
+        }
+        // 2D elements
+        {
+            const int i0 = map1d.size();
+            const int c0 = triangles.size();
+            for ( unsigned int i=0; i<map2d.size(); i++ )
+            {
+                const Real fx = map2d[i].baryCoords[0];
+                const Real fy = map2d[i].baryCoords[1];
+                int index = map2d[i].in_index;
+                if ( index<c0 )
+                {
+                    const sofa::core::componentmodel::topology::BaseMeshTopology::Triangle& triangle = triangles[index];
+                    out[i+i0] = in[triangle[0]] * ( 1-fx-fy )
+                            + in[triangle[1]] * fx
+                            + in[triangle[2]] * fy;
+                }
+                else
+                {
+                    const sofa::core::componentmodel::topology::BaseMeshTopology::Quad& quad = quads[index-c0];
+                    out[i+i0] = in[quad[0]] * ( ( 1-fx ) * ( 1-fy ) )
+                            + in[quad[1]] * ( ( fx ) * ( 1-fy ) )
+                            + in[quad[3]] * ( ( 1-fx ) * ( fy ) )
+                            + in[quad[2]] * ( ( fx ) * ( fy ) );
+                }
+            }
+        }
+        // 3D elements
+        {
+            const int i0 = map1d.size() + map2d.size();
+            const int c0 = tetras.size();
+            for ( unsigned int i=0; i<map3d.size(); i++ )
+            {
+                const Real fx = map3d[i].baryCoords[0];
+                const Real fy = map3d[i].baryCoords[1];
+                const Real fz = map3d[i].baryCoords[2];
+                int index = map3d[i].in_index;
+                if ( index<c0 )
+                {
+                    const sofa::core::componentmodel::topology::BaseMeshTopology::Tetra& tetra = tetras[index];
+                    out[i+i0] = in[tetra[0]] * ( 1-fx-fy-fz )
+                            + in[tetra[1]] * fx
+                            + in[tetra[2]] * fy
+                            + in[tetra[3]] * fz;
+                }
+                else
+                {
+#ifdef SOFA_NEW_HEXA
+                    const sofa::core::componentmodel::topology::BaseMeshTopology::Hexa& cube = cubes[index-c0];
+#else
+                    const sofa::core::componentmodel::topology::BaseMeshTopology::Cube& cube = cubes[index-c0];
+#endif
+                    out[i+i0] = in[cube[0]] * ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) )
+                            + in[cube[1]] * ( ( fx ) * ( 1-fy ) * ( 1-fz ) )
+#ifdef SOFA_NEW_HEXA
+                            + in[cube[3]] * ( ( 1-fx ) * ( fy ) * ( 1-fz ) )
+                            + in[cube[2]] * ( ( fx ) * ( fy ) * ( 1-fz ) )
+#else
+                            + in[cube[2]] * ( ( 1-fx ) * ( fy ) * ( 1-fz ) )
+                            + in[cube[3]] * ( ( fx ) * ( fy ) * ( 1-fz ) )
+#endif
+                            + in[cube[4]] * ( ( 1-fx ) * ( 1-fy ) * ( fz ) )
+                            + in[cube[5]] * ( ( fx ) * ( 1-fy ) * ( fz ) )
+#ifdef SOFA_NEW_HEXA
+                            + in[cube[7]] * ( ( 1-fx ) * ( fy ) * ( fz ) )
+                            + in[cube[6]] * ( ( fx ) * ( fy ) * ( fz ) );
+#else
+                            + in[cube[6]] * ( ( 1-fx ) * ( fy ) * ( fz ) )
+                            + in[cube[7]] * ( ( fx ) * ( fy ) * ( fz ) );
+#endif
+                }
             }
         }
     }
-    // 2D elements
+    else
     {
-        const int i0 = map1d.size();
-        const int c0 = triangles.size();
-        for ( unsigned int i=0; i<map2d.size(); i++ )
-        {
-            const Real fx = map2d[i].baryCoords[0];
-            const Real fy = map2d[i].baryCoords[1];
-            int index = map2d[i].in_index;
-            if ( index<c0 )
-            {
-                const sofa::core::componentmodel::topology::BaseMeshTopology::Triangle& triangle = triangles[index];
-                out[i+i0] = in[triangle[0]] * ( 1-fx-fy )
-                        + in[triangle[1]] * fx
-                        + in[triangle[2]] * fy;
-            }
-            else
-            {
-                const sofa::core::componentmodel::topology::BaseMeshTopology::Quad& quad = quads[index-c0];
-                out[i+i0] = in[quad[0]] * ( ( 1-fx ) * ( 1-fy ) )
-                        + in[quad[1]] * ( ( fx ) * ( 1-fy ) )
-                        + in[quad[3]] * ( ( 1-fx ) * ( fy ) )
-                        + in[quad[2]] * ( ( fx ) * ( fy ) );
-            }
-        }
-    }
-    // 3D elements
-    {
-        const int i0 = map1d.size() + map2d.size();
-        const int c0 = tetras.size();
-        for ( unsigned int i=0; i<map3d.size(); i++ )
-        {
-            const Real fx = map3d[i].baryCoords[0];
-            const Real fy = map3d[i].baryCoords[1];
-            const Real fz = map3d[i].baryCoords[2];
-            int index = map3d[i].in_index;
-            if ( index<c0 )
-            {
-                const sofa::core::componentmodel::topology::BaseMeshTopology::Tetra& tetra = tetras[index];
-                out[i+i0] = in[tetra[0]] * ( 1-fx-fy-fz )
-                        + in[tetra[1]] * fx
-                        + in[tetra[2]] * fy
-                        + in[tetra[3]] * fz;
-            }
-            else
-            {
-#ifdef SOFA_NEW_HEXA
-                const sofa::core::componentmodel::topology::BaseMeshTopology::Hexa& cube = cubes[index-c0];
-#else
-                const sofa::core::componentmodel::topology::BaseMeshTopology::Cube& cube = cubes[index-c0];
-#endif
-                out[i+i0] = in[cube[0]] * ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) )
-                        + in[cube[1]] * ( ( fx ) * ( 1-fy ) * ( 1-fz ) )
-#ifdef SOFA_NEW_HEXA
-                        + in[cube[3]] * ( ( 1-fx ) * ( fy ) * ( 1-fz ) )
-                        + in[cube[2]] * ( ( fx ) * ( fy ) * ( 1-fz ) )
-#else
-                        + in[cube[2]] * ( ( 1-fx ) * ( fy ) * ( 1-fz ) )
-                        + in[cube[3]] * ( ( fx ) * ( fy ) * ( 1-fz ) )
-#endif
-                        + in[cube[4]] * ( ( 1-fx ) * ( 1-fy ) * ( fz ) )
-                        + in[cube[5]] * ( ( fx ) * ( 1-fy ) * ( fz ) )
-#ifdef SOFA_NEW_HEXA
-                        + in[cube[7]] * ( ( 1-fx ) * ( fy ) * ( fz ) )
-                        + in[cube[6]] * ( ( fx ) * ( fy ) * ( fz ) );
-#else
-                        + in[cube[6]] * ( ( 1-fx ) * ( fy ) * ( fz ) )
-                        + in[cube[7]] * ( ( fx ) * ( fy ) * ( fz ) );
-#endif
-            }
-        }
-    }
+        typedef core::componentmodel::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+        const ParticleMask::InternalStorage &indices=maskTo->getEntries();
 
+        const unsigned int sizeMap1d=map1d.size();
+        const unsigned int sizeMap2d=map2d.size();
+        const unsigned int sizeMap3d=map3d.size();
+
+        const unsigned int idxStart1=sizeMap1d;
+        const unsigned int idxStart2=sizeMap1d+sizeMap2d;
+        const unsigned int idxStart3=sizeMap1d+sizeMap2d+sizeMap3d;
+
+        ParticleMask::InternalStorage::const_iterator it;
+        for (it=indices.begin(); it!=indices.end(); it++)
+        {
+            const unsigned int i=(*it);
+            // 1D elements
+            if (i < idxStart1)
+            {
+                const Real fx = map1d[i].baryCoords[0];
+                int index = map1d[i].in_index;
+                {
+                    const sofa::core::componentmodel::topology::BaseMeshTopology::Line& line = lines[index];
+                    out[i] = in[line[0]] * ( 1-fx )
+                            + in[line[1]] * fx;
+                }
+            }
+            // 2D elements
+            else if (i < idxStart2)
+            {
+                const int i0 = idxStart1;
+                const int c0 = triangles.size();
+
+                const Real fx = map2d[i-i0].baryCoords[0];
+                const Real fy = map2d[i-i0].baryCoords[1];
+                int index = map2d[i-i0].in_index;
+
+                if ( index<c0 )
+                {
+                    const sofa::core::componentmodel::topology::BaseMeshTopology::Triangle& triangle = triangles[index];
+                    out[i] = in[triangle[0]] * ( 1-fx-fy )
+                            + in[triangle[1]] * fx
+                            + in[triangle[2]] * fy;
+                }
+                else
+                {
+                    const sofa::core::componentmodel::topology::BaseMeshTopology::Quad& quad = quads[index-c0];
+                    out[i] = in[quad[0]] * ( ( 1-fx ) * ( 1-fy ) )
+                            + in[quad[1]] * ( ( fx ) * ( 1-fy ) )
+                            + in[quad[3]] * ( ( 1-fx ) * ( fy ) )
+                            + in[quad[2]] * ( ( fx ) * ( fy ) );
+                }
+            }
+            // 3D elements
+            else if (i < idxStart3)
+            {
+                const int i0 = idxStart2;
+                const int c0 = tetras.size();
+                const Real fx = map3d[i-i0].baryCoords[0];
+                const Real fy = map3d[i-i0].baryCoords[1];
+                const Real fz = map3d[i-i0].baryCoords[2];
+                int index = map3d[i-i0].in_index;
+                if ( index<c0 )
+                {
+                    const sofa::core::componentmodel::topology::BaseMeshTopology::Tetra& tetra = tetras[index];
+                    out[i] = in[tetra[0]] * ( 1-fx-fy-fz )
+                            + in[tetra[1]] * fx
+                            + in[tetra[2]] * fy
+                            + in[tetra[3]] * fz;
+                }
+                else
+                {
+#ifdef SOFA_NEW_HEXA
+                    const sofa::core::componentmodel::topology::BaseMeshTopology::Hexa& cube = cubes[index-c0];
+#else
+                    const sofa::core::componentmodel::topology::BaseMeshTopology::Cube& cube = cubes[index-c0];
+#endif
+                    out[i] = in[cube[0]] * ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) )
+                            + in[cube[1]] * ( ( fx ) * ( 1-fy ) * ( 1-fz ) )
+#ifdef SOFA_NEW_HEXA
+                            + in[cube[3]] * ( ( 1-fx ) * ( fy ) * ( 1-fz ) )
+                            + in[cube[2]] * ( ( fx ) * ( fy ) * ( 1-fz ) )
+#else
+                            + in[cube[2]] * ( ( 1-fx ) * ( fy ) * ( 1-fz ) )
+                            + in[cube[3]] * ( ( fx ) * ( fy ) * ( 1-fz ) )
+#endif
+                            + in[cube[4]] * ( ( 1-fx ) * ( 1-fy ) * ( fz ) )
+                            + in[cube[5]] * ( ( fx ) * ( 1-fy ) * ( fz ) )
+#ifdef SOFA_NEW_HEXA
+                            + in[cube[7]] * ( ( 1-fx ) * ( fy ) * ( fz ) )
+                            + in[cube[6]] * ( ( fx ) * ( fy ) * ( fz ) );
+#else
+                            + in[cube[6]] * ( ( 1-fx ) * ( fy ) * ( fz ) )
+                            + in[cube[7]] * ( ( fx ) * ( fy ) * ( fz ) );
+#endif
+                }
+            }
+        }
+    }
 }
 
 template <class In, class Out>

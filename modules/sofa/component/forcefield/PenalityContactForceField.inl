@@ -88,7 +88,6 @@ void PenalityContactForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2, 
     f1.resize(x1.size());
     f2.resize(x2.size());
 
-
     for (unsigned int i=0; i<contacts.getValue().size(); i++)
     {
         Contact& c = (*contacts.beginEdit())[i];
@@ -101,7 +100,6 @@ void PenalityContactForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2, 
 
             f1[c.m1]+=force;
             this->mask1->insertEntry(c.m1);
-
             f2[c.m2]-=force;
             this->mask2->insertEntry(c.m2);
         }
