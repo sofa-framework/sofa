@@ -67,6 +67,8 @@ public:
     virtual void bwdDraw(Pass);
     virtual void fwdDraw(Pass);
 
+    void setUsage(unsigned int usage) { _usage = usage; }
+
     // handle topological changes
     virtual void handleTopologyChange();
 
@@ -77,7 +79,7 @@ protected:
     // memory index of the attribute into the graphics memory
     GLuint _index;
 
-    unsigned int usage;
+    unsigned int _usage;
 
     Data<ResizableExtVector<DataTypes> > value;
 
