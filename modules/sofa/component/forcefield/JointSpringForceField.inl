@@ -75,7 +75,22 @@ template <class DataTypes>
 void JointSpringForceField<DataTypes>::init()
 {
     this->Inherit::init();
+
+    const VecCoord& x1= *this->mstate1->getX();
+    const VecCoord& x2= *this->mstate2->getX();
+    sofa::helper::vector<Spring> &springsVector=*(springs.beginEdit());
+    for (unsigned int i=0; i<springs.getValue().size(); ++i)
+    {
+        Spring &s=springsVector[i];
+        if (s.initTrans == Vector())
+        {
+            s.initTrans = x2[s.m2].getCenter() - x1[s.m1].getCenter();
+            s.initRot   = x2[s.m2].getOrientation()*x1[s.m1].getOrientation().inverse();
+        }
+    }
+    springs.endEdit();
 }
+
 
 template<class DataTypes>
 void JointSpringForceField<DataTypes>::addSpringForce( double& /*potentialEnergy*/, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int , /*const*/ Spring& spring)

@@ -239,7 +239,7 @@ public:
             out<<"R_LIM_Y "<<s.limitAngles[2]<<" "<<s.limitAngles[3]<<"  ";
         if (s.limitAngles[4]!=-100000 || s.limitAngles[5] != 100000)
             out<<"R_LIM_Z "<<s.limitAngles[4]<<" "<<s.limitAngles[5]<<"  ";
-        if (s.initTrans!= Vector())
+        if (s.initTrans!= Vector(0,0,0))
             out<<"REST_T "<<s.initTrans<<"  ";
         if (s.initRot[3]!= 1)
             out<<"REST_R "<<s.initRot<<"  ";
@@ -342,9 +342,14 @@ public:
     void addSpring(int m1, int m2, Real softKst, Real hardKst, Real softKsr, Real hardKsr, Real blocKsr, Real axmin, Real axmax, Real aymin, Real aymax, Real azmin, Real azmax, Real kd)
     {
         Spring s(m1,m2,softKst,hardKst,softKsr,hardKsr, blocKsr, axmin, axmax, aymin, aymax, azmin, azmax, kd);
-        s.initTrans = Vector(0,0,0);
-        s.initRot = Quat(0,0,0,1);
 
+        const VecCoord& x1= *this->mstate1->getX();
+        const VecCoord& x2= *this->mstate2->getX();
+
+        s.initTrans = x2[m2].getCenter() - x1[m1].getCenter();
+        s.initRot = x2[m2].getOrientation()*x1[m1].getOrientation().inverse();
+
+        std::cerr << s.initTrans << " =T  : " << s.initRot << " = R\n";
         springs.beginEdit()->push_back(s);
         springs.endEdit();
     }
