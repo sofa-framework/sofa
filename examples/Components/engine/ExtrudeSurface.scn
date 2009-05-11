@@ -1,0 +1,10 @@
+
+<Node name="root" dt="0.02" showBehaviorModels="0" showCollisionModels="1" showMappings="0" showForceFields="0" >
+	<MeshLoader name="meshLoader"  filename="mesh/liver.obj"/>
+	<MechanicalObject />
+	<TriangleSetTopologyContainer />
+	<TrianglesInSphereROI name="surface1" centers="2 4 0" radii="0.88" drawSize="0" />
+	<ExtrudeSurface surfaceVertices="@meshLoader.vertices" surfaceTriangles="@surface1.indices" />
+	
+	<OglModel filename="mesh/liver.obj"/>
+</Node>
