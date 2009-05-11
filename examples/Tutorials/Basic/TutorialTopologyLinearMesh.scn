@@ -16,7 +16,7 @@
     <EulerImplicitSolver name="EulerImplicit"/>
     <FixedConstraint template="Vec3d" name="Fixed dof" indices="0"/>
     <MeshTopology name="Static Mesh" edges="0 1  1 2  2 3  3 4  4 5 "/>
-    <MeshSpringForceField template="Vec3d" name="springs"/>
+    <MeshSpringForceField template="Vec3d" name="springs" stiffness="100" damping="1"/>
   </Node>
   
   <Node name="Pendulum No Mesh"> 
@@ -26,6 +26,6 @@
     <EulerImplicitSolver name="EulerImplicit"/>
     <FixedConstraint template="Vec3d" name="Fixed dof" indices="0"/>
     <MeshTopology name="Static Mesh"/>
-    <MeshSpringForceField template="Vec3d" name="springs"/>
+    <MeshSpringForceField template="Vec3d" name="springs" stiffness="100" damping="1"/>
   </Node>
 </Node>

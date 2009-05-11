@@ -28,7 +28,7 @@
       <EdgeSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"/>
       <EdgeSetTopologyAlgorithms template="Vec3d" name="TopoAlgo"/>
       <Triangle2EdgeTopologicalMapping name="Mapping" object1="../../Container" object2="Container"/>
-      <MeshSpringForceField template="Vec3d"/>
+      <MeshSpringForceField template="Vec3d" stiffness="100" damping="1"/>
 			
       <Node name="Visu">
         <OglModel template="ExtVec3f" name="Visual" material="Default Diffuse 1 0 0 1 1 Ambient 1 0 0 0.2 1 Specular 0 0 0 1 1 Emissive 0 0 0 1 1 Shininess 0 45"/>
