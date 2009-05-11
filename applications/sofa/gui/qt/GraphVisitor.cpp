@@ -36,9 +36,11 @@
 #include <algorithm>
 
 #ifndef SOFA_QT4
+#include <qsplitter.h>
 #include <qvaluelist.h>
 typedef QListViewItem Q3ListViewItem;
 #else
+#include <QSplitter>
 #include <QList>
 #endif
 namespace sofa
