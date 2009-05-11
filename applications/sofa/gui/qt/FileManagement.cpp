@@ -26,6 +26,8 @@
 ******************************************************************************/
 
 #include "FileManagement.h"
+#include <iostream>
+
 namespace sofa
 {
 namespace gui
@@ -36,6 +38,10 @@ namespace qt
 
 #ifndef SOFA_QT4
 typedef QFileDialog Q3FileDialog;
+#include <qdir.h>
+#include <qfileinfo.h>
+#else
+#include <QDir>
 #endif
 
 QString getExistingDirectory ( QWidget* parent, const QString & dir, const char * name, const QString & caption)
@@ -43,7 +49,7 @@ QString getExistingDirectory ( QWidget* parent, const QString & dir, const char 
 #ifdef SOFA_QT4
     QFileDialog::Options options = QFileDialog::ShowDirsOnly;
     //	options |= QFileDialog::DontUseNativeDialog;
-    options |= QFileDialog::DontUseSheet;
+    options |= QFileDialog::QFileDialog::DontUseSheet;
     return QFileDialog::getExistingDirectory ( parent, name?QString(name):caption, dir, options );
 #else
     return Q3FileDialog::getExistingDirectory( dir, parent, name, caption );
@@ -73,6 +79,90 @@ QString getSaveFileName ( QWidget* parent, const QString & startWith, const QStr
     return Q3FileDialog::getSaveFileName ( startWith, filter, parent, name, caption, selectedFilter );
 #endif
 };
+
+void getFilesInDirectory( const QString &p, std::vector< QString > &files, bool recursive, const std::vector< QString > &filter )
+{
+    QString path=p;
+    if (path.endsWith("/"))
+    {
+        int slash=path.find('/',-1);
+        path.truncate(slash);
+    }
+    else if (path.endsWith("\\"))
+    {
+        int slash=path.find('\\',-1);
+        path.truncate(slash);
+    }
+
+    QDir d(path);
+
+    d.setFilter( QDir::Dirs | QDir::Hidden | QDir::NoSymLinks );
+
+    std::vector< QString > subDir;
+
+    const QFileInfoList &listDirectories =
+#ifdef SOFA_QT4
+        d.entryInfoList();
+    QStringList filters;
+    for (unsigned int i=0; i<filter.size(); ++i)
+        filters << filter[i];
+
+    d.setNameFilters(filters);
+    for (int j = 0; j < listDirectories.size(); ++j)
+    {
+        QFileInfo fileInfo=listDirectories.at(j);
+#else
+        *(d.entryInfoList());
+    QString filters;
+    for (unsigned int i=0; i<filter.size(); ++i)
+        filters+=  filter[i] + QString(" ");
+
+    d.setNameFilter(filters);
+    QFileInfoListIterator itDir( listDirectories );
+    while ( (itDir.current()) != 0 )
+    {
+
+        QFileInfo fileInfo=*(itDir.current());
+#endif
+        subDir.push_back(fileInfo.fileName());
+#ifndef SOFA_QT4
+        ++itDir;
+#endif
+    }
+
+    d.setFilter( QDir::Files | QDir::Hidden | QDir::NoSymLinks );
+
+    const QFileInfoList &listFiles =
+#ifdef SOFA_QT4
+        d.entryInfoList();
+    for (int j = 0; j < listFiles.size(); ++j)
+    {
+        QFileInfo fileInfo=listFiles.at(j);
+#else
+        *(d.entryInfoList());
+    QFileInfoListIterator itFile( listFiles );
+    while ( (itFile.current()) != 0 )
+    {
+        QFileInfo fileInfo=*(itFile.current());
+#endif
+        files.push_back(path+QString("/")+fileInfo.fileName());
+#ifndef SOFA_QT4
+        ++itFile;
+#endif
+    }
+
+    if (recursive)
+    {
+        for (unsigned int i=0; i<subDir.size(); ++i)
+        {
+            if (subDir[i].left(1) == QString(".")) continue;
+            if (subDir[i] == QString("OBJ"))       continue;
+
+            QString nextDir=path+QString("/")+subDir[i];
+            getFilesInDirectory(nextDir, files, recursive, filter);
+        }
+    }
+}
 
 } // namespace qt
 

@@ -159,6 +159,12 @@ SofaModeler::SofaModeler()
     presetPath = examplePath + std::string("Objects/");
     std::string presetFile = std::string("config/preset.ini" );
 
+    //Find all the scene files in examples directory
+    std::vector< QString > filter;
+    const QString path(examplePath.c_str());
+    filter.push_back("*.scn"); filter.push_back("*.xml");
+    sofa::gui::qt::getFilesInDirectory(path, exampleFiles, true, filter);
+
     presetFile = sofa::helper::system::DataRepository.getFile ( presetFile );
 
     //store the kind and the name of the preset
@@ -553,30 +559,14 @@ void SofaModeler::changeComponent(ClassInfo *currentComponent)
     {
         if (it != currentComponent->baseClasses.begin()) text += std::string(", ");
         text += (*it);
-        std::string baseClassName( *it );
-        for (unsigned int i=0; i<baseClassName.size(); ++i)
-        {
-            if (isupper(baseClassName[i])) baseClassName[i] = tolower(baseClassName[i]);
-        }
-        if (baseClassName == "odesolver")            baseClassName="solver";
-        if (baseClassName == "mastersolver")         baseClassName="solver";
-        if (baseClassName == "topologicalmapping")   baseClassName="topology";
-        if (baseClassName == "topologyobject")       baseClassName="topology";
-        if (baseClassName == "collisionmodel")       baseClassName="collision";
-        std::string path=std::string("Components/") + baseClassName + std::string("/") + currentComponent->className + std::string(".scn");
-
-
-        if ( sofa::helper::system::DataRepository.findFile ( path ) )
-            possiblePaths.push_back(sofa::helper::system::DataRepository.getFile ( path ));
     }
-    if (possiblePaths.size() == 0)
+
+    //Find a scene
+    for (unsigned int i=0; i<exampleFiles.size(); ++i)
     {
-        std::string path=std::string("Components/misc/") + currentComponent->className + std::string(".scn");
-
-        if ( sofa::helper::system::DataRepository.findFile ( path ) )
-            possiblePaths.push_back(sofa::helper::system::DataRepository.getFile ( path ));
+        if (exampleFiles[i].findRev(currentComponent->className.c_str()) >= 0 )
+            possiblePaths.push_back(exampleFiles[i].ascii());
     }
-
 
     std::string nameSpace = sofa::core::objectmodel::Base::decodeNamespaceName(currentComponent->creatorList.begin()->second->type());
 
