@@ -79,7 +79,7 @@ public:
     *
     * This method is automatically called in removeHexahedraProcess() if the user has not ever called it.
     */
-    void renumberAttributes( const sofa::helper::vector<unsigned int> &hexahedra );
+    virtual void renumberAttributes( const sofa::helper::vector<unsigned int> &hexahedra );
 
 private:
     bool everRenumbered;
