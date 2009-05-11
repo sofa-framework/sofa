@@ -16,7 +16,7 @@
     <CGLinearSolver name="linear solver" template="GraphScattered" iterations="25" tolerance="1e-09" threshold="1e-09"/>
 
     <MeshTopology name="Static Mesh" fileTopology="mesh/cylinder.msh" />
-    <MeshSpringForceField name="FEM-Bend" template="Vec3d"/>
+    <MeshSpringForceField name="FEM-Bend" template="Vec3d" stiffness="100" damping="1"/>
     <TetrahedronFEMForceField name="FEM" template="Vec3d" method="polar" poissonRatio="0.3" youngModulus="1116" assembling="0"/>
 
     <TetrahedronModel name="Models"/>
@@ -32,7 +32,7 @@
     <CGLinearSolver name="linear solver" template="GraphScattered" iterations="25" tolerance="1e-09" threshold="1e-09"/>
 
     <CylinderGridTopology name="Regular Mesh" n="10 10 10" axis="0 1 0" radius="2" length="10"/>
-    <MeshSpringForceField name="FEM-Bend" template="Vec3d"/>
+    <MeshSpringForceField name="FEM-Bend" template="Vec3d" stiffness="100" damping="1"/>
     <TetrahedronFEMForceField name="FEM" template="Vec3d" method="polar" poissonRatio="0.3" youngModulus="1116" assembling="0"/>
 
     <OglModel name="Visual" template="ExtVec3f" color="blue"/>
@@ -50,7 +50,7 @@
     <TetrahedronSetTopologyModifier name="Topology Modifier"/>
     <TetrahedronSetTopologyAlgorithms name="Topology Algorithms" template="Vec3d"/>
     <TetrahedronSetGeometryAlgorithms name="Geometry Algorithms" template="Vec3d"/>
-    <MeshSpringForceField name="FEM-Bend" template="Vec3d"/>
+    <MeshSpringForceField name="FEM-Bend" template="Vec3d" stiffness="100" damping="1"/>
     <TetrahedronFEMForceField name="FEM" template="Vec3d" method="polar" poissonRatio="0.3" youngModulus="1116" assembling="0"/>
 
     <TetrahedronModel name="Models"/>
