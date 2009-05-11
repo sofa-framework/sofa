@@ -49,7 +49,7 @@ QString getExistingDirectory ( QWidget* parent, const QString & dir, const char 
 #ifdef SOFA_QT4
     QFileDialog::Options options = QFileDialog::ShowDirsOnly;
     //	options |= QFileDialog::DontUseNativeDialog;
-    options |= QFileDialog::QFileDialog::DontUseSheet;
+    options |= QFileDialog::DontUseSheet;
     return QFileDialog::getExistingDirectory ( parent, name?QString(name):caption, dir, options );
 #else
     return Q3FileDialog::getExistingDirectory( dir, parent, name, caption );
