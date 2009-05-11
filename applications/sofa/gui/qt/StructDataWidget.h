@@ -425,25 +425,32 @@ class struct_data_trait < CLASS >
 {
 public:
     typedef CLASS data_type;
-    enum { NVAR = 13 };
+    enum { NVAR = 20 };
     static void set( data_type& /*d*/)
     {
     }
 };
 
-template<class T> STRUCT_DATA_VAR(CLASS, 0, "Index 1", "Index 1", int, m1);
-template<class T> STRUCT_DATA_VAR(CLASS, 1, "Index 2", "Index 2", int, m2);
-template<class T> STRUCT_DATA_VAR(CLASS, 2, "Soft Stiffness Translation", "Soft Ks Trans", typename data_type::Real, softStiffnessTrans);
-template<class T> STRUCT_DATA_VAR(CLASS, 3, "Hard Stiffness Translation", "Hard Ks Trans", typename data_type::Real, hardStiffnessTrans);
-template<class T> STRUCT_DATA_VAR(CLASS, 4, "Soft Stiffness Rotation", "Soft Ks Rot", typename data_type::Real, softStiffnessRot);
-template<class T> STRUCT_DATA_VAR(CLASS, 5, "Hard Stiffness Rotation", "Hard Ks Rot", typename data_type::Real, hardStiffnessRot);
-template<class T> STRUCT_DATA_VAR(CLASS, 6, "Damping", "Kd", typename data_type::Real, kd);
-template<class T> STRUCT_DATA_VAR(CLASS, 7,  "Min Angle X", "Min Angle X", typename data_type::Real, limitAngles[0]);
-template<class T> STRUCT_DATA_VAR(CLASS, 8,  "Max Angle X", "Max Angle X", typename data_type::Real, limitAngles[1]);
-template<class T> STRUCT_DATA_VAR(CLASS, 9,  "Min Angle Y", "Min Angle Y", typename data_type::Real, limitAngles[2]);
-template<class T> STRUCT_DATA_VAR(CLASS, 10, "Max Angle Y", "Max Angle Y", typename data_type::Real, limitAngles[3]);
-template<class T> STRUCT_DATA_VAR(CLASS, 11, "Min Angle Z", "Min Angle Z", typename data_type::Real, limitAngles[4]);
-template<class T> STRUCT_DATA_VAR(CLASS, 12, "Max Angle Z", "Max Angle Z", typename data_type::Real, limitAngles[5]);
+template<class T> STRUCT_DATA_VAR(CLASS, 0,  "Index 1", "Index 1", int, m1);
+template<class T> STRUCT_DATA_VAR(CLASS, 1,  "Index 2", "Index 2", int, m2);
+template<class T> STRUCT_DATA_VAR(CLASS, 2, "Trans X Axis", "Trans X Axis", bool, freeMovements[0]);
+template<class T> STRUCT_DATA_VAR(CLASS, 3, "Trans Y Axis", "Trans Y Axis", bool, freeMovements[1]);
+template<class T> STRUCT_DATA_VAR(CLASS, 4, "Trans Z Axis", "Trans Z Axis", bool, freeMovements[2]);
+template<class T> STRUCT_DATA_VAR(CLASS, 5, "Rot X Axis", "Rot X Axis", bool, freeMovements[3]);
+template<class T> STRUCT_DATA_VAR(CLASS, 6, "Rot Y Axis", "Rot Y Axis", bool, freeMovements[4]);
+template<class T> STRUCT_DATA_VAR(CLASS, 7, "Rot Z Axis", "Rot Z Axis", bool, freeMovements[5]);
+template<class T> STRUCT_DATA_VAR(CLASS, 8,  "Soft Stiffness Translation", "Soft Ks Trans", typename data_type::Real, softStiffnessTrans);
+template<class T> STRUCT_DATA_VAR(CLASS, 9,  "Hard Stiffness Translation", "Hard Ks Trans", typename data_type::Real, hardStiffnessTrans);
+template<class T> STRUCT_DATA_VAR(CLASS, 10,  "Soft Stiffness Rotation", "Soft Ks Rot", typename data_type::Real, softStiffnessRot);
+template<class T> STRUCT_DATA_VAR(CLASS, 11,  "Hard Stiffness Rotation", "Hard Ks Rot", typename data_type::Real, hardStiffnessRot);
+template<class T> STRUCT_DATA_VAR(CLASS, 12,  "Bloc Stiffness Rotation", "Bloc Ks Rot", typename data_type::Real, blocStiffnessRot);
+template<class T> STRUCT_DATA_VAR(CLASS, 13,  "Damping", "Kd", typename data_type::Real, kd);
+template<class T> STRUCT_DATA_VAR(CLASS, 14,  "Min Angle X", "Min Angle X", typename data_type::Real, limitAngles[0]);
+template<class T> STRUCT_DATA_VAR(CLASS, 15,  "Max Angle X", "Max Angle X", typename data_type::Real, limitAngles[1]);
+template<class T> STRUCT_DATA_VAR(CLASS, 16,  "Min Angle Y", "Min Angle Y", typename data_type::Real, limitAngles[2]);
+template<class T> STRUCT_DATA_VAR(CLASS, 17, "Max Angle Y", "Max Angle Y", typename data_type::Real, limitAngles[3]);
+template<class T> STRUCT_DATA_VAR(CLASS, 18, "Min Angle Z", "Min Angle Z", typename data_type::Real, limitAngles[4]);
+template<class T> STRUCT_DATA_VAR(CLASS, 19, "Max Angle Z", "Max Angle Z", typename data_type::Real, limitAngles[5]);
 
 template<class T>
 class data_widget_container < CLASS > : public struct_data_widget_container < CLASS >
