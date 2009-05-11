@@ -27,6 +27,7 @@
 #ifndef SOFA_GUI_FILEMANAGEMENT_H
 #define SOFA_GUI_FILEMANAGEMENT_H
 
+#include <vector>
 
 #ifdef SOFA_QT4
 #include <Q3FileDialog>
