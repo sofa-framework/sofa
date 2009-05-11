@@ -55,6 +55,9 @@ QString getOpenFileName ( QWidget* parent, const QString & startWith = QString()
 
 QString getSaveFileName ( QWidget* parent, const QString & startWith = QString(), const QString & filter = QString(), const char * name = 0, const QString & caption = QString(), QString * selectedFilter = 0 );
 
+
+void getFilesInDirectory( const QString &path, std::vector< QString > &files, bool recursive=true, const std::vector< QString > &filter=std::vector< QString >() );
+
 } // namespace qt
 
 } // namespace gui
