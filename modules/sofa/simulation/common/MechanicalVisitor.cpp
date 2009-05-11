@@ -445,7 +445,11 @@ Visitor::Result MechanicalPropagateDxVisitor::fwdMechanicalState(simulation::Nod
 Visitor::Result MechanicalPropagateDxVisitor::fwdMechanicalMapping(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalMapping* map)
 {
     ctime_t t0 = beginProcess(node, map);
+    core::componentmodel::behavior::BaseMechanicalState* dofTo = map->getMechTo();
+    bool isActive=dofTo->forceMask.isActive();
+    dofTo->forceMask.activate(false);
     map->propagateDx();
+    dofTo->forceMask.activate(isActive);
     endProcess(node, map, t0);
     return RESULT_CONTINUE;
 }
@@ -459,7 +463,11 @@ Visitor::Result MechanicalPropagateVVisitor::fwdMechanicalState(simulation::Node
 Visitor::Result MechanicalPropagateVVisitor::fwdMechanicalMapping(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalMapping* map)
 {
     ctime_t t0 = beginProcess(node, map);
+    core::componentmodel::behavior::BaseMechanicalState* dofTo = map->getMechTo();
+    bool isActive=dofTo->forceMask.isActive();
+    dofTo->forceMask.activate(false);
     map->propagateV();
+    dofTo->forceMask.activate(isActive);
     endProcess(node, map, t0);
     return RESULT_CONTINUE;
 }
@@ -989,6 +997,7 @@ void MechanicalApplyConstraintsVisitor::bwdConstraint(simulation::Node* node, co
 Visitor::Result MechanicalBeginIntegrationVisitor::fwdMechanicalState(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalState* mm)
 {
     ctime_t t0 = beginProcess(node, mm);
+    mm->forceMask.activate(true);
     mm->beginIntegration(dt);
     endProcess(node, mm, t0);
     return RESULT_CONTINUE;
@@ -996,6 +1005,7 @@ Visitor::Result MechanicalBeginIntegrationVisitor::fwdMechanicalState(simulation
 Visitor::Result MechanicalBeginIntegrationVisitor::fwdMappedMechanicalState(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalState* mm)
 {
     ctime_t t0 = beginProcess(node, mm);
+    mm->forceMask.activate(true);
     mm->beginIntegration(dt);
     endProcess(node, mm, t0);
     return RESULT_CONTINUE;
@@ -1006,6 +1016,7 @@ Visitor::Result MechanicalEndIntegrationVisitor::fwdMechanicalState(simulation::
 {
     ctime_t t0 = beginProcess(node, mm);
     mm->endIntegration(dt);
+    mm->forceMask.activate(false);
     endProcess(node, mm, t0);
     return RESULT_CONTINUE;
 }
@@ -1013,6 +1024,7 @@ Visitor::Result MechanicalEndIntegrationVisitor::fwdMappedMechanicalState(simula
 {
     ctime_t t0 = beginProcess(node, mm);
     mm->endIntegration(dt);
+    mm->forceMask.activate(false);
     endProcess(node, mm, t0);
     return RESULT_CONTINUE;
 }
