@@ -69,6 +69,7 @@ int main(int argc, char** argv)
     bool rnormals = false;
     bool rtexcoords = false;
     bool closemesh = false;
+    float closedist = 0.0f;
     Vec3f translation;
     Vec3f rotation;
     Vec3f scale(1,1,1);
@@ -86,6 +87,7 @@ int main(int argc, char** argv)
     cmd.opt("rnormals",'O',"remove normals",&rnormals);
     cmd.opt("rtexcoords",'T',"remove texcoords",&rtexcoords);
     cmd.opt("close",'c',"close mesh",&closemesh);
+    cmd.opt("close2",'C',"close mesh creating intermediate vertices no further appart than given dist",&closedist);
     cmd.opt("translate",'t',"translate the mesh",&translation);
     cmd.opt("rotate",'r',"rotate the mesh using euler angles in degree",&rotation);
     cmd.opt("scale",'s',"scale the mesh using 3 coefficients",&scale);
@@ -209,16 +211,24 @@ int main(int argc, char** argv)
         obj.flipAll();
         //obj.calcFlip();
     }
-    if (closemesh)
+    if (closemesh || closedist != 0.0f)
     {
         bool closed = obj.isClosed();
         std::cout << "Mesh is "<<(closed?"":"NOT ")<<"closed."<<std::endl;
-        if (closemesh && !closed)
+        if (!closed)
         {
             obj.calcFlip();
             std::cout << "Closing mesh..."<<std::endl;
-            obj.close();
+            if (closedist != 0.0f)
+            {
+                obj.closeDist(closedist);
+            }
+            else //if (closemesh)
+            {
+                obj.close();
+            }
             std::cout << "Mesh is "<<(obj.isClosed()?"":"NOT ")<<"closed."<<std::endl;
+
         }
     }
 

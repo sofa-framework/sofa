@@ -238,31 +238,41 @@ void Mesh::clearEdges()
 
 bool Mesh::addEdgeFace(int p0, int p1, int f)
 {
+  //std::cerr << "addEdgeFace("<<p0<<","<<p1<<","<<f<<")" << std::endl;
   if (getAttrib(MESH_POINTS_GROUP))
   {
     p0 = getGP0(getPG(p0));
     p1 = getGP0(getPG(p1));
   }
+  if ((int)edges.size() <= p0 || (int)edges.size() < p1)
+    edges.resize(nbp());
+  //std::cerr << "getEdgeFace("<<p0<<","<<p1<<")" << std::endl;
   int f2 = getEdgeFace(p0,p1);
   if (f2>=0) { std::cerr << "Overlapping faces "<<f2<<" and "<<f<<std::endl; return false; }
+  //std::cerr << "edges("<<p0<<","<<p1<<")" << std::endl;
   if (p0<p1)
     edges[p0][p1].f1=f;
   else
     edges[p1][p0].f2=f;
+  //std::cerr << "<addEdgeFace("<<p0<<","<<p1<<","<<f<<")" << std::endl;
   return true;
 }
 
 int Mesh::getEdgeFace(int p0, int p1)
 {
+  //std::cerr << "getEdgeFace("<<p0<<","<<p1<<")" << std::endl;
   if (getAttrib(MESH_POINTS_GROUP))
   {
     p0 = getGP0(getPG(p0));
     p1 = getGP0(getPG(p1));
   }
+  int r;
   if (p0<p1)
-    return edges[p0][p1].f1;
+    r = edges[p0][p1].f1;
   else
-    return edges[p1][p0].f2;
+    r = edges[p1][p0].f2;
+  //std::cerr << "<getEdgeFace("<<p0<<","<<p1<<")="<< r << std::endl;
+  return r;
 }
 
 void Mesh::calcEdges()
@@ -382,7 +392,7 @@ bool Mesh::isClosed()
   return nopen==0;
 }
 
-void Mesh::closeLoop(const std::vector<int>& loop)
+void Mesh::closeLoop(const std::vector<int>& loop, float dist)
 {
   if (loop.size()<3) return;
   Vertex v;
@@ -393,18 +403,84 @@ void Mesh::closeLoop(const std::vector<int>& loop)
   v.mean(loop.size());
   int p = addP(v);
 
-  Vec3i f;
-  f[0] = p;
+  float maxdist = 0.0f;
+  if (dist > 0.0f)
   for (unsigned int j=0;j<loop.size();j++)
   {
-    f[1] = loop[j];
-    f[2] = loop[(j+1)%loop.size()];
-    std::cout << "f "<<f[0]+1<<" "<<f[1]+1<<" "<<f[2]+1<<std::endl;
-    addF(f);
+      float d = (getPP(loop[j])-v.p).norm();
+      if (d > maxdist) maxdist = d;
+  }
+
+  if (dist <= 0.0f || maxdist < dist)
+  {
+    if (dist > 0.0f)
+      std::cout << "# open " << loop.size()<<"-sided loop : max radius " << maxdist <<std::endl;
+    Vec3i f;
+    f[0] = p;
+    for (unsigned int j=0;j<loop.size();j++)
+    {
+      f[1] = loop[j];
+      f[2] = loop[(j+1)%loop.size()];
+      if (dist == 0.0f)
+	  std::cout << "f "<<f[0]+1<<" "<<f[1]+1<<" "<<f[2]+1<<std::endl;
+      addF(f);
+    }
+  }
+  else
+  {
+    int nsteps = (int)ceilf(maxdist/dist);
+    std::cout << "# open " << loop.size()<<"-sided loop : max radius " << maxdist << " -> using " << nsteps << " steps."<<std::endl;
+    std::vector<int> loopOut, loopIn;
+    Vec3i f;
+    //loopOut = loop;
+    loopOut.resize(loop.size());
+    for (unsigned int j=0;j<loop.size();j++) loopOut[j] = loop[j];
+    loopIn.resize(loop.size());
+    for (int s=0;s<nsteps-1;++s)
+    {
+      float fact = ((float)(nsteps-1-s))/((float)nsteps);
+      for (unsigned int j=0;j<loop.size();j++)
+      {
+	Vertex v2;
+	if (s&1)
+	    v2.lerp(v,1-fact,getP(loop[j]),fact);
+	else
+	    v2.lerp(v,1-fact,getP(loop[j]),0.5f*fact,getP(loop[(j+1)%loop.size()]),0.5f*fact);
+	loopIn[j] = addP(v2);
+      }
+      for (unsigned int j=0;j<loop.size();j++)
+      {
+	f[0] = loopIn[j];
+	f[1] = loopOut[j];
+	f[2] = loopOut[(j+1)%loop.size()];
+	//std::cout << "f "<<f[0]+1<<" "<<f[1]+1<<" "<<f[2]+1<<std::endl;
+	addF(f);
+	f[0] = loopIn[j];
+	f[1] = loopOut[(j+1)%loop.size()];
+	f[2] = loopIn[(j+1)%loop.size()];
+	//std::cout << "f "<<f[0]+1<<" "<<f[1]+1<<" "<<f[2]+1<<std::endl;
+	addF(f);
+      }
+      //loopOut = loopIn;
+      for (unsigned int j=0;j<loop.size();j++) loopOut[j] = loopIn[j];
+    }
+    f[0] = p;
+    for (unsigned int j=0;j<loop.size();j++)
+    {
+      f[1] = loopOut[j];
+      f[2] = loopOut[(j+1)%loop.size()];
+      //std::cout << "f "<<f[0]+1<<" "<<f[1]+1<<" "<<f[2]+1<<std::endl;
+      addF(f);
+    }
   }
 }
 
 void Mesh::close()
+{
+  closeDist(0.0f);
+}
+
+void Mesh::closeDist(float dist)
 {
   // First detect flipped faces
   //calcFlip();
@@ -444,7 +520,7 @@ void Mesh::close()
 	}
 	if (n==(int)i)
 	{ // closed loop
-	  closeLoop(loop);
+	  closeLoop(loop, dist);
 	  ++nloop;
 	  for (unsigned int j=0;j<loop.size();j++)
 	    next[loop[j]] = -1;

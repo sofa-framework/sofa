@@ -93,6 +93,30 @@ public:
       c/=nb;
       v/=nb;
     }
+    void lerp(const Vertex& v1, float f1, const Vertex& v2, float f2)
+    {
+      p=v1.p*f1+v2.p*f2;
+      t=v1.t*f1+v2.t*f2;
+      n=v1.n*f1+v2.n*f2; n.normalize();
+      for (int i=0;i<4;++i) c[i] = (unsigned char)((float)v1.c[i]*f1+(float)v2.c[i]*f2);
+      v=v1.v*f1+v2.v*f2;
+    }
+    void lerp(const Vertex& v1, float f1, const Vertex& v2, float f2, const Vertex& v3, float f3)
+    {
+      p=v1.p*f1+v2.p*f2+v3.p*f3;
+      t=v1.t*f1+v2.t*f2+v3.t*f3;
+      n=v1.n*f1+v2.n*f2+v3.n*f3; n.normalize();
+      for (int i=0;i<4;++i) c[i] = (unsigned char)((float)v1.c[i]*f1+(float)v2.c[i]*f2+(float)v3.c[i]*f3);
+      v=v1.v*f1+v2.v*f2+v3.v*f3;
+    }
+    void lerp(const Vertex& v1, float f1, const Vertex& v2, float f2, const Vertex& v3, float f3, const Vertex& v4, float f4)
+    {
+      p=v1.p*f1+v2.p*f2+v3.p*f3+v4.p*f4;
+      t=v1.t*f1+v2.t*f2+v3.t*f3+v4.t*f4;
+      n=v1.n*f1+v2.n*f2+v3.n*f3+v4.n*f4; n.normalize();
+      for (int i=0;i<4;++i) c[i] = (unsigned char)((float)v1.c[i]*f1+(float)v2.c[i]*f2+(float)v3.c[i]*f3+(float)v4.c[i]*f4);
+      v=v1.v*f1+v2.v*f2+v3.v*f3+v4.v*f4;
+    }
   };
 
   std::vector<Vec3f> points_p;
@@ -338,6 +362,10 @@ public:
   /// Check if the mesh is closed
   bool isClosed();
 
+  /// Close the mesh, creating intermediate vertices no further appart than given dist.
+  /// Note: the mesh must be correctly flipped
+  void closeDist(float dist);
+
   /// Close the mesh. Note: the mesh must be correctly flipped
   void close();
 
@@ -378,7 +406,7 @@ protected:
   
   bool addEdgeFace(int p0, int p1, int f);
 
-  void closeLoop(const std::vector<int>& loop);
+  void closeLoop(const std::vector<int>& loop, float dist);
 
 };
 
