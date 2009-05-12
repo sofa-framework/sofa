@@ -43,6 +43,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/defaulttype/Mat.h>
+#include <sofa/defaulttype/SparseConstraintTypes.h>
 #include <sofa/helper/fixed_array.h>
 #include <sofa/helper/vector.h>
 #include <iostream>
@@ -332,36 +333,6 @@ public:
     typedef Real  VecReal;
     //         typedef std::vector<Coord> VecCoord;
     //         typedef std::vector<SpatialVector> VecDeriv;
-
-
-    /// Data Structure to store lines of the matrix L.
-    template <class T>
-    class SparseConstraint
-    {
-    public:
-        SparseConstraint() {};
-        void insert( unsigned int index, const T &value)
-        {
-            data[index] += value;
-        }
-        void set( unsigned int index, const T &value)
-        {
-            data[index] = value;
-        }
-
-        T& getDataAt(unsigned int index)
-        {
-            typename std::map< unsigned int, T >::iterator it = data.find(index);
-            static T zeroValue=T();
-            if (it != data.end()) return it->second;
-            else return zeroValue;
-        };
-
-        std::map< unsigned int, T > &getData() {return data;};
-        const std::map< unsigned int, T > &getData() const {return data;};
-    protected:
-        std::map< unsigned int, T > data;
-    };
 
     typedef SparseConstraint<Coord> SparseVecCoord;
     typedef SparseConstraint<Deriv> SparseVecDeriv;

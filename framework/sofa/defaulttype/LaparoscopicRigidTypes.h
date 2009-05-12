@@ -30,6 +30,7 @@
 
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
+#include <sofa/defaulttype/SparseConstraintTypes.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/componentmodel/behavior/Mass.h>
@@ -252,34 +253,6 @@ public:
     static const DRot& getDRot(const Deriv& d) { return d.getVOrientation(); }
     static void setDRot(Deriv& d, const DRot& v) { d.getVOrientation() = v; }
 
-
-    /// Data Structure to store lines of the matrix L.
-    template <class T>
-    class SparseConstraint
-    {
-    public:
-        SparseConstraint() {};
-        void insert( unsigned int index, const T &value)
-        {
-            data[index] += value;
-        }
-        void set( unsigned int index, const T &value)
-        {
-            data[index] = value;
-        }
-        T& getDataAt(unsigned int index)
-        {
-            typename std::map< unsigned int, T >::iterator it = data.find(index);
-            static T zeroValue=T();
-            if (it != data.end()) return it->second;
-            else return zeroValue;
-        };
-
-        std::map< unsigned int, T > &getData() {return data;};
-        const std::map< unsigned int, T > &getData() const {return data;};
-    protected:
-        std::map< unsigned int, T > data;
-    };
 
     typedef SparseConstraint<Coord> SparseVecCoord;
     typedef SparseConstraint<Deriv> SparseVecDeriv;

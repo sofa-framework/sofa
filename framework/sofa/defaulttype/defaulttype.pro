@@ -30,6 +30,7 @@ HEADERS += \
           RigidTypes.h \
           SolidTypes.h \
           SolidTypes.inl \
+          SparseConstraintTypes.h \
           Vec.h \
           VecTypes.h \
           Vec3Types.h

@@ -30,6 +30,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Quat.h>
+#include <sofa/defaulttype/SparseConstraintTypes.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 //#include <sofa/core/componentmodel/behavior/Mass.h>
 #include <sofa/helper/vector.h>
@@ -568,34 +569,6 @@ public:
     static void setDPos(Deriv& d, const DPos& v) { d.getVCenter() = v; }
     static const DRot& getDRot(const Deriv& d) { return d.getVOrientation(); }
     static void setDRot(Deriv& d, const DRot& v) { d.getVOrientation() = v; }
-
-    /// Data Structure to store lines of the matrix L.
-    template <class T>
-    class SparseConstraint
-    {
-    public:
-        SparseConstraint() {};
-        void insert( unsigned int index, const T &value)
-        {
-            data[index] += value;
-        }
-        void set( unsigned int index, const T &value)
-        {
-            data[index] = value;
-        }
-        T& getDataAt(unsigned int index)
-        {
-            typename std::map< unsigned int, T >::iterator it = data.find(index);
-            static T zeroValue=T();
-            if (it != data.end()) return it->second;
-            else return zeroValue;
-        };
-
-        std::map< unsigned int, T > &getData() {return data;};
-        const std::map< unsigned int, T > &getData() const {return data;};
-    protected:
-        std::map< unsigned int, T > data;
-    };
 
     typedef SparseConstraint<Coord> SparseVecCoord;
     typedef SparseConstraint<Deriv> SparseVecDeriv;
@@ -1197,33 +1170,6 @@ public:
 
     typedef vector<Coord> VecCoord;
     typedef vector<Deriv> VecDeriv;
-
-    template <class T>
-    class SparseConstraint
-    {
-    public:
-        SparseConstraint() {};
-        void insert( unsigned int index, const T &value)
-        {
-            data[index] += value;
-        }
-        void set( unsigned int index, const T &value)
-        {
-            data[index] = value;
-        }
-        T& getDataAt(unsigned int index)
-        {
-            typename std::map< unsigned int, T >::iterator it = data.find(index);
-            static T zeroValue=T();
-            if (it != data.end()) return it->second;
-            else return zeroValue;
-        };
-
-        std::map< unsigned int, T > &getData() {return data;};
-        const std::map< unsigned int, T > &getData() const {return data;};
-    protected:
-        std::map< unsigned int, T > data;
-    };
 
     typedef SparseConstraint<Coord> SparseVecCoord;
     typedef SparseConstraint<Deriv> SparseVecDeriv;
