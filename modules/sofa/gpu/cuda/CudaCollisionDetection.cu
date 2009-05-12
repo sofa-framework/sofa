@@ -65,6 +65,29 @@ struct GPUTest
     CudaVec3<float> gridp0, gridinvdp;
 };
 
+struct GPUDeformedCube
+{
+    int elem;
+    int ix,iy,iz;
+    int points0, nbp;
+    CudaVec3<float> initP0, invDP;
+};
+struct GPUDeformedCubeState
+{
+    CudaVec4<float> faces[6];
+    CudaVec3<float> C0, Dx, Dy, Dz, Dxy, Dxz, Dyz, Dxyz;
+    CudaVec3<float> center, radius;
+};
+
+struct GPUTestFFD
+{
+    GPUContact* result;
+    const CudaVec3<float>* points;
+    const float* radius;
+    const float* grid;
+    float margin;
+};
+
 //////////////////////
 // GPU-side methods //
 //////////////////////
