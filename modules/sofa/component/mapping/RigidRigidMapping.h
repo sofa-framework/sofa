@@ -114,7 +114,7 @@ public:
 
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
 
-    //void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
+    void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
 
     void computeAccFromMapping(  typename Out::VecDeriv& acc_out, const typename In::VecDeriv& v_in, const typename In::VecDeriv& acc_in);
 
