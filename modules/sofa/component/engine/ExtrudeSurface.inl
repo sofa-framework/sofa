@@ -111,20 +111,36 @@ void ExtrudeSurface<DataTypes>::update()
     std::map<int, int> pointMatching;
     std::map<BaseMeshTopology::Edge, bool > edgesOnBorder;
     std::set<int> pointsUsed;
+    std::map<int, std::pair<Vec3, unsigned int> > normals;
 
+    //first loop to compute normals per point
     for (itTriangles=surfaceTriangles.begin() ; itTriangles != surfaceTriangles.end() ; itTriangles++)
     {
         BaseMeshTopology::Triangle triangle = topology->getTriangle(*itTriangles);
-
         VecCoord triangleCoord;
 
-        BaseMeshTopology::Triangle t1, t2;
         //fetch real coords
         for (unsigned int i=0 ; i<3 ; i++)
             triangleCoord.push_back(surfaceVertices[triangle[i]]);
 
         //compute normal
         Coord n =  cross(triangleCoord[1]-triangleCoord[0], triangleCoord[2]-triangleCoord[0]);
+        for (unsigned int i=0 ; i<3 ; i++)
+        {
+            normals[triangle[i]].first += n;
+            normals[triangle[i]].second++;
+        }
+    }
+
+    //average normals
+    typename std::map<int, std::pair<Vec3, unsigned int> >::iterator itNormals;
+    for (itNormals = normals.begin(); itNormals != normals.end() ; itNormals++)
+        (*itNormals).second.first /= (*itNormals).second.second;
+
+    for (itTriangles=surfaceTriangles.begin() ; itTriangles != surfaceTriangles.end() ; itTriangles++)
+    {
+        BaseMeshTopology::Triangle triangle = topology->getTriangle(*itTriangles);
+        BaseMeshTopology::Triangle t1, t2;
 
         //create triangle from surface and the new triangle
         //vertex created from surface has an even (2*n) index
@@ -135,7 +151,7 @@ void ExtrudeSurface<DataTypes>::update()
             if (pointMatching.find(triangle[i]) == pointMatching.end())
             {
                 extrusionVertices->push_back(surfaceVertices[triangle[i]]);
-                extrusionVertices->push_back(surfaceVertices[triangle[i]] + n);
+                extrusionVertices->push_back(surfaceVertices[triangle[i]] + normals[triangle[i]].first);
 
                 pointMatching[triangle[i]] = extrusionVertices->size() - 2;
 
