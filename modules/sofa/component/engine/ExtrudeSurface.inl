@@ -203,9 +203,6 @@ void ExtrudeSurface<DataTypes>::update()
         }
     }
 
-
-    std::cout << extrusionTriangles->size() << std::endl;
-
     f_extrusionTriangles.endEdit();
     f_extrusionVertices.endEdit();
 }
@@ -241,7 +238,6 @@ void ExtrudeSurface<DataTypes>::draw()
         {
             Coord p = (extrusionVertices[triangle[j]]);
             glVertex3f(p[0], p[1], p[2]);
-
         }
     }
     glEnd();
@@ -249,7 +245,7 @@ void ExtrudeSurface<DataTypes>::draw()
     //Triangles From Extrusion
     glColor3f(0.0,1.0,0.0);
     glBegin(GL_TRIANGLES);
-    for (unsigned int i=1 ; i<surfaceTriangles.size()*2 + 1 ; i+=2)
+    for (unsigned int i=1 ; i<surfaceTriangles.size()*2 ; i+=2)
     {
         BaseMeshTopology::Triangle triangle = extrusionTriangles[i];
 
@@ -257,7 +253,6 @@ void ExtrudeSurface<DataTypes>::draw()
         {
             Coord p = (extrusionVertices[triangle[j]]);
             glVertex3f(p[0], p[1], p[2]);
-
         }
     }
     glEnd();
@@ -265,7 +260,7 @@ void ExtrudeSurface<DataTypes>::draw()
     //Border Triangles
     glColor3f(0.0,0.0,1.0);
     glBegin(GL_TRIANGLES);
-    for (unsigned int i=surfaceTriangles.size()*2 + 1 ; i<extrusionTriangles.size() ; i++)
+    for (unsigned int i=surfaceTriangles.size()*2 ; i<extrusionTriangles.size() ; i++)
     {
         BaseMeshTopology::Triangle triangle = extrusionTriangles[i];
 
@@ -273,7 +268,6 @@ void ExtrudeSurface<DataTypes>::draw()
         {
             Coord p = (extrusionVertices[triangle[j]]);
             glVertex3f(p[0], p[1], p[2]);
-
         }
     }
     glEnd();
