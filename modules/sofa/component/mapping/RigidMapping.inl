@@ -657,72 +657,106 @@ template <class BaseMapping>
 void RigidMapping<BaseMapping>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in )
 {
 
-//	printf("\n applyJT(VectConst, VectConst) in RigidMapping\n");
-
     int outSize = out.size();
     out.resize(in.size() + outSize); // we can accumulate in "out" constraints from several mappings
 
-    for(unsigned int i=0; i<in.size(); i++)
+
+    switch (repartition.getValue().size())
     {
-        // computation of (Jt.n) //
-        // computation of the ApplicationPoint position // Coord is a Vec3
-        typename Out::Coord ApplicationPoint;
-
-        // computation of the constaint direction
-        typename Out::Deriv n;
-
-        typename Out::Deriv w_n;
-
-        OutConstraintIterator itOut;
-        for (itOut=in[i].getData().begin(); itOut!=in[i].getData().end(); itOut++)
+    case 0:
+    {
+        for(unsigned int i=0; i<in.size(); i++)
         {
-            unsigned int indexIn = itOut->first;// index of the node
-            Deriv data=(Deriv) itOut->second;
-
-            w_n = (Deriv) data;	// weighted value of the constraint direction
-            double w = w_n.norm();	// computation of the weight
-            // the application point (on the child model) is computed using barycentric values //
-            ApplicationPoint += rotatedPoints[indexIn]*w;
-            // we add the contribution of each weighted direction
-            n += w_n ;
-        }
-
-//   		if (n.norm() < 0.9999 || n.norm() > 1.00001)
-//  			printf("\n WARNING : constraint direction is not normalized !!!\n");
-
-        // apply Jt.n as a constraint for the center of mass
-        // Jt = [ I   ]
-        //      [ OM^ ]
-//                 typename Out::Deriv _n=n; _n.normalize();
-        typename Out::Deriv omega_n = cross(ApplicationPoint,n);
-
-        InDeriv direction;
-
-        direction.getVCenter() = n;
-        direction.getVOrientation() = omega_n;
-
-        switch(repartition.getValue().size())
-        {
-        case 0 :
-            // for rigid model, there's only the center of mass as application point (so only one vector for each constraint)
-            if (indexFromEnd.getValue())
+            Vector v,omega;
+            OutConstraintIterator itOut;
+            for (itOut=in[i].getData().begin(); itOut!=in[i].getData().end(); itOut++)
             {
-                out[outSize+i].insert(out.size() - 1 - index.getValue(), direction); // 0 = index of the center of mass
+                const unsigned int i = itOut->first;// index of the node
+                // out = Jt in
+                // Jt = [ I     ]
+                //      [ -OM^t ]
+                // -OM^t = OM^
+
+                const Deriv f = (Deriv) itOut->second;
+                v += f;
+                omega += cross(rotatedPoints[i],f);
+            }
+
+            const InDeriv result(v, omega);
+            if (!indexFromEnd.getValue())
+            {
+                out[outSize+i].insert(index.getValue(), result);
             }
             else
             {
-                out[outSize+i].insert(index.getValue(), direction); // 0 = index of the center of mass
+                out[outSize+i].insert(out.size() - 1 - index.getValue(), result);
             }
-            break;
-        case 1:
-            serr << "applyJT with repartition NOT SUPPORTED YET" << sendl;
-            break;
-        default:
-            serr << "applyJT with repartition NOT SUPPORTED YET" << sendl;
-            break;
         }
+        break;
+    }
+    case 1:
+    {
+        const unsigned int numDofs = this->getFromModel()->getX()->size();
+
+        const unsigned int val=repartition.getValue()[0];
+        for(unsigned int i=0; i<in.size(); i++)
+        {
+            unsigned int cpt=0;
+
+            OutConstraintIterator it=in[i].getData().begin();
+            for(unsigned int ito=0; ito<numDofs; ito++)
+            {
+                Vector v,omega;
+
+                for(unsigned int r=0; r<val && it != in[i].getData().end(); r++, cpt++)
+                {
+                    const unsigned int i = it->first;// index of the node
+                    if (i != cpt) continue;
+
+                    const Deriv f = (Deriv) it->second;
+                    v += f;
+                    omega += cross(rotatedPoints[cpt],f);
+                    it++;
+                }
+                const InDeriv result(v, omega);
+                out[outSize+i].insert(ito, result);
+            }
+        }
+        break;
+    }
+    default:
+    {
+        const unsigned int numDofs = this->getFromModel()->getX()->size();
+
+        for(unsigned int i=0; i<in.size(); i++)
+        {
+            unsigned int cpt=0;
+
+            OutConstraintIterator it=in[i].getData().begin();
+            for(unsigned int ito=0; ito<numDofs; ito++)
+            {
+                Vector v,omega;
+
+                for(unsigned int r=0; r<repartition.getValue()[ito] && it != in[i].getData().end(); r++, cpt++)
+                {
+                    const unsigned int i = it->first;// index of the node
+                    if (i != cpt) continue;
+
+                    const Deriv f = (Deriv) it->second;
+                    v += f;
+                    omega += cross(rotatedPoints[cpt],f);
+                    it++;
+                }
+                const InDeriv result(v, omega);
+                out[outSize+i].insert(ito, result);
+            }
+        }
+        break;
+    }
     }
 }
+
+
 
 /// Template specialization for 2D rigids
 // template<typename real1, typename real2>

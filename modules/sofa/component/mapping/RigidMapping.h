@@ -67,6 +67,7 @@ public:
     typedef typename Coord::value_type Real;
     enum { N=Coord::static_size };
     typedef defaulttype::Mat<N,N,Real> Mat;
+    typedef defaulttype::Vec<N,Real> Vector ;
 
     Data< VecCoord > points;
     VecCoord rotatedPoints;

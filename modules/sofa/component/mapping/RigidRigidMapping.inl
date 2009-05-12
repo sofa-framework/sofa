@@ -568,6 +568,116 @@ void RigidRigidMapping<BasicMapping>::applyJT( typename In::VecDeriv& parentForc
     }
 
 }
+
+
+template <class BaseMapping>
+void RigidRigidMapping<BaseMapping>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in )
+{
+
+    int outSize = out.size();
+    out.resize(in.size() + outSize); // we can accumulate in "out" constraints from several mappings
+
+
+    switch (repartition.getValue().size())
+    {
+    case 0:
+    {
+        for(unsigned int i=0; i<in.size(); i++)
+        {
+            Vector v,omega;
+            OutConstraintIterator itOut;
+            for (itOut=in[i].getData().begin(); itOut!=in[i].getData().end(); itOut++)
+            {
+                const unsigned int i = itOut->first;// index of the node
+                Deriv data=(Deriv) itOut->second;
+                // out = Jt in
+                // Jt = [ I     ]
+                //      [ -OM^t ]
+                // -OM^t = OM^
+
+                Vector f = data.getVCenter();
+                v += f;
+                omega += data.getVOrientation() + cross(f,-pointsR0[i].getCenter());
+            }
+
+            const InDeriv result(v, omega);
+
+            if (!indexFromEnd.getValue())
+            {
+                out[outSize+i].insert(index.getValue(), result);
+            }
+            else
+            {
+                out[outSize+i].insert(out.size() - 1 - index.getValue(), result);
+            }
+        }
+        break;
+    }
+    case 1:
+    {
+        const unsigned int numDofs = this->getFromModel()->getX()->size();
+
+        const unsigned int val=repartition.getValue()[0];
+        for(unsigned int i=0; i<in.size(); i++)
+        {
+            unsigned int cpt=0;
+
+            OutConstraintIterator it=in[i].getData().begin();
+            for(unsigned int ito=0; ito<numDofs && it != in[i].getData().end(); ito++)
+            {
+                Vector v,omega;
+
+                for(unsigned int r=0; r<val && it != in[i].getData().end(); r++, cpt++)
+                {
+                    const unsigned int idx=it->first;
+                    if (idx != cpt) continue;
+                    Deriv data=(Deriv) it->second;
+
+                    Vector f = data.getVCenter();
+                    v += f;
+                    omega += data.getVOrientation() + cross(f,-pointsR0[cpt].getCenter());
+                    it++;
+                }
+                const InDeriv result(v, omega);
+                out[outSize+i].insert(ito, result);
+            }
+        }
+        break;
+    }
+    default:
+    {
+        const unsigned int numDofs = this->getFromModel()->getX()->size();
+
+        for(unsigned int i=0; i<in.size(); i++)
+        {
+            unsigned int cpt=0;
+
+            OutConstraintIterator it=in[i].getData().begin();
+            for(unsigned int ito=0; ito<numDofs && it != in[i].getData().end(); ito++)
+            {
+                Vector v,omega;
+
+                for(unsigned int r=0; r<repartition.getValue()[ito] && it != in[i].getData().end(); r++, cpt++)
+                {
+                    const unsigned int idx=it->first;
+                    if (idx != cpt) continue;
+                    Deriv data=(Deriv) it->second;
+
+                    Vector f = data.getVCenter();
+                    v += f;
+                    omega += data.getVOrientation() + cross(f,-pointsR0[cpt].getCenter());
+                    it++;
+                }
+                const InDeriv result(v, omega);
+                out[outSize+i].insert(ito, result);
+            }
+        }
+        break;
+    }
+    }
+}
+
+
 template <class BasicMapping>
 void RigidRigidMapping<BasicMapping>::computeAccFromMapping(  typename Out::VecDeriv& acc_out, const typename In::VecDeriv& v_in, const typename In::VecDeriv& acc_in)
 {
