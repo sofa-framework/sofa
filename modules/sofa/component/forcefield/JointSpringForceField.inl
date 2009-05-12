@@ -72,9 +72,9 @@ JointSpringForceField<DataTypes>::~JointSpringForceField()
 }
 
 template <class DataTypes>
-void JointSpringForceField<DataTypes>::init()
+void JointSpringForceField<DataTypes>::bwdInit()
 {
-    this->Inherit::init();
+    this->Inherit::bwdInit();
 
     const VecCoord& x1= *this->mstate1->getX();
     const VecCoord& x2= *this->mstate2->getX();
@@ -85,6 +85,9 @@ void JointSpringForceField<DataTypes>::init()
         if (s.initTrans == Vector())
         {
             s.initTrans = x2[s.m2].getCenter() - x1[s.m1].getCenter();
+        }
+        if (s.initRot == Quat())
+        {
             s.initRot   = x2[s.m2].getOrientation()*x1[s.m1].getOrientation().inverse();
         }
     }
