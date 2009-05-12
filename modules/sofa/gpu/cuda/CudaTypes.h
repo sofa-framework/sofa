@@ -709,8 +709,8 @@ public:
     static const DPos& getDPos(const Deriv& d) { return d; }
     static void setDPos(Deriv& d, const DPos& v) { d = v; }
 
-    typedef SparseConstraint<Coord> SparseVecCoord;
-    typedef SparseConstraint<Deriv> SparseVecDeriv;
+    typedef sofa::defaulttype::SparseConstraint<Coord> SparseVecCoord;
+    typedef sofa::defaulttype::SparseConstraint<Deriv> SparseVecDeriv;
 
     //! All the Constraints applied to a state Vector
     typedef    sofa::helper::vector<SparseVecDeriv> VecConst;
@@ -1024,8 +1024,8 @@ public:
     static const DRot& getDRot(const Deriv& d) { return d.getVOrientation(); }
     static void setDRot(Deriv& d, const DRot& v) { d.getVOrientation() = v; }
 
-    typedef SparseConstraint<Coord> SparseVecCoord;
-    typedef SparseConstraint<Deriv> SparseVecDeriv;
+    typedef sofa::defaulttype::SparseConstraint<Coord> SparseVecCoord;
+    typedef sofa::defaulttype::SparseConstraint<Deriv> SparseVecDeriv;
 
 
     //! All the Constraints applied to a state Vector
