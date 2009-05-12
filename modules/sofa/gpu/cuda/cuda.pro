@@ -141,8 +141,9 @@ HEADERS += \
        	CudaHexahedronFEMForceField.inl \
        	CudaHexahedronTLEDForceField.h \
 		CudaTetrahedronSuperTLEDForceField.h \
-       	CudaUncoupledConstraintCorrection.h
-
+       	CudaUncoupledConstraintCorrection.h \
+		CudaRasterizer.h 
+		
 SOURCES += \
         CudaBTDLinearSolver.cpp  \
 	   	CudaLinearSolverConstraintCorrection.cpp \
@@ -157,7 +158,8 @@ SOURCES += \
      	CudaTetrahedronTLEDForceField.cpp \
        	CudaHexahedronTLEDForceField.cpp \
 		CudaTetrahedronSuperTLEDForceField.cpp \
-       	CudaUncoupledConstraintCorrection.cpp
+       	CudaUncoupledConstraintCorrection.cpp \
+       	CudaRasterizer.cpp
 
 CUDA_SOURCES += \
 	   	CudaLCP.cu \
@@ -166,8 +168,9 @@ CUDA_SOURCES += \
         CudaHexahedronFEMForceField.cu \
        	CudaTetrahedronTLEDForceField.cu \
        	CudaHexahedronTLEDForceField.cu \
-	CudaTetrahedronSuperTLEDForceField.cu
-
+		CudaTetrahedronSuperTLEDForceField.cu \
+		CudaRasterizer.cu 
+		
 contains(DEFINES,SOFA_HAVE_BOOST){
 contains(DEFINES,SOFA_HAVE_CSPARSE){
 HEADERS += \
