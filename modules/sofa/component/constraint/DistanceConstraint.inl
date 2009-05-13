@@ -132,46 +132,50 @@ void DistanceConstraint<DataTypes>::writeConstraintEquations(ConstId Id)
         unsigned int idx2=edges[i][1];
 
         Deriv V12 = getDirection(edges[i], x1, x2);
-        //VecConst interface:
-        //index where the direction will be found
-        const unsigned int idxInVecConst[2]= {c1.size(), c2.size()};
-        SparseVecDeriv V1;
-        V1.insert(idx1,V12); c1.push_back(V1);
-
-        if (this->object1 != this->object2)
-        {
-            SparseVecDeriv V2;
-            V2.insert(idx2,V12); c2.push_back(V2);
-        }
 
         core::componentmodel::behavior::BaseLMConstraint::constraintGroup *constraint = this->addGroupConstraint(Id);
+        SReal correction=SReal();
         switch(Id)
         {
         case core::componentmodel::behavior::BaseLMConstraint::ACC :
         {
             const VecDeriv &dx1=*(this->object1->getDx());
             const VecDeriv &dx2=*(this->object2->getDx());
-
-            constraint->addConstraint( idxInVecConst[0], idxInVecConst[1],(dx2[idx2]-dx1[idx1])*V12);
+            correction=(dx2[idx2]-dx1[idx1])*V12;
             break;
         }
         case core::componentmodel::behavior::BaseLMConstraint::VEL :
         {
             const VecDeriv &v1=*(this->object1->getV());
             const VecDeriv &v2=*(this->object2->getV());
-
-            constraint->addConstraint( idxInVecConst[0], idxInVecConst[1],(v2[idx2]-v1[idx1])*V12); //0 in velocity along V12
+            correction=(v2[idx2]-v1[idx1])*V12;
             break;
         }
         case core::componentmodel::behavior::BaseLMConstraint::POS :
         {
-            double length     = lengthEdge(edges[i],x1,x2);
-            double restLength = this->l0[i];
-
-            constraint->addConstraint( idxInVecConst[0], idxInVecConst[1], length-restLength); //we apply a constraint to correct the current length to the rest length
+            SReal length     = lengthEdge(edges[i],x1,x2);
+            SReal restLength = this->l0[i];
+            correction= length-restLength;
             break;
         }
         };
+        if (fabs(correction) > 1.e-2)
+        {
+            //VecConst interface:
+            //index where the direction will be found
+            const unsigned int idxInVecConst[2]= {c1.size(),
+                    c2.size()+(this->object1 == this->object2)
+                                                 };
+            SparseVecDeriv V1;
+            V1.insert(idx1,V12); c1.push_back(V1);
+
+//             if (this->object1 != this->object2)
+//             {
+            SparseVecDeriv V2;
+            V2.insert(idx2,V12); c2.push_back(V2);
+//             }
+            constraint->addConstraint( idxInVecConst[0], idxInVecConst[1], correction);
+        }
 
     }
 }
