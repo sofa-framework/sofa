@@ -309,7 +309,7 @@ sofa::helper::vector< double > EdgeSetGeometryAlgorithms<DataTypes>::computePoin
     sofa::defaulttype::Vec<3,double> coef_CH = cross (ortho_ABC, AB)*1000;
 
     for (unsigned int i = 0; i<3; i++)
-        coord_edge2[1][i] = coord_edge2[0][i] + coef_CH[i];
+        coord_edge2[1][i] = coord_edge2[0][i] + (float)coef_CH[i];
 
     // Compute Coord of projection point H:
     Coord coord_H = compute2EdgesIntersection ( coord_edge1, coord_edge2, intersected);
@@ -376,7 +376,7 @@ typename DataTypes::Coord EdgeSetGeometryAlgorithms<DataTypes>::compute2EdgesInt
 
     // Compute X coords:
     for (unsigned int i = 0; i<3; i++)
-        X[i] = edge1[0][i] + lambda * vec1[i];
+        X[i] = edge1[0][i] + (float)lambda * vec1[i];
 
     // Check if lambda found is really a solution
     for (unsigned int i = 0; i<3; i++)

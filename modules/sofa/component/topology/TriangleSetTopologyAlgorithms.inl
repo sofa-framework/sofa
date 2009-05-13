@@ -1094,7 +1094,8 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
 
                 PointID vertexOrder[5]; //corner, p1, tri+1, tri+2, p2
                 vertexOrder[0] = theEdgeFirst[cornerInEdge1]; vertexOrder[2] = tri[ (vertxInTriangle+1)%3 ]; vertexOrder[3] = tri[ (vertxInTriangle+2)%3 ];
-                Vec<3,double> posOrder[4];
+                //Vec<3,double> posOrder[4];
+                Coord posOrder[4];
 
                 if ( tri[ (vertxInTriangle+1)%3 ] == theEdgeFirst[ (cornerInEdge1+1)%2 ] )
                 {
@@ -1406,7 +1407,8 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
                 typename DataTypes::VecCoord& coords = *(m_geometryAlgorithms->getDOF()->getX());
                 for (unsigned int j = 0; j<2; j++)
                 {
-                    Vec<3,double> pos[4];
+                    //Vec<3,double> pos[4];
+                    Coord pos[4];
                     for (unsigned int k = 0; k<4; k++)
                     {
                         if (quad[j][k] == p1)
@@ -1421,7 +1423,11 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
                             pos[k]= coords[quad[j][k]];
 
                     }
+                    std::cout << "quads: " << std::endl;
+                    std::cout << "- " << quad[j][0] << " " << quad[j][1] << " " <<  quad[j][2] << " " <<  quad[j][3] << std::endl;
 
+
+                    std::cout << "Triangles: " << std::endl;
 
                     if (m_geometryAlgorithms->isQuadDeulaunayOriented(pos[0], pos[1], pos[2], pos[3]))
                     {
@@ -1429,6 +1435,8 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
                         new_triangles_id.push_back(next_triangle++);
                         new_triangles.push_back(Triangle(quad[j][3], quad[j][0], quad[j][2]));
                         new_triangles_id.push_back(next_triangle++);
+                        std::cout << "- " << Triangle(quad[j][1], quad[j][2], quad[j][0]) << std::endl;
+                        std::cout << "- " << Triangle(quad[j][3], quad[j][0], quad[j][2]) << std::endl;
                     }
                     else
                     {
@@ -1436,7 +1444,11 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
                         new_triangles_id.push_back(next_triangle++);
                         new_triangles.push_back(Triangle(quad[j][0], quad[j][1], quad[j][3]));
                         new_triangles_id.push_back(next_triangle++);
+                        std::cout << "- " << Triangle(quad[j][2], quad[j][3], quad[j][1]) << std::endl;
+                        std::cout << "- " << Triangle(quad[j][0], quad[j][1], quad[j][3]) << std::endl;
+
                     }
+
                 }
 
                 triangles_ancestors.resize (triangles_ancestors.size()+5);
