@@ -33,6 +33,9 @@
 
 //#define NO_CUDA
 
+cudaDeviceProp mycudaDeviceProp;
+
+
 #if defined(__cplusplus)
 namespace sofa
 {
@@ -190,7 +193,7 @@ int mycudaInit(int device)
     }
     else
     {
-        cudaDeviceProp dev;
+        cudaDeviceProp& dev = mycudaDeviceProp;
         cudaCheck(cudaGetDeviceProperties(&dev,device));
         myprintf("CUDA: Using device %d : \"%s\"\n",device,dev.name);
         cudaCheck(cudaSetDevice(device));
