@@ -677,6 +677,74 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isQuadDeulaunayOriented(const V
     }
 }
 
+
+template<class DataTypes>
+bool TriangleSetGeometryAlgorithms< DataTypes >::isDiagonalsIntersectionInQuad (const Coord triangle1[3], const Coord triangle2[3])
+{
+
+    Coord CommonEdge[2], oppositeVertices[2];
+    unsigned int cpt = 0;
+    bool test = false;
+
+    for (unsigned int i = 0; i<3; i++)
+    {
+        test = false;
+        for (unsigned int j = 0; j<3; j++)
+            if(triangle1[i] == triangle2[j])
+            {
+                test = true;
+                break;
+            }
+
+        if(test)
+        {
+            CommonEdge[cpt] = triangle1[i];
+            cpt++;
+        }
+        else
+            oppositeVertices[0] = triangle1[i];
+    }
+
+
+    for (unsigned int i = 0; i<3; i++)
+    {
+        test = false;
+        for (unsigned int j = 0; j<2; j++)
+            if (triangle2[i] == CommonEdge[j])
+            {
+                test = true;
+                break;
+            }
+
+        if (!test)
+        {
+            oppositeVertices[1] = triangle2[i];
+            break;
+        }
+    }
+
+    bool intersected = false;
+
+    Coord inter = compute2EdgesIntersection (CommonEdge, oppositeVertices, intersected);
+
+    if (intersected)
+    {
+        sofa::defaulttype::Vec<3,double> A; DataTypes::get(A[0], A[1], A[2], CommonEdge[0]);
+        sofa::defaulttype::Vec<3,double> B; DataTypes::get(B[0], B[1], B[2], CommonEdge[1]);
+        sofa::defaulttype::Vec<3,double> C; DataTypes::get(C[0], C[1], C[2], inter);
+
+        sofa::defaulttype::Vec<3,double> ABAC = (A - B).cross(A - C);
+
+        if(ABAC.norm2() < 1e-12)
+            return true;
+        else
+            return false;
+    }
+
+    return false;
+}
+
+
 // Test if a triangle indexed by ind_triangle (and incident to the vertex indexed by ind_p) is included or not in the plane defined by (ind_p, plane_vect)
 template<class DataTypes>
 bool TriangleSetGeometryAlgorithms< DataTypes >::isTriangleInPlane(const TriangleID ind_t,

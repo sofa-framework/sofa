@@ -274,12 +274,14 @@ sofa::helper::vector< double > compute_2points_barycoefs(const Vec& p, const Vec
 
 
 template<class DataTypes>
-sofa::helper::vector< double > EdgeSetGeometryAlgorithms<DataTypes>::computePointProjectionOnEdge (const EdgeID edgeIndex, sofa::defaulttype::Vec<3,double> coord_c)
+sofa::helper::vector< double > EdgeSetGeometryAlgorithms<DataTypes>::computePointProjectionOnEdge (const EdgeID edgeIndex,
+        sofa::defaulttype::Vec<3,double> c,
+        bool& intersected)
 {
 
     // Compute projection point coordinate H using parametric straight lines equations.
     //
-    //            X                          - Compute vector orthogonal to (ABX), then vector collinear to (XH)
+    //            C                          - Compute vector orthogonal to (ABX), then vector collinear to (XH)
     //          / .                          - Solve the equation system of straight lines intersection
     //        /   .                          - Compute H real coordinates
     //      /     .                          - Compute H bary coef on AB
@@ -287,65 +289,107 @@ sofa::helper::vector< double > EdgeSetGeometryAlgorithms<DataTypes>::computePoin
     //   A ------ H -------------B
 
 
-    Coord coord_AB[2];
+    Coord coord_AB, coord_AC;
+    Coord coord_edge1[2], coord_edge2[2];
+
+    // Compute Coord of first edge AB:
     Edge theEdge = this->m_topology->getEdge (edgeIndex);
-    getEdgeVertexCoordinates (edgeIndex, coord_AB);
+    getEdgeVertexCoordinates (edgeIndex, coord_edge1);
+    coord_AB = coord_edge1[1] - coord_edge1[0];
 
-    sofa::defaulttype::Vec<3,double> a; DataTypes::get(a[0], a[1], a[2], coord_AB[0]);
-    sofa::defaulttype::Vec<3,double> b; DataTypes::get(b[0], b[1], b[2], coord_AB[1]);
-    sofa::defaulttype::Vec<3,double> c = coord_c;
-    sofa::defaulttype::Vec<3,double> h;
+    // Compute Coord of tmp vector AC:
+    DataTypes::add (coord_edge2[0], c[0], c[1], c[2]);
+    coord_AC = coord_edge2[0] - coord_edge1[0];
 
-    sofa::defaulttype::Vec<3,double> AB;
-    sofa::defaulttype::Vec<3,double> AC;
+    // Compute Coord of second edge XH:
+
+    sofa::defaulttype::Vec<3,double> AB; DataTypes::get(AB[0], AB[1], AB[2], coord_AB);
+    sofa::defaulttype::Vec<3,double> AC; DataTypes::get(AC[0], AC[1], AC[2], coord_AC);
+    sofa::defaulttype::Vec<3,double> ortho_ABC = cross (AB, AC)*1000;
+    sofa::defaulttype::Vec<3,double> coef_CH = cross (ortho_ABC, AB)*1000;
 
     for (unsigned int i = 0; i<3; i++)
-    {
-        AB[i] = b[i] - a[i];
-        AC[i] = c[i] - a[i];
-    }
+        coord_edge2[1][i] = coord_edge2[0][i] + coef_CH[i];
 
-    sofa::defaulttype::Vec<3,double> ortho_ABC = cross (AB, AC)*1000;
-    sofa::defaulttype::Vec<3,double> coef_XH = cross (ortho_ABC, AB)*1000;
+    // Compute Coord of projection point H:
+    Coord coord_H = compute2EdgesIntersection ( coord_edge1, coord_edge2, intersected);
+    sofa::defaulttype::Vec<3,double> h; DataTypes::get(h[0], h[1], h[2], coord_H);
 
-    int indAB = -1; int indXH = -1;
+    sofa::helper::vector< double > barycoord = compute2PointsBarycoefs(h, theEdge[0], theEdge[1]);
+    return barycoord;
 
-    // testing if vector composante are not null:
-    bool test = false;
+}
+
+
+
+
+template<class DataTypes>
+typename DataTypes::Coord EdgeSetGeometryAlgorithms<DataTypes>::compute2EdgesIntersection (const Coord edge1[2], const Coord edge2[2], bool& intersected)
+{
+
+    // Creating director vectors:
+    Coord vec1 = edge1[1] - edge1[0];
+    Coord vec2 = edge2[1] - edge2[0];
+    Coord X; X[0]=0; X[1]=0; X[2]=0;
+
+    int ind1 = -1;
+    int ind2 = -1;
+    double epsilon = 0.0001;
+    double lambda = 0.0;
+    double alpha = 0.0;
+
+    // Searching vector composante not null:
     for (unsigned int i=0; i<3; i++)
     {
-        if ( (AB[i] > 0.0001) || (AB[i] < -0.0001) )
+        if ( (vec1[i] > epsilon) || (vec1[i] < -epsilon) )
         {
-            indAB = i;
+            ind1 = i;
+
             for (unsigned int j = 0; j<3; j++)
-                if ( (coef_XH[j] > 0.001 || coef_XH[j] < -0.001) && (j != i))
+                if ( (vec2[j] > epsilon || vec2[j] < -epsilon) && (j != i))
                 {
-                    indXH = j;
-                    test = true;
+                    ind2 = j;
+
+                    // Solving system:
+                    double coef_lambda = vec1[ind1] - ( vec1[ind2]*vec2[ind1]/vec2[ind2] );
+
+                    if (coef_lambda < epsilon && coef_lambda > -epsilon)
+                        break;
+
+                    lambda = ( edge2[0][ind1] - edge1[0][ind1] + (edge1[0][ind2] - edge2[0][ind2])*vec2[ind1]/vec2[ind2]) * 1/coef_lambda;
+                    alpha = (edge1[0][ind2] + lambda * vec1[ind2] - edge2[0][ind2]) * 1 /vec2[ind2];
                     break;
                 }
         }
 
-        if (test)
+        if (lambda != 0.0)
             break;
     }
 
-    if ((indAB == -1) || (indXH == -1))
-        std::cout << "Error: EdgeSetGeometryAlgorithms::computePointProjectionOnEdge, vector director is null." << std::endl;
+    if ((ind1 == -1) || (ind2 == -1))
+    {
+        std::cout << "Error: EdgeSetGeometryAlgorithms::compute2EdgeIntersection, vector director is null." << std::endl;
+        intersected = false;
+        return X;
+    }
 
-    // solving system:
-    double coef_lambda = AB[indAB] - ( AB[indXH]*coef_XH[indAB]/coef_XH[indXH] );
 
-    double lambda = ( c[indAB] - a[indAB] + (a[indXH] - c[indXH])*coef_XH[indAB]/coef_XH[indXH])*1/coef_lambda;
-    //double alpha = ( a[1] + lambda * AB[1] - c[1] ) * 1/coef_XH[1];
-
+    // Compute X coords:
     for (unsigned int i = 0; i<3; i++)
-        h[i] = a[i] + lambda * AB[i];
+        X[i] = edge1[0][i] + lambda * vec1[i];
 
-    sofa::helper::vector< double > barycoord = compute2PointsBarycoefs(h, theEdge[0], theEdge[1]);
+    // Check if lambda found is really a solution
+    for (unsigned int i = 0; i<3; i++)
+        if ( (X[i] - edge2[0][i] - alpha * vec2[i]) > epsilon)
+        {
+            std::cout << "Error: EdgeSetGeometryAlgorithms::compute2EdgeIntersection, edges don't intersect themself." << std::endl;
+            intersected = false;
+        }
 
-    return barycoord;
+    intersected = true;
+    return X;
 }
+
 
 
 } // namespace topology

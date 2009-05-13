@@ -153,6 +153,16 @@ public:
             const sofa::defaulttype::Vec<3,double>& p3,
             const sofa::defaulttype::Vec<3,double>& p4) const;
 
+
+    /** \brief Given two triangles, test if the intersection of the diagonals of the quad composed
+     * by the triangles is inside the quad or not. (test if triangles form a quad)
+     * @param triangle1 Coord tab of the 3 vertices composing the first triangle.
+     * @param triangle2 same for second triangle.
+     * @return bool, true if the intersection point is inside. Else (not inside or no intersection) false.
+     */
+    bool isDiagonalsIntersectionInQuad (const Coord triangle1[3], const Coord triangle2[3]);
+
+
     /** \brief Computes the opposite point to ind_p
      *
      */
@@ -217,11 +227,10 @@ public:
             sofa::helper::vector< Vec<3, double> >& coords_list) const;
 
 
-
-
     /** \brief Get the triangle in a given direction from a point.
      */
     int getTriangleInDirection(PointID p, const sofa::defaulttype::Vec<3,double>& dir) const;
+
 
     /** \brief Write the current mesh into a msh file
      */
