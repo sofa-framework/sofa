@@ -85,7 +85,7 @@ public:
     {
         return DataTypes::Name();
     }
-
+    Data<bool> isVisible;
     Data<VecCoord> f_extrusionVertices;
     Data<VecCoord> f_surfaceVertices;
     Data< helper::vector<BaseMeshTopology::Triangle> > f_extrusionTriangles;

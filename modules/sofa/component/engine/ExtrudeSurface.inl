@@ -48,7 +48,8 @@ using namespace core::objectmodel;
 
 template <class DataTypes>
 ExtrudeSurface<DataTypes>::ExtrudeSurface()
-    : f_extrusionVertices( initData (&f_extrusionVertices, "extrusionVertices", "Position coordinates of the extrusion") )
+    : isVisible( initData (&isVisible, bool (true), "isVisible", "is Visible ?") )
+    , f_extrusionVertices( initData (&f_extrusionVertices, "extrusionVertices", "Position coordinates of the extrusion") )
     , f_surfaceVertices( initData (&f_surfaceVertices, "surfaceVertices", "Position coordinates of the surface") )
     , f_extrusionTriangles( initData (&f_extrusionTriangles, "extrusionTriangles", "Triangles indices of the extrusion") )
     , f_surfaceTriangles( initData (&f_surfaceTriangles, "surfaceTriangles", "Indices of the triangles of the surface to extrude") )
@@ -97,6 +98,8 @@ void ExtrudeSurface<DataTypes>::update()
     dirty = false;
 
     BaseMeshTopology* topology = dynamic_cast<BaseMeshTopology*>(getContext()->getTopology());
+    if (topology->getNbTriangles() < 1)
+        return;
 
     VecCoord* extrusionVertices = f_extrusionVertices.beginEdit();
     extrusionVertices->clear();
@@ -164,34 +167,39 @@ void ExtrudeSurface<DataTypes>::update()
                 t2[i] = pointMatching[triangle[i]] + 1;
             }
         }
-        extrusionTriangles->push_back(t1);
-        extrusionTriangles->push_back(t2);
 
         //to get borders, we simply stock the edge and look if it is already in the table
-
         BaseMeshTopology::Edge e[3];
-        if (t1[0] < t1[1])
+        BaseMeshTopology::Edge ei[3];
+
         { e[0][0] = t1[0] ; e[0][1] = t1[1] ; }
-        else
-        { e[0][0] = t1[1] ; e[0][1] = t1[0] ; }
+        { ei[0][0] = t1[1] ; ei[0][1] = t1[0] ; }
 
-        if (t1[0] < t1[2])
         { e[1][0] = t1[0] ; e[1][1] = t1[2] ; }
-        else
-        { e[1][0] = t1[2] ; e[1][1] = t1[0] ; }
+        { ei[1][0] = t1[2] ; ei[1][1] = t1[0] ; }
 
-        if (t1[1] < t1[2])
         { e[2][0] = t1[1] ; e[2][1] = t1[2] ; }
-        else
-        { e[2][1] = t1[1] ; e[2][0] = t1[2] ; }
+        { ei[2][1] = t1[1] ; ei[2][0] = t1[2] ; }
 
         for (unsigned int i=0 ; i<3 ; i++)
         {
             if ( edgesOnBorder.find(e[i])  == edgesOnBorder.end())
-                edgesOnBorder[e[i]] = true;
+            {
+                if ( edgesOnBorder.find(ei[i])  == edgesOnBorder.end())
+                    edgesOnBorder[e[i]] = true;
+                else
+                    edgesOnBorder[ei[i]] = false;
+            }
             else
                 edgesOnBorder[e[i]] = false;
+
         }
+
+        //flip normal
+        std::swap(t1[1], t1[2]);
+
+        extrusionTriangles->push_back(t1);
+        extrusionTriangles->push_back(t2);
     }
 
     std::map<BaseMeshTopology::Edge, bool >::const_iterator itEdges;
@@ -201,17 +209,16 @@ void ExtrudeSurface<DataTypes>::update()
         if ((*itEdges).second)
         {
             BaseMeshTopology::Edge e = (*itEdges).first;
+            BaseMeshTopology::Triangle ft1, ft2;
 
             //first triangle
-            BaseMeshTopology::Triangle ft1;
             ft1[0] = e[0];
             ft1[1] = e[1];
             ft1[2] = e[0] + 1;
 
             //second triangle
-            BaseMeshTopology::Triangle ft2;
-            ft2[0] = e[0] + 1;
-            ft2[1] = e[1] + 1;
+            ft2[0] = e[1] + 1;
+            ft2[1] = e[0] + 1;
             ft2[2] = e[1];
 
             extrusionTriangles->push_back(ft1);
@@ -232,7 +239,7 @@ void ExtrudeSurface<DataTypes>::draw()
     helper::vector<BaseMeshTopology::TriangleID>::const_iterator itTriangles;
     glDisable(GL_LIGHTING);
 
-    if (!this->getContext()->getShowBehaviorModels())
+    if (!this->getContext()->getShowBehaviorModels() || !isVisible.getValue())
         return;
 
     if (this->getContext()->getShowWireFrame())
