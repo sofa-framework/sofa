@@ -2074,7 +2074,7 @@ void MechanicalObject<DataTypes>::setC(VecId v)
     }
     else
     {
-        std::cerr << "Invalid setDx operation ("<<v<<")\n";
+        std::cerr << "Invalid setC operation ("<<v<<")\n";
     }
 }
 
@@ -2240,6 +2240,7 @@ std::list<core::componentmodel::behavior::BaseMechanicalState::ConstraintBlock> 
 
         //Create a new block knowing the constraints to consider (vecDofsInBlock)
         FullMatrix<SReal> *m=new FullMatrix<SReal>(indices.size(), dimensionDeriv);
+        m->clear();
         for (unsigned int i=0; i<vecDofsInBlock.size(); ++i)
         {
             //data is the value in the map for the dof "minDof"

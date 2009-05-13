@@ -626,11 +626,14 @@ void RigidRigidMapping<BaseMapping>::applyJT( typename In::VecConst& out, const 
             for(unsigned int ito=0; ito<numDofs && it != in[i].getData().end(); ito++)
             {
                 Vector v,omega;
+                bool needToInsert=false;
 
                 for(unsigned int r=0; r<val && it != in[i].getData().end(); r++, cpt++)
                 {
                     const unsigned int idx=it->first;
                     if (idx != cpt) continue;
+                    needToInsert=true;
+
                     Deriv data=(Deriv) it->second;
 
                     Vector f = data.getVCenter();
@@ -638,8 +641,11 @@ void RigidRigidMapping<BaseMapping>::applyJT( typename In::VecConst& out, const 
                     omega += data.getVOrientation() + cross(f,-pointsR0[cpt].getCenter());
                     it++;
                 }
-                const InDeriv result(v, omega);
-                out[outSize+i].insert(ito, result);
+                if (needToInsert)
+                {
+                    const InDeriv result(v, omega);
+                    out[outSize+i].insert(ito, result);
+                }
             }
         }
         break;
@@ -651,25 +657,34 @@ void RigidRigidMapping<BaseMapping>::applyJT( typename In::VecConst& out, const 
         for(unsigned int i=0; i<in.size(); i++)
         {
             unsigned int cpt=0;
-
+            std::cerr << "\tConstraint " << i << "\n";
             OutConstraintIterator it=in[i].getData().begin();
             for(unsigned int ito=0; ito<numDofs && it != in[i].getData().end(); ito++)
             {
                 Vector v,omega;
+                bool needToInsert=false;
 
                 for(unsigned int r=0; r<repartition.getValue()[ito] && it != in[i].getData().end(); r++, cpt++)
                 {
                     const unsigned int idx=it->first;
+//                     std::cerr << "\tIdx " << idx << "/" << cpt << "\n";
                     if (idx != cpt) continue;
-                    Deriv data=(Deriv) it->second;
+                    needToInsert=true;
 
+                    Deriv data=(Deriv) it->second;
+                    std::cerr << "Data " << idx << " : " << data.getVCenter() << " : " << data.getVOrientation() << " => " << data << "\n";
                     Vector f = data.getVCenter();
                     v += f;
                     omega += data.getVOrientation() + cross(f,-pointsR0[cpt].getCenter());
                     it++;
                 }
-                const InDeriv result(v, omega);
-                out[outSize+i].insert(ito, result);
+
+                if (needToInsert)
+                {
+                    std::cerr << "In : " << ito << " / " << i << " Need to Insert : " << v << " ### " << omega << "\n";
+                    const InDeriv result(v, omega);
+                    out[outSize+i].insert(ito, result);
+                }
             }
         }
         break;

@@ -707,19 +707,24 @@ void RigidMapping<BaseMapping>::applyJT( typename In::VecConst& out, const typen
             for(unsigned int ito=0; ito<numDofs; ito++)
             {
                 Vector v,omega;
+                bool needToInsert=false;
 
                 for(unsigned int r=0; r<val && it != in[i].getData().end(); r++, cpt++)
                 {
                     const unsigned int i = it->first;// index of the node
                     if (i != cpt) continue;
 
+                    needToInsert=true;
                     const Deriv f = (Deriv) it->second;
                     v += f;
                     omega += cross(rotatedPoints[cpt],f);
                     it++;
                 }
-                const InDeriv result(v, omega);
-                out[outSize+i].insert(ito, result);
+                if (needToInsert)
+                {
+                    const InDeriv result(v, omega);
+                    out[outSize+i].insert(ito, result);
+                }
             }
         }
         break;
@@ -736,19 +741,24 @@ void RigidMapping<BaseMapping>::applyJT( typename In::VecConst& out, const typen
             for(unsigned int ito=0; ito<numDofs; ito++)
             {
                 Vector v,omega;
+                bool needToInsert=false;
 
                 for(unsigned int r=0; r<repartition.getValue()[ito] && it != in[i].getData().end(); r++, cpt++)
                 {
                     const unsigned int i = it->first;// index of the node
                     if (i != cpt) continue;
 
+                    needToInsert=true;
                     const Deriv f = (Deriv) it->second;
                     v += f;
                     omega += cross(rotatedPoints[cpt],f);
                     it++;
                 }
-                const InDeriv result(v, omega);
-                out[outSize+i].insert(ito, result);
+                if (needToInsert)
+                {
+                    const InDeriv result(v, omega);
+                    out[outSize+i].insert(ito, result);
+                }
             }
         }
         break;
