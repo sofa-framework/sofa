@@ -636,10 +636,10 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isPointInTriangle(const Triangl
 
 // Tests how to triangularize a quad whose vertices are defined by (p_q1, p_q2, ind_q3, ind_q4) according to the Delaunay criterion
 template<class DataTypes>
-bool TriangleSetGeometryAlgorithms< DataTypes >::isQuadDeulaunayOriented(const Vec<3,double>& p_q1,
-        const Vec<3,double>& p_q2,
+bool TriangleSetGeometryAlgorithms< DataTypes >::isQuadDeulaunayOriented(const typename DataTypes::Coord& p_q1,
+        const typename DataTypes::Coord& p_q2,
         unsigned int ind_q3,
-        unsigned int ind_q4) const
+        unsigned int ind_q4)
 {
     sofa::helper::vector< double > baryCoefs;
 
@@ -648,38 +648,61 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isQuadDeulaunayOriented(const V
     const typename DataTypes::Coord& c3 = vect_c[ind_q3];
     const typename DataTypes::Coord& c4 = vect_c[ind_q4];
 
-    Vec<3,double> p1 = p_q1;
-    Vec<3,double> p2 = p_q2;
-    Vec<3,double> p3; p3 = c3;
-    Vec<3,double> p4; p4 = c4;
-    return isQuadDeulaunayOriented(p1, p2, p3, p4);
+    return isQuadDeulaunayOriented(p_q1, p_q2, c3, c4);
 }
 
 /** \brief Tests how to triangularize a quad whose vertices are defined by (p1, p2, p3, p4) according to the Delaunay criterion
  *
  */
 template<class DataTypes>
-bool TriangleSetGeometryAlgorithms< DataTypes >::isQuadDeulaunayOriented(const Vec<3,double>& q1,
-        const sofa::defaulttype::Vec<3,double>& q2,
-        const sofa::defaulttype::Vec<3,double>& q3,
-        const sofa::defaulttype::Vec<3,double>& q4) const
+bool TriangleSetGeometryAlgorithms< DataTypes >::isQuadDeulaunayOriented(const typename DataTypes::Coord& p1,
+        const typename DataTypes::Coord& p2,
+        const typename DataTypes::Coord& p3,
+        const typename DataTypes::Coord& p4)
 {
-    //TODO: consider case with one vertex being inside the triangle fromed by the 3 others vertices.
-    Vec<3,double> G = (q1+q2+q3)/3.0;
+    Coord tri1[3], tri2[3];
 
-    if((G-q2)*(G-q2) <= (G-q4)*(G-q4))
+    tri1[0] = p1; tri1[1] = p2; tri1[2] = p3;
+    tri2[0] = p3; tri2[1] = p4; tri2[2] = p1;
+
+
+    //Test if one vertex is inside the triangle fromed by the the 3 others
+    Coord CommonEdge[2], oppositeVertices[2];
+
+    oppositeVertices[0] = p1; sofa::defaulttype::Vec<3,double> A; A = p1;
+    CommonEdge[0] = p2;       sofa::defaulttype::Vec<3,double> C; C = p2;
+    CommonEdge[1] = p4;       sofa::defaulttype::Vec<3,double> B; B = p3;
+    oppositeVertices[1] = p3; sofa::defaulttype::Vec<3,double> D; D = p4;
+
+    bool intersected = false;
+
+    Coord inter = compute2EdgesIntersection (CommonEdge, oppositeVertices, intersected);
+
+    if (intersected)
     {
+
+        sofa::defaulttype::Vec<3,double> X; DataTypes::get(X[0], X[1], X[2], inter);
+
+        double ABAX = (A - B)*(A - X);
+        double CDCX = (C - D)*(C - X);
+
+        if ( (ABAX < 0) || ((A - X).norm2() > (A - B).norm2()) )
+            return true;
+        else if (	(CDCX < 0) || ((C - X).norm2() > (C - D).norm2()) )
+            return false;
+    }
+
+    Vec<3,double> G = (A+B+C)/3.0;
+
+    if((G-C)*(G-C) <= (G-D)*(G-D))
         return true;
-    }
     else
-    {
         return false;
-    }
 }
 
 
 template<class DataTypes>
-bool TriangleSetGeometryAlgorithms< DataTypes >::isDiagonalsIntersectionInQuad (const Coord triangle1[3], const Coord triangle2[3])
+bool TriangleSetGeometryAlgorithms< DataTypes >::isDiagonalsIntersectionInQuad (const typename DataTypes::Coord triangle1[3],const  typename DataTypes::Coord triangle2[3])
 {
 
     Coord CommonEdge[2], oppositeVertices[2];
@@ -731,14 +754,19 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::isDiagonalsIntersectionInQuad (
     {
         sofa::defaulttype::Vec<3,double> A; DataTypes::get(A[0], A[1], A[2], CommonEdge[0]);
         sofa::defaulttype::Vec<3,double> B; DataTypes::get(B[0], B[1], B[2], CommonEdge[1]);
-        sofa::defaulttype::Vec<3,double> C; DataTypes::get(C[0], C[1], C[2], inter);
 
-        sofa::defaulttype::Vec<3,double> ABAC = (A - B).cross(A - C);
+        sofa::defaulttype::Vec<3,double> C; DataTypes::get(C[0], C[1], C[2], oppositeVertices[0]);
+        sofa::defaulttype::Vec<3,double> D; DataTypes::get(D[0], D[1], D[2], oppositeVertices[1]);
 
-        if(ABAC.norm2() < 1e-12)
-            return true;
-        else
+        sofa::defaulttype::Vec<3,double> X; DataTypes::get(X[0], X[1], X[2], inter);
+
+        double ABAX = (A - B)*(A - X);
+        double CDCX = (C - D)*(C - X);
+
+        if ( (ABAX < 0) || (CDCX < 0) || ((A - X).norm2() > (A - B).norm2()) || ((C - X).norm2() > (C - D).norm2()) )
             return false;
+        else
+            return true;
     }
 
     return false;

@@ -141,17 +141,17 @@ public:
     /** \brief Tests how to triangularize a quad whose vertices are defined by (p_q1, p_q2, ind_q3, ind_q4) according to the Delaunay criterion
     *
     */
-    bool isQuadDeulaunayOriented(const sofa::defaulttype::Vec<3,double>& p_q1,
-            const sofa::defaulttype::Vec<3,double>& p_q2,
-            unsigned int ind_q3, unsigned int ind_q4) const;
+    bool isQuadDeulaunayOriented(const typename DataTypes::Coord& p_q1,
+            const typename DataTypes::Coord& p_q2,
+            unsigned int ind_q3, unsigned int ind_q4);
 
     /** \brief Tests how to triangularize a quad whose vertices are defined by (p1, p2, p3, p4) according to the Delaunay criterion
      *
      */
-    bool isQuadDeulaunayOriented(const sofa::defaulttype::Vec<3,double>& p1,
-            const sofa::defaulttype::Vec<3,double>& p2,
-            const sofa::defaulttype::Vec<3,double>& p3,
-            const sofa::defaulttype::Vec<3,double>& p4) const;
+    bool isQuadDeulaunayOriented(const typename DataTypes::Coord& p1,
+            const typename DataTypes::Coord& p2,
+            const typename DataTypes::Coord& p3,
+            const typename DataTypes::Coord& p4);
 
 
     /** \brief Given two triangles, test if the intersection of the diagonals of the quad composed
@@ -160,7 +160,7 @@ public:
      * @param triangle2 same for second triangle.
      * @return bool, true if the intersection point is inside. Else (not inside or no intersection) false.
      */
-    bool isDiagonalsIntersectionInQuad (const Coord triangle1[3], const Coord triangle2[3]);
+    bool isDiagonalsIntersectionInQuad (const typename DataTypes::Coord triangle1[3], const typename DataTypes::Coord triangle2[3]);
 
 
     /** \brief Computes the opposite point to ind_p
