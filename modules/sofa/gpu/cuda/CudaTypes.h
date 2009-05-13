@@ -129,6 +129,10 @@ public:
     {
         return vectorSize;
     }
+    size_type capacity() const
+    {
+        return allocSize;
+    }
     bool empty() const
     {
         return vectorSize==0;
