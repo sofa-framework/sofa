@@ -1771,6 +1771,7 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapBorderPath (unsigned int pa, 
 
     bool snap_a = false;
     bool snap_b = false;
+    bool intersected = true;
     double epsilon = epsilonSnapBorder;
 
     // Test if point has not already been snap on a point
@@ -1811,7 +1812,11 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapBorderPath (unsigned int pa, 
                 {
                     sofa::defaulttype::Vec<3,double> thePoint; DataTypes::get(thePoint[0], thePoint[1], thePoint[2], a);
 
-                    sofa::helper::vector< double > new_coord =  m_geometryAlgorithms->computePointProjectionOnEdge (theEdge, thePoint);
+                    sofa::helper::vector< double > new_coord =  m_geometryAlgorithms->computePointProjectionOnEdge (theEdge, thePoint, intersected);
+
+                    if (!intersected)
+                        std::cout << " Error: TriangleSetTopologyAlgorithms::SnapBorderPath orthogonal projection failed" << std::endl;
+
                     topoPath_list[0] = core::componentmodel::topology::EDGE;
                     //std::cout << "new_coord: " << new_coord << std::endl;
                     //std::cout << "thePoint: " << thePoint << std::endl;
@@ -1858,7 +1863,11 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapBorderPath (unsigned int pa, 
                 else
                 {
                     sofa::defaulttype::Vec<3,double> thePoint; DataTypes::get(thePoint[0], thePoint[1], thePoint[2], b);
-                    sofa::helper::vector< double > new_coord =  m_geometryAlgorithms->computePointProjectionOnEdge (theEdge, thePoint);
+                    sofa::helper::vector< double > new_coord =  m_geometryAlgorithms->computePointProjectionOnEdge (theEdge, thePoint, intersected);
+
+                    if (!intersected)
+                        std::cout << " Error: TriangleSetTopologyAlgorithms::SnapBorderPath orthogonal projection failed" << std::endl;
+
                     topoPath_list.back() = core::componentmodel::topology::EDGE;
                     indices_list.back() = theEdge;
                     coords_list.back()[0] = new_coord[1];

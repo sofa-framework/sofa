@@ -103,9 +103,21 @@ public:
     // compute barycentric coefficients
     sofa::helper::vector< double > compute2PointsBarycoefs(const Vec<3,double> &p, unsigned int ind_p1, unsigned int ind_p2) const;
 
-    /// compute the projection coordinate of a point x on the edge i
-    sofa::helper::vector< double > computePointProjectionOnEdge (const EdgeID i, sofa::defaulttype::Vec<3,double> coord_x);
+    /** \brief Compute the projection coordinate of a point C on the edge i. Using compute2EdgesIntersection().
+     * @param i edgeID on which point is projected.
+     * @param coord_x coordinate of point to project
+     * @param intersected bool default value true, changed as false if no intersection is done.
+     * @return barycentric coefficient of the projection in edgeID i.
+     */
+    sofa::helper::vector< double > computePointProjectionOnEdge (const EdgeID i, sofa::defaulttype::Vec<3,double> coord_x, bool& intersected);
 
+    /** \brief Compute the intersection coordinate of the 2 input straight lines. Lines vector director are computed using coord given in input.
+     * @param edge1 tab Coord[2] from the 2 vertices composing first edge
+     * @param edge2 same for second edge
+     * @param intersected bool default value true, changed as false if no intersection is done.
+     * @return Coord of intersection point, 0 if no intersection.
+     */
+    Coord compute2EdgesIntersection (const Coord edge1[2], const Coord edge2[2], bool& intersected);
 
     void writeMSHfile(const char *filename) const;
 };
