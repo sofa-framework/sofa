@@ -56,7 +56,7 @@
 #include "CudaCommon.h"
 #include "CudaMath.h"
 #include "cuda.h"
-#include "radixsort.cuh"
+#include "radixsort.h"
 
 #if defined(__cplusplus) && CUDA_VERSION < 2000
 namespace sofa
@@ -306,7 +306,7 @@ void SpatialGridContainer3f1_updateGrid(int cellBits, float cellWidth, int nbPoi
 
     // Then sort it
 
-    RadixSort((KeyValuePair*)particleHash, (KeyValuePair*)sortTmp, nbPoints, cellBits);
+    //RadixSort((KeyValuePair*)particleHash, (KeyValuePair*)sortTmp, nbPoints, cellBits);
 
     // Then find the start of each cell
     {

@@ -181,7 +181,12 @@ SOURCES += \
 }
 }
 
-HEADERS += radixsort.cuh radixsort_kernel.cu
+CUDA_SOURCES += scan.cu
+
+#HEADERS += radixsort.cuh radixsort_kernel.cu
+#CUDA_SOURCES += radixsort.cu
+
+HEADERS += radixsort.h
 CUDA_SOURCES += radixsort.cu
 
 } # END SOFA_DEV
