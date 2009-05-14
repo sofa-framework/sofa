@@ -84,7 +84,7 @@ void TriangleSetTopologyContainer::addTriangle( int a, int b, int c )
     if (b >= getNbPoints()) nbPoints.setValue(b+1);
     if (c >= getNbPoints()) nbPoints.setValue(c+1);
 
-    serr << "ADD TRIANGLE" << sendl;
+    sout << "ADD TRIANGLE" << sendl;
 }
 
 void TriangleSetTopologyContainer::init()
