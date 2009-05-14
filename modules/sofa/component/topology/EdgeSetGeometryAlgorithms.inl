@@ -373,20 +373,22 @@ typename DataTypes::Coord EdgeSetGeometryAlgorithms<DataTypes>::compute2EdgesInt
         return X;
     }
 
-
     // Compute X coords:
     for (unsigned int i = 0; i<3; i++)
         X[i] = edge1[0][i] + (float)lambda * vec1[i];
 
+    intersected = true;
+
     // Check if lambda found is really a solution
     for (unsigned int i = 0; i<3; i++)
-        if ( (X[i] - edge2[0][i] - alpha * vec2[i]) > epsilon)
+        if ( (X[i] - edge2[0][i] - alpha * vec2[i]) > 0.1 )
         {
+            std::cout << "erreur: " <<(X[i] - edge2[0][i] - alpha * vec2[i]) << std::endl;
+
             std::cout << "Error: EdgeSetGeometryAlgorithms::compute2EdgeIntersection, edges don't intersect themself." << std::endl;
             intersected = false;
         }
 
-    intersected = true;
     return X;
 }
 

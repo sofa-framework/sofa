@@ -91,18 +91,6 @@ public:
             sofa::helper::vector< unsigned int >& trianglesIndex2remove);
 
 
-    /** \brief: Swap a list of edges.
-     *
-     */
-    void edgeSwapProcess (const sofa::helper::vector <EdgeID>& listEdges);
-
-
-    /** \brief: Swap the edge adjacent to the two input triangles (To be used by the ray pick interactor).
-     *
-     */
-    void edgeSwapProcess (const TriangleID& indexTri1, const TriangleID& indexTri2);
-
-
     /** \brief: Reorder the vertex in the array of a given edge. In order to be in the oriented in the right direction
      * regarding the first triangle of m_triangleEdgeShellArray[ edgeIndex ].
      *
@@ -127,17 +115,6 @@ public:
      */
     void reorderingTopologyOnROI (const sofa::helper::vector <unsigned int>& listVertex);
 
-
-    /** \brief: Reorder the mesh by swaping a list of edges.
-     * For each edge, check if topology will be better before swaping it.
-     */
-    void swapRemeshing (sofa::helper::vector <EdgeID>& listEdges);
-
-    /** \brief: Reorder the whole mesh by swaping a all edges.
-     * For each edge, check if topology will be better before swaping it.
-     * @see swapRemeshing (const sofa::helper::vector <unsigned int>& listedges)
-     */
-    void swapRemeshing ();
 
 protected:
 

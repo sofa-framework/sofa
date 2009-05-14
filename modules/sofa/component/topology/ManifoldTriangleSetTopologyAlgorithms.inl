@@ -44,6 +44,7 @@ namespace topology
 using namespace sofa::defaulttype;
 using namespace sofa::core::componentmodel::behavior;
 
+
 template<class DataTypes>
 void ManifoldTriangleSetTopologyAlgorithms< DataTypes >::init()
 {
@@ -52,6 +53,260 @@ void ManifoldTriangleSetTopologyAlgorithms< DataTypes >::init()
     this->getContext()->get(m_modifier);
     this->getContext()->get(m_geometryAlgorithms);
 }
+
+
+template<class DataTypes>
+void ManifoldTriangleSetTopologyAlgorithms< DataTypes >::reinit()
+{
+    if(!(m_triSwap.getValue()).empty() && this->getContext()->getAnimate()) //temporarly test for the funciton edgeSwap
+    {
+        edgeSwapProcess (m_triSwap.getValue());
+    }
+
+    if(m_swapMesh.getValue() && this->getContext()->getAnimate())
+    {
+        swapRemeshing();
+    }
+}
+
+
+
+
+template<class DataTypes>
+void ManifoldTriangleSetTopologyAlgorithms< DataTypes >::edgeSwapProcess (const sofa::helper::vector <EdgeID>& listEdges)
+{
+
+    for (unsigned int i = 0; i<listEdges.size(); i++)
+    {
+        edgeSwap(listEdges[i]);
+        //   m_modifier->propagateTopologicalChanges();
+    }
+}
+
+
+
+template<class DataTypes>
+void ManifoldTriangleSetTopologyAlgorithms< DataTypes >::edgeSwapProcess (const TriangleID& indexTri1, const TriangleID& indexTri2)
+{
+    sofa::helper::vector < unsigned int > listVertex;
+    unsigned int cpt = 0;
+    int commonEdgeIndex;
+    bool test = true;
+    Edge commonEdge;
+
+    Triangle vertexTriangle1 = m_container->getTriangleArray()[indexTri1];
+    for (unsigned int i = 0; i < 3; i++)
+        listVertex.push_back(vertexTriangle1[i]);
+
+    Triangle vertexTriangle2 = m_container->getTriangleArray()[indexTri2];
+    for (unsigned int i = 0; i <3; i++)
+    {
+        test =true;
+        for (unsigned int j = 0; j <3; j++)
+        {
+            if (vertexTriangle2[i] == listVertex[j])
+            {
+                commonEdge[cpt] = vertexTriangle2[i];
+                cpt++;
+                test = false;
+                break;
+            }
+        }
+
+        if (test)
+            listVertex.push_back(vertexTriangle2[i]);
+    }
+
+
+    if (commonEdge[0] < commonEdge[1])
+        commonEdgeIndex = m_container->getEdgeIndex(commonEdge[0], commonEdge[1]);
+    else
+        commonEdgeIndex = m_container->getEdgeIndex(commonEdge[1], commonEdge[0]);
+
+    if (commonEdgeIndex == -1 || listVertex.size() > 4)
+    {
+        std::cout << "Error: edgeSwapProcess: the two selected triangles are not adjacent" << std::endl;
+        return;
+    }
+    else
+    {
+        edgeSwap(commonEdgeIndex);
+        //   m_modifier->propagateTopologicalChanges();
+    }
+}
+
+
+
+template<class DataTypes>
+bool ManifoldTriangleSetTopologyAlgorithms< DataTypes >::edgeSwap(const EdgeID& edgeIndex)
+{
+
+    sofa::helper::vector< Triangle > triToAdd; triToAdd.resize (2);
+    sofa::helper::vector< TriangleID > triToAddID; triToAddID.resize (2);
+    sofa::helper::vector< sofa::helper::vector< unsigned int > > ancestors; ancestors.resize(2);
+    sofa::helper::vector< sofa::helper::vector< double > > baryCoefs; baryCoefs.resize (2);
+    sofa::helper::vector< TriangleID > trianglesIndex2remove; trianglesIndex2remove.resize(2);
+
+    trianglesIndex2remove = m_container->getTriangleEdgeShellArray()[edgeIndex];
+
+    if(trianglesIndex2remove.size()>2)
+    {
+        std::cout << "Error: edgeSwap: the topology is not manifold around the input edge: "<< edgeIndex << std::endl;
+        return false;
+    }
+    else if (trianglesIndex2remove.size() == 1)
+    {
+        std::cout << "Error: edgeSwap: the edge: "<< edgeIndex << " is on the border of the mesh. Swaping this edge is impossible" << std::endl;
+        return false;
+    }
+
+    int edgeInTri1 = m_container->getEdgeIndexInTriangle ( m_container->getEdgeTriangleShell (trianglesIndex2remove[0]), edgeIndex);
+    int edgeInTri2 = m_container->getEdgeIndexInTriangle ( m_container->getEdgeTriangleShell (trianglesIndex2remove[1]), edgeIndex);
+    Triangle vertexTriangle1 = m_container->getTriangle (trianglesIndex2remove[0]);
+    Triangle vertexTriangle2 = m_container->getTriangle (trianglesIndex2remove[1]);
+
+    Triangle newTri;
+    typename DataTypes::VecCoord& coords = *(m_geometryAlgorithms->getDOF()->getX());
+    typename DataTypes::Coord tri1[3], tri2[3];
+
+    newTri[0] = vertexTriangle1[ edgeInTri1 ];
+    newTri[1] = vertexTriangle1[ (edgeInTri1+1)%3 ];
+    newTri[2] = vertexTriangle2[ edgeInTri2 ];
+    triToAdd[0] = newTri;
+
+    for (unsigned int i = 0; i<3; i++)
+        tri1[i] = coords[ newTri[i]];
+
+    newTri[0] = vertexTriangle2[ edgeInTri2 ];
+    newTri[1] = vertexTriangle2[ (edgeInTri2+1)%3 ];
+    newTri[2] = vertexTriangle1[ edgeInTri1 ];
+    triToAdd[1] = newTri;
+
+    for (unsigned int i = 0; i<3; i++)
+        tri2[i] = coords[ newTri[i]];
+
+    if (!m_geometryAlgorithms->isDiagonalsIntersectionInQuad (tri1, tri2) )
+    {
+        std::cout << "Error: edgeSwap: the new edge swaped will be outside the quad." << std::endl;
+        return false;
+    }
+
+    for (unsigned int i = 0; i <2; i++)
+    {
+        ancestors[i].push_back (trianglesIndex2remove[0]); baryCoefs[i].push_back (0.5);
+        ancestors[i].push_back (trianglesIndex2remove[1]); baryCoefs[i].push_back (0.5);
+    }
+    triToAddID[0] = m_container->getNbTriangles();
+    triToAddID[1] = m_container->getNbTriangles()+1;
+
+    m_modifier->addRemoveTriangles (triToAdd.size(), triToAdd, triToAddID, ancestors, baryCoefs, trianglesIndex2remove);
+
+    return true;
+}
+
+
+
+template<class DataTypes>
+void ManifoldTriangleSetTopologyAlgorithms< DataTypes >::swapRemeshing()
+{
+    // All the mesh is about to be remeshed by swaping edges. So passing a simple list.
+    sofa::helper::vector <EdgeID> listEdges;
+    for(unsigned int i = 0; i<m_container->getNumberOfEdges(); i++)
+        listEdges.push_back (i);
+
+    swapRemeshing(listEdges);
+}
+
+
+
+template<class DataTypes>
+void ManifoldTriangleSetTopologyAlgorithms< DataTypes >::swapRemeshing(sofa::helper::vector <EdgeID>& listEdges)
+{
+    //sofa::helper::vector <EdgeID> edgeToSwap;
+    bool allDone = false;
+    bool test = true;
+
+    while (!allDone && test)
+    {
+        allDone = true;
+        test = false;
+
+        for (unsigned int edgeIndex = 0; edgeIndex<listEdges.size() ; edgeIndex++)
+        {
+            const sofa::helper::vector <TriangleID>& shell = m_container->getTriangleEdgeShellArray()[listEdges[edgeIndex]];
+
+            if (shell.size() == 2)
+            {
+                sofa::helper::vector <unsigned int> listVertex;
+                const sofa::helper::vector <PointID>& border = m_container->getPointsOnBorder();
+                TriangleID indexTri1, indexTri2;
+
+                indexTri1 = shell[0];
+                indexTri2 = shell[1];
+
+                int edgeInTri1 = m_container->getEdgeIndexInTriangle ( m_container->getEdgeTriangleShell (indexTri1), listEdges[edgeIndex]);
+                int edgeInTri2 = m_container->getEdgeIndexInTriangle ( m_container->getEdgeTriangleShell (indexTri2), listEdges[edgeIndex]);
+                Triangle vertexTriangle1 = m_container->getTriangleArray()[indexTri1];
+                Triangle vertexTriangle2 = m_container->getTriangleArray()[indexTri2];
+
+                listVertex.push_back( vertexTriangle1[edgeInTri1] );
+                listVertex.push_back( vertexTriangle2[edgeInTri2] );
+                listVertex.push_back( vertexTriangle1[ (edgeInTri1+1)%3 ] );
+                listVertex.push_back( vertexTriangle2[ (edgeInTri2+1)%3 ] );
+
+                int sum = 0;
+
+                sum = (m_container->getTriangleVertexShellArray()[ listVertex[0] ]).size();
+                sum += (m_container->getTriangleVertexShellArray()[ listVertex[1] ]).size();
+                sum -= (m_container->getTriangleVertexShellArray()[ listVertex[2] ]).size();
+                sum -= (m_container->getTriangleVertexShellArray()[ listVertex[3] ]).size();
+
+                for (unsigned int i = 0; i <2; i++)
+                {
+                    for (unsigned int j = 0; j <border.size(); j++)
+                    {
+                        if(listVertex[i] == border[j])
+                        {
+                            sum+=2;
+                            break;
+                        }
+                    }
+                }
+
+                for (unsigned int i = 2; i <4; i++)
+                {
+                    for (unsigned int j = 0; j <border.size(); j++)
+                    {
+                        if(listVertex[i] == border[j])
+                        {
+                            sum-=2;
+                            break;
+                        }
+                    }
+                }
+
+                if (sum < -2)
+                {
+                    //edgeToSwap.push_back (listEdges[edgeIndex]);
+                    if (edgeSwap (listEdges[edgeIndex]))
+                        test = true;
+                    //	    m_modifier->propagateTopologicalChanges();
+                    allDone = false;
+                }
+            }
+        }
+
+        //edgeSwapProcess (edgeToSwap);
+        //edgeToSwap.clear();
+    }
+}
+
+
+
+
+
+
+
 
 
 
@@ -172,7 +427,7 @@ bool ManifoldTriangleSetTopologyAlgorithms< DataTypes >::InciseAlongEdgeList (co
         m_container->createElementsOnBorder();
 
 
-    m_modifier->swapRemeshing (listEdges);
+    swapRemeshing (listEdges);
 
     // std::cout <<"end incision"<<std::endl;
 
