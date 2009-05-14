@@ -106,6 +106,11 @@ void Quad2TriangleTopologicalMapping::init()
 
             toModel->setNbPoints(fromModel->getNbPoints());
 
+            for (int i=0; i<fromModel->getNbPoints(); i++)
+            {
+                toModel->addPoint(fromModel->getPX(i), fromModel->getPY(i), fromModel->getPZ(i));
+            }
+
             TriangleSetTopologyModifier *to_tstm;
             toModel->getContext()->get(to_tstm);
 
