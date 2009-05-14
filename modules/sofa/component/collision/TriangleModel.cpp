@@ -286,21 +286,21 @@ void TriangleModel::handleTopologyChange()
                 //updateNormals();
                 break;
             }
-            case core::componentmodel::topology::TRIANGLESADDED:
-            {
-                //sout << "INFO_print : Vis - TRIANGLESADDED" << sendl;
-                const sofa::component::topology::TrianglesAdded *ta=static_cast< const sofa::component::topology::TrianglesAdded * >( *itBegin );
-                for (unsigned int i=0; i<ta->getNbAddedTriangles(); ++i)
-                {
-                    Triangle t(this, size - ta->getNbAddedTriangles() + i);
-                    const Vector3& pt1 = t.p1();
-                    const Vector3& pt2 = t.p2();
-                    const Vector3& pt3 = t.p3();
-                    t.n() = cross(pt2-pt1,pt3-pt1);
-                    t.n().normalize();
-                }
-                break;
-            }
+            /*
+            	case core::componentmodel::topology::TRIANGLESADDED:
+            	{
+            			//sout << "INFO_print : Vis - TRIANGLESADDED" << sendl;
+            		const sofa::component::topology::TrianglesAdded *ta=static_cast< const sofa::component::topology::TrianglesAdded * >( *itBegin );
+            		for (unsigned int i=0;i<ta->getNbAddedTriangles();++i) {
+            			Triangle t(this, size - ta->getNbAddedTriangles() + i);
+            			const Vector3& pt1 = t.p1();
+            			const Vector3& pt2 = t.p2();
+            			const Vector3& pt3 = t.p3();
+            			t.n() = cross(pt2-pt1,pt3-pt1);
+            			t.n().normalize();
+            		}
+            		break;
+            	}*/
             default: break;
             }
             ++itBegin;
