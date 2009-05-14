@@ -94,7 +94,7 @@ void TriangleModelInRegularGrid::computeBoundingTree ( int )
     needsUpdate=false;
     Vector3 minElem, maxElem;
     const VecCoord& xHigh = *_higher_mstate->getX();
-    const VecCoord& x = *mstate->getX();
+    //const VecCoord& x = *mstate->getX();
 
     // no hierarchy
     if ( empty() )
