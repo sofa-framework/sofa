@@ -337,6 +337,12 @@ public:
         return hostPointer[i];
     }
 
+    const T& getSingle ( size_type i ) const
+    {
+        copyToHostSingle(i);
+        return hostPointer[i];
+    }
+
     /// Output stream
     inline friend std::ostream& operator<< ( std::ostream& os, const CudaVector<T>& vec )
     {
@@ -387,6 +393,21 @@ protected:
 //#endif
         mycudaMemcpyHostToDevice ( devicePointer, hostPointer, vectorSize*sizeof ( T ) );
         deviceIsValid = true;
+    }
+    void copyToHostSingle(size_type i) const
+    {
+        if ( hostIsValid ) return;
+//#ifndef NDEBUG
+        if (mycudaVerboseLevel>=LOG_TRACE)
+        {
+            std::cout << "CUDA: GPU->CPU single copy of "<<sofa::core::objectmodel::Base::decodeTypeName ( typeid ( *this ) ) <<": "<<sizeof ( T ) <<" B"<<std::endl;
+            //sofa::helper::BackTrace::dump();
+        }
+//#endif
+        if (bufferObject)
+            mapBuffer();
+        mycudaMemcpyDeviceToHost ( ((T*)hostPointer)+i, ((const T*)devicePointer)+i, sizeof ( T ) );
+        //hostIsValid = true;
     }
 #ifdef NDEBUG
     void checkIndex ( size_type ) const
