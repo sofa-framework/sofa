@@ -77,6 +77,7 @@ public:
     sofa::core::objectmodel::DataFileName fileRigidMapping;
     Data< bool > useX0;
     Data< bool > indexFromEnd;
+    Data< bool > globalToLocalCoords;
 
     core::componentmodel::behavior::BaseMechanicalState::ParticleMask* maskFrom;
     core::componentmodel::behavior::BaseMechanicalState::ParticleMask* maskTo;
@@ -89,7 +90,8 @@ public:
           fileRigidMapping ( initData ( &fileRigidMapping,"fileRigidMapping","Filename" ) ),
           useX0( initData ( &useX0,false,"useX0","Use x0 instead of local copy of initial positions (to support topo changes)") ),
           indexFromEnd( initData ( &indexFromEnd,false,"indexFromEnd","input DOF index starts from the end of input DOFs vector") ),
-          repartition ( initData ( &repartition,"repartition","number of dest dofs per entry dof" ) )
+          repartition ( initData ( &repartition,"repartition","number of dest dofs per entry dof" ) ),
+          globalToLocalCoords ( initData ( &globalToLocalCoords,"globalToLocalCoords","are the output DOFs initially expressed in global coordinates" ) )
     {
         addAlias(&fileRigidMapping,"filename");
         maskFrom = NULL;
