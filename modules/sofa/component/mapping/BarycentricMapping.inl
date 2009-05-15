@@ -3038,7 +3038,9 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::VecConst& out
     {
 
         OutConstraintIterator itOut;
-        for (itOut=in[i].getData().begin(); itOut!=in[i].getData().end(); itOut++)
+        std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
+
+        for (itOut=iter.first; itOut!=iter.second; itOut++)
         {
             indexIn = itOut->first;
             InDeriv data = (InDeriv) itOut->second;
@@ -3131,7 +3133,9 @@ void BarycentricMapperRegularGridTopology<In,Out>::applyJT ( typename In::VecCon
     for ( unsigned int i=0; i<in.size(); i++ )
     {
         OutConstraintIterator itOut;
-        for (itOut=in[i].getData().begin(); itOut!=in[i].getData().end(); itOut++)
+        std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
+
+        for (itOut=iter.first; itOut!=iter.second; itOut++)
         {
             unsigned int indexIn = itOut->first;
             InDeriv data = (InDeriv) itOut->second;
@@ -3179,7 +3183,9 @@ void BarycentricMapperSparseGridTopology<In,Out>::applyJT ( typename In::VecCons
         std::map<int,int> outpos;
         int nbout = 0;
         OutConstraintIterator itOut;
-        for (itOut=in[i].getData().begin(); itOut!=in[i].getData().end(); itOut++)
+        std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
+
+        for (itOut=iter.first; itOut!=iter.second; itOut++)
         {
             unsigned indexIn = itOut->first;
             InDeriv data = (InDeriv) itOut->second;
@@ -3208,7 +3214,7 @@ void BarycentricMapperSparseGridTopology<In,Out>::applyJT ( typename In::VecCons
                     out[i+offset].add ( cube[1],  ( data * f ) ); ++nbout;
                 }
                 else
-                    out[i+offset].getDataAt(it.first->second) +=  ( data * f );
+                    out[i+offset].add(it.first->second,( data * f ));
             }
 #ifdef SOFA_NEW_HEXA
             {
@@ -3218,7 +3224,7 @@ void BarycentricMapperSparseGridTopology<In,Out>::applyJT ( typename In::VecCons
                     out[i+offset].add ( cube[3],  ( data * f ) ); ++nbout;
                 }
                 else
-                    out[i+offset].getDataAt(it.first->second) +=  ( data * f );
+                    out[i+offset].add(it.first->second, ( data * f ));
             }
             {
                 std::pair<std::map<int,int>::iterator,bool> it = outpos.insert ( std::make_pair ( cube[2],nbout ) ); OutReal f = ( ( fx ) * ( fy ) * ( 1-fz ) );
@@ -3227,7 +3233,7 @@ void BarycentricMapperSparseGridTopology<In,Out>::applyJT ( typename In::VecCons
                     out[i+offset].add ( cube[2],  ( data * f ) ); ++nbout;
                 }
                 else
-                    out[i+offset].getDataAt(it.first->second) +=  ( data * f );
+                    out[i+offset].add(it.first->second,  ( data * f ));
             }
 #else
             {
@@ -3237,7 +3243,7 @@ void BarycentricMapperSparseGridTopology<In,Out>::applyJT ( typename In::VecCons
                     out[i+offset].add ( cube[2],  ( data * f ) ); ++nbout;
                 }
                 else
-                    out[i+offset].getDataAt(it.first->second) +=  ( data * f );
+                    out[i+offset].add(it.first->second,  ( data * f ));
             }
             {
                 std::pair<std::map<int,int>::iterator,bool> it = outpos.insert ( std::make_pair ( cube[3],nbout ) ); OutReal f = ( ( fx ) * ( fy ) * ( 1-fz ) );
@@ -3246,7 +3252,7 @@ void BarycentricMapperSparseGridTopology<In,Out>::applyJT ( typename In::VecCons
                     out[i+offset].add ( cube[3],  ( data * f ) ); ++nbout;
                 }
                 else
-                    out[i+offset].getDataAt(it.first->second) +=  ( data * f );
+                    out[i+offset].add(it.first->second,  ( data * f ));
             }
 #endif
             {
@@ -3256,7 +3262,7 @@ void BarycentricMapperSparseGridTopology<In,Out>::applyJT ( typename In::VecCons
                     out[i+offset].add ( cube[4],  ( data * f ) ); ++nbout;
                 }
                 else
-                    out[i+offset].getDataAt(it.first->second) +=  ( data * f );
+                    out[i+offset].add(it.first->second,  ( data * f ));
             }
             {
                 std::pair<std::map<int,int>::iterator,bool> it = outpos.insert ( std::make_pair ( cube[5],nbout ) ); OutReal f = ( ( fx ) * ( 1-fy ) * ( fz ) );
@@ -3265,7 +3271,7 @@ void BarycentricMapperSparseGridTopology<In,Out>::applyJT ( typename In::VecCons
                     out[i+offset].add ( cube[5],  ( data * f ) ); ++nbout;
                 }
                 else
-                    out[i+offset].getDataAt(it.first->second) +=  ( data * f );
+                    out[i+offset].add(it.first->second, ( data * f ));
             }
 #ifdef SOFA_NEW_HEXA
             {
@@ -3275,7 +3281,7 @@ void BarycentricMapperSparseGridTopology<In,Out>::applyJT ( typename In::VecCons
                     out[i+offset].add ( cube[7],  ( data * f ) ); ++nbout;
                 }
                 else
-                    out[i+offset].getDataAt(it.first->second) +=  ( data * f );
+                    out[i+offset].add(it.first->second, ( data * f ));
             }
             {
                 std::pair<std::map<int,int>::iterator,bool> it = outpos.insert ( std::make_pair ( cube[6],nbout ) ); OutReal f = ( ( fx ) * ( fy ) * ( fz ) );
@@ -3284,7 +3290,7 @@ void BarycentricMapperSparseGridTopology<In,Out>::applyJT ( typename In::VecCons
                     out[i+offset].add ( cube[6],  ( data * f ) ); ++nbout;
                 }
                 else
-                    out[i+offset].getDataAt(it.first->second) +=  ( data * f );
+                    out[i+offset].add(it.first->second, ( data * f ));
             }
 #else
             {
@@ -3294,7 +3300,7 @@ void BarycentricMapperSparseGridTopology<In,Out>::applyJT ( typename In::VecCons
                     out[i+offset].add ( cube[6],  ( data * f ) ); ++nbout;
                 }
                 else
-                    out[i+offset].getDataAt(it.first->second) +=  ( data * f );
+                    out[i+offset].add(it.first->second, ( data * f ));
             }
             {
                 std::pair<std::map<int,int>::iterator,bool> it = outpos.insert ( std::make_pair ( cube[7],nbout ) ); OutReal f = ( ( fx ) * ( fy ) * ( fz ) );
@@ -3303,7 +3309,7 @@ void BarycentricMapperSparseGridTopology<In,Out>::applyJT ( typename In::VecCons
                     out[i+offset].add ( cube[7],  ( data * f ) ); ++nbout;
                 }
                 else
-                    out[i+offset].getDataAt(it.first->second) +=  ( data * f );
+                    out[i+offset].add(it.first->second,  ( data * f ));
             }
 #endif
             //out[i+offset].push_back(typename In::SparseDeriv(cube[0], (typename In::Deriv) (cIn.data * ((1-fx) * (1-fy) * (1-fz)))));
@@ -3331,7 +3337,9 @@ void BarycentricMapperEdgeSetTopology<In,Out>::applyJT ( typename In::VecConst& 
     for ( unsigned int i=0; i<in.size(); i++ )
     {
         OutConstraintIterator itOut;
-        for (itOut=in[i].getData().begin(); itOut!=in[i].getData().end(); itOut++)
+        std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
+
+        for (itOut=iter.first; itOut!=iter.second; itOut++)
         {
             unsigned int indexIn = itOut->first;
             InDeriv data = (InDeriv) itOut->second;
@@ -3355,7 +3363,9 @@ void BarycentricMapperTriangleSetTopology<In,Out>::applyJT ( typename In::VecCon
     for ( unsigned int i=0; i<in.size(); i++ )
     {
         OutConstraintIterator itOut;
-        for (itOut=in[i].getData().begin(); itOut!=in[i].getData().end(); itOut++)
+        std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
+
+        for (itOut=iter.first; itOut!=iter.second; itOut++)
         {
             unsigned int indexIn = itOut->first;
             InDeriv data = (InDeriv) itOut->second;
@@ -3381,7 +3391,9 @@ void BarycentricMapperQuadSetTopology<In,Out>::applyJT ( typename In::VecConst& 
     for ( unsigned int i=0; i<in.size(); i++ )
     {
         OutConstraintIterator itOut;
-        for (itOut=in[i].getData().begin(); itOut!=in[i].getData().end(); itOut++)
+        std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
+
+        for (itOut=iter.first; itOut!=iter.second; itOut++)
         {
             unsigned int indexIn = itOut->first;
             InDeriv data = (InDeriv) itOut->second;
@@ -3407,7 +3419,9 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::applyJT ( typename In::Vec
     for ( unsigned int i=0; i<in.size(); i++ )
     {
         OutConstraintIterator itOut;
-        for (itOut=in[i].getData().begin(); itOut!=in[i].getData().end(); itOut++)
+        std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
+
+        for (itOut=iter.first; itOut!=iter.second; itOut++)
         {
             unsigned int indexIn = itOut->first;
             InDeriv data = (InDeriv) itOut->second;
@@ -3435,7 +3449,9 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::applyJT ( typename In::VecC
     for ( unsigned int i=0; i<in.size(); i++ )
     {
         OutConstraintIterator itOut;
-        for (itOut=in[i].getData().begin(); itOut!=in[i].getData().end(); itOut++)
+        std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
+
+        for (itOut=iter.first; itOut!=iter.second; itOut++)
         {
             unsigned int indexIn = itOut->first;
             InDeriv data = (InDeriv) itOut->second;

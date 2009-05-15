@@ -163,7 +163,9 @@ void LinearSolverConstraintCorrection<DataTypes>::getCompliance(defaulttype::Bas
     {
         int cid = mstate->getConstraintId()[c1];
         ConstraintIterator itConstraint;
-        for (itConstraint=constraints[c1].getData().begin(); itConstraint!=constraints[c1].getData().end(); itConstraint++)
+        std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[c1].data();
+
+        for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
         {
             unsigned int dof = itConstraint->first;
             Deriv n = itConstraint->second;
@@ -232,7 +234,8 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
         if (fC1 != 0.0)
         {
             ConstraintIterator itConstraint;
-            for (itConstraint=constraints[c1].getData().begin(); itConstraint!=constraints[c1].getData().end(); itConstraint++)
+            std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[c1].data();
+            for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
             {
                 unsigned int dof = itConstraint->first;
                 Deriv n = itConstraint->second;
@@ -352,15 +355,16 @@ void LinearSolverConstraintCorrection<DataTypes>::verify_constraints()
 
                 /// on copie les données de I dans J
                 ConstraintIterator itConstraintI;
+                std::pair< ConstraintIterator, ConstraintIterator > iter=it_constI->data();
                 //ConstraintIterator itConstraintJ;
 
                 //std::cout<<" copie de I dans J"<<std::endl;
-                for (itConstraintI=it_constI->getData().begin(); itConstraintI!=it_constI->getData().end(); itConstraintI++)
+                for (itConstraintI=iter.first; itConstraintI!=iter.second; itConstraintI++)
                 {
 
                     unsigned int dof = itConstraintI->first;
                     Deriv n = itConstraintI->second;
-                    it_constJ->getData().insert(std::pair<unsigned int, Deriv> (dof,n ) );
+                    it_constJ->add(dof,n);
 
                 }
                 //std::cout<<" suppression de I"<<std::endl;
@@ -464,7 +468,9 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
         if (fC != 0.0)
         {
             ConstraintIterator itConstraint;
-            for (itConstraint=constraints[c].getData().begin(); itConstraint!=constraints[c].getData().end(); itConstraint++)
+
+            std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[c].data();
+            for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
             {
 
                 unsigned int dof = itConstraint->first;
@@ -488,7 +494,8 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
 
         /// a vector of the minimal indice of dof involved with each constraint is built
         VecMinDof[c] = mstate->getSize()+1;
-        for (itConstraint=constraints[c].getData().begin(); itConstraint!=constraints[c].getData().end(); itConstraint++)
+        std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[c].data();
+        for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
         {
             unsigned int dof = itConstraint->first;
             constraint_dofs.push_back(dof);
@@ -650,7 +657,9 @@ void LinearSolverConstraintCorrection<DataTypes>::addConstraintDisplacement(doub
         //std::cout<<"dfree["<<id_<<"] ="<<d[id_];
         int c = id_to_localIndex[id_];
         ConstraintIterator itConstraint;
-        for (itConstraint=constraints[c].getData().begin(); itConstraint!=constraints[c].getData().end(); itConstraint++)
+
+        std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[c].data();
+        for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
         {
             int dof = (int) itConstraint->first;
             Deriv n = itConstraint->second;
@@ -699,7 +708,8 @@ void LinearSolverConstraintCorrection<DataTypes>::setConstraintDForce(double *df
 
 
         ConstraintIterator itConstraint;
-        for (itConstraint=constraints[c].getData().begin(); itConstraint!=constraints[c].getData().end(); itConstraint++)
+        std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[c].data();
+        for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
         {
             Deriv n = itConstraint->second;
             int dof = (int) itConstraint->first;
@@ -774,9 +784,10 @@ void LinearSolverConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(def
         //std::cerr<<" local index : "<<c1<<std::endl;
 
         ConstraintIterator itConstraint1;
+        std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[c1].data();
         unsigned int dof_buf=0;
         int toto=0;
-        for (itConstraint1=constraints[c1].getData().begin(); itConstraint1!=constraints[c1].getData().end(); itConstraint1++)
+        for (itConstraint1=iter.first; itConstraint1!=iter.second; itConstraint1++)
         {
 
             unsigned int dof = itConstraint1->first;
@@ -807,7 +818,9 @@ void LinearSolverConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(def
     {
         int c = id_to_localIndex[id_];
         ConstraintIterator itConstraint;
-        for (itConstraint=constraints[c].getData().begin(); itConstraint!=constraints[c].getData().end(); itConstraint++)
+        std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[c].data();
+
+        for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
         {
             int dof = (int) itConstraint->first;
             list_dof.push_back(dof);

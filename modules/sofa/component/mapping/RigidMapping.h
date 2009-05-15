@@ -63,7 +63,8 @@ public:
     typedef typename Out::Coord Coord;
     typedef typename Out::Deriv Deriv;
     typedef typename In::Deriv InDeriv;
-    typedef typename std::map<unsigned int, Deriv>::const_iterator OutConstraintIterator;
+    typedef typename defaulttype::SparseConstraint<Deriv> OutSparseConstraint;
+    typedef typename OutSparseConstraint::const_data_iterator OutConstraintIterator;
     typedef typename Coord::value_type Real;
     enum { N=Coord::static_size };
     typedef defaulttype::Mat<N,N,Real> Mat;

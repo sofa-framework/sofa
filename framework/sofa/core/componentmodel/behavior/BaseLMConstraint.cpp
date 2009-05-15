@@ -82,6 +82,20 @@ void BaseLMConstraint::getCorrections(ConstId Id, std::vector<SReal>& c)
     }
 }
 
+void BaseLMConstraint::clear()
+{
+    std::map< ConstId, std::vector< constraintGroup*> >::iterator it;
+    for (it=constraintId.begin(); it!=constraintId.end(); it++)
+    {
+        std::vector< constraintGroup* > &v=it->second;
+        for (unsigned int i=0; i<v.size(); ++i)
+        {
+            delete v[i];
+        }
+    }
+    constraintId.clear();
+}
+
 }
 }
 }

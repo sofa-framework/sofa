@@ -194,7 +194,9 @@ void BeamLinearMapping<BasicMapping>::applyJT( typename In::VecConst& out, const
         // in[i].size() = num node involved in the constraint
 
         OutConstraintIterator itOut;
-        for (itOut=in[i].getData().begin(); itOut!=in[i].getData().end(); itOut++)
+        std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
+
+        for (itOut=iter.first; itOut!=iter.second; itOut++)
         {
             unsigned int indexIn = itOut->first;
             Deriv data = (Deriv) itOut->second;

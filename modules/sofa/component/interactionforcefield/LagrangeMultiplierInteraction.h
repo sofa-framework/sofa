@@ -70,7 +70,14 @@ public:
     typedef typename DataTypes2::Coord Coord2;
     typedef typename DataTypes2::Deriv Deriv2;
     typedef typename DataTypes2::SparseVecDeriv SparseVecDeriv2;
+    typedef typename defaulttype::SparseConstraint<Deriv2> SparseConstraint2;
+    typedef typename SparseConstraint2::const_data_iterator ConstraintIterator;
     typedef typename Coord2::value_type Real2;
+
+
+
+
+
 
     Data < std::string > f_constraint;
     Data<std::string> pathObject1;

@@ -237,7 +237,9 @@ void IdentityMapping<BaseMapping>::applyJT( typename In::VecConst& out, const ty
     {
         typename In::SparseVecDeriv& o = out[i+outSize];
         OutConstraintIterator itOut;
-        for (itOut=in[i].getData().begin(); itOut!=in[i].getData().end(); itOut++)
+        std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
+
+        for (itOut=iter.first; itOut!=iter.second; itOut++)
         {
             unsigned int indexIn = itOut->first;
             InDeriv data; eq(data, itOut->second);

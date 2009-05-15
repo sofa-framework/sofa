@@ -53,7 +53,8 @@ public:
     typedef typename DataTypes::VecConst VecConst;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
-    typedef typename std::map<unsigned int, Deriv>::const_iterator ConstraintIterator;
+    typedef typename defaulttype::SparseConstraint<Deriv> SparseConstraint;
+    typedef typename SparseConstraint::const_data_iterator ConstraintIterator;
     typedef typename Coord::value_type Real;
     typedef helper::vector<Real> VecReal;
 

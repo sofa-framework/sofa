@@ -73,7 +73,8 @@ public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::SparseVecDeriv SparseVecDeriv;
     typedef typename DataTypes::VecConst VecConst;
-    typedef typename std::map<unsigned int, Deriv>::const_iterator ConstraintIterator;
+    typedef typename defaulttype::SparseConstraint<Deriv> SparseConstraint;
+    typedef typename SparseConstraint::const_data_iterator ConstraintIterator;
     typedef typename core::componentmodel::behavior::BaseMechanicalState::ConstraintBlock ConstraintBlock;
 
 protected:

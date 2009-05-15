@@ -100,7 +100,7 @@ void SlidingConstraint<DataTypes>::applyConstraint(unsigned int &constraintId)
     svd2.add(tm2a, -dir1 * (1-r2));
     svd2.add(tm2b, -dir1 * r2);
     c2.push_back(svd2);
-    svd2.getData().clear();
+    svd2.clear();
 
     this->object1->setConstraintId(cid+1);
     svd1.set(tm1, dir2);
@@ -110,7 +110,7 @@ void SlidingConstraint<DataTypes>::applyConstraint(unsigned int &constraintId)
     svd2.add(tm2a, -dir2 * (1-r2));
     svd2.add(tm2b, -dir2 * r2);
     c2.push_back(svd2);
-    svd2.getData().clear();
+    svd2.clear();
 
     thirdConstraint = 0;
     if(r<0)

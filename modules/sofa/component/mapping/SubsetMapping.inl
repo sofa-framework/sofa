@@ -188,7 +188,9 @@ void SubsetMapping<BaseMapping>::applyJT( typename In::VecConst& out, const type
     for(unsigned int i = 0; i < in.size(); ++i)
     {
         OutConstraintIterator itOut;
-        for (itOut=in[i].getData().begin(); itOut!=in[i].getData().end(); itOut++)
+        std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
+
+        for (itOut=iter.first; itOut!=iter.second; itOut++)
         {
             unsigned int indexIn = itOut->first;
             OutDeriv data = (OutDeriv) itOut->second;
