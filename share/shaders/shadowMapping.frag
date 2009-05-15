@@ -8,11 +8,17 @@ varying vec4 shadowTexCoord[MAX_NUMBER_OF_LIGHTS];
 varying vec3 lightDir[MAX_NUMBER_OF_LIGHTS];
 varying float dist[MAX_NUMBER_OF_LIGHTS];
 
+#ifdef USE_TEXTURE
+uniform sampler2D colorTexture;
+#endif
 
 void main()
 {
-
 	vec4 final_color = ambientGlobal;
+
+#ifdef USE_TEXTURE
+	final_color.rgb = texture2D(colorTexture,gl_TexCoord[0].st).rgb;
+#endif
 	vec4 temp_color;
 	bool hasLight = false;
 	vec3 n,halfV;

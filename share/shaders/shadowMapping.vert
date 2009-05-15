@@ -45,6 +45,10 @@ void main()
 
 	}
 
+#ifdef USE_TEXTURE
+	gl_TexCoord[0] = gl_MultiTexCoord0;
+#endif
+
 	//////
 	gl_Position = ftransform();
 	gl_FrontColor = gl_FrontMaterial.diffuse;
