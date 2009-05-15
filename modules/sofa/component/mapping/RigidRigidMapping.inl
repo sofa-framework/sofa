@@ -586,7 +586,9 @@ void RigidRigidMapping<BaseMapping>::applyJT( typename In::VecConst& out, const 
         {
             Vector v,omega;
             OutConstraintIterator itOut;
-            for (itOut=in[i].getData().begin(); itOut!=in[i].getData().end(); itOut++)
+            std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
+
+            for (itOut=iter.first; itOut!=iter.second; itOut++)
             {
                 const unsigned int i = itOut->first;// index of the node
                 Deriv data=(Deriv) itOut->second;
@@ -622,13 +624,15 @@ void RigidRigidMapping<BaseMapping>::applyJT( typename In::VecConst& out, const 
         {
             unsigned int cpt=0;
 
-            OutConstraintIterator it=in[i].getData().begin();
-            for(unsigned int ito=0; ito<numDofs && it != in[i].getData().end(); ito++)
+            std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
+
+            OutConstraintIterator it=iter.first;
+            for(unsigned int ito=0; ito<numDofs && it != iter.second; ito++)
             {
                 Vector v,omega;
                 bool needToInsert=false;
 
-                for(unsigned int r=0; r<val && it != in[i].getData().end(); r++, cpt++)
+                for(unsigned int r=0; r<val && it != iter.second; r++, cpt++)
                 {
                     const unsigned int idx=it->first;
                     if (idx != cpt) continue;
@@ -657,13 +661,15 @@ void RigidRigidMapping<BaseMapping>::applyJT( typename In::VecConst& out, const 
         for(unsigned int i=0; i<in.size(); i++)
         {
             unsigned int cpt=0;
-            OutConstraintIterator it=in[i].getData().begin();
-            for(unsigned int ito=0; ito<numDofs && it != in[i].getData().end(); ito++)
+            std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
+
+            OutConstraintIterator it=iter.first;
+            for(unsigned int ito=0; ito<numDofs && it != iter.second; ito++)
             {
                 Vector v,omega;
                 bool needToInsert=false;
 
-                for(unsigned int r=0; r<repartition.getValue()[ito] && it != in[i].getData().end(); r++, cpt++)
+                for(unsigned int r=0; r<repartition.getValue()[ito] && it != iter.second; r++, cpt++)
                 {
                     const unsigned int idx=it->first;
                     if (idx != cpt) continue;

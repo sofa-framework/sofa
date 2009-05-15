@@ -61,7 +61,8 @@ public:
     typedef typename Out::VecDeriv VecDeriv;
     typedef typename Out::Coord Coord;
     typedef typename Out::Deriv Deriv;
-    typedef typename std::map<unsigned int, Deriv>::const_iterator OutConstraintIterator;
+    typedef typename defaulttype::SparseConstraint<Deriv> OutSparseConstraint;
+    typedef typename OutSparseConstraint::const_data_iterator OutConstraintIterator;
     typedef typename Out::DataTypes OutDataTypes;
     typedef typename OutDataTypes::Real OutReal;
     typedef typename OutDataTypes::VecCoord OutVecCoord;

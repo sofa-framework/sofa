@@ -59,8 +59,9 @@ public:
     typedef typename DataTypes::VecConst VecConst;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
-    typedef typename std::map<unsigned int, Deriv>::iterator ConstraintIterator;
-    typedef typename std::map<unsigned int, Deriv>::iterator CConstraintIterator;
+    typedef typename defaulttype::SparseConstraint<Deriv> SparseConstraint;
+    typedef typename SparseConstraint::const_data_iterator ConstConstraintIterator;
+    typedef typename SparseConstraint::data_iterator ConstraintIterator;
     typedef typename DataTypes::SparseVecDeriv Const;
 
     /// element rotation matrix

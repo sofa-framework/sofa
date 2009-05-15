@@ -154,7 +154,7 @@ public:
     virtual unsigned int getNumConstraint(ConstId Id);
     virtual double getError() {return 0;}
 
-    virtual void clear() {constraintId.clear();}
+    virtual void clear();
 protected:
     Data<std::string> pathObject1;
     Data<std::string> pathObject2;

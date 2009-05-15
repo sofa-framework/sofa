@@ -90,7 +90,8 @@ public:
     typedef typename DataTypes::VecConst::iterator VecConstIt;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
-    typedef typename std::map<unsigned int, Deriv>::const_iterator ConstraintIterator;
+    typedef typename defaulttype::SparseConstraint<Deriv> SparseConstraint;
+    typedef typename SparseConstraint::const_data_iterator ConstraintIterator;
     typedef std::list<int> ListIndex;
 
     typedef typename DataTypes::SparseVecDeriv Const;

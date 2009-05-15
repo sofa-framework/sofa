@@ -50,6 +50,9 @@ class LCPForceFeedback : public sofa::component::controller::ForceFeedback
 {
 
 public:
+    typedef defaulttype::SparseConstraint<defaulttype::RigidTypes::Deriv> SparseConstraint;
+    typedef SparseConstraint::const_data_iterator ConstraintIterator;
+
     void init();
     Data<double> forceCoef;
     virtual void computeForce(double x, double y, double z, double u, double v, double w, double q, double& fx, double& fy, double& fz);

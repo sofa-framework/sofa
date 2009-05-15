@@ -396,8 +396,10 @@ void PrecomputedConstraintCorrection<DataTypes>::getCompliance(defaulttype::Base
         _indexNodeSparseCompliance[i] = -1;
     for(unsigned int c1 = 0; c1 < numConstraints; c1++)
     {
-        CConstraintIterator itConstraint;
-        for (itConstraint=constraints[c1].getData().begin(); itConstraint!=constraints[c1].getData().end(); itConstraint++)
+        ConstConstraintIterator itConstraint;
+        std::pair< ConstConstraintIterator, ConstConstraintIterator > iter=constraints[c1].data();
+
+        for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
         {
             unsigned int dof = itConstraint->first;
             //activeDof.push_back(dof);
@@ -437,8 +439,10 @@ void PrecomputedConstraintCorrection<DataTypes>::getCompliance(defaulttype::Base
             indexCurColConst = mstate->getConstraintId()[curColConst];
 
             Vbuf.clear();
-            CConstraintIterator itConstraint;
-            for (itConstraint=constraints[curColConst].getData().begin(); itConstraint!=constraints[curColConst].getData().end(); itConstraint++)
+            ConstConstraintIterator itConstraint;
+
+            std::pair< ConstConstraintIterator, ConstConstraintIterator > iter=constraints[curColConst].data();
+            for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
             {
                 unsigned int dof = itConstraint->first;
                 const Deriv n2 = itConstraint->second;
@@ -463,8 +467,10 @@ void PrecomputedConstraintCorrection<DataTypes>::getCompliance(defaulttype::Base
     {
         indexCurRowConst = mstate->getConstraintId()[curRowConst];//global index of constraint
 
-        ConstraintIterator itConstraint;
-        for (itConstraint=constraints[curRowConst].getData().begin(); itConstraint!=constraints[curRowConst].getData().end(); itConstraint++)
+        ConstConstraintIterator itConstraint;
+
+        std::pair< ConstConstraintIterator, ConstConstraintIterator > iter=constraints[curRowConst].data();
+        for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
         {
             const int NodeIdx = itConstraint->first;
             const Deriv n1 = itConstraint->second;
@@ -530,8 +536,10 @@ void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const default
         if (fC1 != 0.0)
         {
 
-            CConstraintIterator itConstraint;
-            for (itConstraint=constraints[c1].getData().begin(); itConstraint!=constraints[c1].getData().end(); itConstraint++)
+            ConstConstraintIterator itConstraint;
+
+            std::pair< ConstConstraintIterator, ConstConstraintIterator > iter=constraints[c1].data();
+            for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
             {
                 unsigned int dof = itConstraint->first;
                 const Deriv n = itConstraint->second;
@@ -767,7 +775,9 @@ void PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::rotateConstraints
     for(unsigned int curRowConst = 0; curRowConst < numConstraints; curRowConst++)
     {
         ConstraintIterator itConstraint;
-        for (itConstraint=constraints[curRowConst].getData().begin(); itConstraint!=constraints[curRowConst].getData().end(); itConstraint++)
+        std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[curRowConst].data();
+
+        for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
         {
             unsigned int dof = itConstraint->first;
             Deriv& n = itConstraint->second;
@@ -814,7 +824,8 @@ void PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>::rotateConstrain
     for(unsigned int curRowConst = 0; curRowConst < numConstraints; curRowConst++)
     {
         ConstraintIterator itConstraint;
-        for (itConstraint=constraints[curRowConst].getData().begin(); itConstraint!=constraints[curRowConst].getData().end(); itConstraint++)
+        std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[curRowConst].data();
+        for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
         {
             unsigned int dof = itConstraint->first;
             Deriv& n = itConstraint->second;
@@ -959,7 +970,9 @@ void PrecomputedConstraintCorrection<defaulttype::Vec3fTypes>::rotateConstraints
     for(unsigned int curRowConst = 0; curRowConst < numConstraints; curRowConst++)
     {
         ConstraintIterator itConstraint;
-        for (itConstraint=constraints[curRowConst].getData().begin(); itConstraint!=constraints[curRowConst].getData().end(); itConstraint++)
+
+        std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[curRowConst].data();
+        for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
         {
             unsigned int dof = itConstraint->first;
             Deriv& n = itConstraint->second;
@@ -1005,7 +1018,9 @@ void PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>::rotateConstrain
     for(unsigned int curRowConst = 0; curRowConst < numConstraints; curRowConst++)
     {
         ConstraintIterator itConstraint;
-        for (itConstraint=constraints[curRowConst].getData().begin(); itConstraint!=constraints[curRowConst].getData().end(); itConstraint++)
+
+        std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[curRowConst].data();
+        for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
         {
             unsigned int dof = itConstraint->first;
             Deriv& n = itConstraint->second;
@@ -1138,8 +1153,9 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
     std::list<int> activeDof;
     for(unsigned int c1 = 0; c1 < numConstraints; c1++)
     {
-        CConstraintIterator itConstraint;
-        for (itConstraint=constraints[c1].getData().begin(); itConstraint!=constraints[c1].getData().end(); itConstraint++)
+        ConstConstraintIterator itConstraint;
+        std::pair< ConstConstraintIterator, ConstConstraintIterator > iter=constraints[c1].data();
+        for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
         {
             unsigned int dof = itConstraint->first;
             activeDof.push_back(dof);
@@ -1173,8 +1189,9 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
             //indexCurColConst = mstate->getConstraintId()[curColConst];
 
             Vbuf.clear();
-            CConstraintIterator itConstraint;
-            for (itConstraint=constraints[curColConst].getData().begin(); itConstraint!=constraints[curColConst].getData().end(); itConstraint++)
+            ConstConstraintIterator itConstraint;
+            std::pair< ConstConstraintIterator, ConstConstraintIterator > iter=constraints[curColConst].data();
+            for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
             {
                 unsigned int dof = itConstraint->first;
                 const Deriv n2 = itConstraint->second;
@@ -1210,8 +1227,10 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
     {
         //indexCurRowConst = mstate->getConstraintId()[curRowConst];//global index of constraint
 
-        ConstraintIterator itConstraint;
-        for (itConstraint=constraints[curRowConst].getData().begin(); itConstraint!=constraints[curRowConst].getData().end(); itConstraint++)
+        ConstConstraintIterator itConstraint;
+
+        std::pair< ConstConstraintIterator, ConstConstraintIterator > iter=constraints[curRowConst].data();
+        for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
         {
             const int NodeIdx = itConstraint->first;
             const Deriv n1 = itConstraint->second;

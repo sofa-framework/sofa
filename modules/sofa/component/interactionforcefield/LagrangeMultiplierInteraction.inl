@@ -195,15 +195,16 @@ void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::addDForce(VecDeriv1&
 
     VecConst2& c2= *this->mstate2->getC();
     //sout<<" constraint size :"<<c2.size()<<sendl;
-    typename std::map< unsigned int, Deriv2>::const_iterator it;
+    ConstraintIterator it;
 
 
     for (unsigned int i=0; i< c2.size(); i++)
     {
         SparseVecDeriv2 constraint = c2[i];
 
+        std::pair< ConstraintIterator, ConstraintIterator > iter=constraint.data();
         //sout<<" i= "<<i <<"   constraint size= "<< constraint.size() <<sendl;
-        for (it=constraint.getData().begin(); it!=constraint.getData().end(); it++)
+        for (it=iter.first; it!=iter.second; it++)
         {
             //sout<<" constraint : i "<< constraint[j].index  << "  data"<< constraint[j].data << sendl;
             /// @TODO : use the constraint ID

@@ -100,11 +100,13 @@ public:
 
     typedef typename In::VecDeriv InVecDeriv;
     typedef typename In::Deriv InDeriv;
-    typedef typename std::map<unsigned int, InDeriv>::const_iterator InConstraintIterator;
+    typedef typename defaulttype::SparseConstraint<InDeriv> InSparseConstraint;
+    typedef typename InSparseConstraint::const_data_iterator InConstraintIterator;
 
     typedef typename Out::VecDeriv OutVecDeriv;
     typedef typename Out::Deriv OutDeriv;
-    typedef typename std::map<unsigned int, OutDeriv>::const_iterator OutConstraintIterator;
+    typedef typename defaulttype::SparseConstraint<OutDeriv> OutSparseConstraint;
+    typedef typename OutSparseConstraint::const_data_iterator OutConstraintIterator;
 
 protected:
     template< int NC,  int NP>
@@ -212,10 +214,13 @@ public:
     typedef TopologyBarycentricMapper<In,Out> Inherit;
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
-    typedef typename Inherit::OutConstraintIterator OutConstraintIterator;
     typedef typename Inherit::OutDeriv  OutDeriv;
-    typedef typename Inherit::InConstraintIterator  InConstraintIterator;
+    typedef typename defaulttype::SparseConstraint<OutDeriv> OutSparseConstraint;
+    typedef typename OutSparseConstraint::const_data_iterator OutConstraintIterator;
+
     typedef typename Inherit::InDeriv  InDeriv;
+    typedef typename defaulttype::SparseConstraint<InDeriv> InSparseConstraint;
+    typedef typename InSparseConstraint::const_data_iterator InConstraintIterator;
     typedef typename Inherit::MappingData1D MappingData1D;
     typedef typename Inherit::MappingData2D MappingData2D;
     typedef typename Inherit::MappingData3D MappingData3D;
@@ -324,10 +329,12 @@ public:
     typedef TopologyBarycentricMapper<In,Out> Inherit;
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
-    typedef typename Inherit::OutConstraintIterator OutConstraintIterator;
     typedef typename Inherit::OutDeriv  OutDeriv;
-    typedef typename Inherit::InConstraintIterator  InConstraintIterator;
+    typedef typename defaulttype::SparseConstraint<OutDeriv> OutSparseConstraint;
+    typedef typename OutSparseConstraint::const_data_iterator OutConstraintIterator;
     typedef typename Inherit::InDeriv  InDeriv;
+    typedef typename defaulttype::SparseConstraint<InDeriv> InSparseConstraint;
+    typedef typename InSparseConstraint::const_data_iterator InConstraintIterator;
     typedef typename Inherit::CubeData CubeData;
 protected:
     sofa::helper::vector<CubeData> map;
@@ -384,10 +391,12 @@ public:
     typedef TopologyBarycentricMapper<In,Out> Inherit;
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
-    typedef typename Inherit::OutConstraintIterator OutConstraintIterator;
     typedef typename Inherit::OutDeriv  OutDeriv;
-    typedef typename Inherit::InConstraintIterator  InConstraintIterator;
+    typedef typename defaulttype::SparseConstraint<OutDeriv> OutSparseConstraint;
+    typedef typename OutSparseConstraint::const_data_iterator OutConstraintIterator;
     typedef typename Inherit::InDeriv  InDeriv;
+    typedef typename defaulttype::SparseConstraint<InDeriv> InSparseConstraint;
+    typedef typename InSparseConstraint::const_data_iterator InConstraintIterator;
 
     typedef typename Inherit::CubeData CubeData;
 protected:
@@ -460,10 +469,12 @@ public:
     typedef TopologyBarycentricMapper<In,Out> Inherit;
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
-    typedef typename Inherit::OutConstraintIterator OutConstraintIterator;
     typedef typename Inherit::OutDeriv  OutDeriv;
-    typedef typename Inherit::InConstraintIterator  InConstraintIterator;
+    typedef typename defaulttype::SparseConstraint<OutDeriv> OutSparseConstraint;
+    typedef typename OutSparseConstraint::const_data_iterator OutConstraintIterator;
     typedef typename Inherit::InDeriv  InDeriv;
+    typedef typename defaulttype::SparseConstraint<InDeriv> InSparseConstraint;
+    typedef typename InSparseConstraint::const_data_iterator InConstraintIterator;
     typedef typename Inherit::MappingData1D MappingData;
 
 protected:
@@ -545,10 +556,12 @@ public:
     typedef TopologyBarycentricMapper<In,Out> Inherit;
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
-    typedef typename Inherit::OutConstraintIterator OutConstraintIterator;
     typedef typename Inherit::OutDeriv  OutDeriv;
-    typedef typename Inherit::InConstraintIterator  InConstraintIterator;
+    typedef typename defaulttype::SparseConstraint<OutDeriv> OutSparseConstraint;
+    typedef typename OutSparseConstraint::const_data_iterator OutConstraintIterator;
     typedef typename Inherit::InDeriv  InDeriv;
+    typedef typename defaulttype::SparseConstraint<InDeriv> InSparseConstraint;
+    typedef typename InSparseConstraint::const_data_iterator InConstraintIterator;
     typedef typename Inherit::MappingData2D MappingData;
 protected:
     topology::PointData< MappingData >		map;
@@ -629,10 +642,12 @@ public:
     typedef TopologyBarycentricMapper<In,Out> Inherit;
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
-    typedef typename Inherit::OutConstraintIterator OutConstraintIterator;
     typedef typename Inherit::OutDeriv  OutDeriv;
-    typedef typename Inherit::InConstraintIterator  InConstraintIterator;
+    typedef typename defaulttype::SparseConstraint<OutDeriv> OutSparseConstraint;
+    typedef typename OutSparseConstraint::const_data_iterator OutConstraintIterator;
     typedef typename Inherit::InDeriv  InDeriv;
+    typedef typename defaulttype::SparseConstraint<InDeriv> InSparseConstraint;
+    typedef typename InSparseConstraint::const_data_iterator InConstraintIterator;
     typedef typename Inherit::MappingData2D MappingData;
 protected:
     topology::PointData< MappingData >  map;
@@ -710,10 +725,12 @@ public:
     typedef TopologyBarycentricMapper<In,Out> Inherit;
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
-    typedef typename Inherit::OutConstraintIterator OutConstraintIterator;
     typedef typename Inherit::OutDeriv  OutDeriv;
-    typedef typename Inherit::InConstraintIterator  InConstraintIterator;
+    typedef typename defaulttype::SparseConstraint<OutDeriv> OutSparseConstraint;
+    typedef typename OutSparseConstraint::const_data_iterator OutConstraintIterator;
     typedef typename Inherit::InDeriv  InDeriv;
+    typedef typename defaulttype::SparseConstraint<InDeriv> InSparseConstraint;
+    typedef typename InSparseConstraint::const_data_iterator InConstraintIterator;
     typedef typename Inherit::MappingData3D MappingData;
 protected:
     topology::PointData< MappingData >  map;
@@ -790,10 +807,12 @@ public:
     typedef TopologyBarycentricMapper<In,Out> Inherit;
     typedef typename Inherit::Real Real;
     typedef typename Inherit::OutReal OutReal;
-    typedef typename Inherit::OutConstraintIterator OutConstraintIterator;
     typedef typename Inherit::OutDeriv  OutDeriv;
-    typedef typename Inherit::InConstraintIterator  InConstraintIterator;
+    typedef typename defaulttype::SparseConstraint<OutDeriv> OutSparseConstraint;
+    typedef typename OutSparseConstraint::const_data_iterator OutConstraintIterator;
     typedef typename Inherit::InDeriv  InDeriv;
+    typedef typename defaulttype::SparseConstraint<InDeriv> InSparseConstraint;
+    typedef typename InSparseConstraint::const_data_iterator InConstraintIterator;
     typedef typename Inherit::MappingData3D MappingData;
 
 

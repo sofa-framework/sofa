@@ -188,7 +188,9 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getCompliance(defa
 
 
         ConstraintIterator itConstraint;
-        for (itConstraint=constraints[curRowConst].getData().begin(); itConstraint!=constraints[curRowConst].getData().end(); itConstraint++)
+        std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[curRowConst].data();
+
+        for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
         {
             unsigned int dof = itConstraint->first;
             Deriv n = itConstraint->second;
@@ -208,7 +210,9 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getCompliance(defa
                 indexCurColConst = mstate->getConstraintId()[curColConst];
 
                 ConstraintIterator itConstraint2;
-                for (itConstraint2=constraints[curColConst].getData().begin(); itConstraint2!=constraints[curColConst].getData().end(); itConstraint2++)
+                std::pair< ConstraintIterator, ConstraintIterator > iter2=constraints[curColConst].data();
+
+                for (itConstraint2=iter2.first; itConstraint2!=iter2.second; itConstraint2++)
                 {
                     unsigned int dof2 = itConstraint2->first;
                     Deriv n2 = itConstraint2->second;
@@ -277,7 +281,9 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::applyContactForce(
         if (fC1 != 0.0)
         {
             ConstraintIterator itConstraint;
-            for (itConstraint=constraints[c1].getData().begin(); itConstraint!=constraints[c1].getData().end(); itConstraint++)
+            std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[c1].data();
+
+            for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
             {
                 unsigned int dof = itConstraint->first;
                 weighedNormal = itConstraint->second; // weighted normal
@@ -336,7 +342,9 @@ void UncoupledConstraintCorrection<defaulttype::Vec1Types>::getCompliance(defaul
         int indexCurRowConst = mstate->getConstraintId()[curRowConst];
         //sout<<"constraint["<<curRowConst<<"] : ";
         ConstraintIterator itConstraint;
-        for (itConstraint=constraints[curRowConst].getData().begin(); itConstraint!=constraints[curRowConst].getData().end(); itConstraint++)
+        std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[curRowConst].data();
+
+        for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
         {
             unsigned int dof = itConstraint->first;
             Deriv n = itConstraint->second;
@@ -350,7 +358,9 @@ void UncoupledConstraintCorrection<defaulttype::Vec1Types>::getCompliance(defaul
                 indexCurColConst = mstate->getConstraintId()[curColConst];
 
                 ConstraintIterator itConstraint2;
-                for (itConstraint2=constraints[curColConst].getData().begin(); itConstraint2!=constraints[curColConst].getData().end(); itConstraint2++)
+                std::pair< ConstraintIterator, ConstraintIterator > iter2=constraints[curColConst].data();
+
+                for (itConstraint2=iter2.first; itConstraint2!=iter2.second; itConstraint2++)
                 {
                     unsigned int dof2 = itConstraint->first;
                     Deriv n2 = itConstraint2->second;
@@ -408,7 +418,9 @@ void UncoupledConstraintCorrection<defaulttype::Vec1Types>::applyContactForce(co
         if (fC1 != 0.0)
         {
             ConstraintIterator itConstraint;
-            for (itConstraint=constraints[c1].getData().begin(); itConstraint!=constraints[c1].getData().end(); itConstraint++)
+            std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[c1].data();
+
+            for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
             {
                 unsigned int dof = itConstraint->first;
                 Deriv n = itConstraint->second;
@@ -509,7 +521,9 @@ void UncoupledConstraintCorrection<DataTypes>::resetForUnbuiltResolution(double 
         if (fC != 0.0)
         {
             ConstraintIterator itConstraint;
-            for (itConstraint=constraints[c].getData().begin(); itConstraint!=constraints[c].getData().end(); itConstraint++)
+            std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[c].data();
+
+            for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
             {
 
                 unsigned int dof = itConstraint->first;
@@ -544,7 +558,9 @@ void UncoupledConstraintCorrection<DataTypes>::addConstraintDisplacement(double 
         int c = id_to_localIndex[id_];
 
         ConstraintIterator itConstraint;
-        for (itConstraint=constraints[c].getData().begin(); itConstraint!=constraints[c].getData().end(); itConstraint++)
+        std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[c].data();
+
+        for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
         {
             //Deriv DX =  constraint_force[constraints[c][i].index] * compliance.getValue()[constraints[c][i].index];
             Deriv n = itConstraint->second;
@@ -573,7 +589,8 @@ void UncoupledConstraintCorrection<defaulttype::Vec1Types>::setConstraintDForce(
         int c = id_to_localIndex[id_];
 
         ConstraintIterator itConstraint;
-        for (itConstraint=constraints[c].getData().begin(); itConstraint!=constraints[c].getData().end(); itConstraint++)
+        std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[c].data();
+        for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
         {
             Deriv n = itConstraint->second;
             unsigned int dof = itConstraint->first;
@@ -603,7 +620,8 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::setConstraintDForc
     {
         int c = id_to_localIndex[id_];
         ConstraintIterator itConstraint;
-        for (itConstraint=constraints[c].getData().begin(); itConstraint!=constraints[c].getData().end(); itConstraint++)
+        std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[c].data();
+        for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
         {
 
             Deriv n = itConstraint->second;
@@ -637,7 +655,8 @@ void UncoupledConstraintCorrection<defaulttype::Vec1Types>::getBlockDiagonalComp
     {
         int c1 = id_to_localIndex[id1];
         ConstraintIterator itConstraint1;
-        for (itConstraint1=constraints[c1].getData().begin(); itConstraint1!=constraints[c1].getData().end(); itConstraint1++)
+        std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[c1].data();
+        for (itConstraint1=iter.first; itConstraint1!=iter.second; itConstraint1++)
         {
             Deriv n1 = itConstraint1->second;
             unsigned int dof1 = itConstraint1->first;
@@ -647,7 +666,8 @@ void UncoupledConstraintCorrection<defaulttype::Vec1Types>::getBlockDiagonalComp
                 int c2 = id_to_localIndex[id2];
 
                 ConstraintIterator itConstraint2;
-                for (itConstraint2=constraints[c2].getData().begin(); itConstraint2!=constraints[c2].getData().end(); itConstraint2++)
+                std::pair< ConstraintIterator, ConstraintIterator > iter2=constraints[c2].data();
+                for (itConstraint2=iter2.first; itConstraint2!=iter2.second; itConstraint2++)
                 {
 
                     unsigned int dof2 = itConstraint2->first;
@@ -691,7 +711,9 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getBlockDiagonalCo
         //std::cerr<<" local index : "<<c1<<std::endl;
 
         ConstraintIterator itConstraint1;
-        for (itConstraint1=constraints[c1].getData().begin(); itConstraint1!=constraints[c1].getData().end(); itConstraint1++)
+        std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[c1].data();
+
+        for (itConstraint1=iter.first; itConstraint1!=iter.second; itConstraint1++)
         {
             weighedNormal = itConstraint1->second;
             unsigned int dof1 = itConstraint1->first;
@@ -709,7 +731,8 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getBlockDiagonalCo
             {
                 int c2 = id_to_localIndex[id2];
                 ConstraintIterator itConstraint2;
-                for (itConstraint2=constraints[c2].getData().begin(); itConstraint2!=constraints[c2].getData().end(); itConstraint2++)
+                std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[c2].data();
+                for (itConstraint2=iter.first; itConstraint2!=iter.second; itConstraint2++)
                 {
 
                     unsigned int dof2 = itConstraint2->first;
