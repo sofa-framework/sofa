@@ -77,6 +77,7 @@ public:
     sofa::core::objectmodel::DataFileName fileRigidMapping;
     Data< bool > useX0;
     Data< bool > indexFromEnd;
+    Data<sofa::helper::vector<unsigned int> >  repartition;
     Data< bool > globalToLocalCoords;
 
     core::componentmodel::behavior::BaseMechanicalState::ParticleMask* maskFrom;
@@ -130,7 +131,6 @@ public:
 protected:
     class Loader;
     void load ( const char* filename );
-    Data<sofa::helper::vector<unsigned int> >  repartition;
     const VecCoord& getPoints();
 };
 

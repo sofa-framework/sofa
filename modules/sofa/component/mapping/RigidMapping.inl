@@ -155,7 +155,7 @@ void RigidMapping<BasicMapping>::init()
         unsigned int i=0, cpt=0;
         if(globalToLocalCoords.getValue() == true) //test booleen fromWorldCoord
         {
-            In::VecCoord& xfrom = *this->fromModel->getX();
+            typename In::VecCoord& xfrom = *this->fromModel->getX();
             switch (repartition.getValue().size())
             {
             case 0 :
@@ -183,12 +183,12 @@ void RigidMapping<BasicMapping>::init()
     this->BasicMapping::init();
 
     sofa::component::MultiMeshLoader * loader;
-    loader = getContext()->get<MultiMeshLoader>();
+    this->getContext()->get(loader);
     if (loader)
     {
         sofa::helper::vector<unsigned int>& rep = *repartition.beginEdit();
         unsigned int cpt=0;
-        In::VecCoord& xfrom = *this->fromModel->getX();
+        typename In::VecCoord& xfrom = *this->fromModel->getX();
         VecCoord& xto = *this->toModel->getX();
         for (unsigned int i=0 ; i<loader->getNbMeshs() ; i++)
         {
