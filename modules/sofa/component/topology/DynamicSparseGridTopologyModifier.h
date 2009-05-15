@@ -38,7 +38,7 @@ class DynamicSparseGridTopologyContainer;
 /**
 * A class that modifies the topology by adding and removing hexahedra
 */
-class DynamicSparseGridTopologyModifier : public HexahedronSetTopologyModifier
+class SOFA_COMPONENT_CONTAINER_API DynamicSparseGridTopologyModifier : public HexahedronSetTopologyModifier
 {
 public:
     DynamicSparseGridTopologyModifier()

@@ -44,7 +44,6 @@ void DataFileName::updatePath()
 
 void DataFileNameVector::updatePath()
 {
-    std::cerr<<"DataFileNameVector::updatePath()"<<std::endl;
     fullpath = m_value;
     if (!fullpath.empty())
         for (unsigned int i=0 ; i<fullpath.size() ; i++)

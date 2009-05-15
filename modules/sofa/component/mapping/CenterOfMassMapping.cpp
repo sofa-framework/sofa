@@ -22,7 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_MAPPING_CENTEROFMASSMAPPING_CPP
+
 #include <sofa/component/mapping/CenterOfMassMapping.inl>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/componentmodel/behavior/MappedModel.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
@@ -47,6 +51,7 @@ using namespace core::componentmodel::behavior;
 
 // Register in the Factory
 int CenterOfMassMappingClass = core::RegisterObject("Set the point to the center of mass of the DOFs it is attached to")
+
 #ifndef SOFA_FLOAT
         .add< CenterOfMassMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Vec3dTypes> > > >()
         .add< CenterOfMassMapping< MechanicalMapping< MechanicalState<Rigid2dTypes>, MechanicalState<Vec2dTypes> > > >()
@@ -73,6 +78,32 @@ int CenterOfMassMappingClass = core::RegisterObject("Set the point to the center
 #endif
 #endif
         ;
+
+#ifndef SOFA_FLOAT
+template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Vec3dTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< MechanicalMapping< MechanicalState<Rigid2dTypes>, MechanicalState<Vec2dTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3dTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3dTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3fTypes> > >;
+#endif
+#ifndef SOFA_DOUBLE
+template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< MechanicalMapping<MechanicalState<Rigid3fTypes>, MechanicalState<Vec3fTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< MechanicalMapping<MechanicalState<Rigid2fTypes>, MechanicalState<Vec2fTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3fTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3dTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3fTypes> > >;
+#endif
+
+#ifndef SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< MechanicalMapping<MechanicalState<Rigid3dTypes>, MechanicalState<Vec3fTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< MechanicalMapping<MechanicalState<Rigid3fTypes>, MechanicalState<Vec3dTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< MechanicalMapping<MechanicalState<Rigid2dTypes>, MechanicalState<Vec2fTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< MechanicalMapping<MechanicalState<Rigid2fTypes>, MechanicalState<Vec2dTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3fTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3dTypes> > >;
+#endif
+#endif
 
 
 } // namespace mapping
