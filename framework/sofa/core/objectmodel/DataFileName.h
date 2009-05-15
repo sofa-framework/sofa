@@ -33,6 +33,7 @@
 
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/vector.h>
 
 namespace sofa
 {
@@ -99,6 +100,62 @@ protected:
     void updatePath();
 
     std::string fullpath;
+};
+
+
+
+class SOFA_CORE_API DataFileNameVector : public sofa::core::objectmodel::Data< sofa::helper::vector<std::string> >
+{
+public:
+    typedef sofa::core::objectmodel::Data<sofa::helper::vector<std::string> > Inherit;
+
+    DataFileNameVector( const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false )
+        : Inherit(helpMsg, isDisplayed, isReadOnly)
+    {
+    }
+
+    DataFileNameVector( const sofa::helper::vector<std::string>& value, const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false )
+        : Inherit(value, helpMsg, isDisplayed, isReadOnly)
+    {
+        updatePath();
+    }
+
+    explicit DataFileNameVector( const Inherit& d)
+        : Inherit(d)
+    {
+        updatePath();
+    }
+
+    virtual ~DataFileNameVector()
+    {
+    }
+
+    void endEdit()
+    {
+        updatePath();
+    }
+
+    void setValue(const std::string& v)
+    {
+        beginEdit()->push_back(v);
+        endEdit();
+    }
+    virtual void virtualSetValue(const std::string& v) { setValue(v); }
+    virtual bool read( std::string& s )
+    {
+        bool ret = Inherit::read(s);
+        if (ret) updatePath();
+        return ret;
+    }
+
+    virtual std::string getRelativePath(unsigned int i) { return getValue()[i]; }
+    virtual std::string getFullPath(unsigned int i) { return fullpath[i]; }
+    virtual std::string getAbsolutePath(unsigned int i) { return fullpath[i]; }
+
+protected:
+    void updatePath();
+
+    sofa::helper::vector<std::string> fullpath;
 };
 
 } // namespace objectmodel

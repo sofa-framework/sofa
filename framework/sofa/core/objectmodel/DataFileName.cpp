@@ -42,6 +42,15 @@ void DataFileName::updatePath()
         helper::system::DataRepository.findFile(fullpath);
 }
 
+void DataFileNameVector::updatePath()
+{
+    std::cerr<<"DataFileNameVector::updatePath()"<<std::endl;
+    fullpath = m_value;
+    if (!fullpath.empty())
+        for (unsigned int i=0 ; i<fullpath.size() ; i++)
+            helper::system::DataRepository.findFile(fullpath[i]);
+}
+
 } // namespace objectmodel
 
 } // namespace core

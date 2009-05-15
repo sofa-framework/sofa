@@ -362,6 +362,15 @@ public:
         return c;
     }
 
+    Vec3 rotate(const Vec3& v) const
+    {
+        return orientation.rotate(v);
+    }
+    Vec3 inverseRotate(const Vec3& v) const
+    {
+        return orientation.inverseRotate(v);
+    }
+
     /// Apply a transformation with respect to itself
     void multRight( const RigidCoord<3,real>& c )
     {
