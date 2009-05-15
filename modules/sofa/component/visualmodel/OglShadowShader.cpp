@@ -56,8 +56,13 @@ int OglShadowShaderClass = core::RegisterObject("OglShadowShader")
         .add< OglShadowShader >()
         ;
 
+#ifndef PCSS_SHADOWS
 const std::string OglShadowShader::PATH_TO_SHADOW_VERTEX_SHADERS = "shaders/shadowMapping.vert";
 const std::string OglShadowShader::PATH_TO_SHADOW_FRAGMENT_SHADERS = "shaders/shadowMapping.frag";
+#else
+const std::string OglShadowShader::PATH_TO_SHADOW_VERTEX_SHADERS = "shaders/shadowMappingPCSS.vert";
+const std::string OglShadowShader::PATH_TO_SHADOW_FRAGMENT_SHADERS = "shaders/shadowMappingPCSS.frag";
+#endif
 
 OglShadowShader::OglShadowShader()
     :test(initData(&test, (int) 0, "test", "test"))
