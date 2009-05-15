@@ -241,7 +241,7 @@ void IdentityMapping<BaseMapping>::applyJT( typename In::VecConst& out, const ty
         {
             unsigned int indexIn = itOut->first;
             InDeriv data; eq(data, itOut->second);
-            o.insert( indexIn, data);
+            o.add( indexIn, data);
         }
     }
 }

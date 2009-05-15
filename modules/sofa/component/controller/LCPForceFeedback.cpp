@@ -104,7 +104,7 @@ void LCPForceFeedback::computeForce(double x, double y, double z, double /*u*/, 
             std::map<unsigned int, RigidTypes::Deriv>::const_iterator itConstraint;
             for(itConstraint=(*mState->getC())[c1].getData().begin(); itConstraint!=(*mState->getC())[c1].getData().end(); itConstraint++)
             {
-                v.insert(itConstraint->first, itConstraint->second);
+                v.add(itConstraint->first, itConstraint->second);
             }
             c.push_back(v);
         }

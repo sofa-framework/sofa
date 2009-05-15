@@ -604,11 +604,11 @@ void RigidRigidMapping<BaseMapping>::applyJT( typename In::VecConst& out, const 
 
             if (!indexFromEnd.getValue())
             {
-                out[outSize+i].insert(index.getValue(), result);
+                out[outSize+i].add(index.getValue(), result);
             }
             else
             {
-                out[outSize+i].insert(out.size() - 1 - index.getValue(), result);
+                out[outSize+i].add(out.size() - 1 - index.getValue(), result);
             }
         }
         break;
@@ -644,7 +644,7 @@ void RigidRigidMapping<BaseMapping>::applyJT( typename In::VecConst& out, const 
                 if (needToInsert)
                 {
                     const InDeriv result(v, omega);
-                    out[outSize+i].insert(ito, result);
+                    out[outSize+i].add(ito, result);
                 }
             }
         }
@@ -657,7 +657,6 @@ void RigidRigidMapping<BaseMapping>::applyJT( typename In::VecConst& out, const 
         for(unsigned int i=0; i<in.size(); i++)
         {
             unsigned int cpt=0;
-            std::cerr << "\tConstraint " << i << "\n";
             OutConstraintIterator it=in[i].getData().begin();
             for(unsigned int ito=0; ito<numDofs && it != in[i].getData().end(); ito++)
             {
@@ -667,12 +666,10 @@ void RigidRigidMapping<BaseMapping>::applyJT( typename In::VecConst& out, const 
                 for(unsigned int r=0; r<repartition.getValue()[ito] && it != in[i].getData().end(); r++, cpt++)
                 {
                     const unsigned int idx=it->first;
-//                     std::cerr << "\tIdx " << idx << "/" << cpt << "\n";
                     if (idx != cpt) continue;
                     needToInsert=true;
 
                     Deriv data=(Deriv) it->second;
-                    std::cerr << "Data " << idx << " : " << data.getVCenter() << " : " << data.getVOrientation() << " => " << data << "\n";
                     Vector f = data.getVCenter();
                     v += f;
                     omega += data.getVOrientation() + cross(f,-pointsR0[cpt].getCenter());
@@ -681,9 +678,8 @@ void RigidRigidMapping<BaseMapping>::applyJT( typename In::VecConst& out, const 
 
                 if (needToInsert)
                 {
-                    std::cerr << "In : " << ito << " / " << i << " Need to Insert : " << v << " ### " << omega << "\n";
                     const InDeriv result(v, omega);
-                    out[outSize+i].insert(ito, result);
+                    out[outSize+i].add(ito, result);
                 }
             }
         }

@@ -305,7 +305,7 @@ void LineSetSkinningMapping<BasicMapping>::applyJT( typename In::VecConst& out, 
                 direction.getVCenter() = d * iline.weight;
                 //printf("\n Weighted normale : %f %f %f",direction.getVCenter().x(), direction.getVCenter().y(), direction.getVCenter().z());
                 direction.getVOrientation() = IP.cross(d) * iline.weight;
-                out[i].insert(t->getLine(iline.lineIndex)[0], direction);
+                out[i].add(t->getLine(iline.lineIndex)[0], direction);
             }
         }
     }

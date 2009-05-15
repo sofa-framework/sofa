@@ -561,7 +561,7 @@ void SkinningMapping<BasicMapping>::applyJT ( typename In::VecConst& out, const 
         {
             //if (!(v[i] == typename In::Deriv()))
             if ( flags[j] )
-                out[outSize+i].insert (j,v[j] );
+                out[outSize+i].add (j,v[j] );
         }
     }
 }

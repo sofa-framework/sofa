@@ -192,7 +192,7 @@ void SubsetMapping<BaseMapping>::applyJT( typename In::VecConst& out, const type
         {
             unsigned int indexIn = itOut->first;
             OutDeriv data = (OutDeriv) itOut->second;
-            out[i+offset].insert( indices[indexIn] , data );
+            out[i+offset].add( indices[indexIn] , data );
         }
     }
 

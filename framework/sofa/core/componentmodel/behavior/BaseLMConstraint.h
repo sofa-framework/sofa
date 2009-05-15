@@ -53,6 +53,7 @@ class SOFA_CORE_API BaseLMConstraint: public virtual core::objectmodel::BaseObje
 public:
     /// Description of the nature of the constraint
     enum ConstId {POS,VEL,ACC};
+    enum ConstNature {UNILATERAL,BILATERAL};
 
     /**
      * \brief Intern storage of the constraints.
@@ -63,7 +64,7 @@ public:
     class constraintGroup
     {
     public:
-        constraintGroup( ConstId typeConstraint):Id(typeConstraint) {}
+        constraintGroup( ConstId idConstraint, ConstNature natureConstraint):Id(idConstraint),Nature(natureConstraint) {}
         /**
          * Method to add a constraint to the group
          *
@@ -106,15 +107,22 @@ public:
         /// Return the number of constraint contained in this group
         std::size_t getNumConstraint() const { return correction.size();};
 
-        /// Return the nature of the constraint
+        /// Return the order of the constraint
         /// @see ConstId
         ConstId getId() const { return Id;};
 
+        /// Return the nature of the constraint
+        /// @see ConstNature
+        ConstNature getNature() const { return Nature;};
+
 
     protected:
-        /// Nature of the constraint
+        /// Order of the constraint
         /// @see ConstId
         ConstId Id;
+        /// Order of the constraint
+        /// @see ConstNature
+        ConstNature Nature;
         /// Indices of the entries in the VecConst for the two objects
         std::vector< unsigned int > index[2];
         /// Right Hand Term
@@ -130,12 +138,12 @@ public:
     virtual void writeConstraintEquations(ConstId id)=0;
     /// Interface to construct a group of constraint: Giving the nature of these constraints, it returns a pointer to the structure
     /// @see constraintGroup
-    virtual constraintGroup* addGroupConstraint( ConstId Id);
+    virtual constraintGroup* addGroupConstraint( ConstId Id, ConstNature Nature);
 
     /// Get the internal structure: return all the constraint stored by their nature in a map
-    virtual void getConstraints( std::map< ConstId, std::vector< constraintGroup > >  &i) { i=constraintId;}
+    virtual void getConstraints( std::map< ConstId, std::vector< constraintGroup* > >  &i) { i=constraintId;}
     /// Get all the constraints stored of a given nature
-    virtual const std::vector< constraintGroup > &getConstraintsId(ConstId Id) { return constraintId[Id];}
+    virtual const std::vector< constraintGroup* > &getConstraintsId(ConstId Id) { return constraintId[Id];}
 
     virtual void getIndicesUsed(ConstId Id, std::vector< unsigned int > &used0, std::vector< unsigned int > &used1);
     virtual void getCorrections(ConstId Id, std::vector<SReal>& c);
@@ -153,7 +161,7 @@ protected:
 
     /// Constraints stored depending on their nature
     /// @see constraintGroup
-    std::map< ConstId, std::vector< constraintGroup > > constraintId;
+    std::map< ConstId, std::vector< constraintGroup* > > constraintId;
 };
 }
 }

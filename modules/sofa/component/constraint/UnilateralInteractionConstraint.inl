@@ -250,8 +250,8 @@ void UnilateralInteractionConstraint<DataTypes>::applyConstraint(unsigned int &c
             SparseVecDeriv svd1;
 
             this->object1->setConstraintId(c.id);
-            svd1.insert(c.m1, -c.norm);
-            svd1.insert(c.m2, c.norm);
+            svd1.add(c.m1, -c.norm);
+            svd1.add(c.m2, c.norm);
             c1.push_back(svd1);
 
             if (c.mu > 0.0)
@@ -288,11 +288,11 @@ void UnilateralInteractionConstraint<DataTypes>::applyConstraint(unsigned int &c
             SparseVecDeriv svd2;
 
             this->object1->setConstraintId(c.id);
-            svd1.insert(c.m1, -c.norm);
+            svd1.add(c.m1, -c.norm);
             c1.push_back(svd1);
 
             this->object2->setConstraintId(c.id);
-            svd2.insert(c.m2, c.norm);
+            svd2.add(c.m2, c.norm);
             c2.push_back(svd2);
 
             if (c.mu > 0.0)

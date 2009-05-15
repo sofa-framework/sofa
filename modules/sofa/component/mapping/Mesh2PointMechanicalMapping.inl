@@ -397,7 +397,7 @@ void Mesh2PointMechanicalMapping<BaseMapping>::applyJT( typename In::VecConst& o
             {
             case topology::Mesh2PointTopologicalMapping::POINT:
             {
-                out[i+offset].insert( source.second , data );
+                out[i+offset].add( source.second , data );
                 break;
             }
             case topology::Mesh2PointTopologicalMapping::EDGE:
@@ -405,8 +405,8 @@ void Mesh2PointMechanicalMapping<BaseMapping>::applyJT( typename In::VecConst& o
                 core::componentmodel::topology::BaseMeshTopology::Edge e = edges[source.second];
                 typename In::Deriv f = data;
                 double fx = topoMap->getEdgeBaryCoords()[indexIn][0];
-                out[i+offset].insert( e[0] , f*(1-fx) );
-                out[i+offset].insert( e[1] , f*fx );
+                out[i+offset].add( e[0] , f*(1-fx) );
+                out[i+offset].add( e[1] , f*fx );
                 break;
             }
             case topology::Mesh2PointTopologicalMapping::TRIANGLE:
@@ -415,9 +415,9 @@ void Mesh2PointMechanicalMapping<BaseMapping>::applyJT( typename In::VecConst& o
                 typename In::Deriv f = data;
                 double fx = topoMap->getTriangleBaryCoords()[indexIn][0];
                 double fy = topoMap->getTriangleBaryCoords()[indexIn][1];
-                out[i+offset].insert( t[0] , f*(1-fx-fy) );
-                out[i+offset].insert( t[1] , f*fx );
-                out[i+offset].insert( t[2] , f*fy );
+                out[i+offset].add( t[0] , f*(1-fx-fy) );
+                out[i+offset].add( t[1] , f*fx );
+                out[i+offset].add( t[2] , f*fy );
                 break;
             }
             case topology::Mesh2PointTopologicalMapping::QUAD:
@@ -426,10 +426,10 @@ void Mesh2PointMechanicalMapping<BaseMapping>::applyJT( typename In::VecConst& o
                 typename In::Deriv f = data;
                 double fx = topoMap->getQuadBaryCoords()[indexIn][0];
                 double fy = topoMap->getQuadBaryCoords()[indexIn][1];
-                out[i+offset].insert( q[0] , f*((1-fx) * (1-fy)) );
-                out[i+offset].insert( q[1] , f*((  fx) * (1-fy)) );
-                out[i+offset].insert( q[0] , f*((1-fx) * (  fy)) );
-                out[i+offset].insert( q[1] , f*((  fx) * (  fy)) );
+                out[i+offset].add( q[0] , f*((1-fx) * (1-fy)) );
+                out[i+offset].add( q[1] , f*((  fx) * (1-fy)) );
+                out[i+offset].add( q[0] , f*((1-fx) * (  fy)) );
+                out[i+offset].add( q[1] , f*((  fx) * (  fy)) );
                 break;
             }
             case topology::Mesh2PointTopologicalMapping::TETRA:
@@ -439,10 +439,10 @@ void Mesh2PointMechanicalMapping<BaseMapping>::applyJT( typename In::VecConst& o
                 double fx = topoMap->getTetraBaryCoords()[indexIn][0];
                 double fy = topoMap->getTetraBaryCoords()[indexIn][1];
                 double fz = topoMap->getTetraBaryCoords()[indexIn][2];
-                out[i+offset].insert( t[0] , f*(1-fx-fy-fz) );
-                out[i+offset].insert( t[1] , f*fx );
-                out[i+offset].insert( t[0] , f*fy );
-                out[i+offset].insert( t[1] , f*fz );
+                out[i+offset].add( t[0] , f*(1-fx-fy-fz) );
+                out[i+offset].add( t[1] , f*fx );
+                out[i+offset].add( t[0] , f*fy );
+                out[i+offset].add( t[1] , f*fz );
                 break;
             }
             case topology::Mesh2PointTopologicalMapping::HEXA:
@@ -452,14 +452,14 @@ void Mesh2PointMechanicalMapping<BaseMapping>::applyJT( typename In::VecConst& o
                 double fx = topoMap->getHexaBaryCoords()[indexIn][0];
                 double fy = topoMap->getHexaBaryCoords()[indexIn][1];
                 double fz = topoMap->getHexaBaryCoords()[indexIn][2];
-                out[i+offset].insert( h[0] , f*((1-fx) * (1-fy) * (1-fz)) );
-                out[i+offset].insert( h[1] , f*((  fx) * (1-fy) * (1-fz)) );
-                out[i+offset].insert( h[0] , f*((1-fx) * (  fy) * (1-fz)) );
-                out[i+offset].insert( h[1] , f*((  fx) * (  fy) * (1-fz)) );
-                out[i+offset].insert( h[0] , f*((1-fx) * (1-fy) * (  fz)) );
-                out[i+offset].insert( h[1] , f*((  fx) * (1-fy) * (  fz)) );
-                out[i+offset].insert( h[0] , f*((  fx) * (  fy) * (  fz)) );
-                out[i+offset].insert( h[1] , f*((1-fx) * (  fy) * (  fz)) );
+                out[i+offset].add( h[0] , f*((1-fx) * (1-fy) * (1-fz)) );
+                out[i+offset].add( h[1] , f*((  fx) * (1-fy) * (1-fz)) );
+                out[i+offset].add( h[0] , f*((1-fx) * (  fy) * (1-fz)) );
+                out[i+offset].add( h[1] , f*((  fx) * (  fy) * (1-fz)) );
+                out[i+offset].add( h[0] , f*((1-fx) * (1-fy) * (  fz)) );
+                out[i+offset].add( h[1] , f*((  fx) * (1-fy) * (  fz)) );
+                out[i+offset].add( h[0] , f*((  fx) * (  fy) * (  fz)) );
+                out[i+offset].add( h[1] , f*((1-fx) * (  fy) * (  fz)) );
                 break;
             }
             default:

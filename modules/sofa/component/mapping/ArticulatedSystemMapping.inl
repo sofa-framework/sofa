@@ -543,7 +543,7 @@ void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecConst& out
                         data = (Real)dot(axis, T.getVCenter());
                         //printf("\n weightedNormalArticulation : %f", constArt.data);
                     }
-                    out[i].insert(ind,data);
+                    out[i].add(ind,data);
                     ii++;
                 }
             }
@@ -556,7 +556,7 @@ void ArticulatedSystemMapping<BasicMapping>::applyJT( typename In::VecConst& out
                 T.getVCenter() = valueConst.getVCenter();
                 T.getVOrientation() = valueConst.getVOrientation() + cross(C - posRoot, valueConst.getVCenter());
 
-                (*outRoot)[sizeOutRoot+i].insert(indexT,T);
+                (*outRoot)[sizeOutRoot+i].add(indexT,T);
                 //sout<< "constraintT = data : "<< T << "index : "<< indexT<<sendl;
                 //(*outRoot)[i].push_back(constraintT);
                 //	sout<< "constraintT = data : "<< T << "index : "<< indexT<<sendl;
