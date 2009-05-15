@@ -155,6 +155,8 @@ protected:
     Data< std::string > object1;
     Data< std::string > object2;
 
+    Data<bool> flipNormals;
+
 };
 
 } // namespace topology

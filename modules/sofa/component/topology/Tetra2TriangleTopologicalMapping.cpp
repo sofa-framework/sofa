@@ -67,7 +67,8 @@ int Tetra2TriangleTopologicalMappingClass = core::RegisterObject("Special case o
 Tetra2TriangleTopologicalMapping::Tetra2TriangleTopologicalMapping(In* from, Out* to)
     : TopologicalMapping(from, to),
       object1(initData(&object1, std::string("../.."), "object1", "First object to map")),
-      object2(initData(&object2, std::string(".."), "object2", "Second object to map"))
+      object2(initData(&object2, std::string(".."), "object2", "Second object to map")),
+      flipNormals(initData(&flipNormals, bool(false), "flipNormals", "Flip Normal ? (Inverse point order when creating triangle)"))
 {
 }
 
@@ -114,8 +115,15 @@ void Tetra2TriangleTopologicalMapping::init()
 
                 if (fromModel->getTetraTriangleShell(i).size()==1)
                 {
-
-                    to_tstm->addTriangleProcess(triangleArray[i]);
+                    if(flipNormals.getValue())
+                    {
+                        Triangle t = triangleArray[i];
+                        unsigned int tmp = t[2];
+                        t[2] = t[1];
+                        t[1] = tmp;
+                        to_tstm->addTriangleProcess(t);
+                    }
+                    else	to_tstm->addTriangleProcess(triangleArray[i]);
 
                     Loc2GlobVec.push_back(i);
                     Glob2LocMap[i]=Loc2GlobVec.size()-1;

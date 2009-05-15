@@ -84,7 +84,8 @@ public:
            m_nbPointsOnEachCircle( initData(&m_nbPointsOnEachCircle, "nbPointsOnEachCircle", "Discretization of created circles")),
            m_radius( initData(&m_radius, "radius", "Radius of created circles")),
            object1(initData(&object1, std::string("../.."), "object1", "First object to map")),
-           object2(initData(&object2, std::string(".."), "object2", "Second object to map"))
+           object2(initData(&object2, std::string(".."), "object2", "Second object to map")),
+           flipNormals(initData(&flipNormals, bool(false), "flipNormals", "Flip Normals ? (Inverse point order when creating quads)"))
     {
     }
 
@@ -178,6 +179,8 @@ protected:
 
     Data< std::string > object1;
     Data< std::string > object2;
+
+    Data<bool> flipNormals;
 };
 
 } // namespace topology
