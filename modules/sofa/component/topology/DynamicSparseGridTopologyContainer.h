@@ -38,7 +38,7 @@ namespace topology
 typedef defaulttype::Vec<3, int> Vec3i;
 
 /** a class that stores a sparse regular grid of hexahedra and provides a better loading and access to neighbors than HexahedronSetTopologyContainer */
-class DynamicSparseGridTopologyContainer : public HexahedronSetTopologyContainer
+class SOFA_COMPONENT_CONTAINER_API DynamicSparseGridTopologyContainer : public HexahedronSetTopologyContainer
 {
     friend class DynamicSparseGridTopologyModifier;
 

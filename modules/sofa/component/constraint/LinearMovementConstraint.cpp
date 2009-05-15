@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_CONSTRAINT_LINEARMOVEMENTCONSTRAINT_CPP
 #include <sofa/component/constraint/LinearMovementConstraint.inl>
 #include <sofa/core/componentmodel/behavior/Constraint.inl>
 #include <sofa/core/ObjectFactory.h>
@@ -97,31 +98,31 @@ int LinearMovementConstraintClass = core::RegisterObject("translate given partic
         .add< LinearMovementConstraint<Vec3dTypes> >()
         .add< LinearMovementConstraint<Vec2dTypes> >()
         .add< LinearMovementConstraint<Vec1dTypes> >()
-        .add< LinearMovementConstraint<Vec6dTypes> >()
+//.add< LinearMovementConstraint<Vec6dTypes> >()
         .add< LinearMovementConstraint<Rigid3dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
         .add< LinearMovementConstraint<Vec3fTypes> >()
         .add< LinearMovementConstraint<Vec2fTypes> >()
         .add< LinearMovementConstraint<Vec1fTypes> >()
-        .add< LinearMovementConstraint<Vec6fTypes> >()
+//.add< LinearMovementConstraint<Vec6fTypes> >()
         .add< LinearMovementConstraint<Rigid3fTypes> >()
 #endif
         ;
 
 #ifndef SOFA_FLOAT
-template class LinearMovementConstraint<Vec3dTypes>;
-template class LinearMovementConstraint<Vec2dTypes>;
-template class LinearMovementConstraint<Vec1dTypes>;
-template class LinearMovementConstraint<Vec6dTypes>;
-template class LinearMovementConstraint<Rigid3dTypes>;
+template class SOFA_COMPONENT_CONSTRAINT_API LinearMovementConstraint<Vec3dTypes>;
+template class SOFA_COMPONENT_CONSTRAINT_API LinearMovementConstraint<Vec2dTypes>;
+template class SOFA_COMPONENT_CONSTRAINT_API LinearMovementConstraint<Vec1dTypes>;
+//template class SOFA_COMPONENT_CONSTRAINT_API LinearMovementConstraint<Vec6dTypes>;
+template class SOFA_COMPONENT_CONSTRAINT_API LinearMovementConstraint<Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class LinearMovementConstraint<Vec3fTypes>;
-template class LinearMovementConstraint<Vec2fTypes>;
-template class LinearMovementConstraint<Vec1fTypes>;
-template class LinearMovementConstraint<Vec6fTypes>;
-template class LinearMovementConstraint<Rigid3fTypes>;
+template class SOFA_COMPONENT_CONSTRAINT_API LinearMovementConstraint<Vec3fTypes>;
+template class SOFA_COMPONENT_CONSTRAINT_API LinearMovementConstraint<Vec2fTypes>;
+template class SOFA_COMPONENT_CONSTRAINT_API LinearMovementConstraint<Vec1fTypes>;
+//template class SOFA_COMPONENT_CONSTRAINT_API LinearMovementConstraint<Vec6fTypes>;
+template class SOFA_COMPONENT_CONSTRAINT_API LinearMovementConstraint<Rigid3fTypes>;
 #endif
 
 } // namespace constraint

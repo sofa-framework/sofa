@@ -25,10 +25,9 @@
 #ifndef SOFA_COMPONENT_CONSTRAINT_LINEARMOVEMENTCONSTRAINT_INL
 #define SOFA_COMPONENT_CONSTRAINT_LINEARMOVEMENTCONSTRAINT_INL
 
+#include <sofa/component/constraint/LinearMovementConstraint.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/core/componentmodel/behavior/Constraint.inl>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
-#include <sofa/component/constraint/LinearMovementConstraint.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <iostream>
