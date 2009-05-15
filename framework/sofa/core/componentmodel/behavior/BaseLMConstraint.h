@@ -64,17 +64,18 @@ public:
     class constraintGroup
     {
     public:
-        constraintGroup( ConstId idConstraint, ConstNature natureConstraint):Id(idConstraint),Nature(natureConstraint) {}
+        constraintGroup( ConstId idConstraint):Id(idConstraint) {}
         /**
          * Method to add a constraint to the group
          *
          * @param i0 index of the entry in the VecConst for the first object
          * @param i1 index of the entry in the VecConst for the second object
          **/
-        void addConstraint(  unsigned int i0, unsigned int i1, SReal c)
+        void addConstraint(  unsigned int i0, unsigned int i1, SReal c, ConstNature n)
         {
             index[0].push_back(i0); index[1].push_back(i1);
             correction.push_back(c);
+            nature.push_back(n);
         }
         /**
          * Method to retrieve one of the constraint in the group
@@ -84,16 +85,18 @@ public:
          * @param indexVecConst1 index of the entry in the VecConst for the second object
          **/
         void getConstraint(const unsigned int i,
-                unsigned int &indexVecConst0, unsigned int &indexVecConst1, double &c) const
+                unsigned int &indexVecConst0, unsigned int &indexVecConst1, double &c, ConstNature &n) const
         {
             indexVecConst0 = index[0][i]; indexVecConst1 = index[1][i];
             c = correction[i];
+            n = nature[i];
         }
 
         /// Retrieves only the indices in the VecConst for a given constraint of the group
         void   getIndices          (unsigned int entry, unsigned int &i0, unsigned int &i1) const {i0=index[0][entry]; i1=index[1][entry];}
         /// Retrieves only the correction for a given index in the VecConst
         SReal getCorrection(unsigned int entry) const {return correction[entry];}
+        ConstNature getNature(unsigned int entry) const {return nature[entry];}
 
         ///Retrieves all the indices in the VecConst for the first object
         const std::vector< unsigned int > &getIndicesUsed0()   const {return index[0];}
@@ -101,6 +104,7 @@ public:
         const std::vector< unsigned int > &getIndicesUsed1()   const {return index[1];}
         ///Retrieves the correction for the constraint (corresponds to the Right Hand term of the equation)
         const std::vector< SReal >       &getCorrections()    const {return correction;}
+        const std::vector< ConstNature > &getNatures()        const {return nature;}
 
 
 
@@ -111,22 +115,18 @@ public:
         /// @see ConstId
         ConstId getId() const { return Id;};
 
-        /// Return the nature of the constraint
-        /// @see ConstNature
-        ConstNature getNature() const { return Nature;};
-
 
     protected:
         /// Order of the constraint
         /// @see ConstId
         ConstId Id;
-        /// Order of the constraint
-        /// @see ConstNature
-        ConstNature Nature;
         /// Indices of the entries in the VecConst for the two objects
         std::vector< unsigned int > index[2];
         /// Right Hand Term
         std::vector< SReal > correction;
+        /// Nature of the constraints
+        /// @see ConstNature
+        std::vector< ConstNature > nature;
     };
 
 public:
@@ -138,7 +138,7 @@ public:
     virtual void writeConstraintEquations(ConstId id)=0;
     /// Interface to construct a group of constraint: Giving the nature of these constraints, it returns a pointer to the structure
     /// @see constraintGroup
-    virtual constraintGroup* addGroupConstraint( ConstId Id, ConstNature Nature);
+    virtual constraintGroup* addGroupConstraint( ConstId Id);
 
     /// Get the internal structure: return all the constraint stored by their nature in a map
     virtual void getConstraints( std::map< ConstId, std::vector< constraintGroup* > >  &i) { i=constraintId;}

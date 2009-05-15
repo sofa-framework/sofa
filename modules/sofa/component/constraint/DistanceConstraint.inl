@@ -133,7 +133,7 @@ void DistanceConstraint<DataTypes>::writeConstraintEquations(ConstId Id)
 
         Deriv V12 = getDirection(edges[i], x1, x2);
 
-        core::componentmodel::behavior::BaseLMConstraint::constraintGroup *constraint = this->addGroupConstraint(Id,core::componentmodel::behavior::BaseLMConstraint::BILATERAL );
+        core::componentmodel::behavior::BaseLMConstraint::constraintGroup *constraint = this->addGroupConstraint(Id);
         SReal correction=SReal();
         switch(Id)
         {
@@ -174,7 +174,7 @@ void DistanceConstraint<DataTypes>::writeConstraintEquations(ConstId Id)
             SparseVecDeriv V2;
             V2.add(idx2,V12); c2.push_back(V2);
 //             }
-            constraint->addConstraint( idxInVecConst[0], idxInVecConst[1], correction);
+            constraint->addConstraint( idxInVecConst[0], idxInVecConst[1], correction, core::componentmodel::behavior::BaseLMConstraint::BILATERAL);
         }
 
     }
