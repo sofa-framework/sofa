@@ -67,11 +67,11 @@ void BilateralInteractionConstraint<DataTypes>::applyConstraint(unsigned int &co
     SparseVecDeriv svd2;
 
     this->object1->setConstraintId(cid);
-    svd1.insert(tm1, -cx);
+    svd1.add(tm1, -cx);
     c1.push_back(svd1);
 
     this->object2->setConstraintId(cid);
-    svd2.insert(tm2, cx);
+    svd2.add(tm2, cx);
     c2.push_back(svd2);
 
     this->object1->setConstraintId(cid+1);

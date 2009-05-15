@@ -215,8 +215,8 @@ void BeamLinearMapping<BasicMapping>::applyJT( typename In::VecConst& out, const
             InDeriv direction1;
             direction1.getVCenter() = w_n * (fact);
             direction1.getVOrientation() = cross(rotatedPoints1[indexIn], w_n) * (fact);
-            out[outSize+i].insert(in0, direction0);
-            out[outSize+i].insert(in0+1, direction1);
+            out[outSize+i].add(in0, direction0);
+            out[outSize+i].add(in0+1, direction1);
         }
 
     }

@@ -685,11 +685,11 @@ void RigidMapping<BaseMapping>::applyJT( typename In::VecConst& out, const typen
             const InDeriv result(v, omega);
             if (!indexFromEnd.getValue())
             {
-                out[outSize+i].insert(index.getValue(), result);
+                out[outSize+i].add(index.getValue(), result);
             }
             else
             {
-                out[outSize+i].insert(out.size() - 1 - index.getValue(), result);
+                out[outSize+i].add(out.size() - 1 - index.getValue(), result);
             }
         }
         break;
@@ -723,7 +723,7 @@ void RigidMapping<BaseMapping>::applyJT( typename In::VecConst& out, const typen
                 if (needToInsert)
                 {
                     const InDeriv result(v, omega);
-                    out[outSize+i].insert(ito, result);
+                    out[outSize+i].add(ito, result);
                 }
             }
         }
@@ -757,7 +757,7 @@ void RigidMapping<BaseMapping>::applyJT( typename In::VecConst& out, const typen
                 if (needToInsert)
                 {
                     const InDeriv result(v, omega);
-                    out[outSize+i].insert(ito, result);
+                    out[outSize+i].add(ito, result);
                 }
             }
         }
