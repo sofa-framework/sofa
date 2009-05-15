@@ -54,9 +54,9 @@ unsigned int BaseLMConstraint::getNumConstraint(ConstId Id)
     return result;
 }
 
-BaseLMConstraint::constraintGroup* BaseLMConstraint::addGroupConstraint( ConstId id, ConstNature n)
+BaseLMConstraint::constraintGroup* BaseLMConstraint::addGroupConstraint( ConstId id)
 {
-    constraintGroup *c=new constraintGroup(id,n);
+    constraintGroup *c=new constraintGroup(id);
     constraintId[id].push_back(c);
     return c;
 }
