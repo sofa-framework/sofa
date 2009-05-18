@@ -130,7 +130,8 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
        scale             (initData   (&scale, (SReal)(1.0), "scale", "Initial Scale of the object")),
        scaleTex          (initData   (&scaleTex, TexCoord(1.0,1.0), "scaleTex", "Scale of the texture")),
        translationTex    (initData   (&translationTex, TexCoord(1.0,1.0), "translationTex", "Translation of the texture")),
-       material(initData(&material,"material","Material")) //, tex(NULL)
+       material(initData(&material,"material","Material")), // tex(NULL)
+       putOnlyTexCoords(initData(&putOnlyTexCoords, (bool) false, "putOnlyTexCoords", "Give Texture Coordinates without the texture binding"))
 {
     inputVertices = &vertices;
     addAlias(&fileMesh, "filename");
@@ -219,8 +220,8 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
     vertices.resize(nbVOut);
     vnormals.resize(nbVOut);
 
-    if (tex)
-        vtexcoords.resize(nbVOut);
+    //if (tex)
+    vtexcoords.resize(nbVOut);
 
     if (vsplit)
     {
@@ -319,7 +320,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
 
 bool VisualModelImpl::load(const std::string& filename, const std::string& loader, const std::string& textureName)
 {
-    bool tex = !textureName.empty();
+    bool tex = !textureName.empty() || putOnlyTexCoords.getValue();
     if (!textureName.empty() )
     {
         std::string textureFilename(textureName);
@@ -328,7 +329,6 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
         else
             serr <<"Texture \""<<textureName <<"\" not found" << sendl;
     }
-    tex = !textureName.empty();
 
     if (!filename.empty() && vertices.size() == 0)
     {
@@ -349,6 +349,7 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
             else
             {
                 setMesh(*objLoader,tex);
+                //setMesh(*objLoader,true);
                 //sout << "VisualModel::load, vertices.size = "<< vertices.size() <<sendl;
             }
         }
