@@ -121,10 +121,13 @@ void OglModel::internalDraw()
 
     glEnableClientState(GL_NORMAL_ARRAY);
     glEnableClientState(GL_VERTEX_ARRAY);
-    if (tex)
+
+    if (tex || putOnlyTexCoords.getValue())
     {
         glEnable(GL_TEXTURE_2D);
-        tex->bind();
+        if(tex)
+            tex->bind();
+
         if(VBOGenDone && useVBO.getValue())
         {
             glBindBuffer(GL_ARRAY_BUFFER, vbo);
@@ -221,9 +224,10 @@ void OglModel::internalDraw()
 
         glPopMatrix();
     }
-    if (tex)
+    if (tex || putOnlyTexCoords.getValue())
     {
-        tex->unbind();
+        if (tex)
+            tex->unbind();
         glDisableClientState(GL_TEXTURE_COORD_ARRAY);
         glDisable(GL_TEXTURE_2D);
     }
@@ -329,7 +333,7 @@ void OglModel::initVertexBuffer()
     unsigned int positionsBufferSize, normalsBufferSize, textureCoordsBufferSize = 0;
     positionsBufferSize = (vertices.size()*sizeof(vertices[0]));
     normalsBufferSize = (vnormals.size()*sizeof(vnormals[0]));
-    if (tex)
+    if (tex || putOnlyTexCoords.getValue())
         textureCoordsBufferSize = vtexcoords.size() * sizeof(vtexcoords[0]);
 
     unsigned int totalSize = positionsBufferSize + normalsBufferSize + textureCoordsBufferSize;
@@ -371,7 +375,7 @@ void OglModel::updateVertexBuffer()
     unsigned int positionsBufferSize, normalsBufferSize, textureCoordsBufferSize = 0;
     positionsBufferSize = (vertices.size()*sizeof(vertices[0]));
     normalsBufferSize = (vnormals.size()*sizeof(vnormals[0]));
-    if (tex)
+    if (tex || putOnlyTexCoords.getValue())
         textureCoordsBufferSize = vtexcoords.size() * sizeof(vtexcoords[0]);
 
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
@@ -387,13 +391,14 @@ void OglModel::updateVertexBuffer()
             normalsBufferSize,
             vnormals.getData());
     //Texture coords
-    if(tex)
+    if(tex || putOnlyTexCoords.getValue())
     {
         glBufferSubData(GL_ARRAY_BUFFER,
                 positionsBufferSize + normalsBufferSize,
                 textureCoordsBufferSize,
                 vtexcoords.getData());
     }
+
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
 }

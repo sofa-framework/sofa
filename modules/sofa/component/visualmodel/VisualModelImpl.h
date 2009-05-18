@@ -169,6 +169,7 @@ protected:
 
 public:
     Data< sofa::helper::io::Mesh::Material > material;
+    Data< bool > putOnlyTexCoords;
 
     VisualModelImpl();
 
