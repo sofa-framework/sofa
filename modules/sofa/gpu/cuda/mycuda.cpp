@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/system/config.h>
+#include <sofa/helper/BackTrace.h>
 #include <iostream>
 #include <fstream>
 #include <stdarg.h>
@@ -83,6 +84,7 @@ extern "C"
 void mycudaLogError(const char* err, const char* src)
 {
     std::cerr << "CUDA error: "<< err <<" returned from "<< src <<".\n";
+    sofa::helper::BackTrace::dump();
     exit(1);
 }
 
