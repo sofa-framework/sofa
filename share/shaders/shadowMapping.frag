@@ -15,18 +15,13 @@ uniform sampler2D colorTexture;
 void main()
 {
 	vec4 final_color = ambientGlobal;
-
-#ifdef USE_TEXTURE
-	final_color.rgb = texture2D(colorTexture,gl_TexCoord[0].st).rgb;
-#endif
-	vec4 temp_color;
+    vec4 specular_color = vec4(0.0,0.0,0.0,0.0);
 	bool hasLight = false;
 	vec3 n,halfV;
 	vec4 diffuse;
 	float NdotL,NdotHV;
 	float att,spotEffect;
 	float isLit;
-
 	//lightFlag[0] = 2;
 	//lightFlag[1] = 0;
 
@@ -37,7 +32,6 @@ void main()
 	n = normalize(normal);
 	for(int i=0 ; i<MAX_NUMBER_OF_LIGHTS ;i++)
 	{
-		vec4 temp_color = vec4(0.0,0.0,0.0,0.0);
 		if(lightFlag[i] > 0)
 		{
 			hasLight = true;
@@ -45,7 +39,9 @@ void main()
 
 			//shadow enabled
 			if (lightFlag[i] == 2)
+			{
 				isLit = shadow2DProj(shadowTexture[i], shadowTexCoord[i]).x;
+			}
 
 			NdotL = max(dot(n,normalize(lightDir[i])),0.0);
 			if (NdotL > 0.0 && isLit > 0.0)
@@ -60,21 +56,26 @@ void main()
 							gl_LightSource[i].linearAttenuation * dist[i] +
 							gl_LightSource[i].quadraticAttenuation * dist[i] * dist[i]);
 
-					temp_color += att * (diffuse * NdotL) ;
+					final_color += att * (diffuse * NdotL) ;
 
 					halfV = normalize(gl_LightSource[i].halfVector.xyz);
 					NdotHV = max(dot(n,halfV),0.0);
-					temp_color += att * gl_FrontMaterial.specular * gl_LightSource[i].specular * pow(NdotHV,gl_FrontMaterial.shininess);
+					specular_color += att * gl_FrontMaterial.specular * gl_LightSource[i].specular * pow(NdotHV,gl_FrontMaterial.shininess);
 				}
 			}
 		}
-
-		final_color += temp_color;
 	}
+
+#ifdef USE_TEXTURE
+	final_color.rgb *= texture2D(colorTexture,gl_TexCoord[0].st).rgb;
+#endif
+
+	final_color.rgb += specular_color.rgb;
 
 	if (hasLight)
 		gl_FragColor = final_color;
 	else
 		gl_FragColor = gl_Color;
+
 
 }
