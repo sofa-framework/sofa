@@ -30,6 +30,9 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 
+#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/common/Simulation.h>
+
 namespace sofa
 {
 
@@ -158,6 +161,64 @@ PointSetGeometryAlgorithms<DataTypes>::computeAngle(PointID ind_p0, PointID ind_
     else
         return OBTUSE;
 }
+
+
+template<class DataTypes>
+void PointSetGeometryAlgorithms<DataTypes>::draw()
+{
+
+    if (debugViewPointIndices.getValue())
+    {
+        Mat<4,4, GLfloat> modelviewM;
+        Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
+        const VecCoord& coords = *(this->object->getX());
+
+        sofa::simulation::Node* context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
+        glColor3f(1.0,1.0,1.0);
+        glDisable(GL_LIGHTING);
+        sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
+
+
+        PointIndicesScale = (sceneMaxBBox - sceneMinBBox).norm() * debugViewIndicesScale.getValue();
+        //float scale = debugViewIndicesScale.getValue();
+
+        for (unsigned int i =0; i<coords.size(); i++)
+        {
+            std::ostringstream oss;
+            oss << i;
+            std::string tmp = oss.str();
+            const char* s = tmp.c_str();
+            glPushMatrix();
+
+            glTranslatef(coords[i][0], coords[i][1], coords[i][2]);
+            glScalef(PointIndicesScale,PointIndicesScale,PointIndicesScale);
+
+            // Makes text always face the viewer by removing the scene rotation
+            // get the current modelview matrix
+            glGetFloatv(GL_MODELVIEW_MATRIX , modelviewM.ptr() );
+            modelviewM.transpose();
+
+            Vec3d temp(coords[i][0], coords[i][1], coords[i][2]);
+            temp = modelviewM.transform(temp);
+
+            //glLoadMatrixf(modelview);
+            glLoadIdentity();
+
+            glTranslatef(temp[0], temp[1], temp[2]);
+            glScalef(PointIndicesScale,PointIndicesScale,PointIndicesScale);
+
+            while(*s)
+            {
+                glutStrokeCharacter(GLUT_STROKE_ROMAN, *s);
+                s++;
+            }
+
+            glPopMatrix();
+
+        }
+    }
+}
+
 
 } // namespace topology
 

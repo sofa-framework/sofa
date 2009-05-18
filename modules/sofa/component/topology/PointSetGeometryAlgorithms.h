@@ -30,6 +30,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/component/component.h>
+#include <sofa/helper/system/glut.h>
 
 namespace sofa
 {
@@ -73,11 +74,16 @@ public:
 
     PointSetGeometryAlgorithms()
         : GeometryAlgorithms()
-    {}
+    {
+        debugViewIndicesScale = this->initData(&debugViewIndicesScale, (float) 0.0001, "debugViewIndicesScale", "Debug : scale for view topology indices");
+        debugViewPointIndices = this->initData(&debugViewPointIndices, (bool) false, "debugViewPointIndices", "Debug : view Point indices");
+    }
 
     virtual ~PointSetGeometryAlgorithms() {}
 
     virtual void init();
+
+    void draw();
 
     /** return the centroid of the set of points */
     Coord getPointSetCenter() const;
@@ -98,6 +104,10 @@ public:
 
     /** \brief Returns the object where the mechanical DOFs are stored */
     sofa::core::componentmodel::behavior::MechanicalState<DataTypes> *getDOF() const { return object;	}
+
+    Data<bool> debugViewPointIndices;
+    Data<float> debugViewIndicesScale;
+    float PointIndicesScale;
 
     virtual std::string getTemplateName() const
     {

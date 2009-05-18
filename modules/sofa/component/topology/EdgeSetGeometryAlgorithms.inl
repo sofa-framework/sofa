@@ -383,14 +383,88 @@ typename DataTypes::Coord EdgeSetGeometryAlgorithms<DataTypes>::compute2EdgesInt
     for (unsigned int i = 0; i<3; i++)
         if ( (X[i] - edge2[0][i] - alpha * vec2[i]) > 0.1 )
         {
-            std::cout << "erreur: " <<(X[i] - edge2[0][i] - alpha * vec2[i]) << std::endl;
-
             std::cout << "Error: EdgeSetGeometryAlgorithms::compute2EdgeIntersection, edges don't intersect themself." << std::endl;
             intersected = false;
         }
 
     return X;
 }
+
+
+template<class DataTypes>
+void EdgeSetGeometryAlgorithms<DataTypes>::draw()
+{
+
+    PointSetGeometryAlgorithms<DataTypes>::draw();
+
+    Mat<4,4, GLfloat> modelviewM;
+    //    Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
+    //sofa::simulation::Node* context;
+    if (debugViewEdgeIndices.getValue())
+    {
+        const VecCoord& coords = *(this->object->getX());
+        glColor3f(1.0,0.0,1.0);
+        glDisable(GL_LIGHTING);
+        float scale = PointSetGeometryAlgorithms<DataTypes>::PointIndicesScale;
+
+        //for edges:
+        scale = scale/2;
+
+        const sofa::helper::vector <Edge>& edgeArray = this->m_topology->getEdges();
+
+        for (unsigned int i =0; i<edgeArray.size(); i++)
+        {
+
+            Edge the_edge = edgeArray[i];
+            Coord baryCoord;
+            Coord vertex1 = coords[ the_edge[0] ];
+            Coord vertex2 = coords[ the_edge[1] ];
+
+            for (unsigned int k = 0; k<3; k++)
+                baryCoord[k] = (vertex1[k]+vertex2[k])/2;
+
+            /*
+                  (coords[ the_edge[0] ][j] + coords[ the_edge[1][j] ])/2;
+            Vec<3,double> baryCoord;
+
+            baryCoord = (coords[ the_edge[0] ] + coords[ the_edge[1] ])/2;
+            */
+            std::ostringstream oss;
+            oss << i;
+            std::string tmp = oss.str();
+            const char* s = tmp.c_str();
+            glPushMatrix();
+
+            glTranslatef(baryCoord[0], baryCoord[1], baryCoord[2]);
+            glScalef(scale,scale,scale);
+
+            // Makes text always face the viewer by removing the scene rotation
+            // get the current modelview matrix
+            glGetFloatv(GL_MODELVIEW_MATRIX , modelviewM.ptr() );
+            modelviewM.transpose();
+
+            Vec3d temp(baryCoord[0], baryCoord[1], baryCoord[2]);
+            temp = modelviewM.transform(temp);
+
+            //glLoadMatrixf(modelview);
+            glLoadIdentity();
+
+            glTranslatef(temp[0], temp[1], temp[2]);
+            glScalef(scale,scale,scale);
+
+            while(*s)
+            {
+                glutStrokeCharacter(GLUT_STROKE_ROMAN, *s);
+                s++;
+            }
+
+            glPopMatrix();
+
+        }
+    }
+}
+
+
 
 
 

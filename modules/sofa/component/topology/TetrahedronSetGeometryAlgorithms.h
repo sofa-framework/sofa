@@ -62,9 +62,13 @@ public:
 
     TetrahedronSetGeometryAlgorithms()
         : TriangleSetGeometryAlgorithms<DataTypes>()
-    {}
+    {
+        debugViewTetrahedraIndices = this->initData(&debugViewTetrahedraIndices, (bool) false, "debugViewTetrahedraIndices", "Debug : view Tetrahedrons indices");
+    }
 
     virtual ~TetrahedronSetGeometryAlgorithms() {}
+
+    void draw();
 
     void computeTetrahedronAABB(const TetraID i, Coord& minCoord, Coord& maxCoord) const;
 
@@ -99,6 +103,8 @@ public:
     /** \brief Write the current mesh into a msh file
     */
     void writeMSHfile(const char *filename) const;
+
+    Data<bool> debugViewTetrahedraIndices;
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETGEOMETRYALGORITHMS_CPP)

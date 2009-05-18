@@ -25,9 +25,10 @@
 #include <sofa/component/topology/TriangleSetTopologyContainer.h>
 
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/component/container/MechanicalObject.inl>
-#include <sofa/helper/gl/glText.inl>
+//#include <sofa/component/container/MechanicalObject.inl>
+//#include <sofa/helper/gl/glText.inl>
 
+#include <sofa/helper/system/glut.h>
 
 #include <sofa/component/container/MeshLoader.h>
 
@@ -623,12 +624,6 @@ void TriangleSetTopologyContainer::clear()
     clearTriangles();
     EdgeSetTopologyContainer::clear();
 }
-
-
-void TriangleSetTopologyContainer::draw()
-{
-}
-
 
 } // namespace topology
 

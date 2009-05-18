@@ -73,9 +73,6 @@ public:
 
     virtual void init();
 
-    virtual void draw();
-
-
     /// BaseMeshTopology API
     /// @{
     const SeqTriangles& getTriangles()
