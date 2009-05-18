@@ -318,6 +318,7 @@ void EdgeSetTopologyContainer::clear()
     PointSetTopologyContainer::clear();
 }
 
+
 } // namespace topology
 
 } // namespace component

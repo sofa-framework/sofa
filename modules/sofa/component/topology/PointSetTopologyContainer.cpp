@@ -45,8 +45,8 @@ int PointSetTopologyContainerClass = core::RegisterObject("Point set topology co
         ;
 
 PointSetTopologyContainer::PointSetTopologyContainer(int npoints)
-    : nbPoints(initData(&nbPoints, (unsigned int )npoints, "nbPoints", "Number of points"))
-    , d_initPoints(initDataPtr(&d_initPoints, &initPoints, "points", "Initial position of points"))
+    : nbPoints (initData(&nbPoints, (unsigned int )npoints, "nbPoints", "Number of points"))
+    , d_initPoints (initDataPtr(&d_initPoints, &initPoints, "points", "Initial position of points"))
 {
 }
 
@@ -147,6 +147,7 @@ void PointSetTopologyContainer::removePoint()
 {
     nbPoints.setValue(nbPoints.getValue()-1);
 }
+
 
 } // namespace topology
 

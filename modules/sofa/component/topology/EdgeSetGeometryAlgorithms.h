@@ -71,7 +71,10 @@ public:
 
     EdgeSetGeometryAlgorithms()
         : PointSetGeometryAlgorithms<DataTypes>()
-    {}
+    {
+        debugViewEdgeIndices = this->initData(&debugViewEdgeIndices, (bool) false, "debugViewEdgeIndices", "Debug : view Edge indices");
+    }
+
 
     virtual ~EdgeSetGeometryAlgorithms() {}
 
@@ -120,6 +123,10 @@ public:
     Coord compute2EdgesIntersection (const Coord edge1[2], const Coord edge2[2], bool& intersected);
 
     void writeMSHfile(const char *filename) const;
+
+    void draw();
+
+    Data<bool> debugViewEdgeIndices;
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_CPP)

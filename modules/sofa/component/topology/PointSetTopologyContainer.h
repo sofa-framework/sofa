@@ -62,6 +62,7 @@ public:
 
     virtual void init();
 
+
     /** \brief Checks if the Topology is coherent
     *
     */

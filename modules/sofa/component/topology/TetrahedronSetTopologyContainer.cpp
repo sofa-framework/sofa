@@ -27,9 +27,10 @@
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/component/container/MeshLoader.h>
-
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/gl/template.h>
+#include <sofa/helper/system/glut.h>
+
 
 namespace sofa
 {
@@ -84,6 +85,7 @@ void TetrahedronSetTopologyContainer::draw()
         {
             const Tetra& t = getTetra(i);
             glBegin(GL_LINE_STRIP);
+
             glVertex3d(getPX(t[0]), getPY(t[0]), getPZ(t[0]));
             glVertex3d(getPX(t[1]), getPY(t[1]), getPZ(t[1]));
             glVertex3d(getPX(t[2]), getPY(t[2]), getPZ(t[2]));
@@ -97,7 +99,6 @@ void TetrahedronSetTopologyContainer::draw()
             glEnd();
         }
     }
-
 }
 
 

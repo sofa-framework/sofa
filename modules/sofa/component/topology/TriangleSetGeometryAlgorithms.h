@@ -63,9 +63,13 @@ public:
 
     TriangleSetGeometryAlgorithms()
         : EdgeSetGeometryAlgorithms<DataTypes>()
-    {}
+    {
+        debugViewTriangleIndices = this->initData(&debugViewTriangleIndices, (bool) false, "debugViewTriangleIndices", "Debug : view Triangle indices");
+    }
 
     virtual ~TriangleSetGeometryAlgorithms() {}
+
+    void draw();
 
     void computeTriangleAABB(const TriangleID i, Coord& minCoord, Coord& maxCoord) const;
 
@@ -235,6 +239,9 @@ public:
     /** \brief Write the current mesh into a msh file
      */
     void writeMSHfile(const char *filename) const;
+
+    Data<bool> debugViewTriangleIndices;
+
 };
 
 
