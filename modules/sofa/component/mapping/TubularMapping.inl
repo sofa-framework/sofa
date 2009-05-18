@@ -64,6 +64,7 @@ void TubularMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const ty
 
     unsigned int N = m_nbPointsOnEachCircle.getValue();
     double rho = m_radius.getValue();
+    int peak = m_peak.getValue();
 
     out.resize(in.size() * N);
     rotatedPoints.resize(in.size() * N);
@@ -75,6 +76,32 @@ void TubularMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const ty
 
     for (unsigned int i=0; i<in.size(); i++)
     {
+
+        // allows for peak at the beginning or at the end of the Tubular Mapping
+        Real radius_rho = rho;
+        if(peak>0)
+        {
+            int test= (int)i;
+            if (test<peak)
+            {
+                double attenuation = (double)test/ (double)peak;
+                radius_rho = attenuation*rho;
+            }
+        }
+        else
+        {
+            int test= (int) in.size()-(i+1) ;
+
+            if (test < -peak)
+            {
+                double attenuation = -(double)test/(double)peak;
+                radius_rho = attenuation *rho;
+            }
+
+        }
+
+
+
         Vec curPos = in[i].getCenter();
 
         Mat rotation;
@@ -89,7 +116,7 @@ void TubularMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const ty
         for(unsigned int j=0; j<N; ++j)
         {
 
-            rotatedPoints[i*N+j] = (Y*cos((Real) (2.0*j*M_PI/N)) + Z*sin((Real) (2.0*j*M_PI/N)))*((Real) rho);
+            rotatedPoints[i*N+j] = (Y*cos((Real) (2.0*j*M_PI/N)) + Z*sin((Real) (2.0*j*M_PI/N)))*((Real) radius_rho);
             Vec x = curPos + rotatedPoints[i*N+j];
             //sout << "INFO_print : TubularMapping  DO move point - j = " << j << " , curPos = " << curPos <<  " , x = " << x << sendl;
 
