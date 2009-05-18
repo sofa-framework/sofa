@@ -1,3 +1,4 @@
+#version 120
 varying vec3 normal;
 varying vec4 ambientGlobal;
 
@@ -7,6 +8,8 @@ uniform int lightFlag[MAX_NUMBER_OF_LIGHTS];
 varying vec4 shadowTexCoord[MAX_NUMBER_OF_LIGHTS];
 varying vec3 lightDir[MAX_NUMBER_OF_LIGHTS];
 varying float dist[MAX_NUMBER_OF_LIGHTS];
+
+uniform mat4x4 shadowMatrix[MAX_NUMBER_OF_LIGHTS];
 
 void main()
 {
@@ -40,7 +43,9 @@ void main()
 			ambientGlobal += gl_FrontMaterial.ambient * gl_LightSource[i].ambient;
 
 			if (lightFlag[i] == 2)
+				//shadowTexCoord[i] = shadowMatrix[i] * gl_ModelViewMatrix * gl_Vertex;
 				shadowTexCoord[i] = gl_TextureMatrix[i] * gl_ModelViewMatrix * gl_Vertex;
+
 		}
 
 	}
