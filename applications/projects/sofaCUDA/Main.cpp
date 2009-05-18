@@ -94,7 +94,7 @@ int main(int argc, char** argv)
         groot = new GNode;
     }
 
-    if (nbIter > 0)
+    if (nbIter != 0)
     {
 
         groot->setAnimate(true);
@@ -105,7 +105,8 @@ int main(int argc, char** argv)
 
         //=======================================
         // Run the main loop
-
+        bool save = (nbIter > 0);
+        if (nbIter < 0) nbIter = -nbIter;
         std::cout << "Computing " << nbIter << " iterations." << std::endl;
         t0 = CTime::getRefTime();
 
@@ -131,12 +132,15 @@ int main(int argc, char** argv)
         std::ofstream flog(logname.c_str());
         flog << "Time: " << ((t1-t0)/(CTime::getRefTicksPerSec()/1000))*0.001 << " seconds, " << ((t1-t0)/(CTime::getRefTicksPerSec()/1000))/(double)nbIter <<" ms/it." << std::endl;
         flog.close();
-        std::string objname = fileName.substr(0,fileName.length()-4)+"-scene.obj";
-        std::cout << "Exporting to OBJ " << objname << std::endl;
-        getSimulation()->exportOBJ(groot, objname.c_str());
-        std::string xmlname = fileName.substr(0,fileName.length()-4)+"-scene.scn";
-        std::cout << "Exporting to XML " << xmlname << std::endl;
-        getSimulation()->exportXML(groot, xmlname.c_str());
+        if (save)
+        {
+            std::string objname = fileName.substr(0,fileName.length()-4)+"-scene.obj";
+            std::cout << "Exporting to OBJ " << objname << std::endl;
+            getSimulation()->exportOBJ(groot, objname.c_str());
+            std::string xmlname = fileName.substr(0,fileName.length()-4)+"-scene.scn";
+            std::cout << "Exporting to XML " << xmlname << std::endl;
+            getSimulation()->exportXML(groot, xmlname.c_str());
+        }
 
     }
     else
