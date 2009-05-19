@@ -40,6 +40,724 @@ namespace component
 namespace linearsolver
 {
 
+/// Simple bloc full matrix container
+template<int N, typename T>
+class BlocFullMatrix : public defaulttype::BaseMatrix
+{
+public:
+    enum { BSIZE = N };
+    typedef T Real;
+    typedef int Index;
+
+    class TransposedBloc
+    {
+    public:
+        const defaulttype::Mat<BSIZE,BSIZE,Real>& m;
+        TransposedBloc(const defaulttype::Mat<BSIZE,BSIZE,Real>& m) : m(m) {}
+        defaulttype::Vec<BSIZE,Real> operator*(const defaulttype::Vec<BSIZE,Real>& v)
+        {
+            return m.multTranspose(v);
+        }
+        defaulttype::Mat<BSIZE,BSIZE,Real> operator-() const
+        {
+            return -m.transposed();
+        }
+    };
+
+    class Bloc : public defaulttype::Mat<BSIZE,BSIZE,Real>
+    {
+    public:
+        int Nrows() const { return BSIZE; }
+        int Ncols() const { return BSIZE; }
+        void resize(int, int)
+        {
+            clear();
+        }
+        const T& element(int i, int j) const { return (*this)[i][j]; }
+        void set(int i, int j, const T& v) { (*this)[i][j] = v; }
+        void add(int i, int j, const T& v) { (*this)[i][j] += v; }
+        void operator=(const defaulttype::Mat<BSIZE,BSIZE,Real>& v)
+        {
+            defaulttype::Mat<BSIZE,BSIZE,Real>::operator=(v);
+        }
+        defaulttype::Mat<BSIZE,BSIZE,Real> operator-() const
+        {
+            return defaulttype::Mat<BSIZE,BSIZE,Real>::operator-();
+        }
+        defaulttype::Mat<BSIZE,BSIZE,Real> operator-(const defaulttype::Mat<BSIZE,BSIZE,Real>& m) const
+        {
+            return defaulttype::Mat<BSIZE,BSIZE,Real>::operator-(m);
+        }
+        defaulttype::Vec<BSIZE,Real> operator*(const defaulttype::Vec<BSIZE,Real>& v)
+        {
+            return defaulttype::Mat<BSIZE,BSIZE,Real>::operator*(v);
+        }
+        defaulttype::Mat<BSIZE,BSIZE,Real> operator*(const defaulttype::Mat<BSIZE,BSIZE,Real>& m)
+        {
+            return defaulttype::Mat<BSIZE,BSIZE,Real>::operator*(m);
+        }
+        defaulttype::Mat<BSIZE,BSIZE,Real> operator*(const Bloc& m)
+        {
+            return defaulttype::Mat<BSIZE,BSIZE,Real>::operator*(m);
+        }
+        defaulttype::Mat<BSIZE,BSIZE,Real> operator*(const TransposedBloc& mt)
+        {
+            return defaulttype::Mat<BSIZE,BSIZE,Real>::operator*(mt.m.transposed());
+        }
+        TransposedBloc t() const
+        {
+            return TransposedBloc(*this);
+        }
+        Bloc i() const
+        {
+            Bloc r;
+            r.invert(*this);
+            return r;
+        }
+    };
+    typedef Bloc SubMatrixType;
+    typedef FullMatrix<T> InvMatrixType;
+    // return the dimension of submatrices when requesting a given size
+    static int getSubMatrixDim(int) { return BSIZE; }
+
+protected:
+    Bloc* data;
+    Index nTRow,nTCol;
+    Index nBRow,nBCol;
+    Index allocsize;
+
+public:
+
+    BlocFullMatrix()
+        : data(NULL), nTRow(0), nTCol(0), nBRow(0), nBCol(0), allocsize(0)
+    {
+    }
+
+    BlocFullMatrix(int nbRow, int nbCol)
+        : data(new T[nbRow*nbCol]), nTRow(nbRow), nTCol(nbCol), nBRow(nbRow/BSIZE), nBCol(nbCol/BSIZE), allocsize((nbCol/BSIZE)*(nbRow/BSIZE))
+    {
+    }
+
+    ~BlocFullMatrix()
+    {
+        if (allocsize>0)
+            delete data;
+    }
+
+    Bloc* ptr() { return data; }
+    const Bloc* ptr() const { return data; }
+
+    const Bloc& bloc(int bi, int bj) const
+    {
+        return data[bi*nBCol + bj];
+    }
+    Bloc& bloc(int bi, int bj)
+    {
+        return data[bi*nBCol + bj];
+    }
+
+    void resize(int nbRow, int nbCol)
+    {
+        if (nbCol != nTCol || nbRow != nTRow)
+        {
+            if (allocsize < 0)
+            {
+                if ((nbCol/BSIZE)*(nbRow/BSIZE) > -allocsize)
+                {
+                    std::cerr << "ERROR: cannot resize preallocated matrix to size ("<<nbRow<<","<<nbCol<<")"<<std::endl;
+                    return;
+                }
+            }
+            else
+            {
+                if ((nbCol/BSIZE)*(nbRow/BSIZE) > allocsize)
+                {
+                    if (allocsize > 0)
+                        delete[] data;
+                    allocsize = (nbCol/BSIZE)*(nbRow/BSIZE);
+                    data = new Bloc[allocsize];
+                }
+            }
+            nTCol = nbCol;
+            nTRow = nbRow;
+            nBCol = nbCol/BSIZE;
+            nBRow = nbRow/BSIZE;
+        }
+        clear();
+    }
+
+    unsigned int rowSize(void) const
+    {
+        return nTRow;
+    }
+
+    unsigned int colSize(void) const
+    {
+        return nTCol;
+    }
+
+    SReal element(int i, int j) const
+    {
+        int bi = i / BSIZE; i = i % BSIZE;
+        int bj = j / BSIZE; j = j % BSIZE;
+        return bloc(bi,bj)[i][j];
+    }
+
+    const Bloc& asub(int bi, int bj, int, int) const
+    {
+        return bloc(bi,bj);
+    }
+
+    const Bloc& sub(int i, int j, int, int) const
+    {
+        return asub(i/BSIZE,j/BSIZE);
+    }
+
+    Bloc& asub(int bi, int bj, int, int)
+    {
+        return bloc(bi,bj);
+    }
+
+    Bloc& sub(int i, int j, int, int)
+    {
+        return asub(i/BSIZE,j/BSIZE);
+    }
+
+    template<class B>
+    void getSubMatrix(int i, int j, int nrow, int ncol, B& m)
+    {
+        m = sub(i,j, nrow, ncol);
+    }
+
+    template<class B>
+    void getAlignedSubMatrix(int bi, int bj, int nrow, int ncol, B& m)
+    {
+        m = asub(bi, bj, nrow, ncol);
+    }
+
+    template<class B>
+    void setSubMatrix(int i, int j, int nrow, int ncol, const B& m)
+    {
+        sub(i,j, nrow, ncol) = m;
+    }
+
+    template<class B>
+    void setAlignedSubMatrix(int bi, int bj, int nrow, int ncol, const B& m)
+    {
+        asub(bi, bj, nrow, ncol) = m;
+    }
+
+    void set(int i, int j, double v)
+    {
+        int bi = i / BSIZE; i = i % BSIZE;
+        int bj = j / BSIZE; j = j % BSIZE;
+        bloc(bi,bj)[i][j] = (Real)v;
+    }
+
+    void add(int i, int j, double v)
+    {
+        int bi = i / BSIZE; i = i % BSIZE;
+        int bj = j / BSIZE; j = j % BSIZE;
+        bloc(bi,bj)[i][j] += (Real)v;
+    }
+
+    void clear(int i, int j)
+    {
+        int bi = i / BSIZE; i = i % BSIZE;
+        int bj = j / BSIZE; j = j % BSIZE;
+        bloc(bi,bj)[i][j] = Real();
+    }
+
+    void clearRow(int i)
+    {
+        int bi = i / BSIZE; i = i % BSIZE;
+        for (int bj = 0; bj < nBCol; ++bj)
+            for (int j=0; j<BSIZE; ++j)
+                bloc(bi,bj)[i][j] = Real();
+    }
+
+    void clearCol(int j)
+    {
+        int bj = j / BSIZE; j = j % BSIZE;
+        for (int bi = 0; bi < nBRow; ++bi)
+            for (int i=0; i<BSIZE; ++i)
+                bloc(bi,bj)[i][j] = Real();
+    }
+
+    void clearRowCol(int i)
+    {
+        clearRow(i);
+        clearCol(i);
+    }
+
+    void clear()
+    {
+        for (Index i=0; i<3*nBRow; ++i)
+            data[i].clear();
+    }
+
+    template<class Real2>
+    FullVector<Real2> operator*(const FullVector<Real2>& v) const
+    {
+        FullVector<Real2> res(rowSize());
+        for (int bi=0; bi<nBRow; ++bi)
+        {
+            int bj = 0;
+            for (int i=0; i<BSIZE; ++i)
+            {
+                Real r = 0;
+                for (int j=0; j<BSIZE; ++j)
+                {
+                    r += bloc(bi,bj)[i][j] * v[(bi + bj - 1)*BSIZE + j];
+                }
+                res[bi*BSIZE + i] = r;
+            }
+            for (++bj; bj<nBCol; ++bj)
+            {
+                for (int i=0; i<BSIZE; ++i)
+                {
+                    Real r = 0;
+                    for (int j=0; j<BSIZE; ++j)
+                    {
+                        r += bloc(bi,bj)[i][j] * v[(bi + bj - 1)*BSIZE + j];
+                    }
+                    res[bi*BSIZE + i] += r;
+                }
+            }
+        }
+        return res;
+    }
+
+    friend std::ostream& operator << (std::ostream& out, const BlocFullMatrix<N,T>& v)
+    {
+        int nx = v.colSize();
+        int ny = v.rowSize();
+        out << "[";
+        for (int y=0; y<ny; ++y)
+        {
+            out << "\n[";
+            for (int x=0; x<nx; ++x)
+            {
+                out << " " << v.element(y,x);
+            }
+            out << " ]";
+        }
+        out << " ]";
+        return out;
+    }
+
+    static const char* Name();
+};
+
+template<int N, typename T>
+class BlockVector : public FullVector<T>
+{
+public:
+    typedef FullVector<T> Inherit;
+    typedef T Real;
+    typedef typename Inherit::Index Index;
+
+    typedef typename Inherit::value_type value_type;
+    typedef typename Inherit::size_type size_type;
+    typedef typename Inherit::iterator iterator;
+    typedef typename Inherit::const_iterator const_iterator;
+
+    class Bloc : public defaulttype::Vec<N,T>
+    {
+    public:
+        int Nrows() const { return N; }
+        void resize(int) { this->clear(); }
+        void operator=(const defaulttype::Vec<N,T>& v)
+        {
+            defaulttype::Vec<N,T>::operator=(v);
+        }
+        void operator=(int v)
+        {
+            defaulttype::Vec<N,T>::fill(v);
+        }
+        void operator=(float v)
+        {
+            defaulttype::Vec<N,T>::fill(v);
+        }
+        void operator=(double v)
+        {
+            defaulttype::Vec<N,T>::fill(v);
+        }
+    };
+
+    typedef Bloc SubVectorType;
+
+public:
+
+    BlockVector()
+    {
+    }
+
+    explicit BlockVector(Index n)
+        : Inherit(n)
+    {
+    }
+
+    virtual ~BlockVector()
+    {
+    }
+
+    const Bloc& sub(int i, int) const
+    {
+        return (const Bloc&)*(this->ptr()+i);
+    }
+
+    Bloc& sub(int i, int)
+    {
+        return (Bloc&)*(this->ptr()+i);
+    }
+
+    const Bloc& asub(int bi, int) const
+    {
+        return (const Bloc&)*(this->ptr()+bi*N);
+    }
+
+    Bloc& asub(int bi, int)
+    {
+        return (Bloc&)*(this->ptr()+bi*N);
+    }
+};
+
+/// Simple BTD matrix container
+template<int N, typename T>
+class BTDMatrix : public defaulttype::BaseMatrix
+{
+public:
+    enum { BSIZE = N };
+    typedef T Real;
+    typedef int Index;
+
+
+    class TransposedBloc
+    {
+    public:
+        const defaulttype::Mat<BSIZE,BSIZE,Real>& m;
+        TransposedBloc(const defaulttype::Mat<BSIZE,BSIZE,Real>& m) : m(m) {}
+        defaulttype::Vec<BSIZE,Real> operator*(const defaulttype::Vec<BSIZE,Real>& v)
+        {
+            return m.multTranspose(v);
+        }
+        defaulttype::Mat<BSIZE,BSIZE,Real> operator-() const
+        {
+            defaulttype::Mat<BSIZE,BSIZE,Real> r;
+            for (int i=0; i<BSIZE; i++)
+                for (int j=0; j<BSIZE; j++)
+                    r[i][j]=-m[j][i];
+            return r;
+        }
+    };
+
+    class Bloc : public defaulttype::Mat<BSIZE,BSIZE,Real>
+    {
+    public:
+        int Nrows() const { return BSIZE; }
+        int Ncols() const { return BSIZE; }
+        void resize(int, int)
+        {
+            clear();
+        }
+        const T& element(int i, int j) const { return (*this)[i][j]; }
+        void set(int i, int j, const T& v) { (*this)[i][j] = v; }
+        void add(int i, int j, const T& v) { (*this)[i][j] += v; }
+        void operator=(const defaulttype::Mat<BSIZE,BSIZE,Real>& v)
+        {
+            defaulttype::Mat<BSIZE,BSIZE,Real>::operator=(v);
+        }
+        defaulttype::Mat<BSIZE,BSIZE,Real> operator-() const
+        {
+            defaulttype::Mat<BSIZE,BSIZE,Real> r;
+            for (int i=0; i<BSIZE; i++)
+                for (int j=0; j<BSIZE; j++)
+                    r[i][j]=-(*this)[i][j];
+            return r;
+        }
+        defaulttype::Mat<BSIZE,BSIZE,Real> operator-(const defaulttype::Mat<BSIZE,BSIZE,Real>& m) const
+        {
+            return defaulttype::Mat<BSIZE,BSIZE,Real>::operator-(m);
+        }
+        defaulttype::Vec<BSIZE,Real> operator*(const defaulttype::Vec<BSIZE,Real>& v)
+        {
+            return defaulttype::Mat<BSIZE,BSIZE,Real>::operator*(v);
+        }
+        defaulttype::Mat<BSIZE,BSIZE,Real> operator*(const defaulttype::Mat<BSIZE,BSIZE,Real>& m)
+        {
+            return defaulttype::Mat<BSIZE,BSIZE,Real>::operator*(m);
+        }
+        defaulttype::Mat<BSIZE,BSIZE,Real> operator*(const Bloc& m)
+        {
+            return defaulttype::Mat<BSIZE,BSIZE,Real>::operator*(m);
+        }
+        defaulttype::Mat<BSIZE,BSIZE,Real> operator*(const TransposedBloc& mt)
+        {
+            return defaulttype::Mat<BSIZE,BSIZE,Real>::operator*(mt.m.transposed());
+        }
+        TransposedBloc t() const
+        {
+            return TransposedBloc(*this);
+        }
+        Bloc i() const
+        {
+            Bloc r;
+            r.invert(*this);
+            return r;
+        }
+    };
+
+    typedef Bloc SubMatrixType;
+    typedef BlocFullMatrix<N,T> InvMatrixType;
+    // return the dimension of submatrices when requesting a given size
+    static int getSubMatrixDim(int) { return BSIZE; }
+
+protected:
+    Bloc* data;
+    Index nTRow,nTCol;
+    Index nBRow,nBCol;
+    Index allocsize;
+
+public:
+
+    BTDMatrix()
+        : data(NULL), nTRow(0), nTCol(0), nBRow(0), nBCol(0), allocsize(0)
+    {
+    }
+
+    BTDMatrix(int nbRow, int nbCol)
+        : data(new T[3*(nbRow/BSIZE)]), nTRow(nbRow), nTCol(nbCol), nBRow(nbRow/BSIZE), nBCol(nbCol/BSIZE), allocsize(3*(nbRow/BSIZE))
+    {
+    }
+
+    ~BTDMatrix()
+    {
+        if (allocsize>0)
+            delete data;
+    }
+
+    Bloc* ptr() { return data; }
+    const Bloc* ptr() const { return data; }
+
+    //Real* operator[](Index i)
+    //{
+    //    return data+i*pitch;
+    //}
+    const Bloc& bloc(int bi, int bj) const
+    {
+        return data[3*bi + (bj - bi + 1)];
+    }
+    Bloc& bloc(int bi, int bj)
+    {
+        return data[3*bi + (bj - bi + 1)];
+    }
+
+    void resize(int nbRow, int nbCol)
+    {
+        if (nbCol != nTCol || nbRow != nTRow)
+        {
+            if (allocsize < 0)
+            {
+                if ((nbRow/BSIZE)*3 > -allocsize)
+                {
+                    std::cerr << "ERROR: cannot resize preallocated matrix to size ("<<nbRow<<","<<nbCol<<")"<<std::endl;
+                    return;
+                }
+            }
+            else
+            {
+                if ((nbRow/BSIZE)*3 > allocsize)
+                {
+                    if (allocsize > 0)
+                        delete[] data;
+                    allocsize = (nbRow/BSIZE)*3;
+                    data = new Bloc[allocsize];
+                }
+            }
+            nTCol = nbCol;
+            nTRow = nbRow;
+            nBCol = nbCol/BSIZE;
+            nBRow = nbRow/BSIZE;
+        }
+        clear();
+    }
+
+    unsigned int rowSize(void) const
+    {
+        return nTRow;
+    }
+
+    unsigned int colSize(void) const
+    {
+        return nTCol;
+    }
+
+    SReal element(int i, int j) const
+    {
+        int bi = i / BSIZE; i = i % BSIZE;
+        int bj = j / BSIZE; j = j % BSIZE;
+        int bindex = bj - bi + 1;
+        if ((unsigned)bindex >= 3) return (SReal)0;
+        return data[bi*3+bindex][i][j];
+    }
+
+    const Bloc& asub(int bi, int bj, int, int) const
+    {
+        static Bloc b;
+        int bindex = bj - bi + 1;
+        if ((unsigned)bindex >= 3) return b;
+        return data[bi*3+bindex];
+    }
+
+    const Bloc& sub(int i, int j, int, int) const
+    {
+        return asub(i/BSIZE,j/BSIZE);
+    }
+
+    Bloc& asub(int bi, int bj, int, int)
+    {
+        static Bloc b;
+        int bindex = bj - bi + 1;
+        if ((unsigned)bindex >= 3) return b;
+        return data[bi*3+bindex];
+    }
+
+    Bloc& sub(int i, int j, int, int)
+    {
+        return asub(i/BSIZE,j/BSIZE);
+    }
+
+    template<class B>
+    void getSubMatrix(int i, int j, int nrow, int ncol, B& m)
+    {
+        m = sub(i,j, nrow, ncol);
+    }
+
+    template<class B>
+    void getAlignedSubMatrix(int bi, int bj, int nrow, int ncol, B& m)
+    {
+        m = asub(bi, bj, nrow, ncol);
+    }
+
+    template<class B>
+    void setSubMatrix(int i, int j, int nrow, int ncol, const B& m)
+    {
+        sub(i,j, nrow, ncol) = m;
+    }
+
+    template<class B>
+    void setAlignedSubMatrix(int bi, int bj, int nrow, int ncol, const B& m)
+    {
+        asub(bi, bj, nrow, ncol) = m;
+    }
+
+    void set(int i, int j, double v)
+    {
+        int bi = i / BSIZE; i = i % BSIZE;
+        int bj = j / BSIZE; j = j % BSIZE;
+        int bindex = bj - bi + 1;
+        if ((unsigned)bindex >= 3) return;
+        data[bi*3+bindex][i][j] = (Real)v;
+    }
+
+    void add(int i, int j, double v)
+    {
+        int bi = i / BSIZE; i = i % BSIZE;
+        int bj = j / BSIZE; j = j % BSIZE;
+        int bindex = bj - bi + 1;
+        if ((unsigned)bindex >= 3) return;
+        data[bi*3+bindex][i][j] += (Real)v;
+    }
+
+    void clear(int i, int j)
+    {
+        int bi = i / BSIZE; i = i % BSIZE;
+        int bj = j / BSIZE; j = j % BSIZE;
+        int bindex = bj - bi + 1;
+        if ((unsigned)bindex >= 3) return;
+        data[bi*3+bindex][i][j] = Real();
+    }
+
+    void clearRow(int i)
+    {
+        int bi = i / BSIZE; i = i % BSIZE;
+        for (int bj = 0; bj < 3; ++bj)
+            for (int j=0; j<BSIZE; ++j)
+                data[bi*3+bj][i][j] = Real();
+    }
+
+    void clearCol(int j)
+    {
+        int bj = j / BSIZE; j = j % BSIZE;
+        if (bj > 0)
+            for (int i=0; i<BSIZE; ++i)
+                data[(bj-1)*3+2][i][j] = Real();
+        for (int i=0; i<BSIZE; ++i)
+            data[bj*3+1][i][j] = Real();
+        if (bj < nBRow-1)
+            for (int i=0; i<BSIZE; ++i)
+                data[(bj+1)*3+0][i][j] = Real();
+    }
+
+    void clearRowCol(int i)
+    {
+        clearRow(i);
+        clearCol(i);
+    }
+
+    void clear()
+    {
+        for (Index i=0; i<3*nBRow; ++i)
+            data[i].clear();
+    }
+
+    template<class Real2>
+    FullVector<Real2> operator*(const FullVector<Real2>& v) const
+    {
+        FullVector<Real2> res(rowSize());
+        for (int bi=0; bi<nBRow; ++bi)
+        {
+            int b0 = (bi > 0) ? 0 : 1;
+            int b1 = ((bi < nBRow - 1) ? 3 : 2);
+            for (int i=0; i<BSIZE; ++i)
+            {
+                Real r = 0;
+                for (int bj = b0; bj < b1; ++bj)
+                {
+                    for (int j=0; j<BSIZE; ++j)
+                    {
+                        r += data[bi*3+bj][i][j] * v[(bi + bj - 1)*BSIZE + j];
+                    }
+                }
+                res[bi*BSIZE + i] = r;
+            }
+        }
+        return res;
+    }
+
+    friend std::ostream& operator << (std::ostream& out, const BTDMatrix<N,T>& v)
+    {
+        int nx = v.colSize();
+        int ny = v.rowSize();
+        out << "[";
+        for (int y=0; y<ny; ++y)
+        {
+            out << "\n[";
+            for (int x=0; x<nx; ++x)
+            {
+                out << " " << v.element(y,x);
+            }
+            out << " ]";
+        }
+        out << " ]";
+        return out;
+    }
+
+    static const char* Name();
+};
+
+
 /// Linear system solver using Thomas Algorithm for Block Tridiagonal matrices
 ///
 /// References:
@@ -58,6 +776,7 @@ public:
     Data<bool> verification;
     Data<bool> test_perf;
 
+    typedef typename Vector::SubVectorType SubVector;
     typedef typename Matrix::SubMatrixType SubMatrix;
     typedef std::list<int> ListIndex;
     typedef std::pair<int,int> IndexPair;
@@ -77,10 +796,10 @@ public:
     Vector _acc_result;  //
     Vector _rh_buf;		 //				// buf the right hand term
     //Vector _df_buf;		 //
-    Vector _acc_rh_current_block;		// accumulation of rh through the browsing of the structure
-    Vector _acc_lh_current_block;		// accumulation of lh through the browsing of the strucutre
+    SubVector _acc_rh_current_block;		// accumulation of rh through the browsing of the structure
+    SubVector _acc_lh_current_block;		// accumulation of lh through the browsing of the strucutre
     int	current_block, first_block;
-    std::vector<Vector> Vec_df;			// buf the df on block that are not current_block...
+    std::vector<SubVector> Vec_df;			// buf the df on block that are not current_block...
     ////////////////////////////
 
     helper::vector<int> nBlockComputedMinv;
@@ -96,6 +815,13 @@ public:
         , test_perf(initData(&test_perf, false,"test_perf", "verification of performance"))
         , f_blockSize( initData(&f_blockSize,6,"blockSize","dimension of the blocks in the matrix") )
     {
+        int bsize = Matrix::getSubMatrixDim(0);
+        if (bsize > 0)
+        {
+            // the template uses fixed bloc size
+            f_blockSize.setValue(bsize);
+            f_blockSize.setReadOnly(true);
+        }
     }
 
     /// Factorize M
@@ -170,10 +896,11 @@ public:
             }
             else break;
         }
-        if (i0 == 0)
+        if (i0 < n)
+            //if (i0 == 0)
             Inv = M.i();
-        else if (i0 < n)
-            Inv.sub(i0,i0,n-i0,n-i0) = M.sub(i0,i0,n-i0,n-i0).i();
+        //else if (i0 < n)
+        //        Inv.sub(i0,i0,n-i0,n-i0) = M.sub(i0,i0,n-i0,n-i0).i();
         //else return true;
         //return false;
     }
@@ -186,7 +913,7 @@ public:
             serr<<"BTDLinearSolver, invert Matrix = "<< M <<sendl;
         }
 
-        const int bsize = f_blockSize.getValue();
+        const int bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
         const int nb = M.rowSize() / bsize;
         if (nb == 0) return;
         //alpha.resize(nb);
@@ -199,9 +926,9 @@ public:
         if(subpartSolve.getValue() )
         {
             H.clear();
-            _acc_result=0;
+            //_acc_result=0;
             _acc_result.resize(nb*bsize);
-            _rh_buf = 0;
+            //_rh_buf = 0;
             _rh_buf.resize(nb*bsize);
             //_df_buf = 0;
             //_df_buf.resize(nb*bsize);
@@ -223,9 +950,9 @@ public:
 
         SubMatrix A, C;
         //int ndiag = 0;
-        M.getSubMatrix(0*bsize,0*bsize,bsize,bsize,A);
+        M.getAlignedSubMatrix(0,0,bsize,bsize,A);
         //if (verbose) sout << "A[0] = " << A << sendl;
-        M.getSubMatrix(0*bsize,1*bsize,bsize,bsize,C);
+        M.getAlignedSubMatrix(0,1,bsize,bsize,C);
         //if (verbose) sout << "C[0] = " << C << sendl;
         //alpha[0] = A;
         invert(alpha_inv[0],A);
@@ -237,9 +964,9 @@ public:
 
         for (int i=1; i<nb; ++i)
         {
-            M.getSubMatrix((i  )*bsize,(i  )*bsize,bsize,bsize,A);
+            M.getAlignedSubMatrix((i  ),(i  ),bsize,bsize,A);
             //if (verbose) sout << "A["<<i<<"] = " << A << sendl;
-            M.getSubMatrix((i  )*bsize,(i-1)*bsize,bsize,bsize,B[i]);
+            M.getAlignedSubMatrix((i  ),(i-1),bsize,bsize,B[i]);
             //if (verbose) sout << "B["<<i<<"] = " << B[i] << sendl;
             //alpha[i] = (A - B[i]*lambda[i-1]);
             invert(alpha_inv[i], (A - B[i]*lambda[i-1]));
@@ -257,7 +984,7 @@ public:
             //if (verbose) sout << "A["<<i<<"] = B["<<i<<"]*lambda["<<i-1<<"]+alpha["<<i<<"] = " << B[i]*lambda[i-1]+alpha[i] << sendl;
             if (i<nb-1)
             {
-                M.getSubMatrix((i  )*bsize,(i+1)*bsize,bsize,bsize,C);
+                M.getAlignedSubMatrix((i  ),(i+1),bsize,bsize,C);
                 //if (verbose) sout << "C["<<i<<"] = " << C << sendl;
                 lambda[i] = alpha_inv[i]*C;
                 if (verbose) sout << "lambda["<<i<<"] = " << lambda[i] << sendl;
@@ -270,7 +997,7 @@ public:
 
         // WARNING : cost of resize here : ???
         Minv.resize(nb*bsize,nb*bsize);
-        Minv.setSubMatrix((nb-1)*bsize,(nb-1)*bsize,bsize,bsize,alpha_inv[nb-1]);
+        Minv.setAlignedSubMatrix((nb-1),(nb-1),bsize,bsize,alpha_inv[nb-1]);
 
         //std::cout<<"Minv.setSubMatrix call for block number"<<(nb-1)<<std::endl;
 
@@ -311,7 +1038,7 @@ public:
 
         // the block is computed now :
         // 1. all the diagonal block between N and i need to be computed
-        const int bsize = f_blockSize.getValue();
+        const int bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
         int i0 = i;
         while (nBlockComputedMinv[i0]==0)
             ++i0;
@@ -322,7 +1049,7 @@ public:
             if (nBlockComputedMinv[i0] == 1)
             {
                 // compute bloc (i0,i0-1)
-                Minv.sub((i0  )*bsize,(i0-1)*bsize,bsize,bsize) = Minv.sub((i0  )*bsize,(i0  )*bsize,bsize,bsize)*(-lambda[i0-1].t());
+                Minv.asub((i0  ),(i0-1),bsize,bsize) = Minv.asub((i0  ),(i0  ),bsize,bsize)*(-(lambda[i0-1].t()));
                 ++nBlockComputedMinv[i0];
 
                 if(subpartSolve.getValue() )
@@ -333,12 +1060,12 @@ public:
                     H.insert( make_pair(  IndexPair(i0, i0-1), iHi_1[0]  ) );
                     //serr<<" Add pair H("<<i0<<","<<i0-1<<")"<<sendl;
                     // compute bloc (i0,i0-1)
-                    Minv.sub((i0-1)*bsize,(i0)*bsize,bsize,bsize) = -lambda[i0-1] * Minv.sub((i0  )*bsize,(i0  )*bsize,bsize,bsize);
+                    Minv.asub((i0-1),(i0),bsize,bsize) = -lambda[i0-1] * Minv.asub((i0  ),(i0  ),bsize,bsize);
                 }
 
             }
             // compute bloc (i0-1,i0-1)
-            Minv.sub((i0-1)*bsize,(i0-1)*bsize,bsize,bsize) = alpha_inv[i0-1] - lambda[i0-1]*Minv.sub((i0  )*bsize,(i0-1)*bsize,bsize,bsize);
+            Minv.asub((i0-1),(i0-1),bsize,bsize) = alpha_inv[i0-1] - lambda[i0-1]*Minv.asub((i0  ),(i0-1),bsize,bsize);
 
             if(subpartSolve.getValue() )
             {
@@ -389,13 +1116,13 @@ public:
         while (j0 >= j)
         {
             // compute bloc (i0,j0)
-            Minv.sub((i0  )*bsize,(j0  )*bsize,bsize,bsize) = Minv.sub((i0  )*bsize,(j0+1)*bsize,bsize,bsize)*(-lambda[j0].t());
+            Minv.asub((i0  ),(j0  ),bsize,bsize) = Minv.asub((i0  ),(j0+1),bsize,bsize)*(-lambda[j0].t());
             if(subpartSolve.getValue() )
             {
-                iHj = - iHj * lambda[j0].t();
+                iHj = iHj * -lambda[j0].t();
                 H.insert(make_pair(IndexPair(i0,j0),iHj));
                 // compute bloc (i0,j0)
-                Minv.sub((j0  )*bsize,(i0  )*bsize,bsize,bsize) = -lambda[j0]*Minv.sub((j0+1)*bsize,(i0)*bsize,bsize,bsize);
+                Minv.asub((j0  ),(i0  ),bsize,bsize) = -lambda[j0]*Minv.asub((j0+1),(i0),bsize,bsize);
                 //serr<<" Add pair ("<<i<<","<<j0<<")"<<sendl;
             }
             ++nBlockComputedMinv[i0];
@@ -405,7 +1132,7 @@ public:
 
     double getMinvElement(int i, int j)
     {
-        const int bsize = f_blockSize.getValue();
+        const int bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
         if (i < j)
         {
             // lower diagonal
@@ -427,25 +1154,25 @@ public:
 
         //invert(M);
 
-        const int bsize = f_blockSize.getValue();
+        const int bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
         const int nb = b.size() / bsize;
         if (nb == 0) return;
 
-        //if (verbose) sout << "D["<<0<<"] = " << b.sub(0,bsize) << sendl;
-        x.sub(0,bsize) = alpha_inv[0] * b.sub(0,bsize);
-        //if (verbose) sout << "Y["<<0<<"] = " << x.sub(0,bsize) << sendl;
+        //if (verbose) sout << "D["<<0<<"] = " << b.asub(0,bsize) << sendl;
+        x.asub(0,bsize) = alpha_inv[0] * b.asub(0,bsize);
+        //if (verbose) sout << "Y["<<0<<"] = " << x.asub(0,bsize) << sendl;
         for (int i=1; i<nb; ++i)
         {
-            //if (verbose) sout << "D["<<i<<"] = " << b.sub(i*bsize,bsize) << sendl;
-            x.sub(i*bsize,bsize) = alpha_inv[i]*(b.sub(i*bsize,bsize) - B[i]*x.sub((i-1)*bsize,bsize));
-            //if (verbose) sout << "Y["<<i<<"] = " << x.sub(i*bsize,bsize) << sendl;
+            //if (verbose) sout << "D["<<i<<"] = " << b.asub(i,bsize) << sendl;
+            x.asub(i,bsize) = alpha_inv[i]*(b.asub(i,bsize) - B[i]*x.asub((i-1),bsize));
+            //if (verbose) sout << "Y["<<i<<"] = " << x.asub(i,bsize) << sendl;
         }
-        //x.sub((nb-1)*bsize,bsize) = Y.sub((nb-1)*bsize,bsize);
-        //if (verbose) sout << "x["<<nb-1<<"] = " << x.sub((nb-1)*bsize,bsize) << sendl;
+        //x.asub((nb-1),bsize) = Y.asub((nb-1),bsize);
+        //if (verbose) sout << "x["<<nb-1<<"] = " << x.asub((nb-1),bsize) << sendl;
         for (int i=nb-2; i>=0; --i)
         {
-            x.sub(i*bsize,bsize) /* = Y.sub(i*bsize,bsize)- */ -= lambda[i]*x.sub((i+1)*bsize,bsize);
-            //if (verbose) sout << "x["<<i<<"] = " << x.sub(i*bsize,bsize) << sendl;
+            x.asub(i,bsize) /* = Y.asub(i,bsize)- */ -= lambda[i]*x.asub((i+1),bsize);
+            //if (verbose) sout << "x["<<i<<"] = " << x.asub(i,bsize) << sendl;
         }
 
         // x is the solution of the system
@@ -559,7 +1286,7 @@ public:
                 return addJMInvJt(*r,*j,fact);
             }
         }
-        else if (FullMatrix<double>* r = dynamic_cast<FullMatrix<double>*>(result))
+        else if (FullMatrix<float>* r = dynamic_cast<FullMatrix<float>*>(result))
         {
             if (SparseMatrix<double>* j = dynamic_cast<SparseMatrix<double>*>(J))
             {
@@ -607,7 +1334,7 @@ public:
         }
 
 
-        const int bsize = f_blockSize.getValue();
+        const int bsize = Matrix::getSubMatrixDim(f_blockSize.getValue());
 
         std::list<int>::const_iterator block_it;
         //SubMatrix iHj;
@@ -645,10 +1372,10 @@ public:
                 int block = *block_it;
 
                 //// computation of DF
-                Vector DF;
+                SubVector DF;
                 DF.resize(bsize);
-                DF += this->systemRHVector->sub(block*bsize,bsize) - _rh_buf.sub(block*bsize,bsize);
-                _rh_buf.sub(block*bsize,bsize) = this->systemRHVector->sub(block*bsize,bsize) ;
+                DF += this->systemRHVector->asub(block,bsize) - _rh_buf.asub(block,bsize);
+                _rh_buf.asub(block,bsize) = this->systemRHVector->asub(block,bsize) ;
                 ////
 
 
@@ -660,27 +1387,27 @@ public:
                     if (current_block< block)
                     {
 
-                        Vector DU;
+                        SubVector DU;
                         DU.resize(bsize);
-                        DU =  Minv.sub(block*bsize,block*bsize,bsize,bsize) * DF;
+                        DU =  Minv.asub(block,block,bsize,bsize) * DF;
 
 
                         //std::cout<<"Vec_df["<<block<<"]"<<Vec_df[block] ;
                         Vec_df[block] += DF;
                         //std::cout<<"Vec_df["<<block<<"] += DF "<<Vec_df[block]<<std::endl;
                         // Un += DUacc
-                        //_acc_result.sub(block*bsize,bsize)  += DU;		 // NON ! DU n'est ajouté que pour les blocks [current_block block[
+                        //_acc_result.asub(block,bsize)  += DU;		 // NON ! DU n'est ajouté que pour les blocks [current_block block[
                         // dans les calculs ultérieur.. pour les blocks [block N[ le calcul se dans le step 4 avec Vec_df
-                        // jusqu'à ce que current_block== block dans ce cas, DF étant déjà dans this->systemRHVector->sub(block*bsize,bsize) il est définitivement pris en compte
+                        // jusqu'à ce que current_block== block dans ce cas, DF étant déjà dans this->systemRHVector->asub(block,bsize) il est définitivement pris en compte
                         //std::cout<<"la force sur le block en entrée vient du block "<<block<<" et le block courant est"<<current_block<<" ... on remonte le déplacement engendré "<<DU<<std::endl;
                         while( block > current_block)
                         {
                             block--;
                             // DUacc = Hn,n+1 * DUacc
-                            DU = -lambda[block]*DU;
+                            DU = -(lambda[block]*DU);
 
                             // Un += DUacc
-                            _acc_result.sub(block*bsize,bsize)  += DU;
+                            _acc_result.asub(block,bsize)  += DU;
 
                         }
                     }
@@ -741,14 +1468,14 @@ public:
 
             //// on inverse le dernier block
             //debug
-            //std::cout<<"Un = Kinv(n,n)*(accF + Fn) // accF="<<_acc_rh_current_block<<"   - Fn= "<< this->systemRHVector->sub(current_block*bsize,bsize)<<std::endl;
+            //std::cout<<"Un = Kinv(n,n)*(accF + Fn) // accF="<<_acc_rh_current_block<<"   - Fn= "<< this->systemRHVector->asub(current_block,bsize)<<std::endl;
             /// Un = Kinv(n,n)*(accF + Fn)
 
-            //_acc_result.sub(current_block*bsize,bsize) =  Minv.sub(current_block*bsize,current_block*bsize,bsize,bsize) * (  _acc_rh_current_block +  this->systemRHVector->sub(current_block*bsize,bsize) );
+            //_acc_result.asub(current_block,bsize) =  Minv.asub(current_block,current_block*bsize,bsize,bsize) * (  _acc_rh_current_block +  this->systemRHVector->asub(current_block,bsize) );
 
             /// Uacc = Kinv(n,n) * (accF+ Fn)
-            _acc_lh_current_block =  Minv.sub(current_block*bsize,current_block*bsize,bsize,bsize) *  this->systemRHVector->sub(current_block*bsize,bsize);
-            Vec_df[ current_block ] =  this->systemRHVector->sub(current_block*bsize,bsize);
+            _acc_lh_current_block =  Minv.asub(current_block,current_block,bsize,bsize) *  this->systemRHVector->asub(current_block,bsize);
+            Vec_df[ current_block ] =  this->systemRHVector->asub(current_block,bsize);
             //debug
             //std::cout<<"Uacc = Kinv("<<current_block<<","<<current_block<<")*Fn = "<<_acc_lh_current_block<<std::endl;
 
@@ -760,20 +1487,20 @@ public:
                 current_block--;
                 //std::cout<<"descente des déplacements  : current_block = "<<current_block;
                 // Uacc += Hn,n+1 * Uacc
-                _acc_lh_current_block = -lambda[current_block]*_acc_lh_current_block;
+                _acc_lh_current_block = -(lambda[current_block]*_acc_lh_current_block);
 
                 // Un = Uacc
-                _acc_result.sub(current_block*bsize,bsize)  = _acc_lh_current_block;
+                _acc_result.asub(current_block,bsize)  = _acc_lh_current_block;
 
                 // debug
-                Vector Fn;
-                Fn =this->systemRHVector->sub(current_block*bsize,bsize);
+                SubVector Fn;
+                Fn =this->systemRHVector->asub(current_block,bsize);
                 if (Fn.norm()>0.0)
                 {
-                    Vec_df[ current_block ] =  this->systemRHVector->sub(current_block*bsize,bsize);
+                    Vec_df[ current_block ] =  this->systemRHVector->asub(current_block,bsize);
                     //std::cout<<"non null force detected on block "<<current_block<<" : Fn= "<< Fn;
                     // Uacc += Kinv* Fn
-                    _acc_lh_current_block += Minv.sub(current_block*bsize,current_block*bsize,bsize,bsize) * this->systemRHVector->sub(current_block*bsize,bsize) ;
+                    _acc_lh_current_block += Minv.asub(current_block,current_block,bsize,bsize) * this->systemRHVector->asub(current_block,bsize) ;
                 }
 
 
@@ -788,21 +1515,21 @@ public:
             //std::cout<<"VERIFY : current_block = "<<current_block<<"  must be 0"<<std::endl;
 
             //facc=f0;
-            _acc_rh_current_block = this->systemRHVector->sub(0,bsize);
+            _acc_rh_current_block = this->systemRHVector->asub(0,bsize);
 
 
             // debug
-            Vector DF;
+            SubVector DF;
             DF = Vec_df[0];
             if (DF.norm()> 0.0)
                 std::cerr<<"WARNING: Vec_df added on block 0... strange..."<<std::endl;
 
 
-            //_acc_result.sub(0, bsize) += alpha_inv[0] * this->systemRHVector->sub(0,bsize);
-//			_rh_buf.sub(0,bsize)  =  this->systemRHVector->sub(0,bsize);
+            //_acc_result.asub(0, bsize) += alpha_inv[0] * this->systemRHVector->asub(0,bsize);
+//			_rh_buf.asub(0,bsize)  =  this->systemRHVector->asub(0,bsize);
 
             // accumulation of right hand term is reinitialized
-//			_acc_rh_current_block= this->systemRHVector->sub(0,bsize);
+//			_acc_rh_current_block= this->systemRHVector->asub(0,bsize);
         }
 
         ///////////////////////// step3 parcours de la structure pour remonter les forces /////////////////////////
@@ -814,7 +1541,7 @@ public:
             // Fbuf = Fn
             //std::cerr<<"Fbuf = Fn"<<std::endl;
             // la contribution du block [current_block+1] est prise en compte dans le mouvement actuel : ne sert à rien ?? = _rh_buf n'est utilisé que pour calculer DF
-            //_rh_buf.sub((current_block+1)*bsize,bsize)  =  this->systemRHVector->sub((current_block+1)*bsize,bsize) ;
+            //_rh_buf.asub((current_block+1),bsize)  =  this->systemRHVector->asub((current_block+1),bsize) ;
 
             // Facc = Hn+1,n * Facc
             //std::cerr<<"Facc = Hn+1,n * Facc"<<std::endl;
@@ -841,13 +1568,13 @@ public:
             }
             */
 
-            _acc_rh_current_block = -lambda[current_block].t() * _acc_rh_current_block;
+            _acc_rh_current_block = -(lambda[current_block].t() * _acc_rh_current_block);
 
             current_block++;
 
             // debug: Facc+=Fn
-            Vector toto;
-            toto =  this->systemRHVector->sub(current_block*bsize,bsize);
+            SubVector toto;
+            toto =  this->systemRHVector->asub(current_block,bsize);
             _acc_rh_current_block += toto;
             //std::cout<<"step3 : Facc+= F["<<current_block<<"] : result : Facc ="<<_acc_rh_current_block<<std::endl;
 
@@ -875,24 +1602,24 @@ public:
             if (current_block>block)
                 std::cerr<<"WARNING : step 4 : blocks en sortie : current_block= "<<current_block<<" must be inferior or equal to  block= "<<block<<" problem with sort in Iout"<<std::endl;
 
-            Vector LH_block;
+            SubVector LH_block;
             LH_block.resize(bsize);
 
             // un = Forces from
-            Vector PreviousU; // displacement of LH_block due to forces from on other blocks > block (from step 2)
-            PreviousU =  _acc_result.sub(block*bsize,bsize);
-            LH_block = Minv.sub( block *bsize, current_block *bsize,bsize,bsize) * _acc_rh_current_block + PreviousU;
+            SubVector PreviousU; // displacement of LH_block due to forces from on other blocks > block (from step 2)
+            PreviousU =  _acc_result.asub(block,bsize);
+            LH_block = Minv.asub( block, current_block *bsize,bsize,bsize) * _acc_rh_current_block + PreviousU;
 
 
 
             for (int b=current_block; b<block; b++)
             {
-                Vector DF ;
+                SubVector DF ;
                 DF = Vec_df[b+1];
                 if (DF.norm())
                 {
                     //std::cout<<"step 4. Vec_df["<<b+1<<"] in NOT 0: "<<DF<<"   -> calcul du déplacement sur "<<block<<std::endl;
-                    LH_block += Minv.sub( block *bsize, (b+1) *bsize,bsize,bsize) * DF;
+                    LH_block += Minv.asub( block, (b+1),bsize,bsize) * DF;
                 }
                 else
                 {
@@ -916,19 +1643,19 @@ public:
 
             if (verification.getValue())
             {
-                Vector LH_block2;
+                SubVector LH_block2;
                 LH_block2.resize(bsize);
-                LH_block2 = this->systemLHVector->sub(block*bsize,bsize);
+                LH_block2 = this->systemLHVector->asub(block,bsize);
                 //std::cout<< " solution ["<<block<<"] = "<<LH_block2<<std::endl;
 
-                Vector delta_result ;
+                SubVector delta_result ;
                 delta_result= LH_block - LH_block2;
 
                 if (delta_result.norm() > 0.0001 * LH_block.norm() )
                 {
                     std::cout<<"++++++++++++++++++++++++++++++++ Problem : delta_result = "<<delta_result<<" +++++++++++++++++++++++++++++++++"<<std::endl;
                     // pour faire un seg fault:
-                    delta_result +=  Minv.sub(0, 0,bsize+1,bsize) *delta_result ;
+                    delta_result +=  Minv.asub(0, 0,bsize+1,bsize) *delta_result ;
 
 
                 }
@@ -937,7 +1664,7 @@ public:
 
             // apply the result on "this->systemLHVector"
 
-            this->systemLHVector->sub(block*bsize,bsize) = LH_block;
+            this->systemLHVector->asub(block,bsize) = LH_block;
 
 
 

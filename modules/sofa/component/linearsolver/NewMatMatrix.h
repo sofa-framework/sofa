@@ -49,6 +49,8 @@ public:
     //typedef NEWMAT::Matrix SubMatrixType;
     typedef TNewMatMatrix<NEWMAT::Matrix> SubMatrixType;
     typedef TNewMatMatrix<NEWMAT::Matrix> InvMatrixType;
+    // return the dimension of submatrices when requesting a given size
+    static int getSubMatrixDim(int n) { return n; }
     typedef NEWMAT::LinearEquationSolver LUSolver;
     explicit TNewMatMatrix(int defaultBandWidth = 11)
         : bandWidth(defaultBandWidth)
@@ -192,6 +194,23 @@ public:
     void setSubMatrix(int i, int j, int nrow, int ncol, const T& m)
     {
         M::SubMatrix(i+1,i+nrow,j+1,j+ncol) = m;
+    }
+
+    NEWMAT::GetSubMatrix asub(int bi, int bj, int nrow, int ncol)
+    {
+        return M::SubMatrix(bi*nrow+1,bi*nrow+nrow,bj*ncol+1,bj*ncol+ncol);
+    }
+
+    template<class T>
+    void getAlignedSubMatrix(int bi, int bj, int nrow, int ncol, T& m)
+    {
+        m = M::SubMatrix(bi*nrow+1,bi*nrow+nrow,bj*ncol+1,bj*ncol+ncol);
+    }
+
+    template<class T>
+    void setAlignedSubMatrix(int bi, int bj, int nrow, int ncol, const T& m)
+    {
+        M::SubMatrix(bi*nrow+1,bi*nrow+nrow,bj*ncol+1,bj*ncol+ncol) = m;
     }
 
     void solve(NewMatVector *rv, NewMatVector *ov)
