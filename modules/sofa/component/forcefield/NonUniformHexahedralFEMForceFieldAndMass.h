@@ -98,7 +98,7 @@ public:
 
 public:
 
-    Data<bool> _oldMethod;
+    Data<bool>	_ignoreHexaModifEvent;
 
     using HexahedralFEMForceFieldAndMass<DataTypes>::serr;
     using HexahedralFEMForceFieldAndMass<DataTypes>::sout;
@@ -134,8 +134,8 @@ protected:
             const int elementIndex);
 
     /// add a matrix of a fine element to its englobing coarser matrix
-    void addFineToCoarse( ElementStiffness& coarse, const ElementStiffness& fine, int indice );
-    void computeHtfineHAndAddFineToCoarse( ElementStiffness& HtfineH ,ElementStiffness& coarse, const ElementStiffness& fine, const Mat88& H );
+    void addFineToCoarse(const ElementStiffness& fine, const Mat88& H, ElementStiffness& coarse);
+    void computeHtfineHAndAddFineToCoarse(const ElementStiffness& fine, const Mat88& H, ElementStiffness& coarse,  ElementStiffness& HtfineH );
 
     /// remove a fine hexa given by its idx (i.e. remove its M and K into its coarse embedding hexa)
     void removeFineHexa( const unsigned int fineIdx );
@@ -147,15 +147,24 @@ protected:
     void initPolar(const int i);
 
 private:
-    static const float FINE_TO_COARSE[8][8][8]; ///< interpolation matrices from finer level to a coarser (to build stiffness and mass matrices)
 
+    // [childId][childNodeId][parentNodeId] -> weight
+    helper::fixed_array<Mat88, 8> _H; ///< interpolation matrices from finer level to a coarser (to build stiffness and mass matrices)
+
+    helper::vector < Mat88 > __H; ///< interpolation matrices from finer level to a coarser (to build stiffness and mass matrices)
 
     typedef struct
     {
-        //Mat88 interpolation;
-        //int coarseHexaIdx;
-        //ElementStiffness K;
-        //ElementMass M;
+        MaterialStiffness	C;
+        ElementStiffness	K;
+        ElementMass			M;
+        Real				mass;
+    } Material;
+
+    Material _material; // TODO: enable combination of multiple materials
+
+    typedef struct
+    {
         Real mass;
         ElementStiffness HtKH;
         ElementMass HtMH;

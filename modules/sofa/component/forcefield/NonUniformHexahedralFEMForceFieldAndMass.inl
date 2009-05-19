@@ -45,114 +45,14 @@ namespace component
 namespace forcefield
 {
 
-/*
-indices ordering (same as in HexahedronSetTopology):
-
-     Y  7---------6
-     ^ /         /|
-     |/    Z    / |
-     3----^----2  |
-     |   /     |  |
-     |  4------|--5
-     | /       | /
-     |/        |/
-     0---------1-->X
-*/
-
-// FINE_TO_COARSE[childId][childNodeId][parentNodeId] -> weight
-template<class T>
-const float NonUniformHexahedralFEMForceFieldAndMass<T>::FINE_TO_COARSE[8][8][8] =
-{
-    {
-        {1,0,0,0,0,0,0,0},
-        {0.5,0.5,0,0,0,0,0,0},
-        {0.25,0.25,0.25,0.25,0,0,0,0},
-        {0.5,0,0,0.5,0,0,0,0},
-        {0.5,0,0,0,0.5,0,0,0},
-        {0.25,0.25,0,0,0.25,0.25,0,0},
-        {0.125,0.125,0.125,0.125,0.125,0.125,0.125,0.125},
-        {0.25,0,0,0.25,0.25,0,0,0.25}
-    },
-    {
-        {0.5,0.5,0,0,0,0,0,0},
-        {0,1,0,0,0,0,0,0},
-        {0,0.5,0.5,0,0,0,0,0},
-        {0.25,0.25,0.25,0.25,0,0,0,0},
-        {0.25,0.25,0,0,0.25,0.25,0,0},
-        {0,0.5,0,0,0,0.5,0,0},
-        {0,0.25,0.25,0,0,0.25,0.25,0},
-        {0.125,0.125,0.125,0.125,0.125,0.125,0.125,0.125}
-    },
-    {
-        {0.25,0.25,0.25,0.25,0,0,0,0},
-        {0,0.5,0.5,0,0,0,0,0},
-        {0,0,1,0,0,0,0,0},
-        {0,0,0.5,0.5,0,0,0,0},
-        {0.125,0.125,0.125,0.125,0.125,0.125,0.125,0.125},
-        {0,0.25,0.25,0,0,0.25,0.25,0},
-        {0,0,0.5,0,0,0,0.5,0},
-        {0,0,0.25,0.25,0,0,0.25,0.25}
-    },
-    {
-        {0.5,0,0,0.5,0,0,0,0},
-        {0.25,0.25,0.25,0.25,0,0,0,0},
-        {0,0,0.5,0.5,0,0,0,0},
-        {0,0,0,1,0,0,0,0},
-        {0.25,0,0,0.25,0.25,0,0,0.25},
-        {0.125,0.125,0.125,0.125,0.125,0.125,0.125,0.125},
-        {0,0,0.25,0.25,0,0,0.25,0.25},
-        {0,0,0,0.5,0,0,0,0.5}
-    },
-    {
-        {0.5,0,0,0,0.5,0,0,0},
-        {0.25,0.25,0,0,0.25,0.25,0,0},
-        {0.125,0.125,0.125,0.125,0.125,0.125,0.125,0.125},
-        {0.25,0,0,0.25,0.25,0,0,0.25},
-        {0,0,0,0,1,0,0,0},
-        {0,0,0,0,0.5,0.5,0,0},
-        {0,0,0,0,0.25,0.25,0.25,0.25},
-        {0,0,0,0,0.5,0,0,0.5}
-    },
-    {
-        {0.25,0.25,0,0,0.25,0.25,0,0},
-        {0,0.5,0,0,0,0.5,0,0},
-        {0,0.25,0.25,0,0,0.25,0.25,0},
-        {0.125,0.125,0.125,0.125,0.125,0.125,0.125,0.125},
-        {0,0,0,0,0.5,0.5,0,0},
-        {0,0,0,0,0,1,0,0},
-        {0,0,0,0,0,0.5,0.5,0},
-        {0,0,0,0,0.25,0.25,0.25,0.25}
-    },
-    {
-        {0.125,0.125,0.125,0.125,0.125,0.125,0.125,0.125},
-        {0,0.25,0.25,0,0,0.25,0.25,0},
-        {0,0,0.5,0,0,0,0.5,0},
-        {0,0,0.25,0.25,0,0,0.25,0.25},
-        {0,0,0,0,0.25,0.25,0.25,0.25},
-        {0,0,0,0,0,0.5,0.5,0},
-        {0,0,0,0,0,0,1,0},
-        {0,0,0,0,0,0,0.5,0.5}
-    },
-    {
-        {0.25,0,0,0.25,0.25,0,0,0.25},
-        {0.125,0.125,0.125,0.125,0.125,0.125,0.125,0.125},
-        {0,0,0.25,0.25,0,0,0.25,0.25},
-        {0,0,0,0.5,0,0,0,0.5},
-        {0,0,0,0,0.5,0,0,0.5},
-        {0,0,0,0,0.25,0.25,0.25,0.25},
-        {0,0,0,0,0,0,0.5,0.5},
-        {0,0,0,0,0,0,0,1}
-    }
-
-};
-
 using namespace sofa::defaulttype;
 
 template <class DataTypes>
 NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::NonUniformHexahedralFEMForceFieldAndMass()
     : HexahedralFEMForceFieldAndMassT()
-    , _oldMethod(core::objectmodel::Base::initData(&_oldMethod,false,"_oldMethod","Is the building done by using the old procedure?"))
-{}
+    , _ignoreHexaModifEvent(core::objectmodel::Base::initData(&_ignoreHexaModifEvent, true, "ignoreHexaModifEvent", "Ignore hexa modif event."))
+{
+}
 
 template <class DataTypes>
 void NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::init()
@@ -196,6 +96,78 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::reinit()
     helper::vector<Real>& elementTotalMass = *this->_elementTotalMass.beginEdit();
     elementTotalMass.resize( this->_topology->getNbHexas() );
     this->_elementTotalMass.endEdit();
+
+    const int level = _multilevelTopology->getLevel();
+    const int coarseNodeSize = (1 << level);
+
+    const VecCoord *X0=this->mstate->getX0();
+    Vec<8,Coord> nodesCoarse;
+    for(int w=0; w<8; ++w)
+        nodesCoarse[w] = (*X0)[this->_topology->getHexa(0)[w]];
+
+    Vec<8,Coord> nodesFine;
+    for(int w=0; w<8; ++w)
+        nodesFine[w] = (nodesCoarse[w] - nodesCoarse[0]) / coarseNodeSize;
+
+    HexahedralFEMForceField<T>::computeMaterialStiffness(_material.C, this->f_youngModulus.getValue(), this->f_poissonRatio.getValue());
+    HexahedralFEMForceField<T>::computeElementStiffness(_material.K, _material.C, nodesFine);
+    HexahedralFEMForceFieldAndMass<T>::computeElementMass(_material.M, _material.mass, nodesFine);
+
+
+    const float cube[8][3]=
+    {
+        {0,0,0}, {1,0,0}, {1,1,0}, {0,1,0},
+        {0,0,1}, {1,0,1}, {1,1,1}, {0,1,1}
+    };
+
+    for(int i=0; i<8; ++i) // child
+    {
+        for(int w=0; w<8; ++w) // childNodeId
+        {
+            float x, y, z;
+
+            x = 0.5f * (cube[i][0] + cube[w][0]);
+            y = 0.5f * (cube[i][1] + cube[w][1]);
+            z = 0.5f * (cube[i][2] + cube[w][2]);
+
+            _H[i][w][0] = (1-x)*(1-y)*(1-z);
+            _H[i][w][1] = (x)*(1-y)*(1-z);
+            _H[i][w][2] = (x)*(y)*(1-z);
+            _H[i][w][3] = (1-x)*(y)*(1-z);
+            _H[i][w][4] = (1-x)*(1-y)*(z);
+            _H[i][w][5] = (x)*(1-y)*(z);
+            _H[i][w][6] = (x)*(y)*(z);
+            _H[i][w][7] = (1-x)*(y)*(z);
+        }
+    }
+
+    const float fineNodeSize = 1.0f / (float) coarseNodeSize;
+    int idx=0;
+
+    __H.resize(coarseNodeSize * coarseNodeSize * coarseNodeSize);
+
+    for(int k=0; k<coarseNodeSize; ++k)
+        for(int j=0; j<coarseNodeSize; ++j)
+            for(int i=0; i<coarseNodeSize; ++i, ++idx)
+            {
+                for(int w=0; w<8; ++w) // childNodeId
+                {
+                    const float x = fineNodeSize * (i + cube[w][0]);
+                    const float y = fineNodeSize * (j + cube[w][1]);
+                    const float z = fineNodeSize * (k + cube[w][2]);
+
+                    // entree dans la matrice pour le sommet w
+                    __H[idx][w][0] = (1-x)*(1-y)*(1-z);
+                    __H[idx][w][1] = (x)*(1-y)*(1-z);
+                    __H[idx][w][2] = (x)*(y)*(1-z);
+                    __H[idx][w][3] = (1-x)*(y)*(1-z);
+                    __H[idx][w][4] = (1-x)*(1-y)*(z);
+                    __H[idx][w][5] = (x)*(1-y)*(z);
+                    __H[idx][w][6] = (x)*(y)*(z);
+                    __H[idx][w][7] = (1-x)*(y)*(z);
+                }
+            }
+
 
     switch(this->method)
     {
@@ -249,9 +221,6 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleTopologyChange(core::com
         {
             const VecElement& hexas = this->_topology->getHexas();
             const sofa::helper::vector<unsigned int> &hexaModif = (static_cast< const HexahedraAdded *> (*iter))->hexahedronIndexArray;
-
-
-            //cerr<<"HEXAHEDRAADDED "<<hexaModif<<endl;
 
             switch(this->method)
             {
@@ -315,10 +284,6 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleTopologyChange(core::com
             const VecElement& hexas = this->_topology->getHexas();
             const sofa::helper::vector<unsigned int> &hexaModif = (static_cast< const HexahedraRemoved *> (*iter))->getArray();
 
-
-            //cerr<<"HEXAHEDRAREMOVED "<<hexaModif<<endl;
-
-
             helper::vector<Real>&	particleMasses = *this->_particleMasses.beginEdit();
 
             for(unsigned int i=0; i<hexaModif.size(); ++i)
@@ -362,7 +327,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleTopologyChange(core::com
 
             //cerr<<"MULTILEVEL_MODIFICATION "<<(static_cast< const MultilevelModification *> (*iter))->getArray()<<endl;
 
-            if( _oldMethod.getValue() ) // recompute everything
+            if(! _ignoreHexaModifEvent.getValue() ) // recompute everything
             {
                 const VecElement& hexas = this->_topology->getHexas();
                 const sofa::helper::vector<unsigned int> &hexaModif = (static_cast< const MultilevelModification *> (*iter))->getArray();
@@ -463,11 +428,13 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleTopologyChange(core::com
             }
             else // newmethod -> just delete the fine hexa (only for removing and not adding of fine hexa)
             {
-                const sofa::helper::vector<unsigned int> &fineRemovedHexa = (static_cast< const MultilevelModification *> (*iter))->getRemovedFineHexahedraArray();
-                for(unsigned int i=0; i<fineRemovedHexa.size(); ++i)
-                {
-                    removeFineHexa( fineRemovedHexa[i] );
-                }
+                // TODO: this is not working !!!
+
+                //	const sofa::helper::vector<unsigned int> &fineRemovedHexa = (static_cast< const MultilevelModification *> (*iter))->getRemovedFineHexahedraArray();
+                //	for(unsigned int i=0; i<fineRemovedHexa.size(); ++i)
+                //	{
+                //		removeFineHexa( fineRemovedHexa[i] );
+                //	}
             }
         }
         break;
@@ -503,18 +470,17 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::initLarge( const int i)
     for(int w=0; w<8; ++w)
         hexahedronInf[i].rotatedInitialElements[w] = R_0_1*nodes[w];
 
+    hexahedronInf[i].stiffness = ElementStiffness(0);
     elementMasses[i] = ElementMass(0);
     elementTotalMass[i] = 0;
 
-    // compute mechanichal matrices (mass and stiffness) by condensating from finest level
-    if(_oldMethod.getValue())
-        computeMechanicalMatricesByCondensation( hexahedronInf[i].stiffness,
-                elementMasses[i],
-                elementTotalMass[i], i);
-    else
-        computeMechanicalMatricesByCondensationDirectlyFromFinestToCoarse( hexahedronInf[i].stiffness,
-                elementMasses[i],
-                elementTotalMass[i], i);
+    //computeMechanicalMatricesByCondensation( hexahedronInf[i].stiffness,
+    //								elementMasses[i],
+    //								elementTotalMass[i], i);
+
+    computeMechanicalMatricesByCondensationDirectlyFromFinestToCoarse( hexahedronInf[i].stiffness,
+            elementMasses[i],
+            elementTotalMass[i], i);
 
     this->_elementTotalMass.endEdit();
     this->_elementMasses.endEdit();
@@ -542,15 +508,18 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::initPolar( const int i)
     for(int w=0; w<8; ++w)
         hexahedronInf[i].rotatedInitialElements[w] = R_0_1*nodes[w];
 
+    hexahedronInf[i].stiffness = ElementStiffness(0);
+    elementMasses[i] = ElementMass(0);
+    elementTotalMass[i] = 0;
+
     // compute mechanichal matrices (mass and stiffness) by condensating from finest level
-    if(_oldMethod.getValue())
-        computeMechanicalMatricesByCondensation( hexahedronInf[i].stiffness,
-                elementMasses[i],
-                elementTotalMass[i], i);
-    else
-        computeMechanicalMatricesByCondensationDirectlyFromFinestToCoarse( hexahedronInf[i].stiffness,
-                elementMasses[i],
-                elementTotalMass[i], i);
+    //computeMechanicalMatricesByCondensation( hexahedronInf[i].stiffness,
+    //								elementMasses[i],
+    //								elementTotalMass[i], i);
+
+    computeMechanicalMatricesByCondensationDirectlyFromFinestToCoarse( hexahedronInf[i].stiffness,
+            elementMasses[i],
+            elementTotalMass[i], i);
 
     this->_elementTotalMass.endEdit();
     this->_elementMasses.endEdit();
@@ -695,23 +664,13 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCon
             if(!allChildrenEmpty)
             {
                 computeMechanicalMatricesByCondensation( K_tmp, M_tmp, mass_tmp, K_fine, M_fine, mass_fine, nextLevel, children_tmp);
-                this->addFineToCoarse(K, K_tmp, i);
-                this->addFineToCoarse(M, M_tmp, i);
+                this->addFineToCoarse(K_tmp, _H[i], K);
+                this->addFineToCoarse(M_tmp, _H[i], M);
                 totalMass += mass_tmp;
             }
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
 
 template<class T>
 void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCondensationDirectlyFromFinestToCoarse( ElementStiffness &K,
@@ -722,185 +681,60 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCon
     const int level = _multilevelTopology->getLevel();
     const int coarseNodeSize = (1 << level);
 
-    const VecCoord *X0=this->mstate->getX0();
-    Vec<8,Coord> nodesCoarse;
-    for(int w=0; w<8; ++w)
-        nodesCoarse[w] = (*X0)[this->_topology->getHexa(elementIndex)[w]];
-
-    Vec<8,Coord> nodesFine;
-    for(int w=0; w<8; ++w)
-        nodesFine[w] = (nodesCoarse[w] - nodesCoarse[0]) / coarseNodeSize;
-
-    MaterialStiffness	C_fine;
-    ElementStiffness	K_fine;
-    ElementMass			M_fine;
-    Real				mass_fine;
-
-    HexahedralFEMForceField<T>::computeMaterialStiffness(C_fine, this->f_youngModulus.getValue(), this->f_poissonRatio.getValue());
-    HexahedralFEMForceField<T>::computeElementStiffness(K_fine, C_fine, nodesFine);
-    HexahedralFEMForceFieldAndMass<T>::computeElementMass(M_fine, mass_fine, nodesFine);
-
-
     helper::vector<unsigned int>	fineElements;
     _multilevelTopology->getHexaChildren(elementIndex, fineElements);
 
     for(unsigned int i=0; i<fineElements.size(); ++i)
     {
         const MultilevelHexahedronSetTopologyContainer::Vec3i& voxelId = _multilevelTopology->getHexaIdxInFineRegularGrid(fineElements[i]);
-        Vec3f localcoord; // local coord of the fine hexa into the coarse hexa
-        float delta;
-        localcoord[0] = (float)(voxelId[0]%coarseNodeSize)/(float)coarseNodeSize;
-        localcoord[1] = (float)(voxelId[1]%coarseNodeSize)/(float)coarseNodeSize;
-        localcoord[2] = (float)(voxelId[2]%coarseNodeSize)/(float)coarseNodeSize;
-        delta = 1.0f/(float)coarseNodeSize;
-
-        Mat88 H;
-
-        for( int w=0; w<8; ++w) // all the 8 fine nodes
-        {
-            float x=0.0f,y=0.0f,z=0.0f; // coord du somment dans l'element grossier
-
-            switch(w)
-            {
-            case 0:
-                x=localcoord[0];
-                y=localcoord[1];
-                z=localcoord[2];
-                break;
-            case 1:
-                x=localcoord[0]+delta;
-                y=localcoord[1];
-                z=localcoord[2];
-                break;
-            case 2:
-                x=localcoord[0]+delta;
-                y=localcoord[1]+delta;
-                z=localcoord[2];
-                break;
-            case 3:
-                x=localcoord[0];
-                y=localcoord[1]+delta;
-                z=localcoord[2];
-                break;
-            case 4:
-                x=localcoord[0];
-                y=localcoord[1];
-                z=localcoord[2]+delta;
-                break;
-            case 5:
-                x=localcoord[0]+delta;
-                y=localcoord[1];
-                z=localcoord[2]+delta;
-                break;
-            case 6:
-                x=localcoord[0]+delta;
-                y=localcoord[1]+delta;
-                z=localcoord[2]+delta;
-                break;
-            case 7:
-                x=localcoord[0];
-                y=localcoord[1]+delta;
-                z=localcoord[2]+delta;
-                break;
-            }
-
-            // entree dans la matrice pour le sommet w
-            H[w][0] = (1-x)*(1-y)*(1-z);
-            H[w][1] = (x)*(1-y)*(1-z);
-            H[w][2] = (x)*(y)*(1-z);
-            H[w][3] = (1-x)*(y)*(1-z);
-            H[w][4] = (1-x)*(1-y)*(z);
-            H[w][5] = (x)*(1-y)*(z);
-            H[w][6] = (x)*(y)*(z);
-            H[w][7] = (1-x)*(y)*(z);
-        }
-
-        //if(i==0)
-        //{
-        //	cerr<<"localcoord : "<<localcoord<<endl;
-        //	for(int w=0;w<8;++w)
-        //		cerr<<H[w]<<endl;
-        //}
 
         AFine actualfine;
         //actualfine.coarseHexaIdx = elementIndex;
-        actualfine.mass = mass_fine;
+        actualfine.mass = _material.mass;
 
+        Mat88& H = __H[(voxelId[0]%coarseNodeSize) + coarseNodeSize * ((voxelId[1]%coarseNodeSize) + coarseNodeSize * (voxelId[2]%coarseNodeSize))];
 
         // add the fine element into the coarse
-        this->computeHtfineHAndAddFineToCoarse(actualfine.HtKH, K, K_fine, H);
-        this->computeHtfineHAndAddFineToCoarse(actualfine.HtMH, M, M_fine, H);
-        totalMass += mass_fine;
+        this->computeHtfineHAndAddFineToCoarse(_material.K, H, K, actualfine.HtKH);
+        this->computeHtfineHAndAddFineToCoarse(_material.M, H, M, actualfine.HtMH);
+        totalMass += _material.mass;
 
         // save the fine values
         _mapFineToCorse[voxelId] = actualfine;
-
     }
 }
 
-
-
-
-
-
-
-
-
 template<class T>
-void NonUniformHexahedralFEMForceFieldAndMass<T>::addFineToCoarse( ElementStiffness& coarse,
-        const ElementStiffness& fine,
-        int index )
+void NonUniformHexahedralFEMForceFieldAndMass<T>::addFineToCoarse( const ElementStiffness& fine,
+        const Mat88& H,
+        ElementStiffness& coarse)
 {
     ElementStiffness A;
 
     for(int i=0; i<24; ++i)
         for(int j=0; j<24; ++j)
         {
-            A[i][j] = (Real) ((j%3==0) ? fine[i][0] * FINE_TO_COARSE[index][0][j/3] : 0.0);
+            A[i][j] = (Real) ((j%3==0) ? fine[i][0] * H[0][j/3] : 0.0);
 
             for(int k=1; k<24; ++k)
-                A[i][j] += (Real) ((j%3==k%3) ? fine[i][k] * FINE_TO_COARSE[index][k/3][j/3] : 0.0);
+                A[i][j] += (Real) ((j%3==k%3) ? fine[i][k] * H[k/3][j/3] : 0.0);
         }
 
     for(int i=0; i<24; i++)
         for(int j=0; j<24; ++j)
         {
             for(int k=0; k<24; ++k)
-                coarse[i][j] += (Real) ((i%3==k%3) ? FINE_TO_COARSE[index][k/3][i/3] * A[k][j] : 0.0);   // FINE_TO_COARSE[index] transposed
+                coarse[i][j] += (Real) ((i%3==k%3) ? H[k/3][i/3] * A[k][j] : 0.0);   // H[index] transposed
         }
-
-    /*
-    	for(int i=0; i<8; ++i)
-    		for(int j=0; j<8; ++j)
-    			for(int k=0; k<8; ++k)
-    			{
-    				const Real weight = FINE_TO_COARSE[index][k][j];
-
-    				for(int m=0; m<3; ++m)
-    					for(int n=0; n<3; ++n)
-    						A[3*i+m][3*j+n] += fine[3*i+m][3*k+n] * weight;
-    			}
-
-    	for(int i=0; i<8; i++)
-    		for(int j=0; j<8; ++j)
-    			for(int k=0; k<8; ++k)
-    			{
-    				const Real weight = FINE_TO_COARSE[index][k][i];	// FINE_TO_COARSE[index] transposed
-
-    				for(int m=0; m<3; ++m)
-    					for(int n=0; n<3; ++n)
-    						coarse[3*i+m][3*j+n] +=  A[3*k+m][3*j+n] * weight ;
-    			}
-    */
 }
 
 
-
 template<class T>
-void NonUniformHexahedralFEMForceFieldAndMass<T>::computeHtfineHAndAddFineToCoarse( ElementStiffness& HtfineH,
+void NonUniformHexahedralFEMForceFieldAndMass<T>::computeHtfineHAndAddFineToCoarse(const ElementStiffness& fine,
+        const Mat88& H,
         ElementStiffness& coarse,
-        const ElementStiffness& fine,
-        const Mat88& H )
+        ElementStiffness& HtfineH
+                                                                                  )
 {
     ElementStiffness A;
 
@@ -919,13 +753,12 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::computeHtfineHAndAddFineToCoar
         {
             for(int k=0; k<24; ++k)
             {
-                Real tmp = (Real) ((i%3==k%3) ? H[k/3][i/3] * A[k][j] : 0.0);   // FINE_TO_COARSE[index] transposed
+                Real tmp = (Real) ((i%3==k%3) ? H[k/3][i/3] * A[k][j] : 0.0);
                 HtfineH[i][j] += tmp;
                 coarse[i][j] += tmp;
             }
         }
 }
-
 
 
 template<class T>
