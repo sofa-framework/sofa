@@ -94,7 +94,7 @@ void TriangleModelInRegularGrid::computeBoundingTree ( int )
     needsUpdate=false;
     Vector3 minElem, maxElem;
     const VecCoord& xHigh = *_higher_mstate->getX();
-    //const VecCoord& x = *mstate->getX();
+    const VecCoord& x = *mstate->getX();
 
     // no hierarchy
     if ( empty() )
@@ -114,17 +114,17 @@ void TriangleModelInRegularGrid::computeBoundingTree ( int )
             if ( pt1[2] > maxElem[2] ) maxElem[2] = pt1[2];
             else if ( pt1[2] < minElem[2] ) minElem[2] = pt1[2];
         }
-        /*
-        for (int i=0;i<getSize();i++)
+
+        for (int i=0; i<getSize(); i++)
         {
-        	Triangle t(this,i);
-        	const Vector3& pt1 = x[t.p1Index()];
-        	const Vector3& pt2 = x[t.p2Index()];
-        	const Vector3& pt3 = x[t.p3Index()];
-        	t.n() = cross(pt2-pt1,pt3-pt1);
-        	t.n().normalize();
+            Triangle t(this,i);
+            const Vector3& pt1 = x[t.p1Index()];
+            const Vector3& pt2 = x[t.p2Index()];
+            const Vector3& pt3 = x[t.p3Index()];
+            t.n() = cross(pt2-pt1,pt3-pt1);
+            t.n().normalize();
         }
-        */
+
         cubeModel->setLeafCube ( 0, std::make_pair ( this->begin(),this->end() ), minElem, maxElem ); // define the bounding box of the current triangle
     }
 }
