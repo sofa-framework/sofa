@@ -48,7 +48,10 @@ using namespace core::objectmodel;
 
 template <class DataTypes>
 ExtrudeSurface<DataTypes>::ExtrudeSurface()
-    : isVisible( initData (&isVisible, bool (true), "isVisible", "is Visible ?") )
+    : initialized(false)
+    , isVisible( initData (&isVisible, bool (true), "isVisible", "is Visible ?") )
+    , heightFactor( initData (&heightFactor, Real (1.0), "heightFactor", "Factor for the height of the extrusion (based on normal) ?") )
+    , f_triangles(initData(&f_triangles, "triangles", "List of triangle indices"))
     , f_extrusionVertices( initData (&f_extrusionVertices, "extrusionVertices", "Position coordinates of the extrusion") )
     , f_surfaceVertices( initData (&f_surfaceVertices, "surfaceVertices", "Position coordinates of the surface") )
     , f_extrusionTriangles( initData (&f_extrusionTriangles, "extrusionTriangles", "Triangles indices of the extrusion") )
@@ -56,6 +59,7 @@ ExtrudeSurface<DataTypes>::ExtrudeSurface()
 {
     addInput(&f_surfaceTriangles);
     addInput(&f_surfaceVertices);
+    addInput(&f_triangles);
 
     addOutput(&f_extrusionVertices);
     addOutput(&f_extrusionTriangles);
@@ -64,26 +68,27 @@ ExtrudeSurface<DataTypes>::ExtrudeSurface()
 template <class DataTypes>
 void ExtrudeSurface<DataTypes>::init()
 {
+    /*
     BaseMeshTopology* topology = dynamic_cast<BaseMeshTopology*>(getContext()->getTopology());
     if (topology != NULL)
     {
-        BaseData* parent = topology->findField("triangles");
-        if (parent == NULL)
-        {
-            sout << "ERROR: Topology " << topology->getName() << " does not contain triangles" << sendl;
-        }
+    	BaseData* parent = topology->findField("triangles");
+    	if (parent == NULL)
+    	{
+    		sout << "ERROR: Topology " << topology->getName() << " does not contain triangles" << sendl;
+    	}
     }
     else
     {
-        sout << "ERROR: Topology not found. Extrusion can not be computed" << sendl;
+    	sout << "ERROR: Topology not found. Extrusion can not be computed" << sendl;
     }
 
     if (!f_surfaceVertices.isSet() || !f_surfaceTriangles.isSet())
     {
-        sout << "ERROR: No indices or vertices given for extrusion" << sendl;
-        return;
+    	sout << "ERROR: No indices or vertices given for extrusion" << sendl;
+    	return;
     }
-
+    */
 }
 
 template <class DataTypes>
@@ -97,17 +102,18 @@ void ExtrudeSurface<DataTypes>::update()
 {
     dirty = false;
 
-    BaseMeshTopology* topology = dynamic_cast<BaseMeshTopology*>(getContext()->getTopology());
-    if (topology->getNbTriangles() < 1)
+    const helper::vector<BaseMeshTopology::TriangleID>& surfaceTriangles = f_surfaceTriangles.getValue();
+    const VecCoord& surfaceVertices = f_surfaceVertices.getValue();
+
+    if (surfaceVertices.size() <= 1 && surfaceTriangles.size() <= 1)
         return;
+
+    const BaseMeshTopology::SeqTriangles* triangles = &f_triangles.getValue();
 
     VecCoord* extrusionVertices = f_extrusionVertices.beginEdit();
     extrusionVertices->clear();
     helper::vector<BaseMeshTopology::Triangle>* extrusionTriangles = f_extrusionTriangles.beginEdit();
     extrusionTriangles->clear();
-
-    const helper::vector<BaseMeshTopology::TriangleID>& surfaceTriangles = f_surfaceTriangles.getValue();
-    const VecCoord& surfaceVertices = f_surfaceVertices.getValue();
 
     helper::vector<BaseMeshTopology::TriangleID>::const_iterator itTriangles, itTrianglesSide;
 
@@ -115,11 +121,10 @@ void ExtrudeSurface<DataTypes>::update()
     std::map<BaseMeshTopology::Edge, bool > edgesOnBorder;
     std::set<int> pointsUsed;
     std::map<int, std::pair<Vec3, unsigned int> > normals;
-
     //first loop to compute normals per point
     for (itTriangles=surfaceTriangles.begin() ; itTriangles != surfaceTriangles.end() ; itTriangles++)
     {
-        BaseMeshTopology::Triangle triangle = topology->getTriangle(*itTriangles);
+        BaseMeshTopology::Triangle triangle = (*triangles)[(*itTriangles)];
         VecCoord triangleCoord;
 
         //fetch real coords
@@ -134,7 +139,7 @@ void ExtrudeSurface<DataTypes>::update()
             normals[triangle[i]].second++;
         }
     }
-
+    std::cout << "0" << std::endl;
     //average normals
     typename std::map<int, std::pair<Vec3, unsigned int> >::iterator itNormals;
     for (itNormals = normals.begin(); itNormals != normals.end() ; itNormals++)
@@ -142,7 +147,7 @@ void ExtrudeSurface<DataTypes>::update()
 
     for (itTriangles=surfaceTriangles.begin() ; itTriangles != surfaceTriangles.end() ; itTriangles++)
     {
-        BaseMeshTopology::Triangle triangle = topology->getTriangle(*itTriangles);
+        BaseMeshTopology::Triangle triangle = (*triangles)[(*itTriangles)];
         BaseMeshTopology::Triangle t1, t2;
 
         //create triangle from surface and the new triangle
@@ -154,7 +159,7 @@ void ExtrudeSurface<DataTypes>::update()
             if (pointMatching.find(triangle[i]) == pointMatching.end())
             {
                 extrusionVertices->push_back(surfaceVertices[triangle[i]]);
-                extrusionVertices->push_back(surfaceVertices[triangle[i]] + normals[triangle[i]].first);
+                extrusionVertices->push_back(surfaceVertices[triangle[i]] + normals[triangle[i]].first*heightFactor.getValue());
 
                 pointMatching[triangle[i]] = extrusionVertices->size() - 2;
 

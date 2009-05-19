@@ -51,7 +51,9 @@ using namespace core::objectmodel;
 
 template <class DataTypes>
 RandomPointDistributionInSurface<DataTypes>::RandomPointDistributionInSurface()
-    : isVisible( initData (&isVisible, bool (true), "isVisible", "is Visible ?") )
+    : initialized(false)
+    , isVisible( initData (&isVisible, bool (true), "isVisible", "is Visible ?") )
+    , drawOutputPoints( initData (&drawOutputPoints, bool (false), "drawOutputPoints", "Output points visible ?") )
     , minDistanceBetweenPoints( initData (&minDistanceBetweenPoints, Real (0.1), "minDistanceBetweenPoints", "Min Distance between 2 points (-1 for true randomness)") )
     , numberOfInPoints( initData (&numberOfInPoints, (unsigned int) 10, "numberOfInPoints", "Number of points inside") )
     , numberOfTests( initData (&numberOfTests, (unsigned int) 5, "numberOfTests", "Number of tests to find if the point is inside or not (odd number)") )
@@ -66,31 +68,6 @@ RandomPointDistributionInSurface<DataTypes>::RandomPointDistributionInSurface()
 
     addOutput(&f_inPoints);
 
-}
-
-template <class DataTypes>
-void RandomPointDistributionInSurface<DataTypes>::init()
-{
-
-    BaseMeshTopology* topology = dynamic_cast<BaseMeshTopology*>(getContext()->getTopology());
-    if (topology != NULL)
-    {
-        BaseData* parent = topology->findField("triangles");
-        if (parent == NULL)
-        {
-            sout << "ERROR: Topology " << topology->getName() << " does not contain triangles" << sendl;
-        }
-    }
-    else
-    {
-        sout << "ERROR: Topology not found." << sendl;
-    }
-
-    if (!f_vertices.isSet() || !f_triangles.isSet())
-    {
-        sout << "ERROR: No indices or vertices ." << sendl;
-    }
-
     unsigned int nb = numberOfTests.getValue();
     if (nb%2 == 0)
     {
@@ -103,7 +80,14 @@ void RandomPointDistributionInSurface<DataTypes>::init()
 
     generateRandomDirections();
 
-    safeLimit = numberOfInPoints.getValue()*numberOfInPoints.getValue();
+    safeLimit = numberOfInPoints.getValue()*numberOfInPoints.getValue()*numberOfInPoints.getValue()*numberOfInPoints.getValue();
+
+}
+
+template <class DataTypes>
+void RandomPointDistributionInSurface<DataTypes>::init()
+{
+
 
 
 }
@@ -226,6 +210,15 @@ void RandomPointDistributionInSurface<DataTypes>::update()
     const VecCoord& vertices = f_vertices.getValue();
     const helper::vector<BaseMeshTopology::Triangle>& triangles = f_triangles.getValue();
 
+    if (triangles.size() <= 1 ||  vertices.size() <= 1)
+    {
+        std::cout << "Random Exit UPDATE" << std::endl;
+        return;
+    }
+
+
+    std::cout << "Random Pas UPDATE" << std::endl;
+
     VecCoord* inPoints = f_inPoints.beginEdit();
     inPoints->clear();
     VecCoord* outPoints = f_outPoints.beginEdit();
@@ -290,12 +283,14 @@ void RandomPointDistributionInSurface<DataTypes>::draw()
     for (unsigned int i=0 ; i<in.size() ; i++)
         helper::gl::glVertexT(in[i]);
 
-    glColor3f(0.0,0.0,1.0);
-    for (unsigned int i=0 ; i<out.size() ; i++)
-        helper::gl::glVertexT(out[i]);
+    if (drawOutputPoints.getValue())
+    {
+        glColor3f(0.0,0.0,1.0);
+        for (unsigned int i=0 ; i<out.size() ; i++)
+            helper::gl::glVertexT(out[i]);
+    }
 
     glEnd();
-
     //Debug : normals
 //    const VecCoord& vertices = f_vertices.getValue();
 //    const helper::vector<BaseMeshTopology::Triangle>& triangles = f_triangles.getValue();
