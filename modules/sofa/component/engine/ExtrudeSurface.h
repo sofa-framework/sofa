@@ -85,7 +85,10 @@ public:
     {
         return DataTypes::Name();
     }
+    bool initialized;
     Data<bool> isVisible;
+    Data<Real> heightFactor;
+    Data< helper::vector<BaseMeshTopology::Triangle> > f_triangles;
     Data<VecCoord> f_extrusionVertices;
     Data<VecCoord> f_surfaceVertices;
     Data< helper::vector<BaseMeshTopology::Triangle> > f_extrusionTriangles;

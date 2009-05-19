@@ -86,7 +86,9 @@ public:
     {
         return DataTypes::Name();
     }
+    bool initialized;
     Data<bool> isVisible;
+    Data<bool> drawOutputPoints;
     Data<Real> minDistanceBetweenPoints;
     Data<unsigned int> numberOfInPoints;
     Data<unsigned int> numberOfTests;
