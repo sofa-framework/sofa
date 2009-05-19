@@ -47,11 +47,32 @@ using namespace sofa::simulation;
 SOFA_DECL_CLASS(BTDLinearSolver)
 
 int BTDLinearSolverClass = core::RegisterObject("Linear system solver using Thomas Algorithm for Block Tridiagonal matrices")
-        .add< BTDLinearSolver<NewMatMatrix,NewMatVector> >()
-        .add< BTDLinearSolver<NewMatSymmetricMatrix,NewMatVector> >()
-        .add< BTDLinearSolver<NewMatBandMatrix,NewMatVector> >(true)
-        .add< BTDLinearSolver<NewMatSymmetricBandMatrix,NewMatVector> >()
+        .add< BTDLinearSolver<BTDMatrix<6,double>,BlockVector<6,double> > >(true)
+        .add< BTDLinearSolver<BTDMatrix<6,float>,BlockVector<6,float> > >()
+//.add< BTDLinearSolver<BTDMatrix<3,double>,BlockVector<3,double> > >()
+//.add< BTDLinearSolver<BTDMatrix<3,float>,BlockVector<3,float> > >()
+//.add< BTDLinearSolver<BTDMatrix<2,double>,BlockVector<2,double> > >()
+//.add< BTDLinearSolver<BTDMatrix<2,float>,BlockVector<2,float> > >()
+//.add< BTDLinearSolver<BTDMatrix<1,double>,BlockVector<1,double> > >()
+//.add< BTDLinearSolver<BTDMatrix<1,float>,BlockVector<1,float> > >()
+//.add< BTDLinearSolver<NewMatMatrix,NewMatVector> >()
+//.add< BTDLinearSolver<NewMatSymmetricMatrix,NewMatVector> >()
+//.add< BTDLinearSolver<NewMatBandMatrix,NewMatVector> >(true)
+//.add< BTDLinearSolver<NewMatSymmetricBandMatrix,NewMatVector> >()
         ;
+
+template<> const char* BTDMatrix<1,float>::Name() { return "BTDMatrix1f"; }
+template<> const char* BTDMatrix<1,double>::Name() { return "BTDMatrix1d"; }
+template<> const char* BTDMatrix<2,float>::Name() { return "BTDMatrix2f"; }
+template<> const char* BTDMatrix<2,double>::Name() { return "BTDMatrix2d"; }
+template<> const char* BTDMatrix<3,float>::Name() { return "BTDMatrix3f"; }
+template<> const char* BTDMatrix<3,double>::Name() { return "BTDMatrix3d"; }
+template<> const char* BTDMatrix<4,float>::Name() { return "BTDMatrix4f"; }
+template<> const char* BTDMatrix<4,double>::Name() { return "BTDMatrix4d"; }
+template<> const char* BTDMatrix<5,float>::Name() { return "BTDMatrix5f"; }
+template<> const char* BTDMatrix<5,double>::Name() { return "BTDMatrix5d"; }
+template<> const char* BTDMatrix<6,float>::Name() { return "BTDMatrix6f"; }
+template<> const char* BTDMatrix<6,double>::Name() { return "BTDMatrix6d"; }
 
 } // namespace linearsolver
 

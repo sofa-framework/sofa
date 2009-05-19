@@ -44,6 +44,7 @@ class NewMatVector : public NEWMAT::ColumnVector, public defaulttype::BaseVector
 public:
 
     typedef NEWMAT::ColumnVector SubVector;
+    typedef NewMatVector SubVectorType;
 
     NewMatVector()
     {
