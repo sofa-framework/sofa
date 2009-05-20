@@ -72,7 +72,13 @@ public:
         void add
         (ParticleField* field, int i, Real r2, Real h2)
         {
-            val += (typename OutDataTypes::Real) field->getParticleField(i, r2/h2);
+            if (field)
+                val += (typename OutDataTypes::Real) field->getParticleField(i, r2/h2);
+            else
+            {
+                Real a = 1-r2/h2;
+                val += (a*a*a);
+            }
         }
     };
 
