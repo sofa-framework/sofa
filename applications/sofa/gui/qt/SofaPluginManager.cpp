@@ -26,6 +26,8 @@
 ******************************************************************************/
 #include "SofaPluginManager.h"
 #include "FileManagement.h"
+#include <sofa/helper/system/SetDirectory.h>
+#include <sofa/helper/system/FileRepository.h>
 
 #ifdef SOFA_QT4
 //#include <Q3Header>
@@ -127,12 +129,13 @@ SofaPluginManager::SofaPluginManager()
 void SofaPluginManager::addLibrary()
 {
     //get the lib to load
+    std::string pluginPath = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + std::string( "/lib/sofa-plugins/" );
 #if defined (__APPLE__)
-    QString sfile = getOpenFileName ( this, NULL, "dynamic library (*.sylib*)", "load library dialog",  "Choose the component library to load" );
+    QString sfile = getOpenFileName ( this, QString(pluginPath.c_str()), "dynamic library (*.dylib*)", "load library dialog",  "Choose the component library to load" );
 #elif defined (WIN32)
-    QString sfile = getOpenFileName ( this, NULL, "dynamic library (*.sll)", "load library dialog",  "Choose the component library to load" );
+    QString sfile = getOpenFileName ( this, QString(pluginPath.c_str()), "dynamic library (*.dll)", "load library dialog",  "Choose the component library to load" );
 #else
-    QString sfile = getOpenFileName ( this, NULL, "dynamic library (*.sso)", "load library dialog",  "Choose the component library to load" );
+    QString sfile = getOpenFileName ( this, QString(pluginPath.c_str()), "dynamic library (*.so)", "load library dialog",  "Choose the component library to load" );
 #endif
     if(sfile=="")
         return;
@@ -224,6 +227,8 @@ void SofaPluginManager::removeLibrary()
     }
 
     settings.endGroup();
+    description->clear();
+    listComponents->clear();
 }
 
 

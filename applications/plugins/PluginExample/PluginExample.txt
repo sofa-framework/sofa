@@ -1,0 +1,19 @@
+
+************************************
+*         PluginExample.txt        *
+************************************
+
+
+
+AUTHOR :
+ - Michael Adam
+
+
+
+
+LICENCE :
+ - None
+
+
+
+OTHER COMMENTS :
