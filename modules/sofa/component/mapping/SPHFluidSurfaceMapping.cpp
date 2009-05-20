@@ -45,6 +45,7 @@ SOFA_DECL_CLASS(SPHFluidSurfaceMapping)
 
 // Register in the Factory
 int SPHFluidSurfaceMappingClass = core::RegisterObject("TODO-SPHFluidSurfaceMappingClass")
+        .addAlias("MarchingCubeMapping")
 #ifndef SOFA_FLOAT
         .add< SPHFluidSurfaceMapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> > >()
 // .add< SPHFluidSurfaceMapping< State<Vec3dTypes>, MappedModel<ExtVec3dTypes> > >()

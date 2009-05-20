@@ -150,7 +150,9 @@ void SPHFluidSurfaceMapping<In,Out>::createFaces(OutVecCoord& out, const Cell** 
 template <class In, class Out>
 void SPHFluidSurfaceMapping<In,Out>::apply( OutVecCoord& out, const InVecCoord& in )
 {
-    if (!sph) return;
+    //if (!sph) return;
+    if (!grid) return;
+
     //const InReal invStep = (InReal)(1/mStep.getValue());
     out.resize(0);
     clear();
