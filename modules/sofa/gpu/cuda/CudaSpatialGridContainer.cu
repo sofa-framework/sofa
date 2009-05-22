@@ -92,10 +92,10 @@ struct GridParams
 #if USE_TEX
 #if USE_SORT
 texture<uint2, 1, cudaReadModeElementType> particleHashTex;
-texture<uint, 1, cudaReadModeElementType> cellStartTex;
+texture<unsigned int, 1, cudaReadModeElementType> cellStartTex;
 #else
-texture<uint, 1, cudaReadModeElementType> gridCountersTex;
-texture<uint, 1, cudaReadModeElementType> gridCellsTex;
+texture<unsigned int, 1, cudaReadModeElementType> gridCountersTex;
+texture<unsigned int, 1, cudaReadModeElementType> gridCellsTex;
 #endif
 #endif
 
@@ -122,7 +122,7 @@ __device__ int3 calcGridPos(float4 p)
 }
 
 // calculate address in grid from position
-__device__ uint calcGridHash(int3 p)
+__device__ unsigned int calcGridHash(int3 p)
 {
     //return ((p.x<<10)^(p.y<<5)^(p.z)) & gridParams.cellMask;
     //return ((p.x)^(p.y)^(p.z)) & gridParams.cellMask;
@@ -134,13 +134,13 @@ __device__ uint calcGridHash(int3 p)
 }
 
 // calculate address in grid from position
-__device__ uint calcGridHash(float3 p)
+__device__ unsigned int calcGridHash(float3 p)
 {
     return calcGridHash(calcGridPos(p));
 }
 
 // calculate address in grid from position
-__device__ uint calcGridHash(float4 p)
+__device__ unsigned int calcGridHash(float4 p)
 {
     return calcGridHash(calcGridPos(p));
 }
@@ -204,7 +204,7 @@ calcHashD(const TIn* pos,
 
     // get address in grid
     int3 gridPos = calcGridPos(p);
-    uint gridHash = calcGridHash(gridPos);
+    unsigned int gridHash = calcGridHash(gridPos);
 
     // store grid hash and particle index
     particleHash[index] = make_uint2(gridHash, index);
@@ -214,9 +214,9 @@ calcHashD(const TIn* pos,
 // one thread per particle
 __global__ void
 findCellStartD(const uint2* particleHash,
-        uint * cellStart, int n)
+        unsigned int * cellStart, int n)
 {
-    uint i = __mul24(blockIdx.x, blockDim.x) + threadIdx.x;
+    unsigned int i = __mul24(blockIdx.x, blockDim.x) + threadIdx.x;
     if (i < n)
     {
         volatile uint2 particle = particleHash[i];
@@ -284,7 +284,7 @@ void SpatialGridContainer3f_updateGrid(int cellBits, float cellWidth, int nbPoin
     {
         dim3 threads(BSIZE,1);
         dim3 grid((nbPoints+BSIZE-1)/BSIZE,1);
-        findCellStartD<<< grid, threads >>>((const uint2*)particleHash, (uint*)cellStart, nbPoints);
+        findCellStartD<<< grid, threads >>>((const uint2*)particleHash, (unsigned int*)cellStart, nbPoints);
     }
 }
 
@@ -312,7 +312,7 @@ void SpatialGridContainer3f1_updateGrid(int cellBits, float cellWidth, int nbPoi
     {
         dim3 threads(BSIZE,1);
         dim3 grid((nbPoints+BSIZE-1)/BSIZE,1);
-        findCellStartD<<< grid, threads >>>((const uint2*)particleHash, (uint*)cellStart, nbPoints);
+        findCellStartD<<< grid, threads >>>((const uint2*)particleHash, (unsigned int*)cellStart, nbPoints);
     }
 }
 

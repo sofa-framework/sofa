@@ -184,7 +184,7 @@ void CudaMasterContactSolver<real>::build_LCP()
 
     if (initial_guess.getValue())
     {
-        MechanicalGetContactIDVisitor(_cont_id_list.data()).execute(context);
+        MechanicalGetContactIDVisitor(&(_cont_id_list[0])).execute(context);
         computeInitialGuess();
     }
 }
