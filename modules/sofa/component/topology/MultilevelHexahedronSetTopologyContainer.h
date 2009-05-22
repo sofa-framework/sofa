@@ -213,8 +213,8 @@ public:
 
     typedef Vec<3,int>	Vec3i;
 
-    MultilevelModification(const sofa::helper::vector<unsigned int> _tArray,
-            const std::map<unsigned int, std::list<Vec3i>> removedVoxels)
+    MultilevelModification(const sofa::helper::vector<unsigned int>& _tArray,
+            const std::map<unsigned int, std::list<Vec3i> >& removedVoxels)
         : core::componentmodel::topology::TopologyChange((core::componentmodel::topology::TopologyChangeType) MULTILEVEL_MODIFICATION)
         , _modifiedHexahedraArray(_tArray)
         , _removedFineVoxels(removedVoxels)
@@ -227,7 +227,7 @@ public:
 
     const std::list<Vec3i> &getRemovedVoxels(const unsigned int hexaId) const
     {
-        std::map<unsigned int, std::list<Vec3i>>::const_iterator it = _removedFineVoxels.find(hexaId);
+        std::map<unsigned int, std::list<Vec3i> >::const_iterator it = _removedFineVoxels.find(hexaId);
         if(it != _removedFineVoxels.end())
             return it->second;
         else
@@ -241,7 +241,7 @@ public:
 
 private:
     sofa::helper::vector<unsigned int>		_modifiedHexahedraArray;
-    std::map<unsigned int, std::list<Vec3i>> _removedFineVoxels;
+    std::map<unsigned int, std::list<Vec3i> > _removedFineVoxels;
 
     const std::list<Vec3i>	__dummyList;
 };
