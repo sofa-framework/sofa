@@ -211,33 +211,40 @@ class MultilevelModification : public core::componentmodel::topology::TopologyCh
 public:
     static const int MULTILEVEL_MODIFICATION = core::componentmodel::topology::TOPOLOGYCHANGE_LASTID + 1;
 
-    MultilevelModification(const sofa::helper::vector<unsigned int> _tArray, const sofa::helper::vector<unsigned int> removedFineHexahedraArray)
+    typedef Vec<3,int>	Vec3i;
+
+    MultilevelModification(const sofa::helper::vector<unsigned int> _tArray,
+            const std::map<unsigned int, std::list<Vec3i>> removedVoxels)
         : core::componentmodel::topology::TopologyChange((core::componentmodel::topology::TopologyChangeType) MULTILEVEL_MODIFICATION)
-        , modifiedHexahedraArray(_tArray)
-        , _removedFineHexahedraArray(removedFineHexahedraArray)
+        , _modifiedHexahedraArray(_tArray)
+        , _removedFineVoxels(removedVoxels)
     {}
 
     const sofa::helper::vector<unsigned int> &getArray() const
     {
-        return modifiedHexahedraArray;
+        return _modifiedHexahedraArray;
     }
 
-    const sofa::helper::vector<unsigned int> &getRemovedFineHexahedraArray() const
+    const std::list<Vec3i> &getRemovedVoxels(const unsigned int hexaId) const
     {
-        return _removedFineHexahedraArray;
+        std::map<unsigned int, std::list<Vec3i>>::const_iterator it = _removedFineVoxels.find(hexaId);
+        if(it != _removedFineVoxels.end())
+            return it->second;
+        else
+            return __dummyList;
     }
 
     unsigned int getNbModifiedHexahedra() const
     {
-        return modifiedHexahedraArray.size();
+        return _modifiedHexahedraArray.size();
     }
 
-public:
-    sofa::helper::vector<unsigned int> modifiedHexahedraArray;
-    sofa::helper::vector<unsigned int> _removedFineHexahedraArray;
+private:
+    sofa::helper::vector<unsigned int>		_modifiedHexahedraArray;
+    std::map<unsigned int, std::list<Vec3i>> _removedFineVoxels;
 
+    const std::list<Vec3i>	__dummyList;
 };
-
 
 } // namespace topology
 
