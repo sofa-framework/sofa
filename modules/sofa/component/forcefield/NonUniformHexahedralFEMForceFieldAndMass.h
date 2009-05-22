@@ -93,12 +93,10 @@ public:
     typedef typename HexahedralFEMForceFieldAndMassT::ElementMass ElementMass;
     typedef typename HexahedralFEMForceFieldAndMassT::Element Element;
 
-    typedef typename helper::fixed_array<helper::fixed_array<float,8>,8 > Mat88;
-    typedef typename helper::fixed_array<int,3> Vec3i;
+    typedef typename Mat<8, 8, Real> Mat88;
+    typedef typename Vec<3, int> Vec3i;
 
 public:
-
-    Data<bool>	_ignoreHexaModifEvent;
 
     using HexahedralFEMForceFieldAndMass<DataTypes>::serr;
     using HexahedralFEMForceFieldAndMass<DataTypes>::sout;
@@ -119,34 +117,23 @@ protected:
             Real& totalMass,
             const int elementIndex);
 
-    void computeMechanicalMatricesByCondensation( ElementStiffness &K,
+    void initLarge(const int i);
+
+    void initPolar(const int i);
+
+private:
+    void computeHtfineH(const Mat88& H, const ElementStiffness& fine, ElementStiffness& HtfineH ) const;
+    void addHtfineHtoCoarse(const Mat88& H, const ElementStiffness& fine, ElementStiffness& coarse ) const;
+    void subtractHtfineHfromCoarse(const Mat88& H, const ElementStiffness& fine, ElementStiffness& coarse ) const;
+
+    void computeMechanicalMatricesByCondensation_Recursive( ElementStiffness &K,
             ElementMass &M,
             Real& totalMass,
             const ElementStiffness &K_fine,
             const ElementMass &M_fine,
             const Real& mass_fine,
             const int level,
-            const helper::vector<bool>& fineChildren);
-
-    void computeMechanicalMatricesByCondensationDirectlyFromFinestToCoarse( ElementStiffness &K,
-            ElementMass &M,
-            Real& totalMass,
-            const int elementIndex);
-
-    /// add a matrix of a fine element to its englobing coarser matrix
-    void addFineToCoarse(const ElementStiffness& fine, const Mat88& H, ElementStiffness& coarse);
-    void computeHtfineHAndAddFineToCoarse(const ElementStiffness& fine, const Mat88& H, ElementStiffness& coarse,  ElementStiffness& HtfineH );
-
-    /// remove a fine hexa given by its idx (i.e. remove its M and K into its coarse embedding hexa)
-    void removeFineHexa( const unsigned int fineIdx );
-
-
-
-    void initLarge(const int i);
-
-    void initPolar(const int i);
-
-private:
+            const helper::vector<bool>& fineChildren) const;
 
     // [childId][childNodeId][parentNodeId] -> weight
     helper::fixed_array<Mat88, 8> _H; ///< interpolation matrices from finer level to a coarser (to build stiffness and mass matrices)
@@ -162,15 +149,6 @@ private:
     } Material;
 
     Material _material; // TODO: enable combination of multiple materials
-
-    typedef struct
-    {
-        Real mass;
-        ElementStiffness HtKH;
-        ElementMass HtMH;
-    } AFine;
-
-    std::map<Vec3i,AFine > _mapFineToCorse; ///< finest hexa idx in regular grid -> coarse parent coarse hexa idx + H
 
     MultilevelHexahedronSetTopologyContainer*	_multilevelTopology;
 };

@@ -50,9 +50,7 @@ using namespace sofa::defaulttype;
 template <class DataTypes>
 NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::NonUniformHexahedralFEMForceFieldAndMass()
     : HexahedralFEMForceFieldAndMassT()
-    , _ignoreHexaModifEvent(core::objectmodel::Base::initData(&_ignoreHexaModifEvent, true, "ignoreHexaModifEvent", "Ignore hexa modif event."))
-{
-}
+{}
 
 template <class DataTypes>
 void NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::init()
@@ -204,14 +202,12 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleTopologyChange(core::com
     if( this->_useLumpedMass.getValue() )
         this->_lumpedMasses.handleTopologyEvents(itBegin,itEnd);
 
-    // handle hexa events
-    this->hexahedronInfo.handleTopologyEvents(itBegin,itEnd);
-    this->_elementMasses.handleTopologyEvents(itBegin,itEnd);
-    this->_elementTotalMass.handleTopologyEvents(itBegin,itEnd);
-
     for(std::list<const TopologyChange *>::const_iterator iter = itBegin;
         iter != itEnd; ++iter)
     {
+        std::list<const TopologyChange *>::const_iterator next_iter = iter;
+        ++next_iter;
+
         switch((*iter)->getChangeType())
         {
             // for added elements:
@@ -219,6 +215,11 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleTopologyChange(core::com
             // add particle masses and lumped masses of adjacent particles
         case core::componentmodel::topology::HEXAHEDRAADDED:
         {
+            // handle hexa events
+            this->hexahedronInfo.handleTopologyEvents(iter, next_iter);
+            this->_elementMasses.handleTopologyEvents(iter, next_iter);
+            this->_elementTotalMass.handleTopologyEvents(iter, next_iter);
+
             const VecElement& hexas = this->_topology->getHexas();
             const sofa::helper::vector<unsigned int> &hexaModif = (static_cast< const HexahedraAdded *> (*iter))->hexahedronIndexArray;
 
@@ -320,126 +321,88 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleTopologyChange(core::com
 
                 this->_lumpedMasses.endEdit();
             }
+
+            // handle hexa events
+            this->hexahedronInfo.handleTopologyEvents(iter, next_iter);
+            this->_elementMasses.handleTopologyEvents(iter, next_iter);
+            this->_elementTotalMass.handleTopologyEvents(iter, next_iter);
         }
         break;
+
+        // the structure of the coarse hexas has changed
+        // subtract the contributions of removed voxels
         case ((core::componentmodel::topology::TopologyChangeType) component::topology::MultilevelModification::MULTILEVEL_MODIFICATION) :
         {
+            const VecElement& hexas = this->_topology->getHexas();
+            const component::topology::MultilevelModification *modEvent = static_cast< const component::topology::MultilevelModification *> (*iter);
+            const sofa::helper::vector<unsigned int> &hexaModif = modEvent->getArray();
 
-            //cerr<<"MULTILEVEL_MODIFICATION "<<(static_cast< const MultilevelModification *> (*iter))->getArray()<<endl;
+            const int level = _multilevelTopology->getLevel();
+            const int coarseNodeSize = (1 << level);
 
-            if(! _ignoreHexaModifEvent.getValue() ) // recompute everything
+            // subtract the contributions of removed voxels from element matrices
+            helper::vector<typename HexahedralFEMForceFieldT::HexahedronInformation>& hexahedronInf = *this->hexahedronInfo.beginEdit();
+            helper::vector<ElementMass>& elementMasses = *this->_elementMasses.beginEdit();
+            helper::vector<Real>& elementTotalMass = *this->_elementTotalMass.beginEdit();
+
+            helper::vector<Real>&	particleMasses = *this->_particleMasses.beginEdit();
+            helper::vector<Coord>&	lumpedMasses = *this->_lumpedMasses.beginEdit();
+
+            for(unsigned int i=0; i<hexaModif.size(); ++i)
             {
-                const VecElement& hexas = this->_topology->getHexas();
-                const sofa::helper::vector<unsigned int> &hexaModif = (static_cast< const MultilevelModification *> (*iter))->getArray();
+                const unsigned int hexaId = hexaModif[i];
 
-                // reinit modified elements: remove and add
+                ElementStiffness K;
+                ElementMass M;
+                Real totalMass = (Real) 0.0;
+
+                const std::list<Vec3i>& removedVoxels = modEvent->getRemovedVoxels(hexaId);
+                for(std::list<Vec3i>::const_iterator it = removedVoxels.begin(); it != removedVoxels.end(); ++it)
                 {
-                    helper::vector<Real>&	particleMasses = *this->_particleMasses.beginEdit();
+                    const MultilevelHexahedronSetTopologyContainer::Vec3i& voxelId = *it;
 
-                    for(unsigned int i=0; i<hexaModif.size(); ++i)
-                    {
-                        const unsigned int hexaId = hexaModif[i];
+                    const Mat88& H = __H[(voxelId[0]%coarseNodeSize) + coarseNodeSize * ((voxelId[1]%coarseNodeSize) + coarseNodeSize * (voxelId[2]%coarseNodeSize))];
 
-                        Real mass = this->_elementTotalMass.getValue()[hexaId] * (Real) 0.125;
-
-                        for(int w=0; w<8; ++w)
-                            particleMasses[ hexas[hexaId][w] ] -= mass;
-                    }
-
-                    this->_particleMasses.endEdit();
+                    // add the fine element into the coarse
+                    this->addHtfineHtoCoarse(H, _material.K, K);
+                    this->addHtfineHtoCoarse(H, _material.M, M);
+                    totalMass += _material.mass;
                 }
+
+                hexahedronInf[hexaId].stiffness -= K;
+                elementMasses[hexaId] -= M;
+                elementTotalMass[hexaId] -= totalMass;
+
+                const Real partMass = totalMass * (Real) 0.125;
+
+                for(int w=0; w<8; ++w)
+                    particleMasses[ hexas[hexaId][w] ] -= partMass;
 
                 if( this->_useLumpedMass.getValue() )
                 {
-                    helper::vector<Coord>&	lumpedMasses = *this->_lumpedMasses.beginEdit();
-
-                    for(unsigned int i=0; i<hexaModif.size(); ++i)
+                    for(int w=0; w<8; ++w)
                     {
-                        const unsigned int hexaId = hexaModif[i];
-                        const ElementMass& mass = this->_elementMasses.getValue()[hexaId];
-
-                        for(int w=0; w<8; ++w)
+                        for(int j=0; j<8*3; ++j)
                         {
-                            for(int j=0; j<8*3; ++j)
-                            {
-                                lumpedMasses[ hexas[hexaId][w] ][0] -= mass[w*3  ][j];
-                                lumpedMasses[ hexas[hexaId][w] ][1] -= mass[w*3+1][j];
-                                lumpedMasses[ hexas[hexaId][w] ][2] -= mass[w*3+2][j];
-                            }
+                            lumpedMasses[ hexas[hexaId][w] ][0] -= M[w*3  ][j];
+                            lumpedMasses[ hexas[hexaId][w] ][1] -= M[w*3+1][j];
+                            lumpedMasses[ hexas[hexaId][w] ][2] -= M[w*3+2][j];
                         }
                     }
-
-                    this->_lumpedMasses.endEdit();
-                }
-
-                switch(this->method)
-                {
-                case HexahedralFEMForceFieldT::LARGE:
-                {
-                    for(unsigned int i=0; i<hexaModif.size(); ++i)
-                        initLarge(hexaModif[i]);
-                }
-                break;
-                case HexahedralFEMForceFieldT::POLAR:
-                {
-                    for(unsigned int i=0; i<hexaModif.size(); ++i)
-                        initPolar(hexaModif[i]);
-                }
-                break;
-                }
-                {
-                    helper::vector<Real>&	particleMasses = *this->_particleMasses.beginEdit();
-
-                    for(unsigned int i=0; i<hexaModif.size(); ++i)
-                    {
-                        const unsigned int hexaId = hexaModif[i];
-
-                        Real mass = this->_elementTotalMass.getValue()[hexaId] * (Real) 0.125;
-
-                        for(int w=0; w<8; ++w)
-                            particleMasses[ hexas[hexaId][w] ] += mass;
-                    }
-
-                    this->_particleMasses.endEdit();
-                }
-
-                if( this->_useLumpedMass.getValue() )
-                {
-                    helper::vector<Coord>&	lumpedMasses = *this->_lumpedMasses.beginEdit();
-
-                    for(unsigned int i=0; i<hexaModif.size(); ++i)
-                    {
-                        const unsigned int hexaId = hexaModif[i];
-                        const ElementMass& mass = this->_elementMasses.getValue()[hexaId];
-
-                        for(int w=0; w<8; ++w)
-                        {
-                            for(int j=0; j<8*3; ++j)
-                            {
-                                lumpedMasses[ hexas[hexaId][w] ][0] += mass[w*3  ][j];
-                                lumpedMasses[ hexas[hexaId][w] ][1] += mass[w*3+1][j];
-                                lumpedMasses[ hexas[hexaId][w] ][2] += mass[w*3+2][j];
-                            }
-                        }
-                    }
-
-                    this->_lumpedMasses.endEdit();
                 }
             }
-            else // newmethod -> just delete the fine hexa (only for removing and not adding of fine hexa)
-            {
-                // TODO: this is not working !!!
 
-                //	const sofa::helper::vector<unsigned int> &fineRemovedHexa = (static_cast< const MultilevelModification *> (*iter))->getRemovedFineHexahedraArray();
-                //	for(unsigned int i=0; i<fineRemovedHexa.size(); ++i)
-                //	{
-                //		removeFineHexa( fineRemovedHexa[i] );
-                //	}
-            }
+            this->_elementTotalMass.endEdit();
+            this->_elementMasses.endEdit();
+            this->hexahedronInfo.endEdit();
+            this->_particleMasses.endEdit();
+            this->_lumpedMasses.endEdit();
         }
         break;
         default:
-            break;
+        {
+        }
+        break;
         }
     }
 }
@@ -462,7 +425,6 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::initLarge( const int i)
     typename HexahedralFEMForceFieldT::Transformation R_0_1;
     computeRotationLarge(R_0_1, horizontal, vertical);
 
-
     helper::vector<typename HexahedralFEMForceFieldT::HexahedronInformation>& hexahedronInf = *this->hexahedronInfo.beginEdit();
     helper::vector<ElementMass>& elementMasses = *this->_elementMasses.beginEdit();
     helper::vector<Real>& elementTotalMass = *this->_elementTotalMass.beginEdit();
@@ -470,15 +432,8 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::initLarge( const int i)
     for(int w=0; w<8; ++w)
         hexahedronInf[i].rotatedInitialElements[w] = R_0_1*nodes[w];
 
-    hexahedronInf[i].stiffness = ElementStiffness(0);
-    elementMasses[i] = ElementMass(0);
-    elementTotalMass[i] = 0;
-
-    //computeMechanicalMatricesByCondensation( hexahedronInf[i].stiffness,
-    //								elementMasses[i],
-    //								elementTotalMass[i], i);
-
-    computeMechanicalMatricesByCondensationDirectlyFromFinestToCoarse( hexahedronInf[i].stiffness,
+    /// compute mechanichal matrices (mass and stiffness) by condensating from finest level
+    computeMechanicalMatricesByCondensation( hexahedronInf[i].stiffness,
             elementMasses[i],
             elementTotalMass[i], i);
 
@@ -508,16 +463,8 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::initPolar( const int i)
     for(int w=0; w<8; ++w)
         hexahedronInf[i].rotatedInitialElements[w] = R_0_1*nodes[w];
 
-    hexahedronInf[i].stiffness = ElementStiffness(0);
-    elementMasses[i] = ElementMass(0);
-    elementTotalMass[i] = 0;
-
-    // compute mechanichal matrices (mass and stiffness) by condensating from finest level
-    //computeMechanicalMatricesByCondensation( hexahedronInf[i].stiffness,
-    //								elementMasses[i],
-    //								elementTotalMass[i], i);
-
-    computeMechanicalMatricesByCondensationDirectlyFromFinestToCoarse( hexahedronInf[i].stiffness,
+    /// compute mechanichal matrices (mass and stiffness) by condensating from finest level
+    computeMechanicalMatricesByCondensation( hexahedronInf[i].stiffness,
             elementMasses[i],
             elementTotalMass[i], i);
 
@@ -532,57 +479,61 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCon
         Real& totalMass,
         const int elementIndex)
 {
-    const int level = _multilevelTopology->getLevel();
-    const int coarseNodeSize = (1 << level);
-
-    const VecCoord *X0=this->mstate->getX0();
-    Vec<8,Coord> nodesCoarse;
-    for(int w=0; w<8; ++w)
-        nodesCoarse[w] = (*X0)[this->_topology->getHexa(elementIndex)[w]];
-
-    Vec<8,Coord> nodesFine;
-    for(int w=0; w<8; ++w)
-        nodesFine[w] = (nodesCoarse[w] - nodesCoarse[0]) / coarseNodeSize;
-
-    MaterialStiffness	C_fine;
-    ElementStiffness	K_fine;
-    ElementMass			M_fine;
-    Real				mass_fine;
-
-    HexahedralFEMForceField<T>::computeMaterialStiffness(C_fine, this->f_youngModulus.getValue(), this->f_poissonRatio.getValue());
-    HexahedralFEMForceField<T>::computeElementStiffness(K_fine, C_fine, nodesFine);
-    HexahedralFEMForceFieldAndMass<T>::computeElementMass(M_fine, mass_fine, nodesFine);
-
-    // condensate recursively each 8 children (if they exist)
+    K.clear();
+    M.clear();
+    totalMass = (Real) 0.0;
 
     helper::vector<unsigned int>	fineElements;
     _multilevelTopology->getHexaChildren(elementIndex, fineElements);
 
-    helper::vector<bool> fineChildren((int) coarseNodeSize*coarseNodeSize*coarseNodeSize, false);
+    const int level = _multilevelTopology->getLevel();
+    const int coarseNodeSize = (1 << level);
 
-    for(unsigned int i=0; i<fineElements.size(); ++i)
+    const bool recursive = false;
+
+    if(recursive)
     {
-        const MultilevelHexahedronSetTopologyContainer::Vec3i& voxelId = _multilevelTopology->getHexaIdxInFineRegularGrid(fineElements[i]);
+        helper::vector<bool> fineChildren((int) coarseNodeSize*coarseNodeSize*coarseNodeSize, false);
 
-        const int I = voxelId[0]%coarseNodeSize;
-        const int J = voxelId[1]%coarseNodeSize;
-        const int K = voxelId[2]%coarseNodeSize;
+        // condensate recursively each 8 children (if they exist)
+        for(unsigned int i=0; i<fineElements.size(); ++i)
+        {
+            const MultilevelHexahedronSetTopologyContainer::Vec3i& voxelId = _multilevelTopology->getHexaIdxInFineRegularGrid(fineElements[i]);
 
-        fineChildren[I + coarseNodeSize * (J + K * coarseNodeSize)] = true;
+            const int I = voxelId[0]%coarseNodeSize;
+            const int J = voxelId[1]%coarseNodeSize;
+            const int K = voxelId[2]%coarseNodeSize;
+
+            fineChildren[I + coarseNodeSize * (J + K * coarseNodeSize)] = true;
+        }
+
+        computeMechanicalMatricesByCondensation_Recursive( K, M, totalMass, _material.K, _material.M, _material.mass, level, fineChildren);
     }
+    else
+    {
+        for(unsigned int i=0; i<fineElements.size(); ++i)
+        {
+            const MultilevelHexahedronSetTopologyContainer::Vec3i& voxelId = _multilevelTopology->getHexaIdxInFineRegularGrid(fineElements[i]);
 
-    computeMechanicalMatricesByCondensation( K, M, totalMass, K_fine, M_fine, mass_fine, level, fineChildren);
+            const Mat88& H = __H[(voxelId[0]%coarseNodeSize) + coarseNodeSize * ((voxelId[1]%coarseNodeSize) + coarseNodeSize * (voxelId[2]%coarseNodeSize))];
+
+            // add the fine element into the coarse
+            this->addHtfineHtoCoarse(H, _material.K, K);
+            this->addHtfineHtoCoarse(H, _material.M, M);
+            totalMass += _material.mass;
+        }
+    }
 }
 
 template<class T>
-void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCondensation( ElementStiffness &K,
+void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCondensation_Recursive( ElementStiffness &K,
         ElementMass &M,
         Real& totalMass,
         const ElementStiffness &K_fine,
         const ElementMass &M_fine,
         const Real& mass_fine,
         const int level,
-        const helper::vector<bool>& fineChildren)
+        const helper::vector<bool>& fineChildren) const
 {
     if(level==0)
     {
@@ -663,9 +614,10 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCon
 
             if(!allChildrenEmpty)
             {
-                computeMechanicalMatricesByCondensation( K_tmp, M_tmp, mass_tmp, K_fine, M_fine, mass_fine, nextLevel, children_tmp);
-                this->addFineToCoarse(K_tmp, _H[i], K);
-                this->addFineToCoarse(M_tmp, _H[i], M);
+                computeMechanicalMatricesByCondensation_Recursive( K_tmp, M_tmp, mass_tmp, K_fine, M_fine, mass_fine, nextLevel, children_tmp);
+
+                this->addHtfineHtoCoarse(_H[i], K_tmp, K);
+                this->addHtfineHtoCoarse(_H[i], M_tmp, M);
                 totalMass += mass_tmp;
             }
         }
@@ -673,151 +625,76 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCon
 }
 
 template<class T>
-void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCondensationDirectlyFromFinestToCoarse( ElementStiffness &K,
-        ElementMass &M,
-        Real& totalMass,
-        const int elementIndex)
-{
-    const int level = _multilevelTopology->getLevel();
-    const int coarseNodeSize = (1 << level);
-
-    helper::vector<unsigned int>	fineElements;
-    _multilevelTopology->getHexaChildren(elementIndex, fineElements);
-
-    for(unsigned int i=0; i<fineElements.size(); ++i)
-    {
-        const MultilevelHexahedronSetTopologyContainer::Vec3i& voxelId = _multilevelTopology->getHexaIdxInFineRegularGrid(fineElements[i]);
-
-        AFine actualfine;
-        //actualfine.coarseHexaIdx = elementIndex;
-        actualfine.mass = _material.mass;
-
-        Mat88& H = __H[(voxelId[0]%coarseNodeSize) + coarseNodeSize * ((voxelId[1]%coarseNodeSize) + coarseNodeSize * (voxelId[2]%coarseNodeSize))];
-
-        // add the fine element into the coarse
-        this->computeHtfineHAndAddFineToCoarse(_material.K, H, K, actualfine.HtKH);
-        this->computeHtfineHAndAddFineToCoarse(_material.M, H, M, actualfine.HtMH);
-        totalMass += _material.mass;
-
-        // save the fine values
-        _mapFineToCorse[voxelId] = actualfine;
-    }
-}
-
-template<class T>
-void NonUniformHexahedralFEMForceFieldAndMass<T>::addFineToCoarse( const ElementStiffness& fine,
-        const Mat88& H,
-        ElementStiffness& coarse)
+void NonUniformHexahedralFEMForceFieldAndMass<T>::addHtfineHtoCoarse(const Mat88& H,
+        const ElementStiffness& fine,
+        ElementStiffness& coarse) const
 {
     ElementStiffness A;
 
     for(int i=0; i<24; ++i)
         for(int j=0; j<24; ++j)
-        {
-            A[i][j] = (Real) ((j%3==0) ? fine[i][0] * H[0][j/3] : 0.0);
-
-            for(int k=1; k<24; ++k)
-                A[i][j] += (Real) ((j%3==k%3) ? fine[i][k] * H[k/3][j/3] : 0.0);
-        }
+            for(int k=0; k<24; ++k)
+            {
+                if(j%3==k%3)
+                    A[i][j] += fine[i][k] * H[k/3][j/3];		// A = fine * H
+            }
 
     for(int i=0; i<24; i++)
         for(int j=0; j<24; ++j)
-        {
             for(int k=0; k<24; ++k)
-                coarse[i][j] += (Real) ((i%3==k%3) ? H[k/3][i/3] * A[k][j] : 0.0);   // H[index] transposed
-        }
+            {
+                if(i%3==k%3)
+                    coarse[i][j] += H[k/3][i/3] * A[k][j];		// HtfineH = Ht * A
+            }
 }
 
-
 template<class T>
-void NonUniformHexahedralFEMForceFieldAndMass<T>::computeHtfineHAndAddFineToCoarse(const ElementStiffness& fine,
-        const Mat88& H,
-        ElementStiffness& coarse,
-        ElementStiffness& HtfineH
-                                                                                  )
+void NonUniformHexahedralFEMForceFieldAndMass<T>::subtractHtfineHfromCoarse(const Mat88& H,
+        const ElementStiffness& fine,
+        ElementStiffness& coarse) const
 {
     ElementStiffness A;
 
     for(int i=0; i<24; ++i)
         for(int j=0; j<24; ++j)
-        {
-            HtfineH[i][j] = 0.0;
-            A[i][j] = (Real) ((j%3==0) ? fine[i][0] * H[0][j/3] : 0.0);
-
-            for(int k=1; k<24; ++k)
-                A[i][j] += (Real) ((j%3==k%3) ? fine[i][k] * H[k/3][j/3] : 0.0);
-        }
+            for(int k=0; k<24; ++k)
+            {
+                if(j%3==k%3)
+                    A[i][j] += fine[i][k] * H[k/3][j/3];		// A = fine * H
+            }
 
     for(int i=0; i<24; i++)
         for(int j=0; j<24; ++j)
-        {
             for(int k=0; k<24; ++k)
             {
-                Real tmp = (Real) ((i%3==k%3) ? H[k/3][i/3] * A[k][j] : 0.0);
-                HtfineH[i][j] += tmp;
-                coarse[i][j] += tmp;
+                if(i%3==k%3)
+                    coarse[i][j] -= H[k/3][i/3] * A[k][j];		// HtfineH = Ht * A
             }
-        }
 }
 
-
 template<class T>
-void NonUniformHexahedralFEMForceFieldAndMass<T>::removeFineHexa( const unsigned int fineIdx )
+void NonUniformHexahedralFEMForceFieldAndMass<T>::computeHtfineH(const Mat88& H,
+        const ElementStiffness& fine,
+        ElementStiffness& HtfineH) const
 {
-    const Vec3i& voxelId = _multilevelTopology->getHexaIdxInFineRegularGrid(fineIdx);
-    AFine& actualfine = _mapFineToCorse[voxelId];
-    unsigned coarseIdx = _multilevelTopology->getHexaParent(fineIdx);
+    HtfineH.clear();
+    ElementStiffness A;
 
-
-    //cerr<<"removeFineHexa "<<fineIdx<< " in "<<coarseIdx<<" / "<<(*this->hexahedronInfo.beginEdit()).size()<<endl;
-    //if( coarseIdx>=(*this->hexahedronInfo.beginEdit()).size() ) return; // the coarse hexa doesn't exist anymore
-
-    helper::vector<typename HexahedralFEMForceFieldT::HexahedronInformation>& hexahedronInf = *this->hexahedronInfo.beginEdit();
-    helper::vector<ElementMass>& elementMasses = *this->_elementMasses.beginEdit();
-    helper::vector<Real>& elementTotalMass = *this->_elementTotalMass.beginEdit();
-
-
-    ElementStiffness& K_coarse = hexahedronInf[coarseIdx].stiffness;
-    ElementMass& M_coarse = elementMasses[coarseIdx];
-    Real& mass_coarse = elementTotalMass[coarseIdx];
-
-    K_coarse -= actualfine.HtKH;
-    M_coarse -= actualfine.HtMH;
-    mass_coarse -= actualfine.mass;
-
-
-    const VecElement& hexas = this->_topology->getHexas();
-    const Element& actualcoarsehexa = hexas[ coarseIdx ];
-
-    helper::vector<Real>&	particleMasses = *this->_particleMasses.beginEdit();
-    Real particleMass = (Real)actualfine.mass * (Real)0.125;
-    for(int w=0; w<8; ++w)
-        particleMasses[ actualcoarsehexa[w] ] -= particleMass;
-
-    if( this->_useLumpedMass.getValue() )
-    {
-        helper::vector<Coord>&	lumpedMasses = *this->_lumpedMasses.beginEdit();
-
-        for(int w=0; w<8; ++w)
-        {
-            lumpedMasses[ actualcoarsehexa[w] ][0] = 0;
-            lumpedMasses[ actualcoarsehexa[w] ][1] = 0;
-            lumpedMasses[ actualcoarsehexa[w] ][2] = 0;
-            for(int j=0; j<8*3; ++j)
+    for(int i=0; i<24; ++i)
+        for(int j=0; j<24; ++j)
+            for(int k=0; k<24; ++k)
             {
-                lumpedMasses[ actualcoarsehexa[w] ][0] += M_coarse[w*3  ][j];
-                lumpedMasses[ actualcoarsehexa[w] ][1] += M_coarse[w*3+1][j];
-                lumpedMasses[ actualcoarsehexa[w] ][2] += M_coarse[w*3+2][j];
+                if(j%3==k%3)
+                    A[i][j] += fine[i][k] * H[k/3][j/3];		// A = fine * H
             }
-        }
-        this->_lumpedMasses.endEdit();
-    }
 
-
-    this->_elementTotalMass.endEdit();
-    this->_elementMasses.endEdit();
-    this->hexahedronInfo.endEdit();
-    this->_particleMasses.endEdit();
+    for(int i=0; i<24; i++)
+        for(int j=0; j<24; ++j)
+            for(int k=0; k<24; ++k)
+            {
+                if(i%3==k%3)
+                    HtfineH[i][j] += H[k/3][i/3] * A[k][j];		// HtfineH = Ht * A
+            }
 }
 
 
