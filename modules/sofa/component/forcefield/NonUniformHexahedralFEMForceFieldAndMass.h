@@ -93,8 +93,8 @@ public:
     typedef typename HexahedralFEMForceFieldAndMassT::ElementMass ElementMass;
     typedef typename HexahedralFEMForceFieldAndMassT::Element Element;
 
-    typedef typename Mat<8, 8, Real> Mat88;
-    typedef typename Vec<3, int> Vec3i;
+    typedef typename defaulttype::Mat<8, 8, Real> Mat88;
+    typedef typename defaulttype::Vec<3, int> Vec3i;
 
 public:
 
