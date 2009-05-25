@@ -56,13 +56,13 @@ PointsFromIndices<DataTypes>::PointsFromIndices()
 template <class DataTypes>
 void PointsFromIndices<DataTypes>::init()
 {
-    /*    if (!f_X.isSet())
-        {
-            BaseData* parent = mstate->findField("position");
-            f_X.setParentValue(parent);
-            parent->addOutput(&f_X);
-            f_X.setReadOnly(true);
-        }*/
+    if (!f_X.isSet())
+    {
+        BaseData* parent = mstate->findField("position");
+        f_X.setParentValue(parent);
+        parent->addOutput(&f_X);
+        f_X.setReadOnly(true);
+    }
     addInput(&f_X);
     addInput(&f_indices);
     addOutput(&f_indices_position);

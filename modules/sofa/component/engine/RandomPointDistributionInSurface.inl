@@ -63,11 +63,11 @@ RandomPointDistributionInSurface<DataTypes>::RandomPointDistributionInSurface()
     , f_outPoints( initData (&f_inPoints, "outPoints", "Points outside the surface") )
     , safeCounter(0), safeLimit(UINT_MAX)
 {
-    addInput(&f_triangles);
-    addInput(&f_vertices);
+}
 
-    addOutput(&f_inPoints);
-
+template <class DataTypes>
+void RandomPointDistributionInSurface<DataTypes>::init()
+{
     unsigned int nb = numberOfTests.getValue();
     if (nb%2 == 0)
     {
@@ -82,14 +82,12 @@ RandomPointDistributionInSurface<DataTypes>::RandomPointDistributionInSurface()
 
     safeLimit = numberOfInPoints.getValue()*numberOfInPoints.getValue()*numberOfInPoints.getValue()*numberOfInPoints.getValue();
 
-}
+    addInput(&f_triangles);
+    addInput(&f_vertices);
 
-template <class DataTypes>
-void RandomPointDistributionInSurface<DataTypes>::init()
-{
+    addOutput(&f_inPoints);
 
-
-
+    setDirty();
 }
 
 template <class DataTypes>
@@ -215,9 +213,6 @@ void RandomPointDistributionInSurface<DataTypes>::update()
         std::cout << "Random Exit UPDATE" << std::endl;
         return;
     }
-
-
-    std::cout << "Random Pas UPDATE" << std::endl;
 
     VecCoord* inPoints = f_inPoints.beginEdit();
     inPoints->clear();

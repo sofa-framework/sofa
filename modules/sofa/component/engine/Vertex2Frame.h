@@ -60,6 +60,8 @@ public:
 
     ~Vertex2Frame() {}
 
+    void init();
+
     void reinit();
 
     void update();

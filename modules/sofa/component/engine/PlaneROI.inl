@@ -56,9 +56,6 @@ PlaneROI<DataTypes>::PlaneROI()
     planes.beginEdit()->push_back(Vec10(Vec<9,Real>(0,0,0,0,0,0,0,0,0),0));
     planes.endEdit();
 
-    addInput(&f_X0);
-
-    addOutput(&f_indices);
     f_indices.beginEdit()->push_back(0);
     f_indices.endEdit();
 }
@@ -73,6 +70,9 @@ void PlaneROI<DataTypes>::init()
         parent->addOutput(&f_X0);
         f_X0.setReadOnly(true);
     }
+    addInput(&f_X0);
+    addOutput(&f_indices);
+    setDirty();
 }
 
 template <class DataTypes>

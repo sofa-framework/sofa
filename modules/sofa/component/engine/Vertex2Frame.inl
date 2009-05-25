@@ -51,12 +51,19 @@ Vertex2Frame<DataTypes>::Vertex2Frame():
     , facets(initData(&facets,"facets","Facets of the mesh loaded"))
     , frames( initData (&frames, "frames", "Frames at output") )
 {
+}
+
+template <class DataTypes>
+void Vertex2Frame<DataTypes>::init()
+{
     addInput(&vertices);
     addInput(&texCoords);
     addInput(&normals);
     addInput(&facets);
 
     addOutput(&frames);
+
+    setDirty();
 }
 
 template <class DataTypes>
