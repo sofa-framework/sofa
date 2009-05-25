@@ -23,7 +23,7 @@
 	</Node>
 	
 	<Node name="Sphere">
-		<MeshLoader filename="mesh/sphere.obj" />
+		<MeshLoader filename="mesh/sphere.obj" triangulate="true"/>
 		<Mesh />
 		<Object type="MechanicalObject" scale="3.95" dx="0" dy="1" dz="3"/>
 		
