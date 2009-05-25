@@ -52,13 +52,14 @@ Spiral<DataTypes>::Spiral()
     , f_X( initData (&f_X, "position", "Position coordinates of the degrees of freedom") )
     , curvature( initData (&curvature, Real(0.2),"curvature", "Spiral curvature factor") )
 {
-    addInput(&f_X0);
-    addOutput(&f_X);
 }
 
 template <class DataTypes>
 void Spiral<DataTypes>::init()
 {
+    addInput(&f_X0);
+    addOutput(&f_X);
+    setDirty();
 }
 
 template <class DataTypes>

@@ -56,9 +56,6 @@ BoxROI<DataTypes>::BoxROI()
     boxes.beginEdit()->push_back(Vec6(0,0,0,1,1,1));
     boxes.endEdit();
 
-    addInput(&f_X0);
-
-    addOutput(&f_indices);
     f_indices.beginEdit()->push_back(0);
     f_indices.endEdit();
 }
@@ -73,6 +70,9 @@ void BoxROI<DataTypes>::init()
         parent->addOutput(&f_X0);
         f_X0.setReadOnly(true);
     }
+    addInput(&f_X0);
+    addOutput(&f_indices);
+    setDirty();
 }
 
 template <class DataTypes>
@@ -85,6 +85,7 @@ template <class DataTypes>
 void BoxROI<DataTypes>::update()
 {
     dirty = false;
+
     helper::vector<Vec6>& vb = *(boxes.beginEdit());
 
     for (unsigned int bi=0; bi<vb.size(); ++bi)

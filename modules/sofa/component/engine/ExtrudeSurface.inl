@@ -57,38 +57,18 @@ ExtrudeSurface<DataTypes>::ExtrudeSurface()
     , f_extrusionTriangles( initData (&f_extrusionTriangles, "extrusionTriangles", "Triangles indices of the extrusion") )
     , f_surfaceTriangles( initData (&f_surfaceTriangles, "surfaceTriangles", "Indices of the triangles of the surface to extrude") )
 {
+}
+
+template <class DataTypes>
+void ExtrudeSurface<DataTypes>::init()
+{
     addInput(&f_surfaceTriangles);
     addInput(&f_surfaceVertices);
     addInput(&f_triangles);
 
     addOutput(&f_extrusionVertices);
     addOutput(&f_extrusionTriangles);
-}
-
-template <class DataTypes>
-void ExtrudeSurface<DataTypes>::init()
-{
-    /*
-    BaseMeshTopology* topology = dynamic_cast<BaseMeshTopology*>(getContext()->getTopology());
-    if (topology != NULL)
-    {
-    	BaseData* parent = topology->findField("triangles");
-    	if (parent == NULL)
-    	{
-    		sout << "ERROR: Topology " << topology->getName() << " does not contain triangles" << sendl;
-    	}
-    }
-    else
-    {
-    	sout << "ERROR: Topology not found. Extrusion can not be computed" << sendl;
-    }
-
-    if (!f_surfaceVertices.isSet() || !f_surfaceTriangles.isSet())
-    {
-    	sout << "ERROR: No indices or vertices given for extrusion" << sendl;
-    	return;
-    }
-    */
+    setDirty();
 }
 
 template <class DataTypes>
@@ -139,7 +119,6 @@ void ExtrudeSurface<DataTypes>::update()
             normals[triangle[i]].second++;
         }
     }
-    std::cout << "0" << std::endl;
     //average normals
     typename std::map<int, std::pair<Vec3, unsigned int> >::iterator itNormals;
     for (itNormals = normals.begin(); itNormals != normals.end() ; itNormals++)

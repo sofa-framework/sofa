@@ -58,13 +58,6 @@ MergePoints<DataTypes>::MergePoints()
 template <class DataTypes>
 void MergePoints<DataTypes>::init()
 {
-//     if (!f_X0.isSet())
-//     {
-//         BaseData* parent = mstate->findField("rest_position");
-//         f_X0.setParentValue(parent);
-//         parent->addOutput(&f_X0);
-//         f_X0.setReadOnly(true);
-//     }
     addInput(&f_X1);
     addInput(&f_X2);
     addOutput(&f_indices1);
