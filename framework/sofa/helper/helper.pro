@@ -68,6 +68,7 @@ HEADERS += \
           Quater.h \
           Quater.inl \
           rmath.h \
+          RandomGenerator.h \
           set.h \
           system/config.h \
           system/gl.h \
@@ -115,6 +116,7 @@ SOURCES += \
           LCPcalc.cpp \         
           MarchingCubeUtility.cpp \
           Quater.cpp \
+          RandomGenerator.cpp \
           system/SetDirectory.cpp \
           system/FileRepository.cpp \
           system/thread/CTime.cpp \
