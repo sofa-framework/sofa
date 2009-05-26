@@ -9,6 +9,7 @@
 #define RANDOMGENERATOR_H_
 
 #include <cstdlib>
+#include <sofa/helper/helper.h>
 
 #define RAND48_SEED_0   (0x330e)
 #define RAND48_SEED_1   (0xabcd)
@@ -28,7 +29,7 @@ namespace helper
 //Generate Random number
 //based on random functions from OpenBSD
 
-class RandomGenerator
+class SOFA_HELPER_API RandomGenerator
 {
 private:
     unsigned short __rand48_seed[3];
