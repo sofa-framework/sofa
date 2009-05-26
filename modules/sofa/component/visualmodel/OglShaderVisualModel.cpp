@@ -73,7 +73,6 @@ void OglShaderVisualModel::init()
 {
     OglModel::init();
 
-
     sofa::core::objectmodel::BaseContext* context = this->getContext();
     shader = context->core::objectmodel::BaseContext::get<OglShader>();
 
@@ -121,6 +120,19 @@ void OglShaderVisualModel::initVisual()
         vrestnormals.initVisual();
 
     }
+}
+
+void OglShaderVisualModel::putRestPositions(const Vec3fTypes::VecCoord& positions)
+{
+    ResizableExtVector<Coord>& vrestpos = * ( vrestpositions.beginEdit() );
+    vrestpos.resize ( positions.size() );
+
+    for ( unsigned int i = 0; i < positions.size(); i++ )
+    {
+        vrestpos[i] = positions[i];
+    }
+
+    vrestpositions.endEdit();
 }
 
 void OglShaderVisualModel::handleTopologyChange()
