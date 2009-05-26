@@ -52,6 +52,7 @@ using namespace core::objectmodel;
 template <class DataTypes>
 RandomPointDistributionInSurface<DataTypes>::RandomPointDistributionInSurface()
     : initialized(false)
+    , randomSeed( initData (&randomSeed, (unsigned int) 0, "randomSeed", "Set a specified seed for random generation (0 for \"true pseudo-randomness\" ") )
     , isVisible( initData (&isVisible, bool (true), "isVisible", "is Visible ?") )
     , drawOutputPoints( initData (&drawOutputPoints, bool (false), "drawOutputPoints", "Output points visible ?") )
     , minDistanceBetweenPoints( initData (&minDistanceBetweenPoints, Real (0.1), "minDistanceBetweenPoints", "Min Distance between 2 points (-1 for true randomness)") )
@@ -76,7 +77,13 @@ void RandomPointDistributionInSurface<DataTypes>::init()
     }
 
     // initialize random seed
-    srand ( time(NULL) );
+    if (randomSeed.getValue() == 0)
+    {
+        randomSeed.setValue(time(NULL));
+    }
+
+    //srand(randomSeed.getValue());
+    rg.initSeed(randomSeed.getValue());
 
     generateRandomDirections();
 
@@ -137,7 +144,8 @@ void RandomPointDistributionInSurface<DataTypes>::generateRandomDirections()
     for (unsigned int i=0 ; i<numberOfTests.getValue() ; i++)
     {
         for (unsigned int i=0 ; i<3 ; i++)
-            d[i] = (2.0*((Real) rand())/RAND_MAX) - 1.0; //[-1; 1]
+            //d[i] = (2.0*((Real) rand())/RAND_MAX) - 1.0; //[-1; 1]
+            d[i] = rg.randomDouble(-1.0,1.0); //[-1; 1]
 
         directions.push_back(d);
     }
@@ -150,7 +158,8 @@ defaulttype::Vec<3,typename DataTypes::Real> RandomPointDistributionInSurface<Da
 {
     Vec3 r;
     for (unsigned int i= 0 ; i<3 ; i++)
-        r[i] = (minBBox[i] + ((maxBBox[i] - minBBox[i])*rand())/RAND_MAX);
+        //r[i] = (minBBox[i] + ((maxBBox[i] - minBBox[i])*rand())/RAND_MAX);
+        r[i] = rg.randomDouble(minBBox[i], maxBBox[i]);
 
     return r;
 }
@@ -210,7 +219,7 @@ void RandomPointDistributionInSurface<DataTypes>::update()
 
     if (triangles.size() <= 1 ||  vertices.size() <= 1)
     {
-        std::cout << "Random Exit UPDATE" << std::endl;
+        serr << "Error in input data (number of vertices of triangles is less than 1)." << std::endl;
         return;
     }
 
@@ -261,7 +270,6 @@ void RandomPointDistributionInSurface<DataTypes>::update()
 template <class DataTypes>
 void RandomPointDistributionInSurface<DataTypes>::draw()
 {
-
     if (!this->getContext()->getShowBehaviorModels() || !isVisible.getValue())
         return;
 

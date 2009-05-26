@@ -37,6 +37,7 @@
 #include <sofa/component/topology/PointSubset.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/component/collision/TriangleOctree.h>
+#include <sofa/helper/RandomGenerator.h>
 
 namespace sofa
 {
@@ -87,6 +88,8 @@ public:
         return DataTypes::Name();
     }
     bool initialized;
+    helper::RandomGenerator rg;
+    Data<unsigned int> randomSeed;
     Data<bool> isVisible;
     Data<bool> drawOutputPoints;
     Data<Real> minDistanceBetweenPoints;
