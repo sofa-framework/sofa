@@ -113,6 +113,7 @@ void ExtrudeSurface<DataTypes>::update()
 
         //compute normal
         Coord n =  cross(triangleCoord[1]-triangleCoord[0], triangleCoord[2]-triangleCoord[0]);
+        n.normalize();
         for (unsigned int i=0 ; i<3 ; i++)
         {
             normals[triangle[i]].first += n;
@@ -122,7 +123,10 @@ void ExtrudeSurface<DataTypes>::update()
     //average normals
     typename std::map<int, std::pair<Vec3, unsigned int> >::iterator itNormals;
     for (itNormals = normals.begin(); itNormals != normals.end() ; itNormals++)
-        (*itNormals).second.first /= (*itNormals).second.second;
+    {
+        //(*itNormals).second.first /= (*itNormals).second.second;
+        (*itNormals).second.first.normalize();
+    }
 
     for (itTriangles=surfaceTriangles.begin() ; itTriangles != surfaceTriangles.end() ; itTriangles++)
     {
