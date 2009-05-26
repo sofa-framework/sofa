@@ -35,7 +35,7 @@
 #include <map>
 #include <list>
 
-
+#include <sofa/component/visualmodel/OglShaderVisualModel.h>
 
 namespace sofa
 {
@@ -343,6 +343,21 @@ void SPHFluidSurfaceMapping<In,Out>::apply( OutVecCoord& out, const InVecCoord& 
     }
 
     //sout << out.size() << " points, "<<seqTriangles.size()<<" faces."<<sendl;
+    if (firstApply)
+    {
+        visualmodel::OglShaderVisualModel* oglsvm = dynamic_cast<visualmodel::OglShaderVisualModel*>(this->toModel);
+
+        if(oglsvm)
+        {
+            Vec3fTypes::VecCoord tempRest;
+            for(unsigned int i=0 ; i<out.size() ; i++)
+                tempRest.push_back(out[i]);
+            oglsvm->putRestPositions(tempRest);
+            std::cout << "void SPHFluidSurfaceMapping<In,Out>::apply" << std::endl;
+        }
+
+        firstApply = false;
+    }
 }
 
 template <class In, class Out>

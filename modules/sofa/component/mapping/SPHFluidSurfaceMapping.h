@@ -119,7 +119,7 @@ public:
           mStep(initData(&mStep,0.5,"step","Step")),
           mRadius(initData(&mRadius,2.0,"radius","Radius")),
           mIsoValue(initData(&mIsoValue,0.5,"isoValue", "Iso Value")),
-          sph(NULL), grid(NULL)
+          sph(NULL), grid(NULL), firstApply(true)
     {
     }
 
@@ -169,6 +169,7 @@ protected:
     Data< double > mRadius;
     Data< double > mIsoValue;
 
+
     typedef forcefield::SPHFluidForceField<typename In::DataTypes> SPHForceField;
     SPHForceField* sph;
 
@@ -184,6 +185,8 @@ protected:
     enum { DZ = Grid::DZ };
 
     Grid* grid;
+
+    bool firstApply;
 
     void createPoints(OutVecCoord& out, int x, int y, int z, Cell* c, const Cell* cx, const Cell* cy, const Cell* cz, const OutReal isoval);
 
