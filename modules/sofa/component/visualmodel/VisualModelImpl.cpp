@@ -117,9 +117,10 @@ int VisualModelImplClass = core::RegisterObject("Generic visual model. If a view
 
 VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filename, std::string loader, std::string textureName)
     :  useTopology(false), lastMeshRev(-1), useNormals(true), castShadow(true),
-
+       f_useNormals      (initDataPtr(&f_useNormals, &useNormals, "useNormals", "True if normal smoothing groups should be read from file")),
+       updateNormals     (initData   (&updateNormals, true, "updateNormals", "True if normals should be updated at each iteration")),
        field_vertices    (initDataPtr(&field_vertices,&vertices,  "position",   "vertices of the model") ),
-       field_vnormals    (initDataPtr(&field_vnormals, &vnormals, "normals",   "normals of the model") ),
+       field_vnormals    (initDataPtr(&field_vnormals, &vnormals, "normal",   "normals of the model") ),
        field_vtexcoords  (initDataPtr(&field_vtexcoords, &vtexcoords, "texcoords",  "coordinates of the texture") ),
        field_triangles   (initDataPtr(&field_triangles, &triangles,"triangles" ,  "triangles of the model") ),
        field_quads       (initDataPtr(&field_quads, &quads,   "quads",    "quads of the model") ),
@@ -136,6 +137,7 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
     inputVertices = &vertices;
     inputNormals = &vnormals;
 
+    addAlias(&f_useNormals, "normals");
     addAlias(&fileMesh, "filename");
 }
 
@@ -469,6 +471,7 @@ void VisualModelImpl::init()
 
 void VisualModelImpl::computeNormals()
 {
+    if (!updateNormals.getValue() && vnormals.size() != vertices.size()) return;
     if (vertNormIdx.empty())
     {
         int nbn = vertices.size();
