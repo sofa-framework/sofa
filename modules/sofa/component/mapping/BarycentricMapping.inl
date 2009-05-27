@@ -3126,6 +3126,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::VecConst& out
 template <class In, class Out>
 void BarycentricMapperRegularGridTopology<In,Out>::applyJT ( typename In::VecConst& out, const typename Out::VecConst& in )
 {
+
 //    printf("\n applyJT() in BarycentricMapping  [RegularGridMapper] ");
     int offset = out.size();
     out.resize ( offset+in.size() );
@@ -3176,11 +3177,13 @@ template <class In, class Out>
 void BarycentricMapperSparseGridTopology<In,Out>::applyJT ( typename In::VecConst& out, const typename Out::VecConst& in )
 {
 //    printf("\n applyJT() in BarycentricMapping  [RegularGridMapper] ");
+    std::cerr<<"applyJT on VecConst begin:"<<std::endl;
     int offset = out.size();
     out.resize ( offset+in.size() );
+    std::cerr<<"SIZE of out+in : "<< out.size()<<std::endl;
     for ( unsigned int i=0; i<in.size(); i++ )
     {
-        std::map<int,int> outpos;
+        //std::map<int,int> outpos;
         int nbout = 0;
         OutConstraintIterator itOut;
         std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
@@ -3198,119 +3201,66 @@ void BarycentricMapperSparseGridTopology<In,Out>::applyJT ( typename In::VecCons
             const OutReal fx = ( OutReal ) map[indexIn].baryCoords[0];
             const OutReal fy = ( OutReal ) map[indexIn].baryCoords[1];
             const OutReal fz = ( OutReal ) map[indexIn].baryCoords[2];
-            {
-                std::pair<std::map<int,int>::iterator,bool> it = outpos.insert ( std::make_pair ( cube[0],nbout ) ); OutReal f = ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) );
-                if ( it.second )
-                {
-                    out[i+offset].add ( cube[0],  ( data * f ) ); ++nbout;
-                }
-                else
-                    out[i+offset].getDataAt(it.first->second) +=  ( data * f );
-            }
-            {
-                std::pair<std::map<int,int>::iterator,bool> it = outpos.insert ( std::make_pair ( cube[1],nbout ) ); OutReal f = ( ( fx ) * ( 1-fy ) * ( 1-fz ) );
-                if ( it.second )
-                {
-                    out[i+offset].add ( cube[1],  ( data * f ) ); ++nbout;
-                }
-                else
-                    out[i+offset].add(it.first->second,( data * f ));
-            }
+
+            OutReal f = ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) );
+            out[i+offset].add ( cube[0],  ( data * f ) ); ++nbout;
+
+
+            f = ( ( fx ) * ( 1-fy ) * ( 1-fz ) );
+
+            out[i+offset].add ( cube[1],  ( data * f ) ); ++nbout;
+
+
 #ifdef SOFA_NEW_HEXA
-            {
-                std::pair<std::map<int,int>::iterator,bool> it = outpos.insert ( std::make_pair ( cube[3],nbout ) ); OutReal f = ( ( 1-fx ) * ( fy ) * ( 1-fz ) );
-                if ( it.second )
-                {
-                    out[i+offset].add ( cube[3],  ( data * f ) ); ++nbout;
-                }
-                else
-                    out[i+offset].add(it.first->second, ( data * f ));
-            }
-            {
-                std::pair<std::map<int,int>::iterator,bool> it = outpos.insert ( std::make_pair ( cube[2],nbout ) ); OutReal f = ( ( fx ) * ( fy ) * ( 1-fz ) );
-                if ( it.second )
-                {
-                    out[i+offset].add ( cube[2],  ( data * f ) ); ++nbout;
-                }
-                else
-                    out[i+offset].add(it.first->second,  ( data * f ));
-            }
+
+            f = ( ( 1-fx ) * ( fy ) * ( 1-fz ) );
+
+            out[i+offset].add ( cube[3],  ( data * f ) ); ++nbout;
+
+            f = ( ( fx ) * ( fy ) * ( 1-fz ) );
+
+            out[i+offset].add ( cube[2],  ( data * f ) ); ++nbout;
+
 #else
-            {
-                std::pair<std::map<int,int>::iterator,bool> it = outpos.insert ( std::make_pair ( cube[2],nbout ) ); OutReal f = ( ( 1-fx ) * ( fy ) * ( 1-fz ) );
-                if ( it.second )
-                {
-                    out[i+offset].add ( cube[2],  ( data * f ) ); ++nbout;
-                }
-                else
-                    out[i+offset].add(it.first->second,  ( data * f ));
-            }
-            {
-                std::pair<std::map<int,int>::iterator,bool> it = outpos.insert ( std::make_pair ( cube[3],nbout ) ); OutReal f = ( ( fx ) * ( fy ) * ( 1-fz ) );
-                if ( it.second )
-                {
-                    out[i+offset].add ( cube[3],  ( data * f ) ); ++nbout;
-                }
-                else
-                    out[i+offset].add(it.first->second,  ( data * f ));
-            }
+
+            f = ( ( 1-fx ) * ( fy ) * ( 1-fz ) );
+
+            out[i+offset].add ( cube[2],  ( data * f ) ); ++nbout;
+
+            f = ( ( fx ) * ( fy ) * ( 1-fz ) );
+
+            out[i+offset].add ( cube[3],  ( data * f ) ); ++nbout;
+
 #endif
-            {
-                std::pair<std::map<int,int>::iterator,bool> it = outpos.insert ( std::make_pair ( cube[4],nbout ) ); OutReal f = ( ( 1-fx ) * ( 1-fy ) * ( fz ) );
-                if ( it.second )
-                {
-                    out[i+offset].add ( cube[4],  ( data * f ) ); ++nbout;
-                }
-                else
-                    out[i+offset].add(it.first->second,  ( data * f ));
-            }
-            {
-                std::pair<std::map<int,int>::iterator,bool> it = outpos.insert ( std::make_pair ( cube[5],nbout ) ); OutReal f = ( ( fx ) * ( 1-fy ) * ( fz ) );
-                if ( it.second )
-                {
-                    out[i+offset].add ( cube[5],  ( data * f ) ); ++nbout;
-                }
-                else
-                    out[i+offset].add(it.first->second, ( data * f ));
-            }
+
+            f = ( ( 1-fx ) * ( 1-fy ) * ( fz ) );
+
+            out[i+offset].add ( cube[4],  ( data * f ) ); ++nbout;
+
+            f = ( ( fx ) * ( 1-fy ) * ( fz ) );
+
+            out[i+offset].add ( cube[5],  ( data * f ) ); ++nbout;
+
 #ifdef SOFA_NEW_HEXA
-            {
-                std::pair<std::map<int,int>::iterator,bool> it = outpos.insert ( std::make_pair ( cube[7],nbout ) ); OutReal f = ( ( 1-fx ) * ( fy ) * ( fz ) );
-                if ( it.second )
-                {
-                    out[i+offset].add ( cube[7],  ( data * f ) ); ++nbout;
-                }
-                else
-                    out[i+offset].add(it.first->second, ( data * f ));
-            }
-            {
-                std::pair<std::map<int,int>::iterator,bool> it = outpos.insert ( std::make_pair ( cube[6],nbout ) ); OutReal f = ( ( fx ) * ( fy ) * ( fz ) );
-                if ( it.second )
-                {
-                    out[i+offset].add ( cube[6],  ( data * f ) ); ++nbout;
-                }
-                else
-                    out[i+offset].add(it.first->second, ( data * f ));
-            }
+
+            f = ( ( 1-fx ) * ( fy ) * ( fz ) );
+
+            out[i+offset].add ( cube[7],  ( data * f ) ); ++nbout;
+
+            f = ( ( fx ) * ( fy ) * ( fz ) );
+
+            out[i+offset].add ( cube[6],  ( data * f ) ); ++nbout;
+
 #else
-            {
-                std::pair<std::map<int,int>::iterator,bool> it = outpos.insert ( std::make_pair ( cube[6],nbout ) ); OutReal f = ( ( 1-fx ) * ( fy ) * ( fz ) );
-                if ( it.second )
-                {
-                    out[i+offset].add ( cube[6],  ( data * f ) ); ++nbout;
-                }
-                else
-                    out[i+offset].add(it.first->second, ( data * f ));
-            }
-            {
-                std::pair<std::map<int,int>::iterator,bool> it = outpos.insert ( std::make_pair ( cube[7],nbout ) ); OutReal f = ( ( fx ) * ( fy ) * ( fz ) );
-                if ( it.second )
-                {
-                    out[i+offset].add ( cube[7],  ( data * f ) ); ++nbout;
-                }
-                else
-                    out[i+offset].add(it.first->second,  ( data * f ));
-            }
+
+            f = ( ( 1-fx ) * ( fy ) * ( fz ) );
+
+            out[i+offset].add ( cube[6],  ( data * f ) ); ++nbout;
+
+            f = ( ( fx ) * ( fy ) * ( fz ) );
+
+            out[i+offset].add ( cube[7],  ( data * f ) ); ++nbout;
+
 #endif
             //out[i+offset].push_back(typename In::SparseDeriv(cube[0], (typename In::Deriv) (cIn.data * ((1-fx) * (1-fy) * (1-fz)))));
             //out[i+offset].push_back(typename In::SparseDeriv(cube[1], (typename In::Deriv) (cIn.data * ((  fx) * (1-fy) * (1-fz)))));
@@ -3322,6 +3272,8 @@ void BarycentricMapperSparseGridTopology<In,Out>::applyJT ( typename In::VecCons
             //out[i+offset].push_back(typename In::SparseDeriv(cube[7], (typename In::Deriv) (cIn.data * ((  fx) * (  fy) * (  fz)))));
         }
     }
+
+    std::cerr<<"applyJT on VecConst end"<<std::endl;
 }
 
 
