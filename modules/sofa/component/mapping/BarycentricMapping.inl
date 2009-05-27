@@ -3172,15 +3172,12 @@ void BarycentricMapperRegularGridTopology<In,Out>::applyJT ( typename In::VecCon
 }
 
 
-
 template <class In, class Out>
 void BarycentricMapperSparseGridTopology<In,Out>::applyJT ( typename In::VecConst& out, const typename Out::VecConst& in )
 {
 //    printf("\n applyJT() in BarycentricMapping  [RegularGridMapper] ");
-    std::cerr<<"applyJT on VecConst begin:"<<std::endl;
     int offset = out.size();
     out.resize ( offset+in.size() );
-    std::cerr<<"SIZE of out+in : "<< out.size()<<std::endl;
     for ( unsigned int i=0; i<in.size(); i++ )
     {
         //std::map<int,int> outpos;
@@ -3273,7 +3270,6 @@ void BarycentricMapperSparseGridTopology<In,Out>::applyJT ( typename In::VecCons
         }
     }
 
-    std::cerr<<"applyJT on VecConst end"<<std::endl;
 }
 
 
