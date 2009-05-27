@@ -134,6 +134,8 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
        putOnlyTexCoords(initData(&putOnlyTexCoords, (bool) false, "putOnlyTexCoords", "Give Texture Coordinates without the texture binding"))
 {
     inputVertices = &vertices;
+    inputNormals = &vnormals;
+
     addAlias(&fileMesh, "filename");
 }
 

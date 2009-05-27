@@ -75,10 +75,12 @@ class ExtVec3fMappedModel : public core::componentmodel::behavior::MappedModel< 
 {
 public:
     ResizableExtVector<Coord>* inputVertices;
+    ResizableExtVector<Coord>* inputRestVertices;
+    ResizableExtVector<Coord>* inputNormals;
     bool modified; ///< True if input vertices modified since last rendering
 
     ExtVec3fMappedModel()
-        : inputVertices(NULL), modified(false)
+        : inputVertices(NULL), inputRestVertices(NULL), inputNormals(NULL), modified(false)
     {
     }
 
@@ -90,6 +92,14 @@ public:
 
     const VecCoord* getVecX()  const { return getX(); }
     VecCoord* getVecX()  { return getX(); }
+
+    virtual VecCoord* getX0() { return inputRestVertices; };
+    virtual VecCoord* getN() { return inputNormals; };
+
+    virtual const VecCoord* getX0() const { return inputRestVertices; };
+    virtual const VecCoord* getN() const { return inputNormals; };
+
+
 };
 
 /**
@@ -240,11 +250,6 @@ public:
 
     bool addBBox(double* minBBox, double* maxBBox);
 
-    //const VecCoord* getX()  const; // { return &x;   }
-    //const VecDeriv* getV()  const { return NULL; }
-
-    //VecCoord* getX(); //  { return &x;   }
-    //VecDeriv* getV()  { return NULL; }
 
     /// Append this mesh to an OBJ format stream.
     /// The number of vertices position, normal, and texture coordinates already written is given as parameters
