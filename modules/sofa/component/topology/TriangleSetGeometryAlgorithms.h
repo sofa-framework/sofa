@@ -63,13 +63,14 @@ public:
 
     TriangleSetGeometryAlgorithms()
         : EdgeSetGeometryAlgorithms<DataTypes>()
+        ,debugViewTriangleIndices (this->initData(&debugViewTriangleIndices, (bool) false, "debugViewTriangleIndices", "Debug : view Triangle indices"))
+        , _draw(this->initData(&_draw, false, "drawTriangles","if true, draw the triangles in the topology"))
     {
-        debugViewTriangleIndices = this->initData(&debugViewTriangleIndices, (bool) false, "debugViewTriangleIndices", "Debug : view Triangle indices");
     }
 
     virtual ~TriangleSetGeometryAlgorithms() {}
 
-    void draw();
+    virtual void draw();
 
     void computeTriangleAABB(const TriangleID i, Coord& minCoord, Coord& maxCoord) const;
 
@@ -240,7 +241,9 @@ public:
      */
     void writeMSHfile(const char *filename) const;
 
+protected:
     Data<bool> debugViewTriangleIndices;
+    Data<bool> _draw;
 
 };
 

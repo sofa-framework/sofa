@@ -80,6 +80,21 @@ EdgeSetTopologyContainer::EdgeSetTopologyContainer(const sofa::helper::vector< E
 
 void EdgeSetTopologyContainer::init()
 {
+    d_edge.getValue(); // make sure m_edge is up to date
+    std::cout <<"vide? : " << m_edge.empty() << std::endl;
+
+    if (!m_edge.empty())
+    {
+        for (unsigned int i=0; i<m_edge.size(); ++i)
+        {
+            for(unsigned int j=0; j<2; ++j)
+            {
+                int a = m_edge[i][j];
+                if (a >= getNbPoints()) nbPoints.setValue(a+1);
+            }
+        }
+    }
+    // std::cout << "coords: " << getPX(m_edge[1][0]) << " " << getPY(m_edge[1][0]) << " " << getPZ(m_edge[1][0]) << std::endl;
     PointSetTopologyContainer::init();
 }
 
