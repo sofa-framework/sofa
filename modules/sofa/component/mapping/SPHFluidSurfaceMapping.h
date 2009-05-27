@@ -77,7 +77,7 @@ public:
             else
             {
                 Real a = 1-r2/h2;
-                val += (a*a*a);
+                val += (typename OutDataTypes::Real) (a*a*a);
             }
         }
     };

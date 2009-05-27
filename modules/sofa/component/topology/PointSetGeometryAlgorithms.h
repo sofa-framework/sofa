@@ -74,8 +74,8 @@ public:
 
     PointSetGeometryAlgorithms()
         : GeometryAlgorithms()
-        ,debugViewIndicesScale (this->initData(&debugViewIndicesScale, (float) 0.0001, "debugViewIndicesScale", "Debug : scale for view topology indices"))
-        ,debugViewPointIndices (this->initData(&debugViewPointIndices, (bool) false, "debugViewPointIndices", "Debug : view Point indices"))
+        ,debugViewIndicesScale (core::objectmodel::Base::initData(&debugViewIndicesScale, (float) 0.0001, "debugViewIndicesScale", "Debug : scale for view topology indices"))
+        ,debugViewPointIndices (core::objectmodel::Base::initData(&debugViewPointIndices, (bool) false, "debugViewPointIndices", "Debug : view Point indices"))
     {
     }
 

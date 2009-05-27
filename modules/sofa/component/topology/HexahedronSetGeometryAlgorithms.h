@@ -60,8 +60,8 @@ public:
 
     HexahedronSetGeometryAlgorithms()
         : QuadSetGeometryAlgorithms<DataTypes>()
-        , debugViewHexaIndices(this->initData(&debugViewHexaIndices, (bool) false, "debugViewHexaIndices", "Debug : view Hexa indices"))
-        , _draw(this->initData(&_draw, false, "drawHexa","if true, draw the Hexahedron in the topology"))
+        , debugViewHexaIndices(core::objectmodel::Base::initData(&debugViewHexaIndices, (bool) false, "debugViewHexaIndices", "Debug : view Hexa indices"))
+        , _draw(core::objectmodel::Base::initData(&_draw, false, "drawHexa","if true, draw the Hexahedron in the topology"))
     {}
 
     virtual ~HexahedronSetGeometryAlgorithms() {}

@@ -373,7 +373,7 @@ public:
         }
         void operator=(int v)
         {
-            defaulttype::Vec<N,T>::fill(v);
+            defaulttype::Vec<N,T>::fill((float)v);
         }
         void operator=(float v)
         {

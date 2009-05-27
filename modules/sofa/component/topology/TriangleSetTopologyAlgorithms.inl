@@ -1505,16 +1505,26 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
                 b[j] = (float)points2Snap[points2Snap.size()-1][j+1];
         }
 
+
+        sofa::helper::vector <unsigned int> id2Snap;
+        sofa::helper::vector< sofa::helper::vector< unsigned int > > ancestors2Snap; ancestors2Snap.resize(points2Snap.size());
+        sofa::helper::vector< sofa::helper::vector< double > > coefs2Snap; coefs2Snap.resize(points2Snap.size());
+
         for (unsigned int i = 0; i<points2Snap.size(); i++)
         {
+            Vec<3,double> SnapedCoord;
+            for (unsigned int j = 0; j<3; j++)
+                SnapedCoord[j] = points2Snap[i][j+1];
+
+            sofa::helper::vector< double > bary_coefs = m_geometryAlgorithms->compute2PointsBarycoefs (SnapedCoord , (unsigned int)points2Snap[i][4]-1, (unsigned int)points2Snap[i][4]);
+
+            id2Snap.push_back ((unsigned int)points2Snap[i][0]);
+            ancestors2Snap[i].push_back ((unsigned int)points2Snap[i][4]-1); coefs2Snap[i].push_back (bary_coefs[0]);
+            ancestors2Snap[i].push_back ((unsigned int)points2Snap[i][4]); coefs2Snap[i].push_back (bary_coefs[1]);
             //std::cout << "vertex to snap: " << points2Snap[i][0] <<std::endl;
             //std::cout << "points adjacents: " << points2Snap[i][4]-1 << " -- " << points2Snap[i][4] << std::endl;
-
-
-            // compute coef from coord to ancestors
-            //m_modifier->movePointsProcess (points2Snap[i][0], const sofa::helper::vector< sofa::helper::vector< unsigned int > >& ancestors,
-            //const sofa::helper::vector< sofa::helper::vector< double > >& coefs,
         }
+        m_modifier->movePointsProcess ( id2Snap, ancestors2Snap, coefs2Snap);
     }
 
 

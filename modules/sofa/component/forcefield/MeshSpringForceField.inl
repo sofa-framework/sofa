@@ -89,7 +89,7 @@ void MeshSpringForceField<DataTypes>::init()
 
     if (this->mstate1==this->mstate2)
     {
-        sofa::core::componentmodel::topology::BaseMeshTopology* topology = this->mstate1->getContext()->getMeshTopology();
+        sofa::core::componentmodel::topology::BaseMeshTopology* topology = this->getContext()->getMeshTopology();
 
         if (topology != NULL)
         {

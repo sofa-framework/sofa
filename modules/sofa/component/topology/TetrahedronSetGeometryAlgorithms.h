@@ -62,8 +62,8 @@ public:
 
     TetrahedronSetGeometryAlgorithms()
         : TriangleSetGeometryAlgorithms<DataTypes>()
-        ,debugViewTetrahedraIndices (this->initData(&debugViewTetrahedraIndices, (bool) false, "debugViewTetrahedraIndices", "Debug : view Tetrahedrons indices"))
-        , _draw(this->initData(&_draw, false, "drawTetrahedra","if true, draw the tetrahedra in the topology"))
+        ,debugViewTetrahedraIndices (core::objectmodel::Base::initData(&debugViewTetrahedraIndices, (bool) false, "debugViewTetrahedraIndices", "Debug : view Tetrahedrons indices"))
+        , _draw(core::objectmodel::Base::initData(&_draw, false, "drawTetrahedra","if true, draw the tetrahedra in the topology"))
     {
     }
 
