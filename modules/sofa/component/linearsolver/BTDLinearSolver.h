@@ -891,7 +891,7 @@ public:
             if (j0 == n)
             {
                 // i0 row is the identity
-                Inv.set(i0,i0,1.0/M.element(i0,i0));
+                Inv.set(i0,i0,(float)1.0/M.element(i0,i0));
                 ++i0;
             }
             else break;

@@ -469,7 +469,7 @@ void Quater<Real>::quatToAxis(defaulttype::Vec<3,Real> & a, Real &phi)
     else
         a = defaulttype::Vec<3,Real>(_q[0],_q[1],_q[2])/ sine;
 
-    phi =  acos(_q[3]) * 2.0 ;
+    phi =  (Real) (acos(_q[3]) * 2.0) ;
 }
 
 
@@ -586,19 +586,19 @@ Quater<Real> Quater<Real>::slerp2(Quater<Real> &q1, Real t)
     // we could rotate around any axis normal to qa or qb
     if (fabs(sinHalfTheta) < 0.001)  // fabs is floating point absolute
     {
-        qm[3] = (_q[3] * 0.5 + q1[3] * 0.5);
-        qm[0] = (_q[0] * 0.5 + q1[0] * 0.5);
-        qm[1] = (_q[1] * 0.5 + q1[1] * 0.5);
-        qm[2] = (_q[2] * 0.5 + q1[2] * 0.5);
+        qm[3] = (Real)(_q[3] * 0.5 + q1[3] * 0.5);
+        qm[0] = (Real)(_q[0] * 0.5 + q1[0] * 0.5);
+        qm[1] = (Real)(_q[1] * 0.5 + q1[1] * 0.5);
+        qm[2] = (Real)(_q[2] * 0.5 + q1[2] * 0.5);
         return qm;
     }
     double ratioA = sin((1 - t) * halfTheta) / sinHalfTheta;
     double ratioB = sin(t * halfTheta) / sinHalfTheta;
     //calculate Quaternion.
-    qm[3] = (_q[3] * ratioA + q1[3] * ratioB);
-    qm[0] = (_q[0] * ratioA + q1[0] * ratioB);
-    qm[1] = (_q[1] * ratioA + q1[1] * ratioB);
-    qm[2] = (_q[2] * ratioA + q1[2] * ratioB);
+    qm[3] = (Real)(_q[3] * ratioA + q1[3] * ratioB);
+    qm[0] = (Real)(_q[0] * ratioA + q1[0] * ratioB);
+    qm[1] = (Real)(_q[1] * ratioA + q1[1] * ratioB);
+    qm[2] = (Real)(_q[2] * ratioA + q1[2] * ratioB);
     return qm;
 
 }

@@ -269,7 +269,7 @@ void JointSpringForceField<DataTypes>::draw()
 
         if(springs[i].freeMovements[3] == 1)
         {
-            helper::gl::Cylinder::draw(p1[springs[i].m1].getCenter(), p1[springs[i].m1].getOrientation(), Vector(1.0*showFactorSize.getValue(),0,0));
+            helper::gl::Cylinder::draw(p1[springs[i].m1].getCenter(), p1[springs[i].m1].getOrientation(), Vector((Real)(1.0*showFactorSize.getValue()),0,0));
         }
         if(springs[i].freeMovements[4] == 1)
         {
