@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
+#define SOFA_COMPONENT_TOPOLOGY_DYNAMICSPARSEGRIDTOPOLOGYALGORITHMS_CPP
 #include <sofa/component/topology/DynamicSparseGridTopologyAlgorithms.h>
 #include <sofa/component/topology/DynamicSparseGridTopologyAlgorithms.inl>
 #include <sofa/defaulttype/Vec3Types.h>

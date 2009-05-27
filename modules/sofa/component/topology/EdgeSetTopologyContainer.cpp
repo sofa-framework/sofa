@@ -81,7 +81,6 @@ EdgeSetTopologyContainer::EdgeSetTopologyContainer(const sofa::helper::vector< E
 void EdgeSetTopologyContainer::init()
 {
     d_edge.getValue(); // make sure m_edge is up to date
-    std::cout <<"vide? : " << m_edge.empty() << std::endl;
 
     if (!m_edge.empty())
     {
