@@ -55,6 +55,8 @@ public:
 
     QuadSetGeometryAlgorithms()
         : EdgeSetGeometryAlgorithms<DataTypes>()
+        , debugViewQuadIndices(this->initData(&debugViewQuadIndices, (bool) false, "debugViewQuadIndices", "Debug : view Quad indices"))
+        , _draw(this->initData(&_draw, false, "drawQuads","if true, draw the quads in the topology"))
     { }
 
     virtual ~QuadSetGeometryAlgorithms() {}
@@ -99,6 +101,13 @@ public:
     /** \brief Write the current mesh into a msh file
     */
     void writeMSHfile(const char *filename) const;
+
+    virtual void draw();
+
+protected:
+    Data<bool> debugViewQuadIndices;
+    Data<bool> _draw;
+
 };
 
 template<class Coord>

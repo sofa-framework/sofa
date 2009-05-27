@@ -60,6 +60,8 @@ public:
 
     HexahedronSetGeometryAlgorithms()
         : QuadSetGeometryAlgorithms<DataTypes>()
+        , debugViewHexaIndices(this->initData(&debugViewHexaIndices, (bool) false, "debugViewHexaIndices", "Debug : view Hexa indices"))
+        , _draw(this->initData(&_draw, false, "drawHexa","if true, draw the Hexahedron in the topology"))
     {}
 
     virtual ~HexahedronSetGeometryAlgorithms() {}
@@ -122,6 +124,12 @@ public:
     /** \brief Write the current mesh into a msh file
     */
     void writeMSHfile(const char *filename) const;
+
+    virtual void draw();
+
+protected:
+    Data<bool> debugViewHexaIndices;
+    Data<bool> _draw;
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_TOPOLOGY_HEXAHEDRONSETGEOMETRYALGORITHMS_CPP)

@@ -57,7 +57,6 @@ public:
 
     virtual void init();
 
-
 private:
     QuadSetTopologyContainer*					m_container;
     QuadSetTopologyModifier*					m_modifier;
