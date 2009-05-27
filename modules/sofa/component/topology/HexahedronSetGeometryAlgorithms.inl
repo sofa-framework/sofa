@@ -458,6 +458,130 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filena
     myfile.close();
 }
 
+template<class DataTypes>
+void HexahedronSetGeometryAlgorithms<DataTypes>::draw()
+{
+    QuadSetGeometryAlgorithms<DataTypes>::draw();
+
+    // Draw Hexa indices
+    if (debugViewHexaIndices.getValue())
+    {
+        Mat<4,4, GLfloat> modelviewM;
+        const VecCoord& coords = *(this->object->getX());
+        glColor3f(1.0,1.0,0.0);
+        glDisable(GL_LIGHTING);
+        float scale = PointSetGeometryAlgorithms<DataTypes>::PointIndicesScale;
+
+        //for hexa:
+        scale = scale/2;
+
+        const sofa::helper::vector<Hexahedron> &hexaArray = this->m_topology->getHexas();
+
+        for (unsigned int i =0; i<hexaArray.size(); i++)
+        {
+
+            Hexahedron the_hexa = hexaArray[i];
+            Coord baryCoord;
+
+            for (unsigned int j = 0; j<8; j++)
+            {
+                Coord vertex = coords[ the_hexa[j] ];
+
+                for (unsigned int k = 0; k<3; k++)
+                    baryCoord[k] += vertex[k];
+            }
+
+            baryCoord = baryCoord/8;
+
+            std::ostringstream oss;
+            oss << i;
+            std::string tmp = oss.str();
+            const char* s = tmp.c_str();
+            glPushMatrix();
+
+            glTranslatef(baryCoord[0], baryCoord[1], baryCoord[2]);
+            glScalef(scale,scale,scale);
+
+            // Makes text always face the viewer by removing the scene rotation
+            // get the current modelview matrix
+            glGetFloatv(GL_MODELVIEW_MATRIX , modelviewM.ptr() );
+            modelviewM.transpose();
+
+            Vec3d temp(baryCoord[0], baryCoord[1], baryCoord[2]);
+            temp = modelviewM.transform(temp);
+
+            //glLoadMatrixf(modelview);
+            glLoadIdentity();
+
+            glTranslatef(temp[0], temp[1], temp[2]);
+            glScalef(scale,scale,scale);
+
+            while(*s)
+            {
+                glutStrokeCharacter(GLUT_STROKE_ROMAN, *s);
+                s++;
+            }
+
+            glPopMatrix();
+
+        }
+    }
+
+
+    //Draw triangles
+    if (_draw.getValue())
+    {
+        const sofa::helper::vector<Hexahedron> &hexaArray = this->m_topology->getHexas();
+
+        if (!hexaArray.empty())
+        {
+            glDisable(GL_LIGHTING);
+            glColor3f(1.0,1.0,0.0);
+            const VecCoord& coords = *(this->object->getX());
+
+            for (unsigned int i = 0; i<hexaArray.size(); i++)
+            {
+                const Hexahedron& H = hexaArray[i];
+                glBegin(GL_LINE_STRIP);
+
+                sofa::helper::vector <Coord> vertices;
+                vertices.resize (8);
+
+                for (unsigned int j = 0; j<8; j++)
+                    vertices[j] = coords[H[j]];
+
+                // First quad
+                for (unsigned int j = 0; j<4; j++)
+                    glVertex3d(vertices[j][0], vertices[j][1], vertices[j][2]);
+
+                glVertex3d(vertices[0][0], vertices[0][1], vertices[0][2]);
+
+                // second quad + link
+                for (unsigned int j = 0; j<4; j++)
+                    glVertex3d(vertices[j+4][0], vertices[j+4][1], vertices[j+4][2]);
+
+                glVertex3d(vertices[4][0], vertices[4][1], vertices[4][2]);
+                glEnd();
+
+                // last 3 lines
+                glBegin(GL_LINES);
+                glVertex3d(vertices[1][0], vertices[1][1], vertices[1][2]);
+                glVertex3d(vertices[5][0], vertices[5][1], vertices[5][2]);
+
+                glVertex3d(vertices[3][0], vertices[3][1], vertices[3][2]);
+                glVertex3d(vertices[7][0], vertices[7][1], vertices[7][2]);
+
+                glVertex3d(vertices[2][0], vertices[2][1], vertices[2][2]);
+                glVertex3d(vertices[6][0], vertices[6][1], vertices[6][2]);
+                glEnd();
+            }
+        }
+    }
+}
+
+
+
+
 } // namespace topology
 
 } // namespace component

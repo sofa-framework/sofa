@@ -345,6 +345,114 @@ bool is_point_in_quad(const Coord& p,
 
     return false;
 }
+
+
+template<class DataTypes>
+void QuadSetGeometryAlgorithms<DataTypes>::draw()
+{
+    EdgeSetGeometryAlgorithms<DataTypes>::draw();
+
+    // Draw Quads indices
+    if (debugViewQuadIndices.getValue())
+    {
+        Mat<4,4, GLfloat> modelviewM;
+        const VecCoord& coords = *(this->object->getX());
+        glColor3f(0.0,0.4,0.4);
+        glDisable(GL_LIGHTING);
+        float scale = PointSetGeometryAlgorithms<DataTypes>::PointIndicesScale;
+
+        //for quads:
+        scale = scale/2;
+
+        const sofa::helper::vector<Quad>& quadArray = this->m_topology->getQuads();
+
+        for (unsigned int i =0; i<quadArray.size(); i++)
+        {
+
+            Quad the_quad = quadArray[i];
+            Coord baryCoord;
+            Coord vertex1 = coords[ the_quad[0] ];
+            Coord vertex2 = coords[ the_quad[1] ];
+            Coord vertex3 = coords[ the_quad[2] ];
+            Coord vertex4 = coords[ the_quad[3] ];
+
+            for (unsigned int k = 0; k<3; k++)
+                baryCoord[k] = (vertex1[k]+vertex2[k]+vertex3[k]+vertex4[k])/4;
+
+            std::ostringstream oss;
+            oss << i;
+            std::string tmp = oss.str();
+            const char* s = tmp.c_str();
+            glPushMatrix();
+
+            glTranslatef(baryCoord[0], baryCoord[1], baryCoord[2]);
+            glScalef(scale,scale,scale);
+
+            // Makes text always face the viewer by removing the scene rotation
+            // get the current modelview matrix
+            glGetFloatv(GL_MODELVIEW_MATRIX , modelviewM.ptr() );
+            modelviewM.transpose();
+
+            Vec3d temp(baryCoord[0], baryCoord[1], baryCoord[2]);
+            temp = modelviewM.transform(temp);
+
+            //glLoadMatrixf(modelview);
+            glLoadIdentity();
+
+            glTranslatef(temp[0], temp[1], temp[2]);
+            glScalef(scale,scale,scale);
+
+            while(*s)
+            {
+                glutStrokeCharacter(GLUT_STROKE_ROMAN, *s);
+                s++;
+            }
+
+            glPopMatrix();
+
+        }
+    }
+
+
+    //Draw quads
+    if (_draw.getValue())
+    {
+        const sofa::helper::vector<Quad>& quadArray = this->m_topology->getQuads();
+
+        if (!quadArray.empty())
+        {
+            glDisable(GL_LIGHTING);
+
+            const VecCoord& coords = *(this->object->getX());
+
+            for (unsigned int i = 0; i<quadArray.size(); i++)
+            {
+                const Quad& q = quadArray[i];
+                glColor3f(0.2,1.0,1.0);
+                glBegin(GL_QUADS);
+
+                for (unsigned int j = 0; j<4; j++)
+                {
+                    Coord coordP = coords[q[j]];
+                    glVertex3d(coordP[0], coordP[1], coordP[2]);
+                }
+                glEnd();
+                glColor3f(0.0,0.4,0.4);
+                glBegin(GL_LINE_STRIP);
+                for (unsigned int j = 0; j<4; j++)
+                {
+                    Coord coordP = coords[q[j]];
+                    glVertex3d(coordP[0], coordP[1], coordP[2]);
+                }
+                Coord coordP = coords[q[0]];
+                glVertex3d(coordP[0], coordP[1], coordP[2]);
+                glEnd();
+            }
+        }
+    }
+}
+
+
 } // namespace topology
 
 } // namespace component

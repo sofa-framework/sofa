@@ -1958,7 +1958,6 @@ bool is_point_in_halfplane(const Vec<3,Real>& p, unsigned int e0, unsigned int e
 template<class DataTypes>
 void TriangleSetGeometryAlgorithms<DataTypes>::draw()
 {
-    PointSetGeometryAlgorithms<DataTypes>::draw();
     EdgeSetGeometryAlgorithms<DataTypes>::draw();
 
     // Draw Triangles indices
@@ -1966,7 +1965,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw()
     {
         Mat<4,4, GLfloat> modelviewM;
         const VecCoord& coords = *(this->object->getX());
-        glColor3f(0.0,1.0,1.0);
+        glColor3f(0.0,0.4,0.4);
         glDisable(GL_LIGHTING);
         float scale = PointSetGeometryAlgorithms<DataTypes>::PointIndicesScale;
 
@@ -2030,12 +2029,22 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw()
         if (!triangleArray.empty())
         {
             glDisable(GL_LIGHTING);
-            glColor3f(0.0,1.0,1.0);
+
             const VecCoord& coords = *(this->object->getX());
 
             for (unsigned int i = 0; i<triangleArray.size(); i++)
             {
                 const Triangle& t = triangleArray[i];
+
+                glColor3f(0.2,1.0,1.0);
+                glBegin(GL_TRIANGLES);
+                for (unsigned int j = 0; j<3; j++)
+                {
+                    Coord coordP = coords[t[j]];
+                    glVertex3d(coordP[0], coordP[1], coordP[2]);
+                }
+                glEnd();
+                glColor3f(0.0,0.4,0.4);
                 glBegin(GL_LINE_STRIP);
                 for (unsigned int j = 0; j<3; j++)
                 {

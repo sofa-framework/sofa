@@ -416,8 +416,6 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::writeMSHfile(const char *filen
 template<class DataTypes>
 void TetrahedronSetGeometryAlgorithms<DataTypes>::draw()
 {
-    PointSetGeometryAlgorithms<DataTypes>::draw();
-    EdgeSetGeometryAlgorithms<DataTypes>::draw();
     TriangleSetGeometryAlgorithms<DataTypes>::draw();
 
     //Draw tetra indices
