@@ -61,7 +61,8 @@ int OglShaderVisualModelClass = core::RegisterObject("Visual model for OpenGL di
 
 OglShaderVisualModel::OglShaderVisualModel()
 {
-    // TODO Auto-generated constructor stub
+    inputNormals = vrestpositions.beginEdit();
+    vrestpositions.endEdit();
 }
 
 OglShaderVisualModel::~OglShaderVisualModel()
@@ -133,6 +134,8 @@ void OglShaderVisualModel::putRestPositions(const Vec3fTypes::VecCoord& position
     }
 
     vrestpositions.endEdit();
+
+    computeRestNormals();
 }
 
 void OglShaderVisualModel::handleTopologyChange()

@@ -75,6 +75,8 @@ public:
     // handle topological changes
     virtual void handleTopologyChange();
     void computeRestNormals();
+
+
 };
 
 } //namespace visualmodel
