@@ -472,7 +472,7 @@ void DistanceGridForceField<DataTypes>::drawDistanceGrid(float size)
                 pointsTri.push_back(p);
             }
         }
-        simulation::getSimulation()->DrawUtility.drawTriangles(pointsTri, defaulttype::Vec<4,float>(1,0.2,0.2,0.5));
+        simulation::getSimulation()->DrawUtility.drawTriangles(pointsTri, defaulttype::Vec<4,double>(1.0,0.2,0.2,0.5));
     }
     const sofa::helper::vector<VContact>& vcontacts = this->vcontacts.getValue();
     if (!vcontacts.empty())
@@ -504,7 +504,7 @@ void DistanceGridForceField<DataTypes>::drawDistanceGrid(float size)
             pointsTet.push_back(p[3]);
             pointsTet.push_back(p[2]);
         }
-        simulation::getSimulation()->DrawUtility.drawTriangles(pointsTet, defaulttype::Vec<4,float>(0.8,0.8,0,0.25));
+        simulation::getSimulation()->DrawUtility.drawTriangles(pointsTet, defaulttype::Vec<4,double>(0.8,0.8,0,0.25));
     }
 }
 

@@ -58,20 +58,20 @@ public:
     virtual ~DynamicSparseGridTopologyAlgorithms() {}
 };
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_TOPOLOGY_DynamicSparseGridGeometryAlgorithms_CPP)
+#if defined(WIN32) && !defined(SOFA_COMPONENT_TOPOLOGY_DYNAMICSPARSEGRIDTOPOLOGYALGORITHMS_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_TOPOLOGY_API DynamicSparseGridGeometryAlgorithms<defaulttype::Vec3dTypes>;
-extern template class SOFA_COMPONENT_TOPOLOGY_API DynamicSparseGridGeometryAlgorithms<defaulttype::Vec2dTypes>;
-extern template class SOFA_COMPONENT_TOPOLOGY_API DynamicSparseGridGeometryAlgorithms<defaulttype::Vec1dTypes>;
-//extern template class SOFA_COMPONENT_TOPOLOGY_API DynamicSparseGridGeometryAlgorithms<defaulttype::Rigid3dTypes>;
-//extern template class SOFA_COMPONENT_TOPOLOGY_API DynamicSparseGridGeometryAlgorithms<defaulttype::Rigid2dTypes>;
+extern template class SOFA_COMPONENT_TOPOLOGY_API DynamicSparseGridTopologyAlgorithms<defaulttype::Vec3dTypes>;
+extern template class SOFA_COMPONENT_TOPOLOGY_API DynamicSparseGridTopologyAlgorithms<defaulttype::Vec2dTypes>;
+extern template class SOFA_COMPONENT_TOPOLOGY_API DynamicSparseGridTopologyAlgorithms<defaulttype::Vec1dTypes>;
+//extern template class SOFA_COMPONENT_TOPOLOGY_API DynamicSparseGridTopologyAlgorithms<defaulttype::Rigid3dTypes>;
+//extern template class SOFA_COMPONENT_TOPOLOGY_API DynamicSparseGridTopologyAlgorithms<defaulttype::Rigid2dTypes>;
 #endif
 
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_TOPOLOGY_API DynamicSparseGridGeometryAlgorithms<defaulttype::Vec3fTypes>;
-extern template class SOFA_COMPONENT_TOPOLOGY_API DynamicSparseGridGeometryAlgorithms<defaulttype::Vec2fTypes>;
-extern template class SOFA_COMPONENT_TOPOLOGY_API DynamicSparseGridGeometryAlgorithms<defaulttype::Vec1fTypes>;
+extern template class SOFA_COMPONENT_TOPOLOGY_API DynamicSparseGridTopologyAlgorithms<defaulttype::Vec3fTypes>;
+extern template class SOFA_COMPONENT_TOPOLOGY_API DynamicSparseGridTopologyAlgorithms<defaulttype::Vec2fTypes>;
+extern template class SOFA_COMPONENT_TOPOLOGY_API DynamicSparseGridTopologyAlgorithms<defaulttype::Vec1fTypes>;
 //extern template class SOFA_COMPONENT_TOPOLOGY_API DynamicSparseGridGeometryAlgorithms<defaulttype::Rigid3fTypes>;
 //extern template class SOFA_COMPONENT_TOPOLOGY_API DynamicSparseGridGeometryAlgorithms<defaulttype::Rigid2fTypes>;
 #endif

@@ -79,7 +79,7 @@ void RandomPointDistributionInSurface<DataTypes>::init()
     // initialize random seed
     if (randomSeed.getValue() == 0)
     {
-        randomSeed.setValue(time(NULL));
+        randomSeed.setValue((unsigned int)time(NULL));
     }
 
     //srand(randomSeed.getValue());
@@ -145,7 +145,7 @@ void RandomPointDistributionInSurface<DataTypes>::generateRandomDirections()
     {
         for (unsigned int i=0 ; i<3 ; i++)
             //d[i] = (2.0*((Real) rand())/RAND_MAX) - 1.0; //[-1; 1]
-            d[i] = rg.randomDouble(-1.0,1.0); //[-1; 1]
+            d[i] = (Real)rg.randomDouble(-1.0,1.0); //[-1; 1]
 
         directions.push_back(d);
     }
@@ -159,7 +159,7 @@ defaulttype::Vec<3,typename DataTypes::Real> RandomPointDistributionInSurface<Da
     Vec3 r;
     for (unsigned int i= 0 ; i<3 ; i++)
         //r[i] = (minBBox[i] + ((maxBBox[i] - minBBox[i])*rand())/RAND_MAX);
-        r[i] = rg.randomDouble(minBBox[i], maxBBox[i]);
+        r[i] = (Real)rg.randomDouble(minBBox[i], maxBBox[i]);
 
     return r;
 }

@@ -78,14 +78,14 @@ void TubularMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const ty
     {
 
         // allows for peak at the beginning or at the end of the Tubular Mapping
-        Real radius_rho = rho;
+        Real radius_rho = (Real) rho;
         if(peak>0)
         {
             int test= (int)i;
             if (test<peak)
             {
                 double attenuation = (double)test/ (double)peak;
-                radius_rho = attenuation*rho;
+                radius_rho = (Real) (attenuation*rho);
             }
         }
         else
@@ -95,7 +95,7 @@ void TubularMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const ty
             if (test < -peak)
             {
                 double attenuation = -(double)test/(double)peak;
-                radius_rho = attenuation *rho;
+                radius_rho = (Real) (attenuation *rho);
             }
 
         }

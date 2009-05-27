@@ -248,7 +248,7 @@ void ExtrudeSurface<DataTypes>::draw()
         for (unsigned int j=0 ; j<3 ; j++)
         {
             Coord p = (extrusionVertices[triangle[j]]);
-            glVertex3f(p[0], p[1], p[2]);
+            glVertex3d(p[0], p[1], p[2]);
         }
     }
     glEnd();
@@ -263,7 +263,7 @@ void ExtrudeSurface<DataTypes>::draw()
         for (unsigned int j=0 ; j<3 ; j++)
         {
             Coord p = (extrusionVertices[triangle[j]]);
-            glVertex3f(p[0], p[1], p[2]);
+            glVertex3d(p[0], p[1], p[2]);
         }
     }
     glEnd();
@@ -278,7 +278,7 @@ void ExtrudeSurface<DataTypes>::draw()
         for (unsigned int j=0 ; j<3 ; j++)
         {
             Coord p = (extrusionVertices[triangle[j]]);
-            glVertex3f(p[0], p[1], p[2]);
+            glVertex3d(p[0], p[1], p[2]);
         }
     }
     glEnd();

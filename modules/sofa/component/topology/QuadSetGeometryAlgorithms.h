@@ -55,8 +55,8 @@ public:
 
     QuadSetGeometryAlgorithms()
         : EdgeSetGeometryAlgorithms<DataTypes>()
-        , debugViewQuadIndices(this->initData(&debugViewQuadIndices, (bool) false, "debugViewQuadIndices", "Debug : view Quad indices"))
-        , _draw(this->initData(&_draw, false, "drawQuads","if true, draw the quads in the topology"))
+        , debugViewQuadIndices(core::objectmodel::Base::initData(&debugViewQuadIndices, (bool) false, "debugViewQuadIndices", "Debug : view Quad indices"))
+        , _draw(core::objectmodel::Base::initData(&_draw, false, "drawQuads","if true, draw the quads in the topology"))
     { }
 
     virtual ~QuadSetGeometryAlgorithms() {}

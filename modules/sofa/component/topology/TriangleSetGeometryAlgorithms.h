@@ -63,8 +63,8 @@ public:
 
     TriangleSetGeometryAlgorithms()
         : EdgeSetGeometryAlgorithms<DataTypes>()
-        ,debugViewTriangleIndices (this->initData(&debugViewTriangleIndices, (bool) false, "debugViewTriangleIndices", "Debug : view Triangle indices"))
-        , _draw(this->initData(&_draw, false, "drawTriangles","if true, draw the triangles in the topology"))
+        ,debugViewTriangleIndices (core::objectmodel::Base::initData(&debugViewTriangleIndices, (bool) false, "debugViewTriangleIndices", "Debug : view Triangle indices"))
+        , _draw(core::objectmodel::Base::initData(&_draw, false, "drawTriangles","if true, draw the triangles in the topology"))
     {
     }
 
