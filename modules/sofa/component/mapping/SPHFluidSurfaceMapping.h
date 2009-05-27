@@ -95,7 +95,7 @@ public:
             clear();
         }
     };
-    enum { GRIDDIM_LOG2 = 2 };
+    enum { GRIDDIM_LOG2 = 3 };
 };
 
 template <class In, class Out>
@@ -179,6 +179,9 @@ protected:
 
     typedef SpatialGrid<GridTypes> Grid;
     typedef typename Grid::Cell Cell;
+    typedef typename Grid::Grid SubGrid;
+    typedef typename Grid::Key SubKey;
+    typedef std::pair<SubKey,SubGrid*> GridEntry;
     enum { GRIDDIM = Grid::GRIDDIM };
     enum { DX = Grid::DX };
     enum { DY = Grid::DY };
@@ -188,18 +191,51 @@ protected:
 
     bool firstApply;
 
-    void createPoints(OutVecCoord& out, int x, int y, int z, Cell* c, const Cell* cx, const Cell* cy, const Cell* cz, const OutReal isoval);
+    void createPoints(OutVecCoord& out, OutVecDeriv* normals, const GridEntry& g, int x, int y, int z, Cell* c, const Cell* cx1, const Cell* cy1, const Cell* cz1, const OutReal isoval);
 
-    void createFaces(OutVecCoord& out, const Cell** cells, const OutReal isoval);
+    void createFaces(OutVecCoord& out, OutVecDeriv* normals, const Cell** cells, const OutReal isoval);
+
+    OutReal getValue(const SubGrid* g, int cx, int cy, int cz)
+    {
+        if (cx < 0) { g = g->neighbors[0]; cx+=GRIDDIM; }
+        else if (cx >= GRIDDIM) { g = g->neighbors[1]; cx-=GRIDDIM; }
+        if (cy < 0) { g = g->neighbors[2]; cy+=GRIDDIM; }
+        else if (cy >= GRIDDIM) { g = g->neighbors[3]; cy-=GRIDDIM; }
+        if (cz < 0) { g = g->neighbors[4]; cz+=GRIDDIM; }
+        else if (cz >= GRIDDIM) { g = g->neighbors[5]; cz-=GRIDDIM; }
+        return g->cell[(cz*GRIDDIM+cy)*GRIDDIM+cx].data.val;
+    }
+
+    OutDeriv calcGrad(const GridEntry& g, int x, int y, int z)
+    {
+        x-=g.first[0]*GRIDDIM;
+        y-=g.first[1]*GRIDDIM;
+        z-=g.first[2]*GRIDDIM;
+        OutDeriv n;
+        n[0] = getValue(g.second, x+1,y,z) - getValue(g.second, x-1,y,z);
+        n[1] = getValue(g.second, x,y+1,z) - getValue(g.second, x,y-1,z);
+        n[2] = getValue(g.second, x,y,z+1) - getValue(g.second, x,y,z-1);
+        return n;
+    }
 
     template<int C>
-    int addPoint(OutVecCoord& out, int x,int y,int z, OutReal v0, OutReal v1, OutReal iso)
+    int addPoint(OutVecCoord& out, OutVecDeriv* normals, const GridEntry& g, int x,int y,int z, OutReal v0, OutReal v1, OutReal iso)
     {
         int p = out.size();
         OutCoord pos = OutCoord((OutReal)x,(OutReal)y,(OutReal)z);
-        pos[C] += (iso-v0)/(v1-v0);
+        OutReal interp = (iso-v0)/(v1-v0);
+        pos[C] += interp;
         out.resize(p+1);
         out[p] = pos * mStep.getValue();
+        if (normals)
+        {
+            normals->resize(p+1);
+            OutDeriv& n = (*normals)[p];
+            OutDeriv n0 = calcGrad(g, x,y,z);
+            OutDeriv n1 = calcGrad(g, (C==0)?x+1:x,(C==1)?y+1:y,(C==2)?z+1:z);
+            n = n0 + (n1-n0) * interp;
+            n.normalize();
+        }
         return p;
     }
 

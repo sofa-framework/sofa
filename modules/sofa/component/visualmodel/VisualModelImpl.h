@@ -138,6 +138,9 @@ protected:
 
     sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
 
+    DataPtr<bool> f_useNormals; ///< True if normals should be read from file
+    Data<bool> updateNormals; ///< True if normals should be updated at each iteration
+
     /*     Data< ResizableExtVector<Coord> > vertices; */
     DataPtr< ResizableExtVector<Coord> > field_vertices;
     ResizableExtVector<Coord> vertices;
