@@ -74,9 +74,9 @@ public:
 
     PointSetGeometryAlgorithms()
         : GeometryAlgorithms()
+        ,debugViewIndicesScale (this->initData(&debugViewIndicesScale, (float) 0.0001, "debugViewIndicesScale", "Debug : scale for view topology indices"))
+        ,debugViewPointIndices (this->initData(&debugViewPointIndices, (bool) false, "debugViewPointIndices", "Debug : view Point indices"))
     {
-        debugViewIndicesScale = this->initData(&debugViewIndicesScale, (float) 0.0001, "debugViewIndicesScale", "Debug : scale for view topology indices");
-        debugViewPointIndices = this->initData(&debugViewPointIndices, (bool) false, "debugViewPointIndices", "Debug : view Point indices");
     }
 
     virtual ~PointSetGeometryAlgorithms() {}
@@ -105,8 +105,6 @@ public:
     /** \brief Returns the object where the mechanical DOFs are stored */
     sofa::core::componentmodel::behavior::MechanicalState<DataTypes> *getDOF() const { return object;	}
 
-    Data<bool> debugViewPointIndices;
-    Data<float> debugViewIndicesScale;
     float PointIndicesScale;
 
     virtual std::string getTemplateName() const
@@ -123,6 +121,8 @@ protected:
     /** the object where the mechanical DOFs are stored */
     sofa::core::componentmodel::behavior::MechanicalState<DataTypes> *object;
     sofa::core::componentmodel::topology::BaseMeshTopology* m_topology;
+    Data<float> debugViewIndicesScale;
+    Data<bool> debugViewPointIndices;
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_TOPOLOGY_POINTSETGEOMETRYALGORITHMS_CPP)

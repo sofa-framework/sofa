@@ -71,10 +71,10 @@ public:
 
     EdgeSetGeometryAlgorithms()
         : PointSetGeometryAlgorithms<DataTypes>()
+        , debugViewEdgeIndices(this->initData(&debugViewEdgeIndices, (bool) false, "debugViewEdgeIndices", "Debug : view Edge indices"))
+        , _draw(this->initData(&_draw, false, "drawEdges","if true, draw the edges in the topology"))
     {
-        debugViewEdgeIndices = this->initData(&debugViewEdgeIndices, (bool) false, "debugViewEdgeIndices", "Debug : view Edge indices");
     }
-
 
     virtual ~EdgeSetGeometryAlgorithms() {}
 
@@ -124,9 +124,11 @@ public:
 
     void writeMSHfile(const char *filename) const;
 
-    void draw();
+    virtual void draw();
 
+protected:
     Data<bool> debugViewEdgeIndices;
+    Data<bool> _draw;
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_CPP)

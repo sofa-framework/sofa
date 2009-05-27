@@ -1961,17 +1961,16 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw()
     PointSetGeometryAlgorithms<DataTypes>::draw();
     EdgeSetGeometryAlgorithms<DataTypes>::draw();
 
-    Mat<4,4, GLfloat> modelviewM;
-    //    Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
-    //sofa::simulation::Node* context;
+    // Draw Triangles indices
     if (debugViewTriangleIndices.getValue())
     {
+        Mat<4,4, GLfloat> modelviewM;
         const VecCoord& coords = *(this->object->getX());
         glColor3f(0.0,1.0,1.0);
         glDisable(GL_LIGHTING);
         float scale = PointSetGeometryAlgorithms<DataTypes>::PointIndicesScale;
 
-        //for edges:
+        //for triangles:
         scale = scale/2;
 
         const sofa::helper::vector<Triangle> &triangleArray = this->m_topology->getTriangles();
@@ -1988,12 +1987,6 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw()
             for (unsigned int k = 0; k<3; k++)
                 baryCoord[k] = (vertex1[k]+vertex2[k]+vertex3[k])/3;
 
-            /*
-                  (coords[ the_edge[0] ][j] + coords[ the_edge[1][j] ])/2;
-            Vec<3,double> baryCoord;
-
-            baryCoord = (coords[ the_edge[0] ] + coords[ the_edge[1] ])/2;
-            */
             std::ostringstream oss;
             oss << i;
             std::string tmp = oss.str();
@@ -2027,6 +2020,38 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw()
 
         }
     }
+
+
+    //Draw triangles
+    if (_draw.getValue())
+    {
+        const sofa::helper::vector<Triangle> &triangleArray = this->m_topology->getTriangles();
+
+        if (!triangleArray.empty())
+        {
+            glDisable(GL_LIGHTING);
+            glColor3f(0.0,1.0,1.0);
+            const VecCoord& coords = *(this->object->getX());
+
+            for (unsigned int i = 0; i<triangleArray.size(); i++)
+            {
+                const Triangle& t = triangleArray[i];
+                glBegin(GL_LINE_STRIP);
+                for (unsigned int j = 0; j<3; j++)
+                {
+                    Coord coordP = coords[t[j]];
+                    glVertex3d(coordP[0], coordP[1], coordP[2]);
+                }
+
+                Coord coordP = coords[t[0]];
+                glVertex3d(coordP[0], coordP[1], coordP[2]);
+                glEnd();
+            }
+        }
+    }
+
+
+
 }
 
 

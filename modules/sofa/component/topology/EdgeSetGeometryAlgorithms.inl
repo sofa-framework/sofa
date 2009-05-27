@@ -397,11 +397,10 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw()
 
     PointSetGeometryAlgorithms<DataTypes>::draw();
 
-    Mat<4,4, GLfloat> modelviewM;
-    //    Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
-    //sofa::simulation::Node* context;
+    // Draw Edges indices
     if (debugViewEdgeIndices.getValue())
     {
+        Mat<4,4, GLfloat> modelviewM;
         const VecCoord& coords = *(this->object->getX());
         glColor3f(1.0,0.0,1.0);
         glDisable(GL_LIGHTING);
@@ -423,12 +422,6 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw()
             for (unsigned int k = 0; k<3; k++)
                 baryCoord[k] = (vertex1[k]+vertex2[k])/2;
 
-            /*
-                  (coords[ the_edge[0] ][j] + coords[ the_edge[1][j] ])/2;
-            Vec<3,double> baryCoord;
-
-            baryCoord = (coords[ the_edge[0] ] + coords[ the_edge[1] ])/2;
-            */
             std::ostringstream oss;
             oss << i;
             std::string tmp = oss.str();
@@ -459,9 +452,36 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw()
             }
 
             glPopMatrix();
-
         }
     }
+
+
+    //Draw edges
+    if (_draw.getValue())
+    {
+        const sofa::helper::vector<Edge> &edgeArray = this->m_topology->getEdges();
+
+        if (!edgeArray.empty())
+        {
+            glDisable(GL_LIGHTING);
+            glColor3f(1.0,0.0,1.0);
+            const VecCoord& coords = *(this->object->getX());
+
+            for (unsigned int i = 0; i<edgeArray.size(); i++)
+            {
+                const Edge& e = edgeArray[i];
+                //glBegin(GL_LINE_STRIP);
+                glBegin(GL_LINES);
+                Coord coordP = coords[e[0]];
+                glVertex3d(coordP[0], coordP[1], coordP[2]);
+                coordP = coords[e[1]];
+                glVertex3d(coordP[0], coordP[1], coordP[2]);
+
+                glEnd();
+            }
+        }
+    }
+
 }
 
 

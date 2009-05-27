@@ -74,8 +74,6 @@ public:
 
     virtual ~TetrahedronSetTopologyContainer() {}
 
-    virtual void draw();
-
     /// Procedural creation methods
     /// @{
     virtual void clear();
@@ -340,8 +338,6 @@ protected:
     sofa::helper::vector< sofa::helper::vector< unsigned int > > m_tetrahedronTriangleShell;
 
     virtual void loadFromMeshLoader(sofa::component::MeshLoader* loader);
-
-    Data< bool > _draw;
 
     /** \brief Creates the Tetrahedron Vertex Shell Array
     *
