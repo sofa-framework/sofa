@@ -80,30 +80,112 @@ typedef QTextDrag Q3TextDrag;
 
 SofaModeler::SofaModeler()
 {
-
+    //index to add in temporary scenes created by the Modeler
     count='0';
-    displayComponents=0;
     isPasteReady=false;
     editPasteAction->setEnabled(false);
-    QWidget *GraphSupport = new QWidget((QWidget*)splitter2);
-    QGridLayout* GraphLayout = new QGridLayout(GraphSupport, 1,1,5,2,"GraphLayout");
-
 #ifdef SOFA_QT4
     fileMenu->removeAction(Action);
-
-    //Temporary: desactivate with Qt4 the filter
-    //LabelSearch->hide();
-    //SearchEdit->hide();
 #endif
-    connect(GNodeButton, SIGNAL(pressed()), this, SLOT( releaseButton()));
+
+
+    //----------------------------------------------------------------------
+    //Get the different path needed
+    examplePath = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + std::string( "/examples/" );
+    binPath = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + std::string( "/bin/" );
+    presetPath = examplePath + std::string("Objects/");
+    std::string presetFile = std::string("config/preset.ini" );
+    presetFile = sofa::helper::system::DataRepository.getFile ( presetFile );
+
+
+
+    //Find all the scene files in examples directory
+    std::vector< QString > filter;
+    const QString path(examplePath.c_str());
+    filter.push_back("*.scn"); filter.push_back("*.xml");
+    sofa::gui::qt::getFilesInDirectory(path, exampleFiles, true, filter);
+
+
+
+    //----------------------------------------------------------------------
+    // Create the Left part of the GUI
+    //----------------------------------------------------------------------
+    QWidget *leftPartWidget = new QWidget( (QWidget*)splitter2, "LibraryLayout");
+    QVBoxLayout *leftPartLayout = new QVBoxLayout(leftPartWidget);
+
+    //----------------------------------------------------------------------
+    //Add the button to create GNode
+    QPushButton *GNodeButton = new QPushButton( leftPartWidget, "GNodeButton");
+    GNodeButton->setText("GNode");
+    leftPartLayout->addWidget(GNodeButton);
+    connect( GNodeButton, SIGNAL( pressed() ),  this, SLOT( pressedGNodeButton() ) );
+
+    //----------------------------------------------------------------------
+    //Add a Filter to the Library
+    QWidget *filterContainer = new QWidget( leftPartWidget, "filterContainer" );
+    QHBoxLayout *filterLayout = new QHBoxLayout(filterContainer);
+    leftPartLayout->addWidget(filterContainer);
+    //--> Label
+    QLabel *filterLabel = new QLabel(filterContainer, "filterLabel");
+    filterLabel->setText( "Filter: " );
+    filterLayout->addWidget(filterLabel);
+    //--> Filter
+    filterLibrary = new FilterLibrary(filterContainer);
+    filterLayout->addWidget(filterLibrary);
+    connect(filterLibrary, SIGNAL( filterList( const FilterQuery &) ), this, SLOT(searchText( const FilterQuery &)) );
+
+
+    //----------------------------------------------------------------------
+    //Add the Sofa Library
+    //-->Container
+    containerLibrary = new QToolBox( leftPartWidget, "containerLibrary");
+    containerLibrary->setCurrentIndex(1);
+    containerLibrary->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
+
+    QWidget *contentContainer = new QWidget( containerLibrary, "contentContainer");
+    QVBoxLayout *contentLayout = new QVBoxLayout( contentContainer );
+    containerLibrary->addItem(contentContainer, QString());
+    leftPartLayout->addWidget(containerLibrary);
+
+
+    //-->Sofa Library
+    QSofaLibrary *l = new QSofaLibrary(contentContainer); library = l;
+    QToolBox *containerLibrary=l->getContainer();
+    contentLayout->addWidget(containerLibrary);
+    connect(library, SIGNAL( componentDragged( std::string, std::string, std::string, ClassEntry *) ),
+            this, SLOT( componentDraggedReception( std::string, std::string, std::string, ClassEntry *) ));
+
+    library->build(exampleFiles);
+    changeLibraryLabel(0);
+
+
+
+    //----------------------------------------------------------------------
+    // Create the Right part of the GUI
+    //----------------------------------------------------------------------
+
+    //----------------------------------------------------------------------
+    //Create the scene graph visualization
+    QWidget *GraphSupport = new QWidget((QWidget*)splitter2);
+    QGridLayout* GraphLayout = new QGridLayout(GraphSupport, 1,1,5,2,"GraphLayout");
+    sceneTab = new QTabWidget(GraphSupport);
+    GraphLayout->addWidget(sceneTab,0,0);
+    connect( sceneTab, SIGNAL(currentChanged( QWidget*)), this, SLOT( changeCurrentScene( QWidget*)));
+
+    GraphSupport->resize(200,550);
 
     //----------------------------------------------------------------------
     //Add plugin manager window. ->load external libs
     pluginManager = new SofaPluginManager;
     pluginManager->hide();
-    this->connect(pluginManager->buttonClose, SIGNAL(clicked() ),  this, SLOT( updateComponentList() ));
+    this->connect(pluginManager->buttonClose, SIGNAL(clicked() ),  this, SLOT( rebuildLibrary() ));
 
     int menuIndex=4;
+
+    //----------------------------------------------------------------------
+    // Create the Menus
+    //----------------------------------------------------------------------
+
     //----------------------------------------------------------------------
     //Add menu runSofa
     Q3PopupMenu *runSofaMenu = new Q3PopupMenu(this);
@@ -145,7 +227,6 @@ SofaModeler::SofaModeler()
     //----------------------------------------------------------------------
     //Add menu Preset
     preset = new Q3PopupMenu(this);
-    this->menubar->insertItem(tr(QString("&Preset")), preset, menuIndex++);
 
     //----------------------------------------------------------------------
     //Add menu Window: to quickly find an opened simulation
@@ -154,26 +235,14 @@ SofaModeler::SofaModeler()
 
     connect(windowMenu, SIGNAL(activated(int)), this, SLOT( changeCurrentScene(int)));
 
-    examplePath = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + std::string( "/examples/" );
-    binPath = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + std::string( "/bin/" );
-    presetPath = examplePath + std::string("Objects/");
-    std::string presetFile = std::string("config/preset.ini" );
 
-    //Find all the scene files in examples directory
-    std::vector< QString > filter;
-    const QString path(examplePath.c_str());
-    filter.push_back("*.scn"); filter.push_back("*.xml");
-    sofa::gui::qt::getFilesInDirectory(path, exampleFiles, true, filter);
 
-    presetFile = sofa::helper::system::DataRepository.getFile ( presetFile );
-
-    //store the kind and the name of the preset
+    //----------------------------------------------------------------------
+    //Create the Preset Menu
     std::multimap< std::string, std::pair< std::string,std::string> > presetArchitecture;
-
 
     std::ifstream end(presetFile.c_str());
     std::string s;
-
 
     std::string directory, namePreset, nameFile;
     while( std::getline(end,s) )
@@ -211,24 +280,8 @@ SofaModeler::SofaModeler()
             mapPreset.insert(it_preset->second);
         }
     }
-
-
-    //Construction of the left part of the GUI: list of all objects sorted by base class
-    updateComponentList();
-
-    connect( this->infoItem, SIGNAL(linkClicked( const QString &)), this, SLOT(fileOpen(const QString &)));
-
-    connect( recentlyOpened, SIGNAL(activated(int)), this, SLOT(fileRecentlyOpened(int)));
-
-    sceneTab = new QTabWidget(GraphSupport);
-    GraphLayout->addWidget(sceneTab,0,0);
-    connect( sceneTab, SIGNAL(currentChanged( QWidget*)), this, SLOT( changeCurrentScene( QWidget*)));
-
-
-
-    changeLibraryLabel(0);
-    connect(SofaComponents, SIGNAL(currentChanged(int)), this, SLOT(changeLibraryLabel(int)));
-    //Recently Opened Files
+    //----------------------------------------------------------------------
+    //Recently Opened Files: if the init file does not exist, we create one
     std::string scenes ( "config/Modeler.ini" );
     if ( !sofa::helper::system::DataRepository.findFile ( scenes ) )
     {
@@ -239,21 +292,27 @@ SofaModeler::SofaModeler()
         ofile.close();
     }
 
-    scenes = sofa::helper::system::DataRepository.getFile ( scenes );
-
+    connect( recentlyOpened, SIGNAL(activated(int)), this, SLOT(fileRecentlyOpened(int)));
     updateRecentlyOpened("");
 
+
+    //----------------------------------------------------------------------
+    //Center the application in the screen
     const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->primaryScreen());
     this->move(  ( screen.width()- this->width()  ) / 2,  ( screen.height() - this->height()) / 2  );
 
-    GraphSupport->resize(200,550);
 
-    Library->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
-    SofaComponents->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
+    connect( this->infoItem, SIGNAL(linkClicked( const QString &)), this, SLOT(fileOpen(const QString &)));
 };
 
 
 
+void SofaModeler::rebuildLibrary()
+{
+    library->clear();
+    library->build(exampleFiles);
+    changeLibraryLabel();
+}
 
 void SofaModeler::closeEvent( QCloseEvent *e)
 {
@@ -318,7 +377,7 @@ void SofaModeler::createTab()
     graph->setAcceptDrops(true);
     currentTabLayout->addWidget(graph,0,0);
 
-    graph->setLibrary(mapComponents);
+    graph->setSofaLibrary(library);
     graph->setPreset(preset);
     fileNew();
 
@@ -458,6 +517,13 @@ void SofaModeler::updateRecentlyOpened(std::string fileLoaded)
 }
 
 
+void SofaModeler::pressedGNodeButton()
+{
+    newGNode();
+    QPushButton *button = (QPushButton*) sender();
+    button->setDown(false);
+}
+
 void SofaModeler::fileSave()
 {
     if (sceneTab->count() == 0) return;
@@ -519,77 +585,27 @@ void SofaModeler::changeInformation(Q3ListViewItem *item)
     std::string nameObject = item->text(0).ascii();
     std::string::size_type end_name = nameObject.find(" ");
     if (end_name != std::string::npos) nameObject.resize(end_name);
-    ClassInfo *currentComponent = getInfoFromName(nameObject);
-    if (currentComponent) changeComponent(currentComponent);
+    changeComponent( library->getComponentDescription(nameObject) );
 }
 
-void SofaModeler::changeLibraryLabel(int index)
+void SofaModeler::changeLibraryLabel(int)
 {
-    Library->setItemLabel(0, QString("Sofa Components[") + QString::number(displayComponents) + QString("] : ")+SofaComponents->itemLabel(index));
+    containerLibrary->setItemLabel(0, QString("Sofa Components[") + QString::number(library->getNumComponents()) + QString("]"));
 }
 
-void SofaModeler::newComponent()
+void SofaModeler::componentDraggedReception( std::string description, std::string // categoryName
+        , std::string templateName, ClassEntry* componentEntry)
 {
-    const QObject* sender = this->sender();
-    //Change the frontal description of the object
-    if ( mapComponents.find(sender) == mapComponents.end()) return;
-    ClassInfo *currentComponent = mapComponents.find(sender)->second.first;
-    changeComponent(currentComponent);
-
-    Q3TextDrag *dragging = new Q3TextDrag(QString(currentComponent->className.c_str()), (QWidget *)sender);
-    QComboBox *box = (QComboBox *) mapComponents.find(sender)->second.second;
-    QString textDragged;
-    if (box)
-    {
-        textDragged = box->currentText();
-    }
-    dragging->setText(textDragged);
+    changeComponent(description );
+    graph->setLastSelectedComponent(templateName, componentEntry);
+    Q3TextDrag *dragging = new Q3TextDrag(QString("ComponentCreation"), (QWidget*) this->sender());
+    dragging->setText(QString("ComponentCreation"));
     dragging->dragCopy();
-
 }
 
-
-void SofaModeler::changeComponent(ClassInfo *currentComponent)
+void SofaModeler::changeComponent(const std::string &description)
 {
-    std::string text;
-    text  = std::string("<H2>")  + currentComponent->className + std::string(": ");
-
-    std::vector< std::string > possiblePaths;
-    for (std::set< std::string >::iterator it=currentComponent->baseClasses.begin(); it!=currentComponent->baseClasses.end() ; it++)
-    {
-        if (it != currentComponent->baseClasses.begin()) text += std::string(", ");
-        text += (*it);
-    }
-
-    //Find a scene
-    for (unsigned int i=0; i<exampleFiles.size(); ++i)
-    {
-        if (exampleFiles[i].findRev(currentComponent->className.c_str()) >= 0 )
-            possiblePaths.push_back(exampleFiles[i].ascii());
-    }
-
-    std::string nameSpace = sofa::core::objectmodel::Base::decodeNamespaceName(currentComponent->creatorList.begin()->second->type());
-
-
-    text += std::string("</H2>");
-
-    text += std::string("<ul>");
-
-    text += std::string("<li><b>Description: </b>") + currentComponent->description + std::string("</li>");
-
-
-    if (!nameSpace.empty())
-        text += std::string("<li><b>NameSpace: </b>")+nameSpace +std::string("</li>");
-    if (!currentComponent->authors.empty())
-        text += std::string("<li><b>Authors: </b>")+currentComponent->authors +std::string("</li>");
-    if (!currentComponent->license.empty())
-        text += std::string("<li><b>License: </b>") + currentComponent->license + std::string("</li>");
-    if (possiblePaths.size() != 0)
-        text += std::string("<li><b>Example: </b><a href=\"")+possiblePaths[0]+std::string("\">") + possiblePaths[0] + std::string("</a></li>");
-
-    text += std::string("</ul>");
-
-    infoItem->setText(text.c_str());
+    infoItem->setText(description.c_str());
 }
 
 
@@ -636,16 +652,6 @@ void SofaModeler::changeNameWindow(std::string filename)
     setCaption ( str.c_str() );
 #endif
     updateRecentlyOpened(filename);
-}
-
-ClassInfo* SofaModeler::getInfoFromName(std::string name)
-{
-    std::map< const QObject* , std::pair<ClassInfo*, QObject*> >::iterator it;
-    for (it=mapComponents.begin(); it!= mapComponents.end(); it++)
-    {
-        if (it->second.first->className == name) return it->second.first;
-    }
-    return NULL;
 }
 
 void SofaModeler::dropEvent(QDropEvent* event)
@@ -776,11 +782,6 @@ void SofaModeler::removeTemporaryFiles(Q3Process *p)
 }
 
 
-void SofaModeler::releaseButton()
-{
-    QPushButton *push = (QPushButton *)sender();
-    if (push) push->setDown(false);
-}
 /// When the user enter the Modeler, grabbing something: determine the acceptance or not
 void SofaModeler::dragEnterEvent( QDragEnterEvent* event)
 {
@@ -812,62 +813,10 @@ void SofaModeler::dragMoveEvent( QDragMoveEvent* event)
 }
 
 /// Quick Filter of te components
-void SofaModeler::searchText(const QString& text)
+void SofaModeler::searchText(const FilterQuery& query)
 {
-    unsigned int displayed=0;
-
-    std::multimap< QWidget*, std::pair< QPushButton*, QComboBox*> >::iterator itMap;
-    for (unsigned int p=0; p<pages.size(); ++p)
-    {
-        QWidget* page=pages[p].begin()->first;
-        const unsigned int numComponents=pages[p].size();
-        unsigned int counterHiddenComponents=0;
-        for (itMap=pages[p].begin(); itMap!=pages[p].end(); itMap++)
-        {
-            QPushButton* button= itMap->second.first;
-            QComboBox* combo= itMap->second.second;
-            if (!button->text().contains(text,false))
-            {
-                counterHiddenComponents++;
-                button->hide();
-                if (combo) combo->hide();
-            }
-            else
-            {
-                displayed++;
-                button->show();
-                if (combo) combo->show();
-            }
-        }
-
-
-
-        int idx=SofaComponents->indexOf(page);
-        if (counterHiddenComponents == numComponents)
-        {
-            //Hide the page
-            if (idx >= 0)
-            {
-#ifdef SOFA_QT4
-                SofaComponents->removeItem(idx);
-#else
-                SofaComponents->removeItem(page);
-#endif
-            }
-        }
-        else
-        {
-            if (idx < 0)
-            {
-                SofaComponents->insertItem(p,page,page->name());
-            }
-        }
-    }
-
-    displayComponents = displayed;
-
-    changeLibraryLabel(SofaComponents->currentIndex());
-    SofaComponents->update();
+    library->filter(query);
+    changeLibraryLabel(0);
 }
 
 
@@ -935,180 +884,6 @@ void SofaModeler::showPluginManager()
 }
 
 
-void SofaModeler::updateComponentList()
-{
-    //clear the current component list
-    for (int p=0; p<(int)pages.size(); ++p)
-    {
-        QWidget* page=pages[p].begin()->first;
-        int idx=SofaComponents->indexOf(page);
-        //Hide the page
-        if (idx >= 0)
-        {
-#ifdef SOFA_QT4
-            SofaComponents->removeItem(idx);
-#else
-            SofaComponents->removeItem(page);
-#endif
-        }
-    }
-
-
-    //create the new one
-    std::set< std::string > setType;
-    std::multimap< std::string, ClassInfo* > inventory;
-    std::vector< ClassInfo* > entries;
-    sofa::core::ObjectFactory::getInstance()->getAllEntries(entries);
-
-    for (unsigned int i=0; i<entries.size(); ++i)
-    {
-#ifdef	    TEST_CREATION_COMPONENT
-        sofa::core::objectmodel::BaseObject *object;
-        std::cout << "Creating " << entries[i]->className << "\n";
-        if (entries[i]->creatorMap.find(entries[i]->defaultTemplate) != entries[i]->creatorMap.end())
-        {
-            object = entries[i]->creatorMap.find(entries[i]->defaultTemplate)->second->createInstance(NULL, NULL);
-        }
-        else
-        {
-            object = entries[i]->creatorList.begin()->second->createInstance(NULL, NULL);
-        }
-        std::cout << "Deleting " << entries[i]->className << "\n";
-        delete object;
-#endif
-        std::set< std::string >::iterator it;
-        for (it = entries[i]->baseClasses.begin(); it!= entries[i]->baseClasses.end(); it++)
-        {
-            setType.insert((*it));
-            inventory.insert(std::make_pair((*it), entries[i]));
-        }
-        if (entries[i]->baseClasses.size() == 0)
-        {
-            setType.insert("_Miscellaneous");
-            inventory.insert(std::make_pair("_Miscellaneous", entries[i]));
-        }
-    }
-
-
-    std::set< std::string >::iterator it;
-    std::multimap< std::string,ClassInfo* >::iterator itMap;
-
-    for (it = setType.begin(); it != setType.end(); it++)
-    {
-        itMap = inventory.find( (*it) );
-        unsigned int numRows = inventory.count( (*it) );
-        QString s=QString(it->c_str());
-
-
-        std::multimap< QWidget*, std::pair< QPushButton*, QComboBox*> > pageMap;
-        QWidget* gridWidget = new QWidget(SofaComponents, s);
-
-        QGridLayout* gridLayout = new QGridLayout( gridWidget, numRows+1,1);
-
-        //Insert all the components belonging to the same family
-        SofaComponents->addItem( gridWidget ,it->c_str() );
-        unsigned int counterElem=1;
-        for (unsigned int i=0; i< inventory.count( (*it) ); ++i)
-        {
-            ClassInfo* entry = itMap->second;
-            //We must remove the mass from the ForceField list
-            if ( *it == "ForceField")
-            {
-                std::set< std::string >::iterator baseClassIt;
-                bool isMass=false;
-                for (baseClassIt = entry->baseClasses.begin(); baseClassIt!= entry->baseClasses.end() && !isMass; baseClassIt++)
-                {
-                    isMass= (*baseClassIt == "Mass");
-                }
-                if (isMass) { itMap++; continue;}
-            }
-
-            //We must remove the topological container from the Topology
-            if ( *it == "Topology")
-            {
-                std::set< std::string >::iterator baseClassIt;
-                bool isMass=false;
-                for (baseClassIt = entry->baseClasses.begin(); baseClassIt!= entry->baseClasses.end() && !isMass; baseClassIt++)
-                {
-                    isMass= (*baseClassIt == "TopologyObject");
-                }
-                if (isMass) { itMap++; continue;}
-            }
-
-
-
-            //Count the number of template usable: Mapping and MechanicalMapping must be separated
-            std::vector< std::string > templateCombo;
-            {
-                std::list< std::pair< std::string, ClassCreator*> >::iterator itTemplate;
-                for (itTemplate=entry->creatorList.begin(); itTemplate!= entry->creatorList.end(); itTemplate++)
-                {
-                    if (*it == "Mapping")
-                    {
-                        std::string mechanical = itTemplate->first;
-                        mechanical.resize(10+7);
-                        if (mechanical == "MechanicalMapping") continue;
-                    }
-                    else if ( *it == "MechanicalMapping")
-                    {
-                        std::string nonmechanical = itTemplate->first;
-                        nonmechanical.resize(7);
-                        if (nonmechanical == "Mapping") continue;
-                    }
-                    templateCombo.push_back(itTemplate->first);
-                }
-            }
-
-            if (templateCombo.size() == 0 && entry->creatorList.size() > 1)
-            { itMap++; continue;}
-
-            displayComponents++;
-            QPushButton *button = new QPushButton(gridWidget, QString(entry->className.c_str()));
-            connect(button, SIGNAL(pressed()), this, SLOT( newComponent()));
-            connect(button, SIGNAL(pressed()), this, SLOT( releaseButton()));
-            gridLayout->addWidget(button, counterElem,0);
-            button->setFlat(false);
-
-            //Template: Add in a combo box the list of the templates
-            QComboBox *combo=NULL;
-            if ( entry->creatorList.size() > 1 )
-            {
-                combo = new QComboBox(gridWidget);
-
-                for (unsigned int t=0; t<templateCombo.size(); ++t)
-                    combo->insertItem(QString(templateCombo[t].c_str()));
-
-                gridLayout->addWidget(combo, counterElem,1);
-            }
-            else
-            {
-                if (!entry->creatorList.begin()->first.empty())
-                {
-                    combo = new QComboBox(gridWidget);
-                    combo->insertItem(QString(entry->creatorList.begin()->first.c_str()));
-                    gridLayout->addWidget(combo, counterElem,1);
-                }
-            }
-
-            button->setText(QString(entry->className.c_str()));
-
-            mapComponents.insert(std::make_pair(button, std::make_pair(entry, combo)));
-            pageMap.insert(std::make_pair(gridWidget,std::make_pair(button, combo)));
-            itMap++;
-
-            //connect(button, SIGNAL(pressed() ), this, SLOT( newComponent() ));
-            counterElem++;
-        }
-        gridLayout->addItem(new QSpacerItem(1,1,QSizePolicy::Minimum, QSizePolicy::Expanding ), counterElem,0);
-
-        pages.push_back(pageMap);
-    }
-
-    //update the graph library
-    std::map<  const QWidget*, GraphModeler*>::iterator itgraph;
-    for (itgraph = mapGraph.begin(); itgraph!=mapGraph.end() ; itgraph++)
-        itgraph->second->setLibrary(mapComponents);
-}
 
 }
 }

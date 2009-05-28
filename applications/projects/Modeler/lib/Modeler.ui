@@ -92,64 +92,6 @@
         <property name="opaqueResize">
           <bool>true</bool>
         </property>
-        <widget class="QLayoutWidget">
-          <property name="name">
-            <cstring>layout5</cstring>
-          </property>
-          <grid>
-            <property name="name">
-              <cstring>unnamed</cstring>
-            </property>
-            <widget class="QPushButton" row="0" column="0">
-              <property name="name">
-                <cstring>GNodeButton</cstring>
-              </property>
-              <property name="text">
-                <string>GNode</string>
-              </property>
-            </widget>
-	    <widget class="QLayoutWidget" row="1" column="0" >
-	      <hbox>
-		<widget class="QLabel" >
-                  <property name="name">
-                    <cstring>LabelSearch</cstring>
-                  </property>
-                  <property name="text">
-                    <cstring>Filter:</cstring>
-                  </property>
-		</widget>
-		<widget class="QLineEdit" >
-                  <property name="name">
-                    <cstring>SearchEdit</cstring>
-                  </property>
-		</widget>
-	      </hbox>
-	    </widget>
-            <widget class="QToolBox" row="2" column="0">
-              <property name="name">
-                <cstring>Library</cstring>
-              </property>
-              <property name="currentIndex">
-		<number>1</number>
-              </property>
-	      <widget class="QWidget">
-              <property name="name">
-                <cstring>Page</cstring>
-              </property>
-		<grid>
-		  <widget class="QToolBox" row="1" column="0">
-                    <property name="name">
-		      <cstring>SofaComponents</cstring>
-                    </property>
-                    <property name="currentIndex">
-		      <number>-1</number>
-                    </property>
-		  </widget>
-		</grid>
-              </widget>
-            </widget>
-          </grid>
-        </widget>
       </widget>
     </vbox>
   </widget>
@@ -643,18 +585,6 @@
       <receiver>Modeler</receiver>
       <slot>editFind()</slot>
     </connection>
-    <connection>
-      <sender>GNodeButton</sender>
-      <signal>pressed()</signal>
-      <receiver>Modeler</receiver>
-      <slot>newGNode()</slot>
-    </connection>
-    <connection>
-      <sender>SearchEdit</sender>
-      <signal>textChanged(const QString&amp;)</signal>
-      <receiver>Modeler</receiver>
-      <slot>searchText(const QString&amp;)</slot>
-    </connection>
   </connections>
   <slots>
     <slot>newTab()</slot>
@@ -673,8 +603,6 @@
     <slot>showPluginManager()</slot>
     <slot>editFind()</slot>
     <slot>saveXML()</slot>
-    <slot>newGNode()</slot>
-    <slot>searchText(const QString&amp;)</slot>
   </slots>
   <layoutdefaults spacing="2" margin="5"/>
 </UI>
