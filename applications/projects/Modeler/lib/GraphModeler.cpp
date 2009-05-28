@@ -26,6 +26,8 @@
 ******************************************************************************/
 #include "GraphModeler.h"
 #include "AddPreset.h"
+#include "ComponentLibrary.h"
+
 
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/gui/qt/FileManagement.h> //static functions to manage opening/ saving of files
@@ -56,7 +58,6 @@ namespace gui
 
 namespace qt
 {
-
 
 #ifndef SOFA_QT4
 typedef QPopupMenu Q3PopupMenu;
@@ -102,19 +103,19 @@ GNode *GraphModeler::addGNode(GNode *parent, GNode *child, bool saveHistory)
     return child;
 }
 
-BaseObject *GraphModeler::addComponent(GNode *parent, ClassInfo* entry, std::string templateName, bool saveHistory, bool displayWarning)
+BaseObject *GraphModeler::addComponent(GNode *parent, const ClassEntry* entry, const std::string &templateName, bool saveHistory, bool displayWarning)
 {
     BaseObject *object=NULL;;
     if (!parent || !entry) return object;
 
-
+    std::string templateUsed = templateName;
 
     xml::ObjectElement description("Default", entry->className.c_str() );
 
     if (!templateName.empty()) description.setAttribute("template", templateName.c_str());
 
 
-    ClassCreator* c;
+    Creator* c;
 
     if (entry->creatorMap.size() <= 1)
         c=entry->creatorMap.begin()->second;
@@ -122,7 +123,8 @@ BaseObject *GraphModeler::addComponent(GNode *parent, ClassInfo* entry, std::str
     {
         if (templateName.empty())
         {
-            c=entry->creatorMap.find(entry->defaultTemplate)->second; templateName=entry->defaultTemplate;
+            c=entry->creatorMap.find(entry->defaultTemplate)->second;
+            templateUsed=entry->defaultTemplate;
         }
         else
             c=entry->creatorMap.find(templateName)->second;
@@ -162,7 +164,7 @@ BaseObject *GraphModeler::addComponent(GNode *parent, ClassInfo* entry, std::str
                     const QString warning=
                         QString("Your component won't be created: \n \t * <")
                         + QString(reference->getTemplateName().c_str()) + QString("> DOFs are used in the Node ") + QString(parent->getName().c_str()) + QString("\n\t * <")
-                        + QString(templateName.c_str()) + QString("> is the type of your ") + QString(entry->className.c_str());
+                        + QString(templateUsed.c_str()) + QString("> is the type of your ") + QString(entry->className.c_str());
                     if ( QMessageBox::warning ( this, caption,warning, QMessageBox::Cancel | QMessageBox::Default | QMessageBox::Escape, QMessageBox::Ignore ) == QMessageBox::Cancel )
                         return object;
                 }
@@ -179,11 +181,9 @@ BaseObject *GraphModeler::addComponent(GNode *parent, ClassInfo* entry, std::str
 
 void GraphModeler::dropEvent(QDropEvent* event)
 {
-    QPushButton *push = (QPushButton *)event->source();
-    if (push)  push->setDown(false);
-
     QString text;
     Q3TextDrag::decode(event, text);
+
     if (!text.isEmpty())
     {
         std::string filename(text.ascii());
@@ -208,10 +208,9 @@ void GraphModeler::dropEvent(QDropEvent* event)
             return;
         }
     }
-    if (library.find(event->source()) != library.end())
+    if (text == QString("ComponentCreation"))
     {
-        std::string templateName =  text.ascii();
-        BaseObject *newComponent = addComponent(getGNode(event->pos()), library.find(event->source())->second.first, templateName );
+        BaseObject *newComponent = addComponent(getGNode(event->pos()), lastSelectedComponent.second, lastSelectedComponent.first );
         if (newComponent)
         {
             Q3ListViewItem *after = graphListener->items[newComponent];
@@ -482,10 +481,17 @@ GNode *GraphModeler::buildNodeFromBaseElement(GNode *node,xml::BaseElement *elem
         }
         else
         {
+
+            ///TODO!!!
+
+            const ComponentLibrary *component = sofaLibrary->getComponent(it->getType());
             //Configure the new Component
-            std::string templatename; std::string templateAttribute("template");
+            const std::string templateAttribute("template");
+            std::string templatename;
             templatename = it->getAttribute(templateAttribute, "");
-            ClassInfo *info = getCreatorComponent(it->getType());
+
+
+            const ClassEntry *info = component->getEntry();
             BaseObject *newComponent=addComponent(newNode, info, templatename, saveHistory,displayWarning);
             if (!newComponent) continue;
             configureElement(newComponent, it);
@@ -505,7 +511,7 @@ GNode *GraphModeler::buildNodeFromBaseElement(GNode *node,xml::BaseElement *elem
     return newNode;
 }
 
-ClassInfo *GraphModeler::getCreatorComponent(std::string name)
+ClassEntry *GraphModeler::getCreatorComponent(std::string name)
 {
 
     ComponentMap::iterator it;
@@ -788,6 +794,7 @@ Base *GraphModeler::getComponentAbove(Q3ListViewItem *item)
 void GraphModeler::deleteComponent()
 {
     Q3ListViewItem *item = currentItem();
+    if (!item) item = selectedItem();
     deleteComponent(item);
 }
 

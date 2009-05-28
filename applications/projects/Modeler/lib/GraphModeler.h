@@ -30,6 +30,7 @@
 #include <deque>
 
 #include "AddPreset.h"
+#include "SofaLibrary.h"
 
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/tree/GNode.h>
@@ -59,14 +60,16 @@ namespace gui
 namespace qt
 {
 
+
+typedef sofa::core::ObjectFactory::ClassEntry ClassEntry;
+typedef sofa::core::ObjectFactory::Creator    Creator;
+
 #ifndef SOFA_QT4
 typedef QListView Q3ListView;
 typedef QListViewItem Q3ListViewItem;
 typedef QTextDrag Q3TextDrag;
 #endif
 
-typedef sofa::core::ObjectFactory::ClassEntry ClassInfo;
-typedef sofa::core::ObjectFactory::Creator    ClassCreator;
 using sofa::simulation::tree::GNode;
 using namespace sofa::core::objectmodel;
 using namespace sofa::simulation::tree;
@@ -74,7 +77,7 @@ using namespace sofa::simulation::tree;
 class GraphModeler : public Q3ListView
 {
 
-    typedef std::map< const QObject* , std::pair< ClassInfo*, QObject*> > ComponentMap;
+    typedef std::map< const QObject* , std::pair< ClassEntry*, QObject*> > ComponentMap;
 
     Q_OBJECT
 public:
@@ -106,6 +109,8 @@ public:
 
     /// Set the Sofa Resources: intern library to get the creators of the elements
     void setLibrary(ComponentMap &s) {library=s;}
+
+    void setSofaLibrary( SofaLibrary *l) { sofaLibrary = l;}
 
     /// Set a menu of Preset available when right clicking on a node
     void setPreset(Q3PopupMenu *_preset) {preset=_preset;}
@@ -155,11 +160,13 @@ public:
     /// Construct a node from a BaseElement, by passing the factory
     GNode *buildNodeFromBaseElement(GNode *node,xml::BaseElement *elem, bool saveHistory=false);
     void configureElement(Base* b, xml::BaseElement *elem);
+
+    void setLastSelectedComponent( const std::string& templateName, ClassEntry *entry) {lastSelectedComponent = std::make_pair(templateName, entry);}
+
 signals:
     void fileOpen(const QString&);
     void undo(bool);
     void redo(bool);
-
 
 public slots:
     void editUndo();
@@ -213,9 +220,9 @@ protected:
     /// Insert a GNode in the scene
     GNode      *addGNode(GNode *parent, GNode *node=NULL, bool saveHistory=true);
     /// Insert a Component in the scene
-    BaseObject *addComponent(GNode *parent, ClassInfo *entry, std::string templateName, bool saveHistory=true, bool displayWarning=true );
-    /// Find the ClassInfo associated to the name of a component and if needed its template
-    ClassInfo *getCreatorComponent(std::string name);
+    BaseObject *addComponent(GNode *parent, const ClassEntry *entry, const std::string& templateName, bool saveHistory=true, bool displayWarning=true );
+    /// Find the ClassEntry associated to the name of a component and if needed its template
+    ClassEntry *getCreatorComponent(std::string name);
 
     /// Find the Sofa Component above the item
     Base *getComponentAbove(Q3ListViewItem *item);
@@ -233,6 +240,7 @@ protected:
 
     GraphListenerQListView *graphListener; // Management of the list: Listener of the sofa tree
     ComponentMap library; // Sofa Library, containing a description of all the components existing
+    SofaLibrary *sofaLibrary;
     Q3PopupMenu *preset;  //Preset menu selection appearing when right click on a node
     AddPreset *DialogAdd; //Single Window appearing when adding a preset
 
@@ -242,6 +250,9 @@ protected:
     std::map< void*, QDialog* >    map_modifyObjectWindow;
 
     std::string filenameXML; //name associated to the current graph
+
+    //Store template + ClassEntry
+    std::pair< std::string, ClassEntry* > lastSelectedComponent;
 
     //-----------------------------------------------------------------------------//
     //Historic of actions: management of the undo/redo actions
