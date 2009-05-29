@@ -30,15 +30,11 @@
 #include <sofa/simulation/common/SolveVisitor.h>
 
 #include <sofa/helper/LCPcalc.h>
-
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/helper/system/thread/CTime.h>
 #include <math.h>
 #include <iostream>
-
-
-
 
 namespace sofa
 {
@@ -49,34 +45,11 @@ namespace component
 namespace odesolver
 {
 
-/*
-LCP::LCP(unsigned int mxC) : maxConst(mxC), tol(0.00001), numItMax(1000), useInitialF(true), mu(0.0), dim(0), lok(false)
-{
-	W.resize(maxConst,maxConst);
-    dFree.resize(maxConst);
-    f.resize(2*maxConst+1);
-}
-
-LCP::~LCP()
-{
-}
-
-void LCP::reset(void)
-{
-	W.clear();
-	W.clear();
-	dFree.clear();
-}
-*/
-
-
 using namespace sofa::defaulttype;
 using namespace helper::system::thread;
 using namespace core::componentmodel::behavior;
 
-
 static unsigned MAX_NUM_CONSTRAINTS=2048;
-//#define DISPLAY_TIME
 
 template<class real>
 CudaMasterContactSolver<real>::CudaMasterContactSolver()
@@ -91,13 +64,6 @@ CudaMasterContactSolver<real>::CudaMasterContactSolver()
     ,mu( initData(&mu, 0.6, "mu", ""))
     , constraintGroups( initData(&constraintGroups, "group", "list of ID of groups of constraints to be handled by this solver.") )
     ,_mu(0.6)
-//, lcp1(MAX_NUM_CONSTRAINTS)
-//, lcp2(MAX_NUM_CONSTRAINTS)
-//, _A(&lcp1.A)
-//, _W(&lcp1.W)
-//, _dFree(&lcp1.dFree)
-//, _result(&lcp1.f)
-//, lcp(&lcp1)
 {
     _W.resize(MAX_NUM_CONSTRAINTS,MAX_NUM_CONSTRAINTS);
     _dFree.resize(MAX_NUM_CONSTRAINTS);
@@ -115,8 +81,6 @@ CudaMasterContactSolver<real>::CudaMasterContactSolver()
 template<class real>
 void CudaMasterContactSolver<real>::init()
 {
-    //getContext()->get<core::componentmodel::behavior::BaseConstraintCorrection>(&constraintCorrections, core::objectmodel::BaseContext::SearchDown);
-
     sofa::core::objectmodel::BaseContext* context = this->getContext();
     context->get<core::componentmodel::behavior::BaseConstraintCorrection>(&constraintCorrections, core::objectmodel::BaseContext::SearchDown);
 }
@@ -125,7 +89,6 @@ template<class real>
 void CudaMasterContactSolver<real>::build_LCP()
 {
     _numConstraints = 0;
-    //sout<<" accumulateConstraint "  <<sendl;
 
     // mechanical action executed from root node to propagate the constraints
     simulation::MechanicalResetConstraintVisitor().execute(context);
@@ -134,53 +97,49 @@ void CudaMasterContactSolver<real>::build_LCP()
     _mu = mu.getValue();
 
     _realNumConstraints = _numConstraints;
-    if (_mu>0.0) _numConstraints = ((_numConstraints+47)/48) * 48;
-    else _numConstraints = ((_numConstraints+15)/16) * 16;
 
-    //sout<<" accumulateConstraint_done "  <<sendl;
+    if (_mu > 0.0)
+    {
+        constraintRenumbering.resize(_realNumConstraints);
+        for (unsigned int i=0; i<_realNumConstraints; ++i)
+            constraintRenumbering[i] = i+(i/15);
+        simulation::MechanicalRenumberConstraint(constraintRenumbering).execute(context);
+
+        _numConstraints += _numConstraints/15;
+    }
+
+    _numConstraints = ((_numConstraints+15)/16) * 16;
+    if (_numConstraints<32) _numConstraints = 32;
 
     if (_numConstraints > MAX_NUM_CONSTRAINTS)
     {
-        serr<<endl<<"Error in CudaMasterContactSolver, maximum number of contacts exceeded, "<< _numConstraints/3 <<" contacts detected"<<endl;
+        serr<<sendl<<"Error in CudaMasterContactSolver, maximum number of contacts exceeded, "<< _numConstraints/3 <<" contacts detected"<<endl;
         MAX_NUM_CONSTRAINTS=MAX_NUM_CONSTRAINTS+MAX_NUM_CONSTRAINTS;
 
         _PreviousContactList.resize(MAX_NUM_CONSTRAINTS * sizeof(contactBuf));
         _cont_id_list.resize(MAX_NUM_CONSTRAINTS * sizeof(long));
     }
 
-
-    if (_mu>0.0)
-    {
-        _dFree.resize(_numConstraints,MBSIZE);
-        _f.resize(_numConstraints,MBSIZE);
-        _W.resize(_numConstraints,_numConstraints,MBSIZE);
-    }
-    else
-    {
-        _dFree.resize(_numConstraints);
-        _f.resize(_numConstraints);
-        _W.resize(_numConstraints,_numConstraints);
-    }
+    _dFree.resize(_numConstraints);
+    _W.resize(_numConstraints,_numConstraints);
+    _f.resize(_numConstraints);
 
     _W.clear();
 
     CudaMechanicalGetConstraintValueVisitor(&_dFree).execute(context);
-//	simulation::MechanicalComputeComplianceVisitor(_W).execute(context);
-
-    for (unsigned i=_realNumConstraints; i<_numConstraints; i++)
-    {
-        _W.set(i,i,1.0);
-        _dFree.set(i,0.0);
-    }
-
-//sout<<" computeCompliance in "  << constraintCorrections.size()<< " constraintCorrections" <<sendl;
+    //simulation::MechanicalComputeComplianceVisitor(_W).execute(context);
 
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
     {
         core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
         cc->getCompliance(&_W);
     }
-    //sout<<" computeCompliance_done "  <<sendl;
+
+    for (unsigned i=_realNumConstraints; i<_numConstraints; i++)
+    {
+        _W.set(i,i,1.0);
+    }
+
 
     if (initial_guess.getValue())
     {
@@ -192,7 +151,7 @@ void CudaMasterContactSolver<real>::build_LCP()
 template<class real>
 void CudaMasterContactSolver<real>::computeInitialGuess()
 {
-    int numContact = (_mu > 0.0) ? _numConstraints/3 : _numConstraints;
+    int numContact = (_mu > 0.0) ? _realNumConstraints/3 : _realNumConstraints;
 
     for (int c=0; c<numContact; c++)
     {
@@ -235,13 +194,14 @@ void CudaMasterContactSolver<real>::keepContactForcesValue()
 {
     _numPreviousContact=0;
 
-    int numContact = (_mu > 0.0) ? _numConstraints/3 : _numConstraints;
+    int numContact = (_mu > 0.0) ? _realNumConstraints/3 : _realNumConstraints;
+    //_PreviousContactList.resize(numContact);
 
     for (int c=0; c<numContact; c++)
     {
         if (_mu>0.0)
         {
-            if (_f[3*c]>0.0)//((_result[3*c]>0.0)||(_result[3*c+1]>0.0)||(_result[3*c+2]>0.0))
+            if (_f[3*c]>0.0)
             {
                 _PreviousContactList[_numPreviousContact].id = (_cont_id_list[c] >= 0) ? _cont_id_list[c] : -_cont_id_list[c];
                 _PreviousContactList[_numPreviousContact].F.x() = _f[3*c];
@@ -277,10 +237,8 @@ void CudaMasterContactSolver<real>::step(double dt)
 
     // Update the BehaviorModels
     // Required to allow the RayPickInteractor interaction
-
     simulation::BehaviorUpdatePositionVisitor updatePos(dt);
     context->execute(&updatePos);
-
 
     simulation::MechanicalBeginIntegrationVisitor beginVisitor(dt);
     context->execute(&beginVisitor);
@@ -300,14 +258,13 @@ void CudaMasterContactSolver<real>::step(double dt)
     double time_computeCollision = (double) timer->getTime();
 #endif
 
-    // Collision detection and response creation
     computeCollision();
 
 #ifdef DISPLAY_TIME
     time_computeCollision = ((double) timer->getTime() - time_computeCollision)*timeScale;
     double time_build_LCP = (double) timer->getTime();
 #endif
-//	MechanicalResetContactForceVisitor().execute(context);
+    //MechanicalResetContactForceVisitor().execute(context);
 
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
     {
@@ -324,23 +281,6 @@ void CudaMasterContactSolver<real>::step(double dt)
 
     double _tol = tol.getValue();
     int _maxIt = maxIt.getValue();
-    /*
-    	if (_mu > 0.0)
-    	{
-
-    		lcp->setNbConst(_numConstraints);
-    		lcp->setTol(_tol);
-    		helper::nlcp_gaussseidel(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue());
-    		if (this->f_printLog.getValue()) helper::afficheLCP(_dFree->ptr(), _W->lptr(), _result->ptr(),_numConstraints);
-    	}
-    	else
-    	{
-
-    //		helper::lcp_lexicolemke(_numConstraints, _dFree->ptr(), _W->lptr(), _A.lptr(), _result->ptr());
-    		helper::gaussSeidelLCP1(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _tol, _maxIt);
-    		if (this->f_printLog.getValue()) helper::afficheLCP(_dFree->ptr(), _W->lptr(), _result->ptr(),_numConstraints);
-    	}
-    */
 
     if (! initial_guess.getValue()) _f.clear();
 
@@ -370,14 +310,80 @@ void CudaMasterContactSolver<real>::step(double dt)
     {
         if ((f_check.element(i)-_f.element(i)>CHECK) || (f_check.element(i)-_f.element(i)<-CHECK))
         {
-            std::cerr << "Error(" << useGPU_d.getValue() << ") dim(" << _numConstraints << ") elmt(" << i << ") : (cpu," << f_check.element(i) << ") (gpu,(" << _f.element(i) << ")" << std::endl;
+            std::cerr << "Error(" << useGPU_d.getValue() << ") dim(" << _numConstraints << ") realDim(" << _realNumConstraints << ") elmt(" << i << ") : (cpu," << f_check.element(i) << ") (gpu,(" << _f.element(i) << ")" << std::endl;
         }
     }
 
 #else
     if (_mu > 0.0)
     {
+        printf("\nFE = [");
+        for (unsigned j=0; j<_realNumConstraints; j++)
+        {
+            printf("%f ",_f.element(j));
+        }
+        printf("]\n");
+
+        for (unsigned i=_realNumConstraints; i>0; i--) // decompact
+        {
+            unsigned ri = i + i/15;
+            _f[ri] = _f[i]; // decompact
+            _dFree[ri] = _dFree[i]; // decompact
+        }
+
+        printf("FD = [");
+        for (unsigned j=0; j<_numConstraints; j++)
+        {
+            printf("%f ",_f.element(j));
+        }
+        printf("]\n");
+
         error = sofa::gpu::cuda::CudaLCP<real>::CudaNlcp_gaussseidel(useGPU_d.getValue(),_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), _f.getCudaVector(), _mu,(real)_tol, _maxIt);
+
+        printf("M = [\n");
+        for (unsigned j=0; j<_W.rowSize(); j++)
+        {
+            for (unsigned i=0; i<_W.colSize(); i++)
+            {
+                printf("%f ",_W.element(i,j));
+            }
+            printf("\n");
+        }
+        printf("]\n");
+
+        printf("FR = [");
+        for (unsigned j=0; j<_numConstraints; j++)
+        {
+            printf("%f",_f.element(j));
+        }
+        printf("]\n");
+//
+        for (unsigned i=3; i<_realNumConstraints; i++)
+        {
+            unsigned ri = i + i/3;
+            _f[i] = _f[ri]; // compact
+            //_dFree[i] = _dFree[ri]; // decompact
+        }
+        for (unsigned i=0; i<_numConstraints; i++)
+        {
+            _f[i] = 0.0;
+            //_dfree[i] = 0.0;
+        }
+
+        printf("q = [");
+        for (unsigned j=0; j<_f.size(); j++)
+        {
+            printf("%f\t",_dFree.element(j));
+        }
+        printf("]\n");
+
+        printf("FS = [");
+        for (unsigned j=0; j<_realNumConstraints; j++)
+        {
+            printf("%f ",_f.element(j));
+        }
+        printf("]\n");
+
     }
     else
     {
@@ -392,11 +398,10 @@ void CudaMasterContactSolver<real>::step(double dt)
     double time_contactCorrections = (double) timer->getTime();
 #endif
 
-    if (initial_guess.getValue())
-        keepContactForcesValue();
+    if (initial_guess.getValue()) keepContactForcesValue();
 
+    // MechanicalApplyContactForceVisitor(_result).execute(context);
 
-//	MechanicalApplyContactForceVisitor(_result).execute(context);
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
     {
         core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
@@ -404,15 +409,19 @@ void CudaMasterContactSolver<real>::step(double dt)
     }
 
     simulation::MechanicalPropagateAndAddDxVisitor().execute( context);
-    simulation::MechanicalPropagatePositionAndVelocityVisitor().execute(context);
 
+    //simulation::MechanicalPropagatePositionAndVelocityVisitor().execute(context);
 
-//	MechanicalResetContactForceVisitor().execute(context);
+    //simulation::MechanicalPropagateAndAddDxVisitor().execute( context);
+
+    //MechanicalResetContactForceVisitor().execute(context);
+
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
     {
         core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
         cc->resetContactForce();
     }
+
 #ifdef DISPLAY_TIME
     time_contactCorrections = ((double) timer->getTime() - time_contactCorrections)*timeScale;
 #endif
@@ -438,32 +447,9 @@ void CudaMasterContactSolver<real>::step(double dt)
     }
 #endif
 
-    //switch lcp
-    //sout << "switch lcp : " << lcp << endl;
-
-    //lcp1.wait();
-    //lcp1.lock();
-    //lcp2.wait();
-    //lcp2.lock();
-
-    //	lcp = (lcp == &lcp1) ? &lcp2 : &lcp1;
-    //	_A =&lcp->A;
-    //	_W = &lcp->W;
-    //	_dFree = &lcp->dFree;
-    //	_result = &lcp->f;
-
-
-    //lcp1.unlock();
-    //lcp2.unlock();
-    //sout << "new lcp : " << lcp << endl;
-
-    //struct timespec ts;
-    //ts.tv_sec = 0;
-    //ts.tv_nsec = 60 *1000 *1000;
-//	nanosleep(&ts, NULL);
-
     simulation::MechanicalEndIntegrationVisitor endVisitor(dt);
     context->execute(&endVisitor);
+
 }
 
 SOFA_DECL_CLASS(CudaMasterContactSolver)

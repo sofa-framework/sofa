@@ -135,7 +135,6 @@ HEADERS += \
 	   	CudaBTDLinearSolver.h \
 	   	CudaUnilateralInteractionConstraint.h \
 	   	CudaPrecomputedWarpPreconditioner.h \
-	   	CudaFrictionContact.h \
         CudaTetrahedronTLEDForceField.h \
        	CudaHexahedronFEMForceField.h \
        	CudaHexahedronFEMForceField.inl \
@@ -153,7 +152,6 @@ SOURCES += \
        	CudaSpatialGridContainer.cpp \
 	   	CudaUnilateralInteractionConstraint.cpp \
 	   	CudaPrecomputedWarpPreconditioner.cpp \  	
-	   	CudaFrictionContact.cpp \
        	CudaHexahedronFEMForceField.cpp \
      	CudaTetrahedronTLEDForceField.cpp \
        	CudaHexahedronTLEDForceField.cpp \

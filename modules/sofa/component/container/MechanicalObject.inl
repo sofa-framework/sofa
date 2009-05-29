@@ -2192,6 +2192,13 @@ sofa::helper::vector<unsigned int>& MechanicalObject<DataTypes>::getConstraintId
 }
 
 template <class DataTypes>
+void MechanicalObject<DataTypes>::renumberConstraintId(const sofa::helper::vector<unsigned>& renumbering)
+{
+    for (unsigned int i=0; i<constraintId.size(); ++i)
+        constraintId[i] = renumbering[constraintId[i]];
+}
+
+template <class DataTypes>
 std::list<core::componentmodel::behavior::BaseMechanicalState::ConstraintBlock> MechanicalObject<DataTypes>::constraintBlocks( const std::list<unsigned int> &indices, double factor ) const
 {
     using sofa::component::linearsolver::FullMatrix;
