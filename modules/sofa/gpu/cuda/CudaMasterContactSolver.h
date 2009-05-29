@@ -38,7 +38,7 @@
 #include "CudaTypesBase.h"
 
 //#define CHECK 0.01
-//#define DISPLAY_TIME
+#define DISPLAY_TIME
 
 namespace sofa
 {
@@ -53,48 +53,6 @@ using namespace sofa::defaulttype;
 using namespace sofa::component::linearsolver;
 using namespace helper::system::thread;
 using namespace sofa::gpu::cuda;
-/*
-class LCP
-{
-public:
-	int maxConst;
-	LPtrFullMatrix<double> W, A;
-    FullVector<double> dFree, f;
-	double tol;
-	int numItMax;
-	unsigned int nbConst;
-	bool useInitialF;
-	double mu;
-	int dim;
-private:
-	bool lok;
-
-public:
-	LCP(unsigned int maxConstraint);
-	~LCP();
-	void reset(void);
-	//LCP& operator=(LCP& lcp);
-	inline double** getW(void) {return W.lptr();};
-	inline double& getMu(void) { return mu;};
-	inline double* getDfree(void) {return dFree.ptr();};
-	inline int getDfreeSize(void) {return dFree.size();};
-	inline double getTolerance(void) {return tol;};
-	inline void setTol(double t) {tol = t;};
-	inline double getMaxIter(void) {return numItMax;};
-	inline double* getF(void) {return f.ptr();};
-	inline bool useInitialGuess(void) {return useInitialF;};
-	inline unsigned int getNbConst(void) {return nbConst;};
-	inline void setNbConst(unsigned int nbC) {nbConst = nbC;};
-	inline unsigned int getMaxConst(void) {return maxConst;};
-
-	inline bool isLocked(void) {return false;};
-	inline void lock(void) {lok = true;};
-	inline void unlock(void) {lok = false;};
-	inline void wait(void) {while(lok) ; } //infinite loop?
-};
-*/
-
-
 
 class MechanicalResetContactForceVisitor : public simulation::MechanicalVisitor
 {
@@ -299,6 +257,7 @@ private:
     std::vector<contactBuf> _PreviousContactList;
     unsigned int _numPreviousContact;
     std::vector<long> _cont_id_list;
+    helper::vector<unsigned> constraintRenumbering;
 };
 
 } // namespace odesolver

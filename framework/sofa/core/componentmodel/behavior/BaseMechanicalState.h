@@ -135,6 +135,8 @@ public:
     /// Scale the current state
     virtual void applyScale(const double s)=0;
 
+    /// Renumber the constraint ids with the given permutation vector
+    virtual void renumberConstraintId(const sofa::helper::vector<unsigned>& renumbering) = 0;
 
 
     virtual bool addBBox(double* /*minBBox*/, double* /*maxBBox*/)

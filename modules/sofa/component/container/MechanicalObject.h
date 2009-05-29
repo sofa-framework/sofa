@@ -299,6 +299,8 @@ public:
 
     void setConstraintId(unsigned int);
     sofa::helper::vector<unsigned int>& getConstraintId();
+    /// Renumber the constraint ids with the given permutation vector
+    void renumberConstraintId(const sofa::helper::vector<unsigned>& renumbering);
 
 
     /// @name Integration related methods
