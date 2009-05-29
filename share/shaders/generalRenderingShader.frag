@@ -420,9 +420,6 @@ void main()
 	
 #endif //PLANE_ENVIRONMENT_MAPPING
 
-
-
-	color = ambientGlobal;
 	// Write the final pixel.
 	gl_FragColor = color;
 
