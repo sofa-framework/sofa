@@ -127,6 +127,7 @@ protected:
         if (tData)
         {
             value() = tData->value();
+            ++this->m_counter;
             return true;
         }
         return false;
