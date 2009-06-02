@@ -31,15 +31,11 @@
 #include <sofa/core/ObjectFactory.h>
 
 #ifdef SOFA_QT4
-#include <Q3Header>
-#include <QPushButton>
-#include <QComboBox>
-#include <QGridLayout>
+#include <QWidget>
+#include <QString>
 #else
-#include <qheader.h>
-#include <qpushbutton.h>
-#include <qcombobox.h>
-#include <qlayout.h>
+#include <qwidget.h>
+#include <qstring.h>
 #endif
 
 namespace sofa
@@ -54,10 +50,10 @@ namespace qt
 typedef sofa::core::ObjectFactory::ClassEntry ClassEntry;
 
 //***************************************************************
-class ComponentLibrary : public QWidget
+class ComponentLibrary
 {
 public:
-    ComponentLibrary(QWidget *parent, const std::string &componentName, const std::string &categoryName, ClassEntry *entry, const std::vector< QString > &exampleFiles);
+    ComponentLibrary(const std::string &componentName, const std::string &categoryName, ClassEntry *entry, const std::vector< QString > &exampleFiles);
 
     virtual void addTemplate( const std::string &templateName);
     virtual void endConstruction();
@@ -68,50 +64,17 @@ public:
     const std::string &getCategory()                 const { return categoryName;}
     const std::vector< std::string > &getTemplates() const { return templateName;}
     const ClassEntry  *getEntry()                    const { return entry;}
+
+    virtual QWidget *getQWidget()=0;
 protected:
     //--------------------------------------------
     //Sofa information
     std::string name;
     std::vector< std::string > templateName;
     std::string description;
-
     std::string categoryName;
     ClassEntry *entry;
 };
-
-
-class QComponentLibrary : public ComponentLibrary
-{
-
-    Q_OBJECT
-public:
-    typedef QGridLayout ComponentLayout;
-    typedef QPushButton ComponentLabel;
-    typedef QComboBox   ComponentTemplates;
-public:
-    QComponentLibrary(QWidget *parent, ComponentLayout *layout, const std::string &componentName, const std::string &categoryName, ClassEntry *entry, const std::vector< QString > &exampleFiles);
-    ~QComponentLibrary();
-
-    void endConstruction();
-
-
-    void setDisplayed(bool b);
-
-    void setLayout(ComponentLayout *l) {layout = l;}
-protected:
-    //--------------------------------------------
-    //Qt Data
-    ComponentLayout    *layout;
-    ComponentLabel     *label;
-    ComponentTemplates *templates;
-
-public slots:
-    void componentPressed();
-
-signals:
-    void componentDragged( std::string description, std::string templateName, ClassEntry *entry);
-};
-
 }
 }
 }

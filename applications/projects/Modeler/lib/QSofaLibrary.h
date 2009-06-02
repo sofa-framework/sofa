@@ -24,11 +24,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SOFALIBRARY_H
-#define SOFA_SOFALIBRARY_H
+#ifndef SOFA_QSOFALIBRARY_H
+#define SOFA_QSOFALIBRARY_H
 
-#include "CategoryLibrary.h"
-#include "FilterLibrary.h"
+#include "SofaLibrary.h"
+
+#ifdef SOFA_QT4
+#include <Q3Header>
+#include <QToolBox>
+#else
+#include <qheader.h>
+#include <qtoolbox.h>
+#endif
 
 
 namespace sofa
@@ -41,30 +48,32 @@ namespace qt
 {
 
 //***************************************************************
-//Generic Library
-class SofaLibrary
+//Library using QToolBox
+class QSofaLibrary : virtual public QWidget, public SofaLibrary
 {
-
+    Q_OBJECT
 public:
+    typedef QToolBox LibraryContainer;
+public:
+    QSofaLibrary(QWidget *parent);
 
-    void build(const std::vector< QString >& examples);
-    void clear();
-    virtual void filter(const FilterQuery &f)=0;
+    void filter(const FilterQuery &f);
 
-    std::string getComponentDescription( const std::string &componentName) const;
-    const ComponentLibrary *getComponent( const std::string &componentName) const;
-    unsigned int getNumComponents() const {return numComponents;}
+    LibraryContainer* getContainer() {return toolbox;};
 
-    virtual QWidget *getQWidget()=0;
+    QWidget *getQWidget() {return this;};
 protected:
-    virtual CategoryLibrary *createCategory(const std::string &category, unsigned int numComponent)=0;
-    virtual void addCategory(CategoryLibrary *);
-    void computeNumComponents();
+    CategoryLibrary *createCategory(const std::string &category, unsigned int numComponent);
+    void addCategory(CategoryLibrary *category);
 
-    std::vector< CategoryLibrary* > categories;
-    std::vector< QString > exampleFiles;
-    int numComponents;
 
+    LibraryContainer *toolbox;
+
+public slots:
+    void componentDraggedReception( std::string description, std::string categoryName, std::string templateName, ClassEntry* componentEntry);
+
+signals:
+    void componentDragged( std::string description, std::string categoryName, std::string templateName, ClassEntry *entry);
 };
 
 }

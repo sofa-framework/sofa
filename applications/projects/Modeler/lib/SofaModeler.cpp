@@ -152,7 +152,7 @@ SofaModeler::SofaModeler()
     QSofaLibrary *l = new QSofaLibrary(contentContainer); library = l;
     QToolBox *containerLibrary=l->getContainer();
     contentLayout->addWidget(containerLibrary);
-    connect(library, SIGNAL( componentDragged( std::string, std::string, std::string, ClassEntry *) ),
+    connect(l, SIGNAL( componentDragged( std::string, std::string, std::string, ClassEntry *) ),
             this, SLOT( componentDraggedReception( std::string, std::string, std::string, ClassEntry *) ));
 
     library->build(exampleFiles);

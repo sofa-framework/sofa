@@ -31,7 +31,7 @@
 
 #include "Modeler.h"
 #include "GraphModeler.h"
-#include "SofaLibrary.h"
+#include "QSofaLibrary.h"
 #include "FilterLibrary.h"
 
 #include <map>

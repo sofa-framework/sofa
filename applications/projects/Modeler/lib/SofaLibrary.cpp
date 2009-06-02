@@ -38,9 +38,6 @@ namespace gui
 namespace qt
 {
 
-
-//-------------------------------------------------------------------------------------------------------
-
 void SofaLibrary::build( const std::vector< QString >& examples)
 {
     exampleFiles=examples;
@@ -143,9 +140,6 @@ void SofaLibrary::computeNumComponents()
 void SofaLibrary::addCategory(CategoryLibrary *category)
 {
     categories.push_back(category);
-
-    connect( category, SIGNAL( componentDragged( std::string, std::string, std::string, ClassEntry* ) ),
-            this, SLOT( componentDraggedReception( std::string, std::string, std::string , ClassEntry* )));
 }
 
 
@@ -178,98 +172,6 @@ void SofaLibrary::clear()
         delete categories[i];
     }
     categories.clear();
-}
-
-
-//-------------------------------------------------------------------------------------------------------
-
-QSofaLibrary::QSofaLibrary(QWidget *parent)
-{
-    toolbox = new LibraryContainer(parent);
-    toolbox->setCurrentIndex(-1);
-    toolbox->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
-}
-
-CategoryLibrary *QSofaLibrary::createCategory(const std::string &categoryName, unsigned int numComponent)
-{
-    CategoryLibrary* category = new QCategoryLibrary(toolbox, categoryName, numComponent);
-    toolbox->addItem( category, categoryName.c_str());
-    return category;
-}
-
-
-void QSofaLibrary::addCategory(CategoryLibrary *category)
-{
-    SofaLibrary::addCategory(category);
-    toolbox->setItemLabel(categories.size()-1, QString(category->getName().c_str()) + QString(" [") + QString::number(category->getNumComponents()) + QString("]"));
-}
-
-void QSofaLibrary::filter(const FilterQuery &f)
-{
-
-    numComponents=0;
-    unsigned int numComponentDisplayed=0;
-    unsigned int indexPage=0;
-    //Look into all the categories
-    for (unsigned int cat=0; cat<categories.size(); ++cat)
-    {
-        unsigned int numComponentDisplayedInCategory=0;
-        bool needToHideCategory=true;
-        //For each category, look at all the components if one has the name wanted
-        const std::vector< ComponentLibrary* > &components = categories[cat]->getComponents();
-        for (unsigned int comp=0; comp<components.size(); ++comp)
-        {
-            if (f.isValid(components[comp]))
-            {
-                components[comp]->setDisplayed(true);
-                needToHideCategory=false;
-                ++numComponentDisplayed;
-                ++numComponentDisplayedInCategory;
-            }
-            else
-            {
-                components[comp]->setDisplayed(false);
-            }
-        }
-
-        int idx = toolbox->indexOf(categories[cat]);
-
-        if (needToHideCategory)
-        {
-            categories[cat]->setDisplayed(false);
-            if (idx >= 0)
-            {
-#ifdef SOFA_QT4
-                toolbox->removeItem(idx);
-#else
-                toolbox->removeItem(categories[cat]);
-#endif
-
-            }
-        }
-        else
-        {
-
-            categories[cat]->setDisplayed(true);
-            if (idx < 0)
-            {
-                toolbox->insertItem(indexPage,categories[cat],QString(categories[cat]->getName().c_str()) );
-            }
-            toolbox->setItemLabel(indexPage, QString(categories[cat]->getName().c_str()) + QString(" [") + QString::number(numComponentDisplayedInCategory) + QString("]"));
-
-            numComponents+=numComponentDisplayedInCategory;
-            indexPage++;
-        }
-    }
-
-}
-
-//*********************//
-// SLOTS               //
-//*********************//
-void SofaLibrary::componentDraggedReception( std::string description, std::string categoryName, std::string templateName, ClassEntry* componentEntry)
-{
-    emit(componentDragged(description, categoryName,templateName,componentEntry));
 }
 
 }

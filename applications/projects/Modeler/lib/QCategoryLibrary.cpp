@@ -24,12 +24,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SOFALIBRARY_H
-#define SOFA_SOFALIBRARY_H
 
-#include "CategoryLibrary.h"
-#include "FilterLibrary.h"
-
+#include "QCategoryLibrary.h"
+#include "QComponentLibrary.h"
 
 namespace sofa
 {
@@ -40,35 +37,61 @@ namespace gui
 namespace qt
 {
 
-//***************************************************************
-//Generic Library
-class SofaLibrary
+
+QCategoryLibrary::QCategoryLibrary( QWidget *parent, const std::string &categoryName, unsigned int numComponent): QWidget(parent, categoryName.c_str()), CategoryLibrary(categoryName)
 {
+    layout = new CategoryLayout( this, numComponent );
+}
 
-public:
+QCategoryLibrary::~QCategoryLibrary()
+{
+    for (unsigned int i=0; i<components.size(); ++i)
+    {
+        delete components[i];
+    }
+    delete layout;
+    components.clear();
+}
+ComponentLibrary *QCategoryLibrary::createComponent(const std::string &componentName, ClassEntry* entry, const std::vector< QString > &exampleFiles)
+{
+    QComponentLibrary* component = new QComponentLibrary(this, layout, componentName, this->getName(), entry, exampleFiles);
+    return component;
+}
 
-    void build(const std::vector< QString >& examples);
-    void clear();
-    virtual void filter(const FilterQuery &f)=0;
+ComponentLibrary *QCategoryLibrary::addComponent(const std::string &componentName, ClassEntry* entry, const std::vector< QString > &exampleFiles)
+{
+    ComponentLibrary *component = CategoryLibrary::addComponent(componentName, entry, exampleFiles);
+    if (component)
+    {
+        layout->addWidget(component->getQWidget(), components.size()-1,0);
+        connect( component->getQWidget(), SIGNAL( componentDragged( std::string, std::string, ClassEntry* ) ),
+                this, SLOT( componentDraggedReception( std::string, std::string, ClassEntry*) ) );
+    }
+    return component;
+}
 
-    std::string getComponentDescription( const std::string &componentName) const;
-    const ComponentLibrary *getComponent( const std::string &componentName) const;
-    unsigned int getNumComponents() const {return numComponents;}
 
-    virtual QWidget *getQWidget()=0;
-protected:
-    virtual CategoryLibrary *createCategory(const std::string &category, unsigned int numComponent)=0;
-    virtual void addCategory(CategoryLibrary *);
-    void computeNumComponents();
+void QCategoryLibrary::endConstruction()
+{
+    layout->addItem(new QSpacerItem(1,1,QSizePolicy::Minimum, QSizePolicy::Expanding ), layout->numRows(),0);
+}
 
-    std::vector< CategoryLibrary* > categories;
-    std::vector< QString > exampleFiles;
-    int numComponents;
 
-};
+void QCategoryLibrary::setDisplayed(bool b)
+{
+    if (b) this->show();
+    else   this->hide();
+}
+
+
+//*********************//
+// SLOTS               //
+//*********************//
+void QCategoryLibrary::componentDraggedReception( std::string description, std::string templateName, ClassEntry* componentEntry)
+{
+    emit( componentDragged( description, this->getName(), templateName, componentEntry) );
+}
 
 }
 }
 }
-
-#endif

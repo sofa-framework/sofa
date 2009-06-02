@@ -77,8 +77,6 @@ using namespace sofa::simulation::tree;
 class GraphModeler : public Q3ListView
 {
 
-    typedef std::map< const QObject* , std::pair< ClassEntry*, QObject*> > ComponentMap;
-
     Q_OBJECT
 public:
     GraphModeler( QWidget* parent=0, const char* name=0, Qt::WFlags f = 0 ):Q3ListView(parent, name, f), graphListener(NULL)
@@ -108,8 +106,6 @@ public:
     }
 
     /// Set the Sofa Resources: intern library to get the creators of the elements
-    void setLibrary(ComponentMap &s) {library=s;}
-
     void setSofaLibrary( SofaLibrary *l) { sofaLibrary = l;}
 
     /// Set a menu of Preset available when right clicking on a node
@@ -161,6 +157,7 @@ public:
     GNode *buildNodeFromBaseElement(GNode *node,xml::BaseElement *elem, bool saveHistory=false);
     void configureElement(Base* b, xml::BaseElement *elem);
 
+    /// Used to know what component is about to be created by a drag&drop
     void setLastSelectedComponent( const std::string& templateName, ClassEntry *entry) {lastSelectedComponent = std::make_pair(templateName, entry);}
 
 signals:
@@ -221,8 +218,6 @@ protected:
     GNode      *addGNode(GNode *parent, GNode *node=NULL, bool saveHistory=true);
     /// Insert a Component in the scene
     BaseObject *addComponent(GNode *parent, const ClassEntry *entry, const std::string& templateName, bool saveHistory=true, bool displayWarning=true );
-    /// Find the ClassEntry associated to the name of a component and if needed its template
-    ClassEntry *getCreatorComponent(std::string name);
 
     /// Find the Sofa Component above the item
     Base *getComponentAbove(Q3ListViewItem *item);
@@ -239,7 +234,6 @@ protected:
     void updatePresetNode(xml::BaseElement &elem, std::string meshFile, std::string *translation, std::string *rotation, std::string scale);
 
     GraphListenerQListView *graphListener; // Management of the list: Listener of the sofa tree
-    ComponentMap library; // Sofa Library, containing a description of all the components existing
     SofaLibrary *sofaLibrary;
     Q3PopupMenu *preset;  //Preset menu selection appearing when right click on a node
     AddPreset *DialogAdd; //Single Window appearing when adding a preset

@@ -28,18 +28,7 @@
 #define SOFA_CATEGORYLIBRARY_H
 
 #include <iostream>
-#include <sofa/core/ObjectFactory.h>
-
-
 #include "ComponentLibrary.h"
-
-#ifdef SOFA_QT4
-#include <Q3Header>
-#include <QGridLayout>
-#else
-#include <qheader.h>
-#include <qlayout.h>
-#endif
 
 namespace sofa
 {
@@ -50,14 +39,13 @@ namespace gui
 namespace qt
 {
 
-typedef sofa::core::ObjectFactory::ClassEntry ClassEntry;
 typedef sofa::core::ObjectFactory::Creator    Creator;
 
 //***************************************************************
-class CategoryLibrary : public QWidget
+class CategoryLibrary
 {
 public:
-    CategoryLibrary( QWidget *parent, const std::string &categoryName);
+    CategoryLibrary( const std::string &categoryName);
 
 
     virtual ComponentLibrary *addComponent(const std::string &componentName, ClassEntry* entry, const std::vector< QString > &exampleFiles);
@@ -68,44 +56,14 @@ public:
     const std::string                      &getName()          const { return name;}
     const std::vector< ComponentLibrary* > &getComponents()    const {return components;}
     unsigned int                            getNumComponents() const {return components.size();}
+
+    virtual QWidget *getQWidget()=0;
 protected:
     virtual ComponentLibrary *createComponent(const std::string &componentName, ClassEntry* entry, const std::vector< QString > &exampleFiles)=0;
 
     std::string name;
     std::vector< ComponentLibrary* > components;
 };
-
-
-//***************************************************************
-class QCategoryLibrary : public CategoryLibrary
-{
-
-    Q_OBJECT
-public:
-    typedef QGridLayout CategoryLayout;
-public:
-    QCategoryLibrary(QWidget *parent, const std::string &categoryName, unsigned int numCom);
-    ~QCategoryLibrary();
-
-    ComponentLibrary *addComponent(const std::string &componentName, ClassEntry* entry, const std::vector< QString > &exampleFiles);
-    void endConstruction();
-
-    void setDisplayed(bool b);
-
-
-protected:
-    ComponentLibrary *createComponent(const std::string &componentName, ClassEntry* entry, const std::vector< QString > &exampleFiles);
-
-    CategoryLayout *layout;
-
-public slots:
-    void componentDraggedReception( std::string description, std::string templateName, ClassEntry* componentEntry);
-
-signals:
-    void componentDragged( std::string description, std::string categoryName, std::string templateName, ClassEntry *entry);
-};
-
-
 
 }
 }

@@ -24,12 +24,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SOFALIBRARY_H
-#define SOFA_SOFALIBRARY_H
 
-#include "CategoryLibrary.h"
-#include "FilterLibrary.h"
+#include "QComponentLibrary.h"
 
+#ifdef SOFA_QT4
+#include <QToolTip>
+#else
+#include <qtooltip.h>
+#endif
 
 namespace sofa
 {
@@ -39,36 +41,72 @@ namespace gui
 
 namespace qt
 {
-
-//***************************************************************
-//Generic Library
-class SofaLibrary
+QComponentLibrary::QComponentLibrary(QWidget *parent, ComponentLayout *l, const std::string &componentN, const std::string &categoryN, ClassEntry *e, const std::vector< QString > &exampleFiles): QWidget(parent, componentN.c_str()), ComponentLibrary(componentN,categoryN,e, exampleFiles)
 {
+//         layout    = new ComponentLayout( this );
+    layout    = l;
+    label     = new ComponentLabel( QString(this->getName().c_str()), parent);
+    templates = new ComponentTemplates(parent);
 
-public:
+    connect( label, SIGNAL(pressed()), this, SLOT( componentPressed() ));
 
-    void build(const std::vector< QString >& examples);
-    void clear();
-    virtual void filter(const FilterQuery &f)=0;
+    const unsigned int row=layout->numRows();
 
-    std::string getComponentDescription( const std::string &componentName) const;
-    const ComponentLibrary *getComponent( const std::string &componentName) const;
-    unsigned int getNumComponents() const {return numComponents;}
+    label->setFlat(false);
+    std::string tooltipText = entry->description.substr(0, entry->description.size()-1);
+    QToolTip::add(label, tooltipText.c_str());
+    layout->addWidget(label,row,0);
+    layout->addWidget(templates,row,1);
+    templates->setHidden(true);
+}
 
-    virtual QWidget *getQWidget()=0;
-protected:
-    virtual CategoryLibrary *createCategory(const std::string &category, unsigned int numComponent)=0;
-    virtual void addCategory(CategoryLibrary *);
-    void computeNumComponents();
+QComponentLibrary::~QComponentLibrary()
+{
+    //Shared layout
+//         delete layout;
+    delete label;
+    delete templates;
+}
 
-    std::vector< CategoryLibrary* > categories;
-    std::vector< QString > exampleFiles;
-    int numComponents;
+void QComponentLibrary::endConstruction()
+{
+    if (templateName.empty()) return;
 
-};
+    templates->setHidden(false);
+    for (unsigned int i=0; i<templateName.size(); ++i)
+    {
+        templates->insertItem(QString(templateName[i].c_str()));
+    }
+}
+
+void QComponentLibrary::setDisplayed(bool b)
+{
+    if (b)
+    {
+//             this->show();
+        label->show();
+        if (!templateName.empty()) templates->show();
+    }
+    else
+    {
+//             this->hide();
+        label->hide();
+        if (!templateName.empty()) templates->hide();
+    }
+}
+
+//*********************//
+// SLOTS               //
+//*********************//
+void QComponentLibrary::componentPressed()
+{
+    std::string tName;
+    if (!templateName.empty()) tName = templates->currentText().ascii();
+
+    emit( componentDragged( description, tName, entry));
+    label->setDown(false);
+}
 
 }
 }
 }
-
-#endif
