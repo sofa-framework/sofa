@@ -108,7 +108,10 @@ SparseGridTopology::SparseGridTopology(bool _isVirtual)
     dataResolution(initData(&dataResolution, Vec3i(0,0,0), "dataResolution", "Dimension of the voxel File")),
     voxelSize(initData(&voxelSize, Vector3(1.0f,1.0f,1.0f), "voxelSize", "Dimension of one voxel")),
     marchingCubeStep(initData(&marchingCubeStep, (unsigned int) 1, "marchingCubeStep", "Step of the Marching Cube algorithm")),
-    convolutionSize(initData(&convolutionSize, (unsigned int) 0, "convolutionSize", "Dimension of the convolution kernel to smooth the voxels. 0 if no smoothing is required."))
+    convolutionSize(initData(&convolutionSize, (unsigned int) 0, "convolutionSize", "Dimension of the convolution kernel to smooth the voxels. 0 if no smoothing is required.")),
+    vertices(initData(&vertices, "vertices", "Topology vertices")),
+    facets(initData(&facets, "facets", "Topology facets"))
+
 {
     isVirtual = _isVirtual;
     _alreadyInit = false;
@@ -227,41 +230,46 @@ void SparseGridTopology::buildAsFinest(  )
     else
     {
         std::string _filename=fileTopology.getValue();
-        if (_filename.empty())
+        if (!vertices.isSet())
         {
-            serr << "SparseGridTopology: no filename specified." << sendl;
-            return;
+            if (_filename.empty())
+            {
+                serr << "SparseGridTopology: no filename specified." << sendl;
+                return;
+            }
+            if (! sofa::helper::system::DataRepository.findFile ( _filename ))
+                return;
+
+            // initialize the following datafields:
+            // xmin, xmax, ymin, ymax, zmin, zmax, evtl. nx, ny, nz
+            // _regularGrid, _indicesOfRegularCubeInSparseGrid, _types
+            // seqPoints, seqHexas.getValue(), nbPoints
+            if(_filename.length() > 4 && _filename.compare(_filename.length()-4, 4, ".obj")==0)
+            {
+                //			std::cout << "SparseGridTopology: using mesh "<<_filename<<std::endl;
+                buildFromTriangleMesh(_filename);
+            }
+            else if(_filename.length() > 6 && _filename.compare(_filename.length()-6, 6, ".trian")==0)
+            {
+                //			std::cout << "SparseGridTopology: using mesh "<<_filename<<std::endl;
+                buildFromTriangleMesh(_filename);
+            }
+            else if(_filename.length() > 4 && _filename.compare(_filename.length()-4, 4, ".raw")==0)
+            {
+                //			std::cout << "SparseGridTopology: using mesh "<<_filename<<std::endl;
+                _usingMC = true;
+
+                buildFromRawVoxelFile(_filename);
+            }
+            else if(_filename.length() > 6 && _filename.compare(_filename.length()-6, 6, ".voxel")==0)
+            {
+                buildFromVoxelFile(_filename);
+            }
         }
-        if (! sofa::helper::system::DataRepository.findFile ( _filename ))
-            return;
-
-
-        // initialize the following datafields:
-        // xmin, xmax, ymin, ymax, zmin, zmax, evtl. nx, ny, nz
-        // _regularGrid, _indicesOfRegularCubeInSparseGrid, _types
-        // seqPoints, seqHexas.getValue(), nbPoints
-        if(_filename.length() > 4 && _filename.compare(_filename.length()-4, 4, ".obj")==0)
+        else
         {
-            //			std::cout << "SparseGridTopology: using mesh "<<_filename<<std::endl;
             buildFromTriangleMesh(_filename);
         }
-        else if(_filename.length() > 6 && _filename.compare(_filename.length()-6, 6, ".trian")==0)
-        {
-            //			std::cout << "SparseGridTopology: using mesh "<<_filename<<std::endl;
-            buildFromTriangleMesh(_filename);
-        }
-        else if(_filename.length() > 4 && _filename.compare(_filename.length()-4, 4, ".raw")==0)
-        {
-            //			std::cout << "SparseGridTopology: using mesh "<<_filename<<std::endl;
-            _usingMC = true;
-
-            buildFromRawVoxelFile(_filename);
-        }
-        else if(_filename.length() > 6 && _filename.compare(_filename.length()-6, 6, ".voxel")==0)
-        {
-            buildFromVoxelFile(_filename);
-        }
-
 
         // default stiffness coefficient : BOUNDARY=.5, INSIDE=1
         _stiffnessCoefs.resize( this->getNbHexas());
@@ -621,7 +629,22 @@ void SparseGridTopology::constructCollisionModels(const sofa::helper::vector< so
 
 void SparseGridTopology::buildFromTriangleMesh(const std::string& filename)
 {
-    helper::io::Mesh* mesh = helper::io::Mesh::Create(filename.c_str());
+    helper::io::Mesh* mesh = NULL;
+
+    if (filename.empty())
+    {
+        mesh = new helper::io::Mesh();
+        for (unsigned int i=0; i<vertices.getValue().size(); ++i)
+            mesh->getVertices().push_back(vertices.getValue()[i]);
+
+        mesh->getFacets().resize(facets.getValue().size());
+        for (unsigned int i=0; i<facets.getValue().size(); ++i)
+            mesh->getFacets()[i].push_back(facets.getValue()[i]);
+    }
+    else
+    {
+        mesh = helper::io::Mesh::Create(filename.c_str());
+    }
 
     if(mesh == NULL)
     {

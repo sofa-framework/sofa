@@ -209,6 +209,8 @@ protected:
     Data< unsigned int >    marchingCubeStep;
     Data< unsigned int >    convolutionSize;
 
+    Data< vector< Vector3 > >    vertices;
+    Data< vector < vector <int> > >facets;
 
     virtual void updateEdges();
     virtual void updateQuads();
