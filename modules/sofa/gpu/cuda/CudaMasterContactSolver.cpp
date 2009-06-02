@@ -108,17 +108,10 @@ void CudaMasterContactSolver<real>::build_LCP()
         _numConstraints += _numConstraints/15;
     }
 
+    unsigned num3Constraint = _numConstraints;
+
     _numConstraints = ((_numConstraints+15)/16) * 16;
     if (_numConstraints<32) _numConstraints = 32;
-
-    if (_numConstraints > MAX_NUM_CONSTRAINTS)
-    {
-        serr<<sendl<<"Error in CudaMasterContactSolver, maximum number of contacts exceeded, "<< _numConstraints/3 <<" contacts detected"<<endl;
-        MAX_NUM_CONSTRAINTS=MAX_NUM_CONSTRAINTS+MAX_NUM_CONSTRAINTS;
-
-        _PreviousContactList.resize(MAX_NUM_CONSTRAINTS * sizeof(contactBuf));
-        _cont_id_list.resize(MAX_NUM_CONSTRAINTS * sizeof(long));
-    }
 
     _dFree.resize(_numConstraints);
     _W.resize(_numConstraints,_numConstraints);
@@ -135,11 +128,32 @@ void CudaMasterContactSolver<real>::build_LCP()
         cc->getCompliance(&_W);
     }
 
-    for (unsigned i=_realNumConstraints; i<_numConstraints; i++)
+    if (_mu > 0.0)
+    {
+// 	  for (unsigned i=0;i<_realNumConstraints;i++) {
+// 	      	constraintRenumbering[i] = i;
+// 	  }
+// 	  simulation::MechanicalRenumberConstraint(constraintRenumbering).execute(context);
+
+        for (unsigned i=15; i<num3Constraint; i+=16)
+        {
+            _W.set(i,i,1.0);
+        }
+    }
+
+    for (unsigned i=num3Constraint; i<_numConstraints; i++)
     {
         _W.set(i,i,1.0);
     }
 
+    if (_numConstraints > MAX_NUM_CONSTRAINTS)
+    {
+        serr<<sendl<<"Error in CudaMasterContactSolver, maximum number of contacts exceeded, "<< _numConstraints/3 <<" contacts detected"<<endl;
+        MAX_NUM_CONSTRAINTS=MAX_NUM_CONSTRAINTS+MAX_NUM_CONSTRAINTS;
+
+        _PreviousContactList.resize(MAX_NUM_CONSTRAINTS * sizeof(contactBuf));
+        _cont_id_list.resize(MAX_NUM_CONSTRAINTS * sizeof(long));
+    }
 
     if (initial_guess.getValue())
     {
@@ -318,72 +332,36 @@ void CudaMasterContactSolver<real>::step(double dt)
     if (_mu > 0.0)
     {
         printf("\nFE = [");
-        for (unsigned j=0; j<_realNumConstraints; j++)
-        {
-            printf("%f ",_f.element(j));
-        }
-        printf("]\n");
-
-        for (unsigned i=_realNumConstraints; i>0; i--) // decompact
-        {
-            unsigned ri = i + i/15;
-            _f[ri] = _f[i]; // decompact
-            _dFree[ri] = _dFree[i]; // decompact
-        }
-
-        printf("FD = [");
         for (unsigned j=0; j<_numConstraints; j++)
         {
             printf("%f ",_f.element(j));
         }
         printf("]\n");
 
-        error = sofa::gpu::cuda::CudaLCP<real>::CudaNlcp_gaussseidel(useGPU_d.getValue(),_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), _f.getCudaVector(), _mu,(real)_tol, _maxIt);
+        real toln = ((int) (_realNumConstraints/3) + 1) * (real)_tol;
+        error = sofa::gpu::cuda::CudaLCP<real>::CudaNlcp_gaussseidel(useGPU_d.getValue(),_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), _f.getCudaVector(), _mu,toln, _maxIt);
 
-        printf("M = [\n");
-        for (unsigned j=0; j<_W.rowSize(); j++)
-        {
-            for (unsigned i=0; i<_W.colSize(); i++)
-            {
-                printf("%f ",_W.element(i,j));
-            }
-            printf("\n");
-        }
-        printf("]\n");
+// 			printf("M = [\n");
+// 			for (unsigned j=0;j<_W.rowSize();j++) {
+// 				for (unsigned i=0;i<_W.colSize();i++) {
+// 					printf("%3f ",_W.element(i,j));
+// 				}
+// 				printf("\n");
+// 			}
+// 			printf("]\n");
 
-        printf("FR = [");
-        for (unsigned j=0; j<_numConstraints; j++)
-        {
-            printf("%f",_f.element(j));
-        }
-        printf("]\n");
+// 			printf("q = [");
+// 			for (unsigned j=0;j<_f.size();j++) {
+// 				printf("%f\t",_dFree.element(j));
+// 			}
+// 			printf("]\n");
 //
-        for (unsigned i=3; i<_realNumConstraints; i++)
-        {
-            unsigned ri = i + i/3;
-            _f[i] = _f[ri]; // compact
-            //_dFree[i] = _dFree[ri]; // decompact
-        }
-        for (unsigned i=0; i<_numConstraints; i++)
-        {
-            _f[i] = 0.0;
-            //_dfree[i] = 0.0;
-        }
-
-        printf("q = [");
-        for (unsigned j=0; j<_f.size(); j++)
-        {
-            printf("%f\t",_dFree.element(j));
-        }
-        printf("]\n");
-
         printf("FS = [");
         for (unsigned j=0; j<_realNumConstraints; j++)
         {
             printf("%f ",_f.element(j));
         }
         printf("]\n");
-
     }
     else
     {
@@ -449,7 +427,6 @@ void CudaMasterContactSolver<real>::step(double dt)
 
     simulation::MechanicalEndIntegrationVisitor endVisitor(dt);
     context->execute(&endVisitor);
-
 }
 
 SOFA_DECL_CLASS(CudaMasterContactSolver)
