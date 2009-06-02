@@ -101,7 +101,7 @@ void QSofaLibrary::filter(const FilterQuery &f)
 #ifdef SOFA_QT4
                 toolbox->removeItem(idx);
 #else
-                toolbox->removeItem(categories[cat]);
+                toolbox->removeItem(categories[cat]->getQWidget());
 #endif
 
             }
