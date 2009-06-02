@@ -24,12 +24,23 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SOFALIBRARY_H
-#define SOFA_SOFALIBRARY_H
+#ifndef SOFA_QCOMPONENTLIBRARY_H
+#define SOFA_QCOMPONENTLIBRARY_H
 
-#include "CategoryLibrary.h"
-#include "FilterLibrary.h"
 
+#include "ComponentLibrary.h"
+
+#ifdef SOFA_QT4
+#include <Q3Header>
+#include <QPushButton>
+#include <QComboBox>
+#include <QGridLayout>
+#else
+#include <qheader.h>
+#include <qpushbutton.h>
+#include <qcombobox.h>
+#include <qlayout.h>
+#endif
 
 namespace sofa
 {
@@ -40,31 +51,38 @@ namespace gui
 namespace qt
 {
 
-//***************************************************************
-//Generic Library
-class SofaLibrary
+class QComponentLibrary : virtual public QWidget, public ComponentLibrary
 {
 
+    Q_OBJECT
 public:
+    typedef QGridLayout ComponentLayout;
+    typedef QPushButton ComponentLabel;
+    typedef QComboBox   ComponentTemplates;
+public:
+    QComponentLibrary(QWidget *parent, ComponentLayout *layout, const std::string &componentName, const std::string &categoryName, ClassEntry *entry, const std::vector< QString > &exampleFiles);
+    ~QComponentLibrary();
 
-    void build(const std::vector< QString >& examples);
-    void clear();
-    virtual void filter(const FilterQuery &f)=0;
+    void endConstruction();
 
-    std::string getComponentDescription( const std::string &componentName) const;
-    const ComponentLibrary *getComponent( const std::string &componentName) const;
-    unsigned int getNumComponents() const {return numComponents;}
 
-    virtual QWidget *getQWidget()=0;
+    void setDisplayed(bool b);
+
+    void setLayout(ComponentLayout *l) {layout = l;}
+
+    QWidget *getQWidget() { return this;};
 protected:
-    virtual CategoryLibrary *createCategory(const std::string &category, unsigned int numComponent)=0;
-    virtual void addCategory(CategoryLibrary *);
-    void computeNumComponents();
+    //--------------------------------------------
+    //Qt Data
+    ComponentLayout    *layout;
+    ComponentLabel     *label;
+    ComponentTemplates *templates;
 
-    std::vector< CategoryLibrary* > categories;
-    std::vector< QString > exampleFiles;
-    int numComponents;
+public slots:
+    void componentPressed();
 
+signals:
+    void componentDragged( std::string description, std::string templateName, ClassEntry *entry);
 };
 
 }

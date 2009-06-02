@@ -481,9 +481,6 @@ GNode *GraphModeler::buildNodeFromBaseElement(GNode *node,xml::BaseElement *elem
         }
         else
         {
-
-            ///TODO!!!
-
             const ComponentLibrary *component = sofaLibrary->getComponent(it->getType());
             //Configure the new Component
             const std::string templateAttribute("template");
@@ -509,18 +506,6 @@ GNode *GraphModeler::buildNodeFromBaseElement(GNode *node,xml::BaseElement *elem
     newNode->sendl.clearWarnings();
 
     return newNode;
-}
-
-ClassEntry *GraphModeler::getCreatorComponent(std::string name)
-{
-
-    ComponentMap::iterator it;
-    for (it=library.begin(); it!=library.end(); it++)
-    {
-        if (it->second.first->className == name)
-            return it->second.first;
-    }
-    return NULL;
 }
 
 void GraphModeler::configureElement(Base* b, xml::BaseElement *elem)

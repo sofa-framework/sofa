@@ -37,7 +37,7 @@ namespace qt
 {
 
 //-------------------------------------------------------------------------------------------------------
-CategoryLibrary::CategoryLibrary( QWidget *parent, const std::string &categoryName):QWidget(parent, categoryName.c_str()), name(categoryName)
+CategoryLibrary::CategoryLibrary( const std::string &categoryName): name(categoryName)
 {
 }
 
@@ -91,66 +91,6 @@ ComponentLibrary *CategoryLibrary::addComponent(const std::string &componentName
 
 void CategoryLibrary::endConstruction()
 {
-}
-
-
-
-//-------------------------------------------------------------------------------------------------------
-QCategoryLibrary::QCategoryLibrary( QWidget *parent, const std::string &categoryName, unsigned int numComponent): CategoryLibrary(parent, categoryName)
-{
-    //-----------------------------------------------------------------------
-    //QT Creation
-    //-----------------------------------------------------------------------
-    layout = new CategoryLayout( this, numComponent );
-}
-
-QCategoryLibrary::~QCategoryLibrary()
-{
-    for (unsigned int i=0; i<components.size(); ++i)
-    {
-        delete components[i];
-    }
-    delete layout;
-    components.clear();
-}
-ComponentLibrary *QCategoryLibrary::createComponent(const std::string &componentName, ClassEntry* entry, const std::vector< QString > &exampleFiles)
-{
-    ComponentLibrary* component = new QComponentLibrary(this, layout, componentName,name, entry, exampleFiles);
-    return component;
-}
-
-ComponentLibrary *QCategoryLibrary::addComponent(const std::string &componentName, ClassEntry* entry, const std::vector< QString > &exampleFiles)
-{
-    ComponentLibrary *component = CategoryLibrary::addComponent(componentName, entry, exampleFiles);
-    if (component)
-    {
-        layout->addWidget(component, components.size()-1,0);
-        connect( component, SIGNAL( componentDragged( std::string, std::string, ClassEntry* ) ),
-                this, SLOT( componentDraggedReception( std::string, std::string, ClassEntry*) ) );
-    }
-    return component;
-}
-
-
-void QCategoryLibrary::endConstruction()
-{
-    layout->addItem(new QSpacerItem(1,1,QSizePolicy::Minimum, QSizePolicy::Expanding ), layout->numRows(),0);
-}
-
-
-void QCategoryLibrary::setDisplayed(bool b)
-{
-    if (b) this->show();
-    else   this->hide();
-}
-
-
-//*********************//
-// SLOTS               //
-//*********************//
-void QCategoryLibrary::componentDraggedReception( std::string description, std::string templateName, ClassEntry* componentEntry)
-{
-    emit( componentDragged( description, name, templateName, componentEntry) );
 }
 
 }
