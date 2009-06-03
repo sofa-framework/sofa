@@ -550,7 +550,7 @@ void  OglShader::setGeometryVerticesOut(const unsigned int index, GLint v)
 }
 
 OglShaderElement::OglShaderElement()
-    : id(initData(&id, (std::string) "id", "id", "Set an ID name"))
+    : id(initData(&id, std::string(""), "id", "Set an ID name"))
     , indexShader(initData(&indexShader, (unsigned int) 0, "indexShader", "Set the index of the desired shader you want to apply this parameter"))
 {
 
@@ -566,6 +566,8 @@ void OglShaderElement::init()
         serr << "OglShaderElement: shader not found "<< sendl;
         return;
     }
+    if (id.getValue().empty())
+        id.setValue(this->getName());
 }
 
 
