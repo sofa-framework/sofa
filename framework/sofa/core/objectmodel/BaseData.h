@@ -113,6 +113,9 @@ public:
     /// True if the Data contain persistent information
     bool isPersistent() const { return m_isPersistent; }
 
+    /// True if the counter of modification gives valid information. It is the case for Data, but not for DataPtr
+    virtual bool isCounterValid() const =0;
+
     /// Can dynamically change the status of a Data, by making it appear or disappear
     void setDisplayed(bool b) {m_isDisplayed = b;}
     /// Can dynamically change the status of a Data, by making it readOnly

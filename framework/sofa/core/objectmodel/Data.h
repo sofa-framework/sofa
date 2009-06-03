@@ -118,6 +118,7 @@ public:
         }
     }
 
+    virtual bool isCounterValid() const {return true;};
 protected:
 
 
