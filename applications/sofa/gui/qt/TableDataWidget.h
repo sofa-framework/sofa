@@ -294,10 +294,9 @@ public:
     Q3Table* wTable;
     QPushButton* wDisplay;
 
-    table_data_widget_container() : wSize(NULL), wTable(NULL), wDisplay(NULL), rowHeaderSet(false) {}
+    table_data_widget_container() : wSize(NULL), wTable(NULL), wDisplay(NULL) {}
     int rows;
     int cols;
-    bool rowHeaderSet;
 
     void setRowHeader(int r, const std::string& s)
     {
@@ -388,21 +387,21 @@ public:
             }
         }
 
+        for (int y=0; y<rows; ++y)
+        {
+            const char* h = rhelper::header(d,y);
+            if (h && *h)
+                setRowHeader(y,h);
+            else
+            {
+                std::ostringstream o;
+                o << y;
+                setRowHeader(y,o.str());
+            }
+        }
 
         if (isDisplayed())
         {
-            for (int y=0; y<rows; ++y)
-            {
-                const char* h = rhelper::header(d,y);
-                if (h && *h)
-                    setRowHeader(y,h);
-                else
-                {
-                    std::ostringstream o;
-                    o << y;
-                    setRowHeader(y,o.str());
-                }
-            }
             for (int y=0; y<rows; ++y)
                 for (int x=0; x<cols; ++x)
                     setCell(y, x, *vhelper::get(*rhelper::get(d,y),x));

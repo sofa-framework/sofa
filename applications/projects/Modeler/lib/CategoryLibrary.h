@@ -46,7 +46,7 @@ class CategoryLibrary
 {
 public:
     CategoryLibrary( const std::string &categoryName);
-
+    virtual ~CategoryLibrary() {};
 
     virtual ComponentLibrary *addComponent(const std::string &componentName, ClassEntry* entry, const std::vector< QString > &exampleFiles);
     virtual void endConstruction();

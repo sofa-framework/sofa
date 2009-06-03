@@ -46,6 +46,7 @@ class SofaLibrary
 {
 
 public:
+    virtual ~SofaLibrary() {};
 
     void build(const std::vector< QString >& examples);
     void clear();
