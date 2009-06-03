@@ -1,6 +1,6 @@
 #version 120
 #extension GL_EXT_gpu_shader4 : enable
-varying vec4 diffuse, ambient, ambientGlobal, specular;
+varying vec4 diffuse, ambient, /*ambientGlobal,*/ specular;
 varying vec3 positionW, normalW;
 
 #ifdef TEXTURE_UNIT_0
@@ -22,6 +22,11 @@ uniform float altitude;
 
 #if defined(PHONG) || defined(BUMP_MAPPING)
 varying vec3 normalView;
+#endif
+
+#if defined(SMOOTH_LAYER)
+uniform float smoothSpecular;
+uniform float smoothShininess;
 #endif
 
 #if defined(PHONG)
@@ -55,19 +60,21 @@ varying vec3 lightDir2;
 #endif //LIGHT2
 
 #if defined (PERLIN_NOISE_COLOR)
+uniform float perlinColorFrequency;
 uniform int perlinColorOctave;
 uniform float perlinColorPersistance;
-uniform float perlinColorFactor;
+uniform vec4 perlinColorFactor;
 #endif
 
 #if defined (PERLIN_NOISE_BUMP) 
+uniform float perlinBumpFrequency;
 uniform int perlinBumpOctave;
 uniform float perlinBumpPersistance;
 uniform float perlinBumpFactor;
 #endif
 
 #if defined (PERLIN_NOISE_COLOR) || defined (PERLIN_NOISE_BUMP) 
-int perlinPermutations[ ] = int[256]( 151,160,137,91,90,15,
+uniform int perlinPermutations[256] /* = { 151,160,137,91,90,15,
    131,13,201,95,96,53,194,233,7,225,140,36,103,30,69,142,8,99,37,240,21,10,23,
    190, 6,148,247,120,234,75,0,26,197,62,94,252,219,203,117,35,11,32,57,177,33,
    88,237,149,56,87,174,20,125,136,171,168, 68,175,74,165,71,134,139,48,27,166,
@@ -79,7 +86,7 @@ int perlinPermutations[ ] = int[256]( 151,160,137,91,90,15,
    129,22,39,253, 19,98,108,110,79,113,224,232,178,185, 112,104,218,246,97,228,
    251,34,242,193,238,210,144,12,191,179,162,241, 81,51,145,235,249,14,239,107,
    49,192,214, 31,181,199,106,157,184, 84,204,176,115,121,50,45,127, 4,150,254,
-   138,236,205,93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180);
+   138,236,205,93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180 } */;
 #endif //PERLIN_NOISE
 
 vec3 reflect(vec3 I, vec3 N)
@@ -88,8 +95,8 @@ vec3 reflect(vec3 I, vec3 N)
 }
 
 #if defined (PERLIN_NOISE_COLOR) || defined (PERLIN_NOISE_BUMP) 
-float fade(float t) { return t * t * t * (t * (t * 6 - 15) + 10); } // 6t5-15t4+10t3
-float dfade(float t) { return 30*t * t * (t*(t - 2) + 1); } // 30t4-60t3+30t2
+float fade(float t) { return t * t * t * (t * (t * 6.0 - 15.0) + 10.0); } // 6t5-15t4+10t3
+float dfade(float t) { return 30.0 *t * t * (t*(t - 2.0) + 1.0); } // 30t4-60t3+30t2
 
 float lerp(float t, float a, float b) { return a + t * (b - a); }
 float dlerp(float t, float da, float db) { return da + t * (db - da); }
@@ -113,9 +120,9 @@ vec4 dgrad(int hash, float x, float y, float z)
 
 float noise(float x, float y, float z) 
 {
-	int X = int(floor(x)) & 255;                  // FIND UNIT CUBE THAT
-	int Y = int(floor(y)) & 255;                  // CONTAINS POINT.
-	int Z = int(floor(z)) & 255;
+	int X = int(floor(x));                  // FIND UNIT CUBE THAT
+	int Y = int(floor(y));                  // CONTAINS POINT.
+	int Z = int(floor(z));
 	
 	x -= floor(x);                                // FIND RELATIVE X,Y,Z
 	y -= floor(y);                                // OF POINT IN CUBE.
@@ -125,17 +132,17 @@ float noise(float x, float y, float z)
 	float v = fade(y);                                // FOR EACH OF X,Y,Z.
 	float w = fade(z);
 	
-    int A = (perlinPermutations[X]+Y) & 255;
-    int AA = (perlinPermutations[A]+Z) & 255;
-    int AB = (perlinPermutations[A+1]+Z) & 255;
-    int B = (perlinPermutations[X+1]+Y) & 255; 
-    int BA = (perlinPermutations[B]+Z) & 255;
-    int BB = (perlinPermutations[B+1]+Z) & 255;      // THE 8 CUBE CORNERS,
+    int A = (perlinPermutations[X & 255]+Y);
+    int AA = (perlinPermutations[A & 255]+Z);
+    int AB = (perlinPermutations[(A+1) & 255]+Z);
+    int B = (perlinPermutations[(X+1) & 255]+Y); 
+    int BA = (perlinPermutations[B & 255]+Z);
+    int BB = (perlinPermutations[(B+1) & 255]+Z);      // THE 8 CUBE CORNERS,
 
-    return lerp(w, lerp(v, lerp(u, grad(perlinPermutations[AA  ], x  , y  , z   ),  // AND ADD
-                                   grad(perlinPermutations[BA  ], x-1, y  , z   )), // BLENDED
-                           lerp(u, grad(perlinPermutations[AB  ], x  , y-1, z   ),  // RESULTS
-                                   grad(perlinPermutations[BB  ], x-1, y-1, z   ))),// FROM  8
+    return lerp(w, lerp(v, lerp(u, grad(perlinPermutations[AA & 255], x  , y  , z   ),  // AND ADD
+                                   grad(perlinPermutations[BA & 255], x-1, y  , z   )), // BLENDED
+                           lerp(u, grad(perlinPermutations[AB & 255], x  , y-1, z   ),  // RESULTS
+                                   grad(perlinPermutations[BB & 255], x-1, y-1, z   ))),// FROM  8
                    lerp(v, lerp(u, grad(perlinPermutations[(AA+1) & 255], x  , y  , z-1 ),  // CORNERS
                                    grad(perlinPermutations[(BA+1) & 255], x-1, y  , z-1 )), // OF CUBE
                            lerp(u, grad(perlinPermutations[(AB+1) & 255], x  , y-1, z-1 ),
@@ -224,40 +231,37 @@ vec4 dnoise(vec3 p)
 	return dnoise(p.x,p.y,p.z);
 }
 
-float perlin_noise(vec3 p, int octave, float persistance)
+float perlin_noise(vec3 p, float freq, int octave, float persistance)
 {
-	float res = 0.0;
-    float o=1.0;
+    float res = 0.0;
+    float o=freq;
     float f=persistance;
         
     for(int i = 0;i<octave;i++)
     {
-    	o *= 2.0;
-    	f *= f;
-    	
         res += noise(p*o) * f;
+    	o *= 2.0;
+    	f *= f;
     }
            
     return res;
 }
 
-vec4 perlin_dnoise(vec3 p, int octave, float persistance)
+vec4 perlin_dnoise(vec3 p, float freq, int octave, float persistance)
 {
-	vec4 res = vec4(0.0,0.0,0.0,0.0);
-    float o=1.0;
+    vec4 res = vec4(0.0,0.0,0.0,0.0);
+    float o=freq;
     float f=persistance;
         
     for(int i = 0;i<octave;i++)
     {
+        res += dnoise(p*o) * f;
     	o *= 2.0;
     	f *= f;
-    	
-        res += dnoise(p*o) * f;
     }
            
     return res;
 }
-
 
 #endif //PERLIN_NOISE
 
@@ -265,7 +269,7 @@ void main()
 {
 	vec4 color = gl_Color;
 	
-	color = ambientGlobal;
+	color = ambient;
 	
 #ifdef TEXTURE_UNIT_0
 	color.rgb = texture2D(colorTexture,gl_TexCoord[0].st).rgb;
@@ -296,6 +300,14 @@ void main()
 
 	color.rgb = showDebug * (vec3(1.0,1.0,1.0)-coefs) + (1.0-showDebug)*color.rgb;
 	color.a = 1.0;
+#endif
+
+#if defined (PERLIN_NOISE_COLOR) 
+	//color *= 0.8+0.2*noise(positionW*10);
+	//color *= 0.8+0.2*perlin_noise(positionW, 4, 1.0);
+	color += perlinColorFactor*(perlin_noise(positionW, perlinColorFrequency, perlinColorOctave, perlinColorPersistance));
+	//float t = perlin_noise(positionW, 4, 1.0);
+	//color.xyz = 0.8+vec3(t, t, t);
 #endif
 
 	//normal
@@ -338,7 +350,7 @@ void main()
 #endif //BUMP_MAPPING
 #if defined (PERLIN_NOISE_BUMP) 
 	//n += gl_NormalMatrix*dnoise(positionW*10).xyz*0.2;
-	n += gl_NormalMatrix*perlin_dnoise(positionW,perlinBumpOctave,perlinBumpPersistance).xyz*perlinBumpFactor;
+	n += gl_NormalMatrix*perlin_dnoise(positionW,perlinBumpFrequency,perlinBumpOctave,perlinBumpPersistance).xyz*perlinBumpFactor;
 	n = normalize(n);
 #endif
 
@@ -377,19 +389,14 @@ void main()
 
 	NdotHV = max(dot(n,halfV),0.0);
 	spec +=  specular * pow(NdotHV,gl_FrontMaterial.shininess) /* * att */;
+
+#if defined(SMOOTH_LAYER)
+	spec +=  smoothSpecular * pow( max(dot(normalize(normalW),halfV),0.0),smoothShininess);
+#endif
 	
 	color.rgb += spec.rgb;
 	
 #endif //PHONG
-
-#if defined (PERLIN_NOISE_COLOR) 
-	//color *= 0.8+0.2*noise(positionW*10);
-	//color *= 0.8+0.2*perlin_noise(positionW, 4, 1.0);
-	color *= 0.8 + perlinColorFactor*perlin_noise(positionW, perlinColorOctave, perlinColorPersistance);
-	//float t = perlin_noise(positionW, 4, 1.0);
-	//color.xyz = 0.8+vec3(t, t, t);
-#endif
-
 
 #ifdef BORDER_OPACIFYING
 	vec3 unitNormalVec = normalize(normalW);
