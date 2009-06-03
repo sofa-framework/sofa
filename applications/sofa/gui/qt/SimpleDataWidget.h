@@ -171,7 +171,7 @@ public:
     }
     virtual void update()
     {
-        if (counter != data->getCounter())
+        if (!data->isCounterValid() || counter != data->getCounter())
             readFromData();
     }
 };

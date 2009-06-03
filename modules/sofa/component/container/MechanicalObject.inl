@@ -93,7 +93,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     this->addField(f_X, "position");
     this->addField(f_V, "velocity");
     this->addField(f_F, "force");
-    this->addField(f_F, "externalForce");
+    this->addField(f_externalF, "externalForce");
     this->addField(f_Dx, "derivX");
     this->addField(f_Xfree, "free_position");
     this->addField(f_Vfree, "free_velocity");

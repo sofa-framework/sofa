@@ -32,6 +32,10 @@
 #include <sofa/component/topology/PointSubset.h>
 #include <sofa/component/topology/PointData.h>
 
+//If a table has higher than MAX_NUM_ELEM, its data won't be loaded at the creation of the window
+//user has to click on the button update to see the content
+#define MAX_NUM_ELEM 100
+
 namespace sofa
 {
 
@@ -288,9 +292,13 @@ public:
 
     QSpinBox* wSize;
     Q3Table* wTable;
-    table_data_widget_container() : wSize(NULL), wTable(NULL) {}
+    QPushButton* wDisplay;
+
+    table_data_widget_container() : wSize(NULL), wTable(NULL), wDisplay(NULL), rowHeaderSet(false) {}
     int rows;
     int cols;
+    bool rowHeaderSet;
+
     void setRowHeader(int r, const std::string& s)
     {
         if (FLAGS & TABLE_HORIZONTAL)
@@ -340,10 +348,14 @@ public:
     {
         s = getCellText(r,c);
     }
+
+
+
     template<class Dialog, class Slot>
     bool createWidgets(Dialog* dialog, Slot s, QWidget* parent, const data_type& d, bool readOnly)
     {
         rows = rhelper::size(d);
+
         if (rows > 0)
             cols = vhelper::size(*rhelper::get(d,0));
         else
@@ -353,19 +365,16 @@ public:
             wTable = new Q3Table(cols, rows, parent);
         else
             wTable = new Q3Table(rows, cols, parent);
+
+        wDisplay = new QPushButton( QString("Click to display the values"), parent);
+
+        wDisplay->setToggleButton(true);
+        wDisplay->setOn(rows < MAX_NUM_ELEM && rows != 0 );
+        updateVisibilityTable();
+
+
         wSize->setValue(rows);
-        for (int y=0; y<rows; ++y)
-        {
-            const char* h = rhelper::header(d,y);
-            if (h && *h)
-                setRowHeader(y,h);
-            else
-            {
-                std::ostringstream o;
-                o << y;
-                setRowHeader(y,o.str());
-            }
-        }
+
         for (int x=0; x<cols; ++x)
         {
             const char* h = (rows > 0) ? vhelper::header(*rhelper::get(d,0),x) : vhelper::header(row_type(),x);
@@ -378,9 +387,26 @@ public:
                 setColHeader(x,o.str());
             }
         }
-        for (int y=0; y<rows; ++y)
-            for (int x=0; x<cols; ++x)
-                setCell(y, x, *vhelper::get(*rhelper::get(d,y),x));
+
+
+        if (isDisplayed())
+        {
+            for (int y=0; y<rows; ++y)
+            {
+                const char* h = rhelper::header(d,y);
+                if (h && *h)
+                    setRowHeader(y,h);
+                else
+                {
+                    std::ostringstream o;
+                    o << y;
+                    setRowHeader(y,o.str());
+                }
+            }
+            for (int y=0; y<rows; ++y)
+                for (int x=0; x<cols; ++x)
+                    setCell(y, x, *vhelper::get(*rhelper::get(d,y),x));
+        }
 
         if (readOnly)
         {
@@ -399,6 +425,8 @@ public:
             }
             dialog->connect(wTable, SIGNAL( valueChanged(int,int) ), dialog, s);
         }
+        dialog->connect(wDisplay, SIGNAL( clicked() ), dialog, s);
+
         return true;
     }
     void setReadOnly(bool readOnly)
@@ -406,6 +434,31 @@ public:
         wSize->setEnabled(!readOnly);
         wTable->setEnabled(!readOnly);
     }
+
+    bool isDisplayed()
+    {
+        return (wDisplay->isOn());
+    }
+
+    void updateVisibilityTable()
+    {
+        setDisplayed(wDisplay->isOn());
+    }
+
+    void setDisplayed( bool disp)
+    {
+        if (disp)
+        {
+            wDisplay->setText(QString("Click to hide the values"));
+        }
+        else
+        {
+            wDisplay->setText(QString("Click to display the values"));
+        }
+
+        wTable->setShown(disp);
+    }
+
     void readFromData(const data_type& d)
     {
         int newRows = rhelper::size(d);
@@ -431,9 +484,13 @@ public:
                 wTable->setNumCols(newCols);
             cols = newCols;
         }
-        for (int y=0; y<rows; ++y)
-            for (int x=0; x<cols; ++x)
-                setCell(y, x, *vhelper::get(*rhelper::get(d,y),x));
+
+        if (isDisplayed())
+        {
+            for (int y=0; y<rows; ++y)
+                for (int x=0; x<cols; ++x)
+                    setCell(y, x, *vhelper::get(*rhelper::get(d,y),x));
+        }
     }
     void writeToData(data_type& d)
     {
@@ -461,20 +518,25 @@ public:
                 std::cout << "Resize to " << rows << " succeeded." << std::endl;
             }
         }
-        for (int y=0; y<rows; ++y)
+
+        if (isDisplayed())
         {
-            row_type r = *rhelper::get(d,y);
-            for (int x=0; x<cols; ++x)
+            for (int y=0; y<rows; ++y)
             {
-                value_type v = *vhelper::get(r,x);
-                getCell(y, x, v);
-                vhelper::set(v,r,x);
+                row_type r = *rhelper::get(d,y);
+                for (int x=0; x<cols; ++x)
+                {
+                    value_type v = *vhelper::get(r,x);
+                    getCell(y, x, v);
+                    vhelper::set(v,r,x);
+                }
+                rhelper::set(r,d,y);
             }
-            rhelper::set(r,d,y);
         }
     }
     bool processChange(const QObject* sender)
     {
+        updateVisibilityTable();
         if (!(FLAGS & TABLE_FIXEDSIZE) && sender == wSize)
         {
             int newRows = wSize->value();

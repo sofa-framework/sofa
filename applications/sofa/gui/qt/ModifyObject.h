@@ -220,6 +220,7 @@ protected:
     core::objectmodel::BaseData* baseData;
     QWidget* parent;
     ModifyObject* dialog;
+    std::string name;
     bool readOnly;
 public:
     typedef core::objectmodel::BaseData MyData;
@@ -230,11 +231,13 @@ public:
     void setDialog(ModifyObject* d) { dialog = d; }
     void setReadOnly(bool b) { readOnly = b; }
     void setParent(QWidget *p) { parent=p; }
+    void setName(std::string n) { name = n;};
     virtual bool createWidgets(QWidget* parent) = 0;
     virtual void readFromData() = 0;
     virtual void writeToData() {}
     virtual bool processChange(const QObject* /*sender*/) { return false; }
     virtual bool isModified() { return false; }
+    std::string getName() { return name;};
     virtual void update()
     {
         readFromData();
@@ -269,6 +272,7 @@ public:
         instance->setDialog(arg.dialog);
         instance->setReadOnly(arg.readOnly);
         instance->setParent(arg.parent);
+        instance->setName(arg.name);
         if (!instance->createWidgets(arg.parent))
         {
             delete instance;
