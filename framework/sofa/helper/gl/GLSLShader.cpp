@@ -122,6 +122,30 @@ std::string GLSLShader::LoadTextFile(const std::string& strFile)
     return strText;
 }
 
+std::string CombineHeaders(const std::string& header, const std::string& source)
+{
+    if (header.empty()) return source;
+    std::size_t spos = source.find_first_not_of("\n\r");
+    if (source.size() > spos + 8 && source.substr(spos,8) == std::string("#version"))
+    {
+        spos = source.find('\n', spos+8);
+        if (spos != std::string::npos) spos = source.find_first_not_of("\n\r", spos);
+    }
+    while (spos != std::string::npos && source.size() > spos + 10 && source.substr(spos,10) == std::string("#extension"))
+    {
+        spos = source.find('\n', spos+10);
+        if (spos != std::string::npos) spos = source.find_first_not_of("\n\r", spos);
+    }
+    std::string res;
+    if (spos == 0)
+        res = header + source;
+    else if (spos == std::string::npos)
+        res = source + "\n" + header;
+    else
+        res = source.substr(0, spos) + header + source.substr(spos);
+    return res;
+}
+
 ///	This function compiles a shader and check the log
 bool GLSLShader::CompileShader(GLint target, const std::string& source, GLhandleARB& shader)
 {
@@ -169,17 +193,17 @@ void GLSLShader::InitShaders(const std::string& strVertex, const std::string& st
     bool ready = true;
 
     // Now we load and compile the shaders from their respective files
-    ready &= CompileShader( GL_VERTEX_SHADER_ARB, header + LoadTextFile(strVertex), m_hVertexShader );
+    ready &= CompileShader( GL_VERTEX_SHADER_ARB, CombineHeaders(header, LoadTextFile(strVertex)), m_hVertexShader );
     if (!strGeometry.empty())
     {
 #ifdef GL_GEOMETRY_SHADER_EXT
-        ready &= CompileShader( GL_GEOMETRY_SHADER_EXT, LoadTextFile(strGeometry), m_hGeometryShader );
+        ready &= CompileShader( GL_GEOMETRY_SHADER_EXT, CombineHeaders(header, LoadTextFile(strGeometry)), m_hGeometryShader );
 #else
         std::cerr << "SHADER ERROR: GL_GEOMETRY_SHADER_EXT not defined. Please use a recent version of GLEW.\n";
         ready = false;
 #endif
     }
-    ready &= CompileShader( GL_FRAGMENT_SHADER_ARB, header + LoadTextFile(strFragment), m_hFragmentShader );
+    ready &= CompileShader( GL_FRAGMENT_SHADER_ARB, CombineHeaders(header, LoadTextFile(strFragment)), m_hFragmentShader );
 
     if (!ready)
     {
