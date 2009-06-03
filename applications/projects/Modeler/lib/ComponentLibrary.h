@@ -54,6 +54,7 @@ class ComponentLibrary
 {
 public:
     ComponentLibrary(const std::string &componentName, const std::string &categoryName, ClassEntry *entry, const std::vector< QString > &exampleFiles);
+    virtual ~ComponentLibrary() {};
 
     virtual void addTemplate( const std::string &templateName);
     virtual void endConstruction();
