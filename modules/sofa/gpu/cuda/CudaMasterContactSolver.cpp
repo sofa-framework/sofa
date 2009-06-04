@@ -74,8 +74,19 @@ CudaMasterContactSolver<real>::CudaMasterContactSolver()
     constraintGroups.endEdit();
 
     _numPreviousContact=0;
-    _PreviousContactList.resize(MAX_NUM_CONSTRAINTS * sizeof(contactBuf));
-    _cont_id_list.resize(MAX_NUM_CONSTRAINTS * sizeof(long));
+    _PreviousContactList.resize(MAX_NUM_CONSTRAINTS);
+    _cont_id_list.resize(MAX_NUM_CONSTRAINTS);
+
+    constraintRenumbering.resize(MAX_NUM_CONSTRAINTS);
+    for (unsigned int i=0; i<MAX_NUM_CONSTRAINTS; ++i)
+        constraintRenumbering[i] = i+(i/15);
+
+    unsigned nmax = MAX_NUM_CONSTRAINTS + MAX_NUM_CONSTRAINTS/15;
+    constraintReinitialize.resize(nmax);
+    for (unsigned i=0; i<MAX_NUM_CONSTRAINTS; i++)
+    {
+        constraintReinitialize[i+i/15] = i;
+    }
 }
 
 template<class real>
@@ -98,24 +109,41 @@ void CudaMasterContactSolver<real>::build_LCP()
 
     _realNumConstraints = _numConstraints;
 
-    if (_mu > 0.0)
+    if (_numConstraints > MAX_NUM_CONSTRAINTS)
     {
-        constraintRenumbering.resize(_realNumConstraints);
-        for (unsigned int i=0; i<_realNumConstraints; ++i)
-            constraintRenumbering[i] = i+(i/15);
-        simulation::MechanicalRenumberConstraint(constraintRenumbering).execute(context);
+        serr<<sendl<<"Error in CudaMasterContactSolver, maximum number of contacts exceeded, "<< _numConstraints/3 <<" contacts detected"<<endl;
+        MAX_NUM_CONSTRAINTS=MAX_NUM_CONSTRAINTS+MAX_NUM_CONSTRAINTS;
 
-        _numConstraints += _numConstraints/15;
+        _PreviousContactList.resize(MAX_NUM_CONSTRAINTS * sizeof(contactBuf));
+        _cont_id_list.resize(MAX_NUM_CONSTRAINTS * sizeof(long));
+
+        constraintRenumbering.resize(MAX_NUM_CONSTRAINTS);
+        for (unsigned int i=0; i<MAX_NUM_CONSTRAINTS; ++i)
+            constraintRenumbering[i] = i+(i/15);
+
+        unsigned nmax = MAX_NUM_CONSTRAINTS + MAX_NUM_CONSTRAINTS/15;
+        constraintReinitialize.resize(nmax);
+        for (unsigned i=0; i<MAX_NUM_CONSTRAINTS; i++)
+        {
+            constraintReinitialize[i+i/15] = i;
+        }
     }
 
-    unsigned num3Constraint = _numConstraints;
+    if (_mu > 0.0)
+    {
+        simulation::MechanicalRenumberConstraint(constraintRenumbering).execute(context);
 
-    _numConstraints = ((_numConstraints+15)/16) * 16;
-    if (_numConstraints<32) _numConstraints = 32;
+        _realNumConstraints += _realNumConstraints/15;
+    }
 
-    _dFree.resize(_numConstraints);
-    _W.resize(_numConstraints,_numConstraints);
-    _f.resize(_numConstraints);
+    unsigned num3Constraint = _realNumConstraints;
+
+    _realNumConstraints = ((_realNumConstraints+15)/16) * 16;
+    if (_realNumConstraints<32) _realNumConstraints = 32;
+
+    _dFree.resize(_realNumConstraints);
+    _W.resize(_realNumConstraints,_realNumConstraints);
+    _f.resize(_realNumConstraints);
 
     _W.clear();
 
@@ -128,32 +156,14 @@ void CudaMasterContactSolver<real>::build_LCP()
         cc->getCompliance(&_W);
     }
 
-    if (_mu > 0.0)
-    {
-// 	  for (unsigned i=0;i<_realNumConstraints;i++) {
-// 	      	constraintRenumbering[i] = i;
-// 	  }
-// 	  simulation::MechanicalRenumberConstraint(constraintRenumbering).execute(context);
+    if (_mu > 0.0) simulation::MechanicalRenumberConstraint(constraintReinitialize).execute(context);
 
-        for (unsigned i=15; i<num3Constraint; i+=16)
-        {
-            _W.set(i,i,1.0);
-        }
-    }
-
-    for (unsigned i=num3Constraint; i<_numConstraints; i++)
+    for (unsigned i=num3Constraint; i<_realNumConstraints; i++)
     {
         _W.set(i,i,1.0);
     }
 
-    if (_numConstraints > MAX_NUM_CONSTRAINTS)
-    {
-        serr<<sendl<<"Error in CudaMasterContactSolver, maximum number of contacts exceeded, "<< _numConstraints/3 <<" contacts detected"<<endl;
-        MAX_NUM_CONSTRAINTS=MAX_NUM_CONSTRAINTS+MAX_NUM_CONSTRAINTS;
 
-        _PreviousContactList.resize(MAX_NUM_CONSTRAINTS * sizeof(contactBuf));
-        _cont_id_list.resize(MAX_NUM_CONSTRAINTS * sizeof(long));
-    }
 
     if (initial_guess.getValue())
     {
@@ -165,7 +175,7 @@ void CudaMasterContactSolver<real>::build_LCP()
 template<class real>
 void CudaMasterContactSolver<real>::computeInitialGuess()
 {
-    int numContact = (_mu > 0.0) ? _realNumConstraints/3 : _realNumConstraints;
+    int numContact = (_mu > 0.0) ? _numConstraints/3 : _numConstraints;
 
     for (int c=0; c<numContact; c++)
     {
@@ -180,7 +190,6 @@ void CudaMasterContactSolver<real>::computeInitialGuess()
             _f[c] =  0.0;
         }
     }
-
 
     for (int c=0; c<numContact; c++)
     {
@@ -208,7 +217,7 @@ void CudaMasterContactSolver<real>::keepContactForcesValue()
 {
     _numPreviousContact=0;
 
-    int numContact = (_mu > 0.0) ? _realNumConstraints/3 : _realNumConstraints;
+    int numContact = (_mu > 0.0) ? _numConstraints/3 : _numConstraints;
     //_PreviousContactList.resize(numContact);
 
     for (int c=0; c<numContact; c++)
@@ -331,41 +340,58 @@ void CudaMasterContactSolver<real>::step(double dt)
 #else
     if (_mu > 0.0)
     {
-        printf("\nFE = [");
-        for (unsigned j=0; j<_numConstraints; j++)
-        {
-            printf("%f ",_f.element(j));
-        }
-        printf("]\n");
+// 			_wTmp.resize(_realNumConstraints,_realNumConstraints);
+//
+// 			_wTmp.clear();
+//
+// 			for (unsigned k=0;k<_numConstraints;k++) {
+// 			  int j = k + k/15;
+// 			  for (unsigned l=0;l<_numConstraints;l++) {
+// 			    int i = l + l/15;
+// 			    _wTmp.set(i,j,_W.element(l,k));
+// 			  }
+// 			}
+//
+// 			for (unsigned k=_numConstraints+_numConstraints/15;k<_realNumConstraints;k++) {
+// 			  _wTmp.set(k,k,1.0);
+// 			}
 
         real toln = ((int) (_realNumConstraints/3) + 1) * (real)_tol;
-        error = sofa::gpu::cuda::CudaLCP<real>::CudaNlcp_gaussseidel(useGPU_d.getValue(),_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), _f.getCudaVector(), _mu,toln, _maxIt);
+        error = sofa::gpu::cuda::CudaLCP<real>::CudaNlcp_gaussseidel(useGPU_d.getValue(),_realNumConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), _f.getCudaVector(), _mu,toln, _maxIt);
+
+// 			printf("\nFE = [");
+// 			for (unsigned j=0;j<_numConstraints;j++) {
+// 				printf("%f ",_f.element(j));
+// 			}
+// 			printf("]\n");
+
+// 			real toln = ((int) (_numConstraints/3) + 1) * (real)_tol;
+// 			error = sofa::gpu::cuda::CudaLCP<real>::CudaNlcp_gaussseidel(useGPU_d.getValue(),_realNumConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), _f.getCudaVector(), _mu,toln, _maxIt);
 
 // 			printf("M = [\n");
 // 			for (unsigned j=0;j<_W.rowSize();j++) {
 // 				for (unsigned i=0;i<_W.colSize();i++) {
-// 					printf("%3f ",_W.element(i,j));
+// 					printf("%f\t",_W.element(i,j));
 // 				}
 // 				printf("\n");
 // 			}
 // 			printf("]\n");
-
+//
 // 			printf("q = [");
 // 			for (unsigned j=0;j<_f.size();j++) {
 // 				printf("%f\t",_dFree.element(j));
 // 			}
 // 			printf("]\n");
 //
-        printf("FS = [");
-        for (unsigned j=0; j<_realNumConstraints; j++)
-        {
-            printf("%f ",_f.element(j));
-        }
-        printf("]\n");
+// 			printf("FS = [");
+// 			for (unsigned j=0;j<_numConstraints;j++) {
+// 				printf("%f ",_f.element(j));
+// 			}
+// 			printf("]\n");
     }
     else
     {
-        error = sofa::gpu::cuda::CudaLCP<real>::CudaGaussSeidelLCP1(useGPU_d.getValue(),_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), _f.getCudaVector(), (real)_tol, _maxIt);
+        error = sofa::gpu::cuda::CudaLCP<real>::CudaGaussSeidelLCP1(useGPU_d.getValue(),_realNumConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), _f.getCudaVector(), (real)_tol, _maxIt);
     }
 #endif
 
@@ -418,7 +444,7 @@ void CudaMasterContactSolver<real>::step(double dt)
         sout<<"ContactCorrections\t" << time_contactCorrections <<" s \t| " << time_contactCorrections*100.0/total << "%"  <<sendl;
 
         unsigned nbNnul = 0;
-        unsigned sz = _W.colSize() * _W.rowSize();
+        unsigned sz = _realNumConstraints * _realNumConstraints;
         for (unsigned j=0; j<sz; j++) if (_W.getCudaMatrix().hostRead()[j]==0.0) nbNnul++;
 
         sout<<"Sparsity =  " << ((double) (((double) nbNnul * 100.0) / ((double)sz))) <<"%" <<sendl;

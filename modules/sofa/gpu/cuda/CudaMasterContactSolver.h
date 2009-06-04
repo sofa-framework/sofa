@@ -257,7 +257,7 @@ private:
     std::vector<contactBuf> _PreviousContactList;
     unsigned int _numPreviousContact;
     std::vector<long> _cont_id_list;
-    helper::vector<unsigned> constraintRenumbering;
+    helper::vector<unsigned> constraintRenumbering,constraintReinitialize;
 };
 
 } // namespace odesolver
