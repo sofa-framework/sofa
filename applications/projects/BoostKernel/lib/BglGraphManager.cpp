@@ -248,7 +248,7 @@ void BglGraphManager::clearVertex( Hvertex v )
 }
 
 /// Update the graph with all the operation stored in memory: add/delete node, add interactions...
-void BglGraphManager::update()
+void BglGraphManager::updateGraph()
 {
 //         std::cerr << "node:" <<nodeToAdd.size() << " : edge:" << edgeToAdd.size() << " : interaction:" << interactionToAdd.size() << "\n";
     for (std::set<Hvertex>::iterator it=vertexToDelete.begin(); it!=vertexToDelete.end(); it++) deleteVertex(*it);
@@ -258,14 +258,21 @@ void BglGraphManager::update()
     for (unsigned int i=0; i<interactionToAdd.size(); i++)         addInteractionNow(interactionToAdd[i]);
 
     if (vertexToDelete.size() || nodeToAdd.size()) computeRoots();
-    if (needToComputeInteractions()) computeInteractionGraphAndConnectedComponents();
 
     vertexToDelete.clear();
     nodeToAdd.clear();
     edgeToAdd.clear();
     interactionToAdd.clear();
+}
+
+void BglGraphManager::update()
+{
+    updateGraph();
+
+    if (needToComputeInteractions()) computeInteractionGraphAndConnectedComponents();
 
 }
+
 
 Node* BglGraphManager::newNodeNow(const std::string& name)
 {
@@ -299,37 +306,41 @@ void BglGraphManager::reset()
 
 void BglGraphManager::clear()
 {
+    updateGraph();
+
+    {
+        Hgraph::vertex_iterator h_vertex_iter, h_vertex_iter_end;
+        for (tie(h_vertex_iter,h_vertex_iter_end) = vertices(hgraph); h_vertex_iter != h_vertex_iter_end; ++h_vertex_iter)
+        {
+            remove_vertex(*h_vertex_iter, hgraph);
+        }
+    }
+    {
+        Rgraph::vertex_iterator r_vertex_iter, r_vertex_iter_end;
+        for (tie(r_vertex_iter,r_vertex_iter_end) = vertices(rgraph); r_vertex_iter != r_vertex_iter_end; ++r_vertex_iter)
+        {
+            remove_vertex(*r_vertex_iter, rgraph);
+        }
+    }
+
     solver_colisionGroup_map.clear();
     nodeSolvers.clear();
     nodeGroupSolvers.clear();
-
-    clear();
 
     hgraph.clear();
     h_node_vertex_map.clear();
     rgraph.clear();
     r_node_vertex_map.clear();
-    delete collisionPipeline;
     collisionPipeline=NULL;
 
-    delete masterNode; masterNode=NULL;
-//         delete collisionNode; collisionNode=NULL;
 
     h_vertex_node_map = get( bglnode_t(), hgraph);
     r_vertex_node_map = get( bglnode_t(), rgraph);
 
     // The animation control overloads the solvers of the scene
-    masterNode= static_cast<BglNode*>(newNodeNow("masterNode"));
+    Node *n=newNodeNow("masterNode");
+    masterNode= dynamic_cast<BglNode*>(n);
     masterVertex = h_node_vertex_map[masterNode];
-
-//         // The collision Node
-// 	collisionNode= static_cast<BglNode*>(newNodeNow("collisionNode"));
-//         collisionVertex = h_node_vertex_map[collisionNode];
-
-//         // The visual Node
-// 	visualNode= static_cast<BglNode*>(newNodeNow("visualNode"));
-//         visualVertex = h_node_vertex_map[visualNode];
-
 }
 
 

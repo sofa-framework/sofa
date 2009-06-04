@@ -196,7 +196,7 @@ helper::vector< BglNode* > BglNode::getChildren()
     for (tie(out_i, out_end) = boost::out_edges(vertexId, *graph); out_i != out_end; ++out_i)
     {
         BglGraphManager::Hedge e=*out_i;
-        BglGraphManager::Hvertex src=source(e, *graph);
+        BglGraphManager::Hvertex src=target(e, *graph);
         Node *n=graphManager->getNodeFromHvertex(src);
         if (n) p.push_back(static_cast<BglNode*>(n));
     }
