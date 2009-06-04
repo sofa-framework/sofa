@@ -376,6 +376,7 @@ public:
 
         if (isDisplayed())
         {
+            processTableModifications(d);
             fillTable(d);
             rows = dataRows;
         }
@@ -500,8 +501,15 @@ public:
 
     void processTableModifications(const data_type &d)
     {
-        int currentNumRow=wTable->numRows();
+        int currentNumRow;
+        if (FLAGS & TABLE_HORIZONTAL)
+            currentNumRow=wTable->numCols();
+        else
+            currentNumRow=wTable->numRows();
+
         int dataRows = wSize->value();
+
+        if (dataRows == currentNumRow) return;
 
         if (FLAGS & TABLE_HORIZONTAL)
             wTable->setNumCols(dataRows);
@@ -537,20 +545,22 @@ public:
 
     void fillTable(const data_type &d)
     {
-        int currentNumRows=wTable->numRows();
-        for (int y=0; y<currentNumRows; ++y)
+        int currentNum;
+        if (FLAGS & TABLE_HORIZONTAL)  currentNum=wTable->numCols();
+        else                           currentNum=wTable->numRows();
+
+        for (int y=0; y<currentNum; ++y)
             for (int x=0; x<cols; ++x)
                 setCell(y, x, *vhelper::get(*rhelper::get(d,y),x));
+
     }
 
     bool processChange(const QObject* sender)
     {
         updateVisibilityTable();
         data_type d=data_type();
-        if (isDisplayed())
-        {
-            processTableModifications(d);
-        }
+
+        if (isDisplayed()) processTableModifications(d);
 
         if (!(FLAGS & TABLE_FIXEDSIZE) && sender == wSize)
         {
