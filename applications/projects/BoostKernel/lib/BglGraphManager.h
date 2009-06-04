@@ -237,6 +237,8 @@ public:
     void removeEdge( Node* p, Node* c );
 
     /// Update the graph with all the operation stored in memory: add/delete node, add interactions...
+
+    void updateGraph();
     void update();
 
     void reset();

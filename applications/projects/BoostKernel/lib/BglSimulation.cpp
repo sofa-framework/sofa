@@ -161,21 +161,15 @@ Data: hgraph, rgraph
     */
 void BglSimulation::init()
 {
-    cerr<<"begin BglSimulation::init()"<<endl;
     graphManager.update();
 
     /// find the roots in hgraph
     graphManager.computeRoots();
 
     graphManager.insertHierarchicalGraph();
-//         insertCollisionGraph();
-//         insertVisualGraph();
 
-    print(graphManager.getMasterNode() );
-    std::cerr << "-----------------------------" << std::endl;
     InitVisitor act;
     graphManager.getMasterNode()->doExecuteVisitor(&act);
-
 
 //         /// compute the interaction groups
     graphManager.computeInteractionGraphAndConnectedComponents();
@@ -194,6 +188,8 @@ void BglSimulation::animate(Node* root, double dt)
     simulation::Visitor::printComment(std::string("Begin Step"));
 #endif
     Node *masterNode = graphManager.getMasterNode();
+
+//         masterNode->execute<PrintVisitor>();
     {
         AnimateBeginEvent ev ( dt );
         PropagateEventVisitor act ( &ev );
@@ -237,7 +233,7 @@ void BglSimulation::animate(Node* root, double dt)
 
 }
 
-void BglSimulation::computeBBox(Node* root, SReal* minBBox, SReal* maxBBox)
+void BglSimulation::computeBBox(Node* /*root*/, SReal* minBBox, SReal* maxBBox)
 {
     sofa::simulation::Simulation::computeBBox(graphManager.getMasterNode(),minBBox,maxBBox);
 }
@@ -261,7 +257,7 @@ void BglSimulation::resetMechanicalMapping(Node* , core::componentmodel::behavio
 }
 
 /// Method called when a MechanicalMapping is created.
-void BglSimulation::setContactResponse(Node * parent, core::objectmodel::BaseObject* response)
+void BglSimulation::setContactResponse(Node * /*parent*/, core::objectmodel::BaseObject* response)
 {
     if (InteractionForceField *iff = dynamic_cast<InteractionForceField*>(response))
     {
@@ -278,7 +274,7 @@ void BglSimulation::setContactResponse(Node * parent, core::objectmodel::BaseObj
     }
 }
 /// Method called when a MechanicalMapping is destroyed.
-void BglSimulation::resetContactResponse(Node * parent, core::objectmodel::BaseObject* response)
+void BglSimulation::resetContactResponse(Node * /*parent*/, core::objectmodel::BaseObject* response)
 {
     if (InteractionForceField *iff = dynamic_cast<InteractionForceField*>(response))
     {
@@ -312,8 +308,6 @@ Node* BglSimulation::load(const char* f)
         sofa::helper::system::DataRepository.findFile(fileName);
     }
 
-    std::cerr << "Loading " << f << "\n";
-
     sofa::simulation::tree::GNode* groot = 0;
 
     sofa::simulation::tree::TreeSimulation treeSimu;
@@ -321,7 +315,6 @@ Node* BglSimulation::load(const char* f)
     if (in_filename.rfind(".simu") == std::string::npos)
         groot = dynamic_cast< sofa::simulation::tree::GNode* >(treeSimu.load(fileName.c_str()));
 
-    std::cerr << "File Loaded\n";
     if ( !groot )
     {
         cerr<<"BglSimulation::load file "<<fileName<<" failed"<<endl;
@@ -329,24 +322,28 @@ Node* BglSimulation::load(const char* f)
     }
     //else cerr<<"BglSimulation::loaded file "<<fileName<<endl;
 
-// 	     cerr<<"GNode loaded: "<<endl;
-// 	     groot->execute<PrintVisitor>();
-    //      cerr<<"==========================="<<endl;
+//        cerr<<"GNode loaded: "<<endl;
+//        groot->execute<PrintVisitor>();
+//         cerr<<"==========================="<<endl;
+
+
     std::map<simulation::Node*,BglNode*> gnode_bnode_map;
     BuildNodesFromGNodeVisitor b1(this);
     groot->execute(b1);
+
+
     gnode_bnode_map = b1.getGNodeBNodeMap();
     BuildRestFromGNodeVisitor b2(&graphManager);
     b2.setGNodeBNodeMap(gnode_bnode_map);
     groot->execute(b2);
 
-    Node *masterNode=graphManager.getMasterNode();
 
+    Node *masterNode=graphManager.getMasterNode();
     const sofa::core::objectmodel::Context &c = *( (sofa::core::objectmodel::Context*)groot->getContext());
     masterNode->copyContext(c);
 
     init();
-    std::cerr << "End Init \n";
+//         masterNode->execute<PrintVisitor>();
     return masterNode;
     /*    cerr<<"loaded graph has "<<num_vertices(hgraph)<<" vertices and "<<num_edges(hgraph)<<" edges:"<<endl;
           PrintVisitor printvisitor;
@@ -377,8 +374,7 @@ void BglSimulation::unload(Node* root)
     root->execute<CleanupVisitor>();
     BglDeleteVisitor deleteGraph;
     graphManager.getMasterNode()->doExecuteVisitor(&deleteGraph);
-//         visualNode->doExecuteVisitor(&deleteGraph);
-    graphManager.clear();
+    clear();
 }
 
 Node* BglSimulation::getSolverEulerEuler()
