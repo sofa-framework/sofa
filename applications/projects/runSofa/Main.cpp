@@ -184,7 +184,7 @@ int main(int argc, char** argv)
         if (separator != std::string::npos)
         {
             std::string stringWidth=dimension.substr(0,separator);
-            std::string stringHeight=dimension.substr(dimension.size()-separator+1);
+            std::string stringHeight=dimension.substr(separator+1);
             sofa::gui::SofaGUI::CurrentGUI()->setDimension(atoi(stringWidth.c_str()), atoi(stringHeight.c_str()));
         }
 
