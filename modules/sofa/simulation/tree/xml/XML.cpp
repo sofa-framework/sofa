@@ -249,7 +249,7 @@ BaseElement* loadFromMemory(const char *filename, const char *data, unsigned int
 
     if (!(doc.Parse(data)))
     {
-        std::cerr << "Failed to open " << filename << std::endl;
+        std::cerr << "Failed to open " << filename << "\n" << doc.ErrorDesc() << " at line " << doc.ErrorRow() << " row " << doc.ErrorCol() << std::endl;
         return NULL;
     }
     return processXMLLoading(filename, doc);
@@ -269,7 +269,7 @@ BaseElement* loadFromFile(const char *filename)
 
     if (!(doc.LoadFile(filename)))
     {
-        std::cerr << "Failed to open " << filename << std::endl;
+        std::cerr << "Failed to open " << filename << "\n" << doc.ErrorDesc() << " at line " << doc.ErrorRow() << " row " << doc.ErrorCol() << std::endl;
         return NULL;
     }
     return processXMLLoading(filename, doc);
