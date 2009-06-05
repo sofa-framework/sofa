@@ -35,8 +35,8 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#ifndef BglNode_h
-#define BglNode_h
+#ifndef SOFA_SIMULATION_BGL_BGLNODE_H
+#define SOFA_SIMULATION_BGL_BGLNODE_H
 
 #include "BglGraphManager.h"
 #include <sofa/simulation/common/Node.h>
@@ -120,19 +120,29 @@ public:
     bool removeObject(BaseObject* obj);
 
     /// Add a child node
-    void addChild(Node* node);
+    void addChild(core::objectmodel::BaseNode* node);
 
     /// Remove a child node
-    void removeChild(Node* node);
+    void removeChild(core::objectmodel::BaseNode* node);
 
     /// Move a node from another node
-    void moveChild(Node* obj);
+    void moveChild(core::objectmodel::BaseNode* obj);
+
+
+    /// Remove the current node from the graph: consists in removing the link to all the parents
+    void detachFromGraph() ;
+
 
     /// Find all the Nodes pointing
-    helper::vector< BglNode* > getParents();
-    helper::vector< BglNode* > getChildren();
+    helper::vector< BglNode* > getParents() const;
 
+    /// Get children nodes
+    virtual sofa::helper::vector< core::objectmodel::BaseNode* >  getChildren();
 
+    /// Get a list of child node
+    virtual const sofa::helper::vector< core::objectmodel::BaseNode* >  getChildren() const;
+
+    std::string getPathName() const;
 
     /// Mechanical Degrees-of-Freedom
     virtual core::objectmodel::BaseObject* getMechanicalState() const;
@@ -172,7 +182,8 @@ public:
     BglGraphManager* graphManager;              ///< the scene the node belongs to
     BglGraphManager::Hgraph* graph;      ///< the mechanical graph of the scene it belongs to
     BglGraphManager::Hvertex vertexId;  ///< its id in the mechanical graph
-
+    Sequence<BglNode> parents;
+    typedef Sequence<BglNode>::iterator ParentIterator;
 };
 
 }
