@@ -35,4 +35,5 @@ SOURCES += \
            src/librender/mesh_io_mesh.cpp \
            src/librender/mesh_io_obj.cpp \
            src/librender/mesh_io_off.cpp \
-           src/librender/mesh_io_stl.cpp
+           src/librender/mesh_io_stl.cpp \
+           src/librender/mesh_io_vtk.cpp

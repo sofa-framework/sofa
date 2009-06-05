@@ -311,11 +311,13 @@ public:
   bool loadMesh(const char* filename);
   bool loadObj(const char* filename, const char* filter=NULL);
   bool loadOff(const char* filename);
+  bool loadVtk(const char* filename);
   bool save(const char* filename) const;
   bool saveMesh(const char* filename) const;
   bool saveObj(const char* filename) const;
   bool saveOff(const char* filename) const;
   bool saveStl(const char* filename) const;
+  bool saveVtk(const char* filename, bool binary = true) const;
   bool saveObj(FILE* f, int &v0, int &vn0, int &vt0) const;
   bool saveObj(FILE* f, int &v0) const
   {
