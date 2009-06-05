@@ -62,6 +62,7 @@ public:
 private:
     bool loadObj(const char *filename);
     bool loadMeshFile(const char *filename);
+    bool loadVtk(const char *filename);
 
     bool loadGmsh(FILE *, const int);
     bool loadXsp(FILE *, bool);

@@ -295,7 +295,7 @@ bool BaseMeshTopology::load(const char* filename)
     DefaultMeshTopologyLoader loader(this);
     if (!loader.load(meshFilename.c_str()))
     {
-        serr << "Unable to load Mesh \""<<filename << sendl;
+        serr << "Unable to load Mesh \""<<filename << "\"" << sendl;
         return false;
     }
     return true;
