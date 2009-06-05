@@ -30,6 +30,7 @@
 #include <sofa/component/mapping/BarycentricMapping.h>
 #include <sofa/core/componentmodel/behavior/MechanicalMapping.inl>
 #include <sofa/helper/gl/template.h>
+#include <sofa/helper/vector.h>
 #include <algorithm>
 #include <iostream>
 
@@ -1138,8 +1139,11 @@ void BarycentricMapperSparseGridTopology<In,Out>::apply ( typename Out::VecCoord
 {
     out.resize ( map.size() );
 
-    sofa::helper::vector< CubeData >::const_iterator it = map.begin();
-    sofa::helper::vector< CubeData >::const_iterator itEnd = map.end();
+    typedef sofa::helper::vector< CubeData > CubeDataVector;
+    typedef typename CubeDataVector::const_iterator CubeDataVectorIt;
+
+    CubeDataVectorIt it = map.begin();
+    CubeDataVectorIt itEnd = map.end();
 
     unsigned int i = 0;
 
