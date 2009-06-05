@@ -109,8 +109,8 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
     for(sofa::helper::vector<Contact*>::const_iterator cit = contacts.begin(); cit != contacts.end(); cit++)
     {
         Contact* contact = *cit;
-        simulation::tree::GNode* group1 = getIntegrationNode(contact->getCollisionModels().first);
-        simulation::tree::GNode* group2 = getIntegrationNode(contact->getCollisionModels().second);
+        simulation::tree::GNode* group1 = static_cast<simulation::tree::GNode*>(getIntegrationNode(contact->getCollisionModels().first));
+        simulation::tree::GNode* group2 = static_cast<simulation::tree::GNode*>(getIntegrationNode(contact->getCollisionModels().second));
         simulation::Node* group = NULL;
         if (group1==NULL || group2==NULL)
         {
@@ -263,16 +263,14 @@ void DefaultCollisionGroupManager::clearGroups(core::objectmodel::BaseContext* /
     groups.clear();
 }
 
-simulation::tree::GNode* DefaultCollisionGroupManager::getIntegrationNode(core::CollisionModel* model)
+simulation::Node* DefaultCollisionGroupManager::getIntegrationNode(core::CollisionModel* model)
 {
-    simulation::tree::GNode* node = dynamic_cast<simulation::tree::GNode*>(model->getContext());
-    simulation::tree::GNode* lastSolver = NULL;
-    while (node!=NULL)
-    {
-        if (!node->solver.empty()) lastSolver = node;
-        node = node->parent;
-    }
-    return lastSolver;
+    simulation::Node* node = static_cast<simulation::Node*>(model->getContext());
+    helper::vector< core::componentmodel::behavior::OdeSolver *> listSolver;
+    node->get< core::componentmodel::behavior::OdeSolver >(&listSolver);
+
+    if (!listSolver.empty()) return static_cast<simulation::Node*>(listSolver.back()->getContext());
+    else                     return NULL;
 }
 
 // Sylvere F. : change the name of function, because under Visual C++ it doesn't compile

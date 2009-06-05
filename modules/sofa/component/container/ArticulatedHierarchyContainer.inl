@@ -208,7 +208,7 @@ void ArticulatedHierarchyContainer::buildCenterArticulationsTree(sofa::helper::i
 
 void ArticulatedHierarchyContainer::init ()
 {
-    simulation::tree::GNode* context = dynamic_cast<simulation::tree::GNode *>(this->getContext()); // access to current node
+    simulation::Node* context = dynamic_cast<simulation::Node *>(this->getContext()); // access to current node
 
     std::string file = filename.getFullPath();
     if ( sofa::helper::system::DataRepository.findFile (file) )
@@ -231,7 +231,7 @@ void ArticulatedHierarchyContainer::init ()
         component::MechanicalObject<Vec1dTypes>* mm1 = dynamic_cast<component::MechanicalObject<Vec1dTypes>*>(context->getMechanicalState());
         mm1->resize(id);
 
-        context = *context->child.begin();
+        context = *(context->child.begin());
         component::MechanicalObject<RigidTypes>* mm2 = dynamic_cast<component::MechanicalObject<RigidTypes>*>(context->getMechanicalState());
         mm2->resize(joint->getNumJoints()+1);
     }
@@ -242,10 +242,10 @@ void ArticulatedHierarchyContainer::init ()
         vector<ArticulatedHierarchyContainer::ArticulationCenter*>::const_iterator acEnd = articulationCenters.end();
         for (; ac != acEnd; ac++)
         {
-            context = dynamic_cast<simulation::tree::GNode *>((*ac)->getContext());
-            for (simulation::tree::GNode::ChildIterator it = context->child.begin(); it != context->child.end(); ++it)
+            context = dynamic_cast<simulation::Node *>((*ac)->getContext());
+            for (simulation::Node::ChildIterator it = context->child.begin(); it != context->child.end(); ++it)
             {
-                GNode* n = *it;
+                simulation::Node* n =  *it;
                 n->getTreeObjects<ArticulationCenter::Articulation>(&(*ac)->articulations);
             }
 
@@ -254,9 +254,6 @@ void ArticulatedHierarchyContainer::init ()
             (*ac)->H_p_pLc.set((*ac)->posOnParent.getValue(),q);
             (*ac)->H_c_cLp.set((*ac)->posOnChild.getValue(), q);
             (*ac)->H_pLc_cLp.identity();
-
-
-
 
         }
     }

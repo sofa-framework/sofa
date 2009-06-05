@@ -2011,7 +2011,7 @@ void SimpleGUI::mouseEvent ( int type, int eventX, int eventY, int button )
             interactor->setName("mouse");
             if (groot)
             {
-                simulation::Node* child = new simulation::tree::GNode("mouse");
+                simulation::Node* child = simulation::getSimulation()->newNode("mouse");
                 groot->addChild(child);
                 child->addObject(interactor);
             }
@@ -2684,7 +2684,7 @@ void SimpleGUI::setScene(sofa::simulation::Node* scene, const char* filename)
         if (interactor != NULL)
             interactor = NULL;
     }
-    groot = static_cast< sofa::simulation::tree::GNode *>(scene);
+    groot = scene;
     groot->getContext()->get( interactor);
     initTexturesDone = false;
     sceneBBoxIsValid = false;

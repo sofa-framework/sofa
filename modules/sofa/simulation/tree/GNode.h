@@ -27,7 +27,7 @@
 
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/tree/tree.h>
-#include <sofa/simulation/tree/MutationListener.h>
+#include <sofa/simulation/common/MutationListener.h>
 #include <sofa/simulation/tree/xml/NodeElement.h>
 #include <stdlib.h>
 #include <vector>
@@ -45,15 +45,15 @@ namespace simulation
 {
 class Visitor;
 class VisitorScheduler;
+class MutationListener;
 
 namespace tree
 {
 
-class MutationListener;
 
 /** Define the structure of the scene. Contains (as pointer lists) Component objects and children GNode objects.
 */
-class SOFA_SIMULATION_TREE_API GNode : public simulation::Node, public core::objectmodel::BaseNode
+class SOFA_SIMULATION_TREE_API GNode : public simulation::Node
 {
 public:
     GNode( const std::string& name="", GNode* parent=NULL  );
@@ -63,15 +63,6 @@ public:
     //virtual const char* getTypeName() const { return "GNODE"; }
     void reinit();
 
-    /// Add a child node
-    virtual void addChild(Node* node);
-
-    /// Remove a child
-    virtual void removeChild(Node* node);
-
-    /// Move a node from another node
-    virtual void moveChild(Node* obj);
-
     //Pure Virtual method from BaseNode
     /// Add a child node
     virtual void addChild(BaseNode* node);
@@ -79,6 +70,11 @@ public:
     /// Remove a child node
     virtual void removeChild(BaseNode* node);
 
+    /// Move a node from another node
+    virtual void moveChild(BaseNode* obj);
+
+    /// Remove the current node from the graph: consists in removing the link to its parent
+    virtual void detachFromGraph() ;
 
     /// @name Visitors and graph traversal
     /// @{
@@ -92,10 +88,10 @@ public:
     /// Get parent node (or NULL if no hierarchy or for root node)
     const core::objectmodel::BaseNode* getParent() const;
 
-    /// Get parent node (or NULL if no hierarchy or for root node)
+    /// Get children nodes
     sofa::helper::vector< core::objectmodel::BaseNode* > getChildren();
 
-    /// Get parent node (or NULL if no hierarchy or for root node)
+    /// Get children nodes
     const sofa::helper::vector< core::objectmodel::BaseNode* > getChildren() const;
 
 
@@ -190,15 +186,9 @@ public:
         getObjects(class_info, container, sofa::core::objectmodel::TagSet(), dir);
     }
 
-    void addListener(MutationListener* obj);
-
-    void removeListener(MutationListener* obj);
-
 
     // should this be public ?
     Single<GNode> parent;
-    Sequence<GNode> child;
-    typedef Sequence<GNode>::iterator ChildIterator;
 
 
 
@@ -214,9 +204,6 @@ protected:
     virtual void doAddChild(GNode* node);
     void doRemoveChild(GNode* node);
 
-    void notifyAddChild(GNode* node);
-    void notifyRemoveChild(GNode* node);
-    void notifyMoveChild(GNode* node, GNode* prev);
 
     /// Execute a recursive action starting from this node.
     /// This method bypass the actionScheduler of this node if any.
@@ -224,15 +211,7 @@ protected:
     // VisitorScheduler can use doExecuteVisitor() method
     friend class simulation::VisitorScheduler;
 
-    Sequence<MutationListener> listener;
 
-
-protected:
-    /*    virtual void doAddObject(core::objectmodel::BaseObject* obj);
-        virtual void doRemoveObject(core::objectmodel::BaseObject* obj);*/
-    void notifyAddObject(core::objectmodel::BaseObject* obj);
-    void notifyRemoveObject(core::objectmodel::BaseObject* obj);
-    void notifyMoveObject(core::objectmodel::BaseObject* obj, GNode* prev);
 };
 
 } // namespace tree

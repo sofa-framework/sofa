@@ -33,8 +33,8 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#ifndef SOFA_COMPONENT_NODE_H
-#define SOFA_COMPONENT_NODE_H
+#ifndef SOFA_SIMULATION_COMMON_NODE_H
+#define SOFA_SIMULATION_COMMON_NODE_H
 
 #include <sofa/core/objectmodel/Context.h>
 // moved from GNode (27/04/08)
@@ -63,6 +63,7 @@
 #include <sofa/core/objectmodel/Event.h>
 
 #include <sofa/simulation/common/common.h>
+#include <sofa/simulation/common/MutationListener.h>
 #include <sofa/simulation/common/VisitorScheduler.h>
 using sofa::simulation::VisitorScheduler;
 namespace sofa
@@ -91,7 +92,7 @@ The other nodes are not visible (unknown scene graph).
 
 	@author The SOFA team </www.sofa-framework.org>
 */
-class SOFA_SIMULATION_COMMON_API Node : public sofa::core::objectmodel::Context
+class SOFA_SIMULATION_COMMON_API Node : public core::objectmodel::BaseNode, public sofa::core::objectmodel::Context
 {
 
 public:
@@ -291,6 +292,9 @@ public:
         }
     };
 
+    Sequence<Node> child;
+    typedef Sequence<Node>::iterator ChildIterator;
+
     Sequence<core::objectmodel::BaseObject> object;
     typedef Sequence<core::objectmodel::BaseObject>::iterator ObjectIterator;
 
@@ -327,16 +331,6 @@ public:
     /// @name Set/get objects
     /// @{
 
-
-    /// Add a child node
-    virtual void addChild(Node* node);
-
-    /// Remove a child node
-    virtual void removeChild(Node* node);
-
-    /// Move a node from another node
-    virtual void moveChild(Node* obj);
-
     /// Add an object and return this. Detect the implemented interfaces and add the object to the corresponding lists.
     virtual bool addObject(core::objectmodel::BaseObject* obj);
 
@@ -348,6 +342,42 @@ public:
 
     /// Find an object given its name
     core::objectmodel::BaseObject* getObject(const std::string& name) const;
+
+
+
+    /// Generic object access, given a set of required tags, possibly searching up or down from the current context
+    ///
+    /// Note that the template wrapper method should generally be used to have the correct return type,
+    virtual void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir = SearchUp) const=0;
+
+    /// Generic object access, possibly searching up or down from the current context
+    ///
+    /// Note that the template wrapper method should generally be used to have the correct return type,
+    void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, SearchDirection dir = SearchUp) const
+    {
+        return getObject(class_info, sofa::core::objectmodel::TagSet(), dir);
+    }
+
+    /// Generic object access, given a path from the current context
+    ///
+    /// Note that the template wrapper method should generally be used to have the correct return type,
+    virtual void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, const std::string& path) const=0;
+
+    /// Generic list of objects access, given a set of required tags, possibly searching up or down from the current context
+    ///
+    /// Note that the template wrapper method should generally be used to have the correct return type,
+    virtual void getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir = SearchUp) const =0;
+
+    /// Generic list of objects access, possibly searching up or down from the current context
+    ///
+    /// Note that the template wrapper method should generally be used to have the correct return type,
+    void getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, SearchDirection dir = SearchUp) const
+    {
+        getObjects(class_info, container, sofa::core::objectmodel::TagSet(), dir);
+    }
+
+
+
 
     /// List all objects of this node deriving from a given class
     template<class Object, class Container>
@@ -477,19 +507,12 @@ public:
     // debug
     void printComponents();
 
-    /*
-    /// Get parent node (or NULL if no hierarchy or for root node)
-    virtual core::objectmodel::BaseNode* getParent();
-
-    /// Get parent node (or NULL if no hierarchy or for root node)
-    virtual const core::objectmodel::BaseNode* getParent() const;
+    /// Get children nodes
+    virtual sofa::helper::vector< core::objectmodel::BaseNode* >  getChildren()=0;
 
     /// Get a list of child node
-    virtual sofa::helper::vector< core::objectmodel::BaseNode* >  getChildren();
+    virtual const sofa::helper::vector< core::objectmodel::BaseNode* >  getChildren() const=0;
 
-    /// Get a list of child node
-    virtual const sofa::helper::vector< core::objectmodel::BaseNode* >  getChildren() const;
-    */
 
     const BaseContext* getContext() const;
     BaseContext* getContext();
@@ -538,14 +561,24 @@ protected:
 
 
     std::stack<Visitor*> actionStack;
-    virtual void notifyAddObject(core::objectmodel::BaseObject* ) {}
-    virtual void notifyRemoveObject(core::objectmodel::BaseObject* ) {}
-    virtual void notifyMoveObject(core::objectmodel::BaseObject* , Node* /*prev*/) {}
+
+    virtual void notifyAddChild(Node* node);
+    virtual void notifyRemoveChild(Node* node);
+    virtual void notifyMoveChild(Node* node, Node* prev);
+    virtual void notifyAddObject(core::objectmodel::BaseObject* obj);
+    virtual void notifyRemoveObject(core::objectmodel::BaseObject* obj);
+    virtual void notifyMoveObject(core::objectmodel::BaseObject* obj, Node* prev);
+
 
     BaseContext* _context;
 
+    Sequence<MutationListener> listener;
+
+
     // Added by FF to model component dependencies
 public:
+    virtual void addListener(MutationListener* obj);
+    virtual void removeListener(MutationListener* obj);
     /// Pairs representing component dependencies. First must be initialized before second.
     Data < sofa::helper::vector < std::string > > depend;
     /// Sort the components according to the dependencies expressed in Data depend.

@@ -15,6 +15,7 @@ HEADERS += common.h \
            CollisionVisitor.h \  
            Colors.h \
            ConstraintVisitor.h \
+           DeleteVisitor.h \
            DesactivatedNodeVisitor.h \
            ExportGnuplotVisitor.h \
            ExportOBJVisitor.h \
@@ -27,6 +28,8 @@ HEADERS += common.h \
 	   MechanicalMatrixVisitor.h \
            MechanicalVPrintVisitor.h \
            MechanicalVisitor.h \  
+           MutationListener.h \
+           ParallelVisitorScheduler.h \
            PipelineImpl.h \
            PrintVisitor.h \
            PropagateEventVisitor.h \
@@ -56,6 +59,7 @@ SOURCES += Node.cpp \
            CleanupVisitor.cpp \
            ConstraintVisitor.cpp \
            CollisionVisitor.cpp \
+           DeleteVisitor.cpp \
            DesactivatedNodeVisitor.cpp \
            ExportGnuplotVisitor.cpp \
            ExportOBJVisitor.cpp \
@@ -65,7 +69,9 @@ SOURCES += Node.cpp \
            MechanicalComputeEnergyVisitor.cpp \
 	   MechanicalMatrixVisitor.cpp \
            MechanicalVPrintVisitor.cpp \
-           MechanicalVisitor.cpp \
+           MechanicalVisitor.cpp \   
+           MutationListener.cpp \ 
+           ParallelVisitorScheduler.cpp \
            PipelineImpl.cpp \
            PrintVisitor.cpp \
            PropagateEventVisitor.cpp \

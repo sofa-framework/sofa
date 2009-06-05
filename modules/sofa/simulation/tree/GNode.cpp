@@ -25,7 +25,6 @@
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/simulation/common/Visitor.h>
 #include <sofa/simulation/common/DesactivatedNodeVisitor.h>
-#include <sofa/simulation/tree/MutationListener.h>
 #include <iostream>
 
 using std::cerr;
@@ -67,36 +66,26 @@ void GNode::doRemoveChild(GNode* node)
     node->parent.remove(this);
 }
 
+
 /// Add a child node
-void GNode::addChild(Node* node)
+void GNode::addChild(core::objectmodel::BaseNode* node)
 {
-    GNode *gnode = dynamic_cast<GNode*>(node);
+    GNode *gnode = static_cast<GNode*>(node);
     notifyAddChild(gnode);
     doAddChild(gnode);
 }
 
 /// Remove a child
-void GNode::removeChild(Node* node)
+void GNode::removeChild(core::objectmodel::BaseNode* node)
 {
     GNode *gnode = dynamic_cast<GNode*>(node);
     notifyRemoveChild(gnode);
     doRemoveChild(gnode);
 }
 
-/// Add a child node
-void GNode::addChild(core::objectmodel::BaseNode* node)
-{
-    this->addChild(dynamic_cast<Node*>(node));
-}
-
-/// Remove a child node
-void GNode::removeChild(core::objectmodel::BaseNode* node)
-{
-    this->removeChild(dynamic_cast<Node*>(node));
-}
 
 /// Move a node from another node
-void GNode::moveChild(Node* node)
+void GNode::moveChild(BaseNode* node)
 {
     GNode* gnode=dynamic_cast<GNode*>(node);
     if (!gnode) return;
@@ -114,6 +103,11 @@ void GNode::moveChild(Node* node)
 }
 
 
+/// Remove a child
+void GNode::detachFromGraph()
+{
+    parent->removeChild(this);
+}
 
 /// Generic object access, possibly searching up or down from the current context
 ///
@@ -393,7 +387,7 @@ GNode* GNode::getChild(const std::string& name) const
 {
     for (ChildIterator it = child.begin(), itend = child.end(); it != itend; ++it)
         if ((*it)->getName() == name)
-            return *it;
+            return static_cast<GNode*>(*it);
     return NULL;
 }
 
@@ -403,26 +397,8 @@ GNode* GNode::getTreeNode(const std::string& name) const
     GNode* result = NULL;
     result = getChild(name);
     for (ChildIterator it = child.begin(), itend = child.end(); result == NULL && it != itend; ++it)
-        result = (*it)->getTreeNode(name);
+        result = static_cast<GNode*>(*it)->getTreeNode(name);
     return result;
-}
-
-void GNode::notifyAddChild(GNode* node)
-{
-    for (Sequence<MutationListener>::iterator it = listener.begin(); it != listener.end(); ++it)
-        (*it)->addChild(this, node);
-}
-
-void GNode::notifyRemoveChild(GNode* node)
-{
-    for (Sequence<MutationListener>::iterator it = listener.begin(); it != listener.end(); ++it)
-        (*it)->removeChild(this, node);
-}
-
-void GNode::notifyMoveChild(GNode* node, GNode* prev)
-{
-    for (Sequence<MutationListener>::iterator it = listener.begin(); it != listener.end(); ++it)
-        (*it)->moveChild(prev, this, node);
 }
 
 /// Return the full path name of this node
@@ -600,39 +576,6 @@ void GNode::addTime(ctime_t t, const std::string& s, core::objectmodel::BaseObje
     objectTime[s][parent].tObject -= t;
 }
 
-
-void GNode::addListener(MutationListener* obj)
-{
-    // make sure we don't add the same listener twice
-    Sequence< MutationListener >::iterator it = listener.begin();
-    while (it != listener.end() && (*it)!=obj)
-        ++it;
-    if (it == listener.end())
-        listener.add(obj);
-}
-
-void GNode::removeListener(MutationListener* obj)
-{
-    listener.remove(obj);
-}
-
-void GNode::notifyAddObject(core::objectmodel::BaseObject* obj)
-{
-    for (Sequence<MutationListener>::iterator it = listener.begin(); it != listener.end(); ++it)
-        (*it)->addObject(this, obj);
-}
-
-void GNode::notifyRemoveObject(core::objectmodel::BaseObject* obj)
-{
-    for (Sequence<MutationListener>::iterator it = listener.begin(); it != listener.end(); ++it)
-        (*it)->removeObject(this, obj);
-}
-
-void GNode::notifyMoveObject(core::objectmodel::BaseObject* obj, GNode* prev)
-{
-    for (Sequence<MutationListener>::iterator it = listener.begin(); it != listener.end(); ++it)
-        (*it)->moveObject(prev, this, obj);
-}
 
 SOFA_DECL_CLASS(GNode)
 

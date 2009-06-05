@@ -27,7 +27,7 @@
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/common/Node.h>
 #include <sofa/helper/io/bvh/BVHLoader.h>
 #include <sofa/component/component.h>
 #include <sofa/component/container/MechanicalObject.h>
@@ -44,7 +44,7 @@ namespace container
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::simulation::tree;
+using namespace sofa::simulation;
 
 /**
 * This class allow to store and retrieve all the articulation centers from an articulated rigid object

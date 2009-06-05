@@ -148,7 +148,6 @@ protected:
     void resizeGL( int w, int h );
 
 public:
-// 	      void setScene(sofa::simulation::tree::GNode* scene, const char* filename=NULL, bool keepParams=false);
 
 #ifdef SOFA_DEV
 

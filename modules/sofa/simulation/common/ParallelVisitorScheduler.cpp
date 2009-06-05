@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/tree/ParallelVisitorScheduler.h>
+#include <sofa/simulation/common/ParallelVisitorScheduler.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/Visitor.h>
 
@@ -32,15 +32,13 @@ namespace sofa
 namespace simulation
 {
 
-namespace tree
-{
 
 ParallelVisitorScheduler::ParallelVisitorScheduler(bool propagate)
     : propagate(propagate)
 {
 }
 
-void ParallelVisitorScheduler::executeVisitor(GNode* node, simulation::Visitor* action)
+void ParallelVisitorScheduler::executeVisitor(Node* node, simulation::Visitor* action)
 {
     // first make sure all child nodes have schedulers
     if (propagate)
@@ -54,15 +52,15 @@ void ParallelVisitorScheduler::executeVisitor(GNode* node, simulation::Visitor* 
     }
 }
 
-void ParallelVisitorScheduler::recursiveClone(GNode* node)
+void ParallelVisitorScheduler::recursiveClone(Node* node)
 {
     if (!node->actionScheduler)
         node->addObject( this->clone() );
-    for (unsigned int i=0; i<node->child.size(); i++)
-        recursiveClone(node->child[i]);
-}
 
-} // namespace tree
+    for(Node::ChildIterator it = node->child.begin(); it != node->child.end(); ++it)
+        recursiveClone(*it);
+
+}
 
 } // namespace simulation
 

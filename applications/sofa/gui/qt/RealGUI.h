@@ -81,6 +81,9 @@ typedef QTextDrag Q3TextDrag;
 #include <qurl.h>
 #endif
 
+#ifdef SOFA_PML
+#include <sofa/simulation/tree/GNode.h>
+#endif
 
 namespace sofa
 {
@@ -94,7 +97,6 @@ namespace qt
 //enum TYPE{ NORMAL, PML, LML};
 enum SCRIPT_TYPE { PHP, PERL };
 
-using sofa::simulation::tree::GNode;
 using sofa::simulation::Node;
 #ifdef SOFA_PML
 using namespace sofa::filemanager::pml;
@@ -241,6 +243,7 @@ protected:
     void graphAddCollisionModelsStat(sofa::helper::vector< sofa::core::CollisionModel* > &v);
     void graphSummary();
 
+    void addInitialNodes( Node* node);
     bool isErasable(core::objectmodel::Base* element);
 
     void startDumpVisitor();
@@ -328,9 +331,10 @@ private:
     int frameCounter;
     //At initialization: list of the path to the basic objects you can add to the scene
     std::vector< std::string > list_object;
-    std::list< GNode *> list_object_added;
-    std::list< GNode *> list_object_removed;
-    std::list< GNode *> list_object_initial;
+    std::list< Node *> list_object_added;
+    std::list< Node *> list_object_removed;
+    //Pair: parent->child
+    std::list< std::pair< Node *, Node* > > list_object_initial;
     bool record_simulation;
 
     bool setViewer(const char* name);

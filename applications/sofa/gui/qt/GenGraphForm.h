@@ -28,7 +28,7 @@
 #define SOFA_GUI_QGLVIEWER_GENGRAPHFORM_H
 
 #include "BaseGenGraphForm.h"
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/common/Node.h>
 
 #ifdef SOFA_QT4
 #include "QProcess"

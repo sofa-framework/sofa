@@ -62,15 +62,7 @@ void LMConstraint<DataTypes1,DataTypes2>::init()
             sofa::core::objectmodel::BaseContext *context = NULL;
             sofa::core::objectmodel::BaseNode*    currentNode = dynamic_cast< sofa::core::objectmodel::BaseNode *>(object1->getContext());
 
-            std::string object_name=currentNode->getContext()->getName();
-            currentNode = dynamic_cast< sofa::core::objectmodel::BaseNode *>(currentNode->getParent());
-            while (currentNode != NULL)
-            {
-                context = currentNode->getContext();
-                if (context == this->getContext()) break;
-                object_name = context->getName() + "/" + object_name;
-                currentNode = dynamic_cast< sofa::core::objectmodel::BaseNode *>(currentNode->getParent());
-            }
+            std::string object_name=currentNode->getPathName();
             if (context != NULL) this->pathObject1.setValue(object_name);
         }
 
@@ -80,15 +72,7 @@ void LMConstraint<DataTypes1,DataTypes2>::init()
             sofa::core::objectmodel::BaseContext *context = NULL;
             sofa::core::objectmodel::BaseNode*    currentNode = dynamic_cast< sofa::core::objectmodel::BaseNode *>(object2->getContext());
 
-            std::string object_name=currentNode->getContext()->getName();
-            currentNode = dynamic_cast< sofa::core::objectmodel::BaseNode *>(currentNode->getParent());
-            while (currentNode != NULL)
-            {
-                context = currentNode->getContext();
-                if (context == this->getContext()) break;
-                object_name = context->getName() + "/" + object_name;
-                currentNode = dynamic_cast< sofa::core::objectmodel::BaseNode *>(currentNode->getParent());
-            }
+            std::string object_name=currentNode->getPathName();
             if (context != NULL) this->pathObject2.setValue(object_name);
         }
     }

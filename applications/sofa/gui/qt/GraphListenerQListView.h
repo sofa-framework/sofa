@@ -33,30 +33,19 @@
 
 #ifdef SOFA_QT4
 #include <Q3ListViewItem>
-#include <Q3CheckListItem>
 #include <Q3ListView>
 #include <QWidget>
-#include <Q3PopupMenu>
 
 #else
 #include <qlistview.h>
-#include <qwidget.h>
-#include <qpopupmenu.h>
-
-
-#include <qlabel.h>
-#include <qcheckbox.h>
-#include <qpushbutton.h>
 #include <qimage.h>
-#include <qspinbox.h>
 
 #endif
 
-
+#include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/Simulation.h>
-#include <sofa/simulation/tree/MutationListener.h>
+#include <sofa/simulation/common/MutationListener.h>
 
-#include "WFloatLineEdit.h"
 
 
 namespace sofa
@@ -67,19 +56,9 @@ namespace gui
 
 namespace qt
 {
-using sofa::simulation::tree::GNode;
+using sofa::simulation::Node;
 using sofa::simulation::Simulation;
-using sofa::simulation::tree::MutationListener;
-
-#ifdef SOFA_QT4
-typedef Q3ListView QListView;
-typedef Q3PopupMenu QPopupMenu;
-#else
-typedef QListViewItem Q3ListViewItem;
-typedef QCheckListItem Q3CheckListItem;
-typedef QListView Q3ListView;
-typedef QPopupMenu Q3PopupMenu;
-#endif
+using sofa::simulation::MutationListener;
 
 QPixmap* getPixmap(core::objectmodel::Base* obj);
 
@@ -97,14 +76,16 @@ public:
 
     /*****************************************************************************************************************/
     Q3ListViewItem* createItem(Q3ListViewItem* parent);
-    void addChild(GNode* parent, GNode* child);
-    void removeChild(GNode* parent, GNode* child);
-    void moveChild(GNode* previous, GNode* parent, GNode* child);
-    void addObject(GNode* parent, core::objectmodel::BaseObject* object);
-    void removeObject(GNode* /*parent*/, core::objectmodel::BaseObject* object);
-    void moveObject(GNode* previous, GNode* parent, core::objectmodel::BaseObject* object);
-    void freeze(GNode* groot);
-    void unfreeze(GNode* groot);
+
+    virtual void addChild(Node* parent, Node* child);
+    virtual void removeChild(Node* parent, Node* child);
+    virtual void moveChild(Node* previous, Node* parent, Node* child);
+    virtual void addObject(Node* parent, core::objectmodel::BaseObject* object);
+    virtual void removeObject(Node* /*parent*/, core::objectmodel::BaseObject* object);
+    virtual void moveObject(Node* previous, Node* parent, core::objectmodel::BaseObject* object);
+
+    virtual void freeze(Node* groot);
+    virtual void unfreeze(Node* groot);
 };
 
 }

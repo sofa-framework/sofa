@@ -22,63 +22,38 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_DEFAULTCOLLISIONGROUPMANAGER_H
-#define SOFA_COMPONENT_COLLISION_DEFAULTCOLLISIONGROUPMANAGER_H
-
-#include <sofa/core/componentmodel/collision/CollisionGroupManager.h>
+#include <sofa/simulation/common/DeleteVisitor.h>
 #include <sofa/simulation/common/Node.h>
-#include <sofa/simulation/tree/GNode.h>
-#include <sofa/component/component.h>
-#include <set>
-
 
 namespace sofa
 {
 
-namespace component
+namespace simulation
 {
 
-namespace collision
+
+Visitor::Result DeleteVisitor::processNodeTopDown(Node* /*node*/)
 {
+    return RESULT_CONTINUE;
+}
 
-class SOFA_COMPONENT_COLLISION_API DefaultCollisionGroupManager : public core::componentmodel::collision::CollisionGroupManager
+void DeleteVisitor::processNodeBottomUp(Node* node)
 {
-public:
-    typedef std::set<simulation::Node*> GroupSet;
-    GroupSet groupSet;
-public:
-    DefaultCollisionGroupManager();
-
-    virtual ~DefaultCollisionGroupManager();
-
-    virtual void createGroups(core::objectmodel::BaseContext* scene, const sofa::helper::vector<core::componentmodel::collision::Contact*>& contacts);
-
-    virtual void clearGroups(core::objectmodel::BaseContext* scene);
-
-    /** Overload this if yo want to design your collision group, e.g. with a MasterSolver.
-    Otherwise, an empty Node is returned.
-    The OdeSolver is added afterwards.
-    */
-    virtual simulation::Node* buildCollisionGroup();
-
-protected:
-    virtual simulation::Node* getIntegrationNode(core::CollisionModel* model);
-
-    std::map<Instance,GroupSet> storedGroupSet;
-
-    virtual void changeInstance(Instance inst)
+    while (!node->child.empty())
     {
-        core::componentmodel::collision::CollisionGroupManager::changeInstance(inst);
-        storedGroupSet[instance].swap(groupSet);
-        groupSet.swap(storedGroupSet[inst]);
+        Node* child = *node->child.begin();
+        node->removeChild((Node*)child);
+        delete child;
     }
+    while (!node->object.empty())
+    {
+        core::objectmodel::BaseObject* object = *node->object.begin();
+        node->simulation::Node::removeObject(object);
+        delete object;
+    }
+}
 
-};
-
-} // namespace collision
-
-} // namespace component
+} // namespace simulation
 
 } // namespace sofa
 
-#endif

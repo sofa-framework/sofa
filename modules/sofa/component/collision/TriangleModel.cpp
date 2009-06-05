@@ -283,7 +283,8 @@ void TriangleModel::handleTopologyChange()
                 resize(_topology->getNbTriangles());
                 needsUpdate=true;
                 updateFlags();
-                //updateNormals();
+
+//                 updateNormals();
                 break;
             }
             /*
@@ -598,6 +599,21 @@ void TriangleModel::draw()
         sofa::simulation::getSimulation()->DrawUtility.setLightingEnabled(false);
         if (getContext()->getShowWireFrame())
             simulation::getSimulation()->DrawUtility.setPolygonMode(0,false);
+
+
+        if (getContext()->getShowNormals())
+        {
+            std::vector< Vector3 > points;
+            for (int i=0; i<size; i++)
+            {
+                Triangle t(this,i);
+                points.push_back((t.p1()+t.p2()+t.p3())/3.0);
+                points.push_back(points.back()+t.n());
+            }
+
+            simulation::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(1,1,1,1));
+
+        }
     }
     if (getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels())
         getPrevious()->draw();

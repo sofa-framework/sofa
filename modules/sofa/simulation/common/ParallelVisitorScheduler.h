@@ -22,62 +22,41 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_DEFAULTCOLLISIONGROUPMANAGER_H
-#define SOFA_COMPONENT_COLLISION_DEFAULTCOLLISIONGROUPMANAGER_H
+#ifndef SOFA_SIMULATION_COMMON_PARALLELACTIONSCHEDULER_H
+#define SOFA_SIMULATION_COMMON_PARALLELACTIONSCHEDULER_H
 
-#include <sofa/core/componentmodel/collision/CollisionGroupManager.h>
+
+#include <sofa/simulation/common/VisitorScheduler.h>
 #include <sofa/simulation/common/Node.h>
-#include <sofa/simulation/tree/GNode.h>
-#include <sofa/component/component.h>
-#include <set>
-
 
 namespace sofa
 {
 
-namespace component
+namespace simulation
 {
 
-namespace collision
-{
 
-class SOFA_COMPONENT_COLLISION_API DefaultCollisionGroupManager : public core::componentmodel::collision::CollisionGroupManager
+/// Specialized VisitorScheduler for parallel implementations.
+class SOFA_SIMULATION_COMMON_API ParallelVisitorScheduler : public simulation::VisitorScheduler
 {
 public:
-    typedef std::set<simulation::Node*> GroupSet;
-    GroupSet groupSet;
-public:
-    DefaultCollisionGroupManager();
+    ParallelVisitorScheduler(bool propagate=false);
 
-    virtual ~DefaultCollisionGroupManager();
+    /// Specify whether this scheduler is multi-threaded.
+    virtual bool isMultiThreaded() const { return true; }
 
-    virtual void createGroups(core::objectmodel::BaseContext* scene, const sofa::helper::vector<core::componentmodel::collision::Contact*>& contacts);
-
-    virtual void clearGroups(core::objectmodel::BaseContext* scene);
-
-    /** Overload this if yo want to design your collision group, e.g. with a MasterSolver.
-    Otherwise, an empty Node is returned.
-    The OdeSolver is added afterwards.
-    */
-    virtual simulation::Node* buildCollisionGroup();
+    virtual void executeVisitor(Node* node, Visitor* action);
 
 protected:
-    virtual simulation::Node* getIntegrationNode(core::CollisionModel* model);
+    bool propagate;
 
-    std::map<Instance,GroupSet> storedGroupSet;
+    void recursiveClone(Node* node);
 
-    virtual void changeInstance(Instance inst)
-    {
-        core::componentmodel::collision::CollisionGroupManager::changeInstance(inst);
-        storedGroupSet[instance].swap(groupSet);
-        groupSet.swap(storedGroupSet[inst]);
-    }
-
+    virtual ParallelVisitorScheduler* clone() = 0;
+    virtual void executeParallelVisitor(Node* node, Visitor* action) = 0;
 };
 
-} // namespace collision
-
-} // namespace component
+} // namespace simulation
 
 } // namespace sofa
 
