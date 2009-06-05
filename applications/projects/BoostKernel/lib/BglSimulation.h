@@ -35,8 +35,8 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#ifndef BglSimulation_h
-#define BglSimulation_h
+#ifndef SOFA_SIMULATION_BGL_BGLSIMULATION_H
+#define SOFA_SIMULATION_BGL_BGLSIMULATION_H
 
 #include "BglGraphManager.h"
 

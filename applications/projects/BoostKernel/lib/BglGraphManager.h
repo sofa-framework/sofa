@@ -36,8 +36,8 @@
 //
 //
 
-#ifndef BglGraphManager_h
-#define BglGraphManager_h
+#ifndef SOFA_SIMULATION_BGL_BGLGRAPHMANAGER_H
+#define SOFA_SIMULATION_BGL_BGLGRAPHMANAGER_H
 
 //#include "BglNode.h"
 #include <sofa/simulation/common/Node.h>

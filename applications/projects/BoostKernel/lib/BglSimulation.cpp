@@ -39,7 +39,7 @@
 
 #include "BuildNodesFromGNodeVisitor.h"
 #include "BuildRestFromGNodeVisitor.h"
-#include "BglDeleteVisitor.h"
+
 
 
 #include <sofa/simulation/tree/TreeSimulation.h>
@@ -48,6 +48,7 @@
 #include <sofa/simulation/common/AnimateVisitor.h>
 #include <sofa/simulation/common/BehaviorUpdatePositionVisitor.h>
 #include <sofa/simulation/common/CleanupVisitor.h>
+#include <sofa/simulation/common/DeleteVisitor.h>
 #include <sofa/simulation/common/InitVisitor.h>
 #include <sofa/simulation/common/PrintVisitor.h>
 #include <sofa/simulation/common/PropagateEventVisitor.h>
@@ -189,7 +190,6 @@ void BglSimulation::animate(Node* root, double dt)
 #endif
     Node *masterNode = graphManager.getMasterNode();
 
-//         masterNode->execute<PrintVisitor>();
     {
         AnimateBeginEvent ev ( dt );
         PropagateEventVisitor act ( &ev );
@@ -261,7 +261,6 @@ void BglSimulation::setContactResponse(Node * /*parent*/, core::objectmodel::Bas
 {
     if (InteractionForceField *iff = dynamic_cast<InteractionForceField*>(response))
     {
-//             std::cerr << "ADD CONTACT RESPONSE " << parent->getName() << "   : " << response->getName() << "\n";
         graphManager.addInteraction( (Node*)iff->getMechModel1()->getContext(),
                 (Node*)iff->getMechModel2()->getContext(),
                 iff);
@@ -290,11 +289,9 @@ void BglSimulation::resetContactResponse(Node * /*parent*/, core::objectmodel::B
 void BglSimulation::draw(Node* masterNode, helper::gl::VisualParameters*)
 {
     if (!masterNode) return;
-    // 	cerr<<"begin BglSimulation::glDraw()"<<endl;
+
     masterNode->glDraw();
 
-//         visualNode->glDraw();
-    // 	cerr<<"end BglSimulation::glDraw()"<<endl;
 }
 
 
@@ -320,12 +317,6 @@ Node* BglSimulation::load(const char* f)
         cerr<<"BglSimulation::load file "<<fileName<<" failed"<<endl;
         exit(1);
     }
-    //else cerr<<"BglSimulation::loaded file "<<fileName<<endl;
-
-//        cerr<<"GNode loaded: "<<endl;
-//        groot->execute<PrintVisitor>();
-//         cerr<<"==========================="<<endl;
-
 
     std::map<simulation::Node*,BglNode*> gnode_bnode_map;
     BuildNodesFromGNodeVisitor b1(this);
@@ -344,10 +335,8 @@ Node* BglSimulation::load(const char* f)
 
     init();
 //         masterNode->execute<PrintVisitor>();
+    /*    cerr<<"loaded graph has "<<num_vertices(hgraph)<<" vertices and "<<num_edges(hgraph)<<" edges:"<<endl; */
     return masterNode;
-    /*    cerr<<"loaded graph has "<<num_vertices(hgraph)<<" vertices and "<<num_edges(hgraph)<<" edges:"<<endl;
-          PrintVisitor printvisitor;
-          dfs( printvisitor );*/
 }
 
 void BglSimulation::clear()
@@ -372,7 +361,7 @@ void BglSimulation::unload(Node* root)
 {
     if (!root) return;
     root->execute<CleanupVisitor>();
-    BglDeleteVisitor deleteGraph;
+    DeleteVisitor deleteGraph;
     graphManager.getMasterNode()->doExecuteVisitor(&deleteGraph);
     clear();
 }

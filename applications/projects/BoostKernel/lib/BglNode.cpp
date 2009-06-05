@@ -103,6 +103,7 @@ bool BglNode::addObject(BaseObject* obj)
 {
     if (sofa::core::componentmodel::behavior::BaseMechanicalMapping* mm = dynamic_cast<sofa::core::componentmodel::behavior::BaseMechanicalMapping*>(obj))
     {
+        if (mm->getMechFrom() == NULL) {std::cerr << "ERROR in addObject BglNode: RayPick Issue!!\n"; return false; }
         Node *from=(Node*)mm->getMechFrom()->getContext();
         Node *to=(Node*)mm->getMechTo()->getContext();
         graphManager->addEdge(from, to);
@@ -152,26 +153,58 @@ bool BglNode::removeObject(core::objectmodel::BaseObject* obj)
     return Node::removeObject(obj);
 }
 
-void BglNode::addChild(Node* c)
+void BglNode::addChild(core::objectmodel::BaseNode* c)
 {
-//         std::cerr << "addChild : of "<< this->getName() << "@" << this << " and " <<  c->getName() << "@" << c << "\n";
-    graphManager->addNode(this,dynamic_cast<BglNode*>(c));
+    BglNode *childNode = static_cast< BglNode *>(c);
+    //std::cerr << "addChild : of "<< this->getName() << "@" << this << " and " <<  c->getName() << "@" << c << "\n";
+
+    notifyAddChild(childNode);
+    child.add(childNode);
+    childNode->parents.add(this);
+    graphManager->addNode(this,childNode);
 }
 
-void BglNode::removeChild(Node* c)
+void BglNode::removeChild(core::objectmodel::BaseNode* c)
 {
-//         std::cerr << "deleteChild : of "<< this->getName() << "@" << this << " and " <<  c->getName() << "@" << c << "\n";
-    graphManager->deleteNode(c);
+    BglNode *childNode = static_cast< BglNode *>(c);
+    //std::cerr << "deleteChild : of "<< this->getName() << "@" << this << " and " <<  c->getName() << "@" << c << "\n";
+
+    notifyRemoveChild(childNode);
+    child.remove(childNode);
+    childNode->parents.remove(this);
+    graphManager->deleteNode(childNode);
 }
 
-void BglNode::moveChild(Node* c)
+void BglNode::moveChild(core::objectmodel::BaseNode* c)
 {
-    std::cerr << "NOT IMPLEMENTED YET moveChild : " << c << "\n";
+    BglNode* childNode=dynamic_cast<BglNode*>(c);
+    if (!childNode) return;
+
+    if (childNode->parents.empty())
+    {
+        addChild(childNode);
+    }
+    else
+    {
+        for (ParentIterator it = parents.begin(); it != parents.end(); it++)
+        {
+            BglNode *prev = *it;
+            notifyMoveChild(childNode,prev);
+            prev->removeChild(childNode);
+        }
+        addChild(childNode);
+    }
+}
+
+void BglNode::detachFromGraph()
+{
+    const helper::vector< BglNode* > &parents = getParents();
+    for (unsigned int i=0; i<parents.size(); ++i) parents[i]->removeChild(this);
 }
 
 
 /// Find all the Nodes pointing
-helper::vector< BglNode* > BglNode::getParents()
+helper::vector< BglNode* > BglNode::getParents() const
 {
     helper::vector< BglNode* > p;
     if (!graph) return p;
@@ -186,10 +219,23 @@ helper::vector< BglNode* > BglNode::getParents()
     return p;
 }
 
-/// Find all the Nodes pointing
-helper::vector< BglNode* > BglNode::getChildren()
+
+std::string BglNode::getPathName() const
 {
-    helper::vector< BglNode* > p;
+
+    std::string str;
+    const helper::vector< BglNode* > &parents=getParents();
+    if (!parents.empty()) str = parents[0]->getPathName();
+    str += '/';
+    str += getName();
+    return str;
+
+}
+
+/// Get children nodes
+sofa::helper::vector< core::objectmodel::BaseNode* >  BglNode::getChildren()
+{
+    helper::vector< core::objectmodel::BaseNode* > p;
     if (!graph) return p;
     BglGraphManager::Hgraph::out_edge_iterator out_i, out_end;
     //Find all in-edges from the graph
@@ -198,10 +244,30 @@ helper::vector< BglNode* > BglNode::getChildren()
         BglGraphManager::Hedge e=*out_i;
         BglGraphManager::Hvertex src=target(e, *graph);
         Node *n=graphManager->getNodeFromHvertex(src);
-        if (n) p.push_back(static_cast<BglNode*>(n));
+        if (n) p.push_back(n);
     }
     return p;
+
 }
+
+/// Get a list of child node
+const sofa::helper::vector< core::objectmodel::BaseNode* >  BglNode::getChildren() const
+{
+    helper::vector< core::objectmodel::BaseNode* > p;
+    if (!graph) return p;
+    BglGraphManager::Hgraph::out_edge_iterator out_i, out_end;
+    //Find all in-edges from the graph
+    for (tie(out_i, out_end) = boost::out_edges(vertexId, *graph); out_i != out_end; ++out_i)
+    {
+        BglGraphManager::Hedge e=*out_i;
+        BglGraphManager::Hvertex src=target(e, *graph);
+        Node *n=graphManager->getNodeFromHvertex(src);
+        if (n) p.push_back(n);
+    }
+    return p;
+
+}
+
 
 
 
@@ -245,19 +311,10 @@ core::objectmodel::BaseObject* BglNode::getMechanicalState() const
 
 
 
-
-
-
-
-
-
-
-
-
 void BglNode::doExecuteVisitor( Visitor* vis )
 {
     //cerr<<"BglNode::doExecuteVisitor( simulation::tree::Visitor* action)"<<endl;
-
+    if (!graph) return;
     boost::vector_property_map<boost::default_color_type> colors( boost::num_vertices(*graph) );
     //boost::queue<BglGraphManager::Hvertex> queue;
 
