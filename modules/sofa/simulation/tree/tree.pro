@@ -4,12 +4,9 @@
 # Target is a library:  sofatree$$LIBSUFFIX
 
 HEADERS += tree.h \
-           DeleteVisitor.h \
            ExportDotVisitor.h \
            GNode.h \
            GNodeVisitor.h \
-           MutationListener.h \
-           ParallelVisitorScheduler.h \
            TreeSimulation.h \
            xml/BaseElement.h \
            xml/Element.h \
@@ -21,12 +18,9 @@ HEADERS += tree.h \
            xml/DataElement.h \
            xml/XML.h 
 
-SOURCES += DeleteVisitor.cpp \
-           ExportDotVisitor.cpp \
+SOURCES += ExportDotVisitor.cpp \
            GNode.cpp \   
            GNodeVisitor.cpp \
-           MutationListener.cpp \
-           ParallelVisitorScheduler.cpp \
            TreeSimulation.cpp \
            xml/BaseElement.cpp \
 		   xml/initXml.cpp \

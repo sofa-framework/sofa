@@ -107,22 +107,6 @@ void Node::glDraw()
 }
 
 
-
-void Node::addChild(Node* )
-{
-    serr << "addChild NOT IMPLEMENTED" << sendl;
-}
-
-void Node::removeChild(Node* )
-{
-    serr << "removeChild NOT IMPLEMENTED" << sendl;
-}
-
-void Node::moveChild(Node* )
-{
-    serr << "moveChild NOT IMPLEMENTED" << sendl;
-}
-
 /// Add an object. Detect the implemented interfaces and add the object to the corresponding lists.
 bool Node::addObject(BaseObject* obj)
 {
@@ -155,6 +139,64 @@ void Node::moveObject(BaseObject* obj)
         doAddObject(obj);
     }
 }
+
+
+
+void Node::notifyAddChild(Node* node)
+{
+    for (Sequence<MutationListener>::iterator it = listener.begin(); it != listener.end(); ++it)
+        (*it)->addChild(this, node);
+}
+
+
+void Node::notifyRemoveChild(Node* node)
+{
+    for (Sequence<MutationListener>::iterator it = listener.begin(); it != listener.end(); ++it)
+        (*it)->removeChild(this, node);
+}
+
+
+void Node::notifyMoveChild(Node* node, Node* prev)
+{
+    for (Sequence<MutationListener>::iterator it = listener.begin(); it != listener.end(); ++it)
+        (*it)->moveChild(prev, this, node);
+}
+
+
+void Node::notifyAddObject(core::objectmodel::BaseObject* obj)
+{
+    for (Sequence<MutationListener>::iterator it = listener.begin(); it != listener.end(); ++it)
+        (*it)->addObject(this, obj);
+}
+
+void Node::notifyRemoveObject(core::objectmodel::BaseObject* obj)
+{
+    for (Sequence<MutationListener>::iterator it = listener.begin(); it != listener.end(); ++it)
+        (*it)->removeObject(this, obj);
+}
+
+void Node::notifyMoveObject(core::objectmodel::BaseObject* obj, Node* prev)
+{
+    for (Sequence<MutationListener>::iterator it = listener.begin(); it != listener.end(); ++it)
+        (*it)->moveObject(prev, this, obj);
+}
+
+
+void Node::addListener(MutationListener* obj)
+{
+    // make sure we don't add the same listener twice
+    Sequence< MutationListener >::iterator it = listener.begin();
+    while (it != listener.end() && (*it)!=obj)
+        ++it;
+    if (it == listener.end())
+        listener.add(obj);
+}
+
+void Node::removeListener(MutationListener* obj)
+{
+    listener.remove(obj);
+}
+
 
 /// Find an object given its name
 core::objectmodel::BaseObject* Node::getObject(const std::string& name) const

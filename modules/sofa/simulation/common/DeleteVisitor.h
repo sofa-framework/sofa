@@ -22,11 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_TREE_PARALLELACTIONSCHEDULER_H
-#define SOFA_SIMULATION_TREE_PARALLELACTIONSCHEDULER_H
+#ifndef SOFA_SIMULATION_COMMON_DELETEVISITOR_H
+#define SOFA_SIMULATION_COMMON_DELETEVISITOR_H
 
-#include <sofa/simulation/common/VisitorScheduler.h>
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/common/Visitor.h>
 
 namespace sofa
 {
@@ -34,30 +33,15 @@ namespace sofa
 namespace simulation
 {
 
-namespace tree
-{
-
-/// Specialized VisitorScheduler for parallel implementations.
-class SOFA_SIMULATION_TREE_API ParallelVisitorScheduler : public simulation::VisitorScheduler
+class SOFA_SIMULATION_COMMON_API DeleteVisitor : public Visitor
 {
 public:
-    ParallelVisitorScheduler(bool propagate=false);
+    DeleteVisitor() {}
 
-    /// Specify whether this scheduler is multi-threaded.
-    virtual bool isMultiThreaded() const { return true; }
-
-    virtual void executeVisitor(GNode* node, simulation::Visitor* action);
-
-protected:
-    bool propagate;
-
-    void recursiveClone(GNode* node);
-
-    virtual ParallelVisitorScheduler* clone() = 0;
-    virtual void executeParallelVisitor(GNode* node, simulation::Visitor* action) = 0;
+    virtual Result processNodeTopDown(Node* node);
+    virtual void processNodeBottomUp(Node* node);
+    virtual const char* getClassName() const { return "DeleteVisitor"; }
 };
-
-} // namespace tree
 
 } // namespace simulation
 

@@ -44,9 +44,6 @@
 using std::set;
 
 
-// using sofa::simulation::tree::GNode;
-
-
 namespace sofa
 {
 

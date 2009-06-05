@@ -31,6 +31,9 @@
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/helper/gl/template.h>
 
+#include <sofa/simulation/tree/GNode.h>
+
+
 namespace sofa
 {
 
@@ -39,6 +42,9 @@ namespace component
 
 namespace mapping
 {
+
+using sofa::simulation::tree::GNode;
+
 
 template <class BasicMapping>
 ArticulatedSystemMapping<BasicMapping>::ArticulatedSystemMapping(In* from, Out* to)

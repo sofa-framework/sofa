@@ -22,8 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/tree/DeleteVisitor.h>
 #include <sofa/simulation/common/Node.h>
+
+#include <sofa/simulation/common/MutationListener.h>
 
 namespace sofa
 {
@@ -31,31 +32,48 @@ namespace sofa
 namespace simulation
 {
 
-namespace tree
-{
 
-simulation::Visitor::Result DeleteVisitor::processNodeTopDown(GNode* /*node*/)
+MutationListener::~MutationListener()
 {
-    return RESULT_CONTINUE;
 }
 
-void DeleteVisitor::processNodeBottomUp(GNode* node)
+void MutationListener::addChild(Node* /*parent*/, Node* child)
 {
-    while (!node->child.empty())
-    {
-        GNode* child = *node->child.begin();
-        node->removeChild((Node*)child);
-        delete child;
-    }
-    while (!node->object.empty())
-    {
-        core::objectmodel::BaseObject* object = *node->object.begin();
-        node->simulation::Node::removeObject(object);
-        delete object;
-    }
+    child->addListener(this);
+    for(Node::ObjectIterator it = child->object.begin(); it != child->object.end(); ++it)
+        addObject(child, *it);
+    for(Node::ChildIterator it = child->child.begin(); it != child->child.end(); ++it)
+        addChild(child, *it);
 }
 
-} // namespace tree
+void MutationListener::removeChild(Node* /*parent*/, Node* child)
+{
+    for(Node::ObjectIterator it = child->object.begin(); it != child->object.end(); ++it)
+        removeObject(child, *it);
+    for(Node::ChildIterator it = child->child.begin(); it != child->child.end(); ++it)
+        removeChild(child, *it);
+    child->removeListener(this);
+}
+
+void MutationListener::addObject(Node* /*parent*/, core::objectmodel::BaseObject* /*object*/)
+{
+}
+
+void MutationListener::removeObject(Node* /*parent*/, core::objectmodel::BaseObject* /*object*/)
+{
+}
+
+void MutationListener::moveChild(Node* previous, Node* parent, Node* child)
+{
+    removeChild(previous, child);
+    addChild(parent, child);
+}
+
+void MutationListener::moveObject(Node* previous, Node* parent, core::objectmodel::BaseObject* object)
+{
+    removeObject(previous, object);
+    addObject(parent, object);
+}
 
 } // namespace simulation
 

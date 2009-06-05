@@ -58,11 +58,6 @@ public:
     /// @name Scene hierarchy
     /// @{
 
-    /// Get parent node (or NULL if no hierarchy or for root node)
-    virtual BaseNode* getParent() = 0;
-
-    /// Get parent node (or NULL if no hierarchy or for root node)
-    virtual const BaseNode* getParent() const = 0;
 
     /// Get a list of child node
     virtual sofa::helper::vector< BaseNode* > getChildren() = 0;
@@ -76,17 +71,26 @@ public:
     /// Remove a child node
     virtual void removeChild(BaseNode* node) = 0;
 
+    /// Move a node from another node
+    virtual void moveChild(BaseNode* obj) = 0;
+
     /// Add a generic object
     virtual bool addObject(BaseObject* obj) = 0;
 
     /// Remove a generic object
     virtual bool removeObject(BaseObject* obj) = 0;
 
+    /// Remove the current node from the graph: depending on the type of Node, it can have one or several parents.
+    virtual void detachFromGraph() = 0;
+
     /// Get this node context
     virtual BaseContext* getContext() = 0;
 
     /// Get this node context
     virtual const BaseContext* getContext() const = 0;
+
+    /// Return the full path name of this node
+    virtual std::string getPathName() const=0;
 
     /// @}
 };

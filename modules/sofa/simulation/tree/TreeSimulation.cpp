@@ -24,7 +24,7 @@
 ******************************************************************************/
 #include <sofa/simulation/tree/TreeSimulation.h>
 
-#include <sofa/simulation/tree/DeleteVisitor.h>
+#include <sofa/simulation/common/DeleteVisitor.h>
 #include <sofa/simulation/common/FindByTypeVisitor.h>
 #include <sofa/simulation/common/CleanupVisitor.h>
 #include <sofa/core/ObjectFactory.h>

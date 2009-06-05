@@ -48,7 +48,6 @@ namespace mapping
 
 using namespace sofa::defaulttype;
 using namespace sofa::component::container;
-using namespace sofa::simulation::tree;
 
 template <class BasicMapping>
 class ArticulatedSystemMapping : public BasicMapping, public virtual core::objectmodel::BaseObject

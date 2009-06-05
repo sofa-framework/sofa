@@ -22,11 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_TREE_DELETEACTION_H
-#define SOFA_SIMULATION_TREE_DELETEACTION_H
+#ifndef SOFA_SIMULATION_COMMON_MUTATIONLISTENER_H
+#define SOFA_SIMULATION_COMMON_MUTATIONLISTENER_H
 
-#include <sofa/simulation/tree/GNodeVisitor.h>
-//#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/common/common.h>
+#include <sofa/core/objectmodel/BaseObject.h>
 
 namespace sofa
 {
@@ -34,20 +34,26 @@ namespace sofa
 namespace simulation
 {
 
-namespace tree
-{
+class Node;
 
-class SOFA_SIMULATION_TREE_API DeleteVisitor : public GNodeVisitor
+///Generic API to handle mutations of the graph
+class SOFA_SIMULATION_COMMON_API MutationListener
 {
 public:
-    DeleteVisitor() {}
+    virtual ~MutationListener();
 
-    virtual Result processNodeTopDown(GNode* node);
-    virtual void processNodeBottomUp(GNode* node);
-    virtual const char* getClassName() const { return "DeleteVisitor"; }
+    virtual void addChild(Node* parent, Node* child);
+
+    virtual void removeChild(Node* parent, Node* child);
+
+    virtual void moveChild(Node* previous, Node* parent, Node* child);
+
+    virtual void addObject(Node* parent, core::objectmodel::BaseObject* object);
+
+    virtual void removeObject(Node* parent, core::objectmodel::BaseObject* object);
+
+    virtual void moveObject(Node* previous, Node* parent, core::objectmodel::BaseObject* object);
 };
-
-} // namespace tree
 
 } // namespace simulation
 
