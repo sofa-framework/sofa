@@ -136,6 +136,7 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
 {
     inputVertices = &vertices;
     inputNormals = &vnormals;
+    _topology = 0;
 
     addAlias(&f_useNormals, "normals");
     addAlias(&fileMesh, "filename");
@@ -445,16 +446,21 @@ void VisualModelImpl::applyUVScale(const double scaleU, const double scaleV)
 
 void VisualModelImpl::init()
 {
-
     load(fileMesh.getFullPath(), "", texturename.getFullPath());
     _topology = getContext()->getMeshTopology();
+
+    if (_topology == 0)
+    {
+        // Fixes bug when neither an .obj file nor a topology is present in the VisualModel Node.
+        // Thus nothing will be displayed.
+        useTopology = false;
+    }
 
     field_vertices.beginEdit();
     field_vnormals.beginEdit();
     field_vtexcoords.beginEdit();
     field_triangles.beginEdit();
     field_quads.beginEdit();
-
 
 
     applyScale(scale.getValue());

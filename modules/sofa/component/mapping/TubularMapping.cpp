@@ -54,7 +54,7 @@ int TubularMappingClass = core::RegisterObject(" ")
         .add< TubularMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Vec3dTypes> > > >()
 //.add< TubularMapping< MechanicalMapping< MechanicalState<Rigid2dTypes>, MechanicalState<Vec2dTypes> > > >()
         .add< TubularMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3dTypes> > > >()
-        .add< TubularMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3dTypes> > > >()
+        .add< TubularMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3fTypes> > > >()
 #endif
 #ifndef SOFA_DOUBLE
         .add< TubularMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Vec3fTypes> > > >()
@@ -79,7 +79,7 @@ int TubularMappingClass = core::RegisterObject(" ")
 template class TubularMapping< MechanicalMapping<MechanicalState<Rigid3dTypes>, MechanicalState<Vec3dTypes> > >;
 //template class TubularMapping< MechanicalMapping<MechanicalState<Rigid2dTypes>, MechanicalState<Vec2dTypes> > >;
 template class TubularMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3dTypes> > >;
-template class TubularMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3dTypes> > >;
+template class TubularMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3fTypes> > >;
 #endif
 #ifndef SOFA_DOUBLE
 template class TubularMapping< MechanicalMapping<MechanicalState<Rigid3fTypes>, MechanicalState<Vec3fTypes> > >;

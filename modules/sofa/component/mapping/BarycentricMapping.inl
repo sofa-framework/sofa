@@ -1137,16 +1137,23 @@ template <class In, class Out>
 void BarycentricMapperSparseGridTopology<In,Out>::apply ( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
     out.resize ( map.size() );
-    for ( unsigned int i=0; i<map.size(); i++ )
+
+    sofa::helper::vector< CubeData >::const_iterator it = map.begin();
+    sofa::helper::vector< CubeData >::const_iterator itEnd = map.end();
+
+    unsigned int i = 0;
+
+    while (it != itEnd)
     {
 #ifdef SOFA_NEW_HEXA
-        const topology::SparseGridTopology::Hexa cube = this->topology->getHexa ( this->map[i].in_index );
+        const topology::SparseGridTopology::Hexa cube = this->topology->getHexa( it->in_index );
 #else
-        const topology::SparseGridTopology::Cube cube = this->topology->getCube ( this->map[i].in_index );
+        const topology::SparseGridTopology::Cube cube = this->topology->getCube ( it->in_index );
 #endif
-        const Real fx = map[i].baryCoords[0];
-        const Real fy = map[i].baryCoords[1];
-        const Real fz = map[i].baryCoords[2];
+        const Real fx = it->baryCoords[0];
+        const Real fy = it->baryCoords[1];
+        const Real fz = it->baryCoords[2];
+
         out[i] = in[cube[0]] * ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) )
                 + in[cube[1]] * ( ( fx ) * ( 1-fy ) * ( 1-fz ) )
 #ifdef SOFA_NEW_HEXA
@@ -1165,8 +1172,9 @@ void BarycentricMapperSparseGridTopology<In,Out>::apply ( typename Out::VecCoord
                 + in[cube[6]] * ( ( 1-fx ) * ( fy ) * ( fz ) )
                 + in[cube[7]] * ( ( fx ) * ( fy ) * ( fz ) );
 #endif
+        ++it;
+        ++i;
     }
-
 }
 
 template <class In, class Out>

@@ -55,13 +55,6 @@ void TubularMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const ty
 {
     // Propagation of positions from the input DOFs to the output DOFs
 
-    //sout << "TubularMapping<BasicMapping>::apply"<<sendl;
-
-    if(out.size() != rotatedPoints.size())
-    {
-        rotatedPoints.resize(out.size());
-    }
-
     unsigned int N = m_nbPointsOnEachCircle.getValue();
     double rho = m_radius.getValue();
     int peak = m_peak.getValue();

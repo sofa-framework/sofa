@@ -111,37 +111,50 @@ void Edge2QuadTopologicalMapping::init()
             Y0[0] = (Real) (0.0); Y0[1] = (Real) (1.0); Y0[2] = (Real) (0.0);
             Z0[0] = (Real) (0.0); Z0[1] = (Real) (0.0); Z0[2] = (Real) (1.0);
 
-            to_mstate->resize(fromModel->getNbPoints() * N);
+            if (to_mstate)
+            {
+                to_mstate->resize(fromModel->getNbPoints() * N);
+            }
+
             to_tstc->clear();
 
             toModel->setNbPoints(fromModel->getNbPoints() * N);
 
-            for (unsigned int i=0; i<(unsigned int) fromModel->getNbPoints(); ++i)
+
+            if (to_mstate)
             {
-                unsigned int p0=i;
-
-                Mat rotation;
-                (*from_mstate->getX())[p0].writeRotationMatrix(rotation);
-
-                Vec t;
-                t=(*from_mstate->getX())[p0].getCenter();
-
-                Vec Y;
-                Vec Z;
-
-                Y = rotation * Y0;
-                Z = rotation * Z0;
-
-                for(unsigned int j=0; j<N; ++j)
+                for (unsigned int i=0; i<(unsigned int) fromModel->getNbPoints(); ++i)
                 {
+                    unsigned int p0=i;
 
-                    Vec x = t + (Y*cos((Real) (2.0*j*M_PI/N)) + Z*sin((Real) (2.0*j*M_PI/N)))*((Real) rho);
+                    Mat rotation;
+                    (*from_mstate->getX())[p0].writeRotationMatrix(rotation);
 
-                    (*to_mstate->getX())[p0*N+j]=x;
+                    Vec t;
+                    t=(*from_mstate->getX())[p0].getCenter();
+
+                    Vec Y;
+                    Vec Z;
+
+                    Y = rotation * Y0;
+                    Z = rotation * Z0;
+
+                    for(unsigned int j=0; j<N; ++j)
+                    {
+
+                        Vec x = t + (Y*cos((Real) (2.0*j*M_PI/N)) + Z*sin((Real) (2.0*j*M_PI/N)))*((Real) rho);
+
+                        (*to_mstate->getX())[p0*N+j]=x;
+                    }
                 }
             }
 
+
             // CREATION of the quads based on the the circles
+
+            sofa::helper::vector< Quad > quads_to_create;
+            sofa::helper::vector< unsigned int > quadsIndexList;
+            int nb_elems = toModel->getNbQuads();
 
             for (unsigned int i=0; i<edgeArray.size(); ++i)
             {
@@ -158,16 +171,31 @@ void Edge2QuadTopologicalMapping::init()
                     unsigned int q1 = p1*N+j;
                     unsigned int q2 = p1*N+((j+1)%N);
                     unsigned int q3 = p0*N+((j+1)%N);
-                    if(flipNormals.getValue())
-                        to_tstm->addQuadProcess(Quad(helper::make_array<unsigned int>((unsigned int) q3, (unsigned int) q2, (unsigned int) q1, (unsigned int) q0)));
+
+                    if (flipNormals.getValue())
+                    {
+                        Quad q = Quad(helper::make_array<unsigned int>((unsigned int) q3, (unsigned int) q2, (unsigned int) q1, (unsigned int) q0));
+                        quads_to_create.push_back(q);
+                        quadsIndexList.push_back(nb_elems);
+                    }
                     else
-                        to_tstm->addQuadProcess(Quad(helper::make_array<unsigned int>((unsigned int) q0, (unsigned int) q1, (unsigned int) q2, (unsigned int) q3)));
+                    {
+                        Quad q = Quad(helper::make_array<unsigned int>((unsigned int) q0, (unsigned int) q1, (unsigned int) q2, (unsigned int) q3));
+                        quads_to_create.push_back(q);
+                        quadsIndexList.push_back(nb_elems);
+                    }
+
                     Loc2GlobVec.push_back(i);
                     out_info.push_back(Loc2GlobVec.size()-1);
+
+                    nb_elems++;
                 }
 
                 In2OutMap[i]=out_info;
             }
+
+            to_tstm->addQuadsProcess(quads_to_create);
+            to_tstm->addQuadsWarning(quads_to_create.size(), quads_to_create, quadsIndexList);
 
             //to_tstm->propagateTopologicalChanges();
             to_tstm->notifyEndingEvent();
@@ -479,6 +507,7 @@ void Edge2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
                 ++itBegin;
             }
+
             to_tstm->propagateTopologicalChanges();
         }
     }
