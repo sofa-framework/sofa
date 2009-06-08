@@ -35,11 +35,11 @@
 #include <Q3ListViewItem>
 #include <Q3ListView>
 #include <QWidget>
-
 #else
 #include <qlistview.h>
 #include <qimage.h>
-
+typedef QListViewItem Q3ListViewItem;
+typedef QListView Q3ListView;
 #endif
 
 #include <sofa/simulation/common/Node.h>
