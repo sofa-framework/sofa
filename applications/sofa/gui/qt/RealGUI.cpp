@@ -412,10 +412,11 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     connect ( stepButton, SIGNAL ( clicked() ), this, SLOT ( step() ) );
     connect ( ExportGraphButton, SIGNAL ( clicked() ), this, SLOT ( exportGraph() ) );
     connect ( dumpStateCheckBox, SIGNAL ( toggled ( bool ) ), this, SLOT ( dumpState ( bool ) ) );
-    connect ( exportGnuplotFilesCheckbox, SIGNAL ( toggled ( bool ) ), this, SLOT ( setExportGnuplot ( bool ) ) );
-    connect ( exportVisitorCheckbox, SIGNAL ( toggled ( bool ) ), this, SLOT ( setExportVisitor ( bool ) ) );
     connect ( displayComputationTimeCheckBox, SIGNAL ( toggled ( bool ) ), this, SLOT ( displayComputationTime ( bool ) ) );
-
+    connect ( exportGnuplotFilesCheckbox, SIGNAL ( toggled ( bool ) ), this, SLOT ( setExportGnuplot ( bool ) ) );
+#ifdef SOFA_DUMP_VISITOR_INFO
+    connect ( exportVisitorCheckbox, SIGNAL ( toggled ( bool ) ), this, SLOT ( setExportVisitor ( bool ) ) );
+#endif
     connect ( record, SIGNAL (toggled (bool) ),              this, SLOT( slot_recordSimulation( bool) ) );
     connect ( backward_record, SIGNAL (clicked () ),         this, SLOT( slot_backward( ) ) );
     connect ( stepbackward_record, SIGNAL (clicked () ),     this, SLOT( slot_stepbackward( ) ) );
@@ -575,8 +576,11 @@ RealGUI::~RealGUI()
     }
 #endif
     delete displayFlag;
+
+#ifdef SOFA_DUMP_VISITOR_INFO
     delete windowTraceVisitor;
     delete handleTraceVisitor;
+#endif
     if (dialog) delete dialog;
 }
 
@@ -604,14 +608,14 @@ void RealGUI::init()
 #ifndef SOFA_DUMP_VISITOR_INFO
     //Remove option to see visitor trace
     this->exportVisitorCheckbox->hide();
-#endif
+#else
     //Main window containing a QListView only
     windowTraceVisitor = new WindowVisitor;
     windowTraceVisitor->graphView->setSorting(-1);
     windowTraceVisitor->hide();
     connect(windowTraceVisitor, SIGNAL(WindowVisitorClosed(bool)), this->exportVisitorCheckbox, SLOT(setChecked(bool)));
     handleTraceVisitor = new GraphVisitor(windowTraceVisitor);
-
+#endif
     //--------
     descriptionScene = new QDialog(this);
     descriptionScene->resize(400,400);
@@ -1772,11 +1776,11 @@ void RealGUI::setExportGnuplot ( bool exp )
 
 //*****************************************************************************************
 //
+#ifdef SOFA_DUMP_VISITOR_INFO
 void RealGUI::setExportVisitor ( bool exp )
 {
     if (exp)
     {
-        std::string pFilename = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + std::string( "/dumpVisitor.xml" );
         windowTraceVisitor->show();
         handleTraceVisitor->clear();
     }
@@ -1785,7 +1789,7 @@ void RealGUI::setExportVisitor ( bool exp )
         windowTraceVisitor->hide();
     }
 }
-
+#endif
 
 //*****************************************************************************************
 //
