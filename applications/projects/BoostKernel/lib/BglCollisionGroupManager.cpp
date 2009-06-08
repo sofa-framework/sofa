@@ -151,30 +151,13 @@ void BglCollisionGroupManager::clearGroups(core::objectmodel::BaseContext* /*sce
 
 simulation::Node* BglCollisionGroupManager::getIntegrationNode(core::CollisionModel* model)
 {
-    simulation::Node* currentNode = dynamic_cast<simulation::bgl::BglNode*>(model->getContext());
-    assert(currentNode);
 
-    simulation::bgl::BglSimulation *currentSimulation = dynamic_cast<simulation::bgl::BglSimulation*>(simulation::getSimulation());
-    assert(currentSimulation);
+    simulation::Node* node = static_cast<simulation::Node*>(model->getContext());
+    helper::vector< core::componentmodel::behavior::OdeSolver *> listSolver;
+    node->get< core::componentmodel::behavior::OdeSolver >(&listSolver);
 
-    std::set< simulation::Node*> &nodeSolvers = currentSimulation->graphManager.getSolverNode();
-    while (true)
-    {
-        //Verify is the current node contains at least a solver
-        if (nodeSolvers.find(currentNode) != nodeSolvers.end()) return currentNode;
-        else
-        {
-            //We look at an eventual mechanical mapping to goes up in the hierarchy
-            if (currentNode->mechanicalMapping)
-            {
-                currentNode = static_cast<simulation::Node*>(currentNode->mechanicalMapping->getMechFrom()->getContext());
-            }
-            else
-            {
-                return NULL;
-            }
-        }
-    }
+    if (!listSolver.empty()) return static_cast<simulation::Node*>(listSolver.back()->getContext());
+    else                     return NULL;
 }
 
 

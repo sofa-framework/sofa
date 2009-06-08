@@ -315,6 +315,7 @@ void BglNode::doExecuteVisitor( Visitor* vis )
 {
     //cerr<<"BglNode::doExecuteVisitor( simulation::tree::Visitor* action)"<<endl;
     if (!graph) return;
+
     boost::vector_property_map<boost::default_color_type> colors( boost::num_vertices(*graph) );
     //boost::queue<BglGraphManager::Hvertex> queue;
 
