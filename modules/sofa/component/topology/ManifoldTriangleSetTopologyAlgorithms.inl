@@ -334,12 +334,12 @@ int ManifoldTriangleSetTopologyAlgorithms< DataTypes >::SplitAlongPath(unsigned 
 
 
 template<class DataTypes>
-bool ManifoldTriangleSetTopologyAlgorithms< DataTypes >::InciseAlongEdgeList (const sofa::helper::vector<unsigned int>& edges, sofa::helper::vector<unsigned int>& new_points, sofa::helper::vector<unsigned int>& end_points)
+bool ManifoldTriangleSetTopologyAlgorithms< DataTypes >::InciseAlongEdgeList (const sofa::helper::vector<unsigned int>& edges, sofa::helper::vector<unsigned int>& new_points, sofa::helper::vector<unsigned int>& end_points, bool& reachBorder)
 {
     // std::cout << "ManifoldTriangleSetTopologyAlgorithms::InciseAlongEdgeList()" << std::endl;
 
     //// STEP 1 - Incise with the TriangleSetTopologyAlgorithms function. Addremovetriangles() automatically reorder the mesh
-    bool ok = TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongEdgeList (edges, new_points, end_points);
+    bool ok = TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongEdgeList (edges, new_points, end_points, reachBorder);
 
     //// STEP 2 - Create a ROI of edges (without double) around the incision
     sofa::helper::vector< PointID > listVertex;
