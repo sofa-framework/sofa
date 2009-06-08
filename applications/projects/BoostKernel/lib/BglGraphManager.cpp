@@ -332,7 +332,7 @@ void BglGraphManager::clear()
     rgraph.clear();
     r_node_vertex_map.clear();
     collisionPipeline=NULL;
-
+    hasCollisionGroupManager = false;
 
     h_vertex_node_map = get( bglnode_t(), hgraph);
     r_vertex_node_map = get( bglnode_t(), rgraph);
@@ -640,7 +640,7 @@ void BglGraphManager::collisionStep(Node* root, double dt)
 {
     if (collisionPipeline)
     {
-        masterNode->moveObject( collisionPipeline );
+        masterNode->addObject( collisionPipeline );
         CollisionVisitor act;
         masterNode->doExecuteVisitor(&act);
         masterNode->removeObject( collisionPipeline );
@@ -651,6 +651,9 @@ void BglGraphManager::collisionStep(Node* root, double dt)
 */
 void BglGraphManager::mechanicalStep(Node* root, double dt)
 {
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printNode("MechanicalStep");
+#endif
     clearVertex(masterVertex);
     update();
 
@@ -715,8 +718,8 @@ void BglGraphManager::mechanicalStep(Node* root, double dt)
             addHedge( masterVertex,solverVertex);
             if (hasCollisionGroupManager)
             {
-#ifdef DUMP_VISITOR_INFO
-                simulation::Visitor::printComment(std::string("Animate ") + staticObjectName + currentSolver->getName() );
+#ifdef SOFA_DUMP_VISITOR_INFO
+                simulation::Visitor::printComment(std::string("Collision Group Animate ") + staticObjectName + currentSolver->getName() );
 #endif
                 masterNode->animate(dt);
                 removeHedge( masterVertex, solverVertex);
@@ -724,9 +727,10 @@ void BglGraphManager::mechanicalStep(Node* root, double dt)
             else staticObjectName += currentSolver->getName() + std::string(" ");
         }
 
-        if (animatedObjectAdded.empty() || !hasCollisionGroupManager)
+        if (animatedObjectAdded.empty() // || !hasCollisionGroupManager
+           )
         {
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
             simulation::Visitor::printComment(std::string("Animate ") + staticObjectName );
 #endif
             masterNode->animate(dt);
@@ -734,8 +738,8 @@ void BglGraphManager::mechanicalStep(Node* root, double dt)
     }
 
 
-#ifdef DUMP_VISITOR_INFO
-    simulation::Visitor::printComment(std::string("End Animate"));
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printCloseNode("MechanicalStep");
 #endif
 }
 

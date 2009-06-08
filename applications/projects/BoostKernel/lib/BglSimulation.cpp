@@ -185,7 +185,7 @@ void BglSimulation::animate(Node* root, double dt)
 {
     dt = root->getContext()->getDt();
 
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printComment(std::string("Begin Step"));
 #endif
     Node *masterNode = graphManager.getMasterNode();
@@ -227,7 +227,7 @@ void BglSimulation::animate(Node* root, double dt)
         masterNode->doExecuteVisitor( &act );
     }
 
-#ifdef DUMP_VISITOR_INFO
+#ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printComment(std::string("End Step"));
 #endif
 
@@ -298,6 +298,7 @@ void BglSimulation::draw(Node* masterNode, helper::gl::VisualParameters*)
 /// Create a GNode tree structure using available file loaders, then convert it to a BglSimulation
 Node* BglSimulation::load(const char* f)
 {
+    graphManager.reset();
     std::string fileName(f);
     /*  if (fileName.empty())*/
     {
@@ -334,8 +335,6 @@ Node* BglSimulation::load(const char* f)
     masterNode->copyContext(c);
 
     init();
-//         masterNode->execute<PrintVisitor>();
-    /*    cerr<<"loaded graph has "<<num_vertices(hgraph)<<" vertices and "<<num_edges(hgraph)<<" edges:"<<endl; */
     return masterNode;
 }
 
@@ -346,7 +345,6 @@ void BglSimulation::clear()
 
 void BglSimulation::reset(Node* root)
 {
-//         print(root);
     sofa::simulation::Simulation::reset(root);
 //         sofa::simulation::Simulation::reset(visualNode);
 
