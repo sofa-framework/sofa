@@ -163,55 +163,44 @@ void MechanicalVisitor::processNodeBottomUp(simulation::Node* node)
     }
 }
 #ifdef SOFA_DUMP_VISITOR_INFO
-void MechanicalVisitor::printReadVectors(core::componentmodel::behavior::BaseMechanicalState* mm, std::string &info)
+void MechanicalVisitor::printReadVectors(core::componentmodel::behavior::BaseMechanicalState* mm)
 {
     if (!mm || !readVector.size() || !Visitor::printActivated) return;
 
-
-    for (unsigned int i=0; i<Visitor::depthLevel; ++i) info += "\t";
-    info += "<Input>\n";
+    printNode("Input");
 
     for (unsigned int i=0; i<readVector.size(); ++i)
     {
         std::ostringstream infoStream;
-        for (unsigned int j=0; j<Visitor::depthLevel+1; ++j) info += "\t";
-
-        info += "<Vector name=\"" + readVector[i].getName() + "\"";
+        TRACE_ARGUMENT arg;
         if (mm->getSize() < DUMP_VISITOR_MAX_SIZE_VECTOR)
-        {
-            mm->printDOF(readVector[i], infoStream);
-            info += "value=\"" + infoStream.str() + "\"";
-        }
-        info += "/>\n";
+            arg.push_back(std::make_pair("value", infoStream.str()));
+
+        printNode("Vector", readVector[i].getName(), arg);
+        printCloseNode("Vector");
     }
 
-    for (unsigned int i=0; i<Visitor::depthLevel; ++i) info += "\t";
-    info += "</Input>\n";
+    printCloseNode("Input");
 }
 
-void MechanicalVisitor::printWriteVectors(core::componentmodel::behavior::BaseMechanicalState* mm, std::string &info)
+void MechanicalVisitor::printWriteVectors(core::componentmodel::behavior::BaseMechanicalState* mm)
 {
     if (!mm || !writeVector.size() || !Visitor::printActivated) return;
 
-    for (unsigned int i=0; i<Visitor::depthLevel; ++i) info += "\t";
-    info += "<Output>\n";
+    printNode("Output");
 
     for (unsigned int i=0; i<writeVector.size(); ++i)
     {
         std::ostringstream infoStream;
-        for (unsigned int j=0; j<Visitor::depthLevel+1; ++j) info += "\t";
-        info += "<Vector name=\"" + writeVector[i].getName() + "\"";
-
+        TRACE_ARGUMENT arg;
         if (mm->getSize() < DUMP_VISITOR_MAX_SIZE_VECTOR)
-        {
-            mm->printDOF(writeVector[i], infoStream);
-            info += "value=\"" + infoStream.str() + "\"";
-        }
-        info += "/>\n";
+            arg.push_back(std::make_pair("value", infoStream.str()));
+
+        printNode("Vector", writeVector[i].getName(), arg);
+        printCloseNode("Vector");
     }
 
-    for (unsigned int i=0; i<Visitor::depthLevel; ++i) info += "\t";
-    info += "</Output>\n";
+    printCloseNode("Output");
 }
 
 void MechanicalVisitor::printReadVectors(simulation::Node* node, core::objectmodel::BaseObject* obj)
@@ -219,7 +208,6 @@ void MechanicalVisitor::printReadVectors(simulation::Node* node, core::objectmod
     if (!Visitor::printActivated) return;
     if (readVector.size())
     {
-        std::string info;
         core::componentmodel::behavior::BaseMechanicalState *dof1, *dof2;
         if ( sofa::core::componentmodel::behavior::InteractionForceField* interact = dynamic_cast<sofa::core::componentmodel::behavior::InteractionForceField*> (obj))
         {
@@ -238,22 +226,21 @@ void MechanicalVisitor::printReadVectors(simulation::Node* node, core::objectmod
         }
         else
         {
-            printReadVectors(node->mechanicalState, info);
-            dumpInfo(info);
+            printReadVectors(node->mechanicalState);
             return;
         }
-        for (unsigned int i=0; i<Visitor::depthLevel; ++i) info +="\t";
-        info +="<Components type=\"" + dof1->getClassName() + "\" name=\"" + dof1->getName() + "\">\n";
-        printReadVectors(dof1,info);
-        for (unsigned int i=0; i<Visitor::depthLevel; ++i) info +="\t";
-        info +="</Components>\n";
 
-        for (unsigned int i=0; i<Visitor::depthLevel; ++i) info +="\t";
-        info +="<Components type=\"" + dof2->getClassName() + "\" name=\"" + dof2->getName() + "\">\n";
-        printReadVectors(dof2,info);
-        for (unsigned int i=0; i<Visitor::depthLevel; ++i) info +="\t";
-        info +="</Components>\n";
-        dumpInfo(info);
+        TRACE_ARGUMENT arg1;
+        arg1.push_back(std::make_pair("type", dof1->getClassName()));
+        printNode("Components", dof1->getName(), arg1);
+        printReadVectors(dof1);
+        printCloseNode("Components");
+
+        TRACE_ARGUMENT arg2;
+        arg2.push_back(std::make_pair("type", dof2->getClassName()));
+        printNode("Components", dof2->getName(), arg2);
+        printReadVectors(dof2);
+        printCloseNode("Components");
     }
 }
 void MechanicalVisitor::printWriteVectors(simulation::Node* node, core::objectmodel::BaseObject* obj)
@@ -261,7 +248,6 @@ void MechanicalVisitor::printWriteVectors(simulation::Node* node, core::objectmo
     if (!Visitor::printActivated) return;
     if (writeVector.size())
     {
-        std::string info;
         core::componentmodel::behavior::BaseMechanicalState *dof1, *dof2;
         if ( sofa::core::componentmodel::behavior::InteractionForceField* interact = dynamic_cast<sofa::core::componentmodel::behavior::InteractionForceField*> (obj))
         {
@@ -280,23 +266,21 @@ void MechanicalVisitor::printWriteVectors(simulation::Node* node, core::objectmo
         }
         else
         {
-            printWriteVectors(node->mechanicalState, info);
-            dumpInfo(info);
+            printWriteVectors(node->mechanicalState);
             return;
         }
 
-        for (unsigned int i=0; i<Visitor::depthLevel; ++i) info +="\t";
-        info +="<Components type=\"" + dof1->getClassName() + "\" name=\"" + dof1->getName() + "\">\n";
-        printWriteVectors(dof1,info);
-        for (unsigned int i=0; i<Visitor::depthLevel; ++i) info +="\t";
-        info +="</Components>\n";
+        TRACE_ARGUMENT arg1;
+        arg1.push_back(std::make_pair("type", dof1->getClassName()));
+        printNode("Components", dof1->getName(), arg1);
+        printWriteVectors(dof1);
+        printCloseNode("Components");
 
-        for (unsigned int i=0; i<Visitor::depthLevel; ++i) info +="\t";
-        info +="<Components type=\"" + dof2->getClassName() + "\" name=\"" + dof2->getName() + "\">\n";
-        printWriteVectors(dof2,info);
-        for (unsigned int i=0; i<Visitor::depthLevel; ++i) info +="\t";
-        info +="</Components>\n";
-        dumpInfo(info);
+        TRACE_ARGUMENT arg2;
+        arg2.push_back(std::make_pair("type", dof2->getClassName()));
+        printNode("Components", dof2->getName(), arg2);
+        printWriteVectors(dof2);
+        printCloseNode("Components");
     }
 }
 #endif

@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include <sofa/simulation/common/InitVisitor.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/simulation/common/Simulation.h>
 //#include "MechanicalIntegration.h"
 
 namespace sofa
@@ -40,6 +41,7 @@ Visitor::Result InitVisitor::processNodeTopDown(simulation::Node* node)
     for(unsigned int i=0; i<node->object.size(); ++i)
     {
         node->object[i]->init();
+        simulation::getSimulation()->setPrefetching( node->object[i]->canPrefetch() );
     }
 
     return RESULT_CONTINUE;

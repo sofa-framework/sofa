@@ -39,18 +39,24 @@ namespace simulation
 
 void Visitor::execute(sofa::core::objectmodel::BaseContext* c, bool doPrefetch)
 {
-    if (doPrefetch)
+    if (getSimulation()->isPrefetchingUsed() && doPrefetch)
     {
+#ifdef SOFA_DUMP_VISITOR_INFO
+        const std::string prefetchName=std::string("Prefetch--") + std::string(getClassName());
+        printNode(prefetchName);
+#endif
         prefetching = true;
         sofa::core::objectmodel::BaseObject::setPrefetching(true);
         c->executeVisitor(this);
         prefetching = false;
         sofa::core::objectmodel::BaseObject::setPrefetching(false);
+#ifdef SOFA_DUMP_VISITOR_INFO
+        printCloseNode(prefetchName);
+#endif
     }
     c->executeVisitor(this);
 }
 #ifdef SOFA_DUMP_VISITOR_INFO
-unsigned int Visitor::depthLevel=0;
 simulation::Node::ctime_t Visitor::initDumpTime;
 std::vector< simulation::Node::ctime_t  > Visitor::initNodeTime=std::vector< simulation::Node::ctime_t >();
 bool Visitor::printActivated=false;
@@ -75,7 +81,6 @@ void Visitor::printInfo(const core::objectmodel::BaseContext* context, bool dirD
         {
             printCloseNode("Node");
         }
-        dumpInfo(info);
         return;
     }
     else if (!this->infoPrinted)
@@ -129,14 +134,13 @@ void Visitor::printNode(const std::string &type, const std::string &name, const 
 {
     if (Visitor::printActivated)
     {
-        Visitor::depthLevel++;
         std::ostringstream s;
-        s << "<" << type << " ";
-        if (!name.empty()) s << "name=\"" << name << "\" ";
+        s << "<" << type;
+        if (!name.empty()) s << " name=\"" << name << "\"";
         for (unsigned int i=0; i<arguments.size(); ++i)
         {
             if (!arguments[i].second.empty())
-                s << arguments[i].first << "=\"" << arguments[i].second << "\" ";
+                s << " " <<arguments[i].first << "=\"" << arguments[i].second << "\"";
         }
         s << ">\n";
 
@@ -148,7 +152,6 @@ void Visitor::printCloseNode(const std::string &type)
 {
     if (Visitor::printActivated)
     {
-        Visitor::depthLevel--;
         std::ostringstream s;
         ctime_t tSpent = initNodeTime.back(); initNodeTime.pop_back();
         s << "<Time value=\"" << getTimeSpent(tSpent,CTime::getRefTime()) << "\" />\n";

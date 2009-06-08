@@ -241,7 +241,6 @@ protected:
 
     static std::ostream *outputVisitor;  //Ouput stream to dump the info
     static bool printActivated;          //bool to know if the stream is opened or not
-    static unsigned int depthLevel;      //Level in the hierarchy
     static ctime_t initDumpTime;
     static std::vector< ctime_t > initNodeTime;
 
@@ -251,32 +250,29 @@ protected:
 public:
     static void startDumpVisitor(std::ostream *s, double time)
     {
-        depthLevel=0;
         initDumpTime = sofa::helper::system::thread::CTime::getRefTime();
         printActivated=true; outputVisitor=s;
         std::string initDump;
         std::ostringstream ff; ff << "<TraceVisitor time=\"" << time << "\">\n";
-        dumpInfo(ff.str()); depthLevel++;
+        dumpInfo(ff.str());
     };
     static void stopDumpVisitor()
     {
         std::ostringstream s;
         s << "<TotalTime value=\"" << getTimeSpent(initDumpTime, sofa::helper::system::thread::CTime::getRefTime()) << "\" />\n";
         s << "</TraceVisitor>\n";
-        depthLevel--;  dumpInfo(s.str());
+        dumpInfo(s.str());
         printActivated=false;
-        depthLevel=0;
     };
 
     typedef std::vector< std::pair< std::string,std::string > > TRACE_ARGUMENT;
-    static void dumpInfo( const std::string &info) { if (printActivated) {(*outputVisitor) << info; outputVisitor->flush();}}
     static void printComment(const std::string &s) ;
     static void printNode(const std::string &type, const std::string &name=std::string(), const TRACE_ARGUMENT &arguments=TRACE_ARGUMENT() ) ;
     static void printCloseNode(const std::string &type) ;
-    static unsigned int getLevel() {return depthLevel;};
-    static void resetLevel() {depthLevel=0;};
     virtual void printInfo(const core::objectmodel::BaseContext* context, bool dirDown);
     void setNode(core::objectmodel::Base* c);
+private:
+    static void dumpInfo( const std::string &info) { if (printActivated) {(*outputVisitor) << info; outputVisitor->flush();}}
 #endif
 };
 } // namespace simulation

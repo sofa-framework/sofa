@@ -205,9 +205,9 @@ public:
     virtual void addReadVector(VecId &id) {readVector.push_back(id);}
     virtual void addWriteVector(VecId &id) {writeVector.push_back(id);}
     virtual void addReadWriteVector(VecId &id) {readVector.push_back(id); writeVector.push_back(id);}
-    void printReadVectors(core::componentmodel::behavior::BaseMechanicalState* mm, std::string &info);
+    void printReadVectors(core::componentmodel::behavior::BaseMechanicalState* mm);
     void printReadVectors(simulation::Node* node, core::objectmodel::BaseObject* obj);
-    void printWriteVectors(core::componentmodel::behavior::BaseMechanicalState* mm, std::string &info);
+    void printWriteVectors(core::componentmodel::behavior::BaseMechanicalState* mm);
     void printWriteVectors(simulation::Node* node, core::objectmodel::BaseObject* obj);
 protected:
     sofa::helper::vector< VecId > readVector;

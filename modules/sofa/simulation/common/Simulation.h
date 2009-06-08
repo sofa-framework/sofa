@@ -108,11 +108,19 @@ public:
     /// Create a new Node of the simulation
     virtual Node* newNode(const std::string& name)=0;
 
+    /// During init, the components will tell if they need prefetch phase. If only one needs it, we have to use it.
+    void setPrefteching(bool b) { needToPrefetch |= b;};
+
+    bool isPrefetchingUsed() const { return needToPrefetch;};
+
     /// Number of mechanical steps within an animation step
     Data<unsigned> numMechSteps;
 
     /// Number of steps of simulation
     unsigned nbSteps;
+
+    /// Need to launch prefetches during animating steps
+    bool needToPrefetch;
 
     sofa::core::objectmodel::DataFileName gnuplotDirectory;
 
