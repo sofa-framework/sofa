@@ -275,6 +275,13 @@ bool TopologicalChangeManager::incisionTriangleSetTopology(sofa::core::component
     unsigned int& a_last = incision.a_last_init;
     if(incision.is_first_cut)
         a_last = (unsigned int)-1;
+    else
+    {
+        core::componentmodel::behavior::MechanicalState<Vec3Types>* mstate = _topology->getContext()->get<core::componentmodel::behavior::MechanicalState<Vec3Types> >();
+        helper::vector<Vector3> &v_coords =  *mstate->getX();
+        a = v_coords[a_last];
+    }
+
     unsigned int& b_last = incision.b_last_init;
 
     // Triangle Indices
@@ -300,6 +307,7 @@ bool TopologicalChangeManager::incisionTriangleSetTopology(sofa::core::component
         sofa::helper::vector<unsigned int> indices_list;
         sofa::helper::vector< Vec<3, double> > coords2_list;
         //bool is_on_boundary = false;
+
 
         /*
         std::cout << "*********************" << std::endl;
