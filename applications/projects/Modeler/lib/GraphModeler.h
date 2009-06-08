@@ -47,6 +47,7 @@
 #else
 #include <qlistview.h>
 #include <qdragobject.h>
+#include <qpopupmenu.h>
 #endif
 
 #include <iostream>
@@ -68,6 +69,7 @@ typedef sofa::core::ObjectFactory::Creator    Creator;
 typedef QListView Q3ListView;
 typedef QListViewItem Q3ListViewItem;
 typedef QTextDrag Q3TextDrag;
+typedef QPopupMenu Q3PopupMenu;
 #endif
 
 using sofa::simulation::tree::GNode;
