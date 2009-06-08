@@ -84,7 +84,7 @@ public:
     /** \brief Duplicates the given edges. Only works if at least the first or last point is adjacent to a border.
      * @returns true if the incision succeeded.
      */
-    virtual bool InciseAlongEdgeList(const sofa::helper::vector<unsigned int>& edges, sofa::helper::vector<unsigned int>& new_points, sofa::helper::vector<unsigned int>& end_points);
+    virtual bool InciseAlongEdgeList(const sofa::helper::vector<unsigned int>& edges, sofa::helper::vector<unsigned int>& new_points, sofa::helper::vector<unsigned int>& end_points, bool& reachBorder);
 
 
     /** \brief: Swap a list of edges.

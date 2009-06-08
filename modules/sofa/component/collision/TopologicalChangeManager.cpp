@@ -337,15 +337,16 @@ bool TopologicalChangeManager::incisionTriangleSetTopology(sofa::core::component
         sofa::helper::vector< unsigned int > new_edges;
 
         //triangleAlg->SplitAlongPath(a_last, a, b_last, b, triangles_list, edges_list, coords_list, new_edges);
-        triangleAlg->SplitAlongPath(a_last, a, b_last, b, topoPath_list, indices_list, coords2_list, new_edges, 0.1, 0.25);
+        triangleAlg->SplitAlongPath(a_last, a, b_last, b, topoPath_list, indices_list, coords2_list, new_edges, 0.0, 0.25);
         //std::cout << "** split along path done **" << std::endl;
 
         //std::cout << "new edges : " << new_edges << std::endl;
 
         sofa::helper::vector<unsigned int> new_points;
         sofa::helper::vector<unsigned int> end_points;
+        bool &reachBorder = incision.is_cut_completed;
 
-        bool is_fully_cut = triangleAlg->InciseAlongEdgeList(new_edges, new_points, end_points);
+        bool is_fully_cut = triangleAlg->InciseAlongEdgeList(new_edges, new_points, end_points, reachBorder);
         //std::cout << "** incise along path done **" << std::endl;
 
         if (!end_points.empty())
@@ -359,8 +360,6 @@ bool TopologicalChangeManager::incisionTriangleSetTopology(sofa::core::component
             incision.is_first_cut = true;
         }
 
-
-
         triangleMod->propagateTopologicalChanges();
 
         // notify the end for the current sequence of topological change events
@@ -368,6 +367,12 @@ bool TopologicalChangeManager::incisionTriangleSetTopology(sofa::core::component
 
         triangleMod->propagateTopologicalChanges();
 
+        if (reachBorder)
+        {
+            //std::cout << "Cut has reach a border" << std::endl;
+            incision.is_first_cut = true;
+            return false;
+        }
 
 
         return is_fully_cut;

@@ -1916,7 +1916,10 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapBorderPath (unsigned int pa, 
  * @returns true if the incision succeeded.
  */
 template<class DataTypes>
-bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::helper::vector<unsigned int>& edges, sofa::helper::vector<unsigned int>& new_points, sofa::helper::vector<unsigned int>& end_points)
+bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::helper::vector<unsigned int>& edges,
+        sofa::helper::vector<unsigned int>& new_points,
+        sofa::helper::vector<unsigned int>& end_points,
+        bool& reachBorder)
 {
     //std::cout << " TriangleSetTopologyAlgorithms::InciseAlongEdgeList" << std::endl;
 
@@ -1988,6 +1991,9 @@ bool TriangleSetTopologyAlgorithms<DataTypes>::InciseAlongEdgeList(const sofa::h
 
     if (!beginOnBorder) end_points.push_back(init_points.front());
     if (!endOnBorder) end_points.push_back(init_points.back());
+    else
+        reachBorder=true;
+
 
 
     /// STEP 1: Create the new points corresponding the one of the side of the now separated edges
