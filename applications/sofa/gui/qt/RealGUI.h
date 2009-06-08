@@ -44,13 +44,15 @@
 #include <sofa/gui/qt/AddObject.h>
 #include <sofa/gui/qt/ModifyObject.h>
 #include <sofa/gui/qt/DisplayFlagWidget.h>
-#include <sofa/gui/qt/WindowVisitor.h>
-#include <sofa/gui/qt/GraphVisitor.h>
 #include <sofa/gui/qt/SofaPluginManager.h>
 
 #include <sofa/simulation/tree/xml/XML.h>
 #include <sofa/helper/system/SetDirectory.h>
 
+#ifdef SOFA_DUMP_VISITOR_INFO
+#include <sofa/gui/qt/WindowVisitor.h>
+#include <sofa/gui/qt/GraphVisitor.h>
+#endif
 
 #ifdef SOFA_QT4
 #include <QApplication>
@@ -219,7 +221,9 @@ public slots:
     void dumpState(bool);
     void displayComputationTime(bool);
     void setExportGnuplot(bool);
+#ifdef SOFA_DUMP_VISITOR_INFO
     void setExportVisitor(bool);
+#endif
     void currentTabChanged(QWidget*);
 
 signals:
@@ -353,8 +357,11 @@ private:
 #endif
 
     DisplayFlagWidget *displayFlag;
+
+#ifdef SOFA_DUMP_VISITOR_INFO
     WindowVisitor* windowTraceVisitor;
     GraphVisitor* handleTraceVisitor;
+#endif
     SofaPluginManager* pluginManager;
     QDialog* descriptionScene;
     QTextBrowser* htmlPage;
