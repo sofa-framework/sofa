@@ -58,6 +58,7 @@ using namespace sofa::defaulttype;
 Simulation::Simulation()
     : numMechSteps( initData(&numMechSteps,(unsigned) 1,"numMechSteps","Number of mechanical steps within one update step. If the update time step is dt, the mechanical time step is dt/numMechSteps.") ),
       nbSteps(0),
+      needToPrefetch(false),
       gnuplotDirectory( initData(&gnuplotDirectory,std::string(""),"gnuplotDirectory","Directory where the gnuplot files will be saved")),
       instrumentInUse( initData( &instrumentInUse, -1, "instrumentinuse", "Numero of the instrument currently used"))
 {}
@@ -110,6 +111,7 @@ void Simulation::init ( Node* root )
     //cerr<<"Simulation::init"<<endl;
     setContext( root->getContext());
     if ( !root ) return;
+    needToPrefetch = false;
     root->execute<InitVisitor>();
     // Save reset state for later uses in reset()
     root->execute<MechanicalPropagatePositionAndVelocityVisitor>();
