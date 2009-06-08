@@ -1076,6 +1076,10 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
     // HYP : point a is in triangle indexed by t
     // is_entered == true => indices.size() == 2
 
+
+
+
+
     unsigned int ind_first=0;
     unsigned int ind_second=0;
 
@@ -1134,7 +1138,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
         v_normal/=norm_v_normal;
 
         Vec<3,Real> v_ab = pb-pa;
-        Vec<3,Real> v_ab_proj = v_ab - v_normal * dot(v_ab,v_normal); // projection
+        Vec<3,Real> v_ab_proj = v_ab - v_normal * dot(v_ab,v_normal); // projection (same values if incision in the plan)
         Vec<3,Real> pb_proj = v_ab_proj + pa;
 
         Vec<3,Real> v_01 = p1-p0;
@@ -1142,11 +1146,12 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
         Vec<3,Real> v_20 = p0-p2;
 
         Vec<3,Real> n_proj =v_ab_proj.cross(v_normal);
+
         Vec<3,Real> n_01 = v_01.cross(v_normal);
         Vec<3,Real> n_12 = v_12.cross(v_normal);
         Vec<3,Real> n_20 = v_20.cross(v_normal);
 
-        Real norm2_v_ab_proj = v_ab_proj*(v_ab_proj);
+        Real norm2_v_ab_proj = v_ab_proj*(v_ab_proj); //dot product WARNING
 
         if(norm2_v_ab_proj != 0.0) // pb_proj != pa
         {
@@ -1349,16 +1354,21 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeSegmentTriangleIntersect
         }
         else
         {
+            //std::cout << "points a and b are projected to the same point on triangle t" << std::endl;
             is_validated = false; // points a and b are projected to the same point on triangle t
         }
     }
     else
     {
+        //std::cout << "triangle t is flat" << std::endl;
         is_validated = false; // triangle t is flat
     }
 
     return is_validated;
 }
+
+
+
 
 
 // Computes the list of points (edge,coord) intersected by the segment from point a to point b
@@ -1389,6 +1399,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
     double dist_min=0.0;
 
     Vec<3,double> p_current=a;
+
     TriangleID ind_t_current=ind_ta;
     EdgeID ind_edge;
     PointID ind_index;
@@ -1423,6 +1434,8 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
       std::cout << "coord_k: " << coord_k << std::endl;
       std::cout << "indices: " << indices << std::endl;
       std::cout << "last_point: " << last_point << std::endl;
+      std::cout << "a: " << a << std::endl;
+      std::cout << "b: " << b << std::endl;
       std::cout << "is_intersected: "<< is_intersected << std::endl;
       std::cout << "*********************************" << std::endl;
     */
