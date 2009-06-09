@@ -425,7 +425,7 @@ class struct_data_trait < CLASS >
 {
 public:
     typedef CLASS data_type;
-    enum { NVAR = 20 };
+    enum { NVAR = 27 };
     static void set( data_type& /*d*/)
     {
     }
@@ -451,6 +451,15 @@ template<class T> STRUCT_DATA_VAR(CLASS, 16,  "Min Angle Y", "Min Angle Y", type
 template<class T> STRUCT_DATA_VAR(CLASS, 17, "Max Angle Y", "Max Angle Y", typename data_type::Real, limitAngles[3]);
 template<class T> STRUCT_DATA_VAR(CLASS, 18, "Min Angle Z", "Min Angle Z", typename data_type::Real, limitAngles[4]);
 template<class T> STRUCT_DATA_VAR(CLASS, 19, "Max Angle Z", "Max Angle Z", typename data_type::Real, limitAngles[5]);
+
+template<class T> STRUCT_DATA_VAR(CLASS, 20,  "Initial length of the spring X", "L init spring X", typename data_type::Real, initTrans[0]);
+template<class T> STRUCT_DATA_VAR(CLASS, 21,  "Initial length of the spring Y", "L init spring Y", typename data_type::Real, initTrans[1]);
+template<class T> STRUCT_DATA_VAR(CLASS, 22,  "Initial length of the spring Z", "L init spring Z", typename data_type::Real, initTrans[2]);
+
+template<class T> STRUCT_DATA_VAR(CLASS, 23,  "Initial rotation of the spring X", "Rot init spring X", SReal, initRot[0]);
+template<class T> STRUCT_DATA_VAR(CLASS, 24,  "Initial rotation of the spring Y", "Rot init spring Y", SReal, initRot[1]);
+template<class T> STRUCT_DATA_VAR(CLASS, 25,  "Initial rotation of the spring Z", "Rot init spring Z", SReal, initRot[2]);
+template<class T> STRUCT_DATA_VAR(CLASS, 26,  "Initial rotation of the spring W", "Rot init spring W", SReal, initRot[3]);
 
 template<class T>
 class data_widget_container < CLASS > : public struct_data_widget_container < CLASS >
