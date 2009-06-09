@@ -77,16 +77,17 @@ void JointSpringForceField<DataTypes>::bwdInit()
     this->Inherit::bwdInit();
 
     const VecCoord& x1= *this->mstate1->getX();
+
     const VecCoord& x2= *this->mstate2->getX();
     sofa::helper::vector<Spring> &springsVector=*(springs.beginEdit());
     for (unsigned int i=0; i<springs.getValue().size(); ++i)
     {
         Spring &s=springsVector[i];
-        if (s.initTrans == Vector())
+        if (s.needToInitializeTrans)
         {
             s.initTrans = x2[s.m2].getCenter() - x1[s.m1].getCenter();
         }
-        if (s.initRot == Quat())
+        if (s.needToInitializeRot)
         {
             s.initRot   = x2[s.m2].getOrientation()*x1[s.m1].getOrientation().inverse();
         }

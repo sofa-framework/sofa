@@ -74,12 +74,13 @@ public:
     sofa::defaulttype::Vec<6,Real> limitAngles; ///limit angles on rotation axis (default no limit)
 
     Vector bloquage;
-
+    bool needToInitializeTrans;
+    bool needToInitializeRot;
 
     ///constructors
     JointSpring()
         : m1(0), m2(0), kd(0), lawfulTorsion(0,0,0,1), extraTorsion(0,0,0,1)
-        , softStiffnessTrans(0), hardStiffnessTrans(10000), softStiffnessRot(0), hardStiffnessRot(10000), blocStiffnessRot(100)
+        , softStiffnessTrans(0), hardStiffnessTrans(10000), softStiffnessRot(0), hardStiffnessRot(10000), blocStiffnessRot(100), needToInitializeTrans(true), needToInitializeRot(true)
         //, freeMovements(0,0,0,1,1,1), limitAngles(-100000, 100000, -100000, 100000, -100000, 100000)
     {
         freeMovements = sofa::defaulttype::Vec<6,bool>(0,0,0,1,1,1);
@@ -90,7 +91,7 @@ public:
 
     JointSpring(int m1, int m2)
         : m1(m1), m2(m2), kd(0), lawfulTorsion(0,0,0,1), extraTorsion(0,0,0,1)
-        , softStiffnessTrans(0), hardStiffnessTrans(10000), softStiffnessRot(0), hardStiffnessRot(10000), blocStiffnessRot(100)
+        , softStiffnessTrans(0), hardStiffnessTrans(10000), softStiffnessRot(0), hardStiffnessRot(10000), blocStiffnessRot(100), needToInitializeTrans(true), needToInitializeRot(true)
         //, freeMovements(0,0,0,1,1,1), limitAngles(-100000, 100000, -100000, 100000, -100000, 100000)
     {
         freeMovements = sofa::defaulttype::Vec<6,bool>(0,0,0,1,1,1);
@@ -102,7 +103,7 @@ public:
     JointSpring(int m1, int m2, Real softKst, Real hardKst, Real softKsr, Real hardKsr, Real blocKsr, Real axmin, Real axmax, Real aymin, Real aymax, Real azmin, Real azmax, Real kd)
         : m1(m1), m2(m2), kd(kd), lawfulTorsion(0,0,0,1), extraTorsion(0,0,0,1)
         //,limitAngles(axmin,axmax,aymin,aymax,azmin,azmax)
-        , softStiffnessTrans(softKst), hardStiffnessTrans(hardKst), softStiffnessRot(softKsr), hardStiffnessRot(hardKsr), blocStiffnessRot(blocKsr)
+        , softStiffnessTrans(softKst), hardStiffnessTrans(hardKst), softStiffnessRot(softKsr), hardStiffnessRot(hardKsr), blocStiffnessRot(blocKsr), needToInitializeTrans(true), needToInitializeRot(true)
     {
         limitAngles = sofa::defaulttype::Vec<6,Real>(axmin,axmax,aymin,aymax,azmin,azmax);
         freeMovements = sofa::defaulttype::Vec<6,bool>(false, false, false, true, true, true);
@@ -166,6 +167,8 @@ public:
         s.blocStiffnessRot = 0.0;
         //by default no angle limitation is set (bi values for initialisation)
         s.limitAngles = sofa::defaulttype::Vec<6,Real>(-100000., 100000., -100000., 100000., -100000., 100000.);
+        bool initTransFound=false;
+        bool initRotFound=false;
 
         std::string str;
         in>>str;
@@ -192,9 +195,15 @@ public:
                 else if(str == "R_LIM_Z")
                     in>>s.limitAngles[4]>>s.limitAngles[5];
                 else if(str == "REST_T")
+                {
                     in>>s.initTrans;
+                    initTransFound=true;
+                }
                 else if(str == "REST_R")
+                {
                     in>>s.initRot;
+                    initRotFound=true;
+                }
                 else
                 {
                     std::cerr<<"Error parsing Spring : Unknown Attribute "<<str<<std::endl;
@@ -204,6 +213,10 @@ public:
                 in>>str;
             }
         }
+
+
+        s.needToInitializeTrans = initTransFound;
+        s.needToInitializeRot = initTransFound;
 
         //if no blocStiffnessRot was specified (typically 0), we use hardStiffnessRot/100
         if(s.blocStiffnessRot == 0.0)
