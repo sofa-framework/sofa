@@ -127,7 +127,7 @@ protected:
 };
 
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_CONSTRAINT_LINEARMOVEMENTCONSTRAINT_CPP)
+#if defined(WIN32) && !defined(SOFA_COMPONENT_CONSTRAINT_LINEARVELOCITYCONSTRAINT_CPP)
 #ifndef SOFA_FLOAT
 extern template class SOFA_COMPONENT_CONSTRAINT_API LinearVelocityConstraint<defaulttype::Vec3dTypes>;
 extern template class SOFA_COMPONENT_CONSTRAINT_API LinearVelocityConstraint<defaulttype::Vec2dTypes>;
