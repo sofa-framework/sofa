@@ -137,6 +137,8 @@ public:
 
     int getHexaInFineRegularGrid(const Vec3i& id) const;
 
+    const std::set<Vec3i>& getHexaVoxels(const unsigned int hexaId) const;
+
 private:
     void setCoarseResolution(const Vec3i& res) { _coarseResolution = res; }
 

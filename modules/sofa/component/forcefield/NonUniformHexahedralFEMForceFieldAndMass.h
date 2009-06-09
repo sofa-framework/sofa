@@ -36,6 +36,9 @@ namespace component
 namespace topology
 {
 class MultilevelHexahedronSetTopologyContainer;
+class HexahedraAdded;
+class HexahedraRemoved;
+class MultilevelModification;
 }
 
 namespace forcefield
@@ -70,7 +73,6 @@ indices ordering (same as in HexahedronSetTopology):
      0---------1-->X
 
 */
-
 
 template<class DataTypes>
 class NonUniformHexahedralFEMForceFieldAndMass : virtual public HexahedralFEMForceFieldAndMass<DataTypes>
@@ -122,9 +124,24 @@ protected:
     void initPolar(const int i);
 
 private:
+
+    void handleHexaAdded(const HexahedraAdded&);
+    void handleHexaRemoved(const HexahedraRemoved&);
+    void handleMultilevelModif(const MultilevelModification&);
+
+
     void computeHtfineH(const Mat88& H, const ElementStiffness& fine, ElementStiffness& HtfineH ) const;
     void addHtfineHtoCoarse(const Mat88& H, const ElementStiffness& fine, ElementStiffness& coarse ) const;
     void subtractHtfineHfromCoarse(const Mat88& H, const ElementStiffness& fine, ElementStiffness& coarse ) const;
+
+    void computeMechanicalMatricesByCondensation_IntervalAnalysis(ElementStiffness &K,
+            ElementMass &M,
+            Real& totalMass,
+            const ElementStiffness &K_fine,
+            const ElementMass &M_fine,
+            const Real& mass_fine,
+            const unsigned int level,
+            const std::set<Vec3i>& voxels) const;
 
     void computeMechanicalMatricesByCondensation_Recursive( ElementStiffness &K,
             ElementMass &M,
@@ -132,25 +149,42 @@ private:
             const ElementStiffness &K_fine,
             const ElementMass &M_fine,
             const Real& mass_fine,
-            const int level,
-            const helper::vector<bool>& fineChildren) const;
+            const unsigned int level,
+            const unsigned int startIdx,
+            const std::set<unsigned int>& fineChildren) const;
 
-    // [childId][childNodeId][parentNodeId] -> weight
-    helper::fixed_array<Mat88, 8> _H; ///< interpolation matrices from finer level to a coarser (to build stiffness and mass matrices)
+    void computeMechanicalMatricesByCondensation_Direct( ElementStiffness &K,
+            ElementMass &M,
+            Real& totalMass,
+            const ElementStiffness &K_fine,
+            const ElementMass &M_fine,
+            const Real& mass_fine,
+            const unsigned int level,
+            const std::set<Vec3i>& voxels) const;
 
-    helper::vector < Mat88 > __H; ///< interpolation matrices from finer level to a coarser (to build stiffness and mass matrices)
+
+    void swapNodes(const int i, const int j, ElementStiffness& mat) const;
+
+    int ijk2octree(const int i, const int j, const int k) const;
+    void octree2ijk(const int octreeIdx, int &i, int &j, int &k) const;
+    Vec3i octree2voxel(const int octreeIdx) const;
+
+    // [level][childId][childNodeId][parentNodeId] -> weight
+    helper::vector< helper::vector < Mat88 > > _H; ///< interpolation matrices from finer level to a coarser (to build stiffness and mass matrices)
 
     typedef struct
     {
-        MaterialStiffness	C;
-        ElementStiffness	K;
-        ElementMass			M;
+        MaterialStiffness	C;	// Mat<6, 6, Real>
+        ElementStiffness	K;	// Mat<24, 24, Real>
+        ElementMass			M;	// Mat<24, 24, Real>
         Real				mass;
     } Material;
 
     Material _material; // TODO: enable combination of multiple materials
 
     MultilevelHexahedronSetTopologyContainer*	_multilevelTopology;
+
+    Data<bool>		_bRecursive;
 };
 
 } // namespace forcefield
