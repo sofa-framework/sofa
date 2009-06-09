@@ -298,6 +298,11 @@ int MultilevelHexahedronSetTopologyContainer::getHexaChildren(const unsigned int
     return (int) children.size();
 }
 
+const std::set<MultilevelHexahedronSetTopologyContainer::Vec3i>& MultilevelHexahedronSetTopologyContainer::getHexaVoxels(const unsigned int hexaId) const
+{
+    return _coarseComponents.getValue()[hexaId]->_voxels;
+}
+
 int MultilevelHexahedronSetTopologyContainer::getHexaParent(const unsigned int hexaId) const
 {
     Component* comp = _fineComponents.getValue()[hexaId];
@@ -599,16 +604,29 @@ bool MultilevelHexahedronSetTopologyContainer::Component::getConnection(const Co
     if((this->_id - other->_id).norm2() > 3)
         return false;
 
+    const int level = this->getLevel();
+    const int size = 1 << level;
+
     // check if the two components contain neighboring voxels
     for(std::set<Vec3i>::const_iterator voxelIter = this->_voxels.begin();
         voxelIter != this->_voxels.end(); ++voxelIter)
     {
+        const Vec3i& voxel1 = (*voxelIter);
+
+        if((voxel1[0] % size > 0) && (voxel1[1] % size > 0) && (voxel1[2] % size > 0)
+           && (voxel1[0] % size < size -1) && (voxel1[1] % size < size - 1) && (voxel1[2] % size < size - 1))
+            continue;
+
         for(std::set<Vec3i>::const_iterator voxelIter2 = other->_voxels.begin();
             voxelIter2 != other->_voxels.end(); ++voxelIter2)
         {
-            Vec3i diff(*voxelIter);
-            diff -= *voxelIter2;
+            const Vec3i& voxel2 = (*voxelIter2);
 
+            if((voxel2[0] % size > 0) && (voxel2[1] % size > 0) && (voxel2[2] % size > 0)
+               && (voxel2[0] % size < size -1) && (voxel2[1] % size < size - 1) && (voxel2[2] % size < size - 1))
+                continue;
+
+            const Vec3i diff(voxel1 - voxel2);
             const int diffNorm2 = diff.norm2();
 
             if(diffNorm2 == 1) // face connection
@@ -618,16 +636,12 @@ bool MultilevelHexahedronSetTopologyContainer::Component::getConnection(const Co
             }
             else if(diffNorm2 == 2) // edge connection iff the connecting edge is also an edge of the top level comp.
             {
-                const int level = this->getLevel();
-
                 if(level == 0)
                 {
                     connection = diff;
                 }
                 else
                 {
-                    const int size = 1 << level;
-
                     Vec3i d0, d1;
                     d0[0] = (diff[0] == 1) ? 1 : 0;
                     d0[1] = (diff[1] == 1) ? 1 : 0;
@@ -663,16 +677,12 @@ bool MultilevelHexahedronSetTopologyContainer::Component::getConnection(const Co
             }
             else if(diffNorm2 == 3) // vertex connection iff the connecting vertex is also a vertex of the top level comp.
             {
-                const int level = this->getLevel();
-
                 if(level == 0)
                 {
                     connection = diff;
                 }
                 else
                 {
-                    const int size = 1 << level;
-
                     Vec3i d;
                     d[0] = (diff[0] == 1) ? 1 : 0;
                     d[1] = (diff[1] == 1) ? 1 : 0;

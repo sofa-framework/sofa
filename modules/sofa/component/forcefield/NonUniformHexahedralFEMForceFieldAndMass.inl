@@ -50,6 +50,7 @@ using namespace sofa::defaulttype;
 template <class DataTypes>
 NonUniformHexahedralFEMForceFieldAndMass<DataTypes>::NonUniformHexahedralFEMForceFieldAndMass()
     : HexahedralFEMForceFieldAndMassT()
+    , _bRecursive(core::objectmodel::Base::initData(&_bRecursive, false, "recursive", "Use recursive matrix computation"))
 {}
 
 template <class DataTypes>
@@ -109,62 +110,73 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::reinit()
 
     HexahedralFEMForceField<T>::computeMaterialStiffness(_material.C, this->f_youngModulus.getValue(), this->f_poissonRatio.getValue());
     HexahedralFEMForceField<T>::computeElementStiffness(_material.K, _material.C, nodesFine);
-    HexahedralFEMForceFieldAndMass<T>::computeElementMass(_material.M, _material.mass, nodesFine);
 
+//	HexahedralFEMForceFieldAndMass<T>::computeElementMass(_material.M, _material.mass, nodesFine);
 
-    const float cube[8][3]=
-    {
-        {0,0,0}, {1,0,0}, {1,1,0}, {0,1,0},
-        {0,0,1}, {1,0,1}, {1,1,1}, {0,1,1}
-    };
+    const Real volume = (nodesFine[1]-nodesFine[0]).norm()*(nodesFine[3]-nodesFine[0]).norm()*(nodesFine[4]-nodesFine[0]).norm();
+    _material.mass = volume * this->_density.getValue();
 
-    for(int i=0; i<8; ++i) // child
-    {
-        for(int w=0; w<8; ++w) // childNodeId
+    Mat88	M;
+
+    for(unsigned int u=0; u<8; ++u)
+        for(unsigned int v=0; v<8; ++v)
         {
-            float x, y, z;
+            M[u][v] = (Real) (_material.mass/216.0);
 
-            x = 0.5f * (cube[i][0] + cube[w][0]);
-            y = 0.5f * (cube[i][1] + cube[w][1]);
-            z = 0.5f * (cube[i][2] + cube[w][2]);
+            const unsigned int q = u ^ v;
 
-            _H[i][w][0] = (1-x)*(1-y)*(1-z);
-            _H[i][w][1] = (x)*(1-y)*(1-z);
-            _H[i][w][2] = (x)*(y)*(1-z);
-            _H[i][w][3] = (1-x)*(y)*(1-z);
-            _H[i][w][4] = (1-x)*(1-y)*(z);
-            _H[i][w][5] = (x)*(1-y)*(z);
-            _H[i][w][6] = (x)*(y)*(z);
-            _H[i][w][7] = (1-x)*(y)*(z);
-        }
-    }
-
-    const float fineNodeSize = 1.0f / (float) coarseNodeSize;
-    int idx=0;
-
-    __H.resize(coarseNodeSize * coarseNodeSize * coarseNodeSize);
-
-    for(int k=0; k<coarseNodeSize; ++k)
-        for(int j=0; j<coarseNodeSize; ++j)
-            for(int i=0; i<coarseNodeSize; ++i, ++idx)
+            for(unsigned int k=0; k<3; ++k)
             {
-                for(int w=0; w<8; ++w) // childNodeId
+                if((q & (1 << k)) == 0)
                 {
-                    const float x = fineNodeSize * (i + cube[w][0]);
-                    const float y = fineNodeSize * (j + cube[w][1]);
-                    const float z = fineNodeSize * (k + cube[w][2]);
-
-                    // entree dans la matrice pour le sommet w
-                    __H[idx][w][0] = (1-x)*(1-y)*(1-z);
-                    __H[idx][w][1] = (x)*(1-y)*(1-z);
-                    __H[idx][w][2] = (x)*(y)*(1-z);
-                    __H[idx][w][3] = (1-x)*(y)*(1-z);
-                    __H[idx][w][4] = (1-x)*(1-y)*(z);
-                    __H[idx][w][5] = (x)*(1-y)*(z);
-                    __H[idx][w][6] = (x)*(y)*(z);
-                    __H[idx][w][7] = (1-x)*(y)*(z);
+                    M[u][v] *= (Real) 2.0;
                 }
             }
+
+            for(unsigned int k=0; k<3; ++k)
+                for(unsigned int j=0; j<3; ++j)
+                {
+                    _material.M[3*u+k][3*v+j] = M[u][v];
+                }
+        }
+
+    swapNodes(2,3, _material.K);
+    swapNodes(6,7, _material.K);
+    //swapNodes(2,3, _material.M);
+    //swapNodes(6,7, _material.M);
+
+    _H.resize(level+1);
+
+    for(int currLevel = level; currLevel>=0; --currLevel)
+    {
+        const int currCoarseNodeSize = 1 << currLevel;
+        const float fineNodeSize = 1.0f / (float) currCoarseNodeSize;
+        int idx=0;
+
+        _H[currLevel].resize(currCoarseNodeSize * currCoarseNodeSize * currCoarseNodeSize);
+
+        for(int k=0; k<currCoarseNodeSize; ++k)
+            for(int j=0; j<currCoarseNodeSize; ++j)
+                for(int i=0; i<currCoarseNodeSize; ++i, ++idx)
+                {
+                    for(int w=0; w<8; ++w) // childNodeId
+                    {
+                        const float x = fineNodeSize * (i +  (w&1) );
+                        const float y = fineNodeSize * (j + ((w&2) >> 1) );
+                        const float z = fineNodeSize * (k +  (w>>2));
+
+                        // entree dans la matrice pour le sommet w
+                        _H[currLevel][idx][w][0] = (1-x) * (1-y) * (1-z);
+                        _H[currLevel][idx][w][1] =   (x) * (1-y) * (1-z);
+                        _H[currLevel][idx][w][2] = (1-x) *   (y) * (1-z);
+                        _H[currLevel][idx][w][3] =   (x) *   (y) * (1-z);
+                        _H[currLevel][idx][w][4] = (1-x) * (1-y) *   (z);
+                        _H[currLevel][idx][w][5] =   (x) * (1-y) *   (z);
+                        _H[currLevel][idx][w][6] = (1-x) *   (y) *   (z);
+                        _H[currLevel][idx][w][7] =   (x) *   (y) *   (z);
+                    }
+                }
+    }
 
 
     switch(this->method)
@@ -220,61 +232,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleTopologyChange(core::com
             this->_elementMasses.handleTopologyEvents(iter, next_iter);
             this->_elementTotalMass.handleTopologyEvents(iter, next_iter);
 
-            const VecElement& hexas = this->_topology->getHexas();
-            const sofa::helper::vector<unsigned int> &hexaModif = (static_cast< const HexahedraAdded *> (*iter))->hexahedronIndexArray;
-
-            switch(this->method)
-            {
-            case HexahedralFEMForceFieldT::LARGE:
-            {
-                for(unsigned int i=0; i<hexaModif.size(); ++i)
-                    initLarge(hexaModif[i]);
-            }
-            break;
-            case HexahedralFEMForceFieldT::POLAR:
-            {
-                for(unsigned int i=0; i<hexaModif.size(); ++i)
-                    initPolar(hexaModif[i]);
-            }
-            break;
-            }
-
-            helper::vector<Real>&	particleMasses = *this->_particleMasses.beginEdit();
-
-            for(unsigned int i=0; i<hexaModif.size(); ++i)
-            {
-                const unsigned int hexaId = hexaModif[i];
-
-                Real mass = this->_elementTotalMass.getValue()[hexaId] * (Real) 0.125;
-
-                for(int w=0; w<8; ++w)
-                    particleMasses[ hexas[hexaId][w] ] += mass;
-            }
-
-            this->_particleMasses.endEdit();
-
-            if( this->_useLumpedMass.getValue() )
-            {
-                helper::vector<Coord>&	lumpedMasses = *this->_lumpedMasses.beginEdit();
-
-                for(unsigned int i=0; i<hexaModif.size(); ++i)
-                {
-                    const unsigned int hexaId = hexaModif[i];
-                    const ElementMass& mass = this->_elementMasses.getValue()[hexaId];
-
-                    for(int w=0; w<8; ++w)
-                    {
-                        for(int j=0; j<8*3; ++j)
-                        {
-                            lumpedMasses[ hexas[hexaId][w] ][0] += mass[w*3  ][j];
-                            lumpedMasses[ hexas[hexaId][w] ][1] += mass[w*3+1][j];
-                            lumpedMasses[ hexas[hexaId][w] ][2] += mass[w*3+2][j];
-                        }
-                    }
-                }
-
-                this->_lumpedMasses.endEdit();
-            }
+            handleHexaAdded(*(static_cast< const HexahedraAdded *> (*iter)));
         }
         break;
 
@@ -282,45 +240,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleTopologyChange(core::com
         // subtract particle masses and lumped masses of adjacent particles
         case core::componentmodel::topology::HEXAHEDRAREMOVED:
         {
-            const VecElement& hexas = this->_topology->getHexas();
-            const sofa::helper::vector<unsigned int> &hexaModif = (static_cast< const HexahedraRemoved *> (*iter))->getArray();
-
-            helper::vector<Real>&	particleMasses = *this->_particleMasses.beginEdit();
-
-            for(unsigned int i=0; i<hexaModif.size(); ++i)
-            {
-                const unsigned int hexaId = hexaModif[i];
-
-                Real mass = this->_elementTotalMass.getValue()[hexaId] * (Real) 0.125;
-
-                for(int w=0; w<8; ++w)
-                    particleMasses[ hexas[hexaId][w] ] -= mass;
-            }
-
-            this->_particleMasses.endEdit();
-
-            if( this->_useLumpedMass.getValue() )
-            {
-                helper::vector<Coord>&	lumpedMasses = *this->_lumpedMasses.beginEdit();
-
-                for(unsigned int i=0; i<hexaModif.size(); ++i)
-                {
-                    const unsigned int hexaId = hexaModif[i];
-                    const ElementMass& mass = this->_elementMasses.getValue()[hexaId];
-
-                    for(int w=0; w<8; ++w)
-                    {
-                        for(int j=0; j<8*3; ++j)
-                        {
-                            lumpedMasses[ hexas[hexaId][w] ][0] -= mass[w*3  ][j];
-                            lumpedMasses[ hexas[hexaId][w] ][1] -= mass[w*3+1][j];
-                            lumpedMasses[ hexas[hexaId][w] ][2] -= mass[w*3+2][j];
-                        }
-                    }
-                }
-
-                this->_lumpedMasses.endEdit();
-            }
+            handleHexaRemoved(*(static_cast< const HexahedraRemoved *> (*iter)));
 
             // handle hexa events
             this->hexahedronInfo.handleTopologyEvents(iter, next_iter);
@@ -333,70 +253,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleTopologyChange(core::com
         // subtract the contributions of removed voxels
         case ((core::componentmodel::topology::TopologyChangeType) component::topology::MultilevelModification::MULTILEVEL_MODIFICATION) :
         {
-            const VecElement& hexas = this->_topology->getHexas();
-            const component::topology::MultilevelModification *modEvent = static_cast< const component::topology::MultilevelModification *> (*iter);
-            const sofa::helper::vector<unsigned int> &hexaModif = modEvent->getArray();
-
-            const int level = _multilevelTopology->getLevel();
-            const int coarseNodeSize = (1 << level);
-
-            // subtract the contributions of removed voxels from element matrices
-            helper::vector<typename HexahedralFEMForceFieldT::HexahedronInformation>& hexahedronInf = *this->hexahedronInfo.beginEdit();
-            helper::vector<ElementMass>& elementMasses = *this->_elementMasses.beginEdit();
-            helper::vector<Real>& elementTotalMass = *this->_elementTotalMass.beginEdit();
-
-            helper::vector<Real>&	particleMasses = *this->_particleMasses.beginEdit();
-            helper::vector<Coord>&	lumpedMasses = *this->_lumpedMasses.beginEdit();
-
-            for(unsigned int i=0; i<hexaModif.size(); ++i)
-            {
-                const unsigned int hexaId = hexaModif[i];
-
-                ElementStiffness K;
-                ElementMass M;
-                Real totalMass = (Real) 0.0;
-
-                const std::list<Vec3i>& removedVoxels = modEvent->getRemovedVoxels(hexaId);
-                for(std::list<Vec3i>::const_iterator it = removedVoxels.begin(); it != removedVoxels.end(); ++it)
-                {
-                    const MultilevelHexahedronSetTopologyContainer::Vec3i& voxelId = *it;
-
-                    const Mat88& H = __H[(voxelId[0]%coarseNodeSize) + coarseNodeSize * ((voxelId[1]%coarseNodeSize) + coarseNodeSize * (voxelId[2]%coarseNodeSize))];
-
-                    // add the fine element into the coarse
-                    this->addHtfineHtoCoarse(H, _material.K, K);
-                    this->addHtfineHtoCoarse(H, _material.M, M);
-                    totalMass += _material.mass;
-                }
-
-                hexahedronInf[hexaId].stiffness -= K;
-                elementMasses[hexaId] -= M;
-                elementTotalMass[hexaId] -= totalMass;
-
-                const Real partMass = totalMass * (Real) 0.125;
-
-                for(int w=0; w<8; ++w)
-                    particleMasses[ hexas[hexaId][w] ] -= partMass;
-
-                if( this->_useLumpedMass.getValue() )
-                {
-                    for(int w=0; w<8; ++w)
-                    {
-                        for(int j=0; j<8*3; ++j)
-                        {
-                            lumpedMasses[ hexas[hexaId][w] ][0] -= M[w*3  ][j];
-                            lumpedMasses[ hexas[hexaId][w] ][1] -= M[w*3+1][j];
-                            lumpedMasses[ hexas[hexaId][w] ][2] -= M[w*3+2][j];
-                        }
-                    }
-                }
-            }
-
-            this->_elementTotalMass.endEdit();
-            this->_elementMasses.endEdit();
-            this->hexahedronInfo.endEdit();
-            this->_particleMasses.endEdit();
-            this->_lumpedMasses.endEdit();
+            handleMultilevelModif(*(static_cast< const MultilevelModification *> (*iter)));
         }
         break;
         default:
@@ -405,6 +262,197 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleTopologyChange(core::com
         break;
         }
     }
+}
+
+template<class T>
+void NonUniformHexahedralFEMForceFieldAndMass<T>::handleHexaAdded(const HexahedraAdded& hexaAddedEvent)
+{
+    const sofa::helper::vector<unsigned int> &hexaModif = hexaAddedEvent.hexahedronIndexArray;
+
+#ifndef NDEBUG
+    std::cout << "HEXAHEDRAADDED hexaId: " << hexaModif << std::endl;
+#endif
+
+    const VecElement& hexas = this->_topology->getHexas();
+
+    switch(this->method)
+    {
+    case HexahedralFEMForceFieldT::LARGE:
+    {
+        for(unsigned int i=0; i<hexaModif.size(); ++i)
+            initLarge(hexaModif[i]);
+    }
+    break;
+    case HexahedralFEMForceFieldT::POLAR:
+    {
+        for(unsigned int i=0; i<hexaModif.size(); ++i)
+            initPolar(hexaModif[i]);
+    }
+    break;
+    }
+
+    helper::vector<Real>&	particleMasses = *this->_particleMasses.beginEdit();
+
+    for(unsigned int i=0; i<hexaModif.size(); ++i)
+    {
+        const unsigned int hexaId = hexaModif[i];
+
+        Real mass = this->_elementTotalMass.getValue()[hexaId] * (Real) 0.125;
+
+        for(int w=0; w<8; ++w)
+            particleMasses[ hexas[hexaId][w] ] += mass;
+    }
+
+    this->_particleMasses.endEdit();
+
+    if( this->_useLumpedMass.getValue() )
+    {
+        helper::vector<Coord>&	lumpedMasses = *this->_lumpedMasses.beginEdit();
+
+        for(unsigned int i=0; i<hexaModif.size(); ++i)
+        {
+            const unsigned int hexaId = hexaModif[i];
+            const ElementMass& mass = this->_elementMasses.getValue()[hexaId];
+
+            for(int w=0; w<8; ++w)
+            {
+                for(int j=0; j<8*3; ++j)
+                {
+                    lumpedMasses[ hexas[hexaId][w] ][0] += mass[w*3  ][j];
+                    lumpedMasses[ hexas[hexaId][w] ][1] += mass[w*3+1][j];
+                    lumpedMasses[ hexas[hexaId][w] ][2] += mass[w*3+2][j];
+                }
+            }
+        }
+
+        this->_lumpedMasses.endEdit();
+    }
+}
+
+template<class T>
+void NonUniformHexahedralFEMForceFieldAndMass<T>::handleHexaRemoved(const HexahedraRemoved& hexaRemovedEvent)
+{
+    const sofa::helper::vector<unsigned int> &hexaModif = hexaRemovedEvent.getArray();
+
+#ifndef NDEBUG
+    std::cout << "HEXAHEDRAREMOVED hexaId: " << hexaModif << std::endl;
+#endif
+
+    const VecElement& hexas = this->_topology->getHexas();
+    helper::vector<Real>&	particleMasses = *this->_particleMasses.beginEdit();
+
+    for(unsigned int i=0; i<hexaModif.size(); ++i)
+    {
+        const unsigned int hexaId = hexaModif[i];
+
+        Real mass = this->_elementTotalMass.getValue()[hexaId] * (Real) 0.125;
+
+        for(int w=0; w<8; ++w)
+            particleMasses[ hexas[hexaId][w] ] -= mass;
+    }
+
+    this->_particleMasses.endEdit();
+
+    if( this->_useLumpedMass.getValue() )
+    {
+        helper::vector<Coord>&	lumpedMasses = *this->_lumpedMasses.beginEdit();
+
+        for(unsigned int i=0; i<hexaModif.size(); ++i)
+        {
+            const unsigned int hexaId = hexaModif[i];
+            const ElementMass& mass = this->_elementMasses.getValue()[hexaId];
+
+            for(int w=0; w<8; ++w)
+            {
+                for(int j=0; j<8*3; ++j)
+                {
+                    lumpedMasses[ hexas[hexaId][w] ][0] -= mass[w*3  ][j];
+                    lumpedMasses[ hexas[hexaId][w] ][1] -= mass[w*3+1][j];
+                    lumpedMasses[ hexas[hexaId][w] ][2] -= mass[w*3+2][j];
+                }
+            }
+        }
+
+        this->_lumpedMasses.endEdit();
+    }
+}
+
+template<class T>
+void NonUniformHexahedralFEMForceFieldAndMass<T>::handleMultilevelModif(const MultilevelModification& modEvent)
+{
+    const sofa::helper::vector<unsigned int> &hexaModif = modEvent.getArray();
+
+#ifndef NDEBUG
+    std::cout << "MULTILEVEL_MODIFICATION hexaId: " << hexaModif << std::endl;
+#endif
+
+    const VecElement& hexas = this->_topology->getHexas();
+
+    const int level = _multilevelTopology->getLevel();
+    const int coarseNodeSize = (1 << level);
+
+    // subtract the contributions of removed voxels from element matrices
+    helper::vector<typename HexahedralFEMForceFieldT::HexahedronInformation>& hexahedronInf = *this->hexahedronInfo.beginEdit();
+    helper::vector<ElementMass>& elementMasses = *this->_elementMasses.beginEdit();
+    helper::vector<Real>& elementTotalMass = *this->_elementTotalMass.beginEdit();
+
+    helper::vector<Real>&	particleMasses = *this->_particleMasses.beginEdit();
+    helper::vector<Coord>&	lumpedMasses = *this->_lumpedMasses.beginEdit();
+
+    for(unsigned int i=0; i<hexaModif.size(); ++i)
+    {
+        const unsigned int hexaId = hexaModif[i];
+
+        ElementStiffness K;
+        ElementMass M;
+        Real totalMass = (Real) 0.0;
+
+        const std::list<Vec3i>& removedVoxels = modEvent.getRemovedVoxels(hexaId);
+        for(std::list<Vec3i>::const_iterator it = removedVoxels.begin(); it != removedVoxels.end(); ++it)
+        {
+            const Vec3i& voxelId = *it;
+
+            const Mat88& H = _H[level][(voxelId[0]%coarseNodeSize) + coarseNodeSize * ((voxelId[1]%coarseNodeSize) + coarseNodeSize * (voxelId[2]%coarseNodeSize))];
+
+            // add the fine element into the coarse
+            this->addHtfineHtoCoarse(H, _material.K, K);
+            this->addHtfineHtoCoarse(H, _material.M, M);
+            totalMass += _material.mass;
+        }
+
+        swapNodes(2,3, K);
+        swapNodes(6,7, K);
+        swapNodes(2,3, M);
+        swapNodes(6,7, M);
+
+        hexahedronInf[hexaId].stiffness -= K;
+        elementMasses[hexaId] -= M;
+        elementTotalMass[hexaId] -= totalMass;
+
+        const Real partMass = totalMass * (Real) 0.125;
+
+        for(int w=0; w<8; ++w)
+            particleMasses[ hexas[hexaId][w] ] -= partMass;
+
+        if( this->_useLumpedMass.getValue() )
+        {
+            for(int w=0; w<8; ++w)
+            {
+                for(int j=0; j<8*3; ++j)
+                {
+                    lumpedMasses[ hexas[hexaId][w] ][0] -= M[w*3  ][j];
+                    lumpedMasses[ hexas[hexaId][w] ][1] -= M[w*3+1][j];
+                    lumpedMasses[ hexas[hexaId][w] ][2] -= M[w*3+2][j];
+                }
+            }
+        }
+    }
+
+    this->_elementTotalMass.endEdit();
+    this->_elementMasses.endEdit();
+    this->hexahedronInfo.endEdit();
+    this->_particleMasses.endEdit();
+    this->_lumpedMasses.endEdit();
 }
 
 template<class T>
@@ -483,45 +531,264 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCon
     M.clear();
     totalMass = (Real) 0.0;
 
-    helper::vector<unsigned int>	fineElements;
-    _multilevelTopology->getHexaChildren(elementIndex, fineElements);
+    const std::set<Vec3i>& voxels = _multilevelTopology->getHexaVoxels(elementIndex);
 
     const int level = _multilevelTopology->getLevel();
-    const int coarseNodeSize = (1 << level);
 
-    const bool recursive = false;
-
-    if(recursive)
+    if(_bRecursive.getValue())
     {
-        helper::vector<bool> fineChildren((int) coarseNodeSize*coarseNodeSize*coarseNodeSize, false);
+        const unsigned int coarseNodeSize = (1 << level);
+        std::set<unsigned int> fineChildren;
 
         // condensate recursively each 8 children (if they exist)
-        for(unsigned int i=0; i<fineElements.size(); ++i)
+        for(std::set<Vec3i>::const_iterator it = voxels.begin(); it != voxels.end(); ++it)
         {
-            const MultilevelHexahedronSetTopologyContainer::Vec3i& voxelId = _multilevelTopology->getHexaIdxInFineRegularGrid(fineElements[i]);
+            const Vec3i& voxelId = *it;
 
-            const int I = voxelId[0]%coarseNodeSize;
-            const int J = voxelId[1]%coarseNodeSize;
-            const int K = voxelId[2]%coarseNodeSize;
-
-            fineChildren[I + coarseNodeSize * (J + K * coarseNodeSize)] = true;
+            fineChildren.insert(ijk2octree(voxelId[0]%coarseNodeSize, voxelId[1]%coarseNodeSize, voxelId[2]%coarseNodeSize));
         }
 
-        computeMechanicalMatricesByCondensation_Recursive( K, M, totalMass, _material.K, _material.M, _material.mass, level, fineChildren);
+        computeMechanicalMatricesByCondensation_Recursive( K, M, totalMass, _material.K, _material.M, _material.mass, level, 0, fineChildren);
     }
     else
     {
-        for(unsigned int i=0; i<fineElements.size(); ++i)
-        {
-            const MultilevelHexahedronSetTopologyContainer::Vec3i& voxelId = _multilevelTopology->getHexaIdxInFineRegularGrid(fineElements[i]);
+        computeMechanicalMatricesByCondensation_IntervalAnalysis( K, M, totalMass, _material.K, _material.M, _material.mass, level, voxels);
 
-            const Mat88& H = __H[(voxelId[0]%coarseNodeSize) + coarseNodeSize * ((voxelId[1]%coarseNodeSize) + coarseNodeSize * (voxelId[2]%coarseNodeSize))];
+        //ElementStiffness K_tmp;
+        //ElementMass M_tmp;
+        //Real totalMass_tmp = (Real) 0.0;
+
+        //computeMechanicalMatricesByCondensation_Direct( K_tmp, M_tmp, totalMass_tmp, _material.K, _material.M, _material.mass, level, voxels);
+
+        //if(K_tmp != K)
+        //{
+        //	std::cout << "Stiffness matrices don't match." << std::endl;
+        //}
+        //if(M_tmp != M)
+        //{
+        //	std::cout << "Mass matrices don't match." << std::endl;
+        //}
+        //if(fabs(totalMass_tmp - totalMass) > 0.0001)
+        //{
+        //	std::cout << "Total masses don't match." << std::endl;
+        //}
+    }
+
+    swapNodes(2,3, K);
+    swapNodes(6,7, K);
+    swapNodes(2,3, M);
+    swapNodes(6,7, M);
+}
+
+template<class T>
+void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCondensation_IntervalAnalysis(ElementStiffness &K,
+        ElementMass &M,
+        Real& totalMass,
+        const ElementStiffness &K_fine,
+        const ElementMass &M_fine,
+        const Real& mass_fine,
+        const unsigned int level,
+        const std::set<Vec3i>& voxels) const
+{
+    if(voxels.size() == (unsigned int) (1 << (3*level))) // full element
+    {
+        K = K_fine;
+        K *= (Real) (1 << level);
+
+        M = M_fine;
+        M *= (Real) voxels.size();
+
+        totalMass = voxels.size() * mass_fine;
+    }
+    else if(voxels.size() < 8) // almost empty element
+    {
+        const int coarseNodeSize = (1 << level);
+
+        for(std::set<Vec3i>::const_iterator it = voxels.begin(); it != voxels.end(); ++it)
+        {
+            const Vec3i& voxelId = *it;
+
+            const Mat88& H = _H[level][(voxelId[0]%coarseNodeSize) + coarseNodeSize * ((voxelId[1]%coarseNodeSize) + coarseNodeSize * (voxelId[2]%coarseNodeSize))];
 
             // add the fine element into the coarse
-            this->addHtfineHtoCoarse(H, _material.K, K);
-            this->addHtfineHtoCoarse(H, _material.M, M);
-            totalMass += _material.mass;
+            this->addHtfineHtoCoarse(H, K_fine, K);
+            this->addHtfineHtoCoarse(H, M_fine, M);
+            totalMass += mass_fine;
         }
+    }
+    else
+    {
+        unsigned int intervalLevels = 0;
+
+        for(unsigned int l=1; l<=voxels.size(); l <<= 3)
+            ++intervalLevels;
+
+        typedef std::pair< unsigned int, unsigned int > t_int_interval;
+        typedef std::list< t_int_interval > t_interval_list;
+
+        helper::vector< t_interval_list >	intervals(intervalLevels);
+
+        std::set<unsigned int> fineChildren;
+        const unsigned int coarseNodeSize = (1 << level);
+
+        for(std::set<Vec3i>::const_iterator it = voxels.begin(); it != voxels.end(); ++it)
+        {
+            const Vec3i& voxelId = *it;
+
+            fineChildren.insert(ijk2octree(voxelId[0]%coarseNodeSize, voxelId[1]%coarseNodeSize, voxelId[2]%coarseNodeSize));
+        }
+
+        const std::set<unsigned int>::const_iterator itBegin = fineChildren.begin();
+        const std::set<unsigned int>::const_iterator itEnd = fineChildren.end();
+
+        std::set<unsigned int>::const_iterator it = itBegin;
+        std::set<unsigned int>::const_iterator it_first = itBegin;
+        std::set<unsigned int>::const_iterator it_last = itBegin;
+
+        while(it != itEnd)
+        {
+            if((*it)-(*it_last) > 1) // found a gap
+            {
+                const unsigned int first = *it_first;
+                const unsigned int length = (*it_last)-(*it_first)+1;
+
+                unsigned int currLevel = 0;
+                for(unsigned int l=8; l<length; l <<= 3)
+                    ++currLevel;
+                intervals[currLevel].push_back(t_int_interval(first, length));
+
+                it_first = it;
+            }
+
+            it_last = it++;
+
+            if(it == itEnd)
+            {
+                const unsigned int first = *it_first;
+                const unsigned int length = (*it_last)-(*it_first)+1;
+
+                unsigned int currLevel = 0;
+                for(unsigned int l=8; l<length; l <<= 3)
+                    ++currLevel;
+                intervals[currLevel].push_back(t_int_interval(first, length));
+            }
+        }
+
+        for(unsigned int intervalLevel=intervals.size()-1; intervalLevel>0; --intervalLevel)
+        {
+            const unsigned int intervalLength = 1 << (3*intervalLevel);
+
+            for(t_interval_list::iterator iter = intervals[intervalLevel].begin(); iter != intervals[intervalLevel].end(); /* ++iter */)
+            {
+                t_int_interval&	currInterval = *iter;
+
+                unsigned int& first = currInterval.first;
+                unsigned int& length = currInterval.second;
+
+                const unsigned int prefixLength = (intervalLength - (first % intervalLength)) % intervalLength;
+
+                if(prefixLength > 0)
+                {
+                    unsigned int currLevel = 0;
+                    for(unsigned int l=8; l<prefixLength; l <<= 3)
+                        ++currLevel;
+                    intervals[currLevel].push_back(t_int_interval(first, prefixLength));
+
+                    first += prefixLength;
+                    length -= prefixLength;
+                }
+
+                const unsigned int postfixLength = length % intervalLength;
+
+                if(postfixLength > 0)
+                {
+                    unsigned int currLevel = 0;
+                    for(unsigned int l=8; l<postfixLength; l <<= 3)
+                        ++currLevel;
+                    intervals[currLevel].push_back(t_int_interval(first+length-postfixLength, postfixLength));
+
+                    length -= postfixLength;
+                }
+
+                if(length == 0)
+                {
+                    t_interval_list::iterator iter_tmp = iter++;
+                    intervals[intervalLevel].erase(iter_tmp);
+                }
+                else
+                {
+                    ++iter;
+                }
+            }
+        }
+
+        ElementStiffness K_tmp;
+        ElementMass M_tmp;
+        Real mass_tmp = 0;
+
+        for(unsigned int intervalLevel=0; intervalLevel<intervalLevels; ++intervalLevel)
+        {
+            if(! intervals[intervalLevel].empty())
+            {
+                const unsigned int intervalLength = 1 << (3*intervalLevel);
+
+                K_tmp = K_fine;
+                K_tmp *= (Real) (1 << intervalLevel);
+
+                M_tmp = M_fine;
+                M_tmp *= (Real) intervalLength;
+
+                mass_tmp = intervalLength * mass_fine;
+
+                const unsigned int diffLevel = level-intervalLevel;
+                const unsigned int diffSize = 1 << diffLevel;
+
+                for(t_interval_list::iterator iter = intervals[intervalLevel].begin(); iter != intervals[intervalLevel].end(); ++iter)
+                {
+                    const t_int_interval&	currInterval = *iter;
+
+                    const unsigned int totalLength = currInterval.second;
+
+                    for(unsigned int i=0; i * intervalLength < totalLength; ++i)
+                    {
+                        const unsigned int first = currInterval.first + i * intervalLength;
+
+                        const Vec3i voxelId = octree2voxel(first >> (3 * intervalLevel));
+
+                        const Mat88& H = _H[diffLevel][voxelId[0] + diffSize * (voxelId[1] + diffSize * voxelId[2])];
+
+                        this->addHtfineHtoCoarse(H, K_tmp, K);
+                        this->addHtfineHtoCoarse(H, M_tmp, M);
+                        totalMass += mass_tmp;
+                    }
+                }
+            }
+        }
+    }
+}
+
+template<class T>
+void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCondensation_Direct( ElementStiffness &K,
+        ElementMass &M,
+        Real& totalMass,
+        const ElementStiffness &K_fine,
+        const ElementMass &M_fine,
+        const Real& mass_fine,
+        const unsigned int level,
+        const std::set<Vec3i>& voxels) const
+{
+    const int coarseNodeSize = (1 << level);
+
+    for(std::set<Vec3i>::const_iterator it = voxels.begin(); it != voxels.end(); ++it)
+    {
+        const Vec3i& voxelId = *it;
+
+        const Mat88& H = _H[level][(voxelId[0]%coarseNodeSize) + coarseNodeSize * ((voxelId[1]%coarseNodeSize) + coarseNodeSize * (voxelId[2]%coarseNodeSize))];
+
+        // add the fine element into the coarse
+        this->addHtfineHtoCoarse(H, K_fine, K);
+        this->addHtfineHtoCoarse(H, M_fine, M);
+        totalMass += mass_fine;
     }
 }
 
@@ -532,10 +799,11 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCon
         const ElementStiffness &K_fine,
         const ElementMass &M_fine,
         const Real& mass_fine,
-        const int level,
-        const helper::vector<bool>& fineChildren) const
+        const unsigned int level,
+        const unsigned int startIdx,
+        const std::set<unsigned int>& fineChildren) const
 {
-    if(level==0)
+    if(level == 0)
     {
         K = K_fine;
         M = M_fine;
@@ -543,82 +811,29 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCon
     }
     else
     {
-        const int nextLevel = level - 1;
-        const int nodeSize = 1 << level;
-        const int nextNodeSize = 1 << nextLevel;
+        const unsigned int nextLevel = level - 1;
+        const unsigned int delta = 1 << ( 3 * nextLevel);
 
-        for(int i=0; i<8; ++i)
+        for(int child=0; child<8; ++child)
         {
-            ElementStiffness K_tmp;
-            ElementMass M_tmp;
-            Real mass_tmp = 0;
-            helper::vector<bool> children_tmp((int) nextNodeSize*nextNodeSize*nextNodeSize, false);
+            unsigned int minChildIdx = startIdx + child * delta;
+            unsigned int maxChildIdx = minChildIdx + delta;
 
-            int i_min(0), i_max(nodeSize), j_min(0), j_max(nodeSize), k_min(0), k_max(nodeSize);
-            switch(i)
+            std::set<unsigned int>::const_iterator itBegin = fineChildren.lower_bound(minChildIdx);
+            std::set<unsigned int>::const_iterator itEnd = fineChildren.lower_bound(maxChildIdx);
+
+            if(itBegin != itEnd) // there are some non empty voxels in the child area
             {
-            case 0:
-                i_max = nextNodeSize;
-                j_max = nextNodeSize;
-                k_max = nextNodeSize;
-                break;
-            case 1:
-                i_min = nextNodeSize;
-                j_max = nextNodeSize;
-                k_max = nextNodeSize;
-                break;
-            case 2:
-                i_min = nextNodeSize;
-                j_min = nextNodeSize;
-                k_max = nextNodeSize;
-                break;
-            case 3:
-                i_max = nextNodeSize;
-                j_min = nextNodeSize;
-                k_max = nextNodeSize;
-                break;
-            case 4:
-                i_max = nextNodeSize;
-                j_max = nextNodeSize;
-                k_min = nextNodeSize;
-                break;
-            case 5:
-                i_min = nextNodeSize;
-                j_max = nextNodeSize;
-                k_min = nextNodeSize;
-                break;
-            case 6:
-                i_min = nextNodeSize;
-                j_min = nextNodeSize;
-                k_min = nextNodeSize;
-                break;
-            case 7:
-                i_max = nextNodeSize;
-                j_min = nextNodeSize;
-                k_min = nextNodeSize;
-                break;
-            }
+                ElementStiffness K_tmp;
+                ElementMass M_tmp;
+                Real mass_tmp = 0;
 
-            bool allChildrenEmpty = true;
+                computeMechanicalMatricesByCondensation_Recursive( K_tmp, M_tmp, mass_tmp, K_fine, M_fine, mass_fine, nextLevel, minChildIdx, fineChildren);
 
-            for(int I=i_min; I<i_max; ++I)
-                for(int J=j_min; J<j_max; ++J)
-                    for(int K=k_min; K<k_max; ++K)
-                    {
-                        if(fineChildren[I + nodeSize * (J + K * nodeSize)])
-                        {
-                            children_tmp[(I-i_min) + nextNodeSize * ((J-j_min) + (K-k_min) * nextNodeSize)] = true;
-                            allChildrenEmpty = false;
-                        }
-                    }
-
-            if(!allChildrenEmpty)
-            {
-                computeMechanicalMatricesByCondensation_Recursive( K_tmp, M_tmp, mass_tmp, K_fine, M_fine, mass_fine, nextLevel, children_tmp);
-
-                this->addHtfineHtoCoarse(_H[i], K_tmp, K);
-                this->addHtfineHtoCoarse(_H[i], M_tmp, M);
+                this->addHtfineHtoCoarse(_H[1][child], K_tmp, K);
+                this->addHtfineHtoCoarse(_H[1][child], M_tmp, M);
                 totalMass += mass_tmp;
+
             }
         }
     }
@@ -695,6 +910,99 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::computeHtfineH(const Mat88& H,
                 if(i%3==k%3)
                     HtfineH[i][j] += H[k/3][i/3] * A[k][j];		// HtfineH = Ht * A
             }
+}
+
+template<class T>
+void NonUniformHexahedralFEMForceFieldAndMass<T>::swapNodes(const int i, const int j,
+        ElementStiffness& mat) const
+{
+    const int nbLines = mat.getNbLines();
+    const int nbCols = mat.getNbCols();
+
+    for(int w=0; w<3; ++w)
+    {
+        const int I = 3*i + w;
+        const int J = 3*j + w;
+
+        typename ElementStiffness::Line line_I = mat.line(I);
+        typename ElementStiffness::Line line_J = mat.line(J);
+
+        for(int k=0; k<nbLines; ++k)
+        {
+            mat[J][k] = line_I[k];
+            mat[I][k] = line_J[k];
+        }
+
+        typename ElementStiffness::Col col_I = mat.col(I);
+        typename ElementStiffness::Col col_J = mat.col(J);
+
+        for(int k=0; k<nbCols; ++k)
+        {
+            mat[k][J] = col_I[k];
+            mat[k][I] = col_J[k];
+        }
+    }
+}
+
+
+template<class T>
+int NonUniformHexahedralFEMForceFieldAndMass<T>::ijk2octree(const int i,
+        const int j,
+        const int k) const
+{
+    unsigned int I = i;
+    unsigned int J = j;
+    unsigned int K = k;
+
+    unsigned int octreeIdx = 0;
+
+    unsigned int shift = 0;
+
+    while( (I + J + K) > 0)
+    {
+        octreeIdx += ((I & 1) + (((J & 1) + ((K & 1) << 1)) << 1)) << shift;
+
+        I >>= 1;
+        J >>= 1;
+        K >>= 1;
+
+        shift += 3;
+    }
+
+    return octreeIdx;
+}
+
+template<class T>
+void NonUniformHexahedralFEMForceFieldAndMass<T>::octree2ijk(const int octreeIdx,
+        int &i,
+        int &j,
+        int &k) const
+{
+    i = j = k = 0;
+
+    unsigned int idx = octreeIdx;
+
+    unsigned int shift = 0;
+
+    while( idx > 0 )
+    {
+        i +=  (idx & 1) << shift;
+        j += ((idx & 2) >> 1) << shift;
+        k += ((idx & 4) >> 2) << shift;
+
+        idx >>= 3;
+
+        ++shift;
+    }
+}
+
+template<class T>
+typename NonUniformHexahedralFEMForceFieldAndMass<T>::Vec3i NonUniformHexahedralFEMForceFieldAndMass<T>::octree2voxel(const int octreeIdx) const
+{
+    Vec3i voxelId;
+    octree2ijk(octreeIdx, voxelId[0], voxelId[1], voxelId[2]);
+
+    return voxelId;
 }
 
 
