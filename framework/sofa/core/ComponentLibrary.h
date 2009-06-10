@@ -24,48 +24,52 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CATEGORYLIBRARY_H
-#define SOFA_CATEGORYLIBRARY_H
+#ifndef SOFA_COMPONENTLIBRARY_H
+#define SOFA_COMPONENTLIBRARY_H
 
-#include <iostream>
-#include "ComponentLibrary.h"
+#include <sofa/core/ObjectFactory.h>
+
 
 namespace sofa
 {
 
-namespace gui
+namespace core
 {
 
-namespace qt
-{
+typedef sofa::core::ObjectFactory::ClassEntry ClassEntry;
 
-typedef sofa::core::ObjectFactory::Creator    Creator;
-
-//***************************************************************
-class CategoryLibrary
+/**
+ *  \brief An Generic Component of the Sofa Library
+ *
+ *  It contains all the information related to a Sofa component: its name, the templates available, a description of it, its creator, ...
+ *  This Interface is used for the Modeler mainly.
+ *
+ */
+class SOFA_CORE_API ComponentLibrary
 {
 public:
-    CategoryLibrary( const std::string &categoryName);
-    virtual ~CategoryLibrary() {};
+    ComponentLibrary(const std::string &componentName, const std::string &categoryName, ClassEntry *entry, const std::vector< std::string > &exampleFiles);
+    virtual ~ComponentLibrary() {};
 
-    virtual ComponentLibrary *addComponent(const std::string &componentName, ClassEntry* entry, const std::vector< QString > &exampleFiles);
+    virtual void addTemplate( const std::string &templateName);
     virtual void endConstruction();
-
     virtual void setDisplayed(bool ) {};
 
-    const std::string                      &getName()          const { return name;}
-    const std::vector< ComponentLibrary* > &getComponents()    const {return components;}
-    unsigned int                            getNumComponents() const {return components.size();}
+    const std::string &getName()                     const { return name;}
+    const std::string &getDescription()              const { return description;}
+    const std::string &getCategory()                 const { return categoryName;}
+    const std::vector< std::string > &getTemplates() const { return templateName;}
+    const ClassEntry  *getEntry()                    const { return entry;}
 
-    virtual QWidget *getQWidget()=0;
 protected:
-    virtual ComponentLibrary *createComponent(const std::string &componentName, ClassEntry* entry, const std::vector< QString > &exampleFiles)=0;
-
+    //--------------------------------------------
+    //Sofa information
     std::string name;
-    std::vector< ComponentLibrary* > components;
+    std::vector< std::string > templateName;
+    std::string description;
+    std::string categoryName;
+    ClassEntry *entry;
 };
-
-}
 }
 }
 

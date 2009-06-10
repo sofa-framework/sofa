@@ -30,7 +30,7 @@
 #include <deque>
 
 #include "AddPreset.h"
-#include "SofaLibrary.h"
+#include <sofa/core/SofaLibrary.h>
 
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/tree/GNode.h>
@@ -75,6 +75,7 @@ typedef QPopupMenu Q3PopupMenu;
 using sofa::simulation::tree::GNode;
 using namespace sofa::core::objectmodel;
 using namespace sofa::simulation::tree;
+using sofa::core::SofaLibrary;
 
 class GraphModeler : public Q3ListView
 {

@@ -24,59 +24,57 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENTLIBRARY_H
-#define SOFA_COMPONENTLIBRARY_H
+#ifndef SOFA_SOFALIBRARY_H
+#define SOFA_SOFALIBRARY_H
 
-#include <iostream>
-#include <sofa/core/ObjectFactory.h>
+#include "CategoryLibrary.h"
 
-#ifdef SOFA_QT4
-#include <QWidget>
-#include <QString>
-#else
-#include <qwidget.h>
-#include <qstring.h>
-#endif
 
 namespace sofa
 {
 
-namespace gui
+namespace core
 {
 
-namespace qt
-{
 
-typedef sofa::core::ObjectFactory::ClassEntry ClassEntry;
-
-//***************************************************************
-class ComponentLibrary
+/**
+ *  \brief An Generic Library
+ *
+ *  It reads the content of the Object Factory and builds a library of components sorted inside categories.
+ *  This Interface is used for the Modeler mainly.
+ *
+ */
+class SOFA_CORE_API SofaLibrary
 {
 public:
-    ComponentLibrary(const std::string &componentName, const std::string &categoryName, ClassEntry *entry, const std::vector< QString > &exampleFiles);
-    virtual ~ComponentLibrary() {};
+    typedef std::vector< CategoryLibrary* > VecCategory;
+    typedef VecCategory::const_iterator VecCategoryIterator;
 
-    virtual void addTemplate( const std::string &templateName);
-    virtual void endConstruction();
-    virtual void setDisplayed(bool ) {};
+public:
+    virtual ~SofaLibrary() {};
 
-    const std::string &getName()                     const { return name;}
-    const std::string &getDescription()              const { return description;}
-    const std::string &getCategory()                 const { return categoryName;}
-    const std::vector< std::string > &getTemplates() const { return templateName;}
-    const ClassEntry  *getEntry()                    const { return entry;}
+    void build(const std::vector< std::string >& examples=std::vector< std::string >());
+    void clear();
 
-    virtual QWidget *getQWidget()=0;
+    std::string getComponentDescription( const std::string &componentName) const;
+
+    const VecCategory& getCategories() const {return categories;};
+
+    const CategoryLibrary  *getCategory(  const std::string &categoryName ) const;
+    const ComponentLibrary *getComponent( const std::string &componentName) const;
+    unsigned int getNumComponents() const {return numComponents;}
+
 protected:
-    //--------------------------------------------
-    //Sofa information
-    std::string name;
-    std::vector< std::string > templateName;
-    std::string description;
-    std::string categoryName;
-    ClassEntry *entry;
+    virtual CategoryLibrary *createCategory(const std::string &category , unsigned int/*  numComponent */) {return new CategoryLibrary(category);};
+    virtual void addCategory(CategoryLibrary *);
+    void computeNumComponents();
+
+    VecCategory categories;
+    std::vector< std::string > exampleFiles;
+    int numComponents;
+
 };
-}
+
 }
 }
 

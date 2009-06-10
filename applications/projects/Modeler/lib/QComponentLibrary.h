@@ -28,7 +28,7 @@
 #define SOFA_QCOMPONENTLIBRARY_H
 
 
-#include "ComponentLibrary.h"
+#include <sofa/core/ComponentLibrary.h>
 
 #ifdef SOFA_QT4
 #include <Q3Header>
@@ -42,6 +42,8 @@
 #include <qlayout.h>
 #endif
 
+
+using sofa::core::ComponentLibrary;
 namespace sofa
 {
 
@@ -50,6 +52,8 @@ namespace gui
 
 namespace qt
 {
+
+typedef sofa::core::ObjectFactory::ClassEntry ClassEntry;
 
 class QComponentLibrary : virtual public QWidget, public ComponentLibrary
 {
@@ -60,7 +64,7 @@ public:
     typedef QPushButton ComponentLabel;
     typedef QComboBox   ComponentTemplates;
 public:
-    QComponentLibrary(QWidget *parent, ComponentLayout *layout, const std::string &componentName, const std::string &categoryName, ClassEntry *entry, const std::vector< QString > &exampleFiles);
+    QComponentLibrary(QWidget *parent, ComponentLayout *layout, const std::string &componentName, const std::string &categoryName, ClassEntry *entry, const std::vector< std::string > &exampleFiles);
     ~QComponentLibrary();
 
     void endConstruction();

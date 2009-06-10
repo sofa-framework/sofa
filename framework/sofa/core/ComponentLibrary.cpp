@@ -30,14 +30,18 @@
 namespace sofa
 {
 
-namespace gui
+namespace core
 {
 
-namespace qt
+std::string caseInsensitive(const std::string &text)
 {
+    std::string result; result.resize(text.size());
+    for (unsigned int i=0; i<text.size(); ++i) result[i] = toupper(text[i]);
+    return result;
+}
 
 //-------------------------------------------------------------------------------------------------------
-ComponentLibrary::ComponentLibrary( const std::string &componentN, const std::string &categoryN, ClassEntry *e, const std::vector< QString > &exampleFiles):  name(componentN), categoryName(categoryN),entry(e)
+ComponentLibrary::ComponentLibrary( const std::string &componentN, const std::string &categoryN, ClassEntry *e, const std::vector< std::string > &exampleFiles):  name(componentN), categoryName(categoryN),entry(e)
 {
 
     description  = std::string("<H2>")  + entry->className + std::string(": ");
@@ -50,10 +54,14 @@ ComponentLibrary::ComponentLibrary( const std::string &componentN, const std::st
     }
 
     //Find a scene
+    std::string nameComponentCaseInsensitive = caseInsensitive(entry->className);
+
     for (unsigned int i=0; i<exampleFiles.size(); ++i)
     {
-        if (exampleFiles[i].findRev(entry->className.c_str()) >= 0 )
-            possiblePaths.push_back(exampleFiles[i].ascii());
+        std::string exampleCaseInsensitive = caseInsensitive(exampleFiles[i]);
+//             if (exampleFiles[i].findRev(entry->className.c_str()) >= 0 )
+        if (exampleCaseInsensitive.find(nameComponentCaseInsensitive) != std::string::npos)
+            possiblePaths.push_back(exampleFiles[i]);
     }
 
     std::string nameSpace = sofa::core::objectmodel::Base::decodeNamespaceName(entry->creatorList.begin()->second->type());
@@ -101,6 +109,5 @@ void ComponentLibrary::endConstruction()
 {
 }
 
-}
 }
 }

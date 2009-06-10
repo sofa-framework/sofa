@@ -30,11 +30,9 @@
 namespace sofa
 {
 
-namespace gui
+namespace core
 {
 
-namespace qt
-{
 
 //-------------------------------------------------------------------------------------------------------
 CategoryLibrary::CategoryLibrary( const std::string &categoryName): name(categoryName)
@@ -42,7 +40,7 @@ CategoryLibrary::CategoryLibrary( const std::string &categoryName): name(categor
 }
 
 
-ComponentLibrary *CategoryLibrary::addComponent(const std::string &componentName, ClassEntry* entry, const std::vector< QString > &exampleFiles)
+ComponentLibrary *CategoryLibrary::addComponent(const std::string &componentName, ClassEntry* entry, const std::vector< std::string > &exampleFiles)
 {
     //Special case of Mapping and MechanicalMapping
     bool isMechanicalMapping = (name == "MechanicalMapping");
@@ -93,6 +91,16 @@ void CategoryLibrary::endConstruction()
 {
 }
 
+
+const ComponentLibrary *CategoryLibrary::getComponent( const std::string &categoryName) const
+{
+    for (VecComponentIterator it=components.begin(); it != components.end(); ++it)
+    {
+        if ((*it)->getName().find(categoryName) != std::string::npos)
+            return *it;
+    }
+    return NULL;
 }
+
 }
 }

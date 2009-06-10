@@ -100,10 +100,11 @@ SofaModeler::SofaModeler()
 
 
     //Find all the scene files in examples directory
+    std::vector< QString > exampleQString;
     std::vector< QString > filter;
     const QString path(examplePath.c_str());
     filter.push_back("*.scn"); filter.push_back("*.xml");
-    sofa::gui::qt::getFilesInDirectory(path, exampleFiles, true, filter);
+    sofa::gui::qt::getFilesInDirectory(path, exampleQString, true, filter);
 
 
 
@@ -155,6 +156,7 @@ SofaModeler::SofaModeler()
     connect(l, SIGNAL( componentDragged( std::string, std::string, std::string, ClassEntry *) ),
             this, SLOT( componentDraggedReception( std::string, std::string, std::string, ClassEntry *) ));
 
+    for (unsigned int i=0; i<exampleQString.size(); ++i) exampleFiles.push_back(exampleQString[i].ascii());
     library->build(exampleFiles);
     changeLibraryLabel(0);
 
@@ -815,7 +817,8 @@ void SofaModeler::dragMoveEvent( QDragMoveEvent* event)
 /// Quick Filter of te components
 void SofaModeler::searchText(const FilterQuery& query)
 {
-    library->filter(query);
+    QSofaLibrary* l=static_cast<QSofaLibrary*>(library);
+    l->filter(query);
     changeLibraryLabel(0);
 }
 
