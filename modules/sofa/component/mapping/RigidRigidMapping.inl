@@ -37,7 +37,7 @@
 #include <sofa/helper/gl/Axis.h>
 #include <string.h>
 #include <iostream>
-
+#include <sofa/component/container/ArticulatedHierarchyContainer.h>
 
 
 
@@ -112,12 +112,38 @@ void RigidRigidMapping<BasicMapping>::init()
     if (!fileRigidRigidMapping.getValue().empty())
         this->load(fileRigidRigidMapping.getFullPath().c_str());
 
+
     if (this->points.getValue().empty() && this->toModel!=NULL)
     {
         VecCoord& x = *this->toModel->getX();
         points.beginEdit()->resize(x.size());
-        for (unsigned int i=0; i<x.size(); i++)
-            (*points.beginEdit())[i] = x[i];
+        unsigned int i=0, cpt=0;
+        if(globalToLocalCoords.getValue() == true)
+        {
+            typename In::VecCoord& xfrom = *this->fromModel->getX();
+            switch (repartition.getValue().size())
+            {
+            case 0 :
+                for (i=0; i<x.size(); i++)
+                    (*points.beginEdit())[i] = x[i] - xfrom[0];
+                break;
+            case 1 :
+                for (i=0; i<xfrom.size(); i++)
+                    for(unsigned int j=0; j<repartition.getValue()[0]; j++,cpt++)
+                        (*points.beginEdit())[cpt] = x[cpt] - xfrom[i];
+                break;
+            default :
+                for (i=0; i<xfrom.size(); i++)
+                    for(unsigned int j=0; j<repartition.getValue()[i]; j++,cpt++)
+                        (*points.beginEdit())[cpt] = x[cpt] - xfrom[i];
+                break;
+            }
+        }
+        else
+        {
+            for (i=0; i<x.size(); i++)
+                (*points.beginEdit())[i] = x[i];
+        }
     }
     this->BasicMapping::init();
 }

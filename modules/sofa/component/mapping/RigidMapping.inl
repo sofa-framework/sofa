@@ -166,6 +166,7 @@ void RigidMapping<BasicMapping>::init()
                 for (i=0; i<xfrom.size(); i++)
                     for(unsigned int j=0; j<repartition.getValue()[0]; j++,cpt++)
                         (*points.beginEdit())[cpt] = xfrom[i].inverseRotate(x[cpt]-xfrom[i].getCenter());
+                break;
             default :
                 for (i=0; i<xfrom.size(); i++)
                     for(unsigned int j=0; j<repartition.getValue()[i]; j++,cpt++)
