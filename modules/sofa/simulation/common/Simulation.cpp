@@ -141,7 +141,6 @@ void Simulation::animate ( Node* root, double dt )
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printComment(std::string("Begin Step"));
 #endif
-    nbSteps++;
     {
         AnimateBeginEvent ev ( dt );
         PropagateEventVisitor act ( &ev );
@@ -183,6 +182,7 @@ void Simulation::animate ( Node* root, double dt )
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printComment(std::string("End Step"));
 #endif
+    nbSteps++;
 }
 
 
