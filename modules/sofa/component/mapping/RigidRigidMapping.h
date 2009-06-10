@@ -78,6 +78,7 @@ public:
     //axis length for display
     Data<double> axisLength;
     Data< bool > indexFromEnd;
+    Data< bool > globalToLocalCoords;
 
     core::componentmodel::behavior::BaseMechanicalState::ParticleMask* maskFrom;
     core::componentmodel::behavior::BaseMechanicalState::ParticleMask* maskTo;
@@ -90,7 +91,8 @@ public:
           index(initData(&index,(unsigned)0,"index","input DOF index")),
           fileRigidRigidMapping(initData(&fileRigidRigidMapping,"fileRigidRigidMapping","Filename")),
           axisLength(initData( &axisLength, 0.7, "axisLength", "axis length for display")),
-          indexFromEnd( initData ( &indexFromEnd,false,"indexFromEnd","input DOF index starts from the end of input DOFs vector") )
+          indexFromEnd( initData ( &indexFromEnd,false,"indexFromEnd","input DOF index starts from the end of input DOFs vector") ),
+          globalToLocalCoords ( initData ( &globalToLocalCoords,"globalToLocalCoords","are the output DOFs initially expressed in global coordinates" ) )
     {
         addAlias(&fileRigidRigidMapping,"filename");
         maskFrom = NULL;
