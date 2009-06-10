@@ -34,6 +34,9 @@ namespace sofa
 namespace component
 {
 
+namespace misc
+{
+
 SOFA_DECL_CLASS(ParticleSource)
 
 int ParticleSourceClass = core::RegisterObject("Parametrable particle generator")
@@ -47,5 +50,6 @@ int ParticleSourceClass = core::RegisterObject("Parametrable particle generator"
 #endif
         ;
 
+}
 }
 }

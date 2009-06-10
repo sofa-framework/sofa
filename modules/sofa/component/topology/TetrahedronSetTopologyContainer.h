@@ -337,7 +337,7 @@ protected:
     /// for each triangle provides the set of tetrahedra adjacent to that edge
     sofa::helper::vector< sofa::helper::vector< unsigned int > > m_tetrahedronTriangleShell;
 
-    virtual void loadFromMeshLoader(sofa::component::MeshLoader* loader);
+    virtual void loadFromMeshLoader(sofa::component::container::MeshLoader* loader);
 
     /** \brief Creates the Tetrahedron Vertex Shell Array
     *

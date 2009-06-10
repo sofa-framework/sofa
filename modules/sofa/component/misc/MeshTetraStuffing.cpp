@@ -40,6 +40,9 @@ namespace sofa
 namespace component
 {
 
+namespace misc
+{
+
 using namespace sofa::defaulttype;
 
 SOFA_DECL_CLASS(MeshTetraStuffing)
@@ -897,6 +900,8 @@ void MeshTetraStuffing::draw()
         simulation::getSimulation()->DrawUtility.drawLines(diags, 1, Vec<4,float>(0,1,1,1));
     if (!snaps.empty())
         simulation::getSimulation()->DrawUtility.drawPoints(snaps, 4, Vec<4,float>(0,0,1,1));
+}
+
 }
 
 } // namespace component

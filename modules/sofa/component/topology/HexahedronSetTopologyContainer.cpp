@@ -86,7 +86,7 @@ void HexahedronSetTopologyContainer::init()
     QuadSetTopologyContainer::init();
 }
 
-void HexahedronSetTopologyContainer::loadFromMeshLoader(sofa::component::MeshLoader* loader)
+void HexahedronSetTopologyContainer::loadFromMeshLoader(sofa::component::container::MeshLoader* loader)
 {
     // load points
     if (!m_hexahedron.empty()) return;

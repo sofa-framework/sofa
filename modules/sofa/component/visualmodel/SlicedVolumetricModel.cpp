@@ -97,7 +97,7 @@ void SlicedVolumetricModel::init()
 
     VisualModel::init();
 
-    VoxelGridLoader *loader;
+    container::VoxelGridLoader *loader;
     getContext()->get(loader);
     if(loader)
     {

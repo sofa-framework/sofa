@@ -81,7 +81,7 @@ void QuadSetTopologyContainer::init()
     EdgeSetTopologyContainer::init();
 }
 
-void QuadSetTopologyContainer::loadFromMeshLoader(sofa::component::MeshLoader* loader)
+void QuadSetTopologyContainer::loadFromMeshLoader(sofa::component::container::MeshLoader* loader)
 {
     // load points
     if (!m_quad.empty()) return;

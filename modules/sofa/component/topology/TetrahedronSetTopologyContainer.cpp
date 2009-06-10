@@ -99,7 +99,7 @@ void TetrahedronSetTopologyContainer::init()
     TriangleSetTopologyContainer::init();
 }
 
-void TetrahedronSetTopologyContainer::loadFromMeshLoader(sofa::component::MeshLoader* loader)
+void TetrahedronSetTopologyContainer::loadFromMeshLoader(sofa::component::container::MeshLoader* loader)
 {
     // load points
     PointSetTopologyContainer::loadFromMeshLoader(loader);

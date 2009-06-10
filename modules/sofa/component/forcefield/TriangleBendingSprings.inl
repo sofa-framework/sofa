@@ -49,6 +49,7 @@ namespace component
 namespace forcefield
 {
 
+using sofa::component::container::MechanicalObject;
 using namespace core::componentmodel::behavior;
 
 template<class DataTypes>

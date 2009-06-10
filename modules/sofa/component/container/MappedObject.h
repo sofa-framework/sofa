@@ -39,6 +39,9 @@ namespace sofa
 namespace component
 {
 
+namespace container
+{
+
 using namespace core::componentmodel::behavior;
 using namespace core::objectmodel;
 
@@ -82,6 +85,8 @@ public:
     const VecDeriv* getV()  const { return &f_V.getValue();  }
 
 };
+
+}
 
 } // namespace component
 

@@ -93,7 +93,7 @@ void TriangleSetTopologyContainer::init()
     EdgeSetTopologyContainer::init();
 }
 
-void TriangleSetTopologyContainer::loadFromMeshLoader(sofa::component::MeshLoader* loader)
+void TriangleSetTopologyContainer::loadFromMeshLoader(sofa::component::container::MeshLoader* loader)
 {
     // load points
     if (m_triangle.empty())

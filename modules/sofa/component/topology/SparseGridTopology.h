@@ -47,6 +47,8 @@ namespace topology
 
 using namespace sofa::defaulttype;
 using sofa::helper::MarchingCubeUtility;
+using sofa::component::container::VoxelGridLoader;
+
 
 /** A sparse grid topology. Like a sparse FFD building from the bounding box of the object. Starting from a RegularGrid, only valid cells containing matter (ie intersecting the original surface mesh or totally inside the object) are considered.
 Valid cells are tagged by a Type BOUNDARY or INSIDE

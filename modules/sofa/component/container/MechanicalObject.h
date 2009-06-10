@@ -47,6 +47,8 @@ namespace sofa
 namespace component
 {
 
+namespace container
+{
 
 using namespace core::componentmodel::behavior;
 using namespace core::objectmodel;
@@ -400,6 +402,8 @@ extern template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<defaulttype:
 #endif
 extern template class SOFA_COMPONENT_CONTAINER_API MechanicalObject<defaulttype::LaparoscopicRigid3Types>;
 #endif
+
+}
 
 } // namespace component
 

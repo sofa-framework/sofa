@@ -53,14 +53,14 @@ void DevAngleCollisionMonitor<DataTypes>::init()
     }
 
     sofa::core::objectmodel::BaseContext* c1 = this->mstate1->getContext();
-    c1->get(pointsCM, BaseContext::SearchDown);
+    c1->get(pointsCM, core::objectmodel::BaseContext::SearchDown);
     if (pointsCM == NULL)
     {
         serr << "DevAngleCollisionMonitor ERROR: object1 PointModel not found."<<sendl;
         return;
     }
     sofa::core::objectmodel::BaseContext* c2 = this->mstate2->getContext();
-    c2->get(surfaceCM, BaseContext::SearchDown);
+    c2->get(surfaceCM, core::objectmodel::BaseContext::SearchDown);
     if (surfaceCM == NULL)
     {
         serr << "DevAngleCollisionMonitor ERROR: object2 TriangleModel not found."<<sendl;

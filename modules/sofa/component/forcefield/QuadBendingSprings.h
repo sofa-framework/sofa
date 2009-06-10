@@ -68,7 +68,7 @@ protected:
     typedef std::pair<unsigned,unsigned> IndexPair;
     void addSpring( unsigned, unsigned, std::set<IndexPair>& );
     void registerEdge( IndexPair, IndexPair, std::map<IndexPair, IndexPair>&, std::set<IndexPair>&);
-    component::MechanicalObject<DataTypes>* dof;
+    component::container::MechanicalObject<DataTypes>* dof;
 
 };
 

@@ -78,7 +78,7 @@ protected:
     typedef std::pair<unsigned,unsigned> IndexPair;
     void addSpring( unsigned, unsigned );
     void registerTriangle( unsigned, unsigned, unsigned, std::map<IndexPair, unsigned>& );
-    component::MechanicalObject<DataTypes>* dof;
+    component::container::MechanicalObject<DataTypes>* dof;
 
 };
 

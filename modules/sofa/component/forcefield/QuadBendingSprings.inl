@@ -39,6 +39,7 @@ namespace forcefield
 {
 
 using namespace core::componentmodel::behavior;
+using sofa::component::container::MechanicalObject;
 
 template<class DataTypes>
 QuadBendingSprings<DataTypes>::QuadBendingSprings()

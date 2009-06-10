@@ -41,6 +41,8 @@
 
 using std::pair;
 
+using sofa::component::container::MechanicalObject;
+
 namespace sofa
 {
 
@@ -49,7 +51,6 @@ namespace component
 
 namespace topology
 {
-
 SOFA_DECL_CLASS(SparseGridTopology)
 
 int SparseGridTopologyClass = core::RegisterObject("Sparse grid in 3D")
@@ -532,7 +533,7 @@ void SparseGridTopology::updateMesh()
 
     //Get Collision Model
     sofa::helper::vector< sofa::core::componentmodel::topology::BaseMeshTopology* > m_temp;
-    this->getContext()->get< sofa::core::componentmodel::topology::BaseMeshTopology >(&m_temp, BaseContext::SearchDown);
+    this->getContext()->get< sofa::core::componentmodel::topology::BaseMeshTopology >(&m_temp, sofa::core::objectmodel::BaseContext::SearchDown);
 
     sofa::core::componentmodel::topology::BaseMeshTopology* collisionTopology=NULL;
     for (unsigned int i=0; i<m_temp.size(); ++i)

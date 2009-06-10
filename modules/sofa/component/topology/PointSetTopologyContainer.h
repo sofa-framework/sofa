@@ -36,7 +36,10 @@ namespace sofa
 namespace component
 {
 
+namespace container
+{
 class MeshLoader;
+}
 
 namespace topology
 {
@@ -100,7 +103,7 @@ public:
     /// @}
 
 protected:
-    virtual void loadFromMeshLoader(sofa::component::MeshLoader* loader);
+    virtual void loadFromMeshLoader(sofa::component::container::MeshLoader* loader);
 
 protected:
     Data<unsigned int> nbPoints;

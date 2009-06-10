@@ -71,9 +71,9 @@ void MultilevelHexahedronSetTopologyContainer::init()
     HexahedronSetTopologyContainer::init();
 }
 
-void MultilevelHexahedronSetTopologyContainer::loadFromMeshLoader(sofa::component::MeshLoader* loader)
+void MultilevelHexahedronSetTopologyContainer::loadFromMeshLoader(sofa::component::container::MeshLoader* loader)
 {
-    sofa::component::VoxelGridLoader* rgLoader = dynamic_cast<sofa::component::VoxelGridLoader*> (loader);
+    sofa::component::container::VoxelGridLoader* rgLoader = dynamic_cast<sofa::component::container::VoxelGridLoader*> (loader);
 
     if(rgLoader)
     {

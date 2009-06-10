@@ -42,6 +42,7 @@ namespace component
 namespace topology
 {
 
+using  sofa::component::container::MechanicalObject;
 using namespace sofa::defaulttype;
 
 

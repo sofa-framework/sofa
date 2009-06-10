@@ -82,7 +82,7 @@ void PointSplatModel::init()
 
     VisualModel::init();
 
-    VoxelGridLoader *loader;
+    container::VoxelGridLoader *loader;
     getContext()->get(loader);
     if(loader && _mstate)
     {

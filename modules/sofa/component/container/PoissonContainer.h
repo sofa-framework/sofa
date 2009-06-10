@@ -31,11 +31,16 @@ namespace sofa
 namespace component
 {
 
+namespace container
+{
+
 class PoissonContainer : public virtual sofa::core::objectmodel::BaseObject
 {
 public:
     virtual double getPoisson(unsigned int index) = 0;
 };
+
+}
 
 }
 

@@ -31,6 +31,9 @@ namespace sofa
 namespace component
 {
 
+namespace container
+{
+
 class RadiusContainer : public virtual sofa::core::objectmodel::BaseObject
 {
 public:
@@ -41,6 +44,8 @@ public:
     /// Deprecated alias for getEdgeRadius
     double getRadius(unsigned int index) { return getEdgeRadius(index); }
 };
+
+}
 
 }
 

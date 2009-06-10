@@ -106,7 +106,7 @@ public:
 
 
 protected:
-    //component::MechanicalObject<DataTypes>* object;
+    //component::container::MechanicalObject<DataTypes>* object;
 
 
     typedef Vec<24, Real> Displacement;		///< the displacement vector
@@ -222,7 +222,7 @@ public:
 
     void setComputeGlobalMatrix(bool val) { this->f_assembling.setValue(val); }
 
-    //	component::MechanicalObject<DataTypes>* getObject() { return object; }
+    //	component::container::MechanicalObject<DataTypes>* getObject() { return object; }
 
     virtual void init();
     virtual void reinit();
