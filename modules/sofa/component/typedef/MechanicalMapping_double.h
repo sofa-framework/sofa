@@ -46,10 +46,7 @@
 #include <sofa/component/mapping/BeamLinearMapping.h>
 #include <sofa/component/mapping/CenterOfMassMapping.h>
 #include <sofa/component/mapping/CenterPointMechanicalMapping.h>
-#include <sofa/component/mapping/CircumcenterMapping.h>
 #include <sofa/component/mapping/CurveMapping.h>
-#include <sofa/component/mapping/HexahedronCompositeFEMEdgeBasedMapping.h>
-#include <sofa/component/mapping/HexahedronCompositeFEMMapping.h>
 #include <sofa/component/mapping/IdentityMapping.h>
 #include <sofa/component/mapping/LineSetSkinningMapping.h>
 #include <sofa/component/mapping/Mesh2PointMechanicalMapping.h>
@@ -94,26 +91,8 @@ typedef sofa::component::mapping::CenterPointMechanicalMapping<sofa::core::compo
 
 
 //---------------------------------------------------------------------------------------------
-//Typedef for CircumcenterMapping
-typedef sofa::component::mapping::CircumcenterMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> >, sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > > > CircumcenterMechanicalMapping3d_to_3d;
-
-
-
-//---------------------------------------------------------------------------------------------
 //Typedef for CurveMapping
 typedef sofa::component::mapping::CurveMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> >, sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<3, double> > > > CurveMechanicalMapping3d_to_Rigid3d;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for HexahedronCompositeFEMEdgeBasedMapping
-typedef sofa::component::mapping::HexahedronCompositeFEMEdgeBasedMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> >, sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > > > HexahedronCompositeFEMEdgeBasedMechanicalMapping3d_to_3d;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for HexahedronCompositeFEMMapping
-typedef sofa::component::mapping::HexahedronCompositeFEMMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> >, sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > > > HexahedronCompositeFEMMechanicalMapping3d_to_3d;
 
 
 
@@ -188,10 +167,7 @@ typedef BeamLinearMechanicalMappingRigid3d_to_3d BeamLinearMechanicalMappingRigi
 typedef CenterOfMassMechanicalMappingRigid3d_to_3d CenterOfMassMechanicalMappingRigid3_to_3;
 typedef CenterOfMassMechanicalMappingRigid2d_to_1d CenterOfMassMechanicalMappingRigid2_to_1;
 typedef CenterPointMechanicalMechanicalMapping3d_to_3d CenterPointMechanicalMechanicalMapping3_to_3;
-typedef CircumcenterMechanicalMapping3d_to_3d CircumcenterMechanicalMapping3_to_3;
 typedef CurveMechanicalMapping3d_to_Rigid3d CurveMechanicalMapping3_to_Rigid3;
-typedef HexahedronCompositeFEMEdgeBasedMechanicalMapping3d_to_3d HexahedronCompositeFEMEdgeBasedMechanicalMapping3_to_3;
-typedef HexahedronCompositeFEMMechanicalMapping3d_to_3d HexahedronCompositeFEMMechanicalMapping3_to_3;
 typedef IdentityMechanicalMapping3d_to_3d IdentityMechanicalMapping3_to_3;
 typedef IdentityMechanicalMapping1d_to_1d IdentityMechanicalMapping1_to_1;
 typedef IdentityMechanicalMapping2d_to_2d IdentityMechanicalMapping2_to_2;

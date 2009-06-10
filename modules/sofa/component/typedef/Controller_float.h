@@ -39,7 +39,6 @@
 
 
 #include <sofa/component/controller/EdgeSetController.h>
-#include <sofa/component/controller/JointSpringController.h>
 #include <sofa/component/controller/MechanicalStateController.h>
 
 
@@ -47,12 +46,6 @@
 //---------------------------------------------------------------------------------------------
 //Typedef for EdgeSetController
 typedef sofa::component::controller::EdgeSetController<sofa::defaulttype::StdRigidTypes<3, float> > EdgeSetControllerRigid3f;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for JointSpringController
-typedef sofa::component::controller::JointSpringController<sofa::defaulttype::StdRigidTypes<3, float> > JointSpringControllerRigid3f;
 
 
 
@@ -67,7 +60,6 @@ typedef sofa::component::controller::MechanicalStateController<sofa::defaulttype
 
 #ifdef SOFA_FLOAT
 typedef EdgeSetControllerRigid3f EdgeSetControllerRigid3;
-typedef JointSpringControllerRigid3f JointSpringControllerRigid3;
 typedef MechanicalStateController2f MechanicalStateController2;
 typedef MechanicalStateControllerRigid3f MechanicalStateControllerRigid3;
 #endif
