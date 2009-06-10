@@ -918,6 +918,9 @@ Visitor::Result MechanicalAccumulateLMConstraint::fwdLMConstraint(simulation::No
     entry.independentMState[0]=c->getMechModel1();
     entry.independentMState[1]=c->getMechModel2();
 
+    c->getMechModel1()->forceMask.setInUse(c->useMask());
+    c->getMechModel2()->forceMask.setInUse(c->useMask());
+
     entry.data=c;
     endProcess(node, c, t0);
     return RESULT_CONTINUE;

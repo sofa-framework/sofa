@@ -1345,6 +1345,8 @@ void MechanicalObject<DataTypes>::endIntegration(Real /*dt*/)
     this->externalForces->clear();
 
     this->forceMask.clear();
+    //By default the mask is disabled, the user has to enable it to benefit from the speedup
+    this->forceMask.setInUse(this->useMask.getValue());
 }
 
 template <class DataTypes>

@@ -32,6 +32,7 @@
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/BaseVector.h>
 #include <sofa/defaulttype/Vec.h>
+
 #include <sstream>
 #include <iostream>
 
@@ -80,7 +81,7 @@ class BaseMechanicalMapping;
 class BaseMechanicalState : public virtual objectmodel::BaseObject
 {
 public:
-    BaseMechanicalState()
+    BaseMechanicalState():useMask(initData(&useMask, false, "useMask", "Usage of a mask to optimize the computation of the system, highly reducing the passage through the mappings"))
     {}
     virtual ~BaseMechanicalState()
     { }
@@ -332,6 +333,8 @@ public:
 
     /// Mask to filter the particles. Used inside MechanicalMappings inside applyJ and applyJT methods.
     ParticleMask forceMask;
+
+    Data<bool> useMask;
 
     /// Increment the index of the given VecId, so that all 'allocated' vectors in this state have a lower index
     virtual void vAvail(VecId& v) = 0;

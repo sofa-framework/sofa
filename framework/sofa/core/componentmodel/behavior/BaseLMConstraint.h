@@ -115,7 +115,6 @@ public:
         /// @see ConstId
         ConstId getId() const { return Id;};
 
-
     protected:
         /// Order of the constraint
         /// @see ConstId
@@ -155,6 +154,13 @@ public:
     virtual double getError() {return 0;}
 
     virtual void clear();
+
+    /// If the constraint is applied only on a subset of particles.
+    /// That way, we can optimize the time spent traversing the mappings
+    /// Desactivated by default. The constraints using only a subset of particles should activate the mask,
+    /// and during projectResponse(), insert the indices of the particles modified
+    virtual bool useMask() {return false;}
+
 protected:
     Data<std::string> pathObject1;
     Data<std::string> pathObject2;

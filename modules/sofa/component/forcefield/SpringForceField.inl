@@ -53,7 +53,7 @@ namespace forcefield
 
 template<class DataTypes>
 SpringForceField<DataTypes>::SpringForceField(MechanicalState* mstate1, MechanicalState* mstate2, SReal _ks, SReal _kd)
-    : Inherit(mstate1, mstate2)
+    : Inherit(mstate1, mstate2), maskInUse(false)
     , ks(initData(&ks,_ks,"stiffness","uniform stiffness for the all springs"))
     , kd(initData(&kd,_kd,"damping","uniform damping for the all springs"))
     , springs(initData(&springs,"spring","pairs of indices, stiffness, damping, rest length"))
@@ -62,7 +62,8 @@ SpringForceField<DataTypes>::SpringForceField(MechanicalState* mstate1, Mechanic
 
 template<class DataTypes>
 SpringForceField<DataTypes>::SpringForceField(SReal _ks, SReal _kd)
-    : ks(initData(&ks,_ks,"stiffness","uniform stiffness for the all springs"))
+    : maskInUse(false)
+    , ks(initData(&ks,_ks,"stiffness","uniform stiffness for the all springs"))
     , kd(initData(&kd,_kd,"damping","uniform damping for the all springs"))
     , springs(initData(&springs,"spring","pairs of indices, stiffness, damping, rest length"))
 {
@@ -113,12 +114,14 @@ void SpringForceField<DataTypes>::reinit()
         (*springs.beginEdit())[i].ks = (Real) ks.getValue();
         (*springs.beginEdit())[i].kd = (Real) kd.getValue();
     }
+    updateMaskStatus();
 }
 
 template <class DataTypes>
 void SpringForceField<DataTypes>::init()
 {
     this->Inherit::init();
+    updateMaskStatus();
 }
 
 template<class DataTypes>
@@ -140,6 +143,11 @@ void SpringForceField<DataTypes>::addSpringForce(SReal& ener, VecDeriv& f1, cons
     Deriv force = u*forceIntensity;
     f1[a]+=force;
     f2[b]-=force;
+    if (this->maskInUse)
+    {
+        this->mstate1->forceMask.insertEntry(a);
+        this->mstate2->forceMask.insertEntry(b);
+    }
 }
 
 template<class DataTypes>
@@ -323,6 +331,25 @@ void SpringForceField<DataTypes>::handleTopologyChange(core::componentmodel::top
             } // while( changeIt != last; )
         }
     }
+}
+
+
+template <class DataTypes>
+void SpringForceField<DataTypes>::updateMaskStatus()
+{
+    if (this->getMechModel1() == this->getMechModel2()) maskInUse = false;
+    else
+    {
+        if (springs.getValue().size() < 0.5*this->getMechModel1()->getSize() ||
+            springs.getValue().size() < 0.5*this->getMechModel2()->getSize() ) maskInUse = true;
+        else maskInUse=false;
+    }
+}
+
+template<class DataTypes>
+bool SpringForceField<DataTypes>::useMask()
+{
+    return maskInUse;
 }
 
 } // namespace forcefield
