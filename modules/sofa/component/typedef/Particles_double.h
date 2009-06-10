@@ -22,14 +22,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_TYPEDEF_MECHANICAL_DOUBLE_H
-#define SOFA_TYPEDEF_MECHANICAL_DOUBLE_H
+#ifndef SOFA_TYPEDEF_Particles_double_H
+#define SOFA_TYPEDEF_Particles_double_H
 
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/LaparoscopicRigidTypes.h>
-#include <sofa/component/container/MechanicalObject.h>
 
 
 typedef sofa::defaulttype::Vec1dTypes   Particles1d;
@@ -65,32 +63,7 @@ typedef Rigid3d::Quat                   Quat3d;
 typedef Rigid3d::Deriv                  DerivRigid3d;
 typedef Rigid3d::Coord                  CoordRigid3d;
 
-//Mechanical Object
-//---------------------
-//Deformable
-typedef sofa::component::MechanicalObject<sofa::defaulttype::Vec1dTypes> MechanicalObject1d;
-typedef sofa::component::MechanicalObject<sofa::defaulttype::Vec2dTypes> MechanicalObject2d;
-typedef sofa::component::MechanicalObject<sofa::defaulttype::Vec3dTypes> MechanicalObject3d;
-typedef sofa::component::MechanicalObject<sofa::defaulttype::Vec6dTypes> MechanicalObject6d;
-//---------------------
-//Rigid
-typedef sofa::component::MechanicalObject<sofa::defaulttype::Rigid2dTypes> MechanicalObjectRigid2d;
-typedef sofa::component::MechanicalObject<sofa::defaulttype::Rigid3dTypes> MechanicalObjectRigid3d;
-//---------------------
-//Laparoscopic
 #ifndef SOFA_FLOAT
-typedef sofa::component::MechanicalObject<sofa::defaulttype::LaparoscopicRigid3Types> MechanicalObjectLaparoscopicRigid3;
-#endif
-
-#ifndef SOFA_FLOAT
-typedef MechanicalObject1d MechanicalObject1;
-typedef MechanicalObject2d MechanicalObject2;
-typedef MechanicalObject3d MechanicalObject3;
-typedef MechanicalObject6d MechanicalObject6;
-
-typedef MechanicalObjectRigid2d MechanicalObjectRigid2;
-typedef MechanicalObjectRigid3d MechanicalObjectRigid3;
-
 
 typedef Particles1d          Particles1;
 typedef VecDeriv1d	     VecDeriv1;
