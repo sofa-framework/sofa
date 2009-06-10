@@ -27,7 +27,8 @@
 #ifndef SOFA_QSOFALIBRARY_H
 #define SOFA_QSOFALIBRARY_H
 
-#include "SofaLibrary.h"
+#include <sofa/core/SofaLibrary.h>
+#include "FilterLibrary.h"
 
 #ifdef SOFA_QT4
 #include <Q3Header>
@@ -38,6 +39,9 @@
 #endif
 
 
+using sofa::core::SofaLibrary;
+using sofa::core::CategoryLibrary;
+
 namespace sofa
 {
 
@@ -46,6 +50,8 @@ namespace gui
 
 namespace qt
 {
+
+typedef sofa::core::ObjectFactory::ClassEntry ClassEntry;
 
 //***************************************************************
 //Library using QToolBox

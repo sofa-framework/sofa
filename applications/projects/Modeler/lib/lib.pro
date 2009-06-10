@@ -14,11 +14,8 @@ INCLUDEPATH += $$SOFA_DIR/extlibs
 SOURCES = SofaModeler.cpp \
           GraphModeler.cpp \
           AddPreset.cpp \
-          SofaLibrary.cpp \
           QSofaLibrary.cpp \
-          ComponentLibrary.cpp \
           QComponentLibrary.cpp \
-          CategoryLibrary.cpp \
           QCategoryLibrary.cpp \
           FilterLibrary.cpp \
           ../../../sofa/gui/qt/SofaPluginManager.cpp
@@ -26,11 +23,8 @@ SOURCES = SofaModeler.cpp \
 HEADERS = SofaModeler.h \
           GraphModeler.h \
           AddPreset.h \
-          SofaLibrary.h \
           QSofaLibrary.h \
-          ComponentLibrary.h \
           QComponentLibrary.h \
-          CategoryLibrary.h \
           QCategoryLibrary.h \
           FilterLibrary.h \
           ../../../sofa/gui/qt/SofaPluginManager.h

@@ -78,6 +78,17 @@ void Base::setName(const std::string& na)
 }
 
 
+/// Helper method to decode the type name
+std::string Base::decodeFullName(const std::type_info& t)
+{
+    std::string name = t.name();
+    char* allocname = strdup(name.c_str());
+#ifdef __GNUC__
+    int status;
+    allocname = abi::__cxa_demangle(allocname, 0, 0, &status);
+#endif
+    return allocname;
+}
 /// Decode the type's name to a more readable form if possible
 std::string Base::decodeTypeName(const std::type_info& t)
 {
@@ -287,7 +298,7 @@ std::string Base::decodeTemplateName(const std::type_info& t)
     int dest = 0;
     int i = 0;
     char cprev = '\0';
-    //sout << "name = "<<realname<<sendl;
+//     std::cerr  << "name = "<<realname<<std::endl;
     while (i < len && realname[i]!='<')
         ++i;
     start = i+1; ++i;

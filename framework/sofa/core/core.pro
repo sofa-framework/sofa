@@ -90,7 +90,10 @@ HEADERS += \
           objectmodel/XDataPtr.h \
           VisualModel.h \
           VisualManager.h \
-          ObjectFactory.h
+          ObjectFactory.h \
+          SofaLibrary.h \
+          CategoryLibrary.h \
+          ComponentLibrary.h
 
 SOURCES +=  \
           objectmodel/Base.cpp \
@@ -113,6 +116,9 @@ SOURCES +=  \
   	  objectmodel/OmniEvent.cpp \
           objectmodel/Tag.cpp \
           ObjectFactory.cpp \
+          SofaLibrary.cpp \
+          CategoryLibrary.cpp \
+          ComponentLibrary.cpp \
           Mapping.cpp \	   
           CollisionModel.cpp \
           componentmodel/behavior/LinearSolver.cpp \

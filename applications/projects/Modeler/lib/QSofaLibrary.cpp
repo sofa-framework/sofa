@@ -47,18 +47,20 @@ QSofaLibrary::QSofaLibrary(QWidget *parent): QWidget(parent)
 
 CategoryLibrary *QSofaLibrary::createCategory(const std::string &categoryName, unsigned int numComponent)
 {
-    CategoryLibrary* category = new QCategoryLibrary(toolbox, categoryName, numComponent);
-    toolbox->addItem( category->getQWidget(), categoryName.c_str());
+    QCategoryLibrary* category = new QCategoryLibrary(toolbox, categoryName, numComponent);
+    toolbox->addItem( category, categoryName.c_str());
     return category;
 }
 
 
-void QSofaLibrary::addCategory(CategoryLibrary *category)
+void QSofaLibrary::addCategory(CategoryLibrary *c)
 {
+    QCategoryLibrary* category=static_cast<QCategoryLibrary*>(c);
+
     SofaLibrary::addCategory(category);
     toolbox->setItemLabel(categories.size()-1, QString(category->getName().c_str()) + QString(" [") + QString::number(category->getNumComponents()) + QString("]"));
 
-    connect( category->getQWidget(), SIGNAL( componentDragged( std::string, std::string, std::string, ClassEntry* ) ),
+    connect( category, SIGNAL( componentDragged( std::string, std::string, std::string, ClassEntry* ) ),
             this, SLOT( componentDraggedReception( std::string, std::string, std::string , ClassEntry* )));
 
 }
@@ -91,17 +93,18 @@ void QSofaLibrary::filter(const FilterQuery &f)
             }
         }
 
-        int idx = toolbox->indexOf(categories[cat]->getQWidget());
+        QCategoryLibrary *category = static_cast<QCategoryLibrary *>(categories[cat]);
+        int idx = toolbox->indexOf(category);
 
         if (needToHideCategory)
         {
-            categories[cat]->setDisplayed(false);
+            category->setDisplayed(false);
             if (idx >= 0)
             {
 #ifdef SOFA_QT4
                 toolbox->removeItem(idx);
 #else
-                toolbox->removeItem(categories[cat]->getQWidget());
+                toolbox->removeItem(category);
 #endif
 
             }
@@ -109,12 +112,12 @@ void QSofaLibrary::filter(const FilterQuery &f)
         else
         {
 
-            categories[cat]->setDisplayed(true);
+            category->setDisplayed(true);
             if (idx < 0)
             {
-                toolbox->insertItem(indexPage,categories[cat]->getQWidget(),QString(categories[cat]->getName().c_str()) );
+                toolbox->insertItem(indexPage,category,QString(categories[cat]->getName().c_str()) );
             }
-            toolbox->setItemLabel(indexPage, QString(categories[cat]->getName().c_str()) + QString(" [") + QString::number(numComponentDisplayedInCategory) + QString("]"));
+            toolbox->setItemLabel(indexPage, QString(category->getName().c_str()) + QString(" [") + QString::number(numComponentDisplayedInCategory) + QString("]"));
 
             numComponents+=numComponentDisplayedInCategory;
             indexPage++;

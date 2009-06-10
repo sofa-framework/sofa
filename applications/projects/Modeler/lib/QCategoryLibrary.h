@@ -27,7 +27,7 @@
 #ifndef SOFA_QCATEGORYLIBRARY_H
 #define SOFA_QCATEGORYLIBRARY_H
 
-#include "CategoryLibrary.h"
+#include <sofa/core/CategoryLibrary.h>
 
 #ifdef SOFA_QT4
 #include <Q3Header>
@@ -37,6 +37,9 @@
 #include <qlayout.h>
 #endif
 
+using sofa::core::CategoryLibrary;
+using sofa::core::ComponentLibrary;
+
 namespace sofa
 {
 
@@ -45,6 +48,9 @@ namespace gui
 
 namespace qt
 {
+
+
+typedef sofa::core::ObjectFactory::ClassEntry ClassEntry;
 
 //***************************************************************
 class QCategoryLibrary : virtual public QWidget, public CategoryLibrary
@@ -57,14 +63,14 @@ public:
     QCategoryLibrary(QWidget *parent, const std::string &categoryName, unsigned int numCom);
     ~QCategoryLibrary();
 
-    ComponentLibrary *addComponent(const std::string &componentName, ClassEntry* entry, const std::vector< QString > &exampleFiles);
+    ComponentLibrary *addComponent(const std::string &componentName, ClassEntry* entry, const std::vector< std::string > &exampleFiles);
     void endConstruction();
 
     void setDisplayed(bool b);
 
     QWidget *getQWidget() { return this;};
 protected:
-    ComponentLibrary *createComponent(const std::string &componentName, ClassEntry* entry, const std::vector< QString > &exampleFiles);
+    ComponentLibrary *createComponent(const std::string &componentName, ClassEntry* entry, const std::vector< std::string > &exampleFiles);
 
     CategoryLayout *layout;
 

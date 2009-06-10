@@ -94,6 +94,9 @@ public:
         return decodeTemplateName(typeid(*this));
     }
 
+    /// Helper method to decode the type name
+    static std::string decodeFullName(const std::type_info& t);
+
     /// Helper method to decode the type name to a more readable form if possible
     static std::string decodeTypeName(const std::type_info& t);
 

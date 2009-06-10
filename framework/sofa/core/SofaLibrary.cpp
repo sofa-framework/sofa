@@ -26,19 +26,15 @@
 ******************************************************************************/
 
 #include "SofaLibrary.h"
-
+#include <sofa/core/ObjectFactory.h>
 
 
 namespace sofa
 {
 
-namespace gui
+namespace core
 {
-
-namespace qt
-{
-
-void SofaLibrary::build( const std::vector< QString >& examples)
+void SofaLibrary::build( const std::vector< std::string >& examples)
 {
     exampleFiles=examples;
     //-----------------------------------------------------------------------
@@ -150,6 +146,16 @@ std::string SofaLibrary::getComponentDescription( const std::string &componentNa
     else return "";
 }
 
+const CategoryLibrary *SofaLibrary::getCategory( const std::string &categoryName) const
+{
+    for (VecCategoryIterator it=categories.begin(); it != categories.end(); ++it)
+    {
+        if ((*it)->getName().find(categoryName) != std::string::npos)
+            return *it;
+    }
+    return NULL;
+}
+
 const ComponentLibrary *SofaLibrary::getComponent( const std::string &componentName ) const
 {
     //Look into all the categories
@@ -174,6 +180,5 @@ void SofaLibrary::clear()
     categories.clear();
 }
 
-}
 }
 }

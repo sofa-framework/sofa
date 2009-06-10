@@ -26,7 +26,7 @@
 ******************************************************************************/
 #include "GraphModeler.h"
 #include "AddPreset.h"
-#include "ComponentLibrary.h"
+#include <sofa/core/ComponentLibrary.h>
 
 
 #include <sofa/simulation/common/Simulation.h>
@@ -49,6 +49,8 @@
 #include <qpopupmenu.h>
 #include <qmessagebox.h>
 #endif
+
+using sofa::core::ComponentLibrary;
 
 namespace sofa
 {

@@ -28,7 +28,7 @@
 #define SOFA_FILTERLIBRARY_H
 
 #include <iostream>
-#include "ComponentLibrary.h"
+#include <sofa/core/ComponentLibrary.h>
 
 
 #ifdef SOFA_QT4
@@ -39,6 +39,8 @@
 #include <qlineedit.h>
 #endif
 
+
+using sofa::core::ComponentLibrary;
 
 namespace sofa
 {

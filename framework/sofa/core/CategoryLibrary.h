@@ -24,51 +24,54 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SOFALIBRARY_H
-#define SOFA_SOFALIBRARY_H
+#ifndef SOFA_CATEGORYLIBRARY_H
+#define SOFA_CATEGORYLIBRARY_H
 
-#include "CategoryLibrary.h"
-#include "FilterLibrary.h"
-
+#include "ComponentLibrary.h"
 
 namespace sofa
 {
 
-namespace gui
+namespace core
 {
 
-namespace qt
-{
 
-//***************************************************************
-//Generic Library
-class SofaLibrary
+typedef sofa::core::ObjectFactory::Creator    Creator;
+
+/**
+ *  \brief An Generic Category of the Sofa Library
+ *
+ *  It contains all the components available for Sofa corresponding to a given category (force field, mass, mapping...)
+ *  This Interface is used for the Modeler mainly.
+ *
+ */
+class SOFA_CORE_API CategoryLibrary
 {
+public:
+    typedef std::vector< ComponentLibrary* > VecComponent;
+    typedef VecComponent::const_iterator VecComponentIterator;
 
 public:
-    virtual ~SofaLibrary() {};
+    CategoryLibrary( const std::string &categoryName);
+    virtual ~CategoryLibrary() {};
 
-    void build(const std::vector< QString >& examples);
-    void clear();
-    virtual void filter(const FilterQuery &f)=0;
+    virtual ComponentLibrary *addComponent(const std::string &componentName, ClassEntry* entry, const std::vector< std::string > &exampleFiles);
+    virtual void endConstruction();
 
-    std::string getComponentDescription( const std::string &componentName) const;
+    const std::string  &getName()          const { return name;}
+    const VecComponent &getComponents()    const {return components;}
+
     const ComponentLibrary *getComponent( const std::string &componentName) const;
-    unsigned int getNumComponents() const {return numComponents;}
 
-    virtual QWidget *getQWidget()=0;
+    unsigned int getNumComponents() const {return components.size();}
+
 protected:
-    virtual CategoryLibrary *createCategory(const std::string &category, unsigned int numComponent)=0;
-    virtual void addCategory(CategoryLibrary *);
-    void computeNumComponents();
+    virtual ComponentLibrary *createComponent(const std::string &componentName, ClassEntry* entry, const std::vector< std::string > &exampleFiles) {return new ComponentLibrary(componentName, name, entry, exampleFiles);};
 
-    std::vector< CategoryLibrary* > categories;
-    std::vector< QString > exampleFiles;
-    int numComponents;
-
+    std::string name;
+    VecComponent components;
 };
 
-}
 }
 }
 

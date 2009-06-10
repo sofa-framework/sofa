@@ -255,7 +255,7 @@ private:
     std::string examplePath;
     std::string binPath;
     char count;
-    std::vector< QString > exampleFiles;
+    std::vector< std::string > exampleFiles;
 };
 }
 }
