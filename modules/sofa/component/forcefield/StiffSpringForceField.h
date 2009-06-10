@@ -91,7 +91,6 @@ public:
 
     virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, double /*kFact*/, unsigned int &/*offset*/);
 
-    bool useMask() {return true;}
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_STIFFSPRINGFORCEFIELD_CPP)

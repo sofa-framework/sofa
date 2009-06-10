@@ -72,7 +72,10 @@ void Constraint<DataTypes>::projectResponse()
 {
     if( !isActive() ) return;
     if (mstate)
+    {
+        mstate->forceMask.setInUse(this->useMask());
         projectResponse(*mstate->getDx());
+    }
 }
 
 template<class DataTypes>
@@ -80,7 +83,10 @@ void Constraint<DataTypes>::projectVelocity()
 {
     if( !isActive() ) return;
     if (mstate)
+    {
+        mstate->forceMask.setInUse(this->useMask());
         projectVelocity(*mstate->getV());
+    }
 }
 
 template<class DataTypes>
@@ -88,7 +94,10 @@ void Constraint<DataTypes>::projectPosition()
 {
     if( !isActive() ) return;
     if (mstate)
+    {
+        mstate->forceMask.setInUse(this->useMask());
         projectPosition(*mstate->getX());
+    }
 }
 
 template<class DataTypes>
@@ -96,7 +105,10 @@ void Constraint<DataTypes>::projectFreeVelocity()
 {
     if( !isActive() ) return;
     if (mstate)
+    {
+        mstate->forceMask.setInUse(this->useMask());
         projectVelocity(*mstate->getVfree());
+    }
 }
 
 template<class DataTypes>
@@ -104,7 +116,10 @@ void Constraint<DataTypes>::projectFreePosition()
 {
     if( !isActive() ) return;
     if (mstate)
+    {
+        mstate->forceMask.setInUse(this->useMask());
         projectPosition(*mstate->getXfree());
+    }
 }
 
 template<class DataTypes>
@@ -112,7 +127,10 @@ void Constraint<DataTypes>::applyConstraint(unsigned int &contactId)
 {
     if( !isActive() ) return;
     if (mstate)
+    {
+        mstate->forceMask.setInUse(this->useMask());
         applyConstraint(*mstate->getC(), contactId);
+    }
 }
 
 } // namespace behavior
