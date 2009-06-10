@@ -61,7 +61,7 @@ using sofa::component::visualmodel::OglModel;
 using namespace sofa::simulation::tree;
 using namespace sofa::component::collision;
 using namespace sofa::component::topology;
-using sofa::component::MeshLoader;
+using sofa::component::container::MeshLoader;
 using sofa::component::odesolver::EulerImplicitSolver;
 using sofa::component::linearsolver::CGLinearSolver;
 using sofa::component::linearsolver::GraphScatteredMatrix;
