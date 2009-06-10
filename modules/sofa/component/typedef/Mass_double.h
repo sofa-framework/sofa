@@ -39,13 +39,8 @@
 
 
 #include <sofa/component/mass/DiagonalMass.h>
-#include <sofa/component/forcefield/HexahedralFEMForceFieldAndMass.h>
-#include <sofa/component/forcefield/HexahedronCompositeFEMForceFieldAndMass.h>
 #include <sofa/component/forcefield/HexahedronFEMForceFieldAndMass.h>
 #include <sofa/component/mass/MatrixMass.h>
-#include <sofa/component/forcefield/NonUniformHexahedralFEMForceFieldAndMass.h>
-#include <sofa/component/forcefield/NonUniformHexahedronFEMForceFieldAndMass.h>
-#include <sofa/component/forcefield/NonUniformHexahedronFEMForceFieldDensity.h>
 #include <sofa/component/mass/UniformMass.h>
 
 
@@ -61,18 +56,6 @@ typedef sofa::component::mass::DiagonalMass<sofa::defaulttype::StdRigidTypes<2, 
 
 
 //---------------------------------------------------------------------------------------------
-//Typedef for HexahedralFEMForceFieldAndMass
-typedef sofa::component::forcefield::HexahedralFEMForceFieldAndMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > HexahedralFEMForceFieldAndMass3d;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for HexahedronCompositeFEMForceFieldAndMass
-typedef sofa::component::forcefield::HexahedronCompositeFEMForceFieldAndMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > HexahedronCompositeFEMForceFieldAndMass3d;
-
-
-
-//---------------------------------------------------------------------------------------------
 //Typedef for HexahedronFEMForceFieldAndMass
 typedef sofa::component::forcefield::HexahedronFEMForceFieldAndMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > HexahedronFEMForceFieldAndMass3d;
 
@@ -82,24 +65,6 @@ typedef sofa::component::forcefield::HexahedronFEMForceFieldAndMass<sofa::defaul
 //Typedef for MatrixMass
 typedef sofa::component::mass::MatrixMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double>, sofa::defaulttype::Mat<3, 3, double> > MatrixMass3d;
 typedef sofa::component::mass::MatrixMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, double>, sofa::defaulttype::Vec<2, double>, double>, sofa::defaulttype::Mat<2, 2, double> > MatrixMass1d;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for NonUniformHexahedralFEMForceFieldAndMass
-typedef sofa::component::forcefield::NonUniformHexahedralFEMForceFieldAndMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > NonUniformHexahedralFEMForceFieldAndMass3d;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for NonUniformHexahedronFEMForceFieldAndMass
-typedef sofa::component::forcefield::NonUniformHexahedronFEMForceFieldAndMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > NonUniformHexahedronFEMForceFieldAndMass3d;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for NonUniformHexahedronFEMForceFieldDensity
-typedef sofa::component::forcefield::NonUniformHexahedronFEMForceFieldDensity<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > NonUniformHexahedronFEMForceFieldDensity3d;
 
 
 
@@ -122,14 +87,9 @@ typedef DiagonalMass1d DiagonalMass1;
 typedef DiagonalMass2d DiagonalMass2;
 typedef DiagonalMassRigid3d DiagonalMassRigid3;
 typedef DiagonalMassRigid2d DiagonalMassRigid2;
-typedef HexahedralFEMForceFieldAndMass3d HexahedralFEMForceFieldAndMass3;
-typedef HexahedronCompositeFEMForceFieldAndMass3d HexahedronCompositeFEMForceFieldAndMass3;
 typedef HexahedronFEMForceFieldAndMass3d HexahedronFEMForceFieldAndMass3;
 typedef MatrixMass3d MatrixMass3;
 typedef MatrixMass1d MatrixMass1;
-typedef NonUniformHexahedralFEMForceFieldAndMass3d NonUniformHexahedralFEMForceFieldAndMass3;
-typedef NonUniformHexahedronFEMForceFieldAndMass3d NonUniformHexahedronFEMForceFieldAndMass3;
-typedef NonUniformHexahedronFEMForceFieldDensity3d NonUniformHexahedronFEMForceFieldDensity3;
 typedef UniformMass3d UniformMass3;
 typedef UniformMass1d UniformMass1;
 typedef UniformMass2d UniformMass2;

@@ -46,9 +46,6 @@
 #include <sofa/component/mapping/BeamLinearMapping.h>
 #include <sofa/component/mapping/CenterOfMassMapping.h>
 #include <sofa/component/mapping/CenterPointMechanicalMapping.h>
-#include <sofa/component/mapping/CircumcenterMapping.h>
-#include <sofa/component/mapping/HexahedronCompositeFEMEdgeBasedMapping.h>
-#include <sofa/component/mapping/HexahedronCompositeFEMMapping.h>
 #include <sofa/component/mapping/IdentityMapping.h>
 #include <sofa/component/mapping/ImplicitSurfaceMapping.h>
 #include <sofa/component/mapping/LineSetSkinningMapping.h>
@@ -89,27 +86,6 @@ typedef sofa::component::mapping::CenterOfMassMapping<sofa::core::Mapping<sofa::
 //Typedef for CenterPointMechanicalMapping
 typedef sofa::component::mapping::CenterPointMechanicalMapping<sofa::core::Mapping<sofa::core::componentmodel::behavior::State<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> >, sofa::core::componentmodel::behavior::MappedModel<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > > > CenterPointMechanicalMapping3d_to_3d;
 typedef sofa::component::mapping::CenterPointMechanicalMapping<sofa::core::Mapping<sofa::core::componentmodel::behavior::State<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> >, sofa::core::componentmodel::behavior::MappedModel<sofa::defaulttype::ExtVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > CenterPointMechanicalMapping3d_to_Ext3f;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for CircumcenterMapping
-typedef sofa::component::mapping::CircumcenterMapping<sofa::core::Mapping<sofa::core::componentmodel::behavior::State<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> >, sofa::core::componentmodel::behavior::MappedModel<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > > > CircumcenterMapping3d_to_3d;
-typedef sofa::component::mapping::CircumcenterMapping<sofa::core::Mapping<sofa::core::componentmodel::behavior::State<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> >, sofa::core::componentmodel::behavior::MappedModel<sofa::defaulttype::ExtVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > CircumcenterMapping3d_to_Ext3f;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for HexahedronCompositeFEMEdgeBasedMapping
-typedef sofa::component::mapping::HexahedronCompositeFEMEdgeBasedMapping<sofa::core::Mapping<sofa::core::componentmodel::behavior::State<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> >, sofa::core::componentmodel::behavior::MappedModel<sofa::defaulttype::ExtVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > HexahedronCompositeFEMEdgeBasedMapping3d_to_Ext3f;
-typedef sofa::component::mapping::HexahedronCompositeFEMEdgeBasedMapping<sofa::core::Mapping<sofa::core::componentmodel::behavior::State<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> >, sofa::core::componentmodel::behavior::MappedModel<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > > > HexahedronCompositeFEMEdgeBasedMapping3d_to_3d;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for HexahedronCompositeFEMMapping
-typedef sofa::component::mapping::HexahedronCompositeFEMMapping<sofa::core::Mapping<sofa::core::componentmodel::behavior::State<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> >, sofa::core::componentmodel::behavior::MappedModel<sofa::defaulttype::ExtVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > HexahedronCompositeFEMMapping3d_to_Ext3f;
-typedef sofa::component::mapping::HexahedronCompositeFEMMapping<sofa::core::Mapping<sofa::core::componentmodel::behavior::State<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> >, sofa::core::componentmodel::behavior::MappedModel<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > > > HexahedronCompositeFEMMapping3d_to_3d;
 
 
 
@@ -206,12 +182,6 @@ typedef CenterOfMassMappingRigid3d_to_Ext3f CenterOfMassMappingRigid3_to_Ext3;
 typedef CenterOfMassMappingRigid3d_to_Ext3d CenterOfMassMappingRigid3_to_Ext3d;
 typedef CenterPointMechanicalMapping3d_to_3d CenterPointMechanicalMapping3_to_3;
 typedef CenterPointMechanicalMapping3d_to_Ext3f CenterPointMechanicalMapping3_to_Ext3;
-typedef CircumcenterMapping3d_to_3d CircumcenterMapping3_to_3;
-typedef CircumcenterMapping3d_to_Ext3f CircumcenterMapping3_to_Ext3;
-typedef HexahedronCompositeFEMEdgeBasedMapping3d_to_Ext3f HexahedronCompositeFEMEdgeBasedMapping3_to_Ext3;
-typedef HexahedronCompositeFEMEdgeBasedMapping3d_to_3d HexahedronCompositeFEMEdgeBasedMapping3_to_3;
-typedef HexahedronCompositeFEMMapping3d_to_Ext3f HexahedronCompositeFEMMapping3_to_Ext3;
-typedef HexahedronCompositeFEMMapping3d_to_3d HexahedronCompositeFEMMapping3_to_3;
 typedef IdentityMapping3d_to_3d IdentityMapping3_to_3;
 typedef IdentityMapping3d_to_Ext3f IdentityMapping3_to_Ext3;
 typedef IdentityMappingRigid3d_to_Rigid3d IdentityMappingRigid3_to_Rigid3;

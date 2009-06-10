@@ -47,8 +47,6 @@
 #include <sofa/component/topology/ManifoldEdgeSetGeometryAlgorithms.h>
 #include <sofa/component/topology/ManifoldEdgeSetTopologyAlgorithms.h>
 #include <sofa/component/topology/ManifoldTriangleSetTopologyAlgorithms.h>
-#include <sofa/component/topology/MultilevelHexahedronSetGeometryAlgorithms.h>
-#include <sofa/component/topology/MultilevelHexahedronSetTopologyAlgorithms.h>
 #include <sofa/component/topology/PointSetGeometryAlgorithms.h>
 #include <sofa/component/topology/PointSetTopologyAlgorithms.h>
 #include <sofa/component/topology/QuadSetGeometryAlgorithms.h>
@@ -137,22 +135,6 @@ typedef sofa::component::topology::ManifoldEdgeSetTopologyAlgorithms<sofa::defau
 typedef sofa::component::topology::ManifoldTriangleSetTopologyAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > ManifoldTriangleSetTopologyAlgorithms3d;
 typedef sofa::component::topology::ManifoldTriangleSetTopologyAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, double>, sofa::defaulttype::Vec<2, double>, double> > ManifoldTriangleSetTopologyAlgorithms1d;
 typedef sofa::component::topology::ManifoldTriangleSetTopologyAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, double>, sofa::defaulttype::Vec<1, double>, double> > ManifoldTriangleSetTopologyAlgorithms2d;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for MultilevelHexahedronSetGeometryAlgorithms
-typedef sofa::component::topology::MultilevelHexahedronSetGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > MultilevelHexahedronSetGeometryAlgorithms3d;
-typedef sofa::component::topology::MultilevelHexahedronSetGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, double>, sofa::defaulttype::Vec<2, double>, double> > MultilevelHexahedronSetGeometryAlgorithms1d;
-typedef sofa::component::topology::MultilevelHexahedronSetGeometryAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, double>, sofa::defaulttype::Vec<1, double>, double> > MultilevelHexahedronSetGeometryAlgorithms2d;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for MultilevelHexahedronSetTopologyAlgorithms
-typedef sofa::component::topology::MultilevelHexahedronSetTopologyAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > MultilevelHexahedronSetTopologyAlgorithms3d;
-typedef sofa::component::topology::MultilevelHexahedronSetTopologyAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, double>, sofa::defaulttype::Vec<2, double>, double> > MultilevelHexahedronSetTopologyAlgorithms1d;
-typedef sofa::component::topology::MultilevelHexahedronSetTopologyAlgorithms<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, double>, sofa::defaulttype::Vec<1, double>, double> > MultilevelHexahedronSetTopologyAlgorithms2d;
 
 
 
@@ -258,12 +240,6 @@ typedef ManifoldEdgeSetTopologyAlgorithmsRigid2d ManifoldEdgeSetTopologyAlgorith
 typedef ManifoldTriangleSetTopologyAlgorithms3d ManifoldTriangleSetTopologyAlgorithms3;
 typedef ManifoldTriangleSetTopologyAlgorithms1d ManifoldTriangleSetTopologyAlgorithms1;
 typedef ManifoldTriangleSetTopologyAlgorithms2d ManifoldTriangleSetTopologyAlgorithms2;
-typedef MultilevelHexahedronSetGeometryAlgorithms3d MultilevelHexahedronSetGeometryAlgorithms3;
-typedef MultilevelHexahedronSetGeometryAlgorithms1d MultilevelHexahedronSetGeometryAlgorithms1;
-typedef MultilevelHexahedronSetGeometryAlgorithms2d MultilevelHexahedronSetGeometryAlgorithms2;
-typedef MultilevelHexahedronSetTopologyAlgorithms3d MultilevelHexahedronSetTopologyAlgorithms3;
-typedef MultilevelHexahedronSetTopologyAlgorithms1d MultilevelHexahedronSetTopologyAlgorithms1;
-typedef MultilevelHexahedronSetTopologyAlgorithms2d MultilevelHexahedronSetTopologyAlgorithms2;
 typedef PointSetGeometryAlgorithms3d PointSetGeometryAlgorithms3;
 typedef PointSetGeometryAlgorithms1d PointSetGeometryAlgorithms1;
 typedef PointSetGeometryAlgorithms2d PointSetGeometryAlgorithms2;

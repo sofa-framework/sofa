@@ -33,7 +33,6 @@
 
 
 #include <sofa/component/typedef/Particles_float.h>
-#include <sofa/component/typedef/BehaviorModel_float.h>
 #include <sofa/component/typedef/Constraint_float.h>
 #include <sofa/component/typedef/Controller_float.h>
 #include <sofa/component/typedef/ForceField_float.h>

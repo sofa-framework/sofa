@@ -42,7 +42,6 @@
 #include <sofa/component/forcefield/FrameSpringForceField.h>
 #include <sofa/component/interactionforcefield/InteractionEllipsoidForceField.h>
 #include <sofa/component/forcefield/JointSpringForceField.h>
-#include <sofa/component/interactionforcefield/LagrangeMultiplierInteraction.h>
 #include <sofa/component/forcefield/MeshSpringForceField.h>
 #include <sofa/component/forcefield/PenalityContactForceField.h>
 #include <sofa/component/forcefield/QuadBendingSprings.h>
@@ -79,12 +78,6 @@ typedef sofa::component::interactionforcefield::InteractionEllipsoidForceField<s
 //---------------------------------------------------------------------------------------------
 //Typedef for JointSpringForceField
 typedef sofa::component::forcefield::JointSpringForceField<sofa::defaulttype::StdRigidTypes<3, double> > JointSpringForceFieldRigid3d;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for LagrangeMultiplierInteraction
-typedef sofa::component::interactionforcefield::LagrangeMultiplierInteraction<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, double>, sofa::defaulttype::Vec<1, double>, double>, sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > LagrangeMultiplierInteraction2d_3d;
 
 
 
@@ -167,7 +160,6 @@ typedef BoxStiffSpringForceField6d BoxStiffSpringForceField6;
 typedef FrameSpringForceFieldRigid3d FrameSpringForceFieldRigid3;
 typedef InteractionEllipsoidForceField3d_Rigid3d InteractionEllipsoidForceField3_Rigid3;
 typedef JointSpringForceFieldRigid3d JointSpringForceFieldRigid3;
-typedef LagrangeMultiplierInteraction2d_3d LagrangeMultiplierInteraction2_3;
 typedef MeshSpringForceField3d MeshSpringForceField3;
 typedef MeshSpringForceField1d MeshSpringForceField1;
 typedef MeshSpringForceField2d MeshSpringForceField2;

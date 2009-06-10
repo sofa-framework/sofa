@@ -33,13 +33,11 @@
 
 
 #include <sofa/component/typedef/Particles_double.h>
-#include <sofa/component/typedef/BehaviorModel_double.h>
 #include <sofa/component/typedef/CollisionModel_double.h>
 #include <sofa/component/typedef/Constraint_double.h>
 #include <sofa/component/typedef/Controller_double.h>
 #include <sofa/component/typedef/ForceField_double.h>
 #include <sofa/component/typedef/InteractionForceField_double.h>
-#include <sofa/component/typedef/LinearSolver_double.h>
 #include <sofa/component/typedef/Mapping_double.h>
 #include <sofa/component/typedef/Mass_double.h>
 #include <sofa/component/typedef/MechanicalMapping_double.h>
