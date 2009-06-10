@@ -22,13 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_TYPEDEF_MECHANICAL_FLOAT_H
-#define SOFA_TYPEDEF_MECHANICAL_FLOAT_H
+#ifndef SOFA_TYPEDEF_Particles_float_H
+#define SOFA_TYPEDEF_Particles_float_H
 
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/LaparoscopicRigidTypes.h>
-#include <sofa/component/container/MechanicalObject.h>
 
 typedef sofa::defaulttype::Vec1fTypes   Particles1f;
 typedef Particles1f::VecDeriv           VecDeriv1f;
@@ -63,32 +61,8 @@ typedef Rigid3f::Quat                   Quat3f;
 typedef Rigid3f::Deriv                  DerivRigid3f;
 typedef Rigid3f::Coord                  CoordRigid3f;
 
-//Mechanical Object
-//---------------------
-//Deformable
-typedef sofa::component::MechanicalObject<sofa::defaulttype::Vec1fTypes> MechanicalObject1f;
-typedef sofa::component::MechanicalObject<sofa::defaulttype::Vec2fTypes> MechanicalObject2f;
-typedef sofa::component::MechanicalObject<sofa::defaulttype::Vec3fTypes> MechanicalObject3f;
-typedef sofa::component::MechanicalObject<sofa::defaulttype::Vec6fTypes> MechanicalObject6f;
-//---------------------
-//Rigid
-typedef sofa::component::MechanicalObject<sofa::defaulttype::Rigid2fTypes> MechanicalObjectRigid2f;
-typedef sofa::component::MechanicalObject<sofa::defaulttype::Rigid3fTypes> MechanicalObjectRigid3f;
-//---------------------
-//Laparoscopic
-#ifdef SOFA_FLOAT
-typedef sofa::component::MechanicalObject<sofa::defaulttype::LaparoscopicRigid3Types> MechanicalObjectLaparoscopicRigid3;
-#endif
 
 #ifdef SOFA_FLOAT
-typedef MechanicalObject1f MechanicalObject1;
-typedef MechanicalObject2f MechanicalObject2;
-typedef MechanicalObject3f MechanicalObject3;
-typedef MechanicalObject6f MechanicalObject6;
-
-typedef MechanicalObjectRigid2f MechanicalObjectRigid2;
-typedef MechanicalObjectRigid3f MechanicalObjectRigid3;
-
 
 typedef Particles1f          Particles1;
 typedef VecDeriv1f	     VecDeriv1;
