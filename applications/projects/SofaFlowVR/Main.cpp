@@ -395,7 +395,7 @@ public:
     // To do it we need to create an additionnal PointModel collision model, as well as a Detection and Intersection class
     sofa::simulation::tree::GNode * newPointsNode;
     typedef sofa::simulation::tree::GNode::Sequence<sofa::core::CollisionModel>::iterator CMIterator;
-    sofa::component::MechanicalObject<Vec3Types> * newPoints;
+    sofa::component::container::MechanicalObject<Vec3Types> * newPoints;
     sofa::component::collision::PointModel * newPointsCM;
     sofa::component::collision::MinProximityIntersection * intersection;
     sofa::component::collision::BruteForceDetection * detection;
@@ -440,7 +440,7 @@ public:
         if (computeV.getValue())
         {
             newPointsNode = new sofa::simulation::tree::GNode("newPoints");
-            newPointsNode->addObject ( newPoints = new sofa::component::MechanicalObject<Vec3Types> );
+            newPointsNode->addObject ( newPoints = new sofa::component::container::MechanicalObject<Vec3Types> );
             newPointsNode->addObject ( newPointsCM = new sofa::component::collision::PointModel );
 
             newPointsNode->addObject ( intersection = new sofa::component::collision::MinProximityIntersection );
