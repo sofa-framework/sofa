@@ -72,6 +72,7 @@ typename BarycentricContactMapper<TCollisionModel,DataTypes>::MMechanicalState* 
     simulation::Node* child = simulation::getSimulation()->newNode(name);
     parent->addChild(child); child->updateSimulationContext();
     MMechanicalState* mstate = new MMechanicalObject; child->addObject(mstate);
+    mstate->useMask.setValue(true);
     //mapping = new MMapping(model->getMechanicalState(), mstate, model->getMeshTopology());
     //mapper = mapping->getMapper();
     mapper = new mapping::BarycentricMapperMeshTopology<InDataTypes, typename BarycentricContactMapper::DataTypes>(model->getMeshTopology(), &model->getMechanicalState()->forceMask, &mstate->forceMask);
@@ -112,6 +113,7 @@ typename IdentityContactMapper<TCollisionModel,DataTypes>::MMechanicalState* Ide
     simulation::Node* child = simulation::getSimulation()->newNode(name);
     parent->addChild(child); child->updateSimulationContext();
     MMechanicalState* mstate = new MMechanicalObject; child->addObject(mstate);
+    mstate->useMask.setValue(true);
     mapping = new MMapping(model->getMechanicalState(), mstate); child->addObject(mapping);
     return mstate;
 }
@@ -142,6 +144,7 @@ typename RigidContactMapper<TCollisionModel,DataTypes>::MMechanicalState* RigidC
         child = simulation::getSimulation()->newNode(name);
         parent->addChild(child); child->updateSimulationContext();
         outmodel = new MMechanicalObject; child->addObject(outmodel);
+        outmodel->useMask.setValue(true);
         mapping = new MMapping(instate, outmodel); child->addObject(mapping);
     }
     else
@@ -155,6 +158,7 @@ typename RigidContactMapper<TCollisionModel,DataTypes>::MMechanicalState* RigidC
         child = simulation::getSimulation()->newNode(name);
         parent->addChild(child); child->updateSimulationContext();
         outmodel = new MMechanicalObject; child->addObject(outmodel);
+        outmodel->useMask.setValue(true);
         mapping = NULL;
     }
     return outmodel;
@@ -186,6 +190,7 @@ typename SubsetContactMapper<TCollisionModel,DataTypes>::MMechanicalState* Subse
         child = simulation::getSimulation()->newNode(name);
         parent->addChild(child); child->updateSimulationContext();
         outmodel = new MMechanicalObject; child->addObject(outmodel);
+        outmodel->useMask.setValue(true);
         mapping = new MMapping(instate, outmodel); child->addObject(mapping);
     }
     else
@@ -199,6 +204,7 @@ typename SubsetContactMapper<TCollisionModel,DataTypes>::MMechanicalState* Subse
         child = simulation::getSimulation()->newNode(name);
         parent->addChild(child); child->updateSimulationContext();
         outmodel = new MMechanicalObject; child->addObject(outmodel);
+        outmodel->useMask.setValue(true);
         mapping = NULL;
     }
     return outmodel;
