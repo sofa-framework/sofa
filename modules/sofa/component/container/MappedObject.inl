@@ -34,6 +34,9 @@ namespace sofa
 namespace component
 {
 
+namespace container
+{
+
 template <class DataTypes>
 MappedObject<DataTypes>::MappedObject()
     : f_X( initData(&f_X, "position", "position vector") )
@@ -64,6 +67,8 @@ void MappedObject<DataTypes>::init()
             }
         }
     }
+}
+
 }
 
 } // namespace component

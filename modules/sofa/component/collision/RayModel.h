@@ -62,7 +62,7 @@ public:
 
 class BaseRayContact;
 
-class SOFA_COMPONENT_COLLISION_API RayModel : public component::MechanicalObject<Vec3Types>, public core::CollisionModel
+class SOFA_COMPONENT_COLLISION_API RayModel : public component::container::MechanicalObject<Vec3Types>, public core::CollisionModel
 {
 protected:
     sofa::helper::vector<SReal> length;

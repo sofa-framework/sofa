@@ -55,7 +55,7 @@ public:
     TensorForceField (const char *filename);
 
 
-    TensorForceField (component::MechanicalObject<DataTypes>* object,
+    TensorForceField (component::container::MechanicalObject<DataTypes>* object,
             const char* filename);
 
 
@@ -157,7 +157,7 @@ public:
 
 private:
     // Mechanical Object containing this Force Field
-    component::MechanicalObject<DataTypes>* object_;
+    component::container::MechanicalObject<DataTypes>* object_;
     // damping factor
     Real alpha_;
     // Lame coefficient

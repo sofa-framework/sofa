@@ -97,7 +97,7 @@ void EdgeSetTopologyContainer::init()
     PointSetTopologyContainer::init();
 }
 
-void EdgeSetTopologyContainer::loadFromMeshLoader(sofa::component::MeshLoader* loader)
+void EdgeSetTopologyContainer::loadFromMeshLoader(sofa::component::container::MeshLoader* loader)
 {
     // load points
     if (!m_edge.empty()) return;

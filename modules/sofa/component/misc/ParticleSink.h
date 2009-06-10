@@ -59,6 +59,9 @@ namespace sofa
 namespace component
 {
 
+namespace misc
+{
+
 template<class TDataTypes>
 class ParticleSink : public core::componentmodel::behavior::Constraint<TDataTypes>, public virtual core::objectmodel::BaseObject
 {
@@ -140,7 +143,7 @@ public:
                 pointMod->propagateTopologicalChanges();
                 pointMod->removePointsProcess(remove);
             }
-            else if(MechanicalObject<DataTypes>* object = dynamic_cast<MechanicalObject<DataTypes>*>(this->mstate))
+            else if(container::MechanicalObject<DataTypes>* object = dynamic_cast<container::MechanicalObject<DataTypes>*>(this->mstate))
             {
                 sout << "ParticleSink: remove "<<remove.size()<<" particles using MechanicalObject."<<sendl;
                 // deleting the vertices
@@ -255,6 +258,8 @@ public:
         glColor4f(1,0,0,1);
     }
 };
+
+}
 
 } // namespace component
 

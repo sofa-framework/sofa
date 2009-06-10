@@ -29,7 +29,6 @@
 #include <sofa/component/mapping/BarycentricMapping.h>
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/helper/gl/template.h>
-#include <sofa/core/componentmodel/behavior/MechanicalMapping.inl>
 #include <string>
 
 
@@ -53,7 +52,7 @@ void LaparoscopicRigidMapping<BasicMapping>::apply( typename Out::VecCoord& out,
 {
     out.resize(1);
     out[0].getOrientation() = in[0].getOrientation(); // * rotation.getValue();
-    out[0].getCenter() = pivot.getValue() + in[0].getOrientation().rotate(Vector3(0,0,in[0].getTranslation()));
+    out[0].getCenter() = pivot.getValue() + in[0].getOrientation().rotate(sofa::defaulttype::Vector3(0,0,in[0].getTranslation()));
     currentRotation = in[0].getOrientation();
 }
 
@@ -62,14 +61,14 @@ void LaparoscopicRigidMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out
 {
     out.resize(1);
     out[0].getVOrientation() = in[0].getVOrientation(); //rotation * in[0].getVOrientation();
-    out[0].getVCenter() = currentRotation.rotate(Vector3(0,0,in[0].getVTranslation()));
+    out[0].getVCenter() = currentRotation.rotate(sofa::defaulttype::Vector3(0,0,in[0].getVTranslation()));
 }
 
 template <class BasicMapping>
 void LaparoscopicRigidMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
     out[0].getVOrientation() += in[0].getVOrientation(); //rotation * in[0].getVOrientation();
-    out[0].getVTranslation() += dot(currentRotation.rotate(Vector3(0,0,1)), in[0].getVCenter());
+    out[0].getVTranslation() += dot(currentRotation.rotate(sofa::defaulttype::Vector3(0,0,1)), in[0].getVCenter());
 }
 
 template <class BasicMapping>

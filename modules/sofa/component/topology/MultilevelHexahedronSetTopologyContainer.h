@@ -72,7 +72,7 @@ public:
 
     virtual void clear();
 
-    virtual void loadFromMeshLoader(sofa::component::MeshLoader* loader);
+    virtual void loadFromMeshLoader(sofa::component::container::MeshLoader* loader);
 
     void getHexaNeighbors(const unsigned int hexaId,
             helper::vector<unsigned int> &neighbors);

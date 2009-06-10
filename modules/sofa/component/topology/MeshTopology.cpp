@@ -78,7 +78,7 @@ void MeshTopology::init()
 {
     if (nbPoints==0)
     {
-        sofa::component::MeshLoader* loader;
+        sofa::component::container::MeshLoader* loader;
         this->getContext()->get(loader);
 
         if(loader)
@@ -135,7 +135,7 @@ void MeshTopology::init()
     }
 }
 
-void MeshTopology::loadFromMeshLoader(sofa::component::MeshLoader* loader)
+void MeshTopology::loadFromMeshLoader(sofa::component::container::MeshLoader* loader)
 {
     nbPoints = loader->getNbPoints();
     //loader->getPoints(*seqPoints.beginEdit());

@@ -41,6 +41,9 @@ namespace sofa
 namespace component
 {
 
+namespace container
+{
+
 class SOFA_COMPONENT_CONTAINER_API MultiMeshLoader : public virtual core::objectmodel::BaseObject,	public MeshLoader
 {
 public:
@@ -110,6 +113,8 @@ protected:
     sofa::helper::vector<unsigned int> nbPointsPerMesh;
     unsigned int currentMeshIndex;
 };
+
+}
 
 } // namespace component
 

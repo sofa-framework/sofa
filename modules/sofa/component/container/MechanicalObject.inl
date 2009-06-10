@@ -59,6 +59,8 @@ namespace sofa
 namespace component
 {
 
+namespace container
+{
 using namespace topology;
 using namespace sofa::core::componentmodel::topology;
 
@@ -1052,7 +1054,7 @@ void MechanicalObject<DataTypes>::init()
         }
         else
         {
-            sofa::component::MeshLoader* m_loader;
+            MeshLoader* m_loader;
             this->getContext()->get(m_loader);
 
             if(m_loader && m_loader->getFillMState())
@@ -2392,7 +2394,7 @@ bool MechanicalObject<DataTypes>::pickParticles(double rayOx, double rayOy, doub
 //
 // Template specializations
 
-
+}
 
 } // namespace component
 

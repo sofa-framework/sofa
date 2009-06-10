@@ -41,7 +41,10 @@ namespace sofa
 namespace component
 {
 
+namespace container
+{
 class MeshLoader;
+}
 
 namespace topology
 {
@@ -504,7 +507,7 @@ protected:
     virtual void updateHexas();
 
 protected:
-    virtual void loadFromMeshLoader(sofa::component::MeshLoader* loader);
+    virtual void loadFromMeshLoader(sofa::component::container::MeshLoader* loader);
 };
 
 } // namespace topology

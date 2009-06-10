@@ -358,6 +358,9 @@ public:
 namespace component
 {
 
+namespace container
+{
+
 using namespace gpu::cuda;
 
 template<class TCoord, class TDeriv, class TReal>
@@ -975,6 +978,8 @@ CudaMechanicalObject_ImplMethods(gpu::cuda::CudaVec3d1Types);
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 #undef CudaMechanicalObject_ImplMethods
+
+}
 
 } // namespace component
 

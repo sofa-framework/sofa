@@ -80,8 +80,8 @@ void Edge2QuadTopologicalMapping::init()
 
     // INITIALISATION of QUADULAR mesh from EDGE mesh :
 
-    component::MechanicalObject<Rigid3Types>* from_mstate = dynamic_cast<component::MechanicalObject<Rigid3Types>*>(fromModel->getContext()->getMechanicalState());
-    component::MechanicalObject<Vec3Types>* to_mstate = dynamic_cast<component::MechanicalObject<Vec3Types>*>(toModel->getContext()->getMechanicalState());
+    component::container::MechanicalObject<Rigid3Types>* from_mstate = dynamic_cast<component::container::MechanicalObject<Rigid3Types>*>(fromModel->getContext()->getMechanicalState());
+    component::container::MechanicalObject<Vec3Types>* to_mstate = dynamic_cast<component::container::MechanicalObject<Vec3Types>*>(toModel->getContext()->getMechanicalState());
 
     if (fromModel)
     {

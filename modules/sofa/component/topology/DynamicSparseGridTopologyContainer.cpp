@@ -65,12 +65,12 @@ DynamicSparseGridTopologyContainer::DynamicSparseGridTopologyContainer ( const s
 {
 }
 
-void DynamicSparseGridTopologyContainer::loadFromMeshLoader ( sofa::component::MeshLoader* loader )
+void DynamicSparseGridTopologyContainer::loadFromMeshLoader ( sofa::component::container::MeshLoader* loader )
 {
 
     if (!valuesIndexedInRegularGrid.getValue().empty()) return;
     HexahedronSetTopologyContainer::loadFromMeshLoader( loader);
-    sofa::component::VoxelGridLoader* voxelGridLoader = dynamic_cast< sofa::component::VoxelGridLoader*> ( loader );
+    sofa::component::container::VoxelGridLoader* voxelGridLoader = dynamic_cast< sofa::component::container::VoxelGridLoader*> ( loader );
     if ( !voxelGridLoader )
     {
         this->serr << "DynamicSparseGridTopologyContainer::loadFromMeshLoader(): The loader used is not a VoxelGridLoader ! You must use it for this topology." << this->sendl;

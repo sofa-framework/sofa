@@ -31,11 +31,16 @@ namespace sofa
 namespace component
 {
 
+namespace container
+{
+
 class StiffnessContainer : public virtual sofa::core::objectmodel::BaseObject
 {
 public:
     virtual double getStiffness(unsigned int index) = 0;
 };
+
+}
 
 }
 

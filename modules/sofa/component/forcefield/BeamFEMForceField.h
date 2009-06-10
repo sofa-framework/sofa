@@ -70,7 +70,7 @@ public:
 
 
 protected:
-    //component::MechanicalObject<DataTypes>* object;
+    //component::container::MechanicalObject<DataTypes>* object;
 
     typedef Vec<12, Real> Displacement;        ///< the displacement vector
 
@@ -155,10 +155,10 @@ protected:
     bool _updateStiffnessMatrix;
     bool _assembling;
 
-    StiffnessContainer* stiffnessContainer;
-    LengthContainer* lengthContainer;
-    PoissonContainer* poissonContainer;
-    RadiusContainer* radiusContainer;
+    container::StiffnessContainer* stiffnessContainer;
+    container::LengthContainer* lengthContainer;
+    container::PoissonContainer* poissonContainer;
+    container::RadiusContainer* radiusContainer;
 
     Quat& beamQuat(int i)
     {
@@ -185,7 +185,7 @@ public:
 
     void setComputeGlobalMatrix(bool val) { this->_assembling= val; }
 
-//    component::MechanicalObject<DataTypes>* getObject() { return object; }
+//    component::container::MechanicalObject<DataTypes>* getObject() { return object; }
 
     virtual void init();
     virtual void reinit();

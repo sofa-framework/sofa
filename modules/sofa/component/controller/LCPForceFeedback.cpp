@@ -46,7 +46,7 @@ void LCPForceFeedback::init()
 
     mastersolver = context->get<sofa::component::odesolver::MasterContactSolver>();
 
-    mState = dynamic_cast<MechanicalState<Rigid3dTypes> *> (this->getContext()->getMechanicalState());
+    mState = dynamic_cast<core::componentmodel::behavior::MechanicalState<Rigid3dTypes> *> (this->getContext()->getMechanicalState());
     if (!mState)
         serr << "LCPForceFeedback has no binding MechanicalState" << sendl;
 

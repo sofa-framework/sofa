@@ -34,6 +34,9 @@ namespace sofa
 namespace component
 {
 
+namespace container
+{
+
 using namespace core::componentmodel::behavior;
 using namespace defaulttype;
 
@@ -347,6 +350,7 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::addBaseVectorToState(VecId des
 
 #endif
 
+}
 
 } // namespace component
 

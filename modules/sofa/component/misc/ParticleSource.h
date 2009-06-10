@@ -56,6 +56,9 @@ namespace sofa
 namespace component
 {
 
+namespace misc
+{
+
 template<class TDataTypes>
 class ParticleSource : public core::componentmodel::behavior::Constraint<TDataTypes>, public virtual core::objectmodel::BaseObject
 {
@@ -294,6 +297,7 @@ protected :
 
 };
 
+}
 
 } // namespace component
 

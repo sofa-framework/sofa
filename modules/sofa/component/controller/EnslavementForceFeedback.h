@@ -27,7 +27,7 @@
 
 #include <sofa/component/controller/ForceFeedback.h>
 
-#include <sofa/component/container/MechanicalObject.h>
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa

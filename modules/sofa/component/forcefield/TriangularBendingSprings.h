@@ -153,7 +153,7 @@ protected:
 
 public:
 
-    TriangularBendingSprings(/*double _ks, double _kd*/); //component::MechanicalObject<DataTypes>* m_dof = NULL);
+    TriangularBendingSprings(/*double _ks, double _kd*/); //component::container::MechanicalObject<DataTypes>* m_dof = NULL);
     //TriangularBendingSprings(); //MechanicalState<DataTypes> *mm1 = NULL, MechanicalState<DataTypes> *mm2 = NULL);
 
     virtual ~TriangularBendingSprings();

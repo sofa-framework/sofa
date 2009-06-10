@@ -211,7 +211,7 @@ protected:
     /// for each edge provides the set of quads adjacent to that edge
     sofa::helper::vector< sofa::helper::vector< unsigned int > > m_quadEdgeShell;
 
-    virtual void loadFromMeshLoader(sofa::component::MeshLoader* loader);
+    virtual void loadFromMeshLoader(sofa::component::container::MeshLoader* loader);
 };
 
 } // namespace topology

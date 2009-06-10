@@ -182,7 +182,7 @@ void RigidMapping<BasicMapping>::init()
 
     this->BasicMapping::init();
 
-    sofa::component::MultiMeshLoader * loader;
+    sofa::component::container::MultiMeshLoader * loader;
     this->getContext()->get(loader);
     if (loader)
     {

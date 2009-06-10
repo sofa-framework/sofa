@@ -47,6 +47,9 @@ class CudaKernelsMechanicalObject;
 namespace component
 {
 
+namespace container
+{
+
 template<class TCoord, class TDeriv, class TReal>
 class MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >
 {
@@ -133,6 +136,8 @@ CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec3d1Types);
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 #undef CudaMechanicalObject_DeclMethods
+
+}
 
 } // namespace component
 

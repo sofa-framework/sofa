@@ -33,6 +33,9 @@ namespace sofa
 namespace component
 {
 
+namespace container
+{
+
 using namespace sofa::defaulttype;
 
 SOFA_DECL_CLASS(MultiMeshLoader)
@@ -113,6 +116,8 @@ void MultiMeshLoader::addCube(int p1, int p2, int p3, int p4, int p5, int p6, in
 #else
     seqHexas.push_back(Hexa(currentMeshIndex+p1,currentMeshIndex+p2,currentMeshIndex+p4,currentMeshIndex+p3,currentMeshIndex+p5,currentMeshIndex+p6,currentMeshIndex+p8,currentMeshIndex+p7));
 #endif
+}
+
 }
 
 } // namespace component

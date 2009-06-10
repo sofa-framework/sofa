@@ -47,6 +47,7 @@
 #define SOFA_COMPONENT_TOPOLOGY_HEXAHEDRONSETTOPOLOGYCONTAINER_H
 
 #include <sofa/component/topology/QuadSetTopologyContainer.h>
+#include <sofa/component/container/MeshLoader.h>
 
 namespace sofa
 {
@@ -334,7 +335,7 @@ protected:
     sofa::helper::vector< sofa::helper::vector< unsigned int > > m_hexahedronEdgeShell;
     /// for each quad provides the set of hexahedra adjacent to that edge
     sofa::helper::vector< sofa::helper::vector< unsigned int > > m_hexahedronQuadShell;
-    virtual void loadFromMeshLoader(sofa::component::MeshLoader* loader);
+    virtual void loadFromMeshLoader(sofa::component::container::MeshLoader* loader);
 };
 
 } // namespace topology

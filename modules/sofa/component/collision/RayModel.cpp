@@ -56,7 +56,7 @@ RayModel::RayModel(Real length)
 
 void RayModel::resize(int size)
 {
-    this->component::MechanicalObject<Vec3Types>::resize(size);
+    this->component::container::MechanicalObject<Vec3Types>::resize(size);
     this->core::CollisionModel::resize(size/2);
     if ((int)length.size() < size/2)
     {

@@ -42,6 +42,9 @@ namespace sofa
 namespace component
 {
 
+namespace misc
+{
+
 /**
  *  \brief Create a tetrahedral volume mesh from a surface, using the algorithm from F. Labelle and J.R. Shewchuk, "Isosurface Stuffing: Fast Tetrahedral Meshes with Good Dihedral Angles", SIGGRAPH 2007.
  *
@@ -114,6 +117,8 @@ public:
     bool needFlip(int p1, int p2, int p3, int p4, int q1, int q2, int q3, int q4);
 
 };
+
+}
 
 } // namespace component
 

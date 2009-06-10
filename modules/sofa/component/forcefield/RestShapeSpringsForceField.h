@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONSTANTFORCEFIELD_H
-#define SOFA_COMPONENT_CONSTANTFORCEFIELD_H
+#ifndef SOFA_COMPONENT_RESTSHAPESPRINGSFORCEFIELD_H
+#define SOFA_COMPONENT_RESTSHAPESPRINGSFORCEFIELD_H
 
 #include <sofa/core/componentmodel/behavior/ForceField.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>

@@ -310,7 +310,7 @@ void TriangularBendingSprings<DataTypes>::TriangularBSTriangleDestructionFunctio
 
 
 template<class DataTypes>
-TriangularBendingSprings<DataTypes>::TriangularBendingSprings(/*component::MechanicalObject<DataTypes>* m_dof */ /*double _ks, double _kd*/)
+TriangularBendingSprings<DataTypes>::TriangularBendingSprings(/*component::container::MechanicalObject<DataTypes>* m_dof */ /*double _ks, double _kd*/)
     : updateMatrix(true)
     , f_ks(initData(&f_ks,(double) 100000.0,"stiffness","uniform stiffness for the all springs")) //(Real)0.3 ??
     , f_kd(initData(&f_kd,(double) 1.0,"damping","uniform damping for the all springs")) // (Real)1000. ??

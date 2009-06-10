@@ -112,7 +112,7 @@ void PointSetTopologyContainer::init()
 
     if(nbPoints.getValue() == 0)
     {
-        sofa::component::MeshLoader* loader;
+        sofa::component::container::MeshLoader* loader;
         this->getContext()->get(loader);
 
         if(loader)
@@ -122,7 +122,7 @@ void PointSetTopologyContainer::init()
     }
 }
 
-void PointSetTopologyContainer::loadFromMeshLoader(sofa::component::MeshLoader* loader)
+void PointSetTopologyContainer::loadFromMeshLoader(sofa::component::container::MeshLoader* loader)
 {
     if (!initPoints.empty()) return;
     nbPoints.setValue( loader->getNbPoints() );

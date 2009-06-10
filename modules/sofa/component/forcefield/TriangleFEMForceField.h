@@ -80,7 +80,7 @@ public:
     static const int LARGE = 0;										///< Symbol of large displacements triangle solver
 
 protected:
-//    component::MechanicalObject<DataTypes>* _object;
+//    component::container::MechanicalObject<DataTypes>* _object;
 
     typedef Vec<6, Real> Displacement;								///< the displacement vector
 
@@ -138,7 +138,7 @@ public:
     int  getMethod() { return method; }
     void setMethod(int val) { method = val; }
 
-//     component::MechanicalObject<DataTypes>* getObject()
+//     component::container::MechanicalObject<DataTypes>* getObject()
 //     {
 //         return _object;
 //     }

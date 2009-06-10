@@ -520,7 +520,7 @@ void ManifoldTetrahedronSetTopologyContainer::draw()
         double scale = 0.0005;
 
         // *** DOFS ***
-        sofa::component::MechanicalObject<Vec3Types>* dofs;
+        sofa::component::container::MechanicalObject<Vec3Types>* dofs;
         this->getContext()->get(dofs);
 
         // Creating dofs
@@ -530,7 +530,7 @@ void ManifoldTetrahedronSetTopologyContainer::draw()
             cerr << "Hexa2TriangleTopologicalMapping::buildTriangleMesh(). Error: can't find the DOFs on the hexahedron topology." << endl;
             return;
         }
-        sofa::component::MechanicalObject<Vec3Types>::VecCoord& coords = *dofs->getX();
+        sofa::component::container::MechanicalObject<Vec3Types>::VecCoord& coords = *dofs->getX();
 
         glColor4f ( 1,1,1,0 );
         // Drawing dofs
@@ -736,7 +736,7 @@ void ManifoldTetrahedronSetTopologyContainer::draw()
             double scale = 0.0001;
 
             // *** DOFS ***
-            sofa::component::MechanicalObject<Vec3Types>* dofs;
+            sofa::component::container::MechanicalObject<Vec3Types>* dofs;
             this->getContext()->get(dofs);
 
             // Creating dofs
@@ -746,7 +746,7 @@ void ManifoldTetrahedronSetTopologyContainer::draw()
                 cerr << "Hexa2TriangleTopologicalMapping::buildTriangleMesh(). Error: can't find the DOFs on the hexahedron topology." << endl;
                 return;
             }
-            sofa::component::MechanicalObject<Vec3Types>::VecCoord& coords = *dofs->getX();
+            sofa::component::container::MechanicalObject<Vec3Types>::VecCoord& coords = *dofs->getX();
 
 
             // Drawing dofs

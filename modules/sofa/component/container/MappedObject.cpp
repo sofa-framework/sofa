@@ -34,6 +34,9 @@ namespace sofa
 namespace component
 {
 
+namespace container
+{
+
 using namespace core::componentmodel::behavior;
 using namespace defaulttype;
 
@@ -85,6 +88,8 @@ template class MappedObject<Rigid3fTypes>;
 template class MappedObject<Rigid2fTypes>;
 #endif
 template class MappedObject<LaparoscopicRigid3Types>;
+
+}
 
 } // namespace component
 

@@ -31,11 +31,16 @@ namespace sofa
 namespace component
 {
 
+namespace container
+{
+
 class LengthContainer : public virtual sofa::core::objectmodel::BaseObject
 {
 public:
     virtual double getLength(unsigned int index) = 0;
 };
+
+}
 
 }
 
