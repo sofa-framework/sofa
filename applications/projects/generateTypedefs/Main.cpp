@@ -71,7 +71,7 @@ const std::string headerFile("\
 "
                             );
 
-enum TYPES {DOUBLE, FLOAT, COMBINATION};
+enum TYPES {TYPE_DOUBLE, TYPE_FLOAT, TYPE_COMBINATION};
 
 typedef sofa::core::ObjectFactory::Creator Creator;
 
@@ -147,7 +147,7 @@ void printFullTypedefs( const CategoryLibrary &category, TYPES t)
             {
                 std::string extension=templateExtension[templateName];
                 bool isFloat = ( *(extension.rbegin()) == 'f');
-                if ( (isFloat && t==FLOAT) || (!isFloat && t==DOUBLE))
+                if ( (isFloat && t==TYPE_FLOAT) || (!isFloat && t==TYPE_DOUBLE))
                 {
                     const std::string finalName = component.getName() +  templateExtension[templateName];
 
@@ -193,20 +193,20 @@ void printFullTypedefs( const CategoryLibrary &category, TYPES t)
 
                         switch(t)
                         {
-                        case DOUBLE:
+                        case TYPE_DOUBLE:
                         {
                             //Special case of Visual Mapping
                             if ( isT1Float ) continue;
                             if ( isT2Float && t2 != "ExtVec3f") continue;
                             break;
                         }
-                        case FLOAT:
+                        case TYPE_FLOAT:
                         {
                             if (isT1Double || isT2Double) continue;
 
                             break;
                         }
-                        case COMBINATION:
+                        case TYPE_COMBINATION:
                         {
 
                             if ( t2 == "ExtVec3f" ||
@@ -340,16 +340,16 @@ void writeFile(const CategoryLibrary &category,  TYPES t, std::ostream &generalO
 typedefFile << "\n\n";
 //---------------------------------------------------------------------------------------------
 //TYPEDEF SIMPLIFICATIONS
-if (t != COMBINATION)
+if (t != TYPE_COMBINATION)
 {
     switch (t)
     {
-    case DOUBLE:
+    case TYPE_DOUBLE:
     {
         typedefFile << "\n#ifndef SOFA_FLOAT\n";
         break;
     }
-    case FLOAT:
+    case TYPE_FLOAT:
     {
         typedefFile << "\n#ifdef SOFA_FLOAT\n";
         break;
@@ -420,9 +420,9 @@ int main(int , char** )
     templateExtension.insert(std::make_pair("ExtVec3f", "Ext3f"));
     templateExtension.insert(std::make_pair("ExtVec3d", "Ext3d"));
 
-    fileExtension.insert    (std::make_pair(DOUBLE, "_double"));
-    fileExtension.insert    (std::make_pair(FLOAT, "_float"));
-    fileExtension.insert    (std::make_pair(COMBINATION, "_combination"));
+    fileExtension.insert    (std::make_pair(TYPE_DOUBLE, "_double"));
+    fileExtension.insert    (std::make_pair(TYPE_FLOAT, "_float"));
+    fileExtension.insert    (std::make_pair(TYPE_COMBINATION, "_combination"));
 
 
     std::string filenameSofaTypedef=outputPath+"Sofa_typedef.h";
@@ -481,21 +481,21 @@ int main(int , char** )
     //Find the files needed to be included
     printIncludes( category);
 
-    //Get typedefs for the DOUBLE
-    printFullTypedefs( category, DOUBLE);
-    writeFile( category, DOUBLE, sofaDouble);
+    //Get typedefs for the TYPE_DOUBLE
+    printFullTypedefs( category, TYPE_DOUBLE);
+    writeFile( category, TYPE_DOUBLE, sofaDouble);
     typedefComponents.clear();
     simplificationTypedefComponents.clear();
 
-    //Get typedefs for the FLOAT
-    printFullTypedefs( category, FLOAT);
-    writeFile( category, FLOAT, sofaFloat);
+    //Get typedefs for the TYPE_FLOAT
+    printFullTypedefs( category, TYPE_FLOAT);
+    writeFile( category, TYPE_FLOAT, sofaFloat);
     typedefComponents.clear();
     simplificationTypedefComponents.clear();
 
-    //Get typedefs for the COMBINATION
-    printFullTypedefs( category, COMBINATION);
-    writeFile( category, COMBINATION, sofaTypedef);
+    //Get typedefs for the TYPE_COMBINATION
+    printFullTypedefs( category, TYPE_COMBINATION);
+    writeFile( category, TYPE_COMBINATION, sofaTypedef);
     typedefComponents.clear();
     simplificationTypedefComponents.clear();
 
