@@ -51,6 +51,7 @@ using namespace core::componentmodel::topology;
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 using namespace sofa::core::componentmodel::behavior;
+using namespace sofa::core::objectmodel;
 
 
 // Define TestNewPointFunction
@@ -83,10 +84,10 @@ void LinearVelocityConstraint<DataTypes>::FCRemovalFunction(int pointIndex, void
 template <class DataTypes>
 LinearVelocityConstraint<DataTypes>::LinearVelocityConstraint()
     : core::componentmodel::behavior::Constraint<DataTypes>(NULL)
-    , m_indices( initData(&m_indices,"indices","Indices of the constrained points") )
-    , m_keyTimes(  initData(&m_keyTimes,"keyTimes","key times for the movements") )
-    , m_keyVelocities(  initData(&m_keyVelocities,"velocities","velocities corresponding to the key times") )
-    , m_coordinates( initData(&m_coordinates, "coordinates", "coordinates on which to apply velocities") )
+    , m_indices( BaseObject::initData(&m_indices,"indices","Indices of the constrained points") )
+    , m_keyTimes(  BaseObject::initData(&m_keyTimes,"keyTimes","key times for the movements") )
+    , m_keyVelocities(  BaseObject::initData(&m_keyVelocities,"velocities","velocities corresponding to the key times") )
+    , m_coordinates( BaseObject::initData(&m_coordinates, "coordinates", "coordinates on which to apply velocities") )
 {
     // default to indice 0
     m_indices.beginEdit()->push_back(0);
@@ -162,7 +163,7 @@ void LinearVelocityConstraint<DataTypes>::init()
 {
     this->core::componentmodel::behavior::Constraint<DataTypes>::init();
 
-    topology = getContext()->getMeshTopology();
+    topology = this->getContext()->getMeshTopology();
 
     // Initialize functions and parameters
     topology::PointSubset my_subset = m_indices.getValue();
@@ -299,7 +300,7 @@ void LinearVelocityConstraint<DataTypes>::projectPosition(VecCoord& x)
 template <class DataTypes>
 void LinearVelocityConstraint<DataTypes>::draw()
 {
-    if (!getContext()->getShowBehaviorModels() || m_keyTimes.getValue().size() == 0 ) return;
+    if (!this->getContext()->getShowBehaviorModels() || m_keyTimes.getValue().size() == 0 ) return;
     glDisable (GL_LIGHTING);
     glPointSize(10);
     glColor4f (1,0.5,0.5,1);
