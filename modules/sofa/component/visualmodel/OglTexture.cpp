@@ -119,6 +119,11 @@ void OglTexture::bwdDraw(Pass)
 OglTexture2D::OglTexture2D()
     :texture2DFilename(initData(&texture2DFilename, (std::string) "", "texture2DFilename", "Texture2D Filename"))
     ,repeat(initData(&repeat, (bool) false, "repeat", "Repeat Texture ?"))
+    ,linearInterpolation(initData(&linearInterpolation, (bool) true, "linearInterpolation", "Interpolate Texture ?"))
+    ,proceduralTextureWidth(initData(&proceduralTextureWidth, (unsigned int) 0, "proceduralTextureWidth", "Width of procedural Texture"))
+    ,proceduralTextureHeight(initData(&proceduralTextureHeight, (unsigned int) 0, "proceduralTextureHeight", "Height of procedural Texture"))
+    ,proceduralTextureNbBits(initData(&proceduralTextureNbBits, (unsigned int) 1, "proceduralTextureNbBits", "Nb bits per color"))
+    ,proceduralTextureData(initData(&proceduralTextureData,  "proceduralTextureData", "Data of procedural Texture "))
 {
 
 }
@@ -133,8 +138,32 @@ void OglTexture2D::init()
 {
     if (!texture2DFilename.getValue().empty())
         img = helper::io::Image::Create(texture2DFilename.getFullPath().c_str());
+    else
+    {
+        unsigned int height = proceduralTextureHeight.getValue();
+        unsigned int width = proceduralTextureWidth.getValue();
+        helper::vector<unsigned int> textureData = proceduralTextureData.getValue();
+        unsigned int nbb = proceduralTextureNbBits.getValue();
+
+        if (height > 0 && width > 0 && !textureData.empty() )
+        {
+            //Init texture
+            img = new helper::io::Image();
+            img->init(height, width, nbb);
+
+            //Make texture
+            unsigned char* data = img->getData();
+
+            for(unsigned int i=0 ; i<textureData.size() && i < height*width*(nbb/8); i++)
+                data[i] = (unsigned char)textureData[i];
+
+            for (unsigned int i=textureData.size() ; i<height*width*(nbb/8) ; i++)
+                data[i] = 0;
+        }
+    }
     OglTexture::init();
 }
+
 void OglTexture2D::initVisual()
 {
     OglTexture::initVisual();
@@ -145,26 +174,13 @@ void OglTexture2D::initVisual()
         return;
     }
 
-    texture2D = new helper::gl::Texture(img);
+    texture2D = new helper::gl::Texture(img, repeat.getValue(), linearInterpolation.getValue());
 
     texture2D->init();
+
     setActiveTexture(textureUnit.getValue());
 
     bind();
-
-    if (repeat.getValue())
-    {
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT );
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT );
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_REPEAT );
-
-    }
-    else
-    {
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP );
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP );
-        glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_R, GL_CLAMP );
-    }
 
     unbind();
 

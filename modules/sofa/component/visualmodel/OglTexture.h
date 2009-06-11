@@ -91,6 +91,11 @@ class SOFA_COMPONENT_VISUALMODEL_API OglTexture2D : public OglTexture
 private:
     sofa::core::objectmodel::DataFileName texture2DFilename;
     Data<bool> repeat;
+    Data<bool> linearInterpolation;
+    Data<unsigned int>proceduralTextureWidth;
+    Data<unsigned int> proceduralTextureHeight;
+    Data<unsigned int> proceduralTextureNbBits;
+    Data<helper::vector<unsigned int> > proceduralTextureData;
     helper::gl::Texture* texture2D;
 
     helper::io::Image* img;
