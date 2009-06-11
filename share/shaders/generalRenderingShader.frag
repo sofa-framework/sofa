@@ -74,7 +74,8 @@ uniform float perlinBumpFactor;
 #endif
 
 #if defined (PERLIN_NOISE_COLOR) || defined (PERLIN_NOISE_BUMP) 
-uniform int perlinPermutations[256] /* = { 151,160,137,91,90,15,
+uniform sampler2D perlinPermutationsTexture;
+int perlinPermutations[ ] = int[256]( 151,160,137,91,90,15,
    131,13,201,95,96,53,194,233,7,225,140,36,103,30,69,142,8,99,37,240,21,10,23,
    190, 6,148,247,120,234,75,0,26,197,62,94,252,219,203,117,35,11,32,57,177,33,
    88,237,149,56,87,174,20,125,136,171,168, 68,175,74,165,71,134,139,48,27,166,
@@ -86,7 +87,8 @@ uniform int perlinPermutations[256] /* = { 151,160,137,91,90,15,
    129,22,39,253, 19,98,108,110,79,113,224,232,178,185, 112,104,218,246,97,228,
    251,34,242,193,238,210,144,12,191,179,162,241, 81,51,145,235,249,14,239,107,
    49,192,214, 31,181,199,106,157,184, 84,204,176,115,121,50,45,127, 4,150,254,
-   138,236,205,93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180 } */;
+   138,236,205,93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180 );
+
 #endif //PERLIN_NOISE
 
 vec3 reflect(vec3 I, vec3 N)
@@ -95,6 +97,17 @@ vec3 reflect(vec3 I, vec3 N)
 }
 
 #if defined (PERLIN_NOISE_COLOR) || defined (PERLIN_NOISE_BUMP) 
+
+int getPerlinValue(int i, int offset)
+{
+	return int((textureOffset(perlinPermutationsTexture, vec2(i/256.0,0), ivec2(offset,0)).x)*256);
+}
+
+int getPerlinValue(int i)
+{
+	return getPerlinValue(i,0);
+}
+
 float fade(float t) { return t * t * t * (t * (t * 6.0 - 15.0) + 10.0); } // 6t5-15t4+10t3
 float dfade(float t) { return 30.0 *t * t * (t*(t - 2.0) + 1.0); } // 30t4-60t3+30t2
 
@@ -132,28 +145,28 @@ float noise(float x, float y, float z)
 	float v = fade(y);                                // FOR EACH OF X,Y,Z.
 	float w = fade(z);
 	
-    int A = (perlinPermutations[X & 255]+Y);
-    int AA = (perlinPermutations[A & 255]+Z);
-    int AB = (perlinPermutations[(A+1) & 255]+Z);
-    int B = (perlinPermutations[(X+1) & 255]+Y); 
-    int BA = (perlinPermutations[B & 255]+Z);
-    int BB = (perlinPermutations[(B+1) & 255]+Z);      // THE 8 CUBE CORNERS,
+    int A  = (getPerlinValue(X)  +Y);
+    int AA = (getPerlinValue(A)  +Z);
+    int AB = (getPerlinValue(A,1)+Z);
+    int B  = (getPerlinValue(X,1)+Y); 
+    int BA = (getPerlinValue(B)  +Z);
+    int BB = (getPerlinValue(B,1)+Z);      // THE 8 CUBE CORNERS,
 
-    return lerp(w, lerp(v, lerp(u, grad(perlinPermutations[AA & 255], x  , y  , z   ),  // AND ADD
-                                   grad(perlinPermutations[BA & 255], x-1, y  , z   )), // BLENDED
-                           lerp(u, grad(perlinPermutations[AB & 255], x  , y-1, z   ),  // RESULTS
-                                   grad(perlinPermutations[BB & 255], x-1, y-1, z   ))),// FROM  8
-                   lerp(v, lerp(u, grad(perlinPermutations[(AA+1) & 255], x  , y  , z-1 ),  // CORNERS
-                                   grad(perlinPermutations[(BA+1) & 255], x-1, y  , z-1 )), // OF CUBE
-                           lerp(u, grad(perlinPermutations[(AB+1) & 255], x  , y-1, z-1 ),
-                                   grad(perlinPermutations[(BB+1) & 255], x-1, y-1, z-1 ))));
+    return lerp(w, lerp(v, lerp(u, grad(getPerlinValue(AA), x  , y  , z   ),  // AND ADD
+                                   grad(getPerlinValue(BA), x-1, y  , z   )), // BLENDED
+                           lerp(u, grad(getPerlinValue(AB), x  , y-1, z   ),  // RESULTS
+                                   grad(getPerlinValue(BB), x-1, y-1, z   ))),// FROM  8
+                   lerp(v, lerp(u, grad(getPerlinValue(AA,1), x  , y  , z-1 ),  // CORNERS
+                                   grad(getPerlinValue(BA,1), x-1, y  , z-1 )), // OF CUBE
+                           lerp(u, grad(getPerlinValue(AB,1), x  , y-1, z-1 ),
+                                   grad(getPerlinValue(BB,1), x-1, y-1, z-1 ))));
 }
 
 vec4 dnoise(float x, float y, float z) 
 {
-	int X = int(floor(x)) & 255;                  // FIND UNIT CUBE THAT
-	int Y = int(floor(y)) & 255;                  // CONTAINS POINT.
-	int Z = int(floor(z)) & 255;
+	int X = int(floor(x));                  // FIND UNIT CUBE THAT
+	int Y = int(floor(y));                  // CONTAINS POINT.
+	int Z = int(floor(z));
 	
 	x -= floor(x);                                // FIND RELATIVE X,Y,Z
 	y -= floor(y);                                // OF POINT IN CUBE.
@@ -163,20 +176,20 @@ vec4 dnoise(float x, float y, float z)
 	float v = fade(y);                                // FOR EACH OF X,Y,Z.
 	float w = fade(z);
 	
-    int A = (perlinPermutations[X]+Y) & 255;
-    int AA = (perlinPermutations[A]+Z) & 255;
-    int AB = (perlinPermutations[A+1]+Z) & 255;
-    int B = (perlinPermutations[X+1]+Y) & 255; 
-    int BA = (perlinPermutations[B]+Z) & 255;
-    int BB = (perlinPermutations[B+1]+Z) & 255;      // THE 8 CUBE CORNERS,
-    vec4 g0 = dgrad(perlinPermutations[AA  ], x  , y  , z   );
-    vec4 g1 = dgrad(perlinPermutations[BA  ], x-1, y  , z   );
-    vec4 g2 = dgrad(perlinPermutations[AB  ], x  , y-1, z   );
-    vec4 g3 = dgrad(perlinPermutations[BB  ], x-1, y-1, z   );
-    vec4 g4 = dgrad(perlinPermutations[(AA+1) & 255], x  , y  , z-1 );
-    vec4 g5 = dgrad(perlinPermutations[(BA+1) & 255], x-1, y  , z-1 );
-    vec4 g6 = dgrad(perlinPermutations[(AB+1) & 255], x  , y-1, z-1 );
-    vec4 g7 = dgrad(perlinPermutations[(BB+1) & 255], x-1, y-1, z-1 );
+    int A  = (getPerlinValue(X)  +Y);
+    int AA = (getPerlinValue(A)  +Z);
+    int AB = (getPerlinValue(A,1)+Z);
+    int B  = (getPerlinValue(X,1)+Y); 
+    int BA = (getPerlinValue(B)  +Z);
+    int BB = (getPerlinValue(B,1)+Z);      // THE 8 CUBE CORNERS,
+    vec4 g0 = dgrad(getPerlinValue(AA)  , x  , y  , z   );
+    vec4 g1 = dgrad(getPerlinValue(BA)  , x-1, y  , z   );
+    vec4 g2 = dgrad(getPerlinValue(AB)  , x  , y-1, z   );
+    vec4 g3 = dgrad(getPerlinValue(BB)  , x-1, y-1, z   );
+    vec4 g4 = dgrad(getPerlinValue(AA,1), x  , y  , z-1 );
+    vec4 g5 = dgrad(getPerlinValue(BA,1), x-1, y  , z-1 );
+    vec4 g6 = dgrad(getPerlinValue(AB,1), x  , y-1, z-1 );
+    vec4 g7 = dgrad(getPerlinValue(BB,1), x-1, y-1, z-1 );
     vec4 res;
     res.w = lerp(w, lerp(v, lerp(u,g0.w,  // AND ADD
                                    g1.w), // BLENDED
@@ -270,7 +283,7 @@ void main()
 	vec4 color = gl_Color;
 	
 	color = ambient;
-	
+
 #ifdef TEXTURE_UNIT_0
 	color.rgb = texture2D(colorTexture,gl_TexCoord[0].st).rgb;
 #endif //TEXTURE_UNIT_0
@@ -303,6 +316,7 @@ void main()
 #endif
 
 #if defined (PERLIN_NOISE_COLOR) 
+
 	//color *= 0.8+0.2*noise(positionW*10);
 	//color *= 0.8+0.2*perlin_noise(positionW, 4, 1.0);
 	color += perlinColorFactor*(perlin_noise(positionW, perlinColorFrequency, perlinColorOctave, perlinColorPersistance));
@@ -409,7 +423,7 @@ void main()
 
 #ifdef BORDER_OPACIFYING_V2
 	vec3 unitNormalVec = normalize(normalW);
-	
+	 
 	float dotAngle = abs(dot(unitNormalVec,lightDirWorld));
 	dotAngle *= coeffAngle;
 	
@@ -429,5 +443,8 @@ void main()
 
 	// Write the final pixel.
 	gl_FragColor = color;
+	//vec4 p = texture(perlinPermutationsTexture,gl_TexCoord[0].st);
+	//gl_FragColor = p;
 
+	
 }
