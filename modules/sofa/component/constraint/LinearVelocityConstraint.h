@@ -35,7 +35,6 @@
 #include <sofa/component/topology/PointSubset.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
-#include <set>
 
 namespace sofa
 {
@@ -46,16 +45,11 @@ namespace component
 namespace constraint
 {
 
-using helper::vector;
-using core::objectmodel::Data;
-using namespace sofa::core::objectmodel;
-using namespace sofa::defaulttype;
-
 /** impose a motion to given DOFs (translation and rotation)
 	The motion between 2 key times is linearly interpolated
 */
 template <class DataTypes>
-class LinearVelocityConstraint : public core::componentmodel::behavior::Constraint<DataTypes>, public virtual core::objectmodel::BaseObject
+class LinearVelocityConstraint : public core::componentmodel::behavior::Constraint<DataTypes>
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
