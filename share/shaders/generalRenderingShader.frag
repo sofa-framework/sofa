@@ -86,7 +86,7 @@ vec3 reflect(vec3 I, vec3 N)
 
 int getPerlinValue(int i)
 {
-	return int(texture(perlinPermutationsTexture, vec2((i & 255)/256.0,0))*256);
+	return int(texture2D(perlinPermutationsTexture, vec2((i & 255)/256.0,0))*256);
 }
 
 float fade(float t) { return t * t * t * (t * (t * 6.0 - 15.0) + 10.0); } // 6t5-15t4+10t3
