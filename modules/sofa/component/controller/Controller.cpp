@@ -106,7 +106,7 @@ void Controller::handleEvent(core::objectmodel::Event *event)
         onOmniEvent(oev);
     }
 #ifdef SOFA_HAVE_ARTRACK
-    else if (dynamic_cast<sofa::core::objectmodel::OmniEvent *>(event))
+    else if (dynamic_cast<sofa::core::objectmodel::ARTrackEvent *>(event))
     {
         sofa::core::objectmodel::ARTrackEvent *aev = dynamic_cast<sofa::core::objectmodel::ARTrackEvent *>(event);
         onARTrackEvent(aev);
