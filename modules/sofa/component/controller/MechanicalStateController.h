@@ -100,6 +100,12 @@ public:
      */
     void onOmniEvent(core::objectmodel::OmniEvent *mev);
 
+#ifdef SOFA_HAVE_ARTRACK
+    /**
+     * @brief ARTrack event callback.
+    */
+    void onARTrackEvent(core::objectmodel::ARTrackEvent *aev);
+#endif
     /**
      * @brief Begin Animation event callback.
      */
