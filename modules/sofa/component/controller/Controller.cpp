@@ -42,7 +42,9 @@
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
 #include <sofa/core/objectmodel/OmniEvent.h>
+#ifdef SOFA_HAVE_ARTRACK
 #include <ARTrackEvent.h>
+#endif
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
 
