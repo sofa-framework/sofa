@@ -30,6 +30,19 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/Quat.h>
+#include <sofa/helper/system/config.h>
+
+#ifndef WIN32
+#define SOFA_EXPORT_DYNAMIC_LIBRARY
+#define SOFA_IMPORT_DYNAMIC_LIBRARY
+#else
+#ifdef SOFA_BUILD_ARTRACKPLUGIN
+#define SOFA_ARTRACKPLUGIN_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#define SOFA_ARTRACKPLUGIN_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+#endif
+
 
 namespace sofa
 {
@@ -45,7 +58,7 @@ using namespace sofa::defaulttype;
 /**
  * @brief This event notifies about ARTrack device interaction.
  */
-class SOFA_CORE_API ARTrackEvent : public sofa::core::objectmodel::Event
+class SOFA_ARTRACKPLUGIN_API ARTrackEvent : public sofa::core::objectmodel::Event
 {
 public:
 
@@ -64,7 +77,7 @@ public:
 
 private:
     Vector3 m_position; ///< ARTrack coordinates in a Vec3d type.
-    Quat m_orientation; ///< SensAble PHANTOM® orientation.
+    Quat m_orientation; ///< ARTrack orientation.
 };
 
 } // namespace objectmodel
@@ -73,4 +86,4 @@ private:
 
 } // namespace sofa
 
-#endif // SOFA_CORE_OBJECTMODEL_MOUSEEVENT_H
+#endif

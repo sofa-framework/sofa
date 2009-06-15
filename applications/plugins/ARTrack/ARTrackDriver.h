@@ -30,19 +30,19 @@
 #include <sofa/core/componentmodel/behavior/BaseController.h>
 #include <dtracklib.h>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/helper/system/config.h>
 
 #ifndef WIN32
 #define SOFA_EXPORT_DYNAMIC_LIBRARY
 #define SOFA_IMPORT_DYNAMIC_LIBRARY
-# include <pthread.h>
+#include <pthread.h>
 #else
-#ifdef SOFA_BUILD_DYNAMICLIBEXAMPLE
-#define SOFA_EXPORT_DYNAMIC_LIBRARY __declspec( dllexport )
-#define SOFA_DYNAMICLIBEXAMPLEAPI SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_BUILD_ARTRACKPLUGIN
+#define SOFA_ARTRACKPLUGIN_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#define SOFA_IMPORT_DYNAMIC_LIBRARY __declspec( dllimport )
-#define SOFA_DYNAMICLIBEXAMPLEAPI SOFA_IMPORT_DYNAMIC_LIBRARY
+#define SOFA_ARTRACKPLUGIN_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
+#include <process.h>
 #endif
 
 namespace sofa
@@ -56,7 +56,7 @@ namespace controller
 
 using namespace sofa::defaulttype;
 
-class ARTrackDriver : public core::componentmodel::behavior::BaseController
+class SOFA_ARTRACKPLUGIN_API ARTrackDriver : public core::componentmodel::behavior::BaseController
 {
 
 public:

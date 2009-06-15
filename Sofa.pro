@@ -15,6 +15,10 @@ contains(DEFINES,SOFA_XML_PARSER_TINYXML){
   SUBDIRS += extlibs/tinyxml
 }
 
+contains(DEFINES,SOFA_HAVE_ARTRACK){
+  SUBDIRS += extlibs/ARTrack
+}
+
 # FlowVR
 	SUBDIRS += extlibs/miniFlowVR
 contains(DEFINES,SOFA_HAVE_FLOWVR){

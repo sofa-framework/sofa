@@ -39,6 +39,13 @@ namespace component
 namespace controller
 {
 
+SOFA_DECL_CLASS(ARTrackDriver)
+
+int ARTrackDriverClass = core::RegisterObject("Driver for ARTrack system")
+        .add< ARTrackDriver >()
+        ;
+
+
 ARTrackDriver::ARTrackDriver()
 {
 }
@@ -185,13 +192,6 @@ void ARTrackDriver::handleEvent(core::objectmodel::Event *event)
         this->getContext()->propagateEvent(&aRTrackEvent);
     }
 }
-
-
-SOFA_DECL_CLASS(ARTrackDriver)
-
-int ARTrackDriverClass = core::RegisterObject("Driver for ARTrack system")
-        .add< ARTrackDriver >()
-        ;
 
 } // namespace controller
 
