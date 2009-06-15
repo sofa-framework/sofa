@@ -15,17 +15,16 @@ CONFIG += dll
 
 ###### SPECIFIC PLUGIN CONFIGURATION, you should modify it to configure your plugin
 
-TARGET = ARTrack$$LIBSUFFIX
+TARGET = ARTrackPlugin$$LIBSUFFIX
+DEFINES += SOFA_BUILD_ARTRACKPLUGIN
 
 LIBS += $$SOFA_LIBS
 LIBS += $$SOFA_EXT_LIBS
 INCLUDEPATH += $$SOFA_DIR/extlibs
 
 SOURCES = ARTrackDriver.cpp \
-          mainTracker.cpp \
           initARTrack.cpp \
           ARTrackEvent.cpp
 
 HEADERS = ARTrackDriver.h \
-          dtracklib.h \
           ARTrackEvent.h

@@ -30,17 +30,13 @@
 #ifndef WIN32
 #define SOFA_EXPORT_DYNAMIC_LIBRARY
 #define SOFA_IMPORT_DYNAMIC_LIBRARY
-#define SOFA_ARTRACK_API
 #else
-#ifdef SOFA_HAVE_ARTRACK
-#define SOFA_EXPORT_DYNAMIC_LIBRARY __declspec( dllexport )
-#define SOFA_ARTRACK_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#ifdef SOFA_BUILD_ARTRACKPLUGIN
+#define SOFA_ARTRACKPLUGIN_API SOFA_EXPORT_DYNAMIC_LIBRARY
 #else
-#define SOFA_IMPORT_DYNAMIC_LIBRARY __declspec( dllimport )
-#define SOFA_ARTRACK_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#define SOFA_ARTRACKPLUGIN_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
 #endif
-
 
 namespace sofa
 {
@@ -51,11 +47,11 @@ namespace component
 //Here are just several convenient functions to help user to know what contains the plugin
 
 extern "C" {
-    SOFA_ARTRACK_API void initExternalModule();
-    SOFA_ARTRACK_API const char* getModuleName();
-    SOFA_ARTRACK_API const char* getModuleVersion();
-    SOFA_ARTRACK_API const char* getModuleDescription();
-    SOFA_ARTRACK_API const char* getModuleComponentList();
+    SOFA_ARTRACKPLUGIN_API void initExternalModule();
+    SOFA_ARTRACKPLUGIN_API const char* getModuleName();
+    SOFA_ARTRACKPLUGIN_API const char* getModuleVersion();
+    SOFA_ARTRACKPLUGIN_API const char* getModuleDescription();
+    SOFA_ARTRACKPLUGIN_API const char* getModuleComponentList();
 }
 
 void initExternalModule()
