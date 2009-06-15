@@ -73,6 +73,36 @@ template class SOFA_COMPONENT_FORCEFIELD_API LinearForceField<Rigid3fTypes>;
 // template class SOFA_COMPONENT_FORCEFIELD_API LinearForceField<Rigid2fTypes>;
 #endif
 
+#ifndef SOFA_FLOAT
+template <>
+double LinearForceField<Rigid3dTypes>::getPotentialEnergy(const VecCoord& )
+{
+    serr<<"LinearForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
+    return 0;
+}
+template <>
+double LinearForceField<Rigid2dTypes>::getPotentialEnergy(const VecCoord& )
+{
+    serr<<"LinearForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
+    return 0;
+}
+#endif
+
+#ifndef SOFA_DOUBLE
+template <>
+double LinearForceField<Rigid3fTypes>::getPotentialEnergy(const VecCoord& )
+{
+    serr<<"LinearForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
+    return 0;
+}
+
+template <>
+double LinearForceField<Rigid2fTypes>::getPotentialEnergy(const VecCoord& )
+{
+    serr<<"LinearForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
+    return 0;
+}
+#endif
 
 
 } // namespace forcefield
