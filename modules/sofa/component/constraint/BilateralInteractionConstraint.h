@@ -25,13 +25,17 @@
 #ifndef SOFA_COMPONENT_CONSTRAINT_BILATERALINTERACTIONCONSTRAINT_H
 #define SOFA_COMPONENT_CONSTRAINT_BILATERALINTERACTIONCONSTRAINT_H
 
+#include <sofa/component/component.h>
+
 #include <sofa/core/componentmodel/behavior/InteractionConstraint.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/VisualModel.h>
-#include <iostream>
 
 #include <sofa/defaulttype/Mat.h>
+#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/VecTypes.h>
+
 
 namespace sofa
 {
@@ -222,19 +226,19 @@ public:
 
     /// this constraint is holonomic
     bool isHolonomic() {return true;}
+};
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_CONSTRAINT_BILATERALINTERACTIONCONSTRAINT_CPP)
 #ifndef SOFA_FLOAT
-    extern template class SOFA_COMPONENT_CONSTRAINT_API BilateralInteractionConstraint<Vec3dTypes>;
-    extern template class SOFA_COMPONENT_CONSTRAINT_API BilateralInteractionConstraint<Rigid3dTypes>;
+extern template class SOFA_COMPONENT_CONSTRAINT_API BilateralInteractionConstraint< defaulttype::Vec3dTypes >;
+extern template class SOFA_COMPONENT_CONSTRAINT_API BilateralInteractionConstraint< defaulttype::Rigid3dTypes >;
 #endif
 #ifndef SOFA_DOUBLE
-    extern template class SOFA_COMPONENT_CONSTRAINT_API BilateralInteractionConstraint<Vec3fTypes>;
-    extern template class SOFA_COMPONENT_CONSTRAINT_API BilateralInteractionConstraint<Rigid3fTypes>;
+extern template class SOFA_COMPONENT_CONSTRAINT_API BilateralInteractionConstraint< defaulttype::Vec3fTypes >;
+extern template class SOFA_COMPONENT_CONSTRAINT_API BilateralInteractionConstraint< defaulttype::Rigid3fTypes >;
 #endif
 #endif
 
-};
 } // namespace constraint
 
 } // namespace component
