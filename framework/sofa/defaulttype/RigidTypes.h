@@ -755,6 +755,14 @@ public:
         return d;
     }
 
+    RigidDeriv<2,real> operator - (const RigidDeriv<2,real>& a) const
+    {
+        RigidDeriv<2,real> d;
+        d.vCenter = vCenter - a.vCenter;
+        d.vOrientation = vOrientation - a.vOrientation;
+        return d;
+    }
+
     template<typename real2>
     void operator*=(real2 a)
     {
