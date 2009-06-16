@@ -58,7 +58,7 @@ void BilateralInteractionConstraint<DataTypes>::applyConstraint(unsigned int &co
     VecConst& c1 = *this->object1->getC();
     VecConst& c2 = *this->object2->getC();
 
-    Coord cx(1,0,0), cy(0,1,0), cz(0,0,1);
+    defaulttype::Vec<3, Real> cx(1,0,0), cy(0,1,0), cz(0,0,1);
 
     cid = constraintId;
     constraintId+=3;
@@ -123,16 +123,16 @@ void BilateralInteractionConstraint<DataTypes>::getConstraintId(long* id, unsign
         id[offset++] = cid;
     }
 }
-#ifdef SOFA_DEV
+
 template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::getConstraintResolution(std::vector<core::componentmodel::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
 {
 //	resTab[offset] = new BilateralConstraintResolution3Dof();
 //	offset += 3;
+
     for(int i=0; i<3; i++)
         resTab[offset++] = new BilateralConstraintResolution();
 }
-#endif
 
 template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::draw()
@@ -148,6 +148,20 @@ void BilateralInteractionConstraint<DataTypes>::draw()
     glEnd();
     glPointSize(1);
 }
+
+#ifndef SOFA_FLOAT
+template<>
+void BilateralInteractionConstraint<defaulttype::Rigid3dTypes>::applyConstraint(unsigned int &constraintId);
+template<>
+void BilateralInteractionConstraint<defaulttype::Rigid3dTypes>::getConstraintValue(defaulttype::BaseVector* v, bool freeMotion);
+#endif
+
+#ifndef SOFA_DOUBLE
+template<>
+void BilateralInteractionConstraint<defaulttype::Rigid3fTypes>::applyConstraint(unsigned int &constraintId);
+template<>
+void BilateralInteractionConstraint<defaulttype::Rigid3fTypes>::getConstraintValue(defaulttype::BaseVector* v, bool freeMotion);
+#endif
 
 } // namespace constraint
 

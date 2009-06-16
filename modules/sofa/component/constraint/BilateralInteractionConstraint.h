@@ -42,7 +42,6 @@ namespace component
 namespace constraint
 {
 
-#ifdef SOFA_DEV
 class BilateralConstraintResolution : public core::componentmodel::behavior::ConstraintResolution
 {
 public:
@@ -90,7 +89,7 @@ public:
 protected:
     sofa::defaulttype::Mat<3,3,double> invW;
 };
-#endif
+
 template<class DataTypes>
 class BilateralInteractionConstraint : public core::componentmodel::behavior::InteractionConstraint
 {
@@ -109,7 +108,9 @@ protected:
     MechanicalState* object2;
     bool yetIntegrated;
 
-    Coord dfree;
+    Deriv dfree;
+    defaulttype::Quaternion q;
+
     unsigned int cid;
 
     Data<int> m1;
@@ -162,9 +163,8 @@ public:
 
     virtual void getConstraintId(long* id, unsigned int &offset);
 
-#ifdef SOFA_DEV
     virtual void getConstraintResolution(std::vector<core::componentmodel::behavior::ConstraintResolution*>& resTab, unsigned int& offset);
-#endif
+
     // Previous Constraint Interface
     virtual void projectResponse() {}
     virtual void projectVelocity() {}
@@ -222,6 +222,18 @@ public:
 
     /// this constraint is holonomic
     bool isHolonomic() {return true;}
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_CONSTRAINT_BILATERALINTERACTIONCONSTRAINT_CPP)
+#ifndef SOFA_FLOAT
+    extern template class SOFA_COMPONENT_CONSTRAINT_API BilateralInteractionConstraint<Vec3dTypes>;
+    extern template class SOFA_COMPONENT_CONSTRAINT_API BilateralInteractionConstraint<Rigid3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+    extern template class SOFA_COMPONENT_CONSTRAINT_API BilateralInteractionConstraint<Vec3fTypes>;
+    extern template class SOFA_COMPONENT_CONSTRAINT_API BilateralInteractionConstraint<Rigid3fTypes>;
+#endif
+#endif
+
 };
 } // namespace constraint
 
