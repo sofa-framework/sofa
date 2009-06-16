@@ -549,18 +549,14 @@ void TriangleSetTopologyModifier::movePointsProcess (const sofa::helper::vector 
         const sofa::helper::vector< sofa::helper::vector< double > >& coefs,
         const bool moveDOF)
 {
-
-    // Step 1/2 - Physically move all dof
-    PointSetTopologyModifier::movePointsProcess (id, ancestors, coefs);
-
-    // Step 2/2 - refresh all triangles concerned by these moves
     (void)moveDOF;
     unsigned int nbrVertex = id.size();
     bool doublet;
     sofa::helper::vector< unsigned int > triangleVertexShell2Move;
     sofa::helper::vector< Triangle > trianglesArray;
 
-    // Creating list of triangles to refresh
+
+    // Step 1/4 - Creating triangleVertexShell to moved due to moved points:
     for (unsigned int i = 0; i<nbrVertex; ++i)
     {
         const sofa::helper::vector <unsigned int>& triangleVertexShell = m_container->getTriangleVertexShell( id[i] );
@@ -586,17 +582,25 @@ void TriangleSetTopologyModifier::movePointsProcess (const sofa::helper::vector 
 
     std::sort( triangleVertexShell2Move.begin(), triangleVertexShell2Move.end(), std::greater<unsigned int>() );
 
-    // Creating the corresponding array of Triangles
-    for (unsigned int i = 0; i<triangleVertexShell2Move.size(); i++)
-    {
-        trianglesArray.push_back (m_container->getTriangleArray()[ triangleVertexShell2Move[i] ]);
-    }
 
-
-    // Warning that edges just been moved
-    TrianglesMoved *ev2 = new TrianglesMoved (triangleVertexShell2Move, trianglesArray);
-    this->addTopologyChange(ev2);
+    // Step 2/4 - Create event to delete all elements before moving and propagate it:
+    TrianglesMoved_Removing *ev1 = new TrianglesMoved_Removing (triangleVertexShell2Move);
+    this->addTopologyChange(ev1);
     propagateTopologicalChanges();
+
+
+    // Step 3/4 - Physically move all dof:
+    PointSetTopologyModifier::movePointsProcess (id, ancestors, coefs);
+
+
+    // Step 4/4 - Create event to recompute all elements concerned by moving and propagate it:
+
+    // Creating the corresponding array of Triangles for ancestors
+    for (unsigned int i = 0; i<triangleVertexShell2Move.size(); i++)
+        trianglesArray.push_back (m_container->getTriangleArray()[ triangleVertexShell2Move[i] ]);
+
+    TrianglesMoved_Adding *ev2 = new TrianglesMoved_Adding (triangleVertexShell2Move, trianglesArray);
+    this->addTopologyChange(ev2); // This event should be propagated with global workflow
 }
 
 

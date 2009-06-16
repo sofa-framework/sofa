@@ -735,18 +735,13 @@ void EdgeSetTopologyModifier::movePointsProcess (const sofa::helper::vector <uns
         const sofa::helper::vector< sofa::helper::vector< double > >& coefs,
         const bool moveDOF)
 {
-
-    // Step 1/2 - Physically move all dof
-    PointSetTopologyModifier::movePointsProcess (id, ancestors, coefs);
-
-    // Step 2/2 - Refresh all edges concerned by these moves
     (void)moveDOF;
     unsigned int nbrVertex = id.size();
     bool doublet;
     sofa::helper::vector<unsigned int> edgeVertexShell2Move;
     sofa::helper::vector< Edge > edgeArray;
 
-    // Creating list of edges to refresh
+    // Step 1/4 - Creating triangleVertexShell to moved due to moved points:
     for (unsigned int i = 0; i<nbrVertex; ++i)
     {
         const sofa::helper::vector <unsigned int>& edgeVertexShell = m_container->getEdgeVertexShellArray()[ id[i] ];
@@ -772,15 +767,24 @@ void EdgeSetTopologyModifier::movePointsProcess (const sofa::helper::vector <uns
 
     std::sort( edgeVertexShell2Move.begin(), edgeVertexShell2Move.end(), std::greater<unsigned int>() );
 
-    // Creating the corresponding array of edges
-    for (unsigned int i = 0; i<edgeVertexShell2Move.size(); i++)
-    {
-        edgeArray.push_back (m_container->getEdgeArray()[ edgeVertexShell2Move[i] ]);
-    }
+    // Step 2/4 - Create event to delete all elements before moving and propagate it:
+    EdgesMoved_Removing *ev1 = new EdgesMoved_Removing (edgeVertexShell2Move);
+    this->addTopologyChange(ev1);
+    propagateTopologicalChanges();
 
-    // Warning that edges just been moved
-    EdgesMoved *ev2 = new EdgesMoved (edgeVertexShell2Move, edgeArray);
-    this->addTopologyChange(ev2);
+
+    // Step 3/4 - Physically move all dof:
+    PointSetTopologyModifier::movePointsProcess (id, ancestors, coefs);
+
+
+    // Step 4/4 - Create event to recompute all elements concerned by moving and propagate it:
+
+    // Creating the corresponding array of Triangles for ancestors
+    for (unsigned int i = 0; i<edgeVertexShell2Move.size(); i++)
+        edgeArray.push_back (m_container->getEdgeArray()[ edgeVertexShell2Move[i] ]);
+
+    EdgesMoved_Adding *ev2 = new EdgesMoved_Adding (edgeVertexShell2Move, edgeArray);
+    this->addTopologyChange(ev2); // This event should be propagated with global workflow
 }
 
 

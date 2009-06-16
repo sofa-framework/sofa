@@ -114,15 +114,15 @@ public:
 
     void SnapAlongPath (sofa::helper::vector< sofa::core::componentmodel::topology::TopologyObjectType>& topoPath_list,
             sofa::helper::vector<unsigned int>& indices_list, sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list,
-            double epsilonSnapPath,
-            sofa::helper::vector< sofa::helper::vector<double> >& points2Snap);
+            sofa::helper::vector< sofa::helper::vector<double> >& points2Snap,
+            double epsilonSnapPath);
 
     void SnapBorderPath (unsigned int pa, Coord& a, unsigned int pb, Coord& b,
             sofa::helper::vector< sofa::core::componentmodel::topology::TopologyObjectType>& topoPath_list,
             sofa::helper::vector<unsigned int>& indices_list,
             sofa::helper::vector< sofa::defaulttype::Vec<3, double> >& coords_list,
-            double epsilonSnapBorder,
-            sofa::helper::vector< sofa::helper::vector<double> >& points2Snap);
+            sofa::helper::vector< sofa::helper::vector<double> >& points2Snap,
+            double epsilonSnapBorder);
 
 
 

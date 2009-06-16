@@ -337,7 +337,7 @@ bool TopologicalChangeManager::incisionTriangleSetTopology(sofa::core::component
         sofa::helper::vector< unsigned int > new_edges;
 
         //triangleAlg->SplitAlongPath(a_last, a, b_last, b, triangles_list, edges_list, coords_list, new_edges);
-        triangleAlg->SplitAlongPath(a_last, a, b_last, b, topoPath_list, indices_list, coords2_list, new_edges, 0.0, 0.25);
+        triangleAlg->SplitAlongPath(a_last, a, b_last, b, topoPath_list, indices_list, coords2_list, new_edges, 0.1, 0.25);
         //std::cout << "** split along path done **" << std::endl;
 
         //std::cout << "new edges : " << new_edges << std::endl;
@@ -361,7 +361,6 @@ bool TopologicalChangeManager::incisionTriangleSetTopology(sofa::core::component
         }
 
         triangleMod->propagateTopologicalChanges();
-
         // notify the end for the current sequence of topological change events
         triangleMod->notifyEndingEvent();
 
