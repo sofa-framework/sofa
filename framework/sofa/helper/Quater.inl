@@ -30,6 +30,8 @@
 #include "Quater.h"
 #include <math.h>
 #include <iostream>
+#include <stdio.h>
+
 
 namespace sofa
 {
@@ -681,7 +683,6 @@ void Quater<Real>::operator*=(const Quater<Real>& q1)
             q2._q[0] * q1._q[1] -
             q2._q[1] * q1._q[0];
 }
-
 
 } // namespace helper
 

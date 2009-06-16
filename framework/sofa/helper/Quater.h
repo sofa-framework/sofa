@@ -247,13 +247,28 @@ public:
     template<class T>
     static Quater set(T a0, T a1, T a2) { return createFromRotationVector(a0,a1,a2); }
 
+    /// Return the quaternion resulting of the movement between 2 quaternions
+    Quater quatDiff( Quater a, const Quater& b)
+    {
+        // If the axes are not oriented in the same direction, flip the axis and angle of a to get the same convention than b
+        if (a[0]*b[0]+a[1]*b[1]+a[2]*b[2]+a[3]*b[3]<0)
+        {
+            a[0] = -a[0];
+            a[1] = -a[1];
+            a[2] = -a[2];
+            a[3] = -a[3];
+        }
 
-    // Print the quaternion
-//         inline friend std::ostream& operator<<(std::ostream& out, Quater Q)
-// 		{
-// 			return (out << "(" << Q._q[0] << "," << Q._q[1] << "," << Q._q[2] << ","
-// 				<< Q._q[3] << ")");
-// 		}
+        Quater q = b.inverse() * a;
+        return q;
+    }
+
+    /// Return the eulerian vector resulting of the movement between 2 quaternions
+    defaulttype::Vec<3,Real> angularDisplacement( Quater a, const Quater& b)
+    {
+        return quatDiff(a,b).toEulerVector();
+    }
+
 
     // Print the quaternion (C style)
     void print();
