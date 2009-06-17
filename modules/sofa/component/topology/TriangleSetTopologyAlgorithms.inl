@@ -1485,7 +1485,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
     {
         if (topoPath_list[0] == core::componentmodel::topology::POINT)
         {
-            //std::cout << "passe la: points2Snap[0][0]" << std::endl;
+            std::cout << "passe la: points2Snap[0][0]" << std::endl;
 
             for (unsigned int j = 0; j<3; j++)
                 a[j] = (float)points2Snap[0][j+1];
@@ -1493,7 +1493,7 @@ int TriangleSetTopologyAlgorithms<DataTypes>::SplitAlongPath(unsigned int pa, Co
 
         if (topoPath_list[topoPath_list.size()-1] == core::componentmodel::topology::POINT)
         {
-            //std::cout << "passe la: points2Snap[size-1][0]" << std::endl;
+            std::cout << "passe la: points2Snap[size-1][0]" << std::endl;
             for (unsigned int j = 0; j<3; j++)
                 b[j] = (float)points2Snap[points2Snap.size()-1][j+1];
         }
@@ -1824,10 +1824,20 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapBorderPath (unsigned int pa, 
             {
                 const EdgeID theEdge = m_container->getTriangleEdge ( indices_list[0])[i];
 
-                if( (m_container->getTriangleEdgeShell (theEdge)).size() > 1)
+                if( (m_container->getTriangleEdgeShell (theEdge)).size() > 1) //snap to point and not edge
+                {
+                    for (unsigned int j = 0; j<3; j++)
+                        if (coords_list[0][j] > 1-epsilon)
+                        {
+                            const PointID thePoint = m_container->getTriangle ( indices_list[0])[j];
+                            topoPath_list[0] = core::componentmodel::topology::POINT;
+                            indices_list[0] = thePoint;
+                            break;
+                        }
                     break;
+                }
 
-                if ((indices_list[1] == theEdge) && (topoPath_list[1] == core::componentmodel::topology::EDGE)) // Only keep this one? or need to projection?
+                if ((indices_list[1] == theEdge) && (topoPath_list[1] == core::componentmodel::topology::EDGE)) // Only keep this one? or need to project?
                 {
                     topoPath_list.erase (topoPath_list.begin());
                     indices_list.erase (indices_list.begin());
@@ -1876,8 +1886,20 @@ void TriangleSetTopologyAlgorithms<DataTypes>::SnapBorderPath (unsigned int pa, 
             {
                 const EdgeID theEdge = m_container->getTriangleEdge ( indices_list.back())[i];
 
-                if( (m_container->getTriangleEdgeShell (theEdge)).size() > 1)
+                if( (m_container->getTriangleEdgeShell (theEdge)).size() > 1) //snap to point and not edge
+                {
+                    for (unsigned int j = 0; j<3; j++)
+                        if (coords_list.back()[j] > 1-epsilon)
+                        {
+                            const PointID thePoint = m_container->getTriangle ( indices_list.back())[j];
+                            topoPath_list.back() = core::componentmodel::topology::POINT;
+                            indices_list.back() = thePoint;
+
+                            break;
+                        }
                     break;
+                }
+
 
                 if ((indices_list[indices_list.size()-2] == theEdge) && (topoPath_list[topoPath_list.size()-2] == core::componentmodel::topology::EDGE)) // Only keep this one? or need to projection?
                 {
