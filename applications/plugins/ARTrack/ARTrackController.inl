@@ -41,15 +41,15 @@ namespace controller
 template <>
 void ARTrackController<RigidTypes>::onARTrackEvent(core::objectmodel::ARTrackEvent *aev)
 {
-    if(mState)
+    if(mstate)
     {
-        if(!(*mState->getXfree()).empty() && !(*mState->getX()).empty())
+        if(!(*mstate->getXfree()).empty() && !(*mstate->getX()).empty())
         {
-            (*mState->getXfree())[0].getCenter() = aev->getPosition();
-            (*mState->getX())[0].getCenter() = aev->getPosition();
+            (*mstate->getXfree())[0].getCenter() = aev->getPosition();
+            (*mstate->getX())[0].getCenter() = aev->getPosition();
 
-            (*mState->getXfree())[0].getOrientation() = aev->getOrientation();
-            (*mState->getX())[0].getOrientation() = aev->getOrientation();
+            (*mstate->getXfree())[0].getOrientation() = aev->getOrientation();
+            (*mstate->getX())[0].getOrientation() = aev->getOrientation();
         }
     }
 }

@@ -164,13 +164,10 @@ void* ARTrackDriver::computeTracking(void *sarg)
 #else
         pthread_mutex_unlock( &arg->mutex );
 #endif
-
-#ifdef WIN32
-        return;
-#else
-        return NULL;
-#endif
     }
+#ifdef WIN32
+    return;
+#endif
 }
 
 
