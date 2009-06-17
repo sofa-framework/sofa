@@ -47,9 +47,6 @@
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
-#ifdef SOFA_HAVE_ARTRACK
-#include <ARTrackEvent.h>
-#endif
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
 namespace sofa
@@ -206,29 +203,6 @@ void MechanicalStateController<DataTypes>::onOmniEvent(core::objectmodel::OmniEv
     applyController();
     omni = false;
 }
-
-#ifdef SOFA_HAVE_ARTRACK
-template <>
-void MechanicalStateController<RigidTypes>::onARTrackEvent(core::objectmodel::ARTrackEvent *aev)
-{
-    if(mState)
-    {
-        if(!(*mState->getXfree()).empty() && !(*mState->getX()).empty())
-        {
-            (*mState->getXfree())[0].getCenter() = aev->getPosition();
-            (*mState->getX())[0].getCenter() = aev->getPosition();
-
-            (*mState->getXfree())[0].getOrientation() = orientation;
-            (*mState->getX())[0].getOrientation() = orientation;
-        }
-    }
-}
-
-template <class DataTypes>
-void MechanicalStateController<DataTypes>::onARTrackEvent(core::objectmodel::ARTrackEvent* /*aev*/)
-{
-}
-#endif
 
 template <class DataTypes>
 void MechanicalStateController<DataTypes>::onBeginAnimationStep(const double /*dt*/)

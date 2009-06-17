@@ -53,9 +53,6 @@ class OmniEvent;
 class KeypressedEvent;
 class KeyreleasedEvent;
 class JoystickEvent;
-#ifdef SOFA_HAVE_ARTRACK
-class ARTrackEvent;
-#endif
 }
 }
 }
@@ -98,13 +95,6 @@ public:
     * @brief Omni event callback.
     */
     virtual void onOmniEvent(core::objectmodel::OmniEvent *) {};
-
-#ifdef SOFA_HAVE_ARTRACK
-    /**
-     * @brief ARTrack event callback.
-             */
-    virtual void onARTrackEvent(core::objectmodel::ARTrackEvent *) {};
-#endif
 
     /**
     * @brief Key Press event callback.

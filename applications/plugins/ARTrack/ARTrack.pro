@@ -19,12 +19,18 @@ TARGET = ARTrackPlugin$$LIBSUFFIX
 DEFINES += SOFA_BUILD_ARTRACKPLUGIN
 
 LIBS += $$SOFA_LIBS
+SOFA_EXT_LIBS += -lARTrack$$LIBSUFFIX
 LIBS += $$SOFA_EXT_LIBS
-INCLUDEPATH += $$SOFA_DIR/extlibs
+INCLUDEPATH += $$SOFA_DIR/extlibs/ARTrack
 
-SOURCES = ARTrackDriver.cpp \
+SOURCES = \
+ARTrackDriver.cpp \
           initARTrack.cpp \
-          ARTrackEvent.cpp
+          ARTrackEvent.cpp \
+          ARTrackController.cpp
 
-HEADERS = ARTrackDriver.h \
-          ARTrackEvent.h
+HEADERS = \
+ARTrackDriver.h \
+          ARTrackEvent.h \
+          ARTrackController.h \
+          ARTrackController.inl

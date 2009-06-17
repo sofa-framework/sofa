@@ -42,9 +42,6 @@
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
 #include <sofa/core/objectmodel/OmniEvent.h>
-#ifdef SOFA_HAVE_ARTRACK
-#include <ARTrackEvent.h>
-#endif
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
 
@@ -105,13 +102,6 @@ void Controller::handleEvent(core::objectmodel::Event *event)
         sofa::core::objectmodel::OmniEvent *oev = dynamic_cast<sofa::core::objectmodel::OmniEvent *>(event);
         onOmniEvent(oev);
     }
-#ifdef SOFA_HAVE_ARTRACK
-    else if (dynamic_cast<sofa::core::objectmodel::ARTrackEvent *>(event))
-    {
-        sofa::core::objectmodel::ARTrackEvent *aev = dynamic_cast<sofa::core::objectmodel::ARTrackEvent *>(event);
-        onARTrackEvent(aev);
-    }
-#endif //SOFA_BUILD_ARTRACK
 }
 
 } // namespace controller
