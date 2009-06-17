@@ -24,21 +24,24 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <iostream>
-#include <fstream>
-
-#include <sofa/helper/ArgumentParser.h>
-#include <sofa/simulation/tree/TreeSimulation.h>
 #include <sofa/component/contextobject/Gravity.h>
 #include <sofa/component/contextobject/CoordinateSystem.h>
-#include <sofa/core/objectmodel/Context.h>
 #include <sofa/component/odesolver/CGImplicitSolver.h>
-#include <sofa/helper/system/FileRepository.h>
+#include <sofa/component/typedef/Sofa_typedef.h>
+#include <sofa/component/visualmodel/OglModel.h>
+
+#include <sofa/core/objectmodel/Context.h>
+
 #include <sofa/gui/SofaGUI.h>
 
-#include <sofa/component/typedef/Sofa_typedef.h>
-
+#include <sofa/helper/ArgumentParser.h>
+#include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/glut.h>
+
+#include <sofa/simulation/tree/TreeSimulation.h>
+
+#include <iostream>
+#include <fstream>
 
 using namespace sofa::simulation::tree;
 using sofa::simulation::Node;
