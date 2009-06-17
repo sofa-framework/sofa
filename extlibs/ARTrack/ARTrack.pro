@@ -7,6 +7,11 @@ include($${SOFA_DIR}/sofa.cfg)
 TARGET = ARTracklib$$LIBSUFFIX
 CONFIG += $$CONFIGLIBRARIES
 
+unix {
+    CONFIG *= opengl
+    LIBS += -lglut
+}
+
 HEADERS += \
   dtracklib.h
 

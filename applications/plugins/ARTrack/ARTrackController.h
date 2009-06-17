@@ -16,62 +16,68 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                              SOFA :: Framework                              *
+*                               SOFA :: Modules                               *
 *                                                                             *
-* Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
-* H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
-* M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_ARTRACKEVENT_H
-#define SOFA_CORE_OBJECTMODEL_ARTRACKEVENT_H
+#ifndef SOFA_COMPONENT_CONTROLLER_ARTRACKCONTROLLER_H
+#define SOFA_COMPONENT_CONTROLLER_ARTRACKCONTROLLER_H
 
-#include <sofa/core/objectmodel/Event.h>
-#include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/defaulttype/Quat.h>
-#include <sofa/helper/system/config.h>
+#include <sofa/core/componentmodel/behavior/BaseController.h>
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <ARTrackEvent.h>
 
 namespace sofa
 {
 
-namespace core
+namespace component
 {
 
-namespace objectmodel
+namespace controller
 {
 
 using namespace sofa::defaulttype;
 
-/**
- * @brief This event notifies about ARTrack device interaction.
- */
-class ARTrackEvent : public sofa::core::objectmodel::Event
+template<class DataTypes>
+class ARTrackController : public virtual core::componentmodel::behavior::BaseController
 {
 public:
+    /**
+     * @brief Default Constructor.
+     */
+    ARTrackController() {};
 
     /**
-     * @brief Constructor.
+     * @brief Default Destructor.
      */
-    ARTrackEvent(const Vector3& position, const Quat& orientation);
+    virtual ~ARTrackController() {};
 
-    /**
-     * @brief Destructor.
-     */
-    virtual ~ARTrackEvent() {}
+    void onARTrackEvent(core::objectmodel::ARTrackEvent *aev);
 
-    Vector3 getPosition();
-    Quat getOrientation();
+    void handleEvent(core::objectmodel::Event *);
 
-private:
-    Vector3 m_position; ///< ARTrack coordinates in a Vec3d type.
-    Quat m_orientation; ///< ARTrack orientation.
+protected:
+    core::componentmodel::behavior::MechanicalState<DataTypes> *mState; ///< Controlled MechanicalState.
 };
 
-} // namespace objectmodel
+#if defined(WIN32) && !defined(SOFA_COMPONENT_CONTROLLER_ARTRACKCONTROLLER_CPP)
+#pragma warning(disable : 4231)
+#ifndef SOFA_FLOAT
+extern template class ARTrackController<defaulttype::Vec1dTypes>;
+extern template class ARTrackController<defaulttype::Rigid3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class ARTrackController<defaulttype::Vec1fTypes>;
+extern template class ARTrackController<defaulttype::Rigid3fTypes>;
+#endif
+#endif
 
-} // namespace core
+} // namespace controller
+
+} // namespace component
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_CONTROLLER_MECHANICALSTATECONTROLLER_H

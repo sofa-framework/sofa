@@ -16,62 +16,64 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                              SOFA :: Framework                              *
+*                               SOFA :: Modules                               *
 *                                                                             *
-* Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
-* H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
-* M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_CORE_OBJECTMODEL_ARTRACKEVENT_H
-#define SOFA_CORE_OBJECTMODEL_ARTRACKEVENT_H
+#ifndef SOFA_COMPONENT_CONTROLLER_ARTRACKCONTROLLER_INL
+#define SOFA_COMPONENT_CONTROLLER_ARTRACKCONTROLLER_INL
 
-#include <sofa/core/objectmodel/Event.h>
-#include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/defaulttype/Quat.h>
-#include <sofa/helper/system/config.h>
+#include <ARTrackController.h>
+#include <ARTrackEvent.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
 {
 
-namespace core
+namespace component
 {
 
-namespace objectmodel
+namespace controller
 {
 
-using namespace sofa::defaulttype;
-
-/**
- * @brief This event notifies about ARTrack device interaction.
- */
-class ARTrackEvent : public sofa::core::objectmodel::Event
+template <>
+void ARTrackController<RigidTypes>::onARTrackEvent(core::objectmodel::ARTrackEvent *aev)
 {
-public:
+    if(mState)
+    {
+        if(!(*mState->getXfree()).empty() && !(*mState->getX()).empty())
+        {
+            (*mState->getXfree())[0].getCenter() = aev->getPosition();
+            (*mState->getX())[0].getCenter() = aev->getPosition();
 
-    /**
-     * @brief Constructor.
-     */
-    ARTrackEvent(const Vector3& position, const Quat& orientation);
+            (*mState->getXfree())[0].getOrientation() = aev->getOrientation();
+            (*mState->getX())[0].getOrientation() = aev->getOrientation();
+        }
+    }
+}
 
-    /**
-     * @brief Destructor.
-     */
-    virtual ~ARTrackEvent() {}
+template <class DataTypes>
+void ARTrackController<DataTypes>::onARTrackEvent(core::objectmodel::ARTrackEvent* /*aev*/)
+{
+}
 
-    Vector3 getPosition();
-    Quat getOrientation();
+template <class DataTypes>
+void ARTrackController<DataTypes>::handleEvent(core::objectmodel::Event *event)
+{
+    if (dynamic_cast<sofa::core::objectmodel::ARTrackEvent *>(event))
+    {
+        sofa::core::objectmodel::ARTrackEvent *aev = dynamic_cast<sofa::core::objectmodel::ARTrackEvent *>(event);
+        onARTrackEvent(aev);
+    }
+}
 
-private:
-    Vector3 m_position; ///< ARTrack coordinates in a Vec3d type.
-    Quat m_orientation; ///< ARTrack orientation.
-};
 
-} // namespace objectmodel
+} // namespace controller
 
-} // namespace core
+} // namespace component
 
 } // namespace sofa
 
-#endif
+#endif // SOFA_COMPONENT_CONTROLLER_ARTRACKCONTROLLER_H
