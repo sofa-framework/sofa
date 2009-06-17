@@ -58,8 +58,34 @@ public:
 
     void handleEvent(core::objectmodel::Event *);
 
+    static std::string templateName(const ARTrackController<DataTypes>* = NULL)
+    {
+        return DataTypes::Name();
+    }
+
+    /// Pre-construction check method called by ObjectFactory.
+    /// Check that DataTypes matches the MechanicalState.
+    template<class T>
+    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    {
+        if (dynamic_cast<core::componentmodel::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+            return false;
+        return BaseObject::canCreate(obj, context, arg);
+    }
+
+    /// Construction method called by ObjectFactory.
+    template<class T>
+    static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    {
+        sofa::core::objectmodel::BaseObject::create(obj, context, arg);
+        if (context)
+        {
+            obj->mstate = dynamic_cast<core::componentmodel::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState());
+        }
+    }
+
 protected:
-    core::componentmodel::behavior::MechanicalState<DataTypes> *mState; ///< Controlled MechanicalState.
+    core::componentmodel::behavior::MechanicalState<DataTypes> *mstate; ///< Controlled MechanicalState.
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_CONTROLLER_ARTRACKCONTROLLER_CPP)
