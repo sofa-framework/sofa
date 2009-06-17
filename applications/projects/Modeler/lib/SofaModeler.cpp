@@ -157,7 +157,7 @@ SofaModeler::SofaModeler()
             this, SLOT( componentDraggedReception( std::string, std::string, std::string, ClassEntry *) ));
 
     for (unsigned int i=0; i<exampleQString.size(); ++i) exampleFiles.push_back(exampleQString[i].ascii());
-    library->build(exampleFiles);
+
     changeLibraryLabel(0);
 
 
@@ -181,6 +181,8 @@ SofaModeler::SofaModeler()
     pluginManager = new SofaPluginManager;
     pluginManager->hide();
     this->connect(pluginManager->buttonClose, SIGNAL(clicked() ),  this, SLOT( rebuildLibrary() ));
+
+    library->build(exampleFiles);
 
     int menuIndex=4;
 
