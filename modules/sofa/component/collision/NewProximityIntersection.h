@@ -48,22 +48,25 @@ class SOFA_COMPONENT_COLLISION_API NewProximityIntersection : public DiscreteInt
 public:
     Data<double> alarmDistance;
     Data<double> contactDistance;
+    Data<bool> useLineLine;
 
     NewProximityIntersection();
 
     virtual void init();
 
-    /// returns true if algorithm uses proximity
+    /// Returns true if algorithm uses proximity
     virtual bool useProximity() const { return true; }
 
-    /// Return the alarm distance (must return 0 if useNewProximity() is false)
+    /// Returns the alarm distance (must returns 0 if useProximity() is false)
     double getAlarmDistance() const { return alarmDistance.getValue(); }
 
-    /// Return the contact distance (must return 0 if useNewProximity() is false)
+    /// Returns the contact distance (must returns 0 if useProximity() is false)
     double getContactDistance() const { return contactDistance.getValue(); }
 
+    /// Sets the alarm distance (if useProximity() is false, the alarm distance is equal to 0)
     void setAlarmDistance(double v) { alarmDistance.setValue(v); }
 
+    /// Sets the contact distance (if useProximity() is false, the contact distance is equal to 0)
     void setContactDistance(double v) { contactDistance.setValue(v); }
 
     bool testIntersection(Cube& ,Cube&);

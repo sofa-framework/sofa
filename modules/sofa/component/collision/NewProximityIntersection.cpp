@@ -54,6 +54,7 @@ int NewProximityIntersectionClass = core::RegisterObject("Optimized Proximity In
 NewProximityIntersection::NewProximityIntersection()
     : alarmDistance(initData(&alarmDistance, 1.0, "alarmDistance","Proximity detection distance"))
     , contactDistance(initData(&contactDistance, 0.5, "contactDistance","Distance below which a contact is created"))
+    , useLineLine(initData(&useLineLine, false, "useLineLine", "Line-line collision detection enabled"))
 {
 }
 
@@ -82,21 +83,24 @@ bool NewProximityIntersection::testIntersection(Cube &cube1, Cube &cube2)
     const Vector3& minVect2 = cube2.minVect();
     const Vector3& maxVect1 = cube1.maxVect();
     const Vector3& maxVect2 = cube2.maxVect();
+
     const double alarmDist = getAlarmDistance() + cube1.getProximity() + cube2.getProximity();
 
-    for (int i=0; i<3; i++)
+    for (int i = 0; i < 3; i++)
     {
-        if ( minVect1[i] > maxVect2[i] + alarmDist || minVect2[i]> maxVect1[i] + alarmDist )
+        if ( minVect1[i] > maxVect2[i] + alarmDist || minVect2[i] > maxVect1[i] + alarmDist )
             return false;
     }
 
     return true;
 }
 
+
 int NewProximityIntersection::computeIntersection(Cube&, Cube&, OutputVector* /*contacts*/)
 {
     return 0; /// \todo
 }
+
 
 bool NewProximityIntersection::testIntersection(Point& e1, Point& e2)
 {
@@ -105,6 +109,7 @@ bool NewProximityIntersection::testIntersection(Point& e1, Point& e2)
     int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.p(), e2.p(), &contacts, -1);
     return n>0;
 }
+
 
 int NewProximityIntersection::computeIntersection(Point& e1, Point& e2, OutputVector* contacts)
 {
@@ -122,11 +127,13 @@ int NewProximityIntersection::computeIntersection(Point& e1, Point& e2, OutputVe
     return n;
 }
 
+
 bool NewProximityIntersection::testIntersection(Line&, Point&)
 {
     serr << "Unnecessary call to NewProximityIntersection::testIntersection(Line,Point)."<<sendl;
     return true;
 }
+
 
 int NewProximityIntersection::computeIntersection(Line& e1, Point& e2, OutputVector* contacts)
 {
@@ -144,11 +151,13 @@ int NewProximityIntersection::computeIntersection(Line& e1, Point& e2, OutputVec
     return n;
 }
 
+
 bool NewProximityIntersection::testIntersection(Line&, Line&)
 {
     serr << "Unnecessary call to NewProximityIntersection::testIntersection(Line,Line)."<<sendl;
     return true;
 }
+
 
 int NewProximityIntersection::computeIntersection(Line& e1, Line& e2, OutputVector* contacts)
 {
@@ -168,11 +177,13 @@ int NewProximityIntersection::computeIntersection(Line& e1, Line& e2, OutputVect
     return n;
 }
 
+
 bool NewProximityIntersection::testIntersection(Triangle&, Point&)
 {
     serr << "Unnecessary call to NewProximityIntersection::testIntersection(Triangle,Point)."<<sendl;
     return true;
 }
+
 
 int NewProximityIntersection::computeIntersection(Triangle& e1, Point& e2, OutputVector* contacts)
 {
@@ -191,11 +202,13 @@ int NewProximityIntersection::computeIntersection(Triangle& e1, Point& e2, Outpu
     return n;
 }
 
+
 bool NewProximityIntersection::testIntersection(Triangle&, Line&)
 {
     serr << "Unnecessary call to NewProximityIntersection::testIntersection(Triangle& e1, Line& e2)."<<sendl;
     return true;
 }
+
 
 int NewProximityIntersection::computeIntersection(Triangle& e1, Line& e2, OutputVector* contacts)
 {
@@ -214,19 +227,29 @@ int NewProximityIntersection::computeIntersection(Triangle& e1, Line& e2, Output
 
     if (f1&TriangleModel::FLAG_P1)
     {
-        n += doIntersectionLinePoint(dist2, q1,q2, p1, contacts, e2.getIndex(), true);
+        n += doIntersectionLinePoint(dist2, q1, q2, p1, contacts, e2.getIndex(), true);
     }
     if (f1&TriangleModel::FLAG_P2)
     {
-        n += doIntersectionLinePoint(dist2, q1,q2, p2, contacts, e2.getIndex(), true);
+        n += doIntersectionLinePoint(dist2, q1, q2, p2, contacts, e2.getIndex(), true);
     }
     if (f1&TriangleModel::FLAG_P3)
     {
-        n += doIntersectionLinePoint(dist2, q1,q2, p3, contacts, e2.getIndex(), true);
+        n += doIntersectionLinePoint(dist2, q1, q2, p3, contacts, e2.getIndex(), true);
     }
 
-    n += doIntersectionTrianglePoint(dist2, f1,p1,p2,p3,pn, q1, contacts, e2.getIndex(), false);
-    n += doIntersectionTrianglePoint(dist2, f1,p1,p2,p3,pn, q2, contacts, e2.getIndex(), false);
+    n += doIntersectionTrianglePoint(dist2, f1, p1, p2, p3, pn, q1, contacts, e2.getIndex(), false);
+    n += doIntersectionTrianglePoint(dist2, f1, p1, p2, p3, pn, q2, contacts, e2.getIndex(), false);
+
+    if (useLineLine.getValue())
+    {
+        if (f1&TriangleModel::FLAG_E12)
+            n += doIntersectionLineLine(dist2, p1, p2, q1, q2, contacts, e2.getIndex());
+        if (f1&TriangleModel::FLAG_E23)
+            n += doIntersectionLineLine(dist2, p2, p3, q1, q2, contacts, e2.getIndex());
+        if (f1&TriangleModel::FLAG_E31)
+            n += doIntersectionLineLine(dist2, p3, p1, q1, q2, contacts, e2.getIndex());
+    }
 
     if (n>0)
     {
@@ -247,18 +270,23 @@ bool NewProximityIntersection::testIntersection(Triangle&, Triangle&)
     return true;
 }
 
+
 int NewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2, OutputVector* contacts)
 {
     if (e1.getIndex() >= e1.getCollisionModel()->getSize())
     {
-        serr << "NewProximityIntersection::computeIntersection(Triangle, Triangle): ERROR invalid e1 index "<<e1.getIndex()<<" on CM "<<e1.getCollisionModel()->getName()<<" of size "<<e1.getCollisionModel()->getSize()<<sendl;
+        serr << "NewProximityIntersection::computeIntersection(Triangle, Triangle): ERROR invalid e1 index "
+                << e1.getIndex() << " on CM " << e1.getCollisionModel()->getName() << " of size " << e1.getCollisionModel()->getSize()<<sendl;
         return 0;
     }
+
     if (e2.getIndex() >= e2.getCollisionModel()->getSize())
     {
-        serr << "NewProximityIntersection::computeIntersection(Triangle, Triangle): ERROR invalid e2 index "<<e2.getIndex()<<" on CM "<<e2.getCollisionModel()->getName()<<" of size "<<e2.getCollisionModel()->getSize()<<sendl;
+        serr << "NewProximityIntersection::computeIntersection(Triangle, Triangle): ERROR invalid e2 index "
+                << e2.getIndex() << " on CM " << e2.getCollisionModel()->getName() << " of size " << e2.getCollisionModel()->getSize()<<sendl;
         return 0;
     }
+
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
     const double dist2 = alarmDist*alarmDist;
     const Vector3& p1 = e1.p1();
@@ -274,35 +302,64 @@ int NewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2, Ou
     const int f2 = e2.flags();
 
     const int id1 = e1.getIndex()*3; // index of contacts involving points in e1
-    const int id2 = e1.getCollisionModel()->getSize()*3 + e2.getIndex()*3; // index of contacts involving points in e2
+    const int id2 = e1.getCollisionModel()->getSize()*3 + e2.getIndex()*12; // index of contacts involving points in e2
 
     int n = 0;
 
     if (f1&TriangleModel::FLAG_P1)
-        n += doIntersectionTrianglePoint(dist2, f2,q1,q2,q3,qn, p1, contacts, id1+0, true);
+        n += doIntersectionTrianglePoint(dist2, f2, q1, q2, q3, qn, p1, contacts, id1+0, true);
     if (f1&TriangleModel::FLAG_P2)
-        n += doIntersectionTrianglePoint(dist2, f2,q1,q2,q3,qn, p2, contacts, id1+1, true);
+        n += doIntersectionTrianglePoint(dist2, f2, q1, q2, q3, qn, p2, contacts, id1+1, true);
     if (f1&TriangleModel::FLAG_P3)
-        n += doIntersectionTrianglePoint(dist2, f2,q1,q2,q3,qn, p3, contacts, id1+2, true);
+        n += doIntersectionTrianglePoint(dist2, f2, q1, q2, q3, qn, p3, contacts, id1+2, true);
 
     if (f2&TriangleModel::FLAG_P1)
-        n += doIntersectionTrianglePoint(dist2, f1,p1,p2,p3,pn, q1, contacts, id2+0, false);
+        n += doIntersectionTrianglePoint(dist2, f1, p1, p2, p3, pn, q1, contacts, id2+0, false);
     if (f2&TriangleModel::FLAG_P2)
-        n += doIntersectionTrianglePoint(dist2, f1,p1,p2,p3,pn, q2, contacts, id2+1, false);
+        n += doIntersectionTrianglePoint(dist2, f1, p1, p2, p3, pn, q2, contacts, id2+1, false);
     if (f2&TriangleModel::FLAG_P3)
-        n += doIntersectionTrianglePoint(dist2, f1,p1,p2,p3,pn, q3, contacts, id2+2, false);
+        n += doIntersectionTrianglePoint(dist2, f1, p1, p2, p3, pn, q3, contacts, id2+2, false);
+
+    if (useLineLine.getValue())
+    {
+        if (f1&TriangleModel::FLAG_E12)
+        {
+            if (f2&TriangleModel::FLAG_E12)
+                n += doIntersectionLineLine(dist2, p1, p2, q1, q2, contacts, id2+3);
+            if (f2&TriangleModel::FLAG_E23)
+                n += doIntersectionLineLine(dist2, p1, p2, q2, q3, contacts, id2+4);
+            if (f2&TriangleModel::FLAG_E31)
+                n += doIntersectionLineLine(dist2, p1, p2, q3, q1, contacts, id2+5);
+        }
+
+        if (f1&TriangleModel::FLAG_E23)
+        {
+            if (f2&TriangleModel::FLAG_E12)
+                n += doIntersectionLineLine(dist2, p2, p3, q1, q2, contacts, id2+6);
+            if (f2&TriangleModel::FLAG_E23)
+                n += doIntersectionLineLine(dist2, p2, p3, q2, q3, contacts, id2+7);
+            if (f2&TriangleModel::FLAG_E31)
+                n += doIntersectionLineLine(dist2, p2, p3, q3, q1, contacts, id2+8);
+        }
+
+        if (f1&TriangleModel::FLAG_E31)
+        {
+            if (f2&TriangleModel::FLAG_E12)
+                n += doIntersectionLineLine(dist2, p3, p1, q1, q2, contacts, id2+9);
+            if (f2&TriangleModel::FLAG_E23)
+                n += doIntersectionLineLine(dist2, p3, p1, q2, q3, contacts, id2+10);
+            if (f2&TriangleModel::FLAG_E31)
+                n += doIntersectionLineLine(dist2, p3, p1, q3, q1, contacts, id2+11);
+        }
+    }
 
     if (n>0)
     {
         const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
-//        for (OutputVector::iterator detection = contacts->end()-n; detection != contacts->end(); ++detection)
-        for (int i=0; i<n; ++i)
+        for (int i = 0; i < n; ++i)
         {
-            //detection->elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
-            //detection->value -= contactDist;
             (*contacts)[contacts->size()-n+i].elem = std::pair<core::CollisionElementIterator, core::CollisionElementIterator>(e1, e2);
             (*contacts)[contacts->size()-n+i].value -= contactDist;
-
         }
     }
     return n;
@@ -332,6 +389,7 @@ bool NewProximityIntersection::testIntersection(Ray &t1,Triangle &t2)
     else
         return false;
 }
+
 
 int NewProximityIntersection::computeIntersection(Ray &t1, Triangle &t2, OutputVector* contacts)
 {

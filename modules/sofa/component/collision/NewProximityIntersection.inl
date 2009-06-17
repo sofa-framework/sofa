@@ -69,13 +69,9 @@ inline int NewProximityIntersection::doIntersectionLineLine(double dist2, const 
     {
         alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
         beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
-        //if (alpha < 0.000001 || alpha > 0.999999 ||
-        //    beta  < 0.000001 || beta  > 0.999999 )
-        //        return 0;
-        if (alpha < 0.0) alpha = 0.0;
-        else if (alpha > 1.0) alpha = 1.0;
-        if (beta < 0.0) beta = 0.0;
-        else if (beta > 1.0) beta = 1.0;
+
+        if (alpha < 0.000001 || alpha > 0.999999 || beta < 0.000001 || beta > 0.999999 )
+            return 0;
     }
 
     Vector3 p,q,pq;
