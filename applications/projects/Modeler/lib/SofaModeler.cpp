@@ -158,8 +158,6 @@ SofaModeler::SofaModeler()
 
     for (unsigned int i=0; i<exampleQString.size(); ++i) exampleFiles.push_back(exampleQString[i].ascii());
 
-    changeLibraryLabel(0);
-
 
 
     //----------------------------------------------------------------------
@@ -183,6 +181,7 @@ SofaModeler::SofaModeler()
     this->connect(pluginManager->buttonClose, SIGNAL(clicked() ),  this, SLOT( rebuildLibrary() ));
 
     library->build(exampleFiles);
+    changeLibraryLabel(0);
 
     int menuIndex=4;
 
