@@ -483,6 +483,21 @@ public:
     /// Get time log of all objects of a given category
     const std::map<core::objectmodel::BaseObject*, ObjectTimer>& getObjectTime(const char* s) { return objectTime[s]; }
 
+
+    /// Find a child node given its name
+    Node* getChild(const std::string& name) const;
+
+    /// Get a descendant node given its name
+    Node* getTreeNode(const std::string& name) const;
+
+    /// Get children nodes
+    sofa::helper::vector< core::objectmodel::BaseNode* > getChildren();
+
+    /// Get children nodes
+    const sofa::helper::vector< core::objectmodel::BaseNode* > getChildren() const;
+
+
+
     /// Get timer frequency
     ctime_t getTimeFreq() const;
 
@@ -506,13 +521,6 @@ public:
     bool getDebug() const;
     // debug
     void printComponents();
-
-    /// Get children nodes
-    virtual sofa::helper::vector< core::objectmodel::BaseNode* >  getChildren()=0;
-
-    /// Get a list of child node
-    virtual const sofa::helper::vector< core::objectmodel::BaseNode* >  getChildren() const=0;
-
 
     const BaseContext* getContext() const;
     BaseContext* getContext();

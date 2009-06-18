@@ -51,6 +51,7 @@
 #include <sofa/core/componentmodel/behavior/LinearSolver.h>
 
 #include <sofa/simulation/common/AnimateVisitor.h>
+#include <sofa/simulation/common/PrintVisitor.h>
 
 
 //#include "bfs_adapter.h"
@@ -103,7 +104,11 @@ bool BglNode::addObject(BaseObject* obj)
 {
     if (sofa::core::componentmodel::behavior::BaseMechanicalMapping* mm = dynamic_cast<sofa::core::componentmodel::behavior::BaseMechanicalMapping*>(obj))
     {
-        if (mm->getMechFrom() == NULL) {std::cerr << "ERROR in addObject BglNode: RayPick Issue!!\n"; return false; }
+        if (mm->getMechFrom() == NULL)
+        {
+//               graphManager->getMasterNode()->execute<simulation::PrintVisitor>();
+            std::cerr << "ERROR in addObject BglNode: RayPick Issue!!\n"; return false;
+        }
         Node *from=(Node*)mm->getMechFrom()->getContext();
         Node *to=(Node*)mm->getMechTo()->getContext();
         graphManager->addEdge(from, to);

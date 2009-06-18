@@ -72,13 +72,16 @@ public:
     virtual void removeChild(BaseNode* node) = 0;
 
     /// Move a node from another node
-    virtual void moveChild(BaseNode* obj) = 0;
+    virtual void moveChild(BaseNode* node) = 0;
 
     /// Add a generic object
     virtual bool addObject(BaseObject* obj) = 0;
 
     /// Remove a generic object
     virtual bool removeObject(BaseObject* obj) = 0;
+
+    /// Move an object from a node to another node
+    virtual void moveObject(BaseObject* obj) = 0;
 
     /// Remove the current node from the graph: depending on the type of Node, it can have one or several parents.
     virtual void detachFromGraph() = 0;

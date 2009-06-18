@@ -163,7 +163,7 @@ void* GNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, con
 {
     if (path.empty())
     {
-        return getObject(class_info, Local);
+        return Node::getObject(class_info, Local);
     }
     else if (path[0] == '/')
     {
@@ -190,7 +190,7 @@ void* GNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, con
         std::string::size_type pend = path.find('/');
         if (pend == std::string::npos) pend = path.length();
         std::string name ( path, 0, pend );
-        GNode* child = getChild(name);
+        Node* child = getChild(name);
         if (child)
         {
             while (pend < path.length() && path[pend] == '/')
@@ -290,29 +290,6 @@ const core::objectmodel::BaseNode* GNode::getParent() const
     return parent;
 }
 
-/// Get parent node (or NULL if no hierarchy or for root node)
-sofa::helper::vector< core::objectmodel::BaseNode* > GNode::getChildren()
-{
-    sofa::helper::vector< core::objectmodel::BaseNode* > list_children;
-    for (ChildIterator it = child.begin(), itend = child.end(); it != itend; ++it)
-    {
-        list_children.push_back((*it));
-    }
-    return list_children;
-}
-
-/// Get parent node (or NULL if no hierarchy or for root node)
-const sofa::helper::vector< core::objectmodel::BaseNode* > GNode::getChildren() const
-{
-    sofa::helper::vector< core::objectmodel::BaseNode* > list_children;
-    for (ChildIterator it = child.begin(), itend = child.end(); it != itend; ++it)
-    {
-        list_children.push_back((*it));
-    }
-    return list_children;
-}
-
-
 
 /// Execute a recursive action starting from this node
 /// This method bypass the actionScheduler of this node if any.
@@ -381,25 +358,6 @@ void GNode::doExecuteVisitor(simulation::Visitor* action)
     }
 }
 
-
-/// Find a child node given its name
-GNode* GNode::getChild(const std::string& name) const
-{
-    for (ChildIterator it = child.begin(), itend = child.end(); it != itend; ++it)
-        if ((*it)->getName() == name)
-            return static_cast<GNode*>(*it);
-    return NULL;
-}
-
-/// Get a descendant node given its name
-GNode* GNode::getTreeNode(const std::string& name) const
-{
-    GNode* result = NULL;
-    result = getChild(name);
-    for (ChildIterator it = child.begin(), itend = child.end(); result == NULL && it != itend; ++it)
-        result = static_cast<GNode*>(*it)->getTreeNode(name);
-    return result;
-}
 
 /// Return the full path name of this node
 std::string GNode::getPathName() const
