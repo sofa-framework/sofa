@@ -51,7 +51,6 @@ public:
     {
         this->MeshTopology::parse(arg);
 
-
         if (arg->getAttribute("nx")!=NULL && arg->getAttribute("ny")!=NULL && arg->getAttribute("nz")!=NULL )
         {
             const char* nx = arg->getAttribute("nx");
@@ -77,12 +76,12 @@ public:
 
     /*
     int getNbQuads() {
-      if (n.getValue()[2] == 1)
-        return (n.getValue()[0]-1)*(n.getValue()[1]-1);
-      else if (n.getValue()[1] == 1)
-        return (n.getValue()[0]-1)*(n.getValue()[2]-1);
-      else
-        return (n.getValue()[1]-1)*(n.getValue()[2]-1);
+    	if (n.getValue()[2] == 1)
+    		return (n.getValue()[0]-1)*(n.getValue()[1]-1);
+    	else if (n.getValue()[1] == 1)
+    		return (n.getValue()[0]-1)*(n.getValue()[2]-1);
+    	else
+    		return (n.getValue()[1]-1)*(n.getValue()[2]-1);
     }
     */
 
