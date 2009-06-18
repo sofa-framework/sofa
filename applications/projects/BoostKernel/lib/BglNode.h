@@ -136,12 +136,6 @@ public:
     /// Find all the Nodes pointing
     helper::vector< BglNode* > getParents() const;
 
-    /// Get children nodes
-    virtual sofa::helper::vector< core::objectmodel::BaseNode* >  getChildren();
-
-    /// Get a list of child node
-    virtual const sofa::helper::vector< core::objectmodel::BaseNode* >  getChildren() const;
-
     std::string getPathName() const;
 
     /// Mechanical Degrees-of-Freedom

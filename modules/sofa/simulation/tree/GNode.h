@@ -73,14 +73,18 @@ public:
     /// Move a node from another node
     virtual void moveChild(BaseNode* obj);
 
+    /// Add an object and return this. Detect the implemented interfaces and add the object to the corresponding lists.
+    virtual bool addObject(core::objectmodel::BaseObject* obj) { return simulation::Node::addObject(obj); }
+
+    /// Remove an object
+    virtual bool removeObject(core::objectmodel::BaseObject* obj) { return simulation::Node::removeObject(obj); }
+
     /// Remove the current node from the graph: consists in removing the link to its parent
     virtual void detachFromGraph() ;
 
-    /// @name Visitors and graph traversal
-    /// @{
 
-    /// Execute a recursive action starting from this node
-//    virtual void executeVisitor(Visitor* action);
+
+
 
     /// Get parent node (or NULL if no hierarchy or for root node)
     core::objectmodel::BaseNode* getParent();
@@ -88,51 +92,38 @@ public:
     /// Get parent node (or NULL if no hierarchy or for root node)
     const core::objectmodel::BaseNode* getParent() const;
 
-    /// Get children nodes
-    sofa::helper::vector< core::objectmodel::BaseNode* > getChildren();
-
-    /// Get children nodes
-    const sofa::helper::vector< core::objectmodel::BaseNode* > getChildren() const;
-
-
-    /// Find a child node given its name
-    GNode* getChild(const std::string& name) const;
-
-
-    /// Get a descendant node given its name
-    GNode* getTreeNode(const std::string& name) const;
-
-    /// @}
-
-    /// @name Components
-    /// @{
-
-    /// Add an object and return this. Detect the implemented interfaces and add the object to the corresponding lists.
-    virtual bool addObject(core::objectmodel::BaseObject* obj) { return simulation::Node::addObject(obj); }
-
-    /// Remove an object
-    virtual bool removeObject(core::objectmodel::BaseObject* obj) { return simulation::Node::removeObject(obj); }
-
-    /// Import an object
-    virtual void moveObject(core::objectmodel::BaseObject* obj) { simulation::Node::moveObject(obj); }
-
-    /// Mechanical Degrees-of-Freedom
-    virtual core::objectmodel::BaseObject* getMechanicalState() const;
-
-    /// Topology
+    //Inheritance from the parent if no object if found in the current Node
     virtual core::componentmodel::topology::Topology* getTopology() const;
 
     /// Mesh Topology (unified interface for both static and dynamic topologies)
     virtual core::componentmodel::topology::BaseMeshTopology* getMeshTopology() const;
 
+    /// Mechanical Degrees-of-Freedom
+    virtual core::objectmodel::BaseObject* getMechanicalState() const;
+
     /// Shader
     virtual core::objectmodel::BaseObject* getShader() const;
 
-    const BaseContext* getContext() const { return simulation::Node::getContext(); }
-    BaseContext* getContext() { return simulation::Node::getContext(); }
 
 
-    /// @}
+    /// Generic object access, given a set of required tags, possibly searching up or down from the current context
+    ///
+    /// Note that the template wrapper method should generally be used to have the correct return type,
+    virtual void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir = SearchUp) const;
+
+    /// Generic object access, given a path from the current context
+    ///
+    /// Note that the template wrapper method should generally be used to have the correct return type,
+    virtual void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, const std::string& path) const;
+
+    /// Generic list of objects access, given a set of required tags, possibly searching up or down from the current context
+    ///
+    /// Note that the template wrapper method should generally be used to have the correct return type,
+    virtual void getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir = SearchUp) const;
+
+
+
+
 
 
     /// Called during initialization to corectly propagate the visual context to the children
@@ -155,36 +146,6 @@ public:
     /// Return the full path name of this node
     std::string getPathName() const;
 
-    /// Generic object access, given a set of required tags, possibly searching up or down from the current context
-    ///
-    /// Note that the template wrapper method should generally be used to have the correct return type,
-    virtual void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir = SearchUp) const;
-
-    /// Generic object access, possibly searching up or down from the current context
-    ///
-    /// Note that the template wrapper method should generally be used to have the correct return type,
-    void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, SearchDirection dir = SearchUp) const
-    {
-        return getObject(class_info, sofa::core::objectmodel::TagSet(), dir);
-    }
-
-    /// Generic object access, given a path from the current context
-    ///
-    /// Note that the template wrapper method should generally be used to have the correct return type,
-    virtual void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, const std::string& path) const;
-
-    /// Generic list of objects access, given a set of required tags, possibly searching up or down from the current context
-    ///
-    /// Note that the template wrapper method should generally be used to have the correct return type,
-    virtual void getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir = SearchUp) const;
-
-    /// Generic list of objects access, possibly searching up or down from the current context
-    ///
-    /// Note that the template wrapper method should generally be used to have the correct return type,
-    void getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, SearchDirection dir = SearchUp) const
-    {
-        getObjects(class_info, container, sofa::core::objectmodel::TagSet(), dir);
-    }
 
 
     // should this be public ?

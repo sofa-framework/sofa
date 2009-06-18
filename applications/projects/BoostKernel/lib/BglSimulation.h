@@ -99,6 +99,17 @@ public:
     /// @{
     BglSimulation();
 
+    /// Load a file
+    Node* load(const char* filename);
+
+    /// Load a file
+    void unload(Node* root);
+
+    /// Delayed Creation of a graph node and attach a new Node to it, then return the Node
+    Node* newNode(const std::string& name="");
+
+
+
     /// Method called when a MechanicalMapping is created.
     void setMechanicalMapping(Node *child, core::componentmodel::behavior::BaseMechanicalMapping *m);
     /// Method called when a MechanicalMapping is destroyed.
@@ -113,6 +124,9 @@ public:
 
 
 
+    /// Add a Solver working inside a given Node
+    void addSolver(BaseObject*,Node* n);
+
     /// Add an interaction
     void addInteraction( Node* n1, Node* n2, BaseObject* );
 
@@ -121,16 +135,6 @@ public:
 
     /// Remove an interaction
     void removeInteraction( BaseObject* );
-
-    /// Load a file
-    Node* load(const char* filename);
-
-    /// Load a file
-    void unload(Node* root);
-
-    /// Delayed Creation of a graph node and attach a new Node to it, then return the Node
-    Node* newNode(const std::string& name="");
-
     /// Insert a node previously created, into the graph
     void insertNewNode(Node *n);
 
@@ -158,8 +162,6 @@ public:
     void draw(Node* root, helper::gl::VisualParameters* params = NULL);
 
 
-    /// Add a Solver working inside a given Node
-    void addSolver(BaseObject*,Node* n);
     /// @}
 
     /** @name control

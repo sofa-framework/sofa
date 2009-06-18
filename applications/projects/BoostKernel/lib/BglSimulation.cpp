@@ -200,14 +200,14 @@ void BglSimulation::animate(Node* root, double dt)
     double startTime = root->getTime();
     double mechanicalDt = dt/numMechSteps.getValue();
 
-    BehaviorUpdatePositionVisitor beh(dt);
-
     for( unsigned step=0; step<numMechSteps.getValue(); step++ )
     {
         graphManager.collisionStep(root,dt);
         graphManager.mechanicalStep(root,dt);
         graphManager.clearMasterVertex();
         graphManager.insertHierarchicalGraph();
+
+        BehaviorUpdatePositionVisitor beh(dt);
         masterNode->doExecuteVisitor ( &beh );
         masterNode->setTime ( startTime + (step+1)* mechanicalDt );
     }

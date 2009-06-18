@@ -321,6 +321,49 @@ core::objectmodel::BaseObject* Node::getMechanicalState() const
 }
 
 
+/// Find a child node given its name
+Node* Node::getChild(const std::string& name) const
+{
+    for (ChildIterator it = child.begin(), itend = child.end(); it != itend; ++it)
+        if ((*it)->getName() == name)
+            return (*it);
+    return NULL;
+}
+
+/// Get a descendant node given its name
+Node* Node::getTreeNode(const std::string& name) const
+{
+    Node* result = NULL;
+    result = getChild(name);
+    for (ChildIterator it = child.begin(), itend = child.end(); result == NULL && it != itend; ++it)
+        result = (*it)->getTreeNode(name);
+    return result;
+}
+
+sofa::helper::vector< core::objectmodel::BaseNode* > Node::getChildren()
+{
+    sofa::helper::vector< core::objectmodel::BaseNode* > list_children;
+    for (ChildIterator it = child.begin(), itend = child.end(); it != itend; ++it)
+    {
+        list_children.push_back((*it));
+    }
+    return list_children;
+}
+
+/// Get parent node (or NULL if no hierarchy or for root node)
+const sofa::helper::vector< core::objectmodel::BaseNode* > Node::getChildren() const
+{
+    sofa::helper::vector< core::objectmodel::BaseNode* > list_children;
+    for (ChildIterator it = child.begin(), itend = child.end(); it != itend; ++it)
+    {
+        list_children.push_back((*it));
+    }
+    return list_children;
+}
+
+
+
+
 void Node::setLogTime(bool b)
 {
     logTime_=b;
