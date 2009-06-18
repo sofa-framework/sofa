@@ -772,7 +772,7 @@ void SparseGridTopology::voxelizeTriangleMesh(helper::io::Mesh* mesh,
 
             for(unsigned int x=(unsigned int)iMin[0]; x<=(unsigned int)iMax[0]; ++x)
             {
-                for(unsigned int y=(unsigned int)iMin[1]; y<=(unsigned int)iMax[y]; ++y)
+                for(unsigned int y=(unsigned int)iMin[1]; y<=(unsigned int)iMax[1]; ++y)
                 {
                     for(unsigned int z=(unsigned int)iMin[2]; z<=(unsigned int)iMax[2]; ++z)
                     {
