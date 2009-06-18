@@ -106,7 +106,7 @@ void ArticulatedSystemMapping<BasicMapping>::init()
             else
             {
                 if (node != 0)
-                    node = node->getChild(*it);
+                    node = static_cast<GNode*>(node->getChild(*it));
             }
 
             ++it;
