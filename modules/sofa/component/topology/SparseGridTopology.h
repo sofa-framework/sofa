@@ -51,9 +51,9 @@ using sofa::component::container::VoxelGridLoader;
 
 
 /** A sparse grid topology. Like a sparse FFD building from the bounding box of the object. Starting from a RegularGrid, only valid cells containing matter (ie intersecting the original surface mesh or totally inside the object) are considered.
-Valid cells are tagged by a Type BOUNDARY or INSIDE
-WARNING: the corresponding node in the XML file has to be placed BEFORE the MechanicalObject node, in order to excute its init() before the MechanicalObject one in order to be able to give dofs
-   */
+ * Valid cells are tagged by a Type BOUNDARY or INSIDE
+ * WARNING: the corresponding node in the XML file has to be placed BEFORE the MechanicalObject node, in order to excute its init() before the MechanicalObject one in order to be able to give dofs
+ */
 class SOFA_COMPONENT_CONTAINER_API SparseGridTopology : public MeshTopology
 {
 public:
@@ -65,17 +65,23 @@ public:
 
     SparseGridTopology(bool _isVirtual=false);
 
-//					virtual void reinit() {updateMesh();};
+//	virtual void reinit() {updateMesh();};
 
-// 					static const float WEIGHT[8][8];
+//	static const float WEIGHT[8][8];
     static const float WEIGHT27[8][27];
     static const int cornerIndicesFromFineToCoarse[8][8];
 
     bool load(const char* filename);
     virtual void init();
-    virtual void buildAsFinest(); ///< building from a mesh file
-    virtual void buildFromFiner(); ///< building by condensating a finer sparse grid (used if setFinerSparseGrid has initializated _finerSparseGrid before calling init() )
-    virtual void buildVirtualFinerLevels(); ///< building eventual virtual finer levels (cf _nbVirtualFinerLevels)
+
+    /// building from a mesh file
+    virtual void buildAsFinest();
+
+    /// building by condensating a finer sparse grid (used if setFinerSparseGrid has initializated _finerSparseGrid before calling init() )
+    virtual void buildFromFiner();
+
+    /// building eventual virtual finer levels (cf _nbVirtualFinerLevels)
+    virtual void buildVirtualFinerLevels();
 
     typedef std::map<Vector3,int> MapBetweenCornerPositionAndIndice;///< a vertex indice for a given vertex position in space
 
@@ -86,7 +92,7 @@ public:
     InverseHierarchicalCubeMap _inverseHierarchicalCubeMap;
 
     typedef std::map<int,float> AHierarchicalPointMap;
-// 					typedef helper::vector< std::pair<int,float> >  AHierarchicalPointMap;
+// 	typedef helper::vector< std::pair<int,float> >  AHierarchicalPointMap;
     typedef helper::vector< AHierarchicalPointMap > HierarchicalPointMap; ///< a point indice -> corresponding 27 child indices on the potential _finerSparseGrid with corresponding weight
     HierarchicalPointMap _hierarchicalPointMap;
     typedef helper::vector< AHierarchicalPointMap > InverseHierarchicalPointMap; ///< a fine point indice -> corresponding some parent points for interpolation
@@ -156,7 +162,6 @@ public:
     /// return indices of 6 neighboor cubes
     virtual helper::fixed_array<int,6> findneighboorCubes( int indice );
 
-
     /// return the type of the i-th cube
     virtual Type getType( int i );
 
@@ -180,7 +185,6 @@ public:
 
     void getMesh( sofa::helper::io::Mesh &m);
 
-
     void setDimVoxels( int a, int b, int c) { dataResolution.setValue(Vec3i(a,b,c));}
     void setSizeVoxel( float a, float b, float c) { voxelSize.setValue(Vector3(a,b,c));}
 
@@ -194,14 +198,13 @@ public:
         return dataVoxels.getValue()[index]==1;
     };
 
-
     Data< vector< unsigned char > >     dataVoxels;
     Data<bool> _fillWeighted; // is quantity of matter inside a cell taken into account?
 
 protected:
     bool isVirtual;
     /// cutting number in all directions
-    Data< Vec<3, int>    > n;
+    Data< Vec< 3, int > > n;
     Data< Vector3 > _min;
     Data< Vector3 > _max;
     Data< int > _nbVirtualFinerLevels; ///< create virtual (not in the animation tree) finer sparse grids in order to dispose of finest information (usefull to compute better mechanical properties for example)
@@ -344,7 +347,6 @@ public :
     }
 
     virtual int getNbHexas() { return this->getHexas().size();}
-
 };
 
 } // namespace topology
