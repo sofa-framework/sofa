@@ -264,7 +264,6 @@ void TopologicalChangeManager::removeItemsFromCollisionModel(sofa::core::Collisi
 // Intermediate method to handle cutting
 bool TopologicalChangeManager::incisionTriangleSetTopology(sofa::core::componentmodel::topology::BaseMeshTopology* _topology)
 {
-
     //Incision in triangles from point a to point b
 
     // Mechanical coord of points a & b:
@@ -318,6 +317,7 @@ bool TopologicalChangeManager::incisionTriangleSetTopology(sofa::core::component
 
 
         //    bool ok = triangleGeo->computeIntersectedPointsList(a, b, ind_ta, ind_tb, triangles_list, edges_list, coords_list, is_on_boundary);
+
         bool ok = triangleGeo->computeIntersectedObjectsList(a_last, a, b, ind_ta, ind_tb, topoPath_list, indices_list, coords2_list);
 
         //std::cout << "NEW PATH" << std::endl;
@@ -337,6 +337,7 @@ bool TopologicalChangeManager::incisionTriangleSetTopology(sofa::core::component
         sofa::helper::vector< unsigned int > new_edges;
 
         //triangleAlg->SplitAlongPath(a_last, a, b_last, b, triangles_list, edges_list, coords_list, new_edges);
+
         triangleAlg->SplitAlongPath(a_last, a, b_last, b, topoPath_list, indices_list, coords2_list, new_edges, 0.1, 0.25);
         //std::cout << "** split along path done **" << std::endl;
 
@@ -348,7 +349,6 @@ bool TopologicalChangeManager::incisionTriangleSetTopology(sofa::core::component
 
         bool is_fully_cut = triangleAlg->InciseAlongEdgeList(new_edges, new_points, end_points, reachBorder);
         //std::cout << "** incise along path done **" << std::endl;
-
         if (!end_points.empty())
         {
             incision.a_last_init = end_points.back();
@@ -359,7 +359,6 @@ bool TopologicalChangeManager::incisionTriangleSetTopology(sofa::core::component
             incision.is_cut_completed = true;
             incision.is_first_cut = true;
         }
-
         triangleMod->propagateTopologicalChanges();
         // notify the end for the current sequence of topological change events
         triangleMod->notifyEndingEvent();
@@ -372,7 +371,6 @@ bool TopologicalChangeManager::incisionTriangleSetTopology(sofa::core::component
             incision.is_first_cut = true;
             return false;
         }
-
 
         return is_fully_cut;
     }
@@ -465,6 +463,7 @@ bool TopologicalChangeManager::incisionTriangleModel(sofa::core::CollisionElemen
 
                 if(incision_ok)  //switch data b to a, in order to continue incision.
                 {
+                    std::cout << "full cut : " << num << std::endl;
                     // full cut
                     incision.a_init[0] = pos[0];
                     incision.a_init[1] = pos[1];
