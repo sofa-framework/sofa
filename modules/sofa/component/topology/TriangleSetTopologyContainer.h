@@ -145,6 +145,36 @@ public:
      */
     const TriangleEdges &getTriangleEdge(const unsigned int i) ;
 
+    /** \brief: Return a vector of TriangleID which are on a border.
+     * @see createElementsOnBorder()
+     */
+    const sofa::helper::vector <TriangleID>& getTrianglesOnBorder();
+
+
+    /** \brief: Return a vector of EdgeID which are on a border.
+     * @see createElementsOnBorder()
+     */
+    const sofa::helper::vector <EdgeID>& getEdgesOnBorder();
+
+
+    /** \brief: Return a vector of PointID which are on a border.
+     * @see createElementsOnBorder()
+     */
+    const sofa::helper::vector <PointID>& getPointsOnBorder();
+
+
+    bool hasBorderElementLists() const;
+
+
+    /** \brief: Create element lists which are on topology border:
+     * - A vector of TriangleID @see m_trianglesOnBorder. ( I.e which have at least: one edge not adjacent
+     to an other Triangle)
+     * - A vector of EdgeID @see m_edgesOnBorder. (I.e which are adjacent to only one Triangle)
+     * - A vector of PointID @see m_pointsOnBorder. (I.e which are part of only one Triangle)
+     * To Do: For the moment use TriangleEdgeShellArray() in the container. To be moved in a mapping class
+     */
+    void createElementsOnBorder();
+
 protected:
     /** \brief Creates the TriangleSet array.
      *
@@ -216,6 +246,16 @@ protected:
     sofa::helper::vector< sofa::helper::vector< unsigned int > > m_triangleVertexShell;
     /// for each edge provides the set of triangles adjacent to that edge
     sofa::helper::vector< sofa::helper::vector< unsigned int > > m_triangleEdgeShell;
+
+    /// Set of triangle indices on topology border
+    sofa::helper::vector <TriangleID> m_trianglesOnBorder;
+
+    /// Set of edge indices on topology border
+    sofa::helper::vector <EdgeID> m_edgesOnBorder;
+
+    /// Set of point indices on topology border
+    sofa::helper::vector <PointID> m_pointsOnBorder;
+
 
     virtual void loadFromMeshLoader(sofa::component::container::MeshLoader* loader);
 };
