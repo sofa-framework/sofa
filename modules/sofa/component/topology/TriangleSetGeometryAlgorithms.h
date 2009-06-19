@@ -138,6 +138,16 @@ public:
         return computeBaryEdgePoint(e[0], e[1], coord_p);
     }
 
+    /** \brief Computes the point defined by 3 indices of vertex and 1 barycentric coordinate
+     *
+     */
+    sofa::defaulttype::Vec<3,double> computeBaryTrianglePoint(unsigned int p0, unsigned int p1, unsigned int p2, sofa::defaulttype::Vec<3,double>& coord_p) const;
+    sofa::defaulttype::Vec<3,double> computeBaryTrianglePoint(Triangle& t, sofa::defaulttype::Vec<3,double>& coord_p) const
+    {
+        return computeBaryTrianglePoint(t[0], t[1], t[2], coord_p);
+    }
+
+
     /** \brief Computes the normal vector of a triangle indexed by ind_t (not normed)
      *
      */

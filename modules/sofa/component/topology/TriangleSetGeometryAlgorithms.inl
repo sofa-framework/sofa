@@ -166,6 +166,18 @@ Vec<3,double> TriangleSetGeometryAlgorithms< DataTypes >::computeBaryEdgePoint(u
     return c0*(1-coord_p) + c1*coord_p;
 }
 
+template<class DataTypes>
+Vec<3,double> TriangleSetGeometryAlgorithms< DataTypes >::computeBaryTrianglePoint(unsigned int p0, unsigned int p1, unsigned int p2, sofa::defaulttype::Vec<3,double>& coord_p) const
+{
+    const typename DataTypes::VecCoord& vect_c = *(this->object->getX());
+
+    Vec<3,double> c0; c0 = vect_c[p0];
+    Vec<3,double> c1; c1 = vect_c[p1];
+    Vec<3,double> c2; c2 = vect_c[p2];
+    return c0*coord_p[0] + c1*coord_p[1] + c2*coord_p[2];
+}
+
+
 // Computes the opposite point to ind_p
 template<class DataTypes>
 Vec<3,double> TriangleSetGeometryAlgorithms< DataTypes >::getOppositePoint(unsigned int ind_p,
