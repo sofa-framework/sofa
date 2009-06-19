@@ -159,23 +159,22 @@ void DistanceConstraint<DataTypes>::writeConstraintEquations(ConstId Id)
             break;
         }
         };
-        if (fabs(correction) > 1.e-2)
-        {
-            //VecConst interface:
-            //index where the direction will be found
-            const unsigned int idxInVecConst[2]= {c1.size(),
-                    c2.size()+(this->object1 == this->object2)
-                                                 };
-            SparseVecDeriv V1;
-            V1.add(idx1,V12); c1.push_back(V1);
 
-//             if (this->object1 != this->object2)
-//             {
-            SparseVecDeriv V2;
-            V2.add(idx2,V12); c2.push_back(V2);
-//             }
-            constraint->addConstraint( idxInVecConst[0], idxInVecConst[1], correction, core::componentmodel::behavior::BaseLMConstraint::BILATERAL);
-        }
+        //VecConst interface:
+        //index where the direction will be found
+        const unsigned int idxInVecConst[2]= {c1.size(),
+                c2.size()+(this->object1 == this->object2)
+                                             };
+        SparseVecDeriv V1;
+        V1.add(idx1,V12); c1.push_back(V1);
+
+        //             if (this->object1 != this->object2)
+        //             {
+        SparseVecDeriv V2;
+        V2.add(idx2,V12); c2.push_back(V2);
+        //             }
+        constraint->addConstraint( idxInVecConst[0], idxInVecConst[1], correction, core::componentmodel::behavior::BaseLMConstraint::BILATERAL);
+
 
     }
 }

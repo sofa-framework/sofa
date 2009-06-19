@@ -2205,88 +2205,56 @@ void MechanicalObject<DataTypes>::renumberConstraintId(const sofa::helper::vecto
 template <class DataTypes>
 std::list<core::componentmodel::behavior::BaseMechanicalState::ConstraintBlock> MechanicalObject<DataTypes>::constraintBlocks( const std::list<unsigned int> &indices, double factor ) const
 {
-    using sofa::component::linearsolver::FullMatrix;
-    std::list<ConstraintBlock> block;
-    const unsigned int dimensionDeriv=defaulttype::DataTypeInfo< Deriv >::size();
+    const unsigned int dimensionDeriv = defaulttype::DataTypeInfo< Deriv >::size();
 
-    //Construct the arrays of iterator to explorate the different constraints
-    ConstraintIterator *itConstraint    = new ConstraintIterator[indices.size()];
-    ConstraintIterator *itConstraintEnd = new ConstraintIterator[indices.size()];
+    // simple column/block map
+    typedef sofa::component::linearsolver::FullMatrix<SReal> matrix_t;
+    typedef std::map<unsigned int, matrix_t* > blocks_t;
+
+    blocks_t blocks;
+
+    // for all row indices
+    typedef std::list<unsigned int> indices_t;
+
+    unsigned int block_row = 0;
+    for(indices_t::const_iterator row = indices.begin(); row != indices.end();
+        ++row, ++block_row)
     {
-        unsigned int i=0;
-        for (std::list<unsigned int>::const_iterator it=indices.begin() ; it != indices.end(); it++,i++)
+
+        // for all sparse data in the row
+        std::pair<ConstraintIterator,ConstraintIterator> range=(*c)[ *row ].data();
+        ConstraintIterator chunk=range.first, last=range.second;
+        for( ; chunk != last; ++chunk)
         {
-            const unsigned int idx=*it;
-            std::pair< ConstraintIterator, ConstraintIterator > iter=(*c)[idx].data();
-            itConstraint[i]    = iter.first;
-            itConstraintEnd[i] = iter.second;
+            const unsigned int column = chunk->first;
+
+            // do we already have a block for this column ?
+            if( blocks.find( column ) == blocks.end() )
+            {
+                // nope: let's create it
+                blocks[column] = new matrix_t(indices.size(), dimensionDeriv);
+            }
+
+            // now it's created no matter what \o/
+            matrix_t& block = *blocks[column];
+
+            // fill the right line of the block
+            for( unsigned int i = 0; i < dimensionDeriv; ++i )
+            {
+                SReal value; defaulttype::DataTypeInfo< Deriv >::getValue(chunk->second, i, value); // somebody should pay for this
+                block.set(block_row, i, factor * value);
+            }
         }
     }
 
-    //Constructing a list of block: each block will have as many rows as indices of constraint
-    int minDof=-1;
-    bool stopCondition=false;
-    while (!stopCondition)
+    // put all blocks in a list and we're done
+    std::list<ConstraintBlock> res;
+    for(blocks_t::const_iterator b = blocks.begin(); b != blocks.end(); ++b)
     {
-        //Vector containing the list of indices to store in the new block
-        std::vector< unsigned int > vecDofsInBlock;
-        //We find the minimum dof
-        for (unsigned int constraintId=0; constraintId<indices.size(); ++constraintId)
-        {
-            //For the constraint i, if it has not been fully explorated
-            if (itConstraint[constraintId] != itConstraintEnd[constraintId])
-            {
-                if ( (minDof<0) || //First entrance
-                        minDof>(int)itConstraint[constraintId]->first)
-                {
-                    vecDofsInBlock.clear();
-                    vecDofsInBlock.push_back(constraintId);
-                    minDof=itConstraint[constraintId]->first;
-                }
-                else if (minDof==(int)itConstraint[constraintId]->first)
-                {
-                    vecDofsInBlock.push_back(constraintId);
-                }
-            }
-        }
+        res.push_back( ConstraintBlock( b->first, b->second ) );
+    };
 
-        //Create a new block knowing the constraints to consider (vecDofsInBlock)
-        FullMatrix<SReal> *m=new FullMatrix<SReal>(indices.size(), dimensionDeriv);
-        m->clear();
-        for (unsigned int i=0; i<vecDofsInBlock.size(); ++i)
-        {
-            //data is the value in the map for the dof "minDof"
-            Deriv data=itConstraint[ vecDofsInBlock[i] ]->second;
-            for (unsigned int dimension=0; dimension<dimensionDeriv; ++dimension)
-            {
-                SReal value; defaulttype::DataTypeInfo< Deriv >::getValue(data, dimension, value);
-                m->set(vecDofsInBlock[i], dimension, factor*value );
-            }
-        }
-        block.push_back( ConstraintBlock(minDof, m) );
-
-
-
-        //prepare for next loop
-        for (unsigned int constraintUsed=0; constraintUsed<vecDofsInBlock.size(); ++constraintUsed)
-            itConstraint[ vecDofsInBlock[constraintUsed] ]++;
-
-        minDof = -1;
-        vecDofsInBlock.clear();
-
-
-        //Stop Condition: we have explorated all the entries of the SparseConstraint
-        //If one remains unexplored, we continue
-        stopCondition=true;
-        for (unsigned int cId=0; cId<indices.size() && stopCondition; ++cId)
-        {
-            stopCondition = (itConstraint[cId] == itConstraintEnd[cId]);
-        }
-    }
-    delete [] itConstraint;
-    delete [] itConstraintEnd;
-
-    return block;
+    return res;
 }
 
 
