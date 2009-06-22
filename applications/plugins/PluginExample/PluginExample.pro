@@ -27,7 +27,8 @@ SOURCES = MyFakeComponent.cpp \
 	      initPluginExample.cpp
 
 HEADERS = MyFakeComponent.h \
-          OtherFakeComponent.h 
+          OtherFakeComponent.h \
+		  OtherFakeComponent.inl 
 		  
 README_FILE = PluginExample.txt
 

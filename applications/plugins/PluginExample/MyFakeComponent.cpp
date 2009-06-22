@@ -25,7 +25,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <MyFakeComponent.h>
+#include "MyFakeComponent.h"
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
