@@ -921,16 +921,16 @@ public:
 
     typedef core::componentmodel::topology::BaseMeshTopology BaseMeshTopology;
 
+    typedef TopologyBarycentricMapper<InDataTypes,OutDataTypes> Mapper;
+    typedef BarycentricMapperRegularGridTopology<InDataTypes, OutDataTypes> RegularGridMapper;
+    typedef BarycentricMapperHexahedronSetTopology<InDataTypes, OutDataTypes> HexaMapper;
+
     using Inherit::sout;
     using Inherit::serr;
     using Inherit::sendl;
 
 
 protected:
-
-    typedef TopologyBarycentricMapper<InDataTypes,OutDataTypes> Mapper;
-    typedef BarycentricMapperRegularGridTopology<InDataTypes, OutDataTypes> RegularGridMapper;
-    typedef BarycentricMapperHexahedronSetTopology<InDataTypes, OutDataTypes> HexaMapper;
 
     Mapper* mapper;
     DataPtr< RegularGridMapper >* f_grid;
