@@ -90,7 +90,7 @@ struct GPUDeformedCubeState
 
 struct GPUDeformedCubeBSphere
 {
-    CudaVec3<float> center
+    CudaVec3<float> center;
     float radius;
 };
 
@@ -104,7 +104,7 @@ struct GPUTestFFD
     const float* grid;
     const GPUDeformedCube* ffdCubes;
     GPUDeformedCubeState* ffdState;
-    GPUDeformedCubeState* ffdSphere;
+    GPUDeformedCubeBSphere* ffdBSphere;
     float margin;
     int nbPoints;
     int nbCubes;

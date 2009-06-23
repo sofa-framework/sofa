@@ -88,7 +88,7 @@ unsigned long RandomGenerator::random()
 
 long RandomGenerator::randomInteger(long min, long max)
 {
-    return (min + ((max - min)*random())/(4294967295));
+    return (min + ((max - min)*random())/(4294967295U));
 }
 
 double RandomGenerator::randomDouble(double min, double max)
