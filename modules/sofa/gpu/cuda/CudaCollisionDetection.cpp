@@ -34,6 +34,8 @@ namespace gpu
 namespace cuda
 {
 
+using namespace sofa::core::componentmodel::collision;
+
 extern "C"
 {
     void CudaCollisionDetection_runTests(unsigned int nbTests, unsigned int maxPoints, const void* tests, void* nresults);
@@ -251,6 +253,8 @@ void CudaCollisionDetection::RigidRigidTest::fillInfo(GPUTest* tests)
 {
     if (results.nbTests()==0) return;
     GPUContact* gresults = (GPUContact*)results.results.deviceWrite();
+    GPUContactPoint* gresults1 = (GPUContactPoint*)results.results1.deviceWrite();
+    GPUContactPoint* gresults2 = (GPUContactPoint*)results.results2.deviceWrite();
     int i0 = model1->getSize();
     for (unsigned int i=0; i<results.nbTests(); i++)
     {
@@ -262,6 +266,8 @@ void CudaCollisionDetection::RigidRigidTest::fillInfo(GPUTest* tests)
         CudaDistanceGrid& g2 = *elem2.getGrid();
         test.nbPoints = p1.size();
         test.result = gresults + e.firstIndex;
+        test.result1 = gresults1 + e.firstIndex;
+        test.result2 = gresults2 + e.firstIndex;
         test.points = p1.deviceRead();
         test.radius = NULL;
         test.gridnx = g2.getNx();
@@ -408,6 +414,8 @@ void CudaCollisionDetection::SphereRigidTest::fillInfo(GPUTest* tests)
 
     if (results.nbTests()==0) return;
     GPUContact* gresults = (GPUContact*)results.results.deviceWrite();
+    GPUContactPoint* gresults1 = (GPUContactPoint*)results.results1.deviceWrite();
+    GPUContactPoint* gresults2 = (GPUContactPoint*)results.results2.deviceWrite();
     const CudaVector<Vec3f>& p1 = *model1->getMechanicalState()->getX();
 
     for (unsigned int i=0; i<results.nbTests(); i++)
@@ -419,6 +427,8 @@ void CudaCollisionDetection::SphereRigidTest::fillInfo(GPUTest* tests)
         CudaDistanceGrid* g2 = elem2.getGrid();
         test.nbPoints = p1.size();
         test.result = gresults + e.firstIndex;
+        test.result1 = gresults1 + e.firstIndex;
+        test.result2 = gresults2 + e.firstIndex;
         test.points = p1.deviceRead();
         test.radius = model1->getR().deviceRead();
         test.grid = g2->getDists().deviceRead();
@@ -507,6 +517,8 @@ void CudaCollisionDetection::PointRigidTest::fillInfo(GPUTest* tests)
 {
     if (results.nbTests()==0) return;
     GPUContact* gresults = (GPUContact*)results.results.deviceWrite();
+    GPUContactPoint* gresults1 = (GPUContactPoint*)results.results1.deviceWrite();
+    GPUContactPoint* gresults2 = (GPUContactPoint*)results.results2.deviceWrite();
     for (unsigned int i=0; i<results.nbTests(); i++)
     {
         const GPUOutputVector::TestEntry& e = results.rtest(i);
@@ -517,6 +529,8 @@ void CudaCollisionDetection::PointRigidTest::fillInfo(GPUTest* tests)
         CudaDistanceGrid& g2 = *elem2.getGrid();
         test.nbPoints = elem1.getSize();
         test.result = gresults + e.firstIndex;
+        test.result1 = gresults1 + e.firstIndex;
+        test.result2 = gresults2 + e.firstIndex;
         test.points = p1.deviceRead(elem1.i0());
         test.radius = NULL;
         test.gridnx = g2.getNx();
