@@ -120,6 +120,10 @@ void TetrahedronSetTopologyContainer::createEdgeSetArray()
     d_edge.beginEdit();
     if(hasEdges())
     {
+#ifndef NDEBUG
+        sout << "Warning. [TetrahedronSetTopologyContainer::createEdgeSetArray] edge array is not empty." << endl;
+#endif
+
         EdgeSetTopologyContainer::clear();
 
         clearTriangleEdges();
@@ -135,11 +139,13 @@ void TetrahedronSetTopologyContainer::createEdgeSetArray()
     /// create the m_edge array at the same time than it fills the m_tetrahedronEdge array
     for (unsigned int i = 0; i < m_tetrahedron.size(); ++i)
     {
-        Tetrahedron &t = m_tetrahedron[i];
+        const Tetrahedron &t = m_tetrahedron[i];
         for (unsigned int j=0; j<6; ++j)
         {
-            const unsigned int v1 = t[tetrahedronEdgeArray[j][0]];
-            const unsigned int v2 = t[tetrahedronEdgeArray[j][1]];
+            const unsigned int v1 = t[(j+1)%6];
+            const unsigned int v2 = t[(j+2)%6];
+
+            // sort vertices in lexicographic order
             const Edge e((v1<v2) ? Edge(v1,v2) : Edge(v2,v1));
 
             if (edgeMap.find(e)==edgeMap.end())
@@ -156,24 +162,97 @@ void TetrahedronSetTopologyContainer::createEdgeSetArray()
 
 void TetrahedronSetTopologyContainer::createTetrahedronEdgeArray()
 {
-    if(!hasEdges())
-        createEdgeSetArray();
+    if(!hasTetrahedra()) // this method should only be called when triangles exist
+    {
+#ifndef NDEBUG
+        sout << "Warning. [TetrahedronSetTopologyContainer::createTetrahedronEdgeArray] tetra array is empty." << endl;
+#endif
+        createTetrahedronSetArray();
+    }
 
     if(hasTetrahedronEdges())
         clearTetrahedronEdges();
 
-    m_tetrahedronEdge.resize( getNumberOfTetrahedra());
-
-    for (unsigned int i=0; i<m_tetrahedron.size(); ++i)
+    if(!hasEdges()) // To optimize, this method should be called without creating edgesArray before.
     {
-        Tetrahedron &t = m_tetrahedron[i];
+#ifndef NDEBUG
+        sout << "Warning. [TetrahedronSetTopologyContainer::createTetrahedronEdgeArray] edge array is empty." << endl;
+#endif
 
-        // adding edge i in the edge shell of both points
-        for (unsigned int j=0; j<6; ++j)
+        /// create edge array and triangle edge array at the same time
+        const unsigned int numTetra = getNumberOfTetrahedra();
+        m_tetrahedronEdge.resize (numTetra);
+
+        d_edge.beginEdit();
+        // create a temporary map to find redundant edges
+        std::map<Edge,unsigned int> edgeMap;
+
+        /// create the m_edge array at the same time than it fills the m_tetrahedronEdge array
+        for (unsigned int i = 0; i < m_tetrahedron.size(); ++i)
         {
-            int edgeIndex = getEdgeIndex(t[tetrahedronEdgeArray[j][0]],
-                    t[tetrahedronEdgeArray[j][1]]);
-            m_tetrahedronEdge[i][j] = (unsigned int) edgeIndex;
+            const Tetrahedron &t = m_tetrahedron[i];
+            for (unsigned int j=0; j<6; ++j)
+            {
+                const unsigned int v1 = t[(j+1)%6];
+                const unsigned int v2 = t[(j+2)%6];
+
+                // sort vertices in lexicographic order
+                const Edge e((v1<v2) ? Edge(v1,v2) : Edge(v2,v1));
+
+                if (edgeMap.find(e)==edgeMap.end())
+                {
+                    // edge not in edgeMap so create a new one
+                    const int edgeIndex = edgeMap.size();
+                    edgeMap[e] = edgeIndex;
+                    m_edge.push_back(e);
+                }
+                m_tetrahedronEdge[i][j] = edgeMap[e];
+            }
+        }
+        d_edge.endEdit();
+    }
+    else
+    {
+        /// there are already existing edges : must use an inefficient method. Parse all triangles and find the edge that match each triangle edge
+        const unsigned int numTetra = getNumberOfTetrahedra();
+        const unsigned int numEdges = getNumberOfEdges();
+
+        m_tetrahedronEdge.resize(numTetra);
+        /// create a multi map where the key is a vertex index and the content is the indices of edges adjacent to that vertex.
+        std::multimap<PointID, EdgeID> edgeVertexShellMap;
+        std::multimap<PointID, EdgeID>::iterator it;
+        bool foundEdge;
+
+        for (unsigned int edge=0; edge<numEdges; ++edge)  //Todo: check if not better using multimap <PointID ,TriangleID> and for each edge, push each triangle present in both shell
+        {
+            edgeVertexShellMap.insert(std::pair<PointID, EdgeID> (m_edge[edge][0],edge));
+            edgeVertexShellMap.insert(std::pair<PointID, EdgeID> (m_edge[edge][1],edge));
+        }
+
+        for(unsigned int i=0; i<numTetra; ++i)
+        {
+            Tetrahedron &t = m_tetrahedron[i];
+            // adding edge i in the edge shell of both points
+            for(unsigned int j=0; j<6; ++j)
+            {
+                //finding edge i in edge array
+                std::pair<std::multimap<PointID, EdgeID>::iterator, std::multimap<PointID, EdgeID>::iterator > itPair=edgeVertexShellMap.equal_range(t[(j+1)%6]);
+
+                foundEdge=false;
+                for(it=itPair.first; (it!=itPair.second) && (foundEdge==false); ++it)
+                {
+                    unsigned int edge = (*it).second;
+                    if ( (m_edge[edge][0] == t[(j+1)%6] && m_edge[edge][1] == t[(j+2)%6]) || (m_edge[edge][0] == t[(j+2)%6] && m_edge[edge][1] == t[(j+1)%6]))
+                    {
+                        m_tetrahedronEdge[i][j] = edge;
+                        foundEdge=true;
+                    }
+                }
+#ifndef NDEBUG
+                if (foundEdge==false)
+                    sout << "[TetrahedronSetTopologyContainer::getTetrahedronArray] cannot find edge for tetrahedron " << i << "and edge "<< j << endl;
+#endif
+            }
         }
     }
 }

@@ -480,7 +480,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw()
     }
 
 
-    //Draw tetra
+    // Draw Tetra
     if (_draw.getValue())
     {
         const sofa::helper::vector<Tetrahedron> &tetraArray = this->m_topology->getTetras();
@@ -489,27 +489,30 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw()
         {
             glDisable(GL_LIGHTING);
             glColor3f(1.0,1.0,0.0);
+            glBegin(GL_LINES);
             const VecCoord& coords = *(this->object->getX());
 
             for (unsigned int i = 0; i<tetraArray.size(); i++)
             {
                 const Tetrahedron& tet = tetraArray[i];
-                Coord coordP0 = coords[tet[0]]; Coord coordP1 = coords[tet[1]];
-                Coord coordP2 = coords[tet[2]]; Coord coordP3 = coords[tet[3]];
+                sofa::helper::vector <Coord> tetraCoord;
 
-                glBegin(GL_LINE_STRIP);
-                glVertex3d(coordP0[0], coordP0[1], coordP0[2]);
-                glVertex3d(coordP1[0], coordP1[1], coordP1[2]);
-                glVertex3d(coordP2[0], coordP2[1], coordP2[2]);
-                glVertex3d(coordP3[0], coordP3[1], coordP3[2]);
-                glVertex3d(coordP0[0], coordP0[1], coordP0[2]);
-                glVertex3d(coordP2[0], coordP2[1], coordP2[2]);
-                glEnd();
-                glBegin(GL_LINES);
-                glVertex3d(coordP1[0], coordP1[1], coordP1[2]);
-                glVertex3d(coordP3[0], coordP3[1], coordP3[2]);
-                glEnd();
+                for (unsigned int j = 0; j<4; j++)
+                    tetraCoord.push_back (coords[tet[j]]);
+
+                for (unsigned int j = 0; j<4; j++)
+                {
+                    glVertex3d(tetraCoord[j][0], tetraCoord[j][1], tetraCoord[j][2]);
+                    glVertex3d(tetraCoord[(j+1)%4][0], tetraCoord[(j+1)%4][1], tetraCoord[(j+1)%4][2]);
+                }
+
+                glVertex3d(tetraCoord[0][0], tetraCoord[0][1], tetraCoord[0][2]);
+                glVertex3d(tetraCoord[2][0], tetraCoord[2][1], tetraCoord[2][2]);
+
+                glVertex3d(tetraCoord[1][0], tetraCoord[1][1], tetraCoord[1][2]);
+                glVertex3d(tetraCoord[3][0], tetraCoord[3][1], tetraCoord[3][2]);
             }
+            glEnd();
         }
     }
 

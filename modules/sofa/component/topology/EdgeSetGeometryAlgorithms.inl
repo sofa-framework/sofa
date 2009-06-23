@@ -456,7 +456,7 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw()
     }
 
 
-    //Draw edges
+    // Draw edges
     if (_draw.getValue())
     {
         const sofa::helper::vector<Edge> &edgeArray = this->m_topology->getEdges();
@@ -467,18 +467,16 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw()
             glColor3f(1.0,0.0,1.0);
             const VecCoord& coords = *(this->object->getX());
 
+            glBegin(GL_LINES);
             for (unsigned int i = 0; i<edgeArray.size(); i++)
             {
                 const Edge& e = edgeArray[i];
-                //glBegin(GL_LINE_STRIP);
-                glBegin(GL_LINES);
-                Coord coordP = coords[e[0]];
-                glVertex3d(coordP[0], coordP[1], coordP[2]);
-                coordP = coords[e[1]];
-                glVertex3d(coordP[0], coordP[1], coordP[2]);
-
-                glEnd();
+                Coord coordP1 = coords[e[0]];
+                Coord coordP2 = coords[e[1]];
+                glVertex3d(coordP1[0], coordP1[1], coordP1[2]);
+                glVertex3d(coordP2[0], coordP2[1], coordP2[2]);
             }
+            glEnd();
         }
     }
 

@@ -241,39 +241,96 @@ void TriangleSetTopologyContainer::createTriangleEdgeArray()
         createTriangleSetArray();
     }
 
-    if(!hasEdges()) // this method should only be called when edges exist
+    // this should never be called : remove existing triangle edges
+    if(hasTriangleEdges())
+        clearTriangleEdges();
+
+    if(!hasEdges()) // To optimize, this method should be called without creating edgesArray before.
     {
 #ifndef NDEBUG
         sout << "Warning. [TriangleSetTopologyContainer::createTriangleEdgeArray] edge array is empty." << endl;
 #endif
-        createEdgeSetArray();
-    }
 
-    if(hasTriangleEdges())
-        clearTriangleEdges();
+        /// create edge array and triangle edge array at the same time
+        const unsigned int numTriangles = getNumberOfTriangles();
+        m_triangleEdge.resize(numTriangles);
 
-    const unsigned int numTriangles = getNumberOfTriangles();
-    const unsigned int numEdges = getNumberOfEdges();
+        d_edge.beginEdit();
+        // create a temporary map to find redundant edges
+        std::map<Edge, unsigned int> edgeMap;
 
-    m_triangleEdge.resize(numTriangles);
-    for(unsigned int i=0; i<numTriangles; ++i)
-    {
-        Triangle &t = m_triangle[i];
-        // adding edge i in the edge shell of both points
-
-        for(unsigned int j=0; j<3; ++j)
+        for (unsigned int i=0; i<m_triangle.size(); ++i)
         {
-            //finding edge i in edge array
-            for(unsigned int edge=0; edge<numEdges; ++edge)
+            const Triangle &t = m_triangle[i];
+            for(unsigned int j=0; j<3; ++j)
             {
-                if ( (m_edge[edge][0] == t[(j+1)%3] && m_edge[edge][1] == t[(j+2)%3]) || (m_edge[edge][0] == t[(j+2)%3] && m_edge[edge][1] == t[(j+1)%3]))
+                const unsigned int v1 = t[(j+1)%3];
+                const unsigned int v2 = t[(j+2)%3];
+
+                // sort vertices in lexicographic order
+                const Edge e = ((v1<v2) ? Edge(v1,v2) : Edge(v2,v1));
+
+                if(edgeMap.find(e) == edgeMap.end())
                 {
-                    m_triangleEdge[i][j] = edge;
+                    // edge not in edgeMap so create a new one
+                    const int edgeIndex = edgeMap.size();
+                    /// add new edge
+                    edgeMap[e] = edgeIndex;
+                    m_edge.push_back(e);
                 }
+                m_triangleEdge[i][j] = edgeMap[e];
+            }
+        }
+        d_edge.endEdit();
+    }
+    else
+    {
+        /// there are already existing edges : must use an inefficient method. Parse all triangles and find the edge that match each triangle edge
+
+        const unsigned int numTriangles = getNumberOfTriangles();
+        const unsigned int numEdges = getNumberOfEdges();
+
+        m_triangleEdge.resize(numTriangles);
+        /// create a multi map where the key is a vertex index and the content is the indices of edges adjacent to that vertex.
+        std::multimap<PointID, EdgeID> edgeVertexShellMap;
+        std::multimap<PointID, EdgeID>::iterator it;
+        bool foundEdge;
+
+        for (unsigned int edge=0; edge<numEdges; ++edge)  //Todo: check if not better using multimap <PointID ,TriangleID> and for each edge, push each triangle present in both shell
+        {
+            edgeVertexShellMap.insert(std::pair<PointID, EdgeID> (m_edge[edge][0],edge));
+            edgeVertexShellMap.insert(std::pair<PointID, EdgeID> (m_edge[edge][1],edge));
+        }
+
+        for(unsigned int i=0; i<numTriangles; ++i)
+        {
+            Triangle &t = m_triangle[i];
+            // adding edge i in the edge shell of both points
+            for(unsigned int j=0; j<3; ++j)
+            {
+                //finding edge i in edge array
+                std::pair<std::multimap<PointID, EdgeID>::iterator, std::multimap<PointID, EdgeID>::iterator > itPair=edgeVertexShellMap.equal_range(t[(j+1)%3]);
+
+                foundEdge=false;
+                for(it=itPair.first; (it!=itPair.second) && (foundEdge==false); ++it)
+                {
+                    unsigned int edge = (*it).second;
+                    if ( (m_edge[edge][0] == t[(j+1)%3] && m_edge[edge][1] == t[(j+2)%3]) || (m_edge[edge][0] == t[(j+2)%3] && m_edge[edge][1] == t[(j+1)%3]))
+                    {
+                        m_triangleEdge[i][j] = edge;
+                        foundEdge=true;
+                    }
+                }
+#ifndef NDEBUG
+                if (foundEdge==false)
+                    sout << "[TriangleSetTopologyContainer::getTriangleArray] cannot find edge for triangle " << i << "and edge "<< j << endl;
+#endif
             }
         }
     }
 }
+
+
 
 void TriangleSetTopologyContainer::createElementsOnBorder()
 {
