@@ -51,24 +51,45 @@ using defaulttype::Vec3f;
  *
  *  Each contact point is described by :
  *
- *  \item p1:
- *  \item P2:
- *  \item distance:
- *  \item i2:
- *  \item normal:
+ *  \item p1: indice of the collision element
+ *  \item P2: position of the contact point
+ *  \item distance: estimated penetration distance
+ *  \item normal: contact normal in global space
  */
 
+struct GPUContactPoint
+{
+    Vec3f p;
+    int elem;
+};
+
+
+/**
+ *  \brief Generic description of a contact using GPU.
+ *
+ *  Each contact is described by :
+ *
+ *  \item distance: estimated penetration distance
+ *  \item normal: contact normal in global space
+ */
+struct GPUContact
+{
+    Vec3f normal;
+    float distance;
+};
+
+/*
 struct GPUDetectionOutput
 {
     int p1;
     Vec3f p2;
-    union
-    {
+    //union {
         float distance;
-        int i2;
-    };
+    //    int i2;
+    //};
     Vec3f normal;
 };
+*/
 
 /**
  *  \brief Abstract description of a set of contact point using GPU.
@@ -76,7 +97,8 @@ struct GPUDetectionOutput
 class GPUDetectionOutputVector : public DetectionOutputVector
 {
 public:
-    sofa::gpu::cuda::CudaVector<GPUDetectionOutput> results;
+    sofa::gpu::cuda::CudaVector<GPUContactPoint> results1, results2;
+    sofa::gpu::cuda::CudaVector<GPUContact> results;
     struct TestEntry
     {
         int firstIndex; ///< Index of the first result in the results array
@@ -103,6 +125,8 @@ public:
 
     void clear()
     {
+        results1.clear();
+        results2.clear();
         results.clear();
         tests.clear();
     }
@@ -122,11 +146,13 @@ public:
         e.curSize = 0;
         e.newIndex = 0;
         results.fastResize(e.firstIndex+maxSize);
+        results1.fastResize(e.firstIndex+maxSize);
+        results2.fastResize(e.firstIndex+maxSize);
         tests.push_back(e);
         return t;
     }
 
-    const GPUDetectionOutput* get(int i)
+    const GPUContact* get(int i)
     {
         unsigned int t=0;
         while(t<nbTests() && rtest(t).newIndex > i) ++t;
@@ -135,9 +161,27 @@ public:
         else
             return NULL;
     }
+
+    const GPUContactPoint* getP1(int i)
+    {
+        unsigned int t=0;
+        while(t<nbTests() && rtest(t).newIndex > i) ++t;
+        if (t<nbTests())
+            return &(results1[rtest(t).firstIndex + (i-rtest(t).newIndex)]);
+        else
+            return NULL;
+    }
+
+    const GPUContactPoint* getP2(int i)
+    {
+        unsigned int t=0;
+        while(t<nbTests() && rtest(t).newIndex > i) ++t;
+        if (t<nbTests())
+            return &(results2[rtest(t).firstIndex + (i-rtest(t).newIndex)]);
+        else
+            return NULL;
+    }
 };
-
-
 
 template<>
 class TDetectionOutputVector<sofa::gpu::cuda::CudaRigidDistanceGridCollisionModel,sofa::gpu::cuda::CudaRigidDistanceGridCollisionModel> : public GPUDetectionOutputVector
@@ -175,6 +219,8 @@ public:
     struct GPUTest
     {
         void* result;
+        void* result1;
+        void* result2;
         const void* points;
         const void* radius;
         const void* grid;
@@ -194,7 +240,7 @@ public:
         float distance;
         Vec3f normal;
     };*/
-    typedef sofa::core::componentmodel::collision::GPUDetectionOutput GPUContact;
+    //typedef sofa::core::componentmodel::collision::GPUDetectionOutput GPUContact;
     typedef sofa::core::componentmodel::collision::GPUDetectionOutputVector GPUOutputVector;
 
     CudaVector<GPUTest> gputests;

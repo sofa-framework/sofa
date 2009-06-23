@@ -41,10 +41,16 @@ extern "C"
     void CudaCollisionDetection_runTests(unsigned int nbTests, unsigned int maxPoints, const void* tests, void* nresults);
 }
 
+struct /*__align__(16)*/ GPUContactPoint
+{
+    CudaVec3<float> p;
+    int elem;
+};
+
 struct /*__align__(16)*/ GPUContact
 {
-    int p1;
-    CudaVec3<float> p2;
+//    int p1;
+//    CudaVec3<float> p2;
     float distance;
     CudaVec3<float> normal;
 };
@@ -52,6 +58,8 @@ struct /*__align__(16)*/ GPUContact
 struct GPUTest
 {
     GPUContact* result;
+    GPUContactPoint* result1;
+    GPUContactPoint* result2;
     const CudaVec3<float>* points;
     const float* radius;
     const float* grid;
@@ -72,6 +80,7 @@ struct GPUDeformedCube
     int points0, nbp;
     CudaVec3<float> initP0, invDP;
 };
+
 struct GPUDeformedCubeState
 {
     CudaVec4<float> faces[6];
@@ -79,13 +88,29 @@ struct GPUDeformedCubeState
     CudaVec3<float> center, radius;
 };
 
+struct GPUDeformedCubeBSphere
+{
+    CudaVec3<float> center
+    float radius;
+};
+
 struct GPUTestFFD
 {
     GPUContact* result;
+    GPUContactPoint* result1;
+    GPUContactPoint* result2;
     const CudaVec3<float>* points;
     const float* radius;
     const float* grid;
+    const GPUDeformedCube* ffdCubes;
+    GPUDeformedCubeState* ffdState;
+    GPUDeformedCubeState* ffdSphere;
     float margin;
+    int nbPoints;
+    int nbCubes;
+    int gridnx, gridny, gridnz;
+    CudaVec3<float> gridbbmin, gridbbmax;
+    CudaVec3<float> gridp0, gridinvdp;
 };
 
 //////////////////////
@@ -105,16 +130,16 @@ __global__ void CudaCollisionDetection_runTests_kernel(const GPUTest* tests, int
     //! Dynamically allocated shared memory to compact results
     extern  __shared__  int scan[];
 
-    CudaVec3<float> p;
+    CudaVec3<float> p0,p;
     float distance;
     CudaVec3<float> grad = CudaVec3<float>::make(0,0,0);
     //CudaVec3<float> normal;
     int n = 0;
     if (threadIdx.x < curTest.nbPoints)
     {
-        p = curTest.points[threadIdx.x];
+        p0 = curTest.points[threadIdx.x];
         //p = curTest.rotation * p;
-        p = CudaVec3<float>::make(dot(curTest.rotation_x, p), dot(curTest.rotation_y, p), dot(curTest.rotation_z, p));
+        p = CudaVec3<float>::make(dot(curTest.rotation_x, p0), dot(curTest.rotation_y, p0), dot(curTest.rotation_z, p0));
         p += curTest.translation;
 
         CudaVec3<float> coefs = mul(p-curTest.gridp0, curTest.gridinvdp);
@@ -180,18 +205,26 @@ __global__ void CudaCollisionDetection_runTests_kernel(const GPUTest* tests, int
 
     if (n)
     {
+        int i = scan[threadIdx.x]-1;
         GPUContact c;
-        c.p1 = threadIdx.x;
-        c.p2 = p;
+        //c.p1 = threadIdx.x;
+        //c.p2 = p;
         c.distance = distance;
         c.normal = -grad;
         //c.normal = normal; //CudaVec3<float>::make(-grad.x,-grad.y,-grad.z); //-grad;
-        curTest.result[scan[threadIdx.x]-1] = c;
+        curTest.result[i] = c;
         //curTest.result[scan[threadIdx.x]-1].p1 = threadIdx.x;
         //curTest.result[scan[threadIdx.x]-1].p2 = p;
         //curTest.result[scan[threadIdx.x]-1].distance = distance;
         //curTest.result[scan[threadIdx.x]-1].normal = normal;
-
+        GPUContactPoint cp1;
+        cp1.elem = threadIdx.x;
+        cp1.p = p0;
+        curTest.result1[i] = cp1;
+        GPUContactPoint cp2;
+        cp2.elem = 0;
+        cp2.p = p;
+        curTest.result2[i] = cp2;
     }
     if (threadIdx.x == curTest.nbPoints-1)
         nresults[blockIdx.x] = scan[curTest.nbPoints-1];
