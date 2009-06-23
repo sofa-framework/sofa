@@ -223,16 +223,16 @@ void LinearVelocityConstraint<DataTypes>::projectVelocity(VecDeriv& dx)
 template <class DataTypes>
 void LinearVelocityConstraint<DataTypes>::projectPosition(VecCoord& x)
 {
-    Real cT = (Real) this->getContext()->getTime();
-
     //initialize initial Dofs positions, if it's not done
     if (x0.size() == 0)
     {
         const SetIndexArray & indices = m_indices.getValue().getArray();
-        x0.resize( x.size() );
+        x0.resize( indices.size() );
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
             x0[*it] = x[*it];
     }
+
+    Real cT = (Real) this->getContext()->getTime();
 
     //if we found 2 keyTimes, we have to interpolate a position (linear interpolation)
     if(m_keyTimes.getValue().size() != 0 && cT >= *m_keyTimes.getValue().begin() && cT <= *m_keyTimes.getValue().rbegin())
@@ -288,7 +288,7 @@ void LinearVelocityConstraint<DataTypes>::projectPosition(VecCoord& x)
                 {
                     for(SetIndexArray::const_iterator itInd = coordinates.begin(); itInd != coordinates.end(); ++itInd)
                     {
-                        x[*it][*itInd] = m[*itInd]*dTsimu;
+                        x[*it][*itInd] = x0[*it][*itInd] + m[*itInd]*dTsimu;
                     }
                 }
             }
