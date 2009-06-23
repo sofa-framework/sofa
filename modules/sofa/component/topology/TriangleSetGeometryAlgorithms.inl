@@ -2046,45 +2046,65 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw()
     }
 
 
-    //Draw triangles
+    // Draw Triangles
     if (_draw.getValue())
     {
         const sofa::helper::vector<Triangle> &triangleArray = this->m_topology->getTriangles();
 
-        if (!triangleArray.empty())
+        if (!triangleArray.empty()) // Draw triangle surfaces
         {
-            glDisable(GL_LIGHTING);
-
             const VecCoord& coords = *(this->object->getX());
 
+            glDisable(GL_LIGHTING);
+            glColor3f(0.2,1.0,1.0);
+            glBegin(GL_TRIANGLES);
             for (unsigned int i = 0; i<triangleArray.size(); i++)
             {
                 const Triangle& t = triangleArray[i];
 
-                glColor3f(0.2,1.0,1.0);
-                glBegin(GL_TRIANGLES);
                 for (unsigned int j = 0; j<3; j++)
                 {
                     Coord coordP = coords[t[j]];
                     glVertex3d(coordP[0], coordP[1], coordP[2]);
                 }
-                glEnd();
-                glColor3f(0.0,0.4,0.4);
-                glBegin(GL_LINE_STRIP);
-                for (unsigned int j = 0; j<3; j++)
-                {
-                    Coord coordP = coords[t[j]];
-                    glVertex3d(coordP[0], coordP[1], coordP[2]);
-                }
-
-                Coord coordP = coords[t[0]];
-                glVertex3d(coordP[0], coordP[1], coordP[2]);
-                glEnd();
             }
+            glEnd();
+
+            glColor3f(0.0,0.4,0.4);
+            glBegin(GL_LINES);
+            const sofa::helper::vector<Edge> &edgeArray = this->m_topology->getEdges();
+
+            if (!edgeArray.empty()) // Draw triangle edges for better display
+            {
+                for (unsigned int i = 0; i<edgeArray.size(); i++)
+                {
+                    const Edge& e = edgeArray[i];
+                    Coord coordP1 = coords[e[0]];
+                    Coord coordP2 = coords[e[1]];
+                    glVertex3d(coordP1[0], coordP1[1], coordP1[2]);
+                    glVertex3d(coordP2[0], coordP2[1], coordP2[2]);
+                }
+            }
+            else
+            {
+                for (unsigned int i = 0; i<triangleArray.size(); i++)
+                {
+                    const Triangle& t = triangleArray[i];
+                    sofa::helper::vector <Coord> triCoord;
+
+                    for (unsigned int j = 0; j<3; j++)
+                        triCoord.push_back (coords[t[j]]);
+
+                    for (unsigned int j = 0; j<3; j++)
+                    {
+                        glVertex3d(triCoord[j][0], triCoord[j][1], triCoord[j][2]);
+                        glVertex3d(triCoord[(j+1)%3][0], triCoord[(j+1)%3][1], triCoord[(j+1)%3][2]);
+                    }
+                }
+            }
+            glEnd();
         }
     }
-
-
 
 }
 

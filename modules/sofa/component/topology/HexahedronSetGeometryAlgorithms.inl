@@ -537,44 +537,30 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::draw()
         {
             glDisable(GL_LIGHTING);
             glColor3f(1.0,1.0,0.0);
+            glBegin(GL_LINES);
             const VecCoord& coords = *(this->object->getX());
 
             for (unsigned int i = 0; i<hexaArray.size(); i++)
             {
                 const Hexahedron& H = hexaArray[i];
-                glBegin(GL_LINE_STRIP);
-
-                sofa::helper::vector <Coord> vertices;
-                vertices.resize (8);
+                sofa::helper::vector <Coord> hexaCoord;
 
                 for (unsigned int j = 0; j<8; j++)
-                    vertices[j] = coords[H[j]];
+                    hexaCoord.push_back (coords[H[j]]);
 
-                // First quad
                 for (unsigned int j = 0; j<4; j++)
-                    glVertex3d(vertices[j][0], vertices[j][1], vertices[j][2]);
+                {
+                    glVertex3d(hexaCoord[j][0], hexaCoord[j][1], hexaCoord[j][2]);
+                    glVertex3d(hexaCoord[(j+1)%4][0], hexaCoord[(j+1)%4][1], hexaCoord[(j+1)%4][2]);
 
-                glVertex3d(vertices[0][0], vertices[0][1], vertices[0][2]);
+                    glVertex3d(hexaCoord[j+4][0], hexaCoord[j+4][1], hexaCoord[j+4][2]);
+                    glVertex3d(hexaCoord[(j+1)%4 +4][0], hexaCoord[(j+1)%4 +4][1], hexaCoord[(j+1)%4 +4][2]);
 
-                // second quad + link
-                for (unsigned int j = 0; j<4; j++)
-                    glVertex3d(vertices[j+4][0], vertices[j+4][1], vertices[j+4][2]);
-
-                glVertex3d(vertices[4][0], vertices[4][1], vertices[4][2]);
-                glEnd();
-
-                // last 3 lines
-                glBegin(GL_LINES);
-                glVertex3d(vertices[1][0], vertices[1][1], vertices[1][2]);
-                glVertex3d(vertices[5][0], vertices[5][1], vertices[5][2]);
-
-                glVertex3d(vertices[3][0], vertices[3][1], vertices[3][2]);
-                glVertex3d(vertices[7][0], vertices[7][1], vertices[7][2]);
-
-                glVertex3d(vertices[2][0], vertices[2][1], vertices[2][2]);
-                glVertex3d(vertices[6][0], vertices[6][1], vertices[6][2]);
-                glEnd();
+                    glVertex3d(hexaCoord[j][0], hexaCoord[j][1], hexaCoord[j][2]);
+                    glVertex3d(hexaCoord[j+4][0], hexaCoord[j+4][1], hexaCoord[j+4][2]);
+                }
             }
+            glEnd();
         }
     }
 }
