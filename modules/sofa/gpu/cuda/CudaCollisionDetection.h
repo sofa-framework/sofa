@@ -51,7 +51,7 @@ using defaulttype::Vec3f;
  *
  *  Each contact point is described by :
  *
- *  \item p1: indice of the collision element
+ *  \item p1: index of the collision element
  *  \item P2: position of the contact point
  *  \item distance: estimated penetration distance
  *  \item normal: contact normal in global space
