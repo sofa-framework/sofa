@@ -27,6 +27,7 @@
 
 #include <sofa/core/componentmodel/behavior/BaseController.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/component/container/ArticulatedHierarchyContainer.h>
 #include <ARTrackEvent.h>
 
 namespace sofa
@@ -53,6 +54,8 @@ public:
      * @brief Default Destructor.
      */
     virtual ~ARTrackController() {};
+
+    void init();
 
     void onARTrackEvent(core::objectmodel::ARTrackEvent *aev);
 
@@ -86,6 +89,7 @@ public:
 
 protected:
     core::componentmodel::behavior::MechanicalState<DataTypes> *mstate; ///< Controlled MechanicalState.
+    vector<sofa::component::container::ArticulatedHierarchyContainer::ArticulationCenter::Articulation*> articulations;
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_CONTROLLER_ARTRACKCONTROLLER_CPP)

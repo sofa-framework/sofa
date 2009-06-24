@@ -158,7 +158,11 @@ void* ARTrackDriver::computeTracking(void *sarg)
 #else
         pthread_mutex_lock( &arg->mutex );
 #endif
+
         arg->wirstTranslation = wirstfilteredPos - arg->wristInitPos;
+        for (unsigned int i=0; i<arg->angle_finger.size(); ++i)
+            arg->angle_finger[i] = arg->glove[0].finger[i].anglephalanx[1];
+
 #ifdef WIN32
         ReleaseMutex(arg->mutex);
 #else
@@ -175,17 +179,7 @@ void ARTrackDriver::handleEvent(core::objectmodel::Event *event)
 {
     if (dynamic_cast<sofa::simulation::AnimateBeginEvent *>(event))
     {
-#ifdef WIN32
-        WaitForSingleObject(dataARTrack.mutex, INFINITE);
-#else
-        pthread_mutex_lock( &dataARTrack.mutex );
-#endif
-        core::objectmodel::ARTrackEvent aRTrackEvent(dataARTrack.wirstTranslation, dataARTrack.wristRotation);
-#ifdef WIN32
-        ReleaseMutex(dataARTrack.mutex);
-#else
-        pthread_mutex_unlock( &dataARTrack.mutex );
-#endif
+        core::objectmodel::ARTrackEvent aRTrackEvent(dataARTrack.wirstTranslation, dataARTrack.wristRotation, dataARTrack.angle_finger);
         this->getContext()->propagateEvent(&aRTrackEvent);
     }
 }
