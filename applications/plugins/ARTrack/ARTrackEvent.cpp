@@ -35,20 +35,26 @@ namespace core
 namespace objectmodel
 {
 
-ARTrackEvent::ARTrackEvent(const Vector3& position, const Quat& orientation)
+ARTrackEvent::ARTrackEvent(const Vector3& position, const Quat& orientation, const sofa::helper::fixed_array<double,3>& angles)
     : sofa::core::objectmodel::Event()
     , m_position(position)
     , m_orientation(orientation)
+    , m_angles(angles)
 {}
 
-Vector3 ARTrackEvent::getPosition()
+const Vector3 ARTrackEvent::getPosition() const
 {
     return m_position;
 }
 
-Quat ARTrackEvent::getOrientation()
+const Quat ARTrackEvent::getOrientation() const
 {
     return m_orientation;
+}
+
+const sofa::helper::fixed_array<double,3> ARTrackEvent::getAngles() const
+{
+    return m_angles;
 }
 
 

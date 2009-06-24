@@ -28,6 +28,7 @@
 #include <ARTrackController.h>
 #include <ARTrackEvent.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {
@@ -37,6 +38,18 @@ namespace component
 
 namespace controller
 {
+
+template <class DataTypes>
+void ARTrackController<DataTypes>::init()
+{
+}
+
+template <>
+void ARTrackController<Vec1dTypes>::init()
+{
+    getContext()->get<sofa::component::container::ArticulatedHierarchyContainer::ArticulationCenter::Articulation>(&articulations);
+}
+
 
 template <>
 void ARTrackController<RigidTypes>::onARTrackEvent(core::objectmodel::ARTrackEvent *aev)
@@ -50,6 +63,49 @@ void ARTrackController<RigidTypes>::onARTrackEvent(core::objectmodel::ARTrackEve
 
             (*mstate->getXfree())[0].getOrientation() = aev->getOrientation();
             (*mstate->getX())[0].getOrientation() = aev->getOrientation();
+        }
+    }
+}
+
+template <>
+void ARTrackController<Vec1dTypes>::onARTrackEvent(core::objectmodel::ARTrackEvent *aev)
+{
+    if(mstate)
+    {
+        if(!(*mstate->getXfree()).empty() && !(*mstate->getX()).empty())
+        {
+            for (unsigned int i=6; i<9; ++i) // thumb
+            {
+                (*mstate->getXfree())[i] = aev->getAngles()[0];// * articulations[i]->coeff.getValue() - articulations[i]->correction.getValue();
+
+                if((*mstate->getXfree())[i].x()<0)
+                {
+                    (*mstate->getXfree())[i] = 0.0;
+                    (*mstate->getX())[i] = 0.0;
+                }
+            }
+
+            for (unsigned int i=9; i<12; ++i) // index
+            {
+                (*mstate->getXfree())[i] = aev->getAngles()[1];// * articulations[i]->coeff.getValue() - articulations[i]->correction.getValue();
+
+                if((*mstate->getXfree())[i].x()<0)
+                {
+                    (*mstate->getXfree())[i] = 0.0;
+                    (*mstate->getX())[i] = 0.0;
+                }
+            }
+
+            for(unsigned int i=12; i<21; ++i) // middle, ring, little.
+            {
+                (*mstate->getXfree())[i] = aev->getAngles()[2];// * articulations[i]->coeff.getValue() - articulations[i]->correction.getValue();
+
+                if((*mstate->getXfree())[i].x()<0)
+                {
+                    (*mstate->getXfree())[i] = 0.0;
+                    (*mstate->getX())[i] = 0.0;
+                }
+            }
         }
     }
 }

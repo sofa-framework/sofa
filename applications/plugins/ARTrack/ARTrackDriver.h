@@ -73,6 +73,7 @@ private:
         int nglove;
         dtracklib_glove_type glove[MAX_NGLOVE];
         Vector3 wristInitPos, wirstTranslation;
+        sofa::helper::fixed_array<double,3> angle_finger;
         Quat wristRotation;
 #ifndef WIN32
         pthread_mutex_t mutex;
