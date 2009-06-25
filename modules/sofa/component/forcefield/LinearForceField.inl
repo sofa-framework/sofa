@@ -45,7 +45,7 @@ using namespace sofa::core::objectmodel;
 template<class DataTypes>
 LinearForceField<DataTypes>::LinearForceField()
     : points(BaseObject::initData(&points, "points", "points where the force is applied"))
-    , force(BaseObject::initData(&force, (Real)0.0, "force", "applied force to all points"))
+    , force(BaseObject::initData(&force, (Real)1.0, "force", "applied force to all points"))
     , keyTimes(BaseObject::initData(&keyTimes, "times", "key times for the interpolation"))
     , keyForces(BaseObject::initData(&keyForces, "forces", "forces corresponding to the key times"))
     , arrowSizeCoef(BaseObject::initData(&arrowSizeCoef,0.0, "arrowSizeCoef", "Size of the drawn arrows (0->no arrows, sign->direction of drawing"))
@@ -134,8 +134,8 @@ void LinearForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& /*p1*/,
         if (finished)
         {
 
-            Real dt = (cT - prevT)/(nextT - prevT);
-            Deriv ff = (nextF - prevF)*dt + prevF;
+            Deriv slope = (nextF - prevF)*(1.0/(nextT - prevT));
+            Deriv ff = slope*(cT - prevT) + prevF;
 
             Real f = force.getValue();
 
