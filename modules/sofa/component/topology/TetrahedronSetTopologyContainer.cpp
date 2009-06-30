@@ -142,8 +142,8 @@ void TetrahedronSetTopologyContainer::createEdgeSetArray()
         const Tetrahedron &t = m_tetrahedron[i];
         for (unsigned int j=0; j<6; ++j)
         {
-            const unsigned int v1 = t[(j+1)%6];
-            const unsigned int v2 = t[(j+2)%6];
+            const unsigned int v1 = t[tetrahedronEdgeArray[j][0]];
+            const unsigned int v2 = t[tetrahedronEdgeArray[j][1]];
 
             // sort vertices in lexicographic order
             const Edge e((v1<v2) ? Edge(v1,v2) : Edge(v2,v1));
@@ -193,8 +193,8 @@ void TetrahedronSetTopologyContainer::createTetrahedronEdgeArray()
             const Tetrahedron &t = m_tetrahedron[i];
             for (unsigned int j=0; j<6; ++j)
             {
-                const unsigned int v1 = t[(j+1)%6];
-                const unsigned int v2 = t[(j+2)%6];
+                const unsigned int v1 = t[tetrahedronEdgeArray[j][0]];
+                const unsigned int v2 = t[tetrahedronEdgeArray[j][1]];
 
                 // sort vertices in lexicographic order
                 const Edge e((v1<v2) ? Edge(v1,v2) : Edge(v2,v1));
@@ -236,13 +236,13 @@ void TetrahedronSetTopologyContainer::createTetrahedronEdgeArray()
             for(unsigned int j=0; j<6; ++j)
             {
                 //finding edge i in edge array
-                std::pair<std::multimap<PointID, EdgeID>::iterator, std::multimap<PointID, EdgeID>::iterator > itPair=edgeVertexShellMap.equal_range(t[(j+1)%6]);
+                std::pair<std::multimap<PointID, EdgeID>::iterator, std::multimap<PointID, EdgeID>::iterator > itPair=edgeVertexShellMap.equal_range(t[tetrahedronEdgeArray[j][0]]);
 
                 foundEdge=false;
                 for(it=itPair.first; (it!=itPair.second) && (foundEdge==false); ++it)
                 {
                     unsigned int edge = (*it).second;
-                    if ( (m_edge[edge][0] == t[(j+1)%6] && m_edge[edge][1] == t[(j+2)%6]) || (m_edge[edge][0] == t[(j+2)%6] && m_edge[edge][1] == t[(j+1)%6]))
+                    if ( (m_edge[edge][0] == t[tetrahedronEdgeArray[j][0]] && m_edge[edge][1] == t[tetrahedronEdgeArray[j][1]]) || (m_edge[edge][0] == t[tetrahedronEdgeArray[j][1]] && m_edge[edge][1] == t[tetrahedronEdgeArray[j][0]]))
                     {
                         m_tetrahedronEdge[i][j] = edge;
                         foundEdge=true;
