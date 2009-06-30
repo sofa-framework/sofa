@@ -227,7 +227,7 @@ void LinearVelocityConstraint<DataTypes>::projectPosition(VecCoord& x)
     if (x0.size() == 0)
     {
         const SetIndexArray & indices = m_indices.getValue().getArray();
-        x0.resize( indices.size() );
+        x0.resize( x.size() );
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
             x0[*it] = x[*it];
     }
