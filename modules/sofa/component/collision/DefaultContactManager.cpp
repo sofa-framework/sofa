@@ -169,9 +169,13 @@ std::string DefaultContactManager::getContactResponse(core::CollisionModel* mode
     std::string responseUsed = response.getValue();
     std::string response1 = model1->getContactResponse();
     std::string response2 = model2->getContactResponse();
-    if (!response1.empty()) responseUsed = response1;
-    else if (!response2.empty()) responseUsed = response2;
-    return responseUsed;
+
+    if (response1.empty()  &&  response2.empty()) return responseUsed;
+    if (response1.empty()  && !response2.empty()) return response2;
+    if (!response1.empty() &&  response2.empty()) return response1;
+
+    if (response1 != response2) return responseUsed;
+    else return response1;
 }
 
 void DefaultContactManager::draw()
