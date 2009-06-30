@@ -54,7 +54,11 @@ int OglModelClass = core::RegisterObject("Generic visual model for OpenGL displa
 
 OglModel::OglModel()
     : premultipliedAlpha(initData(&premultipliedAlpha, (bool) false, "premultipliedAlpha", "is alpha premultiplied ?"))
+#ifdef SOFA_HAVE_VBO
     , useVBO(initData(&useVBO, (bool) true, "useVBO", "Use VBO for rendering"))
+#else
+    , useVBO(initData(&useVBO, (bool) false, "useVBO", "Use VBO for rendering"))
+#endif
     , writeZTransparent(initData(&writeZTransparent, (bool) false, "writeZTransparent", "Write into Z Buffer for Transparent Object"))
     , tex(NULL), canUseVBO(false), VBOGenDone(false), initDone(false), useTriangles(false), useQuads(false)
     , oldTrianglesSize(0), oldQuadsSize(0)
