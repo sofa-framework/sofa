@@ -53,6 +53,7 @@ public:
     //Data<bool> filterIntersection;
     Data<double> angleCone;
     Data<double> coneFactor;
+    Data<bool> useLMDFilters;
 
 
     LocalMinDistance();
@@ -109,6 +110,12 @@ public:
 
     /// Actions to accomplish when the broadPhase is started. By default do nothing.
     virtual void beginBroadPhase() {}
+
+    int beginIntersection(sofa::core::CollisionModel* /*model1*/, sofa::core::CollisionModel* /*model2*/, OutputVector* /*contacts*/)
+    {
+        std::cout << "beginIntersection\n";
+        return 0;
+    }
 
 private:
     double mainAlarmDistance;
