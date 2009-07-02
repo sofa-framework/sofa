@@ -102,6 +102,12 @@ public:
         return size;
     }
 
+    /// set a value to bSelfCollision
+    void setSelfCollision(bool _bSelfCollision)
+    {
+        bSelfCollision = _bSelfCollision ;
+    }
+
     /// Get the number of contacts attached to the collision model
     int getNumberOfContacts() const
     {
@@ -348,6 +354,15 @@ public:
     const float* getColor4f();
     /// Set a color that can be used to display this CollisionModel
     void setColor4f(const float *c) {color.setValue(defaulttype::Vec4f(c[0],c[1],c[2],c[3]));};
+
+    /// Set of differents parameters
+    void setActive          (const bool a)        { bActive.setValue(a)          ;} ;
+    void setMoving          (const bool a)        { bMoving.setValue(a)          ;} ;
+    void setSimulated       (const bool a)        { bSimulated.setValue(a)       ;} ;
+    void setProximity       (const double a)      { proximity.setValue(a)        ;} ;
+    void setContactResponse (const std::string &a) { contactResponse.setValue(a)  ;} ;
+
+
 protected:
     /// flag indicating if this collision model is active and should be included in default
     /// collision detections
