@@ -356,9 +356,6 @@ public:
     void setColor4f(const float *c) {color.setValue(defaulttype::Vec4f(c[0],c[1],c[2],c[3]));};
 
     /// Set of differents parameters
-    void setActive          (const bool a)        { bActive.setValue(a)          ;} ;
-    void setMoving          (const bool a)        { bMoving.setValue(a)          ;} ;
-    void setSimulated       (const bool a)        { bSimulated.setValue(a)       ;} ;
     void setProximity       (const double a)      { proximity.setValue(a)        ;} ;
     void setContactResponse (const std::string &a) { contactResponse.setValue(a)  ;} ;
 
