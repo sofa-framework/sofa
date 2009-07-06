@@ -119,14 +119,15 @@ public:
 protected:
 
     TransformationMethod transformationMethod;
-    Data<std::string> method; // the method of the transformation
-    Data<VecCoord> f_outputX; // ouput position
-    Data<VecCoord> f_inputX; // input position
     DataPtr<Coord> originPtr; // origin used by projectOnPlane
+    Data<VecCoord> f_inputX; // input position
+    Data<VecCoord> f_outputX; // ouput position
     DataPtr<Coord> normalPtr; // normal used by projectOnPlane
     DataPtr<Coord> translationPtr; // translation
-    DataPtr<Real> scalePtr; // scale
     DataPtr<Coord> rotationPtr; // rotation
+    DataPtr<Real> scalePtr; // scale
+    Data<std::string> method; // the method of the transformation
+
     Coord origin;
     Coord normal;
     Coord translation;
