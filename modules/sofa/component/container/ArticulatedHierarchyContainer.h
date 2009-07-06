@@ -55,7 +55,7 @@ class SOFA_COMPONENT_CONTAINER_API ArticulatedHierarchyContainer : public virtua
 {
 public:
 
-    typedef SolidTypes<double>::Transform Transform;
+    typedef SolidTypes<SReal>::Transform Transform;
 
     /**
     *	This class defines an articulation center.	This contains a set of articulations.

@@ -126,7 +126,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::init()
 
     for (unsigned int i=0; i<_p0.size(); i++)
     {
-        Vec3d coefs;
+        Vector3 coefs;
 // 		int elementIdx = _sparseGrid->findCube( _p0[i] , coefs[0], coefs[1], coefs[2] );
 // 		if (elementIdx==-1)
 // 		{

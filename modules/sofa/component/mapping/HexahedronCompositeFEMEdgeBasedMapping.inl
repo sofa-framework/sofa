@@ -89,7 +89,7 @@ void HexahedronCompositeFEMEdgeBasedMapping<BasicMapping>::init()
     _coarseBarycentricCoord.resize( this->_qFine0.size());
     for (unsigned int i=0; i<this->_qFine0.size(); i++)
     {
-        Vec3d coefs;
+        Vector3 coefs;
         int elementIdx = this->_sparseGrid->findCube( this->_qFine0[i] , coefs[0], coefs[1], coefs[2] );
         if (elementIdx==-1)
         {

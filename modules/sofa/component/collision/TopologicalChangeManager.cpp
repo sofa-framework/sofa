@@ -267,8 +267,8 @@ bool TopologicalChangeManager::incisionTriangleSetTopology(sofa::core::component
     //Incision in triangles from point a to point b
 
     // Mechanical coord of points a & b:
-    Vec<3,double>& a= incision.a_init;
-    Vec<3,double>& b= incision.b_init;
+    Vector3& a= incision.a_init;
+    Vector3& b= incision.b_init;
 
     // Point Indices
     unsigned int& a_last = incision.a_last_init;

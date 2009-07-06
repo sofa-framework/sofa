@@ -229,7 +229,7 @@ void RandomPointDistributionInSurface<DataTypes>::update()
     outPoints->clear();
 
     //Hack : octree is not templated
-    helper::vector<defaulttype::Vec3d> verticesD;
+    helper::vector<defaulttype::Vector3> verticesD;
     for (unsigned int i=0 ; i<vertices.size() ; i++)
         verticesD.push_back(vertices[i]);
 
