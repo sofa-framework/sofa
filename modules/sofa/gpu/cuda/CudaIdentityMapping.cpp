@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "CudaTypes.h"
-#include <CudaIdentityMapping.inl>
+#include "CudaIdentityMapping.inl"
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/componentmodel/behavior/MappedModel.h>

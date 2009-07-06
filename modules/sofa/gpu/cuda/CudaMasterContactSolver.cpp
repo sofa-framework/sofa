@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <CudaMasterContactSolver.h>
+#include "CudaMasterContactSolver.h"
 
 #include <sofa/simulation/common/AnimateVisitor.h>
 #include <sofa/simulation/common/BehaviorUpdatePositionVisitor.h>
