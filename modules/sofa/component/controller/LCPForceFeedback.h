@@ -63,7 +63,7 @@ public:
 
 protected:
     component::odesolver::LCP* lcp;
-    core::componentmodel::behavior::MechanicalState<defaulttype::Rigid3dTypes> *mState; ///< The omni try to follow this mechanical state.
+    core::componentmodel::behavior::MechanicalState<defaulttype::Rigid3Types> *mState; ///< The omni try to follow this mechanical state.
     sofa::component::odesolver::MasterContactSolver* mastersolver;
 };
 

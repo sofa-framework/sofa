@@ -46,7 +46,7 @@ void LCPForceFeedback::init()
 
     mastersolver = context->get<sofa::component::odesolver::MasterContactSolver>();
 
-    mState = dynamic_cast<core::componentmodel::behavior::MechanicalState<Rigid3dTypes> *> (this->getContext()->getMechanicalState());
+    mState = dynamic_cast<core::componentmodel::behavior::MechanicalState<Rigid3Types> *> (this->getContext()->getMechanicalState());
     if (!mState)
         serr << "LCPForceFeedback has no binding MechanicalState" << sendl;
 
@@ -102,7 +102,10 @@ void LCPForceFeedback::computeForce(double x, double y, double z, double /*u*/, 
             id_buf.push_back(indexC1);
             RigidTypes::SparseVecDeriv v;
             ConstraintIterator itConstraint;
-            std::pair< ConstraintIterator, ConstraintIterator > iter=(*mState->getC())[c1].data();
+            //std::pair< ConstraintIterator, ConstraintIterator > iter=(*mState->getC())[c1].data();
+            std::pair< ConstraintIterator, ConstraintIterator > iter;
+            iter.first=(*mState->getC())[c1].data().first;
+            iter.second=(*mState->getC())[c1].data().second;
 
             for(itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
             {

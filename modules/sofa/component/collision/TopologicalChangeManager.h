@@ -89,8 +89,8 @@ private:
     /// Global variables to register the two last input points (for incision along one segment in a triangular mesh)
     struct Incision
     {
-        Vec<3,double> a_init;
-        Vec<3,double> b_init;
+        Vector3 a_init;
+        Vector3 b_init;
         unsigned int ind_ta_init;
         unsigned int ind_tb_init;
 
