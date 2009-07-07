@@ -120,7 +120,7 @@ void FixedRotationConstraint<DataTypes>::projectPosition(VecCoord& x)
             x[i].getOrientation() = newOrientation;
 
             // Stores orientations for next iteration
-            previousOrientation[i] = Q_prev;
+            previousOrientation[i] = newOrientation;
         }
     }
 
@@ -151,7 +151,7 @@ void FixedRotationConstraint<DataTypes>::projectPosition(VecCoord& x)
             x[i].getOrientation() = newOrientation;
 
             // Stores orientations for next iteration
-            previousOrientation[i] = Q_prev;
+            previousOrientation[i] = newOrientation;
         }
     }
     if (FixedZRotation.getValue() == true)
@@ -181,7 +181,7 @@ void FixedRotationConstraint<DataTypes>::projectPosition(VecCoord& x)
             x[i].getOrientation() = newOrientation;
 
             // Stores orientations for next iteration
-            previousOrientation[i] = Q_prev;
+            previousOrientation[i] = newOrientation;
         }
     }
 
