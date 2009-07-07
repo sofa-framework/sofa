@@ -97,7 +97,7 @@ void Vertex2Frame<DataTypes>::update()
         zAxis.normalize();
         Vector3 xAxis;
         Vector3 yAxis(1.0, 0.0, 0.0);
-        if ( dot(yAxis, zAxis) > 0.99 )
+        if ( fabs(dot(yAxis, zAxis)) > 0.7)
             yAxis = Vector3(0.0, 0.0, 1.0);
 
         xAxis = yAxis.cross(zAxis);
