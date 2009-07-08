@@ -316,9 +316,11 @@ void CudaMasterContactSolver<real>::step(double dt)
     {
         f_check.resize(_numConstraints,MBSIZE);
         for (unsigned i=0; i<_numConstraints; i++) f_check[i] = _f[i];
-        t2 = sofa::gpu::cuda::CudaLCP<real>::CudaNlcp_gaussseidel(useGPU_d.getValue(),_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), f_check.getCudaVector(), _mu,_tol, _maxIt);
 
-        t1 = sofa::gpu::cuda::CudaLCP<real>::CudaNlcp_gaussseidel(0,_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), _f.getCudaVector(), _mu,_tol, _maxIt);
+        real toln = ((int) (_realNumConstraints/3) + 1) * (real)_tol;
+        t2 = sofa::gpu::cuda::CudaLCP<real>::CudaNlcp_gaussseidel(useGPU_d.getValue(),_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), f_check.getCudaVector(), _mu,_toln, _maxIt);
+
+        t1 = sofa::gpu::cuda::CudaLCP<real>::CudaNlcp_gaussseidel(0,_numConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), _f.getCudaVector(), _mu,_toln, _maxIt);
     }
     else
     {
