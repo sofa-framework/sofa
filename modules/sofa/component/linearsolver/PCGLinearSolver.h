@@ -30,7 +30,7 @@
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/helper/map.h>
 
-//#define DISPLAY_TIME
+#define DISPLAY_TIME
 
 #include <math.h>
 
@@ -98,7 +98,6 @@ private :
     double time1;
     double time2;
     double time3;
-    double time4;
     double timeStamp;
 #endif
 protected:

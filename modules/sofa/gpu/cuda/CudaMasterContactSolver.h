@@ -38,7 +38,7 @@
 #include "CudaTypesBase.h"
 
 //#define CHECK 0.01
-#define DISPLAY_TIME
+//#define DISPLAY_TIME
 
 namespace sofa
 {
