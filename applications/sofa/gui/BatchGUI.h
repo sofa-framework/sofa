@@ -52,6 +52,7 @@ public:
     void redraw();
     int closeGUI();
 
+    void setNumIterations(int n) {nbIter=n;};
     sofa::simulation::Node* currentSimulation();
 
     /// @}

@@ -48,7 +48,7 @@ int RayModelClass = core::RegisterObject("Collision model representing a ray in 
 
 using namespace sofa::defaulttype;
 
-RayModel::RayModel(Real length)
+RayModel::RayModel(SReal length)
     : defaultLength(initData(&defaultLength, length, "", "TODO"))
 {
     this->contactResponse.setValue("ray"); // use RayContact response class
@@ -56,24 +56,48 @@ RayModel::RayModel(Real length)
 
 void RayModel::resize(int size)
 {
-    this->component::container::MechanicalObject<Vec3Types>::resize(size);
-    this->core::CollisionModel::resize(size/2);
-    if ((int)length.size() < size/2)
+    this->core::CollisionModel::resize(size);
+
+    if ((int)length.size() < size)
     {
-        length.reserve(size/2);
-        while ((int)length.size() < size/2)
+        length.reserve(size);
+        while ((int)length.size() < size)
             length.push_back(defaultLength.getValue());
+        direction.reserve(size);
+        while ((int)direction.size() < size)
+            direction.push_back(Vector3());
+
     }
     else
     {
-        length.resize(size/2);
+        length.resize(size);
+        direction.resize(size);
     }
 }
 
-int RayModel::addRay(const Vector3& origin, const Vector3& direction, Real length)
+
+void RayModel::init()
+{
+    this->CollisionModel::init();
+
+    mstate = dynamic_cast< core::componentmodel::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
+    if (mstate==NULL)
+    {
+        serr<<"RayModel requires a Vec3 Mechanical Model" << sendl;
+        return;
+    }
+
+    {
+        const int npoints = mstate->getX()->size();
+        resize(npoints);
+    }
+}
+
+
+int RayModel::addRay(const Vector3& origin, const Vector3& direction, SReal length)
 {
     int i = size;
-    resize(2*(i+1));
+    resize(i);
     Ray r = getRay(i);
     r.origin() = origin;
     r.direction() = direction;
@@ -110,6 +134,7 @@ void RayModel::draw()
 void RayModel::computeBoundingTree(int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
+
     if (!isMoving() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
 
     Vector3 minElem, maxElem;
@@ -122,7 +147,7 @@ void RayModel::computeBoundingTree(int maxDepth)
             Ray r(this, i);
             const Vector3& o = r.origin();
             const Vector3& d = r.direction();
-            const Real l = r.l();
+            const SReal l = r.l();
             for (int c=0; c<3; c++)
             {
                 if (d[c]<0)
@@ -140,6 +165,7 @@ void RayModel::computeBoundingTree(int maxDepth)
         }
         cubeModel->computeBoundingTree(maxDepth);
     }
+
 }
 
 void RayModel::applyTranslation(double dx, double dy, double dz)

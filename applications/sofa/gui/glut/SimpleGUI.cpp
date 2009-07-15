@@ -50,6 +50,9 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/LaparoscopicRigidTypes.h>
 
+#include <sofa/gui/OperationFactory.h>
+#include <sofa/gui/MouseOperations.h>
+
 #ifdef SOFA_HAVE_CHAI3D
 #include <sofa/simulation/common/PropagateEventVisitor.h>
 #include <sofa/core/objectmodel/GLInitializedEvent.h>
@@ -341,8 +344,6 @@ SimpleGUI::SimpleGUI()
     _mouseInteractorTrackball.ComputeQuaternion(0.0, 0.0, 0.0, 0.0);
     _mouseInteractorNewQuat = _mouseInteractorTrackball.GetQuaternion();
 
-    interactor = NULL;
-
     //////////////////////
     m_isControlPressed = false;
     m_isShiftPressed = false;
@@ -352,6 +353,15 @@ SimpleGUI::SimpleGUI()
     m_displayComputationTime = false;
     m_exportGnuplot = false;
 
+    //Register the different Operations possible
+    RegisterOperation("Attach").add< AttachOperation >();
+    RegisterOperation("Incise").add< InciseOperation >();
+    RegisterOperation("Remove").add< RemoveOperation >();
+
+    //Add to each button of the mouse an operation
+    pick.changeOperation(LEFT,   "Attach");
+    pick.changeOperation(MIDDLE, "Incise");
+    pick.changeOperation(RIGHT,  "Remove");
 }
 
 
@@ -1917,6 +1927,8 @@ void SimpleGUI::keyReleaseEvent ( int k )
 // ---------------------- Here are the mouse controls for the scene  ----------------------
 void SimpleGUI::mouseEvent ( int type, int eventX, int eventY, int button )
 {
+    pick.activateRay(isShiftPressed());
+
     if (_mouseInteractorRotationMode)
     {
         switch (type)
@@ -2004,44 +2016,7 @@ void SimpleGUI::mouseEvent ( int type, int eventX, int eventY, int button )
     else if (isShiftPressed())
     {
         _moving = false;
-        //_sceneTransform.ApplyInverse();
-        if (interactor==NULL)
-        {
-            interactor = new RayPickInteractor();
-            interactor->setName("mouse");
-            if (groot)
-            {
-                simulation::Node* child = simulation::getSimulation()->newNode("mouse");
-                groot->addChild(child);
-                child->addObject(interactor);
-            }
-            interactor->init();
-        }
-        interactor->newEvent("show");
-        switch (type)
-        {
-        case MouseButtonPress:
-            if (button == GLUT_LEFT_BUTTON) // Shift+Leftclick to deform the mesh
-            {
-                interactor->newEvent("pick");
-            }
-            else if (button == GLUT_RIGHT_BUTTON) // Shift+Rightclick to remove triangles
-            {
-                interactor->newEvent("pick2");
-            }
-            else if (button == GLUT_MIDDLE_BUTTON) // Shift+Midclick (by 2 steps defining 2 input points) to cut from one point to another
-            {
-                interactor->newEvent("pick3");
-            }
-            break;
-        case MouseButtonRelease:
-            //if (button == GLUT_LEFT_BUTTON)
-        {
-            interactor->newEvent("release");
-        }
-        break;
-        default: break;
-        }
+
         Vec3d p0, px, py, pz;
         gluUnProject(eventX, lastViewport[3]-1-(eventY), 0, lastModelviewMatrix, lastProjectionMatrix, lastViewport, &(p0[0]), &(p0[1]), &(p0[2]));
         gluUnProject(eventX+1, lastViewport[3]-1-(eventY), 0, lastModelviewMatrix, lastProjectionMatrix, lastViewport, &(px[0]), &(px[1]), &(px[2]));
@@ -2069,8 +2044,49 @@ void SimpleGUI::mouseEvent ( int type, int eventX, int eventY, int button )
         transform[2][3] = p0[2];
         Mat3x3d mat; mat = transform;
         Quat q; q.fromMatrix(mat);
-        //std::cout << p0[0]<<' '<<p0[1]<<' '<<p0[2] << " -> " << pz[0]<<' '<<pz[1]<<' '<<pz[2] << std::endl;
-        interactor->newPosition(p0, q, transform);
+
+        Vec3d position, direction;
+        position  = transform*Vec4d(0,0,0,1);
+        direction = transform*Vec4d(0,0,1,0);
+        direction.normalize();
+        pick.updateRay(position, direction);
+
+
+        switch (type)
+        {
+        case MouseButtonPress:
+            if (button == GLUT_LEFT_BUTTON) // Shift+Leftclick to deform the mesh
+            {
+                pick.handleMouseEvent(PRESSED, LEFT);
+            }
+            else if (button == GLUT_RIGHT_BUTTON) // Shift+Rightclick to remove triangles
+            {
+                pick.handleMouseEvent(PRESSED, RIGHT);
+            }
+            else if (button == GLUT_MIDDLE_BUTTON) // Shift+Midclick (by 2 steps defining 2 input points) to cut from one point to another
+            {
+                pick.handleMouseEvent(PRESSED, MIDDLE);
+            }
+            break;
+        case MouseButtonRelease:
+            //if (button == GLUT_LEFT_BUTTON)
+        {
+            if (button == GLUT_LEFT_BUTTON) // Shift+Leftclick to deform the mesh
+            {
+                pick.handleMouseEvent(RELEASED, LEFT);
+            }
+            else if (button == GLUT_RIGHT_BUTTON) // Shift+Rightclick to remove triangles
+            {
+                pick.handleMouseEvent(RELEASED, RIGHT);
+            }
+            else if (button == GLUT_MIDDLE_BUTTON) // Shift+Midclick (by 2 steps defining 2 input points) to cut from one point to another
+            {
+                pick.handleMouseEvent(RELEASED, MIDDLE);
+            }
+        }
+        break;
+        default: break;
+        }
     }
     else if (isAltPressed())
     {
@@ -2297,8 +2313,6 @@ void SimpleGUI::mouseEvent ( int type, int eventX, int eventY, int button )
     }
     else
     {
-        if (interactor!=NULL)
-            interactor->newEvent("hide");
         switch (type)
         {
         case MouseButtonPress:
@@ -2678,17 +2692,11 @@ void SimpleGUI::setScene(sofa::simulation::Node* scene, const char* filename)
         ofilename << "scene_";
 
     capture.setPrefix(ofilename.str());
-    if (scene != groot)
-    {
-        //SwitchToPresetView();
-        if (interactor != NULL)
-            interactor = NULL;
-    }
     groot = scene;
-    groot->getContext()->get( interactor);
     initTexturesDone = false;
     sceneBBoxIsValid = false;
     redraw();
+    pick.reset();
 }
 
 void SimpleGUI::setExportGnuplot( bool exp )

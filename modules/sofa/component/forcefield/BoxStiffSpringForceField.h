@@ -71,8 +71,9 @@ public:
     void bwdInit();
 
     //virtual const char* getTypeName() const { return "Boxstiffspringforcefield"; }
-    Data<Vec6> box_object1;
-    Data<Vec6> box_object2;
+    Data<Vec6>  box_object1;
+    Data<Vec6>  box_object2;
+    Data<SReal> factorRestLength;
     // -- VisualModel interface
 
     void draw();

@@ -27,7 +27,8 @@
 #include "CudaPointModel.h"
 #include <sofa/component/collision/NewProximityIntersection.inl>
 #include <sofa/component/collision/DiscreteIntersection.inl>
-#include <sofa/component/collision/RayPickInteractor.inl>
+#include <sofa/component/collision/ComponentMouseInteraction.h>
+#include <sofa/component/collision/MouseInteractor.inl>
 #include <sofa/component/collision/RayContact.h>
 #include "CudaContactMapper.h"
 #include <sofa/component/collision/BarycentricPenalityContact.inl>
@@ -50,6 +51,10 @@ namespace collision
 {
 
 using namespace sofa::gpu::cuda;
+
+
+template class MouseInteractor<CudaVec3fTypes>;
+template class TComponentMouseInteraction< CudaVec3fTypes >;
 
 template <>
 void BarycentricPenalityContact<CudaPointModel,CudaRigidDistanceGridCollisionModel,CudaVec3fTypes>::setDetectionOutputs(OutputVector* o)
@@ -155,16 +160,9 @@ void BarycentricPenalityContact<CudaSphereModel,CudaRigidDistanceGridCollisionMo
 
 ContactMapperCreator< ContactMapper<CudaSphereModel> > CudaSphereContactMapperClass("default",true);
 
-template<>
-void DefaultPickingManager<CudaVec3fTypes,forcefield::StiffSpringForceField<CudaVec3fTypes> >::addContact(forcefield::StiffSpringForceField<CudaVec3fTypes>* ff, int index1, int index2, double stiffness, double mu_v, double length, const Vector3& /*p1*/, const Vector3& /*p2*/)
-{
-    ff->addSpring(index1, index2, stiffness, mu_v, length);
-}
-
-template class DefaultPickingManager< CudaVec3fTypes, forcefield::StiffSpringForceField<CudaVec3fTypes> >;
 
 
-helper::Creator<BasePickingManager::PickingManagerFactory, DefaultPickingManager< CudaVec3fTypes, forcefield::StiffSpringForceField<CudaVec3fTypes> > > PickingVectorSpringCudaClass ("VectorSpringCUDA",true);
+helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory, TComponentMouseInteraction<CudaVec3fTypes> > ComponentMouseInteractionCudaVec3fClass ("MouseSpringCudaVec3f",true);
 
 } //namespace collision
 
@@ -177,6 +175,13 @@ namespace gpu
 
 namespace cuda
 {
+
+
+SOFA_DECL_CLASS(CudaMouseInteractor)
+
+int MouseInteractorCudaClass = core::RegisterObject("Supports Mouse Interaction using CUDA")
+        .add< component::collision::MouseInteractor<CudaVec3fTypes> >();
+
 
 SOFA_DECL_CLASS(CudaCollision)
 

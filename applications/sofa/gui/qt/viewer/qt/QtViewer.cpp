@@ -219,8 +219,6 @@ QtViewer::QtViewer(QWidget* parent, const char* name)
     _mouseInteractorTrackball.ComputeQuaternion(0.0, 0.0, 0.0, 0.0);
     _mouseInteractorNewQuat = _mouseInteractorTrackball.GetQuaternion();
 
-    interactor = NULL;
-
 }
 
 
@@ -1587,8 +1585,6 @@ void QtViewer::mouseEvent ( QMouseEvent * e )
     }
     else
     {
-        if (interactor!=NULL)
-            interactor->newEvent("hide");
         switch (e->type())
         {
         case QEvent::MouseButtonPress:
@@ -1727,9 +1723,12 @@ void QtViewer::moveRayPickInteractor(int eventX, int eventY)
     transform[2][3] = p0[2];
     Mat3x3d mat; mat = transform;
     Quat q; q.fromMatrix(mat);
-    //std::cout << p0[0]<<' '<<p0[1]<<' '<<p0[2] << " -> " << pz[0]<<' '<<pz[1]<<' '<<pz[2] << std::endl;
-    interactor->newPosition(p0, q, transform);
-    interactor->setRayRadius(r0, r1);
+
+    Vec3d position, direction;
+    position  = transform*Vec4d(0,0,0,1);
+    direction = transform*Vec4d(0,0,1,0);
+    direction.normalize();
+    pick.updateRay(position, direction);
 }
 
 // -------------------------------------------------------------------

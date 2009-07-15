@@ -40,6 +40,7 @@
 #include <sofa/gui/qt/viewer/qgl/QtGLViewer.h>
 #endif
 
+
 #include <sofa/simulation/common/InitVisitor.h>
 #include <sofa/simulation/common/DesactivatedNodeVisitor.h>
 
@@ -624,8 +625,8 @@ void RealGUI::init()
     descriptionLayout->addWidget(htmlPage);
     connect(htmlPage, SIGNAL(sourceChanged(const QUrl&)), this, SLOT(changeHtmlPage(const QUrl&)));
     //--------
-    pluginManager = new SofaPluginManager;
-    pluginManager->hide();
+    SofaPluginManager::getInstance()->hide();
+    SofaMouseManager::getInstance()->hide();
     //*********************************************************************************************************************************
     //List of objects
     //Read the object.txt that contains the information about the objects which can be added to the scenes whithin a given BoundingBox and scale range
@@ -745,7 +746,7 @@ void RealGUI::addViewer()
     viewer->getQWidget()->update();
     setGUI();
 
-
+    SofaMouseManager::getInstance()->setPickHandler(viewer->getPickHandler());
 }
 
 void RealGUI::viewerOpenGL()
@@ -1335,7 +1336,12 @@ void RealGUI::editRecordDirectory()
 
 void RealGUI::showPluginManager()
 {
-    pluginManager->show();
+    SofaPluginManager::getInstance()->show();
+}
+
+void RealGUI::showMouseManager()
+{
+    SofaMouseManager::getInstance()->show();
 }
 
 void RealGUI::editGnuplotDirectory()

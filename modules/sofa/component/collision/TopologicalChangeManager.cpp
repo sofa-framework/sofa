@@ -392,7 +392,112 @@ bool TopologicalChangeManager::incisionCollisionModel(sofa::core::CollisionEleme
     return false;
 }
 
+bool TopologicalChangeManager::incisionCollisionModel(sofa::core::CollisionModel *firstModel , PointID idxA, const Vector3& firstPoint,
+        sofa::core::CollisionModel *secondModel, PointID idxB, const Vector3& secondPoint ) const
+{
 
+    TriangleModel* firstCollisionModel = dynamic_cast< TriangleModel* >(firstModel);
+    TriangleModel* secondCollisionModel = dynamic_cast< TriangleModel* >(secondModel);
+    if (!firstCollisionModel || firstCollisionModel != secondCollisionModel) return false;
+    return incisionTriangleModel(firstCollisionModel,  idxA, firstPoint,
+            secondCollisionModel, idxB, secondPoint);
+}
+
+
+bool TopologicalChangeManager::incisionTriangleModel(TriangleModel *firstModel , PointID idxA, const Vector3& firstPoint,
+        TriangleModel *secondModel, PointID idxB, const Vector3& secondPoint ) const
+{
+
+    TriangleModel* firstCollisionModel = dynamic_cast< TriangleModel* >(firstModel);
+    TriangleModel* secondCollisionModel = dynamic_cast< TriangleModel* >(secondModel);
+
+    Triangle firstTriangle(firstCollisionModel, idxA);
+    Triangle secondTriangle(secondCollisionModel, idxB);
+
+    if (firstCollisionModel != secondCollisionModel)
+    {
+        std::cerr << "Incision involving different models is not supported yet!" << std::endl;
+        return false;
+    }
+
+
+
+    sofa::core::componentmodel::topology::BaseMeshTopology* currentTopology = firstCollisionModel->getContext()->getMeshTopology();
+    simulation::Node* collisionNode = dynamic_cast<simulation::Node*>(firstCollisionModel->getContext());
+
+    // Test if a TopologicalMapping (by default from TetrahedronSetTopology to TriangleSetTopology) exists :
+    std::vector< sofa::core::componentmodel::topology::TopologicalMapping *> listTopologicalMapping;
+    collisionNode->get<sofa::core::componentmodel::topology::TopologicalMapping>(&listTopologicalMapping, core::objectmodel::BaseContext::Local);
+    const bool isTopologicalMapping = !(listTopologicalMapping.empty());
+
+    // try to catch the topology associated to the detected object (a TriangleSetTopology is expected)
+    sofa::component::topology::TriangleSetTopologyContainer* triangleContainer;
+    currentTopology->getContext()->get(triangleContainer);
+
+    if (!isTopologicalMapping)
+    {
+        Vector3 a(firstPoint);
+        Vector3 b(secondPoint);
+
+        sofa::component::topology::TriangleSetTopologyModifier* triangleModifier;
+        currentTopology->getContext()->get(triangleModifier);
+
+        sofa::component::topology::TriangleSetTopologyAlgorithms<Vec3Types>* triangleAlgorithm;
+        currentTopology->getContext()->get(triangleAlgorithm);
+
+        sofa::component::topology::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeometry;
+        currentTopology->getContext()->get(triangleGeometry);
+
+        // Output declarations
+        sofa::helper::vector< sofa::core::componentmodel::topology::TopologyObjectType> topoPath_list;
+        sofa::helper::vector<unsigned int> indices_list;
+        sofa::helper::vector< Vec<3, double> > coords2_list;
+
+        PointID a_last=-1;
+        PointID b_last=-1;
+
+        bool ok = triangleGeometry->computeIntersectedObjectsList(a_last, a, b, idxA, idxB, topoPath_list, indices_list, coords2_list);
+
+        if (!ok)
+        {
+            std::cout << "ERROR in computeIntersectedPointsList" << std::endl;
+            return false;
+        }
+
+        sofa::helper::vector< unsigned int > new_edges;
+        triangleAlgorithm->SplitAlongPath(a_last, a, b_last, b, topoPath_list, indices_list, coords2_list, new_edges, 0.1, 0.25);
+
+
+        sofa::helper::vector<unsigned int> new_points;
+        sofa::helper::vector<unsigned int> end_points;
+        bool reachBorder = true;
+
+        bool incision_ok =  triangleAlgorithm->InciseAlongEdgeList(new_edges, new_points, end_points, reachBorder);
+
+
+        triangleModifier->propagateTopologicalChanges();
+        // notify the end for the current sequence of topological change events
+        triangleModifier->notifyEndingEvent();
+
+        triangleModifier->propagateTopologicalChanges();
+
+
+//       // Compute the number of connected components
+//       sofa::helper::vector<unsigned int> components;
+
+//       sofa::component::topology::EdgeSetTopologyContainer* edgeCont;
+//       currentTopology->getContext()->get(edgeCont);
+
+//       int num = edgeCont->getNumberConnectedComponents(components);
+//       std::cout << "Number of connected components : " << num << std::endl;
+
+
+        return incision_ok;
+    }
+    else return false;
+
+
+}
 bool TopologicalChangeManager::incisionTriangleModel(sofa::core::CollisionElementIterator elem2, Vector3& pos,
         const bool firstInput, const bool isCut)
 {

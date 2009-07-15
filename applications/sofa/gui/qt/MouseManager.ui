@@ -1,0 +1,134 @@
+<!DOCTYPE UI><UI version="3.3" stdsetdef="1">
+<class>MouseManager</class>
+<widget class="QDialog">
+    <property name="name">
+        <cstring>MouseManager</cstring>
+    </property>
+    <property name="caption">
+        <string>MouseManager</string>
+    </property>
+    <grid>
+        <property name="name">
+            <cstring>unnamed</cstring>
+        </property>
+        <widget class="QGroupBox" row="0" column="0">
+            <property name="name">
+                <cstring>LeftButton</cstring>
+            </property>
+            <property name="title">
+                <string>Left Button</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>LeftOperationLabel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Operation:</string>
+                    </property>
+                </widget>
+                <widget class="QComboBox" row="0" column="1">
+                    <property name="name">
+                        <cstring>LeftOperationCombo</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
+                        <cstring>LeftValueLabel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Parameter:</string>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="1" column="1">
+                    <property name="name">
+                        <cstring>LeftValue</cstring>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="QGroupBox" row="1" column="0">
+            <property name="name">
+                <cstring>MiddleButton</cstring>
+            </property>
+            <property name="title">
+                <string>Middle Button</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>MiddleOperationLabel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Operation:</string>
+                    </property>
+                </widget>
+                <widget class="QComboBox" row="0" column="1">
+                    <property name="name">
+                        <cstring>MiddleOperationCombo</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
+                        <cstring>MiddleValueLabel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Parameter:</string>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="1" column="1">
+                    <property name="name">
+                        <cstring>MiddleValue</cstring>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="QGroupBox" row="2" column="0">
+            <property name="name">
+                <cstring>RightButton</cstring>
+            </property>
+            <property name="title">
+                <string>Right Button</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>RightOperationLabel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Operation:</string>
+                    </property>
+                </widget>
+                <widget class="QComboBox" row="0" column="1">
+                    <property name="name">
+                        <cstring>RightOperationCombo</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
+                        <cstring>RightValueLabel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Parameter:</string>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="1" column="1">
+                    <property name="name">
+                        <cstring>RightValue</cstring>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+    </grid>
+</widget>
+<layoutdefaults spacing="6" margin="11"/>
+</UI>

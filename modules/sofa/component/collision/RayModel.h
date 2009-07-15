@@ -58,18 +58,13 @@ public:
     Vector3& origin();
     Vector3& direction();
     SReal& l();
+
 };
 
 class BaseRayContact;
 
-class SOFA_COMPONENT_COLLISION_API RayModel : public component::container::MechanicalObject<Vec3Types>, public core::CollisionModel
+class SOFA_COMPONENT_COLLISION_API RayModel : public core::CollisionModel
 {
-protected:
-    sofa::helper::vector<SReal> length;
-
-    Data<SReal> defaultLength;
-
-    std::set<BaseRayContact*> contacts;
 public:
     typedef Vec3Types InDataTypes;
     typedef Vec3Types DataTypes;
@@ -78,29 +73,40 @@ public:
 
     RayModel(SReal defaultLength=1);
 
-    int addRay(const Vector3& origin, const Vector3& direction, SReal length);
-
-    int getNbRay() const { return size; }
-
-    void setNbRay(int n) { resize(2*n); }
-
-    Ray getRay(int index) { return Ray(this, index); }
-
-    virtual void addContact(BaseRayContact* contact) { contacts.insert(contact); }
-
-    virtual void removeContact(BaseRayContact* contact) { contacts.erase(contact); }
-
-    virtual void resize(int size);
+    void init();
 
     // -- CollisionModel interface
+    virtual void resize(int size);
 
     virtual void computeBoundingTree(int maxDepth);
 
     void draw(int index);
+    void draw();
+
+    core::componentmodel::behavior::MechanicalState<Vec3Types>* getMechanicalState() { return mstate; }
+    // ----------------------------
+    int addRay(const Vector3& origin, const Vector3& direction, SReal length);
+    Ray getRay(int index) { return Ray(this, index); }
+
+    int getNbRay() const { return size; }
+    void setNbRay(int n) { resize(n); }
+
 
     void applyTranslation(const double dx,const double dy,const double dz);
+    virtual void addContact(BaseRayContact* contact) { contacts.insert(contact); }
+    virtual void removeContact(BaseRayContact* contact) { contacts.erase(contact); }
 
-    void draw();
+    virtual const std::set<BaseRayContact*> &getContacts() const { return contacts;}
+
+protected:
+    sofa::helper::vector<SReal> length;
+    sofa::helper::vector<Vector3> direction;
+
+    Data<SReal> defaultLength;
+
+    std::set<BaseRayContact*> contacts;
+    core::componentmodel::behavior::MechanicalState<Vec3Types>* mstate;
+
 };
 
 inline Ray::Ray(RayModel* model, int index)
@@ -114,12 +120,12 @@ inline Ray::Ray(core::CollisionElementIterator& i)
 
 inline const Vector3& Ray::origin() const
 {
-    return (*model->getX())[2*index+0];
+    return (*model->getMechanicalState()->getX())[index];
 }
 
 inline const Vector3& Ray::direction() const
 {
-    return (*model->getX())[2*index+1];
+    return model->direction[index];
 }
 
 inline Vector3::value_type Ray::l() const
@@ -129,12 +135,12 @@ inline Vector3::value_type Ray::l() const
 
 inline Vector3& Ray::origin()
 {
-    return (*model->getX())[2*index+0];
+    return (*model->getMechanicalState()->getX())[index];
 }
 
 inline Vector3& Ray::direction()
 {
-    return (*model->getX())[2*index+1];
+    return model->direction[index];
 }
 
 inline Vector3::value_type& Ray::l()

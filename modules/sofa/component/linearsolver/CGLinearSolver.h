@@ -96,7 +96,14 @@ public:
     {
 
 
+#ifdef SOFA_DUMP_VISITOR_INFO
+        simulation::Visitor::printNode("ConjugateGradient");
+#endif
 
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+        simulation::Visitor::printNode("VectorAllocation");
+#endif
         Vector& p = *this->createVector();
         Vector& q = *this->createVector();
         Vector& r = *this->createVector();
@@ -129,12 +136,15 @@ public:
         time1 = (double) timer->getTime();
 #endif
 
+#ifdef SOFA_DUMP_VISITOR_INFO
+        simulation::Visitor::printCloseNode("VectorAllocation");
+#endif
         for( nb_iter=1; nb_iter<=f_maxIter.getValue(); nb_iter++ )
         {
 #ifdef SOFA_DUMP_VISITOR_INFO
             std::ostringstream comment;
-            comment << "Iteration : " << nb_iter;
-            simulation::Visitor::printComment(comment.str());
+            comment << "Iteration_" << nb_iter;
+            simulation::Visitor::printNode(comment.str());
 #endif
             // 		printWithElapsedTime( x, helper::system::thread::CTime::getTime()-time0,sout );
 
@@ -150,6 +160,10 @@ public:
                 if (err <= f_tolerance.getValue())
                 {
                     endcond = "tolerance";
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+                    simulation::Visitor::printCloseNode(comment.str());
+#endif
                     break;
                 }
             }
@@ -187,6 +201,9 @@ public:
                 {
                     serr<<"CGLinearSolver, den = "<<den<<", smallDenominatorThreshold = "<<f_smallDenominatorThreshold.getValue()<<sendl;
                 }
+#ifdef SOFA_DUMP_VISITOR_INFO
+                simulation::Visitor::printCloseNode(comment.str());
+#endif
                 break;
             }
             alpha = rho/den;
@@ -201,7 +218,14 @@ public:
             }
 
             rho_1 = rho;
+#ifdef SOFA_DUMP_VISITOR_INFO
+            simulation::Visitor::printCloseNode(comment.str());
+#endif
         }
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+        simulation::Visitor::printCloseNode("ConjugateGradient");
+#endif
 
 #ifdef DISPLAY_TIME
         time1 = (double)(((double) timer->getTime() - time1) * timeStamp / (nb_iter-1));
@@ -223,6 +247,8 @@ public:
         this->deleteVector(&p);
         this->deleteVector(&q);
         this->deleteVector(&r);
+
+
     }
 
 #ifdef DISPLAY_TIME

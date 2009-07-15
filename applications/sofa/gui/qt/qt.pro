@@ -10,7 +10,8 @@ include($${SOFA_DIR}/sofa.cfg)
 
 TARGET = sofaguiqt$$LIBSUFFIX
 
-LIBS += $$SOFA_FRAMEWORK_LIBS $$SOFA_MODULES_LIBS
+LIBS += $$SOFA_FRAMEWORK_LIBS
+LIBS += $$SOFA_MODULES_LIBS
 LIBS += -lsofagui$$LIBSUFFIX
 LIBS += $$SOFA_GUI_EXT_LIBS
 LIBS += $$SOFA_EXT_LIBS
@@ -24,6 +25,7 @@ contains (DEFINES, SOFA_QT4) {
 	  FORMS3 += BaseGenGraphForm.ui
 	  FORMS3 += DialogAddObject.ui
 	  FORMS3 += PluginManager.ui
+	  FORMS3 += MouseManager.ui
 contains (DEFINES, SOFA_DUMP_VISITOR_INFO){
 	  FORMS3 += VisitorGUI.ui
 }
@@ -35,6 +37,7 @@ else {
 	  FORMS += BaseGenGraphForm.ui
 	  FORMS += DialogAddObject.ui
 	  FORMS += PluginManager.ui
+	  FORMS += MouseManager.ui
 contains (DEFINES, SOFA_DUMP_VISITOR_INFO){
 	  FORMS += VisitorGUI.ui
 }
@@ -56,6 +59,8 @@ HEADERS += viewer/SofaViewer.h \
            WFloatLineEdit.h \ 
            FileManagement.h \
            SofaPluginManager.h \
+           SofaMouseManager.h \
+           QMouseOperations.h \
            ImageQt.h
 
 SOURCES += Main.cpp \
@@ -74,6 +79,7 @@ SOURCES += Main.cpp \
            WFloatLineEdit.cpp \
            FileManagement.cpp \
            SofaPluginManager.cpp \
+           SofaMouseManager.cpp \
            ImageQt.cpp
 
 contains (DEFINES, SOFA_DUMP_VISITOR_INFO){

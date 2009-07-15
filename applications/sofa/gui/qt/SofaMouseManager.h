@@ -24,76 +24,54 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "BatchGUI.h"
-#include <sofa/simulation/common/Simulation.h>
-#include <sofa/helper/system/thread/CTime.h>
+
+
+#ifndef SOFA_GUI_QT_MOUSEMANAGER_H
+#define SOFA_GUI_QT_MOUSEMANAGER_H
+
+#include "MouseManager.h"
+#include <sofa/gui/PickHandler.h>
+
+
 
 namespace sofa
 {
-
 namespace gui
 {
-
-BatchGUI::BatchGUI()
-    : groot(NULL), nbIter(500)
+namespace qt
 {
-}
 
-BatchGUI::~BatchGUI()
-{
-}
 
-int BatchGUI::mainLoop()
+class SofaMouseManager: public MouseManager
 {
-    if (groot)
+    Q_OBJECT
+public:
+
+    SofaMouseManager();
+
+    static SofaMouseManager* getInstance()
     {
-        sofa::simulation::Node::ctime_t tSpent = sofa::helper::system::thread::CTime::getRefTime();
-        std::cout << "Computing "<<nbIter<<" iterations." << std::endl;
-        for (int i=0; i<nbIter; i++)
-        {
-            sofa::simulation::getSimulation()->animate(groot);
-        }
-        std::cout << "1000 iterations done in "<< 1000.0*(sofa::helper::system::thread::CTime::getRefTime()-tSpent)/((double)sofa::helper::system::thread::CTime::getTicksPerSec()) << std::endl;
+        static SofaMouseManager instance;
+        return &instance;
     }
-    return 0;
+
+    void setPickHandler(PickHandler *);
+
+
+public slots:
+    void selectOperation(int);
+
+    double getValue( MOUSE_BUTTON button);
+protected:
+    void updateOperation( MOUSE_BUTTON button, const std::string &id);
+
+    PickHandler *pickHandler;
+    std::map< int, std::string > mapIndexOperation;
+};
+
+
+}
+}
 }
 
-void BatchGUI::redraw()
-{
-}
-
-int BatchGUI::closeGUI()
-{
-    delete this;
-    return 0;
-}
-
-void BatchGUI::setScene(sofa::simulation::Node* groot, const char* filename)
-{
-    this->groot = groot;
-    this->filename = (filename?filename:"");
-}
-
-sofa::simulation::Node* BatchGUI::currentSimulation()
-{
-    return groot;
-}
-
-SOFA_DECL_CLASS(BatchGUI)
-
-int BatchGUIClass = SofaGUI::RegisterGUI("batch", &BatchGUI::CreateGUI, &BatchGUI::InitGUI, -1);
-int BatchGUI::InitGUI(const char* /*name*/, const std::vector<std::string>& /*options*/)
-{
-    return 0;
-}
-
-SofaGUI* BatchGUI::CreateGUI(const char* /*name*/, const std::vector<std::string>& /*options*/, sofa::simulation::Node* groot, const char* filename)
-{
-    BatchGUI* gui = new BatchGUI();
-    gui->setScene(groot, filename);
-    return gui;
-}
-
-} // namespace gui
-
-} // namespace sofa
+#endif

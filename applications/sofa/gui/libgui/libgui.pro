@@ -11,9 +11,14 @@ LIBS += $$SOFA_EXT_LIBS
 
 SOURCES = \
 	    ../SofaGUI.cpp \
-	    ../BatchGUI.cpp
+	    ../BatchGUI.cpp \
+            ../MouseOperations.cpp \
+            ../PickHandler.cpp
 
 HEADERS = \
 	    ../SofaGUI.h \
-	    ../BatchGUI.h
+	    ../BatchGUI.h \
+            ../OperationFactory.h \
+            ../MouseOperations.h \
+            ../PickHandler.h
 

@@ -53,7 +53,11 @@ class SofaPluginManager: public PluginManager
 public:
 
     SofaPluginManager();
-
+    static SofaPluginManager* getInstance()
+    {
+        static SofaPluginManager instance;
+        return &instance;
+    }
 public slots:
     void addLibrary();
     void removeLibrary();

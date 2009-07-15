@@ -182,8 +182,6 @@ QtGLViewer::QtGLViewer(QWidget* parent, const char* name)
 
     //////////////////////
 
-
-    interactor = NULL;
     _mouseInteractorMoving = false;
     _mouseInteractorSavedPosX = 0;
     _mouseInteractorSavedPosY = 0;
@@ -1001,11 +999,7 @@ bool QtGLViewer::mouseEvent(QMouseEvent * e)
         moveLaparoscopic(e);
         return true;
     }
-    else
-    {
-        if (interactor!=NULL)
-            interactor->newEvent("hide");
-    }
+
     return false;
 }
 
@@ -1053,8 +1047,13 @@ void QtGLViewer::moveRayPickInteractor(int eventX, int eventY)
     transform[2][3] = p0[2];
     Mat3x3d mat; mat = transform;
     Quat q; q.fromMatrix(mat);
-    interactor->newPosition(p0, q, transform);
-    interactor->setRayRadius(r0, r1);
+
+
+    Vec3d position, direction;
+    position  = transform*Vec4d(0,0,0,1);
+    direction = transform*Vec4d(0,0,1,0);
+    direction.normalize();
+    pick.updateRay(position, direction);
 }
 
 // -------------------------------------------------------------------
