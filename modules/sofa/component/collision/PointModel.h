@@ -57,6 +57,16 @@ public:
     Vector3 n() const;
 
     bool testLMD(const Vector3 &, double &, double &);
+
+    bool activated;
+};
+
+class PointActiver
+{
+public:
+    PointActiver() {}
+    virtual ~PointActiver() {}
+    virtual bool activePoint(int /*index*/) {return true;}
 };
 
 class SOFA_COMPONENT_COLLISION_API PointModel : public core::CollisionModel
@@ -69,6 +79,8 @@ public:
     typedef DataTypes::Coord Coord;
     typedef DataTypes::Deriv Deriv;
     typedef Point Element;
+    typedef helper::vector<unsigned int> VecIndex;
+
     friend class Point;
 
     PointModel();
@@ -101,18 +113,26 @@ protected:
 
     Data<bool> computeNormals;
 
+    Data<std::string> PointActiverEngine;
+
     VecDeriv normals;
 
     void updateNormals();
+
+    PointActiver *myActiver;
 };
 
 inline Point::Point(PointModel* model, int index)
     : core::TCollisionElementIterator<PointModel>(model, index)
-{}
+{
+    activated =model->myActiver->activePoint(index);
+}
 
 inline Point::Point(core::CollisionElementIterator& i)
     : core::TCollisionElementIterator<PointModel>(static_cast<PointModel*>(i.getCollisionModel()), i.getIndex())
 {
+    PointModel* CM = static_cast<PointModel*>(i.getCollisionModel());
+    activated = CM->myActiver->activePoint(i.getIndex());
 }
 
 inline const Vector3& Point::p() const { return (*model->mstate->getX())[index]; }

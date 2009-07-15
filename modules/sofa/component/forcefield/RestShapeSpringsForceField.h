@@ -56,6 +56,13 @@ public:
 
     Data< VecIndex > points;
     Data< VecReal > stiffness;
+    Data< VecReal > angularStiffness;
+    Data<std::string> external_rest_shape;
+    Data< VecIndex > external_points;
+
+    sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::Rigid3dTypes>* restMStateD;
+    sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::Rigid3fTypes>* restMStateF;
+    bool useRestMState;
 
     RestShapeSpringsForceField();
     ///

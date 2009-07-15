@@ -63,6 +63,7 @@ using core::componentmodel::topology::BaseMeshTopology;
 
 LineModel::LineModel()
     : mstate(NULL), topology(NULL), meshRevision(-1)
+    , LineActiverEngine(initData(&LineActiverEngine,"LineActiverEngine", "path of a component LineActiver that activate or desactivate collision line during execution") )
 {
 }
 
@@ -110,6 +111,27 @@ void LineModel::init()
     }
 
     updateFromTopology();
+
+    const std::string path = LineActiverEngine.getValue();
+
+    if (path.size()==0)
+    {
+        myActiver = new LineActiver();
+        std::cout<<"no Line Activer founded for LineModel "<<this->getName()<<std::endl;
+    }
+    else
+    {
+        this->getContext()->get(myActiver ,path  );
+
+        if (myActiver==NULL)
+        {
+            myActiver = new LineActiver();
+            std::cout<<"wrong path for Line Activer for LineModel "<< this->getName() <<std::endl;
+        }
+        else
+            std::cout<<"Line Activer  founded !! for LineModel "<< this->getName() <<std::endl;
+    }
+
 }
 
 
@@ -342,7 +364,7 @@ void LineModel::updateFromTopology()
 
             if (idx[0] >= nbPoints || idx[1] >= nbPoints)
             {
-                serr << "ERROR: Out of range index in Line " << i << ": " << idx[0] << " " << idx[1] << " ( total points = " << nbPoints << " )"<<sendl;
+                serr << "ERROR: Out of range index in Line " << i << ": " << idx[0] << " " << idx[1] << " : total points (size of the MState) = " << nbPoints <<sendl;
                 continue;
             }
 
@@ -358,6 +380,8 @@ void LineModel::updateFromTopology()
 void LineModel::draw(int index)
 {
     Line t(this,index);
+    if (!t.activated)
+        return;
     glBegin(GL_LINES);
     helper::gl::glVertexT(t.p1());
     helper::gl::glVertexT(t.p2());
@@ -382,8 +406,11 @@ void LineModel::draw()
         for (int i=0; i<size; i++)
         {
             Line t(this,i);
-            points.push_back(t.p1());
-            points.push_back(t.p2());
+            if(t.activated)
+            {
+                points.push_back(t.p1());
+                points.push_back(t.p2());
+            }
         }
 
         simulation::getSimulation()->DrawUtility.drawLines(points, 1, Vec<4,float>(getColor4f()));
@@ -407,6 +434,7 @@ bool LineModel::canCollideWithElement(int index, CollisionModel* model2, int ind
     else if (model2 == mpoints)
     {
         //sout << "line-point self test "<<index<<" - "<<index2<<sendl;
+        //std::cout << "line-point self test "<<index<<" - "<<index2<<"   - elems[index].i1-1"<<elems[index].i1-1<<"   elems[index].i2+1 "<<elems[index].i2+1<<std::endl;
         return index2 < elems[index].i1-1 || index2 > elems[index].i2+1;
     }
     else
