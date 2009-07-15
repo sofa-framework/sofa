@@ -59,7 +59,7 @@ public:
     {
     }
 
-    ~ComponentMouseInteraction()
+    virtual ~ComponentMouseInteraction()
     {
         if (!nodeRayPick) return;
         nodeRayPick->execute<simulation::DeleteVisitor>();

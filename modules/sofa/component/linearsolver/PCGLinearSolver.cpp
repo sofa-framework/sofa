@@ -173,7 +173,8 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
         simulation::Visitor::printComment(comment.str());
 #endif
 #ifdef DISPLAY_TIME
-        double tmp,tmp2;
+        double // tmp,
+        tmp2;
 #endif
         if (this->preconditioners.size()==0 || (!no_precond))
         {
