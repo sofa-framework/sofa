@@ -71,6 +71,7 @@ int PointModelClass = core::RegisterObject("Collision model which represents a s
 PointModel::PointModel()
     : mstate(NULL)
     , computeNormals( initData(&computeNormals, false, "computeNormals", "activate computation of normal vectors (required for some collision detection algorithms)") )
+    , PointActiverEngine(initData(&PointActiverEngine,"PointActiverEngine", "path of a component PointActiver that activate or desactivate collision point during execution") )
 {
 }
 
@@ -93,11 +94,36 @@ void PointModel::init()
     const int npoints = mstate->getX()->size();
     resize(npoints);
     if (computeNormals.getValue()) updateNormals();
+
+
+
+    const std::string path = PointActiverEngine.getValue();
+
+    if (path.size()==0)
+    {
+        myActiver = new PointActiver();
+        std::cout<<"no Point Activer founded path ="<<path<<std::endl;
+    }
+    else
+    {
+        this->getContext()->get(myActiver ,path  );
+
+        if (myActiver==NULL)
+        {
+            myActiver = new PointActiver();
+            std::cout<<"wrong path for Point Activer  "<<std::endl;
+        }
+        else
+            std::cout<<"Point Activer founded if founded !"<<std::endl;
+    }
+
 }
 
 void PointModel::draw(int index)
 {
     Point t(this,index);
+    if (!t.activated)
+        return;
     glBegin(GL_POINTS);
     helper::gl::glVertexT(t.p());
     glEnd();
@@ -130,11 +156,14 @@ void PointModel::draw()
         for (int i = 0; i < size; i++)
         {
             Point t(this,i);
-            pointsP.push_back(t.p());
-            if ((unsigned)i < normals.size())
+            if (t.activated)
             {
-                pointsL.push_back(t.p());
-                pointsL.push_back(t.p()+normals[i]*0.1f);
+                pointsP.push_back(t.p());
+                if ((unsigned)i < normals.size())
+                {
+                    pointsL.push_back(t.p());
+                    pointsL.push_back(t.p()+normals[i]*0.1f);
+                }
             }
         }
         simulation::getSimulation()->DrawUtility.drawPoints(pointsP, 3, Vec<4,float>(getColor4f()));
@@ -334,6 +363,7 @@ void PointModel::updateNormals()
 
 bool Point::testLMD(const Vector3 &PQ, double &coneFactor, double &coneExtension)
 {
+
     Vector3 pt = p();
 
     sofa::core::componentmodel::topology::BaseMeshTopology* mesh = model->getMeshTopology();

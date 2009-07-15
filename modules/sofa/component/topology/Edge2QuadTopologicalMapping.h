@@ -70,6 +70,7 @@ public:
     enum { M=Coord::static_size };
     typedef defaulttype::Mat<M,M,Real> Mat;
     typedef defaulttype::Vec<M,Real> Vec;
+    typedef helper::vector<unsigned int> VecIndex;
 
 
 public:
@@ -85,7 +86,8 @@ public:
            m_radius( initData(&m_radius, "radius", "Radius of created circles")),
            object1(initData(&object1, std::string("../.."), "object1", "First object to map")),
            object2(initData(&object2, std::string(".."), "object2", "Second object to map")),
-           flipNormals(initData(&flipNormals, bool(false), "flipNormals", "Flip Normals ? (Inverse point order when creating quads)"))
+           edgeList(initData(&edgeList, "edgeList", "list of input edges for the topological mapping: by default, all considered")),
+           flipNormals(initData(&flipNormals, bool(false), "flipNormals", "Flip Normal ? (Inverse point order when creating quad)"))
     {
     }
 
@@ -180,6 +182,7 @@ protected:
     Data< std::string > object1;
     Data< std::string > object2;
 
+    Data<VecIndex> edgeList;
     Data<bool> flipNormals;
 };
 

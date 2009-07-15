@@ -87,6 +87,26 @@ void BeamFEMForceField<DataTypes>::init()
             return;
         }
         _indexedElements = &_topology->getEdges();
+        if (_list_segment.getValue().size() == 0)
+        {
+            std::cout<<"Forcefield named "<<this->getName()<<" applies to the wholo topo"<<std::endl;
+            _partial_list_segment = false;
+        }
+        else
+        {
+            std::cout<<"Forcefield named "<<this->getName()<<" applies to a subset of edges"<<std::endl;
+            _partial_list_segment = true;
+
+            for (unsigned int j=0; j<_list_segment.getValue().size(); j++)
+            {
+                unsigned int i = _list_segment.getValue()[j];
+                if (i>=_indexedElements->size())
+                {
+                    serr<<"WARNING defined listSegment is not compatible with topology"<<sendl;
+                    _partial_list_segment = false;
+                }
+            }
+        }
     }
 
     beamsData.setCreateFunction(BeamFEMEdgeCreationFunction);
@@ -178,7 +198,7 @@ void BeamFEMForceField<DataTypes>::addForce (VecDeriv& f, const VecCoord& p, con
 {
 
     //std::cout<<" BeamFEMForceField<DataTypes>::addForce  "<<std::endl;
-    f.resize(p.size());
+    f.resize(p.size()); // will reset the value ????
     //_beamQuat.resize( _indexedElements->size() );
 
     // First compute each node rotation
@@ -195,14 +215,35 @@ void BeamFEMForceField<DataTypes>::addForce (VecDeriv& f, const VecCoord& p, con
 
     typename VecElement::const_iterator it;
 
-    for(it=_indexedElements->begin(),i=0; it!=_indexedElements->end(); ++it,++i)
+    if (_partial_list_segment)
     {
-        Index a = (*it)[0];
-        Index b = (*it)[1];
 
-        initLarge(i,a,b);
-        accumulateForceLarge( f, p, i, a, b );
+        for (unsigned int j=0; j<_list_segment.getValue().size(); j++)
+        {
+            unsigned int i = _list_segment.getValue()[j];
+            Element edge= (*_indexedElements)[i];
+            Index a = edge[0];
+            Index b = edge[1];
+            //std::cout<<"addForce for segment "<<a<<" - "<<b<<std::endl;
+            initLarge(i,a,b);
+            accumulateForceLarge( f, p, i, a, b );
+        }
+
     }
+    else
+    {
+        for(it=_indexedElements->begin(),i=0; it!=_indexedElements->end(); ++it,++i)
+        {
+
+            Index a = (*it)[0];
+            Index b = (*it)[1];
+
+            initLarge(i,a,b);
+            accumulateForceLarge( f, p, i, a, b );
+        }
+    }
+
+
 
 }
 
@@ -210,12 +251,26 @@ template<class DataTypes>
 void BeamFEMForceField<DataTypes>::addDForce (VecDeriv& df, const VecDeriv& dx)
 {
     df.resize(dx.size());
-    //if(_assembling) applyStiffnessAssembled(v,x);
-    //else
-    {
-        unsigned int i=0;
-        typename VecElement::const_iterator it;
 
+
+    unsigned int i=0;
+
+    if (_partial_list_segment)
+    {
+
+        for (unsigned int j=0; j<_list_segment.getValue().size(); j++)
+        {
+            unsigned int i = _list_segment.getValue()[j];
+            Element edge= (*_indexedElements)[i];
+            Index a = edge[0];
+            Index b = edge[1];
+            applyStiffnessLarge( df, dx, i, a, b );
+        }
+
+    }
+    else
+    {
+        typename VecElement::const_iterator it;
         for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
         {
             Index a = (*it)[0];
@@ -224,6 +279,10 @@ void BeamFEMForceField<DataTypes>::addDForce (VecDeriv& df, const VecDeriv& dx)
             applyStiffnessLarge( df, dx, i, a, b );
         }
     }
+
+
+
+
 
 }
 
@@ -445,38 +504,87 @@ void BeamFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *m
     //const VecCoord& x = *this->mstate->getX();
 
     unsigned int i=0;
-    typename VecElement::const_iterator it;
 
-    for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
+
+
+    if (_partial_list_segment)
     {
-        Index a = (*it)[0];
-        Index b = (*it)[1];
 
-        Displacement local_depl;
-        Vec3d u;
-        const Quat& q = beamQuat(i); //x[a].getOrientation();
-        Transformation R,Rt;
-        q.toMatrix(R);
-        Rt.transpose(R);
-        const StiffnessMatrix& K0 = beamsData.getValue()[i]._k_loc;
-        StiffnessMatrix K;
-        for (int x1=0; x1<12; x1+=3)
-            for (int y1=0; y1<12; y1+=3)
-            {
-                Mat<3,3,Real> m;
-                K0.getsub(x1,y1, m);
-                m = R*m*Rt;
-                K.setsub(x1,y1, m);
-            }
-        int index[12];
-        for (int x1=0; x1<6; x1++)
-            index[x1] = offset+a*6+x1;
-        for (int x1=0; x1<6; x1++)
-            index[6+x1] = offset+b*6+x1;
-        for (int x1=0; x1<12; ++x1)
-            for (int y1=0; y1<12; ++y1)
-                mat->add(index[x1], index[y1], - K(x1,y1)*k);
+        for (unsigned int j=0; j<_list_segment.getValue().size(); j++)
+        {
+
+            i = _list_segment.getValue()[j];
+            Element edge= (*_indexedElements)[i];
+            Index a = edge[0];
+            Index b = edge[1];
+
+            Displacement local_depl;
+            Vec3d u;
+            const Quat& q = beamQuat(i); //x[a].getOrientation();
+            Transformation R,Rt;
+            q.toMatrix(R);
+            Rt.transpose(R);
+            const StiffnessMatrix& K0 = beamsData.getValue()[i]._k_loc;
+            StiffnessMatrix K;
+            for (int x1=0; x1<12; x1+=3)
+                for (int y1=0; y1<12; y1+=3)
+                {
+                    Mat<3,3,Real> m;
+                    K0.getsub(x1,y1, m);
+                    m = R*m*Rt;
+                    K.setsub(x1,y1, m);
+                }
+            int index[12];
+            for (int x1=0; x1<6; x1++)
+                index[x1] = offset+a*6+x1;
+            for (int x1=0; x1<6; x1++)
+                index[6+x1] = offset+b*6+x1;
+            for (int x1=0; x1<12; ++x1)
+                for (int y1=0; y1<12; ++y1)
+                    mat->add(index[x1], index[y1], - K(x1,y1)*k);
+
+        }
+
     }
+    else
+    {
+        typename VecElement::const_iterator it;
+        for(it = _indexedElements->begin() ; it != _indexedElements->end() ; ++it, ++i)
+        {
+            Index a = (*it)[0];
+            Index b = (*it)[1];
+
+
+            Displacement local_depl;
+            Vec3d u;
+            const Quat& q = beamQuat(i); //x[a].getOrientation();
+            Transformation R,Rt;
+            q.toMatrix(R);
+            Rt.transpose(R);
+            const StiffnessMatrix& K0 = beamsData.getValue()[i]._k_loc;
+            StiffnessMatrix K;
+            for (int x1=0; x1<12; x1+=3)
+                for (int y1=0; y1<12; y1+=3)
+                {
+                    Mat<3,3,Real> m;
+                    K0.getsub(x1,y1, m);
+                    m = R*m*Rt;
+                    K.setsub(x1,y1, m);
+                }
+            int index[12];
+            for (int x1=0; x1<6; x1++)
+                index[x1] = offset+a*6+x1;
+            for (int x1=0; x1<6; x1++)
+                index[6+x1] = offset+b*6+x1;
+            for (int x1=0; x1<12; ++x1)
+                for (int y1=0; y1<12; ++y1)
+                    mat->add(index[x1], index[y1], - K(x1,y1)*k);
+
+        }
+    }
+
+
+
 }
 
 template<class DataTypes>

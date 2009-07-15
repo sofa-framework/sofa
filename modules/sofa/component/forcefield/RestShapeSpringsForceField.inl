@@ -47,8 +47,11 @@ namespace forcefield
 
 template<class DataTypes>
 RestShapeSpringsForceField<DataTypes>::RestShapeSpringsForceField()
-    : points(initData(&points, "points", "points where the forces are applied"))
+    : points(initData(&points, "points", "points controlled by the rest shape springs"))
     , stiffness(initData(&stiffness, "stiffness", "stiffness values between the actual position and the rest shape position"))
+    , angularStiffness(initData(&angularStiffness, "angularStiffness", "angularStiffness assigned when controlling the rotation of the points"))
+    , external_rest_shape(initData(&external_rest_shape, "external_rest_shape", "rest_shape can be defined by the position of an external Mechanical State"))
+    , external_points(initData(&external_points, "external_points", "points from the external Mechancial State that define the rest shape springs"))
 {}
 
 
@@ -71,6 +74,7 @@ void RestShapeSpringsForceField<DataTypes>::init()
         points.setValue(indices);
 
     }
+
     if(stiffness.getValue().size() == 0)
     {
         VecReal stiffs;
@@ -79,12 +83,18 @@ void RestShapeSpringsForceField<DataTypes>::init()
         stiffness.setValue(stiffs);
     }
 
+
+    // TODO: add the possibility to define a rest shape based on an other Mechanical State //
+    useRestMState = false;
+
 }
 
 template<class DataTypes>
 void RestShapeSpringsForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& p, const VecDeriv& )
 {
     const VecCoord& p_0 = *this->mstate->getX0();
+
+    //std::cout<<"addForce call in RestShapeSpringsForceField"<<std::endl;
 
     f.resize(p.size());
 
@@ -93,7 +103,7 @@ void RestShapeSpringsForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord
 
     if ( k.size()!= indices.size() )
     {
-        sout << "WARNING : stiffness is not defined on each point, first stiffness is used" << sendl;
+        //sout << "WARNING : stiffness is not defined on each point, first stiffness is used" << sendl;
 
         for (unsigned int i=0; i<indices.size(); i++)
         {
@@ -101,6 +111,9 @@ void RestShapeSpringsForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord
 
             Deriv dx = p[index] - p_0[index];
             f[index] -=  dx * k[0] ;
+
+            //	if (dx.norm()>0.00000001)
+            //		std::cout<<"force on point "<<index<<std::endl;
 
             //	Deriv dx = p[i] - p_0[i];
             //	f[ indices[i] ] -=  dx * k[0] ;
@@ -114,6 +127,9 @@ void RestShapeSpringsForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord
 
             Deriv dx = p[index] - p_0[index];
             f[index] -=  dx * k[index] ;
+
+            //	if (dx.norm()>0.00000001)
+            //		std::cout<<"force on point "<<index<<std::endl;
 
             //	Deriv dx = p[i] - p_0[i];
             //	f[ indices[i] ] -=  dx * k[i] ;

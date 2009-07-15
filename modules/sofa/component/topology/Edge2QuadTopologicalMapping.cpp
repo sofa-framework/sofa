@@ -120,9 +120,9 @@ void Edge2QuadTopologicalMapping::init()
 
             toModel->setNbPoints(fromModel->getNbPoints() * N);
 
-
             if (to_mstate)
             {
+
                 for (unsigned int i=0; i<(unsigned int) fromModel->getNbPoints(); ++i)
                 {
                     unsigned int p0=i;
@@ -141,9 +141,7 @@ void Edge2QuadTopologicalMapping::init()
 
                     for(unsigned int j=0; j<N; ++j)
                     {
-
                         Vec x = t + (Y*cos((Real) (2.0*j*M_PI/N)) + Z*sin((Real) (2.0*j*M_PI/N)))*((Real) rho);
-
                         (*to_mstate->getX())[p0*N+j]=x;
                     }
                 }
@@ -151,47 +149,83 @@ void Edge2QuadTopologicalMapping::init()
 
 
             // CREATION of the quads based on the the circles
-
             sofa::helper::vector< Quad > quads_to_create;
             sofa::helper::vector< unsigned int > quadsIndexList;
-            int nb_elems = toModel->getNbQuads();
-
-            for (unsigned int i=0; i<edgeArray.size(); ++i)
+            if(edgeList.getValue().size()==0)
             {
 
-                unsigned int p0 = edgeArray[i][0];
-                unsigned int p1 = edgeArray[i][1];
+                int nb_elems = toModel->getNbQuads();
 
-                sofa::helper::vector<unsigned int> out_info;
-
-                for(unsigned int j=0; j<N; ++j)
+                for (unsigned int i=0; i<edgeArray.size(); ++i)
                 {
 
-                    unsigned int q0 = p0*N+j;
-                    unsigned int q1 = p1*N+j;
-                    unsigned int q2 = p1*N+((j+1)%N);
-                    unsigned int q3 = p0*N+((j+1)%N);
+                    unsigned int p0 = edgeArray[i][0];
+                    unsigned int p1 = edgeArray[i][1];
 
-                    if (flipNormals.getValue())
+                    sofa::helper::vector<unsigned int> out_info;
+
+                    for(unsigned int j=0; j<N; ++j)
                     {
-                        Quad q = Quad(helper::make_array<unsigned int>((unsigned int) q3, (unsigned int) q2, (unsigned int) q1, (unsigned int) q0));
-                        quads_to_create.push_back(q);
-                        quadsIndexList.push_back(nb_elems);
-                    }
-                    else
-                    {
-                        Quad q = Quad(helper::make_array<unsigned int>((unsigned int) q0, (unsigned int) q1, (unsigned int) q2, (unsigned int) q3));
-                        quads_to_create.push_back(q);
-                        quadsIndexList.push_back(nb_elems);
+
+                        unsigned int q0 = p0*N+j;
+                        unsigned int q1 = p1*N+j;
+                        unsigned int q2 = p1*N+((j+1)%N);
+                        unsigned int q3 = p0*N+((j+1)%N);
+
+                        if (flipNormals.getValue())
+                        {
+                            Quad q = Quad(helper::make_array<unsigned int>((unsigned int) q3, (unsigned int) q2, (unsigned int) q1, (unsigned int) q0));
+                            quads_to_create.push_back(q);
+                            quadsIndexList.push_back(nb_elems);
+                        }
+
+                        else
+                        {
+                            Quad q = Quad(helper::make_array<unsigned int>((unsigned int) q0, (unsigned int) q1, (unsigned int) q2, (unsigned int) q3));
+                            quads_to_create.push_back(q);
+                            quadsIndexList.push_back(nb_elems);
+                        }
+
+                        Loc2GlobVec.push_back(i);
+                        out_info.push_back(Loc2GlobVec.size()-1);
                     }
 
-                    Loc2GlobVec.push_back(i);
-                    out_info.push_back(Loc2GlobVec.size()-1);
 
                     nb_elems++;
+
+                    In2OutMap[i]=out_info;
+                }
+            }
+            else
+            {
+                for (unsigned int j=0; j<edgeList.getValue().size(); ++j)
+                {
+                    unsigned int i=edgeList.getValue()[j];
+
+                    unsigned int p0 = edgeArray[i][0];
+                    unsigned int p1 = edgeArray[i][1];
+
+                    sofa::helper::vector<unsigned int> out_info;
+
+                    for(unsigned int j=0; j<N; ++j)
+                    {
+
+                        unsigned int q0 = p0*N+j;
+                        unsigned int q1 = p1*N+j;
+                        unsigned int q2 = p1*N+((j+1)%N);
+                        unsigned int q3 = p0*N+((j+1)%N);
+
+                        if(flipNormals.getValue())
+                            to_tstm->addQuadProcess(Quad(helper::make_array<unsigned int>((unsigned int) q0, (unsigned int) q3, (unsigned int) q2, (unsigned int) q1)));
+                        else
+                            to_tstm->addQuadProcess(Quad(helper::make_array<unsigned int>((unsigned int) q0, (unsigned int) q1, (unsigned int) q2, (unsigned int) q3)));
+                        Loc2GlobVec.push_back(i);
+                        out_info.push_back(Loc2GlobVec.size()-1);
+                    }
+
+                    In2OutMap[i]=out_info;
                 }
 
-                In2OutMap[i]=out_info;
             }
 
             to_tstm->addQuadsProcess(quads_to_create);
