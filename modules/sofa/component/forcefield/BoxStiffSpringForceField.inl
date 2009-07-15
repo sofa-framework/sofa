@@ -49,7 +49,8 @@ template <class DataTypes>
 BoxStiffSpringForceField<DataTypes>::BoxStiffSpringForceField(MechanicalState* object1, MechanicalState* object2, double ks, double kd)
     : StiffSpringForceField<DataTypes>(object1, object2, ks, kd),
       box_object1( initData( &box_object1, Vec6(0,0,0,1,1,1), "box_object1", "Box for the object1 where springs will be attached") ),
-      box_object2( initData( &box_object2, Vec6(0,0,0,1,1,1), "box_object2", "Box for the object2 where springs will be attached") )
+      box_object2( initData( &box_object2, Vec6(0,0,0,1,1,1), "box_object2", "Box for the object2 where springs will be attached") ),
+      factorRestLength( sofa::core::objectmodel::Base::initData( &factorRestLength, (SReal)1.0, "factorRestLength", "Factor used to compute the rest length of the springs generated"))
 
 {
 }
@@ -58,7 +59,8 @@ template <class DataTypes>
 BoxStiffSpringForceField<DataTypes>::BoxStiffSpringForceField(double ks, double kd)
     : StiffSpringForceField<DataTypes>(ks, kd),
       box_object1( initData( &box_object1, Vec6(0,0,0,1,1,1), "box_object1", "Box for the object1 where springs will be attached") ),
-      box_object2( initData( &box_object2, Vec6(0,0,0,1,1,1), "box_object2", "Box for the object2 where springs will be attached") )
+      box_object2( initData( &box_object2, Vec6(0,0,0,1,1,1), "box_object2", "Box for the object2 where springs will be attached") ),
+      factorRestLength( sofa::core::objectmodel::Base::initData( &factorRestLength, (SReal)1.0, "factorRestLength", "Factor used to compute the rest length of the springs generated"))
 {
 }
 
@@ -113,7 +115,7 @@ void BoxStiffSpringForceField<DataTypes>::bwdInit()
                 if (indice_unused[it->second])
                 {
                     indice_unused[it->second] = false;
-                    this->addSpring(indices1[i], indices2[it->second], this->getStiffness()*it->first/min_dist, this->getDamping(), it->first );
+                    this->addSpring(indices1[i], indices2[it->second], this->getStiffness()*it->first/min_dist, this->getDamping(), it->first*factorRestLength.getValue() );
                     break;
                 }
             }
@@ -141,7 +143,7 @@ void BoxStiffSpringForceField<DataTypes>::bwdInit()
                 if (indice_unused[it->second])
                 {
                     indice_unused[it->second] = false;
-                    this->addSpring( indices1[it->second], indices2[i], this->getStiffness()*it->first/min_dist, this->getDamping(), it->first );
+                    this->addSpring( indices1[it->second], indices2[i], this->getStiffness()*it->first/min_dist, this->getDamping(), it->first*factorRestLength.getValue() );
                     break;
                 }
             }

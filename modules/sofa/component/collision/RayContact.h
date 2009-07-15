@@ -65,6 +65,7 @@ public:
     void removeResponse()
     {
     }
+
 };
 
 template<class CM2>

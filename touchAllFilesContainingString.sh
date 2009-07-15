@@ -1,7 +1,7 @@
 #! /bin/bash
 #define the directories where we will apply the script
 defaultDirectories=(framework modules applications extlibs)
-defaultFiles=(*.h *.inl *.cpp)
+defaultFiles=("*.h" "*.inl" "*.cpp")
 declare -a results
 #counter of file touched
 counter=0
@@ -33,6 +33,3 @@ do
 done
 
 echo $counter files were touched
-
-
-echo $(qmake)

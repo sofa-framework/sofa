@@ -24,9 +24,22 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "BatchGUI.h"
+#ifndef SOFA_GUI_PICKHANDLER_H
+#define SOFA_GUI_PICKHANDLER_H
+
+
+#include <sofa/gui/OperationFactory.h>
+
+
 #include <sofa/simulation/common/Simulation.h>
-#include <sofa/helper/system/thread/CTime.h>
+#include <sofa/simulation/common/Node.h>
+
+#include <sofa/component/container/MechanicalObject.h>
+#include <sofa/component/collision/RayModel.h>
+#include <sofa/component/collision/MouseInteractor.h>
+#include <sofa/component/collision/ComponentMouseInteraction.h>
+
+#include <sofa/helper/fixed_array.h>
 
 namespace sofa
 {
@@ -34,66 +47,66 @@ namespace sofa
 namespace gui
 {
 
-BatchGUI::BatchGUI()
-    : groot(NULL), nbIter(500)
-{
-}
+using simulation::Node;
+using sofa::component::collision::BodyPicked;
+using sofa::component::collision::ComponentMouseInteraction;
 
-BatchGUI::~BatchGUI()
-{
-}
 
-int BatchGUI::mainLoop()
+
+class PickHandler
 {
-    if (groot)
+    typedef sofa::component::collision::RayModel MouseCollisionModel;
+    typedef sofa::component::container::MechanicalObject< defaulttype::Vec3Types > MouseContainer;
+public:
+
+
+    PickHandler();
+    ~PickHandler();
+
+    void activateRay(bool act);
+
+    void updateRay(const sofa::defaulttype::Vector3 &position, const sofa::defaulttype::Vector3 &orientation);
+
+    void handleMouseEvent( MOUSE_STATUS status, MOUSE_BUTTON button);
+
+    void reset();
+
+    void changeOperation(MOUSE_BUTTON button, const std::string &op)
     {
-        sofa::simulation::Node::ctime_t tSpent = sofa::helper::system::thread::CTime::getRefTime();
-        std::cout << "Computing "<<nbIter<<" iterations." << std::endl;
-        for (int i=0; i<nbIter; i++)
-        {
-            sofa::simulation::getSimulation()->animate(groot);
-        }
-        std::cout << "1000 iterations done in "<< 1000.0*(sofa::helper::system::thread::CTime::getRefTime()-tSpent)/((double)sofa::helper::system::thread::CTime::getTicksPerSec()) << std::endl;
+        if (operations[button]) delete operations[button];
+        operations[button] = OperationFactory::Instanciate(op);
+        operations[button]->configure(this,button);
     }
-    return 0;
+
+    ComponentMouseInteraction           *getInteraction();
+    BodyPicked                          *getLastPicked() {return &lastPicked;};
+    helper::fixed_array< BodyPicked,2 > *getElementsPicked() {return &elementsPicked;};
+
+protected:
+
+    Node                *mouseNode;
+    MouseContainer      *mouseContainer;
+    MouseCollisionModel *mouseCollision;
+
+
+    BodyPicked findCollision();
+    bool needToCastRay();
+    void setCompatibleInteractor();
+
+    ComponentMouseInteraction *interaction;
+    std::vector< ComponentMouseInteraction *> instanceComponents;
+
+    bool interactorInUse;
+
+    BodyPicked lastPicked;
+    helper::fixed_array< BodyPicked,2 > elementsPicked;
+
+    MOUSE_BUTTON mouseButton;
+    MOUSE_STATUS mouseStatus;
+
+    helper::fixed_array< Operation*,3 > operations;
+};
+}
 }
 
-void BatchGUI::redraw()
-{
-}
-
-int BatchGUI::closeGUI()
-{
-    delete this;
-    return 0;
-}
-
-void BatchGUI::setScene(sofa::simulation::Node* groot, const char* filename)
-{
-    this->groot = groot;
-    this->filename = (filename?filename:"");
-}
-
-sofa::simulation::Node* BatchGUI::currentSimulation()
-{
-    return groot;
-}
-
-SOFA_DECL_CLASS(BatchGUI)
-
-int BatchGUIClass = SofaGUI::RegisterGUI("batch", &BatchGUI::CreateGUI, &BatchGUI::InitGUI, -1);
-int BatchGUI::InitGUI(const char* /*name*/, const std::vector<std::string>& /*options*/)
-{
-    return 0;
-}
-
-SofaGUI* BatchGUI::CreateGUI(const char* /*name*/, const std::vector<std::string>& /*options*/, sofa::simulation::Node* groot, const char* filename)
-{
-    BatchGUI* gui = new BatchGUI();
-    gui->setScene(groot, filename);
-    return gui;
-}
-
-} // namespace gui
-
-} // namespace sofa
+#endif

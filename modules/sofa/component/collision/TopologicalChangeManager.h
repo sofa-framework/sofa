@@ -29,6 +29,7 @@
 #include <sofa/core/CollisionElement.h>
 
 #include <sofa/core/BehaviorModel.h>
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 
 #ifdef SOFA_DEV
 #include <sofa/component/collision/CuttingManager.h>
@@ -60,6 +61,7 @@ namespace component
 namespace collision
 {
 using namespace sofa::defaulttype;
+using namespace sofa::core::componentmodel::topology;
 
 class TopologicalChangeManager
 {
@@ -74,9 +76,14 @@ public:
     /// Handles Cutting (activated only for a triangular topology), using global variables to register the two last input points
     bool incisionCollisionModel(sofa::core::CollisionElementIterator, Vector3&, bool, bool);
 
+    bool incisionCollisionModel(sofa::core::CollisionModel* model1, unsigned int idx1, const Vector3& firstPoint,
+            sofa::core::CollisionModel *model2, unsigned int idx2, const Vector3& secondPoint ) const;
+
 protected:
 
 private:
+    bool incisionTriangleModel(TriangleModel* model1, unsigned int idx1, const Vector3& firstPoint,
+            TriangleModel *model2, unsigned int idx2, const Vector3& secondPoint ) const;
     bool incisionTriangleModel(sofa::core::CollisionElementIterator, Vector3&, bool, bool);
     /// Intermediate method to handle cutting
     bool incisionTriangleSetTopology(sofa::core::componentmodel::topology::BaseMeshTopology*);

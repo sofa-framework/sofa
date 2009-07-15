@@ -45,6 +45,7 @@
 #include <sofa/gui/qt/ModifyObject.h>
 #include <sofa/gui/qt/DisplayFlagWidget.h>
 #include <sofa/gui/qt/SofaPluginManager.h>
+#include <sofa/gui/qt/SofaMouseManager.h>
 
 #include <sofa/simulation/tree/xml/XML.h>
 #include <sofa/helper/system/SetDirectory.h>
@@ -159,6 +160,7 @@ public:
     virtual void editRecordDirectory();
     virtual void editGnuplotDirectory();
     virtual void showPluginManager();
+    virtual void showMouseManager();
 
     void dragEnterEvent( QDragEnterEvent* event) {event->accept();}
     void dropEvent(QDropEvent* event);
@@ -362,7 +364,6 @@ private:
     WindowVisitor* windowTraceVisitor;
     GraphVisitor* handleTraceVisitor;
 #endif
-    SofaPluginManager* pluginManager;
     QDialog* descriptionScene;
     QTextBrowser* htmlPage;
 
