@@ -31,6 +31,11 @@
 #include <sofa/gui/OperationFactory.h>
 
 #include <iostream>
+#ifndef SOFA_QT4
+#include <qlineedit.h>
+#include <qcombobox.h>
+#include <qlabel.h>
+#endif
 
 namespace sofa
 {
