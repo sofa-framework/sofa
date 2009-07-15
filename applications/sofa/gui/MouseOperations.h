@@ -43,6 +43,7 @@ class Operation
 {
 public:
     Operation(): pickHandle(NULL) {};
+    virtual ~Operation() {};
     virtual void configure(PickHandler *picker, MOUSE_BUTTON b) {pickHandle=picker; button=b; }
     virtual void start() =0;
     virtual void execution() =0;
@@ -56,6 +57,7 @@ class AttachOperation : public Operation
 {
 public:
     AttachOperation():stiffness(1000.0) {};
+    virtual ~AttachOperation() {};
     virtual void start() ;
     virtual void execution() ;
     virtual void end() ;
@@ -73,6 +75,7 @@ protected:
 class InciseOperation : public Operation
 {
 public:
+    virtual ~InciseOperation() {};
     virtual void start() ;
     virtual void execution() ;
     virtual void end() ;
@@ -83,6 +86,7 @@ public:
 class RemoveOperation : public Operation
 {
 public:
+    virtual ~RemoveOperation() {};
     virtual void start() ;
     virtual void execution() ;
     virtual void end() ;

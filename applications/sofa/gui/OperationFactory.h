@@ -42,6 +42,7 @@ namespace gui
 class OperationCreator
 {
 public:
+    virtual ~OperationCreator() {};
     virtual Operation* create() const =0;
     virtual std::string getDescription() const=0;
     virtual bool isModifiable() const=0;
