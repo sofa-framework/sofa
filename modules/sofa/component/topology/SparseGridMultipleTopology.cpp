@@ -158,9 +158,9 @@ void SparseGridMultipleTopology::buildAsFinest(  )
 
     buildFromRegularGridTypes(_regularGrid, regularGridTypes);
 
-    _stiffnessCoefs.resize( this->getNbHexas());
-    _massCoefs.resize( this->getNbHexas());
-    for(int i=0; i<this->getNbHexas(); ++i)
+    _stiffnessCoefs.resize( this->getNbHexahedra());
+    _massCoefs.resize( this->getNbHexahedra());
+    for(int i=0; i<this->getNbHexahedra(); ++i)
     {
         _stiffnessCoefs[i] = regularStiffnessCoefs[ this->_indicesOfCubeinRegularGrid[i] ];
         _massCoefs[i] = regularMassCoefs[ this->_indicesOfCubeinRegularGrid[i] ];
@@ -208,7 +208,7 @@ void SparseGridMultipleTopology::assembleRegularGrids(helper::vector<Type>& regu
 
     for(unsigned i=0; i<_regularGrids.size(); ++i)
     {
-        for(int w=0; w<_regularGrids[i]->getNbHexas(); ++w)
+        for(int w=0; w<_regularGrids[i]->getNbHexahedra(); ++w)
         {
             if( _regularGridTypes[i][w] == INSIDE || (_regularGridTypes[i][w] == BOUNDARY && !this->_fillWeighted.getValue()) )
             {
@@ -265,7 +265,7 @@ void SparseGridMultipleTopology::buildVirtualFinerLevels()
     _virtualFinerLevels[0]->init();
 
     serr<<"SparseGridTopology "<<getName()<<" buildVirtualFinerLevels : ";
-    serr<<"("<<newnx<<"x"<<newny<<"x"<<newnz<<") -> "<< _virtualFinerLevels[0]->getNbHexas() <<" elements , ";
+    serr<<"("<<newnx<<"x"<<newny<<"x"<<newnz<<") -> "<< _virtualFinerLevels[0]->getNbHexahedra() <<" elements , ";
 
     for(int i=1; i<nb; ++i)
     {
@@ -280,7 +280,7 @@ void SparseGridMultipleTopology::buildVirtualFinerLevels()
         _virtualFinerLevels[i]->init();
 
 
-        serr<<"("<<_virtualFinerLevels[i]->getNx()<<"x"<<_virtualFinerLevels[i]->getNy()<<"x"<<_virtualFinerLevels[i]->getNz()<<") -> "<< _virtualFinerLevels[i]->getNbHexas() <<" elements , ";
+        serr<<"("<<_virtualFinerLevels[i]->getNx()<<"x"<<_virtualFinerLevels[i]->getNy()<<"x"<<_virtualFinerLevels[i]->getNz()<<") -> "<< _virtualFinerLevels[i]->getNbHexahedra() <<" elements , ";
     }
 
     serr<<sendl;

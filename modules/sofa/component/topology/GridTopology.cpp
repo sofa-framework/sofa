@@ -116,7 +116,7 @@ void GridTopology::updateQuads()
 
 void GridTopology::updateHexas()
 {
-    SeqHexas& hexas = *seqHexas.beginEdit();
+    SeqHexahedra& hexas = *seqHexas.beginEdit();
     hexas.clear();
     hexas.reserve((n.getValue()[0]-1)*(n.getValue()[1]-1)*(n.getValue()[2]-1));
     for (int z=0; z<n.getValue()[2]-1; z++)
@@ -141,10 +141,10 @@ GridTopology::Hexa GridTopology::getHexaCopy(int i)
     int x = i%(n.getValue()[0]-1); i/=(n.getValue()[0]-1);
     int y = i%(n.getValue()[1]-1); i/=(n.getValue()[1]-1);
     int z = i;
-    return getHexa(x,y,z);
+    return getHexahedron(x,y,z);
 }
 
-GridTopology::Hexa GridTopology::getHexa(int x, int y, int z)
+GridTopology::Hexa GridTopology::getHexahedron(int x, int y, int z)
 {
 #ifdef SOFA_NEW_HEXA
     return Hexa(point(x  ,y  ,z  ),point(x+1,y  ,z  ),

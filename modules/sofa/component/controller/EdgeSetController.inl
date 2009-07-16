@@ -365,7 +365,7 @@ void EdgeSetController<DataTypes>::modifyTopology(void)
     if (!reversed.getValue())
     {
         sofa::helper::vector< unsigned int > baseEdge(0);
-        baseEdge = _topology->getEdgeVertexShell(startingIndex.getValue());
+        baseEdge = _topology->getEdgesAroundVertex(startingIndex.getValue());
         /// if the startingIndex is not on the base or on the tip of the wire, then we choose the second edge shared by the starting point.
         if (baseEdge.size() == 2)
         {
@@ -423,7 +423,7 @@ void EdgeSetController<DataTypes>::modifyTopology(void)
         if (n > 1)
         {
             sofa::helper::vector< unsigned int > baseEdge(0);
-            baseEdge = _topology->getEdgeVertexShell(n - 1);
+            baseEdge = _topology->getEdgesAroundVertex(n - 1);
 
             if (baseEdge.size() == 1)
             {
@@ -463,7 +463,7 @@ void EdgeSetController<DataTypes>::modifyTopology(void)
     if (!reversed.getValue())
     {
         sofa::helper::vector< unsigned int > baseEdge;
-        baseEdge = _topology->getEdgeVertexShell(startingIndex.getValue()+1);
+        baseEdge = _topology->getEdgesAroundVertex(startingIndex.getValue()+1);
 
         if (baseEdge.size()==1)
         {
@@ -515,7 +515,7 @@ void EdgeSetController<DataTypes>::modifyTopology(void)
         if (n > 1)
         {
             sofa::helper::vector< unsigned int > baseEdge;
-            baseEdge = _topology->getEdgeVertexShell(n - 2);
+            baseEdge = _topology->getEdgesAroundVertex(n - 2);
 
             if (baseEdge.size() == 2)
             {

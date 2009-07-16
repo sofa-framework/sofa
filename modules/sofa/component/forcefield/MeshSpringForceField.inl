@@ -140,10 +140,10 @@ void MeshSpringForceField<DataTypes>::init()
             {
                 s = this->tetrasStiffness.getValue();
                 d = this->tetrasDamping.getValue();
-                n = topology->getNbTetras();
+                n = topology->getNbTetrahedra();
                 for (int i=0; i<n; ++i)
                 {
-                    sofa::core::componentmodel::topology::BaseMeshTopology::Tetra e = topology->getTetra(i);
+                    sofa::core::componentmodel::topology::BaseMeshTopology::Tetra e = topology->getTetrahedron(i);
                     this->addSpring(sset, e[0], e[1], s, d);
                     this->addSpring(sset, e[0], e[2], s, d);
                     this->addSpring(sset, e[0], e[3], s, d);
@@ -158,11 +158,11 @@ void MeshSpringForceField<DataTypes>::init()
                 s = this->cubesStiffness.getValue();
                 d = this->cubesDamping.getValue();
 #ifdef SOFA_NEW_HEXA
-                n = topology->getNbHexas();
+                n = topology->getNbHexahedra();
                 for (int i=0; i<n; ++i)
                 {
                     if (!topology->isCubeActive(i)) continue;
-                    sofa::core::componentmodel::topology::BaseMeshTopology::Hexa e = topology->getHexa(i);
+                    sofa::core::componentmodel::topology::BaseMeshTopology::Hexa e = topology->getHexahedron(i);
 #else
                 n = topology->getNbCubes();
                 for (int i=0; i<n; ++i)

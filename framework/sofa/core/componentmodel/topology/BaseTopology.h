@@ -196,8 +196,8 @@ public:
     virtual const SeqEdges& getEdges()         { static SeqEdges     empty; return empty; }
     virtual const SeqTriangles& getTriangles() { static SeqTriangles empty; return empty; }
     virtual const SeqQuads& getQuads()         { static SeqQuads     empty; return empty; }
-    virtual const SeqTetras& getTetras()       { static SeqTetras    empty; return empty; }
-    virtual const SeqHexas& getHexas()         { static SeqHexas     empty; return empty; }
+    virtual const SeqTetrahedra& getTetrahedra()       { static SeqTetrahedra    empty; return empty; }
+    virtual const SeqHexahedra& getHexahedra()         { static SeqHexahedra     empty; return empty; }
     /// @}
 
 

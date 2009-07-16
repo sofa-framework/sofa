@@ -46,16 +46,16 @@ typedef BaseMeshTopology::TetraID		TetraID;
 typedef BaseMeshTopology::Edge		Edge;
 typedef BaseMeshTopology::Triangle	Triangle;
 typedef BaseMeshTopology::Tetra		Tetra;
-typedef BaseMeshTopology::SeqTetras	SeqTetras;
-typedef BaseMeshTopology::VertexTetras	VertexTetras;
-typedef BaseMeshTopology::EdgeTetras	EdgeTetras;
-typedef BaseMeshTopology::TriangleTetras	TriangleTetras;
-typedef BaseMeshTopology::TetraEdges	TetraEdges;
-typedef BaseMeshTopology::TetraTriangles	TetraTriangles;
+typedef BaseMeshTopology::SeqTetrahedra	SeqTetrahedra;
+typedef BaseMeshTopology::TetrahedraAroundVertex	TetrahedraAroundVertex;
+typedef BaseMeshTopology::TetrahedraAroundEdge	TetrahedraAroundEdge;
+typedef BaseMeshTopology::TetrahedraAroundTriangle	TetrahedraAroundTriangle;
+typedef BaseMeshTopology::EdgesInTetrahedron	EdgesInTetrahedron;
+typedef BaseMeshTopology::TrianglesInTetrahedron	TrianglesInTetrahedron;
 
 typedef Tetra		Tetrahedron;
-typedef TetraEdges	TetrahedronEdges;
-typedef TetraTriangles	TetrahedronTriangles;
+typedef EdgesInTetrahedron	EdgesInTetrahedron;
+typedef TrianglesInTetrahedron	TrianglesInTetrahedron;
 
 
 /** a class that stores a set of tetrahedra and provides access with adjacent triangles, edges and vertices */
@@ -65,8 +65,8 @@ class SOFA_COMPONENT_CONTAINER_API ManifoldTetrahedronSetTopologyContainer : pub
 
 public:
     typedef Tetra		Tetrahedron;
-    typedef TetraEdges	TetrahedronEdges;
-    typedef TetraTriangles	TetrahedronTriangles;
+    typedef EdgesInTetrahedron	EdgesInTetrahedron;
+    typedef TrianglesInTetrahedron	TrianglesInTetrahedron;
 
     ManifoldTetrahedronSetTopologyContainer();
 
@@ -108,24 +108,24 @@ protected:
 
     /** \brief Creates the Tetrahedron Vertex Shell Array
      *
-     * This function is only called if the TetrahedronVertexShell array is required.
-     * m_tetrahedronVertexShell[i] contains the indices of all tetrahedra adjacent to the ith vertex
+     * This function is only called if the TetrahedraAroundVertex array is required.
+     * m_tetrahedraAroundVertex[i] contains the indices of all tetrahedra adjacent to the ith vertex
      */
-    virtual void createTetrahedronVertexShellArray();
+    virtual void createTetrahedraAroundVertexArray();
 
     /** \brief Creates the Tetrahedron Edge Shell Array
      *
      * This function is only called if the TetrahedronEdheShell array is required.
-     * m_tetrahedronEdgeShell[i] contains the indices of all tetrahedra adjacent to the ith edge
+     * m_tetrahedraAroundEdge[i] contains the indices of all tetrahedra adjacent to the ith edge
      */
-    virtual void createTetrahedronEdgeShellArray();
+    virtual void createTetrahedraAroundEdgeArray();
 
     /** \brief Creates the Tetrahedron Triangle Shell Array
      *
-     * This function is only called if the TetrahedronTriangleShell array is required.
-     * m_tetrahedronTriangleShell[i] contains the indices of all tetrahedra adjacent to the ith edge
+     * This function is only called if the TetrahedraAroundTriangle array is required.
+     * m_tetrahedraAroundTriangle[i] contains the indices of all tetrahedra adjacent to the ith edge
      */
-    virtual void createTetrahedronTriangleShellArray();
+    virtual void createTetrahedraAroundTriangleArray();
 
     /** \brief return if the tetrahedron is ine the same orientation as the one of reference
      * 1 if tetrahedrons have same orientation

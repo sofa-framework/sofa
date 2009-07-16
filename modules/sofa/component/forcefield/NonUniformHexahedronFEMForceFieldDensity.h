@@ -69,7 +69,7 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
 #ifdef SOFA_NEW_HEXA
-    typedef sofa::core::componentmodel::topology::BaseMeshTopology::SeqHexas VecElement;
+    typedef sofa::core::componentmodel::topology::BaseMeshTopology::SeqHexahedra VecElement;
 #else
     typedef sofa::core::componentmodel::topology::BaseMeshTopology::SeqCubes VecElement;
 #endif

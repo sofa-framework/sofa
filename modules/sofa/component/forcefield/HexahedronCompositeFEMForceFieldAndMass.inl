@@ -489,7 +489,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesByCond
         for (unsigned int i=0; i<this->_indexedElements->size(); ++i)
         {
             //Get the 8 indices of the coarser Hexa
-            const helper::fixed_array<unsigned int,8>& points = this->_sparseGrid->getHexas()[i];
+            const helper::fixed_array<unsigned int,8>& points = this->_sparseGrid->getHexahedra()[i];
             //Get the 8 points of the coarser Hexa
             helper::fixed_array<Coord,8> nodes;
 
@@ -518,7 +518,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesByCond
 
     for(int i=0; i<this->_nbVirtualFinerLevels.getValue(); ++i)
     {
-        _weights[i].resize( this->_sparseGrid->_virtualFinerLevels[finestLevel+i]->getNbHexas() );
+        _weights[i].resize( this->_sparseGrid->_virtualFinerLevels[finestLevel+i]->getNbHexahedra() );
     }
 
     _finalWeights.resize( _weights[0].size() );
@@ -616,7 +616,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
     SparseGridTopology*finestSparseGrid = this->_sparseGrid->_virtualFinerLevels[ this->_sparseGrid->getNbVirtualFinerLevels()-this->_nbVirtualFinerLevels.getValue() ];
 
     serr<<"finestChildren.size() : "<<finestChildren.size()<<sendl;
-    serr<<"finestSparseGrid->getNbHexas() : "<<finestSparseGrid->getNbHexas()<<sendl;
+    serr<<"finestSparseGrid->getNbHexahedra() : "<<finestSparseGrid->getNbHexahedra()<<sendl;
 
     int sizeass=2;
     for(int i=0; i<this->_nbVirtualFinerLevels.getValue(); ++i)
@@ -644,7 +644,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
     {
         computeClassicalMechanicalMatrices(finestStiffnesses[i],finestMasses[i],finestChildren[i],this->_sparseGrid->getNbVirtualFinerLevels()-this->_nbVirtualFinerLevels.getValue());
 
-        const SparseGridTopology::Hexa& hexa = finestSparseGrid->getHexa( finestChildren[i] );
+        const SparseGridTopology::Hexa& hexa = finestSparseGrid->getHexahedron( finestChildren[i] );
 
 
         for(int w=0; w<8; ++w) // sommets
@@ -685,7 +685,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
     int idxcutass = 0;
     std::map<int,bool> map_idxq_coarse;
     helper::fixed_array<int,8> map_idxcoarse_idxfine;
-    const SparseGridTopology::Hexa& coarsehexa = this->_sparseGrid->getHexa( elementIndice );
+    const SparseGridTopology::Hexa& coarsehexa = this->_sparseGrid->getHexahedron( elementIndice );
 
 // 		serr<<"BUILT"<<sendl;
 
@@ -754,7 +754,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
 // 		{
 // 			computeClassicalMechanicalMatrices(finestStiffnesses[i],finestMasses[i],finestChildren[i],this->_sparseGrid->getNbVirtualFinerLevels()-this->_nbVirtualFinerLevels.getValue());
 //
-// 			const SparseGridTopology::Hexa& hexa = finestSparseGrid->getHexa( finestChildren[i] );
+// 			const SparseGridTopology::Hexa& hexa = finestSparseGrid->getHexahedron( finestChildren[i] );
 //
 //
 // 			for(int w=0;w<8;++w) // sommets
@@ -1148,7 +1148,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesDirect
 
     for(unsigned i=0 ; i < finestChildren.size() ; ++i )
     {
-        const SparseGridTopology::Hexa& hexa = finestSparseGrid->getHexa( finestChildren[i] );
+        const SparseGridTopology::Hexa& hexa = finestSparseGrid->getHexahedron( finestChildren[i] );
         for(int j=0; j<8; ++j)
         {
             for( int k=0; k<8*3; ++k)
@@ -1658,7 +1658,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         helper::fixed_array<helper::vector<ElementMass>,8> finerM;
 
 
-        const SparseGridTopology::Hexa& coarsehexa = sparseGrid->getHexa( elementIndice );
+        const SparseGridTopology::Hexa& coarsehexa = sparseGrid->getHexahedron( elementIndice );
 
 
         helper::fixed_array< Coord, 27 > finePositions; // coord of each fine positions
@@ -1681,7 +1681,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
             {
                 computeMechanicalMatricesRecursivelyWithRamifications(finerK[i][j], finerM[i][j], finerChildrenRamificationOriginal[i][j], level+1);
 
-                const SparseGridTopology::Hexa& finehexa = finerSparseGrid->getHexa( finerChildrenRamificationOriginal[i][j] );
+                const SparseGridTopology::Hexa& finehexa = finerSparseGrid->getHexahedron( finerChildrenRamificationOriginal[i][j] );
                 for( int k=0; k<8; ++k) //fine nodes
                 {
                     for(int l=0; l<27; ++l)
@@ -1737,7 +1737,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
             {
                 for(unsigned j=0; j<finerChildrenRamificationOriginal[i].size(); ++j)
                 {
-                    const SparseGridTopology::Hexa& finehexa = finerSparseGrid->getHexa( finerChildrenRamificationOriginal[i][j] );
+                    const SparseGridTopology::Hexa& finehexa = finerSparseGrid->getHexahedron( finerChildrenRamificationOriginal[i][j] );
                     helper::fixed_array<int,8 > elem;
                     for(int k=0; k<8; ++k) // fine nodes
                     {
@@ -2281,7 +2281,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
         {
             for(unsigned j=0; j<finerChildrenRamificationOriginal[i].size(); ++j) // finer element
             {
-                const SparseGridTopology::Hexa& finehexa = finerSparseGrid->getHexa( finerChildrenRamificationOriginal[i][j] );
+                const SparseGridTopology::Hexa& finehexa = finerSparseGrid->getHexahedron( finerChildrenRamificationOriginal[i][j] );
                 for(int k=0 ; k < 8 ; ++k ) // fine nodes
                 {
                     for( int l=0; l<8*3; ++l) // toutes les cols de W

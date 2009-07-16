@@ -147,7 +147,7 @@ bool ManifoldTriangleSetTopologyAlgorithms< DataTypes >::edgeSwap(const EdgeID& 
     sofa::helper::vector< sofa::helper::vector< double > > baryCoefs; baryCoefs.resize (2);
     sofa::helper::vector< TriangleID > trianglesIndex2remove; trianglesIndex2remove.resize(2);
 
-    trianglesIndex2remove = m_container->getTriangleEdgeShellArray()[edgeIndex];
+    trianglesIndex2remove = m_container->getTrianglesAroundEdgeArray()[edgeIndex];
 
     if(trianglesIndex2remove.size()>2)
     {
@@ -160,8 +160,8 @@ bool ManifoldTriangleSetTopologyAlgorithms< DataTypes >::edgeSwap(const EdgeID& 
         return false;
     }
 
-    int edgeInTri1 = m_container->getEdgeIndexInTriangle ( m_container->getEdgeTriangleShell (trianglesIndex2remove[0]), edgeIndex);
-    int edgeInTri2 = m_container->getEdgeIndexInTriangle ( m_container->getEdgeTriangleShell (trianglesIndex2remove[1]), edgeIndex);
+    int edgeInTri1 = m_container->getEdgeIndexInTriangle ( m_container->getEdgesInTriangle (trianglesIndex2remove[0]), edgeIndex);
+    int edgeInTri2 = m_container->getEdgeIndexInTriangle ( m_container->getEdgesInTriangle (trianglesIndex2remove[1]), edgeIndex);
     Triangle vertexTriangle1 = m_container->getTriangle (trianglesIndex2remove[0]);
     Triangle vertexTriangle2 = m_container->getTriangle (trianglesIndex2remove[1]);
 
@@ -233,7 +233,7 @@ void ManifoldTriangleSetTopologyAlgorithms< DataTypes >::swapRemeshing(sofa::hel
 
         for (unsigned int edgeIndex = 0; edgeIndex<listEdges.size() ; edgeIndex++)
         {
-            const sofa::helper::vector <TriangleID>& shell = m_container->getTriangleEdgeShellArray()[listEdges[edgeIndex]];
+            const sofa::helper::vector <TriangleID>& shell = m_container->getTrianglesAroundEdgeArray()[listEdges[edgeIndex]];
 
             if (shell.size() == 2)
             {
@@ -244,8 +244,8 @@ void ManifoldTriangleSetTopologyAlgorithms< DataTypes >::swapRemeshing(sofa::hel
                 indexTri1 = shell[0];
                 indexTri2 = shell[1];
 
-                int edgeInTri1 = m_container->getEdgeIndexInTriangle ( m_container->getEdgeTriangleShell (indexTri1), listEdges[edgeIndex]);
-                int edgeInTri2 = m_container->getEdgeIndexInTriangle ( m_container->getEdgeTriangleShell (indexTri2), listEdges[edgeIndex]);
+                int edgeInTri1 = m_container->getEdgeIndexInTriangle ( m_container->getEdgesInTriangle (indexTri1), listEdges[edgeIndex]);
+                int edgeInTri2 = m_container->getEdgeIndexInTriangle ( m_container->getEdgesInTriangle (indexTri2), listEdges[edgeIndex]);
                 Triangle vertexTriangle1 = m_container->getTriangleArray()[indexTri1];
                 Triangle vertexTriangle2 = m_container->getTriangleArray()[indexTri2];
 
@@ -256,10 +256,10 @@ void ManifoldTriangleSetTopologyAlgorithms< DataTypes >::swapRemeshing(sofa::hel
 
                 int sum = 0;
 
-                sum = (m_container->getTriangleVertexShellArray()[ listVertex[0] ]).size();
-                sum += (m_container->getTriangleVertexShellArray()[ listVertex[1] ]).size();
-                sum -= (m_container->getTriangleVertexShellArray()[ listVertex[2] ]).size();
-                sum -= (m_container->getTriangleVertexShellArray()[ listVertex[3] ]).size();
+                sum = (m_container->getTrianglesAroundVertexArray()[ listVertex[0] ]).size();
+                sum += (m_container->getTrianglesAroundVertexArray()[ listVertex[1] ]).size();
+                sum -= (m_container->getTrianglesAroundVertexArray()[ listVertex[2] ]).size();
+                sum -= (m_container->getTrianglesAroundVertexArray()[ listVertex[3] ]).size();
 
                 for (unsigned int i = 0; i <2; i++)
                 {
@@ -318,10 +318,10 @@ int ManifoldTriangleSetTopologyAlgorithms< DataTypes >::SplitAlongPath(unsigned 
         sofa::helper::vector<EdgeID>& new_edges, double epsilonSnapPath, double epsilonSnapBorder)
 {
 
-    /// force the creation of TriangleEdgeShellArray
-    m_container->getTriangleEdgeShellArray();
-    /// force the creation of TriangleVertexShellArray
-    m_container->getTriangleVertexShellArray();
+    /// force the creation of TrianglesAroundEdgeArray
+    m_container->getTrianglesAroundEdgeArray();
+    /// force the creation of TrianglesAroundVertexArray
+    m_container->getTrianglesAroundVertexArray();
 
     int result = TriangleSetTopologyAlgorithms< DataTypes >::SplitAlongPath (pa, a, pb, b, topoPath_list, indices_list, coords_list, new_edges, epsilonSnapPath, epsilonSnapBorder);
 
@@ -353,7 +353,7 @@ bool ManifoldTriangleSetTopologyAlgorithms< DataTypes >::InciseAlongEdgeList (co
 
         for (unsigned int j = 0; j<2; j++)
         {
-            const sofa::helper::vector< PointID >& shell = m_container->getVertexVertexShell( theEdge[j] );
+            const sofa::helper::vector< PointID >& shell = m_container->getVerticesAroundVertex( theEdge[j] );
 
             for (unsigned int k = 0; k<shell.size(); k++)
             {
@@ -377,7 +377,7 @@ bool ManifoldTriangleSetTopologyAlgorithms< DataTypes >::InciseAlongEdgeList (co
     // New points, from vertices just created:
     for (unsigned int i = 0; i < new_points.size(); i++)
     {
-        const sofa::helper::vector< PointID >& shell = m_container->getVertexVertexShell( i );
+        const sofa::helper::vector< PointID >& shell = m_container->getVerticesAroundVertex( i );
 
         for (unsigned int j = 0; j<shell.size(); j++)
         {
@@ -400,7 +400,7 @@ bool ManifoldTriangleSetTopologyAlgorithms< DataTypes >::InciseAlongEdgeList (co
     // Creating ROI of edges from list of vertices.
     for (unsigned int i = 0; i<listVertex.size(); i++)
     {
-        const sofa::helper::vector< unsigned int >& shell = m_container->getEdgeVertexShell (listVertex[i]);
+        const sofa::helper::vector< unsigned int >& shell = m_container->getEdgesAroundVertex (listVertex[i]);
 
         for (unsigned int j = 0; j<shell.size(); j++)
         {

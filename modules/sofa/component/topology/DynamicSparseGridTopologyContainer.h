@@ -45,8 +45,8 @@ class SOFA_COMPONENT_CONTAINER_API DynamicSparseGridTopologyContainer : public H
 
 public:
     typedef Hexa Hexahedron;
-    typedef HexaEdges HexahedronEdges;
-    typedef HexaQuads HexahedronQuads;
+    typedef EdgesInHexahedron EdgesInHexahedron;
+    typedef QuadsInHexahedron QuadsInHexahedron;
 
     Data< Vec3i> resolution;
 

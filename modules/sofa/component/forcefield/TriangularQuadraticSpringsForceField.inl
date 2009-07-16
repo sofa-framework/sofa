@@ -88,7 +88,7 @@ void TriangularQuadraticSpringsForceField<DataTypes>::TRQSTriangleCreationFuncti
         helper::vector<typename TriangularQuadraticSpringsForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
 
         /// describe the jth edge index of triangle no i
-        const TriangleEdges &te= ff->_topology->getEdgeTriangleShell(triangleIndex);
+        const EdgesInTriangle &te= ff->_topology->getEdgesInTriangle(triangleIndex);
         // store square rest length
         for(j=0; j<3; ++j)
         {
@@ -139,7 +139,7 @@ void TriangularQuadraticSpringsForceField<DataTypes>::TRQSTriangleDestroyFunctio
         helper::vector<typename TriangularQuadraticSpringsForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
 
         /// describe the jth edge index of triangle no i
-        const TriangleEdges &te= ff->_topology->getEdgeTriangleShell(triangleIndex);
+        const EdgesInTriangle &te= ff->_topology->getEdgesInTriangle(triangleIndex);
         // store square rest length
         for(j=0; j<3; ++j)
         {
@@ -283,7 +283,7 @@ void TriangularQuadraticSpringsForceField<DataTypes>::addForce(VecDeriv& f, cons
         {
             tinfo=&triangleInf[i];
             /// describe the jth edge index of triangle no i
-            const TriangleEdges &tea= _topology->getEdgeTriangleShell(i);
+            const EdgesInTriangle &tea= _topology->getEdgesInTriangle(i);
             /// describe the jth vertex index of triangle no i
             const Triangle &ta= _topology->getTriangle(i);
 
@@ -339,7 +339,7 @@ void TriangularQuadraticSpringsForceField<DataTypes>::addDForce(VecDeriv& df, co
         {
             tinfo=&triangleInf[l];
             /// describe the jth edge index of triangle no i
-            const TriangleEdges &tea= _topology->getEdgeTriangleShell(l);
+            const EdgesInTriangle &tea= _topology->getEdgesInTriangle(l);
             /// describe the jth vertex index of triangle no i
             const Triangle &ta= _topology->getTriangle(l);
 

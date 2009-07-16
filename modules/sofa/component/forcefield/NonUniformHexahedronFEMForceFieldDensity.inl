@@ -76,7 +76,7 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::init()
         return;
     }
 #ifdef SOFA_NEW_HEXA
-    else if( this->_mesh->getNbHexas()<=0 )
+    else if( this->_mesh->getNbHexahedra()<=0 )
 #else
     else if( this->_mesh->getNbCubes()<=0 )
 #endif
@@ -88,7 +88,7 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::init()
         return;
     }
 #ifdef SOFA_NEW_HEXA
-    this->_indexedElements = & (this->_mesh->getHexas());
+    this->_indexedElements = & (this->_mesh->getHexahedra());
 #else
     this->_indexedElements = & (this->_mesh->getCubes());
 #endif
@@ -267,7 +267,7 @@ void NonUniformHexahedronFEMForceFieldDensity<DataTypes>::computeCoarseElementSt
     {
 
         //Get the 8 indices of the coarser Hexa
-        const helper::fixed_array<unsigned int,8>& points = this->_sparseGrid->_virtualFinerLevels[0]->getHexas()[elementIndice];
+        const helper::fixed_array<unsigned int,8>& points = this->_sparseGrid->_virtualFinerLevels[0]->getHexahedra()[elementIndice];
         //Get the 8 points of the coarser Hexa
         helper::fixed_array<Coord,8> nodes;
 #ifndef SOFA_NEW_HEXA

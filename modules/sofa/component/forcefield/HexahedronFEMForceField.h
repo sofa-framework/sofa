@@ -93,7 +93,7 @@ public:
     typedef core::componentmodel::topology::BaseMeshTopology::index_type Index;
 #ifdef SOFA_NEW_HEXA
     typedef core::componentmodel::topology::BaseMeshTopology::Hexa Element;
-    typedef core::componentmodel::topology::BaseMeshTopology::SeqHexas VecElement;
+    typedef core::componentmodel::topology::BaseMeshTopology::SeqHexahedra VecElement;
 #else
     typedef core::componentmodel::topology::BaseMeshTopology::Cube Element;
     typedef core::componentmodel::topology::BaseMeshTopology::SeqCubes VecElement;

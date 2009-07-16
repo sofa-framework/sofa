@@ -41,7 +41,7 @@ using core::componentmodel::topology::BaseMeshTopology;
 typedef BaseMeshTopology::EdgeID EdgeID;
 typedef BaseMeshTopology::Edge Edge;
 typedef BaseMeshTopology::SeqEdges SeqEdges;
-typedef BaseMeshTopology::VertexEdges VertexEdges;
+typedef BaseMeshTopology::EdgesAroundVertex EdgesAroundVertex;
 
 /**
 * A class that can apply basic transformations on a set of edges.
@@ -239,7 +239,7 @@ public:
 
 
     /** \brief Move input points indices to input new coords.
-     * Also propagate event and update edgeVertexShell for data handling.
+     * Also propagate event and update edgesAroundVertex for data handling.
      *
      * @param id : list of indices to move
      * @param : ancestors list of ancestors to define relative new position

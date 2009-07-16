@@ -44,9 +44,9 @@ using core::componentmodel::topology::BaseMeshTopology;
 typedef BaseMeshTopology::TriangleID TriangleID;
 typedef BaseMeshTopology::Triangle Triangle;
 typedef BaseMeshTopology::SeqTriangles SeqTriangles;
-typedef BaseMeshTopology::VertexTriangles VertexTriangles;
-typedef BaseMeshTopology::EdgeTriangles EdgeTriangles;
-typedef BaseMeshTopology::TriangleEdges TriangleEdges;
+typedef BaseMeshTopology::TrianglesAroundVertex TrianglesAroundVertex;
+typedef BaseMeshTopology::TrianglesAroundEdge TrianglesAroundEdge;
+typedef BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
 
 /**
 * A class that performs topology algorithms on an TriangleSet.

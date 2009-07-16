@@ -81,11 +81,11 @@ public:
     typedef typename topology::MeshTopology::Triangle Triangle;
     typedef typename topology::MeshTopology::Quad Quad;
 
-    typedef typename topology::MeshTopology::VertexEdges VertexEdges;
+    typedef typename topology::MeshTopology::EdgesAroundVertex EdgesAroundVertex;
     typedef typename sofa::helper::vector<FaceID> VertexFaces;
     typedef typename sofa::helper::vector<FaceID> EdgeFaces;
-    typedef typename topology::MeshTopology::TriangleEdges TriangleEdges;
-    typedef typename topology::MeshTopology::QuadEdges QuadEdges;
+    typedef typename topology::MeshTopology::EdgesInTriangle EdgesInTriangle;
+    typedef typename topology::MeshTopology::EdgesInQuad EdgesInQuad;
 
     typedef typename topology::PointSetGeometryAlgorithms<DataTypes>::Angle Angle;
 

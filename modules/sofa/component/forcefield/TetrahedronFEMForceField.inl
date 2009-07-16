@@ -1003,26 +1003,26 @@ void TetrahedronFEMForceField<DataTypes>::init()
         return;
     }
 #ifdef SOFA_NEW_HEXA
-    if (_mesh==NULL || (_mesh->getNbTetras()<=0 && _mesh->getNbHexas()<=0))
+    if (_mesh==NULL || (_mesh->getNbTetrahedra()<=0 && _mesh->getNbHexahedra()<=0))
 #else
-    if (_mesh==NULL || (_mesh->getNbTetras()<=0 && _mesh->getNbCubes()<=0))
+    if (_mesh==NULL || (_mesh->getNbTetrahedra()<=0 && _mesh->getNbCubes()<=0))
 #endif
     {
         serr << "ERROR(TetrahedronFEMForceField): object must have a tetrahedric BaseMeshTopology."<<sendl;
         return;
     }
-    if (!_mesh->getTetras().empty())
+    if (!_mesh->getTetrahedra().empty())
     {
-        _indexedElements = & (_mesh->getTetras());
+        _indexedElements = & (_mesh->getTetrahedra());
     }
     else
     {
 #ifdef SOFA_DEV
         _trimgrid = dynamic_cast<topology::FittedRegularGridTopology*>(_mesh);
 #endif // SOFA_DEV
-        core::componentmodel::topology::BaseMeshTopology::SeqTetras* tetras = new core::componentmodel::topology::BaseMeshTopology::SeqTetras;
+        core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra* tetras = new core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra;
 #ifdef SOFA_NEW_HEXA
-        int nbcubes = _mesh->getNbHexas();
+        int nbcubes = _mesh->getNbHexahedra();
 #else
         int nbcubes = _mesh->getNbCubes();
 #endif
@@ -1046,7 +1046,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
         {
             // if (flags && !flags->isCubeActive(i)) continue;
 #ifdef SOFA_NEW_HEXA
-            core::componentmodel::topology::BaseMeshTopology::Hexa c = _mesh->getHexa(i);
+            core::componentmodel::topology::BaseMeshTopology::Hexa c = _mesh->getHexahedron(i);
 #define swap(a,b) { int t = a; a = b; b = t; }
             if (!((i%nx)&1))
             {

@@ -113,7 +113,7 @@ void Tetra2TriangleTopologicalMapping::init()
             for (unsigned int i=0; i<triangleArray.size(); ++i)
             {
 
-                if (fromModel->getTetraTriangleShell(i).size()==1)
+                if (fromModel->getTetrahedraAroundTriangle(i).size()==1)
                 {
                     if(flipNormals.getValue())
                     {
@@ -144,9 +144,9 @@ void Tetra2TriangleTopologicalMapping::init()
 unsigned int Tetra2TriangleTopologicalMapping::getFromIndex(unsigned int ind)
 {
 
-    if(fromModel->getTetraTriangleShell(ind).size()==1)
+    if(fromModel->getTetrahedraAroundTriangle(ind).size()==1)
     {
-        return fromModel->getTetraTriangleShell(ind)[0];
+        return fromModel->getTetrahedraAroundTriangle(ind)[0];
     }
     else
     {
@@ -284,7 +284,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                     if (fromModel)
                     {
 
-                        const sofa::helper::vector<Tetrahedron> &tetrahedronArray=fromModel->getTetras();
+                        const sofa::helper::vector<Tetrahedron> &tetrahedronArray=fromModel->getTetrahedra();
 
                         const sofa::helper::vector<unsigned int> &tab = ( static_cast< const TetrahedraRemoved *>( *itBegin ) )->getArray();
 
@@ -297,28 +297,28 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
                             for (unsigned int j = 0; j < 4; ++j)
                             {
-                                unsigned int k = (fromModel->getTriangleTetraShell(tab[i]))[j];
+                                unsigned int k = (fromModel->getTrianglesInTetrahedron(tab[i]))[j];
 
-                                if (fromModel->getTetraTriangleShell(k).size()==1)   // remove as visible the triangle indexed by k
+                                if (fromModel->getTetrahedraAroundTriangle(k).size()==1)   // remove as visible the triangle indexed by k
                                 {
 
                                     // do nothing
 
                                 }
-                                else   // fromModel->getTetraTriangleShell(k).size()==2 // add as visible the triangle indexed by k
+                                else   // fromModel->getTetrahedraAroundTriangle(k).size()==2 // add as visible the triangle indexed by k
                                 {
 
                                     unsigned int ind_test;
-                                    if(tab[i] == fromModel->getTetraTriangleShell(k)[0])
+                                    if(tab[i] == fromModel->getTetrahedraAroundTriangle(k)[0])
                                     {
 
-                                        ind_test = fromModel->getTetraTriangleShell(k)[1];
+                                        ind_test = fromModel->getTetrahedraAroundTriangle(k)[1];
 
                                     }
-                                    else   // tab[i] == fromModel->getTetraTriangleShell(k)[1]
+                                    else   // tab[i] == fromModel->getTetrahedraAroundTriangle(k)[1]
                                     {
 
-                                        ind_test = fromModel->getTetraTriangleShell(k)[0];
+                                        ind_test = fromModel->getTetrahedraAroundTriangle(k)[0];
                                     }
 
                                     bool is_present = false;
@@ -334,7 +334,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                                         Triangle t;
 
                                         const Tetrahedron &te=tetrahedronArray[ind_test];
-                                        int h = fromModel->getTriangleIndexInTetrahedron(fromModel->getTriangleTetraShell(ind_test),k);
+                                        int h = fromModel->getTriangleIndexInTetrahedron(fromModel->getTrianglesInTetrahedron(ind_test),k);
 
                                         if (h%2)
                                         {

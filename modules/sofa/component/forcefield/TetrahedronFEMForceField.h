@@ -86,7 +86,7 @@ public:
 
     typedef core::componentmodel::topology::BaseMeshTopology::index_type Index;
     typedef core::componentmodel::topology::BaseMeshTopology::Tetra Element;
-    typedef core::componentmodel::topology::BaseMeshTopology::SeqTetras VecElement;
+    typedef core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra VecElement;
 
     enum { SMALL = 0,   ///< Symbol of small displacements tetrahedron solver
             LARGE = 1,   ///< Symbol of large displacements tetrahedron solver

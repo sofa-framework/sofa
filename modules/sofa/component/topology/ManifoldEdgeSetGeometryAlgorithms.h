@@ -39,7 +39,7 @@ using core::componentmodel::topology::BaseMeshTopology;
 typedef BaseMeshTopology::EdgeID EdgeID;
 typedef BaseMeshTopology::Edge Edge;
 typedef BaseMeshTopology::SeqEdges SeqEdges;
-typedef BaseMeshTopology::VertexEdges VertexEdges;
+typedef BaseMeshTopology::EdgesAroundVertex EdgesAroundVertex;
 
 /**
 * A class that provides geometry information on an ManifoldEdgeSet.

@@ -188,12 +188,12 @@ void Mesh2PointTopologicalMapping::init()
             // tetrahedron to point mapping
             if (!tetraBaryCoords.getValue().empty())
             {
-                pointsMappedFrom[TETRA].resize(fromModel->getNbTetras());
-                for (int i=0; i<fromModel->getNbTetras(); i++)
+                pointsMappedFrom[TETRA].resize(fromModel->getNbTetrahedra());
+                for (int i=0; i<fromModel->getNbTetrahedra(); i++)
                 {
                     for (unsigned int j=0; j<tetraBaryCoords.getValue().size(); j++)
                     {
-                        Tetra t = fromModel->getTetra(i);
+                        Tetra t = fromModel->getTetrahedron(i);
 
                         Vec3d p0(fromModel->getPX(t[0]), fromModel->getPY(t[0]), fromModel->getPZ(t[0]));
                         Vec3d p1(fromModel->getPX(t[1]), fromModel->getPY(t[1]), fromModel->getPZ(t[1]));
@@ -221,12 +221,12 @@ void Mesh2PointTopologicalMapping::init()
             // hexahedron to point mapping
             if (!tetraBaryCoords.getValue().empty())
             {
-                pointsMappedFrom[HEXA].resize(fromModel->getNbHexas());
-                for (int i=0; i<fromModel->getNbHexas(); i++)
+                pointsMappedFrom[HEXA].resize(fromModel->getNbHexahedra());
+                for (int i=0; i<fromModel->getNbHexahedra(); i++)
                 {
                     for (unsigned int j=0; j<hexaBaryCoords.getValue().size(); j++)
                     {
-                        Hexa h = fromModel->getHexa(i);
+                        Hexa h = fromModel->getHexahedron(i);
 
                         Vec3d p0(fromModel->getPX(h[0]), fromModel->getPY(h[0]), fromModel->getPZ(h[0]));
                         Vec3d p1(fromModel->getPX(h[1]), fromModel->getPY(h[1]), fromModel->getPZ(h[1]));

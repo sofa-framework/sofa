@@ -85,15 +85,15 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::reinit()
         this->setMethod(HexahedralFEMForceFieldT::POLAR);
 
     helper::vector<typename HexahedralFEMForceField<T>::HexahedronInformation>& hexahedronInf = *(this->hexahedronInfo.beginEdit());
-    hexahedronInf.resize(this->_topology->getNbHexas());
+    hexahedronInf.resize(this->_topology->getNbHexahedra());
     this->hexahedronInfo.endEdit();
 
     helper::vector<ElementMass>& elementMasses = *this->_elementMasses.beginEdit();
-    elementMasses.resize( this->_topology->getNbHexas() );
+    elementMasses.resize( this->_topology->getNbHexahedra() );
     this->_elementMasses.endEdit();
 
     helper::vector<Real>& elementTotalMass = *this->_elementTotalMass.beginEdit();
-    elementTotalMass.resize( this->_topology->getNbHexas() );
+    elementTotalMass.resize( this->_topology->getNbHexahedra() );
     this->_elementTotalMass.endEdit();
 
     const int level = _multilevelTopology->getLevel();
@@ -102,7 +102,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::reinit()
     const VecCoord *X0=this->mstate->getX0();
     Vec<8,Coord> nodesCoarse;
     for(int w=0; w<8; ++w)
-        nodesCoarse[w] = (*X0)[this->_topology->getHexa(0)[w]];
+        nodesCoarse[w] = (*X0)[this->_topology->getHexahedron(0)[w]];
 
     Vec<8,Coord> nodesFine;
     for(int w=0; w<8; ++w)
@@ -183,13 +183,13 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::reinit()
     {
     case HexahedralFEMForceFieldT::LARGE:
     {
-        for (int i=0; i<this->_topology->getNbHexas(); ++i)
+        for (int i=0; i<this->_topology->getNbHexahedra(); ++i)
             initLarge(i);
     }
     break;
     case HexahedralFEMForceFieldT::POLAR:
     {
-        for(int i=0; i<this->_topology->getNbHexas(); ++i)
+        for(int i=0; i<this->_topology->getNbHexahedra(); ++i)
             initPolar(i);
     }
     break;
@@ -273,7 +273,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleHexaAdded(const Hexahedr
     std::cout << "HEXAHEDRAADDED hexaId: " << hexaModif << std::endl;
 #endif
 
-    const VecElement& hexas = this->_topology->getHexas();
+    const VecElement& hexas = this->_topology->getHexahedra();
 
     switch(this->method)
     {
@@ -338,7 +338,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleHexaRemoved(const Hexahe
     std::cout << "HEXAHEDRAREMOVED hexaId: " << hexaModif << std::endl;
 #endif
 
-    const VecElement& hexas = this->_topology->getHexas();
+    const VecElement& hexas = this->_topology->getHexahedra();
     helper::vector<Real>&	particleMasses = *this->_particleMasses.beginEdit();
 
     for(unsigned int i=0; i<hexaModif.size(); ++i)
@@ -386,7 +386,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleMultilevelModif(const Mu
     std::cout << "MULTILEVEL_MODIFICATION hexaId: " << hexaModif << std::endl;
 #endif
 
-    const VecElement& hexas = this->_topology->getHexas();
+    const VecElement& hexas = this->_topology->getHexahedra();
 
     const int level = _multilevelTopology->getLevel();
     const int coarseNodeSize = (1 << level);
@@ -463,7 +463,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::initLarge( const int i)
 
     Vec<8,Coord> nodes;
     for(int w=0; w<8; ++w)
-        nodes[w] = (*X0)[this->_topology->getHexa(i)[w]];
+        nodes[w] = (*X0)[this->_topology->getHexahedron(i)[w]];
 
     // compute initial configuration in order to compute corotationnal deformations
     Coord horizontal;
@@ -498,7 +498,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::initPolar( const int i)
 
     Vec<8,Coord> nodes;
     for(int j=0; j<8; ++j)
-        nodes[j] = (*X0)[this->_topology->getHexa(i)[j]];
+        nodes[j] = (*X0)[this->_topology->getHexahedron(i)[j]];
 
     typename HexahedralFEMForceFieldT::Transformation R_0_1; // Rotation matrix (deformed and displaced Hexahedron/world)
     computeRotationPolar( R_0_1, nodes );

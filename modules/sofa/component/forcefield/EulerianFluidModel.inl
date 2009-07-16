@@ -565,7 +565,7 @@ void EulerianFluidModel<DataTypes>::draw()
                 {
                     if(!m_pInfo.m_isBoundary[i])
                     {
-                        const VertexFaces vFaces = m_topology->getOrientedQuadVertexShell(i);
+                        const VertexFaces vFaces = m_topology->getOrientedQuadsAroundVertex(i);
                         glBegin(GL_POLYGON);
                         for(unsigned int j = 0; j < vFaces.size(); ++j)
                             glVertex3f(m_pInfo.m_dualFaces.at(i)[j][0], m_pInfo.m_dualFaces.at(i)[j][1], m_pInfo.m_dualFaces.at(i)[j][2]);
@@ -596,7 +596,7 @@ void EulerianFluidModel<DataTypes>::draw()
                 {
                     if(!m_pInfo.m_isBoundary[i])
                     {
-                        const VertexFaces vFaces = m_topology->getOrientedTriangleVertexShell(i);
+                        const VertexFaces vFaces = m_topology->getOrientedTrianglesAroundVertex(i);
                         glBegin(GL_POLYGON);
                         for(unsigned int j = 0; j < vFaces.size(); ++j)
                             glVertex3f(m_bkCenters[vFaces[j]][0], m_bkCenters[vFaces[j]][1], m_bkCenters[vFaces[j]][2]);
@@ -612,7 +612,7 @@ void EulerianFluidModel<DataTypes>::draw()
                 {
                     if(!m_pInfo.m_isBoundary[i])
                     {
-                        const VertexFaces vFaces = m_topology->getOrientedQuadVertexShell(i);
+                        const VertexFaces vFaces = m_topology->getOrientedQuadsAroundVertex(i);
                         glBegin(GL_POLYGON);
                         for(unsigned int j = 0; j < vFaces.size(); ++j)
                             glVertex3f(m_bkCenters[vFaces[j]][0], m_bkCenters[vFaces[j]][1], m_bkCenters[vFaces[j]][2]);
@@ -671,7 +671,7 @@ void EulerianFluidModel<DataTypes>::computeElementInformation()
         for(EdgeID i = 0; i < m_nbEdges; ++i)
         {
             const Edge e = m_topology->getEdge(i);
-            const EdgeFaces& eFaces = m_topology->getTriangleEdgeShell(i);
+            const EdgeFaces& eFaces = m_topology->getTrianglesAroundEdge(i);
             //compute m_eInfo.m_lengths / m_unitTangentVectors / m_eInfo.m_centers
             m_eInfo.m_lengths[i] = m_triGeo->computeEdgeLength(i);
             m_eInfo.m_unitTangentVectors[i] = m_triGeo->computeEdgeDirection(i) / m_eInfo.m_lengths[i];
@@ -700,8 +700,8 @@ void EulerianFluidModel<DataTypes>::computeElementInformation()
         //compute m_pInfo.m_dualFaces
         for(PointID i = 0; i < m_nbPoints; ++i)
         {
-            VertexEdges pEdges = m_topology->getOrientedEdgeVertexShell(i);
-            VertexFaces pFaces = m_topology->getOrientedTriangleVertexShell(i);
+            EdgesAroundVertex pEdges = m_topology->getOrientedEdgesAroundVertex(i);
+            VertexFaces pFaces = m_topology->getOrientedTrianglesAroundVertex(i);
             //for a boundary point, dual face includes the point itself and two edge centers
             if(m_pInfo.m_isBoundary[i])
             {
@@ -726,7 +726,7 @@ void EulerianFluidModel<DataTypes>::computeElementInformation()
         for(EdgeID i = 0; i < m_nbEdges; ++i)
         {
             const Edge e = m_topology->getEdge(i);
-            const EdgeFaces& eFaces = m_topology->getQuadEdgeShell(i);
+            const EdgeFaces& eFaces = m_topology->getQuadsAroundEdge(i);
 
             //compute m_eInfo.m_lengths / m_unitTangentVectors / m_eInfo.m_centers
             m_eInfo.m_lengths[i] = m_quadGeo->computeEdgeLength(i);
@@ -756,8 +756,8 @@ void EulerianFluidModel<DataTypes>::computeElementInformation()
         //compute m_pInfo.m_dualFaces
         for(PointID i = 0; i < m_nbPoints; ++i)
         {
-            VertexEdges pEdges = m_topology->getOrientedEdgeVertexShell(i);
-            VertexFaces pFaces = m_topology->getOrientedQuadVertexShell(i);
+            EdgesAroundVertex pEdges = m_topology->getOrientedEdgesAroundVertex(i);
+            VertexFaces pFaces = m_topology->getOrientedQuadsAroundVertex(i);
             //for a boundary point, dual face includes the point itself and two edge centers
             if(m_pInfo.m_isBoundary[i])
             {
@@ -779,7 +779,7 @@ void EulerianFluidModel<DataTypes>::computeElementInformation()
         for(EdgeID i = 0; i < m_nbEdges; ++i)
         {
             const Edge e = m_topology->getEdge(i);
-            const EdgeFaces& eFaces = m_topology->getQuadEdgeShell(i);
+            const EdgeFaces& eFaces = m_topology->getQuadsAroundEdge(i);
 
             //compute m_eInfo.m_lengths / m_unitTangentVectors / m_eInfo.m_centers
             m_eInfo.m_lengths[i] = m_quadGeo->computeEdgeLength(i);
@@ -809,8 +809,8 @@ void EulerianFluidModel<DataTypes>::computeElementInformation()
         //compute m_pInfo.m_dualFaces
         for(PointID i = 0; i < m_nbPoints; ++i)
         {
-            VertexEdges pEdges = m_topology->getOrientedEdgeVertexShell(i);
-            VertexFaces pFaces = m_topology->getOrientedQuadVertexShell(i);
+            EdgesAroundVertex pEdges = m_topology->getOrientedEdgesAroundVertex(i);
+            VertexFaces pFaces = m_topology->getOrientedQuadsAroundVertex(i);
             //for a boundary point, dual face includes the point itself and two edge centers
             if(m_pInfo.m_isBoundary[i])
             {
@@ -956,7 +956,7 @@ void EulerianFluidModel<DataTypes>::computeDerivativesForTriMesh()
     for(FaceID i = 0; i < m_nbFaces; ++i)
     {
         const Triangle f = m_topology->getTriangle(i);
-        const TriangleEdges& fEdges = m_topology->getEdgeTriangleShell(i);
+        const EdgesInTriangle& fEdges = m_topology->getEdgesInTriangle(i);
         for(EdgeID j = 0; j < fEdges.size(); ++j)
         {
             const Edge e = m_topology->getEdge(fEdges[j]);
@@ -986,7 +986,7 @@ void EulerianFluidModel<DataTypes>::computeDerivativesForQuadMesh()
     for(FaceID i = 0; i < m_nbFaces; ++i)
     {
         const Quad f = m_topology->getQuad(i);
-        const QuadEdges& fEdges = m_topology->getEdgeQuadShell(i);
+        const EdgesInQuad& fEdges = m_topology->getEdgesInQuad(i);
         for(EdgeID j = 0; j < fEdges.size(); ++j)
         {
             const Edge e = m_topology->getEdge(fEdges[j]);
@@ -1022,7 +1022,7 @@ void EulerianFluidModel<DataTypes>::computeHodgeStarsForTriMesh()
     case Barycenter:
         for(EdgeID i = 0; i < m_nbEdges; ++i)
         {
-            const EdgeFaces& eFaces = m_topology->getTriangleEdgeShell(i);
+            const EdgeFaces& eFaces = m_topology->getTrianglesAroundEdge(i);
             c0 = m_fInfo.m_centers[eFaces[0]];
             if(eFaces.size() == 1)
                 c1 = m_eInfo.m_centers[i];
@@ -1039,7 +1039,7 @@ void EulerianFluidModel<DataTypes>::computeHodgeStarsForTriMesh()
             m = m_eInfo.m_centers[i];
 
             dualEdgeLength = 0.0;
-            const EdgeFaces& eFaces = m_topology->getTriangleEdgeShell(i);
+            const EdgeFaces& eFaces = m_topology->getTrianglesAroundEdge(i);
             for(FaceID j = 0; j < eFaces.size(); ++j)
             {
                 c = m_fInfo.m_centers[eFaces[j]];
@@ -1065,10 +1065,10 @@ void EulerianFluidModel<DataTypes>::computeHodgeStarsForTriMesh()
     {
         dualFaceArea = 0;
         p = m_triGeo->getPointPosition(i);
-        const VertexEdges vEdges = m_topology->getOrientedEdgeVertexShell(i);
+        const EdgesAroundVertex vEdges = m_topology->getOrientedEdgesAroundVertex(i);
         for(EdgeID j = 0; j < vEdges.size(); ++j)
         {
-            const EdgeFaces& eFaces = m_topology->getTriangleEdgeShell(vEdges[j]);
+            const EdgeFaces& eFaces = m_topology->getTrianglesAroundEdge(vEdges[j]);
             c0 = m_fInfo.m_centers[eFaces[0]];
             if(!m_eInfo.m_isBoundary[vEdges[j]])
                 c1 = m_fInfo.m_centers[eFaces[1]];
@@ -1097,7 +1097,7 @@ void EulerianFluidModel<DataTypes>::computeHodgeStarsForQuadMesh()
     for(EdgeID i = 0; i < m_nbEdges; ++i)
     {
         const Edge e = m_topology->getEdge(i);
-        const EdgeFaces& eFaces = m_topology->getQuadEdgeShell(i);
+        const EdgeFaces& eFaces = m_topology->getQuadsAroundEdge(i);
         c0 = m_fInfo.m_centers[eFaces[0]];
         if(!m_eInfo.m_isBoundary[i])
             c1 = m_fInfo.m_centers[eFaces[1]];
@@ -1113,10 +1113,10 @@ void EulerianFluidModel<DataTypes>::computeHodgeStarsForQuadMesh()
     {
         dualFaceArea = 0;
         p = m_quadGeo->getPointPosition(i);
-        const VertexEdges vEdges = m_topology->getOrientedEdgeVertexShell(i);
+        const EdgesAroundVertex vEdges = m_topology->getOrientedEdgesAroundVertex(i);
         for(EdgeID j = 0; j < vEdges.size(); ++j)
         {
-            const EdgeFaces& eFaces = m_topology->getQuadEdgeShell(vEdges[j]);
+            const EdgeFaces& eFaces = m_topology->getQuadsAroundEdge(vEdges[j]);
             c0 = m_fInfo.m_centers[eFaces[0]];
             if(!m_eInfo.m_isBoundary[vEdges[j]])
                 c1 = m_fInfo.m_centers[eFaces[1]];
@@ -1163,7 +1163,7 @@ void EulerianFluidModel<DataTypes>::computeProjectMats()
                 NEWMAT::Matrix A(nRows, nCols);
                 A = 0.0;
                 c0 = m_fInfo.m_centers[i];
-                const TriangleEdges fEdges = m_topology->getEdgeTriangleShell(i);
+                const EdgesInTriangle fEdges = m_topology->getEdgesInTriangle(i);
                 //for each edge adjacent to face i: fEdges[j]
                 //for each row of mat: j
                 for(EdgeID j = 0; j < fEdges.size(); ++j)
@@ -1172,7 +1172,7 @@ void EulerianFluidModel<DataTypes>::computeProjectMats()
                         c1 = m_eInfo.m_centers[fEdges[j]];
                     else
                     {
-                        const EdgeFaces eFaces = m_topology->getTriangleEdgeShell(fEdges[j]);
+                        const EdgeFaces eFaces = m_topology->getTrianglesAroundEdge(fEdges[j]);
                         c1 = (eFaces[0] != i) ? m_fInfo.m_centers[eFaces[0]] : m_fInfo.m_centers[eFaces[1]];
                     }
                     v = (c1 - c0) * (double)d1.element(i, fEdges[j]) * m_eInfo.m_lengths[fEdges[j]] / (c1 - c0).norm();
@@ -1203,7 +1203,7 @@ void EulerianFluidModel<DataTypes>::computeProjectMats()
                 NEWMAT::Matrix A(nRows, nCols);
                 A = 0.0;
                 c0 = m_fInfo.m_centers[i];
-                const TriangleEdges fEdges = m_topology->getEdgeTriangleShell(i);
+                const EdgesInTriangle fEdges = m_topology->getEdgesInTriangle(i);
                 //for each edge adjacent to face i: fEdges[j]
                 //for each row of mat: j
                 for(EdgeID j = 0; j < fEdges.size(); ++j)
@@ -1263,7 +1263,7 @@ void EulerianFluidModel<DataTypes>::computeProjectMats()
                 NEWMAT::Matrix A(nRows, nCols);
                 A = 0.0;
                 c0 = m_fInfo.m_centers[i];
-                const QuadEdges fEdges = m_topology->getEdgeQuadShell(i);
+                const EdgesInQuad fEdges = m_topology->getEdgesInQuad(i);
                 //for each edge adjacent to i: fEdges[j]
                 //for each row of mat: j
                 for(EdgeID j = 0; j < fEdges.size(); ++j)
@@ -1272,7 +1272,7 @@ void EulerianFluidModel<DataTypes>::computeProjectMats()
                         c1 = m_eInfo.m_centers[fEdges[j]];
                     else
                     {
-                        const EdgeFaces eFaces = m_topology->getQuadEdgeShell(fEdges[j]);
+                        const EdgeFaces eFaces = m_topology->getQuadsAroundEdge(fEdges[j]);
                         c1 = (eFaces[0] != i) ? m_fInfo.m_centers[eFaces[0]] : m_fInfo.m_centers[eFaces[1]];
                     }
                     v = (c1 - c0) * (double)d1.element(i, fEdges[j]) * m_eInfo.m_lengths[fEdges[j]] / (c1 - c0).norm();
@@ -1309,7 +1309,7 @@ void EulerianFluidModel<DataTypes>::computeProjectMats()
             NEWMAT::Matrix A(nRows, nCols);
             A = 0.0;
             c0 = m_fInfo.m_centers[i];
-            const QuadEdges fEdges = m_topology->getEdgeQuadShell(i);
+            const EdgesInQuad fEdges = m_topology->getEdgesInQuad(i);
             //for each edge adjacent to i: fEdges[j]
             //for each row of mat: j
             for(EdgeID j = 0; j < fEdges.size(); ++j)
@@ -1347,7 +1347,7 @@ void EulerianFluidModel<DataTypes>::setBdConstraints(double xMin, double xMax, d
         if(p.x() > xMin && p.x() < xMax && p.y() > yMin && p.y() < yMax && p.z() > zMin && p.z() < zMax)
         {
             const EdgeFaces eFaces = (m_meshType == TriangleMesh) ?
-                    m_topology->getTriangleEdgeShell(it->first) : m_topology->getQuadEdgeShell(it->first);
+                    m_topology->getTrianglesAroundEdge(it->first) : m_topology->getQuadsAroundEdge(it->first);
             //it->second.m_bdConstraint = 3- 3*((o.y()-p.y())*(o.y()-p.y())) / ((o.y()-yMax)*(o.y()-yMax));
             //it->second.m_bdConstraint *= value * d1.element(eFaces[0], it->first);
             it->second.m_bdConstraint = value * d1.element(eFaces[0], it->first);
@@ -1365,7 +1365,7 @@ void EulerianFluidModel<DataTypes>::setBdConstraints()
         if(m_eInfo.m_isBoundary[ind_e])
         {
             const EdgeFaces eFaces = (m_meshType == TriangleMesh) ?
-                    m_topology->getTriangleEdgeShell(ind_e) : m_topology->getQuadEdgeShell(ind_e);
+                    m_topology->getTrianglesAroundEdge(ind_e) : m_topology->getQuadsAroundEdge(ind_e);
             m_bdEdgeInfo[ind_e].m_bdConstraint = m_cstrValue_1.getValue() * d1.element(eFaces[0], ind_e);
             totalFlux += m_cstrValue_1.getValue() * m_eInfo.m_lengths[ind_e];
         }
@@ -1377,7 +1377,7 @@ void EulerianFluidModel<DataTypes>::setBdConstraints()
         if(m_eInfo.m_isBoundary[ind_e])
         {
             const EdgeFaces eFaces = (m_meshType == TriangleMesh) ?
-                    m_topology->getTriangleEdgeShell(ind_e) : m_topology->getQuadEdgeShell(ind_e);
+                    m_topology->getTrianglesAroundEdge(ind_e) : m_topology->getQuadsAroundEdge(ind_e);
             m_bdEdgeInfo[ind_e].m_bdConstraint = m_cstrValue_2.getValue() * d1.element(eFaces[0], ind_e);
             totalFlux += m_cstrValue_2.getValue() * m_eInfo.m_lengths[ind_e];
         }
@@ -1389,7 +1389,7 @@ void EulerianFluidModel<DataTypes>::setBdConstraints()
         if(m_eInfo.m_isBoundary[ind_e])
         {
             const EdgeFaces eFaces = (m_meshType == TriangleMesh) ?
-                    m_topology->getTriangleEdgeShell(ind_e) : m_topology->getQuadEdgeShell(ind_e);
+                    m_topology->getTrianglesAroundEdge(ind_e) : m_topology->getQuadsAroundEdge(ind_e);
             m_bdEdgeInfo[ind_e].m_bdConstraint = m_cstrValue_3.getValue() * d1.element(eFaces[0], ind_e);
             totalFlux += m_cstrValue_3.getValue() * m_eInfo.m_lengths[ind_e];
         }
@@ -1418,7 +1418,7 @@ void EulerianFluidModel<DataTypes>::calcVelocity()
         for(FaceID i = 0; i < m_nbFaces; ++i)
         {
             //calculate right-hand side U
-            const TriangleEdges fEdges = m_topology->getEdgeTriangleShell(i);
+            const EdgesInTriangle fEdges = m_topology->getEdgesInTriangle(i);
             NEWMAT::ColumnVector u(fEdges.size()+1);
             u = 0.0;
             for(EdgeID j = 0; j < fEdges.size(); ++j)
@@ -1437,7 +1437,7 @@ void EulerianFluidModel<DataTypes>::calcVelocity()
         {
             //it->first: index of a boundary edge
             //it->second: info of this edge
-            const EdgeFaces eFaces = m_topology->getTriangleEdgeShell(it->first);
+            const EdgeFaces eFaces = m_topology->getTrianglesAroundEdge(it->first);
             if(it->second.m_bdConstraint == 0.0)	//no flux can penetrate this edge
             {
                 if(m_bViscous.getValue())	//for the viscous fluid, boundary velocity is zero
@@ -1455,7 +1455,7 @@ void EulerianFluidModel<DataTypes>::calcVelocity()
         {
             //it->first: index of a boundary point
             //it->second: info of this point
-            const VertexEdges vEdges = m_topology->getOrientedEdgeVertexShell(it->first);
+            const EdgesAroundVertex vEdges = m_topology->getOrientedEdgesAroundVertex(it->first);
             it->second.m_bdVel = (m_bdEdgeInfo[vEdges.front()].m_bdVel + m_bdEdgeInfo[vEdges.back()].m_bdVel) * 0.5;
         }
         break;
@@ -1465,7 +1465,7 @@ void EulerianFluidModel<DataTypes>::calcVelocity()
         for(FaceID i = 0; i < m_nbFaces; ++i)
         {
             //calculate right-hand side U
-            const QuadEdges fEdges = m_topology->getEdgeQuadShell(i);
+            const EdgesInQuad fEdges = m_topology->getEdgesInQuad(i);
             NEWMAT::ColumnVector u(fEdges.size()+1);
             u = 0.0;
             for(EdgeID j = 0; j < fEdges.size(); ++j)
@@ -1484,7 +1484,7 @@ void EulerianFluidModel<DataTypes>::calcVelocity()
         {
             //it->first: index of a boundary edge
             //it->second: info of this edge
-            const EdgeFaces eFaces = m_topology->getQuadEdgeShell(it->first);
+            const EdgeFaces eFaces = m_topology->getQuadsAroundEdge(it->first);
             if(it->second.m_bdConstraint == 0.0)
             {
                 if(m_bViscous.getValue())	//for the viscous fluid, boundary velocity is zero
@@ -1503,7 +1503,7 @@ void EulerianFluidModel<DataTypes>::calcVelocity()
         {
             //it->first: index of a boundary point
             //it->second: info of this point
-            const VertexEdges vEdges = m_topology->getOrientedEdgeVertexShell(it->first);
+            const EdgesAroundVertex vEdges = m_topology->getOrientedEdgesAroundVertex(it->first);
             it->second.m_bdVel = (m_bdEdgeInfo[vEdges.front()].m_bdVel + m_bdEdgeInfo[vEdges.back()].m_bdVel) * 0.5;
         }
         break;
@@ -1536,7 +1536,7 @@ unsigned int EulerianFluidModel<DataTypes>::searchDualFaceForTriMesh(const Coord
         }
 
         //push back all the neighbor unsolved dual faces
-        const VertexEdges vEdges = m_topology->getOrientedEdgeVertexShell(dualFaceIDs[i]);
+        const EdgesAroundVertex vEdges = m_topology->getOrientedEdgesAroundVertex(dualFaceIDs[i]);
         for(EdgeID j = 0; j < vEdges.size(); ++j)
         {
             Edge e = m_topology->getEdge(vEdges[j]);
@@ -1598,7 +1598,7 @@ unsigned int EulerianFluidModel<DataTypes>::searchDualFaceForQuadMesh(const Coor
         }
 
         //push back all the neighbor unsolved dual faces
-        const VertexEdges vEdges = m_topology->getOrientedEdgeVertexShell(dualFaceIDs[i]);
+        const EdgesAroundVertex vEdges = m_topology->getOrientedEdgesAroundVertex(dualFaceIDs[i]);
         for(EdgeID j = 0; j < vEdges.size(); ++j)
         {
             Edge e = m_topology->getEdge(vEdges[j]);
@@ -1667,7 +1667,7 @@ typename DataTypes::Deriv EulerianFluidModel<DataTypes>:: interpolateVelocity(co
     VecDeriv vels;
     if(m_pInfo.m_isBoundary[ind_p])
     {
-        VertexEdges pEdges = m_topology->getOrientedEdgeVertexShell(ind_p);
+        EdgesAroundVertex pEdges = m_topology->getOrientedEdgesAroundVertex(ind_p);
         //the velocity at the boudary edge: pEdges.back()
         vels.push_back(m_bdEdgeInfo[pEdges.back()].m_bdVel);
         //the velocity at the boudary point: ind_p
@@ -1677,7 +1677,7 @@ typename DataTypes::Deriv EulerianFluidModel<DataTypes>:: interpolateVelocity(co
     }
 
     VertexFaces pFaces = (m_meshType == TriangleMesh) ?
-            m_topology->getOrientedTriangleVertexShell(ind_p) : m_topology->getOrientedQuadVertexShell(ind_p);
+            m_topology->getOrientedTrianglesAroundVertex(ind_p) : m_topology->getOrientedQuadsAroundVertex(ind_p);
     for(FaceID j = 0; j < pFaces.size(); ++j)
         vels.push_back(m_vels[pFaces[j]]);
 
@@ -1754,7 +1754,7 @@ void EulerianFluidModel<DataTypes>::calcVorticity()
         {
             if(!m_pInfo.m_isBoundary[i])
             {
-                const VertexFaces vFaces = m_topology->getOrientedTriangleVertexShell(i);
+                const VertexFaces vFaces = m_topology->getOrientedTrianglesAroundVertex(i);
                 for(FaceID j = 0; j < vFaces.size(); ++j)
                     m_vorticity.element(i) += (m_bkVels[vFaces[(j+1)%vFaces.size()]] + m_bkVels[vFaces[j]]) * (m_bkCenters[vFaces[(j+1)%vFaces.size()]] - m_bkCenters[vFaces[j]]);
                 m_vorticity.element(i) *= 0.5;
@@ -1763,8 +1763,8 @@ void EulerianFluidModel<DataTypes>::calcVorticity()
         ////calculate boundary vorticity using current data, but not backtrack one
         //for(std::map<PointID, BoundaryPointInformation>::iterator it = m_bdPointInfo.begin(); it !=  m_bdPointInfo.end(); ++it)
         //{
-        //	const VertexEdges vEdges = m_topology->getOrientedEdgeVertexShell(it->first);
-        //	const VertexFaces vFaces = m_topology->getOrientedTriangleVertexShell(it->first);
+        //	const EdgesAroundVertex vEdges = m_topology->getOrientedEdgesAroundVertex(it->first);
+        //	const VertexFaces vFaces = m_topology->getOrientedTrianglesAroundVertex(it->first);
         //	const Coord p(m_topology->getPX(it->first), m_topology->getPY(it->first), m_topology->getPZ(it->first));
         //	m_vorticity.element(it->first) =
         //		(m_bdEdgeInfo[vEdges.back()].m_bdVel + m_bkVels[vFaces.back()]) * (m_eInfo.m_centers[vEdges.back()] - m_bkCenters[vFaces.back()]) +				//fCenter_last->eCenter_last
@@ -1781,8 +1781,8 @@ void EulerianFluidModel<DataTypes>::calcVorticity()
         ////calculate boundary vorticity
         //for(std::map<PointID, BoundaryPointInformation>::iterator it = m_bdPointInfo.begin(); it !=  m_bdPointInfo.end(); ++it)
         //{
-        //	const VertexEdges vEdges = m_topology->getOrientedEdgeVertexShell(it->first);
-        //	const VertexFaces vFaces = m_topology->getOrientedTriangleVertexShell(it->first);
+        //	const EdgesAroundVertex vEdges = m_topology->getOrientedEdgesAroundVertex(it->first);
+        //	const VertexFaces vFaces = m_topology->getOrientedTrianglesAroundVertex(it->first);
         //	m_vorticity.element(it->first) =
         //		(m_bdEdgeInfo[vEdges.back()].m_bkVel + m_bkVels[vFaces.back()]) * (m_bdEdgeInfo[vEdges.back()].m_bkECenter - m_bkCenters[vFaces.back()]) +		//fCenter_last->eCenter_last
         //		(it->second.m_bkVel + m_bdEdgeInfo[vEdges.back()].m_bkVel) * (it->second.m_bkPoint - m_bdEdgeInfo[vEdges.back()].m_bkECenter) +					//eCenter_last->p
@@ -1803,7 +1803,7 @@ void EulerianFluidModel<DataTypes>::calcVorticity()
         {
             if(!m_pInfo.m_isBoundary[i])
             {
-                const VertexFaces vFaces = m_topology->getOrientedQuadVertexShell(i);
+                const VertexFaces vFaces = m_topology->getOrientedQuadsAroundVertex(i);
                 for(FaceID j = 0; j < vFaces.size(); ++j)
                     m_vorticity.element(i) += (m_bkVels[vFaces[(j+1)%vFaces.size()]] + m_bkVels[vFaces[j]]) * (m_bkCenters[vFaces[(j+1)%vFaces.size()]] - m_bkCenters[vFaces[j]]);
                 m_vorticity.element(i) *= 0.5 ;
@@ -1813,8 +1813,8 @@ void EulerianFluidModel<DataTypes>::calcVorticity()
         ////calculate boundary vorticity using current data, but not backtrack one
         //for(std::map<PointID, BoundaryPointInformation>::iterator it = m_bdPointInfo.begin(); it !=  m_bdPointInfo.end(); ++it)
         //{
-        //	const VertexEdges vEdges = m_topology->getOrientedEdgeVertexShell(it->first);
-        //	const VertexFaces vFaces = m_topology->getOrientedQuadVertexShell(it->first);
+        //	const EdgesAroundVertex vEdges = m_topology->getOrientedEdgesAroundVertex(it->first);
+        //	const VertexFaces vFaces = m_topology->getOrientedQuadsAroundVertex(it->first);
         //	const Coord p(m_topology->getPX(it->first), m_topology->getPY(it->first), m_topology->getPZ(it->first));
         //	m_vorticity.element(it->first) =
         //		(m_bdEdgeInfo[vEdges.back()].m_bdVel + m_bkVels[vFaces.back()]) * (m_eInfo.m_centers[vEdges.back()] - m_bkCenters[vFaces.back()]) +				//fCenter_last->eCenter_last
@@ -1831,8 +1831,8 @@ void EulerianFluidModel<DataTypes>::calcVorticity()
         ////calculate boundary vorticity
         //for(std::map<PointID, BoundaryPointInformation>::iterator it = m_bdPointInfo.begin(); it !=  m_bdPointInfo.end(); ++it)
         //{
-        //	const VertexEdges vEdges = m_topology->getOrientedEdgeVertexShell(it->first);
-        //	const VertexFaces vFaces = m_topology->getOrientedQuadVertexShell(it->first);
+        //	const EdgesAroundVertex vEdges = m_topology->getOrientedEdgesAroundVertex(it->first);
+        //	const VertexFaces vFaces = m_topology->getOrientedQuadsAroundVertex(it->first);
         //	m_vorticity.element(it->first) =
         //		(m_bdEdgeInfo[vEdges.back()].m_bkVel + m_bkVels[vFaces.back()]) * (m_bdEdgeInfo[vEdges.back()].m_bkECenter - m_bkCenters[vFaces.back()]) +		//fCenter_last->eCenter_last
         //		(it->second.m_bkVel + m_bdEdgeInfo[vEdges.back()].m_bkVel) * (it->second.m_bkPoint - m_bdEdgeInfo[vEdges.back()].m_bkECenter) +					//eCenter_last->p
@@ -1987,14 +1987,14 @@ void EulerianFluidModel<DataTypes>::saveMeshData() const
         if(m_meshType == TriangleMesh)
         {
             const Triangle f = m_topology->getTriangle(i);
-            const TriangleEdges& edges = m_topology->getEdgeTriangleShell(i);
+            const EdgesInTriangle& edges = m_topology->getEdgesInTriangle(i);
             outfile << "[" << i << "]" << "  " << f[0] << "," << f[1] << "," << f[2] << endl;
             outfile << "[" << i << "]" << "  " << edges[0] << "," << edges[1] << "," << edges[2] << endl;
         }
         if(m_meshType == QuadMesh)
         {
             const Quad f = m_topology->getQuad(i);
-            const QuadEdges& edges = m_topology->getEdgeQuadShell(i);
+            const EdgesInQuad& edges = m_topology->getEdgesInQuad(i);
             outfile << "[" << i << "]" << "  " << f[0] << "," << f[1] << "," << f[2] << "," << f[3] << endl;
             outfile << "[" << i << "]" << "  " << edges[0] << "," << edges[1] << "," << edges[2] << "," << edges[3] << endl;
 

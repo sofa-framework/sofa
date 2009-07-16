@@ -273,7 +273,7 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
     {
         int nactive = 0;
 #ifdef SOFA_NEW_HEXA
-        int ncubes = m->_trimgrid->getNbHexas();
+        int ncubes = m->_trimgrid->getNbHexahedra();
 #else
         int ncubes = m->_trimgrid->getNbCubes();
 #endif

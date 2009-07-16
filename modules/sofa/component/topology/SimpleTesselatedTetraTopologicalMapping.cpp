@@ -121,14 +121,14 @@ void SimpleTesselatedTetraTopologicalMapping::init()
             }
 
             fixed_array <int, 8> newTetrasIndices;
-            int newTetraIndex = to_tstc->getNbTetras();
+            int newTetraIndex = to_tstc->getNbTetrahedra();
 
-            tetraSourceData.resize(8*from_tstc->getNbTetras());
+            tetraSourceData.resize(8*from_tstc->getNbTetrahedra());
 
-            for (int i=0; i<from_tstc->getNbTetras(); i++)
+            for (int i=0; i<from_tstc->getNbTetrahedra(); i++)
             {
-                Tetra t = from_tstc->getTetra(i);
-                TetraEdges e = from_tstc->getEdgeTetraShell(i);
+                Tetra t = from_tstc->getTetrahedron(i);
+                EdgesInTetrahedron e = from_tstc->getEdgesInTetrahedron(i);
                 to_tstc->addTetra(t[0],	pointMappedFromEdgeData[e[0]], pointMappedFromEdgeData[e[1]], pointMappedFromEdgeData[e[2]]);
                 newTetrasIndices[0] = newTetraIndex; tetraSourceData[newTetraIndex] = i; newTetraIndex++;
 

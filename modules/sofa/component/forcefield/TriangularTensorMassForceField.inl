@@ -48,7 +48,7 @@ using namespace core::componentmodel::topology;
 
 
 using core::componentmodel::topology::BaseMeshTopology;
-typedef BaseMeshTopology::TriangleEdges TriangleEdges;
+typedef BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
 
 template< class DataTypes>
 void TriangularTensorMassForceField<DataTypes>::TriangularTMEdgeCreationFunction(int /*edgeIndex*/, void* param, EdgeRestInformation &ei,
@@ -94,7 +94,7 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMTriangleCreationFunc
         {
 
             /// describe the jth edge index of triangle no i
-            const TriangleEdges &te= ff->_topology->getEdgeTriangleShell(triangleAdded[i]);
+            const EdgesInTriangle &te= ff->_topology->getEdgesInTriangle(triangleAdded[i]);
             /// describe the jth vertex index of triangle no i
             const Triangle &t= ff->_topology->getTriangle(triangleAdded[i]);
             // store points
@@ -184,7 +184,7 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMTriangleDestructionF
         {
 
             /// describe the jth edge index of triangle no i
-            const TriangleEdges &te= ff->_topology->getEdgeTriangleShell(triangleRemoved[i]);
+            const EdgesInTriangle &te= ff->_topology->getEdgesInTriangle(triangleRemoved[i]);
             /// describe the jth vertex index of triangle no i
             const Triangle &t= ff->_topology->getTriangle(triangleRemoved[i]);
             // store points

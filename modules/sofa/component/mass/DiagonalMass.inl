@@ -195,7 +195,7 @@ inline void MassTetrahedronCreationFunction(const sofa::helper::vector<unsigned 
         for (i=0; i<tetrahedronAdded.size(); ++i)
         {
             /// get the tetrahedron to be added
-            const Tetrahedron &t=dm->_topology->getTetra(tetrahedronAdded[i]);
+            const Tetrahedron &t=dm->_topology->getTetrahedron(tetrahedronAdded[i]);
             // compute its mass based on the mass density and the tetrahedron volume
             if(dm->tetraGeo)
             {
@@ -227,7 +227,7 @@ inline void MassTetrahedronDestroyFunction(const sofa::helper::vector<unsigned i
         for (i=0; i<tetrahedronRemoved.size(); ++i)
         {
             /// get the tetrahedron to be added
-            const Tetrahedron &t=dm->_topology->getTetra(tetrahedronRemoved[i]);
+            const Tetrahedron &t=dm->_topology->getTetrahedron(tetrahedronRemoved[i]);
             if(dm->tetraGeo)
             {
                 // compute its mass based on the mass density and the tetrahedron volume
@@ -403,7 +403,7 @@ void DiagonalMass<DataTypes, MassType>::reinit()
 {
     if (_topology && (m_massDensity.getValue() > 0 || f_mass.getValue().size() == 0))
     {
-        if (_topology->getNbTetras()>0 && tetraGeo)
+        if (_topology->getNbTetrahedra()>0 && tetraGeo)
         {
 
             MassVector& masses = *f_mass.beginEdit();
@@ -419,10 +419,10 @@ void DiagonalMass<DataTypes, MassType>::reinit()
             Real md=m_massDensity.getValue();
             Real mass=Real();
 
-            for (int i=0; i<_topology->getNbTetras(); ++i)
+            for (int i=0; i<_topology->getNbTetrahedra(); ++i)
             {
 
-                const Tetrahedron &t=_topology->getTetra(i);
+                const Tetrahedron &t=_topology->getTetrahedron(i);
                 if(tetraGeo)
                 {
                     mass=(md*tetraGeo->computeRestTetrahedronVolume(i))/(Real)4.0;
@@ -463,7 +463,7 @@ void DiagonalMass<DataTypes, MassType>::reinit()
             f_mass.endEdit();
         }
         /*
-          else if (_topology->getNbHexas()>0) {
+          else if (_topology->getNbHexahedra()>0) {
 
           // TODO : Hexas
           topologyType=TOPOLOGY_HEXAHEDRONSET;

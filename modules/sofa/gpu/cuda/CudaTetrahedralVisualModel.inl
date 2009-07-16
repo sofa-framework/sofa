@@ -139,8 +139,8 @@ void OglTetrahedralModel< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::dra
 template<class TCoord, class TDeriv, class TReal>
 bool OglTetrahedralModel< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addBBox(double* minBBox, double* maxBBox)
 {
-    const core::componentmodel::topology::BaseMeshTopology::SeqTetras& vec = topo->getTetras();
-    core::componentmodel::topology::BaseMeshTopology::SeqTetras::const_iterator it;
+    const core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra& vec = topo->getTetrahedra();
+    core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra::const_iterator it;
     VecCoord& x = *nodes->getX();
     Coord v;
 

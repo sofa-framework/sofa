@@ -94,12 +94,12 @@ void CudaTetrahedronTLEDForceField::reinit()
         serr << "ERROR(CudaTetrahedronTLEDForceField): no topology found.\n";
         return;
     }
-    VecElement inputElems = topology->getTetras();
+    VecElement inputElems = topology->getTetrahedra();
     if (inputElems.empty())
     {
-        if (topology->getNbHexas() == 0)
+        if (topology->getNbHexahedra() == 0)
             return;
-        int nbcubes = topology->getNbHexas();
+        int nbcubes = topology->getNbHexahedra();
         // These values are only correct if the mesh is a grid topology
         int nx = 2;
         int ny = 1;
@@ -119,7 +119,7 @@ void CudaTetrahedronTLEDForceField::reinit()
         for (int i=0; i<nbcubes; i++)
         {
             // if (flags && !flags->isCubeActive(i)) continue;
-            core::componentmodel::topology::BaseMeshTopology::Hexa c = topology->getHexa(i);
+            core::componentmodel::topology::BaseMeshTopology::Hexa c = topology->getHexahedron(i);
 #define swap(a,b) { int t = a; a = b; b = t; }
             if (!((i%nx)&1))
             {

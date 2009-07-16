@@ -123,8 +123,8 @@ void SlicedVolumetricModel::init()
 
     _nbPlanesOld = _nbPlanes.getValue();
 
-    const Coord& p0 = GETCOORD(_topology->getHexa(0)[0]);
-    const Coord& p7 = GETCOORD(_topology->getHexa(0)[6]);
+    const Coord& p0 = GETCOORD(_topology->getHexahedron(0)[0]);
+    const Coord& p7 = GETCOORD(_topology->getHexahedron(0)[6]);
     _radius = (p7-p0).norm() / 2;
 
 
@@ -279,7 +279,7 @@ void SlicedVolumetricModel::findAndDrawTriangles()
     lastPoint += _planeNormal * .1;
 
     std::list<int>positiveCubes;
-    for(int i=0; i<_topology->getNbHexas(); ++i)
+    for(int i=0; i<_topology->getNbHexahedra(); ++i)
         positiveCubes.push_back( i );
 
 
@@ -300,7 +300,7 @@ void SlicedVolumetricModel::findAndDrawTriangles()
         // seulement les nouveaux cubes potentiellement intersectable, ie proches ou devant le plan
         for(std::list<int>::iterator itcell=positiveCubes.begin(); itcell!=positiveCubes.end(); /*++itcell*/)
         {
-            const BaseMeshTopology::Hexa& cell = _topology->getHexa( *itcell );
+            const BaseMeshTopology::Hexa& cell = _topology->getHexahedron( *itcell );
 
             Coord cubebarycenter = GETCOORD( cell[0] ) + (GETCOORD( cell[6] ) - GETCOORD( cell[0] ) ) / 2.0;
 

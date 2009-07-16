@@ -82,14 +82,14 @@ void TetrahedronModel::init()
         return;
     }
 
-    tetra = &_topology->getTetras();
+    tetra = &_topology->getTetrahedra();
     resize(tetra->size());
 
 }
 
 void TetrahedronModel::handleTopologyChange()
 {
-    resize(_topology->getNbTetras());
+    resize(_topology->getNbTetrahedra());
 }
 
 void TetrahedronModel::draw(int index)

@@ -56,7 +56,7 @@ using namespace core::componentmodel::behavior;
 using core::componentmodel::topology::BaseMeshTopology;
 
 typedef BaseMeshTopology::Quad				Quad;
-typedef BaseMeshTopology::QuadEdges			QuadEdges;
+typedef BaseMeshTopology::EdgesInQuad			EdgesInQuad;
 
 template< class DataTypes>
 void QuadularBendingSprings<DataTypes>::QuadularBSEdgeCreationFunction(int /*edgeIndex*/, void* param, EdgeInformation &ei,
@@ -105,7 +105,7 @@ void QuadularBendingSprings<DataTypes>::QuadularBSQuadCreationFunction (const so
         {
 
             /// describe the jth edge index of quad no i
-            QuadEdges te2 = ff->_topology->getEdgeQuadShell(quadAdded[i]);
+            EdgesInQuad te2 = ff->_topology->getEdgesInQuad(quadAdded[i]);
             /// describe the jth vertex index of quad no i
             Quad t2 = ff->_topology->getQuad(quadAdded[i]);
 
@@ -128,26 +128,26 @@ void QuadularBendingSprings<DataTypes>::QuadularBSQuadCreationFunction (const so
                         }
                     }
 
-                    const sofa::helper::vector< unsigned int > shell = ff->_topology->getQuadEdgeShell(edgeIndex);
+                    const sofa::helper::vector< unsigned int > shell = ff->_topology->getQuadsAroundEdge(edgeIndex);
                     if (shell.size()==2)
                     {
 
                         nb_activated+=1;
 
-                        QuadEdges te1;
+                        EdgesInQuad te1;
                         Quad t1;
 
                         if(shell[0] == quadAdded[i])
                         {
 
-                            te1 = ff->_topology->getEdgeQuadShell(shell[1]);
+                            te1 = ff->_topology->getEdgesInQuad(shell[1]);
                             t1 =  ff->_topology->getQuad(shell[1]);
 
                         }
                         else   // shell[1] == quadAdded[i]
                         {
 
-                            te1 = ff->_topology->getEdgeQuadShell(shell[0]);
+                            te1 = ff->_topology->getEdgesInQuad(shell[0]);
                             t1 =  ff->_topology->getQuad(shell[0]);
                         }
 
@@ -211,7 +211,7 @@ void QuadularBendingSprings<DataTypes>::QuadularBSQuadDestructionFunction (const
         {
 
             /// describe the jth edge index of quad no i
-            QuadEdges te = ff->_topology->getEdgeQuadShell(quadRemoved[i]);
+            EdgesInQuad te = ff->_topology->getEdgesInQuad(quadRemoved[i]);
             /// describe the jth vertex index of quad no i
             Quad t =  ff->_topology->getQuad(quadRemoved[i]);
 
@@ -225,20 +225,20 @@ void QuadularBendingSprings<DataTypes>::QuadularBSQuadDestructionFunction (const
 
                     unsigned int edgeIndex = te[j];
 
-                    const sofa::helper::vector< unsigned int > shell = ff->_topology->getQuadEdgeShell(edgeIndex);
+                    const sofa::helper::vector< unsigned int > shell = ff->_topology->getQuadsAroundEdge(edgeIndex);
                     if (shell.size()==3)
                     {
 
-                        QuadEdges te1;
+                        EdgesInQuad te1;
                         Quad t1;
-                        QuadEdges te2;
+                        EdgesInQuad te2;
                         Quad t2;
 
                         if(shell[0] == quadRemoved[i])
                         {
-                            te1 = ff->_topology->getEdgeQuadShell(shell[1]);
+                            te1 = ff->_topology->getEdgesInQuad(shell[1]);
                             t1 =  ff->_topology->getQuad(shell[1]);
-                            te2 = ff->_topology->getEdgeQuadShell(shell[2]);
+                            te2 = ff->_topology->getEdgesInQuad(shell[2]);
                             t2 =  ff->_topology->getQuad(shell[2]);
 
                         }
@@ -248,18 +248,18 @@ void QuadularBendingSprings<DataTypes>::QuadularBSQuadDestructionFunction (const
                             if(shell[1] == quadRemoved[i])
                             {
 
-                                te1 = ff->_topology->getEdgeQuadShell(shell[2]);
+                                te1 = ff->_topology->getEdgesInQuad(shell[2]);
                                 t1 =  ff->_topology->getQuad(shell[2]);
-                                te2 = ff->_topology->getEdgeQuadShell(shell[0]);
+                                te2 = ff->_topology->getEdgesInQuad(shell[0]);
                                 t2 =  ff->_topology->getQuad(shell[0]);
 
                             }
                             else   // shell[2] == quadRemoved[i]
                             {
 
-                                te1 = ff->_topology->getEdgeQuadShell(shell[0]);
+                                te1 = ff->_topology->getEdgesInQuad(shell[0]);
                                 t1 =  ff->_topology->getQuad(shell[0]);
-                                te2 = ff->_topology->getEdgeQuadShell(shell[1]);
+                                te2 = ff->_topology->getEdgesInQuad(shell[1]);
                                 t2 =  ff->_topology->getQuad(shell[1]);
 
                             }
@@ -376,7 +376,7 @@ template <class DataTypes> void QuadularBendingSprings<DataTypes>::handleTopolog
 
                 }
 
-                const sofa::helper::vector<unsigned int> &shell= _topology->getQuadVertexShell(lastIndexVec[i]);
+                const sofa::helper::vector<unsigned int> &shell= _topology->getQuadsAroundVertex(lastIndexVec[i]);
                 for (j=0; j<shell.size(); ++j)
                 {
 
@@ -384,7 +384,7 @@ template <class DataTypes> void QuadularBendingSprings<DataTypes>::handleTopolog
 
                     unsigned int vertexIndex = _topology->getVertexIndexInQuad(tj, lastIndexVec[i]);
 
-                    QuadEdges tej = _topology->getEdgeQuadShell(shell[j]);
+                    EdgesInQuad tej = _topology->getEdgesInQuad(shell[j]);
 
                     for (unsigned int j_edge=vertexIndex; j_edge%4 !=(vertexIndex+2)%4; ++j_edge)
                     {

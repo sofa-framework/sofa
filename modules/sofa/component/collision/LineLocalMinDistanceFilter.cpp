@@ -65,16 +65,16 @@ void LineInfo::buildFilter(const Line &l)
 
         vector< Vector3 >& x = *(l.getCollisionModel()->getMechanicalState()->getX());
 
-        const sofa::helper::vector<unsigned int>& triangleEdgeShell = topology->getTriangleEdgeShell(l.getIndex());
+        const sofa::helper::vector<unsigned int>& trianglesAroundEdge = topology->getTrianglesAroundEdge(l.getIndex());
 
         // filter if there are two triangles around the edge
-        if (triangleEdgeShell.size() != 2)
+        if (trianglesAroundEdge.size() != 2)
         {
             m_twoTrianglesAroundEdge = false;
         }
 
         // compute the normal of the triangle situated on the right
-        const BaseMeshTopology::Triangle& triangleRight = topology->getTriangle(triangleEdgeShell[0]);
+        const BaseMeshTopology::Triangle& triangleRight = topology->getTriangle(trianglesAroundEdge[0]);
         Vector3 n1 = cross(x[triangleRight[1]] - x[triangleRight[0]], x[triangleRight[2]] - x[triangleRight[0]]);
         n1.normalize();
         m_nMean = n1;
@@ -82,7 +82,7 @@ void LineInfo::buildFilter(const Line &l)
         m_triangleRight.normalize(); // necessary ?
 
         // compute the normal of the triangle situated on the left
-        const BaseMeshTopology::Triangle& triangleLeft = topology->getTriangle(triangleEdgeShell[1]);
+        const BaseMeshTopology::Triangle& triangleLeft = topology->getTriangle(trianglesAroundEdge[1]);
         Vector3 n2 = cross(x[triangleLeft[1]] - x[triangleLeft[0]], x[triangleLeft[2]] - x[triangleLeft[0]]);
         n2.normalize();
         m_nMean += n2;

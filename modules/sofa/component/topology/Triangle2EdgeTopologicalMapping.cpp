@@ -110,7 +110,7 @@ void Triangle2EdgeTopologicalMapping::init()
             for (unsigned int i=0; i<edgeArray.size(); ++i)
             {
 
-                if (fromModel->getTriangleEdgeShell(i).size()==1)
+                if (fromModel->getTrianglesAroundEdge(i).size()==1)
                 {
 
                     to_tstm->addEdgeProcess(edgeArray[i]);
@@ -132,9 +132,9 @@ void Triangle2EdgeTopologicalMapping::init()
 unsigned int Triangle2EdgeTopologicalMapping::getFromIndex(unsigned int ind)
 {
 
-    if(fromModel->getTriangleEdgeShell(ind).size()==1)
+    if(fromModel->getTrianglesAroundEdge(ind).size()==1)
     {
-        return fromModel->getTriangleEdgeShell(ind)[0];
+        return fromModel->getTrianglesAroundEdge(ind)[0];
     }
     else
     {
@@ -284,28 +284,28 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                         {
                             for (unsigned int j = 0; j < 3; ++j)
                             {
-                                unsigned int k = (fromModel->getEdgeTriangleShell(tab[i]))[j];
+                                unsigned int k = (fromModel->getEdgesInTriangle(tab[i]))[j];
 
-                                if (fromModel->getTriangleEdgeShell(k).size()!= 2)   // remove as visible the edge indexed by k // ==1
+                                if (fromModel->getTrianglesAroundEdge(k).size()!= 2)   // remove as visible the edge indexed by k // ==1
                                 {
 
                                     // do nothing
 
                                 }
-                                else   // fromModel->getTriangleEdgeShell(k).size()==2 // add as visible the edge indexed by k
+                                else   // fromModel->getTrianglesAroundEdge(k).size()==2 // add as visible the edge indexed by k
                                 {
 
                                     unsigned int ind_test;
-                                    if(tab[i] == fromModel->getTriangleEdgeShell(k)[0])
+                                    if(tab[i] == fromModel->getTrianglesAroundEdge(k)[0])
                                     {
 
-                                        ind_test = fromModel->getTriangleEdgeShell(k)[1];
+                                        ind_test = fromModel->getTrianglesAroundEdge(k)[1];
 
                                     }
-                                    else   // tab[i] == fromModel->getTriangleEdgeShell(k)[1]
+                                    else   // tab[i] == fromModel->getTrianglesAroundEdge(k)[1]
                                     {
 
-                                        ind_test = fromModel->getTriangleEdgeShell(k)[0];
+                                        ind_test = fromModel->getTrianglesAroundEdge(k)[0];
                                     }
 
                                     bool is_present = false;
@@ -321,7 +321,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                                         Edge t;
 
                                         const Triangle &te=triangleArray[ind_test];
-                                        int h = fromModel->getEdgeIndexInTriangle(fromModel->getEdgeTriangleShell(ind_test),k);
+                                        int h = fromModel->getEdgeIndexInTriangle(fromModel->getEdgesInTriangle(ind_test),k);
 
                                         t[0]=(int)(te[(h+1)%3]); t[1]=(int)(te[(h+2)%3]);
 
@@ -473,10 +473,10 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                             unsigned int ind_elem = ta->triangleIndexArray[i];
                             for (unsigned int j = 0; j < 3; ++j)
                             {
-                                unsigned int k = (fromModel->getEdgeTriangleShell(ind_elem))[j];
+                                unsigned int k = (fromModel->getEdgesInTriangle(ind_elem))[j];
 
                                 std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(k);
-                                bool is_present = (iter_1 != Glob2LocMap.end()) && fromModel->getTriangleEdgeShell(k).size()>1;
+                                bool is_present = (iter_1 != Glob2LocMap.end()) && fromModel->getTrianglesAroundEdge(k).size()>1;
 
                                 if (is_present)   // remove as visible the edge indexed by k
                                 {
@@ -501,7 +501,7 @@ void Triangle2EdgeTopologicalMapping::updateTopologicalMappingTopDown()
                                 else   // add as visible the edge indexed by k
                                 {
 
-                                    if((iter_1 == Glob2LocMap.end()) && (fromModel->getTriangleEdgeShell(k).size()==1))
+                                    if((iter_1 == Glob2LocMap.end()) && (fromModel->getTrianglesAroundEdge(k).size()==1))
                                     {
 
                                         //sofa::helper::vector< Edge > edges_to_create;

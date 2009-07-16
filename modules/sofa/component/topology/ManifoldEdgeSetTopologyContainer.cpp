@@ -69,56 +69,56 @@ void ManifoldEdgeSetTopologyContainer::init()
     // load edges
     EdgeSetTopologyContainer::init();
 
-    // the edgeVertexShell is needed to recognize if the edgeSet is manifold
-    createEdgeVertexShellArray();
+    // the edgesAroundVertex is needed to recognize if the edgeSet is manifold
+    createEdgesAroundVertexArray();
 
     computeConnectedComponent();
     checkTopology();
 }
 
-void ManifoldEdgeSetTopologyContainer::createEdgeVertexShellArray()
+void ManifoldEdgeSetTopologyContainer::createEdgesAroundVertexArray()
 {
     if(!hasEdges())	//  this method should only be called when edges exist
     {
 #ifndef NDEBUG
-        sout << "Warning. [ManifoldEdgeSetTopologyContainer::createEdgeVertexShellArray] edge array is empty." << endl;
+        sout << "Warning. [ManifoldEdgeSetTopologyContainer::createEdgesAroundVertexArray] edge array is empty." << endl;
 #endif
         createEdgeSetArray();
     }
 
-    if(hasEdgeVertexShell())
+    if(hasEdgesAroundVertex())
     {
-        clearEdgeVertexShell();
+        clearEdgesAroundVertex();
     }
 
-    m_edgeVertexShell.resize( getNbPoints() );
+    m_edgesAroundVertex.resize( getNbPoints() );
 
     for (unsigned int edge = 0; edge < m_edge.size(); ++edge)
     {
         // check to how many edges is the end vertex of each edge connnected to
-        unsigned int size1 = m_edgeVertexShell[ m_edge[edge][1] ].size();
+        unsigned int size1 = m_edgesAroundVertex[ m_edge[edge][1] ].size();
 
         // adding edge i in the edge shell of both points, while respecting the manifold orientation
         // (ie : the edge will be added in second position for its first extremity point, and in first position for its second extremity point)
 
-        m_edgeVertexShell[ m_edge[edge][0] ].push_back( edge );
+        m_edgesAroundVertex[ m_edge[edge][0] ].push_back( edge );
 
         if(size1==0)
         {
-            m_edgeVertexShell[ m_edge[edge][1] ].push_back( edge );
+            m_edgesAroundVertex[ m_edge[edge][1] ].push_back( edge );
         }
         else if(size1==1)
         {
-            unsigned int nextEdge = m_edgeVertexShell[ m_edge[edge][1] ][0];
-            m_edgeVertexShell[ m_edge[edge][1] ][0] = edge;
-            m_edgeVertexShell[ m_edge[edge][1] ].push_back( nextEdge );
+            unsigned int nextEdge = m_edgesAroundVertex[ m_edge[edge][1] ][0];
+            m_edgesAroundVertex[ m_edge[edge][1] ][0] = edge;
+            m_edgesAroundVertex[ m_edge[edge][1] ].push_back( nextEdge );
         }
         else
         {
             // not manifold !!!
-            m_edgeVertexShell[ m_edge[edge][1] ].push_back( edge );
+            m_edgesAroundVertex[ m_edge[edge][1] ].push_back( edge );
 
-            sout << "Error. [ManifoldEdgeSetTopologyContainer::createEdgeVertexShellArray] The given EdgeSet is not manifold." << endl;
+            sout << "Error. [ManifoldEdgeSetTopologyContainer::createEdgesAroundVertexArray] The given EdgeSet is not manifold." << endl;
         }
     }
 }
@@ -167,14 +167,14 @@ void ManifoldEdgeSetTopologyContainer::computeConnectedComponent()
             components[m_ComponentVertexArray[j]][0]+=1;
             components[m_ComponentVertexArray[j]][1]=j;
 
-            if((getEdgeVertexShell(j)).size()==1)
+            if((getEdgesAroundVertex(j)).size()==1)
             {
 
-                if((getEdge((getEdgeVertexShell(j))[0]))[0]==j)
+                if((getEdge((getEdgesAroundVertex(j))[0]))[0]==j)
                 {
                     components[m_ComponentVertexArray[j]][2]=j;
                 }
-                else   // (getEdge((getEdgeVertexShell(j))[0]))[1]==j
+                else   // (getEdge((getEdgesAroundVertex(j))[0]))[1]==j
                 {
                     components[m_ComponentVertexArray[j]][3]=j;
                 }
@@ -205,11 +205,11 @@ bool ManifoldEdgeSetTopologyContainer::checkTopology() const
 #ifndef NDEBUG
     bool ret = true;
 
-    if (hasEdgeVertexShell())
+    if (hasEdgesAroundVertex())
     {
-        for (unsigned int i=0; i<m_edgeVertexShell.size(); ++i)
+        for (unsigned int i=0; i<m_edgesAroundVertex.size(); ++i)
         {
-            const sofa::helper::vector<unsigned int> &es = m_edgeVertexShell[i];
+            const sofa::helper::vector<unsigned int> &es = m_edgesAroundVertex[i];
 
             if(es.size() != 1 && es.size() != 2)
             {

@@ -101,7 +101,7 @@ protected:
     };
 
     sofa::helper::vector<TetrahedronInfo> elems;
-    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTetras* tetra;
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra* tetra;
 
     core::componentmodel::behavior::MechanicalState<Vec3Types>* mstate;
 

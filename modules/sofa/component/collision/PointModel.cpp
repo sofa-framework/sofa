@@ -269,11 +269,11 @@ void PointModel::updateNormals()
         normals[i].clear();
     }
     core::componentmodel::topology::BaseMeshTopology* mesh = getContext()->getMeshTopology();
-    if (mesh->getNbTetras()+mesh->getNbHexas() > 0)
+    if (mesh->getNbTetrahedra()+mesh->getNbHexahedra() > 0)
     {
-        if (mesh->getNbTetras()>0)
+        if (mesh->getNbTetrahedra()>0)
         {
-            const core::componentmodel::topology::BaseMeshTopology::SeqTetras &elems = mesh->getTetras();
+            const core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra &elems = mesh->getTetrahedra();
             for (unsigned int i=0; i < elems.size(); ++i)
             {
                 const core::componentmodel::topology::BaseMeshTopology::Tetra &e = elems[i];
@@ -369,26 +369,26 @@ bool Point::testLMD(const Vector3 &PQ, double &coneFactor, double &coneExtension
     sofa::core::componentmodel::topology::BaseMeshTopology* mesh = model->getMeshTopology();
     helper::vector<Vector3> x = (*model->mstate->getX());
 
-    const helper::vector <unsigned int>& triangleVertexShell = mesh->getTriangleVertexShell(index);
-    const helper::vector <unsigned int>& edgeVertexShell = mesh->getEdgeVertexShell(index);
+    const helper::vector <unsigned int>& trianglesAroundVertex = mesh->getTrianglesAroundVertex(index);
+    const helper::vector <unsigned int>& edgesAroundVertex = mesh->getEdgesAroundVertex(index);
 
 
     Vector3 nMean;
 
-    for (unsigned int i=0; i<triangleVertexShell.size(); i++)
+    for (unsigned int i=0; i<trianglesAroundVertex.size(); i++)
     {
-        unsigned int t = triangleVertexShell[i];
+        unsigned int t = trianglesAroundVertex[i];
         const fixed_array<unsigned int,3>& ptr = mesh->getTriangle(t);
         Vector3 nCur = (x[ptr[1]]-x[ptr[0]]).cross(x[ptr[2]]-x[ptr[0]]);
         nCur.normalize();
         nMean += nCur;
     }
 
-    if (triangleVertexShell.size()==0)
+    if (trianglesAroundVertex.size()==0)
     {
-        for (unsigned int i=0; i<edgeVertexShell.size(); i++)
+        for (unsigned int i=0; i<edgesAroundVertex.size(); i++)
         {
-            unsigned int e = edgeVertexShell[i];
+            unsigned int e = edgesAroundVertex[i];
             const fixed_array<unsigned int,2>& ped = mesh->getEdge(e);
             Vector3 l = (pt - x[ped[0]]) + (pt - x[ped[1]]);
             l.normalize();
@@ -400,9 +400,9 @@ bool Point::testLMD(const Vector3 &PQ, double &coneFactor, double &coneExtension
         nMean.normalize();
 
 
-    for (unsigned int i=0; i<edgeVertexShell.size(); i++)
+    for (unsigned int i=0; i<edgesAroundVertex.size(); i++)
     {
-        unsigned int e = edgeVertexShell[i];
+        unsigned int e = edgesAroundVertex[i];
         const fixed_array<unsigned int,2>& ped = mesh->getEdge(e);
         Vector3 l = (pt - x[ped[0]]) + (pt - x[ped[1]]);
         l.normalize();

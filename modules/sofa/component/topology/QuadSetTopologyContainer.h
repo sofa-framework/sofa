@@ -43,9 +43,9 @@ typedef BaseMeshTopology::QuadID			QuadID;
 typedef BaseMeshTopology::Edge				Edge;
 typedef BaseMeshTopology::Quad				Quad;
 typedef BaseMeshTopology::SeqQuads			SeqQuads;
-typedef BaseMeshTopology::QuadEdges			QuadEdges;
-typedef BaseMeshTopology::VertexQuads		VertexQuads;
-typedef BaseMeshTopology::EdgeQuads			EdgeQuads;
+typedef BaseMeshTopology::EdgesInQuad			EdgesInQuad;
+typedef BaseMeshTopology::QuadsAroundVertex		QuadsAroundVertex;
+typedef BaseMeshTopology::QuadsAroundEdge		QuadsAroundEdge;
 
 /** Object that stores a set of quads and provides access
 to each quad and its edges and vertices */
@@ -77,20 +77,20 @@ public:
     }
 
     /// Returns the set of edges adjacent to a given quad.
-    const QuadEdges& getEdgeQuadShell(QuadID i)
+    /*		const EdgesInQuad& getEdgesInQuad(QuadID i)
     {
-        return getQuadEdge(i);
+    	return getEdgesInQuad(i);
     }
-
+    */
     /** \brief Returns the set of quads adjacent to a given vertex.
     *
     */
-    virtual const VertexQuads& getQuadVertexShell(PointID i);
+    virtual const QuadsAroundVertex& getQuadsAroundVertex(PointID i);
 
     /** \brief Returns the set of quads adjacent to a given edge.
     *
     */
-    virtual const EdgeQuads& getQuadEdgeShell(EdgeID i);
+    virtual const QuadsAroundEdge& getQuadsAroundEdge(EdgeID i);
 
     /** Returns the indices of a quad given four vertex indices : returns -1 if none */
     virtual int getQuadIndex(PointID v1, PointID v2, PointID v3, PointID v4);
@@ -111,17 +111,17 @@ public:
     /** \brief Returns the Quad Vertex Shells array.
     *
     */
-    const sofa::helper::vector< sofa::helper::vector<unsigned int> > &getQuadVertexShellArray();
+    const sofa::helper::vector< sofa::helper::vector<unsigned int> > &getQuadsAroundVertexArray();
 
-    /** \brief Returns the QuadEdges array (ie provide the 4 edge indices for each quad)
+    /** \brief Returns the EdgesInQuad array (ie provide the 4 edge indices for each quad)
     *
     */
-    const sofa::helper::vector< QuadEdges > &getQuadEdgeArray() ;
+    const sofa::helper::vector< EdgesInQuad > &getEdgesInQuadArray() ;
 
     /** \brief Returns the Quad Edge Shells array (ie provides the quads adjacent to each edge)
     *
     */
-    const sofa::helper::vector< sofa::helper::vector<unsigned int> > &getQuadEdgeShellArray() ;
+    const sofa::helper::vector< sofa::helper::vector<unsigned int> > &getQuadsAroundEdgeArray() ;
 
     /** \brief Returns the number of quads in this topology.
     *	The difference to getNbQuads() is that this method does not generate the quad array if it does not exist.
@@ -131,13 +131,13 @@ public:
     /** \brief Returns the 4 edges adjacent to a given quad.
     *
     */
-    const QuadEdges &getQuadEdge(const unsigned int i) ;
+    const EdgesInQuad& getEdgesInQuad(QuadID i) ;
 
     /** returns the index (either 0, 1, 2, 3) of the vertex whose global index is vertexIndex. Returns -1 if none */
     int getVertexIndexInQuad(Quad &t,unsigned int vertexIndex) const;
 
     /** returns the index (either 0, 1, 2, 3) of the edge whose global index is edgeIndex. Returns -1 if none */
-    int getEdgeIndexInQuad(QuadEdges &t,unsigned int edheIndex) const;
+    int getEdgeIndexInQuad(EdgesInQuad &t,unsigned int edheIndex) const;
 
 protected:
     /** \brief Creates the QuadSet array.
@@ -154,62 +154,62 @@ protected:
 
     bool hasQuads() const;
 
-    bool hasQuadEdges() const;
+    bool hasEdgesInQuad() const;
 
-    bool hasQuadVertexShell() const;
+    bool hasQuadsAroundVertex() const;
 
-    bool hasQuadEdgeShell() const;
+    bool hasQuadsAroundEdge() const;
 
     void clearQuads();
 
-    void clearQuadEdges();
+    void clearEdgesInQuad();
 
-    void clearQuadVertexShell();
+    void clearQuadsAroundVertex();
 
-    void clearQuadEdgeShell();
+    void clearQuadsAroundEdge();
 
 private:
     /** \brief Creates the array of edge indices for each quad
     *
-    * This function is only called if the QuadEdge array is required.
-    * m_quadEdge[i] contains the 4 indices of the 4 edges opposite to the ith vertex
+    * This function is only called if the EdgesInQuad array is required.
+    * m_edgesInQuad[i] contains the 4 indices of the 4 edges opposite to the ith vertex
     */
-    void createQuadEdgeArray();
+    void createEdgesInQuadArray();
 
     /** \brief Creates the Quad Vertex Shell Array
     *
-    * This function is only called if the QuadVertexShell array is required.
-    * m_quadVertexShell[i] contains the indices of all quads adjacent to the ith vertex
+    * This function is only called if the QuadsAroundVertex array is required.
+    * m_quadsAroundVertex[i] contains the indices of all quads adjacent to the ith vertex
     */
-    void createQuadVertexShellArray();
+    void createQuadsAroundVertexArray();
 
     /** \brief Creates the Quad Edge Shell Array
     *
-    * This function is only called if the QuadVertexShell array is required.
-    * m_quadEdgeShell[i] contains the indices of all quads adjacent to the ith edge
+    * This function is only called if the QuadsAroundVertex array is required.
+    * m_quadsAroundEdge[i] contains the indices of all quads adjacent to the ith edge
     */
-    void createQuadEdgeShellArray();
+    void createQuadsAroundEdgeArray();
 
     /** \brief Returns a non-const quad vertex shell given a vertex index for subsequent modification
     *
     */
-    sofa::helper::vector< unsigned int > &getQuadVertexShellForModification(const unsigned int vertexIndex);
+    sofa::helper::vector< unsigned int > &getQuadsAroundVertexForModification(const unsigned int vertexIndex);
 
     /** \brief Returns a non-const quad edge shell given the index of an edge for subsequent modification
     *
     */
-    sofa::helper::vector< unsigned int > &getQuadEdgeShellForModification(const unsigned int edgeIndex);
+    sofa::helper::vector< unsigned int > &getQuadsAroundEdgeForModification(const unsigned int edgeIndex);
 
 protected:
     /// provides the set of quads
     sofa::helper::vector<Quad> m_quad;
     DataPtr< sofa::helper::vector<Quad> > d_quad;
     /// provides the 4 edges in each quad
-    sofa::helper::vector<QuadEdges> m_quadEdge;
+    sofa::helper::vector<EdgesInQuad> m_edgesInQuad;
     /// for each vertex provides the set of quads adjacent to that vertex
-    sofa::helper::vector< sofa::helper::vector< unsigned int > > m_quadVertexShell;
+    sofa::helper::vector< sofa::helper::vector< unsigned int > > m_quadsAroundVertex;
     /// for each edge provides the set of quads adjacent to that edge
-    sofa::helper::vector< sofa::helper::vector< unsigned int > > m_quadEdgeShell;
+    sofa::helper::vector< sofa::helper::vector< unsigned int > > m_quadsAroundEdge;
 
     virtual void loadFromMeshLoader(sofa::component::container::MeshLoader* loader);
 };

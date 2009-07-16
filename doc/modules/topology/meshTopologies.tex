@@ -210,7 +210,7 @@ The component Tetra$2$TriangleSetTopology handles this topological change by fol
 
 
     \item \textbf{Step $2$.} If a Topological Mapping of type ( input = TetrahedronSetTopology, output = TriangleSetTopology ) does exist, the index map $Loc2GlobVec$ is requested to give the index $glob\_T$ which is indexing the triangle T in the tetrahedral volume mesh. 
-The TetrahedronTriangleShell gives then the index $ind\_TE$ which is indexing the unique tetrahedron TE containing T. 
+The TetrahedraAroundTriangle gives then the index $ind\_TE$ which is indexing the unique tetrahedron TE containing T. 
 We call the action RemoveTetrahedra($< ind\_TE >$) on the input topology.
 
 \begin{figure*}

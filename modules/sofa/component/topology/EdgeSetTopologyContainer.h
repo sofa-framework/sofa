@@ -41,7 +41,7 @@ typedef BaseMeshTopology::PointID			PointID;
 typedef BaseMeshTopology::EdgeID			EdgeID;
 typedef BaseMeshTopology::Edge				Edge;
 typedef BaseMeshTopology::SeqEdges			SeqEdges;
-typedef BaseMeshTopology::VertexEdges		VertexEdges;
+typedef BaseMeshTopology::EdgesAroundVertex		EdgesAroundVertex;
 
 /** a class that stores a set of edges  and provides access to the adjacency between points and edges */
 class SOFA_COMPONENT_CONTAINER_API EdgeSetTopologyContainer : public PointSetTopologyContainer
@@ -74,7 +74,7 @@ public:
     /** \brief Returns the edge shell of the ith DOF.
     *
     */
-    virtual const VertexEdges& getEdgeVertexShell(PointID i);
+    virtual const EdgesAroundVertex& getEdgesAroundVertex(PointID i);
 
 
     /** \brief Returns the index of the edge joining vertex v1 and vertex v2; returns -1 if no edge exists
@@ -104,7 +104,7 @@ public:
     /** \brief Returns the Edge Shell array.
     *
     */
-    virtual const sofa::helper::vector< sofa::helper::vector<unsigned int> > &getEdgeVertexShellArray();
+    virtual const sofa::helper::vector< sofa::helper::vector<unsigned int> > &getEdgesAroundVertexArray();
 
 
     /** \brief Returns the number of connected components from the graph containing all edges and give, for each vertex, which component it belongs to  (use BOOST GRAPH LIBRAIRY)
@@ -115,7 +115,7 @@ public:
     /** \brief Returns a non-const edge shell of the ith DOF for subsequent modification
     *
     */
-    virtual sofa::helper::vector< unsigned int > &getEdgeVertexShellForModification(const unsigned int i);
+    virtual sofa::helper::vector< unsigned int > &getEdgesAroundVertexForModification(const unsigned int i);
 
     /** \brief Creates the EdgeSet array.
     *
@@ -129,15 +129,15 @@ public:
     * EdgeShell[i] contains the indices of all edges having the ith DOF as
     * one of their ends.
     */
-    virtual void createEdgeVertexShellArray();
+    virtual void createEdgesAroundVertexArray();
 
     bool hasEdges() const;
 
-    bool hasEdgeVertexShell() const;
+    bool hasEdgesAroundVertex() const;
 
     void clearEdges();
 
-    void clearEdgeVertexShell();
+    void clearEdgesAroundVertex();
 
 protected:
     /*** The array that stores the set of edges in the edge set */
@@ -145,7 +145,7 @@ protected:
     DataPtr< sofa::helper::vector<Edge> > d_edge;
 
     /** the array that stores the set of edge-vertex shells, ie for each vertex gives the set of adjacent edges */
-    sofa::helper::vector< sofa::helper::vector< unsigned int > > m_edgeVertexShell;
+    sofa::helper::vector< sofa::helper::vector< unsigned int > > m_edgesAroundVertex;
 
     virtual void loadFromMeshLoader(sofa::component::container::MeshLoader* loader);
 };

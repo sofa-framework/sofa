@@ -128,7 +128,7 @@ public:
         : Inherit(topology)
         , maxNIn(0), maxNOut(0), insize(0), size(0), topology(topology)
     {
-        if (topology==NULL || topology->getNbHexas()==0) maxNIn = 4;
+        if (topology==NULL || topology->getNbHexahedra()==0) maxNIn = 4;
         else maxNIn = 8;
     }
     void setMaskFrom(core::componentmodel::behavior::BaseMechanicalState::ParticleMask *) {}
