@@ -31,6 +31,8 @@
 #include <sofa/simulation/common/InitVisitor.h>
 #include <sofa/simulation/common/DeleteVisitor.h>
 
+#include <sofa/helper/Factory.inl>
+
 #include <iostream>
 
 namespace sofa
