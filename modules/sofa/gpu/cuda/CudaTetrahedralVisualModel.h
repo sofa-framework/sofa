@@ -44,7 +44,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef core::componentmodel::topology::BaseMeshTopology::Tetra Tetra;
-    typedef core::componentmodel::topology::BaseMeshTopology::SeqTetras SeqTetras;
+    typedef core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
 
 private:
     core::componentmodel::topology::BaseMeshTopology* topo;
@@ -93,7 +93,7 @@ protected:
         if (!topo || !nodes) return;
         if (!needUpdateTopology) return;
         needUpdateTopology = false;
-        const SeqTetras& t = topo->getTetras();
+        const SeqTetrahedra& t = topo->getTetrahedra();
         tetras.clear();
         if (!t.empty())
         {

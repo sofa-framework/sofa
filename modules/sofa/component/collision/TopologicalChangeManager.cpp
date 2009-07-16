@@ -80,17 +80,17 @@ void TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::col
 
     simulation::Node *node_curr = dynamic_cast<simulation::Node*>(topo_curr->getContext());
 
-    if (topo_curr->getNbTetras() > 0)
+    if (topo_curr->getNbTetrahedra() > 0)
     {
         // get the index of the tetra linked to each triangle
         for (unsigned int i=0; i<indices.size(); ++i)
-            items.insert(topo_curr->getTetraTriangleShell(indices[i])[0]);
+            items.insert(topo_curr->getTetrahedraAroundTriangle(indices[i])[0]);
     }
-    else if (topo_curr->getNbHexas() > 0)
+    else if (topo_curr->getNbHexahedra() > 0)
     {
         // get the index of the hexa linked to each quad
         for (unsigned int i=0; i<indices.size(); ++i)
-            items.insert(topo_curr->getHexaQuadShell(indices[i]/2)[0]);
+            items.insert(topo_curr->getHexahedraAroundQuad(indices[i]/2)[0]);
     }
     else
     {

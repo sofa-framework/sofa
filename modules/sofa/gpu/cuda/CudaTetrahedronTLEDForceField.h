@@ -57,7 +57,7 @@ public:
     typedef CudaVec3fTypes::Real Real;
     typedef CudaVec3fTypes::Coord Coord;
     typedef component::topology::MeshTopology::Tetra Element;
-    typedef component::topology::MeshTopology::SeqTetras VecElement;
+    typedef component::topology::MeshTopology::SeqTetrahedra VecElement;
 
 
     int nbVertex; // number of vertices

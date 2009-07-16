@@ -51,7 +51,7 @@ int ManifoldTetrahedronSetTopologyContainerClass = core::RegisterObject("Manifol
         .add< ManifoldTetrahedronSetTopologyContainer >()
         ;
 
-const unsigned int tetrahedronEdgeArray[6][2] = {{0,1}, {0,2}, {0,3}, {1,2}, {1,3}, {2,3}};
+const unsigned int edgesInTetrahedronArray[6][2] = {{0,1}, {0,2}, {0,3}, {1,2}, {1,3}, {2,3}};
 
 ManifoldTetrahedronSetTopologyContainer::ManifoldTetrahedronSetTopologyContainer()
     : TetrahedronSetTopologyContainer()// draw to be restored
@@ -88,15 +88,15 @@ void ManifoldTetrahedronSetTopologyContainer::reinit()
 
 
 
-    createTetrahedronEdgeShellArray();
-    createTetrahedronTriangleShellArray();
+    createTetrahedraAroundEdgeArray();
+    createTetrahedraAroundTriangleArray();
 
 
     /*		for (unsigned int i = 0 ; i <m_edge.size();i++)
       std::cout << i  << " => " << m_edge[i] <<std::endl;
 
-    for (unsigned int i = 0; i < m_tetrahedronEdgeShell.size(); i++)
-      std::cout << i << " => " << m_tetrahedronEdgeShell[i] << std::endl;
+    for (unsigned int i = 0; i < m_tetrahedraAroundEdge.size(); i++)
+      std::cout << i << " => " << m_tetrahedraAroundEdge[i] << std::endl;
 
     for (unsigned int i =0; i<m_tetrahedron.size();i++)
       std::cout << i << " => "<<m_tetrahedron[i] << std::endl;
@@ -111,37 +111,37 @@ void ManifoldTetrahedronSetTopologyContainer::init()
 
 
 
-void ManifoldTetrahedronSetTopologyContainer::createTetrahedronVertexShellArray ()
+void ManifoldTetrahedronSetTopologyContainer::createTetrahedraAroundVertexArray ()
 {
-    std::cout << "ManifoldTetrahedronSetTopologyContainer::createTetrahedronVertexShellArray ()"<<std::endl;
+    std::cout << "ManifoldTetrahedronSetTopologyContainer::createTetrahedraAroundVertexArray ()"<<std::endl;
 
     // TO be implemented
     // see late: for the topology, only one connexe composante around one vertex.
 
-    TetrahedronSetTopologyContainer::createTetrahedronVertexShellArray();
+    TetrahedronSetTopologyContainer::createTetrahedraAroundVertexArray();
 
 }
 
 
 
-void ManifoldTetrahedronSetTopologyContainer::createTetrahedronEdgeShellArray ()
+void ManifoldTetrahedronSetTopologyContainer::createTetrahedraAroundEdgeArray ()
 {
-    std::cout << "ManifoldTetrahedronSetTopologyContainer::createTetrahedronEdgeShellArray ()"<<std::endl;
+    std::cout << "ManifoldTetrahedronSetTopologyContainer::createTetrahedraAroundEdgeArray ()"<<std::endl;
 
     // Get edge array
     sofa::helper::vector<Edge> edges = getEdgeArray();
 
     // Creating Tetrahedrons edges shell unordered
-    TetrahedronSetTopologyContainer::createTetrahedronEdgeShellArray();
+    TetrahedronSetTopologyContainer::createTetrahedraAroundEdgeArray();
 
-    //	for (unsigned int i = 0; i < m_tetrahedronEdgeShell.size(); i++)
-    //  std::cout << i << " => " << m_tetrahedronEdgeShell[i] << std::endl;
+    //	for (unsigned int i = 0; i < m_tetrahedraAroundEdge.size(); i++)
+    //  std::cout << i << " => " << m_tetrahedraAroundEdge[i] << std::endl;
 
 
     for (unsigned int edgeIndex =0; edgeIndex<edges.size(); edgeIndex++)
     {
 
-        sofa::helper::vector <unsigned int> &shell = getTetrahedronEdgeShellForModification (edgeIndex);
+        sofa::helper::vector <unsigned int> &shell = getTetrahedraAroundEdgeForModification (edgeIndex);
         sofa::helper::vector <unsigned int>::iterator it;
         sofa::helper::vector < sofa::helper::vector <unsigned int> > vertexTofind;
         sofa::helper::vector <unsigned int> goodShell;
@@ -185,7 +185,7 @@ void ManifoldTetrahedronSetTopologyContainer::createTetrahedronEdgeShellArray ()
         }
         else
         {
-            std::cout << "Error: createTetrahedronEdgeShellArray: Houston there is a probleme." <<std::endl;
+            std::cout << "Error: createTetrahedraAroundEdgeArray: Houston there is a probleme." <<std::endl;
         }
 
         goodShell.push_back(shell[0]);
@@ -270,21 +270,21 @@ void ManifoldTetrahedronSetTopologyContainer::createTetrahedronEdgeShellArray ()
 }
 
 
-void ManifoldTetrahedronSetTopologyContainer::createTetrahedronTriangleShellArray ()
+void ManifoldTetrahedronSetTopologyContainer::createTetrahedraAroundTriangleArray ()
 {
-    //std::cout << "ManifoldTetrahedronSetTopologyContainer::createTetrahedronTriangleShellArray ()"<<std::endl;
+    //std::cout << "ManifoldTetrahedronSetTopologyContainer::createTetrahedraAroundTriangleArray ()"<<std::endl;
     // To be implemented
     // at most 2 tetrahedrons adjacent to one triangle.
 
-    TetrahedronSetTopologyContainer::createTetrahedronTriangleShellArray();
+    TetrahedronSetTopologyContainer::createTetrahedraAroundTriangleArray();
 
-    //	for (unsigned int i = 0; i <m_tetrahedronTriangleShell.size();i++)
-    // std::cout << i << " old => " << m_tetrahedronTriangleShell[i] << std::endl;
+    //	for (unsigned int i = 0; i <m_tetrahedraAroundTriangle.size();i++)
+    // std::cout << i << " old => " << m_tetrahedraAroundTriangle[i] << std::endl;
 
 
-    for (unsigned int triangleIndex = 0; triangleIndex < m_tetrahedronTriangleShell.size(); triangleIndex++)
+    for (unsigned int triangleIndex = 0; triangleIndex < m_tetrahedraAroundTriangle.size(); triangleIndex++)
     {
-        sofa::helper::vector <unsigned int> &shell = getTetrahedronTriangleShellForModification (triangleIndex);
+        sofa::helper::vector <unsigned int> &shell = getTetrahedraAroundTriangleForModification (triangleIndex);
 
         if (shell.size() == 1)
         {
@@ -306,12 +306,12 @@ void ManifoldTetrahedronSetTopologyContainer::createTetrahedronTriangleShellArra
         }
         else
         {
-            std::cout << " Error: createTetrahedronTriangleShellArray, manifold topology is not fullfil" << std::endl;
+            std::cout << " Error: createTetrahedraAroundTriangleArray, manifold topology is not fullfil" << std::endl;
         }
     }
 
-    //	for (unsigned int i = 0; i <m_tetrahedronTriangleShell.size();i++)
-    //	  std::cout << i << " new => " << m_tetrahedronTriangleShell[i] << std::endl;
+    //	for (unsigned int i = 0; i <m_tetrahedraAroundTriangle.size();i++)
+    //	  std::cout << i << " new => " << m_tetrahedraAroundTriangle[i] << std::endl;
 
 }
 
@@ -463,19 +463,19 @@ int ManifoldTetrahedronSetTopologyContainer::getTriangleTetrahedronOrientation (
 
 /*
 
-  - equivalent to TriangleEdgeShell [i]
+  - equivalent to TrianglesAroundEdge [i]
   - first triangle of the tetrahedron should be in positive orientation
   - This first triangle is the one on the border if tetrahedron is on border.
   - return either negatif or positive orientation in the tetrahedron or -1 if error.
 
-  => should be used in createTetrahedronTriangleShellArray
+  => should be used in createTetrahedraAroundTriangleArray
 
 
 
   for(TetraID i = 0; i < m_nbTetras; ++i)
   {
-  const Tetra& t = m_topo->getTetra(i);
-  const TetraTriangles& tFaces = m_topo->getTriangleTetraShell(i);
+  const Tetra& t = m_topo->getTetrahedron(i);
+  const TrianglesInTetrahedron& tFaces = m_topo->getTrianglesInTetrahedron(i);
   for(int l = 0; l < 4; ++l)
   {
   int sign = 1;
@@ -547,10 +547,10 @@ void ManifoldTetrahedronSetTopologyContainer::draw()
 
 
         // Creating tetra
-        if (!hasTetrahedronVertexShell())
+        if (!hasTetrahedraAroundVertex())
         {
-            std::cout << "creating TriangleVertexShellArray()" << std::endl;
-            createTetrahedronVertexShellArray();
+            std::cout << "creating TrianglesAroundVertexArray()" << std::endl;
+            createTetrahedraAroundVertexArray();
         }
 
         //recupere les coord bary de chaque tri -> code surement existant deja, mais pas le temps:
@@ -647,9 +647,9 @@ void ManifoldTetrahedronSetTopologyContainer::draw()
         glEndList();
 
 
-        // Display tetraEdgeShell positions:
-        if (!hasTetrahedronEdgeShell())
-            createTetrahedronEdgeShellArray();
+        // Display tetrahedraAroundEdge positions:
+        if (!hasTetrahedraAroundEdge())
+            createTetrahedraAroundEdgeArray();
 
         tetraEdge_list = glGenLists(1);
         glNewList(tetraEdge_list, GL_COMPILE);
@@ -658,11 +658,11 @@ void ManifoldTetrahedronSetTopologyContainer::draw()
 
         for (unsigned int i = 0; i < 50/*m_edge.size()*/; i++)
         {
-            for (unsigned int j =0; j< m_tetrahedronEdgeShell[i].size(); j++)
+            for (unsigned int j =0; j< m_tetrahedraAroundEdge[i].size(); j++)
             {
-                position[0] = ( bary_coord[m_tetrahedronEdgeShell[i][j]][0] + bary_coord2[i][0]*9)/10;
-                position[1] = ( bary_coord[m_tetrahedronEdgeShell[i][j]][1] + bary_coord2[i][1]*9)/10;
-                position[2] = ( bary_coord[m_tetrahedronEdgeShell[i][j]][2] + bary_coord2[i][2]*9)/10;
+                position[0] = ( bary_coord[m_tetrahedraAroundEdge[i][j]][0] + bary_coord2[i][0]*9)/10;
+                position[1] = ( bary_coord[m_tetrahedraAroundEdge[i][j]][1] + bary_coord2[i][1]*9)/10;
+                position[2] = ( bary_coord[m_tetrahedraAroundEdge[i][j]][2] + bary_coord2[i][2]*9)/10;
 
                 sofa::helper::gl::GlText::draw ( j, position , scale );
             }
@@ -693,16 +693,16 @@ void ManifoldTetrahedronSetTopologyContainer::draw()
         }
 
         /*
-        // Display tetraEdgeShell positions:
-        if (!hasTetrahedronEdgeShell())
-        createTetrahedronEdgeShellArray();
+        // Display tetrahedraAroundEdge positions:
+        if (!hasTetrahedraAroundEdge())
+        createTetrahedraAroundEdgeArray();
 
         for (unsigned int i = 0; i < m_edge.size(); i++)
         {
         std::cout <<"Edge: " << i << " Shell: ";
-        for (unsigned int j = 0; j < m_tetrahedronEdgeShell[i].size();j++)
+        for (unsigned int j = 0; j < m_tetrahedraAroundEdge[i].size();j++)
         {
-        std::cout << m_tetrahedronEdgeShell[i][j] << " ";
+        std::cout << m_tetrahedraAroundEdge[i][j] << " ";
         }
 
         std::cout << std::endl;
@@ -766,10 +766,10 @@ void ManifoldTetrahedronSetTopologyContainer::draw()
             const unsigned int nbrEdges = getNumberOfEdges();
 
             // Creating triangles
-            if (!hasTriangleVertexShell())
+            if (!hasTrianglesAroundVertex())
             {
-                std::cout << "creating TriangleVertexShellArray()" << std::endl;
-                createTriangleVertexShellArray();
+                std::cout << "creating TrianglesAroundVertexArray()" << std::endl;
+                createTrianglesAroundVertexArray();
             }
 
 
@@ -830,11 +830,11 @@ void ManifoldTetrahedronSetTopologyContainer::draw()
               for (unsigned int vert = 0; vert <nbrVertices; vert++)
               {
 
-              for (unsigned int tri = 0; tri < m_triangleVertexShell[vert].size(); tri++)
+              for (unsigned int tri = 0; tri < m_trianglesAroundVertex[vert].size(); tri++)
               {
-              position[0] = (coords[ vert ][0] * 1.5 + bary_coord[ m_triangleVertexShell[vert][tri] ][0])/2.5;
-              position[1] = (coords[ vert ][1] * 1.5 + bary_coord[ m_triangleVertexShell[vert][tri] ][1])/2.5;
-              position[2] = (coords[ vert ][2] * 1.5 + bary_coord[ m_triangleVertexShell[vert][tri] ][2])/2.5;
+              position[0] = (coords[ vert ][0] * 1.5 + bary_coord[ m_trianglesAroundVertex[vert][tri] ][0])/2.5;
+              position[1] = (coords[ vert ][1] * 1.5 + bary_coord[ m_trianglesAroundVertex[vert][tri] ][1])/2.5;
+              position[2] = (coords[ vert ][2] * 1.5 + bary_coord[ m_trianglesAroundVertex[vert][tri] ][2])/2.5;
 
 
               sofa::helper::gl::GlText::draw ( tri, position , scale );
@@ -844,11 +844,11 @@ void ManifoldTetrahedronSetTopologyContainer::draw()
 
 
               // Creatring edges
-              if (!hasEdgeVertexShell())
+              if (!hasEdgesAroundVertex())
               {
-              std::cout << "creating createEdgeVertexShellArray()" << std::endl;
+              std::cout << "creating createEdgesAroundVertexArray()" << std::endl;
 
-              createEdgeVertexShellArray();
+              createEdgesAroundVertexArray();
               }
 
             */
@@ -900,11 +900,11 @@ void ManifoldTetrahedronSetTopologyContainer::draw()
               for (unsigned int vert = 0; vert <nbrVertices; vert++)
               {
 
-              for (unsigned int edge = 0; edge < m_edgeVertexShell[vert].size(); edge++)
+              for (unsigned int edge = 0; edge < m_edgesAroundVertex[vert].size(); edge++)
               {
-              position[0] = (coords[ vert ][0] * 1.5 + bary_coord[ m_edgeVertexShell[vert][edge] ][0])/2.5;
-              position[1] = (coords[ vert ][1] * 1.5 + bary_coord[ m_edgeVertexShell[vert][edge] ][1])/2.5;
-              position[2] = (coords[ vert ][2] * 1.5 + bary_coord[ m_edgeVertexShell[vert][edge] ][2])/2.5;
+              position[0] = (coords[ vert ][0] * 1.5 + bary_coord[ m_edgesAroundVertex[vert][edge] ][0])/2.5;
+              position[1] = (coords[ vert ][1] * 1.5 + bary_coord[ m_edgesAroundVertex[vert][edge] ][1])/2.5;
+              position[2] = (coords[ vert ][2] * 1.5 + bary_coord[ m_edgesAroundVertex[vert][edge] ][2])/2.5;
 
 
               sofa::helper::gl::GlText::draw ( edge, position , scale );

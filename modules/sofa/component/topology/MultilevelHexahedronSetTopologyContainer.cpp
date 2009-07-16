@@ -80,7 +80,7 @@ void MultilevelHexahedronSetTopologyContainer::loadFromMeshLoader(sofa::componen
         // load points
         PointSetTopologyContainer::loadFromMeshLoader(loader);
 
-        rgLoader->getHexas(m_hexahedron);
+        rgLoader->getHexahedra(m_hexahedron);
         helper::vector<unsigned int> hexaIndexInRegularGrid;
         rgLoader->getIndicesInRegularGrid(hexaIndexInRegularGrid);
 
@@ -166,8 +166,8 @@ void MultilevelHexahedronSetTopologyContainer::getHexaFaceNeighbors(const unsign
         const unsigned int faceId,
         helper::vector<unsigned int> &neighbors)
 {
-    const HexahedronQuads &hexaQuads = getHexahedronQuads(hexa);
-    const sofa::helper::vector< unsigned int > &quadShell = getHexahedronQuadShell(hexaQuads[faceId]);
+    const QuadsInHexahedron &hexaQuads = getQuadsInHexahedron(hexa);
+    const sofa::helper::vector< unsigned int > &quadShell = getHexahedraAroundQuad(hexaQuads[faceId]);
 
     neighbors.clear();
     neighbors.reserve(quadShell.size()-1);
@@ -182,7 +182,7 @@ void MultilevelHexahedronSetTopologyContainer::getHexaVertexNeighbors(const unsi
         const unsigned int vertexId,
         helper::vector<unsigned int> &neighbors)
 {
-    const sofa::helper::vector< unsigned int > &vertexShell = getHexahedronVertexShell(m_hexahedron[hexa][vertexId]);
+    const sofa::helper::vector< unsigned int > &vertexShell = getHexahedraAroundVertex(m_hexahedron[hexa][vertexId]);
 
     neighbors.clear();
     neighbors.reserve(vertexShell.size()-1);

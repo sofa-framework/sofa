@@ -43,7 +43,7 @@ typedef BaseMeshTopology::PointID			PointID;
 typedef BaseMeshTopology::EdgeID			EdgeID;
 typedef BaseMeshTopology::Edge				Edge;
 typedef BaseMeshTopology::SeqEdges			SeqEdges;
-typedef BaseMeshTopology::VertexEdges		VertexEdges;
+typedef BaseMeshTopology::EdgesAroundVertex		EdgesAroundVertex;
 
 /** a class that stores a set of edges and provides access to the adjacency between points and edges.
   this topology is constraint by the manifold property : each vertex is adjacent either to one vertex or to two vertices. */
@@ -80,7 +80,7 @@ protected:
     * EdgeShell[i] contains the indices of all edges having the ith DOF as
     * one of their ends.
     */
-    virtual void createEdgeVertexShellArray();
+    virtual void createEdgesAroundVertexArray();
 
 private:
     // Describe each connected component, which can be seen as an oriented line
@@ -188,14 +188,14 @@ private:
     */
     int getNextVertex(const unsigned int i)
     {
-        assert(getEdgeVertexShell(i).size()>0);
-        if((getEdgeVertexShell(i)).size()==1 && (getEdge((getEdgeVertexShell(i))[0]))[1]==i)
+        assert(getEdgesAroundVertex(i).size()>0);
+        if((getEdgesAroundVertex(i)).size()==1 && (getEdge((getEdgesAroundVertex(i))[0]))[1]==i)
         {
             return -1;
         }
         else
         {
-            return (getEdge((getEdgeVertexShell(i))[0]))[1];
+            return (getEdge((getEdgesAroundVertex(i))[0]))[1];
         }
     }
 
@@ -203,14 +203,14 @@ private:
     */
     int getPreviousVertex(const unsigned int i)
     {
-        assert(getEdgeVertexShell(i).size()>0);
-        if((getEdgeVertexShell(i)).size()==1 && (getEdge((getEdgeVertexShell(i))[0]))[0]==i)
+        assert(getEdgesAroundVertex(i).size()>0);
+        if((getEdgesAroundVertex(i)).size()==1 && (getEdge((getEdgesAroundVertex(i))[0]))[0]==i)
         {
             return -1;
         }
         else
         {
-            return (getEdge((getEdgeVertexShell(i))[0]))[0];
+            return (getEdge((getEdgesAroundVertex(i))[0]))[0];
         }
     }
 
@@ -218,13 +218,13 @@ private:
     */
     int getNextEdge(const unsigned int i)
     {
-        if((getEdgeVertexShell(getEdge(i)[1])).size()==1)
+        if((getEdgesAroundVertex(getEdge(i)[1])).size()==1)
         {
             return -1;
         }
         else
         {
-            return (getEdgeVertexShell(getEdge(i)[1]))[1];
+            return (getEdgesAroundVertex(getEdge(i)[1]))[1];
         }
     }
 
@@ -232,13 +232,13 @@ private:
     */
     int getPreviousEdge(const unsigned int i)
     {
-        if((getEdgeVertexShell(getEdge(i)[0])).size()==1)
+        if((getEdgesAroundVertex(getEdge(i)[0])).size()==1)
         {
             return -1;
         }
         else
         {
-            return (getEdgeVertexShell(getEdge(i)[0]))[0];
+            return (getEdgesAroundVertex(getEdge(i)[0]))[0];
         }
     }
 

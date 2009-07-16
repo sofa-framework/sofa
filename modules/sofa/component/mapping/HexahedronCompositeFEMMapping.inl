@@ -101,14 +101,14 @@ void HexahedronCompositeFEMMapping<BasicMapping>::init()
 // 		serr<<i<<" : "<<_qFine0[i]<<sendl;
 
 
-// 	_pointsCorrespondingToElem.resize(_sparseGrid->getNbHexas());
+// 	_pointsCorrespondingToElem.resize(_sparseGrid->getNbHexahedra());
 
 
 
-// 	_baycenters0.resize(_sparseGrid->getNbHexas());
-// 	for(int i=0;i<_sparseGrid->getNbHexas();++i)
+// 	_baycenters0.resize(_sparseGrid->getNbHexahedra());
+// 	for(int i=0;i<_sparseGrid->getNbHexahedra();++i)
 // 	{
-// 		const SparseGridTopologyT::Hexa& hexa = _sparseGrid->getHexa(i);
+// 		const SparseGridTopologyT::Hexa& hexa = _sparseGrid->getHexahedron(i);
 // 		for(int j=0;j<8;++j)
 // 			_baycenters0[i] += _sparseGrid->getPointPos( hexa[j] );
 // 		_baycenters0[i] /= 8.0;
@@ -120,7 +120,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::init()
     _finestBarycentricCoord.resize(_p0.size());
     _finestWeights.resize(_finestSparseGrid->getNbPoints());
 
-    _rotations.resize( _sparseGrid->getNbHexas() );
+    _rotations.resize( _sparseGrid->getNbHexahedra() );
 
 
 
@@ -173,7 +173,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::init()
 // 		if( _finestSparseGrid->getType(i) != SparseGridTopologyT::BOUNDARY ) continue; // optimisation : regarde un element fin que si boundary == contient un triangle
 
 
-        const SparseGridTopologyT::Hexa& finehexa = _finestSparseGrid->getHexa(i);
+        const SparseGridTopologyT::Hexa& finehexa = _finestSparseGrid->getHexahedron(i);
 
         for(int w=0; w<8; ++w)
         {
@@ -196,7 +196,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::init()
 
 // 	for (unsigned int i=0;i<_forcefield->_finalWeights.size();i++)
 // 	{
-// 		const SparseGridTopologyT::Hexa& finehexa = _finestSparseGrid->getHexa(i);
+// 		const SparseGridTopologyT::Hexa& finehexa = _finestSparseGrid->getHexahedron(i);
 // 		serr<<_finestWeights[ finehexa[i] ].size()<<sendl;
 // 		for(int w=0;w<_finestWeights[ finehexa[w] ].size();++w)
 // 		{
@@ -217,7 +217,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::init()
 // 	{
 // 		std::map< int, Weight >::iterator it = _finestWeights[i].begin();
 //
-// 		SparseGridTopologyT::Hexa& coarsehexa = _sparseGrid.getHexa( (*it).first );
+// 		SparseGridTopologyT::Hexa& coarsehexa = _sparseGrid.getHexahedron( (*it).first );
 //
 //
 // 		for(int j=0;j<8;++j)
@@ -239,10 +239,10 @@ void HexahedronCompositeFEMMapping<BasicMapping>::apply ( OutVecCoord& out, cons
 
 
     // les deplacements des noeuds grossiers
-    helper::vector< Vec< 24 >  > coarseDisplacements( _sparseGrid->getNbHexas() );
-    for(int i=0; i<_sparseGrid->getNbHexas(); ++i)
+    helper::vector< Vec< 24 >  > coarseDisplacements( _sparseGrid->getNbHexahedra() );
+    for(int i=0; i<_sparseGrid->getNbHexahedra(); ++i)
     {
-        const SparseGridTopologyT::Hexa& hexa = _sparseGrid->getHexa(i);
+        const SparseGridTopologyT::Hexa& hexa = _sparseGrid->getHexahedron(i);
 // 		InCoord translation = computeTranslation( hexa, i );
 
 // 		const Transformation& rotation = _forcefield->getRotation(i);
@@ -293,7 +293,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::apply ( OutVecCoord& out, cons
         out[i] = OutCoord(); //_p0[i] /*+ translation*/;
 
 
-        const SparseGridTopologyT::Hexa& finehexa = _finestSparseGrid->getHexa( _finestBarycentricCoord[i].first );
+        const SparseGridTopologyT::Hexa& finehexa = _finestSparseGrid->getHexahedron( _finestBarycentricCoord[i].first );
 
         for(int w=0; w<8; ++w)
         {
@@ -313,10 +313,10 @@ template <class BasicMapping>
 void HexahedronCompositeFEMMapping<BasicMapping>::applyJ ( OutVecDeriv& out, const InVecDeriv& in )
 {
     // les deplacements des noeuds grossiers
-    helper::vector< Vec< 24 >  > coarseDisplacements( _sparseGrid->getNbHexas() );
-    for(int i=0; i<_sparseGrid->getNbHexas(); ++i)
+    helper::vector< Vec< 24 >  > coarseDisplacements( _sparseGrid->getNbHexahedra() );
+    for(int i=0; i<_sparseGrid->getNbHexahedra(); ++i)
     {
-        const SparseGridTopologyT::Hexa& hexa = _sparseGrid->getHexa(i);
+        const SparseGridTopologyT::Hexa& hexa = _sparseGrid->getHexahedron(i);
 
         for(int w=0; w<8; ++w)
         {
@@ -350,7 +350,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::applyJ ( OutVecDeriv& out, con
         out[i] = OutCoord();
 
 
-        const SparseGridTopologyT::Hexa& finehexa = _finestSparseGrid->getHexa( _finestBarycentricCoord[i].first );
+        const SparseGridTopologyT::Hexa& finehexa = _finestSparseGrid->getHexahedron( _finestBarycentricCoord[i].first );
 
         for(int w=0; w<8; ++w)
         {
@@ -369,7 +369,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::applyJT ( InVecDeriv& out, con
 
     for(unsigned i=0; i<_p0.size(); ++i)
     {
-        const SparseGridTopologyT::Hexa& finehexa = _finestSparseGrid->getHexa( _finestBarycentricCoord[i].first );
+        const SparseGridTopologyT::Hexa& finehexa = _finestSparseGrid->getHexahedron( _finestBarycentricCoord[i].first );
 
         for(int w=0; w<8; ++w)
         {
@@ -388,7 +388,7 @@ void HexahedronCompositeFEMMapping<BasicMapping>::applyJT ( InVecDeriv& out, con
 
             Vec< 24 > dfplat = (*it).second.multTranspose( rotation * fineForces[i] ) / _finestWeights[i].size();
 
-            const SparseGridTopologyT::Hexa& hexa = _sparseGrid->getHexa( (*it).first );
+            const SparseGridTopologyT::Hexa& hexa = _sparseGrid->getHexahedron( (*it).first );
             for(int w=0; w<8; ++w)
             {
                 out[ hexa[ w ] ] += rotation.multTranspose( InCoord( dfplat[w*3],dfplat[w*3+1],dfplat[w*3+2]));

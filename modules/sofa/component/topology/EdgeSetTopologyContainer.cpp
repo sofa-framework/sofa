@@ -117,27 +117,27 @@ void EdgeSetTopologyContainer::addEdge(int a, int b)
     if (b >= getNbPoints()) nbPoints.setValue(b+1);
 }
 
-void EdgeSetTopologyContainer::createEdgeVertexShellArray()
+void EdgeSetTopologyContainer::createEdgesAroundVertexArray()
 {
     if(!hasEdges())	// this method should only be called when edges exist
     {
 #ifndef NDEBUG
-        sout << "Warning. [EdgeSetTopologyContainer::createEdgeVertexShellArray] edge array is empty." << endl;
+        sout << "Warning. [EdgeSetTopologyContainer::createEdgesAroundVertexArray] edge array is empty." << endl;
 #endif
         createEdgeSetArray();
     }
 
-    if(hasEdgeVertexShell())
+    if(hasEdgesAroundVertex())
     {
-        clearEdgeVertexShell();
+        clearEdgesAroundVertex();
     }
 
-    m_edgeVertexShell.resize( getNbPoints() );
+    m_edgesAroundVertex.resize( getNbPoints() );
     for (unsigned int edge=0; edge<m_edge.size(); ++edge)
     {
         // adding edge in the edge shell of both points
-        m_edgeVertexShell[ m_edge[edge][0] ].push_back(edge);
-        m_edgeVertexShell[ m_edge[edge][1] ].push_back(edge);
+        m_edgesAroundVertex[ m_edge[edge][0] ].push_back(edge);
+        m_edgesAroundVertex[ m_edge[edge][1] ].push_back(edge);
     }
 }
 
@@ -171,10 +171,10 @@ int EdgeSetTopologyContainer::getEdgeIndex(PointID v1, PointID v2)
         createEdgeSetArray();
     }
 
-    if(!hasEdgeVertexShell())
-        createEdgeVertexShellArray();
+    if(!hasEdgesAroundVertex())
+        createEdgesAroundVertexArray();
 
-    const sofa::helper::vector< unsigned int > &es1 = getEdgeVertexShell(v1) ;
+    const sofa::helper::vector< unsigned int > &es1 = getEdgesAroundVertex(v1) ;
 
     int result = -1;
     for(unsigned int i=0; (i < es1.size()) && (result == -1); ++i)
@@ -211,14 +211,14 @@ bool EdgeSetTopologyContainer::checkTopology() const
 #ifndef NDEBUG
     bool ret = true;
 
-    if(hasEdgeVertexShell())
+    if(hasEdgesAroundVertex())
     {
         std::set<int> edgeSet;
         std::set<int>::iterator it;
 
-        for (unsigned int i=0; i<m_edgeVertexShell.size(); ++i)
+        for (unsigned int i=0; i<m_edgesAroundVertex.size(); ++i)
         {
-            const sofa::helper::vector<unsigned int> &es = m_edgeVertexShell[i];
+            const sofa::helper::vector<unsigned int> &es = m_edgesAroundVertex[i];
 
             for (unsigned int j=0; j<es.size(); ++j)
             {
@@ -239,7 +239,7 @@ bool EdgeSetTopologyContainer::checkTopology() const
 
         if (edgeSet.size() != m_edge.size())
         {
-            std::cout << "*** CHECK FAILED : check_edge_vertex_shell, edge are missing in m_edgeVertexShell" << std::endl;
+            std::cout << "*** CHECK FAILED : check_edge_vertex_shell, edge are missing in m_edgesAroundVertex" << std::endl;
             ret = false;
         }
     }
@@ -255,49 +255,49 @@ unsigned int EdgeSetTopologyContainer::getNumberOfEdges() const
     return m_edge.size();
 }
 
-const sofa::helper::vector< sofa::helper::vector<unsigned int> > &EdgeSetTopologyContainer::getEdgeVertexShellArray()
+const sofa::helper::vector< sofa::helper::vector<unsigned int> > &EdgeSetTopologyContainer::getEdgesAroundVertexArray()
 {
-    if(!hasEdgeVertexShell())
+    if(!hasEdgesAroundVertex())
     {
 #ifndef NDEBUG
-        sout << "Warning. [EdgeSetTopologyContainer::getEdgeVertexShellArray] edge vertex shell array is empty." << endl;
+        sout << "Warning. [EdgeSetTopologyContainer::getEdgesAroundVertexArray] edge vertex shell array is empty." << endl;
 #endif
-        createEdgeVertexShellArray();
+        createEdgesAroundVertexArray();
     }
 
-    return m_edgeVertexShell;
+    return m_edgesAroundVertex;
 }
 
-const VertexEdges& EdgeSetTopologyContainer::getEdgeVertexShell(PointID i)
+const EdgesAroundVertex& EdgeSetTopologyContainer::getEdgesAroundVertex(PointID i)
 {
-    if(!hasEdgeVertexShell())	// this method should only be called when the shell array exists
+    if(!hasEdgesAroundVertex())	// this method should only be called when the shell array exists
     {
 #ifndef NDEBUG
-        sout << "Warning. [EdgeSetTopologyContainer::getEdgeVertexShell] edge vertex shell array is empty." << endl;
+        sout << "Warning. [EdgeSetTopologyContainer::getEdgesAroundVertex] edge vertex shell array is empty." << endl;
 #endif
-        createEdgeVertexShellArray();
+        createEdgesAroundVertexArray();
     }
 
 #ifndef NDEBUG
-    if(m_edgeVertexShell.size() <= i)
-        sout << "Error. [EdgeSetTopologyContainer::getEdgeVertexShell] edge vertex shell array out of bounds: "
-                << i << " >= " << m_edgeVertexShell.size() << endl;
+    if(m_edgesAroundVertex.size() <= i)
+        sout << "Error. [EdgeSetTopologyContainer::getEdgesAroundVertex] edge vertex shell array out of bounds: "
+                << i << " >= " << m_edgesAroundVertex.size() << endl;
 #endif
 
-    return m_edgeVertexShell[i];
+    return m_edgesAroundVertex[i];
 }
 
-sofa::helper::vector< unsigned int > &EdgeSetTopologyContainer::getEdgeVertexShellForModification(const unsigned int i)
+sofa::helper::vector< unsigned int > &EdgeSetTopologyContainer::getEdgesAroundVertexForModification(const unsigned int i)
 {
-    if(!hasEdgeVertexShell())	// this method should only be called when the shell array exists
+    if(!hasEdgesAroundVertex())	// this method should only be called when the shell array exists
     {
 #ifndef NDEBUG
-        sout << "Warning. [EdgeSetTopologyContainer::getEdgeVertexShellForModification] edge vertex shell array is empty." << endl;
+        sout << "Warning. [EdgeSetTopologyContainer::getEdgesAroundVertexForModification] edge vertex shell array is empty." << endl;
 #endif
-        createEdgeVertexShellArray();
+        createEdgesAroundVertexArray();
     }
 
-    return m_edgeVertexShell[i];
+    return m_edgesAroundVertex[i];
 }
 
 
@@ -307,9 +307,9 @@ bool EdgeSetTopologyContainer::hasEdges() const
     return !m_edge.empty();
 }
 
-bool EdgeSetTopologyContainer::hasEdgeVertexShell() const
+bool EdgeSetTopologyContainer::hasEdgesAroundVertex() const
 {
-    return !m_edgeVertexShell.empty();
+    return !m_edgesAroundVertex.empty();
 }
 
 void EdgeSetTopologyContainer::clearEdges()
@@ -319,15 +319,15 @@ void EdgeSetTopologyContainer::clearEdges()
     d_edge.endEdit();
 }
 
-void EdgeSetTopologyContainer::clearEdgeVertexShell()
+void EdgeSetTopologyContainer::clearEdgesAroundVertex()
 {
-    m_edgeVertexShell.clear();
+    m_edgesAroundVertex.clear();
 }
 
 void EdgeSetTopologyContainer::clear()
 {
     clearEdges();
-    clearEdgeVertexShell();
+    clearEdgesAroundVertex();
 
     PointSetTopologyContainer::clear();
 }

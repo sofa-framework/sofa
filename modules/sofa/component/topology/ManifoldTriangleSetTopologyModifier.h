@@ -39,9 +39,9 @@ using core::componentmodel::topology::BaseMeshTopology;
 typedef BaseMeshTopology::TriangleID TriangleID;
 typedef BaseMeshTopology::Triangle Triangle;
 typedef BaseMeshTopology::SeqTriangles SeqTriangles;
-typedef BaseMeshTopology::VertexTriangles VertexTriangles;
-typedef BaseMeshTopology::EdgeTriangles EdgeTriangles;
-typedef BaseMeshTopology::TriangleEdges TriangleEdges;
+typedef BaseMeshTopology::TrianglesAroundVertex TrianglesAroundVertex;
+typedef BaseMeshTopology::TrianglesAroundEdge TrianglesAroundEdge;
+typedef BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
 
 /**
  * A class that modifies the topology by adding and removing triangles
@@ -92,7 +92,7 @@ public:
 
 
     /** \brief: Reorder the vertex in the array of a given edge. In order to be in the oriented in the right direction
-     * regarding the first triangle of m_triangleEdgeShellArray[ edgeIndex ].
+     * regarding the first triangle of m_trianglesAroundEdgeArray[ edgeIndex ].
      *
      */
     void reorderingEdge(const unsigned int edgeIndex);
@@ -101,13 +101,13 @@ public:
     /** \brief: Reorder the triangle vertex array around a given vertex.
      *
      */
-    void reorderingTriangleVertexShell (const unsigned int vertexIndex);
+    void reorderingTrianglesAroundVertex (const unsigned int vertexIndex);
 
 
     /** \brief: Reorder the edge vertex array around a given vertex.
      *
      */
-    void reorderingEdgeVertexShell (const unsigned int vertexIndex);
+    void reorderingEdgesAroundVertex (const unsigned int vertexIndex);
 
 
     /** \brief: Reorder the three shell arrays around a list of given vertices.
@@ -180,7 +180,7 @@ private:
 
     /** Fill the vector m_modificationEdge with the 3 edges of each triangle to be removed (without duplications).
      * This is needed,if orientations of edges have to be changed (always oriented in the right direction regarding the
-     * first or the only one triangle of m_TriangleEdgeShellArray[ the_edge ]);
+     * first or the only one triangle of m_TrianglesAroundEdgeArray[ the_edge ]);
      */
     void createRemovingEdgesFutureModifications (const sofa::helper::vector <unsigned int> items);
 
@@ -188,7 +188,7 @@ private:
     /** Create the vector m_modifications which store the modifications to apply to the topology.
      * Thus, tests can be done before any triangle(s) removal, in order to keep the topology Manifold.
      * m_modifications[0] = vertex index number.
-     * m_modifications[i>0] = 0 (no change) or 1 (remove m_triangleVertexShell[ m_modifications[0] ][i+1])
+     * m_modifications[i>0] = 0 (no change) or 1 (remove m_trianglesAroundVertex[ m_modifications[0] ][i+1])
      */
     void createRemovingTrianglesFutureModifications(const sofa::helper::vector< unsigned int >& items);
 
@@ -199,13 +199,13 @@ private:
     bool testRemovingModifications();
 
 
-    /** According to m_modification map, reorder the m_triangleVertexShellArray.
+    /** According to m_modification map, reorder the m_trianglesAroundVertexArray.
      *
      */
     void internalRemovingPostProcessingTriangles();
 
 
-    /** According to m_modificationEdge vector, reorder the m_EdgeVertexShellArray.
+    /** According to m_modificationEdge vector, reorder the m_EdgesAroundVertexArray.
      *
      */
     void internalRemovingPostProcessingEdges();

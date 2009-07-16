@@ -66,8 +66,8 @@ public:
     typedef helper::vector<Edge> SeqEdges;
     typedef helper::vector<Triangle> SeqTriangles;
     typedef helper::vector<Quad> SeqQuads;
-    typedef helper::vector<Tetra> SeqTetras;
-    typedef helper::vector<Hexa> SeqHexas;
+    typedef helper::vector<Tetra> SeqTetrahedra;
+    typedef helper::vector<Hexa> SeqHexahedra;
 
     MultiMeshLoader();
 

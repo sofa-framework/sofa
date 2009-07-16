@@ -38,16 +38,16 @@ namespace topology
 using core::componentmodel::topology::BaseMeshTopology;
 typedef BaseMeshTopology::TetraID TetraID;
 typedef BaseMeshTopology::Tetra Tetra;
-typedef BaseMeshTopology::SeqTetras SeqTetras;
-typedef BaseMeshTopology::VertexTetras VertexTetras;
-typedef BaseMeshTopology::EdgeTetras EdgeTetras;
-typedef BaseMeshTopology::TriangleTetras TriangleTetras;
-typedef BaseMeshTopology::TetraEdges TetraEdges;
-typedef BaseMeshTopology::TetraTriangles TetraTriangles;
+typedef BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
+typedef BaseMeshTopology::TetrahedraAroundVertex TetrahedraAroundVertex;
+typedef BaseMeshTopology::TetrahedraAroundEdge TetrahedraAroundEdge;
+typedef BaseMeshTopology::TetrahedraAroundTriangle TetrahedraAroundTriangle;
+typedef BaseMeshTopology::EdgesInTetrahedron EdgesInTetrahedron;
+typedef BaseMeshTopology::TrianglesInTetrahedron TrianglesInTetrahedron;
 
 typedef Tetra Tetrahedron;
-typedef TetraEdges TetrahedronEdges;
-typedef TetraTriangles TetrahedronTriangles;
+typedef EdgesInTetrahedron EdgesInTetrahedron;
+typedef TrianglesInTetrahedron TrianglesInTetrahedron;
 
 /**
 * A class that provides geometry information on an TetrahedronSet.

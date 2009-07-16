@@ -88,12 +88,12 @@ void CudaHexahedronTLEDForceField::reinit()
 {
     /// Gets the mesh
     component::topology::MeshTopology* topology = getContext()->get<component::topology::MeshTopology>();
-    if (topology==NULL || topology->getNbHexas()==0)
+    if (topology==NULL || topology->getNbHexahedra()==0)
     {
         serr << "ERROR(CudaHexahedronTLEDForceField): no elements found.\n";
         return;
     }
-    VecElement inputElems = topology->getHexas();
+    VecElement inputElems = topology->getHexahedra();
 
     nbElems = inputElems.size();
 

@@ -102,7 +102,7 @@ void HexahedronCompositeFEMEdgeBasedMapping<BasicMapping>::init()
 
         if( elementIdx!=-1)
         {
-            const topology::SparseGridTopology::Hexa& coarsehexa = this->_sparseGrid->getHexa( elementIdx );
+            const topology::SparseGridTopology::Hexa& coarsehexa = this->_sparseGrid->getHexahedron( elementIdx );
             _coarseBarycentricCoord[i][coarsehexa[0]] = (Real)((1-coefs[0]) * (1-coefs[1]) * (1-coefs[2]));
             _coarseBarycentricCoord[i][coarsehexa[1]] = (Real)((coefs[0]) * (1-coefs[1]) * (1-coefs[2]));
             _coarseBarycentricCoord[i][coarsehexa[2]] = (Real)((coefs[0]) * (coefs[1]) * (1-coefs[2]));
@@ -125,7 +125,7 @@ void HexahedronCompositeFEMEdgeBasedMapping<BasicMapping>::init()
     {
         for(typename std::map< int, Weight >::iterator it = this->_finestWeights[i].begin(); it!=this->_finestWeights[i].end(); ++it)
         {
-            const topology::SparseGridTopology::Hexa& coarsehexa = this->_sparseGrid->getHexa( it->first );
+            const topology::SparseGridTopology::Hexa& coarsehexa = this->_sparseGrid->getHexahedron( it->first );
 
             for(int j=0; j<12; ++j) //edges
             {
@@ -182,7 +182,7 @@ void HexahedronCompositeFEMEdgeBasedMapping<BasicMapping>::init()
 template <class BasicMapping>
 void HexahedronCompositeFEMEdgeBasedMapping<BasicMapping>::apply ( OutVecCoord& out, const InVecCoord& in )
 {
-    for(int i=0; i<this->_sparseGrid->getNbHexas(); ++i)
+    for(int i=0; i<this->_sparseGrid->getNbHexahedra(); ++i)
         this->_rotations[i] = this->_forcefield->getRotation(i);
 
 
@@ -223,7 +223,7 @@ void HexahedronCompositeFEMEdgeBasedMapping<BasicMapping>::apply ( OutVecCoord& 
         out[i] = OutCoord();
 
 
-        const topology::SparseGridTopology::Hexa& finehexa = this->_finestSparseGrid->getHexa(this->_finestBarycentricCoord[i].first );
+        const topology::SparseGridTopology::Hexa& finehexa = this->_finestSparseGrid->getHexahedron(this->_finestBarycentricCoord[i].first );
 
         for(int w=0; w<8; ++w)
         {

@@ -36,16 +36,16 @@ namespace topology
 using core::componentmodel::topology::BaseMeshTopology;
 typedef BaseMeshTopology::HexaID HexaID;
 typedef BaseMeshTopology::Hexa Hexa;
-typedef BaseMeshTopology::SeqHexas SeqHexas;
-typedef BaseMeshTopology::VertexHexas VertexHexas;
-typedef BaseMeshTopology::EdgeHexas EdgeHexas;
-typedef BaseMeshTopology::QuadHexas QuadHexas;
-typedef BaseMeshTopology::HexaEdges HexaEdges;
-typedef BaseMeshTopology::HexaQuads HexaQuads;
+typedef BaseMeshTopology::SeqHexahedra SeqHexahedra;
+typedef BaseMeshTopology::HexahedraAroundVertex HexahedraAroundVertex;
+typedef BaseMeshTopology::HexahedraAroundEdge HexahedraAroundEdge;
+typedef BaseMeshTopology::HexahedraAroundQuad HexahedraAroundQuad;
+typedef BaseMeshTopology::EdgesInHexahedron EdgesInHexahedron;
+typedef BaseMeshTopology::QuadsInHexahedron QuadsInHexahedron;
 
 typedef Hexa Hexahedron;
-typedef HexaEdges HexahedronEdges;
-typedef HexaQuads HexahedronQuads;
+typedef EdgesInHexahedron EdgesInHexahedron;
+typedef QuadsInHexahedron QuadsInHexahedron;
 
 /**
 * A class that provides geometry information on an HexahedronSet.

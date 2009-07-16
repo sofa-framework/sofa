@@ -1140,7 +1140,7 @@ void TriangularFEMForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x
 
     for( unsigned int i=0; i<nbPoints; i++ )
     {
-    const sofa::helper::vector< unsigned int >& triangleNeighbors = _topology->getTriangleVertexShell(i);
+    const sofa::helper::vector< unsigned int >& triangleNeighbors = _topology->getTrianglesAroundVertex(i);
 
     sofa::helper::vector< unsigned int >::const_iterator it = triangleNeighbors.begin();
     sofa::helper::vector< unsigned int >::const_iterator itEnd = triangleNeighbors.end();
@@ -1186,7 +1186,7 @@ void TriangularFEMForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x
 
     for( unsigned int i=0; i<nbPoints; i++ )
     {
-    bool vertexOnBorder = _topology->getTriangleVertexShell(i).size() < _topology->getEdgeVertexShell(i).size() && _topology->getTriangleVertexShell(i).size() > 1;
+    bool vertexOnBorder = _topology->getTrianglesAroundVertex(i).size() < _topology->getEdgesAroundVertex(i).size() && _topology->getTrianglesAroundVertex(i).size() > 1;
 
     if (vertexOnBorder && vertexInfo[i].sumEigenValues > max)
     {
@@ -1232,7 +1232,7 @@ void TriangularFEMForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x
     unsigned int fracturableIndex = 0;
     bool fracture(false);
 
-    const sofa::helper::vector< unsigned int >& edgeNeighbors = _topology->getEdgeVertexShell(mostDeformableVertexIndex);
+    const sofa::helper::vector< unsigned int >& edgeNeighbors = _topology->getEdgesAroundVertex(mostDeformableVertexIndex);
 
     sofa::helper::vector< unsigned int >::const_iterator it = edgeNeighbors.begin();
     sofa::helper::vector< unsigned int >::const_iterator itEnd = edgeNeighbors.end();
@@ -1254,21 +1254,21 @@ void TriangularFEMForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& x
     d.normalize();
     if (fabs(n * d) < minDotProduct)
     {
-    sofa::helper::vector< unsigned int > triangleEdgeShell = _topology->getTriangleEdgeShell(*it);
-    if (triangleEdgeShell.size() != 1)
+    sofa::helper::vector< unsigned int > trianglesAroundEdge = _topology->getTrianglesAroundEdge(*it);
+    if (trianglesAroundEdge.size() != 1)
     {
 
     //	bool bb(false);
-    //	sofa::helper::vector< unsigned int >::iterator _it = triangleEdgeShell.begin();
-    //	sofa::helper::vector< unsigned int >::iterator _itEnd = triangleEdgeShell.end();
+    //	sofa::helper::vector< unsigned int >::iterator _it = trianglesAroundEdge.begin();
+    //	sofa::helper::vector< unsigned int >::iterator _itEnd = trianglesAroundEdge.end();
     //	while (_it != _itEnd)
     //	{
-    //		helper::fixed_array<unsigned int,3> edges = _topology->getTriangleEdge(*_it);
+    //		helper::fixed_array<unsigned int,3> edges = _topology->getEdgesInTriangle(*_it);
 
     //		int cptTest=0;
     //		for (int i=0; i<3; i++)
     //		{
-    //			if (_topology->getTriangleEdgeShell(edges[i]).size() < 2)
+    //			if (_topology->getTrianglesAroundEdge(edges[i]).size() < 2)
     //			{
     //				cptTest++;
     //			}

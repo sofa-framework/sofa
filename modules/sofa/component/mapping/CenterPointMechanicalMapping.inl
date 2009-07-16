@@ -63,7 +63,7 @@ void CenterPointMechanicalMapping<BaseMapping>::init()
 template <class BaseMapping>
 void CenterPointMechanicalMapping<BaseMapping>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    const core::componentmodel::topology::BaseMeshTopology::SeqHexas& hexas = inputTopo->getHexas();
+    const core::componentmodel::topology::BaseMeshTopology::SeqHexahedra& hexas = inputTopo->getHexahedra();
 
     if(out.size() < hexas.size())
         out.resize(hexas.size());
@@ -84,7 +84,7 @@ void CenterPointMechanicalMapping<BaseMapping>::apply( typename Out::VecCoord& o
 template <class BaseMapping>
 void CenterPointMechanicalMapping<BaseMapping>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
-    const core::componentmodel::topology::BaseMeshTopology::SeqHexas& hexas = inputTopo->getHexas();
+    const core::componentmodel::topology::BaseMeshTopology::SeqHexahedra& hexas = inputTopo->getHexahedra();
 
     if(out.size() < hexas.size())
         out.resize(hexas.size());
@@ -105,7 +105,7 @@ void CenterPointMechanicalMapping<BaseMapping>::applyJ( typename Out::VecDeriv& 
 template <class BaseMapping>
 void CenterPointMechanicalMapping<BaseMapping>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
-    const core::componentmodel::topology::BaseMeshTopology::SeqHexas& hexas = inputTopo->getHexas();
+    const core::componentmodel::topology::BaseMeshTopology::SeqHexahedra& hexas = inputTopo->getHexahedra();
 
     for(unsigned int i = 0; i <hexas.size(); ++i)
     {

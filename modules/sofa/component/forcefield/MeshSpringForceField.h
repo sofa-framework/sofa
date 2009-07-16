@@ -96,7 +96,7 @@ public:
     Real getLinesStiffness() const { return linesStiffness.getValue(); }
     Real getTrianglesStiffness() const { return trianglesStiffness.getValue(); }
     Real getQuadsStiffness() const { return quadsStiffness.getValue(); }
-    Real getTetrasStiffness() const { return tetrasStiffness.getValue(); }
+    Real getTetrahedraStiffness() const { return tetrasStiffness.getValue(); }
     Real getCubesStiffness() const { return cubesStiffness.getValue(); }
     void setStiffness(Real val)
     {
@@ -131,7 +131,7 @@ public:
     Real getLinesDamping() const { return linesDamping.getValue(); }
     Real getTrianglesDamping() const { return trianglesDamping.getValue(); }
     Real getQuadsDamping() const { return quadsDamping.getValue(); }
-    Real getTetrasDamping() const { return tetrasDamping.getValue(); }
+    Real getTetrahedraDamping() const { return tetrasDamping.getValue(); }
     Real getCubesDamping() const { return cubesDamping.getValue(); }
     void setDamping(Real val)
     {

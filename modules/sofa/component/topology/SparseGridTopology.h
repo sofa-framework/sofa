@@ -328,16 +328,16 @@ protected:
 public :
 
 #ifdef SOFA_NEW_HEXA
-    virtual const SeqHexas& getHexas()
+    virtual const SeqHexahedra& getHexahedra()
     {
         if( !_alreadyInit ) init();
-        return sofa::component::topology::MeshTopology::getHexas();
+        return sofa::component::topology::MeshTopology::getHexahedra();
     }
 #else
-    virtual const SeqCubes& getHexas()
+    virtual const SeqCubes& getHexahedra()
     {
         if( !_alreadyInit ) init();
-        return sofa::component::topology::MeshTopology::getHexas();
+        return sofa::component::topology::MeshTopology::getHexahedra();
     }
 #endif
     virtual int getNbPoints() const
@@ -346,7 +346,7 @@ public :
         return sofa::component::topology::MeshTopology::getNbPoints();
     }
 
-    virtual int getNbHexas() { return this->getHexas().size();}
+    virtual int getNbHexahedra() { return this->getHexahedra().size();}
 };
 
 } // namespace topology

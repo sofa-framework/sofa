@@ -42,12 +42,12 @@ using core::componentmodel::topology::BaseMeshTopology;
 typedef BaseMeshTopology::PointID			PointID;
 typedef BaseMeshTopology::EdgeID			EdgeID;
 typedef BaseMeshTopology::TriangleID		TriangleID;
-typedef BaseMeshTopology::Edge				Edge;
-typedef BaseMeshTopology::Triangle			Triangle;
+typedef BaseMeshTopology::Edge			Edge;
+typedef BaseMeshTopology::Triangle		Triangle;
 typedef BaseMeshTopology::SeqTriangles		SeqTriangles;
-typedef BaseMeshTopology::TriangleEdges		TriangleEdges;
-typedef BaseMeshTopology::VertexTriangles	VertexTriangles;
-typedef BaseMeshTopology::EdgeTriangles		EdgeTriangles;
+typedef BaseMeshTopology::EdgesInTriangle		EdgesInTriangle;
+typedef BaseMeshTopology::TrianglesAroundVertex	TrianglesAroundVertex;
+typedef BaseMeshTopology::TrianglesAroundEdge	TrianglesAroundEdge;
 
 /*! \class TriangleSetTopologyContainer
 \brief: Object that stores a set of triangles and provides access
@@ -84,27 +84,27 @@ public:
     virtual int getTriangleIndex(PointID v1, PointID v2, PointID v3);
 
     /// Returns the set of edges adjacent to a given triangle.
-    const TriangleEdges& getEdgeTriangleShell(TriangleID i)
+    /*	const EdgesInTriangle& getEdgesInTriangle(TriangleID i)
     {
-        return getTriangleEdge(i);
+      return getEdgesInTriangle(i);
     }
-
+    */
     /** \brief Returns the set of triangles adjacent to a given vertex.
      *
      */
-    virtual const VertexTriangles& getTriangleVertexShell(PointID i);
+    virtual const TrianglesAroundVertex& getTrianglesAroundVertex(PointID i);
 
 
     /** \brief Returns the set of triangles adjacent to a given edge.
      *
      */
-    virtual const EdgeTriangles& getTriangleEdgeShell(EdgeID i) ;
+    virtual const TrianglesAroundEdge& getTrianglesAroundEdge(EdgeID i) ;
 
     /** returns the index (either 0, 1 ,2) of the vertex whose global index is vertexIndex. Returns -1 if none */
     virtual int getVertexIndexInTriangle(const Triangle &t, PointID vertexIndex) const;
 
     /** returns the index (either 0, 1 ,2) of the edge whose global index is edgeIndex. Returns -1 if none */
-    virtual int getEdgeIndexInTriangle(const TriangleEdges &t, EdgeID edgeIndex) const;
+    virtual int getEdgeIndexInTriangle(const EdgesInTriangle &t, EdgeID edgeIndex) const;
 
     /// @}
 
@@ -122,17 +122,17 @@ public:
     /** \brief Returns the Triangle Vertex Shells array.
      *
      */
-    const sofa::helper::vector< sofa::helper::vector<unsigned int> > &getTriangleVertexShellArray();
+    const sofa::helper::vector< sofa::helper::vector<unsigned int> > &getTrianglesAroundVertexArray();
 
-    /** \brief Returns the TriangleEdges array (ie provide the 3 edge indices for each triangle)
+    /** \brief Returns the EdgesInTriangle array (ie provide the 3 edge indices for each triangle)
      *
      */
-    const sofa::helper::vector< TriangleEdges > &getTriangleEdgeArray() ;
+    const sofa::helper::vector< EdgesInTriangle > &getEdgesInTriangleArray() ;
 
     /** \brief Returns the Triangle Edge Shells array (ie provides the triangles adjacent to each edge)
      *
      */
-    const sofa::helper::vector< sofa::helper::vector<unsigned int> > &getTriangleEdgeShellArray() ;
+    const sofa::helper::vector< sofa::helper::vector<unsigned int> > &getTrianglesAroundEdgeArray() ;
 
     /** \brief Returns the number of triangles in this topology.
      *	The difference to getNbTriangles() is that this method does not generate the triangle array if it does not exist.
@@ -143,7 +143,7 @@ public:
     /** \brief Returns the 3 edges adjacent to a given triangle.
      *
      */
-    const TriangleEdges &getTriangleEdge(const unsigned int i) ;
+    virtual const EdgesInTriangle& getEdgesInTriangle(TriangleID i) ;
 
     /** \brief: Return a vector of TriangleID which are on a border.
      * @see createElementsOnBorder()
@@ -171,7 +171,7 @@ public:
      to an other Triangle)
      * - A vector of EdgeID @see m_edgesOnBorder. (I.e which are adjacent to only one Triangle)
      * - A vector of PointID @see m_pointsOnBorder. (I.e which are part of only one Triangle)
-     * To Do: For the moment use TriangleEdgeShellArray() in the container. To be moved in a mapping class
+     * To Do: For the moment use TrianglesAroundEdgeArray() in the container. To be moved in a mapping class
      */
     void createElementsOnBorder();
 
@@ -190,62 +190,62 @@ protected:
 
     /** \brief Creates the array of edge indices for each triangle
      *
-     * This function is only called if the TriangleEdge array is required.
-     * m_triangleEdge[i] contains the 3 indices of the 3 edges opposite to the ith vertex
+     * This function is only called if the EdgesInTriangle array is required.
+     * m_edgesInTriangle[i] contains the 3 indices of the 3 edges opposite to the ith vertex
      */
-    void createTriangleEdgeArray();
+    void createEdgesInTriangleArray();
 
     /** \brief Creates the Triangle Vertex Shell Array
      *
-     * This function is only called if the TriangleVertexShell array is required.
-     * m_triangleVertexShell[i] contains the indices of all triangles adjacent to the ith vertex
+     * This function is only called if the TrianglesAroundVertex array is required.
+     * m_trianglesAroundVertex[i] contains the indices of all triangles adjacent to the ith vertex
      */
-    virtual void createTriangleVertexShellArray();
+    virtual void createTrianglesAroundVertexArray();
 
     /** \brief Creates the Triangle Edge Shell Array
      *
-     * This function is only called if the TriangleVertexShell array is required.
-     * m_triangleEdgeShell[i] contains the indices of all triangles adjacent to the ith edge
+     * This function is only called if the TrianglesAroundVertex array is required.
+     * m_trianglesAroundEdge[i] contains the indices of all triangles adjacent to the ith edge
      */
-    virtual void createTriangleEdgeShellArray();
+    virtual void createTrianglesAroundEdgeArray();
 
 
     bool hasTriangles() const;
 
-    bool hasTriangleEdges() const;
+    bool hasEdgesInTriangle() const;
 
-    bool hasTriangleVertexShell() const;
+    bool hasTrianglesAroundVertex() const;
 
-    bool hasTriangleEdgeShell() const;
+    bool hasTrianglesAroundEdge() const;
 
     void clearTriangles();
 
-    void clearTriangleEdges();
+    void clearEdgesInTriangle();
 
-    void clearTriangleVertexShell();
+    void clearTrianglesAroundVertex();
 
-    void clearTriangleEdgeShell();
+    void clearTrianglesAroundEdge();
 
 private:
     /** \brief Returns a non-const triangle vertex shell given a vertex index for subsequent modification
      *
      */
-    sofa::helper::vector< unsigned int > &getTriangleVertexShellForModification(const unsigned int vertexIndex);
+    sofa::helper::vector< unsigned int > &getTrianglesAroundVertexForModification(const unsigned int vertexIndex);
     /** \brief Returns a non-const triangle edge shell given the index of an edge for subsequent modification
      *
      */
-    sofa::helper::vector< unsigned int > &getTriangleEdgeShellForModification(const unsigned int edgeIndex);
+    sofa::helper::vector< unsigned int > &getTrianglesAroundEdgeForModification(const unsigned int edgeIndex);
 
 protected:
     /// provides the set of triangles
     sofa::helper::vector<Triangle> m_triangle;
     DataPtr< sofa::helper::vector<Triangle> > d_triangle;
     /// provides the 3 edges in each triangle
-    sofa::helper::vector<TriangleEdges> m_triangleEdge;
+    sofa::helper::vector<EdgesInTriangle> m_edgesInTriangle;
     /// for each vertex provides the set of triangles adjacent to that vertex
-    sofa::helper::vector< sofa::helper::vector< unsigned int > > m_triangleVertexShell;
+    sofa::helper::vector< sofa::helper::vector< unsigned int > > m_trianglesAroundVertex;
     /// for each edge provides the set of triangles adjacent to that edge
-    sofa::helper::vector< sofa::helper::vector< unsigned int > > m_triangleEdgeShell;
+    sofa::helper::vector< sofa::helper::vector< unsigned int > > m_trianglesAroundEdge;
 
     /// Set of triangle indices on topology border
     sofa::helper::vector <TriangleID> m_trianglesOnBorder;

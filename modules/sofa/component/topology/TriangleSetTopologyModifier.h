@@ -39,9 +39,9 @@ using core::componentmodel::topology::BaseMeshTopology;
 typedef BaseMeshTopology::TriangleID TriangleID;
 typedef BaseMeshTopology::Triangle Triangle;
 typedef BaseMeshTopology::SeqTriangles SeqTriangles;
-typedef BaseMeshTopology::VertexTriangles VertexTriangles;
-typedef BaseMeshTopology::EdgeTriangles EdgeTriangles;
-typedef BaseMeshTopology::TriangleEdges TriangleEdges;
+typedef BaseMeshTopology::TrianglesAroundVertex TrianglesAroundVertex;
+typedef BaseMeshTopology::TrianglesAroundEdge TrianglesAroundEdge;
+typedef BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
 
 /**
  * A class that modifies the topology by adding and removing triangles
@@ -233,7 +233,7 @@ public:
 
 
     /** \brief Move input points indices to input new coords.
-     * Also propagate event and update edgeVertexShell and triangleVertexShell for data handling.
+     * Also propagate event and update edgesAroundVertex and trianglesAroundVertex for data handling.
      *
      * @param id : list of indices to move
      * @param : ancestors list of ancestors to define relative new position

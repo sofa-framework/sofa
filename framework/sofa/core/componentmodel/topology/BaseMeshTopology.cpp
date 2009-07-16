@@ -51,155 +51,155 @@ BaseMeshTopology::BaseMeshTopology()
 }
 
 /// Returns the set of edges adjacent to a given vertex.
-const BaseMeshTopology::VertexEdges& BaseMeshTopology::getEdgeVertexShell(PointID)
+const BaseMeshTopology::EdgesAroundVertex& BaseMeshTopology::getEdgesAroundVertex(PointID)
 {
-    if (getNbEdges()) std::cerr << "WARNING: "<<this->getClassName()<<"::getEdgeVertexShell unsupported."<<std::endl;
-    static VertexEdges empty;
+    if (getNbEdges()) std::cerr << "WARNING: "<<this->getClassName()<<"::getEdgesAroundVertex unsupported."<<std::endl;
+    static EdgesAroundVertex empty;
     return empty;
 }
 
 /// Returns the set of edges adjacent to a given triangle.
-const BaseMeshTopology::TriangleEdges& BaseMeshTopology::getEdgeTriangleShell(TriangleID)
+const BaseMeshTopology::EdgesInTriangle& BaseMeshTopology::getEdgesInTriangle(TriangleID)
 {
-    if (getNbEdges()) std::cerr << "WARNING: "<<this->getClassName()<<"::getEdgeTriangleShell unsupported."<<std::endl;
-    static TriangleEdges empty;
+    if (getNbEdges()) std::cerr << "WARNING: "<<this->getClassName()<<"::getEdgesInTriangle unsupported."<<std::endl;
+    static EdgesInTriangle empty;
     empty.assign(InvalidID);
     return empty;
 }
 
 /// Returns the set of edges adjacent to a given quad.
-const BaseMeshTopology::QuadEdges& BaseMeshTopology::getEdgeQuadShell(QuadID)
+const BaseMeshTopology::EdgesInQuad& BaseMeshTopology::getEdgesInQuad(QuadID)
 {
-    if (getNbEdges()) std::cerr << "WARNING: "<<this->getClassName()<<"::getEdgeQuadShell unsupported."<<std::endl;
-    static QuadEdges empty;
+    if (getNbEdges()) std::cerr << "WARNING: "<<this->getClassName()<<"::getEdgesInQuad unsupported."<<std::endl;
+    static EdgesInQuad empty;
     empty.assign(InvalidID);
     return empty;
 }
 
 /// Returns the set of edges adjacent to a given tetrahedron.
-const BaseMeshTopology::TetraEdges& BaseMeshTopology::getEdgeTetraShell(TetraID)
+const BaseMeshTopology::EdgesInTetrahedron& BaseMeshTopology::getEdgesInTetrahedron(TetraID)
 {
-    if (getNbEdges()) std::cerr << "WARNING: "<<this->getClassName()<<"::getEdgeTetraShell unsupported."<<std::endl;
-    static TetraEdges empty;
+    if (getNbEdges()) std::cerr << "WARNING: "<<this->getClassName()<<"::getEdgesInTetrahedron unsupported."<<std::endl;
+    static EdgesInTetrahedron empty;
     empty.assign(InvalidID);
     return empty;
 }
 
 
 /// Returns the set of edges adjacent to a given hexahedron.
-const BaseMeshTopology::HexaEdges& BaseMeshTopology::getEdgeHexaShell(HexaID)
+const BaseMeshTopology::EdgesInHexahedron& BaseMeshTopology::getEdgesInHexahedron(HexaID)
 {
-    if (getNbEdges()) std::cerr << "WARNING: "<<this->getClassName()<<"::getEdgeHexaShell unsupported."<<std::endl;
-    static HexaEdges empty;
+    if (getNbEdges()) std::cerr << "WARNING: "<<this->getClassName()<<"::getEdgesInHexahedron unsupported."<<std::endl;
+    static EdgesInHexahedron empty;
     empty.assign(InvalidID);
     return empty;
 }
 
 /// Returns the set of triangle adjacent to a given vertex.
-const BaseMeshTopology::VertexTriangles& BaseMeshTopology::getTriangleVertexShell(PointID)
+const BaseMeshTopology::TrianglesAroundVertex& BaseMeshTopology::getTrianglesAroundVertex(PointID)
 {
-    if (getNbTriangles()) std::cerr << "WARNING: "<<this->getClassName()<<"::getTriangleVertexShell unsupported."<<std::endl;
-    static VertexTriangles empty;
+    if (getNbTriangles()) std::cerr << "WARNING: "<<this->getClassName()<<"::getTrianglesAroundVertex unsupported."<<std::endl;
+    static TrianglesAroundVertex empty;
     return empty;
 }
 
 /// Returns the set of triangle adjacent to a given edge.
-const BaseMeshTopology::EdgeTriangles& BaseMeshTopology::getTriangleEdgeShell(EdgeID)
+const BaseMeshTopology::TrianglesAroundEdge& BaseMeshTopology::getTrianglesAroundEdge(EdgeID)
 {
-    if (getNbTriangles()) std::cerr << "WARNING: "<<this->getClassName()<<"::getEdgeVertexShell unsupported."<<std::endl;
-    static EdgeTriangles empty;
+    if (getNbTriangles()) std::cerr << "WARNING: "<<this->getClassName()<<"::getEdgesAroundVertex unsupported."<<std::endl;
+    static TrianglesAroundEdge empty;
     return empty;
 }
 
 /// Returns the set of triangle adjacent to a given tetrahedron.
-const BaseMeshTopology::TetraTriangles& BaseMeshTopology::getTriangleTetraShell(TetraID)
+const BaseMeshTopology::TrianglesInTetrahedron& BaseMeshTopology::getTrianglesInTetrahedron(TetraID)
 {
-    if (getNbTriangles()) std::cerr << "WARNING: "<<this->getClassName()<<"::getTriangleTetraShell unsupported."<<std::endl;
-    static TetraTriangles empty;
+    if (getNbTriangles()) std::cerr << "WARNING: "<<this->getClassName()<<"::getTrianglesInTetrahedron unsupported."<<std::endl;
+    static TrianglesInTetrahedron empty;
     empty.assign(InvalidID);
     return empty;
 }
 
 /// Returns the set of quad adjacent to a given vertex.
-const BaseMeshTopology::VertexQuads& BaseMeshTopology::getQuadVertexShell(PointID)
+const BaseMeshTopology::QuadsAroundVertex& BaseMeshTopology::getQuadsAroundVertex(PointID)
 {
-    if (getNbQuads()) std::cerr << "WARNING: "<<this->getClassName()<<"::getQuadVertexShell unsupported."<<std::endl;
-    static VertexQuads empty;
+    if (getNbQuads()) std::cerr << "WARNING: "<<this->getClassName()<<"::getQuadsAroundVertex unsupported."<<std::endl;
+    static QuadsAroundVertex empty;
     return empty;
 }
 
 /// Returns the set of quad adjacent to a given edge.
-const BaseMeshTopology::EdgeQuads& BaseMeshTopology::getQuadEdgeShell(EdgeID)
+const BaseMeshTopology::QuadsAroundEdge& BaseMeshTopology::getQuadsAroundEdge(EdgeID)
 {
-    if (getNbQuads()) std::cerr << "WARNING: "<<this->getClassName()<<"::getQuadEdgeShell unsupported."<<std::endl;
-    static EdgeQuads empty;
+    if (getNbQuads()) std::cerr << "WARNING: "<<this->getClassName()<<"::getQuadsAroundEdge unsupported."<<std::endl;
+    static QuadsAroundEdge empty;
     return empty;
 }
 
 /// Returns the set of quad adjacent to a given hexahedron.
-const BaseMeshTopology::HexaQuads& BaseMeshTopology::getQuadHexaShell(HexaID)
+const BaseMeshTopology::QuadsInHexahedron& BaseMeshTopology::getQuadsInHexahedron(HexaID)
 {
-    if (getNbQuads()) std::cerr << "WARNING: "<<this->getClassName()<<"::getQuadHexaShell unsupported."<<std::endl;
-    static HexaQuads empty;
+    if (getNbQuads()) std::cerr << "WARNING: "<<this->getClassName()<<"::getQuadsInHexahedron unsupported."<<std::endl;
+    static QuadsInHexahedron empty;
     empty.assign(InvalidID);
     return empty;
 }
 
 /// Returns the set of tetrahedra adjacent to a given vertex.
-const BaseMeshTopology::VertexTetras& BaseMeshTopology::getTetraVertexShell(PointID)
+const BaseMeshTopology::TetrahedraAroundVertex& BaseMeshTopology::getTetrahedraAroundVertex(PointID)
 {
-    if (getNbTetras()) std::cerr << "WARNING: "<<this->getClassName()<<"::getTetraVertexShell unsupported."<<std::endl;
-    static VertexTetras empty;
+    if (getNbTetrahedra()) std::cerr << "WARNING: "<<this->getClassName()<<"::getTetrahedraAroundVertex unsupported."<<std::endl;
+    static TetrahedraAroundVertex empty;
     return empty;
 }
 
 /// Returns the set of tetrahedra adjacent to a given edge.
-const BaseMeshTopology::EdgeTetras& BaseMeshTopology::getTetraEdgeShell(EdgeID)
+const BaseMeshTopology::TetrahedraAroundEdge& BaseMeshTopology::getTetrahedraAroundEdge(EdgeID)
 {
-    if (getNbTetras()) std::cerr << "WARNING: "<<this->getClassName()<<"::getTetraEdgeShell unsupported."<<std::endl;
-    static EdgeTetras empty;
+    if (getNbTetrahedra()) std::cerr << "WARNING: "<<this->getClassName()<<"::getTetrahedraAroundEdge unsupported."<<std::endl;
+    static TetrahedraAroundEdge empty;
     return empty;
 }
 
 /// Returns the set of tetrahedra adjacent to a given triangle.
-const BaseMeshTopology::TriangleTetras& BaseMeshTopology::getTetraTriangleShell(TriangleID)
+const BaseMeshTopology::TetrahedraAroundTriangle& BaseMeshTopology::getTetrahedraAroundTriangle(TriangleID)
 {
-    if (getNbTetras()) std::cerr << "WARNING: "<<this->getClassName()<<"::getTetraTriangleShell unsupported."<<std::endl;
-    static TriangleTetras empty;
+    if (getNbTetrahedra()) std::cerr << "WARNING: "<<this->getClassName()<<"::getTetrahedraAroundTriangle unsupported."<<std::endl;
+    static TetrahedraAroundTriangle empty;
     return empty;
 }
 
 /// Returns the set of hexahedra adjacent to a given vertex.
-const BaseMeshTopology::VertexHexas& BaseMeshTopology::getHexaVertexShell(PointID)
+const BaseMeshTopology::HexahedraAroundVertex& BaseMeshTopology::getHexahedraAroundVertex(PointID)
 {
-    if (getNbHexas()) std::cerr << "WARNING: "<<this->getClassName()<<"::getHexaVertexShell unsupported."<<std::endl;
-    static VertexHexas empty;
+    if (getNbHexahedra()) std::cerr << "WARNING: "<<this->getClassName()<<"::getHexahedraAroundVertex unsupported."<<std::endl;
+    static HexahedraAroundVertex empty;
     return empty;
 }
 
 /// Returns the set of hexahedra adjacent to a given edge.
-const BaseMeshTopology::EdgeHexas& BaseMeshTopology::getHexaEdgeShell(EdgeID)
+const BaseMeshTopology::HexahedraAroundEdge& BaseMeshTopology::getHexahedraAroundEdge(EdgeID)
 {
-    if (getNbHexas()) std::cerr << "WARNING: "<<this->getClassName()<<"::getHexaEdgeShell unsupported."<<std::endl;
-    static EdgeHexas empty;
+    if (getNbHexahedra()) std::cerr << "WARNING: "<<this->getClassName()<<"::getHexahedraAroundEdge unsupported."<<std::endl;
+    static HexahedraAroundEdge empty;
     return empty;
 }
 
 /// Returns the set of hexahedra adjacent to a given quad.
-const BaseMeshTopology::QuadHexas& BaseMeshTopology::getHexaQuadShell(QuadID)
+const BaseMeshTopology::HexahedraAroundQuad& BaseMeshTopology::getHexahedraAroundQuad(QuadID)
 {
-    if (getNbHexas()) std::cerr << "WARNING: "<<this->getClassName()<<"::getHexaQuadShell unsupported."<<std::endl;
-    static QuadHexas empty;
+    if (getNbHexahedra()) std::cerr << "WARNING: "<<this->getClassName()<<"::getHexahedraAroundQuad unsupported."<<std::endl;
+    static HexahedraAroundQuad empty;
     return empty;
 }
 
 
 /// Returns the set of vertices adjacent to a given vertex (i.e. sharing an edge)
-const BaseMeshTopology::VertexVertices BaseMeshTopology::getVertexVertexShell(PointID i)
+const BaseMeshTopology::VerticesAroundVertex BaseMeshTopology::getVerticesAroundVertex(PointID i)
 {
     const SeqEdges& edges = getEdges();
-    const VertexEdges& shell = getEdgeVertexShell(i);
-    VertexVertices adjacentVertices;
+    const EdgesAroundVertex& shell = getEdgesAroundVertex(i);
+    VerticesAroundVertex adjacentVertices;
 
     for (unsigned int j = 0; j<shell.size(); j++)
     {
@@ -402,7 +402,7 @@ int BaseMeshTopology::getVertexIndexInTriangle(const Triangle &, PointID) const
     return 0;
 }
 
-int BaseMeshTopology::getEdgeIndexInTriangle(const TriangleEdges &, EdgeID) const
+int BaseMeshTopology::getEdgeIndexInTriangle(const EdgesInTriangle &, EdgeID) const
 {
     std::cerr << "WARNING: "<<this->getClassName()<<"::getEdgeIndexInTriangle() not supported." << std::endl;
     return 0;
@@ -414,7 +414,7 @@ int BaseMeshTopology::getVertexIndexInQuad(Quad &, PointID) const
     return 0;
 }
 
-int BaseMeshTopology::getEdgeIndexInQuad(QuadEdges &, EdgeID) const
+int BaseMeshTopology::getEdgeIndexInQuad(EdgesInQuad &, EdgeID) const
 {
     std::cerr << "WARNING: "<<this->getClassName()<<"::getEdgeIndexInQuad() not supported." << std::endl;
     return 0;
@@ -426,13 +426,13 @@ int BaseMeshTopology::getVertexIndexInTetrahedron(const Tetra &, PointID) const
     return 0;
 }
 
-int BaseMeshTopology::getEdgeIndexInTetrahedron(const TetraEdges &, EdgeID) const
+int BaseMeshTopology::getEdgeIndexInTetrahedron(const EdgesInTetrahedron &, EdgeID) const
 {
     std::cerr << "WARNING: "<<this->getClassName()<<"::getEdgeIndexInTetrahedron() not supported." << std::endl;
     return 0;
 }
 
-int BaseMeshTopology::getTriangleIndexInTetrahedron(const TetraTriangles &, TriangleID) const
+int BaseMeshTopology::getTriangleIndexInTetrahedron(const TrianglesInTetrahedron &, TriangleID) const
 {
     std::cerr << "WARNING: "<<this->getClassName()<<"::getTriangleIndexInTetrahedron() not supported." << std::endl;
     return 0;
@@ -444,22 +444,22 @@ int BaseMeshTopology::getVertexIndexInHexahedron(Hexa &, PointID) const
     return 0;
 }
 
-int BaseMeshTopology::getEdgeIndexInHexahedron(const HexaEdges &, EdgeID) const
+int BaseMeshTopology::getEdgeIndexInHexahedron(const EdgesInHexahedron &, EdgeID) const
 {
     std::cerr << "WARNING: "<<this->getClassName()<<"::getEdgeIndexInHexahedron() not supported." << std::endl;
     return 0;
 }
 
-int BaseMeshTopology::getQuadIndexInHexahedron(const HexaQuads &, QuadID) const
+int BaseMeshTopology::getQuadIndexInHexahedron(const QuadsInHexahedron &, QuadID) const
 {
     std::cerr << "WARNING: "<<this->getClassName()<<"::getQuadIndexInHexahedron() not supported." << std::endl;
     return 0;
 }
 
-BaseMeshTopology::Edge BaseMeshTopology::getLocalTetrahedronEdges (const unsigned int) const
+BaseMeshTopology::Edge BaseMeshTopology::getLocalEdgesInTetrahedron (const unsigned int) const
 {
     static BaseMeshTopology::Edge empty;
-    std::cerr << "WARNING: "<<this->getClassName()<<"::getLocalTetrahedronEdges() not supported." << std::endl;
+    std::cerr << "WARNING: "<<this->getClassName()<<"::getLocalEdgesInTetrahedron() not supported." << std::endl;
     return empty;
 }
 

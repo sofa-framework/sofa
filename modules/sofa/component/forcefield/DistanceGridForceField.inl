@@ -102,9 +102,9 @@ void DistanceGridForceField<DataTypes>::init()
     if (this->stiffnessVolume.getValue() != 0 && this->mstate)
     {
         core::componentmodel::topology::BaseMeshTopology* topology = this->mstate->getContext()->getMeshTopology();
-        if (topology && topology->getNbTetras() > 0)
+        if (topology && topology->getNbTetrahedra() > 0)
         {
-            const core::componentmodel::topology::BaseMeshTopology::SeqTetras& tetras = topology->getTetras();
+            const core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra& tetras = topology->getTetrahedra();
             Real sumVolume = 0;
             const VecCoord& p1 = *this->mstate->getX0();
             for (unsigned int ti = 0; ti < tetras.size(); ++ti)
@@ -248,9 +248,9 @@ void DistanceGridForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p
     if (stiffV != 0)
     {
         core::componentmodel::topology::BaseMeshTopology* topology = this->mstate->getContext()->getMeshTopology();
-        if (topology && topology->getNbTetras() > 0)
+        if (topology && topology->getNbTetrahedra() > 0)
         {
-            const core::componentmodel::topology::BaseMeshTopology::SeqTetras& tetras = topology->getTetras();
+            const core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra& tetras = topology->getTetrahedra();
             const Real v1_6 = (Real)(1.0/6.0);
             for (unsigned int ti = 0; ti < tetras.size(); ++ti)
             {

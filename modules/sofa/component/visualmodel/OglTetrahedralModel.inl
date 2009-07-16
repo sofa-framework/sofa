@@ -82,12 +82,12 @@ void OglTetrahedralModel<DataTypes>::drawTransparent()
         glDepthMask(GL_FALSE);
 
     glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-    //core::componentmodel::topology::BaseMeshTopology::SeqHexas::const_iterator it;
-    core::componentmodel::topology::BaseMeshTopology::SeqTetras::const_iterator it;
+    //core::componentmodel::topology::BaseMeshTopology::SeqHexahedra::const_iterator it;
+    core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra::const_iterator it;
 
 #ifdef GL_LINES_ADJACENCY_EXT
 
-    const core::componentmodel::topology::BaseMeshTopology::SeqTetras& vec = topo->getTetras();
+    const core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra& vec = topo->getTetrahedra();
 
     VecCoord& x = *nodes->getX();
     Coord v;
@@ -103,7 +103,7 @@ void OglTetrahedralModel<DataTypes>::drawTransparent()
     }
     glEnd();
     /*
-    	const core::componentmodel::topology::BaseMeshTopology::SeqHexas& vec = topo->getHexas();
+    	const core::componentmodel::topology::BaseMeshTopology::SeqHexahedra& vec = topo->getHexahedra();
 
     	VecCoord& x = *nodes->getX();
     	Coord v;
@@ -143,8 +143,8 @@ void OglTetrahedralModel<DataTypes>::drawTransparent()
 template<class DataTypes>
 bool OglTetrahedralModel<DataTypes>::addBBox(double* minBBox, double* maxBBox)
 {
-    const core::componentmodel::topology::BaseMeshTopology::SeqTetras& vec = topo->getTetras();
-    core::componentmodel::topology::BaseMeshTopology::SeqTetras::const_iterator it;
+    const core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra& vec = topo->getTetrahedra();
+    core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra::const_iterator it;
     VecCoord& x = *nodes->getX();
     Coord v;
 

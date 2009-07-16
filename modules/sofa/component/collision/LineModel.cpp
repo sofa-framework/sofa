@@ -285,7 +285,7 @@ void LineModel::handleTopologyChange()
                             lastIndexVec[i_next] = lastIndexVec[i];
                         }
 
-                        const sofa::helper::vector<unsigned int> &shell = bmt->getEdgeVertexShell(lastIndexVec[i]);
+                        const sofa::helper::vector<unsigned int> &shell = bmt->getEdgesAroundVertex(lastIndexVec[i]);
 
                         for (j = 0; j < shell.size(); ++j)
                         {

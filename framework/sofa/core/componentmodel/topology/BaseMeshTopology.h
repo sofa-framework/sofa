@@ -78,8 +78,8 @@ public:
     typedef vector<Edge>		SeqEdges;
     typedef vector<Triangle>		SeqTriangles;
     typedef vector<Quad>		SeqQuads;
-    typedef vector<Tetra>		SeqTetras;
-    typedef vector<Hexa>		SeqHexas;
+    typedef vector<Tetra>		SeqTetrahedra;
+    typedef vector<Hexa>		SeqHexahedra;
 
     /// @name Deprecated types, for backward-compatibility
     /// @{
@@ -89,34 +89,34 @@ public:
 #ifndef SOFA_NEW_HEXA
     typedef HexaID CubeID;
     typedef Hexa Cube;
-    typedef SeqHexas SeqCubes;
+    typedef SeqHexahedra SeqCubes;
 #endif
     /// @}
 
     /// fixed-size neighbors arrays
     /// @{
-    typedef fixed_array<EdgeID,3>		TriangleEdges;
-    typedef fixed_array<EdgeID,4>		QuadEdges;
-    typedef fixed_array<TriangleID,4>		TetraTriangles;
-    typedef fixed_array<EdgeID,6>		TetraEdges;
-    typedef fixed_array<QuadID,6>		HexaQuads;
-    typedef fixed_array<EdgeID,12>		HexaEdges;
+    typedef fixed_array<EdgeID,3>		EdgesInTriangle;
+    typedef fixed_array<EdgeID,4>		EdgesInQuad;
+    typedef fixed_array<TriangleID,4>		TrianglesInTetrahedron;
+    typedef fixed_array<EdgeID,6>		EdgesInTetrahedron;
+    typedef fixed_array<QuadID,6>		QuadsInHexahedron;
+    typedef fixed_array<EdgeID,12>		EdgesInHexahedron;
     /// @}
 
     /// dynamic-size neighbors arrays
     /// @{
-    typedef vector<PointID>			VertexVertices;
-    typedef vector<EdgeID>			VertexEdges;
-    typedef vector<TriangleID>			VertexTriangles;
-    typedef vector<QuadID>			VertexQuads;
-    typedef vector<TetraID>			VertexTetras;
-    typedef vector<HexaID>			VertexHexas;
-    typedef vector<TriangleID>		EdgeTriangles;
-    typedef vector<QuadID>			EdgeQuads;
-    typedef vector<TetraID>			EdgeTetras;
-    typedef vector<HexaID>			EdgeHexas;
-    typedef vector<TetraID>			TriangleTetras;
-    typedef vector<HexaID>			QuadHexas;
+    typedef vector<PointID>			VerticesAroundVertex;
+    typedef vector<EdgeID>			EdgesAroundVertex;
+    typedef vector<TriangleID>			TrianglesAroundVertex;
+    typedef vector<QuadID>			QuadsAroundVertex;
+    typedef vector<TetraID>			TetrahedraAroundVertex;
+    typedef vector<HexaID>			HexahedraAroundVertex;
+    typedef vector<TriangleID>		        TrianglesAroundEdge;
+    typedef vector<QuadID>			QuadsAroundEdge;
+    typedef vector<TetraID>			TetrahedraAroundEdge;
+    typedef vector<HexaID>			HexahedraAroundEdge;
+    typedef vector<TetraID>			TetrahedraAroundTriangle;
+    typedef vector<HexaID>			HexahedraAroundQuad;
     /// @}
 
     BaseMeshTopology();
@@ -137,65 +137,65 @@ public:
     virtual const SeqEdges& getEdges() = 0;
     virtual const SeqTriangles& getTriangles() = 0;
     virtual const SeqQuads& getQuads() = 0;
-    virtual const SeqTetras& getTetras() = 0;
-    virtual const SeqHexas& getHexas() = 0;
+    virtual const SeqTetrahedra& getTetrahedra() = 0;
+    virtual const SeqHexahedra& getHexahedra() = 0;
     /// @}
 
     /// Random accessors
     /// @{
 
-    virtual int getNbEdges()     { return getEdges().size(); }
-    virtual int getNbTriangles() { return getTriangles().size(); }
-    virtual int getNbQuads()     { return getQuads().size(); }
-    virtual int getNbTetras()    { return getTetras().size(); }
-    virtual int getNbHexas()	 { return getHexas().size(); }
+    virtual int getNbEdges()                   { return getEdges().size(); }
+    virtual int getNbTriangles()               { return getTriangles().size(); }
+    virtual int getNbQuads()                   { return getQuads().size(); }
+    virtual int getNbTetrahedra()              { return getTetrahedra().size(); }
+    virtual int getNbHexahedra()	       { return getHexahedra().size(); }
 
-    virtual Edge getEdge(EdgeID i)             { return getEdges()[i]; }
-    virtual Triangle getTriangle(TriangleID i) { return getTriangles()[i]; }
-    virtual Quad getQuad(QuadID i)             { return getQuads()[i]; }
-    virtual Tetra getTetra(TetraID i)          { return getTetras()[i]; }
-    virtual Hexa getHexa(HexaID i)             { return getHexas()[i]; }
+    virtual const Edge getEdge(EdgeID i)             { return getEdges()[i]; }
+    virtual const Triangle getTriangle(TriangleID i) { return getTriangles()[i]; }
+    virtual const Quad getQuad(QuadID i)             { return getQuads()[i]; }
+    virtual const Tetra getTetrahedron(TetraID i)    { return getTetrahedra()[i]; }
+    virtual const Hexa getHexahedron(HexaID i)       { return getHexahedra()[i]; }
     /// @}
 
     /// @name neighbors queries
     /// @{
     /// Returns the set of edges adjacent to a given vertex.
-    virtual const VertexEdges& getEdgeVertexShell(PointID i);
+    virtual const EdgesAroundVertex& getEdgesAroundVertex(PointID i);
     /// Returns the set of edges adjacent to a given triangle.
-    virtual const TriangleEdges& getEdgeTriangleShell(TriangleID i);
+    virtual const EdgesInTriangle& getEdgesInTriangle(TriangleID i);
     /// Returns the set of edges adjacent to a given quad.
-    virtual const QuadEdges& getEdgeQuadShell(QuadID i);
+    virtual const EdgesInQuad& getEdgesInQuad(QuadID i);
     /// Returns the set of edges adjacent to a given tetrahedron.
-    virtual const TetraEdges& getEdgeTetraShell(TetraID i);
+    virtual const EdgesInTetrahedron& getEdgesInTetrahedron(TetraID i);
     /// Returns the set of edges adjacent to a given hexahedron.
-    virtual const HexaEdges& getEdgeHexaShell(HexaID i);
+    virtual const EdgesInHexahedron& getEdgesInHexahedron(HexaID i);
     /// Returns the set of triangles adjacent to a given vertex.
-    virtual const VertexTriangles& getTriangleVertexShell(PointID i);
+    virtual const TrianglesAroundVertex& getTrianglesAroundVertex(PointID i);
     /// Returns the set of triangles adjacent to a given edge.
-    virtual const EdgeTriangles& getTriangleEdgeShell(EdgeID i);
+    virtual const TrianglesAroundEdge& getTrianglesAroundEdge(EdgeID i);
     /// Returns the set of triangles adjacent to a given tetrahedron.
-    virtual const TetraTriangles& getTriangleTetraShell(TetraID i);
+    virtual const TrianglesInTetrahedron& getTrianglesInTetrahedron(TetraID i);
     /// Returns the set of quads adjacent to a given vertex.
-    virtual const VertexQuads& getQuadVertexShell(PointID i);
+    virtual const QuadsAroundVertex& getQuadsAroundVertex(PointID i);
     /// Returns the set of quads adjacent to a given edge.
-    virtual const EdgeQuads& getQuadEdgeShell(EdgeID i);
+    virtual const QuadsAroundEdge& getQuadsAroundEdge(EdgeID i);
     /// Returns the set of quads adjacent to a given hexahedron.
-    virtual const HexaQuads& getQuadHexaShell(HexaID i);
+    virtual const QuadsInHexahedron& getQuadsInHexahedron(HexaID i);
     /// Returns the set of tetrahedra adjacent to a given vertex.
-    virtual const VertexTetras& getTetraVertexShell(PointID i);
+    virtual const TetrahedraAroundVertex& getTetrahedraAroundVertex(PointID i);
     /// Returns the set of tetrahedra adjacent to a given edge.
-    virtual const EdgeTetras& getTetraEdgeShell(EdgeID i);
+    virtual const TetrahedraAroundEdge& getTetrahedraAroundEdge(EdgeID i);
     /// Returns the set of tetrahedra adjacent to a given triangle.
-    virtual const TriangleTetras& getTetraTriangleShell(TriangleID i);
+    virtual const TetrahedraAroundTriangle& getTetrahedraAroundTriangle(TriangleID i);
     /// Returns the set of hexahedra adjacent to a given vertex.
-    virtual const VertexHexas& getHexaVertexShell(PointID i);
+    virtual const HexahedraAroundVertex& getHexahedraAroundVertex(PointID i);
     /// Returns the set of hexahedra adjacent to a given edge.
-    virtual const EdgeHexas& getHexaEdgeShell(EdgeID i);
+    virtual const HexahedraAroundEdge& getHexahedraAroundEdge(EdgeID i);
     /// Returns the set of hexahedra adjacent to a given quad.
-    virtual const QuadHexas& getHexaQuadShell(QuadID i);
+    virtual const HexahedraAroundQuad& getHexahedraAroundQuad(QuadID i);
 
     /// Returns the set of vertices adjacent to a given vertex (i.e. sharing an edge)
-    virtual const VertexVertices getVertexVertexShell(PointID i);
+    virtual const VerticesAroundVertex getVerticesAroundVertex(PointID i);
 
     /// @}
 
@@ -215,29 +215,29 @@ public:
     /** returns the index (either 0, 1 ,2 or 3) of the vertex whose global index is vertexIndex. Returns -1 if none */
     virtual int getVertexIndexInTriangle(const Triangle &t, PointID vertexIndex) const;
     /** returns the index (either 0, 1 ,2) of the edge whose global index is edgeIndex. Returns -1 if none */
-    virtual int getEdgeIndexInTriangle(const TriangleEdges &t, EdgeID edgeIndex) const;
+    virtual int getEdgeIndexInTriangle(const EdgesInTriangle &t, EdgeID edgeIndex) const;
 
     /** returns the index (either 0, 1 ,2 or 3) of the vertex whose global index is vertexIndex. Returns -1 if none */
     virtual int getVertexIndexInQuad(Quad &t, PointID vertexIndex) const;
     /** returns the index (either 0, 1 ,2, 3) of the edge whose global index is edgeIndex. Returns -1 if none */
-    virtual int getEdgeIndexInQuad(QuadEdges &t, EdgeID edgeIndex) const;
+    virtual int getEdgeIndexInQuad(EdgesInQuad &t, EdgeID edgeIndex) const;
 
     /** returns the index (either 0, 1 ,2 or 3) of the vertex whose global index is vertexIndex. Returns -1 if none */
     virtual int getVertexIndexInTetrahedron(const Tetra &t, PointID vertexIndex) const;
     /** returns the index (either 0, 1 ,2 ,3, 4, 5) of the edge whose global index is edgeIndex. Returns -1 if none */
-    virtual int getEdgeIndexInTetrahedron(const TetraEdges &t, EdgeID edgeIndex) const;
+    virtual int getEdgeIndexInTetrahedron(const EdgesInTetrahedron &t, EdgeID edgeIndex) const;
     /** returns the index (either 0, 1 ,2 ,3) of the triangle whose global index is triangleIndex. Returns -1 if none */
-    virtual int getTriangleIndexInTetrahedron(const TetraTriangles &t, TriangleID triangleIndex) const;
+    virtual int getTriangleIndexInTetrahedron(const TrianglesInTetrahedron &t, TriangleID triangleIndex) const;
 
     /** returns the index (either 0, 1 ,2, 3, 4, 5, 6, or 7) of the vertex whose global index is vertexIndex. Returns -1 if none */
     virtual int getVertexIndexInHexahedron(Hexa &t, PointID vertexIndex) const;
     /** returns the index (either 0, 1 ,2 ,3, 4, 5, 6, 7, 8, 9, 10, 11) of the edge whose global index is edgeIndex. Returns -1 if none */
-    virtual int getEdgeIndexInHexahedron(const HexaEdges &t, EdgeID edgeIndex) const;
+    virtual int getEdgeIndexInHexahedron(const EdgesInHexahedron &t, EdgeID edgeIndex) const;
     /** returns the index (either 0, 1 ,2 ,3, 4, 5) of the quad whose global index is quadIndex. Returns -1 if none */
-    virtual int getQuadIndexInHexahedron(const HexaQuads &t, QuadID quadIndex) const;
+    virtual int getQuadIndexInHexahedron(const QuadsInHexahedron &t, QuadID quadIndex) const;
 
     /** returns for each index (between 0 and 5) the two vertex indices that are adjacent to that edge */
-    virtual Edge getLocalTetrahedronEdges (const unsigned int i) const;
+    virtual Edge getLocalEdgesInTetrahedron (const unsigned int i) const;
 
     /// @name Deprecated names, for backward-compatibility
     /// @{
@@ -245,9 +245,9 @@ public:
     int getNbLines() { return getNbEdges(); }
     Line getLine(LineID i) { return getEdge(i); }
 #ifndef SOFA_NEW_HEXA
-    const SeqCubes& getCubes() { return getHexas(); }
-    int getNbCubes() { return getNbHexas(); }
-    Cube getCube(CubeID i) { return getHexa(i); }
+    const SeqCubes& getCubes() { return getHexahedra(); }
+    int getNbCubes() { return getNbHexahedra(); }
+    Cube getCube(CubeID i) { return getHexahedron(i); }
 #endif
     /// @}
 

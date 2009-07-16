@@ -210,9 +210,9 @@ void FlowVisualModel<DataTypes>::initVisual()
             unsigned int indexClosestPoint = getIndexClosestPoint(*this->tetraGeometry->getX(), pTriangle);
 
             //get the TetraShell of the closest Point
-            helper::vector<BaseMeshTopology::TetraID> closestTetraShell = m_tetraTopo->getTetraVertexShell(indexClosestPoint);
+            helper::vector<BaseMeshTopology::TetraID> closestTetraShell = m_tetraTopo->getTetrahedraAroundVertex(indexClosestPoint);
 
-            //helper::vector<BaseMeshTopology::Tetra> tetras = m_tetraTopo->getTetras();
+            //helper::vector<BaseMeshTopology::Tetra> tetras = m_tetraTopo->getTetrahedra();
             unsigned int t, closestTetra = 0;
             bool found = false;
             for(t=0 ; t<closestTetraShell.size() && !found; t++)
@@ -276,7 +276,7 @@ void FlowVisualModel<DataTypes>::initVisual()
             std::cout << "Precomputing tetra neighborhood : " << (float)i/(float)nbTetraPoints*100.0f << "%." << '\xd';
             Coord pTetra = m_tetraGeo->getPointPosition(i);
             //get the TetraShell of Point
-            helper::vector<BaseMeshTopology::TetraID> tetraShell = m_tetraTopo->getTetraVertexShell(i);
+            helper::vector<BaseMeshTopology::TetraID> tetraShell = m_tetraTopo->getTetrahedraAroundVertex(i);
 
             tetraShellPerTetraVertex[i] = tetraShell;
         }
@@ -324,7 +324,7 @@ bool FlowVisualModel<DataTypes>::isInDomainT(unsigned int index, typename DataTy
         {
             unsigned int indexClosestPoint = getIndexClosestPoint(centers, p);
             //2-get its TriangleShell
-            tetras = m_tetraTopo->getTetraVertexShell(indexClosestPoint);
+            tetras = m_tetraTopo->getTetrahedraAroundVertex(indexClosestPoint);
             //3-check if the seed is in one of these triangles
             streamLines[index].primitivesAroundLastPoint.clear();
             for (unsigned int i=0 ; i<tetras.size() ; i++)
@@ -352,11 +352,11 @@ bool FlowVisualModel<DataTypes>::isInDomainT(unsigned int index, typename DataTy
             else
             {
                 streamLines[index].primitivesAroundLastPoint.clear();
-                const BaseMeshTopology::Tetra& currentTetra = m_tetraTopo->getTetra(streamLines[index].currentPrimitiveID);
+                const BaseMeshTopology::Tetra& currentTetra = m_tetraTopo->getTetrahedron(streamLines[index].currentPrimitiveID);
 
                 for (unsigned int i=0 ; i<3; i++)
                 {
-                    tetras = m_tetraTopo->getTetraVertexShell(currentTetra[i]);
+                    tetras = m_tetraTopo->getTetrahedraAroundVertex(currentTetra[i]);
                     for (unsigned int i=0 ; i<tetras.size() ; i++)
                     {
                         if (!found)
@@ -400,7 +400,7 @@ bool FlowVisualModel<DataTypes>::isInDomain(unsigned int index, typename DataTyp
             unsigned int indexClosestPoint = getIndexClosestPoint(*this->triangleGeometry->getX(), p);
 
             //2-get its TriangleShell
-            triangles = m_triTopo->getTriangleVertexShell(indexClosestPoint);
+            triangles = m_triTopo->getTrianglesAroundVertex(indexClosestPoint);
             //3-check if the seed is in one of these triangles
             streamLines[index].primitivesAroundLastPoint.clear();
             for (unsigned int i=0 ; i<triangles.size() ; i++)
@@ -432,7 +432,7 @@ bool FlowVisualModel<DataTypes>::isInDomain(unsigned int index, typename DataTyp
 
                 for (unsigned int i=0 ; i<3; i++)
                 {
-                    triangles = m_triTopo->getTriangleVertexShell(currentTriangle[i]);
+                    triangles = m_triTopo->getTrianglesAroundVertex(currentTriangle[i]);
                     for (unsigned int i=0 ; i<triangles.size() ; i++)
                     {
                         if (!found)
@@ -681,7 +681,7 @@ void FlowVisualModel<DataTypes>::drawTetra()
         interpolateVelocityAtTetraVertices();
 
         //draw tetrahedra
-        const core::componentmodel::topology::BaseMeshTopology::SeqTetras& tetrahedra=  m_tetraTopo->getTetras();
+        const core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra=  m_tetraTopo->getTetrahedra();
         /*
         		for (unsigned int i=0 ; i<tetrahedra.size() ; i++)
         		{
@@ -758,7 +758,7 @@ void FlowVisualModel<DataTypes>::drawTetra()
         //		simulation::getSimulation()->DrawUtility.drawTriangles(points[2], colors[2]);
         //		simulation::getSimulation()->DrawUtility.drawTriangles(points[3], colors[3]);
         */
-        core::componentmodel::topology::BaseMeshTopology::SeqTetras::const_iterator it;
+        core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra::const_iterator it;
         Coord v;
         unsigned int i;
         for(it = tetrahedra.begin(), i=0; it != tetrahedra.end() ; it++, i++)

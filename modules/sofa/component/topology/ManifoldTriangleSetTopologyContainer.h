@@ -44,9 +44,9 @@ typedef BaseMeshTopology::TriangleID	TriangleID;
 typedef BaseMeshTopology::Edge		Edge;
 typedef BaseMeshTopology::Triangle	Triangle;
 typedef BaseMeshTopology::SeqTriangles	SeqTriangles;
-typedef BaseMeshTopology::TriangleEdges	TriangleEdges;
-typedef BaseMeshTopology::VertexTriangles	VertexTriangles;
-typedef BaseMeshTopology::EdgeTriangles	EdgeTriangles;
+typedef BaseMeshTopology::EdgesInTriangle	EdgesInTriangle;
+typedef BaseMeshTopology::TrianglesAroundVertex	TrianglesAroundVertex;
+typedef BaseMeshTopology::TrianglesAroundEdge	TrianglesAroundEdge;
 
 /** A class that stores a set of triangles and provides access
 to each triangle, triangle's edges and vertices.
@@ -72,10 +72,10 @@ public:
      *
      * The function TriangleSetTopologyContainer::CheckTopology() Check if the shell arrays are coherent
      * from on to the other.
-     * In this class, we check the topology. I.e for m_triangleVertexShell
+     * In this class, we check the topology. I.e for m_trianglesAroundVertex
      *   - Test if triangles are stocked in counterclockewise direction around each vertex and that they are contiguous.
      *   - Test if no triangles are missing and if no triangle are badly connected to a vertex.
-     * For m_triangleEdgeShell
+     * For m_trianglesAroundEdge
      *   - Test if no triangles are missing.
      *   - Test if there is at least 1 and not more than 2 triangles adjacent to each edge.
      *   - Test if triangles are well order in the shell: In the first one, vertices of the
@@ -93,7 +93,7 @@ public:
      * @return -1 if there is no adjacent triangle in this direction.
      * @return -2 if the vertex does not belongs to this Triangle or if there is an other error.
      */
-    int getNextTriangleVertexShell(PointID vertexIndex, TriangleID triangleIndex);
+    int getNextTrianglesAroundVertex(PointID vertexIndex, TriangleID triangleIndex);
 
 
     /** \brief: Given a Triangle and a Vertex i, returns the next adjacent triangle to this first one
@@ -102,7 +102,7 @@ public:
      * @return -1 if there is no adjacent triangle in this direction
      * @return -2 if the vertex does not belongs to this Triangle or if there is an other error.
      */
-    int getPreviousTriangleVertexShell(PointID vertexIndex, TriangleID triangleIndex);
+    int getPreviousTrianglesAroundVertex(PointID vertexIndex, TriangleID triangleIndex);
 
 
     /** \brief: Given a Triangle and a Edge i, returns the other adjacent triangle to the ith edge.
@@ -110,7 +110,7 @@ public:
      * @return -1 if there is only one triangle adjacent to this edge.
      * @return -2 if the edge does not belongs to this Triangle or if there is an other error.
      */
-    int getOppositeTriangleEdgeShell(EdgeID edgeIndex, TriangleID triangleIndex);
+    int getOppositeTrianglesAroundEdge(EdgeID edgeIndex, TriangleID triangleIndex);
 
 
     /** \brief: Given a Edge and a Vertex i, returns the next edge containing the ith vertex
@@ -119,7 +119,7 @@ public:
      * return -1 if there is adjacent no triangle in this direction
      * return -2 if the vertex does not belongs to the edge or if there is an other error.
      */
-    int getNextEdgeVertexShell(PointID vertexIndex, EdgeID edgeIndex);
+    int getNextEdgesAroundVertex(PointID vertexIndex, EdgeID edgeIndex);
 
 
     /** \brief: Given a Edge and a Vertex i, returns the next edge containing the ith vertex
@@ -128,7 +128,7 @@ public:
      * return -1 if there is no triangle in this direction
      * return -2 if the vertex does not belongs to the edge or if there is an other error.
      */
-    int getPreviousEdgeVertexShell(PointID vertexIndex, EdgeID edgeIndex);
+    int getPreviousEdgesAroundVertex(PointID vertexIndex, EdgeID edgeIndex);
 
 protected:
 
@@ -144,32 +144,32 @@ protected:
 
     /** \brief Creates the Edge Vertex Shell Array.
      *
-     * This function is only called if the EdgeVertexShell array is required.
-     * m_EdgeVertexShell[i] contains the indices of all edges adjacent to the ith vertex.
+     * This function is only called if the EdgesAroundVertex array is required.
+     * m_EdgesAroundVertex[i] contains the indices of all edges adjacent to the ith vertex.
      * This funciton check if there are T connections between more than 2 edges at the ith DOF.
      *
      */
-    virtual void createEdgeVertexShellArray();
+    virtual void createEdgesAroundVertexArray();
 
 
     /** \brief Creates the Triangle Vertex Shell Array
      *
-     * This function is only called if the TriangleVertexShell array is required.
-     * m_triangleVertexShell[i] contains the indices of all triangles adjacent to the ith vertex.
+     * This function is only called if the TrianglesAroundVertex array is required.
+     * m_trianglesAroundVertex[i] contains the indices of all triangles adjacent to the ith vertex.
      * This function check if there are T connections between more than 3 triangles at the ith DOF.
      *
      */
-    virtual void createTriangleVertexShellArray();
+    virtual void createTrianglesAroundVertexArray();
 
 
     /** \brief Creates the Triangle Edge Shell Array
      *
-     * This function is only called if the TriangleEdgeShell array is required.
-     * m_triangleEdgeShell[i] contains the indices of all triangles adjacent to the ith edge.
+     * This function is only called if the TrianglesAroundEdge array is required.
+     * m_trianglesAroundEdge[i] contains the indices of all triangles adjacent to the ith edge.
      * This function check if there are more than 2 triangles adjacent to each edge.
      *
      */
-    virtual void createTriangleEdgeShellArray();
+    virtual void createTrianglesAroundEdgeArray();
 
 
 private:
@@ -177,19 +177,19 @@ private:
     /** \brief Returns a non-const triangle vertex shell given a vertex index for subsequent modification
      *
      */
-    sofa::helper::vector <TriangleID>& getTriangleVertexShellForModification(const unsigned int vertexIndex);
+    sofa::helper::vector <TriangleID>& getTrianglesAroundVertexForModification(const unsigned int vertexIndex);
 
 
     /** \brief Returns a non-const triangle edge shell given the index of an edge for subsequent modification
      *
      */
-    sofa::helper::vector <TriangleID>& getTriangleEdgeShellForModification(const unsigned int edgeIndex);
+    sofa::helper::vector <TriangleID>& getTrianglesAroundEdgeForModification(const unsigned int edgeIndex);
 
 
     /** \brief Returns a non-const edge vertex shell given the index of an vertex for subsequent modification
      *
      */
-    sofa::helper::vector <EdgeID>& getEdgeVertexShellForModification(const unsigned int vertexIndex);
+    sofa::helper::vector <EdgeID>& getEdgesAroundVertexForModification(const unsigned int vertexIndex);
 
 };
 

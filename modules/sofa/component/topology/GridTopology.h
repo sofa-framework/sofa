@@ -72,7 +72,7 @@ public:
 
     //int getNbPoints() const { return n.getValue()[0]*n.getValue()[1]*n.getValue()[2]; }
 
-    virtual int getNbHexas() { return (n.getValue()[0]-1)*(n.getValue()[1]-1)*(n.getValue()[2]-1); }
+    virtual int getNbHexahedra() { return (n.getValue()[0]-1)*(n.getValue()[1]-1)*(n.getValue()[2]-1); }
 
     /*
     int getNbQuads() {
@@ -86,11 +86,11 @@ public:
     */
 
     Hexa getHexaCopy(int i);
-    Hexa getHexa(int x, int y, int z);
+    Hexa getHexahedron(int x, int y, int z);
 
 #ifndef SOFA_NEW_HEXA
     Cube getCubeCopy(int i) { return getHexaCopy(i); }
-    Cube getCube(int x, int y, int z) { return getHexa(x,y,z); }
+    Cube getCube(int x, int y, int z) { return getHexahedron(x,y,z); }
 #endif
 
     Quad getQuadCopy(int i);

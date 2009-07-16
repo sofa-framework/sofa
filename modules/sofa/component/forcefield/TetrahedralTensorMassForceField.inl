@@ -50,10 +50,10 @@ using namespace core::componentmodel::topology;
 using core::componentmodel::topology::BaseMeshTopology;
 
 typedef BaseMeshTopology::Tetra				Tetra;
-typedef BaseMeshTopology::TetraEdges		TetraEdges;
+typedef BaseMeshTopology::EdgesInTetrahedron		EdgesInTetrahedron;
 
 typedef Tetra			Tetrahedron;
-typedef TetraEdges		TetrahedronEdges;
+typedef EdgesInTetrahedron		EdgesInTetrahedron;
 
 
 template< class DataTypes>
@@ -100,9 +100,9 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMTetrahedronCreatio
         {
 
             /// get a reference on the edge set of the ith added tetrahedron
-            const TetrahedronEdges &te= ff->_topology->getEdgeTetraShell(tetrahedronAdded[i]);
+            const EdgesInTetrahedron &te= ff->_topology->getEdgesInTetrahedron(tetrahedronAdded[i]);
             ///get a reference on the vertex set of the ith added tetrahedron
-            const Tetrahedron &t= ff->_topology->getTetra(tetrahedronAdded[i]);
+            const Tetrahedron &t= ff->_topology->getTetrahedron(tetrahedronAdded[i]);
             // store points
             for(j=0; j<4; ++j)
                 point[j]=(*restPosition)[t[j]];
@@ -124,8 +124,8 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMTetrahedronCreatio
             for(j=0; j<6; ++j)
             {
                 /// local indices of the edge
-                k = ff->_topology->getLocalTetrahedronEdges(j)[0];
-                l = ff->_topology->getLocalTetrahedronEdges(j)[1];
+                k = ff->_topology->getLocalEdgesInTetrahedron(j)[0];
+                l = ff->_topology->getLocalEdgesInTetrahedron(j)[1];
 
                 Mat3 &m=edgeData[te[j]].DfDx;
 
@@ -189,9 +189,9 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMTetrahedronDestruc
         {
 
             /// get a reference on the edge set of the ith added tetrahedron
-            const TetrahedronEdges &te= ff->_topology->getEdgeTetraShell(tetrahedronRemoved[i]);
+            const EdgesInTetrahedron &te= ff->_topology->getEdgesInTetrahedron(tetrahedronRemoved[i]);
             ///get a reference on the vertex set of the ith added tetrahedron
-            const Tetrahedron &t= ff->_topology->getTetra(tetrahedronRemoved[i]);
+            const Tetrahedron &t= ff->_topology->getTetrahedron(tetrahedronRemoved[i]);
             // store points
             for(j=0; j<4; ++j)
                 point[j]=(*restPosition)[t[j]];
@@ -213,8 +213,8 @@ void TetrahedralTensorMassForceField<DataTypes>::TetrahedralTMTetrahedronDestruc
             for(j=0; j<6; ++j)
             {
                 /// local indices of the edge
-                k = ff->_topology->getLocalTetrahedronEdges(j)[0];
-                l = ff->_topology->getLocalTetrahedronEdges(j)[1];
+                k = ff->_topology->getLocalEdgesInTetrahedron(j)[0];
+                l = ff->_topology->getLocalEdgesInTetrahedron(j)[1];
 
                 Mat3 &m=edgeData[te[j]].DfDx;
 
@@ -288,7 +288,7 @@ template <class DataTypes> void TetrahedralTensorMassForceField<DataTypes>::init
 
     _topology = getContext()->getMeshTopology();
 
-    if (_topology->getNbTetras()==0)
+    if (_topology->getNbTetrahedra()==0)
     {
         serr << "ERROR(TetrahedralTensorMassForceField): object must have a Tetrahedral Set Topology."<<sendl;
         return;
@@ -317,7 +317,7 @@ template <class DataTypes> void TetrahedralTensorMassForceField<DataTypes>::init
     }
     // create edge tensor by calling the tetrahedron creation function
     std::vector<unsigned int> tetrahedronAdded;
-    for (i=0; i<_topology->getNbTetras(); ++i)
+    for (i=0; i<_topology->getNbTetrahedra(); ++i)
         tetrahedronAdded.push_back(i);
     TetrahedralTMTetrahedronCreationFunction(tetrahedronAdded,(void*) this,
             edgeInf);

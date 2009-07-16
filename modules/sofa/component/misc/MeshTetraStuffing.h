@@ -61,7 +61,7 @@ public:
 
     typedef defaulttype::Vec3Types::VecCoord SeqPoints;
     typedef sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
-    typedef sofa::core::componentmodel::topology::BaseMeshTopology::SeqTetras SeqTetras;
+    typedef sofa::core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
 
     MeshTetraStuffing();
 
@@ -76,7 +76,7 @@ public:
     Data<SeqPoints> inputPoints;
     Data<SeqTriangles> inputTriangles;
     Data<SeqPoints> outputPoints;
-    Data<SeqTetras> outputTetras;
+    Data<SeqTetrahedra> outputTetras;
 
     Data< Real > alphaLong;
     Data< Real > alphaShort;
@@ -106,8 +106,8 @@ public:
     SeqPoints snaps;
     SeqPoints diags;
 
-    void addTetra(SeqTetras& outT, SeqPoints& outP, int p1, int p2, int p3, int p4, int line=0);
-    void addFinalTetra(SeqTetras& outT, SeqPoints& outP, int p1, int p2, int p3, int p4, bool flip=false, int line=0);
+    void addTetra(SeqTetrahedra& outT, SeqPoints& outP, int p1, int p2, int p3, int p4, int line=0);
+    void addFinalTetra(SeqTetrahedra& outT, SeqPoints& outP, int p1, int p2, int p3, int p4, bool flip=false, int line=0);
     int getSplitPoint(int from, int to);
 
     /// Should the diagonal of abcd should be bd instead of ac ?

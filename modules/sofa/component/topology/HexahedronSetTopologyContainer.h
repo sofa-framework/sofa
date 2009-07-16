@@ -61,21 +61,21 @@ using core::componentmodel::topology::BaseMeshTopology;
 
 typedef BaseMeshTopology::PointID			PointID;
 typedef BaseMeshTopology::EdgeID			EdgeID;
-typedef BaseMeshTopology::TriangleID		QuadID;
+typedef BaseMeshTopology::TriangleID	         	QuadID;
 typedef BaseMeshTopology::HexaID			HexaID;
 typedef BaseMeshTopology::Edge				Edge;
 typedef BaseMeshTopology::Quad				Quad;
 typedef BaseMeshTopology::Hexa				Hexa;
-typedef BaseMeshTopology::SeqHexas			SeqHexas;
-typedef BaseMeshTopology::VertexHexas		VertexHexas;
-typedef BaseMeshTopology::EdgeHexas			EdgeHexas;
-typedef BaseMeshTopology::QuadHexas			QuadHexas;
-typedef BaseMeshTopology::HexaEdges			HexaEdges;
-typedef BaseMeshTopology::HexaQuads			HexaQuads;
+typedef BaseMeshTopology::SeqHexahedra			SeqHexahedra;
+typedef BaseMeshTopology::HexahedraAroundVertex		HexahedraAroundVertex;
+typedef BaseMeshTopology::HexahedraAroundEdge		HexahedraAroundEdge;
+typedef BaseMeshTopology::HexahedraAroundQuad		HexahedraAroundQuad;
+typedef BaseMeshTopology::EdgesInHexahedron		EdgesInHexahedron;
+typedef BaseMeshTopology::QuadsInHexahedron		QuadsInHexahedron;
 
 typedef Hexa		Hexahedron;
-typedef HexaEdges	HexahedronEdges;
-typedef HexaQuads	HexahedronQuads;
+typedef EdgesInHexahedron	EdgesInHexahedron;
+typedef QuadsInHexahedron	QuadsInHexahedron;
 
 /** a class that stores a set of hexahedra and provides access with adjacent quads, edges and vertices */
 class SOFA_COMPONENT_CONTAINER_API HexahedronSetTopologyContainer : public QuadSetTopologyContainer
@@ -84,8 +84,8 @@ class SOFA_COMPONENT_CONTAINER_API HexahedronSetTopologyContainer : public QuadS
 
 public:
     typedef Hexa		Hexahedron;
-    typedef HexaEdges	HexahedronEdges;
-    typedef HexaQuads	HexahedronQuads;
+    typedef EdgesInHexahedron	EdgesInHexahedron;
+    typedef QuadsInHexahedron	QuadsInHexahedron;
 
     HexahedronSetTopologyContainer();
 
@@ -104,40 +104,40 @@ public:
     /// BaseMeshTopology API
     /// @{
 
-    const SeqHexas& getHexas()
+    /*	const SeqHexahedra& getHexahedra()
     {
-        return getHexahedronArray();
+    	return getHexahedronArray();
     }
 
     /// Returns the set of edges adjacent to a given hexahedron.
-    const HexaEdges& getEdgeHexaShell(HexaID i)
+    const EdgesInHexahedron& getEdgesInHexahedron(HexaID i)
     {
-        return getHexahedronEdges(i);
+    	return getEdgesInHexahedron(i);
     }
 
     /// Returns the set of quads adjacent to a given hexahedron.
-    const HexaQuads& getQuadHexaShell(HexaID i)
+    const QuadsInHexahedron& getQuadsInHexahedron(HexaID i)
     {
-        return getHexahedronQuads(i);
+    	return getQuadsInHexahedron(i);
     }
 
     /// Returns the set of hexahedra adjacent to a given vertex.
-    const VertexHexas& getHexaVertexShell(PointID i)
+    const HexahedraAroundVertex& getHexahedraAroundVertex(PointID i)
     {
-        return getHexahedronVertexShell(i);
-    }
+    	return getHexahedraAroundVertex(i);
+    	}
 
     /// Returns the set of hexahedra adjacent to a given edge.
-    const EdgeHexas& getHexaEdgeShell(EdgeID i)
+    const HexahedraAroundEdge& getHexahedraAroundEdge(EdgeID i)
     {
-        return getHexahedronEdgeShell(i);
+    	return getHexahedraAroundEdge(i);
     }
 
     /// Returns the set of hexahedra adjacent to a given quad.
-    const QuadHexas& getHexaQuadShell(QuadID i)
+    const HexahedraAroundQuad& getHexahedraAroundQuad(QuadID i)
     {
-        return getHexahedronQuadShell(i);
-    }
+    	return getHexahedraAroundQuad(i);
+    	}*/
 
     /** Returns the indices of a hexahedron given 8 vertex indices : returns -1 if none */
     virtual int getHexahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4,
@@ -159,77 +159,77 @@ public:
     /** \brief Returns the ith Hexahedron.
     *
     */
-    const Hexahedron &getHexahedron(const unsigned int i);
+    virtual const Hexahedron getHexahedron(HexaID i);
 
     /** \brief Returns the number of hexahedra in this topology.
-    *	The difference to getNbHexas() is that this method does not generate the hexa array if it does not exist.
+    *	The difference to getNbHexahedra() is that this method does not generate the hexa array if it does not exist.
     */
     unsigned int getNumberOfHexahedra() const;
 
     /** \brief Returns the Hexahedron Vertex Shells array.
     *
     */
-    const sofa::helper::vector< sofa::helper::vector<unsigned int> > &getHexahedronVertexShellArray() ;
+    const sofa::helper::vector< sofa::helper::vector<unsigned int> > &getHexahedraAroundVertexArray() ;
 
     /** \brief Returns the set of hexahedra adjacent to a given vertex.
     *
     */
-    const sofa::helper::vector< unsigned int > &getHexahedronVertexShell(const unsigned int i) ;
+    const HexahedraAroundVertex &getHexahedraAroundVertex(PointID i) ;
 
     /** \brief Returns the Hexahedron Edges  array.
     *
     */
-    const sofa::helper::vector< HexahedronEdges > &getHexahedronEdgeArray() ;
+    const sofa::helper::vector< EdgesInHexahedron > &getHexahedronEdgeArray() ;
 
     /** \brief Returns the 12 edges adjacent to a given hexahedron.
     *
     */
-    const HexahedronEdges &getHexahedronEdges(const unsigned int i) ;
+    const EdgesInHexahedron &getEdgesInHexahedron(HexaID i) ;
 
     /** \brief Returns for each index (between 0 and 12) the two vertex indices that are adjacent to that edge
     *
     */
-    Edge getLocalHexahedronEdges (const unsigned int i) const;
+    Edge getLocalEdgesInHexahedron (const unsigned int i) const;
 
     /** \brief Returns the Hexahedron Quads  array.
     *
     */
-    const sofa::helper::vector< HexahedronQuads > &getHexahedronQuadArray() ;
+    const sofa::helper::vector< QuadsInHexahedron > &getHexahedronQuadArray() ;
 
     /** \brief Returns the 6 quads adjacent to a given hexahedron.
     *
     */
-    const HexahedronQuads &getHexahedronQuads(const unsigned int i) ;
+    const QuadsInHexahedron &getQuadsInHexahedron(HexaID i) ;
 
     /** \brief Returns the Hexahedron Edge Shells array.
     *
     */
-    const sofa::helper::vector< sofa::helper::vector<unsigned int> > &getHexahedronEdgeShellArray() ;
+    const sofa::helper::vector< sofa::helper::vector<unsigned int> > &getHexahedraAroundEdgeArray() ;
 
     /** \brief Returns the set of hexahedra adjacent to a given edge.
     *
     */
-    const sofa::helper::vector< unsigned int > &getHexahedronEdgeShell(const unsigned int i) ;
+    const HexahedraAroundEdge &getHexahedraAroundEdge(EdgeID i) ;
 
 
     /** \brief Returns the Hexahedron Quad Shells array.
     *
     */
-    const sofa::helper::vector< sofa::helper::vector<unsigned int> > &getHexahedronQuadShellArray() ;
+    const sofa::helper::vector< sofa::helper::vector<unsigned int> > &getHexahedraAroundQuadArray() ;
 
     /** \brief Returns the set of hexahedra adjacent to a given quad.
     *
     */
-    const sofa::helper::vector< unsigned int > &getHexahedronQuadShell(const unsigned int i) ;
+    const HexahedraAroundQuad &getHexahedraAroundQuad(QuadID i) ;
 
     /** returns the index of the vertex whose global index is vertexIndex. Returns -1 if none */
     int getVertexIndexInHexahedron(Hexahedron &t,unsigned int vertexIndex) const;
 
     /** returns the index of the edge whose global index is edgeIndex. Returns -1 if none */
-    int getEdgeIndexInHexahedron(const HexahedronEdges &t,unsigned int edgeIndex) const;
+    int getEdgeIndexInHexahedron(const EdgesInHexahedron &t,unsigned int edgeIndex) const;
 
     /** returns the index of the quad whose global index is quadIndex. Returns -1 if none */
-    int getQuadIndexInHexahedron(const HexahedronQuads &t,unsigned int quadIndex) const;
+    int getQuadIndexInHexahedron(const QuadsInHexahedron &t,unsigned int quadIndex) const;
 
 protected:
     /** \brief Creates the EdgeSet array.
@@ -252,89 +252,89 @@ protected:
 
     bool hasHexahedra() const;
 
-    bool hasHexahedronEdges() const;
+    bool hasEdgesInHexahedron() const;
 
-    bool hasHexahedronQuads() const;
+    bool hasQuadsInHexahedron() const;
 
-    bool hasHexahedronVertexShell() const;
+    bool hasHexahedraAroundVertex() const;
 
-    bool hasHexahedronEdgeShell() const;
+    bool hasHexahedraAroundEdge() const;
 
-    bool hasHexahedronQuadShell() const;
+    bool hasHexahedraAroundQuad() const;
 
     void clearHexahedra();
 
-    void clearHexahedronEdges();
+    void clearEdgesInHexahedron();
 
-    void clearHexahedronQuads();
+    void clearQuadsInHexahedron();
 
-    void clearHexahedronVertexShell();
+    void clearHexahedraAroundVertex();
 
-    void clearHexahedronEdgeShell();
+    void clearHexahedraAroundEdge();
 
-    void clearHexahedronQuadShell();
+    void clearHexahedraAroundQuad();
 
 protected:
     /** \brief Creates the array of edge indices for each hexahedron
     *
     * This function is only called if the HexahedronEdge array is required.
-    * m_hexahedronEdge[i] contains the 12 indices of the 12 edges of each hexahedron
+    * m_edgesInHexahedron[i] contains the 12 indices of the 12 edges of each hexahedron
     */
     void createHexahedronEdgeArray();
 
     /** \brief Creates the array of quad indices for each hexahedron
     *
     * This function is only called if the HexahedronQuad array is required.
-    * m_hexahedronQuad[i] contains the 6 indices of the 6 quads opposite to the ith vertex
+    * m_quadsInHexahedron[i] contains the 6 indices of the 6 quads opposite to the ith vertex
     */
     void createHexahedronQuadArray();
 
     /** \brief Creates the Hexahedron Vertex Shell Array
     *
-    * This function is only called if the HexahedronVertexShell array is required.
-    * m_hexahedronVertexShell[i] contains the indices of all hexahedra adjacent to the ith vertex
+    * This function is only called if the HexahedraAroundVertex array is required.
+    * m_hexahedraAroundVertex[i] contains the indices of all hexahedra adjacent to the ith vertex
     */
-    void createHexahedronVertexShellArray();
+    void createHexahedraAroundVertexArray();
 
     /** \brief Creates the Hexahedron Edge Shell Array
     *
-    * This function is only called if the HexahedronEdgeShell array is required.
-    * m_hexahedronEdgeShell[i] contains the indices of all hexahedra adjacent to the ith edge
+    * This function is only called if the HexahedraAroundEdge array is required.
+    * m_hexahedraAroundEdge[i] contains the indices of all hexahedra adjacent to the ith edge
     */
-    void createHexahedronEdgeShellArray();
+    void createHexahedraAroundEdgeArray();
 
     /** \brief Creates the Hexahedron Quad Shell Array
     *
-    * This function is only called if the HexahedronQuadShell array is required.
-    * m_hexahedronQuadShell[i] contains the indices of all hexahedra adjacent to the ith edge
+    * This function is only called if the HexahedraAroundQuad array is required.
+    * m_hexahedraAroundQuad[i] contains the indices of all hexahedra adjacent to the ith edge
     */
-    void createHexahedronQuadShellArray();
+    void createHexahedraAroundQuadArray();
 
     /** \brief Returns a non-const hexahedron vertex shell given a vertex index for subsequent modification
     *
     */
-    sofa::helper::vector< unsigned int > &getHexahedronVertexShellForModification(const unsigned int vertexIndex);
+    sofa::helper::vector< unsigned int > &getHexahedraAroundVertexForModification(const unsigned int vertexIndex);
 
     /** \brief Returns a non-const hexahedron edge shell given the index of an edge for subsequent modification
     *
     */
-    sofa::helper::vector< unsigned int > &getHexahedronEdgeShellForModification(const unsigned int edgeIndex);
+    sofa::helper::vector< unsigned int > &getHexahedraAroundEdgeForModification(const unsigned int edgeIndex);
 
 protected:
     /// provides the set of hexahedra
     sofa::helper::vector<Hexahedron> m_hexahedron;
     DataPtr< sofa::helper::vector<Hexahedron> > d_hexahedron;
     /// provides the set of edges for each hexahedron
-    sofa::helper::vector<HexahedronEdges> m_hexahedronEdge;
+    sofa::helper::vector<EdgesInHexahedron> m_edgesInHexahedron;
     /// provides the set of quads for each hexahedron
-    sofa::helper::vector<HexahedronQuads> m_hexahedronQuad;
+    sofa::helper::vector<QuadsInHexahedron> m_quadsInHexahedron;
 
     /// for each vertex provides the set of hexahedra adjacent to that vertex
-    sofa::helper::vector< sofa::helper::vector< unsigned int > > m_hexahedronVertexShell;
+    sofa::helper::vector< sofa::helper::vector< unsigned int > > m_hexahedraAroundVertex;
     /// for each edge provides the set of hexahedra adjacent to that edge
-    sofa::helper::vector< sofa::helper::vector< unsigned int > > m_hexahedronEdgeShell;
+    sofa::helper::vector< sofa::helper::vector< unsigned int > > m_hexahedraAroundEdge;
     /// for each quad provides the set of hexahedra adjacent to that edge
-    sofa::helper::vector< sofa::helper::vector< unsigned int > > m_hexahedronQuadShell;
+    sofa::helper::vector< sofa::helper::vector< unsigned int > > m_hexahedraAroundQuad;
     virtual void loadFromMeshLoader(sofa::component::container::MeshLoader* loader);
 };
 

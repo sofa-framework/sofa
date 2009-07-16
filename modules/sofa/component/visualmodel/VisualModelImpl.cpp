@@ -998,7 +998,7 @@ void VisualModelImpl::handleTopologyChange()
                         lastIndexVec[i_next] = lastIndexVec[i];
                     }
 
-                    const sofa::helper::vector<unsigned int> &shell= _topology->getTriangleVertexShell(lastIndexVec[i]);
+                    const sofa::helper::vector<unsigned int> &shell= _topology->getTrianglesAroundVertex(lastIndexVec[i]);
                     for (j=0; j<shell.size(); ++j)
                     {
 
@@ -1119,7 +1119,7 @@ void VisualModelImpl::handleTopologyChange()
 
                         }
 
-                        const sofa::helper::vector<unsigned int> &shell= _topology->getQuadVertexShell(lastIndexVec[i]);
+                        const sofa::helper::vector<unsigned int> &shell= _topology->getQuadsAroundVertex(lastIndexVec[i]);
                         for (j=0; j<shell.size(); ++j)
                         {
 

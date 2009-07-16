@@ -86,7 +86,7 @@ public:
 
     typedef core::componentmodel::topology::BaseMeshTopology::index_type Index;
     typedef core::componentmodel::topology::BaseMeshTopology::Hexa Element;
-    typedef core::componentmodel::topology::BaseMeshTopology::SeqHexas VecElement;
+    typedef core::componentmodel::topology::BaseMeshTopology::SeqHexahedra VecElement;
 
     static const int LARGE = 0;   ///< Symbol of large displacements hexahedron solver
     static const int POLAR = 1;   ///< Symbol of polar displacements hexahedron solver

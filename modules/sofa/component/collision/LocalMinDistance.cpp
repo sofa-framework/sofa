@@ -585,8 +585,8 @@ int LocalMinDistance::computeIntersection(Line& e2, Point& e1, OutputVector* con
 
     ///// debug
     //BaseMeshTopology* topology = e2.getCollisionModel()->getMeshTopology();
-    //const sofa::helper::vector<unsigned int>& triangleEdgeShell = topology->getTriangleEdgeShell(e2.getIndex());
-    //if (triangleEdgeShell.size() == 0)
+    //const sofa::helper::vector<unsigned int>& trianglesAroundEdge = topology->getTrianglesAroundEdge(e2.getIndex());
+    //if (trianglesAroundEdge.size() == 0)
     //	std::cout<<"intersection line / point active while triangle Edge Shell = 0"<<std::endl;
     //// end debug
 
@@ -1058,40 +1058,40 @@ bool LocalMinDistance::testValidity(Point &p, const Vector3 &PQ)
     BaseMeshTopology* topology = p.getCollisionModel()->getMeshTopology();
     helper::vector<Vector3>& x = *(p.getCollisionModel()->getMechanicalState()->getX());
 
-    const helper::vector <unsigned int>& triangleVertexShell = topology->getTriangleVertexShell(p.getIndex());
-    const helper::vector <unsigned int>& edgeVertexShell = topology->getEdgeVertexShell(p.getIndex());
+    const helper::vector <unsigned int>& trianglesAroundVertex = topology->getTrianglesAroundVertex(p.getIndex());
+    const helper::vector <unsigned int>& edgesAroundVertex = topology->getEdgesAroundVertex(p.getIndex());
 /////////
     /*std::cout << "LocalMinDistance::testValidity(Point &p, const Vector3 &PQ) : " << std::endl;
-    std::cout << "triangleVertexShell : " << std::endl;
-    for (unsigned int i=0 ; i<triangleVertexShell.size() ; i++)
+    std::cout << "trianglesAroundVertex : " << std::endl;
+    for (unsigned int i=0 ; i<trianglesAroundVertex.size() ; i++)
     {
-    	std::cout << triangleVertexShell[i] << " ";
+    	std::cout << trianglesAroundVertex[i] << " ";
     }
     std::cout << std::endl;
-    std::cout << "edgeVertexShell : " << std::endl;
-    for (unsigned int i=0 ; i<edgeVertexShell.size() ; i++)
+    std::cout << "edgesAroundVertex : " << std::endl;
+    for (unsigned int i=0 ; i<edgesAroundVertex.size() ; i++)
     {
-    	std::cout << edgeVertexShell[i] << " ";
+    	std::cout << edgesAroundVertex[i] << " ";
     }
     std::cout << std::endl;
     std::cout << "end LMD " << std::endl;*/
 ////////
     Vector3 nMean;
 
-    for (unsigned int i=0; i<triangleVertexShell.size(); i++)
+    for (unsigned int i=0; i<trianglesAroundVertex.size(); i++)
     {
-        unsigned int t = triangleVertexShell[i];
+        unsigned int t = trianglesAroundVertex[i];
         const fixed_array<unsigned int,3>& ptr = topology->getTriangle(t);
         Vector3 nCur = (x[ptr[1]]-x[ptr[0]]).cross(x[ptr[2]]-x[ptr[0]]);
         nCur.normalize();
         nMean += nCur;
     }
 
-    if (triangleVertexShell.size()==0)
+    if (trianglesAroundVertex.size()==0)
     {
-        for (unsigned int i=0; i<edgeVertexShell.size(); i++)
+        for (unsigned int i=0; i<edgesAroundVertex.size(); i++)
         {
-            unsigned int e = edgeVertexShell[i];
+            unsigned int e = edgesAroundVertex[i];
             const fixed_array<unsigned int,2>& ped = topology->getEdge(e);
             Vector3 l = (pt - x[ped[0]]) + (pt - x[ped[1]]);
             l.normalize();
@@ -1105,9 +1105,9 @@ bool LocalMinDistance::testValidity(Point &p, const Vector3 &PQ)
         std::cerr<<"WARNING nMean is null"<<std::endl;
 
 
-    for (unsigned int i=0; i<edgeVertexShell.size(); i++)
+    for (unsigned int i=0; i<edgesAroundVertex.size(); i++)
     {
-        unsigned int e = edgeVertexShell[i];
+        unsigned int e = edgesAroundVertex[i];
         const fixed_array<unsigned int,2>& ped = topology->getEdge(e);
         Vector3 l = (pt - x[ped[0]]) + (pt - x[ped[1]]);
         l.normalize();
@@ -1137,22 +1137,22 @@ bool LocalMinDistance::testValidity(Line &l, const Vector3 &PQ)
 
     BaseMeshTopology* topology = l.getCollisionModel()->getMeshTopology();
     helper::vector<Vector3>& x = *(l.getCollisionModel()->getMechanicalState()->getX());
-    const sofa::helper::vector<unsigned int>& triangleEdgeShell = topology->getTriangleEdgeShell(l.getIndex());
+    const sofa::helper::vector<unsigned int>& trianglesAroundEdge = topology->getTrianglesAroundEdge(l.getIndex());
     /*
     	std::cout << "LocalMinDistance::testValidity(Point &p, const Vector3 &PQ) : " << std::endl;
-    	std::cout << "triangleEdgeShell : " << std::endl;
-    	for (unsigned int i=0 ; i<triangleEdgeShell.size() ; i++)
+    	std::cout << "trianglesAroundEdge : " << std::endl;
+    	for (unsigned int i=0 ; i<trianglesAroundEdge.size() ; i++)
     	{
-    		std::cout << triangleEdgeShell[i] << " ";
+    		std::cout << trianglesAroundEdge[i] << " ";
     	}
     	std::cout << std::endl;
     	std::cout << "end LMD " << std::endl;
     */
     // filter if there are two triangles around the edge
-    if (triangleEdgeShell.size() == 2)
+    if (trianglesAroundEdge.size() == 2)
     {
         // compute the normal of the triangle situated on the right
-        const BaseMeshTopology::Triangle& triangleRight = topology->getTriangle(triangleEdgeShell[0]);
+        const BaseMeshTopology::Triangle& triangleRight = topology->getTriangle(trianglesAroundEdge[0]);
         n1 = cross(x[triangleRight[1]]-x[triangleRight[0]], x[triangleRight[2]]-x[triangleRight[0]]);
         n1.normalize();
         nMean = n1;
@@ -1160,7 +1160,7 @@ bool LocalMinDistance::testValidity(Line &l, const Vector3 &PQ)
         t1.normalize(); // necessary ?
 
         // compute the normal of the triangle situated on the left
-        const fixed_array<PointID,3>& triangleLeft = topology->getTriangle(triangleEdgeShell[1]);
+        const fixed_array<PointID,3>& triangleLeft = topology->getTriangle(trianglesAroundEdge[1]);
         n2 = cross(x[triangleLeft[1]]-x[triangleLeft[0]], x[triangleLeft[2]]-x[triangleLeft[0]]);
         n2.normalize();
         nMean += n2;
@@ -1201,7 +1201,7 @@ bool LocalMinDistance::testValidity(Line &l, const Vector3 &PQ)
             return false;
         }
     }
-    //sout<<"triangleEdgeShell.size()"<<triangleEdgeShell.size()<<sendl;
+    //sout<<"trianglesAroundEdge.size()"<<trianglesAroundEdge.size()<<sendl;
     return true;
 
 

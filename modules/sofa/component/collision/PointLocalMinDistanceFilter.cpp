@@ -71,10 +71,10 @@ void PointInfo::buildFilter(const Point &p)
         BaseMeshTopology* topology = p.getCollisionModel()->getMeshTopology();
         vector< Vector3 >& x = *(p.getCollisionModel()->getMechanicalState()->getX());
 
-        const vector< unsigned int >& triangleVertexShell = topology->getTriangleVertexShell(p.getIndex());
+        const vector< unsigned int >& trianglesAroundVertex = topology->getTrianglesAroundVertex(p.getIndex());
 
-        vector< unsigned int >::const_iterator triIt = triangleVertexShell.begin();
-        vector< unsigned int >::const_iterator triItEnd = triangleVertexShell.end();
+        vector< unsigned int >::const_iterator triIt = trianglesAroundVertex.begin();
+        vector< unsigned int >::const_iterator triItEnd = trianglesAroundVertex.end();
 
         Vector3 nMean;
 
@@ -89,12 +89,12 @@ void PointInfo::buildFilter(const Point &p)
             ++triIt;
         }
 
-        const vector< unsigned int >& edgeVertexShell = topology->getEdgeVertexShell(p.getIndex());
+        const vector< unsigned int >& edgesAroundVertex = topology->getEdgesAroundVertex(p.getIndex());
 
-        if (triangleVertexShell.empty())
+        if (trianglesAroundVertex.empty())
         {
-            vector< unsigned int >::const_iterator edgeIt = edgeVertexShell.begin();
-            vector< unsigned int >::const_iterator edgeItEnd = edgeVertexShell.end();
+            vector< unsigned int >::const_iterator edgeIt = edgesAroundVertex.begin();
+            vector< unsigned int >::const_iterator edgeItEnd = edgesAroundVertex.end();
 
             while (edgeIt != edgeItEnd)
             {
@@ -113,8 +113,8 @@ void PointInfo::buildFilter(const Point &p)
         else
             std::cerr << "WARNING PointInfo m_nMean is null" << std::endl;
 
-        vector< unsigned int >::const_iterator edgeIt = edgeVertexShell.begin();
-        vector< unsigned int >::const_iterator edgeItEnd = edgeVertexShell.end();
+        vector< unsigned int >::const_iterator edgeIt = edgesAroundVertex.begin();
+        vector< unsigned int >::const_iterator edgeItEnd = edgesAroundVertex.end();
 
         while (edgeIt != edgeItEnd)
         {

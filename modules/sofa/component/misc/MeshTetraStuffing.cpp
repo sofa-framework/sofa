@@ -141,7 +141,7 @@ void MeshTetraStuffing::init()
     sout << "Grid <"<<c0[0]<<","<<c0[1]<<","<<c0[2]<<">-<"<<c1[0]<<","<<c1[1]<<","<<c1[2]<<">" << sendl;
 
     SeqPoints& outP = *outputPoints.beginEdit();
-    SeqTetras& outT = *outputTetras.beginEdit();
+    SeqTetrahedra& outT = *outputTetras.beginEdit();
 
     outP.resize(gsize[0]*gsize[1]*gsize[2] + hsize[0]*hsize[1]*hsize[2]);
 
@@ -556,7 +556,7 @@ void MeshTetraStuffing::init()
     outputTetras.endEdit();
 }
 
-void MeshTetraStuffing::addFinalTetra(SeqTetras& outT, SeqPoints& outP, int p1, int p2, int p3, int p4, bool flip, int line)
+void MeshTetraStuffing::addFinalTetra(SeqTetrahedra& outT, SeqPoints& outP, int p1, int p2, int p3, int p4, bool flip, int line)
 {
     if (flip)
     {
@@ -604,7 +604,7 @@ bool MeshTetraStuffing::needFlip(int p1, int p2, int p3, int p4, int q1, int q2,
     return flip;
 }
 
-void MeshTetraStuffing::addTetra(SeqTetras& outT, SeqPoints& outP, int p1, int p2, int p3, int p4, int line)
+void MeshTetraStuffing::addTetra(SeqTetrahedra& outT, SeqPoints& outP, int p1, int p2, int p3, int p4, int line)
 {
     {
         Point a = outP[p2] - outP[p1];
@@ -889,7 +889,7 @@ void MeshTetraStuffing::draw()
     //const SeqPoints& inP = inputPoints.getValue();
     //const SeqTriangles& inT = inputTriangles.getValue();
     const SeqPoints& outP = outputPoints.getValue();
-    //const SeqTetras& outT = outputTetras.getValue();
+    //const SeqTetrahedra& outT = outputTetras.getValue();
 
     //simulation::getSimulation()->DrawUtility.drawPoints(inP, 1, Vec<4,float>(1,0,0,1));
     simulation::getSimulation()->DrawUtility.drawPoints(intersections, 2, Vec<4,float>(1,0,0,1));
