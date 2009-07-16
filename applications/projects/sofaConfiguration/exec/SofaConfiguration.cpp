@@ -153,7 +153,7 @@ SofaConfiguration::SofaConfiguration(std::string p, std::vector< DEFINES >& conf
     layout->addWidget(global);
 
 #ifdef WIN32
-    projectVC = new QLineEdit(QString("ProjectVC8.bat"),appli);
+    projectVC = new QLineEdit(QString("Project VC8.bat"),appli);
     layout->addWidget(projectVC);
 #endif
 
