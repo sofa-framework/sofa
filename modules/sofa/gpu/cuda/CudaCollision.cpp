@@ -27,7 +27,7 @@
 #include "CudaPointModel.h"
 #include <sofa/component/collision/NewProximityIntersection.inl>
 #include <sofa/component/collision/DiscreteIntersection.inl>
-#include <sofa/component/collision/ComponentMouseInteraction.h>
+#include <sofa/component/collision/ComponentMouseInteraction.inl>
 #include <sofa/component/collision/MouseInteractor.inl>
 #include <sofa/component/collision/RayContact.h>
 #include "CudaContactMapper.h"
