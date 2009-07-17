@@ -49,7 +49,7 @@ private:
     GLuint id;
     bool repeat, linearInterpolation;
 public:
-    Texture (io::Image *img, bool repeat = false, bool linearInterpolation = true)
+    Texture (io::Image *img, bool repeat = true, bool linearInterpolation = true)
         :image(img),id(0),repeat(repeat), linearInterpolation(linearInterpolation)
     {};
 
