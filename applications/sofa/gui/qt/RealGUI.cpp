@@ -1648,6 +1648,8 @@ void RealGUI::resetScene()
 {
     Node* root = getScene();
 
+
+    startDumpVisitor();
     //Hide the dialog to add a new object in the graph
     if ( dialog != NULL ) dialog->hide();
     //Hide all the dialogs to modify the graph
@@ -1725,6 +1727,9 @@ void RealGUI::resetScene()
         emit newStep();
 // 	    viewer->getQWidget()->update();
     }
+
+    stopDumpVisitor();
+
 }
 
 

@@ -84,10 +84,13 @@ void ReadStateCreator::addReadState(sofa::core::componentmodel::behavior::BaseMe
     sofa::core::BaseMapping *mapping; context->get(mapping);
     if (createInMapping || mapping== NULL)
     {
-        sofa::component::misc::ReadState *rs; context->get(rs, core::objectmodel::BaseContext::Local);
+        sofa::component::misc::ReadState *rs;
+        context->get(rs, this->subsetsToManage, core::objectmodel::BaseContext::Local);
         if (  rs == NULL )
         {
             rs = new sofa::component::misc::ReadState(); gnode->addObject(rs);
+            for (core::objectmodel::TagSet::iterator it=this->subsetsToManage.begin(); it != this->subsetsToManage.end(); it++)
+                rs->addTag(*it);
         }
 
         std::ostringstream ofilename;
@@ -103,7 +106,7 @@ void ReadStateCreator::addReadState(sofa::core::componentmodel::behavior::BaseMe
 ///if state is true, we activate all the write states present in the scene.
 simulation::Visitor::Result ReadStateActivator::processNodeTopDown( simulation::Node* gnode)
 {
-    sofa::component::misc::ReadState *rs = gnode->get< sofa::component::misc::ReadState >();
+    sofa::component::misc::ReadState *rs = gnode->get< sofa::component::misc::ReadState >(this->subsetsToManage);
     if (rs != NULL) { changeStateReader(rs);}
 
     return simulation::Visitor::RESULT_CONTINUE;
@@ -121,7 +124,7 @@ simulation::Visitor::Result ReadStateModifier::processNodeTopDown( simulation::N
 {
     using namespace sofa::defaulttype;
 
-    sofa::component::misc::ReadState*rs = gnode->get< sofa::component::misc::ReadState>();
+    sofa::component::misc::ReadState*rs = gnode->get< sofa::component::misc::ReadState>(this->subsetsToManage);
     if (rs != NULL) {changeTimeReader(rs);}
 
     return simulation::Visitor::RESULT_CONTINUE;
