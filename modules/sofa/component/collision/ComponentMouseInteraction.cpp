@@ -22,9 +22,9 @@
  *                                                                             *
  * Contact information: contact@sofa-framework.org                             *
  ******************************************************************************/
-#include <sofa/component/collision/ComponentMouseInteraction.h>
+#include <sofa/component/collision/ComponentMouseInteraction.inl>
 #include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/helper/Factory.inl>
+
 
 namespace sofa
 {
@@ -34,9 +34,50 @@ namespace component
 
 namespace collision
 {
-template class TComponentMouseInteraction<defaulttype::Vec3Types>;
+ComponentMouseInteraction::ComponentMouseInteraction():parentNode(NULL), nodeRayPick(NULL)/* ,mouseCollision(NULL) */
+{
+}
 
-helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory, TComponentMouseInteraction<defaulttype::Vec3Types> > ComponentMouseInteractionVec3Class ("MouseSpringVec3d",true);
+ComponentMouseInteraction::~ComponentMouseInteraction()
+{
+    if (!nodeRayPick) return;
+    nodeRayPick->execute<simulation::DeleteVisitor>();
+    delete nodeRayPick;
+}
+
+void ComponentMouseInteraction::init(Node* node)
+{
+    parentNode = node;
+    nodeRayPick = simulation::getSimulation()->newNode("RayPick");
+}
+
+void ComponentMouseInteraction::activate()
+{
+    parentNode->addChild(nodeRayPick);
+}
+
+void ComponentMouseInteraction::deactivate()
+{
+    mouseInteractor->doReleaseBody();
+    nodeRayPick->detachFromGraph();
+}
+
+void ComponentMouseInteraction::reset()
+{
+    mouseInteractor->reset();
+}
+
+
+
+//template <class RealObject>
+//void ComponentMouseInteraction::create( RealObject*& obj, core::objectmodel::BaseContext* /* context */)
+//{
+//	obj = new RealObject;
+//}
+
+
+
+template class TComponentMouseInteraction<defaulttype::Vec3Types>;
 
 }
 }

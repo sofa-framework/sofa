@@ -32,8 +32,11 @@
 #include <sofa/simulation/common/DeleteVisitor.h>
 
 #include <sofa/helper/Factory.inl>
+#include <sofa/component/collision/ComponentMouseInteraction.inl>
 
 #include <iostream>
+
+
 
 namespace sofa
 {

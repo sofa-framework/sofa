@@ -24,15 +24,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_H
-#define SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_H
+#ifndef SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_INL
+#define SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_INL
 
-#include <sofa/simulation/common/Simulation.h>
-/* #include <sofa/simulation/common/InitVisitor.h> */
-#include <sofa/simulation/common/DeleteVisitor.h>
-#include <sofa/simulation/common/Node.h>
+#include <sofa/component/container/MechanicalObject.h>
+#include <sofa/component/collision/RayModel.h>
+#include <sofa/component/collision/MouseInteractor.h>
+#include <sofa/component/mapping/IdentityMapping.h>
 
-#include <sofa/component/component.h>
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/VecTypes.h>
+
+
+#include <sofa/component/collision/ComponentMouseInteraction.h>
+#include <sofa/helper/Factory.inl>
 
 namespace sofa
 {
@@ -43,59 +48,57 @@ namespace component
 namespace collision
 {
 
-
-class SOFA_COMPONENT_COLLISION_API ComponentMouseInteraction
-{
-public:
-    ComponentMouseInteraction();
-
-    virtual ~ComponentMouseInteraction();
-
-    virtual void init(simulation::Node* node);
-
-    void activate();
-
-    void deactivate();
-
-    void reset();
-
-    virtual bool isCompatible( core::objectmodel::BaseContext *)const=0;
-
-    typedef helper::Factory<std::string, ComponentMouseInteraction, core::objectmodel::BaseContext*> ComponentMouseInteractionFactory;
-
-    template <class RealObject>
-    static void create( RealObject*& obj, core::objectmodel::BaseContext* /* context */)
-    {
-        obj = new RealObject;
-    }
+using simulation::Node;
+using sofa::component::collision::BodyPicked;
 
 
-    //Components
-    simulation::Node                                                      *parentNode;
-    simulation::Node                                                      *nodeRayPick;
-    sofa::core::componentmodel::behavior::BaseMechanicalState *mouseInSofa;
-    sofa::core::componentmodel::behavior::BaseMechanicalMapping *mouseMapping;
-    sofa::component::collision::BaseMouseInteractor           *mouseInteractor;
-};
 
 
 
 template <class DataTypes>
-class TComponentMouseInteraction : public ComponentMouseInteraction
+void TComponentMouseInteraction<DataTypes>::init(Node* node)
 {
-    typedef sofa::component::container::MechanicalObject< defaulttype::Vec3Types > MousePosition;
-    typedef sofa::component::container::MechanicalObject< DataTypes > MouseContainer;
-    typedef sofa::component::collision::MouseInteractor< DataTypes > Interactor;
-    typedef sofa::component::mapping::IdentityMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState< defaulttype::Vec3Types>, sofa::core::componentmodel::behavior::MechanicalState< DataTypes > > > IdentityMechanicalMapping;
+    ComponentMouseInteraction::init(node);
 
-public:
+    parentNode->addChild(nodeRayPick);
+
+    mouseInSofa =  new MouseContainer;
+    mouseInSofa = new MouseContainer; mouseInSofa->resize(1);
+    mouseInSofa->setName("MousePosition");
+    nodeRayPick->addObject(mouseInSofa);
 
 
-    void init(simulation::Node* node);
 
-    bool isCompatible( core::objectmodel::BaseContext *context) const;
+    mouseInteractor = new Interactor;
+    mouseInteractor->setName("MouseInteractor");
+    nodeRayPick->addObject(mouseInteractor);
 
-};
+    MousePosition *mecha = dynamic_cast<MousePosition*>(node->getMechanicalState());
+    mouseMapping = new IdentityMechanicalMapping(mecha, static_cast<MouseContainer*>(mouseInSofa));
+    nodeRayPick->addObject(mouseMapping);
+
+    mouseMapping->setMechanical(false);
+
+    nodeRayPick->init();
+    mouseInSofa->init();
+    mouseMapping->init();
+    mouseInteractor->init();
+
+    /*             parentNode->execute<simulation::InitVisitor>(); */
+    parentNode->removeChild(nodeRayPick);
+}
+
+
+template <class DataTypes>
+bool TComponentMouseInteraction<DataTypes>::isCompatible( core::objectmodel::BaseContext *context) const
+{
+    return dynamic_cast<MouseContainer*>(context->getMechanicalState());
+}
+
+
+
+helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory, TComponentMouseInteraction<defaulttype::Vec3Types> > ComponentMouseInteractionVec3Class ("MouseSpringVec3d",true);
+
 }
 }
 }
