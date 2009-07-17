@@ -93,20 +93,23 @@ void WriteStateCreator::addWriteState(sofa::core::componentmodel::behavior::Base
     if ( createInMapping || mapping == NULL)
     {
         sofa::component::misc::WriteState *ws;
-        context->get(ws, core::objectmodel::BaseContext::Local);
+        context->get(ws, this->subsetsToManage, core::objectmodel::BaseContext::Local);
         if ( ws == NULL )
         {
             ws = new sofa::component::misc::WriteState(); gnode->addObject(ws);
             ws->f_writeX.setValue(recordX);
             ws->f_writeV.setValue(recordV);
-        }
+            for (core::objectmodel::TagSet::iterator it=this->subsetsToManage.begin(); it != this->subsetsToManage.end(); it++)
+                ws->addTag(*it);
 
+        }
         std::ostringstream ofilename;
         ofilename << sceneName << "_" << counterWriteState << "_" << ms->getName()  << "_mstate" << extension ;
 
         ws->f_filename.setValue(ofilename.str()); ws->init(); ws->f_listening.setValue(true);  //Activated at init
 
         ++counterWriteState;
+
     }
 }
 
@@ -115,7 +118,7 @@ void WriteStateCreator::addWriteState(sofa::core::componentmodel::behavior::Base
 //if state is true, we activate all the write states present in the scene.
 simulation::Visitor::Result WriteStateActivator::processNodeTopDown( simulation::Node* gnode)
 {
-    sofa::component::misc::WriteState *ws = gnode->get< sofa::component::misc::WriteState >();
+    sofa::component::misc::WriteState *ws = gnode->get< sofa::component::misc::WriteState >(this->subsetsToManage);
     if (ws != NULL) { changeStateWriter(ws);}
     return simulation::Visitor::RESULT_CONTINUE;
 }
