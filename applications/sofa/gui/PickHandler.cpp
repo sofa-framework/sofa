@@ -48,7 +48,6 @@ PickHandler::PickHandler():interactorInUse(false), mouseStatus(DEACTIVATED)
 {
     operations[0] = operations[1] = operations[2] = NULL;
 
-
     mouseNode = simulation::getSimulation()->newNode("Mouse");
 
     mouseContainer = new MouseContainer; mouseContainer->resize(1);
@@ -82,13 +81,7 @@ PickHandler::PickHandler():interactorInUse(false), mouseStatus(DEACTIVATED)
 
 PickHandler::~PickHandler()
 {
-    //Need to remove all the components
-    if (!interactorInUse)
-    {
-        //Need to delete the components
-        interaction->nodeRayPick->execute<simulation::DeleteVisitor>();
-        delete interaction->nodeRayPick;
-    }
+//       for (unsigned int i=0;i<instanceComponents.size();++i) delete instanceComponents[i];
 }
 
 void PickHandler::reset()
@@ -114,9 +107,7 @@ void PickHandler::activateRay(bool act)
     {
         Node *root = static_cast<Node*>(simulation::getSimulation()->getContext());
         root->addChild(mouseNode);
-
         interaction->activate();
-
         interactorInUse=true;
     }
 }

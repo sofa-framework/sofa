@@ -61,7 +61,8 @@ public:
 public slots:
     void selectOperation(int);
 
-    double getValue( MOUSE_BUTTON button);
+    void   setValue( MOUSE_BUTTON button, const char *text, double value);
+    double getValue( MOUSE_BUTTON button) const;
 protected:
     void updateOperation( MOUSE_BUTTON button, const std::string &id);
 

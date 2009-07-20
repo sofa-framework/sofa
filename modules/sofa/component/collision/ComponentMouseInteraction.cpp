@@ -38,12 +38,6 @@ ComponentMouseInteraction::ComponentMouseInteraction():parentNode(NULL), nodeRay
 {
 }
 
-ComponentMouseInteraction::~ComponentMouseInteraction()
-{
-    if (!nodeRayPick) return;
-    nodeRayPick->execute<simulation::DeleteVisitor>();
-    delete nodeRayPick;
-}
 
 void ComponentMouseInteraction::init(Node* node)
 {
@@ -64,7 +58,7 @@ void ComponentMouseInteraction::deactivate()
 
 void ComponentMouseInteraction::reset()
 {
-    mouseInteractor->reset();
+    mouseInteractor->clear();
 }
 
 

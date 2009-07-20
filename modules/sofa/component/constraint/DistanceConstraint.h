@@ -79,10 +79,12 @@ protected:
     friend class DistanceConstraintInternalData<DataTypes>;
 
 public:
-    DistanceConstraint( MechanicalState * /*dof*/):
+    DistanceConstraint( MechanicalState *dof):
+        core::componentmodel::behavior::LMConstraint<DataTypes,DataTypes>(dof,dof),
         vecConstraint(Base::initData(&vecConstraint, "vecConstraint", "List of the edges to constrain"))
     {};
-    DistanceConstraint( MechanicalState * /*dof1*/, MechanicalState * /* dof2 */):
+    DistanceConstraint( MechanicalState *dof1, MechanicalState * dof2):
+        core::componentmodel::behavior::LMConstraint<DataTypes,DataTypes>(dof1,dof2),
         vecConstraint(Base::initData(&vecConstraint, "vecConstraint", "List of the edges to constrain"))
     {};
     DistanceConstraint():
@@ -97,6 +99,7 @@ public:
 
     double getError();
 
+    void addConstraint(unsigned int i1, unsigned int i2);
 
     virtual void draw();
     virtual std::string getTemplateName() const
@@ -108,6 +111,8 @@ public:
         return DataTypes::Name();
     }
 
+    //Edges involving a distance constraint
+    Data< SeqEdges > vecConstraint;
 
 protected :
     ///Compute the length of an edge given the vector of coordinates corresponding
@@ -119,8 +124,6 @@ protected :
     // Base Components of the current context
     core::componentmodel::topology::BaseMeshTopology *topology;
 
-    //Edges involving a distance constraint
-    Data< SeqEdges > vecConstraint;
     // rest length pre-computated
     sofa::helper::vector< double > l0;
 };

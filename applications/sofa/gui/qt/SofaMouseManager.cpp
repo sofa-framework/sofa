@@ -54,6 +54,7 @@ SofaMouseManager::SofaMouseManager()
     RightValue ->setText(QString::number(1000.0));
 
     RegisterOperation("Attach").add< QAttachOperation >();
+    RegisterOperation("Fix")   .add< QFixOperation  >();
     RegisterOperation("Incise").add< InciseOperation  >();
     RegisterOperation("Remove").add< RemoveOperation  >();
 }
@@ -76,16 +77,16 @@ void SofaMouseManager::setPickHandler(PickHandler *picker)
         MiddleOperationCombo->insertItem(QString(OperationFactory::GetDescription(it->first).c_str()));
         RightOperationCombo ->insertItem(QString(OperationFactory::GetDescription(it->first).c_str()));
 
+        if      (it->first == "Attach") LeftOperationCombo->setCurrentItem(idx);
+        else if (it->first == "Incise") MiddleOperationCombo->setCurrentItem(idx);
+        else if (it->first == "Remove") RightOperationCombo->setCurrentItem(idx);
         mapIndexOperation.insert(std::make_pair(idx++, it->first));
     }
 
 
 
-    LeftOperationCombo->setCurrentItem(0);
     updateOperation(LEFT,   "Attach");
-    MiddleOperationCombo->setCurrentItem(1);
     updateOperation(MIDDLE, "Incise");
-    RightOperationCombo->setCurrentItem(2);
     updateOperation(RIGHT,  "Remove");
 }
 
@@ -100,7 +101,26 @@ void SofaMouseManager::selectOperation(int operation)
     else if (combo == RightOperationCombo)  updateOperation(RIGHT,  operationName);
 }
 
-double SofaMouseManager::getValue( MOUSE_BUTTON button )
+void SofaMouseManager::setValue( MOUSE_BUTTON button, const char *text, double value )
+{
+    switch(button)
+    {
+    case LEFT:
+        LeftValueLabel->setText(text);
+        LeftValue->setText(QString::number(value));
+        return;
+    case MIDDLE:
+        MiddleValueLabel->setText(text);
+        MiddleValue->setText(QString::number(value));
+        return;
+    case RIGHT:
+        RightValueLabel->setText(text);
+        RightValue->setText(QString::number(value));
+        return;
+    }
+}
+
+double SofaMouseManager::getValue( MOUSE_BUTTON button ) const
 {
     switch(button)
     {

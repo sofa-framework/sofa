@@ -72,6 +72,17 @@ void DistanceConstraint<DataTypes>::reinit()
 }
 
 
+template <class DataTypes>
+void DistanceConstraint<DataTypes>::addConstraint(unsigned int i1, unsigned int i2)
+{
+    SeqEdges &constraints = *(vecConstraint.beginEdit());
+    constraints.resize(constraints.size()+1);
+    constraints.back()[0] = i1;
+    constraints.back()[1] = i2;
+    vecConstraint.endEdit();
+
+}
+
 
 template <class DataTypes>
 double DistanceConstraint<DataTypes>::lengthEdge(const Edge &e, const VecCoord &x1, const VecCoord &x2) const
