@@ -39,19 +39,19 @@ class TetrahedronSetTopologyModifier; //has to be change to Manifold one
 
 using core::componentmodel::topology::BaseMeshTopology;
 
-typedef BaseMeshTopology::PointID		PointID;
-typedef BaseMeshTopology::EdgeID		EdgeID;
-typedef BaseMeshTopology::TriangleID	TriangleID;
-typedef BaseMeshTopology::TetraID		TetraID;
-typedef BaseMeshTopology::Edge		Edge;
-typedef BaseMeshTopology::Triangle	Triangle;
-typedef BaseMeshTopology::Tetra		Tetra;
-typedef BaseMeshTopology::SeqTetrahedra	SeqTetrahedra;
-typedef BaseMeshTopology::TetrahedraAroundVertex	TetrahedraAroundVertex;
-typedef BaseMeshTopology::TetrahedraAroundEdge	TetrahedraAroundEdge;
+typedef BaseMeshTopology::PointID	                     	PointID;
+typedef BaseMeshTopology::EdgeID		                EdgeID;
+typedef BaseMeshTopology::TriangleID               	TriangleID;
+typedef BaseMeshTopology::TetraID	                  	TetraID;
+typedef BaseMeshTopology::Edge                    	Edge;
+typedef BaseMeshTopology::Triangle                 	Triangle;
+typedef BaseMeshTopology::Tetra        	        	Tetra;
+typedef BaseMeshTopology::SeqTetrahedra           	SeqTetrahedra;
+typedef BaseMeshTopology::TetrahedraAroundVertex          TetrahedraAroundVertex;
+typedef BaseMeshTopology::TetrahedraAroundEdge     	TetrahedraAroundEdge;
 typedef BaseMeshTopology::TetrahedraAroundTriangle	TetrahedraAroundTriangle;
-typedef BaseMeshTopology::EdgesInTetrahedron	EdgesInTetrahedron;
-typedef BaseMeshTopology::TrianglesInTetrahedron	TrianglesInTetrahedron;
+typedef BaseMeshTopology::EdgesInTetrahedron       	EdgesInTetrahedron;
+typedef BaseMeshTopology::TrianglesInTetrahedron      	TrianglesInTetrahedron;
 
 typedef Tetra		Tetrahedron;
 typedef EdgesInTetrahedron	EdgesInTetrahedron;
@@ -64,9 +64,6 @@ class SOFA_COMPONENT_CONTAINER_API ManifoldTetrahedronSetTopologyContainer : pub
     friend class TetrahedronSetTopologyModifier; // To be change to manifold one
 
 public:
-    typedef Tetra		Tetrahedron;
-    typedef EdgesInTetrahedron	EdgesInTetrahedron;
-    typedef TrianglesInTetrahedron	TrianglesInTetrahedron;
 
     ManifoldTetrahedronSetTopologyContainer();
 
@@ -74,37 +71,48 @@ public:
 
     virtual ~ManifoldTetrahedronSetTopologyContainer() {}
 
+    virtual void init();
+    virtual void reinit();
+
+
     /// Procedural creation methods
     /// @{
     virtual void clear();
     /// @}
 
-    virtual void init();
-
-    virtual void reinit();
-
-    /// BaseMeshTopology API
-    /// @{
-
-    /// @}
 
     /** \brief Checks if the topology is coherent
      *
-     * Check if the shell arrays are coherent
+     * TODO: like in ManifoldTriangles, test the topology
      */
     virtual bool checkTopology() const;
     /** \brief Returns the Tetrahedron array.
      *
      */
 
-    virtual void draw();
+    /** \brief return if the tetrahedron is ine the same orientation as the one of reference
+     *
+     * @param Ref to the tetrahedron of reference
+     * @parem Ref to the tetrahedron to test.
+     * @return 1 if tetrahedrons have same orientation
+     * @return 0 if tetrahedrons don't have same orientation
+     * @return -1 if tetrahedrons don't share the same 4 vertices
+     */
+    int getTetrahedronOrientation(const Tetrahedron &t, const Tetrahedron &t_test );
+
+    /** \brief return the orientation of a triangle relatively to one tetrahedron
+     *
+     * @param Ref to the tetrahedron of reference
+     * @parem Ref to the triangle to test.
+     * @return 1 if good orientation
+     * @return 0 if other orientation
+     * @return -1 if triangle does'nt belongs to this tetrahedron
+     */
+    int getTriangleTetrahedronOrientation(const Tetrahedron &t, const Triangle &tri );
+
 
 
 protected:
-
-    Data<bool> debugViewIndices;
-    Data<bool> debugViewIndicesTetra;
-    Data<bool> shellDisplay;
 
     /** \brief Creates the Tetrahedron Vertex Shell Array
      *
@@ -127,26 +135,15 @@ protected:
      */
     virtual void createTetrahedraAroundTriangleArray();
 
-    /** \brief return if the tetrahedron is ine the same orientation as the one of reference
-     * 1 if tetrahedrons have same orientation
-     * 0 if tetrahedrons don't have same orientation
-     * -1 if tetrahedrons don't share the same 4 vertices
-     */
-    int getTetrahedronOrientation(const Tetrahedron &t, const Tetrahedron &t_test );
-
-    /** \brief return the orientation of a triangle relatively to one tetrahedron
-     * 1 if good orientation
-     * 0 if other orientation
-     * -1 if triangle does'nt belongs to this tetrahedron
-     */
-    int getTriangleTetrahedronOrientation(const Tetrahedron &t, const Triangle &tri );
-
-private:
-
-
 
 
 protected:
+
+    Data<bool> debugViewIndices;
+    Data<bool> debugViewIndicesTetra;
+    Data<bool> shellDisplay;
+
+
 };
 
 } // namespace topology

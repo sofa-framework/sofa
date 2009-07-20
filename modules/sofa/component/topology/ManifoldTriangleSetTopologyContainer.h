@@ -35,16 +35,16 @@ namespace component
 
 namespace topology
 {
-class ManifoldTriangleSetTopologyModifier;
 
 using core::componentmodel::topology::BaseMeshTopology;
-typedef BaseMeshTopology::PointID		PointID;
-typedef BaseMeshTopology::EdgeID		EdgeID;
-typedef BaseMeshTopology::TriangleID	TriangleID;
-typedef BaseMeshTopology::Edge		Edge;
-typedef BaseMeshTopology::Triangle	Triangle;
-typedef BaseMeshTopology::SeqTriangles	SeqTriangles;
-typedef BaseMeshTopology::EdgesInTriangle	EdgesInTriangle;
+typedef BaseMeshTopology::PointID	        	PointID;
+typedef BaseMeshTopology::EdgeID	        	EdgeID;
+typedef BaseMeshTopology::TriangleID      	TriangleID;
+typedef BaseMeshTopology::Edge	           	Edge;
+typedef BaseMeshTopology::Triangle        	Triangle;
+typedef BaseMeshTopology::SeqTriangles       	SeqTriangles;
+typedef BaseMeshTopology::EdgesInTriangle      	EdgesInTriangle;
+typedef BaseMeshTopology::EdgesAroundVertex      	EdgesAroundVertex;
 typedef BaseMeshTopology::TrianglesAroundVertex	TrianglesAroundVertex;
 typedef BaseMeshTopology::TrianglesAroundEdge	TrianglesAroundEdge;
 
@@ -67,6 +67,8 @@ public:
     virtual void init();
 
     virtual void clear();
+
+
 
     /** \brief Checks if the topology is coherent.
      *
@@ -177,19 +179,19 @@ private:
     /** \brief Returns a non-const triangle vertex shell given a vertex index for subsequent modification
      *
      */
-    sofa::helper::vector <TriangleID>& getTrianglesAroundVertexForModification(const unsigned int vertexIndex);
+    virtual TrianglesAroundVertex& getTrianglesAroundVertexForModification(const PointID vertexIndex);
 
 
     /** \brief Returns a non-const triangle edge shell given the index of an edge for subsequent modification
      *
      */
-    sofa::helper::vector <TriangleID>& getTrianglesAroundEdgeForModification(const unsigned int edgeIndex);
+    virtual TrianglesAroundEdge& getTrianglesAroundEdgeForModification(const EdgeID edgeIndex);
 
 
     /** \brief Returns a non-const edge vertex shell given the index of an vertex for subsequent modification
      *
      */
-    sofa::helper::vector <EdgeID>& getEdgesAroundVertexForModification(const unsigned int vertexIndex);
+    virtual EdgesAroundVertex& getEdgesAroundVertexForModification(const PointID vertexIndex);
 
 };
 

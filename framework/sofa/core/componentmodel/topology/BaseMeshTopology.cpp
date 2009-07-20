@@ -408,13 +408,13 @@ int BaseMeshTopology::getEdgeIndexInTriangle(const EdgesInTriangle &, EdgeID) co
     return 0;
 }
 
-int BaseMeshTopology::getVertexIndexInQuad(Quad &, PointID) const
+int BaseMeshTopology::getVertexIndexInQuad(const Quad &, PointID) const
 {
     std::cerr << "WARNING: "<<this->getClassName()<<"::getVertexIndexInQuad() not supported." << std::endl;
     return 0;
 }
 
-int BaseMeshTopology::getEdgeIndexInQuad(EdgesInQuad &, EdgeID) const
+int BaseMeshTopology::getEdgeIndexInQuad(const EdgesInQuad &, EdgeID) const
 {
     std::cerr << "WARNING: "<<this->getClassName()<<"::getEdgeIndexInQuad() not supported." << std::endl;
     return 0;
@@ -438,7 +438,7 @@ int BaseMeshTopology::getTriangleIndexInTetrahedron(const TrianglesInTetrahedron
     return 0;
 }
 
-int BaseMeshTopology::getVertexIndexInHexahedron(Hexa &, PointID) const
+int BaseMeshTopology::getVertexIndexInHexahedron(const Hexa &, PointID) const
 {
     std::cerr << "WARNING: "<<this->getClassName()<<"::getVertexIndexInHexahedron() not supported." << std::endl;
     return 0;
@@ -456,12 +456,20 @@ int BaseMeshTopology::getQuadIndexInHexahedron(const QuadsInHexahedron &, QuadID
     return 0;
 }
 
-BaseMeshTopology::Edge BaseMeshTopology::getLocalEdgesInTetrahedron (const unsigned int) const
+BaseMeshTopology::Edge BaseMeshTopology::getLocalEdgesInTetrahedron (const PointID) const
 {
     static BaseMeshTopology::Edge empty;
     std::cerr << "WARNING: "<<this->getClassName()<<"::getLocalEdgesInTetrahedron() not supported." << std::endl;
     return empty;
 }
+
+BaseMeshTopology::Edge BaseMeshTopology::getLocalEdgesInHexahedron (const PointID) const
+{
+    static BaseMeshTopology::Edge empty;
+    std::cerr << "WARNING: "<<this->getClassName()<<"::getLocalEdgesInHexahedron() not supported." << std::endl;
+    return empty;
+}
+
 
 } // namespace topology
 

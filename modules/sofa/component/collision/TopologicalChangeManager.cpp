@@ -453,8 +453,8 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleModel *firstModel ,
         sofa::helper::vector<unsigned int> indices_list;
         sofa::helper::vector< Vec<3, double> > coords2_list;
 
-        PointID a_last=-1;
-        PointID b_last=-1;
+        PointID a_last=(unsigned int)-1;
+        PointID b_last=(unsigned int)-1;
 
         bool ok = triangleGeometry->computeIntersectedObjectsList(a_last, a, b, idxA, idxB, topoPath_list, indices_list, coords2_list);
 

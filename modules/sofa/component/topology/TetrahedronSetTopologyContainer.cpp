@@ -160,7 +160,7 @@ void TetrahedronSetTopologyContainer::createEdgeSetArray()
     d_edge.endEdit();
 }
 
-void TetrahedronSetTopologyContainer::createTetrahedronEdgeArray()
+void TetrahedronSetTopologyContainer::createEdgesInTetrahedronArray()
 {
     if(!hasTetrahedra()) // this method should only be called when triangles exist
     {
@@ -324,7 +324,7 @@ void TetrahedronSetTopologyContainer::createTriangleSetArray()
     d_triangle.endEdit();
 }
 
-void TetrahedronSetTopologyContainer::createTetrahedronTriangleArray()
+void TetrahedronSetTopologyContainer::createTrianglesInTetrahedronArray()
 {
     if(!hasTriangles())
         createTriangleSetArray();
@@ -367,7 +367,7 @@ void TetrahedronSetTopologyContainer::createTetrahedraAroundVertexArray ()
 void TetrahedronSetTopologyContainer::createTetrahedraAroundEdgeArray ()
 {
     if(!hasEdgesInTetrahedron())
-        createTetrahedronEdgeArray();
+        createEdgesInTetrahedronArray();
 
     if(hasTetrahedraAroundEdge())
         clearTetrahedraAroundEdge();
@@ -387,7 +387,7 @@ void TetrahedronSetTopologyContainer::createTetrahedraAroundEdgeArray ()
 void TetrahedronSetTopologyContainer::createTetrahedraAroundTriangleArray ()
 {
     if(!hasTrianglesInTetrahedron())
-        createTetrahedronTriangleArray();
+        createTrianglesInTetrahedronArray();
 
     if(hasTetrahedraAroundTriangle())
         clearTetrahedraAroundTriangle();
@@ -496,24 +496,24 @@ const sofa::helper::vector< sofa::helper::vector<unsigned int> > &TetrahedronSet
     return m_tetrahedraAroundTriangle;
 }
 
-const sofa::helper::vector< EdgesInTetrahedron> &TetrahedronSetTopologyContainer::getTetrahedronEdgeArray()
+const sofa::helper::vector< EdgesInTetrahedron> &TetrahedronSetTopologyContainer::getEdgesInTetrahedronArray()
 {
     if (!hasEdgesInTetrahedron())
-        createTetrahedronEdgeArray();
+        createEdgesInTetrahedronArray();
 
     return m_edgesInTetrahedron;
 }
 
-Edge TetrahedronSetTopologyContainer::getLocalEdgesInTetrahedron (const unsigned int i) const
+Edge TetrahedronSetTopologyContainer::getLocalEdgesInTetrahedron (const PointID i) const
 {
     assert(i<6);
     return Edge (edgesInTetrahedronArray[i][0], edgesInTetrahedronArray[i][1]);
 }
 
-const sofa::helper::vector< TrianglesInTetrahedron> &TetrahedronSetTopologyContainer::getTetrahedronTriangleArray()
+const sofa::helper::vector< TrianglesInTetrahedron> &TetrahedronSetTopologyContainer::getTrianglesInTetrahedronArray()
 {
     if (!hasTrianglesInTetrahedron())
-        createTetrahedronTriangleArray();
+        createTrianglesInTetrahedronArray();
 
     return m_trianglesInTetrahedron;
 }
@@ -551,7 +551,7 @@ const sofa::helper::vector< unsigned int > &TetrahedronSetTopologyContainer::get
 const EdgesInTetrahedron &TetrahedronSetTopologyContainer::getEdgesInTetrahedron(const unsigned int i)
 {
     if (!hasEdgesInTetrahedron())
-        createTetrahedronEdgeArray();
+        createEdgesInTetrahedronArray();
 
     assert(i < m_edgesInTetrahedron.size());
 
@@ -561,7 +561,7 @@ const EdgesInTetrahedron &TetrahedronSetTopologyContainer::getEdgesInTetrahedron
 const TrianglesInTetrahedron &TetrahedronSetTopologyContainer::getTrianglesInTetrahedron(const unsigned int i)
 {
     if (!hasTrianglesInTetrahedron())
-        createTetrahedronTriangleArray();
+        createTrianglesInTetrahedronArray();
 
     assert(i < m_trianglesInTetrahedron.size());
 
