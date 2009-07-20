@@ -50,6 +50,27 @@ public:
         setStiffness(SofaMouseManager::getInstance()->getValue(button));
         AttachOperation::start();
     }
+    void configure(PickHandler *picker, MOUSE_BUTTON b)
+    {
+        AttachOperation::configure(picker, b);
+        SofaMouseManager::getInstance()->setValue(button, "Stiffness", stiffness);
+    }
+};
+
+class QFixOperation : public FixOperation
+{
+public:
+    QFixOperation() {}
+    void start()
+    {
+        setStiffness(SofaMouseManager::getInstance()->getValue(button));
+        FixOperation::start();
+    }
+    void configure(PickHandler *picker, MOUSE_BUTTON b)
+    {
+        FixOperation::configure(picker, b);
+        SofaMouseManager::getInstance()->setValue(button, "Fixation", stiffness);
+    }
 };
 }
 }

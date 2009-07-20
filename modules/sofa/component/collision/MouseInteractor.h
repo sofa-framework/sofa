@@ -39,6 +39,9 @@
 #include <sofa/component/collision/RayModel.h>
 #include <sofa/component/forcefield/StiffSpringForceField.h>
 
+#include <sofa/component/constraint/FixedConstraint.h>
+#include <sofa/simulation/common/Node.h>
+
 #include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
@@ -70,6 +73,12 @@ public:
 
     virtual void draw();
 
+    void clear()
+    {
+        doReleaseBody();
+        doReleaseFixations();
+    };
+
     //Basic operations available with the Mouse
     /// Attach a body to the mouse
     virtual void doAttachBody(const BodyPicked& body, double stiffness)=0;
@@ -80,6 +89,8 @@ public:
     /// Process to an incision
     virtual void doInciseBody(const helper::fixed_array< BodyPicked,2 > &incision)=0;
 
+    virtual void doFixParticle(const BodyPicked& body, double stiffness)=0;
+    virtual void doReleaseFixations()=0;
 
     SReal getDistanceFromMouse() const {return distanceFromMouse;};
     bool isMouseAttached() const { return isAttached;};
@@ -137,8 +148,6 @@ public:
 
     void init();
 
-    void reset() {doReleaseBody();};
-
     //Basic operations available with the Mouse
     /// Attach a body to the mouse
     void doAttachBody(const BodyPicked& body, double stiffness);
@@ -148,14 +157,18 @@ public:
     void doRemoveCollisionElement(const BodyPicked& body);
     /// Process to an incision
     void doInciseBody(const helper::fixed_array< BodyPicked,2 > &incision);
-
+    /// Fix the particle picked
+    void doFixParticle(const BodyPicked& body, double stiffness);
+    /// Release the attached body
+    void doReleaseFixations();
 
 protected:
 
     MouseContainer       *mouseInSofa;
     MouseContactMapper   *mapper;
+    std::map< core::CollisionModel*, MouseContactMapper* > mapperFixations;
     MouseForceField      *forcefield;
-
+    std::vector< simulation::Node * > fixations;
 };
 
 

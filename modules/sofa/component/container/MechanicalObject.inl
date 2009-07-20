@@ -1048,11 +1048,8 @@ void MechanicalObject<DataTypes>::init()
     }
     else if (getX()->size() <= 1)
     {
-        if( ignoreLoader.getValue())
-        {
-            this->resize(0);
-        }
-        else
+
+        if (!ignoreLoader.getValue())
         {
             MeshLoader* m_loader;
             this->getContext()->get(m_loader);

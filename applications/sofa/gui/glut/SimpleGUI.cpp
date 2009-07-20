@@ -355,6 +355,7 @@ SimpleGUI::SimpleGUI()
 
     //Register the different Operations possible
     RegisterOperation("Attach").add< AttachOperation >();
+    RegisterOperation("Fix").add< FixOperation >();
     RegisterOperation("Incise").add< InciseOperation >();
     RegisterOperation("Remove").add< RemoveOperation >();
 

@@ -49,7 +49,7 @@ class SOFA_COMPONENT_COLLISION_API ComponentMouseInteraction
 public:
     ComponentMouseInteraction();
 
-    virtual ~ComponentMouseInteraction();
+    virtual ~ComponentMouseInteraction() {};
 
     virtual void init(simulation::Node* node);
 

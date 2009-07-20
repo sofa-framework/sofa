@@ -294,6 +294,8 @@ public:
     void setTranslation(double dx,double dy,double dz) {translation.setValue(Vector3(dx,dy,dz));};
     void setRotation(double rx,double ry,double rz) {rotation.setValue(Vector3(rx,ry,rz));};
     void setScale(double s) {scale.setValue(s);};
+    void setIgnoreLoader(bool b) {ignoreLoader.setValue(b);}
+
 
     std::string getFilename() {return filename.getValue();};
 

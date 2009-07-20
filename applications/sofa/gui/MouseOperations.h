@@ -94,6 +94,24 @@ public:
     static bool isModifiable() {return false;};
 };
 
+class FixOperation : public Operation
+{
+public:
+    FixOperation():stiffness(10000.0) {};
+    virtual ~FixOperation() {};
+    virtual void start() ;
+    virtual void execution() ;
+    virtual void end() ;
+
+    void setStiffness(double s) {stiffness = s;}
+    virtual double getStiffness() const { return stiffness;}
+    static bool isModifiable() {return true;};
+
+
+    static std::string getDescription() {return "Fix Picked particle";}
+protected:
+    double stiffness;
+};
 }
 }
 

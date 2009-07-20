@@ -35,8 +35,7 @@ namespace gui
 
 void AttachOperation::start()
 {
-    sofa::component::collision::BaseMouseInteractor *mouse = pickHandle->getInteraction()->mouseInteractor;
-    if (!mouse->isMouseAttached()) mouse->doAttachBody(*pickHandle->getLastPicked(), getStiffness());
+    pickHandle->getInteraction()->mouseInteractor->doAttachBody(*pickHandle->getLastPicked(), getStiffness());
 }
 
 void AttachOperation::execution()
@@ -87,5 +86,22 @@ void InciseOperation::end()
 {
     pickHandle->getInteraction()->mouseInteractor->doInciseBody(*pickHandle->getElementsPicked());
 }
+
+
+void FixOperation::start()
+{
+    pickHandle->getInteraction()->mouseInteractor->doFixParticle(*pickHandle->getLastPicked(), getStiffness());
+}
+
+void FixOperation::execution()
+{
+}
+
+void FixOperation::end()
+{
+    //do nothing
+}
+
+
 }
 }
