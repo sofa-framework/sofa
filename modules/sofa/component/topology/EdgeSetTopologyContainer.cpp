@@ -186,6 +186,15 @@ int EdgeSetTopologyContainer::getEdgeIndex(PointID v1, PointID v2)
     return result;
 }
 
+const Edge EdgeSetTopologyContainer::getEdge (EdgeID i)
+{
+    if(!hasEdges())
+        createEdgeSetArray();
+
+    return m_edge[i];
+}
+
+
 // Return the number of connected components from the graph containing all edges and give, for each vertex, which component it belongs to  (use BOOST GRAPH LIBRAIRY)
 int EdgeSetTopologyContainer::getNumberConnectedComponents(sofa::helper::vector<unsigned int>& components)
 {

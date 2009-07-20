@@ -435,6 +435,16 @@ const sofa::helper::vector<Triangle> & TriangleSetTopologyContainer::getTriangle
 }
 
 
+const Triangle TriangleSetTopologyContainer::getTriangle (TriangleID i)
+{
+    if(!hasTriangles())
+        createTriangleSetArray();
+
+    return m_triangle[i];
+}
+
+
+
 int TriangleSetTopologyContainer::getTriangleIndex(PointID v1, PointID v2, PointID v3)
 {
     if(!hasTrianglesAroundVertex())
@@ -813,14 +823,23 @@ void TriangleSetTopologyContainer::clearTriangles()
     d_triangle.endEdit();
 }
 
+void TriangleSetTopologyContainer::clearBorderElementLists()
+{
+    m_trianglesOnBorder.clear();
+    m_edgesOnBorder.clear();
+    m_pointsOnBorder.clear();
+}
+
 void TriangleSetTopologyContainer::clear()
 {
     clearTrianglesAroundVertex();
     clearTrianglesAroundEdge();
     clearEdgesInTriangle();
     clearTriangles();
+    clearBorderElementLists();
     EdgeSetTopologyContainer::clear();
 }
+
 
 } // namespace topology
 

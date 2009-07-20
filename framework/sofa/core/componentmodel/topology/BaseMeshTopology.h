@@ -62,34 +62,34 @@ public:
     //typedef int index_type;
     typedef unsigned int index_type;
     enum { InvalidID = (unsigned)-1 };
-    typedef index_type		PointID;
-    typedef index_type		EdgeID;
-    typedef index_type		TriangleID;
-    typedef index_type		QuadID;
-    typedef index_type		TetraID;
-    typedef index_type		HexaID;
+    typedef index_type	        	        PointID;
+    typedef index_type          		EdgeID;
+    typedef index_type           		TriangleID;
+    typedef index_type                 		QuadID;
+    typedef index_type	                	TetraID;
+    typedef index_type	                	HexaID;
 
-    typedef fixed_array<PointID,2> Edge;
-    typedef fixed_array<PointID,3> Triangle;
-    typedef fixed_array<PointID,4> Quad;
-    typedef fixed_array<PointID,4> Tetra;
-    typedef fixed_array<PointID,8> Hexa;
+    typedef fixed_array<PointID,2>              Edge;
+    typedef fixed_array<PointID,3>              Triangle;
+    typedef fixed_array<PointID,4>              Quad;
+    typedef fixed_array<PointID,4>              Tetra;
+    typedef fixed_array<PointID,8>              Hexa;
 
-    typedef vector<Edge>		SeqEdges;
-    typedef vector<Triangle>		SeqTriangles;
-    typedef vector<Quad>		SeqQuads;
-    typedef vector<Tetra>		SeqTetrahedra;
-    typedef vector<Hexa>		SeqHexahedra;
+    typedef vector<Edge> 		        SeqEdges;
+    typedef vector<Triangle>		        SeqTriangles;
+    typedef vector<Quad>		        SeqQuads;
+    typedef vector<Tetra>		        SeqTetrahedra;
+    typedef vector<Hexa>		        SeqHexahedra;
 
     /// @name Deprecated types, for backward-compatibility
     /// @{
-    typedef EdgeID		LineID;
-    typedef Edge		Line;
-    typedef SeqEdges	SeqLines;
+    typedef EdgeID		                LineID;
+    typedef Edge		                Line;
+    typedef SeqEdges	                        SeqLines;
 #ifndef SOFA_NEW_HEXA
-    typedef HexaID CubeID;
-    typedef Hexa Cube;
-    typedef SeqHexahedra SeqCubes;
+    typedef HexaID                              CubeID;
+    typedef Hexa                                Cube;
+    typedef SeqHexahedra                        SeqCubes;
 #endif
     /// @}
 
@@ -218,9 +218,9 @@ public:
     virtual int getEdgeIndexInTriangle(const EdgesInTriangle &t, EdgeID edgeIndex) const;
 
     /** returns the index (either 0, 1 ,2 or 3) of the vertex whose global index is vertexIndex. Returns -1 if none */
-    virtual int getVertexIndexInQuad(Quad &t, PointID vertexIndex) const;
+    virtual int getVertexIndexInQuad(const Quad &t, PointID vertexIndex) const;
     /** returns the index (either 0, 1 ,2, 3) of the edge whose global index is edgeIndex. Returns -1 if none */
-    virtual int getEdgeIndexInQuad(EdgesInQuad &t, EdgeID edgeIndex) const;
+    virtual int getEdgeIndexInQuad(const EdgesInQuad &t, EdgeID edgeIndex) const;
 
     /** returns the index (either 0, 1 ,2 or 3) of the vertex whose global index is vertexIndex. Returns -1 if none */
     virtual int getVertexIndexInTetrahedron(const Tetra &t, PointID vertexIndex) const;
@@ -230,14 +230,17 @@ public:
     virtual int getTriangleIndexInTetrahedron(const TrianglesInTetrahedron &t, TriangleID triangleIndex) const;
 
     /** returns the index (either 0, 1 ,2, 3, 4, 5, 6, or 7) of the vertex whose global index is vertexIndex. Returns -1 if none */
-    virtual int getVertexIndexInHexahedron(Hexa &t, PointID vertexIndex) const;
+    virtual int getVertexIndexInHexahedron(const Hexa &t, PointID vertexIndex) const;
     /** returns the index (either 0, 1 ,2 ,3, 4, 5, 6, 7, 8, 9, 10, 11) of the edge whose global index is edgeIndex. Returns -1 if none */
     virtual int getEdgeIndexInHexahedron(const EdgesInHexahedron &t, EdgeID edgeIndex) const;
     /** returns the index (either 0, 1 ,2 ,3, 4, 5) of the quad whose global index is quadIndex. Returns -1 if none */
     virtual int getQuadIndexInHexahedron(const QuadsInHexahedron &t, QuadID quadIndex) const;
 
     /** returns for each index (between 0 and 5) the two vertex indices that are adjacent to that edge */
-    virtual Edge getLocalEdgesInTetrahedron (const unsigned int i) const;
+    virtual Edge getLocalEdgesInTetrahedron (const PointID i) const;
+
+    /** \brief Returns for each index (between 0 and 12) the two vertex indices that are adjacent to that edge */
+    virtual Edge getLocalEdgesInHexahedron (const PointID i) const;
 
     /// @name Deprecated names, for backward-compatibility
     /// @{

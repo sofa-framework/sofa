@@ -269,6 +269,15 @@ const sofa::helper::vector<Quad> &QuadSetTopologyContainer::getQuadArray()
     return m_quad;
 }
 
+const Quad QuadSetTopologyContainer::getQuad (QuadID i)
+{
+    if(!hasQuads())
+        createQuadSetArray();
+
+    return m_quad[i];
+}
+
+
 int QuadSetTopologyContainer::getQuadIndex(PointID v1, PointID v2, PointID v3, PointID v4)
 {
     if(!hasQuadsAroundVertex())
@@ -406,7 +415,7 @@ const EdgesInQuad &QuadSetTopologyContainer::getEdgesInQuad(const unsigned int i
     return m_edgesInQuad[i];
 }
 
-int QuadSetTopologyContainer::getVertexIndexInQuad(Quad &t, unsigned int vertexIndex) const
+int QuadSetTopologyContainer::getVertexIndexInQuad(const Quad &t, unsigned int vertexIndex) const
 {
     if(t[0]==vertexIndex)
         return 0;
@@ -420,7 +429,7 @@ int QuadSetTopologyContainer::getVertexIndexInQuad(Quad &t, unsigned int vertexI
         return -1;
 }
 
-int QuadSetTopologyContainer::getEdgeIndexInQuad(EdgesInQuad &t, unsigned int edgeIndex) const
+int QuadSetTopologyContainer::getEdgeIndexInQuad(const EdgesInQuad &t, unsigned int edgeIndex) const
 {
     if(t[0]==edgeIndex)
         return 0;
