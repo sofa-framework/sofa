@@ -123,7 +123,6 @@ bool PickHandler::needToCastRay()
 
 void PickHandler::setCompatibleInteractor()
 {
-
     if (!lastPicked.body) return;
     if (interaction->isCompatible(lastPicked.body->getContext())) return;
     for (unsigned int i=0; i<instanceComponents.size(); ++i)
@@ -151,6 +150,7 @@ void PickHandler::updateRay(const sofa::defaulttype::Vector3 &position,const sof
     {
         lastPicked=findCollision();
         setCompatibleInteractor();
+        interaction->mouseInteractor->setMouseRayModel(mouseCollision);
 
         interaction->mouseInteractor->setCollisionElement(lastPicked.body, lastPicked.indexCollisionElement);
     }

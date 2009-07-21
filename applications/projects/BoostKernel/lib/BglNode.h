@@ -133,6 +133,13 @@ public:
     void detachFromGraph() ;
 
 
+    /// Get children nodes
+    sofa::helper::vector< core::objectmodel::BaseNode* > getChildren();
+
+    /// Get children nodes
+    const sofa::helper::vector< core::objectmodel::BaseNode* > getChildren() const;
+
+
     /// Find all the Nodes pointing
     helper::vector< BglNode* > getParents() const;
 

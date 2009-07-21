@@ -22,6 +22,9 @@
  *                                                                             *
  * Contact information: contact@sofa-framework.org                             *
  ******************************************************************************/
+#ifndef SOFA_COMPONENT_COLLISION_MOUSEINTERACTOR_INL
+#define SOFA_COMPONENT_COLLISION_MOUSEINTERACTOR_INL
+
 #include <sofa/component/collision/MouseInteractor.h>
 #include <sofa/helper/system/gl.h>
 
@@ -175,18 +178,10 @@ void MouseInteractor<DataTypes>::doReleaseFixations()
     for (it=mapperFixations.begin(); it!=mapperFixations.end(); ++it)
     {
         MouseContactMapper *mapFixation = it->second;
-//             mapFixation->cleanup();
         delete mapFixation;
     }
     mapperFixations.clear();
 
-//         std::vector< simulation::Node* >::iterator itFixations;
-//         for (itFixations=fixations.begin(); itFixations!=fixations.end(); ++itFixations)
-//           {
-//             simulation::Node *nodeFixation = *itFixations;
-//             nodeFixation->detachFromGraph();
-//             nodeFixation->execute< simulation::DeleteVisitor >();
-//           }
     fixations.clear();
 }
 
@@ -198,7 +193,6 @@ void MouseInteractor<DataTypes>::init()
     mouseInSofa = dynamic_cast< MouseContainer*>(this->getContext()->getMechanicalState());
     assert(mouseInSofa);
 
-    this->getContext()->get(mouseCollision);
 }
 
 
@@ -217,3 +211,4 @@ void MouseInteractor<DataTypes>::draw()
 }
 }
 }
+#endif
