@@ -35,11 +35,12 @@ namespace core
 namespace objectmodel
 {
 
-ARTrackEvent::ARTrackEvent(const Vector3& position, const Quat& orientation, const sofa::helper::fixed_array<double,3>& angles)
+ARTrackEvent::ARTrackEvent(const Vector3& position, const Quat& orientation, const sofa::helper::fixed_array<double,3>& angles, const sofa::helper::fixed_array<Vector3,3>& fingersPosition)
     : sofa::core::objectmodel::Event()
     , m_position(position)
     , m_orientation(orientation)
     , m_angles(angles)
+    , m_fingersPosition(fingersPosition)
 {}
 
 const Vector3 ARTrackEvent::getPosition() const
@@ -57,6 +58,10 @@ const sofa::helper::fixed_array<double,3> ARTrackEvent::getAngles() const
     return m_angles;
 }
 
+const Vector3 ARTrackEvent::getFingerposition(const unsigned int i) const
+{
+    return m_fingersPosition[i];
+}
 
 } // namespace tree
 

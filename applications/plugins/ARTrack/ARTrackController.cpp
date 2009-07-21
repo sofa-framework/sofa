@@ -46,20 +46,24 @@ SOFA_DECL_CLASS(ARTrackController)
 int ARTrackControllerClass = core::RegisterObject("Provides ARTrack user control on a Mechanical State.")
 #ifndef SOFA_FLOAT
         .add< ARTrackController<Vec1dTypes> >()
+        .add< ARTrackController<Vec3dTypes> >()
         .add< ARTrackController<Rigid3dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
         .add< ARTrackController<Vec1fTypes> >()
+        .add< ARTrackController<Vec3fTypes> >()
         .add< ARTrackController<Rigid3fTypes> >()
 #endif
         ;
 
 #ifndef SOFA_FLOAT
 template class ARTrackController<defaulttype::Vec1dTypes>;
+template class ARTrackController<defaulttype::Vec3dTypes>;
 template class ARTrackController<defaulttype::Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 template class ARTrackController<defaulttype::Vec1fTypes>;
+template class ARTrackController<defaulttype::Vec3fTypes>;
 template class ARTrackController<defaulttype::Rigid3fTypes>;
 #endif
 

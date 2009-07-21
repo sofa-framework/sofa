@@ -53,7 +53,7 @@ public:
     /**
      * @brief Constructor.
      */
-    ARTrackEvent(const Vector3& position, const Quat& orientation, const sofa::helper::fixed_array<double,3>& angles);
+    ARTrackEvent(const Vector3& position, const Quat& orientation, const sofa::helper::fixed_array<double,3>& angles, const sofa::helper::fixed_array<Vector3,3>& fingersPosition);
 
     /**
      * @brief Destructor.
@@ -63,11 +63,13 @@ public:
     const Vector3 getPosition() const;
     const Quat getOrientation() const;
     const sofa::helper::fixed_array<double,3> getAngles() const;
+    const Vector3 getFingerposition(const unsigned int i) const;
 
 private:
     Vector3 m_position; ///< ARTrack coordinates in a Vec3d type.
     Quat m_orientation; ///< ARTrack orientation.
     sofa::helper::fixed_array<double,3> m_angles; ///< ARTrack finger angles.
+    sofa::helper::fixed_array<Vector3,3> m_fingersPosition; ///< ARTrack fingers position.
 };
 
 } // namespace objectmodel
