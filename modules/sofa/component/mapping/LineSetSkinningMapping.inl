@@ -219,7 +219,7 @@ void LineSetSkinningMapping<BasicMapping>::draw()
             Vec<3,Real> v = projectToSegment(xfrom[l[0]].getCenter(), xfrom[l[1]].getCenter(), xto[verticeIndex]);
 
 
-            glColor3f (iline.weight, 0 , 1.0-iline.weight);
+            glColor3f ((GLfloat) iline.weight, (GLfloat) 0, (GLfloat) (1.0-iline.weight));
             helper::gl::glVertexT(xto[verticeIndex]);
             helper::gl::glVertexT(v);
 

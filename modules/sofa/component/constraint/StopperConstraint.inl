@@ -53,9 +53,9 @@ void StopperConstraint<DataTypes>::init()
         std::cout<<"no ode_integrator found"<<std::endl;
 
     if ((*this->object->getX())[index.getValue()].x() < min.getValue())
-        (*this->object->getX())[index.getValue()].x() = min.getValue();
+        (*this->object->getX())[index.getValue()].x() = (Real) min.getValue();
     if ((*this->object->getX())[index.getValue()].x() > max.getValue())
-        (*this->object->getX())[index.getValue()].x() = max.getValue();
+        (*this->object->getX())[index.getValue()].x() = (Real) max.getValue();
 
 
 }
