@@ -65,12 +65,15 @@ class SOFA_DEFAULTTYPE_API SolidTypes
 {
 public:
     typedef R Real;
-    typedef defaulttype::Vec<3,Real> Vec;
+    typedef defaulttype::Vec<3,Real> Vec3;
+    typedef Vec3 Vec;  ///< For compatibility
     typedef helper::Quater<Real> Rot;
-    typedef defaulttype::Mat<3,3,Real> Mat;
-    typedef defaulttype::Mat<6,6,Real> Mat66;
-    typedef defaulttype::Vec<6,Real> DOF;
-
+    typedef defaulttype::Mat<3,3,Real> Mat3x3;
+    typedef Mat3x3 Mat; ///< For compatibility
+    typedef defaulttype::Mat<6,6,Real> Mat6x6;
+    typedef Mat6x6 Mat66; ///< For compatibility
+    typedef defaulttype::Vec<6,Real> Vec6;
+    typedef Vec6 DOF; ///< For compatibility
 
 
     /** A spatial vector.
@@ -178,6 +181,32 @@ public:
         }
     };
 
+    /**
+     * \brief A twist aka a SpatialVector representing a velocity
+     * This is pratically a SpatialVector (screw) with the additionnal semantics
+     * that this screw represents a twist (velocity) and not a wrench (force and torque)
+     * @author Anthony Truchet, CEA, 2006
+     */
+    class Twist : public SpatialVector
+    {
+    public:
+        Twist(const Vec3& linear, const Vec3& angular)
+            : SpatialVector(angular, linear) {}
+    };
+
+    /**
+    	* \brief A wrench aka a SpatialVector representing a force and a torque
+     * This is pratically a SpatialVector (screw) with the additionnal semantics
+     * that this screw represents a wrench (force and torque) and not a twist (velocity)
+     * @author Anthony Truchet, CEA, 2006
+     */
+    class Wrench : public SpatialVector
+    {
+    public:
+        Wrench(const Vec3& force, const Vec3& torque)
+            : SpatialVector(force, torque) {}
+    };
+
     /** Define a frame (child) whith respect to another (parent). A frame represents a local coordinate system.
 
     Internal data represents the orientation of the child wrt the parent, BUT the translation vector represents the origin of the parent with respect to the child. For example, the coordinates M_p of point M in parent given the coordinates M_c of the same point in child are given by: M_p = orientation * ( M_c - origin ). This is due to Featherstone's conventions. Use method setTranslationRotation( const Vec& t, const Rot& q ) to model the Transform the standard way (i.e. translation givne in the parent frame).
@@ -216,7 +245,16 @@ public:
         /// Orientation of the child coordinate axes wrt the parent coordinate axes
         void setOrientation( const Rot& );
         /// Matrix which projects vectors from child coordinates to parent coordinates. The columns of the matrix are the axes of the child base axes in the parent coordinate system.
-        Mat getRotationMatrix() const;
+        Mat3x3 getRotationMatrix() const;
+
+
+        /**
+         * \brief Adjoint matrix to the transform
+         * This matrix transports velocities in twist coordinates from the child frame to the parent frame.
+         * Its inverse transpose does the same for the wrenches
+         */
+        Mat6x6 getAdjointMatrix() const;
+
         /// Project a vector (i.e. a direction or a displacement) from child coordinates to parent coordinates
         Vec projectVector( const Vec& vectorInChild ) const;
         /// Project a point from child coordinates to parent coordinates
@@ -229,7 +267,15 @@ public:
         Transform operator * (const Transform& f2) const;
         /// Combine two transforms. If (*this) locates frame B (child) wrt frame A (parent) and if f2 locates frame C (child) wrt frame B (parent) then the result locates frame C wrt to Frame A.
         Transform& operator *= (const Transform& f2);
-        /// Project a spatial vector from child to parent
+
+        /** Project a spatial vector from child to parent
+        	*  TODO One should handle differently the transformation of a twist and a wrench !
+        	*  This applying the adjoint to velocities or its transpose to wrench :
+        	*  V_parent = Ad . V_child or W_child = Ad^T . W_parent
+        	*  To project a wrench in the child frame to the parent frame you need to do
+        	*  parent_wrench = this->inversed * child_wrench
+        	*  (this doc needs to be douv-ble checked !)
+        	*/
         SpatialVector operator * (const SpatialVector& sv ) const;
         /// Project a spatial vector from parent to child (the inverse of operator *). This method computes (*this).inversed()*sv without inverting (*this).
         SpatialVector operator / (const SpatialVector& sv ) const;

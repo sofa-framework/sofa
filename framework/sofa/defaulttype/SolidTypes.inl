@@ -244,9 +244,9 @@ typename SolidTypes<R>::Vec SolidTypes<R>::Transform::backProjectPoint( const Ve
 }
 
 template<class R>
-typename SolidTypes<R>::Mat SolidTypes<R>::Transform::getRotationMatrix() const
+typename SolidTypes<R>::Mat3x3 SolidTypes<R>::Transform::getRotationMatrix() const
 {
-    Mat m;
+    Mat3x3 m;
     m[0][0] = (1.0f - 2.0f * (orientation_[1] * orientation_[1] + orientation_[2] * orientation_[2]));
     m[0][1] = (2.0f * (orientation_[0] * orientation_[1] - orientation_[2] * orientation_[3]));
     m[0][2] = (2.0f * (orientation_[2] * orientation_[0] + orientation_[1] * orientation_[3]));
@@ -258,6 +258,15 @@ typename SolidTypes<R>::Mat SolidTypes<R>::Transform::getRotationMatrix() const
     m[2][0] = (2.0f * (orientation_[2] * orientation_[0] - orientation_[1] * orientation_[3]));
     m[2][1] = (2.0f * (orientation_[1] * orientation_[2] + orientation_[0] * orientation_[3]));
     m[2][2] = (1.0f - 2.0f * (orientation_[1] * orientation_[1] + orientation_[0] * orientation_[0]));
+    return m;
+}
+
+template<class R>
+typename SolidTypes<R>::Mat6x6 SolidTypes<R>::Transform::getAdjointMatrix() const
+{
+    /// TODO
+    Mat6x6 m;
+
     return m;
 }
 
@@ -286,9 +295,17 @@ typename SolidTypes<R>::Transform& SolidTypes<R>::Transform::operator *= (const 
 template<class R>
 typename SolidTypes<R>::SpatialVector SolidTypes<R>::Transform::operator * (const SpatialVector& sv ) const
 {
+    /*
+       return SpatialVector(
+                  orientation_.rotate(sv.lineVec),
+                  orientation_.rotate(sv.freeVec - cross( origin_, sv.lineVec) )
+              );*/
+
+    //std::cout<<"sv.lineVec"<<sv.lineVec<<" orientation_.rotate(sv.lineVec)"<<orientation_.rotate(sv.lineVec)<<std::endl;
+
     return SpatialVector(
             orientation_.rotate(sv.lineVec),
-            orientation_.rotate(sv.freeVec - cross( origin_, sv.lineVec) )
+            orientation_.rotate( cross(sv.lineVec, origin_ ) + sv.freeVec)
             );
 }
 
@@ -414,7 +431,7 @@ SolidTypes<R>::RigidInertia::RigidInertia()
 {}
 
 template<class R>
-SolidTypes<R>::RigidInertia::RigidInertia( Real m, const Vec& h, const Mat& I ):m(m),h(h),I(I)
+SolidTypes<R>::RigidInertia::RigidInertia( Real m, const Vec& h, const Mat3x3& I ):m(m),h(h),I(I)
 {}
 
 template<class R>
@@ -430,7 +447,7 @@ template<class R>
 typename SolidTypes<R>::RigidInertia SolidTypes<R>::RigidInertia::operator * ( const Transform& t ) const
 {
     Vec h_mr = h - t.getOriginOfParentInChild() * m;
-    Mat E = t.getRotationMatrix();
+    Mat3x3 E = t.getRotationMatrix();
     return RigidInertia(
             m, E*h_mr,
             E*(I+crossM(t.getOriginOfParentInChild())*crossM(h)+crossM(h_mr)*crossM(t.getOriginOfParentInChild()))*(E.transposed()) );
@@ -444,7 +461,7 @@ SolidTypes<R>::ArticulatedInertia::ArticulatedInertia()
 {}
 
 template<class R>
-SolidTypes<R>::ArticulatedInertia::ArticulatedInertia( const Mat& M, const Mat& H, const Mat& I ):M(M),H(H),I(I)
+SolidTypes<R>::ArticulatedInertia::ArticulatedInertia( const Mat3x3& M, const Mat3x3& H, const Mat3x3& I ):M(M),H(H),I(I)
 {}
 
 template<class R>
@@ -525,7 +542,7 @@ void SolidTypes<R>::ArticulatedInertia::copyTo( Mat66& m ) const
 
 
 template<class R>
-typename SolidTypes<R>::Vec SolidTypes<R>::mult( const typename SolidTypes<R>::Mat& m, const typename SolidTypes<R>::Vec& v )
+typename SolidTypes<R>::Vec SolidTypes<R>::mult( const typename SolidTypes<R>::Mat3x3& m, const typename SolidTypes<R>::Vec& v )
 {
     typename SolidTypes<R>::Vec r;
     for( int i=0; i<3; ++i )
@@ -538,7 +555,7 @@ typename SolidTypes<R>::Vec SolidTypes<R>::mult( const typename SolidTypes<R>::M
 }
 
 template<class R>
-typename SolidTypes<R>::Vec SolidTypes<R>::multTrans( const typename SolidTypes<R>::Mat& m, const typename SolidTypes<R>::Vec& v )
+typename SolidTypes<R>::Vec SolidTypes<R>::multTrans( const typename SolidTypes<R>::Mat3x3& m, const typename SolidTypes<R>::Vec& v )
 {
     typename SolidTypes<R>::Vec r;
     for( int i=0; i<3; ++i )
@@ -552,9 +569,9 @@ typename SolidTypes<R>::Vec SolidTypes<R>::multTrans( const typename SolidTypes<
 
 /// Cross product matrix of a vector
 template<class R>
-typename SolidTypes<R>::Mat SolidTypes<R>::crossM( const typename SolidTypes<R>::Vec& v )
+typename SolidTypes<R>::Mat3x3 SolidTypes<R>::crossM( const typename SolidTypes<R>::Vec& v )
 {
-    typename SolidTypes<R>::Mat m;
+    typename SolidTypes<R>::Mat3x3 m;
     m[0][0]=0;
     m[0][1]=-v[2];
     m[0][2]= v[1];
@@ -576,9 +593,9 @@ typename SolidTypes<R>::ArticulatedInertia  SolidTypes<R>::dyad( const SpatialVe
 }
 
 template<class R>
-typename SolidTypes<R>::Mat SolidTypes<R>::dyad( const Vec& u, const Vec& v )
+typename SolidTypes<R>::Mat3x3 SolidTypes<R>::dyad( const Vec& u, const Vec& v )
 {
-    Mat m;
+    Mat3x3 m;
     for( int i=0; i<3; i++ )
         for( int j=0; j<3; j++ )
             m[i][j] = u[i]*v[j];
