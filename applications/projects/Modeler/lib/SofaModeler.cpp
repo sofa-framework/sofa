@@ -176,9 +176,8 @@ SofaModeler::SofaModeler()
 
     //----------------------------------------------------------------------
     //Add plugin manager window. ->load external libs
-    pluginManager = new SofaPluginManager;
-    pluginManager->hide();
-    this->connect(pluginManager->buttonClose, SIGNAL(clicked() ),  this, SLOT( rebuildLibrary() ));
+    SofaPluginManager::getInstance()->hide();
+    this->connect( SofaPluginManager::getInstance()->buttonClose, SIGNAL(clicked() ),  this, SLOT( rebuildLibrary() ));
 
     library->build(exampleFiles);
     changeLibraryLabel(0);
@@ -884,7 +883,7 @@ void SofaModeler::editPaste()
 
 void SofaModeler::showPluginManager()
 {
-    pluginManager->show();
+    SofaPluginManager::getInstance()->show();
 }
 
 

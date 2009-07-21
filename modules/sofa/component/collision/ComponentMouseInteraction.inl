@@ -92,7 +92,7 @@ void TComponentMouseInteraction<DataTypes>::init(Node* node)
 template <class DataTypes>
 bool TComponentMouseInteraction<DataTypes>::isCompatible( core::objectmodel::BaseContext *context) const
 {
-    return dynamic_cast<MouseContainer*>(context->getMechanicalState());
+    return (dynamic_cast<MouseContainer*>(context->getMechanicalState()) != NULL);
 }
 
 

@@ -242,9 +242,6 @@ protected:
     /// Is ready to do a paste operation?
     bool isPasteReady;
 
-    /// plugin manager window
-    SofaPluginManager* pluginManager;
-
     /// Number of components currently displayed in the library
     unsigned int displayComponents;
 
