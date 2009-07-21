@@ -60,6 +60,10 @@ template class SOFA_COMPONENT_CONSTRAINT_API UnilateralInteractionConstraint<Vec
 #endif
 
 
+
+
+
+
 } // namespace constraint
 
 } // namespace component

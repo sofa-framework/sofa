@@ -48,22 +48,22 @@ SOFA_DECL_CLASS(LineSetSkinningMapping)
 int HandMappingClass = core::RegisterObject("skin a model from a set of rigid lines")
 #ifndef SOFA_FLOAT
         .add< LineSetSkinningMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Vec3dTypes> > > >()
-        .add< LineSetSkinningMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3dTypes> > > >()
+//.add< LineSetSkinningMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3dTypes> > > >()
 // .add< LineSetSkinningMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3dTypes> > > >()
-        .add< LineSetSkinningMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3fTypes> > > >()
+//.add< LineSetSkinningMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3fTypes> > > >()
 #endif
 #ifndef SOFA_DOUBLE
         .add< LineSetSkinningMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Vec3fTypes> > > >()
-        .add< LineSetSkinningMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3fTypes> > > >()
+//.add< LineSetSkinningMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3fTypes> > > >()
 // .add< LineSetSkinningMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3dTypes> > > >()
-        .add< LineSetSkinningMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3fTypes> > > >()
+//.add< LineSetSkinningMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3fTypes> > > >()
 #endif
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
         .add< LineSetSkinningMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Vec3fTypes> > > >()
         .add< LineSetSkinningMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Vec3dTypes> > > >()
-        .add< LineSetSkinningMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3fTypes> > > >()
-        .add< LineSetSkinningMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3dTypes> > > >()
+//.add< LineSetSkinningMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3fTypes> > > >()
+//.add< LineSetSkinningMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3dTypes> > > >()
 #endif
 #endif
 //.add< HandMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Vec3dTypes> > > >()
@@ -77,14 +77,14 @@ int HandMappingClass = core::RegisterObject("skin a model from a set of rigid li
 
 #ifndef SOFA_FLOAT
 template class LineSetSkinningMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Vec3dTypes> > >;
-template class LineSetSkinningMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3dTypes> > >;
+//template class LineSetSkinningMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3dTypes> > >;
 // template class LineSetSkinningMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3dTypes> > >;
-template class LineSetSkinningMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3fTypes> > >;
+//template class LineSetSkinningMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3fTypes> > >;
 #endif
 #ifndef SOFA_DOUBLE
 template class LineSetSkinningMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Vec3fTypes> > >;
-template class LineSetSkinningMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3fTypes> > >;
-template class LineSetSkinningMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3fTypes> > >;
+//template class LineSetSkinningMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3fTypes> > >;
+//template class LineSetSkinningMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3fTypes> > >;
 // template class LineSetSkinningMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3dTypes> > >;
 #endif
 
@@ -92,8 +92,8 @@ template class LineSetSkinningMapping< Mapping< State<Rigid3fTypes>, MappedModel
 #ifndef SOFA_DOUBLE
 template class LineSetSkinningMapping< MechanicalMapping< MechanicalState<Rigid3dTypes>, MechanicalState<Vec3fTypes> > >;
 template class LineSetSkinningMapping< MechanicalMapping< MechanicalState<Rigid3fTypes>, MechanicalState<Vec3dTypes> > >;
-template class LineSetSkinningMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3fTypes> > >;
-template class LineSetSkinningMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3dTypes> > >;
+//template class LineSetSkinningMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3fTypes> > >;
+//template class LineSetSkinningMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3dTypes> > >;
 #endif
 #endif
 // Mech -> Mech

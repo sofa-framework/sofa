@@ -52,12 +52,14 @@ int ArticulatedSystemMappingClass = core::RegisterObject("Mapping between a set 
 #ifndef SOFA_DOUBLE
         .add< ArticulatedSystemMapping< MechanicalMapping< MechanicalState<Vec1fTypes>, MechanicalState<Rigid3fTypes> > > >()
 #endif
-#ifndef SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< ArticulatedSystemMapping< MechanicalMapping< MechanicalState<Vec1fTypes>, MechanicalState<Rigid3dTypes> > > >()
-        .add< ArticulatedSystemMapping< MechanicalMapping< MechanicalState<Vec1dTypes>, MechanicalState<Rigid3fTypes> > > >()
-#endif
-#endif
+        /*
+        #ifndef SOFA_FLOAT
+        #ifndef SOFA_DOUBLE
+            .add< ArticulatedSystemMapping< MechanicalMapping< MechanicalState<Vec1fTypes>, MechanicalState<Rigid3dTypes> > > >()
+            .add< ArticulatedSystemMapping< MechanicalMapping< MechanicalState<Vec1dTypes>, MechanicalState<Rigid3fTypes> > > >()
+        #endif
+        #endif
+        */
         ;
 
 #ifndef SOFA_FLOAT
@@ -66,12 +68,14 @@ template class ArticulatedSystemMapping< MechanicalMapping< MechanicalState<Vec1
 #ifndef SOFA_DOUBLE
 template class ArticulatedSystemMapping< MechanicalMapping< MechanicalState<Vec1fTypes>, MechanicalState<Rigid3fTypes> > >;
 #endif
+/*
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
 template class ArticulatedSystemMapping< MechanicalMapping< MechanicalState<Vec1fTypes>, MechanicalState<Rigid3dTypes> > >;
 template class ArticulatedSystemMapping< MechanicalMapping< MechanicalState<Vec1dTypes>, MechanicalState<Rigid3fTypes> > >;
 #endif
 #endif
+*/
 } // namespace mapping
 
 } // namespace component

@@ -48,6 +48,7 @@ namespace mapping
 
 using namespace sofa::defaulttype;
 using namespace sofa::component::container;
+//using namespace sofa::simulation::tree;
 
 template <class BasicMapping>
 class ArticulatedSystemMapping : public BasicMapping, public virtual core::objectmodel::BaseObject
@@ -74,6 +75,11 @@ public:
     typedef typename OutCoord::value_type OutReal;
 
     typedef sofa::core::componentmodel::behavior::MechanicalState<typename Out::DataTypes> InRoot;
+    typedef typename InRoot::VecCoord InRootVecCoord;
+    typedef typename InRoot::VecDeriv InRootVecDeriv;
+    typedef typename InRoot::VecConst InRootVecConst;
+
+    typedef typename core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
 
     InRoot* rootModel;
 

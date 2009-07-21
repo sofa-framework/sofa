@@ -95,6 +95,46 @@ public:
 
     void draw();
 
+    /**
+     * @name
+     */
+    //@{
+    /**
+     * @brief
+     */
+    void propagateX();
+
+    /**
+     * @brief
+     */
+    void propagateXfree();
+
+
+    /**
+     * @brief
+     */
+    void propagateV();
+
+    /**
+     * @brief
+     */
+    void propagateDx();
+
+    /**
+     * @brief
+     */
+    void accumulateForce();
+
+    /**
+     * @brief
+     */
+    void accumulateDf();
+
+    /**
+     * @brief
+     */
+    void accumulateConstraint();
+
 protected:
 
     sofa::core::componentmodel::topology::BaseMeshTopology* t;

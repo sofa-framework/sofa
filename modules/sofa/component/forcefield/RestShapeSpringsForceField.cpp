@@ -107,9 +107,9 @@ void RestShapeSpringsForceField<Rigid3dTypes>::init()
 
 
     const std::string path = external_rest_shape.getValue();
-    this->getContext()->get(restMStateD ,path  );
+    this->getContext()->get(restMState ,path  );
 
-    if(restMStateD == NULL)
+    if(restMState == NULL)
     {
         std::cout<<"do not found any Mechanical state named "<<external_rest_shape.getValue()<<std::endl;
         useRestMState = false;
@@ -117,7 +117,7 @@ void RestShapeSpringsForceField<Rigid3dTypes>::init()
     }
     else
     {
-        std::cout<<"Mechanical state named "<<restMStateD->getName()<< " founded"<<std::endl;
+        std::cout<<"Mechanical state named "<<restMState->getName()<< " founded"<<std::endl;
         useRestMState = true;
         if (external_points.getValue().size()==0)
         {
@@ -125,7 +125,7 @@ void RestShapeSpringsForceField<Rigid3dTypes>::init()
             serr<<"in RestShapeSpringsForceField external_points undefined, external_points assigned automatically "<<sendl;
 
             int pointSize = (int) points.getValue().size();
-            int restMstateSize = (int)  restMStateD->getSize();
+            int restMstateSize = (int)  restMState->getSize();
 
             if (pointSize > restMstateSize)
                 serr<<"ERROR in  RestShapeSpringsForceField<Rigid3fTypes>::init() : extenal_points must be defined !!" <<sendl;
@@ -155,7 +155,7 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addForce(VecDeriv& f, const VecCo
     //const VecCoord& p_0 = *this->mstate->getX0();
     VecCoord p_0;
     if (useRestMState)
-        p_0 = *restMStateD->getX();
+        p_0 = *restMState->getX();
     else
         p_0 = *this->mstate->getX0();
 
@@ -184,8 +184,17 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addForce(VecDeriv& f, const VecCo
         Vec3d dir;
         double angle=0;
         dq.normalize();
+
+        if (dq[3] < 0)
+        {
+            //std::cout<<"WARNING inversion quaternion"<<std::endl;
+            dq = dq * -1.0;
+        }
+
         if (dq[3] < 0.999999999999999)
             dq.quatToAxis(dir, angle);
+
+        //std::cout<<"dq : "<<dq <<"  dir :"<<dir<<"  angle :"<<angle<<std::endl;
         f[index].getVOrientation() -= dir * angle * k_a[i] ;
     }
 
@@ -201,11 +210,15 @@ void RestShapeSpringsForceField<Rigid3dTypes>::addDForce(VecDeriv& df, const Vec
 
     //std::cout<<" kFactor :"<<kFactor<<std::endl;
 
+
+
     for (unsigned int i=0; i<indices.size(); i++)
     {
         df[indices[i]].getVCenter()		 -=  dx[indices[i]].getVCenter()	  * k[i]   * kFactor ;
         df[indices[i]].getVOrientation() -=  dx[indices[i]].getVOrientation() * k_a[i] * kFactor ;
     }
+
+    //serr<<"addDForce : dx="<<dx<<"  - df="<<df<<sendl;
 
 }
 
@@ -323,16 +336,16 @@ void RestShapeSpringsForceField<Rigid3fTypes>::init()
     }
 
     const std::string path = external_rest_shape.getValue();
-    this->getContext()->get(restMStateF ,path  );
+    this->getContext()->get(restMState ,path  );
 
-    if(restMStateF == NULL)
+    if(restMState == NULL)
     {
         std::cout<<"do not found any Mechanical state named "<<external_rest_shape.getValue()<<std::endl;
         useRestMState = false;
     }
     else
     {
-        std::cout<<"Mechanical state named "<<restMStateF->getName()<< " founded"<<std::endl;
+        std::cout<<"Mechanical state named "<<restMState->getName()<< " founded"<<std::endl;
         useRestMState = true;
         if (external_points.getValue().size()==0)
         {
@@ -341,7 +354,7 @@ void RestShapeSpringsForceField<Rigid3fTypes>::init()
 
 
             int pointSize = (int)points.getValue().size();
-            int restMstateSize = (int)  restMStateF->getSize();
+            int restMstateSize = (int)  restMState->getSize();
 
             if (  pointSize>restMstateSize)
                 serr<<"ERROR in  RestShapeSpringsForceField<Rigid3fTypes>::init() : extenal_points must be defined !!" <<sendl;
@@ -365,9 +378,13 @@ void RestShapeSpringsForceField<Rigid3fTypes>::addForce(VecDeriv& f, const VecCo
 {
     VecCoord p_0;
     if (useRestMState)
-        p_0 = *restMStateF->getX();
+        p_0 = *restMState->getX();
     else
         p_0 = *this->mstate->getX0();
+
+
+
+
 
 
 
@@ -392,12 +409,14 @@ void RestShapeSpringsForceField<Rigid3fTypes>::addForce(VecDeriv& f, const VecCo
 
         // rotation
         Quat dq = p[index].getOrientation() * p_0[ext_index].getOrientation().inverse();
-        Vector3 dir;
-        SReal angle=0;
+        Vec3d dir;
+        double angle=0;
         dq.normalize();
         if (dq[3] < 0.999999999999999)
             dq.quatToAxis(dir, angle);
         dq.quatToAxis(dir, angle);
+
+        //std::cout<<"dq : "<<dq <<"  dir :"<<dir<<"  angle :"<<angle<<std::endl;
         f[index].getVOrientation() -= dir * angle * k_a[i] ;
     }
 
@@ -427,7 +446,7 @@ void RestShapeSpringsForceField<Rigid3fTypes>::addKToMatrix(sofa::defaulttype::B
     const VecReal& k = stiffness.getValue();
     const VecReal& k_a = angularStiffness.getValue();
     const int N = 6;
-    std::cout<<"addKToMatrix : N = "<<N<<std::endl;
+    //std::cout<<"addKToMatrix : N = "<<N<<std::endl;
 
     unsigned int curIndex = 0;
 
@@ -452,8 +471,75 @@ void RestShapeSpringsForceField<Rigid3fTypes>::addKToMatrix(sofa::defaulttype::B
 
 }
 
+#endif
+
+#ifndef SOFA_FLOAT
+
+/*
+template<>
+void RestShapeSpringsForceField<Vec3dTypes>::addDForce(VecDeriv& df, const VecDeriv &dx, double kFactor, double )
+{
+	const VecIndex& indices = points.getValue();
+	const VecReal& k = stiffness.getValue();
+
+	if (k.size()!= indices.size() )
+	{
+		sout << "WARNING : stiffness is not defined on each point, first stiffness is used" << sendl;
+
+		for (unsigned int i=0; i<indices.size(); i++)
+		{
+			df[indices[i]] -=  Springs_dir[i]  * k[0] * kFactor * dot(dx[indices[i]], Springs_dir[i]);
+		}
+	}
+	else
+	{
+		for (unsigned int i=0; i<indices.size(); i++)
+		{
+		//	df[ indices[i] ] -=  dx[indices[i]] * k[i] * kFactor ;
+			df[indices[i]] -=   Springs_dir[i]  * k[indices[i]] * kFactor * dot(dx[indices[i]] , Springs_dir[i]);
+		}
+	}
+}
+*/
 
 
+template<>
+void RestShapeSpringsForceField<Vec3dTypes>::draw()
+{
+
+    if (!getContext()->getShowForceFields())
+        return;  /// \todo put this in the parent class
+
+    VecCoord& p_0 = *this->mstate->getX0();
+    if (useRestMState)
+        p_0 = *restMState->getX();
+
+    //std::cout<<"p_0 in draw : "<<p_0<<std::endl;
+
+    VecCoord& p = *this->mstate->getX();
+
+
+    const VecIndex& indices = points.getValue();
+    const VecIndex& ext_indices=external_points.getValue();
+
+
+    for (unsigned int i=0; i<indices.size(); i++)
+    {
+        const unsigned int index = indices[i];
+        const unsigned int ext_index = ext_indices[i];
+
+        glDisable(GL_LIGHTING);
+        glBegin(GL_LINES);
+        glColor3f(0,1,0);
+
+        glVertex3f( (GLfloat)p[index][0], (GLfloat)p[index][1], (GLfloat)p[index][2] );
+        glVertex3f( (GLfloat)p_0[ext_index][0], (GLfloat)p_0[ext_index][1], (GLfloat)p_0[ext_index][2] );
+
+        glEnd();
+    }
+
+
+}
 #endif
 
 

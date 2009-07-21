@@ -48,7 +48,7 @@ using simulation::Node;
 template < class TCollisionModel1, class TCollisionModel2 >
 FrictionContact<TCollisionModel1,TCollisionModel2>::FrictionContact(CollisionModel1* model1, CollisionModel2* model2, Intersection* intersectionMethod)
     : model1(model1), model2(model2), intersectionMethod(intersectionMethod), c(NULL), parent(NULL)
-    , mu (initData(&mu, 0.1, "mu", "friction coefficient (0 for frictionless contacts)"))
+    , mu (initData(&mu, 0.8, "mu", "friction coefficient (0 for frictionless contacts)"))
 {
     selfCollision = ((core::CollisionModel*)model1 == (core::CollisionModel*)model2);
     mapper1.setCollisionModel(model1);
