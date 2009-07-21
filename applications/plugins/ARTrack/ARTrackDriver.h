@@ -58,6 +58,12 @@ public:
 
     virtual void init();
 
+    virtual void reinit();
+
+
+    Data<double> aRTrackScale;
+    Data<Vector3> localTrackerPos;
+
 private:
 
     class dataARTrackClass
@@ -73,8 +79,11 @@ private:
         int nglove;
         dtracklib_glove_type glove[MAX_NGLOVE];
         Vector3 wristInitPos, wirstTranslation;
-        sofa::helper::fixed_array<double,3> angle_finger;
+        sofa::helper::fixed_array<double,3> angle_finger, rest_angle_finger;
         Quat wristRotation;
+        sofa::helper::fixed_array<Vector3,3> fingersGlobalPos;
+        double aRTrackScale;
+        Vector3 localTrackerPos;
 #ifndef WIN32
         pthread_mutex_t mutex;
 #else

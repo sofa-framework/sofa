@@ -50,6 +50,22 @@ void ARTrackController<Vec1dTypes>::init()
     getContext()->get<sofa::component::container::ArticulatedHierarchyContainer::ArticulationCenter::Articulation>(&articulations);
 }
 
+template <>
+void ARTrackController<Vec3dTypes>::onARTrackEvent(core::objectmodel::ARTrackEvent *aev)
+{
+    if(mstate)
+    {
+        if(!(*mstate->getXfree()).empty() && !(*mstate->getX()).empty())
+        {
+            for (unsigned int i=0; i<3; ++i)
+            {
+                std::cout<<"finger["<<i<<"] = "<<aev->getFingerposition(i)<<std::endl;
+                (*mstate->getXfree())[i] = aev->getFingerposition(i);
+                (*mstate->getX())[i] = aev->getFingerposition(i);
+            }
+        }
+    }
+}
 
 template <>
 void ARTrackController<RigidTypes>::onARTrackEvent(core::objectmodel::ARTrackEvent *aev)
@@ -58,11 +74,18 @@ void ARTrackController<RigidTypes>::onARTrackEvent(core::objectmodel::ARTrackEve
     {
         if(!(*mstate->getXfree()).empty() && !(*mstate->getX()).empty())
         {
+            if(f_printLog.getValue())
+                std::cout<<" aev pos :"<<aev->getPosition()<<" aev quat :"<<aev->getOrientation()<<std::endl;
+
             (*mstate->getXfree())[0].getCenter() = aev->getPosition();
             (*mstate->getX())[0].getCenter() = aev->getPosition();
 
             (*mstate->getXfree())[0].getOrientation() = aev->getOrientation();
             (*mstate->getX())[0].getOrientation() = aev->getOrientation();
+
+            (*mstate->getXfree())[0].getOrientation().normalize();
+            (*mstate->getX())[0].getOrientation().normalize();
+
         }
     }
 }
@@ -74,37 +97,42 @@ void ARTrackController<Vec1dTypes>::onARTrackEvent(core::objectmodel::ARTrackEve
     {
         if(!(*mstate->getXfree()).empty() && !(*mstate->getX()).empty())
         {
+
+            if(f_printLog.getValue())
+                std::cout<<"pouce :"<<aev->getAngles()[0]<<"  index:"<<aev->getAngles()[1]<<"  autres:"<<aev->getAngles()[2]<<std::endl;
+
+
             for (unsigned int i=6; i<9; ++i) // thumb
             {
-                (*mstate->getXfree())[i] = aev->getAngles()[0];// * articulations[i]->coeff.getValue() - articulations[i]->correction.getValue();
+                (*mstate->getX0())[i].x() = (aev->getAngles()[0]);// * articulations[i]->coeff.getValue() - articulations[i]->correction.getValue();
 
-                if((*mstate->getXfree())[i].x()<0)
-                {
-                    (*mstate->getXfree())[i] = 0.0;
-                    (*mstate->getX())[i] = 0.0;
-                }
+                /* if((*mstate->getX0())[i].x()<0)
+                 {
+                     (*mstate->getX0())[i] = 0.0;
+                     (*mstate->getX())[i] = 0.0;
+                 }*/
             }
 
             for (unsigned int i=9; i<12; ++i) // index
             {
-                (*mstate->getXfree())[i] = aev->getAngles()[1];// * articulations[i]->coeff.getValue() - articulations[i]->correction.getValue();
+                (*mstate->getX0())[i].x() = (aev->getAngles()[1]);// * articulations[i]->coeff.getValue() - articulations[i]->correction.getValue();
 
-                if((*mstate->getXfree())[i].x()<0)
-                {
-                    (*mstate->getXfree())[i] = 0.0;
-                    (*mstate->getX())[i] = 0.0;
-                }
+                /* if((*mstate->getX0())[i].x()<0)
+                 {
+                     (*mstate->getX0())[i] = 0.0;
+                     (*mstate->getX())[i] = 0.0;
+                 }*/
             }
 
             for(unsigned int i=12; i<21; ++i) // middle, ring, little.
             {
-                (*mstate->getXfree())[i] = aev->getAngles()[2];// * articulations[i]->coeff.getValue() - articulations[i]->correction.getValue();
+                (*mstate->getX0())[i].x() = (aev->getAngles()[2]);// * articulations[i]->coeff.getValue() - articulations[i]->correction.getValue();
 
-                if((*mstate->getXfree())[i].x()<0)
+                /*if((*mstate->getX0())[i].x()<0)
                 {
-                    (*mstate->getXfree())[i] = 0.0;
+                    (*mstate->getX0())[i] = 0.0;
                     (*mstate->getX())[i] = 0.0;
-                }
+                }*/
             }
         }
     }

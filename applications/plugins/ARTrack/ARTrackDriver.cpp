@@ -47,11 +47,22 @@ int ARTrackDriverClass = core::RegisterObject("Driver for ARTrack system")
 
 
 ARTrackDriver::ARTrackDriver()
+    : aRTrackScale( initData(&aRTrackScale,double(1.0),"aRTrackScale","ARTrack scale") )
+    , localTrackerPos( initData(&localTrackerPos,Vector3(0,0,0),"localTrackerPos","Local tracker position") )
 {
+}
+
+void ARTrackDriver::reinit()
+{
+    dataARTrack.aRTrackScale = aRTrackScale.getValue();
+    dataARTrack.localTrackerPos = localTrackerPos.getValue();
 }
 
 void ARTrackDriver::init()
 {
+    dataARTrack.aRTrackScale = aRTrackScale.getValue();
+    dataARTrack.localTrackerPos = localTrackerPos.getValue();
+
     initARTrack();
 
     if(!dtracklib_receive(dataARTrack.handle,&dataARTrack.framenr, &dataARTrack.timestamp,NULL, NULL, 0, 0,NULL, 0, 0,NULL, 0, 0,
@@ -66,6 +77,12 @@ void ARTrackDriver::init()
     }
 
     dataARTrack.wristInitPos = dataARTrack.glove[0].loc;
+
+    for (unsigned int i=0; i<dataARTrack.rest_angle_finger.size(); ++i)
+        dataARTrack.rest_angle_finger[i] = dataARTrack.glove[0].finger[i].anglephalanx[1];
+//    for (unsigned int i=0; i<dataARTrack.fingersInitPos.size(); ++i)
+//		dataARTrack.fingersInitPos[i] = dataARTrack.glove[0].finger[i].loc;
+
 
 #ifdef WIN32
     threadID = _beginthread( ARTrackDriver::computeTracking, 0, &dataARTrack);
@@ -92,17 +109,18 @@ void ARTrackDriver::initARTrack()
         std::cout << "dtracklib init error" << std::endl;
         std::cout << "check that the tracker is opened and started (listening)" << std::endl;
     }
+    /*
+        if(!dtracklib_send(dataARTrack.handle, DTRACKLIB_CMD_CAMERAS_AND_CALC_ON, 0))
+        {
+            std::cout << "dtracklib send command error" << std::endl;
+        }
 
-    if(!dtracklib_send(dataARTrack.handle, DTRACKLIB_CMD_CAMERAS_AND_CALC_ON, 0))
-    {
-        std::cout << "dtracklib send command error" << std::endl;
-    }
 
-
-    if(!dtracklib_send(dataARTrack.handle, DTRACKLIB_CMD_SEND_DATA, 0))
-    {
-        std::cout << "dtracklib send command error" << std::endl;
-    }
+        if(!dtracklib_send(dataARTrack.handle, DTRACKLIB_CMD_SEND_DATA, 0))
+        {
+            std::cout << "dtracklib send command error" << std::endl;
+        }
+    	*/
 }
 
 #ifdef WIN32
@@ -111,6 +129,11 @@ void ARTrackDriver::computeTracking(void *sarg)
 void* ARTrackDriver::computeTracking(void *sarg)
 #endif
 {
+    Vector3 wirstCurrentPos, wirstfilteredPos, tempPos;
+    Mat3x3d T(Vector3(0.0,0.0,-1.0), Vector3(-1.0,0.0,0.0), Vector3(0.0,1.0,0.0));
+    Mat3x3d wirstRotMat;
+    sofa::helper::fixed_array<Vector3,3> fingersLocalPos;
+
     dataARTrackClass *arg = (dataARTrackClass*)sarg;
 
     while(true)
@@ -125,10 +148,6 @@ void* ARTrackDriver::computeTracking(void *sarg)
             if(dtracklib_parseerror(arg->handle))
                 std::cout << "--- error while parsing udp data" << std::endl;
         }
-
-        Vector3 wirstCurrentPos, wirstfilteredPos;
-        Mat3x3d T(Vector3(0.0,0.0,-1.0), Vector3(-1.0,0.0,0.0), Vector3(0.0,1.0,0.0));
-        Mat3x3d wirstRotMat;
 
         for (int i=0; i<3; i++)
             for (int j=0; j<3; j++)
@@ -161,7 +180,21 @@ void* ARTrackDriver::computeTracking(void *sarg)
 
         arg->wirstTranslation = wirstfilteredPos - arg->wristInitPos;
         for (unsigned int i=0; i<arg->angle_finger.size(); ++i)
-            arg->angle_finger[i] = arg->glove[0].finger[i].anglephalanx[1];
+        {
+//			std::cout<<"angle finger["<<i<<"] = "<<arg->glove[0].finger[i].anglephalanx[1]<<std::endl;
+            arg->angle_finger[i] = (arg->glove[0].finger[i].anglephalanx[1] - arg->rest_angle_finger[i]) * 0.017444; // *pi/180
+        }
+
+        for (unsigned int i=0; i<fingersLocalPos.size(); ++i)
+        {
+            fingersLocalPos[i] = arg->glove[0].finger[i].loc;
+            tempPos[0] = -fingersLocalPos[i][1];
+            tempPos[1] = fingersLocalPos[i][2];
+            tempPos[2] = -fingersLocalPos[i][0];
+            tempPos *= arg->aRTrackScale;
+            tempPos += arg->localTrackerPos;
+            arg->fingersGlobalPos[i] = arg->wristRotation.rotate(tempPos) + arg->wirstTranslation;
+        }
 
 #ifdef WIN32
         ReleaseMutex(arg->mutex);
@@ -175,11 +208,12 @@ void* ARTrackDriver::computeTracking(void *sarg)
 }
 
 
+
 void ARTrackDriver::handleEvent(core::objectmodel::Event *event)
 {
     if (dynamic_cast<sofa::simulation::AnimateBeginEvent *>(event))
     {
-        core::objectmodel::ARTrackEvent aRTrackEvent(dataARTrack.wirstTranslation, dataARTrack.wristRotation, dataARTrack.angle_finger);
+        core::objectmodel::ARTrackEvent aRTrackEvent(dataARTrack.wirstTranslation, dataARTrack.wristRotation, dataARTrack.angle_finger, dataARTrack.fingersGlobalPos);
         this->getContext()->propagateEvent(&aRTrackEvent);
     }
 }
