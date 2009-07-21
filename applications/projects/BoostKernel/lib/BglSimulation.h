@@ -41,24 +41,9 @@
 #include "BglGraphManager.h"
 
 #include <sofa/simulation/common/Simulation.h>
-#include <sofa/core/componentmodel/behavior/BaseMechanicalMapping.h>
-#include <sofa/core/componentmodel/behavior/InteractionForceField.h>
-#include <sofa/core/componentmodel/behavior/InteractionConstraint.h>
-
-
-#include <sofa/core/componentmodel/behavior/MasterSolver.h>
-#include <sofa/core/componentmodel/behavior/OdeSolver.h>
-#include <sofa/core/componentmodel/behavior/LinearSolver.h>
-
-#include <sofa/core/BaseMapping.h>
-#include <sofa/core/VisualModel.h>
 #include <sofa/helper/gl/VisualParameters.h>
 #include <sofa/helper/vector.h>
 #include <map>
-
-using sofa::core::componentmodel::behavior::MasterSolver;
-using sofa::core::componentmodel::behavior::OdeSolver;
-using sofa::core::componentmodel::behavior::LinearSolver;
 
 namespace sofa
 {
@@ -75,20 +60,7 @@ using sofa::simulation::Node;
 /// SOFA scene implemented using bgl graphs and with high-level modeling and animation methods.
 class BglSimulation : public sofa::simulation::Simulation
 {
-public:
-    typedef BglGraphManager::Hgraph Hgraph;
-    typedef BglGraphManager::Hvertex Hvertex;
-    typedef BglGraphManager::Rvertex Rvertex;
-    typedef BglGraphManager::Hedge Hedge;
-    typedef BglGraphManager::Redge Redge;
-    typedef BglGraphManager::InteractionData InteractionData;
-
-    /* 	typedef BglNode Node;     ///< sofa simulation node */
-    typedef sofa::core::componentmodel::behavior::InteractionForceField InteractionForceField;
-    typedef sofa::core::componentmodel::behavior::InteractionConstraint InteractionConstraint;
-    typedef sofa::core::componentmodel::collision::Pipeline CollisionPipeline;
-    typedef sofa::core::BaseMapping Mapping;
-    typedef sofa::core::VisualModel VisualModel;
+public:	typedef sofa::core::componentmodel::collision::Pipeline CollisionPipeline;
 
     ///@}
 
@@ -110,42 +82,10 @@ public:
 
 
 
-    /// Method called when a MechanicalMapping is created.
-    void setMechanicalMapping(Node *child, core::componentmodel::behavior::BaseMechanicalMapping *m);
-    /// Method called when a MechanicalMapping is destroyed.
-    void resetMechanicalMapping(Node *child, core::componentmodel::behavior::BaseMechanicalMapping *m);
-
-    /// Method called when a MechanicalMapping is created.
-    void setContactResponse(Node * parent, core::objectmodel::BaseObject* response);
-    /// Method called when a MechanicalMapping is destroyed.
-    void resetContactResponse(Node * parent, core::objectmodel::BaseObject* response);
-
     void clear();
 
 
-
-    /// Add a Solver working inside a given Node
-    void addSolver(BaseObject*,Node* n);
-
-    /// Add an interaction
-    void addInteraction( Node* n1, Node* n2, BaseObject* );
-
-    /* 	/// Add an interaction */
-    void addInteractionNow( InteractionData &i);
-
-    /// Remove an interaction
-    void removeInteraction( BaseObject* );
-    /// Insert a node previously created, into the graph
-    void insertNewNode(Node *n);
-
     void reset ( Node* root );
-
-    // Node dynamical access
-    /// Add a node to as the child of another
-    void addNode(BglNode* parent, BglNode* child);
-
-    /// Delete a graph node and all the edges, and entries in map
-    void deleteNode( Node* n);
 
 
     /// Initialize all the nodes and edges depth-first

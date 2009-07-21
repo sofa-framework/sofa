@@ -185,6 +185,9 @@ public:
     // Node dynamical access
     /// Add a node to as the child of another
     void addNode(BglNode* parent, BglNode* child);
+    // Node dynamical access
+    /// Add a node in the boost graph
+    void addNode(BglNode* node);
 
     /// Delete a graph node and all the edges, and entries in map
     void deleteNode( Node* n);
@@ -209,28 +212,8 @@ public:
     /// depth visit starting from the given vertex
     void dfv( Hvertex, Visitor& );
 
-    Node* getNodeFromHvertex(Hvertex h);
-    Node* getNodeFromRvertex(Rvertex r);
 
     std::set< Node*> &getSolverNode() {return nodeSolvers;}
-
-    void  removeVertex(Hvertex p);
-    void  addEdge(Hvertex p, Hvertex c);
-    Hedge addHedge(Hvertex parent, Hvertex child);
-    Redge addRedge(Rvertex parent, Rvertex child);
-    void  removeEdge(Hvertex p, Hvertex c);
-    void  removeHedge(Hvertex parent, Hvertex child);
-    void  removeRedge(Rvertex parent, Rvertex child);
-
-    /// Delete the hgraph node and rgraph node and all the edges, and entries in map
-    void  deleteVertex( Hvertex v);
-    /// Delete the hgraph node and all the edges, and entries in map
-    void deleteHvertex( Hvertex n);
-    /// Delete the rgraph node and all the edges, and entries in map
-    void deleteRvertex( Rvertex n);
-
-    void  clearVertex(Hvertex v);
-
 
     //Dynamic creation of edges
     void addEdge(Node *p, Node*c);
@@ -272,12 +255,12 @@ public:
     void mechanicalStep(Node* root, double dt=0.0);
 
     void insertHierarchicalGraph();
-    void insertVisualGraph();
-    void insertCollisionGraph();
 
     void clearMasterVertex() {clearVertex(masterVertex);}
 
 
+    Node* getNodeFromHvertex(Hvertex h);
+    Node* getNodeFromRvertex(Rvertex r);
 
     Hgraph hgraph;             ///< the directed acyclic graph representing system dependencies (edges correspond to mappings)
     Rgraph rgraph;             ///< The reverse graph
@@ -290,6 +273,24 @@ public:
     bool hasCollisionGroupManager;
 protected:
 
+    void  removeVertex(Hvertex p);
+    void  addEdge(Hvertex p, Hvertex c);
+    Hedge addHedge(Hvertex parent, Hvertex child);
+    Redge addRedge(Rvertex parent, Rvertex child);
+    void  removeEdge(Hvertex p, Hvertex c);
+    void  removeHedge(Hvertex parent, Hvertex child);
+    void  removeRedge(Rvertex parent, Rvertex child);
+
+    /// Delete the hgraph node and rgraph node and all the edges, and entries in map
+    void  deleteVertex( Hvertex v);
+    /// Delete the hgraph node and all the edges, and entries in map
+    void deleteHvertex( Hvertex n);
+    /// Delete the rgraph node and all the edges, and entries in map
+    void deleteRvertex( Rvertex n);
+
+    void  clearVertex(Hvertex v);
+
+
 
     BglNode* masterNode;
     Hvertex masterVertex;
@@ -301,13 +302,6 @@ protected:
     HvertexVector visualroots;      ///< the roots of the visual graph
     HvertexVector collisionroots;   ///< the roots of the collision graph
     //H_vertex_node_const_map h_vertex_node_const_map;           ///< hvertex->sofa node
-
-
-    Igraph igraph;                           ///< the interaction graph
-    I_vertex_node_map      i_vertex_node_map;
-    I_node_vertex_map      i_node_vertex_map;
-    I_edge_interaction_map i_edge_interaction_map;           ///< iedge->sofa interaction force field
-    I_interaction_edge_map i_interaction_edge_map;                       ///< sofa interaction force field->iedge
 
 
     Interactions interactions;            ///< interactions between nodes at at any hierarchical levels

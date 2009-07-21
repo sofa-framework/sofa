@@ -349,7 +349,11 @@ void BglNode::doExecuteVisitor( Visitor* vis )
 /// Note that the template wrapper method should generally be used to have the correct return type,
 void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir) const
 {
-    if (graphManager->isNodeCreated(this)) return NULL;//std::cerr << "ERROR !!!!!\n";
+    if (graphManager->isNodeCreated(this))
+    {
+        std::cerr << "ERROR !!!!! Node " << this->getName() << " still not initialized\n";
+        return NULL;
+    }
     GetObjectVisitor getobj(class_info);
     getobj.setTags(tags);
     if ( dir == SearchDown )

@@ -109,43 +109,6 @@ Node* BglSimulation::newNode(const std::string& name)
     return graphManager.newNode(name);
 }
 
-void BglSimulation::insertNewNode(Node *n)
-{
-    graphManager.insertNewNode(n);
-}
-
-
-
-
-/// Add a node to as the child of another
-void BglSimulation::addNode(BglNode* parent, BglNode* child)
-{
-    graphManager.addNode(parent,child);
-}
-void BglSimulation::deleteNode( Node* n)
-{
-    graphManager.deleteNode(n);
-}
-
-
-
-
-void BglSimulation::addInteraction( Node* n1, Node* n2, BaseObject* iff )
-{
-    graphManager.addInteraction(n1,n2,iff);
-}
-
-void BglSimulation::addInteractionNow( InteractionData &i )
-{
-    graphManager.addInteractionNow(i);
-}
-
-void BglSimulation::removeInteraction( BaseObject* iff )
-{
-    graphManager.removeInteraction(iff);
-}
-
-
 
 //
 //      void BglSimulation::setSolverOfCollisionGroup(Node* solverNode, Node* solverOfCollisionGroup)
@@ -171,6 +134,7 @@ void BglSimulation::init()
 
     InitVisitor act;
     graphManager.getMasterNode()->doExecuteVisitor(&act);
+    setContext( graphManager.getMasterNode()->getContext());
 
 //         /// compute the interaction groups
     graphManager.computeInteractionGraphAndConnectedComponents();
@@ -236,53 +200,6 @@ void BglSimulation::animate(Node* root, double dt)
 void BglSimulation::computeBBox(Node* /*root*/, SReal* minBBox, SReal* maxBBox)
 {
     sofa::simulation::Simulation::computeBBox(graphManager.getMasterNode(),minBBox,maxBBox);
-}
-
-
-/// Method called when a MechanicalMapping is created.
-void BglSimulation::setMechanicalMapping(Node* , core::componentmodel::behavior::BaseMechanicalMapping* m )
-{
-    Node *from=(Node*)m->getMechFrom()->getContext();
-    Node *to=(Node*)m->getMechTo()->getContext();
-    graphManager.addEdge(from, to);
-}
-/// Method called when a MechanicalMapping is destroyed.
-void BglSimulation::resetMechanicalMapping(Node* , core::componentmodel::behavior::BaseMechanicalMapping* m )
-{
-
-    Node *from=(Node*)m->getMechFrom()->getContext();
-    Node *to=(Node*)m->getMechTo()->getContext();
-
-    graphManager.removeEdge(from, to);
-}
-
-/// Method called when a MechanicalMapping is created.
-void BglSimulation::setContactResponse(Node * /*parent*/, core::objectmodel::BaseObject* response)
-{
-    if (InteractionForceField *iff = dynamic_cast<InteractionForceField*>(response))
-    {
-        graphManager.addInteraction( (Node*)iff->getMechModel1()->getContext(),
-                (Node*)iff->getMechModel2()->getContext(),
-                iff);
-    }
-    else if ( InteractionConstraint *ic = dynamic_cast<InteractionConstraint*>(response))
-    {
-        graphManager.addInteraction( (Node*)ic->getMechModel1()->getContext(),
-                (Node*)ic->getMechModel2()->getContext(),
-                ic);
-    }
-}
-/// Method called when a MechanicalMapping is destroyed.
-void BglSimulation::resetContactResponse(Node * /*parent*/, core::objectmodel::BaseObject* response)
-{
-    if (InteractionForceField *iff = dynamic_cast<InteractionForceField*>(response))
-    {
-        graphManager.removeInteraction(iff);
-    }
-    else if (InteractionConstraint *ic = dynamic_cast<InteractionConstraint*>(response))
-    {
-        graphManager.removeInteraction(ic);
-    }
 }
 
 

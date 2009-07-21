@@ -88,29 +88,6 @@ void BglGraphManager::insertHierarchicalGraph()
     }
 }
 
-void BglGraphManager::insertCollisionGraph()
-{
-    for (HvertexVector::iterator i=collisionroots.begin(), iend=collisionroots.end(); i!=iend; i++ )
-    {
-        //Link all the nodes to the MasterNode, in ordre to propagate the Context
-        Hgraph::edge_descriptor e1; bool found=false;
-        tie(e1,found) = edge(masterVertex, *i,hgraph);
-        if (!found) addEdge( masterVertex, *i); // add nodes
-    }
-}
-
-void BglGraphManager::insertVisualGraph()
-{
-    for (HvertexVector::iterator i=visualroots.begin(), iend=visualroots.end(); i!=iend; i++ )
-    {
-        //Link all the nodes to the MasterNode, in ordre to propagate the Context
-        Hgraph::edge_descriptor e1; bool found=false;
-        tie(e1,found) = edge(masterVertex, *i,hgraph);
-        if (!found) addEdge( masterVertex, *i); // add nodes
-    }
-}
-
-
 
 BglGraphManager::Rvertex BglGraphManager::convertHvertex2Rvertex(Hvertex v)
 {
@@ -254,10 +231,22 @@ void BglGraphManager::updateGraph()
     for (std::set<Hvertex>::iterator it=vertexToDelete.begin(); it!=vertexToDelete.end(); it++) deleteVertex(*it);
     for (unsigned int i=0; i<nodeToAdd.size() ; i++)               insertNewNode(nodeToAdd[i]);
     std::set< std::pair< Node*, Node*> >::iterator itEdge;
-    for (itEdge=edgeToAdd.begin(); itEdge!=edgeToAdd.end(); itEdge++) addEdge(h_node_vertex_map[ itEdge->first],h_node_vertex_map[ itEdge->second]);
+    for (itEdge=edgeToAdd.begin(); itEdge!=edgeToAdd.end(); itEdge++)
+    {
+        if (itEdge->first != masterNode && !h_node_vertex_map[itEdge->first])
+        {
+            addNode(static_cast<BglNode*>(itEdge->first));
+        }
+        if (itEdge->first != masterNode && !h_node_vertex_map[itEdge->second])
+        {
+            addNode(static_cast<BglNode*>(itEdge->second));
+        }
+        addEdge(h_node_vertex_map[ itEdge->first],h_node_vertex_map[ itEdge->second]);
+    }
     for (unsigned int i=0; i<interactionToAdd.size(); i++)         addInteractionNow(interactionToAdd[i]);
 
-    if (vertexToDelete.size() || nodeToAdd.size()) computeRoots();
+    if (vertexToDelete.size() || nodeToAdd.size() || edgeToAdd.size()) computeRoots();
+
 
     vertexToDelete.clear();
     nodeToAdd.clear();
@@ -273,6 +262,23 @@ void BglGraphManager::update()
 
 }
 
+
+
+void BglGraphManager::addNode(BglNode *node)
+{
+    // Each BglNode needs a vertex in hgraph
+    Hvertex hnode =  add_vertex( hgraph);
+    node->graphManager = this;
+    node->vertexId = hnode;
+    node->graph = &hgraph;
+
+    h_vertex_node_map[hnode] = node;
+    h_node_vertex_map[node] = hnode;
+
+    Rvertex rnode = add_vertex( rgraph );
+    r_vertex_node_map[rnode] = node;
+    r_node_vertex_map[node] = rnode;
+}
 
 Node* BglGraphManager::newNodeNow(const std::string& name)
 {
@@ -347,16 +353,13 @@ void BglGraphManager::clear()
 /// Create a graph node and attach a new Node to it, then return the Node
 Node* BglGraphManager::newNode(const std::string& name)
 {
-//         std::cerr << "new Node : " << name << "\n";
     BglNode* s  = new BglNode(this,name);
     nodeToAdd.push_back(s);
-//         std::cerr << "\t @" << s << "\n";
     return s;
 }
 
 void BglGraphManager::insertNewNode(Node *n)
 {
-//         std::cerr << "Effectively add " << n->getName() << "\n";
     BglNode *bglN = static_cast<BglNode*>(n);
     //Effectively create a vertex in the graph
     Hvertex hnode=add_vertex(hgraph);
@@ -387,19 +390,6 @@ void BglGraphManager::setSolverOfCollisionGroup(Node* solverNode, Node* solverOf
 //         std::cerr << "Inserting " << solverOfCollisionGroup->getName() << "\n";
 }
 
-bool BglGraphManager::isVisualRoot(Node* n)
-{
-    if (!n ||
-        !n->visualModel.empty()) return true;
-    return false;
-}
-bool BglGraphManager::isCollisionRoot(Node* n)
-{
-    if (!n ||
-        !n->collisionModel.empty()) return true;
-    return false;
-}
-
 
 /// Add a node to as the child of another
 void BglGraphManager::addNode(BglNode* parent, BglNode* child)
@@ -426,7 +416,7 @@ void BglGraphManager::addInteraction( Node* n1, Node* n2, BaseObject* iff )
 
 void BglGraphManager::addInteractionNow( InteractionData &i )
 {
-    interactions.push_back( Interaction(h_node_vertex_map[i.n1], h_node_vertex_map[i.n2],i.iff));
+    if (i.n1 != i.n2) interactions.push_back( Interaction(h_node_vertex_map[i.n1], h_node_vertex_map[i.n2],i.iff));
 }
 
 void BglGraphManager::removeInteraction( BaseObject* iff )
@@ -507,6 +497,16 @@ Data: hroots, interactions
     */
 void BglGraphManager::computeInteractionGraphAndConnectedComponents()
 {
+
+    ///< the interaction graph
+    Igraph igraph;
+    I_vertex_node_map      i_vertex_node_map;
+    I_node_vertex_map      i_node_vertex_map;
+    ///< iedge->sofa interaction force field
+    I_edge_interaction_map i_edge_interaction_map;
+    ///< sofa interaction force field->iedge
+    I_interaction_edge_map i_interaction_edge_map;
+
 
     i_vertex_node_map = get( bglnode_t(), igraph);
     i_edge_interaction_map = get( interaction_t(), igraph );
@@ -613,9 +613,10 @@ void BglGraphManager::computeInteractionGraphAndConnectedComponents()
 
 void BglGraphManager::computeRoots()
 {
+
     /// find the roots in hgraph
     hroots.clear();
-    visualroots.clear();
+//             visualroots.clear();
 //             collisionroots.clear();
     for ( Hvpair iter=boost::vertices(hgraph); iter.first!=iter.second; iter.first++)
     {
@@ -624,15 +625,18 @@ void BglGraphManager::computeRoots()
         if (!vNode) continue;
 
 
+
         unsigned int degree = in_degree (*iter.first,hgraph);
         if (degree==0 && *iter.first != masterVertex)
         {
+//                     std::cerr << degree << " : " << degree << " ## " << vNode->getName() << "\n";
             hroots.push_back(*iter.first);
         }
 
-        if (isVisualRoot(vNode)) visualroots.push_back(*iter.first);
+//                 if (isVisualRoot(vNode)) visualroots.push_back(*iter.first);
 //                 if (isCollisionRoot(vNode)) collisionroots.push_back(*iter.first);
     }
+
 }
 
 /// Perform the collision detection
@@ -676,7 +680,7 @@ void BglGraphManager::mechanicalStep(Node* root, double dt)
         {
             Hvertex currentVertex = group.first[j];
             Node   *currentNode   = h_vertex_node_map[ currentVertex ];
-
+            if (!currentNode) continue;
             //No solver Found: we link it to the masterNode
             if (nodeSolvers.find( currentNode )      == nodeSolvers.end() &&
                 nodeGroupSolvers.find( currentNode ) == nodeGroupSolvers.end())
