@@ -123,18 +123,9 @@ Node* BglSimulation::newNode(const std::string& name)
 Data: hgraph, rgraph
  Result: hroots, interaction groups, all nodes initialized.
     */
-void BglSimulation::init()
+void BglSimulation::init(Node* root )
 {
-    graphManager.update();
-
-    /// find the roots in hgraph
-    graphManager.computeRoots();
-
-    graphManager.insertHierarchicalGraph();
-
-    InitVisitor act;
-    graphManager.getMasterNode()->doExecuteVisitor(&act);
-    setContext( graphManager.getMasterNode()->getContext());
+    Simulation::init(root);
 
 //         /// compute the interaction groups
     graphManager.computeInteractionGraphAndConnectedComponents();
@@ -251,7 +242,13 @@ Node* BglSimulation::load(const char* f)
     const sofa::core::objectmodel::Context &c = *( (sofa::core::objectmodel::Context*)groot->getContext());
     masterNode->copyContext(c);
 
-    init();
+    graphManager.update();
+
+    /// find the roots in hgraph
+    graphManager.computeRoots();
+
+    graphManager.insertHierarchicalGraph();
+
     return masterNode;
 }
 

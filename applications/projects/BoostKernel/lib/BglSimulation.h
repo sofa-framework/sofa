@@ -89,7 +89,7 @@ public:	typedef sofa::core::componentmodel::collision::Pipeline CollisionPipelin
 
 
     /// Initialize all the nodes and edges depth-first
-    void init();
+    void init(Node* root);
 
 
     /// Animate all the nodes depth-first
