@@ -1101,8 +1101,8 @@ bool LocalMinDistance::testValidity(Point &p, const Vector3 &PQ)
 
     if (nMean.norm()> 0.0000000001)
         nMean.normalize();
-    else
-        std::cerr<<"WARNING nMean is null"<<std::endl;
+    //else
+    //	std::cerr<<"WARNING nMean is null"<<std::endl;
 
 
     for (unsigned int i=0; i<edgesAroundVertex.size(); i++)

@@ -400,13 +400,15 @@ void UnilateralInteractionConstraint<DataTypes>::draw()
         helper::gl::glVertexT(c.Q);
         helper::gl::glVertexT(c.Q-c.norm*(c.dfree));
 
+        /*
         if (c.dfree < 0)
         {
-            glLineWidth(5);
-            glColor4f(0,1,0,1);
-            helper::gl::glVertexT(c.Pfree);
-            helper::gl::glVertexT(c.Qfree);
+        	glLineWidth(5);
+        	glColor4f(0,1,0,1);
+        	helper::gl::glVertexT(c.Pfree);
+        	helper::gl::glVertexT(c.Qfree);
         }
+        */
     }
     glEnd();
 }

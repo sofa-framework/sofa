@@ -198,35 +198,57 @@ void LineSetSkinningMapping<BasicMapping>::reinit()
 template <class BasicMapping>
 void LineSetSkinningMapping<BasicMapping>::draw()
 {
-    //if (!getShow(this)) return;
-    //glDisable (GL_LIGHTING);
-    //glLineWidth(1);
+    if (!getShow(this)) return;
+    glDisable (GL_LIGHTING);
+    glLineWidth(1);
 
-    //glBegin (GL_LINES);
+    glBegin (GL_LINES);
 
-    //OutVecCoord& xto = *this->toModel->getX();
-    //InVecCoord& xfrom = *this->fromModel->getX();
+    OutVecCoord& xto = *this->toModel->getX();
+    InVecCoord& xfrom = *this->fromModel->getX();
 
-    //for(unsigned int verticeIndex=0; verticeIndex<xto.size(); verticeIndex++)
-    //{
-    //	const sofa::core::componentmodel::topology::BaseMeshTopology::Line& line = t->getLine(linesInfluencedByVertice[verticeIndex][0].lineIndex);
-    //	Vec<3,Real> v = projectToSegment(xfrom[line[0]].getCenter(), xfrom[line[1]].getCenter(), xto[verticeIndex]);
+    for (unsigned int verticeIndex=0; verticeIndex<xto.size(); verticeIndex++)
+    {
+        //out[verticeIndex] = typename Out::Coord();
+        for (unsigned int lineInfluencedIndex=0; lineInfluencedIndex<linesInfluencedByVertice[verticeIndex].size(); lineInfluencedIndex++)
+        {
 
-    //	glColor3f (1,0,0);
-    //	helper::gl::glVertexT(xto[verticeIndex]);
-    //	helper::gl::glVertexT(v);
+            influencedLineType iline = linesInfluencedByVertice[verticeIndex][lineInfluencedIndex];
+            //Vec<3,Real> v = xfrom[t->getLine(iline.lineIndex)[0]].getCenter() + xfrom[t->getLine(iline.lineIndex)[0]].getOrientation().rotate(iline.position);
+            const sofa::core::componentmodel::topology::BaseMeshTopology::Line& l = t->getLine(linesInfluencedByVertice[verticeIndex][lineInfluencedIndex].lineIndex);
+            Vec<3,Real> v = projectToSegment(xfrom[l[0]].getCenter(), xfrom[l[1]].getCenter(), xto[verticeIndex]);
 
-    //	for(unsigned int i=1; i<linesInfluencedByVertice[verticeIndex].size(); i++)
-    //	{
-    //		const sofa::core::componentmodel::topology::BaseMeshTopology::Line& l = t->getLine(linesInfluencedByVertice[verticeIndex][i].lineIndex);
-    //		Vec<3,Real> v = projectToSegment(xfrom[l[0]].getCenter(), xfrom[l[1]].getCenter(), xto[verticeIndex]);
 
-    //		glColor3f (0,0,1);
-    //		helper::gl::glVertexT(xto[verticeIndex]);
-    //		helper::gl::glVertexT(v);
-    //	}
-    //}
-    //glEnd();
+            glColor3f (iline.weight, 0 , 1.0-iline.weight);
+            helper::gl::glVertexT(xto[verticeIndex]);
+            helper::gl::glVertexT(v);
+
+        }
+    }
+
+
+    /*
+    for(unsigned int verticeIndex=0; verticeIndex<xto.size(); verticeIndex++)
+    {
+    	const sofa::core::componentmodel::topology::BaseMeshTopology::Line& line = t->getLine(linesInfluencedByVertice[verticeIndex][0].lineIndex);
+    	Vec<3,Real> v = projectToSegment(xfrom[line[0]].getCenter(), xfrom[line[1]].getCenter(), xto[verticeIndex]);
+
+    	glColor3f (1,0,0);
+    	helper::gl::glVertexT(xto[verticeIndex]);
+    	helper::gl::glVertexT(v);
+
+    	for(unsigned int i=1; i<linesInfluencedByVertice[verticeIndex].size(); i++)
+    	{
+    		const sofa::core::componentmodel::topology::BaseMeshTopology::Line& l = t->getLine(linesInfluencedByVertice[verticeIndex][i].lineIndex);
+    		Vec<3,Real> v = projectToSegment(xfrom[l[0]].getCenter(), xfrom[l[1]].getCenter(), xto[verticeIndex]);
+
+    		glColor3f (0,0,1);
+    		helper::gl::glVertexT(xto[verticeIndex]);
+    		helper::gl::glVertexT(v);
+    	}
+    }
+    */
+    glEnd();
 }
 
 template <class BasicMapping>
@@ -249,6 +271,7 @@ void LineSetSkinningMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, 
 {
     InVecCoord& xfrom = *this->fromModel->getX();
 
+
     for (unsigned int verticeIndex=0; verticeIndex<out.size(); verticeIndex++)
     {
         out[verticeIndex] = typename Out::Deriv();
@@ -265,27 +288,62 @@ void LineSetSkinningMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, 
 template <class BasicMapping>
 void LineSetSkinningMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
-    InVecCoord& xfrom = *this->fromModel->getX();
 
-    for(unsigned int lineIndex=0; lineIndex< (unsigned) t->getNbLines(); lineIndex++)
+    //std::cerr<<"LineSetSkinningMapping::applyJT called   - out :"<<out<<std::endl;
+
+
+
+    InVecCoord& xfrom = *this->fromModel->getX();
+    out.clear();
+    out.resize(xfrom.size());
+
+
+    for (unsigned int verticeIndex=0; verticeIndex<in.size(); verticeIndex++)
     {
-        for (unsigned int verticeInfluencedIndex=0; verticeInfluencedIndex<verticesInfluencedByLine[lineIndex].size(); verticeInfluencedIndex++)
+        typename Out::Deriv f = in[verticeIndex];
+
+        for (unsigned int lineInfluencedIndex=0; lineInfluencedIndex<linesInfluencedByVertice[verticeIndex].size(); lineInfluencedIndex++)
         {
-            influencedVerticeType vertice = verticesInfluencedByLine[lineIndex][verticeInfluencedIndex];
-            Vec<3,Real> IP = xfrom[t->getLine(lineIndex)[0]].getOrientation().rotate(vertice.position);
-            out[vertice.verticeIndex].getVCenter() += in[vertice.verticeIndex] * vertice.weight;
-            out[vertice.verticeIndex].getVOrientation() += IP.cross(in[vertice.verticeIndex]) * vertice.weight;
+            influencedLineType iline = linesInfluencedByVertice[verticeIndex][lineInfluencedIndex];
+            unsigned int I =t->getLine(iline.lineIndex)[0];
+
+            Vec<3,Real> IP = xfrom[I].getOrientation().rotate(iline.position);
+
+            out[I].getVCenter() += f * iline.weight;
+            out[I].getVOrientation() += IP.cross(f) *  iline.weight;
+
         }
     }
+
+
+    /*
+    	for(unsigned int lineIndex=0; lineIndex< (unsigned) t->getNbLines(); lineIndex++)
+    	{
+    		unsigned int I = t->getLine(lineIndex)[0];
+    		for (unsigned int verticeInfluencedIndex=0; verticeInfluencedIndex<verticesInfluencedByLine[lineIndex].size(); verticeInfluencedIndex++)
+    		{
+    			influencedVerticeType vertice = verticesInfluencedByLine[lineIndex][verticeInfluencedIndex];
+    			Vec<3,Real> IP = xfrom[I].getOrientation().rotate(vertice.position);
+    			out[I].getVCenter() += in[vertice.verticeIndex] * vertice.weight;
+    			out[I].getVOrientation() += IP.cross(in[vertice.verticeIndex]) * vertice.weight;
+    		}
+    	}
+    */
+
+
+
 }
 
 template <class BasicMapping>
 void LineSetSkinningMapping<BasicMapping>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in )
 {
-    out.clear();
-    out.resize(in.size());
+    //out.clear();
+    unsigned int outSize = out.size();
+    out.resize(outSize+in.size());
 
     InVecCoord& xfrom = *this->fromModel->getX();
+
+    //serr<<"applyJT for constraints called : in.size() = "<<in.size()<<sendl;
 
     for(unsigned int i=0; i<in.size(); i++)
     {
@@ -307,11 +365,133 @@ void LineSetSkinningMapping<BasicMapping>::applyJT( typename In::VecConst& out, 
                 direction.getVCenter() = d * iline.weight;
                 //printf("\n Weighted normale : %f %f %f",direction.getVCenter().x(), direction.getVCenter().y(), direction.getVCenter().z());
                 direction.getVOrientation() = IP.cross(d) * iline.weight;
-                out[i].add(t->getLine(iline.lineIndex)[0], direction);
+                out[outSize+i].add(t->getLine(iline.lineIndex)[0], direction);
             }
         }
     }
+
+
+
 }
+
+
+template <class BasicMapping>
+void LineSetSkinningMapping<BasicMapping>::propagateX()
+{
+    if (this->fromModel!=NULL && this->toModel->getX()!=NULL && this->fromModel->getX()!=NULL)
+        apply(*this->toModel->getX(), *this->fromModel->getX() );
+
+    if( f_printLog.getValue())
+    {
+        serr<<"propageX processed :"<<sendl;
+        serr<<"  - input: "<<*this->fromModel->getX()<<"  output : "<<*this->toModel->getX()<<sendl;
+    }
+
+}
+
+template <class BasicMapping>
+void LineSetSkinningMapping<BasicMapping>::propagateXfree()
+{
+    if (this->fromModel!=NULL && this->toModel->getXfree()!=NULL && this->fromModel->getXfree()!=NULL)
+        apply(*this->toModel->getXfree(), *this->fromModel->getXfree());
+
+    if( f_printLog.getValue())
+    {
+        serr<<"propageXfree processed"<<sendl;
+        serr<<"  - input: "<<*this->fromModel->getXfree()<<"  output : "<<*this->toModel->getXfree()<<sendl;
+    }
+}
+
+
+template <class BasicMapping>
+void LineSetSkinningMapping<BasicMapping>::propagateV()
+{
+    if (this->fromModel!=NULL && this->toModel->getV()!=NULL && this->fromModel->getV()!=NULL)
+        applyJ(*this->toModel->getV(), *this->fromModel->getV());
+
+    if( f_printLog.getValue())
+    {
+        serr<<" propagateV processed"<<sendl;
+        serr<<"  - V input: "<<*this->fromModel->getV()<<"   V output : "<<*this->toModel->getV()<<sendl;
+    }
+
+}
+
+
+
+template <class BasicMapping>
+void LineSetSkinningMapping<BasicMapping>::propagateDx()
+{
+
+    if (this->fromModel!=NULL && this->toModel->getDx()!=NULL && this->fromModel->getDx()!=NULL)
+        applyJ(*this->toModel->getDx(), *this->fromModel->getDx());
+
+    if( f_printLog.getValue())
+    {
+        serr<<"propagateDx processed"<<sendl;
+        serr<<"  - input: "<<*this->fromModel->getDx()<<"  output : "<<*this->toModel->getDx()<<sendl;
+    }
+}
+
+
+
+template <class BasicMapping>
+void LineSetSkinningMapping<BasicMapping>::accumulateForce()
+{
+    if (this->fromModel!=NULL && this->toModel->getF()!=NULL && this->fromModel->getF()!=NULL)
+        applyJT(*this->fromModel->getF(), *this->toModel->getF());
+
+    if( f_printLog.getValue())
+    {
+        serr<<"accumulateForce processed"<<sendl;
+        serr<<" input f : "<<*this->toModel->getF();
+        serr<<"  - output F: "<<*this->fromModel->getF()<<sendl;
+    }
+}
+
+
+
+template <class BasicMapping>
+void LineSetSkinningMapping<BasicMapping>::accumulateDf()
+{
+    if (this->fromModel!=NULL && this->toModel->getF()!=NULL && this->fromModel->getF()!=NULL)
+        applyJT(*this->fromModel->getF(), *this->toModel->getF());
+
+    if( f_printLog.getValue())
+    {
+        serr<<"accumulateDf processed"<<sendl;
+        serr<<" input df : "<<*this->toModel->getF();
+        serr<<"  - output: "<<*this->fromModel->getF()<<sendl;
+    }
+}
+
+
+
+template <class BasicMapping>
+void LineSetSkinningMapping<BasicMapping>::accumulateConstraint()
+{
+    if (this->fromModel!=NULL && this->toModel->getC()!=NULL && this->fromModel->getC()!=NULL)
+    {
+        applyJT(*this->fromModel->getC(), *this->toModel->getC());
+
+        // Accumulate contacts indices through the MechanicalMapping
+        std::vector<unsigned int>::iterator it = this->toModel->getConstraintId().begin();
+        std::vector<unsigned int>::iterator itEnd = this->toModel->getConstraintId().end();
+
+
+        while (it != itEnd)
+        {
+            this->fromModel->setConstraintId(*it);
+            it++;
+        }
+    }
+
+
+}
+
+
+
+
 
 } // namespace mapping
 

@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_INTERACTIONFORCEFIELD_ConstantForceField_INL
-#define SOFA_COMPONENT_INTERACTIONFORCEFIELD_ConstantForceField_INL
+#ifndef SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGFORCEFIELD_INL
+#define SOFA_COMPONENT_FORCEFIELD_RESTSHAPESPRINGFORCEFIELD_INL
 
 #include <sofa/core/componentmodel/behavior/ForceField.inl>
 #include "RestShapeSpringsForceField.h"
@@ -84,23 +84,91 @@ void RestShapeSpringsForceField<DataTypes>::init()
     }
 
 
-    // TODO: add the possibility to define a rest shape based on an other Mechanical State //
-    useRestMState = false;
+
+    const std::string path = external_rest_shape.getValue();
+
+    if (path.size()>0)
+    {
+        this->getContext()->get(restMState ,path  );
+        std::cout<< "for RestShapeSpringFF named "<<this->getName()<<", path = "<<path<<std::endl;
+    }
+    else
+        restMState = NULL;
+
+
+
+    VecIndex indices;
+    if(restMState == NULL)
+    {
+        std::cout<<"do not found any Mechanical state named "<<external_rest_shape.getValue()<<std::endl;
+        useRestMState = false;
+
+        for (unsigned int i=0; i<points.getValue().size(); i++)
+        {
+            indices.push_back(i);
+        }
+        external_points.setValue(indices);
+
+    }
+    else
+    {
+        std::cout<<"Mechanical state named "<<restMState->getName()<< " founded for RestShapeSpringFF named "<<this->getName()<<std::endl;
+        useRestMState = true;
+        if (external_points.getValue().size()==0)
+        {
+
+            serr<<"in RestShapeSpringsForceField external_points undefined, default case: external_points assigned "<<sendl;
+
+
+            int pointSize = (int)points.getValue().size();
+            int restMstateSize = (int)  restMState->getSize();
+
+            if (  pointSize>restMstateSize)
+                serr<<"ERROR in  RestShapeSpringsForceField<Rigid3fTypes>::init() : extenal_points must be defined !!" <<sendl;
+
+            for (unsigned int i=0; i<points.getValue().size(); i++)
+            {
+                //int &toto = i;
+                indices.push_back(i);
+            }
+            external_points.setValue(indices);
+        }
+
+
+    }
+
 
 }
 
 template<class DataTypes>
 void RestShapeSpringsForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& p, const VecDeriv& )
 {
-    const VecCoord& p_0 = *this->mstate->getX0();
+    /*
+    VecCoord &p_0;
 
+    else
+    	p_0 = *this->mstate->getX0();
+    */
+
+
+    VecCoord& p_0 = *this->mstate->getX0();
+    //std::cout<<"p_0 in addForce"<<p_0<<std::endl;
+    if (useRestMState)
+        p_0 = *restMState->getX();
+
+    /*
+    std::cout<<"p_0 in addForce"<<p_0<<std::endl;
     //std::cout<<"addForce call in RestShapeSpringsForceField"<<std::endl;
+    */
 
     f.resize(p.size());
 
+
     const VecIndex& indices = points.getValue();
+    const VecIndex& ext_indices=external_points.getValue();
     const VecReal& k = stiffness.getValue();
 
+    Springs_dir.resize(indices.size() );
     if ( k.size()!= indices.size() )
     {
         //sout << "WARNING : stiffness is not defined on each point, first stiffness is used" << sendl;
@@ -108,8 +176,11 @@ void RestShapeSpringsForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord
         for (unsigned int i=0; i<indices.size(); i++)
         {
             const unsigned int index = indices[i];
+            const unsigned int ext_index = ext_indices[i];
 
-            Deriv dx = p[index] - p_0[index];
+            Deriv dx = p[index] - p_0[ext_index];
+            Springs_dir[i] = p[index] - p_0[ext_index];
+            Springs_dir[i].normalize();
             f[index] -=  dx * k[0] ;
 
             //	if (dx.norm()>0.00000001)
@@ -124,8 +195,11 @@ void RestShapeSpringsForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord
         for (unsigned int i=0; i<indices.size(); i++)
         {
             const unsigned int index = indices[i];
+            const unsigned int ext_index = ext_indices[i];
 
-            Deriv dx = p[index] - p_0[index];
+            Deriv dx = p[index] - p_0[ext_index];
+            Springs_dir[i] = p[index] - p_0[ext_index];
+            Springs_dir[i].normalize();
             f[index] -=  dx * k[index] ;
 
             //	if (dx.norm()>0.00000001)
@@ -135,6 +209,9 @@ void RestShapeSpringsForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord
             //	f[ indices[i] ] -=  dx * k[i] ;
         }
     }
+
+
+
 }
 
 
@@ -161,6 +238,8 @@ void RestShapeSpringsForceField<DataTypes>::addDForce(VecDeriv& df, const VecDer
             df[indices[i]] -=  dx[indices[i]] * k[indices[i]] * kFactor ;
         }
     }
+    //serr<<"addDForce: dx = "<<dx<<"  - df = "<<df<<sendl;
+
 }
 
 
@@ -172,6 +251,7 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(sofa::defaulttype::Base
     const int N = Coord::static_size;
 
     unsigned int curIndex = 0;
+
 
     if (k.size()!= indices.size() )
     {
@@ -187,7 +267,7 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(sofa::defaulttype::Base
                 //		mat->add(offset + N * curIndex + i, offset + N * curIndex + j, kFact * k[0]);
                 //	}
 
-                mat->add(offset + N * curIndex + i, offset + N * curIndex + i, kFact * k[0]);
+                mat->add(offset + N * curIndex + i, offset + N * curIndex + i, - kFact * k[0]);
             }
         }
     }
@@ -205,7 +285,7 @@ void RestShapeSpringsForceField<DataTypes>::addKToMatrix(sofa::defaulttype::Base
                 //		mat->add(offset + N * curIndex + i, offset + N * curIndex + j, kFact * k[curIndex]);
                 //	}
 
-                mat->add(offset + N * curIndex + i, offset + N * curIndex + i, kFact * k[curIndex]);
+                mat->add(offset + N * curIndex + i, offset + N * curIndex + i, -kFact * k[curIndex]);
             }
         }
     }
@@ -249,6 +329,8 @@ void RestShapeSpringsForceField<DataTypes>::draw()
     /*
     if (!getContext()->getShowForceFields())
     	return;  /// \todo put this in the parent class
+
+
     const VecIndex& indices = points.getValue();
     const VecDeriv& f = forces.getValue();
     const VecCoord& x = *this->mstate->getX();
@@ -266,6 +348,7 @@ void RestShapeSpringsForceField<DataTypes>::draw()
     glEnd();
     */
 }
+
 
 
 template <class DataTypes>
