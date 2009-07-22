@@ -72,7 +72,7 @@ Consequently, the particles and the rigid body necessarily belong to different n
 In this example, the masses are stored in \texttt{UniformMass} components.
 The types of their values are related to the types of their associated DOF.
 \texttt{UniformMass} is derived from the abstract \texttt{Mass} class, and stores only one value, for the case where all the associated objects have the same mass. 
-If necessary, it can be replaced by a \texttt{DiagonalMass} instanciated on the same DOF types, for the case where the associated objects have different masses. 
+If necessary, it can be replaced by a \texttt{DiagonalMass} instantiated on the same DOF types, for the case where the associated objects have different masses. 
 This is an important feature of \sofa: each component can be replaced by another one deriving from the same abstract class and instantiated on the same DOF types. 
 This results in a high flexibility.
 
@@ -123,7 +123,7 @@ The liver exhibits three different geometries for mechanics, rendering and colli
 The corresponding xml code is given in section~\ref{xml:liver}.
 \label{bla:liver}
 
-On top of the scene, collision-related components allow a user to interact with the collision models using rays casted from the mouse pointer and hitting collision models. 
+On top of the scene, collision-related components allow a user to interact with the collision models using rays cast from the mouse pointer and hitting collision models. 
 %Collision is discussed in section~\ref{sec:collision}.
 
 The liver is modeled using three nodes, in two levels. 
@@ -268,7 +268,7 @@ It is also used by some solvers when auxiliary states are needed, as discussed i
 \section{State vectors} \label{sec:statevectors}
 The state vectors contain the coordinates, velocites, and other DOF-related values such as force and acceleration.
 They are stored in \texttt{MechanicalObject} components.
-This template class can be instanciated on a variety of types to model particles, rigid bodies or other types of bodies.
+This template class can be instantiated on a variety of types to model particles, rigid bodies or other types of bodies.
 The template parameter is a \texttt{DataTypes} class which describes data and data containers, such as the the type of coordinates and coordinate derivatives used.
 These two types are the same in the case of particles, but they are different in the case of rigid bodies.
 

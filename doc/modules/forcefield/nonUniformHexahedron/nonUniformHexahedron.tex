@@ -56,7 +56,7 @@ The basic idea, illustrated in figure \ref{fig:condensation}, is :
 	\end{itemize}
 \item A hack on masses (for debugging)
 		\begin{itemize}
-	\item useMass (bool) : do the condensated mass matrices are used ? (if not, scalar masses concentrated on particles are used) (default = 0)
+	\item useMass (bool) : are the condensated mass matrices are used ? (if not, scalar masses concentrated on particles are used) (default = 0)
 	\item totalMass (float) : if useMass=false, the scalar mass of the object
 	\end{itemize}
 \end{itemize}
@@ -86,5 +86,5 @@ The basic idea, illustrated in figure \ref{fig:condensation}, is :
 \textbf{Important} : note that the SparseGrid has nbVirtualFinerLevels=2 in order to built enough finer virtual levels. This SparseGrid$->$nbVirtualFinerLevels has to be greater or equal to the NonUniformHexahedronFEMForceFieldAndMass$->$nbVirtualFinerLevels.
 \\
 
-A more complex example can be found in : examples/Components/forcefield/NonUniformHexahedronFEMForceFieldAndMass.scn where a comparaison with a classical HexahedronFEMForceFieldAndMassForceField is done.
+A more complex example can be found in : examples/Components/forcefield/NonUniformHexahedronFEMForceFieldAndMass.scn where a comparison with a classical HexahedronFEMForceFieldAndMassForceField is done.
 
