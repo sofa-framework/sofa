@@ -232,7 +232,7 @@ void Simulation::updateContext ( Node* root )
 }
 
 /// Update only Visual contexts. Required before drawing the scene if root flags are modified.( can filter by specifying a specific element)
-void Simulation::updateVisualContext ( Node* root, int FILTER)
+void Simulation::updateVisualContext ( Node* root, Node::VISUAL_FLAG FILTER)
 {
     if ( !root ) return;
     UpdateVisualContextVisitor vis(FILTER);

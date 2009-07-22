@@ -65,8 +65,8 @@ class SOFA_SIMULATION_COMMON_API UpdateVisualContextVisitor : public UpdateConte
 {
 
 public:
-    int filter;
-    UpdateVisualContextVisitor(int FILTER=10):filter(FILTER)
+    Node::VISUAL_FLAG filter;
+    UpdateVisualContextVisitor(Node::VISUAL_FLAG FILTER=Node::ALLFLAGS):filter(FILTER)
     {};
     virtual Result processNodeTopDown(simulation::Node* node);
     virtual const char* getClassName() const { return "UpdateVisualContextVisitor"; }

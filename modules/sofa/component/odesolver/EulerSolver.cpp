@@ -161,7 +161,7 @@ void EulerSolver::solve(double dt)
         typedef core::componentmodel::behavior::BaseMechanicalState::VMultiOp VMultiOp;
         VMultiOp ops;
         ops.resize(2);
-        // change order of operations depending on the sympletic flag
+        // change order of operations depending on the symplectic flag
         int op_vel = (symplectic.getValue()?0:1);
         int op_pos = (symplectic.getValue()?1:0);
         ops[op_vel].first = (VecId)vel;

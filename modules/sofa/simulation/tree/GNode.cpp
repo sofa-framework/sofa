@@ -476,47 +476,47 @@ void GNode::updateSimulationContext()
         }
         copySimulationContext(*parent);
     }
-    simulation::Node::updateSimulationContext();
+// 	simulation::Node::updateSimulationContext();
 }
 
-void GNode::updateVisualContext(int FILTER)
+void GNode::updateVisualContext(VISUAL_FLAG FILTER)
 {
     if ( getParent() != NULL )
     {
-        if (FILTER==10)
+        if (FILTER==ALLFLAGS)
             copyVisualContext(*parent);
         else
         {
             switch (FILTER)
             {
-            case 0:
+            case VISUALMODELS:
                 showVisualModels_.setValue((*parent).showVisualModels_.getValue());
                 break;
-            case 1:
+            case BEHAVIORMODELS:
                 showBehaviorModels_.setValue((*parent).showBehaviorModels_.getValue());
                 break;
-            case 2:
+            case COLLISIONMODELS:
                 showCollisionModels_.setValue((*parent).showCollisionModels_.getValue());
                 break;
-            case 3:
+            case BOUNDINGCOLLISIONMODELS:
                 showBoundingCollisionModels_.setValue((*parent).showBoundingCollisionModels_.getValue());
                 break;
-            case 4:
+            case MAPPINGS:
                 showMappings_.setValue((*parent).showMappings_.getValue());
                 break;
-            case 5:
+            case MECHANICALMAPPINGS:
                 showMechanicalMappings_.setValue((*parent).showMechanicalMappings_.getValue());
                 break;
-            case 6:
+            case FORCEFIELDS:
                 showForceFields_.setValue((*parent).showForceFields_.getValue());
                 break;
-            case 7:
+            case INTERACTIONFORCEFIELDS:
                 showInteractionForceFields_.setValue((*parent).showInteractionForceFields_.getValue());
                 break;
-            case 8:
+            case WIREFRAME:
                 showWireFrame_.setValue((*parent).showWireFrame_.getValue());
                 break;
-            case 9:
+            case NORMALS:
                 showNormals_.setValue((*parent).showNormals_.getValue());
                 break;
             }

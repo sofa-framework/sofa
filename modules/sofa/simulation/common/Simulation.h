@@ -74,7 +74,7 @@ public:
     virtual void updateContext(Node* root);
 
     /// Update contexts. Required before drawing the scene if root flags are modified.
-    virtual void updateVisualContext(Node* root,int FILTER=10);
+    virtual void updateVisualContext(Node* root,Node::VISUAL_FLAG FILTER=Node::ALLFLAGS);
 
     /// Compute the bounding box of the scene.
     virtual void computeBBox(Node* root, SReal* minBBox, SReal* maxBBox);

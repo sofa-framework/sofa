@@ -532,10 +532,10 @@ void Node::updateContext()
 
 void Node::updateSimulationContext()
 {
-    updateContext();
+//    updateContext();
 }
 
-void Node::updateVisualContext(int/* FILTER*/)
+void Node::updateVisualContext(VISUAL_FLAG/* FILTER*/)
 {
     // Apply local modifications to the context
     if (getLogTime())
