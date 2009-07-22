@@ -11,7 +11,7 @@ To model a dynamic object, you have to follow that steps:
  \item { \bf Topology}: describes how the dofs will be connected
  \item { \bf MechanicalState}: the degrees of freedom (dofs) of your object. It is the heart of the simulation
  \item { \bf Mass}: the mass attached to each dofs of the object
- \item { \bf ForceField}: describes the behavior of your object, how it will interact. If you don``t specify one, your model won't be deformable
+ \item { \bf ForceField}: describes the behavior of your object, how it will interact. If you don't specify one, your model won't be deformable
  \item { \bf Constraint}: optional
 \end{enumerate}
 
@@ -29,7 +29,7 @@ Using the previously described mechanism of Mapping, you can attach a visual mod
 \begin{enumerate}
  \item { \bf GNode}: add a GNode inside your current object. It will contain the components necessary to do the visual mapping
  \item { \bf VisualModel}: this component contains the mesh representing your object
- \item { \bf Mapping}: a non-mechanical mapping will connect your mesh to the dofs. This mapping won't transmit forces from your visual model to the dofs. If you are writting...
+ \item { \bf Mapping}: a non-mechanical mapping will connect your mesh to the dofs. This mapping won't transmit forces from your visual model to the dofs. If you are writing...
 \begin{itemize}
  \item { \bf a c++ file}, take good care of using a non-mechanical template: The second object should be a template of ExtVec3Types
  \item { \bf a xml file}, you have to specify the path to the two models to be mapped: 

@@ -115,8 +115,8 @@ The ``Graph tab'' is certainly the most important tab. It displays the scene gra
 
 This graph can dynamically change during the simulation: collisions can create new nodes, new components in case of contacts. But you can directly interact with it too. Double clicking on an item of the graph will make appear a small window displaying important data.
 
-To know how to display the information of your brand new Sofa component, please refer to the section ``How to configure your Component''. Only objects of type ``sofa::core::objectmodel::Data'' or ``sofa::core::objectmodel::DataPtr'' can be displayed. It is important to understand that only these information will be kept if you decide to save the simulation. Loading a saved simulation, will just fill the components with these datas.
-This kind of dialog windows give the possibility to modify directly some characteristics of your component. Take care of clicking on the button ``Update'' once you have completed your modifications.
+To know how to display the information of your brand new Sofa component, please refer to the section ``How to configure your Component''. Only objects of type ``sofa::core::objectmodel::Data'' or ``sofa::core::objectmodel::DataPtr'' can be displayed. It is important to understand that only these information will be kept if you decide to save the simulation. Loading a saved simulation, will just fill the components with this data.
+This kind of dialog windows give the possibility to modify directly some characteristics of your component. Take care to click on the button ``Update'' once you have completed your modifications.
 
 \begin{figure}[htpb]
 	\centering
@@ -127,9 +127,9 @@ This kind of dialog windows give the possibility to modify directly some charact
 \par
 A Node gives access to much more interactions: right clicking on one of them makes appear a small context window.
 \begin{itemize}
- \item {\bf Collapse}: Collapse the graph from the current node, so that remain visible the other Nodes and the components right below
+ \item {\bf Collapse}: Collapse the graph from the current node, close all the nodes below the clicked one
  \item {\bf Expand}: Expand the graph, and open all the nodes below the clicked one
- \item {\bf Desactivate}: Desactivate a part of the scene. Everything below this node won't be anymore taken into account. BUT it remains in the scene, and can be Activated again at any time
+ \item {\bf Desactivate}: Deactivate a part of the scene. Everything below this node won't be anymore taken into account. BUT it remains in the scene, and can be Activated again at any time
  \item {\bf Save Node}: Export in a XML files a part of the simulation
  \item {\bf Add Node}: Read a XML files describing an object or a whole scene, and put it right below the clicked node.
 An interesting feature to note, is when you might be always using, and adding the same set of objects, you will find it convenient to add in the file scenes/object.txt the path to them. Like this, they will directly appear in the dialog window by default.

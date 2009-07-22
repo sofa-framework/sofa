@@ -1,11 +1,11 @@
 
 \section{How To make your Component modifiable}
-When you create your own component, it can be very convenient to display some internal datas, or be able to modify its behavior by modifying a few values. It is made possible by the usage of two objects:
+When you create your own component, it can be very convenient to display some internal data, or be able to modify its behavior by modifying a few values. It is made possible by the usage of two objects:
 \begin{itemize}
  \item sofa::core::objectmodel::Data
  \item sofa::core::objectmodel::DataPtr
 \end{itemize}
-They are templated with the type you want. It can be ``classic'' types, bool, int, double (...), or more complex one (your own data structure). You only have to implement the stream operators ``<<'' and ``>>''. In the constructor of your object, you have to call the function initData, or initDataPtr. 
+They are templated with the type you want. It can be ``classic'' types, bool, int, double (...), or more complex ones (your own data structure). You only have to implement the stream operators ``<<'' and ``>>''. In the constructor of your object, you have to call the function initData, or initDataPtr. 
 \\
 for instance, let's call your class  {\bf foo}. You want to control a parameter of type boolean called {\bf verbose}. You want it to be displayed
 \begin{verbatim}
