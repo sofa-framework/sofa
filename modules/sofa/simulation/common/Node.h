@@ -96,6 +96,7 @@ class SOFA_SIMULATION_COMMON_API Node : public core::objectmodel::BaseNode, publ
 {
 
 public:
+    enum VISUAL_FLAG {VISUALMODELS,BEHAVIORMODELS,COLLISIONMODELS,BOUNDINGCOLLISIONMODELS,MAPPINGS,MECHANICALMAPPINGS,FORCEFIELDS,INTERACTIONFORCEFIELDS,WIREFRAME,NORMALS,ALLFLAGS};
     Node(const std::string& name="");
 
     virtual ~Node();
@@ -538,7 +539,7 @@ public:
     virtual void propagateEvent( core::objectmodel::Event* event );
 
     /// Update the visual context values, based on parent and local ContextObjects
-    virtual void updateVisualContext(int FILTER=10);
+    virtual void updateVisualContext(VISUAL_FLAG FILTER=ALLFLAGS);
 
     Single<VisitorScheduler> actionScheduler;
 

@@ -2081,7 +2081,7 @@ void RealGUI::showhideElements(int FILTER, bool value)
         case  DisplayFlagWidget::WIREFRAME:         root->getContext()->setShowWireFrame ( value ); break;
         case  DisplayFlagWidget::NORMALS:           root->getContext()->setShowNormals ( value ); break;
         }
-        sofa::simulation::getSimulation()->updateVisualContext ( root, FILTER );
+        sofa::simulation::getSimulation()->updateVisualContext ( root, (simulation::Node::VISUAL_FLAG) FILTER );
     }
     viewer->getQWidget()->update();
 }
