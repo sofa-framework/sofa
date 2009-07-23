@@ -25,9 +25,10 @@
 #ifndef SOFA_COMPONENT_CONTROLLER_ARTRACKCONTROLLER_H
 #define SOFA_COMPONENT_CONTROLLER_ARTRACKCONTROLLER_H
 
-#include <sofa/core/componentmodel/behavior/BaseController.h>
+#include <sofa/component/controller/Controller.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/component/container/ArticulatedHierarchyContainer.h>
+#include <sofa/core/objectmodel/MouseEvent.h>
 #include <ARTrackEvent.h>
 
 namespace sofa
@@ -42,7 +43,7 @@ namespace controller
 using namespace sofa::defaulttype;
 
 template<class DataTypes>
-class ARTrackController : public virtual core::componentmodel::behavior::BaseController
+class ARTrackController : public virtual component::controller::Controller
 {
 public:
     /**
@@ -58,6 +59,8 @@ public:
     void init();
 
     void onARTrackEvent(core::objectmodel::ARTrackEvent *aev);
+
+    void onMouseEvent(core::objectmodel::MouseEvent *mev);
 
     void handleEvent(core::objectmodel::Event *);
 
@@ -90,16 +93,20 @@ public:
 protected:
     core::componentmodel::behavior::MechanicalState<DataTypes> *mstate; ///< Controlled MechanicalState.
     vector<sofa::component::container::ArticulatedHierarchyContainer::ArticulationCenter::Articulation*> articulations;
+    bool leftPressed, rightPressed;
+    Vec3d beginLocalPosition,endLocalPosition;
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_CONTROLLER_ARTRACKCONTROLLER_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
 extern template class ARTrackController<defaulttype::Vec1dTypes>;
+template class ARTrackController<defaulttype::Vec3dTypes>;
 extern template class ARTrackController<defaulttype::Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
 extern template class ARTrackController<defaulttype::Vec1fTypes>;
+template class ARTrackController<defaulttype::Vec3fTypes>;
 extern template class ARTrackController<defaulttype::Rigid3fTypes>;
 #endif
 #endif
