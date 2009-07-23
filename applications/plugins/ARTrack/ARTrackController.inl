@@ -144,12 +144,64 @@ void ARTrackController<DataTypes>::onARTrackEvent(core::objectmodel::ARTrackEven
 }
 
 template <class DataTypes>
+void ARTrackController<DataTypes>::onMouseEvent(core::objectmodel::MouseEvent * /*mev*/)
+{
+}
+
+template <>
+void ARTrackController<RigidTypes>::onMouseEvent(core::objectmodel::MouseEvent *mev)
+{
+    switch (mev->getState())
+    {
+    case core::objectmodel::MouseEvent::RightPressed :
+        rightPressed = true;
+        break;
+    case core::objectmodel::MouseEvent::RightReleased :
+        rightPressed = false;
+        break;
+    case core::objectmodel::MouseEvent::LeftPressed :
+        beginLocalPosition = Vec3d(-mev->getPosX(), 0, mev->getPosY());
+        leftPressed = true;
+        break;
+    case core::objectmodel::MouseEvent::LeftReleased :
+        leftPressed = false;
+        break;
+    case core::objectmodel::MouseEvent::Reset :
+        leftPressed = false;
+        rightPressed = false;
+        break;
+    default:
+        break;
+    }
+
+    if(leftPressed)
+    {
+        endLocalPosition = Vec3d(-mev->getPosX(), 0, mev->getPosY());
+        (*mstate->getXfree())[0].getCenter() += (endLocalPosition - beginLocalPosition);
+        (*mstate->getX())[0].getCenter() += (endLocalPosition - beginLocalPosition);
+        beginLocalPosition = endLocalPosition;
+    }
+    if(rightPressed)
+    {
+        //TODO: build a quat using mouse events to turn the hand.
+        (*mstate->getXfree())[0].getOrientation() = Quat(mev->getPosX(), 0, 0, 1);
+        (*mstate->getX())[0].getOrientation() = Quat(mev->getPosX(), 0, 0, 1);
+    }
+}
+
+template <class DataTypes>
 void ARTrackController<DataTypes>::handleEvent(core::objectmodel::Event *event)
 {
     if (dynamic_cast<sofa::core::objectmodel::ARTrackEvent *>(event))
     {
         sofa::core::objectmodel::ARTrackEvent *aev = dynamic_cast<sofa::core::objectmodel::ARTrackEvent *>(event);
         onARTrackEvent(aev);
+    }
+
+    if (dynamic_cast<sofa::core::objectmodel::MouseEvent *>(event))
+    {
+        sofa::core::objectmodel::MouseEvent *mev = dynamic_cast<sofa::core::objectmodel::MouseEvent *>(event);
+        onMouseEvent(mev);
     }
 }
 
