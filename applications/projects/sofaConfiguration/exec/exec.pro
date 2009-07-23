@@ -1,11 +1,8 @@
 SOFA_DIR=../../../..
 include($${SOFA_DIR}/sofa.cfg)
 
-# Auto-detect Qt 4.x
-# The QT variable was introduced in Qt 4
-!isEmpty(QT): DEFINES += SOFA_QT4
-
 CONFIG += $$CONFIGPROJECTGUI 
+
 contains(DEFINES, SOFA_QT4){
 QT += qt3support 
 }
