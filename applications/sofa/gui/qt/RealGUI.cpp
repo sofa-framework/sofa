@@ -442,7 +442,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     pathDumpVisitor = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + std::string( "/dumpVisitor.xml" );
     scenes = sofa::helper::system::DataRepository.getFile ( scenes );
 
-    updateRecentlyOpened("");
+    initRecentlyOpened();
 
 
     //Dialog Add Object
@@ -507,9 +507,29 @@ void RealGUI::fileRecentlyOpened(int id)
     fileOpen(recentlyOpened->text(id).ascii());
 }
 
+void RealGUI::initRecentlyOpened()
+{
+    recentlyOpened->clear();
+    std::vector< std::string > list_files;
+
+
+    std::string scenes ( "config/Sofa.ini" );
+    scenes = sofa::helper::system::DataRepository.getFile ( scenes );
+
+
+    std::ifstream end(scenes.c_str());
+    std::string s;
+    while( std::getline(end,s) )
+    {
+        list_files.push_back(sofa::helper::system::DataRepository.getFile(s));
+        recentlyOpened->insertItem(QString(list_files.back().c_str()));
+    }
+    end.close();
+
+}
+
 void RealGUI::updateRecentlyOpened(std::string fileLoaded)
 {
-
 #ifdef WIN32
     for (unsigned int i=0; i<fileLoaded.size(); ++i)
     {
@@ -520,34 +540,32 @@ void RealGUI::updateRecentlyOpened(std::string fileLoaded)
 
     scenes = sofa::helper::system::DataRepository.getFile ( scenes );
 
-    std::vector< std::string > list_files;
-    std::ifstream end(scenes.c_str());
-    std::string s;
-    while( std::getline(end,s) )
-    {
-        if (s != fileLoaded)
-            list_files.push_back(sofa::helper::system::DataRepository.getFile(s));
-    }
-    end.close();
-
-
-    recentlyOpened->clear();
     std::ofstream out;
     out.open(scenes.c_str(),std::ios::out);
     if (sofa::helper::system::DataRepository.findFile(fileLoaded))
     {
         fileLoaded = sofa::helper::system::DataRepository.getFile(fileLoaded);
         out << fileLoaded << "\n";
-
-        recentlyOpened->insertItem(QString(fileLoaded.c_str()));
+        recentlyOpened->insertItem(QString(fileLoaded.c_str()),-1,0);
     }
-    for (unsigned int i=0; i<list_files.size() && i<MAX_RECENTLY_OPENED ; ++i)
+
+    for (unsigned int i=1; i<recentlyOpened->count(); ++i)
     {
-        if (fileLoaded != list_files[i])
+        std::string entry = (recentlyOpened->text(recentlyOpened->idAt(i))).ascii();
+        if (fileLoaded == entry)
         {
-            recentlyOpened->insertItem(QString(list_files[i].c_str()));
-            out << list_files[i] << "\n";
+            recentlyOpened->removeItemAt(i);
+            --i;
         }
+        else
+        {
+            out << entry << "\n";
+        }
+    }
+
+    while (recentlyOpened->count() >= MAX_RECENTLY_OPENED)
+    {
+        recentlyOpened->removeItemAt(MAX_RECENTLY_OPENED);
     }
 
     out.close();
@@ -897,11 +915,14 @@ bool RealGUI::setViewer ( const char* name )
 
 void RealGUI::fileOpen ( std::string filename )
 {
+    startButton->setOn(false);
+    descriptionScene->hide();
+    htmlPage->clear();
+
     if ( sofa::helper::system::DataRepository.findFile (filename) )
         filename = sofa::helper::system::DataRepository.getFile ( filename );
     else
         return;
-
     startDumpVisitor();
 
     frameCounter = 0;
@@ -912,7 +933,6 @@ void RealGUI::fileOpen ( std::string filename )
     writeSceneName="";
 
     update();
-
     //Hide the dialog to add a new object in the graph
     if ( dialog != NULL ) dialog->hide();
     //Hide all the dialogs to modify the graph
@@ -928,7 +948,6 @@ void RealGUI::fileOpen ( std::string filename )
         }
         graphView->clear();
     }
-
     //Clear the list of modified dialog opened
     current_Id_modifyDialog=0;
     map_modifyDialogOpened.clear();
@@ -944,10 +963,8 @@ void RealGUI::fileOpen ( std::string filename )
 
     setScene ( root, filename.c_str() );
     //need to create again the output streams !!
-
     simulation::getSimulation()->gnuplotDirectory.setValue(gnuplot_directory);
     setExportGnuplot(exportGnuplotFilesCheckbox->isChecked());
-
     displayComputationTime(m_displayComputationTime);
     stopDumpVisitor();
 }
@@ -1019,11 +1036,11 @@ void RealGUI::initDesactivatedNode()
 }
 
 
-void RealGUI::setScene ( Node* root, const char* filename )
+void RealGUI::setScene ( Node* root, const char* filename, bool temporaryFile )
 {
     if (filename)
     {
-        updateRecentlyOpened(filename);
+        if (!temporaryFile) updateRecentlyOpened(filename);
         setTitle ( filename );
         std::string extension=sofa::helper::system::SetDirectory::GetExtension(filename);
         std::string htmlFile=filename; htmlFile.resize(htmlFile.size()-extension.size()-1);
@@ -1037,16 +1054,7 @@ void RealGUI::setScene ( Node* root, const char* filename )
             descriptionScene->show();
             htmlPage->setSource(QUrl(QString(htmlFile.c_str())));
         }
-        else
-        {
-            htmlPage->clear();
-            descriptionScene->hide();
-        }
-    }
-    else
-    {
-        htmlPage->clear();
-        descriptionScene->hide();
+
     }
 
     if (tabInstrument!= NULL)

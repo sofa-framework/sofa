@@ -76,6 +76,7 @@ int main(int argc, char** argv)
     bool        startAnim = false;
     bool        printFactory = false;
     bool        loadRecent = false;
+    bool        temporaryFile = false;
     std::string dimension="800x600";
     bool fullScreen = false;
 
@@ -95,6 +96,7 @@ int main(int argc, char** argv)
     .option(&loadRecent,'r',"recent","load most recently opened file")
     .option(&dimension,'d',"dimension","width and height of the viewer")
     .option(&fullScreen,'f',"fullScreen","start in full screen")
+    .option(&temporaryFile,'t',"temporary","the loaded scene won't appear in history of opened files")
     (argc,argv);
 
     if(gui!="batch")
@@ -142,7 +144,7 @@ int main(int argc, char** argv)
     }
 
 
-    if (int err=sofa::gui::SofaGUI::createGUI(groot,fileName.c_str()))
+    if (int err=sofa::gui::SofaGUI::createGUI(groot))
         return err;
 
     std::string in_filename(fileName);
@@ -152,7 +154,7 @@ int main(int argc, char** argv)
         groot = dynamic_cast<sofa::simulation::tree::GNode*>( sofa::simulation::tree::getSimulation()->load(fileName.c_str()));
         sofa::simulation::tree::getSimulation()->init(groot);
         if(sofa::gui::SofaGUI::CurrentGUI())
-            sofa::gui::SofaGUI::CurrentGUI()->setScene(groot,fileName.c_str());
+            sofa::gui::SofaGUI::CurrentGUI()->setScene(groot,fileName.c_str(), temporaryFile);
     }
 
 

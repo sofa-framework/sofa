@@ -333,7 +333,7 @@
         <bool>false</bool>
       </property>
       <property name="iconSet">
-        <iconset>image5</iconset>
+        <iconset>image6</iconset>
       </property>
       <property name="text">
         <string>Redo</string>

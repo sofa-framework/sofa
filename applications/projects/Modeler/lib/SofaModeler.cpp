@@ -737,6 +737,8 @@ void SofaModeler::runInSofa()
         }
     }
 
+    argv << "-t";
+
     statusBar()->message(messageLaunch,5000);
 
     Q3Process *p = new Q3Process(argv, this);

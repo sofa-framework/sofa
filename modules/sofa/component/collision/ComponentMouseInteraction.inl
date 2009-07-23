@@ -27,6 +27,8 @@
 #ifndef SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_INL
 #define SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_INL
 
+#include <sofa/component/collision/ComponentMouseInteraction.h>
+
 #include <sofa/component/container/MechanicalObject.h>
 #include <sofa/component/collision/RayModel.h>
 #include <sofa/component/collision/MouseInteractor.h>
@@ -36,7 +38,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 
 
-#include <sofa/component/collision/ComponentMouseInteraction.h>
+
 #include <sofa/helper/Factory.inl>
 
 namespace sofa
@@ -96,8 +98,11 @@ bool TComponentMouseInteraction<DataTypes>::isCompatible( core::objectmodel::Bas
 }
 
 
+typedef helper::Factory<std::string, ComponentMouseInteraction, core::objectmodel::BaseContext*> ComponentMouseInteractionFactory;
 
+#ifdef WIN32
 helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory, TComponentMouseInteraction<defaulttype::Vec3Types> > ComponentMouseInteractionVec3Class ("MouseSpringVec3d",true);
+#endif
 
 }
 }

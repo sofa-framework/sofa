@@ -137,7 +137,7 @@ public:
 
     virtual void fileOpen(std::string filename); //, int TYPE=NORMAL);
     virtual void fileOpenSimu(std::string filename); //, int TYPE=NORMAL);
-    virtual void setScene(Node* groot, const char* filename=NULL);
+    virtual void setScene(Node* groot, const char* filename=NULL, bool temporaryFile=false);
     virtual void setDimension(int w, int h);
     virtual void setFullScreen();
     virtual void setTitle( std::string windowTitle );
@@ -165,8 +165,11 @@ public:
     void dragEnterEvent( QDragEnterEvent* event) {event->accept();}
     void dropEvent(QDropEvent* event);
 
+    void initRecentlyOpened();
+
 public slots:
     void fileRecentlyOpened(int id);
+
     void updateRecentlyOpened(std::string fileLoaded);
     void DoubleClickeItemInSceneView(QListViewItem * item);
     void RightClickedItemInSceneView(QListViewItem *item, const QPoint& point, int index);

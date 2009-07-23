@@ -96,6 +96,8 @@ public:
     bool isCompatible( core::objectmodel::BaseContext *context) const;
 
 };
+
+
 }
 }
 }

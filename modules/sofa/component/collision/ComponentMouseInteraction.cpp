@@ -25,7 +25,6 @@
 #include <sofa/component/collision/ComponentMouseInteraction.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 
-
 namespace sofa
 {
 
@@ -73,6 +72,9 @@ void ComponentMouseInteraction::reset()
 
 template class TComponentMouseInteraction<defaulttype::Vec3Types>;
 
+#ifndef WIN32
+helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory, TComponentMouseInteraction<defaulttype::Vec3Types> > ComponentMouseInteractionVec3Class ("MouseSpringVec3d",true);
+#endif
 }
 }
 }

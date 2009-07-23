@@ -93,7 +93,7 @@ public:
     virtual int mainLoop()=0;
     virtual void redraw()=0;
     virtual int closeGUI()=0;
-    virtual void setScene(sofa::simulation::Node* groot, const char* filename=NULL)=0;
+    virtual void setScene(sofa::simulation::Node* groot, const char* filename=NULL, bool temporaryFile=false)=0;
     virtual void setDimension(int /* width */, int /* height */) {};
     virtual void setFullScreen() {};
 

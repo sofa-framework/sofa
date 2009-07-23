@@ -2676,7 +2676,7 @@ void SimpleGUI::exportOBJ(bool exportMTL)
     getSimulation()->exportOBJ(groot, filename.c_str(),exportMTL);
 }
 
-void SimpleGUI::setScene(sofa::simulation::Node* scene, const char* filename)
+void SimpleGUI::setScene(sofa::simulation::Node* scene, const char* filename, bool)
 {
     std::ostringstream ofilename;
 

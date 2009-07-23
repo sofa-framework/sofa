@@ -167,7 +167,7 @@ QtGLViewer::QtGLViewer(QWidget* parent, const char* name)
 
     sceneBBoxIsValid = false;
     texLogo = NULL;
-
+    _waitForRender=false;
 #ifdef SOFA_DEV
 
     _automateDisplayed = false;
