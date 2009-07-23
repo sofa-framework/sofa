@@ -206,6 +206,15 @@ public:
     void drawTetra();
     void computeStreamLine(unsigned int index, unsigned int maxNbPoints, double dt);
 
+    virtual std::string getTemplateName() const
+    {
+        return templateName(this);
+    }
+    static std::string templateName(const FlowVisualModel<DataTypes>* = NULL)
+    {
+        return DataTypes::Name();
+    }
+
 };
 /*
 #if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_FLUIDSOLIDINTERACTIONFORCEFIELD_CPP)

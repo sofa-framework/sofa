@@ -35,6 +35,8 @@
 
 #include <iostream>
 
+#include <sofa/helper/Factory.inl>
+#include <sofa/component/collision/ComponentMouseInteraction.inl>
 
 
 namespace sofa

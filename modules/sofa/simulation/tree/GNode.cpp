@@ -483,44 +483,43 @@ void GNode::updateVisualContext(VISUAL_FLAG FILTER)
 {
     if ( getParent() != NULL )
     {
-        if (FILTER==ALLFLAGS)
-            copyVisualContext(*parent);
-        else
+        switch (FILTER)
         {
-            switch (FILTER)
-            {
-            case VISUALMODELS:
-                showVisualModels_.setValue((*parent).showVisualModels_.getValue());
-                break;
-            case BEHAVIORMODELS:
-                showBehaviorModels_.setValue((*parent).showBehaviorModels_.getValue());
-                break;
-            case COLLISIONMODELS:
-                showCollisionModels_.setValue((*parent).showCollisionModels_.getValue());
-                break;
-            case BOUNDINGCOLLISIONMODELS:
-                showBoundingCollisionModels_.setValue((*parent).showBoundingCollisionModels_.getValue());
-                break;
-            case MAPPINGS:
-                showMappings_.setValue((*parent).showMappings_.getValue());
-                break;
-            case MECHANICALMAPPINGS:
-                showMechanicalMappings_.setValue((*parent).showMechanicalMappings_.getValue());
-                break;
-            case FORCEFIELDS:
-                showForceFields_.setValue((*parent).showForceFields_.getValue());
-                break;
-            case INTERACTIONFORCEFIELDS:
-                showInteractionForceFields_.setValue((*parent).showInteractionForceFields_.getValue());
-                break;
-            case WIREFRAME:
-                showWireFrame_.setValue((*parent).showWireFrame_.getValue());
-                break;
-            case NORMALS:
-                showNormals_.setValue((*parent).showNormals_.getValue());
-                break;
-            }
+        case VISUALMODELS:
+            showVisualModels_.setValue((*parent).showVisualModels_.getValue());
+            break;
+        case BEHAVIORMODELS:
+            showBehaviorModels_.setValue((*parent).showBehaviorModels_.getValue());
+            break;
+        case COLLISIONMODELS:
+            showCollisionModels_.setValue((*parent).showCollisionModels_.getValue());
+            break;
+        case BOUNDINGCOLLISIONMODELS:
+            showBoundingCollisionModels_.setValue((*parent).showBoundingCollisionModels_.getValue());
+            break;
+        case MAPPINGS:
+            showMappings_.setValue((*parent).showMappings_.getValue());
+            break;
+        case MECHANICALMAPPINGS:
+            showMechanicalMappings_.setValue((*parent).showMechanicalMappings_.getValue());
+            break;
+        case FORCEFIELDS:
+            showForceFields_.setValue((*parent).showForceFields_.getValue());
+            break;
+        case INTERACTIONFORCEFIELDS:
+            showInteractionForceFields_.setValue((*parent).showInteractionForceFields_.getValue());
+            break;
+        case WIREFRAME:
+            showWireFrame_.setValue((*parent).showWireFrame_.getValue());
+            break;
+        case NORMALS:
+            showNormals_.setValue((*parent).showNormals_.getValue());
+            break;
+        case ALLFLAGS:
+            copyVisualContext(*parent);
+            break;
         }
+
     }
     simulation::Node::updateVisualContext(FILTER);
 }
