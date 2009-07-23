@@ -30,9 +30,8 @@
 
 #include <sofa/simulation/common/InitVisitor.h>
 #include <sofa/simulation/common/DeleteVisitor.h>
+#include <sofa/simulation/common/MechanicalVisitor.h>
 
-#include <sofa/helper/Factory.inl>
-#include <sofa/component/collision/ComponentMouseInteraction.inl>
 
 #include <iostream>
 
@@ -90,6 +89,10 @@ void PickHandler::reset()
     {
         interaction->reset();
     }
+    core::componentmodel::collision::Pipeline *pipeline;
+    simulation::getSimulation()->getContext()->get(pipeline, core::objectmodel::BaseContext::SearchRoot);
+
+    useCollisions = (pipeline != NULL);
 }
 void PickHandler::activateRay(bool act)
 {
@@ -123,16 +126,36 @@ bool PickHandler::needToCastRay()
 
 void PickHandler::setCompatibleInteractor()
 {
-    if (!lastPicked.body) return;
-    if (interaction->isCompatible(lastPicked.body->getContext())) return;
-    for (unsigned int i=0; i<instanceComponents.size(); ++i)
+    if (useCollisions)
     {
-        if (instanceComponents[i] != interaction &&
-            instanceComponents[i]->isCompatible(lastPicked.body->getContext()))
+        if (!lastPicked.body ) return;
+
+        if (interaction->isCompatible(lastPicked.body->getContext())) return;
+        for (unsigned int i=0; i<instanceComponents.size(); ++i)
         {
-            interaction->deactivate();
-            interaction = instanceComponents[i];
-            interaction->activate();
+            if (instanceComponents[i] != interaction &&
+                instanceComponents[i]->isCompatible(lastPicked.body->getContext()))
+            {
+                interaction->deactivate();
+                interaction = instanceComponents[i];
+                interaction->activate();
+            }
+        }
+    }
+    else
+    {
+        if (!lastPicked.mstate) return;
+
+        if (interaction->isCompatible(lastPicked.mstate->getContext())) return;
+        for (unsigned int i=0; i<instanceComponents.size(); ++i)
+        {
+            if (instanceComponents[i] != interaction &&
+                instanceComponents[i]->isCompatible(lastPicked.mstate->getContext()))
+            {
+                interaction->deactivate();
+                interaction = instanceComponents[i];
+                interaction->activate();
+            }
         }
     }
 
@@ -142,10 +165,8 @@ void PickHandler::setCompatibleInteractor()
 void PickHandler::updateRay(const sofa::defaulttype::Vector3 &position,const sofa::defaulttype::Vector3 &orientation)
 {
     if (!interactorInUse) return;
-
     mouseCollision->getRay(0).origin() = position+orientation*interaction->mouseInteractor->getDistanceFromMouse();
     mouseCollision->getRay(0).direction() = orientation;
-
     if (needToCastRay())
     {
         lastPicked=findCollision();
@@ -199,10 +220,15 @@ ComponentMouseInteraction *PickHandler::getInteraction()
 
 component::collision::BodyPicked PickHandler::findCollision()
 {
+    if (useCollisions) return findCollisionUsingPipeline();
+    else               return findCollisionUsingBruteForce();
+}
+
+component::collision::BodyPicked PickHandler::findCollisionUsingPipeline()
+{
     const defaulttype::Vector3& origin          = mouseCollision->getRay(0).origin();
     const defaulttype::Vector3& direction       = mouseCollision->getRay(0).direction();
     const double& maxLength                     = mouseCollision->getRay(0).l();
-
 
     BodyPicked result;
     const std::set< sofa::component::collision::BaseRayContact*> &contacts = mouseCollision->getContacts();
@@ -251,6 +277,35 @@ component::collision::BodyPicked PickHandler::findCollision()
     }
     return result;
 }
+
+component::collision::BodyPicked PickHandler::findCollisionUsingBruteForce()
+{
+    const defaulttype::Vector3& origin          = mouseCollision->getRay(0).origin();
+    const defaulttype::Vector3& direction       = mouseCollision->getRay(0).direction();
+    const double& maxLength                     = mouseCollision->getRay(0).l();
+
+    BodyPicked result;
+    // Look for particles hit by this ray
+    simulation::MechanicalPickParticlesVisitor picker(origin, direction, maxLength, 0);
+    core::objectmodel::BaseNode* rootNode = dynamic_cast<core::objectmodel::BaseNode*>(sofa::simulation::getSimulation()->getContext());
+
+    if (rootNode) picker.execute(rootNode->getContext());
+    else std::cerr << "ERROR: root node not found." << std::endl;
+
+    if (!picker.particles.empty())
+    {
+        core::componentmodel::behavior::BaseMechanicalState *mstate = picker.particles.begin()->second.first;
+        result.mstate=mstate;
+        result.indexCollisionElement = picker.particles.begin()->second.second;
+        result.point[0] = mstate->getPX(result.indexCollisionElement);
+        result.point[1] = mstate->getPY(result.indexCollisionElement);
+        result.point[2] = mstate->getPZ(result.indexCollisionElement);
+        result.dist =  0;
+        result.rayLength = (result.point-origin)*direction;
+    }
+    return result;
+}
+
 
 }
 }

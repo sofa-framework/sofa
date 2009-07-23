@@ -227,7 +227,7 @@ protected:
     void StoreLightMatrices();
 
 public:
-    void setScene(sofa::simulation::Node* scene, const char* filename=NULL);
+    void setScene(sofa::simulation::Node* scene, const char* filename=NULL, bool temporaryFile=false);
     sofa::simulation::Node* getScene()
     {
         return groot;

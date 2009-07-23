@@ -55,8 +55,9 @@ namespace collision
 
 struct BodyPicked
 {
-    BodyPicked():body(NULL) {};
+    BodyPicked():body(NULL), mstate(NULL) {};
     sofa::core::CollisionModel *body;
+    sofa::core::componentmodel::behavior::BaseMechanicalState *mstate;
     unsigned int indexCollisionElement;
     defaulttype::Vector3 point;
     double dist;
@@ -121,6 +122,7 @@ protected:
     bool isIncising;
 
     SReal distanceFromMouse;
+
     sofa::component::collision::TopologicalChangeManager topologyChangeManager;
 };
 
@@ -162,6 +164,14 @@ public:
     /// Release the attached body
     void doReleaseFixations();
 
+    virtual std::string getTemplateName() const
+    {
+        return templateName(this);
+    }
+    static std::string templateName(const MouseInteractor<DataTypes>* = NULL)
+    {
+        return DataTypes::Name();
+    }
 protected:
 
     MouseContainer       *mouseInSofa;

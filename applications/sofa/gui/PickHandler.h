@@ -27,16 +27,13 @@
 #ifndef SOFA_GUI_PICKHANDLER_H
 #define SOFA_GUI_PICKHANDLER_H
 
-
 #include <sofa/gui/OperationFactory.h>
-
 
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/common/Node.h>
 
 #include <sofa/component/container/MechanicalObject.h>
 #include <sofa/component/collision/RayModel.h>
-#include <sofa/component/collision/MouseInteractor.h>
 #include <sofa/component/collision/ComponentMouseInteraction.h>
 
 #include <sofa/helper/fixed_array.h>
@@ -90,6 +87,8 @@ protected:
 
 
     BodyPicked findCollision();
+    BodyPicked findCollisionUsingPipeline();
+    BodyPicked findCollisionUsingBruteForce();
     bool needToCastRay();
     void setCompatibleInteractor();
 
@@ -105,6 +104,7 @@ protected:
     MOUSE_STATUS mouseStatus;
 
     helper::fixed_array< Operation*,3 > operations;
+    bool useCollisions;
 };
 }
 }

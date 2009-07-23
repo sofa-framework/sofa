@@ -2345,12 +2345,17 @@ bool MechanicalObject<DataTypes>::pickParticles(double rayOx, double rayOy, doub
         {
             Vec<3,Real> pos;
             DataTypes::get(pos[0],pos[1],pos[2],x[i]);
-            double dist = dot(pos-origin, direction);
+
+            if (pos == origin) continue;
+            double dist = (pos-origin)*direction;
             if (dist < 0) continue;
+
+            Vec<3,Real> vecPoint = (pos-origin) - direction*dist;
+            double distToRay = vecPoint.norm2();
             double maxr = radius0 + dRadius*dist;
             double r2 = (pos-origin-direction*dist).norm2();
             if (r2 <= maxr*maxr)
-                particles.insert(std::make_pair(dist,std::make_pair(this,i)));
+                particles.insert(std::make_pair(distToRay,std::make_pair(this,i)));
         }
         return true;
     }

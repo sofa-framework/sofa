@@ -43,32 +43,50 @@ namespace collision
 template <class DataTypes>
 void MouseInteractor<DataTypes>::doAttachBody(const BodyPicked& picked, double stiffness)
 {
-    if (!picked.body) return;
-    mapper = MouseContactMapper::Create(picked.body);
-    if (!mapper)
+    if (!picked.body && !picked.mstate) return;
+    core::componentmodel::behavior::MechanicalState<DataTypes>* mstateCollision=NULL;
+    int index;
+    double restLength=0;
+    if (picked.body)
     {
-        std::cerr << "Problem with Mouse Mapper creation : " << std::endl;
-        return;
+        mapper = MouseContactMapper::Create(picked.body);
+
+        if (!mapper)
+        {
+            std::cerr << "Problem with Mouse Mapper creation : " << std::endl;
+            return;
+        }
+
+        std::string name = "contactMouse";
+        mstateCollision = mapper->createMapping(name.c_str());
+        mapper->resize(1);
+
+        const typename DataTypes::Coord pointPicked=picked.point;
+        const int idx=picked.indexCollisionElement;
+        typename DataTypes::Real r=0.0;
+
+        index = mapper->addPoint(pointPicked, idx, r);
+        mapper->update();
+
     }
+    else
+    {
+        mstateCollision = dynamic_cast< core::componentmodel::behavior::MechanicalState<DataTypes>*  >(picked.mstate);
+        index = picked.indexCollisionElement;
+        if (!mstateCollision)
+        {
+            this->serr << "uncompatible MState during Mouse Interaction " << this->sendl;
+            return;
+        }
 
-    std::string name = "contactMouse";
-    core::componentmodel::behavior::MechanicalState<DataTypes>* mstateCollision = mapper->createMapping(name.c_str());
-    mapper->resize(1);
-
-    const typename DataTypes::Coord pointPicked=picked.point;
-    const int idx=picked.indexCollisionElement;
-    typename DataTypes::Real r=0.0;
-
-    const int index = mapper->addPoint(pointPicked, idx, r);
-    mapper->update();
-
+    }
+    restLength=picked.dist;
     distanceFromMouse = picked.rayLength;
-//         const defaulttype::Vector3 &orientation =  mouseCollision->getRay(0).direction();
-//         const defaulttype::Vector3 repulsionVector = orientation*picked.dist;
+
     const double friction=0.0;
 
     forcefield = new MouseForceField(mouseInSofa, mstateCollision); forcefield->setName("Spring-Mouse-Contact");
-    forcefield->addSpring(0,index, stiffness, friction, picked.dist);
+    forcefield->addSpring(0,index, stiffness, friction, restLength);
 
     mouseCollision->getRay(0).origin() += mouseCollision->getRay(0).direction()*distanceFromMouse;
 
@@ -91,17 +109,15 @@ void MouseInteractor<DataTypes>::doReleaseBody()
         forcefield->cleanup();
         forcefield->getContext()->removeObject(forcefield);
         delete forcefield; forcefield=NULL;
-
     }
 
     if (mapper)
     {
         mapper->cleanup();
         delete mapper; mapper=NULL;
-        distanceFromMouse = 0;
     }
 
-
+    distanceFromMouse = 0;
     isAttached=false;
 }
 
