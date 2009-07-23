@@ -111,6 +111,15 @@ public:
     virtual void drawVisual();
     virtual void updateVisual();
 
+    virtual std::string getTemplateName() const
+    {
+        return templateName(this);
+    }
+    static std::string templateName(const CudaVisualModel<TDataTypes>* = NULL)
+    {
+        return TDataTypes::Name();
+    }
+
 protected:
 
     void updateTopology();
