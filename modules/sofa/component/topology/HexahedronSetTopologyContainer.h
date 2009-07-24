@@ -204,7 +204,7 @@ public:
     /** \brief Returns for each index (between 0 and 12) the two vertex indices that are adjacent to that edge
      *
      */
-    virtual Edge getLocalEdgesInHexahedron (const PointID i) const;
+    virtual Edge getLocalEdgesInHexahedron (const unsigned int i) const;
 
     /// @}
 
