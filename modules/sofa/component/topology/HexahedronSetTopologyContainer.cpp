@@ -571,7 +571,7 @@ const sofa::helper::vector< EdgesInHexahedron> &HexahedronSetTopologyContainer::
     return m_edgesInHexahedron;
 }
 
-Edge HexahedronSetTopologyContainer::getLocalEdgesInHexahedron (const PointID i) const
+Edge HexahedronSetTopologyContainer::getLocalEdgesInHexahedron (const unsigned int i) const
 {
     assert(i<12);
     return Edge (edgesInHexahedronArray[i][0], edgesInHexahedronArray[i][1]);

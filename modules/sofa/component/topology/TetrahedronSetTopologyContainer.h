@@ -186,7 +186,7 @@ public:
     /** \brief Returns for each index (between 0 and 5) the two vertex indices that are adjacent to that edge.
      *
      */
-    virtual Edge getLocalEdgesInTetrahedron (const PointID i) const;
+    virtual Edge getLocalEdgesInTetrahedron (const unsigned int i) const;
 
     /// @}
 

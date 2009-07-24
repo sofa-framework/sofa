@@ -504,7 +504,7 @@ const sofa::helper::vector< EdgesInTetrahedron> &TetrahedronSetTopologyContainer
     return m_edgesInTetrahedron;
 }
 
-Edge TetrahedronSetTopologyContainer::getLocalEdgesInTetrahedron (const PointID i) const
+Edge TetrahedronSetTopologyContainer::getLocalEdgesInTetrahedron (const unsigned int i) const
 {
     assert(i<6);
     return Edge (edgesInTetrahedronArray[i][0], edgesInTetrahedronArray[i][1]);
