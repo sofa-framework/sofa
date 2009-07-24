@@ -270,7 +270,6 @@ public:
 
     H_node_vertex_map h_node_vertex_map;     ///< sofa node->hvertex
     R_node_vertex_map r_node_vertex_map;     ///< sofa node->rvertex
-    bool hasCollisionGroupManager;
 protected:
 
     void  removeVertex(Hvertex p);

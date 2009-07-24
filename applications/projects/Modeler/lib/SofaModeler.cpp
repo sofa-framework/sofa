@@ -599,6 +599,7 @@ void SofaModeler::componentDraggedReception( std::string description, std::strin
         , std::string templateName, ClassEntry* componentEntry)
 {
     changeComponent(description );
+    if (!graph) return;
     graph->setLastSelectedComponent(templateName, componentEntry);
     Q3TextDrag *dragging = new Q3TextDrag(QString("ComponentCreation"), (QWidget*) this->sender());
     dragging->setText(QString("ComponentCreation"));

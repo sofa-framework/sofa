@@ -554,76 +554,71 @@ void BglNode::updateSimulationContext()
     {
         copySimulationContext(*parents[0]);
     }
-    simulation::Node::updateSimulationContext();
 }
 
-void BglNode::updateVisualContext(int FILTER)
+void BglNode::updateVisualContext(VISUAL_FLAG FILTER)
 {
     helper::vector< BglNode* > parents=getParents();
     if (parents.size())
     {
-        if (FILTER==10)
+        switch (FILTER)
         {
+        case VISUALMODELS:
+            showVisualModels_.setValue(0);
+            for (unsigned int i=0; i<parents.size(); ++i)
+                showVisualModels_.setValue(showVisualModels_.getValue() || parents[i]->showVisualModels_.getValue());
+            break;
+        case BEHAVIORMODELS:
+            showBehaviorModels_.setValue(0);
+            for (unsigned int i=0; i<parents.size(); ++i)
+                showBehaviorModels_.setValue(showBehaviorModels_.getValue() || parents[i]->showBehaviorModels_.getValue());
+            break;
+        case COLLISIONMODELS:
+            showCollisionModels_.setValue(0);
+            for (unsigned int i=0; i<parents.size(); ++i)
+                showCollisionModels_.setValue(showCollisionModels_.getValue() || parents[i]->showCollisionModels_.getValue());
+            break;
+        case BOUNDINGCOLLISIONMODELS:
+            showBoundingCollisionModels_.setValue(0);
+            for (unsigned int i=0; i<parents.size(); ++i)
+                showBoundingCollisionModels_.setValue(showBoundingCollisionModels_.getValue() || parents[i]->showBoundingCollisionModels_.getValue());
+            break;
+        case MAPPINGS:
+            showMappings_.setValue(0);
+            for (unsigned int i=0; i<parents.size(); ++i)
+                showMappings_.setValue(showMappings_.getValue() || parents[i]->showMappings_.getValue());
+            break;
+        case MECHANICALMAPPINGS:
+            showMechanicalMappings_.setValue(0);
+            for (unsigned int i=0; i<parents.size(); ++i)
+                showMechanicalMappings_.setValue(showMechanicalMappings_.getValue() || parents[i]->showMechanicalMappings_.getValue());
+            break;
+        case FORCEFIELDS:
+            showForceFields_.setValue(0);
+            for (unsigned int i=0; i<parents.size(); ++i)
+                showForceFields_.setValue(showForceFields_.getValue() || parents[i]->showForceFields_.getValue());
+            break;
+        case INTERACTIONFORCEFIELDS:
+            showInteractionForceFields_.setValue(0);
+            for (unsigned int i=0; i<parents.size(); ++i)
+                showInteractionForceFields_.setValue(showInteractionForceFields_.getValue() || parents[i]->showInteractionForceFields_.getValue());
+            break;
+        case WIREFRAME:
+            showWireFrame_.setValue(0);
+            for (unsigned int i=0; i<parents.size(); ++i)
+                showWireFrame_.setValue(showWireFrame_.getValue() || parents[i]->showWireFrame_.getValue());
+            break;
+        case NORMALS:
+            showNormals_.setValue(0);
+            for (unsigned int i=0; i<parents.size(); ++i)
+                showNormals_.setValue(showNormals_.getValue() || parents[i]->showNormals_.getValue());
+            break;
+        case ALLFLAGS:
             for (unsigned int i=0; i<parents.size(); ++i)
             {
                 fusionVisualContext(*parents[i]);
             }
-        }
-        else
-        {
-            switch (FILTER)
-            {
-            case 0:
-                showVisualModels_.setValue(0);
-                for (unsigned int i=0; i<parents.size(); ++i)
-                    showVisualModels_.setValue(showVisualModels_.getValue() || parents[i]->showVisualModels_.getValue());
-                break;
-            case 1:
-                showBehaviorModels_.setValue(0);
-                for (unsigned int i=0; i<parents.size(); ++i)
-                    showBehaviorModels_.setValue(showBehaviorModels_.getValue() || parents[i]->showBehaviorModels_.getValue());
-                break;
-            case 2:
-                showCollisionModels_.setValue(0);
-                for (unsigned int i=0; i<parents.size(); ++i)
-                    showCollisionModels_.setValue(showCollisionModels_.getValue() || parents[i]->showCollisionModels_.getValue());
-                break;
-            case 3:
-                showBoundingCollisionModels_.setValue(0);
-                for (unsigned int i=0; i<parents.size(); ++i)
-                    showBoundingCollisionModels_.setValue(showBoundingCollisionModels_.getValue() || parents[i]->showBoundingCollisionModels_.getValue());
-                break;
-            case 4:
-                showMappings_.setValue(0);
-                for (unsigned int i=0; i<parents.size(); ++i)
-                    showMappings_.setValue(showMappings_.getValue() || parents[i]->showMappings_.getValue());
-                break;
-            case 5:
-                showMechanicalMappings_.setValue(0);
-                for (unsigned int i=0; i<parents.size(); ++i)
-                    showMechanicalMappings_.setValue(showMechanicalMappings_.getValue() || parents[i]->showMechanicalMappings_.getValue());
-                break;
-            case 6:
-                showForceFields_.setValue(0);
-                for (unsigned int i=0; i<parents.size(); ++i)
-                    showForceFields_.setValue(showForceFields_.getValue() || parents[i]->showForceFields_.getValue());
-                break;
-            case 7:
-                showInteractionForceFields_.setValue(0);
-                for (unsigned int i=0; i<parents.size(); ++i)
-                    showInteractionForceFields_.setValue(showInteractionForceFields_.getValue() || parents[i]->showInteractionForceFields_.getValue());
-                break;
-            case 8:
-                showWireFrame_.setValue(0);
-                for (unsigned int i=0; i<parents.size(); ++i)
-                    showWireFrame_.setValue(showWireFrame_.getValue() || parents[i]->showWireFrame_.getValue());
-                break;
-            case 9:
-                showNormals_.setValue(0);
-                for (unsigned int i=0; i<parents.size(); ++i)
-                    showNormals_.setValue(showNormals_.getValue() || parents[i]->showNormals_.getValue());
-                break;
-            }
+            break;
         }
     }
     simulation::Node::updateVisualContext(FILTER);

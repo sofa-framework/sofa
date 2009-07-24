@@ -80,6 +80,11 @@ int main(int argc, char** argv)
     bool        startAnim = false;
     bool        printFactory = false;
     bool        loadRecent = false;
+    bool        temporaryFile = false;
+    std::string dimension="800x600";
+    bool fullScreen = false;
+
+
     std::string gui = sofa::gui::SofaGUI::GetGUIName();
     std::vector<std::string> plugins;
     std::vector<std::string> files;
@@ -94,26 +99,27 @@ int main(int argc, char** argv)
     .option(&gui,'g',"gui",gui_help.c_str())
     .option(&plugins,'l',"load","load given plugins")
     .option(&loadRecent,'r',"recent","load most recently opened file")
+    .option(&dimension,'d',"dimension","width and height of the viewer")
+    .option(&fullScreen,'f',"fullScreen","start in full screen")
+    .option(&temporaryFile,'t',"temporary","the loaded scene won't appear in history of opened files")
     (argc,argv);
 
     if(gui!="batch")
         glutInit(&argc,argv);
     sofa::component::init();
     sofa::simulation::setSimulation(new sofa::simulation::bgl::BglSimulation);
+    sofa::simulation::tree::xml::initXml();
 
     sofa::core::ObjectFactory::ClassEntry* classDefaultCollisionGroupManager;
     sofa::core::ObjectFactory::ClassEntry* classCollisionGroup;
-
     sofa::core::ObjectFactory::AddAlias("DefaultCollisionGroupManager",
             "BglCollisionGroupManager", true, &classDefaultCollisionGroupManager);
-
     sofa::core::ObjectFactory::AddAlias("CollisionGroup",
             "BglCollisionGroupManager", true, &classCollisionGroup);
 
 
 
 
-    sofa::simulation::tree::xml::initXml();
 
     if (!files.empty()) fileName = files[0];
 
@@ -135,6 +141,7 @@ int main(int argc, char** argv)
     if (fileName.empty())
     {
         fileName = "Demos/liver.scn";
+
         if (loadRecent) // try to reload the latest scene
         {
             std::string scenes = "config/Sofa.ini";
@@ -146,48 +153,40 @@ int main(int argc, char** argv)
         sofa::helper::system::DataRepository.findFile(fileName);
     }
 
-    if (int err=sofa::gui::SofaGUI::createGUI(groot,fileName.c_str()))
+    if (int err=sofa::gui::SofaGUI::createGUI(groot))
         return err;
+
     std::string in_filename(fileName);
     if (in_filename.rfind(".simu") == std::string::npos)
     {
         sofa::simulation::getSimulation()->unload ( groot);
-
         groot = dynamic_cast<sofa::simulation::bgl::BglNode*>( sofa::simulation::getSimulation()->load(fileName.c_str()));
         sofa::simulation::bgl::getSimulation()->init(groot);
-
         if(sofa::gui::SofaGUI::CurrentGUI())
-            sofa::gui::SofaGUI::CurrentGUI()->setScene(groot,fileName.c_str());
+            sofa::gui::SofaGUI::CurrentGUI()->setScene(groot,fileName.c_str(), temporaryFile);
     }
 
     if (startAnim)
         groot->setAnimate(true);
 
 
-
     //=======================================
     // Run the main loop
 
-    if (gui=="none")
+    //Dimension Option
+    std::string::size_type separator=dimension.find_first_of('x');
+    if (separator != std::string::npos)
     {
-        if (groot==NULL)
-        {
-            std::cerr<<"Could not load file "<<fileName<<std::endl;
-            return 1;
-        }
-        std::cout << "Computing 1000 iterations." << std::endl;
-        for (int i=0; i<1000; i++)
-        {
-            sofa::simulation::bgl::getSimulation()->animate(groot);
-        }
-        std::cout << "1000 iterations done." << std::endl;
+        std::string stringWidth=dimension.substr(0,separator);
+        std::string stringHeight=dimension.substr(separator+1);
+        sofa::gui::SofaGUI::CurrentGUI()->setDimension(atoi(stringWidth.c_str()), atoi(stringHeight.c_str()));
     }
-    else
-    {
-        if (int err=sofa::gui::SofaGUI::MainLoop(groot,fileName.c_str()))
-            return err;
-        groot = dynamic_cast<sofa::simulation::bgl::BglNode*>( sofa::gui::SofaGUI::CurrentSimulation() );
-    }
+
+    if (fullScreen) sofa::gui::SofaGUI::CurrentGUI()->setFullScreen();
+    if (int err=sofa::gui::SofaGUI::MainLoop(groot,fileName.c_str()))
+        return err;
+    groot = dynamic_cast<sofa::simulation::bgl::BglNode*>( sofa::gui::SofaGUI::CurrentSimulation() );
+
 
     if (groot!=NULL)
         sofa::simulation::bgl::getSimulation()->unload(groot);

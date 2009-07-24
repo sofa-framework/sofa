@@ -173,7 +173,7 @@ public:
     virtual void updateContext();
 
     /// Update the visual context values, based on parent and local ContextObjects
-    virtual void updateVisualContext(int FILTER=0);
+    virtual void updateVisualContext(VISUAL_FLAG FILTER=ALLFLAGS);
 
     /// Update the simulation context values(gravity, time...), based on parent and local ContextObjects
     virtual void updateSimulationContext();

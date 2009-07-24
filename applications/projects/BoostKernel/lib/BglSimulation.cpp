@@ -129,7 +129,9 @@ void BglSimulation::init(Node* root )
 
 //         /// compute the interaction groups
     graphManager.computeInteractionGraphAndConnectedComponents();
+    graphManager.insertHierarchicalGraph();
 
+    graphManager.getMasterNode()->updateContext();
 }
 
 
@@ -208,11 +210,7 @@ Node* BglSimulation::load(const char* f)
 {
     graphManager.reset();
     std::string fileName(f);
-    /*  if (fileName.empty())*/
-    {
-        //         fileName = "liver.scn";
-        sofa::helper::system::DataRepository.findFile(fileName);
-    }
+    sofa::helper::system::DataRepository.findFile(fileName);
 
     sofa::simulation::tree::GNode* groot = 0;
 
@@ -239,9 +237,7 @@ Node* BglSimulation::load(const char* f)
 
 
     Node *masterNode=graphManager.getMasterNode();
-    const sofa::core::objectmodel::Context &c = *( (sofa::core::objectmodel::Context*)groot->getContext());
-    masterNode->copyContext(c);
-
+    masterNode->copyContext(*( (sofa::core::objectmodel::Context*)groot->getContext()));
     graphManager.update();
 
     /// find the roots in hgraph
@@ -252,15 +248,10 @@ Node* BglSimulation::load(const char* f)
     return masterNode;
 }
 
-void BglSimulation::clear()
-{
-    graphManager.clear();
-}
 
 void BglSimulation::reset(Node* root)
 {
     sofa::simulation::Simulation::reset(root);
-//         sofa::simulation::Simulation::reset(visualNode);
 
     graphManager.update();
     graphManager.reset();
@@ -272,11 +263,18 @@ void BglSimulation::reset(Node* root)
 void BglSimulation::unload(Node* root)
 {
     if (!root) return;
+    root->execute<PrintVisitor>();
     root->execute<CleanupVisitor>();
     DeleteVisitor deleteGraph;
     graphManager.getMasterNode()->doExecuteVisitor(&deleteGraph);
     clear();
 }
+
+void BglSimulation::clear()
+{
+    graphManager.clear();
+}
+
 
 Node* BglSimulation::getSolverEulerEuler()
 {
