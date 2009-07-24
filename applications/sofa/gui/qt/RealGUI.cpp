@@ -549,7 +549,7 @@ void RealGUI::updateRecentlyOpened(std::string fileLoaded)
         recentlyOpened->insertItem(QString(fileLoaded.c_str()),-1,0);
     }
 
-    for (unsigned int i=1; i<recentlyOpened->count(); ++i)
+    for (unsigned int i=1; i<recentlyOpened->count() && i< MAX_RECENTLY_OPENED; ++i)
     {
         std::string entry = (recentlyOpened->text(recentlyOpened->idAt(i))).ascii();
         if (fileLoaded == entry)
@@ -563,14 +563,9 @@ void RealGUI::updateRecentlyOpened(std::string fileLoaded)
         }
     }
 
-    while (recentlyOpened->count() >= MAX_RECENTLY_OPENED)
-    {
-        recentlyOpened->removeItemAt(MAX_RECENTLY_OPENED);
-    }
+    while (recentlyOpened->count() > MAX_RECENTLY_OPENED) recentlyOpened->removeItemAt(MAX_RECENTLY_OPENED);
 
     out.close();
-
-
 }
 
 void RealGUI::setPixmap(std::string pixmap_filename, QPushButton* b)
