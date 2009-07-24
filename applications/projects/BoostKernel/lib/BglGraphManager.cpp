@@ -54,6 +54,7 @@
 #include <map>
 
 #include <sofa/simulation/common/CollisionVisitor.h>
+#include <sofa/simulation/common/PrintVisitor.h>
 
 namespace sofa
 {
@@ -72,6 +73,8 @@ BglGraphManager::BglGraphManager()
     Node *n=newNodeNow("masterNode");
     masterNode= dynamic_cast<BglNode*>(n);
     masterVertex = h_node_vertex_map[masterNode];
+
+    collisionPipeline=NULL;
 };
 
 
@@ -338,7 +341,6 @@ void BglGraphManager::clear()
     rgraph.clear();
     r_node_vertex_map.clear();
     collisionPipeline=NULL;
-    hasCollisionGroupManager = false;
 
     h_vertex_node_map = get( bglnode_t(), hgraph);
     r_vertex_node_map = get( bglnode_t(), rgraph);
@@ -709,7 +711,6 @@ void BglGraphManager::mechanicalStep(Node* root, double dt)
         //No object to animate
         if (staticObjectAdded.empty() && animatedObjectAdded.empty() ) continue;
 
-
         //We deal with all the solvers one by one
         std::set< Hvertex >::iterator it;
 
@@ -720,7 +721,6 @@ void BglGraphManager::mechanicalStep(Node* root, double dt)
             Node* currentSolver=h_vertex_node_map[solverVertex];
             // animate this interaction group
             addHedge( masterVertex,solverVertex);
-            if (hasCollisionGroupManager)
             {
 #ifdef SOFA_DUMP_VISITOR_INFO
                 simulation::Visitor::printComment(std::string("Collision Group Animate ") + staticObjectName + currentSolver->getName() );
@@ -728,7 +728,6 @@ void BglGraphManager::mechanicalStep(Node* root, double dt)
                 masterNode->animate(dt);
                 removeHedge( masterVertex, solverVertex);
             }
-            else staticObjectName += currentSolver->getName() + std::string(" ");
         }
 
         if (animatedObjectAdded.empty() // || !hasCollisionGroupManager
