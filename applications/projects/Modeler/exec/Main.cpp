@@ -32,6 +32,12 @@
 
 #include "../lib/SofaModeler.h"
 #include <sofa/helper/system/glut.h>
+
+
+#include <sofa/helper/system/SetDirectory.h>
+#ifndef SOFA_QT4
+#include <qpixmap.h>
+#endif
 // ---------------------------------------------------------------------
 // ---
 // ---------------------------------------------------------------------
@@ -45,8 +51,18 @@ int main(int argc, char** argv)
     sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
 
     sofa::gui::qt::SofaModeler* sofaModeler = new sofa::gui::qt::SofaModeler();
+
+
     application->setMainWidget(sofaModeler);
     sofaModeler->show();
+
+
+    QString pathIcon=(sofa::helper::system::DataRepository.getFirstPath() + std::string( "/icons/MODELER.png" )).c_str();
+#ifdef SOFA_QT4
+    application->setWindowIcon(QIcon(pathIcon));
+#else
+    sofaModeler->setIcon(QPixmap(pathIcon));
+#endif
 
     for (int i=1; i<argc; ++i)
     {

@@ -164,37 +164,20 @@ int main(int argc, char** argv)
     //=======================================
     // Run the main loop
 
-    if (gui=="none")
+    //Dimension Option
+    std::string::size_type separator=dimension.find_first_of('x');
+    if (separator != std::string::npos)
     {
-        if (groot==NULL)
-        {
-            std::cerr<<"Could not load file "<<fileName<<std::endl;
-            return 1;
-        }
-        std::cout << "Computing 1000 iterations." << std::endl;
-        for (int i=0; i<1000; i++)
-        {
-            sofa::simulation::tree::getSimulation()->animate(groot);
-        }
-        std::cout << "1000 iterations done." << std::endl;
+        std::string stringWidth=dimension.substr(0,separator);
+        std::string stringHeight=dimension.substr(separator+1);
+        sofa::gui::SofaGUI::CurrentGUI()->setDimension(atoi(stringWidth.c_str()), atoi(stringHeight.c_str()));
     }
-    else
-    {
-        //=======================================
-        //Dimension Option
-        std::string::size_type separator=dimension.find_first_of('x');
-        if (separator != std::string::npos)
-        {
-            std::string stringWidth=dimension.substr(0,separator);
-            std::string stringHeight=dimension.substr(separator+1);
-            sofa::gui::SofaGUI::CurrentGUI()->setDimension(atoi(stringWidth.c_str()), atoi(stringHeight.c_str()));
-        }
 
-        if (fullScreen) sofa::gui::SofaGUI::CurrentGUI()->setFullScreen();
-        if (int err=sofa::gui::SofaGUI::MainLoop(groot,fileName.c_str()))
-            return err;
-        groot = dynamic_cast<sofa::simulation::tree::GNode*>( sofa::gui::SofaGUI::CurrentSimulation() );
-    }
+    if (fullScreen) sofa::gui::SofaGUI::CurrentGUI()->setFullScreen();
+    if (int err=sofa::gui::SofaGUI::MainLoop(groot,fileName.c_str()))
+        return err;
+    groot = dynamic_cast<sofa::simulation::tree::GNode*>( sofa::gui::SofaGUI::CurrentSimulation() );
+
 
     if (groot!=NULL)
         sofa::simulation::tree::getSimulation()->unload(groot);

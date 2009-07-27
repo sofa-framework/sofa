@@ -97,7 +97,7 @@ public:
 
 
 #ifdef SOFA_DUMP_VISITOR_INFO
-        simulation::Visitor::printNode("ConjugateGradient");
+        simulation::Visitor::printComment("ConjugateGradient");
 #endif
 
 
@@ -222,10 +222,6 @@ public:
             simulation::Visitor::printCloseNode(comment.str());
 #endif
         }
-
-#ifdef SOFA_DUMP_VISITOR_INFO
-        simulation::Visitor::printCloseNode("ConjugateGradient");
-#endif
 
 #ifdef DISPLAY_TIME
         time1 = (double)(((double) timer->getTime() - time1) * timeStamp / (nb_iter-1));
