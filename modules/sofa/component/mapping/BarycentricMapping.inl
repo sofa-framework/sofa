@@ -1331,7 +1331,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJ ( typename Out::VecDeriv& out
     const sofa::core::componentmodel::topology::BaseMeshTopology::SeqCubes& cubes = this->topology->getCubes();
 #endif
 
-    if ( !(maskTo->isInUse()) )
+    if ((!maskTo)||(maskTo&& !(maskTo->isInUse())) )
     {
         // 1D elements
         {
@@ -1524,7 +1524,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJ ( typename Out::VecDeriv& out
 template <class In, class Out>
 void BarycentricMapperRegularGridTopology<In,Out>::applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
-    if ( !(maskTo->isInUse()) )
+    if ((!maskTo)||(maskTo&& !(maskTo->isInUse())) )
     {
         for ( unsigned int i=0; i<map.size(); i++ )
         {
@@ -1600,7 +1600,7 @@ void BarycentricMapperRegularGridTopology<In,Out>::applyJ ( typename Out::VecDer
 template <class In, class Out>
 void BarycentricMapperSparseGridTopology<In,Out>::applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
-    if ( !(maskTo->isInUse()) )
+    if ((!maskTo)||(maskTo&& !(maskTo->isInUse())) )
     {
         for ( unsigned int i=0; i<map.size(); i++ )
         {
@@ -1679,7 +1679,7 @@ void BarycentricMapperEdgeSetTopology<In,Out>::applyJ ( typename Out::VecDeriv& 
 
     out.resize ( map.getValue().size() );
     const sofa::helper::vector<topology::Edge>& edges = this->topology->getEdges();
-    if ( !(maskTo->isInUse()) )
+    if ((!maskTo)||(maskTo&& !(maskTo->isInUse())) )
     {
         for ( unsigned int i=0; i<map.getValue().size(); i++ )
         {
@@ -1716,7 +1716,7 @@ void BarycentricMapperTriangleSetTopology<In,Out>::applyJ ( typename Out::VecDer
     const sofa::helper::vector<topology::Triangle>& triangles = this->topology->getTriangles();
 
 
-    if ( !(maskTo->isInUse()) )
+    if ((!maskTo)||(maskTo&& !(maskTo->isInUse())) )
     {
         for ( unsigned int i=0; i<map.getValue().size(); i++ )
         {
@@ -1758,7 +1758,7 @@ void BarycentricMapperQuadSetTopology<In,Out>::applyJ ( typename Out::VecDeriv& 
     const sofa::helper::vector<topology::Quad>& quads = this->topology->getQuads();
 
 
-    if ( !(maskTo->isInUse()) )
+    if ((!maskTo)||(maskTo&& !(maskTo->isInUse())) )
     {
         for ( unsigned int i=0; i<map.getValue().size(); i++ )
         {
@@ -1802,7 +1802,7 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::applyJ ( typename Out::Vec
     const sofa::helper::vector<topology::Tetrahedron>& tetras = this->topology->getTetrahedra();
 
 
-    if (!(maskTo->isInUse()) )
+    if ((!maskTo)||(maskTo&& !(maskTo->isInUse())) )
     {
         for ( unsigned int i=0; i<map.getValue().size(); i++ )
         {
@@ -1847,7 +1847,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::applyJ ( typename Out::VecD
     const sofa::helper::vector<topology::Hexahedron>& cubes = this->topology->getHexahedra();
 
 
-    if (!(maskTo->isInUse()) )
+    if ((!maskTo)||(maskTo&& !(maskTo->isInUse())) )
     {
         for ( unsigned int i=0; i<map.getValue().size(); i++ )
         {
@@ -1920,7 +1920,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::VecDeriv& out
 
 //         std::cerr << "BarycentricMapperMeshTopology<In,Out>::applyJT " << maskTo->isInUse() << "\n";
 
-    if (  !(maskTo->isInUse()) )
+    if ((!maskTo)||(maskTo&& !(maskTo->isInUse())) )
     {
         maskFrom->setInUse(false);
         // 1D elements
@@ -2141,7 +2141,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::VecDeriv& out
 template <class In, class Out>
 void BarycentricMapperRegularGridTopology<In,Out>::applyJT ( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
-    if (!(maskTo->isInUse()) )
+    if ((!maskTo)||(maskTo&& !(maskTo->isInUse())) )
     {
         maskFrom->setInUse(false);
         for ( unsigned int i=0; i<map.size(); i++ )
@@ -2228,7 +2228,7 @@ void BarycentricMapperRegularGridTopology<In,Out>::applyJT ( typename In::VecDer
 template <class In, class Out>
 void BarycentricMapperSparseGridTopology<In,Out>::applyJT ( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
-    if ( !(maskTo->isInUse()) )
+    if ((!maskTo)||(maskTo&& !(maskTo->isInUse())) )
     {
         maskFrom->setInUse(false);
         for ( unsigned int i=0; i<map.size(); i++ )
@@ -2317,7 +2317,7 @@ void BarycentricMapperEdgeSetTopology<In,Out>::applyJT ( typename In::VecDeriv& 
 {
     const sofa::helper::vector<topology::Edge>& edges = this->topology->getEdges();
 
-    if (!(maskTo->isInUse()) )
+    if ((!maskTo)||(maskTo&& !(maskTo->isInUse())) )
     {
         maskFrom->setInUse(false);
         for ( unsigned int i=0; i<map.getValue().size(); i++ )
@@ -2358,7 +2358,7 @@ void BarycentricMapperTriangleSetTopology<In,Out>::applyJT ( typename In::VecDer
 {
     const sofa::helper::vector<topology::Triangle>& triangles = this->topology->getTriangles();
 
-    if (!(maskTo->isInUse()) )
+    if ((!maskTo)||(maskTo&& !(maskTo->isInUse())) )
     {
         maskFrom->setInUse(false);
         for ( unsigned int i=0; i<map.getValue().size(); i++ )
@@ -2403,7 +2403,7 @@ void BarycentricMapperQuadSetTopology<In,Out>::applyJT ( typename In::VecDeriv& 
 {
     const sofa::helper::vector<topology::Quad>& quads = this->topology->getQuads();
 
-    if ( !(maskTo->isInUse()) )
+    if ((!maskTo)||(maskTo&& !(maskTo->isInUse())) )
     {
         maskFrom->setInUse(false);
         for ( unsigned int i=0; i<map.getValue().size(); i++ )
@@ -2452,7 +2452,7 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::applyJT ( typename In::Vec
 {
     const sofa::helper::vector<topology::Tetrahedron>& tetras = this->topology->getTetrahedra();
 
-    if (!(maskTo->isInUse()) )
+    if ((!maskTo)||(maskTo&& !(maskTo->isInUse())) )
     {
         maskFrom->setInUse(false);
         for ( unsigned int i=0; i<map.getValue().size(); i++ )
@@ -2511,7 +2511,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::applyJT ( typename In::VecD
     // }
     ////////////////////////////////////
 
-    if ( !(maskTo->isInUse()) )
+    if ((!maskTo)||(maskTo&& !(maskTo->isInUse())) )
     {
         maskFrom->setInUse(false);
         for ( unsigned int i=0; i<map.getValue().size(); i++ )
