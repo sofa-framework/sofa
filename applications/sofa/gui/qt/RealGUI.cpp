@@ -229,6 +229,7 @@ SofaGUI* RealGUI::CreateGUI ( const char* name, const std::vector<std::string>& 
         argv[0] = strdup ( SofaGUI::GetProgramName() );
         argv[1]=NULL;
         application = new QSOFAApplication ( *argc,argv );
+
     }
     // create interface
     gui = new RealGUI ( name, options );
@@ -241,6 +242,13 @@ SofaGUI* RealGUI::CreateGUI ( const char* name, const std::vector<std::string>& 
     //gui->viewer->resetView();
 
     application->setMainWidget ( gui );
+
+    QString pathIcon=(sofa::helper::system::DataRepository.getFirstPath() + std::string( "/icons/SOFA.png" )).c_str();
+#ifdef SOFA_QT4
+    application->setWindowIcon(QIcon(pathIcon));
+#else
+    gui->setIcon(QPixmap(pathIcon));
+#endif
 
 #ifdef SOFA_DEV
 
@@ -320,6 +328,9 @@ Node* RealGUI::currentSimulation()
 RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*options*/ )
     : viewerName ( viewername ), viewer ( NULL ), currentTab ( NULL ), tabInstrument (NULL),  graphListener ( NULL ), dialog ( NULL )
 {
+
+
+
     connect(this, SIGNAL(quit()), this, SLOT(fileExit()));
 
 #ifdef SOFA_QT4

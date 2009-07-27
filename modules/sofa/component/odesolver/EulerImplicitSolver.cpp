@@ -69,6 +69,9 @@ void EulerImplicitSolver::init()
 
 void EulerImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior::BaseMechanicalState::VecId xResult, sofa::core::componentmodel::behavior::BaseMechanicalState::VecId vResult)
 {
+#ifdef SOFA_DUMP_VISITOR_INFO
+    sofa::simulation::Visitor::printNode("SolverVectorAllocation");
+#endif
     MultiVector pos(this, VecId::position());
     MultiVector vel(this, VecId::velocity());
     MultiVector f(this, VecId::force());
@@ -78,6 +81,10 @@ void EulerImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior:
     //MultiVector q2(this, VecId::V_DERIV);
     //MultiVector r(this, VecId::V_DERIV);
     MultiVector x(this, VecId::V_DERIV);
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+    sofa::simulation::Visitor::printCloseNode("SolverVectorAllocation");
+#endif
 
     double h = dt;
     //const bool printLog = f_printLog.getValue();
@@ -110,7 +117,13 @@ void EulerImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior:
     //if( verbose )
 //	serr<<"EulerImplicitSolver, matrix = "<< (MechanicalMatrix::K * (-h*(h+f_rayleighStiffness.getValue())) + MechanicalMatrix::M * (1+h*f_rayleighMass.getValue())) << " = " << matrix <<sendl;
 
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printNode("SystemSolution");
+#endif
     matrix.solve(x, b);
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printCloseNode("SystemSolution");
+#endif
     // projectResponse(x);
     // x is the solution of the system
 
@@ -154,8 +167,6 @@ void EulerImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior:
 #ifdef SOFA_HAVE_EIGEN2
     applyConstraints();
 #endif
-
-
 }
 
 SOFA_DECL_CLASS(EulerImplicitSolver)
