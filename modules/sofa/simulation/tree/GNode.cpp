@@ -106,7 +106,8 @@ void GNode::moveChild(BaseNode* node)
 /// Remove a child
 void GNode::detachFromGraph()
 {
-    parent->removeChild(this);
+    if (parent)
+        parent->removeChild(this);
 }
 
 /// Generic object access, possibly searching up or down from the current context
@@ -369,60 +370,6 @@ std::string GNode::getPathName() const
     return str;
 }
 
-/// Topology
-core::componentmodel::topology::Topology* GNode::getTopology() const
-{
-    // return this->topology;
-    // CHANGE 12/01/06 (Jeremie A.): Inherit parent topology if no local topology is defined
-    if (this->topology)
-        return this->topology;
-    else if (parent)
-        return parent->getTopology();
-    else
-        return NULL;
-}
-
-/// Mesh Topology (unified interface for both static and dynamic topologies)
-core::componentmodel::topology::BaseMeshTopology* GNode::getMeshTopology() const
-{
-    if (this->meshTopology)
-        return this->meshTopology;
-    else if (parent)
-        return parent->getMeshTopology();
-    else
-        return NULL;
-}
-
-/// Shader
-core::objectmodel::BaseObject* GNode::getShader() const
-{
-    if (shader)
-        return shader;
-    else if (parent)
-        return parent->getShader();
-    else
-        return NULL;
-}
-
-/// Mechanical Degrees-of-Freedom
-core::objectmodel::BaseObject* GNode::getMechanicalState() const
-{
-    // return this->mechanicalModel;
-    // CHANGE 12/01/06 (Jeremie A.): Inherit parent mechanical model if no local model is defined
-    if (this->mechanicalState)
-        return this->mechanicalState;
-    else if (parent)
-        return parent->getMechanicalState();
-    else
-        return NULL;
-}
-
-/// Update the parameters of the System
-void GNode::reinit()
-{
-    sofa::simulation::DesactivationVisitor desactivate(isActive());
-    desactivate.execute( this );
-}
 
 
 void GNode::initVisualContext()
@@ -476,7 +423,7 @@ void GNode::updateSimulationContext()
         }
         copySimulationContext(*parent);
     }
-// 	simulation::Node::updateSimulationContext();
+    simulation::Node::updateSimulationContext();
 }
 
 void GNode::updateVisualContext(VISUAL_FLAG FILTER)
@@ -519,7 +466,6 @@ void GNode::updateVisualContext(VISUAL_FLAG FILTER)
             copyVisualContext(*parent);
             break;
         }
-
     }
     simulation::Node::updateVisualContext(FILTER);
 }

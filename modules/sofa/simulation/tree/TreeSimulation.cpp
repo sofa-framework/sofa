@@ -24,9 +24,7 @@
 ******************************************************************************/
 #include <sofa/simulation/tree/TreeSimulation.h>
 
-#include <sofa/simulation/common/DeleteVisitor.h>
 #include <sofa/simulation/common/FindByTypeVisitor.h>
-#include <sofa/simulation/common/CleanupVisitor.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/PipeProcess.h>
 
@@ -189,15 +187,8 @@ Node* TreeSimulation::load ( const char *filename )
 /// Delete a scene from memory. After this call the pointer is invalid
 void TreeSimulation::unload ( Node* root )
 {
-    GNode *groot = dynamic_cast<GNode*>(root);
-    if ( !groot ) return;
-    instruments.clear();
-    instrumentInUse.setValue(-1);
-    groot->execute<CleanupVisitor>();
-    groot->execute<DeleteVisitor>();
-    if ( groot->getParent() !=NULL )
-        groot->getParent()->removeChild ( groot );
-    delete groot;
+    Simulation::unload(root);
+    delete root;
 }
 
 /// Create a new node

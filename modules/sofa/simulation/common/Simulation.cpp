@@ -44,6 +44,8 @@
 #include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
 #include <sofa/simulation/common/UpdateMappingEndEvent.h>
+#include <sofa/simulation/common/CleanupVisitor.h>
+#include <sofa/simulation/common/DeleteVisitor.h>
 #include <sofa/core/ObjectFactory.h>
 #include <fstream>
 #include <string.h>
@@ -352,7 +354,18 @@ void Simulation::exportGnuplot ( Node* root, double time )
     ExportGnuplotVisitor expg ( time );
     root->execute ( expg );
 }
-
+void Simulation::unload(Node * root)
+{
+    if ( !root ) return;
+    if (dynamic_cast<Node*>(this->getContext()) == root)
+    {
+        instruments.clear();
+        instrumentInUse.setValue(-1);
+    }
+    root->execute<CleanupVisitor>();
+    root->execute<DeleteVisitor>();
+    root->detachFromGraph();
+}
 //      void Simulation::addStep ( )
 //      {
 //        nbSteps++;

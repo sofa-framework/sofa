@@ -41,9 +41,6 @@
 #include "BglGraphManager.h"
 
 #include <sofa/simulation/common/Simulation.h>
-#include <sofa/helper/gl/VisualParameters.h>
-#include <sofa/helper/vector.h>
-#include <map>
 
 namespace sofa
 {
@@ -51,8 +48,6 @@ namespace simulation
 {
 namespace bgl
 {
-
-//      class BglGraphManager;
 
 using sofa::helper::vector;
 using sofa::simulation::Node;
@@ -80,42 +75,22 @@ public:	typedef sofa::core::componentmodel::collision::Pipeline CollisionPipelin
     /// Delayed Creation of a graph node and attach a new Node to it, then return the Node
     Node* newNode(const std::string& name="");
 
-
-
     void clear();
 
-
     void reset ( Node* root );
-
 
     /// Initialize all the nodes and edges depth-first
     void init(Node* root);
 
-
     /// Animate all the nodes depth-first
     void animate(Node* root, double dt=0.0);
-
-    /// Compute the bounding box of the scene.
-    void computeBBox(Node* root, SReal* minBBox, SReal* maxBBox);
-
-    /// Render the scene
-    void draw(Node* root, helper::gl::VisualParameters* params = NULL);
-
-
     /// @}
 
-    /** @name control
-        The control node contains the Solver(s) and CollisionPipeline applied to the scene.
-        Each independent set of objects is processed independently by this node.
-        In future work, we may allow local overloading in nodes which contain a solver.
+    BglGraphManager graphManager;
 
 
-    */
-    /// @{
-    /* 	BglNode* masterNode; */
-    /* 	Hvertex masterVertex; */
-
-    /// @}
+    /// /!\ Temporary implementation
+    /// Need to be changed!
     /// Methods to handle collision group:
     /// We create default solvers, that will eventually be used when two groups containing a solver will have to be managed at the same time
     Node* getSolverEulerEuler();
@@ -129,11 +104,7 @@ public:	typedef sofa::core::componentmodel::collision::Pipeline CollisionPipelin
     Node* getSolverEulerImplicitEuler();
     Node* getSolverEulerImplicitRungeKutta4();
     Node* getSolverEulerImplicitCGImplicit();
-
-
-    BglGraphManager graphManager;
 protected:
-
     Node* solverEulerEuler;
     Node* solverRungeKutta4RungeKutta4;
     Node* solverCGImplicitCGImplicit;
@@ -145,9 +116,6 @@ protected:
     Node* solverEulerImplicitEuler;
     Node* solverEulerImplicitRungeKutta4;
     Node* solverEulerImplicitCGImplicit;
-
-
-
 };
 
 Simulation* getSimulation();
