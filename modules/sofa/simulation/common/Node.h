@@ -492,10 +492,10 @@ public:
     Node* getTreeNode(const std::string& name) const;
 
     /// Get children nodes
-    sofa::helper::vector< core::objectmodel::BaseNode* > getChildren();
+    virtual sofa::helper::vector< core::objectmodel::BaseNode* > getChildren();
 
     /// Get children nodes
-    const sofa::helper::vector< core::objectmodel::BaseNode* > getChildren() const;
+    virtual const sofa::helper::vector< core::objectmodel::BaseNode* > getChildren() const;
 
 
 

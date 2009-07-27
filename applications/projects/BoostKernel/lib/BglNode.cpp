@@ -38,31 +38,13 @@
 #include "BglNode.h"
 #include "GetObjectsVisitor.h"
 
-
-#include <sofa/core/objectmodel/BaseContext.h>
 //Components of the core to detect during the addition of objects in a node
-#include <sofa/core/componentmodel/behavior/BaseMechanicalMapping.h>
-#include <sofa/core/BaseMapping.h>
-#include <sofa/core/VisualModel.h>
 #include <sofa/core/componentmodel/behavior/InteractionForceField.h>
 #include <sofa/core/componentmodel/behavior/InteractionConstraint.h>
-#include <sofa/core/componentmodel/behavior/MasterSolver.h>
-#include <sofa/core/componentmodel/behavior/OdeSolver.h>
-#include <sofa/core/componentmodel/behavior/LinearSolver.h>
-
-#include <sofa/simulation/common/AnimateVisitor.h>
-#include <sofa/simulation/common/PrintVisitor.h>
 
 
-//#include "bfs_adapter.h"
 #include "dfv_adapter.h"
-#include <boost/graph/depth_first_search.hpp>
-#include <boost/graph/topological_sort.hpp>
-//#include <boost/property_map.hpp>
 #include <boost/vector_property_map.hpp>
-#include <iostream>
-using std::cerr;
-using std::endl;
 
 
 namespace sofa
@@ -91,22 +73,12 @@ BglNode::~BglNode()
 }
 
 
-/// Do one step forward in time
-void BglNode::animate( double dt )
-{
-    simulation::AnimateVisitor vis(dt);
-    //cerr<<"Node::animate, start execute"<<endl;
-    doExecuteVisitor(&vis);
-    //cerr<<"Node::animate, end execute"<<endl;
-}
-
 bool BglNode::addObject(BaseObject* obj)
 {
     if (sofa::core::componentmodel::behavior::BaseMechanicalMapping* mm = dynamic_cast<sofa::core::componentmodel::behavior::BaseMechanicalMapping*>(obj))
     {
         if (mm->getMechFrom() == NULL)
         {
-//               graphManager->getMasterNode()->execute<simulation::PrintVisitor>();
             std::cerr << "ERROR in addObject BglNode: RayPick Issue!!\n"; return false;
         }
         Node *from=(Node*)mm->getMechFrom()->getContext();
@@ -125,13 +97,15 @@ bool BglNode::addObject(BaseObject* obj)
                 (Node*)ic->getMechModel2()->getContext(),
                 ic);
     }
-    else if (sofa::core::componentmodel::behavior::MasterSolver* ms = dynamic_cast<sofa::core::componentmodel::behavior::MasterSolver*>(obj))
+    else if (// sofa::core::componentmodel::behavior::MasterSolver* ms =
+        dynamic_cast<sofa::core::componentmodel::behavior::MasterSolver*>(obj))
     {
-        graphManager->addSolver(ms,this);
+        graphManager->addSolver(this);
     }
-    else if (sofa::core::componentmodel::behavior::OdeSolver* odes = dynamic_cast<sofa::core::componentmodel::behavior::OdeSolver*>(obj))
+    else if (// sofa::core::componentmodel::behavior::OdeSolver* odes =
+        dynamic_cast<sofa::core::componentmodel::behavior::OdeSolver*>(obj))
     {
-        graphManager->addSolver(odes,this);
+        graphManager->addSolver(this);
     }
     return Node::addObject(obj);
 }
@@ -158,15 +132,31 @@ bool BglNode::removeObject(core::objectmodel::BaseObject* obj)
     return Node::removeObject(obj);
 }
 
+
+/// Add a child node
+void BglNode::doAddChild(BglNode* node)
+{
+    child.add(node);
+    node->parents.add(this);
+    graphManager->addNode(this,node);
+}
+
+
 void BglNode::addChild(core::objectmodel::BaseNode* c)
 {
     BglNode *childNode = static_cast< BglNode *>(c);
     //std::cerr << "addChild : of "<< this->getName() << "@" << this << " and " <<  c->getName() << "@" << c << "\n";
 
     notifyAddChild(childNode);
-    child.add(childNode);
-    childNode->parents.add(this);
-    graphManager->addNode(this,childNode);
+    doAddChild(childNode);
+}
+
+/// Remove a child
+void BglNode::doRemoveChild(BglNode* node)
+{
+    child.remove(node);
+    node->parents.remove(this);
+    graphManager->deleteNode(node);
 }
 
 void BglNode::removeChild(core::objectmodel::BaseNode* c)
@@ -175,9 +165,7 @@ void BglNode::removeChild(core::objectmodel::BaseNode* c)
     //std::cerr << "deleteChild : of "<< this->getName() << "@" << this << " and " <<  c->getName() << "@" << c << "\n";
 
     notifyRemoveChild(childNode);
-    child.remove(childNode);
-    childNode->parents.remove(this);
-    graphManager->deleteNode(childNode);
+    doRemoveChild(childNode);
 }
 
 void BglNode::moveChild(core::objectmodel::BaseNode* c)
@@ -195,21 +183,35 @@ void BglNode::moveChild(core::objectmodel::BaseNode* c)
         {
             BglNode *prev = *it;
             notifyMoveChild(childNode,prev);
-            prev->removeChild(childNode);
+            prev->doRemoveChild(childNode);
         }
-        addChild(childNode);
+        doAddChild(childNode);
     }
 }
 
 void BglNode::detachFromGraph()
 {
-    const helper::vector< BglNode* > &parents = getParents();
-    for (unsigned int i=0; i<parents.size(); ++i) parents[i]->removeChild(this);
+    for (ParentIterator it=parents.begin(); it!=parents.end(); ++it) (*it)->removeChild(this);
 }
 
 
-/// Find all the Nodes pointing
-helper::vector< BglNode* > BglNode::getParents() const
+helper::vector< const BglNode* > BglNode::getParents() const
+{
+    helper::vector< const BglNode* > p;
+    if (!graph) return p;
+    BglGraphManager::Hgraph::in_edge_iterator in_i, in_end;
+    //Find all in-edges from the graph
+    for (tie(in_i, in_end) = boost::in_edges(vertexId, *graph); in_i != in_end; ++in_i)
+    {
+        BglGraphManager::Hedge e=*in_i;
+        BglGraphManager::Hvertex src=source(e, *graph);
+        p.push_back(static_cast<BglNode*>(graphManager->getNodeFromHvertex(src)));
+    }
+    return p;
+}
+
+
+helper::vector< BglNode* > BglNode::getParents()
 {
     helper::vector< BglNode* > p;
     if (!graph) return p;
@@ -229,8 +231,7 @@ std::string BglNode::getPathName() const
 {
 
     std::string str;
-    const helper::vector< BglNode* > &parents=getParents();
-    if (!parents.empty()) str = parents[0]->getPathName();
+    if (!parents.empty()) str = (*parents.begin())->getPathName();
     str += '/';
     str += getName();
     return str;
@@ -276,45 +277,6 @@ const sofa::helper::vector< core::objectmodel::BaseNode* >  BglNode::getChildren
 
 
 
-/// Topology
-core::componentmodel::topology::Topology* BglNode::getTopology() const
-{
-    // return this->topology;
-    if (this->topology)
-        return this->topology;
-    else
-        return get<core::componentmodel::topology::Topology>();
-}
-
-/// Mesh Topology (unified interface for both static and dynamic topologies)
-core::componentmodel::topology::BaseMeshTopology* BglNode::getMeshTopology() const
-{
-    if (this->meshTopology)
-        return this->meshTopology;
-    else
-        return get<core::componentmodel::topology::BaseMeshTopology>();
-}
-
-/// Shader
-core::objectmodel::BaseObject* BglNode::getShader() const
-{
-    if (shader)
-        return shader;
-    else
-        return get<core::Shader>();
-}
-
-/// Mechanical Degrees-of-Freedom
-core::objectmodel::BaseObject* BglNode::getMechanicalState() const
-{
-    // return this->mechanicalModel;
-    if (this->mechanicalState)
-        return this->mechanicalState;
-    else
-        return get<core::componentmodel::behavior::BaseMechanicalState>();
-}
-
-
 
 void BglNode::doExecuteVisitor( Visitor* vis )
 {
@@ -322,15 +284,6 @@ void BglNode::doExecuteVisitor( Visitor* vis )
     if (!graph) return;
 
     boost::vector_property_map<boost::default_color_type> colors( boost::num_vertices(*graph) );
-    //boost::queue<BglGraphManager::Hvertex> queue;
-
-    /*    boost::breadth_first_search(
-          graph,
-          boost::vertex(this->vertexId, *graph),
-          queue,
-          bfs_adapter(vis,graphManager->h_vertex_node_map),
-          colors
-          );*/
 
     dfv_adapter dfv(vis,graphManager, graphManager->h_vertex_node_map);
     boost::depth_first_visit(
@@ -351,14 +304,13 @@ void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
 {
     if (graphManager->isNodeCreated(this))
     {
-        std::cerr << "ERROR !!!!! Node " << this->getName() << " still not initialized\n";
+        std::cerr << "ERROR : getObject(" << sofa::helper::gettypename(class_info) << "," << dir << ") not done!!!!! Node " << this->getName() << " still not initialized\n";
         return NULL;
     }
     GetObjectVisitor getobj(class_info);
     getobj.setTags(tags);
     if ( dir == SearchDown )
     {
-//              std::cerr << "Search Down ";
         boost::vector_property_map<boost::default_color_type> colors( boost::num_vertices(graphManager->hgraph) );
         dfv_adapter dfv( &getobj,  graphManager, graphManager->h_vertex_node_map );
         boost::depth_first_visit(
@@ -371,7 +323,6 @@ void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
     }
     else if (dir== SearchUp )
     {
-//              std::cerr << "Search Up ";
         boost::vector_property_map<boost::default_color_type> colors( boost::num_vertices(graphManager->rgraph) );
         dfv_adapter dfv( &getobj, graphManager, graphManager->r_vertex_node_map );
         BglGraphManager::Rvertex thisvertex = graphManager->convertHvertex2Rvertex(this->vertexId);
@@ -385,23 +336,19 @@ void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
     }
     else if (dir== SearchRoot )
     {
-//              std::cerr << "Search Root ";
         graphManager->dfv( graphManager->getMasterVertex(), getobj );
     }
     else    // Local
     {
-//              std::cerr << "Search Local ";
         for (ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
         {
             void* result = class_info.dynamicCast(*it);
             if (result != NULL && (tags.empty() || (*it)->getTags().includes(tags)))
             {
-//                     std::cerr << "Single Search : " << sofa::helper::gettypename((class_info)) << " result : " << result << "\n";
                 return result;
             }
         }
     }
-//          std::cerr << "Single Search : " << sofa::helper::gettypename(class_info) << " result : " << getobj.getObject() << "\n";
     return getobj.getObject();
 }
 
@@ -411,8 +358,88 @@ void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
 /// Note that the template wrapper method should generally be used to have the correct return type,
 void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, const std::string& path) const
 {
-    std::cerr << "Single Search with path NOT IMPLEMENTED for " << sofa::helper::gettypename(class_info) << "\n";
-    return NULL;
+    if (path.empty())
+    {
+        return Node::getObject(class_info, Local);
+    }
+    else if (path[0] == '/')
+    {
+        if (!parents.empty())
+        {
+            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
+            {
+                void *result=(*it)->getObject(class_info, path);
+                if (result) return result;
+            }
+            return NULL;
+        }
+        else return getObject(class_info,std::string(path,1));
+    }
+    else if (std::string(path,0,2)==std::string("./"))
+    {
+        std::string newpath = std::string(path, 2);
+        while (!newpath.empty() && path[0] == '/')
+            newpath.erase(0);
+        return getObject(class_info,newpath);
+    }
+    else if (std::string(path,0,3)==std::string("../"))
+    {
+        std::string newpath = std::string(path, 3);
+        while (!newpath.empty() && path[0] == '/')
+            newpath.erase(0);
+
+        if (!parents.empty())
+        {
+            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
+            {
+                void *result=(*it)->getObject(class_info, newpath);
+                if (result) return result;
+            }
+            return NULL;
+        }
+        else return getObject(class_info,newpath);
+    }
+    else
+    {
+        std::string::size_type pend = path.find('/');
+        if (pend == std::string::npos) pend = path.length();
+        std::string name ( path, 0, pend );
+        Node* child = getChild(name);
+        if (child)
+        {
+            while (pend < path.length() && path[pend] == '/')
+                ++pend;
+            return child->getObject(class_info, std::string(path, pend));
+        }
+        else if (pend < path.length())
+        {
+            std::cerr << "ERROR: child node "<<name<<" not found in "<<getPathName()<<std::endl;
+            return NULL;
+        }
+        else
+        {
+            core::objectmodel::BaseObject* obj = simulation::Node::getObject(name);
+            if (obj == NULL)
+            {
+                std::cerr << "ERROR: object "<<name<<" not found in "<<getPathName()<<std::endl;
+                return NULL;
+            }
+            else
+            {
+                void* result = class_info.dynamicCast(obj);
+                if (result == NULL)
+                {
+                    std::cerr << "ERROR: object "<<name<<" in "<<getPathName()<<" does not implement class "<<class_info.name()<<std::endl;
+                    return NULL;
+                }
+                else
+                {
+                    return result;
+                }
+            }
+        }
+    }
+
 }
 
 
@@ -470,153 +497,149 @@ void BglNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, G
 
 void BglNode::initVisualContext()
 {
-    helper::vector< BglNode* > parents=getParents();
-    if (parents.size())
+    if (!parents.empty())
     {
-
         if (showVisualModels_.getValue() == -1)
         {
             showVisualModels_.setValue(0);
-            for (unsigned int i=0; i<parents.size(); ++i)
-                showVisualModels_.setValue(showVisualModels_.getValue() || parents[i]->showVisualModels_.getValue());
+            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
+                showVisualModels_.setValue(showVisualModels_.getValue() || (*it)->showVisualModels_.getValue());
         }
         if (showBehaviorModels_.getValue() == -1)
         {
             showBehaviorModels_.setValue(0);
-            for (unsigned int i=0; i<parents.size(); ++i)
-                showBehaviorModels_.setValue(showBehaviorModels_.getValue() || parents[i]->showBehaviorModels_.getValue());
+            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
+                showBehaviorModels_.setValue(showBehaviorModels_.getValue() || (*it)->showBehaviorModels_.getValue());
         }
         if (showCollisionModels_.getValue() == -1)
         {
             showCollisionModels_.setValue(0);
-            for (unsigned int i=0; i<parents.size(); ++i)
-                showCollisionModels_.setValue(showCollisionModels_.getValue() || parents[i]->showCollisionModels_.getValue());
+            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
+                showCollisionModels_.setValue(showCollisionModels_.getValue() || (*it)->showCollisionModels_.getValue());
         }
         if (showBoundingCollisionModels_.getValue() == -1)
         {
             showBoundingCollisionModels_.setValue(0);
-            for (unsigned int i=0; i<parents.size(); ++i)
-                showBoundingCollisionModels_.setValue(showBoundingCollisionModels_.getValue() || parents[i]->showBoundingCollisionModels_.getValue());
+            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
+                showBoundingCollisionModels_.setValue(showBoundingCollisionModels_.getValue() || (*it)->showBoundingCollisionModels_.getValue());
         }
         if (showMappings_.getValue() == -1)
         {
             showMappings_.setValue(0);
-            for (unsigned int i=0; i<parents.size(); ++i)
-                showMappings_.setValue(showMappings_.getValue() || parents[i]->showMappings_.getValue());
+            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
+                showMappings_.setValue(showMappings_.getValue() || (*it)->showMappings_.getValue());
         }
         if (showMechanicalMappings_.getValue() == -1)
         {
             showMechanicalMappings_.setValue(0);
-            for (unsigned int i=0; i<parents.size(); ++i)
-                showMechanicalMappings_.setValue(showMechanicalMappings_.getValue() || parents[i]->showMechanicalMappings_.getValue());
+            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
+                showMechanicalMappings_.setValue(showMechanicalMappings_.getValue() || (*it)->showMechanicalMappings_.getValue());
         }
         if (showForceFields_.getValue() == -1)
         {
             showForceFields_.setValue(0);
-            for (unsigned int i=0; i<parents.size(); ++i)
-                showForceFields_.setValue(showForceFields_.getValue() || parents[i]->showForceFields_.getValue());
+            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
+                showForceFields_.setValue(showForceFields_.getValue() || (*it)->showForceFields_.getValue());
         }
         if (showInteractionForceFields_.getValue() == -1)
         {
             showInteractionForceFields_.setValue(0);
-            for (unsigned int i=0; i<parents.size(); ++i)
-                showInteractionForceFields_.setValue(showInteractionForceFields_.getValue() || parents[i]->showInteractionForceFields_.getValue());
+            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
+                showInteractionForceFields_.setValue(showInteractionForceFields_.getValue() || (*it)->showInteractionForceFields_.getValue());
         }
         if (showWireFrame_.getValue() == -1)
         {
             showWireFrame_.setValue(0);
-            for (unsigned int i=0; i<parents.size(); ++i)
-                showWireFrame_.setValue(showWireFrame_.getValue() || parents[i]->showWireFrame_.getValue());
+            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
+                showWireFrame_.setValue(showWireFrame_.getValue() || (*it)->showWireFrame_.getValue());
         }
         if (showNormals_.getValue() == -1)
         {
             showNormals_.setValue(0);
-            for (unsigned int i=0; i<parents.size(); ++i)
-                showNormals_.setValue(showNormals_.getValue() || parents[i]->showNormals_.getValue());
+            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
+                showNormals_.setValue(showNormals_.getValue() || (*it)->showNormals_.getValue());
         }
     }
 }
 
 void BglNode::updateContext()
 {
-    helper::vector< BglNode* > parents=getParents();
-    if (parents.size())
+    if (!parents.empty())
     {
-        copyContext(*parents[0]);
+        copyContext(*(*parents.begin()));
     }
     simulation::Node::updateContext();
 }
 
 void BglNode::updateSimulationContext()
 {
-    helper::vector< BglNode* > parents=getParents();
-    if (parents.size())
+    if (!parents.empty())
     {
-        copySimulationContext(*parents[0]);
+        copySimulationContext(*(*parents.begin()));
     }
+    simulation::Node::updateSimulationContext();
 }
 
 void BglNode::updateVisualContext(VISUAL_FLAG FILTER)
 {
-    helper::vector< BglNode* > parents=getParents();
-    if (parents.size())
+    if (!parents.empty())
     {
         switch (FILTER)
         {
         case VISUALMODELS:
             showVisualModels_.setValue(0);
-            for (unsigned int i=0; i<parents.size(); ++i)
-                showVisualModels_.setValue(showVisualModels_.getValue() || parents[i]->showVisualModels_.getValue());
+            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
+                showVisualModels_.setValue(showVisualModels_.getValue() || (*it)->showVisualModels_.getValue());
             break;
         case BEHAVIORMODELS:
             showBehaviorModels_.setValue(0);
-            for (unsigned int i=0; i<parents.size(); ++i)
-                showBehaviorModels_.setValue(showBehaviorModels_.getValue() || parents[i]->showBehaviorModels_.getValue());
+            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
+                showBehaviorModels_.setValue(showBehaviorModels_.getValue() || (*it)->showBehaviorModels_.getValue());
             break;
         case COLLISIONMODELS:
             showCollisionModels_.setValue(0);
-            for (unsigned int i=0; i<parents.size(); ++i)
-                showCollisionModels_.setValue(showCollisionModels_.getValue() || parents[i]->showCollisionModels_.getValue());
+            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
+                showCollisionModels_.setValue(showCollisionModels_.getValue() || (*it)->showCollisionModels_.getValue());
             break;
         case BOUNDINGCOLLISIONMODELS:
             showBoundingCollisionModels_.setValue(0);
-            for (unsigned int i=0; i<parents.size(); ++i)
-                showBoundingCollisionModels_.setValue(showBoundingCollisionModels_.getValue() || parents[i]->showBoundingCollisionModels_.getValue());
+            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
+                showBoundingCollisionModels_.setValue(showBoundingCollisionModels_.getValue() || (*it)->showBoundingCollisionModels_.getValue());
             break;
         case MAPPINGS:
             showMappings_.setValue(0);
-            for (unsigned int i=0; i<parents.size(); ++i)
-                showMappings_.setValue(showMappings_.getValue() || parents[i]->showMappings_.getValue());
+            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
+                showMappings_.setValue(showMappings_.getValue() || (*it)->showMappings_.getValue());
             break;
         case MECHANICALMAPPINGS:
             showMechanicalMappings_.setValue(0);
-            for (unsigned int i=0; i<parents.size(); ++i)
-                showMechanicalMappings_.setValue(showMechanicalMappings_.getValue() || parents[i]->showMechanicalMappings_.getValue());
+            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
+                showMechanicalMappings_.setValue(showMechanicalMappings_.getValue() || (*it)->showMechanicalMappings_.getValue());
             break;
         case FORCEFIELDS:
             showForceFields_.setValue(0);
-            for (unsigned int i=0; i<parents.size(); ++i)
-                showForceFields_.setValue(showForceFields_.getValue() || parents[i]->showForceFields_.getValue());
+            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
+                showForceFields_.setValue(showForceFields_.getValue() || (*it)->showForceFields_.getValue());
             break;
         case INTERACTIONFORCEFIELDS:
             showInteractionForceFields_.setValue(0);
-            for (unsigned int i=0; i<parents.size(); ++i)
-                showInteractionForceFields_.setValue(showInteractionForceFields_.getValue() || parents[i]->showInteractionForceFields_.getValue());
+            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
+                showInteractionForceFields_.setValue(showInteractionForceFields_.getValue() || (*it)->showInteractionForceFields_.getValue());
             break;
         case WIREFRAME:
             showWireFrame_.setValue(0);
-            for (unsigned int i=0; i<parents.size(); ++i)
-                showWireFrame_.setValue(showWireFrame_.getValue() || parents[i]->showWireFrame_.getValue());
+            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
+                showWireFrame_.setValue(showWireFrame_.getValue() || (*it)->showWireFrame_.getValue());
             break;
         case NORMALS:
             showNormals_.setValue(0);
-            for (unsigned int i=0; i<parents.size(); ++i)
-                showNormals_.setValue(showNormals_.getValue() || parents[i]->showNormals_.getValue());
+            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
+                showNormals_.setValue(showNormals_.getValue() || (*it)->showNormals_.getValue());
             break;
         case ALLFLAGS:
-            for (unsigned int i=0; i<parents.size(); ++i)
+            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
             {
-                fusionVisualContext(*parents[i]);
+                fusionVisualContext(*(*it));
             }
             break;
         }
@@ -624,6 +647,9 @@ void BglNode::updateVisualContext(VISUAL_FLAG FILTER)
     simulation::Node::updateVisualContext(FILTER);
 }
 
+SOFA_DECL_CLASS(BglNode)
+
+helper::Creator<simulation::tree::xml::NodeElement::Factory, BglNode> BglNodeClass("BglNode");
 
 }
 }

@@ -39,11 +39,9 @@
 #define SOFA_SIMULATION_BGL_BGLNODE_H
 
 #include "BglGraphManager.h"
+#include "BglSimulation.h"
 #include <sofa/simulation/common/Node.h>
-#include <sofa/simulation/common/Visitor.h>
-#include <sofa/core/objectmodel/BaseNode.h>
-#include <sofa/core/objectmodel/ClassInfo.h>
-#include <sofa/helper/vector.h>
+#include <sofa/simulation/tree/xml/NodeElement.h>
 
 
 namespace sofa
@@ -57,10 +55,10 @@ using sofa::core::objectmodel::BaseObject;
 
 using sofa::simulation::Node;
 /**
-sofa::simulation::Node as a node of a BGL scene graph.
+   sofa::simulation::Node as a node of a BGL scene graph.
 
 
-	@author Francois Faure in The SOFA team </www.sofa-framework.org>
+   @author Francois Faure in The SOFA team </www.sofa-framework.org>
 */
 
 class BglNode : public sofa::simulation::Node
@@ -68,56 +66,14 @@ class BglNode : public sofa::simulation::Node
 public:
     typedef sofa::simulation::Visitor Visitor;
 
-    BglNode(BglGraphManager* s,const std::string& name);
+    BglNode(BglGraphManager* s=NULL,const std::string& name="");
     /**
-    \param sg the SOFA scene containing a bgl graph
-    \param n the node of the bgl graph corresponding to this
+       \param sg the SOFA scene containing a bgl graph
+       \param n the node of the bgl graph corresponding to this
     */
     BglNode(BglGraphManager* s, BglGraphManager::Hgraph* g,  BglGraphManager::Hvertex n, const std::string& name="" );
     ~BglNode();
 
-    /** Perform a scene graph traversal with the given Visitor, starting from this node.
-    Visitor::processNodetopdown is applied on discover, and Visitor::processNodeBottomUp is applied on finish.
-    */
-    void doExecuteVisitor( Visitor* action);
-
-    /// Do one step forward in time
-    void animate( double dt );
-
-
-    /// Generic object access, given a set of required tags, possibly searching up or down from the current context
-    ///
-    /// Note that the template wrapper method should generally be used to have the correct return type,
-    virtual void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir = SearchUp) const;
-
-    /// Generic object access, possibly searching up or down from the current context
-    ///
-    /// Note that the template wrapper method should generally be used to have the correct return type,
-    void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, SearchDirection dir = SearchUp) const
-    {
-        return getObject(class_info, sofa::core::objectmodel::TagSet(), dir);
-    }
-
-    /// Generic object access, given a path from the current context
-    ///
-    /// Note that the template wrapper method should generally be used to have the correct return type,
-    virtual void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, const std::string& path) const;
-
-    /// Generic list of objects access, given a set of required tags, possibly searching up or down from the current context
-    ///
-    /// Note that the template wrapper method should generally be used to have the correct return type,
-    virtual void getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir = SearchUp) const;
-
-    /// Generic list of objects access, possibly searching up or down from the current context
-    ///
-    /// Note that the template wrapper method should generally be used to have the correct return type,
-    void getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, SearchDirection dir = SearchUp) const
-    {
-        getObjects(class_info, container, sofa::core::objectmodel::TagSet(), dir);
-    }
-
-    bool addObject(BaseObject* obj);
-    bool removeObject(BaseObject* obj);
 
     /// Add a child node
     void addChild(core::objectmodel::BaseNode* node);
@@ -129,8 +85,25 @@ public:
     void moveChild(core::objectmodel::BaseNode* obj);
 
 
+    /// Add an object and return this. Detect the implemented interfaces and add the object to the corresponding lists.
+    bool addObject(BaseObject* obj);
+
+    /// Remove an object
+    bool removeObject(BaseObject* obj);
+
     /// Remove the current node from the graph: consists in removing the link to all the parents
     void detachFromGraph() ;
+
+
+
+
+
+
+    /// Find all the Nodes pointing
+    helper::vector< BglNode* > getParents();
+
+    /// Find all the Nodes pointing
+    helper::vector< const BglNode* > getParents() const;
 
 
     /// Get children nodes
@@ -140,30 +113,26 @@ public:
     const sofa::helper::vector< core::objectmodel::BaseNode* > getChildren() const;
 
 
-    /// Find all the Nodes pointing
-    helper::vector< BglNode* > getParents() const;
-
-    std::string getPathName() const;
-
-    /// Mechanical Degrees-of-Freedom
-    virtual core::objectmodel::BaseObject* getMechanicalState() const;
-
-    /// Topology
-    virtual core::componentmodel::topology::Topology* getTopology() const;
-
-    /// Mesh Topology (unified interface for both static and dynamic topologies)
-    virtual core::componentmodel::topology::BaseMeshTopology* getMeshTopology() const;
-
-    /// Shader
-    virtual core::objectmodel::BaseObject* getShader() const;
 
 
+    /// Generic object access, given a set of required tags, possibly searching up or down from the current context
+    ///
+    /// Note that the template wrapper method should generally be used to have the correct return type,
+    virtual void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir = SearchUp) const;
 
-    /// return the mechanical graph of the scene it belongs to
-    BglGraphManager::Hgraph &getGraph() { return *graph;};
+    /// Generic object access, given a path from the current context
+    ///
+    /// Note that the template wrapper method should generally be used to have the correct return type,
+    virtual void* getObject(const sofa::core::objectmodel::ClassInfo& class_info, const std::string& path) const;
 
-    /// return the id of the node in the mechanical graph
-    BglGraphManager::Hvertex getVertexId() { return vertexId;};
+    /// Generic list of objects access, given a set of required tags, possibly searching up or down from the current context
+    ///
+    /// Note that the template wrapper method should generally be used to have the correct return type,
+    virtual void getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir = SearchUp) const;
+
+
+
+
 
 
     /// Called during initialization to corectly propagate the visual context to the children
@@ -180,13 +149,51 @@ public:
 
 
 
-    BglGraphManager* graphManager;              ///< the scene the node belongs to
-    BglGraphManager::Hgraph* graph;      ///< the mechanical graph of the scene it belongs to
-    BglGraphManager::Hvertex vertexId;  ///< its id in the mechanical graph
+    std::string getPathName() const;
+
     Sequence<BglNode> parents;
     typedef Sequence<BglNode>::iterator ParentIterator;
-};
 
+
+
+
+    static void create(BglNode*& obj, simulation::tree::xml::Element<core::objectmodel::BaseNode>* arg)
+    {
+        BglGraphManager *graphManager=NULL;
+        simulation::bgl::BglSimulation *simu=dynamic_cast<simulation::bgl::BglSimulation *>(simulation::getSimulation());
+        if( simu ) graphManager=&simu->graphManager;
+        obj = new BglNode(graphManager);
+        obj->parse(arg);
+    }
+
+
+    /// return the mechanical graph of the scene it belongs to
+    BglGraphManager::Hgraph &getGraph() { return *graph;};
+
+    /// return the id of the node in the mechanical graph
+    BglGraphManager::Hvertex getVertexId() { return vertexId;};
+
+
+
+
+    BglGraphManager* graphManager;              ///< the scene the node belongs to
+    BglGraphManager::Hgraph* graph;      ///< the mechanical graph of the scene it belongs to
+    BglGraphManager::Hvertex vertexId;  ///< its id in the mechanical graph        protected:
+
+
+protected:
+
+    virtual void doAddChild(BglNode* node);
+    void doRemoveChild(BglNode* node);
+
+    /** Perform a scene graph traversal with the given Visitor, starting from this node.
+        Visitor::processNodetopdown is applied on discover, and Visitor::processNodeBottomUp is applied on finish.
+    */
+    void doExecuteVisitor( Visitor* action);
+    // VisitorScheduler can use doExecuteVisitor() method
+    friend class simulation::VisitorScheduler;
+
+};
 }
 }
 }

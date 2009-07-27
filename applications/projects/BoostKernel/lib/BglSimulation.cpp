@@ -36,38 +36,23 @@
 //
 //
 #include "BglSimulation.h"
+#include "BglNode.h"
 
 #include "BuildNodesFromGNodeVisitor.h"
 #include "BuildRestFromGNodeVisitor.h"
 
 
-
 #include <sofa/simulation/tree/TreeSimulation.h>
-
-#include <sofa/simulation/common/Visitor.h>
-#include <sofa/simulation/common/AnimateVisitor.h>
-#include <sofa/simulation/common/BehaviorUpdatePositionVisitor.h>
-#include <sofa/simulation/common/CleanupVisitor.h>
-#include <sofa/simulation/common/DeleteVisitor.h>
-#include <sofa/simulation/common/InitVisitor.h>
-#include <sofa/simulation/common/PrintVisitor.h>
+#include <sofa/simulation/common/AnimateBeginEvent.h>
 #include <sofa/simulation/common/PropagateEventVisitor.h>
+#include <sofa/simulation/common/BehaviorUpdatePositionVisitor.h>
+#include <sofa/simulation/common/UpdateContextVisitor.h>
+#include <sofa/simulation/common/AnimateEndEvent.h>
+#include <sofa/simulation/common/UpdateMappingEndEvent.h>
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
 #include <sofa/simulation/common/VisualVisitor.h>
 
-#include <sofa/simulation/common/AnimateBeginEvent.h>
-#include <sofa/simulation/common/AnimateEndEvent.h>
-#include <sofa/simulation/common/UpdateMappingEndEvent.h>
 
-
-#include <sofa/helper/system/FileRepository.h>
-
-#include <iostream>
-#include <algorithm>
-
-#include "BglNode.h"
-using std::cerr;
-using std::endl;
 
 namespace sofa
 {
@@ -110,13 +95,6 @@ Node* BglSimulation::newNode(const std::string& name)
 }
 
 
-//
-//      void BglSimulation::setSolverOfCollisionGroup(Node* solverNode, Node* solverOfCollisionGroup)
-//      {
-//        solver_colisionGroup_map[solverNode] = solverOfCollisionGroup;
-//        nodeGroupSolvers.insert(solverOfCollisionGroup);
-////         std::cerr << "Inserting " << solverOfCollisionGroup->getName() << "\n";
-//      }
 
 
 /**
@@ -127,7 +105,7 @@ void BglSimulation::init(Node* root )
 {
     Simulation::init(root);
 
-//         /// compute the interaction groups
+    /// compute the interaction groups
     graphManager.computeInteractionGraphAndConnectedComponents();
     graphManager.insertHierarchicalGraph();
 
@@ -143,14 +121,13 @@ void BglSimulation::animate(Node* root, double dt)
     dt = root->getContext()->getDt();
 
 #ifdef SOFA_DUMP_VISITOR_INFO
-    simulation::Visitor::printComment(std::string("Begin Step"));
+    simulation::Visitor::printComment(std::string("Boost Kernel: Begin Step"));
 #endif
-    Node *masterNode = graphManager.getMasterNode();
 
     {
         AnimateBeginEvent ev ( dt );
         PropagateEventVisitor act ( &ev );
-        masterNode->doExecuteVisitor ( &act );
+        root->doExecuteVisitor ( &act );
     }
 
 
@@ -159,30 +136,34 @@ void BglSimulation::animate(Node* root, double dt)
 
     for( unsigned step=0; step<numMechSteps.getValue(); step++ )
     {
+        BehaviorUpdatePositionVisitor beh(dt);
+        root->doExecuteVisitor ( &beh );
+
         graphManager.collisionStep(root,dt);
         graphManager.mechanicalStep(root,dt);
         graphManager.clearMasterVertex();
         graphManager.insertHierarchicalGraph();
 
-        BehaviorUpdatePositionVisitor beh(dt);
-        masterNode->doExecuteVisitor ( &beh );
-        masterNode->setTime ( startTime + (step+1)* mechanicalDt );
+        root->setTime ( startTime + (step+1)* mechanicalDt );
+        root->execute<UpdateSimulationContextVisitor>();
     }
 
     {
         AnimateEndEvent ev ( dt );
         PropagateEventVisitor act ( &ev );
-        masterNode->doExecuteVisitor( &act );
+        root->doExecuteVisitor( &act );
     }
 
     //Update Mapping
     {
         UpdateMappingVisitor actMapping;
-        masterNode->doExecuteVisitor( &actMapping);
+        root->doExecuteVisitor( &actMapping);
         simulation::UpdateMappingEndEvent ev ( dt );
         PropagateEventVisitor act ( &ev );
-        masterNode->doExecuteVisitor( &act );
+        root->doExecuteVisitor( &act );
     }
+
+    root->execute<VisualUpdateVisitor>();
 
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printComment(std::string("End Step"));
@@ -190,19 +171,7 @@ void BglSimulation::animate(Node* root, double dt)
 
 }
 
-void BglSimulation::computeBBox(Node* /*root*/, SReal* minBBox, SReal* maxBBox)
-{
-    sofa::simulation::Simulation::computeBBox(graphManager.getMasterNode(),minBBox,maxBBox);
-}
 
-
-void BglSimulation::draw(Node* masterNode, helper::gl::VisualParameters*)
-{
-    if (!masterNode) return;
-
-    masterNode->glDraw();
-
-}
 
 
 /// Create a GNode tree structure using available file loaders, then convert it to a BglSimulation
@@ -252,21 +221,13 @@ Node* BglSimulation::load(const char* f)
 void BglSimulation::reset(Node* root)
 {
     sofa::simulation::Simulation::reset(root);
-
-    graphManager.update();
     graphManager.reset();
-
-//        instruments.clear();
-//        instrumentInUse.setValue(-1);
 }
 
 void BglSimulation::unload(Node* root)
 {
     if (!root) return;
-    root->execute<PrintVisitor>();
-    root->execute<CleanupVisitor>();
-    DeleteVisitor deleteGraph;
-    graphManager.getMasterNode()->doExecuteVisitor(&deleteGraph);
+    Simulation::unload(root);
     clear();
 }
 

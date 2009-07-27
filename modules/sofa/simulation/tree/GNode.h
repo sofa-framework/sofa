@@ -60,9 +60,6 @@ public:
 
     virtual ~GNode();
 
-    //virtual const char* getTypeName() const { return "GNODE"; }
-    void reinit();
-
     //Pure Virtual method from BaseNode
     /// Add a child node
     virtual void addChild(BaseNode* node);
@@ -91,18 +88,6 @@ public:
 
     /// Get parent node (or NULL if no hierarchy or for root node)
     const core::objectmodel::BaseNode* getParent() const;
-
-    //Inheritance from the parent if no object if found in the current Node
-    virtual core::componentmodel::topology::Topology* getTopology() const;
-
-    /// Mesh Topology (unified interface for both static and dynamic topologies)
-    virtual core::componentmodel::topology::BaseMeshTopology* getMeshTopology() const;
-
-    /// Mechanical Degrees-of-Freedom
-    virtual core::objectmodel::BaseObject* getMechanicalState() const;
-
-    /// Shader
-    virtual core::objectmodel::BaseObject* getShader() const;
 
 
 

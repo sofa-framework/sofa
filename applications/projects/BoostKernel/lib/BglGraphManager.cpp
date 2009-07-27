@@ -42,19 +42,11 @@
 #include "dfs_adapter.h"
 #include "dfv_adapter.h"
 
-#include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/breadth_first_search.hpp>
 #include <boost/graph/connected_components.hpp>
+#include <boost/graph/breadth_first_search.hpp>
 #include <boost/vector_property_map.hpp>
 
-
-#include <sofa/helper/vector.h>
-
-#include <algorithm>
-#include <map>
-
 #include <sofa/simulation/common/CollisionVisitor.h>
-#include <sofa/simulation/common/PrintVisitor.h>
 
 namespace sofa
 {
@@ -380,7 +372,7 @@ void BglGraphManager::insertNewNode(Node *n)
 
 
 /// Add an OdeSolver working inside a given Node
-void BglGraphManager::addSolver(BaseObject* s,Node* n)
+void BglGraphManager::addSolver(Node* n)
 {
     nodeSolvers.insert(n);
 }
@@ -626,9 +618,9 @@ void BglGraphManager::computeRoots()
         Node *vNode=h_vertex_node_map[*iter.first];
         if (!vNode) continue;
 
-
-
         unsigned int degree = in_degree (*iter.first,hgraph);
+
+        std::cerr << "degree : " << degree << " : " << vNode->getName() << "\n";
         if (degree==0 && *iter.first != masterVertex)
         {
 //                     std::cerr << degree << " : " << degree << " ## " << vNode->getName() << "\n";
@@ -642,32 +634,33 @@ void BglGraphManager::computeRoots()
 }
 
 /// Perform the collision detection
-void BglGraphManager::collisionStep(Node* root, double dt)
+void BglGraphManager::collisionStep(Node* root, double /* dt */)
 {
     if (collisionPipeline)
     {
-        masterNode->addObject( collisionPipeline );
+        root->addObject( collisionPipeline );
         CollisionVisitor act;
-        masterNode->doExecuteVisitor(&act);
-        masterNode->removeObject( collisionPipeline );
+        root->doExecuteVisitor(&act);
+        root->removeObject( collisionPipeline );
     }
 }
 /** Data: interaction groups
     Result: nodes updated
 */
-void BglGraphManager::mechanicalStep(Node* root, double dt)
+void BglGraphManager::mechanicalStep(Node* rootNode, double dt)
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode("MechanicalStep");
 #endif
-    clearVertex(masterVertex);
+    Hvertex rootVertex=h_node_vertex_map[rootNode];
+    clearVertex(rootVertex);
     update();
 
     for ( unsigned i=0; i<interactionGroups.size(); i++ )
     {
         // remove previous children and interactions
 
-        clearVertex( masterVertex );
+        clearVertex( rootVertex );
 
         // add the vertices and the interactions
         InteractionGroup& group = interactionGroups[i];
@@ -687,7 +680,7 @@ void BglGraphManager::mechanicalStep(Node* root, double dt)
             if (nodeSolvers.find( currentNode )      == nodeSolvers.end() &&
                 nodeGroupSolvers.find( currentNode ) == nodeGroupSolvers.end())
             {
-                addHedge( masterVertex, currentVertex); // add static object
+                addHedge( rootVertex, currentVertex); // add static object
                 staticObjectAdded.insert(currentVertex);
                 staticObjectName += currentNode->getName() + " ";
             }
@@ -720,13 +713,13 @@ void BglGraphManager::mechanicalStep(Node* root, double dt)
             Hvertex solverVertex =*it;
             Node* currentSolver=h_vertex_node_map[solverVertex];
             // animate this interaction group
-            addHedge( masterVertex,solverVertex);
+            addHedge( rootVertex,solverVertex);
             {
 #ifdef SOFA_DUMP_VISITOR_INFO
                 simulation::Visitor::printComment(std::string("Collision Group Animate ") + staticObjectName + currentSolver->getName() );
 #endif
-                masterNode->animate(dt);
-                removeHedge( masterVertex, solverVertex);
+                rootNode->animate(dt);
+                removeHedge( rootVertex, solverVertex);
             }
         }
 
@@ -736,7 +729,7 @@ void BglGraphManager::mechanicalStep(Node* root, double dt)
 #ifdef SOFA_DUMP_VISITOR_INFO
             simulation::Visitor::printComment(std::string("Animate ") + staticObjectName );
 #endif
-            masterNode->animate(dt);
+            rootNode->animate(dt);
         }
     }
 

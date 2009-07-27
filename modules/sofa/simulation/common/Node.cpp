@@ -295,30 +295,44 @@ void Node::doRemoveObject(BaseObject* obj)
 }
 
 
-
 /// Topology
 core::componentmodel::topology::Topology* Node::getTopology() const
 {
-    return this->topology;
+    // return this->topology;
+    if (this->topology)
+        return this->topology;
+    else
+        return get<core::componentmodel::topology::Topology>();
 }
 
 /// Mesh Topology (unified interface for both static and dynamic topologies)
 core::componentmodel::topology::BaseMeshTopology* Node::getMeshTopology() const
 {
-    return this->meshTopology;
+    if (this->meshTopology)
+        return this->meshTopology;
+    else
+        return get<core::componentmodel::topology::BaseMeshTopology>();
 }
 
 /// Shader
 core::objectmodel::BaseObject* Node::getShader() const
 {
-    return shader;
+    if (shader)
+        return shader;
+    else
+        return get<core::Shader>();
 }
 
 /// Mechanical Degrees-of-Freedom
 core::objectmodel::BaseObject* Node::getMechanicalState() const
 {
-    return this->mechanicalState;
+    // return this->mechanicalModel;
+    if (this->mechanicalState)
+        return this->mechanicalState;
+    else
+        return get<core::componentmodel::behavior::BaseMechanicalState>();
 }
+
 
 
 /// Find a child node given its name
@@ -532,7 +546,7 @@ void Node::updateContext()
 
 void Node::updateSimulationContext()
 {
-//    updateContext();
+//   std::cerr << "updateSimulationContext() in sofa::simulation::Node does Nothing!" << std::endl;
 }
 
 void Node::updateVisualContext(VISUAL_FLAG/* FILTER*/)

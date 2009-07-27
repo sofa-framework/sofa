@@ -39,15 +39,10 @@
 #ifndef SOFA_SIMULATION_BGL_BGLGRAPHMANAGER_H
 #define SOFA_SIMULATION_BGL_BGLGRAPHMANAGER_H
 
-//#include "BglNode.h"
 #include <sofa/simulation/common/Node.h>
-//Boost Headers
 #include <boost/graph/adjacency_list.hpp>
 
 #include <sofa/core/componentmodel/collision/Pipeline.h>
-
-#include <sofa/helper/vector.h>
-
 
 namespace sofa
 {
@@ -168,6 +163,22 @@ public:
 
     BglNode *getMasterNode() {return masterNode;};
     Hvertex getMasterVertex() {return masterVertex;};
+    /// Update the graph with all the operation stored in memory: add/delete node, add interactions...
+
+    void updateGraph();
+    void update();
+
+    void reset();
+    void clear();
+
+
+    /// Perform the collision detection
+    void collisionStep(Node* root, double dt=0.0);
+    /// Animate all the nodes depth-first
+    void mechanicalStep(Node* root, double dt=0.0);
+
+
+
 
     bool isNodeCreated(const Node *n) {return std::find(nodeToAdd.begin(),nodeToAdd.end(),n) != nodeToAdd.end();}
     bool isNodeDeleted(const Hvertex u) {return std::find(vertexToDelete.begin(),vertexToDelete.end(),u) != vertexToDelete.end();}
@@ -200,17 +211,11 @@ public:
 
     void setCollisionPipeline(core::componentmodel::collision::Pipeline* p) {collisionPipeline=p;};
 
-    void addSolver(core::objectmodel::BaseObject* s,Node* n);
+    void addSolver(Node* n);
     void setSolverOfCollisionGroup(Node* solverNode, Node* solverOfCollisionGroup);
 
     /// Remove an interaction
     void removeInteraction( core::objectmodel::BaseObject* );
-
-
-    /// depth search in the whole scene
-    void dfs( Visitor& );
-    /// depth visit starting from the given vertex
-    void dfv( Hvertex, Visitor& );
 
 
     std::set< Node*> &getSolverNode() {return nodeSolvers;}
@@ -219,13 +224,6 @@ public:
     void addEdge(Node *p, Node*c);
     void removeEdge( Node* p, Node* c );
 
-    /// Update the graph with all the operation stored in memory: add/delete node, add interactions...
-
-    void updateGraph();
-    void update();
-
-    void reset();
-    void clear();
     /// @}
 
     Rvertex convertHvertex2Rvertex(Hvertex v);
@@ -249,10 +247,6 @@ public:
      */
     void computeRoots();
 
-    /// Perform the collision detection
-    void collisionStep(Node* root, double dt=0.0);
-    /// Animate all the nodes depth-first
-    void mechanicalStep(Node* root, double dt=0.0);
 
     void insertHierarchicalGraph();
 
@@ -261,6 +255,14 @@ public:
 
     Node* getNodeFromHvertex(Hvertex h);
     Node* getNodeFromRvertex(Rvertex r);
+
+
+
+    /// depth search in the whole scene
+    void dfs( Visitor& );
+    /// depth visit starting from the given vertex
+    void dfv( Hvertex, Visitor& );
+
 
     Hgraph hgraph;             ///< the directed acyclic graph representing system dependencies (edges correspond to mappings)
     Rgraph rgraph;             ///< The reverse graph
