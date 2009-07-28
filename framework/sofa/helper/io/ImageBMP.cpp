@@ -28,6 +28,8 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <iostream>
 
+#include <cstdio>		// fopen and friends
+
 namespace sofa
 {
 
