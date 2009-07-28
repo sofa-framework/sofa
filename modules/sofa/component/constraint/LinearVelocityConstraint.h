@@ -74,7 +74,7 @@ public :
     Real prevT, nextT;
     ///the velocities corresponding to the surrouding key times
     Deriv prevV, nextV;
-    ///initial constrained DOFs position
+    ///position at the previous step for constrained DOFs position
     VecCoord x0;
 
     LinearVelocityConstraint();
