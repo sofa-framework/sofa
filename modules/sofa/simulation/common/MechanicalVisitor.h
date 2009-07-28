@@ -1149,6 +1149,8 @@ public:
     }
 #endif
 
+    core::componentmodel::behavior::BaseLMConstraint::ConstId getId() const { return id; }
+
 protected:
     core::componentmodel::behavior::BaseLMConstraint::ConstId id;
     std::vector< ConstraintData > datasC;
