@@ -29,6 +29,8 @@
 
 #include <sofa/helper/LCPSolver.h>
 
+#include <cstdio> 		// printf
+
 namespace sofa
 {
 
