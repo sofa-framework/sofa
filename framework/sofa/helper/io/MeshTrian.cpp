@@ -30,6 +30,8 @@
 #include <iostream>
 #include <string>
 
+#include <cstdio>
+
 namespace sofa
 {
 
