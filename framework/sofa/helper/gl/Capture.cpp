@@ -33,6 +33,9 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+#include <cstdio>		// sprintf and friends
+
+
 namespace sofa
 {
 
