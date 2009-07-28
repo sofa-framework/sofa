@@ -35,8 +35,6 @@
 #include <sofa/component/topology/PointSubset.h>
 
 
-
-
 namespace sofa
 {
 
@@ -190,6 +188,7 @@ template <class DataTypes>
 void LinearVelocityConstraint<DataTypes>::projectVelocity(VecDeriv& dx)
 {
     Real cT = (Real) this->getContext()->getTime();
+
     if(m_keyTimes.getValue().size() != 0 && cT >= *m_keyTimes.getValue().begin() && cT <= *m_keyTimes.getValue().rbegin() && nextT!=prevT)
     {
         const SetIndexArray & indices = m_indices.getValue().getArray();
@@ -197,6 +196,10 @@ void LinearVelocityConstraint<DataTypes>::projectVelocity(VecDeriv& dx)
 
         //if we found 2 keyTimes, we have to interpolate a velocity (linear interpolation)
         Deriv v = ((nextV - prevV)*((cT - prevT)/(nextT - prevT))) + prevV;
+
+#if 0
+        std::cout<<"LinearVelocityConstraint::projectVelocity, TIME = "<<cT<<", v = "<<v<<std::endl;
+#endif
 
         if (coordinates.size() == 0)
         {
@@ -269,17 +272,24 @@ void LinearVelocityConstraint<DataTypes>::projectPosition(VecCoord& x)
         const SetIndexArray & coordinates = m_coordinates.getValue().getArray();
         Real dTsimu = (Real) this->getContext()->getDt();
 
+
         if(finished)
         {
             Real dt = (cT - prevT) / (nextT - prevT);
             Deriv m = (nextV-prevV)*dt + prevV;
+
+#if 0
+            std::cout<<"LinearVelocityConstraint::projectPosition, TIME = "<<cT<<", m = "<<m<<", dTsimu = "<<dTsimu<<std::endl;
+#endif
 
             if (coordinates.size() == 0)
             {
                 //set the motion to the Dofs
                 for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
                 {
+                    Coord xP = x[*it];
                     x[*it] = x0[*it] + m*dTsimu;
+                    x0[*it] = xP;
                 }
             }
             else
@@ -288,7 +298,12 @@ void LinearVelocityConstraint<DataTypes>::projectPosition(VecCoord& x)
                 {
                     for(SetIndexArray::const_iterator itInd = coordinates.begin(); itInd != coordinates.end(); ++itInd)
                     {
+                        Real xP = x[*it][*itInd];
                         x[*it][*itInd] = x0[*it][*itInd] + m[*itInd]*dTsimu;
+                        x0[*it][*itInd] = xP;
+#if 0
+                        std::cout<<"LinearVelocityConstraint::projectPosition x["<<*it<<"] = "<<x[*it][*itInd]<<", x0["<<*it<<"] = "<<x0[*it][*itInd]<<", xP = "<<xP<<std::endl;
+#endif
                     }
                 }
             }
