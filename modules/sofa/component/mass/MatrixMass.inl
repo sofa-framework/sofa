@@ -204,13 +204,9 @@ void MatrixMass<DataTypes, MassType>::getElementMass(unsigned int index, default
 
     if ((int)m->rowSize() != dimension || (int)m->colSize() != dimension) m->resize(dimension,dimension);
 
-    for (int i=0; i<dimension; i++)
-    {
-        for (int j=0; j<dimension; j++)
-        {
-            m->set(i,j,mElement(i,j));
-        }
-    }
+    m->clear();
+    AddMToMatrixFunctor<Deriv,MassType>()(m, mElement, 0, 1);
+
 }
 
 

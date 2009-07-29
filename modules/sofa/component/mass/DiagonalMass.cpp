@@ -75,36 +75,6 @@ double DiagonalMass<Rigid2dTypes, Rigid2dMass>::getPotentialEnergy( const VecCoo
 }
 
 
-template <> SOFA_COMPONENT_MASS_API
-void DiagonalMass<Rigid3dTypes,Rigid3dMass>::getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const
-{
-    const MassType &massMatrix=f_mass.getValue()[index];
-    const defaulttype::Mat3x3d &M=massMatrix.inertiaMassMatrix;
-
-    static unsigned  int dimension = 3;
-    if (m->rowSize() != dimension || m->colSize() != dimension) m->resize(dimension,dimension);
-
-    m->clear();
-    for ( int i=0; i<(int)dimension; ++i)
-        m->set(i,i,massMatrix.mass);
-
-    for ( int i=0; i<(int)dimension; ++i)
-        for ( int j=0; j<(int)dimension; ++j)
-            m->set(dimension+i,dimension+j,M(i,j));
-}
-
-template <> SOFA_COMPONENT_MASS_API
-void DiagonalMass<Rigid2dTypes,Rigid2dMass>::getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const
-{
-    const MassType &massMatrix=f_mass.getValue()[index];
-
-    static unsigned int dimension = 1;
-    if (m->rowSize() != dimension || m->colSize() != dimension) m->resize(dimension,dimension);
-
-    m->clear();
-    m->set(0,0,massMatrix.mass);
-}
-
 /*
   template <>
   void MassEdgeDestroyFunction<Rigid3dTypes, Rigid3dMass>(const sofa::helper::vector<unsigned int> &,
@@ -245,38 +215,6 @@ double DiagonalMass<Rigid2fTypes, Rigid2fMass>::getPotentialEnergy( const VecCoo
     }
     return e;
 }
-
-
-template <> SOFA_COMPONENT_MASS_API
-void DiagonalMass<Rigid3fTypes,Rigid3fMass>::getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const
-{
-    const MassType &massMatrix=f_mass.getValue()[index];
-    const defaulttype::Mat3x3f &M=massMatrix.inertiaMassMatrix;
-
-    static unsigned  int dimension = 3;
-    if (m->rowSize() != dimension || m->colSize() != dimension) m->resize(dimension,dimension);
-
-    m->clear();
-    for ( int i=0; i<(int)dimension; ++i)
-        m->set(i,i,massMatrix.mass);
-
-    for ( int i=0; i<(int)dimension; ++i)
-        for ( int j=0; j<(int)dimension; ++j)
-            m->set(dimension+i,dimension+j,M(i,j));
-}
-
-template <> SOFA_COMPONENT_MASS_API
-void DiagonalMass<Rigid2fTypes,Rigid2fMass>::getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const
-{
-    const MassType &massMatrix=f_mass.getValue()[index];
-
-    static unsigned int dimension = 1;
-    if (m->rowSize() != dimension || m->colSize() != dimension) m->resize(dimension,dimension);
-
-    m->clear();
-    m->set(0,0,massMatrix.mass);
-}
-
 
 
 
