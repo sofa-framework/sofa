@@ -31,10 +31,10 @@
 #include <sofa/defaulttype/Vec.h>
 #include <vector>
 #include <sofa/defaulttype/Mat.h>
-using namespace sofa::defaulttype;
 
 namespace sofa
 {
+using namespace sofa::defaulttype;
 
 namespace component
 {
