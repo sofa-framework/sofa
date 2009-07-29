@@ -102,13 +102,19 @@ public:
 
     /// Accessor to index maps :
     const std::map<unsigned int, unsigned int>& getGlob2LocMap() { return Glob2LocMap;}
-    const sofa::helper::vector<unsigned int>& getLoc2GlobVec() { return Loc2GlobVec;}
+    //const sofa::helper::vector<unsigned int>& getLoc2GlobVec(){ return Loc2GlobVec.getValue();}
+
+    Data <sofa::helper::vector<unsigned int> >& getLoc2GlobVec() {return Loc2GlobDataVec;}
+
+
+
+
 
     virtual unsigned int getGlobIndex(unsigned int ind)
     {
-        if(ind<Loc2GlobVec.size())
+        if(ind< (Loc2GlobDataVec.getValue()).size())
         {
-            return Loc2GlobVec[ind];
+            return (Loc2GlobDataVec.getValue())[ind];
         }
         else
         {
@@ -140,11 +146,11 @@ protected:
 
     // Array which gives for each index (local index) of an element in the OUTPUT topology
     // the corresponding index (global index) of the same element in the INPUT topology :
-    sofa::helper::vector<unsigned int> Loc2GlobVec;
+    Data <sofa::helper::vector <unsigned int> > Loc2GlobDataVec;
 
     // Map which gives for each index (global index) of an element in the INPUT topology
     // the corresponding index (local index) of the same element in the OUTPUT topology :
-    std::map<unsigned int, unsigned int> Glob2LocMap;
+    std::map<unsigned int, unsigned int> Glob2LocMap;   //TODO put it in Data => Data allow map
 
     std::map<unsigned int, sofa::helper::vector<unsigned int> > In2OutMap;
 };

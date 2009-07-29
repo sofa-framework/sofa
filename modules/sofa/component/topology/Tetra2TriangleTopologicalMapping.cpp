@@ -107,6 +107,8 @@ void Tetra2TriangleTopologicalMapping::init()
 
             unsigned int nb_visible_triangles = 0;
 
+            sofa::helper::vector <unsigned int>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
+
             Loc2GlobVec.clear();
             Glob2LocMap.clear();
 
@@ -135,7 +137,7 @@ void Tetra2TriangleTopologicalMapping::init()
             //to_tstm->propagateTopologicalChanges();
             to_tstm->notifyEndingEvent();
             //to_tstm->propagateTopologicalChanges();
-
+            Loc2GlobDataVec.endEdit();
         }
 
     }
@@ -170,6 +172,8 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
             std::list<const TopologyChange *>::const_iterator itBegin=fromModel->firstChange();
             std::list<const TopologyChange *>::const_iterator itEnd=fromModel->lastChange();
+
+            sofa::helper::vector <unsigned int>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
 
             while( itBegin != itEnd )
             {
@@ -435,6 +439,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                 ++itBegin;
             }
             to_tstm->propagateTopologicalChanges();
+            Loc2GlobDataVec.endEdit();
         }
     }
 
