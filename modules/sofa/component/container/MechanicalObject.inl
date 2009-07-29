@@ -879,6 +879,45 @@ void MechanicalObject<DataTypes>::setOffset(unsigned int &offset)
     }
 }
 
+template <class DataTypes>
+void MechanicalObject<DataTypes>::loadInVector(defaulttype::BaseVector * dest, VecId src, unsigned int offset)
+{
+    if (src.type == VecId::V_COORD)
+    {
+        const VecCoord* vSrc = getVecCoord(src.index);
+
+        const unsigned int coordDim = DataTypeInfo<Coord>::size();
+        const unsigned int nbEntries = dest->size()/coordDim;
+
+        for (unsigned int i=0; i<nbEntries; ++i)
+            for (unsigned int j=0; j<coordDim; ++j)
+            {
+                Real tmp;
+                DataTypeInfo<Coord>::getValue((*vSrc)[offset + i],j,tmp);
+                dest->set(i * coordDim + j, tmp);
+            }
+        // offset += vSrc->size() * coordDim;
+    }
+    else
+    {
+        const VecDeriv* vSrc = getVecDeriv(src.index);
+
+        const unsigned int derivDim = DataTypeInfo<Deriv>::size();
+        const unsigned int nbEntries = dest->size()/derivDim;
+
+        for (unsigned int i=0; i<nbEntries; i++)
+            for (unsigned int j=0; j<derivDim; j++)
+            {
+                Real tmp;
+                DataTypeInfo<Deriv>::getValue((*vSrc)[i + offset],j,tmp);
+                dest->set(i * derivDim + j, tmp);
+            }
+        // offset += vSrc->size() * derivDim;
+    }
+}
+
+
+
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::loadInBaseVector(defaulttype::BaseVector * dest, VecId src, unsigned int &offset)
@@ -2214,8 +2253,7 @@ std::list<core::componentmodel::behavior::BaseMechanicalState::ConstraintBlock> 
     typedef std::list<unsigned int> indices_t;
 
     unsigned int block_row = 0;
-    for(indices_t::const_iterator row = indices.begin(); row != indices.end();
-        ++row, ++block_row)
+    for(indices_t::const_iterator row = indices.begin(); row != indices.end(); ++row, ++block_row)
     {
 
         // for all sparse data in the row
@@ -2229,7 +2267,17 @@ std::list<core::componentmodel::behavior::BaseMechanicalState::ConstraintBlock> 
             if( blocks.find( column ) == blocks.end() )
             {
                 // nope: let's create it
-                blocks[column] = new matrix_t(indices.size(), dimensionDeriv);
+                matrix_t* mat = new matrix_t(indices.size(), dimensionDeriv);
+                blocks[column] = mat;
+
+                for(unsigned int i = 0; i < mat->rowSize(); ++i)
+                {
+                    for(unsigned int j = 0; j < mat->colSize(); ++j)
+                    {
+                        mat->set(i, j, 0);
+                    }
+                }
+
             }
 
             // now it's created no matter what \o/

@@ -271,6 +271,9 @@ public:
     /// Add the Mechanical State Dimension [DOF number * DOF dimension] to the global matrix dimension
     virtual void contributeToMatrixDimension(unsigned int * const, unsigned int * const);
 
+    /// Load local mechanical data stored in the state in a (possibly smaller) vector
+    virtual void loadInVector(defaulttype::BaseVector *, VecId , unsigned int);
+
     /// Load local mechanical data stored in the state in a global BaseVector basically stored in solvers
     virtual void loadInBaseVector(defaulttype::BaseVector *, VecId , unsigned int &);
 

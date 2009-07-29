@@ -460,6 +460,9 @@ public:
     /// Load local mechanical data stored in the state in a global BaseVector basically stored in solvers
     virtual void loadInBaseVector(defaulttype::BaseVector *, VecId , unsigned int &) = 0;
 
+    /// Load local mechanical data stored in the state in a (possibly smaller) BaseVector
+    virtual void loadInVector(defaulttype::BaseVector *, VecId , unsigned int) = 0;
+
     /// Add data stored in a BaseVector to a local mechanical vector of the MechanicalState
     virtual void addBaseVectorToState(VecId , defaulttype::BaseVector *, unsigned int &) = 0;
 
