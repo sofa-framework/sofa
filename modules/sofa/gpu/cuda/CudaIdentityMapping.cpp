@@ -34,6 +34,46 @@
 namespace sofa
 {
 
+namespace component
+{
+
+namespace mapping
+{
+
+using namespace sofa::defaulttype;
+using namespace sofa::core;
+using namespace sofa::core::componentmodel::behavior;
+using namespace sofa::gpu::cuda;
+
+template class  IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<CudaVec3fTypes> > >;
+template class  IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<Vec3dTypes> > >;
+template class  IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<Vec3fTypes> > >;
+template class  IdentityMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<CudaVec3fTypes> > >;
+template class  IdentityMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<CudaVec3fTypes> > >;
+template class  IdentityMapping< Mapping< State<CudaVec3fTypes>, MappedModel<CudaVec3fTypes> > >;
+template class  IdentityMapping< Mapping< State<CudaVec3fTypes>, MappedModel<Vec3dTypes> > >;
+template class  IdentityMapping< Mapping< State<CudaVec3fTypes>, MappedModel<Vec3fTypes> > >;
+// template class  IdentityMapping< Mapping< State<CudaVec3fTypes>, MappedModel<ExtVec3dTypes> > >;
+template class  IdentityMapping< Mapping< State<CudaVec3fTypes>, MappedModel<ExtVec3fTypes> > >;
+template class  IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3f1Types>, MechanicalState<CudaVec3f1Types> > >;
+template class  IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3f1Types>, MechanicalState<Vec3dTypes> > >;
+template class  IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3f1Types>, MechanicalState<Vec3fTypes> > >;
+template class  IdentityMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<CudaVec3f1Types> > >;
+template class  IdentityMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<CudaVec3f1Types> > >;
+template class  IdentityMapping< Mapping< State<CudaVec3f1Types>, MappedModel<CudaVec3f1Types> > >;
+template class  IdentityMapping< Mapping< State<CudaVec3f1Types>, MappedModel<Vec3dTypes> > >;
+template class  IdentityMapping< Mapping< State<CudaVec3f1Types>, MappedModel<Vec3fTypes> > >;
+// template class  IdentityMapping< Mapping< State<CudaVec3f1Types>, MappedModel<ExtVec3dTypes> > >;
+template class  IdentityMapping< Mapping< State<CudaVec3f1Types>, MappedModel<ExtVec3fTypes> > >;
+template class  IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3f1Types>, MechanicalState<CudaVec3fTypes> > >;
+template class  IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<CudaVec3f1Types> > >;
+template class  IdentityMapping< Mapping< State<CudaVec3f1Types>, MappedModel<CudaVec3fTypes> > >;
+template class  IdentityMapping< Mapping< State<CudaVec3fTypes>, MappedModel<CudaVec3f1Types> > >;
+
+} // namespace mapping
+
+} // namespace component
+
 namespace gpu
 {
 
