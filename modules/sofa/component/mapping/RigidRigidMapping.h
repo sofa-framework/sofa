@@ -33,10 +33,10 @@
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <vector>
 
-using namespace sofa::defaulttype;
-
 namespace sofa
 {
+
+using namespace sofa::defaulttype;
 
 namespace component
 {
