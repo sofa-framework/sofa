@@ -382,7 +382,7 @@ void DiagonalMass<DataTypes, MassType>::getElementMass(unsigned int index, defau
     if (m->rowSize() != dimension || m->colSize() != dimension) m->resize(dimension,dimension);
 
     m->clear();
-    for (unsigned int i=0; i<dimension; ++i)m->set(i,i,f_mass.getValue()[index]);
+    AddMToMatrixFunctor<Deriv,MassType>()(m, f_mass.getValue()[index], 0, 1);
 }
 
 template <class DataTypes, class MassType>

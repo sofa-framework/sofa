@@ -377,7 +377,6 @@ double UniformMass<DataTypes, MassType>::getElementMass(unsigned int ) const
     return (double)(mass.getValue());
 }
 
-//TODO: special case for Rigid Mass
 template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::getElementMass(unsigned int /* index */, defaulttype::BaseMatrix *m) const
 {
@@ -385,7 +384,7 @@ void UniformMass<DataTypes, MassType>::getElementMass(unsigned int /* index */, 
     if (m->rowSize() != dimension || m->colSize() != dimension) m->resize(dimension,dimension);
 
     m->clear();
-    for (unsigned int i=0; i<dimension; ++i) m->set(i,i,mass.getValue());
+    AddMToMatrixFunctor<Deriv,MassType>()(m, mass.getValue(), 0, 1);
 }
 
 

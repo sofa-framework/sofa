@@ -295,36 +295,6 @@ double UniformMass<Rigid2dTypes,Rigid2dMass>::getPotentialEnergy( const Rigid2dT
     return e;
 }
 
-template <> SOFA_COMPONENT_MASS_API
-void UniformMass<Rigid3dTypes,Rigid3dMass>::getElementMass(unsigned int , defaulttype::BaseMatrix *m) const
-{
-    const MassType &massMatrix=mass.getValue();
-    const defaulttype::Mat3x3d &M=massMatrix.inertiaMassMatrix;
-
-    static unsigned  int dimension = 3;
-    if (m->rowSize() != 2*dimension || m->colSize() != 2*dimension) m->resize(2*dimension,2*dimension);
-
-    m->clear();
-    for ( int i=0; i<(int)dimension; ++i)
-        m->set(i,i,massMatrix.mass);
-
-    for ( int i=0; i<(int)dimension; ++i)
-        for ( int j=0; j<(int)dimension; ++j)
-            m->set(dimension+i,dimension+j,M(i,j));
-
-}
-
-template <> SOFA_COMPONENT_MASS_API
-void UniformMass<Rigid2dTypes,Rigid2dMass>::getElementMass(unsigned int , defaulttype::BaseMatrix *m) const
-{
-    const MassType &massMatrix=mass.getValue();
-
-    static unsigned int dimension = 1;
-    if (m->rowSize() != dimension || m->colSize() != dimension) m->resize(dimension,dimension);
-
-    m->clear();
-    m->set(0,0,massMatrix.mass);
-}
 
 
 template <> SOFA_COMPONENT_MASS_API
@@ -593,35 +563,6 @@ double UniformMass<Rigid2fTypes,Rigid2fMass>::getPotentialEnergy( const Rigid2fT
 }
 
 
-template <> SOFA_COMPONENT_MASS_API
-void UniformMass<Rigid3fTypes,Rigid3fMass>::getElementMass(unsigned int , defaulttype::BaseMatrix *m) const
-{
-    const MassType &massMatrix=mass.getValue();
-    const defaulttype::Mat3x3d &M=massMatrix.inertiaMassMatrix;
-
-    static unsigned  int dimension = 3;
-    if (m->rowSize() != 2*dimension || m->colSize() != 2*dimension) m->resize(2*dimension,2*dimension);
-
-    m->clear();
-    for ( int i=0; i<(int)dimension; ++i)
-        m->set(i,i,massMatrix.mass);
-
-    for ( int i=0; i<(int)dimension; ++i)
-        for ( int j=0; j<(int)dimension; ++j)
-            m->set(dimension+i,dimension+j,M(i,j));
-}
-
-template <> SOFA_COMPONENT_MASS_API
-void UniformMass<Rigid2fTypes,Rigid2fMass>::getElementMass(unsigned int , defaulttype::BaseMatrix *m) const
-{
-    const MassType &massMatrix=mass.getValue();
-
-    static unsigned int dimension = 1;
-    if (m->rowSize() != dimension || m->colSize() != dimension) m->resize(dimension,dimension);
-
-    m->clear();
-    m->set(0,0,massMatrix.mass);
-}
 
 template <> SOFA_COMPONENT_MASS_API
 void UniformMass<Vec6fTypes, float>::draw()
