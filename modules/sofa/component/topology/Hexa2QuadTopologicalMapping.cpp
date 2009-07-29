@@ -105,6 +105,7 @@ void Hexa2QuadTopologicalMapping::init()
 
             unsigned int nb_visible_quads = 0;
 
+            sofa::helper::vector <unsigned int>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
             Loc2GlobVec.clear();
             Glob2LocMap.clear();
 
@@ -126,6 +127,7 @@ void Hexa2QuadTopologicalMapping::init()
             //to_tstm->propagateTopologicalChanges();
             to_tstm->notifyEndingEvent();
             //to_tstm->propagateTopologicalChanges();
+            Loc2GlobDataVec.endEdit();
         }
 
     }
@@ -160,6 +162,8 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
 
             std::list<const TopologyChange *>::const_iterator itBegin=fromModel->firstChange();
             std::list<const TopologyChange *>::const_iterator itEnd=fromModel->lastChange();
+
+            sofa::helper::vector <unsigned int>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
 
             while( itBegin != itEnd )
             {
@@ -473,6 +477,7 @@ void Hexa2QuadTopologicalMapping::updateTopologicalMappingTopDown()
                 ++itBegin;
             }
             to_tstm->propagateTopologicalChanges();
+            Loc2GlobDataVec.endEdit();
         }
     }
 

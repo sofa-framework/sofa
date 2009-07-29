@@ -101,6 +101,8 @@ void Hexa2TetraTopologicalMapping::init()
             TetrahedronSetTopologyModifier *to_tstm;
             toModel->getContext()->get(to_tstm);
 
+            sofa::helper::vector <unsigned int>& Loc2GlobVec = *(Loc2GlobDataVec.beginEdit());
+
             Loc2GlobVec.clear();
             Glob2LocMap.clear();
 
@@ -181,7 +183,7 @@ void Hexa2TetraTopologicalMapping::init()
             //to_tstm->propagateTopologicalChanges();
             to_tstm->notifyEndingEvent();
             //to_tstm->propagateTopologicalChanges();
-
+            Loc2GlobDataVec.endEdit();
         }
 
     }
