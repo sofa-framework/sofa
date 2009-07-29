@@ -1,0 +1,5 @@
+QMAKE_PRL_BUILD_DIR = /home/sofa-work/sofa-dev/trunk/Sofa/extlibs/libQGLViewer/QGLViewer
+QMAKE_PRO_INPUT = QGLViewer.pro
+QMAKE_PRL_TARGET = libQGLViewer.so.2.3.3
+QMAKE_PRL_CONFIG = lex yacc warn_on uic resources qt warn_on release incremental link_prl nostrip exceptions no_mocdepend release stl qt_no_framework opengl shared thread create_prl rtti dll shared moc opengl
+QMAKE_PRL_VERSION = 2.3.3

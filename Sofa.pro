@@ -50,7 +50,7 @@ contains(DEFINES,SOFA_EXTLIBS_TAUCS){
 #QGLViewer
 
 contains(DEFINES,SOFA_GUI_QGLVIEWER){
-	SUBDIRS += extlibs/libQGLViewer/QGLViewer
+	SUBDIRS += extlibs/libQGLViewer-2.3.3/QGLViewer
 }
 
 contains(DEFINES,SOFA_HAVE_COLLADADOM){
