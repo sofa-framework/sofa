@@ -71,6 +71,8 @@ public:
     /// optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)
     Data< defaulttype::Vec<2,int> > localRange;
 
+    Data< bool > m_handleTopoChange;
+
 public:
     UniformMass();
 
@@ -86,6 +88,8 @@ public:
 
     void reinit();
     void init();
+
+    void handleTopologyChange();
 
     void addMDx(VecDeriv& f, const VecDeriv& dx, double factor = 1.0);
 

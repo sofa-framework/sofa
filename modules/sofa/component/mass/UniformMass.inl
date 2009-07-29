@@ -27,6 +27,7 @@
 
 #include <sofa/component/mass/UniformMass.h>
 #include <sofa/core/componentmodel/behavior/Mass.inl>
+#include <sofa/core/componentmodel/topology/Topology.h>
 #include <sofa/core/objectmodel/Context.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -63,6 +64,7 @@ UniformMass<DataTypes, MassType>::UniformMass()
     , showInitialCenterOfGravity( initData(&showInitialCenterOfGravity, false, "showInitialCenterOfGravity", "display the initial center of gravity of the system" ) )
     , showX0( initData(&showX0, false, "showX0", "display the rest positions" ) )
     , localRange( initData(&localRange, defaulttype::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
+    , m_handleTopoChange( initData(&m_handleTopoChange, false, "handleTopoChange", "The mass and totalMass are recomputed on particles add/remove." ) )
 {}
 
 template <class DataTypes, class MassType>
@@ -107,6 +109,49 @@ void UniformMass<DataTypes, MassType>::init()
     this->core::componentmodel::behavior::Mass<DataTypes>::init();
     reinit();
 }
+
+
+template <class DataTypes, class MassType>
+void UniformMass<DataTypes, MassType>::handleTopologyChange()
+{
+    using core::componentmodel::topology::TopologyChange;
+
+    core::componentmodel::topology::BaseMeshTopology *bmt = getContext()->getMeshTopology();
+
+    if (bmt != 0)
+    {
+        std::list< const TopologyChange * >::const_iterator it = bmt->firstChange();
+        std::list< const TopologyChange * >::const_iterator itEnd = bmt->lastChange();
+
+        while (it != itEnd)
+        {
+            switch((*it)->getChangeType())
+            {
+            case core::componentmodel::topology::POINTSADDED:
+                if (m_handleTopoChange.getValue())
+                {
+                    MassType* m = this->mass.beginEdit();
+                    *m = ((typename DataTypes::Real)this->totalMass.getValue() / this->mstate->getX()->size());
+                    this->mass.endEdit();
+                }
+                break;
+
+            case core::componentmodel::topology::POINTSREMOVED:
+                if (m_handleTopoChange.getValue())
+                {
+                    this->totalMass.setValue(this->mstate->getX()->size() * this->mass.getValue());
+                }
+                break;
+
+            default:
+                break;
+            }
+
+            ++it;
+        }
+    }
+}
+
 
 // -- Mass interface
 template <class DataTypes, class MassType>
