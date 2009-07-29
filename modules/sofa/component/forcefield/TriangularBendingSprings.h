@@ -206,6 +206,17 @@ protected:
 
 };
 
+#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_TRIANGULARBENDINGSPRINGS_CPP)
+#pragma warning(disable : 4231)
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_FORCEFIELD_API TriangularBendingSprings<defaulttype::Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_FORCEFIELD_API TriangularBendingSprings<defaulttype::Vec3fTypes>;
+#endif
+#endif
+
+
 } // namespace forcefield
 
 } // namespace component
