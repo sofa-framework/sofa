@@ -33,6 +33,7 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
+#define SOFA_COMPONENT_FORCEFIELD_TRIANGULARBENDINGSPRINGS_CPP
 #include <sofa/component/forcefield/TriangularBendingSprings.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
@@ -72,10 +73,10 @@ int TriangularBendingSpringsClass = core::RegisterObject("Springs added to a tri
         ;
 
 #ifndef SOFA_FLOAT
-template class TriangularBendingSprings<Vec3dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API TriangularBendingSprings<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class TriangularBendingSprings<Vec3fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API TriangularBendingSprings<Vec3fTypes>;
 #endif
 
 
