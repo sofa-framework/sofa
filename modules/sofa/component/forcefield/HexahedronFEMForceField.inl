@@ -38,8 +38,6 @@
 
 
 
-using std::set;
-
 
 
 // WARNING: indices ordering is different than in topology node
@@ -67,6 +65,7 @@ namespace component
 namespace forcefield
 {
 
+using std::set;
 using namespace sofa::defaulttype;
 
 #ifndef SOFA_NEW_HEXA

@@ -27,14 +27,15 @@
 
 #include <sofa/simulation/common/VelocityThresholdVisitor.h>
 #include <iostream>
-using std::cerr;
-using std::endl;
 
 namespace sofa
 {
 
 namespace simulation
 {
+
+using std::cerr;
+using std::endl;
 
 VelocityThresholdVisitor::VelocityThresholdVisitor( VecId v, double t )
     : vid(v), threshold(t)

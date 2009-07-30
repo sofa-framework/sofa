@@ -34,9 +34,6 @@
 #include <iostream>
 
 
-using std::cerr;
-using std::endl;
-
 
 namespace sofa
 {
@@ -46,6 +43,9 @@ namespace component
 
 namespace mapping
 {
+
+using std::cerr;
+using std::endl;
 
 using namespace sofa::defaulttype;
 

@@ -34,8 +34,6 @@
 
 #include <sofa/core/objectmodel/Base.h>
 
-using std::set;
-
 namespace sofa
 {
 
@@ -45,6 +43,7 @@ namespace component
 namespace forcefield
 {
 
+using std::set;
 using namespace sofa::defaulttype;
 
 template <class DataTypes>

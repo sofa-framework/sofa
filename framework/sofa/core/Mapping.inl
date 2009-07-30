@@ -29,14 +29,15 @@
 
 #include <sofa/core/Mapping.h>
 #include <iostream>
-using std::cerr;
-using std::endl;
 
 namespace sofa
 {
 
 namespace core
 {
+
+using std::cerr;
+using std::endl;
 
 template <class In, class Out>
 Mapping<In,Out>::Mapping(In* from, Out* to)

@@ -37,7 +37,6 @@
 #include "sofa/component/odesolver/EulerSolver.h"
 #include "sofa/component/odesolver/StaticSolver.h"
 #include "sofa/component/odesolver/RungeKutta4Solver.h"
-using namespace sofa::component::odesolver;
 
 namespace sofa
 {
@@ -48,6 +47,8 @@ namespace filemanager
 namespace pml
 {
 
+
+using namespace sofa::component::odesolver;
 
 PMLBody::PMLBody()
 {

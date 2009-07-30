@@ -44,7 +44,6 @@
 #include <sofa/simulation/common/Node.h>
 
 
-using std::set;
 
 
 namespace sofa
@@ -56,6 +55,7 @@ namespace component
 namespace forcefield
 {
 
+using std::set;
 using namespace sofa::core;
 using namespace sofa::core::componentmodel;
 using namespace sofa::defaulttype;

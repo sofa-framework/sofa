@@ -43,8 +43,6 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/map.h>
 #include <iostream>
-using std::cerr;
-using std::endl;
 
 namespace sofa
 {
@@ -52,6 +50,8 @@ namespace sofa
 namespace simulation
 {
 
+using std::cerr;
+using std::endl;
 
 using namespace sofa::defaulttype;
 /** Base class for easily creating new actions for mechanical simulation.

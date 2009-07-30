@@ -38,9 +38,6 @@
 #include "sofa/component/mass/UniformMass.h"
 #include "sofa/component/mass/DiagonalMass.h"
 #include "sofa/component/mapping/IdentityMapping.h"
-using namespace sofa::component::mass;
-using namespace sofa::component::mapping;
-using namespace sofa::component;
 
 
 #include <PhysicalModel.h>
@@ -56,6 +53,10 @@ namespace filemanager
 
 namespace pml
 {
+
+using namespace sofa::component::mass;
+using namespace sofa::component::mapping;
+using namespace sofa::component;
 
 PMLStiffSpringForceField::PMLStiffSpringForceField(StructuralComponent* body, GNode * parent)
 {

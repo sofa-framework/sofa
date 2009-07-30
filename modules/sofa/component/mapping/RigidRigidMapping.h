@@ -36,13 +36,13 @@
 namespace sofa
 {
 
-using namespace sofa::defaulttype;
 
 namespace component
 {
 
 namespace mapping
 {
+using namespace sofa::defaulttype;
 
 template <class BasicMapping>
 class RigidRigidMapping : public BasicMapping, public virtual core::objectmodel::BaseObject

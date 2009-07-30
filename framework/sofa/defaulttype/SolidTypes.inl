@@ -41,14 +41,14 @@
 #include <sofa/defaulttype/SolidTypes.h>
 #include <sofa/helper/system/gl.h>
 #include <iostream>
-using std::cerr;
-using std::endl;
 
 namespace sofa
 {
 
 namespace defaulttype
 {
+using std::cerr;
+using std::endl;
 
 template<class R>
 SolidTypes<R>::SpatialVector::SpatialVector()

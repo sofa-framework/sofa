@@ -36,7 +36,6 @@
 #include <sofa/helper/vector.h>
 #include <sofa/helper/rmath.h>
 #include <iostream>
-using std::endl;
 
 namespace sofa
 {
@@ -44,6 +43,7 @@ namespace sofa
 namespace defaulttype
 {
 
+using std::endl;
 using sofa::helper::vector;
 
 template<int N, typename real>

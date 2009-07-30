@@ -72,7 +72,7 @@ protected:
         int age;      ///< how old is this contact
 
 
-        Contact(int _m1=0, int _m2=0, int _index1=0, int _index2=0, Deriv _norm=Deriv(), Real _dist=Real(), Real _ks=Real(), Real _mu_s=Real(), Real _mu_v=Real(), Real _pen=Real(), int _age=0)
+        Contact(int _m1=0, int _m2=0, int _index1=0, int _index2=0, Deriv _norm=Deriv(), Real _dist=(Real)0, Real _ks=(Real)0, Real _mu_s=(Real)0, Real _mu_v=(Real)0, Real _pen=(Real)0, int _age=0)
             : m1(_m1),m2(_m2),index1(_index1),index2(_index2),norm(_norm),dist(_dist),ks(_ks),mu_s(_mu_s),mu_v(_mu_v),pen(_pen),age(_age)
         {
         }

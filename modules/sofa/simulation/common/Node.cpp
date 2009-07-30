@@ -42,8 +42,6 @@
 #include <sofa/simulation/common/VisualVisitor.h>
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
 #include <iostream>
-using std::cerr;
-using std::endl;
 
 #include <boost/graph/adjacency_list.hpp>
 //#include <sofa/core/objectmodel/BaseObject.h>
@@ -55,6 +53,8 @@ namespace sofa
 
 namespace simulation
 {
+using std::cerr;
+using std::endl;
 using core::objectmodel::BaseNode;
 using core::objectmodel::BaseObject;
 using helper::system::thread::CTime;

@@ -34,8 +34,6 @@
 #include <string>
 #include <map>
 
-using sofa::core::objectmodel::DataPtr;
-using sofa::core::objectmodel::Data;
 
 namespace sofa
 {
@@ -45,6 +43,9 @@ namespace core
 
 namespace objectmodel
 {
+
+using sofa::core::objectmodel::DataPtr;
+using sofa::core::objectmodel::Data;
 
 class Base;
 

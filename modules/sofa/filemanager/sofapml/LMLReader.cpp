@@ -44,11 +44,8 @@
 
 #include "sofa/defaulttype/Vec3Types.h"
 #include "sofa/defaulttype/RigidTypes.h"
-using namespace sofa::defaulttype;
 #include "sofa/core/objectmodel/BaseObject.h"
-using namespace sofa::core::objectmodel;
 #include "sofa/component/constraint/FixedConstraint.h"
-using namespace sofa::component::constraint;
 
 namespace sofa
 {
@@ -59,6 +56,9 @@ namespace filemanager
 namespace pml
 {
 
+using namespace sofa::defaulttype;
+using namespace sofa::core::objectmodel;
+using namespace sofa::component::constraint;
 
 LMLReader::LMLReader(char* filename)
 {

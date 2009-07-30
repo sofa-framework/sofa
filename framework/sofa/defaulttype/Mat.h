@@ -32,8 +32,6 @@
 #include <assert.h>
 #include <boost/static_assert.hpp>
 #include <iostream>
-using std::cerr;
-using std::endl;
 
 namespace sofa
 {
@@ -41,6 +39,8 @@ namespace sofa
 namespace defaulttype
 {
 
+using std::cerr;
+using std::endl;
 template <int L, int C, class real=float>
 class Mat : public helper::fixed_array<VecNoInit<C,real>,L>
     //class Mat : public Vec<L,Vec<C,real> >

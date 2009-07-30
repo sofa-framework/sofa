@@ -29,9 +29,6 @@
 
 
 
-using std::set;
-
-
 
 #include <sofa/component/topology/SparseGridMultipleTopology.h>
 
@@ -44,6 +41,7 @@ namespace component
 namespace forcefield
 {
 
+using std::set;
 using namespace sofa::defaulttype;
 using topology::SparseGridMultipleTopology;
 

@@ -145,7 +145,7 @@ void DistanceConstraint<DataTypes>::writeConstraintEquations(ConstId Id)
         Deriv V12 = getDirection(edges[i], x1, x2);
 
         core::componentmodel::behavior::BaseLMConstraint::constraintGroup *constraint = this->addGroupConstraint(Id);
-        SReal correction=SReal();
+        SReal correction=0;
         switch(Id)
         {
         case core::componentmodel::behavior::BaseLMConstraint::ACC :

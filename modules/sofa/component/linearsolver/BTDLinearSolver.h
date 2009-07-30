@@ -265,7 +265,7 @@ public:
     {
         int bi = i / BSIZE; i = i % BSIZE;
         int bj = j / BSIZE; j = j % BSIZE;
-        bloc(bi,bj)[i][j] = Real();
+        bloc(bi,bj)[i][j] = (Real)0;
     }
 
     void clearRow(int i)
@@ -273,7 +273,7 @@ public:
         int bi = i / BSIZE; i = i % BSIZE;
         for (int bj = 0; bj < nBCol; ++bj)
             for (int j=0; j<BSIZE; ++j)
-                bloc(bi,bj)[i][j] = Real();
+                bloc(bi,bj)[i][j] = (Real)0;
     }
 
     void clearCol(int j)
@@ -281,7 +281,7 @@ public:
         int bj = j / BSIZE; j = j % BSIZE;
         for (int bi = 0; bi < nBRow; ++bi)
             for (int i=0; i<BSIZE; ++i)
-                bloc(bi,bj)[i][j] = Real();
+                bloc(bi,bj)[i][j] = (Real)0;
     }
 
     void clearRowCol(int i)
@@ -676,7 +676,7 @@ public:
         int bj = j / BSIZE; j = j % BSIZE;
         int bindex = bj - bi + 1;
         if ((unsigned)bindex >= 3) return;
-        data[bi*3+bindex][i][j] = Real();
+        data[bi*3+bindex][i][j] = (Real)0;
     }
 
     void clearRow(int i)
@@ -684,7 +684,7 @@ public:
         int bi = i / BSIZE; i = i % BSIZE;
         for (int bj = 0; bj < 3; ++bj)
             for (int j=0; j<BSIZE; ++j)
-                data[bi*3+bj][i][j] = Real();
+                data[bi*3+bj][i][j] = (Real)0;
     }
 
     void clearCol(int j)
@@ -692,12 +692,12 @@ public:
         int bj = j / BSIZE; j = j % BSIZE;
         if (bj > 0)
             for (int i=0; i<BSIZE; ++i)
-                data[(bj-1)*3+2][i][j] = Real();
+                data[(bj-1)*3+2][i][j] = (Real)0;
         for (int i=0; i<BSIZE; ++i)
-            data[bj*3+1][i][j] = Real();
+            data[bj*3+1][i][j] = (Real)0;
         if (bj < nBRow-1)
             for (int i=0; i<BSIZE; ++i)
-                data[(bj+1)*3+0][i][j] = Real();
+                data[(bj+1)*3+0][i][j] = (Real)0;
     }
 
     void clearRowCol(int i)

@@ -51,10 +51,6 @@
 #include "sofa/simulation/common/Simulation.h"
 #include "sofa/simulation/common/Node.h"
 
-using namespace sofa::component::collision;
-using namespace sofa::simulation::tree;
-using namespace sofa::simulation;
-
 namespace sofa
 {
 
@@ -63,6 +59,10 @@ namespace filemanager
 
 namespace pml
 {
+
+using namespace sofa::component::collision;
+using namespace sofa::simulation::tree;
+using namespace sofa::simulation;
 
 //build sofa structure from a pml file
 void PMLReader::BuildStructure(const char* filename, GNode* root)

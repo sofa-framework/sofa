@@ -32,8 +32,6 @@
 #include <fstream>
 
 
-using std::set;
-
 
 
 
@@ -47,6 +45,7 @@ namespace component
 namespace forcefield
 {
 
+using std::set;
 using namespace sofa::defaulttype;
 
 

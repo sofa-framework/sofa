@@ -36,8 +36,6 @@
 #include "sofa/defaulttype/Vec3Types.h"
 #include "sofa/component/container/MechanicalObject.h"
 #include <sofa/core/ObjectFactory.h>
-using namespace sofa::defaulttype;
-using namespace sofa::component;
 
 namespace sofa
 {
@@ -47,6 +45,8 @@ namespace filemanager
 
 namespace pml
 {
+using namespace sofa::defaulttype;
+using namespace sofa::component;
 
 using namespace core::componentmodel::behavior;
 

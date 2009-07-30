@@ -25,8 +25,6 @@
 #include <sofa/simulation/common/MechanicalMatrixVisitor.h>
 #include <sofa/simulation/common/Node.h>
 #include <iostream>
-using std::cerr;
-using std::endl;
 
 namespace sofa
 {
@@ -34,6 +32,8 @@ namespace sofa
 namespace simulation
 {
 
+using std::cerr;
+using std::endl;
 
 Visitor::Result MechanicalMatrixVisitor::processNodeTopDown(simulation::Node* node)
 {

@@ -33,8 +33,6 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
-using std::cerr;
-using std::endl;
 
 namespace sofa
 {
@@ -42,6 +40,8 @@ namespace sofa
 namespace simulation
 {
 
+using std::cerr;
+using std::endl;
 class SOFA_SIMULATION_COMMON_API VisualVisitor : public Visitor
 {
 public:
