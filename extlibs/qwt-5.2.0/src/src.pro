@@ -11,35 +11,17 @@
 
 QWT_ROOT = ..
 
+SOFA_DIR = ../../..
+TEMPLATE = lib
+include($${SOFA_DIR}/sofa.cfg)
+
 include( $${QWT_ROOT}/qwtconfig.pri )
 
-SUFFIX_STR =
-VVERSION = $$[QT_VERSION]
-isEmpty(VVERSION) {
-
-    # Qt 3
-    debug {
-        SUFFIX_STR = $${DEBUG_SUFFIX}
-    }
-    else {
-        SUFFIX_STR = $${RELEASE_SUFFIX} 
-    }
-}
-else {
-    CONFIG(debug, debug|release) {
-        SUFFIX_STR = $${DEBUG_SUFFIX}
-    }
-    else {
-        SUFFIX_STR = $${RELEASE_SUFFIX}
-    }
-}
-
-TARGET            = qwt$${SUFFIX_STR}
-TEMPLATE          = lib
+TARGET            = qwt$${LIBSUFFIX}
+CONFIG += $$CONFIGLIBRARIES
 
 MOC_DIR           = moc
-OBJECTS_DIR       = obj$${SUFFIX_STR}
-DESTDIR           = $${QWT_ROOT}/lib
+OBJECTS_DIR       = obj
 
 contains(CONFIG, QwtDll ) {
     CONFIG += dll
