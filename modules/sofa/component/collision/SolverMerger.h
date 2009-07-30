@@ -22,12 +22,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_DEFAULTCOLLISIONGROUPMANAGER_H
-#define SOFA_COMPONENT_COLLISION_DEFAULTCOLLISIONGROUPMANAGER_H
 
-#include <sofa/core/componentmodel/collision/CollisionGroupManager.h>
-#include <sofa/simulation/common/Node.h>
-#include <sofa/component/component.h>
+#ifndef SOFA_COMPONENT_COLLISION_SOLVERMERGER_H
+#define SOFA_COMPONENT_COLLISION_SOLVERMERGER_H
+
+
+#include <sofa/core/componentmodel/behavior/OdeSolver.h>
+#include <sofa/core/componentmodel/behavior/LinearSolver.h>
+#include <sofa/helper/FnDispatcher.h>
 
 
 namespace sofa
@@ -39,44 +41,22 @@ namespace component
 namespace collision
 {
 
-class SOFA_COMPONENT_COLLISION_API DefaultCollisionGroupManager : public core::componentmodel::collision::CollisionGroupManager
+typedef std::pair<core::componentmodel::behavior::OdeSolver*,core::componentmodel::behavior::LinearSolver*> SolverSet;
+
+class SolverMerger
 {
 public:
-    typedef std::set<simulation::Node*> GroupSet;
-    GroupSet groupSet;
-public:
-    DefaultCollisionGroupManager();
-
-    virtual ~DefaultCollisionGroupManager();
-
-    virtual void createGroups(core::objectmodel::BaseContext* scene, const sofa::helper::vector<core::componentmodel::collision::Contact*>& contacts);
-
-    virtual void clearGroups(core::objectmodel::BaseContext* scene);
-
-    /** Overload this if yo want to design your collision group, e.g. with a MasterSolver.
-    Otherwise, an empty Node is returned.
-    The OdeSolver is added afterwards.
-    */
-    virtual simulation::Node* buildCollisionGroup();
+    static SolverSet merge(core::componentmodel::behavior::OdeSolver* solver1, core::componentmodel::behavior::OdeSolver* solver2);
 
 protected:
-    virtual simulation::Node* getIntegrationNode(core::CollisionModel* model);
 
-    std::map<Instance,GroupSet> storedGroupSet;
+    helper::FnDispatcher<core::componentmodel::behavior::OdeSolver, SolverSet> solverDispatcher;
 
-    virtual void changeInstance(Instance inst)
-    {
-        core::componentmodel::collision::CollisionGroupManager::changeInstance(inst);
-        storedGroupSet[instance].swap(groupSet);
-        groupSet.swap(storedGroupSet[inst]);
-    }
-
+    SolverMerger ();
 };
 
-} // namespace collision
-
-} // namespace component
-
-} // namespace sofa
+}
+}
+}
 
 #endif
