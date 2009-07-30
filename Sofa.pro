@@ -9,7 +9,7 @@ contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 #SUBDIRS += extlibs/SLC
 } # END SOFA_DEV
 
-SUBDIRS += extlibs/qwt
+SUBDIRS += extlibs/qwt-5.2.0/src
 
 contains(DEFINES,SOFA_XML_PARSER_TINYXML){
   SUBDIRS += extlibs/tinyxml
