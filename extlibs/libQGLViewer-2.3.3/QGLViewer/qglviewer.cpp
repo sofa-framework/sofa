@@ -191,10 +191,10 @@ the associated documentation.
 
 If the \p shareWidget parameter points to a valid \c QGLWidget, the QGLViewer will share the OpenGL
 context with \p shareWidget (see isSharing()). */
-QGLViewer::QGLViewer(QWidget* parent, const QGLWidget* shareWidget, Qt::WFlags flags)
+/*QGLViewer::QGLViewer(QWidget* parent, const QGLWidget* shareWidget, Qt::WFlags flags)
 : QGLWidget(parent, shareWidget, flags)
 { defaultConstructor(); }
-
+*/
 /*! Same as QGLViewer(), but a \c QGLContext can be provided so that viewers share GL contexts, even
 with \c QGLContext sub-classes (use \p shareWidget otherwise).
 
