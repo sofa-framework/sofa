@@ -31,9 +31,6 @@
 #include <assert.h>
 #include <algorithm>
 #include <iostream>
-using std::cout;
-using std::cerr;
-using std::endl;
 
 
 namespace sofa
@@ -44,6 +41,10 @@ namespace helper
 
 namespace gl
 {
+using std::cout;
+using std::cerr;
+using std::endl;
+
 template <typename T>
 void GlText::setText ( const T& text )
 {

@@ -41,8 +41,6 @@
 
 
 
-using std::set;
-
 
 namespace sofa
 {
@@ -53,7 +51,9 @@ namespace component
 namespace forcefield
 {
 
+using std::set;
 using namespace sofa::defaulttype;
+
 
 using topology::SparseGridTopology;
 using namespace linearsolver;

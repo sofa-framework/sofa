@@ -36,13 +36,13 @@
 
 namespace sofa
 {
-using namespace sofa::defaulttype;
 
 namespace component
 {
 
 namespace forcefield
 {
+using namespace sofa::defaulttype;
 
 template<class DataTypes>
 class JointSpring

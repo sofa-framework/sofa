@@ -52,7 +52,6 @@
 #include <sofa/simulation/common/Node.h>
 
 #include <sofa/component/linearsolver/FullVector.h>
-using namespace sofa::component::linearsolver;
 
 namespace sofa
 {
@@ -63,6 +62,7 @@ namespace component
 namespace interactionforcefield
 {
 
+using namespace sofa::component::linearsolver;
 
 template<class DataTypes1, class DataTypes2>
 void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::init()

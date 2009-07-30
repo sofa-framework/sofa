@@ -37,8 +37,6 @@
 
 #include "sofa/component/container/MechanicalObject.h"
 #include "sofa/component/mapping/BarycentricMapping.h"
-using namespace sofa::component::mapping;
-using namespace sofa::component;
 
 #include <PhysicalModel.h>
 #include <MultiComponent.h>
@@ -53,6 +51,8 @@ namespace filemanager
 
 namespace pml
 {
+using namespace sofa::component::mapping;
+using namespace sofa::component;
 
 PMLMappedBody::PMLMappedBody(StructuralComponent* body, PMLBody* fromBody, GNode * parent)
 {

@@ -36,10 +36,6 @@
 #include <set>
 
 
-
-using std::set;
-
-
 namespace sofa
 {
 
@@ -48,6 +44,10 @@ namespace component
 
 namespace forcefield
 {
+
+
+using std::set;
+
 
 using namespace sofa::defaulttype;
 

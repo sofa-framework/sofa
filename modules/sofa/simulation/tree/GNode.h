@@ -35,8 +35,6 @@
 #include <iostream>
 
 
-using std::cout;
-using std::endl;
 
 namespace sofa
 {
@@ -50,6 +48,8 @@ class MutationListener;
 namespace tree
 {
 
+using std::cout;
+using std::endl;
 
 /** Define the structure of the scene. Contains (as pointer lists) Component objects and children GNode objects.
 */

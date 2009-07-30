@@ -25,14 +25,14 @@
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/Node.h>
 #include <iostream>
-using std::cerr;
-using std::endl;
 
 namespace sofa
 {
 
 namespace simulation
 {
+using std::cerr;
+using std::endl;
 //Max size for vector to be allowed to be dumped
 #define DUMP_VISITOR_MAX_SIZE_VECTOR 20
 

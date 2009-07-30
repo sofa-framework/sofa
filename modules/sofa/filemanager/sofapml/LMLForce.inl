@@ -28,7 +28,6 @@
 #include "LMLForce.h"
 #include <sofa/core/componentmodel/behavior/ForceField.inl>
 #include <sofa/helper/gl/template.h>
-using namespace sofa::helper::gl;
 
 
 namespace sofa
@@ -40,6 +39,7 @@ namespace filemanager
 namespace pml
 {
 
+using namespace sofa::helper::gl;
 
 template<class DataTypes>
 LMLForce<DataTypes>::LMLForce(Loads* loadsList, const map<unsigned int, unsigned int> &atomIndexToDOFIndex, MechanicalState<DataTypes> *mm)

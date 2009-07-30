@@ -26,14 +26,14 @@
 #include <sofa/simulation/common/Node.h>
 #include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
 #include <iostream>
-using std::cerr;
-using std::endl;
 
 namespace sofa
 {
 
 namespace simulation
 {
+using std::cerr;
+using std::endl;
 
 simulation::Visitor::Result InitGnuplotVisitor::processNodeTopDown(simulation::Node* node)
 {

@@ -65,7 +65,6 @@
 #include <sofa/simulation/common/common.h>
 #include <sofa/simulation/common/MutationListener.h>
 #include <sofa/simulation/common/VisitorScheduler.h>
-using sofa::simulation::VisitorScheduler;
 namespace sofa
 {
 namespace simulation
@@ -74,6 +73,7 @@ class Visitor;
 }
 }
 using sofa::simulation::Visitor;
+using sofa::simulation::VisitorScheduler;
 
 #include <sofa/helper/system/thread/CTime.h>
 #include <string>

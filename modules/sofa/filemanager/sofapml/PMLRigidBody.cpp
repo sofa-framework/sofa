@@ -49,11 +49,6 @@
 //#include "sofa/component/collision/LineModel.h"
 //#include "sofa/component/collision/PointModel.h"
 //using namespace sofa::component::GL;
-using namespace sofa::component;
-using namespace sofa::component::mapping;
-using namespace sofa::component::collision;
-using namespace sofa::component::mass;
-using namespace sofa::component::topology;
 //using namespace sofa::Core;
 
 
@@ -65,6 +60,11 @@ namespace filemanager
 
 namespace pml
 {
+using namespace sofa::component;
+using namespace sofa::component::mapping;
+using namespace sofa::component::collision;
+using namespace sofa::component::mass;
+using namespace sofa::component::topology;
 
 PMLRigidBody::PMLRigidBody(StructuralComponent* body, GNode * parent)
 {

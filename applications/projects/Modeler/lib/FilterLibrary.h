@@ -40,8 +40,6 @@
 #endif
 
 
-using sofa::core::ComponentLibrary;
-
 namespace sofa
 {
 
@@ -50,6 +48,8 @@ namespace gui
 
 namespace qt
 {
+
+using sofa::core::ComponentLibrary;
 
 
 class FilterQuery

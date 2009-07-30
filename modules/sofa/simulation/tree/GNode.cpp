@@ -27,8 +27,6 @@
 #include <sofa/simulation/common/DesactivatedNodeVisitor.h>
 #include <iostream>
 
-using std::cerr;
-using std::endl;
 
 namespace sofa
 {
@@ -38,6 +36,9 @@ namespace simulation
 
 namespace tree
 {
+
+using std::cerr;
+using std::endl;
 
 using helper::system::thread::CTime;
 using namespace sofa::core::objectmodel;

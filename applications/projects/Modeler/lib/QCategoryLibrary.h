@@ -37,9 +37,6 @@
 #include <qlayout.h>
 #endif
 
-using sofa::core::CategoryLibrary;
-using sofa::core::ComponentLibrary;
-
 namespace sofa
 {
 
@@ -49,6 +46,9 @@ namespace gui
 namespace qt
 {
 
+
+using sofa::core::CategoryLibrary;
+using sofa::core::ComponentLibrary;
 
 typedef sofa::core::ObjectFactory::ClassEntry ClassEntry;
 

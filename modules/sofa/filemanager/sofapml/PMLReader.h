@@ -49,7 +49,6 @@
 #include "sofapml.h"
 
 #include <sofa/simulation/tree/GNode.h>
-using namespace sofa::simulation::tree;
 
 namespace sofa
 {
@@ -60,6 +59,7 @@ namespace filemanager
 namespace pml
 {
 
+using namespace sofa::simulation::tree;
 
 class SOFA_BUILD_FILEMANAGER_PML_API PMLReader
 {

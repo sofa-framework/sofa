@@ -33,7 +33,6 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 
-using namespace sofa::defaulttype;
 
 namespace sofa
 {
@@ -47,6 +46,7 @@ namespace fem
 namespace material
 {
 
+using namespace sofa::defaulttype;
 /**
  * Generic material class
  */

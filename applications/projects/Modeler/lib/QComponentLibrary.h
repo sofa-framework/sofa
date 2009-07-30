@@ -43,7 +43,6 @@
 #endif
 
 
-using sofa::core::ComponentLibrary;
 namespace sofa
 {
 
@@ -53,6 +52,7 @@ namespace gui
 namespace qt
 {
 
+using sofa::core::ComponentLibrary;
 typedef sofa::core::ObjectFactory::ClassEntry ClassEntry;
 
 class QComponentLibrary : virtual public QWidget, public ComponentLibrary

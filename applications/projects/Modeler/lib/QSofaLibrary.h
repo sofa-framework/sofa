@@ -39,8 +39,6 @@
 #endif
 
 
-using sofa::core::SofaLibrary;
-using sofa::core::CategoryLibrary;
 
 namespace sofa
 {
@@ -50,6 +48,9 @@ namespace gui
 
 namespace qt
 {
+
+using sofa::core::SofaLibrary;
+using sofa::core::CategoryLibrary;
 
 typedef sofa::core::ObjectFactory::ClassEntry ClassEntry;
 

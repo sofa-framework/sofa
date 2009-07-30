@@ -36,7 +36,6 @@
 
 #include "sofa/component/container/MechanicalObject.h"
 #include "sofa/component/forcefield/StiffSpringForceField.h"
-using namespace sofa::component::forcefield;
 
 #include <PhysicalModel.h>
 #include <MultiComponent.h>
@@ -52,6 +51,7 @@ namespace filemanager
 namespace pml
 {
 
+using namespace sofa::component::forcefield;
 PMLInteractionForceField::PMLInteractionForceField(StructuralComponent* body, PMLBody* b1, PMLBody* b2, GNode * parent)
 {
     parentNode = parent;

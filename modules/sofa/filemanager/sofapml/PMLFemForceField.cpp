@@ -41,12 +41,6 @@
 #include <sofa/component/mass/DiagonalMass.h>
 #include <sofa/component/mapping/IdentityMapping.h>
 #include <sofa/component/topology/MeshTopology.h>
-using namespace sofa::component::mass;
-using namespace sofa::component::mapping;
-using namespace sofa::component::forcefield;
-using namespace sofa::component::topology;
-using namespace sofa::component;
-
 #include <PhysicalModel.h>
 #include <MultiComponent.h>
 #include <CellProperties.h>
@@ -60,6 +54,12 @@ namespace filemanager
 
 namespace pml
 {
+
+using namespace sofa::component::mass;
+using namespace sofa::component::mapping;
+using namespace sofa::component::forcefield;
+using namespace sofa::component::topology;
+using namespace sofa::component;
 
 PMLFemForceField::PMLFemForceField(StructuralComponent* body, GNode * parent)
 {
