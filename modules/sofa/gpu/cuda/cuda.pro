@@ -141,7 +141,8 @@ HEADERS += \
        	CudaHexahedronTLEDForceField.h \
 		CudaTetrahedronSuperTLEDForceField.h \
        	CudaUncoupledConstraintCorrection.h \
-		CudaRasterizer.h 
+		CudaRasterizer.h \
+		CudaLDIMultiPenalityContactForceField.h
 		
 SOURCES += \
         CudaBTDLinearSolver.cpp  \
@@ -157,7 +158,8 @@ SOURCES += \
        	CudaHexahedronTLEDForceField.cpp \
 		CudaTetrahedronSuperTLEDForceField.cpp \
        	CudaUncoupledConstraintCorrection.cpp \
-       	CudaRasterizer.cpp
+       	CudaRasterizer.cpp \
+	CudaLDIMultiPenalityContactForceField.cpp
 
 CUDA_SOURCES += \
 	   	CudaLCP.cu \
