@@ -170,7 +170,7 @@ protected:
     sofa::core::objectmodel::DataFileName texturename;
     Data< Vector3 > translation;
     Data< Vector3 > rotation;
-    Data< SReal > scale;
+    Data< Vector3 > scale;
 
     Data< TexCoord >  scaleTex;
     Data< TexCoord >  translationTex;
@@ -204,7 +204,7 @@ public:
     //Apply Rotation from Euler angles (in degree!)
     void applyRotation (const double rx, const double ry, const double rz);
     void applyRotation(const Quat q);
-    void applyScale(const double s);
+    void applyScale(const double sx, const double sy, const double sz);
     virtual void applyUVTransformation();
     void applyUVTranslation(const double dU, const double dV);
     void applyUVScale(const double su, const double sv);
@@ -214,7 +214,7 @@ public:
     void setFilename(std::string s) {fileMesh.setValue(s);}
     void setTranslation(double dx,double dy,double dz) {translation.setValue(Vector3(dx,dy,dz));};
     void setRotation(double rx,double ry,double rz) {rotation.setValue(Vector3(rx,ry,rz));};
-    void setScale(double s) {scale.setValue(s);};
+    void setScale(double sx, double sy, double sz) {scale.setValue(Vector3(sx,sy,sz));};
 
     std::string getFilename() {return fileMesh.getValue();}
 
