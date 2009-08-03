@@ -106,6 +106,20 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
     {
         translation.setValue(Vector3((SReal)atof(arg->getAttribute("dx","0.0")), (SReal)atof(arg->getAttribute("dy","0.0")), (SReal)atof(arg->getAttribute("dz","0.0"))));
     }
+
+    if (arg->getAttribute("scale")!=NULL)
+    {
+        scale.setValue(Vector3((SReal)atof(arg->getAttribute("scale","0.0")), (SReal)atof(arg->getAttribute("scale","0.0")), (SReal)atof(arg->getAttribute("scale","0.0"))));
+    }
+    else
+    {
+        if (arg->getAttribute("sx")!=NULL || arg->getAttribute("sy")!=NULL || arg->getAttribute("sz")!=NULL)
+        {
+            scale.setValue(Vector3((SReal)atof(arg->getAttribute("sx","1.0")), (SReal)atof(arg->getAttribute("sy","1.0")), (SReal)atof(arg->getAttribute("sz","1.0"))));
+        }
+        std::cout << scale.getValue() << std::endl;
+    }
+
 }
 
 SOFA_DECL_CLASS(VisualModelImpl)
@@ -125,10 +139,10 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
        field_triangles   (initDataPtr(&field_triangles, &triangles,"triangles" ,  "triangles of the model") ),
        field_quads       (initDataPtr(&field_quads, &quads,   "quads",    "quads of the model") ),
        fileMesh          (initData   (&fileMesh,    "fileMesh","Path to the model")),
-       texturename       (initData                            (&texturename, "texturename","Name of the Texture")),
+       texturename       (initData   (&texturename, "texturename","Name of the Texture")),
        translation       (initData   (&translation, Vector3(), "translation", "Initial Translation of the object")),
        rotation          (initData   (&rotation, Vector3(), "rotation", "Initial Rotation of the object")),
-       scale             (initData   (&scale, (SReal)(1.0), "scale", "Initial Scale of the object")),
+       scale             (initData   (&scale, Vector3(), "scales", "Initial Scale of the object")),
        scaleTex          (initData   (&scaleTex, TexCoord(1.0,1.0), "scaleTex", "Scale of the texture")),
        translationTex    (initData   (&translationTex, TexCoord(1.0,1.0), "translationTex", "Translation of the texture")),
        material(initData(&material,"material","Material")), // tex(NULL)
@@ -416,12 +430,14 @@ void VisualModelImpl::applyRotation(const Quat q)
     updateVisual();
 }
 
-void VisualModelImpl::applyScale(const double scale)
+void VisualModelImpl::applyScale(const double sx, const double sy, const double sz)
 {
     VecCoord& x = *getVecX();
     for (unsigned int i = 0; i < x.size(); i++)
     {
-        x[i] *= (GLfloat) scale;
+        x[i][0] *= (GLfloat) sx;
+        x[i][1] *= (GLfloat) sy;
+        x[i][2] *= (GLfloat) sz;
     }
     updateVisual();
 }
@@ -462,15 +478,14 @@ void VisualModelImpl::init()
     field_triangles.beginEdit();
     field_quads.beginEdit();
 
-
-    applyScale(scale.getValue());
+    applyScale(scale.getValue()[0], scale.getValue()[1], scale.getValue()[2]);
     applyRotation(rotation.getValue()[0],rotation.getValue()[1],rotation.getValue()[2]);
     applyTranslation(translation.getValue()[0],translation.getValue()[1],translation.getValue()[2]);
 
 
     translation.setValue(Vector3());
     rotation.setValue(Vector3());
-    scale.setValue((SReal)1.0);
+    scale.setValue(Vector3());
     VisualModel::init();
     updateVisual();
 }

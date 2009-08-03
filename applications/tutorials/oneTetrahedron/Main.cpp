@@ -116,7 +116,7 @@ int main(int argc, char** argv)
     visual->setName( "visual" );
     visual->load(sofa::helper::system::DataRepository.getFile("mesh/liver-smooth.obj"), "", "");
     visual->setColor("red");
-    visual->applyScale(0.7);
+    visual->applyScale(0.7, 0.7, 0.7);
     visual->applyTranslation(1.2, 0.8, 0);
     skin->addObject(visual);
 
