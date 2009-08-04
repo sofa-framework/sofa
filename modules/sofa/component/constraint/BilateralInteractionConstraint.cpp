@@ -157,7 +157,7 @@ void BilateralInteractionConstraint<Rigid3dTypes>::getConstraintValue(defaulttyp
         Coord dof2 = (*this->object2->getXfree())[m2.getValue()];
 
         dfree.getVCenter() = dof2.getCenter() - dof1.getCenter();
-        dfree.getVOrientation() = q.angularDisplacement(dof2.getOrientation() , dof1.getOrientation()) ;
+        dfree.getVOrientation() =  dof1.rotate(q.angularDisplacement(dof2.getOrientation() , dof1.getOrientation())) ;
     }
     //std::cout << q.axisToQuat(Vec3f(0,0,1),-M_PI/2) << std::endl;
 
@@ -256,7 +256,7 @@ void BilateralInteractionConstraint<Rigid3fTypes>::getConstraintValue(defaulttyp
         Coord dof2 = (*this->object2->getXfree())[m1.getValue()];
 
         dfree.getVCenter() = dof2.getCenter() - dof1.getCenter();
-        dfree.getVOrientation() = Quaternion().angularDisplacement(dof2.getOrientation() , dof1.getOrientation()) ;
+        dfree.getVOrientation() =  dof1.rotate(q.angularDisplacement(dof2.getOrientation() , dof1.getOrientation())) ;
     }
 
     for (unsigned int i=0 ; i<dfree.size() ; i++)
