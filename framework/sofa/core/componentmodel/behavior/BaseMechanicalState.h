@@ -444,6 +444,8 @@ public:
     virtual void setC(VecId v) = 0;
 
 
+    /// new: get the size of the vecconst (used when mapping constraints)
+    virtual unsigned int getCSize() const = 0;
 
     /// new : get compliance on the constraints
     virtual void getCompliance(double ** /*w*/) { }

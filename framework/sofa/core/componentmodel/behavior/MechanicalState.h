@@ -153,6 +153,7 @@ public:
     /// Return a VecConst given its index, or NULL if it does not exists
     virtual const VecConst* getVecConst(unsigned int index) const = 0;
 
+    virtual unsigned int getCSize() const { return getC()->size(); }
 
     /// Get the indices of the particles located in the given bounding box
     virtual void getIndicesInSpace(sofa::helper::vector<unsigned>& /*indices*/, Real /*xmin*/, Real /*xmax*/,Real /*ymin*/, Real /*ymax*/, Real /*zmin*/, Real /*zmax*/) const=0;
