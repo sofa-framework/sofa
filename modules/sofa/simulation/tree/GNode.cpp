@@ -480,6 +480,15 @@ void GNode::addTime(ctime_t t, const std::string& s, core::objectmodel::BaseObje
     objectTime[s][parent].tObject -= t;
 }
 
+/// Log time spent given a start time, an action category, and the concerned object
+Node::ctime_t GNode::endTime(ctime_t t0, const std::string& s, core::objectmodel::BaseObject* obj, core::objectmodel::BaseObject* parent)
+{
+    if (!getLogTime()) return 0;
+    const ctime_t t1 = CTime::getTime();
+    const ctime_t t = t1 - t0;
+    addTime(t, s, obj, parent);
+    return t1;
+}
 
 SOFA_DECL_CLASS(GNode)
 

@@ -951,6 +951,7 @@ void RealGUI::fileOpen ( std::string filename )
 
     if ( viewer->getScene() !=NULL )
     {
+        viewer->getPickHandler()->activateRay(false);
         simulation::getSimulation()->unload ( viewer->getScene() );
         if ( graphListener!=NULL )
         {
@@ -1092,16 +1093,16 @@ void RealGUI::setScene ( Node* root, const char* filename, bool temporaryFile )
     if (root)
     {
         // set state of display flags
-        displayFlag->setFlag(DisplayFlagWidget::VISUAL,root->getContext()->getShowVisualModels());
-        displayFlag->setFlag(DisplayFlagWidget::BEHAVIOR,root->getContext()->getShowBehaviorModels());
-        displayFlag->setFlag(DisplayFlagWidget::COLLISION,root->getContext()->getShowCollisionModels());
-        displayFlag->setFlag(DisplayFlagWidget::BOUNDING,root->getContext()->getShowBoundingCollisionModels());
-        displayFlag->setFlag(DisplayFlagWidget::MAPPING,root->getContext()->getShowMappings());
-        displayFlag->setFlag(DisplayFlagWidget::MECHANICALMAPPING,root->getContext()->getShowMechanicalMappings());
-        displayFlag->setFlag(DisplayFlagWidget::FORCEFIELD,root->getContext()->getShowForceFields());
-        displayFlag->setFlag(DisplayFlagWidget::INTERACTION,root->getContext()->getShowInteractionForceFields());
-        displayFlag->setFlag(DisplayFlagWidget::WIREFRAME,root->getContext()->getShowWireFrame());
-        displayFlag->setFlag(DisplayFlagWidget::NORMALS,root->getContext()->getShowNormals());
+        displayFlag->setFlag(Node::VISUALMODELS,root->getContext()->getShowVisualModels());
+        displayFlag->setFlag(Node::BEHAVIORMODELS,root->getContext()->getShowBehaviorModels());
+        displayFlag->setFlag(Node::COLLISIONMODELS,root->getContext()->getShowCollisionModels());
+        displayFlag->setFlag(Node::BOUNDINGCOLLISIONMODELS,root->getContext()->getShowBoundingCollisionModels());
+        displayFlag->setFlag(Node::MAPPINGS,root->getContext()->getShowMappings());
+        displayFlag->setFlag(Node::MECHANICALMAPPINGS,root->getContext()->getShowMechanicalMappings());
+        displayFlag->setFlag(Node::FORCEFIELDS,root->getContext()->getShowForceFields());
+        displayFlag->setFlag(Node::INTERACTIONFORCEFIELDS,root->getContext()->getShowInteractionForceFields());
+        displayFlag->setFlag(Node::WIREFRAME,root->getContext()->getShowWireFrame());
+        displayFlag->setFlag(Node::NORMALS,root->getContext()->getShowNormals());
 
         //simulation::getSimulation()->updateVisualContext ( root );
         startButton->setOn ( root->getContext()->getAnimate() );
@@ -2079,7 +2080,7 @@ void RealGUI::showhideElements(int FILTER, bool value)
     {
         switch(FILTER)
         {
-        case DisplayFlagWidget::ALL:
+        case Node::ALLFLAGS:
             root->getContext()->setShowVisualModels ( value );
             root->getContext()->setShowBehaviorModels ( value );
             root->getContext()->setShowCollisionModels ( value );
@@ -2089,16 +2090,16 @@ void RealGUI::showhideElements(int FILTER, bool value)
             root->getContext()->setShowForceFields ( value );
             root->getContext()->setShowInteractionForceFields ( value );
             break;
-        case  DisplayFlagWidget::VISUAL:            root->getContext()->setShowVisualModels ( value ); break;
-        case  DisplayFlagWidget::BEHAVIOR:          root->getContext()->setShowBehaviorModels ( value ); break;
-        case  DisplayFlagWidget::COLLISION:         root->getContext()->setShowCollisionModels ( value ); break;
-        case  DisplayFlagWidget::BOUNDING:          root->getContext()->setShowBoundingCollisionModels ( value );  break;
-        case  DisplayFlagWidget::MAPPING:           root->getContext()->setShowMappings ( value ); break;
-        case  DisplayFlagWidget::MECHANICALMAPPING: root->getContext()->setShowMechanicalMappings ( value ); break;
-        case  DisplayFlagWidget::FORCEFIELD:        root->getContext()->setShowForceFields ( value ); break;
-        case  DisplayFlagWidget::INTERACTION:       root->getContext()->setShowInteractionForceFields ( value ); break;
-        case  DisplayFlagWidget::WIREFRAME:         root->getContext()->setShowWireFrame ( value ); break;
-        case  DisplayFlagWidget::NORMALS:           root->getContext()->setShowNormals ( value ); break;
+        case  Node::VISUALMODELS:            root->getContext()->setShowVisualModels ( value ); break;
+        case  Node::BEHAVIORMODELS:          root->getContext()->setShowBehaviorModels ( value ); break;
+        case  Node::COLLISIONMODELS:         root->getContext()->setShowCollisionModels ( value ); break;
+        case  Node::BOUNDINGCOLLISIONMODELS: root->getContext()->setShowBoundingCollisionModels ( value );  break;
+        case  Node::MAPPINGS:                root->getContext()->setShowMappings ( value ); break;
+        case  Node::MECHANICALMAPPINGS:      root->getContext()->setShowMechanicalMappings ( value ); break;
+        case  Node::FORCEFIELDS:             root->getContext()->setShowForceFields ( value ); break;
+        case  Node::INTERACTIONFORCEFIELDS:  root->getContext()->setShowInteractionForceFields ( value ); break;
+        case  Node::WIREFRAME:               root->getContext()->setShowWireFrame ( value ); break;
+        case  Node::NORMALS:                 root->getContext()->setShowNormals ( value ); break;
         }
         sofa::simulation::getSimulation()->updateVisualContext ( root, (simulation::Node::VISUAL_FLAG) FILTER );
     }

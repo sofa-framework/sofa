@@ -70,7 +70,7 @@ typename BarycentricContactMapper<TCollisionModel,DataTypes>::MMechanicalState* 
         return NULL;
     }
     simulation::Node* child = simulation::getSimulation()->newNode(name);
-    parent->addChild(child); child->updateSimulationContext();
+    parent->addChild(child); child->updateContext();
     MMechanicalState* mstate = new MMechanicalObject; child->addObject(mstate);
     mstate->useMask.setValue(true);
     //mapping = new MMapping(model->getMechanicalState(), mstate, model->getMeshTopology());
