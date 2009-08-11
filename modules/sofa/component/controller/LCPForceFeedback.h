@@ -25,6 +25,7 @@
 #ifndef SOFA_COMPONENT_CONTROLLER_LCPFORCEFEEDBACK_H
 #define SOFA_COMPONENT_CONTROLLER_LCPFORCEFEEDBACK_H
 
+#include <sofa/component/component.h>
 #include <sofa/component/controller/ForceFeedback.h>
 #include <sofa/component/container/MechanicalObject.h>
 
@@ -46,7 +47,7 @@ using namespace std;
 /**
 * Omni driver force field
 */
-class LCPForceFeedback : public sofa::component::controller::ForceFeedback
+class SOFA_COMPONENT_CONTROLLER_API LCPForceFeedback : public sofa::component::controller::ForceFeedback
 {
 
 public:
