@@ -105,6 +105,7 @@ void ArticulatedHierarchyContainer::buildCenterArticulationsTree(sofa::helper::i
 
     simulation::Node* nodeOfArticulationCenters = simulation::getSimulation()->newNode(str);
     node->addChild(nodeOfArticulationCenters);
+    nodeOfArticulationCenters->updateContext();
 
     ArticulationCenter* ac = new ArticulationCenter();
     nodeOfArticulationCenters->addObject(ac);
@@ -117,6 +118,7 @@ void ArticulatedHierarchyContainer::buildCenterArticulationsTree(sofa::helper::i
 
     simulation::Node* nodeOfArticulations = simulation::getSimulation()->newNode("articulations");
     nodeOfArticulationCenters->addChild(nodeOfArticulations);
+    nodeOfArticulations->updateContext();
 
     sofa::helper::io::bvh::BVHChannels* channels = bvhjoint->getChannels();
     sofa::helper::io::bvh::BVHMotion* motion = bvhjoint->getMotion();
@@ -225,6 +227,7 @@ void ArticulatedHierarchyContainer::init ()
     {
         simulation::Node* articulationCenters = simulation::getSimulation()->newNode("ArticulationCenters");
         context->addChild(articulationCenters);
+        articulationCenters->updateContext();
 
         buildCenterArticulationsTree(joint, 0, "Root", articulationCenters);
 

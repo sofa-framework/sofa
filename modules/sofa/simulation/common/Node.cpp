@@ -533,20 +533,19 @@ void Node::initialize()
 
 void Node::updateContext()
 {
-
-    for ( unsigned i=0; i<contextObject.size(); ++i )
-    {
-        contextObject[i]->init();
-        contextObject[i]->apply();
-        //cerr<<"Node::updateContext, modified by node = "<<contextObject[i]->getName()<<endl;
-    }
-
+    updateSimulationContext();
+    updateVisualContext();
     if ( debug_ ) std::cerr<<"Node::updateContext, node = "<<getName()<<", updated context = "<< *static_cast<core::objectmodel::Context*>(this) << endl;
 }
 
 void Node::updateSimulationContext()
 {
-//   std::cerr << "updateSimulationContext() in sofa::simulation::Node does Nothing!" << std::endl;
+    for ( unsigned i=0; i<contextObject.size(); ++i )
+    {
+        contextObject[i]->init();
+        contextObject[i]->apply();
+//       cerr<<"Node::updateContext, modified by node = "<<contextObject[i]->getName()<<endl;
+    }
 }
 
 void Node::updateVisualContext(VISUAL_FLAG/* FILTER*/)

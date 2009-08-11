@@ -47,6 +47,7 @@ void ComponentMouseInteraction::init(Node* node)
 void ComponentMouseInteraction::activate()
 {
     parentNode->addChild(nodeRayPick);
+    nodeRayPick->updateContext();
 }
 
 void ComponentMouseInteraction::deactivate()

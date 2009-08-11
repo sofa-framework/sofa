@@ -182,6 +182,7 @@ void MouseInteractor<DataTypes>::doFixParticle(const BodyPicked& picked, double 
     nodeFixation->addObject(distanceForceField);
 
     nodeCollision->addChild(nodeFixation);
+    nodeFixation->updateContext();
     mstateFixation->init();
     fixFixation->init();
     distanceForceField->init();
