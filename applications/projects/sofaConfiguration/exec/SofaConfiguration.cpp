@@ -329,8 +329,9 @@ void SofaConfiguration::saveConfiguration()
         //listDir.push_back(QString("/extlibs"));
 
         std::set< QWidget *>::iterator it;
+        std::cout << "Touch file containing option :";
         for (it=optionsModified.begin(); it!=optionsModified.end(); it++)
-            std::cout << "Touch file containing option \"" <<(*it)->name() << "\" ";
+            std::cout << "\"" << (*it)->name() << "\" ";
         std::cout << "in [ ";
         for (unsigned int i=0; i<listDir.size(); ++i)
             std::cout << listDir[i].ascii() << " ";

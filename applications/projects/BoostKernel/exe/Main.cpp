@@ -35,12 +35,12 @@
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/gui/SofaGUI.h>
-
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glut.h>
 #include <sofa/helper/system/atomic.h>
 
 #include <sofa/core/ObjectFactory.h>
+
 
 #ifndef WIN32
 #include <dlfcn.h>
@@ -84,7 +84,6 @@ int main(int argc, char** argv)
     std::string dimension="800x600";
     bool fullScreen = false;
 
-
     std::string gui = sofa::gui::SofaGUI::GetGUIName();
     std::vector<std::string> plugins;
     std::vector<std::string> files;
@@ -104,11 +103,13 @@ int main(int argc, char** argv)
     .option(&temporaryFile,'t',"temporary","the loaded scene won't appear in history of opened files")
     (argc,argv);
 
-    if(gui!="batch")
-        glutInit(&argc,argv);
+    if(gui!="batch") glutInit(&argc,argv);
+
+    sofa::simulation::setSimulation(new sofa::simulation::bgl::BglSimulation());
     sofa::component::init();
-    sofa::simulation::setSimulation(new sofa::simulation::bgl::BglSimulation);
     sofa::simulation::tree::xml::initXml();
+
+
 
     sofa::core::ObjectFactory::ClassEntry* classDefaultCollisionGroupManager;
     sofa::core::ObjectFactory::ClassEntry* classCollisionGroup;
@@ -119,59 +120,46 @@ int main(int argc, char** argv)
 
 
 
-
-
     if (!files.empty()) fileName = files[0];
 
     for (unsigned int i=0; i<plugins.size(); i++)
         loadPlugin(plugins[i].c_str());
 
-    if (printFactory)
-    {
-        std::cout << "////////// FACTORY //////////" << std::endl;
-        sofa::helper::printFactoryLog();
-        std::cout << "//////// END FACTORY ////////" << std::endl;
-    }
 
     if (int err=sofa::gui::SofaGUI::Init(argv[0],gui.c_str()))
         return err;
 
-    sofa::simulation::bgl::BglNode* groot = NULL;
-
     if (fileName.empty())
     {
-        fileName = "Demos/liver.scn";
-
         if (loadRecent) // try to reload the latest scene
         {
             std::string scenes = "config/Sofa.ini";
-            sofa::helper::system::DataRepository.findFile( scenes );
+            scenes = sofa::helper::system::DataRepository.getFile( scenes );
             std::ifstream mrulist(scenes.c_str());
             std::getline(mrulist,fileName);
             mrulist.close();
         }
-        sofa::helper::system::DataRepository.findFile(fileName);
+        else
+            fileName = "Demos/liver.scn";
+
+        fileName = sofa::helper::system::DataRepository.getFile(fileName);
     }
 
-    if (int err=sofa::gui::SofaGUI::createGUI(groot))
+
+    if (int err=sofa::gui::SofaGUI::createGUI(NULL))
         return err;
 
-    std::string in_filename(fileName);
-    if (in_filename.rfind(".simu") == std::string::npos)
-    {
-        sofa::simulation::getSimulation()->unload ( groot);
-        groot = dynamic_cast<sofa::simulation::bgl::BglNode*>( sofa::simulation::getSimulation()->load(fileName.c_str()));
-        sofa::simulation::bgl::getSimulation()->init(groot);
-        if(sofa::gui::SofaGUI::CurrentGUI())
-            sofa::gui::SofaGUI::CurrentGUI()->setScene(groot,fileName.c_str(), temporaryFile);
-    }
+    sofa::simulation::bgl::BglNode* groot = dynamic_cast<sofa::simulation::bgl::BglNode*>( sofa::simulation::bgl::getSimulation()->load(fileName.c_str()));
+    if (groot==NULL)  groot = new sofa::simulation::bgl::BglNode;
 
-    if (startAnim)
-        groot->setAnimate(true);
+    sofa::simulation::bgl::getSimulation()->init(groot);
+    sofa::gui::SofaGUI::CurrentGUI()->setScene(groot,fileName.c_str(), temporaryFile);
 
 
     //=======================================
-    // Run the main loop
+    //Apply Options
+
+    if (startAnim)  groot->setAnimate(true);
 
     //Dimension Option
     std::string::size_type separator=dimension.find_first_of('x');
@@ -182,13 +170,22 @@ int main(int argc, char** argv)
         sofa::gui::SofaGUI::CurrentGUI()->setDimension(atoi(stringWidth.c_str()), atoi(stringHeight.c_str()));
     }
 
+    if (printFactory)
+    {
+        std::cout << "////////// FACTORY //////////" << std::endl;
+        sofa::helper::printFactoryLog();
+        std::cout << "//////// END FACTORY ////////" << std::endl;
+    }
+
     if (fullScreen) sofa::gui::SofaGUI::CurrentGUI()->setFullScreen();
+
+    //=======================================
+    // Run the main loop
     if (int err=sofa::gui::SofaGUI::MainLoop(groot,fileName.c_str()))
         return err;
     groot = dynamic_cast<sofa::simulation::bgl::BglNode*>( sofa::gui::SofaGUI::CurrentSimulation() );
 
 
-    if (groot!=NULL)
-        sofa::simulation::bgl::getSimulation()->unload(groot);
+    if (groot!=NULL) sofa::simulation::bgl::getSimulation()->unload(groot);
     return 0;
 }

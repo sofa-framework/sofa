@@ -921,6 +921,11 @@ bool RealGUI::setViewer ( const char* name )
 
 void RealGUI::fileOpen ( std::string filename )
 {
+    if (filename.substr(filename.size()-5) == ".simu")
+    {
+        return fileOpenSimu(filename);
+    }
+
     startButton->setOn(false);
     descriptionScene->hide();
     htmlPage->clear();

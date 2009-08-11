@@ -6,6 +6,7 @@ include($${SOFA_DIR}/sofa.cfg)
 TARGET = runSofa$$SUFFIX
 DESTDIR = $$SOFA_DIR/bin
 CONFIG += $$CONFIGPROJECTGUI 
+
 LIBS += $$SOFA_GUI_LIBS
 LIBS += $$SOFA_LIBS
 

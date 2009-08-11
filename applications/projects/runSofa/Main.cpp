@@ -99,10 +99,10 @@ int main(int argc, char** argv)
     .option(&temporaryFile,'t',"temporary","the loaded scene won't appear in history of opened files")
     (argc,argv);
 
-    if(gui!="batch")
-        glutInit(&argc,argv);
-    sofa::component::init();
+    if(gui!="batch") glutInit(&argc,argv);
+
     sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
+    sofa::component::init();
     sofa::simulation::tree::xml::initXml();
 
     if (!files.empty()) fileName = files[0];
@@ -110,23 +110,12 @@ int main(int argc, char** argv)
     for (unsigned int i=0; i<plugins.size(); i++)
         loadPlugin(plugins[i].c_str());
 
-    if (printFactory)
-    {
-        std::cout << "////////// FACTORY //////////" << std::endl;
-        sofa::helper::printFactoryLog();
-        std::cout << "//////// END FACTORY ////////" << std::endl;
-    }
 
     if (int err=sofa::gui::SofaGUI::Init(argv[0],gui.c_str()))
         return err;
 
-    sofa::simulation::tree::GNode* groot = NULL;
-
-
     if (fileName.empty())
     {
-        fileName = "Demos/liver.scn";
-
         if (loadRecent) // try to reload the latest scene
         {
             std::string scenes = "config/Sofa.ini";
@@ -135,34 +124,27 @@ int main(int argc, char** argv)
             std::getline(mrulist,fileName);
             mrulist.close();
         }
+        else
+            fileName = "Demos/liver.scn";
+
         fileName = sofa::helper::system::DataRepository.getFile(fileName);
     }
-    if (groot==NULL)
-    {
-        groot = new sofa::simulation::tree::GNode;
-        //return 1;
-    }
 
 
-    if (int err=sofa::gui::SofaGUI::createGUI(groot))
+    if (int err=sofa::gui::SofaGUI::createGUI(NULL))
         return err;
 
-    std::string in_filename(fileName);
-    if (in_filename.rfind(".simu") == std::string::npos)
-    {
-        sofa::simulation::tree::getSimulation()->unload ( groot);
-        groot = dynamic_cast<sofa::simulation::tree::GNode*>( sofa::simulation::tree::getSimulation()->load(fileName.c_str()));
-        sofa::simulation::tree::getSimulation()->init(groot);
-        if(sofa::gui::SofaGUI::CurrentGUI())
-            sofa::gui::SofaGUI::CurrentGUI()->setScene(groot,fileName.c_str(), temporaryFile);
-    }
+    sofa::simulation::tree::GNode* groot = dynamic_cast<sofa::simulation::tree::GNode*>( sofa::simulation::tree::getSimulation()->load(fileName.c_str()));
+    if (groot==NULL)  groot = new sofa::simulation::tree::GNode;
 
+    sofa::simulation::tree::getSimulation()->init(groot);
+    sofa::gui::SofaGUI::CurrentGUI()->setScene(groot,fileName.c_str(), temporaryFile);
 
-    if (startAnim)
-        groot->setAnimate(true);
 
     //=======================================
-    // Run the main loop
+    //Apply Options
+
+    if (startAnim)  groot->setAnimate(true);
 
     //Dimension Option
     std::string::size_type separator=dimension.find_first_of('x');
@@ -173,13 +155,22 @@ int main(int argc, char** argv)
         sofa::gui::SofaGUI::CurrentGUI()->setDimension(atoi(stringWidth.c_str()), atoi(stringHeight.c_str()));
     }
 
+    if (printFactory)
+    {
+        std::cout << "////////// FACTORY //////////" << std::endl;
+        sofa::helper::printFactoryLog();
+        std::cout << "//////// END FACTORY ////////" << std::endl;
+    }
+
     if (fullScreen) sofa::gui::SofaGUI::CurrentGUI()->setFullScreen();
+
+    //=======================================
+    // Run the main loop
     if (int err=sofa::gui::SofaGUI::MainLoop(groot,fileName.c_str()))
         return err;
     groot = dynamic_cast<sofa::simulation::tree::GNode*>( sofa::gui::SofaGUI::CurrentSimulation() );
 
 
-    if (groot!=NULL)
-        sofa::simulation::tree::getSimulation()->unload(groot);
+    if (groot!=NULL) sofa::simulation::tree::getSimulation()->unload(groot);
     return 0;
 }
