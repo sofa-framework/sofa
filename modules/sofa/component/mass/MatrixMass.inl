@@ -200,7 +200,7 @@ template <class DataTypes, class MassType>
 void MatrixMass<DataTypes, MassType>::getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const
 {
     MassType mElement=f_mass.getValue()[index];
-    static int dimension=mElement.getNbLines();
+    const int dimension=mElement.getNbLines();
 
     if ((int)m->rowSize() != dimension || (int)m->colSize() != dimension) m->resize(dimension,dimension);
 
