@@ -34,6 +34,7 @@
 
 
 #include <sofa/component/collision/PointModel.h>
+#include <sofa/component/collision/PointLocalMinDistanceFilter.h>
 #include <sofa/component/collision/CubeModel.h>
 #include <sofa/core/ObjectFactory.h>
 #include <vector>
@@ -72,6 +73,7 @@ PointModel::PointModel()
     : mstate(NULL)
     , computeNormals( initData(&computeNormals, false, "computeNormals", "activate computation of normal vectors (required for some collision detection algorithms)") )
     , PointActiverEngine(initData(&PointActiverEngine,"PointActiverEngine", "path of a component PointActiver that activate or desactivate collision point during execution") )
+    , m_lmdFilter( NULL )
 {
 }
 
@@ -89,6 +91,12 @@ void PointModel::init()
     {
         serr<<"ERROR: PointModel requires a Vec3 Mechanical Model" << sendl;
         return;
+    }
+
+    simulation::Node* node = dynamic_cast< simulation::Node* >(this->getContext());
+    if (node != 0)
+    {
+        m_lmdFilter = node->getNodeObject< PointLocalMinDistanceFilter >();
     }
 
     const int npoints = mstate->getX()->size();
@@ -216,6 +224,11 @@ void PointModel::computeBoundingTree(int maxDepth)
             cubeModel->setParentOf(i, pt, pt);
         }
         cubeModel->computeBoundingTree(maxDepth);
+    }
+
+    if (m_lmdFilter != 0)
+    {
+        m_lmdFilter->invalidate();
     }
 }
 
@@ -419,10 +432,16 @@ bool Point::testLMD(const Vector3 &PQ, double &coneFactor, double &coneExtension
 }
 
 
+PointLocalMinDistanceFilter *PointModel::getFilter() const
+{
+    return m_lmdFilter;
+}
 
 
-
-
+void PointModel::setFilter(PointLocalMinDistanceFilter *lmdFilter)
+{
+    m_lmdFilter = lmdFilter;
+}
 
 
 } // namespace collision

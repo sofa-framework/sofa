@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_COLLISION_POINTMODEL_H
 
 #include <sofa/core/CollisionModel.h>
+#include <sofa/component/collision/LocalMinDistanceFilter.h>
 #include <sofa/component/container/MechanicalObject.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec3Types.h>
@@ -43,6 +44,7 @@ namespace collision
 using namespace sofa::defaulttype;
 
 class PointModel;
+class PointLocalMinDistanceFilter;
 
 class Point : public core::TCollisionElementIterator<PointModel>
 {
@@ -105,7 +107,18 @@ public:
 
     //virtual const char* getTypeName() const { return "Point"; }
 
+    PointLocalMinDistanceFilter *getFilter() const;
 
+    //template< class TFilter >
+    //TFilter *getFilter() const
+    //{
+    //	if (m_lmdFilter != 0)
+    //		return m_lmdFilter;
+    //	else
+    //		return &m_emptyFilter;
+    //}
+
+    void setFilter(PointLocalMinDistanceFilter * /*lmdFilter*/);
 
 protected:
 
@@ -116,6 +129,9 @@ protected:
     Data<std::string> PointActiverEngine;
 
     VecDeriv normals;
+
+    PointLocalMinDistanceFilter *m_lmdFilter;
+    EmptyFilter m_emptyFilter;
 
     void updateNormals();
 

@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/collision/LineModel.h>
+#include <sofa/component/collision/LineLocalMinDistanceFilter.h>
 #include <sofa/component/collision/CubeModel.h>
 #include <sofa/component/collision/Line.h>
 #include <sofa/core/CollisionElement.h>
@@ -62,7 +63,7 @@ using core::componentmodel::topology::BaseMeshTopology;
 //;
 
 LineModel::LineModel()
-    : mstate(NULL), topology(NULL), meshRevision(-1)
+    : mstate(NULL), topology(NULL), meshRevision(-1), m_lmdFilter(NULL)
     , LineActiverEngine(initData(&LineActiverEngine,"LineActiverEngine", "path of a component LineActiver that activate or desactivate collision line during execution") )
 {
 }
@@ -93,6 +94,12 @@ void LineModel::init()
     {
         serr << "LineModel requires a Vec3 Mechanical Model" << sendl;
         return;
+    }
+
+    simulation::Node* node = dynamic_cast< simulation::Node* >(this->getContext());
+    if (node != 0)
+    {
+        m_lmdFilter = node->getNodeObject< LineLocalMinDistanceFilter >();
     }
 
     core::componentmodel::topology::BaseMeshTopology *bmt = getContext()->getMeshTopology();
@@ -473,6 +480,11 @@ void LineModel::computeBoundingTree(int maxDepth)
         }
         cubeModel->computeBoundingTree(maxDepth);
     }
+
+    if (m_lmdFilter != 0)
+    {
+        m_lmdFilter->invalidate();
+    }
 }
 
 void LineModel::computeContinuousBoundingTree(double dt, int maxDepth)
@@ -513,6 +525,19 @@ void LineModel::computeContinuousBoundingTree(double dt, int maxDepth)
         cubeModel->computeBoundingTree(maxDepth);
     }
 }
+
+
+LineLocalMinDistanceFilter *LineModel::getFilter() const
+{
+    return m_lmdFilter;
+}
+
+
+void LineModel::setFilter(LineLocalMinDistanceFilter *lmdFilter)
+{
+    m_lmdFilter = lmdFilter;
+}
+
 
 } // namespace collision
 

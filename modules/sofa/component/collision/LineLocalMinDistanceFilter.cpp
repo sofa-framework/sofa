@@ -160,9 +160,15 @@ void LineLocalMinDistanceFilter::init()
         pInfo.resize(bmt->getNbPoints());
         m_pointInfo.endEdit();
 
+        m_pointInfo.setCreateFunction(LMDFilterPointCreationFunction);
+        m_pointInfo.setCreateParameter((void *) this);
+
         helper::vector< LineInfo >& lInfo = *(m_lineInfo.beginEdit());
         lInfo.resize(bmt->getNbEdges());
         m_lineInfo.endEdit();
+
+        m_lineInfo.setCreateFunction(LMDFilterLineCreationFunction);
+        m_lineInfo.setCreateParameter((void *) this);
     }
 }
 

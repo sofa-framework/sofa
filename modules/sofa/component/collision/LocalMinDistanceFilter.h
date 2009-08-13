@@ -169,11 +169,17 @@ public:
      */
     void setRevision(const int revision) {m_revision = revision;};
 
+    /**
+     * @brief Increases LMDFilter revision number to notify a CollisionModel modification.
+     * Corresponding filtrations data should be rebuilt or updated.
+     */
+    void invalidate();
+
 private:
 
     Data< double >	m_coneExtension;	///< Filtering cone extension angle.
     Data< double >	m_coneMinAngle;		///< Minimal filtering cone angle value, independent from geometry.
-    int				m_revision;			///< Simulation step index (CollisionModel revision).
+    unsigned int	m_revision;			///< Simulation step index (CollisionModel revision).
 };
 
 

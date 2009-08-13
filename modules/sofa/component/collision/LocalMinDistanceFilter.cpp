@@ -27,6 +27,8 @@
 
 #include <sofa/core/ObjectFactory.h>
 
+#include <limits>
+
 
 namespace sofa
 {
@@ -41,6 +43,7 @@ namespace collision
 LocalMinDistanceFilter::LocalMinDistanceFilter()
     : m_coneExtension(initData(&m_coneExtension, 0.5, "coneExtension", "Filtering cone extension angle."))
     , m_coneMinAngle(initData(&m_coneMinAngle, 0.0, "coneMinAngle", "Minimal filtering cone angle value, independent from geometry."))
+    , m_revision(0)
 {
 
 }
@@ -50,6 +53,13 @@ LocalMinDistanceFilter::LocalMinDistanceFilter()
 LocalMinDistanceFilter::~LocalMinDistanceFilter()
 {
 
+}
+
+
+
+void LocalMinDistanceFilter::invalidate()
+{
+    m_revision = m_revision < std::numeric_limits< unsigned int >::max() ? m_revision++ : 0;
 }
 
 

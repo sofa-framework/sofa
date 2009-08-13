@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/collision/TriangleModel.h>
+#include <sofa/component/collision/TriangleLocalMinDistanceFilter.h>
 #include <sofa/component/collision/CubeModel.h>
 #include <sofa/component/collision/Triangle.h>
 #include <sofa/component/topology/TriangleData.inl>
@@ -65,6 +66,7 @@ TriangleModel::TriangleModel()
     : mstate(NULL)
     , computeNormals(initData(&computeNormals, true, "computeNormals", "set to false to disable computation of triangles normal"))
     , meshRevision(-1)
+    , m_lmdFilter(NULL)
 {
     triangles = &mytriangles;
 }
@@ -94,6 +96,12 @@ void TriangleModel::init()
     {
         serr << "TriangleModel requires a BaseMeshTopology" << sendl;
         return;
+    }
+
+    simulation::Node* node = dynamic_cast< simulation::Node* >(this->getContext());
+    if (node != 0)
+    {
+        m_lmdFilter = node->getNodeObject< TriangleLocalMinDistanceFilter >();
     }
 
     //sout << "INFO_print : Col - init TRIANGLE " << sendl;
@@ -623,7 +631,9 @@ void TriangleModel::computeBoundingTree(int maxDepth)
 {
     CubeModel* cubeModel = createPrevious<CubeModel>();
     updateFromTopology();
+
     if (needsUpdate && !cubeModel->empty()) cubeModel->resize(0);
+
     if (!isMoving() && !cubeModel->empty() && !needsUpdate) return; // No need to recompute BBox if immobile
 
     needsUpdate=false;
@@ -662,27 +672,27 @@ void TriangleModel::computeBoundingTree(int maxDepth)
 
                     /*for (int c = 0; c < 3; c++)
                     {
-                        if (i==0)
-                        {
-                    	minElem[c] = pt1[c];
-                    	maxElem[c] = pt1[c];
-                        }
-                        else
-                        {
-                    	if (pt1[c] > maxElem[c]) maxElem[c] = pt1[c];
-                    	else if (pt1[c] < minElem[c]) minElem[c] = pt1[c];
-                        }
-                        if (pt2[c] > maxElem[c]) maxElem[c] = pt2[c];
-                        else if (pt2[c] < minElem[c]) minElem[c] = pt2[c];
-                        if (pt3[c] > maxElem[c]) maxElem[c] = pt3[c];
-                        else if (pt3[c] < minElem[c]) minElem[c] = pt3[c];
+                    if (i==0)
+                    {
+                    minElem[c] = pt1[c];
+                    maxElem[c] = pt1[c];
+                    }
+                    else
+                    {
+                    if (pt1[c] > maxElem[c]) maxElem[c] = pt1[c];
+                    else if (pt1[c] < minElem[c]) minElem[c] = pt1[c];
+                    }
+                    if (pt2[c] > maxElem[c]) maxElem[c] = pt2[c];
+                    else if (pt2[c] < minElem[c]) minElem[c] = pt2[c];
+                    if (pt3[c] > maxElem[c]) maxElem[c] = pt3[c];
+                    else if (pt3[c] < minElem[c]) minElem[c] = pt3[c];
                     }*/
 
                     // Also recompute normal vector
                     t.n() = cross(pt2-pt1,pt3-pt1);
                     t.n().normalize();
-
                 }
+
             cubeModel->setLeafCube(0, std::make_pair(this->begin(),this->end()), minElem, maxElem); // define the bounding box of the current triangle
         }
     }
@@ -718,6 +728,11 @@ void TriangleModel::computeBoundingTree(int maxDepth)
             }
             cubeModel->computeBoundingTree(maxDepth);
         }
+    }
+
+    if (m_lmdFilter != 0)
+    {
+        m_lmdFilter->invalidate();
     }
 }
 
@@ -769,6 +784,18 @@ void TriangleModel::computeContinuousBoundingTree(double dt, int maxDepth)
         }
         cubeModel->computeBoundingTree(maxDepth);
     }
+}
+
+
+TriangleLocalMinDistanceFilter *TriangleModel::getFilter() const
+{
+    return m_lmdFilter;
+}
+
+
+void TriangleModel::setFilter(TriangleLocalMinDistanceFilter *lmdFilter)
+{
+    m_lmdFilter = lmdFilter;
 }
 
 
