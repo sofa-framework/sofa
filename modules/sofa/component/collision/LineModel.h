@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_COLLISION_LINEMODEL_H
 
 #include <sofa/core/CollisionModel.h>
+#include <sofa/component/collision/LocalMinDistanceFilter.h>
 #include <sofa/component/container/MechanicalObject.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec3Types.h>
@@ -43,6 +44,7 @@ namespace collision
 using namespace sofa::defaulttype;
 
 class LineModel;
+class LineLocalMinDistanceFilter;
 
 class Line : public core::TCollisionElementIterator<LineModel>
 {
@@ -128,11 +130,25 @@ public:
 
     //virtual const char* getTypeName() const { return "Line"; }
 
+    LineLocalMinDistanceFilter *getFilter() const;
+
+    //template< class TFilter >
+    //TFilter *getFilter() const
+    //{
+    //	if (m_lmdFilter != 0)
+    //		return m_lmdFilter;
+    //	else
+    //		return &m_emptyFilter;
+    //}
+
+    void setFilter(LineLocalMinDistanceFilter * /*lmdFilter*/);
+
 protected:
 
     core::componentmodel::behavior::MechanicalState<Vec3Types>* mstate;
     Topology* topology;
     PointModel* mpoints;
+    LineLocalMinDistanceFilter *m_lmdFilter;
     int meshRevision;
 
     Data<std::string> LineActiverEngine;

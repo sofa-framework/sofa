@@ -86,13 +86,22 @@ void TriangleLocalMinDistanceFilter::init()
         pInfo.resize(bmt->getNbPoints());
         m_pointInfo.endEdit();
 
+        m_pointInfo.setCreateFunction(LMDFilterPointCreationFunction);
+        m_pointInfo.setCreateParameter((void *) this);
+
         helper::vector< LineInfo >& lInfo = *(m_lineInfo.beginEdit());
         lInfo.resize(bmt->getNbEdges());
         m_lineInfo.endEdit();
 
+        m_lineInfo.setCreateFunction(LMDFilterLineCreationFunction);
+        m_lineInfo.setCreateParameter((void *) this);
+
         helper::vector< TriangleInfo >& tInfo = *(m_triangleInfo.beginEdit());
         tInfo.resize(bmt->getNbTriangles());
         m_triangleInfo.endEdit();
+
+        m_triangleInfo.setCreateFunction(LMDFilterTriangleCreationFunction);
+        m_triangleInfo.setCreateParameter((void *) this);
     }
 }
 
