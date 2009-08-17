@@ -148,8 +148,8 @@ protected:
     core::componentmodel::behavior::MechanicalState<Vec3Types>* mstate;
     Topology* topology;
     PointModel* mpoints;
-    LineLocalMinDistanceFilter *m_lmdFilter;
     int meshRevision;
+    LineLocalMinDistanceFilter *m_lmdFilter;
 
     Data<std::string> LineActiverEngine;
 
