@@ -110,12 +110,14 @@ void OglModel::internalDraw()
 
     if(VBOGenDone && useVBO.getValue())
     {
+#ifdef SOFA_HAVE_GLEW
         glBindBuffer(GL_ARRAY_BUFFER, vbo);
 
         glVertexPointer(3, GL_FLOAT, 0, (char*)NULL + 0);
         glNormalPointer(GL_FLOAT, 0, (char*)NULL + (vertices.size()*sizeof(vertices[0])));
 
         glBindBuffer(GL_ARRAY_BUFFER, 0);
+#endif
     }
     else
     {
@@ -134,9 +136,11 @@ void OglModel::internalDraw()
 
         if(VBOGenDone && useVBO.getValue())
         {
+#ifdef SOFA_HAVE_GLEW
             glBindBuffer(GL_ARRAY_BUFFER, vbo);
             glTexCoordPointer(2, GL_FLOAT, 0, (char*)NULL + (vertices.size()*sizeof(vertices[0])) + (vnormals.size()*sizeof(vnormals[0])) );
             glBindBuffer(GL_ARRAY_BUFFER, 0);
+#endif
         }
         else
         {
@@ -162,6 +166,7 @@ void OglModel::internalDraw()
             glMultMatrixf(matrix);
             if(VBOGenDone && useVBO.getValue())
             {
+#ifdef SOFA_HAVE_GLEW
                 if (!triangles.empty())
                 {
                     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
@@ -174,6 +179,7 @@ void OglModel::internalDraw()
                     glDrawElements(GL_QUADS, quads.size() * 4, GL_UNSIGNED_INT, (char*)NULL + 0);
                     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
                 }
+#endif
             }
             else
             {
@@ -205,6 +211,7 @@ void OglModel::internalDraw()
 
         if (VBOGenDone && useVBO.getValue())
         {
+#ifdef SOFA_HAVE_GLEW
             if (!triangles.empty())
             {
                 glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
@@ -217,6 +224,7 @@ void OglModel::internalDraw()
                 glDrawElements(GL_QUADS, quads.size() * 4, GL_UNSIGNED_INT, (char*)NULL + 0);
                 glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
             }
+#endif
         }
         else
         {
@@ -290,12 +298,14 @@ void OglModel::initVisual()
     }
 
     initDone = true;
+#ifdef SOFA_HAVE_GLEW
     //This test is not enough to detect if we can enable the VBO.
     canUseVBO = (GLEW_ARB_vertex_buffer_object!=0);
     if (useVBO.getValue() && !canUseVBO)
     {
         std::cerr << "OglModel : VBO is not supported by your GPU ; will use display list instead" << std::endl;
     }
+#endif
     updateBuffers();
 }
 
@@ -306,7 +316,7 @@ void OglModel::initTextures()
         tex->init();
     }
 }
-
+#ifdef SOFA_HAVE_GLEW
 void OglModel::createVertexBuffer()
 {
 
@@ -420,11 +430,12 @@ void OglModel::updateQuadsIndicesBuffer()
     glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, quads.size()*sizeof(quads[0]), &quads[0]);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
-
+#endif
 void OglModel::updateBuffers()
 {
     if (initDone)
     {
+#ifdef SOFA_HAVE_GLEW
         if (useVBO.getValue() && canUseVBO)
         {
             if(!VBOGenDone)
@@ -468,6 +479,7 @@ void OglModel::updateBuffers()
             oldTrianglesSize = triangles.size();
             oldQuadsSize = quads.size();
         }
+#endif
     }
 
 }

@@ -73,6 +73,7 @@ LightManager::~LightManager()
 void LightManager::init()
 {
     sofa::core::objectmodel::BaseContext* context = this->getContext();
+#ifdef SOFA_HAVE_GLEW
     context->get<sofa::component::visualmodel::OglShadowShader, sofa::helper::vector<sofa::component::visualmodel::OglShadowShader*> >(&shadowShaders, core::objectmodel::BaseContext::SearchDown);
 
     if (shadowShaders.empty())
@@ -84,15 +85,16 @@ void LightManager::init()
 
     for(unsigned int i=0 ; i<shadowShaders.size() ; i++)
         shadowShaders[i]->initShaders(lights.size());
-
+#endif
 }
 
 
 void LightManager::initVisual()
 {
+#ifdef SOFA_HAVE_GLEW
     for(unsigned int i=0 ; i<shadowShaders.size() ; i++)
         shadowShaders[i]->initVisual();
-
+#endif
 
     for (std::vector<Light*>::iterator itl = lights.begin(); itl != lights.end() ; itl++)
     {
@@ -137,6 +139,7 @@ void LightManager::makeShadowMatrix(unsigned int i)
 
 void LightManager::fwdDraw(Pass)
 {
+#ifdef SOFA_HAVE_GLEW
     GLint* lightFlag = new GLint[MAX_NUMBER_OF_LIGHTS];
     GLint* shadowTextureID = new GLint [MAX_NUMBER_OF_LIGHTS];
     GLfloat* lightModelViewProjectionMatrices = new GLfloat [MAX_NUMBER_OF_LIGHTS*16];
@@ -188,10 +191,12 @@ void LightManager::fwdDraw(Pass)
     delete lightFlag;
     delete shadowTextureID;
     delete lightModelViewProjectionMatrices;
+#endif
 }
 
 void LightManager::bwdDraw(Pass)
 {
+#ifdef SOFA_HAVE_GLEW
     if (shadowEnabled.getValue())
         for(unsigned int i=0 ; i<shadowShaders.size() ; i++)
         {
@@ -200,7 +205,7 @@ void LightManager::bwdDraw(Pass)
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, 0);
         }
-
+#endif
 }
 
 void LightManager::draw()
@@ -232,6 +237,7 @@ void LightManager::reinit()
 
 void LightManager::preDrawScene(VisualParameters* vp)
 {
+#ifdef SOFA_HAVE_GLEW
     for (std::vector<Light*>::iterator itl = lights.begin(); itl != lights.end() ; itl++)
     {
         if(shadowEnabled.getValue())
@@ -253,6 +259,7 @@ void LightManager::preDrawScene(VisualParameters* vp)
     }
     //restore viewport
     glViewport(0, 0, vp->viewport[2] , vp->viewport[3]);
+#endif
 }
 
 bool LightManager::drawScene(VisualParameters* /*vp*/)
@@ -274,12 +281,14 @@ void LightManager::handleEvent(sofa::core::objectmodel::Event* event)
 
         case 'l':
         case 'L':
+#ifdef SOFA_HAVE_GLEW
             if (!shadowShaders.empty())
             {
                 bool b = shadowEnabled.getValue();
                 shadowEnabled.setValue(!b);
                 std::cout << "Shadows : "<<(shadowEnabled.getValue()?"ENABLED":"DISABLED")<<std::endl;
             }
+#endif
             break;
         }
     }

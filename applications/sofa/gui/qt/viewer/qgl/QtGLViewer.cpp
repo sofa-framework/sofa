@@ -259,11 +259,11 @@ void QtGLViewer::init(void)
         specref[3] = 1.0f;
 
         // Here we initialize our multi-texturing functions
-#ifdef SOFA_HAVE_GLEW
+#if 0
         glewInit();
         if (!GLEW_ARB_multitexture)
             std::cerr << "Error: GL_ARB_multitexture not supported\n";
-#else
+
         glActiveTextureARB        = (PFNGLACTIVETEXTUREARBPROC)        glewGetProcAddress("glActiveTextureARB");
         glMultiTexCoord2fARB    = (PFNGLMULTITEXCOORD2FARBPROC)        glewGetProcAddress("glMultiTexCoord2fARB");
 
