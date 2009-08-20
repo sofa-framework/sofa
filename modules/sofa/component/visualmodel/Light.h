@@ -30,8 +30,11 @@
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/core/VisualModel.h>
-#include <sofa/helper/gl/FrameBufferObject.h>
 #include <sofa/component/component.h>
+
+#ifdef SOFA_HAVE_GLEW
+#include <sofa/helper/gl/FrameBufferObject.h>
+#endif
 
 namespace sofa
 {
@@ -67,8 +70,9 @@ protected:
     Data<float> zFar;
     Data<GLuint> shadowTextureSize;
 
-
+#ifdef SOFA_HAVE_GLEW
     helper::gl::FrameBufferObject shadowFBO;
+#endif
     GLuint debugVisualShadowTexture;
 
     GLfloat lightMatProj[16];

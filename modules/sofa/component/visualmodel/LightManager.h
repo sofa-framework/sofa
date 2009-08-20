@@ -42,7 +42,10 @@
 #include <sofa/component/visualmodel/Light.h>
 #include <sofa/core/VisualManager.h>
 #include <sofa/core/objectmodel/Event.h>
+
+#ifdef SOFA_HAVE_GLEW
 #include <sofa/component/visualmodel/OglShadowShader.h>
+#endif
 
 namespace sofa
 {
@@ -66,9 +69,10 @@ class SOFA_COMPONENT_VISUALMODEL_API LightManager : public core::VisualManager
 private:
     std::vector<Light*> lights;
     Data<bool> shadowEnabled;
-
+#ifdef SOFA_HAVE_GLEW
     //OglShadowShader* shadowShader;
     helper::vector<OglShadowShader*> shadowShaders;
+#endif
     void makeShadowMatrix(unsigned int i);
 
 public:

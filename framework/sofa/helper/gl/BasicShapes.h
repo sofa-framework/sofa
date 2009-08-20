@@ -28,6 +28,7 @@
 #define SOFA_HELPER_GL_BASICSHAPES_H
 
 #include <sofa/helper/gl/template.h>
+#include <sofa/helper/system/glu.h>
 #include <math.h>
 
 namespace sofa
