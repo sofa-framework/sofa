@@ -219,7 +219,7 @@ void Mesh2PointTopologicalMapping::init()
             }
 
             // hexahedron to point mapping
-            if (!tetraBaryCoords.getValue().empty())
+            if (!hexaBaryCoords.getValue().empty())
             {
                 pointsMappedFrom[HEXA].resize(fromModel->getNbHexahedra());
                 for (int i=0; i<fromModel->getNbHexahedra(); i++)
