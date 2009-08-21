@@ -126,53 +126,53 @@ double ConstantForceField<defaulttype::Rigid2fTypes>::getPotentialEnergy(const V
 template<class DataTypes>
 void ConstantForceField<DataTypes>::draw()
 {
-    /*       if (!getContext()->getShowForceFields()) return;  /// \todo put this in the parent class
-            const VecIndex& indices = points.getValue();
-            const VecDeriv& f = forces.getValue();
-    	const Deriv f_end = (f.empty()? force.getValue() : f[f.size()-1]);
-            const VecCoord& x = *this->mstate->getX();
+    if (!getContext()->getShowForceFields()) return;  /// \todo put this in the parent class
+    const VecIndex& indices = points.getValue();
+    const VecDeriv& f = forces.getValue();
+    const Deriv f_end = (f.empty()? force.getValue() : f[f.size()-1]);
+    const VecCoord& x = *this->mstate->getX();
 
-    		double aSC = arrowSizeCoef.getValue();
+    double aSC = arrowSizeCoef.getValue();
 
-    		if( fabs(aSC)<1.0e-10 )
-    		{
-    			std::vector<defaulttype::Vector3> points;
-    			for (unsigned int i=0; i<indices.size(); i++)
-    			{
-    			Real xx,xy,xz,fx,fy,fz;
-    			DataTypes::get(xx,xy,xz,x[indices[i]]);
-    			DataTypes::get(fx,fy,fz,(i<f.size())? f[i] : f_end);
-    			points.push_back(defaulttype::Vector3(xx, xy, xz ));
-    			points.push_back(defaulttype::Vector3(xx+fx, xy+fy, xz+fz ));
-    			}
-    			simulation::getSimulation()->DrawUtility.drawLines(points, 2, defaulttype::Vec<4,float>(0,1,0,1));
-    		}
-    		else
-    		{
-    			for (unsigned int i=0; i<indices.size(); i++)
-    			{
-    				Real xx,xy,xz,fx,fy,fz;
-    				DataTypes::get(xx,xy,xz,x[indices[i]]);
-    				DataTypes::get(fx,fy,fz,(i<f.size())? f[i] : f_end);
+    if( fabs(aSC)<1.0e-10 )
+    {
+        std::vector<defaulttype::Vector3> points;
+        for (unsigned int i=0; i<indices.size(); i++)
+        {
+            Real xx,xy,xz,fx,fy,fz;
+            DataTypes::get(xx,xy,xz,x[indices[i]]);
+            DataTypes::get(fx,fy,fz,(i<f.size())? f[i] : f_end);
+            points.push_back(defaulttype::Vector3(xx, xy, xz ));
+            points.push_back(defaulttype::Vector3(xx+fx, xy+fy, xz+fz ));
+        }
+        simulation::getSimulation()->DrawUtility.drawLines(points, 2, defaulttype::Vec<4,float>(0,1,0,1));
+    }
+    else
+    {
+        for (unsigned int i=0; i<indices.size(); i++)
+        {
+            Real xx,xy,xz,fx,fy,fz;
+            DataTypes::get(xx,xy,xz,x[indices[i]]);
+            DataTypes::get(fx,fy,fz,(i<f.size())? f[i] : f_end);
 
 
-    				defaulttype::Vector3 p1( xx, xy, xz);
-    				defaulttype::Vector3 p2( aSC*fx+xx, aSC*fy+xy, aSC*fz+xz );
+            defaulttype::Vector3 p1( xx, xy, xz);
+            defaulttype::Vector3 p2( aSC*fx+xx, aSC*fy+xy, aSC*fz+xz );
 
-    				float norm = (float)(p2-p1).norm();
+            float norm = (float)(p2-p1).norm();
 
-    				if( aSC > 0)
-    				{
-    				  //helper::gl::drawArrow(p1,p2, norm/20.0);
-    				  simulation::getSimulation()->DrawUtility.drawArrow(p1,p2, norm/20.0f, defaulttype::Vec<4,float>(1.0f,0.4f,0.4f,1.0f));
-    				}
-    				else
-    				{
-    				  //helper::gl::drawArrow(p2,p1, norm/20.0);
-     				  simulation::getSimulation()->DrawUtility.drawArrow(p2,p1, norm/20.0f, defaulttype::Vec<4,float>(1.0f,0.4f,0.4f,1.0f));
-    				}
-    			}
-    		}*/
+            if( aSC > 0)
+            {
+                //helper::gl::drawArrow(p1,p2, norm/20.0);
+                simulation::getSimulation()->DrawUtility.drawArrow(p1,p2, norm/20.0f, defaulttype::Vec<4,float>(1.0f,0.4f,0.4f,1.0f));
+            }
+            else
+            {
+                //helper::gl::drawArrow(p2,p1, norm/20.0);
+                simulation::getSimulation()->DrawUtility.drawArrow(p2,p1, norm/20.0f, defaulttype::Vec<4,float>(1.0f,0.4f,0.4f,1.0f));
+            }
+        }
+    }
 }
 
 
