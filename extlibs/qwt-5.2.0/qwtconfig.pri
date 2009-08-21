@@ -24,38 +24,8 @@ doc.path       = $$INSTALLBASE/doc
 ######################################################################
 
 CONFIG           += qt     # Also for Qtopia Core!
-CONFIG           += warn_on
-CONFIG           += thread
 
-######################################################################
-# release/debug mode
-# If you want to build both DEBUG_SUFFIX and RELEASE_SUFFIX
-# have to differ to avoid, that they overwrite each other.
-######################################################################
-
-VVERSION = $$[QT_VERSION]
-isEmpty(VVERSION) {
-
-    # Qt 3
-    CONFIG           += release     # release/debug
-}
-else {
-    # Qt 4
-    win32 {
-        # On Windows you can't mix release and debug libraries.
-        # The designer is built in release mode. If you like to use it
-        # you need a release version. For your own application development you
-        # might need a debug version. 
-        # Enable debug_and_release + build_all if you want to build both.
-
-        CONFIG           += release     # release/debug/debug_and_release
-        #CONFIG           += release_and_release
-        #CONFIG           += build_all
-    }
-    else {
-        CONFIG           += release     # release/debug
-    }
-}
+# THE REST OF THE CONFIG OPTIONS ARE HANDLED BY SOFA
 
 ######################################################################
 # If you want to have different names for the debug and release 
