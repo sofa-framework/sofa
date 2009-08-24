@@ -168,10 +168,9 @@ protected:
     Data< std::string > object2;
 
     helper::vector<int> pointMappedFromPoint;
-    helper::vector< fixed_array<int,12> > pointMappedFromEdge;
-    helper::vector< fixed_array<int,6> > pointMappedFromFacet;
+    std::map<fixed_array<int,2>, int> pointMappedFromEdge;
+    std::map<fixed_array<int,4>, int> pointMappedFromFacet;
     helper::vector<int> pointMappedFromHexa;
-    helper::vector< fixed_array<int,8> > hexasMappedFromHexa;
 };
 
 } // namespace topology
