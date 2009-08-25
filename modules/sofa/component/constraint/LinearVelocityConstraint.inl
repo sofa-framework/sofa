@@ -191,31 +191,60 @@ void LinearVelocityConstraint<DataTypes>::projectVelocity(VecDeriv& dx)
 
     if(m_keyTimes.getValue().size() != 0 && cT >= *m_keyTimes.getValue().begin() && cT <= *m_keyTimes.getValue().rbegin() && nextT!=prevT)
     {
+        nextT = *m_keyTimes.getValue().begin();
+        prevT = nextT;
+
+        bool finished=false;
+
+        typename helper::vector<Real>::const_iterator it_t = m_keyTimes.getValue().begin();
+        typename VecDeriv::const_iterator it_m = m_keyVelocities.getValue().begin();
+
+        //WARNING : we consider that the key-events are in chronological order
+        //here we search between which keyTimes we are, to know which are the motion to interpolate
+        while( it_t != m_keyTimes.getValue().end() && !finished)
+        {
+            if( *it_t <= cT)
+            {
+                prevT = *it_t;
+                prevV = *it_m;
+            }
+            else
+            {
+                nextT = *it_t;
+                nextV = *it_m;
+                finished = true;
+            }
+            it_t++;
+            it_m++;
+        }
         const SetIndexArray & indices = m_indices.getValue().getArray();
         const SetIndexArray & coordinates = m_coordinates.getValue().getArray();
 
-        //if we found 2 keyTimes, we have to interpolate a velocity (linear interpolation)
-        Deriv v = ((nextV - prevV)*((cT - prevT)/(nextT - prevT))) + prevV;
+        if (finished)
+        {
+            //if we found 2 keyTimes, we have to interpolate a velocity (linear interpolation)
+            Deriv v = ((nextV - prevV)*((cT - prevT)/(nextT - prevT))) + prevV;
 
 #if 0
-        std::cout<<"LinearVelocityConstraint::projectVelocity, TIME = "<<cT<<", v = "<<v<<std::endl;
+            std::cout<<"LinearVelocityConstraint::projectVelocity, TIME = "<<cT<<", v = "<<v<<std::endl;
 #endif
 
-        if (coordinates.size() == 0)
-        {
-            //set the motion to the Dofs
-            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+            if (coordinates.size() == 0)
             {
-                dx[*it] = v;
-            }
-        }
-        else
-        {
-            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
-            {
-                for(SetIndexArray::const_iterator itInd = coordinates.begin(); itInd != coordinates.end(); ++itInd)
+                //set the motion to the Dofs
+                for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
                 {
-                    dx[*it][*itInd] = v[*itInd];
+                    dx[*it] = v;
+                }
+            }
+            else
+            {
+                for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+                {
+                    for(SetIndexArray::const_iterator itInd = coordinates.begin(); itInd != coordinates.end(); ++itInd)
+                    {
+                        dx[*it][*itInd] = v[*itInd];
+                    }
                 }
             }
         }
@@ -287,9 +316,7 @@ void LinearVelocityConstraint<DataTypes>::projectPosition(VecCoord& x)
                 //set the motion to the Dofs
                 for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
                 {
-                    Coord xP = x[*it];
-                    x[*it] = x0[*it] + m*dTsimu;
-                    x0[*it] = xP;
+                    x[*it] = x[*it] + m*dTsimu;
                 }
             }
             else
@@ -298,11 +325,9 @@ void LinearVelocityConstraint<DataTypes>::projectPosition(VecCoord& x)
                 {
                     for(SetIndexArray::const_iterator itInd = coordinates.begin(); itInd != coordinates.end(); ++itInd)
                     {
-                        Real xP = x[*it][*itInd];
-                        x[*it][*itInd] = x0[*it][*itInd] + m[*itInd]*dTsimu;
-                        x0[*it][*itInd] = xP;
+                        x[*it][*itInd] = x[*it][*itInd] + m[*itInd]*dTsimu;
 #if 0
-                        std::cout<<"LinearVelocityConstraint::projectPosition x["<<*it<<"] = "<<x[*it][*itInd]<<", x0["<<*it<<"] = "<<x0[*it][*itInd]<<", xP = "<<xP<<std::endl;
+                        std::cout<<"LinearVelocityConstraint::projectPosition x["<<*it<<"] = "<<x[*it][*itInd]<<std::endl;
 #endif
                     }
                 }
