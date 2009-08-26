@@ -107,7 +107,7 @@ void QSofaTreeLibrary::filter(const FilterQuery &f)
         if (!currentItem) return;
 
         currentItem->setText(0,QString(category->getName().c_str() ) );
-        currentItem->setText(1, QString::number(numComponentDisplayedInCategory) + QString("/")+ QString::number(category->getNumComponents()) );
+        currentItem->setText(1, QString::number(numComponentDisplayedInCategory));
 
         if (needToHideCategory)
         {
@@ -123,7 +123,7 @@ void QSofaTreeLibrary::filter(const FilterQuery &f)
         }
     }
     headerItem()->setText(0,QString("Sofa Components"));
-    headerItem()->setText(1, QString::number(numComponentDisplayed) + QString("/") + QString::number(getNumComponents()) );
+    headerItem()->setText(1, QString::number(numComponentDisplayed));
 }
 
 //*********************//
@@ -139,7 +139,7 @@ void QSofaTreeLibrary::build(const std::vector< std::string >& examples)
 {
     SofaLibrary::build(examples);
     headerItem()->setText(0,QString("Sofa Components"));
-    headerItem()->setText(1, QString::number(getNumComponents()) + QString("/") + QString::number(getNumComponents()) );
+    headerItem()->setText(1, QString::number(getNumComponents()));
     headerItem()->setTextAlignment(1, Qt::AlignHCenter|Qt::AlignVCenter|Qt::AlignCenter);
 
     QFont font;

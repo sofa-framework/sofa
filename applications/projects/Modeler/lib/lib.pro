@@ -14,29 +14,24 @@ INCLUDEPATH += $$SOFA_DIR/extlibs
 SOURCES = SofaModeler.cpp \
           GraphModeler.cpp \
           AddPreset.cpp \
-          QSofaLibrary.cpp \
-          QComponentLibrary.cpp \
-          QCategoryLibrary.cpp \
-          QSofaTreeLibrary.cpp \
-          QComponentTreeLibrary.cpp \
-          QCategoryTreeLibrary.cpp \
           FilterLibrary.cpp \
-          ../../../sofa/gui/qt/SofaPluginManager.cpp
+          ../../../sofa/gui/qt/SofaPluginManager.cpp 
 
 HEADERS = SofaModeler.h \
           GraphModeler.h \
           AddPreset.h \
-          QSofaLibrary.h \
-          QComponentLibrary.h \
-          QCategoryLibrary.h \
-          QSofaTreeLibrary.h \
-          QComponentTreeLibrary.h \
-          QCategoryTreeLibrary.h \
           FilterLibrary.h \
-          ../../../sofa/gui/qt/SofaPluginManager.h
+          ../../../sofa/gui/qt/SofaPluginManager.h 
 
 contains (DEFINES, SOFA_QT4) {	
 
+          HEADERS += QSofaTreeLibrary.h \
+                     QCategoryTreeLibrary.h \ 
+                     QComponentTreeLibrary.h
+          SOURCES += QSofaTreeLibrary.cpp \
+                     QCategoryTreeLibrary.cpp \ 
+                     QComponentTreeLibrary.cpp
+                     
 	  CONFIG += $$CONFIGLIBRARIES qt uic uic3
 	  QT += qt3support xml
 	  FORMS3 += Modeler.ui 
@@ -44,6 +39,14 @@ contains (DEFINES, SOFA_QT4) {
         FORMS3 += ../../../sofa/gui/qt/PluginManager.ui                    
 }
 else {
+
+          HEADERS += QSofaLibrary.h \
+                     QCategoryLibrary.h \ 
+                     QComponentLibrary.h
+          SOURCES += QSofaLibrary.cpp \
+                     QCategoryLibrary.cpp \ 
+                     QComponentLibrary.cpp
+                     
 	  CONFIG += $$CONFIGLIBRARIES qt
 	  FORMS += Modeler.ui
 	  FORMS += DialogAddPreset.ui
