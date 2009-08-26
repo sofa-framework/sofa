@@ -17,6 +17,9 @@ SOURCES = SofaModeler.cpp \
           QSofaLibrary.cpp \
           QComponentLibrary.cpp \
           QCategoryLibrary.cpp \
+          QSofaTreeLibrary.cpp \
+          QComponentTreeLibrary.cpp \
+          QCategoryTreeLibrary.cpp \
           FilterLibrary.cpp \
           ../../../sofa/gui/qt/SofaPluginManager.cpp
 
@@ -26,6 +29,9 @@ HEADERS = SofaModeler.h \
           QSofaLibrary.h \
           QComponentLibrary.h \
           QCategoryLibrary.h \
+          QSofaTreeLibrary.h \
+          QComponentTreeLibrary.h \
+          QCategoryTreeLibrary.h \
           FilterLibrary.h \
           ../../../sofa/gui/qt/SofaPluginManager.h
 

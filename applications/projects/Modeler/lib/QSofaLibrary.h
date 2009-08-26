@@ -56,7 +56,7 @@ typedef sofa::core::ObjectFactory::ClassEntry ClassEntry;
 
 //***************************************************************
 //Library using QToolBox
-class QSofaLibrary : virtual public QWidget, public SofaLibrary
+class QSofaLibrary : virtual public QToolBox, public SofaLibrary
 {
     Q_OBJECT
 public:
@@ -64,6 +64,7 @@ public:
 public:
     QSofaLibrary(QWidget *parent);
 
+    void build(const std::vector< std::string >& examples=std::vector< std::string >());
     void filter(const FilterQuery &f);
 
     LibraryContainer* getContainer() {return toolbox;};

@@ -24,57 +24,62 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SOFALIBRARY_H
-#define SOFA_SOFALIBRARY_H
+#ifndef SOFA_QCATEGORYLIBRARY_H
+#define SOFA_QCATEGORYLIBRARY_H
 
-#include "CategoryLibrary.h"
+#include <sofa/core/CategoryLibrary.h>
 
+#include <QTreeWidget>
+#include <QGridLayout>
 
 namespace sofa
 {
 
-namespace core
+namespace gui
+{
+
+namespace qt
 {
 
 
-/**
- *  \brief An Generic Library
- *
- *  It reads the content of the Object Factory and builds a library of components sorted inside categories.
- *  This Interface is used for the Modeler mainly.
- *
- */
-class SOFA_CORE_API SofaLibrary
+using sofa::core::CategoryLibrary;
+using sofa::core::ComponentLibrary;
+
+typedef sofa::core::ObjectFactory::ClassEntry ClassEntry;
+
+//***************************************************************
+class QCategoryTreeLibrary : virtual public QWidget, public CategoryLibrary
 {
+
+    Q_OBJECT
 public:
-    typedef std::vector< CategoryLibrary* > VecCategory;
-    typedef VecCategory::const_iterator VecCategoryIterator;
-
+    typedef QGridLayout CategoryLayout;
 public:
-    virtual ~SofaLibrary() {};
+    QCategoryTreeLibrary(QWidget *parent, const std::string &categoryName, unsigned int numCom);
+    ~QCategoryTreeLibrary();
 
-    virtual void build(const std::vector< std::string >& examples=std::vector< std::string >());
-    virtual void clear();
+    ComponentLibrary *addComponent(const std::string &componentName, ClassEntry* entry, const std::vector< std::string > &exampleFiles);
+    void endConstruction();
 
-    std::string getComponentDescription( const std::string &componentName) const;
+    void setDisplayed(bool b);
 
-    const VecCategory& getCategories() const {return categories;};
-
-    const CategoryLibrary  *getCategory(  const std::string &categoryName ) const;
-    const ComponentLibrary *getComponent( const std::string &componentName) const;
-    unsigned int getNumComponents() const {return numComponents;}
-
+    QTreeWidgetItem *getQWidget() { return categoryTree;};
 protected:
-    virtual CategoryLibrary *createCategory(const std::string &category , unsigned int/*  numComponent */) {return new CategoryLibrary(category);};
-    virtual void addCategory(CategoryLibrary *);
-    void computeNumComponents();
+    ComponentLibrary *createComponent(const std::string &componentName, ClassEntry* entry, const std::vector< std::string > &exampleFiles);
 
-    VecCategory categories;
-    std::vector< std::string > exampleFiles;
-    int numComponents;
+    QTreeWidgetItem *categoryTree;
+    QTreeWidget *tree;
 
+public slots:
+    void componentDraggedReception( std::string description, std::string templateName, ClassEntry* componentEntry);
+
+signals:
+    void componentDragged( std::string description, std::string categoryName, std::string templateName, ClassEntry *entry);
 };
 
+
+
+}
 }
 }
 
