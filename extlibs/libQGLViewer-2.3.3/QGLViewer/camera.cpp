@@ -1677,11 +1677,22 @@ void Camera::initFromDOMElement(const QDomElement& element)
 {
   QDomElement child=element.firstChild().toElement();
 
+#if QT_VERSION >= 0x040000
   QMutableMapIterator<int, KeyFrameInterpolator*> it(kfi_);
   while (it.hasNext()) {
     it.next();
     deletePath(it.key());
   }
+#else
+  QMapIterator<int, KeyFrameInterpolator*> it = kfi_.begin();
+  QMapIterator<int, KeyFrameInterpolator*> it_end =kfi_.end();
+  for (;it!=it_end; it++)
+    {
+      int k=it.key();
+      it++;
+      deletePath(k);
+    }
+#endif
 
   while (!child.isNull())
     {

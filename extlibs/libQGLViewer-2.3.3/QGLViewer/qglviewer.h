@@ -576,10 +576,17 @@ public:
 	    return font;
 	  else {
 	    QFont f(font);
+#if QT_VERSION >= 0x040000
 	    if (f.pixelSize() == -1)
 	      f.setPointSizeF(f.pointSizeF() * tileRegion_->textScale);
 	    else
 	      f.setPixelSize(f.pixelSize() * tileRegion_->textScale);
+#else
+	    if (f.pixelSize() == -1)
+	      f.setPointSizeFloat(f.pointSizeFloat() * tileRegion_->textScale);
+	    else
+	      f.setPixelSize(f.pixelSize() * tileRegion_->textScale);
+#endif
 	    return f;
 	  }
 	}
