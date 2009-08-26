@@ -56,7 +56,7 @@ QCategoryTreeLibrary::QCategoryTreeLibrary( QWidget *parent, const std::string &
     tree->addTopLevelItem(categoryTree);
     tree->setItemExpanded(categoryTree,true);
     categoryTree->setText(0,QString(this->getName().c_str() ) );
-    categoryTree->setText(1, QString::number(numComponent) + QString("/")+ QString::number(numComponent) );
+    categoryTree->setText(1, QString::number(numComponent) );
     categoryTree->setTextAlignment(1, Qt::AlignHCenter|Qt::AlignVCenter|Qt::AlignCenter);
 }
 
