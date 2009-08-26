@@ -138,26 +138,20 @@ SofaModeler::SofaModeler()
 
     //----------------------------------------------------------------------
     //Add the Sofa Library
-    //-->Container
-    containerLibrary = new QToolBox( leftPartWidget, "containerLibrary");
-    containerLibrary->setCurrentIndex(1);
-    containerLibrary->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
+#ifdef SOFA_QT4
+    QSofaTreeLibrary *l = new QSofaTreeLibrary(leftPartWidget); library = l;
+#else
+    QSofaLibrary *l = new QSofaLibrary(leftPartWidget); library = l;
+#endif
 
-    QWidget *contentContainer = new QWidget( containerLibrary, "contentContainer");
-    QVBoxLayout *contentLayout = new QVBoxLayout( contentContainer );
-    containerLibrary->addItem(contentContainer, QString());
-    leftPartLayout->addWidget(containerLibrary);
+    leftPartLayout->addWidget(l);
 
 
-    //-->Sofa Library
-    QSofaLibrary *l = new QSofaLibrary(contentContainer); library = l;
-    QToolBox *containerLibrary=l->getContainer();
-    contentLayout->addWidget(containerLibrary);
+
     connect(l, SIGNAL( componentDragged( std::string, std::string, std::string, ClassEntry *) ),
             this, SLOT( componentDraggedReception( std::string, std::string, std::string, ClassEntry *) ));
 
     for (unsigned int i=0; i<exampleQString.size(); ++i) exampleFiles.push_back(exampleQString[i].ascii());
-
 
 
     //----------------------------------------------------------------------
@@ -180,8 +174,6 @@ SofaModeler::SofaModeler()
     this->connect( SofaPluginManager::getInstance()->buttonClose, SIGNAL(clicked() ),  this, SLOT( rebuildLibrary() ));
 
     library->build(exampleFiles);
-    changeLibraryLabel(0);
-
     int menuIndex=4;
 
     //----------------------------------------------------------------------
@@ -224,7 +216,6 @@ SofaModeler::SofaModeler()
         listActionGUI.push_back(act);
         connect(act, SIGNAL( activated()), this, SLOT( GUIChanged() ));
     }
-
 
     //----------------------------------------------------------------------
     //Add menu Preset
@@ -313,7 +304,6 @@ void SofaModeler::rebuildLibrary()
 {
     library->clear();
     library->build(exampleFiles);
-    changeLibraryLabel();
 }
 
 void SofaModeler::closeEvent( QCloseEvent *e)
@@ -590,10 +580,6 @@ void SofaModeler::changeInformation(Q3ListViewItem *item)
     changeComponent( library->getComponentDescription(nameObject) );
 }
 
-void SofaModeler::changeLibraryLabel(int)
-{
-    containerLibrary->setItemLabel(0, QString("Sofa Components[") + QString::number(library->getNumComponents()) + QString("]"));
-}
 
 void SofaModeler::componentDraggedReception( std::string description, std::string // categoryName
         , std::string templateName, ClassEntry* componentEntry)
@@ -820,9 +806,12 @@ void SofaModeler::dragMoveEvent( QDragMoveEvent* event)
 /// Quick Filter of te components
 void SofaModeler::searchText(const FilterQuery& query)
 {
+#ifdef SOFA_QT4
+    QSofaTreeLibrary* l=static_cast<QSofaTreeLibrary*>(library);
+#else
     QSofaLibrary* l=static_cast<QSofaLibrary*>(library);
+#endif
     l->filter(query);
-    changeLibraryLabel(0);
 }
 
 

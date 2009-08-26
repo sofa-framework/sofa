@@ -24,58 +24,77 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SOFALIBRARY_H
-#define SOFA_SOFALIBRARY_H
 
-#include "CategoryLibrary.h"
+#include "QComponentTreeLibrary.h"
 
+#include <QToolTip>
 
 namespace sofa
 {
 
-namespace core
+namespace gui
 {
 
-
-/**
- *  \brief An Generic Library
- *
- *  It reads the content of the Object Factory and builds a library of components sorted inside categories.
- *  This Interface is used for the Modeler mainly.
- *
- */
-class SOFA_CORE_API SofaLibrary
+namespace qt
 {
-public:
-    typedef std::vector< CategoryLibrary* > VecCategory;
-    typedef VecCategory::const_iterator VecCategoryIterator;
+QComponentTreeLibrary::QComponentTreeLibrary(QWidget *parent, QTreeWidgetItem* category, const std::string &componentN, const std::string &categoryN, ClassEntry *e, const std::vector< std::string > &exampleFiles): QWidget(parent, componentN.c_str()), ComponentLibrary(componentN,categoryN,e, exampleFiles)
+{
+    //Create Tree component
+    tree=(QTreeWidget*) parent;
+    componentTree = new QTreeWidgetItem( category, QTreeWidgetItem::UserType );
+    category->addChild(componentTree);
 
-public:
-    virtual ~SofaLibrary() {};
+    //Create button and label
+    label     = new ComponentLabel( QString(this->getName().c_str()), this);
+    label->setFlat(false);
+    connect( label, SIGNAL(pressed()), this, SLOT( componentPressed() ));
+    templates = new ComponentTemplates(this);
 
-    virtual void build(const std::vector< std::string >& examples=std::vector< std::string >());
-    virtual void clear();
+    //Add Documentation tool tip
+    std::string tooltipText = entry->description.substr(0, entry->description.size()-1);
+    QToolTip::add(label, tooltipText.c_str());
+}
 
-    std::string getComponentDescription( const std::string &componentName) const;
+QComponentTreeLibrary::~QComponentTreeLibrary()
+{
+    setDisplayed(false);
+    delete label;
+    delete templates;
+}
 
-    const VecCategory& getCategories() const {return categories;};
+void QComponentTreeLibrary::endConstruction()
+{
+    tree->setItemWidget(componentTree,0,label);
+    if (templateName.empty())
+    {
+        templates->hide();
+        return;
+    }
 
-    const CategoryLibrary  *getCategory(  const std::string &categoryName ) const;
-    const ComponentLibrary *getComponent( const std::string &componentName) const;
-    unsigned int getNumComponents() const {return numComponents;}
+    tree->setItemWidget(componentTree,1,templates);
+    for (unsigned int i=0; i<templateName.size(); ++i)
+    {
+        templates->insertItem(QString(templateName[i].c_str()));
+    }
+}
 
-protected:
-    virtual CategoryLibrary *createCategory(const std::string &category , unsigned int/*  numComponent */) {return new CategoryLibrary(category);};
-    virtual void addCategory(CategoryLibrary *);
-    void computeNumComponents();
+void QComponentTreeLibrary::setDisplayed(bool b)
+{
+    componentTree->setHidden(!b);
+}
 
-    VecCategory categories;
-    std::vector< std::string > exampleFiles;
-    int numComponents;
+//*********************//
+// SLOTS               //
+//*********************//
+void QComponentTreeLibrary::componentPressed()
+{
+    std::string tName;
+    if (!templateName.empty()) tName = templates->currentText().ascii();
 
-};
+    emit( componentDragged( description, tName, entry));
+    label->setDown(false);
+}
 
 }
 }
-
-#endif
+}

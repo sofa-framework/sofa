@@ -31,7 +31,6 @@
 
 #include "Modeler.h"
 #include "GraphModeler.h"
-#include "QSofaLibrary.h"
 #include "FilterLibrary.h"
 
 #include <map>
@@ -42,7 +41,10 @@
 #include <sofa/gui/SofaGUI.h>
 #include <sofa/gui/qt/RealGUI.h>
 
+
+
 #ifdef SOFA_QT4
+#include "QSofaTreeLibrary.h"
 #include <Q3ListView>
 #include <Q3TextDrag>
 #include <QPushButton>
@@ -53,6 +55,7 @@
 #include <QComboBox>
 #include <Q3Process>
 #else
+#include "QSofaLibrary.h"
 #include <qlistview.h>
 #include <qdragobject.h>
 #include <qpushbutton.h>
@@ -121,8 +124,6 @@ public slots:
 #else
     void changeInformation(QListViewItem *);
 #endif
-    /// Change the main library label, it happens when the user open a new class of component from the library
-    void changeLibraryLabel(int index=0);
     /// Dropping a Node in the Graph
     void newGNode();
 
@@ -205,7 +206,7 @@ public slots:
 protected:
     //********************************************
     //Left Part
-    QToolBox     *containerLibrary;
+    /*           QToolBox     *containerLibrary; */
     SofaLibrary  *library;
     FilterLibrary *filterLibrary;
 

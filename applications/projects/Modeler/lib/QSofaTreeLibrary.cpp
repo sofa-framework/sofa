@@ -25,8 +25,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include "QSofaLibrary.h"
-#include "QCategoryLibrary.h"
+#include "QSofaTreeLibrary.h"
+#include "QCategoryTreeLibrary.h"
 
 
 namespace sofa
@@ -38,46 +38,33 @@ namespace gui
 namespace qt
 {
 
-QSofaLibrary::QSofaLibrary(QWidget *parent): QToolBox(parent)
+QSofaTreeLibrary::QSofaTreeLibrary(QWidget *parent): QTreeWidget(parent)
 {
-
-    this->setCurrentIndex(1);
-    this->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
-
-    QWidget *contentContainer = new QWidget( this, "contentContainer");
-    QVBoxLayout *contentLayout = new QVBoxLayout( contentContainer );
-    this->addItem(contentContainer, QString());
-
-
-    toolbox = new LibraryContainer(contentContainer);
-    toolbox->setCurrentIndex(-1);
-    toolbox->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
-    contentLayout->addWidget( toolbox );
+    setFocusPolicy(Qt::NoFocus);
+    setIndentation(10);
+    setColumnCount(2);
+    setAutoFillBackground(true);
 }
 
-CategoryLibrary *QSofaLibrary::createCategory(const std::string &categoryName, unsigned int numComponent)
+CategoryLibrary *QSofaTreeLibrary::createCategory(const std::string &categoryName, unsigned int numComponent)
 {
-    QCategoryLibrary* category = new QCategoryLibrary(toolbox, categoryName, numComponent);
-    toolbox->addItem( category, categoryName.c_str());
+    QCategoryTreeLibrary* category = new QCategoryTreeLibrary(this, categoryName, numComponent);
     return category;
 }
 
 
-void QSofaLibrary::addCategory(CategoryLibrary *c)
+void QSofaTreeLibrary::addCategory(CategoryLibrary *c)
 {
-    QCategoryLibrary* category=static_cast<QCategoryLibrary*>(c);
+    QCategoryTreeLibrary* category=static_cast<QCategoryTreeLibrary*>(c);
 
     SofaLibrary::addCategory(category);
-    toolbox->setItemLabel(categories.size()-1, QString(category->getName().c_str()) + QString(" [") + QString::number(category->getNumComponents()) + QString("]"));
 
     connect( category, SIGNAL( componentDragged( std::string, std::string, std::string, ClassEntry* ) ),
             this, SLOT( componentDraggedReception( std::string, std::string, std::string , ClassEntry* )));
-
 }
 
-void QSofaLibrary::filter(const FilterQuery &f)
+void QSofaTreeLibrary::filter(const FilterQuery &f)
 {
-
     numComponents=0;
     unsigned int numComponentDisplayed=0;
     unsigned int indexPage=0;
@@ -103,52 +90,71 @@ void QSofaLibrary::filter(const FilterQuery &f)
             }
         }
 
-        QCategoryLibrary *category = static_cast<QCategoryLibrary *>(categories[cat]);
-        int idx = toolbox->indexOf(category);
+        QCategoryTreeLibrary *category = static_cast<QCategoryTreeLibrary *>(categories[cat]);
+
+        QList<QTreeWidgetItem*> found=findItems(QString(category->getName().c_str()),Qt::MatchStartsWith);
+
+        QTreeWidgetItem* currentItem=NULL;
+        int minSize=-1;
+        for ( int i=0; i<found.count(); ++i)
+        {
+            if (minSize < 0 || minSize >found[i]->text(0).size())
+            {
+                currentItem=found[i];
+                minSize=found[i]->text(0).size();
+            }
+        }
+        if (!currentItem) return;
+
+        currentItem->setText(0,QString(category->getName().c_str() ) );
+        currentItem->setText(1, QString::number(numComponentDisplayedInCategory) + QString("/")+ QString::number(category->getNumComponents()) );
 
         if (needToHideCategory)
         {
             category->setDisplayed(false);
-            if (idx >= 0)
-            {
-#ifdef SOFA_QT4
-                toolbox->removeItem(idx);
-#else
-                toolbox->removeItem(category);
-#endif
-
-            }
+            setItemHidden(currentItem,true);
         }
         else
         {
-
             category->setDisplayed(true);
-            if (idx < 0)
-            {
-                toolbox->insertItem(indexPage,category,QString(categories[cat]->getName().c_str()) );
-            }
-            toolbox->setItemLabel(indexPage, QString(category->getName().c_str()) + QString(" [") + QString::number(numComponentDisplayedInCategory) + QString("]"));
-
+            setItemHidden(currentItem,false);
             numComponents+=numComponentDisplayedInCategory;
             indexPage++;
         }
     }
-    this->setItemLabel(0,QString("Sofa Components [") + QString::number(numComponentDisplayed) + QString("]"));
+    headerItem()->setText(0,QString("Sofa Components"));
+    headerItem()->setText(1, QString::number(numComponentDisplayed) + QString("/") + QString::number(getNumComponents()) );
 }
 
 //*********************//
 // SLOTS               //
 //*********************//
-void QSofaLibrary::componentDraggedReception( std::string description, std::string categoryName, std::string templateName, ClassEntry* componentEntry)
+void QSofaTreeLibrary::componentDraggedReception( std::string description, std::string categoryName, std::string templateName, ClassEntry* componentEntry)
 {
     emit(componentDragged(description, categoryName,templateName,componentEntry));
 }
 
 
-void QSofaLibrary::build(const std::vector< std::string >& examples)
+void QSofaTreeLibrary::build(const std::vector< std::string >& examples)
 {
     SofaLibrary::build(examples);
-    this->setItemLabel(0,QString("Sofa Components [") + QString::number(getNumComponents()) + QString("]"));
+    headerItem()->setText(0,QString("Sofa Components"));
+    headerItem()->setText(1, QString::number(getNumComponents()) + QString("/") + QString::number(getNumComponents()) );
+    headerItem()->setTextAlignment(1, Qt::AlignHCenter|Qt::AlignVCenter|Qt::AlignCenter);
+
+    QFont font;
+    font.setBold(true);
+    headerItem()->setFont(0, font);
+
+    resizeColumnToContents(0);
+
+    //Look into all the categories
+    for (unsigned int cat=0; cat<categories.size(); ++cat)
+    {
+        QCategoryTreeLibrary *category = static_cast<QCategoryTreeLibrary *>(categories[cat]);
+        setItemExpanded(category->getQWidget(),false);
+    }
+
 }
 }
 }
