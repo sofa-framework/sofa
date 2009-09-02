@@ -176,6 +176,7 @@ SOURCES += \
 }
 }
 
+HEADERS += scan.h
 CUDA_SOURCES += scan.cu
 
 #HEADERS += radixsort.cuh radixsort_kernel.cu

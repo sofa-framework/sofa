@@ -204,6 +204,8 @@ void* ARTrackDriver::computeTracking(void *sarg)
     }
 #ifdef WIN32
     return;
+#else
+    return NULL;
 #endif
 }
 
