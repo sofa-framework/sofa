@@ -9,13 +9,42 @@
 # init
 BEGIN {
     infilelist=0;
+    blk_before=0;
+    blk_after=0;
+    blk_dev=0;
+}
+
+{ blk_before=blk_after; }
+
+/[{}]/ {
+  split($0,a,"#")
+  if (a[1]!="") {
+    split(a[1],beg,"{")
+    split(a[1],end,"}")
+    blk_after = blk_before + length(beg) - length(end)
+  }
+}
+
+END {
+    if (blk_after != 0) print "# ERROR: unmatched brackets"
 }
 
 # Match blocks conditionnally included depending on the SOFA_DEV flag
+# Note that we now count the brackets in the source file to find the
+# SOFA_DEV closing one instead of relying on the presence of a comment
 
-/contains[ \t]*\([ \t]*DEFINES[ \t]*,[ \t]*SOFA_DEV[ \t]*\)[ \t]*{/,/[ \t]*}.*SOFA_DEV/ {
-#    for(f=1;f<=NF && !(f==NF && $f~/\\[:space:]*/);f++)
-#        print f " -> \"" $f "\""
+blk_dev==0 && /contains[ \t]*\([ \t]*DEFINES[ \t]*,[ \t]*SOFA_DEV[ \t]*\)[ \t]*{/ {
+    blk_dev=blk_after;
+    infilelist=0;
+}
+
+blk_dev>0 && blk_after < blk_dev {
+    blk_dev=0;
+    next;
+}
+
+# /contains[ \t]*\([ \t]*DEFINES[ \t]*,[ \t]*SOFA_DEV[ \t]*\)[ \t]*{/,/[ \t]*}.*SOFA_DEV/ {
+blk_dev>0 {
     # look for a filename
     # we assume files and directories are listed inside variables containing SUBDIRS, SOURCES or HEADERS
     f0=1;
@@ -27,12 +56,13 @@ BEGIN {
 	}
     }
     if (infilelist) {
-	for(f=f0;f<=NF && !(f==NF && $f~/\\[:space:]*/);f++) {
+	for(f=f0;f<=NF && !(f==NF && $f~/^[:space:]*\\[:space:]*$/);f++) {
 	    fname=$f
 	    gsub(/[\r\n]/,"",fname);
+	    gsub(/\\[:space:]*$/,"",fname);
 	    if (fname != "#") print fname > "/dev/stderr";
 	}
-	if (f>NF) { # no "\\" is put at the end of the line -> end of list
+	if (f>NF && (NF==0 || $NF!~/\\[:space:]*$/)) { # no "\\" is put at the end of the line -> end of list
 #	    print "end"
 	    infilelist=0;
 	}
@@ -44,4 +74,5 @@ BEGIN {
 /SOFA_DEV/ { next; }
 
 # other: simply print the line
-{ print; }
+#{ print blk_before "<" $0 ">" blk_after; }
+{ print }
