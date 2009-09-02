@@ -122,6 +122,16 @@ protected:
     /// Define RemovalFunction (for topology changes)
     static void FCRemovalFunction ( int , void*);
 
+private:
+
+    /// to keep the time corresponding to the key times
+    Real currentTime;
+
+    /// to know if we found the key times
+    bool finished;
+
+    /// find previous and next time keys
+    void findKeyTimes();
 };
 
 
