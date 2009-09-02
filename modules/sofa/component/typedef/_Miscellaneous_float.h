@@ -51,7 +51,6 @@
 #include <sofa/component/engine/PointsFromIndices.h>
 #include <sofa/component/constraint/PrecomputedConstraintCorrection.h>
 #include <sofa/component/engine/RandomPointDistributionInSurface.h>
-#include <sofa/component/misc/Rasterizer.h>
 #include <sofa/component/container/RotationFinder.h>
 #include <sofa/component/container/SpatialGridContainer.h>
 #include <sofa/component/engine/Spiral.h>
@@ -152,11 +151,6 @@ typedef sofa::component::engine::RandomPointDistributionInSurface<sofa::defaultt
 
 
 
-//---------------------------------------------------------------------------------------------
-//Typedef for Rasterizer
-typedef sofa::component::misc::Rasterizer<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > Rasterizer3f;
-
-
 
 //---------------------------------------------------------------------------------------------
 //Typedef for RotationFinder
@@ -228,7 +222,6 @@ typedef PrecomputedConstraintCorrection3f PrecomputedConstraintCorrection3;
 typedef PrecomputedConstraintCorrection2f PrecomputedConstraintCorrection2;
 typedef PrecomputedConstraintCorrectionRigid3f PrecomputedConstraintCorrectionRigid3;
 typedef RandomPointDistributionInSurface3f RandomPointDistributionInSurface3;
-typedef Rasterizer3f Rasterizer3;
 typedef RotationFinder3f RotationFinder3;
 typedef SpatialGridContainer3f SpatialGridContainer3;
 typedef Spiral3f Spiral3;
