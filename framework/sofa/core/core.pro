@@ -61,6 +61,9 @@ HEADERS += \
           componentmodel/topology/BaseTopologyObject.h \
           componentmodel/topology/TopologicalMapping.h \
           componentmodel/topology/Topology.h \
+          componentmodel/loader/BaseLoader.h \
+          componentmodel/loader/ImageLoader.h \
+          componentmodel/loader/MeshLoader.h \
           Mapping.h \
           Mapping.inl \
           objectmodel/Base.h \
@@ -102,7 +105,7 @@ SOURCES +=  \
           objectmodel/BaseObjectDescription.cpp \
           objectmodel/ClassInfo.cpp \
           objectmodel/Context.cpp \
-		  objectmodel/Data.cpp \
+          objectmodel/Data.cpp \
 	  objectmodel/DDGNode.cpp \
           objectmodel/DetachNodeEvent.cpp \
           objectmodel/Event.cpp \
@@ -141,7 +144,8 @@ SOURCES +=  \
           componentmodel/behavior/PairInteractionForceField.cpp \
           componentmodel/behavior/MixedInteractionForceField.cpp \
           componentmodel/behavior/PairInteractionConstraint.cpp \
-          componentmodel/behavior/MixedInteractionConstraint.cpp 
+          componentmodel/behavior/MixedInteractionConstraint.cpp \
+          componentmodel/loader/MeshLoader.cpp 
 
 SOFA_DIR = ../../..
 TEMPLATE = lib
