@@ -29,7 +29,8 @@
 #include <sofa/core/objectmodel/DataFileName.h>
 
 //#include <stdlib.h>
-#include <string>
+#include <string.h>
+#include <cstring>
 //#include <iostream>
 //#include <sofa/helper/vector.h>
 
