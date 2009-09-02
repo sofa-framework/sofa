@@ -175,6 +175,8 @@ void LinearMovementConstraint<DataTypes>::init()
     x0.resize(0);
     nextM = prevM = Deriv();
 
+    currentTime = -1.0;
+    finished = false;
 }
 
 
@@ -188,19 +190,19 @@ template <class DataTypes>
 void LinearMovementConstraint<DataTypes>::projectVelocity(VecDeriv& dx)
 {
     Real cT = (Real) this->getContext()->getTime();
-    if(m_keyTimes.getValue().size() != 0 && cT >= *m_keyTimes.getValue().begin() && cT <= *m_keyTimes.getValue().rbegin() && nextT!=prevT)
+    if ((cT != currentTime) || !finished)
+    {
+        findKeyTimes();
+    }
+
+    if (finished && nextT != prevT)
     {
         const SetIndexArray & indices = m_indices.getValue().getArray();
-
-        Real dTsimu = (Real) this->getContext()->getDt();
-        Real dt = (cT - prevT) / (nextT - prevT);
-        Deriv m= (nextM-prevM)*dt;
-        Deriv mPrev= (nextM-prevM)*(((cT-dTsimu) - prevT) / (nextT - prevT));
 
         //set the motion to the Dofs
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
-            dx[*it] = (m - mPrev) * (1/dTsimu);
+            dx[*it] = (nextM - prevM)*(1.0 / (nextT - prevT));
         }
     }
 }
@@ -220,14 +222,39 @@ void LinearMovementConstraint<DataTypes>::projectPosition(VecCoord& x)
             x0[*it] = x[*it];
     }
 
-    //if we found 2 keyTimes, we have to interpolate a position (linear interpolation)
+    if ((cT != currentTime) || !finished)
+    {
+        findKeyTimes();
+    }
+
+    //if we found 2 keyTimes, we have to interpolate a velocity (linear interpolation)
+    if(finished && nextT != prevT)
+    {
+        const SetIndexArray & indices = m_indices.getValue().getArray();
+
+        Real dt = (cT - prevT) / (nextT - prevT);
+        Deriv m = prevM + (nextM-prevM)*dt;
+
+        //set the motion to the Dofs
+        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        {
+            x[*it] = x0[*it] + m ;
+        }
+    }
+}
+
+template <class DataTypes>
+void LinearMovementConstraint<DataTypes>::findKeyTimes()
+{
+    Real cT = (Real) this->getContext()->getTime();
+
+    finished = false;
+
     if(m_keyTimes.getValue().size() != 0 && cT >= *m_keyTimes.getValue().begin() && cT <= *m_keyTimes.getValue().rbegin())
     {
 
         nextT = *m_keyTimes.getValue().begin();
         prevT = nextT;
-
-        bool finished=false;
 
         typename helper::vector<Real>::const_iterator it_t = m_keyTimes.getValue().begin();
         typename VecDeriv::const_iterator it_m = m_keyMovements.getValue().begin();
@@ -250,23 +277,9 @@ void LinearMovementConstraint<DataTypes>::projectPosition(VecCoord& x)
             it_t++;
             it_m++;
         }
-
-        //if we found 2 keyTimes, we have to interpolate a velocity (linear interpolation)
-        if(finished)
-        {
-            const SetIndexArray & indices = m_indices.getValue().getArray();
-
-            Real dt = (cT - prevT) / (nextT - prevT);
-            Deriv m = prevM + (nextM-prevM)*dt;
-
-            //set the motion to the Dofs
-            for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
-            {
-                x[*it] = x0[*it] + m ;
-            }
-        }
     }
 }
+
 
 //display the path the constrained dofs will go through
 template <class DataTypes>
