@@ -79,7 +79,6 @@ HEADERS += mycuda.h \
            CudaSpatialGridContainer.inl \
            CudaVisualModel.h \
            CudaVisualModel.inl \
-           CudaTestForceField.h \
            CudaTetrahedralVisualModel.h \
            CudaTetrahedralVisualModel.inl
 
@@ -105,7 +104,6 @@ SOURCES += mycuda.cpp \
            CudaPenalityContactForceField.cpp \
            CudaVisualModel.cpp \
            CudaTetrahedralVisualModel.cpp \
-           CudaTestForceField.cpp \
            CudaSetTopology.cpp 
 
 CUDA_SOURCES += mycuda.cu \
@@ -123,7 +121,6 @@ CUDA_SOURCES += mycuda.cu \
            CudaCollisionDetection.cu \
            CudaContactMapper.cu \
            CudaPenalityContactForceField.cu \
-           CudaTestForceField.cu \
            CudaVisualModel.cu
 
 contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
