@@ -49,6 +49,12 @@ namespace controller
 
 using namespace sofa::defaulttype;
 
+#define UDPBUFSIZE  10000
+#define UDPTIMEOUT  1000000
+#define MAX_NMEATOOL 2
+#define MAX_NMARKER 100
+#define MAX_NGLOVE 2
+
 class ARTrackDriver : public core::componentmodel::behavior::BaseController
 {
 
