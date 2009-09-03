@@ -78,15 +78,17 @@ bool SphereLoader::load(const char *filename)
     {
         if (!strcmp(cmd,"nums"))
         {
-            fscanf(file, "%d", &totalNumSpheres);
+            if (fscanf(file, "%d", &totalNumSpheres) == EOF)
+                std::cerr << "Error: SphereLoader: fscanf function has encountered and error." << std::endl;
             setNumSpheres(totalNumSpheres);
         }
         else if (!strcmp(cmd,"sphe"))
         {
             int index;
             double cx=0,cy=0,cz=0,r=1;
-            fscanf(file, "%d %lf %lf %lf %lf\n",
-                    &index, &cx, &cy, &cz, &r);
+            if (fscanf(file, "%d %lf %lf %lf %lf\n",
+                    &index, &cx, &cy, &cz, &r) == EOF)
+                std::cerr << "Error: SphereLoader: fscanf function has encountered and error." << std::endl;
             addSphere((SReal)cx,(SReal)cy,(SReal)cz,(SReal)r);
             ++totalNumSpheres;
         }

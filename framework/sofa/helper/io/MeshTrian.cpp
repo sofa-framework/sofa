@@ -67,20 +67,25 @@ void MeshTrian::init (std::string filename)
 void MeshTrian::readTrian (FILE* file)
 {
     int nbp=0;
-    (void)fscanf(file, "%d\n", &nbp);
+
+    if (fscanf(file, "%d\n", &nbp) == EOF)
+        std::cerr << "Error: MeshTrian: fscanf function has encountered and error." << std::endl;
+
 
     vertices.resize(nbp);
     Vec3d fromFile;
     for (int p=0; p<nbp; p++)
     {
-        (void)fscanf(file, "%lf %lf %lf\n", &fromFile[0], &fromFile[1], &fromFile[2]);
+        if (fscanf(file, "%lf %lf %lf\n", &fromFile[0], &fromFile[1], &fromFile[2]) == EOF)
+            std::cerr << "Error: MeshTrian: fscanf function has encountered and error." << std::endl;
         vertices[p][0] = (SReal)fromFile[0];
         vertices[p][1] = (SReal)fromFile[1];
         vertices[p][2] = (SReal)fromFile[2];
     }
 
     int nbf=0;
-    (void)fscanf(file, "%d\n", &nbf);
+    if (fscanf(file, "%d\n", &nbf) == EOF )
+        std::cerr << "Error: MeshTrian: fscanf function has encountered and error." << std::endl;
 
     facets.resize(nbf);
     for (int f=0; f<nbf; f++)
@@ -90,7 +95,8 @@ void MeshTrian::readTrian (FILE* file)
         facets[f][1].resize(3);
         facets[f][2].resize(3);
         int dummy = 0;
-        (void)fscanf(file, "%d %d %d %d %d %d\n", &facets[f][0][0], &facets[f][0][1], &facets[f][0][2], &dummy, &dummy, &dummy);
+        if ( fscanf(file, "%d %d %d %d %d %d\n", &facets[f][0][0], &facets[f][0][1], &facets[f][0][2], &dummy, &dummy, &dummy) )
+            std::cerr << "Error: MeshTrian: fscanf function has encountered and error." << std::endl;
     }
 
     // announce the model statistics

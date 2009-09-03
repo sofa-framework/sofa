@@ -89,9 +89,9 @@ void MeshOBJ::readOBJ (FILE* file, const char* filename)
             if ( fgets(buf, sizeof(buf), file) == NULL)
             {
                 if (feof (file) )
-                    std::cerr << "Error: MeshOBJ: fgets function has encounter end of file." << std::endl;
+                    std::cerr << "Error: MeshOBJ: fgets function has encountered end of file." << std::endl;
                 else
-                    std::cerr << "Error: MeshOBJ: fgets function has encounter an error." << std::endl;
+                    std::cerr << "Error: MeshOBJ: fgets function has encountered an error." << std::endl;
             }
 
             break;
@@ -105,9 +105,9 @@ void MeshOBJ::readOBJ (FILE* file, const char* filename)
                 if ( fgets(buf, sizeof(buf), file) == NULL)
                 {
                     if (feof (file) )
-                        std::cerr << "Error: MeshOBJ: fgets function has encounter end of file." << std::endl;
+                        std::cerr << "Error: MeshOBJ: fgets function has encountered end of file." << std::endl;
                     else
-                        std::cerr << "Error: MeshOBJ: fgets function has encounter an error." << std::endl;
+                        std::cerr << "Error: MeshOBJ: fgets function has encountered an error." << std::endl;
                 }
                 sscanf(buf, "%lf %lf %lf", &result[0], &result[1], &result[2]);
                 vertices.push_back(Vector3(result[0],result[1], result[2]));
@@ -118,9 +118,9 @@ void MeshOBJ::readOBJ (FILE* file, const char* filename)
                 if ( fgets(buf, sizeof(buf), file) == NULL)
                 {
                     if (feof (file) )
-                        std::cerr << "Error: MeshOBJ: fgets function has encounter end of file." << std::endl;
+                        std::cerr << "Error: MeshOBJ: fgets function has encountered end of file." << std::endl;
                     else
-                        std::cerr << "Error: MeshOBJ: fgets function has encounter an error." << std::endl;
+                        std::cerr << "Error: MeshOBJ: fgets function has encountered an error." << std::endl;
                 }
                 sscanf(buf, "%lf %lf %lf", &result[0], &result[1], &result[2]);
                 normals.push_back(Vector3(result[0],result[1], result[2]));
@@ -131,9 +131,9 @@ void MeshOBJ::readOBJ (FILE* file, const char* filename)
                 if ( fgets(buf, sizeof(buf), file) == NULL)
                 {
                     if (feof (file) )
-                        std::cerr << "Error: MeshOBJ: fgets function has encounter end of file." << std::endl;
+                        std::cerr << "Error: MeshOBJ: fgets function has encountered end of file." << std::endl;
                     else
-                        std::cerr << "Error: MeshOBJ: fgets function has encounter an error." << std::endl;
+                        std::cerr << "Error: MeshOBJ: fgets function has encountered an error." << std::endl;
                 }
                 sscanf (buf, "%lf %lf", &result[0], &result[1]);
                 texCoords.push_back(Vector3(result[0],result[1], result[2]));
@@ -149,9 +149,9 @@ void MeshOBJ::readOBJ (FILE* file, const char* filename)
             if ( fgets(buf, sizeof(buf), file) == NULL)
             {
                 if (feof (file) )
-                    std::cerr << "Error: MeshOBJ: fgets function has encounter end of file." << std::endl;
+                    std::cerr << "Error: MeshOBJ: fgets function has encountered end of file." << std::endl;
                 else
-                    std::cerr << "Error: MeshOBJ: fgets function has encounter an error." << std::endl;
+                    std::cerr << "Error: MeshOBJ: fgets function has encountered an error." << std::endl;
             }
             sscanf(buf, "%s %s", buf, buf);
             //mtllibname = strdup(buf);
@@ -169,9 +169,9 @@ void MeshOBJ::readOBJ (FILE* file, const char* filename)
             if ( fgets(buf, sizeof(buf), file) == NULL)
             {
                 if (feof (file) )
-                    std::cerr << "Error: MeshOBJ: fgets function has encounter end of file." << std::endl;
+                    std::cerr << "Error: MeshOBJ: fgets function has encountered end of file." << std::endl;
                 else
-                    std::cerr << "Error: MeshOBJ: fgets function has encounter an error." << std::endl;
+                    std::cerr << "Error: MeshOBJ: fgets function has encountered an error." << std::endl;
             }
             sscanf(buf, "%s", matName);
             vector<Material>::iterator it = materials.begin();
@@ -193,9 +193,9 @@ void MeshOBJ::readOBJ (FILE* file, const char* filename)
             if ( fgets(buf, sizeof(buf), file) == NULL)
             {
                 if (feof (file) )
-                    std::cerr << "Error: MeshOBJ: fgets function has encounter end of file." << std::endl;
+                    std::cerr << "Error: MeshOBJ: fgets function has encountered end of file." << std::endl;
                 else
-                    std::cerr << "Error: MeshOBJ: fgets function has encounter an error." << std::endl;
+                    std::cerr << "Error: MeshOBJ: fgets function has encountered an error." << std::endl;
             }
             sscanf(buf, "%s", buf);
             break;
@@ -205,9 +205,9 @@ void MeshOBJ::readOBJ (FILE* file, const char* filename)
             if ( fgets(buf, sizeof(buf), file) == NULL)
             {
                 if (feof (file) )
-                    std::cerr << "Error: MeshOBJ: fgets function has encounter end of file." << std::endl;
+                    std::cerr << "Error: MeshOBJ: fgets function has encountered end of file." << std::endl;
                 else
-                    std::cerr << "Error: MeshOBJ: fgets function has encounter an error." << std::endl;
+                    std::cerr << "Error: MeshOBJ: fgets function has encountered an error." << std::endl;
             }
             token = strtok(buf, " ");
 
@@ -247,9 +247,9 @@ void MeshOBJ::readOBJ (FILE* file, const char* filename)
             if ( fgets(buf, sizeof(buf), file) == NULL)
             {
                 if (feof (file) )
-                    std::cerr << "Error: MeshOBJ: fgets function has encounter end of file." << std::endl;
+                    std::cerr << "Error: MeshOBJ: fgets function has encountered end of file." << std::endl;
                 else
-                    std::cerr << "Error: MeshOBJ: fgets function has encounter an error." << std::endl;
+                    std::cerr << "Error: MeshOBJ: fgets function has encountered an error." << std::endl;
             }
             break;
         }
@@ -310,9 +310,9 @@ void MeshOBJ::readMTL(const char* filename)
                 if ( fgets(buf, sizeof(buf), file) == NULL)
                 {
                     if (feof (file) )
-                        std::cerr << "Error: MeshOBJ: fgets function has encounter end of file." << std::endl;
+                        std::cerr << "Error: MeshOBJ: fgets function has encountered end of file." << std::endl;
                     else
-                        std::cerr << "Error: MeshOBJ: fgets function has encounter an error." << std::endl;
+                        std::cerr << "Error: MeshOBJ: fgets function has encountered an error." << std::endl;
                 }
                 break;
             case 'n':
@@ -327,9 +327,9 @@ void MeshOBJ::readMTL(const char* filename)
                 if ( fgets(buf, sizeof(buf), file) == NULL)
                 {
                     if (feof (file) )
-                        std::cerr << "Error: MeshOBJ: fgets function has encounter end of file." << std::endl;
+                        std::cerr << "Error: MeshOBJ: fgets function has encountered end of file." << std::endl;
                     else
-                        std::cerr << "Error: MeshOBJ: fgets function has encounter an error." << std::endl;
+                        std::cerr << "Error: MeshOBJ: fgets function has encountered an error." << std::endl;
                 }
                 sscanf(buf, "%s %s", buf, buf);
                 mat->name = buf;
@@ -341,13 +341,13 @@ void MeshOBJ::readMTL(const char* filename)
                 {
                     float optical_density;
                     if (fscanf(file, "%f", &optical_density) == EOF)
-                        std::cerr << "Error: MeshOBJ: fscanf has encounter an error" << std::endl;
+                        std::cerr << "Error: MeshOBJ: fscanf has encountered an error" << std::endl;
 
                     break;
                 }
                 case 's':
                     if( fscanf(file, "%f", &mat->shininess) == EOF)
-                        std::cerr << "Error: MeshOBJ: fscanf has encounter an error" << std::endl;
+                        std::cerr << "Error: MeshOBJ: fscanf has encountered an error" << std::endl;
                     // wavefront shininess is from [0, 1000], so scale for OpenGL
                     //mat->shininess /= 1000.0;
                     //mat->shininess *= 128.0;
@@ -358,9 +358,9 @@ void MeshOBJ::readMTL(const char* filename)
                     if ( fgets(buf, sizeof(buf), file) == NULL)
                     {
                         if (feof (file) )
-                            std::cerr << "Error: MeshOBJ: fgets function has encounter end of file." << std::endl;
+                            std::cerr << "Error: MeshOBJ: fgets function has encountered end of file." << std::endl;
                         else
-                            std::cerr << "Error: MeshOBJ: fgets function has encounter an error." << std::endl;
+                            std::cerr << "Error: MeshOBJ: fgets function has encountered an error." << std::endl;
                     }
                     break;
                 }
@@ -370,19 +370,19 @@ void MeshOBJ::readMTL(const char* filename)
                 {
                 case 'd':
                     if( fscanf(file, "%f %f %f", &mat->diffuse[0], &mat->diffuse[1], &mat->diffuse[2]) == EOF)
-                        std::cerr << "Error: MeshOBJ: fscanf has encounter an error" << std::endl;
+                        std::cerr << "Error: MeshOBJ: fscanf has encountered an error" << std::endl;
                     mat->useDiffuse = true;
                     /*std::cout << mat->name << " diffuse = "<<mat->diffuse[0]<<' '<<mat->diffuse[1]<<'*/ /*'<<mat->diffuse[2]<<std::endl;*/
                     break;
                 case 's':
                     if( fscanf(file, "%f %f %f", &mat->specular[0], &mat->specular[1], &mat->specular[2]) == EOF)
-                        std::cerr << "Error: MeshOBJ: fscanf has encounter an error" << std::endl;
+                        std::cerr << "Error: MeshOBJ: fscanf has encountered an error" << std::endl;
                     mat->useSpecular = true;
                     /*std::cout << mat->name << " specular = "<<mat->specular[0]<<' '<<mat->specular[1]<<'*/ /*'<<mat->specular[2]<<std::endl;*/
                     break;
                 case 'a':
                     if( fscanf(file, "%f %f %f", &mat->ambient[0], &mat->ambient[1], &mat->ambient[2]) == EOF)
-                        std::cerr << "Error: MeshOBJ: fscanf has encounter an error" << std::endl;
+                        std::cerr << "Error: MeshOBJ: fscanf has encountered an error" << std::endl;
                     mat->useAmbient = true;
                     /*std::cout << mat->name << " ambient = "<<mat->ambient[0]<<' '<<mat->ambient[1]<<'*/ /*'<<mat->ambient[2]<<std::endl;*/
                     break;
@@ -391,9 +391,9 @@ void MeshOBJ::readMTL(const char* filename)
                     fgets(buf, sizeof(buf), file);
                     {
                         if (feof (file) )
-                            std::cerr << "Error: MeshOBJ: fgets function has encounter end of file." << std::endl;
+                            std::cerr << "Error: MeshOBJ: fgets function has encountered end of file." << std::endl;
                         else
-                            std::cerr << "Error: MeshOBJ: fgets function has encounter an error." << std::endl;
+                            std::cerr << "Error: MeshOBJ: fgets function has encountered an error." << std::endl;
                     }
 
                     break;
@@ -403,16 +403,16 @@ void MeshOBJ::readMTL(const char* filename)
             case 'T':
                 // transparency value
                 if( fscanf(file, "%f", &mat->diffuse[3]) == EOF)
-                    std::cerr << "Error: MeshOBJ: fscanf has encounter an error" << std::endl;
+                    std::cerr << "Error: MeshOBJ: fscanf has encountered an error" << std::endl;
                 break;
             default:
                 /* eat up rest of line */
                 if ( fgets(buf, sizeof(buf), file) == NULL)
                 {
                     if (feof (file) )
-                        std::cerr << "Error: MeshOBJ: fgets function has encounter end of file." << std::endl;
+                        std::cerr << "Error: MeshOBJ: fgets function has encountered end of file." << std::endl;
                     else
-                        std::cerr << "Error: MeshOBJ: fgets function has encounter an error." << std::endl;
+                        std::cerr << "Error: MeshOBJ: fgets function has encountered an error." << std::endl;
                 }
                 break;
             }

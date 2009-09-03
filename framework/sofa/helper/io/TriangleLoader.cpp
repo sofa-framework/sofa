@@ -80,6 +80,8 @@ void TriangleLoader::loadTriangles(FILE *file)
     assert (file != NULL);
 
     char buf[128];
+    int result;
+
     std::vector<Vector3> normals;
     Vector3 n;
     float x, y, z;
@@ -92,7 +94,13 @@ void TriangleLoader::loadTriangles(FILE *file)
         case '#':
             /* comment */
             /* eat up rest of line */
-            fgets(buf, sizeof(buf), file);
+            if ( fgets(buf, sizeof(buf), file) == NULL)
+            {
+                if (feof (file) )
+                    std::cerr << "Error: TriangleLoader: fgets function has encountered end of file." << std::endl;
+                else
+                    std::cerr << "Error: TriangleLoader: fgets function has encountered an error." << std::endl;
+            }
             break;
         case 'v':
             /* v, vn, vt */
@@ -101,7 +109,7 @@ void TriangleLoader::loadTriangles(FILE *file)
             case '\0':
                 /* vertex */
                 //p = new Vector3();
-                fscanf(file, "%f %f %f", &x, &y, &z);
+                result = fscanf(file, "%f %f %f", &x, &y, &z);
                 addVertices(x, y, z);
 
                 // fgets(buf, sizeof(buf), file);
@@ -110,14 +118,26 @@ void TriangleLoader::loadTriangles(FILE *file)
             case 'n':
                 /* normal */
                 /* eat up rest of line */
-                fgets(buf, sizeof(buf), file);
+                if ( fgets(buf, sizeof(buf), file) == NULL)
+                {
+                    if (feof (file) )
+                        std::cerr << "Error: TriangleLoader: fgets function has encountered end of file." << std::endl;
+                    else
+                        std::cerr << "Error: TriangleLoader: fgets function has encountered an error." << std::endl;
+                }
                 //fscanf(file, "%lf %lf %lf", &(n.x), &(n.y), &(n.z));
                 //normals.push_back(n);
                 break;
             case 't':
                 /* texcoord */
                 /* eat up rest of line */
-                fgets(buf, sizeof(buf), file);
+                if ( fgets(buf, sizeof(buf), file) == NULL)
+                {
+                    if (feof (file) )
+                        std::cerr << "Error: TriangleLoader: fgets function has encountered end of file." << std::endl;
+                    else
+                        std::cerr << "Error: TriangleLoader: fgets function has encountered an error." << std::endl;
+                }
                 break;
             default:
                 printf("loadTriangles(): Unknown token \"%s\".\n", buf);
@@ -127,27 +147,45 @@ void TriangleLoader::loadTriangles(FILE *file)
             break;
         case 'm':
             /* eat up rest of line */
-            fgets(buf, sizeof(buf), file);
+            if ( fgets(buf, sizeof(buf), file) == NULL)
+            {
+                if (feof (file) )
+                    std::cerr << "Error: TriangleLoader: fgets function has encountered end of file." << std::endl;
+                else
+                    std::cerr << "Error: TriangleLoader: fgets function has encountered an error." << std::endl;
+            }
             break;
         case 'u':
             /* eat up rest of line */
-            fgets(buf, sizeof(buf), file);
+            if ( fgets(buf, sizeof(buf), file) == NULL)
+            {
+                if (feof (file) )
+                    std::cerr << "Error: TriangleLoader: fgets function has encountered end of file." << std::endl;
+                else
+                    std::cerr << "Error: TriangleLoader: fgets function has encountered an error." << std::endl;
+            }
             break;
         case 'g':
             /* eat up rest of line */
-            fgets(buf, sizeof(buf), file);
+            if ( fgets(buf, sizeof(buf), file) == NULL)
+            {
+                if (feof (file) )
+                    std::cerr << "Error: TriangleLoader: fgets function has encountered end of file." << std::endl;
+                else
+                    std::cerr << "Error: TriangleLoader: fgets function has encountered an error." << std::endl;
+            }
             break;
         case 'f':
             /* face */
-            fscanf(file, "%s", buf);
+            result = fscanf(file, "%s", buf);
             int n1, n2, n3, v1, v2, v3, t1, t2, t3;
             /* can be one of %d, %d//%d, %d/%d, %d/%d/%d %d//%d */
             if (strstr(buf, "//"))
             {
                 /* v//n */
                 sscanf(buf, "%d//%d", &v1, &n1);
-                fscanf(file, "%d//%d", &v2, &n2);
-                fscanf(file, "%d//%d", &v3, &n3);
+                result = fscanf(file, "%d//%d", &v2, &n2);
+                result = fscanf(file, "%d//%d", &v3, &n3);
                 //Triangle *t = new Triangle(vertices[v1 - 1],
                 //						   vertices[v2 - 1],
                 //						   vertices[v3 - 1],
@@ -163,8 +201,8 @@ void TriangleLoader::loadTriangles(FILE *file)
             {
                 /* v/t/n */
 
-                fscanf(file, "%d/%d/%d", &v2, &t2, &n2);
-                fscanf(file, "%d/%d/%d", &v3, &t3, &n3);
+                result = fscanf(file, "%d/%d/%d", &v2, &t2, &n2);
+                result = fscanf(file, "%d/%d/%d", &v3, &t3, &n3);
                 /* Triangle *t = new Triangle(vertices[v1 - 1],
                 						   vertices[v2 - 1],
                 						   vertices[v3 - 1],
@@ -179,8 +217,8 @@ void TriangleLoader::loadTriangles(FILE *file)
             else if (sscanf(buf, "%d/%d", &v1, &t1) == 2)
             {
                 /* v/t */
-                fscanf(file, "%d/%d", &v2, &t2);
-                fscanf(file, "%d/%d", &v3, &t3);
+                result = fscanf(file, "%d/%d", &v2, &t2);
+                result = fscanf(file, "%d/%d", &v3, &t3);
                 /* Triangle *t = new Triangle(vertices[v1 - 1],
                 						   vertices[v2 - 1],
                 						   vertices[v3 - 1],
@@ -195,9 +233,9 @@ void TriangleLoader::loadTriangles(FILE *file)
             else
             {
                 /* v */
-                sscanf(buf, "%d", &v1);
-                fscanf(file, "%d", &v2);
-                fscanf(file, "%d", &v3);
+                result = sscanf(buf, "%d", &v1);
+                result = fscanf(file, "%d", &v2);
+                result = fscanf(file, "%d", &v3);
 
                 // compute the normal
                 /* Triangle *t = new Triangle(vertices[v1 - 1],
@@ -214,7 +252,13 @@ void TriangleLoader::loadTriangles(FILE *file)
 
         default:
             /* eat up rest of line */
-            fgets(buf, sizeof(buf), file);
+            if ( fgets(buf, sizeof(buf), file) == NULL)
+            {
+                if (feof (file) )
+                    std::cerr << "Error: TriangleLoader: fgets function has encountered end of file." << std::endl;
+                else
+                    std::cerr << "Error: TriangleLoader: fgets function has encountered an error." << std::endl;
+            }
             break;
         }
     }
