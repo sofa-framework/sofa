@@ -55,7 +55,7 @@ public:
 protected:
 
     // Point coordinates in 3D in double.
-    Data< helper::vector<sofa::defaulttype::Vector3> >    positions;
+    Data< helper::vector<sofa::defaulttype::Vec<3,SReal> > > positions;
 
     // Tab of 2D elements composition
     Data< helper::vector< helper::fixed_array <unsigned int,2> > > edges;

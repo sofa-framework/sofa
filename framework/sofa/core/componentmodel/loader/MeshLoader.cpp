@@ -41,7 +41,7 @@ namespace loader
 using namespace sofa::defaulttype;
 
 MeshLoader::MeshLoader() : BaseLoader()
-    , positions(initData(&positions,"vertices","Vertices of the mesh loaded"))
+    , positions(initData(&positions,"position","Vertices of the mesh loaded"))
     , edges(initData(&edges,"edges","Edges of the mesh loaded"))
     , triangles(initData(&triangles,"triangles","Triangles of the mesh loaded"))
     , quads(initData(&quads,"quads","Quads of the mesh loaded"))

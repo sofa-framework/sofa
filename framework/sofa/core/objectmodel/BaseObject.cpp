@@ -63,6 +63,98 @@ void BaseObject::parse( BaseObjectDescription* arg )
     arg->getAttributeList(attributeList);
     for (unsigned int i=0; i<attributeList.size(); ++i)
     {
+#ifdef SOFA_DEV
+        if (attributeList[i] == "src")
+        {
+            // Parse attribute 'src' for new MeshLoader architecture.
+            const char* val = arg->getAttribute(attributeList[i]);
+            std::string valueString(val);
+
+            if(!val)
+            {
+                serr<<"ERROR: Missing argument for 'src' attribute in object: "<< this->getName() << sendl;
+                break;
+            }
+
+            if (valueString[0] != '@')
+            {
+                serr<<"ERROR: 'src' attribute value should be a link using '@' in object "<< this->getName() << sendl;
+                break;
+            }
+
+            BaseObject* obj = this;
+            BaseObject* loader = NULL;
+
+            std::size_t posAt = valueString.rfind('@');
+            if (posAt == std::string::npos) posAt = 0;
+            std::string objectName;
+
+            objectName = valueString.substr(posAt+1);
+            loader = getContext()->get<BaseObject>(objectName);
+
+            std::map < std::string, BaseData*> dataLoaderMap;
+            std::map < std::string, BaseData*>::iterator it_map;
+
+            //std::cout << "- objet en cours: " << obj->getName() << std::endl;
+            //std::cout << "- loader associe: " << objectName << std::endl;
+
+            for (unsigned int j = 0; j<loader->m_fieldVec.size(); ++j)
+            {
+                dataLoaderMap.insert (std::pair<std::string, BaseData*> (loader->m_fieldVec[j].first, loader->m_fieldVec[j].second));
+                //std::cout << "Data loader: " << j << " => " << loader->m_fieldVec[j].first << std::endl;
+            }
+
+            for (unsigned int j = 0; j<attributeList.size(); ++j)
+            {
+                //std::cout << "Data Object filled: " << attributeList[j] << std::endl;
+                it_map = dataLoaderMap.find (attributeList[j]);
+                if (it_map != dataLoaderMap.end())
+                    dataLoaderMap.erase (it_map);
+            }
+
+            // -- Temporary patch, using exceptions. TODO: use a flag to set Data not to be automatically linked. --
+            //{
+            it_map = dataLoaderMap.find ("name");
+            if (it_map != dataLoaderMap.end())
+                dataLoaderMap.erase (it_map);
+
+            it_map = dataLoaderMap.find ("type");
+            if (it_map != dataLoaderMap.end())
+                dataLoaderMap.erase (it_map);
+
+            it_map = dataLoaderMap.find ("filename");
+            if (it_map != dataLoaderMap.end())
+                dataLoaderMap.erase (it_map);
+
+            it_map = dataLoaderMap.find ("tags");
+            if (it_map != dataLoaderMap.end())
+                dataLoaderMap.erase (it_map);
+
+            it_map = dataLoaderMap.find ("printLog");
+            if (it_map != dataLoaderMap.end())
+                dataLoaderMap.erase (it_map);
+
+            it_map = dataLoaderMap.find ("listening");
+            if (it_map != dataLoaderMap.end())
+                dataLoaderMap.erase (it_map);
+            //}
+
+
+            for (it_map =dataLoaderMap.begin(); it_map != dataLoaderMap.end(); ++it_map)
+            {
+                BaseData* Data = obj->findField( (*it_map).first );
+
+                if (Data != NULL)
+                {
+                    //serr<<"Adding link for: " << (*it_map).first << sendl;
+                    Data->addInput( (*it_map).second);
+                }
+            }
+
+        }
+#endif //SOFA_DEV
+
+
         std::vector< BaseData* > dataModif = findGlobalField(attributeList[i]);
         for (unsigned int d=0; d<dataModif.size(); ++d)
         {
