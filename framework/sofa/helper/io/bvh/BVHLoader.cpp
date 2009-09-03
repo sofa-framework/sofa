@@ -118,11 +118,11 @@ BVHOffset *BVHLoader::parseOffset(FILE *f)
     double y(0);
     double z(0);
 
-    if (fscanf(f,"%lf",&x) == EOf)
+    if (fscanf(f,"%lf",&x) == EOF)
         std::cerr << "Error: BVHLoader: fscanf function has encountered and error." << std::endl;
     if (fscanf(f,"%lf",&y) == EOF)
         std::cerr << "Error: BVHLoader: fscanf function has encountered and error." << std::endl;
-    if (fscanf(f,"%lf",&z) == EOf)
+    if (fscanf(f,"%lf",&z) == EOF)
         std::cerr << "Error: BVHLoader: fscanf function has encountered and error." << std::endl;
 
     return new BVHOffset(x,y,z);
