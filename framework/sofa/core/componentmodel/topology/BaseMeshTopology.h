@@ -157,6 +157,18 @@ public:
     virtual const Hexa getHexahedron(HexaID i)       { return getHexahedra()[i]; }
     /// @}
 
+    /// Bridge from old functions (using Tetra/Tetras and Hexa/Hexas) to new ones
+    ///@{
+    virtual int getNbTetras()    { return getTetrahedra().size(); }
+    virtual int getNbHexas()     { return getHexahedra().size(); }
+
+    virtual Tetra getTetra(TetraID i)          { return getTetrahedra()[i]; }
+    virtual Hexa getHexa(HexaID i)             { return getHexahedra()[i]; }
+
+    virtual const SeqTetrahedra& getTetras() {return getTetrahedra();}
+    virtual const SeqHexahedra& getHexas() {return getHexahedra();}
+    /// @}
+
     /// @name neighbors queries
     /// @{
     /// Returns the set of edges adjacent to a given vertex.
