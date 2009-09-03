@@ -465,7 +465,7 @@ void DiagonalMass<DataTypes, MassType>::reinit()
         /*
           else if (_topology->getNbHexahedra()>0) {
 
-          // TODO : Hexas
+          // TODO : Hexahedra
           topologyType=TOPOLOGY_HEXAHEDRONSET;
           }
           else if (_topology->getNbQuads()>0) {

@@ -54,8 +54,8 @@ protected:
     Data< Real >  trianglesDamping;
     Data< Real >  quadsStiffness;
     Data< Real >  quadsDamping;
-    Data< Real >  tetrasStiffness;
-    Data< Real >  tetrasDamping;
+    Data< Real >  tetrahedraStiffness;
+    Data< Real >  tetrahedraDamping;
     Data< Real >  cubesStiffness;
     Data< Real >  cubesDamping;
 
@@ -72,8 +72,8 @@ public:
         , trianglesDamping(initData(&trianglesDamping,Real(0),"trianglesDamping","Damping for the Triangles",true))
         , quadsStiffness(initData(&quadsStiffness,Real(0),"quadsStiffness","Stiffness for the Quads",true))
         , quadsDamping(initData(&quadsDamping,Real(0),"quadsDamping","Damping for the Quads",true))
-        , tetrasStiffness(initData(&tetrasStiffness,Real(0),"tetrasStiffness","Stiffness for the Tetras",true))
-        , tetrasDamping(initData(&tetrasDamping,Real(0),"tetrasDamping","Damping for the Tetras",true))
+        , tetrahedraStiffness(initData(&tetrahedraStiffness,Real(0),"tetrahedraStiffness","Stiffness for the Tetrahedra",true))
+        , tetrahedraDamping(initData(&tetrahedraDamping,Real(0),"tetrahedraDamping","Damping for the Tetrahedra",true))
         , cubesStiffness(initData(&cubesStiffness,Real(0),"cubesStiffness","Stiffness for the Cubes",true))
         , cubesDamping(initData(&cubesDamping,Real(0),"cubesDamping","Damping for the Cubes",true))
         , localRange( initData(&localRange, defaulttype::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
@@ -83,7 +83,7 @@ public:
         addAlias(&linesStiffness,    "stiffness"); addAlias(&linesDamping,    "damping");
         addAlias(&trianglesStiffness,"stiffness"); addAlias(&trianglesDamping,"damping");
         addAlias(&quadsStiffness,    "stiffness"); addAlias(&quadsDamping,    "damping");
-        addAlias(&tetrasStiffness,   "stiffness"); addAlias(&tetrasDamping,   "damping");
+        addAlias(&tetrahedraStiffness,   "stiffness"); addAlias(&tetrahedraDamping,   "damping");
         addAlias(&cubesStiffness,    "stiffness"); addAlias(&cubesDamping,    "damping");
     }
 
@@ -96,14 +96,14 @@ public:
     Real getLinesStiffness() const { return linesStiffness.getValue(); }
     Real getTrianglesStiffness() const { return trianglesStiffness.getValue(); }
     Real getQuadsStiffness() const { return quadsStiffness.getValue(); }
-    Real getTetrahedraStiffness() const { return tetrasStiffness.getValue(); }
+    Real getTetrahedraStiffness() const { return tetrahedraStiffness.getValue(); }
     Real getCubesStiffness() const { return cubesStiffness.getValue(); }
     void setStiffness(Real val)
     {
         linesStiffness.setValue(val);
         trianglesStiffness.setValue(val);
         quadsStiffness.setValue(val);
-        tetrasStiffness.setValue(val);
+        tetrahedraStiffness.setValue(val);
         cubesStiffness.setValue(val);
     }
     void setLinesStiffness(Real val)
@@ -118,9 +118,9 @@ public:
     {
         quadsStiffness.setValue(val);
     }
-    void setTetrasStiffness(Real val)
+    void setTetrahedraStiffness(Real val)
     {
-        tetrasStiffness.setValue(val);
+        tetrahedraStiffness.setValue(val);
     }
     void setCubesStiffness(Real val)
     {
@@ -131,14 +131,14 @@ public:
     Real getLinesDamping() const { return linesDamping.getValue(); }
     Real getTrianglesDamping() const { return trianglesDamping.getValue(); }
     Real getQuadsDamping() const { return quadsDamping.getValue(); }
-    Real getTetrahedraDamping() const { return tetrasDamping.getValue(); }
+    Real getTetrahedraDamping() const { return tetrahedraDamping.getValue(); }
     Real getCubesDamping() const { return cubesDamping.getValue(); }
     void setDamping(Real val)
     {
         linesDamping.setValue(val);
         trianglesDamping.setValue(val);
         quadsDamping.setValue(val);
-        tetrasDamping.setValue(val);
+        tetrahedraDamping.setValue(val);
         cubesDamping.setValue(val);
     }
     void setLinesDamping(Real val)
@@ -153,9 +153,9 @@ public:
     {
         quadsDamping.setValue(val);
     }
-    void setTetrasDamping(Real val)
+    void setTetrahedraDamping(Real val)
     {
-        tetrasDamping.setValue(val);
+        tetrahedraDamping.setValue(val);
     }
     void setCubesDamping(Real val)
     {

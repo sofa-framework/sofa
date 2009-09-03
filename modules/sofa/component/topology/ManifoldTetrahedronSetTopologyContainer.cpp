@@ -55,8 +55,8 @@ const unsigned int edgesInTetrahedronArray[6][2] = {{0,1}, {0,2}, {0,3}, {1,2}, 
 
 ManifoldTetrahedronSetTopologyContainer::ManifoldTetrahedronSetTopologyContainer()
     : TetrahedronSetTopologyContainer()// draw to be restored
-    //, d_tetrahedron(initDataPtr(&d_tetrahedron, &m_tetrahedron, "tetras", "List of tetrahedron indices"))
-    //, _draw(initData(&_draw, false, "drawTetras","if true, draw the tetr46ahedrons in the topology"))
+    //, d_tetrahedron(initDataPtr(&d_tetrahedron, &m_tetrahedron, "tetrahedra", "List of tetrahedron indices"))
+    //, _draw(initData(&_draw, false, "drawTetrahedra","if true, draw the tetr46ahedrons in the topology"))
 {
     debugViewIndices=this->initData(&debugViewIndices, (bool) false, "debugViewTriangleIndices", "Debug : view triangles indices");
     debugViewIndicesTetra=this->initData(&debugViewIndicesTetra, (bool) false, "debugViewTetraIndices", "Debug : view tetra indices");
@@ -66,7 +66,7 @@ ManifoldTetrahedronSetTopologyContainer::ManifoldTetrahedronSetTopologyContainer
 ManifoldTetrahedronSetTopologyContainer::ManifoldTetrahedronSetTopologyContainer(const sofa::helper::vector< Tetrahedron >& tetrahedra )
     : TetrahedronSetTopologyContainer( tetrahedra)
     //, m_tetrahedron( tetrahedra )
-    //, d_tetrahedron(initDataPtr(&d_tetrahedron, &m_tetrahedron, "tetras", "List of tetrahedron indices"))
+    //, d_tetrahedron(initDataPtr(&d_tetrahedron, &m_tetrahedron, "tetrahedra", "List of tetrahedron indices"))
 {
 
 }
@@ -472,7 +472,7 @@ int ManifoldTetrahedronSetTopologyContainer::getTriangleTetrahedronOrientation (
 
 
 
-  for(TetraID i = 0; i < m_nbTetras; ++i)
+  for(TetraID i = 0; i < m_nbTetrahedra; ++i)
   {
   const Tetra& t = m_topo->getTetrahedron(i);
   const TrianglesInTetrahedron& tFaces = m_topo->getTrianglesInTetrahedron(i);

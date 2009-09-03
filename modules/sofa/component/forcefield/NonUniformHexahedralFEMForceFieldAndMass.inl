@@ -248,7 +248,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleTopologyChange(core::com
         }
         break;
 
-        // the structure of the coarse hexas has changed
+        // the structure of the coarse hexahedra has changed
         // subtract the contributions of removed voxels
         case ((core::componentmodel::topology::TopologyChangeType) component::topology::MultilevelModification::MULTILEVEL_MODIFICATION) :
         {
@@ -272,7 +272,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleHexaAdded(const Hexahedr
     std::cout << "HEXAHEDRAADDED hexaId: " << hexaModif << std::endl;
 #endif
 
-    const VecElement& hexas = this->_topology->getHexahedra();
+    const VecElement& hexahedra = this->_topology->getHexahedra();
 
     switch(this->method)
     {
@@ -299,7 +299,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleHexaAdded(const Hexahedr
         Real mass = this->_elementTotalMass.getValue()[hexaId] * (Real) 0.125;
 
         for(int w=0; w<8; ++w)
-            particleMasses[ hexas[hexaId][w] ] += mass;
+            particleMasses[ hexahedra[hexaId][w] ] += mass;
     }
 
     this->_particleMasses.endEdit();
@@ -317,9 +317,9 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleHexaAdded(const Hexahedr
             {
                 for(int j=0; j<8*3; ++j)
                 {
-                    lumpedMasses[ hexas[hexaId][w] ][0] += mass[w*3  ][j];
-                    lumpedMasses[ hexas[hexaId][w] ][1] += mass[w*3+1][j];
-                    lumpedMasses[ hexas[hexaId][w] ][2] += mass[w*3+2][j];
+                    lumpedMasses[ hexahedra[hexaId][w] ][0] += mass[w*3  ][j];
+                    lumpedMasses[ hexahedra[hexaId][w] ][1] += mass[w*3+1][j];
+                    lumpedMasses[ hexahedra[hexaId][w] ][2] += mass[w*3+2][j];
                 }
             }
         }
@@ -337,7 +337,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleHexaRemoved(const Hexahe
     std::cout << "HEXAHEDRAREMOVED hexaId: " << hexaModif << std::endl;
 #endif
 
-    const VecElement& hexas = this->_topology->getHexahedra();
+    const VecElement& hexahedra = this->_topology->getHexahedra();
     helper::vector<Real>&	particleMasses = *this->_particleMasses.beginEdit();
 
     for(unsigned int i=0; i<hexaModif.size(); ++i)
@@ -347,7 +347,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleHexaRemoved(const Hexahe
         Real mass = this->_elementTotalMass.getValue()[hexaId] * (Real) 0.125;
 
         for(int w=0; w<8; ++w)
-            particleMasses[ hexas[hexaId][w] ] -= mass;
+            particleMasses[ hexahedra[hexaId][w] ] -= mass;
     }
 
     this->_particleMasses.endEdit();
@@ -365,9 +365,9 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleHexaRemoved(const Hexahe
             {
                 for(int j=0; j<8*3; ++j)
                 {
-                    lumpedMasses[ hexas[hexaId][w] ][0] -= mass[w*3  ][j];
-                    lumpedMasses[ hexas[hexaId][w] ][1] -= mass[w*3+1][j];
-                    lumpedMasses[ hexas[hexaId][w] ][2] -= mass[w*3+2][j];
+                    lumpedMasses[ hexahedra[hexaId][w] ][0] -= mass[w*3  ][j];
+                    lumpedMasses[ hexahedra[hexaId][w] ][1] -= mass[w*3+1][j];
+                    lumpedMasses[ hexahedra[hexaId][w] ][2] -= mass[w*3+2][j];
                 }
             }
         }
@@ -385,7 +385,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleMultilevelModif(const Mu
     std::cout << "MULTILEVEL_MODIFICATION hexaId: " << hexaModif << std::endl;
 #endif
 
-    const VecElement& hexas = this->_topology->getHexahedra();
+    const VecElement& hexahedra = this->_topology->getHexahedra();
 
     const int level = _multilevelTopology->getLevel();
     const int coarseNodeSize = (1 << level);
@@ -431,7 +431,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleMultilevelModif(const Mu
         const Real partMass = totalMass * (Real) 0.125;
 
         for(int w=0; w<8; ++w)
-            particleMasses[ hexas[hexaId][w] ] -= partMass;
+            particleMasses[ hexahedra[hexaId][w] ] -= partMass;
 
         if( this->_useLumpedMass.getValue() )
         {
@@ -439,9 +439,9 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleMultilevelModif(const Mu
             {
                 for(int j=0; j<8*3; ++j)
                 {
-                    lumpedMasses[ hexas[hexaId][w] ][0] -= M[w*3  ][j];
-                    lumpedMasses[ hexas[hexaId][w] ][1] -= M[w*3+1][j];
-                    lumpedMasses[ hexas[hexaId][w] ][2] -= M[w*3+2][j];
+                    lumpedMasses[ hexahedra[hexaId][w] ][0] -= M[w*3  ][j];
+                    lumpedMasses[ hexahedra[hexaId][w] ][1] -= M[w*3+1][j];
+                    lumpedMasses[ hexahedra[hexaId][w] ][2] -= M[w*3+2][j];
                 }
             }
         }

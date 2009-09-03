@@ -1717,7 +1717,7 @@ void HexahedronCompositeFEMForceFieldAndMass<T>::computeMechanicalMatricesRecurs
 // 			  }
 
 
-        helper::fixed_array<helper::vector<helper::fixed_array<int,8 > >,8 > finerChildrenRamification; // listes des hexas � chaque position, avec des indices fictifs pour les vides
+        helper::fixed_array<helper::vector<helper::fixed_array<int,8 > >,8 > finerChildrenRamification; // listes des hexahedra � chaque position, avec des indices fictifs pour les vides
         helper::fixed_array<helper::vector<bool>,8 > isFinerChildrenVirtual; // a boolean, true if ficitf, only created for void
         for ( int i=0; i<8; ++i) //for 8 virtual finer element positions
         {

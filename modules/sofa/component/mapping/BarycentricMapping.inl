@@ -308,7 +308,7 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
 {
     int outside = 0;
 
-    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra& tetras = this->topology->getTetrahedra();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = this->topology->getTetrahedra();
 #ifdef SOFA_NEW_HEXA
     const sofa::core::componentmodel::topology::BaseMeshTopology::SeqHexahedra& cubes = this->topology->getHexahedra();
 #else
@@ -318,7 +318,7 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
     const sofa::core::componentmodel::topology::BaseMeshTopology::SeqQuads& quads = this->topology->getQuads();
     sofa::helper::vector<Matrix3> bases;
     sofa::helper::vector<Vector3> centers;
-    if ( tetras.empty() && cubes.empty() )
+    if ( tetrahedra.empty() && cubes.empty() )
     {
         if ( triangles.empty() && quads.empty() )
         {
@@ -419,18 +419,18 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
     else
     {
         clear3d ( out.size() ); // reserve space for 3D mapping
-        int c0 = tetras.size();
-        bases.resize ( tetras.size() +cubes.size() );
-        centers.resize ( tetras.size() +cubes.size() );
-        for ( unsigned int t = 0; t < tetras.size(); t++ )
+        int c0 = tetrahedra.size();
+        bases.resize ( tetrahedra.size() +cubes.size() );
+        centers.resize ( tetrahedra.size() +cubes.size() );
+        for ( unsigned int t = 0; t < tetrahedra.size(); t++ )
         {
             Mat3x3d m,mt;
-            m[0] = in[tetras[t][1]]-in[tetras[t][0]];
-            m[1] = in[tetras[t][2]]-in[tetras[t][0]];
-            m[2] = in[tetras[t][3]]-in[tetras[t][0]];
+            m[0] = in[tetrahedra[t][1]]-in[tetrahedra[t][0]];
+            m[1] = in[tetrahedra[t][2]]-in[tetrahedra[t][0]];
+            m[2] = in[tetrahedra[t][3]]-in[tetrahedra[t][0]];
             mt.transpose ( m );
             bases[t].invert ( mt );
-            centers[t] = ( in[tetras[t][0]]+in[tetras[t][1]]+in[tetras[t][2]]+in[tetras[t][3]] ) *0.25;
+            centers[t] = ( in[tetrahedra[t][0]]+in[tetrahedra[t][1]]+in[tetrahedra[t][2]]+in[tetrahedra[t][3]] ) *0.25;
             //sout << "Tetra "<<t<<" center="<<centers[t]<<" base="<<m<<sendl;
         }
         for ( unsigned int c = 0; c < cubes.size(); c++ )
@@ -453,9 +453,9 @@ void BarycentricMapperMeshTopology<In,Out>::init ( const typename Out::VecCoord&
             Vector3 coefs;
             int index = -1;
             double distance = 1e10;
-            for ( unsigned int t = 0; t < tetras.size(); t++ )
+            for ( unsigned int t = 0; t < tetrahedra.size(); t++ )
             {
-                Vector3 v = bases[t] * ( pos - in[tetras[t][0]] );
+                Vector3 v = bases[t] * ( pos - in[tetrahedra[t][0]] );
                 double d = std::max ( std::max ( -v[0],-v[1] ),std::max ( -v[2],v[0]+v[1]+v[2]-1 ) );
                 if ( d>0 ) d = ( pos-centers[t] ).norm2();
                 if ( d<distance ) { coefs = v; distance = d; index = t; }
@@ -732,23 +732,23 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::init ( const typename Out:
     _container->getContext()->get ( _geomAlgo );
 
     int outside = 0;
-    const sofa::helper::vector<topology::Tetrahedron>& tetras = this->topology->getTetrahedra();
+    const sofa::helper::vector<topology::Tetrahedron>& tetrahedra = this->topology->getTetrahedra();
 
     sofa::helper::vector<Matrix3> bases;
     sofa::helper::vector<Vector3> centers;
 
     clear ( out.size() );
-    bases.resize ( tetras.size() );
-    centers.resize ( tetras.size() );
-    for ( unsigned int t = 0; t < tetras.size(); t++ )
+    bases.resize ( tetrahedra.size() );
+    centers.resize ( tetrahedra.size() );
+    for ( unsigned int t = 0; t < tetrahedra.size(); t++ )
     {
         Mat3x3d m,mt;
-        m[0] = in[tetras[t][1]]-in[tetras[t][0]];
-        m[1] = in[tetras[t][2]]-in[tetras[t][0]];
-        m[2] = in[tetras[t][3]]-in[tetras[t][0]];
+        m[0] = in[tetrahedra[t][1]]-in[tetrahedra[t][0]];
+        m[1] = in[tetrahedra[t][2]]-in[tetrahedra[t][0]];
+        m[2] = in[tetrahedra[t][3]]-in[tetrahedra[t][0]];
         mt.transpose ( m );
         bases[t].invert ( mt );
-        centers[t] = ( in[tetras[t][0]]+in[tetras[t][1]]+in[tetras[t][2]]+in[tetras[t][3]] ) *0.25;
+        centers[t] = ( in[tetrahedra[t][0]]+in[tetrahedra[t][1]]+in[tetrahedra[t][2]]+in[tetrahedra[t][3]] ) *0.25;
     }
 
     for ( unsigned int i=0; i<out.size(); i++ )
@@ -757,9 +757,9 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::init ( const typename Out:
         Vector3 coefs;
         int index = -1;
         double distance = 1e10;
-        for ( unsigned int t = 0; t < tetras.size(); t++ )
+        for ( unsigned int t = 0; t < tetrahedra.size(); t++ )
         {
-            Vec3d v = bases[t] * ( pos - in[tetras[t][0]] );
+            Vec3d v = bases[t] * ( pos - in[tetrahedra[t][0]] );
             double d = std::max ( std::max ( -v[0],-v[1] ),std::max ( -v[2],v[0]+v[1]+v[2]-1 ) );
             if ( d>0 ) d = ( pos-centers[t] ).norm2();
             if ( d<distance ) { coefs = v; distance = d; index = t; }
@@ -1006,7 +1006,7 @@ void BarycentricMapperMeshTopology<In,Out>::apply ( typename Out::VecCoord& out,
     const sofa::core::componentmodel::topology::BaseMeshTopology::SeqLines& lines = this->topology->getLines();
     const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles& triangles = this->topology->getTriangles();
     const sofa::core::componentmodel::topology::BaseMeshTopology::SeqQuads& quads = this->topology->getQuads();
-    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra& tetras = this->topology->getTetrahedra();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = this->topology->getTetrahedra();
 #ifdef SOFA_NEW_HEXA
     const sofa::core::componentmodel::topology::BaseMeshTopology::SeqHexahedra& cubes = this->topology->getHexahedra();
 #else
@@ -1054,7 +1054,7 @@ void BarycentricMapperMeshTopology<In,Out>::apply ( typename Out::VecCoord& out,
     // 3D elements
     {
         const int i0 = map1d.size() + map2d.size();
-        const int c0 = tetras.size();
+        const int c0 = tetrahedra.size();
         for ( unsigned int i=0; i<map3d.size(); i++ )
         {
             const Real fx = map3d[i].baryCoords[0];
@@ -1063,7 +1063,7 @@ void BarycentricMapperMeshTopology<In,Out>::apply ( typename Out::VecCoord& out,
             int index = map3d[i].in_index;
             if ( index<c0 )
             {
-                const sofa::core::componentmodel::topology::BaseMeshTopology::Tetra& tetra = tetras[index];
+                const sofa::core::componentmodel::topology::BaseMeshTopology::Tetra& tetra = tetrahedra[index];
                 out[i+i0] = in[tetra[0]] * ( 1-fx-fy-fz )
                         + in[tetra[1]] * fx
                         + in[tetra[2]] * fy
@@ -1238,14 +1238,14 @@ template <class In, class Out>
 void BarycentricMapperTetrahedronSetTopology<In,Out>::apply ( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
     out.resize ( map.getValue().size() );
-    const sofa::helper::vector<topology::Tetrahedron>& tetras = this->topology->getTetrahedra();
+    const sofa::helper::vector<topology::Tetrahedron>& tetrahedra = this->topology->getTetrahedra();
     for ( unsigned int i=0; i<map.getValue().size(); i++ )
     {
         const Real fx = map.getValue()[i].baryCoords[0];
         const Real fy = map.getValue()[i].baryCoords[1];
         const Real fz = map.getValue()[i].baryCoords[2];
         int index = map.getValue()[i].in_index;
-        const topology::Tetrahedron& tetra = tetras[index];
+        const topology::Tetrahedron& tetra = tetrahedra[index];
         out[i] = in[tetra[0]] * ( 1-fx-fy-fz )
                 + in[tetra[1]] * fx
                 + in[tetra[2]] * fy
@@ -1324,7 +1324,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJ ( typename Out::VecDeriv& out
     const sofa::core::componentmodel::topology::BaseMeshTopology::SeqLines& lines = this->topology->getLines();
     const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles& triangles = this->topology->getTriangles();
     const sofa::core::componentmodel::topology::BaseMeshTopology::SeqQuads& quads = this->topology->getQuads();
-    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra& tetras = this->topology->getTetrahedra();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = this->topology->getTetrahedra();
 #ifdef SOFA_NEW_HEXA
     const sofa::core::componentmodel::topology::BaseMeshTopology::SeqHexahedra& cubes = this->topology->getHexahedra();
 #else
@@ -1375,7 +1375,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJ ( typename Out::VecDeriv& out
         // 3D elements
         {
             const int i0 = map1d.size() + map2d.size();
-            const int c0 = tetras.size();
+            const int c0 = tetrahedra.size();
             for ( unsigned int i=0; i<map3d.size(); i++ )
             {
                 const Real fx = map3d[i].baryCoords[0];
@@ -1384,7 +1384,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJ ( typename Out::VecDeriv& out
                 int index = map3d[i].in_index;
                 if ( index<c0 )
                 {
-                    const sofa::core::componentmodel::topology::BaseMeshTopology::Tetra& tetra = tetras[index];
+                    const sofa::core::componentmodel::topology::BaseMeshTopology::Tetra& tetra = tetrahedra[index];
                     out[i+i0] = in[tetra[0]] * ( 1-fx-fy-fz )
                             + in[tetra[1]] * fx
                             + in[tetra[2]] * fy
@@ -1477,14 +1477,14 @@ void BarycentricMapperMeshTopology<In,Out>::applyJ ( typename Out::VecDeriv& out
             else if (i < idxStart3)
             {
                 const int i0 = idxStart2;
-                const int c0 = tetras.size();
+                const int c0 = tetrahedra.size();
                 const Real fx = map3d[i-i0].baryCoords[0];
                 const Real fy = map3d[i-i0].baryCoords[1];
                 const Real fz = map3d[i-i0].baryCoords[2];
                 int index = map3d[i-i0].in_index;
                 if ( index<c0 )
                 {
-                    const sofa::core::componentmodel::topology::BaseMeshTopology::Tetra& tetra = tetras[index];
+                    const sofa::core::componentmodel::topology::BaseMeshTopology::Tetra& tetra = tetrahedra[index];
                     out[i] = in[tetra[0]] * ( 1-fx-fy-fz )
                             + in[tetra[1]] * fx
                             + in[tetra[2]] * fy
@@ -1799,7 +1799,7 @@ template <class In, class Out>
 void BarycentricMapperTetrahedronSetTopology<In,Out>::applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
     out.resize ( map.getValue().size() );
-    const sofa::helper::vector<topology::Tetrahedron>& tetras = this->topology->getTetrahedra();
+    const sofa::helper::vector<topology::Tetrahedron>& tetrahedra = this->topology->getTetrahedra();
 
 
     if ((!maskTo)||(maskTo&& !(maskTo->isInUse())) )
@@ -1810,7 +1810,7 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::applyJ ( typename Out::Vec
             const Real fy = map.getValue()[i].baryCoords[1];
             const Real fz = map.getValue()[i].baryCoords[2];
             int index = map.getValue()[i].in_index;
-            const topology::Tetrahedron& tetra = tetras[index];
+            const topology::Tetrahedron& tetra = tetrahedra[index];
             out[i] = in[tetra[0]] * ( 1-fx-fy-fz )
                     + in[tetra[1]] * fx
                     + in[tetra[2]] * fy
@@ -1831,7 +1831,7 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::applyJ ( typename Out::Vec
             const Real fy = map.getValue()[i].baryCoords[1];
             const Real fz = map.getValue()[i].baryCoords[2];
             int index = map.getValue()[i].in_index;
-            const topology::Tetrahedron& tetra = tetras[index];
+            const topology::Tetrahedron& tetra = tetrahedra[index];
             out[i] = in[tetra[0]] * ( 1-fx-fy-fz )
                     + in[tetra[1]] * fx
                     + in[tetra[2]] * fy
@@ -1911,7 +1911,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::VecDeriv& out
     const sofa::core::componentmodel::topology::BaseMeshTopology::SeqLines& lines = this->topology->getLines();
     const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles& triangles = this->topology->getTriangles();
     const sofa::core::componentmodel::topology::BaseMeshTopology::SeqQuads& quads = this->topology->getQuads();
-    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra& tetras = this->topology->getTetrahedra();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = this->topology->getTetrahedra();
 #ifdef SOFA_NEW_HEXA
     const sofa::core::componentmodel::topology::BaseMeshTopology::SeqHexahedra& cubes = this->topology->getHexahedra();
 #else
@@ -1967,7 +1967,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::VecDeriv& out
         // 3D elements
         {
             const int i0 = map1d.size() + map2d.size();
-            const int c0 = tetras.size();
+            const int c0 = tetrahedra.size();
             for ( unsigned int i=0; i<map3d.size(); i++ )
             {
                 const typename Out::Deriv v = in[i+i0];
@@ -1977,7 +1977,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::VecDeriv& out
                 int index = map3d[i].in_index;
                 if ( index<c0 )
                 {
-                    const sofa::core::componentmodel::topology::BaseMeshTopology::Tetra& tetra = tetras[index];
+                    const sofa::core::componentmodel::topology::BaseMeshTopology::Tetra& tetra = tetrahedra[index];
                     out[tetra[0]] += v * ( 1-fx-fy-fz );
                     out[tetra[1]] += v * fx;
                     out[tetra[2]] += v * fy;
@@ -2077,7 +2077,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::VecDeriv& out
             else if (i < i1d+i2d+i3d)
             {
                 const int i0 = map1d.size() + map2d.size();
-                const int c0 = tetras.size();
+                const int c0 = tetrahedra.size();
                 const typename Out::Deriv v = in[i];
                 const OutReal fx = ( OutReal ) map3d[i-i0].baryCoords[0];
                 const OutReal fy = ( OutReal ) map3d[i-i0].baryCoords[1];
@@ -2085,7 +2085,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::VecDeriv& out
                 int index = map3d[i-i0].in_index;
                 if ( index<c0 )
                 {
-                    const sofa::core::componentmodel::topology::BaseMeshTopology::Tetra& tetra = tetras[index];
+                    const sofa::core::componentmodel::topology::BaseMeshTopology::Tetra& tetra = tetrahedra[index];
                     out[tetra[0]] += v * ( 1-fx-fy-fz );
                     out[tetra[1]] += v * fx;
                     out[tetra[2]] += v * fy;
@@ -2450,7 +2450,7 @@ void BarycentricMapperQuadSetTopology<In,Out>::applyJT ( typename In::VecDeriv& 
 template <class In, class Out>
 void BarycentricMapperTetrahedronSetTopology<In,Out>::applyJT ( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
-    const sofa::helper::vector<topology::Tetrahedron>& tetras = this->topology->getTetrahedra();
+    const sofa::helper::vector<topology::Tetrahedron>& tetrahedra = this->topology->getTetrahedra();
 
     if ((!maskTo)||(maskTo&& !(maskTo->isInUse())) )
     {
@@ -2462,7 +2462,7 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::applyJT ( typename In::Vec
             const OutReal fy = ( OutReal ) map.getValue()[i].baryCoords[1];
             const OutReal fz = ( OutReal ) map.getValue()[i].baryCoords[2];
             int index = map.getValue()[i].in_index;
-            const topology::Tetrahedron& tetra = tetras[index];
+            const topology::Tetrahedron& tetra = tetrahedra[index];
             out[tetra[0]] += v * ( 1-fx-fy-fz );
             out[tetra[1]] += v * fx;
             out[tetra[2]] += v * fy;
@@ -2484,7 +2484,7 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::applyJT ( typename In::Vec
             const OutReal fy = ( OutReal ) map.getValue()[i].baryCoords[1];
             const OutReal fz = ( OutReal ) map.getValue()[i].baryCoords[2];
             int index = map.getValue()[i].in_index;
-            const topology::Tetrahedron& tetra = tetras[index];
+            const topology::Tetrahedron& tetra = tetrahedra[index];
             out[tetra[0]] += v * ( 1-fx-fy-fz );
             out[tetra[1]] += v * fx;
             out[tetra[2]] += v * fy;
@@ -2594,7 +2594,7 @@ void BarycentricMapperMeshTopology<In,Out>::draw ( const typename Out::VecCoord&
     const sofa::core::componentmodel::topology::BaseMeshTopology::SeqLines& lines = this->topology->getLines();
     const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles& triangles = this->topology->getTriangles();
     const sofa::core::componentmodel::topology::BaseMeshTopology::SeqQuads& quads = this->topology->getQuads();
-    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra& tetras = this->topology->getTetrahedra();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = this->topology->getTetrahedra();
 #ifdef SOFA_NEW_HEXA
     const sofa::core::componentmodel::topology::BaseMeshTopology::SeqHexahedra& cubes = this->topology->getHexahedra();
 #else
@@ -2674,7 +2674,7 @@ void BarycentricMapperMeshTopology<In,Out>::draw ( const typename Out::VecCoord&
     // 3D elements
     {
         const int i0 = map1d.size() +map2d.size();
-        const int c0 = tetras.size();
+        const int c0 = tetrahedra.size();
         for ( unsigned int i=0; i<map3d.size(); i++ )
         {
             const Real fx = map3d[i].baryCoords[0];
@@ -2683,7 +2683,7 @@ void BarycentricMapperMeshTopology<In,Out>::draw ( const typename Out::VecCoord&
             int index = map3d[i].in_index;
             if ( index<c0 )
             {
-                const sofa::core::componentmodel::topology::BaseMeshTopology::Tetra& tetra = tetras[index];
+                const sofa::core::componentmodel::topology::BaseMeshTopology::Tetra& tetra = tetrahedra[index];
                 Real f[4];
                 f[0] = ( 1-fx-fy-fz );
                 f[1] = fx;
@@ -2935,7 +2935,7 @@ void BarycentricMapperQuadSetTopology<In,Out>::draw ( const typename Out::VecCoo
 template <class In, class Out>
 void BarycentricMapperTetrahedronSetTopology<In,Out>::draw ( const typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
-    const sofa::helper::vector<topology::Tetrahedron>& tetras = this->topology->getTetrahedra();
+    const sofa::helper::vector<topology::Tetrahedron>& tetrahedra = this->topology->getTetrahedra();
 
     std::vector< Vector3 > points;
     {
@@ -2945,7 +2945,7 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::draw ( const typename Out:
             const Real fy = map.getValue()[i].baryCoords[1];
             const Real fz = map.getValue()[i].baryCoords[2];
             int index = map.getValue()[i].in_index;
-            const topology::Tetrahedron& tetra = tetras[index];
+            const topology::Tetrahedron& tetra = tetrahedra[index];
             Real f[4];
             f[0] = ( 1-fx-fy-fz );
             f[1] = fx;
@@ -3025,7 +3025,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::VecConst& out
     const sofa::core::componentmodel::topology::BaseMeshTopology::SeqLines& lines = this->topology->getLines();
     const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles& triangles = this->topology->getTriangles();
     const sofa::core::componentmodel::topology::BaseMeshTopology::SeqQuads& quads = this->topology->getQuads();
-    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra& tetras = this->topology->getTetrahedra();
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = this->topology->getTetrahedra();
 #ifdef SOFA_NEW_HEXA
     const sofa::core::componentmodel::topology::BaseMeshTopology::SeqHexahedra& cubes = this->topology->getHexahedra();
 #else
@@ -3034,7 +3034,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::VecConst& out
     //const int iLine = lines.size();
     const int iTri = triangles.size();
     //const int iQuad = quads.size();
-    const int iTetra= tetras.size();
+    const int iTetra= tetrahedra.size();
     //const int iCube = cubes.size();
 
     const int i1d = map1d.size();
@@ -3098,7 +3098,7 @@ void BarycentricMapperMeshTopology<In,Out>::applyJT ( typename In::VecConst& out
                 int index = map3d[indexIn].in_index;
                 if ( index < iTetra ) // tetra
                 {
-                    const sofa::core::componentmodel::topology::BaseMeshTopology::Tetra& tetra = tetras[index];
+                    const sofa::core::componentmodel::topology::BaseMeshTopology::Tetra& tetra = tetrahedra[index];
                     out[i+offset].add ( tetra[0], data * ( 1-fx-fy-fz ) );
                     out[i+offset].add ( tetra[1], data * fx );
                     out[i+offset].add ( tetra[2], data * fy );
@@ -3374,7 +3374,7 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::applyJT ( typename In::Vec
 {
     int offset = out.size();
     out.resize ( offset+in.size() );
-    const sofa::helper::vector<topology::Tetrahedron>& tetras = this->topology->getTetrahedra();
+    const sofa::helper::vector<topology::Tetrahedron>& tetrahedra = this->topology->getTetrahedra();
 
     for ( unsigned int i=0; i<in.size(); i++ )
     {
@@ -3390,7 +3390,7 @@ void BarycentricMapperTetrahedronSetTopology<In,Out>::applyJT ( typename In::Vec
             const OutReal fy = ( OutReal ) map.getValue()[indexIn].baryCoords[1];
             const OutReal fz = ( OutReal ) map.getValue()[indexIn].baryCoords[2];
             int index = map.getValue()[indexIn].in_index;
-            const topology::Tetrahedron& tetra = tetras[index];
+            const topology::Tetrahedron& tetra = tetrahedra[index];
             out[i+offset].add (tetra[0], data * ( 1-fx-fy-fz ) );
             out[i+offset].add (tetra[1], data * fx );
             out[i+offset].add (tetra[2], data * fy );
@@ -3651,7 +3651,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
         case core::componentmodel::topology::HEXAHEDRAREMOVED:   ///< For HexahedraRemoved.
         {
 // std::cout << "BarycentricMapperHexahedronSetTopology() HEXAHEDRAREMOVED" << std::endl;
-            const unsigned int nbHexas = this->topology->getNbHexahedra();
+            const unsigned int nbHexahedra = this->topology->getNbHexahedra();
 
             const sofa::helper::vector<unsigned int> &hexahedra = ( static_cast< const component::topology::HexahedraRemoved *> ( *changeIt ) )->getArray();
 //        sofa::helper::vector<unsigned int> hexahedra(tab);
@@ -3684,7 +3684,7 @@ void BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
             }
 
             // renumber
-            unsigned int lastCubeId = nbHexas-1;
+            unsigned int lastCubeId = nbHexahedra-1;
             for ( unsigned int i=0; i<hexahedra.size(); ++i, --lastCubeId )
             {
                 unsigned int cubeId = hexahedra[i];

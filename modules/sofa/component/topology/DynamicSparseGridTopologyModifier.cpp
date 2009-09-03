@@ -53,8 +53,8 @@ void DynamicSparseGridTopologyModifier::init()
 }
 
 
-//TODO// find a solution for this case !!!! Modifier can not access to the DOF and can not compute the indices of the added hexas.
-// We have to find a way to automaticaly compute the indices of the added hexas to update the map 'm_m_DynContainer->idInRegularGrid2Hexa'
+//TODO// find a solution for this case !!!! Modifier can not access to the DOF and can not compute the indices of the added hexahedra.
+// We have to find a way to automaticaly compute the indices of the added hexahedra to update the map 'm_m_DynContainer->idInRegularGrid2Hexa'
 void DynamicSparseGridTopologyModifier::addHexahedraProcess ( const sofa::helper::vector< Hexahedron > &hexahedra )
 {
     HexahedronSetTopologyModifier::addHexahedraProcess ( hexahedra );

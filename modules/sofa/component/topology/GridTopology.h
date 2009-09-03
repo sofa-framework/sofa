@@ -106,7 +106,7 @@ protected:
     virtual void setSize();
     virtual void updateEdges();
     virtual void updateQuads();
-    virtual void updateHexas();
+    virtual void updateHexahedra();
 };
 
 } // namespace topology

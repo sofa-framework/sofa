@@ -109,9 +109,9 @@ int DynamicSparseGridGeometryAlgorithms<DataTypes>::findNearestElementInRestPos(
     }
     if( index == -1)
     {
-        // Dans le cas de projection ou autre.... il se peut que la zone ciblée ne contienne pas d'hexas, il faut alors tous les parcourrir.
+        // Dans le cas de projection ou autre.... il se peut que la zone ciblée ne contienne pas d'hexahedra, il faut alors tous les parcourrir.
         serr << "DynamicSparseGridGeometryAlgorithms<DataTypes>::findNearestElementInRestPos(). Index not found" << sendl;
-        //sout << "DynamicSparseGridGeometryAlgorithms<DataTypes>::findNearestElementInRestPos(). Index not found => Search in all the hexas ! SLOW." << sendl;
+        //sout << "DynamicSparseGridGeometryAlgorithms<DataTypes>::findNearestElementInRestPos(). Index not found => Search in all the hexahedra ! SLOW." << sendl;
         //sout << "pos: " << pos << ", currentIndex: " << currentIndex << ", et regular index: " << regularGridIndex << sendl;
         return HexahedronSetGeometryAlgorithms<DataTypes>::findNearestElementInRestPos( pos, baryC, distance);
     }

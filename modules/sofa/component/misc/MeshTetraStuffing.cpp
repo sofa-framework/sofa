@@ -57,11 +57,11 @@ MeshTetraStuffing::MeshTetraStuffing()
     , inputPoints(initData(&inputPoints,"inputPoints","Input surface mesh points"))
     , inputTriangles(initData(&inputTriangles,"inputTriangles","Input surface mesh triangles"))
     , outputPoints(initData(&outputPoints,"outputPoints","Output volume mesh points"))
-    , outputTetras(initData(&outputTetras,"outputTetras","Output volume mesh tetras"))
+    , outputTetrahedra(initData(&outputTetrahedra,"outputTetrahedra","Output volume mesh tetrahedra"))
     , alphaLong(initData(&alphaLong,(Real)0.24999,"alphaLong","Minimum alpha values on long edges when snapping points"))
     , alphaShort(initData(&alphaShort,(Real)0.42978,"alphaShort","Minimum alpha values on short edges when snapping points"))
     , bSnapPoints(initData(&bSnapPoints,false,"snapPoints","Snap points to the surface if intersections on edges are closed to given alpha values"))
-    , bSplitTetras(initData(&bSplitTetras,false,"splitTetras","Split tetrahedra crossing the surface"))
+    , bSplitTetrahedra(initData(&bSplitTetrahedra,false,"splitTetrahedra","Split tetrahedra crossing the surface"))
     , bDraw(initData(&bDraw,false,"draw","Activate rendering of internal datasets"))
 {
 }
@@ -141,7 +141,7 @@ void MeshTetraStuffing::init()
     sout << "Grid <"<<c0[0]<<","<<c0[1]<<","<<c0[2]<<">-<"<<c1[0]<<","<<c1[1]<<","<<c1[2]<<">" << sendl;
 
     SeqPoints& outP = *outputPoints.beginEdit();
-    SeqTetrahedra& outT = *outputTetras.beginEdit();
+    SeqTetrahedra& outT = *outputTetrahedra.beginEdit();
 
     outP.resize(gsize[0]*gsize[1]*gsize[2] + hsize[0]*hsize[1]*hsize[2]);
 
@@ -428,7 +428,7 @@ void MeshTetraStuffing::init()
     }
 
     // Create cut points
-    if (bSplitTetras.getValue())
+    if (bSplitTetrahedra.getValue())
     {
         for (int p=0; p<nbp; ++p)
         {
@@ -550,10 +550,10 @@ void MeshTetraStuffing::init()
         }
     }
 
-    sout << "Final mesh: " << outP.size() << " points, "<<outT.size() << " tetras." << sendl;
+    sout << "Final mesh: " << outP.size() << " points, "<<outT.size() << " tetrahedra." << sendl;
 
     outputPoints.endEdit();
-    outputTetras.endEdit();
+    outputTetrahedra.endEdit();
 }
 
 void MeshTetraStuffing::addFinalTetra(SeqTetrahedra& outT, SeqPoints& outP, int p1, int p2, int p3, int p4, bool flip, int line)
@@ -599,7 +599,7 @@ bool MeshTetraStuffing::needFlip(int p1, int p2, int p3, int p4, int q1, int q2,
     {
         int tmp = q2; q2 = q3; q3 = q4; q4 = tmp; //flip = !flip;
     }
-    // the tetras are flipped if the last edge is flipped
+    // the tetrahedra are flipped if the last edge is flipped
     if (p3 == q4) flip = !flip;
     return flip;
 }
@@ -630,7 +630,7 @@ void MeshTetraStuffing::addTetra(SeqTetrahedra& outT, SeqPoints& outP, int p1, i
     if (in3 < 0) pneg[nneg++]=p3; else if (in3 > 0) ppos[npos++]=p3; else pzero[nzero++]=p3;
     if (in4 < 0) pneg[nneg++]=p4; else if (in4 > 0) ppos[npos++]=p4; else pzero[nzero++]=p4;
     if (npos == 0 && nneg > 0) return ; // no tetra
-    if (nneg == 0 || !bSplitTetras.getValue()) // full tetra
+    if (nneg == 0 || !bSplitTetrahedra.getValue()) // full tetra
     {
         addFinalTetra(outT,outP, p1,p2,p3,p4, false,__LINE__);
     }
@@ -646,7 +646,7 @@ void MeshTetraStuffing::addTetra(SeqTetrahedra& outT, SeqPoints& outP, int p1, i
     }
     else if (npos == 2 && nneg == 1)
     {
-        // two tetras
+        // two tetrahedra
         int p0 = pzero[0];
         int cut1 = getSplitPoint(pneg[0],ppos[0]);
         int cut2 = getSplitPoint(pneg[0],ppos[1]);
@@ -889,7 +889,7 @@ void MeshTetraStuffing::draw()
     //const SeqPoints& inP = inputPoints.getValue();
     //const SeqTriangles& inT = inputTriangles.getValue();
     const SeqPoints& outP = outputPoints.getValue();
-    //const SeqTetrahedra& outT = outputTetras.getValue();
+    //const SeqTetrahedra& outT = outputTetrahedra.getValue();
 
     //simulation::getSimulation()->DrawUtility.drawPoints(inP, 1, Vec<4,float>(1,0,0,1));
     simulation::getSimulation()->DrawUtility.drawPoints(intersections, 2, Vec<4,float>(1,0,0,1));

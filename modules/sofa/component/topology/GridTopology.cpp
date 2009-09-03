@@ -114,26 +114,26 @@ void GridTopology::updateQuads()
     seqQuads.endEdit();
 }
 
-void GridTopology::updateHexas()
+void GridTopology::updateHexahedra()
 {
-    SeqHexahedra& hexas = *seqHexas.beginEdit();
-    hexas.clear();
-    hexas.reserve((n.getValue()[0]-1)*(n.getValue()[1]-1)*(n.getValue()[2]-1));
+    SeqHexahedra& hexahedra = *seqHexahedra.beginEdit();
+    hexahedra.clear();
+    hexahedra.reserve((n.getValue()[0]-1)*(n.getValue()[1]-1)*(n.getValue()[2]-1));
     for (int z=0; z<n.getValue()[2]-1; z++)
         for (int y=0; y<n.getValue()[1]-1; y++)
             for (int x=0; x<n.getValue()[0]-1; x++)
 #ifdef SOFA_NEW_HEXA
-                hexas.push_back(Hexa(point(x  ,y  ,z  ),point(x+1,y  ,z  ),
+                hexahedra.push_back(Hexa(point(x  ,y  ,z  ),point(x+1,y  ,z  ),
                         point(x+1,y+1,z  ),point(x  ,y+1,z  ),
                         point(x  ,y  ,z+1),point(x+1,y  ,z+1),
                         point(x+1,y+1,z+1),point(x  ,y+1,z+1)));
 #else
-                hexas.push_back(Hexa(point(x  ,y  ,z  ),point(x+1,y  ,z  ),
+                hexahedra.push_back(Hexa(point(x  ,y  ,z  ),point(x+1,y  ,z  ),
                         point(x  ,y+1,z  ),point(x+1,y+1,z  ),
                         point(x  ,y  ,z+1),point(x+1,y  ,z+1),
                         point(x  ,y+1,z+1),point(x+1,y+1,z+1)));
 #endif
-    seqHexas.endEdit();
+    seqHexahedra.endEdit();
 }
 
 GridTopology::Hexa GridTopology::getHexaCopy(int i)

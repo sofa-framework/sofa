@@ -129,7 +129,7 @@ public:
     const Vec3i& getHexaIdxInFineRegularGrid(const unsigned int hexaId) const;
     int getHexaIdInFineRegularGrid(const unsigned int hexaId) const;
 
-    // gets a vector of fine hexas inside a specified coarse hexa
+    // gets a vector of fine hexahedra inside a specified coarse hexa
     int getHexaChildren(const unsigned int hexaId, helper::vector<unsigned int>& children) const;
 
     // gets a coarse hexa for a specified fine hexa
@@ -207,7 +207,7 @@ private:
     sofa::helper::vector<Component*>	_fineComponentInRegularGrid;
 };
 
-/** notifies change in the multilevel structure other than adding or removing coarse hexas */
+/** notifies change in the multilevel structure other than adding or removing coarse hexahedra */
 class MultilevelModification : public core::componentmodel::topology::TopologyChange
 {
 public:

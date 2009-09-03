@@ -49,7 +49,7 @@ public:
 
     virtual void init();
 
-    /** \brief Actually Add some hexahedra to this topology. Wrong way to add some hexas for the moment !
+    /** \brief Actually Add some hexahedra to this topology. Wrong way to add some hexahedra for the moment !
     *
     * TEMPORARY BUT THIS METHOD MUST NOT BE USED !!
     *
