@@ -56,8 +56,6 @@ MeshTrianLoader::MeshTrianLoader() : MeshLoader()
     , edgesOnBorder(initData(&edgesOnBorder,"edgesOnBorder","Edges of the mesh loaded"))
     , trianglesOnBorderList(initData(&trianglesOnBorderList,"trianglesOnBorderList","Triangles of the mesh loaded"))
 {
-    std::cout << "passe la " << std::endl;
-
     neighborTable.setPersistent(false);
     edgesOnBorder.setPersistent(false);
     trianglesOnBorderList.setPersistent(false);

@@ -146,14 +146,14 @@ bool MeshTopologyLoader::loadGmsh(FILE *file, const int gmshFormat)
     int ncubes = 0;
 
 // 	std::cout << "Loading Gmsh topology '" << filename << "'" << std::endl;
-    fscanf(file, "%d\n", &npoints);
+    (void) fscanf(file, "%d\n", &npoints);
     setNbPoints(npoints);
     std::vector<int> pmap;
     for (int i=0; i<npoints; ++i)
     {
         int index = i;
         double x,y,z;
-        fscanf(file, "%d %lf %lf %lf\n", &index, &x, &y, &z);
+        (void) fscanf(file, "%d %lf %lf %lf\n", &index, &x, &y, &z);
         addPoint(x, y, z);
         if ((int)pmap.size() <= index) pmap.resize(index+1);
         pmap[index] = i;
@@ -179,7 +179,7 @@ bool MeshTopologyLoader::loadGmsh(FILE *file, const int gmshFormat)
     }
 
     int nelems = 0;
-    fscanf(file, "%d\n", &nelems);
+    (void) fscanf(file, "%d\n", &nelems);
     for (int i=0; i<nelems; ++i)
     {
         int index, etype, rphys, relem, nnodes, ntags, tag;
@@ -187,15 +187,15 @@ bool MeshTopologyLoader::loadGmsh(FILE *file, const int gmshFormat)
         {
             // version 1.0 format is
             // elm-number elm-type reg-phys reg-elem number-of-nodes <node-number-list ...>
-            fscanf(file, "%d %d %d %d %d", &index, &etype, &rphys, &relem, &nnodes);
+            (void) fscanf(file, "%d %d %d %d %d", &index, &etype, &rphys, &relem, &nnodes);
         }
         else if (gmshFormat == 2)
         {
             // version 2.0 format is
             // elm-number elm-type number-of-tags < tag > ... node-number-list
-            fscanf(file, "%d %d %d", &index, &etype, &ntags);
+            (void) fscanf(file, "%d %d %d", &index, &etype, &ntags);
             for (int t=0; t<ntags; t++)
-                fscanf(file, "%d", &tag); // read the tag but don't use it
+                (void) fscanf(file, "%d", &tag); // read the tag but don't use it
 
             switch (etype)
             {
@@ -227,7 +227,7 @@ bool MeshTopologyLoader::loadGmsh(FILE *file, const int gmshFormat)
         for (int n=0; n<nnodes; ++n)
         {
             int t = 0;
-            fscanf(file, "%d",&t);
+            (void) fscanf(file, "%d",&t);
             nodes[n] = (((unsigned int)t)<pmap.size())?pmap[t]:0;
             //std::cout << "nodes[" << n << "] = " << nodes[n] << std::endl;
         }
@@ -298,14 +298,14 @@ bool MeshTopologyLoader::loadXsp(FILE *file, bool vector_spring)
     // then find out number of masses and springs
     if (fscanf(file, "%s", cmd) != EOF && !strcmp(cmd,"numm"))
     {
-        fscanf(file, "%d", &totalNumMasses);
+        (void) fscanf(file, "%d", &totalNumMasses);
         setNbPoints(totalNumMasses);
         npoints=totalNumMasses;
     }
 
     if (fscanf(file, "%s", cmd) != EOF && !strcmp(cmd,"nums"))
     {
-        fscanf(file, "%d", &totalNumSprings);
+        (void) fscanf(file, "%d", &totalNumSprings);
         setNbLines(totalNumSprings);
         nlines=totalNumSprings;
         //		setNumSprings(totalNumSprings);
@@ -321,7 +321,7 @@ bool MeshTopologyLoader::loadXsp(FILE *file, bool vector_spring)
             char location;
             double px,py,pz,vx,vy,vz,mass=0.0,elastic=0.0;
             bool fixed=false;
-            fscanf(file, "%d %c %lf %lf %lf %lf %lf %lf %lf %lf\n",
+            (void) fscanf(file, "%d %c %lf %lf %lf %lf %lf %lf %lf %lf\n",
                     &index, &location,
                     &px, &py, &pz, &vx, &vy, &vz,
                     &mass, &elastic);
@@ -341,10 +341,10 @@ bool MeshTopologyLoader::loadXsp(FILE *file, bool vector_spring)
             double ks=0.0,kd=0.0,initpos=-1;
             double restx=0.0,resty=0.0,restz=0.0;
             if (vector_spring)
-                fscanf(file, "%d %d %d %lf %lf %lf %lf %lf %lf\n",
+                (void) fscanf(file, "%d %d %d %lf %lf %lf %lf %lf %lf\n",
                         &index,&m1,&m2,&ks,&kd,&initpos, &restx,&resty,&restz);
             else
-                fscanf(file, "%d %d %d %lf %lf %lf\n",
+                (void) fscanf(file, "%d %d %d %lf %lf %lf\n",
                         &index,&m1,&m2,&ks,&kd,&initpos);
             --m1;
             --m2;
@@ -354,12 +354,12 @@ bool MeshTopologyLoader::loadXsp(FILE *file, bool vector_spring)
         else if (!strcmp(cmd,"grav"))
         {
             double gx,gy,gz;
-            fscanf(file, "%lf %lf %lf\n", &gx, &gy, &gz);
+            (void) fscanf(file, "%lf %lf %lf\n", &gx, &gy, &gz);
         }
         else if (!strcmp(cmd,"visc"))
         {
             double viscosity;
-            fscanf(file, "%lf\n", &viscosity);
+            (void) fscanf(file, "%lf\n", &viscosity);
         }
         else if (!strcmp(cmd,"step"))
         {
@@ -409,7 +409,7 @@ bool MeshTopologyLoader::loadMesh(FILE *file)
         if (!strcmp(cmd,"line"))
         {
             int p1,p2;
-            fscanf(file, "%d %d\n",
+            (void) fscanf(file, "%d %d\n",
                     &p1, &p2);
             addLine(p1, p2);
             ++nlines;
@@ -417,7 +417,7 @@ bool MeshTopologyLoader::loadMesh(FILE *file)
         else if (!strcmp(cmd,"triangle"))
         {
             int p1,p2,p3;
-            fscanf(file, "%d %d %d\n",
+            (void) fscanf(file, "%d %d %d\n",
                     &p1, &p2, &p3);
             addTriangle(p1, p2, p3);
             ++ntris;
@@ -425,7 +425,7 @@ bool MeshTopologyLoader::loadMesh(FILE *file)
         else if (!strcmp(cmd,"quad"))
         {
             int p1,p2,p3,p4;
-            fscanf(file, "%d %d %d %d\n",
+            (void) fscanf(file, "%d %d %d %d\n",
                     &p1, &p2, &p3, &p4);
             addQuad(p1, p2, p3, p4);
             ++nquads;
@@ -433,7 +433,7 @@ bool MeshTopologyLoader::loadMesh(FILE *file)
         else if (!strcmp(cmd,"tetra"))
         {
             int p1,p2,p3,p4;
-            fscanf(file, "%d %d %d %d\n",
+            (void) fscanf(file, "%d %d %d %d\n",
                     &p1, &p2, &p3, &p4);
             addTetra(p1, p2, p3, p4);
             ++ntetras;
@@ -441,7 +441,7 @@ bool MeshTopologyLoader::loadMesh(FILE *file)
         else if (!strcmp(cmd,"cube"))
         {
             int p1,p2,p3,p4,p5,p6,p7,p8;
-            fscanf(file, "%d %d %d %d %d %d %d %d\n",
+            (void) fscanf(file, "%d %d %d %d %d %d %d %d\n",
                     &p1, &p2, &p3, &p4, &p5, &p6, &p7, &p8);
             addCube(p1, p2, p3, p4, p5, p6, p7, p8);
             ++ncubes;
@@ -449,7 +449,7 @@ bool MeshTopologyLoader::loadMesh(FILE *file)
         else if (!strcmp(cmd,"point"))
         {
             double px,py,pz;
-            fscanf(file, "%lf %lf %lf\n",
+            (void) fscanf(file, "%lf %lf %lf\n",
                     &px, &py, &pz);
             addPoint(px, py, pz);
             ++npoints;
@@ -457,7 +457,7 @@ bool MeshTopologyLoader::loadMesh(FILE *file)
         else if (!strcmp(cmd,"v"))
         {
             double px,py,pz;
-            fscanf(file, "%lf %lf %lf\n",
+            (void) fscanf(file, "%lf %lf %lf\n",
                     &px, &py, &pz);
             addPoint(px, py, pz);
             ++npoints;
@@ -465,7 +465,7 @@ bool MeshTopologyLoader::loadMesh(FILE *file)
         else if (!strcmp(cmd,"f"))
         {
             int p1,p2,p3,p4=0;
-            fscanf(file, "%d %d %d %d\n",
+            (void) fscanf(file, "%d %d %d %d\n",
                     &p1, &p2, &p3, &p4);
             if (p4)
             {
@@ -483,7 +483,7 @@ bool MeshTopologyLoader::loadMesh(FILE *file)
             int index;
             char location;
             double px,py,pz,vx,vy,vz,mass=0.0,elastic=0.0;
-            fscanf(file, "%d %c %lf %lf %lf %lf %lf %lf %lf %lf\n",
+            (void) fscanf(file, "%d %c %lf %lf %lf %lf %lf %lf %lf %lf\n",
                     &index, &location,
                     &px, &py, &pz, &vx, &vy, &vz,
                     &mass, &elastic);
@@ -495,7 +495,7 @@ bool MeshTopologyLoader::loadMesh(FILE *file)
             int	index;
             int m1,m2;
             double ks=0.0,kd=0.0,initpos=-1;
-            fscanf(file, "%d %d %d %lf %lf %lf\n", &index,
+            (void) fscanf(file, "%d %d %d %lf %lf %lf\n", &index,
                     &m1,&m2,&ks,&kd,&initpos);
             --m1;
             --m2;
