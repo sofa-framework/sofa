@@ -70,11 +70,16 @@ BVHJoint *BVHLoader::parseJoint(FILE *f, bool isEndSite, BVHJoint *parent)
     char buf[256];
 
     if (!isEndSite)
-        fscanf(f,"%s",buf);
+    {
+        if (fscanf(f,"%s",buf) == EOF)
+            std::cerr << "Error: BVHLoader: fscanf function has encountered and error." << std::endl;
+    }
+
 
     BVHJoint *j = new BVHJoint(buf, isEndSite, parent);
 
-    fscanf(f,"%s",buf);
+    if (fscanf(f,"%s",buf) == EOF)
+        std::cerr << "Error: BVHLoader: fscanf function has encountered and error." << std::endl;
 
     while (!(strcmp(buf,"}") == 0))
     {
@@ -92,12 +97,15 @@ BVHJoint *BVHLoader::parseJoint(FILE *f, bool isEndSite, BVHJoint *parent)
         }
         else if (strcmp(buf,"End") == 0)
         {
-            fscanf(f,"%s",buf);
+            if (fscanf(f,"%s",buf) ==EOF )
+                std::cerr << "Error: BVHLoader: fscanf function has encountered and error." << std::endl;
+
             if (strcmp(buf, "Site") == 0)
                 j->addChild(parseJoint(f, true, j));
         }
 
-        fscanf(f,"%s",buf);
+        if (fscanf(f,"%s",buf) == EOF)
+            std::cerr << "Error: BVHLoader: fscanf function has encountered and error." << std::endl;
     }
 
     return j;
@@ -110,9 +118,12 @@ BVHOffset *BVHLoader::parseOffset(FILE *f)
     double y(0);
     double z(0);
 
-    fscanf(f,"%lf",&x);
-    fscanf(f,"%lf",&y);
-    fscanf(f,"%lf",&z);
+    if (fscanf(f,"%lf",&x) == EOf)
+        std::cerr << "Error: BVHLoader: fscanf function has encountered and error." << std::endl;
+    if (fscanf(f,"%lf",&y) == EOF)
+        std::cerr << "Error: BVHLoader: fscanf function has encountered and error." << std::endl;
+    if (fscanf(f,"%lf",&z) == EOf)
+        std::cerr << "Error: BVHLoader: fscanf function has encountered and error." << std::endl;
 
     return new BVHOffset(x,y,z);
 }
@@ -121,7 +132,8 @@ BVHOffset *BVHLoader::parseOffset(FILE *f)
 BVHChannels *BVHLoader::parseChannels(FILE *f)
 {
     int cSize(0);
-    fscanf(f,"%d",&cSize);
+    if (fscanf(f,"%d",&cSize) == EOF)
+        std::cerr << "Error: BVHLoader: fscanf function has encountered and error." << std::endl;
 
     if (cSize <= 0)
         return NULL;
@@ -131,7 +143,8 @@ BVHChannels *BVHLoader::parseChannels(FILE *f)
 
     for (int i=0; i<cSize; i++)
     {
-        fscanf(f,"%s",buf);
+        if (fscanf(f,"%s",buf) == EOF)
+            std::cerr << "Error: BVHLoader: fscanf function has encountered and error." << std::endl;
 
         if (strcmp(buf, "Xposition") == 0)
             c->addChannel(BVHChannels::Xposition);
@@ -166,16 +179,19 @@ void BVHLoader::parseMotion(FILE *f, BVHJoint *j)
 
     while (!framesFound || !frameTimeFound)
     {
-        fscanf(f,"%s",buf);
+        if (fscanf(f,"%s",buf) == EOF)
+            std::cerr << "Error: BVHLoader: fscanf function has encountered and error." << std::endl;
 
         if (strcmp(buf,"Frames:") == 0)
         {
-            fscanf(f,"%d",&(frameCount));
+            if (fscanf(f,"%d",&(frameCount)) == EOF)
+                std::cerr << "Error: BVHLoader: fscanf function has encountered and error." << std::endl;
             framesFound = true;
         }
         else if (strcmp(buf, "Time:") == 0)
         {
-            fscanf(f,"%lf",&(frameTime));
+            if (fscanf(f,"%lf",&(frameTime)) == EOF)
+                std::cerr << "Error: BVHLoader: fscanf function has encountered and error." << std::endl;
             frameTimeFound = true;
         }
     }
@@ -191,7 +207,11 @@ void BVHLoader::parseFrames(BVHJoint *joint, unsigned int frameIndex, FILE *f)
 {
     if (joint->getChannels() != NULL)
         for (unsigned int i=0; i < joint->getChannels()->size; i++)
-            fscanf(f,"%lf",&joint->getMotion()->frames[frameIndex][i]);
+        {
+            if (fscanf(f,"%lf",&joint->getMotion()->frames[frameIndex][i]) == EOF)
+                std::cerr << "Error: BVHLoader: fscanf function has encountered and error." << std::endl;
+        }
+
 
     for (unsigned int i=0; i < joint->getChildren().size(); i++)
         parseFrames(joint->getChildren()[i], frameIndex, f);
