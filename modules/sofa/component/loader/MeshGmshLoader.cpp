@@ -114,7 +114,7 @@ bool MeshGmshLoader::readGmsh(FILE *file, const unsigned int gmshFormat)
     unsigned int nlines = 0;
     unsigned int ntris = 0;
     unsigned int nquads = 0;
-    unsigned int ntetras = 0;
+    unsigned int ntetrahedra = 0;
     unsigned int ncubes = 0;
 
     // --- Loading Vertices ---
@@ -247,7 +247,7 @@ bool MeshGmshLoader::readGmsh(FILE *file, const unsigned int gmshFormat)
             break;
         case 4: // Tetra
             my_tetrahedra.push_back (helper::fixed_array <unsigned int,4>(nodes[0], nodes[1], nodes[2], nodes[3]));
-            ++ntetras;
+            ++ntetrahedra;
             break;
         case 5: // Hexa
             helper::fixed_array <unsigned int,8> hexa;
@@ -279,7 +279,7 @@ bool MeshGmshLoader::readGmsh(FILE *file, const unsigned int gmshFormat)
     // 	if (nlines>0)  std::cout << ' ' << nlines  << " lines";
     // 	if (ntris>0)   std::cout << ' ' << ntris   << " triangles";
     // 	if (nquads>0)  std::cout << ' ' << nquads  << " quads";
-    // 	if (ntetras>0) std::cout << ' ' << ntetras << " tetrahedra";
+    // 	if (ntetrahedra>0) std::cout << ' ' << ntetrahedra << " tetrahedra";
     // 	if (ncubes>0)  std::cout << ' ' << ncubes  << " cubes";
     // 	std::cout << std::endl;
 

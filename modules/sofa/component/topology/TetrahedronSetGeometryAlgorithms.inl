@@ -223,17 +223,17 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const TetraID
 
             for (unsigned int i=0; i<adjacent_triangles.size(); i++)
             {
-                sofa::helper::vector< unsigned int > tetras_to_remove = this->m_topology->getTetrahedraAroundTriangle(adjacent_triangles[i]);
+                sofa::helper::vector< unsigned int > tetrahedra_to_remove = this->m_topology->getTetrahedraAroundTriangle(adjacent_triangles[i]);
 
-                if(tetras_to_remove.size()==2)
+                if(tetrahedra_to_remove.size()==2)
                 {
-                    if(tetras_to_remove[0]==ind_t)
+                    if(tetrahedra_to_remove[0]==ind_t)
                     {
-                        t_test=tetras_to_remove[1];
+                        t_test=tetrahedra_to_remove[1];
                     }
                     else
                     {
-                        t_test=tetras_to_remove[0];
+                        t_test=tetrahedra_to_remove[0];
                     }
 
                     std::map<unsigned int, unsigned int>::iterator iter_1 = IndexMap.find(t_test);
@@ -319,17 +319,17 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const Coord& 
 
             for (unsigned int i=0; i<adjacent_triangles.size(); i++)
             {
-                sofa::helper::vector< unsigned int > tetras_to_remove = this->m_topology->getTetrahedraAroundTriangle(adjacent_triangles[i]);
+                sofa::helper::vector< unsigned int > tetrahedra_to_remove = this->m_topology->getTetrahedraAroundTriangle(adjacent_triangles[i]);
 
-                if(tetras_to_remove.size()==2)
+                if(tetrahedra_to_remove.size()==2)
                 {
-                    if(tetras_to_remove[0]==ind_t)
+                    if(tetrahedra_to_remove[0]==ind_t)
                     {
-                        t_test=tetras_to_remove[1];
+                        t_test=tetrahedra_to_remove[1];
                     }
                     else
                     {
-                        t_test=tetras_to_remove[0];
+                        t_test=tetrahedra_to_remove[0];
                     }
 
                     std::map<unsigned int, unsigned int>::iterator iter_1 = IndexMap.find(t_test);

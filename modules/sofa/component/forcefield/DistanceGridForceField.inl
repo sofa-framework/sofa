@@ -104,23 +104,23 @@ void DistanceGridForceField<DataTypes>::init()
         core::componentmodel::topology::BaseMeshTopology* topology = this->mstate->getContext()->getMeshTopology();
         if (topology && topology->getNbTetrahedra() > 0)
         {
-            const core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra& tetras = topology->getTetrahedra();
+            const core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = topology->getTetrahedra();
             Real sumVolume = 0;
             const VecCoord& p1 = *this->mstate->getX0();
-            for (unsigned int ti = 0; ti < tetras.size(); ++ti)
+            for (unsigned int ti = 0; ti < tetrahedra.size(); ++ti)
             {
-                helper::fixed_array<unsigned int,4> t = tetras[ti];
+                helper::fixed_array<unsigned int,4> t = tetrahedra[ti];
                 Coord A = p1[t[1]]-p1[t[0]];
                 Coord B = p1[t[2]]-p1[t[0]];
                 Coord C = p1[t[3]]-p1[t[0]];
                 Real volume = (A*cross(B, C))/6.0f;
                 sumVolume += volume;
             }
-            sout << "Volume : " << sumVolume << " ( mean " << sumVolume / tetras.size() << " per tetra )"<<sendl;
+            sout << "Volume : " << sumVolume << " ( mean " << sumVolume / tetrahedra.size() << " per tetra )"<<sendl;
         }
         else
         {
-            serr << "No tetras found in topology" << sendl;
+            serr << "No tetrahedra found in topology" << sendl;
         }
     }
 
@@ -250,11 +250,11 @@ void DistanceGridForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p
         core::componentmodel::topology::BaseMeshTopology* topology = this->mstate->getContext()->getMeshTopology();
         if (topology && topology->getNbTetrahedra() > 0)
         {
-            const core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra& tetras = topology->getTetrahedra();
+            const core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = topology->getTetrahedra();
             const Real v1_6 = (Real)(1.0/6.0);
-            for (unsigned int ti = 0; ti < tetras.size(); ++ti)
+            for (unsigned int ti = 0; ti < tetrahedra.size(); ++ti)
             {
-                helper::fixed_array<unsigned int,4> t = tetras[ti];
+                helper::fixed_array<unsigned int,4> t = tetrahedra[ti];
                 //if (t[0] < ibegin && t[0] >= iend && t[1] < ibegin && t[1] >= iend && t[2] < ibegin && t[2] >= iend) continue;
                 Coord A = p1[t[1]]-p1[t[0]];
                 Coord B = p1[t[2]]-p1[t[0]];

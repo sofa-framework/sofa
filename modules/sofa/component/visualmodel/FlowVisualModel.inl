@@ -65,7 +65,7 @@ FlowVisualModel<DataTypes>::FlowVisualModel()
     ,streamlineMaxNumberOfPoints(initData(&streamlineMaxNumberOfPoints, (unsigned int) 50 , "streamlineMaxNumberOfPoints", "Set the maximum number of points for each stream line"))
     ,streamlineDtNumberOfPointsPerTriangle(initData(&streamlineDtNumberOfPointsPerTriangle, (double) 5.0 , "streamlineDtNumberOfPointsPerTriangle", "Set the number of points for each step (equals ~ a triangle)"))
     ,showColorScale(initData(&showColorScale, bool(true), "showColorScale", "Set color scale"))
-    ,showTetras(initData(&showTetras, bool(false), "showTetras", "Show Tetras"))
+    ,showTetrahedra(initData(&showTetrahedra, bool(false), "showTetrahedra", "Show Tetrahedra"))
     ,minAlpha(initData(&minAlpha, float(0.2), "minAlpha", "Minimum alpha value for triangles"))
     ,maxAlpha(initData(&maxAlpha, float(0.8), "maxAlpha", "Maximum alpha value for triangles"))
 {
@@ -87,16 +87,16 @@ void FlowVisualModel<DataTypes>::init()
     core::objectmodel::TagSet::const_iterator tagIt = this->getTags().begin();
 
     core::objectmodel::Tag triangles(m_tag2D.getValue());
-    core::objectmodel::Tag tetras(m_tag3D.getValue());
+    core::objectmodel::Tag tetrahedra(m_tag3D.getValue());
     core::objectmodel::Tag geometry("geometry");
     core::objectmodel::Tag state("state");
     core::objectmodel::Tag surface("surface");
 
     core::objectmodel::TagSet trianglesTS(triangles);
-    core::objectmodel::TagSet tetraTS(tetras);
-    core::objectmodel::TagSet tetraStateTS(tetras);
+    core::objectmodel::TagSet tetraTS(tetrahedra);
+    core::objectmodel::TagSet tetraStateTS(tetrahedra);
     core::objectmodel::TagSet tetraSurfaceTS(surface);
-    core::objectmodel::TagSet tetraGeometryTS(tetras);
+    core::objectmodel::TagSet tetraGeometryTS(tetrahedra);
     tetraStateTS.insert(state);
     tetraGeometryTS.insert(geometry);
 
@@ -190,11 +190,11 @@ void FlowVisualModel<DataTypes>::initVisual()
     if (tetraCenters)
     {
         unsigned int nbPoints = m_triTopo->getNbPoints();
-        unsigned int nbTetras = (*this->tetraCenters->getX()).size();
-        (*this->tetraCenters->getV()).resize(nbTetras);
+        unsigned int nbTetrahedra = (*this->tetraCenters->getX()).size();
+        (*this->tetraCenters->getV()).resize(nbTetrahedra);
         tetraShellPerTriangleVertex.resize(nbPoints);
         isPointInTetra.resize(nbPoints);
-        tetraSize.resize(nbTetras);
+        tetraSize.resize(nbTetrahedra);
         std::fill(tetraSize.begin(), tetraSize.end(), 0.0);
         std::fill(isPointInTetra.begin(), isPointInTetra.end(), true);
 
@@ -212,7 +212,7 @@ void FlowVisualModel<DataTypes>::initVisual()
             //get the TetraShell of the closest Point
             helper::vector<BaseMeshTopology::TetraID> closestTetraShell = m_tetraTopo->getTetrahedraAroundVertex(indexClosestPoint);
 
-            //helper::vector<BaseMeshTopology::Tetra> tetras = m_tetraTopo->getTetrahedra();
+            //helper::vector<BaseMeshTopology::Tetra> tetrahedra = m_tetraTopo->getTetrahedra();
             unsigned int t, closestTetra = 0;
             bool found = false;
             for(t=0 ; t<closestTetraShell.size() && !found; t++)
@@ -314,7 +314,7 @@ bool FlowVisualModel<DataTypes>::isInDomainT(unsigned int index, typename DataTy
     //1-find closest point from seed to mesh
     bool found = false;
     unsigned int tetraID = BaseMeshTopology::InvalidID;
-    helper::vector<BaseMeshTopology::TetraID> tetras;
+    helper::vector<BaseMeshTopology::TetraID> tetrahedra;
     const VecCoord& centers = *this->tetraGeometry->getX();
 
     if (centers.size() > 0)
@@ -324,21 +324,21 @@ bool FlowVisualModel<DataTypes>::isInDomainT(unsigned int index, typename DataTy
         {
             unsigned int indexClosestPoint = getIndexClosestPoint(centers, p);
             //2-get its TriangleShell
-            tetras = m_tetraTopo->getTetrahedraAroundVertex(indexClosestPoint);
+            tetrahedra = m_tetraTopo->getTetrahedraAroundVertex(indexClosestPoint);
             //3-check if the seed is in one of these triangles
             streamLines[index].primitivesAroundLastPoint.clear();
-            for (unsigned int i=0 ; i<tetras.size() ; i++)
+            for (unsigned int i=0 ; i<tetrahedra.size() ; i++)
             {
                 if (!found)
                 {
-                    if ( (found = m_tetraGeo->isPointInTetrahedron(tetras[i], p)) )
+                    if ( (found = m_tetraGeo->isPointInTetrahedron(tetrahedra[i], p)) )
                     {
-                        tetraID = tetras[i];
+                        tetraID = tetrahedra[i];
                     }
                 }
 
                 //fill the set of triangles
-                streamLines[index].primitivesAroundLastPoint.insert(tetras[i]);
+                streamLines[index].primitivesAroundLastPoint.insert(tetrahedra[i]);
             }
         }
         else
@@ -356,17 +356,17 @@ bool FlowVisualModel<DataTypes>::isInDomainT(unsigned int index, typename DataTy
 
                 for (unsigned int i=0 ; i<3; i++)
                 {
-                    tetras = m_tetraTopo->getTetrahedraAroundVertex(currentTetra[i]);
-                    for (unsigned int i=0 ; i<tetras.size() ; i++)
+                    tetrahedra = m_tetraTopo->getTetrahedraAroundVertex(currentTetra[i]);
+                    for (unsigned int i=0 ; i<tetrahedra.size() ; i++)
                     {
                         if (!found)
                         {
-                            if ( (found = m_tetraGeo->isPointInTetrahedron(tetras[i], p)) )
+                            if ( (found = m_tetraGeo->isPointInTetrahedron(tetrahedra[i], p)) )
                             {
-                                tetraID = tetras[i];
+                                tetraID = tetrahedra[i];
                             }
                         }
-                        streamLines[index].primitivesAroundLastPoint.insert(tetras[i]);
+                        streamLines[index].primitivesAroundLastPoint.insert(tetrahedra[i]);
                     }
                 }
             }
@@ -994,7 +994,7 @@ void FlowVisualModel<DataTypes>::drawTransparent()
         glEnd();
 
 
-        if (showTetras.getValue())
+        if (showTetrahedra.getValue())
             drawTetra();
 
         if (getContext()->getShowWireFrame())

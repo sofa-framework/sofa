@@ -72,14 +72,14 @@ BVHJoint *BVHLoader::parseJoint(FILE *f, bool isEndSite, BVHJoint *parent)
     if (!isEndSite)
     {
         if (fscanf(f,"%s",buf) == EOF)
-            std::cerr << "Error: BVHLoader: fscanf function has encountered and error." << std::endl;
+            std::cerr << "Error: BVHLoader: fscanf function has encountered an error." << std::endl;
     }
 
 
     BVHJoint *j = new BVHJoint(buf, isEndSite, parent);
 
     if (fscanf(f,"%s",buf) == EOF)
-        std::cerr << "Error: BVHLoader: fscanf function has encountered and error." << std::endl;
+        std::cerr << "Error: BVHLoader: fscanf function has encountered an error." << std::endl;
 
     while (!(strcmp(buf,"}") == 0))
     {
@@ -98,14 +98,14 @@ BVHJoint *BVHLoader::parseJoint(FILE *f, bool isEndSite, BVHJoint *parent)
         else if (strcmp(buf,"End") == 0)
         {
             if (fscanf(f,"%s",buf) ==EOF )
-                std::cerr << "Error: BVHLoader: fscanf function has encountered and error." << std::endl;
+                std::cerr << "Error: BVHLoader: fscanf function has encountered an error." << std::endl;
 
             if (strcmp(buf, "Site") == 0)
                 j->addChild(parseJoint(f, true, j));
         }
 
         if (fscanf(f,"%s",buf) == EOF)
-            std::cerr << "Error: BVHLoader: fscanf function has encountered and error." << std::endl;
+            std::cerr << "Error: BVHLoader: fscanf function has encountered an error." << std::endl;
     }
 
     return j;
@@ -119,11 +119,11 @@ BVHOffset *BVHLoader::parseOffset(FILE *f)
     double z(0);
 
     if (fscanf(f,"%lf",&x) == EOF)
-        std::cerr << "Error: BVHLoader: fscanf function has encountered and error." << std::endl;
+        std::cerr << "Error: BVHLoader: fscanf function has encountered an error." << std::endl;
     if (fscanf(f,"%lf",&y) == EOF)
-        std::cerr << "Error: BVHLoader: fscanf function has encountered and error." << std::endl;
+        std::cerr << "Error: BVHLoader: fscanf function has encountered an error." << std::endl;
     if (fscanf(f,"%lf",&z) == EOF)
-        std::cerr << "Error: BVHLoader: fscanf function has encountered and error." << std::endl;
+        std::cerr << "Error: BVHLoader: fscanf function has encountered an error." << std::endl;
 
     return new BVHOffset(x,y,z);
 }
@@ -133,7 +133,7 @@ BVHChannels *BVHLoader::parseChannels(FILE *f)
 {
     int cSize(0);
     if (fscanf(f,"%d",&cSize) == EOF)
-        std::cerr << "Error: BVHLoader: fscanf function has encountered and error." << std::endl;
+        std::cerr << "Error: BVHLoader: fscanf function has encountered an error." << std::endl;
 
     if (cSize <= 0)
         return NULL;
@@ -144,7 +144,7 @@ BVHChannels *BVHLoader::parseChannels(FILE *f)
     for (int i=0; i<cSize; i++)
     {
         if (fscanf(f,"%s",buf) == EOF)
-            std::cerr << "Error: BVHLoader: fscanf function has encountered and error." << std::endl;
+            std::cerr << "Error: BVHLoader: fscanf function has encountered an error." << std::endl;
 
         if (strcmp(buf, "Xposition") == 0)
             c->addChannel(BVHChannels::Xposition);
@@ -180,18 +180,18 @@ void BVHLoader::parseMotion(FILE *f, BVHJoint *j)
     while (!framesFound || !frameTimeFound)
     {
         if (fscanf(f,"%s",buf) == EOF)
-            std::cerr << "Error: BVHLoader: fscanf function has encountered and error." << std::endl;
+            std::cerr << "Error: BVHLoader: fscanf function has encountered an error." << std::endl;
 
         if (strcmp(buf,"Frames:") == 0)
         {
             if (fscanf(f,"%d",&(frameCount)) == EOF)
-                std::cerr << "Error: BVHLoader: fscanf function has encountered and error." << std::endl;
+                std::cerr << "Error: BVHLoader: fscanf function has encountered an error." << std::endl;
             framesFound = true;
         }
         else if (strcmp(buf, "Time:") == 0)
         {
             if (fscanf(f,"%lf",&(frameTime)) == EOF)
-                std::cerr << "Error: BVHLoader: fscanf function has encountered and error." << std::endl;
+                std::cerr << "Error: BVHLoader: fscanf function has encountered an error." << std::endl;
             frameTimeFound = true;
         }
     }
@@ -209,7 +209,7 @@ void BVHLoader::parseFrames(BVHJoint *joint, unsigned int frameIndex, FILE *f)
         for (unsigned int i=0; i < joint->getChannels()->size; i++)
         {
             if (fscanf(f,"%lf",&joint->getMotion()->frames[frameIndex][i]) == EOF)
-                std::cerr << "Error: BVHLoader: fscanf function has encountered and error." << std::endl;
+                std::cerr << "Error: BVHLoader: fscanf function has encountered an error." << std::endl;
         }
 
 

@@ -95,7 +95,7 @@ void MultiMeshLoader::addTriangle( int a, int b, int c )
 
 void MultiMeshLoader::addTetra( int a, int b, int c, int d )
 {
-    seqTetras.push_back( Tetra(currentMeshIndex+a,currentMeshIndex+b,currentMeshIndex+c,currentMeshIndex+d) );
+    seqTetrahedra.push_back( Tetra(currentMeshIndex+a,currentMeshIndex+b,currentMeshIndex+c,currentMeshIndex+d) );
 }
 
 void MultiMeshLoader::addQuad(int p1, int p2, int p3, int p4)
@@ -112,9 +112,9 @@ void MultiMeshLoader::addQuad(int p1, int p2, int p3, int p4)
 void MultiMeshLoader::addCube(int p1, int p2, int p3, int p4, int p5, int p6, int p7, int p8)
 {
 #ifdef SOFA_NEW_HEXA
-    seqHexas.push_back(Hexa(currentMeshIndex+p1,currentMeshIndex+p2,currentMeshIndex+p3,currentMeshIndex+p4,currentMeshIndex+p5,currentMeshIndex+p6,currentMeshIndex+p7,currentMeshIndex+p8));
+    seqHexahedra.push_back(Hexa(currentMeshIndex+p1,currentMeshIndex+p2,currentMeshIndex+p3,currentMeshIndex+p4,currentMeshIndex+p5,currentMeshIndex+p6,currentMeshIndex+p7,currentMeshIndex+p8));
 #else
-    seqHexas.push_back(Hexa(currentMeshIndex+p1,currentMeshIndex+p2,currentMeshIndex+p4,currentMeshIndex+p3,currentMeshIndex+p5,currentMeshIndex+p6,currentMeshIndex+p8,currentMeshIndex+p7));
+    seqHexahedra.push_back(Hexa(currentMeshIndex+p1,currentMeshIndex+p2,currentMeshIndex+p4,currentMeshIndex+p3,currentMeshIndex+p5,currentMeshIndex+p6,currentMeshIndex+p8,currentMeshIndex+p7));
 #endif
 }
 

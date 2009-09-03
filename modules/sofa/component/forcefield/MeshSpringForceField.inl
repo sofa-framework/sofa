@@ -136,10 +136,10 @@ void MeshSpringForceField<DataTypes>::init()
                     this->addSpring(sset, e[2], e[3], s, d);
                 }
             }
-            if (this->tetrasStiffness.getValue() != 0.0 || this->tetrasDamping.getValue() != 0.0)
+            if (this->tetrahedraStiffness.getValue() != 0.0 || this->tetrahedraDamping.getValue() != 0.0)
             {
-                s = this->tetrasStiffness.getValue();
-                d = this->tetrasDamping.getValue();
+                s = this->tetrahedraStiffness.getValue();
+                d = this->tetrahedraDamping.getValue();
                 n = topology->getNbTetrahedra();
                 for (int i=0; i<n; ++i)
                 {

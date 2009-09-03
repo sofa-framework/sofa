@@ -95,13 +95,13 @@ bool MassSpringLoader::load(const char *filename)
     if (fscanf(file, "%s", cmd) != EOF && !strcmp(cmd,"numm"))
     {
         if (fscanf(file, "%d", &totalNumMasses) == EOF)
-            std::cerr << "Error: MassSpringLoader: fscanf function has encountered and error." << std::endl;
+            std::cerr << "Error: MassSpringLoader: fscanf function has encountered an error." << std::endl;
         setNumMasses(totalNumMasses);
     }
     if (fscanf(file, "%s", cmd) != EOF && !strcmp(cmd,"nums"))
     {
         if (fscanf(file, "%d", &totalNumSprings) == EOF)
-            std::cerr << "Error: MassSpringLoader: fscanf function has encountered and error." << std::endl;
+            std::cerr << "Error: MassSpringLoader: fscanf function has encountered an error." << std::endl;
         setNumSprings(totalNumSprings);
     }
 
@@ -123,7 +123,7 @@ bool MassSpringLoader::load(const char *filename)
                     &index, &location,
                     &px, &py, &pz, &vx, &vy, &vz,
                     &mass, &elastic) == EOF)
-                std::cerr << "Error: MassSpringLoader: fscanf function has encountered and error." << std::endl;
+                std::cerr << "Error: MassSpringLoader: fscanf function has encountered an error." << std::endl;
 
             bool surface = (location == 's');
 
@@ -147,13 +147,13 @@ bool MassSpringLoader::load(const char *filename)
             {
                 if (fscanf(file, "%d %d %d %lf %lf %lf %lf %lf %lf\n",
                         &index,&m1,&m2,&ks,&kd,&initpos, &restx,&resty,&restz) == EOF)
-                    std::cerr << "Error: MassSpringLoader: fscanf function has encountered and error." << std::endl;
+                    std::cerr << "Error: MassSpringLoader: fscanf function has encountered an error." << std::endl;
             }
             else
             {
                 if (fscanf(file, "%d %d %d %lf %lf %lf\n",
                         &index,&m1,&m2,&ks,&kd,&initpos) == EOF)
-                    std::cerr << "Error: MassSpringLoader: fscanf function has encountered and error." << std::endl;
+                    std::cerr << "Error: MassSpringLoader: fscanf function has encountered an error." << std::endl;
             }
 
             --m1;
@@ -183,14 +183,14 @@ bool MassSpringLoader::load(const char *filename)
         {
             double gx,gy,gz;
             if (fscanf(file, "%lf %lf %lf\n", &gx, &gy, &gz) == EOF)
-                std::cerr << "Error: MassSpringLoader: fscanf function has encountered and error." << std::endl;
+                std::cerr << "Error: MassSpringLoader: fscanf function has encountered an error." << std::endl;
             setGravity((SReal)gx,(SReal)gy,(SReal)gz);
         }
         else if (!strcmp(cmd,"visc"))
         {
             double viscosity;
             if (fscanf(file, "%lf\n", &viscosity) == EOF)
-                std::cerr << "Error: MassSpringLoader: fscanf function has encountered and error." << std::endl;
+                std::cerr << "Error: MassSpringLoader: fscanf function has encountered an error." << std::endl;
             setViscosity((SReal)viscosity);
         }
         else if (!strcmp(cmd,"step"))

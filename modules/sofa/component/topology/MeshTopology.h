@@ -207,17 +207,17 @@ protected:
     Data<SeqQuads>       seqQuads;
     bool         validQuads;
 
-    //SeqTetrahedra      seqTetras;
-    Data<SeqTetrahedra>      seqTetras;
-    bool         validTetras;
+    //SeqTetrahedra      seqTetrahedra;
+    Data<SeqTetrahedra>      seqTetrahedra;
+    bool         validTetrahedra;
 
 #ifdef SOFA_NEW_HEXA
-    //SeqHexahedra	   seqHexas;
-    Data<SeqHexahedra>	   seqHexas;
+    //SeqHexahedra	   seqHexahedra;
+    Data<SeqHexahedra>	   seqHexahedra;
 #else
-    Data<SeqCubes>       seqHexas;
+    Data<SeqCubes>       seqHexahedra;
 #endif
-    bool         validHexas;
+    bool         validHexahedra;
 
     /** the array that stores the set of edge-vertex shells, ie for each vertex gives the set of adjacent edges */
     vector< EdgesAroundVertex > m_edgesAroundVertex;
@@ -264,7 +264,7 @@ protected:
     /// provides the set of tetrahedrons adjacents to each vertex
     vector< TetrahedraAroundVertex> m_tetrahedraAroundVertex;
 
-    /// for each edge provides the set of tetras adjacent to that edge
+    /// for each edge provides the set of tetrahedra adjacent to that edge
     vector< TetrahedraAroundEdge > m_tetrahedraAroundEdge;
 
     /// for each triangle provides the set of tetrahedrons adjacent to that triangle
@@ -273,7 +273,7 @@ protected:
     /// provides the set of hexahedrons for each vertex
     vector< HexahedraAroundVertex > m_hexahedraAroundVertex;
 
-    /// for each edge provides the set of tetras adjacent to that edge
+    /// for each edge provides the set of tetrahedra adjacent to that edge
     vector< HexahedraAroundEdge > m_hexahedraAroundEdge;
 
     /// for each quad provides the set of hexahedrons adjacent to that quad
@@ -568,8 +568,8 @@ public:
     virtual void updateEdges();
     virtual void updateTriangles();
     virtual void updateQuads();
-    virtual void updateTetras();
-    virtual void updateHexas();
+    virtual void updateTetrahedra();
+    virtual void updateHexahedra();
 
 protected:
     virtual void loadFromMeshLoader(sofa::component::container::MeshLoader* loader);

@@ -1020,7 +1020,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
 #ifdef SOFA_DEV
         _trimgrid = dynamic_cast<topology::FittedRegularGridTopology*>(_mesh);
 #endif // SOFA_DEV
-        core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra* tetras = new core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra;
+        core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra* tetrahedra = new core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra;
 #ifdef SOFA_NEW_HEXA
         int nbcubes = _mesh->getNbHexahedra();
 #else
@@ -1041,7 +1041,7 @@ void TetrahedronFEMForceField<DataTypes>::init()
         }
 
         // Tesselation of each cube into 6 tetrahedra
-        tetras->reserve(nbcubes*6);
+        tetrahedra->reserve(nbcubes*6);
         for (int i=0; i<nbcubes; i++)
         {
             // if (flags && !flags->isCubeActive(i)) continue;
@@ -1074,12 +1074,12 @@ void TetrahedronFEMForceField<DataTypes>::init()
             }
 #undef swap
             typedef core::componentmodel::topology::BaseMeshTopology::Tetra Tetra;
-            tetras->push_back(Tetra(c[0],c[5],c[1],c[6]));
-            tetras->push_back(Tetra(c[0],c[1],c[3],c[6]));
-            tetras->push_back(Tetra(c[1],c[3],c[6],c[2]));
-            tetras->push_back(Tetra(c[6],c[3],c[0],c[7]));
-            tetras->push_back(Tetra(c[6],c[7],c[0],c[5]));
-            tetras->push_back(Tetra(c[7],c[5],c[4],c[0]));
+            tetrahedra->push_back(Tetra(c[0],c[5],c[1],c[6]));
+            tetrahedra->push_back(Tetra(c[0],c[1],c[3],c[6]));
+            tetrahedra->push_back(Tetra(c[1],c[3],c[6],c[2]));
+            tetrahedra->push_back(Tetra(c[6],c[3],c[0],c[7]));
+            tetrahedra->push_back(Tetra(c[6],c[7],c[0],c[5]));
+            tetrahedra->push_back(Tetra(c[7],c[5],c[4],c[0]));
 #else
             core::componentmodel::topology::BaseMeshTopology::Cube c = _mesh->getCube(i);
             int sym = 0;
@@ -1087,18 +1087,18 @@ void TetrahedronFEMForceField<DataTypes>::init()
             if (((i/nx)%ny)&1) sym+=2;
             if ((i/(nx*ny))&1) sym+=4;
             typedef core::componentmodel::topology::BaseMeshTopology::Tetra Tetra;
-            tetras->push_back(Tetra(c[0^sym],c[5^sym],c[1^sym],c[7^sym]));
-            tetras->push_back(Tetra(c[0^sym],c[1^sym],c[2^sym],c[7^sym]));
-            tetras->push_back(Tetra(c[1^sym],c[2^sym],c[7^sym],c[3^sym]));
-            tetras->push_back(Tetra(c[7^sym],c[2^sym],c[0^sym],c[6^sym]));
-            tetras->push_back(Tetra(c[7^sym],c[6^sym],c[0^sym],c[5^sym]));
-            tetras->push_back(Tetra(c[6^sym],c[5^sym],c[4^sym],c[0^sym]));
+            tetrahedra->push_back(Tetra(c[0^sym],c[5^sym],c[1^sym],c[7^sym]));
+            tetrahedra->push_back(Tetra(c[0^sym],c[1^sym],c[2^sym],c[7^sym]));
+            tetrahedra->push_back(Tetra(c[1^sym],c[2^sym],c[7^sym],c[3^sym]));
+            tetrahedra->push_back(Tetra(c[7^sym],c[2^sym],c[0^sym],c[6^sym]));
+            tetrahedra->push_back(Tetra(c[7^sym],c[6^sym],c[0^sym],c[5^sym]));
+            tetrahedra->push_back(Tetra(c[6^sym],c[5^sym],c[4^sym],c[0^sym]));
 #endif
         }
 
         /*
         // Tesselation of each cube into 5 tetrahedra
-        tetras->reserve(nbcubes*5);
+        tetrahedra->reserve(nbcubes*5);
         for (int i=0;i<nbcubes;i++)
         {
         	MeshTopology::Cube c = _mesh->getCube(i);
@@ -1106,14 +1106,14 @@ void TetrahedronFEMForceField<DataTypes>::init()
         	if ((i%nx)&1) sym+=1;
         	if (((i/nx)%ny)&1) sym+=2;
         	if ((i/(nx*ny))&1) sym+=4;
-        	tetras->push_back(make_array(c[1^sym],c[0^sym],c[3^sym],c[5^sym]));
-        	tetras->push_back(make_array(c[2^sym],c[3^sym],c[0^sym],c[6^sym]));
-        	tetras->push_back(make_array(c[4^sym],c[5^sym],c[6^sym],c[0^sym]));
-        	tetras->push_back(make_array(c[7^sym],c[6^sym],c[5^sym],c[3^sym]));
-        	tetras->push_back(make_array(c[0^sym],c[3^sym],c[5^sym],c[6^sym]));
+        	tetrahedra->push_back(make_array(c[1^sym],c[0^sym],c[3^sym],c[5^sym]));
+        	tetrahedra->push_back(make_array(c[2^sym],c[3^sym],c[0^sym],c[6^sym]));
+        	tetrahedra->push_back(make_array(c[4^sym],c[5^sym],c[6^sym],c[0^sym]));
+        	tetrahedra->push_back(make_array(c[7^sym],c[6^sym],c[5^sym],c[3^sym]));
+        	tetrahedra->push_back(make_array(c[0^sym],c[3^sym],c[5^sym],c[6^sym]));
         }
         */
-        _indexedElements = tetras;
+        _indexedElements = tetrahedra;
     }
     /*if (_mesh->hasPos())
     { // use positions from topology

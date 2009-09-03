@@ -76,12 +76,12 @@ public:
     Data<SeqPoints> inputPoints;
     Data<SeqTriangles> inputTriangles;
     Data<SeqPoints> outputPoints;
-    Data<SeqTetrahedra> outputTetras;
+    Data<SeqTetrahedra> outputTetrahedra;
 
     Data< Real > alphaLong;
     Data< Real > alphaShort;
     Data< bool > bSnapPoints;
-    Data< bool > bSplitTetras;
+    Data< bool > bSplitTetrahedra;
     Data< bool > bDraw;
 
     Real cellsize;

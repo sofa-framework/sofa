@@ -192,7 +192,7 @@ public:
     Data<unsigned int> streamlineMaxNumberOfPoints;
     Data<double> streamlineDtNumberOfPointsPerTriangle;
     Data<bool> showColorScale;
-    Data<bool> showTetras;
+    Data<bool> showTetrahedra;
     Data<float> minAlpha;
     Data<float> maxAlpha;
     FlowVisualModel();

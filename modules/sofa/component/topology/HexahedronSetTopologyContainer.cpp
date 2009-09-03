@@ -47,14 +47,14 @@ const unsigned int edgesInHexahedronArray[12][2]= {{0,1},{0,3},{0,4},{1,2},{1,5}
 
 HexahedronSetTopologyContainer::HexahedronSetTopologyContainer()
     : QuadSetTopologyContainer()
-    , d_hexahedron(initDataPtr(&d_hexahedron, &m_hexahedron, "hexas", "List of hexahedron indices"))
+    , d_hexahedron(initDataPtr(&d_hexahedron, &m_hexahedron, "hexahedra", "List of hexahedron indices"))
 {
 }
 
 HexahedronSetTopologyContainer::HexahedronSetTopologyContainer(const sofa::helper::vector< Hexahedron > &hexahedra )
     : QuadSetTopologyContainer()
     , m_hexahedron( hexahedra )
-    , d_hexahedron(initDataPtr(&d_hexahedron, &m_hexahedron, "hexas", "List of hexahedron indices"))
+    , d_hexahedron(initDataPtr(&d_hexahedron, &m_hexahedron, "hexahedra", "List of hexahedron indices"))
 {
     for (unsigned int i=0; i<m_hexahedron.size(); ++i)
     {

@@ -72,7 +72,7 @@ public:
     virtual void buildFromFiner();
     virtual void buildVirtualFinerLevels();
 
-    /// find the connexion graph between the finest hexas
+    /// find the connexion graph between the finest hexahedra
     void findConnexionsAtFinestLevel();
     /// Once the finest connectivity is computed, some nodes can be dobled
     void buildRamifiedFinestLevel();
@@ -106,8 +106,8 @@ public:
 
         unsigned int _coarsestParent; //in order to compute findCube by beginning by the finnest, by going up and give the coarsest parent
 
-        unsigned int _hexaIdx; // idx of the corresponding hexa in the resulting Topology::seqHexas
-        unsigned int _nonRamifiedHexaIdx; // idx of the corresponding hexa in the initial, regular list SparseGrid::hexas
+        unsigned int _hexaIdx; // idx of the corresponding hexa in the resulting Topology::seqHexahedra
+        unsigned int _nonRamifiedHexaIdx; // idx of the corresponding hexa in the initial, regular list SparseGrid::hexahedra
 
         int _tmp; // warning: useful to several algos (as a temporary variable) but it is not an identification number
 

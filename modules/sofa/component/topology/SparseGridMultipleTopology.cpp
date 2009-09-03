@@ -171,7 +171,7 @@ void SparseGridMultipleTopology::buildAsFinest(  )
 
         if( _finestConnectivity.getValue() || this->isVirtual || _nbVirtualFinerLevels.getValue() > 0 )
         {
-            // find the connexion graph between the finest hexas
+            // find the connexion graph between the finest hexahedra
             findConnexionsAtFinestLevel();
         }
 

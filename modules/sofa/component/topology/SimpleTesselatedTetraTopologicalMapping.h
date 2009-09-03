@@ -181,7 +181,7 @@ protected:
 
     PointData<int> pointMappedFromPoint; ///< Each point of the input topology is mapped to the same point.
     EdgeData<int> pointMappedFromEdge; ///< Each edge of the input topology is mapped to his midpoint.
-    TetrahedronData< fixed_array<int, 8> > tetrasMappedFromTetra; ///< Each Tetrahedron of the input topology is mapped to the 8 tetrahedrons in which it can be divided.
+    TetrahedronData< fixed_array<int, 8> > tetrahedraMappedFromTetra; ///< Each Tetrahedron of the input topology is mapped to the 8 tetrahedrons in which it can be divided.
 
     PointData<int> pointSource; ///< Which input topology element map to a given point in the output topology : 0 -> none, > 0 -> point index + 1, < 0 , - edge index -1
     TetrahedronData<int> tetraSource; ///<Which tetra from the input topology map to a given tetra in the output topology (-1 if none)
@@ -194,8 +194,8 @@ protected:
     void removeOutputPoints( const sofa::helper::vector<unsigned int>& tab );
     void renumberOutputPoints( const sofa::helper::vector<unsigned int>& tab );
 
-    void swapOutputTetras(int i1, int i2);
-    void removeOutputTetras( const sofa::helper::vector<unsigned int>& tab );
+    void swapOutputTetrahedra(int i1, int i2);
+    void removeOutputTetrahedra( const sofa::helper::vector<unsigned int>& tab );
 
     void setPointSource(int i, int source)
     {
@@ -217,7 +217,7 @@ protected:
         pointMappedFromPoint.endEdit();
         pointMappedFromEdge.endEdit();
     }
-    std::set<unsigned int> tetrasToRemove;
+    std::set<unsigned int> tetrahedraToRemove;
 
 
     void swapInputPoints(int i1, int i2);
@@ -226,8 +226,8 @@ protected:
     void swapInputEdges(int i1, int i2);
     void removeInputEdges( const sofa::helper::vector<unsigned int>& tab );
 
-    void swapInputTetras(int i1, int i2);
-    void removeInputTetras( const sofa::helper::vector<unsigned int>& tab );
+    void swapInputTetrahedra(int i1, int i2);
+    void removeInputTetrahedra( const sofa::helper::vector<unsigned int>& tab );
 
 };
 

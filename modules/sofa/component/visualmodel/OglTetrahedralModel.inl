@@ -109,7 +109,7 @@ void OglTetrahedralModel<DataTypes>::drawTransparent()
     	Coord v;
 
 
-    	const unsigned int hexa2tetras[24] = { 0, 5, 1, 6,
+    	const unsigned int hexa2tetrahedra[24] = { 0, 5, 1, 6,
     										   0, 1, 3, 6,
     										   1, 3, 6, 2,
     										   6, 3, 0, 7,
@@ -126,8 +126,8 @@ void OglTetrahedralModel<DataTypes>::drawTransparent()
     		{
     			for (unsigned int j=0 ; j<4 ; j++)
     			{
-    				//glVertex3f((GLfloat)x[(*it)[hexa2tetras[i][j]]][0], (GLfloat)x[(*it)[hexa2tetras[i][j]]][1], (GLfloat)x[(*it)[hexa2tetras[i][j]]][2]);
-    				glVertex3f((GLfloat)x[(*it)[hexa2tetras[i*4 + j]]][0], (GLfloat)x[(*it)[hexa2tetras[i*4 + j]]][1], (GLfloat)x[(*it)[hexa2tetras[i*4 + j]]][2]);
+    				//glVertex3f((GLfloat)x[(*it)[hexa2tetrahedra[i][j]]][0], (GLfloat)x[(*it)[hexa2tetrahedra[i][j]]][1], (GLfloat)x[(*it)[hexa2tetrahedra[i][j]]][2]);
+    				glVertex3f((GLfloat)x[(*it)[hexa2tetrahedra[i*4 + j]]][0], (GLfloat)x[(*it)[hexa2tetrahedra[i*4 + j]]][1], (GLfloat)x[(*it)[hexa2tetrahedra[i*4 + j]]][2]);
     			}
     		}
     	}

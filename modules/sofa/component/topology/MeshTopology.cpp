@@ -57,10 +57,10 @@ MeshTopology::MeshTopology()
     , seqEdges(initData(&seqEdges,"edges","List of edge indices")), validEdges(false)
     , seqTriangles(initData(&seqTriangles,"triangles","List of triangle indices")), validTriangles(false)
     , seqQuads(initData(&seqQuads,"quads","List of quad indices")), validQuads(false)
-    , seqTetras(initData(&seqTetras,"tetras","List of tetrahedron indices")), validTetras(false)
-    , seqHexas(initData(&seqHexas,"hexas","List of hexahedron indices")), validHexas(false)
+    , seqTetrahedra(initData(&seqTetrahedra,"tetrahedra","List of tetrahedron indices")), validTetrahedra(false)
+    , seqHexahedra(initData(&seqHexahedra,"hexahedra","List of hexahedron indices")), validHexahedra(false)
     , revision(0)
-    , _draw(initData(&_draw, false, "drawHexas","if true, draw the topology hexahedra"))
+    , _draw(initData(&_draw, false, "drawHexahedra","if true, draw the topology hexahedra"))
 {
 }
 
@@ -115,20 +115,20 @@ void MeshTopology::init()
                     n = 1 + seqQuads.getValue()[i][j];
             }
         }
-        for (unsigned int i=0; i<seqTetras.getValue().size(); i++)
+        for (unsigned int i=0; i<seqTetrahedra.getValue().size(); i++)
         {
-            for (unsigned int j=0; j<seqTetras.getValue()[i].size(); j++)
+            for (unsigned int j=0; j<seqTetrahedra.getValue()[i].size(); j++)
             {
-                if (n <= seqTetras.getValue()[i][j])
-                    n = 1 + seqTetras.getValue()[i][j];
+                if (n <= seqTetrahedra.getValue()[i][j])
+                    n = 1 + seqTetrahedra.getValue()[i][j];
             }
         }
-        for (unsigned int i=0; i<seqHexas.getValue().size(); i++)
+        for (unsigned int i=0; i<seqHexahedra.getValue().size(); i++)
         {
-            for (unsigned int j=0; j<seqHexas.getValue()[i].size(); j++)
+            for (unsigned int j=0; j<seqHexahedra.getValue()[i].size(); j++)
             {
-                if (n <= seqHexas.getValue()[i][j])
-                    n = 1 + seqHexas.getValue()[i][j];
+                if (n <= seqHexahedra.getValue()[i][j])
+                    n = 1 + seqHexahedra.getValue()[i][j];
             }
         }
         nbPoints = n;
@@ -148,8 +148,8 @@ void MeshTopology::loadFromMeshLoader(sofa::component::container::MeshLoader* lo
     loader->getEdges(*seqEdges.beginEdit()); seqEdges.endEdit();
     loader->getTriangles(*seqTriangles.beginEdit()); seqTriangles.endEdit();
     loader->getQuads(*seqQuads.beginEdit()); seqQuads.endEdit();
-    loader->getTetrahedra(*seqTetras.beginEdit()); seqTetras.endEdit();
-    loader->getHexahedra(*seqHexas.beginEdit()); seqHexas.endEdit();
+    loader->getTetrahedra(*seqTetrahedra.beginEdit()); seqTetrahedra.endEdit();
+    loader->getHexahedra(*seqHexahedra.beginEdit()); seqHexahedra.endEdit();
 }
 
 void MeshTopology::clear()
@@ -159,8 +159,8 @@ void MeshTopology::clear()
     seqEdges.beginEdit()->clear(); seqEdges.endEdit();
     seqTriangles.beginEdit()->clear(); seqTriangles.endEdit();
     seqQuads.beginEdit()->clear(); seqQuads.endEdit();
-    seqTetras.beginEdit()->clear(); seqTetras.endEdit();
-    seqHexas.beginEdit()->clear(); seqHexas.endEdit();
+    seqTetrahedra.beginEdit()->clear(); seqTetrahedra.endEdit();
+    seqHexahedra.beginEdit()->clear(); seqHexahedra.endEdit();
     invalidate();
 }
 
@@ -202,8 +202,8 @@ void MeshTopology::addQuad(int a, int b, int c, int d)
 
 void MeshTopology::addTetra( int a, int b, int c, int d )
 {
-    seqTetras.beginEdit()->push_back( Tetra(a,b,c,d) );
-    seqTetras.endEdit();
+    seqTetrahedra.beginEdit()->push_back( Tetra(a,b,c,d) );
+    seqTetrahedra.endEdit();
     if (a >= (int)nbPoints) nbPoints = a+1;
     if (b >= (int)nbPoints) nbPoints = b+1;
     if (c >= (int)nbPoints) nbPoints = c+1;
@@ -213,11 +213,11 @@ void MeshTopology::addTetra( int a, int b, int c, int d )
 void MeshTopology::addHexa(int p1, int p2, int p3, int p4, int p5, int p6, int p7, int p8)
 {
 #ifdef SOFA_NEW_HEXA
-    seqHexas.beginEdit()->push_back(Hexa(p1,p2,p3,p4,p5,p6,p7,p8));
+    seqHexahedra.beginEdit()->push_back(Hexa(p1,p2,p3,p4,p5,p6,p7,p8));
 #else
-    seqHexas.beginEdit()->push_back(Hexa(p1,p2,p4,p3,p5,p6,p8,p7));
+    seqHexahedra.beginEdit()->push_back(Hexa(p1,p2,p4,p3,p5,p6,p8,p7));
 #endif
-    seqHexas.endEdit();
+    seqHexahedra.endEdit();
     if (p1 >= (int)nbPoints) nbPoints = p1+1;
     if (p2 >= (int)nbPoints) nbPoints = p2+1;
     if (p3 >= (int)nbPoints) nbPoints = p3+1;
@@ -260,22 +260,22 @@ const MeshTopology::SeqQuads& MeshTopology::getQuads()
 
 const MeshTopology::SeqTetrahedra& MeshTopology::getTetrahedra()
 {
-    if (!validTetras)
+    if (!validTetrahedra)
     {
-        updateTetras();
-        validTetras = true;
+        updateTetrahedra();
+        validTetrahedra = true;
     }
-    return seqTetras.getValue();
+    return seqTetrahedra.getValue();
 }
 
 const MeshTopology::SeqHexahedra& MeshTopology::getHexahedra()
 {
-    if (!validHexas)
+    if (!validHexahedra)
     {
-        updateHexas();
-        validHexas = true;
+        updateHexahedra();
+        validHexahedra = true;
     }
-    return seqHexas.getValue();
+    return seqHexahedra.getValue();
 }
 
 int MeshTopology::getNbPoints() const
@@ -416,14 +416,14 @@ void MeshTopology::createEdgesInQuadArray ()
 void MeshTopology::createEdgesInTetrahedronArray ()
 {
     //const SeqEdges& edges = getEdges(); // do not use seqEdges directly as it might not be up-to-date
-    const SeqQuads& tetras = getTetrahedra(); // do not use seqTetras directly as it might not be up-to-date
+    const SeqQuads& tetrahedra = getTetrahedra(); // do not use seqTetrahedra directly as it might not be up-to-date
     m_edgesInTetrahedron.clear();
-    m_edgesInTetrahedron.resize(tetras.size());
+    m_edgesInTetrahedron.resize(tetrahedra.size());
     const unsigned int edgesInTetrahedronArray[6][2]= {{0,1},{0,2},{0,3},{1,2},{1,3},{2,3}};
 
-    for (unsigned int i = 0; i < tetras.size(); ++i)
+    for (unsigned int i = 0; i < tetrahedra.size(); ++i)
     {
-        const Tetra &t=tetras[i];
+        const Tetra &t=tetrahedra[i];
         // adding edge i in the edge shell of both points
         for (unsigned int j=0; j<6; ++j)
         {
@@ -438,14 +438,14 @@ void MeshTopology::createEdgesInTetrahedronArray ()
 void MeshTopology::createEdgesInHexahedronArray ()
 {
     //const SeqEdges& edges = getEdges(); // do not use seqEdges directly as it might not be up-to-date
-    const SeqHexahedra& hexas = getHexahedra(); // do not use seqHexas directly as it might not be up-to-date
+    const SeqHexahedra& hexahedra = getHexahedra(); // do not use seqHexahedra directly as it might not be up-to-date
     m_edgesInHexahedron.clear();
-    m_edgesInHexahedron.resize(hexas.size());
+    m_edgesInHexahedron.resize(hexahedra.size());
     const unsigned int edgeHexahedronDescriptionArray[12][2]= {{0,1},{0,3},{0,4},{1,2},{1,5},{2,3},{2,6},{3,7},{4,5},{4,7},{5,6},{6,7}};
 
-    for (unsigned int i = 0; i < hexas.size(); ++i)
+    for (unsigned int i = 0; i < hexahedra.size(); ++i)
     {
-        const Hexa &h=hexas[i];
+        const Hexa &h=hexahedra[i];
         // adding edge i in the edge shell of both points
         for (unsigned int j=0; j<12; ++j)
         {
@@ -633,13 +633,13 @@ void MeshTopology::createTrianglesAroundEdgeArray ()
 void MeshTopology::createTrianglesInTetrahedronArray ()
 {
     //const SeqEdges& edges = getEdges(); // do not use seqEdges directly as it might not be up-to-date
-    const SeqQuads& tetras = getTetrahedra(); // do not use seqTetras directly as it might not be up-to-date
+    const SeqQuads& tetrahedra = getTetrahedra(); // do not use seqTetrahedra directly as it might not be up-to-date
     m_trianglesInTetrahedron.clear();
-    m_trianglesInTetrahedron.resize(tetras.size());
+    m_trianglesInTetrahedron.resize(tetrahedra.size());
 
-    for (unsigned int i = 0; i < tetras.size(); ++i)
+    for (unsigned int i = 0; i < tetrahedra.size(); ++i)
     {
-        const Tetra &t=tetras[i];
+        const Tetra &t=tetrahedra[i];
         // adding triangles in the triangle list of the ith tetrahedron  i
         for (unsigned int j=0; j<4; ++j)
         {
@@ -821,13 +821,13 @@ void MeshTopology::createQuadsAroundEdgeArray ()
 void MeshTopology::createQuadsInHexahedronArray ()
 {
     //const SeqEdges& edges = getEdges(); // do not use seqEdges directly as it might not be up-to-date
-    const SeqHexahedra& hexas = getHexahedra(); // do not use seqHexas directly as it might not be up-to-date
+    const SeqHexahedra& hexahedra = getHexahedra(); // do not use seqHexahedra directly as it might not be up-to-date
     m_quadsInHexahedron.clear();
-    m_quadsInHexahedron.resize(hexas.size());
+    m_quadsInHexahedron.resize(hexahedra.size());
 
-    for (unsigned int i = 0; i < hexas.size(); ++i)
+    for (unsigned int i = 0; i < hexahedra.size(); ++i)
     {
-        const Hexa &h=hexas[i];
+        const Hexa &h=hexahedra[i];
         int quadIndex;
         // adding the 6 quads in the quad list of the ith hexahedron  i
         // Quad 0 :
@@ -862,10 +862,10 @@ void MeshTopology::createTetrahedraAroundVertexArray ()
     m_tetrahedraAroundVertex.resize( nbPoints );
     unsigned int j;
 
-    for (unsigned int i = 0; i < seqTetras.getValue().size(); ++i)
+    for (unsigned int i = 0; i < seqTetrahedra.getValue().size(); ++i)
     {
         for (j=0; j<4; ++j)
-            m_tetrahedraAroundVertex[ seqTetras.getValue()[i][j]  ].push_back( i );
+            m_tetrahedraAroundVertex[ seqTetrahedra.getValue()[i][j]  ].push_back( i );
     }
 }
 
@@ -877,7 +877,7 @@ void MeshTopology::createTetrahedraAroundEdgeArray ()
     const vector< EdgesInTetrahedron > &tea = m_edgesInTetrahedron;
     unsigned int j;
 
-    for (unsigned int i = 0; i < seqTetras.getValue().size(); ++i)
+    for (unsigned int i = 0; i < seqTetrahedra.getValue().size(); ++i)
     {
         for (j=0; j<6; ++j)
             m_tetrahedraAroundEdge[ tea[i][j] ].push_back( i );
@@ -892,7 +892,7 @@ void MeshTopology::createTetrahedraAroundTriangleArray ()
     unsigned int j;
     const vector< TrianglesInTetrahedron > &tta=m_trianglesInTetrahedron;
 
-    for (unsigned int i = 0; i < seqTetras.getValue().size(); ++i)
+    for (unsigned int i = 0; i < seqTetrahedra.getValue().size(); ++i)
     {
         for (j=0; j<4; ++j)
             m_tetrahedraAroundTriangle[ tta[i][j] ].push_back( i );
@@ -904,10 +904,10 @@ void MeshTopology::createHexahedraAroundVertexArray ()
     m_hexahedraAroundVertex.resize( nbPoints );
     unsigned int j;
 
-    for (unsigned int i = 0; i < seqHexas.getValue().size(); ++i)
+    for (unsigned int i = 0; i < seqHexahedra.getValue().size(); ++i)
     {
         for (j=0; j<8; ++j)
-            m_hexahedraAroundVertex[ seqHexas.getValue()[i][j]  ].push_back( i );
+            m_hexahedraAroundVertex[ seqHexahedra.getValue()[i][j]  ].push_back( i );
     }
 }
 
@@ -919,7 +919,7 @@ void MeshTopology::createHexahedraAroundEdgeArray ()
     unsigned int j;
     const vector< EdgesInHexahedron > &hea=m_edgesInHexahedron;
 
-    for (unsigned int i = 0; i < seqHexas.getValue().size(); ++i)
+    for (unsigned int i = 0; i < seqHexahedra.getValue().size(); ++i)
     {
         for (j=0; j<12; ++j)
             m_hexahedraAroundEdge[ hea[i][j] ].push_back( i );
@@ -934,7 +934,7 @@ void MeshTopology::createHexahedraAroundQuadArray ()
     unsigned int j;
     const vector< QuadsInHexahedron > &qha=m_quadsInHexahedron;
 
-    for (unsigned int i = 0; i < seqHexas.getValue().size(); ++i)
+    for (unsigned int i = 0; i < seqHexahedra.getValue().size(); ++i)
     {
         // adding quad i in the edge shell of both points
         for (j=0; j<6; ++j)
@@ -1744,8 +1744,8 @@ void MeshTopology::invalidate()
     validEdges = false;
     validTriangles = false;
     validQuads = false;
-    validTetras = false;
-    validHexas = false;
+    validTetrahedra = false;
+    validHexahedra = false;
     m_edgesAroundVertex.clear();
     m_edgesInTriangle.clear();
     m_edgesInQuad.clear();
@@ -1777,11 +1777,11 @@ void MeshTopology::updateEdges()
 
     if (hasVolume())
     {
-        const SeqTetrahedra& tetras = getTetrahedra(); // do not use seqTetras directly as it might not be up-to-date
+        const SeqTetrahedra& tetrahedra = getTetrahedra(); // do not use seqTetrahedra directly as it might not be up-to-date
         const unsigned int edgesInTetrahedronArray[6][2]= {{0,1},{0,2},{0,3},{1,2},{1,3},{2,3}};
-        for (unsigned int i = 0; i < tetras.size(); ++i)
+        for (unsigned int i = 0; i < tetrahedra.size(); ++i)
         {
-            const Tetra &t=tetras[i];
+            const Tetra &t=tetrahedra[i];
             std::map<Edge,unsigned int>::iterator ite;
             Edge e;
             unsigned int v1,v2;
@@ -1812,14 +1812,14 @@ void MeshTopology::updateEdges()
             }
         }
 
-        const SeqHexahedra& hexas = getHexahedra(); // do not use seqHexas directly as it might not be up-to-date
+        const SeqHexahedra& hexahedra = getHexahedra(); // do not use seqHexahedra directly as it might not be up-to-date
         const unsigned int edgeHexahedronDescriptionArray[12][2]= {{0,1},{0,3},{0,4},{1,2},{1,5},{2,3},{2,6},{3,7},{4,5},{4,7},{5,6},{6,7}};
         // create a temporary map to find redundant edges
         std::map<Edge,unsigned int> edgeMap;
         /// create the m_edge array at the same time than it fills the m_edgesInHexahedron array
-        for (unsigned int i = 0; i < hexas.size(); ++i)
+        for (unsigned int i = 0; i < hexahedra.size(); ++i)
         {
-            const Hexa &h=hexas[i];
+            const Hexa &h=hexahedra[i];
             std::map<Edge,unsigned int>::iterator ite;
             Edge e;
             unsigned int v1,v2;
@@ -1924,9 +1924,9 @@ void MeshTopology::updateEdges()
 void MeshTopology::updateQuads()
 {
     if (!seqQuads.getValue().empty()) return; // quads already defined
-    if (getNbHexahedra()==0) return; // no hexas to extract edges from
+    if (getNbHexahedra()==0) return; // no hexahedra to extract edges from
 
-    const SeqHexahedra& hexas = getHexahedra(); // do not use seqQuads directly as it might not be up-to-date
+    const SeqHexahedra& hexahedra = getHexahedra(); // do not use seqQuads directly as it might not be up-to-date
 
     // create a temporary map to find redundant quads
     std::map<Quad,unsigned int> quadMap;
@@ -1935,9 +1935,9 @@ void MeshTopology::updateQuads()
     unsigned int v[4],val;
     int quadIndex;
     /// create the m_edge array at the same time than it fills the m_edgesInHexahedron array
-    for (unsigned int i = 0; i < hexas.size(); ++i)
+    for (unsigned int i = 0; i < hexahedra.size(); ++i)
     {
-        const Hexa &h=hexas[i];
+        const Hexa &h=hexahedra[i];
 
         // Quad 0 :
         v[0]=h[0]; v[1]=h[3]; v[2]=h[2]; v[3]=h[1];
@@ -2120,8 +2120,8 @@ void MeshTopology::updateQuads()
 void MeshTopology::updateTriangles()
 {
     if (!seqTriangles.getValue().empty()) return; // triangles already defined
-    if (getNbTetrahedra()==0) return; // no tetras to extract edges from
-    const SeqTetrahedra& tetras = getTetrahedra(); // do not use seqTriangles directly as it might not be up-to-date
+    if (getNbTetrahedra()==0) return; // no tetrahedra to extract edges from
+    const SeqTetrahedra& tetrahedra = getTetrahedra(); // do not use seqTriangles directly as it might not be up-to-date
 
     // create a temporary map to find redundant triangles
     std::map<Triangle,unsigned int> triangleMap;
@@ -2130,9 +2130,9 @@ void MeshTopology::updateTriangles()
     int triangleIndex;
     unsigned int v[3],val;
     /// create the m_edge array at the same time than it fills the m_trianglesInTetrahedron array
-    for (unsigned int i = 0; i < tetras.size(); ++i)
+    for (unsigned int i = 0; i < tetrahedra.size(); ++i)
     {
-        const Tetra &t=seqTetras.getValue()[i];
+        const Tetra &t=seqTetrahedra.getValue()[i];
         for (unsigned int j=0; j<4; ++j)
         {
             if (j%2)
@@ -2170,15 +2170,15 @@ void MeshTopology::updateTriangles()
     }
 }
 
-void MeshTopology::updateHexas()
+void MeshTopology::updateHexahedra()
 {
-    if (!seqHexas.getValue().empty()) return; // hexas already defined
+    if (!seqHexahedra.getValue().empty()) return; // hexahedra already defined
     // No 4D elements yet! ;)
 }
 
-void MeshTopology::updateTetras()
+void MeshTopology::updateTetrahedra()
 {
-    if (!seqTetras.getValue().empty()) return; // tetras already defined
+    if (!seqTetrahedra.getValue().empty()) return; // tetrahedra already defined
     // No 4D elements yet! ;)
 }
 

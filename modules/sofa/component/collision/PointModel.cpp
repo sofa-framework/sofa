@@ -317,7 +317,7 @@ void PointModel::updateNormals()
                 n3 += n;
             }
         }
-        /// @TODO Hexas
+        /// @TODO Hexahedra
     }
     else if (mesh->getNbTriangles()+mesh->getNbQuads() > 0)
     {

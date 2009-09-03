@@ -77,8 +77,8 @@ void Mesh2PointMechanicalMapping<BaseMapping>::apply( typename Out::VecCoord& ou
     const core::componentmodel::topology::BaseMeshTopology::SeqEdges& edges = inputTopo->getEdges();
     const core::componentmodel::topology::BaseMeshTopology::SeqTriangles& triangles = inputTopo->getTriangles();
     const core::componentmodel::topology::BaseMeshTopology::SeqQuads& quads = inputTopo->getQuads();
-    const core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra& tetras = inputTopo->getTetrahedra();
-    const core::componentmodel::topology::BaseMeshTopology::SeqHexahedra& hexas = inputTopo->getHexahedra();
+    const core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = inputTopo->getTetrahedra();
+    const core::componentmodel::topology::BaseMeshTopology::SeqHexahedra& hexahedra = inputTopo->getHexahedra();
 
     out.resize(outputTopo->getNbPoints());
     for(unsigned int i = 0; i < pointMap.size(); ++i)
@@ -136,10 +136,10 @@ void Mesh2PointMechanicalMapping<BaseMapping>::apply( typename Out::VecCoord& ou
             double fx = topoMap->getTetraBaryCoords()[j][0];
             double fy = topoMap->getTetraBaryCoords()[j][1];
             double fz = topoMap->getTetraBaryCoords()[j][2];
-            out[tetraMap[i][j]] = in[ tetras[i][0] ] * (1-fx-fy-fz)
-                    + in[ tetras[i][1] ] * fx
-                    + in[ tetras[i][2] ] * fy
-                    + in[ tetras[i][3] ] * fz;
+            out[tetraMap[i][j]] = in[ tetrahedra[i][0] ] * (1-fx-fy-fz)
+                    + in[ tetrahedra[i][1] ] * fx
+                    + in[ tetrahedra[i][2] ] * fy
+                    + in[ tetrahedra[i][3] ] * fz;
         }
     }
 
@@ -151,14 +151,14 @@ void Mesh2PointMechanicalMapping<BaseMapping>::apply( typename Out::VecCoord& ou
             double fx = topoMap->getHexaBaryCoords()[j][0];
             double fy = topoMap->getHexaBaryCoords()[j][1];
             double fz = topoMap->getHexaBaryCoords()[j][2];
-            out[hexaMap[i][j]] = in[ hexas[i][0] ] * ((1-fx) * (1-fy) * (1-fz))
-                    + in[ hexas[i][1] ] * ((  fx) * (1-fy) * (1-fz))
-                    + in[ hexas[i][2] ] * ((1-fx) * (  fy) * (1-fz))
-                    + in[ hexas[i][3] ] * ((  fx) * (  fy) * (1-fz))
-                    + in[ hexas[i][4] ] * ((1-fx) * (1-fy) * (  fz))
-                    + in[ hexas[i][5] ] * ((  fx) * (1-fy) * (  fz))
-                    + in[ hexas[i][6] ] * ((  fx) * (  fy) * (  fz))
-                    + in[ hexas[i][7] ] * ((1-fx) * (  fy) * (  fz));
+            out[hexaMap[i][j]] = in[ hexahedra[i][0] ] * ((1-fx) * (1-fy) * (1-fz))
+                    + in[ hexahedra[i][1] ] * ((  fx) * (1-fy) * (1-fz))
+                    + in[ hexahedra[i][2] ] * ((1-fx) * (  fy) * (1-fz))
+                    + in[ hexahedra[i][3] ] * ((  fx) * (  fy) * (1-fz))
+                    + in[ hexahedra[i][4] ] * ((1-fx) * (1-fy) * (  fz))
+                    + in[ hexahedra[i][5] ] * ((  fx) * (1-fy) * (  fz))
+                    + in[ hexahedra[i][6] ] * ((  fx) * (  fy) * (  fz))
+                    + in[ hexahedra[i][7] ] * ((1-fx) * (  fy) * (  fz));
         }
     }
 }
@@ -180,8 +180,8 @@ void Mesh2PointMechanicalMapping<BaseMapping>::applyJ( typename Out::VecDeriv& o
     const core::componentmodel::topology::BaseMeshTopology::SeqEdges& edges = inputTopo->getEdges();
     const core::componentmodel::topology::BaseMeshTopology::SeqTriangles& triangles = inputTopo->getTriangles();
     const core::componentmodel::topology::BaseMeshTopology::SeqQuads& quads = inputTopo->getQuads();
-    const core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra& tetras = inputTopo->getTetrahedra();
-    const core::componentmodel::topology::BaseMeshTopology::SeqHexahedra& hexas = inputTopo->getHexahedra();
+    const core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = inputTopo->getTetrahedra();
+    const core::componentmodel::topology::BaseMeshTopology::SeqHexahedra& hexahedra = inputTopo->getHexahedra();
 
     out.resize(outputTopo->getNbPoints());
     for(unsigned int i = 0; i < pointMap.size(); ++i)
@@ -239,10 +239,10 @@ void Mesh2PointMechanicalMapping<BaseMapping>::applyJ( typename Out::VecDeriv& o
             double fx = topoMap->getTetraBaryCoords()[j][0];
             double fy = topoMap->getTetraBaryCoords()[j][1];
             double fz = topoMap->getTetraBaryCoords()[j][2];
-            out[tetraMap[i][j]] = in[ tetras[i][0] ] * (1-fx-fy-fz)
-                    + in[ tetras[i][1] ] * fx
-                    + in[ tetras[i][2] ] * fy
-                    + in[ tetras[i][3] ] * fz;
+            out[tetraMap[i][j]] = in[ tetrahedra[i][0] ] * (1-fx-fy-fz)
+                    + in[ tetrahedra[i][1] ] * fx
+                    + in[ tetrahedra[i][2] ] * fy
+                    + in[ tetrahedra[i][3] ] * fz;
         }
     }
 
@@ -254,14 +254,14 @@ void Mesh2PointMechanicalMapping<BaseMapping>::applyJ( typename Out::VecDeriv& o
             double fx = topoMap->getHexaBaryCoords()[j][0];
             double fy = topoMap->getHexaBaryCoords()[j][1];
             double fz = topoMap->getHexaBaryCoords()[j][2];
-            out[hexaMap[i][j]] = in[ hexas[i][0] ] * ((1-fx) * (1-fy) * (1-fz))
-                    + in[ hexas[i][1] ] * ((  fx) * (1-fy) * (1-fz))
-                    + in[ hexas[i][2] ] * ((1-fx) * (  fy) * (1-fz))
-                    + in[ hexas[i][3] ] * ((  fx) * (  fy) * (1-fz))
-                    + in[ hexas[i][4] ] * ((1-fx) * (1-fy) * (  fz))
-                    + in[ hexas[i][5] ] * ((  fx) * (1-fy) * (  fz))
-                    + in[ hexas[i][6] ] * ((  fx) * (  fy) * (  fz))
-                    + in[ hexas[i][7] ] * ((1-fx) * (  fy) * (  fz));
+            out[hexaMap[i][j]] = in[ hexahedra[i][0] ] * ((1-fx) * (1-fy) * (1-fz))
+                    + in[ hexahedra[i][1] ] * ((  fx) * (1-fy) * (1-fz))
+                    + in[ hexahedra[i][2] ] * ((1-fx) * (  fy) * (1-fz))
+                    + in[ hexahedra[i][3] ] * ((  fx) * (  fy) * (1-fz))
+                    + in[ hexahedra[i][4] ] * ((1-fx) * (1-fy) * (  fz))
+                    + in[ hexahedra[i][5] ] * ((  fx) * (1-fy) * (  fz))
+                    + in[ hexahedra[i][6] ] * ((  fx) * (  fy) * (  fz))
+                    + in[ hexahedra[i][7] ] * ((1-fx) * (  fy) * (  fz));
         }
     }
 }
@@ -283,8 +283,8 @@ void Mesh2PointMechanicalMapping<BaseMapping>::applyJT( typename In::VecDeriv& o
     const core::componentmodel::topology::BaseMeshTopology::SeqEdges& edges = inputTopo->getEdges();
     const core::componentmodel::topology::BaseMeshTopology::SeqTriangles& triangles = inputTopo->getTriangles();
     const core::componentmodel::topology::BaseMeshTopology::SeqQuads& quads = inputTopo->getQuads();
-    const core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra& tetras = inputTopo->getTetrahedra();
-    const core::componentmodel::topology::BaseMeshTopology::SeqHexahedra& hexas = inputTopo->getHexahedra();
+    const core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = inputTopo->getTetrahedra();
+    const core::componentmodel::topology::BaseMeshTopology::SeqHexahedra& hexahedra = inputTopo->getHexahedra();
 
     out.resize(inputTopo->getNbPoints());
     for(unsigned int i = 0; i < pointMap.size(); ++i)
@@ -342,10 +342,10 @@ void Mesh2PointMechanicalMapping<BaseMapping>::applyJT( typename In::VecDeriv& o
             double fx = topoMap->getTetraBaryCoords()[j][0];
             double fy = topoMap->getTetraBaryCoords()[j][1];
             double fz = topoMap->getTetraBaryCoords()[j][2];
-            out[ tetras[i][0] ] += in[tetraMap[i][j]] * (1-fx-fy-fz);
-            out[ tetras[i][1] ] += in[tetraMap[i][j]] * fx;
-            out[ tetras[i][2] ] += in[tetraMap[i][j]] * fy;
-            out[ tetras[i][3] ] += in[tetraMap[i][j]] * fz;
+            out[ tetrahedra[i][0] ] += in[tetraMap[i][j]] * (1-fx-fy-fz);
+            out[ tetrahedra[i][1] ] += in[tetraMap[i][j]] * fx;
+            out[ tetrahedra[i][2] ] += in[tetraMap[i][j]] * fy;
+            out[ tetrahedra[i][3] ] += in[tetraMap[i][j]] * fz;
         }
     }
 
@@ -357,14 +357,14 @@ void Mesh2PointMechanicalMapping<BaseMapping>::applyJT( typename In::VecDeriv& o
             double fx = topoMap->getHexaBaryCoords()[j][0];
             double fy = topoMap->getHexaBaryCoords()[j][1];
             double fz = topoMap->getHexaBaryCoords()[j][2];
-            out[ hexas[i][0] ] += in[hexaMap[i][j]] * ((1-fx) * (1-fy) * (1-fz));
-            out[ hexas[i][1] ] += in[hexaMap[i][j]] * ((  fx) * (1-fy) * (1-fz));
-            out[ hexas[i][2] ] += in[hexaMap[i][j]] * ((1-fx) * (  fy) * (1-fz));
-            out[ hexas[i][3] ] += in[hexaMap[i][j]] * ((  fx) * (  fy) * (1-fz));
-            out[ hexas[i][4] ] += in[hexaMap[i][j]] * ((1-fx) * (1-fy) * (  fz));
-            out[ hexas[i][5] ] += in[hexaMap[i][j]] * ((  fx) * (1-fy) * (  fz));
-            out[ hexas[i][6] ] += in[hexaMap[i][j]] * ((  fx) * (  fy) * (  fz));
-            out[ hexas[i][7] ] += in[hexaMap[i][j]] * ((1-fx) * (  fy) * (  fz));
+            out[ hexahedra[i][0] ] += in[hexaMap[i][j]] * ((1-fx) * (1-fy) * (1-fz));
+            out[ hexahedra[i][1] ] += in[hexaMap[i][j]] * ((  fx) * (1-fy) * (1-fz));
+            out[ hexahedra[i][2] ] += in[hexaMap[i][j]] * ((1-fx) * (  fy) * (1-fz));
+            out[ hexahedra[i][3] ] += in[hexaMap[i][j]] * ((  fx) * (  fy) * (1-fz));
+            out[ hexahedra[i][4] ] += in[hexaMap[i][j]] * ((1-fx) * (1-fy) * (  fz));
+            out[ hexahedra[i][5] ] += in[hexaMap[i][j]] * ((  fx) * (1-fy) * (  fz));
+            out[ hexahedra[i][6] ] += in[hexaMap[i][j]] * ((  fx) * (  fy) * (  fz));
+            out[ hexahedra[i][7] ] += in[hexaMap[i][j]] * ((1-fx) * (  fy) * (  fz));
         }
     }
 }
@@ -379,8 +379,8 @@ void Mesh2PointMechanicalMapping<BaseMapping>::applyJT( typename In::VecConst& o
     const core::componentmodel::topology::BaseMeshTopology::SeqEdges& edges = inputTopo->getEdges();
     const core::componentmodel::topology::BaseMeshTopology::SeqTriangles& triangles = inputTopo->getTriangles();
     const core::componentmodel::topology::BaseMeshTopology::SeqQuads& quads = inputTopo->getQuads();
-    const core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra& tetras = inputTopo->getTetrahedra();
-    const core::componentmodel::topology::BaseMeshTopology::SeqHexahedra& hexas = inputTopo->getHexahedra();
+    const core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra& tetrahedra = inputTopo->getTetrahedra();
+    const core::componentmodel::topology::BaseMeshTopology::SeqHexahedra& hexahedra = inputTopo->getHexahedra();
 
     int offset = out.size();
     out.resize(offset+in.size());
@@ -436,7 +436,7 @@ void Mesh2PointMechanicalMapping<BaseMapping>::applyJT( typename In::VecConst& o
             }
             case topology::Mesh2PointTopologicalMapping::TETRA:
             {
-                core::componentmodel::topology::BaseMeshTopology::Tetra t = tetras[source.second];
+                core::componentmodel::topology::BaseMeshTopology::Tetra t = tetrahedra[source.second];
                 typename In::Deriv f = data;
                 double fx = topoMap->getTetraBaryCoords()[indexIn][0];
                 double fy = topoMap->getTetraBaryCoords()[indexIn][1];
@@ -449,7 +449,7 @@ void Mesh2PointMechanicalMapping<BaseMapping>::applyJT( typename In::VecConst& o
             }
             case topology::Mesh2PointTopologicalMapping::HEXA:
             {
-                core::componentmodel::topology::BaseMeshTopology::Hexa h = hexas[source.second];
+                core::componentmodel::topology::BaseMeshTopology::Hexa h = hexahedra[source.second];
                 typename In::Deriv f = data;
                 double fx = topoMap->getHexaBaryCoords()[indexIn][0];
                 double fy = topoMap->getHexaBaryCoords()[indexIn][1];

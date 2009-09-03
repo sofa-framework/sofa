@@ -219,7 +219,7 @@ protected:
 
     virtual void updateEdges();
     virtual void updateQuads();
-    virtual void updateHexas();
+    virtual void updateHexahedra();
 
     MarchingCubeUtility                 marchingCubes;
     bool                                _usingMC;

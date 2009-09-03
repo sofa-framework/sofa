@@ -142,7 +142,7 @@ bool MeshTopologyLoader::loadGmsh(FILE *file, const int gmshFormat)
     int nlines = 0;
     int ntris = 0;
     int nquads = 0;
-    int ntetras = 0;
+    int ntetrahedra = 0;
     int ncubes = 0;
     int result;
 
@@ -249,7 +249,7 @@ bool MeshTopologyLoader::loadGmsh(FILE *file, const int gmshFormat)
             break;
         case 4: // Tetra
             addTetra(nodes[0], nodes[1], nodes[2], nodes[3]);
-            ++ntetras;
+            ++ntetrahedra;
             break;
         case 5: // Hexa
             addCube(nodes[0], nodes[1], nodes[2], nodes[3],nodes[4], nodes[5], nodes[6], nodes[7]);
@@ -274,7 +274,7 @@ bool MeshTopologyLoader::loadGmsh(FILE *file, const int gmshFormat)
 // 	if (nlines>0)  std::cout << ' ' << nlines  << " lines";
 // 	if (ntris>0)   std::cout << ' ' << ntris   << " triangles";
 // 	if (nquads>0)  std::cout << ' ' << nquads  << " quads";
-// 	if (ntetras>0) std::cout << ' ' << ntetras << " tetrahedra";
+// 	if (ntetrahedra>0) std::cout << ' ' << ntetrahedra << " tetrahedra";
 // 	if (ncubes>0)  std::cout << ' ' << ncubes  << " cubes";
 // 	std::cout << std::endl;
 
@@ -288,7 +288,7 @@ bool MeshTopologyLoader::loadXsp(FILE *file, bool vector_spring)
     int nlines = 0;
 //	int ntris = 0;
 //	int nquads = 0;
-//	int ntetras = 0;
+//	int ntetrahedra = 0;
 //	int ncubes = 0;
 
     int totalNumMasses;
@@ -389,7 +389,7 @@ bool MeshTopologyLoader::loadXsp(FILE *file, bool vector_spring)
 // 	if (nlines>0)  std::cout << ' ' << nlines  << " lines";
 // 	if (ntris>0)   std::cout << ' ' << ntris   << " triangles";
 // 	if (nquads>0)  std::cout << ' ' << nquads  << " quads";
-// 	if (ntetras>0) std::cout << ' ' << ntetras << " tetrahedra";
+// 	if (ntetrahedra>0) std::cout << ' ' << ntetrahedra << " tetrahedra";
 // 	if (ncubes>0)  std::cout << ' ' << ncubes  << " cubes";
 // 	std::cout << std::endl;
 
@@ -403,7 +403,7 @@ bool MeshTopologyLoader::loadMesh(FILE *file)
     int nlines = 0;
     int ntris = 0;
     int nquads = 0;
-    int ntetras = 0;
+    int ntetrahedra = 0;
     int ncubes = 0;
     int result;
 
@@ -441,7 +441,7 @@ bool MeshTopologyLoader::loadMesh(FILE *file)
             result = fscanf(file, "%d %d %d %d\n",
                     &p1, &p2, &p3, &p4);
             addTetra(p1, p2, p3, p4);
-            ++ntetras;
+            ++ntetrahedra;
         }
         else if (!strcmp(cmd,"cube"))
         {
@@ -523,7 +523,7 @@ bool MeshTopologyLoader::loadMesh(FILE *file)
 // 	if (nlines>0)  std::cout << ' ' << nlines  << " lines";
 // 	if (ntris>0)   std::cout << ' ' << ntris   << " triangles";
 // 	if (nquads>0)  std::cout << ' ' << nquads  << " quads";
-// 	if (ntetras>0) std::cout << ' ' << ntetras << " tetrahedra";
+// 	if (ntetrahedra>0) std::cout << ' ' << ntetrahedra << " tetrahedra";
 // 	if (ncubes>0)  std::cout << ' ' << ncubes  << " cubes";
 // 	std::cout << std::endl;
 
