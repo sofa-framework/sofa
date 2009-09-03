@@ -118,7 +118,9 @@ bool MeshGmshLoader::readGmsh(FILE *file, const unsigned int gmshFormat)
     unsigned int ncubes = 0;
 
     // --- Loading Vertices ---
-    fscanf(file, "%d\n", &npoints); //Loading number of Point
+    if ( fscanf(file, "%d\n", &npoints) == EOF) //Loading number of Point
+        std::cerr << "Error: MeshGmshLoader: fscanf function can't read number of point." << std::endl;
+
     helper::vector<sofa::defaulttype::Vector3>& my_positions = *(positions.beginEdit());
 
     std::vector<unsigned int> pmap; // map for reordering vertices possibly not well sorted
@@ -126,7 +128,9 @@ bool MeshGmshLoader::readGmsh(FILE *file, const unsigned int gmshFormat)
     {
         unsigned int index = i;
         double x,y,z;
-        fscanf(file, "%d %lf %lf %lf\n", &index, &x, &y, &z);
+        if ( fscanf(file, "%d %lf %lf %lf\n", &index, &x, &y, &z) == EOF )
+            std::cerr << "Error: MeshGmshLoader: fscanf function can't read vertices." << std::endl;
+
         my_positions.push_back(Vector3(x, y, z));
 
         if (pmap.size() <= index)
@@ -155,7 +159,8 @@ bool MeshGmshLoader::readGmsh(FILE *file, const unsigned int gmshFormat)
         return false;
     }
 
-    fscanf(file, "%d\n", &nelems); //Loading number of Element
+    if ( fscanf(file, "%d\n", &nelems) == EOF ) //Loading number of Element
+        std::cerr << "Error: MeshGmshLoader: fscanf function can't read number of element." << std::endl;
 
     helper::vector<helper::fixed_array <unsigned int,2> >& my_edges = *(edges.beginEdit());
     helper::vector<helper::fixed_array <unsigned int,3> >& my_triangles = *(triangles.beginEdit());
@@ -172,15 +177,22 @@ bool MeshGmshLoader::readGmsh(FILE *file, const unsigned int gmshFormat)
         {
             // version 1.0 format is
             // elm-number elm-type reg-phys reg-elem number-of-nodes <node-number-list ...>
-            fscanf(file, "%d %d %d %d %d", &index, &etype, &rphys, &relem, &nnodes);
+            if ( fscanf(file, "%d %d %d %d %d", &index, &etype, &rphys, &relem, &nnodes) == EOF )
+                std::cerr << "Error: MeshGmshLoader: fscanf function can't read elements in gmshFormat 1." << std::endl;
         }
         else if (gmshFormat == 2)
         {
             // version 2.0 format is
             // elm-number elm-type number-of-tags < tag > ... node-number-list
-            fscanf(file, "%d %d %d", &index, &etype, &ntags);
+            if ( fscanf(file, "%d %d %d", &index, &etype, &ntags) == EOF )
+                std::cerr << "Error: MeshGmshLoader: fscanf function can't read elements in gmshFormat 2." << std::endl;
+
             for (int t=0; t<ntags; t++)
-                fscanf(file, "%d", &tag); // read the tag but don't use it
+            {
+                if ( fscanf(file, "%d", &tag) == EOF ) // read the tag but don't use it
+                    std::cerr << "Error: MeshGmshLoader: fscanf function can't read tag." << std::endl;
+            }
+
 
             switch (etype)
             {
@@ -212,7 +224,9 @@ bool MeshGmshLoader::readGmsh(FILE *file, const unsigned int gmshFormat)
         for (int n=0; n<nnodes; ++n)
         {
             int t = 0;
-            fscanf(file, "%d",&t);
+            if ( fscanf(file, "%d",&t) == EOF )
+                std::cerr << "Error: MeshGmshLoader: fscanf function can't read element nodes." << std::endl;
+
             nodes[n] = (((unsigned int)t)<pmap.size())?pmap[t]:0;
             //std::cout << "nodes[" << n << "] = " << nodes[n] << std::endl;
         }
