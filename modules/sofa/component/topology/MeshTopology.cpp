@@ -53,7 +53,7 @@ int MeshTopologyClass = core::RegisterObject("Generic mesh topology")
 
 MeshTopology::MeshTopology()
     : nbPoints(0)
-    , seqPoints(initData(&seqPoints,"posistion","List of point positions"))
+    , seqPoints(initData(&seqPoints,"position","List of point positions"))
     , seqEdges(initData(&seqEdges,"edges","List of edge indices")), validEdges(false)
     , seqTriangles(initData(&seqTriangles,"triangles","List of triangle indices")), validTriangles(false)
     , seqQuads(initData(&seqQuads,"quads","List of quad indices")), validQuads(false)
@@ -62,6 +62,7 @@ MeshTopology::MeshTopology()
     , revision(0)
     , _draw(initData(&_draw, false, "drawHexahedra","if true, draw the topology hexahedra"))
 {
+    addAlias(&seqPoints,"points");
 }
 
 void MeshTopology::parse(core::objectmodel::BaseObjectDescription* arg)
