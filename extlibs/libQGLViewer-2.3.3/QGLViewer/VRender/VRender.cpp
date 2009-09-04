@@ -46,7 +46,9 @@
 # include <windows.h>
 #endif
 
-#ifdef __APPLE__
+#if defined (SOFA_HAVE_GLEW)
+#include <GL/glew.h>
+#elif defined (__APPLE__)
 # include <OpenGL/gl.h>
 #else
 # include <GL/gl.h>
