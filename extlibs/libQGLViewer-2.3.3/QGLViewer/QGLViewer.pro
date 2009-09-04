@@ -221,7 +221,7 @@ irix-cc|irix-n32 {
 
 #		--  M a c O S X  --
 macx|darwin-g++ {
-  CONFIG *= lib_bundle
+#  CONFIG *= lib_bundle
   # GLUT for Macintosh architecture
   !isEmpty( USE_GLUT ) {
     QMAKE_LIBS_OPENGL -= -lglut
