@@ -269,6 +269,11 @@ void mycudaMemcpyDeviceToHost2D(void *dst, size_t dpitch, const void *src, size_
     cudaCheck(cudaMemcpy2D(dst, dpitch, src, spitch, width, height, cudaMemcpyDeviceToHost),"cudaMemcpyDeviceToHost2D");
 }
 
+void mycudaMemset(void *devPtr, int val, size_t size)
+{
+    cudaCheck(cudaMemset(devPtr, val,size),"mycudaMemset");
+}
+
 void mycudaGLRegisterBufferObject(int id)
 {
     if (!cudaInitCalled) mycudaInit();
