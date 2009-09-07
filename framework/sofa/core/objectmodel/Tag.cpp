@@ -54,7 +54,7 @@ Tag::operator std::string() const
 
 bool TagSet::includes(const TagSet& t) const
 {
-    return !empty() && std::includes(t.begin(), t.end(), this->begin(), this->end());
+    return !empty() && std::includes( this->begin(), this->end(), t.begin(), t.end());
 }
 
 } // namespace objectmodel
