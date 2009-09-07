@@ -188,6 +188,20 @@ public:
             hostIsValid = true;
         }
     }
+    /// resize the vector discarding any old values, without calling constructors or destructors, and without synchronizing the device and host copy
+    void recreate( size_type s,size_type WARP_SIZE=BSIZE)
+    {
+        clear();
+        fastResize(s,WARP_SIZE);
+    }
+
+    void memsetDevice(int v = 0)
+    {
+        mycudaMemset(devicePointer, v, vectorSize*sizeof(T));
+        hostIsValid = false;
+        deviceIsValid = true;
+    }
+
     void resize ( size_type s,size_type WARP_SIZE=BSIZE)
     {
         if ( s == vectorSize ) return;
