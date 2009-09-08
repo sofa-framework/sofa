@@ -54,6 +54,8 @@ MeshLoader::MeshLoader() : BaseLoader()
     , normals(initData(&normals,"normals","Normals of the mesh loaded"))
     //, facets(initData(&facets,"facets","Facets of the mesh loaded"))
 {
+    addAlias(&tetrahedra,"tetras");
+    addAlias(&hexahedra,"hexas");
     //TODO: check if necessary!
     positions.setPersistent(false);
     edges.setPersistent(false);

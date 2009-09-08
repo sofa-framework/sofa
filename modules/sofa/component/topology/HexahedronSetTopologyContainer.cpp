@@ -49,6 +49,7 @@ HexahedronSetTopologyContainer::HexahedronSetTopologyContainer()
     : QuadSetTopologyContainer()
     , d_hexahedron(initDataPtr(&d_hexahedron, &m_hexahedron, "hexahedra", "List of hexahedron indices"))
 {
+    addAlias(&d_hexahedron, "hexas");
 }
 
 HexahedronSetTopologyContainer::HexahedronSetTopologyContainer(const sofa::helper::vector< Hexahedron > &hexahedra )
@@ -56,6 +57,7 @@ HexahedronSetTopologyContainer::HexahedronSetTopologyContainer(const sofa::helpe
     , m_hexahedron( hexahedra )
     , d_hexahedron(initDataPtr(&d_hexahedron, &m_hexahedron, "hexahedra", "List of hexahedron indices"))
 {
+    addAlias(&d_hexahedron, "hexas");
     for (unsigned int i=0; i<m_hexahedron.size(); ++i)
     {
         for(unsigned int j=0; j<8; ++j)

@@ -64,6 +64,8 @@ MeshTetraStuffing::MeshTetraStuffing()
     , bSplitTetrahedra(initData(&bSplitTetrahedra,false,"splitTetrahedra","Split tetrahedra crossing the surface"))
     , bDraw(initData(&bDraw,false,"draw","Activate rendering of internal datasets"))
 {
+    addAlias(&outputTetrahedra,"outputTetras");
+    addAlias(&bSplitTetrahedra,"splitTetras");
 }
 
 MeshTetraStuffing::~MeshTetraStuffing()

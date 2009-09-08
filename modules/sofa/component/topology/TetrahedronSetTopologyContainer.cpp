@@ -51,6 +51,7 @@ TetrahedronSetTopologyContainer::TetrahedronSetTopologyContainer()
     : TriangleSetTopologyContainer()
     , d_tetrahedron(initDataPtr(&d_tetrahedron, &m_tetrahedron, "tetrahedra", "List of tetrahedron indices"))
 {
+    addAlias(&d_tetrahedron, "tetras");
 }
 
 
@@ -59,6 +60,7 @@ TetrahedronSetTopologyContainer::TetrahedronSetTopologyContainer(const sofa::hel
     , m_tetrahedron( tetrahedra )
     , d_tetrahedron(initDataPtr(&d_tetrahedron, &m_tetrahedron, "tetrahedra", "List of tetrahedron indices"))
 {
+    addAlias(&d_tetrahedron, "tetras");
     for (unsigned int i=0; i<m_tetrahedron.size(); ++i)
     {
         for(unsigned int j=0; j<4; ++j)
