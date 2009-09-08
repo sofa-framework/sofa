@@ -52,22 +52,10 @@ class SOFA_CORE_API DDGNode
 public:
 
     /// Constructor
-    DDGNode():dirty(false) {}
+    DDGNode();
 
-    /// Destructor. Do nothing
+    /// Destructor. Automatically remove remaining links
     virtual ~DDGNode();
-
-    /// Update the value of Datas
-    virtual void update() = 0;
-
-    /// True if the Data has been modified
-    virtual void setDirty();
-
-    /// Set dirty flag to false
-    void cleanDirty();
-
-    /// Returns true if the DDGNode has been modified. Otherwise returns false
-    bool isDirty();
 
     /// Add a new input to this node
     void addInput(DDGNode* n);
@@ -87,11 +75,41 @@ public:
     /// Get the list of outputs for this DDGNode
     std::list<DDGNode*> getOutputs();
 
+    /// Update this value
+    virtual void update() = 0;
+
+    /// Returns true if the DDGNode needs to be updated
+    bool isDirty() const
+    {
+        return dirtyValue;
+    }
+
+    /// Indicate the value needs to be updated
+    virtual void setDirtyValue();
+
+    /// Indicate the outputs needs to be updated. This method must be called after changing the value of this node.
+    virtual void setDirtyOutputs();
+
+    /// Set dirty flag to false
+    void cleanDirty();
+
+    /// Utility method to call update if necessary. This method should be called before reading of writing the value of this node.
+    void updateIfDirty() const
+    {
+        if (isDirty())
+        {
+            const_cast <DDGNode*> (this)->update();
+        }
+    }
+
 protected:
 
     std::list<DDGNode*> inputs;
     std::list<DDGNode*> outputs;
-    bool dirty;
+
+private:
+    bool dirtyValue;
+    bool dirtyOutputs;
 };
 
 } // namespace objectmodel

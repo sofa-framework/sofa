@@ -43,7 +43,7 @@ bool SOFA_CORE_API TData<std::string>::read( std::string& str )
 {
     value() = str;
     ++m_counter;
-    BaseData::setDirty();
+    BaseData::setDirtyOutputs();
     return true;
 }
 
@@ -65,7 +65,7 @@ bool SOFA_CORE_API TData<bool>::read( std::string& str )
         return false;
 
     ++m_counter;
-    BaseData::setDirty();
+    BaseData::setDirtyOutputs();
     return true;
 }
 

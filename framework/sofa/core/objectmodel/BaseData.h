@@ -133,7 +133,7 @@ public:
     /// Update the value of this Data
     void update()
     {
-        dirty = false;
+        cleanDirty();
         for(std::list<DDGNode*>::iterator it=inputs.begin(); it!=inputs.end(); ++it)
         {
             if ((*it)->isDirty())

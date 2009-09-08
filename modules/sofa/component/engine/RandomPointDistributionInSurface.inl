@@ -94,7 +94,7 @@ void RandomPointDistributionInSurface<DataTypes>::init()
 
     addOutput(&f_inPoints);
 
-    setDirty();
+    setDirtyValue();
 }
 
 template <class DataTypes>
@@ -212,7 +212,7 @@ bool RandomPointDistributionInSurface<DataTypes>::testDistance(Coord p)
 template <class DataTypes>
 void RandomPointDistributionInSurface<DataTypes>::update()
 {
-    dirty = false;
+    cleanDirty();
 
     const VecCoord& vertices = f_vertices.getValue();
     const helper::vector<BaseMeshTopology::Triangle>& triangles = f_triangles.getValue();

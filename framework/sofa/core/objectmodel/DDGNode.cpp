@@ -35,6 +35,13 @@ namespace core
 namespace objectmodel
 {
 
+/// Constructor
+DDGNode::DDGNode()
+    : dirtyValue(false)
+    , dirtyOutputs(false)
+{
+}
+
 DDGNode::~DDGNode()
 {
     for(std::list< DDGNode* >::iterator it=inputs.begin(); it!=inputs.end(); ++it)
@@ -43,26 +50,35 @@ DDGNode::~DDGNode()
         (*it)->inputs.remove(this);
 }
 
-void DDGNode::setDirty()
+void DDGNode::setDirtyValue()
 {
-    if (!dirty)
+    if (!dirtyValue)
     {
-        dirty = true;
+        dirtyValue = true;
+        setDirtyOutputs();
+    }
+}
+
+void DDGNode::setDirtyOutputs()
+{
+    if (!dirtyOutputs)
+    {
+        dirtyOutputs = true;
         for(std::list<DDGNode*>::iterator it=outputs.begin(); it!=outputs.end(); ++it)
         {
-            (*it)->setDirty();
+            (*it)->setDirtyValue();
         }
     }
 }
 
 void DDGNode::cleanDirty()
 {
-    dirty = false;
-}
-
-bool DDGNode::isDirty()
-{
-    return dirty;
+    if (dirtyValue)
+    {
+        dirtyValue = false;
+        for(std::list< DDGNode* >::iterator it=inputs.begin(); it!=inputs.end(); ++it)
+            (*it)->dirtyOutputs = false;
+    }
 }
 
 void DDGNode::addInput(DDGNode* n)

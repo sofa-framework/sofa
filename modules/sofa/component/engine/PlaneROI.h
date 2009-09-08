@@ -95,10 +95,6 @@ public:
     static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
         core::objectmodel::BaseObject::create(obj, context, arg);
-        if (context)
-        {
-            obj->mstate = dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState());
-        }
     }
 
     virtual std::string getTemplateName() const
@@ -115,7 +111,6 @@ public:
     Data<VecCoord> f_X0;
     Data<SetIndex> f_indices;
     Data<double> _drawSize;
-    MechanicalState<DataTypes>* mstate;
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_ENGINE_BOXROI_CPP)

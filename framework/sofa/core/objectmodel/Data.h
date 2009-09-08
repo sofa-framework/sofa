@@ -75,17 +75,13 @@ public:
     inline bool setParentValue(BaseData* parent)
     {
         updateFromParentValue(parent);
-        BaseData::setDirty();
+        BaseData::setDirtyValue();
         return true;
     }
 
     const T& virtualGetValue() const
     {
-        if (this->dirty)
-        {
-            TData* data = const_cast <TData*> (this);
-            data->update();
-        }
+        this->updateIfDirty();
         return value();
     }
 
@@ -93,7 +89,7 @@ public:
     {
         ++this->m_counter;
         value() = v;
-        BaseData::setDirty();
+        BaseData::setDirtyOutputs();
     }
 
     /** Try to read argument value from an input stream.
@@ -113,7 +109,7 @@ public:
         else
         {
             ++this->m_counter;
-            BaseData::setDirty();
+            BaseData::setDirtyOutputs();
             return true;
         }
     }
@@ -171,17 +167,13 @@ public:
 
     inline T* beginEdit()
     {
-        if (this->dirty)
-        {
-            Data* data = const_cast <Data*> (this);
-            data->update();
-        }
+        this->updateIfDirty();
         ++this->m_counter;
+        BaseData::setDirtyOutputs();
         return &m_value;
     }
     inline void endEdit()
     {
-        BaseData::setDirty();
     }
     inline void setValue(const T& value )
     {
@@ -190,11 +182,7 @@ public:
     }
     inline const T& getValue() const
     {
-        if (this->dirty)
-        {
-            Data* data = const_cast <Data*> (this);
-            data->update();
-        }
+        this->updateIfDirty();
         return m_value;
     }
 
@@ -224,23 +212,13 @@ protected:
     T m_value;
     const T& value() const
     {
-        if (this->dirty)
-        {
-            Data* data = const_cast <Data*> (this);
-            data->update();
-        }
-
+        this->updateIfDirty();
         return m_value;
     }
 
     T& value()
     {
-        if (this->dirty)
-        {
-            Data* data = const_cast <Data*> (this);
-            data->update();
-        }
-
+        this->updateIfDirty();
         return m_value;
     }
 };

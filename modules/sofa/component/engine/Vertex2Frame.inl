@@ -63,7 +63,7 @@ void Vertex2Frame<DataTypes>::init()
 
     addOutput(&frames);
 
-    setDirty();
+    setDirtyValue();
 }
 
 template <class DataTypes>
@@ -75,7 +75,7 @@ void Vertex2Frame<DataTypes>::reinit()
 template <class DataTypes>
 void Vertex2Frame<DataTypes>::update()
 {
-    dirty = false;
+    cleanDirty();
 
     const helper::vector<Vector3>& fVertices = vertices.getValue();
     const helper::vector<Vector3>& fNormals = normals.getValue();

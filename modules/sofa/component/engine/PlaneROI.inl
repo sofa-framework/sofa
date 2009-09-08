@@ -65,14 +65,22 @@ void PlaneROI<DataTypes>::init()
 {
     if (!f_X0.isSet())
     {
-        BaseData* parent = mstate->findField("rest_position");
-        f_X0.setParentValue(parent);
-        parent->addOutput(&f_X0);
-        f_X0.setReadOnly(true);
+        MechanicalState<DataTypes>* mstate;
+        this->getContext()->get(mstate);
+        if (mstate)
+        {
+            BaseData* parent = mstate->findField("rest_position");
+            if (parent)
+            {
+                f_X0.setParentValue(parent);
+                parent->addOutput(&f_X0);
+                f_X0.setReadOnly(true);
+            }
+        }
     }
     addInput(&f_X0);
     addOutput(&f_indices);
-    setDirty();
+    setDirtyValue();
 }
 
 template <class DataTypes>
@@ -84,7 +92,7 @@ void PlaneROI<DataTypes>::reinit()
 template <class DataTypes>
 void PlaneROI<DataTypes>::update()
 {
-    dirty = false;
+    cleanDirty();
 
     SetIndex& indices = *(f_indices.beginEdit());
     indices.clear();
