@@ -58,12 +58,12 @@ public:
     /// @name Scene hierarchy
     /// @{
 
+    typedef sofa::helper::vector< BaseNode* > Children;
+    /// Get a list of child node
+    virtual Children getChildren() = 0;
 
     /// Get a list of child node
-    virtual sofa::helper::vector< BaseNode* > getChildren() = 0;
-
-    /// Get a list of child node
-    virtual const sofa::helper::vector< BaseNode* > getChildren() const = 0;
+    virtual const Children getChildren() const = 0;
 
     /// Add a child node
     virtual void addChild(BaseNode* node) = 0;
