@@ -355,6 +355,32 @@ std::string Base::decodeTemplateName(const std::type_info& t)
     */
 }
 
+/// Find a field given its name. Return NULL if not found. If more than one field is found (due to aliases), only the first is returned.
+BaseData* Base::findField( const std::string &name ) const
+{
+    std::string ln(name);
+    //Search in the aliases
+    typedef std::multimap< std::string, BaseData* >::const_iterator multimapIterator;
+    std::pair< multimapIterator, multimapIterator> range = m_aliasData.equal_range(name);
+    if (range.first != range.second)
+        return range.first->second;
+    else
+        return NULL;
+}
+
+/// Find fields given a name: several can be found as we look into the alias map
+std::vector< BaseData* > Base::findGlobalField( const std::string &name ) const
+{
+    std::string ln(name);
+    std::vector<BaseData*> result;
+    //Search in the aliases
+    typedef std::multimap< std::string, BaseData* >::const_iterator multimapIterator;
+    std::pair< multimapIterator, multimapIterator> range = m_aliasData.equal_range(name);
+    for (multimapIterator itAlias=range.first; itAlias!=range.second; itAlias++)
+        result.push_back(itAlias->second);
+    return result;
+}
+
 void  Base::parseFields ( std::list<std::string> str )
 {
     string name;
