@@ -23,6 +23,7 @@
  * Contact information: contact@sofa-framework.org                             *
  ******************************************************************************/
 #include <sofa/component/collision/ComponentMouseInteraction.inl>
+#include <sofa/simulation/common/DeleteVisitor.h>
 #include <sofa/defaulttype/Vec3Types.h>
 
 namespace sofa
@@ -35,6 +36,12 @@ namespace collision
 {
 ComponentMouseInteraction::ComponentMouseInteraction():parentNode(NULL), nodeRayPick(NULL)/* ,mouseCollision(NULL) */
 {
+}
+
+ComponentMouseInteraction::~ComponentMouseInteraction()
+{
+    nodeRayPick->execute< simulation::DeleteVisitor >();
+    delete nodeRayPick;
 }
 
 
