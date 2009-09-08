@@ -168,58 +168,11 @@ public:
     /// Write the current field values to the given XML output stream
     void xmlWriteDatas (std::ostream& out, unsigned level, bool compact);
 
-    /// Find a field given its name, if not found, the index is the size of the vector
-    BaseData* findField( const char* name ) const
-    {
-        std::string ln(name);
-        for ( unsigned int i=0; i<m_fieldVec.size(); i++)
-        {
-            if (m_fieldVec[i].first == ln) return m_fieldVec[i].second;
-        }
-        return NULL;
-    }
-    BaseData* findField( const std::string &name ) const
-    {
-        for ( unsigned int i=0; i<m_fieldVec.size(); i++)
-        {
-            if (m_fieldVec[i].first == name) return m_fieldVec[i].second;
-        }
-        return NULL;
-    }
+    /// Find a field given its name. Return NULL if not found. If more than one field is found (due to aliases), only the first is returned.
+    BaseData* findField( const std::string &name ) const;
 
     /// Find fields given a name: several can be found as we look into the alias map
-    std::vector< BaseData* > findGlobalField( const char* name ) const
-    {
-        std::string ln(name);
-        std::vector<BaseData*> dataCorresponding;
-        //Search in the list of Datas
-        BaseData *f=findField(name);
-        if (f) dataCorresponding.push_back(f);
-        //Search in the aliases
-        typedef std::multimap< std::string, BaseData* >::const_iterator multimapIterator;
-        std::pair< multimapIterator, multimapIterator> range;
-        multimapIterator itAlias;
-
-        range=m_aliasData.equal_range(ln);
-        for (itAlias=range.first; itAlias!=range.second; itAlias++)dataCorresponding.push_back(itAlias->second);
-        return dataCorresponding;
-    }
-    std::vector< BaseData* > findGlobalField( const std::string &name ) const
-    {
-        std::string ln(name);
-        std::vector<BaseData*> dataCorresponding;
-        //Search in the list of Datas
-        BaseData *f=findField(name);
-        if (f) dataCorresponding.push_back(f);
-        //Search in the aliases
-        typedef std::multimap< std::string, BaseData* >::const_iterator multimapIterator;
-        std::pair< multimapIterator, multimapIterator> range;
-        multimapIterator itAlias;
-
-        range=m_aliasData.equal_range(name);
-        for (itAlias=range.first; itAlias!=range.second; itAlias++)dataCorresponding.push_back(itAlias->second);
-        return dataCorresponding;
-    }
+    std::vector< BaseData* > findGlobalField( const std::string &name ) const;
 
     /// Helper method used to initialize a field containing a value of type T
     template<class T>
@@ -233,6 +186,7 @@ public:
         }
         //field = tmp;
         m_fieldVec.push_back( std::make_pair(ln,field));
+        m_aliasData.insert(std::make_pair(ln,field));
         return Data<T>(help,isDisplayed,isReadOnly);
     }
 
@@ -248,6 +202,7 @@ public:
         }
         //field = tmp;
         m_fieldVec.push_back( std::make_pair(ln,field));
+        m_aliasData.insert(std::make_pair(ln,field));
         return Data<T>(value,help,isDisplayed,isReadOnly);
     }
 
@@ -263,6 +218,7 @@ public:
         }
         //field = tmp;
         m_fieldVec.push_back( std::make_pair(ln,field));
+        m_aliasData.insert(std::make_pair(ln,field));
         return DataPtr<T>(ptr,help,isDisplayed,isReadOnly);
     }
 
@@ -289,8 +245,9 @@ public:
 protected:
 
 
-    /// name -> Field object
+    /// List of fields (Data instances)
     std::vector< std::pair<std::string, BaseData*> > m_fieldVec;
+    /// name -> Data multi-map (includes names and aliases)
     std::multimap< std::string, BaseData* > m_aliasData;
 
     /// Add a field. Note that this method should only be called if the field was not initialized with the initData<T> of field<T> methods
@@ -303,6 +260,7 @@ protected:
             exit( 1 );
         }
         m_fieldVec.push_back( std::make_pair(ln,f));
+        m_aliasData.insert(std::make_pair(ln,f));
     }
 };
 
