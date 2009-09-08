@@ -68,13 +68,13 @@ public:
     ~dfs_adapter() {};
 
     /// Applies visitor->processNodeTopDown
-    bool operator() (Vertex u, const Graph &)
+    void discover_vertex(Vertex u, const Graph &)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         visitor->setNode(systemMap[u]);
         visitor->printInfo(systemMap[u]->getContext(),true);
 #endif
-        return visitor->processNodeTopDown(systemMap[u])==Visitor::RESULT_PRUNE;
+        visitor->processNodeTopDown(systemMap[u]);
     }
 
     /// Applies visitor->processNodeBottomUp
