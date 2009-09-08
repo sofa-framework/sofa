@@ -414,6 +414,7 @@ void BglNode::initVisualContext()
     Parents parents=getParents();
     if (!parents.empty())
     {
+        this->worldGravity_.setDisplayed(false); //only display gravity for the root: it will be propagated at each time step
         if (showVisualModels_.getValue() == -1)
         {
             showVisualModels_.setValue(0);
