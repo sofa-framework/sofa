@@ -69,7 +69,7 @@ FlowVisualModel<DataTypes>::FlowVisualModel()
     ,minAlpha(initData(&minAlpha, float(0.2), "minAlpha", "Minimum alpha value for triangles"))
     ,maxAlpha(initData(&maxAlpha, float(0.8), "maxAlpha", "Maximum alpha value for triangles"))
 {
-
+    addAlias(&showTetrahedra, "showTetras");
 }
 
 template <class DataTypes>

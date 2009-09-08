@@ -65,6 +65,7 @@ public:
         ,debugViewTetrahedraIndices (core::objectmodel::Base::initData(&debugViewTetrahedraIndices, (bool) false, "debugViewTetrahedraIndices", "Debug : view Tetrahedrons indices"))
         , _draw(core::objectmodel::Base::initData(&_draw, false, "drawTetrahedra","if true, draw the tetrahedra in the topology"))
     {
+        core::objectmodel::Base::addAlias(&debugViewTetrahedraIndices, "debugViewTetrasIndices");
     }
 
     virtual ~TetrahedronSetGeometryAlgorithms() {}
