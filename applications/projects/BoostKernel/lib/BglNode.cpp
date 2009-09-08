@@ -37,6 +37,7 @@
 //
 #include "BglNode.h"
 #include "GetObjectsVisitor.h"
+#include "BglGraphManager.inl"
 
 //Components of the core to detect during the addition of objects in a node
 #include <sofa/core/componentmodel/behavior/InteractionForceField.h>
@@ -54,22 +55,17 @@ namespace simulation
 namespace bgl
 {
 
-BglNode::BglNode(BglGraphManager* s,const std::string& name)
-    : sofa::simulation::Node(name), graphManager(s), graph(NULL)
+int BglNode::uniqueId=0;
+
+BglNode::BglNode(const std::string& name)
+    : sofa::simulation::Node(name),id(uniqueId++)
 {
-
-}
-
-BglNode::BglNode(BglGraphManager* s, BglGraphManager::Hgraph *g,  BglGraphManager::Hvertex n, const std::string& name)
-    : sofa::simulation::Node(name), graphManager(s), graph(g), vertexId(n)
-{
-
+    BglGraphManager::getInstance()->addVertex(this);
 }
 
 BglNode::~BglNode()
 {
-    //std::cerr << "Destruction of Node this : " << this->getName() << " ; " << graphManager->h_node_vertex_map[this] << " DELETED\n";
-    graphManager->deleteNode(this);
+    BglGraphManager::getInstance()->removeVertex(this);
 }
 
 
@@ -77,35 +73,29 @@ bool BglNode::addObject(BaseObject* obj)
 {
     if (sofa::core::componentmodel::behavior::BaseMechanicalMapping* mm = dynamic_cast<sofa::core::componentmodel::behavior::BaseMechanicalMapping*>(obj))
     {
-        if (mm->getMechFrom() == NULL)
-        {
-            std::cerr << "ERROR in addObject BglNode: RayPick Issue!!\n"; return false;
-        }
         Node *from=(Node*)mm->getMechFrom()->getContext();
         Node *to=(Node*)mm->getMechTo()->getContext();
-        graphManager->addEdge(from, to);
+
+        BglGraphManager::getInstance()->addEdge(from, to);
     }
     else if (sofa::core::componentmodel::behavior::InteractionForceField* iff = dynamic_cast<sofa::core::componentmodel::behavior::InteractionForceField*>(obj))
     {
-        graphManager->addInteraction( (Node*)iff->getMechModel1()->getContext(),
-                (Node*)iff->getMechModel2()->getContext(),
-                iff);
+        Node *m1=(Node*)iff->getMechModel1()->getContext();
+        Node *m2=(Node*)iff->getMechModel2()->getContext();
+        BglGraphManager::getInstance()->addInteraction( m1, m2, iff);
+        //Bi directional graph
+        //             BglGraphManager::getInstance()->addEdge(m1,m2);
+        //             BglGraphManager::getInstance()->addEdge(m2,m1);
     }
     else if (sofa::core::componentmodel::behavior::InteractionConstraint* ic = dynamic_cast<sofa::core::componentmodel::behavior::InteractionConstraint*>(obj))
     {
-        graphManager->addInteraction( (Node*)ic->getMechModel1()->getContext(),
-                (Node*)ic->getMechModel2()->getContext(),
-                ic);
-    }
-    else if (// sofa::core::componentmodel::behavior::MasterSolver* ms =
-        dynamic_cast<sofa::core::componentmodel::behavior::MasterSolver*>(obj))
-    {
-        graphManager->addSolver(this);
-    }
-    else if (// sofa::core::componentmodel::behavior::OdeSolver* odes =
-        dynamic_cast<sofa::core::componentmodel::behavior::OdeSolver*>(obj))
-    {
-        graphManager->addSolver(this);
+
+        Node *m1=(Node*)ic->getMechModel1()->getContext();
+        Node *m2=(Node*)ic->getMechModel2()->getContext();
+        BglGraphManager::getInstance()->addInteraction( m1, m2, ic);
+        //Bi directional graph
+        //             BglGraphManager::getInstance()->addEdge(m1,m2);
+        //             BglGraphManager::getInstance()->addEdge(m2,m1);
     }
     return Node::addObject(obj);
 }
@@ -117,69 +107,75 @@ bool BglNode::removeObject(core::objectmodel::BaseObject* obj)
         Node *from=(Node*)mm->getMechFrom()->getContext();
         Node *to=(Node*)mm->getMechTo()->getContext();
 
-        graphManager->removeEdge(from, to);
-        Node::removeObject(obj);
-        return true;
+        BglGraphManager::getInstance()->removeEdge(from, to);
     }
     else if (sofa::core::componentmodel::behavior::InteractionForceField* iff = dynamic_cast<sofa::core::componentmodel::behavior::InteractionForceField*>(obj))
     {
-        graphManager->removeInteraction(iff);
+        BglGraphManager::getInstance()->removeInteraction(iff);
+
+        //             Node *m1=(Node*)iff->getMechModel1()->getContext();
+        //             Node *m2=(Node*)iff->getMechModel2()->getContext();
+
+        //             BglGraphManager::getInstance()->removeEdge(m1,m2);
+        //             BglGraphManager::getInstance()->removeEdge(m2,m1);
     }
     else if (sofa::core::componentmodel::behavior::InteractionConstraint* ic = dynamic_cast<sofa::core::componentmodel::behavior::InteractionConstraint*>(obj))
     {
-        graphManager->removeInteraction(ic);
+        BglGraphManager::getInstance()->removeInteraction(ic);
+        //             Node *m1=(Node*)ic->getMechModel1()->getContext();
+        //             Node *m2=(Node*)ic->getMechModel2()->getContext();
+
+        //             BglGraphManager::getInstance()->removeEdge(m1,m2);
+        //             BglGraphManager::getInstance()->removeEdge(m2,m1);
     }
     return Node::removeObject(obj);
-}
-
-
-/// Add a child node
-void BglNode::doAddChild(BglNode* node)
-{
-    child.add(node);
-    node->parents.add(this);
-    graphManager->addNode(this,node);
 }
 
 
 void BglNode::addChild(core::objectmodel::BaseNode* c)
 {
     BglNode *childNode = static_cast< BglNode *>(c);
-    //std::cerr << "addChild : of "<< this->getName() << "@" << this << " and " <<  c->getName() << "@" << c << "\n";
 
     notifyAddChild(childNode);
     doAddChild(childNode);
 }
-
-/// Remove a child
-void BglNode::doRemoveChild(BglNode* node)
+/// Add a child node
+void BglNode::doAddChild(BglNode* node)
 {
-    child.remove(node);
-    node->parents.remove(this);
-    graphManager->deleteNode(node);
+    child.add(node);
+    BglGraphManager::getInstance()->addEdge(this,node);
 }
 
+
+/// Remove a child
 void BglNode::removeChild(core::objectmodel::BaseNode* c)
 {
     BglNode *childNode = static_cast< BglNode *>(c);
-    //std::cerr << "deleteChild : of "<< this->getName() << "@" << this << " and " <<  c->getName() << "@" << c << "\n";
 
     notifyRemoveChild(childNode);
     doRemoveChild(childNode);
 }
 
-void BglNode::moveChild(core::objectmodel::BaseNode* c)
+void BglNode::doRemoveChild(BglNode* node)
 {
-    BglNode* childNode=dynamic_cast<BglNode*>(c);
+    child.remove(node);
+    BglGraphManager::getInstance()->removeEdge(this, node);
+}
+
+
+void BglNode::moveChild(core::objectmodel::BaseNode* node)
+{
+    BglNode* childNode=dynamic_cast<BglNode*>(node);
     if (!childNode) return;
 
-    if (childNode->parents.empty())
+    Parents nodeParents=childNode->getParents();
+    if (nodeParents.empty())
     {
-        addChild(childNode);
+        addChild(node);
     }
     else
     {
-        for (ParentIterator it = parents.begin(); it != parents.end(); it++)
+        for (ParentIterator it = nodeParents.begin(); it != nodeParents.end(); it++)
         {
             BglNode *prev = *it;
             notifyMoveChild(childNode,prev);
@@ -191,45 +187,16 @@ void BglNode::moveChild(core::objectmodel::BaseNode* c)
 
 void BglNode::detachFromGraph()
 {
+    Parents parents=getParents();
     for (ParentIterator it=parents.begin(); it!=parents.end(); ++it) (*it)->removeChild(this);
 }
 
-
-helper::vector< const BglNode* > BglNode::getParents() const
-{
-    helper::vector< const BglNode* > p;
-    if (!graph) return p;
-    BglGraphManager::Hgraph::in_edge_iterator in_i, in_end;
-    //Find all in-edges from the graph
-    for (tie(in_i, in_end) = boost::in_edges(vertexId, *graph); in_i != in_end; ++in_i)
-    {
-        BglGraphManager::Hedge e=*in_i;
-        BglGraphManager::Hvertex src=source(e, *graph);
-        p.push_back(static_cast<BglNode*>(graphManager->getNodeFromHvertex(src)));
-    }
-    return p;
-}
-
-
-helper::vector< BglNode* > BglNode::getParents()
-{
-    helper::vector< BglNode* > p;
-    if (!graph) return p;
-    BglGraphManager::Hgraph::in_edge_iterator in_i, in_end;
-    //Find all in-edges from the graph
-    for (tie(in_i, in_end) = boost::in_edges(vertexId, *graph); in_i != in_end; ++in_i)
-    {
-        BglGraphManager::Hedge e=*in_i;
-        BglGraphManager::Hvertex src=source(e, *graph);
-        p.push_back(static_cast<BglNode*>(graphManager->getNodeFromHvertex(src)));
-    }
-    return p;
-}
 
 
 std::string BglNode::getPathName() const
 {
 
+    const Parents parents=getParents();
     std::string str;
     if (!parents.empty()) str = (*parents.begin())->getPathName();
     str += '/';
@@ -238,61 +205,42 @@ std::string BglNode::getPathName() const
 
 }
 
-/// Get children nodes
-sofa::helper::vector< core::objectmodel::BaseNode* >  BglNode::getChildren()
+const BglNode::Parents BglNode::getParents() const
 {
-    helper::vector< core::objectmodel::BaseNode* > p;
-    if (!graph) return p;
-    BglGraphManager::Hgraph::out_edge_iterator out_i, out_end;
-    //Find all in-edges from the graph
-    for (tie(out_i, out_end) = boost::out_edges(vertexId, *graph); out_i != out_end; ++out_i)
-    {
-        BglGraphManager::Hedge e=*out_i;
-        BglGraphManager::Hvertex src=target(e, *graph);
-        Node *n=graphManager->getNodeFromHvertex(src);
-        if (n) p.push_back(n);
-    }
+    Parents p;
+    BglGraphManager::getInstance()->getParentNodes(p, this);
     return p;
+}
+
+BglNode::Parents BglNode::getParents()
+{
+    Parents p;
+    BglGraphManager::getInstance()->getParentNodes(p, this);
+    return p;
+}
+
+/// Get children nodes
+sofa::core::objectmodel::BaseNode::Children  BglNode::getChildren()
+{
+    Children c;
+    BglGraphManager::getInstance()->getChildNodes(c, this);
+    return c;
 
 }
 
 /// Get a list of child node
-const sofa::helper::vector< core::objectmodel::BaseNode* >  BglNode::getChildren() const
+const sofa::core::objectmodel::BaseNode::Children  BglNode::getChildren() const
 {
-    helper::vector< core::objectmodel::BaseNode* > p;
-    if (!graph) return p;
-    BglGraphManager::Hgraph::out_edge_iterator out_i, out_end;
-    //Find all in-edges from the graph
-    for (tie(out_i, out_end) = boost::out_edges(vertexId, *graph); out_i != out_end; ++out_i)
-    {
-        BglGraphManager::Hedge e=*out_i;
-        BglGraphManager::Hvertex src=target(e, *graph);
-        Node *n=graphManager->getNodeFromHvertex(src);
-        if (n) p.push_back(n);
-    }
-    return p;
+    Children c;
+    BglGraphManager::getInstance()->getChildNodes(c, this);
+    return c;
 
 }
 
 
-
-
-
-void BglNode::doExecuteVisitor( Visitor* vis )
+void BglNode::doExecuteVisitor( Visitor* visit )
 {
-    //cerr<<"BglNode::doExecuteVisitor( simulation::tree::Visitor* action)"<<endl;
-    if (!graph) return;
-
-    boost::vector_property_map<boost::default_color_type> colors( boost::num_vertices(*graph) );
-
-    dfv_adapter dfv(vis,graphManager, graphManager->h_vertex_node_map);
-    boost::depth_first_visit(
-        *graph,
-        boost::vertex(this->vertexId, *graph),
-        dfv,
-        colors,
-        dfv
-    );
+    BglGraphManager::getInstance()->depthFirstVisit(this, *visit, SearchDown);
 }
 
 
@@ -302,43 +250,9 @@ void BglNode::doExecuteVisitor( Visitor* vis )
 /// Note that the template wrapper method should generally be used to have the correct return type,
 void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir) const
 {
-    if (graphManager->isNodeCreated(this))
-    {
-        std::cerr << "ERROR : getObject(" << sofa::helper::gettypename(class_info) << "," << dir << ") not done!!!!! Node " << this->getName() << " still not initialized\n";
-        return NULL;
-    }
     GetObjectVisitor getobj(class_info);
     getobj.setTags(tags);
-    if ( dir == SearchDown )
-    {
-        boost::vector_property_map<boost::default_color_type> colors( boost::num_vertices(graphManager->hgraph) );
-        dfv_adapter dfv( &getobj,  graphManager, graphManager->h_vertex_node_map );
-        boost::depth_first_visit(
-            graphManager->hgraph,
-            boost::vertex(this->vertexId, graphManager->hgraph),
-            dfv,
-            colors,
-            dfv
-        );
-    }
-    else if (dir== SearchUp )
-    {
-        boost::vector_property_map<boost::default_color_type> colors( boost::num_vertices(graphManager->rgraph) );
-        dfv_adapter dfv( &getobj, graphManager, graphManager->r_vertex_node_map );
-        BglGraphManager::Rvertex thisvertex = graphManager->convertHvertex2Rvertex(this->vertexId);
-        boost::depth_first_visit(
-            graphManager->rgraph,
-            boost::vertex(thisvertex, graphManager->rgraph),
-            dfv,
-            colors,
-            dfv
-        );
-    }
-    else if (dir== SearchRoot )
-    {
-        graphManager->dfv( graphManager->getMasterVertex(), getobj );
-    }
-    else    // Local
+    if (dir == Local)
     {
         for (ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
         {
@@ -349,8 +263,36 @@ void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
             }
         }
     }
+    else
+    {
+        BglGraphManager::getInstance()->depthFirstVisit(this, getobj, dir);
+    }
     return getobj.getObject();
 }
+
+
+/// Generic object access, possibly searching up or down from the current context
+///
+/// Note that the template wrapper method should generally be used to have the correct return type,
+void BglNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir) const
+{
+    GetObjectsVisitor getobjs(class_info, container);
+    getobjs.setTags(tags);
+    if (dir == Local)
+    {
+        for (ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
+        {
+            void* result = class_info.dynamicCast(*it);
+            if (result != NULL && (tags.empty() || (*it)->getTags().includes(tags)))
+                container(result);
+        }
+    }
+    else
+    {
+        BglGraphManager::getInstance()->depthFirstVisit(this, getobjs, dir);
+    }
+}
+
 
 
 /// Generic object access, given a path from the current context
@@ -358,6 +300,8 @@ void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
 /// Note that the template wrapper method should generally be used to have the correct return type,
 void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, const std::string& path) const
 {
+
+    Parents parents=getParents();
     if (path.empty())
     {
         return Node::getObject(class_info, Local);
@@ -366,7 +310,7 @@ void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
     {
         if (!parents.empty())
         {
-            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
+            for (ParentConstIterator it=parents.begin(); it!=parents.end(); ++it)
             {
                 void *result=(*it)->getObject(class_info, path);
                 if (result) return result;
@@ -390,7 +334,7 @@ void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
 
         if (!parents.empty())
         {
-            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
+            for (ParentConstIterator it=parents.begin(); it!=parents.end(); ++it)
             {
                 void *result=(*it)->getObject(class_info, newpath);
                 if (result) return result;
@@ -444,126 +388,9 @@ void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
 
 
 
-/// Generic object access, possibly searching up or down from the current context
-///
-/// Note that the template wrapper method should generally be used to have the correct return type,
-void BglNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir) const
-{
-//         std::cerr << "Search for " << sofa::helper::gettypename(class_info) << "\n";
-    GetObjectsVisitor getobjs(class_info, container);
-    getobjs.setTags(tags);
-    if ( dir == SearchDown )
-    {
-        boost::vector_property_map<boost::default_color_type> colors( boost::num_vertices(graphManager->hgraph) );
-        dfv_adapter dfv( &getobjs, graphManager, graphManager->h_vertex_node_map );
-        boost::depth_first_visit(
-            graphManager->hgraph,
-            boost::vertex(this->vertexId, graphManager->hgraph),
-            dfv,
-            colors,
-            dfv
-        );
-    }
-    else if (dir== SearchUp )
-    {
-        boost::vector_property_map<boost::default_color_type> colors( boost::num_vertices(graphManager->rgraph) );
-        dfv_adapter dfv( &getobjs, graphManager, graphManager->r_vertex_node_map );
-        BglGraphManager::Rvertex thisvertex = graphManager->convertHvertex2Rvertex(this->vertexId);
-        boost::depth_first_visit(
-            graphManager->rgraph,
-            boost::vertex(thisvertex, graphManager->rgraph),
-            dfv,
-            colors,
-            dfv
-        );
-    }
-    else if (dir== SearchRoot )
-    {
-        graphManager->dfv( graphManager->getMasterVertex(), getobjs );
-    }
-    else    // Local
-    {
-        for (ObjectIterator it = this->object.begin(); it != this->object.end(); ++it)
-        {
-            void* result = class_info.dynamicCast(*it);
-            if (result != NULL && (tags.empty() || (*it)->getTags().includes(tags)))
-                container(result);
-        }
-    }
-}
-
-
-
-
-void BglNode::initVisualContext()
-{
-    if (!parents.empty())
-    {
-        if (showVisualModels_.getValue() == -1)
-        {
-            showVisualModels_.setValue(0);
-            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                showVisualModels_.setValue(showVisualModels_.getValue() || (*it)->showVisualModels_.getValue());
-        }
-        if (showBehaviorModels_.getValue() == -1)
-        {
-            showBehaviorModels_.setValue(0);
-            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                showBehaviorModels_.setValue(showBehaviorModels_.getValue() || (*it)->showBehaviorModels_.getValue());
-        }
-        if (showCollisionModels_.getValue() == -1)
-        {
-            showCollisionModels_.setValue(0);
-            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                showCollisionModels_.setValue(showCollisionModels_.getValue() || (*it)->showCollisionModels_.getValue());
-        }
-        if (showBoundingCollisionModels_.getValue() == -1)
-        {
-            showBoundingCollisionModels_.setValue(0);
-            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                showBoundingCollisionModels_.setValue(showBoundingCollisionModels_.getValue() || (*it)->showBoundingCollisionModels_.getValue());
-        }
-        if (showMappings_.getValue() == -1)
-        {
-            showMappings_.setValue(0);
-            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                showMappings_.setValue(showMappings_.getValue() || (*it)->showMappings_.getValue());
-        }
-        if (showMechanicalMappings_.getValue() == -1)
-        {
-            showMechanicalMappings_.setValue(0);
-            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                showMechanicalMappings_.setValue(showMechanicalMappings_.getValue() || (*it)->showMechanicalMappings_.getValue());
-        }
-        if (showForceFields_.getValue() == -1)
-        {
-            showForceFields_.setValue(0);
-            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                showForceFields_.setValue(showForceFields_.getValue() || (*it)->showForceFields_.getValue());
-        }
-        if (showInteractionForceFields_.getValue() == -1)
-        {
-            showInteractionForceFields_.setValue(0);
-            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                showInteractionForceFields_.setValue(showInteractionForceFields_.getValue() || (*it)->showInteractionForceFields_.getValue());
-        }
-        if (showWireFrame_.getValue() == -1)
-        {
-            showWireFrame_.setValue(0);
-            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                showWireFrame_.setValue(showWireFrame_.getValue() || (*it)->showWireFrame_.getValue());
-        }
-        if (showNormals_.getValue() == -1)
-        {
-            showNormals_.setValue(0);
-            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                showNormals_.setValue(showNormals_.getValue() || (*it)->showNormals_.getValue());
-        }
-    }
-}
-
 void BglNode::updateContext()
 {
+    Parents parents=getParents();
     if (!parents.empty())
     {
         copyContext(*(*parents.begin()));
@@ -573,6 +400,7 @@ void BglNode::updateContext()
 
 void BglNode::updateSimulationContext()
 {
+    Parents parents=getParents();
     if (!parents.empty())
     {
         copySimulationContext(*(*parents.begin()));
@@ -580,8 +408,78 @@ void BglNode::updateSimulationContext()
     simulation::Node::updateSimulationContext();
 }
 
+
+void BglNode::initVisualContext()
+{
+    Parents parents=getParents();
+    if (!parents.empty())
+    {
+        if (showVisualModels_.getValue() == -1)
+        {
+            showVisualModels_.setValue(0);
+            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
+                showVisualModels_.setValue(showVisualModels_.getValue()!=0 || (*it)->showVisualModels_.getValue()!=0);
+        }
+        if (showBehaviorModels_.getValue() == -1)
+        {
+            showBehaviorModels_.setValue(0);
+            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
+                showBehaviorModels_.setValue(showBehaviorModels_.getValue()==1 || (*it)->showBehaviorModels_.getValue()==1);
+        }
+        if (showCollisionModels_.getValue()== -1)
+        {
+            showCollisionModels_.setValue(0);
+            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
+                showCollisionModels_.setValue(showCollisionModels_.getValue()==1 || (*it)->showCollisionModels_.getValue()==1);
+        }
+        if (showBoundingCollisionModels_.getValue()== -1)
+        {
+            showBoundingCollisionModels_.setValue(0);
+            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
+                showBoundingCollisionModels_.setValue(showBoundingCollisionModels_.getValue()==1 || (*it)->showBoundingCollisionModels_.getValue()==1);
+        }
+        if (showMappings_.getValue()== -1)
+        {
+            showMappings_.setValue(0);
+            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
+                showMappings_.setValue(showMappings_.getValue()==1 || (*it)->showMappings_.getValue()==1);
+        }
+        if (showMechanicalMappings_.getValue()== -1)
+        {
+            showMechanicalMappings_.setValue(0);
+            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
+                showMechanicalMappings_.setValue(showMechanicalMappings_.getValue()==1 || (*it)->showMechanicalMappings_.getValue()==1);
+        }
+        if (showForceFields_.getValue()== -1)
+        {
+            showForceFields_.setValue(0);
+            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
+                showForceFields_.setValue(showForceFields_.getValue()==1 || (*it)->showForceFields_.getValue()==1);
+        }
+        if (showInteractionForceFields_.getValue()== -1)
+        {
+            showInteractionForceFields_.setValue(0);
+            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
+                showInteractionForceFields_.setValue(showInteractionForceFields_.getValue()==1 || (*it)->showInteractionForceFields_.getValue()==1);
+        }
+        if (showWireFrame_.getValue()== -1)
+        {
+            showWireFrame_.setValue(0);
+            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
+                showWireFrame_.setValue(showWireFrame_.getValue()==1 || (*it)->showWireFrame_.getValue()==1);
+        }
+        if (showNormals_.getValue()== -1)
+        {
+            showNormals_.setValue(0);
+            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
+                showNormals_.setValue(showNormals_.getValue()==1 || (*it)->showNormals_.getValue()==1);
+        }
+    }
+}
+
 void BglNode::updateVisualContext(VISUAL_FLAG FILTER)
 {
+    Parents parents=getParents();
     if (!parents.empty())
     {
         switch (FILTER)
@@ -589,52 +487,52 @@ void BglNode::updateVisualContext(VISUAL_FLAG FILTER)
         case VISUALMODELS:
             showVisualModels_.setValue(0);
             for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                showVisualModels_.setValue(showVisualModels_.getValue() || (*it)->showVisualModels_.getValue());
+                showVisualModels_.setValue( (*it)->showVisualModels_.getValue());
             break;
         case BEHAVIORMODELS:
             showBehaviorModels_.setValue(0);
             for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                showBehaviorModels_.setValue(showBehaviorModels_.getValue() || (*it)->showBehaviorModels_.getValue());
+                showBehaviorModels_.setValue( (*it)->showBehaviorModels_.getValue());
             break;
         case COLLISIONMODELS:
             showCollisionModels_.setValue(0);
             for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                showCollisionModels_.setValue(showCollisionModels_.getValue() || (*it)->showCollisionModels_.getValue());
+                showCollisionModels_.setValue( (*it)->showCollisionModels_.getValue());
             break;
         case BOUNDINGCOLLISIONMODELS:
             showBoundingCollisionModels_.setValue(0);
             for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                showBoundingCollisionModels_.setValue(showBoundingCollisionModels_.getValue() || (*it)->showBoundingCollisionModels_.getValue());
+                showBoundingCollisionModels_.setValue( (*it)->showBoundingCollisionModels_.getValue());
             break;
         case MAPPINGS:
             showMappings_.setValue(0);
             for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                showMappings_.setValue(showMappings_.getValue() || (*it)->showMappings_.getValue());
+                showMappings_.setValue( (*it)->showMappings_.getValue());
             break;
         case MECHANICALMAPPINGS:
             showMechanicalMappings_.setValue(0);
             for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                showMechanicalMappings_.setValue(showMechanicalMappings_.getValue() || (*it)->showMechanicalMappings_.getValue());
+                showMechanicalMappings_.setValue( (*it)->showMechanicalMappings_.getValue());
             break;
         case FORCEFIELDS:
             showForceFields_.setValue(0);
             for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                showForceFields_.setValue(showForceFields_.getValue() || (*it)->showForceFields_.getValue());
+                showForceFields_.setValue( (*it)->showForceFields_.getValue());
             break;
         case INTERACTIONFORCEFIELDS:
             showInteractionForceFields_.setValue(0);
             for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                showInteractionForceFields_.setValue(showInteractionForceFields_.getValue() || (*it)->showInteractionForceFields_.getValue());
+                showInteractionForceFields_.setValue( (*it)->showInteractionForceFields_.getValue());
             break;
         case WIREFRAME:
             showWireFrame_.setValue(0);
             for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                showWireFrame_.setValue(showWireFrame_.getValue() || (*it)->showWireFrame_.getValue());
+                showWireFrame_.setValue( (*it)->showWireFrame_.getValue());
             break;
         case NORMALS:
             showNormals_.setValue(0);
             for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
-                showNormals_.setValue(showNormals_.getValue() || (*it)->showNormals_.getValue());
+                showNormals_.setValue( (*it)->showNormals_.getValue());
             break;
         case ALLFLAGS:
             for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)

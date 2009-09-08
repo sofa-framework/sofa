@@ -36,17 +36,18 @@
 //
 //
 
-#include "BglGraphManager.h"
+#include "BglGraphManager.inl"
 #include "BglNode.h"
 
+#include "bfs_adapter.h"
 #include "dfs_adapter.h"
 #include "dfv_adapter.h"
 
 #include <boost/graph/connected_components.hpp>
-#include <boost/graph/breadth_first_search.hpp>
 #include <boost/vector_property_map.hpp>
 
 #include <sofa/simulation/common/CollisionVisitor.h>
+#include <sofa/simulation/common/PrintVisitor.h>
 
 namespace sofa
 {
@@ -57,239 +58,180 @@ namespace bgl
 
 BglGraphManager::BglGraphManager()
 {
-    h_vertex_node_map = get( bglnode_t(), hgraph);
-    r_vertex_node_map = get( bglnode_t(), rgraph);
-    // 	c_vertex_node_map = get( bglnode_t(), cgraph);
-
-    // The animation control overloads the solvers of the scene
-    Node *n=newNodeNow("masterNode");
-    masterNode= dynamic_cast<BglNode*>(n);
-    masterVertex = h_node_vertex_map[masterNode];
-
-    collisionPipeline=NULL;
 };
 
 
 
-void BglGraphManager::insertHierarchicalGraph()
-{
-    /// Initialize all the nodes using a depth-first visit
-    for (HvertexVector::iterator i=hroots.begin(), iend=hroots.end(); i!=iend; i++ )
-    {
-        //Link all the nodes to the MasterNode, in ordre to propagate the Context
-        Hgraph::edge_descriptor e1; bool found=false;
-        tie(e1,found) = edge(masterVertex, *i,hgraph);
-        if (!found) addEdge( masterVertex, *i); // add nodes
-    }
-}
-
-
 BglGraphManager::Rvertex BglGraphManager::convertHvertex2Rvertex(Hvertex v)
 {
-    return r_node_vertex_map[ h_vertex_node_map[ v ] ];
+    return r_node_vertex_map[ getNode(v,hgraph) ];
 }
 BglGraphManager::Hvertex BglGraphManager::convertRvertex2Hvertex(Rvertex v)
 {
-    return h_node_vertex_map[ r_vertex_node_map[ v ] ];
+    return h_node_vertex_map[ getNode(v,rgraph) ];
 }
 
+
+
+//TODO: understand why we need this "magic number" to use the visitors with the Boost:
+#define HACK_MAGIC_NUMBER 200
+
+
+/// breadth first visit starting from the given vertex, and prunable
+void BglGraphManager::breadthFirstVisit( const Node *constNode, Visitor& visit, core::objectmodel::BaseContext::SearchDirection dir )
+{
+    using core::objectmodel::BaseContext;
+    Node* n = const_cast<Node*>(constNode);
+
+    if (h_node_vertex_map.find(n) == h_node_vertex_map.end())
+        addVertex((BglNode*)(n));
+
+    switch(dir)
+    {
+    case BaseContext::SearchDown:
+    {
+        ColorMap colors;
+        colors.resize( HACK_MAGIC_NUMBER*boost::num_vertices(hgraph));
+        boost::queue<Hvertex> queue;
+        H_vertex_node_map systemMap=get(bglnode_t(),hgraph);
+        bfs_adapter<Hgraph> bfsv(&visit, systemMap );
+        Hvertex v=h_node_vertex_map[n];
+        boost::breadth_first_visit(hgraph,
+                v,
+                queue,
+                bfsv,
+                make_iterator_property_map(colors.begin(),boost::get(boost::vertex_index, hgraph) )
+                                  );
+        break;
+    }
+    case BaseContext::SearchUp:
+    {
+        ColorMap colors;
+        colors.resize( HACK_MAGIC_NUMBER*boost::num_vertices(rgraph));
+        boost::queue<Rvertex> queue;
+        R_vertex_node_map systemMap=get(bglnode_t(),rgraph);
+        bfs_adapter<Rgraph> bfsv(&visit, systemMap );
+        Rvertex v=r_node_vertex_map[n];
+        boost::breadth_first_visit(rgraph,
+                v,
+                queue,
+                bfsv,
+                make_iterator_property_map(colors.begin(),boost::get(boost::vertex_index, rgraph) )
+                                  );
+        break;
+    }
+    case BaseContext::SearchRoot:
+    {
+        std::cerr << "breadth First Visit not implemented yet for Root direction" << std::endl;
+        break;
+    }
+    case BaseContext::Local:
+    {
+        std::cerr << "depthFirstVisit cannot be used with a Local Direction" << std::endl;
+    }
+    }
+}
 
 
 /// depth search in the whole scene
-void BglGraphManager::dfs( Visitor& visit )
+void BglGraphManager::depthFirstSearch( Visitor& visit, core::objectmodel::BaseContext::SearchDirection dir)
 {
-    dfs_adapter vis(&visit,h_vertex_node_map);
-    boost::depth_first_search( hgraph, boost::visitor(vis) );
-}
-/// depth search starting from the given vertex, and prunable
-void BglGraphManager::dfv( Hvertex v, Visitor& vis )
-{
-    boost::vector_property_map<boost::default_color_type> colors( boost::num_vertices(hgraph) );
-    dfv_adapter dfsv(&vis,this,h_vertex_node_map );
-    boost::depth_first_visit(
-        hgraph,
-        boost::vertex(v, hgraph),
-        dfsv,
-        colors,
-        dfsv
-    );
-}
-
-
-Node* BglGraphManager::getNodeFromHvertex(Hvertex h)
-{
-    Hvpair vIterator=vertices(hgraph);
-    if (std::find(vIterator.first, vIterator.second, h) != vIterator.second) return h_vertex_node_map[h];
-    else return NULL;
-}
-Node* BglGraphManager::getNodeFromRvertex(Rvertex r)
-{
-    Rvpair vIterator=vertices(rgraph);
-    if (std::find(vIterator.first, vIterator.second, r) != vIterator.second) return r_vertex_node_map[r];
-    else return NULL;
-}
-
-void BglGraphManager::addEdge( Hvertex p, Hvertex c )
-{
-    if (p == c) return;
-    addHedge(p,c);
-    addRedge(convertHvertex2Rvertex(c),convertHvertex2Rvertex(p));
-}
-
-BglGraphManager::Hedge BglGraphManager::addHedge( Hvertex p, Hvertex c )
-{
-    std::pair<Hedge, bool> e =  add_edge(  p,c,hgraph);
-    assert(e.second);
-    return e.first;
-}
-
-BglGraphManager::Redge BglGraphManager::addRedge( Rvertex p, Rvertex c )
-{
-    std::pair<Redge, bool> e =  add_edge(  p,c,rgraph);
-    assert(e.second);
-    return e.first;
-}
-
-
-void BglGraphManager::removeEdge( Hvertex p, Hvertex c )
-{
-    if (p == c) return;
-    removeHedge(p,c);
-    removeRedge(convertHvertex2Rvertex(c),convertHvertex2Rvertex(p));
-}
-
-void BglGraphManager::removeHedge( Hvertex p, Hvertex c )
-{
-    remove_edge(  p,c,hgraph);
-}
-
-void BglGraphManager::removeRedge( Rvertex p, Rvertex c )
-{
-    remove_edge(  p,c,rgraph);
-}
-
-
-void BglGraphManager::addEdge( Node* from, Node* to )
-{
-    edgeToAdd.insert(std::make_pair(from, to));
-}
-
-void BglGraphManager::removeEdge( Node* from, Node* to )
-{
-    removeHedge( h_node_vertex_map[from], h_node_vertex_map[to] );
-    removeRedge( r_node_vertex_map[to], r_node_vertex_map[from] );
-}
-
-void BglGraphManager::deleteVertex( Hvertex v)
-{
-    deleteHvertex(v);
-    deleteRvertex(convertHvertex2Rvertex(v));
-}
-
-void BglGraphManager::deleteHvertex( Hvertex vH)
-{
-//         std::cerr << "Delete Now Node " << n << " : \n";
-//         std::cerr << n->getName() << " : " << h_node_vertex_map[n] << "\n";
-    Node *node = h_vertex_node_map[vH];
-    clear_vertex(vH, hgraph);
-    h_node_vertex_map.erase(node);
-    h_vertex_node_map[vH]=NULL;
-    //Cannot remove vertex: it changes all the vertices of the graph !!!
-//         remove_vertex(vH, hgraph);
-}
-
-
-void BglGraphManager::deleteRvertex( Rvertex vR)
-{
-//         std::cerr << "Delete Now Node " << n << " : \n";
-//         std::cerr << n->getName() << " : " << h_node_vertex_map[n] << "\n";
-    Node *node = r_vertex_node_map[vR];
-    clear_vertex(vR, rgraph);
-    r_node_vertex_map.erase(node);
-    r_vertex_node_map[vR]=NULL;
-
-    //Cannot remove vertex: it changes all the vertices of the graph !!!
-//         remove_vertex(vR, rgraph);
-}
-
-
-void BglGraphManager::clearVertex( Hvertex v )
-{
-    clear_vertex(v,hgraph);
-    clear_vertex(convertHvertex2Rvertex(v),rgraph);
-}
-
-/// Update the graph with all the operation stored in memory: add/delete node, add interactions...
-void BglGraphManager::updateGraph()
-{
-//         std::cerr << "node:" <<nodeToAdd.size() << " : edge:" << edgeToAdd.size() << " : interaction:" << interactionToAdd.size() << "\n";
-    for (std::set<Hvertex>::iterator it=vertexToDelete.begin(); it!=vertexToDelete.end(); it++) deleteVertex(*it);
-    for (unsigned int i=0; i<nodeToAdd.size() ; i++)               insertNewNode(nodeToAdd[i]);
-    std::set< std::pair< Node*, Node*> >::iterator itEdge;
-    for (itEdge=edgeToAdd.begin(); itEdge!=edgeToAdd.end(); itEdge++)
+    using core::objectmodel::BaseContext;
+    switch(dir)
     {
-        if (itEdge->first != masterNode && !h_node_vertex_map[itEdge->first])
-        {
-            addNode(static_cast<BglNode*>(itEdge->first));
-        }
-        if (itEdge->first != masterNode && !h_node_vertex_map[itEdge->second])
-        {
-            addNode(static_cast<BglNode*>(itEdge->second));
-        }
-        addEdge(h_node_vertex_map[ itEdge->first],h_node_vertex_map[ itEdge->second]);
+    case BaseContext::SearchRoot:
+    case BaseContext::SearchDown:
+    {
+        H_vertex_node_map systemMap=get(bglnode_t(),hgraph);
+        dfs_adapter<Hgraph> vis(&visit,systemMap);
+        boost::depth_first_search( hgraph, boost::visitor(vis) );
+        break;
     }
-    for (unsigned int i=0; i<interactionToAdd.size(); i++)         addInteractionNow(interactionToAdd[i]);
-
-    if (vertexToDelete.size() || nodeToAdd.size() || edgeToAdd.size()) computeRoots();
-
-
-    vertexToDelete.clear();
-    nodeToAdd.clear();
-    edgeToAdd.clear();
-    interactionToAdd.clear();
+    case BaseContext::SearchUp:
+    {
+        R_vertex_node_map systemMap=get(bglnode_t(),rgraph);
+        dfs_adapter<Rgraph> vis(&visit,systemMap);
+        boost::depth_first_search( rgraph, boost::visitor(vis) );
+        break;
+    }
+    case BaseContext::Local:
+    {
+        std::cerr << "depthFirstSearch cannot be used with a Local Direction" << std::endl;
+        break;
+    }
+    }
 }
+
+
+/// depth search starting from the given vertex, and prunable
+void BglGraphManager::depthFirstVisit( const Node *constNode, Visitor& visit, core::objectmodel::BaseContext::SearchDirection dir )
+{
+    using core::objectmodel::BaseContext;
+    Node* n = const_cast<Node*>(constNode);
+    if (h_node_vertex_map.find(n) == h_node_vertex_map.end())
+        addVertex((BglNode*)(n));
+
+//         std::cerr << visit.getClassName() << "  " << visit.getInfos() << " depthFirstVisitor with " << constNode->getName() << "\n";
+
+    switch(dir)
+    {
+    case BaseContext::SearchDown:
+    {
+        {
+            ColorMap colors;
+            colors.resize(HACK_MAGIC_NUMBER*boost::num_vertices(hgraph));
+
+            H_vertex_node_map systemMap=get(bglnode_t(),hgraph);
+            dfv_adapter<Hgraph> dfsv(&visit, systemMap);
+            Hvertex v=h_node_vertex_map[n];
+            boost::depth_first_visit(hgraph,
+                    v,
+                    dfsv,
+                    make_iterator_property_map(colors.begin(),boost::get(boost::vertex_index, hgraph) ),
+                    dfsv
+                                    );
+            break;
+        }
+        case BaseContext::SearchUp:
+        {
+            ColorMap colors;
+            colors.resize(HACK_MAGIC_NUMBER*boost::num_vertices(rgraph));
+
+            R_vertex_node_map systemMap=get(bglnode_t(),rgraph);
+            dfv_adapter<Rgraph> dfsv(&visit, systemMap );
+            Rvertex v=r_node_vertex_map[n];
+            boost::depth_first_visit(rgraph,
+                    v,
+                    dfsv,
+                    make_iterator_property_map(colors.begin(),boost::get(boost::vertex_index, rgraph) ),
+                    dfsv
+                                    );
+
+            break;
+        }
+        case BaseContext::SearchRoot:
+        {
+            depthFirstSearch(visit,dir);
+            break;
+        }
+        case BaseContext::Local:
+        {
+            std::cerr << "depthFirstVisit cannot be used with a Local Direction" << std::endl;
+        }
+    }
+    }
+}
+
+
+
 
 void BglGraphManager::update()
 {
-    updateGraph();
-
+    computeRoots();
     if (needToComputeInteractions()) computeInteractionGraphAndConnectedComponents();
-
 }
 
 
-
-void BglGraphManager::addNode(BglNode *node)
-{
-    // Each BglNode needs a vertex in hgraph
-    Hvertex hnode =  add_vertex( hgraph);
-    node->graphManager = this;
-    node->vertexId = hnode;
-    node->graph = &hgraph;
-
-    h_vertex_node_map[hnode] = node;
-    h_node_vertex_map[node] = hnode;
-
-    Rvertex rnode = add_vertex( rgraph );
-    r_vertex_node_map[rnode] = node;
-    r_node_vertex_map[node] = rnode;
-}
-
-Node* BglGraphManager::newNodeNow(const std::string& name)
-{
-//          std::cerr << "new Node : " << name << "\n";
-    // Each BglNode needs a vertex in hgraph
-    Hvertex hnode =  add_vertex( hgraph);
-    BglNode* s  = new BglNode(this,&hgraph,hnode,name);
-    h_vertex_node_map[hnode] = s;
-    h_node_vertex_map[s] = hnode;
-    // add it to rgraph
-    Rvertex rnode = add_vertex( rgraph );
-    r_vertex_node_map[rnode] = s;
-    r_node_vertex_map[s] = rnode;
-//         std::cerr << "\t @" << s << "\n";
-    return s;
-}
 
 void BglGraphManager::reset()
 {
@@ -297,120 +239,141 @@ void BglGraphManager::reset()
     {
         interactionGroups[i].second.clear();
     }
-    solver_colisionGroup_map.clear();
-
-    vertexToDelete.clear();
-    nodeToAdd.clear();
-    edgeToAdd.clear();
-    interactionToAdd.clear();
 }
+
 
 void BglGraphManager::clear()
 {
-    updateGraph();
-
-    {
-        Hgraph::vertex_iterator h_vertex_iter, h_vertex_iter_end;
-        for (tie(h_vertex_iter,h_vertex_iter_end) = vertices(hgraph); h_vertex_iter != h_vertex_iter_end; ++h_vertex_iter)
-        {
-            remove_vertex(*h_vertex_iter, hgraph);
-        }
-    }
-    {
-        Rgraph::vertex_iterator r_vertex_iter, r_vertex_iter_end;
-        for (tie(r_vertex_iter,r_vertex_iter_end) = vertices(rgraph); r_vertex_iter != r_vertex_iter_end; ++r_vertex_iter)
-        {
-            remove_vertex(*r_vertex_iter, rgraph);
-        }
-    }
-
-    solver_colisionGroup_map.clear();
-    nodeSolvers.clear();
-    nodeGroupSolvers.clear();
-
     hgraph.clear();
+    printVertices(hgraph);
     h_node_vertex_map.clear();
     rgraph.clear();
     r_node_vertex_map.clear();
-    collisionPipeline=NULL;
-
-    h_vertex_node_map = get( bglnode_t(), hgraph);
-    r_vertex_node_map = get( bglnode_t(), rgraph);
-
-    // The animation control overloads the solvers of the scene
-    Node *n=newNodeNow("masterNode");
-    masterNode= dynamic_cast<BglNode*>(n);
-    masterVertex = h_node_vertex_map[masterNode];
 }
 
 
-/// Create a graph node and attach a new Node to it, then return the Node
-Node* BglGraphManager::newNode(const std::string& name)
+
+
+//**************************************************
+// addVertex keeping both graph up-to-date        //
+//**************************************************
+void BglGraphManager::addVertex(BglNode *node)
 {
-    BglNode* s  = new BglNode(this,name);
-    nodeToAdd.push_back(s);
-    return s;
+    //Add a vertex to the bgl graph
+    addVertex(node,hgraph, h_node_vertex_map);
+    addVertex(node,rgraph, r_node_vertex_map);
 }
 
-void BglGraphManager::insertNewNode(Node *n)
+//Insert a new vertex inside a graph boost
+template < typename Graph, typename VertexMap>
+void  BglGraphManager::addVertex(BglNode *node, Graph &g, VertexMap &vmap)
 {
-    BglNode *bglN = static_cast<BglNode*>(n);
-    //Effectively create a vertex in the graph
-    Hvertex hnode=add_vertex(hgraph);
-    h_vertex_node_map[hnode] = bglN;
-    h_node_vertex_map[bglN] = hnode;
-
-    //Reverse graph
-    Rvertex rnode = add_vertex(rgraph);
-    r_vertex_node_map[rnode] = bglN;
-    r_node_vertex_map[bglN] = rnode;
-
-    //configure the node
-    bglN->graph = &hgraph;
-    bglN->vertexId = hnode;
+    typedef typename Graph::vertex_descriptor Vertex;
+    Vertex v=add_vertex(g);
+    boost::put(bglnode_t(),             g, v, node);
+    boost::put(boost::vertex_index_t(), g, v, node->getId());
+    vmap[node]=v;
 }
 
 
-/// Add an OdeSolver working inside a given Node
-void BglGraphManager::addSolver(Node* n)
+
+
+//**************************************************
+// deleteVertex keeping both graph up-to-date     //
+//**************************************************
+//Insert a new vertex inside a graph boost
+
+
+void BglGraphManager::removeVertex(BglNode *node)
 {
-    nodeSolvers.insert(n);
+    //Add a vertex to the bgl graph
+    removeVertex(node,hgraph, h_node_vertex_map);
+    removeVertex(node,rgraph, r_node_vertex_map);
 }
 
-void BglGraphManager::setSolverOfCollisionGroup(Node* solverNode, Node* solverOfCollisionGroup)
+
+template < typename Graph, typename VertexMap>
+void  BglGraphManager::removeVertex(BglNode *node, Graph &g, VertexMap &vmap)
 {
-    solver_colisionGroup_map[solverNode] = solverOfCollisionGroup;
-    nodeGroupSolvers.insert(solverOfCollisionGroup);
-//         std::cerr << "Inserting " << solverOfCollisionGroup->getName() << "\n";
+    typedef typename Graph::vertex_descriptor Vertex;
+    Vertex v=vmap[node];
+    clear_vertex(v, g);
+    vmap.erase(node);
+    remove_vertex(v, g);
 }
 
 
-/// Add a node to as the child of another
-void BglGraphManager::addNode(BglNode* parent, BglNode* child)
+//**************************************************
+// addEdge keeping both graph up-to-date          //
+//**************************************************
+void BglGraphManager::addEdge( Node* from, Node* to )
 {
-//           std::cerr << "ADD Node " << parent->getName() << "-->" << child->getName() << " : \n";
-//           if (parent != masterNode)
+    //Verify if the node we need to link is already present in the graph
+    if (h_node_vertex_map.find(from) == h_node_vertex_map.end()) addVertex(static_cast<BglNode*>(from));
+    if (h_node_vertex_map.find(to)   == h_node_vertex_map.end()) addVertex(static_cast<BglNode*>(to));
 
-//           std::cerr << "Add Node : push an edge " << parent->getName() << "-->" << child->getName() << " : \n";
-    edgeToAdd.insert(std::make_pair(parent,child));
+    Hvertex hfrom=h_node_vertex_map[from];
+    Hvertex hto  =h_node_vertex_map[to];
+    addEdge( hfrom, hto, hgraph);
+
+    Rvertex rfrom=r_node_vertex_map[from];
+    Rvertex rto  =r_node_vertex_map[to];
+    addEdge( rto, rfrom, rgraph);
 }
-void BglGraphManager::deleteNode( Node* n)
+
+
+template <typename Graph>
+typename Graph::edge_descriptor BglGraphManager::addEdge( typename Graph::vertex_descriptor p, typename Graph::vertex_descriptor c,Graph &g)
 {
-//         std::cerr << "Delete Node " << n << " : \n";
-    vertexToDelete.insert(h_node_vertex_map[n]);
+    std::pair<typename Graph::edge_descriptor, bool> e =  add_edge(p,c,g);
+    assert(e.second);
+    return e.first;
 }
 
 
+//**************************************************
+// removeEdge keeping both graph up-to-date       //
+//**************************************************
+void BglGraphManager::removeEdge( Node* from, Node* to )
+{
+    if (h_node_vertex_map.find(from) == h_node_vertex_map.end() ||
+        h_node_vertex_map.find(to) == h_node_vertex_map.end() )
+    {
+//             std::cerr << "Error !!\n";
+        return;
+    }
+//         std::cerr << "Remove Edge from " << from->getName() << " to " << to->getName() << "\n";
+    Hvertex hfrom=h_node_vertex_map[from];
+    Hvertex hto  =h_node_vertex_map[to];
+    remove_edge(hfrom, hto, hgraph);
+
+    Rvertex rfrom=r_node_vertex_map[from];
+    Rvertex rto  =r_node_vertex_map[to];
+    remove_edge(rto, rfrom, rgraph);
+}
+
+//**************************************************
+// clearVertex                                    //
+//**************************************************
+
+void BglGraphManager::clearVertex( BglNode* node)
+{
+    clearVertex(h_node_vertex_map[node],hgraph);
+    clearVertex(r_node_vertex_map[node],rgraph);
+}
+
+template <typename Graph>
+void BglGraphManager::clearVertex( typename Graph::vertex_descriptor v, Graph &g)
+{
+    clear_vertex(v, g);
+}
 
 
+//TODO: understand why an interaction is not stored as an edge of the graph
 void BglGraphManager::addInteraction( Node* n1, Node* n2, BaseObject* iff )
 {
-    interactionToAdd.push_back( InteractionData(n1, n2, iff) );
-}
-
-void BglGraphManager::addInteractionNow( InteractionData &i )
-{
-    if (i.n1 != i.n2) interactions.push_back( Interaction(h_node_vertex_map[i.n1], h_node_vertex_map[i.n2],i.iff));
+    if (n1 == n2) return;
+    interactions.push_back( Interaction(h_node_vertex_map[n1], h_node_vertex_map[n2],iff));
 }
 
 void BglGraphManager::removeInteraction( BaseObject* iff )
@@ -425,41 +388,11 @@ void BglGraphManager::removeInteraction( BaseObject* iff )
             return;
         }
     }
-    InteractionsData::iterator itData;
-    for (itData=interactionToAdd.begin(); itData!=interactionToAdd.end(); itData++)
-    {
-        if (itData->iff == iff)
-        {
-            interactionToAdd.erase(itData);
-            return;
-        }
-    }
 //         std::cerr << iff << "@" << iff->getName() << " : ########################################## NO REMOVAL\n";
 }
 
 
 
-
-
-namespace
-{
-
-class find_leaves: public ::boost::bfs_visitor<>
-{
-public:
-    typedef vector<BglGraphManager::Rvertex> Rleaves;
-    Rleaves& leaves; // use external data, since internal data seems corrupted after the visit (???)
-    find_leaves( Rleaves& l ):leaves(l) {}
-    void discover_vertex( BglGraphManager::Rvertex v, const BglGraphManager::Rgraph& g )
-    {
-        if ( out_degree (v,g)==0 )  // leaf vertex
-        {
-            leaves.push_back(v);
-        }
-    }
-
-};
-}
 
 
 
@@ -485,13 +418,37 @@ bool BglGraphManager::needToComputeInteractions()
     return need;
 }
 
+
 /**
 Data: hroots, interactions
  Result: interactionGroups
     */
+namespace
+{
+template< typename Graph>
+class find_leaves: public ::boost::bfs_visitor<>
+{
+    typedef typename Graph::vertex_descriptor Vertex;
+public:
+    typedef vector<Vertex> VertexLeaves;
+    VertexLeaves& leaves; // use external data, since internal data seems corrupted after the visit (???)
+    find_leaves(VertexLeaves& l ):leaves(l) {}
+    void discover_vertex( Vertex v, const Graph& g )
+    {
+        if ( out_degree (v,g)==0 )  // leaf vertex
+        {
+            leaves.push_back(v);
+        }
+    }
+
+};
+
+}
 void BglGraphManager::computeInteractionGraphAndConnectedComponents()
 {
 
+    return ;
+#if 0
     ///< the interaction graph
     Igraph igraph;
     I_vertex_node_map      i_vertex_node_map;
@@ -511,7 +468,7 @@ void BglGraphManager::computeInteractionGraphAndConnectedComponents()
     for ( HvertexVector::iterator i=hroots.begin(), iend=hroots.end(); i!=iend; i++ )
     {
         Ivertex iv = add_vertex( igraph );
-        Node* n = h_vertex_node_map[*i];
+        Node* n = getNode(*i,hgraph);
 //              std::cerr << n->getName() << ", ";
         i_vertex_node_map[iv] = n;
         i_node_vertex_map[n] = iv;
@@ -527,19 +484,36 @@ void BglGraphManager::computeInteractionGraphAndConnectedComponents()
     // rgraph is used to find the roots corresponding to the nodes.
     typedef std::map<Rvertex,Interactions > R_vertex_interactions_map;
     R_vertex_interactions_map rootInteractions;
+    std::cerr << "Interactions : " << interactions.size() << "!!!!!!!!!!\n";
+    for ( Interactions::iterator i=interactions.begin(), iend=interactions.end(); i!=iend; i++ )
+    {
+        std::cerr << getNode((*i).v1, hgraph)->getName() << " and " << getNode((*i).v2, hgraph)->getName()  << " : " << (*i).iff->getName() << std::endl;
+    }
     for ( Interactions::iterator i=interactions.begin(), iend=interactions.end(); i!=iend; i++ )
     {
 //             cerr<<"find all the roots associated with the interaction from "<<h_vertex_node_map[(*i).v1]->getName()<<" to "<<h_vertex_node_map[(*i).v2]->getName()<<endl;
-
         // find all the roots associated with the given interaction
-        vector<BglGraphManager::Rvertex> leaves;
-        find_leaves visit(leaves);
-        boost::vector_property_map<boost::default_color_type> colors( boost::num_vertices(rgraph) );
+        vector<Rvertex> leaves;
+        find_leaves<Rgraph> visit(leaves);
+        ColorMap colors;
+        colors.resize(boost::num_vertices(rgraph));
         boost::queue<Rvertex> queue;
-        Rvertex v1 = r_node_vertex_map[ h_vertex_node_map[ (*i).v1 ]];
-        Rvertex v2 = r_node_vertex_map[ h_vertex_node_map[ (*i).v2 ]];
-        boost::breadth_first_search( rgraph, boost::vertex(v1, rgraph), queue, visit, colors );
-        boost::breadth_first_search( rgraph, boost::vertex(v2, rgraph), queue, visit, colors );
+        Rvertex v1 = convertHvertex2Rvertex( (*i).v1 );
+        Rvertex v2 = convertHvertex2Rvertex( (*i).v2 );
+
+        boost::breadth_first_visit(rgraph,
+                v1,
+                queue,
+                visit,
+                make_iterator_property_map(colors.begin(),boost::get(boost::vertex_index, rgraph) )
+                                  );
+
+        boost::breadth_first_visit(rgraph,
+                v2,
+                queue,
+                visit,
+                make_iterator_property_map(colors.begin(),boost::get(boost::vertex_index, rgraph) )
+                                  );
 
 //             cerr<<"the roots are: "<<endl;
 //             for( unsigned j=0; j<leaves.size(); j++ ){
@@ -553,20 +527,23 @@ void BglGraphManager::computeInteractionGraphAndConnectedComponents()
 
 //             Rvertex collisionRvertex = convertHvertex2Rvertex(collisionVertex);
         // add edges between all the pairs of roots
-        for ( find_leaves::Rleaves::iterator l=visit.leaves.begin(), lend=visit.leaves.end(); l!=lend; l++ )
+        typedef find_leaves<Rgraph>::VertexLeaves::iterator LeavesIterator;
+        for ( LeavesIterator l=visit.leaves.begin(), lend=visit.leaves.end(); l!=lend; l++ )
         {
-            for ( find_leaves::Rleaves::iterator m=l++; m!=lend; m++ )
+            for ( LeavesIterator m=l++; m!=lend; m++ )
             {
                 if ( *l != *m )
                 {
-                    std::pair<Iedge,bool> e = add_edge( i_node_vertex_map[r_vertex_node_map[*l]],i_node_vertex_map[r_vertex_node_map[*m]], igraph );
+                    std::pair<Iedge,bool> e = add_edge( i_node_vertex_map[getNode(*l,rgraph)],i_node_vertex_map[getNode(*m,rgraph)], igraph );
                     assert( e.second );
                 }
             }
         }
     }
+
     // compute the connected components of the interaction graph, represented by integers associated with vertices
     vector<int> component(num_vertices(igraph));
+
     int num = boost::connected_components(igraph, &component[0]);
 
     // build the interactionGroups
@@ -588,6 +565,7 @@ void BglGraphManager::computeInteractionGraphAndConnectedComponents()
             group.second.push_back( *j );
         }
     }
+
     // 	debug
 //         	     cerr<<"end connected components"<<endl;
 //        for( unsigned i=0; i<interactionGroups.size(); i++ )
@@ -601,145 +579,71 @@ void BglGraphManager::computeInteractionGraphAndConnectedComponents()
 //               }
 //             cerr<<endl;
 //           }
+#endif
 }
 
 
 
 void BglGraphManager::computeRoots()
 {
-
     /// find the roots in hgraph
     hroots.clear();
-//             visualroots.clear();
-//             collisionroots.clear();
-    for ( Hvpair iter=boost::vertices(hgraph); iter.first!=iter.second; iter.first++)
+    HvertexIterator it_begin, it_end;
+    for (boost::tie(it_begin, it_end)=vertices(hgraph); it_begin!=it_end; ++it_begin)
     {
+        unsigned int degree = in_degree (*it_begin,hgraph);
 
-        Node *vNode=h_vertex_node_map[*iter.first];
-        if (!vNode) continue;
-
-        unsigned int degree = in_degree (*iter.first,hgraph);
-
-        std::cerr << "degree : " << degree << " : " << vNode->getName() << "\n";
-        if (degree==0 && *iter.first != masterVertex)
+        if (degree==0)
         {
-//                     std::cerr << degree << " : " << degree << " ## " << vNode->getName() << "\n";
-            hroots.push_back(*iter.first);
+            hroots.push_back(*it_begin);
         }
-
-//                 if (isVisualRoot(vNode)) visualroots.push_back(*iter.first);
-//                 if (isCollisionRoot(vNode)) collisionroots.push_back(*iter.first);
     }
-
 }
 
-/// Perform the collision detection
-void BglGraphManager::collisionStep(Node* root, double /* dt */)
+
+void BglGraphManager::printDebug()
 {
-    if (collisionPipeline)
-    {
-        root->addObject( collisionPipeline );
-        CollisionVisitor act;
-        root->doExecuteVisitor(&act);
-        root->removeObject( collisionPipeline );
-    }
+    std::cerr << "******************************************************" << std::endl;
+    std::cerr << "State of Hgraph" << std::endl;
+    printVertices(hgraph);
+    printEdges(hgraph);
+    std::cerr << "State of Rgraph" << std::endl;
+    printVertices(rgraph);
+    printEdges(rgraph);
+    std::cerr << "******************************************************" << std::endl;
+    std::cerr << std::endl << std::endl;
 }
-/** Data: interaction groups
-    Result: nodes updated
-*/
-void BglGraphManager::mechanicalStep(Node* rootNode, double dt)
+
+//*****************************************************
+// DEBUG
+//*****************************************************
+
+template <typename Graph>
+void BglGraphManager::printVertices(Graph &g)
 {
-#ifdef SOFA_DUMP_VISITOR_INFO
-    simulation::Visitor::printNode("MechanicalStep");
-#endif
-    Hvertex rootVertex=h_node_vertex_map[rootNode];
-    clearVertex(rootVertex);
-    update();
-
-    for ( unsigned i=0; i<interactionGroups.size(); i++ )
+    typedef typename Graph::vertex_iterator VertexIterator;
+    VertexIterator it, it_end;
+    for (boost::tie(it, it_end)=vertices(g); it!=it_end; ++it)
     {
-        // remove previous children and interactions
-
-        clearVertex( rootVertex );
-
-        // add the vertices and the interactions
-        InteractionGroup& group = interactionGroups[i];
-        //Find the different objects
-        std::set< Hvertex > staticObjectAdded; //objects without solver
-        std::set< Hvertex > animatedObjectAdded; //objects animated by a solver
-        std::set< Hvertex > solverUsed;
-
-
-        std::string staticObjectName;
-        for ( unsigned j=0; j<group.first.size(); j++ )
-        {
-            Hvertex currentVertex = group.first[j];
-            Node   *currentNode   = h_vertex_node_map[ currentVertex ];
-            if (!currentNode) continue;
-            //No solver Found: we link it to the masterNode
-            if (nodeSolvers.find( currentNode )      == nodeSolvers.end() &&
-                nodeGroupSolvers.find( currentNode ) == nodeGroupSolvers.end())
-            {
-                addHedge( rootVertex, currentVertex); // add static object
-                staticObjectAdded.insert(currentVertex);
-                staticObjectName += currentNode->getName() + " ";
-            }
-            else
-            {
-                Node *sUsed=currentNode;
-                //Verify if the current solver is not controled by a collision group
-                if (solver_colisionGroup_map.find(sUsed) != solver_colisionGroup_map.end())
-                {
-                    sUsed = solver_colisionGroup_map[sUsed];
-                    addHedge(h_node_vertex_map[sUsed], currentVertex);
-                    //Add the main solver, and link it to the vertex describing the dynamic object
-                }
-
-                if (nodeSolvers.find( currentNode ) != nodeSolvers.end())
-                    animatedObjectAdded.insert(currentVertex);
-
-                solverUsed.insert(h_node_vertex_map[sUsed]);
-            }
-        }
-        //No object to animate
-        if (staticObjectAdded.empty() && animatedObjectAdded.empty() ) continue;
-
-        //We deal with all the solvers one by one
-        std::set< Hvertex >::iterator it;
-
-        for (it=solverUsed.begin(); it != solverUsed.end(); it++)
-        {
-            std::string animationName;
-            Hvertex solverVertex =*it;
-            Node* currentSolver=h_vertex_node_map[solverVertex];
-            // animate this interaction group
-            addHedge( rootVertex,solverVertex);
-            {
-#ifdef SOFA_DUMP_VISITOR_INFO
-                simulation::Visitor::printComment(std::string("Collision Group Animate ") + staticObjectName + currentSolver->getName() );
-#endif
-                rootNode->animate(dt);
-                removeHedge( rootVertex, solverVertex);
-            }
-        }
-
-        if (animatedObjectAdded.empty() // || !hasCollisionGroupManager
-           )
-        {
-#ifdef SOFA_DUMP_VISITOR_INFO
-            simulation::Visitor::printComment(std::string("Animate ") + staticObjectName );
-#endif
-            rootNode->animate(dt);
-        }
+        std::cout << getNode(*it, g)->getName() << "@" << *it << "  ";
     }
-
-
-#ifdef SOFA_DUMP_VISITOR_INFO
-    simulation::Visitor::printCloseNode("MechanicalStep");
-#endif
+    std::cout << std::endl;
 }
 
 
+template <typename Graph>
+void BglGraphManager::printEdges(Graph &g)
+{
+
+    typedef typename Graph::edge_iterator EdgeIterator;
+    EdgeIterator it, it_end;
+    for (boost::tie(it, it_end)=edges(g); it!=it_end; ++it)
+    {
+        std::cout << getNode(source(*it,g), g)->getName()  << "->"
+                << getNode(target(*it,g), g)->getName()  << "  ";
+    }
+    std::cout << std::endl;
+}
 }
 }
 }

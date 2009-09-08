@@ -55,21 +55,41 @@ Adapt a sofa visitor to breadth-first search in a bgl mapping scene graph.
 
 	@author The SOFA team </www.sofa-framework.org>
 */
+template <typename Graph>
 class bfs_adapter : public boost::bfs_visitor<>
 {
 public:
+    typedef typename Graph::vertex_descriptor Vertex;
+    typedef typename boost::property_map<Graph, BglGraphManager::bglnode_t>::type NodeMap;
+
+
+    bfs_adapter( sofa::simulation::Visitor* v, NodeMap& s ):visitor(v),systemMap(s) {};
+
+    ~bfs_adapter() {};
+
+    /// Applies visitor->processNodeTopDown
+    bool operator() (Vertex u, const Graph &)
+    {
+#ifdef SOFA_DUMP_VISITOR_INFO
+        visitor->setNode(systemMap[u]);
+        visitor->printInfo(systemMap[u]->getContext(),true);
+#endif
+        return visitor->processNodeTopDown(systemMap[u])==Visitor::RESULT_PRUNE;
+    }
+
+    /// Applies visitor->processNodeBottomUp
+    void finish_vertex(Vertex u, const Graph &) const
+    {
+        visitor->processNodeBottomUp(systemMap[u]);
+#ifdef SOFA_DUMP_VISITOR_INFO
+        visitor->printInfo(systemMap[u]->getContext(), false);
+#endif
+    }
+
+protected:
     sofa::simulation::Visitor* visitor;
+    NodeMap& systemMap;      ///< access the System*
 
-    typedef BglGraphManager::Hgraph Graph; ///< BGL graph to traverse
-    BglGraphManager::H_vertex_node_map& systemMap;      ///< access the System*
-
-    bfs_adapter( sofa::simulation::Visitor* v, BglGraphManager::H_vertex_node_map& s );
-
-    ~bfs_adapter();
-
-    void discover_vertex( Graph::vertex_descriptor u, const Graph &) const;
-
-    void finish_vertex(Graph::vertex_descriptor u, const Graph &) const;
 };
 
 }

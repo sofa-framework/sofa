@@ -36,8 +36,6 @@ namespace bgl
 {
 Visitor::Result GetObjectsVisitor::processNodeTopDown( simulation::Node* node )
 {
-//     std::cerr << "SSSTop Down : " << node->getName() << "\n";
-
     for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
     {
         void* result = class_info.dynamicCast(*it);
@@ -49,9 +47,6 @@ Visitor::Result GetObjectsVisitor::processNodeTopDown( simulation::Node* node )
 
 Visitor::Result GetObjectVisitor::processNodeTopDown( simulation::Node* node )
 {
-//     std::cerr << node->object.size() << "Top Down : " << node->getName() << " infos:" << getInfos() << "\n";
-//     getSimulation()->print(node);
-
     for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
     {
         void* r = class_info.dynamicCast(*it);

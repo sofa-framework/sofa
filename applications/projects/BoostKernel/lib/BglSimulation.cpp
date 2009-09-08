@@ -41,6 +41,7 @@
 #include "BuildNodesFromGNodeVisitor.h"
 #include "BuildRestFromGNodeVisitor.h"
 
+#include "BglGraphManager.inl"
 
 #include <sofa/simulation/tree/TreeSimulation.h>
 #include <sofa/simulation/common/AnimateBeginEvent.h>
@@ -69,20 +70,8 @@ Simulation* getSimulation()
     return simulation::getSimulation();
 }
 
-BglSimulation::BglSimulation():
-    solverEulerEuler(NULL),
-    solverRungeKutta4RungeKutta4(NULL),
-    solverCGImplicitCGImplicit(NULL),
-    solverEulerImplicitEulerImplicit(NULL),
-    solverStaticSolver(NULL),
-    solverRungeKutta4Euler(NULL),
-    solverCGImplicitEuler(NULL),
-    solverCGImplicitRungeKutta4(NULL),
-    solverEulerImplicitEuler(NULL),
-    solverEulerImplicitRungeKutta4(NULL),
-    solverEulerImplicitCGImplicit(NULL)
+BglSimulation::BglSimulation()
 {
-
 }
 
 
@@ -91,7 +80,7 @@ BglSimulation::BglSimulation():
 /// Create a graph node and attach a new Node to it, then return the Node
 Node* BglSimulation::newNode(const std::string& name)
 {
-    return graphManager.newNode(name);
+    return new BglNode(name);
 }
 
 
@@ -104,80 +93,13 @@ Data: hgraph, rgraph
 void BglSimulation::init(Node* root )
 {
     Simulation::init(root);
-
-    /// compute the interaction groups
-    graphManager.computeInteractionGraphAndConnectedComponents();
-    graphManager.insertHierarchicalGraph();
-
-    graphManager.getMasterNode()->updateContext();
+    BglGraphManager::getInstance()->update();
 }
-
-
-
-
-/// TODO: adapt the AnimateVisitor to BGL
-void BglSimulation::animate(Node* root, double dt)
-{
-    dt = root->getContext()->getDt();
-
-#ifdef SOFA_DUMP_VISITOR_INFO
-    simulation::Visitor::printComment(std::string("Boost Kernel: Begin Step"));
-#endif
-
-    {
-        AnimateBeginEvent ev ( dt );
-        PropagateEventVisitor act ( &ev );
-        root->doExecuteVisitor ( &act );
-    }
-
-
-    double startTime = root->getTime();
-    double mechanicalDt = dt/numMechSteps.getValue();
-
-    for( unsigned step=0; step<numMechSteps.getValue(); step++ )
-    {
-        BehaviorUpdatePositionVisitor beh(dt);
-        root->doExecuteVisitor ( &beh );
-
-        graphManager.collisionStep(root,dt);
-        graphManager.mechanicalStep(root,dt);
-        graphManager.clearMasterVertex();
-        graphManager.insertHierarchicalGraph();
-
-        root->setTime ( startTime + (step+1)* mechanicalDt );
-        root->execute<UpdateSimulationContextVisitor>();
-    }
-
-    {
-        AnimateEndEvent ev ( dt );
-        PropagateEventVisitor act ( &ev );
-        root->doExecuteVisitor( &act );
-    }
-
-    //Update Mapping
-    {
-        UpdateMappingVisitor actMapping;
-        root->doExecuteVisitor( &actMapping);
-        simulation::UpdateMappingEndEvent ev ( dt );
-        PropagateEventVisitor act ( &ev );
-        root->doExecuteVisitor( &act );
-    }
-
-    root->execute<VisualUpdateVisitor>();
-
-#ifdef SOFA_DUMP_VISITOR_INFO
-    simulation::Visitor::printComment(std::string("End Step"));
-#endif
-
-}
-
-
 
 
 /// Create a GNode tree structure using available file loaders, then convert it to a BglSimulation
 Node* BglSimulation::load(const char* f)
 {
-    graphManager.reset();
     std::string fileName(f);
     sofa::helper::system::DataRepository.findFile(fileName);
 
@@ -194,138 +116,47 @@ Node* BglSimulation::load(const char* f)
         exit(1);
     }
 
-    std::map<simulation::Node*,BglNode*> gnode_bnode_map;
     BuildNodesFromGNodeVisitor b1(this);
     groot->execute(b1);
 
 
+    std::map<simulation::Node*,BglNode*> gnode_bnode_map;
     gnode_bnode_map = b1.getGNodeBNodeMap();
-    BuildRestFromGNodeVisitor b2(&graphManager);
+    BuildRestFromGNodeVisitor b2;
     b2.setGNodeBNodeMap(gnode_bnode_map);
     groot->execute(b2);
 
 
-    Node *masterNode=graphManager.getMasterNode();
-    masterNode->copyContext(*( (sofa::core::objectmodel::Context*)groot->getContext()));
-    graphManager.update();
+    BglGraphManager::getInstance()->update();
+    std::vector< Node* > roots;
+    BglGraphManager::getInstance()->getRoots(roots);
 
-    /// find the roots in hgraph
-    graphManager.computeRoots();
 
-    graphManager.insertHierarchicalGraph();
-
-    return masterNode;
+    //Temporary: we need to change that: We could change getRoots by a getRoot.
+    //if several roots are found, we return a master node, above the roots of the simulation
+    if (roots.empty()) return NULL;
+    return roots.back();
 }
 
 
 void BglSimulation::reset(Node* root)
 {
     sofa::simulation::Simulation::reset(root);
-    graphManager.reset();
+    BglGraphManager::getInstance()->reset();
 }
 
 void BglSimulation::unload(Node* root)
 {
     if (!root) return;
     Simulation::unload(root);
+    delete root;
     clear();
 }
 
 void BglSimulation::clear()
 {
-    graphManager.clear();
+    BglGraphManager::getInstance()->clear();
 }
-
-
-Node* BglSimulation::getSolverEulerEuler()
-{
-    if (!solverEulerEuler)
-    {
-        solverEulerEuler = newNode("SolverEulerEuler");
-    }
-    return solverEulerEuler;
-}
-Node* BglSimulation::getSolverRungeKutta4RungeKutta4()
-{
-    if (!solverRungeKutta4RungeKutta4)
-    {
-        solverRungeKutta4RungeKutta4 = newNode("SolverRungeKutta4RungeKutta4");
-    }
-    return solverRungeKutta4RungeKutta4;
-}
-Node* BglSimulation::getSolverCGImplicitCGImplicit()
-{
-    if (!solverCGImplicitCGImplicit)
-    {
-        solverCGImplicitCGImplicit = newNode("SolverCGImplicitCGImplicit");
-    }
-    return solverCGImplicitCGImplicit;
-}
-Node* BglSimulation::getSolverEulerImplicitEulerImplicit()
-{
-    if (!solverEulerImplicitEulerImplicit)
-    {
-        solverEulerImplicitEulerImplicit = newNode("SolverEulerImplicitEulerImplicit");
-    }
-    return solverEulerImplicitEulerImplicit;
-}
-Node* BglSimulation::getSolverStaticSolver()
-{
-    if (!solverStaticSolver)
-    {
-        solverStaticSolver = newNode("SolverStaticSolver");
-    }
-    return solverStaticSolver;
-}
-Node* BglSimulation::getSolverRungeKutta4Euler()
-{
-    if (!solverRungeKutta4Euler)
-    {
-        solverRungeKutta4Euler = newNode("SolverRungeKutta4Euler");
-    }
-    return solverRungeKutta4Euler;
-}
-Node* BglSimulation::getSolverCGImplicitEuler()
-{
-    if (!solverCGImplicitEuler)
-    {
-        solverCGImplicitEuler = newNode("SolverCGImplicitEuler");
-    }
-    return solverCGImplicitEuler;
-}
-Node* BglSimulation::getSolverCGImplicitRungeKutta4()
-{
-    if (!solverCGImplicitRungeKutta4)
-    {
-        solverCGImplicitRungeKutta4 = newNode("SolverCGImplicitRungeKutta4");
-    }
-    return solverCGImplicitRungeKutta4;
-}
-Node* BglSimulation::getSolverEulerImplicitEuler()
-{
-    if (!solverEulerImplicitEuler)
-    {
-        solverEulerImplicitEuler = newNode("SolverEulerImplicitEuler");
-    }
-    return solverEulerImplicitEuler;
-}
-Node* BglSimulation::getSolverEulerImplicitRungeKutta4()
-{
-    if (!solverEulerImplicitRungeKutta4)
-    {
-        solverEulerImplicitRungeKutta4 = newNode("SolverEulerImplicitRungeKutta4");
-    }
-    return solverEulerImplicitRungeKutta4;
-}
-Node* BglSimulation::getSolverEulerImplicitCGImplicit()
-{
-    if (!solverEulerImplicitCGImplicit)
-    {
-        solverEulerImplicitCGImplicit = newNode("SolverEulerImplicitCGImplicit");
-    }
-    return solverEulerImplicitCGImplicit;
-}
-
 }
 }
 }
