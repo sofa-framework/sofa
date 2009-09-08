@@ -87,10 +87,6 @@ public:
     static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
         core::objectmodel::BaseObject::create(obj, context, arg);
-        if (context)
-        {
-            obj->mstate = dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState());
-        }
     }
 
     virtual std::string getTemplateName() const
@@ -106,7 +102,6 @@ public:
     Data<VecCoord> f_X;
     Data<SetIndex> f_indices;
     Data<VecCoord> f_indices_position;
-    MechanicalState<DataTypes>* mstate;
 
 private:
     bool contains(VecCoord& v, Coord c);

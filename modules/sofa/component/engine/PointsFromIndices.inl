@@ -58,15 +58,23 @@ void PointsFromIndices<DataTypes>::init()
 {
     if (!f_X.isSet())
     {
-        BaseData* parent = mstate->findField("position");
-        f_X.setParentValue(parent);
-        parent->addOutput(&f_X);
-        f_X.setReadOnly(true);
+        MechanicalState<DataTypes>* mstate;
+        this->getContext()->get(mstate);
+        if (mstate)
+        {
+            BaseData* parent = mstate->findField("position");
+            if (parent)
+            {
+                f_X.setParentValue(parent);
+                parent->addOutput(&f_X);
+                f_X.setReadOnly(true);
+            }
+        }
     }
     addInput(&f_X);
     addInput(&f_indices);
     addOutput(&f_indices_position);
-    setDirty();
+    setDirtyValue();
 }
 
 template <class DataTypes>
@@ -88,7 +96,7 @@ bool PointsFromIndices<DataTypes>::contains(VecCoord& v, Coord c)
 template <class DataTypes>
 void PointsFromIndices<DataTypes>::update()
 {
-    dirty = false;
+    cleanDirty();
 
     VecCoord& indices_position = *(f_indices_position.beginEdit());
     const SetIndex& indices = f_indices.getValue();

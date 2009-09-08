@@ -59,7 +59,7 @@ void Spiral<DataTypes>::init()
 {
     addInput(&f_X0);
     addOutput(&f_X);
-    setDirty();
+    setDirtyValue();
 }
 
 template <class DataTypes>
@@ -73,7 +73,7 @@ void Spiral<DataTypes>::reinit()
 template <class DataTypes>
 void Spiral<DataTypes>::update()
 {
-    dirty = false;
+    cleanDirty();
 
     const VecCoord x0 = f_X0.getValue();
     VecCoord* x = f_X.beginEdit();

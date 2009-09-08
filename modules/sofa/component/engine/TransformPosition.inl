@@ -94,15 +94,16 @@ void TransformPosition<DataTypes>::init()
         std::cerr << "Error : Method " << method << "is unknown" <<std::endl;
     }
 
-    addInput(&f_inputX);
-    addOutput(&f_outputX);
-
-    setDirty();
     /// check if the normal is of norm 1
     if (fabs((normal.norm2()-1.0))>1e-10)
     {
         normal/=normal.norm();
     }
+
+    addInput(&f_inputX);
+    addOutput(&f_outputX);
+
+    setDirtyValue();
 }
 
 template <class DataTypes>
@@ -116,7 +117,7 @@ void TransformPosition<DataTypes>::reinit()
 template <class DataTypes>
 void TransformPosition<DataTypes>::update()
 {
-    dirty = false;
+    cleanDirty();
 
 
     const helper::vector<Coord>& in = f_inputX.getValue();

@@ -68,7 +68,7 @@ void ExtrudeSurface<DataTypes>::init()
 
     addOutput(&f_extrusionVertices);
     addOutput(&f_extrusionTriangles);
-    setDirty();
+    setDirtyValue();
 }
 
 template <class DataTypes>
@@ -80,7 +80,7 @@ void ExtrudeSurface<DataTypes>::reinit()
 template <class DataTypes>
 void ExtrudeSurface<DataTypes>::update()
 {
-    dirty = false;
+    cleanDirty();
 
     const helper::vector<BaseMeshTopology::TriangleID>& surfaceTriangles = f_surfaceTriangles.getValue();
     const VecCoord& surfaceVertices = f_surfaceVertices.getValue();

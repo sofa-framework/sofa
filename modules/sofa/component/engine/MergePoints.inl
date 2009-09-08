@@ -63,7 +63,7 @@ void MergePoints<DataTypes>::init()
     addOutput(&f_indices1);
     addOutput(&f_indices2);
     addOutput(&f_points);
-    setDirty();
+    setDirtyValue();
 }
 
 template <class DataTypes>
@@ -75,7 +75,7 @@ void MergePoints<DataTypes>::reinit()
 template <class DataTypes>
 void MergePoints<DataTypes>::update()
 {
-    dirty = false;
+    cleanDirty();
 
     const VecCoord& x1 = f_X1.getValue();
     const VecCoord& x2 = f_X2.getValue();
