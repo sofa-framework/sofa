@@ -80,11 +80,13 @@ public:
     {
         this->ks.setDisplayed(false);
         this->kd.setDisplayed(false);
-        addAlias(&linesStiffness,    "stiffness"); addAlias(&linesDamping,    "damping");
-        addAlias(&trianglesStiffness,"stiffness"); addAlias(&trianglesDamping,"damping");
-        addAlias(&quadsStiffness,    "stiffness"); addAlias(&quadsDamping,    "damping");
-        addAlias(&tetrahedraStiffness,   "stiffness"); addAlias(&tetrahedraDamping,   "damping");
-        addAlias(&cubesStiffness,    "stiffness"); addAlias(&cubesDamping,    "damping");
+        addAlias(&linesStiffness,     "stiffness"); addAlias(&linesDamping,     "damping");
+        addAlias(&trianglesStiffness, "stiffness"); addAlias(&trianglesDamping, "damping");
+        addAlias(&quadsStiffness,     "stiffness"); addAlias(&quadsDamping,     "damping");
+        addAlias(&tetrahedraStiffness,"stiffness"); addAlias(&tetrahedraDamping, "damping");
+        addAlias(&cubesStiffness,     "stiffness"); addAlias(&cubesDamping,      "damping");
+        //Name changes: keep compatibility with old version
+        addAlias(&tetrahedraStiffness,"tetrasStiffness"); addAlias(&tetrahedraDamping, "tetrasDamping");
     }
 
     virtual ~MeshSpringForceField();

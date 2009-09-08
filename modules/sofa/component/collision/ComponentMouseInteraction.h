@@ -49,7 +49,7 @@ class SOFA_COMPONENT_COLLISION_API ComponentMouseInteraction
 public:
     ComponentMouseInteraction();
 
-    virtual ~ComponentMouseInteraction() {};
+    virtual ~ComponentMouseInteraction();
 
     virtual void init(simulation::Node* node);
 
@@ -89,7 +89,6 @@ class TComponentMouseInteraction : public ComponentMouseInteraction
     typedef sofa::component::mapping::IdentityMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState< defaulttype::Vec3Types>, sofa::core::componentmodel::behavior::MechanicalState< DataTypes > > > IdentityMechanicalMapping;
 
 public:
-
 
     void init(simulation::Node* node);
 

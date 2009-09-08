@@ -34,6 +34,8 @@
 #include <sofa/component/collision/MouseInteractor.h>
 #include <sofa/component/mapping/IdentityMapping.h>
 
+#include <sofa/simulation/common/InitVisitor.h>
+
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -61,15 +63,13 @@ template <class DataTypes>
 void TComponentMouseInteraction<DataTypes>::init(Node* node)
 {
     ComponentMouseInteraction::init(node);
-
+    nodeRayPick->setName(nodeRayPick->getName() + "_" + DataTypes::Name());
     parentNode->addChild(nodeRayPick);
 
     mouseInSofa =  new MouseContainer;
     mouseInSofa = new MouseContainer; mouseInSofa->resize(1);
     mouseInSofa->setName("MousePosition");
     nodeRayPick->addObject(mouseInSofa);
-
-
 
     mouseInteractor = new Interactor;
     mouseInteractor->setName("MouseInteractor");
@@ -81,12 +81,7 @@ void TComponentMouseInteraction<DataTypes>::init(Node* node)
 
     mouseMapping->setMechanical(false);
 
-    nodeRayPick->init();
-    mouseInSofa->init();
-    mouseMapping->init();
-    mouseInteractor->init();
-
-    /*             parentNode->execute<simulation::InitVisitor>(); */
+    parentNode->execute<simulation::InitVisitor>();
     parentNode->removeChild(nodeRayPick);
 }
 
