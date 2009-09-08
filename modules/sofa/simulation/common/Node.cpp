@@ -79,9 +79,9 @@ Node::~Node()
 /// Initialize the components of this node and all the nodes which depend on it.
 void Node::init()
 {
-    //cerr<<"Node::init() begin node "<<getName()<<endl;
+//     cerr<<"Node::init() begin node "<<getName()<<endl;
     execute<simulation::InitVisitor>();
-    //cerr<<"Node::init() end node "<<getName()<<endl;
+//     cerr<<"Node::init() end node "<<getName()<<endl;
 }
 
 /// ReInitialize the components of this node and all the nodes which depend on it.
@@ -354,7 +354,7 @@ Node* Node::getTreeNode(const std::string& name) const
     return result;
 }
 
-sofa::helper::vector< core::objectmodel::BaseNode* > Node::getChildren()
+sofa::core::objectmodel::BaseNode::Children Node::getChildren()
 {
     sofa::helper::vector< core::objectmodel::BaseNode* > list_children;
     for (ChildIterator it = child.begin(), itend = child.end(); it != itend; ++it)
@@ -365,7 +365,7 @@ sofa::helper::vector< core::objectmodel::BaseNode* > Node::getChildren()
 }
 
 /// Get parent node (or NULL if no hierarchy or for root node)
-const sofa::helper::vector< core::objectmodel::BaseNode* > Node::getChildren() const
+const sofa::core::objectmodel::BaseNode::Children Node::getChildren() const
 {
     sofa::helper::vector< core::objectmodel::BaseNode* > list_children;
     for (ChildIterator it = child.begin(), itend = child.end(); it != itend; ++it)
