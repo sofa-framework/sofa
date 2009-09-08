@@ -56,25 +56,39 @@ The BglGraphManager::H_vertex_node_map is used to get the sofa::simulation::Node
 
 	@author The SOFA team </www.sofa-framework.org>
 */
+template <typename Graph>
 class dfs_adapter : public boost::dfs_visitor<>
 {
 public:
-    sofa::simulation::Visitor* visitor;
+    typedef typename Graph::vertex_descriptor Vertex;
+    typedef typename boost::property_map<Graph, BglGraphManager::bglnode_t>::type NodeMap;
 
-    typedef BglGraphManager::Hgraph Graph; ///< BGL graph to traverse
-    typedef Graph::vertex_descriptor Vertex;
+    dfs_adapter( sofa::simulation::Visitor* v, NodeMap& s ):visitor(v),systemMap(s) {};
 
-    BglGraphManager::H_vertex_node_map& systemMap;      ///< access the System*
-
-    dfs_adapter( sofa::simulation::Visitor* v, BglGraphManager::H_vertex_node_map& s );
-
-    ~dfs_adapter();
+    ~dfs_adapter() {};
 
     /// Applies visitor->processNodeTopDown
-    void discover_vertex (Vertex u, const Graph &);
+    bool operator() (Vertex u, const Graph &)
+    {
+#ifdef SOFA_DUMP_VISITOR_INFO
+        visitor->setNode(systemMap[u]);
+        visitor->printInfo(systemMap[u]->getContext(),true);
+#endif
+        return visitor->processNodeTopDown(systemMap[u])==Visitor::RESULT_PRUNE;
+    }
 
     /// Applies visitor->processNodeBottomUp
-    void finish_vertex(Vertex u, const Graph &) const;
+    void finish_vertex(Vertex u, const Graph &) const
+    {
+        visitor->processNodeBottomUp(systemMap[u]);
+#ifdef SOFA_DUMP_VISITOR_INFO
+        visitor->printInfo(systemMap[u]->getContext(), false);
+#endif
+    }
+
+protected:
+    sofa::simulation::Visitor* visitor;
+    NodeMap& systemMap;      ///< access the System*
 
 };
 }

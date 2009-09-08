@@ -25,7 +25,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 //
-// C++ Interface: BglSimulation
+// C++ Implementation: BglGraphManager
 //
 // Description:
 //
@@ -35,12 +35,11 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#ifndef SOFA_SIMULATION_BGL_BGLSIMULATION_H
-#define SOFA_SIMULATION_BGL_BGLSIMULATION_H
+
+#ifndef SOFA_SIMULATION_BGL_BGLGRAPHMANAGER_INL
+#define SOFA_SIMULATION_BGL_BGLGRAPHMANAGER_INL
 
 #include "BglGraphManager.h"
-
-#include <sofa/simulation/common/Simulation.h>
 
 namespace sofa
 {
@@ -49,40 +48,68 @@ namespace simulation
 namespace bgl
 {
 
-using sofa::helper::vector;
-using sofa::simulation::Node;
-
-/// SOFA scene implemented using bgl graphs and with high-level modeling and animation methods.
-class BglSimulation : public sofa::simulation::Simulation
+template <typename Container>
+void BglGraphManager::getParentNodes(Container &data, const Node* node)
 {
-public:
+    getInVertices(data, node, h_node_vertex_map, hgraph);
+}
 
-    /// @name High-level interface
-    /// @{
-    BglSimulation();
+template <typename Container>
+void BglGraphManager::getChildNodes(Container &data, const Node* node)
+{
+    getOutVertices(data, node, h_node_vertex_map, hgraph);
+}
 
-    /// Load a file
-    Node* load(const char* filename);
 
-    /// Load a file
-    void unload(Node* root);
 
-    /// Delayed Creation of a graph node and attach a new Node to it, then return the Node
-    Node* newNode(const std::string& name="");
+template <typename Container, typename NodeMap, typename Graph>
+void BglGraphManager::getInVertices(Container &data, const Node* node, NodeMap &nodeMap, Graph &g)
+{
+    typedef typename boost::graph_traits< Graph >::in_edge_iterator InEdgeIterator;
+    typedef typename boost::graph_traits< Graph >::vertex_descriptor Vertex;
+    Vertex v=nodeMap[const_cast<Node*>(node)];
+    InEdgeIterator it,it_end;
+    for (tie(it, it_end)=in_edges(v, g); it!=it_end; ++it)
+    {
+        Node *inV=getNode(source(*it, g), g);
+        data.insert(data.begin(),static_cast<typename Container::value_type>(inV));
+    }
+}
 
-    void clear();
 
-    void reset ( Node* root );
 
-    /// Initialize all the nodes and edges depth-first
-    void init(Node* root);
 
-    /* 	/// Animate all the nodes depth-first */
-    /* 	void animate(Node* root, double dt=0.0); */
-    /// @}
-};
+template <typename Container, typename NodeMap, typename Graph>
+void BglGraphManager::getOutVertices(Container &data, const Node* node, NodeMap &nodeMap, Graph &g)
+{
+    typedef typename boost::graph_traits< Graph >::out_edge_iterator OutEdgeIterator;
+    typedef typename boost::graph_traits< Graph >::vertex_descriptor Vertex;
+    Vertex v=nodeMap[const_cast<Node*>(node)];
+    OutEdgeIterator it,it_end;
 
-Simulation* getSimulation();
+    for (tie(it, it_end)=out_edges(v, g); it!=it_end; ++it)
+    {
+        Node *outV=getNode(target(*it, g), g);
+        data.insert(data.begin(),static_cast<typename Container::value_type>(outV));
+    }
+}
+
+template <typename Container>
+void BglGraphManager::getRoots(Container &data)
+{
+    HvertexVector::iterator it, it_end=hroots.end();
+    for (it=hroots.begin(); it!=it_end; ++it) data.push_back(getNode(*it, hgraph));
+}
+
+template <typename Graph>
+Node *BglGraphManager::getNode( typename Graph::vertex_descriptor v, Graph &g)
+{
+    return get( bglnode_t(), g, v);
+}
+
+
+
+
 }
 }
 }

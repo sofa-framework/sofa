@@ -64,14 +64,15 @@ using sofa::simulation::Node;
 class BglNode : public sofa::simulation::Node
 {
 public:
-    typedef sofa::simulation::Visitor Visitor;
+    typedef helper::set<BglNode*> Parents;
+    typedef Parents::iterator ParentIterator;
+    typedef Parents::const_iterator ParentConstIterator;
 
-    BglNode(BglGraphManager* s=NULL,const std::string& name="");
+    BglNode(const std::string& name="");
     /**
        \param sg the SOFA scene containing a bgl graph
        \param n the node of the bgl graph corresponding to this
     */
-    BglNode(BglGraphManager* s, BglGraphManager::Hgraph* g,  BglGraphManager::Hvertex n, const std::string& name="" );
     ~BglNode();
 
 
@@ -91,6 +92,7 @@ public:
     /// Remove an object
     bool removeObject(BaseObject* obj);
 
+
     /// Remove the current node from the graph: consists in removing the link to all the parents
     void detachFromGraph() ;
 
@@ -100,19 +102,20 @@ public:
 
 
     /// Find all the Nodes pointing
-    helper::vector< BglNode* > getParents();
+    Parents getParents();
 
     /// Find all the Nodes pointing
-    helper::vector< const BglNode* > getParents() const;
+    const Parents getParents() const;
 
 
     /// Get children nodes
-    sofa::helper::vector< core::objectmodel::BaseNode* > getChildren();
+    Children getChildren();
 
     /// Get children nodes
-    const sofa::helper::vector< core::objectmodel::BaseNode* > getChildren() const;
+    const Children getChildren() const;
 
 
+    std::string getPathName() const;
 
 
     /// Generic object access, given a set of required tags, possibly searching up or down from the current context
@@ -149,39 +152,19 @@ public:
 
 
 
-    std::string getPathName() const;
-
-    Sequence<BglNode> parents;
-    typedef Sequence<BglNode>::iterator ParentIterator;
-
-
-
 
     static void create(BglNode*& obj, simulation::tree::xml::Element<core::objectmodel::BaseNode>* arg)
     {
-        BglGraphManager *graphManager=NULL;
-        simulation::bgl::BglSimulation *simu=dynamic_cast<simulation::bgl::BglSimulation *>(simulation::getSimulation());
-        if( simu ) graphManager=&simu->graphManager;
-        obj = new BglNode(graphManager);
+        obj = new BglNode();
         obj->parse(arg);
     }
 
+    int getId() const {return id;};
 
-    /// return the mechanical graph of the scene it belongs to
-    BglGraphManager::Hgraph &getGraph() { return *graph;};
-
-    /// return the id of the node in the mechanical graph
-    BglGraphManager::Hvertex getVertexId() { return vertexId;};
-
-
-
-
-    BglGraphManager* graphManager;              ///< the scene the node belongs to
-    BglGraphManager::Hgraph* graph;      ///< the mechanical graph of the scene it belongs to
-    BglGraphManager::Hvertex vertexId;  ///< its id in the mechanical graph        protected:
-
+    static int uniqueId;
 
 protected:
+    int id;
 
     virtual void doAddChild(BglNode* node);
     void doRemoveChild(BglNode* node);
