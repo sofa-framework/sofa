@@ -78,10 +78,10 @@ contains(DEFINES,MUPARSER){
 
 #VRPN
 contains(DEFINES,SOFA_HAVE_VRPN){
-	SUBDIRS += extlibs/VRPN
 	contains(DEFINES,VRPN_USE_WIIUSE){
 		SUBDIRS += extlibs/wiiuse
 	}
+	SUBDIRS += extlibs/VRPN
 }
 
 SUBDIRS += framework
