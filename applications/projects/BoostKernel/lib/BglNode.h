@@ -42,7 +42,7 @@
 #include "BglSimulation.h"
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/tree/xml/NodeElement.h>
-
+#include <deque>
 
 namespace sofa
 {
@@ -64,7 +64,8 @@ using sofa::simulation::Node;
 class BglNode : public sofa::simulation::Node
 {
 public:
-    typedef helper::set<BglNode*> Parents;
+    typedef helper::vector<BglNode*> Parents;
+    /*           typedef Sequence<BglNode> Parents; */
     typedef Parents::iterator ParentIterator;
     typedef Parents::const_iterator ParentConstIterator;
 
@@ -100,23 +101,24 @@ public:
 
 
 
-
     /// Find all the Nodes pointing
     Parents getParents();
-
     /// Find all the Nodes pointing
     const Parents getParents() const;
 
-
-    /// Get children nodes
-    Children getChildren();
-
-    /// Get children nodes
-    const Children getChildren() const;
-
-
     std::string getPathName() const;
 
+    void addParent(BglNode *node);
+
+    void removeParent(BglNode *node);
+
+
+
+
+    /** Perform a scene graph traversal with the given Visitor, starting from this node.
+        Visitor::processNodetopdown is applied on discover, and Visitor::processNodeBottomUp is applied on finish.
+    */
+    void doExecuteVisitor( Visitor* action);
 
     /// Generic object access, given a set of required tags, possibly searching up or down from the current context
     ///
@@ -132,9 +134,6 @@ public:
     ///
     /// Note that the template wrapper method should generally be used to have the correct return type,
     virtual void getObjects(const sofa::core::objectmodel::ClassInfo& class_info, GetObjectsCallBack& container, const sofa::core::objectmodel::TagSet& tags, SearchDirection dir = SearchUp) const;
-
-
-
 
 
 
@@ -163,16 +162,18 @@ public:
 
     static int uniqueId;
 
+    Sequence< BglNode > parents;
 protected:
+    int getUniqueId();
+
+
+
     int id;
+
+    static std::deque<int> freeId;
 
     virtual void doAddChild(BglNode* node);
     void doRemoveChild(BglNode* node);
-
-    /** Perform a scene graph traversal with the given Visitor, starting from this node.
-        Visitor::processNodetopdown is applied on discover, and Visitor::processNodeBottomUp is applied on finish.
-    */
-    void doExecuteVisitor( Visitor* action);
     // VisitorScheduler can use doExecuteVisitor() method
     friend class simulation::VisitorScheduler;
 

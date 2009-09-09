@@ -51,46 +51,44 @@ namespace bgl
 template <typename Container>
 void BglGraphManager::getParentNodes(Container &data, const Node* node)
 {
-    getInVertices(data, node, h_node_vertex_map, hgraph);
+    getInVertices(data, h_node_vertex_map[const_cast<Node*>(node)], hgraph);
 }
 
 template <typename Container>
 void BglGraphManager::getChildNodes(Container &data, const Node* node)
 {
-    getOutVertices(data, node, h_node_vertex_map, hgraph);
+    getOutVertices(data, h_node_vertex_map[const_cast<Node*>(node)], hgraph);
 }
 
 
-
-template <typename Container, typename NodeMap, typename Graph>
-void BglGraphManager::getInVertices(Container &data, const Node* node, NodeMap &nodeMap, Graph &g)
+template <typename Container,  typename Graph>
+void BglGraphManager::getInVertices(Container &data, typename Graph::vertex_descriptor v, Graph &g)
 {
     typedef typename boost::graph_traits< Graph >::in_edge_iterator InEdgeIterator;
     typedef typename boost::graph_traits< Graph >::vertex_descriptor Vertex;
-    Vertex v=nodeMap[const_cast<Node*>(node)];
+
     InEdgeIterator it,it_end;
     for (tie(it, it_end)=in_edges(v, g); it!=it_end; ++it)
     {
         Node *inV=getNode(source(*it, g), g);
-        data.insert(data.begin(),static_cast<typename Container::value_type>(inV));
+        data.insert(data.end(),static_cast<typename Container::value_type>(inV));
     }
 }
 
 
 
 
-template <typename Container, typename NodeMap, typename Graph>
-void BglGraphManager::getOutVertices(Container &data, const Node* node, NodeMap &nodeMap, Graph &g)
+template <typename Container, typename Graph>
+void BglGraphManager::getOutVertices(Container &data, typename Graph::vertex_descriptor v, Graph &g)
 {
     typedef typename boost::graph_traits< Graph >::out_edge_iterator OutEdgeIterator;
     typedef typename boost::graph_traits< Graph >::vertex_descriptor Vertex;
-    Vertex v=nodeMap[const_cast<Node*>(node)];
-    OutEdgeIterator it,it_end;
 
+    OutEdgeIterator it,it_end;
     for (tie(it, it_end)=out_edges(v, g); it!=it_end; ++it)
     {
         Node *outV=getNode(target(*it, g), g);
-        data.insert(data.begin(),static_cast<typename Container::value_type>(outV));
+        data.insert(data.end(),static_cast<typename Container::value_type>(outV));
     }
 }
 

@@ -25,9 +25,7 @@
 #ifndef SOFA_COMPONENT_COLLISION_BGLCOLLISIONGROUPMANAGER_H
 #define SOFA_COMPONENT_COLLISION_BGLCOLLISIONGROUPMANAGER_H
 
-#include <sofa/core/componentmodel/collision/CollisionGroupManager.h>
-#include <sofa/simulation/common/Node.h>
-#include <sofa/component/component.h>
+#include <sofa/component/collision/DefaultCollisionGroupManager.h>
 
 
 namespace sofa
@@ -39,41 +37,22 @@ namespace component
 namespace collision
 {
 
-class SOFA_COMPONENT_COLLISION_API BglCollisionGroupManager : public core::componentmodel::collision::CollisionGroupManager
+class SOFA_COMPONENT_COLLISION_API BglCollisionGroupManager : public DefaultCollisionGroupManager
 {
+    ;
 public:
-    typedef std::set<simulation::Node*> GroupSet;
-    GroupSet groupSet;
-public:
-    BglCollisionGroupManager();
+    BglCollisionGroupManager() {};
 
-    virtual ~BglCollisionGroupManager();
-
-    virtual void createGroups(core::objectmodel::BaseContext* scene, const sofa::helper::vector<core::componentmodel::collision::Contact*>& contacts);
-
-    virtual void clearGroups(core::objectmodel::BaseContext* scene);
-
-    /** Overload this if yo want to design your collision group, e.g. with a MasterSolver.
-    Otherwise, an empty Node is returned.
-    The OdeSolver is added afterwards.
-    */
-    virtual simulation::Node* buildCollisionGroup();
-
+    void clearGroups(core::objectmodel::BaseContext* scene);
 protected:
+    virtual simulation::Node* findCommonParent(simulation::Node *group1, simulation::Node* group2);
+
     template <typename ContainerParent>
     typename ContainerParent::value_type compatibleSetOfNode( ContainerParent &set1,ContainerParent &set2);
-    virtual simulation::Node* getIntegrationNode(core::CollisionModel* model);
 
-    std::map<Instance,GroupSet> storedGroupSet;
-
-    virtual void changeInstance(Instance inst)
-    {
-        core::componentmodel::collision::CollisionGroupManager::changeInstance(inst);
-        storedGroupSet[instance].swap(groupSet);
-        groupSet.swap(storedGroupSet[inst]);
-    }
 
 };
+
 
 } // namespace collision
 

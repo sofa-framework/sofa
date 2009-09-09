@@ -111,15 +111,6 @@ int main(int argc, char** argv)
 
 
 
-    sofa::core::ObjectFactory::ClassEntry* classDefaultCollisionGroupManager;
-    sofa::core::ObjectFactory::ClassEntry* classCollisionGroup;
-    sofa::core::ObjectFactory::AddAlias("DefaultCollisionGroupManager",
-            "BglCollisionGroupManager", true, &classDefaultCollisionGroupManager);
-    sofa::core::ObjectFactory::AddAlias("CollisionGroup",
-            "BglCollisionGroupManager", true, &classCollisionGroup);
-
-
-
     if (!files.empty()) fileName = files[0];
 
     for (unsigned int i=0; i<plugins.size(); i++)
@@ -149,6 +140,8 @@ int main(int argc, char** argv)
     if (int err=sofa::gui::SofaGUI::createGUI(NULL))
         return err;
 
+
+    sofa::simulation::bgl::BglGraphManager::getInstance()->clear();
     sofa::simulation::bgl::BglNode* groot = dynamic_cast<sofa::simulation::bgl::BglNode*>( sofa::simulation::bgl::getSimulation()->load(fileName.c_str()));
     if (groot==NULL)  groot = new sofa::simulation::bgl::BglNode;
 

@@ -56,16 +56,31 @@ namespace bgl
 {
 
 int BglNode::uniqueId=0;
+std::deque<int> BglNode::freeId;
 
 BglNode::BglNode(const std::string& name)
-    : sofa::simulation::Node(name),id(uniqueId++)
+    : sofa::simulation::Node(name)
 {
+    id=getUniqueId();
     BglGraphManager::getInstance()->addVertex(this);
 }
 
 BglNode::~BglNode()
 {
     BglGraphManager::getInstance()->removeVertex(this);
+    freeId.push_back(id);
+}
+
+int BglNode::getUniqueId()
+{
+    if (freeId.empty())
+        return uniqueId++;
+    else
+    {
+        int unique=freeId.front();
+        freeId.pop_front();
+        return unique;
+    }
 }
 
 
@@ -80,22 +95,27 @@ bool BglNode::addObject(BaseObject* obj)
     }
     else if (sofa::core::componentmodel::behavior::InteractionForceField* iff = dynamic_cast<sofa::core::componentmodel::behavior::InteractionForceField*>(obj))
     {
-        Node *m1=(Node*)iff->getMechModel1()->getContext();
-        Node *m2=(Node*)iff->getMechModel2()->getContext();
-        BglGraphManager::getInstance()->addInteraction( m1, m2, iff);
-        //Bi directional graph
-        //             BglGraphManager::getInstance()->addEdge(m1,m2);
-        //             BglGraphManager::getInstance()->addEdge(m2,m1);
+        if (iff->getMechModel1() && iff->getMechModel2())
+        {
+            Node *m1=(Node*)iff->getMechModel1()->getContext();
+            Node *m2=(Node*)iff->getMechModel2()->getContext();
+            if (m1!=m2) BglGraphManager::getInstance()->addInteraction( m1, m2, iff);
+            //Bi directional graph
+            //             BglGraphManager::getInstance()->addEdge(m1,m2);
+            //             BglGraphManager::getInstance()->addEdge(m2,m1);
+        }
     }
     else if (sofa::core::componentmodel::behavior::InteractionConstraint* ic = dynamic_cast<sofa::core::componentmodel::behavior::InteractionConstraint*>(obj))
     {
-
-        Node *m1=(Node*)ic->getMechModel1()->getContext();
-        Node *m2=(Node*)ic->getMechModel2()->getContext();
-        BglGraphManager::getInstance()->addInteraction( m1, m2, ic);
-        //Bi directional graph
-        //             BglGraphManager::getInstance()->addEdge(m1,m2);
-        //             BglGraphManager::getInstance()->addEdge(m2,m1);
+        if (ic->getMechModel1() && ic->getMechModel2())
+        {
+            Node *m1=(Node*)ic->getMechModel1()->getContext();
+            Node *m2=(Node*)ic->getMechModel2()->getContext();
+            if (m1!=m2) BglGraphManager::getInstance()->addInteraction( m1, m2, ic);
+            //Bi directional graph
+            //             BglGraphManager::getInstance()->addEdge(m1,m2);
+            //             BglGraphManager::getInstance()->addEdge(m2,m1);
+        }
     }
     return Node::addObject(obj);
 }
@@ -131,6 +151,15 @@ bool BglNode::removeObject(core::objectmodel::BaseObject* obj)
     return Node::removeObject(obj);
 }
 
+void BglNode::addParent(BglNode *node)
+{
+    parents.add(node);
+}
+void BglNode::removeParent(BglNode *node)
+{
+    parents.remove(node);
+}
+
 
 void BglNode::addChild(core::objectmodel::BaseNode* c)
 {
@@ -143,6 +172,7 @@ void BglNode::addChild(core::objectmodel::BaseNode* c)
 void BglNode::doAddChild(BglNode* node)
 {
     child.add(node);
+    node->addParent(this);
     BglGraphManager::getInstance()->addEdge(this,node);
 }
 
@@ -151,7 +181,6 @@ void BglNode::doAddChild(BglNode* node)
 void BglNode::removeChild(core::objectmodel::BaseNode* c)
 {
     BglNode *childNode = static_cast< BglNode *>(c);
-
     notifyRemoveChild(childNode);
     doRemoveChild(childNode);
 }
@@ -159,6 +188,7 @@ void BglNode::removeChild(core::objectmodel::BaseNode* c)
 void BglNode::doRemoveChild(BglNode* node)
 {
     child.remove(node);
+    node->removeParent(this);
     BglGraphManager::getInstance()->removeEdge(this, node);
 }
 
@@ -175,9 +205,9 @@ void BglNode::moveChild(core::objectmodel::BaseNode* node)
     }
     else
     {
-        for (ParentIterator it = nodeParents.begin(); it != nodeParents.end(); it++)
+        for (ParentIterator it = nodeParents.begin(); it != nodeParents.end(); ++it)
         {
-            BglNode *prev = *it;
+            BglNode *prev = (*it);
             notifyMoveChild(childNode,prev);
             prev->doRemoveChild(childNode);
         }
@@ -187,8 +217,8 @@ void BglNode::moveChild(core::objectmodel::BaseNode* node)
 
 void BglNode::detachFromGraph()
 {
-    Parents parents=getParents();
-    for (ParentIterator it=parents.begin(); it!=parents.end(); ++it) (*it)->removeChild(this);
+    Sequence<BglNode>::iterator it=parents.begin(), it_end=parents.end();
+    for (; it!=it_end; ++it) (*it)->removeChild(this);
 }
 
 
@@ -205,37 +235,22 @@ std::string BglNode::getPathName() const
 
 }
 
+
+
 const BglNode::Parents BglNode::getParents() const
 {
     Parents p;
-    BglGraphManager::getInstance()->getParentNodes(p, this);
+    std::copy(parents.begin(),parents.end(), std::back_inserter<Parents>(p));
     return p;
 }
 
 BglNode::Parents BglNode::getParents()
 {
     Parents p;
-    BglGraphManager::getInstance()->getParentNodes(p, this);
+    std::copy(parents.begin(),parents.end(), std::back_inserter<Parents>(p));
     return p;
 }
 
-/// Get children nodes
-sofa::core::objectmodel::BaseNode::Children  BglNode::getChildren()
-{
-    Children c;
-    BglGraphManager::getInstance()->getChildNodes(c, this);
-    return c;
-
-}
-
-/// Get a list of child node
-const sofa::core::objectmodel::BaseNode::Children  BglNode::getChildren() const
-{
-    Children c;
-    BglGraphManager::getInstance()->getChildNodes(c, this);
-    return c;
-
-}
 
 
 void BglNode::doExecuteVisitor( Visitor* visit )
