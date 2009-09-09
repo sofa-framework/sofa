@@ -28,6 +28,7 @@
 #include <sofa/core/componentmodel/collision/CollisionGroupManager.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/component/component.h>
+#include <sofa/simulation/common/DeleteVisitor.h>
 
 
 namespace sofa
@@ -51,7 +52,7 @@ public:
 
     virtual void createGroups(core::objectmodel::BaseContext* scene, const sofa::helper::vector<core::componentmodel::collision::Contact*>& contacts);
 
-    virtual void clearGroups(core::objectmodel::BaseContext* scene);
+    virtual void clearGroups(core::objectmodel::BaseContext* scene)=0;
 
     /** Overload this if yo want to design your collision group, e.g. with a MasterSolver.
     Otherwise, an empty Node is returned.
@@ -60,9 +61,11 @@ public:
     virtual simulation::Node* buildCollisionGroup();
 
 protected:
-    virtual simulation::Node* getIntegrationNode(core::CollisionModel* model);
+    //Given to nodes, we find the parent node in common: if none is found, we return NULL
+    virtual simulation::Node* findCommonParent(simulation::Node *group1, simulation::Node* group2)=0;
 
-    std::map<Instance,GroupSet> storedGroupSet;
+    //Find the node containing the ode solver used to animate the mechanical model associated to the collision model
+    virtual simulation::Node* getIntegrationNode(core::CollisionModel* model);
 
     virtual void changeInstance(Instance inst)
     {
@@ -70,6 +73,22 @@ protected:
         storedGroupSet[instance].swap(groupSet);
         groupSet.swap(storedGroupSet[inst]);
     }
+
+    template <typename Container, typename NodeType>
+    void clearGroup(Container &inNodes, NodeType* group)
+    {
+        NodeType* parent = *inNodes.begin();
+        while(!group->child.empty()) parent->moveChild(*group->child.begin());
+
+        simulation::DeleteVisitor vis;
+        vis.execute(group);
+        group->detachFromGraph();
+        delete group;
+    }
+
+
+    std::map<Instance,GroupSet> storedGroupSet;
+
 
 };
 
