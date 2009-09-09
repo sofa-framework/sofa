@@ -24,8 +24,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+
+
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
+
+
+
 #include <sofa/component/contextobject/CoordinateSystem.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/core/objectmodel/Context.h>
@@ -34,7 +39,7 @@
 //Including components for collision detection
 #include <sofa/component/collision/DefaultPipeline.h>
 #include <sofa/component/collision/DefaultContactManager.h>
-#include <sofa/component/collision/DefaultCollisionGroupManager.h>
+#include <sofa/component/collision/TreeCollisionGroupManager.h>
 #include <sofa/component/collision/BruteForceDetection.h>
 #include <sofa/component/collision/NewProximityIntersection.h>
 #include <sofa/component/collision/TriangleModel.h>
@@ -56,9 +61,21 @@
 
 #include <sofa/helper/system/SetDirectory.h>
 
+
+//SOFA_HAS_BOOST_KERNEL to define in chainHybrid.pro
+
+#ifdef SOFA_HAS_BOOST_KERNEL
+#include "../../projects/BoostKernel/lib/BglNode.h"
+#include "../../projects/BoostKernel/lib/BglSimulation.h"
+#include "../../projects/BoostKernel/lib/BglCollisionGroupManager.h"
+#else
+#include <sofa/simulation/tree/GNode.h>
+#endif
+
+
 using sofa::component::visualmodel::OglModel;
 
-using namespace sofa::simulation::tree;
+using namespace sofa::simulation;
 using namespace sofa::component::collision;
 using namespace sofa::component::topology;
 using sofa::component::container::MeshLoader;
@@ -68,22 +85,19 @@ using sofa::component::linearsolver::GraphScatteredMatrix;
 using sofa::component::linearsolver::GraphScatteredVector;
 typedef CGLinearSolver<GraphScatteredMatrix,GraphScatteredVector> CGLinearSolverGraph;
 
+
 //Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
 #include <sofa/component/typedef/Sofa_typedef.h>
 // ---------------------------------------------------------------------
 // ---
 // ---------------------------------------------------------------------
-int main(int argc, char** argv)
-{
-    glutInit(&argc,argv);
-    sofa::helper::parse("This is a SOFA application.")
-    (argc,argv);
-    sofa::gui::SofaGUI::Init(argv[0]);
 
+
+Node *createChainHybrid(std::string simulationType)
+{
     // The graph root node
-    GNode* groot = new GNode;
-    groot->setName( "root" );
-    groot->setGravityInWorld( Coord3(0,0,-10) );
+    Node* root = getSimulation()->newNode("root");
+    root->setGravityInWorld( Coord3(0,0,-10) );
 
 
     //Components for collision management
@@ -91,40 +105,51 @@ int main(int argc, char** argv)
     //--> adding collision pipeline
     DefaultPipeline* collisionPipeline = new DefaultPipeline;
     collisionPipeline->setName("Collision Pipeline");
-    groot->addObject(collisionPipeline);
+    root->addObject(collisionPipeline);
 
     //--> adding collision detection system
     BruteForceDetection* detection = new BruteForceDetection;
     detection->setName("Detection");
-    groot->addObject(detection);
+    root->addObject(detection);
 
     //--> adding component to detection intersection of elements
     NewProximityIntersection* detectionProximity = new NewProximityIntersection;
     detectionProximity->setName("Proximity");
     detectionProximity->setAlarmDistance(0.3);   //warning distance
     detectionProximity->setContactDistance(0.2); //min distance before setting a spring to create a repulsion
-    groot->addObject(detectionProximity);
-
+    root->addObject(detectionProximity);
 
     //--> adding contact manager
     DefaultContactManager* contactManager = new DefaultContactManager;
     contactManager->setName("Contact Manager");
-    groot->addObject(contactManager);
+    root->addObject(contactManager);
 
     //--> adding component to handle groups of collision.
-    DefaultCollisionGroupManager* collisionGroupManager = new DefaultCollisionGroupManager;
-    collisionGroupManager->setName("Collision Group Manager");
-    groot->addObject(collisionGroupManager);
-
-
+#ifdef SOFA_HAS_BOOST_KERNEL
+    if (simulationType == "bgl")
+    {
+        BglCollisionGroupManager* collisionGroupManager = new BglCollisionGroupManager;
+        collisionGroupManager->setName("Collision Group Manager");
+        root->addObject(collisionGroupManager);
+    }
+    else
+#endif
+    {
+        //--> adding component to handle groups of collision.
+        TreeCollisionGroupManager* collisionGroupManager = new TreeCollisionGroupManager;
+        collisionGroupManager->setName("Collision Group Manager");
+        root->addObject(collisionGroupManager);
+    }
 
     //Elements of the scene
     //------------------------------------
-    GNode* chain = new GNode("Chain",groot);
+    Node* chain = getSimulation()->newNode("Chain");
+    root->addChild(chain);
 
     //************************************
     //Torus Fixed
-    GNode* torusFixed = new GNode("Fixed",chain);
+    Node* torusFixed = getSimulation()->newNode("Fixed");
+    chain->addChild(torusFixed);
 
     MeshLoader* loaderFixed = new MeshLoader;
     loaderFixed->load(sofa::helper::system::DataRepository.getFile("mesh/torus_for_collision.obj").c_str());
@@ -150,7 +175,9 @@ int main(int argc, char** argv)
 
     //************************************
     //Torus FEM
-    GNode* torusFEM = new GNode("FEM",chain);
+    Node* torusFEM = getSimulation()->newNode("FEM");
+    chain->addChild(torusFEM);
+
 
     EulerImplicitSolver* solverFEM = new EulerImplicitSolver;
     CGLinearSolverGraph* linearFEM = new CGLinearSolverGraph;
@@ -192,7 +219,9 @@ int main(int argc, char** argv)
     torusFEM->addObject(tetraFEMFF);
 
     //Node VISUAL
-    GNode* FEMVisualNode = new GNode("Visu",torusFEM);
+    Node* FEMVisualNode = getSimulation()->newNode("Visu");
+    torusFEM->addChild(FEMVisualNode);
+
 
     OglModel* visualFEM = new OglModel;
     visualFEM->setName("visual");
@@ -208,7 +237,9 @@ int main(int argc, char** argv)
 
 
     //Node COLLISION
-    GNode* FEMCollisionNode = new GNode("Collision",torusFEM);
+    Node* FEMCollisionNode = getSimulation()->newNode("Collision");
+    torusFEM->addChild(FEMCollisionNode);
+
 
     MeshLoader* loaderFEM_surf = new MeshLoader;
     loaderFEM_surf->load(sofa::helper::system::DataRepository.getFile("mesh/torus_for_collision.obj").c_str());
@@ -231,7 +262,9 @@ int main(int argc, char** argv)
 
     //************************************
     //Torus Spring
-    GNode* torusSpring = new GNode("Spring",chain);
+    Node* torusSpring = getSimulation()->newNode("Spring");
+    chain->addChild(torusSpring);
+
 
     EulerImplicitSolver* solverSpring = new EulerImplicitSolver;
     CGLinearSolverGraph* linearSpring = new CGLinearSolverGraph;
@@ -270,7 +303,9 @@ int main(int argc, char** argv)
     torusSpring->addObject(springFF);
 
     //Node VISUAL
-    GNode* SpringVisualNode = new GNode("Visu",torusSpring);
+    Node* SpringVisualNode = getSimulation()->newNode("Visu");
+    torusSpring->addChild(SpringVisualNode);
+
 
     OglModel* visualSpring = new OglModel;
     visualSpring->setName("visual");
@@ -285,7 +320,9 @@ int main(int argc, char** argv)
 
 
     //Node COLLISION
-    GNode* SpringCollisionNode = new GNode("Collision",torusSpring);
+    Node* SpringCollisionNode = getSimulation()->newNode("Collision");
+    torusSpring->addChild(SpringCollisionNode);
+
 
     MeshLoader* loaderSpring_surf = new MeshLoader;
     loaderSpring_surf->load(sofa::helper::system::DataRepository.getFile("mesh/torus_for_collision.obj").c_str());
@@ -307,7 +344,9 @@ int main(int argc, char** argv)
 
     //************************************
     //Torus FFD
-    GNode* torusFFD = new GNode("FFD",chain);
+    Node* torusFFD = getSimulation()->newNode("FFD");
+    chain->addChild(torusFFD);
+
 
     EulerImplicitSolver* solverFFD = new EulerImplicitSolver;
     CGLinearSolverGraph* linearFFD = new CGLinearSolverGraph;
@@ -347,7 +386,9 @@ int main(int argc, char** argv)
     torusFFD->addObject(FFDFF);
 
     //Node VISUAL
-    GNode* FFDVisualNode = new GNode("Visu",torusFFD);
+    Node* FFDVisualNode = getSimulation()->newNode("Visu");
+    torusFFD->addChild(FFDVisualNode);
+
 
     OglModel* visualFFD = new OglModel;
     visualFFD->setName("visual");
@@ -362,7 +403,8 @@ int main(int argc, char** argv)
 
 
     //Node COLLISION
-    GNode* FFDCollisionNode = new GNode("Collision",torusFFD);
+    Node* FFDCollisionNode = getSimulation()->newNode("Collision");
+    torusFFD->addChild(FFDCollisionNode);
 
     MeshLoader* loaderFFD_surf = new MeshLoader;
     loaderFFD_surf->load(sofa::helper::system::DataRepository.getFile("mesh/torus_for_collision.obj").c_str());
@@ -383,8 +425,8 @@ int main(int argc, char** argv)
 
     //************************************
     //Torus Rigid
-    GNode* torusRigid = new GNode("Rigid",chain);
-
+    Node* torusRigid = getSimulation()->newNode("Rigid");
+    chain->addChild(torusRigid);
 
     EulerImplicitSolver* solverRigid = new EulerImplicitSolver;
     CGLinearSolverGraph* linearRigid = new CGLinearSolverGraph;
@@ -409,7 +451,9 @@ int main(int argc, char** argv)
     torusRigid->addObject(uniMassRigid);
 
     //Node VISUAL
-    GNode* RigidVisualNode = new GNode("Visu", torusRigid);
+    Node* RigidVisualNode = getSimulation()->newNode("Visu");
+    torusRigid->addChild(RigidVisualNode);
+
 
     OglModel* visualRigid = new OglModel;
     visualRigid->setName("visual");
@@ -423,7 +467,9 @@ int main(int argc, char** argv)
 
 
     //Node COLLISION
-    GNode* RigidCollisionNode = new GNode("Collision", torusRigid);
+    Node* RigidCollisionNode = getSimulation()->newNode("Collision");
+    torusRigid->addChild(RigidCollisionNode);
+
 
     MeshLoader* loaderRigid_surf = new MeshLoader;
     loaderRigid_surf->load(sofa::helper::system::DataRepository.getFile("mesh/torus_for_collision.obj").c_str());
@@ -440,16 +486,51 @@ int main(int argc, char** argv)
 
     RigidMechanicalMappingRigid3_to_3* mechaMappingRigid = new RigidMechanicalMappingRigid3_to_3(dofRigid, dofRigid_surf);
     RigidCollisionNode->addObject(mechaMappingRigid);
+#if 0
+#endif
+
+    return root;
+}
 
 
-    groot->setAnimate(false);
 
-    getSimulation()->init(groot);
+
+
+
+
+
+
+int main(int argc, char** argv)
+{
+    glutInit(&argc,argv);
+
+    std::vector<std::string> files;
+    std::string simulationType="tree";
+
+    sofa::helper::parse("This is a SOFA application. Here are the command line arguments")
+    .option(&simulationType,'s',"simulation","type of the simulation(bgl,tree)")
+    (argc,argv);
+
+#ifdef SOFA_HAS_BOOST_KERNEL
+    if (simulationType == "bgl")
+        sofa::simulation::setSimulation(new sofa::simulation::bgl::BglSimulation());
+    else
+        sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
+#else
+    sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
+#endif
+    sofa::gui::SofaGUI::Init(argv[0]);
+
+    Node *root=createChainHybrid(simulationType);
+
+    root->setAnimate(false);
+
+    getSimulation()->init(root);
 
 
     //=======================================
     // Run the main loop
-    sofa::gui::SofaGUI::MainLoop(groot);
+    sofa::gui::SofaGUI::MainLoop(root);
 
     return 0;
 }

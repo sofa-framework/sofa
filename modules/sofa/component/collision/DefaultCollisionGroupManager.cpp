@@ -24,13 +24,8 @@
 ******************************************************************************/
 #include <sofa/component/collision/DefaultCollisionGroupManager.h>
 #include <sofa/component/collision/SolverMerger.h>
-#include <sofa/core/ObjectFactory.h>
 #include <sofa/core/CollisionModel.h>
-// #include <sofa/helper/system/config.h>
-// #include <string.h>
-
-
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/Simulation.h>
 
 namespace sofa
@@ -43,13 +38,6 @@ namespace collision
 {
 
 using core::componentmodel::collision::Contact;
-
-SOFA_DECL_CLASS(DefaultCollisionGroupManager);
-
-int DefaultCollisionGroupManagerClass = core::RegisterObject("Responsible for gathering colliding objects in the same group, for consistent time integration")
-        .add< DefaultCollisionGroupManager >()
-        .addAlias("CollisionGroup")
-        ;
 
 
 DefaultCollisionGroupManager::DefaultCollisionGroupManager()
@@ -64,6 +52,7 @@ simulation::Node* DefaultCollisionGroupManager::buildCollisionGroup()
 {
     return simulation::getSimulation()->newNode("CollisionGroup");
 }
+
 
 void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* scene, const sofa::helper::vector<Contact*>& contacts)
 {
@@ -88,8 +77,8 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
     for(sofa::helper::vector<Contact*>::const_iterator cit = contacts.begin(); cit != contacts.end(); cit++)
     {
         Contact* contact = *cit;
-        simulation::tree::GNode* group1 = static_cast<simulation::tree::GNode*>(getIntegrationNode(contact->getCollisionModels().first));
-        simulation::tree::GNode* group2 = static_cast<simulation::tree::GNode*>(getIntegrationNode(contact->getCollisionModels().second));
+        simulation::Node* group1 = getIntegrationNode(contact->getCollisionModels().first);
+        simulation::Node* group2 = getIntegrationNode(contact->getCollisionModels().second);
         simulation::Node* group = NULL;
         if (group1==NULL || group2==NULL)
         {
@@ -99,14 +88,13 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
             // same group, no new group necessary
             group = group1;
         }
-        else if (group1->getParent()!=NULL && group1->getParent() == group2->getParent())
+        else if (simulation::Node* parent=findCommonParent(group1,group2))
         {
             // we can merge the groups
             // if solvers are compatible...
             SolverSet solver = SolverMerger::merge(group1->solver[0], group2->solver[0]);
             if (solver.first!=NULL)
             {
-                simulation::tree::GNode* parent = group1->parent;
                 bool group1IsColl = groupSet.find(group1)!=groupSet.end();
                 bool group2IsColl = groupSet.find(group2)!=groupSet.end();
                 if (!group1IsColl && !group2IsColl)
@@ -217,31 +205,6 @@ void DefaultCollisionGroupManager::createGroups(core::objectmodel::BaseContext* 
     //	sout << groups.size()<<" collision groups created."<<sendl;
 }
 
-void DefaultCollisionGroupManager::clearGroups(core::objectmodel::BaseContext* /*scene*/)
-{
-    for (std::set<simulation::Node*>::iterator it = groupSet.begin(); it!=groupSet.end(); ++it)
-    {
-        simulation::tree::GNode* group = dynamic_cast<simulation::tree::GNode*>(*it);
-        if (group)
-        {
-            simulation::tree::GNode* parent = group->parent;
-            while(!group->child.empty())
-                parent->moveChild(*group->child.begin());
-            while(!group->object.empty())
-            {
-                core::objectmodel::BaseObject* obj = *group->object.begin();
-                group->removeObject(obj);
-                delete obj;
-            }
-            parent->removeChild((simulation::Node*)group);
-            delete group;
-        }
-    }
-
-    groupSet.clear();
-    groups.clear();
-}
-
 simulation::Node* DefaultCollisionGroupManager::getIntegrationNode(core::CollisionModel* model)
 {
     simulation::Node* node = static_cast<simulation::Node*>(model->getContext());
@@ -251,6 +214,10 @@ simulation::Node* DefaultCollisionGroupManager::getIntegrationNode(core::Collisi
     if (!listSolver.empty()) return static_cast<simulation::Node*>(listSolver.back()->getContext());
     else                     return NULL;
 }
+
+
+
+
 
 }// namespace collision
 
