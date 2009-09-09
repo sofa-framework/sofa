@@ -76,6 +76,14 @@ contains(DEFINES,MUPARSER){
 	SUBDIRS += extlibs/muparser
 }
 
+#VRPN
+contains(DEFINES,SOFA_HAVE_VRPN){
+	SUBDIRS += extlibs/VRPN
+	contains(DEFINES,VRPN_USE_WIIUSE){
+		SUBDIRS += extlibs/wiiuse
+	}
+}
+
 SUBDIRS += framework
 SUBDIRS += modules
 SUBDIRS += applications
