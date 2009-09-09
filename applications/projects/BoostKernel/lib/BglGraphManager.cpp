@@ -149,10 +149,10 @@ void BglGraphManager::removeEdge( Node* from, Node* to )
     if (h_node_vertex_map.find(from) == h_node_vertex_map.end() ||
         h_node_vertex_map.find(to) == h_node_vertex_map.end() )
     {
-//             std::cerr << "Error !!\n";
+        //             std::cerr << "Error !!\n";
         return;
     }
-//         std::cerr << "Remove Edge from " << from->getName() << " to " << to->getName() << "\n";
+    //         std::cerr << "Remove Edge from " << from->getName() << " to " << to->getName() << "\n";
     Hvertex hfrom=h_node_vertex_map[from];
     Hvertex hto  =h_node_vertex_map[to];
     remove_edge(hfrom, hto, hgraph);
@@ -192,12 +192,12 @@ void BglGraphManager::removeInteraction( BaseObject* iff )
     {
         if (it->iff == iff)
         {
-//                 ((Node*)(iff->getContext()))->removeObject(iff);
+            //                 ((Node*)(iff->getContext()))->removeObject(iff);
             interactions.erase(it);
             return;
         }
     }
-//         std::cerr << iff << "@" << iff->getName() << " : ########################################## NO REMOVAL\n";
+    //         std::cerr << iff << "@" << iff->getName() << " : ########################################## NO REMOVAL\n";
 }
 
 //----------------------------------------------------------------------------------
@@ -358,7 +358,7 @@ void BglGraphManager::depthFirstVisit( const Node *constNode, Visitor& visit, co
     if (h_node_vertex_map.find(n) == h_node_vertex_map.end())
         addVertex((BglNode*)(n));
 
-//         std::cerr << visit.getClassName() << "  " << visit.getInfos() << " depthFirstVisitor with " << constNode->getName() << "\n";
+    //         std::cerr << visit.getClassName() << "  " << visit.getInfos() << " depthFirstVisitor with " << constNode->getName() << "\n";
 
     switch(dir)
     {

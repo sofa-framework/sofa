@@ -52,6 +52,7 @@
 #include <sofa/simulation/common/UpdateMappingEndEvent.h>
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
 #include <sofa/simulation/common/VisualVisitor.h>
+#include <sofa/core/ObjectFactory.h>
 
 
 
@@ -72,6 +73,23 @@ Simulation* getSimulation()
 
 BglSimulation::BglSimulation()
 {
+
+    //-------------------------------------------------------------------------------------------------------
+    //Adding aliases to convert Tree based components to Bgl components
+    sofa::core::ObjectFactory::ClassEntry* classDefaultCollisionGroupManager;
+    sofa::core::ObjectFactory::AddAlias("DefaultCollisionGroupManager",
+            "BglCollisionGroupManager", true, &classDefaultCollisionGroupManager);
+
+    sofa::core::ObjectFactory::ClassEntry* classCollisionGroup;
+    sofa::core::ObjectFactory::AddAlias("CollisionGroup",
+            "BglCollisionGroupManager", true, &classCollisionGroup);
+
+    //Should this alias be added?
+    sofa::core::ObjectFactory::ClassEntry* classTreeCollisionGroupManager;
+    sofa::core::ObjectFactory::AddAlias("TreeCollisionGroupManager",
+            "BglCollisionGroupManager", true, &classTreeCollisionGroupManager);
+
+
 }
 
 
@@ -130,7 +148,6 @@ Node* BglSimulation::load(const char* f)
     BglGraphManager::getInstance()->update();
     std::vector< Node* > roots;
     BglGraphManager::getInstance()->getRoots(roots);
-
 
     //Temporary: we need to change that: We could change getRoots by a getRoot.
     //if several roots are found, we return a master node, above the roots of the simulation

@@ -63,15 +63,17 @@ class BglGraphManager
 {
 public:
 
+    typedef std::vector< boost::default_color_type> ColorMap;
     /** @name Hierarchical graph
         This graph (hgraph) reflects the sofa mechanical mapping hierarchy.
         The vertices contains sofa simulation nodes, while the edges contain nothing.
         The (mechanical) mappings are not in the edges because in future work we want to allow a single mapping to read input from several parents. Thus, the mappings remain associated with the Nodes as usual.
 
-        A dual graph (rraph) is used for convenience.
+        A dual graph (rgraph) is used for convenience.
         It is the same as the hierarchical graph, but its edges are in the opposite directions.
         (BTW, do we really need it ?)
     */
+
 
 
     /// @{
@@ -83,13 +85,11 @@ public:
     {
         typedef boost::vertex_property_tag kind;
     };
-
     //The Vertex Property: as we will need to process to removals, and additions at any time possible, we need to store the vertices inside a list.
     //As a list in Boost doesn't have vertex index, we add an index as property to the vertices.
     typedef
     boost::property< bglnode_t            , Node*, //Property linking a vertex of the boost graph to a Sofa Node
-          boost::property< boost::vertex_index_t, int     //Property needed to be able to launch visitors. Each vertex must have a unique id
-          /*           , boost::property<boost::vertex_color_t, boost::default_color_type > */
+          boost::property< boost::vertex_index_t, int    //Property needed to be able to launch visitors. Each vertex must have a unique id
           > > VertexProperty;
 
     // Graph
@@ -118,14 +118,16 @@ public:
     //Inverse map, that we must keep up to date
     // sofa node->hvertex
     typedef std::map<Node*, Hvertex> H_node_vertex_map;
-
+    ///@}
 
     //-----------------------------------------------------------------------------------
     // reverse graph: hgraph with vertices in the opposite direction.
     typedef
     boost::property< bglnode_t            , Node*, //Property linking a vertex of the boost graph to a Sofa Node
           boost::property< boost::vertex_index_t, int    //Property needed to be able to launch visitors. Each vertex must have a unique id
-          > > RVertexProperty;
+          /*           boost::property< parentnodes_t        , bool ,  */
+          /*           boost::property< childnodes_t         , bool     */
+          /*           > > */ > > RVertexProperty;
 
     // Graph
     typedef ::boost::adjacency_list < ::boost::listS, ::boost::listS, ::boost::bidirectionalS, RVertexProperty > Rgraph;
@@ -141,8 +143,6 @@ public:
 
     typedef boost::property_map<Rgraph, bglnode_t>::type  R_vertex_node_map; // rvertex->sofa node
     typedef std::map<Node*, Rvertex> R_node_vertex_map;                    //  sofa node->rvertex
-
-    typedef std::vector< boost::default_color_type> ColorMap;
 
     /** @name interaction graph
         This auxiliary graph represents the interactions between the simulated objects.
@@ -194,7 +194,7 @@ public:
     typedef vector<InteractionData> InteractionsData;
     typedef std::pair< HvertexVector, vector<Interaction> > InteractionGroup; ///< maximum set of nodes which interact together, along with the interactions between them
     typedef vector<InteractionGroup> InteractionGroups;
-
+    ///@}
 
 public:
 
@@ -230,12 +230,14 @@ public:
     template <typename Container>
     void getRoots(Container &data);
 
+    //*********************************************************************************
+    //Visitors implementation
+    /// breadth visit from the given vertex
+    void breadthFirstVisit( const Node* n, Visitor&, core::objectmodel::BaseContext::SearchDirection);
     /// depth search in the whole scene
     void depthFirstSearch(  Visitor&, core::objectmodel::BaseContext::SearchDirection);
     /// depth visit starting from the given vertex
     void depthFirstVisit( const Node* n,  Visitor&, core::objectmodel::BaseContext::SearchDirection);
-    /// breadth visit from the given vertex
-    void breadthFirstVisit( const Node* n, Visitor&, core::objectmodel::BaseContext::SearchDirection);
 
 
 
@@ -243,9 +245,6 @@ public:
     void update();
     void reset();
     void clear();
-
-    /// @}
-
     void printDebug();
 
 
@@ -268,26 +267,25 @@ protected:
     inline Hvertex convertRvertex2Hvertex(Rvertex v);
 
     template <typename Graph, typename VertexMap>
-    void  addVertex(BglNode *node, Graph &g, VertexMap &map);
+    inline void  addVertex(BglNode *node, Graph &g, VertexMap &map);
 
     template <typename Graph, typename VertexMap>
-    void  removeVertex(BglNode *node, Graph &g, VertexMap &vmap);
-
-    //Maybe we should keep the same interface: use the BglNode and the VertexMap
-    template <typename Graph>
-    typename Graph::edge_descriptor  addEdge( typename Graph::vertex_descriptor p, typename Graph::vertex_descriptor c,Graph &g);
+    inline void  removeVertex(BglNode *node, Graph &g, VertexMap &vmap);
 
     template <typename Graph>
-    void clearVertex( typename Graph::vertex_descriptor v, Graph &g);
+    inline typename Graph::edge_descriptor  addEdge( typename Graph::vertex_descriptor p, typename Graph::vertex_descriptor c,Graph &g);
 
     template <typename Graph>
-    Node *getNode( typename Graph::vertex_descriptor v, Graph &g);
+    inline void clearVertex( typename Graph::vertex_descriptor v, Graph &g);
 
-    template <typename Container, typename NodeMap, typename Graph>
-    void getInVertices(Container &data, const Node* node, NodeMap &n, Graph &g);
+    template <typename Graph>
+    inline Node *getNode( typename Graph::vertex_descriptor v, Graph &g);
 
-    template <typename Container, typename NodeMap, typename Graph>
-    void getOutVertices(Container &data, const Node* node, NodeMap &n, Graph &g);
+    template <typename Container, typename Graph>
+    inline void getInVertices(Container &data, typename Graph::vertex_descriptor v,  Graph &g);
+
+    template <typename Container, typename Graph>
+    inline void getOutVertices(Container &data, typename Graph::vertex_descriptor v,  Graph &g);
 
 
 
