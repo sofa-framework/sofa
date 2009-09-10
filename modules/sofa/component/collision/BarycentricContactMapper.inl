@@ -28,6 +28,7 @@
 #include <sofa/component/collision/BarycentricContactMapper.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/common/DeleteVisitor.h>
 #include <iostream>
 
 namespace sofa
@@ -48,11 +49,8 @@ void BarycentricContactMapper<TCollisionModel,DataTypes>::cleanup()
         if (parent!=NULL)
         {
             simulation::Node* child = dynamic_cast<simulation::Node*>(mapping->getContext());
-            child->removeObject(mapping->getTo());
-            child->removeObject(mapping);
-            parent->removeChild(child);
-            delete mapping->getTo();
-            delete mapping;
+            child->detachFromGraph();
+            child->execute<simulation::DeleteVisitor>();
             delete child;
             mapping = NULL;
         }
@@ -90,11 +88,8 @@ void IdentityContactMapper<TCollisionModel,DataTypes>::cleanup()
         if (parent!=NULL)
         {
             simulation::Node* child = dynamic_cast<simulation::Node*>(mapping->getContext());
-            child->removeObject(mapping->getTo());
-            child->removeObject(mapping);
-            parent->removeChild(child);
-            delete mapping->getTo();
-            delete mapping;
+            child->detachFromGraph();
+            child->execute<simulation::DeleteVisitor>();
             delete child;
             mapping = NULL;
         }
@@ -123,7 +118,9 @@ void RigidContactMapper<TCollisionModel,DataTypes>::cleanup()
 {
     if (child!=NULL)
     {
-        simulation::getSimulation()->unload(child);
+        child->detachFromGraph();
+        child->execute<simulation::DeleteVisitor>();
+        delete child;
         child = NULL;
     }
 }
@@ -169,7 +166,9 @@ void SubsetContactMapper<TCollisionModel,DataTypes>::cleanup()
 {
     if (child!=NULL)
     {
-        simulation::getSimulation()->unload(child);
+        child->detachFromGraph();
+        child->execute<simulation::DeleteVisitor>();
+        delete child;
         child = NULL;
     }
 }

@@ -30,7 +30,6 @@
 #include <sofa/simulation/common/InstrumentVisitor.h>
 #include <sofa/simulation/common/AnimateVisitor.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
-#include <sofa/simulation/common/CleanupVisitor.h>
 #include <sofa/simulation/common/CollisionVisitor.h>
 #include <sofa/simulation/common/UpdateContextVisitor.h>
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
@@ -193,6 +192,7 @@ void Simulation::reset ( Node* root )
 {
     if ( !root ) return;
 
+    root->execute<CleanupVisitor>();
     root->execute<ResetVisitor>();
     root->execute<MechanicalPropagatePositionAndVelocityVisitor>();
     root->execute<UpdateMappingVisitor>();
@@ -362,9 +362,9 @@ void Simulation::unload(Node * root)
         instruments.clear();
         instrumentInUse.setValue(-1);
     }
+    root->detachFromGraph();
     root->execute<CleanupVisitor>();
     root->execute<DeleteVisitor>();
-    root->detachFromGraph();
 }
 //      void Simulation::addStep ( )
 //      {
