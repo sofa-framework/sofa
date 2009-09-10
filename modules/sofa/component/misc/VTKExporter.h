@@ -9,6 +9,7 @@
 #define VTKEXPORTER_H_
 
 #include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/defaulttype/Vec.h>
 #include <sofa/component/component.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
@@ -31,7 +32,10 @@ private:
 
     std::ofstream* outfile;
 
+    void fetchDataFields(const helper::vector<std::string>& strData, helper::vector<std::string>& objects, helper::vector<std::string>& fields);
     void writeVTK();
+    void writeData(const helper::vector<std::string>& objects, const helper::vector<std::string>& fields);
+    std::string segmentString(std::string str, unsigned int n);
 
 public:
     sofa::core::objectmodel::DataFileName vtkFilename;
@@ -40,6 +44,14 @@ public:
     Data<bool> writeQuads;
     Data<bool> writeTetras;
     Data<bool> writeHexas;
+    Data<helper::vector<std::string> > dPointsDataFields;
+    Data<helper::vector<std::string> > dCellsDataFields;
+
+    helper::vector<std::string> pointsDataObject;
+    helper::vector<std::string> pointsDataField;
+
+    helper::vector<std::string> cellsDataObject;
+    helper::vector<std::string> cellsDataField;
 
     VTKExporter();
     virtual ~VTKExporter();
