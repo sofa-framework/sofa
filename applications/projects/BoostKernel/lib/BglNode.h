@@ -64,10 +64,10 @@ using sofa::simulation::Node;
 class BglNode : public sofa::simulation::Node
 {
 public:
-    typedef helper::vector<BglNode*> Parents;
-    /*           typedef Sequence<BglNode> Parents; */
+    typedef Sequence< BglNode > Parents;
     typedef Parents::iterator ParentIterator;
-    typedef Parents::const_iterator ParentConstIterator;
+    Parents parents;
+
 
     BglNode(const std::string& name="");
     /**
@@ -101,10 +101,12 @@ public:
 
 
 
-    /// Find all the Nodes pointing
-    Parents getParents();
-    /// Find all the Nodes pointing
-    const Parents getParents() const;
+    /// Find all the parents of the node, and fill them inside the container passed as argument
+    template <typename Container>
+    void getParents(Container &data) const
+    {
+        std::copy(parents.begin(),parents.end(), std::back_inserter<Container>(data));
+    }
 
     std::string getPathName() const;
 
@@ -158,25 +160,27 @@ public:
         obj->parse(arg);
     }
 
-    int getId() const {return id;};
 
-    static int uniqueId;
 
-    Sequence< BglNode > parents;
+
+    //A Node is a property of a vertex of the boost graph. Each vertex must have a unique identifier we are calling id.
+    unsigned int getId() const {return id;};
+    static unsigned int uniqueId;
 protected:
-    int getUniqueId();
+    //Id of the Node in the Boost graph
+    unsigned int id;
+    //Provide a unique Id
+    static unsigned int getUniqueId();
+    //Stack of Ids that has been freed by previously deleted BglNodes
+    static std::deque<unsigned int> freeId;
 
 
 
-    int id;
-
-    static std::deque<int> freeId;
 
     virtual void doAddChild(BglNode* node);
     void doRemoveChild(BglNode* node);
     // VisitorScheduler can use doExecuteVisitor() method
     friend class simulation::VisitorScheduler;
-
 };
 }
 }

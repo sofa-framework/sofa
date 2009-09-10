@@ -55,8 +55,8 @@ namespace simulation
 namespace bgl
 {
 
-int BglNode::uniqueId=0;
-std::deque<int> BglNode::freeId;
+unsigned int BglNode::uniqueId=0;
+std::deque<unsigned int> BglNode::freeId;
 
 BglNode::BglNode(const std::string& name)
     : sofa::simulation::Node(name)
@@ -71,7 +71,7 @@ BglNode::~BglNode()
     freeId.push_back(id);
 }
 
-int BglNode::getUniqueId()
+unsigned int BglNode::getUniqueId()
 {
     if (freeId.empty())
         return uniqueId++;
@@ -88,33 +88,41 @@ bool BglNode::addObject(BaseObject* obj)
 {
     if (sofa::core::componentmodel::behavior::BaseMechanicalMapping* mm = dynamic_cast<sofa::core::componentmodel::behavior::BaseMechanicalMapping*>(obj))
     {
-        Node *from=(Node*)mm->getMechFrom()->getContext();
-        Node *to=(Node*)mm->getMechTo()->getContext();
+        sofa::core::componentmodel::behavior::BaseMechanicalState
+        *msFrom=mm->getMechFrom(),
+         *msTo  =mm->getMechTo();
 
-        BglGraphManager::getInstance()->addEdge(from, to);
+        if (msFrom && msTo)
+        {
+            Node *from=(Node*)msFrom->getContext();
+            Node *to=(Node*)  msTo  ->getContext();
+            BglGraphManager::getInstance()->addInteraction( from, to, mm);
+        }
     }
     else if (sofa::core::componentmodel::behavior::InteractionForceField* iff = dynamic_cast<sofa::core::componentmodel::behavior::InteractionForceField*>(obj))
     {
-        if (iff->getMechModel1() && iff->getMechModel2())
+        sofa::core::componentmodel::behavior::BaseMechanicalState
+        *ms1=iff->getMechModel1(),
+         *ms2=iff->getMechModel2();
+
+        if (ms1 && ms2)
         {
-            Node *m1=(Node*)iff->getMechModel1()->getContext();
-            Node *m2=(Node*)iff->getMechModel2()->getContext();
+            Node *m1=(Node*)ms1->getContext();
+            Node *m2=(Node*)ms2->getContext();
             if (m1!=m2) BglGraphManager::getInstance()->addInteraction( m1, m2, iff);
-            //Bi directional graph
-            //             BglGraphManager::getInstance()->addEdge(m1,m2);
-            //             BglGraphManager::getInstance()->addEdge(m2,m1);
         }
     }
     else if (sofa::core::componentmodel::behavior::InteractionConstraint* ic = dynamic_cast<sofa::core::componentmodel::behavior::InteractionConstraint*>(obj))
     {
-        if (ic->getMechModel1() && ic->getMechModel2())
+        sofa::core::componentmodel::behavior::BaseMechanicalState
+        *ms1=ic->getMechModel1(),
+         *ms2=ic->getMechModel2();
+
+        if (ms1 && ms2)
         {
-            Node *m1=(Node*)ic->getMechModel1()->getContext();
-            Node *m2=(Node*)ic->getMechModel2()->getContext();
+            Node *m1=(Node*)ms1->getContext();
+            Node *m2=(Node*)ms2->getContext();
             if (m1!=m2) BglGraphManager::getInstance()->addInteraction( m1, m2, ic);
-            //Bi directional graph
-            //             BglGraphManager::getInstance()->addEdge(m1,m2);
-            //             BglGraphManager::getInstance()->addEdge(m2,m1);
         }
     }
     return Node::addObject(obj);
@@ -124,29 +132,15 @@ bool BglNode::removeObject(core::objectmodel::BaseObject* obj)
 {
     if (sofa::core::componentmodel::behavior::BaseMechanicalMapping* mm = dynamic_cast<sofa::core::componentmodel::behavior::BaseMechanicalMapping*>(obj))
     {
-        Node *from=(Node*)mm->getMechFrom()->getContext();
-        Node *to=(Node*)mm->getMechTo()->getContext();
-
-        BglGraphManager::getInstance()->removeEdge(from, to);
+        BglGraphManager::getInstance()->removeInteraction(mm);
     }
     else if (sofa::core::componentmodel::behavior::InteractionForceField* iff = dynamic_cast<sofa::core::componentmodel::behavior::InteractionForceField*>(obj))
     {
         BglGraphManager::getInstance()->removeInteraction(iff);
-
-        //             Node *m1=(Node*)iff->getMechModel1()->getContext();
-        //             Node *m2=(Node*)iff->getMechModel2()->getContext();
-
-        //             BglGraphManager::getInstance()->removeEdge(m1,m2);
-        //             BglGraphManager::getInstance()->removeEdge(m2,m1);
     }
     else if (sofa::core::componentmodel::behavior::InteractionConstraint* ic = dynamic_cast<sofa::core::componentmodel::behavior::InteractionConstraint*>(obj))
     {
         BglGraphManager::getInstance()->removeInteraction(ic);
-        //             Node *m1=(Node*)ic->getMechModel1()->getContext();
-        //             Node *m2=(Node*)ic->getMechModel2()->getContext();
-
-        //             BglGraphManager::getInstance()->removeEdge(m1,m2);
-        //             BglGraphManager::getInstance()->removeEdge(m2,m1);
     }
     return Node::removeObject(obj);
 }
@@ -198,14 +192,15 @@ void BglNode::moveChild(core::objectmodel::BaseNode* node)
     BglNode* childNode=dynamic_cast<BglNode*>(node);
     if (!childNode) return;
 
-    Parents nodeParents=childNode->getParents();
+    typedef std::vector< BglNode*> ParentsContainer;
+    ParentsContainer nodeParents; childNode->getParents(nodeParents);
     if (nodeParents.empty())
     {
         addChild(node);
     }
     else
     {
-        for (ParentIterator it = nodeParents.begin(); it != nodeParents.end(); ++it)
+        for (ParentsContainer::iterator it = nodeParents.begin(); it != nodeParents.end(); ++it)
         {
             BglNode *prev = (*it);
             notifyMoveChild(childNode,prev);
@@ -225,32 +220,14 @@ void BglNode::detachFromGraph()
 
 std::string BglNode::getPathName() const
 {
-
-    const Parents parents=getParents();
     std::string str;
-    if (!parents.empty()) str = (*parents.begin())->getPathName();
+    if (!parents.empty())
+        str = (*parents.begin())->getPathName();
     str += '/';
     str += getName();
     return str;
 
 }
-
-
-
-const BglNode::Parents BglNode::getParents() const
-{
-    Parents p;
-    std::copy(parents.begin(),parents.end(), std::back_inserter<Parents>(p));
-    return p;
-}
-
-BglNode::Parents BglNode::getParents()
-{
-    Parents p;
-    std::copy(parents.begin(),parents.end(), std::back_inserter<Parents>(p));
-    return p;
-}
-
 
 
 void BglNode::doExecuteVisitor( Visitor* visit )
@@ -316,7 +293,6 @@ void BglNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, G
 void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, const std::string& path) const
 {
 
-    Parents parents=getParents();
     if (path.empty())
     {
         return Node::getObject(class_info, Local);
@@ -325,7 +301,7 @@ void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
     {
         if (!parents.empty())
         {
-            for (ParentConstIterator it=parents.begin(); it!=parents.end(); ++it)
+            for (Parents::iterator it=parents.begin(); it!=parents.end(); ++it)
             {
                 void *result=(*it)->getObject(class_info, path);
                 if (result) return result;
@@ -349,7 +325,7 @@ void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
 
         if (!parents.empty())
         {
-            for (ParentConstIterator it=parents.begin(); it!=parents.end(); ++it)
+            for (Parents::iterator it=parents.begin(); it!=parents.end(); ++it)
             {
                 void *result=(*it)->getObject(class_info, newpath);
                 if (result) return result;
@@ -405,7 +381,6 @@ void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
 
 void BglNode::updateContext()
 {
-    Parents parents=getParents();
     if (!parents.empty())
     {
         copyContext(*(*parents.begin()));
@@ -415,7 +390,6 @@ void BglNode::updateContext()
 
 void BglNode::updateSimulationContext()
 {
-    Parents parents=getParents();
     if (!parents.empty())
     {
         copySimulationContext(*(*parents.begin()));
@@ -426,7 +400,6 @@ void BglNode::updateSimulationContext()
 
 void BglNode::initVisualContext()
 {
-    Parents parents=getParents();
     if (!parents.empty())
     {
         this->worldGravity_.setDisplayed(false); //only display gravity for the root: it will be propagated at each time step
@@ -495,7 +468,6 @@ void BglNode::initVisualContext()
 
 void BglNode::updateVisualContext(VISUAL_FLAG FILTER)
 {
-    Parents parents=getParents();
     if (!parents.empty())
     {
         switch (FILTER)

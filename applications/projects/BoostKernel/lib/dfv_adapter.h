@@ -56,8 +56,6 @@ The criterion is embedded within the dfv_adapter.
 The usual method discover_vertex is replaced by operator(), used by the bgl to evaluate if the visit must be pruned.
 Operator () calls visitor->processNodeTopDown and returns true iff this method has returned RESULT_PRUNE.
 
-The BglGraphManager::H_vertex_node_map is used to get the sofa::simulation::Node associated with a bgl vertex.
-
 	@author The SOFA team </www.sofa-framework.org>
 */
 template <typename Graph>
@@ -65,41 +63,41 @@ class dfv_adapter : public boost::dfs_visitor<>
 {
 public:
     typedef typename Graph::vertex_descriptor Vertex;
-    typedef typename boost::property_map<Graph, BglGraphManager::bglnode_t>::type NodeMap;
 
-
-    dfv_adapter( sofa::simulation::Visitor* v, NodeMap& s ):visitor(v), systemMap(s) {};
+    dfv_adapter( sofa::simulation::Visitor* v):visitor(v) {};
 
     ~dfv_adapter() {};
 
 
+
     //**********************************************************
     /// Applies visitor->processNodeTopDown
-    bool operator() ( Vertex u, const Graph &)
+    bool operator() ( Vertex u, const Graph &g )
     {
-        /*   if (!systemMap[u]) return Visitor::RESULT_PRUNE; */
+        Node *node=const_cast<Node*>(get(BglGraphManager::bglnode_t(),g,u));
 #ifdef SOFA_DUMP_VISITOR_INFO
-        visitor->setNode(systemMap[u]);
-        visitor->printInfo(systemMap[u]->getContext(),true);
+        visitor->setNode(node);
+        visitor->printInfo(node->getContext(),true);
 #endif
-        return visitor->processNodeTopDown(systemMap[u])==Visitor::RESULT_PRUNE;
+        return visitor->processNodeTopDown(node)==Visitor::RESULT_PRUNE;
     }
 
 
 
     //**********************************************************
     /// Applies visitor->processNodeBottomUp
-    void finish_vertex(Vertex u, const Graph &) const
+    void finish_vertex(Vertex u, const Graph &g) const
     {
-        visitor->processNodeBottomUp(systemMap[u]);
+        Node *node=const_cast<Node*>(get(BglGraphManager::bglnode_t(),g,u));
+
+        visitor->processNodeBottomUp(node);
 #ifdef SOFA_DUMP_VISITOR_INFO
-        visitor->printInfo(systemMap[u]->getContext(), false);
+        visitor->printInfo(node->getContext(), false);
 #endif
     }
 
 protected:
     sofa::simulation::Visitor* visitor;
-    NodeMap& systemMap;      ///< access the System*
 };
 }
 }

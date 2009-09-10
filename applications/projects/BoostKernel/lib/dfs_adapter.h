@@ -52,7 +52,6 @@ namespace bgl
 
 /**
 Adapt a sofa visitor to a depth-first search in a bgl graph encoding the mechanical mapping hierarchy.
-The BglGraphManager::H_vertex_node_map is used to get the sofa::simulation::Node associated with a bgl vertex.
 
 	@author The SOFA team </www.sofa-framework.org>
 */
@@ -61,34 +60,34 @@ class dfs_adapter : public boost::dfs_visitor<>
 {
 public:
     typedef typename Graph::vertex_descriptor Vertex;
-    typedef typename boost::property_map<Graph, BglGraphManager::bglnode_t>::type NodeMap;
 
-    dfs_adapter( sofa::simulation::Visitor* v, NodeMap& s ):visitor(v),systemMap(s) {};
+    dfs_adapter( sofa::simulation::Visitor* v ):visitor(v) {};
 
     ~dfs_adapter() {};
 
     /// Applies visitor->processNodeTopDown
-    void discover_vertex(Vertex u, const Graph &)
+    void discover_vertex(Vertex u, const Graph &g)
     {
+        Node *node=const_cast<Node*>(get(BglGraphManager::bglnode_t(),g,u));
 #ifdef SOFA_DUMP_VISITOR_INFO
-        visitor->setNode(systemMap[u]);
-        visitor->printInfo(systemMap[u]->getContext(),true);
+        visitor->setNode(node);
+        visitor->printInfo(node->getContext(),true);
 #endif
-        visitor->processNodeTopDown(systemMap[u]);
+        visitor->processNodeTopDown(node);
     }
 
     /// Applies visitor->processNodeBottomUp
-    void finish_vertex(Vertex u, const Graph &) const
+    void finish_vertex(Vertex u, const Graph &g) const
     {
-        visitor->processNodeBottomUp(systemMap[u]);
+        Node *node=const_cast<Node*>(get(BglGraphManager::bglnode_t(),g,u));
+        visitor->processNodeBottomUp(node);
 #ifdef SOFA_DUMP_VISITOR_INFO
-        visitor->printInfo(systemMap[u]->getContext(), false);
+        visitor->printInfo(node->getContext(), false);
 #endif
     }
 
 protected:
     sofa::simulation::Visitor* visitor;
-    NodeMap& systemMap;      ///< access the System*
 
 };
 }

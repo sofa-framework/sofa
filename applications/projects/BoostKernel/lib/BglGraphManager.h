@@ -89,7 +89,7 @@ public:
     //As a list in Boost doesn't have vertex index, we add an index as property to the vertices.
     typedef
     boost::property< bglnode_t            , Node*, //Property linking a vertex of the boost graph to a Sofa Node
-          boost::property< boost::vertex_index_t, int    //Property needed to be able to launch visitors. Each vertex must have a unique id
+          boost::property< boost::vertex_index_t, unsigned int    //Property needed to be able to launch visitors. Each vertex must have a unique id
           > > VertexProperty;
 
     // Graph
@@ -124,7 +124,7 @@ public:
     // reverse graph: hgraph with vertices in the opposite direction.
     typedef
     boost::property< bglnode_t            , Node*, //Property linking a vertex of the boost graph to a Sofa Node
-          boost::property< boost::vertex_index_t, int    //Property needed to be able to launch visitors. Each vertex must have a unique id
+          boost::property< boost::vertex_index_t, unsigned int    //Property needed to be able to launch visitors. Each vertex must have a unique id
           /*           boost::property< parentnodes_t        , bool ,  */
           /*           boost::property< childnodes_t         , bool     */
           /*           > > */ > > RVertexProperty;

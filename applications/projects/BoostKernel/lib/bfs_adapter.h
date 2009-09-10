@@ -63,32 +63,34 @@ public:
     typedef typename boost::property_map<Graph, BglGraphManager::bglnode_t>::type NodeMap;
 
 
-    bfs_adapter( sofa::simulation::Visitor* v, NodeMap& s ):visitor(v),systemMap(s) {};
+    bfs_adapter( sofa::simulation::Visitor* v):visitor(v) {};
 
     ~bfs_adapter() {};
 
     /// Applies visitor->processNodeTopDown
-    bool operator() (Vertex u, const Graph &)
+    bool operator() (Vertex u, const Graph &g)
     {
+        Node *node=const_cast<Node*>(get(BglGraphManager::bglnode_t(),g,u));
 #ifdef SOFA_DUMP_VISITOR_INFO
-        visitor->setNode(systemMap[u]);
-        visitor->printInfo(systemMap[u]->getContext(),true);
+        visitor->setNode(node);
+        visitor->printInfo(node->getContext(),true);
 #endif
-        return visitor->processNodeTopDown(systemMap[u])==Visitor::RESULT_PRUNE;
+        return visitor->processNodeTopDown(node)==Visitor::RESULT_PRUNE;
     }
 
     /// Applies visitor->processNodeBottomUp
-    void finish_vertex(Vertex u, const Graph &) const
+    void finish_vertex(Vertex u, const Graph &g) const
     {
-        visitor->processNodeBottomUp(systemMap[u]);
+        Node *node=const_cast<Node*>(get(BglGraphManager::bglnode_t(),g,u));
+
+        visitor->processNodeBottomUp(node);
 #ifdef SOFA_DUMP_VISITOR_INFO
-        visitor->printInfo(systemMap[u]->getContext(), false);
+        visitor->printInfo(node->getContext(), false);
 #endif
     }
 
 protected:
     sofa::simulation::Visitor* visitor;
-    NodeMap& systemMap;      ///< access the System*
 
 };
 
