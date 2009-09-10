@@ -46,7 +46,7 @@ protected:
     typedef std::map<std::pair<core::CollisionModel*,core::CollisionModel*>,core::componentmodel::collision::Contact*> ContactMap;
     ContactMap contactMap;
 
-    void clear();
+    void cleanup();
 public:
     Data<std::string> response;
 

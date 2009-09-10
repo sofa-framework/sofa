@@ -57,7 +57,7 @@ DefaultContactManager::~DefaultContactManager()
     //clear();
 }
 
-void DefaultContactManager::clear()
+void DefaultContactManager::cleanup()
 {
     for (sofa::helper::vector<core::componentmodel::collision::Contact*>::iterator it=contacts.begin(); it!=contacts.end(); ++it)
     {
