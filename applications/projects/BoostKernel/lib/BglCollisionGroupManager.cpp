@@ -58,11 +58,13 @@ simulation::Node* BglCollisionGroupManager::findCommonParent(simulation::Node *g
     simulation::bgl::BglNode *bglGroup1=static_cast<simulation::bgl::BglNode*>(group1),
                               *bglGroup2=static_cast<simulation::bgl::BglNode*>(group2);
 
-    simulation::bgl::BglNode::Parents pgroup1=bglGroup1->getParents();
+    typedef std::vector< simulation::Node*> ParentsContainer;
+
+    ParentsContainer pgroup1; bglGroup1->getParents(pgroup1);
     if (pgroup1.empty()) return NULL;
 
 
-    simulation::bgl::BglNode::Parents pgroup2=bglGroup2->getParents();
+    ParentsContainer pgroup2; bglGroup2->getParents(pgroup2);
     return compatibleSetOfNode(pgroup1, pgroup2);
 }
 

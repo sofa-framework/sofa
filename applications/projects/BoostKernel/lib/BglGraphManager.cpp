@@ -146,13 +146,6 @@ typename Graph::edge_descriptor BglGraphManager::addEdge( typename Graph::vertex
 //**************************************************
 void BglGraphManager::removeEdge( Node* from, Node* to )
 {
-    if (h_node_vertex_map.find(from) == h_node_vertex_map.end() ||
-        h_node_vertex_map.find(to) == h_node_vertex_map.end() )
-    {
-        //             std::cerr << "Error !!\n";
-        return;
-    }
-    //         std::cerr << "Remove Edge from " << from->getName() << " to " << to->getName() << "\n";
     Hvertex hfrom=h_node_vertex_map[from];
     Hvertex hto  =h_node_vertex_map[to];
     remove_edge(hfrom, hto, hgraph);
@@ -192,45 +185,46 @@ void BglGraphManager::removeInteraction( BaseObject* iff )
     {
         if (it->iff == iff)
         {
-            //                 ((Node*)(iff->getContext()))->removeObject(iff);
             interactions.erase(it);
             return;
         }
     }
-    //         std::cerr << iff << "@" << iff->getName() << " : ########################################## NO REMOVAL\n";
 }
 
 //----------------------------------------------------------------------------------
 // Methods to consult the Graph
-
 //TODO: understand why we need this "magic number" to use the visitors with the Boost:
-#define HACK_MAGIC_NUMBER 200
+//possible explanation: when new vertices are created during graph traversal, the color map is not automatically resized,
+//thus, we need to pass during graph traversal initialization a bigger map than needed.
+#define HACK_MAGIC_NUMBER 2
+unsigned int findSizeColorMap()
+{
+    return HACK_MAGIC_NUMBER*BglNode::uniqueId;
+}
 
 
 //**************************************************
 // Breadth First Visit                            //
 //**************************************************
 
-template< typename Visitor, typename Graph,  typename SystemMap>
+template< typename Visitor, typename Graph>
 struct launchBreadthFirstVisit
 {
 
     typedef typename boost::graph_traits<Graph>::vertex_descriptor Vertex;
     typedef typename boost::property_map<Graph, BglGraphManager::bglnode_t>::type  Vertex_Node_Map;
 
-    launchBreadthFirstVisit( Visitor &v, Graph &g, SystemMap &s):  visitor(v), graph(g),systemMap(s)
+    launchBreadthFirstVisit( Visitor &v, Graph &g):  visitor(v), graph(g)
     {
     }
 
-    void operator()(Node *node)
+    void operator()(Vertex v)
     {
         BglGraphManager::ColorMap colors;
-        colors.resize(HACK_MAGIC_NUMBER*boost::num_vertices(graph));
+        colors.resize(findSizeColorMap());
         boost::queue<Vertex> queue;
 
-        Vertex_Node_Map nodeMap=get(BglGraphManager::bglnode_t(),graph);
-        bfs_adapter<Graph> bfsv(&visitor, nodeMap);
-        Vertex v=systemMap[node];
+        bfs_adapter<Graph> bfsv(&visitor);
         boost::breadth_first_visit(graph,
                 v,
                 queue,
@@ -241,7 +235,6 @@ struct launchBreadthFirstVisit
 
     Visitor &visitor;
     Graph &graph;
-    SystemMap &systemMap;
 };
 
 
@@ -258,12 +251,12 @@ void BglGraphManager::breadthFirstVisit( const Node *constNode, Visitor& visit, 
     {
     case BaseContext::SearchDown:
     {
-        launchBreadthFirstVisit<Visitor, Hgraph, H_node_vertex_map> launcher(visit, hgraph, h_node_vertex_map);
+        launchBreadthFirstVisit<Visitor, Hgraph>(visit, hgraph)(h_node_vertex_map[n]);
         break;
     }
     case BaseContext::SearchUp:
     {
-        launchBreadthFirstVisit<Visitor, Rgraph, R_node_vertex_map> launcher(visit, rgraph, r_node_vertex_map);
+        launchBreadthFirstVisit<Visitor, Rgraph>(visit, rgraph)(r_node_vertex_map[n]);;
         break;
     }
     case BaseContext::SearchRoot:
@@ -278,7 +271,6 @@ void BglGraphManager::breadthFirstVisit( const Node *constNode, Visitor& visit, 
     }
 }
 
-
 //**************************************************
 // Depth First Search                             //
 //**************************************************
@@ -292,15 +284,13 @@ void BglGraphManager::depthFirstSearch( Visitor& visit, core::objectmodel::BaseC
     case BaseContext::SearchRoot:
     case BaseContext::SearchDown:
     {
-        H_vertex_node_map systemMap=get(bglnode_t(),hgraph);
-        dfs_adapter<Hgraph> vis(&visit,systemMap);
+        dfs_adapter<Hgraph> vis(&visit);
         boost::depth_first_search( hgraph, boost::visitor(vis) );
         break;
     }
     case BaseContext::SearchUp:
     {
-        R_vertex_node_map systemMap=get(bglnode_t(),rgraph);
-        dfs_adapter<Rgraph> vis(&visit,systemMap);
+        dfs_adapter<Rgraph> vis(&visit);
         boost::depth_first_search( rgraph, boost::visitor(vis) );
         break;
     }
@@ -313,25 +303,28 @@ void BglGraphManager::depthFirstSearch( Visitor& visit, core::objectmodel::BaseC
 }
 
 
-template< typename Visitor, typename Graph,  typename SystemMap>
+//**************************************************
+// Depth First Visit                              //
+//**************************************************
+/// depth search starting from the given vertex, and prunable
+
+template< typename Visitor, typename Graph>
 struct launchDepthFirstVisit
 {
 
     typedef typename boost::graph_traits<Graph>::vertex_descriptor Vertex;
     typedef typename boost::property_map<Graph, BglGraphManager::bglnode_t>::type  Vertex_Node_Map;
 
-    launchDepthFirstVisit( Visitor &v, Graph &g, SystemMap &s):  visitor(v), graph(g),systemMap(s)
+    launchDepthFirstVisit( Visitor &v, Graph &g):  visitor(v), graph(g)
     {
     }
 
-    void operator()(Node *node)
+    void operator()(Vertex v)
     {
         BglGraphManager::ColorMap colors;
-        colors.resize(HACK_MAGIC_NUMBER*boost::num_vertices(graph));
+        colors.resize(findSizeColorMap());
 
-        Vertex_Node_Map nodeMap=get(BglGraphManager::bglnode_t(),graph);
-        dfv_adapter<Graph> dfsv(&visitor, nodeMap);
-        Vertex v=systemMap[node];
+        dfv_adapter<Graph> dfsv(&visitor);
         boost::depth_first_visit(graph,
                 v,
                 dfsv,
@@ -342,15 +335,8 @@ struct launchDepthFirstVisit
 
     Visitor &visitor;
     Graph &graph;
-    SystemMap &systemMap;
 };
 
-
-//**************************************************
-// Depth First Visit                              //
-//**************************************************
-
-/// depth search starting from the given vertex, and prunable
 void BglGraphManager::depthFirstVisit( const Node *constNode, Visitor& visit, core::objectmodel::BaseContext::SearchDirection dir )
 {
     using core::objectmodel::BaseContext;
@@ -358,27 +344,22 @@ void BglGraphManager::depthFirstVisit( const Node *constNode, Visitor& visit, co
     if (h_node_vertex_map.find(n) == h_node_vertex_map.end())
         addVertex((BglNode*)(n));
 
-    //         std::cerr << visit.getClassName() << "  " << visit.getInfos() << " depthFirstVisitor with " << constNode->getName() << "\n";
-
     switch(dir)
     {
     case BaseContext::SearchDown:
     {
-        launchDepthFirstVisit<Visitor, Hgraph, H_node_vertex_map>(visit, hgraph, h_node_vertex_map)(n);
+        launchDepthFirstVisit<Visitor, Hgraph>(visit, hgraph)(h_node_vertex_map[n]);
         break;
     }
     case BaseContext::SearchUp:
     {
-        launchDepthFirstVisit<Visitor, Rgraph, R_node_vertex_map>(visit, rgraph, r_node_vertex_map)(n);
+        launchDepthFirstVisit<Visitor, Rgraph>(visit, rgraph)(r_node_vertex_map[n]);
         break;
     }
     case BaseContext::SearchRoot:
     {
-
-        std::vector< Node* > roots;
-        getRoots(roots);
-        launchDepthFirstVisit<Visitor, Hgraph, H_node_vertex_map> launcher(visit, hgraph, h_node_vertex_map);
-        std::for_each(roots.begin(), roots.end(),launcher);
+        launchDepthFirstVisit<Visitor, Hgraph> launcher(visit, hgraph);
+        std::for_each(hroots.begin(), hroots.end(),launcher);
         break;
     }
     case BaseContext::Local:
@@ -387,6 +368,7 @@ void BglGraphManager::depthFirstVisit( const Node *constNode, Visitor& visit, co
     }
     }
 }
+
 
 //----------------------------------------------------------------------------------
 
@@ -411,6 +393,9 @@ void BglGraphManager::reset()
 
 void BglGraphManager::clear()
 {
+    interactions.clear();
+
+
     hgraph.clear();
     printVertices(hgraph);
     h_node_vertex_map.clear();
@@ -638,6 +623,10 @@ BglGraphManager::Hvertex BglGraphManager::convertRvertex2Hvertex(Rvertex v)
 
 
 
+//*****************************************************
+// DEBUG
+//*****************************************************
+
 void BglGraphManager::printDebug()
 {
     std::cerr << "******************************************************" << std::endl;
@@ -650,10 +639,6 @@ void BglGraphManager::printDebug()
     std::cerr << "******************************************************" << std::endl;
     std::cerr << std::endl << std::endl;
 }
-
-//*****************************************************
-// DEBUG
-//*****************************************************
 
 template <typename Graph>
 void BglGraphManager::printVertices(Graph &g)

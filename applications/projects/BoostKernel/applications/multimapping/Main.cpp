@@ -27,9 +27,6 @@
 
 
 #include <sofa/helper/ArgumentParser.h>
-#include <sofa/simulation/tree/TreeSimulation.h>
-
-
 
 #include <sofa/component/contextobject/CoordinateSystem.h>
 #include <sofa/helper/system/FileRepository.h>
@@ -39,7 +36,6 @@
 //Including components for collision detection
 #include <sofa/component/collision/DefaultPipeline.h>
 #include <sofa/component/collision/DefaultContactManager.h>
-#include <sofa/component/collision/TreeCollisionGroupManager.h>
 #include <sofa/component/collision/BruteForceDetection.h>
 #include <sofa/component/collision/NewProximityIntersection.h>
 #include <sofa/component/collision/TriangleModel.h>
@@ -56,6 +52,7 @@
 
 #include <sofa/component/visualmodel/OglModel.h>
 
+#include <sofa/simulation/common/PrintVisitor.h>
 #include <sofa/simulation/common/TransformationVisitor.h>
 #include <sofa/helper/system/glut.h>
 
@@ -64,13 +61,9 @@
 
 //SOFA_HAS_BOOST_KERNEL to define in chainHybrid.pro
 
-#ifdef SOFA_HAS_BOOST_KERNEL
-#include "../../projects/BoostKernel/lib/BglNode.h"
-#include "../../projects/BoostKernel/lib/BglSimulation.h"
-#include "../../projects/BoostKernel/lib/BglCollisionGroupManager.h"
-#else
-#include <sofa/simulation/tree/GNode.h>
-#endif
+#include "../../lib/BglNode.h"
+#include "../../lib/BglSimulation.h"
+#include "../../lib/BglCollisionGroupManager.h"
 
 
 using sofa::component::visualmodel::OglModel;
@@ -93,11 +86,7 @@ typedef CGLinearSolver<GraphScatteredMatrix,GraphScatteredVector> CGLinearSolver
 // ---------------------------------------------------------------------
 
 
-Node *createChainHybrid(std::string
-#ifdef SOFA_HAS_BOOST_KERNEL
-        simulationType
-#endif
-                       )
+Node *createChainHybrid()
 {
     // The graph root node
     Node* root = getSimulation()->newNode("root");
@@ -129,21 +118,10 @@ Node *createChainHybrid(std::string
     root->addObject(contactManager);
 
     //--> adding component to handle groups of collision.
-#ifdef SOFA_HAS_BOOST_KERNEL
-    if (simulationType == "bgl")
-    {
-        BglCollisionGroupManager* collisionGroupManager = new BglCollisionGroupManager;
-        collisionGroupManager->setName("Collision Group Manager");
-        root->addObject(collisionGroupManager);
-    }
-    else
-#endif
-    {
-        //--> adding component to handle groups of collision.
-        TreeCollisionGroupManager* collisionGroupManager = new TreeCollisionGroupManager;
-        collisionGroupManager->setName("Collision Group Manager");
-        root->addObject(collisionGroupManager);
-    }
+    BglCollisionGroupManager* collisionGroupManager = new BglCollisionGroupManager;
+    collisionGroupManager->setName("Collision Group Manager");
+    root->addObject(collisionGroupManager);
+
 
     //Elements of the scene
     //------------------------------------
@@ -165,7 +143,7 @@ Node *createChainHybrid(std::string
     MechanicalObject3* dofFixed = new MechanicalObject3; dofFixed->setName("Fixed Object");
     torusFixed->addObject(dofFixed);
 
-    TriangleModel* triangleFixed = new TriangleModel; triangleFixed->setName("Collision Fixed");
+    TriangleModel* triangleFixed = new TriangleModel; triangleFixed->setName("Fixed Collision");
     triangleFixed->setSimulated(false); //Not simulated, fixed object
     triangleFixed->setMoving(false);    //No extern events
     torusFixed->addObject(triangleFixed);
@@ -223,7 +201,7 @@ Node *createChainHybrid(std::string
     torusFEM->addObject(tetraFEMFF);
 
     //Node VISUAL
-    Node* FEMVisualNode = getSimulation()->newNode("Visu");
+    Node* FEMVisualNode = getSimulation()->newNode("FEM Visu");
     torusFEM->addChild(FEMVisualNode);
 
 
@@ -241,7 +219,7 @@ Node *createChainHybrid(std::string
 
 
     //Node COLLISION
-    Node* FEMCollisionNode = getSimulation()->newNode("Collision");
+    Node* FEMCollisionNode = getSimulation()->newNode("FEM Collision");
     torusFEM->addChild(FEMCollisionNode);
 
 
@@ -307,7 +285,7 @@ Node *createChainHybrid(std::string
     torusSpring->addObject(springFF);
 
     //Node VISUAL
-    Node* SpringVisualNode = getSimulation()->newNode("Visu");
+    Node* SpringVisualNode = getSimulation()->newNode("Spring Visu");
     torusSpring->addChild(SpringVisualNode);
 
 
@@ -324,7 +302,7 @@ Node *createChainHybrid(std::string
 
 
     //Node COLLISION
-    Node* SpringCollisionNode = getSimulation()->newNode("Collision");
+    Node* SpringCollisionNode = getSimulation()->newNode("Spring Collision");
     torusSpring->addChild(SpringCollisionNode);
 
 
@@ -390,7 +368,7 @@ Node *createChainHybrid(std::string
     torusFFD->addObject(FFDFF);
 
     //Node VISUAL
-    Node* FFDVisualNode = getSimulation()->newNode("Visu");
+    Node* FFDVisualNode = getSimulation()->newNode("FFD Visu");
     torusFFD->addChild(FFDVisualNode);
 
 
@@ -407,7 +385,7 @@ Node *createChainHybrid(std::string
 
 
     //Node COLLISION
-    Node* FFDCollisionNode = getSimulation()->newNode("Collision");
+    Node* FFDCollisionNode = getSimulation()->newNode("FFD Collision");
     torusFFD->addChild(FFDCollisionNode);
 
     MeshLoader* loaderFFD_surf = new MeshLoader;
@@ -455,7 +433,7 @@ Node *createChainHybrid(std::string
     torusRigid->addObject(uniMassRigid);
 
     //Node VISUAL
-    Node* RigidVisualNode = getSimulation()->newNode("Visu");
+    Node* RigidVisualNode = getSimulation()->newNode("Rigid Visu");
     torusRigid->addChild(RigidVisualNode);
 
 
@@ -471,7 +449,7 @@ Node *createChainHybrid(std::string
 
 
     //Node COLLISION
-    Node* RigidCollisionNode = getSimulation()->newNode("Collision");
+    Node* RigidCollisionNode = getSimulation()->newNode("Rigid Collision");
     torusRigid->addChild(RigidCollisionNode);
 
 
@@ -490,8 +468,18 @@ Node *createChainHybrid(std::string
 
     RigidMechanicalMappingRigid3_to_3* mechaMappingRigid = new RigidMechanicalMappingRigid3_to_3(dofRigid, dofRigid_surf);
     RigidCollisionNode->addObject(mechaMappingRigid);
-#if 0
-#endif
+
+    Node* MultiParentsNode = getSimulation()->newNode("MultiParentsNode");
+    RigidCollisionNode->addChild(MultiParentsNode);
+    FEMCollisionNode->addChild(MultiParentsNode);
+    std::cerr << "Testing MultiParents Addition:" << std::endl;
+
+    PrintVisitor vis;
+    vis.execute(RigidCollisionNode);
+    std::cerr << "----------------------------------" << std::endl;
+    vis.execute(FEMCollisionNode);
+
+    std::cerr << "\nEND TEST\n----------------------------------" << std::endl;
 
     return root;
 }
@@ -509,23 +497,15 @@ int main(int argc, char** argv)
     glutInit(&argc,argv);
 
     std::vector<std::string> files;
-    std::string simulationType="tree";
 
     sofa::helper::parse("This is a SOFA application. Here are the command line arguments")
-    .option(&simulationType,'s',"simulation","type of the simulation(bgl,tree)")
+//       .option(&simulationType,'s',"simulation","type of the simulation(bgl,tree)")
     (argc,argv);
 
-#ifdef SOFA_HAS_BOOST_KERNEL
-    if (simulationType == "bgl")
-        sofa::simulation::setSimulation(new sofa::simulation::bgl::BglSimulation());
-    else
-        sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
-#else
-    sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
-#endif
+    sofa::simulation::setSimulation(new sofa::simulation::bgl::BglSimulation());
     sofa::gui::SofaGUI::Init(argv[0]);
 
-    Node *root=createChainHybrid(simulationType);
+    Node *root=createChainHybrid();
 
     root->setAnimate(false);
 
