@@ -65,7 +65,9 @@ UniformMass<DataTypes, MassType>::UniformMass()
     , showX0( initData(&showX0, false, "showX0", "display the rest positions" ) )
     , localRange( initData(&localRange, defaulttype::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
     , m_handleTopoChange( initData(&m_handleTopoChange, false, "handleTopoChange", "The mass and totalMass are recomputed on particles add/remove." ) )
-{}
+{
+    this->addAlias(&totalMass, "totalMass");
+}
 
 template <class DataTypes, class MassType>
 UniformMass<DataTypes, MassType>::~UniformMass()

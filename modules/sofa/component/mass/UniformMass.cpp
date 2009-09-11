@@ -79,6 +79,17 @@ Mat3x3d MatrixFromEulerXYZ(double thetaX, double thetaY, double thetaZ)
 template<> SOFA_COMPONENT_MASS_API
 void UniformMass<Rigid3dTypes, Rigid3dMass>::reinit()
 {
+    if (this->totalMass.getValue()>0 && this->mstate!=NULL)
+    {
+        MassType* m = this->mass.beginEdit();
+        *m = ((Real)this->totalMass.getValue() / this->mstate->getX()->size());
+        this->mass.endEdit();
+    }
+    else
+    {
+        this->totalMass.setValue(  this->mstate->getX()->size()*this->mass.getValue());
+    }
+
     this->mass.beginEdit()->recalc();
     this->mass.endEdit();
 }
@@ -86,7 +97,8 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::reinit()
 template<> SOFA_COMPONENT_MASS_API
 void UniformMass<Rigid3dTypes, Rigid3dMass>::loadRigidMass(std::string filename)
 {
-    this->totalMass.setDisplayed(false);
+//  this->totalMass.setDisplayed(false);
+
     if (!filename.empty())
     {
         Rigid3dMass m = this->getMass();
@@ -188,8 +200,8 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::loadRigidMass(std::string filename)
         }
         this->setMass(m);
     }
-    else if (this->totalMass.getValue()>0 ) this->mass.setValue(this->totalMass.getValue());
-    this->totalMass.setValue(0.0);
+    else if (this->totalMass.getValue()>0 && this->mstate!=NULL) this->mass.setValue((Real)this->totalMass.getValue() / this->mstate->getX()->size());
+
 }
 
 
@@ -357,6 +369,17 @@ void UniformMass<Vec3dTypes, double>::addMDxToVector(defaulttype::BaseVector *re
 template<> SOFA_COMPONENT_MASS_API
 void UniformMass<Rigid3fTypes, Rigid3fMass>::reinit()
 {
+    if (this->totalMass.getValue()>0 && this->mstate!=NULL)
+    {
+        MassType* m = this->mass.beginEdit();
+        *m = ((Real)this->totalMass.getValue() / this->mstate->getX()->size());
+        this->mass.endEdit();
+    }
+    else
+    {
+        this->totalMass.setValue(  this->mstate->getX()->size()*this->mass.getValue());
+    }
+
     this->mass.beginEdit()->recalc();
     this->mass.endEdit();
 }
