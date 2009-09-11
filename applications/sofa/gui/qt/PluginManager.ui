@@ -8,8 +8,8 @@
         <rect>
             <x>0</x>
             <y>0</y>
-            <width>647</width>
-            <height>306</height>
+            <width>800</width>
+            <height>400</height>
         </rect>
     </property>
     <property name="caption">
@@ -32,7 +32,7 @@
                     <height>0</height>
                 </size>
             </property>
-            <grid>
+            <vbox>
                 <property name="name">
                     <cstring>unnamed</cstring>
                 </property>
@@ -41,7 +41,7 @@
                         <cstring>unnamed</cstring>
                     </property>
                     <property name="orientation">
-                        <enum>Horizontal</enum>
+                        <enum>Vertical</enum>
                     </property>
                     <widget class="QListView">
                         <column>
@@ -54,6 +54,17 @@
                             <property name="resizable">
                                 <bool>true</bool>
                             </property>
+                        </column>
+                        <column>
+                          <property name="text">
+                            <string>License</string>
+                          </property>
+                          <property name="clickable">
+                            <bool>true</bool>
+                          </property>
+                          <property name="resizable">
+                            <bool>true</bool>
+                          </property>
                         </column>
                         <column>
                           <property name="text">
@@ -86,13 +97,6 @@
                                 <height>0</height>
                             </size>
                         </property>
-                        <property name="paletteBackgroundColor">
-                            <color>
-                                <red>255</red>
-                                <green>255</green>
-                                <blue>255</blue>
-                            </color>
-                        </property>
                         <property name="midLineWidth">
                             <number>1</number>
                         </property>
@@ -110,44 +114,22 @@
                         <property name="name">
                             <cstring>layout24</cstring>
                         </property>
-                        <vbox>
+                        <hbox>
                             <property name="name">
                                 <cstring>unnamed</cstring>
                             </property>
-                            <widget class="QLayoutWidget">
-                                <property name="name">
-                                    <cstring>layout29</cstring>
-                                </property>
-                                <hbox>
-                                    <property name="name">
-                                        <cstring>unnamed</cstring>
-                                    </property>
-                                    <widget class="QLabel">
-                                        <property name="name">
-                                            <cstring>description_label</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>Description</string>
-                                        </property>
-                                    </widget>
-                                    <spacer>
-                                        <property name="name">
-                                            <cstring>Horizontal Spacing2_2</cstring>
-                                        </property>
-                                        <property name="orientation">
-                                            <enum>Horizontal</enum>
-                                        </property>
-                                        <property name="sizeType">
-                                            <enum>Expanding</enum>
-                                        </property>
-                                        <property name="sizeHint">
-                                            <size>
-                                                <width>80</width>
-                                                <height>20</height>
-                                            </size>
-                                        </property>
-                                    </spacer>
-                                </hbox>
+                          <widget class="QLayoutWidget">
+                            <property name="name">
+                              <cstring>DescriptionLayout</cstring>
+                            </property>
+                            <vbox>
+                            <widget class="QLabel">
+                              <property name="name">
+                                <cstring>description_label</cstring>
+                              </property>
+                              <property name="text">
+                                <string>Description</string>
+                              </property>
                             </widget>
                             <widget class="QTextEdit">
                                 <property name="name">
@@ -156,22 +138,6 @@
                                 <property name="enabled">
                                     <bool>true</bool>
                                 </property>
-                                <property name="minimumSize">
-                                    <size>
-                                        <width>150</width>
-                                        <height>0</height>
-                                    </size>
-                                </property>
-                                <property name="paletteBackgroundColor">
-                                    <color>
-                                        <red>221</red>
-                                        <green>223</green>
-                                        <blue>228</blue>
-                                    </color>
-                                </property>
-                                <property name="wrapColumnOrWidth">
-                                    <number>195</number>
-                                </property>
                                 <property name="readOnly">
                                     <bool>true</bool>
                                 </property>
@@ -179,75 +145,31 @@
                                     <bool>false</bool>
                                 </property>
                             </widget>
-                            <widget class="QLayoutWidget">
-                                <property name="name">
-                                    <cstring>layout23</cstring>
-                                </property>
-                                <hbox>
-                                    <property name="name">
-                                        <cstring>unnamed</cstring>
-                                    </property>
-                                    <widget class="QLabel">
-                                        <property name="name">
-                                            <cstring>components_label</cstring>
-                                        </property>
-                                        <property name="text">
-                                            <string>Component list</string>
-                                        </property>
-                                    </widget>
-                                    <spacer>
-                                        <property name="name">
-                                            <cstring>Horizontal Spacing2_2</cstring>
-                                        </property>
-                                        <property name="orientation">
-                                            <enum>Horizontal</enum>
-                                        </property>
-                                        <property name="sizeType">
-                                            <enum>Expanding</enum>
-                                        </property>
-                                        <property name="sizeHint">
-                                            <size>
-                                                <width>80</width>
-                                                <height>20</height>
-                                            </size>
-                                        </property>
-                                    </spacer>
-                                </hbox>
-                            </widget>
-                            <widget class="QTextEdit">
+                            </vbox>
+                          </widget>
+                            <widget class="QListView">
                                 <property name="name">
                                     <cstring>listComponents</cstring>
                                 </property>
+                                <column>
+                                  <property name="text">
+                                    <string>Component list</string>
+                                  </property>
+                                  <property name="clickable">
+                                    <bool>true</bool>
+                                  </property>
+                                  <property name="resizable">
+                                    <bool>true</bool>
+                                  </property>  
+                                </column>
                                 <property name="enabled">
                                     <bool>true</bool>
                                 </property>
-                                <property name="minimumSize">
-                                    <size>
-                                        <width>150</width>
-                                        <height>0</height>
-                                    </size>
-                                </property>
-                                <property name="paletteBackgroundColor">
-                                    <color>
-                                        <red>221</red>
-                                        <green>223</green>
-                                        <blue>228</blue>
-                                    </color>
-                                </property>
-                                <property name="wrapColumnOrWidth">
-                                    <number>195</number>
-                                </property>
-                                <property name="readOnly">
-                                    <bool>true</bool>
-                                </property>
-                                <property name="undoRedoEnabled">
-                                    <bool>false</bool>
-                                </property>
                             </widget>
-                        </vbox>
+                        </hbox>
                     </widget>
                 </widget>
-            </grid>
+            </vbox>
         </widget>
         <widget class="QLayoutWidget" row="1" column="0">
             <property name="name">

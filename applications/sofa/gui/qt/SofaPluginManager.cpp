@@ -48,6 +48,8 @@
 #endif
 
 #include <iostream>
+#include <sstream>
+
 
 
 #ifndef SOFA_QT4
@@ -60,6 +62,8 @@ namespace gui
 {
 namespace qt
 {
+
+#define LOCATION_COLUMN 3
 
 SofaPluginManager::SofaPluginManager()
 {
@@ -111,12 +115,17 @@ SofaPluginManager::SofaPluginManager()
             componentLoaderFunc();
             QString sname(componentNameFunc());
 
+            componentStr componentLicenseFunc = (componentStr) lib.resolve("getModuleLicense");
+            QString slicense;
+            if (componentLicenseFunc)
+                slicense=componentLicenseFunc();
+
             componentStr componentVersionFunc = (componentStr) lib.resolve("getModuleVersion");
             QString sversion;
             if(componentVersionFunc)
                 sversion=componentVersionFunc();
 
-            Q3ListViewItem * item = new Q3ListViewItem(listPlugins, sname, sversion, sfile);
+            Q3ListViewItem * item = new Q3ListViewItem(listPlugins, sname, slicense, sversion, sfile);
             item->setSelectable(true);
         }
     }
@@ -166,12 +175,18 @@ void SofaPluginManager::addLibrary()
         componentLoaderFunc();
         QString sname(componentNameFunc());
 
+        componentStr componentLicenseFunc = (componentStr) lib.resolve("getModuleLicense");
+        QString slicense;
+        if (componentLicenseFunc)
+            slicense=componentLicenseFunc();
+
+
         componentStr componentVersionFunc = (componentStr) lib.resolve("getModuleVersion");
         QString sversion;
         if(componentVersionFunc)
             sversion=componentVersionFunc();
 
-        Q3ListViewItem * item = new Q3ListViewItem(listPlugins, sname, sversion, sfile);
+        Q3ListViewItem * item = new Q3ListViewItem(listPlugins, sname, slicense, sversion, sfile);
         item->setSelectable(true);
 
         //add to the settings (to record it)
@@ -205,7 +220,7 @@ void SofaPluginManager::removeLibrary()
 {
     //get the selected item
     Q3ListViewItem * curItem = listPlugins->selectedItem();
-    QString location = curItem->text(2); //get the location value
+    QString location = curItem->text(LOCATION_COLUMN); //get the location value
     //remove it from the list view
     listPlugins->removeItem(curItem);
 
@@ -235,9 +250,10 @@ void SofaPluginManager::removeLibrary()
 
 void SofaPluginManager::updateComponentList(Q3ListViewItem* curItem)
 {
+
     //update the component list when an item is selected
     listComponents->clear();
-    QString location = curItem->text(2); //get the location value
+    QString location = curItem->text(LOCATION_COLUMN); //get the location value
     QLibrary lib(location);
     typedef const char* (*componentStr)();
     componentStr componentListFunc = (componentStr) lib.resolve("getModuleComponentList");
@@ -246,15 +262,24 @@ void SofaPluginManager::updateComponentList(Q3ListViewItem* curItem)
         QString cpts( componentListFunc() );
         cpts.replace(", ","\n");
         cpts.replace(",","\n");
-        listComponents->setText(cpts);
+        std::istringstream in(cpts.ascii());
+
+        while (!in.eof())
+        {
+            std::string componentText;
+            in >> componentText;
+            Q3ListViewItem *item=new Q3ListViewItem(listComponents,curItem);
+            item->setText(0,componentText.c_str());
+        }
     }
 }
+
 
 void SofaPluginManager::updateDescription(Q3ListViewItem* curItem)
 {
     //update the component list when an item is selected
     description->clear();
-    QString location = curItem->text(2); //get the location value
+    QString location = curItem->text(LOCATION_COLUMN); //get the location value
     QLibrary lib(location);
     typedef const char* (*componentStr)();
     componentStr componentDescFunc = (componentStr) lib.resolve("getModuleDescription");
