@@ -3,35 +3,35 @@
 <!-- Date : 24/02/09 -->
 
 <Node name="root" dt="0.00005" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0">
-	<Object type="Gravity" name="G" gravity="0 -9.8 0" />
+	<Gravity name="G" gravity="0 -9.8 0" />
 	
 	<!-- Phantom Solution -->
     <Node name="Reference">
         <Node name="Visual">
-            <Object type="OglModel" filename="mesh/truthCylinder-Deformed.obj" color="0.5 0.5 0.5 0.5" scale="1.0" />
+            <OglModel filename="mesh/truthCylinder-Deformed.obj" color="0.5 0.5 0.5 0.5" scale="1.0" />
         </Node>
         <Node name="EndPoint">
-            <Object type="MechanicalObject" position="0.0 -0.119383 0.126842" />
-            <Object type="FixedConstraint" indices="0" />
+            <MechanicalObject position="0.0 -0.119383 0.126842" />
+            <FixedConstraint indices="0" />
         </Node>
         <Node name="Surface">
-            <Object type="MeshLoader" filename="mesh/truthCylinder-Deformed.obj" />
-            <Object type="Mesh"  />
-            <Object type="MechanicalObject" scale="1.0" />
-            <Object type="Triangle" />
-            <Object type="Line" />
-            <Object type="Point" />
+            <MeshLoader filename="mesh/truthCylinder-Deformed.obj" />
+            <Mesh  />
+            <MechanicalObject scale="1.0" />
+            <Triangle />
+            <Line />
+            <Point />
         </Node>
 	</Node>
 	
 	<!-- FEM TLED Tetrahedra Solution -->
 	<Node name="CylinderFEMTetra">
-        <Object type="CentralDifferenceSolver" rayleighMass="5"/>
-		<Object type="MeshLoader"  filename="mesh/cylinder_Hexa.msh" /> 
-		<Object type="Mesh" />
-		<Object type="MechanicalObject" template="CudaVec3f"/>
-		<Object type="UniformMass" totalmass="0.216" />
-		<Object type="BoxConstraint" box="-0.020 -0.020 -0.001 0.020 0.020 .001" fixAll="0" />
-        <Object type="CudaTetrahedronTLEDForceField" name="FEM" youngModulus="60000" poissonRatio="0.49" viscoelasticity="0" anisotropy="0" preferredDirection="0 0.707 0.707"/>
+        <CentralDifferenceSolver rayleighMass="5"/>
+		<MeshLoader  filename="mesh/cylinder_Hexa.msh" /> 
+		<Mesh />
+		<MechanicalObject template="CudaVec3f"/>
+		<UniformMass totalmass="0.216" />
+		<BoxConstraint box="-0.020 -0.020 -0.001 0.020 0.020 .001" fixAll="0" />
+        <CudaTetrahedronTLEDForceField name="FEM" youngModulus="60000" poissonRatio="0.49" viscoelasticity="0" anisotropy="0" preferredDirection="0 0.707 0.707"/>
 	</Node>
 </Node>
