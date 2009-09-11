@@ -202,6 +202,13 @@ public:
         deviceIsValid = true;
     }
 
+    void memsetHost(int v = 0)
+    {
+        memset(hostPointer,v,vectorSize*sizeof(T));
+        hostIsValid = true;
+        deviceIsValid = false;
+    }
+
     void resize ( size_type s,size_type WARP_SIZE=BSIZE)
     {
         if ( s == vectorSize ) return;
