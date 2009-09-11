@@ -602,8 +602,8 @@ public:
     BaseVTKDataIO() : dataSize(0) {}
     virtual ~BaseVTKDataIO() {}
     virtual void resize(int n) = 0;
-    virtual bool read(std::ifstream& f, int n, bool binary) = 0;
-    virtual bool write(std::ofstream& f, int n, int groups, bool binary) = 0;
+    virtual bool read(std::ifstream& f, int n, int binary) = 0;
+    virtual bool write(std::ofstream& f, int n, int groups, int binary) = 0;
     virtual void addPoints(MeshTopologyLoader* dest) = 0;
 };
 
@@ -623,7 +623,7 @@ public:
         }
         dataSize = n;
     }
-    virtual bool read(std::ifstream& in, int n, bool binary)
+    virtual bool read(std::ifstream& in, int n, int binary)
     {
         resize(n);
         if (binary)
@@ -633,6 +633,21 @@ public:
             {
                 resize(0);
                 return false;
+            }
+            if (binary == 2) // swap bytes
+            {
+                for (int i=0; i<n; ++i)
+                {
+                    union T_chars
+                    {
+                        T t;
+                        char b[sizeof(T)];
+                    } tmp,rev;
+                    tmp.t = data[i];
+                    for (unsigned int c=0; c<sizeof(T); ++c)
+                        rev.b[c] = tmp.b[sizeof(T)-1-c];
+                    data[i] = rev.t;
+                }
             }
         }
         else
@@ -654,7 +669,7 @@ public:
         }
         return true;
     }
-    virtual bool write(std::ofstream& out, int n, int groups, bool binary)
+    virtual bool write(std::ofstream& out, int n, int groups, int binary)
     {
         if (n > dataSize && !data) return false;
         if (binary)
@@ -723,10 +738,14 @@ bool MeshTopologyLoader::loadVtk(const char *filename)
     // Part 3
     std::getline(inVTKFile, line);
 
-    bool binary;
-    if (line == "BINARY") binary = true;
-    else if (line == "ASCII") binary = false;
+    int binary;
+    if (line == "BINARY") binary = 1;
+    else if (line == "ASCII") binary = 0;
     else return false;
+
+    if (binary && strlen(filename)>9 && !strcmp(filename+strlen(filename)-9,".vtk_swap"))
+        binary = 2; // bytes will be swapped
+
 
     // Part 4
     do
@@ -737,7 +756,7 @@ bool MeshTopologyLoader::loadVtk(const char *filename)
         return false;
     }
 
-    std::cout << (binary ? "Binary" : "Text") << " VTK File (version " << version << "): " << header << std::endl;
+    std::cout << (binary == 0 ? "Text" : (binary == 1) ? "Binary" : "Swapped Binary") << " VTK File (version " << version << "): " << header << std::endl;
     BaseVTKDataIO* inputPoints = NULL;
     VTKDataIO<int>* inputPolygons = NULL;
     VTKDataIO<int>* inputCells = NULL;
@@ -785,7 +804,7 @@ bool MeshTopologyLoader::loadVtk(const char *filename)
             inputCellTypes = new VTKDataIO<int>;
             if (!inputCellTypes->read(inVTKFile, n, binary)) return false;
         }
-        else
+        else if (!kw.empty())
             std::cerr << "WARNING: Unknown keyword " << kw << std::endl;
         if (inputPoints && inputPolygons) break; // already found the mesh description, skip the rest
         if (inputPoints && inputCells && inputCellTypes) break; // already found the mesh description, skip the rest
@@ -794,27 +813,41 @@ bool MeshTopologyLoader::loadVtk(const char *filename)
     if (inputPolygons)
     {
         const int* inFP = inputPolygons->data;
-        nbf = 0;
+        int poly = 0;
         for (int i=0; i < inputPolygons->dataSize;)
         {
             int nv = inFP[i]; ++i;
-            if (nv == 4)
+            bool valid = true;
+            if (inputPoints)
             {
-                addQuad(inFP[i+0],inFP[i+1],inFP[i+2],inFP[i+3]);
+                for (int j=0; j<nv; ++j)
+                    if ((unsigned)inFP[i+j] >= (unsigned)(inputPoints->dataSize/3))
+                    {
+                        std::cerr << "ERROR: invalid point " << inFP[i+j] << " in polygon " << poly << std::endl;
+                        valid = false;
+                    }
             }
-            else if (nv >= 3)
+            if (valid)
             {
-                int f[3];
-                f[0] = inFP[i+0];
-                f[1] = inFP[i+1];
-                for (int j=2; j<nv; j++)
+                if (nv == 4)
                 {
-                    f[2] = inFP[i+j];
-                    addTriangle(f[0],f[1],f[2]);
-                    f[1] = f[2];
+                    addQuad(inFP[i+0],inFP[i+1],inFP[i+2],inFP[i+3]);
                 }
+                else if (nv >= 3)
+                {
+                    int f[3];
+                    f[0] = inFP[i+0];
+                    f[1] = inFP[i+1];
+                    for (int j=2; j<nv; j++)
+                    {
+                        f[2] = inFP[i+j];
+                        addTriangle(f[0],f[1],f[2]);
+                        f[1] = f[2];
+                    }
+                }
+                i += nv;
             }
-            i += nv;
+            ++poly;
         }
     }
     else if (inputCells && inputCellTypes)
@@ -895,6 +928,8 @@ bool MeshTopologyLoader::load(const char *filename)
         || (strlen(filename)>6 && !strcmp(filename+strlen(filename)-6,".trian")))
         fileLoaded = loadObj(fname.c_str());
     else if (strlen(filename)>4 && !strcmp(filename+strlen(filename)-4,".vtk"))
+        fileLoaded = loadVtk(fname.c_str());
+    else if (strlen(filename)>9 && !strcmp(filename+strlen(filename)-9,".vtk_swap"))
         fileLoaded = loadVtk(fname.c_str());
     else
         fileLoaded = loadMeshFile(fname.c_str());
