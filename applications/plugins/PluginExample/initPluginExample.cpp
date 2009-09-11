@@ -54,6 +54,7 @@ extern "C" {
     SOFA_PLUGINEXAMPLE_API void initExternalModule();
     SOFA_PLUGINEXAMPLE_API const char* getModuleName();
     SOFA_PLUGINEXAMPLE_API const char* getModuleVersion();
+    SOFA_PLUGINEXAMPLE_API const char* getModuleLicense();
     SOFA_PLUGINEXAMPLE_API const char* getModuleDescription();
     SOFA_PLUGINEXAMPLE_API const char* getModuleComponentList();
 }
@@ -76,6 +77,12 @@ const char* getModuleVersion()
 {
     return "0.2";
 }
+
+const char* getModuleLicense()
+{
+    return "LGPL";
+}
+
 
 const char* getModuleDescription()
 {
