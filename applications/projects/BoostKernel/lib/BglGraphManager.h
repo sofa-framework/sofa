@@ -63,7 +63,7 @@ class BglGraphManager
 {
 public:
 
-    typedef std::vector< boost::default_color_type> ColorMap;
+
     /** @name Hierarchical graph
         This graph (hgraph) reflects the sofa mechanical mapping hierarchy.
         The vertices contains sofa simulation nodes, while the edges contain nothing.

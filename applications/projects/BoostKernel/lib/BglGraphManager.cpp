@@ -191,8 +191,18 @@ void BglGraphManager::removeInteraction( BaseObject* iff )
     }
 }
 
+
 //----------------------------------------------------------------------------------
 // Methods to consult the Graph
+
+
+//Uncomment to use a faster traversal of the graph by the visitors.
+//The color map (container used to store the state of the different vertices "not visited", "visited", ...) used in the unstable version is a vector. Problems can occur when new vertices are created during the graph traversal, leading to out of boundaries access to the vector. To avoid, we need to allocate more memory when we create the color map.
+//The Stable version use a std::map, and thus the access is a bit slower, but memory safe/
+
+//#define USE_UNSTABLE_VERSION
+
+#ifdef USE_UNSTABLE_VERSION
 //TODO: understand why we need this "magic number" to use the visitors with the Boost:
 //possible explanation: when new vertices are created during graph traversal, the color map is not automatically resized,
 //thus, we need to pass during graph traversal initialization a bigger map than needed.
@@ -201,7 +211,7 @@ unsigned int findSizeColorMap()
 {
     return HACK_MAGIC_NUMBER*BglNode::uniqueId;
 }
-
+#endif
 
 //**************************************************
 // Breadth First Visit                            //
@@ -220,9 +230,13 @@ struct launchBreadthFirstVisit
 
     void operator()(Vertex v)
     {
-        BglGraphManager::ColorMap colors;
-        colors.resize(findSizeColorMap());
         boost::queue<Vertex> queue;
+
+#ifdef USE_UNSTABLE_VERSION
+        typedef helper::vector< boost::default_color_type> ColorMap;
+        ColorMap colors;
+        colors.resize(findSizeColorMap());
+
 
         bfs_adapter<Graph> bfsv(&visitor);
         boost::breadth_first_visit(graph,
@@ -231,6 +245,22 @@ struct launchBreadthFirstVisit
                 bfsv,
                 make_iterator_property_map(colors.begin(),boost::get(boost::vertex_index, graph) )
                                   );
+
+#else
+        typedef std::map<Vertex, boost::default_color_type> ColorStdMap;
+        ColorStdMap colorsStdMap;
+        boost::associative_property_map< ColorStdMap > propertyColorMap(colorsStdMap);
+
+        bfs_adapter<Graph> bfsv(&visitor);
+        boost::breadth_first_visit(graph,
+                v,
+                queue,
+                bfsv,
+                propertyColorMap
+                                  );
+
+#endif
+
     }
 
     Visitor &visitor;
@@ -321,16 +351,33 @@ struct launchDepthFirstVisit
 
     void operator()(Vertex v)
     {
-        BglGraphManager::ColorMap colors;
+        dfv_adapter<Graph> dfsv(&visitor);
+
+#ifdef USE_UNSTABLE_VERSION
+        typedef helper::vector< boost::default_color_type> ColorMap;
+        ColorMap colors;
         colors.resize(findSizeColorMap());
 
-        dfv_adapter<Graph> dfsv(&visitor);
         boost::depth_first_visit(graph,
                 v,
                 dfsv,
                 make_iterator_property_map(colors.begin(),boost::get(boost::vertex_index, graph) ),
                 dfsv
                                 );
+#else
+        typedef std::map<Vertex, boost::default_color_type> ColorStdMap;
+        ColorStdMap colorsStdMap;
+        boost::associative_property_map< ColorStdMap > propertyColorMap(colorsStdMap);
+
+
+        boost::depth_first_visit(graph,
+                v,
+                dfsv,
+                propertyColorMap,
+                dfsv
+                                );
+#endif
+
     }
 
     Visitor &visitor;
