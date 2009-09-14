@@ -16,11 +16,9 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                              SOFA :: Framework                              *
+*                               SOFA :: Modules                               *
 *                                                                             *
-* Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
-* H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
-* M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
@@ -47,14 +45,14 @@ using namespace sofa::defaulttype;
 
 SOFA_DECL_CLASS(MeshTrianLoader)
 
-int MeshTrianLoaderClass = core::RegisterObject("Specific mesh loader for Trian file format.")
+int MeshTrianLoaderClass = core::RegisterObject("Specific mesh loader for trian (only triangulations) file format.")
         .add< MeshTrianLoader >()
         ;
 
 MeshTrianLoader::MeshTrianLoader() : MeshLoader()
-    , neighborTable(initData(&neighborTable,"neighborTable","Vertices of the mesh loaded"))
-    , edgesOnBorder(initData(&edgesOnBorder,"edgesOnBorder","Edges of the mesh loaded"))
-    , trianglesOnBorderList(initData(&trianglesOnBorderList,"trianglesOnBorderList","Triangles of the mesh loaded"))
+    , neighborTable(initData(&neighborTable,"neighborTable","Table of neighborhood triangle indices for each triangle."))
+    , edgesOnBorder(initData(&edgesOnBorder,"edgesOnBorder","List of edges which are on the border of the mesh loaded."))
+    , trianglesOnBorderList(initData(&trianglesOnBorderList,"trianglesOnBorderList","List of triangle indices which are on the border of the mesh loaded."))
 {
     neighborTable.setPersistent(false);
     edgesOnBorder.setPersistent(false);

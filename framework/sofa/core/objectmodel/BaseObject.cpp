@@ -63,7 +63,6 @@ void BaseObject::parse( BaseObjectDescription* arg )
     arg->getAttributeList(attributeList);
     for (unsigned int i=0; i<attributeList.size(); ++i)
     {
-#ifdef SOFA_DEV
         if (attributeList[i] == "src")
         {
             // Parse attribute 'src' for new MeshLoader architecture.
@@ -95,18 +94,13 @@ void BaseObject::parse( BaseObjectDescription* arg )
             std::map < std::string, BaseData*> dataLoaderMap;
             std::map < std::string, BaseData*>::iterator it_map;
 
-            //std::cout << "- objet en cours: " << obj->getName() << std::endl;
-            //std::cout << "- loader associe: " << objectName << std::endl;
-
             for (unsigned int j = 0; j<loader->m_fieldVec.size(); ++j)
             {
                 dataLoaderMap.insert (std::pair<std::string, BaseData*> (loader->m_fieldVec[j].first, loader->m_fieldVec[j].second));
-                //std::cout << "Data loader: " << j << " => " << loader->m_fieldVec[j].first << std::endl;
             }
 
             for (unsigned int j = 0; j<attributeList.size(); ++j)
             {
-                //std::cout << "Data Object filled: " << attributeList[j] << std::endl;
                 it_map = dataLoaderMap.find (attributeList[j]);
                 if (it_map != dataLoaderMap.end())
                     dataLoaderMap.erase (it_map);
@@ -146,13 +140,11 @@ void BaseObject::parse( BaseObjectDescription* arg )
 
                 if (Data != NULL)
                 {
-                    //serr<<"Adding link for: " << (*it_map).first << sendl;
                     Data->addInput( (*it_map).second);
                 }
             }
 
         }
-#endif //SOFA_DEV
 
 
         std::vector< BaseData* > dataModif = findGlobalField(attributeList[i]);
