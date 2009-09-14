@@ -13,9 +13,7 @@ include($${SOFA_DIR}/sofa.cfg)
 
 TEMPLATE = lib
 TARGET = QGLViewer$${LIBSUFFIX}
-VERSION = 2.3.3
-CONFIG -= debug debug_and_release
-CONFIG *= release qt opengl warn_on shared thread create_prl rtti uic
+CONFIG *= qt opengl warn_on shared thread create_prl rtti uic
 
 HEADERS = qglviewer.h \
 	  camera.h \
@@ -50,10 +48,6 @@ QT_VERSION=$$[QT_VERSION]
 
 contains( QT_VERSION, "^4.*" ) {
   QT *= xml opengl
-  CONFIG(debug, debug|release) {
-    unix: TARGET = $$join(TARGET,,,_debug)
-    win32: TARGET = $$join(TARGET,,d)
-  }
 }
 
 !isEmpty( QGLVIEWER_STATIC ) {
@@ -239,9 +233,16 @@ win32 {
   } else {
     DEFINES *= CREATE_QGLVIEWER_DLL
   }
-
-  MOC_DIR = moc
-  OBJECTS_DIR = obj
+ MOC_DIR = moc
+ contains (CONFIGDEBUG, debug) {
+	
+  	OBJECTS_DIR = obj\debug	
+  }
+  contains (CONFIGDEBUG, release) {
+	
+  	OBJECTS_DIR = obj\release	
+  }
+  
 
   # Use the DLL version of Qt (needed for Qt3 only)
   DEFINES *= QT_DLL QT_THREAD_SUPPORT
