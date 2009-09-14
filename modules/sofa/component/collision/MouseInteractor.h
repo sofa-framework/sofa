@@ -133,7 +133,7 @@ protected:
  *
  */
 template <class DataTypes>
-class SOFA_COMPONENT_COLLISION_API MouseInteractor : public BaseMouseInteractor
+class MouseInteractor : public BaseMouseInteractor
 {
 public:
     typedef sofa::component::container::MechanicalObject< DataTypes >         MouseContainer;
@@ -180,6 +180,11 @@ protected:
     MouseForceField      *forcefield;
     std::vector< simulation::Node * > fixations;
 };
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_COLLISION_MOUSEINTERACTOR_CPP)
+extern template class SOFA_COMPONENT_COLLISION_API MouseInteractor<defaulttype::Vec3Types>;
+#endif
+
 
 
 } // namespace collision

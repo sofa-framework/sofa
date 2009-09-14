@@ -22,6 +22,7 @@
  *                                                                             *
  * Contact information: contact@sofa-framework.org                             *
  ******************************************************************************/
+#define SOFA_COMPONENT_COLLISION_MOUSEINTERACTOR_CPP
 #include <sofa/component/collision/MouseInteractor.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
@@ -41,7 +42,7 @@ int MouseInteractorClass = core::RegisterObject("Perform tasks related to the in
         .add< MouseInteractor<defaulttype::Vec3Types> >();
 
 
-template class MouseInteractor<defaulttype::Vec3Types>;
+template class SOFA_COMPONENT_COLLISION_API MouseInteractor<defaulttype::Vec3Types>;
 
 
 
