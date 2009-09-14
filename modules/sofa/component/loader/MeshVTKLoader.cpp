@@ -26,11 +26,20 @@
 ******************************************************************************/
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/component/loader/MeshVTKLoader.h>
+#include <string>
+#include <cstring>
+#include <set>
+#include <stdio.h>
+
 
 #include <iostream>
 #include <fstream>
 #include <sstream>
 
+
+#ifdef WIN32
+#define strcasecmp stricmp
+#endif
 
 namespace sofa
 {
