@@ -42,7 +42,6 @@ VTKExporter::VTKExporter()
 
 VTKExporter::~VTKExporter()
 {
-    outfile->close();
     delete outfile;
 }
 
@@ -51,20 +50,9 @@ void VTKExporter::init()
     sofa::core::objectmodel::BaseContext* context = this->getContext();
     context->get(topology);
 
-    const std::string& filename = vtkFilename.getFullPath();
-
     if (!topology)
     {
         serr << "VTKExporter : error, no topology ." << sendl;
-        return;
-    }
-
-    outfile = new std::ofstream(filename.c_str());
-    if( !outfile->is_open() )
-    {
-        serr << "Error creating file "<<filename<<sendl;
-        delete outfile;
-        outfile = NULL;
         return;
     }
 
@@ -87,7 +75,7 @@ void VTKExporter::fetchDataFields(const helper::vector<std::string>& strData, he
     for (unsigned int i=0 ; i<strData.size() ; i++)
     {
         std::string objectName, dataFieldName;
-        std::string::size_type loc = strData[i].find_first_of('.');
+        std::string::size_type loc = strData[i].find_last_of('.');
         if ( loc != std::string::npos)
         {
             objectName = strData[i].substr(0, loc);
@@ -107,11 +95,14 @@ void VTKExporter::writeData(const helper::vector<std::string>& objects, const he
 {
     sofa::core::objectmodel::BaseContext* context = this->getContext();
 
+    //std::cout << "List o: " << objects << std::endl;
+    //std::cout << "List f: " << fields << std::endl;
+
     for (unsigned int i=0 ; i<objects.size() ; i++)
     {
         core::objectmodel::BaseObject* obj = context->get<core::objectmodel::BaseObject> (objects[i]);
         core::objectmodel::BaseData* field = NULL;
-
+        //std::cout << objects[i] << std::endl;
         if (obj)
         {
             std::vector< std::pair<std::string, core::objectmodel::BaseData*> > f = obj->getFields();
@@ -216,6 +207,17 @@ void VTKExporter::writeVTK()
 {
     const helper::vector<std::string>& pointsData = dPointsDataFields.getValue();
     const helper::vector<std::string>& cellsData = dCellsDataFields.getValue();
+
+    const std::string& filename = vtkFilename.getFullPath();
+
+    outfile = new std::ofstream(filename.c_str());
+    if( !outfile->is_open() )
+    {
+        serr << "Error creating file "<<filename<<sendl;
+        delete outfile;
+        outfile = NULL;
+        return;
+    }
 
     //Write header
     *outfile << "# vtk DataFile Version 2.0" << std::endl;
@@ -327,7 +329,7 @@ void VTKExporter::writeVTK()
         *outfile << "CELL_DATA " << numberOfCells << std::endl;
         writeData(cellsDataObject, cellsDataField);
     }
-
+    outfile->close();
     std::cout << "VTK written" << std::endl;
 }
 
