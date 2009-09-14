@@ -49,6 +49,7 @@
 #include <sofa/core/componentmodel/topology/Topology.h>
 #include <sofa/core/componentmodel/topology/BaseTopologyObject.h>
 #include <sofa/core/componentmodel/behavior/BaseController.h>
+#include <sofa/core/componentmodel/loader/BaseLoader.h>
 
 #include <map>
 #include <iostream>
@@ -335,6 +336,8 @@ public:
             entry.baseClasses.insert("TopologyObject");
         if (implements<RealObject,core::componentmodel::behavior::BaseController>())
             entry.baseClasses.insert("Controller");
+        if (implements<RealObject,core::componentmodel::loader::BaseLoader>())
+            entry.baseClasses.insert("Loader");
 
 
 

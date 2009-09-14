@@ -60,6 +60,7 @@
 #include <sofa/core/componentmodel/behavior/OdeSolver.h>
 #include <sofa/core/componentmodel/behavior/MasterSolver.h>
 #include <sofa/core/componentmodel/collision/Pipeline.h>
+#include <sofa/core/componentmodel/loader/BaseLoader.h>
 #include <sofa/core/objectmodel/Event.h>
 
 #include <sofa/simulation/common/common.h>
