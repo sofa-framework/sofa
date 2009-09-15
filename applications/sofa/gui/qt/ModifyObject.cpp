@@ -45,7 +45,6 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/Factory.inl>
 
-#include <sofa/simulation/common/InitVisitor.h>
 #include <sofa/simulation/common/UpdateContextVisitor.h>
 #include <sofa/simulation/common/TransformationVisitor.h>
 

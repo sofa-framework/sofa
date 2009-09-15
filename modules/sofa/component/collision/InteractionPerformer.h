@@ -24,16 +24,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_H
-#define SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_H
-
-#include <sofa/simulation/common/Simulation.h>
-#include <sofa/simulation/common/DeleteVisitor.h>
-#include <sofa/simulation/common/Node.h>
-#include <sofa/component/collision/MouseInteractor.h>
-#include <sofa/component/mapping/IdentityMapping.h>
+#ifndef SOFA_COMPONENT_COLLISION_INTERACTIONPERFORMER_H
+#define SOFA_COMPONENT_COLLISION_INTERACTIONPERFORMER_H
 
 #include <sofa/component/component.h>
+#include <sofa/helper/Factory.h>
+#include <sofa/core/objectmodel/Event.h>
 
 namespace sofa
 {
@@ -44,60 +40,51 @@ namespace component
 namespace collision
 {
 
+class BaseMouseInteractor;
+template <class DataTypes>
+class MouseInteractor;
 
-class SOFA_COMPONENT_COLLISION_API ComponentMouseInteraction
+
+class SOFA_COMPONENT_COLLISION_API InteractionPerformer
 {
 public:
-    ComponentMouseInteraction();
+    typedef helper::Factory<std::string, InteractionPerformer, BaseMouseInteractor*> InteractionPerformerFactory;
 
-    virtual ~ComponentMouseInteraction();
+    InteractionPerformer(BaseMouseInteractor *i):interactor(i) {};
+    virtual ~InteractionPerformer() {};
 
-    virtual void init(simulation::Node* node);
 
-    void activate();
+    virtual void start()=0;
+    virtual void execute()=0;
 
-    void deactivate();
 
-    void reset();
-
-    virtual bool isCompatible( core::objectmodel::BaseContext *)const=0;
-
-    typedef helper::Factory<std::string, ComponentMouseInteraction, core::objectmodel::BaseContext*> ComponentMouseInteractionFactory;
+    virtual void handleEvent(core::objectmodel::Event * ) {};
+    virtual void draw() {};
 
     template <class RealObject>
-    static void create( RealObject*& obj, core::objectmodel::BaseContext* /* context */)
+    static void create( RealObject*& obj, BaseMouseInteractor* interactor)
     {
-        obj = new RealObject;
+        obj = new RealObject(interactor);
     }
-
-
-    //Components
-    simulation::Node                                            *parentNode;
-    simulation::Node                                            *nodeRayPick;
-    sofa::core::componentmodel::behavior::BaseMechanicalState   *mouseInSofa;
-    sofa::core::componentmodel::behavior::BaseMechanicalMapping *mouseMapping;
-    sofa::component::collision::BaseMouseInteractor             *mouseInteractor;
+    BaseMouseInteractor *interactor;
 };
-
 
 
 template <class DataTypes>
-class TComponentMouseInteraction : public ComponentMouseInteraction
+class TInteractionPerformer: public InteractionPerformer
 {
-    typedef sofa::component::container::MechanicalObject< defaulttype::Vec3Types > MousePosition;
-    typedef sofa::component::container::MechanicalObject< DataTypes > MouseContainer;
-    typedef sofa::component::collision::MouseInteractor< DataTypes > Interactor;
-    typedef sofa::component::mapping::IdentityMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState< defaulttype::Vec3Types>, sofa::core::componentmodel::behavior::MechanicalState< DataTypes > > > IdentityMechanicalMapping;
-
 public:
 
-    void init(simulation::Node* node);
+    TInteractionPerformer(BaseMouseInteractor *i):InteractionPerformer(i) {};
 
-    bool isCompatible( core::objectmodel::BaseContext *context) const;
+    template <class RealObject>
+    static void create( RealObject*& obj, BaseMouseInteractor* interactor)
+    {
+        if (!dynamic_cast< MouseInteractor<DataTypes>* >(interactor)) obj=NULL;
+        else obj = new RealObject(interactor);
+    }
 
 };
-
-
 }
 }
 }

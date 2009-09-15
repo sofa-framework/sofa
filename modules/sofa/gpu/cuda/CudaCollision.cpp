@@ -29,10 +29,13 @@
 #include <sofa/component/collision/DiscreteIntersection.inl>
 #include <sofa/component/collision/ComponentMouseInteraction.inl>
 #include <sofa/component/collision/MouseInteractor.inl>
+#include <sofa/component/collision/AttachBodyPerformer.inl>
+#include <sofa/component/collision/FixParticlePerformer.inl>
 #include <sofa/component/collision/RayContact.h>
 #include "CudaContactMapper.h"
 #include <sofa/component/collision/BarycentricPenalityContact.inl>
 #include <sofa/component/collision/BarycentricContactMapper.inl>
+
 #include <sofa/component/forcefield/PenalityContactForceField.h>
 #include "CudaPenalityContactForceField.h"
 #include "CudaSpringForceField.h"
@@ -55,6 +58,8 @@ using namespace sofa::gpu::cuda;
 
 template class MouseInteractor<CudaVec3fTypes>;
 template class TComponentMouseInteraction< CudaVec3fTypes >;
+template class AttachBodyPerformer< CudaVec3fTypes >;
+template class FixParticlePerformer< CudaVec3fTypes >;
 
 template <>
 void BarycentricPenalityContact<CudaPointModel,CudaRigidDistanceGridCollisionModel,CudaVec3fTypes>::setDetectionOutputs(OutputVector* o)
@@ -163,6 +168,8 @@ ContactMapperCreator< ContactMapper<CudaSphereModel> > CudaSphereContactMapperCl
 
 
 helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory, TComponentMouseInteraction<CudaVec3fTypes> > ComponentMouseInteractionCudaVec3fClass ("MouseSpringCudaVec3f",true);
+helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer <CudaVec3fTypes> >  AttachBodyPerformerCudaVec3fClass("AttachBody",true);
+helper::Creator<InteractionPerformer::InteractionPerformerFactory, FixParticlePerformer<CudaVec3fTypes> >  FixParticlePerformerCudaVec3fClass("FixParticle",true);
 
 } //namespace collision
 

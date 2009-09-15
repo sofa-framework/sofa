@@ -59,22 +59,13 @@ void ComponentMouseInteraction::activate()
 
 void ComponentMouseInteraction::deactivate()
 {
-    mouseInteractor->doReleaseBody();
     nodeRayPick->detachFromGraph();
 }
 
 void ComponentMouseInteraction::reset()
 {
-    mouseInteractor->clear();
+    mouseInteractor->cleanup();
 }
-
-
-
-//template <class RealObject>
-//void ComponentMouseInteraction::create( RealObject*& obj, core::objectmodel::BaseContext* /* context */)
-//{
-//	obj = new RealObject;
-//}
 
 
 

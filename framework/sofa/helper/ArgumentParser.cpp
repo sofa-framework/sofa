@@ -55,7 +55,7 @@ void ArgumentBase::print () const
 {
     std::cout << "-" << shortName <<",\t--"<< longName <<":\t" << help;
     if( mandatory ) std::cout<< " (required) ";
-    std::cout << "  (default: "; printValue();
+    std::cout << "  (default: ";  printValue();
     std::cout << ")" << std::endl;
 }
 
@@ -114,8 +114,10 @@ void ArgumentParser::operator () ( std::list<std::string> str )
         {
             if( globalHelp.size()>0 ) std::cout<< globalHelp <<std::endl;
             std::cout << "(short name, long name, description, default value)\n-h,\t--help: this help" << std::endl;
+            std::cout << std::boolalpha;
             for( ArgVec::const_iterator a=commands.begin(), aend=commands.end(); a!=aend; ++a )
                 (*a)->print();
+            std::cout << std::noboolalpha;
             if( files )
                 std::cout << "others: file names" << std::endl;
             exit(1);

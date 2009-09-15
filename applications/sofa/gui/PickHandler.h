@@ -66,6 +66,7 @@ public:
 
     void handleMouseEvent( MOUSE_STATUS status, MOUSE_BUTTON button);
 
+    void init();
     void reset();
 
     void changeOperation(MOUSE_BUTTON button, const std::string &op)
@@ -77,7 +78,6 @@ public:
 
     ComponentMouseInteraction           *getInteraction();
     BodyPicked                          *getLastPicked() {return &lastPicked;};
-    helper::fixed_array< BodyPicked,2 > *getElementsPicked() {return &elementsPicked;};
 
 protected:
 
@@ -98,7 +98,6 @@ protected:
     bool interactorInUse;
 
     BodyPicked lastPicked;
-    helper::fixed_array< BodyPicked,2 > elementsPicked;
 
     MOUSE_BUTTON mouseButton;
     MOUSE_STATUS mouseStatus;

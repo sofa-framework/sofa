@@ -31,7 +31,13 @@
 
 namespace sofa
 {
-
+namespace component
+{
+namespace collision
+{
+class InteractionPerformer;
+}
+}
 namespace gui
 {
 enum MOUSE_BUTTON {LEFT, MIDDLE, RIGHT};
@@ -51,6 +57,7 @@ public:
 protected:
     PickHandler *pickHandle;
     MOUSE_BUTTON button;
+    sofa::component::collision::InteractionPerformer *performer;
 };
 
 class AttachOperation : public Operation
