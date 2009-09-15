@@ -40,6 +40,10 @@
 #include <sofa/gpu/cuda/CudaSpatialGridContainer.h>
 #include <sofa/component/container/SpatialGridContainer.inl>
 
+#ifdef SOFA_DEV
+#include "radixsort.h"
+#endif
+
 namespace sofa
 {
 
@@ -51,10 +55,11 @@ namespace cuda
 
 extern "C"
 {
-    void SpatialGridContainer3f_updateGrid(int cellBits, float cellWidth, int nbPoints, void* particleHash, void* sortTmp, void* cellStart, const void* x);
-    void SpatialGridContainer3f1_updateGrid(int cellBits, float cellWidth, int nbPoints, void* particleHash, void* sortTmp, void* cellStart, const void* x);
-    void SpatialGridContainer3f_reorderData(int nbPoints, const void* particleHash, void* sorted, const void* x);
-    void SpatialGridContainer3f1_reorderData(int nbPoints, const void* particleHash, void* sorted, const void* x);
+    void SpatialGridContainer3f_computeHash(int cellBits, float cellWidth, int nbPoints, void* particleIndex8, void* particleHash8, const void* x);
+    void SpatialGridContainer3f1_computeHash(int cellBits, float cellWidth, int nbPoints, void* particleIndex8, void* particleHash8, const void* x);
+    void SpatialGridContainer_findCellRange(int cellBits, float cellWidth, int nbPoints, const void* particleHash8, void* cellRange);
+//void SpatialGridContainer3f_reorderData(int nbPoints, const void* particleHash, void* sorted, const void* x);
+//void SpatialGridContainer3f1_reorderData(int nbPoints, const void* particleHash, void* sorted, const void* x);
 }
 
 } // namespace cuda
@@ -99,17 +104,25 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TR
 }
 
 template<>
-void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3fTypes > >::kernel_updateGrid(int cellBits, float cellWidth, int nbPoints, void* particleHash, void* sortTmp, void* cellStart, const void* x)
+void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3fTypes > >::kernel_updateGrid(int cellBits, float cellWidth, int nbPoints, void* particleIndex, void* particleHash, void* sortTmp, void* cellRange, const void* x)
 {
-    gpu::cuda::SpatialGridContainer3f_updateGrid(cellBits, cellWidth, nbPoints, particleHash, sortTmp, cellStart, x);
+    gpu::cuda::SpatialGridContainer3f_computeHash(cellBits, cellWidth, nbPoints, particleIndex, particleHash, x);
+#ifdef SOFA_DEV
+    radixSort((unsigned int *)particleHash, (unsigned int *)particleIndex, (unsigned int *)sortTmp, nbPoints*8, cellBits+1);
+#endif
+    gpu::cuda::SpatialGridContainer_findCellRange(cellBits, cellWidth, nbPoints, particleHash, cellRange);
 }
 
 template<>
-void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3f1Types > >::kernel_updateGrid(int cellBits, float cellWidth, int nbPoints, void* particleHash, void* sortTmp, void* cellStart, const void* x)
+void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3f1Types > >::kernel_updateGrid(int cellBits, float cellWidth, int nbPoints, void* particleIndex, void* particleHash, void* sortTmp, void* cellRange, const void* x)
 {
-    gpu::cuda::SpatialGridContainer3f1_updateGrid(cellBits, cellWidth, nbPoints, particleHash, sortTmp, cellStart, x);
+    gpu::cuda::SpatialGridContainer3f1_computeHash(cellBits, cellWidth, nbPoints, particleIndex, particleHash, x);
+#ifdef SOFA_DEV
+    radixSort((unsigned int *)particleHash, (unsigned int *)particleIndex, (unsigned int *)sortTmp, nbPoints*8, cellBits+1);
+#endif
+    gpu::cuda::SpatialGridContainer_findCellRange(cellBits, cellWidth, nbPoints, particleHash, cellRange);
 }
-
+/*
 template<>
 void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3fTypes > >::kernel_reorderData(int nbPoints, const void* particleHash, void* sorted, const void* x)
 {
@@ -121,6 +134,7 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3f1Types > >::kernel_reor
 {
     gpu::cuda::SpatialGridContainer3f1_reorderData(nbPoints, particleHash, sorted, x);
 }
+*/
 
 template<class TCoord, class TDeriv, class TReal>
 void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> > >::update(const VecCoord& x)
@@ -128,12 +142,15 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TR
     lastX = &x;
     data.clear();
     int nbPoints = x.size();
-    particleHash.fastResize(nbPoints);
-    sortTmp.fastResize(nbPoints);
-    cellStart.fastResize(nbCells);
-    sortedPos.fastResize(nbPoints);
-    kernel_updateGrid(cellBits, cellWidth, nbPoints, particleHash.deviceWrite(), sortTmp.deviceWrite(), cellStart.deviceWrite(), x.deviceRead());
-    kernel_reorderData(nbPoints, particleHash.deviceRead(), sortedPos.deviceWrite(), x.deviceRead());
+    particleIndex.recreate(nbPoints*8,8*BSIZE);
+    particleHash.recreate(nbPoints*8,8*BSIZE);
+#ifdef SOFA_DEV
+    sortTmp.recreate(radixSortTempStorage(nbPoints*8));
+#endif
+    cellRange.recreate(nbCells);
+    //sortedPos.recreate(nbPoints);
+    kernel_updateGrid(cellBits, cellWidth, nbPoints, particleIndex.deviceWrite(), particleHash.deviceWrite(), sortTmp.deviceWrite(), cellRange.deviceWrite(), x.deviceRead());
+    //kernel_reorderData(nbPoints, particleHash.deviceRead(), sortedPos.deviceWrite(), x.deviceRead());
 }
 
 template<class TCoord, class TDeriv, class TReal>
@@ -147,16 +164,18 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TR
     glBegin(GL_POINTS);
     for (int i=0; i<nbPoints; i++)
     {
-        unsigned int cell = particleHash[i][0];
-        //unsigned int p = particleHash[i][1];
+        unsigned int cell = particleHash[i];
+        unsigned int p = particleIndex[i];
+        if (!(cell&1)) continue; // this is a ghost particle from a neighbor cell
+        cell>>=1;
         //if (cell != 0 && cell != 65535)
         //    std::cout << i << ": "<<p<<" -> "<<cell<<", "<<(*lastX)[p]<<" -> "<<sortedPos[i]<<std::endl;
         int r = cell&3;
         int g = (cell>>2)&3;
         int b = (cell>>4)&3;
         glColor4ub(63+r*64,63+g*64,63+b*64,255);
-        glVertex3fv(sortedPos[i].ptr());
-        //glVertex3fv((*lastX)[p].ptr());
+        //glVertex3fv(sortedPos[i].ptr());
+        glVertex3fv((*lastX)[p].ptr());
     }
     glEnd();
     glPointSize(1);
