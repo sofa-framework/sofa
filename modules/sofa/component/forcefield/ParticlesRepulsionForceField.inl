@@ -25,6 +25,7 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_PARTICLESREPULSIONFORCEFIELD_INL
 #define SOFA_COMPONENT_FORCEFIELD_PARTICLESREPULSIONFORCEFIELD_INL
 
+#include <sofa/core/componentmodel/behavior/ForceField.inl>
 #include <sofa/component/forcefield/ParticlesRepulsionForceField.h>
 #include <sofa/component/container/SpatialGridContainer.inl>
 #include <sofa/helper/system/config.h>
@@ -60,12 +61,12 @@ void ParticlesRepulsionForceField<DataTypes>::init()
     this->getContext()->get(grid); //new Grid(distance.getValue());
     if (grid==NULL)
         serr<<"SpatialGridContainer not found by ParticlesRepulsionForceField, slow O(n2) method will be used !!!" << sendl;
-    int n = (*this->mstate->getX()).size();
-    particles.resize(n);
-    for (int i=0; i<n; i++)
-    {
-        particles[i].neighbors.clear();
-    }
+    //int n = (*this->mstate->getX()).size();
+    //particles.resize(n);
+    //for (int i=0;i<n;i++)
+    //{
+    //	particles[i].neighbors.clear();
+    //}
 }
 
 template<class DataTypes>
@@ -139,13 +140,13 @@ void ParticlesRepulsionForceField<DataTypes>::addForce(VecDeriv& f, const VecCoo
 }
 
 template<class DataTypes>
-void ParticlesRepulsionForceField<DataTypes>::addDForce(VecDeriv& df,  const VecDeriv& dx)
+void ParticlesRepulsionForceField<DataTypes>::addDForce(VecDeriv& df, const VecDeriv& dx, double kFactor, double /*bFactor*/)
 {
     const VecCoord& x = *this->mstate->getX();
     const Real h = distance.getValue();
     const Real h2 = h*h;
-    const Real ks = stiffness.getValue();
-    //const Real kd = damping.getValue();
+    const Real ks = stiffness.getValue()*kFactor;
+    //const Real kd = damping.getValue()*bFactor;
     const int n = x.size();
     df.resize(dx.size());
 
