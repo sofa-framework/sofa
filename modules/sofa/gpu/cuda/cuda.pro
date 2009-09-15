@@ -176,6 +176,8 @@ SOURCES += \
 }
 }
 
+CUDA_SOURCES += CudaParticlesRepulsionForceField.cu
+
 HEADERS += scan.h
 CUDA_SOURCES += scan.cu
 

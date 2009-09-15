@@ -1,0 +1,317 @@
+/******************************************************************************
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+*                                                                             *
+* This library is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This library is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this library; if not, write to the Free Software Foundation,     *
+* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+*******************************************************************************
+*                               SOFA :: Modules                               *
+*                                                                             *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
+#include "CudaCommon.h"
+#include "CudaMath.h"
+#include "cuda.h"
+
+#if defined(__cplusplus) && CUDA_VERSION < 2000
+namespace sofa
+{
+namespace gpu
+{
+namespace cuda
+{
+#endif
+
+template<class real>
+class GPURepulsion
+{
+public:
+    real d;
+    real d2;
+    real stiffness;
+    real damping;
+};
+
+typedef GPURepulsion<float> GPURepulsion3f;
+typedef GPURepulsion<double> GPURepulsion3d;
+
+extern "C"
+{
+    void ParticlesRepulsionForceFieldCuda3f_addForce(unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPURepulsion3f* repulsion, float* penetration, void* f, const void* x, const void* v);
+    void ParticlesRepulsionForceFieldCuda3f_addDForce(unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPURepulsion3f* repulsion, const float* penetration, void* f, const void* dx); //, const void* dfdx);
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+
+    void ParticlesRepulsionForceFieldCuda3d_addForce(unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPURepulsion3d* repulsion, double* penetration, void* f, const void* x, const void* v);
+    void ParticlesRepulsionForceFieldCuda3d_addDForce(unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPURepulsion3d* repulsion, const double* penetration, void* f, const void* dx); //, const void* dfdx);
+
+#endif // SOFA_GPU_CUDA_DOUBLE
+}
+
+//////////////////////
+// GPU-side methods //
+//////////////////////
+
+template<class real>
+__device__ CudaVec3<real> ParticlesRepulsionCalcForce(CudaVec3<real> x1, CudaVec3<real> v1, CudaVec3<real> x2, CudaVec3<real> v2, GPURepulsion<real>& rep)
+{
+    CudaVec3<real> n = x2-x1;
+    real d2 = norm2(n);
+    CudaVec3<real> force;
+    if (d2 >= rep.d2) force = CudaVec3<real>::make(0,0,0);
+    else
+    {
+        CudaVec3<real> vi = v2-v1;
+        real inv_d = rsqrtf(d2);
+        n *= inv_d;
+        real d = d2*inv_d - rep.d2;
+        real forceIntensity = -rep.stiffness*d;
+        real dampingIntensity = -rep.damping*d;
+        force = n*forceIntensity - vi*dampingIntensity;
+    }
+    return force;
+}
+
+template<class real>
+__device__ CudaVec3<real> ParticlesRepulsionCalcDForce(CudaVec3<real> x1, CudaVec3<real> dx1, CudaVec3<real> x2, CudaVec3<real> dx2, GPURepulsion<real>& rep)
+{
+    CudaVec3<real> n = x2-x1;
+    real d2 = norm2(n);
+    CudaVec3<real> dforce;
+    if (d2 >= rep.d2) dforce = CudaVec3<real>::make(0,0,0);
+    else
+    {
+        CudaVec3<real> dxi = dx2-dx1;
+        //real inv_d = rsqrtf(d2);
+        //n *= inv_d;
+        //dforce = n * (-rep.stiffness * dot(dxi, n));
+
+        //dforce = (n * (-rep.stiffness * dot(dxi, n)))/d2;
+
+        dforce = n * __fdividef((-rep.stiffness * dot(dxi, n)),d2);
+    }
+    return dforce;
+}
+
+template<class real>
+__global__ void ParticlesRepulsionForceFieldCuda3t_addForce_kernel(int size, const int2 *cellRange, const int *cellGhost, const int* particleIndex, GPURepulsion<real> repulsion, real* f, const real* x, const real* v)
+{
+    __shared__ int2 range;
+    __shared__ int ghost;
+    __shared__ real temp_x[BSIZE*3];
+    __shared__ real temp_v[BSIZE*3];
+    int tx3 = __umul24(threadIdx.x,3);
+    for (int cell = blockIdx.x; cell < size; cell += gridDim.x)
+    {
+        if (!threadIdx.x)
+        {
+            range = cellRange[cell];
+            ghost = cellGhost[cell];
+        }
+        __syncthreads();
+        if (range.x == -1) continue; // no actual particle in this cell
+        for (int px0 = range.x; px0 < ghost; px0 += BSIZE)
+        {
+            int px = px0 + threadIdx.x;
+            CudaVec3<real> xi;
+            CudaVec3<real> vi;
+            CudaVec3<real> force;
+            int index;
+            if (px < range.y)
+            {
+                index = particleIndex[px];
+                xi = ((const CudaVec3<real>*)x)[index];
+                temp_x[tx3  ] = xi.x;
+                temp_x[tx3+1] = xi.y;
+                temp_x[tx3+2] = xi.z;
+                vi = ((const CudaVec3<real>*)v)[index];
+                temp_v[tx3  ] = vi.x;
+                temp_v[tx3+1] = vi.y;
+                temp_v[tx3+2] = vi.z;
+            }
+            __syncthreads();
+            if (px < ghost)
+            {
+                // actual particle -> compute interactions
+                force = CudaVec3<real>::make(0,0,0);
+                int np = min(range.y-px0,BSIZE);
+                for (int i=0; i < np; ++i)
+                {
+                    if (i != threadIdx.x)
+                        force += ParticlesRepulsionCalcForce(xi, vi, ((const CudaVec3<real>*)temp_x)[i], ((const CudaVec3<real>*)temp_v)[i], repulsion);
+                }
+            }
+            // loop through other groups of particles
+            for (int py0 = range.x; py0 < range.y; py0 += BSIZE)
+            {
+                if (py0 == px0) continue;
+                int py = py0 + threadIdx.x;
+                if (py < range.y)
+                {
+                    int index2 = particleIndex[py];
+                    CudaVec3<real> xj = ((const CudaVec3<real>*)x)[index2];
+                    temp_x[tx3  ] = xj.x;
+                    temp_x[tx3+1] = xj.y;
+                    temp_x[tx3+2] = xj.z;
+                    CudaVec3<real> vj = ((const CudaVec3<real>*)v)[index2];
+                    temp_v[tx3  ] = vj.x;
+                    temp_v[tx3+1] = vj.y;
+                    temp_v[tx3+2] = vj.z;
+                }
+                if (px < ghost)
+                {
+                    // actual particle -> compute interactions
+                    int np = min(range.y-py0,BSIZE);
+                    for (int i=0; i < np; ++i)
+                    {
+                        force += ParticlesRepulsionCalcForce(xi, vi, ((const CudaVec3<real>*)temp_x)[i], ((const CudaVec3<real>*)temp_v)[i], repulsion);
+                    }
+                }
+            }
+            if (px < ghost)
+            {
+                // actual particle -> write computed force
+                ((CudaVec3<real>*)f)[index] = force;
+            }
+        }
+    }
+}
+
+template<class real>
+__global__ void ParticlesRepulsionForceFieldCuda3t_addDForce_kernel(int size, const int2 *cellRange, const int *cellGhost, const int* particleIndex, GPURepulsion<real> repulsion, real* df, const real* x, const real* dx)
+{
+    __shared__ int2 range;
+    __shared__ int ghost;
+    __shared__ real temp_x[BSIZE*3];
+    __shared__ real temp_dx[BSIZE*3];
+    int tx3 = __umul24(threadIdx.x,3);
+    for (int cell = blockIdx.x; cell < size; cell += gridDim.x)
+    {
+        if (!threadIdx.x)
+        {
+            range = cellRange[cell];
+            ghost = cellGhost[cell];
+        }
+        __syncthreads();
+        if (range.x == -1) continue; // no actual particle in this cell
+        for (int px0 = range.x; px0 < ghost; px0 += BSIZE)
+        {
+            int px = px0 + threadIdx.x;
+            CudaVec3<real> xi;
+            CudaVec3<real> dxi;
+            CudaVec3<real> dforce;
+            int index;
+            if (px < range.y)
+            {
+                index = particleIndex[px];
+                xi = ((const CudaVec3<real>*)x)[index];
+                temp_x[tx3  ] = xi.x;
+                temp_x[tx3+1] = xi.y;
+                temp_x[tx3+2] = xi.z;
+                dxi = ((const CudaVec3<real>*)dx)[index];
+                temp_dx[tx3  ] = dxi.x;
+                temp_dx[tx3+1] = dxi.y;
+                temp_dx[tx3+2] = dxi.z;
+            }
+            __syncthreads();
+            if (px < ghost)
+            {
+                // actual particle -> compute interactions
+                dforce = CudaVec3<real>::make(0,0,0);
+                int np = min(range.y-px0,BSIZE);
+                for (int i=0; i < np; ++i)
+                {
+                    if (i != threadIdx.x)
+                        dforce += ParticlesRepulsionCalcDForce(xi, dxi, ((const CudaVec3<real>*)temp_x)[i], ((const CudaVec3<real>*)temp_dx)[i], repulsion);
+                }
+            }
+            // loop through other groups of particles
+            for (int py0 = range.x; py0 < range.y; py0 += BSIZE)
+            {
+                if (py0 == px0) continue;
+                int py = py0 + threadIdx.x;
+                if (py < range.y)
+                {
+                    int index2 = particleIndex[py];
+                    CudaVec3<real> xj = ((const CudaVec3<real>*)x)[index2];
+                    temp_x[tx3  ] = xj.x;
+                    temp_x[tx3+1] = xj.y;
+                    temp_x[tx3+2] = xj.z;
+                    CudaVec3<real> dxj = ((const CudaVec3<real>*)dx)[index2];
+                    temp_dx[tx3  ] = dxj.x;
+                    temp_dx[tx3+1] = dxj.y;
+                    temp_dx[tx3+2] = dxj.z;
+                }
+                if (px < ghost)
+                {
+                    // actual particle -> compute interactions
+                    int np = min(range.y-py0,BSIZE);
+                    for (int i=0; i < np; ++i)
+                    {
+                        dforce += ParticlesRepulsionCalcDForce(xi, dxi, ((const CudaVec3<real>*)temp_x)[i], ((const CudaVec3<real>*)temp_dx)[i], repulsion);
+                    }
+                }
+            }
+            if (px < ghost)
+            {
+                // actual particle -> write computed force
+                ((CudaVec3<real>*)df)[index] = dforce;
+            }
+        }
+    }
+}
+
+//////////////////////
+// CPU-side methods //
+//////////////////////
+
+void ParticlesRepulsionForceFieldCuda3f_addForce(unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPURepulsion3f* repulsion, void* f, const void* x, const void* v)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((size+BSIZE-1)/BSIZE,1);
+    ParticlesRepulsionForceFieldCuda3t_addForce_kernel<float><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int2*) cellRange, (const int*) cellGhost, (const int*) particleIndex, *repulsion, (float*)f, (const float*)x, (const float*)v);
+}
+
+void ParticlesRepulsionForceFieldCuda3f_addDForce(unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPURepulsion3f* repulsion, void* df, const void* x, const void* dx) //, const void* dfdx)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((size+BSIZE-1)/BSIZE,1);
+    ParticlesRepulsionForceFieldCuda3t_addDForce_kernel<float><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int2*) cellRange, (const int*) cellGhost, (const int*) particleIndex, *repulsion, (float*)df, (const float*)x, (const float*)dx);
+}
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+
+void ParticlesRepulsionForceFieldCuda3d_addForce(unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPURepulsion3d* repulsion, void* f, const void* x, const void* v)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((size+BSIZE-1)/BSIZE,1);
+    ParticlesRepulsionForceFieldCuda3t_addForce_kernel<double><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int2*) cellRange, (const int*) cellGhost, (const int*) particleIndex, *repulsion, (double*)f, (const double*)x, (const double*)v);
+}
+
+void ParticlesRepulsionForceFieldCuda3d_addDForce(unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPURepulsion3d* repulsion, void* df, const void* x, const void* dx) //, const void* dfdx)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid((size+BSIZE-1)/BSIZE,1);
+    ParticlesRepulsionForceFieldCuda3t_addDForce_kernel<double><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int2*) cellRange, (const int*) cellGhost, (const int*) particleIndex, *repulsion, (double*)df, (const double*)x, (const double*)dx);
+}
+
+#endif // SOFA_GPU_CUDA_DOUBLE
+
+#if defined(__cplusplus) && CUDA_VERSION < 2000
+} // namespace cuda
+} // namespace gpu
+} // namespace sofa
+#endif
