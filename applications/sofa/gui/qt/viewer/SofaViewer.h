@@ -114,8 +114,8 @@ public:
     virtual QWidget* getQWidget()=0;
 
     virtual sofa::simulation::Node* getScene()        {  return groot;}
-    virtual const std::string&             getSceneFileName() {  return sceneFileName;}
-    virtual void                           setSceneFileName(const std::string &f) {sceneFileName = f;};
+    virtual const std::string&      getSceneFileName() {  return sceneFileName;}
+    virtual void                    setSceneFileName(const std::string &f) {sceneFileName = f;};
 
     virtual void setup() {}
     virtual void setScene(sofa::simulation::Node* scene, const char* filename=NULL, bool /*keepParams*/=false)
@@ -129,7 +129,7 @@ public:
         initTexturesDone = false;
         sceneBBoxIsValid = false;
 
-        pick.reset();
+        pick.init();
         //if (!keepParams) resetView();
     }
 

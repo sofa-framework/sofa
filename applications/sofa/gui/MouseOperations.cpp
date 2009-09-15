@@ -26,6 +26,11 @@
 ******************************************************************************/
 #include <sofa/gui/MouseOperations.h>
 #include <sofa/gui/PickHandler.h>
+#include <sofa/component/collision/InteractionPerformer.h>
+#include <sofa/helper/Factory.inl>
+
+#include <sofa/component/collision/AttachBodyPerformer.h>
+#include <sofa/component/collision/FixParticlePerformer.h>
 
 namespace sofa
 {
@@ -33,9 +38,20 @@ namespace sofa
 namespace gui
 {
 
+
+//*******************************************************************************************
 void AttachOperation::start()
 {
-    pickHandle->getInteraction()->mouseInteractor->doAttachBody(*pickHandle->getLastPicked(), getStiffness());
+    //Creation
+    performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("AttachBody", pickHandle->getInteraction()->mouseInteractor);
+    pickHandle->getInteraction()->mouseInteractor->addInteractionPerformer(performer);
+
+    //Configuration
+    component::collision::AttachBodyPerformerConfiguration *performerConfiguration=dynamic_cast<component::collision::AttachBodyPerformerConfiguration*>(performer);
+    performerConfiguration->setStiffness(getStiffness());
+
+    //Start
+    performer->start();
 }
 
 void AttachOperation::execution()
@@ -45,52 +61,21 @@ void AttachOperation::execution()
 
 void AttachOperation::end()
 {
-    pickHandle->getInteraction()->mouseInteractor->doReleaseBody();
+    pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
 }
 
-
-
-
-void RemoveOperation::start()
-{
-    execution();
-}
-
-void RemoveOperation::execution()
-{
-    pickHandle->getInteraction()->mouseInteractor->doRemoveCollisionElement(*pickHandle->getLastPicked());
-}
-
-void RemoveOperation::end()
-{
-    //do nothing
-}
-
-
-void InciseOperation::start()
-{
-    execution();
-}
-
-
-void InciseOperation::execution()
-{
-    helper::fixed_array< BodyPicked,2 > &elementsPicked = *pickHandle->getElementsPicked();
-
-    elementsPicked[1] = elementsPicked[0];
-    elementsPicked[0] = *pickHandle->getLastPicked();
-    pickHandle->getInteraction()->mouseInteractor->doInciseBody(elementsPicked);
-}
-
-void InciseOperation::end()
-{
-    pickHandle->getInteraction()->mouseInteractor->doInciseBody(*pickHandle->getElementsPicked());
-}
-
-
+//*******************************************************************************************
 void FixOperation::start()
 {
-    pickHandle->getInteraction()->mouseInteractor->doFixParticle(*pickHandle->getLastPicked(), getStiffness());
+    //Creation
+    performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("FixParticle", pickHandle->getInteraction()->mouseInteractor);
+    pickHandle->getInteraction()->mouseInteractor->addInteractionPerformer(performer);
+
+    //Configuration
+    component::collision::FixParticlePerformerConfiguration *performerConfiguration=dynamic_cast<component::collision::FixParticlePerformerConfiguration*>(performer);
+    performerConfiguration->setStiffness(getStiffness());
+    //Start
+    performer->start();
 }
 
 void FixOperation::execution()
@@ -102,6 +87,45 @@ void FixOperation::end()
     //do nothing
 }
 
+
+//*******************************************************************************************
+void RemoveOperation::start()
+{
+    performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("RemovePrimitive", pickHandle->getInteraction()->mouseInteractor);
+    pickHandle->getInteraction()->mouseInteractor->addInteractionPerformer(performer);
+}
+
+void RemoveOperation::execution()
+{
+//       performer->execute();
+}
+
+void RemoveOperation::end()
+{
+    pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
+}
+
+
+
+//*******************************************************************************************
+void InciseOperation::start()
+{
+    performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("InciseAlongPath", pickHandle->getInteraction()->mouseInteractor);
+    pickHandle->getInteraction()->mouseInteractor->addInteractionPerformer(performer);
+    performer->start();
+}
+
+
+void InciseOperation::execution()
+{
+//       performer->execute();
+}
+
+void InciseOperation::end()
+{
+    execution();
+    pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
+}
 
 }
 }

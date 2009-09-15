@@ -28,21 +28,10 @@
 
 #include <sofa/component/collision/initCollision.h>
 
-#include <sofa/core/BehaviorModel.h>
-#include <sofa/core/CollisionModel.h>
-#include <sofa/core/componentmodel/behavior/BaseForceField.h>
-#include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
-
-
-#include <sofa/component/collision/BarycentricContactMapper.h>
-#include <sofa/component/collision/TopologicalChangeManager.h>
+#include <sofa/component/collision/InteractionPerformer.h>
 #include <sofa/component/collision/RayModel.h>
-#include <sofa/component/forcefield/StiffSpringForceField.h>
-
-#include <sofa/component/constraint/FixedConstraint.h>
 #include <sofa/simulation/common/Node.h>
 
-#include <sofa/defaulttype/VecTypes.h>
 
 namespace sofa
 {
@@ -66,64 +55,46 @@ struct BodyPicked
 
 class SOFA_COMPONENT_COLLISION_API BaseMouseInteractor : public core::BehaviorModel
 {
-    typedef sofa::component::collision::RayModel MouseCollisionModel;
 public:
-    BaseMouseInteractor(): collisionModel(NULL),isAttached(false), isRemovingElement(false), isIncising(false),distanceFromMouse(0) {};
-
-    void updatePosition( double dt);
+    typedef sofa::component::collision::RayModel MouseCollisionModel;
+    typedef helper::vector< InteractionPerformer* > VecPerformer;
+    BaseMouseInteractor(): isAttached(false),distanceFromMouse(0) {};
 
     virtual void draw();
 
-    void clear()
-    {
-        doReleaseBody();
-        doReleaseFixations();
-    };
+    void cleanup();
 
-    //Basic operations available with the Mouse
-    /// Attach a body to the mouse
-    virtual void doAttachBody(const BodyPicked& body, double stiffness)=0;
-    /// Release the attached body
-    virtual void doReleaseBody()=0;
-    /// Remove the collision element under the mouse
-    virtual void doRemoveCollisionElement(const BodyPicked& body)=0;
-    /// Process to an incision
-    virtual void doInciseBody(const helper::fixed_array< BodyPicked,2 > &incision)=0;
 
-    virtual void doFixParticle(const BodyPicked& body, double stiffness)=0;
-    virtual void doReleaseFixations()=0;
+    //Interactions handling
+    void addInteractionPerformer(InteractionPerformer *i);
+    bool removeInteractionPerformer( InteractionPerformer *i);
+    //Called at each time step: launch all the performers
+    void updatePosition( double dt);
+    //Propagate an event in case to all the performers
+    void handleEvent(core::objectmodel::Event *e);
+
+
+    virtual core::componentmodel::behavior::BaseMechanicalState *getMouseContainer()=0;
+
+    bool isMouseAttached() const { return isAttached;};
+    void setMouseAttached(bool b) {isAttached=b;};
+
+    MouseCollisionModel *getMouseRayModel() {return mouseCollision;};
+    void setMouseRayModel( MouseCollisionModel* model) {mouseCollision=model;}
+
+    BodyPicked getBodyPicked() const {return lastPicked;};
+    void setBodyPicked( BodyPicked picked) {lastPicked=picked;}
 
     SReal getDistanceFromMouse() const {return distanceFromMouse;};
-    bool isMouseAttached() const { return isAttached;};
-
-
-    void setMouseRayModel( component::collision::RayModel* model)
-    {
-        mouseCollision=model;
-    }
-
-
-    void setCollisionElement( sofa::core::CollisionModel *body, unsigned int index)
-    {
-        collisionModel=body;
-        indexCollisionElement=index;
-    }
-
+    void setDistanceFromMouse(SReal d) {distanceFromMouse=d;}
 
 protected:
     MouseCollisionModel  *mouseCollision;
-    sofa::core::CollisionModel *collisionModel;
-    unsigned int indexCollisionElement;
-
-    helper::fixed_array< BodyPicked,2 > elementsPicked;
-
+    BodyPicked lastPicked;
     bool isAttached;
-    bool isRemovingElement;
-    bool isIncising;
-
     SReal distanceFromMouse;
 
-    sofa::component::collision::TopologicalChangeManager topologyChangeManager;
+    VecPerformer performers;
 };
 
 
@@ -136,33 +107,16 @@ template <class DataTypes>
 class MouseInteractor : public BaseMouseInteractor
 {
 public:
-    typedef sofa::component::container::MechanicalObject< DataTypes >         MouseContainer;
-    typedef sofa::component::collision::BaseContactMapper< DataTypes >        MouseContactMapper;
-    //typedef sofa::component::forcefield::VectorSpringForceField< DataTypes >  MouseForceField;
-    typedef sofa::component::forcefield::StiffSpringForceField< DataTypes >   MouseForceField;
-
+    typedef sofa::component::container::MechanicalObject< DataTypes > MouseContainer;
     typedef typename DataTypes::Coord Coord;
 public:
-    MouseInteractor():mouseInSofa(NULL), mapper(NULL), forcefield(NULL) {};
-    ~MouseInteractor() { doReleaseBody();}
-
-    void draw();
+    MouseInteractor():mouseInSofa(NULL) {};
+    ~MouseInteractor() {}
 
     void init();
 
-    //Basic operations available with the Mouse
-    /// Attach a body to the mouse
-    void doAttachBody(const BodyPicked& body, double stiffness);
-    /// Release the attached body
-    void doReleaseBody();
-    /// Remove the collision element under the mouse
-    void doRemoveCollisionElement(const BodyPicked& body);
-    /// Process to an incision
-    void doInciseBody(const helper::fixed_array< BodyPicked,2 > &incision);
-    /// Fix the particle picked
-    void doFixParticle(const BodyPicked& body, double stiffness);
-    /// Release the attached body
-    void doReleaseFixations();
+    core::componentmodel::behavior::BaseMechanicalState *getMouseContainer() {return mouseInSofa;}
+
 
     virtual std::string getTemplateName() const
     {
@@ -173,12 +127,7 @@ public:
         return DataTypes::Name();
     }
 protected:
-
     MouseContainer       *mouseInSofa;
-    MouseContactMapper   *mapper;
-    std::map< core::CollisionModel*, MouseContactMapper* > mapperFixations;
-    MouseForceField      *forcefield;
-    std::vector< simulation::Node * > fixations;
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_COLLISION_MOUSEINTERACTOR_CPP)

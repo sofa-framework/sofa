@@ -85,17 +85,21 @@ PickHandler::~PickHandler()
 //       for (unsigned int i=0;i<instanceComponents.size();++i) delete instanceComponents[i];
 }
 
-void PickHandler::reset()
+void PickHandler::init()
 {
-    if (!interactorInUse)
-    {
-        interaction->reset();
-    }
     core::componentmodel::collision::Pipeline *pipeline;
     simulation::getSimulation()->getContext()->get(pipeline, core::objectmodel::BaseContext::SearchRoot);
 
     useCollisions = (pipeline != NULL);
 }
+
+void PickHandler::reset()
+{
+    activateRay(false);
+
+    for (unsigned int i=0; i<instanceComponents.size(); ++i) instanceComponents[i]->reset();
+}
+
 void PickHandler::activateRay(bool act)
 {
     if (interactorInUse && !act)
@@ -104,9 +108,6 @@ void PickHandler::activateRay(bool act)
 
         interaction->deactivate();
         interactorInUse=false;
-
-        elementsPicked[0] = BodyPicked();
-        elementsPicked[1] = BodyPicked();
     }
     else if (!interactorInUse && act)
     {
@@ -169,13 +170,13 @@ void PickHandler::updateRay(const sofa::defaulttype::Vector3 &position,const sof
     if (!interactorInUse) return;
     mouseCollision->getRay(0).origin() = position+orientation*interaction->mouseInteractor->getDistanceFromMouse();
     mouseCollision->getRay(0).direction() = orientation;
+
     if (needToCastRay())
     {
         lastPicked=findCollision();
         setCompatibleInteractor();
         interaction->mouseInteractor->setMouseRayModel(mouseCollision);
-
-        interaction->mouseInteractor->setCollisionElement(lastPicked.body, lastPicked.indexCollisionElement);
+        interaction->mouseInteractor->setBodyPicked(lastPicked);
     }
 
 

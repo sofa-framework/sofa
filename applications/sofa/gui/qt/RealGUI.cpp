@@ -220,7 +220,7 @@ protected:
 typedef QApplication QSOFAApplication;
 #endif
 
-SofaGUI* RealGUI::CreateGUI ( const char* name, const std::vector<std::string>& options, sofa::simulation::Node* node, const char* filename )
+SofaGUI* RealGUI::CreateGUI ( const char* name, const std::vector<std::string>& options, sofa::simulation::Node* root, const char* filename )
 {
     {
         int  *argc = new int;
@@ -233,11 +233,7 @@ SofaGUI* RealGUI::CreateGUI ( const char* name, const std::vector<std::string>& 
     }
     // create interface
     gui = new RealGUI ( name, options );
-    Node *root = dynamic_cast< Node* >(node);
-    if ( !root )
-        root = simulation::getSimulation()->newNode("Root");
-
-    gui->setScene ( root, filename );
+    if ( root ) gui->setScene ( root, filename );
 
     //gui->viewer->resetView();
 
@@ -607,6 +603,7 @@ RealGUI::~RealGUI()
     delete handleTraceVisitor;
 #endif
     if (dialog) delete dialog;
+    delete viewer;
 }
 
 void RealGUI::init()
@@ -951,7 +948,7 @@ void RealGUI::fileOpen ( std::string filename )
 
     if ( viewer->getScene() !=NULL )
     {
-        viewer->getPickHandler()->activateRay(false);
+        viewer->getPickHandler()->reset();//activateRay(false);
         simulation::getSimulation()->unload ( viewer->getScene() );
         if ( graphListener!=NULL )
         {
@@ -1408,36 +1405,6 @@ void RealGUI::setGUI ( void )
 {
     textEdit1->setText ( viewer->helpString() );
     connect ( this, SIGNAL( newStep()), viewer->getQWidget(), SLOT( update()));
-    /*
-    #ifdef SOFA_GUI_QTOGREVIEWER
-    	//Hide unused options
-    	if ( !strcmp ( viewerName,"ogre" ) )
-    	  {
-    	    showVisual->hide();
-    	    showBehavior->hide();
-    	    showCollision->hide();
-    	    showBoundingCollision->hide();
-    	    showMapping->hide();
-    	    showMechanicalMapping->hide();
-    	    showForceField->hide();
-    	    showInteractionForceField->hide();
-    	    showWireFrame->hide();
-    	    showNormals->hide();
-    	  }
-    	else
-    	  {
-    	    showVisual->show();
-    	    showBehavior->show();
-    	    showCollision->show();
-    	    showBoundingCollision->show();
-    	    showMapping->show();
-    	    showMechanicalMapping->show();
-    	    showForceField->show();
-    	    showInteractionForceField->show();
-    	    showWireFrame->show();
-    	    showNormals->show();
-    	  }
-    #endif*/
 }
 //###################################################################################################################
 
@@ -1743,11 +1710,9 @@ void RealGUI::resetScene()
         root->setTime(initial_time);
         eventNewTime();
 
-        //viewer->resetView();
         emit newStep();
-// 	    viewer->getQWidget()->update();
     }
-
+    viewer->getPickHandler()->reset();
     stopDumpVisitor();
 
 }
