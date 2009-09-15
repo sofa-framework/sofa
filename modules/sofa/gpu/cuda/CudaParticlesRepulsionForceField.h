@@ -22,21 +22,37 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_FORCEFIELD_PARTICLESREPULSIONFORCEFIELD_H
-#define SOFA_COMPONENT_FORCEFIELD_PARTICLESREPULSIONFORCEFIELD_H
+#ifndef SOFA_GPU_CUDA_CUDAPARTICLESREPULSIONFORCEFIELD_H
+#define SOFA_GPU_CUDA_CUDAPARTICLESREPULSIONFORCEFIELD_H
 
-#include <sofa/helper/system/config.h>
-#include <sofa/core/componentmodel/behavior/ForceField.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/component/container/SpatialGridContainer.h>
-#include <sofa/helper/rmath.h>
-#include <vector>
-#include <math.h>
-
-
+#include "CudaTypes.h"
+#include <sofa/component/forcefield/ParticlesRepulsionForceField.h>
+#include <sofa/gpu/cuda/CudaSpatialGridContainer.h>
 
 namespace sofa
 {
+
+namespace gpu
+{
+
+namespace cuda
+{
+
+template<class real>
+struct GPURepulsion
+{
+    real d;
+    real d2;
+    real stiffness;
+    real damping;
+};
+
+typedef GPURepulsion<float> GPURepulsion3f;
+typedef GPURepulsion<double> GPURepulsion3d;
+
+} // namespace cuda
+
+} // namespace gpu
 
 namespace component
 {
@@ -44,60 +60,21 @@ namespace component
 namespace forcefield
 {
 
-using namespace sofa::component::container;
+template <>
+void ParticlesRepulsionForceField<gpu::cuda::CudaVec3fTypes>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
 
-template<class DataTypes>
-class ParticlesRepulsionForceField : public sofa::core::componentmodel::behavior::ForceField<DataTypes>, public virtual core::objectmodel::BaseObject
-{
-public:
-    typedef sofa::core::componentmodel::behavior::ForceField<DataTypes> Inherit;
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::Coord Coord;
-    typedef typename DataTypes::Deriv Deriv;
-    typedef typename Coord::value_type Real;
+template <>
+void ParticlesRepulsionForceField<gpu::cuda::CudaVec3fTypes>::addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
 
-public:
-    Data< Real > distance;
-    Data< Real > stiffness;
-    Data< Real > damping;
+#ifdef SOFA_GPU_CUDA_DOUBLE
 
-    typedef SpatialGridContainer<DataTypes> Grid;
+template <>
+void ParticlesRepulsionForceField<gpu::cuda::CudaVec3dTypes>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
 
-    Grid* grid;
+template <>
+void ParticlesRepulsionForceField<gpu::cuda::CudaVec3dTypes>::addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
 
-protected:
-
-    struct Particle
-    {
-        sofa::helper::vector< int > neighbors; ///< indice + r/h
-    };
-
-    sofa::helper::vector<Particle> particles;
-
-public:
-    /// this method is called by the SpatialGrid when w connection between two particles is detected
-    void addNeighbor(int i1, int i2, Real /*r2*/, Real /*h2*/)
-    {
-        //Real r_h = (Real)sqrt(r2/h2);
-        if (i1<i2)
-            particles[i1].neighbors.push_back(i2);
-        else
-            particles[i2].neighbors.push_back(i1);
-    }
-
-    ParticlesRepulsionForceField();
-
-    virtual void init();
-
-    virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
-
-    virtual void addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
-
-    virtual double getPotentialEnergy(const VecCoord& x);
-
-    void draw();
-};
+#endif // SOFA_GPU_CUDA_DOUBLE
 
 } // namespace forcefield
 

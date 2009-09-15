@@ -265,8 +265,12 @@ findCellRangeD(const uint* particleHash,
             if (prev != hash[threadIdx.x])
             {
                 firstInCell = ((prev>>1) != (hash[threadIdx.x]>>1));
-                if (!(prev&1)) // no ghost particles in previous cells
-                    cellGhost[ prev>>1 ] = i;
+                if (firstInCell)
+                {
+                    cellRange[ prev>>1 ].y = i;
+                    if (!(prev&1)) // no ghost particles in previous cells
+                        cellGhost[ prev>>1 ] = i;
+                }
                 firstGhost = hash[threadIdx.x]&1;
             }
         }

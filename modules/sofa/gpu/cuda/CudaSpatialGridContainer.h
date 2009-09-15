@@ -112,6 +112,13 @@ public:
     Real getCellWidth() const { return cellWidth; }
     Real getInvCellWidth() const { return invCellWidth; }
 
+    int getCellBits() const { return cellBits; }
+    int getNbCells() const { return nbCells; }
+
+    const sofa::gpu::cuda::CudaVector< unsigned int >& getParticleIndexVector() const { return particleIndex; }
+    const sofa::gpu::cuda::CudaVector< sofa::helper::fixed_array<int,2> >& getCellRangeVector() const { return cellRange; }
+    const sofa::gpu::cuda::CudaVector< int >& getCellGhostVector() const { return cellGhost; }
+
 protected:
     const Real cellWidth;
     const Real invCellWidth;
