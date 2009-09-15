@@ -48,8 +48,6 @@ MeshLoader::MeshLoader() : BaseLoader()
     , hexahedra(initData(&hexahedra,"hexahedra","Hexahedra of the mesh loaded"))
     //, triangulate(initData(&triangulate,false,"triangulate","Divide all polygons into triangles"))
     //, fillMState(initData(&fillMState,true,"fillMState","Must this mesh loader fill the mstate instead of manually or by using the topology"))
-    , texCoords(initData(&texCoords,"texCoords","TexCoords of the mesh loaded"))
-    , normals(initData(&normals,"normals","Normals of the mesh loaded"))
     //, facets(initData(&facets,"facets","Facets of the mesh loaded"))
 {
     addAlias(&tetrahedra,"tetras");
@@ -62,8 +60,6 @@ MeshLoader::MeshLoader() : BaseLoader()
     polygons.setPersistent(false);
     tetrahedra.setPersistent(false);
     hexahedra.setPersistent(false);
-    texCoords.setPersistent(false);
-    normals.setPersistent(false);
 }
 
 

@@ -68,11 +68,6 @@ protected:
     Data< helper::vector< helper::fixed_array<unsigned int,8> > > hexahedra;
     // polygons in 3D ?
 
-
-    // Only for obj?
-    Data< helper::vector<sofa::defaulttype::Vector3> > texCoords;
-    Data< helper::vector<sofa::defaulttype::Vector3> > normals;
-
     Data< bool > triangulate;
     Data< bool > fillMState; ///< Must this mesh loader fill the mstate instead of manually or by using the topology
 

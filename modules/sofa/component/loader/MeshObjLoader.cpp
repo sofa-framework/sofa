@@ -77,11 +77,15 @@ void MeshObjLoader::Material::setColor(float r, float g, float b, float a)
 
 
 MeshObjLoader::MeshObjLoader(): MeshLoader()
-    , normalsList(initData(&normalsList,"normalsList","List of normals of elements of the mesh loaded."))
     , texturesList(initData(&texturesList,"texturesList","List of textures corresponding to elements of the mesh loaded."))
+    , texCoords(initData(&texCoords,"texcoords","Texcoords of the mesh loaded"))
+    , normalsList(initData(&normalsList,"normalsList","List of normals of elements of the mesh loaded."))
+    , normals(initData(&normals,"normals","Normals of the mesh loaded"))
 {
-    normalsList.setPersistent(false);
     texturesList.setPersistent(false);
+    texCoords.setPersistent(false);
+    normalsList.setPersistent(false);
+    normals.setPersistent(false);
 }
 
 
@@ -117,7 +121,7 @@ bool MeshObjLoader::readOBJ (FILE* file, const char* filename)
 
 
     helper::vector<sofa::defaulttype::Vector3>& my_positions = *(positions.beginEdit());
-    helper::vector<sofa::defaulttype::Vector3>& my_texCoords = *(texCoords.beginEdit());
+    helper::vector<sofa::defaulttype::Vector2>& my_texCoords = *(texCoords.beginEdit());
     helper::vector<sofa::defaulttype::Vector3>& my_normals   = *(normals.beginEdit());
 
     helper::vector<Material>& my_materials = *(materials.beginEdit());
@@ -197,7 +201,7 @@ bool MeshObjLoader::readOBJ (FILE* file, const char* filename)
                 }
 
                 sscanf (buf, "%lf %lf", &result[0], &result[1]);
-                my_texCoords.push_back(Vector3(result[0],result[1], result[2]));
+                my_texCoords.push_back(Vector2(result[0],result[1]));
                 break;
             default:
                 printf("readObj : Unknown token \"%s\".\n", buf);
