@@ -123,8 +123,14 @@ public:
 
     Data <helper::vector <Material> > materials;
 
-    Data <helper::vector <helper::vector <int> > > normalsList; //TODO: check if it not the sames daata as normals and texCoords
     Data <helper::vector <helper::vector <int> > > texturesList;
+    Data< helper::vector<sofa::defaulttype::Vector2> > texCoords;
+
+    Data <helper::vector <helper::vector <int> > > normalsList; //TODO: check if it not the sames daata as normals and texCoords
+    Data< helper::vector<sofa::defaulttype::Vector3> > normals;
+
+
+
 
     virtual std::string type()                 { return "The format of this mesh is OBJ."; }
 
