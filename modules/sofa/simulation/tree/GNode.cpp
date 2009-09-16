@@ -25,7 +25,7 @@
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/simulation/common/Visitor.h>
 #include <sofa/simulation/common/xml/NodeElement.h>
-
+#include <sofa/helper/Factory.inl>
 
 namespace sofa
 {
