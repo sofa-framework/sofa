@@ -47,7 +47,7 @@
 #include <sofa/gui/qt/SofaPluginManager.h>
 #include <sofa/gui/qt/SofaMouseManager.h>
 
-#include <sofa/simulation/tree/xml/XML.h>
+#include <sofa/simulation/common/xml/XML.h>
 #include <sofa/helper/system/SetDirectory.h>
 
 #ifdef SOFA_DUMP_VISITOR_INFO

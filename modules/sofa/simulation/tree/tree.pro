@@ -8,27 +8,12 @@ HEADERS += tree.h \
            GNode.h \
            GNodeVisitor.h \
            TreeSimulation.h \
-           xml/BaseElement.h \
-           xml/Element.h \
-           xml/Element.inl \
-		   xml/initXml.h \
-           xml/NodeElement.h \
-           xml/ObjectElement.h \
-           xml/AttributeElement.h \
-           xml/DataElement.h \
-           xml/XML.h 
 
 SOURCES += ExportDotVisitor.cpp \
            GNode.cpp \   
            GNodeVisitor.cpp \
-           TreeSimulation.cpp \
-           xml/BaseElement.cpp \
-		   xml/initXml.cpp \
-           xml/NodeElement.cpp \
-           xml/ObjectElement.cpp \
-           xml/AttributeElement.cpp \
-           xml/DataElement.cpp \
-           xml/XML.cpp 
+           TreeSimulation.cpp
+
 SOFA_DIR =../../../..
 TEMPLATE = lib
 include($${SOFA_DIR}/sofa.cfg)

@@ -27,8 +27,9 @@
 #include <iostream>
 #include <fstream>
 #include <sofa/helper/ArgumentParser.h>
-#include <sofa/simulation/tree/xml/initXml.h>
+#include <sofa/simulation/common/xml/initXml.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
+#include <sofa/simulation/tree/GNode.h>
 #include <sofa/component/init.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/BackTrace.h>
@@ -110,7 +111,7 @@ int main(int argc, char** argv)
 
     sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
     sofa::component::init();
-    sofa::simulation::tree::xml::initXml();
+    sofa::simulation::xml::initXml();
 
     if (!files.empty()) fileName = files[0];
 

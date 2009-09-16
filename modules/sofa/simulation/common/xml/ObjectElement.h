@@ -22,19 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_TREE_XML_XML_H
-#define SOFA_SIMULATION_TREE_XML_XML_H
+#ifndef SOFA_SIMULATION_COMMON_XML_OBJECTELEMENT_H
+#define SOFA_SIMULATION_COMMON_XML_OBJECTELEMENT_H
 
-#include <sofa/simulation/tree/xml/Element.h>
-
-#ifdef SOFA_XML_PARSER_TINYXML
-#include <tinyxml.h>
-#endif
-#ifdef SOFA_XML_PARSER_LIBXML
-#include <libxml/parser.h>
-#include <libxml/tree.h>
-#endif
-
+#include <sofa/simulation/common/xml/Element.h>
+#include <sofa/core/objectmodel/BaseObject.h>
 
 namespace sofa
 {
@@ -42,31 +34,26 @@ namespace sofa
 namespace simulation
 {
 
-namespace tree
-{
-
 namespace xml
 {
 
-#ifdef SOFA_XML_PARSER_TINYXML
-SOFA_SIMULATION_TREE_API BaseElement* processXMLLoading(const char *filename, const TiXmlDocument &doc);
-#endif
-#ifdef SOFA_XML_PARSER_LIBXML
-SOFA_SIMULATION_TREE_API BaseElement* processXMLLoading(const char *filename, const xmlDocPtr &doc);
-#endif
+class SOFA_SIMULATION_COMMON_API ObjectElement : public Element<core::objectmodel::BaseObject>
+{
+public:
+    ObjectElement(const std::string& name, const std::string& type, BaseElement* parent=NULL);
 
-SOFA_SIMULATION_TREE_API BaseElement* loadFromFile(const char *filename);
+    virtual ~ObjectElement();
 
-SOFA_SIMULATION_TREE_API BaseElement* loadFromMemory(const char *filename, const char *data, unsigned int size );
+    virtual bool initNode();
 
+    virtual bool init();
 
-SOFA_SIMULATION_TREE_API bool save(const char *filename, BaseElement* root);
+    void setAttribute(const std::string& attr, const char* val);
 
-extern int SOFA_SIMULATION_TREE_API numDefault;
+    virtual const char* getClass() const;
+};
 
 } // namespace xml
-
-} // namespace tree
 
 } // namespace simulation
 

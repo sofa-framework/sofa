@@ -27,7 +27,7 @@
 #include <iostream>
 #include <fstream>
 #include <sofa/helper/ArgumentParser.h>
-#include <sofa/simulation/tree/xml/initXml.h>
+#include <sofa/simulation/common/xml/initXml.h>
 #include "../lib/BglSimulation.h"
 #include "../lib/BglNode.h"
 #include <sofa/component/init.h>
@@ -107,7 +107,7 @@ int main(int argc, char** argv)
 
     sofa::simulation::setSimulation(new sofa::simulation::bgl::BglSimulation());
     sofa::component::init();
-    sofa::simulation::tree::xml::initXml();
+    sofa::simulation::xml::initXml();
 
 
 

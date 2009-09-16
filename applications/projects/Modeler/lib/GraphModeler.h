@@ -74,6 +74,7 @@ typedef QPopupMenu Q3PopupMenu;
 
 using sofa::simulation::tree::GNode;
 using namespace sofa::core::objectmodel;
+using namespace sofa::simulation;
 using namespace sofa::simulation::tree;
 using sofa::core::SofaLibrary;
 

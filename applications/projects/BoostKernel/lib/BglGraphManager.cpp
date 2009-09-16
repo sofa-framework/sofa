@@ -37,17 +37,13 @@
 //
 
 #include "BglGraphManager.inl"
-#include "BglNode.h"
 
 #include "bfs_adapter.h"
 #include "dfs_adapter.h"
 #include "dfv_adapter.h"
 
-#include <boost/graph/connected_components.hpp>
 #include <boost/vector_property_map.hpp>
 
-#include <sofa/simulation/common/CollisionVisitor.h>
-#include <sofa/simulation/common/PrintVisitor.h>
 
 namespace sofa
 {
@@ -172,13 +168,13 @@ void BglGraphManager::clearVertex( typename Graph::vertex_descriptor v, Graph &g
 }
 
 
-void BglGraphManager::addInteraction( Node* n1, Node* n2, BaseObject* iff )
+void BglGraphManager::addInteraction( Node* n1, Node* n2, core::objectmodel::BaseObject* iff )
 {
     if (n1 == n2) return;
     interactions.push_back( Interaction(h_node_vertex_map[n1], h_node_vertex_map[n2],iff));
 }
 
-void BglGraphManager::removeInteraction( BaseObject* iff )
+void BglGraphManager::removeInteraction( core::objectmodel::BaseObject* iff )
 {
     Interactions::iterator it;
     for (it=interactions.begin(); it!=interactions.end(); ++it)
@@ -226,6 +222,7 @@ struct launchBreadthFirstVisit
 
     launchBreadthFirstVisit( Visitor &v, Graph &g):  visitor(v), graph(g)
     {
+        std::cerr << "Visitor Launch: " << v.getClassName() << " : " << v.getInfos() << std::endl;
     }
 
     void operator()(Vertex v)
@@ -251,7 +248,7 @@ struct launchBreadthFirstVisit
         ColorStdMap colorsStdMap;
         boost::associative_property_map< ColorStdMap > propertyColorMap(colorsStdMap);
 
-        bfs_adapter<Graph> bfsv(&visitor);
+        bfs_adapter<Graph> bfsv(&visitor, graph);
         boost::breadth_first_visit(graph,
                 v,
                 queue,
@@ -291,7 +288,8 @@ void BglGraphManager::breadthFirstVisit( const Node *constNode, Visitor& visit, 
     }
     case BaseContext::SearchRoot:
     {
-        std::cerr << "breadth First Visit not implemented yet for Root direction" << std::endl;
+        launchBreadthFirstVisit<Visitor, Hgraph> launcher(visit, hgraph);
+        std::for_each(hroots.begin(), hroots.end(),launcher);
         break;
     }
     case BaseContext::Local:
@@ -358,8 +356,7 @@ struct launchDepthFirstVisit
         ColorMap colors;
         colors.resize(findSizeColorMap());
 
-        boost::depth_first_visit(graph,
-                v,
+        boost::depth_first_visit(graph,                                   v,
                 dfsv,
                 make_iterator_property_map(colors.begin(),boost::get(boost::vertex_index, graph) ),
                 dfsv
@@ -442,10 +439,9 @@ void BglGraphManager::clear()
 {
     interactions.clear();
 
-
     hgraph.clear();
-    printVertices(hgraph);
     h_node_vertex_map.clear();
+
     rgraph.clear();
     r_node_vertex_map.clear();
 }
@@ -489,7 +485,7 @@ class find_leaves: public ::boost::bfs_visitor<>
 {
     typedef typename Graph::vertex_descriptor Vertex;
 public:
-    typedef vector<Vertex> VertexLeaves;
+    typedef helper::vector<Vertex> VertexLeaves;
     VertexLeaves& leaves; // use external data, since internal data seems corrupted after the visit (???)
     find_leaves(VertexLeaves& l ):leaves(l) {}
     void discover_vertex( Vertex v, const Graph& g )

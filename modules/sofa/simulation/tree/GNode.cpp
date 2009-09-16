@@ -24,8 +24,7 @@
 ******************************************************************************/
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/simulation/common/Visitor.h>
-#include <sofa/simulation/common/DesactivatedNodeVisitor.h>
-#include <iostream>
+#include <sofa/simulation/common/xml/NodeElement.h>
 
 
 namespace sofa
@@ -37,11 +36,8 @@ namespace simulation
 namespace tree
 {
 
-using std::cerr;
-using std::endl;
 
 using helper::system::thread::CTime;
-using namespace sofa::core::objectmodel;
 
 GNode::GNode(const std::string& name, GNode* parent)
     : simulation::Node(name)
@@ -407,7 +403,7 @@ void GNode::updateContext()
     {
         if( debug_ )
         {
-            cerr<<"GNode::updateContext, node = "<<getName()<<", incoming context = "<< *getParent()->getContext() << endl;
+            std::cerr<<"GNode::updateContext, node = "<<getName()<<", incoming context = "<< *getParent()->getContext() << std::endl;
         }
         copyContext(*parent);
     }
@@ -420,7 +416,7 @@ void GNode::updateSimulationContext()
     {
         if( debug_ )
         {
-            cerr<<"GNode::updateContext, node = "<<getName()<<", incoming context = "<< *getParent()->getContext() << endl;
+            std::cerr<<"GNode::updateContext, node = "<<getName()<<", incoming context = "<< *getParent()->getContext() << std::endl;
         }
         copySimulationContext(*parent);
     }
@@ -492,7 +488,8 @@ Node::ctime_t GNode::endTime(ctime_t t0, const std::string& s, core::objectmodel
 
 SOFA_DECL_CLASS(GNode)
 
-helper::Creator<xml::NodeElement::Factory, GNode> GNodeClass("default");
+//helper::Creator<xml::NodeElement::Factory, GNode> GNodeDefaultClass("default");
+helper::Creator<xml::NodeElement::Factory, GNode> GNodeClass("GNode");
 
 } // namespace tree
 

@@ -22,11 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_TREE_XML_ELEMENT_H
-#define SOFA_SIMULATION_TREE_XML_ELEMENT_H
+#ifndef SOFA_SIMULATION_COMMON_XML_ELEMENT_H
+#define SOFA_SIMULATION_COMMON_XML_ELEMENT_H
 
 #include <vector>
-#include <sofa/simulation/tree/xml/BaseElement.h>
+#include <sofa/simulation/common/xml/BaseElement.h>
 #include <sofa/helper/Factory.h>
 
 namespace sofa
@@ -35,15 +35,13 @@ namespace sofa
 namespace simulation
 {
 
-namespace tree
-{
 
 namespace xml
 {
 
 
 template<class Object>
-class SOFA_SIMULATION_TREE_API Element : public BaseElement
+class SOFA_SIMULATION_COMMON_API Element : public BaseElement
 {
 private:
     Object* object;
@@ -209,8 +207,6 @@ void createWith2Objects(Object*& obj, BaseElement* arg)
 */
 
 } // namespace xml
-
-} // namespace tree
 
 } // namespace simulation
 

@@ -34,10 +34,10 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 
-#include <sofa/simulation/tree/xml/ObjectElement.h>
-#include <sofa/simulation/tree/xml/AttributeElement.h>
-#include <sofa/simulation/tree/xml/DataElement.h>
-#include <sofa/simulation/tree/xml/XML.h>
+#include <sofa/simulation/common/xml/ObjectElement.h>
+#include <sofa/simulation/common/xml/AttributeElement.h>
+#include <sofa/simulation/common/xml/DataElement.h>
+#include <sofa/simulation/common/xml/XML.h>
 #include <sofa/simulation/common/XMLPrintVisitor.h>
 
 #ifdef SOFA_QT4

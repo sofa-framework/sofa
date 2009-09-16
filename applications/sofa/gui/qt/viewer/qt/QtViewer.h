@@ -46,7 +46,7 @@
 #include <sofa/helper/gl/Texture.h>
 #include <sofa/helper/gl/VisualParameters.h>
 #include <sofa/helper/system/thread/CTime.h>
-#include <sofa/simulation/tree/xml/Element.h>
+#include <sofa/simulation/common/xml/Element.h>
 
 // allow catheter navigation using the tracking system (very simple version, surely will be modified)
 //#define TRACKING

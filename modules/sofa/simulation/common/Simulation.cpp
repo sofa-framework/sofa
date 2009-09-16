@@ -45,9 +45,32 @@
 #include <sofa/simulation/common/UpdateMappingEndEvent.h>
 #include <sofa/simulation/common/CleanupVisitor.h>
 #include <sofa/simulation/common/DeleteVisitor.h>
+
+
+#include <sofa/helper/system/SetDirectory.h>
+#include <sofa/helper/system/PipeProcess.h>
+
 #include <sofa/core/ObjectFactory.h>
+
+
 #include <fstream>
 #include <string.h>
+
+
+// #include <sofa/simulation/common/FindByTypeVisitor.h>
+
+
+
+// #include <sofa/helper/system/FileRepository.h>
+
+// #include <fstream>
+// #include <string.h>
+// #ifndef WIN32
+// #include <locale.h>
+// #endif
+
+
+
 namespace sofa
 {
 
@@ -354,6 +377,138 @@ void Simulation::exportGnuplot ( Node* root, double time )
     ExportGnuplotVisitor expg ( time );
     root->execute ( expg );
 }
+
+
+
+/// Load a scene from a file
+Node* Simulation::processXML(xml::BaseElement* xml, const char *filename)
+{
+    if ( xml==NULL )
+    {
+        return NULL;
+    }
+
+    // We go the the current file's directory so that all relative path are correct
+    helper::system::SetDirectory chdir ( filename );
+
+#ifndef WIN32
+    // Reset local settings to make sure that floating-point values are interpreted correctly
+    setlocale(LC_ALL,"C");
+    setlocale(LC_NUMERIC,"C");
+#endif
+
+    // 				std::cout << "Initializing objects"<<std::endl;
+    if ( !xml->init() )
+    {
+        std::cerr << "Objects initialization failed."<<std::endl;
+    }
+
+    Node* root = dynamic_cast<Node*> ( xml->getObject() );
+    if ( root == NULL )
+    {
+        std::cerr << "Objects initialization failed."<<std::endl;
+        delete xml;
+        return NULL;
+    }
+
+    // 				std::cout << "Initializing simulation "<<root->getName() <<std::endl;
+
+    // Find the Simulation component in the scene
+    FindByTypeVisitor<Simulation> findSimu;
+    findSimu.execute(root);
+    if( !findSimu.found.empty() )
+        setSimulation( findSimu.found[0] );
+
+    // As mappings might be initialized after visual models, it is necessary to update them
+    // BUGFIX (Jeremie A.): disabled as initTexture was not called yet, and the GUI might not even be up yet
+    //root->execute<VisualUpdateVisitor>();
+
+    return root;
+}
+
+/// Load from a string in memory
+Node* Simulation::loadFromMemory ( const char *filename, const char *data, unsigned int size )
+{
+    //::sofa::simulation::init();
+    // 				std::cerr << "Loading simulation XML file "<<filename<<std::endl;
+    xml::BaseElement* xml = xml::loadFromMemory (filename, data, size );
+
+    Node* root = processXML(xml, filename);
+
+    // 				std::cout << "load done."<<std::endl;
+    delete xml;
+
+    return root;
+}
+
+
+/// Load a scene from a file
+Node* Simulation::loadFromFile ( const char *filename )
+{
+    //::sofa::simulation::init();
+    // 				std::cerr << "Loading simulation XML file "<<filename<<std::endl;
+    xml::BaseElement* xml = xml::loadFromFile ( filename );
+
+    Node* root = processXML(xml, filename);
+
+    // 				std::cout << "load done."<<std::endl;
+    delete xml;
+
+    return root;
+}
+
+/// Load a scene
+Node* Simulation::load ( const char *filename )
+{
+    std::string ext = sofa::helper::system::SetDirectory::GetExtension(filename);
+    if (ext == "php" || ext == "pscn")
+    {
+        std::string out="",error="";
+        std::vector<std::string> args;
+
+
+        //TODO : replace when PipeProcess will get file as stdin
+        //at the moment, the filename is given as an argument
+        args.push_back(std::string("-f" + std::string(filename)));
+        //args.push_back("-w");
+        std::string newFilename="";
+        //std::string newFilename=filename;
+
+        helper::system::FileRepository fp("PATH", ".");
+#ifdef WIN32
+        std::string command = "php.exe";
+#else
+        std::string command = "php";
+#endif
+        if (!fp.findFile(command,""))
+        {
+            std::cerr << "Simulation : Error : php not found in your PATH environment" << std::endl;
+            return NULL;
+        }
+
+        sofa::helper::system::PipeProcess::executeProcess(command.c_str(), args,  newFilename, out, error);
+
+        if(error != "")
+        {
+            std::cerr << "Simulation : load : "<< error << std::endl;
+            if (out == "")
+                return NULL;
+        }
+
+        return loadFromMemory(filename, out.c_str(), out.size());
+    }
+
+    if (ext == "scn" || ext == "xml")
+    {
+        return loadFromFile(filename);
+    }
+
+    std::cerr << "Simulation : Error : extension not handled" << std::endl;
+    return NULL;
+
+}
+
+/// Delete a scene from memory. After this call the pointer is invalid
 void Simulation::unload(Node * root)
 {
     if ( !root ) return;
@@ -365,6 +520,7 @@ void Simulation::unload(Node * root)
     root->detachFromGraph();
     root->execute<CleanupVisitor>();
     root->execute<DeleteVisitor>();
+    delete root;
 }
 //      void Simulation::addStep ( )
 //      {

@@ -47,7 +47,7 @@ void apply(std::string &input, unsigned int nbsteps, std::string &output)
 {
     cerr<<"\n****SIMULATION*  (.scn:"<< input<<", #steps:"<<nbsteps<<", .simu:"<<output<<")"<<endl;
 
-    sofa::simulation::tree::xml::numDefault = 0;
+    sofa::simulation::xml::numDefault = 0;
 
     using namespace sofa::helper::system;
     sofa::simulation::tree::GNode* groot = NULL;

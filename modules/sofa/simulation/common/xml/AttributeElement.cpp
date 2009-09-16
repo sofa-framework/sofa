@@ -22,9 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <sofa/simulation/tree/xml/initXml.h>
-
+#include <sofa/simulation/common/xml/AttributeElement.h>
+#include <sofa/simulation/common/xml/Element.inl>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
@@ -32,32 +32,58 @@ namespace sofa
 namespace simulation
 {
 
-namespace tree
-{
-
 namespace xml
 {
 
+using namespace sofa::defaulttype;
+using helper::Creator;
 
-void initXml()
+//template class Factory< std::string, objectmodel::BaseObject, Node<objectmodel::BaseObject*>* >;
+
+AttributeElement::AttributeElement(const std::string& name, const std::string& type, BaseElement* parent)
+    : Element<core::objectmodel::BaseObject>(name, type, parent)
 {
-    static bool first = true;
-    if (first)
+}
+
+AttributeElement::~AttributeElement()
+{
+}
+
+bool AttributeElement::init()
+{
+    int i=0;
+    for (child_iterator<> it = begin(); it != end(); ++it)
     {
-        first = false;
+        i++;
+        it->initNode();
     }
+    return initNode();
+}
+
+bool AttributeElement::initNode()
+{
+    std::string name = getAttribute( "type", "");
+
+    if (this->replaceAttribute.find(name) != this->replaceAttribute.end())
+    {
+        value=replaceAttribute[name];
+    }
+    getParentElement()->setAttribute(name, value.c_str());
+    return true;
+}
+
+SOFA_DECL_CLASS(Attribute)
+
+Creator<BaseElement::NodeFactory, AttributeElement> AttributeNodeClass("Attribute");
+
+const char* AttributeElement::getClass() const
+{
+    return AttributeNodeClass.c_str();
 }
 
 } // namespace xml
-
-} // namespace tree
 
 } // namespace simulation
 
 } // namespace sofa
 
-
-SOFA_LINK_CLASS(Attribute)
-SOFA_LINK_CLASS(Data)
-SOFA_LINK_CLASS(Node)
-SOFA_LINK_CLASS(Object)

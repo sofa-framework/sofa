@@ -22,11 +22,19 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#ifndef SOFA_SIMULATION_COMMON_XML_XML_H
+#define SOFA_SIMULATION_COMMON_XML_XML_H
 
-#include <sofa/simulation/tree/xml/DataElement.h>
-#include <sofa/simulation/tree/xml/AttributeElement.h>
-#include <sofa/simulation/tree/xml/Element.inl>
-#include <sofa/core/ObjectFactory.h>
+#include <sofa/simulation/common/xml/Element.h>
+
+#ifdef SOFA_XML_PARSER_TINYXML
+#include <tinyxml.h>
+#endif
+#ifdef SOFA_XML_PARSER_LIBXML
+#include <libxml/parser.h>
+#include <libxml/tree.h>
+#endif
+
 
 namespace sofa
 {
@@ -34,49 +42,29 @@ namespace sofa
 namespace simulation
 {
 
-namespace tree
-{
-
 namespace xml
 {
 
-using namespace sofa::defaulttype;
-using helper::Creator;
+#ifdef SOFA_XML_PARSER_TINYXML
+SOFA_SIMULATION_COMMON_API BaseElement* processXMLLoading(const char *filename, const TiXmlDocument &doc);
+#endif
+#ifdef SOFA_XML_PARSER_LIBXML
+SOFA_SIMULATION_COMMON_API BaseElement* processXMLLoading(const char *filename, const xmlDocPtr &doc);
+#endif
 
-//template class Factory< std::string, objectmodel::BaseObject, Node<objectmodel::BaseObject*>* >;
+SOFA_SIMULATION_COMMON_API BaseElement* loadFromFile(const char *filename);
 
-DataElement::DataElement(const std::string& name, const std::string& type, BaseElement* parent)
-    : Element<core::objectmodel::BaseObject>(name, type, parent)
-{
-}
+SOFA_SIMULATION_COMMON_API BaseElement* loadFromMemory(const char *filename, const char *data, unsigned int size );
 
-DataElement::~DataElement()
-{
-}
 
-bool DataElement::initNode()
-{
-    AttributeElement *p = dynamic_cast< AttributeElement *>( getParentElement());
-    std::string info;
-    info = getAttribute( "value", "");
-    p->setValue(info);
-    return true;
-}
+SOFA_SIMULATION_COMMON_API bool save(const char *filename, BaseElement* root);
 
-SOFA_DECL_CLASS(Data)
-
-Creator<BaseElement::NodeFactory, DataElement> DataNodeClass("Data");
-
-const char* DataElement::getClass() const
-{
-    return DataNodeClass.c_str();
-}
+extern int SOFA_SIMULATION_COMMON_API numDefault;
 
 } // namespace xml
-
-} // namespace tree
 
 } // namespace simulation
 
 } // namespace sofa
 
+#endif

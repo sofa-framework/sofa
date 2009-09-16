@@ -28,6 +28,7 @@
 #include <fstream>
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
+#include <sofa/simulation/tree/GNode.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/FileRepository.h>

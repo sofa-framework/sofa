@@ -56,26 +56,41 @@ Adapt a sofa visitor to breadth-first search in a bgl mapping scene graph.
 	@author The SOFA team </www.sofa-framework.org>
 */
 template <typename Graph>
-class bfs_adapter : public boost::bfs_visitor<>
+class bfs_adapter : public boost::default_bfs_visitor
 {
 public:
-    typedef typename Graph::vertex_descriptor Vertex;
+    typedef typename Graph::vertex_descriptor   Vertex;
+    typedef typename Graph::edge_descriptor Edge;
     typedef typename boost::property_map<Graph, BglGraphManager::bglnode_t>::type NodeMap;
+    typedef typename boost::graph_traits< Graph >::out_edge_iterator OutEdgeIterator;
 
 
-    bfs_adapter( sofa::simulation::Visitor* v):visitor(v) {};
+    bfs_adapter( sofa::simulation::Visitor* v, Graph &g):visitor(v), graph(g)
+    {};
 
     ~bfs_adapter() {};
 
     /// Applies visitor->processNodeTopDown
-    bool operator() (Vertex u, const Graph &g)
+    void discover_vertex(Vertex u, const Graph &g) const
     {
         Node *node=const_cast<Node*>(get(BglGraphManager::bglnode_t(),g,u));
+        std::cerr << "Visiting " << node->getName() << std::endl;
 #ifdef SOFA_DUMP_VISITOR_INFO
         visitor->setNode(node);
         visitor->printInfo(node->getContext(),true);
 #endif
-        return visitor->processNodeTopDown(node)==Visitor::RESULT_PRUNE;
+        if (visitor->processNodeTopDown(node)==Visitor::RESULT_PRUNE)
+        {
+            std::cerr << "\tStopping " << node->getName() << std::endl;
+            OutEdgeIterator it,it_end;
+            for (tie(it, it_end)=out_edges(u, g); it!=it_end;)
+            {
+                Edge e=*it;
+                ++it;
+                hack.push_back(std::make_pair(source(e,g), target(e,g)));
+                remove_edge(e,graph);
+            }
+        }
     }
 
     /// Applies visitor->processNodeBottomUp
@@ -83,7 +98,15 @@ public:
     {
         Node *node=const_cast<Node*>(get(BglGraphManager::bglnode_t(),g,u));
 
+        std::cerr << "Ending " << node->getName() << std::endl;
         visitor->processNodeBottomUp(node);
+
+        while (!hack.empty())
+        {
+            add_edge(hack.front().first,hack.front().second, graph);
+            hack.pop_front();
+        }
+
 #ifdef SOFA_DUMP_VISITOR_INFO
         visitor->printInfo(node->getContext(), false);
 #endif
@@ -91,7 +114,8 @@ public:
 
 protected:
     sofa::simulation::Visitor* visitor;
-
+    mutable std::list< std::pair< Vertex, Vertex> > hack;
+    mutable Graph &graph;
 };
 
 }

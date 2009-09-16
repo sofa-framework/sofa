@@ -28,7 +28,6 @@
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/simulation/common/Simulation.h>
-#include <sofa/simulation/tree/GNode.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>

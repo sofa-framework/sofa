@@ -22,10 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/tree/TreeSimulation.h>
-#include <sofa/simulation/tree/GNode.h>
+#include <sofa/helper/system/config.h>
+#include <sofa/simulation/common/xml/initXml.h>
 
-#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
@@ -33,34 +32,27 @@ namespace sofa
 namespace simulation
 {
 
-namespace tree
+namespace xml
 {
 
-using namespace sofa::defaulttype;
 
-
-Simulation* getSimulation()
+void initXml()
 {
-    if ( simulation::Simulation::theSimulation==NULL )
-        setSimulation( new TreeSimulation() );
-    return simulation::getSimulation();
-}
-/// Create a new node
-Node* TreeSimulation::newNode(const std::string& name)
-{
-    return new GNode(name);
+    static bool first = true;
+    if (first)
+    {
+        first = false;
+    }
 }
 
-SOFA_DECL_CLASS ( TreeSimulation );
-// Register in the Factory
-int TreeSimulationClass = core::RegisterObject ( "Main simulation algorithm, based on tree graph" )
-        .add< TreeSimulation >()
-        ;
-
-
-} // namespace tree
+} // namespace xml
 
 } // namespace simulation
 
 } // namespace sofa
 
+
+SOFA_LINK_CLASS(Attribute)
+SOFA_LINK_CLASS(Data)
+SOFA_LINK_CLASS(Node)
+SOFA_LINK_CLASS(Object)

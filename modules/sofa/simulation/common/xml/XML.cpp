@@ -25,7 +25,7 @@
 #include <string>
 #include <typeinfo>
 #include <stdlib.h>
-#include <sofa/simulation/tree/xml/XML.h>
+#include <sofa/simulation/common/xml/XML.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/core/ObjectFactory.h>
@@ -38,9 +38,6 @@ namespace sofa
 {
 
 namespace simulation
-{
-
-namespace tree
 {
 
 namespace xml
@@ -125,6 +122,7 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename, bool isRoot =
     {
         type = "default";
     }
+
     if (!BaseElement::NodeFactory::HasKey(classType) && type == "default")
     {
         type=classType;
@@ -620,8 +618,6 @@ BaseElement* includeNode(xmlNodePtr root,const char *basefilename)
 
 
 } // namespace xml
-
-} // namespace tree
 
 } // namespace simulation
 

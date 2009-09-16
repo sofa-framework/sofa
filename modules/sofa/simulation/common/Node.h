@@ -66,6 +66,8 @@
 #include <sofa/simulation/common/common.h>
 #include <sofa/simulation/common/MutationListener.h>
 #include <sofa/simulation/common/VisitorScheduler.h>
+#include <sofa/simulation/common/xml/Element.h>
+
 namespace sofa
 {
 namespace simulation
@@ -553,6 +555,8 @@ public:
     /// Called after initialization to set the default value of the visual context.
     virtual void setDefaultVisualContextValue();
 
+    template <class RealObject>
+    static void create( RealObject*& obj, sofa::simulation::xml::Element<sofa::core::objectmodel::BaseNode>*& arg);
 protected:
     bool debug_;
     bool logTime_;
@@ -593,6 +597,8 @@ public:
     Data < sofa::helper::vector < std::string > > depend;
     /// Sort the components according to the dependencies expressed in Data depend.
     void sortComponents();
+
+
 };
 
 }

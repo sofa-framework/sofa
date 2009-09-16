@@ -27,6 +27,7 @@
 
 
 #include <sofa/helper/ArgumentParser.h>
+#include <sofa/simulation/tree/GNode.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 
 

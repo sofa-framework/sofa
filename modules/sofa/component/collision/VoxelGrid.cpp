@@ -44,7 +44,7 @@ namespace sofa
 
 namespace helper
 {
-void create(VoxelGrid*& obj, simulation::tree::xml::ObjectDescription* arg)
+void create(VoxelGrid*& obj, simulation::xml::ObjectDescription* arg)
 {
     obj = new VoxelGrid(
         Vector3(atof(arg->getAttribute("minx",arg->getAttribute("min","-20.0"))),
@@ -62,7 +62,7 @@ void create(VoxelGrid*& obj, simulation::tree::xml::ObjectDescription* arg)
 
 SOFA_DECL_CLASS(VoxelGrid)
 
-Creator<simulation::tree::xml::ObjectFactory, VoxelGrid> VoxelGridClass("VoxelGridDetection");
+Creator<simulation::xml::ObjectFactory, VoxelGrid> VoxelGridClass("VoxelGridDetection");
 }
 namespace component
 {

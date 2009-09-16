@@ -22,11 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_TREE_XML_DATAELEMENT_H
-#define SOFA_SIMULATION_TREE_XML_DATAELEMENT_H
 
-#include <sofa/simulation/tree/xml/Element.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/simulation/common/xml/DataElement.h>
+#include <sofa/simulation/common/xml/AttributeElement.h>
+#include <sofa/simulation/common/xml/Element.inl>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
@@ -34,30 +34,44 @@ namespace sofa
 namespace simulation
 {
 
-namespace tree
-{
-
 namespace xml
 {
 
-class SOFA_SIMULATION_TREE_API DataElement : public Element<core::objectmodel::BaseObject>
+using namespace sofa::defaulttype;
+using helper::Creator;
+
+//template class Factory< std::string, objectmodel::BaseObject, Node<objectmodel::BaseObject*>* >;
+
+DataElement::DataElement(const std::string& name, const std::string& type, BaseElement* parent)
+    : Element<core::objectmodel::BaseObject>(name, type, parent)
 {
-public:
-    DataElement(const std::string& name, const std::string& type, BaseElement* parent=NULL);
+}
 
-    virtual ~DataElement();
+DataElement::~DataElement()
+{
+}
 
-    virtual bool initNode();
+bool DataElement::initNode()
+{
+    AttributeElement *p = dynamic_cast< AttributeElement *>( getParentElement());
+    std::string info;
+    info = getAttribute( "value", "");
+    p->setValue(info);
+    return true;
+}
 
-    virtual const char* getClass() const;
-};
+SOFA_DECL_CLASS(Data)
+
+Creator<BaseElement::NodeFactory, DataElement> DataNodeClass("Data");
+
+const char* DataElement::getClass() const
+{
+    return DataNodeClass.c_str();
+}
 
 } // namespace xml
-
-} // namespace tree
 
 } // namespace simulation
 
 } // namespace sofa
 
-#endif

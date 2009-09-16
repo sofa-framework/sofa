@@ -22,17 +22,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/tree/xml/AttributeElement.h>
-#include <sofa/simulation/tree/xml/Element.inl>
+#include <sofa/simulation/common/xml/ObjectElement.h>
+#include <sofa/simulation/common/xml/Element.inl>
 #include <sofa/core/ObjectFactory.h>
+
 
 namespace sofa
 {
 
 namespace simulation
-{
-
-namespace tree
 {
 
 namespace xml
@@ -43,50 +41,91 @@ using helper::Creator;
 
 //template class Factory< std::string, objectmodel::BaseObject, Node<objectmodel::BaseObject*>* >;
 
-AttributeElement::AttributeElement(const std::string& name, const std::string& type, BaseElement* parent)
+ObjectElement::ObjectElement(const std::string& name, const std::string& type, BaseElement* parent)
     : Element<core::objectmodel::BaseObject>(name, type, parent)
 {
 }
 
-AttributeElement::~AttributeElement()
+ObjectElement::~ObjectElement()
 {
 }
 
-bool AttributeElement::init()
+
+bool ObjectElement::init()
 {
     int i=0;
     for (child_iterator<> it = begin(); it != end(); ++it)
     {
         i++;
-        it->initNode();
+        it->init();
     }
+
     return initNode();
 }
 
-bool AttributeElement::initNode()
+/// Set an attribute. Override any existing value
+void ObjectElement::setAttribute(const std::string& attr, const char* val)
 {
-    std::string name = getAttribute( "type", "");
+    attributes[attr] = val;
+}
 
-    if (this->replaceAttribute.find(name) != this->replaceAttribute.end())
+bool ObjectElement::initNode()
+{
+    //if (!Element<core::objectmodel::BaseObject>::initNode()) return false;
+    core::objectmodel::BaseContext* ctx = dynamic_cast<core::objectmodel::BaseContext*>(getParent()->getObject());
+
+//    std::cout << "ObjectElement: creating "<<getAttribute( "type", "" )<<std::endl;
+
+    for (AttributeMap::iterator it = attributes.begin(), itend = attributes.end(); it != itend; ++it)
     {
-        value=replaceAttribute[name];
+        if (replaceAttribute.find(it->first) != replaceAttribute.end())
+        {
+            setAttribute(it->first,replaceAttribute[it->first].c_str());
+        }
     }
-    getParentElement()->setAttribute(name, value.c_str());
+
+    core::objectmodel::BaseObject *obj = core::ObjectFactory::CreateObject(ctx, this);
+
+    if (obj == NULL)
+        obj = Factory::CreateObject(this->getType(), this);
+    if (obj == NULL)
+    {
+        getParent()->logWarning(std::string("Object type \"" + getType() + "\" creation Failed" ));
+        return false;
+    }
+    setObject(obj);
+    obj->setName(getName());
+
+    // display any unused attributes
+    std::string unused;
+    for (AttributeMap::iterator it = attributes.begin(), itend = attributes.end(); it != itend; ++it)
+    {
+        if (!it->second.isAccessed())
+        {
+            unused += ' ';
+            unused += it->first;
+
+            obj->serr <<"Unused Attribute: \""<<it->first <<"\" with value: \"" <<it->second.c_str() <<"\"" << obj->sendl;
+        }
+    }
+//     if (!unused.empty())
+//     {
+//         std::cerr << "WARNING: Unused attribute(s) in "<<getFullName()<<" :"<<unused<<std::endl;
+//     }
+
     return true;
 }
 
-SOFA_DECL_CLASS(Attribute)
+SOFA_DECL_CLASS(Object)
 
-Creator<BaseElement::NodeFactory, AttributeElement> AttributeNodeClass("Attribute");
+Creator<BaseElement::NodeFactory, ObjectElement> ObjectNodeClass("Object");
 
-const char* AttributeElement::getClass() const
+const char* ObjectElement::getClass() const
 {
-    return AttributeNodeClass.c_str();
+    return ObjectNodeClass.c_str();
 }
 
 } // namespace xml
-
-} // namespace tree
 
 } // namespace simulation
 
