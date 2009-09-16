@@ -48,7 +48,16 @@ HEADERS += common.h \
            VisitorScheduler.h \
            VisualVisitor.h \
            WriteStateVisitor.h \
-           XMLPrintVisitor.h
+           XMLPrintVisitor.h \
+           xml/BaseElement.h \
+           xml/Element.h \
+           xml/Element.inl \
+           xml/initXml.h \
+           xml/NodeElement.h \
+           xml/ObjectElement.h \
+           xml/AttributeElement.h \
+           xml/DataElement.h \
+           xml/XML.h 
 
 SOURCES += Node.cpp \
            AnimateBeginEvent.cpp \
@@ -90,7 +99,14 @@ SOURCES += Node.cpp \
            VisitorScheduler.cpp \
            VisualVisitor.cpp \
            WriteStateVisitor.cpp \
-           XMLPrintVisitor.cpp
+           XMLPrintVisitor.cpp \
+           xml/BaseElement.cpp \
+           xml/initXml.cpp \
+           xml/NodeElement.cpp \
+           xml/ObjectElement.cpp \
+           xml/AttributeElement.cpp \
+           xml/DataElement.cpp \
+           xml/XML.cpp 
 
 SOFA_DIR =../../../..
 TEMPLATE = lib

@@ -1780,14 +1780,21 @@ bool loadPlugin(const char* filename)
 
 int main(int argc, char** argv)
 {
+    std::cout << "Using " << sofa::helper::system::atomic<int>::getImplName()<<" atomics." << std::endl;
+
     sofa::helper::BackTrace::autodump();
 
-    glutInit(&argc,argv);
+
 
     sofa::gui::SofaGUI::SetProgramName(argv[0]);
     std::string fileName ;
     bool        startAnim = false;
     bool        printFactory = false;
+    bool        loadRecent = false;
+    bool        temporaryFile = false;
+    std::string dimension="800x600";
+    bool fullScreen = false;
+
     std::string gui = sofa::gui::SofaGUI::GetGUIName();
     std::vector<std::string> plugins;
     std::vector<std::string> files;
@@ -1797,20 +1804,75 @@ int main(int argc, char** argv)
     gui_help += ")";
 
     sofa::helper::parse(&files, "This is a SOFA application. Here are the command line arguments")
-//	.option(&fileName,'f',"file","scene file")
     .option(&startAnim,'s',"start","start the animation loop")
     .option(&printFactory,'p',"factory","print factory logs")
-    //.option(&nogui,'g',"nogui","use no gui, run a number of iterations and exit")
     .option(&gui,'g',"gui",gui_help.c_str())
     .option(&plugins,'l',"load","load given plugins")
+    .option(&loadRecent,'r',"recent","load most recently opened file")
+    .option(&dimension,'d',"dimension","width and height of the viewer")
+    .option(&fullScreen,'f',"fullScreen","start in full screen")
+    .option(&temporaryFile,'t',"temporary","the loaded scene won't appear in history of opened files")
     (argc,argv);
 
+    if(gui!="batch") glutInit(&argc,argv);
+
+    sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
     sofa::component::init();
+    sofa::simulation::xml::initXml();
+
+
+    sofa::core::ObjectFactory::ClassEntry* classVisualModel;
+    sofa::core::ObjectFactory::AddAlias("VisualModel", "FlowVRRenderMesh", true, &classVisualModel);
 
     if (!files.empty()) fileName = files[0];
 
     for (unsigned int i=0; i<plugins.size(); i++)
         loadPlugin(plugins[i].c_str());
+
+
+    if (int err=sofa::gui::SofaGUI::Init(argv[0],gui.c_str()))
+        return err;
+
+    if (fileName.empty())
+    {
+        if (loadRecent) // try to reload the latest scene
+        {
+            std::string scenes = "config/Sofa.ini";
+            scenes = sofa::helper::system::DataRepository.getFile( scenes );
+            std::ifstream mrulist(scenes.c_str());
+            std::getline(mrulist,fileName);
+            mrulist.close();
+        }
+        else
+            fileName = "Demos/liver.scn";
+
+        fileName = sofa::helper::system::DataRepository.getFile(fileName);
+    }
+
+
+    if (int err=sofa::gui::SofaGUI::createGUI(NULL))
+        return err;
+
+    sofa::simulation::tree::GNode* groot = dynamic_cast<sofa::simulation::tree::GNode*>( sofa::simulation::tree::getSimulation()->load(fileName.c_str()));
+    if (groot==NULL)  groot = new sofa::simulation::tree::GNode;
+
+    sofa::simulation::tree::getSimulation()->init(groot);
+    sofa::gui::SofaGUI::CurrentGUI()->setScene(groot,fileName.c_str(), temporaryFile);
+
+
+    //=======================================
+    //Apply Options
+
+    if (startAnim)  groot->setAnimate(true);
+
+    //Dimension Option
+    std::string::size_type separator=dimension.find_first_of('x');
+    if (separator != std::string::npos)
+    {
+        std::string stringWidth=dimension.substr(0,separator);
+        std::string stringHeight=dimension.substr(separator+1);
+        sofa::gui::SofaGUI::CurrentGUI()->setDimension(atoi(stringWidth.c_str()), atoi(stringHeight.c_str()));
+    }
 
     if (printFactory)
     {
@@ -1819,57 +1881,15 @@ int main(int argc, char** argv)
         std::cout << "//////// END FACTORY ////////" << std::endl;
     }
 
-    if (int err=sofa::gui::SofaGUI::Init(argv[0],gui.c_str()))
-        return err;
-
-    sofa::simulation::Node* groot = NULL;
-
-    if (fileName.empty())
-    {
-        fileName = "liver.scn";
-        sofa::helper::system::DataRepository.findFile(fileName);
-    }
-
-    sofa::core::ObjectFactory::ClassEntry* classVisualModel;
-    sofa::core::ObjectFactory::AddAlias("VisualModel", "FlowVRRenderMesh", true, &classVisualModel);
-    groot = sofa::simulation::getSimulation()->load(fileName.c_str());
-    sofa::simulation::tree::getSimulation()->init(groot);
-
-    if (groot==NULL)
-    {
-        groot = new sofa::simulation::tree::GNode;
-        //return 1;
-    }
-
-    if (startAnim)
-        groot->setAnimate(true);
-
-
+    if (fullScreen) sofa::gui::SofaGUI::CurrentGUI()->setFullScreen();
 
     //=======================================
     // Run the main loop
+    if (int err=sofa::gui::SofaGUI::MainLoop(groot,fileName.c_str()))
+        return err;
+    groot = dynamic_cast<sofa::simulation::tree::GNode*>( sofa::gui::SofaGUI::CurrentSimulation() );
 
-    if (gui=="batch")
-    {
-        if (groot==NULL)
-        {
-            std::cerr<<"Could not load file "<<fileName<<std::endl;
-            return 1;
-        }
-        for (int i=0; true; i++)
-        {
-            sofa::simulation::getSimulation()->animate(groot);
-        }
-        std::cout << "FlowVR has sent stop" << std::endl;
-    }
-    else
-    {
-        if (int err=sofa::gui::SofaGUI::MainLoop(groot,fileName.c_str()))
-            return err;
-        groot = (GNode *)sofa::gui::SofaGUI::CurrentSimulation();
-    }
 
-    if (groot!=NULL)
-        sofa::simulation::getSimulation()->unload(groot);
+    if (groot!=NULL) sofa::simulation::tree::getSimulation()->unload(groot);
     return 0;
 }

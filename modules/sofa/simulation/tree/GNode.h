@@ -25,14 +25,8 @@
 #ifndef SOFA_SIMULATION_TREE_GNODE_H
 #define SOFA_SIMULATION_TREE_GNODE_H
 
-#include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/tree/tree.h>
-#include <sofa/simulation/common/MutationListener.h>
-#include <sofa/simulation/tree/xml/NodeElement.h>
-#include <stdlib.h>
-#include <vector>
-#include <string>
-#include <iostream>
+#include <sofa/simulation/common/Node.h>
 
 
 
@@ -41,15 +35,9 @@ namespace sofa
 
 namespace simulation
 {
-class Visitor;
-class VisitorScheduler;
-class MutationListener;
-
 namespace tree
 {
 
-using std::cout;
-using std::endl;
 
 /** Define the structure of the scene. Contains (as pointer lists) Component objects and children GNode objects.
 */

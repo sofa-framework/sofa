@@ -32,14 +32,12 @@ namespace sofa
 
 namespace helper
 {
-template class Factory< std::string, simulation::tree::xml::BaseElement, std::pair<std::string, std::string> >;
+template class Factory< std::string, simulation::xml::BaseElement, std::pair<std::string, std::string> >;
 }
 
 namespace simulation
 {
 
-namespace tree
-{
 
 namespace xml
 {
@@ -209,8 +207,6 @@ BaseElement* BaseElement::findNode(const char* nodeName, bool absolute)
 }
 
 } // namespace xml
-
-} // namespace tree
 
 } // namespace simulation
 

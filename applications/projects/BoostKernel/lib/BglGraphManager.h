@@ -43,7 +43,6 @@
 #include <boost/graph/adjacency_list.hpp>
 
 
-
 /* #include <boost/graph/reverse_graph.hpp> */
 
 #include <sofa/core/componentmodel/collision/Pipeline.h>
@@ -55,9 +54,6 @@ namespace simulation
 namespace bgl
 {
 class BglNode;
-using sofa::helper::vector;
-using sofa::simulation::bgl::BglNode;
-using sofa::simulation::Node;
 
 class BglGraphManager
 {
@@ -109,7 +105,7 @@ public:
 
     typedef std::pair<HvertexIterator,HvertexIterator> Hvpair;
 
-    typedef vector<Hvertex> HvertexVector;
+    typedef helper::vector<Hvertex> HvertexVector;
 
 
     //Defining the Property Map: link between a vertex of the BglGraph and one of its property
@@ -190,10 +186,10 @@ public:
         core::objectmodel::BaseObject* iff;
         Interaction( Hvertex r1, Hvertex r2, core::objectmodel::BaseObject* i ) : v1(r1), v2(r2), iff(i) {}
     };
-    typedef vector<Interaction> Interactions;
-    typedef vector<InteractionData> InteractionsData;
-    typedef std::pair< HvertexVector, vector<Interaction> > InteractionGroup; ///< maximum set of nodes which interact together, along with the interactions between them
-    typedef vector<InteractionGroup> InteractionGroups;
+    typedef helper::vector<Interaction> Interactions;
+    typedef helper::vector<InteractionData> InteractionsData;
+    typedef std::pair< HvertexVector, helper::vector<Interaction> > InteractionGroup; ///< maximum set of nodes which interact together, along with the interactions between them
+    typedef helper::vector<InteractionGroup> InteractionGroups;
     ///@}
 
 public:
@@ -246,7 +242,6 @@ public:
     void reset();
     void clear();
     void printDebug();
-
 
 protected:
 
@@ -302,7 +297,6 @@ protected:
 
     H_node_vertex_map h_node_vertex_map;     ///< sofa node->hvertex
     R_node_vertex_map r_node_vertex_map;     ///< sofa node->rvertex
-
 
 
 

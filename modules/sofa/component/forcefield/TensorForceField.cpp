@@ -632,20 +632,20 @@ using namespace sofa::defaulttype;
 
 template<class DataTypes>
 void create(TensorForceField<DataTypes>*& obj,
-        simulation::tree::xml::ObjectDescription* arg)
+        simulation::xml::ObjectDescription* arg)
 {
-    simulation::tree::xml::createWithParentAndFilename<
+    simulation::xml::createWithParentAndFilename<
     TensorForceField<DataTypes>, component::MechanicalObject<DataTypes>
     > (obj, arg);
 }
 
 #ifndef SOFA_FLOAT
-Creator<simulation::tree::xml::ObjectFactory, TensorForceField<Vec3dTypes> >
+Creator<simulation::xml::ObjectFactory, TensorForceField<Vec3dTypes> >
 TensorForceFieldVec3dClass("TensorForceField", true);
 template class TensorForceField<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-Creator<simulation::tree::xml::ObjectFactory, TensorForceField<Vec3fTypes> >
+Creator<simulation::xml::ObjectFactory, TensorForceField<Vec3fTypes> >
 TensorForceFieldVec3fClass("TensorForceField", true);
 template class TensorForceField<Vec3fTypes>; // doesn't work for now
 #endif

@@ -41,7 +41,7 @@
 #include "BglGraphManager.h"
 #include "BglSimulation.h"
 #include <sofa/simulation/common/Node.h>
-#include <sofa/simulation/tree/xml/NodeElement.h>
+
 #include <deque>
 
 namespace sofa
@@ -51,9 +51,6 @@ namespace simulation
 namespace bgl
 {
 
-using sofa::core::objectmodel::BaseObject;
-
-using sofa::simulation::Node;
 /**
    sofa::simulation::Node as a node of a BGL scene graph.
 
@@ -88,10 +85,10 @@ public:
 
 
     /// Add an object and return this. Detect the implemented interfaces and add the object to the corresponding lists.
-    bool addObject(BaseObject* obj);
+    bool addObject(core::objectmodel::BaseObject* obj);
 
     /// Remove an object
-    bool removeObject(BaseObject* obj);
+    bool removeObject(core::objectmodel::BaseObject* obj);
 
 
     /// Remove the current node from the graph: consists in removing the link to all the parents
@@ -154,7 +151,7 @@ public:
 
 
 
-    static void create(BglNode*& obj, simulation::tree::xml::Element<core::objectmodel::BaseNode>* arg)
+    static void create(BglNode*& obj, simulation::xml::Element<core::objectmodel::BaseNode>* arg)
     {
         obj = new BglNode();
         obj->parse(arg);

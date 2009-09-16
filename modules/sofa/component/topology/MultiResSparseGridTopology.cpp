@@ -45,7 +45,7 @@ using std::cerr;
 using std::cout;
 using std::endl;
 
-void create(MultiResSparseGridTopology*& obj, simulation::tree::xml::ObjectDescription* arg)
+void create(MultiResSparseGridTopology*& obj, simulation::xml::ObjectDescription* arg)
 {
     const char* nx = arg->getAttribute("nx","1.0");
     const char* ny = arg->getAttribute("ny","1.0");
@@ -71,7 +71,7 @@ void create(MultiResSparseGridTopology*& obj, simulation::tree::xml::ObjectDescr
 
 SOFA_DECL_CLASS(MultiResSparseGridTopology)
 
-helper::Creator<simulation::tree::xml::ObjectFactory, MultiResSparseGridTopology> MultiResSparseGridTopologyClass("MultiResSparseGridTopology");
+helper::Creator<simulation::xml::ObjectFactory, MultiResSparseGridTopology> MultiResSparseGridTopologyClass("MultiResSparseGridTopology");
 
 MultiResSparseGridTopology::MultiResSparseGridTopology()//:GridTopology(nx,ny,nz)
 {}

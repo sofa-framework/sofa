@@ -22,10 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_TREE_XML_INIT_H
-#define SOFA_SIMULATION_TREE_XML_INIT_H
+#ifndef SOFA_SIMULATION_COMMON_XML_DATAELEMENT_H
+#define SOFA_SIMULATION_COMMON_XML_DATAELEMENT_H
 
-#include <sofa/simulation/tree/tree.h>
+#include <sofa/simulation/common/xml/Element.h>
+#include <sofa/core/objectmodel/BaseObject.h>
 
 namespace sofa
 {
@@ -33,20 +34,26 @@ namespace sofa
 namespace simulation
 {
 
-namespace tree
-{
 
 namespace xml
 {
 
-SOFA_SIMULATION_TREE_API void initXml();
+class SOFA_SIMULATION_COMMON_API DataElement : public Element<core::objectmodel::BaseObject>
+{
+public:
+    DataElement(const std::string& name, const std::string& type, BaseElement* parent=NULL);
+
+    virtual ~DataElement();
+
+    virtual bool initNode();
+
+    virtual const char* getClass() const;
+};
 
 } // namespace xml
-
-} // namespace tree
 
 } // namespace simulation
 
 } // namespace sofa
 
-#endif // SOFA_SIMULATION_TREE_XML_INIT_H
+#endif

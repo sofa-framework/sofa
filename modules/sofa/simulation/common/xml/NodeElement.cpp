@@ -22,9 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/tree/xml/NodeElement.h>
-//#include <sofa/simulation/tree/xml/ObjectElement.h>
-#include <sofa/simulation/tree/xml/Element.inl>
+#include <sofa/simulation/common/xml/NodeElement.h>
+//#include <sofa/simulation/common/xml/ObjectElement.h>
+#include <sofa/simulation/common/xml/Element.inl>
 
 namespace sofa
 {
@@ -32,8 +32,6 @@ namespace sofa
 namespace simulation
 {
 
-namespace tree
-{
 
 namespace xml
 {
@@ -94,7 +92,7 @@ bool NodeElement::init()
     return res;
 }
 
-SOFA_DECL_CLASS(Node)
+SOFA_DECL_CLASS(NodeElement)
 
 helper::Creator<BaseElement::NodeFactory, NodeElement> NodeNodeClass("Node");
 //helper::Creator<BaseElement::NodeFactory, NodeElement> NodeBodyClass("Body");
@@ -106,8 +104,6 @@ const char* NodeElement::getClass() const
 }
 
 } // namespace xml
-
-} // namespace tree
 
 } // namespace simulation
 

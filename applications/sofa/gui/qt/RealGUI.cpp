@@ -62,7 +62,7 @@
 #include <sofa/component/visualmodel/VisualModelImpl.h>
 
 #include <sofa/simulation/common/Visitor.h>
-#include <sofa/simulation/tree/xml/XML.h>
+#include <sofa/simulation/common/xml/XML.h>
 #include <sofa/simulation/common/TransformationVisitor.h>
 #include <sofa/helper/system/FileRepository.h>
 
@@ -934,7 +934,7 @@ void RealGUI::fileOpen ( std::string filename )
     startDumpVisitor();
 
     frameCounter = 0;
-    sofa::simulation::tree::xml::numDefault = 0;
+    sofa::simulation::xml::numDefault = 0;
     list_object_added.clear();
     list_object_removed.clear();
     list_object_initial.clear();
@@ -1928,7 +1928,7 @@ void RealGUI::loadObject ( std::string path, double dx, double dy, double dz,  d
         graphListener->unfreeze ( node_clicked );
 
     //Loading of the xml file
-    simulation::tree::xml::BaseElement* xml = simulation::tree::xml::loadFromFile ( path.c_str() );
+    simulation::xml::BaseElement* xml = simulation::xml::loadFromFile ( path.c_str() );
     if ( xml == NULL ) return;
 
 

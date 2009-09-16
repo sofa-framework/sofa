@@ -26,9 +26,7 @@
 #define SOFA_SIMULATION_TREE_TREESIMULATION_H
 
 #include <sofa/simulation/common/Simulation.h>
-#include <sofa/simulation/common/Node.h>
-#include <sofa/simulation/tree/GNode.h>
-#include <sofa/simulation/tree/xml/XML.h>
+#include <sofa/simulation/tree/tree.h>
 
 namespace sofa
 {
@@ -43,29 +41,11 @@ namespace tree
 Defines how the scene is inited at the beginning, and updated at each time step.
 Derives from BaseObject in order to model the parameters as Datas, which makes their edition easy in the GUI.
 */
-class SOFA_SIMULATION_TREE_API TreeSimulation: public sofa::simulation::Simulation
+class SOFA_SIMULATION_TREE_API TreeSimulation: public Simulation
 {
-private:
-    ///load a scene from memory (typically : an xml into a string)
-    static Node* loadFromMemory ( const char *filename, const char *data, unsigned int size );
-    ///load a scene from a file
-    static Node* loadFromFile ( const char *filename );
-    ///generic function to process xml tree (after loading the xml structure from the 2 previous functions)
-    static Node* processXML(xml::BaseElement* xml, const char *filename);
 public:
-    /** Load a scene from a file.
-    This file can be a xml file or a script file which will generate a xml tree.
-    */
-
-    Node* load(const char* filename);
-
-    /// Delete a scene from memory. After this call the pointer is invalid
-    void unload(Node* root);
-
     /// Create a new Node of the simulation
     Node* newNode(const std::string& name);
-
-
 };
 
 /** Get the (unique) simulation which controls the scene.

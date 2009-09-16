@@ -48,10 +48,6 @@ namespace simulation
 {
 namespace bgl
 {
-
-using sofa::helper::vector;
-using sofa::simulation::Node;
-
 /// SOFA scene implemented using bgl graphs and with high-level modeling and animation methods.
 class BglSimulation : public sofa::simulation::Simulation
 {
@@ -61,11 +57,10 @@ public:
     /// @{
     BglSimulation();
 
-    /// Load a file
+    /// Load a file, and update the graph
     Node* load(const char* filename);
 
-    /// Load a file
-    void unload(Node* root);
+    /* 	void unload(Node* root); */
 
     /// Delayed Creation of a graph node and attach a new Node to it, then return the Node
     Node* newNode(const std::string& name="");
@@ -77,8 +72,6 @@ public:
     /// Initialize all the nodes and edges depth-first
     void init(Node* root);
 
-    /* 	/// Animate all the nodes depth-first */
-    /* 	void animate(Node* root, double dt=0.0); */
     /// @}
 };
 

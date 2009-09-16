@@ -22,11 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_TREE_XML_OBJECTELEMENT_H
-#define SOFA_SIMULATION_TREE_XML_OBJECTELEMENT_H
+#ifndef SOFA_SIMULATION_COMMON_XML_ELEMENT_INL
+#define SOFA_SIMULATION_COMMON_XML_ELEMENT_INL
 
-#include <sofa/simulation/tree/xml/Element.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include "Element.h"
+#include <sofa/helper/Factory.inl>
 
 namespace sofa
 {
@@ -34,31 +34,57 @@ namespace sofa
 namespace simulation
 {
 
-namespace tree
-{
-
 namespace xml
 {
 
-class SOFA_SIMULATION_TREE_API ObjectElement : public Element<core::objectmodel::BaseObject>
+
+template<class Object>
+Element<Object>::Element(const std::string& name, const std::string& type, BaseElement* newParent)
+    : BaseElement(name, type, newParent), object(NULL)
 {
-public:
-    ObjectElement(const std::string& name, const std::string& type, BaseElement* parent=NULL);
+}
 
-    virtual ~ObjectElement();
+template<class Object>
+Element<Object>::~Element()
+{
+}
 
-    virtual bool initNode();
+template<class Object>
+Object* Element<Object>::getTypedObject()
+{
+    return object;
+}
 
-    virtual bool init();
+template<class Object>
+void Element<Object>::setObject(Object* newObject)
+{
+    object = newObject;
+}
 
-    void setAttribute(const std::string& attr, const char* val);
+/// Get the associated object
+template<class Object>
+core::objectmodel::Base* Element<Object>::getObject()
+{
+    return object;
+}
 
-    virtual const char* getClass() const;
-};
+template<class Object>
+bool Element<Object>::initNode()
+{
+    Object *obj = Factory::CreateObject(this->getType(), this);
+    if (obj != NULL)
+    {
+        setObject(obj);
+        obj->setName(getName());
+        return true;
+    }
+    else return false;
+}
+
+//template<class Object> class Factory< std::string, Object, Node<Object>* >;
+
 
 } // namespace xml
-
-} // namespace tree
 
 } // namespace simulation
 

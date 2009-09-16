@@ -38,15 +38,17 @@
 #include "BglNode.h"
 #include "GetObjectsVisitor.h"
 #include "BglGraphManager.inl"
+#include <sofa/simulation/common/xml/NodeElement.h>
 
 //Components of the core to detect during the addition of objects in a node
 #include <sofa/core/componentmodel/behavior/InteractionForceField.h>
 #include <sofa/core/componentmodel/behavior/InteractionConstraint.h>
 
 
-#include "dfv_adapter.h"
 #include <boost/vector_property_map.hpp>
+#include "dfv_adapter.h"
 
+// #define BREADTH_FIRST_VISIT
 
 namespace sofa
 {
@@ -84,7 +86,7 @@ unsigned int BglNode::getUniqueId()
 }
 
 
-bool BglNode::addObject(BaseObject* obj)
+bool BglNode::addObject(core::objectmodel::BaseObject* obj)
 {
     if (sofa::core::componentmodel::behavior::BaseMechanicalMapping* mm = dynamic_cast<sofa::core::componentmodel::behavior::BaseMechanicalMapping*>(obj))
     {
@@ -232,7 +234,11 @@ std::string BglNode::getPathName() const
 
 void BglNode::doExecuteVisitor( Visitor* visit )
 {
+#ifdef BREADTH_FIRST_VISIT
+    BglGraphManager::getInstance()->breadthFirstVisit(this, *visit, SearchDown);
+#else
     BglGraphManager::getInstance()->depthFirstVisit(this, *visit, SearchDown);
+#endif
 }
 
 
@@ -257,7 +263,11 @@ void* BglNode::getObject(const sofa::core::objectmodel::ClassInfo& class_info, c
     }
     else
     {
+#ifdef BREADTH_FIRST_VISIT
+        BglGraphManager::getInstance()->breadthFirstVisit(this, getobj, dir);
+#else
         BglGraphManager::getInstance()->depthFirstVisit(this, getobj, dir);
+#endif
     }
     return getobj.getObject();
 }
@@ -281,7 +291,11 @@ void BglNode::getObjects(const sofa::core::objectmodel::ClassInfo& class_info, G
     }
     else
     {
+#ifdef BREADTH_FIRST_VISIT
+        BglGraphManager::getInstance()->breadthFirstVisit(this, getobjs, dir);
+#else
         BglGraphManager::getInstance()->depthFirstVisit(this, getobjs, dir);
+#endif
     }
 }
 
@@ -535,8 +549,7 @@ void BglNode::updateVisualContext(VISUAL_FLAG FILTER)
 
 SOFA_DECL_CLASS(BglNode)
 
-helper::Creator<simulation::tree::xml::NodeElement::Factory, BglNode> BglNodeClass("BglNode");
-
+helper::Creator<simulation::xml::NodeElement::Factory, BglNode> BglNodeClass("BglNode");
 }
 }
 }

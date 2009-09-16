@@ -26,7 +26,7 @@
 ******************************************************************************/
 #include "SofaGUI.h"
 #include <sofa/component/init.h>
-#include <sofa/simulation/tree/xml/initXml.h>
+#include <sofa/simulation/common/xml/initXml.h>
 
 namespace sofa
 {
@@ -53,7 +53,7 @@ SOFA_LINK_CLASS(OgreGUI)
 int SofaGUI::Init()
 {
     sofa::component::init();
-    sofa::simulation::tree::xml::initXml();
+    sofa::simulation::xml::initXml();
     if (guiCreators().empty())
     {
         std::cerr << "ERROR(SofaGUI): No GUI registered."<<std::endl;

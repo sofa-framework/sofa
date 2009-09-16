@@ -22,11 +22,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SIMULATION_TREE_XML_ELEMENT_INL
-#define SOFA_SIMULATION_TREE_XML_ELEMENT_INL
+#ifndef SOFA_SIMULATION_COMMON_XML_NODEELEMENT_H
+#define SOFA_SIMULATION_COMMON_XML_NODEELEMENT_H
 
-#include "Element.h"
-#include <sofa/helper/Factory.inl>
+#include <sofa/simulation/common/xml/Element.h>
+#include <sofa/simulation/common/xml/BaseElement.h>
+#include <sofa/core/objectmodel/BaseNode.h>
+#include <sofa/simulation/common/Simulation.h>
 
 namespace sofa
 {
@@ -34,62 +36,26 @@ namespace sofa
 namespace simulation
 {
 
-namespace tree
-{
-
 namespace xml
 {
 
-
-template<class Object>
-Element<Object>::Element(const std::string& name, const std::string& type, BaseElement* newParent)
-    : BaseElement(name, type, newParent), object(NULL)
+class SOFA_SIMULATION_COMMON_API NodeElement : public Element<core::objectmodel::BaseNode>
 {
-}
+public:
+    NodeElement(const std::string& name, const std::string& type, BaseElement* parent=NULL);
 
-template<class Object>
-Element<Object>::~Element()
-{
-}
+    virtual ~NodeElement();
 
-template<class Object>
-Object* Element<Object>::getTypedObject()
-{
-    return object;
-}
+    virtual bool setParent(BaseElement* newParent);
 
-template<class Object>
-void Element<Object>::setObject(Object* newObject)
-{
-    object = newObject;
-}
+    virtual bool initNode();
 
-/// Get the associated object
-template<class Object>
-core::objectmodel::Base* Element<Object>::getObject()
-{
-    return object;
-}
+    virtual bool init();
 
-template<class Object>
-bool Element<Object>::initNode()
-{
-    Object *obj = Factory::CreateObject(this->getType(), this);
-    if (obj != NULL)
-    {
-        setObject(obj);
-        obj->setName(getName());
-        return true;
-    }
-    else return false;
-}
-
-//template<class Object> class Factory< std::string, Object, Node<Object>* >;
-
+    virtual const char* getClass() const;
+};
 
 } // namespace xml
-
-} // namespace tree
 
 } // namespace simulation
 
