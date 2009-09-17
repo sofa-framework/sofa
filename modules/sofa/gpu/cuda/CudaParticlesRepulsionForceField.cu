@@ -148,6 +148,7 @@ __global__ void ParticlesRepulsionForceFieldCuda3t_addForce_kernel(int size, con
                         ParticlesRepulsionCalcForce(xi, vi, ((const CudaVec3<real>*)temp_x)[i], ((const CudaVec3<real>*)temp_v)[i], force, repulsion);
                 }
             }
+            __syncthreads();
             // loop through other groups of particles
             for (int py0 = range.x; py0 < range.y; py0 += BSIZE)
             {
@@ -165,6 +166,7 @@ __global__ void ParticlesRepulsionForceFieldCuda3t_addForce_kernel(int size, con
                     temp_v[tx3+1] = vj.y;
                     temp_v[tx3+2] = vj.z;
                 }
+                __syncthreads();
                 if (px < ghost)
                 {
                     // actual particle -> compute interactions
@@ -174,6 +176,7 @@ __global__ void ParticlesRepulsionForceFieldCuda3t_addForce_kernel(int size, con
                         ParticlesRepulsionCalcForce(xi, vi, ((const CudaVec3<real>*)temp_x)[i], ((const CudaVec3<real>*)temp_v)[i], force, repulsion);
                     }
                 }
+                __syncthreads();
             }
             if (px < ghost)
             {
@@ -232,6 +235,7 @@ __global__ void ParticlesRepulsionForceFieldCuda3t_addDForce_kernel(int size, co
                         ParticlesRepulsionCalcDForce(xi, dxi, ((const CudaVec3<real>*)temp_x)[i], ((const CudaVec3<real>*)temp_dx)[i], dforce, repulsion);
                 }
             }
+            __syncthreads();
             // loop through other groups of particles
             for (int py0 = range.x; py0 < range.y; py0 += BSIZE)
             {
@@ -249,6 +253,7 @@ __global__ void ParticlesRepulsionForceFieldCuda3t_addDForce_kernel(int size, co
                     temp_dx[tx3+1] = dxj.y;
                     temp_dx[tx3+2] = dxj.z;
                 }
+                __syncthreads();
                 if (px < ghost)
                 {
                     // actual particle -> compute interactions
@@ -258,6 +263,7 @@ __global__ void ParticlesRepulsionForceFieldCuda3t_addDForce_kernel(int size, co
                         ParticlesRepulsionCalcDForce(xi, dxi, ((const CudaVec3<real>*)temp_x)[i], ((const CudaVec3<real>*)temp_dx)[i], dforce, repulsion);
                     }
                 }
+                __syncthreads();
             }
             if (px < ghost)
             {
