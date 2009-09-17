@@ -127,6 +127,32 @@ void Visitor::printComment(const std::string &s)
     }
 }
 
+void Visitor::dumpInfo( const std::string &info)
+{
+    if (printActivated) {(*outputVisitor) << info; outputVisitor->flush();}
+}
+
+void Visitor::startDumpVisitor(std::ostream *s, double time)
+{
+    initDumpTime = sofa::helper::system::thread::CTime::getRefTime();
+    printActivated=true; outputVisitor=s;
+    std::string initDump;
+    std::ostringstream ff; ff << "<TraceVisitor time=\"" << time << "\">\n";
+    dumpInfo(ff.str());
+};
+void Visitor::stopDumpVisitor()
+{
+    std::ostringstream s;
+    s << "<TotalTime value=\"" << getTimeSpent(initDumpTime, sofa::helper::system::thread::CTime::getRefTime()) << "\" />\n";
+    s << "</TraceVisitor>\n";
+    dumpInfo(s.str());
+    printActivated=false;
+};
+
+double Visitor::getTimeSpent(ctime_t initTime, ctime_t endTime)
+{
+    return 1000.0*(endTime-initTime)/((double)CTime::getTicksPerSec());
+}
 
 void Visitor::printNode(const std::string &type, const std::string &name, const TRACE_ARGUMENT &arguments)
 {

@@ -232,11 +232,7 @@ public:
     Visitor& removeTag(Tag t) { subsetsToManage.erase(t); return *this; }
 
 #ifdef SOFA_DUMP_VISITOR_INFO
-    //DEBUG Purposes
-    static double getTimeSpent(ctime_t initTime, ctime_t endTime)
-    {
-        return 1000.0*(endTime-initTime)/((double)CTime::getTicksPerSec());
-    }
+    static double getTimeSpent(ctime_t initTime, ctime_t endTime);
 protected:
 
     static std::ostream *outputVisitor;  //Ouput stream to dump the info
@@ -248,22 +244,8 @@ protected:
     bool infoPrinted;
 
 public:
-    static void startDumpVisitor(std::ostream *s, double time)
-    {
-        initDumpTime = sofa::helper::system::thread::CTime::getRefTime();
-        printActivated=true; outputVisitor=s;
-        std::string initDump;
-        std::ostringstream ff; ff << "<TraceVisitor time=\"" << time << "\">\n";
-        dumpInfo(ff.str());
-    };
-    static void stopDumpVisitor()
-    {
-        std::ostringstream s;
-        s << "<TotalTime value=\"" << getTimeSpent(initDumpTime, sofa::helper::system::thread::CTime::getRefTime()) << "\" />\n";
-        s << "</TraceVisitor>\n";
-        dumpInfo(s.str());
-        printActivated=false;
-    };
+    static void startDumpVisitor(std::ostream *s, double time);
+    static void stopDumpVisitor();
 
     typedef std::vector< std::pair< std::string,std::string > > TRACE_ARGUMENT;
     static void printComment(const std::string &s) ;
@@ -272,7 +254,7 @@ public:
     virtual void printInfo(const core::objectmodel::BaseContext* context, bool dirDown);
     void setNode(core::objectmodel::Base* c);
 private:
-    static void dumpInfo( const std::string &info) { if (printActivated) {(*outputVisitor) << info; outputVisitor->flush();}}
+    static void dumpInfo( const std::string &info);
 #endif
 };
 } // namespace simulation
