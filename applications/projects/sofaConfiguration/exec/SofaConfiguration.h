@@ -94,13 +94,21 @@ public:
     bool operator== (const DEFINES& other)
     {
         if (typeOption)
-            return name == other.name;
+            return name == other.name && category == other.category;
         else
-            return name == other.name && description == other.description;
+        {
+            return name == other.name && category == other.category && description == other.description;
+        }
     }
 
 
     void addConditions(std::vector< CONDITION > c) {conditions=c;}
+
+    friend std::ostream& operator << (std::ostream& out, const DEFINES& val)
+    {
+        out << "[" << val.category << "] -> " << "(" << val.name << ", " << val.description << ")" << std::endl;
+        return out;
+    }
 
     bool value;
     std::string name;

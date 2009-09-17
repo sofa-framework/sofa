@@ -118,12 +118,15 @@ SofaConfiguration::SofaConfiguration(std::string p, std::vector< DEFINES >& conf
 
     std::string currentCategory;
 
+    std::set< std::string > alreadyBuiltCategories;
+
     QWidget *page=NULL;
     QVBoxLayout *pageLayout=NULL;
     for (unsigned int i=0; i<config.size(); ++i)
     {
-        if (currentCategory != config[i].category)
+        if (alreadyBuiltCategories.find(config[i].category) == alreadyBuiltCategories.end())
         {
+            alreadyBuiltCategories.insert(config[i].category);
             if (page)
             {
                 pageLayout->addItem( new QSpacerItem(10,10,QSizePolicy::Expanding, QSizePolicy::Expanding));
@@ -132,14 +135,21 @@ SofaConfiguration::SofaConfiguration(std::string p, std::vector< DEFINES >& conf
             page = new QWidget(global);
             global->addItem(page,QString(currentCategory.c_str()));
             pageLayout=new QVBoxLayout(page);
-        }
-        ConfigWidget *o;
-        if (config[i].typeOption) o=new OptionConfigWidget(page, config[i]);
-        else                      o=new TextConfigWidget(page, config[i]);
 
-        pageLayout->addWidget(o);
-        options.push_back(o);
-        connect(o, SIGNAL(modified()), this, SLOT(updateOptions()));
+            for (unsigned int j=0; j<config.size(); ++j)
+            {
+                if (config[j].category == currentCategory)
+                {
+                    ConfigWidget *o;
+                    if (config[j].typeOption) o=new OptionConfigWidget(page, config[j]);
+                    else                      o=new TextConfigWidget(page, config[j]);
+
+                    pageLayout->addWidget(o);
+                    options.push_back(o);
+                    connect(o, SIGNAL(modified()), this, SLOT(updateOptions()));
+                }
+            }
+        }
     }
 
     if (page)

@@ -111,6 +111,7 @@ void processOption(std::string &name, bool &activated, std::size_t pos)
     name = name.substr(pos+10);
     removeInitialCharacter(name,' ');
     removeComment(name);
+    removeFinalCharacter(name,' ');
 }
 
 void processTextOption(std::string &description, std::string &name, bool &activated, std::size_t pos)
@@ -256,7 +257,9 @@ void parse(std::ifstream &in, std::vector<DEFINES>  &listOptions)
                 continue;
             }
             found = text.find('=');
-            if (found != std::string::npos)
+            if (found != std::string::npos           &&
+                text.find("<=") == std::string::npos &&
+                text.find(">=") == std::string::npos    )
             {
                 std::string name;
                 bool presence;
@@ -340,8 +343,6 @@ std::string GetProcessFullPath(const char* filename)
     return filename;
 }
 
-
-
 int main(int argc, char** argv)
 {
 
@@ -351,7 +352,9 @@ int main(int argc, char** argv)
 
     std::ifstream sofa_default((file+"/sofa-default.cfg").c_str());
     std::ifstream sofa_local((file+"/sofa-local.cfg").c_str());
-    std::vector<DEFINES>  listOptions;
+
+    typedef std::vector<DEFINES> VecDEFINES;
+    VecDEFINES  listOptions;
 
     parse(sofa_default, listOptions);
 
@@ -368,7 +371,7 @@ int main(int argc, char** argv)
     QApplication* application;
     application = new QApplication(argc, argv);
     sofa::gui::qt::SofaConfiguration* config = new sofa::gui::qt::SofaConfiguration(file,listOptions);
-//   application->setMainWidget(config);
+    application->setMainWidget(config);
     config->show();
     return application->exec();
 }
