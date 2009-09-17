@@ -169,7 +169,7 @@ CUDA_SOURCES += \
 contains(DEFINES,SOFA_HAVE_BOOST){
 contains(DEFINES,SOFA_HAVE_CSPARSE){
 HEADERS += \
-	   	CudaUpdatePrecomputedPreconditioner.h \
+	   	CudaUpdatePrecomputedPreconditioner.h
 	   	
 SOURCES += \	
 		CudaUpdatePrecomputedPreconditioner.cpp
@@ -181,6 +181,12 @@ HEADERS += \
 	   	CudaParticlesRepulsionForceField.inl
 SOURCES += CudaParticlesRepulsionForceField.cpp
 CUDA_SOURCES += CudaParticlesRepulsionForceField.cu
+
+HEADERS += \
+	   	CudaSPHFluidForceField.h \
+	   	CudaSPHFluidForceField.inl
+SOURCES += CudaSPHFluidForceField.cpp
+CUDA_SOURCES += CudaSPHFluidForceField.cu
 
 HEADERS += scan.h
 CUDA_SOURCES += scan.cu
