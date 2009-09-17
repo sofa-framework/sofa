@@ -53,7 +53,7 @@ int BatchGUI::mainLoop()
         {
             sofa::simulation::getSimulation()->animate(groot);
         }
-        std::cout << "1000 iterations done in "<< 1000.0*(sofa::helper::system::thread::CTime::getRefTime()-tSpent)/((double)sofa::helper::system::thread::CTime::getTicksPerSec()) << std::endl;
+        std::cout << nbIter << " iterations done in "<< 1000.0*(sofa::helper::system::thread::CTime::getRefTime()-tSpent)/((double)sofa::helper::system::thread::CTime::getTicksPerSec()) << std::endl;
     }
     return 0;
 }

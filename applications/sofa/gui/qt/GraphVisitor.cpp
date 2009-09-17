@@ -35,6 +35,8 @@
 
 #include <algorithm>
 
+#include <sofa/helper/system/thread/CTime.h>
+
 #ifndef SOFA_QT4
 #include <qsplitter.h>
 #include <qvaluelist.h>
@@ -52,12 +54,16 @@ namespace gui
 namespace qt
 {
 
+typedef sofa::helper::system::thread::CTime CTime;
+
 bool cmpTime(const dataTime &a, const dataTime &b) { return a.time > b.time;};
 bool GraphVisitor::load(std::string &file)
 {
     //Open it using TinyXML
     TiXmlDocument doc;
     doc.Parse(file.c_str());
+
+//         std::cerr << "GRAPH:"<< std::endl << file << std::endl;
 
     TiXmlHandle hDoc(&doc);
     TiXmlNode* pElem;
@@ -133,8 +139,7 @@ void GraphVisitor::openTime      ( TiXmlNode* node, Q3ListViewItem* item)
     TiXmlElement* element=node->ToElement();
     if (!element) return;
     TiXmlAttribute* attribute=element->FirstAttribute();
-    std::string valueOfAttribute(attribute->Value());
-    double timeSec=atof(valueOfAttribute.c_str());
+    double timeSec= getTime(attribute);
     double time = 100.0*timeSec/totalTime;
     std::ostringstream s;
     s.setf(std::ios::fixed, std::ios::floatfield);
@@ -204,7 +209,15 @@ void GraphVisitor::openTime      ( TiXmlNode* node, Q3ListViewItem* item)
     addTime(item,  s.str());
 }
 
-double GraphVisitor::getTotalTime(TiXmlNode* node)
+double GraphVisitor::getTime(TiXmlAttribute* attribute) const
+{
+    static double conversion=1.0/(double)CTime::getTicksPerSec();
+    std::string valueOfAttribute(attribute->Value());
+    double result=1000.0*atof(valueOfAttribute.c_str())*conversion;
+    return result;
+}
+
+double GraphVisitor::getTotalTime(TiXmlNode* node) const
 {
 
     for ( TiXmlNode* child = node->FirstChild(); child != 0; child = child->NextSibling())
@@ -213,8 +226,10 @@ double GraphVisitor::getTotalTime(TiXmlNode* node)
         if (nameOfNode == "TotalTime")
         {
             TiXmlAttribute* attribute=child->ToElement()->FirstAttribute();
-            std::string valueOfAttribute(attribute->Value());
-            return atof(valueOfAttribute.c_str());
+            double total=getTime(attribute);
+            std::ostringstream out; out << total;
+            attribute->SetValue(out.str().c_str());
+            return total;
         }
     }
     return 1;
