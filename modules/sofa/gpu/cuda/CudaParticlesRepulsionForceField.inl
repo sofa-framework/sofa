@@ -87,7 +87,6 @@ void ParticlesRepulsionForceField<gpu::cuda::CudaVec3fTypes>::addDForce(VecDeriv
 {
     if (grid == NULL) return;
     const VecCoord& x = *this->mstate->getX();
-    df.resize(dx.size());
     GPURepulsion3f repulsion;
     repulsion.d = distance.getValue();
     repulsion.d2 = repulsion.d*repulsion.d;
@@ -125,7 +124,6 @@ void ParticlesRepulsionForceField<gpu::cuda::CudaVec3dTypes>::addDForce(VecDeriv
 {
     if (grid == NULL) return;
     const VecCoord& x = *this->mstate->getX();
-    df.resize(dx.size());
     GPURepulsion3d repulsion;
     repulsion.d = distance.getValue();
     repulsion.d2 = repulsion.d*repulsion.d;

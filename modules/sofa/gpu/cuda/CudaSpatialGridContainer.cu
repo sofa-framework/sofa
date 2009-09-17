@@ -199,7 +199,7 @@ computeHashD(const TIn* pos,
     hgpos.x = __float2int_rd(p.x * gridParams.invHalfCellWidth);
     hgpos.y = __float2int_rd(p.y * gridParams.invHalfCellWidth);
     hgpos.z = __float2int_rd(p.z * gridParams.invHalfCellWidth);
-    int halfcell = (hgpos.x&1) + ((hgpos.y&1)<<1) + ((hgpos.z&1)<<2);
+    int halfcell = ((hgpos.x&1) + ((hgpos.y&1)<<1) + ((hgpos.z&1)<<2))^7;
     // compute the first cell to be influenced by the particle
     hgpos.x = (hgpos.x-1) >> 1;
     hgpos.y = (hgpos.y-1) >> 1;
@@ -231,7 +231,7 @@ computeHashD(const TIn* pos,
         h.y += dH.y;
         h.z += dH.z;
         uint hash = ((h.x ^ h.y ^ h.z) & gridParams.cellMask)<<1;
-        if (hc == (x&7)) ++hash;
+        if (hc != (x&7)) ++hash;
         particleHash8[index0_8 + l] = hash;
     }
 }
@@ -245,15 +245,19 @@ findCellRangeD(const uint* particleHash,
     unsigned int i = __mul24(blockIdx.x, blockDim.x) + threadIdx.x;
     __shared__ uint hash[BSIZE];
     if (i < n)
-    {
         hash[threadIdx.x] = particleHash[i];
-        __syncthreads();
+
+    __syncthreads();
+
+    if (i < n)
+    {
         bool firstInCell;
         bool firstGhost;
+        uint cur = hash[threadIdx.x];
         if (i == 0)
         {
             firstInCell = true;
-            firstGhost = hash[threadIdx.x]&1;
+            firstGhost = cur&1;
         }
         else
         {
@@ -262,27 +266,24 @@ findCellRangeD(const uint* particleHash,
                 prev = hash[threadIdx.x-1];
             else
                 prev = particleHash[i-1];
-            if (prev != hash[threadIdx.x])
+            firstInCell = ((prev>>1) != (cur>>1));
+            firstGhost = ((prev != cur) && (cur&1));
+            if (firstInCell)
             {
-                firstInCell = ((prev>>1) != (hash[threadIdx.x]>>1));
-                if (firstInCell)
-                {
-                    cellRange[ prev>>1 ].y = i;
-                    if (!(prev&1)) // no ghost particles in previous cells
-                        cellGhost[ prev>>1 ] = i;
-                }
-                firstGhost = hash[threadIdx.x]&1;
+                cellRange[ prev>>1 ].y = i;
+                if (!(prev&1)) // no ghost particles in previous cell
+                    cellGhost[ prev>>1 ] = i;
             }
         }
-        if (firstGhost)
-            cellGhost[ hash[threadIdx.x]>>1 ] = i;
         if (firstInCell)
-            cellRange[ hash[threadIdx.x]>>1 ].x = i;
+            cellRange[ cur>>1 ].x = i;
+        if (firstGhost)
+            cellGhost[ cur>>1 ] = i;
         if (i == n-1)
         {
-            cellRange[ hash[threadIdx.x]>>1 ].y = n;
-            if (!(hash[threadIdx.x]&1))
-                cellGhost[ hash[threadIdx.x]>>1 ] = n;
+            cellRange[ cur>>1 ].y = n;
+            if (!(cur&1))
+                cellGhost[ cur>>1 ] = n;
         }
     }
 }

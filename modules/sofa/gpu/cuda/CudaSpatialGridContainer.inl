@@ -81,7 +81,7 @@ template<class TCoord, class TDeriv, class TReal>
 SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> > >::SpatialGrid(Real cellWidth)
     : cellWidth(cellWidth), invCellWidth(1/cellWidth), lastX(NULL)
 {
-    cellBits = 16;
+    cellBits = 15;
     nbCells = 1<<cellBits;
 }
 
@@ -108,7 +108,9 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3fTypes > >::kernel_updat
 {
     gpu::cuda::SpatialGridContainer3f_computeHash(cellBits, cellWidth, nbPoints, particleIndex, particleHash, x);
 #ifdef SOFA_DEV
-    radixSort((unsigned int *)particleHash, (unsigned int *)particleIndex, (unsigned int *)sortTmp, nbPoints*8, cellBits+1);
+    int nbbits = 8;
+    while (nbbits < cellBits + 1) ++nbbits;
+    radixSort((unsigned int *)particleHash, (unsigned int *)particleIndex, (unsigned int *)sortTmp, nbPoints*8, nbbits);
 #endif
     gpu::cuda::SpatialGridContainer_findCellRange(cellBits, cellWidth, nbPoints, particleHash, cellRange, cellGhost);
 }
@@ -118,7 +120,9 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3f1Types > >::kernel_upda
 {
     gpu::cuda::SpatialGridContainer3f1_computeHash(cellBits, cellWidth, nbPoints, particleIndex, particleHash, x);
 #ifdef SOFA_DEV
-    radixSort((unsigned int *)particleHash, (unsigned int *)particleIndex, (unsigned int *)sortTmp, nbPoints*8, cellBits+1);
+    int nbbits = 8;
+    while (nbbits < cellBits + 1) ++nbbits;
+    radixSort((unsigned int *)particleHash, (unsigned int *)particleIndex, (unsigned int *)sortTmp, nbPoints*8, nbbits);
 #endif
     gpu::cuda::SpatialGridContainer_findCellRange(cellBits, cellWidth, nbPoints, particleHash, cellRange, cellGhost);
 }
@@ -151,17 +155,16 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TR
     cellGhost.recreate(nbCells);
     //sortedPos.recreate(nbPoints);
     kernel_updateGrid(cellBits, cellWidth*2, nbPoints, particleIndex.deviceWrite(), particleHash.deviceWrite(), sortTmp.deviceWrite(), cellRange.deviceWrite(), cellGhost.deviceWrite(), x.deviceRead());
-
     /*
-    std::cout << nbPoints*8 << " entries in " << nbCells << " cells." << std::endl;
-    int nfill = 0;
-    for (int c=0;c<nbCells;++c)
-    {
-        if (cellRange[c][0] == -1) continue;
-        std::cout << "Cell " << c << ": range = " << cellRange[c][0] << " - " << cellRange[c][1] << "     ghost = " << cellGhost[c] << std::endl;
-        ++nfill;
-    }
-    std::cout << ((1000*nfill)/nbCells) * 0.1 << " % cells with particles." << std::endl;
+        std::cout << nbPoints*8 << " entries in " << nbCells << " cells." << std::endl;
+        int nfill = 0;
+        for (int c=0;c<nbCells;++c)
+        {
+            if (cellRange[c][0] == -1) continue;
+            std::cout << "Cell " << c << ": range = " << cellRange[c][0] << " - " << cellRange[c][1] << "     ghost = " << cellGhost[c] << std::endl;
+            ++nfill;
+        }
+        std::cout << ((1000*nfill)/nbCells) * 0.1 << " % cells with particles." << std::endl;
     */
     //kernel_reorderData(nbPoints, particleHash.deviceRead(), sortedPos.deviceWrite(), x.deviceRead());
 }
