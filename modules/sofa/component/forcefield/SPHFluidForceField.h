@@ -46,6 +46,13 @@ namespace forcefield
 
 using namespace sofa::component::container;
 
+/// This class can be overridden if needed for additionnal storage within template specializations.
+template<class DataTypes>
+class SPHFluidForceFieldInternalData
+{
+public:
+};
+
 template<class DataTypes>
 class SPHFluidForceField : public sofa::core::componentmodel::behavior::ForceField<DataTypes>, public virtual core::objectmodel::BaseObject
 {
@@ -57,17 +64,15 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
 
-protected:
+public:
     Data< Real > particleRadius;
     Data< Real > particleMass;
     Data< Real > pressureStiffness; ///< 100 - 1000 m2/s2
     Data< Real > density0; ///< 1000 kg/m3 for water
     Data< Real > viscosity;
     Data< Real > surfaceTension;
-    //Real a,b,alpha,beta,dmax,fmax;
-    //Real d0,p0;
-    //Real damping;
 
+protected:
     struct Particle
     {
         Real density;
@@ -85,6 +90,9 @@ protected:
     typedef SpatialGridContainer<DataTypes> Grid;
 
     Grid* grid;
+
+    SPHFluidForceFieldInternalData<DataTypes> data;
+    friend class SPHFluidForceFieldInternalData<DataTypes>;
 
 public:
     /// this method is called by the SpatialGrid when w connection between two particles is detected
@@ -309,7 +317,7 @@ public:
 
     virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
 
-    virtual void addDForce (VecDeriv& df, const VecDeriv& dx);
+    virtual void addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
 
     virtual double getPotentialEnergy(const VecCoord& x);
 
