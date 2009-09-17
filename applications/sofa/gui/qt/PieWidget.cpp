@@ -113,7 +113,7 @@ void PieWidget::clear()
     repaint();
 }
 
-ChartsWidget::ChartsWidget(QWidget *parent): QWidget(parent)
+ChartsWidget::ChartsWidget(const std::string &name, QWidget *parent): QWidget(parent)
 {
     QSplitter *splitter=new QSplitter(this);
     splitter->setOrientation(Qt::Horizontal);
@@ -124,12 +124,12 @@ ChartsWidget::ChartsWidget(QWidget *parent): QWidget(parent)
     table->horizontalHeader()->setResizeMode(0,QHeaderView::Fixed);
     table->horizontalHeader()->resizeSection(0,30);
     table->horizontalHeader()->setResizeMode(1,QHeaderView::ResizeToContents);
-    table->horizontalHeader()->setResizeMode(2,QHeaderView::Stretch);
-    QStringList list; list<<"Id" << "Name" << "Time";
+    table->horizontalHeader()->setResizeMode(2,QHeaderView::ResizeToContents);
+    QStringList list; list<<"Id" << name.c_str() << "Time";
     table->setHorizontalHeaderLabels(list);
 #else
     table = new QTableWidget(0,2,splitter);
-    table->horizontalHeader()->setLabel(0,QString("Name"));
+    table->horizontalHeader()->setLabel(0,QString(name.c_str()));
     table->horizontalHeader()->setStretchEnabled(true,0);
     table->horizontalHeader()->setLabel(1,QString("Time"));
     table->horizontalHeader()->setStretchEnabled(true,1);

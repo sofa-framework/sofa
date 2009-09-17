@@ -513,7 +513,7 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
-        addWriteVector(dx);
+        addReadVector(dx);
     }
 #endif
 };
@@ -548,7 +548,7 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
-        addWriteVector(v);
+        addReadVector(v);
     }
 #endif
 };
@@ -583,8 +583,8 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
-        addWriteVector(dx);
-        addWriteVector(f);
+        addReadVector(dx);
+        addReadVector(f);
     }
 #endif
 };
@@ -614,7 +614,7 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
-        addWriteVector(x);
+        addReadVector(x);
     }
 #endif
 };
@@ -645,8 +645,8 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
-        addWriteVector(x);
-        addWriteVector(f);
+        addReadVector(x);
+        addReadWriteVector(f);
     }
 #endif
 };
@@ -681,7 +681,8 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
-        addWriteVector(dx);
+        addReadVector(v);
+        addReadWriteVector(dx);
     }
 #endif
 };
@@ -807,7 +808,7 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
-        addWriteVector(x);
+        addReadVector(x);
     }
 #endif
 };
@@ -850,8 +851,8 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
-        addWriteVector(x);
-        addWriteVector(v);
+        addReadVector(x);
+        addReadVector(v);
     }
 #endif
 };
@@ -892,8 +893,8 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
-        addWriteVector(x);
-        addWriteVector(v);
+        addReadVector(x);
+        addReadVector(v);
     }
 #endif
 };
@@ -1071,7 +1072,7 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
-        addWriteVector(res);
+        addReadWriteVector(res);
     }
 #endif
 };

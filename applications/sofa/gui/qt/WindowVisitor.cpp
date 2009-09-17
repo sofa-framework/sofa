@@ -147,8 +147,8 @@ WindowVisitor::WindowVisitor()
     typeOfCharts->insertStringList(list,0);
 #endif
 
-    chartsComponent=new ChartsWidget(statsWidget);
-    chartsVisitor  =new ChartsWidget(statsWidget);
+    chartsComponent=new ChartsWidget("Component (name)", statsWidget);
+    chartsVisitor  =new ChartsWidget("Visitor", statsWidget);
 
     statsLayout->addWidget(typeOfCharts,0,0);
     statsLayout->addWidget(chartsComponent,1,0);

@@ -38,6 +38,9 @@
 #include <qpixmap.h>
 #endif
 
+#include <sofa/simulation/common/Visitor.h>
+#include <sofa/simulation/common/Node.h>
+
 #include "WindowVisitor.h"
 #include "PieWidget.h"
 
@@ -77,8 +80,8 @@ public:
     void setGraph(Q3ListView* g) {graph = g;}
     void clear() {graph->clear();}
 
-    double getTotalTime(TiXmlNode* node);
-
+    double getTotalTime(TiXmlNode* node) const;
+    inline double getTime(TiXmlAttribute* attribute) const;
 
 protected:
     void openTime           ( TiXmlNode* element, Q3ListViewItem* item);
