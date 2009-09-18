@@ -42,6 +42,7 @@
 #include "BglNode.h"
 #include "BglGraphManager.h"
 #include <sofa/simulation/common/Visitor.h>
+#include <map>
 
 namespace sofa
 {
@@ -65,57 +66,70 @@ public:
     typedef typename boost::graph_traits< Graph >::out_edge_iterator OutEdgeIterator;
 
 
-    bfs_adapter( sofa::simulation::Visitor* v, Graph &g):visitor(v), graph(g)
-    {};
+    bfs_adapter( sofa::simulation::Visitor* v, Graph &g, std::stack< Vertex > &queue):visitor(v), graph(g), visitedNode(queue) {};
 
     ~bfs_adapter() {};
 
     /// Applies visitor->processNodeTopDown
-    void discover_vertex(Vertex u, const Graph &g) const
+    void discover_vertex(Vertex u, const Graph &g)
     {
         Node *node=const_cast<Node*>(get(BglGraphManager::bglnode_t(),g,u));
-        std::cerr << "Visiting " << node->getName() << std::endl;
+        visitedNode.push(u);
 #ifdef SOFA_DUMP_VISITOR_INFO
         visitor->setNode(node);
         visitor->printInfo(node->getContext(),true);
 #endif
         if (visitor->processNodeTopDown(node)==Visitor::RESULT_PRUNE)
         {
-            std::cerr << "\tStopping " << node->getName() << std::endl;
             OutEdgeIterator it,it_end;
             for (tie(it, it_end)=out_edges(u, g); it!=it_end;)
             {
                 Edge e=*it;
                 ++it;
-                hack.push_back(std::make_pair(source(e,g), target(e,g)));
+                hack.insert(std::make_pair(u,target(e,g)));
                 remove_edge(e,graph);
             }
         }
     }
 
+    void finish_vertex(Vertex v, const Graph &)
+    {
+        typename std::multimap< Vertex, Vertex >::iterator it, it_end;
+        boost::tie(it, it_end)=hack.equal_range(v);
+        for (; it!=it_end; ++it)
+        {
+            add_edge(v,it->second, graph);
+        }
+        hack.erase(v);
+    }
+
     /// Applies visitor->processNodeBottomUp
-    void finish_vertex(Vertex u, const Graph &g) const
+    void processBottomUp(Vertex u, const Graph &g)
     {
         Node *node=const_cast<Node*>(get(BglGraphManager::bglnode_t(),g,u));
 
-        std::cerr << "Ending " << node->getName() << std::endl;
         visitor->processNodeBottomUp(node);
-
-        while (!hack.empty())
-        {
-            add_edge(hack.front().first,hack.front().second, graph);
-            hack.pop_front();
-        }
 
 #ifdef SOFA_DUMP_VISITOR_INFO
         visitor->printInfo(node->getContext(), false);
 #endif
     }
 
+    void endTraversal()
+    {
+        while (!visitedNode.empty())
+        {
+            Vertex u=visitedNode.top();
+            processBottomUp(u, graph);
+            visitedNode.pop();
+        }
+    }
+
 protected:
     sofa::simulation::Visitor* visitor;
-    mutable std::list< std::pair< Vertex, Vertex> > hack;
-    mutable Graph &graph;
+    std::multimap< Vertex, Vertex > hack;
+    Graph &graph;
+    std::stack< Vertex > &visitedNode;
 };
 
 }
