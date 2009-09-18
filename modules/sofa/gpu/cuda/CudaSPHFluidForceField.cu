@@ -36,8 +36,9 @@ namespace cuda
 #endif
 
 template<class real>
-struct GPUSPHFluid
+class GPUSPHFluid
 {
+public:
     real h;         ///< particles radius
     real h2;        ///< particles radius squared
     real stiffness; ///< pressure stiffness
