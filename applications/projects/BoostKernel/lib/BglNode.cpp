@@ -48,7 +48,7 @@
 #include <boost/vector_property_map.hpp>
 #include "dfv_adapter.h"
 
-// #define BREADTH_FIRST_VISIT
+#define BREADTH_FIRST_VISIT
 
 namespace sofa
 {

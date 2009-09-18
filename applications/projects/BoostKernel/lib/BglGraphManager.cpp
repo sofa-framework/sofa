@@ -222,12 +222,13 @@ struct launchBreadthFirstVisit
 
     launchBreadthFirstVisit( Visitor &v, Graph &g):  visitor(v), graph(g)
     {
-        std::cerr << "Visitor Launch: " << v.getClassName() << " : " << v.getInfos() << std::endl;
+//           std::cerr << "Visitor Launch: " << v.getClassName() << " : " << v.getInfos() << std::endl;
     }
 
     void operator()(Vertex v)
     {
         boost::queue<Vertex> queue;
+        std::stack<Vertex> visitedNode;
 
 #ifdef USE_UNSTABLE_VERSION
         typedef helper::vector< boost::default_color_type> ColorMap;
@@ -235,29 +236,27 @@ struct launchBreadthFirstVisit
         colors.resize(findSizeColorMap());
 
 
-        bfs_adapter<Graph> bfsv(&visitor);
+        bfs_adapter<Graph> bfsv(&visitor, graph, visitedNode);
         boost::breadth_first_visit(graph,
                 v,
                 queue,
                 bfsv,
                 make_iterator_property_map(colors.begin(),boost::get(boost::vertex_index, graph) )
                                   );
-
 #else
         typedef std::map<Vertex, boost::default_color_type> ColorStdMap;
         ColorStdMap colorsStdMap;
         boost::associative_property_map< ColorStdMap > propertyColorMap(colorsStdMap);
 
-        bfs_adapter<Graph> bfsv(&visitor, graph);
+        bfs_adapter<Graph> bfsv(&visitor, graph, visitedNode);
         boost::breadth_first_visit(graph,
                 v,
                 queue,
                 bfsv,
                 propertyColorMap
                                   );
-
 #endif
-
+        bfsv.endTraversal();
     }
 
     Visitor &visitor;
