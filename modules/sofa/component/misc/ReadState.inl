@@ -98,7 +98,7 @@ void ReadState::reset()
 #ifdef SOFA_HAVE_ZLIB
     else if (filename.size() >= 3 && filename.substr(filename.size()-3)==".gz")
     {
-        gzfile = gzopen(filename.c_str(),"r");
+        gzfile = gzopen(filename.c_str(),"rb");
         if( !gzfile )
         {
             serr << "Error opening compressed file "<<filename<<sendl;

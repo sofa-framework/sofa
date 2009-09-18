@@ -102,7 +102,7 @@ void WriteState::init()
 #ifdef SOFA_HAVE_ZLIB
         if (filename.size() >= 3 && filename.substr(filename.size()-3)==".gz")
         {
-            gzfile = gzopen(filename.c_str(),"w");
+            gzfile = gzopen(filename.c_str(),"wb");
             if( !gzfile )
             {
                 serr << "Error creating compressed file "<<filename<<sendl;
