@@ -59,7 +59,7 @@ struct DataTypeInfo
 
     static unsigned int size() { return 1; }
 
-    static unsigned int size(const DataType& type) { return 1; }
+    static unsigned int size(const DataType& /*type*/) { return 1; }
 
     template <typename T>
     static void getValue(const DataType& /*type*/, unsigned int /*index*/, T& /*value*/)
