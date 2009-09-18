@@ -31,7 +31,8 @@
 
 #include "MouseManager.h"
 #include <sofa/gui/PickHandler.h>
-
+#include <qslider.h>
+#include <qspinbox.h>
 
 
 namespace sofa

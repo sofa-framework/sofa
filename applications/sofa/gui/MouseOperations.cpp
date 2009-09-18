@@ -31,7 +31,9 @@
 
 #include <sofa/component/collision/AttachBodyPerformer.h>
 #include <sofa/component/collision/FixParticlePerformer.h>
+#ifdef SOFA_DEV
 #include <sofa/component/collision/SculptBodyPerformer.h>
+#endif
 
 namespace sofa
 {
