@@ -32,6 +32,7 @@
 #endif
 
 #include <sofa/helper/set.h>
+#include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/core/core.h>
 #include <iostream>
 #include <string>
@@ -104,6 +105,25 @@ public:
 } // namespace objectmodel
 
 } // namespace core
+
+// Specialization of the defaulttype::DataTypeInfo type traits template
+
+namespace defaulttype
+{
+
+template<>
+struct DataTypeInfo< sofa::core::objectmodel::Tag > : public TextTypeInfo<sofa::core::objectmodel::Tag >
+{
+    static const char* name() { return "Tag"; }
+};
+
+template<>
+struct DataTypeInfo< sofa::core::objectmodel::TagSet > : public SetTypeInfo<sofa::core::objectmodel::TagSet >
+{
+    static const char* name() { return "TagSet"; }
+};
+
+} // namespace defaulttype
 
 } // namespace sofa
 

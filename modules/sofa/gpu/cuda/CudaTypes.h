@@ -215,30 +215,42 @@ public:
         reserve ( s,WARP_SIZE);
         if ( s > vectorSize )
         {
-            copyToHost();
-            memset(hostPointer+vectorSize,0,(s-vectorSize)*sizeof(T));
-            // Call the constructor for the new elements
-            for ( size_type i = vectorSize; i < s; i++ )
+            if (defaulttype::DataTypeInfo<T>::ZeroConstructor)
             {
-                ::new ( hostPointer+i ) T;
+                // can use memset instead of constructors
+                if (hostIsValid)
+                    memset(hostPointer+vectorSize,0,(s-vectorSize)*sizeof(T));
+                if (deviceIsValid)
+                    mycudaMemset((T*)devicePointer+vectorSize, 0, (s-vectorSize)*sizeof(T));
             }
-            if ( deviceIsValid )
+            else
             {
-                if ( vectorSize == 0 )
+                copyToHost();
+                memset(hostPointer+vectorSize,0,(s-vectorSize)*sizeof(T));
+                // Call the constructor for the new elements
+                for ( size_type i = vectorSize; i < s; i++ )
                 {
-                    // wait until the transfer is really necessary, as other modifications might follow
-                    deviceIsValid = false;
+                    ::new ( hostPointer+i ) T;
                 }
-                else
+                if ( deviceIsValid )
                 {
-                    if (bufferObject)
-                        mapBuffer();
-                    mycudaMemcpyHostToDevice ( ( ( T* ) devicePointer ) +vectorSize, hostPointer+vectorSize, ( s-vectorSize ) *sizeof ( T ) );
+                    if ( vectorSize == 0 )
+                    {
+                        // wait until the transfer is really necessary, as other modifications might follow
+                        deviceIsValid = false;
+                    }
+                    else
+                    {
+                        if (bufferObject)
+                            mapBuffer();
+                        mycudaMemcpyHostToDevice ( ( ( T* ) devicePointer ) +vectorSize, hostPointer+vectorSize, ( s-vectorSize ) *sizeof ( T ) );
+                    }
                 }
             }
         }
-        else if (s < vectorSize)
+        else if (s < vectorSize && !(defaulttype::DataTypeInfo<T>::SimpleCopy))
         {
+            // need to call destructors
             copyToHost();
             // Call the destructor for the deleted elements
             for ( size_type i = s; i < vectorSize; i++ )
@@ -1278,5 +1290,38 @@ inline real operator*(const sofa::gpu::cuda::Vec3r1<real>& v1, const sofa::defau
 
 } // namespace sofa
 
+// Specialization of the defaulttype::DataTypeInfo type traits template
+
+namespace sofa
+{
+
+namespace defaulttype
+{
+
+template<class T>
+struct DataTypeInfo< sofa::gpu::cuda::CudaVector<T> > : public VectorTypeInfo<sofa::gpu::cuda::CudaVector<T> >
+{
+    static std::string name() { std::ostringstream o; o << "CudaVector<" << DataTypeName<T>::name() << ">"; return o.str(); }
+};
+
+template<typename real>
+struct DataTypeInfo< sofa::gpu::cuda::Vec3r1<real> > : public FixedArrayTypeInfo<sofa::gpu::cuda::Vec3r1<real> >
+{
+    static std::string name() { std::ostringstream o; o << "Vec3r1<" << DataTypeName<real>::name() << ">"; return o.str(); }
+};
+
+// The next line hides all those methods from the doxygen documentation
+/// \cond TEMPLATE_OVERRIDES
+
+template<> struct DataTypeName<sofa::gpu::cuda::Vec3f1> { static const char* name() { return "Vec3f1"; } };
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template<> struct DataTypeName<sofa::gpu::cuda::Vec3d1> { static const char* name() { return "Vec3d1"; } };
+#endif
+
+/// \endcond
+
+} // namespace defaulttype
+
+} // namespace sofa
 
 #endif
