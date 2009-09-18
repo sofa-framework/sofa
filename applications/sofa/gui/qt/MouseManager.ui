@@ -4,6 +4,14 @@
     <property name="name">
         <cstring>MouseManager</cstring>
     </property>
+    <property name="geometry">
+        <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>274</width>
+            <height>484</height>
+        </rect>
+    </property>
     <property name="caption">
         <string>MouseManager</string>
     </property>
@@ -11,45 +19,6 @@
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
-        <widget class="QGroupBox" row="0" column="0">
-            <property name="name">
-                <cstring>LeftButton</cstring>
-            </property>
-            <property name="title">
-                <string>Left Button</string>
-            </property>
-            <grid>
-                <property name="name">
-                    <cstring>unnamed</cstring>
-                </property>
-                <widget class="QLabel" row="0" column="0">
-                    <property name="name">
-                        <cstring>LeftOperationLabel</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Operation:</string>
-                    </property>
-                </widget>
-                <widget class="QComboBox" row="0" column="1">
-                    <property name="name">
-                        <cstring>LeftOperationCombo</cstring>
-                    </property>
-                </widget>
-                <widget class="QLabel" row="1" column="0">
-                    <property name="name">
-                        <cstring>LeftValueLabel</cstring>
-                    </property>
-                    <property name="text">
-                        <string>Parameter:</string>
-                    </property>
-                </widget>
-                <widget class="QLineEdit" row="1" column="1">
-                    <property name="name">
-                        <cstring>LeftValue</cstring>
-                    </property>
-                </widget>
-            </grid>
-        </widget>
         <widget class="QGroupBox" row="1" column="0">
             <property name="name">
                 <cstring>MiddleButton</cstring>
@@ -69,9 +38,57 @@
                         <string>Operation:</string>
                     </property>
                 </widget>
-                <widget class="QComboBox" row="0" column="1">
+                <widget class="QComboBox" row="0" column="1" rowspan="1" colspan="2">
                     <property name="name">
                         <cstring>MiddleOperationCombo</cstring>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="1" column="1" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>MiddleValue</cstring>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="2" column="0">
+                    <property name="name">
+                        <cstring>MiddleValueLabelForce</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Parameter:</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="3" column="0">
+                    <property name="name">
+                        <cstring>MiddleValueLabelScale</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Parameter:</string>
+                    </property>
+                </widget>
+                <widget class="QSlider" row="3" column="1">
+                    <property name="name">
+                        <cstring>MiddleSliderScale</cstring>
+                    </property>
+                    <property name="maxValue">
+                        <number>100</number>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                </widget>
+                <widget class="QSpinBox" row="2" column="2">
+                    <property name="name">
+                        <cstring>MiddleSpinBoxForce</cstring>
+                    </property>
+                    <property name="maxValue">
+                        <number>100</number>
+                    </property>
+                </widget>
+                <widget class="QSpinBox" row="3" column="2">
+                    <property name="name">
+                        <cstring>MiddleSpinBoxScale</cstring>
+                    </property>
+                    <property name="maxValue">
+                        <number>100</number>
                     </property>
                 </widget>
                 <widget class="QLabel" row="1" column="0">
@@ -82,9 +99,15 @@
                         <string>Parameter:</string>
                     </property>
                 </widget>
-                <widget class="QLineEdit" row="1" column="1">
+                <widget class="QSlider" row="2" column="1">
                     <property name="name">
-                        <cstring>MiddleValue</cstring>
+                        <cstring>MiddleSliderForce</cstring>
+                    </property>
+                    <property name="maxValue">
+                        <number>100</number>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
                     </property>
                 </widget>
             </grid>
@@ -108,9 +131,30 @@
                         <string>Operation:</string>
                     </property>
                 </widget>
-                <widget class="QComboBox" row="0" column="1">
+                <widget class="QComboBox" row="0" column="1" rowspan="1" colspan="3">
                     <property name="name">
                         <cstring>RightOperationCombo</cstring>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="1" column="1" rowspan="1" colspan="3">
+                    <property name="name">
+                        <cstring>RightValue</cstring>
+                    </property>
+                </widget>
+                <widget class="QSpinBox" row="2" column="3">
+                    <property name="name">
+                        <cstring>RightSpinBoxForce</cstring>
+                    </property>
+                    <property name="maxValue">
+                        <number>100</number>
+                    </property>
+                </widget>
+                <widget class="QSpinBox" row="3" column="3" rowspan="2" colspan="1">
+                    <property name="name">
+                        <cstring>RightSpinBoxScale</cstring>
+                    </property>
+                    <property name="maxValue">
+                        <number>100</number>
                     </property>
                 </widget>
                 <widget class="QLabel" row="1" column="0">
@@ -121,14 +165,166 @@
                         <string>Parameter:</string>
                     </property>
                 </widget>
-                <widget class="QLineEdit" row="1" column="1">
+                <widget class="QLabel" row="4" column="0" rowspan="1" colspan="2">
                     <property name="name">
-                        <cstring>RightValue</cstring>
+                        <cstring>RightValueLabelScale</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Parameter:</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="2" column="0" rowspan="2" colspan="2">
+                    <property name="name">
+                        <cstring>RightValueLabelForce</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Parameter:</string>
+                    </property>
+                </widget>
+                <widget class="QSlider" row="2" column="2">
+                    <property name="name">
+                        <cstring>RightSliderForce</cstring>
+                    </property>
+                    <property name="maxValue">
+                        <number>100</number>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                </widget>
+                <widget class="QSlider" row="4" column="2">
+                    <property name="name">
+                        <cstring>RightSliderScale</cstring>
+                    </property>
+                    <property name="maxValue">
+                        <number>100</number>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                </widget>
+            </grid>
+        </widget>
+        <widget class="QGroupBox" row="0" column="0">
+            <property name="name">
+                <cstring>LeftButton</cstring>
+            </property>
+            <property name="title">
+                <string>Left Button</string>
+            </property>
+            <grid>
+                <property name="name">
+                    <cstring>unnamed</cstring>
+                </property>
+                <widget class="QLabel" row="0" column="0">
+                    <property name="name">
+                        <cstring>LeftOperationLabel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Operation:</string>
+                    </property>
+                </widget>
+                <widget class="QComboBox" row="0" column="1" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>LeftOperationCombo</cstring>
+                    </property>
+                </widget>
+                <widget class="QLineEdit" row="1" column="1" rowspan="1" colspan="2">
+                    <property name="name">
+                        <cstring>LeftValue</cstring>
+                    </property>
+                </widget>
+                <widget class="QSpinBox" row="3" column="2">
+                    <property name="name">
+                        <cstring>LeftSpinBoxScale</cstring>
+                    </property>
+                    <property name="maxValue">
+                        <number>100</number>
+                    </property>
+                </widget>
+                <widget class="QSpinBox" row="2" column="2">
+                    <property name="name">
+                        <cstring>LeftSpinBoxForce</cstring>
+                    </property>
+                    <property name="maxValue">
+                        <number>100</number>
+                    </property>
+                </widget>
+                <widget class="QSlider" row="3" column="1">
+                    <property name="name">
+                        <cstring>LeftSliderScale</cstring>
+                    </property>
+                    <property name="maxValue">
+                        <number>100</number>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                </widget>
+                <widget class="QSlider" row="2" column="1">
+                    <property name="name">
+                        <cstring>LeftSliderForce</cstring>
+                    </property>
+                    <property name="maxValue">
+                        <number>100</number>
+                    </property>
+                    <property name="orientation">
+                        <enum>Horizontal</enum>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="3" column="0">
+                    <property name="name">
+                        <cstring>LeftValueLabelScale</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Parameter:</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="2" column="0">
+                    <property name="name">
+                        <cstring>LeftValueLabelForce</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Parameter:</string>
+                    </property>
+                </widget>
+                <widget class="QLabel" row="1" column="0">
+                    <property name="name">
+                        <cstring>LeftValueLabel</cstring>
+                    </property>
+                    <property name="text">
+                        <string>Parameter:</string>
                     </property>
                 </widget>
             </grid>
         </widget>
     </grid>
 </widget>
+<connections>
+    <connection>
+        <sender>LeftSliderForce</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>LeftSpinBoxForce</receiver>
+        <slot>setValue(int)</slot>
+    </connection>
+    <connection>
+        <sender>LeftSliderScale</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>LeftSpinBoxScale</receiver>
+        <slot>setValue(int)</slot>
+    </connection>
+    <connection>
+        <sender>LeftSpinBoxForce</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>LeftSliderForce</receiver>
+        <slot>setValue(int)</slot>
+    </connection>
+    <connection>
+        <sender>LeftSpinBoxScale</sender>
+        <signal>valueChanged(int)</signal>
+        <receiver>LeftSliderScale</receiver>
+        <slot>setValue(int)</slot>
+    </connection>
+</connections>
 <layoutdefaults spacing="6" margin="11"/>
 </UI>
