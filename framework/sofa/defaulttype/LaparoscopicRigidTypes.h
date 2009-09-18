@@ -29,7 +29,6 @@
 
 
 #include <sofa/defaulttype/RigidTypes.h>
-#include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/defaulttype/SparseConstraintTypes.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/objectmodel/BaseContext.h>
@@ -124,6 +123,23 @@ public:
             in>>v.vOrientation;
             return in;
         }
+
+        enum { static_size = 1 };
+        Real* ptr() { return &vTranslation; }
+        const Real* ptr() const { return &vTranslation; }
+
+        static unsigned int size() { return 4; }
+        Real& operator[](int i)
+        {
+            if (i < 1) return this->vTranslation;
+            else       return this->vOrientation(i-1);
+        }
+        const Real& operator[](int i) const
+        {
+            if (i < 1) return this->vTranslation;
+            else       return this->vOrientation(i-1);
+        }
+
     };
 
     class Coord
@@ -236,6 +252,23 @@ public:
         Vector3 vectorToChild( const Vector3& v ) const
         {
             return orientation.inverseRotate(v);
+        }
+
+
+        enum { static_size = 1 };
+        Real* ptr() { return &translation; }
+        const Real* ptr() const { return &translation; }
+
+        static unsigned int size() { return 5; }
+        Real& operator[](int i)
+        {
+            if (i < 1) return this->translation;
+            else       return this->orientation[i-1];
+        }
+        const Real& operator[](int i) const
+        {
+            if (i < 1) return this->translation;
+            else       return this->orientation[i-1];
         }
     };
 
@@ -353,54 +386,18 @@ inline LaparoscopicRigid3Types::Deriv operator/(const LaparoscopicRigid3Types::D
 
 typedef LaparoscopicRigid3Types LaparoscopicRigidTypes; ///< Alias
 
+// Specialization of the defaulttype::DataTypeInfo type traits template
+
 template<>
-class DataTypeInfo<LaparoscopicRigidTypes::Coord>
+struct DataTypeInfo< sofa::defaulttype::LaparoscopicRigid3Types::Deriv > : public FixedArrayTypeInfo< sofa::defaulttype::LaparoscopicRigid3Types::Deriv >
 {
-public:
-    static unsigned int size() { return 5; }
-
-    template <typename T>
-    static void getValue(const LaparoscopicRigidTypes::Coord &type, unsigned int index, T& value)
-    {
-        if (index < 1)
-            value = static_cast<T>(type.getTranslation());
-        else
-            value = static_cast<T>(type.getOrientation()[index-1]);
-    }
-
-    template<typename T>
-    static void setValue(LaparoscopicRigidTypes::Coord &type, unsigned int index, const T& value )
-    {
-        if (index < 1)
-            type.getTranslation() = static_cast<LaparoscopicRigidTypes::Coord::value_type>(value);
-        else
-            type.getOrientation()[index-1] = static_cast<LaparoscopicRigidTypes::Coord::value_type>(value);
-    }
+    static const char* name() { return "LaparoscopicRigid3Types::Deriv"; }
 };
 
 template<>
-class DataTypeInfo<LaparoscopicRigidTypes::Deriv>
+struct DataTypeInfo< sofa::defaulttype::LaparoscopicRigid3Types::Coord > : public FixedArrayTypeInfo< sofa::defaulttype::LaparoscopicRigid3Types::Coord >
 {
-public:
-    static unsigned int size() { return 4; }
-
-    template <typename T>
-    static void getValue(const LaparoscopicRigidTypes::Deriv &type, unsigned int index, T& value)
-    {
-        if (index < 1)
-            value = static_cast<T>(type.getVTranslation());
-        else
-            value = static_cast<T>(type.getVOrientation()[index-1]);
-    }
-
-    template<typename T>
-    static void setValue(LaparoscopicRigidTypes::Deriv &type, unsigned int index, const T& value )
-    {
-        if (index < 1)
-            type.getVTranslation() = static_cast<LaparoscopicRigidTypes::Deriv::value_type>(value);
-        else
-            type.getVOrientation()[index-1] = static_cast<LaparoscopicRigidTypes::Deriv::value_type>(value);
-    }
+    static const char* name() { return "LaparoscopicRigid3Types::Coord"; }
 };
 
 } // namespace defaulttype

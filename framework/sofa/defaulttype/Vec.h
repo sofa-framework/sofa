@@ -30,6 +30,7 @@
 #include <sofa/helper/fixed_array.h>
 #include <boost/static_assert.hpp>
 #include <sofa/helper/rmath.h>
+#include <sofa/defaulttype/DataTypeInfo.h>
 #include <functional>
 
 
@@ -586,10 +587,50 @@ typedef Vec3d Vector3; ///< alias
 typedef Vec4d Vector4; ///< alias
 typedef Vec6d Vector6; ///< alias
 #endif
+
 } // namespace defaulttype
 
 } // namespace sofa
 
+// Specialization of the defaulttype::DataTypeInfo type traits template
+
+namespace sofa
+{
+
+namespace defaulttype
+{
+
+template<int N, typename real>
+struct DataTypeInfo< sofa::defaulttype::Vec<N,real> > : public FixedArrayTypeInfo<sofa::defaulttype::Vec<N,real> >
+{
+    static std::string name() { std::ostringstream o; o << "Vec<" << N << "," << DataTypeName<real>::name() << ">"; return o.str(); }
+};
+
+template<int N, typename real>
+struct DataTypeInfo< sofa::defaulttype::VecNoInit<N,real> > : public FixedArrayTypeInfo<sofa::defaulttype::VecNoInit<N,real> >
+{
+    static std::string name() { std::ostringstream o; o << "VecNoInit<" << N << "," << DataTypeName<real>::name() << ">"; return o.str(); }
+};
+
+// The next line hides all those methods from the doxygen documentation
+/// \cond TEMPLATE_OVERRIDES
+
+template<> struct DataTypeName<defaulttype::Vec1f> { static const char* name() { return "Vec1f"; } };
+template<> struct DataTypeName<defaulttype::Vec1d> { static const char* name() { return "Vec1d"; } };
+template<> struct DataTypeName<defaulttype::Vec2f> { static const char* name() { return "Vec2f"; } };
+template<> struct DataTypeName<defaulttype::Vec2d> { static const char* name() { return "Vec2d"; } };
+template<> struct DataTypeName<defaulttype::Vec3f> { static const char* name() { return "Vec3f"; } };
+template<> struct DataTypeName<defaulttype::Vec3d> { static const char* name() { return "Vec3d"; } };
+template<> struct DataTypeName<defaulttype::Vec4f> { static const char* name() { return "Vec4f"; } };
+template<> struct DataTypeName<defaulttype::Vec4d> { static const char* name() { return "Vec4d"; } };
+template<> struct DataTypeName<defaulttype::Vec6f> { static const char* name() { return "Vec6f"; } };
+template<> struct DataTypeName<defaulttype::Vec6d> { static const char* name() { return "Vec6d"; } };
+
+/// \endcond
+
+} // namespace defaulttype
+
+} // namespace sofa
 
 // Specialization of the std comparison function, to use Vec as std::map key
 namespace std

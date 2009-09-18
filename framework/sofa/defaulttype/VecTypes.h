@@ -469,6 +469,22 @@ typedef ExtVec2dTypes ExtVec2Types;
 /// 1D external DOFs, double precision (default)
 typedef ExtVec1dTypes ExtVec1Types;
 #endif
+
+
+// Specialization of the defaulttype::DataTypeInfo type traits template
+
+template<class T>
+struct DataTypeInfo< sofa::defaulttype::ExtVector<T> > : public VectorTypeInfo<sofa::defaulttype::ExtVector<T> >
+{
+    static std::string name() { std::ostringstream o; o << "ExtVector<" << DataTypeName<T>::name() << ">"; return o.str(); }
+};
+
+template<class T>
+struct DataTypeInfo< sofa::defaulttype::ResizableExtVector<T> > : public VectorTypeInfo<sofa::defaulttype::ResizableExtVector<T> >
+{
+    static std::string name() { std::ostringstream o; o << "ResizableExtVector<" << DataTypeName<T>::name() << ">"; return o.str(); }
+};
+
 } // namespace defaulttype
 
 namespace core
@@ -580,64 +596,6 @@ defaulttype::Vec<2, float>,
 } // namespace behavoir
 
 } // namespace componentmodel
-
-
-
-namespace objectmodel
-{
-
-// Specialization of Field::getValueTypeString() method to display smaller aliases
-// The next line hides all those methods from the doxygen documentation
-/// \cond TEMPLATE_OVERRIDES
-
-template<>
-inline std::string BaseData::typeName< defaulttype::Vec1f >(const defaulttype::Vec1f *) { return "Vec1f"; }
-
-template<>
-inline std::string BaseData::typeName< std::vector< defaulttype::Vec1f > >(const std::vector< defaulttype::Vec1f > *) { return "vector<Vec1f>"; }
-
-template<>
-inline std::string BaseData::typeName< helper::vector< defaulttype::Vec1f > >(const helper::vector< defaulttype::Vec1f > *) { return "vector<Vec1f>"; }
-
-template<>
-inline std::string BaseData::typeName< defaulttype::Vec1d >(const defaulttype::Vec1d *) { return "Vec1d"; }
-
-template<>
-inline std::string BaseData::typeName< std::vector< defaulttype::Vec1d > >(const std::vector< defaulttype::Vec1d > *) { return "vector<Vec1d>"; }
-
-template<>
-inline std::string BaseData::typeName< helper::vector< defaulttype::Vec1d > >(const helper::vector< defaulttype::Vec1d > *) { return "vector<Vec1d>"; }
-
-template<>
-inline std::string BaseData::typeName< defaulttype::Vec2d >(const defaulttype::Vec2d *) { return "Vec2d"; }
-
-template<>
-inline std::string BaseData::typeName< std::vector< defaulttype::Vec2d > >(const std::vector< defaulttype::Vec2d > *) { return "vector<Vec2d>"; }
-
-template<>
-inline std::string BaseData::typeName< helper::vector< defaulttype::Vec2d > >(const helper::vector< defaulttype::Vec2d > *) { return "vector<Vec2d>"; }
-
-template<>
-inline std::string BaseData::typeName< defaulttype::Vec3d >(const defaulttype::Vec3d *) { return "Vec3d"; }
-
-template<>
-inline std::string BaseData::typeName< std::vector< defaulttype::Vec3d > >(const std::vector< defaulttype::Vec3d > *) { return "vector<Vec3d>"; }
-
-template<>
-inline std::string BaseData::typeName< helper::vector< defaulttype::Vec3d > >(const helper::vector< defaulttype::Vec3d > *) { return "vector<Vec3d>"; }
-
-template<>
-inline std::string BaseData::typeName< defaulttype::Vec6d >(const defaulttype::Vec6d *) { return "Vec6d"; }
-
-template<>
-inline std::string BaseData::typeName< std::vector< defaulttype::Vec6d > >(const std::vector< defaulttype::Vec6d > *) { return "vector<Vec6d>"; }
-
-template<>
-inline std::string BaseData::typeName< helper::vector< defaulttype::Vec6d > >(const helper::vector< defaulttype::Vec6d > *) { return "vector<Vec6d>"; }
-
-/// \endcond
-
-} // namespace objectmodel
 
 } // namespace core
 

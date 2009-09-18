@@ -72,6 +72,12 @@ public:
     inline std::string getValueString() const;
     inline std::string getValueTypeString() const; // { return std::string(typeid(m_value).name()); }
 
+    /// Get info about the value type of the associated variable
+    virtual const sofa::defaulttype::AbstractTypeInfo* getValueTypeInfo() const
+    {
+        return sofa::defaulttype::VirtualTypeInfo<T>::get();
+    }
+
     inline bool setParentValue(BaseData* parent)
     {
         updateFromParentValue(parent);
@@ -90,6 +96,36 @@ public:
         ++this->m_counter;
         value() = v;
         BaseData::setDirtyOutputs();
+    }
+
+    virtual T* virtualBeginEdit()
+    {
+        this->updateIfDirty();
+        ++this->m_counter;
+        BaseData::setDirtyOutputs();
+        return &(value());
+    }
+
+    virtual void virtualEndEdit()
+    {
+    }
+
+    /// Get current value as a void pointer (use getValueTypeInfo to find how to access it)
+    virtual const void* getValueVoidPtr() const
+    {
+        return &(virtualGetValue());
+    }
+
+    /// Begin edit current value as a void pointer (use getValueTypeInfo to find how to access it)
+    virtual void* beginEditVoidPtr()
+    {
+        return virtualBeginEdit();
+    }
+
+    /// End edit current value as a void pointer (use getValueTypeInfo to find how to access it)
+    virtual void endEditVoidPtr()
+    {
+        virtualEndEdit();
     }
 
     /** Try to read argument value from an input stream.

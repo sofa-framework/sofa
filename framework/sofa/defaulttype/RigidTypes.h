@@ -1284,6 +1284,42 @@ typedef Rigid2fMass Rigid2Mass;
 typedef Rigid2dTypes Rigid2Types;
 typedef Rigid2dMass Rigid2Mass;
 #endif
+
+
+
+// Specialization of the defaulttype::DataTypeInfo type traits template
+
+template<int N, typename real>
+struct DataTypeInfo< sofa::defaulttype::RigidDeriv<N,real> > : public FixedArrayTypeInfo< sofa::defaulttype::RigidDeriv<N,real> >
+{
+    static std::string name() { std::ostringstream o; o << "RigidDeriv<" << N << "," << DataTypeName<real>::name() << ">"; return o.str(); }
+};
+
+template<int N, typename real>
+struct DataTypeInfo< sofa::defaulttype::RigidCoord<N,real> > : public FixedArrayTypeInfo< sofa::defaulttype::RigidCoord<N,real> >
+{
+    static std::string name() { std::ostringstream o; o << "RigidCoord<" << N << "," << DataTypeName<real>::name() << ">"; return o.str(); }
+};
+
+// The next line hides all those methods from the doxygen documentation
+/// \cond TEMPLATE_OVERRIDES
+
+template<> struct DataTypeName< defaulttype::Rigid2fTypes::Coord > { static const char* name() { return "Rigid2fTypes::Coord"; } };
+template<> struct DataTypeName< defaulttype::Rigid2fTypes::Deriv > { static const char* name() { return "Rigid2fTypes::Deriv"; } };
+template<> struct DataTypeName< defaulttype::Rigid2dTypes::Coord > { static const char* name() { return "Rigid2dTypes::Coord"; } };
+template<> struct DataTypeName< defaulttype::Rigid2dTypes::Deriv > { static const char* name() { return "Rigid2dTypes::Deriv"; } };
+template<> struct DataTypeName< defaulttype::Rigid3fTypes::Coord > { static const char* name() { return "Rigid3fTypes::Coord"; } };
+template<> struct DataTypeName< defaulttype::Rigid3fTypes::Deriv > { static const char* name() { return "Rigid3fTypes::Deriv"; } };
+template<> struct DataTypeName< defaulttype::Rigid3dTypes::Coord > { static const char* name() { return "Rigid3dTypes::Coord"; } };
+template<> struct DataTypeName< defaulttype::Rigid3dTypes::Deriv > { static const char* name() { return "Rigid3dTypes::Deriv"; } };
+template<> struct DataTypeName< defaulttype::Rigid2fMass > { static const char* name() { return "Rigid2fMass"; } };
+template<> struct DataTypeName< defaulttype::Rigid2dMass > { static const char* name() { return "Rigid2dMass"; } };
+template<> struct DataTypeName< defaulttype::Rigid3fMass > { static const char* name() { return "Rigid3fMass"; } };
+template<> struct DataTypeName< defaulttype::Rigid3dMass > { static const char* name() { return "Rigid3dMass"; } };
+
+/// \endcond
+
+
 } // namespace defaulttype
 
 namespace core
@@ -1357,107 +1393,6 @@ defaulttype::RigidCoord<3, float>,
 } // namespace behavoir
 
 } // namespace componentmodel
-
-namespace objectmodel
-{
-
-// Specialization of Field::getValueTypeString() method to display smaller
-// The next line hides all those methods from the doxygen documentation
-/// \cond TEMPLATE_OVERRIDES
-
-template<>
-inline std::string BaseData::typeName< defaulttype::Quatd >(const defaulttype::Quatd *) { return "Quatd"; }
-
-template<>
-inline std::string BaseData::typeName< std::vector< defaulttype::Quatd > >(const std::vector< defaulttype::Quatd > *) { return "vector<Quatd>"; }
-
-template<>
-inline std::string BaseData::typeName< helper::vector< defaulttype::Quatd > >(const helper::vector< defaulttype::Quatd > *) { return "vector<Quatd>"; }
-
-template<>
-inline std::string BaseData::typeName< defaulttype::Quatf >(const defaulttype::Quatf *) { return "Quatf"; }
-
-template<>
-inline std::string BaseData::typeName< std::vector< defaulttype::Quatf > >(const std::vector< defaulttype::Quatf > *) { return "vector<Quatf>"; }
-
-template<>
-inline std::string BaseData::typeName< helper::vector< defaulttype::Quatf > >(const helper::vector< defaulttype::Quatf > *) { return "vector<Quatf>"; }
-
-template<>
-inline std::string BaseData::typeName< defaulttype::Rigid2dTypes::Coord >(const defaulttype::Rigid2dTypes::Coord *) { return "Rigid2dTypes::Coord"; }
-
-template<>
-inline std::string BaseData::typeName< std::vector< defaulttype::Rigid2dTypes::Coord > >(const std::vector< defaulttype::Rigid2dTypes::Coord > *) { return "vector<Rigid2dTypes::Coord>"; }
-
-template<>
-inline std::string BaseData::typeName< helper::vector< defaulttype::Rigid2dTypes::Coord > >(const helper::vector< defaulttype::Rigid2dTypes::Coord > *) { return "vector<Rigid2dTypes::Coord>"; }
-
-template<>
-inline std::string BaseData::typeName< defaulttype::Rigid2dTypes::Deriv >(const defaulttype::Rigid2dTypes::Deriv *) { return "Rigid2dTypes::Deriv"; }
-
-template<>
-inline std::string BaseData::typeName< std::vector< defaulttype::Rigid2dTypes::Deriv > >(const std::vector< defaulttype::Rigid2dTypes::Deriv > *) { return "vector<Rigid2dTypes::Deriv>"; }
-
-template<>
-inline std::string BaseData::typeName< helper::vector< defaulttype::Rigid2dTypes::Deriv > >(const helper::vector< defaulttype::Rigid2dTypes::Deriv > *) { return "vector<Rigid2dTypes::Deriv>"; }
-
-template<>
-inline std::string BaseData::typeName< defaulttype::Rigid2fTypes::Coord >(const defaulttype::Rigid2fTypes::Coord *) { return "Rigid2fTypes::Coord"; }
-
-template<>
-inline std::string BaseData::typeName< std::vector< defaulttype::Rigid2fTypes::Coord > >(const std::vector< defaulttype::Rigid2fTypes::Coord > *) { return "vector<Rigid2fTypes::Coord>"; }
-
-template<>
-inline std::string BaseData::typeName< helper::vector< defaulttype::Rigid2fTypes::Coord > >(const helper::vector< defaulttype::Rigid2fTypes::Coord > *) { return "vector<Rigid2fTypes::Coord>"; }
-
-template<>
-inline std::string BaseData::typeName< defaulttype::Rigid2fTypes::Deriv >(const defaulttype::Rigid2fTypes::Deriv *) { return "Rigid2fTypes::Deriv"; }
-
-template<>
-inline std::string BaseData::typeName< std::vector< defaulttype::Rigid2fTypes::Deriv > >(const std::vector< defaulttype::Rigid2fTypes::Deriv > *) { return "vector<Rigid2fTypes::Deriv>"; }
-
-template<>
-inline std::string BaseData::typeName< helper::vector< defaulttype::Rigid2fTypes::Deriv > >(const helper::vector< defaulttype::Rigid2fTypes::Deriv > *) { return "vector<Rigid2fTypes::Deriv>"; }
-
-template<>
-inline std::string BaseData::typeName< defaulttype::Rigid3dTypes::Coord >(const defaulttype::Rigid3dTypes::Coord *) { return "Rigid3dTypes::Coord"; }
-
-template<>
-inline std::string BaseData::typeName< std::vector< defaulttype::Rigid3dTypes::Coord > >(const std::vector< defaulttype::Rigid3dTypes::Coord > *) { return "vector<Rigid3dTypes::Coord>"; }
-
-template<>
-inline std::string BaseData::typeName< helper::vector< defaulttype::Rigid3dTypes::Coord > >(const helper::vector< defaulttype::Rigid3dTypes::Coord > *) { return "vector<Rigid3dTypes::Coord>"; }
-
-template<>
-inline std::string BaseData::typeName< defaulttype::Rigid3dTypes::Deriv >(const defaulttype::Rigid3dTypes::Deriv *) { return "Rigid3dTypes::Deriv"; }
-
-template<>
-inline std::string BaseData::typeName< std::vector< defaulttype::Rigid3dTypes::Deriv > >(const std::vector< defaulttype::Rigid3dTypes::Deriv > *) { return "vector<Rigid3dTypes::Deriv>"; }
-
-template<>
-inline std::string BaseData::typeName< helper::vector< defaulttype::Rigid3dTypes::Deriv > >(const helper::vector< defaulttype::Rigid3dTypes::Deriv > *) { return "vector<Rigid3dTypes::Deriv>"; }
-
-template<>
-inline std::string BaseData::typeName< defaulttype::Rigid3fTypes::Coord >(const defaulttype::Rigid3fTypes::Coord *) { return "Rigid3fTypes::Coord"; }
-
-template<>
-inline std::string BaseData::typeName< std::vector< defaulttype::Rigid3fTypes::Coord > >(const std::vector< defaulttype::Rigid3fTypes::Coord > *) { return "vector<Rigid3fTypes::Coord>"; }
-
-template<>
-inline std::string BaseData::typeName< helper::vector< defaulttype::Rigid3fTypes::Coord > >(const helper::vector< defaulttype::Rigid3fTypes::Coord > *) { return "vector<Rigid3fTypes::Coord>"; }
-
-template<>
-inline std::string BaseData::typeName< defaulttype::Rigid3fTypes::Deriv >(const defaulttype::Rigid3fTypes::Deriv *) { return "Rigid3fTypes::Deriv"; }
-
-template<>
-inline std::string BaseData::typeName< std::vector< defaulttype::Rigid3fTypes::Deriv > >(const std::vector< defaulttype::Rigid3fTypes::Deriv > *) { return "vector<Rigid3fTypes::Deriv>"; }
-
-template<>
-inline std::string BaseData::typeName< helper::vector< defaulttype::Rigid3fTypes::Deriv > >(const helper::vector< defaulttype::Rigid3fTypes::Deriv > *) { return "vector<Rigid3fTypes::Deriv>"; }
-
-/// \endcond
-
-} // namespace objectmodel
 
 } // namespace core
 

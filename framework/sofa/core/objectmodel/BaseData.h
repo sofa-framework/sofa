@@ -36,6 +36,7 @@
 #include <typeinfo>
 #include <sofa/core/core.h>
 #include <sofa/core/objectmodel/DDGNode.h>
+#include <sofa/defaulttype/DataTypeInfo.h>
 
 namespace sofa
 {
@@ -79,6 +80,18 @@ public:
 
     /// Print the value type of the associated variable
     virtual std::string getValueTypeString() const=0;
+
+    /// Get info about the value type of the associated variable
+    virtual const sofa::defaulttype::AbstractTypeInfo* getValueTypeInfo() const=0;
+
+    /// Get current value as a void pointer (use getValueTypeInfo to find how to access it)
+    virtual const void* getValueVoidPtr() const=0;
+
+    /// Begin edit current value as a void pointer (use getValueTypeInfo to find how to access it)
+    virtual void* beginEditVoidPtr()=0;
+
+    /// End edit current value as a void pointer (use getValueTypeInfo to find how to access it)
+    virtual void endEditVoidPtr()=0;
 
     /// Get help message
     const char* getHelp() const { return help; }
@@ -171,7 +184,10 @@ protected:
     template<class T>
     static std::string typeName(const T* = NULL)
     {
-        return decodeTypeName(typeid(T));
+        if (defaulttype::DataTypeInfo<T>::ValidInfo)
+            return defaulttype::DataTypeName<T>::name();
+        else
+            return decodeTypeName(typeid(T));
     }
 };
 

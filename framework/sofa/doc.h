@@ -144,7 +144,7 @@
  *  \brief Default (and currently only) implementation of the simulation data structure using a tree.
  */
 
-/** \namespace sofa::simulation::tree::xml
+/** \namespace sofa::simulation::xml
  *  \brief XML I/O classes.
  */
 

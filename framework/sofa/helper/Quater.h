@@ -48,6 +48,9 @@ private:
     Real _q[4];
 
 public:
+
+    typedef Real value_type;
+
     Quater();
     virtual ~Quater();
     Quater(Real x, Real y, Real z, Real w);
