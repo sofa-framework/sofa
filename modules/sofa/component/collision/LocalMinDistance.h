@@ -50,10 +50,11 @@ public:
     // Data<bool> usePointPoint;
     Data<double> alarmDistance;
     Data<double> contactDistance;
-    //Data<bool> filterIntersection;
+    Data<bool> filterIntersection;
     Data<double> angleCone;
     Data<double> coneFactor;
     Data<bool> useLMDFilters;
+    Data<bool> bothSides;
 
 
     LocalMinDistance();
