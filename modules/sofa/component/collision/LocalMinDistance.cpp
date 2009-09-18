@@ -22,18 +22,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#include <sofa/helper/system/config.h>
 #include <sofa/component/collision/LocalMinDistance.h>
-
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/core/componentmodel/collision/Intersection.inl>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
-
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/proximity.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
-
-#include <sofa/helper/proximity.h>
+#include <sofa/core/componentmodel/collision/Intersection.inl>
+//#include <sofa/component/collision/RayPickInteractor.h>
+#include <iostream>
+#include <algorithm>
 #include <sofa/helper/gl/template.h>
-#include <sofa/helper/system/config.h>
 
 #include <sofa/simulation/common/Node.h>
 
@@ -68,9 +68,11 @@ int LocalMinDistanceClass = core::RegisterObject("A set of methods to compute (f
 LocalMinDistance::LocalMinDistance()
     : alarmDistance(initData(&alarmDistance, 1.0, "alarmDistance","Proximity detection distance"))
     , contactDistance(initData(&contactDistance, 0.5, "contactDistance","Distance below which a contact is created"))
+    , filterIntersection(initData(&filterIntersection, true, "filterIntersection","Activate LMD filter"))
     , angleCone(initData(&angleCone, 0.0, "angleCone","Filtering cone extension angle"))
     , coneFactor(initData(&coneFactor, 0.5, "coneFactor", "Factor for filtering cone angle computation"))
     , useLMDFilters(initData(&useLMDFilters, false, "useLMDFilters", "Use external cone computation (Work in Progress)"))
+    , bothSides(initData(&bothSides, false, "bothSides", "detect proximity on both sides of the mesh"))
 {
 }
 
@@ -121,6 +123,12 @@ int LocalMinDistance::computeIntersection(Cube&, Cube&, OutputVector* /*contacts
 
 bool LocalMinDistance::testIntersection(Line& e1, Line& e2)
 {
+    if(!e1.activated || !e2.activated)
+    {
+
+        return false;
+    }
+
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
 
     const Vector3 AB = e1.p2()-e1.p1();
@@ -193,6 +201,23 @@ bool LocalMinDistance::testIntersection(Line& e1, Line& e2)
 
 int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* contacts)
 {
+
+    bool debug=false;
+
+    //if(e1.i1()==35 && e1.i2()==45 || e2.i1()==35 && e2.i2()==45 )
+    //{
+    //	std::cout<<"test segment"<<e1.i1()<<" - "<<e1.i2()<<"with segment "<<e2.i1()<<" - "<<e2.i2()<<std::endl;
+    //	debug=true;
+    //}
+
+
+    if(!e1.activated || !e2.activated)
+    {
+        if(debug)
+            std::cout<<" not activated"<<std::endl;
+        return 0;
+    }
+
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
 
     // E1 => A-->B
@@ -226,8 +251,8 @@ int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* cont
         // several possibilities :
         // -one point in common (auto-collision) => return false !
         // -no point in common but line are // => we can continue to test
-
-        //std::cout<<"WARNING det is null"<<std::endl;
+        if (debug)
+            std::cout<<"WARNING det is null"<<std::endl;
     }
 
     Vector3 P,Q,PQ;
@@ -238,17 +263,30 @@ int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* cont
     if (PQ.norm2() >= alarmDist*alarmDist)
         return 0;
 
-    // filter for LMD //
+// filter for LMD //
 
     if (!useLMDFilters.getValue())
     {
+
+
+
         if (!testValidity(e1, PQ))
+        {
+            if(debug)
+                std::cout<<" testValidity rejected for the first segment"<<std::endl;
             return 0;
+        }
 
         Vector3 QP = -PQ;
 
         if (!testValidity(e2, QP))
+
+        {
+            if(debug)
+                std::cout<<" testValidity rejected for the second segment"<<std::endl;
             return 0;
+        }
+
     }
     else
     {
@@ -256,9 +294,6 @@ int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* cont
         core::componentmodel::collision::ContactFiltrationAlgorithm *e1_cfa = e1.getCollisionModel()->getContactFiltrationAlgorithm();
         if (e1_cfa != 0)
         {
-        	if (!e1_cfa->validate(e1, PQ))
-        		return 0;
-        }
 
         core::componentmodel::collision::ContactFiltrationAlgorithm *e2_cfa = e2.getCollisionModel()->getContactFiltrationAlgorithm();
         if (e2_cfa != 0)
@@ -270,7 +305,7 @@ int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* cont
         */
     }
 
-    // end filter
+    //std::cout<<" contact line line detected with alpha ="<<alpha<<" and beta ="<<beta<<std::endl;
 
 #ifdef DETECTIONOUTPUT_FREEMOTION
 
@@ -303,6 +338,9 @@ int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* cont
 
 bool LocalMinDistance::testIntersection(Triangle& e2, Point& e1)
 {
+    if(!e1.activated)
+        return false;
+
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
 
     const Vector3 AB = e2.p2()-e2.p1();
@@ -389,6 +427,9 @@ bool LocalMinDistance::testIntersection(Triangle& e2, Point& e1)
 
 int LocalMinDistance::computeIntersection(Triangle& e2, Point& e1, OutputVector* contacts)
 {
+    if(!e1.activated)
+        return 0;
+
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
 
     const Vector3 AB = e2.p2()-e2.p1();
@@ -421,7 +462,7 @@ int LocalMinDistance::computeIntersection(Triangle& e2, Point& e1, OutputVector*
     Vector3 P,Q; //PQ
     P = e1.p();
     Q = e2.p1() + AB * alpha + AC * beta;
-    Vector3 PQ = Q - P;
+    Vector3 PQ = Q-P;
     Vector3 QP = -PQ;
 
     if (PQ.norm2() >= alarmDist*alarmDist)
@@ -492,6 +533,9 @@ int LocalMinDistance::computeIntersection(Triangle& e2, Point& e1, OutputVector*
 bool LocalMinDistance::testIntersection(Line& e2, Point& e1)
 {
 
+    if(!e1.activated || !e2.activated)
+        return false;
+
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
     const Vector3 AB = e2.p2()-e2.p1();
     const Vector3 AP = e1.p()-e2.p1();
@@ -556,6 +600,9 @@ bool LocalMinDistance::testIntersection(Line& e2, Point& e1)
 
 int LocalMinDistance::computeIntersection(Line& e2, Point& e1, OutputVector* contacts)
 {
+    if(!e1.activated || !e2.activated)
+        return 0;
+
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
     const Vector3 AB = e2.p2()-e2.p1();
     const Vector3 AP = e1.p()-e2.p1();
@@ -620,9 +667,12 @@ int LocalMinDistance::computeIntersection(Line& e2, Point& e1, OutputVector* con
         */
     }
 
+
+
     // end filter
 
 #ifdef DETECTIONOUTPUT_FREEMOTION
+
 
     Vector3 ABfree = e2.p2Free()-e2.p1Free();
     Vector3 Pfree = e1.pFree();
@@ -652,6 +702,9 @@ int LocalMinDistance::computeIntersection(Line& e2, Point& e1, OutputVector* con
 
 bool LocalMinDistance::testIntersection(Point& e1, Point& e2)
 {
+    if(!e1.activated || !e2.activated)
+        return 0;
+
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
 
     Vector3 PQ = e2.p()-e1.p();
@@ -697,6 +750,9 @@ bool LocalMinDistance::testIntersection(Point& e1, Point& e2)
 
 int LocalMinDistance::computeIntersection(Point& e1, Point& e2, OutputVector* contacts)
 {
+    if(!e1.activated || !e2.activated)
+        return 0;
+
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
 
     Vector3 P,Q,PQ;
@@ -770,6 +826,8 @@ int LocalMinDistance::computeIntersection(Point& e1, Point& e2, OutputVector* co
 
 bool LocalMinDistance::testIntersection(Triangle& e2, Sphere& e1)
 {
+
+    return false;
     const double alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
 
     const Vector3 x13 = e2.p1()-e2.p2();
@@ -864,6 +922,11 @@ int LocalMinDistance::computeIntersection(Triangle& e2, Sphere& e1, OutputVector
 
 bool LocalMinDistance::testIntersection(Line& e2, Sphere& e1)
 {
+    return false;
+
+    if(!e2.activated)
+        return false;
+
     const double alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
 
     const Vector3 x32 = e2.p1()-e2.p2();
@@ -897,6 +960,11 @@ bool LocalMinDistance::testIntersection(Line& e2, Sphere& e1)
 
 int LocalMinDistance::computeIntersection(Line& e2, Sphere& e1, OutputVector* contacts)
 {
+
+    return 0;
+    if(!e2.activated)
+        return 0;
+
     const double alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
 
     const Vector3 x32 = e2.p1()-e2.p2();
@@ -940,6 +1008,11 @@ int LocalMinDistance::computeIntersection(Line& e2, Sphere& e1, OutputVector* co
 
 bool LocalMinDistance::testIntersection(Sphere& e1, Point& e2)
 {
+    return false;
+
+    if( !e2.activated)
+        return false;
+
     const double alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
 
     Vector3 P,Q,PQ;
@@ -957,6 +1030,11 @@ bool LocalMinDistance::testIntersection(Sphere& e1, Point& e2)
 
 int LocalMinDistance::computeIntersection(Sphere& e1, Point& e2, OutputVector* contacts)
 {
+    return 0;
+
+    if(!e2.activated)
+        return 0;
+
     const double alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
 
     Vector3 P,Q,PQ;
@@ -1047,7 +1125,12 @@ int LocalMinDistance::computeIntersection(Ray &t1, Triangle &t2, OutputVector* c
 
 bool LocalMinDistance::testValidity(Point &p, const Vector3 &PQ)
 {
-    //return true;
+    if (!filterIntersection.getValue())
+        return true;
+
+    if (!p.activated)
+        std::cout<<"Problem testValidity on inactive point"<<std::endl;
+
 
     Vector3 pt = p.p();
 
@@ -1124,6 +1207,14 @@ bool LocalMinDistance::testValidity(Point &p, const Vector3 &PQ)
 
 bool LocalMinDistance::testValidity(Line &l, const Vector3 &PQ)
 {
+    if (!filterIntersection.getValue())
+        return true;
+
+    if (!l.activated)
+        std::cout<<"Problem testValidity on inactive point"<<std::endl;
+
+
+
     //return true;
     Vector3 nMean;
     Vector3 n1, n2;
@@ -1138,6 +1229,18 @@ bool LocalMinDistance::testValidity(Line &l, const Vector3 &PQ)
     BaseMeshTopology* topology = l.getCollisionModel()->getMeshTopology();
     helper::vector<Vector3>& x = *(l.getCollisionModel()->getMechanicalState()->getX());
     const sofa::helper::vector<unsigned int>& trianglesAroundEdge = topology->getTrianglesAroundEdge(l.getIndex());
+
+    //
+    bool debug= false;
+    //
+    //if(l.i1()==34 && l.i2()==35 || l.i1()==35 && l.i2()==45 )
+    //{
+    //	debug=true;
+    //	std::cout<<"testValidity sur segment "<<l.i1() <<" - "<< l.i2() << " : "<<std::endl;
+    //	std::cout<<"trianglesAroundEdge.size()="<<trianglesAroundEdge.size()<<std::endl;
+    //	std::cout<<"PQ = "<<PQ<<std::endl;
+    //}
+
     /*
     	std::cout << "LocalMinDistance::testValidity(Point &p, const Vector3 &PQ) : " << std::endl;
     	std::cout << "trianglesAroundEdge : " << std::endl;
@@ -1149,28 +1252,48 @@ bool LocalMinDistance::testValidity(Line &l, const Vector3 &PQ)
     	std::cout << "end LMD " << std::endl;
     */
     // filter if there are two triangles around the edge
-    if (trianglesAroundEdge.size() == 2)
+
+    //std::cout<<"testValidity sur segment "<<l.i1() <<" - "<< l.i2() << " : "<<std::endl;
+
+    if ( trianglesAroundEdge.size() == 2)
     {
+
+        // which triangle is left ?
+        const BaseMeshTopology::Triangle& triangle0 = topology->getTriangle(trianglesAroundEdge[0]);
+        bool triangle0_is_left=false;
+        if ( l.i1()==triangle0[0]&&l.i2()==triangle0[1] || l.i1()==triangle0[1]&&l.i2()==triangle0[2] || l.i1()==triangle0[2]&&l.i2()==triangle0[0] )
+        {
+            triangle0_is_left=true;
+            //std::cout<<"triangle0_is_left"<<std::endl;
+        }
+
+
         // compute the normal of the triangle situated on the right
-        const BaseMeshTopology::Triangle& triangleRight = topology->getTriangle(trianglesAroundEdge[0]);
+        const BaseMeshTopology::Triangle& triangleRight = triangle0_is_left ? topology->getTriangle(trianglesAroundEdge[1]): topology->getTriangle(trianglesAroundEdge[0]);
+        //const BaseMeshTopology::Triangle& triangleRight = topology->getTriangle(trianglesAroundEdge[0]);
         n1 = cross(x[triangleRight[1]]-x[triangleRight[0]], x[triangleRight[2]]-x[triangleRight[0]]);
         n1.normalize();
         nMean = n1;
-        t1 = -cross(n1, AB);
+        t1 = cross(n1, AB);
         t1.normalize(); // necessary ?
 
         // compute the normal of the triangle situated on the left
-        const fixed_array<PointID,3>& triangleLeft = topology->getTriangle(trianglesAroundEdge[1]);
+        const BaseMeshTopology::Triangle& triangleLeft = triangle0_is_left ? topology->getTriangle(trianglesAroundEdge[0]): topology->getTriangle(trianglesAroundEdge[1]);
+        //const fixed_array<PointID,3>& triangleLeft = topology->getTriangle(trianglesAroundEdge[1]);
         n2 = cross(x[triangleLeft[1]]-x[triangleLeft[0]], x[triangleLeft[2]]-x[triangleLeft[0]]);
         n2.normalize();
         nMean += n2;
-        t2 = -cross(AB, n2);
+        t2 = cross(AB, n2);
         t2.normalize(); // necessary ?
 
         nMean.normalize();
 
-        if ((nMean*PQ) < 0) // test
+        if ((nMean*PQ) < 0  && !bothSides.getValue()) // test
+        {
+            if(debug)
+                std::cout<<" rejected because of nMean: "<<nMean<<std::endl;
             return false;
+        }
 
         // compute the angle for the cone to filter contacts using the normal of the triangle situated on the right
         double computedAngleCone = (nMean * t1) * coneFactor.getValue();
@@ -1179,7 +1302,11 @@ bool LocalMinDistance::testValidity(Line &l, const Vector3 &PQ)
         computedAngleCone+=angleCone.getValue();
 
         if (t1*PQ < -computedAngleCone*PQ.norm())
+        {
+            if(debug)
+                std::cout<<" rejected because of right triangle normal: "<<n1<<" tang "<< t1<<std::endl;
             return false;
+        }
 
         // compute the angle for the cone to filter contacts using the normal of the triangle situated on the left
         computedAngleCone = (nMean * t2) * coneFactor.getValue();
@@ -1188,18 +1315,28 @@ bool LocalMinDistance::testValidity(Line &l, const Vector3 &PQ)
         computedAngleCone+=angleCone.getValue();
 
         if (t2*PQ < -computedAngleCone*PQ.norm())
+        {
+            if(debug)
+                std::cout<<" rejected because of left triangle normal: "<<n2<<std::endl;
             return false;
+        }
 
     }
     else
     {
+
+        //std::cout<<"in test validity for segment,  trianglesAroundEdge.size() ="<<trianglesAroundEdge.size()<<std::endl;
         n1 = PQ;
         n1.normalize();
-        if (fabs(dot(AB,n1)) > angleCone.getValue() + 0.001)		// auto-collision case between
+        //
+        ///////// ??? /////////
+        if (fabs(dot(AB,n1)) > angleCone.getValue() + 0.001)		// dot(AB,n1) should be equal to 0
         {
-            //std::cout<<"bad case detected  -  abs(dot(AB,n1)) ="<<fabs(dot(AB,n1))<<std::endl;
+            if(debug)
+                std::cout<<"bad case detected  -  abs(dot(AB,n1)) ="<<fabs(dot(AB,n1))<<std::endl;
             return false;
         }
+        //////////////////////
     }
     //sout<<"trianglesAroundEdge.size()"<<trianglesAroundEdge.size()<<sendl;
     return true;
@@ -1209,6 +1346,9 @@ bool LocalMinDistance::testValidity(Line &l, const Vector3 &PQ)
 
 bool LocalMinDistance::testValidity(Triangle &t, const Vector3 &PQ)
 {
+    if (!filterIntersection.getValue()  || bothSides.getValue())
+        return true;
+
     const Vector3& pt1 = t.p1();
     const Vector3& pt2 = t.p2();
     const Vector3& pt3 = t.p3();
