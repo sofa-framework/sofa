@@ -28,6 +28,7 @@
 #define SOFA_GUI_MOUSEOPERATIONS_H
 
 #include <iostream>
+#include <vector>
 
 namespace sofa
 {
@@ -73,7 +74,6 @@ public:
     virtual double getStiffness() const { return stiffness;}
     static bool isModifiable() {return true;};
 
-
     static std::string getDescription() {return "Attach an object to the Mouse";}
 protected:
     double stiffness;
@@ -114,11 +114,31 @@ public:
     virtual double getStiffness() const { return stiffness;}
     static bool isModifiable() {return true;};
 
-
     static std::string getDescription() {return "Fix Picked particle";}
 protected:
     double stiffness;
 };
+
+class SculptOperation : public Operation
+{
+public:
+    SculptOperation():force(50), scale(50) {};
+    virtual ~SculptOperation() {};
+    virtual void start() ;
+    virtual void execution() ;
+    virtual void end() ;
+
+    void setForce(double f) {force = f;}
+    virtual double getForce() const { return force;}
+    void setScale(double s) {scale = s;}
+    double getScale() const {return scale;}
+    static bool isModifiable() {return false;};
+
+    static std::string getDescription() {return "Sculpt an object using the Mouse";}
+protected:
+    double force, scale;
+};
+
 }
 }
 

@@ -31,6 +31,7 @@
 
 #include <sofa/component/collision/AttachBodyPerformer.h>
 #include <sofa/component/collision/FixParticlePerformer.h>
+#include <sofa/component/collision/SculptBodyPerformer.h>
 
 namespace sofa
 {
@@ -124,6 +125,33 @@ void InciseOperation::execution()
 void InciseOperation::end()
 {
     execution();
+    pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
+}
+
+
+//*******************************************************************************************
+void SculptOperation::start()
+{
+    //Creation
+    performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("SculptBody", pickHandle->getInteraction()->mouseInteractor);
+    pickHandle->getInteraction()->mouseInteractor->addInteractionPerformer(performer);
+
+    //Configuration
+    component::collision::SculptBodyPerformerConfiguration *performerConfiguration=dynamic_cast<component::collision::SculptBodyPerformerConfiguration*>(performer);
+    performerConfiguration->setForce(getForce());
+    performerConfiguration->setScale(getScale());
+
+    //Start
+//       performer->start();
+}
+
+void SculptOperation::execution()
+{
+    performer->execute();
+}
+
+void SculptOperation::end()
+{
     pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
 }
 
