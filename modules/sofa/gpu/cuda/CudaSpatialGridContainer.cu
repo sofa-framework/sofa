@@ -188,7 +188,7 @@ __device__ __inline__ float4 getPos4(const float3* pos, int index)
 template<class TIn>
 __global__ void
 computeHashD(const TIn* pos,
-        uint* particleIndex8, uint*  particleHash8, int n)
+        unsigned int* particleIndex8, unsigned int*  particleHash8, int n)
 {
     int index0 = __mul24(blockIdx.x, blockDim.x);
     int index = index0 + threadIdx.x;
@@ -230,7 +230,7 @@ computeHashD(const TIn* pos,
         h.x = (h.x>>3) + dH.x;
         h.y += dH.y;
         h.z += dH.z;
-        uint hash = ((h.x ^ h.y ^ h.z) & gridParams.cellMask)<<1;
+        unsigned int hash = ((h.x ^ h.y ^ h.z) & gridParams.cellMask)<<1;
         if (hc != (x&7)) ++hash;
         particleHash8[index0_8 + l] = hash;
     }
@@ -239,11 +239,11 @@ computeHashD(const TIn* pos,
 // find start of each cell in sorted particle list by comparing with previous hash value
 // one thread per particle
 __global__ void
-findCellRangeD(const uint* particleHash,
+findCellRangeD(const unsigned int* particleHash,
         int2 * cellRange, int* cellGhost, int n)
 {
     unsigned int i = __mul24(blockIdx.x, blockDim.x) + threadIdx.x;
-    __shared__ uint hash[BSIZE];
+    __shared__ unsigned int hash[BSIZE];
     if (i < n)
         hash[threadIdx.x] = particleHash[i];
 
@@ -253,7 +253,7 @@ findCellRangeD(const uint* particleHash,
     {
         bool firstInCell;
         bool firstGhost;
-        uint cur = hash[threadIdx.x];
+        unsigned int cur = hash[threadIdx.x];
         if (i == 0)
         {
             firstInCell = true;
@@ -261,7 +261,7 @@ findCellRangeD(const uint* particleHash,
         }
         else
         {
-            uint prev;
+            unsigned int prev;
             if (threadIdx.x > 0)
                 prev = hash[threadIdx.x-1];
             else
@@ -326,7 +326,7 @@ void SpatialGridContainer3f_computeHash(int cellBits, float cellWidth, int nbPoi
     {
         dim3 threads(BSIZE,1);
         dim3 grid((nbPoints+BSIZE-1)/BSIZE,1);
-        computeHashD<float3><<< grid, threads >>>((const float3*)x, (uint*)particleIndex8, (uint*)particleHash8, nbPoints);
+        computeHashD<float3><<< grid, threads >>>((const float3*)x, (unsigned int*)particleIndex8, (unsigned int*)particleHash8, nbPoints);
     }
 }
 
@@ -344,7 +344,7 @@ void SpatialGridContainer3f1_computeHash(int cellBits, float cellWidth, int nbPo
     {
         dim3 threads(BSIZE,1);
         dim3 grid((nbPoints+BSIZE-1)/BSIZE,1);
-        computeHashD<float4><<< grid, threads >>>((const float4*)x, (uint*)particleIndex8, (uint*)particleHash8, nbPoints);
+        computeHashD<float4><<< grid, threads >>>((const float4*)x, (unsigned int*)particleIndex8, (unsigned int*)particleHash8, nbPoints);
     }
 }
 
