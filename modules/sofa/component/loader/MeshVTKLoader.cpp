@@ -70,6 +70,7 @@ public:
     virtual bool read(std::ifstream& f, int n, int binary) = 0;
     virtual bool write(std::ofstream& f, int n, int groups, int binary) = 0;
     virtual void addPoints(helper::vector<sofa::defaulttype::Vec<3,SReal> >& my_positions) = 0;
+    virtual void swap() = 0;
 };
 
 template<class T>
@@ -88,6 +89,23 @@ public:
         }
         dataSize = n;
     }
+    static T swapT(T t)
+    {
+        union T_chars
+        {
+            T t;
+            char b[sizeof(T)];
+        } tmp,rev;
+        tmp.t = t;
+        for (unsigned int c=0; c<sizeof(T); ++c)
+            rev.b[c] = tmp.b[sizeof(T)-1-c];
+        return rev.t;
+    }
+    void swap()
+    {
+        for (int i=0; i<dataSize; ++i)
+            data[i] = swapT(data[i]);
+    }
     virtual bool read(std::ifstream& in, int n, int binary)
     {
         resize(n);
@@ -101,18 +119,7 @@ public:
             }
             if (binary == 2) // swap bytes
             {
-                for (int i=0; i<n; ++i)
-                {
-                    union T_chars
-                    {
-                        T t;
-                        char b[sizeof(T)];
-                    } tmp,rev;
-                    tmp.t = data[i];
-                    for (unsigned int c=0; c<sizeof(T); ++c)
-                        rev.b[c] = tmp.b[sizeof(T)-1-c];
-                    data[i] = rev.t;
-                }
+                swap();
             }
         }
         else
@@ -311,6 +318,29 @@ bool MeshVTKLoader::readVTK (const char* filename)
         if (inputPoints && inputCells && inputCellTypes) break; // already found the mesh description, skip the rest
     }
 
+    if (binary)
+    {
+        // detect swapped data
+        bool swapped = false;
+        if (inputPolygons)
+        {
+            if ((unsigned)inputPolygons->data[0] > (unsigned)inputPolygons->swapT(inputPolygons->data[0]))
+                swapped = true;
+        }
+        else if (inputCells && inputCellTypes)
+        {
+            if ((unsigned)inputCellTypes->data[0] > (unsigned)inputCellTypes->swapT(inputCellTypes->data[0]))
+                swapped = true;
+        }
+        if (swapped)
+        {
+            std::cout << "Binary data is byte-swapped." << std::endl;
+            if (inputPoints) inputPoints->swap();
+            if (inputPolygons) inputPolygons->swap();
+            if (inputCells) inputCells->swap();
+            if (inputCellTypes) inputCellTypes->swap();
+        }
+    }
     helper::vector<sofa::defaulttype::Vector3>& my_positions = *(positions.beginEdit());
     inputPoints->addPoints(my_positions);
     positions.endEdit();
