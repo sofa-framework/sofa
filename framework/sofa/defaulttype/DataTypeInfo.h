@@ -100,6 +100,7 @@ public:
 
     virtual std::string name() const = 0;
 
+    virtual bool ValidInfo() const = 0;
     virtual bool FixedSize() const = 0;
     virtual bool ZeroConstructor() const = 0;
     virtual bool SimpleCopy() const = 0;
@@ -144,6 +145,7 @@ public:
 
     virtual std::string name() const { return DataTypeName<DataType>::name(); }
 
+    virtual bool ValidInfo() const       { return Info::ValidInfo; }
     virtual bool FixedSize() const       { return Info::FixedSize; }
     virtual bool ZeroConstructor() const { return Info::ZeroConstructor; }
     virtual bool SimpleCopy() const      { return Info::SimpleCopy; }

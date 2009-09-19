@@ -107,6 +107,26 @@ protected:
     std::list<DDGNode*> inputs;
     std::list<DDGNode*> outputs;
 
+    virtual void doAddInput(DDGNode* n)
+    {
+        inputs.push_back(n);
+    }
+
+    virtual void doDelInput(DDGNode* n)
+    {
+        inputs.remove(n);
+    }
+
+    virtual void doAddOutput(DDGNode* n)
+    {
+        outputs.push_back(n);
+    }
+
+    virtual void doDelOutput(DDGNode* n)
+    {
+        outputs.remove(n);
+    }
+
 private:
     bool dirtyValue;
     bool dirtyOutputs;

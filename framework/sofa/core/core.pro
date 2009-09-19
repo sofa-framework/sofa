@@ -100,6 +100,7 @@ HEADERS += \
 
 SOURCES +=  \
           objectmodel/Base.cpp \
+          objectmodel/BaseData.cpp \
           objectmodel/BaseContext.cpp \
           objectmodel/BaseObject.cpp \
           objectmodel/BaseObjectDescription.cpp \

@@ -140,7 +140,7 @@ void BaseObject::parse( BaseObjectDescription* arg )
 
                 if (Data != NULL)
                 {
-                    Data->addInput( (*it_map).second);
+                    Data->setParent( (*it_map).second);
                 }
             }
 
@@ -242,12 +242,11 @@ void BaseObject::parse( BaseObjectDescription* arg )
                     }
 
                     /* set parent value to the child */
-                    if (!dataModif[d]->setParentValue(parentData))
+                    if (!dataModif[d]->setParent(parentData))
                     {
                         serr<<"could not copy value from parent Data "<< valueString << ". Incompatible Data types" << sendl;
                         break;
                     }
-                    parentData->addOutput(dataModif[d]);
                     /* children Data can be modified changing the parent Data value */
                     dataModif[d]->setReadOnly(true);
                     break;
