@@ -45,9 +45,9 @@ DDGNode::DDGNode()
 DDGNode::~DDGNode()
 {
     for(std::list< DDGNode* >::iterator it=inputs.begin(); it!=inputs.end(); ++it)
-        (*it)->outputs.remove(this);
+        (*it)->doDelOutput(this);
     for(std::list< DDGNode* >::iterator it=outputs.begin(); it!=outputs.end(); ++it)
-        (*it)->inputs.remove(this);
+        (*it)->doDelInput(this);
 }
 
 void DDGNode::setDirtyValue()
@@ -83,26 +83,28 @@ void DDGNode::cleanDirty()
 
 void DDGNode::addInput(DDGNode* n)
 {
-    inputs.push_back(n);
-    n->outputs.push_back(this);
+    doAddInput(n);
+    n->doAddOutput(this);
+    setDirtyValue();
 }
 
 void DDGNode::delInput(DDGNode* n)
 {
-    inputs.remove(n);
-    n->outputs.remove(this);
+    doDelInput(n);
+    n->doDelOutput(this);
 }
 
 void DDGNode::addOutput(DDGNode* n)
 {
-    outputs.push_back(n);
-    n->inputs.push_back(this);
+    doAddOutput(n);
+    n->doAddInput(this);
+    n->setDirtyValue();
 }
 
 void DDGNode::delOutput(DDGNode* n)
 {
-    outputs.remove(n);
-    n->inputs.remove(this);
+    doDelOutput(n);
+    n->doDelInput(this);
 }
 
 std::list<DDGNode*> DDGNode::getInputs()

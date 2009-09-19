@@ -72,8 +72,7 @@ void BoxROI<DataTypes>::init()
             BaseData* parent = mstate->findField("rest_position");
             if (parent)
             {
-                f_X0.setParentValue(parent);
-                parent->addOutput(&f_X0);
+                f_X0.setParent(parent);
                 f_X0.setReadOnly(true);
             }
         }

@@ -60,8 +60,8 @@ class TData : public sofa::core::objectmodel::BaseData
 public:
     typedef T value_type;
 
-    TData( const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false )
-        : BaseData(helpMsg, isDisplayed, isReadOnly)
+    TData( const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false, Base* owner=NULL, const char* name="")
+        : BaseData(helpMsg, isDisplayed, isReadOnly, owner, name), parentData(NULL)
     {
     }
 
@@ -76,13 +76,6 @@ public:
     virtual const sofa::defaulttype::AbstractTypeInfo* getValueTypeInfo() const
     {
         return sofa::defaulttype::VirtualTypeInfo<T>::get();
-    }
-
-    inline bool setParentValue(BaseData* parent)
-    {
-        updateFromParentValue(parent);
-        BaseData::setDirtyValue();
-        return true;
     }
 
     const T& virtualGetValue() const
@@ -150,24 +143,39 @@ public:
         }
     }
 
-    virtual bool isCounterValid() const {return true;};
+    virtual bool isCounterValid() const {return true;}
+
 protected:
 
-
-    inline bool updateFromParentValue(BaseData* parent)
+    bool validParent(BaseData* parent)
     {
-        TData<T>* tData = dynamic_cast< TData<T>* >(parent);
-        if (tData)
+        if (dynamic_cast<TData<T>*>(parent))
+            return true;
+        return BaseData::validParent(parent);
+    }
+
+    void doSetParent(BaseData* parent)
+    {
+        parentData = dynamic_cast<TData<T>*>(parent);
+        BaseData::doSetParent(parent);
+    }
+
+    bool updateFromParentValue(BaseData* parent)
+    {
+        if (parent == parentData)
         {
-            value() = tData->value();
+            value() = parentData->value();
             ++this->m_counter;
             return true;
         }
-        return false;
+        else
+            return BaseData::updateFromParentValue(parent);
     }
 
     virtual const T& value() const = 0;
     virtual T& value() = 0;
+
+    TData<T>* parentData;
 };
 
 /**
@@ -182,8 +190,8 @@ public:
     /** Constructor
     \param helpMsg help on the field
      */
-    Data( const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false )
-        : TData<T>(helpMsg, isDisplayed, isReadOnly)
+    Data( const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false, Base* owner=NULL, const char* name="")
+        : TData<T>(helpMsg, isDisplayed, isReadOnly, owner, name)
         , m_value(T())// BUGFIX (Jeremie A.): Force initialization of basic types to 0 (bool, int, float, etc).
     {
     }
@@ -192,8 +200,8 @@ public:
     \param value default value
     \param helpMsg help on the field
      */
-    Data( const T& value, const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false  )
-        : TData<T>(helpMsg, isDisplayed, isReadOnly)
+    Data( const T& value, const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false, Base* owner=NULL, const char* name="")
+        : TData<T>(helpMsg, isDisplayed, isReadOnly, owner, name)
         , m_value(value)
     {
     }

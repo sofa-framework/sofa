@@ -187,7 +187,7 @@ public:
         //field = tmp;
         m_fieldVec.push_back( std::make_pair(ln,field));
         m_aliasData.insert(std::make_pair(ln,field));
-        return Data<T>(help,isDisplayed,isReadOnly);
+        return Data<T>(help,isDisplayed,isReadOnly, this, name);
     }
 
     /// Helper method used to initialize a field containing a value of type T
@@ -203,7 +203,7 @@ public:
         //field = tmp;
         m_fieldVec.push_back( std::make_pair(ln,field));
         m_aliasData.insert(std::make_pair(ln,field));
-        return Data<T>(value,help,isDisplayed,isReadOnly);
+        return Data<T>(value,help,isDisplayed,isReadOnly, this, name);
     }
 
     /// Helper method used to initialize a field pointing to a value of type T
@@ -219,11 +219,10 @@ public:
         //field = tmp;
         m_fieldVec.push_back( std::make_pair(ln,field));
         m_aliasData.insert(std::make_pair(ln,field));
-        return DataPtr<T>(ptr,help,isDisplayed,isReadOnly);
+        return DataPtr<T>(ptr,help,isDisplayed,isReadOnly, this, name);
     }
 
-    /// Helper method used to add an alias to a DataPtr
-
+    /// Helper method used to add an alias to a Data
     void addAlias( BaseData* field, const char* alias)
     {
         m_aliasData.insert(std::make_pair(std::string(alias),field));
@@ -261,6 +260,8 @@ protected:
         }
         m_fieldVec.push_back( std::make_pair(ln,f));
         m_aliasData.insert(std::make_pair(ln,f));
+        f->setOwner(this);
+        f->setName(name);
     }
 };
 

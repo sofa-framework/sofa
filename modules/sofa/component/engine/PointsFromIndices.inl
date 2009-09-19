@@ -65,8 +65,7 @@ void PointsFromIndices<DataTypes>::init()
             BaseData* parent = mstate->findField("position");
             if (parent)
             {
-                f_X.setParentValue(parent);
-                parent->addOutput(&f_X);
+                f_X.setParent(parent);
                 f_X.setReadOnly(true);
             }
         }
