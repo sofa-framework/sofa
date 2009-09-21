@@ -134,6 +134,7 @@ void InciseOperation::end()
 //*******************************************************************************************
 void SculptOperation::start()
 {
+#ifdef SOFA_DEV
     //Creation
     performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("SculptBody", pickHandle->getInteraction()->mouseInteractor);
     pickHandle->getInteraction()->mouseInteractor->addInteractionPerformer(performer);
@@ -145,16 +146,21 @@ void SculptOperation::start()
 
     //Start
 //       performer->start();
+#endif
 }
 
 void SculptOperation::execution()
 {
+#ifdef SOFA_DEV
     performer->execute();
+#endif
 }
 
 void SculptOperation::end()
 {
+#ifdef SOFA_DEV
     pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
+#endif
 }
 
 }
