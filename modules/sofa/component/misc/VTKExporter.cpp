@@ -42,7 +42,8 @@ VTKExporter::VTKExporter()
 
 VTKExporter::~VTKExporter()
 {
-    delete outfile;
+    if (outfile)
+        delete outfile;
 }
 
 void VTKExporter::init()
@@ -53,6 +54,17 @@ void VTKExporter::init()
     if (!topology)
     {
         serr << "VTKExporter : error, no topology ." << sendl;
+        return;
+    }
+
+    const std::string& filename = vtkFilename.getFullPath();
+
+    outfile = new std::ofstream(filename.c_str());
+    if( !outfile->is_open() )
+    {
+        serr << "Error creating file "<<filename<<sendl;
+        delete outfile;
+        outfile = NULL;
         return;
     }
 
@@ -120,7 +132,7 @@ void VTKExporter::writeData(const helper::vector<std::string>& objects, const he
         }
         else
         {
-            std::cout << "Type: " << field->getValueTypeString() << std::endl;
+            //std::cout << "Type: " << field->getValueTypeString() << std::endl;
 
             //retrieve data file type
 //			if (dynamic_cast<Data< defaulttype::Vec3f >* >(field))
@@ -207,17 +219,6 @@ void VTKExporter::writeVTK()
 {
     const helper::vector<std::string>& pointsData = dPointsDataFields.getValue();
     const helper::vector<std::string>& cellsData = dCellsDataFields.getValue();
-
-    const std::string& filename = vtkFilename.getFullPath();
-
-    outfile = new std::ofstream(filename.c_str());
-    if( !outfile->is_open() )
-    {
-        serr << "Error creating file "<<filename<<sendl;
-        delete outfile;
-        outfile = NULL;
-        return;
-    }
 
     //Write header
     *outfile << "# vtk DataFile Version 2.0" << std::endl;
