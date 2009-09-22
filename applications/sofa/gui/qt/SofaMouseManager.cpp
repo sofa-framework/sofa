@@ -112,17 +112,29 @@ void SofaMouseManager::updateOperation( MOUSE_BUTTON button, const std::string &
     {
     case LEFT:
     {
+#ifdef SOFA_QT4
         LeftButton->layout()->addWidget(qoperation);
+#else
+        LeftButton->layout()->add(qoperation);
+#endif
         break;
     }
     case MIDDLE:
     {
+#ifdef SOFA_QT4
         MiddleButton->layout()->addWidget(qoperation);
+#else
+        MiddleButton->layout()->add(qoperation);
+#endif
         break;
     }
     case RIGHT:
     {
+#ifdef SOFA_QT4
         RightButton->layout()->addWidget(qoperation);
+#else
+        RightButton->layout()->add(qoperation);
+#endif
         break;
     }
     }
