@@ -125,7 +125,7 @@ public:
     Data<unsigned> numMechSteps;
 
     /// Number of steps of simulation
-    unsigned nbSteps;
+    Data<unsigned> nbSteps;
 
     /// Need to launch prefetches during animating steps
     bool needToPrefetch;
