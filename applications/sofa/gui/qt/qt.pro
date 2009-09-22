@@ -80,6 +80,7 @@ SOURCES += Main.cpp \
            FileManagement.cpp \
            SofaPluginManager.cpp \
            SofaMouseManager.cpp \
+           QMouseOperations.cpp \
            ImageQt.cpp
 
 contains (DEFINES, SOFA_DUMP_VISITOR_INFO){

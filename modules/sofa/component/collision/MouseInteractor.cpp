@@ -39,10 +39,20 @@ namespace collision
 SOFA_DECL_CLASS(MouseInteractor)
 
 int MouseInteractorClass = core::RegisterObject("Perform tasks related to the interaction with the mouse")
-        .add< MouseInteractor<defaulttype::Vec3Types> >();
+#ifndef SOFA_DOUBLE
+        .add< MouseInteractor<defaulttype::Vec3fTypes> >()
+#endif
+#ifndef SOFA_FLOAT
+        .add< MouseInteractor<defaulttype::Vec3dTypes> >()
+#endif
+        ;
 
-
-template class SOFA_COMPONENT_COLLISION_API MouseInteractor<defaulttype::Vec3Types>;
+#ifndef SOFA_DOUBLE
+template class SOFA_COMPONENT_COLLISION_API MouseInteractor<defaulttype::Vec3fTypes>;
+#endif
+#ifndef SOFA_FLOAT
+template class SOFA_COMPONENT_COLLISION_API MouseInteractor<defaulttype::Vec3dTypes>;
+#endif
 
 
 void BaseMouseInteractor::cleanup()
@@ -51,6 +61,7 @@ void BaseMouseInteractor::cleanup()
     {
         removeInteractionPerformer(*performers.begin());
     }
+    lastPicked=BodyPicked();
 };
 
 

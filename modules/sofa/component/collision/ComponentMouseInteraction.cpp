@@ -68,11 +68,20 @@ void ComponentMouseInteraction::reset()
 }
 
 
-
-template class TComponentMouseInteraction<defaulttype::Vec3Types>;
+#ifndef SOFA_DOUBLE
+template class TComponentMouseInteraction<defaulttype::Vec3fTypes>;
+#endif
+#ifndef SOFA_FLOAT
+template class TComponentMouseInteraction<defaulttype::Vec3dTypes>;
+#endif
 
 #ifndef WIN32
-helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory, TComponentMouseInteraction<defaulttype::Vec3Types> > ComponentMouseInteractionVec3Class ("MouseSpringVec3d",true);
+#ifndef SOFA_DOUBLE
+helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory, TComponentMouseInteraction<defaulttype::Vec3fTypes> > ComponentMouseInteractionVec3fClass ("MouseSpringVec3f",true);
+#endif
+#ifndef SOFA_FLOAT
+helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory, TComponentMouseInteraction<defaulttype::Vec3dTypes> > ComponentMouseInteractionVec3dClass ("MouseSpringVec3d",true);
+#endif
 #endif
 }
 }

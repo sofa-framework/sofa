@@ -25,51 +25,100 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
+#include <sofa/gui/qt/QMouseOperations.h>
 
-#ifndef SOFA_GUI_QT_MOUSEMANAGER_H
-#define SOFA_GUI_QT_MOUSEMANAGER_H
-
-#include "MouseManager.h"
-#include <sofa/gui/PickHandler.h>
-
+#ifdef SOFA_QT4
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QGridLayout>
+#include <QLabel>
+#else
+#include <qlayout.h>
+#include <qlabel.h>
+#endif
 
 namespace sofa
 {
+
 namespace gui
 {
+
 namespace qt
 {
-
-
-class SofaMouseManager: public MouseManager
+QAttachOperation::QAttachOperation()
 {
-    Q_OBJECT
-public:
+    //Building the GUI for the Attach Operation
+    QHBoxLayout *layout=new QHBoxLayout(this);
+    QLabel *label=new QLabel(QString("Stiffness"), this);
+    value=new QLineEdit(QString("1000.0"), this);
 
-    SofaMouseManager();
+    layout->addWidget(label);
+    layout->addWidget(value);
+}
 
-    static SofaMouseManager* getInstance()
-    {
-        static SofaMouseManager instance;
-        return &instance;
-    }
-
-    void setPickHandler(PickHandler *);
-
-
-public slots:
-    void selectOperation(int);
-
-protected:
-    void updateOperation( MOUSE_BUTTON button, const std::string &id);
-
-    PickHandler *pickHandler;
-    std::map< int, std::string > mapIndexOperation;
-};
+double QAttachOperation::getStiffness() const
+{
+    return atof(value->displayText().ascii());
+}
 
 
+
+QSculptOperation::QSculptOperation()
+{
+    QGridLayout *layout=new QGridLayout(this,2,3);
+    QLabel *forceLabel=new QLabel(QString("Force"), this);
+    forceSlider=new QSlider(Qt::Horizontal, this);
+    forceValue=new QSpinBox(0,100,1,this);
+    forceValue->setEnabled(false);
+
+
+    layout->addWidget(forceLabel,0,0);
+    layout->addWidget(forceSlider,0,1);
+    layout->addWidget(forceValue,0,2);
+
+    QLabel *scaleLabel=new QLabel(QString("Scale"), this);
+    scaleSlider=new QSlider(Qt::Horizontal, this);
+    scaleValue=new QSpinBox(0,100,1,this);
+    scaleValue->setEnabled(false);
+
+    layout->addWidget(scaleLabel,1,0);
+    layout->addWidget(scaleSlider,1,1);
+    layout->addWidget(scaleValue,1,2);
+
+
+    connect(forceSlider,SIGNAL(valueChanged(int)), forceValue, SLOT(setValue(int)));
+    connect(scaleSlider,SIGNAL(valueChanged(int)), scaleValue, SLOT(setValue(int)));
+
+    forceSlider->setValue(50);
+    scaleSlider->setValue(50);
+}
+
+double QSculptOperation::getForce() const
+{
+    return forceValue->value();
+}
+
+double QSculptOperation::getScale() const
+{
+    return scaleValue->value();
+}
+
+
+QFixOperation::QFixOperation()
+{
+    //Building the GUI for the Fix Operation
+    QHBoxLayout *layout=new QHBoxLayout(this);
+    QLabel *label=new QLabel(QString("Fixation"), this);
+    value=new QLineEdit(QString("10000.0"), this);
+
+    layout->addWidget(label);
+    layout->addWidget(value);
+}
+
+double QFixOperation::getStiffness() const
+{
+    return atof(value->displayText().ascii());
 }
 }
 }
-
-#endif
+}

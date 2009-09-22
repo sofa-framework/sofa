@@ -106,7 +106,13 @@ void PickHandler::activateRay(bool act)
     {
         mouseNode->detachFromGraph();
 
+
+        operations[LEFT]->end();
+        operations[MIDDLE]->end();
+        operations[RIGHT]->end();
+
         interaction->deactivate();
+
         interactorInUse=false;
     }
     else if (!interactorInUse && act)
@@ -287,6 +293,14 @@ component::collision::BodyPicked PickHandler::findCollisionUsingBruteForce()
     const defaulttype::Vector3& direction       = mouseCollision->getRay(0).direction();
     const double& maxLength                     = mouseCollision->getRay(0).l();
 
+    return findCollisionUsingBruteForce(origin, direction, maxLength);
+}
+
+
+component::collision::BodyPicked PickHandler::findCollisionUsingBruteForce(const defaulttype::Vector3& origin,
+        const defaulttype::Vector3& direction,
+        double maxLength)
+{
     BodyPicked result;
     // Look for particles hit by this ray
     simulation::MechanicalPickParticlesVisitor picker(origin, direction, maxLength, 0);
@@ -308,7 +322,6 @@ component::collision::BodyPicked PickHandler::findCollisionUsingBruteForce()
     }
     return result;
 }
-
 
 }
 }
