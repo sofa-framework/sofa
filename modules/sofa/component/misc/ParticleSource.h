@@ -122,6 +122,15 @@ public:
         lastparticles.setRemovalParameter( (void *) this );
 
         sout << "ParticleSource: center="<<f_center.getValue()<<" radius="<<f_radius.getValue()<<" delay="<<f_delay.getValue()<<" start="<<f_start.getValue()<<" stop="<<f_stop.getValue()<<sendl;
+
+        int i0 = this->mstate->getX()->size();
+        if (i0==1) i0=0; // ignore the first point if it is the only one
+        int ntotal = i0+((int)((f_stop.getValue() - f_start.getValue() - f_delay.getValue()) / f_delay.getValue()))*N;
+        if (ntotal > 0)
+        {
+            this->mstate->resize(ntotal);
+            this->mstate->resize((i0==0) ? 1 : i0);
+        }
     }
 
     virtual void reset()
@@ -141,7 +150,14 @@ public:
     {
         //sout << "ParticleSource: animate begin time="<<time<<sendl;
         if (!this->mstate) return;
-        if (time < f_start.getValue() || time > f_stop.getValue()) return;
+        if (time < f_start.getValue() || time > f_stop.getValue())
+        {
+            if (time > f_stop.getValue() && time-this->getContext()->getDt() <= f_stop.getValue())
+            {
+                sout << "Source stopped, current number of particles : " << this->mstate->getX()->size() << sendl;
+            }
+            return;
+        }
         int i0 = this->mstate->getX()->size();
         if (i0==1) i0=0; // ignore the first point if it is the only one
         int nparticles = (int)((time - lasttime) / f_delay.getValue());

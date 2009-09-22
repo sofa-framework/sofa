@@ -545,9 +545,6 @@ void QuadularBendingSprings<DataTypes>::init()
     /////
 
     /*
-    dof = dynamic_cast<MechanicalObject<DataTypes>*>( this->getContext()->getMechanicalState() );
-    assert(dof);
-    //sout<<"==================================QuadularBendingSprings<DataTypes>::init(), dof size = "<<dof->getX()->size()<<sendl;
 
     // Set the bending springs
 

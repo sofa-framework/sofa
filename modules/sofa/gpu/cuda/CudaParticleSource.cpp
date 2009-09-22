@@ -22,68 +22,30 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Interface: TriangleBendingSprings
-//
-// Description:
-//
-//
-// Author: The SOFA team </www.sofa-framework.org>, (C) 2007
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
-#ifndef SOFA_COMPONENT_FORCEFIELD_TRIANGLEBENDINGSPRINGS_H
-#define SOFA_COMPONENT_FORCEFIELD_TRIANGLEBENDINGSPRINGS_H
-
-#include <sofa/component/forcefield/StiffSpringForceField.h>
-#include <map>
+#include "CudaTypes.h"
+#include "CudaParticleSource.inl"
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
 
-namespace component
+namespace gpu
 {
 
-namespace forcefield
+namespace cuda
 {
 
-/**
-Bending springs added between vertices of triangles sharing a common edge.
-The springs connect the vertices not belonging to the common edge. It compresses when the surface bends along the common edge.
+SOFA_DECL_CLASS(CudaParticleSource)
 
+int ParticleSourceCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
+        .add< component::misc::ParticleSource<CudaVec3fTypes> >()
+#ifdef SOFA_GPU_CUDA_DOUBLE
+        .add< component::misc::ParticleSource<CudaVec3dTypes> >()
+#endif // SOFA_GPU_CUDA_DOUBLE
+        ;
 
-	@author The SOFA team </www.sofa-framework.org>
-*/
-template<class DataTypes>
-class TriangleBendingSprings : public sofa::component::forcefield::StiffSpringForceField<DataTypes>
-{
-public:
-    typedef typename DataTypes::Real Real;
-    typedef typename DataTypes::VecCoord VecCoord;
+} // namespace cuda
 
-    TriangleBendingSprings();
-
-    ~TriangleBendingSprings();
-
-    /// Searches triangle topology and creates the bending springs
-    virtual void init();
-
-    //virtual void draw()
-    //{
-    //}
-
-protected:
-    typedef std::pair<unsigned,unsigned> IndexPair;
-    void addSpring( unsigned, unsigned );
-    void registerTriangle( unsigned, unsigned, unsigned, std::map<IndexPair, unsigned>& );
-
-};
-
-} // namespace forcefield
-
-} // namespace component
+} // namespace gpu
 
 } // namespace sofa
-
-#endif

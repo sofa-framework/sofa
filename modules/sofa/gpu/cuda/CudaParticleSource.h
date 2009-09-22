@@ -22,22 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Interface: TriangleBendingSprings
-//
-// Description:
-//
-//
-// Author: The SOFA team </www.sofa-framework.org>, (C) 2007
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
-#ifndef SOFA_COMPONENT_FORCEFIELD_TRIANGLEBENDINGSPRINGS_H
-#define SOFA_COMPONENT_FORCEFIELD_TRIANGLEBENDINGSPRINGS_H
+#ifndef SOFA_GPU_CUDA_CUDAPARTICLESOURCE_H
+#define SOFA_GPU_CUDA_CUDAPARTICLESOURCE_H
 
-#include <sofa/component/forcefield/StiffSpringForceField.h>
-#include <map>
+#include "CudaTypes.h"
+#include <sofa/component/misc/ParticleSource.h>
 
 namespace sofa
 {
@@ -45,42 +34,32 @@ namespace sofa
 namespace component
 {
 
-namespace forcefield
+namespace misc
 {
 
-/**
-Bending springs added between vertices of triangles sharing a common edge.
-The springs connect the vertices not belonging to the common edge. It compresses when the surface bends along the common edge.
+template <>
+void ParticleSource<gpu::cuda::CudaVec3fTypes>::projectResponse(VecDeriv& res);
 
+template <>
+void ParticleSource<gpu::cuda::CudaVec3fTypes>::projectVelocity(VecDeriv& res);
 
-	@author The SOFA team </www.sofa-framework.org>
-*/
-template<class DataTypes>
-class TriangleBendingSprings : public sofa::component::forcefield::StiffSpringForceField<DataTypes>
-{
-public:
-    typedef typename DataTypes::Real Real;
-    typedef typename DataTypes::VecCoord VecCoord;
+template <>
+void ParticleSource<gpu::cuda::CudaVec3fTypes>::projectPosition(VecCoord& res);
 
-    TriangleBendingSprings();
+#ifdef SOFA_GPU_CUDA_DOUBLE
 
-    ~TriangleBendingSprings();
+template <>
+void ParticleSource<gpu::cuda::CudaVec3dTypes>::projectResponse(VecDeriv& res);
 
-    /// Searches triangle topology and creates the bending springs
-    virtual void init();
+template <>
+void ParticleSource<gpu::cuda::CudaVec3dTypes>::projectVelocity(VecDeriv& res);
 
-    //virtual void draw()
-    //{
-    //}
+template <>
+void ParticleSource<gpu::cuda::CudaVec3dTypes>::projectPosition(VecCoord& res);
 
-protected:
-    typedef std::pair<unsigned,unsigned> IndexPair;
-    void addSpring( unsigned, unsigned );
-    void registerTriangle( unsigned, unsigned, unsigned, std::map<IndexPair, unsigned>& );
+#endif // SOFA_GPU_CUDA_DOUBLE
 
-};
-
-} // namespace forcefield
+} // namespace misc
 
 } // namespace component
 

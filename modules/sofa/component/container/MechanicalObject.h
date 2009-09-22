@@ -62,7 +62,7 @@ public:
 };
 
 template <class DataTypes>
-class MechanicalObject : public MechanicalState<DataTypes>
+class MechanicalObject : public MechanicalState<DataTypes>, public virtual sofa::core::objectmodel::BaseObject
 {
 public:
     typedef MechanicalState<DataTypes> Inherited;
@@ -107,6 +107,7 @@ protected:
     Data< Vector3> rotation2;
     sofa::core::objectmodel::DataFileName filename;
     Data< bool> ignoreLoader;
+    Data<int> f_reserve;
 
     /// @name Integration-related data
     /// @{
@@ -204,6 +205,7 @@ public:
     virtual void exportGnuplot(Real time);
 
     virtual void resize( int vsize);
+    virtual void reserve(int vsize);
 
     virtual bool addBBox(double* minBBox, double* maxBBox);
 

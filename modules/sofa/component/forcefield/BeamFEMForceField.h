@@ -27,7 +27,6 @@
 
 #include <sofa/component/topology/EdgeData.inl>
 #include <sofa/core/componentmodel/behavior/ForceField.h>
-#include <sofa/component/container/MechanicalObject.h>
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
@@ -70,7 +69,6 @@ public:
     typedef helper::vector<unsigned int> VecIndex;
 
 protected:
-    //component::container::MechanicalObject<DataTypes>* object;
 
     typedef Vec<12, Real> Displacement;        ///< the displacement vector
 
@@ -189,8 +187,6 @@ public:
     void setUpdateStiffnessMatrix(bool val) { this->_updateStiffnessMatrix = val; }
 
     void setComputeGlobalMatrix(bool val) { this->_assembling= val; }
-
-//    component::container::MechanicalObject<DataTypes>* getObject() { return object; }
 
     virtual void init();
     virtual void reinit();

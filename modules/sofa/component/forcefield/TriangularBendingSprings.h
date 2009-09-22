@@ -41,10 +41,9 @@
 #endif
 
 //#include <sofa/component/forcefield/StiffSpringForceField.h>
-#include <sofa/component/container/MechanicalObject.h>
 #include <map>
 
-#include <sofa/core/componentmodel/behavior/ForceField.h> // or "BaseForceField.h" ?
+#include <sofa/core/componentmodel/behavior/ForceField.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
@@ -153,7 +152,7 @@ protected:
 
 public:
 
-    TriangularBendingSprings(/*double _ks, double _kd*/); //component::container::MechanicalObject<DataTypes>* m_dof = NULL);
+    TriangularBendingSprings(/*double _ks, double _kd*/);
     //TriangularBendingSprings(); //MechanicalState<DataTypes> *mm1 = NULL, MechanicalState<DataTypes> *mm2 = NULL);
 
     virtual ~TriangularBendingSprings();

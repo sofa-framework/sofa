@@ -68,7 +68,7 @@ extern "C"
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
-    void SPHFluidForceFieldCuda3d_computeDensity(unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPUSPHFluid3f* params, void* pos4, const void* x);
+    void SPHFluidForceFieldCuda3d_computeDensity(unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPUSPHFluid3d* params, void* pos4, const void* x);
     void SPHFluidForceFieldCuda3d_addForce (unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPUSPHFluid3d* params, void* f, const void* pos4, const void* v );
     void SPHFluidForceFieldCuda3d_addDForce(unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPUSPHFluid3d* params, void* f, const void* pos4, const void* dx);
 

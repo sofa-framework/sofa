@@ -25,7 +25,6 @@
 #include <fstream>
 #include <string>
 
-#include <sofa/component/container/MechanicalObject.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/component/topology/SparseGridTopology.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
@@ -40,8 +39,6 @@
 
 
 using std::pair;
-
-using sofa::component::container::MechanicalObject;
 
 namespace sofa
 {
@@ -534,7 +531,7 @@ void SparseGridTopology::updateMesh()
     if ( collisionTopology != NULL && collisionTopology->getNbTriangles() == 0)
     {
 #ifndef SOFA_FLOAT
-        MechanicalObject< Vec3dTypes > *mecha_tempd = collisionTopology->getContext()->get< MechanicalObject< Vec3dTypes > >();
+        core::componentmodel::behavior::MechanicalState< Vec3dTypes > *mecha_tempd = collisionTopology->getContext()->get< core::componentmodel::behavior::MechanicalState< Vec3dTypes > >();
         if (mecha_tempd != NULL && mecha_tempd->getX()->size() < 2) //a triangle mesh has minimum 3elements
         {
 
@@ -543,7 +540,7 @@ void SparseGridTopology::updateMesh()
         }
 #endif
 #ifndef SOFA_DOUBLE
-        MechanicalObject< Vec3fTypes > *mecha_tempf = collisionTopology->getContext()->get< MechanicalObject< Vec3fTypes > >();
+        core::componentmodel::behavior::MechanicalState< Vec3fTypes > *mecha_tempf = collisionTopology->getContext()->get< core::componentmodel::behavior::MechanicalState< Vec3fTypes > >();
         if (mecha_tempf != NULL && mecha_tempf->getX()->size() < 2) //a triangle mesh has minimum 3elements
         {
 
