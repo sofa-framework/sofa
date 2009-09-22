@@ -48,7 +48,12 @@ ContactMapperCreator< ContactMapper<TetrahedronModel> > TetrahedronContactMapper
 ContactMapperCreator< ContactMapper<RigidDistanceGridCollisionModel> > DistanceGridContactMapperClass("default", true);
 ContactMapperCreator< ContactMapper<FFDDistanceGridCollisionModel> > FFDDistanceGridContactMapperClass("default", true);
 
-template class SOFA_COMPONENT_COLLISION_API BaseContactMapper< defaulttype::Vec3Types>;
+#ifndef SOFA_DOUBLE
+template class SOFA_COMPONENT_COLLISION_API BaseContactMapper< defaulttype::Vec3fTypes>;
+#endif
+#ifndef SOFA_FLOAT
+template class SOFA_COMPONENT_COLLISION_API BaseContactMapper< defaulttype::Vec3dTypes>;
+#endif
 
 template class SOFA_COMPONENT_COLLISION_API ContactMapper<SphereModel>;
 template class SOFA_COMPONENT_COLLISION_API ContactMapper<SphereTreeModel>;
@@ -65,7 +70,12 @@ template class SOFA_COMPONENT_COLLISION_API ContactMapper<FFDDistanceGridCollisi
 
 namespace helper
 {
-template class SOFA_COMPONENT_COLLISION_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Vec3Types>, core::CollisionModel* >;
+#ifndef SOFA_DOUBLE
+template class SOFA_COMPONENT_COLLISION_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Vec3fTypes>, core::CollisionModel* >;
+#endif
+#ifndef SOFA_FLOAT
+template class SOFA_COMPONENT_COLLISION_API Factory< std::string, sofa::component::collision::BaseContactMapper<defaulttype::Vec3dTypes>, core::CollisionModel* >;
+#endif
 } // namespace helper
 
 } // namespace sofa

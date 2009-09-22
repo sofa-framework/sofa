@@ -48,7 +48,6 @@ void AttachOperation::start()
     //Creation
     performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("AttachBody", pickHandle->getInteraction()->mouseInteractor);
     pickHandle->getInteraction()->mouseInteractor->addInteractionPerformer(performer);
-
     //Configuration
     component::collision::AttachBodyPerformerConfiguration *performerConfiguration=dynamic_cast<component::collision::AttachBodyPerformerConfiguration*>(performer);
     performerConfiguration->setStiffness(getStiffness());

@@ -49,10 +49,6 @@ SofaMouseManager::SofaMouseManager()
     connect( MiddleOperationCombo, SIGNAL(activated(int)), this, SLOT( selectOperation(int) ));
     connect( RightOperationCombo,  SIGNAL(activated(int)), this, SLOT( selectOperation(int) ));
 
-    LeftValue  ->setText(QString::number(1000.0));
-    MiddleValue->setText(QString::number(1000.0));
-    RightValue ->setText(QString::number(1000.0));
-
     RegisterOperation("Attach").add< QAttachOperation >();
     RegisterOperation("Fix")   .add< QFixOperation  >();
     RegisterOperation("Incise").add< InciseOperation  >();
@@ -102,173 +98,34 @@ void SofaMouseManager::selectOperation(int operation)
     else if (combo == RightOperationCombo)  updateOperation(RIGHT,  operationName);
 }
 
-void SofaMouseManager::setValue( MOUSE_BUTTON button, const char *text, double value )
-{
-    switch(button)
-    {
-    case LEFT:
-        if (strcmp(text, "Force") == 0)
-        {
-            LeftValueLabelForce->setText(text);
-            LeftSliderForce->setValue((int)value);
-            return;
-        }
-        if (strcmp(text, "Scale") == 0)
-        {
-            LeftValueLabelScale->setText(text);
-            LeftSliderScale->setValue((int)value);
-            return;
-        }
-        else
-        {
-            LeftValueLabel->setText(text);
-            LeftValue->setText(QString::number(value));
-            return;
-        }
-    case MIDDLE:
-        if (strcmp(text, "Force") == 0)
-        {
-            MiddleValueLabelForce->setText(text);
-            MiddleSliderForce->setValue((int)value);
-            return;
-        }
-        if (strcmp(text, "Scale") == 0)
-        {
-            MiddleValueLabelScale->setText(text);
-            MiddleSliderScale->setValue((int)value);
-            return;
-        }
-        else
-        {
-            MiddleValueLabel->setText(text);
-            MiddleValue->setText(QString::number(value));
-            return;
-        }
-    case RIGHT:
-        if (strcmp(text, "Force") == 0)
-        {
-            RightValueLabelForce->setText(text);
-            RightSliderForce->setValue((int)value);
-            return;
-        }
-        if (strcmp(text, "Scale") == 0)
-        {
-            RightValueLabelScale->setText(text);
-            RightSliderScale->setValue((int)value);
-            return;
-        }
-        else
-        {
-            RightValueLabel->setText(text);
-            RightValue->setText(QString::number(value));
-            return;
-        }
-    }
-}
-
-double SofaMouseManager::getValue( MOUSE_BUTTON button, const char *text ) const
-{
-    switch(button)
-    {
-    case LEFT:
-        if (strcmp(text, "Force")==0)
-            return (double) LeftSliderForce->value()/5000;
-        if (strcmp(text, "Scale")==0)
-            return (double) (100 - LeftSliderScale->value())/5;
-        else
-            return atof(LeftValue->text().ascii());
-    case MIDDLE:
-        if (strcmp(text, "Force")==0)
-            return (double) MiddleSliderForce->value()/5000;
-        if (strcmp(text, "Scale")==0)
-            return (double) (100 - MiddleSliderScale->value())/5;
-        else
-            return atof(MiddleValue->text().ascii());
-    case RIGHT:
-        if (strcmp(text, "Force")==0)
-            return (double) RightSliderForce->value()/5000;
-        if (strcmp(text, "Scale")==0)
-            return (double) (100 - RightSliderScale->value())/5;
-        else
-            return atof(RightValue->text().ascii());
-    }
-    return 0;
-}
 
 void SofaMouseManager::updateOperation( MOUSE_BUTTON button, const std::string &id)
 {
+    //By changing the operation, we delete the previous operation
+    Operation *operation=pickHandler->changeOperation( button, id);
+    QWidget* qoperation=dynamic_cast<QWidget*>(operation);
+    if (!qoperation) return;
+
     switch(button)
     {
     case LEFT:
-        if (OperationFactory::IsModifiable(id))
-        {
-            LeftValue->show(); LeftValueLabel->show();
-            LeftValueLabelForce->hide(); LeftSliderForce->hide(); LeftSpinBoxForce->hide();
-            LeftValueLabelScale->hide(); LeftSliderScale->hide(); LeftSpinBoxScale->hide();
-        }
-        else
-        {
-            LeftValue->hide(); LeftValueLabel->hide();
-            if (id == "Sculpt")
-            {
-                LeftValueLabelForce->show(); LeftSliderForce->show(); LeftSpinBoxForce->show();
-                LeftValueLabelScale->show(); LeftSliderScale->show(); LeftSpinBoxScale->show();
-            }
-            else
-            {
-                LeftValueLabelForce->hide(); LeftSliderForce->hide(); LeftSpinBoxForce->hide();
-                LeftValueLabelScale->hide(); LeftSliderScale->hide(); LeftSpinBoxScale->hide();
-            }
-        }
-        break;
-
-    case MIDDLE:
-        if (OperationFactory::IsModifiable(id))
-        {
-            MiddleValue->show(); MiddleValueLabel->show();
-            MiddleValueLabelForce->hide(); MiddleSliderForce->hide(); MiddleSpinBoxForce->hide();
-            MiddleValueLabelScale->hide(); MiddleSliderScale->hide(); MiddleSpinBoxScale->hide();
-        }
-        else
-        {
-            MiddleValue->hide(); MiddleValueLabel->hide();
-            if (id == "Sculpt")
-            {
-                MiddleValueLabelForce->show(); MiddleSliderForce->show(); MiddleSpinBoxForce->show();
-                MiddleValueLabelScale->show(); MiddleSliderScale->show(); MiddleSpinBoxScale->show();
-            }
-            else
-            {
-                MiddleValueLabelForce->hide(); MiddleSliderForce->hide(); MiddleSpinBoxForce->hide();
-                MiddleValueLabelScale->hide(); MiddleSliderScale->hide(); MiddleSpinBoxScale->hide();
-            }
-        }
-        break;
-
-    case RIGHT:
-        if (OperationFactory::IsModifiable(id))
-        {
-            RightValue->show(); RightValueLabel->show();
-            RightValueLabelForce->hide(); RightSliderForce->hide(); RightSpinBoxForce->hide();
-            RightValueLabelScale->hide(); RightSliderScale->hide(); RightSpinBoxScale->hide();
-        }
-        else
-        {
-            RightValue->hide(); RightValueLabel->hide();
-            if (id == "Sculpt")
-            {
-                RightValueLabelForce->show(); RightSliderForce->show(); RightSpinBoxForce->show();
-                RightValueLabelScale->show(); RightSliderScale->show(); RightSpinBoxScale->show();
-            }
-            else
-            {
-                RightValueLabelForce->hide(); RightSliderForce->hide(); RightSpinBoxForce->hide();
-                RightValueLabelScale->hide(); RightSliderScale->hide(); RightSpinBoxScale->hide();
-            }
-        }
+    {
+        LeftButton->layout()->addWidget(qoperation);
         break;
     }
-    pickHandler->changeOperation( button, id);
+    case MIDDLE:
+    {
+        MiddleButton->layout()->addWidget(qoperation);
+        break;
+    }
+    case RIGHT:
+    {
+        RightButton->layout()->addWidget(qoperation);
+        break;
+    }
+    }
+
+
 }
 
 }
