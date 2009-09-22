@@ -145,8 +145,6 @@ void Simulation::init ( Node* root )
     //Get the list of instruments present in the scene graph
     getInstruments(root);
 
-    *(nbSteps.beginEdit()) = 0;
-    nbSteps.endEdit();
 }
 
 void Simulation::getInstruments( Node *node)
