@@ -36,6 +36,7 @@
 #include <qcombobox.h>
 #include <qlabel.h>
 #include <qgroupbox.h>
+#include <qlayout.h>
 #endif
 
 namespace sofa
