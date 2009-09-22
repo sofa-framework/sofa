@@ -138,7 +138,7 @@ void Simulation::init ( Node* root )
     needToPrefetch = false;
     root->execute<InitVisitor>();
     // Save reset state for later uses in reset()
-    // root->execute<MechanicalPropagatePositionAndVelocityVisitor>();
+    root->execute<MechanicalPropagatePositionAndVelocityVisitor>();
     root->execute<MechanicalPropagateFreePositionVisitor>();
     root->execute<StoreResetStateVisitor>();
 
