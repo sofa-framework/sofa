@@ -81,7 +81,7 @@ namespace simulation
 using namespace sofa::defaulttype;
 Simulation::Simulation()
     : numMechSteps( initData(&numMechSteps,(unsigned) 1,"numMechSteps","Number of mechanical steps within one update step. If the update time step is dt, the mechanical time step is dt/numMechSteps.") ),
-      nbSteps(0),
+      nbSteps( initData(&nbSteps, (unsigned)0, "nbSteps", "Steps number of computation", true, false)),
       needToPrefetch(false),
       gnuplotDirectory( initData(&gnuplotDirectory,std::string(""),"gnuplotDirectory","Directory where the gnuplot files will be saved")),
       instrumentInUse( initData( &instrumentInUse, -1, "instrumentinuse", "Numero of the instrument currently used"))
@@ -138,14 +138,15 @@ void Simulation::init ( Node* root )
     needToPrefetch = false;
     root->execute<InitVisitor>();
     // Save reset state for later uses in reset()
-    root->execute<MechanicalPropagatePositionAndVelocityVisitor>();
+    // root->execute<MechanicalPropagatePositionAndVelocityVisitor>();
     root->execute<MechanicalPropagateFreePositionVisitor>();
     root->execute<StoreResetStateVisitor>();
 
     //Get the list of instruments present in the scene graph
     getInstruments(root);
 
-    nbSteps = 0;
+    *(nbSteps.beginEdit()) = 0;
+    nbSteps.endEdit();
 }
 
 void Simulation::getInstruments( Node *node)
@@ -206,7 +207,8 @@ void Simulation::animate ( Node* root, double dt )
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printComment(std::string("End Step"));
 #endif
-    nbSteps++;
+    *(nbSteps.beginEdit()) = nbSteps.getValue() + 1;
+    nbSteps.endEdit();
 }
 
 
@@ -221,7 +223,8 @@ void Simulation::reset ( Node* root )
     root->execute<UpdateMappingVisitor>();
     root->execute<VisualUpdateVisitor>();
 
-    nbSteps = 0;
+    *(nbSteps.beginEdit()) = 0;
+    nbSteps.endEdit();
 }
 
 /// Initialize the textures
