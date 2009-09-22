@@ -641,7 +641,6 @@ Visitor::Result MechanicalAddMDxVisitor::fwdMappedMechanicalState(simulation::No
 Visitor::Result MechanicalPropagatePositionVisitor::processNodeTopDown(simulation::Node* node)
 {
     //cerr<<" MechanicalPropagatePositionVisitor::processNodeTopDown "<<node->getName()<<endl;
-    node->setTime(t);
     node->updateSimulationContext();
     return MechanicalVisitor::processNodeTopDown( node);
 }
@@ -681,7 +680,6 @@ Visitor::Result MechanicalPropagatePositionVisitor::fwdConstraint(simulation::No
 Visitor::Result MechanicalPropagatePositionAndVelocityVisitor::processNodeTopDown(simulation::Node* node)
 {
     //cerr<<" MechanicalPropagatePositionAndVelocityVisitor::processNodeTopDown "<<node->getName()<<endl;
-    node->setTime(t);
     node->updateSimulationContext();
     return MechanicalVisitor::processNodeTopDown( node);
 }
@@ -736,7 +734,6 @@ Visitor::Result MechanicalPropagatePositionAndVelocityVisitor::fwdConstraint(sim
 
 Visitor::Result MechanicalPropagateFreePositionVisitor::processNodeTopDown(simulation::Node* node)
 {
-    node->setTime(t);
     node->updateSimulationContext();
     return MechanicalVisitor::processNodeTopDown( node);
 }
