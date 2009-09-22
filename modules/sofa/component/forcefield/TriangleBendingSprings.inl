@@ -49,12 +49,10 @@ namespace component
 namespace forcefield
 {
 
-using sofa::component::container::MechanicalObject;
 using namespace core::componentmodel::behavior;
 
 template<class DataTypes>
 TriangleBendingSprings<DataTypes>::TriangleBendingSprings()
-    : dof(NULL)
 {
     //serr<<"TriangleBendingSprings<DataTypes>::TriangleBendingSprings"<<sendl;
 }
@@ -67,7 +65,7 @@ TriangleBendingSprings<DataTypes>::~TriangleBendingSprings()
 template<class DataTypes>
 void TriangleBendingSprings<DataTypes>::addSpring( unsigned a, unsigned b )
 {
-    const VecCoord& x = *dof->getX();
+    const VecCoord& x = *this->mstate1->getX();
     Real s = (Real)this->ks.getValue();
     Real d = (Real)this->kd.getValue();
     Real l = (x[a]-x[b]).norm();
@@ -129,9 +127,7 @@ void TriangleBendingSprings<DataTypes>::registerTriangle( unsigned a, unsigned b
 template<class DataTypes>
 void TriangleBendingSprings<DataTypes>::init()
 {
-    dof = dynamic_cast<MechanicalObject<DataTypes>*>( this->getContext()->getMechanicalState() );
-    assert(dof);
-    this->mstate1 = this->mstate2 = dof;
+    this->mstate1 = this->mstate2 = dynamic_cast<core::componentmodel::behavior::MechanicalState<DataTypes>*>( this->getContext()->getMechanicalState() );
     StiffSpringForceField<DataTypes>::clear();
 
     // Set the bending springs

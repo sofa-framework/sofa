@@ -379,12 +379,12 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
     if (v.type == VecId::V_COORD && v.index >= VecId::V_FIRST_DYNAMIC_INDEX)
     {
         VecCoord* vec = m->getVecCoord(v.index);
-        vec->fastResize(m->vsize);
+        vec->recreate(m->vsize);
     }
     else if (v.type == VecId::V_DERIV && v.index >= VecId::V_FIRST_DYNAMIC_INDEX)
     {
         VecDeriv* vec = m->getVecDeriv(v.index);
-        vec->fastResize(m->vsize);
+        vec->recreate(m->vsize);
     }
     else
     {
@@ -471,13 +471,13 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
             if (v.type == VecId::V_COORD)
             {
                 VecCoord* vv = m->getVecCoord(v.index);
-                vv->fastResize(m->vsize);
+                vv->recreate(m->vsize);
                 Kernels::vClear(vv->size(), vv->deviceWrite());
             }
             else
             {
                 VecDeriv* vv = m->getVecDeriv(v.index);
-                vv->fastResize(m->vsize);
+                vv->recreate(m->vsize);
                 Kernels::vClear(vv->size(), vv->deviceWrite());
             }
         }
@@ -510,14 +510,14 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
                 {
                     VecCoord* vv = m->getVecCoord(v.index);
                     VecCoord* vb = m->getVecCoord(b.index);
-                    vv->fastResize(vb->size());
+                    vv->recreate(vb->size());
                     Kernels::vEqBF(vv->size(), vv->deviceWrite(), vb->deviceRead(), (Real) f);
                 }
                 else
                 {
                     VecDeriv* vv = m->getVecDeriv(v.index);
                     VecDeriv* vb = m->getVecDeriv(b.index);
-                    vv->fastResize(vb->size());
+                    vv->recreate(vb->size());
                     Kernels::vEqBF(vv->size(), vv->deviceWrite(), vb->deviceRead(), (Real) f);
                 }
             }
@@ -538,14 +538,14 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
             {
                 VecCoord* vv = m->getVecCoord(v.index);
                 VecCoord* va = m->getVecCoord(a.index);
-                vv->fastResize(va->size());
+                vv->recreate(va->size());
                 Kernels::vAssign(vv->size(), vv->deviceWrite(), va->deviceRead());
             }
             else
             {
                 VecDeriv* vv = m->getVecDeriv(v.index);
                 VecDeriv* va = m->getVecDeriv(a.index);
-                vv->fastResize(va->size());
+                vv->recreate(va->size());
                 Kernels::vAssign(vv->size(), vv->deviceWrite(), va->deviceRead());
             }
         }
@@ -629,7 +629,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
                     {
                         VecCoord* vv = m->getVecCoord(v.index);
                         VecCoord* va = m->getVecCoord(a.index);
-                        vv->fastResize(va->size());
+                        vv->recreate(va->size());
                         if (b.type == VecId::V_COORD)
                         {
                             VecCoord* vb = m->getVecCoord(b.index);
@@ -646,7 +646,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
                         VecDeriv* vv = m->getVecDeriv(v.index);
                         VecDeriv* va = m->getVecDeriv(a.index);
                         VecDeriv* vb = m->getVecDeriv(b.index);
-                        vv->fastResize(va->size());
+                        vv->recreate(va->size());
                         Kernels::vAdd(vv->size(), vv->deviceWrite(), va->deviceRead(), vb->deviceRead());
                     }
                     else
@@ -663,7 +663,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
                     {
                         VecCoord* vv = m->getVecCoord(v.index);
                         VecCoord* va = m->getVecCoord(a.index);
-                        vv->fastResize(va->size());
+                        vv->recreate(va->size());
                         if (b.type == VecId::V_COORD)
                         {
                             VecCoord* vb = m->getVecCoord(b.index);
@@ -680,7 +680,7 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
                         VecDeriv* vv = m->getVecDeriv(v.index);
                         VecDeriv* va = m->getVecDeriv(a.index);
                         VecDeriv* vb = m->getVecDeriv(b.index);
-                        vv->fastResize(va->size());
+                        vv->recreate(va->size());
                         Kernels::vOp(vv->size(), vv->deviceWrite(), va->deviceRead(), vb->deviceRead(), (Real)f);
                     }
                     else
@@ -843,7 +843,7 @@ double MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TR
                     }
                     else
                     {
-                        m->data.tmpdot.fastResize(tmpsize);
+                        m->data.tmpdot.recreate(tmpsize);
                         Kernels::multiVDot(n, &(ops[i0]), &(results[i0]), m->data.tmpdot.deviceWrite(), (Real*)(&(m->data.tmpdot.getCached(0))));
                     }
                     i0 += n;
@@ -873,7 +873,7 @@ double MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TR
         }
         else
         {
-            m->data.tmpdot.fastResize(tmpsize);
+            m->data.tmpdot.recreate(tmpsize);
             Kernels::vDot(va->size(), &r, va->deviceRead(), vb->deviceRead(), m->data.tmpdot.deviceWrite(), (Real*)(&(m->data.tmpdot.getCached(0))));
         }
     }
@@ -888,7 +888,7 @@ double MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TR
         }
         else
         {
-            m->data.tmpdot.fastResize(tmpsize);
+            m->data.tmpdot.recreate(tmpsize);
             Kernels::vDot(va->size(), &r, va->deviceRead(), vb->deviceRead(), m->data.tmpdot.deviceWrite(), (Real*)(&(m->data.tmpdot.getCached(0))));
         }
 #ifndef NDEBUG

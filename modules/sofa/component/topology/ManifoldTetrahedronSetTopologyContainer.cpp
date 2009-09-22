@@ -32,7 +32,6 @@
 #include <sofa/helper/gl/template.h>
 
 #include <sofa/helper/gl/glText.inl>
-#include <sofa/component/container/MechanicalObject.inl>
 
 namespace sofa
 {

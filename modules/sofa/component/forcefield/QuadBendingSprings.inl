@@ -39,12 +39,10 @@ namespace forcefield
 {
 
 using namespace core::componentmodel::behavior;
-using sofa::component::container::MechanicalObject;
 
 template<class DataTypes>
 QuadBendingSprings<DataTypes>::QuadBendingSprings()
     : localRange( initData(&localRange, defaulttype::Vec<2,int>(-1,-1), "localRange", "optional range of local DOF indices. Any computation involving only indices outside of this range are discarded (useful for parallelization using mesh partitionning)" ) )
-    , dof(NULL)
 {
 }
 
@@ -67,7 +65,7 @@ void QuadBendingSprings<DataTypes>::addSpring( unsigned a, unsigned b, std::set<
     IndexPair ab(a<b?a:b, a<b?b:a);
     if (springSet.find(ab) != springSet.end()) return;
     springSet.insert(ab);
-    const VecCoord& x = *dof->getX();
+    const VecCoord& x = *this->mstate1->getX();
     Real s = (Real)this->ks.getValue();
     Real d = (Real)this->kd.getValue();
     Real l = (x[a]-x[b]).norm();
@@ -99,10 +97,6 @@ void QuadBendingSprings<DataTypes>::registerEdge( IndexPair ab, IndexPair cd, st
 template<class DataTypes>
 void QuadBendingSprings<DataTypes>::init()
 {
-    dof = dynamic_cast<MechanicalObject<DataTypes>*>( this->getContext()->getMechanicalState() );
-    assert(dof);
-    //sout<<"==================================QuadBendingSprings<DataTypes>::init(), dof size = "<<dof->getX()->size()<<sendl;
-
     // Set the bending springs
 
     std::map< IndexPair, IndexPair > edgeMap;

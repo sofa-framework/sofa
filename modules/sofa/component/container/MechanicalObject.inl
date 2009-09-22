@@ -68,13 +68,14 @@ using namespace sofa::defaulttype;
 template <class DataTypes>
 MechanicalObject<DataTypes>::MechanicalObject()
     : x(new VecCoord), v(new VecDeriv), f(new VecDeriv), externalForces(new VecDeriv), dx(new VecDeriv), x0(new VecCoord),reset_position(NULL), v0(NULL), xfree(new VecCoord), vfree(new VecDeriv), c(new VecConst)
-    , translation(core::objectmodel::Base::initData(&translation, Vector3(), "translation", "Translation of the DOFs"))
-    , rotation(core::objectmodel::Base::initData(&rotation, Vector3(), "rotation", "Rotation of the DOFs"))
-    , scale(core::objectmodel::Base::initData(&scale, (SReal)1.0, "scale", "Scale of the DOFs"))
-    , translation2(core::objectmodel::Base::initData(&translation2, Vector3(), "translation2", "Translation of the DOFs, applied after the rest position has been computed"))
-    , rotation2(core::objectmodel::Base::initData(&rotation2, Vector3(), "rotation2", "Rotation of the DOFs, applied the after the rest position has been computed"))
-    , filename(core::objectmodel::Base::initData(&filename, std::string(""), "filename", "File corresponding to the Mechanical Object", false))
-    , ignoreLoader(core::objectmodel::Base::initData(&ignoreLoader, (bool) false, "ignoreLoader", "Is the Mechanical Object do not use a loader"))
+    , translation(initData(&translation, Vector3(), "translation", "Translation of the DOFs"))
+    , rotation(initData(&rotation, Vector3(), "rotation", "Rotation of the DOFs"))
+    , scale(initData(&scale, (SReal)1.0, "scale", "Scale of the DOFs"))
+    , translation2(initData(&translation2, Vector3(), "translation2", "Translation of the DOFs, applied after the rest position has been computed"))
+    , rotation2(initData(&rotation2, Vector3(), "rotation2", "Rotation of the DOFs, applied the after the rest position has been computed"))
+    , filename(initData(&filename, std::string(""), "filename", "File corresponding to the Mechanical Object", false))
+    , ignoreLoader(initData(&ignoreLoader, (bool) false, "ignoreLoader", "Is the Mechanical Object do not use a loader"))
+    , f_reserve(initData(&f_reserve, 0, "reserve", "Size to reserve when creating vectors"))
     , vsize(0), m_gnuplotFileX(NULL), m_gnuplotFileV(NULL)
     , f_X ( new XDataPtr<DataTypes>(&x,  "position coordinates of the degrees of freedom") )
     , f_V ( new VDataPtr<DataTypes>(&v,  "velocity coordinates of the degrees of freedom") )
@@ -84,9 +85,9 @@ MechanicalObject<DataTypes>::MechanicalObject()
     , f_Xfree ( new XDataPtr<DataTypes>(&xfree,  "free position coordinates of the degrees of freedom") )
     , f_Vfree ( new VDataPtr<DataTypes>(&vfree,  "free velocity coordinates of the degrees of freedom") )
     , f_X0( new XDataPtr<DataTypes>(&x0, "rest position coordinates of the degrees of freedom") )
-    , restScale(core::objectmodel::Base::initData(&restScale, (SReal)1.0, "restScale","optional scaling of rest position coordinates (to simulated pre-existing internal tension)"))
-    , debugViewIndices(core::objectmodel::Base::initData(&debugViewIndices, (bool) false, "debugViewIndices", "Debug : view indices"))
-    , debugViewIndicesScale(core::objectmodel::Base::initData(&debugViewIndicesScale, (float) 0.0001, "debugViewIndicesScale", "Debug : scale for view indices"))
+    , restScale(initData(&restScale, (SReal)1.0, "restScale","optional scaling of rest position coordinates (to simulated pre-existing internal tension)"))
+    , debugViewIndices(initData(&debugViewIndices, (bool) false, "debugViewIndices", "Debug : view indices"))
+    , debugViewIndicesScale(initData(&debugViewIndicesScale, (float) 0.0001, "debugViewIndicesScale", "Debug : scale for view indices"))
 {
     //HACK
     if (!restScale.isSet())
@@ -598,6 +599,33 @@ void MechanicalObject<DataTypes>::resize(const int size)
     }
 }
 
+
+template <class DataTypes>
+void MechanicalObject<DataTypes>::reserve(const int size)
+{
+    if (vsize == 0) return;
+    (*x).reserve(size);
+    if (initialized && x0!=NULL)
+        (*x0).reserve(size);
+    (*v).reserve(size);
+    if (v0!=NULL)
+        (*v0).reserve(size);
+    (*f).reserve(size);
+    (*dx).reserve(size);
+    (*xfree).reserve(size);
+    (*vfree).reserve(size);
+    externalForces->reserve(size);
+    internalForces->reserve(size);
+    if (reset_position!=NULL)
+        (*reset_position).reserve(size);
+
+    for (unsigned int i=0; i<vectorsCoord.size(); i++)
+        if (vectorsCoord[i]!=NULL)
+            vectorsCoord[i]->reserve(size);
+    for (unsigned int i=0; i<vectorsDeriv.size(); i++)
+        if (vectorsDeriv[i]!=NULL)
+            vectorsDeriv[i]->reserve(size);
+}
 
 
 template <class DataTypes>
@@ -1177,6 +1205,9 @@ void MechanicalObject<DataTypes>::init()
 
     initialized = true;
 
+    if (f_reserve.getValue() > 0)
+        reserve(f_reserve.getValue());
+
     f_X->endEdit();
     f_V->endEdit();
     f_F->endEdit();
@@ -1441,7 +1472,11 @@ typename MechanicalObject<DataTypes>::VecCoord* MechanicalObject<DataTypes>::get
     if (index>=vectorsCoord.size())
         vectorsCoord.resize(index+1);
     if (vectorsCoord[index]==NULL)
+    {
         vectorsCoord[index] = new VecCoord;
+        if (f_reserve.getValue() > 0)
+            vectorsCoord[index]->reserve(f_reserve.getValue());
+    }
     return vectorsCoord[index];
 }
 
@@ -1461,7 +1496,11 @@ typename MechanicalObject<DataTypes>::VecDeriv* MechanicalObject<DataTypes>::get
     if (index>=vectorsDeriv.size())
         vectorsDeriv.resize(index+1);
     if (vectorsDeriv[index]==NULL)
+    {
         vectorsDeriv[index] = new VecDeriv;
+        if (f_reserve.getValue() > 0)
+            vectorsDeriv[index]->reserve(f_reserve.getValue());
+    }
 
     return vectorsDeriv[index];
 }

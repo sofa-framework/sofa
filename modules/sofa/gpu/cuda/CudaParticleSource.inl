@@ -22,65 +22,95 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-//
-// C++ Interface: TriangleBendingSprings
-//
-// Description:
-//
-//
-// Author: The SOFA team </www.sofa-framework.org>, (C) 2007
-//
-// Copyright: See COPYING file that comes with this distribution
-//
-//
-#ifndef SOFA_COMPONENT_FORCEFIELD_TRIANGLEBENDINGSPRINGS_H
-#define SOFA_COMPONENT_FORCEFIELD_TRIANGLEBENDINGSPRINGS_H
+#ifndef SOFA_GPU_CUDA_CUDAPARTICLESOURCE_INL
+#define SOFA_GPU_CUDA_CUDAPARTICLESOURCE_INL
 
-#include <sofa/component/forcefield/StiffSpringForceField.h>
-#include <map>
+#include "CudaParticleSource.h"
+//#include <sofa/component/misc/ParticleSource.inl>
+#include <sofa/gpu/cuda/mycuda.h>
 
 namespace sofa
 {
 
+namespace gpu
+{
+
+namespace cuda
+{
+
+extern "C"
+{
+
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+
+#endif // SOFA_GPU_CUDA_DOUBLE
+}
+
+} // namespace cuda
+
+} // namespace gpu
+
 namespace component
 {
 
-namespace forcefield
+namespace misc
 {
 
-/**
-Bending springs added between vertices of triangles sharing a common edge.
-The springs connect the vertices not belonging to the common edge. It compresses when the surface bends along the common edge.
+using namespace gpu::cuda;
 
 
-	@author The SOFA team </www.sofa-framework.org>
-*/
-template<class DataTypes>
-class TriangleBendingSprings : public sofa::component::forcefield::StiffSpringForceField<DataTypes>
+template <>
+void ParticleSource<gpu::cuda::CudaVec3fTypes>::projectResponse(VecDeriv& res)
 {
-public:
-    typedef typename DataTypes::Real Real;
-    typedef typename DataTypes::VecCoord VecCoord;
+    if (!this->mstate) return;
+    if (lastparticles.empty()) return;
+    //sout << "ParticleSource: projectResponse of last particle ("<<lastparticle<<")."<<sendl;
+    double time = getContext()->getTime();
+    if (time < f_start.getValue() || time > f_stop.getValue()) return;
+    // constraint the last values
+    mycudaMemset(((Deriv*)res.deviceWrite())+lastparticles[0], 0, lastparticles.size()*sizeof(Coord));
+}
 
-    TriangleBendingSprings();
+template <>
+void ParticleSource<gpu::cuda::CudaVec3fTypes>::projectVelocity(VecDeriv& res)
+{
+}
 
-    ~TriangleBendingSprings();
+template <>
+void ParticleSource<gpu::cuda::CudaVec3fTypes>::projectPosition(VecDeriv& res)
+{
+}
 
-    /// Searches triangle topology and creates the bending springs
-    virtual void init();
 
-    //virtual void draw()
-    //{
-    //}
+#ifdef SOFA_GPU_CUDA_DOUBLE
 
-protected:
-    typedef std::pair<unsigned,unsigned> IndexPair;
-    void addSpring( unsigned, unsigned );
-    void registerTriangle( unsigned, unsigned, unsigned, std::map<IndexPair, unsigned>& );
+template <>
+void ParticleSource<gpu::cuda::CudaVec3dTypes>::projectResponse(VecDeriv& res)
+{
+    if (!this->mstate) return;
+    if (lastparticles.empty()) return;
+    //sout << "ParticleSource: projectResponse of last particle ("<<lastparticle<<")."<<sendl;
+    double time = getContext()->getTime();
+    if (time < f_start.getValue() || time > f_stop.getValue()) return;
+    // constraint the last values
+    mycudaMemset(((Deriv*)res.deviceWrite())+lastparticles[0], 0, lastparticles.size()*sizeof(Coord));
+}
 
-};
+template <>
+void ParticleSource<gpu::cuda::CudaVec3dTypes>::projectVelocity(VecDeriv& res)
+{
+}
 
-} // namespace forcefield
+template <>
+void ParticleSource<gpu::cuda::CudaVec3dTypes>::projectPosition(VecDeriv& res)
+{
+}
+
+#endif // SOFA_GPU_CUDA_DOUBLE
+
+
+} // namespace misc
 
 } // namespace component
 

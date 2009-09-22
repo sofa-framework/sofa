@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/topology/MultiResSparseGridTopology.h>
-#include <sofa/simulation/tree/xml/ObjectFactory.h>
+#include <sofa/simulation/common/xml/ObjectFactory.h>
 #include <sofa/helper/system/gl.h>
 #include <string>
 #include <fstream>

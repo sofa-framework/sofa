@@ -25,11 +25,7 @@
 #ifndef SOFA_COMPONENT_FORCEFIELD_QUADULARBENDINGSPRINGS_H
 #define SOFA_COMPONENT_FORCEFIELD_QUADULARBENDINGSPRINGS_H
 
-#include <sofa/component/container/MechanicalObject.h>
-#include <map>
-#include <set>
-
-#include <sofa/core/componentmodel/behavior/ForceField.h> // or "BaseForceField.h" ?
+#include <sofa/core/componentmodel/behavior/ForceField.h>
 #include <sofa/core/VisualModel.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec.h>
@@ -39,6 +35,9 @@
 
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/fixed_array.h>
+
+#include <map>
+#include <set>
 
 namespace sofa
 {
@@ -195,8 +194,6 @@ protected:
     //void addSpring( unsigned, unsigned, std::set<IndexPair>& );
 
     //// void registerEdge( IndexPair, IndexPair, std::map<IndexPair, IndexPair>&, std::set<IndexPair>&);
-
-    //component::container::MechanicalObject<DataTypes>* dof;
 
 };
 

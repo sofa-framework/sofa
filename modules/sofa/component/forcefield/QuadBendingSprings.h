@@ -26,7 +26,6 @@
 #define SOFA_COMPONENT_FORCEFIELD_QUADBENDINGSPRINGS_H
 
 #include <sofa/component/forcefield/StiffSpringForceField.h>
-#include <sofa/component/container/MechanicalObject.h>
 #include <map>
 #include <set>
 
@@ -68,7 +67,6 @@ protected:
     typedef std::pair<unsigned,unsigned> IndexPair;
     void addSpring( unsigned, unsigned, std::set<IndexPair>& );
     void registerEdge( IndexPair, IndexPair, std::map<IndexPair, IndexPair>&, std::set<IndexPair>&);
-    component::container::MechanicalObject<DataTypes>* dof;
 
 };
 
