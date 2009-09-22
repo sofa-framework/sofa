@@ -294,7 +294,14 @@ struct BoolTypeInfo
     static void setValue(DataType &type, unsigned int index, const T& value )
     {
         if (index != 0) return;
-        type = static_cast<DataType>(value);
+        if( value != 0)
+        {
+            type = true;
+        }
+        else
+        {
+            type = false;
+        }
     }
 
     template<typename T>
