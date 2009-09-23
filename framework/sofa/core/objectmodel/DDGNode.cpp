@@ -25,6 +25,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/objectmodel/DDGNode.h>
+#include <sofa/core/objectmodel/BaseData.h>
+#include <sofa/core/objectmodel/Base.h>
 
 namespace sofa
 {
@@ -55,6 +57,12 @@ void DDGNode::setDirtyValue()
     if (!dirtyValue)
     {
         dirtyValue = true;
+
+        // TRACE LOG (HACK...)
+        BaseData* d = dynamic_cast<BaseData*>(this);
+        if (d && d->getOwner())
+            d->getOwner()->sout << "Data " << d->getName() << " is now dirty." << d->getOwner()->sendl;
+
         setDirtyOutputs();
     }
 }
@@ -76,6 +84,11 @@ void DDGNode::cleanDirty()
     if (dirtyValue)
     {
         dirtyValue = false;
+
+        BaseData* d = dynamic_cast<BaseData*>(this);
+        if (d && d->getOwner())
+            d->getOwner()->sout << "Data " << d->getName() << " has been updated." << d->getOwner()->sendl;
+
         for(std::list< DDGNode* >::iterator it=inputs.begin(); it!=inputs.end(); ++it)
             (*it)->dirtyOutputs = false;
     }

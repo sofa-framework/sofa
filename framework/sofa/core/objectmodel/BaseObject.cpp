@@ -143,7 +143,7 @@ void BaseObject::parse( BaseObjectDescription* arg )
                     Data->setParent( (*it_map).second);
                 }
             }
-
+            continue;
         }
 
 
@@ -191,7 +191,7 @@ void BaseObject::parse( BaseObjectDescription* arg )
                             if (objectName[objectName.size()-1] != ']')
                             {
                                 serr<<"ERROR: Missing ']' in at the end of "<< objectName << sendl;
-                                break;
+                                continue;
                             }
 
                             objectName = objectName.substr(1, objectName.size()-2);
@@ -199,7 +199,7 @@ void BaseObject::parse( BaseObjectDescription* arg )
                             if (objectName.empty())
                             {
                                 serr<<"ERROR: Missing object level between [] in : " << val << sendl;
-                                break;
+                                continue;
                             }
 
                             int objectLevel = atoi(objectName.c_str());
@@ -229,7 +229,7 @@ void BaseObject::parse( BaseObjectDescription* arg )
                         if (obj == NULL)
                         {
                             serr<<"could not find object for option "<< attributeList[i] <<": " << objectName << sendl;
-                            break;
+                            continue;
                         }
                     }
 
@@ -237,19 +237,21 @@ void BaseObject::parse( BaseObjectDescription* arg )
 
                     if (parentData == NULL)
                     {
-                        serr<<"could not read value for option "<< attributeList[i] <<": " << val << sendl;
-                        break;
+                        serr<<"could not find parent Data for option "<< attributeList[i] <<": " << val << sendl;
+                        continue;
                     }
 
                     /* set parent value to the child */
                     if (!dataModif[d]->setParent(parentData))
                     {
                         serr<<"could not copy value from parent Data "<< valueString << ". Incompatible Data types" << sendl;
-                        break;
+                        continue;
                     }
-                    /* children Data can be modified changing the parent Data value */
+                    else
+                        sout<<"Link from parent Data " << valueString << " (" << parentData->getValueTypeInfo()->name() << ") to Data " << attributeList[i] << "(" << dataModif[d]->getValueTypeInfo()->name() << ") OK" << sendl;
+                    /* children Data cannot be modified changing the parent Data value */
                     dataModif[d]->setReadOnly(true);
-                    break;
+                    continue;
                 }
 
                 if( !(dataModif[d]->read( valueString ))) serr<<"could not read value for option "<< attributeList[i] <<": " << val << sendl;

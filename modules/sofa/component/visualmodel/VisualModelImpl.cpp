@@ -109,7 +109,7 @@ void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
 
     if (arg->getAttribute("scale")!=NULL)
     {
-        scale.setValue(Vector3((SReal)atof(arg->getAttribute("scale","0.0")), (SReal)atof(arg->getAttribute("scale","0.0")), (SReal)atof(arg->getAttribute("scale","0.0"))));
+        scale.setValue(Vector3((SReal)atof(arg->getAttribute("scale","1.0")), (SReal)atof(arg->getAttribute("scale","1.0")), (SReal)atof(arg->getAttribute("scale","1.0"))));
     }
     else
     {
@@ -348,6 +348,14 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
             serr <<"Texture \""<<textureName <<"\" not found" << sendl;
     }
 
+    // Make sure all Data are up-to-date
+    field_vertices.updateIfDirty();
+    field_vnormals.updateIfDirty();
+    field_vtexcoords.updateIfDirty();
+    field_triangles.updateIfDirty();
+    field_quads.updateIfDirty();
+
+
     if (!filename.empty() && vertices.size() == 0)
     {
         std::string meshFilename(filename);
@@ -484,7 +492,7 @@ void VisualModelImpl::init()
 
     translation.setValue(Vector3());
     rotation.setValue(Vector3());
-    scale.setValue(Vector3());
+    scale.setValue(Vector3(1,1,1));
     VisualModel::init();
     updateVisual();
 }
