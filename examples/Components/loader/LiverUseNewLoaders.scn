@@ -31,7 +31,7 @@
 		<!-- Can not work because fields are already written by the --
 		  -- mapping. Attribut src is not allowed to overwrite non empty fields -->
 		<OglModel name="VisualModel" position="@ObjLoader.position"
-		normal="@ObjLoader.normals" triangles="@ObjLoader.triangles"/>
+		normal="@ObjLoader.normals" triangles="@ObjLoader.triangles" color="red"/>
 		<BarycentricMapping object1="../.." object2="VisualModel" name="visual mapping"/>
 		</Node>
 		<Node name="Surf">
