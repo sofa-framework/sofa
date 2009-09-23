@@ -90,16 +90,22 @@ bool ImageBMP::load(std::string filename)
     /* skip size of bitmap info header */
     fseek(file, 4, SEEK_CUR);
     /* get the width of the bitmap */
-    fread(&width, sizeof(int), 1, file);
+    if (fread(&width, sizeof(int), 1, file) != 1)
+        std::cerr << "Error: fread can't read the width of the bitmap." << std::endl;
+
     if (width < 0) width = -width;
     //printf("Width of Bitmap: %d\n", texture->width);
     /* get the height of the bitmap */
-    fread(&height, sizeof(int), 1, file);
+    if (fread(&height, sizeof(int), 1, file) != 1)
+        std::cerr << "Error: fread can't read the height of the bitmap." << std::endl;
+
     bool upsidedown = false;
     if (height < 0) { height = -height; upsidedown = true; }
     //printf("Height of Bitmap: %d\n", texture->height);
     /* get the number of planes (must be set to 1) */
-    fread(&biPlanes, sizeof(short int), 1, file);
+    if (fread(&biPlanes, sizeof(short int), 1, file) != 1)
+        std::cerr << "Error: fread can't read the number of planes." << std::endl;
+
     if (biPlanes != 1)
     {
         std::cerr << "Error: number of Planes not 1!\n";

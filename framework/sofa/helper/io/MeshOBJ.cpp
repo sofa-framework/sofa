@@ -388,7 +388,7 @@ void MeshOBJ::readMTL(const char* filename)
                     break;
                 default:
                     /* eat up rest of line */
-                    fgets(buf, sizeof(buf), file);
+                    if (fgets(buf, sizeof(buf), file) == NULL)
                     {
                         if (feof (file) )
                             std::cerr << "Error: MeshOBJ: fgets function has encountered end of file." << std::endl;
