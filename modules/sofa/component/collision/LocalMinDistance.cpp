@@ -1261,7 +1261,7 @@ bool LocalMinDistance::testValidity(Line &l, const Vector3 &PQ)
         // which triangle is left ?
         const BaseMeshTopology::Triangle& triangle0 = topology->getTriangle(trianglesAroundEdge[0]);
         bool triangle0_is_left=false;
-        if ( l.i1()==triangle0[0]&&l.i2()==triangle0[1] || l.i1()==triangle0[1]&&l.i2()==triangle0[2] || l.i1()==triangle0[2]&&l.i2()==triangle0[0] )
+        if ( (l.i1()==triangle0[0]&&l.i2()==triangle0[1]) || (l.i1()==triangle0[1]&&l.i2()==triangle0[2]) || (l.i1()==triangle0[2]&&l.i2()==triangle0[0]) )
         {
             triangle0_is_left=true;
             //std::cout<<"triangle0_is_left"<<std::endl;

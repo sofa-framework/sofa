@@ -84,7 +84,9 @@ void InputEventReader::getInputEvents()
     while (poll(&pfd, 1, 0 /*timeout.getValue()*/)>0 && (pfd.revents & POLLIN))
     {
         input_event ev;
-        read(fd, &ev, sizeof(input_event));
+        if (read(fd, &ev, sizeof(input_event)) == -1)
+            serr << "Error: read function return an error." << sendl;
+
 //		sout << "event type 0x" << std::hex << ev.type << std::dec << " code 0x" << std::hex << ev.code << std::dec << " value " << ev.value << sendl;
         if (ev.type == EV_REL)
         {

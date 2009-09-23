@@ -56,7 +56,8 @@ SetDirectory::SetDirectory(const char* filename)
 //         std::cout << ">chdir("<<directory<<")"<<std::endl;
         previousDir = GetCurrentDir();
 #ifndef WIN32
-        chdir(directory.c_str());
+        if (chdir(directory.c_str()) != 0)
+            std::cerr <<"Error: can't change directory." << std::endl;
 #else
         _chdir(directory.c_str());
 #endif
@@ -71,7 +72,8 @@ SetDirectory::SetDirectory(const std::string& filename)
 //         std::cout << ">chdir("<<directory<<")"<<std::endl;
         previousDir = GetCurrentDir();
 #ifndef WIN32
-        chdir(directory.c_str());
+        if (chdir(directory.c_str()) != 0)
+            std::cerr <<"Error: can't change directory." << std::endl;
 #else
         _chdir(directory.c_str());
 #endif
@@ -84,7 +86,8 @@ SetDirectory::~SetDirectory()
     {
 //         std::cout << "<chdir("<<directory<<")"<<std::endl;
 #ifndef WIN32
-        chdir(previousDir.c_str());
+        if (chdir(previousDir.c_str()) != 0)
+            std::cerr <<"Error: can't change directory." << std::endl;
 #else
         _chdir(previousDir.c_str());
 #endif
@@ -108,7 +111,8 @@ std::string SetDirectory::GetCurrentDir()
     char dir[1024];
     memset(dir,0,sizeof(dir));
 #ifndef WIN32
-    getcwd(dir, sizeof(dir));
+    if (getcwd(dir, sizeof(dir)) == NULL)
+        std::cerr <<"Error: can't get current directory." << std::endl;
 #else
     _getcwd(dir, sizeof(dir));
 #endif
@@ -201,7 +205,8 @@ std::string SetDirectory::GetProcessFullPath(const char* filename)
     {
         char path[1024];
         memset(path,0,sizeof(path));
-        readlink("/proc/self/exe",path,sizeof(path)-1);
+        if (readlink("/proc/self/exe",path,sizeof(path)-1) == -1)
+            std::cerr <<"Error: can't read the contents of the link." << std::endl;
 // 		std::cout << "Current process: "<< path <<std::endl;
         if (path[0])
             return path;
