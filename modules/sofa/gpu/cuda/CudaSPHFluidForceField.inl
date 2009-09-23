@@ -42,14 +42,14 @@ extern "C"
 {
 
     void SPHFluidForceFieldCuda3f_computeDensity(unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPUSPHFluid3f* params, void* pos4, const void* x);
-    void SPHFluidForceFieldCuda3f_addForce (unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPUSPHFluid3f* params, void* f, const void* pos4, const void* v );
-    void SPHFluidForceFieldCuda3f_addDForce(unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPUSPHFluid3f* params, void* f, const void* pos4, const void* dx);
+    void SPHFluidForceFieldCuda3f_addForce (unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPUSPHFluid3f* params, void* f, const void* pos4, const void* v);
+    void SPHFluidForceFieldCuda3f_addDForce(unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPUSPHFluid3f* params, void* f, const void* pos4, const void* v, const void* dx);
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
     void SPHFluidForceFieldCuda3d_computeDensity(unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPUSPHFluid3f* params, void* pos4, const void* x);
-    void SPHFluidForceFieldCuda3d_addForce (unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPUSPHFluid3d* params, void* f, const void* pos4, const void* v );
-    void SPHFluidForceFieldCuda3d_addDForce(unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPUSPHFluid3d* params, void* f, const void* pos4, const void* dx);
+    void SPHFluidForceFieldCuda3d_addForce (unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPUSPHFluid3d* params, void* f, const void* pos4, const void* v);
+    void SPHFluidForceFieldCuda3d_addDForce(unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPUSPHFluid3d* params, void* f, const void* pos4, const void* v, const void* dx);
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 }
@@ -75,13 +75,13 @@ void SPHFluidForceFieldInternalData<gpu::cuda::CudaVec3fTypes>::Kernels_computeD
 template<>
 void SPHFluidForceFieldInternalData<gpu::cuda::CudaVec3fTypes>::Kernels_addForce(int gsize, const void* cellRange, const void* cellGhost, const void* particleIndex, void* f, const void* pos4, const void* v)
 {
-    SPHFluidForceFieldCuda3f_addForce (gsize, cellRange, cellGhost, particleIndex, &params, f, pos4, v );
+    SPHFluidForceFieldCuda3f_addForce (gsize, cellRange, cellGhost, particleIndex, &params, f, pos4, v);
 }
 
 template<>
-void SPHFluidForceFieldInternalData<gpu::cuda::CudaVec3fTypes>::Kernels_addDForce(int gsize, const void* cellRange, const void* cellGhost, const void* particleIndex, void* f, const void* pos4, const void* dx)
+void SPHFluidForceFieldInternalData<gpu::cuda::CudaVec3fTypes>::Kernels_addDForce(int gsize, const void* cellRange, const void* cellGhost, const void* particleIndex, void* f, const void* pos4, const void* v, const void* dx)
 {
-    SPHFluidForceFieldCuda3f_addDForce(gsize, cellRange, cellGhost, particleIndex, &params, f, pos4, dx);
+    SPHFluidForceFieldCuda3f_addDForce(gsize, cellRange, cellGhost, particleIndex, &params, f, pos4, v, dx);
 }
 
 template <>
@@ -105,13 +105,15 @@ template <>
 void SPHFluidForceField<gpu::cuda::CudaVec3fTypes>::addDForce(VecDeriv& df, const VecCoord& dx, double kFactor, double bFactor)
 {
     if (grid == NULL) return;
+    sout << "addDForce(" << kFactor << "," << bFactor << ")" << sendl;
     //const VecCoord& x = *this->mstate->getX();
+    const VecDeriv& v = *this->mstate->getV();
     data.fillParams(this, kFactor, bFactor);
     df.resize(dx.size());
     Grid::Grid* g = grid->getGrid();
     data.Kernels_addDForce(
         g->getNbCells(), g->getCellRangeVector().deviceRead(), g->getCellGhostVector().deviceRead(), g->getParticleIndexVector().deviceRead(),
-        df.deviceWrite(), data.pos4.deviceRead(), dx.deviceRead());
+        df.deviceWrite(), data.pos4.deviceRead(), v.deviceRead(), dx.deviceRead());
 }
 
 
@@ -127,13 +129,13 @@ void SPHFluidForceFieldInternalData<gpu::cuda::CudaVec3dTypes>::Kernels_computeD
 template<>
 void SPHFluidForceFieldInternalData<gpu::cuda::CudaVec3dTypes>::Kernels_addForce(int gsize, const void* cellRange, const void* cellGhost, const void* particleIndex, void* f, const void* pos4, const void* v)
 {
-    SPHFluidForceFieldCuda3d_addForce (gsize, cellRange, cellGhost, particleIndex, &params, f, pos4, v );
+    SPHFluidForceFieldCuda3d_addForce (gsize, cellRange, cellGhost, particleIndex, &params, f, pos4, v);
 }
 
 template<>
-void SPHFluidForceFieldInternalData<gpu::cuda::CudaVec3dTypes>::Kernels_addDForce(int gsize, const void* cellRange, const void* cellGhost, const void* particleIndex, void* f, const void* pos4, const void* dx)
+void SPHFluidForceFieldInternalData<gpu::cuda::CudaVec3dTypes>::Kernels_addDForce(int gsize, const void* cellRange, const void* cellGhost, const void* particleIndex, void* f, const void* pos4, const void* v, const void* dx)
 {
-    SPHFluidForceFieldCuda3d_addDForce(gsize, cellRange, cellGhost, particleIndex, &params, f, pos4, dx);
+    SPHFluidForceFieldCuda3d_addDForce(gsize, cellRange, cellGhost, particleIndex, &params, f, pos4, v, dx);
 }
 
 template <>
@@ -158,12 +160,13 @@ void SPHFluidForceField<gpu::cuda::CudaVec3dTypes>::addDForce(VecDeriv& df, cons
 {
     if (grid == NULL) return;
     //const VecCoord& x = *this->mstate->getX();
+    const VecDeriv& v = *this->mstate->getV();
     data.fillParams(this, kFactor, bFactor);
     df.resize(dx.size());
     Grid::Grid* g = grid->getGrid();
     data.Kernels_addDForce(
         g->getNbCells(), g->getCellRangeVector().deviceRead(), g->getCellGhostVector().deviceRead(), g->getParticleIndexVector().deviceRead(),
-        df.deviceWrite(), data.pos4.deviceRead(), dx.deviceRead());
+        df.deviceWrite(), data.pos4.deviceRead(), v.deviceRead(), dx.deviceRead());
 }
 
 #endif // SOFA_GPU_CUDA_DOUBLE

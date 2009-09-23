@@ -52,6 +52,7 @@ struct GPUSPHFluid
 
     // Precomputed constants for smoothing kernels
     real CWd;          ///< =     constWd(h)
+    real CgradWd;      ///< = constGradWd(h)
     real CgradWp;      ///< = constGradWp(h)
     real ClaplacianWv; ///< =  constLaplacianWv(h)
     real CgradWc;      ///< = constGradWc(h)
@@ -95,6 +96,7 @@ public:
         params.surfaceTension = (Real)(kFactor*m->surfaceTension.getValue());
 
         params.CWd          = m->constWd(h);
+        params.CgradWd      = m->constGradWd(h);
         params.CgradWp      = m->constGradWp(h);
         params.ClaplacianWv = m->constLaplacianWv(h);
         params.CgradWc      = m->constGradWc(h);
@@ -103,7 +105,7 @@ public:
 
     void Kernels_computeDensity(int gsize, const void* cellRange, const void* cellGhost, const void* particleIndex, void* pos4, const void* x);
     void Kernels_addForce(int gsize, const void* cellRange, const void* cellGhost, const void* particleIndex, void* f, const void* pos4, const void* vel);
-    void Kernels_addDForce(int gsize, const void* cellRange, const void* cellGhost, const void* particleIndex, void* f, const void* pos4, const void* dx);
+    void Kernels_addDForce(int gsize, const void* cellRange, const void* cellGhost, const void* particleIndex, void* f, const void* pos4, const void* dx, const void* vel);
 };
 
 

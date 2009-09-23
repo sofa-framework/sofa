@@ -1,7 +1,9 @@
-<Node dt="0.002" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0" gravity="0 -5 0" >
+<Node dt="0.004" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0" gravity="0 -5 0" >
 	<Node name="fluid">
-		<!--<Object type="RungeKutta4"/>-->
-		<CentralDifferenceSolver/>
+		<_RungeKutta4/>
+		<_CentralDifferenceSolver/>
+        <EulerImplicitSolver rayleighMass="0" rayleighStiffness="0" />
+        <CGLinearSolver tolerance="1.0e-20" threshold="1.0e-12"/>
 		<MechanicalObject name="MModel" position="" template="CudaVec3f" reserve="32000" />
 		<ParticleSource name="Source01"
 		        center="
