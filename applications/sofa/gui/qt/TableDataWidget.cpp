@@ -117,6 +117,8 @@ Creator<DataWidgetFactory, TableDataWidget< sofa::defaulttype::ResizableExtVecto
 Creator<DataWidgetFactory, TableDataWidget< sofa::defaulttype::ResizableExtVector<std::string> > > DWClass_ResizableExtVectorstring("default",true);
 Creator<DataWidgetFactory, TableDataWidget< sofa::defaulttype::ResizableExtVector<fixed_array<int,3> > > > DWClass_ResizableExtVectorA3i("default",true);
 Creator<DataWidgetFactory, TableDataWidget< sofa::defaulttype::ResizableExtVector<fixed_array<int,4> > > > DWClass_ResizableExtVectorA4i("default",true);
+Creator<DataWidgetFactory, TableDataWidget< sofa::defaulttype::ResizableExtVector<fixed_array<unsigned int,3> > > > DWClass_ResizableExtVectorA3u("default",true);
+Creator<DataWidgetFactory, TableDataWidget< sofa::defaulttype::ResizableExtVector<fixed_array<unsigned int,4> > > > DWClass_ResizableExtVectorA4u("default",true);
 Creator<DataWidgetFactory, TableDataWidget< sofa::defaulttype::ResizableExtVector<Vec<2, float> > > > DWClass_ResizableExtVectorVec2f("default",true);
 Creator<DataWidgetFactory, TableDataWidget< sofa::defaulttype::ResizableExtVector<Vec<2, double> > > > DWClass_ResizableExtVectorVec2d("default",true);
 Creator<DataWidgetFactory, TableDataWidget< sofa::defaulttype::ResizableExtVector<Vec<3, float> > > > DWClass_ResizableExtVectorVec3f("default",true);

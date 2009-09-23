@@ -698,8 +698,8 @@ void Node::sortComponents()
     {
         BaseObject* o1 = getObject( depend.getValue()[i] );
         BaseObject* o2 = getObject( depend.getValue()[i+1] );
-        if ( o1==NULL ) cerr<<"Node::sortComponent, could not fin object called "<<depend.getValue()[i]<<endl;
-        else if ( o2==NULL ) cerr<<"Node::sortComponent, could not fin object called "<<depend.getValue()[i+1]<<endl;
+        if ( o1==NULL ) cerr<<"Node::sortComponent, could not find object called "<<depend.getValue()[i]<<endl;
+        else if ( o2==NULL ) cerr<<"Node::sortComponent, could not find object called "<<depend.getValue()[i+1]<<endl;
         else
         {
             boost::add_edge( vertex_from_component[o1], vertex_from_component[o2], dependencyGraph );

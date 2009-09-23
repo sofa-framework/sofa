@@ -20,7 +20,7 @@
 	  </Node>
 
 	  <Node name="visu">
-	    <OglModel name="VisualModel" src="../@ObjLoader" texturename="textures/floor.bmp"/>
+	    <OglModel name="VisualModel" src="@../ObjLoader" texturename="textures/floor.bmp"/>
 	  </Node>
 
 	</Node>

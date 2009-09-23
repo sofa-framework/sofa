@@ -27,10 +27,11 @@
 #ifndef SOFA_HELPER_SYSTEM_FILEREPOSITORY_H
 #define SOFA_HELPER_SYSTEM_FILEREPOSITORY_H
 
+#include <sofa/helper/helper.h>
+
 #include <string>
 #include <vector>
-
-#include <sofa/helper/helper.h>
+#include <iostream>
 
 namespace sofa
 {
@@ -78,13 +79,13 @@ public:
     /// @param basedir override current directory (optional)
     /// @param filename requested file as input, resolved file path as output
     /// @return true if the file was found in one of the directories, false otherwise
-    bool findFile(std::string& filename, const std::string& basedir="");
+    bool findFile(std::string& filename, const std::string& basedir="", std::ostream* errlog=&std::cerr);
 
     /// Alias for findFile, but returning the resolved file as the result.
     /// Less informative for errors, but sometimes easier to use
-    std::string getFile(std::string filename, const std::string& basedir="")
+    std::string getFile(std::string filename, const std::string& basedir="", std::ostream* errlog=&std::cerr)
     {
-        findFile(filename, basedir);
+        findFile(filename, basedir, errlog);
         return filename;
     }
 
@@ -92,7 +93,7 @@ public:
     /// @param basefile override current directory by using the parent directory of the given file
     /// @param filename requested file as input, resolved file path as output
     /// @return true if the file was found in one of the directories, false otherwise
-    bool findFileFromFile(std::string& filename, const std::string& basefile);
+    bool findFileFromFile(std::string& filename, const std::string& basefile, std::ostream* errlog=&std::cerr);
 
     /// Print the list of path to std::cout
     void print();

@@ -603,7 +603,7 @@ void MechanicalObject<DataTypes>::resize(const int size)
 template <class DataTypes>
 void MechanicalObject<DataTypes>::reserve(const int size)
 {
-    if (vsize == 0) return;
+    if (size == 0) return;
     (*x).reserve(size);
     if (initialized && x0!=NULL)
         (*x0).reserve(size);
