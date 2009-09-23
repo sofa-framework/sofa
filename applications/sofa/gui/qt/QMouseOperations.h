@@ -82,6 +82,10 @@ public:
 
     double getForce() const;
     double getScale() const;
+
+public slots:
+    void setScale(int s);
+
 protected:
     QSlider  *forceSlider;
     QSpinBox *forceValue;

@@ -49,12 +49,13 @@ class PickHandler;
 class Operation
 {
 public:
-    Operation(): pickHandle(NULL) {};
+    Operation(): pickHandle(NULL), performer(NULL) {};
     virtual ~Operation() {};
     virtual void configure(PickHandler *picker, MOUSE_BUTTON b) {pickHandle=picker; button=b; }
     virtual void start() =0;
     virtual void execution() =0;
     virtual void end()     =0;
+    virtual void wait() {};
 protected:
     PickHandler *pickHandle;
     MOUSE_BUTTON button;
@@ -123,15 +124,16 @@ class SculptOperation : public Operation
 {
 public:
     SculptOperation():force(50), scale(50) {};
-    virtual ~SculptOperation() {};
+    virtual ~SculptOperation();
     virtual void start() ;
     virtual void execution() ;
     virtual void end() ;
+    virtual void wait() ;
 
     void setForce(double f) {force = f;}
     virtual double getForce() const { return force;}
     void setScale(double s) {scale = s;}
-    double getScale() const {return scale;}
+    virtual double getScale() const {return scale;}
     static bool isModifiable() {return false;};
 
     static std::string getDescription() {return "Sculpt an object using the Mouse";}

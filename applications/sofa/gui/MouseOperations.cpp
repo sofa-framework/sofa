@@ -134,17 +134,11 @@ void InciseOperation::end()
 void SculptOperation::start()
 {
 #ifdef SOFA_DEV
-    //Creation
-    performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("SculptBody", pickHandle->getInteraction()->mouseInteractor);
-    pickHandle->getInteraction()->mouseInteractor->addInteractionPerformer(performer);
-
-    //Configuration
-    component::collision::SculptBodyPerformerConfiguration *performerConfiguration=dynamic_cast<component::collision::SculptBodyPerformerConfiguration*>(performer);
-    performerConfiguration->setForce(getForce());
-    performerConfiguration->setScale(getScale());
-
-    //Start
-//       performer->start();
+    if (performer)
+    {
+        component::collision::SculptBodyPerformerConfiguration *performerConfiguration=dynamic_cast<component::collision::SculptBodyPerformerConfiguration*>(performer);
+        performerConfiguration->setForce(getForce()/5000);
+    }
 #endif
 }
 
@@ -156,6 +150,29 @@ void SculptOperation::execution()
 }
 
 void SculptOperation::end()
+{
+#ifdef SOFA_DEV
+    component::collision::SculptBodyPerformerConfiguration *performerConfiguration=dynamic_cast<component::collision::SculptBodyPerformerConfiguration*>(performer);
+    performerConfiguration->setForce(0.0);
+#endif
+}
+
+void SculptOperation::wait()
+{
+#ifdef SOFA_DEV
+    if( performer==NULL || pickHandle->getInteraction()->mouseInteractor!= performer->interactor)
+    {
+        //Creation
+        performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("SculptBody", pickHandle->getInteraction()->mouseInteractor);
+        pickHandle->getInteraction()->mouseInteractor->addInteractionPerformer(performer);
+
+        //Configuration
+        component::collision::SculptBodyPerformerConfiguration *performerConfiguration=dynamic_cast<component::collision::SculptBodyPerformerConfiguration*>(performer);
+        performerConfiguration->setScale(getScale());
+    }
+#endif
+}
+SculptOperation::~SculptOperation()
 {
 #ifdef SOFA_DEV
     pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
