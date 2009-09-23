@@ -73,12 +73,12 @@ void ParticleSource<gpu::cuda::CudaVec3fTypes>::projectResponse(VecDeriv& res)
 }
 
 template <>
-void ParticleSource<gpu::cuda::CudaVec3fTypes>::projectVelocity(VecDeriv& res)
+void ParticleSource<gpu::cuda::CudaVec3fTypes>::projectVelocity(VecDeriv& )
 {
 }
 
 template <>
-void ParticleSource<gpu::cuda::CudaVec3fTypes>::projectPosition(VecDeriv& res)
+void ParticleSource<gpu::cuda::CudaVec3fTypes>::projectPosition(VecDeriv& )
 {
 }
 
