@@ -26,7 +26,9 @@
 ******************************************************************************/
 
 #include <sofa/gui/qt/QMouseOperations.h>
-
+#ifdef SOFA_DEV
+#include <sofa/component/collision/SculptBodyPerformer.h>
+#endif
 #ifdef SOFA_QT4
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -88,6 +90,7 @@ QSculptOperation::QSculptOperation()
 
     connect(forceSlider,SIGNAL(valueChanged(int)), forceValue, SLOT(setValue(int)));
     connect(scaleSlider,SIGNAL(valueChanged(int)), scaleValue, SLOT(setValue(int)));
+    connect(scaleSlider,SIGNAL(valueChanged(int)), this, SLOT(setScale(int)));
 
     forceSlider->setValue(50);
     scaleSlider->setValue(50);
@@ -103,6 +106,13 @@ double QSculptOperation::getScale() const
     return scaleValue->value();
 }
 
+void QSculptOperation::setScale(int s)
+{
+    if (!performer) return;
+    component::collision::SculptBodyPerformerConfiguration *performerConfiguration=dynamic_cast<component::collision::SculptBodyPerformerConfiguration*>(performer);
+    if (!performerConfiguration) return;
+    performerConfiguration->setScale(s);
+}
 
 QFixOperation::QFixOperation()
 {

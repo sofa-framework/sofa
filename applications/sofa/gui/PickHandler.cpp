@@ -206,7 +206,7 @@ void PickHandler::updateRay(const sofa::defaulttype::Vector3 &position,const sof
     }
     case DEACTIVATED:
     {
-        //Nothing to do
+        operations[mouseButton]->wait();
     }
     }
 }
