@@ -39,6 +39,10 @@
 #include <sofa/helper/system/glut.h>
 #include <sofa/helper/system/atomic.h>
 
+#ifdef SOFA_GPU_CUDA
+#include <sofa/gpu/cuda/mycuda.h>
+#endif
+
 #ifndef WIN32
 #include <dlfcn.h>
 bool loadPlugin(const char* filename)
@@ -108,7 +112,9 @@ int main(int argc, char** argv)
     (argc,argv);
 
     if(gui!="batch") glutInit(&argc,argv);
-
+#ifdef SOFA_GPU_CUDA
+    sofa::gpu::cuda::mycudaInit();
+#endif
     sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
     sofa::component::init();
     sofa::simulation::xml::initXml();
