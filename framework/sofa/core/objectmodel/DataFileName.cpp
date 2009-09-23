@@ -25,6 +25,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/objectmodel/DataFileName.h>
+#include <sofa/core/objectmodel/Base.h>
 
 namespace sofa
 {
@@ -39,7 +40,7 @@ void DataFileName::updatePath()
 {
     fullpath = m_value;
     if (!fullpath.empty())
-        helper::system::DataRepository.findFile(fullpath);
+        helper::system::DataRepository.findFile(fullpath,"",(this->m_owner ? &(this->m_owner->serr) : &std::cerr));
 }
 
 void DataFileNameVector::updatePath()
@@ -47,7 +48,7 @@ void DataFileNameVector::updatePath()
     fullpath = m_value;
     if (!fullpath.empty())
         for (unsigned int i=0 ; i<fullpath.size() ; i++)
-            helper::system::DataRepository.findFile(fullpath[i]);
+            helper::system::DataRepository.findFile(fullpath[i],"",(this->m_owner ? &(this->m_owner->serr) : &std::cerr));
 }
 
 } // namespace objectmodel

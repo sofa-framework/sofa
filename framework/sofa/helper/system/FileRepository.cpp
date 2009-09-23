@@ -149,7 +149,7 @@ bool FileRepository::findFileIn(std::string& filename, const std::string& path)
     return false;
 }
 
-bool FileRepository::findFile(std::string& filename, const std::string& basedir)
+bool FileRepository::findFile(std::string& filename, const std::string& basedir, std::ostream* errlog)
 {
     if (filename.empty()) return false; // no filename
     if (basedir.empty())
@@ -164,16 +164,19 @@ bool FileRepository::findFile(std::string& filename, const std::string& basedir)
     if (filename.substr(0,2)=="./" || filename.substr(0,3)=="../") return false; // local file path
     for (std::vector<std::string>::const_iterator it = vpath.begin(); it != vpath.end(); ++it)
         if (findFileIn(filename, *it)) return true;
-    std::cerr << "File "<<filename<<" NOT FOUND in "<<basedir;
-    for (std::vector<std::string>::const_iterator it = vpath.begin(); it != vpath.end(); ++it)
-        std::cerr << ':'<<*it;
-    std::cerr<<std::endl;
+    if (errlog)
+    {
+        (*errlog) << "File "<<filename<<" NOT FOUND in "<<basedir;
+        for (std::vector<std::string>::const_iterator it = vpath.begin(); it != vpath.end(); ++it)
+            (*errlog) << ':'<<*it;
+        (*errlog)<<std::endl;
+    }
     return false;
 }
 
-bool FileRepository::findFileFromFile(std::string& filename, const std::string& basefile)
+bool FileRepository::findFileFromFile(std::string& filename, const std::string& basefile, std::ostream* errlog)
 {
-    return findFile(filename, SetDirectory::GetParentDir(basefile.c_str()));
+    return findFile(filename, SetDirectory::GetParentDir(basefile.c_str()), errlog);
 }
 
 void FileRepository::print()

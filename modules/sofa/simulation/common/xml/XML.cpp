@@ -135,7 +135,7 @@ BaseElement* createNode(TiXmlNode* root, const char *basefilename, bool isRoot =
         filename += type;
         filename += ".xml";
 
-        if (sofa::helper::system::DataRepository.findFileFromFile(filename, basefilename))
+        if (sofa::helper::system::DataRepository.findFileFromFile(filename, basefilename, NULL))
         {
             // we found a replacement xml
             element->SetAttribute("href",filename.c_str());

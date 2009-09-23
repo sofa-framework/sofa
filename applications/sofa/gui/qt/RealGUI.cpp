@@ -1054,9 +1054,8 @@ void RealGUI::setScene ( Node* root, const char* filename, bool temporaryFile )
         std::string extension=sofa::helper::system::SetDirectory::GetExtension(filename);
         std::string htmlFile=filename; htmlFile.resize(htmlFile.size()-extension.size()-1);
         htmlFile+=".html";
-        if (sofa::helper::system::DataRepository.findFile (htmlFile))
+        if (sofa::helper::system::DataRepository.findFile (htmlFile,"",NULL))
         {
-            htmlFile = sofa::helper::system::DataRepository.getFile (htmlFile);
 #ifdef WIN32
             htmlFile = "file:///"+htmlFile;
 #endif

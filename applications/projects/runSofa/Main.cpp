@@ -73,7 +73,7 @@ bool loadPlugin(const char* filename)
 // ---------------------------------------------------------------------
 int main(int argc, char** argv)
 {
-    std::cout << "Using " << sofa::helper::system::atomic<int>::getImplName()<<" atomics." << std::endl;
+    //std::cout << "Using " << sofa::helper::system::atomic<int>::getImplName()<<" atomics." << std::endl;
 
     sofa::helper::BackTrace::autodump();
 
