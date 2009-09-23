@@ -112,7 +112,7 @@ void EulerImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior:
         serr<<"EulerImplicitSolver, projected f0 = "<< b <<sendl;
 
     MultiMatrix matrix(this);
-    matrix = MechanicalMatrix::K * (-h*(h+f_rayleighStiffness.getValue())) + MechanicalMatrix::M * (1+h*f_rayleighMass.getValue());
+    matrix = MechanicalMatrix::K * (-h*(h+f_rayleighStiffness.getValue())) + MechanicalMatrix::B * (-h) + MechanicalMatrix::M * (1+h*f_rayleighMass.getValue());
 
     //if( verbose )
 //	serr<<"EulerImplicitSolver, matrix = "<< (MechanicalMatrix::K * (-h*(h+f_rayleighStiffness.getValue())) + MechanicalMatrix::M * (1+h*f_rayleighMass.getValue())) << " = " << matrix <<sendl;
