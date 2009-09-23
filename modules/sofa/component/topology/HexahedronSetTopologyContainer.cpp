@@ -86,6 +86,7 @@ void HexahedronSetTopologyContainer::addHexa( int a, int b, int c, int d, int e,
 void HexahedronSetTopologyContainer::init()
 {
     QuadSetTopologyContainer::init();
+    d_hexahedron.updateIfDirty(); // make sure m_hexahedron is up to date
 }
 
 void HexahedronSetTopologyContainer::loadFromMeshLoader(sofa::component::container::MeshLoader* loader)
@@ -828,6 +829,7 @@ bool HexahedronSetTopologyContainer::checkTopology() const
 
 bool HexahedronSetTopologyContainer::hasHexahedra() const
 {
+    d_hexahedron.updateIfDirty();
     return !m_hexahedron.empty();
 }
 
