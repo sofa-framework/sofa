@@ -91,6 +91,7 @@ void TriangleSetTopologyContainer::addTriangle( int a, int b, int c )
 void TriangleSetTopologyContainer::init()
 {
     EdgeSetTopologyContainer::init();
+    d_triangle.updateIfDirty(); // make sure m_triangle is up to date
 }
 
 void TriangleSetTopologyContainer::loadFromMeshLoader(sofa::component::container::MeshLoader* loader)
@@ -769,6 +770,7 @@ bool TriangleSetTopologyContainer::checkTopology() const
 
 bool TriangleSetTopologyContainer::hasTriangles() const
 {
+    d_triangle.updateIfDirty();
     return !m_triangle.empty();
 }
 
