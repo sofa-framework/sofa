@@ -78,6 +78,8 @@ bool BaseData::setParent(BaseData* parent)
 void BaseData::doSetParent(BaseData* parent)
 {
     parentBaseData = parent;
+    if (parent)
+        addInput(parent);
 }
 
 void BaseData::doDelInput(DDGNode* n)
@@ -98,7 +100,11 @@ void BaseData::update()
         }
     }
     if (parentBaseData)
+    {
+        if (m_owner)
+            m_owner->sout << "Data " << m_name << ": update from parent " << parentBaseData->m_name<< m_owner->sendl;
         updateFromParentValue(parentBaseData);
+    }
 }
 
 /// Update this Data from the value of its parent
@@ -109,7 +115,6 @@ bool BaseData::updateFromParentValue(BaseData* parent)
     // Check if automatic conversion is possible
     if (!dataInfo->ValidInfo() || !parentInfo->ValidInfo())
         return false; // No conversion found
-    //std::cout << "Data link update " << parentInfo->name() << " -> " << dataInfo->name() << std::endl;
     std::ostringstream msgs;
     const void* parentValue = parent->getValueVoidPtr();
     void* dataValue = this->beginEditVoidPtr();
@@ -178,7 +183,12 @@ bool BaseData::updateFromParentValue(BaseData* parent)
 
     std::string m = msgs.str();
     if (m_owner)
-        m_owner->sout << "Data link from " << (parent->m_owner ? parent->m_owner->getName() : std::string("?")) << "." << parent->getName() << " to " << m_owner->getName() << "." << getName() << " : " << (m.empty()?std::string("OK"):m) << m_owner->sendl;
+    {
+        m_owner->sout << "Data link from " << (parent->m_owner ? parent->m_owner->getName() : std::string("?")) << "." << parent->getName() << " to " << m_owner->getName() << "." << getName() << " : ";
+        if (!m.empty()) m_owner->sout << m;
+        else            m_owner->sout << "OK, " << nbl << "*"<<copySize<<" values copied.";
+        m_owner->sout << m_owner->sendl;
+    }
 
     return true;
 }
