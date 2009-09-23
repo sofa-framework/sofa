@@ -529,7 +529,6 @@ public:
                         x[i] = Vec3d(tv[0],tv[1],tv[2])*scale2;
                     }
                 }
-#if 0
                 if (doComputeV)
                 {
                     sofa::simulation::tree::GNode* node = dynamic_cast<sofa::simulation::tree::GNode*>(getContext());
@@ -592,7 +591,6 @@ public:
                     x2.swap(x);
                     v2.swap(v);
                 }
-#endif
                 motionLastTime = time;
             }
 
