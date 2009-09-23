@@ -10,7 +10,7 @@
 	  <MeshVTKLoader name="VtkLoader" filename="mesh/liver.vtk"/>
 
 	  <!--	  <Object type="MeshLoader" name="meshLoader" filename="mesh/square3.msh" /> -->
-	  <MechanicalObject name="dofs" scale="10" src="@VtkLoader"  />
+	  <MechanicalObject name="dofs" scale="1" src="@VtkLoader"  />
 	  
 	  <TriangleSetTopologyContainer name="topo" src="@VtkLoader" />
 	  <TriangleSetTopologyModifier name="modif" />
