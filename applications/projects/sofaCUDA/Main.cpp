@@ -31,6 +31,7 @@
 
 #include <sofa/gpu/cuda/mycuda.h>
 
+#include <sofa/simulation/common/xml/initXml.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/component/init.h>
@@ -54,8 +55,11 @@ using namespace sofa::gpu::cuda;
 int main(int argc, char** argv)
 {
 
-    glutInit(&argc,argv);
+    sofa::helper::BackTrace::autodump();
 
+    sofa::gui::SofaGUI::SetProgramName(argv[0]);
+    std::string gui = sofa::gui::SofaGUI::GetGUIName();
+    sofa::gui::SofaGUI::ListSupportedGUI('|');
     //std::string fileName = "CUDA/beam10x10x46-spring-rk4-CUDA.scn";
 
     std::string fileName = "CUDA/quadSpringSphereCUDA.scn";
@@ -72,13 +76,25 @@ int main(int argc, char** argv)
         if (argc >=3) nbIter = atoi(argv[2]);
     }
 
-    sofa::component::init();
-
-    sofa::gui::SofaGUI::Init(argv[0]);
-
-    sofa::helper::system::DataRepository.findFile(fileName);
+    if (!nbIter)
+        glutInit(&argc,argv);
 
     mycudaInit();
+
+    sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
+    sofa::component::init();
+    sofa::simulation::xml::initXml();
+
+    if (!nbIter)
+    {
+        if (int err=sofa::gui::SofaGUI::Init(argv[0],gui.c_str()))
+            return err;
+
+        if (int err=sofa::gui::SofaGUI::createGUI(NULL))
+            return err;
+    }
+
+    sofa::helper::system::DataRepository.findFile(fileName);
 
     GNode* groot = NULL;
     ctime_t t0, t1;
@@ -87,13 +103,15 @@ int main(int argc, char** argv)
     if (!fileName.empty())
     {
         groot = dynamic_cast< GNode* >(getSimulation()->load(fileName.c_str()));
-        sofa::simulation::tree::getSimulation()->init(groot);
     }
 
     if (groot==NULL)
     {
         groot = new GNode;
     }
+    sofa::simulation::tree::getSimulation()->init(groot);
+    if (!nbIter)
+        sofa::gui::SofaGUI::CurrentGUI()->setScene(groot,fileName.c_str());
 
     if (nbIter != 0)
     {
@@ -147,7 +165,9 @@ int main(int argc, char** argv)
     else
     {
         sofa::gui::SofaGUI::MainLoop(groot,fileName.c_str());
+        groot = dynamic_cast<GNode*>( sofa::gui::SofaGUI::CurrentSimulation() );
     }
+    if (groot!=NULL) getSimulation()->unload(groot);
 
     return 0;
 }
