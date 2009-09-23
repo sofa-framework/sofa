@@ -50,6 +50,7 @@ public:
 
     // Precomputed constants for smoothing kernels
     real CWd;          ///< =     constWd(h)
+    real CgradWd;      ///< = constGradWd(h)
     real CgradWp;      ///< = constGradWp(h)
     real ClaplacianWv; ///< =  constLaplacianWv(h)
     real CgradWc;      ///< = constGradWc(h)
@@ -63,14 +64,14 @@ extern "C"
 {
 
     void SPHFluidForceFieldCuda3f_computeDensity(unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPUSPHFluid3f* params, void* pos4, const void* x);
-    void SPHFluidForceFieldCuda3f_addForce (unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPUSPHFluid3f* params, void* f, const void* pos4, const void* v );
-    void SPHFluidForceFieldCuda3f_addDForce(unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPUSPHFluid3f* params, void* f, const void* pos4, const void* dx);
+    void SPHFluidForceFieldCuda3f_addForce (unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPUSPHFluid3f* params, void* f, const void* pos4, const void* v);
+    void SPHFluidForceFieldCuda3f_addDForce(unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPUSPHFluid3f* params, void* f, const void* pos4, const void* v, const void* dx);
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
     void SPHFluidForceFieldCuda3d_computeDensity(unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPUSPHFluid3d* params, void* pos4, const void* x);
-    void SPHFluidForceFieldCuda3d_addForce (unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPUSPHFluid3d* params, void* f, const void* pos4, const void* v );
-    void SPHFluidForceFieldCuda3d_addDForce(unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPUSPHFluid3d* params, void* f, const void* pos4, const void* dx);
+    void SPHFluidForceFieldCuda3d_addForce (unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPUSPHFluid3d* params, void* f, const void* pos4, const void* v);
+    void SPHFluidForceFieldCuda3d_addDForce(unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPUSPHFluid3d* params, void* f, const void* pos4, const void* v, const void* dx);
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 
@@ -346,25 +347,60 @@ __device__ void SPHFluidCalcForce(CudaVec4<real> x1, CudaVec3<real> v1, CudaVec4
         force += SPH<real>::gradWp(n, r_h, params.CgradWp) * ( params.mass2 * (pressure1 / (density1*density1) + pressure2 / (density2*density2) ));
 
         // Viscosity
-        force += ( v2 - v1 ) * ( params.mass2 * params.viscosity / (density1 * density2) * SPH<real>::laplacianWv(r_h,params.ClaplacianWv) );
+        force += ( v2 - v1 ) * ( params.mass2 * params.viscosity * SPH<real>::laplacianWv(r_h,params.ClaplacianWv) / (density1 * density2) );
     }
 }
 
 template<class real>
-__device__ void SPHFluidCalcDForce(CudaVec4<real> x1, CudaVec3<real> dx1, CudaVec4<real> x2, CudaVec3<real> dx2, CudaVec3<real>& dforce, GPUSPHFluid<real>& params)
+__device__ void SPHFluidCalcDForce(CudaVec4<real> x1, CudaVec3<real> v1, CudaVec3<real> dx1, CudaVec4<real> x2, CudaVec3<real> v2,  CudaVec3<real> dx2, CudaVec3<real>& dforce, GPUSPHFluid<real>& params)
 {
     CudaVec3<real> n = CudaVec3<real>::make(x2.x-x1.x,x2.y-x1.y,x2.z-x1.z);
     real d2 = norm2(n);
     if (d2 < params.h2)
     {
         CudaVec3<real> dxi = dx2-dx1;
-        //real inv_d = rsqrtf(d2);
-        //n *= inv_d;
-        //dforce = n * (params.stiffness * dot(dxi, n));
 
-        //dforce = (n * (params.stiffness * dot(dxi, n)))/d2;
+        real inv_d = rsqrtf(d2);
 
-        //dforce += n * __fdividef((params.stiffness * dot(dxi, n)),d2);
+        real r2_h2 = (d2/params.h2);
+        real r_h = sqrtf(r2_h2);
+
+        real density1 = x1.w;
+        real density2 = x2.w;
+
+        // Pressure
+        real pressure1 = params.stiffness * (density1 - params.density0);
+        real pressure2 = params.stiffness * (density2 - params.density0);
+
+        real fpressure = params.mass2 * (pressure1 / (density1*density1) + pressure2 / (density2*density2) );
+
+        // Derivatives
+
+        CudaVec3<real> dn = dxi * inv_d;
+
+        real dr_h = dot(dn,n)/params.h;
+        //real dr2_h2 = 2*r_h*dr_h;
+
+        real ddensity = dot(dxi,SPH<real>::gradWd2(n, r2_h2, params.CgradWd));
+        real dpressure = params.stiffness*ddensity;
+        // d(a/b^2) = (d(a)*b-2*a*d(b))/b^3
+        real dfpressure = params.mass2 * ( (dpressure*density1-2*pressure1*ddensity)/(density1*density1*density1)
+                +(dpressure*density2-2*pressure2*ddensity)/(density2*density2*density2) );
+        real a = (1-r_h);
+        real dWp = params.CgradWp*a*a;
+        real ddWp = -2*params.CgradWp*a*dr_h;
+
+        // f = n * dWp * fpressure
+        // df = dn * (dWp * fpressure) + n * (ddWp * fpressure + dWp * dfpressure);
+
+        dforce += dn * (dWp  * fpressure) + n * (ddWp * fpressure + dWp * dfpressure);
+
+        // Viscosity
+        // force += ( v2 - v1 ) * ( params.mass2 * params.viscosity * params.ClaplacianWv * (1-r_h) / (density1 * density2) );
+        real d1d2 = density1*density2;
+        dforce += dxi * ( params.mass2 * params.viscosity * params.ClaplacianWv * (1-r_h) / (density1 * density2) )
+                + (v2-v1) * ( params.mass2 * params.viscosity * params.ClaplacianWv * (-dr_h*d1d2 - (1-r_h)*ddensity*(density1+density2))/(d1d2*d1d2));
+
     }
 }
 
@@ -539,11 +575,12 @@ __global__ void SPHFluidForceFieldCuda3t_addForce_kernel(int size, const int2 *c
 }
 
 template<class real>
-__global__ void SPHFluidForceFieldCuda3t_addDForce_kernel(int size, const int2 *cellRange, const int *cellGhost, const int* particleIndex, GPUSPHFluid<real> params, real* df, const real* pos4, const real* dx)
+__global__ void SPHFluidForceFieldCuda3t_addDForce_kernel(int size, const int2 *cellRange, const int *cellGhost, const int* particleIndex, GPUSPHFluid<real> params, real* df, const real* pos4, const real* v, const real* dx)
 {
     __shared__ int2 range;
     __shared__ int ghost;
-    __shared__ real temp_x[BSIZE*3];
+    __shared__ real temp_x[BSIZE*4];
+    __shared__ real temp_v[BSIZE*3];
     __shared__ real temp_dx[BSIZE*3];
     int tx3 = __umul24(threadIdx.x,3);
     int tx4 = threadIdx.x << 2;
@@ -560,6 +597,7 @@ __global__ void SPHFluidForceFieldCuda3t_addDForce_kernel(int size, const int2 *
         {
             int px = px0 + threadIdx.x;
             CudaVec4<real> xi;
+            CudaVec3<real> vi;
             CudaVec3<real> dxi;
             CudaVec3<real> dforce;
             int index;
@@ -571,6 +609,10 @@ __global__ void SPHFluidForceFieldCuda3t_addDForce_kernel(int size, const int2 *
                 temp_x[tx4+1] = xi.y;
                 temp_x[tx4+2] = xi.z;
                 temp_x[tx4+3] = xi.w;
+                vi = ((const CudaVec3<real>*)v)[index];
+                temp_v[tx3  ] = vi.x;
+                temp_v[tx3+1] = vi.y;
+                temp_v[tx3+2] = vi.z;
                 dxi = ((const CudaVec3<real>*)dx)[index];
                 temp_dx[tx3  ] = dxi.x;
                 temp_dx[tx3+1] = dxi.y;
@@ -585,7 +627,7 @@ __global__ void SPHFluidForceFieldCuda3t_addDForce_kernel(int size, const int2 *
                 for (int i=0; i < np; ++i)
                 {
                     if (i != threadIdx.x)
-                        SPHFluidCalcDForce(xi, dxi, ((const CudaVec4<real>*)temp_x)[i], ((const CudaVec3<real>*)temp_dx)[i], dforce, params);
+                        SPHFluidCalcDForce(xi, vi, dxi, ((const CudaVec4<real>*)temp_x)[i], ((const CudaVec3<real>*)temp_v)[i], ((const CudaVec3<real>*)temp_dx)[i], dforce, params);
                 }
             }
             __syncthreads();
@@ -602,6 +644,10 @@ __global__ void SPHFluidForceFieldCuda3t_addDForce_kernel(int size, const int2 *
                     temp_x[tx4+1] = xj.y;
                     temp_x[tx4+2] = xj.z;
                     temp_x[tx4+3] = xj.w;
+                    CudaVec3<real> vj = ((const CudaVec3<real>*)v)[index2];
+                    temp_v[tx3  ] = vj.x;
+                    temp_v[tx3+1] = vj.y;
+                    temp_v[tx3+2] = vj.z;
                     CudaVec3<real> dxj = ((const CudaVec3<real>*)dx)[index2];
                     temp_dx[tx3  ] = dxj.x;
                     temp_dx[tx3+1] = dxj.y;
@@ -614,7 +660,7 @@ __global__ void SPHFluidForceFieldCuda3t_addDForce_kernel(int size, const int2 *
                     int np = min(range.y-py0,BSIZE);
                     for (int i=0; i < np; ++i)
                     {
-                        SPHFluidCalcDForce(xi, dxi, ((const CudaVec4<real>*)temp_x)[i], ((const CudaVec3<real>*)temp_dx)[i], dforce, params);
+                        SPHFluidCalcDForce(xi, vi, dxi, ((const CudaVec4<real>*)temp_x)[i], ((const CudaVec3<real>*)temp_v)[i], ((const CudaVec3<real>*)temp_dx)[i], dforce, params);
                     }
                 }
                 __syncthreads();
@@ -650,11 +696,11 @@ void SPHFluidForceFieldCuda3f_addForce(unsigned int size, const void* cellRange,
 
 }
 
-void SPHFluidForceFieldCuda3f_addDForce(unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPUSPHFluid3f* params, void* df, const void* x, const void* dx)
+void SPHFluidForceFieldCuda3f_addDForce(unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPUSPHFluid3f* params, void* df, const void* x, const void* v, const void* dx)
 {
     dim3 threads(BSIZE,1);
     dim3 grid(60/BSIZE,1);
-    SPHFluidForceFieldCuda3t_addDForce_kernel<float><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int2*) cellRange, (const int*) cellGhost, (const int*) particleIndex, *params, (float*)df, (const float*)x, (const float*)dx);
+    SPHFluidForceFieldCuda3t_addDForce_kernel<float><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int2*) cellRange, (const int*) cellGhost, (const int*) particleIndex, *params, (float*)df, (const float*)x, (const float*)v, (const float*)dx);
 }
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
@@ -666,11 +712,11 @@ void SPHFluidForceFieldCuda3d_addForce(unsigned int size, const void* cellRange,
     SPHFluidForceFieldCuda3t_addForce_kernel<double><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int2*) cellRange, (const int*) cellGhost, (const int*) particleIndex, *params, (double*)f, (const double*)x, (const double*)v);
 }
 
-void SPHFluidForceFieldCuda3d_addDForce(unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPUSPHFluid3d* params, void* df, const void* x, const void* dx)
+void SPHFluidForceFieldCuda3d_addDForce(unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPUSPHFluid3d* params, void* df, const void* x, const void* v, const void* dx)
 {
     dim3 threads(BSIZE,1);
     dim3 grid(60/BSIZE,1);
-    SPHFluidForceFieldCuda3t_addDForce_kernel<double><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int2*) cellRange, (const int*) cellGhost, (const int*) particleIndex, *params, (double*)df, (const double*)x, (const double*)dx);
+    SPHFluidForceFieldCuda3t_addDForce_kernel<double><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int2*) cellRange, (const int*) cellGhost, (const int*) particleIndex, *params, (double*)df, (const double*)x, (const double*)v, (const double*)dx);
 }
 
 #endif // SOFA_GPU_CUDA_DOUBLE

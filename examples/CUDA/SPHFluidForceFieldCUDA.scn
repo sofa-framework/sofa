@@ -1,6 +1,9 @@
 <Node dt="0.005" showBehaviorModels="1" showCollisionModels="1" showMappings="0" showForceFields="1" gravity="0 -10 0" >
 	<Node>
-		<Object type="RungeKutta4"/>
+		<RungeKutta4/>
+		<!--<CentralDifferenceSolver/>-->
+        <!--<EulerImplicitSolver/>
+        <CGLinearSolver/>-->
 		<Object type="MechanicalObject" name="MModel" template="Vec3f" />
 		<!-- A topology is used here just to set initial particles positions. It is a bad idea because this object has no real topology, but it works... -->
 		<Object type="RegularGrid"
