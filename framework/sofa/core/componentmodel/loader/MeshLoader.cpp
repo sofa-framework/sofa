@@ -116,6 +116,17 @@ bool MeshLoader::canLoad()
     return true;
 }
 
+void addPosition(helper::vector<sofa::defaulttype::Vec<3,SReal> >* pPositions, const sofa::defaulttype::Vec<3,SReal> &p)
+{
+    pPositions->push_back(p);
+}
+
+void addPosition(helper::vector<sofa::defaulttype::Vec<3,SReal> >* pPositions,  SReal x, SReal y, SReal z)
+{
+    addPosition(pPositions, sofa::defaulttype::Vec<3,SReal>(x, y, z));
+}
+
+
 void MeshLoader::addEdge(helper::vector<helper::fixed_array <unsigned int,2> >* pEdges, const helper::fixed_array <unsigned int,2> &p)
 {
     pEdges->push_back(p);
