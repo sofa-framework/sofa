@@ -89,9 +89,7 @@ bool MeshLoader::canLoad()
 
 
     // -- Check if file exist:
-    char* filename = new char [m_filename.getFullPath().size()+1];
-    strcpy (filename, m_filename.getFullPath().c_str());
-    static_cast< char const * >(filename);
+    const char* filename = m_filename.getFullPath().c_str();
     std::string sfilename (filename);
 
     if (!sofa::helper::system::DataRepository.findFile(sfilename))
@@ -116,7 +114,6 @@ bool MeshLoader::canLoad()
     }
 
     fclose(file);
-    delete[] filename;
     return true;
 }
 

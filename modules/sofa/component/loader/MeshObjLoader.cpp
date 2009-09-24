@@ -99,9 +99,7 @@ bool MeshObjLoader::load()
     bool fileRead = false;
 
     // -- Loading file
-    char* filename = new char [m_filename.getFullPath().size()+1];
-    strcpy (filename, m_filename.getFullPath().c_str());
-    static_cast< char const * >(filename);
+    const char* filename = m_filename.getFullPath().c_str();
 
     if ((file = fopen(filename, "r")) == NULL)
     {
@@ -113,7 +111,6 @@ bool MeshObjLoader::load()
     fileRead = this->readOBJ (file,filename);
     fclose(file);
 
-    delete[] filename;
     return fileRead;
 }
 

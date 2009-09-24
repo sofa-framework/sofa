@@ -53,9 +53,7 @@ bool MeshGmshLoader::load()
     unsigned int gmshFormat = 0;
 
     // -- Loading file
-    char* filename = new char [m_filename.getFullPath().size()+1];
-    strcpy (filename, m_filename.getFullPath().c_str());
-    static_cast< char const * >(filename);
+    const char* filename = m_filename.getFullPath().c_str();
 
     if ((file = fopen(filename, "r")) == NULL)
     {
@@ -98,7 +96,6 @@ bool MeshGmshLoader::load()
         return false;
     }
 
-    delete[] filename;
     return fileRead;
 }
 
