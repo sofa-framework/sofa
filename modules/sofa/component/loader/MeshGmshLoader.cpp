@@ -53,7 +53,10 @@ bool MeshGmshLoader::load()
     unsigned int gmshFormat = 0;
 
     // -- Loading file
-    const char* filename = m_filename.getFullPath().c_str();
+    char* filename = new char [m_filename.getFullPath().size()+1];
+    strcpy (filename, m_filename.getFullPath().c_str());
+    static_cast< char const * >(filename);
+
     if ((file = fopen(filename, "r")) == NULL)
     {
         std::cerr << "Error: MeshGmshLoader: Cannot read file '" << m_filename << "'." << std::endl;
@@ -95,6 +98,7 @@ bool MeshGmshLoader::load()
         return false;
     }
 
+    delete[] filename;
     return fileRead;
 }
 

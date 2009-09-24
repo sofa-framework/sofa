@@ -69,7 +69,10 @@ bool MeshTrianLoader::load()
     bool fileRead = false;
 
     // -- Loading file
-    const char* filename = m_filename.getFullPath().c_str();
+    char* filename = new char [m_filename.getFullPath().size()+1];
+    strcpy (filename, m_filename.getFullPath().c_str());
+    static_cast< char const * >(filename);
+
     if ((file = fopen(filename, "r")) == NULL)
     {
         std::cerr << "Error: MeshTrianLoader: Cannot read file '" << m_filename << "'." << std::endl;
@@ -79,6 +82,7 @@ bool MeshTrianLoader::load()
     // -- Reading file
     fileRead = this->readTrian (filename);
 
+    delete[] filename;
     fclose (file);
     return fileRead;
 }
