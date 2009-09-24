@@ -71,6 +71,9 @@ protected:
     Data< bool > fillMState; ///< Must this mesh loader fill the mstate instead of manually or by using the topology
     Data< bool > flipNormals;
 
+    void addPosition(helper::vector<sofa::defaulttype::Vec<3,SReal> > pPositions, const sofa::defaulttype::Vec<3,SReal> &p);
+    void addPosition(helper::vector<sofa::defaulttype::Vec<3,SReal> > pPositions,  SReal x, SReal y, SReal z);
+
     void addEdge(helper::vector<helper::fixed_array <unsigned int,2> >* pEdges, const helper::fixed_array <unsigned int,2> &p);
     void addEdge(helper::vector<helper::fixed_array <unsigned int,2> >* pEdges, unsigned int p0, unsigned int p1);
 
