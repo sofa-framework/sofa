@@ -96,7 +96,7 @@ __device__ void ParticlesRepulsionCalcDForce(CudaVec3<real> x1, CudaVec3<real> d
 
         //dforce = (n * (rep.stiffness * dot(dxi, n)))/d2;
 
-        dforce += n * __fdividef((rep.stiffness * dot(dxi, n)),d2);
+        dforce += n * (real)__fdividef((rep.stiffness * dot(dxi, n)),d2);
     }
 }
 
