@@ -216,6 +216,8 @@ protected:
 
     Data< vector< Vector3 > >    vertices;
     Data< vector < vector <int> > >facets;
+    Data< SeqTriangles > input_triangles;
+    Data< SeqQuads > input_quads;
 
     virtual void updateEdges();
     virtual void updateQuads();
