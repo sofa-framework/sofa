@@ -373,7 +373,7 @@ bool MeshVTKLoader::readVTK (const char* filename)
             {
                 if (nv == 4)
                 {
-                    my_quads.push_back (helper::fixed_array <unsigned int,4> (inFP[i+0],inFP[i+1],inFP[i+2],inFP[i+3]));
+                    addQuad(&my_quads, helper::fixed_array <unsigned int,4> (inFP[i+0],inFP[i+1],inFP[i+2],inFP[i+3]));
                 }
                 else if (nv >= 3)
                 {
@@ -383,7 +383,7 @@ bool MeshVTKLoader::readVTK (const char* filename)
                     for (int j=2; j<nv; j++)
                     {
                         f[2] = inFP[i+j];
-                        my_triangles.push_back (helper::fixed_array <unsigned int,3> (f[0],f[1],f[2]));
+                        addTriangle(&my_triangles, helper::fixed_array <unsigned int,3> (f[0], f[1], f[2]));
                         f[1] = f[2];
                     }
                 }
@@ -407,41 +407,41 @@ bool MeshVTKLoader::readVTK (const char* filename)
             case 2: // POLY_VERTEX
                 break;
             case 3: // LINE
-                my_edges.push_back (helper::fixed_array <unsigned int,2> (inFP[i+0], inFP[i+1]));
+                addEdge(&my_edges, helper::fixed_array <unsigned int,2> (inFP[i+0], inFP[i+1]));
                 break;
             case 4: // POLY_LINE
                 for (int v = 0; v < nv-1; ++v)
-                    my_edges.push_back (helper::fixed_array <unsigned int,2> (inFP[i+v+0], inFP[i+v+1]));
+                    addEdge(&my_edges, helper::fixed_array <unsigned int,2> (inFP[i+v+0], inFP[i+v+1]));
                 break;
             case 5: // TRIANGLE
-                my_triangles.push_back (helper::fixed_array <unsigned int,3> (inFP[i+0], inFP[i+1], inFP[i+2]));
+                addTriangle(&my_triangles,(helper::fixed_array <unsigned int,3> (inFP[i+0], inFP[i+1], inFP[i+2])));
                 break;
             case 6: // TRIANGLE_STRIP
                 for (int j=0; j<nv-2; j++)
                     if (j&1)
-                        my_triangles.push_back (helper::fixed_array <unsigned int,3> (inFP[i+j+0],inFP[i+j+1],inFP[i+j+2]));
+                        addTriangle(&my_triangles, (helper::fixed_array <unsigned int,3> (inFP[i+j+0],inFP[i+j+1],inFP[i+j+2])));
                     else
-                        my_triangles.push_back (helper::fixed_array <unsigned int,3> (inFP[i+j+0],inFP[i+j+2],inFP[i+j+1]));
+                        addTriangle(&my_triangles, (helper::fixed_array <unsigned int,3> (inFP[i+j+0],inFP[i+j+2],inFP[i+j+1])));
                 break;
             case 7: // POLYGON
                 for (int j=2; j<nv; j++)
-                    my_triangles.push_back (helper::fixed_array <unsigned int,3> (inFP[i+0],inFP[i+j-1],inFP[i+j]));
+                    addTriangle(&my_triangles, (helper::fixed_array <unsigned int,3> (inFP[i+0],inFP[i+j-1],inFP[i+j])));
                 break;
             case 8: // PIXEL
-                my_quads.push_back (helper::fixed_array <unsigned int,4> (inFP[i+0], inFP[i+1], inFP[i+3], inFP[i+2]));
+                addQuad(&my_quads, helper::fixed_array <unsigned int,4> (inFP[i+0], inFP[i+1], inFP[i+3], inFP[i+2]));
                 break;
             case 9: // QUAD
-                my_quads.push_back (helper::fixed_array <unsigned int,4> (inFP[i+0], inFP[i+1], inFP[i+2], inFP[i+3]));
+                addQuad(&my_quads, helper::fixed_array <unsigned int,4> (inFP[i+0], inFP[i+1], inFP[i+2], inFP[i+3]));
                 break;
             case 10: // TETRA
-                my_tetrahedra.push_back (helper::fixed_array <unsigned int,4> (inFP[i+0], inFP[i+1], inFP[i+2], inFP[i+3]));
+                addTetrahedron(&my_tetrahedra, helper::fixed_array <unsigned int,4> (inFP[i+0], inFP[i+1], inFP[i+2], inFP[i+3]));
                 break;
             case 11: // VOXEL
-                my_hexahedra.push_back (helper::fixed_array <unsigned int,8> (inFP[i+0], inFP[i+1], inFP[i+3], inFP[i+2],
+                addHexahedron(&my_hexahedra, helper::fixed_array <unsigned int,8> (inFP[i+0], inFP[i+1], inFP[i+3], inFP[i+2],
                         inFP[i+4], inFP[i+5], inFP[i+7], inFP[i+6]));
                 break;
             case 12: // HEXAHEDRON
-                my_hexahedra.push_back (helper::fixed_array <unsigned int,8> (inFP[i+0], inFP[i+1], inFP[i+2], inFP[i+3],
+                addHexahedron(&my_hexahedra, helper::fixed_array <unsigned int,8> (inFP[i+0], inFP[i+1], inFP[i+2], inFP[i+3],
                         inFP[i+4], inFP[i+5], inFP[i+6], inFP[i+7]));
                 break;
             default:

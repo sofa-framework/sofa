@@ -309,18 +309,18 @@ bool MeshObjLoader::readOBJ (FILE* file, const char* filename)
             if (nodes.size() == 2) // Edge
             {
                 if (nodes[0]<nodes[1])
-                    my_edges.push_back (helper::fixed_array <unsigned int,2>(nodes[0], nodes[1]));
+                    addEdge(&my_edges, helper::fixed_array <unsigned int,2>(nodes[0], nodes[1]));
                 else
-                    my_edges.push_back (helper::fixed_array <unsigned int,2>(nodes[1], nodes[0]));
+                    addEdge(&my_edges, helper::fixed_array <unsigned int,2>(nodes[1], nodes[0]));
             }
             else if (nodes.size()==4) // Quad
             {
-                my_quads.push_back (helper::fixed_array <unsigned int,4>(nodes[0], nodes[1], nodes[2], nodes[3]));
+                addQuad(&my_quads, helper::fixed_array <unsigned int,4>(nodes[0], nodes[1], nodes[2], nodes[3]));
             }
             else // Triangularize
             {
                 for (unsigned int j=2; j<nodes.size(); j++)
-                    my_triangles.push_back (helper::fixed_array <unsigned int,3>(nodes[0], nodes[j-1], nodes[j]));
+                    addTriangle(&my_triangles, helper::fixed_array <unsigned int,3>(nodes[0], nodes[j-1], nodes[j]));
             }
 
             break;

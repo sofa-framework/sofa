@@ -232,26 +232,26 @@ bool MeshGmshLoader::readGmsh(FILE *file, const unsigned int gmshFormat)
         switch (etype)
         {
         case 1: // Line
-            my_edges.push_back (helper::fixed_array <unsigned int,2>(nodes[0], nodes[1]));
+            addEdge(&my_edges, helper::fixed_array <unsigned int,2>(nodes[0], nodes[1]));
             ++nlines;
             break;
         case 2: // Triangle
-            my_triangles.push_back (helper::fixed_array <unsigned int,3>(nodes[0], nodes[1], nodes[2]));
+            addTriangle(&my_triangles, helper::fixed_array <unsigned int,3>(nodes[0], nodes[1], nodes[2]));
             ++ntris;
             break;
         case 3: // Quad
-            my_quads.push_back (helper::fixed_array <unsigned int,4>(nodes[0], nodes[1], nodes[2], nodes[3]));
+            addQuad(&my_quads, helper::fixed_array <unsigned int,4>(nodes[0], nodes[1], nodes[2], nodes[3]));
             ++nquads;
             break;
         case 4: // Tetra
-            my_tetrahedra.push_back (helper::fixed_array <unsigned int,4>(nodes[0], nodes[1], nodes[2], nodes[3]));
+            addTetrahedron(&my_tetrahedra, helper::fixed_array <unsigned int,4>(nodes[0], nodes[1], nodes[2], nodes[3]));
             ++ntetrahedra;
             break;
         case 5: // Hexa
             helper::fixed_array <unsigned int,8> hexa;
             for (unsigned int n=0; n<8; n++)
                 hexa[n] = nodes[n];
-            my_hexahedra.push_back (hexa);
+            addHexahedron(&my_hexahedra,hexa);
             ++ncubes;
             break;
         }

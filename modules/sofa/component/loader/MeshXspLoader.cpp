@@ -185,7 +185,7 @@ bool MeshXspLoader::readXsp (FILE *file, bool vector_spring)
             --m[0];
             --m[1];
 
-            my_edges.push_back (m);
+            addEdge(&my_edges, m);
         }
         else if (!strcmp(cmd,"grav"))
         {
