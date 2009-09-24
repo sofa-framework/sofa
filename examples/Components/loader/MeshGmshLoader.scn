@@ -7,7 +7,7 @@
 	<TreeCollisionGroupManager name="Group"/>
 	<Node name="Obj file">
 	  <CGImplicit iterations="40" tolerance="1e-6" threshold="1e-10"/>
-	  <MeshLoader name="GmshLoader" filename="mesh/square3.msh"/>
+	  <MeshGmshLoader name="GmshLoader" filename="mesh/square3.msh"/>
 
 	  <MechanicalObject name="dofs" scale="10" src="@GmshLoader"  />
 	  
