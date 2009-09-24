@@ -129,7 +129,7 @@ bool MeshTrianLoader::readTrian (const char* filename)
 
         // set 3 triangle vertices  ==>> Dans le MeshLoader?
 
-        my_triangles.push_back (nodes);
+        addTriangle(&my_triangles, nodes);
         my_neighborTable.push_back (ngh);
 
         // if we have a boundary edge store it in the m_edgeOnBorder array:
