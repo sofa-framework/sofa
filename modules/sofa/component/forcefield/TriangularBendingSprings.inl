@@ -330,7 +330,7 @@ template <class DataTypes> void TriangularBendingSprings<DataTypes>::handleTopol
     std::list<const TopologyChange *>::const_iterator itBegin=_topology->firstChange();
     std::list<const TopologyChange *>::const_iterator itEnd=_topology->lastChange();
 
-    helper::vector<EdgeInformation> edgeInf = *(edgeInfo.beginEdit());
+    helper::vector<EdgeInformation>& edgeInf = *(edgeInfo.beginEdit());
 
     edgeInfo.handleTopologyEvents(itBegin,itEnd);
 
