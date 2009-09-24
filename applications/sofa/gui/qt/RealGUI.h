@@ -226,9 +226,7 @@ public slots:
     void dumpState(bool);
     void displayComputationTime(bool);
     void setExportGnuplot(bool);
-#ifdef SOFA_DUMP_VISITOR_INFO
     void setExportVisitor(bool);
-#endif
     void currentTabChanged(QWidget*);
 
 signals:
