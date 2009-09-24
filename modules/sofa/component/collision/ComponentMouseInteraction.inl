@@ -29,10 +29,10 @@
 
 #include <sofa/component/collision/ComponentMouseInteraction.h>
 
-#include <sofa/component/container/MechanicalObject.h>
+#include <sofa/component/container/MechanicalObject.inl>
 #include <sofa/component/collision/RayModel.h>
-#include <sofa/component/collision/MouseInteractor.h>
-#include <sofa/component/mapping/IdentityMapping.h>
+#include <sofa/component/collision/MouseInteractor.inl>
+#include <sofa/component/mapping/IdentityMapping.inl>
 
 #include <sofa/simulation/common/InitVisitor.h>
 
