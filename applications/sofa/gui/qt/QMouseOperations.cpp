@@ -90,7 +90,7 @@ QSculptOperation::QSculptOperation()
 
     connect(forceSlider,SIGNAL(valueChanged(int)), forceValue, SLOT(setValue(int)));
     connect(scaleSlider,SIGNAL(valueChanged(int)), scaleValue, SLOT(setValue(int)));
-    connect(scaleSlider,SIGNAL(valueChanged(int)), this, SLOT(setScale(int)));
+    connect(scaleSlider,SIGNAL(valueChanged(int)), this, SLOT(setScale()));
 
     forceSlider->setValue(50);
     scaleSlider->setValue(50);
@@ -106,12 +106,14 @@ double QSculptOperation::getScale() const
     return scaleValue->value();
 }
 
-void QSculptOperation::setScale(int s)
+void QSculptOperation::setScale()
 {
+#ifdef SOFA_DEV
     if (!performer) return;
     component::collision::SculptBodyPerformerConfiguration *performerConfiguration=dynamic_cast<component::collision::SculptBodyPerformerConfiguration*>(performer);
     if (!performerConfiguration) return;
-    performerConfiguration->setScale(s);
+    performerConfiguration->setScale(getScale());
+#endif
 }
 
 QFixOperation::QFixOperation()

@@ -84,7 +84,7 @@ public:
     double getScale() const;
 
 public slots:
-    void setScale(int s);
+    void setScale();
 
 protected:
     QSlider  *forceSlider;
