@@ -1,32 +1,33 @@
 /******************************************************************************
-*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
-*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
-*                                                                             *
-* This library is free software; you can redistribute it and/or modify it     *
-* under the terms of the GNU Lesser General Public License as published by    *
-* the Free Software Foundation; either version 2.1 of the License, or (at     *
-* your option) any later version.                                             *
-*                                                                             *
-* This library is distributed in the hope that it will be useful, but WITHOUT *
-* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
-* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
-* for more details.                                                           *
-*                                                                             *
-* You should have received a copy of the GNU Lesser General Public License    *
-* along with this library; if not, write to the Free Software Foundation,     *
-* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
-*******************************************************************************
-*                               SOFA :: Modules                               *
-*                                                                             *
-* Authors: The SOFA Team and external contributors (see Authors.txt)          *
-*                                                                             *
-* Contact information: contact@sofa-framework.org                             *
-******************************************************************************/
+ *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+ *                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+ *                                                                             *
+ * This library is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU Lesser General Public License as published by    *
+ * the Free Software Foundation; either version 2.1 of the License, or (at     *
+ * your option) any later version.                                             *
+ *                                                                             *
+ * This library is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+ * for more details.                                                           *
+ *                                                                             *
+ * You should have received a copy of the GNU Lesser General Public License    *
+ * along with this library; if not, write to the Free Software Foundation,     *
+ * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+ *******************************************************************************
+ *                               SOFA :: Modules                               *
+ *                                                                             *
+ * Authors: The SOFA Team and external contributors (see Authors.txt)          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/component/loader/MeshVTKLoader.h>
 
 #include <iostream>
-#include <fstream>
+//#include <fstream> // we can't use iostream because the windows implementation gets confused by the mix of text and binary
+#include <stdio.h>
 #include <sstream>
 
 
@@ -55,7 +56,28 @@ MeshVTKLoader::MeshVTKLoader() : MeshLoader()
 {
 }
 
-
+static bool fgetline(FILE* f, std::string& line)
+{
+    line.clear();
+    char buf[256];
+    while (fgets(buf, sizeof(buf), f))
+    {
+        int n = strlen(buf);
+        if (n < (int)sizeof(buf)-1 || buf[n-1]=='\n')
+        {
+            // end of line
+            while (n > 0 && (buf[n-1]=='\n' || buf[n-1]=='\r'))
+                --n;
+            buf[n]='\0';
+            line+=buf;
+            return true;
+        }
+        else // partial line
+            line+=buf;
+    }
+    if (!line.empty() && feof(f)) return true; // we succeeding in reading the last line of the file
+    return false; // fgets returned an error
+}
 
 // --- VTK classes ---
 
@@ -67,8 +89,8 @@ public:
     BaseVTKDataIO() : dataSize(0) {}
     virtual ~BaseVTKDataIO() {}
     virtual void resize(int n) = 0;
-    virtual bool read(std::ifstream& f, int n, int binary) = 0;
-    virtual bool write(std::ofstream& f, int n, int groups, int binary) = 0;
+    virtual bool read(FILE* f, int n, int binary) = 0;
+    virtual bool write(FILE* f, int n, int groups, int binary) = 0;
     virtual void addPoints(helper::vector<sofa::defaulttype::Vec<3,SReal> >& my_positions) = 0;
     virtual void swap() = 0;
 };
@@ -106,13 +128,12 @@ public:
         for (int i=0; i<dataSize; ++i)
             data[i] = swapT(data[i]);
     }
-    virtual bool read(std::ifstream& in, int n, int binary)
+    virtual bool read(FILE* in, int n, int binary)
     {
         resize(n);
         if (binary)
         {
-            in.read((char*)data, n * sizeof(T));
-            if (in.eof() || in.bad())
+            if ((int)fread(data, sizeof(T), n, in) < n)
             {
                 resize(0);
                 return false;
@@ -126,9 +147,9 @@ public:
         {
             int i = 0;
             std::string line;
-            while(i < dataSize && !in.eof() && !in.bad())
+            while(i < dataSize)
             {
-                std::getline(in, line);
+                if (!fgetline(in, line)) break;
                 std::istringstream ln(line);
                 while (i < n && ln >> data[i])
                     ++i;
@@ -141,26 +162,31 @@ public:
         }
         return true;
     }
-    virtual bool write(std::ofstream& out, int n, int groups, int binary)
+    virtual bool write(FILE* out, int n, int groups, int binary)
     {
         if (n > dataSize && !data) return false;
         if (binary)
         {
-            out.write((char*)data, n * sizeof(T));
+            fwrite(data, sizeof(T), n, out);
         }
         else
         {
+            std::ostringstream os;
             if (groups <= 0 || groups > n) groups = n;
             for (int i = 0; i < n; ++i)
             {
                 if ((i % groups) > 0)
-                    out << ' ';
-                out << data[i];
-                if ((i % groups) == groups-1)
-                    out << '\n';
+                    os << ' ';
+                os << data[i];
+                if (((i % groups) == groups-1) || i == n-1)
+                {
+                    os << '\n';
+                    std::string s = os.str();
+                    fwrite(s.c_str(), 1, s.length(), out);
+                }
             }
         }
-        if (out.bad())
+        if (ferror(out))
             return false;
         return true;
     }
@@ -188,30 +214,18 @@ BaseVTKDataIO* newVTKDataIO(const std::string& typestr)
     else return NULL;
 }
 
-
-
-
-
 // --- Loading VTK functions ---
 
 
 bool MeshVTKLoader::load()
 {
 
-    std::cout << "Loading VTK file: " << m_filename << std::endl;
+    sout << "Loading VTK file: " << m_filename << sendl;
 
-    FILE* file;
     bool fileRead = false;
 
     // -- Loading file
     const char* filename = m_filename.getFullPath().c_str();
-
-    if ((file = fopen(filename, "r")) == NULL)
-    {
-        std::cerr << "Error: MeshVTKLoader: Cannot read file '" << m_filename << "'." << std::endl;
-        return false;
-    }
-    fclose (file);
 
     // -- Reading file
     fileRead = this->readVTK (filename);
@@ -228,31 +242,45 @@ bool MeshVTKLoader::readVTK (const char* filename)
 
     // Format doc: http://www.vtk.org/VTK/img/file-formats.pdf
     // http://www.cacr.caltech.edu/~slombey/asci/vtk/vtk_formats.simple.html
-    std::ifstream inVTKFile(filename, std::ifstream::in & std::ifstream::binary);
+    //std::ifstream inVTKFile(filename, std::ifstream::in & std::ifstream::binary);
     //std::ifstream inVTKFile(filename, std::ifstream::in, std::ifstream::binary);
 
-    if( !inVTKFile.is_open() )
+    FILE* inVTKFile = fopen(filename, "rb");
+
+    if (inVTKFile == NULL)
     {
+        serr << "Error: Cannot read file '" << filename << "'." << sendl;
         return false;
     }
+
     std::string line;
 
     // Part 1
-    std::getline(inVTKFile, line);
-    if (std::string(line,0,23) != "# vtk DataFile Version ") return false;
+    fgetline(inVTKFile, line);
+    if (std::string(line,0,23) != "# vtk DataFile Version ")
+    {
+        serr << "Error: Unrecognized header in file '" << filename << "'." << sendl;
+        fclose(inVTKFile);
+        return false;
+    }
     std::string version(line,23);
 
     // Part 2
     std::string header;
-    std::getline(inVTKFile, header);
+    fgetline(inVTKFile, header);
 
     // Part 3
-    std::getline(inVTKFile, line);
+    fgetline(inVTKFile, line);
 
     int binary;
     if (line == "BINARY") binary = 1;
     else if (line == "ASCII") binary = 0;
-    else return false;
+    else
+    {
+        serr << "Error: Unrecognized format in file '" << filename << "'." << sendl;
+        fclose(inVTKFile);
+        return false;
+    }
 
     if (binary && strlen(filename)>9 && !strcmp(filename+strlen(filename)-9,".vtk_swap"))
         binary = 2; // bytes will be swapped
@@ -260,22 +288,24 @@ bool MeshVTKLoader::readVTK (const char* filename)
 
     // Part 4
     do
-        std::getline(inVTKFile, line);
+        fgetline(inVTKFile, line);
     while (line == "");
     if (line != "DATASET POLYDATA" && line != "DATASET UNSTRUCTURED_GRID")
     {
+        serr << "Error: Unsupported data type in file '" << filename << "'." << sendl;
+        fclose(inVTKFile);
         return false;
     }
 
-    std::cout << (binary == 0 ? "Text" : (binary == 1) ? "Binary" : "Swapped Binary") << " VTK File (version " << version << "): " << header << std::endl;
+    sout << (binary == 0 ? "Text" : (binary == 1) ? "Binary" : "Swapped Binary") << " VTK File (version " << version << "): " << header << sendl;
     BaseVTKDataIO* inputPoints = NULL;
     VTKDataIO<int>* inputPolygons = NULL;
     VTKDataIO<int>* inputCells = NULL;
     VTKDataIO<int>* inputCellTypes = NULL;
     int nbp = 0, nbf = 0;
-    while(!inVTKFile.eof())
+    while(!feof(inVTKFile))
     {
-        std::getline(inVTKFile, line);
+        fgetline(inVTKFile, line);
         std::istringstream ln(line);
         std::string kw;
         ln >> kw;
@@ -284,7 +314,7 @@ bool MeshVTKLoader::readVTK (const char* filename)
             int n;
             std::string typestr;
             ln >> n >> typestr;
-            std::cout << "Found " << n << " " << typestr << " points" << std::endl;
+            sout << "Found " << n << " " << typestr << " points" << sendl;
             inputPoints = newVTKDataIO(typestr);
             if (inputPoints == NULL) return false;
             if (!inputPoints->read(inVTKFile, 3*n, binary)) {return false;}
@@ -294,7 +324,7 @@ bool MeshVTKLoader::readVTK (const char* filename)
         {
             int n, ni;
             ln >> n >> ni;
-            std::cout << "Found " << n << " polygons ( " << (ni - 3*n) << " triangles )" << std::endl;
+            sout << "Found " << n << " polygons ( " << (ni - 3*n) << " triangles )" << sendl;
             inputPolygons = new VTKDataIO<int>;
             if (!inputPolygons->read(inVTKFile, ni, binary)) return false;
             nbf = ni - 3*n;
@@ -303,7 +333,7 @@ bool MeshVTKLoader::readVTK (const char* filename)
         {
             int n, ni;
             ln >> n >> ni;
-            std::cout << "Found " << n << " cells" << std::endl;
+            sout << "Found " << n << " cells" << sendl;
             inputCells = new VTKDataIO<int>;
             if (!inputCells->read(inVTKFile, ni, binary)) return false;
             nbf = n;
@@ -316,7 +346,7 @@ bool MeshVTKLoader::readVTK (const char* filename)
             if (!inputCellTypes->read(inVTKFile, n, binary)) return false;
         }
         else if (!kw.empty())
-            std::cerr << "WARNING: Unknown keyword " << kw << std::endl;
+            serr << "WARNING: Unknown keyword " << kw << sendl;
         if (inputPoints && inputPolygons) break; // already found the mesh description, skip the rest
         if (inputPoints && inputCells && inputCellTypes) break; // already found the mesh description, skip the rest
     }
@@ -337,7 +367,7 @@ bool MeshVTKLoader::readVTK (const char* filename)
         }
         if (swapped)
         {
-            std::cout << "Binary data is byte-swapped." << std::endl;
+            sout << "Binary data is byte-swapped." << sendl;
             if (inputPoints) inputPoints->swap();
             if (inputPolygons) inputPolygons->swap();
             if (inputCells) inputCells->swap();
@@ -368,7 +398,7 @@ bool MeshVTKLoader::readVTK (const char* filename)
                 for (int j=0; j<nv; ++j)
                     if ((unsigned)inFP[i+j] >= (unsigned)(inputPoints->dataSize/3))
                     {
-                        std::cerr << "ERROR: invalid point " << inFP[i+j] << " in polygon " << poly << std::endl;
+                        serr << "ERROR: invalid point " << inFP[i+j] << " in polygon " << poly << sendl;
                         valid = false;
                     }
             }
@@ -376,7 +406,7 @@ bool MeshVTKLoader::readVTK (const char* filename)
             {
                 if (nv == 4)
                 {
-                    addQuad(&my_quads, helper::fixed_array <unsigned int,4> (inFP[i+0],inFP[i+1],inFP[i+2],inFP[i+3]));
+                    addQuad(&my_quads, inFP[i+0],inFP[i+1],inFP[i+2],inFP[i+3]);
                 }
                 else if (nv >= 3)
                 {
@@ -386,7 +416,7 @@ bool MeshVTKLoader::readVTK (const char* filename)
                     for (int j=2; j<nv; j++)
                     {
                         f[2] = inFP[i+j];
-                        addTriangle(&my_triangles, helper::fixed_array <unsigned int,3> (f[0], f[1], f[2]));
+                        addTriangle(&my_triangles, f[0], f[1], f[2]);
                         f[1] = f[2];
                     }
                 }
@@ -410,45 +440,45 @@ bool MeshVTKLoader::readVTK (const char* filename)
             case 2: // POLY_VERTEX
                 break;
             case 3: // LINE
-                addEdge(&my_edges, helper::fixed_array <unsigned int,2> (inFP[i+0], inFP[i+1]));
+                addEdge(&my_edges, inFP[i+0], inFP[i+1]);
                 break;
             case 4: // POLY_LINE
                 for (int v = 0; v < nv-1; ++v)
-                    addEdge(&my_edges, helper::fixed_array <unsigned int,2> (inFP[i+v+0], inFP[i+v+1]));
+                    addEdge(&my_edges, inFP[i+v+0], inFP[i+v+1]);
                 break;
             case 5: // TRIANGLE
-                addTriangle(&my_triangles,(helper::fixed_array <unsigned int,3> (inFP[i+0], inFP[i+1], inFP[i+2])));
+                addTriangle(&my_triangles,inFP[i+0], inFP[i+1], inFP[i+2]);
                 break;
             case 6: // TRIANGLE_STRIP
                 for (int j=0; j<nv-2; j++)
                     if (j&1)
-                        addTriangle(&my_triangles, (helper::fixed_array <unsigned int,3> (inFP[i+j+0],inFP[i+j+1],inFP[i+j+2])));
+                        addTriangle(&my_triangles, inFP[i+j+0],inFP[i+j+1],inFP[i+j+2]);
                     else
-                        addTriangle(&my_triangles, (helper::fixed_array <unsigned int,3> (inFP[i+j+0],inFP[i+j+2],inFP[i+j+1])));
+                        addTriangle(&my_triangles, inFP[i+j+0],inFP[i+j+2],inFP[i+j+1]);
                 break;
             case 7: // POLYGON
                 for (int j=2; j<nv; j++)
-                    addTriangle(&my_triangles, (helper::fixed_array <unsigned int,3> (inFP[i+0],inFP[i+j-1],inFP[i+j])));
+                    addTriangle(&my_triangles, inFP[i+0],inFP[i+j-1],inFP[i+j]);
                 break;
             case 8: // PIXEL
-                addQuad(&my_quads, helper::fixed_array <unsigned int,4> (inFP[i+0], inFP[i+1], inFP[i+3], inFP[i+2]));
+                addQuad(&my_quads, inFP[i+0], inFP[i+1], inFP[i+3], inFP[i+2]);
                 break;
             case 9: // QUAD
-                addQuad(&my_quads, helper::fixed_array <unsigned int,4> (inFP[i+0], inFP[i+1], inFP[i+2], inFP[i+3]));
+                addQuad(&my_quads, inFP[i+0], inFP[i+1], inFP[i+2], inFP[i+3]);
                 break;
             case 10: // TETRA
-                addTetrahedron(&my_tetrahedra, helper::fixed_array <unsigned int,4> (inFP[i+0], inFP[i+1], inFP[i+2], inFP[i+3]));
+                addTetrahedron(&my_tetrahedra, inFP[i+0], inFP[i+1], inFP[i+2], inFP[i+3]);
                 break;
             case 11: // VOXEL
-                addHexahedron(&my_hexahedra, helper::fixed_array <unsigned int,8> (inFP[i+0], inFP[i+1], inFP[i+3], inFP[i+2],
-                        inFP[i+4], inFP[i+5], inFP[i+7], inFP[i+6]));
+                addHexahedron(&my_hexahedra, inFP[i+0], inFP[i+1], inFP[i+3], inFP[i+2],
+                        inFP[i+4], inFP[i+5], inFP[i+7], inFP[i+6]);
                 break;
             case 12: // HEXAHEDRON
-                addHexahedron(&my_hexahedra, helper::fixed_array <unsigned int,8> (inFP[i+0], inFP[i+1], inFP[i+2], inFP[i+3],
-                        inFP[i+4], inFP[i+5], inFP[i+6], inFP[i+7]));
+                addHexahedron(&my_hexahedra, inFP[i+0], inFP[i+1], inFP[i+2], inFP[i+3],
+                        inFP[i+4], inFP[i+5], inFP[i+6], inFP[i+7]);
                 break;
             default:
-                std::cerr << "ERROR: unsupported cell type " << t << std::endl;
+                serr << "ERROR: unsupported cell type " << t << sendl;
             }
             i += nv;
         }
