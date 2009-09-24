@@ -95,7 +95,7 @@ void MeshTrian::readTrian (FILE* file)
         facets[f][1].resize(3);
         facets[f][2].resize(3);
         int dummy = 0;
-        if ( fscanf(file, "%d %d %d %d %d %d\n", &facets[f][0][0], &facets[f][0][1], &facets[f][0][2], &dummy, &dummy, &dummy) )
+        if ( fscanf(file, "%d %d %d %d %d %d\n", &facets[f][0][0], &facets[f][0][1], &facets[f][0][2], &dummy, &dummy, &dummy) == EOF )
             std::cerr << "Error: MeshTrian: fscanf function has encountered an error." << std::endl;
     }
 
