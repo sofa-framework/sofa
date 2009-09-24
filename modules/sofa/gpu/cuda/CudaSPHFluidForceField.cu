@@ -705,11 +705,21 @@ void SPHFluidForceFieldCuda3f_addDForce(unsigned int size, const void* cellRange
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
+void SPHFluidForceFieldCuda3d_computeDensity(unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPUSPHFluid3d* params, void* pos4, const void* x)
+{
+    dim3 threads(BSIZE,1);
+    dim3 grid(60,1);
+    SPHFluidForceFieldCuda3t_computeDensity_kernel<double><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int2*) cellRange, (const int*) cellGhost, (const int*) particleIndex, *params, (double*)pos4, (const double*)x);
+}
+
 void SPHFluidForceFieldCuda3d_addForce(unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPUSPHFluid3d* params, void* f, const void* x, const void* v)
 {
     dim3 threads(BSIZE,1);
     dim3 grid(60/BSIZE,1);
-    SPHFluidForceFieldCuda3t_addForce_kernel<double><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int2*) cellRange, (const int*) cellGhost, (const int*) particleIndex, *params, (double*)f, (const double*)x, (const double*)v);
+    if (params->surfaceTension > 0)
+        SPHFluidForceFieldCuda3t_addForce_kernel<double,true><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int2*) cellRange, (const int*) cellGhost, (const int*) particleIndex, *params, (double*)f, (const double*)x, (const double*)v);
+    else
+        SPHFluidForceFieldCuda3t_addForce_kernel<double,false><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int2*) cellRange, (const int*) cellGhost, (const int*) particleIndex, *params, (double*)f, (const double*)x, (const double*)v);
 }
 
 void SPHFluidForceFieldCuda3d_addDForce(unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPUSPHFluid3d* params, void* df, const void* x, const void* v, const void* dx)
