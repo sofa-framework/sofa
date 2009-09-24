@@ -51,7 +51,6 @@ public:
 
     virtual void init();
 
-
 protected:
 
     // Point coordinates in 3D in double.
@@ -70,6 +69,26 @@ protected:
 
     Data< bool > triangulate;
     Data< bool > fillMState; ///< Must this mesh loader fill the mstate instead of manually or by using the topology
+    Data< bool > flipNormals;
+
+    void addEdge(helper::vector<helper::fixed_array <unsigned int,2> >* pEdges, const helper::fixed_array <unsigned int,2> &p);
+    void addEdge(helper::vector<helper::fixed_array <unsigned int,2> >* pEdges, unsigned int p0, unsigned int p1);
+
+    void addTriangle(helper::vector<helper::fixed_array <unsigned int,3> >* pTriangles, const helper::fixed_array <unsigned int,3> &p);
+    void addTriangle(helper::vector<helper::fixed_array <unsigned int,3> >* pTriangles, unsigned int p0, unsigned int p1, unsigned int p2);
+
+    void addQuad(helper::vector<helper::fixed_array <unsigned int,4> >* pQuads, const helper::fixed_array <unsigned int,4> &p);
+    void addQuad(helper::vector<helper::fixed_array <unsigned int,4> >* pQuads, unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3);
+
+    void addPolygon(helper::vector< helper::vector <unsigned int> >* pPolygons, const helper::vector<unsigned int> &p);
+
+    void addTetrahedron(helper::vector< helper::fixed_array<unsigned int,4> >* pTetrahedra, const helper::fixed_array<unsigned int,4> &p);
+    void addTetrahedron(helper::vector< helper::fixed_array<unsigned int,4> >* pTetrahedra, unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3);
+
+    void addHexahedron(helper::vector< helper::fixed_array<unsigned int,8> >* pHexahedra, const helper::fixed_array<unsigned int,8> &p);
+    void addHexahedron(helper::vector< helper::fixed_array<unsigned int,8> >* pHexahedra,
+            unsigned int p0, unsigned int p1, unsigned int p2, unsigned int p3,
+            unsigned int p4, unsigned int p5, unsigned int p6, unsigned int p7);
 
     //      Data< helper::vector< helper::vector < helper::vector <int> > > > facets;
 
