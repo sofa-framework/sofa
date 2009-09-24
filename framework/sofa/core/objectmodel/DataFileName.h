@@ -92,9 +92,9 @@ public:
         return ret;
     }
 
-    virtual std::string getRelativePath() { return getValue(); }
-    virtual std::string getFullPath() { return fullpath; }
-    virtual std::string getAbsolutePath() { return fullpath; }
+    virtual const std::string& getRelativePath() { return getValue(); }
+    virtual const std::string& getFullPath() { return fullpath; }
+    virtual const std::string& getAbsolutePath() { return fullpath; }
 
 protected:
     void updatePath();
@@ -148,9 +148,9 @@ public:
         return ret;
     }
 
-    virtual std::string getRelativePath(unsigned int i) { return getValue()[i]; }
-    virtual std::string getFullPath(unsigned int i) { return fullpath[i]; }
-    virtual std::string getAbsolutePath(unsigned int i) { return fullpath[i]; }
+    virtual const std::string& getRelativePath(unsigned int i) { return getValue()[i]; }
+    virtual const std::string& getFullPath(unsigned int i) { return fullpath[i]; }
+    virtual const std::string& getAbsolutePath(unsigned int i) { return fullpath[i]; }
 
 protected:
     void updatePath();

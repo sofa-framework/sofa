@@ -204,9 +204,7 @@ bool MeshVTKLoader::load()
     bool fileRead = false;
 
     // -- Loading file
-    char* filename = new char [m_filename.getFullPath().size()+1];
-    strcpy (filename, m_filename.getFullPath().c_str());
-    static_cast< char const * >(filename);
+    const char* filename = m_filename.getFullPath().c_str();
 
     if ((file = fopen(filename, "r")) == NULL)
     {
@@ -218,7 +216,6 @@ bool MeshVTKLoader::load()
     // -- Reading file
     fileRead = this->readVTK (filename);
 
-    delete[] filename;
     return fileRead;
 }
 
@@ -232,6 +229,8 @@ bool MeshVTKLoader::readVTK (const char* filename)
     // Format doc: http://www.vtk.org/VTK/img/file-formats.pdf
     // http://www.cacr.caltech.edu/~slombey/asci/vtk/vtk_formats.simple.html
     std::ifstream inVTKFile(filename, std::ifstream::in & std::ifstream::binary);
+    //std::ifstream inVTKFile(filename, std::ifstream::in, std::ifstream::binary);
+
     if( !inVTKFile.is_open() )
     {
         return false;
@@ -288,7 +287,7 @@ bool MeshVTKLoader::readVTK (const char* filename)
             std::cout << "Found " << n << " " << typestr << " points" << std::endl;
             inputPoints = newVTKDataIO(typestr);
             if (inputPoints == NULL) return false;
-            if (!inputPoints->read(inVTKFile, 3*n, binary)) return false;
+            if (!inputPoints->read(inVTKFile, 3*n, binary)) {return false;}
             nbp = n;
         }
         else if (kw == "POLYGONS")
