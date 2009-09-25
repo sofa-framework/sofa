@@ -46,12 +46,17 @@ void UnilateralConstraintResolutionWithFriction::init(int line, double** w, doub
     _W[4]=w[line+1][line+2];
     _W[5]=w[line+2][line+2];
 
+    return;
+
+
+    ////////////////// christian : the following does not work ! /////////
     if(_vec && _vec->size()>=3)
     {
         force[line] = _vec->front(); _vec->pop_front();
         force[line+1] = _vec->front(); _vec->pop_front();
         force[line+2] = _vec->front(); _vec->pop_front();
     }
+
 }
 
 void UnilateralConstraintResolutionWithFriction::resolution(int line, double** /*w*/, double* d, double* force)
@@ -69,9 +74,9 @@ void UnilateralConstraintResolutionWithFriction::resolution(int line, double** /
     }
 
     d[line+1] += _W[1] * (force[line]-f[0]);
-    force[line+1] -= d[line+1] / _W[3];
-    d[line+2] += _W[2] * (force[line]-f[0]) + _W[4] * (force[line+1]-f[1]);
-    force[line+2] -= d[line+2] / _W[5];
+    d[line+2] += _W[2] * (force[line]-f[0]);
+    force[line+1] -= 2*d[line+1] / (_W[3] +_W[5]) ;
+    force[line+2] -= 2*d[line+2] / (_W[3] +_W[5]) ;
 
     normFt = sqrt(force[line+1]*force[line+1] + force[line+2]*force[line+2]);
 
