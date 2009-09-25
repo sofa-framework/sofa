@@ -151,6 +151,34 @@ public:
 #endif
 };
 
+
+
+class SOFA_COMPONENT_MASTERSOLVER_API ConstraintProblem
+{
+private:
+    LPtrFullMatrix<double> _W;
+    FullVector<double> _dFree, _force, _d;              // cf. These Duriez
+    std::vector<core::componentmodel::behavior::ConstraintResolution*> _constraintsResolutions;
+    double _tol;
+    int _dim;
+    CTime *_timer;
+
+public:
+    ConstraintProblem();
+    ~ConstraintProblem();
+    void clear(int dim, const double &tol);
+
+    inline int getSize(void) {return _dim;};
+    inline LPtrFullMatrix<double>* getW(void) {return &_W;};
+    inline FullVector<double>* getDfree(void) {return &_dFree;};
+    inline FullVector<double>* getD(void) {return &_d;};
+    inline FullVector<double>* getF(void) {return &_force;};
+    inline std::vector<core::componentmodel::behavior::ConstraintResolution*>& getConstraintResolutions(void) {return _constraintsResolutions;};
+    inline double *getTolerance(void) {return &_tol;};
+
+    void gaussSeidelConstraintTimed(double &timeout, int numItMax);
+
+};
 class SOFA_COMPONENT_MASTERSOLVER_API MasterConstraintSolver : public sofa::simulation::MasterSolverImpl//, public sofa::simulation::tree::OdeSolverImpl
 {
 public:
@@ -169,17 +197,20 @@ public:
     Data<double> _tol;
     Data<int> _maxIt;
     Data<bool> doCollisionsFirst;
+    Data<bool> doubleBuffer;
+
+    ConstraintProblem *getConstraintProblem(void) {return (bufCP1 == true) ? &CP1 : &CP2;};
 
 private:
     void gaussSeidelConstraint(int dim, double* dfree, double** w, double* force, double* d, std::vector<core::componentmodel::behavior::ConstraintResolution*>& res);
 
     std::vector<core::componentmodel::behavior::BaseConstraintCorrection*> constraintCorrections;
 
-    LPtrFullMatrix<double> _W;
-    FullVector<double> _dFree, _force, _d;              // cf. These Duriez
-    FullVector<bool> _constraintsType;
 
-    std::vector<core::componentmodel::behavior::ConstraintResolution*> _constraintsResolutions;
+    bool bufCP1;
+    ConstraintProblem CP1, CP2;
+
+
 
 
 };
