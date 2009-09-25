@@ -72,6 +72,7 @@ public:
     DataPtr<bool> f_rotations;
     bool   _restRotations;
     DataPtr<bool> f_restRotations;
+    Data<bool> recompute;
 
     PrecomputedConstraintCorrection(behavior::MechanicalState<DataTypes> *mm = NULL);
 
@@ -88,9 +89,9 @@ public:
 
     virtual void rotateConstraints();
     virtual void rotateResponse();
-
-
     virtual void resetContactForce();
+
+    virtual void draw();
 
 
     // new API for non building the constraint system during solving process //
