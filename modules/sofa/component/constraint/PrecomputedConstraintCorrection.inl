@@ -40,6 +40,10 @@
 
 #include <sofa/component/container/RotationFinder.h>
 
+#include <sofa/helper/gl/DrawManager.h>
+#include <sofa/helper/gl/Axis.h>
+#include <sofa/helper/Quater.h>
+
 //#include <glib.h>
 #include <sstream>
 #include <list>
@@ -65,6 +69,7 @@ PrecomputedConstraintCorrection<DataTypes>::PrecomputedConstraintCorrection(beha
     , f_rotations(initDataPtr(&f_rotations,&_rotations,"rotations",""))
     , _restRotations(false)
     , f_restRotations(initDataPtr(&f_restRotations,&_restRotations,"restDeformations",""))
+    , recompute(initData(&recompute,false,"recompute","if true, always recompute the compliance"))
     , mstate(mm)
     , invM(NULL)
     , appCompliance(NULL)
@@ -103,6 +108,7 @@ void PrecomputedConstraintCorrection<DataTypes>::releaseInverse(std::string name
         registry.erase(name);
     }
 }
+
 
 template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
@@ -145,7 +151,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
         sout << "try to open : " << invName << endl;
 
-        if(compFileIn.good())
+        if(compFileIn.good() && recompute.getValue()==false)
         {
             sout << "file open : " << invName << " compliance being loaded" << endl;
             //complianceLoaded = true;
@@ -154,7 +160,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         }
         else
         {
-            sout << "can not open : " << invName << " compliance being built" << endl;
+            sout << " compliance being built" << sendl;
 
             // for the intial computation, the gravity has to be put at 0
             const Vec3d gravity = this->getContext()->getGravityInWorld();
@@ -178,7 +184,9 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
             else if(EulerSolver && linearSolver)
                 sout << "use EulerImplicitSolver &  LinearSolver" << sendl;
             else if(EulerSolver)
+            {
                 sout << "use EulerImplicitSolver" << sendl;
+            }
             else
             {
                 serr<<"PrecomputedContactCorrection must be associated with CGImplicitSolver or EulerImplicitSolver+LinearSolver for the precomputation\nNo Precomputation" << sendl;
@@ -204,7 +212,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
                 buf_maxIter   = (int) odeSolver->f_maxIter.getValue();
                 buf_threshold = (double) odeSolver->f_smallDenominatorThreshold.getValue();
                 odeSolver->f_tolerance.setValue(1e-20);
-                odeSolver->f_maxIter.setValue(500);
+                odeSolver->f_maxIter.setValue(5000);
                 odeSolver->f_smallDenominatorThreshold.setValue(1e-35);
             }
             else if(CGlinearSolver)
@@ -213,7 +221,7 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
                 buf_maxIter   = (int) CGlinearSolver->f_maxIter.getValue();
                 buf_threshold = (double) CGlinearSolver->f_smallDenominatorThreshold.getValue();
                 CGlinearSolver->f_tolerance.setValue(1e-20);
-                CGlinearSolver->f_maxIter.setValue(500);
+                CGlinearSolver->f_maxIter.setValue(5000);
                 CGlinearSolver->f_smallDenominatorThreshold.setValue(1e-35);
             }
             ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -223,7 +231,13 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
             VecCoord& pos0=*mstate->getX0();
 
 
-
+            /// christian : it seems necessary to called the integration one time for initialization
+            /// (avoid to have a line of 0 at the top of the matrix)
+            if(EulerSolver)
+            {
+                //serr<<"EulerSolver"<<sendl;
+                EulerSolver->solve(dt, core::componentmodel::behavior::BaseMechanicalState::VecId::position(), core::componentmodel::behavior::BaseMechanicalState::VecId::velocity());
+            }
             for(unsigned int f = 0 ; f < nbNodes ; f++)
             {
                 std::cout.precision(2);
@@ -246,9 +260,17 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
                     ////////////////////////////////////////////
                     //serr<<"pos0 set"<<sendl;
 
+                    if(f*dof_on_node+i <2 )
+                    {
+                        EulerSolver->f_verbose.setValue(true);
+                        EulerSolver->f_printLog.setValue(true);
+                        serr<<"getF : "<<force<<sendl;
+                    }
 
+                    double fact = 1.0; // christian : it is not a compliance... but an admittance that is computed !
+                    if (EulerSolver)
+                        fact = EulerSolver->getPositionIntegrationFactor(); // here, we compute a compliance
 
-                    double fact = 1.0;
                     //odeSolver->computeContactForce(force);
 
                     if(odeSolver)
@@ -268,7 +290,15 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
                     velocity = *mstate->getV();
                     fact /= unitary_force[i];
-                    //serr<<"getV : "<<velocity<<sendl;
+
+                    if(f*dof_on_node+i < 2)
+                    {
+
+                        //EulerSolver->solve(dt, core::componentmodel::behavior::BaseMechanicalState::VecId::position(), core::componentmodel::behavior::BaseMechanicalState::VecId::velocity());
+                        EulerSolver->f_verbose.setValue(false);
+                        EulerSolver->f_printLog.setValue(false);
+                        serr<<"getV : "<<velocity<<sendl;
+                    }
                     for (unsigned int v=0; v<nbNodes; v++)
                     {
 
@@ -314,15 +344,15 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
     //_sparseCompliance.resize(v0.size()*MAX_NUM_CONSTRAINT_PER_NODE);
 
 
-    ////  debug print 100 first row and column of the matrix
+    ////  debug print 400 first row and column of the matrix
     if (this->f_printLog.getValue())
     {
-        sout << "Matrix compliance" ;
+        sout << "Matrix compliance : nbCols ="<<nbCols<<"  nbRows ="<<nbRows ;
 
-        for (unsigned int i=0; i<10 && i<nbCols; i++)
+        for (unsigned int i=0; i<20 && i<nbCols; i++)
         {
             sout << sendl;
-            for (unsigned int j=0; j<10 && j<nbCols; j++)
+            for (unsigned int j=0; j<20 && j<nbCols; j++)
             {
                 sout <<" \t "<< appCompliance[j*nbCols + i];
             }
@@ -735,7 +765,77 @@ void PrecomputedConstraintCorrection<DataTypes>::resetContactForce()
         force[i] = Deriv();
 }
 
+////  DRAW : generic function ////
+template<class DataTypes>
+void PrecomputedConstraintCorrection<DataTypes>::draw()
+{
+    if (!getContext()->getShowBehaviorModels()) return;
+}
+
 #ifndef SOFA_FLOAT
+template<>
+void PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::draw()
+{
+
+    if (!getContext()->getShowBehaviorModels() || !_rotations) return;
+
+    // we draw the rotations associated to each node //
+
+    simulation::Node *node = dynamic_cast<simulation::Node *>(getContext());
+
+    sofa::component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3dTypes>* forceField = NULL;
+    sofa::component::container::RotationFinder<defaulttype::Vec3dTypes>* rotationFinder = NULL;
+
+    if (node != NULL)
+    {
+        //		core::componentmodel::behavior::BaseForceField* _forceField = node->forceField[1];
+        forceField = node->get<component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3dTypes> > ();
+        if (forceField == NULL)
+        {
+            rotationFinder = node->get<component::container::RotationFinder<defaulttype::Vec3dTypes> > ();
+            if (rotationFinder == NULL)
+            {
+                sout << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";
+                return;
+            }
+        }
+    }
+
+    VecCoord& x = *mstate->getX();
+    for (unsigned int i=0; i< x.size(); i++)
+    {
+        Transformation Ri;
+        if (forceField != NULL)
+        {
+            forceField->getRotation(Ri, i);
+        }
+        else // rotationFinder has been defined
+        {
+            Ri = rotationFinder->getRotations()[i];
+        }
+
+
+        sofa::defaulttype::Matrix3 RotMat;
+
+        for (unsigned int a=0; a<3; a++)
+        {
+            for (unsigned int b=0; b<3; b++)
+            {
+                RotMat[a][b] = Ri(a,b);
+            }
+        }
+
+        sofa::defaulttype::Quat q;
+        q.fromMatrix(RotMat);
+
+
+        helper::gl::Axis::draw(x[i], q  , 10.0);
+
+    }
+
+
+
+}
 
 template<>
 void PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::rotateConstraints()
