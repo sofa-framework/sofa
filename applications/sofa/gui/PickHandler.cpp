@@ -45,9 +45,12 @@ namespace sofa
 namespace gui
 {
 
-PickHandler::PickHandler():interactorInUse(false), mouseStatus(DEACTIVATED)
+PickHandler::PickHandler():interactorInUse(false), mouseStatus(DEACTIVATED),mouseButton(NONE)
 {
-    operations[0] = operations[1] = operations[2] = NULL;
+    operations[NONE] =
+        operations[LEFT] =
+                operations[MIDDLE] =
+                        operations[RIGHT] = NULL;
 
     mouseNode = simulation::getSimulation()->newNode("Mouse");
 
@@ -96,7 +99,7 @@ void PickHandler::init()
 void PickHandler::reset()
 {
     activateRay(false);
-
+    mouseButton = NONE;
     for (unsigned int i=0; i<instanceComponents.size(); ++i) instanceComponents[i]->reset();
 }
 
@@ -186,28 +189,31 @@ void PickHandler::updateRay(const sofa::defaulttype::Vector3 &position,const sof
     }
 
 
-    switch (mouseStatus)
+    if(mouseButton != NONE)
     {
-    case PRESSED:
-    {
-        operations[mouseButton]->start();
-        mouseStatus=ACTIVATED;
-        break;
-    }
-    case RELEASED:
-    {
-        operations[mouseButton]->end();
-        mouseStatus=DEACTIVATED;
-        break;
-    }
-    case ACTIVATED:
-    {
-        operations[mouseButton]->execution();
-    }
-    case DEACTIVATED:
-    {
-        operations[mouseButton]->wait();
-    }
+        switch (mouseStatus)
+        {
+        case PRESSED:
+        {
+            operations[mouseButton]->start();
+            mouseStatus=ACTIVATED;
+            break;
+        }
+        case RELEASED:
+        {
+            operations[mouseButton]->end();
+            mouseStatus=DEACTIVATED;
+            break;
+        }
+        case ACTIVATED:
+        {
+            operations[mouseButton]->execution();
+        }
+        case DEACTIVATED:
+        {
+            operations[mouseButton]->wait();
+        }
+        }
     }
 }
 

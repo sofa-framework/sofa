@@ -41,7 +41,7 @@ class InteractionPerformer;
 }
 namespace gui
 {
-enum MOUSE_BUTTON {LEFT, MIDDLE, RIGHT};
+enum MOUSE_BUTTON {NONE ,LEFT, MIDDLE, RIGHT};
 enum MOUSE_STATUS {PRESSED,RELEASED, ACTIVATED, DEACTIVATED};
 
 class PickHandler;
@@ -49,7 +49,7 @@ class PickHandler;
 class Operation
 {
 public:
-    Operation(): pickHandle(NULL), performer(NULL) {};
+    Operation(): pickHandle(NULL), performer(NULL),button(NONE) {};
     virtual ~Operation() {};
     virtual void configure(PickHandler *picker, MOUSE_BUTTON b) {pickHandle=picker; button=b; }
     virtual void start() =0;
