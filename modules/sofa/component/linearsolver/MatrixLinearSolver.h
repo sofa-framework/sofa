@@ -470,11 +470,6 @@ public:
         this->v = VecId();
     }
 
-    // for compatibility with base vector
-    void clear()
-    {
-        reset();
-    }
 
     /// TO IMPLEMENT
     void add(int /*row*/, SReal /*v*/)
