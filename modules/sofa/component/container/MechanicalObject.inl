@@ -2278,7 +2278,7 @@ void MechanicalObject<DataTypes>::renumberConstraintId(const sofa::helper::vecto
 }
 
 template <class DataTypes>
-std::list<core::componentmodel::behavior::BaseMechanicalState::ConstraintBlock> MechanicalObject<DataTypes>::constraintBlocks( const std::list<unsigned int> &indices, double factor ) const
+std::list<core::componentmodel::behavior::BaseMechanicalState::ConstraintBlock> MechanicalObject<DataTypes>::constraintBlocks( const std::list<unsigned int> &indices) const
 {
     const unsigned int dimensionDeriv = defaulttype::DataTypeInfo< Deriv >::size();
 
@@ -2326,7 +2326,7 @@ std::list<core::componentmodel::behavior::BaseMechanicalState::ConstraintBlock> 
             for( unsigned int i = 0; i < dimensionDeriv; ++i )
             {
                 SReal value; defaulttype::DataTypeInfo< Deriv >::getValue(chunk->second, i, value); // somebody should pay for this
-                block.set(block_row, i, factor * value);
+                block.set(block_row, i, value);
             }
         }
     }

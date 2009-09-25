@@ -69,7 +69,7 @@ public:
 
 
     typedef typename core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
-    typedef core::componentmodel::behavior::BaseLMConstraint::ConstId ConstId;
+    typedef core::componentmodel::behavior::BaseLMConstraint::ConstOrder ConstOrder;
 
     using core::componentmodel::behavior::LMConstraint<DataTypes,DataTypes>::sout;
     using core::componentmodel::behavior::LMConstraint<DataTypes,DataTypes>::serr;
@@ -95,7 +95,7 @@ public:
     // -- Constraint interface
     void init();
     void reinit();
-    void writeConstraintEquations(ConstId id);
+    void writeConstraintEquations(ConstOrder order);
 
     double getError();
 

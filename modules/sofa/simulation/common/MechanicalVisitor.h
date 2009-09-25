@@ -1138,7 +1138,7 @@ public:
     virtual void clear() {datasC.clear();}
     virtual ConstraintData &getConstraint(unsigned int i) {return datasC[i];}
     virtual unsigned int numConstraintDatas() {return datasC.size();}
-    virtual void setId(core::componentmodel::behavior::BaseLMConstraint::ConstId i) {id=i;}
+    virtual void setOrder(core::componentmodel::behavior::BaseLMConstraint::ConstOrder i) {order=i;}
 
     virtual bool isThreadSafe() const
     {
@@ -1150,10 +1150,10 @@ public:
     }
 #endif
 
-    core::componentmodel::behavior::BaseLMConstraint::ConstId getId() const { return id; }
+    core::componentmodel::behavior::BaseLMConstraint::ConstOrder getOrder() const { return order; }
 
 protected:
-    core::componentmodel::behavior::BaseLMConstraint::ConstId id;
+    core::componentmodel::behavior::BaseLMConstraint::ConstOrder order;
     std::vector< ConstraintData > datasC;
 
 };

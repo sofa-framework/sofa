@@ -293,7 +293,7 @@ public:
 
 
     /// Express the matrix L in term of block of matrices, using the indices of the lines in the VecConst container
-    virtual std::list<ConstraintBlock> constraintBlocks( const std::list<unsigned int> &indices, double factor ) const;
+    virtual std::list<ConstraintBlock> constraintBlocks( const std::list<unsigned int> &indices) const;
 
     void setFilename(std::string s) {filename.setValue(s);};
     void setTranslation(double dx,double dy,double dz) {translation.setValue(Vector3(dx,dy,dz));};
