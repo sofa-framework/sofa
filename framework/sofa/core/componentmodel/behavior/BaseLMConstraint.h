@@ -52,19 +52,19 @@ class SOFA_CORE_API BaseLMConstraint: public virtual core::objectmodel::BaseObje
 {
 public:
     /// Description of the nature of the constraint
-    enum ConstId {POS,VEL,ACC};
+    enum ConstOrder {POS,VEL,ACC};
     enum ConstNature {UNILATERAL,BILATERAL};
 
     /**
      * \brief Intern storage of the constraints.
      *         a constraintGroup is a list of constraint that will be solved together.
      *
-     *  They are defined by a ConstId(position, velocity or acceleration), indices corresponding of the entries in the VecConst vector
+     *  They are defined by a ConstOrder(position, velocity or acceleration), indices corresponding of the entries in the VecConst vector
      **/
     class constraintGroup
     {
     public:
-        constraintGroup( ConstId idConstraint):Id(idConstraint) {}
+        constraintGroup( ConstOrder idConstraint):Order(idConstraint) {}
         /**
          * Method to add a constraint to the group
          *
@@ -112,14 +112,16 @@ public:
         std::size_t getNumConstraint() const { return correction.size();};
 
         /// Return the order of the constraint
-        /// @see ConstId
-        ConstId getId() const { return Id;};
+        /// @see ConstOrder
+        ConstOrder getOrder() const { return Order;};
 
     protected:
         /// Order of the constraint
-        /// @see ConstId
-        ConstId Id;
+        /// @see ConstOrder
+        ConstOrder Order;
         /// Indices of the entries in the VecConst for the two objects
+        /// As the constraint will be propagated through the mapping, we need to keep track of the index where the equations are written within the vector C of each Mechanical State
+        std::map< BaseMechanicalState*, std::vector<  std::pair< unsigned int, unsigned int > > > numLineEquations;
         std::vector< unsigned int > index[2];
         /// Right Hand Term
         std::vector< SReal > correction;
@@ -134,23 +136,23 @@ public:
     ~BaseLMConstraint() {};
 
     /// Called by MechanicalAccumulateLMConstaint: The Object will compute the constraints present in the current state, and create the constraintGroup related.
-    virtual void writeConstraintEquations(ConstId id)=0;
+    virtual void writeConstraintEquations(ConstOrder id)=0;
     /// Interface to construct a group of constraint: Giving the nature of these constraints, it returns a pointer to the structure
     /// @see constraintGroup
-    virtual constraintGroup* addGroupConstraint( ConstId Id);
+    virtual constraintGroup* addGroupConstraint( ConstOrder Order);
 
     /// Get the internal structure: return all the constraint stored by their nature in a map
-    virtual void getConstraints( std::map< ConstId, std::vector< constraintGroup* > >  &i) { i=constraintId;}
+    virtual void getConstraints( std::map< ConstOrder, std::vector< constraintGroup* > >  &i) { i=constraintOrder;}
     /// Get all the constraints stored of a given nature
-    virtual const std::vector< constraintGroup* > &getConstraintsId(ConstId Id) { return constraintId[Id];}
+    virtual const std::vector< constraintGroup* > &getConstraintsOrder(ConstOrder Order) { return constraintOrder[Order];}
 
-    virtual void getIndicesUsed(ConstId Id, std::vector< unsigned int > &used0, std::vector< unsigned int > &used1);
-    virtual void getCorrections(ConstId Id, std::vector<SReal>& c);
+    virtual void getIndicesUsed(ConstOrder Order, std::vector< unsigned int > &used0, std::vector< unsigned int > &used1);
+    virtual void getCorrections(ConstOrder Order, std::vector<SReal>& c);
 
     virtual BaseMechanicalState* getMechModel1()=0;
     virtual BaseMechanicalState* getMechModel2()=0;
 
-    virtual unsigned int getNumConstraint(ConstId Id);
+    virtual unsigned int getNumConstraint(ConstOrder Order);
     virtual double getError() {return 0;}
 
     virtual void clear();
@@ -167,7 +169,7 @@ protected:
 
     /// Constraints stored depending on their nature
     /// @see constraintGroup
-    std::map< ConstId, std::vector< constraintGroup* > > constraintId;
+    std::map< ConstOrder, std::vector< constraintGroup* > > constraintOrder;
 };
 }
 }
