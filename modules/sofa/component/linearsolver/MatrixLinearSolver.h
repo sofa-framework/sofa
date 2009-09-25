@@ -28,6 +28,8 @@
 #include <sofa/simulation/common/SolverImpl.h>
 #include <sofa/core/componentmodel/behavior/LinearSolver.h>
 #include <sofa/component/component.h>
+#include <sofa/component/linearsolver/SparseMatrix.h>
+#include <sofa/component/linearsolver/FullMatrix.h>
 
 namespace sofa
 {
@@ -122,6 +124,110 @@ public:
     virtual void invert(Matrix& /*M*/) {}
 
     virtual void solve(Matrix& M, Vector& solution, Vector& rh) = 0;
+
+
+    /// Default implementation of Multiply the inverse of the system matrix by the transpose of the given matrix, and multiply the result with the given matrix J
+    ///
+    /// TODO : put this implementation in MatrixLinearSolver class - fix problems mith Scattered Matrix
+
+    template<class RMatrix, class JMatrix>
+    bool addJMInvJt(RMatrix& result, JMatrix& J, double fact)
+    {
+        const unsigned int Jrows = J.rowSize();
+        const unsigned int Jcols = J.colSize();
+        if (Jcols != this->systemMatrix->rowSize())
+        {
+            serr << "LULinearSolver::addJMInvJt ERROR: incompatible J matrix size." << sendl;
+            return false;
+        }
+
+        if (!Jrows) return false;
+
+        const typename JMatrix::LineConstIterator jitend = J.end();
+        // STEP 1 : put each line of matrix Jt in the right hand term of the system
+        for (typename JMatrix::LineConstIterator jit1 = J.begin(); jit1 != jitend; ++jit1)
+        {
+            int row1 = jit1->first;
+            // clear the right hand term:
+            this->systemRHVector->clear(); // this->systemMatrix->rowSize()
+            //double acc = 0.0;
+            for (typename JMatrix::LElementConstIterator i1 = jit1->second.begin(), i1end = jit1->second.end(); i1 != i1end; ++i1)
+            {
+                this->systemRHVector->add(i1->first,i1->second);
+            }
+
+            // STEP 2 : solve the system :
+            solveSystem();
+
+
+            // STEP 3 : project the result using matrix J
+            for (typename JMatrix::LineConstIterator jit2 = jit1; jit2 != jitend; ++jit2)
+            {
+                int row2 = jit2->first;
+                double acc = 0.0;
+                for (typename JMatrix::LElementConstIterator i2 = jit2->second.begin(), i2end = jit2->second.end(); i2 != i2end; ++i2)
+                {
+                    int col2 = i2->first;
+                    double val2 = i2->second;
+                    acc += val2 * this->systemLHVector->element(col2);
+                }
+                acc *= fact;
+                //sout << "W("<<row1<<","<<row2<<") += "<<acc<<" * "<<fact<<sendl;
+                result.add(row2,row1,acc);
+                if (row1!=row2)
+                    result.add(row1,row2,acc);
+            }
+        }
+        return true;
+    }
+
+
+
+
+
+    /// Default implementation of Multiply the inverse of the system matrix by the transpose of the given matrix, and multiply the result with the given matrix J
+    ///
+    /// @param result the variable where the result will be added
+    /// @param J the matrix J to use
+    /// @return false if the solver does not support this operation, of it the system matrix is not invertible
+    bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact)
+    {
+        if (FullMatrix<double>* r = dynamic_cast<FullMatrix<double>*>(result))
+        {
+            if (SparseMatrix<double>* j = dynamic_cast<SparseMatrix<double>*>(J))
+            {
+                return addJMInvJt(*r,*j,fact);
+            }
+            else if (SparseMatrix<float>* j = dynamic_cast<SparseMatrix<float>*>(J))
+            {
+                return addJMInvJt(*r,*j,fact);
+            }
+        }
+        else if (FullMatrix<double>* r = dynamic_cast<FullMatrix<double>*>(result))
+        {
+            if (SparseMatrix<double>* j = dynamic_cast<SparseMatrix<double>*>(J))
+            {
+                return addJMInvJt(*r,*j,fact);
+            }
+            else if (SparseMatrix<float>* j = dynamic_cast<SparseMatrix<float>*>(J))
+            {
+                return addJMInvJt(*r,*j,fact);
+            }
+        }
+        else if (defaulttype::BaseMatrix* r = result)
+        {
+            if (SparseMatrix<double>* j = dynamic_cast<SparseMatrix<double>*>(J))
+            {
+                return addJMInvJt(*r,*j,fact);
+            }
+            else if (SparseMatrix<float>* j = dynamic_cast<SparseMatrix<float>*>(J))
+            {
+                return addJMInvJt(*r,*j,fact);
+            }
+        }
+        return false;
+    }
+
 
 protected:
 
@@ -321,6 +427,22 @@ public:
         return MultExpr<GraphScatteredMatrix,GraphScatteredVector>(*this, v);
     }
     void apply(GraphScatteredVector& res, GraphScatteredVector& x);
+
+    // compatibility with baseMatrix
+    unsigned int rowSize()
+    {
+        unsigned int nbRow=0, nbCol=0;
+        this->parent->getMatrixDimension(&nbRow, &nbCol);
+        return nbRow;
+
+    }
+    int colSize()
+    {
+        unsigned int nbRow=0, nbCol=0;
+        this->parent->getMatrixDimension(&nbRow, &nbCol);
+        return nbCol;
+    }
+
     //void papply(GraphScatteredVector& res, GraphScatteredVector& x);
 
     static const char* Name() { return "GraphScattered"; }
@@ -347,6 +469,26 @@ public:
     {
         this->v = VecId();
     }
+
+    // for compatibility with base vector
+    void clear()
+    {
+        reset();
+    }
+
+    /// TO IMPLEMENT
+    void add(int /*row*/, SReal /*v*/)
+    {
+        std::cerr<<"WARNING : add an element is not supported in MultiVector"<<std::endl;
+    }
+
+    SReal element(int /*i*/)
+    {
+        std::cerr<<"WARNING : get a single element is not supported in MultiVector"<<std::endl;
+        return 0;
+    }
+
+
 
     friend class GraphScatteredMatrix;
 

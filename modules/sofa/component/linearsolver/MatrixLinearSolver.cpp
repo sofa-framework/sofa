@@ -152,6 +152,59 @@ void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::deleteVector
     delete v;
 }
 
+/*
+/////////// devrait être dans un fichier inl ... ////////
+template<class Matrix, class Vector>
+bool MatrixLinearSolver<Matrix,Vector>::addMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact)
+{
+	const unsigned int Jrows = J.rowSize();
+	const unsigned int Jcols = J.colSize();
+	if (Jcols != this->systemMatrix->rowSize())
+	{
+		serr << "MatrixLinearSolver::addJMInvJt ERROR: incompatible J matrix size." << sendl;
+		return false;
+	}
+
+	if (!Jrows) return false;
+	//this->computeMinv();
+
+	const typename JMatrix::LineConstIterator jitend = J.end();
+	for (typename JMatrix::LineConstIterator jit1 = J.begin(); jit1 != jitend; ++jit1)
+	{
+	int row1 = jit1->first;
+	for (typename JMatrix::LineConstIterator jit2 = jit1; jit2 != jitend; ++jit2)
+	{
+		int row2 = jit2->first;
+		double acc = 0.0;
+		for (typename JMatrix::LElementConstIterator i1 = jit1->second.begin(), i1end = jit1->second.end(); i1 != i1end; ++i1)
+		{
+			int col1 = i1->first;
+			double val1 = i1->second;
+			for (typename JMatrix::LElementConstIterator i2 = jit2->second.begin(), i2end = jit2->second.end(); i2 != i2end; ++i2)
+			{
+				int col2 = i2->first;
+				double val2 = i2->second;
+				acc += val1 * getMinvElement(col1,col2) * val2;
+			}
+		}
+		acc *= fact;
+		//sout << "W("<<row1<<","<<row2<<") += "<<acc<<" * "<<fact<<sendl;
+		result.add(row1,row2,acc);
+		if (row1!=row2)
+			result.add(row2,row1,acc);
+	}
+	}
+	return true;
+}
+
+template<class Matrix, class Vector>
+bool MatrixLinearSolver<Matrix,Vector>::addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact)
+{
+
+}
+*/
+
+
 template<>
 defaulttype::BaseMatrix* MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::getSystemBaseMatrix() { return NULL; }
 

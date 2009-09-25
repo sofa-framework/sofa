@@ -136,6 +136,12 @@ public:
             std::fill( this->begin(), this->end(), T() );
     }
 
+    // for compatibility with baseVector
+    void clear(int dim)
+    {
+        resize(dim);
+    }
+
     T& operator[](Index i)
     {
         return data[i];
