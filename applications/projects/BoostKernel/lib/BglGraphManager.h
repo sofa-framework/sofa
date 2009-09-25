@@ -92,9 +92,9 @@ public:
     //As the graph is sparse, we use an adjacency_list to describe it.
     //The edges are stored in a vector (maybe use a list instead?)
     //bidirectional = oriented + each node stores its in-edges, allowing to easily detect roots (root = no in-edges)
-    typedef ::boost::adjacency_list < ::boost::listS, ::boost::listS, ::boost::bidirectionalS, VertexProperty > Hgraph;
-    typedef ::boost::graph_traits<Hgraph> HgraphTraits;
-    /* 	typedef ::boost::reverse_graph<Hgraph> ReverseHgraph;  */
+    typedef boost::adjacency_list < boost::listS, boost::listS, boost::bidirectionalS, VertexProperty > Hgraph;
+    typedef boost::graph_traits<Hgraph> HgraphTraits;
+    /* 	typedef boost::reverse_graph<Hgraph> ReverseHgraph;  */
 
     //Defining some typedefs for convenience usage
     typedef HgraphTraits::vertex_descriptor Hvertex;
@@ -110,7 +110,7 @@ public:
 
     //Defining the Property Map: link between a vertex of the BglGraph and one of its property
     // hvertex->sofa node
-    typedef ::boost::property_map<Hgraph, bglnode_t>::type  H_vertex_node_map;
+    typedef boost::property_map<Hgraph, bglnode_t>::type  H_vertex_node_map;
     //Inverse map, that we must keep up to date
     // sofa node->hvertex
     typedef std::map<Node*, Hvertex> H_node_vertex_map;
@@ -126,8 +126,8 @@ public:
           /*           > > */ > > RVertexProperty;
 
     // Graph
-    typedef ::boost::adjacency_list < ::boost::listS, ::boost::listS, ::boost::bidirectionalS, RVertexProperty > Rgraph;
-    typedef ::boost::graph_traits<Rgraph> RgraphTraits;
+    typedef boost::adjacency_list < boost::listS, boost::listS, boost::bidirectionalS, RVertexProperty > Rgraph;
+    typedef boost::graph_traits<Rgraph> RgraphTraits;
 
     typedef Rgraph::vertex_descriptor Rvertex;
     typedef Rgraph::edge_descriptor   Redge;
@@ -150,18 +150,18 @@ public:
     // Edges
     struct interaction_t
     {
-        typedef ::boost::edge_property_tag kind;
+        typedef boost::edge_property_tag kind;
     };
     typedef boost::property<interaction_t, core::objectmodel::BaseObject*> IEdgeProperty;
     // Graph
-    typedef ::boost::adjacency_list < ::boost::vecS, ::boost::vecS, ::boost::undirectedS, VertexProperty, IEdgeProperty > Igraph;
+    typedef boost::adjacency_list < boost::vecS, boost::vecS, boost::undirectedS, VertexProperty, IEdgeProperty > Igraph;
     typedef Igraph::vertex_descriptor Ivertex;
     typedef Igraph::edge_descriptor Iedge;
     typedef std::pair<Igraph::vertex_iterator,Igraph::vertex_iterator> Ivpair;
 
-    typedef ::boost::property_map<Igraph, bglnode_t>::type  I_vertex_node_map;           // ivertex->sofa node
+    typedef boost::property_map<Igraph, bglnode_t>::type  I_vertex_node_map;           // ivertex->sofa node
     typedef std::map<Node*, Ivertex>     I_node_vertex_map;                              // sofa node -> ivertex
-    typedef ::boost::property_map<Igraph, interaction_t>::type  I_edge_interaction_map;  // iedge->sofa interaction force field
+    typedef boost::property_map<Igraph, interaction_t>::type  I_edge_interaction_map;  // iedge->sofa interaction force field
     typedef std::map<core::objectmodel::BaseObject*, Iedge> I_interaction_edge_map;              // sofa interaction force field->iedge
     ///@}
 

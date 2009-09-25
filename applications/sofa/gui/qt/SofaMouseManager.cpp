@@ -137,6 +137,9 @@ void SofaMouseManager::updateOperation( MOUSE_BUTTON button, const std::string &
 #endif
         break;
     }
+    default:
+    {
+    }
     }
 
 
