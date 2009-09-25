@@ -293,7 +293,7 @@ void main()
 	color += texture2D(planarTextureX,vec2(pos0.y/scaleTexture.x,pos0.z/scaleTexture.y) ) * coefs.x;
 
 	color.rgb = showDebug * (vec3(1.0,1.0,1.0)-coefs) + (1.0-showDebug)*color.rgb;
-	color.a = 1.0;
+	color.a = diffuse.a;
 #endif
 
 #if defined (PERLIN_NOISE_COLOR) 
@@ -374,9 +374,9 @@ void main()
 	
 	
 #if defined(TEXTURE_UNIT_0) || defined(TRI_TEXTURING)
-	color *= phong_color;
+	color.rgb *= phong_color.rgb;
 #else
-	color += phong_color;
+	color.rgb += phong_color.rgb;
 #endif
 
 	halfV = normalize(gl_LightSource[0].halfVector.xyz);
@@ -424,8 +424,7 @@ void main()
 
 	// Write the final pixel.
 	gl_FragColor = color;
+	//gl_FragColor = vec4(1.0,1.0,1.0,0.0);
 	//vec4 p = texture(perlinPermutationsTexture,gl_TexCoord[0].st);
-	//gl_FragColor = p;
 
-	
 }
