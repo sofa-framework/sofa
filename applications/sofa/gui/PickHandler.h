@@ -111,7 +111,7 @@ protected:
     MOUSE_BUTTON mouseButton;
     MOUSE_STATUS mouseStatus;
 
-    helper::fixed_array< Operation*,3 > operations;
+    helper::fixed_array< Operation*,4 > operations;
     bool useCollisions;
 };
 }
