@@ -108,10 +108,11 @@ protected:
 
     BodyPicked lastPicked;
 
-    MOUSE_BUTTON mouseButton;
     MOUSE_STATUS mouseStatus;
+    MOUSE_BUTTON mouseButton;
 
-    helper::fixed_array< Operation*,4 > operations;
+    //NONE is the number of Operations in use.
+    helper::fixed_array< Operation*,NONE > operations;
     bool useCollisions;
 };
 }

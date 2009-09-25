@@ -41,7 +41,7 @@ class InteractionPerformer;
 }
 namespace gui
 {
-enum MOUSE_BUTTON {NONE ,LEFT, MIDDLE, RIGHT};
+enum MOUSE_BUTTON {LEFT, MIDDLE, RIGHT,NONE};
 enum MOUSE_STATUS {PRESSED,RELEASED, ACTIVATED, DEACTIVATED};
 
 class PickHandler;
@@ -58,8 +58,8 @@ public:
     virtual void wait() {};
 protected:
     PickHandler *pickHandle;
-    MOUSE_BUTTON button;
     sofa::component::collision::InteractionPerformer *performer;
+    MOUSE_BUTTON button;
 };
 
 class AttachOperation : public Operation

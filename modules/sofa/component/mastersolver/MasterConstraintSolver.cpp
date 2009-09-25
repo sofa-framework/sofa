@@ -492,7 +492,7 @@ void MasterConstraintSolver::step ( double dt )
 
         //std::cout<<"swap Buffer: size new ConstraintProblem = "<<numConstraints<< " size old buf Problem "<<getConstraintProblem()->getSize()<<std::endl;
         bufCP1 = !bufCP1;
-        int a=getConstraintProblem()->getConstraintResolutions().size();
+// 		int a=getConstraintProblem()->getConstraintResolutions().size();
         //std::cerr<<"##"<<a<<"##"<<std::endl;
 
 
