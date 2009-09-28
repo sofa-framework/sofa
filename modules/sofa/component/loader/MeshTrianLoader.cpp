@@ -63,7 +63,7 @@ MeshTrianLoader::MeshTrianLoader() : MeshLoader()
 
 bool MeshTrianLoader::load()
 {
-    std::cout << "Loading Trian file: " << m_filename << std::endl;
+    sout << "Loading Trian file: " << m_filename << sendl;
 
     FILE* file;
     bool fileRead = false;
@@ -73,7 +73,7 @@ bool MeshTrianLoader::load()
 
     if ((file = fopen(filename, "r")) == NULL)
     {
-        std::cerr << "Error: MeshTrianLoader: Cannot read file '" << m_filename << "'." << std::endl;
+        serr << "Error: MeshTrianLoader: Cannot read file '" << m_filename << "'." << sendl;
         return false;
     }
 
@@ -172,7 +172,7 @@ bool MeshTrianLoader::readTrian (const char* filename)
         /*
         if ((v0<v1)|| (ngh2== -1))
         {
-        std::cout << " ((v0<v1)|| (ngh2== -1)) " << std::endl;
+        sout << " ((v0<v1)|| (ngh2== -1)) " << sendl;
 
         e=new E(trian,vertexTable[v0],vertexTable[v1],t,0);
         t->setEdge(2,e);
@@ -185,7 +185,7 @@ bool MeshTrianLoader::readTrian (const char* filename)
              }
              if ((v1<v2) | (ngh0== -1))
              {
-        std::cout << " ((v1<v2) | (ngh0== -1)) " << std::endl;
+        sout << " ((v1<v2) | (ngh0== -1)) " << sendl;
         e=new E(trian,vertexTable[v1],vertexTable[v2],
         	t,0);
         t->setEdge(0,e);
@@ -199,7 +199,7 @@ bool MeshTrianLoader::readTrian (const char* filename)
              }
              if ((v2<v0)| (ngh1== -1))
              {
-        std::cout << " ((v2<v0)| (ngh1== -1)) " << std::endl;
+        sout << " ((v2<v0)| (ngh1== -1)) " << sendl;
         e=new E(trian,vertexTable[v2],vertexTable[v0],
         	t,0);
         t->setEdge(1,e);

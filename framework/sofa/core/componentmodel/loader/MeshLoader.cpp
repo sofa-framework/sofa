@@ -66,12 +66,12 @@ MeshLoader::MeshLoader() : BaseLoader()
 
 void MeshLoader::init()
 {
-    std::cout << "MeshLoader::init()" << std::endl;
+    sout << "MeshLoader::init()" << sendl;
 
     if (canLoad())
         load(/*m_filename.getFullPath().c_str()*/);
     else
-        std::cout << "Doing nothing" << std::endl;
+        sout << "Doing nothing" << sendl;
 }
 
 
@@ -83,7 +83,7 @@ bool MeshLoader::canLoad()
     // -- Check filename field:
     if(m_filename.getValue() == "")
     {
-        std::cerr << "Error: MeshLoader: No file name given." << std::endl;
+        serr << "Error: MeshLoader: No file name given." << sendl;
         return false;
     }
 
@@ -94,21 +94,21 @@ bool MeshLoader::canLoad()
 
     if (!sofa::helper::system::DataRepository.findFile(sfilename))
     {
-        std::cerr << "Error: MeshLoader: File '" << m_filename << "' not found. " << std::endl;
+        serr << "Error: MeshLoader: File '" << m_filename << "' not found. " << sendl;
         return false;
     }
 
     // -- Check if file is readable:
     if ((file = fopen(filename, "r")) == NULL)
     {
-        std::cerr << "Error: MeshLoader: Cannot read file '" << m_filename << "'." << std::endl;
+        serr << "Error: MeshLoader: Cannot read file '" << m_filename << "'." << sendl;
         return false;
     }
 
     // -- Step 2.2: Check first line.
     if (!readLine(cmd, sizeof(cmd), file))
     {
-        std::cerr << "Error: MeshLoader: Cannot read first line in file '" << m_filename << "'." << std::endl;
+        serr << "Error: MeshLoader: Cannot read first line in file '" << m_filename << "'." << sendl;
         fclose(file);
         return false;
     }
