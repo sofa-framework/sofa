@@ -99,14 +99,18 @@ public:
         ConstNature getNature(unsigned int entry) const {return nature[entry];}
 
         ///Retrieves all the indices in the VecConst for the first object
-        const std::vector< unsigned int > &getIndicesUsed0()   const {return index[0];}
+        const helper::vector< unsigned int > &getIndicesUsed0()   const {return index[0];}
         ///Retrieves all the indices in the VecConst for the second object
-        const std::vector< unsigned int > &getIndicesUsed1()   const {return index[1];}
+        const helper::vector< unsigned int > &getIndicesUsed1()   const {return index[1];}
+
+        ///Retrieves all the indices in the VecConst for the first object
+        helper::vector< unsigned int > &getIndicesUsed0() {return index[0];}
+        ///Retrieves all the indices in the VecConst for the second object
+        helper::vector< unsigned int > &getIndicesUsed1() {return index[1];}
+
         ///Retrieves the correction for the constraint (corresponds to the Right Hand term of the equation)
-        const std::vector< SReal >       &getCorrections()    const {return correction;}
-        const std::vector< ConstNature > &getNatures()        const {return nature;}
-
-
+        const helper::vector< SReal >       &getCorrections()    const {return correction;}
+        const helper::vector< ConstNature > &getNatures()        const {return nature;}
 
         /// Return the number of constraint contained in this group
         std::size_t getNumConstraint() const { return correction.size();};
@@ -119,15 +123,12 @@ public:
         /// Order of the constraint
         /// @see ConstOrder
         ConstOrder Order;
-        /// Indices of the entries in the VecConst for the two objects
-        /// As the constraint will be propagated through the mapping, we need to keep track of the index where the equations are written within the vector C of each Mechanical State
-        std::map< BaseMechanicalState*, std::vector<  std::pair< unsigned int, unsigned int > > > numLineEquations;
-        std::vector< unsigned int > index[2];
+        helper::vector< unsigned int > index[2];
         /// Right Hand Term
-        std::vector< SReal > correction;
+        helper::vector< SReal > correction;
         /// Nature of the constraints
         /// @see ConstNature
-        std::vector< ConstNature > nature;
+        helper::vector< ConstNature > nature;
     };
 
 public:
@@ -141,13 +142,15 @@ public:
     /// @see constraintGroup
     virtual constraintGroup* addGroupConstraint( ConstOrder Order);
 
-    /// Get the internal structure: return all the constraint stored by their nature in a map
-    virtual void getConstraints( std::map< ConstOrder, std::vector< constraintGroup* > >  &i) { i=constraintOrder;}
-    /// Get all the constraints stored of a given nature
-    virtual const std::vector< constraintGroup* > &getConstraintsOrder(ConstOrder Order) { return constraintOrder[Order];}
+    virtual void constraintTransmission(ConstOrder Order, BaseMechanicalState* state, unsigned int entry);
 
-    virtual void getIndicesUsed(ConstOrder Order, std::vector< unsigned int > &used0, std::vector< unsigned int > &used1);
-    virtual void getCorrections(ConstOrder Order, std::vector<SReal>& c);
+    /// Get the internal structure: return all the constraint stored by their nature in a map
+    virtual void getConstraints( std::map< ConstOrder, helper::vector< constraintGroup* > >  &i) { i=constraintOrder;}
+    /// Get all the constraints stored of a given nature
+    virtual const helper::vector< constraintGroup* > &getConstraintsOrder(ConstOrder Order) { return constraintOrder[Order];}
+
+    virtual void getIndicesUsed(ConstOrder Order, helper::vector< unsigned int > &used0, helper::vector< unsigned int > &used1);
+    virtual void getCorrections(ConstOrder Order, helper::vector<SReal>& c);
 
     virtual BaseMechanicalState* getMechModel1()=0;
     virtual BaseMechanicalState* getMechModel2()=0;
@@ -169,7 +172,7 @@ protected:
 
     /// Constraints stored depending on their nature
     /// @see constraintGroup
-    std::map< ConstOrder, std::vector< constraintGroup* > > constraintOrder;
+    std::map< ConstOrder, helper::vector< constraintGroup* > > constraintOrder;
 };
 }
 }

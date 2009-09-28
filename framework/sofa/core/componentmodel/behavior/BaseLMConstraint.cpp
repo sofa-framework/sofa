@@ -46,7 +46,7 @@ BaseLMConstraint::BaseLMConstraint():
 unsigned int BaseLMConstraint::getNumConstraint(ConstOrder Order)
 {
     unsigned int result=0;
-    std::vector< constraintGroup* > &vec = constraintOrder[Order];
+    helper::vector< constraintGroup* > &vec = constraintOrder[Order];
     for (unsigned int i=0; i<vec.size(); ++i)
     {
         result+=vec[i]->getNumConstraint();
@@ -61,33 +61,62 @@ BaseLMConstraint::constraintGroup* BaseLMConstraint::addGroupConstraint( ConstOr
     return c;
 }
 
-void BaseLMConstraint::getIndicesUsed(ConstOrder Order, std::vector< unsigned int > &used0,std::vector< unsigned int > &used1)
+void BaseLMConstraint::constraintTransmission(ConstOrder order, BaseMechanicalState* state, unsigned int entry)
 {
-    const std::vector< BaseLMConstraint::constraintGroup* > &constraints=constraintOrder[Order];
+    helper::vector< constraintGroup* > &vec = constraintOrder[order];
+    for (unsigned int i=0; i<vec.size(); ++i)
+    {
+        constraintGroup *group=vec[i];
+
+        if (state==getMechModel1())
+        {
+            helper::vector< unsigned int > &lines=group->getIndicesUsed0();
+            for (unsigned int index=0; index<lines.size(); ++index)
+            {
+                lines[index]+=entry;
+            }
+        }
+        if (state==getMechModel2())
+        {
+            helper::vector< unsigned int > &lines=group->getIndicesUsed1();
+            for (unsigned int index=0; index<lines.size(); ++index)
+            {
+                lines[index]+=entry;
+            }
+        }
+
+
+    }
+}
+
+
+void BaseLMConstraint::getIndicesUsed(ConstOrder Order, helper::vector< unsigned int > &used0,helper::vector< unsigned int > &used1)
+{
+    const helper::vector< BaseLMConstraint::constraintGroup* > &constraints=constraintOrder[Order];
     for (unsigned int idxGroupConstraint=0; idxGroupConstraint<constraints.size(); ++idxGroupConstraint)
     {
-        const std::vector< unsigned int > &iUsed0= constraints[idxGroupConstraint]->getIndicesUsed0();
+        const helper::vector< unsigned int > &iUsed0= constraints[idxGroupConstraint]->getIndicesUsed0();
         used0.insert(used0.end(),iUsed0.begin(), iUsed0.end());
-        const std::vector< unsigned int > &iUsed1= constraints[idxGroupConstraint]->getIndicesUsed1();
+        const helper::vector< unsigned int > &iUsed1= constraints[idxGroupConstraint]->getIndicesUsed1();
         used1.insert(used1.end(),iUsed1.begin(), iUsed1.end());
     }
 }
-void BaseLMConstraint::getCorrections(ConstOrder Order, std::vector<SReal>& c)
+void BaseLMConstraint::getCorrections(ConstOrder Order, helper::vector<SReal>& c)
 {
-    const std::vector< BaseLMConstraint::constraintGroup* > &constraints=constraintOrder[Order];
+    const helper::vector< BaseLMConstraint::constraintGroup* > &constraints=constraintOrder[Order];
     for (unsigned int idxGroupConstraint=0; idxGroupConstraint<constraints.size(); ++idxGroupConstraint)
     {
-        const std::vector<SReal>& correction=constraints[idxGroupConstraint]->getCorrections();
+        const helper::vector<SReal>& correction=constraints[idxGroupConstraint]->getCorrections();
         c.insert(c.end(), correction.begin(), correction.end());
     }
 }
 
 void BaseLMConstraint::clear()
 {
-    std::map< ConstOrder, std::vector< constraintGroup*> >::iterator it;
+    std::map< ConstOrder, helper::vector< constraintGroup*> >::iterator it;
     for (it=constraintOrder.begin(); it!=constraintOrder.end(); it++)
     {
-        std::vector< constraintGroup* > &v=it->second;
+        helper::vector< constraintGroup* > &v=it->second;
         for (unsigned int i=0; i<v.size(); ++i)
         {
             delete v[i];
