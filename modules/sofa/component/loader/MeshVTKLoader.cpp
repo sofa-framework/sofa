@@ -167,7 +167,8 @@ public:
         if (n > dataSize && !data) return false;
         if (binary)
         {
-            fwrite(data, sizeof(T), n, out);
+            if(fwrite(data, sizeof(T), n, out) != (size_t)n)
+                std::cerr << "Error: fwrite has encounter, count size differ from '" << n << "'." << std::endl;
         }
         else
         {
@@ -182,7 +183,8 @@ public:
                 {
                     os << '\n';
                     std::string s = os.str();
-                    fwrite(s.c_str(), 1, s.length(), out);
+                    if (fwrite(s.c_str(), 1, s.length(), out) != s.length())
+                        std::cerr << "Error: fwrite has encounter, count size differ from '" << s.length() << "'." << std::endl;
                 }
             }
         }
