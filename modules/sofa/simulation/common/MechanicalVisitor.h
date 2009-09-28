@@ -1113,9 +1113,18 @@ class SOFA_SIMULATION_COMMON_API MechanicalAccumulateLMConstraint : public Mecha
 public:
     struct ConstraintData
     {
+        ConstraintData():data(NULL)
+        {
+            independentMState[0]=independentMState[1]=NULL;
+            constrainedMState[0]=constrainedMState[1]=NULL;
+        }
+
+
+
         core::componentmodel::behavior::BaseLMConstraint *data;
         //independent dofs associated
         core::componentmodel::behavior::BaseMechanicalState *independentMState[2]; //independentMechanicalState
+        core::componentmodel::behavior::BaseMechanicalState *constrainedMState[2]; //constrainedMechanicalStates
     };
 
 
