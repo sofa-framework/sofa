@@ -135,14 +135,12 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::reinit()
             for(unsigned int k=0; k<3; ++k)
                 for(unsigned int j=0; j<3; ++j)
                 {
-                    _material.M[3*u+k][3*v+j] = M[u][v];
+                    _material.M[3*u+k][3*v+j] = (k%3==j%3)?M[u][v]:0.0;
                 }
         }
 
-    swapNodes(2,3, _material.K);
-    swapNodes(6,7, _material.K);
-    //swapNodes(2,3, _material.M);
-    //swapNodes(6,7, _material.M);
+    swapNodes(2,3, _material.M);
+    swapNodes(6,7, _material.M);
 
     _H.resize(level+1);
 
@@ -160,19 +158,19 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::reinit()
                 {
                     for(int w=0; w<8; ++w) // childNodeId
                     {
-                        const float x = fineNodeSize * (i +  (w&1) );
+                        const float x = fineNodeSize * (i + ((w&1)!=((w&2) >> 1)) );
                         const float y = fineNodeSize * (j + ((w&2) >> 1) );
-                        const float z = fineNodeSize * (k +  (w>>2));
+                        const float z = fineNodeSize * (k + (w>>2));
 
                         // entree dans la matrice pour le sommet w
                         _H[currLevel][idx][w][0] = (1-x) * (1-y) * (1-z);
                         _H[currLevel][idx][w][1] =   (x) * (1-y) * (1-z);
-                        _H[currLevel][idx][w][2] = (1-x) *   (y) * (1-z);
-                        _H[currLevel][idx][w][3] =   (x) *   (y) * (1-z);
+                        _H[currLevel][idx][w][3] = (1-x) *   (y) * (1-z);
+                        _H[currLevel][idx][w][2] =   (x) *   (y) * (1-z);
                         _H[currLevel][idx][w][4] = (1-x) * (1-y) *   (z);
                         _H[currLevel][idx][w][5] =   (x) * (1-y) *   (z);
-                        _H[currLevel][idx][w][6] = (1-x) *   (y) *   (z);
-                        _H[currLevel][idx][w][7] =   (x) *   (y) *   (z);
+                        _H[currLevel][idx][w][7] = (1-x) *   (y) *   (z);
+                        _H[currLevel][idx][w][6] =   (x) *   (y) *   (z);
                     }
                 }
     }
@@ -419,11 +417,6 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::handleMultilevelModif(const Mu
             totalMass += _material.mass;
         }
 
-        swapNodes(2,3, K);
-        swapNodes(6,7, K);
-        swapNodes(2,3, M);
-        swapNodes(6,7, M);
-
         hexahedronInf[hexaId].stiffness -= K;
         elementMasses[hexaId] -= M;
         elementTotalMass[hexaId] -= totalMass;
@@ -572,11 +565,6 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCon
         //	std::cout << "Total masses don't match." << std::endl;
         //}
     }
-
-    swapNodes(2,3, K);
-    swapNodes(6,7, K);
-    swapNodes(2,3, M);
-    swapNodes(6,7, M);
 }
 
 template<class T>
@@ -614,6 +602,47 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::computeMechanicalMatricesByCon
             this->addHtfineHtoCoarse(H, M_fine, M);
             totalMass += mass_fine;
         }
+        /*
+        std::cout << "M_fine" << std::endl;
+        for( int i = 0; i < 24; i++)
+        {
+        	for( int j = 0; j < 24; j++)
+        		std::cout << M_fine[i][j]*8 << " ";
+        	std::cout << endl;
+        }
+
+        std::cout << "M" << std::endl;
+        for( int i = 0; i < 24; i++)
+        {
+        	for( int j = 0; j < 24; j++)
+        		std::cout << M[i][j] << " ";
+        	std::cout << endl;
+        }
+
+        std::cout << "K_fine" << std::endl;
+        for( int i = 0; i < 24; i++)
+        {
+        	for( int j = 0; j < 24; j++)
+        		std::cout << K_fine[i][j]*2 << " ";
+        	std::cout << endl;
+        }
+
+        std::cout << "K" << std::endl;
+        for( int i = 0; i < 24; i++)
+        {
+        	for( int j = 0; j < 24; j++)
+        		std::cout << K[i][j] << " ";
+        	std::cout << endl;
+        }
+
+        for( int i = 0; i < 24; i++)
+        	for( int j = 0; j < 24; j++)
+        		if ((float)(M_fine[i][j]*8) != (float)(M[i][j])) std::cout << "diff en M["<<i<<"]["<<j<<"]: " << M_fine[i][j]*8 << ", " << M[i][j] << std::endl;
+
+        for( int i = 0; i < 24; i++)
+        	for( int j = 0; j < 24; j++)
+        		if ((float)(K_fine[i][j]*2) != (float)(K[i][j])) std::cout << "diff en K["<<i<<"]["<<j<<"]: " << K_fine[i][j]*2 << ", " << K[i][j] << std::endl;
+        */
     }
     else
     {
