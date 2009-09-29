@@ -47,6 +47,7 @@
 
 #include <boost/vector_property_map.hpp>
 #include <sofa/simulation/bgl/dfv_adapter.h>
+#include <sofa/helper/Factory.inl>
 
 #define BREADTH_FIRST_VISIT
 
