@@ -44,6 +44,9 @@ Derives from BaseObject in order to model the parameters as Datas, which makes t
 class SOFA_SIMULATION_TREE_API TreeSimulation: public Simulation
 {
 public:
+
+    TreeSimulation();
+
     /// Create a new Node of the simulation
     Node* newNode(const std::string& name);
 };

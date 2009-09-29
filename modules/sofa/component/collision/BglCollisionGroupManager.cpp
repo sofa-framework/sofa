@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "BglCollisionGroupManager.h"
+#include <sofa/component/collision/BglCollisionGroupManager.h>
 #include <sofa/component/collision/SolverMerger.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/CollisionModel.h>
@@ -30,7 +30,7 @@
 // #include <string.h>
 
 
-#include "BglNode.h"
+#include <sofa/simulation/bgl/BglNode.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/common/DeleteVisitor.h>
 
@@ -72,7 +72,7 @@ void BglCollisionGroupManager::clearGroups(core::objectmodel::BaseContext* /*sce
 {
     for (std::set<simulation::Node*>::iterator it = groupSet.begin(); it!=groupSet.end(); ++it)
     {
-        simulation::bgl::BglNode* group = dynamic_cast<simulation::bgl::BglNode*>(*it);
+        sofa::simulation::bgl::BglNode* group = dynamic_cast<sofa::simulation::bgl::BglNode*>(*it);
         if (group) clearGroup(group->parents, group);
     }
     groupSet.clear();

@@ -35,9 +35,9 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#include "BglNode.h"
-#include "GetObjectsVisitor.h"
-#include "BglGraphManager.inl"
+#include <sofa/simulation/bgl/BglNode.h>
+#include <sofa/simulation/bgl/GetObjectsVisitor.h>
+#include <sofa/simulation/bgl/BglGraphManager.inl>
 #include <sofa/simulation/common/xml/NodeElement.h>
 
 //Components of the core to detect during the addition of objects in a node
@@ -46,7 +46,7 @@
 
 
 #include <boost/vector_property_map.hpp>
-#include "dfv_adapter.h"
+#include <sofa/simulation/bgl/dfv_adapter.h>
 
 #define BREADTH_FIRST_VISIT
 

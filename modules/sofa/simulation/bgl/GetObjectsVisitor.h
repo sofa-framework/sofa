@@ -28,7 +28,7 @@
 #define SOFA_SIMULATION_BGL_GETOBJECTSVISITOR_H
 
 #include <sofa/simulation/common/Visitor.h>
-#include "BglSimulation.h"
+#include <sofa/simulation/bgl/BglSimulation.h>
 namespace sofa
 {
 
@@ -39,7 +39,7 @@ namespace bgl
 {
 
 
-class GetObjectsVisitor : public Visitor
+class SOFA_SIMULATION_BGL_API GetObjectsVisitor : public Visitor
 {
 public:
     typedef sofa::core::objectmodel::ClassInfo ClassInfo;
@@ -65,7 +65,7 @@ protected:
 };
 
 
-class GetObjectVisitor : public Visitor
+class SOFA_SIMULATION_BGL_API GetObjectVisitor : public Visitor
 {
 public:
     typedef sofa::core::objectmodel::ClassInfo ClassInfo;

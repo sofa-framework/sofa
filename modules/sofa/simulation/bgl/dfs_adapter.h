@@ -25,22 +25,23 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 //
-// C++ Interface: BglSimulation
+// C++ Interface: dfs_adapter
 //
 // Description:
 //
 //
-// Author: Francois Faure in The SOFA team </www.sofa-framework.org>, (C) 2008
+// Author: The SOFA team </www.sofa-framework.org>, (C) 2008
 //
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#ifndef SOFA_SIMULATION_BGL_BGLSIMULATION_H
-#define SOFA_SIMULATION_BGL_BGLSIMULATION_H
+#ifndef dfs_adapter_h
+#define dfs_adapter_h
 
-#include "BglGraphManager.h"
-
-#include <sofa/simulation/common/Simulation.h>
+#include <boost/graph/depth_first_search.hpp>
+#include <sofa/simulation/bgl/BglGraphManager.h>
+#include <sofa/simulation/bgl/BglNode.h>
+#include <sofa/simulation/common/Visitor.h>
 
 namespace sofa
 {
@@ -48,36 +49,50 @@ namespace simulation
 {
 namespace bgl
 {
-/// SOFA scene implemented using bgl graphs and with high-level modeling and animation methods.
-class BglSimulation : public sofa::simulation::Simulation
+
+/**
+Adapt a sofa visitor to a depth-first search in a bgl graph encoding the mechanical mapping hierarchy.
+
+	@author The SOFA team </www.sofa-framework.org>
+*/
+template <typename Graph>
+class SOFA_SIMULATION_BGL_API  dfs_adapter : public boost::dfs_visitor<>
 {
 public:
+    typedef typename Graph::vertex_descriptor Vertex;
 
-    /// @name High-level interface
-    /// @{
-    BglSimulation();
+    dfs_adapter( sofa::simulation::Visitor* v ):visitor(v) {};
 
-    /// Load a file, and update the graph
-    Node* load(const char* filename);
+    ~dfs_adapter() {};
 
-    /* 	void unload(Node* root); */
+    /// Applies visitor->processNodeTopDown
+    void discover_vertex(Vertex u, const Graph &g)
+    {
+        Node *node=const_cast<Node*>(get(BglGraphManager::bglnode_t(),g,u));
+#ifdef SOFA_DUMP_VISITOR_INFO
+        visitor->setNode(node);
+        visitor->printInfo(node->getContext(),true);
+#endif
+        visitor->processNodeTopDown(node);
+    }
 
-    /// Delayed Creation of a graph node and attach a new Node to it, then return the Node
-    Node* newNode(const std::string& name="");
+    /// Applies visitor->processNodeBottomUp
+    void finish_vertex(Vertex u, const Graph &g) const
+    {
+        Node *node=const_cast<Node*>(get(BglGraphManager::bglnode_t(),g,u));
+        visitor->processNodeBottomUp(node);
+#ifdef SOFA_DUMP_VISITOR_INFO
+        visitor->printInfo(node->getContext(), false);
+#endif
+    }
 
-    void clear();
+protected:
+    sofa::simulation::Visitor* visitor;
 
-    void reset ( Node* root );
-
-    /// Initialize all the nodes and edges depth-first
-    void init(Node* root);
-
-    /// @}
 };
+}
+}
+}
 
-Simulation* getSimulation();
-}
-}
-}
 
 #endif

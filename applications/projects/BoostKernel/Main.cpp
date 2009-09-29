@@ -28,8 +28,8 @@
 #include <fstream>
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/simulation/common/xml/initXml.h>
-#include "../lib/BglSimulation.h"
-#include "../lib/BglNode.h"
+#include <sofa/simulation/bgl/BglSimulation.h>
+#include <sofa/simulation/bgl/BglNode.h>
 #include <sofa/component/init.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/BackTrace.h>

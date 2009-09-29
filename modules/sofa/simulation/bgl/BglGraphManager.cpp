@@ -36,11 +36,11 @@
 //
 //
 
-#include "BglGraphManager.inl"
+#include <sofa/simulation/bgl/BglGraphManager.inl>
 
-#include "bfs_adapter.h"
-#include "dfs_adapter.h"
-#include "dfv_adapter.h"
+#include <sofa/simulation/bgl/bfs_adapter.h>
+#include <sofa/simulation/bgl/dfs_adapter.h>
+#include <sofa/simulation/bgl/dfv_adapter.h>
 
 #include <boost/vector_property_map.hpp>
 

@@ -66,9 +66,9 @@
 //SOFA_HAS_BOOST_KERNEL to define in chainHybrid.pro
 
 #ifdef SOFA_HAS_BOOST_KERNEL
-#include "../../projects/BoostKernel/lib/BglNode.h"
-#include "../../projects/BoostKernel/lib/BglSimulation.h"
-#include "../../projects/BoostKernel/lib/BglCollisionGroupManager.h"
+#include <sofa/simulation/bgl/BglNode.h>
+#include <sofa/simulation/bgl/BglSimulation.h>
+#include <sofa/component/collision/BglCollisionGroupManager.h>
 #else
 #include <sofa/simulation/tree/GNode.h>
 #endif
