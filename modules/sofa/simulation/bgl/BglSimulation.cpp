@@ -52,7 +52,7 @@ namespace bgl
 
 Simulation* getSimulation()
 {
-    if ( Simulation::Simulation::theSimulation==NULL )
+    if ( simulation::Simulation::theSimulation==NULL )
         setSimulation(new BglSimulation);
     return simulation::getSimulation();
 }
