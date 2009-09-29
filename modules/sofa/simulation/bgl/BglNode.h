@@ -38,8 +38,8 @@
 #ifndef SOFA_SIMULATION_BGL_BGLNODE_H
 #define SOFA_SIMULATION_BGL_BGLNODE_H
 
-#include "BglGraphManager.h"
-#include "BglSimulation.h"
+#include <sofa/simulation/bgl/BglGraphManager.h>
+#include <sofa/simulation/bgl/BglSimulation.h>
 #include <sofa/simulation/common/Node.h>
 
 #include <deque>
@@ -58,7 +58,7 @@ namespace bgl
    @author Francois Faure in The SOFA team </www.sofa-framework.org>
 */
 
-class BglNode : public sofa::simulation::Node
+class SOFA_SIMULATION_BGL_API BglNode : public sofa::simulation::Node
 {
 public:
     typedef Sequence< BglNode > Parents;

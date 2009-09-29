@@ -40,8 +40,6 @@ SOFA_DECL_CLASS(TreeCollisionGroupManager);
 
 int TreeCollisionGroupManagerClass = core::RegisterObject("Responsible for gathering colliding objects in the same group, for consistent time integration")
         .add< TreeCollisionGroupManager >()
-        .addAlias("DefaultCollisionGroupManager")
-        .addAlias("CollisionGroup")
         ;
 
 

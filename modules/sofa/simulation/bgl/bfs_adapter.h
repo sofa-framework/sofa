@@ -39,8 +39,8 @@
 #define bfs_adapter_h
 
 #include <boost/graph/breadth_first_search.hpp>
-#include "BglNode.h"
-#include "BglGraphManager.h"
+#include <sofa/simulation/bgl/BglNode.h>
+#include <sofa/simulation/bgl/BglGraphManager.h>
 #include <sofa/simulation/common/Visitor.h>
 #include <map>
 
@@ -57,7 +57,7 @@ Adapt a sofa visitor to breadth-first search in a bgl mapping scene graph.
 	@author The SOFA team </www.sofa-framework.org>
 */
 template <typename Graph>
-class bfs_adapter : public boost::default_bfs_visitor
+class SOFA_SIMULATION_BGL_API  bfs_adapter : public boost::default_bfs_visitor
 {
 public:
     typedef typename Graph::vertex_descriptor   Vertex;

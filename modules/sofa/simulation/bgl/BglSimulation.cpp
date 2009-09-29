@@ -35,8 +35,8 @@
 // Copyright: See COPYING file that comes with this distribution
 //
 //
-#include "BglSimulation.h"
-#include "BglNode.h"
+#include <sofa/simulation/bgl/BglSimulation.h>
+#include <sofa/simulation/bgl/BglNode.h>
 
 #include <sofa/core/ObjectFactory.h>
 
@@ -57,11 +57,10 @@ Simulation* getSimulation()
     return simulation::getSimulation();
 }
 
+
 BglSimulation::BglSimulation()
 {
-
     //-------------------------------------------------------------------------------------------------------
-    //Adding aliases to convert Tree based components to Bgl components
     sofa::core::ObjectFactory::ClassEntry* classDefaultCollisionGroupManager;
     sofa::core::ObjectFactory::AddAlias("DefaultCollisionGroupManager",
             "BglCollisionGroupManager", true, &classDefaultCollisionGroupManager);
@@ -69,16 +68,7 @@ BglSimulation::BglSimulation()
     sofa::core::ObjectFactory::ClassEntry* classCollisionGroup;
     sofa::core::ObjectFactory::AddAlias("CollisionGroup",
             "BglCollisionGroupManager", true, &classCollisionGroup);
-
-    //Should this alias be added?
-    sofa::core::ObjectFactory::ClassEntry* classTreeCollisionGroupManager;
-    sofa::core::ObjectFactory::AddAlias("TreeCollisionGroupManager",
-            "BglCollisionGroupManager", true, &classTreeCollisionGroupManager);
-
-
 }
-
-
 
 
 /// Create a graph node and attach a new Node to it, then return the Node

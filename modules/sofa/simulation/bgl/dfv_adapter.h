@@ -24,40 +24,84 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "GetObjectsVisitor.h"
+//
+// C++ Interface: dfv_adapter
+//
+// Description:
+//
+//
+// Author: The SOFA team </www.sofa-framework.org>, (C) 2008
+//
+// Copyright: See COPYING file that comes with this distribution
+//
+//
+#ifndef dfv_adapter_h
+#define dfv_adapter_h
+
+#include <boost/graph/depth_first_search.hpp>
+#include <sofa/simulation/bgl/BglGraphManager.h>
+#include <sofa/simulation/common/Visitor.h>
 
 namespace sofa
 {
-
 namespace simulation
 {
-
 namespace bgl
 {
-Visitor::Result GetObjectsVisitor::processNodeTopDown( simulation::Node* node )
+
+/**
+Adapt a sofa visitor to a depth-first visit in a bgl graph encoding the mechanical mapping hierarchy.
+This visitor is aimed to be used by a depth first visit with a pruning criterion.
+The criterion is embedded within the dfv_adapter.
+The usual method discover_vertex is replaced by operator(), used by the bgl to evaluate if the visit must be pruned.
+Operator () calls visitor->processNodeTopDown and returns true iff this method has returned RESULT_PRUNE.
+
+	@author The SOFA team </www.sofa-framework.org>
+*/
+template <typename Graph>
+class SOFA_SIMULATION_BGL_API  dfv_adapter : public boost::dfs_visitor<>
 {
-    for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
+public:
+    typedef typename Graph::vertex_descriptor Vertex;
+
+    dfv_adapter( sofa::simulation::Visitor* v):visitor(v) {};
+
+    ~dfv_adapter() {};
+
+
+
+    //**********************************************************
+    /// Applies visitor->processNodeTopDown
+    bool operator() ( Vertex u, const Graph &g )
     {
-        void* result = class_info.dynamicCast(*it);
-        if (result != NULL &&  (tags.empty() || (*it)->getTags().includes(tags)))
-            container(result);
+        Node *node=const_cast<Node*>(get(BglGraphManager::bglnode_t(),g,u));
+#ifdef SOFA_DUMP_VISITOR_INFO
+        visitor->setNode(node);
+        visitor->printInfo(node->getContext(),true);
+#endif
+        return visitor->processNodeTopDown(node)==Visitor::RESULT_PRUNE;
     }
-    return Visitor::RESULT_CONTINUE;
+
+
+
+    //**********************************************************
+    /// Applies visitor->processNodeBottomUp
+    void finish_vertex(Vertex u, const Graph &g) const
+    {
+        Node *node=const_cast<Node*>(get(BglGraphManager::bglnode_t(),g,u));
+
+        visitor->processNodeBottomUp(node);
+#ifdef SOFA_DUMP_VISITOR_INFO
+        visitor->printInfo(node->getContext(), false);
+#endif
+    }
+
+protected:
+    sofa::simulation::Visitor* visitor;
+};
+}
+}
 }
 
-Visitor::Result GetObjectVisitor::processNodeTopDown( simulation::Node* node )
-{
-    for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
-    {
-        void* r = class_info.dynamicCast(*it);
-        if (r != NULL &&  (tags.empty() || (*it)->getTags().includes(tags)))
-        {
-            result=r; return Visitor::RESULT_PRUNE;
-        }
-    }
-    return Visitor::RESULT_CONTINUE;
-}
 
-}
-}
-}
+#endif

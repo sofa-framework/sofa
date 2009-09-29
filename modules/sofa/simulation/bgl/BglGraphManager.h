@@ -39,12 +39,9 @@
 #ifndef SOFA_SIMULATION_BGL_BGLGRAPHMANAGER_H
 #define SOFA_SIMULATION_BGL_BGLGRAPHMANAGER_H
 
+#include <sofa/simulation/bgl/bgl.h>
 #include <sofa/simulation/common/Node.h>
 #include <boost/graph/adjacency_list.hpp>
-
-
-/* #include <boost/graph/reverse_graph.hpp> */
-
 #include <sofa/core/componentmodel/collision/Pipeline.h>
 
 namespace sofa
@@ -55,7 +52,7 @@ namespace bgl
 {
 class BglNode;
 
-class BglGraphManager
+class SOFA_SIMULATION_BGL_API BglGraphManager
 {
 public:
 

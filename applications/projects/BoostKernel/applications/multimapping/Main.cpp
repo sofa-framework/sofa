@@ -61,9 +61,9 @@
 
 //SOFA_HAS_BOOST_KERNEL to define in chainHybrid.pro
 
-#include "../../lib/BglNode.h"
-#include "../../lib/BglSimulation.h"
-#include "../../lib/BglCollisionGroupManager.h"
+#include <sofa/simulation/bgl/BglNode.h>
+#include <sofa/simulation/bgl/BglSimulation.h>
+#include <sofa/component/collision/BglCollisionGroupManager.h>
 
 
 using sofa::component::visualmodel::OglModel;

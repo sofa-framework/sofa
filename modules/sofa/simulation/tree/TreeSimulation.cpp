@@ -45,6 +45,19 @@ Simulation* getSimulation()
         setSimulation( new TreeSimulation() );
     return simulation::getSimulation();
 }
+
+TreeSimulation::TreeSimulation()
+{
+    //-------------------------------------------------------------------------------------------------------
+    sofa::core::ObjectFactory::ClassEntry* classDefaultCollisionGroupManager;
+    sofa::core::ObjectFactory::AddAlias("DefaultCollisionGroupManager",
+            "TreeCollisionGroupManager", true, &classDefaultCollisionGroupManager);
+
+    sofa::core::ObjectFactory::ClassEntry* classCollisionGroup;
+    sofa::core::ObjectFactory::AddAlias("CollisionGroup",
+            "TreeCollisionGroupManager", true, &classCollisionGroup);
+}
+
 /// Create a new node
 Node* TreeSimulation::newNode(const std::string& name)
 {

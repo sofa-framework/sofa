@@ -39,7 +39,7 @@
 #ifndef SOFA_SIMULATION_BGL_BGLGRAPHMANAGER_INL
 #define SOFA_SIMULATION_BGL_BGLGRAPHMANAGER_INL
 
-#include "BglGraphManager.h"
+#include <sofa/simulation/bgl/BglGraphManager.h>
 
 namespace sofa
 {
