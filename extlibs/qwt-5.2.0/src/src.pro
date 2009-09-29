@@ -41,6 +41,11 @@ win32:QwtDll {
     DEFINES    += QT_DLL QWT_DLL QWT_MAKEDLL
 }
 
+win32 {
+	QMAKE_CXXFLAGS_DEBUG += -wd4661 
+	QMAKE_CXXFLAGS_RELEASE += -wd4661
+}
+
 HEADERS += \
     qwt.h \
     qwt_abstract_scale_draw.h \
