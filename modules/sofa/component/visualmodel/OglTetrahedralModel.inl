@@ -57,7 +57,6 @@ void OglTetrahedralModel<DataTypes>::init()
     context->get(topo);
     context->get(nodes);
 
-
     if (!nodes)
     {
         serr << "OglTetrahedralModel : Error : no MechanicalState found." << sendl;
@@ -143,26 +142,32 @@ void OglTetrahedralModel<DataTypes>::drawTransparent()
 template<class DataTypes>
 bool OglTetrahedralModel<DataTypes>::addBBox(double* minBBox, double* maxBBox)
 {
-    const core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra& vec = topo->getTetrahedra();
-    core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra::const_iterator it;
-    VecCoord& x = *nodes->getX();
-    Coord v;
-
-    for(it = vec.begin() ; it != vec.end() ; it++)
+    if (nodes && topo)
     {
-        for (unsigned int i=0 ; i< 4 ; i++)
-        {
-            v = x[(*it)[i]];
+        const core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra& vec = topo->getTetrahedra();
+        core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra::const_iterator it;
+        VecCoord& x = *nodes->getX();
+        Coord v;
 
-            if (minBBox[0] > v[0]) minBBox[0] = v[0];
-            if (minBBox[1] > v[1]) minBBox[1] = v[1];
-            if (minBBox[2] > v[2]) minBBox[2] = v[2];
-            if (maxBBox[0] < v[0]) maxBBox[0] = v[0];
-            if (maxBBox[1] < v[1]) maxBBox[1] = v[1];
-            if (maxBBox[2] < v[2]) maxBBox[2] = v[2];
+        for(it = vec.begin() ; it != vec.end() ; it++)
+        {
+            for (unsigned int i=0 ; i< 4 ; i++)
+            {
+                v = x[(*it)[i]];
+
+                if (minBBox[0] > v[0]) minBBox[0] = v[0];
+                if (minBBox[1] > v[1]) minBBox[1] = v[1];
+                if (minBBox[2] > v[2]) minBBox[2] = v[2];
+                if (maxBBox[0] < v[0]) maxBBox[0] = v[0];
+                if (maxBBox[1] < v[1]) maxBBox[1] = v[1];
+                if (maxBBox[2] < v[2]) maxBBox[2] = v[2];
+            }
         }
+
+        return true;
     }
-    return true;
+
+    return false;
 }
 
 }
