@@ -92,6 +92,65 @@ public:
 };
 
 template <typename VecIn, typename VecOut>
+class BarycentricMapperSparseGridTopology< gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> > : public TopologyBarycentricMapper< gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >
+{
+public:
+    typedef gpu::cuda::CudaVectorTypes<VecIn,VecIn,float> In;
+    typedef gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> Out;
+    typedef TopologyBarycentricMapper<In,Out> Inherit;
+    typedef typename Inherit::Real Real;
+    typedef typename Inherit::OutReal OutReal;
+    typedef typename Inherit::CubeData CubeData;
+protected:
+    gpu::cuda::CudaVector<CubeData> map;
+    topology::SparseGridTopology* topology;
+    bool bHexa;
+    bool bTrans;
+    unsigned sizeout;
+    gpu::cuda::CudaVector<unsigned int> CudaHexa;
+    gpu::cuda::CudaVector<unsigned int> CudaTid;
+    gpu::cuda::CudaVector<unsigned int> CudaTnb;
+    gpu::cuda::CudaVector<unsigned int> CudaTst;
+    gpu::cuda::CudaVector<float> CudaTVal;
+    void buildHexa();
+    void buildTranslate(unsigned outsize);
+
+public:
+    BarycentricMapperSparseGridTopology(topology::SparseGridTopology* topology, core::componentmodel::behavior::BaseMechanicalState::ParticleMask *, core::componentmodel::behavior::BaseMechanicalState::ParticleMask *)
+        : Inherit(topology)
+        , topology(topology), bHexa(true), bTrans(true)
+    {}
+    void setMaskFrom(core::componentmodel::behavior::BaseMechanicalState::ParticleMask *) {}
+    void setMaskTo  (core::componentmodel::behavior::BaseMechanicalState::ParticleMask *) {}
+
+    void clear(int reserve=0);
+
+    int addPointInCube(int cubeIndex, const Real* baryCoords);
+
+    bool isEmpty() { return map.size() == 0; }
+    void setTopology(topology::RegularGridTopology* _topology) { topology = _topology; }
+
+    void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
+    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
+    void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
+    void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
+    void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
+    void draw( const typename Out::VecCoord& out, const typename In::VecCoord& in);
+
+    inline friend std::istream& operator >> ( std::istream& in, BarycentricMapperSparseGridTopology<In, Out> &b )
+    {
+        in >> b.map;
+        return in;
+    }
+
+    inline friend std::ostream& operator << ( std::ostream& out, const BarycentricMapperSparseGridTopology<In, Out> & b )
+    {
+        out << b.map;
+        return out;
+    }
+};
+
+template <typename VecIn, typename VecOut>
 class BarycentricMapperMeshTopology< gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> > : public TopologyBarycentricMapper< gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >
 {
 public:

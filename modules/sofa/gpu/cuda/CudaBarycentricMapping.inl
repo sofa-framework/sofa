@@ -55,6 +55,22 @@ extern "C"
     void RegularGridMapperCuda3f1_3f_applyJ(unsigned int size, const unsigned int* gridsize, const void* map, void* out, const void* in);
     void RegularGridMapperCuda3f1_3f_applyJT(unsigned int insize, unsigned int maxNOut, const unsigned int* gridsize, const void* mapT, void* out, const void* in);
 
+    void SparseGridMapperCuda3f_apply(unsigned int size, const void * cudaHexa,const void* map, void* out, const void* in);
+    void SparseGridMapperCuda3f_applyJ(unsigned int size, const void * cudaHexa,const void* map, void* out, const void* in);
+    void SparseGridMapperCuda3f_applyJT(unsigned int size, const void * CudaTnb, const void * CudaTst, const void * CudaTid, const void * CudaTVal, void* out, const void* in);
+
+    void SparseGridMapperCuda3f1_apply(unsigned int size, const void * cudaHexa,const void* map, void* out, const void* in);
+    void SparseGridMapperCuda3f1_applyJ(unsigned int size, const void * cudaHexa,const void* map, void* out, const void* in);
+    void SparseGridMapperCuda3f1_applyJT(unsigned int size, const void * CudaTnb, const void * CudaTst, const void * CudaTid, const void * CudaTVal, void* out, const void* in);
+
+    void SparseGridMapperCuda3f_3f1_apply(unsigned int size, const void * cudaHexa,const void* map, void* out, const void* in);
+    void SparseGridMapperCuda3f_3f1_applyJ(unsigned int size, const void * cudaHexa,const void* map, void* out, const void* in);
+    void SparseGridMapperCuda3f_3f1_applyJT(unsigned int size, const void * CudaTnb, const void * CudaTst, const void * CudaTid, const void * CudaTVal, void* out, const void* in);
+
+    void SparseGridMapperCuda3f1_3f_apply(unsigned int size, const void * cudaHexa,const void* map, void* out, const void* in);
+    void SparseGridMapperCuda3f1_3f_applyJ(unsigned int size, const void * cudaHexa,const void* map, void* out, const void* in);
+    void SparseGridMapperCuda3f1_3f_applyJT(unsigned int size, const void * CudaTnb, const void * CudaTst, const void * CudaTid, const void * CudaTVal, void* out, const void* in);
+
     void MeshMapperCuda3f_apply(unsigned int size, unsigned int maxN, const void* map, void* out, const void* in);
     void MeshMapperCuda3f1_apply(unsigned int size, unsigned int maxN, const void* map, void* out, const void* in);
     void MeshMapperCuda3f_3f1_apply(unsigned int size, unsigned int maxN, const void* map, void* out, const void* in);
@@ -330,6 +346,293 @@ template<>
 void BarycentricMapperRegularGridTopology<CudaVec3fTypes,CudaVec3f1Types>::draw( const Out::VecCoord& /*out*/, const In::VecCoord& /*in*/)
 {
 }
+
+////////////////////////////////////////////////////////////////////////////
+//////////          BarycentricMapperSparseGridTopology           //////////
+////////////////////////////////////////////////////////////////////////////
+
+
+template <typename VecIn, typename VecOut>
+void BarycentricMapperSparseGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::clear(int reserve)
+{
+    map.clear();
+    bHexa = true;
+    bTrans = true;
+    if (reserve>0) map.reserve(reserve);
+}
+
+template <typename VecIn, typename VecOut>
+int BarycentricMapperSparseGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::addPointInCube(int cubeIndex, const Real* baryCoords)
+{
+    map.resize(map.size()+1);
+    CubeData& data = map[map.size()-1];
+
+    data.in_index = cubeIndex;
+    data.baryCoords[0] = baryCoords[0];
+    data.baryCoords[1] = baryCoords[1];
+    data.baryCoords[2] = baryCoords[2];
+    bHexa = true;
+    bTrans = true;
+    return map.size()-1;
+}
+
+template <typename VecIn, typename VecOut>
+void BarycentricMapperSparseGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::init(const typename Out::VecCoord& out, const typename In::VecCoord& /*in*/)
+{
+    int outside = 0;
+
+    clear(out.size());
+    for (unsigned int i=0; i<out.size(); i++)
+    {
+        Vector3 coefs;
+        int cube = topology->findCube(Vector3(out[i]), coefs[0], coefs[1], coefs[2]);
+        if (cube==-1)
+        {
+            ++outside;
+            cube = topology->findNearestCube(Vector3(out[i]), coefs[0], coefs[1], coefs[2]);
+        }
+        Vec<3,Real> baryCoords = coefs;
+        addPointInCube(cube, baryCoords.ptr());
+    }
+
+    bHexa = true;
+    bTrans = true;
+}
+
+template <typename VecIn, typename VecOut>
+void BarycentricMapperSparseGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::buildHexa()
+{
+    if (! bHexa) return;
+
+    CudaHexa.clear();
+
+    for (unsigned i=0; i<this->topology->getHexahedra().size(); i++)
+    {
+        const topology::SparseGridTopology::Hexa cube = this->topology->getHexahedron(i);
+        for (int c=0; c<8; c++) CudaHexa.push_back(cube[c]);
+    }
+
+    bHexa = false;
+}
+
+template <typename VecIn, typename VecOut>
+void BarycentricMapperSparseGridTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>, gpu::cuda::CudaVectorTypes<VecOut,VecOut,float> >::buildTranslate(unsigned outsize)
+{
+    if (! bTrans) return;
+
+    CudaTnb.clear();
+    CudaTst.clear();
+    CudaTnb.resize(outsize);
+    CudaTst.resize(outsize+1);
+
+    for (unsigned i=0; i<outsize; i++) CudaTnb[i] = 0;
+
+    for (unsigned i=0; i<map.size(); i++)
+    {
+        const topology::SparseGridTopology::Hexa cube = this->topology->getHexahedron(map[i].in_index);
+        for (int c=0; c<8; c++) CudaTnb[cube[c]]++;
+    }
+
+    CudaTst[0] = 0;
+    for (unsigned i=1; i<=outsize; i++)
+    {
+        CudaTst[i] = CudaTst[i-1] + CudaTnb[i-1];
+        CudaTnb[i-1] = 0; //clear tnb
+    }
+
+    CudaTid.clear();
+    CudaTVal.clear();
+    CudaTid.resize(CudaTst[outsize]);
+    CudaTVal.resize(CudaTst[outsize]);
+
+    for (unsigned i=0; i<map.size(); i++)
+    {
+        const topology::SparseGridTopology::Hexa cube = this->topology->getHexahedron(map[i].in_index);
+
+        const Real fx = map[i].baryCoords[0];
+        const Real fy = map[i].baryCoords[1];
+        const Real fz = map[i].baryCoords[2];
+
+        for (int c=0; c<8; c++)
+        {
+            int writepos = CudaTst[cube[c]] + CudaTnb[cube[c]];
+
+            CudaTid[writepos] = i;
+
+            if (c==0)      CudaTVal[writepos] = ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) );
+            else if (c==1) CudaTVal[writepos] = ( (   fx ) * ( 1-fy ) * ( 1-fz ) );
+            else if (c==3) CudaTVal[writepos] = ( ( 1-fx ) * (   fy ) * ( 1-fz ) );
+            else if (c==2) CudaTVal[writepos] = ( (   fx ) * (   fy ) * ( 1-fz ) );
+            else if (c==4) CudaTVal[writepos] = ( ( 1-fx ) * ( 1-fy ) * (   fz ) );
+            else if (c==5) CudaTVal[writepos] = ( (   fx ) * ( 1-fy ) * (   fz ) );
+            else if (c==7) CudaTVal[writepos] = ( ( 1-fx ) * (   fy ) * (   fz ) );
+            else if (c==6) CudaTVal[writepos] = ( (   fx ) * (   fy ) * (   fz ) );
+
+            CudaTnb[cube[c]]++;
+        }
+    }
+
+    sizeout = outsize;
+    bTrans = false;
+}
+
+template<>
+void BarycentricMapperSparseGridTopology<CudaVec3fTypes,CudaVec3fTypes>::apply( Out::VecCoord& out, const In::VecCoord& in )
+{
+    out.fastResize(map.size());
+    buildHexa();
+    SparseGridMapperCuda3f_apply(map.size(), CudaHexa.deviceRead(),map.deviceRead(), out.deviceWrite(), in.deviceRead());
+}
+
+template<>
+void BarycentricMapperSparseGridTopology<CudaVec3fTypes,CudaVec3fTypes>::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
+{
+    out.fastResize(map.size());
+    buildHexa();
+    SparseGridMapperCuda3f_applyJ(map.size(), CudaHexa.deviceRead(), map.deviceRead(), out.deviceWrite(), in.deviceRead());
+}
+
+template<>
+void BarycentricMapperSparseGridTopology<CudaVec3fTypes,CudaVec3fTypes>::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
+{
+    buildTranslate(out.size());
+    SparseGridMapperCuda3f_applyJT(out.size(), CudaTnb.deviceRead(),CudaTst.deviceRead(),CudaTid.deviceRead(),CudaTVal.deviceRead(), out.deviceWrite(), in.deviceRead());
+    /*
+    	for ( unsigned int i=0;i<map.size();i++ ) {
+    		Out::Deriv v = in[i];
+    		const topology::SparseGridTopology::Hexa cube = this->topology->getHexahedron ( this->map[i].in_index );
+    		const OutReal fx = ( OutReal ) map[i].baryCoords[0];
+    		const OutReal fy = ( OutReal ) map[i].baryCoords[1];
+    		const OutReal fz = ( OutReal ) map[i].baryCoords[2];
+    		out[cube[0]] += v * ( ( 1-fx ) * ( 1-fy ) * ( 1-fz ) );
+    		out[cube[1]] += v * ( (   fx ) * ( 1-fy ) * ( 1-fz ) );
+    		out[cube[3]] += v * ( ( 1-fx ) * (   fy ) * ( 1-fz ) );
+    		out[cube[2]] += v * ( (   fx ) * (   fy ) * ( 1-fz ) );
+    		out[cube[4]] += v * ( ( 1-fx ) * ( 1-fy ) * (   fz ) );
+    		out[cube[5]] += v * ( (   fx ) * ( 1-fy ) * (   fz ) );
+    		out[cube[7]] += v * ( ( 1-fx ) * (   fy ) * (   fz ) );
+    		out[cube[6]] += v * ( (   fx ) * (   fy ) * (   fz ) );
+    	}
+    */
+// 	for ( unsigned int o=0;o<out.size();o++ ) {
+// 	    for (unsigned n=CudaTst[o];n<CudaTst[o]+CudaTnb[o];n++) {
+// 	      out[o] += in[CudaTid[n]] * CudaTVal[n];
+// 	    }
+// 	}
+
+
+
+}
+
+template<>
+void BarycentricMapperSparseGridTopology<CudaVec3fTypes,CudaVec3fTypes>::applyJT( In::VecConst& /*out*/, const Out::VecConst& /*in*/ )
+{
+}
+
+template<>
+void BarycentricMapperSparseGridTopology<CudaVec3fTypes,CudaVec3fTypes>::draw( const Out::VecCoord& /*out*/, const In::VecCoord& /*in*/)
+{
+}
+
+template<>
+void BarycentricMapperSparseGridTopology<CudaVec3f1Types,CudaVec3f1Types>::apply( Out::VecCoord& out, const In::VecCoord& in )
+{
+    out.fastResize(map.size());
+    buildHexa();
+    SparseGridMapperCuda3f1_apply(map.size(), CudaHexa.deviceRead(), map.deviceRead(), out.deviceWrite(), in.deviceRead());
+}
+
+template<>
+void BarycentricMapperSparseGridTopology<CudaVec3f1Types,CudaVec3f1Types>::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
+{
+    out.fastResize(map.size());
+    buildHexa();
+    SparseGridMapperCuda3f1_applyJ(map.size(), CudaHexa.deviceRead(), map.deviceRead(), out.deviceWrite(), in.deviceRead());
+}
+
+template<>
+void BarycentricMapperSparseGridTopology<CudaVec3f1Types,CudaVec3f1Types>::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
+{
+    buildTranslate(out.size());
+    SparseGridMapperCuda3f1_applyJT(out.size(), CudaTnb.deviceRead(),CudaTst.deviceRead(),CudaTid.deviceRead(),CudaTVal.deviceRead(), out.deviceWrite(), in.deviceRead());
+}
+
+template<>
+void BarycentricMapperSparseGridTopology<CudaVec3f1Types,CudaVec3f1Types>::applyJT( In::VecConst& /*out*/, const Out::VecConst& /*in*/ )
+{
+}
+
+template<>
+void BarycentricMapperSparseGridTopology<CudaVec3f1Types,CudaVec3f1Types>::draw( const Out::VecCoord& /*out*/, const In::VecCoord& /*in*/)
+{
+}
+
+template<>
+void BarycentricMapperSparseGridTopology<CudaVec3f1Types,CudaVec3fTypes>::apply( Out::VecCoord& out, const In::VecCoord& in )
+{
+    out.fastResize(map.size());
+    buildHexa();
+    SparseGridMapperCuda3f1_3f_apply(map.size(), CudaHexa.deviceRead(), map.deviceRead(), out.deviceWrite(), in.deviceRead());
+}
+
+template<>
+void BarycentricMapperSparseGridTopology<CudaVec3f1Types,CudaVec3fTypes>::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
+{
+    out.fastResize(map.size());
+    buildHexa();
+    SparseGridMapperCuda3f1_3f_applyJ(map.size(), CudaHexa.deviceRead(), map.deviceRead(), out.deviceWrite(), in.deviceRead());
+}
+
+template<>
+void BarycentricMapperSparseGridTopology<CudaVec3f1Types,CudaVec3fTypes>::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
+{
+    buildTranslate(out.size());
+    SparseGridMapperCuda3f1_3f_applyJT(out.size(), CudaTnb.deviceRead(),CudaTst.deviceRead(),CudaTid.deviceRead(),CudaTVal.deviceRead(), out.deviceWrite(), in.deviceRead());
+}
+
+template<>
+void BarycentricMapperSparseGridTopology<CudaVec3f1Types,CudaVec3fTypes>::applyJT( In::VecConst& /*out*/, const Out::VecConst& /*in*/ )
+{
+}
+
+template<>
+void BarycentricMapperSparseGridTopology<CudaVec3f1Types,CudaVec3fTypes>::draw( const Out::VecCoord& /*out*/, const In::VecCoord& /*in*/)
+{
+}
+
+template<>
+void BarycentricMapperSparseGridTopology<CudaVec3fTypes,CudaVec3f1Types>::apply( Out::VecCoord& out, const In::VecCoord& in )
+{
+    out.fastResize(map.size());
+    buildHexa();
+    SparseGridMapperCuda3f_3f1_apply(map.size(), CudaHexa.deviceRead(), map.deviceRead(), out.deviceWrite(), in.deviceRead());
+}
+
+template<>
+void BarycentricMapperSparseGridTopology<CudaVec3fTypes,CudaVec3f1Types>::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
+{
+    out.fastResize(map.size());
+    buildHexa();
+    SparseGridMapperCuda3f_3f1_applyJ(map.size(), CudaHexa.deviceRead(), map.deviceRead(), out.deviceWrite(), in.deviceRead());
+}
+
+template<>
+void BarycentricMapperSparseGridTopology<CudaVec3fTypes,CudaVec3f1Types>::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
+{
+    buildTranslate(out.size());
+    SparseGridMapperCuda3f_3f1_applyJT(out.size(), CudaTnb.deviceRead(),CudaTst.deviceRead(),CudaTid.deviceRead(),CudaTVal.deviceRead(), out.deviceWrite(), in.deviceRead());
+}
+
+template<>
+void BarycentricMapperSparseGridTopology<CudaVec3fTypes,CudaVec3f1Types>::applyJT( In::VecConst& /*out*/, const Out::VecConst& /*in*/ )
+{
+}
+
+template<>
+void BarycentricMapperSparseGridTopology<CudaVec3fTypes,CudaVec3f1Types>::draw( const Out::VecCoord& /*out*/, const In::VecCoord& /*in*/)
+{
+}
+
 
 
 ////////////////////////////////////////////////////////////
