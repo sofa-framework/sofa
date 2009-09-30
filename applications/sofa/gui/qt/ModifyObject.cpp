@@ -306,7 +306,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
             }
 
             {
-// 		  if (hideData(it->second)) continue;
+                if (hideData(it->second)) continue;
                 std::string box_name(oss.str());
                 box = new Q3GroupBox(currentTab, QString(box_name.c_str()));
                 box->setColumns(4);
