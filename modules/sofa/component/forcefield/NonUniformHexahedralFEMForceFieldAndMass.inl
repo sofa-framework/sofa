@@ -123,24 +123,14 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::reinit()
             M[u][v] = (Real) (_material.mass/216.0);
 
             const unsigned int q = u ^ v;
-
-            for(unsigned int k=0; k<3; ++k)
-            {
-                if((q & (1 << k)) == 0)
-                {
-                    M[u][v] *= (Real) 2.0;
-                }
-            }
+            if ((q&1)==((q&2) >> 1)) M[u][v] *= (Real) 2.0;
+            if (!((q&2) >> 1))       M[u][v] *= (Real) 2.0;
+            if (!(q>>2))             M[u][v] *= (Real) 2.0;
 
             for(unsigned int k=0; k<3; ++k)
                 for(unsigned int j=0; j<3; ++j)
-                {
                     _material.M[3*u+k][3*v+j] = (k%3==j%3)?M[u][v]:0.0;
-                }
         }
-
-    swapNodes(2,3, _material.M);
-    swapNodes(6,7, _material.M);
 
     _H.resize(level+1);
 
@@ -938,38 +928,6 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::computeHtfineH(const Mat88& H,
                 if(i%3==k%3)
                     HtfineH[i][j] += H[k/3][i/3] * A[k][j];		// HtfineH = Ht * A
             }
-}
-
-template<class T>
-void NonUniformHexahedralFEMForceFieldAndMass<T>::swapNodes(const int i, const int j,
-        ElementStiffness& mat) const
-{
-    const int nbLines = mat.getNbLines();
-    const int nbCols = mat.getNbCols();
-
-    for(int w=0; w<3; ++w)
-    {
-        const int I = 3*i + w;
-        const int J = 3*j + w;
-
-        typename ElementStiffness::Line line_I = mat.line(I);
-        typename ElementStiffness::Line line_J = mat.line(J);
-
-        for(int k=0; k<nbLines; ++k)
-        {
-            mat[J][k] = line_I[k];
-            mat[I][k] = line_J[k];
-        }
-
-        typename ElementStiffness::Col col_I = mat.col(I);
-        typename ElementStiffness::Col col_J = mat.col(J);
-
-        for(int k=0; k<nbCols; ++k)
-        {
-            mat[k][J] = col_I[k];
-            mat[k][I] = col_J[k];
-        }
-    }
 }
 
 
