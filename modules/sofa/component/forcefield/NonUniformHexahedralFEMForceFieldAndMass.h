@@ -163,8 +163,6 @@ private:
             const std::set<Vec3i>& voxels) const;
 
 
-    void swapNodes(const int i, const int j, ElementStiffness& mat) const;
-
     int ijk2octree(const int i, const int j, const int k) const;
     void octree2ijk(const int octreeIdx, int &i, int &j, int &k) const;
     Vec3i octree2voxel(const int octreeIdx) const;
