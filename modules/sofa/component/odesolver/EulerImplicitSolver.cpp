@@ -51,6 +51,7 @@ EulerImplicitSolver::EulerImplicitSolver()
     : f_rayleighStiffness( initData(&f_rayleighStiffness,0.1,"rayleighStiffness","Rayleigh damping coefficient related to stiffness") )
     , f_rayleighMass( initData(&f_rayleighMass,0.1,"rayleighMass","Rayleigh damping coefficient related to mass"))
     , f_velocityDamping( initData(&f_velocityDamping,0.,"vdamping","Velocity decay coefficient (no decay if null)") )
+    , f_firstOrder (initData(&f_firstOrder, false, "firstOrder", "Use backward Euler scheme for first order ode system."))
     , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
 {
 }
@@ -89,6 +90,7 @@ void EulerImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior:
     double h = dt;
     //const bool printLog = f_printLog.getValue();
     const bool verbose  = f_verbose.getValue();
+    const bool firstOrder = f_firstOrder.getValue();
 
     //projectResponse(vel);          // initial velocities are projected to the constrained space
 
@@ -96,12 +98,16 @@ void EulerImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior:
     // accumulation through mappings is disabled as it will be done by addMBKv after all factors are computed
     computeForce(b, true, false);             // b = f0
 
-    // new more powerful visitors
-    // b += (h+rs)df/dx v - rd M v
-    // values are not cleared so that contributions from computeForces are kept and accumulated through mappings once at the end
-    addMBKv(b, (f_rayleighMass.getValue() == 0.0 ? 0.0 : -f_rayleighMass.getValue()), 0, h+f_rayleighStiffness.getValue(), false, true);
+    if (!firstOrder)
+    {
+        // new more powerful visitors
+        // b += (h+rs)df/dx v - rd M v
+        // values are not cleared so that contributions from computeForces are kept and accumulated through mappings once at the end
+        addMBKv(b, (f_rayleighMass.getValue() == 0.0 ? 0.0 : -f_rayleighMass.getValue()), 0, h+f_rayleighStiffness.getValue(), false, true);
 
-    b.teq(h);                           // b = h(f0 + (h+rs)df/dx v - rd M v)
+        b.teq(h);                           // b = h(f0 + (h+rs)df/dx v - rd M v)
+    }
+
 
     if( verbose )
         serr<<"EulerImplicitSolver, f0 = "<< b <<sendl;
@@ -111,8 +117,13 @@ void EulerImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior:
     if( verbose )
         serr<<"EulerImplicitSolver, projected f0 = "<< b <<sendl;
 
+
     MultiMatrix matrix(this);
-    matrix = MechanicalMatrix::K * (-h*(h+f_rayleighStiffness.getValue())) + MechanicalMatrix::B * (-h) + MechanicalMatrix::M * (1+h*f_rayleighMass.getValue());
+
+    if (firstOrder)
+        matrix = MechanicalMatrix::K * (-h) + MechanicalMatrix::M;
+    else
+        matrix = MechanicalMatrix::K * (-h*(h+f_rayleighStiffness.getValue())) + MechanicalMatrix::B * (-h) + MechanicalMatrix::M * (1+h*f_rayleighMass.getValue());
 
     //if( verbose )
 //	serr<<"EulerImplicitSolver, matrix = "<< (MechanicalMatrix::K * (-h*(h+f_rayleighStiffness.getValue())) + MechanicalMatrix::M * (1+h*f_rayleighMass.getValue())) << " = " << matrix <<sendl;
@@ -120,7 +131,7 @@ void EulerImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior:
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode("SystemSolution");
 #endif
-    matrix.solve(x, b);
+    matrix.solve(x, b); //Call to ODE resolution.
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode("SystemSolution");
 #endif
@@ -132,22 +143,44 @@ void EulerImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior:
     MultiVector newPos(this, xResult);
     MultiVector newVel(this, vResult);
 #ifdef SOFA_NO_VMULTIOP // unoptimized version
-    //vel.peq( x );                       // vel = vel + x
-    newVel.eq(vel, x);
-    //pos.peq( vel, h );                  // pos = pos + h vel
-    newPos.eq(pos, newVel, h);
+    if (firstOrder)
+    {
+        newVel.eq(x);                         // vel = x
+        newPos.eq(pos, newVel, h);            // pos = pos + h vel
+    }
+    else
+    {
+        //vel.peq( x );                       // vel = vel + x
+        newVel.eq(vel, x);
+        //pos.peq( vel, h );                  // pos = pos + h vel
+        newPos.eq(pos, newVel, h);
+    }
+
 
 #else // single-operation optimization
     {
         typedef core::componentmodel::behavior::BaseMechanicalState::VMultiOp VMultiOp;
         VMultiOp ops;
-        ops.resize(2);
-        ops[0].first = (VecId)newVel;
-        ops[0].second.push_back(std::make_pair((VecId)vel,1.0));
-        ops[0].second.push_back(std::make_pair((VecId)x,1.0));
-        ops[1].first = (VecId)newPos;
-        ops[1].second.push_back(std::make_pair((VecId)pos,1.0));
-        ops[1].second.push_back(std::make_pair((VecId)newVel,h));
+        if (firstOrder)
+        {
+            ops.resize(2);
+            ops[0].first = (VecId)newVel;
+            ops[0].second.push_back(std::make_pair((VecId)x,1.0));
+            ops[1].first = (VecId)newPos;
+            ops[1].second.push_back(std::make_pair((VecId)pos,1.0));
+            ops[1].second.push_back(std::make_pair((VecId)newVel,h));
+        }
+        else
+        {
+            ops.resize(2);
+            ops[0].first = (VecId)newVel;
+            ops[0].second.push_back(std::make_pair((VecId)vel,1.0));
+            ops[0].second.push_back(std::make_pair((VecId)x,1.0));
+            ops[1].first = (VecId)newPos;
+            ops[1].second.push_back(std::make_pair((VecId)pos,1.0));
+            ops[1].second.push_back(std::make_pair((VecId)newVel,h));
+        }
+
         simulation::MechanicalVMultiOpVisitor vmop(ops);
         vmop.setTags(this->getTags());
         vmop.execute(this->getContext());
