@@ -479,6 +479,7 @@ void VisualModelImpl::init()
         useTopology = false;
     }
 
+
     field_vertices.beginEdit();
     field_vnormals.beginEdit();
     field_vtexcoords.beginEdit();
@@ -754,6 +755,12 @@ void VisualModelImpl::updateVisual()
         updateBuffers();
         modified = false;
     }
+
+    field_vertices.updateIfDirty();
+    field_vnormals.updateIfDirty();
+    field_vtexcoords.updateIfDirty();
+    field_triangles.updateIfDirty();
+    field_quads.updateIfDirty();
 }
 
 
