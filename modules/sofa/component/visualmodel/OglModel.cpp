@@ -54,7 +54,7 @@ int OglModelClass = core::RegisterObject("Generic visual model for OpenGL displa
 
 OglModel::OglModel()
     : premultipliedAlpha(initData(&premultipliedAlpha, (bool) false, "premultipliedAlpha", "is alpha premultiplied ?"))
-#ifdef SOFA_HAVE_GLEW
+#ifndef SOFA_HAVE_GLEW
     , useVBO(initData(&useVBO, (bool) false, "useVBO", "Use VBO for rendering"))
 #else
     , useVBO(initData(&useVBO, (bool) true, "useVBO", "Use VBO for rendering"))
