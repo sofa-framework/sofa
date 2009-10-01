@@ -32,7 +32,7 @@
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec3Types.h>
 /*THIS STATIC CUBE SIZE MUST BE CHANGE, it represents the size of the occtree cube*/
-#define CUBE_SIZE 200
+#define CUBE_SIZE 800
 #define bb_max(a,b) (((a)>(b))?(a):(b))
 #define bb_max3(a,b,c) bb_max((bb_max(a,b)),c)
 
