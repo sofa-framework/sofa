@@ -91,15 +91,6 @@ bool TComponentMouseInteraction<DataTypes>::isCompatible( core::objectmodel::Bas
 {
     return (dynamic_cast<MouseContainer*>(context->getMechanicalState()) != NULL);
 }
-
-
-typedef helper::Factory<std::string, ComponentMouseInteraction, core::objectmodel::BaseContext*> ComponentMouseInteractionFactory;
-
-#ifdef WIN32
-helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory, TComponentMouseInteraction<defaulttype::Vec3dTypes> > ComponentMouseInteractionVec3dClass ("MouseSpringVec3d",true);
-helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory, TComponentMouseInteraction<defaulttype::Vec3fTypes> > ComponentMouseInteractionVec3fClass ("MouseSpringVec3f",true);
-#endif
-
 }
 }
 }

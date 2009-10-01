@@ -34,7 +34,23 @@ namespace component
 
 namespace collision
 {
+#ifndef WIN32
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, RemovePrimitivePerformer >  RemovePrimitivePerformerClass("RemovePrimitive");
+#endif
+void RemovePrimitivePerformer::execute()
+{
+    BodyPicked picked=this->interactor->getBodyPicked();
+    if (!picked.body) return;
+    core::CollisionElementIterator collisionElement( picked.body, picked.indexCollisionElement);
+
+    sofa::core::componentmodel::topology::TopologyModifier* topologyModifier;
+    picked.body->getContext()->get(topologyModifier);
+
+    // Handle Removing of topological element (from any type of topology)
+    if(topologyModifier) topologyChangeManager.removeItemsFromCollisionModel(collisionElement);
+    picked.body=NULL;
+    this->interactor->setBodyPicked(picked);
+}
 }
 }
 }

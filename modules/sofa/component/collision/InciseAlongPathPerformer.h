@@ -38,7 +38,7 @@ namespace component
 
 namespace collision
 {
-class InciseAlongPathPerformer: public InteractionPerformer
+class SOFA_COMPONENT_COLLISION_API InciseAlongPathPerformer: public InteractionPerformer
 {
 public:
     InciseAlongPathPerformer(BaseMouseInteractor *i):InteractionPerformer(i) {};

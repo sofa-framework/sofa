@@ -33,13 +33,21 @@
 #include <sofa/simulation/common/Node.h>
 
 #include <sofa/component/container/MechanicalObject.h>
+
 #include <sofa/component/collision/RayModel.h>
-#include <sofa/component/collision/ComponentMouseInteraction.h>
+#include <sofa/component/collision/MouseInteractor.h>
 
 #include <sofa/helper/fixed_array.h>
 
 namespace sofa
 {
+namespace component
+{
+namespace collision
+{
+class ComponentMouseInteraction;
+}
+}
 
 namespace gui
 {
