@@ -54,10 +54,10 @@ int OglModelClass = core::RegisterObject("Generic visual model for OpenGL displa
 
 OglModel::OglModel()
     : premultipliedAlpha(initData(&premultipliedAlpha, (bool) false, "premultipliedAlpha", "is alpha premultiplied ?"))
-#ifdef SOFA_HAVE_VBO
-    , useVBO(initData(&useVBO, (bool) true, "useVBO", "Use VBO for rendering"))
-#else
+#ifdef SOFA_HAVE_GLEW
     , useVBO(initData(&useVBO, (bool) false, "useVBO", "Use VBO for rendering"))
+#else
+    , useVBO(initData(&useVBO, (bool) true, "useVBO", "Use VBO for rendering"))
 #endif
     , writeZTransparent(initData(&writeZTransparent, (bool) false, "writeZTransparent", "Write into Z Buffer for Transparent Object"))
     , tex(NULL), canUseVBO(false), VBOGenDone(false), initDone(false), useTriangles(false), useQuads(false)
@@ -208,7 +208,6 @@ void OglModel::internalDraw()
         glMultMatrixf(matrix);
 
         //glutWireCube( 3 );
-
         if (VBOGenDone && useVBO.getValue())
         {
 #ifdef SOFA_HAVE_GLEW
@@ -301,12 +300,15 @@ void OglModel::initVisual()
 #ifdef SOFA_HAVE_GLEW
     //This test is not enough to detect if we can enable the VBO.
     canUseVBO = (GLEW_ARB_vertex_buffer_object!=0);
+#endif
+
     if (useVBO.getValue() && !canUseVBO)
     {
         std::cerr << "OglModel : VBO is not supported by your GPU ; will use display list instead" << std::endl;
     }
-#endif
+
     updateBuffers();
+
 }
 
 void OglModel::initTextures()
