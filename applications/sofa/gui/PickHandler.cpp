@@ -44,8 +44,12 @@
 namespace sofa
 {
 using namespace component::collision;
+#ifndef SOFA_FLOAT
 helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory,TComponentMouseInteraction<defaulttype::Vec3dTypes> > ComponentMouseInteractionVec3dClass ("MouseSpringVec3d",true);
+#endif
+#ifndef SOFA_DOUBLE
 helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory, TComponentMouseInteraction<defaulttype::Vec3fTypes> > ComponentMouseInteractionVec3fClass ("MouseSpringVec3f",true);
+#endif
 
 namespace gui
 {
