@@ -297,10 +297,18 @@ void main()
 #endif
 
 #if defined (PERLIN_NOISE_COLOR) 
-
+	color.a = 1.0;
 	//color *= 0.8+0.2*noise(positionW*10);
 	//color *= 0.8+0.2*perlin_noise(positionW, 4, 1.0);
-	color += perlinColorFactor*(perlin_noise(positionW, perlinColorFrequency, perlinColorOctave, perlinColorPersistance));
+	
+	//color = perlinColorFactor + (perlin_noise(positionW, perlinColorFrequency, perlinColorOctave, perlinColorPersistance));
+	
+	float perlinColor = perlin_noise(positionW, perlinColorFrequency, perlinColorOctave, perlinColorPersistance);
+	color.rgb =  perlinColorFactor.rgb * (color.rgb+perlinColor);
+	//color.a += (perlinColor);
+	
+	//color *= vec4(0.0,0.0,0.0,0.0)*(perlin_noise(positionW, perlinColorFrequency, perlinColorOctave, perlinColorPersistance));
+	//color = perlinColorFactor;
 	//float t = perlin_noise(positionW, 4, 1.0);
 	//color.xyz = 0.8+vec3(t, t, t);
 #endif
@@ -368,7 +376,8 @@ void main()
 			//		gl_LightSource[0].linearAttenuation * dist +
 			//		gl_LightSource[0].quadraticAttenuation * dist * dist);
 	
-			phong_color += (diffuse * NdotL) /* * att */;
+			//phong_color += (diffuse * NdotL) /* * att */;
+			phong_color.rgb += (diffuse.rgb * NdotL) /* * att */;
 		}
 	}
 	
