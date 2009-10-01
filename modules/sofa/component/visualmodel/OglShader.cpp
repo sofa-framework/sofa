@@ -87,7 +87,6 @@ OglShader::~OglShader()
 
 void OglShader::init()
 {
-
     ///Vertex filenames parsing
     std::string tempStr = vertFilename.getFullPath();
     std::string file;
