@@ -38,7 +38,7 @@ namespace simulation
 
 void Visitor::execute(sofa::core::objectmodel::BaseContext* c, bool doPrefetch)
 {
-    if (getSimulation()->isPrefetchingUsed() && doPrefetch)
+    if (doPrefetch && getSimulation()->isPrefetchingUsed())
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         const std::string prefetchName=std::string("Prefetch--") + std::string(getClassName());
