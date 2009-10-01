@@ -75,6 +75,8 @@ public:
     /// Get the first path into the set of paths
     std::string getFirstPath();
 
+    const std::vector< std::string > &getPaths() const {return vpath;};
+
     /// Find file using the stored set of paths.
     /// @param basedir override current directory (optional)
     /// @param filename requested file as input, resolved file path as output

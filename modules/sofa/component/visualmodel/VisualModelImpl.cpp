@@ -141,7 +141,7 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
        texturename       (initData   (&texturename, "texturename","Name of the Texture")),
        translation       (initData   (&translation, Vector3(), "translation", "Initial Translation of the object")),
        rotation          (initData   (&rotation, Vector3(), "rotation", "Initial Rotation of the object")),
-       scale             (initData   (&scale, Vector3(1.0,1.0,1.0), "scales", "Initial Scale of the object")),
+       scale             (initData   (&scale, Vector3(1.0,1.0,1.0), "scale3d", "Initial Scale of the object")),
        scaleTex          (initData   (&scaleTex, TexCoord(1.0,1.0), "scaleTex", "Scale of the texture")),
        translationTex    (initData   (&translationTex, TexCoord(1.0,1.0), "translationTex", "Translation of the texture")),
        material(initData(&material,"material","Material")), // tex(NULL)

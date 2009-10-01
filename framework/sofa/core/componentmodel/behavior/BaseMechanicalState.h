@@ -96,7 +96,7 @@ public:
     virtual double getPX(int /*i*/) const { return 0.0; }
     virtual double getPY(int /*i*/) const { return 0.0; }
     virtual double getPZ(int /*i*/) const { return 0.0; }
-    virtual double getScale() const { return 0.0; }
+    virtual defaulttype::Vector3 getScale() const { return defaulttype::Vector3(1.0,1.0,1.0); }
 
     /// @name Integration related methods
     /// @{
@@ -134,7 +134,7 @@ public:
     virtual void applyRotation(const defaulttype::Quat q)=0;
 
     /// Scale the current state
-    virtual void applyScale(const double s)=0;
+    virtual void applyScale(const double /*sx*/,const double /*sy*/,const double /*sz*/)=0;
 
     /// Renumber the constraint ids with the given permutation vector
     virtual void renumberConstraintId(const sofa::helper::vector<unsigned>& renumbering) = 0;
