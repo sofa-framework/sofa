@@ -713,6 +713,9 @@ bool invertMatrix(Mat<2,2,real>& dest, const Mat<2,2,real>& from)
 }
 #undef MIN_DETERMINANT
 
+typedef Mat<1,1,float> Mat1x1f;
+typedef Mat<1,1,double> Mat1x1d;
+
 typedef Mat<2,2,float> Mat2x2f;
 typedef Mat<2,2,double> Mat2x2d;
 
@@ -1225,6 +1228,8 @@ struct DataTypeInfo< sofa::defaulttype::Mat<L,C,real> > : public FixedArrayTypeI
 // The next line hides all those methods from the doxygen documentation
 /// \cond TEMPLATE_OVERRIDES
 
+template<> struct DataTypeName<defaulttype::Mat1x1f> { static const char* name() { return "Mat1x1f"; } };
+template<> struct DataTypeName<defaulttype::Mat1x1d> { static const char* name() { return "Mat1x1d"; } };
 template<> struct DataTypeName<defaulttype::Mat2x2f> { static const char* name() { return "Mat2x2f"; } };
 template<> struct DataTypeName<defaulttype::Mat2x2d> { static const char* name() { return "Mat2x2d"; } };
 template<> struct DataTypeName<defaulttype::Mat3x3f> { static const char* name() { return "Mat3x3f"; } };
