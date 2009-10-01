@@ -82,7 +82,7 @@ public:
 
 
 template <class DataTypes>
-class SOFA_COMPONENT_COLLISION_API TComponentMouseInteraction : public ComponentMouseInteraction
+class TComponentMouseInteraction : public ComponentMouseInteraction
 {
     typedef sofa::component::container::MechanicalObject< defaulttype::Vec3Types > MousePosition;
     typedef sofa::component::container::MechanicalObject< DataTypes > MouseContainer;
@@ -91,13 +91,20 @@ class SOFA_COMPONENT_COLLISION_API TComponentMouseInteraction : public Component
 
 public:
 
-    void init(simulation::Node* node);
+    void  init(simulation::Node* node);
 
-    bool isCompatible( core::objectmodel::BaseContext *context) const;
+    bool  isCompatible( core::objectmodel::BaseContext *context) const;
 
 };
 
-
+#if defined(WIN32)
+#ifndef SOFA_DOUBLE
+template class SOFA_COMPONENT_COLLISION_API TComponentMouseInteraction<defaulttype::Vec3fTypes>;
+#endif
+#ifndef SOFA_FLOAT
+template class SOFA_COMPONENT_COLLISION_API TComponentMouseInteraction<defaulttype::Vec3dTypes>;
+#endif
+#endif
 }
 }
 }

@@ -34,6 +34,7 @@ namespace component
 
 namespace collision
 {
+
 ComponentMouseInteraction::ComponentMouseInteraction():parentNode(NULL), nodeRayPick(NULL)/* ,mouseCollision(NULL) */
 {
 }
