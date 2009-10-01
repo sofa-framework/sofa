@@ -25,11 +25,14 @@
 #ifndef SOFA_COMPONENT_COLLISION_REMOVEPRIMITIVEPERFORMER_H
 #define SOFA_COMPONENT_COLLISION_REMOVEPRIMITIVEPERFORMER_H
 
-#include <sofa/component/collision/InteractionPerformer.h>
 
+#include <sofa/component/collision/InteractionPerformer.h>
 #include <sofa/component/collision/TopologicalChangeManager.h>
 #include <sofa/component/collision/MouseInteractor.h>
-
+/*
+#include <sofa/core/CollisionModel.h>
+#include <sofa/core/CollisionElement.h>
+*/
 namespace sofa
 {
 
@@ -38,26 +41,13 @@ namespace component
 
 namespace collision
 {
-class RemovePrimitivePerformer: public InteractionPerformer
+class SOFA_COMPONENT_COLLISION_API RemovePrimitivePerformer: public InteractionPerformer
 {
 public:
     RemovePrimitivePerformer(BaseMouseInteractor *i):InteractionPerformer(i) {};
 
     void start() {};
-    void execute()
-    {
-        BodyPicked picked=this->interactor->getBodyPicked();
-        if (!picked.body) return;
-        core::CollisionElementIterator collisionElement( picked.body, picked.indexCollisionElement);
-
-        sofa::core::componentmodel::topology::TopologyModifier* topologyModifier;
-        picked.body->getContext()->get(topologyModifier);
-
-        // Handle Removing of topological element (from any type of topology)
-        if(topologyModifier) topologyChangeManager.removeItemsFromCollisionModel(collisionElement);
-        picked.body=NULL;
-        this->interactor->setBodyPicked(picked);
-    };
+    void execute();
     void draw() {};
 
 protected:

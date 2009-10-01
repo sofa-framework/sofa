@@ -28,20 +28,40 @@
 #include <sofa/gui/PickHandler.h>
 #include <sofa/component/collision/InteractionPerformer.h>
 #include <sofa/helper/Factory.inl>
-
+#include <sofa/component/collision/ComponentMouseInteraction.h>
 #include <sofa/component/collision/AttachBodyPerformer.h>
 #include <sofa/component/collision/FixParticlePerformer.h>
 #ifdef SOFA_DEV
 #include <sofa/component/collision/SculptBodyPerformer.h>
 #endif
+#include <sofa/component/collision/RemovePrimitivePerformer.h>
+#include <sofa/component/collision/InciseAlongPathPerformer.h>
 
 namespace sofa
 {
 
+using namespace component::collision;
+#ifdef WIN32
+#ifndef SOFA_DOUBLE
+helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer<defaulttype::Vec3fTypes> >  AttachBodyPerformerVec3fClass("AttachBody",true);
+helper::Creator<InteractionPerformer::InteractionPerformerFactory, FixParticlePerformer<defaulttype::Vec3fTypes> >  FixParticlePerformerVec3fClass("FixParticle",true);
+#ifdef SOFA_DEV
+helper::Creator<InteractionPerformer::InteractionPerformerFactory, SculptBodyPerformer<defaulttype::Vec3fTypes> >  SculptBodyPerformerVec3fClass("SculptBody",true);
+#endif
+#endif
+#ifndef SOFA_FLOAT
+helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer<defaulttype::Vec3dTypes> >  AttachBodyPerformerVec3dClass("AttachBody",true);
+helper::Creator<InteractionPerformer::InteractionPerformerFactory, FixParticlePerformer<defaulttype::Vec3dTypes> >  FixParticlePerformerVec3dClass("FixParticle",true);
+#ifdef SOFA_DEV
+helper::Creator<InteractionPerformer::InteractionPerformerFactory, SculptBodyPerformer<defaulttype::Vec3dTypes> >  SculptBodyPerformerVec3dClass("SculptBody",true);
+#endif
+#endif
+helper::Creator<InteractionPerformer::InteractionPerformerFactory, RemovePrimitivePerformer >  RemovePrimitivePerformerClass("RemovePrimitive");
+helper::Creator<InteractionPerformer::InteractionPerformerFactory, InciseAlongPathPerformer>  InciseAlongPathPerformerClass("InciseAlongPath");
+#endif
+
 namespace gui
 {
-
-
 //*******************************************************************************************
 void AttachOperation::start()
 {

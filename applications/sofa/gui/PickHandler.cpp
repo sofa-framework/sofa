@@ -26,21 +26,26 @@
 ******************************************************************************/
 #include <sofa/gui/PickHandler.h>
 
+#include <sofa/component/collision/ComponentMouseInteraction.h>
 #include <sofa/component/collision/RayContact.h>
 
 #include <sofa/simulation/common/InitVisitor.h>
 #include <sofa/simulation/common/DeleteVisitor.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 
+#include <sofa/helper/Factory.inl>
 
 #include <iostream>
 
-#include <sofa/helper/Factory.inl>
-#include <sofa/component/collision/ComponentMouseInteraction.inl>
+
+
 
 
 namespace sofa
 {
+using namespace component::collision;
+helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory,TComponentMouseInteraction<defaulttype::Vec3dTypes> > ComponentMouseInteractionVec3dClass ("MouseSpringVec3d",true);
+helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory, TComponentMouseInteraction<defaulttype::Vec3fTypes> > ComponentMouseInteractionVec3fClass ("MouseSpringVec3f",true);
 
 namespace gui
 {

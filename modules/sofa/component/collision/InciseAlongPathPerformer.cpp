@@ -34,7 +34,9 @@ namespace component
 
 namespace collision
 {
+#ifndef WIN32
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, InciseAlongPathPerformer>  InciseAlongPathPerformerClass("InciseAlongPath");
+#endif
 }
 }
 }

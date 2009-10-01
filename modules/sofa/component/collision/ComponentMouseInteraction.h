@@ -82,7 +82,7 @@ public:
 
 
 template <class DataTypes>
-class TComponentMouseInteraction : public ComponentMouseInteraction
+class SOFA_COMPONENT_COLLISION_API TComponentMouseInteraction : public ComponentMouseInteraction
 {
     typedef sofa::component::container::MechanicalObject< defaulttype::Vec3Types > MousePosition;
     typedef sofa::component::container::MechanicalObject< DataTypes > MouseContainer;
