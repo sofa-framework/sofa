@@ -15,5 +15,5 @@
        - Vec1f
 
      Example of use:
-     <include href="Objects/DynamicSparseGridGeometryAlgorithms.xml" template="Vec1d" />
+     <include href="Objects/DynamicSparseGridTopology.xml" template="Vec1d" />
 -->
