@@ -70,7 +70,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     : x(new VecCoord), v(new VecDeriv), f(new VecDeriv), externalForces(new VecDeriv), dx(new VecDeriv), x0(new VecCoord),reset_position(NULL), v0(NULL), xfree(new VecCoord), vfree(new VecDeriv), c(new VecConst)
     , translation(initData(&translation, Vector3(), "translation", "Translation of the DOFs"))
     , rotation(initData(&rotation, Vector3(), "rotation", "Rotation of the DOFs"))
-    , scale(initData(&scale, (SReal)1.0, "scale", "Scale of the DOFs"))
+    , scale(initData(&scale, Vector3(1.0,1.0,1.0), "scale3d", "Scale of the DOFs in 3 dimensions"))
     , translation2(initData(&translation2, Vector3(), "translation2", "Translation of the DOFs, applied after the rest position has been computed"))
     , rotation2(initData(&rotation2, Vector3(), "rotation2", "Rotation of the DOFs, applied the after the rest position has been computed"))
     , filename(initData(&filename, std::string(""), "filename", "File corresponding to the Mechanical Object", false))
@@ -215,30 +215,27 @@ void MechanicalObject<DataTypes>::parse ( BaseObjectDescription* arg )
         filename.setValue(std::string("")); //clear the field filename: When we save the scene, we don't need anymore the filename
     }
 
-//      unsigned int size0 = getX()->size();
     Inherited::parse(arg);
-//      if (arg->getAttribute("size")!=NULL) {
-//        resize( atoi(arg->getAttribute("size")) );
-//      }
-//      else if (getX()->size() != size0)
-//        resize( getX()->size() );
-//
-//      //obj->parseTransform(arg);
-//      if (arg->getAttribute("scale")!=NULL) {
-//	scale.setValue((SReal)atof(arg->getAttribute("scale")));
-//	//applyScale(scale.getValue());
-//      }
+
+    // DEPRECATED: Warning, you should not use these parameters, but a TransformEngine instead
+    if (arg->getAttribute("scale")!=NULL)
+    {
+        SReal s=(SReal)atof(arg->getAttribute("scale","1.0"));
+        scale.setValue(Vector3(s,s,s));
+    }
+
+    if (arg->getAttribute("sx")!=NULL || arg->getAttribute("sy")!=NULL || arg->getAttribute("sz")!=NULL)
+    {
+        scale.setValue(Vector3((SReal)(atof(arg->getAttribute("sx","1.0"))),(SReal)(atof(arg->getAttribute("sy","1.0"))),(SReal)(atof(arg->getAttribute("sz","1.0")))));
+    }
+
     if (arg->getAttribute("rx")!=NULL || arg->getAttribute("ry")!=NULL || arg->getAttribute("rz")!=NULL)
     {
         rotation.setValue(Vector3((SReal)(atof(arg->getAttribute("rx","0.0"))),(SReal)(atof(arg->getAttribute("ry","0.0"))),(SReal)(atof(arg->getAttribute("rz","0.0")))));
-
-        //Quaternion q=helper::Quater<SReal>::createQuaterFromEuler( Vec<3,SReal>(rotation.getValue()[0],rotation.getValue()[1],rotation.getValue()[2]));
-        //applyRotation(q);
     }
     if (arg->getAttribute("dx")!=NULL || arg->getAttribute("dy")!=NULL || arg->getAttribute("dz")!=NULL)
     {
         translation.setValue(Vector3((Real)atof(arg->getAttribute("dx","0.0")), (Real)atof(arg->getAttribute("dy","0.0")), (Real)atof(arg->getAttribute("dz","0.0"))));
-        //applyTranslation(translation.getValue()[0],translation.getValue()[1],translation.getValue()[2]);
     }
     if (arg->getAttribute("rx2")!=NULL || arg->getAttribute("ry2")!=NULL || arg->getAttribute("rz2")!=NULL)
     {
@@ -667,7 +664,7 @@ void MechanicalObject<defaulttype::Rigid3dTypes>::applyRotation (const defaultty
 /*    template <>
 	bool MechanicalObject<Vec1dTypes>::addBBox(double* minBBox, double* maxBBox)*/;
 #endif
-#ifndef SOFA_Real
+#ifndef SOFA_DOUBLE
 template<>
 void MechanicalObject<defaulttype::Rigid3fTypes>::applyRotation (const defaulttype::Quat q);
 //     template <>
@@ -675,13 +672,16 @@ void MechanicalObject<defaulttype::Rigid3fTypes>::applyRotation (const defaultty
 #endif
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::applyScale(const double s)
+void MechanicalObject<DataTypes>::applyScale(const double sx,const double sy,const double sz)
 {
 //       std::cout << "MechanicalObject : applyScale " << this->getName() << " s=" << s << "\n";
     VecCoord& x = *this->getX();
+    const Vector3 s(sx,sy,sz);
     for (unsigned int i=0; i<x.size(); i++)
     {
-        x[i] *= (Real)s;
+        x[i][0] = x[i][0]*sx;
+        x[i][1] = x[i][1]*sy;
+        x[i][2] = x[i][2]*sz;
     }
 }
 
@@ -1225,10 +1225,10 @@ void MechanicalObject<DataTypes>::reinit()
     sofa::component::topology::RegularGridTopology *grid; this->getContext()->get(grid, BaseContext::Local);
     if (grid) p0 = grid->getP0();
 
-    if (scale.getValue() != (SReal)1.0)
+    if (scale.getValue() != Vector3(1.0,1.0,1.0))
     {
-        this->applyScale(scale.getValue());
-        p0 *= scale.getValue();
+        this->applyScale(scale.getValue()[0],scale.getValue()[1],scale.getValue()[2]);
+        p0 = p0.linearProduct(scale.getValue());
     }
 
     if (rotation.getValue()[0]!=0.0 || rotation.getValue()[1]!=0.0 || rotation.getValue()[2]!=0.0)
@@ -1254,7 +1254,7 @@ void MechanicalObject<DataTypes>::reinit()
 
     translation.setValue(Vector3());
     rotation.setValue(Vector3());
-    scale.setValue((SReal)1.0);
+    scale.setValue(Vector3(1.0,1.0,1.0));
 }
 template <class DataTypes>
 void MechanicalObject<DataTypes>::storeResetState()

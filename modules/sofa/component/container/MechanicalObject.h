@@ -102,7 +102,7 @@ protected:
     bool initialized;
     Data< Vector3 > translation;
     Data< Vector3> rotation;
-    Data< SReal > scale;
+    Data< Vector3 > scale;
     Data< Vector3 > translation2;
     Data< Vector3> rotation2;
     sofa::core::objectmodel::DataFileName filename;
@@ -181,7 +181,7 @@ public:
     virtual const VecCoord* getXfree() const { return xfree; }
     virtual const VecDeriv* getVfree()  const { return vfree;  }
 
-    virtual double getScale() const {return scale.getValue();};
+    virtual Vector3 getScale() const {return scale.getValue();};
 
     virtual void init();
     virtual void reinit();
@@ -261,7 +261,7 @@ public:
 
     virtual void applyRotation (const defaulttype::Quat q);
 
-    virtual void applyScale (const double s);
+    virtual void applyScale (const double sx,const double sy,const double sz);
 
     /// Get the indices of the particles located in the given bounding box
     void getIndicesInSpace(sofa::helper::vector<unsigned>& indices, Real xmin, Real xmax, Real ymin, Real ymax, Real zmin, Real zmax) const;
@@ -298,7 +298,7 @@ public:
     void setFilename(std::string s) {filename.setValue(s);};
     void setTranslation(double dx,double dy,double dz) {translation.setValue(Vector3(dx,dy,dz));};
     void setRotation(double rx,double ry,double rz) {rotation.setValue(Vector3(rx,ry,rz));};
-    void setScale(double s) {scale.setValue(s);};
+    void setScale(double sx, double sy, double sz) {scale.setValue(Vector3(sx,sy,sz));};
     void setIgnoreLoader(bool b) {ignoreLoader.setValue(b);}
 
 
