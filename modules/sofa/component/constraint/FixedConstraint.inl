@@ -181,6 +181,7 @@ void FixedConstraint<DataTypes>::projectResponse(VecDeriv& res)
 template <class DataTypes>
 void FixedConstraint<DataTypes>::projectVelocity(VecDeriv& res)
 {
+#if 0 /// @TODO ADD A FLAG FOR THIS
     const SetIndexArray & indices = f_indices.getValue().getArray();
     //serr<<"FixedConstraint<DataTypes>::projectVelocity, res.size()="<<res.size()<<sendl;
     if( f_fixAll.getValue()==true )    // fix everyting
@@ -197,6 +198,7 @@ void FixedConstraint<DataTypes>::projectVelocity(VecDeriv& res)
             res[*it] = Deriv();
         }
     }
+#endif
 }
 
 // Matrix Integration interface
