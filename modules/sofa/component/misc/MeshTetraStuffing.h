@@ -61,6 +61,7 @@ public:
 
     typedef defaulttype::Vec3Types::VecCoord SeqPoints;
     typedef sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles SeqTriangles;
+    typedef sofa::core::componentmodel::topology::BaseMeshTopology::SeqQuads SeqQuads;
     typedef sofa::core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
 
     MeshTetraStuffing();
@@ -75,6 +76,7 @@ public:
     Data< Real > size;
     Data<SeqPoints> inputPoints;
     Data<SeqTriangles> inputTriangles;
+    Data<SeqQuads> inputQuads;
     Data<SeqPoints> outputPoints;
     Data<SeqTetrahedra> outputTetrahedra;
 
