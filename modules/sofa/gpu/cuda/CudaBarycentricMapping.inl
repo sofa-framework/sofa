@@ -1185,7 +1185,7 @@ void BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>
                 for (int i=0; i<n; i++)
                 {
                     int index = map[b*maxNIn+j].d[i].i-1;
-                    std::cout << "map["<<b<<"*"<<maxNIn<<"+"<<j<<"].index["<<i<<"]="<<index<<std::endl;
+                    //std::cout << "map["<<b<<"*"<<maxNIn<<"+"<<j<<"].index["<<i<<"]="<<index<<std::endl;
                     if (index >= 0)
                     {
                         if ((unsigned)index >= nout.size()) nout.resize(index+1);
@@ -1217,7 +1217,7 @@ void BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>
                     if (index >= 0)
                     {
                         int num = nout[index]++;
-                        int bo = (index / BSIZE); index -= b*BSIZE;
+                        int bo = (index / BSIZE); index -= bo*BSIZE;
                         mapT[bo*maxNOut+num].d[index].i = b*BSIZE+i;
                         mapT[bo*maxNOut+num].d[index].val = val;
                     }
