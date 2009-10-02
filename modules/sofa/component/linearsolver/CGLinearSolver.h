@@ -285,7 +285,7 @@ inline void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,compone
 template<>
 inline void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_alpha(Vector& x, Vector& r, Vector& p, Vector& q, double alpha)
 {
-#if 1 //SOFA_NO_VMULTIOP // unoptimized version
+#ifdef SOFA_NO_VMULTIOP // unoptimized version
     x.peq(p,alpha);                 // x = x + alpha p
     r.peq(q,-alpha);                // r = r - alpha q
 #else // single-operation optimization
@@ -298,7 +298,7 @@ inline void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,compone
     ops[1].first = (VecId)r;
     ops[1].second.push_back(std::make_pair((VecId)r,1.0));
     ops[1].second.push_back(std::make_pair((VecId)q,-alpha));
-    simulation::tree::MechanicalVMultiOpVisitor vmop(ops);
+    simulation::MechanicalVMultiOpVisitor vmop(ops);
     vmop.execute(this->getContext());
 #endif
 }
