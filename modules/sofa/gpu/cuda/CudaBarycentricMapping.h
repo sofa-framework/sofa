@@ -181,6 +181,8 @@ protected:
     core::componentmodel::topology::BaseMeshTopology* topology;
     void resizeMap(int size2, int maxNIn2);
     void setMap(int outIndex, int j, int inIndex, Real val);
+    float getMapValue(int outIndex, int j);
+    int getMapIndex(int outIndex, int j);
     void calcMapT();
 public:
     BarycentricMapperMeshTopology(core::componentmodel::topology::BaseMeshTopology* topology, core::componentmodel::behavior::BaseMechanicalState::ParticleMask *, core::componentmodel::behavior::BaseMechanicalState::ParticleMask *)
