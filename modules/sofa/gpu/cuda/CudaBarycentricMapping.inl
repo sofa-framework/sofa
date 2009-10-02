@@ -945,7 +945,7 @@ void BarycentricMapperMeshTopology<gpu::cuda::CudaVectorTypes<VecIn,VecIn,float>
                 addPointInCube(index-c0, coefs.ptr());
         }
     }
-    std::cout << "CUDA: BarycentricMapperMeshTopology: map initialized, "<<size<<" output points, max "<<maxNIn<<" inputs points per output, "<<map.size()*BSIZE<<" contributions total."<<std::endl;
+    std::cout << "CUDA: BarycentricMapperMeshTopology: map initialized, "<<size<<" output points, " << outside << " points ouside input mesh, max "<<maxNIn<<" inputs points per output, "<<map.size()*BSIZE<<" contributions total."<<std::endl;
 }
 
 

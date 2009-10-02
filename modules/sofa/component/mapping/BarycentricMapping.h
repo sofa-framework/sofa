@@ -940,6 +940,7 @@ protected:
 
 public:
 
+    Data<bool> useRestPosition;
 #ifdef SOFA_DEV
     //--- partial mapping test
     Data<bool> sleeping;
@@ -949,6 +950,7 @@ public:
         : Inherit(from, to), mapper(NULL)
         , f_grid (new DataPtr< RegularGridMapper >( new RegularGridMapper( NULL,NULL,NULL ),"Regular Grid Mapping"))
         , f_hexaMapper (new DataPtr< HexaMapper >( new HexaMapper(  ),"Hexahedron Mapper"))
+        , useRestPosition(core::objectmodel::Base::initData(&useRestPosition, false, "useRestPosition", "Use the rest position of the input and output models to initialize the mapping"))
 #ifdef SOFA_DEV
         , sleeping(core::objectmodel::Base::initData(&sleeping, false, "sleeping", "is the mapping sleeping (not computed)"))
 #endif

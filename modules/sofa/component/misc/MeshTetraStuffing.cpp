@@ -56,6 +56,7 @@ MeshTetraStuffing::MeshTetraStuffing()
     , size(initData(&size,(Real)-8.0,"size","Size of the generate tetrahedra. If negative, number of grid cells in the largest bbox dimension"))
     , inputPoints(initData(&inputPoints,"inputPoints","Input surface mesh points"))
     , inputTriangles(initData(&inputTriangles,"inputTriangles","Input surface mesh triangles"))
+    , inputQuads(initData(&inputQuads,"inputQuads","Input surface mesh quads"))
     , outputPoints(initData(&outputPoints,"outputPoints","Output volume mesh points"))
     , outputTetrahedra(initData(&outputTetrahedra,"outputTetrahedra","Output volume mesh tetrahedra"))
     , alphaLong(initData(&alphaLong,(Real)0.24999,"alphaLong","Minimum alpha values on long edges when snapping points"))
@@ -75,11 +76,22 @@ MeshTetraStuffing::~MeshTetraStuffing()
 void MeshTetraStuffing::init()
 {
     const SeqPoints& inP = inputPoints.getValue();
-    const SeqTriangles& inT = inputTriangles.getValue();
-    if (inP.empty() || inT.empty())
+    SeqTriangles inT = inputTriangles.getValue();
+    const SeqQuads& inQ = inputQuads.getValue();
+    if (inP.empty() || (inT.empty() && inQ.empty()))
     {
         serr << "Empty input mesh. Use data dependency to link them to a loaded Topology or MeshLoader" << sendl;
         return;
+    }
+    if (!inQ.empty())
+    {
+        // triangulate quads
+        inT.reserve(inQ.size()*2);
+        for (unsigned int i=0; i < inQ.size(); ++i)
+        {
+            inT.push_back(Triangle(inQ[i][0], inQ[i][1], inQ[i][2]));
+            inT.push_back(Triangle(inQ[i][0], inQ[i][2], inQ[i][3]));
+        }
     }
     SeqPoints inTN;
     helper::fixed_array<Point,2> inputBBox;
