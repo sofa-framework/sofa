@@ -187,13 +187,15 @@ void AddPreset::fileOpen()
     if (s.isNull() ) return;
     fileName=std::string (s.ascii());
 
-
     std::string::size_type loc = fileName.find( SofaPath, 0 );
     if (loc==0) fileName = fileName.substr(SofaPath.size()+1);
     else
     {
-        loc = fileName.find( relative, 0 );
-        fileName = fileName.substr(relative.size()+1);
+        if (!relative.empty())
+        {
+            loc = fileName.find( relative, 0 );
+            fileName = fileName.substr(relative.size()+1);
+        }
     }
 
     if (sender() == openFileButton0)
