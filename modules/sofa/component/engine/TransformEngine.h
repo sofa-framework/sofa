@@ -81,11 +81,6 @@ public:
     }
 
 protected:
-    void applyScale(Coord &p, const Real sx,const Real sy,const Real sz) const ;
-    void applyRotation(Coord &p, const defaulttype::Quat q) const;
-    void applyTranslation(Coord &p, const Real tx,const Real ty, const Real tz) const ;
-
-
     Data<VecCoord> f_inputX; // input position
     Data<VecCoord> f_outputX; // ouput position
     Data<defaulttype::Vector3> translation; // translation
