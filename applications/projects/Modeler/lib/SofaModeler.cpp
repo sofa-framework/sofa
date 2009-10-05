@@ -99,6 +99,7 @@ SofaModeler::SofaModeler()
     //----------------------------------------------------------------------
     //Get the different path needed
     examplePath = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + std::string( "/examples/" );
+    openPath = examplePath;
     binPath = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + std::string( "/bin/" );
     presetPath = examplePath + std::string("Objects/");
     std::string presetFile = std::string("config/preset.ini" );
@@ -333,11 +334,10 @@ void SofaModeler::fileNew( GNode* root)
 
 void SofaModeler::fileOpen()
 {
-    QString s = getOpenFileName ( this, QString(examplePath.c_str()),"Scenes (*.scn *.xml);;Simulation (*.simu);;Php Scenes (*.pscn);;All (*)", "open file dialog",  "Choose a file to open" );
+    QString s = getOpenFileName ( this, QString(openPath.c_str()),"Scenes (*.scn *.xml);;Simulation (*.simu);;Php Scenes (*.pscn);;All (*)", "open file dialog",  "Choose a file to open" );
     if (s.length() >0)
     {
         fileOpen(s);
-        examplePath = sofa::helper::system::SetDirectory::GetParentDir(s.ascii());
     }
 }
 
@@ -352,9 +352,11 @@ void SofaModeler::newTab()
     std::string newScene="config/newScene.scn";
     if (sofa::helper::system::DataRepository.findFile(newScene))
     {
+        std::string openPathPrevious = openPath;
         newScene = sofa::helper::system::DataRepository.getFile ( newScene);
         fileOpen(newScene);
         graph->setFilename("");
+        openPath = openPathPrevious;
     }
     else
     {
@@ -438,7 +440,7 @@ void SofaModeler::fileOpen(std::string filename)
     if ( sofa::helper::system::DataRepository.findFile ( filename ) )
     {
         filename =  sofa::helper::system::DataRepository.getFile ( filename );
-
+        openPath = sofa::helper::system::SetDirectory::GetParentDir(filename.c_str());
         GNode *root = NULL;
         xml::BaseElement* newXML=NULL;
         if (!filename.empty())

@@ -246,6 +246,7 @@ private:
     std::string sofaBinary;
     std::string presetPath;
     std::string examplePath;
+    std::string openPath;
     std::string binPath;
     char count;
     std::vector< std::string > exampleFiles;
