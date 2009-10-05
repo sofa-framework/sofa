@@ -8,6 +8,10 @@ SOFA_DIR = ../../../..
 TEMPLATE = lib
 include($${SOFA_DIR}/sofa.cfg)
 
+
+
+DEFINES += SOFA_BUILD_SOFAGUIQT
+
 TARGET = sofaguiqt$$LIBSUFFIX
 
 LIBS += $$SOFA_FRAMEWORK_LIBS
@@ -20,6 +24,8 @@ LIBS += $$SOFA_EXT_LIBS
 contains (DEFINES, SOFA_QT4) {	
 
 	  CONFIG += $$CONFIGLIBRARIES qt uic uic3
+	  CONFIG -= staticlib
+      CONFIG += dll
 	  QT += opengl qt3support xml
 	  FORMS3 += GUI.ui
 	  FORMS3 += BaseGenGraphForm.ui
@@ -28,10 +34,12 @@ contains (DEFINES, SOFA_QT4) {
 	  FORMS3 += MouseManager.ui
 contains (DEFINES, SOFA_DUMP_VISITOR_INFO){
 	  FORMS3 += VisitorGUI.ui
-}
+	}
 }
 else {
 	  CONFIG += $$CONFIGLIBRARIES qt
+	  CONFIG -= staticlib
+      CONFIG += dll
 	  QT += opengl	
 	  FORMS += GUI.ui
 	  FORMS += BaseGenGraphForm.ui
@@ -54,6 +62,7 @@ HEADERS += viewer/SofaViewer.h \
            GraphDataWidget.h \
            ModifyObject.h \
            SimpleDataWidget.h \
+		   SofaGUIQt.h \
            StructDataWidget.h \
            TableDataWidget.h \
            WFloatLineEdit.h \ 
@@ -109,7 +118,6 @@ contains( DEFINES, SOFA_GUI_QGLVIEWER){
 ########################################################################
 	win32{
 # why do we include lQGLViewer2 whereas in extlibs, QGLviewer creates  llQGLViewer$$LIBSUFFIX ???
-#	  LIBS += $$SOFA_EXT_LIBS -lQGLViewer2$$LIBSUFFIX
 	  LIBS += $$SOFA_EXT_LIBS -lQGLViewer$$LIBSUFFIX
 	}
 	else{

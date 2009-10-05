@@ -26,7 +26,7 @@
  ******************************************************************************/
 #ifndef SOFA_GUI_OPERATIONFACTORY_H
 #define SOFA_GUI_OPERATIONFACTORY_H
-
+#include "SofaGUI.h"
 #include <sofa/gui/MouseOperations.h>
 
 #include <iostream>
@@ -59,7 +59,7 @@ public:
 
 
 
-struct OperationFactory
+class SOFA_SOFAGUI_API OperationFactory
 {
 public:
     typedef std::map< std::string, OperationCreator* > RegisterStorage;

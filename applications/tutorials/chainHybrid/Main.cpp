@@ -35,7 +35,7 @@
 #include <sofa/component/contextobject/CoordinateSystem.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/core/objectmodel/Context.h>
-#include <sofa/gui/SofaGUI.h>
+#include <sofa/gui/GUIManager.h>
 
 //Including components for collision detection
 #include <sofa/component/collision/DefaultPipeline.h>
@@ -524,7 +524,7 @@ int main(int argc, char** argv)
 #else
     sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
 #endif
-    sofa::gui::SofaGUI::Init(argv[0]);
+    sofa::gui::GUIManager::Init(argv[0]);
 
     Node *root=createChainHybrid(simulationType);
 
@@ -535,7 +535,7 @@ int main(int argc, char** argv)
 
     //=======================================
     // Run the main loop
-    sofa::gui::SofaGUI::MainLoop(root);
+    sofa::gui::GUIManager::MainLoop(root);
 
     return 0;
 }

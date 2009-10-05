@@ -29,7 +29,7 @@
 #define GRAPHLISTENERQLISTVIEW_H
 
 
-
+#include "SofaGUIQt.h"
 
 #ifdef SOFA_QT4
 #include <Q3ListViewItem>
@@ -62,7 +62,7 @@ using sofa::simulation::MutationListener;
 
 QPixmap* getPixmap(core::objectmodel::Base* obj);
 
-class GraphListenerQListView : public MutationListener
+class SOFA_SOFAGUIQT_API GraphListenerQListView : public MutationListener
 {
 public:
     Q3ListView* widget;

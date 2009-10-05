@@ -34,7 +34,7 @@
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <sofa/gui/SofaGUI.h>
+#include <sofa/gui/GUIManager.h>
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glut.h>
 #include <sofa/helper/system/atomic.h>
@@ -82,8 +82,6 @@ int main(int argc, char** argv)
     sofa::helper::BackTrace::autodump();
 
 
-
-    sofa::gui::SofaGUI::SetProgramName(argv[0]);
     std::string fileName ;
     bool        startAnim = false;
     bool        printFactory = false;
@@ -92,12 +90,12 @@ int main(int argc, char** argv)
     std::string dimension="800x600";
     bool fullScreen = false;
 
-    std::string gui = sofa::gui::SofaGUI::GetGUIName();
+    std::string gui = "";
     std::vector<std::string> plugins;
     std::vector<std::string> files;
 
     std::string gui_help = "choose the UI (";
-    gui_help += sofa::gui::SofaGUI::ListSupportedGUI('|');
+    gui_help += sofa::gui::GUIManager::ListSupportedGUI('|');
     gui_help += ")";
 
     sofa::helper::parse(&files, "This is a SOFA application. Here are the command line arguments")
@@ -125,7 +123,7 @@ int main(int argc, char** argv)
         loadPlugin(plugins[i].c_str());
 
 
-    if (int err=sofa::gui::SofaGUI::Init(argv[0],gui.c_str()))
+    if (int err=sofa::gui::GUIManager::Init(argv[0],gui.c_str()))
         return err;
 
     if (fileName.empty())
@@ -145,14 +143,14 @@ int main(int argc, char** argv)
     }
 
 
-    if (int err=sofa::gui::SofaGUI::createGUI(NULL))
+    if (int err=sofa::gui::GUIManager::createGUI(NULL))
         return err;
 
     sofa::simulation::tree::GNode* groot = dynamic_cast<sofa::simulation::tree::GNode*>( sofa::simulation::tree::getSimulation()->load(fileName.c_str()));
     if (groot==NULL)  groot = new sofa::simulation::tree::GNode;
 
     sofa::simulation::tree::getSimulation()->init(groot);
-    sofa::gui::SofaGUI::CurrentGUI()->setScene(groot,fileName.c_str(), temporaryFile);
+    sofa::gui::GUIManager::SetScene(groot,fileName.c_str(), temporaryFile);
 
 
     //=======================================
@@ -166,7 +164,7 @@ int main(int argc, char** argv)
     {
         std::string stringWidth=dimension.substr(0,separator);
         std::string stringHeight=dimension.substr(separator+1);
-        sofa::gui::SofaGUI::CurrentGUI()->setDimension(atoi(stringWidth.c_str()), atoi(stringHeight.c_str()));
+        sofa::gui::GUIManager::SetDimension(atoi(stringWidth.c_str()), atoi(stringHeight.c_str()));
     }
 
     if (printFactory)
@@ -176,13 +174,13 @@ int main(int argc, char** argv)
         std::cout << "//////// END FACTORY ////////" << std::endl;
     }
 
-    if (fullScreen) sofa::gui::SofaGUI::CurrentGUI()->setFullScreen();
+    if (fullScreen) sofa::gui::GUIManager::SetFullScreen();
 
     //=======================================
     // Run the main loop
-    if (int err=sofa::gui::SofaGUI::MainLoop(groot,fileName.c_str()))
+    if (int err=sofa::gui::GUIManager::MainLoop(groot,fileName.c_str()))
         return err;
-    groot = dynamic_cast<sofa::simulation::tree::GNode*>( sofa::gui::SofaGUI::CurrentSimulation() );
+    groot = dynamic_cast<sofa::simulation::tree::GNode*>( sofa::gui::GUIManager::CurrentSimulation() );
 
 
     if (groot!=NULL) sofa::simulation::tree::getSimulation()->unload(groot);

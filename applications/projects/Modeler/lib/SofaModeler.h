@@ -38,11 +38,6 @@
 #include <string>
 #include <sofa/helper/Factory.h>
 
-#include <sofa/gui/SofaGUI.h>
-#include <sofa/gui/qt/RealGUI.h>
-
-
-
 #ifdef SOFA_QT4
 #include "QSofaTreeLibrary.h"
 #include <Q3ListView>

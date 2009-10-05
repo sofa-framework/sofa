@@ -49,6 +49,13 @@
 #include <string.h>
 #include <fstream>
 
+
+#ifdef SOFA_BUILD_SOFAGUIGLUT
+#	define SOFA_SOFAGUIGLUT_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#	define SOFA_SOFAGUIGLUT_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
 namespace sofa
 {
 
@@ -64,7 +71,7 @@ using namespace sofa::helper::system::thread;
 using namespace sofa::component::collision;
 
 
-class SimpleGUI : public sofa::gui::SofaGUI
+class SOFA_SOFAGUIGLUT_API SimpleGUI : public sofa::gui::SofaGUI
 {
 
 public:

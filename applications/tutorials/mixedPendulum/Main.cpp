@@ -34,7 +34,7 @@
 #include <sofa/component/odesolver/StaticSolver.h>
 #include <sofa/component/visualmodel/OglModel.h>
 // gui
-#include <sofa/gui/SofaGUI.h>
+#include <sofa/gui/GUIManager.h>
 
 #include <sofa/component/typedef/Sofa_typedef.h>
 
@@ -44,7 +44,7 @@ typedef sofa::component::odesolver::CGImplicitSolver Solver;
 
 int main(int, char** argv)
 {
-    sofa::gui::SofaGUI::Init(argv[0]);
+    sofa::gui::GUIManager::Init(argv[0]);
     //=========================== Build the scene
     double endPos = 1.;
     double attach = -1.;
@@ -166,6 +166,6 @@ int main(int, char** argv)
 
     //=========================== Run the main loop
 
-    sofa::gui::SofaGUI::MainLoop(groot);
+    sofa::gui::GUIManager::MainLoop(groot);
 }
 

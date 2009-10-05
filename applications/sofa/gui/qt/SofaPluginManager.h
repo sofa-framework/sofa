@@ -28,7 +28,7 @@
 #define SOFA_PLUGINMANAGER_H
 
 #include "PluginManager.h"
-
+#include "SofaGUIQt.h"
 #ifdef SOFA_QT4
 #include <Q3ListViewItem>
 #else

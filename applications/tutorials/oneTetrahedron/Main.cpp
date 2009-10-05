@@ -32,7 +32,7 @@
 
 #include <sofa/core/objectmodel/Context.h>
 
-#include <sofa/gui/SofaGUI.h>
+#include <sofa/gui/GUIManager.h>
 
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/helper/system/FileRepository.h>
@@ -58,7 +58,7 @@ int main(int argc, char** argv)
     sofa::helper::parse("This is a SOFA application.")
     (argc,argv);
 
-    sofa::gui::SofaGUI::Init(argv[0]);
+    sofa::gui::GUIManager::Init(argv[0]);
 
     // The graph root node : gravity already exists in a GNode by default
     GNode* groot = new GNode;
@@ -143,7 +143,7 @@ int main(int argc, char** argv)
 
     //=======================================
     // Run the main loop
-    sofa::gui::SofaGUI::MainLoop(groot);
+    sofa::gui::GUIManager::MainLoop(groot);
 
     return 0;
 }

@@ -25,9 +25,15 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "SofaModeler.h"
+
 #include <sofa/helper/system/FileRepository.h>
+
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
+
+#include <sofa/gui/GuiManager.h>
+#include <sofa/gui/qt/FileManagement.h>
+#include <sofa/gui/qt/SofaPluginManager.h>
 
 #define MAX_RECENTLY_OPENED 10
 
@@ -52,6 +58,7 @@
 #include <QMessageBox>
 #include <QDir>
 #include <QStatusBar>
+#include <QDesktopWidget>
 #else
 #include <qtoolbox.h>
 #include <qlayout.h>
@@ -196,7 +203,7 @@ SofaModeler::SofaModeler()
     runSofaMenu->insertItem(QIconSet(), tr("Viewer"), runSofaGUI);
 
     //Set the different available GUI
-    std::vector<std::string> listGUI = sofa::gui::SofaGUI::ListSupportedGUI();
+    std::vector<std::string> listGUI = sofa::gui::GUIManager::ListSupportedGUI();
     //Insert default GUI
     {
         QAction *act= new QAction(this, QString("default")+QString("Action"));
@@ -676,7 +683,7 @@ void SofaModeler::runInSofa()
     GNode* root=graph->getRoot();
     if (!root) return;
     // Init the scene
-    sofa::gui::SofaGUI::Init("Modeler");
+    sofa::gui::GUIManager::Init("Modeler");
 
     //Saving the scene in a temporary file ==> doesn't modify the current GNode of the simulation
     std::string path;

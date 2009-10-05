@@ -27,6 +27,7 @@
 #ifndef SOFA_GUI_MOUSEOPERATIONS_H
 #define SOFA_GUI_MOUSEOPERATIONS_H
 
+#include "SofaGUI.h"
 #include <iostream>
 #include <vector>
 
@@ -62,7 +63,7 @@ protected:
     MOUSE_BUTTON button;
 };
 
-class AttachOperation : public Operation
+class SOFA_SOFAGUI_API AttachOperation : public Operation
 {
 public:
     AttachOperation():stiffness(1000.0) {};
@@ -80,7 +81,7 @@ protected:
     double stiffness;
 };
 
-class InciseOperation : public Operation
+class SOFA_SOFAGUI_API InciseOperation : public Operation
 {
 public:
     virtual ~InciseOperation() {};
@@ -91,7 +92,7 @@ public:
     static bool isModifiable() {return false;};
 };
 
-class RemoveOperation : public Operation
+class SOFA_SOFAGUI_API RemoveOperation : public Operation
 {
 public:
     virtual ~RemoveOperation() {};
@@ -102,7 +103,7 @@ public:
     static bool isModifiable() {return false;};
 };
 
-class FixOperation : public Operation
+class SOFA_SOFAGUI_API FixOperation : public Operation
 {
 public:
     FixOperation():stiffness(10000.0) {};
@@ -120,7 +121,7 @@ protected:
     double stiffness;
 };
 
-class SculptOperation : public Operation
+class SOFA_SOFAGUI_API SculptOperation : public Operation
 {
 public:
     SculptOperation():force(50), scale(50) {};
