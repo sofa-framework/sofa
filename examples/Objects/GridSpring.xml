@@ -2,7 +2,7 @@
 	<Object type="EulerImplicitSolver" rayleighStiffness="0.01" />
 	<Object type="CGLinearSolver" iterations="25" threshold="0.00000001" />
 	<Object type="SparseGrid" n="6 6 6" filename="file"/> 
-	<Object type="MechanicalObject"  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0"/>
+	<Object type="MechanicalObject" translation="0 0 0" rotation="0 0 0" scale3d="1.0 1.0 1.0"/>
 	<Object type="UniformMass" totalmass="5" />
 	<Object type="MeshSpringForceField" name="Springs" stiffness="400" damping="4"/>
 	<Node name="VisualNode">
@@ -12,7 +12,7 @@
 	<Node name="CollisionNode">
          	<Object type="MeshLoader" name="collisionLoader" filename="file"/>
 		<Object type="Mesh" />
-		<Object type="MechanicalObject"   />
+		<Object type="MechanicalObject"  useMask="true"  />
 		<Object type="Triangle" />
 		<Object type="Line" />
 		<Object type="Point" />

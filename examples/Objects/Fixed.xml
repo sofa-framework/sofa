@@ -2,9 +2,9 @@
     <MeshLoader filename="file">
     </MeshLoader>
     <Mesh/>        
-    <Object type="MechanicalObject"  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0"/>                
+    <Object type="MechanicalObject"   translation="0 0 0" rotation="0 0 0" scale3d="1.0 1.0 1.0"/>
     <Object moving="0" simulated="0" type="Triangle" contactStiffness="10" contactFriction="0.01"/>        
     <Object moving="0" simulated="0" type="Line" contactStiffness="10" contactFriction="0.01"/>        
     <Object moving="0" simulated="0" type="Point" contactStiffness="10" contactFriction="0.01"/>        
-    <Object color="0.500 0.500 0.500" filename="file" name="Visual" type="OglModel"  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0"/>       
+    <Object color="0.500 0.500 0.500" filename="file" name="Visual" type="OglModel" translation="0 0 0" rotation="0 0 0" scale3d="1.0 1.0 1.0"/>       
   </Node>              

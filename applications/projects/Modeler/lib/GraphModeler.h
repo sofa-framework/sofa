@@ -196,7 +196,7 @@ public slots:
     /// Context Menu Operation: loading a preset: open the window of configuration
     void loadPreset(std::string presetName);
     /// Context Menu Operation: loading a preset: actually creating the node, given its parameters (path to files, and initial position)
-    void loadPreset(GNode*,std::string,std::string*, std::string*,std::string*,std::string);
+    void loadPreset(GNode*,std::string,std::string*, std::string,std::string,std::string);
     /// Context Menu Operation: Saving a node
     void saveNode();
     /// Context Menu Operation: Open the window to configure a component
@@ -235,7 +235,7 @@ protected:
     /// Verigy if the present component is being edited
     bool isObjectErasable ( core::objectmodel::Base* element );
     /// Change a preset node, update the paths to the files and the initial position
-    void updatePresetNode(xml::BaseElement &elem, std::string meshFile, std::string *translation, std::string *rotation, std::string scale);
+    void updatePresetNode(xml::BaseElement &elem, std::string meshFile, std::string translation, std::string rotation, std::string scale);
 
     GraphListenerQListView *graphListener; // Management of the list: Listener of the sofa tree
     SofaLibrary *sofaLibrary;

@@ -74,8 +74,8 @@ AddPreset::AddPreset(  QWidget* parent , const char* name,bool , Qt::WFlags ):	D
     clear();
 
     //Make the connection between this widget and the parent
-    connect( this, SIGNAL(loadPreset(GNode*,std::string,std::string*, std::string*,std::string*,std::string)),
-            parent, SLOT(loadPreset(GNode*,std::string,std::string*, std::string*,std::string*,std::string)));
+    connect( this, SIGNAL(loadPreset(GNode*,std::string,std::string*, std::string,std::string,std::string)),
+            parent, SLOT(loadPreset(GNode*,std::string,std::string*, std::string,std::string,std::string)));
 }
 
 void AddPreset::setElementPresent(bool *elementPresent)
@@ -131,7 +131,10 @@ void AddPreset::clear()
     rotationY->setText("0");
     rotationZ->setText("0");
 
-    scaleValue->setText("1");
+    scaleX->setText("1");
+    scaleY->setText("1");
+    scaleZ->setText("1");
+
 
     openFilePath0->setText(NULL);
     openFilePath1->setText(NULL);
@@ -143,8 +146,8 @@ void AddPreset::clear()
 //When the Ok Button is clicked, this method is called: we just have to emit a signal to the parent, with the information on the object
 void AddPreset::accept()
 {
-    std::string position[3];
-    std::string rotation[3];
+    std::string position;
+    std::string rotation;
     std::string scale;
 
     std::string filenames[3];
@@ -157,15 +160,16 @@ void AddPreset::accept()
     filenames[1] = openFilePath1->text().ascii();
     filenames[2] = openFilePath2->text().ascii();
 
-    position[0] = positionX->text().ascii();
-    position[1] = positionY->text().ascii();
-    position[2] = positionZ->text().ascii();
-
-    rotation[0] = rotationX->text().ascii();
-    rotation[1] = rotationY->text().ascii();
-    rotation[2] = rotationZ->text().ascii();
-
-    scale       = scaleValue->text().ascii();
+    std::ostringstream out;
+    out << positionX->text().ascii()<<" "<<positionY->text().ascii()<<" "<<positionZ->text().ascii();
+    position=out.str();
+    out.str("");
+    out << rotationX->text().ascii()<<" "<<rotationY->text().ascii()<<" "<<rotationZ->text().ascii();
+    rotation=out.str();
+    out.str("");
+    out << scaleX->text().ascii()<<" "<<scaleY->text().ascii()<<" "<<scaleZ->text().ascii();
+    scale=out.str();
+    out.str("");
 
     emit( loadPreset(node, presetFile,filenames,position,rotation,scale));
     clear();

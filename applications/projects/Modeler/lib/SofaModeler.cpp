@@ -31,7 +31,7 @@
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
 
-#include <sofa/gui/GuiManager.h>
+#include <sofa/gui/GUIManager.h>
 #include <sofa/gui/qt/FileManagement.h>
 #include <sofa/gui/qt/SofaPluginManager.h>
 
@@ -404,7 +404,7 @@ void SofaModeler::closeTab()
         range=mapSofa.equal_range(curTab);
         for (multimapIterator it=range.first; it!=range.second; it++)
         {
-            removeTemporaryFiles(it->second);
+            removeTemporaryFiles(it->second->name());
             it->second->kill();
         }
         mapSofa.erase(range.first, range.second);
@@ -733,7 +733,6 @@ void SofaModeler::runInSofa()
 
     argv << "-t";
 
-    statusBar()->message(messageLaunch,5000);
 
     Q3Process *p = new Q3Process(argv, this);
     p->setName(filename.c_str());
@@ -744,14 +743,13 @@ void SofaModeler::runInSofa()
     p->start();
     mapSofa.insert(std::make_pair(tabGraph, p));
 
-    //Maybe switch to a multimap as several sofa can be launch from the same tab
+    statusBar()->message(messageLaunch,5000);
 }
-
 
 void SofaModeler::sofaExited()
 {
     Q3Process *p = ((Q3Process*) sender());
-    removeTemporaryFiles(p);
+    removeTemporaryFiles(p->name());
     if (p->normalExit()) return;
     typedef std::multimap< const QWidget*, Q3Process* >::iterator multimapIterator;
     for (multimapIterator it=mapSofa.begin(); it!=mapSofa.end(); it++)
@@ -766,9 +764,9 @@ void SofaModeler::sofaExited()
     }
 }
 
-void SofaModeler::removeTemporaryFiles(Q3Process *p)
+void SofaModeler::removeTemporaryFiles(const std::string &f)
 {
-    std::string filename(p->name());
+    std::string filename(f);
     std::string copyBuffer(presetPath+"copyBuffer.scn");
     //Delete Temporary file
     ::remove(filename.c_str());
