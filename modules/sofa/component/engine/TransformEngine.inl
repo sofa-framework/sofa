@@ -66,6 +66,7 @@ void TransformEngine<DataTypes>::reinit()
 template <class DataTypes>
 struct TransformOperation
 {
+    virtual ~TransformOperation() {};
     virtual void execute(typename DataTypes::Coord &v) const =0;
 };
 
