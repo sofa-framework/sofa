@@ -213,12 +213,22 @@
                         <cstring>scaleText</cstring>
                     </property>
                     <property name="text">
-                        <string>Scale</string>
+                        <string>Initial Scale</string>
                     </property>
                 </widget>
                 <widget class="QLineEdit">
                     <property name="name">
-                        <cstring>scaleValue</cstring>
+                        <cstring>scaleX</cstring>
+                    </property>
+                </widget>
+                <widget class="QLineEdit">
+                    <property name="name">
+                        <cstring>scaleY</cstring>
+                    </property>
+                </widget>
+                <widget class="QLineEdit">
+                    <property name="name">
+                        <cstring>scaleZ</cstring>
                     </property>
                 </widget>
             </hbox>

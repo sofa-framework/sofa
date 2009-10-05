@@ -156,7 +156,7 @@ public slots:
     /// Launch the current simulation into Sofa
     void runInSofa();
     void sofaExited();
-    void removeTemporaryFiles(Q3Process *p);
+    void removeTemporaryFiles(const std::string &filename);
 
     /// Change of simulation by changing the current opened tabulation
     void changeCurrentScene( QWidget*);

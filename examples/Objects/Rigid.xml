@@ -2,16 +2,16 @@
 <Node name="Rigid">
 	<Object type="EulerImplicitSolver" rayleighStiffness="0.01" />
 	<Object type="CGLinearSolver" iterations="25" threshold="0.00000001"  />
-	<Object type="MechanicalObject" template="Rigid"  dx="0" dy="0" dz="0" rx="0" ry="0" rz="0" scale="1.0"  />
+	<Object type="MechanicalObject" template="Rigid"  translation="0 0 0" rotation="0 0 0" scale3d="1.0 1.0 1.0"/>
 	<Object type="UniformMass" />
 	<Node name="VisualNode">
-		<Object type="OglModel" name="Visual" filename="file" color="gray" scale="1"  />
+		<Object type="OglModel" name="Visual" filename="file" color="gray"  scale3d="1.0 1.0 1.0" />
 		<Object type="RigidMapping" object1="../.." object2="Visual" />
 	</Node>
 	<Node name="CollisionNode">
 	        <Object type="MeshLoader" filename="file"/>
 	        <Object type="Mesh" />
-		<Object type="MechanicalObject" scale="1" />
+		<Object type="MechanicalObject" useMask="true"  scale3d="1.0 1.0 1.0" />
 		<Object type="Triangle" contactStiffness="10" contactFriction="0.01"/>
 		<Object type="Line" contactStiffness="10" contactFriction="0.01"/>
 		<Object type="Point" contactStiffness="10" contactFriction="0.01"/>
