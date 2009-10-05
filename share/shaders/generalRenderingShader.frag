@@ -32,6 +32,7 @@ uniform float smoothShininess;
 #if defined(PHONG)
 varying vec3 lightDir;
 varying float dist;
+varying vec3 halfVector;
 #endif //PHONG
 
 #if defined(BORDER_OPACIFYING_V2) 
@@ -265,6 +266,9 @@ void main()
 	
 	color = ambient;
 
+	//normal
+	vec3 n;
+	
 #ifdef TEXTURE_UNIT_0
 	color.rgb = texture2D(colorTexture,gl_TexCoord[0].st).rgb;
 #endif //TEXTURE_UNIT_0
@@ -313,20 +317,10 @@ void main()
 	//color.xyz = 0.8+vec3(t, t, t);
 #endif
 
-	//normal
-	vec3 n;
-#ifdef PHONG
-	//Phong	
-#ifdef BUMP_MAPPING
-	vec3 bumpCurrentNormal = normalize(normalW);
-	vec3 bumpCurrentPosition = positionW;
-	vec3 bumpCoefs = vec3(0.33,0.33, 0.33);
-	
-#ifdef TRI_TEXTURING
-	bumpCurrentNormal = n0;
-	bumpCurrentPosition = pos0;
-	bumpCoefs = coefs;
-#endif
+#if defined(BUMP_MAPPING) && defined(TRI_TEXTURING)
+	vec3 bumpCurrentNormal =  n0;
+	vec3 bumpCurrentPosition =  pos0;
+	vec3 bumpCoefs =  coefs;
 	vec4 bump = vec4(0.0,0.0,0.0,0.0);// = normalize( texture2D(normalMap, vec2(pos.x/scaleTexture.x,pos.y/scaleTexture.y) ).xyz * 2.0 - 1.0);
 	// Compute bump normal
 	vec3 bx = vec3(0.0,bumpCurrentNormal.z,-bumpCurrentNormal.y); 
@@ -346,94 +340,122 @@ void main()
 	bump.w += 1.0-bumpFactor;
 	
 	n = normalize(gl_NormalMatrix*( normalize(normalW) * bump.w + bx * bump.x + by * bump.y + bz * bump.z));
+#endif //defined(BUMP_MAPPING) && defined(TRI_TEXTURING)
 	
-#else //BUMP_MAPPING
+#if defined(BUMP_MAPPING) && !defined(TRI_TEXTURING)
+	n = normalize(texture2D(normalMap, gl_TexCoord[0].xy ).xyz * 2.0 - 1.0);
+#endif //BUMP_MAPPING
+
+#if defined(PHONG) && !defined(BUMP_MAPPING) && !defined(TRI_TEXTURING)
 	//normal as usual
 	n = normalize(normalView);
-#endif //BUMP_MAPPING
+#endif //PHONG
+
 #if defined (PERLIN_NOISE_BUMP) 
 	//n += gl_NormalMatrix*dnoise(positionW*10).xyz*0.2;
 	n += gl_NormalMatrix*perlin_dnoise(positionW,perlinBumpFrequency,perlinBumpOctave,perlinBumpPersistance).xyz*perlinBumpFactor;
 	n = normalize(n);
-#endif
-
-	float NdotL,NdotHV;
-	float att,spotEffect;
-	vec4 phong_color = vec4(0.0,0.0,0.0,1.0);
+#endif //PERLIN_NOISE_BUMP
 	
-	vec3 halfV;
-	/* compute the dot product between normal and ldir */
-	NdotL = max(dot(n,normalize(lightDir)),0.0);
-
-	if (NdotL > 0.0)
-	{
-		//spotEffect = dot(normalize(gl_LightSource[0].spotDirection), normalize(-lightDir));
-	
-		//if (spotEffect > gl_LightSource[0].spotCosCutoff)
-		{
-			//spotEffect = smoothstep(gl_LightSource[0].spotCosCutoff, 1.0, spotEffect); //pow(spotEffect, gl_LightSource[0].spotExponent);
-			//att = spotEffect / (gl_LightSource[0].constantAttenuation +
-			//		gl_LightSource[0].linearAttenuation * dist +
-			//		gl_LightSource[0].quadraticAttenuation * dist * dist);
-	
-			//phong_color += (diffuse * NdotL) /* * att */;
-			phong_color.rgb += (diffuse.rgb * NdotL) /* * att */;
-		}
-	}
-	
-	
-#if defined(TEXTURE_UNIT_0) || defined(TRI_TEXTURING)
-	color.rgb *= phong_color.rgb;
-#else
-	color.rgb += phong_color.rgb;
-#endif
-
-	halfV = normalize(gl_LightSource[0].halfVector.xyz);
-	vec4 spec = vec4(0.0,0.0,0.0,0.0);
-
-	NdotHV = max(dot(n,halfV),0.0);
-	spec +=  specular * pow(NdotHV,gl_FrontMaterial.shininess) /* * att */;
-
-#if defined(SMOOTH_LAYER)
-	spec +=  smoothSpecular * pow( max(dot(normalize(normalW),halfV),0.0),smoothShininess);
-#endif
-	
-	color.rgb += spec.rgb;
-	
-#endif //PHONG
 
 #ifdef BORDER_OPACIFYING
+	color = ambient;
+	
 	vec3 unitNormalVec = normalize(normalW);
 	vec3 unitViewVec = normalize(viewVectorW);
 	
 	color.a = color.a + (border_alpha - color.a)* (pow( 1.0 - abs(dot(unitNormalVec,unitViewVec)), border_gamma));
 
 	color.rgb *= color.a;
+	
 #endif
 
 #ifdef BORDER_OPACIFYING_V2
+	color = ambient;
 	vec3 unitNormalVec = normalize(normalW);
+	vec3 unitViewVec = normalize(viewVectorW);
 	 
 	float dotAngle = abs(dot(unitNormalVec,lightDirWorld));
 	dotAngle *= coeffAngle;
 	
-	color.a = color.a + (border_alpha - color.a)* (pow( 1.0 - dotAngle, border_gamma));
+	color.a = color.a + (border_alpha - color.a)* (pow( 1.0 - abs(dot(unitNormalVec,unitViewVec)), border_gamma));
 	
 	color.rgb = color.rgb* (dotAngle);
 	
 #endif
 
+
+#ifdef PHONG
+	float NdotL,NdotHV;
+	float att,spotEffect;
+	vec4 phong_color = vec4(0.0,0.0,0.0,1.0);
+	
+	/* compute the dot product between normal and ldir */
+#ifdef DOUBLE_SIDED
+	NdotL = abs(dot(n,normalize(lightDir)));
+#else
+	NdotL = max(dot(n,normalize(lightDir)),0.0);
+#endif
+	
+	if (NdotL > 0.0)
+	{
+		float spotEffect = dot(normalize(gl_LightSource[0].spotDirection), normalize(-lightDir));
+	
+		if (spotEffect > gl_LightSource[0].spotCosCutoff)
+		{
+			spotEffect = smoothstep(gl_LightSource[0].spotCosCutoff, 1.0, spotEffect); //pow(spotEffect, gl_LightSource[0].spotExponent);
+			att = spotEffect / (gl_LightSource[0].constantAttenuation +
+					gl_LightSource[0].linearAttenuation * dist +
+					gl_LightSource[0].quadraticAttenuation * dist * dist);
+	
+			//phong_color += (diffuse * NdotL) /* * att */;
+			phong_color.rgb += (diffuse.rgb * NdotL)  * att ;
+		}
+	}
+
+	
+	
+#if defined(TEXTURE_UNIT_0) || defined(TRI_TEXTURING)
+	color.rgb *= phong_color.rgb;
+#else
+	color.rgb += phong_color.rgb;
+#endif //defined(TEXTURE_UNIT_0) || defined(TRI_TEXTURING)
+
+	//vec3 halfV = normalize(gl_LightSource[0].halfVector.xyz);
+	vec3 halfV = halfVector;
+	vec4 spec = vec4(0.0,0.0,0.0,0.0);
+
+#ifdef DOUBLE_SIDED
+	NdotHV = abs(dot(n,halfV));
+#else
+	NdotHV = max(dot(n,halfV),0.0);
+#endif
+	
+	spec =  specular * pow(NdotHV,gl_FrontMaterial.shininess) /* * att */;
+
+#if defined(SMOOTH_LAYER)
+	spec +=  smoothSpecular * pow( max(dot(normalize(normalW),halfV),0.0),smoothShininess);
+#endif //SMOOTH_LAYER
+	
+	color.rgb += spec.rgb;
+	color.a += spec.a;
+	
+#endif //PHONG
+
 #ifdef PLANE_ENVIRONMENT_MAPPING
+	color = ambient;
+	
 	vec3 reflectVec = reflect(viewVectorW, normalW);
 	
-	if (reflectVec.z>0.0)
+	if ((reflectVec.z)>0.0)
 	  color.rgb *= texture2D(planeTexture, reflectVec.xy*( altitude/reflectVec.z )+vec2(0.5,0.5)).rgb * specular.rgb ;
+
 	
 #endif //PLANE_ENVIRONMENT_MAPPING
 
 	// Write the final pixel.
 	gl_FragColor = color;
-	//gl_FragColor = vec4(1.0,1.0,1.0,0.0);
+	//gl_FragColor = vec4(1.0,1.0,1.0,1.0);
 	//vec4 p = texture(perlinPermutationsTexture,gl_TexCoord[0].st);
 
 }

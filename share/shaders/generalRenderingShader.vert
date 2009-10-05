@@ -13,6 +13,7 @@ varying vec3 normalView;
 
 #if defined(PHONG)
 varying vec3 lightDir;
+varying vec3 halfVector;
 varying float dist;
 #endif //PHONG
 
@@ -75,12 +76,16 @@ void main()
 #if defined(PHONG)
 	vec4 ecPos = gl_ModelViewMatrix * gl_Vertex;
 	vec3 aux = vec3(gl_LightSource[0].position-ecPos);
+	
+	//aux = (gl_ModelViewMatrixInverse*gl_LightSource[0].position).xyz - gl_Vertex.xyz;
 	lightDir = normalize(aux);
 	dist = length(aux);
+	halfVector = vec3(gl_LightSource[0].halfVector);
 #endif //PHONG
 
 #if defined(BORDER_OPACIFYING_V2) 
-	lightDirWorld =  (gl_ModelViewMatrixInverse*gl_LightSource[0].position).xyz - gl_Vertex.xyz;
+	//lightDirWorld =  (gl_ModelViewMatrixInverse*gl_LightSource[0].position).xyz - gl_Vertex.xyz;
+	lightDirWorld =  normalize(gl_LightSource[0].position.xyz - gl_Vertex.xyz);
 #endif
 
 #ifdef LIGHT2
