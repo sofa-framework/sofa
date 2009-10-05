@@ -40,6 +40,7 @@
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/gui/SofaGUI.h>
+#include <sofa/gui/GUIManager.h>
 #include <sofa/helper/system/glut.h>
 
 using sofa::helper::system::thread::CTime;
@@ -59,7 +60,7 @@ int main(int argc, char** argv)
 
     sofa::gui::SofaGUI::SetProgramName(argv[0]);
     std::string gui = sofa::gui::SofaGUI::GetGUIName();
-    sofa::gui::SofaGUI::ListSupportedGUI('|');
+    sofa::gui::GUIManager::ListSupportedGUI('|');
     //std::string fileName = "CUDA/beam10x10x46-spring-rk4-CUDA.scn";
 
     std::string fileName = "CUDA/quadSpringSphereCUDA.scn";
@@ -87,10 +88,10 @@ int main(int argc, char** argv)
 
     if (!nbIter)
     {
-        if (int err=sofa::gui::SofaGUI::Init(argv[0],gui.c_str()))
+        if (int err=sofa::gui::GUIManager::Init(argv[0],gui.c_str()))
             return err;
 
-        if (int err=sofa::gui::SofaGUI::createGUI(NULL))
+        if (int err=sofa::gui::GUIManager::createGUI(NULL))
             return err;
     }
 
@@ -111,7 +112,7 @@ int main(int argc, char** argv)
     }
     sofa::simulation::tree::getSimulation()->init(groot);
     if (!nbIter)
-        sofa::gui::SofaGUI::CurrentGUI()->setScene(groot,fileName.c_str());
+        sofa::gui::GUIManager::SetScene(groot,fileName.c_str());
 
     if (nbIter != 0)
     {
@@ -164,8 +165,8 @@ int main(int argc, char** argv)
     }
     else
     {
-        sofa::gui::SofaGUI::MainLoop(groot,fileName.c_str());
-        groot = dynamic_cast<GNode*>( sofa::gui::SofaGUI::CurrentSimulation() );
+        sofa::gui::GUIManager::MainLoop(groot,fileName.c_str());
+        groot = dynamic_cast<GNode*>( sofa::gui::GUIManager::CurrentSimulation() );
     }
     if (groot!=NULL) getSimulation()->unload(groot);
 

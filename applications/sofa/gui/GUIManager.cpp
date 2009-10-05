@@ -63,7 +63,7 @@ int QtGUIClass = GUIManager::RegisterGUI ( "qt", &qt::RealGUI::CreateGUI, &qt::R
 
 #ifdef SOFA_GUI_QTOGREVIEWER
 
-int QtOGREGUIClass = GUIManager::RegisterGUI ( "ogre", &RealGUI::CreateGUI, &RealGUI::InitGUI, 1 );
+int QtOGREGUIClass = GUIManager::RegisterGUI ( "ogre", &qt::RealGUI::CreateGUI, &qt::RealGUI::InitGUI, 1 );
 #endif
 
 

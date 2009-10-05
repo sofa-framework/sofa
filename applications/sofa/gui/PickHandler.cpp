@@ -56,10 +56,7 @@ namespace gui
 
 PickHandler::PickHandler():interactorInUse(false), mouseStatus(DEACTIVATED),mouseButton(NONE)
 {
-    operations[NONE] =
-        operations[LEFT] =
-                operations[MIDDLE] =
-                        operations[RIGHT] = NULL;
+    operations[LEFT] = operations[MIDDLE] = operations[RIGHT] = NULL;
 
     mouseNode = simulation::getSimulation()->newNode("Mouse");
 
