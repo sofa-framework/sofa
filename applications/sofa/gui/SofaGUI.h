@@ -32,104 +32,48 @@
 #include <list>
 //class QWidget;
 
+#include <sofa/helper/system/config.h>
+
+#ifdef SOFA_BUILD_SOFAGUI
+#	define SOFA_SOFAGUI_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#	define SOFA_SOFAGUI_API SOFA_IMPORT_DYNAMIC_LIBRARY
+#endif
+
+
 namespace sofa
 {
 
 namespace gui
 {
 
-class SofaGUI
+class SOFA_SOFAGUI_API SofaGUI
 {
-
-public:
-
-    /// @name Static methods for direct access to GUI
-    /// @{
-
-    static void SetProgramName(const char* argv0);
-
-    static const char* GetProgramName();
-
-    static std::vector<std::string> ListSupportedGUI();
-    static std::string ListSupportedGUI(char separator);
-
-    static const char* GetGUIName();
-
-    static void SetGUIName(const char* name="");
-    static void AddGUIOption(const char* option);
-
-    static int Init();
-
-    static int Init(const char* argv0, const char* name = "")
-    {
-        SetProgramName(argv0);
-        SetGUIName(name);
-        return Init();
-    }
-
-    static int createGUI(sofa::simulation::Node* groot = NULL, const char* filename = NULL);
-
-    static int MainLoop(sofa::simulation::Node* groot = NULL, const char* filename = NULL);
-
-
-
-    static SofaGUI* CurrentGUI();
-
-    static void Redraw();
-
-    static sofa::simulation::Node* CurrentSimulation();
-
-
-
-    /// @}
 
 public:
 
     /// @name methods each GUI must implement
     /// @{
-
-    SofaGUI();
-
     virtual int mainLoop()=0;
     virtual void redraw()=0;
     virtual int closeGUI()=0;
     virtual void setScene(sofa::simulation::Node* groot, const char* filename=NULL, bool temporaryFile=false)=0;
     virtual void setDimension(int /* width */, int /* height */) {};
     virtual void setFullScreen() {};
-
     virtual sofa::simulation::Node* currentSimulation()=0;
-
     /// @}
 
-    /// @name registration of each GUI
-    /// @{
-
-    typedef int InitGUIFn(const char* name, const std::vector<std::string>& options);
-    typedef SofaGUI* CreateGUIFn(const char* name, const std::vector<std::string>& options, sofa::simulation::Node* groot, const char* filename);
-    static int RegisterGUI(const char* name, CreateGUIFn* creator, InitGUIFn* init=NULL, int priority=0);
-
-    /// @}
+    static std::string& GetGUIName() { return guiName; }
+    static const char* GetProgramName() { return programName; }
+    static void SetProgramName(const char* argv0) { if(argv0) programName = argv0;}
 
 protected:
+    SofaGUI();
     /// The destructor should not be called directly. Use the closeGUI() method instead.
     virtual ~SofaGUI();
-
+    static std::string guiName; // would like to make it const but not possible with the current implementation of RealGUI...
     static const char* programName;
-    static std::string guiName;
-    static std::vector<std::string> guiOptions;
-    static SofaGUI* currentGUI;
 
-    struct GUICreator
-    {
-        const char* name;
-        InitGUIFn* init;
-        CreateGUIFn* creator;
-        int priority;
-    };
-    //static std::list<GUICreator> guiCreators;
-    static std::list<GUICreator>& guiCreators();
-
-    static GUICreator* GetGUICreator(const char* name = NULL);
 };
 
 } // namespace gui

@@ -79,16 +79,15 @@ sofa::simulation::Node* BatchGUI::currentSimulation()
     return groot;
 }
 
-SOFA_DECL_CLASS(BatchGUI)
 
-int BatchGUIClass = SofaGUI::RegisterGUI("batch", &BatchGUI::CreateGUI, &BatchGUI::InitGUI, -1);
 int BatchGUI::InitGUI(const char* /*name*/, const std::vector<std::string>& /*options*/)
 {
     return 0;
 }
 
-SofaGUI* BatchGUI::CreateGUI(const char* /*name*/, const std::vector<std::string>& /*options*/, sofa::simulation::Node* groot, const char* filename)
+SofaGUI* BatchGUI::CreateGUI(const char* name, const std::vector<std::string>& /*options*/, sofa::simulation::Node* groot, const char* filename)
 {
+    BatchGUI::guiName = name;
     BatchGUI* gui = new BatchGUI();
     gui->setScene(groot, filename);
     return gui;

@@ -27,7 +27,7 @@
 #ifndef SOFA_GUI_QT_MODIFYOBJECT_H
 #define SOFA_GUI_QT_MODIFYOBJECT_H
 
-
+#include "SofaGUIQt.h"
 #include <sofa/core/objectmodel/BaseObject.h>
 
 #include <sofa/defaulttype/Vec.h>
@@ -104,7 +104,7 @@ typedef QGrid       Q3Grid;
 
 class DataWidget;
 
-class ModifyObject : public QDialog
+class SOFA_SOFAGUIQT_API ModifyObject : public QDialog
 {
     Q_OBJECT
 public:
