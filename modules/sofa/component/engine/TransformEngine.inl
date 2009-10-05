@@ -62,44 +62,128 @@ void TransformEngine<DataTypes>::reinit()
     update();
 }
 
-
+//Declare a TransformOperation class able to do an operation on a Coord
 template <class DataTypes>
-void TransformEngine<DataTypes>::applyScale(Coord &p, const Real sx,const Real sy,const Real sz) const
+struct TransformOperation
 {
-    Real x,y,z;
-    DataTypes::get(x,y,z,p);
-    DataTypes::set(p,x*sx,y*sy,z*sz);
-}
+    virtual void execute(typename DataTypes::Coord &v) const =0;
+};
+
+//*****************************************************************
+//Scale Operation
+template <class DataTypes>
+struct Scale : public TransformOperation<DataTypes>
+{
+    typedef typename DataTypes::Real Real;
+    Scale():sx(0),sy(0),sz(0) {};
+
+    void execute(typename DataTypes::Coord &p) const
+    {
+        Real x,y,z;
+        DataTypes::get(x,y,z,p);
+        DataTypes::set(p,x*sx,y*sy,z*sz);
+    };
+    void configure(const defaulttype::Vector3 &s)
+    {
+        sx=s[0]; sy=s[1]; sz=s[2];
+    }
+private:
+    Real sx,sy,sz;
+};
 
 
-#ifndef SOFA_FLOAT
-template<>
-void TransformEngine<defaulttype::Rigid3dTypes>::applyRotation (Coord &p, const defaulttype::Quat q) const;
+//*****************************************************************
+//Rotation Operation
+template <class DataTypes>
+struct Rotation : public TransformOperation<DataTypes>
+{
+    typedef typename DataTypes::Real Real;
 
-#endif
+    void execute(typename DataTypes::Coord &p) const
+    {
+        defaulttype::Vector3 pos;
+        DataTypes::get(pos[0],pos[1],pos[2],p);
+        pos=q.rotate(pos);
+        DataTypes::set(p,pos[0],pos[1],pos[2]);
+    };
+
+
+    void configure(const defaulttype::Vector3 &r)
+    {
+        q=helper::Quater<Real>::createQuaterFromEuler( r*(M_PI/180.0));
+    }
+private:
+    defaulttype::Quaternion q;
+};
+
 #ifndef SOFA_DOUBLE
 template<>
-void TransformEngine<defaulttype::Rigid3fTypes>::applyRotation (Coord &p, const defaulttype::Quat q) const;
+void Rotation<defaulttype::Rigid3fTypes>::execute(defaulttype::Rigid3fTypes::Coord &p) const
+{
+    p.getCenter() = q.rotate(p.getCenter());
+    p.getOrientation() *= q;
+}
+
+#endif
+#ifndef SOFA_FLOAT
+template<>
+void Rotation<defaulttype::Rigid3dTypes>::execute(defaulttype::Rigid3dTypes::Coord &p) const
+{
+    p.getCenter() = q.rotate(p.getCenter());
+    p.getOrientation() *= q;
+}
 #endif
 
 
+//*****************************************************************
+//Translation Operation
 template <class DataTypes>
-void TransformEngine<DataTypes>::applyRotation(Coord &p, const defaulttype::Quat q) const
+struct Translation : public TransformOperation<DataTypes>
 {
-    defaulttype::Vector3 pos;
-    DataTypes::get(pos[0],pos[1],pos[2],p);
-    pos=q.rotate(pos);
-    DataTypes::set(p,pos[0],pos[1],pos[2]);
-}
+    typedef typename DataTypes::Real Real;
+    Translation():tx(0),ty(0),tz(0) {};
+    void execute(typename DataTypes::Coord &p) const
+    {
+        Real x,y,z;
+        DataTypes::get(x,y,z,p);
+        DataTypes::set(p,x+tx,y+ty,z+tz);
+    };
+    void configure(const defaulttype::Vector3 &t)
+    {
+        tx=t[0]; ty=t[1]; tz=t[2];
+    }
+private:
+    Real tx,ty,tz;
+};
 
+
+//*****************************************************************
+//Functor to apply the operations wanted
 template <class DataTypes>
-void TransformEngine<DataTypes>::applyTranslation(Coord &p, const Real tx,const Real ty,const Real tz) const
+struct Transform
 {
-    Real x,y,z;
-    DataTypes::get(x,y,z,p);
-    DataTypes::set(p,x+tx,y+ty,z+tz);
-}
+    typedef TransformOperation<DataTypes> Op;
 
+    template <class  Operation>
+    Operation* add(Operation *op)
+    {
+//     Operation *op=new Operation();
+        list.push_back(op);
+        return op;
+    }
+
+    std::list< Op* > &getOperations() {return list;}
+
+    void operator()(typename DataTypes::Coord &v) const
+    {
+        for (typename std::list< Op* >::const_iterator it=list.begin(); it != list.end() ; ++it)
+        {
+            (*it)->execute(v);
+        }
+    }
+private:
+    std::list< Op* > list;
+};
 
 
 template <class DataTypes>
@@ -107,36 +191,39 @@ void TransformEngine<DataTypes>::update()
 {
     cleanDirty();
 
-    const VecCoord& in = f_inputX.getValue();
-    VecCoord& out = *(f_outputX.beginEdit());
-    out.resize(in.size());
-
     const defaulttype::Vector3 &s=scale.getValue();
     const defaulttype::Vector3 &r=rotation.getValue();
     const defaulttype::Vector3 &t=translation.getValue();
 
-    const defaulttype::Quaternion q=helper::Quater<Real>::createQuaterFromEuler( r*(M_PI/180.0));
-    for (unsigned int i=0; i< in.size(); ++i)
+    //Create the object responsible for the transformations
+    Transform<DataTypes> transformation;
+    if (s != defaulttype::Vector3(1,1,1))  transformation.add(new Scale<DataTypes>)->configure(s);
+    if (r != defaulttype::Vector3(0,0,0))  transformation.add(new Rotation<DataTypes>)->configure(r);
+    if (t != defaulttype::Vector3(0,0,0))  transformation.add(new Translation<DataTypes>)->configure(t);
+
+    //Get input
+    const VecCoord& in = f_inputX.getValue();
+    VecCoord& out = *(f_outputX.beginEdit());
+
+    //Set Output
+    out.resize(in.size());
+    //Set the output to the input
+    std::copy(in.begin(),in.end(), out.begin());
+    //Apply the transformation of the output
+    std::for_each(out.begin(), out.end(), transformation);
+
+    //Deleting operations
+    std::list< TransformOperation<DataTypes>* > operations=transformation.getOperations();
+    while (!operations.empty())
     {
-        out[i] = in[i];
-        if (s != defaulttype::Vector3(1,1,1))
-        {
-            applyScale(out[i], s[0],s[1],s[2]);
-        }
-        if (r != defaulttype::Vector3(0,0,0))
-        {
-            applyRotation(out[i], q);
-        }
-        if (t != defaulttype::Vector3(0,0,0))
-        {
-            applyTranslation( out[i], t[0],t[1],t[2]);
-        }
+        delete operations.back();
+        operations.pop_back();
     }
 
-
+    //Reseting to default values
     translation.setValue(defaulttype::Vector3(0,0,0));
-    rotation.setValue(defaulttype::Vector3(0,0,0));
-    scale.setValue(defaulttype::Vector3(1,1,1));
+    rotation   .setValue(defaulttype::Vector3(0,0,0));
+    scale      .setValue(defaulttype::Vector3(1,1,1));
 
     f_outputX.endEdit();
 }

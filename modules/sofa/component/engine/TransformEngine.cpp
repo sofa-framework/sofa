@@ -35,29 +35,6 @@ namespace component
 namespace engine
 {
 
-
-#ifndef SOFA_FLOAT
-template<>
-void TransformEngine<defaulttype::Rigid3dTypes>::applyRotation (Coord &p, const defaulttype::Quat q) const
-{
-    p.getCenter() = q.rotate(p.getCenter());
-    p.getOrientation() *= q;
-}
-#endif
-
-#ifndef SOFA_DOUBLE
-template<>
-void TransformEngine<defaulttype::Rigid3fTypes>::applyRotation (Coord &p, const defaulttype::Quat q) const
-{
-    p.getCenter() = q.rotate(p.getCenter());
-    p.getOrientation() *= q;
-}
-#endif
-
-
-
-
-
 SOFA_DECL_CLASS(TransformEngine)
 
 int TransformEngineClass = core::RegisterObject("Transform position of 3d points")
