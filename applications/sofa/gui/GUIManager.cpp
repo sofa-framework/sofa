@@ -43,6 +43,7 @@ namespace gui
 SofaGUI* GUIManager::currentGUI = NULL;
 std::list<GUIManager::GUICreator> GUIManager::guiCreators;
 std::vector<std::string> GUIManager::guiOptions;
+const char* GUIManager::valid_guiname = NULL;
 
 int BatchGUIClass = GUIManager::RegisterGUI("batch", &BatchGUI::CreateGUI, &BatchGUI::InitGUI, -1);
 
@@ -119,9 +120,9 @@ std::string GUIManager::ListSupportedGUI(char separator)
     return names;
 }
 
-const char* GUIManager::GetValidGUIName(const char* name /* = NULL */)
+const char* GUIManager::GetValidGUIName()
 {
-
+    const char* name;
     if (guiCreators.empty())
     {
         std::cerr << "ERROR(SofaGUI): No GUI registered."<<std::endl;
@@ -154,7 +155,7 @@ GUIManager::GUICreator* GUIManager::GetGUICreator(const char* name)
         ++it;
     if (it == itend)
     {
-        std::cerr << "ERROR(SofaGUI): GUI "<<name<<" not found."<<std::endl;
+        std::cerr << "ERROR(GUIManager): GUI "<<name<<" creation failed."<<std::endl;
         std::cerr << "Available GUIs:" << ListSupportedGUI(' ') << std::endl;
         return NULL;
     }
@@ -162,27 +163,35 @@ GUIManager::GUICreator* GUIManager::GetGUICreator(const char* name)
         return &(*it);
 }
 
-int GUIManager::Init(const char* argv0, const char* name)
+int GUIManager::Init(const char* argv0, const char* name /* = "" */)
 {
     SofaGUI::SetProgramName(argv0);
     sofa::component::init();
     sofa::simulation::xml::initXml();
+    GUICreator* creator;
+
+    if (currentGUI)
+        return 0; // already initialized
+
     if (guiCreators.empty())
     {
         std::cerr << "ERROR(SofaGUI): No GUI registered."<<std::endl;
         return 1;
     }
-    const char* valid_name = GetValidGUIName(name);
-    if (currentGUI)
-        return 0; // already initialized
 
-    GUICreator* creator = GetGUICreator(valid_name);
-    if (!creator)
+    if( strcmp(name,"") == 0 || name == NULL)
+    {
+        name = GetValidGUIName(); // get the default gui name
+    }
+    creator = GetGUICreator(name);
+    if(!creator)
     {
         return 1;
     }
+    valid_guiname = name; // at this point we must have a valid name for the gui.
+
     if (creator->init)
-        return (*creator->init)(valid_name, guiOptions);
+        return (*creator->init)(valid_guiname, guiOptions);
     else
         return 0;
 }
@@ -190,18 +199,17 @@ int GUIManager::Init(const char* argv0, const char* name)
 
 int GUIManager::createGUI(sofa::simulation::Node* groot, const char* filename)
 {
-    const char* name = GetValidGUIName();
     if (!currentGUI)
     {
-        GUICreator* creator = GetGUICreator(name);
+        GUICreator* creator = GetGUICreator(valid_guiname);
         if (!creator)
         {
             return 1;
         }
-        currentGUI = (*creator->creator)(name, guiOptions, groot, filename);
+        currentGUI = (*creator->creator)(valid_guiname, guiOptions, groot, filename);
         if (!currentGUI)
         {
-            std::cerr << "ERROR(SofaGUI): GUI "<<name<<" creation failed."<<std::endl;
+            std::cerr << "ERROR(GUIManager): GUI "<<valid_guiname<<" creation failed."<<std::endl;
             return 1;
         }
     }
