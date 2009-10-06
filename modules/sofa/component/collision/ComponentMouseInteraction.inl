@@ -38,10 +38,7 @@
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
-
-
-
-#include <sofa/helper/Factory.inl>
+#include <sofa/simulation/common/Node.h>
 
 namespace sofa
 {
@@ -52,7 +49,7 @@ namespace component
 namespace collision
 {
 
-using simulation::Node;
+using sofa::simulation::Node;
 using sofa::component::collision::BodyPicked;
 
 

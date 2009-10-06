@@ -85,6 +85,11 @@ public:
     }
 
 };
+#if defined WIN32 && !defined(SOFA_COMPONENT_COLLISION_INTERACTIONPERFOMER_CPP)
+//delay load of the specialized Factory class. unique definition reside in the cpp file.
+extern template class SOFA_COMPONENT_COLLISION_API helper::Factory<std::string, InteractionPerformer, BaseMouseInteractor*>;
+#endif
+
 }
 }
 }

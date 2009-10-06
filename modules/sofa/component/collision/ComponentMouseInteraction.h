@@ -29,15 +29,17 @@
 
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/common/DeleteVisitor.h>
-#include <sofa/simulation/common/Node.h>
 #include <sofa/component/collision/MouseInteractor.h>
 #include <sofa/component/mapping/IdentityMapping.h>
-
 #include <sofa/component/component.h>
 
 namespace sofa
 {
 
+namespace simulation
+{
+class Node;
+}
 namespace component
 {
 
@@ -97,13 +99,14 @@ public:
 
 };
 
-#if defined(WIN32)
+#if defined(WIN32) && !defined(SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_CPP)
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_COLLISION_API TComponentMouseInteraction<defaulttype::Vec3fTypes>;
+extern template class SOFA_COMPONENT_COLLISION_API TComponentMouseInteraction<defaulttype::Vec3fTypes>;
 #endif
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_COLLISION_API TComponentMouseInteraction<defaulttype::Vec3dTypes>;
+extern template class SOFA_COMPONENT_COLLISION_API TComponentMouseInteraction<defaulttype::Vec3dTypes>;
 #endif
+extern template class SOFA_COMPONENT_COLLISION_API helper::Factory<std::string, ComponentMouseInteraction, core::objectmodel::BaseContext*>;
 #endif
 }
 }
