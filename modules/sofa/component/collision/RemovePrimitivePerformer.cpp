@@ -34,9 +34,8 @@ namespace component
 
 namespace collision
 {
-#ifndef WIN32
+
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, RemovePrimitivePerformer >  RemovePrimitivePerformerClass("RemovePrimitive");
-#endif
 void RemovePrimitivePerformer::execute()
 {
     BodyPicked picked=this->interactor->getBodyPicked();

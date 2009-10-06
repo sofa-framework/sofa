@@ -22,9 +22,20 @@
  *                                                                             *
  * Contact information: contact@sofa-framework.org                             *
  ******************************************************************************/
+#ifndef SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_CPP
+#define SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_CPP
+
+
+#include <sofa/component/collision/ComponentMouseInteraction.h>
 #include <sofa/component/collision/ComponentMouseInteraction.inl>
+#include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/DeleteVisitor.h>
 #include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/component/component.h>
+#include <sofa/helper/Factory.inl>
+
+
+using namespace sofa::simulation;
 
 namespace sofa
 {
@@ -34,6 +45,7 @@ namespace component
 
 namespace collision
 {
+
 
 ComponentMouseInteraction::ComponentMouseInteraction():parentNode(NULL), nodeRayPick(NULL)/* ,mouseCollision(NULL) */
 {
@@ -68,6 +80,7 @@ void ComponentMouseInteraction::reset()
     mouseInteractor->cleanup();
 }
 
+template class SOFA_COMPONENT_COLLISION_API helper::Factory<std::string, ComponentMouseInteraction, core::objectmodel::BaseContext*>;
 
 #ifndef SOFA_DOUBLE
 template class TComponentMouseInteraction<defaulttype::Vec3fTypes>;
@@ -76,14 +89,16 @@ template class TComponentMouseInteraction<defaulttype::Vec3fTypes>;
 template class TComponentMouseInteraction<defaulttype::Vec3dTypes>;
 #endif
 
-#ifndef WIN32
 #ifndef SOFA_DOUBLE
 helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory, TComponentMouseInteraction<defaulttype::Vec3fTypes> > ComponentMouseInteractionVec3fClass ("MouseSpringVec3f",true);
 #endif
 #ifndef SOFA_FLOAT
 helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory, TComponentMouseInteraction<defaulttype::Vec3dTypes> > ComponentMouseInteractionVec3dClass ("MouseSpringVec3d",true);
 #endif
-#endif
+
+
+
+#endif // SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_CPP
 }
 }
 }

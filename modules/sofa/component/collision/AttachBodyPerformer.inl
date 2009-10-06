@@ -136,7 +136,16 @@ AttachBodyPerformer<DataTypes>::~AttachBodyPerformer()
     this->interactor->setDistanceFromMouse(0);
     this->interactor->setMouseAttached(false);
 };
-
+/*
+#ifdef WIN32
+#ifndef SOFA_DOUBLE
+      helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer<defaulttype::Vec3fTypes> >  AttachBodyPerformerVec3fClass("AttachBody",true);
+#endif
+#ifndef SOFA_FLOAT
+      helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer<defaulttype::Vec3dTypes> >  AttachBodyPerformerVec3dClass("AttachBody",true);
+#endif
+#endif
+*/
 }
 }
 }
