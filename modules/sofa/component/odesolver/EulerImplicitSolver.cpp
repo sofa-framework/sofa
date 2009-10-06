@@ -108,7 +108,6 @@ void EulerImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior:
         b.teq(h);                           // b = h(f0 + (h+rs)df/dx v - rd M v)
     }
 
-
     if( verbose )
         serr<<"EulerImplicitSolver, f0 = "<< b <<sendl;
 
@@ -135,6 +134,7 @@ void EulerImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior:
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode("SystemSolution");
 #endif
+
     // projectResponse(x);
     // x is the solution of the system
 
@@ -142,18 +142,40 @@ void EulerImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior:
 
     MultiVector newPos(this, xResult);
     MultiVector newVel(this, vResult);
+
+#ifdef SOFA_HAVE_EIGEN2
+    //For to No MultiOp, as it would be impossible to apply the constraints
+#define SOFA_NO_VMULTIOP
+#endif
+
 #ifdef SOFA_NO_VMULTIOP // unoptimized version
     if (firstOrder)
     {
         newVel.eq(x);                         // vel = x
+#ifdef SOFA_HAVE_EIGEN2
+        solveConstraint(VecId::velocity());
+        simulation::MechanicalPropagateVVisitor propagateVelocity(newVel);
+        propagateVelocity.execute(this->getContext());
+#endif
         newPos.eq(pos, newVel, h);            // pos = pos + h vel
+#ifdef SOFA_HAVE_EIGEN2
+        solveConstraint(VecId::position(), true);
+#endif
     }
     else
     {
         //vel.peq( x );                       // vel = vel + x
         newVel.eq(vel, x);
+#ifdef SOFA_HAVE_EIGEN2
+        solveConstraint(VecId::velocity());
+        simulation::MechanicalPropagateVVisitor propagateVelocity(newVel);
+        propagateVelocity.execute(this->getContext());
+#endif
         //pos.peq( vel, h );                  // pos = pos + h vel
         newPos.eq(pos, newVel, h);
+#ifdef SOFA_HAVE_EIGEN2
+        solveConstraint(VecId::position(), true);
+#endif
     }
 
 
@@ -197,9 +219,6 @@ void EulerImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior:
         serr<<"EulerImplicitSolver, final v = "<< newVel <<sendl;
     }
 
-#ifdef SOFA_HAVE_EIGEN2
-    applyConstraints();
-#endif
 }
 
 SOFA_DECL_CLASS(EulerImplicitSolver)
