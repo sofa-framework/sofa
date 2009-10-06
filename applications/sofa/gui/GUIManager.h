@@ -49,7 +49,7 @@ public:
     };
     static int Init(const char* argv0, const char* name ="");
     static int RegisterGUI(const char* name, CreateGUIFn* creator, InitGUIFn* init=NULL, int priority=0);
-    static const char* GetValidGUIName(const char* name = NULL);
+    static const char* GetValidGUIName();
     static std::vector<std::string> ListSupportedGUI();
     static std::string ListSupportedGUI(char separator);
     static void AddGUIOption(const char* option);
@@ -76,6 +76,7 @@ protected:
 
     static std::vector<std::string> guiOptions;
     static SofaGUI* currentGUI;
+    static const char* valid_guiname;
 };
 
 }
