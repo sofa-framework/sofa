@@ -80,8 +80,6 @@ void ComponentMouseInteraction::reset()
     mouseInteractor->cleanup();
 }
 
-template class SOFA_COMPONENT_COLLISION_API helper::Factory<std::string, ComponentMouseInteraction, core::objectmodel::BaseContext*>;
-
 #ifndef SOFA_DOUBLE
 template class TComponentMouseInteraction<defaulttype::Vec3fTypes>;
 #endif
@@ -96,9 +94,11 @@ helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory, TCo
 helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory, TComponentMouseInteraction<defaulttype::Vec3dTypes> > ComponentMouseInteractionVec3dClass ("MouseSpringVec3d",true);
 #endif
 
-
-
+}
+}
+namespace helper
+{
+template class SOFA_COMPONENT_COLLISION_API helper::Factory<std::string, component::collision::ComponentMouseInteraction, core::objectmodel::BaseContext*>;
+}
+}
 #endif // SOFA_COMPONENT_COLLISION_COMPONENTMOUSEINTERACTION_CPP
-}
-}
-}

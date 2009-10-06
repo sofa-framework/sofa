@@ -8,15 +8,10 @@
 namespace sofa
 {
 
-namespace component
-{
-
-namespace collision
+namespace helper
 {
 //explicit instanciation of our factory class.
-template class SOFA_COMPONENT_COLLISION_API helper::Factory<std::string, InteractionPerformer, BaseMouseInteractor*>;
-
-} // collision
-} // component
+template class SOFA_COMPONENT_COLLISION_API helper::Factory<std::string, component::collision::InteractionPerformer, component::collision::BaseMouseInteractor*>;
+} // helper
 } // sofa
 #endif
