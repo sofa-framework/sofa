@@ -185,6 +185,14 @@ SOURCES += \
 }
 }
 
+contains(DEFINES,SOFA_HAVE_EIGEN2){
+HEADERS += \
+                CudaLDILMConstraint.h
+	   	
+SOURCES += \	
+                CudaLDILMConstraint.cpp
+}
+
 HEADERS += \
 	   	CudaParticlesRepulsionForceField.h \
 	   	CudaParticlesRepulsionForceField.inl

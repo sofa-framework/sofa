@@ -95,6 +95,8 @@ public:
     // -- Constraint interface
     void init();
     void reinit();
+
+    void buildJacobian();
     void writeConstraintEquations(ConstOrder order);
 
     double getError();
@@ -123,6 +125,8 @@ protected :
 
     // Base Components of the current context
     core::componentmodel::topology::BaseMeshTopology *topology;
+
+    helper::vector< SparseVecDeriv > V1, V2;
 
     // rest length pre-computated
     sofa::helper::vector< double > l0;

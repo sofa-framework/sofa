@@ -1286,7 +1286,7 @@ public:
     }
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
-
+    virtual Result fwdLMConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseLMConstraint* c);
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalBeginIntegrationVisitor"; }

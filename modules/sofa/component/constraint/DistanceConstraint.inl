@@ -124,6 +124,35 @@ typename DataTypes::Deriv DistanceConstraint<DataTypes>::getDirection(const Edge
 
 
 template<class DataTypes>
+void DistanceConstraint<DataTypes>::buildJacobian()
+{
+    const VecCoord &x1=*(this->object1->getX());
+    const VecCoord &x2=*(this->object2->getX());
+
+    const SeqEdges &edges =  vecConstraint.getValue();
+
+    if (this->l0.size() != edges.size()) updateRestLength();
+
+    V1.clear();
+    V2.clear();
+
+    V1.resize(edges.size());
+    V2.resize(edges.size());
+
+    for (unsigned int i=0; i<edges.size(); ++i)
+    {
+        unsigned int idx1=edges[i][0];
+        unsigned int idx2=edges[i][1];
+
+        const Deriv V12 = getDirection(edges[i], x1, x2);
+
+        V1[i].add(idx1,V12);
+        V2[i].add(idx2,-V12);
+    }
+}
+
+
+template<class DataTypes>
 void DistanceConstraint<DataTypes>::writeConstraintEquations(ConstOrder Order)
 {
     const VecCoord &x1=*(this->object1->getX());
@@ -134,15 +163,13 @@ void DistanceConstraint<DataTypes>::writeConstraintEquations(ConstOrder Order)
 
     const SeqEdges &edges =  vecConstraint.getValue();
 
-    if (this->l0.size() != edges.size()) updateRestLength();
-
 
     for (unsigned int i=0; i<edges.size(); ++i)
     {
         unsigned int idx1=edges[i][0];
         unsigned int idx2=edges[i][1];
 
-        Deriv V12 = getDirection(edges[i], x1, x2);
+        const Deriv V12 = getDirection(edges[i], x1, x2);
 
         core::componentmodel::behavior::BaseLMConstraint::constraintGroup *constraint = this->addGroupConstraint(Order);
         SReal correction=0;
@@ -176,17 +203,10 @@ void DistanceConstraint<DataTypes>::writeConstraintEquations(ConstOrder Order)
         const unsigned int idxInVecConst[2]= {c1.size(),
                 c2.size()+(this->object1 == this->object2)
                                              };
-        SparseVecDeriv V1;
-        V1.add(idx1,V12); c1.push_back(V1);
+        c1.push_back(V1[i]);
+        c2.push_back(V2[i]);
 
-        //             if (this->object1 != this->object2)
-        //             {
-        SparseVecDeriv V2;
-        V2.add(idx2,-V12); c2.push_back(V2);
-        //             }
         constraint->addConstraint( idxInVecConst[0], idxInVecConst[1], correction, core::componentmodel::behavior::BaseLMConstraint::BILATERAL);
-
-
     }
 }
 
@@ -226,7 +246,6 @@ void DistanceConstraint<DataTypes>::draw()
 {
     if (this->l0.size() != vecConstraint.getValue().size()) updateRestLength();
 
-    sout << getError() << " Error" << sendl;
     if (this->getContext()->getShowBehaviorModels())
     {
         const VecCoord &x1=*(this->object1->getX());
@@ -236,9 +255,6 @@ void DistanceConstraint<DataTypes>::draw()
         const SeqEdges &edges =  vecConstraint.getValue();
         for (unsigned int i=0; i<edges.size(); ++i)
         {
-//                 double length     = lengthEdge(edges[i],x1,x2);
-//                 double restLength = this->l0[i];
-//                 double factor = fabs(length - restLength)/length;
             points.push_back(x1[edges[i][0]]);
             points.push_back(x2[edges[i][1]]);
         }
