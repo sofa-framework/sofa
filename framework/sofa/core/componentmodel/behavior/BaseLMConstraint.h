@@ -136,6 +136,8 @@ public:
 
     ~BaseLMConstraint() {};
 
+    virtual void buildJacobian()=0;
+
     /// Called by MechanicalAccumulateLMConstaint: The Object will compute the constraints present in the current state, and create the constraintGroup related.
     virtual void writeConstraintEquations(ConstOrder id)=0;
     /// Interface to construct a group of constraint: Giving the nature of these constraints, it returns a pointer to the structure

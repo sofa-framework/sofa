@@ -1013,6 +1013,14 @@ Visitor::Result MechanicalBeginIntegrationVisitor::fwdMappedMechanicalState(simu
     return RESULT_CONTINUE;
 }
 
+Visitor::Result MechanicalBeginIntegrationVisitor::fwdLMConstraint(simulation::Node* node, core::componentmodel::behavior::BaseLMConstraint* c)
+{
+    ctime_t t0 = beginProcess(node, c);
+    c->buildJacobian();
+    endProcess(node, c, t0);
+    return RESULT_CONTINUE;
+}
+
 
 Visitor::Result MechanicalEndIntegrationVisitor::fwdMechanicalState(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalState* mm)
 {
