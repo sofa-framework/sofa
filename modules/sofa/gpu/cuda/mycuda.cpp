@@ -77,7 +77,7 @@ extern "C"
     MycudaVerboseLevel mycudaVerboseLevel = LOG_INFO;
 //MycudaVerboseLevel mycudaVerboseLevel = LOG_TRACE;
 
-    int mycudaMultiOpMax = 10;
+    int mycudaMultiOpMax = 0;
 }
 
 void mycudaLogError(const char* err, const char* src)

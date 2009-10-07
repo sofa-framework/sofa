@@ -73,6 +73,7 @@ public:
     bool   _restRotations;
     DataPtr<bool> f_restRotations;
     Data<bool> recompute;
+    Data<std::string> filePrefix;
 
     PrecomputedConstraintCorrection(behavior::MechanicalState<DataTypes> *mm = NULL);
 
