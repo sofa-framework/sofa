@@ -61,7 +61,7 @@ protected:
         Real length;
         Deriv force;
 
-        EdgePressureInformation() {}
+        EdgePressureInformation(): length(0) {}
         EdgePressureInformation(const EdgePressureInformation &e)
             : length(e.length),force(e.force)
         { }
