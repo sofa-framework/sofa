@@ -1078,6 +1078,16 @@ Visitor::Result MechanicalPickParticlesVisitor::fwdMechanicalState(simulation::N
 {
     ctime_t t0 = beginProcess(node, mm);
     //std::cout << "Picking particles on state " << mm->getName() << " within radius " << radius0 << " + dist * " << dRadius << std::endl;
+
+    //We deactivate the Picking with static objects (not simulated)
+    core::CollisionModel *c;
+    mm->getContext()->get(c, core::objectmodel::BaseContext::Local);
+    if (c && !c->isSimulated()) //If it is an obstacle, we don't try to pick
+    {
+        endProcess(node, mm, t0);
+        return RESULT_CONTINUE;
+    }
+
     mm->pickParticles(rayOrigin[0], rayOrigin[1], rayOrigin[2], rayDirection[0], rayDirection[1], rayDirection[2], radius0, dRadius, particles);
     endProcess(node, mm, t0);
     return RESULT_CONTINUE;
