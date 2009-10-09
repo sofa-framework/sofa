@@ -111,7 +111,8 @@ public:
 
     //Edges involving a distance constraint
     Data< SeqEdges > vecConstraint;
-
+    /// we compute the length with the constrained dof
+    bool isCorrectionComputedWithSimulatedDOF() {return false;}
 protected :
     ///Compute the length of an edge given the vector of coordinates corresponding
     double lengthEdge(const Edge &e, const VecCoord &x1,const VecCoord &x2) const;
