@@ -145,7 +145,7 @@ void ParticlesRepulsionForceField<DataTypes>::addDForce(VecDeriv& df, const VecD
     const VecCoord& x = *this->mstate->getX();
     const Real h = distance.getValue();
     const Real h2 = h*h;
-    const Real ks = stiffness.getValue()*kFactor;
+    const Real ks = (Real)(stiffness.getValue()*kFactor);
     //const Real kd = damping.getValue()*bFactor;
     const int n = x.size();
     df.resize(dx.size());

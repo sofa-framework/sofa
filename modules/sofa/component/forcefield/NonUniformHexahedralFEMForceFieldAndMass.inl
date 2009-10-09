@@ -129,7 +129,7 @@ void NonUniformHexahedralFEMForceFieldAndMass<T>::reinit()
 
             for(unsigned int k=0; k<3; ++k)
                 for(unsigned int j=0; j<3; ++j)
-                    _material.M[3*u+k][3*v+j] = (k%3==j%3)?M[u][v]:0.0;
+                    _material.M[3*u+k][3*v+j] = (Real)((k%3==j%3)?M[u][v]:0.0);
         }
 
     _H.resize(level+1);
