@@ -137,10 +137,10 @@ bool PickHandler::needToCastRay()
 
 void PickHandler::setCompatibleInteractor()
 {
-    if (useCollisions)
-    {
-        if (!lastPicked.body ) return;
+    if (!lastPicked.body && !lastPicked.mstate) return;
 
+    if (lastPicked.body)
+    {
         if (interaction->isCompatible(lastPicked.body->getContext())) return;
         for (unsigned int i=0; i<instanceComponents.size(); ++i)
         {
@@ -155,8 +155,6 @@ void PickHandler::setCompatibleInteractor()
     }
     else
     {
-        if (!lastPicked.mstate) return;
-
         if (interaction->isCompatible(lastPicked.mstate->getContext())) return;
         for (unsigned int i=0; i<instanceComponents.size(); ++i)
         {
@@ -234,8 +232,12 @@ ComponentMouseInteraction *PickHandler::getInteraction()
 
 component::collision::BodyPicked PickHandler::findCollision()
 {
-    if (useCollisions) return findCollisionUsingPipeline();
-    else               return findCollisionUsingBruteForce();
+    if (useCollisions)
+    {
+        component::collision::BodyPicked picked=findCollisionUsingPipeline();
+        if (picked.body) return picked;
+    }
+    return findCollisionUsingBruteForce();
 }
 
 component::collision::BodyPicked PickHandler::findCollisionUsingPipeline()
