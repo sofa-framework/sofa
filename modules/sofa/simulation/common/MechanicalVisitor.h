@@ -1137,6 +1137,36 @@ public:
 #endif
 };
 
+
+class SOFA_SIMULATION_COMMON_API MechanicalSolveLMConstraintVisitor: public MechanicalVisitor
+{
+public:
+    MechanicalSolveLMConstraintVisitor()
+    {
+#ifdef SOFA_DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+    };
+
+
+    virtual Result fwdOdeSolver(simulation::Node* /*node*/, core::componentmodel::behavior::OdeSolver* s);
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalSolveLMConstraintVisitor"; }
+
+    virtual bool isThreadSafe() const
+    {
+        return false;
+    }
+#ifdef SOFA_DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+    }
+#endif
+};
+
+
 class SOFA_SIMULATION_COMMON_API MechanicalWriteLMConstraint : public MechanicalVisitor
 {
 public:

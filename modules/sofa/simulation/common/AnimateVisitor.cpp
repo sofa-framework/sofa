@@ -97,8 +97,6 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
         node->execute(&beginVisitor);
 
 #ifdef SOFA_HAVE_EIGEN2
-        MechanicalResetConstraintVisitor resetConstraint;
-        node->execute(&resetConstraint);
         MechanicalExpressJacobianVisitor JacobianVisitor;
         node->execute(&JacobianVisitor);
 #endif
@@ -112,6 +110,11 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
         }
 
         MechanicalPropagatePositionAndVelocityVisitor(nextTime,core::componentmodel::behavior::OdeSolver::VecId::position(),core::componentmodel::behavior::OdeSolver::VecId::velocity()).execute( node );
+
+#ifdef SOFA_HAVE_EIGEN2
+        MechanicalResetConstraintVisitor resetConstraint;
+        node->execute(&resetConstraint);
+#endif
 
         MechanicalEndIntegrationVisitor endVisitor(dt);
         node->execute(&endVisitor);

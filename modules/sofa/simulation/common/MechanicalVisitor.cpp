@@ -933,6 +933,16 @@ void MechanicalExpressJacobianVisitor::bwdMechanicalMapping(simulation::Node* no
     endProcess(node, map, t0);
 }
 
+Visitor::Result MechanicalSolveLMConstraintVisitor::fwdOdeSolver(simulation::Node* node, core::componentmodel::behavior::OdeSolver* s)
+{
+    typedef core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
+    ctime_t t0 = beginProcess(node, s);
+    s->solveConstraint(VecId::velocity(), false);
+    s->solveConstraint(VecId::position(), true );
+    endProcess(node, s, t0);
+    return RESULT_PRUNE;
+}
+
 Visitor::Result MechanicalWriteLMConstraint::fwdLMConstraint(simulation::Node* node, core::componentmodel::behavior::BaseLMConstraint* c)
 {
     ctime_t t0 = beginProcess(node, c);
