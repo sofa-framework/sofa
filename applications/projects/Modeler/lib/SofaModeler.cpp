@@ -534,7 +534,7 @@ void SofaModeler::fileSave()
 
 void SofaModeler::fileSave(std::string filename)
 {
-    simulation::tree::getSimulation()->printXML(graph->getRoot(), filename.c_str(), true);
+    simulation::tree::getSimulation()->exportXML(graph->getRoot(), filename.c_str(), true);
 }
 
 
@@ -693,7 +693,7 @@ void SofaModeler::runInSofa()
     else path = sofa::helper::system::SetDirectory::GetParentDir(graph->getFilename().c_str())+std::string("/");
 
     std::string filename=path + std::string("temp") + (count++) + std::string(".scn");
-    simulation::tree::getSimulation()->printXML(root,filename.c_str(),true);
+    simulation::tree::getSimulation()->exportXML(root,filename.c_str(),true);
 
 
     if (count > '9') count = '0';
