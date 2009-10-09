@@ -64,6 +64,7 @@ public:
     typedef typename DataTypes1::Coord Coord1;
     typedef typename DataTypes1::Deriv Deriv1;
     typedef typename DataTypes1::VecConst VecConst1;
+    typedef typename DataTypes1::SparseVecDeriv SparseVecDeriv1;
 
     typedef typename DataTypes2::Real Real2;
     typedef typename DataTypes2::VecCoord VecCoord2;
@@ -71,20 +72,34 @@ public:
     typedef typename DataTypes2::Coord Coord2;
     typedef typename DataTypes2::Deriv Deriv2;
     typedef typename DataTypes2::VecConst VecConst2;
+    typedef typename DataTypes2::SparseVecDeriv SparseVecDeriv2;
 
 
-    LMConstraint( MechanicalState<DataTypes1> *dof1, MechanicalState<DataTypes2> *dof2):object1(dof1),object2(dof2)
-    {}
-    LMConstraint() {}
+    LMConstraint( MechanicalState<DataTypes1> *dof1, MechanicalState<DataTypes2> *dof2):constrainedObject1(dof1),constrainedObject2(dof2),simulatedObject1(dof1),simulatedObject2(dof2) {}
+    LMConstraint():constrainedObject1(NULL),constrainedObject2(NULL),simulatedObject1(NULL),simulatedObject2(NULL) {}
 
     virtual ~LMConstraint();
 
     virtual void init();
 
-    /// Retrieve the associated MechanicalState
-    virtual core::componentmodel::behavior::BaseMechanicalState* getMechModel1() {return object1;}
-    virtual core::componentmodel::behavior::BaseMechanicalState* getMechModel2() {return object2;}
 
+    //Express the Jacobian for the Simulated Object
+    void expressJacobian();
+
+    //Create the Jacobian for the Constrained Object
+    virtual void buildJacobian()=0;
+
+
+
+    /// get Mechanical State 1 where the constraint will be expressed (can be a Mapped mechanical state)
+    virtual BaseMechanicalState* getConstrainedMechModel1() {return constrainedObject1;}
+    /// get Mechanical State 2 where the constraint will be expressed (can be a Mapped mechanical state)
+    virtual BaseMechanicalState* getConstrainedMechModel2() {return constrainedObject2;}
+
+    /// get Mechanical State 1 where the constraint will be solved
+    virtual BaseMechanicalState* getSimulatedMechModel1() {return simulatedObject1;}
+    /// get Mechanical State 2 where the constraint will be solved
+    virtual BaseMechanicalState* getSimulatedMechModel2() {return simulatedObject2;}
 
 
     /// Pre-construction check method called by ObjectFactory.
@@ -113,13 +128,13 @@ public:
         sofa::core::objectmodel::BaseObject::create(obj, context, arg);
         if (arg && (arg->getAttribute("object1") || arg->getAttribute("object2")))
         {
-            obj->object1 = dynamic_cast<MechanicalState<DataTypes1>*>(arg->findObject(arg->getAttribute("object1","..")));
-            obj->object2 = dynamic_cast<MechanicalState<DataTypes2>*>(arg->findObject(arg->getAttribute("object2","..")));
+            obj->constrainedObject1 = dynamic_cast<MechanicalState<DataTypes1>*>(arg->findObject(arg->getAttribute("object1","..")));
+            obj->constrainedObject2 = dynamic_cast<MechanicalState<DataTypes2>*>(arg->findObject(arg->getAttribute("object2","..")));
         }
         else if (context)
         {
-            obj->object1 =
-                obj->object2 =
+            obj->constrainedObject1 =
+                obj->constrainedObject2 =
                         dynamic_cast<MechanicalState<DataTypes1>*>(context->getMechanicalState());
         }
     }
@@ -137,8 +152,17 @@ public:
 
 
 protected:
-    MechanicalState<DataTypes1> *object1;
-    MechanicalState<DataTypes2> *object2;
+    /// Insert in the Vector C (VecConst) of each constrainedObject the equation expressed using SparseVecDeriv
+    /// Returns the index where the lines have been entered
+    unsigned int  registerEquationInJ1( SparseVecDeriv1 &C1);
+    unsigned int  registerEquationInJ2( SparseVecDeriv2 &C2);
+
+    MechanicalState<DataTypes1> *constrainedObject1;
+    MechanicalState<DataTypes2> *constrainedObject2;
+
+    BaseMechanicalState         *simulatedObject1;
+    BaseMechanicalState         *simulatedObject2;
+
 
 };
 

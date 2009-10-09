@@ -163,7 +163,6 @@ public:
     /// Return the constraint IDs corresponding to the entries in the constraints matrix returned by getC()
     virtual sofa::helper::vector<unsigned int>& getConstraintId() = 0;
 
-
     virtual std::string getTemplateName() const
     {
         return templateName(this);

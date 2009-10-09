@@ -92,9 +92,16 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
     if (!node->solver.empty() )
     {
         double nextTime = node->getTime() + dt;
+
         MechanicalBeginIntegrationVisitor beginVisitor(dt);
         node->execute(&beginVisitor);
 
+#ifdef SOFA_HAVE_EIGEN2
+        MechanicalResetConstraintVisitor resetConstraint;
+        node->execute(&resetConstraint);
+        MechanicalExpressJacobianVisitor JacobianVisitor;
+        node->execute(&JacobianVisitor);
+#endif
 
         for( unsigned i=0; i<node->solver.size(); i++ )
         {

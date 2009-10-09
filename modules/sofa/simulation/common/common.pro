@@ -14,7 +14,6 @@ HEADERS += common.h \
            CleanupVisitor.h \
            CollisionVisitor.h \  
            Colors.h \
-           ConstraintVisitor.h \
            DeleteVisitor.h \
            DesactivatedNodeVisitor.h \
            ExportGnuplotVisitor.h \
@@ -66,7 +65,6 @@ SOURCES += Node.cpp \
            BehaviorUpdatePositionVisitor.cpp \
            CactusStackStorage.cpp \
            CleanupVisitor.cpp \
-           ConstraintVisitor.cpp \
            CollisionVisitor.cpp \
            DeleteVisitor.cpp \
            DesactivatedNodeVisitor.cpp \

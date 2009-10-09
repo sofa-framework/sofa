@@ -77,6 +77,7 @@ public:
     typedef typename DataTypes::VecConst VecConst;
     typedef typename defaulttype::SparseConstraint<Deriv> SparseConstraint;
     typedef typename SparseConstraint::const_data_iterator ConstraintIterator;
+    typedef typename DataTypes::SparseVecDeriv::const_data_iterator SparseVecDerivIterator;
     typedef typename core::componentmodel::behavior::BaseMechanicalState::ConstraintBlock ConstraintBlock;
 
 protected:
@@ -294,6 +295,8 @@ public:
 
     /// Express the matrix L in term of block of matrices, using the indices of the lines in the VecConst container
     virtual std::list<ConstraintBlock> constraintBlocks( const std::list<unsigned int> &indices) const;
+    virtual SReal getConstraintError( unsigned int line, VecId id);
+
 
     void setFilename(std::string s) {filename.setValue(s);};
     void setTranslation(double dx,double dy,double dz) {translation.setValue(Vector3(dx,dy,dz));};

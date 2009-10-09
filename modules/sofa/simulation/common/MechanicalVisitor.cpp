@@ -227,8 +227,8 @@ void MechanicalVisitor::printReadVectors(simulation::Node* node, core::objectmod
         }
         else if (sofa::core::componentmodel::behavior::BaseLMConstraint* interact = dynamic_cast<sofa::core::componentmodel::behavior::BaseLMConstraint*> (obj))
         {
-            dof1=interact->getMechModel1();
-            dof2=interact->getMechModel2();
+            dof1=interact->getConstrainedMechModel1();
+            dof2=interact->getConstrainedMechModel2();
         }
         else
         {
@@ -267,8 +267,8 @@ void MechanicalVisitor::printWriteVectors(simulation::Node* node, core::objectmo
         }
         else if (sofa::core::componentmodel::behavior::BaseLMConstraint* interact = dynamic_cast<sofa::core::componentmodel::behavior::BaseLMConstraint*> (obj))
         {
-            dof1=interact->getMechModel1();
-            dof2=interact->getMechModel2();
+            dof1=interact->getConstrainedMechModel1();
+            dof2=interact->getConstrainedMechModel2();
         }
         else
         {
@@ -908,52 +908,42 @@ Visitor::Result MechanicalResetConstraintVisitor::fwdMappedMechanicalState(simul
     return RESULT_CONTINUE;
 }
 
-Visitor::Result MechanicalAccumulateLMConstraint::fwdLMConstraint(simulation::Node* node, core::componentmodel::behavior::BaseLMConstraint* c)
+Visitor::Result MechanicalResetConstraintVisitor::fwdLMConstraint(simulation::Node* node, core::componentmodel::behavior::BaseLMConstraint* c)
 {
+    // mm->setC(res);
     ctime_t t0 = beginProcess(node, c);
-    c->writeConstraintEquations(order);
-
-    datasC.push_back(ConstraintData());
-    ConstraintData &entry=datasC[datasC.size()-1];
-
-    //get the corrections to apply
-    entry.constrainedMState[0]=entry.independentMState[0]=c->getMechModel1();
-    entry.constrainedMState[1]=entry.independentMState[1]=c->getMechModel2();
-    //get the corrections to apply
-
-    c->getMechModel1()->forceMask.setInUse(c->useMask());
-    c->getMechModel2()->forceMask.setInUse(c->useMask());
-
-    entry.data=c;
+    c->resetConstraint();
     endProcess(node, c, t0);
     return RESULT_CONTINUE;
 }
 
-void MechanicalAccumulateLMConstraint::bwdMechanicalMapping(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalMapping* map)
+
+Visitor::Result MechanicalExpressJacobianVisitor::fwdLMConstraint(simulation::Node* node, core::componentmodel::behavior::BaseLMConstraint* c)
+{
+    ctime_t t0 = beginProcess(node, c);
+    c->expressJacobian();
+    endProcess(node, c, t0);
+    return RESULT_CONTINUE;
+}
+
+void MechanicalExpressJacobianVisitor::bwdMechanicalMapping(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalMapping* map)
 {
     ctime_t t0 = beginProcess(node, map);
-
-    for (unsigned int i=0; i<datasC.size(); ++i)
-    {
-        //When we transmit a constraint equation through a mapping, we need to update the numero of the line in which will be store the equation
-        //corresponds to the entry in Vector C
-        if ( datasC[i].independentMState[0] == map->getMechTo())
-            datasC[i].data->constraintTransmission(order, datasC[i].constrainedMState[0],map->getMechFrom()->getCSize());
-
-        if ( datasC[i].independentMState[1] == map->getMechTo())
-            datasC[i].data->constraintTransmission(order, datasC[i].constrainedMState[1],map->getMechFrom()->getCSize());
-    }
-
     map->accumulateConstraint();
-
-    for (unsigned int i=0; i<datasC.size(); ++i)
-    {
-        if ( datasC[i].independentMState[0] == map->getMechTo()) datasC[i].independentMState[0]=map->getMechFrom();
-        if ( datasC[i].independentMState[1] == map->getMechTo()) datasC[i].independentMState[1]=map->getMechFrom();
-    }
-
     endProcess(node, map, t0);
 }
+
+Visitor::Result MechanicalWriteLMConstraint::fwdLMConstraint(simulation::Node* node, core::componentmodel::behavior::BaseLMConstraint* c)
+{
+    ctime_t t0 = beginProcess(node, c);
+    c->writeConstraintEquations(order);
+
+    datasC.push_back(c);
+
+    endProcess(node, c, t0);
+    return RESULT_CONTINUE;
+}
+
 
 Visitor::Result MechanicalAccumulateConstraint::fwdConstraint(simulation::Node* node, core::componentmodel::behavior::BaseConstraint* c)
 {
@@ -1010,14 +1000,6 @@ Visitor::Result MechanicalBeginIntegrationVisitor::fwdMappedMechanicalState(simu
     mm->forceMask.activate(true);
     mm->beginIntegration(dt);
     endProcess(node, mm, t0);
-    return RESULT_CONTINUE;
-}
-
-Visitor::Result MechanicalBeginIntegrationVisitor::fwdLMConstraint(simulation::Node* node, core::componentmodel::behavior::BaseLMConstraint* c)
-{
-    ctime_t t0 = beginProcess(node, c);
-    c->buildJacobian();
-    endProcess(node, c, t0);
     return RESULT_CONTINUE;
 }
 

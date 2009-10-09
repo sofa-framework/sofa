@@ -81,7 +81,7 @@ class BaseMechanicalMapping;
 class BaseMechanicalState : public virtual objectmodel::BaseObject
 {
 public:
-    BaseMechanicalState():useMask(initData(&useMask, false, "useMask", "Usage of a mask to optimize the computation of the system, highly reducing the passage through the mappings"))
+    BaseMechanicalState():useMask(initData(&useMask, true, "useMask", "Usage of a mask to optimize the computation of the system, highly reducing the passage through the mappings"))
     {}
     virtual ~BaseMechanicalState()
     { }
@@ -276,6 +276,8 @@ public:
 
     /// Express the matrix L in term of block of matrices, using the indices of the lines in the VecConst container
     virtual std::list<ConstraintBlock> constraintBlocks( const std::list<unsigned int> &/* indices */) const {return std::list<ConstraintBlock>();};
+    /// Compute the error given a state vector and a line of the Jacobian (line in vector C)
+    virtual SReal getConstraintError( unsigned int /*line*/, VecId /*id*/) {this->serr << "NOT IMPLEMENTED YET" << this->sendl; return (SReal)0;};
 
     /// Utility to store only the modified indices of a mapped dof.
     /// This should allow to optimize the propagation of the forces from a mechanical state mapped, used as a collision model, to the independent dofs.
