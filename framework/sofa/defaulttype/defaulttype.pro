@@ -33,6 +33,7 @@ HEADERS += \
           SparseConstraintTypes.h \
           Vec.h \
           VecTypes.h \
+	    MatSym.h \
           Vec3Types.h
 
 SOURCES += \
