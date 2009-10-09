@@ -1319,7 +1319,7 @@ void RealGUI::fileSaveAs(Node *node)
 
 void RealGUI::fileSaveAs ( Node *node, const char* filename )
 {
-    simulation::getSimulation()->printXML ( node, filename );
+    simulation::getSimulation()->exportXML ( node, filename );
 }
 
 void RealGUI::fileExit()
@@ -1332,7 +1332,7 @@ void RealGUI::fileExit()
 
 void RealGUI::saveXML()
 {
-    simulation::getSimulation()->printXML ( viewer->getScene(), "scene.scn" );
+    simulation::getSimulation()->exportXML ( viewer->getScene(), "scene.scn" );
 }
 
 void RealGUI::editRecordDirectory()

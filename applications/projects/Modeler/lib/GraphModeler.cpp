@@ -691,7 +691,7 @@ void GraphModeler::saveNode(Q3ListViewItem* item)
 
 void GraphModeler::saveNode(GNode* node, std::string file)
 {
-    simulation::getSimulation()->printXML(node, file.c_str());
+    simulation::getSimulation()->exportXML(node, file.c_str());
 }
 
 void GraphModeler::saveComponent(BaseObject* object, std::string file)
