@@ -55,65 +55,85 @@ public:
     enum ConstOrder {POS,VEL,ACC};
     enum ConstNature {UNILATERAL,BILATERAL};
 
+
+    /**
+     * \brief Expression of a line of the system created to solve the constraint
+         *
+     * @param idxInConstrainedDOF1 index of the line of the Jacobian in the Constrained DOF1 (can be a mapped dof)
+     * @param idxInConstrainedDOF2 index of the line of the Jacobian in the Constrained DOF2 (can be a mapped dof)
+         * @param correction           right hand term of the equation: corresponds to a correction we have to apply to the system
+         * @param nature               If the constraint is Unilateral or Bilateral
+     **/
+    struct ConstraintEquation
+    {
+        unsigned int idxInConstrainedDOF1;
+        unsigned int idxInConstrainedDOF2;
+        SReal correction;
+        ConstNature nature;
+    };
+
     /**
      * \brief Intern storage of the constraints.
-     *         a constraintGroup is a list of constraint that will be solved together.
-     *
-     *  They are defined by a ConstOrder(position, velocity or acceleration), indices corresponding of the entries in the VecConst vector
+     *         a ConstraintGroup is a list of equations that will be solved together.
+     *  They are defined by a ConstOrder(position, velocity or acceleration)
+     * @see ConstraintEquation
+     * @see ConstOrder
      **/
-    class constraintGroup
+    class ConstraintGroup
     {
+        typedef sofa::helper::vector< ConstraintEquation > VecEquations;
     public:
-        constraintGroup( ConstOrder idConstraint):Order(idConstraint) {}
+        typedef VecEquations::const_iterator EquationConstIterator;
+        typedef VecEquations::iterator       EquationIterator;
+
+        ConstraintGroup( ConstOrder idConstraint):Order(idConstraint) {}
         /**
          * Method to add a constraint to the group
          *
          * @param i0 index of the entry in the VecConst for the first object
          * @param i1 index of the entry in the VecConst for the second object
+         * @param c  correction we need to apply in order to solve the constraint
+             * @param n  nature of the constraint (Unilateral or Bilateral) @see ConstNature
          **/
         void addConstraint(  unsigned int i0, unsigned int i1, SReal c, ConstNature n)
         {
-            index[0].push_back(i0); index[1].push_back(i1);
-            correction.push_back(c);
-            nature.push_back(n);
+            equations.resize(equations.size()+1);
+            ConstraintEquation &eq=equations.back();
+            eq.idxInConstrainedDOF1 = i0;
+            eq.idxInConstrainedDOF2 = i1;
+            eq.correction=c;
+            eq.nature=n;
         }
-        /**
-         * Method to retrieve one of the constraint in the group
-         *
-         * @param i index of constraint in this group
-         * @param indexVecConst0 index of the entry in the VecConst for the first object
-         * @param indexVecConst1 index of the entry in the VecConst for the second object
-         **/
-        void getConstraint(const unsigned int i,
-                unsigned int &indexVecConst0, unsigned int &indexVecConst1, double &c, ConstNature &n) const
+
+
+        /// Random Access to an equation
+        const ConstraintEquation &getConstraint(const unsigned int i) const
         {
-            indexVecConst0 = index[0][i]; indexVecConst1 = index[1][i];
-            c = correction[i];
-            n = nature[i];
+            EquationConstIterator it=equations.begin();
+            std::advance(it,i);
+            return *it;
         }
 
-        /// Retrieves only the indices in the VecConst for a given constraint of the group
-        void   getIndices          (unsigned int entry, unsigned int &i0, unsigned int &i1) const {i0=index[0][entry]; i1=index[1][entry];}
-        /// Retrieves only the correction for a given index in the VecConst
-        SReal getCorrection(unsigned int entry) const {return correction[entry];}
-        ConstNature getNature(unsigned int entry) const {return nature[entry];}
+        ConstraintEquation &getConstraint(const unsigned int i)
+        {
+            EquationIterator it=equations.begin();
+            std::advance(it,i);
+            return *it;
+        }
 
-        ///Retrieves all the indices in the VecConst for the first object
-        const helper::vector< unsigned int > &getIndicesUsed0()   const {return index[0];}
-        ///Retrieves all the indices in the VecConst for the second object
-        const helper::vector< unsigned int > &getIndicesUsed1()   const {return index[1];}
+        /// Retrieve all the equations
+        std::pair< EquationConstIterator,EquationConstIterator> data() const
+        {
+            return std::make_pair( equations.begin(), equations.end());
+        }
+        std::pair< EquationIterator,EquationIterator > data()
+        {
+            return std::make_pair( equations.begin(), equations.end());
+        }
 
-        ///Retrieves all the indices in the VecConst for the first object
-        helper::vector< unsigned int > &getIndicesUsed0() {return index[0];}
-        ///Retrieves all the indices in the VecConst for the second object
-        helper::vector< unsigned int > &getIndicesUsed1() {return index[1];}
-
-        ///Retrieves the correction for the constraint (corresponds to the Right Hand term of the equation)
-        const helper::vector< SReal >       &getCorrections()    const {return correction;}
-        const helper::vector< ConstNature > &getNatures()        const {return nature;}
 
         /// Return the number of constraint contained in this group
-        std::size_t getNumConstraint() const { return correction.size();};
+        std::size_t getNumConstraint() const { return equations.size();};
 
         /// Return the order of the constraint
         /// @see ConstOrder
@@ -123,12 +143,7 @@ public:
         /// Order of the constraint
         /// @see ConstOrder
         ConstOrder Order;
-        helper::vector< unsigned int > index[2];
-        /// Right Hand Term
-        helper::vector< SReal > correction;
-        /// Nature of the constraints
-        /// @see ConstNature
-        helper::vector< ConstNature > nature;
+        VecEquations equations;
     };
 
 public:
@@ -136,45 +151,66 @@ public:
 
     ~BaseLMConstraint() {};
 
-    virtual void buildJacobian()=0;
 
-    /// Called by MechanicalAccumulateLMConstaint: The Object will compute the constraints present in the current state, and create the constraintGroup related.
+    /// Write the lines of the Jacobian, and propagate them through the mappings
+    virtual void expressJacobian()=0;
+    /// Called by MechanicalWriteLMConstaint: The Object will compute the constraints present in the current state, and create the ConstraintGroup related.
     virtual void writeConstraintEquations(ConstOrder id)=0;
     /// Interface to construct a group of constraint: Giving the nature of these constraints, it returns a pointer to the structure
-    /// @see constraintGroup
-    virtual constraintGroup* addGroupConstraint( ConstOrder Order);
+    /// @see ConstraintGroup
+    virtual ConstraintGroup* addGroupConstraint( ConstOrder Order);
 
-    virtual void constraintTransmission(ConstOrder Order, BaseMechanicalState* state, unsigned int entry);
-
-    /// Get the internal structure: return all the constraint stored by their nature in a map
-    virtual void getConstraints( std::map< ConstOrder, helper::vector< constraintGroup* > >  &i) { i=constraintOrder;}
-    /// Get all the constraints stored of a given nature
-    virtual const helper::vector< constraintGroup* > &getConstraintsOrder(ConstOrder Order) { return constraintOrder[Order];}
-
+    /// Get Left Hand Term
     virtual void getIndicesUsed(ConstOrder Order, helper::vector< unsigned int > &used0, helper::vector< unsigned int > &used1);
+    /// Get Right Hand Term
     virtual void getCorrections(ConstOrder Order, helper::vector<SReal>& c);
 
-    virtual BaseMechanicalState* getMechModel1()=0;
-    virtual BaseMechanicalState* getMechModel2()=0;
 
+    /// Get the internal structure: return all the constraint stored by their nature in a map
+    virtual void getConstraints( std::map< ConstOrder, helper::vector< ConstraintGroup* > >  &i) { i=constraintOrder;}
+    /// Get all the constraints stored of a given nature
+    virtual const helper::vector< ConstraintGroup* > &getConstraintsOrder(ConstOrder Order) { return constraintOrder[Order];}
+
+
+
+
+    /// get the number of expressed constraints of a given order
     virtual unsigned int getNumConstraint(ConstOrder Order);
-    virtual double getError() {return 0;}
 
-    virtual void clear();
+
+    /// get Mechanical State 1 where the constraint will be expressed (can be a Mapped mechanical state)
+    virtual BaseMechanicalState* getConstrainedMechModel1()=0;
+    /// get Mechanical State 2 where the constraint will be expressed (can be a Mapped mechanical state)
+    virtual BaseMechanicalState* getConstrainedMechModel2()=0;
+
+    /// get Mechanical State 1 where the constraint will be solved
+    virtual BaseMechanicalState* getSimulatedMechModel1()=0;
+    /// get Mechanical State 2 where the constraint will be solved
+    virtual BaseMechanicalState* getSimulatedMechModel2()=0;
 
     /// If the constraint is applied only on a subset of particles.
     /// That way, we can optimize the time spent traversing the mappings
     /// Desactivated by default. The constraints using only a subset of particles should activate the mask,
     /// and during projectResponse(), insert the indices of the particles modified
     virtual bool useMask() {return false;}
-
+    virtual void resetConstraint();
 protected:
+
+    /// Transfer a constraint through a MechanicalMapping. Need to update the index where the equation is expressed inside the C vector
+    virtual void constraintTransmission(BaseMechanicalState* state, unsigned int entry);
+
+    /// Constraints stored depending on their nature
+    /// @see ConstraintGroup
+    std::map< ConstOrder, helper::vector< ConstraintGroup* > > constraintOrder;
+
+
     Data<std::string> pathObject1;
     Data<std::string> pathObject2;
 
-    /// Constraints stored depending on their nature
-    /// @see constraintGroup
-    std::map< ConstOrder, helper::vector< constraintGroup* > > constraintOrder;
+
+    /// stores the indices of the lines in the vector C of each MechanicalState
+    std::map< unsigned int,unsigned int > linesInJ1;
+    std::map< unsigned int,unsigned int > linesInJ2;
 };
 }
 }

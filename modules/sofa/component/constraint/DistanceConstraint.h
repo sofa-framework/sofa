@@ -58,9 +58,7 @@ class DistanceConstraint :  public core::componentmodel::behavior::LMConstraint<
 public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
-    typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
-    typedef typename DataTypes::VecConst VecConst;
     typedef typename DataTypes::SparseVecDeriv SparseVecDeriv;
     typedef typename core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalState;
 
@@ -71,9 +69,6 @@ public:
     typedef typename core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
     typedef core::componentmodel::behavior::BaseLMConstraint::ConstOrder ConstOrder;
 
-    using core::componentmodel::behavior::LMConstraint<DataTypes,DataTypes>::sout;
-    using core::componentmodel::behavior::LMConstraint<DataTypes,DataTypes>::serr;
-    using core::componentmodel::behavior::LMConstraint<DataTypes,DataTypes>::sendl;
 protected:
     DistanceConstraintInternalData<DataTypes> data;
     friend class DistanceConstraintInternalData<DataTypes>;
@@ -92,14 +87,15 @@ public:
 
     ~DistanceConstraint() {};
 
-    // -- Constraint interface
     void init();
     void reinit();
 
+    // -- LMConstraint interface
     void buildJacobian();
     void writeConstraintEquations(ConstOrder order);
 
-    double getError();
+
+
 
     void addConstraint(unsigned int i1, unsigned int i2);
 
@@ -127,6 +123,7 @@ protected :
     core::componentmodel::topology::BaseMeshTopology *topology;
 
     helper::vector< SparseVecDeriv > V1, V2;
+    helper::vector< std::pair< unsigned int, unsigned int> > registeredConstraints;
 
     // rest length pre-computated
     sofa::helper::vector< double > l0;
