@@ -86,7 +86,7 @@ struct Scale : public TransformOperation<DataTypes>
     };
     void configure(const defaulttype::Vector3 &s)
     {
-        sx=s[0]; sy=s[1]; sz=s[2];
+        sx=(Real)s[0]; sy=(Real)s[1]; sz=(Real)s[2];
     }
 private:
     Real sx,sy,sz;
@@ -151,7 +151,7 @@ struct Translation : public TransformOperation<DataTypes>
     };
     void configure(const defaulttype::Vector3 &t)
     {
-        tx=t[0]; ty=t[1]; tz=t[2];
+        tx=(Real)t[0]; ty=(Real)t[1]; tz=(Real)t[2];
     }
 private:
     Real tx,ty,tz;
