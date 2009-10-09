@@ -187,10 +187,10 @@ SOURCES += \
 
 contains(DEFINES,SOFA_HAVE_EIGEN2){
 HEADERS += \
-                CudaLDILMConstraint.h
+                CudaLDIContactLMConstraint.h
 	   	
 SOURCES += \	
-                CudaLDILMConstraint.cpp
+                CudaLDIContactLMConstraint.cpp
 }
 
 HEADERS += \
