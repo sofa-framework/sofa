@@ -28,8 +28,11 @@
 #include <fstream>
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/simulation/common/xml/initXml.h>
+#include <sofa/simulation/common/Node.h>
+#ifdef SOFA_DEV
+#include <sofa/simulation/bgl/BglSimulation.h>
+#endif
 #include <sofa/simulation/tree/TreeSimulation.h>
-#include <sofa/simulation/tree/GNode.h>
 #include <sofa/component/init.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/BackTrace.h>
@@ -91,6 +94,7 @@ int main(int argc, char** argv)
     bool fullScreen = false;
 
     std::string gui = "";
+    std::string simulationType = "tree";
     std::vector<std::string> plugins;
     std::vector<std::string> files;
 
@@ -99,9 +103,10 @@ int main(int argc, char** argv)
     gui_help += ")";
 
     sofa::helper::parse(&files, "This is a SOFA application. Here are the command line arguments")
-    .option(&startAnim,'s',"start","start the animation loop")
+    .option(&startAnim,'a',"start","start the animation loop")
     .option(&printFactory,'p',"factory","print factory logs")
     .option(&gui,'g',"gui",gui_help.c_str())
+    .option(&simulationType,'s',"simu","select the type of simulation (bgl, tree)")
     .option(&plugins,'l',"load","load given plugins")
     .option(&loadRecent,'r',"recent","load most recently opened file")
     .option(&dimension,'d',"dimension","width and height of the viewer")
@@ -113,7 +118,17 @@ int main(int argc, char** argv)
 #ifdef SOFA_GPU_CUDA
     sofa::gpu::cuda::mycudaInit();
 #endif
-    sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
+
+#ifdef SOFA_DEV
+    if (simulationType == "bgl")
+    {
+        sofa::simulation::setSimulation(new sofa::simulation::bgl::BglSimulation());
+    }
+    else
+#endif
+    {
+        sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
+    }
     sofa::component::init();
     sofa::simulation::xml::initXml();
 
@@ -146,10 +161,10 @@ int main(int argc, char** argv)
     if (int err=sofa::gui::GUIManager::createGUI(NULL))
         return err;
 
-    sofa::simulation::tree::GNode* groot = dynamic_cast<sofa::simulation::tree::GNode*>( sofa::simulation::tree::getSimulation()->load(fileName.c_str()));
-    if (groot==NULL)  groot = new sofa::simulation::tree::GNode;
+    sofa::simulation::Node* groot = dynamic_cast<sofa::simulation::Node*>( sofa::simulation::getSimulation()->load(fileName.c_str()));
+    if (groot==NULL)  groot = sofa::simulation::getSimulation()->newNode("");
 
-    sofa::simulation::tree::getSimulation()->init(groot);
+    sofa::simulation::getSimulation()->init(groot);
     sofa::gui::GUIManager::SetScene(groot,fileName.c_str(), temporaryFile);
 
 
@@ -180,9 +195,9 @@ int main(int argc, char** argv)
     // Run the main loop
     if (int err=sofa::gui::GUIManager::MainLoop(groot,fileName.c_str()))
         return err;
-    groot = dynamic_cast<sofa::simulation::tree::GNode*>( sofa::gui::GUIManager::CurrentSimulation() );
+    groot = dynamic_cast<sofa::simulation::Node*>( sofa::gui::GUIManager::CurrentSimulation() );
 
 
-    if (groot!=NULL) sofa::simulation::tree::getSimulation()->unload(groot);
+    if (groot!=NULL) sofa::simulation::getSimulation()->unload(groot);
     return 0;
 }
