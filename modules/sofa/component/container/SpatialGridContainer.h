@@ -342,6 +342,9 @@ public:
         //}
         //grid->end();
     }
+
+    core::componentmodel::behavior::MechanicalState<DataTypes>* getMState() { return mstate; }
+
     template<class NeighborListener>
     void findNeighbors(NeighborListener* listener, Real r)
     {
