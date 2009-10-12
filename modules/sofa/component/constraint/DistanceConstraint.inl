@@ -148,6 +148,9 @@ void DistanceConstraint<DataTypes>::buildJacobian()
         registeredConstraints.resize(registeredConstraints.size()+1);
         registeredConstraints.back().first = registerEquationInJ1(V1);
         registeredConstraints.back().second= registerEquationInJ2(V2);
+
+        this->constrainedObject1->forceMask.insertEntry(idx1);
+        this->constrainedObject2->forceMask.insertEntry(idx2);
     }
 }
 

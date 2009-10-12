@@ -102,11 +102,7 @@ public:
 
 
 
-    void addConstraint(unsigned int i1, unsigned int i2);
-
-
-
-    virtual std::string getTemplateName() const
+    std::string getTemplateName() const
     {
         return templateName(this);
     }
@@ -114,6 +110,12 @@ public:
     {
         return DataTypes::Name();
     }
+
+
+
+
+
+    bool useMask() {return true;}
 protected :
 
     Deriv X,Y,Z;
