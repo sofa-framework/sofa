@@ -92,7 +92,7 @@ void BaseLMConstraint::constraintTransmission(BaseMechanicalState* state, unsign
 }
 
 
-void BaseLMConstraint::getIndicesUsed(ConstOrder Order, helper::vector< unsigned int > &used0,helper::vector< unsigned int > &used1)
+void BaseLMConstraint::getIndicesUsed1(ConstOrder Order, helper::vector< unsigned int > &used0)
 {
     const helper::vector< BaseLMConstraint::ConstraintGroup* > &constraints=constraintOrder[Order];
 
@@ -103,8 +103,25 @@ void BaseLMConstraint::getIndicesUsed(ConstOrder Order, helper::vector< unsigned
 
         for (ConstraintGroup::EquationIterator equation=range.first; equation!=range.second; ++equation)
         {
-            used0.push_back(linesInJ1[equation->idxInConstrainedDOF1]);
-            used1.push_back(linesInJ2[equation->idxInConstrainedDOF2]);
+            if (equation->idxInConstrainedDOF1 >= 0)
+                used0.push_back(linesInJ1[equation->idxInConstrainedDOF1]);
+        }
+    }
+}
+
+void BaseLMConstraint::getIndicesUsed2(ConstOrder Order, helper::vector< unsigned int > &used1)
+{
+    const helper::vector< BaseLMConstraint::ConstraintGroup* > &constraints=constraintOrder[Order];
+
+    for (unsigned int idxGroupConstraint=0; idxGroupConstraint<constraints.size(); ++idxGroupConstraint)
+    {
+        ConstraintGroup *group=constraints[idxGroupConstraint];
+        std::pair< ConstraintGroup::EquationIterator, ConstraintGroup::EquationIterator > range=group->data();
+
+        for (ConstraintGroup::EquationIterator equation=range.first; equation!=range.second; ++equation)
+        {
+            if (equation->idxInConstrainedDOF2 >= 0)
+                used1.push_back(linesInJ2[equation->idxInConstrainedDOF2]);
         }
     }
 }

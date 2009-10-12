@@ -22,12 +22,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONSTRAINT_DISTANCECONSTRAINT_H
-#define SOFA_COMPONENT_CONSTRAINT_DISTANCECONSTRAINT_H
+#ifndef SOFA_COMPONENT_CONSTRAINT_FIXEDLMCONSTRAINT_H
+#define SOFA_COMPONENT_CONSTRAINT_FIXEDLMCONSTRAINT_H
 
-#include <sofa/core/componentmodel/behavior/BaseMass.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/core/componentmodel/behavior/LMConstraint.h>
+#include <sofa/component/topology/PointSubset.h>
+
+
 namespace sofa
 {
 
@@ -37,13 +39,10 @@ namespace component
 namespace constraint
 {
 
-using helper::vector;
-using core::objectmodel::Data;
-using namespace sofa::core::objectmodel;
-
+using namespace sofa::core::componentmodel::topology;
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template <class DataTypes>
-class DistanceConstraintInternalData
+class FixedLMConstraintInternalData
 {
 };
 
@@ -53,43 +52,49 @@ class DistanceConstraintInternalData
 /** Keep two particules at an initial distance
  */
 template <class DataTypes>
-class DistanceConstraint :  public core::componentmodel::behavior::LMConstraint<DataTypes,DataTypes>
+class FixedLMConstraint :  public core::componentmodel::behavior::LMConstraint<DataTypes,DataTypes>
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::SparseVecDeriv SparseVecDeriv;
     typedef typename core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalState;
 
-    typedef typename sofa::core::componentmodel::topology::BaseMeshTopology::SeqEdges SeqEdges;
-    typedef typename sofa::core::componentmodel::topology::BaseMeshTopology::Edge Edge;
 
+    typedef sofa::component::topology::PointSubset SetIndex;
+    typedef helper::vector<unsigned int> SetIndexArray;
 
     typedef typename core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
     typedef core::componentmodel::behavior::BaseLMConstraint::ConstOrder ConstOrder;
 
 protected:
-    DistanceConstraintInternalData<DataTypes> data;
-    friend class DistanceConstraintInternalData<DataTypes>;
+    FixedLMConstraintInternalData<DataTypes> data;
+    friend class FixedLMConstraintInternalData<DataTypes>;
 
 public:
-    DistanceConstraint( MechanicalState *dof):
+    FixedLMConstraint( MechanicalState *dof):
         core::componentmodel::behavior::LMConstraint<DataTypes,DataTypes>(dof,dof),
-        vecConstraint(Base::initData(&vecConstraint, "vecConstraint", "List of the edges to constrain"))
+        f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed")),
+        _drawSize(core::objectmodel::Base::initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
     {};
-    DistanceConstraint( MechanicalState *dof1, MechanicalState * dof2):
-        core::componentmodel::behavior::LMConstraint<DataTypes,DataTypes>(dof1,dof2),
-        vecConstraint(Base::initData(&vecConstraint, "vecConstraint", "List of the edges to constrain"))
-    {};
-    DistanceConstraint():
-        vecConstraint(Base::initData(&vecConstraint, "vecConstraint", "List of the edges to constrain")) {}
+    FixedLMConstraint():
+        f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed")),
+        _drawSize(core::objectmodel::Base::initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
+    {}
 
-    ~DistanceConstraint() {};
+    ~FixedLMConstraint() {};
+
+    void clearConstraints();
+    void addConstraint(unsigned int index);
+    void removeConstraint(unsigned int index);
+
+    // Handle topological changes
+    virtual void handleTopologyChange();
 
     void init();
-    void reinit();
-
+    void draw();
     // -- LMConstraint interface
     void buildJacobian();
     void writeConstraintEquations(ConstOrder order);
@@ -99,34 +104,33 @@ public:
 
     void addConstraint(unsigned int i1, unsigned int i2);
 
-    virtual void draw();
+
+
     virtual std::string getTemplateName() const
     {
         return templateName(this);
     }
-    static std::string templateName(const DistanceConstraint<DataTypes>* = NULL)
+    static std::string templateName(const FixedLMConstraint<DataTypes>* = NULL)
     {
         return DataTypes::Name();
     }
-
-    //Edges involving a distance constraint
-    Data< SeqEdges > vecConstraint;
-    /// we compute the length with the constrained dof
-    bool isCorrectionComputedWithSimulatedDOF() {return false;}
 protected :
-    ///Compute the length of an edge given the vector of coordinates corresponding
-    double lengthEdge(const Edge &e, const VecCoord &x1,const VecCoord &x2) const;
-    ///Compute the direction of the constraint
-    Deriv getDirection(const Edge &e, const VecCoord &x1, const VecCoord &x2) const;
-    void updateRestLength();
 
-    // Base Components of the current context
-    core::componentmodel::topology::BaseMeshTopology *topology;
+    Deriv X,Y,Z;
+    SetIndexArray idxX, idxY, idxZ;
 
-    helper::vector< std::pair< unsigned int, unsigned int> > registeredConstraints;
+    Data<SetIndex> f_indices;
+    Data<double> _drawSize;
 
-    // rest length pre-computated
-    sofa::helper::vector< double > l0;
+    sofa::core::componentmodel::topology::BaseMeshTopology* topology;
+
+
+    // Define TestNewPointFunction
+    static bool FCTestNewPointFunction(int, void*, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& );
+
+    // Define RemovalFunction
+    static void FCRemovalFunction ( int , void*);
+
 };
 
 } // namespace constraint

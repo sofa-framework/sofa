@@ -66,8 +66,8 @@ public:
      **/
     struct ConstraintEquation
     {
-        unsigned int idxInConstrainedDOF1;
-        unsigned int idxInConstrainedDOF2;
+        int idxInConstrainedDOF1;
+        int idxInConstrainedDOF2;
         SReal correction;
         ConstNature nature;
     };
@@ -88,7 +88,7 @@ public:
 
         ConstraintGroup( ConstOrder idConstraint):Order(idConstraint) {}
         /**
-         * Method to add a constraint to the group
+         * Method to add an interaction constraint to the group
          *
          * @param i0 index of the entry in the VecConst for the first object
          * @param i1 index of the entry in the VecConst for the second object
@@ -101,6 +101,22 @@ public:
             ConstraintEquation &eq=equations.back();
             eq.idxInConstrainedDOF1 = i0;
             eq.idxInConstrainedDOF2 = i1;
+            eq.correction=c;
+            eq.nature=n;
+        }
+        /**
+         * Method to add a constraint to the group
+         *
+         * @param i  index of the entry in the VecConst for the first object
+         * @param c  correction we need to apply in order to solve the constraint
+             * @param n  nature of the constraint (Unilateral or Bilateral) @see ConstNature
+         **/
+        void addConstraint(  unsigned int i0,  SReal c, ConstNature n)
+        {
+            equations.resize(equations.size()+1);
+            ConstraintEquation &eq=equations.back();
+            eq.idxInConstrainedDOF1 = i0;
+            eq.idxInConstrainedDOF2 = -1; //Not used
             eq.correction=c;
             eq.nature=n;
         }
@@ -161,7 +177,8 @@ public:
     virtual ConstraintGroup* addGroupConstraint( ConstOrder Order);
 
     /// Get Left Hand Term
-    virtual void getIndicesUsed(ConstOrder Order, helper::vector< unsigned int > &used0, helper::vector< unsigned int > &used1);
+    virtual void getIndicesUsed1(ConstOrder Order, helper::vector< unsigned int > &used0);
+    virtual void getIndicesUsed2(ConstOrder Order, helper::vector< unsigned int > &used1);
     /// Get Right Hand Term
     virtual void getCorrections(ConstOrder Order, helper::vector<SReal>& c);
 
