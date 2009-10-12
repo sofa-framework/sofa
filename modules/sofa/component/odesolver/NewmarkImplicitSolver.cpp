@@ -70,6 +70,10 @@ void NewmarkImplicitSolver::solve(double dt, sofa::core::componentmodel::behavio
     const double rK = f_rayleighStiffness.getValue();
     const bool verbose  = f_verbose.getValue();
 
+#ifdef SOFA_HAVE_EIGEN2
+    bool propagateState=needPriorStatePropagation();
+#endif
+
     /* This integration scheme is based on the following equations:
     *
     *   $x_{t+h} = x_t + h v_t + h^2/2 ( (1-2\beta) a_t + 2\beta a_{t+h} )$
@@ -152,9 +156,16 @@ void NewmarkImplicitSolver::solve(double dt, sofa::core::componentmodel::behavio
     b.eq(vel, a, h*(0.5-beta));
     b.peq(aResult, h*beta);
     newPos.eq(pos, b, h);
+#ifdef SOFA_HAVE_EIGEN2
+    solveConstraint(propagateState,VecId::position(),true);
+#endif
     // v_{t+h} = v_t + h ( (1-\gamma) a_t + \gamma a_{t+h} )
     newVel.eq(vel, a, h*(1-gamma));
     newVel.peq(aResult, h*gamma);
+#ifdef SOFA_HAVE_EIGEN2
+    solveConstraint(propagateState,VecId::velocity());
+#endif
+
 #else // single-operation optimization
     typedef core::componentmodel::behavior::BaseMechanicalState::VMultiOp VMultiOp;
     VMultiOp ops;
@@ -172,6 +183,12 @@ void NewmarkImplicitSolver::solve(double dt, sofa::core::componentmodel::behavio
     ops[2].second.push_back(std::make_pair((VecId)aResult, h*gamma));
     simulation::MechanicalVMultiOpVisitor vmop(ops);
     vmop.execute(this->getContext());
+
+#ifdef SOFA_HAVE_EIGEN2
+    solveConstraint(propagateState,VecId::velocity());
+    solveConstraint(propagateState,VecId::position());
+#endif
+
 #endif
 
     addSeparateGravity(dt, newVel);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
@@ -183,11 +200,6 @@ void NewmarkImplicitSolver::solve(double dt, sofa::core::componentmodel::behavio
         serr<<"NewmarkImplicitSolver, final x = "<< newPos <<sendl;
         serr<<"NewmarkImplicitSolver, final v = "<< newVel <<sendl;
     }
-
-#ifdef SOFA_HAVE_EIGEN2
-    applyConstraints();
-#endif
-
 }
 
 SOFA_DECL_CLASS(NewmarkImplicitSolver)

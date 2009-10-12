@@ -78,6 +78,11 @@ void BiCGStabImplicitSolver::solve(double dt)
     //MultiVector z(group, VecId::V_DERIV);
     double h = dt;
 
+#ifdef SOFA_HAVE_EIGEN2
+    bool propagateState=needPriorStatePropagation();
+#endif
+
+
     if( getDebug() )
     {
         serr<<"BiCGStabImplicitSolver, dt = "<< dt <<sendl;
@@ -187,17 +192,11 @@ void BiCGStabImplicitSolver::solve(double dt)
     // apply the solution
     vel.peq( x );                       // vel = vel + x
 #ifdef SOFA_HAVE_EIGEN2
-    if (constraintVel.getValue())
-    {
-        solveConstraint(VecId::velocity());
-    }
+    solveConstraint(propagateState,VecId::velocity());
 #endif
     pos.peq( vel, h );                  // pos = pos + h vel
 #ifdef SOFA_HAVE_EIGEN2
-    if (constraintPos.getValue())
-    {
-        solveConstraint(VecId::position(), !constraintVel.getValue());
-    }
+    solveConstraint(propagateState,VecId::position());
 #endif
 
     if( getDebug() )

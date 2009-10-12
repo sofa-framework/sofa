@@ -46,7 +46,7 @@ OdeSolver::OdeSolver()
     constraintAcc( initData( &constraintAcc, false, "constraintAcc", "Constraint the acceleration")),
     constraintVel( initData( &constraintVel, false, "constraintVel", "Constraint the velocity")),
     constraintPos( initData( &constraintPos, false, "constraintPos", "Constraint the position")),
-    constraintResolution( initData( &constraintResolution, false, "constraintResolution", "Using Gauss-Seidel to solve the constraint.\nOtherwise, use direct LU resolution.")),
+    constraintSolution( initData( &constraintSolution, true, "constraintSolution", "Using Gauss-Seidel to solve the constraint.\nOtherwise, use direct LU resolution.")),
     numIterations( initData( &numIterations, (unsigned int)25, "numIterations", "Number of iterations for Gauss-Seidel when solving the Constraints")),
     maxError( initData( &maxError, 0.0000001, "maxError", "Max error for Gauss-Seidel algorithm when solving the constraints"))
 #endif

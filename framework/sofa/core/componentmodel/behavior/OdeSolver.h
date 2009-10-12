@@ -86,10 +86,10 @@ public:
 
 
     /** Find all the LMConstraint present in the scene graph and solve a part of them
+     * @param priorStatePropagation boolean indication if we need to propagate the state vector to the mapped dof before solving the constraint
      * @param Id nature of the constraint to be solved
-     * @param propagateVelocityToPosition need to update the position once the velocity has been constrained
      **/
-    virtual void solveConstraint(BaseMechanicalState::VecId, bool /* propagateVelocityToConstraint */ ) {};
+    virtual void solveConstraint(bool /*priorStatePropagation*/, BaseMechanicalState::VecId) {};
 
     /// Propagate the given state (time, position and velocity) through all mappings
     ///
@@ -135,20 +135,20 @@ public:
         return getSolutionIntegrationFactor(0);
     }
 
-    //Constraint resolution using Lapack
+    //Constraint resolution using Eigen2
 #ifdef SOFA_HAVE_EIGEN2
 
     Data<bool> constraintAcc;
     Data<bool> constraintVel;
     Data<bool> constraintPos;
 
-    Data<bool> constraintResolution;
+    Data<bool> constraintSolution;
     Data<unsigned int> numIterations;
     Data<double> maxError;
     void reinit()
     {
-        numIterations.setDisplayed(constraintResolution.getValue());
-        maxError.setDisplayed(constraintResolution.getValue());
+        numIterations.setDisplayed(constraintSolution.getValue());
+        maxError.setDisplayed(constraintSolution.getValue());
     }
 #endif
 

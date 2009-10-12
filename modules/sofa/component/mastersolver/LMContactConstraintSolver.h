@@ -46,10 +46,12 @@ public:
     virtual ~LMContactConstraintSolver();
     void bwdInit();
     void step (double dt);
-    void solveConstraints();
+    void solveConstraints(bool priorStatePropagation);
     bool isCollisionDetected();
 
 protected:
+    bool needPriorStatePropagation();
+
     Data<int> maxCollisionSteps;
 
 };

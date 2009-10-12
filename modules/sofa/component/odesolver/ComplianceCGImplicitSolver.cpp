@@ -72,6 +72,10 @@ void ComplianceCGImplicitSolver::solve(double dt)
     MultiVector r(this, VecId::V_DERIV);
     MultiVector x(this, VecId::V_DERIV);
 
+#ifdef SOFA_HAVE_EIGEN2
+    bool propagateState=needPriorStatePropagation();
+#endif
+
     if (!firstCallToSolve)
     {
         vel.eq(freeVel);
@@ -228,7 +232,13 @@ void ComplianceCGImplicitSolver::solve(double dt)
 
     // apply the solution
     vel.peq( x );                       // vel = vel + x
+#ifdef SOFA_HAVE_EIGEN2
+    solveConstraint(propagateState,VecId::velocity());
+#endif
     pos.peq( vel, h );                  // pos = pos + h vel
+#ifdef SOFA_HAVE_EIGEN2
+    solveConstraint(propagateState,VecId::position());
+#endif
     if (f_velocityDamping.getValue()!=0.0)
         vel *= exp(-h*f_velocityDamping.getValue());
 
@@ -239,9 +249,6 @@ void ComplianceCGImplicitSolver::solve(double dt)
         serr<<"ComplianceCGImplicitSolver, final x = "<< pos <<sendl;
         serr<<"ComplianceCGImplicitSolver, final v = "<< vel <<sendl;
     }
-#ifdef SOFA_HAVE_EIGEN2
-    applyConstraints();
-#endif
 }
 
 

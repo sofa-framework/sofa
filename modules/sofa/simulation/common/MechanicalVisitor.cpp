@@ -937,8 +937,9 @@ Visitor::Result MechanicalSolveLMConstraintVisitor::fwdOdeSolver(simulation::Nod
 {
     typedef core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
     ctime_t t0 = beginProcess(node, s);
-    s->solveConstraint(VecId::velocity(), false);
-    s->solveConstraint(VecId::position(), true );
+
+    s->solveConstraint(propagateState,VecId::velocity());
+    s->solveConstraint(propagateState,VecId::position());
     endProcess(node, s, t0);
     return RESULT_PRUNE;
 }

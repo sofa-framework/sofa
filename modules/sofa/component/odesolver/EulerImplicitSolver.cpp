@@ -92,6 +92,13 @@ void EulerImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior:
     const bool verbose  = f_verbose.getValue();
     const bool firstOrder = f_firstOrder.getValue();
 
+#ifdef SOFA_HAVE_EIGEN2
+    bool propagateState=needPriorStatePropagation();
+#endif
+
+
+
+
     //projectResponse(vel);          // initial velocities are projected to the constrained space
 
     // compute the right-hand term of the equation system
@@ -153,13 +160,11 @@ void EulerImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior:
     {
         newVel.eq(x);                         // vel = x
 #ifdef SOFA_HAVE_EIGEN2
-        solveConstraint(VecId::velocity());
-        simulation::MechanicalPropagateVVisitor propagateVelocity(newVel);
-        propagateVelocity.execute(this->getContext());
+        solveConstraint(propagateState,VecId::velocity());
 #endif
         newPos.eq(pos, newVel, h);            // pos = pos + h vel
 #ifdef SOFA_HAVE_EIGEN2
-        solveConstraint(VecId::position(), true);
+        solveConstraint(propagateState,VecId::position());
 #endif
     }
     else
@@ -167,14 +172,12 @@ void EulerImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior:
         //vel.peq( x );                       // vel = vel + x
         newVel.eq(vel, x);
 #ifdef SOFA_HAVE_EIGEN2
-        solveConstraint(VecId::velocity());
-        simulation::MechanicalPropagateVVisitor propagateVelocity(newVel);
-        propagateVelocity.execute(this->getContext());
+        solveConstraint(propagateState,VecId::velocity());
 #endif
         //pos.peq( vel, h );                  // pos = pos + h vel
         newPos.eq(pos, newVel, h);
 #ifdef SOFA_HAVE_EIGEN2
-        solveConstraint(VecId::position(), true);
+        solveConstraint(propagateState,VecId::position());
 #endif
     }
 
@@ -206,6 +209,11 @@ void EulerImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior:
         simulation::MechanicalVMultiOpVisitor vmop(ops);
         vmop.setTags(this->getTags());
         vmop.execute(this->getContext());
+
+#ifdef SOFA_HAVE_EIGEN2
+        solveConstraint(propagateState,VecId::velocity());
+        solveConstraint(propagateState,VecId::position());
+#endif
     }
 #endif
 

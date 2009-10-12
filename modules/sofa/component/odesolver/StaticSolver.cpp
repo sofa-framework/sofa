@@ -59,6 +59,10 @@ void StaticSolver::solve(double dt)
     MultiVector x(this, VecId::V_DERIV);
     MultiVector pos(this, VecId::position());
 
+#ifdef SOFA_HAVE_EIGEN2
+    bool propagateState=needPriorStatePropagation();
+#endif
+
     addSeparateGravity(dt);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
 
     // compute the right-hand term of the equation system
@@ -85,11 +89,11 @@ void StaticSolver::solve(double dt)
     if( f_printLog.getValue() )
         serr<<"StaticSolver, solution = "<< x <<sendl;
     pos.peq( x );
-
-
 #ifdef SOFA_HAVE_EIGEN2
-    applyConstraints();
+    solveConstraint(propagateState,VecId::position());
 #endif
+
+
     /*    serr<<"StaticSolver::solve, new pos = "<<pos<<sendl;*/
 }
 
