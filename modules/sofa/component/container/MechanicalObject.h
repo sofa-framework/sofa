@@ -295,7 +295,7 @@ public:
 
     /// Express the matrix L in term of block of matrices, using the indices of the lines in the VecConst container
     virtual std::list<ConstraintBlock> constraintBlocks( const std::list<unsigned int> &indices) const;
-    virtual SReal getConstraintError( unsigned int line, VecId id);
+    virtual SReal getConstraintJacobianTimesVecDeriv( unsigned int line, VecId id);
 
 
     void setFilename(std::string s) {filename.setValue(s);};

@@ -2342,7 +2342,7 @@ std::list<core::componentmodel::behavior::BaseMechanicalState::ConstraintBlock> 
 }
 
 template <class DataTypes>
-SReal MechanicalObject<DataTypes>::getConstraintError( unsigned int line, VecId id)
+SReal MechanicalObject<DataTypes>::getConstraintJacobianTimesVecDeriv( unsigned int line, VecId id)
 {
     SReal result=0;
     SparseVecDeriv &value=(*c)[line];
@@ -2360,7 +2360,7 @@ SReal MechanicalObject<DataTypes>::getConstraintError( unsigned int line, VecId 
     }
     else
     {
-        this->serr << "getConstraintError " << "NOT IMPLEMENTED for " << id.getName() << this->sendl;
+        this->serr << "getConstraintJacobianTimesVecDeriv " << "NOT IMPLEMENTED for " << id.getName() << this->sendl;
         return 0;
     }
 

@@ -169,17 +169,17 @@ void DistanceConstraint<DataTypes>::writeConstraintEquations(ConstOrder Order)
         {
         case core::componentmodel::behavior::BaseLMConstraint::ACC :
         {
-            correction =this->constrainedObject1->getConstraintError(registeredConstraints[i].first,
+            correction =this->constrainedObject1->getConstraintJacobianTimesVecDeriv(registeredConstraints[i].first,
                     core::componentmodel::behavior::BaseMechanicalState::VecId::dx());
-            correction+=this->constrainedObject2->getConstraintError(registeredConstraints[i].second,
+            correction+=this->constrainedObject2->getConstraintJacobianTimesVecDeriv(registeredConstraints[i].second,
                     core::componentmodel::behavior::BaseMechanicalState::VecId::dx());
             break;
         }
         case core::componentmodel::behavior::BaseLMConstraint::VEL :
         {
-            correction =this->constrainedObject1->getConstraintError(registeredConstraints[i].first,
+            correction =this->constrainedObject1->getConstraintJacobianTimesVecDeriv(registeredConstraints[i].first,
                     core::componentmodel::behavior::BaseMechanicalState::VecId::velocity());
-            correction+=this->constrainedObject2->getConstraintError(registeredConstraints[i].second,
+            correction+=this->constrainedObject2->getConstraintJacobianTimesVecDeriv(registeredConstraints[i].second,
                     core::componentmodel::behavior::BaseMechanicalState::VecId::velocity());
             break;
         }

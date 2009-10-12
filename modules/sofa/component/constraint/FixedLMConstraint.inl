@@ -173,17 +173,17 @@ void FixedLMConstraint<DataTypes>::writeConstraintEquations(ConstOrder Order)
         {
         case core::componentmodel::behavior::BaseLMConstraint::ACC :
         {
-            correctionX =this->constrainedObject1->getConstraintError(idxX[counter],core::componentmodel::behavior::BaseMechanicalState::VecId::dx());
-            correctionY =this->constrainedObject1->getConstraintError(idxY[counter],core::componentmodel::behavior::BaseMechanicalState::VecId::dx());
-            correctionZ =this->constrainedObject1->getConstraintError(idxZ[counter],core::componentmodel::behavior::BaseMechanicalState::VecId::dx());
+            correctionX =this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxX[counter],core::componentmodel::behavior::BaseMechanicalState::VecId::dx());
+            correctionY =this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxY[counter],core::componentmodel::behavior::BaseMechanicalState::VecId::dx());
+            correctionZ =this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxZ[counter],core::componentmodel::behavior::BaseMechanicalState::VecId::dx());
 
             break;
         }
         case core::componentmodel::behavior::BaseLMConstraint::VEL :
         {
-            correctionX =this->constrainedObject1->getConstraintError(idxX[counter],core::componentmodel::behavior::BaseMechanicalState::VecId::velocity());
-            correctionY =this->constrainedObject1->getConstraintError(idxY[counter],core::componentmodel::behavior::BaseMechanicalState::VecId::velocity());
-            correctionZ =this->constrainedObject1->getConstraintError(idxZ[counter],core::componentmodel::behavior::BaseMechanicalState::VecId::velocity());
+            correctionX =this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxX[counter],core::componentmodel::behavior::BaseMechanicalState::VecId::velocity());
+            correctionY =this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxY[counter],core::componentmodel::behavior::BaseMechanicalState::VecId::velocity());
+            correctionZ =this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxZ[counter],core::componentmodel::behavior::BaseMechanicalState::VecId::velocity());
             break;
         }
         case core::componentmodel::behavior::BaseLMConstraint::POS :

@@ -166,36 +166,12 @@ EulerKaapiSolver::solve (double dt)
     if (symplectic.getValue ())
     {
         vel.peq (acc, dt);
-#ifdef SOFA_HAVE_LAPACK
-        if (constraintVel.getValue())
-        {
-            solveConstraint(VecId::velocity());
-        }
-#endif
         pos.peq (vel, dt);
-#ifdef SOFA_HAVE_LAPACK
-        if (constraintPos.getValue())
-        {
-            solveConstraint(VecId::position(),!constraintVel.getValue());
-        }
-#endif
     }
     else
     {
         pos.peq (vel, dt);
-#ifdef SOFA_HAVE_LAPACK
-        if (constraintPos.getValue())
-        {
-            solveConstraint(VecId::position(),!constraintVel.getValue());
-        }
-#endif
         vel.peq (acc, dt);
-#ifdef SOFA_HAVE_LAPACK
-        if (constraintVel.getValue())
-        {
-            solveConstraint(VecId::velocity());
-        }
-#endif
     }
 
     if (printLog)

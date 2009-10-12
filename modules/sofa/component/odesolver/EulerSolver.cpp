@@ -78,6 +78,9 @@ void EulerSolver::solve(double dt)
     //---------------------------------------------------------------
 
 
+#ifdef SOFA_HAVE_EIGEN2
+    bool propagateState=needPriorStatePropagation();
+#endif
 
 
 
@@ -100,7 +103,7 @@ void EulerSolver::solve(double dt)
 
 
 #ifdef SOFA_HAVE_EIGEN2
-    solveConstraint(VecId::dx());
+    solveConstraint(propagateState,VecId::dx());
 #endif
 
     // update state
@@ -110,12 +113,12 @@ void EulerSolver::solve(double dt)
         vel.peq(acc,dt);
 
 #ifdef SOFA_HAVE_EIGEN2
-        solveConstraint(VecId::velocity());
+        solveConstraint(propagateState,VecId::velocity());
 #endif
         pos.peq(vel,dt);
 
 #ifdef SOFA_HAVE_EIGEN2
-        solveConstraint(VecId::position(),true);
+        solveConstraint(propagateState,VecId::position());
 #endif
 
     }
@@ -124,15 +127,13 @@ void EulerSolver::solve(double dt)
         pos.peq(vel,dt);
 
 #ifdef SOFA_HAVE_EIGEN2
-        solveConstraint(VecId::position(), true);
-        simulation::MechanicalPropagatePositionAndVelocityVisitor propPosAndVelocity;
-        propPosAndVelocity.execute(this->getContext());
+        solveConstraint(propagateState,VecId::position());
 #endif
 
         vel.peq(acc,dt);
 
 #ifdef SOFA_HAVE_EIGEN2
-        solveConstraint(VecId::velocity());
+        solveConstraint(propagateState,VecId::velocity());
 #endif
     }
 #else // single-operation optimization
@@ -152,12 +153,10 @@ void EulerSolver::solve(double dt)
         simulation::MechanicalVMultiOpVisitor vmop(ops);
         vmop.execute(this->getContext());
 
-
 #ifdef SOFA_HAVE_EIGEN2
-        applyConstraints();
+        solveConstraint(propagateState,VecId::velocity());
+        solveConstraint(propagateState,VecId::position());
 #endif
-
-
     }
 #endif
 

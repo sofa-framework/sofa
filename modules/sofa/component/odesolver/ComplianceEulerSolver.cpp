@@ -67,6 +67,10 @@ void ComplianceEulerSolver::solve(double dt)
 
     bool printLog = f_printLog.getValue();
 
+#ifdef SOFA_HAVE_EIGEN2
+    bool propagateState=needPriorStatePropagation();
+#endif
+
     if( printLog )
     {
         serr<<"ComplianceEulerSolver, dt = "<< dt <<sendl;
@@ -103,18 +107,12 @@ void ComplianceEulerSolver::solve(double dt)
     vel.eq(vel);
     vel.peq(acc,dt);
 #ifdef SOFA_HAVE_EIGEN2
-    if (constraintVel.getValue())
-    {
-        solveConstraint(VecId::velocity());
-    }
+    solveConstraint(propagateState,VecId::velocity());
 #endif
     pos.eq(pos);
     pos.peq(vel,dt);
 #ifdef SOFA_HAVE_EIGEN2
-    if (constraintPos.getValue())
-    {
-        solveConstraint(VecId::position(), !constraintVel.getValue());
-    }
+    solveConstraint(propagateState,VecId::position());
 #endif
 
     //simulation::tree::MechanicalPropagateFreePositionVisitor().execute(context);

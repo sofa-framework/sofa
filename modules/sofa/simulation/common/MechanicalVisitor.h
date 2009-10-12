@@ -1141,7 +1141,7 @@ public:
 class SOFA_SIMULATION_COMMON_API MechanicalSolveLMConstraintVisitor: public MechanicalVisitor
 {
 public:
-    MechanicalSolveLMConstraintVisitor()
+    MechanicalSolveLMConstraintVisitor(bool priorStatePropagation):propagateState(priorStatePropagation)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
@@ -1164,6 +1164,7 @@ public:
     {
     }
 #endif
+    bool propagateState;
 };
 
 
@@ -1181,7 +1182,18 @@ public:
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalAccumulateConstraint"; }
+    virtual const char* getClassName() const { return "MechanicalWriteLMConstraint"; }
+    virtual std::string getInfos() const
+    {
+        std::string name;
+        if      (order == core::componentmodel::behavior::BaseLMConstraint::ACC)
+            name= "["+VecId::dx().getName()+"]";
+        else if (order == core::componentmodel::behavior::BaseLMConstraint::VEL)
+            name= "["+VecId::velocity().getName()+"]";
+        else if (order == core::componentmodel::behavior::BaseLMConstraint::POS)
+            name= "["+VecId::position().getName()+"]";
+        return name;
+    }
 
 
     virtual void clear() {datasC.clear();}

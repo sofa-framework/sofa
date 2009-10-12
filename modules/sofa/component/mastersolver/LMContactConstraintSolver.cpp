@@ -63,16 +63,40 @@ void LMContactConstraintSolver::bwdInit()
     computeCollision();
 }
 
-void LMContactConstraintSolver::solveConstraints()
+bool LMContactConstraintSolver::needPriorStatePropagation()
 {
+    using core::componentmodel::behavior::BaseLMConstraint;
+    bool needPriorPropagation=false;
+    {
+        helper::vector< BaseLMConstraint* > c;
+        this->getContext()->get<BaseLMConstraint>(&c, core::objectmodel::BaseContext::SearchDown);
+        for (unsigned int i=0; i<c.size(); ++i)
+        {
+            if (!c[i]->isCorrectionComputedWithSimulatedDOF())
+            {
+                needPriorPropagation=true;
+                sout << "Propagating the State because of "<< c[i]->getName() << sendl;
+                break;
+            }
+        }
+    }
+    return needPriorPropagation;
+}
+
+void LMContactConstraintSolver::solveConstraints(bool needPropagation)
+{
+    sout << "apply constraints" << sendl;
     simulation::MechanicalExpressJacobianVisitor JacobianVisitor;
     JacobianVisitor.execute(this->getContext());
 
-    simulation::MechanicalSolveLMConstraintVisitor solveConstraints;
+    simulation::MechanicalSolveLMConstraintVisitor solveConstraints(needPropagation);
     solveConstraints.execute(this->getContext());
 
     simulation::MechanicalResetConstraintVisitor resetConstraints;
     resetConstraints.execute(this->getContext());
+
+    simulation::MechanicalPropagatePositionAndVelocityVisitor propagateState;
+    propagateState.execute(this->getContext());
 }
 
 bool LMContactConstraintSolver::isCollisionDetected()
@@ -96,12 +120,13 @@ void LMContactConstraintSolver::step(double dt)
     sout << "integration" << sendl;
     integrate(dt);
 
+    bool propagateState=needPriorStatePropagation();
+
     int numStep=0;
-    while (numStep ==0 || (isCollisionDetected() && numStep < maxSteps) )
+    while ((numStep < maxSteps && isCollisionDetected()) || numStep==0)
     {
         sout << "Iteration " << numStep << sendl;
-        sout << "apply constraints" << sendl;
-        solveConstraints();
+        solveConstraints(propagateState);
         ++numStep;
     }
 }
