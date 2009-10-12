@@ -96,11 +96,18 @@ public:
 
 
 
-
     void addConstraint(unsigned int i1, unsigned int i2);
 
     virtual void draw();
-    virtual std::string getTemplateName() const
+
+    /// we compute the length with the constrained dof
+    bool isCorrectionComputedWithSimulatedDOF() {return false;}
+    bool useMask() {return true;}
+
+
+
+
+    std::string getTemplateName() const
     {
         return templateName(this);
     }
@@ -109,11 +116,13 @@ public:
         return DataTypes::Name();
     }
 
+
+
+
+
+protected :
     //Edges involving a distance constraint
     Data< SeqEdges > vecConstraint;
-    /// we compute the length with the constrained dof
-    bool isCorrectionComputedWithSimulatedDOF() {return false;}
-protected :
     ///Compute the length of an edge given the vector of coordinates corresponding
     double lengthEdge(const Edge &e, const VecCoord &x1,const VecCoord &x2) const;
     ///Compute the direction of the constraint

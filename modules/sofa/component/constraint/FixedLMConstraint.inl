@@ -150,6 +150,8 @@ void FixedLMConstraint<DataTypes>::buildJacobian()
         //Constraint degree of freedom along Z direction
         SparseVecDeriv VZ; VZ.add(index,Z);
         idxZ.push_back(registerEquationInJ1(VZ));
+
+        this->constrainedObject1->forceMask.insertEntry(index);
     }
 }
 
