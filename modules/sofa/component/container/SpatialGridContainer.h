@@ -280,6 +280,9 @@ public:
     Real getCellWidth() const { return cellWidth; }
     Real getInvCellWidth() const { return invCellWidth; }
 
+    Map& getMap() { return map; }
+    const Map& getMap() const { return map; }
+
 protected:
     Map map;
     const Real cellWidth;
