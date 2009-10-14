@@ -65,6 +65,16 @@ public:
     explicit MatSym(NoInit)
     {
     }
+    /// Constructor from 6 elements
+    explicit MatSym(const real& v1,const real& v2,const real& v3,const real& v4,const real& v5,const real& v6)
+    {
+        this->elems[0] = v1;
+        this->elems[1] = v2;
+        this->elems[2] = v3;
+        this->elems[3] = v4;
+        this->elems[4] = v5;
+        this->elems[5] = v6;
+    }
 
 
 
@@ -130,7 +140,7 @@ public:
     {
         for (int j=0; j<D; j++)
             for (int i=0; i <= j; i++)
-                W(i,j) = (M(i,j) + M(j,i))/2.;
+                W(i,j) = (Real)((M(i,j) + M(j,i))/2.0);
     }
 
 
