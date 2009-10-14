@@ -300,7 +300,7 @@ void ParticlesRepulsionForceFieldCuda3f_addDForce(unsigned int size, const void*
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
-void ParticlesRepulsionForceFieldCuda3d_addForce(unsigned int size, const void* cellRange, const void* cellGhost, GPURepulsion3d* repulsion, void* f, const void* x, const void* v)
+void ParticlesRepulsionForceFieldCuda3d_addForce(unsigned int size, const void* cells, const void* cellGhost, GPURepulsion3d* repulsion, void* f, const void* x, const void* v)
 {
     dim3 threads(BSIZE,1);
     dim3 grid(60/BSIZE,1);
