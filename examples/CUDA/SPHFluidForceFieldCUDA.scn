@@ -4,7 +4,7 @@
 		<!--<CentralDifferenceSolver/>-->
         <!--<EulerImplicitSolver/>
         <CGLinearSolver/>-->
-		<Object type="MechanicalObject" name="MModel" template="Vec3f" />
+		<Object type="MechanicalObject" name="MModel" template="CudaVec3f" />
 		<!-- A topology is used here just to set initial particles positions. It is a bad idea because this object has no real topology, but it works... -->
 		<Object type="RegularGrid"
 			nx="5" ny="40" nz="5"
