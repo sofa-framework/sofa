@@ -1,13 +1,14 @@
-<Node dt="0.002" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0" gravity="0 -5 0" >
+<Node dt="0.001" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0" gravity="0 -5 0" >
 	<Node name="fluid">
-		<_RungeKutta4/>
 		<CentralDifferenceSolver/>
-        <_EulerImplicitSolver rayleighMass="0" rayleighStiffness="0" />
-        <_CGLinearSolver tolerance="1.0e-20" threshold="1.0e-12"/>
-		<MechanicalObject name="MModel" position="" template="CudaVec3f" reserve="32000" />
+<!--
+		<RungeKutta4/>
+        <EulerImplicitSolver rayleighMass="0" rayleighStiffness="0" />
+        <CGLinearSolver tolerance="1.0e-20" threshold="1.0e-12"/>
+-->
+		<MechanicalObject name="MModel" template="CudaVec3f" reserve="32000" />
 		<ParticleSource name="Source01"
-		        center="
- 0.28287 -0.209161 0
+		        center="0.28287 -0.209161 0
  0.554265 0.481018 0
  -0.852869 0.337623 0
  -0.0922326 0.736642 0
@@ -118,7 +119,7 @@
 		<PlaneForceField damping="0" normal="0 0 1" d="-16" />
 		<PlaneForceField damping="0" normal="0 0 -1" d="0" />
 		<SpatialGridContainer cellWidth="0.4" />
-		<SPHFluidForceField radius="0.4" density="175" viscosity="10" pressure="1000" surfaceTension="-1000" />
+		<SPHFluidForceField radius="0.4" density="175" viscosity="10" pressure="1000" surfaceTension="0" />
 <!--
 		<Node id="Visual">
 			<OglModel name="VModel" color="blue" />
