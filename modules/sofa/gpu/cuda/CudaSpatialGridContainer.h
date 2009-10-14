@@ -65,6 +65,13 @@ public:
     //typedef typename DataTypes::NeighborListener NeighborListener;
     typedef typename DataTypes::ParticleField ParticleField;
 
+    enum
+    {
+        HASH_PX = 73856093,
+        HASH_PY = 19349663,
+        HASH_PZ = 83492791,
+    };
+
 public:
     SpatialGrid(Real cellWidth);
 
@@ -88,6 +95,13 @@ public:
 
     int getCellBits() const { return cellBits; }
     int getNbCells() const { return nbCells; }
+
+    int getCell(const Coord& c) const
+    {
+        return ( (helper::rfloor(c[0]*invCellWidth*0.5f) * HASH_PX) ^
+                (helper::rfloor(c[1]*invCellWidth*0.5f) * HASH_PY) ^
+                (helper::rfloor(c[2]*invCellWidth*0.5f) * HASH_PZ) ) & ((1 << cellBits)-1);
+    }
 
     //const sofa::gpu::cuda::CudaVector< unsigned int >& getParticleIndexVector() const { return particleIndex; }
     const sofa::gpu::cuda::CudaVector< int >& getCellsVector() const { return cells; }
