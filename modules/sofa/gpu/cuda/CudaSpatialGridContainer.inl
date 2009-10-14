@@ -58,7 +58,7 @@ extern "C"
 {
     void SpatialGridContainer3f_computeHash(int cellBits, float cellWidth, int nbPoints, void* particleIndex8, void* particleHash8, const void* x);
     void SpatialGridContainer3f1_computeHash(int cellBits, float cellWidth, int nbPoints, void* particleIndex8, void* particleHash8, const void* x);
-    void SpatialGridContainer_findCellRange(int cellBits, float cellWidth, int nbPoints, const void* particleHash8, void* cellRange, void* cellGhost);
+    void SpatialGridContainer_findCellRange(int cellBits, int index0, float cellWidth, int nbPoints, const void* particleHash8, void* cellRange, void* cellGhost);
 //void SpatialGridContainer3f_reorderData(int nbPoints, const void* particleHash, void* sorted, const void* x);
 //void SpatialGridContainer3f1_reorderData(int nbPoints, const void* particleHash, void* sorted, const void* x);
 }
@@ -105,7 +105,7 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TR
 }
 
 template<>
-void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3fTypes > >::kernel_updateGrid(int cellBits, float cellWidth, int nbPoints, void* particleIndex, void* particleHash, void* sortTmp, void* cellRange, void* cellGhost, const void* x)
+void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3fTypes > >::kernel_updateGrid(int cellBits, int index0, float cellWidth, int nbPoints, void* particleIndex, void* particleHash, void* sortTmp, void* cells, void* cellGhost, const void* x)
 {
     gpu::cuda::SpatialGridContainer3f_computeHash(cellBits, cellWidth, nbPoints, particleIndex, particleHash, x);
 #ifdef SOFA_DEV
@@ -113,11 +113,11 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3fTypes > >::kernel_updat
     while (nbbits < cellBits + 1) ++nbbits;
     radixSort((unsigned int *)particleHash, (unsigned int *)particleIndex, (unsigned int *)sortTmp, nbPoints*8, nbbits);
 #endif
-    gpu::cuda::SpatialGridContainer_findCellRange(cellBits, cellWidth, nbPoints, particleHash, cellRange, cellGhost);
+    gpu::cuda::SpatialGridContainer_findCellRange(cellBits, index0, cellWidth, nbPoints, particleHash, cells, cellGhost);
 }
 
 template<>
-void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3f1Types > >::kernel_updateGrid(int cellBits, float cellWidth, int nbPoints, void* particleIndex, void* particleHash, void* sortTmp, void* cellRange, void* cellGhost, const void* x)
+void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3f1Types > >::kernel_updateGrid(int cellBits, int index0, float cellWidth, int nbPoints, void* particleIndex, void* particleHash, void* sortTmp, void* cells, void* cellGhost, const void* x)
 {
     gpu::cuda::SpatialGridContainer3f1_computeHash(cellBits, cellWidth, nbPoints, particleIndex, particleHash, x);
 #ifdef SOFA_DEV
@@ -125,13 +125,13 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3f1Types > >::kernel_upda
     while (nbbits < cellBits + 1) ++nbbits;
     radixSort((unsigned int *)particleHash, (unsigned int *)particleIndex, (unsigned int *)sortTmp, nbPoints*8, nbbits);
 #endif
-    gpu::cuda::SpatialGridContainer_findCellRange(cellBits, cellWidth, nbPoints, particleHash, cellRange, cellGhost);
+    gpu::cuda::SpatialGridContainer_findCellRange(cellBits, index0, cellWidth, nbPoints, particleHash, cells, cellGhost);
 }
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
 template<>
-void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3dTypes > >::kernel_updateGrid(int cellBits, float cellWidth, int nbPoints, void* particleIndex, void* particleHash, void* sortTmp, void* cellRange, void* cellGhost, const void* x)
+void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3dTypes > >::kernel_updateGrid(int cellBits, int index0, float cellWidth, int nbPoints, void* particleIndex, void* particleHash, void* sortTmp, void* cells, void* cellGhost, const void* x)
 {
     /// TODO
 }
@@ -158,22 +158,23 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TR
     lastX = &x;
     data.clear();
     int nbPoints = x.size();
-    particleIndex.recreate(nbPoints*8,8*BSIZE);
+    int index0 = nbCells+BSIZE;
+    /*particleIndex*/ cells.recreate(index0+nbPoints*8,8*BSIZE);
     particleHash.recreate(nbPoints*8,8*BSIZE);
 #ifdef SOFA_DEV
     sortTmp.recreate(radixSortTempStorage(nbPoints*8));
 #endif
-    cellRange.recreate(nbCells);
+    //cells.recreate(nbCells+1);
     cellGhost.recreate(nbCells);
     //sortedPos.recreate(nbPoints);
-    kernel_updateGrid(cellBits, cellWidth*2, nbPoints, particleIndex.deviceWrite(), particleHash.deviceWrite(), sortTmp.deviceWrite(), cellRange.deviceWrite(), cellGhost.deviceWrite(), x.deviceRead());
+    kernel_updateGrid(cellBits, index0, cellWidth*2, nbPoints, cells.deviceWrite(index0), particleHash.deviceWrite(), sortTmp.deviceWrite(), cells.deviceWrite(), cellGhost.deviceWrite(), x.deviceRead());
     /*
         std::cout << nbPoints*8 << " entries in " << nbCells << " cells." << std::endl;
         int nfill = 0;
         for (int c=0;c<nbCells;++c)
         {
-            if (cellRange[c][0] == -1) continue;
-            std::cout << "Cell " << c << ": range = " << cellRange[c][0] << " - " << cellRange[c][1] << "     ghost = " << cellGhost[c] << std::endl;
+            if (cells[c] <= 0) continue;
+            std::cout << "Cell " << c << ": range = " << cells[c]-index0 << " - " << cells[c+1]-index0 << "     ghost = " << cellGhost[c] << std::endl;
             ++nfill;
         }
         std::cout << ((1000*nfill)/nbCells) * 0.1 << " % cells with particles." << std::endl;
@@ -186,6 +187,7 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TR
 {
     if (!lastX) return;
     int nbPoints = particleHash.size();
+    int index0 = nbCells+BSIZE;
     glDisable(GL_LIGHTING);
     glColor4f(1,1,1,1);
     glPointSize(3);
@@ -193,7 +195,7 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TR
     for (int i=0; i<nbPoints; i++)
     {
         unsigned int cell = particleHash[i];
-        unsigned int p = particleIndex[i];
+        unsigned int p = cells[index0+i]; //particleIndex[i];
         if (!(cell&1)) continue; // this is a ghost particle from a neighbor cell
         cell>>=1;
         //if (cell != 0 && cell != 65535)

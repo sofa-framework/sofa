@@ -50,13 +50,13 @@ typedef GPURepulsion<double> GPURepulsion3d;
 
 extern "C"
 {
-    void ParticlesRepulsionForceFieldCuda3f_addForce (unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPURepulsion3f* repulsion, void* f, const void* x, const void* v );
-    void ParticlesRepulsionForceFieldCuda3f_addDForce(unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPURepulsion3f* repulsion, void* f, const void* x, const void* dx);
+    void ParticlesRepulsionForceFieldCuda3f_addForce (unsigned int size, const void* cells, const void* cellGhost, GPURepulsion3f* repulsion, void* f, const void* x, const void* v );
+    void ParticlesRepulsionForceFieldCuda3f_addDForce(unsigned int size, const void* cells, const void* cellGhost, GPURepulsion3f* repulsion, void* f, const void* x, const void* dx);
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
-    void ParticlesRepulsionForceFieldCuda3d_addForce (unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPURepulsion3d* repulsion, void* f, const void* x, const void* v );
-    void ParticlesRepulsionForceFieldCuda3d_addDForce(unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPURepulsion3d* repulsion, void* f, const void* x, const void* dx);
+    void ParticlesRepulsionForceFieldCuda3d_addForce (unsigned int size, const void* cells, const void* cellGhost, GPURepulsion3d* repulsion, void* f, const void* x, const void* v );
+    void ParticlesRepulsionForceFieldCuda3d_addDForce(unsigned int size, const void* cells, const void* cellGhost, GPURepulsion3d* repulsion, void* f, const void* x, const void* dx);
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 }
@@ -101,7 +101,7 @@ __device__ void ParticlesRepulsionCalcDForce(CudaVec3<real> x1, CudaVec3<real> d
 }
 
 template<class real>
-__global__ void ParticlesRepulsionForceFieldCuda3t_addForce_kernel(int size, const int2 *cellRange, const int *cellGhost, const int* particleIndex, GPURepulsion<real> repulsion, real* f, const real* x, const real* v)
+__global__ void ParticlesRepulsionForceFieldCuda3t_addForce_kernel(int size, const int *cells, const int *cellGhost, GPURepulsion<real> repulsion, real* f, const real* x, const real* v)
 {
     __shared__ int2 range;
     __shared__ int ghost;
@@ -112,11 +112,14 @@ __global__ void ParticlesRepulsionForceFieldCuda3t_addForce_kernel(int size, con
     {
         if (!threadIdx.x)
         {
-            range = cellRange[cell];
+            //range = *(const int2*)(cells+cell);
+            range.x = cells[cell];
+            range.y = cells[cell+1];
+            range.y &= ~(1U<<31);
             ghost = cellGhost[cell];
         }
         __syncthreads();
-        if (range.x == -1) continue; // no actual particle in this cell
+        if (range.x <= 0) continue; // no actual particle in this cell
         for (int px0 = range.x; px0 < ghost; px0 += BSIZE)
         {
             int px = px0 + threadIdx.x;
@@ -126,7 +129,7 @@ __global__ void ParticlesRepulsionForceFieldCuda3t_addForce_kernel(int size, con
             int index;
             if (px < range.y)
             {
-                index = particleIndex[px];
+                index = cells[px];
                 xi = ((const CudaVec3<real>*)x)[index];
                 temp_x[tx3  ] = xi.x;
                 temp_x[tx3+1] = xi.y;
@@ -156,7 +159,7 @@ __global__ void ParticlesRepulsionForceFieldCuda3t_addForce_kernel(int size, con
                 int py = py0 + threadIdx.x;
                 if (py < range.y)
                 {
-                    int index2 = particleIndex[py];
+                    int index2 = cells[py];
                     CudaVec3<real> xj = ((const CudaVec3<real>*)x)[index2];
                     temp_x[tx3  ] = xj.x;
                     temp_x[tx3+1] = xj.y;
@@ -188,7 +191,7 @@ __global__ void ParticlesRepulsionForceFieldCuda3t_addForce_kernel(int size, con
 }
 
 template<class real>
-__global__ void ParticlesRepulsionForceFieldCuda3t_addDForce_kernel(int size, const int2 *cellRange, const int *cellGhost, const int* particleIndex, GPURepulsion<real> repulsion, real* df, const real* x, const real* dx)
+__global__ void ParticlesRepulsionForceFieldCuda3t_addDForce_kernel(int size, const int *cells, const int *cellGhost, GPURepulsion<real> repulsion, real* df, const real* x, const real* dx)
 {
     __shared__ int2 range;
     __shared__ int ghost;
@@ -199,11 +202,14 @@ __global__ void ParticlesRepulsionForceFieldCuda3t_addDForce_kernel(int size, co
     {
         if (!threadIdx.x)
         {
-            range = cellRange[cell];
+            //range = *(const int2*)(cells+cell);
+            range.x = cells[cell];
+            range.y = cells[cell+1];
+            range.y &= ~(1U<<31);
             ghost = cellGhost[cell];
         }
         __syncthreads();
-        if (range.x == -1) continue; // no actual particle in this cell
+        if (range.x <= 0) continue; // no actual particle in this cell
         for (int px0 = range.x; px0 < ghost; px0 += BSIZE)
         {
             int px = px0 + threadIdx.x;
@@ -213,7 +219,7 @@ __global__ void ParticlesRepulsionForceFieldCuda3t_addDForce_kernel(int size, co
             int index;
             if (px < range.y)
             {
-                index = particleIndex[px];
+                index = cells[px];
                 xi = ((const CudaVec3<real>*)x)[index];
                 temp_x[tx3  ] = xi.x;
                 temp_x[tx3+1] = xi.y;
@@ -243,7 +249,7 @@ __global__ void ParticlesRepulsionForceFieldCuda3t_addDForce_kernel(int size, co
                 int py = py0 + threadIdx.x;
                 if (py < range.y)
                 {
-                    int index2 = particleIndex[py];
+                    int index2 = cells[py];
                     CudaVec3<real> xj = ((const CudaVec3<real>*)x)[index2];
                     temp_x[tx3  ] = xj.x;
                     temp_x[tx3+1] = xj.y;
@@ -278,34 +284,34 @@ __global__ void ParticlesRepulsionForceFieldCuda3t_addDForce_kernel(int size, co
 // CPU-side methods //
 //////////////////////
 
-void ParticlesRepulsionForceFieldCuda3f_addForce(unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPURepulsion3f* repulsion, void* f, const void* x, const void* v)
+void ParticlesRepulsionForceFieldCuda3f_addForce(unsigned int size, const void* cells, const void* cellGhost, GPURepulsion3f* repulsion, void* f, const void* x, const void* v)
 {
     dim3 threads(BSIZE,1);
     dim3 grid(60,1);
-    ParticlesRepulsionForceFieldCuda3t_addForce_kernel<float><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int2*) cellRange, (const int*) cellGhost, (const int*) particleIndex, *repulsion, (float*)f, (const float*)x, (const float*)v);
+    ParticlesRepulsionForceFieldCuda3t_addForce_kernel<float><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *repulsion, (float*)f, (const float*)x, (const float*)v);
 }
 
-void ParticlesRepulsionForceFieldCuda3f_addDForce(unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPURepulsion3f* repulsion, void* df, const void* x, const void* dx)
+void ParticlesRepulsionForceFieldCuda3f_addDForce(unsigned int size, const void* cells, const void* cellGhost, GPURepulsion3f* repulsion, void* df, const void* x, const void* dx)
 {
     dim3 threads(BSIZE,1);
     dim3 grid(60/BSIZE,1);
-    ParticlesRepulsionForceFieldCuda3t_addDForce_kernel<float><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int2*) cellRange, (const int*) cellGhost, (const int*) particleIndex, *repulsion, (float*)df, (const float*)x, (const float*)dx);
+    ParticlesRepulsionForceFieldCuda3t_addDForce_kernel<float><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, (const int*) cells, (const int*) cellGhost, *repulsion, (float*)df, (const float*)x, (const float*)dx);
 }
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
-void ParticlesRepulsionForceFieldCuda3d_addForce(unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPURepulsion3d* repulsion, void* f, const void* x, const void* v)
+void ParticlesRepulsionForceFieldCuda3d_addForce(unsigned int size, const void* cellRange, const void* cellGhost, GPURepulsion3d* repulsion, void* f, const void* x, const void* v)
 {
     dim3 threads(BSIZE,1);
     dim3 grid(60/BSIZE,1);
-    ParticlesRepulsionForceFieldCuda3t_addForce_kernel<double><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int2*) cellRange, (const int*) cellGhost, (const int*) particleIndex, *repulsion, (double*)f, (const double*)x, (const double*)v);
+    ParticlesRepulsionForceFieldCuda3t_addForce_kernel<double><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *repulsion, (double*)f, (const double*)x, (const double*)v);
 }
 
-void ParticlesRepulsionForceFieldCuda3d_addDForce(unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPURepulsion3d* repulsion, void* df, const void* x, const void* dx)
+void ParticlesRepulsionForceFieldCuda3d_addDForce(unsigned int size, const void* cells, const void* cellGhost, GPURepulsion3d* repulsion, void* df, const void* x, const void* dx)
 {
     dim3 threads(BSIZE,1);
     dim3 grid(60/BSIZE,1);
-    ParticlesRepulsionForceFieldCuda3t_addDForce_kernel<double><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int2*) cellRange, (const int*) cellGhost, (const int*) particleIndex, *repulsion, (double*)df, (const double*)x, (const double*)dx);
+    ParticlesRepulsionForceFieldCuda3t_addDForce_kernel<double><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, (const int*) cells, (const int*) cellGhost, *repulsion, (double*)df, (const double*)x, (const double*)dx);
 }
 
 #endif // SOFA_GPU_CUDA_DOUBLE

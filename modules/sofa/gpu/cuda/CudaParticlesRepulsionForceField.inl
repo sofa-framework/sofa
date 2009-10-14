@@ -41,13 +41,13 @@ namespace cuda
 extern "C"
 {
 
-    void ParticlesRepulsionForceFieldCuda3f_addForce (unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPURepulsion3f* repulsion, void* f, const void* x, const void* v );
-    void ParticlesRepulsionForceFieldCuda3f_addDForce(unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPURepulsion3f* repulsion, void* f, const void* x, const void* dx);
+    void ParticlesRepulsionForceFieldCuda3f_addForce (unsigned int size, const void* cells, const void* cellGhost, GPURepulsion3f* repulsion, void* f, const void* x, const void* v );
+    void ParticlesRepulsionForceFieldCuda3f_addDForce(unsigned int size, const void* cells, const void* cellGhost, GPURepulsion3f* repulsion, void* f, const void* x, const void* dx);
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
-    void ParticlesRepulsionForceFieldCuda3d_addForce (unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPURepulsion3d* repulsion, void* f, const void* x, const void* v );
-    void ParticlesRepulsionForceFieldCuda3d_addDForce(unsigned int size, const void* cellRange, const void* cellGhost, const void* particleIndex, GPURepulsion3d* repulsion, void* f, const void* x, const void* dx);
+    void ParticlesRepulsionForceFieldCuda3d_addForce (unsigned int size, const void* cells, const void* cellGhost, GPURepulsion3d* repulsion, void* f, const void* x, const void* v );
+    void ParticlesRepulsionForceFieldCuda3d_addDForce(unsigned int size, const void* cells, const void* cellGhost, GPURepulsion3d* repulsion, void* f, const void* x, const void* dx);
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 }
@@ -78,7 +78,7 @@ void ParticlesRepulsionForceField<gpu::cuda::CudaVec3fTypes>::addForce(VecDeriv&
     f.resize(x.size());
     Grid::Grid* g = grid->getGrid();
     ParticlesRepulsionForceFieldCuda3f_addForce(
-        g->getNbCells(), g->getCellRangeVector().deviceRead(), g->getCellGhostVector().deviceRead(), g->getParticleIndexVector().deviceRead(),
+        g->getNbCells(), g->getCellsVector().deviceRead(), g->getCellGhostVector().deviceRead(),
         &repulsion, f.deviceWrite(), x.deviceRead(), v.deviceRead());
 }
 
@@ -95,7 +95,7 @@ void ParticlesRepulsionForceField<gpu::cuda::CudaVec3fTypes>::addDForce(VecDeriv
     df.resize(dx.size());
     Grid::Grid* g = grid->getGrid();
     ParticlesRepulsionForceFieldCuda3f_addDForce(
-        g->getNbCells(), g->getCellRangeVector().deviceRead(), g->getCellGhostVector().deviceRead(), g->getParticleIndexVector().deviceRead(),
+        g->getNbCells(), g->getCellsVector().deviceRead(), g->getCellGhostVector().deviceRead(),
         &repulsion, df.deviceWrite(), x.deviceRead(), dx.deviceRead());
 }
 
@@ -115,7 +115,7 @@ void ParticlesRepulsionForceField<gpu::cuda::CudaVec3dTypes>::addForce(VecDeriv&
     f.resize(x.size());
     Grid::Grid* g = grid->getGrid();
     ParticlesRepulsionForceFieldCuda3d_addForce(
-        g->getNbCells(), g->getCellRangeVector().deviceRead(), g->getCellGhostVector().deviceRead(), g->getParticleIndexVector().deviceRead(),
+        g->getNbCells(), g->getCellsVector().deviceRead(), g->getCellGhostVector().deviceRead(),
         &repulsion, f.deviceWrite(), x.deviceRead(), v.deviceRead());
 }
 
@@ -132,7 +132,7 @@ void ParticlesRepulsionForceField<gpu::cuda::CudaVec3dTypes>::addDForce(VecDeriv
     df.resize(dx.size());
     Grid::Grid* g = grid->getGrid();
     ParticlesRepulsionForceFieldCuda3d_addDForce(
-        g->getNbCells(), g->getCellRangeVector().deviceRead(), g->getCellGhostVector().deviceRead(), g->getParticleIndexVector().deviceRead(),
+        g->getNbCells(), g->getCellsVector().deviceRead(), g->getCellGhostVector().deviceRead(),
         &repulsion, df.deviceWrite(), x.deviceRead(), dx.deviceRead());
 }
 

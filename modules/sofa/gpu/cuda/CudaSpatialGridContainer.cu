@@ -71,13 +71,12 @@ extern "C"
 {
     void SpatialGridContainer3f_computeHash(int cellBits, float cellWidth, int nbPoints, void* particleIndex8, void* particleHash8, const void* x);
     void SpatialGridContainer3f1_computeHash(int cellBits, float cellWidth, int nbPoints, void* particleIndex8, void* particleHash8, const void* x);
-    void SpatialGridContainer_findCellRange(int cellBits, float cellWidth, int nbPoints, const void* particleHash8, void* cellRange, void* cellGhost);
+    void SpatialGridContainer_findCellRange(int cellBits, int index0, float cellWidth, int nbPoints, const void* particleHash8, void* cellRange, void* cellGhost);
 //void SpatialGridContainer3f_reorderData(int nbPoints, const void* particleHash, void* sorted, const void* x);
 //void SpatialGridContainer3f1_reorderData(int nbPoints, const void* particleHash, void* sorted, const void* x);
 }
 
-#define USE_TEX  1
-#define USE_SORT 1
+#define USE_TEX 0
 
 struct GridParams
 {
@@ -98,13 +97,7 @@ struct GridParams
 //////////////////////
 
 #if USE_TEX
-#if USE_SORT
-texture<uint2, 1, cudaReadModeElementType> particleHashTex;
-texture<int2, 1, cudaReadModeElementType> cellRangeTex;
-#else
-texture<unsigned int, 1, cudaReadModeElementType> gridCountersTex;
-texture<unsigned int, 1, cudaReadModeElementType> gridCellsTex;
-#endif
+texture<int, 1, cudaReadModeElementType> cellRangeTex;
 #endif
 
 __constant__ GridParams gridParams;
@@ -239,8 +232,8 @@ computeHashD(const TIn* pos,
 // find start of each cell in sorted particle list by comparing with previous hash value
 // one thread per particle
 __global__ void
-findCellRangeD(const unsigned int* particleHash,
-        int2 * cellRange, int* cellGhost, int n)
+findCellRangeD(int index0, const unsigned int* particleHash,
+        int * cellRange, int* cellGhost, int n)
 {
     unsigned int i = __mul24(blockIdx.x, blockDim.x) + threadIdx.x;
     __shared__ unsigned int hash[BSIZE];
@@ -270,20 +263,21 @@ findCellRangeD(const unsigned int* particleHash,
             firstGhost = ((prev != cur) && (cur&1));
             if (firstInCell)
             {
-                cellRange[ prev>>1 ].y = i;
+                if ((prev>>1) < (cur>>1)-1)
+                    cellRange[ (prev>>1)+1 ] =  (index0+i) | (1U<<31);
                 if (!(prev&1)) // no ghost particles in previous cell
-                    cellGhost[ prev>>1 ] = i;
+                    cellGhost[ prev>>1 ] = index0+i;
             }
         }
         if (firstInCell)
-            cellRange[ cur>>1 ].x = i;
+            cellRange[ cur>>1 ] = index0+i;
         if (firstGhost)
-            cellGhost[ cur>>1 ] = i;
+            cellGhost[ cur>>1 ] = index0+i;
         if (i == n-1)
         {
-            cellRange[ cur>>1 ].y = n;
+            cellRange[ (cur>>1)+1 ] = (index0+n) | (1<<31);
             if (!(cur&1))
-                cellGhost[ cur>>1 ] = n;
+                cellGhost[ cur>>1 ] = index0+n;
         }
     }
 }
@@ -348,15 +342,15 @@ void SpatialGridContainer3f1_computeHash(int cellBits, float cellWidth, int nbPo
     }
 }
 
-void SpatialGridContainer_findCellRange(int cellBits, float cellWidth, int nbPoints, const void* particleHash8, void* cellRange, void* cellGhost)
+void SpatialGridContainer_findCellRange(int cellBits, int index0, float cellWidth, int nbPoints, const void* particleHash8, void* cellRange, void* cellGhost)
 {
-    cudaMemset(cellRange, -1, (1<<cellBits)*2*sizeof(int));
+    cudaMemset(cellRange, 0, ((1<<cellBits)+1)*sizeof(int));
 
     // Then find the start of each cell
     {
         dim3 threads(BSIZE,1);
         dim3 grid((8*nbPoints+BSIZE-1)/BSIZE,1);
-        findCellRangeD<<< grid, threads >>>((const unsigned int*)particleHash8, (int2*)cellRange, (int*)cellGhost, 8*nbPoints);
+        findCellRangeD<<< grid, threads >>>(index0, (const unsigned int*)particleHash8, (int*)cellRange, (int*)cellGhost, 8*nbPoints);
     }
 }
 /*

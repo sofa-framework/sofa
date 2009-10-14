@@ -103,9 +103,9 @@ public:
         params.ClaplacianWc = m->constLaplacianWc(h);
     }
 
-    void Kernels_computeDensity(int gsize, const void* cellRange, const void* cellGhost, const void* particleIndex, void* pos4, const void* x);
-    void Kernels_addForce(int gsize, const void* cellRange, const void* cellGhost, const void* particleIndex, void* f, const void* pos4, const void* vel);
-    void Kernels_addDForce(int gsize, const void* cellRange, const void* cellGhost, const void* particleIndex, void* f, const void* pos4, const void* dx, const void* vel);
+    void Kernels_computeDensity(int gsize, const void* cells, const void* cellGhost, void* pos4, const void* x);
+    void Kernels_addForce(int gsize, const void* cells, const void* cellGhost, void* f, const void* pos4, const void* vel);
+    void Kernels_addDForce(int gsize, const void* cells, const void* cellGhost, void* f, const void* pos4, const void* dx, const void* vel);
 };
 
 
