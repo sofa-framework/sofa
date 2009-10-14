@@ -1,6 +1,7 @@
 #! /bin/bash
 
-
+#----------------------------------------------------------------------------------------------
+#exit value matches the number of test which output a non-zero error value.
 
 #----------------------------------------------------------------------------------------------
 #default values
@@ -79,6 +80,8 @@ declare -a textResults=(Error: Time:)
 declare -a results
 #array counter of scenes
 declare -i counter=0
+declare -i nerrors=0 
+#the script performs a negative count of the error number
 
 #building the parameters passed to sofaVerification
 arguments=$(echo)
@@ -123,6 +126,7 @@ do
     if [[ $? != 0 ]]
     then
 	lineFormatation=$( echo "|  SegFault")
+	nerrors=$(($nerrors + 1))
     else
 	declare -i displayByDof=0
 	declare -i displayTime=0
@@ -136,14 +140,17 @@ do
 		results[$counter]=$line
 		displayTime=0
 	    fi
-
 	    if [[ $words == TIME ]] 
 	    then
 		displayTime=1
 	    fi
 #----------------------------------------------------------------------------------------------
 	    if [[ $displayByDof == 1 ]]
-	    then
+	    then 
+ 		if test "$words" != "0"  
+	  then 
+	nerrors=$(($nerrors+1))
+	  fi
 		line=$(echo $words ${results[$counter]})
 		results[$counter]=$line
 		displayByDof=0
@@ -173,3 +180,5 @@ do
     echo $lineFormatation	
     counter=$(( $counter+1 ))
 done
+exit $nerrors
+
