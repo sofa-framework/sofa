@@ -40,8 +40,10 @@ using namespace sofa::defaulttype;
 
 template<class DataTypes>
 OglTetrahedralModel<DataTypes>::OglTetrahedralModel()
-    :depthTest(initData(&depthTest, (bool) true, "depthTest", "Set Depth Test")),
-     blending(initData(&blending, (bool) true, "blending", "Set Blending"))
+    : nodes(NULL), topo(NULL)
+    , depthTest(initData(&depthTest, (bool) true, "depthTest", "Set Depth Test"))
+    , blending(initData(&blending, (bool) true, "blending", "Set Blending"))
+
 {
 }
 
