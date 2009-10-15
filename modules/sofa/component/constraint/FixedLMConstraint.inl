@@ -46,30 +46,39 @@ using namespace sofa::helper;
 
 
 template <class DataTypes>
-typename DataTypes::Deriv FixedLMConstraint<DataTypes>::getExpectedAcceleration(unsigned int )
-{
-    return Deriv();
-}
-
-
+typename DataTypes::Deriv FixedLMConstraint<DataTypes>::getXDirection(unsigned int) {return X;}
 template <class DataTypes>
-typename DataTypes::Deriv FixedLMConstraint<DataTypes>::getExpectedVelocity(unsigned int )
-{
-    return Deriv();
-}
-
-
+typename DataTypes::Deriv FixedLMConstraint<DataTypes>::getYDirection(unsigned int) {return Y;}
 template <class DataTypes>
-typename DataTypes::Coord FixedLMConstraint<DataTypes>::getExpectedPosition(unsigned int index)
+typename DataTypes::Deriv FixedLMConstraint<DataTypes>::getZDirection(unsigned int) {return Z;}
+
+
+
+//Cancel the acceleration (0 along X direction, 0 along Y direction, 0 along Z direction)
+template <class DataTypes>
+Vector3 FixedLMConstraint<DataTypes>::getExpectedAcceleration(unsigned int ) {return Vector3();}
+//Cancel the velocity (0 along X direction, 0 along Y direction, 0 along Z direction)
+template <class DataTypes>
+Vector3 FixedLMConstraint<DataTypes>::getExpectedVelocity(unsigned int ) {return Vector3();}
+//Force the position to the rest position
+template <class DataTypes>
+Vector3 FixedLMConstraint<DataTypes>::getExpectedPosition(unsigned int index)
 {
+    Vector3 result;
     //If a new particle has to be fixed, we add its current position as rest position
     if (this->restPosition.find(index) == this->restPosition.end())
     {
         const VecCoord& x = *this->constrainedObject1->getX();
         this->restPosition.insert(std::make_pair(index, x[index]));
     }
-    return this->restPosition[index];
+    result[0] = this->restPosition[index][0];
+    result[1] = this->restPosition[index][1];
+    result[2] = this->restPosition[index][2];
+    return result;
 }
+
+
+
 
 
 //At init, we store the rest position of the particles we have to fix
@@ -78,6 +87,9 @@ void FixedLMConstraint<DataTypes>::init()
 {
     BaseProjectiveLMConstraint<DataTypes>::init();
     initFixedPosition();
+    X[0]=1; X[1]=0; X[2]=0;
+    Y[0]=0; Y[1]=1; Y[2]=0;
+    Z[0]=0; Z[1]=0; Z[2]=1;
 }
 
 

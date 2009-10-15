@@ -74,9 +74,17 @@ public:
         _drawSize(core::objectmodel::Base::initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
     {}
 
-    Deriv getExpectedAcceleration(unsigned int index);
-    Deriv getExpectedVelocity    (unsigned int index);
-    Coord getExpectedPosition    (unsigned int index);
+
+    // Constraint direction for a given particle
+    Deriv getXDirection(unsigned int index);
+    Deriv getYDirection(unsigned int index);
+    Deriv getZDirection(unsigned int index);
+
+    Vector3 getExpectedAcceleration(unsigned int index);
+    Vector3 getExpectedVelocity    (unsigned int index);
+    Vector3 getExpectedPosition    (unsigned int index);
+
+
 
     void init();
     void initFixedPosition();
@@ -87,7 +95,7 @@ protected :
 
     std::map< unsigned int, Coord> restPosition;
     Data<double> _drawSize;
-
+    Deriv X,Y,Z;
 };
 
 } // namespace constraint
