@@ -45,169 +45,54 @@ namespace constraint
 using namespace sofa::helper;
 
 
-// Define TestNewPointFunction
-template< class DataTypes>
-bool FixedLMConstraint<DataTypes>::FCTestNewPointFunction(int /*nbPoints*/, void* param, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& )
+template <class DataTypes>
+typename DataTypes::Deriv FixedLMConstraint<DataTypes>::getExpectedAcceleration(unsigned int )
 {
-    FixedLMConstraint<DataTypes> *fc= (FixedLMConstraint<DataTypes> *)param;
-    if (fc)
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    return Deriv();
 }
 
-// Define RemovalFunction
-template< class DataTypes>
-void FixedLMConstraint<DataTypes>::FCRemovalFunction(int pointIndex, void* param)
-{
-    FixedLMConstraint<DataTypes> *fc= (FixedLMConstraint<DataTypes> *)param;
-    if (fc)
-    {
-        fc->removeConstraint((unsigned int) pointIndex);
-    }
-    return;
-}
 
 template <class DataTypes>
-void FixedLMConstraint<DataTypes>::clearConstraints()
+typename DataTypes::Deriv FixedLMConstraint<DataTypes>::getExpectedVelocity(unsigned int )
 {
-    f_indices.beginEdit()->clear();
-    f_indices.endEdit();
+    return Deriv();
 }
+
 
 template <class DataTypes>
-void FixedLMConstraint<DataTypes>::addConstraint(unsigned int index)
+typename DataTypes::Coord FixedLMConstraint<DataTypes>::getExpectedPosition(unsigned int index)
 {
-    f_indices.beginEdit()->push_back(index);
-    f_indices.endEdit();
+    //If a new particle has to be fixed, we add its current position as rest position
+    if (this->restPosition.find(index) == this->restPosition.end())
+    {
+        const VecCoord& x = *this->constrainedObject1->getX();
+        this->restPosition.insert(std::make_pair(index, x[index]));
+    }
+    return this->restPosition[index];
 }
 
-template <class DataTypes>
-void FixedLMConstraint<DataTypes>::removeConstraint(unsigned int index)
-{
-    removeValue(*f_indices.beginEdit(),index);
-    f_indices.endEdit();
-}
 
-
+//At init, we store the rest position of the particles we have to fix
 template <class DataTypes>
 void FixedLMConstraint<DataTypes>::init()
 {
-    core::componentmodel::behavior::LMConstraint<DataTypes,DataTypes>::init();
-
-    topology = this->getContext()->getMeshTopology();
-
-    // Initialize functions and parameters
-    topology::PointSubset my_subset = f_indices.getValue();
-
-    my_subset.setTestFunction(FCTestNewPointFunction);
-    my_subset.setRemovalFunction(FCRemovalFunction);
-
-    my_subset.setTestParameter( (void *) this );
-    my_subset.setRemovalParameter( (void *) this );
-
-
-    X[0]=1; X[1]=0; X[2]=0;
-    Y[0]=0; Y[1]=1; Y[2]=0;
-    Z[0]=0; Z[1]=0; Z[2]=1;
-
-}
-
-// Handle topological changes
-template <class DataTypes> void FixedLMConstraint<DataTypes>::handleTopologyChange()
-{
-    std::list<const TopologyChange *>::const_iterator itBegin=topology->firstChange();
-    std::list<const TopologyChange *>::const_iterator itEnd =topology->lastChange();
-
-    f_indices.beginEdit()->handleTopologyEvents(itBegin,itEnd,this->constrainedObject1->getSize());
+    BaseProjectiveLMConstraint<DataTypes>::init();
+    initFixedPosition();
 }
 
 
-template<class DataTypes>
-void FixedLMConstraint<DataTypes>::buildJacobian()
+template <class DataTypes>
+void FixedLMConstraint<DataTypes>::initFixedPosition()
 {
-    idxX.clear();
-    idxY.clear();
-    idxZ.clear();
-    const SetIndexArray &indices = f_indices.getValue().getArray();
-
+    this->restPosition.clear();
+    const VecCoord& x = *this->constrainedObject1->getX();
+    const SetIndexArray & indices = this->f_indices.getValue().getArray();
     for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
     {
-        const unsigned int index=*it;
-
-        //Constraint degree of freedom along X direction
-        SparseVecDeriv VX; VX.add(index,X);
-        idxX.push_back(registerEquationInJ1(VX));
-
-        //Constraint degree of freedom along X direction
-        SparseVecDeriv VY; VY.add(index,Y);
-        idxY.push_back(registerEquationInJ1(VY));
-
-        //Constraint degree of freedom along Z direction
-        SparseVecDeriv VZ; VZ.add(index,Z);
-        idxZ.push_back(registerEquationInJ1(VZ));
-
-        this->constrainedObject1->forceMask.insertEntry(index);
+        unsigned int index=*it;
+        this->restPosition.insert(std::make_pair(index, x[index]));
     }
 }
-
-
-template<class DataTypes>
-void FixedLMConstraint<DataTypes>::writeConstraintEquations(ConstOrder Order)
-{
-    const VecCoord &x0=*(this->constrainedObject1->getX0());
-    const VecCoord &x =*(this->constrainedObject1->getX());
-
-    const SetIndexArray & indices = f_indices.getValue().getArray();
-
-    unsigned int counter=0;
-    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it,++counter)
-    {
-        const unsigned int index = *it;
-
-        core::componentmodel::behavior::BaseLMConstraint::ConstraintGroup *constraint = this->addGroupConstraint(Order);
-        SReal correctionX=0,correctionY=0,correctionZ=0;
-        switch(Order)
-        {
-        case core::componentmodel::behavior::BaseLMConstraint::ACC :
-        {
-            correctionX =this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxX[counter],core::componentmodel::behavior::BaseMechanicalState::VecId::dx());
-            correctionY =this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxY[counter],core::componentmodel::behavior::BaseMechanicalState::VecId::dx());
-            correctionZ =this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxZ[counter],core::componentmodel::behavior::BaseMechanicalState::VecId::dx());
-
-            break;
-        }
-        case core::componentmodel::behavior::BaseLMConstraint::VEL :
-        {
-            correctionX =this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxX[counter],core::componentmodel::behavior::BaseMechanicalState::VecId::velocity());
-            correctionY =this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxY[counter],core::componentmodel::behavior::BaseMechanicalState::VecId::velocity());
-            correctionZ =this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxZ[counter],core::componentmodel::behavior::BaseMechanicalState::VecId::velocity());
-            break;
-        }
-        case core::componentmodel::behavior::BaseLMConstraint::POS :
-        {
-            //TODO
-            //For the RIGID, we can constrain others degrees of freedom (rotation)
-
-            Coord v=x0[index]-x[index];
-            correctionX=v[0];
-            correctionY=v[1];
-            correctionZ=v[2];
-            break;
-        }
-        };
-
-        constraint->addConstraint( idxX[counter], correctionX, core::componentmodel::behavior::BaseLMConstraint::BILATERAL);
-        constraint->addConstraint( idxY[counter], correctionY, core::componentmodel::behavior::BaseLMConstraint::BILATERAL);
-        constraint->addConstraint( idxZ[counter], correctionZ, core::componentmodel::behavior::BaseLMConstraint::BILATERAL);
-
-    }
-}
-
 
 
 template <class DataTypes>
@@ -218,9 +103,7 @@ void FixedLMConstraint<DataTypes>::draw()
     //serr<<"FixedLMConstraint<DataTypes>::draw(), x.size() = "<<x.size()<<sendl;
 
 
-
-
-    const SetIndexArray & indices = f_indices.getValue().getArray();
+    const SetIndexArray & indices = this->f_indices.getValue().getArray();
 
     std::vector< Vector3 > points;
     Vector3 point;
