@@ -104,6 +104,7 @@ void SPHFluidForceField<gpu::cuda::CudaVec3fTypes>::addForce(VecDeriv& f, const 
 template <>
 void SPHFluidForceField<gpu::cuda::CudaVec3fTypes>::addDForce(VecDeriv& df, const VecCoord& dx, double kFactor, double bFactor)
 {
+    return;
     if (grid == NULL) return;
     sout << "addDForce(" << kFactor << "," << bFactor << ")" << sendl;
     //const VecCoord& x = *this->mstate->getX();
