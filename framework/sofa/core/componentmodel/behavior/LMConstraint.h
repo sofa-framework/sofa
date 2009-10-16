@@ -83,12 +83,11 @@ public:
     virtual void init();
 
 
-    //Express the Jacobian for the Simulated Object
-    void expressJacobian();
-
     //Create the Jacobian for the Constrained Object
     virtual void buildJacobian()=0;
 
+    //Propagate the Jacobian matrix through the mappings
+    virtual void propagateJacobian();
 
 
     /// get Mechanical State 1 where the constraint will be expressed (can be a Mapped mechanical state)

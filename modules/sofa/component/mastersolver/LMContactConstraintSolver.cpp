@@ -89,6 +89,9 @@ void LMContactConstraintSolver::solveConstraints(bool needPropagation)
     simulation::MechanicalExpressJacobianVisitor JacobianVisitor;
     JacobianVisitor.execute(this->getContext());
 
+    simulation::MechanicalPropagateLMConstraintVisitor accumulateVisitor;
+    accumulateVisitor.execute(this->getContext());
+
     simulation::MechanicalSolveLMConstraintVisitor solveConstraints(needPropagation);
     solveConstraints.execute(this->getContext());
 

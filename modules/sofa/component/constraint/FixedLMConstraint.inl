@@ -45,36 +45,34 @@ namespace constraint
 using namespace sofa::helper;
 
 
-template <class DataTypes>
-typename DataTypes::Deriv FixedLMConstraint<DataTypes>::getXDirection(unsigned int) {return X;}
-template <class DataTypes>
-typename DataTypes::Deriv FixedLMConstraint<DataTypes>::getYDirection(unsigned int) {return Y;}
-template <class DataTypes>
-typename DataTypes::Deriv FixedLMConstraint<DataTypes>::getZDirection(unsigned int) {return Z;}
-
-
-
 //Cancel the acceleration (0 along X direction, 0 along Y direction, 0 along Z direction)
 template <class DataTypes>
-Vector3 FixedLMConstraint<DataTypes>::getExpectedAcceleration(unsigned int ) {return Vector3();}
+void FixedLMConstraint<DataTypes>::getExpectedAcceleration(unsigned int, helper::vector< SReal >&expectedValue  )
+{
+    expectedValue[0]=expectedValue[1]=expectedValue[2]=0;
+}
 //Cancel the velocity (0 along X direction, 0 along Y direction, 0 along Z direction)
 template <class DataTypes>
-Vector3 FixedLMConstraint<DataTypes>::getExpectedVelocity(unsigned int ) {return Vector3();}
+void FixedLMConstraint<DataTypes>::getExpectedVelocity(unsigned int, helper::vector< SReal >&expectedValue )
+{
+    expectedValue[0]=expectedValue[1]=expectedValue[2]=0;
+}
+
 //Force the position to the rest position
 template <class DataTypes>
-Vector3 FixedLMConstraint<DataTypes>::getExpectedPosition(unsigned int index)
+void FixedLMConstraint<DataTypes>::getPositionCorrection(unsigned int index, helper::vector< SReal > &correction)
 {
-    Vector3 result;
+    const VecCoord& x = *this->constrainedObject1->getX();
     //If a new particle has to be fixed, we add its current position as rest position
     if (this->restPosition.find(index) == this->restPosition.end())
     {
-        const VecCoord& x = *this->constrainedObject1->getX();
         this->restPosition.insert(std::make_pair(index, x[index]));
     }
-    result[0] = this->restPosition[index][0];
-    result[1] = this->restPosition[index][1];
-    result[2] = this->restPosition[index][2];
-    return result;
+
+    // We want to correct the position so that the current position be equal to the rest position
+    correction[0] = this->restPosition[index][0]-x[index][0];
+    correction[1] = this->restPosition[index][1]-x[index][1];
+    correction[2] = this->restPosition[index][2]-x[index][2];
 }
 
 
@@ -87,9 +85,22 @@ void FixedLMConstraint<DataTypes>::init()
 {
     BaseProjectiveLMConstraint<DataTypes>::init();
     initFixedPosition();
+
+    //the constraint can be applied for the three orders
+    this->usingACC=this->usingVEL=this->usingPOS=true;
+
+    //Define the direction of the constraints
+    //We will constrain the 3 degrees of freedom of translation X,Y,Z
+    this->constraintDirection.resize(3);
+
+    Deriv X,Y,Z;
     X[0]=1; X[1]=0; X[2]=0;
     Y[0]=0; Y[1]=1; Y[2]=0;
     Z[0]=0; Z[1]=0; Z[2]=1;
+
+    this->constraintDirection[0]=X;
+    this->constraintDirection[1]=Y;
+    this->constraintDirection[2]=Z;
 }
 
 
@@ -112,17 +123,14 @@ void FixedLMConstraint<DataTypes>::draw()
 {
     if (!this->getContext()->getShowBehaviorModels()) return;
     const VecCoord& x = *this->constrainedObject1->getX();
-    //serr<<"FixedLMConstraint<DataTypes>::draw(), x.size() = "<<x.size()<<sendl;
-
 
     const SetIndexArray & indices = this->f_indices.getValue().getArray();
 
     std::vector< Vector3 > points;
     Vector3 point;
     unsigned int sizePoints= (Coord::static_size <=3)?Coord::static_size:3;
-    //serr<<"FixedLMConstraint<DataTypes>::draw(), indices = "<<indices<<sendl;
-    for (SetIndexArray::const_iterator it = indices.begin();
-            it != indices.end();
+
+    for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end();
             ++it)
     {
         for (unsigned int s=0; s<sizePoints; ++s) point[s] = x[*it][s];

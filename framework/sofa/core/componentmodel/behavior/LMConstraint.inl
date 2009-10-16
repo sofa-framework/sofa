@@ -56,7 +56,7 @@ unsigned int   LMConstraint<DataTypes1,DataTypes2>::registerEquationInJ1( Sparse
     unsigned int id=constrainedObject1->getCSize();
 
     constrainedObject1->getC()->push_back(C1);
-    linesInJ1.insert(std::make_pair(id,id));
+    linesInSimulatedObject1.insert(std::make_pair(id,id));
     return id;
 }
 
@@ -68,17 +68,13 @@ unsigned int   LMConstraint<DataTypes1,DataTypes2>::registerEquationInJ2( Sparse
     unsigned int id=constrainedObject2->getCSize();
 
     constrainedObject2->getC()->push_back(C2);
-    linesInJ2.insert(std::make_pair(id,id));
+    linesInSimulatedObject2.insert(std::make_pair(id,id));
     return id;
 }
 
 template<class DataTypes1,class DataTypes2>
-void LMConstraint<DataTypes1,DataTypes2>::expressJacobian()
+void LMConstraint<DataTypes1,DataTypes2>::propagateJacobian()
 {
-    //Construct the Jacobian for the Constrained object
-    if (constrainedObject1 != NULL && constrainedObject2 != NULL)
-        buildJacobian();
-
     //Propagate the lines of the Jacobian through the mappings until we reach the simulated object
     BaseMechanicalState *mstate;
 
@@ -88,7 +84,7 @@ void LMConstraint<DataTypes1,DataTypes2>::expressJacobian()
         core::componentmodel::behavior::BaseMechanicalMapping* mapping;
         mstate->getContext()->get(mapping);
         if (!mapping) break;
-        constraintTransmission( constrainedObject1,mapping->getMechFrom()->getCSize());
+        constraintTransmissionJ1( mapping->getMechFrom()->getCSize());
         mstate = mapping->getMechFrom();
     }
 
@@ -98,7 +94,7 @@ void LMConstraint<DataTypes1,DataTypes2>::expressJacobian()
         core::componentmodel::behavior::BaseMechanicalMapping* mapping;
         mstate->getContext()->get(mapping);
         if (!mapping) break;
-        constraintTransmission( constrainedObject2,mapping->getMechFrom()->getCSize());
+        constraintTransmissionJ2( mapping->getMechFrom()->getCSize());
         mstate = mapping->getMechFrom();
     }
 }
