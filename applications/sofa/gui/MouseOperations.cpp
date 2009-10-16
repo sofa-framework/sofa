@@ -136,48 +136,53 @@ void InciseOperation::end()
 void SculptOperation::start()
 {
 #ifdef SOFA_DEV
-    if (performer)
-    {
-        component::collision::SculptBodyPerformerConfiguration *performerConfiguration=dynamic_cast<component::collision::SculptBodyPerformerConfiguration*>(performer);
-        performerConfiguration->setForce(getForce()/5000);
-    }
+    if (performer == NULL) return;
+    component::collision::SculptBodyPerformerConfiguration *performerConfiguration=dynamic_cast<component::collision::SculptBodyPerformerConfiguration*>(performer);
+    performerConfiguration->setCheckedFix(isCheckedFix());
+    performerConfiguration->setForce(getForce()/500);
 #endif
 }
 
 void SculptOperation::execution()
 {
-#ifdef SOFA_DEV
-    performer->execute();
-#endif
 }
 
 void SculptOperation::end()
 {
 #ifdef SOFA_DEV
+    if (performer == NULL) return;
     component::collision::SculptBodyPerformerConfiguration *performerConfiguration=dynamic_cast<component::collision::SculptBodyPerformerConfiguration*>(performer);
     performerConfiguration->setForce(0.0);
+    performerConfiguration->setCheckedFix(false);
+    component::collision::SculptBodyPerformer<defaulttype::Vec3Types>* sculptPerformer=dynamic_cast<component::collision::SculptBodyPerformer<defaulttype::Vec3Types>*>(performer);
+    sculptPerformer->end();
+    if (isAnimated())
+    {
+        sculptPerformer->animate(true);
+    }
 #endif
 }
 
 void SculptOperation::wait()
 {
 #ifdef SOFA_DEV
-    if( performer==NULL || pickHandle->getInteraction()->mouseInteractor!= performer->interactor)
+    if (performer==NULL && pickHandle->getInteraction()->mouseInteractor->getBodyPicked().body != NULL)
     {
-        //Creation
         performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("SculptBody", pickHandle->getInteraction()->mouseInteractor);
         pickHandle->getInteraction()->mouseInteractor->addInteractionPerformer(performer);
-
-        //Configuration
         component::collision::SculptBodyPerformerConfiguration *performerConfiguration=dynamic_cast<component::collision::SculptBodyPerformerConfiguration*>(performer);
         performerConfiguration->setScale(getScale());
+        performerConfiguration->setForce(0.0);
+        performerConfiguration->setCheckedFix(false);
     }
 #endif
 }
+
 SculptOperation::~SculptOperation()
 {
 #ifdef SOFA_DEV
-    pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
+    if (performer != NULL)
+        pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
 #endif
 }
 

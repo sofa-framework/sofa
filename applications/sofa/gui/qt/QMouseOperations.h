@@ -34,11 +34,15 @@
 #include <QLineEdit>
 #include <QSpinBox>
 #include <QSlider>
+#include <QRadioButton>
+#include <QPushButton>
 #else
 #include <qwidget.h>
 #include <qlineedit.h>
 #include <qspinbox.h>
 #include <qslider.h>
+#include <qradiobutton.h>
+#include <qpushbutton.h>
 #endif
 #include <iostream>
 
@@ -79,12 +83,13 @@ public:
         SculptOperation::configure(picker, b);
     }
 
-
     double getForce() const;
     double getScale() const;
+    bool isCheckedFix() const;
 
 public slots:
     void setScale();
+    void animate(bool checked);
 
 protected:
     QSlider  *forceSlider;
@@ -92,6 +97,11 @@ protected:
 
     QSlider  *scaleSlider;
     QSpinBox *scaleValue;
+
+    QRadioButton *sculptRadioButton;
+    QRadioButton *fixRadioButton;
+
+    QPushButton *animatePushButton;
 };
 
 

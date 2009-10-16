@@ -59,7 +59,9 @@ public:
     virtual void wait() {};
 protected:
     PickHandler *pickHandle;
+public:
     sofa::component::collision::InteractionPerformer *performer;
+protected:
     MOUSE_BUTTON button;
 };
 
@@ -124,10 +126,10 @@ protected:
 class SOFA_SOFAGUI_API SculptOperation : public Operation
 {
 public:
-    SculptOperation():force(50), scale(50) {};
+    SculptOperation():force(1), scale(50), checkedFix(false), animated(false) {}
     virtual ~SculptOperation();
     virtual void start() ;
-    virtual void execution() ;
+    virtual void execution();
     virtual void end() ;
     virtual void wait() ;
 
@@ -135,11 +137,15 @@ public:
     virtual double getForce() const { return force;}
     void setScale(double s) {scale = s;}
     virtual double getScale() const {return scale;}
+    virtual bool isCheckedFix() const {return checkedFix;};
+    void setCheckedFix(bool b) {checkedFix = b;};
+    virtual bool isAnimated() const {return animated;};
     static bool isModifiable() {return false;};
 
     static std::string getDescription() {return "Sculpt an object using the Mouse";}
 protected:
     double force, scale;
+    bool checkedFix, animated;
 };
 
 }
