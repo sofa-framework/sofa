@@ -34,9 +34,13 @@
 #include <QHBoxLayout>
 #include <QGridLayout>
 #include <QLabel>
+#include <QRadioButton>
+#include <QPushButton>
 #else
 #include <qlayout.h>
 #include <qlabel.h>
+#include <qradiobutton.h>
+#include <qpushbutton.h>
 #endif
 
 namespace sofa
@@ -74,25 +78,39 @@ QSculptOperation::QSculptOperation()
     forceValue->setEnabled(false);
 
 
-    layout->addWidget(forceLabel,0,0);
-    layout->addWidget(forceSlider,0,1);
-    layout->addWidget(forceValue,0,2);
+    layout->addWidget(forceLabel,1,0);
+    layout->addWidget(forceSlider,1,1);
+    layout->addWidget(forceValue,1,2);
 
     QLabel *scaleLabel=new QLabel(QString("Scale"), this);
     scaleSlider=new QSlider(Qt::Horizontal, this);
     scaleValue=new QSpinBox(0,100,1,this);
     scaleValue->setEnabled(false);
 
-    layout->addWidget(scaleLabel,1,0);
-    layout->addWidget(scaleSlider,1,1);
-    layout->addWidget(scaleValue,1,2);
+    layout->addWidget(scaleLabel,2,0);
+    layout->addWidget(scaleSlider,2,1);
+    layout->addWidget(scaleValue,2,2);
 
+    sculptRadioButton = new QRadioButton(QString("Sculpt"), this);
+    sculptRadioButton->setChecked(true);
+    layout->addWidget(sculptRadioButton,0,0);
+
+    fixRadioButton = new QRadioButton(QString("Fix"), this);
+    layout->addWidget(fixRadioButton,0,1);
+
+    animatePushButton = new QPushButton(QString("Animate"), this);
+    animatePushButton->setCheckable(true);
+    layout->addWidget(animatePushButton,0,2);
 
     connect(forceSlider,SIGNAL(valueChanged(int)), forceValue, SLOT(setValue(int)));
     connect(scaleSlider,SIGNAL(valueChanged(int)), scaleValue, SLOT(setValue(int)));
+
     connect(scaleSlider,SIGNAL(valueChanged(int)), this, SLOT(setScale()));
 
-    forceSlider->setValue(50);
+    /* Add solver, mass and forcefield to simulate added materia */
+    connect(animatePushButton,SIGNAL(toggled(bool)), this, SLOT(animate(bool)));
+
+    forceSlider->setValue(1);
     scaleSlider->setValue(50);
 }
 
@@ -106,13 +124,28 @@ double QSculptOperation::getScale() const
     return scaleValue->value();
 }
 
+bool QSculptOperation::isCheckedFix() const
+{
+    return fixRadioButton->isChecked();
+}
+
 void QSculptOperation::setScale()
 {
 #ifdef SOFA_DEV
-    if (!performer) return;
+    if (performer == NULL) return;
     component::collision::SculptBodyPerformerConfiguration *performerConfiguration=dynamic_cast<component::collision::SculptBodyPerformerConfiguration*>(performer);
-    if (!performerConfiguration) return;
+    if (performerConfiguration == NULL) return;
     performerConfiguration->setScale(getScale());
+#endif
+}
+
+void QSculptOperation::animate(bool checked)
+{
+#ifdef SOFA_DEV
+    animated = checked;
+    if (performer == NULL) return;
+    component::collision::SculptBodyPerformer<defaulttype::Vec3Types>* sculptPerformer=dynamic_cast<component::collision::SculptBodyPerformer<defaulttype::Vec3Types>*>(performer);
+    sculptPerformer->animate(checked);
 #endif
 }
 
@@ -131,6 +164,7 @@ double QFixOperation::getStiffness() const
 {
     return atof(value->displayText().ascii());
 }
+
 }
 }
 }

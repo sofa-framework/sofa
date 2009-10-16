@@ -185,7 +185,6 @@ void PickHandler::updateRay(const sofa::defaulttype::Vector3 &position,const sof
         interaction->mouseInteractor->setBodyPicked(lastPicked);
     }
 
-
     if(mouseButton != NONE)
     {
         switch (mouseStatus)
@@ -208,9 +207,12 @@ void PickHandler::updateRay(const sofa::defaulttype::Vector3 &position,const sof
         }
         case DEACTIVATED:
         {
-            operations[mouseButton]->wait();
         }
         }
+    }
+    for (unsigned int i=0; i<operations.size(); ++i)
+    {
+        operations[i]->wait();
     }
 }
 
