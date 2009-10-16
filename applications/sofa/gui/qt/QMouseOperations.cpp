@@ -27,7 +27,7 @@
 
 #include <sofa/gui/qt/QMouseOperations.h>
 #ifdef SOFA_DEV
-#include <sofa/component/collision/SculptBodyPerformer.h>
+#include <sofa/component/misc/SculptBodyPerformer.h>
 #endif
 #ifdef SOFA_QT4
 #include <QVBoxLayout>
@@ -99,7 +99,11 @@ QSculptOperation::QSculptOperation()
     layout->addWidget(fixRadioButton,0,1);
 
     animatePushButton = new QPushButton(QString("Animate"), this);
+#ifdef SOFA_QT4
     animatePushButton->setCheckable(true);
+#else
+    animatePushButton->setToggleButton(true);
+#endif
     layout->addWidget(animatePushButton,0,2);
 
     connect(forceSlider,SIGNAL(valueChanged(int)), forceValue, SLOT(setValue(int)));
