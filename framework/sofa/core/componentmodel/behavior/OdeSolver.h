@@ -142,14 +142,8 @@ public:
     Data<bool> constraintVel;
     Data<bool> constraintPos;
 
-    Data<bool> constraintSolution;
     Data<unsigned int> numIterations;
     Data<double> maxError;
-    void reinit()
-    {
-        numIterations.setDisplayed(constraintSolution.getValue());
-        maxError.setDisplayed(constraintSolution.getValue());
-    }
 #endif
 
 };

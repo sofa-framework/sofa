@@ -75,14 +75,13 @@ public:
     {}
 
 
-    // Constraint direction for a given particle
-    Deriv getXDirection(unsigned int index);
-    Deriv getYDirection(unsigned int index);
-    Deriv getZDirection(unsigned int index);
-
-    Vector3 getExpectedAcceleration(unsigned int index);
-    Vector3 getExpectedVelocity    (unsigned int index);
-    Vector3 getExpectedPosition    (unsigned int index);
+    //*********************************************************************
+    // -- BaseProjectiveLMConstraint API
+    // Expected values for a given particle:
+    void getExpectedAcceleration(unsigned int index, helper::vector< SReal >&expectedValue );
+    void getExpectedVelocity    (unsigned int index, helper::vector< SReal >&expectedValue );
+    void getPositionCorrection  (unsigned int index, helper::vector< SReal >&correction );
+    //*********************************************************************
 
 
 
@@ -95,7 +94,6 @@ protected :
 
     std::map< unsigned int, Coord> restPosition;
     Data<double> _drawSize;
-    Deriv X,Y,Z;
 };
 
 } // namespace constraint

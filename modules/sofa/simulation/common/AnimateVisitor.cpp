@@ -99,6 +99,9 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
 #ifdef SOFA_HAVE_EIGEN2
         MechanicalExpressJacobianVisitor JacobianVisitor;
         node->execute(&JacobianVisitor);
+
+        MechanicalPropagateLMConstraintVisitor accumulateVisitor;
+        node->execute(&accumulateVisitor);
 #endif
 
         for( unsigned i=0; i<node->solver.size(); i++ )

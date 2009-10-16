@@ -61,36 +61,21 @@ BaseLMConstraint::ConstraintGroup* BaseLMConstraint::addGroupConstraint( ConstOr
     return c;
 }
 
-void BaseLMConstraint::constraintTransmission(BaseMechanicalState* state, unsigned int entry)
+void BaseLMConstraint::constraintTransmissionJ1(unsigned int entry)
 {
-    std::map< ConstOrder, helper::vector< ConstraintGroup*> >::iterator it;
-    for (it=constraintOrder.begin(); it!=constraintOrder.end(); it++)
+    for (std::map< unsigned int,unsigned int >::iterator it=linesInSimulatedObject1.begin(); it!=linesInSimulatedObject1.end(); ++it)
     {
-        helper::vector< ConstraintGroup* > &vec = it->second;
-        for (unsigned int i=0; i<vec.size(); ++i)
-        {
-            ConstraintGroup *group=vec[i];
-            std::pair< ConstraintGroup::EquationIterator, ConstraintGroup::EquationIterator > range=group->data();
-
-            if (state==getConstrainedMechModel1())
-            {
-                for (std::map< unsigned int,unsigned int>::iterator it=linesInJ1.begin(); it!=linesInJ1.end(); ++it)
-                {
-                    it->second += entry;
-                }
-            }
-            if (state==getConstrainedMechModel2())
-            {
-                for (std::map< unsigned int,unsigned int>::iterator it=linesInJ2.begin(); it!=linesInJ2.end(); ++it)
-                {
-                    it->second += entry;
-                }
-            }
-        }
-
+        it->second += entry;
     }
 }
 
+void BaseLMConstraint::constraintTransmissionJ2(unsigned int entry)
+{
+    for (std::map< unsigned int,unsigned int >::iterator it=linesInSimulatedObject2.begin(); it!=linesInSimulatedObject2.end(); ++it)
+    {
+        it->second += entry;
+    }
+}
 
 void BaseLMConstraint::getIndicesUsed1(ConstOrder Order, helper::vector< unsigned int > &used0)
 {
@@ -104,7 +89,7 @@ void BaseLMConstraint::getIndicesUsed1(ConstOrder Order, helper::vector< unsigne
         for (ConstraintGroup::EquationIterator equation=range.first; equation!=range.second; ++equation)
         {
             if (equation->idxInConstrainedDOF1 >= 0)
-                used0.push_back(linesInJ1[equation->idxInConstrainedDOF1]);
+                used0.push_back(linesInSimulatedObject1[equation->idxInConstrainedDOF1]);
         }
     }
 }
@@ -121,7 +106,7 @@ void BaseLMConstraint::getIndicesUsed2(ConstOrder Order, helper::vector< unsigne
         for (ConstraintGroup::EquationIterator equation=range.first; equation!=range.second; ++equation)
         {
             if (equation->idxInConstrainedDOF2 >= 0)
-                used1.push_back(linesInJ2[equation->idxInConstrainedDOF2]);
+                used1.push_back(linesInSimulatedObject2[equation->idxInConstrainedDOF2]);
         }
     }
 }
@@ -156,8 +141,8 @@ void BaseLMConstraint::resetConstraint()
         }
     }
     constraintOrder.clear();
-    linesInJ1.clear();
-    linesInJ2.clear();
+    linesInSimulatedObject1.clear();
+    linesInSimulatedObject2.clear();
 }
 
 }

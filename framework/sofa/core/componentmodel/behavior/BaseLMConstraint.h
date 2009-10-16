@@ -168,8 +168,11 @@ public:
     ~BaseLMConstraint() {};
 
 
-    /// Write the lines of the Jacobian, and propagate them through the mappings
-    virtual void expressJacobian()=0;
+    /// Write the lines of the Jacobian
+    virtual void buildJacobian()=0;
+    /// Find the correspondance between num of lines in the constrained object and the simulated object
+    virtual void propagateJacobian()=0;
+
     /// Called by MechanicalWriteLMConstaint: The Object will compute the constraints present in the current state, and create the ConstraintGroup related.
     virtual void writeConstraintEquations(ConstOrder id)=0;
     /// Interface to construct a group of constraint: Giving the nature of these constraints, it returns a pointer to the structure
@@ -219,7 +222,8 @@ public:
 protected:
 
     /// Transfer a constraint through a MechanicalMapping. Need to update the index where the equation is expressed inside the C vector
-    virtual void constraintTransmission(BaseMechanicalState* state, unsigned int entry);
+    virtual void constraintTransmissionJ1(unsigned int entry);
+    virtual void constraintTransmissionJ2(unsigned int entry);
 
     /// Constraints stored depending on their nature
     /// @see ConstraintGroup
@@ -231,8 +235,8 @@ protected:
 
 
     /// stores the indices of the lines in the vector C of each MechanicalState
-    std::map< unsigned int,unsigned int > linesInJ1;
-    std::map< unsigned int,unsigned int > linesInJ2;
+    std::map< unsigned int,unsigned int > linesInSimulatedObject1;
+    std::map< unsigned int,unsigned int > linesInSimulatedObject2;
 };
 }
 }

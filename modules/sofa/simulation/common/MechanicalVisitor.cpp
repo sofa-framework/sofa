@@ -131,6 +131,7 @@ Visitor::Result MechanicalVisitor::processNodeTopDown(simulation::Node* node)
 void MechanicalVisitor::processNodeBottomUp(simulation::Node* node)
 {
     for_each(this, node, node->constraint, &MechanicalVisitor::bwdConstraint);
+    for_each(this, node, node->LMConstraint, &MechanicalVisitor::bwdLMConstraint);
     if (node->mechanicalState != NULL)
     {
         if (node->mechanicalMapping != NULL)
@@ -921,17 +922,26 @@ Visitor::Result MechanicalResetConstraintVisitor::fwdLMConstraint(simulation::No
 Visitor::Result MechanicalExpressJacobianVisitor::fwdLMConstraint(simulation::Node* node, core::componentmodel::behavior::BaseLMConstraint* c)
 {
     ctime_t t0 = beginProcess(node, c);
-    c->expressJacobian();
+    c->buildJacobian();
     endProcess(node, c, t0);
     return RESULT_CONTINUE;
 }
 
-void MechanicalExpressJacobianVisitor::bwdMechanicalMapping(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalMapping* map)
+void MechanicalExpressJacobianVisitor::bwdLMConstraint(simulation::Node* node, core::componentmodel::behavior::BaseLMConstraint* c)
+{
+    ctime_t t0 = beginProcess(node, c);
+    c->propagateJacobian();
+    endProcess(node, c, t0);
+}
+
+void MechanicalPropagateLMConstraintVisitor::bwdMechanicalMapping(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalMapping* map)
 {
     ctime_t t0 = beginProcess(node, map);
     map->accumulateConstraint();
     endProcess(node, map, t0);
 }
+
+
 
 Visitor::Result MechanicalSolveLMConstraintVisitor::fwdOdeSolver(simulation::Node* node, core::componentmodel::behavior::OdeSolver* s)
 {
