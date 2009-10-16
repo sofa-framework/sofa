@@ -32,7 +32,7 @@
 #include <sofa/component/collision/AttachBodyPerformer.h>
 #include <sofa/component/collision/FixParticlePerformer.h>
 #ifdef SOFA_DEV
-#include <sofa/component/collision/SculptBodyPerformer.h>
+#include <sofa/component/misc/SculptBodyPerformer.h>
 #endif
 #include <sofa/component/collision/RemovePrimitivePerformer.h>
 #include <sofa/component/collision/InciseAlongPathPerformer.h>
