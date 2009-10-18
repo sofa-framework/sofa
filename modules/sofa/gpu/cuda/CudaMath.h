@@ -404,6 +404,129 @@ public:
     }
 };
 
+
+template<class real>
+class /*__align__(4)*/ matrix4
+{
+public:
+    CudaVec4<real> x,y,z,w;
+    __device__ CudaVec4<real> operator*(CudaVec4<real> v)
+    {
+        return CudaVec4<real>::make(dot(x,v),dot(y,v),dot(z,v),dot(w,v));
+    }
+    __device__ CudaVec4<real> operator*(CudaVec3<real> v)
+    {
+        return CudaVec4<real>::make(x.x*v.x+x.y*v.y+x.z*v.z+x.w,
+                y.x*v.x+y.y*v.y+y.z*v.z+y.w,
+                z.x*v.x+z.y*v.y+z.z*v.z+z.w,
+                w.x*v.x+w.y*v.y+w.z*v.z+w.w);
+    }
+    __device__ CudaVec4<real> mulT(CudaVec4<real> v)
+    {
+        return x*v.x+y*v.y+z*v.z+w*v.w;
+    }
+    __device__ matrix4<real> operator*(matrix4<real> v)
+    {
+        matrix3<real> r;
+        r.x.x = x.x * v.x.x + x.y * v.y.x + x.z * v.z.x + x.w * v.w.x;
+        r.x.y = x.x * v.x.y + x.y * v.y.y + x.z * v.z.y + x.w * v.w.y;
+        r.x.z = x.x * v.x.z + x.y * v.y.z + x.z * v.z.z + x.w * v.w.z;
+        r.x.w = x.x * v.x.w + x.y * v.y.w + x.z * v.z.w + x.w * v.w.w;
+
+        r.y.x = y.x * v.x.x + y.y * v.y.x + y.z * v.z.x + y.w * v.w.x;
+        r.y.y = y.x * v.x.y + y.y * v.y.y + y.z * v.z.y + y.w * v.w.y;
+        r.y.z = y.x * v.x.z + y.y * v.y.z + y.z * v.z.z + y.w * v.w.z;
+        r.y.w = y.x * v.x.w + y.y * v.y.w + y.z * v.z.w + y.w * v.w.w;
+
+        r.z.x = z.x * v.x.x + z.y * v.y.x + z.z * v.z.x + z.w * v.w.x;
+        r.z.y = z.x * v.x.y + z.y * v.y.y + z.z * v.z.y + z.w * v.w.y;
+        r.z.z = z.x * v.x.z + z.y * v.y.z + z.z * v.z.z + z.w * v.w.z;
+        r.z.w = z.x * v.x.w + z.y * v.y.w + z.z * v.z.w + z.w * v.w.w;
+
+        r.w.x = w.x * v.x.x + w.y * v.y.x + w.z * v.z.x + w.w * v.w.x;
+        r.w.y = w.x * v.x.y + w.y * v.y.y + w.z * v.z.y + w.w * v.w.y;
+        r.w.z = w.x * v.x.z + w.y * v.y.z + w.z * v.z.z + w.w * v.w.z;
+        r.w.w = w.x * v.x.w + w.y * v.y.w + w.z * v.z.w + w.w * v.w.w;
+
+        return r;
+    }
+    __device__ matrix4<real> mulT(matrix4<real> v)
+    {
+        matrix3<real> r;
+        r.x.x = x.x * v.x.x + y.x * v.y.x + z.x * v.z.x + w.x * v.w.x;
+        r.x.y = x.x * v.x.y + y.x * v.y.y + z.x * v.z.y + w.x * v.w.y;
+        r.x.z = x.x * v.x.z + y.x * v.y.z + z.x * v.z.z + w.x * v.w.z;
+        r.x.w = x.x * v.x.w + y.x * v.y.w + z.x * v.z.w + w.x * v.w.w;
+
+        r.y.x = x.y * v.x.x + y.y * v.y.x + z.y * v.z.x + w.y * v.w.x;
+        r.y.y = x.y * v.x.y + y.y * v.y.y + z.y * v.z.y + w.y * v.w.y;
+        r.y.z = x.y * v.x.z + y.y * v.y.z + z.y * v.z.z + w.y * v.w.z;
+        r.y.w = x.y * v.x.w + y.y * v.y.w + z.y * v.z.w + w.y * v.w.w;
+
+        r.z.x = x.z * v.x.x + y.z * v.y.x + z.z * v.z.x + w.z * v.w.x;
+        r.z.y = x.z * v.x.y + y.z * v.y.y + z.z * v.z.y + w.z * v.w.y;
+        r.z.z = x.z * v.x.z + y.z * v.y.z + z.z * v.z.z + w.z * v.w.z;
+        r.z.w = x.z * v.x.w + y.z * v.y.w + z.z * v.z.w + w.z * v.w.w;
+
+        r.w.x = x.w * v.x.x + y.w * v.y.x + z.w * v.z.x + w.w * v.w.x;
+        r.w.y = x.w * v.x.y + y.w * v.y.y + z.w * v.z.y + w.w * v.w.y;
+        r.w.z = x.w * v.x.z + y.w * v.y.z + z.w * v.z.z + w.w * v.w.z;
+        r.w.w = x.w * v.x.w + y.w * v.y.w + z.w * v.z.w + w.w * v.w.w;
+
+        return r;
+    }
+    __device__ real mulX(CudaVec4<real> v)
+    {
+        return dot(x,v);
+    }
+    __device__ real mulY(CudaVec4<real> v)
+    {
+        return dot(y,v);
+    }
+    __device__ real mulZ(CudaVec4<real> v)
+    {
+        return dot(z,v);
+    }
+    __device__ void readAoS(const real* data, int bsize = blockDim.x)
+    {
+        x.x=*data; data+=bsize;
+        x.y=*data; data+=bsize;
+        x.z=*data; data+=bsize;
+        x.w=*data; data+=bsize;
+        y.x=*data; data+=bsize;
+        y.y=*data; data+=bsize;
+        y.z=*data; data+=bsize;
+        y.w=*data; data+=bsize;
+        z.x=*data; data+=bsize;
+        z.y=*data; data+=bsize;
+        z.z=*data; data+=bsize;
+        z.w=*data; data+=bsize;
+        w.x=*data; data+=bsize;
+        w.y=*data; data+=bsize;
+        w.z=*data; data+=bsize;
+        w.w=*data; data+=bsize;
+    }
+    __device__ void writeAoS(real* data, int bsize = blockDim.x)
+    {
+        *data=x.x; data+=bsize;
+        *data=x.y; data+=bsize;
+        *data=x.z; data+=bsize;
+        *data=x.w; data+=bsize;
+        *data=y.x; data+=bsize;
+        *data=y.y; data+=bsize;
+        *data=y.z; data+=bsize;
+        *data=y.w; data+=bsize;
+        *data=z.x; data+=bsize;
+        *data=z.y; data+=bsize;
+        *data=z.z; data+=bsize;
+        *data=z.w; data+=bsize;
+        *data=w.x; data+=bsize;
+        *data=w.y; data+=bsize;
+        *data=w.z; data+=bsize;
+        *data=w.w; data+=bsize;
+    }
+};
+
 #if defined(__cplusplus) && CUDA_VERSION < 2000
 } // namespace cuda
 } // namespace gpu
