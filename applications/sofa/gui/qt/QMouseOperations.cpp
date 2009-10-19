@@ -169,6 +169,33 @@ double QFixOperation::getStiffness() const
     return atof(value->displayText().ascii());
 }
 
+QInjectOperation::QInjectOperation()
+{
+    //Building the GUI for the Injection Operation
+    QHBoxLayout *layout=new QHBoxLayout(this);
+    QLabel *label1=new QLabel(QString("Potential Value"), this);
+    value=new QLineEdit(QString("100.0"), this);
+
+    QLabel *label2=new QLabel(QString("State Tag"), this);
+    tag=new QLineEdit(QString("elec"), this);
+
+    layout->addWidget(label1);
+    layout->addWidget(value);
+
+    layout->addWidget(label2);
+    layout->addWidget(tag);
+}
+
+double QInjectOperation::getPotentialValue() const
+{
+    return atof(value->displayText().ascii());
+}
+
+std::string QInjectOperation::getStateTag() const
+{
+    return (std::string)(tag->displayText());
+}
+
 }
 }
 }

@@ -120,6 +120,25 @@ public:
 protected:
     QLineEdit *value;
 };
+
+
+class QInjectOperation : public QWidget, public InjectOperation
+{
+    Q_OBJECT
+public:
+    QInjectOperation();
+    double getPotentialValue() const;
+    std::string getStateTag() const;
+    void configure(PickHandler *picker, MOUSE_BUTTON b)
+    {
+        InjectOperation::configure(picker, b);
+    }
+
+protected:
+    QLineEdit *value;
+    QLineEdit *tag;
+};
+
 }
 }
 }

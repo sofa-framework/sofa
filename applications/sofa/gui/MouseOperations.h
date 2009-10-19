@@ -68,7 +68,7 @@ protected:
 class SOFA_SOFAGUI_API AttachOperation : public Operation
 {
 public:
-    AttachOperation():stiffness(1000.0) {};
+    AttachOperation():stiffness(1000.0) {std::cout << "AttachOperation()" << std::endl;};
     virtual ~AttachOperation() {};
     virtual void start() ;
     virtual void execution() ;
@@ -148,6 +148,26 @@ protected:
     bool checkedFix, animated;
 };
 
+class InjectOperation : public Operation
+{
+public:
+    InjectOperation():potentialValue(100.0) {};
+    virtual ~InjectOperation() {};
+    virtual void start();
+    virtual void execution();
+    virtual void end() ;
+
+    void setPotentialValue(double f) {potentialValue = f;}
+    virtual double getPotentialValue() const {; return potentialValue;}
+    void setStateTag(std::string s) {stateTag = s;}
+    virtual std::string getStateTag() const {; return stateTag;}
+    static bool isModifiable() {return true;};
+
+    static std::string getDescription() {return "Set action potential using the Mouse";}
+protected:
+    double potentialValue;
+    std::string stateTag;
+};
 }
 }
 
