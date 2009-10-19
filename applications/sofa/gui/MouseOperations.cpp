@@ -60,7 +60,7 @@ helper::Creator<InteractionPerformer::InteractionPerformerFactory, SculptBodyPer
 #endif
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, RemovePrimitivePerformer >  RemovePrimitivePerformerClass("RemovePrimitive");
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, InciseAlongPathPerformer>  InciseAlongPathPerformerClass("InciseAlongPath");
-helper::Creator<InteractionPerformer::InteractionPerformerFactory, StateInjectionPerformer>  StateInjectionPerformerClass("StateInjection");
+helper::Creator<InteractionPerformer::InteractionPerformerFactory, StateInjectionPerformer>  PotentialInjectionPerformerClass("SetActionPotential");
 #endif
 
 namespace gui
