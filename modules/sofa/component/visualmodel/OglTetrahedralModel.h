@@ -57,8 +57,8 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
 
 private:
-    core::componentmodel::topology::BaseMeshTopology* topo;
     core::componentmodel::behavior::MechanicalState<DataTypes>* nodes;
+    core::componentmodel::topology::BaseMeshTopology* topo;
 
     Data<bool> depthTest;
     Data<bool> blending;

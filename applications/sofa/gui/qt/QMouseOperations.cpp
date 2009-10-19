@@ -193,7 +193,7 @@ double QInjectOperation::getPotentialValue() const
 
 std::string QInjectOperation::getStateTag() const
 {
-    return (std::string)(tag->displayText());
+    return (tag->displayText()).toStdString();
 }
 
 }
