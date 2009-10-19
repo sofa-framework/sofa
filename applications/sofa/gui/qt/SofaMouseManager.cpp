@@ -56,6 +56,7 @@ SofaMouseManager::SofaMouseManager()
     RegisterOperation("Incise").add< InciseOperation  >();
     RegisterOperation("Remove").add< RemoveOperation  >();
     RegisterOperation("Sculpt").add< QSculptOperation  >();
+    RegisterOperation("Inject").add< QInjectOperation >();
 }
 
 void SofaMouseManager::setPickHandler(PickHandler *picker)
