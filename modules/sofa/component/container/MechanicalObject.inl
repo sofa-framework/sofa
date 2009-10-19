@@ -1099,6 +1099,12 @@ void MechanicalObject<DataTypes>::init()
     f_Vfree->beginEdit();
     f_X0->beginEdit();
 
+    //case if X0 has been set but not X
+    if (getX0()->size() > getX()->size())
+    {
+        *x = *x0;
+    }
+
     if (getX()->size() != (std::size_t)vsize || getV()->size() != (std::size_t)vsize)
     {
         // X and/or V where user-specified
