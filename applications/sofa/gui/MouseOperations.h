@@ -148,7 +148,7 @@ protected:
     bool checkedFix, animated;
 };
 
-class InjectOperation : public Operation
+class SOFA_SOFAGUI_API InjectOperation : public Operation
 {
 public:
     InjectOperation():potentialValue(100.0) {};
