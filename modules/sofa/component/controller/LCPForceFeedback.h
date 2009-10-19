@@ -45,26 +45,43 @@ namespace controller
 using namespace std;
 
 /**
-* Omni driver force field
+* LCP force field
 */
+template <class DataType>
 class SOFA_COMPONENT_CONTROLLER_API LCPForceFeedback : public sofa::component::controller::ForceFeedback
 {
 
 public:
-    typedef defaulttype::SparseConstraint<defaulttype::RigidTypes::Deriv> SparseConstraint;
-    typedef SparseConstraint::const_data_iterator ConstraintIterator;
+    typedef defaulttype::SparseConstraint<typename DataType::Deriv> SparseConstraint;
+    typedef typename SparseConstraint::const_data_iterator ConstraintIterator;
 
     void init();
     Data<double> forceCoef;
-    virtual void computeForce(double x, double y, double z, double u, double v, double w, double q, double& fx, double& fy, double& fz);
+    virtual void computeForce(double , double, double, double, double, double, double, double&, double&, double&);
 
-    LCPForceFeedback()
-        : forceCoef(initData(&forceCoef, 0.03, "forceCoef","multiply haptic force by this coef."))
-    {}
+    virtual void computeForce(const typename DataType::VecCoord& state, typename DataType::VecDeriv& forces);
+
+    //void computeForce(double pitch0, double yaw0, double roll0, double z0, double pitch1, double yaw1, double roll1, double z1, double& fpitch0, double& fyaw0, double& froll0, double& fz0, double& fpitch1, double& fyaw1, double& froll1, double& fz1);
+
+    LCPForceFeedback();
+    // Saves all constraint from the simulation thread
+    void handleEvent(sofa::core::objectmodel::Event *event);
 
 protected:
-    component::odesolver::LCP* lcp;
-    core::componentmodel::behavior::MechanicalState<defaulttype::Rigid3Types> *mState; ///< The omni try to follow this mechanical state.
+    component::odesolver::LCP* lcp, *next_lcp;
+    core::componentmodel::behavior::MechanicalState<DataType> *mState; ///< The omni try to follow this mechanical state.
+    typename DataType::VecCoord mVal[3];
+    typename DataType::VecConst mConstraints[3];
+    std::vector<int> mId_buf[3];
+    component::odesolver::LCP* mLcp[3];
+    /* 	typename DataType::VecConst *constraint; */
+    /* 	std::vector<int> *id_buf; */
+    /* 	typename DataType::VecCoord *val; */
+    unsigned char mNextBufferId;
+    unsigned char mCurBufferId;
+
+
+    //core::componentmodel::behavior::MechanicalState<defaulttype::Vec1dTypes> *mState1d; ///< The omni try to follow this mechanical state.
     sofa::component::odesolver::MasterContactSolver* mastersolver;
 };
 
