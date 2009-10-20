@@ -1111,6 +1111,8 @@ public:
 #endif
 };
 
+#ifdef SOFA_HAVE_EIGEN2
+
 class SOFA_SIMULATION_COMMON_API MechanicalExpressJacobianVisitor: public MechanicalVisitor
 {
 public:
@@ -1144,33 +1146,6 @@ protected:
 };
 
 
-class SOFA_SIMULATION_COMMON_API MechanicalPropagateLMConstraintVisitor: public MechanicalVisitor
-{
-public:
-    MechanicalPropagateLMConstraintVisitor()
-    {
-#ifdef SOFA_DUMP_VISITOR_INFO
-        setReadWriteVectors();
-#endif
-    };
-
-    virtual void bwdMechanicalMapping(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalMapping* map);
-
-    /// Return a class name for this visitor
-    /// Only used for debugging / profiling purposes
-    virtual const char* getClassName() const { return "MechanicalPropagateLMConstraintVisitor"; }
-
-    virtual bool isThreadSafe() const
-    {
-        return false;
-    }
-#ifdef SOFA_DUMP_VISITOR_INFO
-    void setReadWriteVectors()
-    {
-    }
-#endif
-};
-
 
 class SOFA_SIMULATION_COMMON_API MechanicalSolveLMConstraintVisitor: public MechanicalVisitor
 {
@@ -1201,7 +1176,6 @@ public:
     VecId state;
     bool propagateState;
 };
-
 
 class SOFA_SIMULATION_COMMON_API MechanicalWriteLMConstraint : public MechanicalVisitor
 {
@@ -1253,6 +1227,8 @@ protected:
     std::vector< core::componentmodel::behavior::BaseLMConstraint *> datasC;
 
 };
+
+#endif
 
 class SOFA_SIMULATION_COMMON_API MechanicalAccumulateConstraint : public MechanicalVisitor
 {

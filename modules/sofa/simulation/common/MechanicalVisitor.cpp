@@ -918,6 +918,7 @@ Visitor::Result MechanicalResetConstraintVisitor::fwdLMConstraint(simulation::No
     return RESULT_CONTINUE;
 }
 
+#ifdef SOFA_HAVE_EIGEN2
 
 Visitor::Result MechanicalExpressJacobianVisitor::fwdLMConstraint(simulation::Node* node, core::componentmodel::behavior::BaseLMConstraint* c)
 {
@@ -985,6 +986,7 @@ Visitor::Result MechanicalWriteLMConstraint::fwdLMConstraint(simulation::Node* n
     return RESULT_CONTINUE;
 }
 
+#endif
 
 Visitor::Result MechanicalAccumulateConstraint::fwdConstraint(simulation::Node* node, core::componentmodel::behavior::BaseConstraint* c)
 {
