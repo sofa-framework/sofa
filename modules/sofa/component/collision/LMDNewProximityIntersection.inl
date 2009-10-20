@@ -49,9 +49,17 @@ using namespace sofa::core::componentmodel::collision;
 using namespace helper;
 
 template< class TFilter1, class TFilter2 >
-inline int LMDNewProximityIntersection::doIntersectionLineLine(double dist2, const Vector3& p1, const Vector3& p2, const Vector3& q1, const Vector3& q2, OutputVector* contacts, int id, TFilter1 &/*f1*/, TFilter2 &/*f2*/)
+inline int LMDNewProximityIntersection::doIntersectionLineLine(double dist2, const Vector3& p1, const Vector3& p2, const Vector3& q1, const Vector3& q2, OutputVector* contacts, int id, int indexLine1, int indexLine2,  TFilter1 &f1, TFilter2 &f2)
 //inline int LMDNewProximityIntersection::doIntersectionLineLine(double dist2, const Vector3& p1, const Vector3& p2, const Vector3& q1, const Vector3& q2, OutputVector* contacts, int id)
 {
+
+//	std::cout<<"doIntersectionLine "<<indexLine1 <<" and Line "<<indexLine2 <<" is called" <<std::endl;
+
+    bool debug=false;
+    if(indexLine1==-1 || indexLine2==-1)
+        debug=true;
+
+
     const Vector3 AB = p2-p1;
     const Vector3 CD = q2-q1;
     const Vector3 AC = q1-p1;
@@ -73,7 +81,11 @@ inline int LMDNewProximityIntersection::doIntersectionLineLine(double dist2, con
         beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
 
         if (alpha < 0.000001 || alpha > 0.999999 || beta < 0.000001 || beta > 0.999999 )
+        {
+            if(debug)
+                std::cout<<"rejected because of alpha= "<<alpha<<"  or beta= "<<beta<<std::endl;
             return 0;
+        }
     }
 
     Vector3 p,q,pq;
@@ -81,14 +93,26 @@ inline int LMDNewProximityIntersection::doIntersectionLineLine(double dist2, con
     q = q1 + CD * beta;
     pq = q-p;
     if (pq.norm2() >= dist2)
+    {
+        if(debug)
+            std::cout<<"pq.norm2()= "<<pq.norm2()<<" >= dist2 = "<<dist2<<std::endl;
         return 0;
-    /*
-    if (!f1->validate(e1, PQ))
-    	return 0;
+    }
 
-    if (!f2->validate(e2, QP))
-    	return 0;
-    */
+    if (!f1.validLine(indexLine1, pq))
+    {
+        if(debug)
+            std::cout<<"rejected because of validLine= "<<indexLine1<<" with pq= "<<pq<<std::endl;
+        return 0;
+    }
+
+    Vector3 qp = p-q;
+    if (!f2.validLine(indexLine2, qp))
+    {
+        if(debug)
+            std::cout<<"rejected because of validLine= "<<indexLine2<<" with qp= "<<pq<<std::endl;
+        return 0;
+    }
 
     //const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
     contacts->resize(contacts->size()+1);
@@ -101,13 +125,17 @@ inline int LMDNewProximityIntersection::doIntersectionLineLine(double dist2, con
     detection->value = detection->normal.norm();
     detection->normal /= detection->value;
     //detection->value -= contactDist;
+
+    if(debug)
+        std::cout<<" --------------------------------- ACCEPTED ! --------------------------------"<<pq<<std::endl;
     return 1;
 }
 
 template< class TFilter1, class TFilter2 >
-inline int LMDNewProximityIntersection::doIntersectionLinePoint(double dist2, const Vector3& p1, const Vector3& p2, const Vector3& q, OutputVector* contacts, int id, TFilter1 &/*f1*/, TFilter2 &/*f2*/, bool swapElems)
+inline int LMDNewProximityIntersection::doIntersectionLinePoint(double dist2, const Vector3& p1, const Vector3& p2, const Vector3& q, OutputVector* contacts, int id, int indexLine1, int indexPoint2, TFilter1 &f1, TFilter2 &f2, bool swapElems)
 //inline int LMDNewProximityIntersection::doIntersectionLinePoint(double dist2, const Vector3& p1, const Vector3& p2, const Vector3& q, OutputVector* contacts, int id, bool swapElems)
 {
+    std::cout<<"doIntersectionLinePoint is called"<<std::endl;
     const Vector3 AB = p2-p1;
     const Vector3 AQ = q -p1;
     double A;
@@ -126,11 +154,20 @@ inline int LMDNewProximityIntersection::doIntersectionLinePoint(double dist2, co
         else if (alpha > 1.0) alpha = 1.0;
     }
 
-    Vector3 p,pq;
+    Vector3 p,pq, qp;
     p = p1 + AB * alpha;
     pq = q-p;
+    qp = p-q;
     if (pq.norm2() >= dist2)
         return 0;
+
+    if (!f1.validLine(indexLine1, pq))
+        return 0;
+
+    if (!f2.validPoint(indexPoint2, qp))
+        return 0;
+
+
 
     //const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
     contacts->resize(contacts->size()+1);
@@ -157,12 +194,19 @@ inline int LMDNewProximityIntersection::doIntersectionLinePoint(double dist2, co
 }
 
 template< class TFilter1, class TFilter2 >
-inline int LMDNewProximityIntersection::doIntersectionPointPoint(double dist2, const Vector3& p, const Vector3& q, OutputVector* contacts, int id, TFilter1 &/*f1*/, TFilter2 &/*f2*/)
+inline int LMDNewProximityIntersection::doIntersectionPointPoint(double dist2, const Vector3& p, const Vector3& q, OutputVector* contacts, int id, int indexPoint1, int indexPoint2, TFilter1 &f1, TFilter2 &f2)
 //inline int LMDNewProximityIntersection::doIntersectionPointPoint(double dist2, const Vector3& p, const Vector3& q, OutputVector* contacts, int id)
 {
     Vector3 pq;
     pq = q-p;
     if (pq.norm2() >= dist2)
+        return 0;
+
+    if (!f1.validPoint(indexPoint1, pq))
+        return 0;
+
+    Vector3 qp = p-q;
+    if (!f2.validPoint(indexPoint2, qp))
         return 0;
 
     //const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
@@ -180,7 +224,7 @@ inline int LMDNewProximityIntersection::doIntersectionPointPoint(double dist2, c
 }
 
 template< class TFilter1, class TFilter2 >
-inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2, int flags, const Vector3& p1, const Vector3& p2, const Vector3& p3, const Vector3& /*n*/, const Vector3& q, OutputVector* contacts, int id, TFilter1 &/*f1*/, TFilter2 &/*f2*/, bool swapElems)
+inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2, int flags, const Vector3& p1, const Vector3& p2, const Vector3& p3, const Vector3& /*n*/, const Vector3& q, OutputVector* contacts, int id,  Triangle &e1, unsigned int *edgesIndices, int indexPoint2, TFilter1 &f1, TFilter2 &f2, bool swapElems)
 //inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2, int flags, const Vector3& p1, const Vector3& p2, const Vector3& p3, const Vector3& /*n*/, const Vector3& q, OutputVector* contacts, int id, bool swapElems)
 {
     const Vector3 AB = p2-p1;
@@ -198,76 +242,142 @@ inline int LMDNewProximityIntersection::doIntersectionTrianglePoint(double dist2
     double alpha = 0.5;
     double beta = 0.5;
 
-    //if (det < -0.000000000001 || det > 0.000000000001)
+    if(det==0.0)
     {
-        alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
-        beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
-        //if (alpha < 0.000001 ||
-        //    beta  < 0.000001 ||
-        //    alpha + beta  > 0.999999)
-        //        return 0;
-        if (alpha < 0.000001 || beta < 0.000001 || alpha + beta > 0.999999)
+        std::cerr<<"WARNING: in doIntersectionTrianglePoint point is just on the triangle or the triangle do not exists: computation impossible"<<std::endl;
+        return 0;
+    }
+
+
+    alpha = (b[0]*A[1][1] - b[1]*A[0][1])/det;
+    beta  = (b[1]*A[0][0] - b[0]*A[1][0])/det;
+    Vector3 pq;
+    Vector3 p;
+    //if (alpha < 0.000001 ||
+    //    beta  < 0.000001 ||
+    //    alpha + beta  > 0.999999)
+    //        return 0;
+    if (alpha < 0.000001 || beta < 0.000001 || alpha + beta > 0.999999)
+    {
+        // nearest point is on an edge or corner
+        // barycentric coordinate on AB
+        double pAB = b[0] / A[0][0]; // AQ*AB / AB*AB
+        // barycentric coordinate on AC
+        double pAC = b[1] / A[1][1]; // AQ*AB / AB*AB
+        if (pAB < 0.000001 && pAC < 0.0000001)
         {
-            // nearest point is on an edge or corner
-            // barycentric coordinate on AB
-            double pAB = b[0] / A[0][0]; // AQ*AB / AB*AB
-            // barycentric coordinate on AC
-            double pAC = b[1] / A[1][1]; // AQ*AB / AB*AB
-            if (pAB < 0.000001 && pAC < 0.0000001)
+            ///////////////////////
+            // closest point is A
+            ///////////////////////
+            if (!(flags&TriangleModel::FLAG_P1)) return 0; // this corner is not considered
+            alpha = 0.0;
+            beta = 0.0;
+            //p = p1 + AB * alpha + AC * beta;
+            pq = q-p1;
+            if (pq.norm2() >= dist2)
+                return 0;
+
+            if (!f1.validPoint(e1.p1Index(), pq))
+                return 0;
+
+
+        }
+        else if (pAB < 0.999999 && beta < 0.000001)
+        {
+            ///////////////////////////
+            // closest point is on AB : convention edgesIndices 0
+            ///////////////////////////
+            if (!(flags&TriangleModel::FLAG_E12)) return 0; // this edge is not considered
+            alpha = pAB;
+            beta = 0.0;
+            pq = q-p1 - AB*alpha;// p= p1 + AB * alpha + AC * beta;
+            if (pq.norm2() >= dist2)
+                return 0;
+
+            if (!f1.validLine(edgesIndices[0], pq))
+                return 0;
+        }
+        else if (pAC < 0.999999 && alpha < 0.000001)
+        {
+            ///////////////////////////
+            // closest point is on AC: convention edgesIndices 2
+            ///////////////////////////
+            if (!(flags&TriangleModel::FLAG_E31)) return 0; // this edge is not considered
+            alpha = 0.0;
+            beta = pAC;
+            pq = q-p1 - AC*beta;// p= p1 + AB * alpha + AC * beta;
+            if (pq.norm2() >= dist2)
+                return 0;
+
+            if (!f1.validLine(edgesIndices[2], pq))
+                return 0;
+        }
+        else
+        {
+            // barycentric coordinate on BC
+            // BQ*BC / BC*BC = (AQ-AB)*(AC-AB) / (AC-AB)*(AC-AB) = (AQ*AC-AQ*AB + AB*AB-AB*AC) / (AB*AB+AC*AC-2AB*AC)
+            double pBC = (b[1] - b[0] + A[0][0] - A[1][1]) / (A[0][0] + A[1][1] - 2*A[0][1]); // BQ*BC / BC*BC
+            if (pBC < 0.000001)
             {
-                // closest point is A
-                if (!(flags&TriangleModel::FLAG_P1)) return 0; // this corner is not considered
-                alpha = 0.0;
+                //////////////////////
+                // closest point is B
+                //////////////////////
+                if (!(flags&TriangleModel::FLAG_P2)) return 0; // this point is not considered
+                alpha = 1.0;
                 beta = 0.0;
+                pq = q-p2;
+                if (pq.norm2() >= dist2)
+                    return 0;
+
+                if (!f1.validPoint(e1.p2Index(), pq))
+                    return 0;
             }
-            else if (pAB < 0.999999 && beta < 0.000001)
+            else if (pBC > 0.999999)
             {
-                // closest point is on AB
-                if (!(flags&TriangleModel::FLAG_E12)) return 0; // this edge is not considered
-                alpha = pAB;
-                beta = 0.0;
-            }
-            else if (pAC < 0.999999 && alpha < 0.000001)
-            {
-                // closest point is on AC
-                if (!(flags&TriangleModel::FLAG_E12)) return 0; // this edge is not considered
+                // closest point is C
+                if (!(flags&TriangleModel::FLAG_P3)) return 0; // this point is not considered
                 alpha = 0.0;
-                beta = pAC;
+                beta = 1.0;
+                pq = q-p3;
+                if (pq.norm2() >= dist2)
+                    return 0;
+
+                if (!f1.validPoint(e1.p3Index(), pq))
+                    return 0;
             }
             else
             {
-                // barycentric coordinate on BC
-                // BQ*BC / BC*BC = (AQ-AB)*(AC-AB) / (AC-AB)*(AC-AB) = (AQ*AC-AQ*AB + AB*AB-AB*AC) / (AB*AB+AC*AC-2AB*AC)
-                double pBC = (b[1] - b[0] + A[0][0] - A[1][1]) / (A[0][0] + A[1][1] - 2*A[0][1]); // BQ*BC / BC*BC
-                if (pBC < 0.000001)
-                {
-                    // closest point is B
-                    if (!(flags&TriangleModel::FLAG_P2)) return 0; // this edge is not considered
-                    alpha = 1.0;
-                    beta = 0.0;
-                }
-                else if (pBC > 0.999999)
-                {
-                    // closest point is C
-                    if (!(flags&TriangleModel::FLAG_P3)) return 0; // this edge is not considered
-                    alpha = 0.0;
-                    beta = 1.0;
-                }
-                else
-                {
-                    // closest point is on BC
-                    if (!(flags&TriangleModel::FLAG_E31)) return 0; // this edge is not considered
-                    alpha = 1.0-pBC;
-                    beta = pBC;
-                }
+                ///////////////////////////
+                // closest point is on BC: convention edgesIndices 1
+                ///////////////////////////
+                if (!(flags&TriangleModel::FLAG_E23)) return 0; // this edge is not considered
+                alpha = 1.0-pBC;
+                beta = pBC;
+                pq = q-p1 - AB * alpha - AC * beta;
+                if (pq.norm2() >= dist2)
+                    return 0;
+
+                if (!f1.validLine(edgesIndices[1], pq))
+                    return 0;
             }
         }
     }
+    else
+    {
+        // nearest point is on the triangle
 
-    Vector3 p, pq;
+        p = p1 + AB * alpha + AC * beta;
+        pq = q-p;
+        if (pq.norm2() >= dist2)
+            return 0;
+
+        if (!f1.validTriangle(e1.getIndex(), pq))
+            return 0;
+    }
+
     p = p1 + AB * alpha + AC * beta;
-    pq = q-p;
-    if (pq.norm2() >= dist2)
+    Vector3 qp = p-q;
+    if (!f2.validPoint(indexPoint2, qp))
         return 0;
 
     //const double contactDist = getContactDistance() + e1.getProximity() + e2.getProximity();
@@ -308,7 +418,7 @@ bool LMDNewProximityIntersection::testIntersection(Sphere& e1, Point& e2)
 
     EmptyFilter emptyFilter;
 
-    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.p(), &contacts, -1, emptyFilter, emptyFilter);
+    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.p(), &contacts, -1, e1.getIndex(), e2.getIndex(), emptyFilter, emptyFilter);
 
     return (n > 0);
 }
@@ -320,7 +430,7 @@ int LMDNewProximityIntersection::computeIntersection(Sphere& e1, Point& e2, Outp
 
     EmptyFilter emptyFilter;
 
-    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.p(), contacts, (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex(), emptyFilter, emptyFilter);
+    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.p(), contacts, (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex(), e1.getIndex(), e2.getIndex(), emptyFilter, emptyFilter);
 
     if (n > 0)
     {
@@ -341,7 +451,7 @@ bool LMDNewProximityIntersection::testIntersection(Sphere& e1, Sphere& e2)
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity() + e1.r() + e2.r();
     EmptyFilter emptyFilter;
 
-    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.center(), &contacts, -1, emptyFilter, emptyFilter);
+    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.center(), &contacts, -1, e1.getIndex(), e2.getIndex(), emptyFilter, emptyFilter);
 
     return (n > 0);
 }
@@ -352,7 +462,7 @@ int LMDNewProximityIntersection::computeIntersection(Sphere& e1, Sphere& e2, Out
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity() + e1.r() + e2.r();
     EmptyFilter emptyFilter;
 
-    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.center(), contacts, (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex(), emptyFilter, emptyFilter);
+    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.center(), e2.center(), contacts, (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex(), e1.getIndex(), e2.getIndex(), emptyFilter, emptyFilter);
 
     if (n > 0)
     {
@@ -378,8 +488,9 @@ int LMDNewProximityIntersection::computeIntersection(Line& e1, Sphere& e2, Outpu
 {
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity() + e2.r();
     EmptyFilter emptyFilter;
+    int id= e2.getIndex();
 
-    int n = doIntersectionLinePoint(alarmDist*alarmDist, e1.p1(),e1.p2(), e2.center(), contacts, e2.getIndex(), emptyFilter, emptyFilter);
+    int n = doIntersectionLinePoint(alarmDist*alarmDist, e1.p1(),e1.p2(), e2.center(), contacts, id, e1.getIndex(), e2.getIndex(), emptyFilter, emptyFilter);
 
     if (n > 0)
     {
@@ -403,11 +514,45 @@ bool LMDNewProximityIntersection::testIntersection(Triangle&, Sphere&)
 template<class Sphere>
 int LMDNewProximityIntersection::computeIntersection(Triangle& e1, Sphere& e2, OutputVector* contacts)
 {
+
+// index of lines:
+    const fixed_array<unsigned int,3>& edgesInTriangle1 = e1.getCollisionModel()->getTopology()->getEdgesInTriangle(e1.getIndex());
+    unsigned int E1edge1verif, E1edge2verif, E1edge3verif;
+
+
+
+    // verify the edge ordering //
+    sofa::core::componentmodel::topology::BaseMeshTopology::Edge edge[3];
+    //std::cout<<"E1 & E2 verif: ";
+    for (int i=0; i<3; i++)
+    {
+        // Verify for E1: convention: Edge1 = P1 P2    Edge2 = P2 P3    Edge3 = P3 P1
+        edge[i] = e1.getCollisionModel()->getTopology()->getEdge(edgesInTriangle1[i]);
+        if(edge[i][0]==e1.p1Index() && edge[i][1]==e1.p2Index() || edge[i][0]==e1.p2Index() && edge[i][1]==e1.p1Index())
+        {
+            E1edge1verif = edgesInTriangle1[i]; /*std::cout<<"- e1 1: "<<i ;*/
+        }
+        if(edge[i][0]==e1.p2Index() && edge[i][1]==e1.p3Index() || edge[i][0]==e1.p3Index() && edge[i][1]==e1.p2Index())
+        {
+            E1edge2verif = edgesInTriangle1[i]; /*std::cout<<"- e1 2: "<<i ;*/
+        }
+        if(edge[i][0]==e1.p1Index() && edge[i][1]==e1.p3Index() || edge[i][0]==e1.p3Index() && edge[i][1]==e1.p1Index())
+        {
+            E1edge3verif = edgesInTriangle1[i]; /*std::cout<<"- e1 3: "<<i ;*/
+        }
+    }
+
+    unsigned int e1_edgesIndex[3];
+    e1_edgesIndex[0]=E1edge1verif; e1_edgesIndex[1]=E1edge2verif; e1_edgesIndex[2]=E1edge3verif;
+
+
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity() + e2.r();
     const double dist2 = alarmDist*alarmDist;
     EmptyFilter emptyFilter;
 
-    int n = doIntersectionTrianglePoint(dist2, e1.flags(),e1.p1(),e1.p2(),e1.p3(),e1.n(), e2.center(), contacts, e2.getIndex(), emptyFilter, emptyFilter);
+    int id= e2.getIndex();
+
+    int n = doIntersectionTrianglePoint(dist2, e1.flags(),e1.p1(),e1.p2(),e1.p3(),e1.n(), e2.center(), contacts, id, e1, e1_edgesIndex, e2.getIndex(), emptyFilter, emptyFilter);
 
     if (n > 0)
     {

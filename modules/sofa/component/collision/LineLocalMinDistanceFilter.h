@@ -46,14 +46,17 @@ namespace collision
 /**
  * @brief LocalMinDistance cone information class for a Line collision primitive.
  */
-class LineInfo : public InfoFilter< Line >
+class LineInfo : public InfoFilter //< topology::Edge >
 {
+    typedef sofa::core::componentmodel::topology::BaseMeshTopology::Edge Edge;
+    typedef sofa::core::componentmodel::topology::BaseMeshTopology::Triangle Triangle;
+
 public:
     /**
      * @brief Empty constructor. Required by EdgeData<>.
      */
     LineInfo()
-        : InfoFilter< Line >(NULL)
+        : InfoFilter(NULL)
     {
 
     }
@@ -62,7 +65,7 @@ public:
      * @brief Default constructor.
      */
     LineInfo(LocalMinDistanceFilter *lmdFilters)
-        : InfoFilter< Line >(lmdFilters)
+        : InfoFilter(lmdFilters)
     {
 
     }
@@ -75,7 +78,7 @@ public:
     /**
      * @brief Returns the validity of a detected contact according to this LineInfo.
      */
-    virtual bool validate(const Line & /*l*/, const defaulttype::Vector3 & /*PQ*/);
+    virtual bool validate(const unsigned int edge_index, const defaulttype::Vector3& PQ);
 
     /**
      * @brief Output stream.
@@ -97,7 +100,7 @@ protected:
     /**
      * @brief Computes the region of interest cone of the Line primitive.
      */
-    virtual void buildFilter(const Line & /*l*/);
+    virtual void buildFilter(unsigned int /*e*/);
 
     Vector3 m_nMean; ///<
     Vector3 m_triangleRight; ///<
@@ -137,9 +140,10 @@ public:
     /**
      * @brief Point Collision Primitive validation method.
      */
-    bool validPoint(const int /*pointIndex*/, const defaulttype::Vector3 &/*PQ*/)
+    bool validPoint(const int pointIndex, const defaulttype::Vector3 &PQ)
     {
-        return true;
+        PointInfo & Li = m_pointInfo[pointIndex];
+        return Li.validate(pointIndex,PQ);
     }
 
     /**
@@ -147,6 +151,8 @@ public:
      */
     bool validLine(const int /*lineIndex*/, const defaulttype::Vector3 &/*PQ*/)
     {
+        //const Edge& bmt->getEdge(lineIndex);
+        // m_lineInfo[edgeIndex].validate(lineIndex, PQ);
         return true;
     }
 
@@ -165,6 +171,8 @@ public:
 private:
     topology::PointData< PointInfo > m_pointInfo;
     topology::EdgeData< LineInfo > m_lineInfo;
+
+    core::componentmodel::topology::BaseMeshTopology *bmt;
 };
 
 

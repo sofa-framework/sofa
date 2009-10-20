@@ -45,7 +45,7 @@ class LocalMinDistanceFilter;
 /**
  * @brief LocalMinDistance cone information class for an unique collision primitive.
  */
-template< class TCollisionElement >
+//template< class TCollisionElement >
 class InfoFilter
 {
 public:
@@ -70,17 +70,19 @@ public:
     /**
      * @brief Returns the validity of a detected contact according to the InfoFilter.
      */
-    virtual bool validate(const TCollisionElement & , const defaulttype::Vector3 & /*PQ*/) = 0;
+    virtual bool validate(const unsigned int /*edge_index*/, const defaulttype::Vector3& /*PQ*/) = 0;
 
     /**
      * @brief Returns cone information validity (up to date or not?).
      */
-    bool isValid(void) const;
+    virtual bool isValid(void);
+
 
     /**
      * @brief Sets cone information validity.
      */
-    void setValid();
+    virtual void setValid();
+
 
     /**
      * @brief Returns true if the CollisionElement is mapped to a rigid mechanical state.
@@ -95,12 +97,16 @@ public:
     /**
      * @brief Returns the LocalMinDistanceFilters object that contains this InfoFilter.
      */
-    LocalMinDistanceFilter *getLMDFilters(void) const {return m_lmdFilters;};
+    const LocalMinDistanceFilter *getLMDFilters(void)  {return m_lmdFilters;};
 
     /**
      * @brief Sets the LocalMinDistanceFilters object that contains this InfoFilter.
      */
     void setLMDFilters(const LocalMinDistanceFilter *lmdFilters) {m_lmdFilters = lmdFilters;};
+
+    void setBaseMeshTopology( core::componentmodel::topology::BaseMeshTopology *bmt) {base_mesh_topology = bmt;};
+
+    void setPositionFiltering(sofa::helper::vector< sofa::defaulttype::Vector3 > *x) {position_filtering = x;};
 
 
 protected:
@@ -110,11 +116,14 @@ protected:
      * If the collision primitive is mapped to a rigid MState, the computation is only an update according to the
      * rigid transformation.
      */
-    virtual void buildFilter(const TCollisionElement & ) = 0;
+    virtual void buildFilter( unsigned int /*edge_index*/) = 0;
 
     int m_revision; ///< Last filter update revision.
     bool m_rigid; ///< True if the CollisionElement is mapped to a rigid mechanical state.
     const LocalMinDistanceFilter	*m_lmdFilters; ///< The LocalMinDistanceFilters object that contains this InfoFilter.
+
+    core::componentmodel::topology::BaseMeshTopology* base_mesh_topology;
+    sofa::helper::vector< sofa::defaulttype::Vector3 > *position_filtering;
 };
 
 

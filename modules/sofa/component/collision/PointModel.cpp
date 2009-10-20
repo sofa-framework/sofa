@@ -71,6 +71,7 @@ int PointModelClass = core::RegisterObject("Collision model which represents a s
 
 PointModel::PointModel()
     : mstate(NULL)
+    , bothSide(initData(&bothSide, false, "bothSide", "activate collision on both side of the point model (when surface normals are defined on these points)") )
     , computeNormals( initData(&computeNormals, false, "computeNormals", "activate computation of normal vectors (required for some collision detection algorithms)") )
     , PointActiverEngine(initData(&PointActiverEngine,"PointActiverEngine", "path of a component PointActiver that activate or desactivate collision point during execution") )
     , m_lmdFilter( NULL )
@@ -187,12 +188,40 @@ void PointModel::draw()
 bool PointModel::canCollideWithElement(int index, CollisionModel* model2, int index2)
 {
     //sout<<"PointModel("<<this->getName()<<") :: canCollideWithElement("<<model2->getName()<<") is called"<<sendl;
-    if (!this->bSelfCollision.getValue()) return true;
+    if (!this->bSelfCollision.getValue()) return true; // we need to perform this verification process only for the selfcollision case.
     if (this->getContext() != model2->getContext()) return true;
+
+
+    //if(index==4)
+    //{
+    //	std::cout<<" model : "<<model2->getName()<<"at index ["<<index2<<"] can collide with point 4 ?"<<std::endl;
+    //}
+
     if (model2 == this)
     {
-        //sout << "point self test "<<index<<" - "<<index2<<sendl;
-        return index < index2-2; // || index > index2+1;
+
+        if (index==index2)
+            return false;
+
+        sofa::core::componentmodel::topology::BaseMeshTopology* topology = this->getMeshTopology();
+
+
+
+        // in the neighborhood, if we find a point in common, we cancel the collision
+        const helper::vector <unsigned int>& verticesAroundVertex1 =topology->getVerticesAroundVertex(index);
+        const helper::vector <unsigned int>& verticesAroundVertex2 =topology->getVerticesAroundVertex(index2);
+
+        for (unsigned int i1=0; i1<verticesAroundVertex1.size(); i1++)
+        {
+            unsigned int v1 = verticesAroundVertex1[i1];
+
+            for (unsigned int i2=0; i2<verticesAroundVertex2.size(); i2++)
+            {
+                if (v1==verticesAroundVertex2[i2])
+                    return false;
+            }
+        }
+        return true; // || index > index2+1;
     }
     else
         return model2->canCollideWithElement(index2, this, index);

@@ -45,7 +45,7 @@ namespace collision
 /**
  * @brief LocalMinDistance cone information class for a Point collision primitive.
  */
-class PointInfo : public InfoFilter< Point >
+class PointInfo : public InfoFilter //< Point >
 {
 public:
     typedef std::vector< std::pair< Vector3, double > > TDataContainer;
@@ -54,7 +54,7 @@ public:
      * @brief Default constructor.
      */
     PointInfo(LocalMinDistanceFilter *lmdFilters)
-        : InfoFilter< Point >(lmdFilters)
+        : InfoFilter(lmdFilters)
     {
 
     }
@@ -63,7 +63,7 @@ public:
      * @brief Empty constructor. Required by PointData<>.
      */
     PointInfo()
-        : InfoFilter< Point >(NULL)
+        : InfoFilter(NULL)
     {
 
     }
@@ -76,8 +76,8 @@ public:
     /**
      * @brief Returns the validity of a detected contact according to this PointInfo.
      */
-    virtual bool validate(const Point & /*p*/, const defaulttype::Vector3 & /*PQ*/);
-
+    //virtual bool validate(const Point & /*p*/, const defaulttype::Vector3 & /*PQ*/);
+    virtual bool validate(const unsigned int /*p*/, const defaulttype::Vector3 & /*PQ*/);
     /**
      * @brief Output stream.
      */
@@ -98,7 +98,8 @@ protected:
     /**
      * @brief Computes the region of interest cone of the Point primitive.
      */
-    virtual void buildFilter(const Point & /*p*/);
+    //virtual void buildFilter(const Point & /*p*/);
+    virtual void buildFilter(unsigned int /*p*/);
 
     bool m_noLineModel; ///< Flag indicating if the Point CollisionModel is not associated to a Line CollisionModel.
     TDataContainer m_computedData; ///< Cone stored data.

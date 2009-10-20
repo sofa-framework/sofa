@@ -64,6 +64,7 @@ using core::componentmodel::topology::BaseMeshTopology;
 
 LineModel::LineModel()
     : mstate(NULL), topology(NULL), meshRevision(-1), m_lmdFilter(NULL)
+    , bothSide(initData(&bothSide, false, "bothSide", "activate collision on both side of the line model (when surface normals are defined on these lines)") )
     , LineActiverEngine(initData(&LineActiverEngine,"LineActiverEngine", "path of a component LineActiver that activate or desactivate collision line during execution") )
 {
 }
@@ -431,19 +432,122 @@ void LineModel::draw()
 
 bool LineModel::canCollideWithElement(int index, CollisionModel* model2, int index2)
 {
+    //std::cerr<<"canCollideWithElement is called"<<std::endl;
+
     if (!this->bSelfCollision.getValue()) return true;
     if (this->getContext() != model2->getContext()) return true;
+    sofa::core::componentmodel::topology::BaseMeshTopology* topology = this->getMeshTopology();
+    /*
+    	TODO : separate 2 case: the model is only composed of lines or is composed of triangles
+    	bool NoTriangles = true;
+    	if( this->getContext()->get<TriangleModel>  != NULL)
+    		NoTriangles = false;
+    */
+    int p11 = elems[index].i1;
+    int p12 = elems[index].i2;
+
+
+    if (!topology)
+    {
+        std::cerr<<"no topology found"<<std::endl;
+        return true;
+    }
+    const helper::vector <unsigned int>& EdgesAroundVertex11 =topology->getEdgesAroundVertex(p11);
+    const helper::vector <unsigned int>& EdgesAroundVertex12 =topology->getEdgesAroundVertex(p12);
+    //std::cerr<<"EdgesAroundVertex11 ok"<<std::endl;
+
+
     if (model2 == this)
     {
-        //sout << "line self test "<<index<<" - "<<index2<<sendl;
-        return index < index2-2; // || index > index2+1;
+        // if point in common, return false:
+        int p21 = elems[index2].i1;
+        int p22 = elems[index2].i2;
+
+        if (p11==p21 || p11==p22 || p12==p21 || p12==p22)
+            return false;
+
+
+        // in the neighborhood, if we find a segment in common, we cancel the collision
+        const helper::vector <unsigned int>& EdgesAroundVertex21 =topology->getEdgesAroundVertex(p21);
+        const helper::vector <unsigned int>& EdgesAroundVertex22 =topology->getEdgesAroundVertex(p22);
+
+        for (unsigned int i1=0; i1<EdgesAroundVertex11.size(); i1++)
+        {
+            unsigned int e11 = EdgesAroundVertex11[i1];
+            unsigned int i2;
+            for (i2=0; i2<EdgesAroundVertex21.size(); i2++)
+            {
+                if (e11==EdgesAroundVertex21[i2])
+                    return false;
+            }
+            for (i2=0; i2<EdgesAroundVertex22.size(); i2++)
+            {
+                if (e11==EdgesAroundVertex22[i2])
+                    return false;
+            }
+        }
+
+        for (unsigned int i1=0; i1<EdgesAroundVertex12.size(); i1++)
+        {
+            unsigned int e11 = EdgesAroundVertex12[i1];
+            unsigned int i2;
+            for (i2=0; i2<EdgesAroundVertex21.size(); i2++)
+            {
+                if (e11==EdgesAroundVertex21[i2])
+                    return false;
+            }
+            for (i2=0; i2<EdgesAroundVertex22.size(); i2++)
+            {
+                if (e11==EdgesAroundVertex22[i2])
+                    return false;
+            }
+
+        }
+        return true;
+
+
+
     }
     else if (model2 == mpoints)
     {
+        //std::cerr<<" point Model"<<std::endl;
+
+        // if point belong to the segment, return false
+        if (index2==p11 || index2==p12)
+            return false;
+
+        // if the point belong to the a segment in the neighborhood, return false
+        for (unsigned int i1=0; i1<EdgesAroundVertex11.size(); i1++)
+        {
+            unsigned int e11 = EdgesAroundVertex11[i1];
+            p11 = elems[e11].i1;
+            p12 = elems[e11].i2;
+            if (index2==p11 || index2==p12)
+                return false;
+        }
+        for (unsigned int i1=0; i1<EdgesAroundVertex11.size(); i1++)
+        {
+            unsigned int e12 = EdgesAroundVertex12[i1];
+            p11 = elems[e12].i1;
+            p12 = elems[e12].i2;
+            if (index2==p11 || index2==p12)
+                return false;
+        }
+        return true;
+
         //sout << "line-point self test "<<index<<" - "<<index2<<sendl;
         //std::cout << "line-point self test "<<index<<" - "<<index2<<"   - elems[index].i1-1"<<elems[index].i1-1<<"   elems[index].i2+1 "<<elems[index].i2+1<<std::endl;
-        return index2 < elems[index].i1-1 || index2 > elems[index].i2+1;
+
+
+        // case1: only lines (aligned lines !!)
+        //return index2 < p11-1 || index2 > p12+1;
+
+        // only removes collision with the two vertices of the segment
+        // TODO: neighborhood search !
+        //return !(index2==p11 || index2==p12);
     }
+
+
     else
         return model2->canCollideWithElement(index2, this, index);
 }

@@ -23,8 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/component/collision/LocalMinDistanceFilter.inl>
-
+#include <sofa/component/collision/LocalMinDistanceFilter.h>
 #include <sofa/core/ObjectFactory.h>
 
 #include <limits>
@@ -59,9 +58,38 @@ LocalMinDistanceFilter::~LocalMinDistanceFilter()
 
 void LocalMinDistanceFilter::invalidate()
 {
-    m_revision = m_revision < std::numeric_limits< unsigned int >::max() ? m_revision++ : 0;
+    //std::cout<<"invalidate is called on Filter "<<this->getName()<<std::endl;
+    //std::cout<<"m_revision before : "<<m_revision;
+    m_revision = m_revision++;
+    if (m_revision >= std::numeric_limits< unsigned int >::max())
+        m_revision=0;
+
+    //std::cout<<"  m_revision after: "<<m_revision<<std::endl;
 }
 
+bool InfoFilter::isValid(void)
+{
+//		std::cout<<"is Valid called"<<std::endl;
+    assert(m_lmdFilters != 0);
+//		std::cout<<"m_revision= "<<m_revision<<std::endl;
+    if (m_lmdFilters==NULL)
+    {
+        std::cerr<<"WARNING pointer m_lmdFilters is null"<<std::endl;
+        return false;
+    }
+
+
+//		std::cout<<" m_lmdFilters->getRevision() "<<m_lmdFilters->getRevision()<<std::endl;
+    return m_revision == m_lmdFilters->getRevision();
+}
+
+
+
+void InfoFilter::setValid()
+{
+    assert(m_lmdFilters != 0);
+    m_revision = m_lmdFilters->getRevision();
+}
 
 /*
 template<>

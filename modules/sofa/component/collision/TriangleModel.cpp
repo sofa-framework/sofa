@@ -64,6 +64,7 @@ int TriangleModelClass = core::RegisterObject("collision model using a triangula
 
 TriangleModel::TriangleModel()
     : mstate(NULL)
+    , bothSide(initData(&bothSide, false, "bothSide", "activate collision on both side of the triangle model") )
     , computeNormals(initData(&computeNormals, true, "computeNormals", "set to false to disable computation of triangles normal"))
     , meshRevision(-1)
     , m_lmdFilter(NULL)
@@ -84,7 +85,9 @@ void TriangleModel::init()
     _topology = this->getContext()->getMeshTopology();
 
     this->CollisionModel::init();
-    mstate = dynamic_cast< core::componentmodel::behavior::MechanicalState<Vec3Types>* > (getContext()->getMechanicalState());
+    mstate = dynamic_cast< core::componentmodel::behavior::MechanicalState<Vec3Types>* > (this->getContext()->getMechanicalState());
+
+    mpoints = this->getContext()->get<PointModel>();
 
     if (mstate==NULL)
     {
@@ -242,6 +245,7 @@ int TriangleModel::getTriangleFlags(int i)
 {
     int f = 0;
     sofa::core::componentmodel::topology::BaseMeshTopology::Triangle t = (*triangles)[i];
+
     if (i < _topology->getNbTriangles())
     {
         if (_topology->getTrianglesAroundVertex(t[0])[0] == (sofa::core::componentmodel::topology::BaseMeshTopology::TriangleID)i)
@@ -250,12 +254,16 @@ int TriangleModel::getTriangleFlags(int i)
             f |= FLAG_P2;
         if (_topology->getTrianglesAroundVertex(t[2])[0] == (sofa::core::componentmodel::topology::BaseMeshTopology::TriangleID)i)
             f |= FLAG_P3;
+
         const sofa::core::componentmodel::topology::BaseMeshTopology::EdgesInTriangle& e = _topology->getEdgesInTriangle(i);
+
+
+
         if (_topology->getTrianglesAroundEdge(e[0])[0] == (sofa::core::componentmodel::topology::BaseMeshTopology::TriangleID)i)
             f |= FLAG_E12;
-        if (_topology->getTrianglesAroundEdge(e[0])[0] == (sofa::core::componentmodel::topology::BaseMeshTopology::TriangleID)i)
+        if (_topology->getTrianglesAroundEdge(e[1])[0] == (sofa::core::componentmodel::topology::BaseMeshTopology::TriangleID)i)
             f |= FLAG_E23;
-        if (_topology->getTrianglesAroundEdge(e[0])[0] == (sofa::core::componentmodel::topology::BaseMeshTopology::TriangleID)i)
+        if (_topology->getTrianglesAroundEdge(e[2])[0] == (sofa::core::componentmodel::topology::BaseMeshTopology::TriangleID)i)
             f |= FLAG_E31;
     }
     else
@@ -625,6 +633,54 @@ void TriangleModel::draw()
     }
     if (getPrevious()!=NULL && getContext()->getShowBoundingCollisionModels())
         getPrevious()->draw();
+}
+
+
+bool TriangleModel::canCollideWithElement(int index, CollisionModel* model2, int index2)
+{
+    if (!this->bSelfCollision.getValue()) return true; // we need to perform this verification process only for the selfcollision case.
+    if (this->getContext() != model2->getContext()) return true;
+
+    //if (model2 == mpoints && index2==4)
+    //{
+    //	std::cout<<"Triangle model : at index ["<<index<<"] can collide with point 4 ?"<<std::endl;
+    //}
+
+
+    //return true;
+
+    Triangle t(this,index);
+    if (model2 == mpoints)
+    {
+        // if point belong to the triangle, return false
+        if ( index2==t.p1Index() || index2==t.p2Index() || index2==t.p3Index())
+            return false;
+
+        //const helper::vector <unsigned int>& EdgesAroundVertex11 =topology->getEdgesAroundVertex(p11);
+        //const helper::vector <unsigned int>& EdgesAroundVertex12 =topology->getEdgesAroundVertex(p12);
+
+        //// if the point belong to the the neighborhood of the triangle, return false
+        //for (unsigned int i1=0; i1<EdgesAroundVertex11.size(); i1++)
+        //{
+        //	unsigned int e11 = EdgesAroundVertex11[i1];
+        //	p11 = elems[e11].i1;
+        //	p12 = elems[e11].i2;
+        //	if (index2==p11 || index2==p12)
+        //		return false;
+        //}
+        //for (unsigned int i1=0; i1<EdgesAroundVertex11.size(); i1++)
+        //{
+        //	unsigned int e12 = EdgesAroundVertex12[i1];
+        //	p11 = elems[e12].i1;
+        //	p12 = elems[e12].i2;
+        //	if (index2==p11 || index2==p12)
+        //		return false;
+    }
+
+    //// TODO : case with auto-collis with segment and auto-collis with itself
+
+    return true;
+
 }
 
 void TriangleModel::computeBoundingTree(int maxDepth)

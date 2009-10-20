@@ -26,7 +26,6 @@
 #include <sofa/component/collision/PointLocalMinDistanceFilter.h>
 
 #include <sofa/component/collision/LineModel.h>
-#include <sofa/component/collision/LocalMinDistanceFilter.inl>
 #include <sofa/component/topology/PointData.inl>
 
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
@@ -47,113 +46,149 @@ namespace collision
 {
 
 
-void PointInfo::buildFilter(const Point &p)
+void PointInfo::buildFilter(unsigned int p_index)
 {
     using sofa::simulation::Node;
     using sofa::helper::vector;
     using sofa::core::componentmodel::topology::BaseMeshTopology;
 
-    if (isRigid())
+
+    bool debug=false;
+    if(p_index==-1)
+        debug=true;
+    //std::cout<<"buildFilter for point"<<p_index;
+    m_noLineModel = false;
+
+
+
+    // get the positions:
+    sofa::helper::vector<sofa::defaulttype::Vector3>& x = (* this->position_filtering);
+    const Vector3 &pt = x[p_index];
+
+    //std::cout<<"  pt"<<pt<<std::endl;
+
+    // get the topology
+    BaseMeshTopology* bmt = this->base_mesh_topology;
+    const vector< unsigned int >& edgesAroundVertex = bmt->getEdgesAroundVertex(p_index);
+    const vector< unsigned int >& trianglesAroundVertex = bmt->getTrianglesAroundVertex(p_index);
+
+    if(edgesAroundVertex.size() ==0)
     {
-        // update rigid
+        std::cerr<<"WARNING no topology defined: no filtering"<<std::endl;
+        std::cout<<"Mesh Topology found :"<<bmt->getName()<<std::endl;
+        m_noLineModel = true;
+        setValid();
+        return;
     }
-    else
+
+
+    // compute the normal (nMean) of the point : IS IT STORED ANYWHERE ELSE ?
+    // 1. using triangle around the point
+    vector< unsigned int >::const_iterator triIt = trianglesAroundVertex.begin();
+    vector< unsigned int >::const_iterator triItEnd = trianglesAroundVertex.end();
+    Vector3 nMean;
+    while (triIt != triItEnd)
     {
-        const Vector3 &pt = p.p();
+        const BaseMeshTopology::Triangle& triangle = bmt->getTriangle(*triIt);
+        Vector3 nCur = (x[triangle[1]] - x[triangle[0]]).cross(x[triangle[2]] - x[triangle[0]]);
+        nCur.normalize();
+        nMean += nCur;
+        ++triIt;
+    }
 
-        Node* node = dynamic_cast< Node* >(p.getCollisionModel()->getContext());
-        if ( !(node->get< LineModel >()) )
-        {
-            m_noLineModel = true;
-            return;
-        }
-
-        BaseMeshTopology* topology = p.getCollisionModel()->getMeshTopology();
-        vector< Vector3 >& x = *(p.getCollisionModel()->getMechanicalState()->getX());
-
-        const vector< unsigned int >& trianglesAroundVertex = topology->getTrianglesAroundVertex(p.getIndex());
-
-        vector< unsigned int >::const_iterator triIt = trianglesAroundVertex.begin();
-        vector< unsigned int >::const_iterator triItEnd = trianglesAroundVertex.end();
-
-        Vector3 nMean;
-
-        while (triIt != triItEnd)
-        {
-            const BaseMeshTopology::Triangle& triangle = topology->getTriangle(*triIt);
-
-            Vector3 nCur = (x[triangle[1]] - x[triangle[0]]).cross(x[triangle[2]] - x[triangle[0]]);
-            nCur.normalize();
-            nMean += nCur;
-
-            ++triIt;
-        }
-
-        const vector< unsigned int >& edgesAroundVertex = topology->getEdgesAroundVertex(p.getIndex());
-
-        if (trianglesAroundVertex.empty())
-        {
-            vector< unsigned int >::const_iterator edgeIt = edgesAroundVertex.begin();
-            vector< unsigned int >::const_iterator edgeItEnd = edgesAroundVertex.end();
-
-            while (edgeIt != edgeItEnd)
-            {
-                const BaseMeshTopology::Edge& edge = topology->getEdge(*edgeIt);
-
-                Vector3 l = (pt - x[edge[0]]) + (pt - x[edge[1]]);
-                l.normalize();
-                nMean += l;
-
-                ++edgeIt;
-            }
-        }
-
-        if (nMean.norm() > 0.0000000001)
-            nMean.normalize();
-        else
-            std::cerr << "WARNING PointInfo m_nMean is null" << std::endl;
-
+    // 2. if no triangle around the point: compute an other normal using edges
+    if (trianglesAroundVertex.empty())
+    {
+        if(debug)
+            std::cout<<" trianglesAroundVertex.empty !"<<std::endl;
         vector< unsigned int >::const_iterator edgeIt = edgesAroundVertex.begin();
         vector< unsigned int >::const_iterator edgeItEnd = edgesAroundVertex.end();
 
         while (edgeIt != edgeItEnd)
         {
-            const BaseMeshTopology::Edge& edge = topology->getEdge(*edgeIt);
+            const BaseMeshTopology::Edge& edge = bmt->getEdge(*edgeIt);
 
             Vector3 l = (pt - x[edge[0]]) + (pt - x[edge[1]]);
             l.normalize();
-
-            double computedAngleCone = dot(nMean , l) * m_lmdFilters->getConeExtension();
-
-            if (computedAngleCone < 0)
-                computedAngleCone = 0.0;
-
-            computedAngleCone += m_lmdFilters->getConeMinAngle();
-
-            m_computedData.push_back(std::make_pair(l, computedAngleCone));
-
+            nMean += l;
             ++edgeIt;
         }
     }
+
+    // 3. test to verify the normal value and normalize it
+    if (nMean.norm() > 1e-20)
+        nMean.normalize();
+    else
+    {
+        std::cerr << "WARNING PointInfo m_nMean is null" << std::endl;
+    }
+
+    if (debug)
+        std::cout<<"  nMean ="<<nMean<<std::endl;
+
+
+    // Build the set of unit vector that are normal to the planes that defines the cone
+    // for each plane, we can "extend" the cone: allow for a larger cone
+    vector< unsigned int >::const_iterator edgeIt = edgesAroundVertex.begin();
+    vector< unsigned int >::const_iterator edgeItEnd = edgesAroundVertex.end();
+
+    m_computedData.clear();
+    while (edgeIt != edgeItEnd)
+    {
+        const BaseMeshTopology::Edge& edge = bmt->getEdge(*edgeIt);
+
+        Vector3 l = (pt - x[edge[0]]) + (pt - x[edge[1]]);
+        l.normalize();
+
+
+
+        double computedAngleCone = dot(nMean , l) * m_lmdFilters->getConeExtension();
+
+        if (computedAngleCone < 0)
+            computedAngleCone = 0.0;
+
+        computedAngleCone += m_lmdFilters->getConeMinAngle();
+        //std::cout<<"  add filtration with l="<<l<<"    and angle="<<computedAngleCone<<std::endl;
+        m_computedData.push_back(std::make_pair(l, computedAngleCone));
+        ++edgeIt;
+
+        if (debug)
+            std::cout<<"  l ="<<l<<"computedAngleCone ="<< computedAngleCone<<"  for edge ["<<edge[0]<<"-"<<edge[1]<<"]"<<std::endl;
+
+    }
+
 
     setValid();
 }
 
 
 
-bool PointInfo::validate(const Point &p, const defaulttype::Vector3 &PQ)
+bool PointInfo::validate(const unsigned int p, const defaulttype::Vector3 &PQ)
 {
+
+    bool debug=false;
+    if (p==-1)
+        debug=true;
+
     if (isValid())
     {
+        if(debug)
+            std::cout<<"Point "<<p<<" is valid"<<std::endl;
+
         if (m_noLineModel)
+        {
+            std::cout<<"Warning : No Line Model"<<std::endl;
             return true;
+        }
 
         TDataContainer::const_iterator it = m_computedData.begin();
         TDataContainer::const_iterator itEnd = m_computedData.end();
 
         while (it != itEnd)
         {
-            if (dot(it->first , PQ) < (-it->second * PQ.norm()))
+            if(debug)
+                std::cout<<" test avec direction : "<<it->first <<"   dot(it->first , PQ)="<<dot(it->first , PQ)<<"    (-it->second * PQ.norm()) ="<<(-it->second * PQ.norm())<<std::endl;
+            if (dot(it->first , PQ) <= (-it->second * PQ.norm()))
                 return false;
 
             ++it;
@@ -163,6 +198,8 @@ bool PointInfo::validate(const Point &p, const defaulttype::Vector3 &PQ)
     }
     else
     {
+        if(debug)
+            std::cout<<"Point "<<p<<" is not valid ------------ build"<<std::endl;
         buildFilter(p);
         return validate(p, PQ);
     }
@@ -203,8 +240,20 @@ void PointLocalMinDistanceFilter::handleTopologyChange()
 
 void PointLocalMinDistanceFilter::LMDFilterPointCreationFunction(int /*pointIndex*/, void* param, PointInfo &pInfo, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&)
 {
+
+    std::cout<<" LMDFilterPointCreationFunction is called"<<std::endl;
     const PointLocalMinDistanceFilter *pLMDFilter = static_cast< const PointLocalMinDistanceFilter * >(param);
     pInfo.setLMDFilters(pLMDFilter);
+
+    sofa::core::componentmodel::topology::BaseMeshTopology * bmt = (sofa::core::componentmodel::topology::BaseMeshTopology *)pLMDFilter->getContext()->getTopology();
+    pInfo.setBaseMeshTopology(bmt);
+    /////// TODO : template de la classe
+    component::container::MechanicalObject<Vec3dTypes>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<Vec3dTypes>*>(pLMDFilter->getContext()->getMechanicalState());
+    if(mstateVec3d != NULL)
+    {
+        pInfo.setPositionFiltering(mstateVec3d->getX());
+    }
+
 }
 
 
