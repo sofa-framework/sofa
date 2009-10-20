@@ -24,7 +24,6 @@
 ******************************************************************************/
 
 #include <sofa/component/collision/TriangleLocalMinDistanceFilter.h>
-#include <sofa/component/collision/LocalMinDistanceFilter.inl>
 #include <sofa/component/topology/EdgeData.inl>
 #include <sofa/component/topology/PointData.inl>
 #include <sofa/component/topology/TriangleData.inl>
@@ -41,17 +40,22 @@ namespace component
 namespace collision
 {
 
-void TriangleInfo::buildFilter(const Triangle &t)
+void TriangleInfo::buildFilter(unsigned int tri_index)
 {
     if (isRigid())
     {
-        // update rigid
+        std::cout<<"TODO in TriangleInfo::buildFilter"<<std::endl;
+        // TODO : supprimer ! : a priori, on ne passe plus dans cette fonction quand on a un objet rigide !
     }
     else
     {
-        const Vector3& pt1 = t.p1();
-        const Vector3& pt2 = t.p2();
-        const Vector3& pt3 = t.p3();
+
+        sofa::core::componentmodel::topology::BaseMeshTopology* bmt = this->base_mesh_topology;
+        const Triangle &t =  bmt->getTriangle(tri_index);
+
+        const Vector3 &pt1 = (*this->position_filtering)[t[0]];
+        const Vector3 &pt2 = (*this->position_filtering)[t[1]];
+        const Vector3 &pt3 = (*this->position_filtering)[t[2]];
 
         m_normal = cross(pt2-pt1, pt3-pt1);
     }
@@ -61,16 +65,19 @@ void TriangleInfo::buildFilter(const Triangle &t)
 
 
 
-bool TriangleInfo::validate(const Triangle &t, const defaulttype::Vector3 &PQ)
+bool TriangleInfo::validate(const unsigned int tri_index, const defaulttype::Vector3 &PQ)
 {
+    //std::cout<<"TriangleInfo::validate on tri "<<tri_index<<"is called"<<std::endl;
     if (isValid())
     {
+        //std::cout<<" is Valid !"<<std::endl;
         return ( (m_normal * PQ) >= 0.0 );
     }
     else
     {
-        buildFilter(t);
-        return validate(t, PQ);
+        //std::cout<<" not valid => build ------------------------ for triangle "<< tri_index <<std::endl;
+        buildFilter(tri_index);
+        return validate(tri_index, PQ);
     }
 }
 
@@ -79,29 +86,63 @@ bool TriangleInfo::validate(const Triangle &t, const defaulttype::Vector3 &PQ)
 void TriangleLocalMinDistanceFilter::init()
 {
     core::componentmodel::topology::BaseMeshTopology *bmt = getContext()->getMeshTopology();
+    std::cout<<"Mesh Topology found :"<<bmt->getName()<<std::endl;
+    component::container::MechanicalObject<Vec3dTypes>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<Vec3dTypes>*>(getContext()->getMechanicalState());
+
+
+    if(mstateVec3d == NULL)
+    {
+        serr<<"WARNING: init failed for TriangleLocalMinDistanceFilter no mstateVec3d found"<<sendl;
+    }
 
     if (bmt != 0)
     {
-        helper::vector< PointInfo >& pInfo = *(m_pointInfo.beginEdit());
-        pInfo.resize(bmt->getNbPoints());
-        m_pointInfo.endEdit();
+
 
         m_pointInfo.setCreateFunction(LMDFilterPointCreationFunction);
         m_pointInfo.setCreateParameter((void *) this);
+        helper::vector< PointInfo >& pInfo = *(m_pointInfo.beginEdit());
+        pInfo.resize(bmt->getNbPoints());
+        int i;
+        for (i=0; i<bmt->getNbPoints(); i++)
+        {
+            pInfo[i].setLMDFilters(this);
+            pInfo[i].setBaseMeshTopology(bmt);
+            pInfo[i].setPositionFiltering(mstateVec3d->getX());
+        }
+        m_pointInfo.endEdit();
 
-        helper::vector< LineInfo >& lInfo = *(m_lineInfo.beginEdit());
-        lInfo.resize(bmt->getNbEdges());
-        m_lineInfo.endEdit();
+
+
 
         m_lineInfo.setCreateFunction(LMDFilterLineCreationFunction);
         m_lineInfo.setCreateParameter((void *) this);
+        helper::vector< LineInfo >& lInfo = *(m_lineInfo.beginEdit());
+        lInfo.resize(bmt->getNbEdges());
+        for (i=0; i<bmt->getNbEdges(); i++)
+        {
+            lInfo[i].setLMDFilters(this);
+            lInfo[i].setBaseMeshTopology(bmt);
+            lInfo[i].setPositionFiltering(mstateVec3d->getX());
+        }
+        m_lineInfo.endEdit();
 
-        helper::vector< TriangleInfo >& tInfo = *(m_triangleInfo.beginEdit());
-        tInfo.resize(bmt->getNbTriangles());
-        m_triangleInfo.endEdit();
+
+
+
 
         m_triangleInfo.setCreateFunction(LMDFilterTriangleCreationFunction);
         m_triangleInfo.setCreateParameter((void *) this);
+        helper::vector< TriangleInfo >& tInfo = *(m_triangleInfo.beginEdit());
+        tInfo.resize(bmt->getNbTriangles());
+        for (i=0; i<bmt->getNbTriangles(); i++)
+        {
+            tInfo[i].setLMDFilters(this);
+            tInfo[i].setBaseMeshTopology(bmt);
+            tInfo[i].setPositionFiltering(mstateVec3d->getX());
+        }
+        m_triangleInfo.endEdit();
+        std::cout<<"create m_pointInfo, m_lineInfo, m_triangleInfo" <<std::endl;
     }
 }
 
@@ -125,24 +166,53 @@ void TriangleLocalMinDistanceFilter::handleTopologyChange()
 
 void TriangleLocalMinDistanceFilter::LMDFilterPointCreationFunction(int, void *param, PointInfo &pInfo, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&)
 {
+    std::cout<<"LMDFilterPointCreationFunction is called "<<std::endl;
     const PointLocalMinDistanceFilter *pLMDFilter = static_cast< const PointLocalMinDistanceFilter * >(param);
     pInfo.setLMDFilters(pLMDFilter);
+    sofa::core::componentmodel::topology::BaseMeshTopology * bmt = (sofa::core::componentmodel::topology::BaseMeshTopology *)pLMDFilter->getContext()->getTopology();
+    pInfo.setBaseMeshTopology(bmt);
+    /////// TODO : template de la classe
+    component::container::MechanicalObject<Vec3dTypes>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<Vec3dTypes>*>(pLMDFilter->getContext()->getMechanicalState());
+    if(mstateVec3d != NULL)
+    {
+        pInfo.setPositionFiltering(mstateVec3d->getX());
+    }
+
 }
 
 
 
 void TriangleLocalMinDistanceFilter::LMDFilterLineCreationFunction(int, void *param, LineInfo &lInfo, const topology::Edge&, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&)
 {
+    std::cout<<"LMDFilterLineCreationFunction is called "<<std::endl;
     const LineLocalMinDistanceFilter *lLMDFilter = static_cast< const LineLocalMinDistanceFilter * >(param);
     lInfo.setLMDFilters(lLMDFilter);
+    sofa::core::componentmodel::topology::BaseMeshTopology * bmt = (sofa::core::componentmodel::topology::BaseMeshTopology *)lLMDFilter->getContext()->getTopology();
+    lInfo.setBaseMeshTopology(bmt);
+    /////// TODO : template de la classe
+    component::container::MechanicalObject<Vec3dTypes>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<Vec3dTypes>*>(lLMDFilter->getContext()->getMechanicalState());
+    if(mstateVec3d != NULL)
+    {
+        lInfo.setPositionFiltering(mstateVec3d->getX());
+    }
 }
 
 
 
 void TriangleLocalMinDistanceFilter::LMDFilterTriangleCreationFunction(int, void *param, TriangleInfo &tInfo, const topology::Triangle&, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >&)
 {
+    std::cout<<"LMDFilterTriangleCreationFunction is called "<<std::endl;
     const TriangleLocalMinDistanceFilter *tLMDFilter = static_cast< const TriangleLocalMinDistanceFilter * >(param);
     tInfo.setLMDFilters(tLMDFilter);
+
+    sofa::core::componentmodel::topology::BaseMeshTopology * bmt = (sofa::core::componentmodel::topology::BaseMeshTopology *)tLMDFilter->getContext()->getTopology();
+    tInfo.setBaseMeshTopology(bmt);
+    /////// TODO : template de la classe
+    component::container::MechanicalObject<Vec3dTypes>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<Vec3dTypes>*>(tLMDFilter->getContext()->getMechanicalState());
+    if(mstateVec3d != NULL)
+    {
+        tInfo.setPositionFiltering(mstateVec3d->getX());
+    }
 }
 
 

@@ -48,14 +48,15 @@ namespace collision
 /**
  * @brief LocalMinDistance cone information class for a Triangle collision primitive.
  */
-class TriangleInfo : public InfoFilter< Triangle >
+class TriangleInfo : public InfoFilter //< Triangle >
 {
+    typedef sofa::core::componentmodel::topology::BaseMeshTopology::Triangle Triangle;
 public:
     /**
      * @brief Default constructor.
      */
     TriangleInfo(LocalMinDistanceFilter *lmdFilters)
-        : InfoFilter< Triangle >(lmdFilters)
+        : InfoFilter(lmdFilters)
     {
 
     }
@@ -64,7 +65,7 @@ public:
      * @brief Empty constructor. Required by TriangleData<>.
      */
     TriangleInfo()
-        : InfoFilter< Triangle >(NULL)
+        : InfoFilter(NULL)
     {
 
     }
@@ -77,8 +78,7 @@ public:
     /**
      * @brief Returns the validity of a detected contact according to this TriangleInfo.
      */
-    virtual bool validate(const Triangle & /*t*/, const defaulttype::Vector3 & /*PQ*/);
-
+    virtual bool validate(const unsigned int /*p*/, const defaulttype::Vector3 & /*PQ*/);
     /**
      * @brief Output stream.
      */
@@ -99,7 +99,8 @@ protected:
     /**
      * @brief Computes the region of interest cone of the Triangle primitive.
      */
-    virtual void buildFilter(const Triangle & /*t*/);
+    //virtual void buildFilter(const Triangle & /*t*/);
+    virtual void buildFilter(unsigned int /*t*/);
 
     Vector3 m_normal; ///< Stored normal of the triangle.
 };
@@ -134,25 +135,39 @@ public:
     /**
      * @brief Point Collision Primitive validation method.
      */
-    bool validPoint(const int /*pointIndex*/, const defaulttype::Vector3 &/*PQ*/)
+    bool validPoint(const int pointIndex, const defaulttype::Vector3 &PQ)
     {
-        return true;
+        //sstd::cout<<"validPoint "<<pointIndex<<" is called with PQ="<<PQ<<std::endl;
+        PointInfo & Pi = m_pointInfo[pointIndex];
+        return Pi.validate(pointIndex,PQ);
     }
 
     /**
      * @brief Line Collision Primitive validation method.
      */
-    bool validLine(const int /*lineIndex*/, const defaulttype::Vector3 &/*PQ*/)
+    bool validLine(const int lineIndex, const defaulttype::Vector3 &PQ)
     {
-        return true;
+        //std::cout<<"validLine "<<lineIndex<<" is called with PQ="<<PQ<<std::endl;
+        LineInfo &Li = m_lineInfo[lineIndex];
+        return Li.validate(lineIndex, PQ);
     }
 
     /**
      * @brief Triangle Collision Primitive validation method.
      */
-    bool validTriangle(const int /*triangleIndex*/, const defaulttype::Vector3 &/*PQ*/)
+    bool validTriangle(const int triangleIndex, const defaulttype::Vector3 &PQ)
     {
-        return true;
+        //std::cout<<"validTriangle "<<triangleIndex<<" is called with PQ="<<PQ<<std::endl;
+        TriangleInfo &Ti = m_triangleInfo[triangleIndex];
+        if(&Ti==NULL)
+        {
+            std::cerr<<"Ti == NULL"<<std::endl;
+            return true;
+        }
+
+
+
+        return Ti.validate(triangleIndex,PQ);
     }
 
     //@}

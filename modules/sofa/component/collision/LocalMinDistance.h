@@ -54,7 +54,7 @@ public:
     Data<double> angleCone;
     Data<double> coneFactor;
     Data<bool> useLMDFilters;
-    Data<bool> bothSides;
+
 
 
     LocalMinDistance();

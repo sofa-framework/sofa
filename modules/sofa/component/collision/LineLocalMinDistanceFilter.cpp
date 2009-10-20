@@ -24,8 +24,6 @@
 ******************************************************************************/
 
 #include <sofa/component/collision/LineLocalMinDistanceFilter.h>
-
-#include <sofa/component/collision/LocalMinDistanceFilter.inl>
 #include <sofa/component/topology/EdgeData.inl>
 #include <sofa/component/topology/PointData.inl>
 
@@ -44,81 +42,138 @@ namespace collision
 {
 
 
-void LineInfo::buildFilter(const Line &l)
+void LineInfo::buildFilter(unsigned int edge_index)
 {
     using sofa::helper::vector;
     using sofa::core::componentmodel::topology::BaseMeshTopology;
 
-    if (isRigid())
+    bool debug=false;
+
+    if (edge_index==-1)
+        debug=true;
+
+
+    //std::cout<<"buildFilter for edge"<<edge_index<<" :";
+
+
+    BaseMeshTopology* bmt = this->base_mesh_topology;
+    //std::cout<<"bmt:"<<bmt<<std::endl;
+
+    const Edge &e =  bmt->getEdge(edge_index);
+
+//	vector< Vector3 >& x = *(l.getCollisionModel()->getMechanicalState()->getX());
+
+    const Vector3 &pt1 = (*this->position_filtering)[e[0]];
+    const Vector3 &pt2 = (*this->position_filtering)[e[1]];
+
+    if (debug)
+        std::cout<<"pt1: "<<pt1<<"  - pt2: "<<pt2;
+
+    m_lineVector = pt2 - pt1;
+    m_lineVector.normalize();
+
+    //BaseMeshTopology* topology = l.getCollisionModel()->getMeshTopology();
+
+
+
+    const sofa::helper::vector<unsigned int>& trianglesAroundEdge = bmt->getTrianglesAroundEdge(edge_index);
+
+    if (debug)
+        std::cout<<"trianglesAroundEdge: "<<trianglesAroundEdge<<"  -";
+
+    // filter if there are two triangles around the edge
+    if (trianglesAroundEdge.size() == 1)
     {
-        // update rigid
+        std::cout<<"TODO : validity for segment on a single triangle"<<std::endl;
     }
-    else
+
+    // filter if there are two triangles around the edge
+    if (trianglesAroundEdge.size() != 2)
     {
-        const Vector3 &pt1 = l.p1();
-        const Vector3 &pt2 = l.p2();
-
-        m_lineVector = pt2 - pt1;
-        m_lineVector.normalize();
-
-        BaseMeshTopology* topology = l.getCollisionModel()->getMeshTopology();
-
-        vector< Vector3 >& x = *(l.getCollisionModel()->getMechanicalState()->getX());
-
-        const sofa::helper::vector<unsigned int>& trianglesAroundEdge = topology->getTrianglesAroundEdge(l.getIndex());
-
-        // filter if there are two triangles around the edge
-        if (trianglesAroundEdge.size() != 2)
-        {
-            m_twoTrianglesAroundEdge = false;
-        }
-
-        // compute the normal of the triangle situated on the right
-        const BaseMeshTopology::Triangle& triangleRight = topology->getTriangle(trianglesAroundEdge[0]);
-        Vector3 n1 = cross(x[triangleRight[1]] - x[triangleRight[0]], x[triangleRight[2]] - x[triangleRight[0]]);
-        n1.normalize();
-        m_nMean = n1;
-        m_triangleRight = -cross(n1, m_lineVector);
-        m_triangleRight.normalize(); // necessary ?
-
-        // compute the normal of the triangle situated on the left
-        const BaseMeshTopology::Triangle& triangleLeft = topology->getTriangle(trianglesAroundEdge[1]);
-        Vector3 n2 = cross(x[triangleLeft[1]] - x[triangleLeft[0]], x[triangleLeft[2]] - x[triangleLeft[0]]);
-        n2.normalize();
-        m_nMean += n2;
-        m_triangleLeft = -cross(m_lineVector, n2);
-        m_triangleLeft.normalize(); // necessary ?
-
-        m_nMean.normalize();
-
-        // compute the angle for the cone to filter contacts using the normal of the triangle situated on the right
-        m_computedRightAngleCone = (m_nMean * m_triangleRight) * m_lmdFilters->getConeExtension();
-        if (m_computedRightAngleCone < 0)
-        {
-            m_computedRightAngleCone = 0.0;
-        }
-        m_computedRightAngleCone += m_lmdFilters->getConeMinAngle();
-
-        // compute the angle for the cone to filter contacts using the normal of the triangle situated on the left
-        m_computedLeftAngleCone = (m_nMean * m_triangleLeft) * m_lmdFilters->getConeExtension();
-        if (m_computedLeftAngleCone < 0)
-        {
-            m_computedLeftAngleCone = 0.0;
-        }
-        m_computedLeftAngleCone += m_lmdFilters->getConeMinAngle();
+        m_twoTrianglesAroundEdge = false;
+        return;
     }
+
+    sofa::helper::vector<sofa::defaulttype::Vector3>& x = (* this->position_filtering);
+
+
+
+    // which triangle is left ?
+    const Triangle& triangle0 = bmt->getTriangle(trianglesAroundEdge[0]);
+    bool triangle0_is_left=false;
+    if ( (e[0]==triangle0[0]&&e[1]==triangle0[1]) || (e[0]==triangle0[1]&&e[1]==triangle0[2]) || (e[0]==triangle0[2]&&e[1]==triangle0[0]) )
+        triangle0_is_left=true;
+
+    // compute the normal of the triangle situated on the right
+    const BaseMeshTopology::Triangle& triangleRight = triangle0_is_left ? bmt->getTriangle(trianglesAroundEdge[1]): bmt->getTriangle(trianglesAroundEdge[0]);
+    Vector3 n1 = cross(x[triangleRight[1]] - x[triangleRight[0]], x[triangleRight[2]] - x[triangleRight[0]]);
+    n1.normalize();
+    m_nMean = n1;
+    m_triangleRight = cross(n1, m_lineVector);
+    m_triangleRight.normalize(); // necessary ?
+
+    // compute the normal of the triangle situated on the left
+    const BaseMeshTopology::Triangle& triangleLeft = triangle0_is_left ? bmt->getTriangle(trianglesAroundEdge[0]): bmt->getTriangle(trianglesAroundEdge[1]);
+    Vector3 n2 = cross(x[triangleLeft[1]] - x[triangleLeft[0]], x[triangleLeft[2]] - x[triangleLeft[0]]);
+    n2.normalize();
+    m_nMean += n2;
+    m_triangleLeft = cross(m_lineVector, n2);
+    m_triangleLeft.normalize(); // necessary ?
+
+    m_nMean.normalize();
+
+    // compute the angle for the cone to filter contacts using the normal of the triangle situated on the right
+    m_computedRightAngleCone = (m_nMean * m_triangleRight) * m_lmdFilters->getConeExtension();
+    if(debug)
+        std::cout<<"m_nMean: "<<m_nMean<<" - m_triangleRight:"<<m_triangleRight<<" - m_triangleLeft:"<<m_triangleLeft<<std::endl;
+    if (m_computedRightAngleCone < 0)
+    {
+        m_computedRightAngleCone = 0.0;
+    }
+    m_computedRightAngleCone += m_lmdFilters->getConeMinAngle();
+    if( debug)
+        std::cout<<"m_computedRightAngleCone :"<<m_computedRightAngleCone<<std::endl;
+
+    // compute the angle for the cone to filter contacts using the normal of the triangle situated on the left
+    m_computedLeftAngleCone = (m_nMean * m_triangleLeft) * m_lmdFilters->getConeExtension();
+    if (m_computedLeftAngleCone < 0)
+    {
+        m_computedLeftAngleCone = 0.0;
+    }
+    m_computedLeftAngleCone += m_lmdFilters->getConeMinAngle();
+    if( debug)
+        std::cout<<"m_computedLeftAngleCone :"<<m_computedRightAngleCone<<std::endl;
+
 
     setValid();
 }
 
 
 
-bool LineInfo::validate(const Line &l, const defaulttype::Vector3 &PQ)
+
+//bool LineInfo::validate(const unsigned int edge_index, const defaulttype::Vector3 &PQ)
+
+bool LineInfo::validate(const unsigned int edge_index, const defaulttype::Vector3& PQ)
 {
+    bool debug=false;
+
+    if (edge_index==-1)
+        debug=true;
+
+
+
     if (isValid())
     {
+        if (debug)
+            std::cout<<"Line "<<edge_index<<" is valid"<<std::endl;
         if (m_twoTrianglesAroundEdge)
         {
+            if (debug)
+            {
+                std::cout<<"m_triangleRight :"<<m_triangleRight<<"  - m_triangleLeft"<<m_triangleLeft<<std::endl;
+                std::cout<<"m_twoTrianglesAroundEdge ok tests: "<< (m_nMean * PQ)<<"<0 ?  - "<<m_triangleRight * PQ <<" < "<<-m_computedRightAngleCone * PQ.norm()<<" ?  - " <<m_triangleLeft * PQ <<" < "<<-m_computedLeftAngleCone * PQ.norm()<<" ?"<<std::endl;
+
+            }
             if ((m_nMean * PQ) < 0)
                 return false;
 
@@ -133,8 +188,10 @@ bool LineInfo::validate(const Line &l, const defaulttype::Vector3 &PQ)
             Vector3 PQnormalized = PQ;
             PQnormalized.normalize();
 
-            if (fabs(dot(m_lineVector, PQnormalized)) > m_lmdFilters->getConeMinAngle() + 0.001)		// auto-collision case between
+            if (fabs(dot(m_lineVector, PQnormalized)) > m_lmdFilters->getConeMinAngle() + 0.001)		// dot(AB,n1) should be equal to 0
             {
+                // means that proximity was detected with a null determinant
+                // in function computeIntersection
                 return false;
             }
         }
@@ -143,16 +200,17 @@ bool LineInfo::validate(const Line &l, const defaulttype::Vector3 &PQ)
     }
     else
     {
-        buildFilter(l);
-        return validate(l, PQ);
+        if (debug)
+            std::cout<<"Line "<<edge_index<<" is no valid ------------ build"<<std::endl;
+        buildFilter(edge_index);
+        return validate(edge_index, PQ);
     }
 }
 
 
-
 void LineLocalMinDistanceFilter::init()
 {
-    core::componentmodel::topology::BaseMeshTopology *bmt = getContext()->getMeshTopology();
+    this->bmt = getContext()->getMeshTopology();
 
     if (bmt != 0)
     {
@@ -193,6 +251,21 @@ void LineLocalMinDistanceFilter::LMDFilterPointCreationFunction(int, void *param
 {
     const PointLocalMinDistanceFilter *pLMDFilter = static_cast< const PointLocalMinDistanceFilter * >(param);
     pInfo.setLMDFilters(pLMDFilter);
+
+    sofa::core::componentmodel::topology::BaseMeshTopology * bmt = (sofa::core::componentmodel::topology::BaseMeshTopology *)pLMDFilter->getContext()->getTopology();
+    pInfo.setBaseMeshTopology(bmt);
+    /////// TODO : template de la classe
+    component::container::MechanicalObject<Vec3dTypes>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<Vec3dTypes>*>(pLMDFilter->getContext()->getMechanicalState());
+    if(mstateVec3d != NULL)
+    {
+        pInfo.setPositionFiltering(mstateVec3d->getX());
+    }
+
+    //component::container::MechanicalObject<Vec3fTypes>*  mstateVec3f= dynamic_cast<component::container::MechanicalObject<Vec3fTypes>*>(context->getMechanicalState())
+    //if(mstateVec3f != NULL)
+    //{
+    //	lInfo.setPositionFiltering(mstateVec3f->getX());
+    //}
 }
 
 
@@ -201,6 +274,24 @@ void LineLocalMinDistanceFilter::LMDFilterLineCreationFunction(int, void *param,
 {
     const LineLocalMinDistanceFilter *lLMDFilter = static_cast< const LineLocalMinDistanceFilter * >(param);
     lInfo.setLMDFilters(lLMDFilter);
+    //
+    sofa::core::componentmodel::topology::BaseMeshTopology * bmt = (sofa::core::componentmodel::topology::BaseMeshTopology *)lLMDFilter->getContext()->getTopology();
+    lInfo.setBaseMeshTopology(bmt);
+
+
+    /////// TODO : template de la classe
+    component::container::MechanicalObject<Vec3dTypes>*  mstateVec3d= dynamic_cast<component::container::MechanicalObject<Vec3dTypes>*>(lLMDFilter->getContext()->getMechanicalState());
+    if(mstateVec3d != NULL)
+    {
+        lInfo.setPositionFiltering(mstateVec3d->getX());
+    }
+
+    //component::container::MechanicalObject<Vec3fTypes>*  mstateVec3f= dynamic_cast<component::container::MechanicalObject<Vec3fTypes>*>(context->getMechanicalState())
+    //if(mstateVec3f != NULL)
+    //{
+    //	lInfo.setPositionFiltering(mstateVec3f->getX());
+    //}
+
 }
 
 

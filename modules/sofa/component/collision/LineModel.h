@@ -143,6 +143,9 @@ public:
 
     void setFilter(LineLocalMinDistanceFilter * /*lmdFilter*/);
 
+    Data<bool> bothSide; // to activate collision on both-side of the both side of the line model (when surface normals are defined on these lines)
+
+
 protected:
 
     core::componentmodel::behavior::MechanicalState<Vec3Types>* mstate;

@@ -31,7 +31,7 @@
 #include <sofa/component/topology/TriangleData.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/defaulttype/Vec3Types.h>
-
+#include <sofa/component/collision/PointModel.h>
 #include <map>
 
 namespace sofa
@@ -100,6 +100,9 @@ public:
         FLAG_EDGES   = FLAG_E12|FLAG_E23|FLAG_E31,
     };
 
+
+    Data<bool> bothSide; // to activate collision on both side of the triangle model
+
 protected:
     struct TriangleInfo
     {
@@ -137,6 +140,8 @@ protected:
 
     sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
 
+    PointModel* mpoints;
+
     TriangleLocalMinDistanceFilter *m_lmdFilter;
 
 public:
@@ -156,6 +161,8 @@ public:
     void draw(int index);
 
     void draw();
+
+    virtual bool canCollideWithElement(int index, CollisionModel* model2, int index2);
 
     virtual void handleTopologyChange();
 

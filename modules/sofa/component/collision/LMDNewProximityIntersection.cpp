@@ -33,6 +33,7 @@
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/componentmodel/collision/Intersection.inl>
 
+
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/defaulttype/Vec.h>
 
@@ -55,6 +56,16 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::componentmodel::collision;
 using namespace helper;
 
+
+void GetPosOfEdgeVertexOnTriangle(Vector3& pv1, Vector3& pv2, int edge_number, Triangle &t)
+{
+    sofa::core::componentmodel::topology::BaseMeshTopology::Edge edge = t.getCollisionModel()->getTopology()->getEdge(edge_number);
+    core::componentmodel::behavior::MechanicalState<Vec3Types>* mState= t.getCollisionModel()->getMechanicalState();
+    //core::componentmodel::behavior::MechanicalState<Vec3Types>::VecCoord* x =
+    pv1= (*mState->getX())[edge[0]];
+    pv2= (*mState->getX())[edge[1]];
+}
+
 SOFA_DECL_CLASS(LMDNewProximityIntersection)
 
 int LMDNewProximityIntersectionClass = core::RegisterObject("Filtered optimized proximity intersection.")
@@ -64,7 +75,7 @@ int LMDNewProximityIntersectionClass = core::RegisterObject("Filtered optimized 
 LMDNewProximityIntersection::LMDNewProximityIntersection()
     : alarmDistance(initData(&alarmDistance, 1.0, "alarmDistance","Proximity detection distance"))
     , contactDistance(initData(&contactDistance, 0.5, "contactDistance","Distance below which a contact is created"))
-    , useLineLine(initData(&useLineLine, false, "useLineLine", "Line-line collision detection enabled"))
+    , useLineLine(initData(&useLineLine, true, "useLineLine", "Line-line collision detection enabled"))
 {
 }
 
@@ -117,7 +128,7 @@ bool LMDNewProximityIntersection::testIntersection(Point& e1, Point& e2)
     OutputVector contacts;
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
 
-    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.p(), e2.p(), &contacts, -1, *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()));
+    int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.p(), e2.p(), &contacts, -1, e1.getIndex(), e2.getIndex(), *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()));
 
     return (n > 0);
 }
@@ -126,10 +137,10 @@ bool LMDNewProximityIntersection::testIntersection(Point& e1, Point& e2)
 int LMDNewProximityIntersection::computeIntersection(Point& e1, Point& e2, OutputVector* contacts)
 {
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
-
+    std::cout<<"computeIntersection(Point& e1, Point& e2... is called"<<std::endl;
     int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.p(), e2.p(), contacts
             , (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex()
-            , *(e1.getCollisionModel()->getFilter())
+            , e1.getIndex(), e2.getIndex(), *(e1.getCollisionModel()->getFilter())
             , *(e2.getCollisionModel()->getFilter()));
 
 //	int n = doIntersectionPointPoint(alarmDist*alarmDist, e1.p(), e2.p(), contacts
@@ -159,8 +170,10 @@ int LMDNewProximityIntersection::computeIntersection(Line& e1, Point& e2, Output
 {
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
 
-    int n = doIntersectionLinePoint(alarmDist*alarmDist, e1.p1(), e1.p2(), e2.p(), contacts, e2.getIndex()
-            , *(e1.getCollisionModel()->getFilter())
+    std::cout<<"computeIntersection(Line& e1, Point& e2... is called"<<std::endl;
+    int id = e2.getIndex();
+    int n = doIntersectionLinePoint(alarmDist*alarmDist, e1.p1(), e1.p2(), e2.p(), contacts, id
+            , e1.getIndex(), e2.getIndex(), *(e1.getCollisionModel()->getFilter())
             , *(e2.getCollisionModel()->getFilter()));
 
     //int n = doIntersectionLinePoint(alarmDist*alarmDist, e1.p1(), e1.p2(), e2.p(), contacts, e2.getIndex());
@@ -187,15 +200,15 @@ bool LMDNewProximityIntersection::testIntersection(Line&, Line&)
 
 int LMDNewProximityIntersection::computeIntersection(Line& e1, Line& e2, OutputVector* contacts)
 {
+    std::cout<<"computeIntersection(Line& e1, Line& e2... is called"<<std::endl;
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
     const double dist2 = alarmDist*alarmDist;
     const int id = (e1.getCollisionModel()->getSize() > e2.getCollisionModel()->getSize()) ? e1.getIndex() : e2.getIndex();
 
     int n = doIntersectionLineLine(dist2, e1.p1(), e1.p2(), e2.p1(), e2.p2(), contacts, id
-            , *(e1.getCollisionModel()->getFilter())
+            , e1.getIndex(), e2.getIndex(), *(e1.getCollisionModel()->getFilter())
             , *(e2.getCollisionModel()->getFilter()));
 
-//	int n = doIntersectionLineLine(dist2, e1.p1(), e1.p2(), e2.p1(), e2.p2(), contacts, id);
 
     if ( n > 0)
     {
@@ -219,11 +232,43 @@ bool LMDNewProximityIntersection::testIntersection(Triangle&, Point&)
 
 int LMDNewProximityIntersection::computeIntersection(Triangle& e1, Point& e2, OutputVector* contacts)
 {
+
+// index of lines:
+    const fixed_array<unsigned int,3>& edgesInTriangle1 = e1.getCollisionModel()->getTopology()->getEdgesInTriangle(e1.getIndex());
+    unsigned int E1edge1verif, E1edge2verif, E1edge3verif;
+
+    // verify the edge ordering //
+    sofa::core::componentmodel::topology::BaseMeshTopology::Edge edge[3];
+    //std::cout<<"E1 & E2 verif: ";
+    for (int i=0; i<3; i++)
+    {
+        // Verify for E1: convention: Edge1 = P1 P2    Edge2 = P2 P3    Edge3 = P3 P1
+        edge[i] = e1.getCollisionModel()->getTopology()->getEdge(edgesInTriangle1[i]);
+        if(edge[i][0]==e1.p1Index() && edge[i][1]==e1.p2Index() || edge[i][0]==e1.p2Index() && edge[i][1]==e1.p1Index())
+        {
+            E1edge1verif = edgesInTriangle1[i]; /*std::cout<<"- e1 1: "<<i ;*/
+        }
+        if(edge[i][0]==e1.p2Index() && edge[i][1]==e1.p3Index() || edge[i][0]==e1.p3Index() && edge[i][1]==e1.p2Index())
+        {
+            E1edge2verif = edgesInTriangle1[i]; /*std::cout<<"- e1 2: "<<i ;*/
+        }
+        if(edge[i][0]==e1.p1Index() && edge[i][1]==e1.p3Index() || edge[i][0]==e1.p3Index() && edge[i][1]==e1.p1Index())
+        {
+            E1edge3verif = edgesInTriangle1[i]; /*std::cout<<"- e1 3: "<<i ;*/
+        }
+    }
+
+    unsigned int e1_edgesIndex[3];
+    e1_edgesIndex[0]=E1edge1verif; e1_edgesIndex[1]=E1edge2verif; e1_edgesIndex[2]=E1edge3verif;
+
+
+    std::cout<<"computeIntersection(Triangle& e1, Point& e2... is called"<<std::endl;
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
     const double dist2 = alarmDist*alarmDist;
 
-    int n = doIntersectionTrianglePoint(dist2, e1.flags(), e1.p1(), e1.p2(), e1.p3(), e1.n(), e2.p(), contacts, e2.getIndex()
-            , *(e1.getCollisionModel()->getFilter())
+    int id = e2.getIndex();
+    int n = doIntersectionTrianglePoint(dist2, e1.flags(), e1.p1(), e1.p2(), e1.p3(), e1.n(), e2.p(), contacts, id
+            , e1, e1_edgesIndex, e2.getIndex() , *(e1.getCollisionModel()->getFilter())
             , *(e2.getCollisionModel()->getFilter()));
 
 //	int n = doIntersectionTrianglePoint(dist2, e1.flags(), e1.p1(), e1.p2(), e1.p3(), e1.n(), e2.p(), contacts, e2.getIndex());
@@ -250,6 +295,40 @@ bool LMDNewProximityIntersection::testIntersection(Triangle&, Line&)
 
 int LMDNewProximityIntersection::computeIntersection(Triangle& e1, Line& e2, OutputVector* contacts)
 {
+
+// index of lines:
+    const fixed_array<unsigned int,3>& edgesInTriangle1 = e1.getCollisionModel()->getTopology()->getEdgesInTriangle(e1.getIndex());
+    unsigned int E1edge1verif, E1edge2verif, E1edge3verif;
+
+
+
+    // verify the edge ordering //
+    sofa::core::componentmodel::topology::BaseMeshTopology::Edge edge[3];
+    //std::cout<<"E1 & E2 verif: ";
+    for (int i=0; i<3; i++)
+    {
+        // Verify for E1: convention: Edge1 = P1 P2    Edge2 = P2 P3    Edge3 = P3 P1
+        edge[i] = e1.getCollisionModel()->getTopology()->getEdge(edgesInTriangle1[i]);
+        if(edge[i][0]==e1.p1Index() && edge[i][1]==e1.p2Index() || edge[i][0]==e1.p2Index() && edge[i][1]==e1.p1Index())
+        {
+            E1edge1verif = edgesInTriangle1[i]; /*std::cout<<"- e1 1: "<<i ;*/
+        }
+        if(edge[i][0]==e1.p2Index() && edge[i][1]==e1.p3Index() || edge[i][0]==e1.p3Index() && edge[i][1]==e1.p2Index())
+        {
+            E1edge2verif = edgesInTriangle1[i]; /*std::cout<<"- e1 2: "<<i ;*/
+        }
+        if(edge[i][0]==e1.p1Index() && edge[i][1]==e1.p3Index() || edge[i][0]==e1.p3Index() && edge[i][1]==e1.p1Index())
+        {
+            E1edge3verif = edgesInTriangle1[i]; /*std::cout<<"- e1 3: "<<i ;*/
+        }
+    }
+
+    unsigned int e1_edgesIndex[3];
+    e1_edgesIndex[0]=E1edge1verif; e1_edgesIndex[1]=E1edge2verif; e1_edgesIndex[2]=E1edge3verif;
+
+
+
+    std::cout<<"computeIntersection(Triangle& e1, Line& e2... is called"<<std::endl;
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
     const double dist2 = alarmDist*alarmDist;
     const Vector3& p1 = e1.p1();
@@ -262,40 +341,41 @@ int LMDNewProximityIntersection::computeIntersection(Triangle& e1, Line& e2, Out
     const int f1 = e1.flags();
 
     int n = 0;
+    int id= e2.getIndex();
 
     if (f1&TriangleModel::FLAG_P1)
     {
-        n += doIntersectionLinePoint(dist2, q1, q2, p1, contacts, e2.getIndex(), *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()), true);
-        //	n += doIntersectionLinePoint(dist2, q1, q2, p1, contacts, e2.getIndex(), true);
+        n += doIntersectionLinePoint(dist2, q1, q2, p1, contacts, id, e1.getIndex(), e2.getIndex() , *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()), true);
+
     }
     if (f1&TriangleModel::FLAG_P2)
     {
-        n += doIntersectionLinePoint(dist2, q1, q2, p2, contacts, e2.getIndex(), *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()), true);
-        //	n += doIntersectionLinePoint(dist2, q1, q2, p2, contacts, e2.getIndex(), true);
+        n += doIntersectionLinePoint(dist2, q1, q2, p2, contacts, id, e1.getIndex(), e2.getIndex() , *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()), true);
+
     }
     if (f1&TriangleModel::FLAG_P3)
     {
-        n += doIntersectionLinePoint(dist2, q1, q2, p3, contacts, e2.getIndex(), *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()), true);
-        //	n += doIntersectionLinePoint(dist2, q1, q2, p3, contacts, e2.getIndex(), true);
+        n += doIntersectionLinePoint(dist2, q1, q2, p3, contacts, id, e1.getIndex(), e2.getIndex() , *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()), true);
+
     }
 
-    n += doIntersectionTrianglePoint(dist2, f1, p1, p2, p3, pn, q1, contacts, e2.getIndex(), *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()), false);
-//	n += doIntersectionTrianglePoint(dist2, f1, p1, p2, p3, pn, q1, contacts, e2.getIndex(), false);
+    n += doIntersectionTrianglePoint(dist2, f1, p1, p2, p3, pn, q1, contacts, id ,e1, e1_edgesIndex, e2.getIndex(), *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()), false);
 
-    n += doIntersectionTrianglePoint(dist2, f1, p1, p2, p3, pn, q2, contacts, e2.getIndex(), *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()), false);
-//	n += doIntersectionTrianglePoint(dist2, f1, p1, p2, p3, pn, q2, contacts, e2.getIndex(), false);
+
+    n += doIntersectionTrianglePoint(dist2, f1, p1, p2, p3, pn, q2, contacts, id, e1, e1_edgesIndex, e2.getIndex(),*(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()), false);
+
 
     if (useLineLine.getValue())
     {
         if (f1&TriangleModel::FLAG_E12)
-            n += doIntersectionLineLine(dist2, p1, p2, q1, q2, contacts, e2.getIndex(), *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()));
-        //	n += doIntersectionLineLine(dist2, p1, p2, q1, q2, contacts, e2.getIndex());
+            n += doIntersectionLineLine(dist2, p1, p2, q1, q2, contacts, id, e1.getIndex(), e2.getIndex(), *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()));
+
         if (f1&TriangleModel::FLAG_E23)
-            n += doIntersectionLineLine(dist2, p2, p3, q1, q2, contacts, e2.getIndex(), *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()));
-        //	n += doIntersectionLineLine(dist2, p2, p3, q1, q2, contacts, e2.getIndex());
+            n += doIntersectionLineLine(dist2, p2, p3, q1, q2, contacts, id, e1.getIndex(), e2.getIndex(), *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()));
+
         if (f1&TriangleModel::FLAG_E31)
-            n += doIntersectionLineLine(dist2, p3, p1, q1, q2, contacts, e2.getIndex(), *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()));
-        //	n += doIntersectionLineLine(dist2, p3, p1, q1, q2, contacts, e2.getIndex());
+            n += doIntersectionLineLine(dist2, p3, p1, q1, q2, contacts, id, e1.getIndex(), e2.getIndex(), *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()));
+
     }
 
     if ( n > 0)
@@ -320,6 +400,9 @@ bool LMDNewProximityIntersection::testIntersection(Triangle&, Triangle&)
 
 int LMDNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2, OutputVector* contacts)
 {
+
+    //std::cout<<"computeIntersection(Triangle "<<e1.getIndex()<<", Triangle"<< e2.getIndex()<<" ... is called"<<std::endl;
+
     if (e1.getIndex() >= e1.getCollisionModel()->getSize())
     {
         serr << "NewProximityIntersection::computeIntersection(Triangle, Triangle): ERROR invalid e1 index "
@@ -334,6 +417,56 @@ int LMDNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2,
         return 0;
     }
 
+
+
+    // index of lines:
+    const fixed_array<unsigned int,3>& edgesInTriangle1 = e1.getCollisionModel()->getTopology()->getEdgesInTriangle(e1.getIndex());
+    const fixed_array<unsigned int,3>& edgesInTriangle2 = e2.getCollisionModel()->getTopology()->getEdgesInTriangle(e2.getIndex());
+
+    unsigned int E1edge1verif, E1edge2verif, E1edge3verif;
+    unsigned int E2edge1verif, E2edge2verif, E2edge3verif;
+
+    // verify the edge ordering //
+    sofa::core::componentmodel::topology::BaseMeshTopology::Edge edge[3];
+    //std::cout<<"E1 & E2 verif: ";
+    for (int i=0; i<3; i++)
+    {
+        // Verify for E1: convention: Edge1 = P1 P2    Edge2 = P2 P3    Edge3 = P3 P1
+        edge[i] = e1.getCollisionModel()->getTopology()->getEdge(edgesInTriangle1[i]);
+        if(edge[i][0]==e1.p1Index() && edge[i][1]==e1.p2Index() || edge[i][0]==e1.p2Index() && edge[i][1]==e1.p1Index())
+        {
+            E1edge1verif = edgesInTriangle1[i]; /*std::cout<<"- e1 1: "<<i ;*/
+        }
+        if(edge[i][0]==e1.p2Index() && edge[i][1]==e1.p3Index() || edge[i][0]==e1.p3Index() && edge[i][1]==e1.p2Index())
+        {
+            E1edge2verif = edgesInTriangle1[i]; /*std::cout<<"- e1 2: "<<i ;*/
+        }
+        if(edge[i][0]==e1.p1Index() && edge[i][1]==e1.p3Index() || edge[i][0]==e1.p3Index() && edge[i][1]==e1.p1Index())
+        {
+            E1edge3verif = edgesInTriangle1[i]; /*std::cout<<"- e1 3: "<<i ;*/
+        }
+        // Verify for E2: convention: Edge1 = P1 P2    Edge2 = P2 P3    Edge3 = P3 P1
+        edge[i] = e2.getCollisionModel()->getTopology()->getEdge(edgesInTriangle2[i]);
+        if(edge[i][0]==e2.p1Index() && edge[i][1]==e2.p2Index() || edge[i][0]==e2.p2Index() && edge[i][1]==e2.p1Index())
+        {
+            E2edge1verif = edgesInTriangle2[i];/*std::cout<<"- e2 1: "<<i ;*/
+        }
+        if(edge[i][0]==e2.p2Index() && edge[i][1]==e2.p3Index() || edge[i][0]==e2.p3Index() && edge[i][1]==e2.p2Index())
+        {
+            E2edge2verif = edgesInTriangle2[i];/*std::cout<<"- e2 2: "<<i ;*/
+        }
+        if(edge[i][0]==e2.p1Index() && edge[i][1]==e2.p3Index() || edge[i][0]==e2.p3Index() && edge[i][1]==e2.p1Index())
+        {
+            E2edge3verif = edgesInTriangle2[i]; /*std::cout<<"- e2 3: "<<i ;*/
+        }
+    }
+
+    unsigned int e1_edgesIndex[3],e2_edgesIndex[3];
+    e1_edgesIndex[0]=E1edge1verif; e1_edgesIndex[1]=E1edge2verif; e1_edgesIndex[2]=E1edge3verif;
+    e2_edgesIndex[0]=E2edge1verif; e2_edgesIndex[1]=E2edge2verif; e2_edgesIndex[2]=E2edge3verif;
+
+
+
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
     const double dist2 = alarmDist*alarmDist;
     const Vector3& p1 = e1.p1();
@@ -345,73 +478,116 @@ int LMDNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2,
     const Vector3& q3 = e2.p3();
     const Vector3& qn = e2.n();
 
+
+
     const int f1 = e1.flags();
     const int f2 = e2.flags();
 
     const int id1 = e1.getIndex()*3; // index of contacts involving points in e1
     const int id2 = e1.getCollisionModel()->getSize()*3 + e2.getIndex()*12; // index of contacts involving points in e2
 
+
     int n = 0;
 
+
+
+
+
+
     if (f1&TriangleModel::FLAG_P1)
-        n += doIntersectionTrianglePoint(dist2, f2, q1, q2, q3, qn, p1, contacts, id1+0, *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()), true);
+        n += doIntersectionTrianglePoint(dist2, f2, q1, q2, q3, qn, p1, contacts, id1+0, e2, e2_edgesIndex, e1.p1Index(), *(e2.getCollisionModel()->getFilter()), *(e1.getCollisionModel()->getFilter()), true);
     //	n += doIntersectionTrianglePoint(dist2, f2, q1, q2, q3, qn, p1, contacts, id1+0, true);
     if (f1&TriangleModel::FLAG_P2)
-        n += doIntersectionTrianglePoint(dist2, f2, q1, q2, q3, qn, p2, contacts, id1+1, *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()), true);
+        n += doIntersectionTrianglePoint(dist2, f2, q1, q2, q3, qn, p2, contacts, id1+1, e2, e2_edgesIndex, e1.p2Index(), *(e2.getCollisionModel()->getFilter()), *(e1.getCollisionModel()->getFilter()), true);
     //	n += doIntersectionTrianglePoint(dist2, f2, q1, q2, q3, qn, p2, contacts, id1+1, true);
     if (f1&TriangleModel::FLAG_P3)
-        n += doIntersectionTrianglePoint(dist2, f2, q1, q2, q3, qn, p3, contacts, id1+2, *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()), true);
+        n += doIntersectionTrianglePoint(dist2, f2, q1, q2, q3, qn, p3, contacts, id1+2, e2, e2_edgesIndex, e1.p3Index(), *(e2.getCollisionModel()->getFilter()), *(e1.getCollisionModel()->getFilter()), true);
     //	n += doIntersectionTrianglePoint(dist2, f2, q1, q2, q3, qn, p3, contacts, id1+2, true);
 
     if (f2&TriangleModel::FLAG_P1)
-        n += doIntersectionTrianglePoint(dist2, f1, p1, p2, p3, pn, q1, contacts, id2+0, *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()), false);
+        n += doIntersectionTrianglePoint(dist2, f1, p1, p2, p3, pn, q1, contacts, id2+0, e1, e1_edgesIndex, e2.p1Index(), *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()), false);
     //	n += doIntersectionTrianglePoint(dist2, f1, p1, p2, p3, pn, q1, contacts, id2+0, false);
     if (f2&TriangleModel::FLAG_P2)
-        n += doIntersectionTrianglePoint(dist2, f1, p1, p2, p3, pn, q2, contacts, id2+1, *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()), false);
+        n += doIntersectionTrianglePoint(dist2, f1, p1, p2, p3, pn, q2, contacts, id2+1, e1, e1_edgesIndex, e2.p2Index(), *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()), false);
     //	n += doIntersectionTrianglePoint(dist2, f1, p1, p2, p3, pn, q1, contacts, id2+0, false);
     if (f2&TriangleModel::FLAG_P3)
-        n += doIntersectionTrianglePoint(dist2, f1, p1, p2, p3, pn, q3, contacts, id2+2, *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()), false);
+        n += doIntersectionTrianglePoint(dist2, f1, p1, p2, p3, pn, q3, contacts, id2+2, e1, e1_edgesIndex, e2.p3Index(), *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()), false);
     //	n += doIntersectionTrianglePoint(dist2, f1, p1, p2, p3, pn, q1, contacts, id2+0, false);
 
     if (useLineLine.getValue())
     {
+
+        //std::cout<<" "<<std::endl;
+
+        //<<E1edge1verif<<" "<<E1edge2verif<<" "<<E1edge3verif<<"  - E2verif: "<<E2edge1verif<<" "<<E2edge2verif<<" "<<E2edge3verif<<std::endl;
+
+
+        //if(e1.getIndex()==23 || e2.getIndex()==23 || e1.getIndex()==46 || e2.getIndex()==46)
+        //	std::cout <<"triangle "<<e1.getIndex() <<" is tested with triangle"<< e2.getIndex()<<"-   f1 = "<<f1<<"  - f2 = "<<f2<<std::endl;
+
+        Vector3 e1_p1, e1_p2, e1_p3,e2_q1 , e2_q2,e2_q3;
+
         if (f1&TriangleModel::FLAG_E12)
         {
+            GetPosOfEdgeVertexOnTriangle(e1_p1,e1_p2,edgesInTriangle1[0],e1);
+
             if (f2&TriangleModel::FLAG_E12)
-                n += doIntersectionLineLine(dist2, p1, p2, q1, q2, contacts, id2+3, *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()));
-            //	n += doIntersectionLineLine(dist2, p1, p2, q1, q2, contacts, id2+3);
+            {
+                // look for the first edge of the triangle (given by edgesInTriangle1[0] )
+                GetPosOfEdgeVertexOnTriangle(e2_q1,e2_q2,edgesInTriangle2[0],e2);
+                n += doIntersectionLineLine(dist2, e1_p1, e1_p2, e2_q1, e2_q2, contacts, id2+3, edgesInTriangle1[0], edgesInTriangle2[0], *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()));
+            }
             if (f2&TriangleModel::FLAG_E23)
-                n += doIntersectionLineLine(dist2, p1, p2, q2, q3, contacts, id2+4, *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()));
-            //	n += doIntersectionLineLine(dist2, p1, p2, q2, q3, contacts, id2+4);
+            {
+                GetPosOfEdgeVertexOnTriangle(e2_q2,e2_q3,edgesInTriangle2[1],e2);
+                n += doIntersectionLineLine(dist2, e1_p1, e1_p2, e2_q2, e2_q3, contacts, id2+4, edgesInTriangle1[0], edgesInTriangle2[1], *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()));
+            }
             if (f2&TriangleModel::FLAG_E31)
-                n += doIntersectionLineLine(dist2, p1, p2, q3, q1, contacts, id2+5, *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()));
-            //	n += doIntersectionLineLine(dist2, p1, p2, q3, q1, contacts, id2+5);
+            {
+                GetPosOfEdgeVertexOnTriangle(e2_q3,e2_q1,edgesInTriangle2[2],e2);
+                n += doIntersectionLineLine(dist2, e1_p1, e1_p2, e2_q3, e2_q1, contacts, id2+5, edgesInTriangle1[0], edgesInTriangle2[2], *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()));
+            }
         }
 
         if (f1&TriangleModel::FLAG_E23)
         {
+            GetPosOfEdgeVertexOnTriangle(e1_p2,e1_p3,edgesInTriangle1[1],e1);
+
             if (f2&TriangleModel::FLAG_E12)
-                n += doIntersectionLineLine(dist2, p2, p3, q1, q2, contacts, id2+6, *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()));
-            //	n += doIntersectionLineLine(dist2, p2, p3, q1, q2, contacts, id2+6);
+            {
+                GetPosOfEdgeVertexOnTriangle(e2_q1,e2_q2,edgesInTriangle2[0],e2);
+                n += doIntersectionLineLine(dist2, e1_p2, e1_p3, e2_q1, e2_q2, contacts, id2+6, edgesInTriangle1[1], edgesInTriangle2[0], *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()));
+            }
             if (f2&TriangleModel::FLAG_E23)
-                n += doIntersectionLineLine(dist2, p2, p3, q2, q3, contacts, id2+7, *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()));
-            //	n += doIntersectionLineLine(dist2, p2, p3, q2, q3, contacts, id2+7);
+            {
+                GetPosOfEdgeVertexOnTriangle(e2_q2,e2_q3,edgesInTriangle2[1],e2);
+                n += doIntersectionLineLine(dist2, e1_p2, e1_p3, e2_q2, e2_q3, contacts, id2+7, edgesInTriangle1[1], edgesInTriangle2[1], *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()));
+            }
             if (f2&TriangleModel::FLAG_E31)
-                n += doIntersectionLineLine(dist2, p2, p3, q3, q1, contacts, id2+8, *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()));
-            //	n += doIntersectionLineLine(dist2, p2, p3, q3, q1, contacts, id2+8);
+            {
+                GetPosOfEdgeVertexOnTriangle(e2_q3,e2_q1,edgesInTriangle2[2],e2);
+                n += doIntersectionLineLine(dist2, e1_p2, e1_p3, e2_q3, e2_q1, contacts, id2+8, edgesInTriangle1[1], edgesInTriangle2[2], *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()));
+            }
         }
 
         if (f1&TriangleModel::FLAG_E31)
         {
+            GetPosOfEdgeVertexOnTriangle(e1_p3,e1_p1,edgesInTriangle1[2],e1);
             if (f2&TriangleModel::FLAG_E12)
-                n += doIntersectionLineLine(dist2, p3, p1, q1, q2, contacts, id2+9, *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()));
-            //	n += doIntersectionLineLine(dist2, p3, p1, q1, q2, contacts, id2+9);
+            {
+                GetPosOfEdgeVertexOnTriangle(e2_q1,e2_q2,edgesInTriangle2[0],e2);
+                n += doIntersectionLineLine(dist2, e1_p3, e1_p1, e2_q1, e2_q2, contacts, id2+9, edgesInTriangle1[2], edgesInTriangle2[0], *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()));
+            }
             if (f2&TriangleModel::FLAG_E23)
-                n += doIntersectionLineLine(dist2, p3, p1, q2, q3, contacts, id2+10, *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()));
-            //	n += doIntersectionLineLine(dist2, p3, p1, q2, q3, contacts, id2+10);
+            {
+                GetPosOfEdgeVertexOnTriangle(e2_q2,e2_q3,edgesInTriangle2[1],e2);
+                n += doIntersectionLineLine(dist2, e1_p3, e1_p1, e2_q2, e2_q3, contacts, id2+10, edgesInTriangle1[2], edgesInTriangle2[1], *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()));
+            }
             if (f2&TriangleModel::FLAG_E31)
-                n += doIntersectionLineLine(dist2, p3, p1, q3, q1, contacts, id2+11, *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()));
-            //	n += doIntersectionLineLine(dist2, p3, p1, q3, q1, contacts, id2+11);;
+            {
+                GetPosOfEdgeVertexOnTriangle(e2_q3,e2_q1,edgesInTriangle2[2],e2);
+                n += doIntersectionLineLine(dist2, e1_p3, e1_p1, e2_q3, e2_q1, contacts, id2+11, edgesInTriangle1[2], edgesInTriangle2[2], *(e1.getCollisionModel()->getFilter()), *(e2.getCollisionModel()->getFilter()));
+            }
         }
     }
 
@@ -488,6 +664,9 @@ int LMDNewProximityIntersection::computeIntersection(Ray &t1, Triangle &t2, Outp
     detection->value -= contactDist;
     return 1;
 }
+
+
+
 
 
 } // namespace collision
