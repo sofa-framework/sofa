@@ -63,8 +63,8 @@ int TriangleModelClass = core::RegisterObject("collision model using a triangula
         ;
 
 TriangleModel::TriangleModel()
-    : mstate(NULL)
-    , bothSide(initData(&bothSide, false, "bothSide", "activate collision on both side of the triangle model") )
+    : bothSide(initData(&bothSide, false, "bothSide", "activate collision on both side of the triangle model") )
+    , mstate(NULL)
     , computeNormals(initData(&computeNormals, true, "computeNormals", "set to false to disable computation of triangles normal"))
     , meshRevision(-1)
     , m_lmdFilter(NULL)

@@ -63,8 +63,9 @@ using core::componentmodel::topology::BaseMeshTopology;
 //;
 
 LineModel::LineModel()
-    : mstate(NULL), topology(NULL), meshRevision(-1), m_lmdFilter(NULL)
+    : mstate(NULL), topology(NULL), meshRevision(-1)
     , bothSide(initData(&bothSide, false, "bothSide", "activate collision on both side of the line model (when surface normals are defined on these lines)") )
+    , m_lmdFilter(NULL)
     , LineActiverEngine(initData(&LineActiverEngine,"LineActiverEngine", "path of a component LineActiver that activate or desactivate collision line during execution") )
 {
 }
