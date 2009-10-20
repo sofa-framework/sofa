@@ -54,7 +54,7 @@ void PointInfo::buildFilter(unsigned int p_index)
 
 
     bool debug=false;
-    if(p_index==-1)
+    if((int)p_index==-1)
         debug=true;
     //std::cout<<"buildFilter for point"<<p_index;
     m_noLineModel = false;
@@ -167,7 +167,7 @@ bool PointInfo::validate(const unsigned int p, const defaulttype::Vector3 &PQ)
 {
 
     bool debug=false;
-    if (p==-1)
+    if ((int)p==-1)
         debug=true;
 
     if (isValid())

@@ -236,6 +236,7 @@ int LMDNewProximityIntersection::computeIntersection(Triangle& e1, Point& e2, Ou
 // index of lines:
     const fixed_array<unsigned int,3>& edgesInTriangle1 = e1.getCollisionModel()->getTopology()->getEdgesInTriangle(e1.getIndex());
     unsigned int E1edge1verif, E1edge2verif, E1edge3verif;
+    E1edge1verif=0; E1edge2verif=0; E1edge3verif=0;
 
     // verify the edge ordering //
     sofa::core::componentmodel::topology::BaseMeshTopology::Edge edge[3];
@@ -244,15 +245,15 @@ int LMDNewProximityIntersection::computeIntersection(Triangle& e1, Point& e2, Ou
     {
         // Verify for E1: convention: Edge1 = P1 P2    Edge2 = P2 P3    Edge3 = P3 P1
         edge[i] = e1.getCollisionModel()->getTopology()->getEdge(edgesInTriangle1[i]);
-        if(edge[i][0]==e1.p1Index() && edge[i][1]==e1.p2Index() || edge[i][0]==e1.p2Index() && edge[i][1]==e1.p1Index())
+        if((int)edge[i][0]==e1.p1Index() && (int)edge[i][1]==e1.p2Index() || (int)edge[i][0]==e1.p2Index() && (int)edge[i][1]==e1.p1Index())
         {
             E1edge1verif = edgesInTriangle1[i]; /*std::cout<<"- e1 1: "<<i ;*/
         }
-        if(edge[i][0]==e1.p2Index() && edge[i][1]==e1.p3Index() || edge[i][0]==e1.p3Index() && edge[i][1]==e1.p2Index())
+        if((int)edge[i][0]==e1.p2Index() && (int)edge[i][1]==e1.p3Index() || (int)edge[i][0]==e1.p3Index() && (int)edge[i][1]==e1.p2Index())
         {
             E1edge2verif = edgesInTriangle1[i]; /*std::cout<<"- e1 2: "<<i ;*/
         }
-        if(edge[i][0]==e1.p1Index() && edge[i][1]==e1.p3Index() || edge[i][0]==e1.p3Index() && edge[i][1]==e1.p1Index())
+        if((int)edge[i][0]==e1.p1Index() && (int)edge[i][1]==e1.p3Index() || (int)edge[i][0]==e1.p3Index() && (int)edge[i][1]==e1.p1Index())
         {
             E1edge3verif = edgesInTriangle1[i]; /*std::cout<<"- e1 3: "<<i ;*/
         }
@@ -299,8 +300,7 @@ int LMDNewProximityIntersection::computeIntersection(Triangle& e1, Line& e2, Out
 // index of lines:
     const fixed_array<unsigned int,3>& edgesInTriangle1 = e1.getCollisionModel()->getTopology()->getEdgesInTriangle(e1.getIndex());
     unsigned int E1edge1verif, E1edge2verif, E1edge3verif;
-
-
+    E1edge1verif=0; E1edge2verif=0; E1edge3verif=0;
 
     // verify the edge ordering //
     sofa::core::componentmodel::topology::BaseMeshTopology::Edge edge[3];
@@ -309,15 +309,15 @@ int LMDNewProximityIntersection::computeIntersection(Triangle& e1, Line& e2, Out
     {
         // Verify for E1: convention: Edge1 = P1 P2    Edge2 = P2 P3    Edge3 = P3 P1
         edge[i] = e1.getCollisionModel()->getTopology()->getEdge(edgesInTriangle1[i]);
-        if(edge[i][0]==e1.p1Index() && edge[i][1]==e1.p2Index() || edge[i][0]==e1.p2Index() && edge[i][1]==e1.p1Index())
+        if((int)edge[i][0]==e1.p1Index() && (int)edge[i][1]==e1.p2Index() || (int)edge[i][0]==e1.p2Index() && (int)edge[i][1]==e1.p1Index())
         {
             E1edge1verif = edgesInTriangle1[i]; /*std::cout<<"- e1 1: "<<i ;*/
         }
-        if(edge[i][0]==e1.p2Index() && edge[i][1]==e1.p3Index() || edge[i][0]==e1.p3Index() && edge[i][1]==e1.p2Index())
+        if((int)edge[i][0]==e1.p2Index() && (int)edge[i][1]==e1.p3Index() || (int)edge[i][0]==e1.p3Index() && (int)edge[i][1]==e1.p2Index())
         {
             E1edge2verif = edgesInTriangle1[i]; /*std::cout<<"- e1 2: "<<i ;*/
         }
-        if(edge[i][0]==e1.p1Index() && edge[i][1]==e1.p3Index() || edge[i][0]==e1.p3Index() && edge[i][1]==e1.p1Index())
+        if((int)edge[i][0]==e1.p1Index() &&(int) edge[i][1]==e1.p3Index() || (int)edge[i][0]==e1.p3Index() && (int)edge[i][1]==e1.p1Index())
         {
             E1edge3verif = edgesInTriangle1[i]; /*std::cout<<"- e1 3: "<<i ;*/
         }
@@ -433,29 +433,29 @@ int LMDNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2,
     {
         // Verify for E1: convention: Edge1 = P1 P2    Edge2 = P2 P3    Edge3 = P3 P1
         edge[i] = e1.getCollisionModel()->getTopology()->getEdge(edgesInTriangle1[i]);
-        if(edge[i][0]==e1.p1Index() && edge[i][1]==e1.p2Index() || edge[i][0]==e1.p2Index() && edge[i][1]==e1.p1Index())
+        if((int)edge[i][0]==e1.p1Index() && (int)edge[i][1]==e1.p2Index() || (int)edge[i][0]==e1.p2Index() && (int)edge[i][1]==e1.p1Index())
         {
             E1edge1verif = edgesInTriangle1[i]; /*std::cout<<"- e1 1: "<<i ;*/
         }
-        if(edge[i][0]==e1.p2Index() && edge[i][1]==e1.p3Index() || edge[i][0]==e1.p3Index() && edge[i][1]==e1.p2Index())
+        if((int)edge[i][0]==e1.p2Index() && (int)edge[i][1]==e1.p3Index() || (int)edge[i][0]==e1.p3Index() && (int)edge[i][1]==e1.p2Index())
         {
             E1edge2verif = edgesInTriangle1[i]; /*std::cout<<"- e1 2: "<<i ;*/
         }
-        if(edge[i][0]==e1.p1Index() && edge[i][1]==e1.p3Index() || edge[i][0]==e1.p3Index() && edge[i][1]==e1.p1Index())
+        if((int)edge[i][0]==e1.p1Index() && (int)edge[i][1]==e1.p3Index() || (int)edge[i][0]==e1.p3Index() && (int)edge[i][1]==e1.p1Index())
         {
             E1edge3verif = edgesInTriangle1[i]; /*std::cout<<"- e1 3: "<<i ;*/
         }
         // Verify for E2: convention: Edge1 = P1 P2    Edge2 = P2 P3    Edge3 = P3 P1
         edge[i] = e2.getCollisionModel()->getTopology()->getEdge(edgesInTriangle2[i]);
-        if(edge[i][0]==e2.p1Index() && edge[i][1]==e2.p2Index() || edge[i][0]==e2.p2Index() && edge[i][1]==e2.p1Index())
+        if((int)edge[i][0]==e2.p1Index() && (int)edge[i][1]==e2.p2Index() || (int)edge[i][0]==e2.p2Index() && (int)edge[i][1]==e2.p1Index())
         {
             E2edge1verif = edgesInTriangle2[i];/*std::cout<<"- e2 1: "<<i ;*/
         }
-        if(edge[i][0]==e2.p2Index() && edge[i][1]==e2.p3Index() || edge[i][0]==e2.p3Index() && edge[i][1]==e2.p2Index())
+        if((int)edge[i][0]==e2.p2Index() && (int)edge[i][1]==e2.p3Index() || (int)edge[i][0]==e2.p3Index() && (int)edge[i][1]==e2.p2Index())
         {
             E2edge2verif = edgesInTriangle2[i];/*std::cout<<"- e2 2: "<<i ;*/
         }
-        if(edge[i][0]==e2.p1Index() && edge[i][1]==e2.p3Index() || edge[i][0]==e2.p3Index() && edge[i][1]==e2.p1Index())
+        if((int)edge[i][0]==e2.p1Index() && (int)edge[i][1]==e2.p3Index() || (int)edge[i][0]==e2.p3Index() && (int)edge[i][1]==e2.p1Index())
         {
             E2edge3verif = edgesInTriangle2[i]; /*std::cout<<"- e2 3: "<<i ;*/
         }

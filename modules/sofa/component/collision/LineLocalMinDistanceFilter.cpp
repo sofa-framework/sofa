@@ -49,7 +49,7 @@ void LineInfo::buildFilter(unsigned int edge_index)
 
     bool debug=false;
 
-    if (edge_index==-1)
+    if ((int)edge_index==-1)
         debug=true;
 
 
@@ -157,7 +157,7 @@ bool LineInfo::validate(const unsigned int edge_index, const defaulttype::Vector
 {
     bool debug=false;
 
-    if (edge_index==-1)
+    if ((int)edge_index==-1)
         debug=true;
 
 
