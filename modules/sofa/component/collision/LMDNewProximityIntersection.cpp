@@ -425,6 +425,9 @@ int LMDNewProximityIntersection::computeIntersection(Triangle& e1, Triangle& e2,
 
     unsigned int E1edge1verif, E1edge2verif, E1edge3verif;
     unsigned int E2edge1verif, E2edge2verif, E2edge3verif;
+    E1edge1verif=0; E1edge2verif=0; E1edge3verif=0;
+    E2edge1verif=0; E2edge2verif=0; E2edge3verif=0;
+
 
     // verify the edge ordering //
     sofa::core::componentmodel::topology::BaseMeshTopology::Edge edge[3];
