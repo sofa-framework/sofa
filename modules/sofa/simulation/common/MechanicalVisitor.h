@@ -1123,7 +1123,7 @@ public:
 
 
     virtual Result fwdLMConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseLMConstraint* c);
-    virtual void bwdLMConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseLMConstraint* c);
+    virtual void bwdMechanicalMapping(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalMapping* map);
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -1138,6 +1138,9 @@ public:
     {
     }
 #endif
+
+protected:
+    helper::vector< core::componentmodel::behavior::BaseLMConstraint* > constraintUsed;
 };
 
 
@@ -1172,7 +1175,7 @@ public:
 class SOFA_SIMULATION_COMMON_API MechanicalSolveLMConstraintVisitor: public MechanicalVisitor
 {
 public:
-    MechanicalSolveLMConstraintVisitor(bool priorStatePropagation):propagateState(priorStatePropagation)
+    MechanicalSolveLMConstraintVisitor(VecId v,bool priorStatePropagation):state(v), propagateState(priorStatePropagation)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
@@ -1195,6 +1198,7 @@ public:
     {
     }
 #endif
+    VecId state;
     bool propagateState;
 };
 

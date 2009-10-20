@@ -26,7 +26,8 @@
 #define SOFA_COMPONENT_CONSTRAINT_FIXEDLMCONSTRAINT_H
 
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
-#include <sofa/component/constraint/BaseProjectiveLMConstraint.h>
+#include <sofa/core/componentmodel/behavior/LMConstraint.h>
+#include <sofa/component/topology/PointSubset.h>
 
 
 namespace sofa
@@ -48,52 +49,95 @@ class FixedLMConstraintInternalData
 
 
 
-/** Keep a set of particle at a fixed position
+/** Keep two particules at an initial distance
  */
 template <class DataTypes>
-class FixedLMConstraint :  public BaseProjectiveLMConstraint<DataTypes>
+class FixedLMConstraint :  public core::componentmodel::behavior::LMConstraint<DataTypes,DataTypes>
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Deriv Deriv;
+    typedef typename DataTypes::SparseVecDeriv SparseVecDeriv;
     typedef typename core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalState;
 
 
     typedef sofa::component::topology::PointSubset SetIndex;
     typedef helper::vector<unsigned int> SetIndexArray;
+
+    typedef typename core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
+    typedef core::componentmodel::behavior::BaseLMConstraint::ConstOrder ConstOrder;
+
 protected:
     FixedLMConstraintInternalData<DataTypes> data;
     friend class FixedLMConstraintInternalData<DataTypes>;
 
 public:
-    FixedLMConstraint( MechanicalState *dof): BaseProjectiveLMConstraint<DataTypes>(dof),
+    FixedLMConstraint( MechanicalState *dof):
+        core::componentmodel::behavior::LMConstraint<DataTypes,DataTypes>(dof,dof),
+        f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed")),
         _drawSize(core::objectmodel::Base::initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
     {};
     FixedLMConstraint():
+        f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed")),
         _drawSize(core::objectmodel::Base::initData(&_drawSize,0.0,"drawSize","0 -> point based rendering, >0 -> radius of spheres") )
     {}
 
+    ~FixedLMConstraint() {};
 
-    //*********************************************************************
-    // -- BaseProjectiveLMConstraint API
-    // Expected values for a given particle:
-    void getExpectedAcceleration(unsigned int index, helper::vector< SReal >&expectedValue );
-    void getExpectedVelocity    (unsigned int index, helper::vector< SReal >&expectedValue );
-    void getPositionCorrection  (unsigned int index, helper::vector< SReal >&correction );
-    //*********************************************************************
+    void clearConstraints();
+    void addConstraint(unsigned int index);
+    void removeConstraint(unsigned int index);
 
-
+    // Handle topological changes
+    virtual void handleTopologyChange();
 
     void init();
+    void draw();
     void initFixedPosition();
     void reset() {initFixedPosition();};
-    void draw();
 
+    // -- LMConstraint interface
+    void buildJacobian();
+    void writeConstraintEquations(ConstOrder order);
+
+
+
+
+    std::string getTemplateName() const
+    {
+        return templateName(this);
+    }
+    static std::string templateName(const FixedLMConstraint<DataTypes>* = NULL)
+    {
+        return DataTypes::Name();
+    }
+
+
+
+
+
+    bool useMask() {return true;}
 protected :
 
+    Deriv X,Y,Z;
+    SetIndexArray idxX, idxY, idxZ;
     std::map< unsigned int, Coord> restPosition;
+
+    Data<SetIndex> f_indices;
     Data<double> _drawSize;
+
+
+    sofa::core::componentmodel::topology::BaseMeshTopology* topology;
+
+
+    // Define TestNewPointFunction
+    static bool FCTestNewPointFunction(int, void*, const sofa::helper::vector< unsigned int > &, const sofa::helper::vector< double >& );
+
+    // Define RemovalFunction
+    static void FCRemovalFunction ( int , void*);
+
 };
 
 } // namespace constraint
