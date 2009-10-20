@@ -923,21 +923,23 @@ Visitor::Result MechanicalExpressJacobianVisitor::fwdLMConstraint(simulation::No
 {
     ctime_t t0 = beginProcess(node, c);
     c->buildJacobian();
+    constraintUsed.push_back(c);
     endProcess(node, c, t0);
     return RESULT_CONTINUE;
 }
 
-void MechanicalExpressJacobianVisitor::bwdLMConstraint(simulation::Node* node, core::componentmodel::behavior::BaseLMConstraint* c)
-{
-    ctime_t t0 = beginProcess(node, c);
-    c->propagateJacobian();
-    endProcess(node, c, t0);
-}
-
-void MechanicalPropagateLMConstraintVisitor::bwdMechanicalMapping(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalMapping* map)
+void MechanicalExpressJacobianVisitor::bwdMechanicalMapping(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalMapping* map)
 {
     ctime_t t0 = beginProcess(node, map);
+
+    if (!constraintUsed.empty())
+    {
+        for (unsigned int i=0; i<constraintUsed.size(); ++i) constraintUsed[i]->propagateJacobian();
+        constraintUsed.clear();
+    }
+
     map->accumulateConstraint();
+
     endProcess(node, map, t0);
 }
 
@@ -947,9 +949,27 @@ Visitor::Result MechanicalSolveLMConstraintVisitor::fwdOdeSolver(simulation::Nod
 {
     typedef core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
     ctime_t t0 = beginProcess(node, s);
-
-    s->solveConstraint(propagateState,VecId::velocity());
-    s->solveConstraint(propagateState,VecId::position());
+    if ( state==VecId::dx())
+    {
+        bool active=s->constraintAcc.getValue();
+        s->constraintAcc.setValue(true);
+        s->solveConstraint(propagateState,state);
+        s->constraintAcc.setValue(active);
+    }
+    else if (state==VecId::velocity())
+    {
+        bool active=s->constraintVel.getValue();
+        s->constraintVel.setValue(true);
+        s->solveConstraint(propagateState,state);
+        s->constraintVel.setValue(active);
+    }
+    else if (state==VecId::position())
+    {
+        bool active=s->constraintPos.getValue();
+        s->constraintPos.setValue(true);
+        s->solveConstraint(propagateState,state);
+        s->constraintPos.setValue(active);
+    }
     endProcess(node, s, t0);
     return RESULT_PRUNE;
 }

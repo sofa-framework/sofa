@@ -36,16 +36,19 @@ namespace component
 namespace constraint
 {
 
+using namespace sofa::defaulttype;
+using namespace sofa::helper;
+
 SOFA_DECL_CLASS(FixedLMConstraint)
 
 int FixedLMConstraintClass = core::RegisterObject("Maintain a set of particle to a fixed position using LMConstraint")
 #ifndef SOFA_FLOAT
-        .add< FixedLMConstraint<defaulttype::Vec3dTypes> >()
-        .add< FixedLMConstraint<defaulttype::Rigid3dTypes> >()
+        .add< FixedLMConstraint<Vec3dTypes> >()
+        .add< FixedLMConstraint<Rigid3dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< FixedLMConstraint<defaulttype::Vec3fTypes> >()
-        .add< FixedLMConstraint<defaulttype::Rigid3fTypes> >()
+        .add< FixedLMConstraint<Vec3fTypes> >()
+        .add< FixedLMConstraint<Rigid3fTypes> >()
 #endif
         ;
 
@@ -66,23 +69,13 @@ void FixedLMConstraint<Rigid3dTypes>::draw()
     const SetIndexArray & indices = f_indices.getValue().getArray();
     if (!getContext()->getShowBehaviorModels()) return;
     VecCoord& x = *constrainedObject1->getX();
-
-    std::vector< Vector3 > points;
-    for (SetIndexArray::const_iterator it = indices.begin();
-            it != indices.end();
-            ++it)
-    {
-        points.push_back(x[*it].getCenter());
-    }
-
-    if( _drawSize.getValue() == 0) // old classical drawing by points
-    {
-        simulation::getSimulation()->DrawUtility.drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
-    }
-    else
-    {
-        simulation::getSimulation()->DrawUtility.drawSpheres(points, (float)_drawSize.getValue(), Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
-    }
+    glDisable (GL_LIGHTING);
+    glPointSize(10);
+    glColor4f (1,0.5,0.5,1);
+    glBegin (GL_POINTS);
+    for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        gl::glVertexT(x[*it].getCenter());
+    glEnd();
 }
 
 #endif
