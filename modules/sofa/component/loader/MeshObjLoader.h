@@ -102,7 +102,7 @@ public:
     template <class T>
     static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
     {
-        std::cout << "MeshObjLoader::cancreate()" << std::endl;
+        //std::cout << "MeshObjLoader::cancreate()" << std::endl;
 
         //      std::cout << BaseLoader::m_filename << " is not an Gmsh file." << std::endl;
 

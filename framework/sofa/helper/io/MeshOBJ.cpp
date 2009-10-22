@@ -66,7 +66,6 @@ void MeshOBJ::init (std::string filename)
 
 void MeshOBJ::readOBJ (FILE* file, const char* filename)
 {
-    std::cout << "MeshOBJ::readOBJ" <<std::endl;
 
     vector< vector<int> > vertNormTexIndices;
     vector<int>vIndices, nIndices, tIndices;
@@ -290,7 +289,6 @@ void MeshOBJ::readOBJ (FILE* file, const char* filename)
 // -----------------------------------------------------
 void MeshOBJ::readMTL(const char* filename)
 {
-    std::cout << "MeshOBJ::readMTL" << std::endl;
     FILE* file;
     char buf[128];
     file = fopen(filename, "r");
