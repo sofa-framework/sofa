@@ -38,6 +38,7 @@
 #include <sofa/component/visualmodel/LightManager.h>
 #include <sofa/helper/system/glu.h>
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/simulation/common/Simulation.h>
 
 namespace sofa
 {
@@ -68,12 +69,15 @@ int SpotLightClass = core::RegisterObject("Spot Light")
         .add< SpotLight >()
         ;
 
+using sofa::defaulttype::Vector3;
+
 Light::Light()
     : lightID(0), shadowTexWidth(0),shadowTexHeight(0)
     , color(initData(&color, (Vector3) Vector3(1,1,1), "color", "Set the color of the light"))
-    , zNear(initData(&zNear, (float) 4.0, "zNear", "Set minimum distance for view field"))
-    , zFar(initData(&zFar, (float) 50.0, "zFar", "Set maximum distance for view field"))
+    , zNear(initData(&zNear, (GLdouble) 4.0, "zNear", "Set minimum distance for view field"))
+    , zFar(initData(&zFar, (GLdouble) 50.0, "zFar", "Set maximum distance for view field"))
     , shadowTextureSize (initData(&shadowTextureSize, (GLuint) 0, "shadowTextureSize", "Set size for shadow texture "))
+    , drawSource(initData(&drawSource, (bool) false, "drawSource", "Draw Light Source"))
     , enableShadow(initData(&enableShadow, (bool) true, "enableShadow", "Enable Shadow from this light"))
 {
 
@@ -227,9 +231,15 @@ void DirectionalLight::drawLight()
     glLightfv(GL_LIGHT0+lightID, GL_POSITION, dir);
 }
 
-PositionalLight::PositionalLight():
-    position(initData(&position, (Vector3) Vector3(-0.7,0.3,0.0), "position", "Set the position of the light")),
-    attenuation(initData(&attenuation, (float) 0.0, "attenuation", "Set the attenuation of the light"))
+void DirectionalLight::draw()
+{
+
+}
+
+PositionalLight::PositionalLight()
+    :fixed(initData(&fixed, (bool) false, "fixed", "Fix light position from the camera"))
+    ,position(initData(&position, (Vector3) Vector3(-0.7,0.3,0.0), "position", "Set the position of the light"))
+    ,attenuation(initData(&attenuation, (float) 0.0, "attenuation", "Set the attenuation of the light"))
 {
 
 }
@@ -260,11 +270,47 @@ void PositionalLight::drawLight()
     pos[1]=(GLfloat)(position.getValue()[1]);
     pos[2]=(GLfloat)(position.getValue()[2]);
     pos[3]=1.0; // positional
-    glLightfv(GL_LIGHT0+lightID, GL_POSITION, pos);
+    if (fixed.getValue())
+    {
+        glMatrixMode(GL_PROJECTION);
+        glPushMatrix();
+        glLoadIdentity();
+        glLightfv(GL_LIGHT0+lightID, GL_POSITION, pos);
+        glPopMatrix();
+        glMatrixMode(GL_MODELVIEW);
+    }
+    else
+        glLightfv(GL_LIGHT0+lightID, GL_POSITION, pos);
 
     glLightf(GL_LIGHT0+lightID, GL_LINEAR_ATTENUATION, attenuation.getValue());
 
 }
+
+void PositionalLight::draw()
+{
+    if (drawSource.getValue() && getContext()->getShowVisualModels())
+    {
+        Vector3 sceneMinBBox, sceneMaxBBox;
+        sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)this->getContext(), sceneMinBBox.ptr(), sceneMaxBBox.ptr());
+        float scale = (sceneMaxBBox - sceneMinBBox).norm();
+        scale *= 0.01;
+
+        GLUquadric* quad = gluNewQuadric();
+        const Vector3& pos = position.getValue();
+        const Vector3& col = color.getValue();
+
+        glDisable(GL_LIGHTING);
+        glColor3dv(col.ptr());
+
+        glPushMatrix();
+        glTranslatef(pos[0], pos[1], pos[2]);
+        gluSphere(quad, 1.0*scale, 16, 16);
+        glPopMatrix();
+
+        glEnable(GL_LIGHTING);
+    }
+}
+
 
 
 SpotLight::SpotLight():
@@ -301,6 +347,52 @@ void SpotLight::drawLight()
     glLightfv(GL_LIGHT0+lightID, GL_SPOT_DIRECTION, dir);
     glLightf(GL_LIGHT0+lightID, GL_SPOT_EXPONENT, exponent.getValue());
 
+    if (fixed.getValue())
+    {
+        glMatrixMode(GL_PROJECTION);
+        glPushMatrix();
+        glLoadIdentity();
+        glLightfv(GL_LIGHT0+lightID, GL_SPOT_DIRECTION, dir);
+        glPopMatrix();
+        glMatrixMode(GL_MODELVIEW);
+    }
+    else
+        glLightfv(GL_LIGHT0+lightID, GL_SPOT_DIRECTION, dir);
+
+}
+
+void SpotLight::draw()
+{
+    if (drawSource.getValue() && getContext()->getShowVisualModels())
+    {
+        Vector3 sceneMinBBox, sceneMaxBBox;
+        sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)this->getContext(), sceneMinBBox.ptr(), sceneMaxBBox.ptr());
+        float scale = (sceneMaxBBox - sceneMinBBox).norm();
+        scale *= 0.01;
+        float width = 5.0;
+        float base =(tan(cutoff.getValue()*M_PI/360)*width*2);
+
+        GLUquadric* quad = gluNewQuadric();
+        const Vector3& pos = position.getValue();
+        const Vector3& col = color.getValue();
+
+        glDisable(GL_LIGHTING);
+        glColor3dv(col.ptr());
+
+        glPushMatrix();
+        glTranslatef(pos[0], pos[1], pos[2]);
+        glScalef(scale, scale, scale);
+        glPushMatrix();
+        gluSphere(quad, 1.0, 16, 16);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glTranslatef(0.0,0.0,-width);
+        gluCylinder(quad,base, 0.0, width, 16, 16);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        glPopMatrix();
+        glPopMatrix();
+
+        glEnable(GL_LIGHTING);
+    }
 }
 
 void SpotLight::preDrawShadow()

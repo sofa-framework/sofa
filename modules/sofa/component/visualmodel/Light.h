@@ -57,7 +57,6 @@ namespace visualmodel
  *
  */
 
-using sofa::defaulttype::Vector3;
 
 class SOFA_COMPONENT_VISUALMODEL_API Light : public virtual sofa::core::VisualModel
 {
@@ -65,11 +64,11 @@ protected:
     GLint lightID;
     GLuint shadowTexWidth, shadowTexHeight;
 
-    Data<Vector3> color;
-    Data<float> zNear;
-    Data<float> zFar;
+    Data<sofa::defaulttype::Vector3> color;
+    Data<GLdouble> zNear;
+    Data<GLdouble> zFar;
     Data<GLuint> shadowTextureSize;
-
+    Data<bool> drawSource;
 #ifdef SOFA_HAVE_GLEW
     helper::gl::FrameBufferObject shadowFBO;
 #endif
@@ -91,7 +90,7 @@ public:
     virtual void initVisual() ;
     void init();
     virtual void drawLight();
-    void draw() { } ;
+    virtual void draw() { } ;
     virtual void reinit();
     void update() {} ;
 
@@ -107,7 +106,7 @@ public:
 class DirectionalLight : public Light
 {
 private:
-    Data<Vector3> direction;
+    Data<sofa::defaulttype::Vector3> direction;
 
 public:
 
@@ -115,6 +114,7 @@ public:
     virtual ~DirectionalLight();
     virtual void initVisual() ;
     virtual void drawLight();
+    virtual void draw();
     virtual void reinit();
 
 
@@ -123,7 +123,8 @@ public:
 class SOFA_COMPONENT_VISUALMODEL_API PositionalLight : public Light
 {
 protected:
-    Data<Vector3> position;
+    Data<bool> fixed;
+    Data<sofa::defaulttype::Vector3> position;
     Data<float> attenuation;
 
 public:
@@ -132,6 +133,7 @@ public:
     virtual ~PositionalLight();
     virtual void initVisual() ;
     virtual void drawLight();
+    virtual void draw();
     virtual void reinit();
 
 };
@@ -139,7 +141,7 @@ public:
 class SOFA_COMPONENT_VISUALMODEL_API SpotLight : public PositionalLight
 {
 protected:
-    Data<Vector3> direction;
+    Data<sofa::defaulttype::Vector3> direction;
     Data<float> cutoff;
     Data<float> exponent;
 
@@ -148,6 +150,7 @@ public:
     virtual ~SpotLight();
     virtual void initVisual() ;
     virtual void drawLight();
+    virtual void draw();
     virtual void reinit();
 
     void preDrawShadow();
