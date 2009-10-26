@@ -59,7 +59,7 @@ OglAttribute< size, type, DataTypes>::OglAttribute() :
 template < int size, unsigned int type, class DataTypes>
 OglAttribute< size, type, DataTypes>::~OglAttribute()
 {
-    glDeleteBuffers(1, &_abo);
+    glDeleteBuffersARB(1, &_abo);
 }
 
 
@@ -70,7 +70,6 @@ void OglAttribute< size, type, DataTypes>::init()
     getContext()->get( _topology);
 
     if ( ( int ) _abo == -1 ) glGenBuffers ( 1, &_abo );
-
 }
 
 
@@ -79,21 +78,20 @@ void OglAttribute< size, type, DataTypes>::initVisual ()
 {
     const ResizableExtVector<DataTypes>& data = value.getValue();
     unsigned int totalSize = data.size() *sizeof ( data[0] );
-    glBindBuffer ( GL_ARRAY_BUFFER, _abo );
-    glBufferData ( GL_ARRAY_BUFFER,
+    glBindBufferARB ( GL_ARRAY_BUFFER, _abo );
+    glBufferDataARB ( GL_ARRAY_BUFFER,
             totalSize,
             NULL,
             _usage );
     // Fill the buffer
-    glBufferSubData ( GL_ARRAY_BUFFER,
+    glBufferSubDataARB ( GL_ARRAY_BUFFER,
             0,
             totalSize,
             data.getData() );
     _index = shader->getAttribute ( indexShader.getValue(), id.getValue().c_str() );
 
-
     enable();
-    glBindBuffer(GL_ARRAY_BUFFER,0);
+    glBindBufferARB(GL_ARRAY_BUFFER,0);
 }
 
 
@@ -102,19 +100,20 @@ bool OglAttribute< size, type, DataTypes>::updateABO()
 {
     const ResizableExtVector<DataTypes>& data = value.getValue();
     unsigned int totalSize = data.size() *sizeof ( data[0] );
-    glBindBuffer ( GL_ARRAY_BUFFER, _abo );
-    glBufferData ( GL_ARRAY_BUFFER,
+    glBindBufferARB ( GL_ARRAY_BUFFER, _abo );
+    glBufferDataARB ( GL_ARRAY_BUFFER,
             totalSize,
             NULL,
             _usage );
     // Fill the buffer
-    glBufferSubData ( GL_ARRAY_BUFFER,
+    glBufferSubDataARB ( GL_ARRAY_BUFFER,
             0,
             totalSize,
             (char*)data.getData() );
 
     enable();
-    glBindBuffer(GL_ARRAY_BUFFER,0);
+    glBindBufferARB(GL_ARRAY_BUFFER,0);
+
     return true;
 }
 
@@ -154,18 +153,18 @@ template < int size, unsigned int type, class DataTypes>
 void OglAttribute< size, type, DataTypes>::enable()
 {
 
-    glBindBuffer(GL_ARRAY_BUFFER, _abo);
-    glEnableVertexAttribArray ( _index );
-    glVertexAttribPointer ( _index, size, type, GL_FALSE, 0, ( char* ) NULL + 0);
-    //glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBufferARB(GL_ARRAY_BUFFER, _abo);
+    glEnableVertexAttribArrayARB ( _index );
+    glVertexAttribPointerARB ( _index, size, type, GL_FALSE, 0, ( char* ) NULL + 0);
+    //glBindBufferARB(GL_ARRAY_BUFFER, 0);
 }
 
 
 template < int size, unsigned int type, class DataTypes>
 void OglAttribute< size, type, DataTypes>::disable()
 {
-    glDisableVertexAttribArray ( _index );
-    glBindBuffer(GL_ARRAY_BUFFER,0);
+    glDisableVertexAttribArrayARB ( _index );
+    glBindBufferARB(GL_ARRAY_BUFFER,0);
 }
 
 template < int size, unsigned int type, class DataTypes>
