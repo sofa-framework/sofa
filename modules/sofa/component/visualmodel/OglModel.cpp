@@ -111,12 +111,12 @@ void OglModel::internalDraw()
     if(VBOGenDone && useVBO.getValue())
     {
 #ifdef SOFA_HAVE_GLEW
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBindBufferARB(GL_ARRAY_BUFFER, vbo);
 
         glVertexPointer(3, GL_FLOAT, 0, (char*)NULL + 0);
         glNormalPointer(GL_FLOAT, 0, (char*)NULL + (vertices.size()*sizeof(vertices[0])));
 
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glBindBufferARB(GL_ARRAY_BUFFER, 0);
 #endif
     }
     else
@@ -137,9 +137,9 @@ void OglModel::internalDraw()
         if(VBOGenDone && useVBO.getValue())
         {
 #ifdef SOFA_HAVE_GLEW
-            glBindBuffer(GL_ARRAY_BUFFER, vbo);
+            glBindBufferARB(GL_ARRAY_BUFFER, vbo);
             glTexCoordPointer(2, GL_FLOAT, 0, (char*)NULL + (vertices.size()*sizeof(vertices[0])) + (vnormals.size()*sizeof(vnormals[0])) );
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
+            glBindBufferARB(GL_ARRAY_BUFFER, 0);
 #endif
         }
         else
@@ -157,6 +157,8 @@ void OglModel::internalDraw()
         else glDepthMask(GL_FALSE);
 
         glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
+        //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 
         for (unsigned int i=0; i<xforms.size(); i++)
         {
@@ -169,15 +171,15 @@ void OglModel::internalDraw()
 #ifdef SOFA_HAVE_GLEW
                 if (!triangles.empty())
                 {
-                    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
+                    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
                     glDrawElements(GL_TRIANGLES, triangles.size() * 3, GL_UNSIGNED_INT, (char*)NULL + 0);
-                    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+                    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
                 }
                 if (!quads.empty())
                 {
-                    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
+                    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
                     glDrawElements(GL_QUADS, quads.size() * 4, GL_UNSIGNED_INT, (char*)NULL + 0);
-                    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+                    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
                 }
 #endif
             }
@@ -213,15 +215,15 @@ void OglModel::internalDraw()
 #ifdef SOFA_HAVE_GLEW
             if (!triangles.empty())
             {
-                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
+                glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
                 glDrawElements(GL_TRIANGLES, triangles.size() * 3, GL_UNSIGNED_INT, (char*)NULL + 0);
-                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+                glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
             }
             if (!quads.empty())
             {
-                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
+                glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
                 glDrawElements(GL_QUADS, quads.size() * 4, GL_UNSIGNED_INT, (char*)NULL + 0);
-                glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+                glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
             }
 #endif
         }
@@ -323,14 +325,14 @@ void OglModel::createVertexBuffer()
 {
 
 
-    glGenBuffers(1, &vbo);
+    glGenBuffersARB(1, &vbo);
     initVertexBuffer();
     VBOGenDone = true;
 }
 
 void OglModel::createTrianglesIndicesBuffer()
 {
-    glGenBuffers(1, &iboTriangles);
+    glGenBuffersARB(1, &iboTriangles);
     initTrianglesIndicesBuffer();
     useTriangles = true;
 }
@@ -338,7 +340,7 @@ void OglModel::createTrianglesIndicesBuffer()
 
 void OglModel::createQuadsIndicesBuffer()
 {
-    glGenBuffers(1, &iboQuads);
+    glGenBuffersARB(1, &iboQuads);
     initQuadsIndicesBuffer();
     useQuads = true;
 }
@@ -354,9 +356,9 @@ void OglModel::initVertexBuffer()
 
     unsigned int totalSize = positionsBufferSize + normalsBufferSize + textureCoordsBufferSize;
 
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBindBufferARB(GL_ARRAY_BUFFER, vbo);
     //Vertex Buffer creation
-    glBufferData(GL_ARRAY_BUFFER,
+    glBufferDataARB(GL_ARRAY_BUFFER,
             totalSize,
             NULL,
             GL_DYNAMIC_DRAW);
@@ -364,26 +366,26 @@ void OglModel::initVertexBuffer()
 
     updateVertexBuffer();
 
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBufferARB(GL_ARRAY_BUFFER, 0);
 }
 
 
 void OglModel::initTrianglesIndicesBuffer()
 {
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
+    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
 
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, triangles.size()*sizeof(triangles[0]), NULL, GL_DYNAMIC_DRAW);
+    glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER, triangles.size()*sizeof(triangles[0]), NULL, GL_DYNAMIC_DRAW);
     updateTrianglesIndicesBuffer();
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 void OglModel::initQuadsIndicesBuffer()
 {
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, quads.size()*sizeof(quads[0]), NULL, GL_DYNAMIC_DRAW);
+    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
+    glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER, quads.size()*sizeof(quads[0]), NULL, GL_DYNAMIC_DRAW);
     updateQuadsIndicesBuffer();
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 void OglModel::updateVertexBuffer()
@@ -394,43 +396,43 @@ void OglModel::updateVertexBuffer()
     if (tex || putOnlyTexCoords.getValue())
         textureCoordsBufferSize = vtexcoords.size() * sizeof(vtexcoords[0]);
 
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBindBufferARB(GL_ARRAY_BUFFER, vbo);
     //Positions
-    glBufferSubData(GL_ARRAY_BUFFER,
+    glBufferSubDataARB(GL_ARRAY_BUFFER,
             0,
             positionsBufferSize,
             vertices.getData());
 
     //Normals
-    glBufferSubData(GL_ARRAY_BUFFER,
+    glBufferSubDataARB(GL_ARRAY_BUFFER,
             positionsBufferSize,
             normalsBufferSize,
             vnormals.getData());
     //Texture coords
     if(tex || putOnlyTexCoords.getValue())
     {
-        glBufferSubData(GL_ARRAY_BUFFER,
+        glBufferSubDataARB(GL_ARRAY_BUFFER,
                 positionsBufferSize + normalsBufferSize,
                 textureCoordsBufferSize,
                 vtexcoords.getData());
     }
 
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindBufferARB(GL_ARRAY_BUFFER, 0);
 
 }
 
 void OglModel::updateTrianglesIndicesBuffer()
 {
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
-    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, triangles.size()*sizeof(triangles[0]), &triangles[0]);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
+    glBufferSubDataARB(GL_ELEMENT_ARRAY_BUFFER, 0, triangles.size()*sizeof(triangles[0]), &triangles[0]);
+    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
 void OglModel::updateQuadsIndicesBuffer()
 {
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
-    glBufferSubData(GL_ELEMENT_ARRAY_BUFFER, 0, quads.size()*sizeof(quads[0]), &quads[0]);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
+    glBufferSubDataARB(GL_ELEMENT_ARRAY_BUFFER, 0, quads.size()*sizeof(quads[0]), &quads[0]);
+    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 #endif
 void OglModel::updateBuffers()
