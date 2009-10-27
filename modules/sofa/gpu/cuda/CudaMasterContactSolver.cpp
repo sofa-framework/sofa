@@ -273,7 +273,7 @@ void CudaMasterContactSolver<real>::step(double dt)
 
     core::componentmodel::behavior::BaseMechanicalState::VecId dx_id = core::componentmodel::behavior::BaseMechanicalState::VecId::dx();
     simulation::MechanicalVOpVisitor(dx_id).execute( context);
-    simulation::MechanicalPropagateDxVisitor(dx_id).execute( context);
+    simulation::MechanicalPropagateDxVisitor(dx_id,true).execute( context); //ignore the masks (is it necessary?)
     simulation::MechanicalVOpVisitor(dx_id).execute( context);
 
 #ifdef DISPLAY_TIME
