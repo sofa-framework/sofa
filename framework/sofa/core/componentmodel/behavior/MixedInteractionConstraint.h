@@ -67,6 +67,7 @@ public:
     typedef typename DataTypes2::VecConst VecConst2;
     typedef typename DataTypes2::Coord Coord2;
     typedef typename DataTypes2::Deriv Deriv2;
+    typedef core::componentmodel::behavior::BaseMechanicalState::ParticleMask ParticleMask;
 
     MixedInteractionConstraint(MechanicalState<DataTypes1> *mm1 = NULL, MechanicalState<DataTypes2> *mm2 = NULL);
 
@@ -189,6 +190,8 @@ protected:
     Data< std::string > object2;
     MechanicalState<DataTypes1> *mstate1;
     MechanicalState<DataTypes2> *mstate2;
+    ParticleMask *mask1;
+    ParticleMask *mask2;
 };
 
 #if defined(WIN32) && !defined(SOFA_BUILD_CORE)

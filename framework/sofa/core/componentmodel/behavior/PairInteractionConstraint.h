@@ -63,6 +63,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
+    typedef core::componentmodel::behavior::BaseMechanicalState::ParticleMask ParticleMask;
 
     PairInteractionConstraint(MechanicalState<DataTypes> *mm1 = NULL, MechanicalState<DataTypes> *mm2 = NULL);
 
@@ -196,6 +197,8 @@ protected:
     Data< std::string > object2;
     MechanicalState<DataTypes> *mstate1;
     MechanicalState<DataTypes> *mstate2;
+    ParticleMask *mask1;
+    ParticleMask *mask2;
 };
 
 #if defined(WIN32) && !defined(SOFA_BUILD_CORE)

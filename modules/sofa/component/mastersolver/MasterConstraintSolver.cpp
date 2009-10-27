@@ -276,7 +276,7 @@ void MasterConstraintSolver::step ( double dt )
     ////////propagate acceleration ? //////
     core::componentmodel::behavior::BaseMechanicalState::VecId dx_id = core::componentmodel::behavior::BaseMechanicalState::VecId::dx();
     simulation::MechanicalVOpVisitor(dx_id).execute(context);
-    simulation::MechanicalPropagateDxVisitor(dx_id).execute(context);
+    simulation::MechanicalPropagateDxVisitor(dx_id,true).execute(context); //ignore mask here (is it necessary?)
     simulation::MechanicalVOpVisitor(dx_id).execute(context);
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

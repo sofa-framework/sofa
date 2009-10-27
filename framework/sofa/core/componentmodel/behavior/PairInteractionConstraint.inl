@@ -64,6 +64,9 @@ void PairInteractionConstraint<DataTypes>::init()
     {
         mstate1 = mstate2 = dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
     }
+
+    this->mask1 = &mstate1->forceMask;
+    this->mask2 = &mstate2->forceMask;
 }
 
 template<class DataTypes>
@@ -78,7 +81,11 @@ void PairInteractionConstraint<DataTypes>::projectResponse()
 {
     if( !isActive() ) return;
     if (mstate1 && mstate2)
+    {
+        this->mask1 = &mstate1->forceMask;
+        this->mask2 = &mstate2->forceMask;
         projectResponse(*mstate1->getDx(), *mstate2->getDx());
+    }
 }
 
 template<class DataTypes>
@@ -86,7 +93,11 @@ void PairInteractionConstraint<DataTypes>::projectVelocity()
 {
     if( !isActive() ) return;
     if (mstate1 && mstate2)
+    {
+        this->mask1 = &mstate1->forceMask;
+        this->mask2 = &mstate2->forceMask;
         projectVelocity(*mstate1->getV(), *mstate2->getV());
+    }
 }
 
 template<class DataTypes>
@@ -94,7 +105,11 @@ void PairInteractionConstraint<DataTypes>::projectPosition()
 {
     if( !isActive() ) return;
     if (mstate1 && mstate2)
+    {
+        this->mask1 = &mstate1->forceMask;
+        this->mask2 = &mstate2->forceMask;
         projectPosition(*mstate1->getX(), *mstate2->getX());
+    }
 }
 
 template<class DataTypes>
@@ -102,7 +117,11 @@ void PairInteractionConstraint<DataTypes>::projectFreeVelocity()
 {
     if( !isActive() ) return;
     if (mstate1 && mstate2)
+    {
+        this->mask1 = &mstate1->forceMask;
+        this->mask2 = &mstate2->forceMask;
         projectVelocity(*mstate1->getVfree(), *mstate2->getVfree());
+    }
 }
 
 template<class DataTypes>
@@ -110,7 +129,11 @@ void PairInteractionConstraint<DataTypes>::projectFreePosition()
 {
     if( !isActive() ) return;
     if (mstate1 && mstate2)
+    {
+        this->mask1 = &mstate1->forceMask;
+        this->mask2 = &mstate2->forceMask;
         projectPosition(*mstate1->getXfree(), *mstate2->getXfree());
+    }
 }
 
 template<class DataTypes>
@@ -118,7 +141,11 @@ void PairInteractionConstraint<DataTypes>::applyConstraint(unsigned int &contact
 {
     if( !isActive() ) return;
     if (mstate1 && mstate2)
+    {
+        this->mask1 = &mstate1->forceMask;
+        this->mask2 = &mstate2->forceMask;
         applyConstraint(*mstate1->getC(), *mstate2->getC(), contactId);
+    }
 }
 
 } // namespace behavior
