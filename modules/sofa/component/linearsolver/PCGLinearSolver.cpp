@@ -68,6 +68,16 @@ void PCGLinearSolver<TMatrix,TVector>::init()
             this->preconditioners.push_back(solvers[i]);
         }
     }
+
+#ifdef DISPLAY_TIME
+    time3 = 0.0;
+    time1 = 0.0;
+    time2 = 0.0;
+    time4 = 0.0;
+    step_simu=0;
+    it_simu=0;
+#endif
+
 }
 
 template<class TMatrix, class TVector>
@@ -76,7 +86,7 @@ void PCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(double mFact, double b
     Inherit::setSystemMBKMatrix(mFact,bFact,kFact);
 
 #ifdef DISPLAY_TIME
-    time3 = (double) CTime::getTime();
+    double t3 = (double) CTime::getTime();
 #endif
 
     no_precond = use_precond.getValue();
@@ -98,7 +108,7 @@ void PCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(double mFact, double b
     }
 
 #ifdef DISPLAY_TIME
-    time3 = ((double) CTime::getTime() - time3) / (double)CTime::getRefTicksPerSec();
+    time3 += (double) CTime::getTime() - t3;
 #endif
 
 }
@@ -138,11 +148,9 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
     const char* endcond = "iterations";
 
 #ifdef DISPLAY_TIME
-    time1 = 0.0;
-    time2 = 0.0;
-    time4 = 0.0;
-
     double tmp3 = (double) CTime::getTime();
+    double tmp2 = 0.0;
+    double tmp = 0.0;
 #endif
 
     for (unsigned int i=0; i<this->preconditioners.size(); i++)
@@ -165,10 +173,7 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
         comment << "Iteration : " << nb_iter;
         simulation::Visitor::printComment(comment.str());
 #endif
-#ifdef DISPLAY_TIME
-        double // tmp,
-        tmp2;
-#endif
+
         if (this->preconditioners.size()==0 || (!no_precond))
         {
             z = r;
@@ -185,7 +190,7 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
                 preconditioners[i]->setSystemRHVector(r);
                 preconditioners[i]->solveSystem();
 #ifdef DISPLAY_TIME
-                time2 += ((double) CTime::getTime() - tmp2);
+                tmp += ((double) CTime::getTime() - tmp2);
 #endif
             }
         }
@@ -258,20 +263,36 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
     }
 
 #ifdef DISPLAY_TIME
-    time1 = ((double) CTime::getTime() - tmp3);
-    time1 = time1 / (double)((double)CTime::getRefTicksPerSec());
-    time2 = time2 / (double)((double)CTime::getRefTicksPerSec());
-    time4 = time4 / (double)((double)CTime::getRefTicksPerSec());
+    time1 += ((double) CTime::getTime() - tmp3) - tmp;
+    time2 += tmp;
 #endif
 
     f_graph.endEdit();
     // x is the solution of the system
+#ifdef DISPLAY_TIME
+    step_simu++;
+    it_simu+=nb_iter;
+    if (step_simu>DISPLAY_TIME)
+    {
+        time1 /= (double)((double)CTime::getRefTicksPerSec());
+        time2 /= (double)((double)CTime::getRefTicksPerSec());
+        time3 /= (double)((double)CTime::getRefTicksPerSec());
+        time4 /= (double)((double)CTime::getRefTicksPerSec());
+
+        double total = time1+time2+time4+time3;
+        double percen = 100.0/total;
+        cerr<<"\nPCGLinearSolver::solve nbiter = "<<it_simu<<" total time = "<<total<<"\nCG =\t\t("<<time1<<"\t"<<(time1*percen)<<"%)\npreconditioner =("<<time2<<"\t"<<(time2*percen)<<"%)\nInvert =\t("<<time4<<"\t"<<(time4*percen)<<"%)\nbuild =\t\t("<<time3<<"\t"<<(time3*percen)<<"%)"<<endl;
+
+        time1 = 0.0;
+        time2 = 0.0;
+        time3 = 0.0;
+        time4 = 0.0;
+        step_simu=0;
+        it_simu=0;
+    }
+#endif
     if( printLog )
     {
-#ifdef DISPLAY_TIME
-        double percen = 100.0/(time1+time2+time4+time3);
-        cerr<<"PCGLinearSolver::solve, CG = ("<<time1<<"|"<<(time1*percen)<<"%) preconditioner = ("<<time2<<"|"<<(time2*percen)<<"%) Invert = ("<<time4<<"|"<<(time4*percen)<<"%) build = ("<<time3<<"|"<<(time3*percen)<<"%)"<<endl;
-#endif
         cerr<<"PCGLinearSolver::solve, nbiter = "<<nb_iter<<" stop because of "<<endcond<<endl;
     }
     if( verbose )

@@ -30,7 +30,7 @@
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/helper/map.h>
 
-#define DISPLAY_TIME
+//#define DISPLAY_TIME 500
 
 #include <math.h>
 
@@ -100,6 +100,8 @@ private :
     double time3;
     double time4;
     double timeStamp;
+    int step_simu;
+    int it_simu;
 #endif
 protected:
     /// This method is separated from the rest to be able to use custom/optimized versions depending on the types of vectors.
