@@ -9,7 +9,7 @@ QT += qt3support
 
 TEMPLATE = app
 
-QMAKE_LIBDIR = ../lib
+QMAKE_LIBDIR *= ../lib
 
 TARGET = sofaConfiguration
 DESTDIR = $$SOFA_DIR/bin
