@@ -151,8 +151,7 @@ protected:
 
 private:
     typedef defaulttype::Vec3Types InitTypes;
-    InitTypes::VecCoord initPoints;
-    DataPtr<InitTypes::VecCoord> d_initPoints;
+    Data<InitTypes::VecCoord> d_initPoints;
 };
 
 } // namespace topology
