@@ -1324,6 +1324,8 @@ public:
     ~ReadAccessor() {}
 
     size_type size() const { return ref.size(); }
+    bool empty() const { return ref.empty(); }
+
     const_reference operator[](size_type i) const { return data[i]; }
 
     const_iterator begin() const { return data; }
@@ -1331,7 +1333,7 @@ public:
 
     inline friend std::ostream& operator<< ( std::ostream& os, const ReadAccessor<container_type>& vec )
     {
-        return os << vec;
+        return os << vec.ref;
     }
 };
 
@@ -1356,6 +1358,7 @@ public:
     ~WriteAccessor() {}
 
     size_type size() const { return ref.size(); }
+    bool empty() const { return ref.empty(); }
 
     const_reference operator[](size_type i) const { return data[i]; }
     reference operator[](size_type i) { return data[i]; }

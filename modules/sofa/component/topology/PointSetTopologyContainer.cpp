@@ -46,7 +46,7 @@ int PointSetTopologyContainerClass = core::RegisterObject("Point set topology co
 
 PointSetTopologyContainer::PointSetTopologyContainer(int npoints)
     : nbPoints (initData(&nbPoints, (unsigned int )npoints, "nbPoints", "Number of points"))
-    , d_initPoints (initDataPtr(&d_initPoints, &initPoints, "position", "Initial position of points"))
+    , d_initPoints (initData(&d_initPoints, "position", "Initial position of points"))
 {
     addAlias(&d_initPoints,"points");
 }
@@ -64,11 +64,13 @@ bool PointSetTopologyContainer::checkTopology() const
 void PointSetTopologyContainer::clear()
 {
     nbPoints.setValue(0);
+    helper::WriteAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
     initPoints.clear();
 }
 
 void PointSetTopologyContainer::addPoint(double px, double py, double pz)
 {
+    helper::WriteAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
     initPoints.push_back(InitTypes::Coord((SReal)px, (SReal)py, (SReal)pz));
     if (initPoints.size() > nbPoints.getValue())
         nbPoints.setValue(initPoints.size());
@@ -76,11 +78,13 @@ void PointSetTopologyContainer::addPoint(double px, double py, double pz)
 
 bool PointSetTopologyContainer::hasPos() const
 {
+    helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
     return !initPoints.empty();
 }
 
 double PointSetTopologyContainer::getPX(int i) const
 {
+    helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
     if ((unsigned)i < initPoints.size())
         return initPoints[i][0];
     else
@@ -89,6 +93,7 @@ double PointSetTopologyContainer::getPX(int i) const
 
 double PointSetTopologyContainer::getPY(int i) const
 {
+    helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
     if ((unsigned)i < initPoints.size())
         return initPoints[i][1];
     else
@@ -97,6 +102,7 @@ double PointSetTopologyContainer::getPY(int i) const
 
 double PointSetTopologyContainer::getPZ(int i) const
 {
+    helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
     if ((unsigned)i < initPoints.size())
         return initPoints[i][2];
     else
@@ -107,7 +113,7 @@ void PointSetTopologyContainer::init()
 {
     core::componentmodel::topology::TopologyContainer::init();
 
-    d_initPoints.getValue(); // make sure initPoints is up to date
+    helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
     if (nbPoints.getValue() == 0 && !initPoints.empty())
         nbPoints.setValue(initPoints.size());
 
@@ -125,6 +131,7 @@ void PointSetTopologyContainer::init()
 
 void PointSetTopologyContainer::loadFromMeshLoader(sofa::component::container::MeshLoader* loader)
 {
+    helper::ReadAccessor< Data<InitTypes::VecCoord> > initPoints = d_initPoints;
     if (!initPoints.empty()) return;
     nbPoints.setValue( loader->getNbPoints() );
 }
