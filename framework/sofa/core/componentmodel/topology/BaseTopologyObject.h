@@ -42,6 +42,9 @@ namespace topology
 
 class BaseTopologyObject : public virtual core::objectmodel::BaseObject
 {
+public:
+    SOFA_CLASS(BaseTopologyObject, core::objectmodel::BaseObject);
+
 
 };
 

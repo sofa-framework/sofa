@@ -70,6 +70,22 @@ public:
         updatePath();
     }
 
+    /** Constructor
+        this constructor should be used through the initData() methods
+     */
+    explicit DataFileName(const BaseData::BaseInitData& init)
+        : Inherit(init)
+    {
+    }
+
+    /** Constructor
+        this constructor should be used through the initData() methods
+     */
+    explicit DataFileName(const Inherit::InitData& init)
+        : Inherit(init)
+    {
+    }
+
     virtual ~DataFileName()
     {
     }
@@ -124,6 +140,22 @@ public:
         : Inherit(d)
     {
         updatePath();
+    }
+
+    /** Constructor
+        this constructor should be used through the initData() methods
+     */
+    explicit DataFileNameVector(const BaseData::BaseInitData& init)
+        : Inherit(init)
+    {
+    }
+
+    /** Constructor
+        this constructor should be used through the initData() methods
+     */
+    explicit DataFileNameVector(const Inherit::InitData& init)
+        : Inherit(init)
+    {
     }
 
     virtual ~DataFileNameVector()

@@ -51,6 +51,8 @@ namespace behavior
 class BaseConstraintCorrection : public virtual objectmodel::BaseObject
 {
 public:
+    SOFA_CLASS(BaseConstraintCorrection, BaseObject);
+
     virtual ~BaseConstraintCorrection() {}
 
     virtual void getCompliance(defaulttype::BaseMatrix* W) = 0;

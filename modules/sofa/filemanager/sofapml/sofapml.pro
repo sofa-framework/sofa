@@ -1,8 +1,9 @@
 SOFA_DIR = ../../../..
 TEMPLATE = lib
+TARGET = sofapml
+
 include($${SOFA_DIR}/sofa.cfg)
 
-TARGET = sofapml$$LIBSUFFIX
 
 CONFIG += $$CONFIGLIBRARIES
 

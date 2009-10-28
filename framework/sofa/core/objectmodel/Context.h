@@ -52,6 +52,7 @@ namespace objectmodel
 class SOFA_CORE_API Context : public BaseContext
 {
 public:
+    SOFA_CLASS(Context, BaseContext);
 
     typedef BaseContext::Frame Frame;
     typedef BaseContext::Vec3 Vec3;

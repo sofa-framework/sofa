@@ -3,16 +3,15 @@
 # Sous dossier relatif au dossier principal du projet : ./applications/sofa/gui/viewer
 # Cible : une bibliotheque:  sofaguiviewer$$LIBSUFFIX
 
-
 SOFA_DIR = ../../../..
 TEMPLATE = lib
-include($${SOFA_DIR}/sofa.cfg)
+TARGET = sofaguiqt
 
+include($${SOFA_DIR}/sofa.cfg)
 
 
 DEFINES += SOFA_BUILD_SOFAGUIQT
 
-TARGET = sofaguiqt$$LIBSUFFIX
 
 LIBS += $$SOFA_FRAMEWORK_LIBS
 LIBS += $$SOFA_MODULES_LIBS

@@ -79,10 +79,10 @@ public:
 
     MatrixMass()
         :  f_mass( initData(&f_mass, "massMatrices", "values of the particles masses") )
+        , _lumped(initData( &this->_lumped, false, "lumped", ""))
         , _defaultValue( initData(&_defaultValue, (Real)1.0,"defaultValue", "real default value") )
-        ,_usingDefaultDiagonalMatrices(false)
+        , _usingDefaultDiagonalMatrices(false)
     {
-        _lumped = initData( &this->_lumped, false, "lumped", "");
     };
 
     ~MatrixMass();

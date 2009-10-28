@@ -56,6 +56,28 @@ class Base;
 class SOFA_CORE_API BaseData : public DDGNode
 {
 public:
+
+    /// This internal class is used by the initData() methods to store initialization parameters of a Data
+    class BaseInitData
+    {
+    public:
+        BaseInitData() : data(NULL), helpMsg(""), isDisplayed(true), isReadOnly(false), isPersistent(true), owner(NULL), name(""), group(""), widget("") {}
+        BaseData* data;
+        const char* helpMsg;
+        bool isDisplayed;
+        bool isReadOnly;
+        bool isPersistent;
+        Base* owner;
+        const char* name;
+        const char* group;
+        const char* widget;
+    };
+
+    /** Constructor
+        this constructor should be used through the initData() methods
+     */
+    explicit BaseData(const BaseInitData& init);
+
     /** Constructor
      *  \param h help
      */
@@ -87,6 +109,11 @@ public:
 
     /// End edit current value as a void pointer (use getValueTypeInfo to find how to access it)
     virtual void endEditVoidPtr()=0;
+
+    /// Copy the value of another Data.
+    /// Note that this is a one-time copy and not a permanent link (otherwise see setParent)
+    /// @return true if copy was successfull
+    virtual bool copyValue(const BaseData* parent);
 
     /// Get help message
     const char* getHelp() const { return help; }
@@ -162,7 +189,7 @@ protected:
     virtual void doDelInput(DDGNode* n);
 
     /// Update this Data from the value of its parent
-    virtual bool updateFromParentValue(BaseData* parent);
+    virtual bool updateFromParentValue(const BaseData* parent);
 
     /// Help message
     const char* help;

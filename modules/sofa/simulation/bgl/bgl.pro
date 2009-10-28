@@ -20,8 +20,10 @@ SOURCES += BglNode.cpp \
 
 SOFA_DIR =../../../..
 TEMPLATE = lib
+TARGET = sofabgl
+
 include($${SOFA_DIR}/sofa.cfg)
-TARGET = sofabgl$$LIBSUFFIX
+
 CONFIG += $$CONFIGLIBRARIES
 
 CONFIG -= staticlib

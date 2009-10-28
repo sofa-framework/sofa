@@ -81,6 +81,8 @@ class BaseMechanicalMapping;
 class BaseMechanicalState : public virtual objectmodel::BaseObject
 {
 public:
+    SOFA_CLASS(BaseMechanicalState, objectmodel::BaseObject);
+
     BaseMechanicalState():useMask(initData(&useMask, true, "useMask", "Usage of a mask to optimize the computation of the system, highly reducing the passage through the mappings"))
     {}
     virtual ~BaseMechanicalState()

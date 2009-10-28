@@ -57,6 +57,7 @@ template<class DataTypes>
 class HexahedronCompositeFEMForceFieldAndMass : public NonUniformHexahedronFEMForceFieldAndMass<DataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(HexahedronCompositeFEMForceFieldAndMass,DataTypes), SOFA_TEMPLATE(NonUniformHexahedronFEMForceFieldAndMass,DataTypes));
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef VecCoord Vector;
@@ -88,16 +89,16 @@ public:
 public:
 
 
-
-    HexahedronCompositeFEMForceFieldAndMass():HexahedronFEMForceFieldAndMassT()
+    HexahedronCompositeFEMForceFieldAndMass()
+        : HexahedronFEMForceFieldAndMassT()
+        , _finestToCoarse(initData(&this->_finestToCoarse,false,"finestToCoarse","Does the homogenization is done directly from the finest level to the coarse one?"))
+        , _homogenizationMethod(initData(&this->_homogenizationMethod,0,"homogenizationMethod","0->static, 1->constrained static, 2->modal analysis"))
+        , _completeInterpolation(initData(&this->_completeInterpolation,false,"completeInterpolation","Is the non-linear, complete interpolation used?"))
+        , _useRamification(initData(&this->_useRamification,true,"useRamification","If SparseGridRamification, are ramifications taken into account?"))
+        , _drawType(initData(&this->_drawType,0,"drawType",""))
+        , _drawColor(initData(&this->_drawColor,0,"drawColor",""))
+        , _drawSize(initData(&this->_drawSize,(float)-1.0,"drawSize",""))
     {
-        _homogenizationMethod = initData(&this->_homogenizationMethod,0,"homogenizationMethod","0->static, 1->constrained static, 2->modal analysis");
-        _finestToCoarse = initData(&this->_finestToCoarse,false,"finestToCoarse","Does the homogenization is done directly from the finest level to the coarse one?");
-        _completeInterpolation = initData(&this->_completeInterpolation,false,"completeInterpolation","Is the non-linear, complete interpolation used?");
-        _useRamification = initData(&this->_useRamification,true,"useRamification","If SparseGridRamification, are ramifications taken into account?");
-        _drawType = initData(&this->_drawType,0,"drawType","");
-        _drawColor = initData(&this->_drawColor,0,"drawColor","");
-        _drawSize = initData(&this->_drawSize,(float)-1.0,"drawSize","");
     }
 
 

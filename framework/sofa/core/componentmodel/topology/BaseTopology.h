@@ -69,6 +69,9 @@ class TopologicalMapping;
 /** A class that contains a set of high-level (user frisendly) methods that perform topological changes */
 class SOFA_CORE_API TopologyAlgorithms : public sofa::core::componentmodel::topology::BaseTopologyObject
 {
+public:
+    SOFA_CLASS(TopologyAlgorithms, BaseTopologyObject);
+
 protected:
     /** \brief Constructor.
     *
@@ -96,6 +99,9 @@ protected:
 /** A class that contains a set of methods that describes the geometry of the object */
 class SOFA_CORE_API GeometryAlgorithms : public sofa::core::componentmodel::topology::BaseTopologyObject
 {
+public:
+    SOFA_CLASS(GeometryAlgorithms, BaseTopologyObject);
+
 protected:
     /** \brief Constructor.
     *
@@ -114,6 +120,9 @@ public:
 /** A class that contains a set of low-level methods that perform topological changes */
 class SOFA_CORE_API TopologyModifier : public sofa::core::componentmodel::topology::BaseTopologyObject
 {
+public:
+    SOFA_CLASS(TopologyModifier, BaseTopologyObject);
+
 protected:
     /** \brief Constructor.
     *
@@ -177,7 +186,11 @@ protected:
 class SOFA_CORE_API TopologyContainer : public sofa::core::componentmodel::topology::BaseTopologyObject,
     public core::componentmodel::topology::BaseMeshTopology
 {
+public:
+    SOFA_CLASS2(TopologyContainer, BaseTopologyObject, BaseMeshTopology);
+
 protected:
+
     /** \brief Constructor.
     *
     */

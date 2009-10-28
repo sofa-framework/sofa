@@ -1,12 +1,12 @@
 SOFA_DIR=../../../../..
 TEMPLATE = app
+TARGET = multimapping
 
 include($${SOFA_DIR}/sofa.cfg)
 
 #Uncomment if you are compiling the boost kernel
 DEFINES += SOFA_HAS_BOOST_KERNEL
 
-TARGET = multimapping$$SUFFIX
 DESTDIR = $$SOFA_DIR/bin
 CONFIG += $$CONFIGPROJECTGUI
 LIBS += $$SOFA_GUI_LIBS

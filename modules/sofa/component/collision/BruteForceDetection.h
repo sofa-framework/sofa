@@ -49,6 +49,9 @@ class SOFA_COMPONENT_COLLISION_API BruteForceDetection :
     public core::componentmodel::collision::BroadPhaseDetection,
     public core::componentmodel::collision::NarrowPhaseDetection
 {
+public:
+    SOFA_CLASS2(BruteForceDetection, core::componentmodel::collision::BroadPhaseDetection, core::componentmodel::collision::NarrowPhaseDetection);
+
 private:
     sofa::helper::vector<core::CollisionModel*> collisionModels;
     Data<bool> bDraw;

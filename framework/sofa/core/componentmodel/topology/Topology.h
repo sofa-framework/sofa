@@ -139,6 +139,8 @@ public:
 class Topology : public virtual core::objectmodel::BaseObject
 {
 public:
+    SOFA_CLASS(Topology, core::objectmodel::BaseObject);
+
     Topology():BaseObject() {}
     virtual ~Topology()
     {}

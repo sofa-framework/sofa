@@ -108,8 +108,10 @@ SOURCES += Node.cpp \
 
 SOFA_DIR =../../../..
 TEMPLATE = lib
+TARGET = sofasimulation
+
 include($${SOFA_DIR}/sofa.cfg)
-TARGET = sofasimulation$$LIBSUFFIX
+
 CONFIG += $$CONFIGLIBRARIES
 
 CONFIG -= staticlib

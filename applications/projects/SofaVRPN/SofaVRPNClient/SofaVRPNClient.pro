@@ -1,3 +1,5 @@
+######  PLUGIN TARGET
+TARGET = SofaVRPN
 ######  GENERAL PLUGIN CONFIGURATION, you shouldn't have to modify it
 
 SOFA_DIR=../../../..
@@ -19,7 +21,6 @@ macx {	QMAKE_EXTENSION_SHLIB = sylib }
 
 
 ###### SPECIFIC PLUGIN CONFIGURATION, you should modify it to configure your plugin
-TARGET = SofaVRPN
 
 DEPENDPATH += .
 INCLUDEPATH += .

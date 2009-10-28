@@ -2,9 +2,10 @@
 
 SOFA_DIR = ../..
 TEMPLATE = lib
+TARGET = newmat
+
 include($${SOFA_DIR}/sofa.cfg)
 
-TARGET = newmat$${LIBSUFFIX}
 CONFIG += $${CONFIGLIBRARIES}
 
 

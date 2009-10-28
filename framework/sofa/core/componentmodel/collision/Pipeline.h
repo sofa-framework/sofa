@@ -56,7 +56,11 @@ namespace collision
 
 class SOFA_CORE_API Pipeline : public virtual sofa::core::objectmodel::BaseObject
 {
+public:
+    SOFA_CLASS(Pipeline, sofa::core::objectmodel::BaseObject);
+
 protected:
+
     //sofa::helper::vector<DetectionOutput*> detectionOutputs;
 
     sofa::helper::vector<Intersection*> intersectionMethods;

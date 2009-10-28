@@ -1,9 +1,9 @@
 SOFA_DIR=../../..
 TEMPLATE = app
+TARGET = GenerateRigid
 
 include($${SOFA_DIR}/sofa.cfg)
 
-TARGET = GenerateRigid$$SUFFIX
 DESTDIR = $$SOFA_DIR/bin
 CONFIG += $$CONFIGPROJECTCMD
 #LIBS += $$SOFA_GUI_LIBS

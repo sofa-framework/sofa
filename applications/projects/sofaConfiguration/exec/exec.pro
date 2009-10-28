@@ -1,4 +1,8 @@
 SOFA_DIR=../../../..
+
+TEMPLATE = app
+TARGET = sofaConfiguration
+
 include($${SOFA_DIR}/sofa.cfg)
 
 CONFIG += $$CONFIGPROJECTGUI 
@@ -7,11 +11,8 @@ contains(DEFINES, SOFA_QT4){
 QT += qt3support 
 }
 
-TEMPLATE = app
-
 QMAKE_LIBDIR *= ../lib
 
-TARGET = sofaConfiguration
 DESTDIR = $$SOFA_DIR/bin
 
 win32{

@@ -210,7 +210,7 @@ void GraphListenerQListView::addChild(Node* parent, Node* child)
         //	    if (std::string(child->getName(),0,7) != "default")
         item->setDropEnabled(true);
         item->setText(0, child->getName().c_str());
-        if (child->sendl.getWarnings().empty())
+        if (child->getWarnings().empty())
         {
             QPixmap* pix = getPixmap(child);
             if (pix)
@@ -314,7 +314,7 @@ void GraphListenerQListView::addObject(Node* parent, core::objectmodel::BaseObje
 // 	      }
         item->setText(0, name.c_str());
 
-        if (object->sendl.getWarnings().empty())
+        if (object->getWarnings().empty())
         {
             QPixmap* pix = getPixmap(object);
             if (pix)

@@ -4,9 +4,10 @@
 
 SOFA_DIR = ../..
 TEMPLATE = lib
+TARGET = physicalmodel
+
 include($${SOFA_DIR}/sofa.cfg)
 
-TARGET = physicalmodel$$LIBSUFFIX
 CONFIG += $$CONFIGLIBRARIES
 LIBS *= $$SOFA_EXT_LIBS
 LIBS -= -lphysicalmodel$$LIBSUFFIX

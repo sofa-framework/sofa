@@ -1,3 +1,5 @@
+######  PLUGIN TARGET
+TARGET = PluginExample
 
 ######  GENERAL PLUGIN CONFIGURATION, you shouldn't have to modify it
 
@@ -15,7 +17,6 @@ CONFIG += dll
 
 ###### SPECIFIC PLUGIN CONFIGURATION, you should modify it to configure your plugin
 
-TARGET = PluginExample$$LIBSUFFIX
 DEFINES += SOFA_BUILD_PLUGINEXAMPLE
 
 LIBS += $$SOFA_LIBS

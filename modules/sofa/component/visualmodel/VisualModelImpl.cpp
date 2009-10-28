@@ -24,6 +24,8 @@
 ******************************************************************************/
 #include <sofa/component/visualmodel/VisualModelImpl.h>
 
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+
 #include <sofa/component/topology/TriangleSetTopologyModifier.h>
 #include <sofa/component/topology/QuadSetTopologyModifier.h>
 #include <sofa/component/topology/TetrahedronSetTopologyModifier.h>

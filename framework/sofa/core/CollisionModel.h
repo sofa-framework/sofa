@@ -63,6 +63,7 @@ namespace core
 class SOFA_CORE_API CollisionModel : public virtual objectmodel::BaseObject
 {
 public:
+    SOFA_CLASS(CollisionModel, objectmodel::BaseObject);
 
     typedef CollisionElementIterator Iterator;
     typedef componentmodel::topology::BaseMeshTopology Topology;

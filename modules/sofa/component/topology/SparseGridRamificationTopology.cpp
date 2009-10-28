@@ -49,8 +49,8 @@ int SparseGridRamificationTopologyClass = core::RegisterObject("Sparse grid in 3
 
 SparseGridRamificationTopology::SparseGridRamificationTopology(bool isVirtual)
     : SparseGridTopology(isVirtual)
+    , _finestConnectivity( initData(&_finestConnectivity,true,"finestConnectivity","Test for connectivity at the finest level? (more precise but slower by testing all intersections between the model mesh and the faces between boundary cubes)"))
 {
-    _finestConnectivity = this->initData(&_finestConnectivity,true,"finestConnectivity","Test for connectivity at the finest level? (more precise but slower by testing all intersections between the model mesh and the faces between boundary cubes)");
 }
 
 SparseGridRamificationTopology::~SparseGridRamificationTopology()

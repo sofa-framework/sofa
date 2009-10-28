@@ -3,9 +3,10 @@
 # 
 
 SOFA_DIR = ../..
+TARGET = load
+
 include($${SOFA_DIR}/sofa.cfg)
 
-TARGET = load$$LIBSUFFIX
 TEMPLATE = lib
 CONFIG += $$CONFIGLIBRARIES
 LIBS *= $$SOFA_EXT_LIBS

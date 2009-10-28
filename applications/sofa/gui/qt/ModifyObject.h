@@ -136,8 +136,8 @@ public slots:
     void reject   () {                 emit(dialogClosed(Id)); deleteLater(); QDialog::reject();} //When closing a window, inform the parent.
     void accept   () { updateValues(); emit(dialogClosed(Id)); deleteLater(); QDialog::accept();} //if closing by using Ok button, update the values
     void resizeTable(int);
-    void clearWarnings() {node->sendl.clearWarnings(); logWarningEdit->clear();}
-    void clearOutputs() {node->sendl.clearOutputs(); logOutputEdit->clear();}
+    void clearWarnings() {node->clearWarnings(); logWarningEdit->clear();}
+    void clearOutputs() {node->clearOutputs(); logOutputEdit->clear();}
 signals:
     void objectUpdated();              //update done
     void dialogClosed(void *);            //the current window has been closed: we give the Id of the current window

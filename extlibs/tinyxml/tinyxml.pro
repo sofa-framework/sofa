@@ -2,9 +2,10 @@
 
 SOFA_DIR = ../..
 TEMPLATE = lib
+TARGET = tinyxml
+
 include($${SOFA_DIR}/sofa.cfg)
 
-TARGET = tinyxml$$LIBSUFFIX
 CONFIG += $$CONFIGLIBRARIES
 
 HEADERS += \

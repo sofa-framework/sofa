@@ -75,6 +75,7 @@ class Event;
 class SOFA_CORE_API BaseContext : public virtual Base
 {
 public:
+    SOFA_CLASS(BaseContext, Base);
 
     /// @name Types defined for local coordinate system handling
     /// @{

@@ -2,11 +2,12 @@
 
 SOFA_DIR = ../../../..
 TEMPLATE = lib
+TARGET = sofagui
+
 include($${SOFA_DIR}/sofa.cfg)
 
 DEFINES += SOFA_BUILD_SOFAGUI
 
-TARGET = sofagui$$LIBSUFFIX
 CONFIG += $$CONFIGLIBRARIES
 CONFIG -= staticlib
 CONFIG += dll

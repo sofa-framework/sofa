@@ -92,11 +92,12 @@ public:
     Data<bool> _useMass; ///< Do we want to use this ForceField like a Mass? (or do we prefer using a separate Mass)
     Data<Real> _totalMass;
 
-    NonUniformHexahedronFEMForceFieldAndMass():HexahedronFEMForceFieldAndMassT()
+    NonUniformHexahedronFEMForceFieldAndMass()
+        : HexahedronFEMForceFieldAndMassT()
+        , _nbVirtualFinerLevels(initData(&this->_nbVirtualFinerLevels,0,"nbVirtualFinerLevels","use virtual finer levels, in order to compte non-uniform stiffness"))
+        , _useMass(initData(&this->_useMass,true,"useMass","Using this ForceField like a Mass? (rather than using a separated Mass)"))
+        , _totalMass(initData(&this->_totalMass,(Real)0.0,"totalMass",""))
     {
-        _nbVirtualFinerLevels = initData(&this->_nbVirtualFinerLevels,0,"nbVirtualFinerLevels","use virtual finer levels, in order to compte non-uniform stiffness");
-        _useMass = initData(&this->_useMass,true,"useMass","Using this ForceField like a Mass? (rather than using a separated Mass)");
-        _totalMass = initData(&this->_totalMass,(Real)0.0,"totalMass","");
     }
 
 

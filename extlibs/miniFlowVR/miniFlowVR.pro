@@ -2,9 +2,10 @@
 
 SOFA_DIR = ../..
 TEMPLATE = lib
+TARGET = miniFlowVR
+
 include($${SOFA_DIR}/sofa.cfg)
 
-TARGET = miniFlowVR$$LIBSUFFIX
 CONFIG += $$CONFIGLIBRARIES
 
 DEFINES *= MINI_FLOWVR

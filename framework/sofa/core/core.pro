@@ -67,6 +67,7 @@ HEADERS += \
           Mapping.h \
           Mapping.inl \
           objectmodel/Base.h \
+          objectmodel/BaseClass.h \
           objectmodel/BaseContext.h \
           objectmodel/BaseNode.h \
           objectmodel/BaseObject.h \
@@ -100,6 +101,7 @@ HEADERS += \
 
 SOURCES +=  \
           objectmodel/Base.cpp \
+          objectmodel/BaseClass.cpp \
           objectmodel/BaseData.cpp \
           objectmodel/BaseContext.cpp \
           objectmodel/BaseObject.cpp \
@@ -150,10 +152,10 @@ SOURCES +=  \
 
 SOFA_DIR = ../../..
 TEMPLATE = lib
-include($${SOFA_DIR}/sofa.cfg){   
+TARGET = sofacore
 
-}
-TARGET = sofacore$$LIBSUFFIX
+include($${SOFA_DIR}/sofa.cfg)
+
 CONFIG += $$CONFIGLIBRARIES
 
 CONFIG -= staticlib

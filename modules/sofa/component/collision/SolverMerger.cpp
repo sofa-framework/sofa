@@ -49,16 +49,31 @@ using sofa::core::componentmodel::behavior::LinearSolver;
 namespace solvermergers
 {
 
+template<class T>
+T* copySolver(const T& s)
+{
+    const T* src = &s;
+    T* res = new T;
+    for (unsigned int i=0; i<src->getFields().size(); ++i)
+    {
+        core::objectmodel::BaseData* s = src->getFields()[i].second;
+        core::objectmodel::BaseData* d = res->findField(src->getFields()[i].first);
+        if (d)
+            d->copyValue(s);
+    }
+    return res;
+}
+
 // First the easy cases...
 
 SolverSet createSolverEulerEuler(odesolver::EulerSolver& solver1, odesolver::EulerSolver& /*solver2*/)
 {
-    return SolverSet(new odesolver::EulerSolver(solver1), NULL);
+    return SolverSet(copySolver<odesolver::EulerSolver>(solver1), NULL);
 }
 
 SolverSet createSolverRungeKutta4RungeKutta4(odesolver::RungeKutta4Solver& solver1, odesolver::RungeKutta4Solver& /*solver2*/)
 {
-    return SolverSet(new odesolver::RungeKutta4Solver(solver1), NULL);
+    return SolverSet(copySolver<odesolver::RungeKutta4Solver>(solver1), NULL);
 }
 
 SolverSet createSolverCGImplicitCGImplicit(odesolver::CGImplicitSolver& solver1, odesolver::CGImplicitSolver& solver2)
@@ -115,53 +130,44 @@ SolverSet createSolverEulerImplicitEulerImplicit(odesolver::EulerImplicitSolver&
 
 SolverSet createSolverStaticSolver(odesolver::StaticSolver& solver1, odesolver::StaticSolver& solver2)
 {
-    return SolverSet(new odesolver::StaticSolver(solver1), createLinearSolver(&solver1, &solver2));
+    return SolverSet(copySolver<odesolver::StaticSolver>(solver1), createLinearSolver(&solver1, &solver2));
 }
 
 // Then the other, with the policy of taking the more precise solver
 
 SolverSet createSolverRungeKutta4Euler(odesolver::RungeKutta4Solver& solver1, odesolver::EulerSolver& /*solver2*/)
 {
-    return SolverSet(new odesolver::RungeKutta4Solver(solver1), NULL);
+    return SolverSet(copySolver<odesolver::RungeKutta4Solver>(solver1), NULL);
 }
 
 SolverSet createSolverCGImplicitEuler(odesolver::CGImplicitSolver& solver1, odesolver::EulerSolver& /*solver2*/)
 {
-    return SolverSet(new odesolver::CGImplicitSolver(solver1), NULL);
+    return SolverSet(copySolver<odesolver::CGImplicitSolver>(solver1), NULL);
 }
 
 SolverSet createSolverCGImplicitRungeKutta4(odesolver::CGImplicitSolver& solver1, odesolver::RungeKutta4Solver& /*solver2*/)
 {
-    return SolverSet(new odesolver::CGImplicitSolver(solver1), NULL);
+    return SolverSet(copySolver<odesolver::CGImplicitSolver>(solver1), NULL);
 }
 
 SolverSet createSolverEulerImplicitEuler(odesolver::EulerImplicitSolver& solver1, odesolver::EulerSolver& /*solver2*/)
 {
-    return SolverSet(new odesolver::EulerImplicitSolver(solver1), createLinearSolver(&solver1, NULL));
+    return SolverSet(copySolver<odesolver::EulerImplicitSolver>(solver1), createLinearSolver(&solver1, NULL));
 }
 
 SolverSet createSolverEulerImplicitRungeKutta4(odesolver::EulerImplicitSolver& solver1, odesolver::RungeKutta4Solver& /*solver2*/)
 {
-    return SolverSet(new odesolver::EulerImplicitSolver(solver1), createLinearSolver(&solver1, NULL));
+    return SolverSet(copySolver<odesolver::EulerImplicitSolver>(solver1), createLinearSolver(&solver1, NULL));
 }
 
 SolverSet createSolverEulerImplicitCGImplicit(odesolver::EulerImplicitSolver& solver1, odesolver::CGImplicitSolver& /*solver2*/)
 {
-    return SolverSet(new odesolver::EulerImplicitSolver(solver1), createLinearSolver(&solver1, NULL));
+    return SolverSet(copySolver<odesolver::EulerImplicitSolver>(solver1), createLinearSolver(&solver1, NULL));
 }
 
 }// namespace SolverMergers
 
-
 using namespace solvermergers;
-
-
-
-
-
-
-
-
 
 SolverSet SolverMerger::merge(core::componentmodel::behavior::OdeSolver* solver1, core::componentmodel::behavior::OdeSolver* solver2)
 {

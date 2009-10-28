@@ -50,6 +50,7 @@ namespace core
 class BaseMapping : public virtual objectmodel::BaseObject
 {
 public:
+    SOFA_CLASS(BaseMapping, objectmodel::BaseObject);
     /// Destructor
     virtual ~BaseMapping() { }
 

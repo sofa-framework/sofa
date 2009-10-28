@@ -1,9 +1,9 @@
 SOFA_DIR=../../../..
 TEMPLATE = lib
+TARGET = sofamodeler
 
 include($${SOFA_DIR}/sofa.cfg)
 
-TARGET = sofamodeler$$LIBSUFFIX
 CONFIG += $$CONFIGLIBRARIES
 # LIBS += -lsofasimulation$$LIBSUFFIX 
 LIBS += $$SOFA_GUI_LIBS

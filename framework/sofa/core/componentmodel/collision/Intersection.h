@@ -94,6 +94,7 @@ protected:
 class SOFA_CORE_API Intersection : public virtual objectmodel::BaseObject
 {
 public:
+    SOFA_CLASS(Intersection, objectmodel::BaseObject);
 
     virtual ~Intersection();
 

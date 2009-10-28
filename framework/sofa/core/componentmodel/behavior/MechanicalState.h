@@ -69,6 +69,8 @@ template<class TDataTypes>
 class MechanicalState : public BaseMechanicalState, public State<TDataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(MechanicalState,TDataTypes), SOFA_TEMPLATE(State,TDataTypes));
+
     typedef TDataTypes DataTypes;
     /// Scalar values (float or double).
     typedef typename DataTypes::Real Real;

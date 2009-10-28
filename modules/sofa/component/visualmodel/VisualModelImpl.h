@@ -114,6 +114,9 @@ public:
 
 class SOFA_COMPONENT_VISUALMODEL_API VisualModelImpl : public core::VisualModel, public ExtVec3fMappedModel, public RigidMappedModel
 {
+public:
+    SOFA_CLASS3(VisualModelImpl, core::VisualModel, ExtVec3fMappedModel, RigidMappedModel);
+
 protected:
     // use types from ExtVec3fTypes
 

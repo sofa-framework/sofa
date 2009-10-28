@@ -1,9 +1,9 @@
 SOFA_DIR=../../..
 TEMPLATE = app
+TARGET = runSofa
 
 include($${SOFA_DIR}/sofa.cfg)
 
-TARGET = runSofa$$SUFFIX
 DESTDIR = $$SOFA_DIR/bin
 CONFIG += $$CONFIGPROJECTGUI 
 

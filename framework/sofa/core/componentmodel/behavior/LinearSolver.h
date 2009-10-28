@@ -51,6 +51,8 @@ namespace behavior
 class SOFA_CORE_API LinearSolver : public virtual objectmodel::BaseObject
 {
 public:
+    SOFA_CLASS(LinearSolver, objectmodel::BaseObject);
+
     typedef BaseMechanicalState::VecId VecId;
 
     LinearSolver();

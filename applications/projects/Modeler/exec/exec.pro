@@ -1,9 +1,9 @@
 SOFA_DIR=../../../..
 TEMPLATE = app
+TARGET = Modeler
 
 include($${SOFA_DIR}/sofa.cfg)
 
-TARGET = Modeler$$SUFFIX
 DESTDIR = $$SOFA_DIR/bin
 CONFIG += $$CONFIGPROJECTGUI 
 LIBS += $$SOFA_GUI_LIBS

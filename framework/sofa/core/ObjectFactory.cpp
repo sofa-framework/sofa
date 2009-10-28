@@ -25,10 +25,35 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "ObjectFactory.h"
+
+#include <sofa/core/objectmodel/ContextObject.h>
+#include <sofa/core/VisualModel.h>
+#include <sofa/core/BehaviorModel.h>
+#include <sofa/core/CollisionModel.h>
+#include <sofa/core/BaseMapping.h>
+#include <sofa/core/componentmodel/topology/TopologicalMapping.h>
+#include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
+#include <sofa/core/componentmodel/behavior/BaseForceField.h>
+#include <sofa/core/componentmodel/behavior/InteractionForceField.h>
+#include <sofa/core/componentmodel/behavior/BaseConstraint.h>
+#include <sofa/core/componentmodel/behavior/BaseLMConstraint.h>
+#include <sofa/core/componentmodel/behavior/BaseMechanicalMapping.h>
+#include <sofa/core/componentmodel/behavior/BaseMass.h>
+#include <sofa/core/componentmodel/behavior/OdeSolver.h>
+#include <sofa/core/componentmodel/behavior/LinearSolver.h>
+#include <sofa/core/componentmodel/behavior/MasterSolver.h>
+#include <sofa/core/componentmodel/topology/Topology.h>
+#include <sofa/core/componentmodel/topology/BaseTopologyObject.h>
+#include <sofa/core/componentmodel/behavior/BaseController.h>
+#include <sofa/core/componentmodel/loader/BaseLoader.h>
+
 #include <iostream>
 using std::cout;
 using std::cerr;
 using std::endl;
+
+// Uncomment to output a warning in the console each time a class is registered without corresponding SOFA_CLASS
+#define LOG_MISSING_CLASS
 
 namespace sofa
 {
@@ -331,9 +356,78 @@ RegisterObject& RegisterObject::addLicense(std::string val)
     return *this;
 }
 
+RegisterObject& RegisterObject::addBaseClasses(const core::objectmodel::BaseClass* mclass)
+{
+    if (mclass->hasParent(objectmodel::ContextObject::GetClass()))
+        entry.baseClasses.insert("ContextObject");
+    if (mclass->hasParent(VisualModel::GetClass()))
+        entry.baseClasses.insert("VisualModel");
+    if (mclass->hasParent(BehaviorModel::GetClass()))
+        entry.baseClasses.insert("BehaviorModel");
+    if (mclass->hasParent(CollisionModel::GetClass()))
+        entry.baseClasses.insert("CollisionModel");
+    if (mclass->hasParent(core::componentmodel::behavior::BaseMechanicalState::GetClass()))
+        entry.baseClasses.insert("MechanicalState");
+    if (mclass->hasParent(core::componentmodel::behavior::BaseForceField::GetClass()))
+        entry.baseClasses.insert("ForceField");
+    if (mclass->hasParent(core::componentmodel::behavior::InteractionForceField::GetClass()))
+        entry.baseClasses.insert("InteractionForceField");
+    if (mclass->hasParent(core::componentmodel::behavior::BaseLMConstraint::GetClass()))
+        entry.baseClasses.insert("Constraint");
+    if (mclass->hasParent(core::componentmodel::behavior::BaseConstraint::GetClass()))
+        entry.baseClasses.insert("Constraint");
+    if (mclass->hasParent(core::BaseMapping::GetClass()))
+        entry.baseClasses.insert("Mapping");
+    if (mclass->hasParent(core::componentmodel::behavior::BaseMechanicalMapping::GetClass()))
+        entry.baseClasses.insert("MechanicalMapping");
+    if (mclass->hasParent(core::componentmodel::topology::TopologicalMapping::GetClass()))
+        entry.baseClasses.insert("TopologicalMapping");
+    if (mclass->hasParent(core::componentmodel::behavior::BaseMass::GetClass()))
+        entry.baseClasses.insert("Mass");
+    if (mclass->hasParent(core::componentmodel::behavior::OdeSolver::GetClass()))
+        entry.baseClasses.insert("OdeSolver");
+    if (mclass->hasParent(core::componentmodel::behavior::LinearSolver::GetClass()))
+        entry.baseClasses.insert("LinearSolver");
+    if (mclass->hasParent(core::componentmodel::behavior::MasterSolver::GetClass()))
+        entry.baseClasses.insert("MasterSolver");
+    if (mclass->hasParent(core::componentmodel::topology::Topology::GetClass()))
+        entry.baseClasses.insert("Topology");
+    if (mclass->hasParent(core::componentmodel::topology::BaseTopologyObject::GetClass()))
+        entry.baseClasses.insert("TopologyObject");
+    if (mclass->hasParent(core::componentmodel::behavior::BaseController::GetClass()))
+        entry.baseClasses.insert("Controller");
+    if (mclass->hasParent(core::componentmodel::loader::BaseLoader::GetClass()))
+        entry.baseClasses.insert("Loader");
+
+    return *this;
+}
+
 RegisterObject& RegisterObject::addCreator(std::string classname, std::string templatename, ObjectFactory::Creator* creator)
 {
     //std::cout << "ObjectFactory: add creator "<<classname<<" with template "<<templatename<<std::endl;
+    // check if the SOFA_CLASS macro is correctly used
+#ifdef LOG_MISSING_CLASS
+    if (entry.className.empty() && classname != creator->getClass()->className)
+    {
+        std::cerr << "CODE WARNING: MISSING SOFA_CLASS in class declaration " << classname;
+        if (!templatename.empty())
+            std::cerr << "<" << templatename << ">";
+        std::cerr << std::endl;
+        std::cerr << "  A code similar to the following needs to be added in " << classname << ".h: \n";
+        std::cerr << "    SOFA_CLASS(";
+        if (templatename.empty())
+            std::cerr << classname;
+        else
+            std::cerr << "SOFA_TEMPLATE(" << classname << ",DataTypes)";
+        std::cerr << ",";
+        if (creator->getClass()->templateName.empty())
+            std::cerr << creator->getClass()->namespaceName << "::" << creator->getClass()->className;
+        else
+            std::cerr << "SOFA_TEMPLATE(" << creator->getClass()->namespaceName << "::" << creator->getClass()->className << ",DataTypes)";
+        std::cerr << ");" << std::endl;
+    }
+#endif
+
     if (!entry.className.empty() && entry.className != classname)
     {
         std::cerr << "ERROR: ObjectFactory: all templated class should have the same base classname ("<<entry.className<<"!="<<classname<<")\n";

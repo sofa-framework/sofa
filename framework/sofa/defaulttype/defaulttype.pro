@@ -2,9 +2,10 @@
 
 SOFA_DIR = ../../..
 TEMPLATE = lib
+TARGET = sofadefaulttype
+
 include($${SOFA_DIR}/sofa.cfg)
 
-TARGET = sofadefaulttype$$LIBSUFFIX
 CONFIG += $$CONFIGLIBRARIES
 
 CONFIG -= staticlib

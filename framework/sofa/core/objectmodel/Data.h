@@ -61,6 +61,11 @@ class TData : public sofa::core::objectmodel::BaseData
 public:
     typedef T value_type;
 
+    explicit TData(const BaseInitData& init)
+        : BaseData(init), parentData(NULL)
+    {
+    }
+
     TData( const char* helpMsg=0, bool isDisplayed=true, bool isReadOnly=false, Base* owner=NULL, const char* name="")
         : BaseData(helpMsg, isDisplayed, isReadOnly, owner, name), parentData(NULL)
     {
@@ -146,6 +151,23 @@ public:
 
     virtual bool isCounterValid() const {return true;}
 
+    bool copyValue(const TData<T>* parent)
+    {
+        virtualSetValue(parent->virtualGetValue());
+        return true;
+    }
+
+    virtual bool copyValue(const BaseData* parent)
+    {
+        const TData<T>* p = dynamic_cast<const TData<T>*>(parent);
+        if (p)
+        {
+            virtualSetValue(p->virtualGetValue());
+            return true;
+        }
+        return BaseData::copyValue(parent);
+    }
+
 protected:
 
     bool validParent(BaseData* parent)
@@ -161,7 +183,7 @@ protected:
         BaseData::doSetParent(parent);
     }
 
-    bool updateFromParentValue(BaseData* parent)
+    bool updateFromParentValue(const BaseData* parent)
     {
         if (parent == parentData)
         {
@@ -187,6 +209,35 @@ template < class T = void* >
 class Data : public TData<T>
 {
 public:
+
+    /// This internal class is used by the initData() methods to store initialization parameters of a Data
+    class InitData : public BaseData::BaseInitData
+    {
+    public:
+        InitData() : value(T()) {}
+        InitData(const T& v) : value(v) {}
+        InitData(const BaseData::BaseInitData& i) : BaseData::BaseInitData(i), value(T()) {}
+
+        T value;
+    };
+
+    /** Constructor
+        this constructor should be used through the initData() methods
+     */
+    explicit Data(const BaseData::BaseInitData& init)
+        : TData<T>(init)
+        , m_value(T())// BUGFIX (Jeremie A.): Force initialization of basic types to 0 (bool, int, float, etc).
+    {
+    }
+
+    /** Constructor
+        this constructor should be used through the initData() methods
+     */
+    explicit Data(const InitData& init)
+        : TData<T>(init)
+        , m_value(init.value)
+    {
+    }
 
     /** Constructor
     \param helpMsg help on the field

@@ -102,6 +102,8 @@ template <class In, class Out>
 class SPHFluidSurfaceMapping : public core::Mapping<In, Out>, public topology::MeshTopology
 {
 public:
+    SOFA_CLASS2(SOFA_TEMPLATE2(SPHFluidSurfaceMapping, In, Out), SOFA_TEMPLATE2(core::Mapping, In, Out), topology::MeshTopology);
+
     typedef core::Mapping<In, Out> Inherit;
     typedef typename Out::VecCoord OutVecCoord;
     typedef typename Out::VecDeriv OutVecDeriv;

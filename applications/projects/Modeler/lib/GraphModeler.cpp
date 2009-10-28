@@ -505,7 +505,7 @@ GNode *GraphModeler::buildNodeFromBaseElement(GNode *node,xml::BaseElement *elem
             itemGraph->setText(0,name.c_str());
         }
     }
-    newNode->sendl.clearWarnings();
+    newNode->clearWarnings();
 
     return newNode;
 }

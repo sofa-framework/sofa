@@ -28,7 +28,6 @@
 #define SOFA_CORE_MAPPING_H
 
 #include <sofa/core/BaseMapping.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
 
 namespace sofa
 {
@@ -43,10 +42,13 @@ namespace core
  *  For example, we can have a mapping from a BehaviorModel to a VisualModel.
  *
  */
+
 template <class TIn, class TOut>
 class Mapping : public BaseMapping
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE2(Mapping,TIn,TOut), BaseMapping);
+
     /// Input Model Type
     typedef TIn In;
     /// Output Model Type
