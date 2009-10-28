@@ -29,6 +29,7 @@
 #include <sofa/simulation/common/Simulation.h>
 #include "PlaneForceField.h"
 #include <sofa/helper/system/config.h>
+#include <sofa/helper/accessor.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/gl/template.h>
 #include <assert.h>
@@ -47,8 +48,12 @@ namespace forcefield
 
 
 template<class DataTypes>
-void PlaneForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1)
+void PlaneForceField<DataTypes>::addForce(VecDeriv& vf1, const VecCoord& vp1, const VecDeriv& vv1)
 {
+    helper::WriteAccessor<VecDeriv> f1 = vf1;
+    helper::ReadAccessor<VecCoord> p1 = vp1;
+    helper::ReadAccessor<VecDeriv> v1 = vv1;
+
     //this->dfdd.resize(p1.size());
     this->contacts.clear();
     f1.resize(p1.size());
@@ -82,8 +87,11 @@ void PlaneForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, cons
 }
 
 template<class DataTypes>
-void PlaneForceField<DataTypes>::addDForce(VecDeriv& f1, const VecDeriv& dx1, double kFactor, double /*bFactor*/)
+void PlaneForceField<DataTypes>::addDForce(VecDeriv& vf1, const VecDeriv& vdx1, double kFactor, double /*bFactor*/)
 {
+    helper::WriteAccessor<VecDeriv> f1 = vf1;
+    helper::ReadAccessor<VecDeriv> dx1 = vdx1;
+
     f1.resize(dx1.size());
     const Real fact = (Real)(-this->stiffness.getValue()*kFactor);
     for (unsigned int i=0; i<this->contacts.size(); i++)
@@ -111,8 +119,10 @@ void PlaneForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat
     }
 }
 template<class DataTypes>
-void PlaneForceField<DataTypes>::updateStiffness( const VecCoord& x )
+void PlaneForceField<DataTypes>::updateStiffness( const VecCoord& vx )
 {
+    helper::ReadAccessor<VecCoord> x = vx;
+
     this->contacts.clear();
 
     unsigned int ibegin = 0;
@@ -170,7 +180,7 @@ void PlaneForceField<DataTypes>::drawPlane(float size)
 {
     if (size == 0.0f) size = (float)drawSize.getValue();
 
-    const VecCoord& p1 = *this->mstate->getX();
+    helper::ReadAccessor<VecCoord> p1 = *this->mstate->getX();
 
     defaulttype::Vec3d normal; normal = planeNormal.getValue();
 

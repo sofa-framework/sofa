@@ -32,6 +32,7 @@
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/vector.h>
+#include <sofa/helper/accessor.h>
 #include <sofa/component/component.h>
 
 
@@ -100,6 +101,12 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
+
+    typedef helper::ReadAccessor<VecCoord> RRefVecCoord;
+    typedef helper::WriteAccessor<VecCoord> WRefVecCoord;
+    typedef helper::ReadAccessor<VecDeriv> RRefVecDeriv;
+    typedef helper::WriteAccessor<VecDeriv> WRefVecDeriv;
+
     typedef core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalState;
 
     typedef LinearSpring<Real> Spring;
@@ -115,7 +122,7 @@ protected:
     SpringForceFieldInternalData<DataTypes> data;
     friend class SpringForceFieldInternalData<DataTypes>;
 
-    void addSpringForce(SReal& potentialEnergy, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int i, const Spring& spring);
+    void addSpringForce(SReal& potentialEnergy, WRefVecDeriv& f1, RRefVecCoord& p1, RRefVecDeriv& v1, WRefVecDeriv& f2, RRefVecCoord& p2, RRefVecDeriv& v2, int i, const Spring& spring);
     void updateMaskStatus();
 public:
     SpringForceField(MechanicalState* object1, MechanicalState* object2, SReal _ks=100.0, SReal _kd=5.0);

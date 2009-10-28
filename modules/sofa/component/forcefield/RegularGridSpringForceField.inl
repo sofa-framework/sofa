@@ -59,11 +59,18 @@ void RegularGridSpringForceField<DataTypes>::init()
 }
 
 template<class DataTypes>
-void RegularGridSpringForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2)
+void RegularGridSpringForceField<DataTypes>::addForce(VecDeriv& vf1, VecDeriv& vf2, const VecCoord& vx1, const VecCoord& vx2, const VecDeriv& vv1, const VecDeriv& vv2)
 {
     // Calc any custom springs
-    this->StiffSpringForceField<DataTypes>::addForce(f1, f2, x1, x2, v1, v2);
+    this->StiffSpringForceField<DataTypes>::addForce(vf1, vf2, vx1, vx2, vv1, vv2);
     // Compute topological springs
+    WRefVecDeriv f1 = vf1;
+    RRefVecCoord x1 = vx1;
+    RRefVecDeriv v1 = vv1;
+    WRefVecDeriv f2 = vf2;
+    RRefVecCoord x2 = vx2;
+    RRefVecDeriv v2 = vv2;
+
     f1.resize(x1.size());
     f2.resize(x2.size());
     m_potentialEnergy = 0;
@@ -282,11 +289,15 @@ void RegularGridSpringForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2
 }
 
 template<class DataTypes>
-void RegularGridSpringForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, double kFactor, double bFactor)
+void RegularGridSpringForceField<DataTypes>::addDForce(VecDeriv& vdf1, VecDeriv& vdf2, const VecDeriv& vdx1, const VecDeriv& vdx2, double kFactor, double bFactor)
 {
     // Calc any custom springs
-    this->StiffSpringForceField<DataTypes>::addDForce(df1, df2, dx1, dx2, kFactor, bFactor);
+    this->StiffSpringForceField<DataTypes>::addDForce(vdf1, vdf2, vdx1, vdx2, kFactor, bFactor);
     // Compute topological springs
+    WRefVecDeriv df1 = vdf1;
+    WRefVecDeriv df2 = vdf2;
+    RRefVecDeriv dx1 = vdx1;
+    RRefVecDeriv dx2 = vdx2;
     const helper::vector<Spring>& springs = this->springs.getValue();
     if (this->mstate1==this->mstate2)
     {

@@ -53,6 +53,11 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
 
+    typedef helper::ReadAccessor<VecCoord> RRefVecCoord;
+    typedef helper::WriteAccessor<VecCoord> WRefVecCoord;
+    typedef helper::ReadAccessor<VecDeriv> RRefVecDeriv;
+    typedef helper::WriteAccessor<VecDeriv> WRefVecDeriv;
+
     //virtual const char* getTypeName() const { return "RegularGridSpringForceField"; }
 
 protected:

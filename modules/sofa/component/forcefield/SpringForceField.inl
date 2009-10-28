@@ -125,7 +125,7 @@ void SpringForceField<DataTypes>::init()
 }
 
 template<class DataTypes>
-void SpringForceField<DataTypes>::addSpringForce(SReal& ener, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int /*i*/, const Spring& spring)
+void SpringForceField<DataTypes>::addSpringForce(SReal& ener, WRefVecDeriv& f1, RRefVecCoord& p1, RRefVecDeriv& v1, WRefVecDeriv& f2, RRefVecCoord& p2, RRefVecDeriv& v2, int /*i*/, const Spring& spring)
 {
     int a = spring.m1;
     int b = spring.m2;
@@ -151,14 +151,23 @@ void SpringForceField<DataTypes>::addSpringForce(SReal& ener, VecDeriv& f1, cons
 }
 
 template<class DataTypes>
-void SpringForceField<DataTypes>::addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2)
+void SpringForceField<DataTypes>::addForce(VecDeriv& vf1, VecDeriv& vf2, const VecCoord& vx1, const VecCoord& vx2, const VecDeriv& vv1, const VecDeriv& vv2)
 {
+    WRefVecDeriv f1 = vf1;
+    RRefVecCoord x1 = vx1;
+    RRefVecDeriv v1 = vv1;
+    WRefVecDeriv f2 = vf2;
+    RRefVecCoord x2 = vx2;
+    RRefVecDeriv v2 = vv2;
+
+    const helper::vector<Spring>& springs= this->springs.getValue();
+
     f1.resize(x1.size());
     f2.resize(x2.size());
     m_potentialEnergy = 0;
     for (unsigned int i=0; i<this->springs.getValue().size(); i++)
     {
-        this->addSpringForce(m_potentialEnergy,f1,x1,v1,f2,x2,v2, i, this->springs.getValue()[i]);
+        this->addSpringForce(m_potentialEnergy,f1,x1,v1,f2,x2,v2, i, springs[i]);
     }
 }
 
