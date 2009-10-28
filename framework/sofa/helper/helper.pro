@@ -81,6 +81,7 @@ HEADERS += \
           system/PipeProcess.h \
           system/SofaOStream.h \
           TagFactory.h \
+          accessor.h \
           vector.h \
           polygon_cube_intersection/vec.h \
           polygon_cube_intersection/polygon_cube_intersection.h \

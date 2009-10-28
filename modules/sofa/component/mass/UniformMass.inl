@@ -29,6 +29,7 @@
 #include <sofa/core/componentmodel/behavior/Mass.inl>
 #include <sofa/core/componentmodel/topology/Topology.h>
 #include <sofa/core/objectmodel/Context.h>
+#include <sofa/helper/accessor.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
@@ -157,8 +158,11 @@ void UniformMass<DataTypes, MassType>::handleTopologyChange()
 
 // -- Mass interface
 template <class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::addMDx(VecDeriv& res, const VecDeriv& dx, double factor)
+void UniformMass<DataTypes, MassType>::addMDx(VecDeriv& vres, const VecDeriv& vdx, double factor)
 {
+    helper::WriteAccessor<VecDeriv> res = vres;
+    helper::ReadAccessor<VecDeriv> dx = vdx;
+
     unsigned int ibegin = 0;
     unsigned int iend = dx.size();
 
@@ -180,8 +184,10 @@ void UniformMass<DataTypes, MassType>::addMDx(VecDeriv& res, const VecDeriv& dx,
 }
 
 template <class DataTypes, class MassType>
-void UniformMass<DataTypes, MassType>::accFromF(VecDeriv& a, const VecDeriv& f)
+void UniformMass<DataTypes, MassType>::accFromF(VecDeriv& va, const VecDeriv& vf)
 {
+    helper::WriteAccessor<VecDeriv> a = va;
+    helper::ReadAccessor<VecDeriv> f = vf;
 
     unsigned int ibegin = 0;
     unsigned int iend = f.size();
@@ -212,7 +218,7 @@ void UniformMass<DataTypes, MassType>::addGravityToV(double dt)
 {
     if (this->mstate)
     {
-        VecDeriv& v = *this->mstate->getV();
+        helper::WriteAccessor<VecDeriv> v = *this->mstate->getV();
         const SReal* g = this->getContext()->getLocalGravity().ptr();
         Deriv theGravity;
         DataTypes::set( theGravity, g[0], g[1], g[2]);
@@ -230,13 +236,15 @@ template <class DataTypes, class MassType>
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
 void UniformMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
 #else
-void UniformMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& /*x*/, const VecDeriv& /*v*/)
+void UniformMass<DataTypes, MassType>::addForce(VecDeriv& vf, const VecCoord& /*x*/, const VecDeriv& /*v*/)
 #endif
 {
 
     //if gravity was added separately (in solver's "solve" method), then nothing to do here
     if(this->m_separateGravity.getValue())
         return;
+
+    helper::WriteAccessor<VecDeriv> f = vf;
 
     unsigned int ibegin = 0;
     unsigned int iend = f.size();
@@ -307,8 +315,9 @@ void UniformMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& /*x
 }
 
 template <class DataTypes, class MassType>
-double UniformMass<DataTypes, MassType>::getKineticEnergy( const VecDeriv& v )
+double UniformMass<DataTypes, MassType>::getKineticEnergy( const VecDeriv& vv )
 {
+    helper::ReadAccessor<VecDeriv> v = vv;
 
     unsigned int ibegin = 0;
     unsigned int iend = v.size();
@@ -330,8 +339,10 @@ double UniformMass<DataTypes, MassType>::getKineticEnergy( const VecDeriv& v )
 }
 
 template <class DataTypes, class MassType>
-double UniformMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord& x )
+double UniformMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord& vx )
 {
+    helper::ReadAccessor<VecCoord> x = vx;
+
     unsigned int ibegin = 0;
     unsigned int iend = x.size();
 
@@ -395,7 +406,7 @@ void UniformMass<DataTypes, MassType>::draw()
 {
     if (!getContext()->getShowBehaviorModels())
         return;
-    const VecCoord& x = *this->mstate->getX();
+    helper::ReadAccessor<VecCoord> x = *this->mstate->getX();
 
     unsigned int ibegin = 0;
     unsigned int iend = x.size();
@@ -443,7 +454,7 @@ void UniformMass<DataTypes, MassType>::draw()
 template <class DataTypes, class MassType>
 bool UniformMass<DataTypes, MassType>::addBBox(double* minBBox, double* maxBBox)
 {
-    const VecCoord& x = *this->mstate->getX();
+    helper::ReadAccessor<VecCoord> x = *this->mstate->getX();
     for (unsigned int i=0; i<x.size(); i++)
     {
         //const Coord& p = x[i];

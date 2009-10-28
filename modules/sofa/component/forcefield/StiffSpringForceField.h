@@ -55,7 +55,14 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
+
+    typedef helper::ReadAccessor<VecCoord> RRefVecCoord;
+    typedef helper::WriteAccessor<VecCoord> WRefVecCoord;
+    typedef helper::ReadAccessor<VecDeriv> RRefVecDeriv;
+    typedef helper::WriteAccessor<VecDeriv> WRefVecDeriv;
+
     typedef typename Inherit::Spring Spring;
+
     typedef core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalState;
     enum { N=Coord::static_size };
     typedef defaulttype::Mat<N,N,Real> Mat;
@@ -65,10 +72,10 @@ protected:
     double m_potentialEnergy;
 
     /// Accumulate the spring force and compute and store its stiffness
-    void addSpringForce(double& potentialEnergy, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int i, const Spring& spring);
+    void addSpringForce(double& potentialEnergy, WRefVecDeriv& f1, RRefVecCoord& p1, RRefVecDeriv& v1, WRefVecDeriv& f2, RRefVecCoord& p2, RRefVecDeriv& v2, int i, const Spring& spring);
 
     /// Apply the stiffness, i.e. accumulate df given dx
-    void addSpringDForce(VecDeriv& df1, const VecDeriv& dx1, VecDeriv& df2, const VecDeriv& dx2, int i, const Spring& spring, double kFactor, double bFactor);
+    void addSpringDForce(WRefVecDeriv& df1, RRefVecDeriv& dx1, WRefVecDeriv& df2, RRefVecDeriv& dx2, int i, const Spring& spring, double kFactor, double bFactor);
 
 public:
     StiffSpringForceField(MechanicalState* object1, MechanicalState* object2, double ks=100.0, double kd=5.0)
