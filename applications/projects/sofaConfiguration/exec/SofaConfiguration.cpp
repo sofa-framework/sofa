@@ -66,6 +66,7 @@ ConfigWidget::ConfigWidget(QWidget *parent, DEFINES &d):QWidget(parent), option(
     layout->addWidget(check);
 
     connect(check, SIGNAL(toggled(bool)), this, SLOT(updateValue(bool)));
+    this->setMaximumHeight(600);
 }
 
 void ConfigWidget::updateValue(bool b)
@@ -114,6 +115,7 @@ SofaConfiguration::SofaConfiguration(std::string p, std::vector< DEFINES >& conf
 
 
     QToolBox *global = new QToolBox(appli);
+    global->setMaximumHeight(600);
     global->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
 
     std::string currentCategory;

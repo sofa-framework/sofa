@@ -348,7 +348,16 @@ int main(int argc, char** argv)
 
     std::string file=GetProcessFullPath(argv[0]);
     std::size_t bin = file.find("bin");
-    file.resize(bin-1);
+
+    if (bin != std::string::npos)
+    {
+        file.resize(bin-1);
+    }
+    else
+    {
+        std::cerr << "ERROR: $SOFA/bin directory not FOUND!" << std::endl;
+        return 1;
+    }
 
     std::ifstream sofa_default((file+"/sofa-default.cfg").c_str());
     std::ifstream sofa_local((file+"/sofa-local.cfg").c_str());
@@ -372,6 +381,7 @@ int main(int argc, char** argv)
     application = new QApplication(argc, argv);
     sofa::gui::qt::SofaConfiguration* config = new sofa::gui::qt::SofaConfiguration(file,listOptions);
     application->setMainWidget(config);
+
     config->show();
     return application->exec();
 }
