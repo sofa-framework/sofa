@@ -96,6 +96,10 @@ void LMContactConstraintSolver::solveConstraints(bool needPropagation)
     simulation::MechanicalSolveLMConstraintVisitor solveConstraintsPosition(positionState,needPropagation);
     solveConstraintsPosition.execute(this->getContext());
 
+    // core::componentmodel::behavior::BaseMechanicalState::VecId velocityState=core::componentmodel::behavior::BaseMechanicalState::VecId::velocity();
+    // simulation::MechanicalSolveLMConstraintVisitor solveConstraintsVelocity(velocityState, needPropagation);
+    // solveConstraintsVelocity.execute(this->getContext());
+
     simulation::MechanicalPropagatePositionAndVelocityVisitor propagateState;
     propagateState.execute(this->getContext());
 }
@@ -122,10 +126,6 @@ void LMContactConstraintSolver::step(double dt)
     integrate(dt);
 
     bool propagateState=needPriorStatePropagation();
-
-    core::componentmodel::behavior::BaseMechanicalState::VecId velocityState=core::componentmodel::behavior::BaseMechanicalState::VecId::velocity();
-    simulation::MechanicalSolveLMConstraintVisitor solveConstraintsVelocity(velocityState, propagateState);
-    solveConstraintsVelocity.execute(this->getContext());
 
     int numStep=0;
     while ((numStep < maxSteps && isCollisionDetected()) || numStep==0)
