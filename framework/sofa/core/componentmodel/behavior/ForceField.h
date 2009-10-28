@@ -62,6 +62,8 @@ template<class TDataTypes>
 class ForceField : public BaseForceField
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(ForceField, TDataTypes), BaseForceField);
+
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;

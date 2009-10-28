@@ -2,9 +2,10 @@
 
 SOFA_DIR = ../../../..
 TEMPLATE = lib
+TARGET = sofaguimain
+
 include($${SOFA_DIR}/sofa.cfg)
 
-TARGET = sofaguimain$$LIBSUFFIX
 
 DEFINES += SOFA_BUILD_GUIMANAGER
 contains (DEFINES, SOFA_QT4) {

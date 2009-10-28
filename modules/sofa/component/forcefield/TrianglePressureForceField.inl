@@ -154,6 +154,7 @@ void TrianglePressureForceField<DataTypes>::selectTrianglesAlongPlane()
         {
             // insert a dummy element : computation of pressure done later
             TrianglePressureInformation t;
+            t.area = 0;
             trianglePressureMap[n]=t;
         }
     }
@@ -169,7 +170,7 @@ void TrianglePressureForceField<DataTypes>::selectTrianglesFromString()
         const char *str=inputString.c_str();
         for(i=0; (i<inputString.length())&&(str[i]!=','); ++i) ;
         TrianglePressureInformation t;
-
+        t.area = 0;
         if (i==inputString.length())
         {
             trianglePressureMap[(unsigned int)atoi(str)]=t;

@@ -61,6 +61,8 @@ namespace behavior
  */
 class BaseController : public virtual core::objectmodel::BaseObject
 {
+public:
+    SOFA_CLASS(BaseController, core::objectmodel::BaseObject);
 
 };
 

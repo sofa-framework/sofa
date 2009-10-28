@@ -51,6 +51,8 @@ namespace behavior
 class SOFA_CORE_API BaseLMConstraint: public virtual core::objectmodel::BaseObject
 {
 public:
+    SOFA_CLASS(BaseLMConstraint, core::objectmodel::BaseObject);
+
     /// Description of the nature of the constraint
     enum ConstOrder {POS,VEL,ACC};
     enum ConstNature {UNILATERAL,BILATERAL};

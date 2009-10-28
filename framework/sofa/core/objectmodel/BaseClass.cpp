@@ -24,38 +24,39 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-#include <sofa/helper/system/SofaOStream.h>
-#include <sstream>
-#include <iostream>
+//
+// C++ Implementation: Base
+//
+// Description:
+//
+//
+// Author: The SOFA team </www.sofa-framework.org>, (C) 2006
+//
+// Copyright: See COPYING file that comes with this distribution
+//
+//
+#include <sofa/core/objectmodel/BaseClass.h>
 
 namespace sofa
 {
 
-namespace helper
+namespace core
 {
 
-namespace system
+namespace objectmodel
 {
 
-SofaOStreamContainer::~SofaOStreamContainer()
-{
-}
-
-SofaOStream::SofaOStream()
-    : parent(NULL)
+BaseClass::BaseClass()
 {
 }
 
-SofaOStream::~SofaOStream()
+BaseClass::~BaseClass()
 {
 }
 
-void SofaOStream::setParent(SofaOStreamContainer* p)
-{
-    parent = p;
-}
+} // namespace objectmodel
 
-}
-}
-}
+} // namespace core
+
+} // namespace sofa
+

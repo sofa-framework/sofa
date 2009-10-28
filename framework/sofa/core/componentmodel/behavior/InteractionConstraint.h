@@ -51,6 +51,7 @@ namespace behavior
 class SOFA_CORE_API InteractionConstraint : public BaseConstraint
 {
 public:
+    SOFA_CLASS(InteractionConstraint, BaseConstraint);
 
     /// Get the first MechanicalState
     /// \todo Rename to getMechState1()

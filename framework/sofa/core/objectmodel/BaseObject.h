@@ -73,6 +73,8 @@ class Event;
 class SOFA_CORE_API BaseObject : public virtual Base
 {
 public:
+    SOFA_CLASS(BaseObject, Base);
+
     BaseObject();
 
     virtual ~BaseObject();

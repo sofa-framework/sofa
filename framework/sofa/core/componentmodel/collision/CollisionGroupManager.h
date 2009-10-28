@@ -64,6 +64,9 @@ namespace collision
  */
 class CollisionGroupManager : public virtual CollisionAlgorithm
 {
+public:
+    SOFA_CLASS(CollisionGroupManager, CollisionAlgorithm);
+
 protected:
     /// integration groups
     sofa::helper::vector<core::objectmodel::BaseContext*> groups;

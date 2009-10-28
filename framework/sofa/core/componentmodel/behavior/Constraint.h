@@ -58,6 +58,8 @@ template<class DataTypes>
 class Constraint : public BaseConstraint
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(Constraint,DataTypes), BaseConstraint);
+
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;

@@ -2,9 +2,10 @@
 
 SOFA_DIR = ../..
 TEMPLATE = lib
+TARGET = csparse
+
 include($${SOFA_DIR}/sofa.cfg)
 
-TARGET = csparse$${LIBSUFFIX}
 CONFIG += $${CONFIGLIBRARIES}
 
 

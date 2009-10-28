@@ -47,6 +47,8 @@ namespace eulerianfluid
 class SOFA_COMPONENT_BEHAVIORMODEL_API Fluid2D : public sofa::core::BehaviorModel, public sofa::core::VisualModel
 {
 public:
+    SOFA_CLASS2(Fluid2D, sofa::core::BehaviorModel, sofa::core::VisualModel);
+
     typedef Grid2D::real real;
     typedef Grid2D::vec2 vec2;
     typedef Vec<3,real> vec3;

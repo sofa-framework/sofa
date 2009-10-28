@@ -1,9 +1,9 @@
 SOFA_DIR=../../..
 TEMPLATE = app
+TARGET = runBoostKernel
 
 include($${SOFA_DIR}/sofa.cfg)
 
-TARGET = runBoostKernel$$SUFFIX
 DESTDIR = $$SOFA_DIR/bin
 CONFIG += $$CONFIGPROJECTGUI 
 

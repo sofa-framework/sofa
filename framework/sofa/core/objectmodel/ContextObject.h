@@ -45,6 +45,8 @@ namespace objectmodel
 class ContextObject : public virtual BaseObject
 {
 public:
+    SOFA_CLASS(ContextObject, BaseObject);
+
     ContextObject()
         : BaseObject()
     {}

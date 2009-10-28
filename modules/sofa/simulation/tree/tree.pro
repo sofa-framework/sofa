@@ -16,8 +16,10 @@ SOURCES += ExportDotVisitor.cpp \
 
 SOFA_DIR =../../../..
 TEMPLATE = lib
+TARGET = sofatree
+
 include($${SOFA_DIR}/sofa.cfg)
-TARGET = sofatree$$LIBSUFFIX
+
 CONFIG += $$CONFIGLIBRARIES
 
 CONFIG -= staticlib

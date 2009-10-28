@@ -56,6 +56,8 @@ template<class TDataTypes>
 class PairInteractionConstraint : public InteractionConstraint
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(PairInteractionConstraint,TDataTypes), InteractionConstraint);
+
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;

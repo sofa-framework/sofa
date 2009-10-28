@@ -61,6 +61,8 @@ namespace topology
 class TopologicalMapping : public virtual objectmodel::BaseObject
 {
 public:
+    SOFA_CLASS(TopologicalMapping, objectmodel::BaseObject);
+
     /// Input Topology
     typedef BaseMeshTopology In;
     /// Output Topology

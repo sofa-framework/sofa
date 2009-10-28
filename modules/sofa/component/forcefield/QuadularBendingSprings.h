@@ -60,6 +60,8 @@ template<class DataTypes>
 class QuadularBendingSprings : public core::componentmodel::behavior::ForceField<DataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(QuadularBendingSprings,DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::ForceField,DataTypes));
+
     typedef core::componentmodel::behavior::ForceField<DataTypes> Inherited;
     //typedef typename DataTypes::Real Real;
     typedef typename DataTypes::VecCoord VecCoord;

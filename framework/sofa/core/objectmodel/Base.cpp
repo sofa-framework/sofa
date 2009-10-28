@@ -55,15 +55,18 @@ namespace objectmodel
 
 using std::string;
 
-Base::Base():sendl(f_printLog.getValue())
-    , serr(*(sendl.serr)), sout(*(sendl.sout))
+Base::Base()
+    : name(initData(&name,std::string("unnamed"),"name","object name"))
+    , f_printLog(initData(&f_printLog, false, "printLog", "if true, print logs at run-time"))
 {
-    name = initData(&name,std::string("unnamed"),"name","object name");
-    f_printLog = initData( &f_printLog, false, "printLog", "if true, print logs at run-time");
+    name.setGroup("Base");
+    f_printLog.setGroup("Base");
+    sendl.setParent(this);
 }
 
 Base::~Base()
-{}
+{
+}
 
 std::string Base::getName() const
 {
@@ -73,8 +76,45 @@ std::string Base::getName() const
 void Base::setName(const std::string& na)
 {
     name.setValue(na);
-    sendl.nameComponent = na;
-    sendl.nameClass = getClassName();
+}
+
+void Base::processStream(std::ostream& out)
+{
+    if (&out == &serr)
+    {
+        serr << "\n";
+        if (f_printLog.getValue())
+            std::cerr<< "WARNING[" << getName() << "(" << getClassName() << ")]: "<<serr.str();
+        warnings += serr.str();
+        serr.str("");
+    }
+    else if (&out == &sout)
+    {
+        sout << "\n";
+        if (f_printLog.getValue()) std::cout<< "[" << getName() << "(" << getClassName() << ")]: "<< sout.str();
+        outputs += sout.str();
+        sout.str("");
+    }
+}
+
+const std::string& Base::getWarnings() const
+{
+    return warnings;
+}
+
+const std::string& Base::getOutputs() const
+{
+    return outputs;
+}
+
+void Base::clearWarnings()
+{
+    warnings.clear();
+}
+
+void Base::clearOutputs()
+{
+    outputs.clear();
 }
 
 

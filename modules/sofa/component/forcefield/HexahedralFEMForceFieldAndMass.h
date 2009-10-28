@@ -52,6 +52,8 @@ class HexahedralFEMForceFieldAndMass : virtual public Mass<DataTypes>,
     virtual public HexahedralFEMForceField<DataTypes>
 {
 public:
+    SOFA_CLASS2(SOFA_TEMPLATE(HexahedralFEMForceFieldAndMass,DataTypes), SOFA_TEMPLATE(Mass,DataTypes), SOFA_TEMPLATE(HexahedralFEMForceField,DataTypes));
+
     typedef HexahedralFEMForceField<DataTypes> HexahedralFEMForceFieldT;
     typedef Mass<DataTypes> MassT;
 

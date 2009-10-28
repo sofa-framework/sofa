@@ -40,10 +40,10 @@ namespace componentmodel
 namespace loader
 {
 
-/// This class :
 class SOFA_CORE_API MeshLoader : public virtual BaseLoader
 {
 public:
+    SOFA_CLASS(MeshLoader, BaseLoader);
 
     MeshLoader();
 

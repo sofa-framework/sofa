@@ -30,6 +30,7 @@
 #include <sofa/helper/system/config.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
 #include <sofa/core/objectmodel/BaseContext.h>
+/*
 #include <sofa/core/objectmodel/ContextObject.h>
 #include <sofa/core/VisualModel.h>
 #include <sofa/core/BehaviorModel.h>
@@ -50,6 +51,7 @@
 #include <sofa/core/componentmodel/topology/BaseTopologyObject.h>
 #include <sofa/core/componentmodel/behavior/BaseController.h>
 #include <sofa/core/componentmodel/loader/BaseLoader.h>
+*/
 
 #include <map>
 #include <iostream>
@@ -94,6 +96,9 @@ public:
 
         /// type_info structure associated with the type of intanciated objects.
         virtual const std::type_info& type() = 0;
+
+        /// BaseClass structure associated with the type of intanciated objects.
+        virtual const objectmodel::BaseClass* getClass() = 0;
     };
 
     /// Record storing information about a class
@@ -204,6 +209,10 @@ public:
     {
         return typeid(RealObject);
     }
+    virtual const objectmodel::BaseClass* getClass()
+    {
+        return RealObject::GetClass();
+    }
 };
 
 /**
@@ -246,42 +255,45 @@ public:
     /// Specify a license (LGPL, GPL, ...)
     RegisterObject& addLicense(std::string val);
 
+    /// Fill the base classes array using the BaseClass reflection system
+    RegisterObject& addBaseClasses(const core::objectmodel::BaseClass* mclass);
+
     /// Add a creator able to instance this class with the given templatename.
     ///
     /// See the add<RealObject>() method for an easy way to add a Creator.
     RegisterObject& addCreator(std::string classname, std::string templatename, ObjectFactory::Creator* creator);
+    /*
+        /// Test whether T* converts to U*,
+        /// that is, if T is derived from U
+        /// taken from Modern C++ Design
+        template <class T, class U>
+        class SOFA_CORE_API Conversion
+        {
+            typedef char Small;
+            class Big {char dummy[2];};
+            static Small Test(U*);
+            static Big Test(...);
+            static T* MakeT();
+        public:
+            enum { exists = sizeof(Test(MakeT())) == sizeof(Small) };
+            static int Exists() { return exists; }
+        };
 
-    /// Test whether T* converts to U*,
-    /// that is, if T is derived from U
-    /// taken from Modern C++ Design
-    template <class T, class U>
-    class SOFA_CORE_API Conversion
-    {
-        typedef char Small;
-        class Big {char dummy[2];};
-        static Small Test(U*);
-        static Big Test(...);
-        static T* MakeT();
-    public:
-        enum { exists = sizeof(Test(MakeT())) == sizeof(Small) };
-        static int Exists() { return exists; }
-    };
-
-    /// Test whether T* converts to U*,
-    /// that is, if T is derived from U
-    template<class RealClass, class BaseClass>
-    bool implements()
-    {
-        bool res = Conversion<RealClass, BaseClass>::exists;
-        //RealClass* p1=NULL;
-        //BaseClass* p2=NULL;
-        //if (res)
-        //    sout << "class "<<RealClass::typeName(p1)<<" implements "<<BaseClass::typeName(p2)<<sendl;
-        //else
-        //    sout << "class "<<RealClass::typeName(p1)<<" does not implement "<<BaseClass::typeName(p2)<<sendl;
-        return res;
-    }
-
+        /// Test whether T* converts to U*,
+        /// that is, if T is derived from U
+        template<class RealClass, class BaseClass>
+        bool implements()
+        {
+            bool res = Conversion<RealClass, BaseClass>::exists;
+            //RealClass* p1=NULL;
+            //BaseClass* p2=NULL;
+            //if (res)
+            //    sout << "class "<<RealClass::typeName(p1)<<" implements "<<BaseClass::typeName(p2)<<sendl;
+            //else
+            //    sout << "class "<<RealClass::typeName(p1)<<" does not implement "<<BaseClass::typeName(p2)<<sendl;
+            return res;
+        }
+    */
     /// Add a template instanciation of this class.
     ///
     /// \param defaultTemplate    set to true if this should be the default instance when no template name is given.
@@ -297,50 +309,49 @@ public:
 
         // This is the only place where we can test which base classes are implemented by this particular object, without having to create any instance
         // Unfortunately, we have to enumerate all classes we are interested in...
-
-        if (implements<RealObject,objectmodel::ContextObject>())
-            entry.baseClasses.insert("ContextObject");
-        if (implements<RealObject,VisualModel>())
-            entry.baseClasses.insert("VisualModel");
-        if (implements<RealObject,BehaviorModel>())
-            entry.baseClasses.insert("BehaviorModel");
-        if (implements<RealObject,CollisionModel>())
-            entry.baseClasses.insert("CollisionModel");
-        if (implements<RealObject,core::componentmodel::behavior::BaseMechanicalState>())
-            entry.baseClasses.insert("MechanicalState");
-        if (implements<RealObject,core::componentmodel::behavior::BaseForceField>())
-            entry.baseClasses.insert("ForceField");
-        if (implements<RealObject,core::componentmodel::behavior::InteractionForceField>())
-            entry.baseClasses.insert("InteractionForceField");
-        if (implements<RealObject,core::componentmodel::behavior::BaseLMConstraint>())
-            entry.baseClasses.insert("Constraint");
-        if (implements<RealObject,core::componentmodel::behavior::BaseConstraint>())
-            entry.baseClasses.insert("Constraint");
-        if (implements<RealObject,core::BaseMapping>())
-            entry.baseClasses.insert("Mapping");
-        if (implements<RealObject,core::componentmodel::behavior::BaseMechanicalMapping>())
-            entry.baseClasses.insert("MechanicalMapping");
-        if (implements<RealObject,core::componentmodel::topology::TopologicalMapping>())
-            entry.baseClasses.insert("TopologicalMapping");
-        if (implements<RealObject,core::componentmodel::behavior::BaseMass>())
-            entry.baseClasses.insert("Mass");
-        if (implements<RealObject,core::componentmodel::behavior::OdeSolver>())
-            entry.baseClasses.insert("OdeSolver");
-        if (implements<RealObject,core::componentmodel::behavior::LinearSolver>())
-            entry.baseClasses.insert("LinearSolver");
-        if (implements<RealObject,core::componentmodel::behavior::MasterSolver>())
-            entry.baseClasses.insert("MasterSolver");
-        if (implements<RealObject,core::componentmodel::topology::Topology>())
-            entry.baseClasses.insert("Topology");
-        if (implements<RealObject,core::componentmodel::topology::BaseTopologyObject>())
-            entry.baseClasses.insert("TopologyObject");
-        if (implements<RealObject,core::componentmodel::behavior::BaseController>())
-            entry.baseClasses.insert("Controller");
-        if (implements<RealObject,core::componentmodel::loader::BaseLoader>())
-            entry.baseClasses.insert("Loader");
-
-
-
+        /*
+                if (implements<RealObject,objectmodel::ContextObject>())
+                    entry.baseClasses.insert("ContextObject");
+                if (implements<RealObject,VisualModel>())
+                    entry.baseClasses.insert("VisualModel");
+                if (implements<RealObject,BehaviorModel>())
+                    entry.baseClasses.insert("BehaviorModel");
+                if (implements<RealObject,CollisionModel>())
+                    entry.baseClasses.insert("CollisionModel");
+                if (implements<RealObject,core::componentmodel::behavior::BaseMechanicalState>())
+                    entry.baseClasses.insert("MechanicalState");
+                if (implements<RealObject,core::componentmodel::behavior::BaseForceField>())
+                    entry.baseClasses.insert("ForceField");
+                if (implements<RealObject,core::componentmodel::behavior::InteractionForceField>())
+                    entry.baseClasses.insert("InteractionForceField");
+                if (implements<RealObject,core::componentmodel::behavior::BaseLMConstraint>())
+                    entry.baseClasses.insert("Constraint");
+                if (implements<RealObject,core::componentmodel::behavior::BaseConstraint>())
+                    entry.baseClasses.insert("Constraint");
+                if (implements<RealObject,core::BaseMapping>())
+                    entry.baseClasses.insert("Mapping");
+                if (implements<RealObject,core::componentmodel::behavior::BaseMechanicalMapping>())
+        	  entry.baseClasses.insert("MechanicalMapping");
+        	if (implements<RealObject,core::componentmodel::topology::TopologicalMapping>())
+        	  entry.baseClasses.insert("TopologicalMapping");
+                if (implements<RealObject,core::componentmodel::behavior::BaseMass>())
+                    entry.baseClasses.insert("Mass");
+                if (implements<RealObject,core::componentmodel::behavior::OdeSolver>())
+        	  entry.baseClasses.insert("OdeSolver");
+        	if (implements<RealObject,core::componentmodel::behavior::LinearSolver>())
+        	  entry.baseClasses.insert("LinearSolver");
+                if (implements<RealObject,core::componentmodel::behavior::MasterSolver>())
+                    entry.baseClasses.insert("MasterSolver");
+                if (implements<RealObject,core::componentmodel::topology::Topology>())
+        	  entry.baseClasses.insert("Topology");
+                if (implements<RealObject,core::componentmodel::topology::BaseTopologyObject>())
+        	  entry.baseClasses.insert("TopologyObject");
+        	if (implements<RealObject,core::componentmodel::behavior::BaseController>())
+        	  entry.baseClasses.insert("Controller");
+        	if (implements<RealObject,core::componentmodel::loader::BaseLoader>())
+        	  entry.baseClasses.insert("Loader");
+        */
+        addBaseClasses(RealObject::GetClass());
 
         return addCreator(classname, templatename, new ObjectCreator<RealObject>);
     }

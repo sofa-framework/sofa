@@ -50,8 +50,8 @@ HexahedronFEMForceFieldAndMass<DataTypes>::HexahedronFEMForceFieldAndMass()
     , HexahedronFEMForceFieldT()
     ,_elementMasses(initData(&_elementMasses,"massMatrices", "Mass matrices per element (M_i)"))
     , _density(initData(&_density,(Real)1.0,"density","density == volumetric mass in english (kg.m-3)"))
+    , _lumpedMass(initData(&_lumpedMass,(bool)false,"lumpedMass","Does it use lumped masses?"))
 {
-    _lumpedMass = this->initData(&_lumpedMass,false,"lumpedMass","Does it use lumped masses?");
 }
 
 

@@ -50,6 +50,8 @@ namespace core
 class BehaviorModel : public virtual sofa::core::objectmodel::BaseObject
 {
 public:
+    SOFA_CLASS(BehaviorModel, objectmodel::BaseObject);
+
     /// Destructor
     virtual ~BehaviorModel() {}
 

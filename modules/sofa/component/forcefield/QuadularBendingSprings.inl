@@ -316,9 +316,9 @@ void QuadularBendingSprings<DataTypes>::QuadularBSQuadDestructionFunction (const
 template<class DataTypes>
 QuadularBendingSprings<DataTypes>::QuadularBendingSprings()
     : updateMatrix(true)
+    , f_ks ( initData(&f_ks,(double) 100000.0,"stiffness","uniform stiffness for the all springs"))
+    , f_kd ( initData(&f_kd,(double) 1.0,"damping","uniform damping for the all springs"))
 {
-    f_ks = this->initData(&f_ks,(double) 100000.0,"stiffness","uniform stiffness for the all springs");
-    f_kd = this->initData(&f_kd,(double) 1.0,"damping","uniform damping for the all springs");
 }
 
 

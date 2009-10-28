@@ -27,6 +27,7 @@
 
 #include <sofa/core/componentmodel/topology/BaseTopology.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/component/component.h>
@@ -34,17 +35,6 @@
 
 namespace sofa
 {
-namespace core
-{
-namespace componentmodel
-{
-namespace behavior
-{
-template <class DataTypes>
-class MechanicalState;
-}
-}
-}
 
 namespace component
 {

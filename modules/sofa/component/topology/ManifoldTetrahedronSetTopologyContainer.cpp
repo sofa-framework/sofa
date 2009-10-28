@@ -54,18 +54,18 @@ const unsigned int edgesInTetrahedronArray[6][2] = {{0,1}, {0,2}, {0,3}, {1,2}, 
 
 ManifoldTetrahedronSetTopologyContainer::ManifoldTetrahedronSetTopologyContainer()
     : TetrahedronSetTopologyContainer()// draw to be restored
+    , debugViewIndices( initData(&debugViewIndices, (bool) false, "debugViewTriangleIndices", "Debug : view triangles indices") )
+    , debugViewIndicesTetra( initData(&debugViewIndicesTetra, (bool) false, "debugViewTetraIndices", "Debug : view tetra indices") )
+    , shellDisplay( initData(&shellDisplay, (bool) false, "debugViewShells", "Debug : view shells tetra"))
 {
-    debugViewIndices=this->initData(&debugViewIndices, (bool) false, "debugViewTriangleIndices", "Debug : view triangles indices");
-    debugViewIndicesTetra=this->initData(&debugViewIndicesTetra, (bool) false, "debugViewTetraIndices", "Debug : view tetra indices");
-    shellDisplay=this->initData(&shellDisplay, (bool) false, "debugViewShells", "Debug : view shells tetra");
 }
 
 ManifoldTetrahedronSetTopologyContainer::ManifoldTetrahedronSetTopologyContainer(const sofa::helper::vector< Tetrahedron >& tetrahedra )
     : TetrahedronSetTopologyContainer( tetrahedra)
+    , debugViewIndices( initData(&debugViewIndices, (bool) false, "debugViewTriangleIndices", "Debug : view triangles indices") )
+    , debugViewIndicesTetra( initData(&debugViewIndicesTetra, (bool) false, "debugViewTetraIndices", "Debug : view tetra indices") )
+    , shellDisplay( initData(&shellDisplay, (bool) false, "debugViewShells", "Debug : view shells tetra"))
 {
-    debugViewIndices=this->initData(&debugViewIndices, (bool) false, "debugViewTriangleIndices", "Debug : view triangles indices");
-    debugViewIndicesTetra=this->initData(&debugViewIndicesTetra, (bool) false, "debugViewTetraIndices", "Debug : view tetra indices");
-    shellDisplay=this->initData(&shellDisplay, (bool) false, "debugViewShells", "Debug : view shells tetra");
 }
 
 

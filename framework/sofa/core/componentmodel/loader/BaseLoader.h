@@ -46,12 +46,11 @@ namespace componentmodel
 namespace loader
 {
 
-/// this class:
 class BaseLoader : public virtual objectmodel::BaseObject
 {
-
-
 public:
+    SOFA_CLASS(BaseLoader, objectmodel::BaseObject);
+
     ///Constructor
     BaseLoader(): m_filename(initData(&m_filename,"filename","Filename of the object")) {}
 

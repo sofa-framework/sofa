@@ -66,6 +66,8 @@ namespace behavior
 class SOFA_CORE_API OdeSolver : public virtual objectmodel::BaseObject
 {
 public:
+    SOFA_CLASS(OdeSolver, objectmodel::BaseObject);
+
     typedef BaseMechanicalState::VecId VecId;
 
     OdeSolver();

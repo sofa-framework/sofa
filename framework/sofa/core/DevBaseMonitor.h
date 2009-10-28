@@ -55,6 +55,8 @@ namespace core
 class DevBaseMonitor : public virtual objectmodel::BaseObject
 {
 public:
+    SOFA_CLASS(DevBaseMonitor, objectmodel::BaseObject);
+
     /// Destructor
     virtual ~DevBaseMonitor() { };
     /// Compute metrics

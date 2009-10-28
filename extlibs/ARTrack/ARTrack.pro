@@ -2,9 +2,10 @@
 
 SOFA_DIR = ../..
 TEMPLATE = lib
+TARGET = ARTrack
+
 include($${SOFA_DIR}/sofa.cfg)
 
-TARGET = ARTrack$$LIBSUFFIX
 CONFIG += $$CONFIGLIBRARIES
 
 HEADERS += \

@@ -36,7 +36,7 @@ namespace simulation
 void ResetVisitor::processObject(core::objectmodel::BaseObject* obj)
 {
     obj->reset();
-    obj->sendl.clearWarnings(); obj->sendl.clearOutputs();
+    obj->clearWarnings(); obj->clearOutputs();
 }
 
 Visitor::Result ResetVisitor::processNodeTopDown(simulation::Node* node)
@@ -45,7 +45,7 @@ Visitor::Result ResetVisitor::processNodeTopDown(simulation::Node* node)
     {
         this->processObject(*it);
     }
-    node->sendl.clearWarnings(); node->sendl.clearOutputs();
+    node->clearWarnings(); node->clearOutputs();
     return RESULT_CONTINUE;
 }
 

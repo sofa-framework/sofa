@@ -55,6 +55,8 @@ template < class DataTypes >
 class TriangleSetTopologyAlgorithms : public EdgeSetTopologyAlgorithms<DataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(TriangleSetTopologyAlgorithms,DataTypes), SOFA_TEMPLATE(EdgeSetTopologyAlgorithms,DataTypes));
+
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
@@ -63,12 +65,12 @@ public:
     using core::componentmodel::topology::TopologyAlgorithms::serr;
     using core::componentmodel::topology::TopologyAlgorithms::sendl;
 
-    TriangleSetTopologyAlgorithms():EdgeSetTopologyAlgorithms<DataTypes>()
+    TriangleSetTopologyAlgorithms()
+        : EdgeSetTopologyAlgorithms<DataTypes>()
+        , m_listTriRemove( initData(&m_listTriRemove,  "Remove triangles by index", "Debug : Remove a triangle or a list of triangles by using their indices (only while animate)."))
+        , m_listTriAdd( initData(&m_listTriAdd,  "Add triangles by index", "Debug : Add a triangle or a list of triangles by using their indices (only while animate)."))
     {
-        m_listTriRemove=this->initData(&m_listTriRemove,  "Remove triangles by index", "Debug : Remove a triangle or a list of triangles by using their indices (only while animate).");
-        m_listTriAdd=this->initData(&m_listTriAdd,  "Add triangles by index", "Debug : Add a triangle or a list of triangles by using their indices (only while animate).");
     }
-
 
     virtual ~TriangleSetTopologyAlgorithms() {}
 

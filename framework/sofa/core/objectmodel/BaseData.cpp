@@ -26,6 +26,7 @@
 ******************************************************************************/
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/objectmodel/Base.h>
+#include <sofa/helper/BackTrace.h>
 
 namespace sofa
 {
@@ -40,6 +41,21 @@ BaseData::BaseData( const char* h, bool isDisplayed, bool isReadOnly, Base* owne
     : help(h), group(""), widget("")
     , m_counter(0), m_isDisplayed(isDisplayed), m_isReadOnly(isReadOnly), m_isPersistent(true), m_owner(owner), m_name(name), parentBaseData(NULL)
 {}
+
+BaseData::BaseData( const BaseInitData& init)
+    : help(init.helpMsg), group(init.group), widget(init.widget)
+    , m_counter(0), m_isDisplayed(init.isDisplayed), m_isReadOnly(init.isReadOnly), m_isPersistent(init.isPersistent), m_owner(init.owner), m_name(init.name), parentBaseData(NULL)
+{
+    if (init.data && init.data != this)
+    {
+        std::cerr << "CODE ERROR: initData POINTER MISMATCH: field name \"" << init.name << "\"";
+        if (init.owner)
+            std::cerr << " created by class " << init.owner->getClassName();
+        std::cerr << "!...aborting" << std::endl;
+        sofa::helper::BackTrace::dump();
+        exit( 1 );
+    }
+}
 
 BaseData::~BaseData()
 {
@@ -108,7 +124,7 @@ void BaseData::update()
 }
 
 /// Update this Data from the value of its parent
-bool BaseData::updateFromParentValue(BaseData* parent)
+bool BaseData::updateFromParentValue(const BaseData* parent)
 {
     const defaulttype::AbstractTypeInfo* dataInfo = this->getValueTypeInfo();
     const defaulttype::AbstractTypeInfo* parentInfo = parent->getValueTypeInfo();
@@ -191,6 +207,16 @@ bool BaseData::updateFromParentValue(BaseData* parent)
     }
 
     return true;
+}
+
+/// Copy the value of another Data.
+/// Note that this is a one-time copy and not a permanent link (otherwise see setParent)
+/// @return true if copy was successfull
+bool BaseData::copyValue(const BaseData* parent)
+{
+    if (updateFromParentValue(parent))
+        return true;
+    return false;
 }
 
 } // namespace objectmodel

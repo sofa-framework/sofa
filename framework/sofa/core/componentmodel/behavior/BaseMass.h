@@ -55,7 +55,16 @@ namespace behavior
 class BaseMass : public virtual objectmodel::BaseObject
 {
 public:
-    virtual ~BaseMass() { }
+    SOFA_CLASS(BaseMass, objectmodel::BaseObject);
+
+    BaseMass()
+        : m_separateGravity (initData(&m_separateGravity , false, "separateGravity", "add separately gravity to velocity computation"))
+    {
+    }
+
+    virtual ~BaseMass()
+    {
+    }
 
     /// @name Vector operations
     /// @{

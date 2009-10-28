@@ -55,6 +55,8 @@ template<class TDataTypes1, class TDataTypes2>
 class SOFA_CORE_API MixedInteractionConstraint : public InteractionConstraint
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE2(MixedInteractionConstraint,TDataTypes1,TDataTypes2), InteractionConstraint);
+
     typedef TDataTypes1 DataTypes1;
     typedef typename DataTypes1::VecCoord VecCoord1;
     typedef typename DataTypes1::VecDeriv VecDeriv1;

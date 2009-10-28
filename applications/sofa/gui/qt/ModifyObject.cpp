@@ -466,6 +466,8 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     new QLabel(QString("Template"), box);
                     new QLabel(QString(node_clicked->getTemplateName().c_str()), box);
                 }
+                new QLabel(QString("Target"), box);
+                new QLabel(QString(node_clicked->getClass()->targetName.c_str()), box);
 
                 tabLayout->addWidget( box );
             }
@@ -544,7 +546,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
 void ModifyObject::updateConsole()
 {
     //Console Warnings
-    if ( !node->sendl.getWarnings().empty())
+    if ( !node->getWarnings().empty())
     {
         if (!logWarningEdit)
         {
@@ -562,13 +564,13 @@ void ModifyObject::updateConsole()
             logWarningEdit->setReadOnly(true);
         }
 
-        logWarningEdit->setText(QString(node->sendl.getWarnings().c_str()));
+        logWarningEdit->setText(QString(node->getWarnings().c_str()));
         logWarningEdit->moveCursor(Q3TextEdit::MoveEnd, false);
         logWarningEdit->ensureCursorVisible();
 
     }
     //Console Outputs
-    if ( !node->sendl.getOutputs().empty())
+    if ( !node->getOutputs().empty())
     {
         if (!logOutputEdit)
         {
@@ -586,7 +588,7 @@ void ModifyObject::updateConsole()
             logOutputEdit->setReadOnly(true);
         }
 
-        logOutputEdit->setText(QString(node->sendl.getOutputs().c_str()));
+        logOutputEdit->setText(QString(node->getOutputs().c_str()));
         logOutputEdit->moveCursor(Q3TextEdit::MoveEnd, false);
         logOutputEdit->ensureCursorVisible();
     }

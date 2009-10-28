@@ -9,10 +9,11 @@
 # USE_GLUT = yes
 
 SOFA_DIR = ../../..
+TEMPLATE = lib
+TARGET = QGLViewer
+
 include($${SOFA_DIR}/sofa.cfg)
 
-TEMPLATE = lib
-TARGET = QGLViewer$${LIBSUFFIX}
 CONFIG *= qt opengl warn_on shared thread create_prl rtti uic
 
 HEADERS = qglviewer.h \

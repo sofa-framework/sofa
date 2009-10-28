@@ -30,6 +30,7 @@
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/system/SofaOStream.h>
 #include <sofa/helper/vector.h>
+#include <sofa/core/objectmodel/BaseClass.h>
 #include <sofa/core/objectmodel/DataPtr.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
@@ -55,20 +56,15 @@ namespace objectmodel
  *  Most importantly it defines how to retrieve information about an object (name, type, fields).
  *
  */
-class SOFA_CORE_API Base
+class SOFA_CORE_API Base : public helper::system::SofaOStreamContainer
 {
 public:
+    typedef TClass< Base, void > MyClass;
+    static const MyClass* GetClass() { return MyClass::get(); }
+    virtual const BaseClass* getClass() const { return GetClass(); }
+
     Base();
     virtual ~Base();
-
-    /// Name of the object.
-    Data<std::string> name;
-
-    /// @name debug
-    ///   Methods related to debugging
-    ///@{
-    Data<bool> f_printLog;
-
 
     /// Accessor to the object name
     std::string getName() const;
@@ -176,34 +172,20 @@ public:
 
     /// Helper method used to initialize a field containing a value of type T
     template<class T>
-    Data<T> initData( Data<T>* field, const char* name, const char* help, bool isDisplayed=true, bool isReadOnly=false )
+    BaseData::BaseInitData initData( Data<T>* field, const char* name, const char* help, bool isDisplayed=true, bool isReadOnly=false )
     {
-        std::string ln(name);
-        if( ln.size()>0 && findField(ln) )
-        {
-            serr << "field name " << ln << " already used in this class or in a parent class !...aborting" << sendl;
-            exit( 1 );
-        }
-        //field = tmp;
-        m_fieldVec.push_back( std::make_pair(ln,field));
-        m_aliasData.insert(std::make_pair(ln,field));
-        return Data<T>(help,isDisplayed,isReadOnly, this, name);
+        BaseData::BaseInitData res;
+        this->initData0(field, res, name, help, isDisplayed, isReadOnly);
+        return res;
     }
 
     /// Helper method used to initialize a field containing a value of type T
     template<class T>
-    Data<T> initData( Data<T>* field, const T& value, const char* name, const char* help, bool isDisplayed=true, bool isReadOnly=false  )
+    typename Data<T>::InitData initData( Data<T>* field, const T& value, const char* name, const char* help, bool isDisplayed=true, bool isReadOnly=false  )
     {
-        std::string ln(name);
-        if( ln.size()>0 && findField(ln)  )
-        {
-            serr << "field name " << ln << " already used in this class or in a parent class !...aborting" << sendl;
-            exit( 1 );
-        }
-        //field = tmp;
-        m_fieldVec.push_back( std::make_pair(ln,field));
-        m_aliasData.insert(std::make_pair(ln,field));
-        return Data<T>(value,help,isDisplayed,isReadOnly, this, name);
+        typename Data<T>::InitData res;
+        this->initData0(field, res, value, name, help, isDisplayed, isReadOnly);
+        return res;
     }
 
     /// Helper method used to initialize a field pointing to a value of type T
@@ -232,17 +214,51 @@ public:
     virtual void parse ( BaseObjectDescription* arg );
 
     /// Accessor to the vector containing all the fields of this object
-    std::vector< std::pair<std::string, BaseData*> > getFields() { return m_fieldVec; }
+    const std::vector< std::pair<std::string, BaseData*> >& getFields() const { return m_fieldVec; }
     /// Accessor to the map containing all the aliases of this object
-    std::multimap< std::string, BaseData* > getAliases() { return m_aliasData; }
+    const std::multimap< std::string, BaseData* >& getAliases() const { return m_aliasData; }
 
     mutable sofa::helper::system::SofaOStream sendl;
-    mutable std::ostringstream               &serr;
-    mutable std::ostringstream               &sout;
+    mutable std::ostringstream                serr;
+    mutable std::ostringstream                sout;
 
+    const std::string& getWarnings() const;
+    const std::string& getOutputs() const;
+
+    void clearWarnings();
+    void clearOutputs();
 
 protected:
 
+    void processStream(std::ostream& out);
+
+    std::string warnings;
+    std::string outputs;
+
+    void initData0( BaseData* field, BaseData::BaseInitData& res, const char* name, const char* help, bool isDisplayed=true, bool isReadOnly=false )
+    {
+        std::string ln(name);
+        if( ln.size()>0 && findField(ln) )
+        {
+            serr << "field name " << ln << " already used in this class or in a parent class !...aborting" << sendl;
+            exit( 1 );
+        }
+        m_fieldVec.push_back( std::make_pair(ln,field));
+        m_aliasData.insert(std::make_pair(ln,field));
+        res.owner = this;
+        res.data = field;
+        res.name = name;
+        res.helpMsg = help;
+        res.isDisplayed = isDisplayed;
+        res.isReadOnly = isReadOnly;
+    }
+
+    template<class T>
+    void initData0( Data<T>* field, typename Data<T>::InitData& res, const T& value, const char* name, const char* help, bool isDisplayed=true, bool isReadOnly=false )
+    {
+        initData0( field, res, name, help, isDisplayed, isReadOnly );
+        res.value = value;
+    }
 
     /// List of fields (Data instances)
     std::vector< std::pair<std::string, BaseData*> > m_fieldVec;
@@ -263,6 +279,13 @@ protected:
         f->setOwner(this);
         f->setName(name);
     }
+
+public:
+
+    /// Name of the object.
+    Data<std::string> name;
+
+    Data<bool> f_printLog;
 };
 
 } // namespace objectmodel

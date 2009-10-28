@@ -29,6 +29,7 @@
 #pragma once
 #endif
 
+#include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
@@ -50,7 +51,7 @@ using namespace sofa::defaulttype;
 /**
  * Generic material class
  */
-class BaseMaterial
+class BaseMaterial : public virtual core::objectmodel::BaseObject
 {
 public:
 

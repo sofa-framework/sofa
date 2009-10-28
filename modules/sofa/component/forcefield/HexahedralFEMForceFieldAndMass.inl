@@ -51,8 +51,8 @@ HexahedralFEMForceFieldAndMass<DataTypes>::HexahedralFEMForceFieldAndMass()
 //	, _elementMasses(initData(&_elementMasses,"massMatrices", "Mass matrices per element (M_i)"))
 //	, _particleMasses(initData(&_particleMasses, "particleMasses", "Mass per particle"))
 //	, _lumpedMasses(initData(&_lumpedMasses, "lumpedMasses", "Lumped masses"))
+    , _useLumpedMass(initData(&_useLumpedMass, (bool)false, "lumpedMass", "Does it use lumped masses?"))
 {
-    _useLumpedMass = this->initData(&_useLumpedMass, false, "lumpedMass", "Does it use lumped masses?");
 }
 
 

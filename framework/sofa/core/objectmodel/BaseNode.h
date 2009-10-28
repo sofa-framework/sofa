@@ -53,6 +53,8 @@ class BaseObject;
 class BaseNode : public virtual Base
 {
 public:
+    SOFA_CLASS(BaseNode, Base);
+
     virtual ~BaseNode() {}
 
     /// @name Scene hierarchy
