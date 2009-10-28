@@ -393,12 +393,12 @@ public:
     void reserve(size_type s) { ref.reserve(s); }
     void push_back(const_reference v) { ref.push_back(v); }
 
-    inline friend std::ostream& operator<< ( std::ostream& os, const WriteAccessor<container_type>& vec )
+    inline friend std::ostream& operator<< ( std::ostream& os, const WriteAccessor<data_container_type>& vec )
     {
         return os << vec.ref;
     }
 
-    inline friend std::istream& operator>> ( std::istream& in, WriteAccessor<container_type>& vec )
+    inline friend std::istream& operator>> ( std::istream& in, WriteAccessor<data_container_type>& vec )
     {
         return in >> vec.ref;
     }
