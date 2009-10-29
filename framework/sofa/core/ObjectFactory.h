@@ -99,6 +99,9 @@ public:
 
         /// BaseClass structure associated with the type of intanciated objects.
         virtual const objectmodel::BaseClass* getClass() = 0;
+
+        /// The name of the library or executable containing the binary code for this component
+        virtual const char* getTarget() = 0;
     };
 
     /// Record storing information about a class
@@ -213,6 +216,16 @@ public:
     {
         return RealObject::GetClass();
     }
+    /// The name of the library or executable containing the binary code for this component
+    virtual const char* getTarget()
+    {
+#ifdef SOFA_TARGET
+        return sofa_tostring(SOFA_TARGET);
+#else
+        return "";
+#endif
+    }
+
 };
 
 /**

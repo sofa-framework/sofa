@@ -466,8 +466,6 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     new QLabel(QString("Template"), box);
                     new QLabel(QString(node_clicked->getTemplateName().c_str()), box);
                 }
-                new QLabel(QString("Target"), box);
-                new QLabel(QString(node_clicked->getClass()->targetName.c_str()), box);
 
                 tabLayout->addWidget( box );
             }
@@ -484,6 +482,13 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     new QLabel(QString("Description"), box);
                     new QLabel(QString(entry->description.c_str()), box);
                 }
+                std::map<std::string, core::ObjectFactory::Creator*>::iterator it = entry->creatorMap.find(node_clicked->getTemplateName());
+                if (it != entry->creatorMap.end() && *it->second->getTarget())
+                {
+                    new QLabel(QString("Provided by"), box);
+                    new QLabel(QString(it->second->getTarget()), box);
+                }
+
                 if (!entry->authors.empty() && entry->authors != std::string("TODO"))
                 {
                     new QLabel(QString("Authors"), box);
