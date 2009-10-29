@@ -292,8 +292,8 @@ void PositionalLight::draw()
     {
         Vector3 sceneMinBBox, sceneMaxBBox;
         sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)this->getContext(), sceneMinBBox.ptr(), sceneMaxBBox.ptr());
-        float scale = (sceneMaxBBox - sceneMinBBox).norm();
-        scale *= 0.01;
+        float scale = (float)((sceneMaxBBox - sceneMinBBox).norm());
+        scale *= 0.01f;
 
         GLUquadric* quad = gluNewQuadric();
         const Vector3& pos = position.getValue();
@@ -303,8 +303,8 @@ void PositionalLight::draw()
         glColor3dv(col.ptr());
 
         glPushMatrix();
-        glTranslatef(pos[0], pos[1], pos[2]);
-        gluSphere(quad, 1.0*scale, 16, 16);
+        glTranslated(pos[0], pos[1], pos[2]);
+        gluSphere(quad, 1.0f*scale, 16, 16);
         glPopMatrix();
 
         glEnable(GL_LIGHTING);
@@ -367,10 +367,10 @@ void SpotLight::draw()
     {
         Vector3 sceneMinBBox, sceneMaxBBox;
         sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)this->getContext(), sceneMinBBox.ptr(), sceneMaxBBox.ptr());
-        float scale = (sceneMaxBBox - sceneMinBBox).norm();
-        scale *= 0.01;
-        float width = 5.0;
-        float base =(tan(cutoff.getValue()*M_PI/360)*width*2);
+        float scale = (float)((sceneMaxBBox - sceneMinBBox).norm());
+        scale *= 0.01f;
+        float width = 5.0f;
+        float base =(float)(tan(cutoff.getValue()*M_PI/360)*width*2);
 
         GLUquadric* quad = gluNewQuadric();
         const Vector3& pos = position.getValue();
@@ -380,7 +380,7 @@ void SpotLight::draw()
         glColor3dv(col.ptr());
 
         glPushMatrix();
-        glTranslatef(pos[0], pos[1], pos[2]);
+        glTranslated(pos[0], pos[1], pos[2]);
         glScalef(scale, scale, scale);
         glPushMatrix();
         gluSphere(quad, 1.0, 16, 16);
