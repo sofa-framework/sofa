@@ -33,12 +33,15 @@ private:
     std::ofstream* outfile;
 
     void fetchDataFields(const helper::vector<std::string>& strData, helper::vector<std::string>& objects, helper::vector<std::string>& fields);
-    void writeVTK();
+    void writeVTKSimple();
+    void writeVTKXML();
     void writeData(const helper::vector<std::string>& objects, const helper::vector<std::string>& fields);
+    void writeDataArray(const helper::vector<std::string>& objects, const helper::vector<std::string>& fields);
     std::string segmentString(std::string str, unsigned int n);
 
 public:
     sofa::core::objectmodel::DataFileName vtkFilename;
+    Data<bool> fileFormat;	//0 for Simple Legacy Formats, 1 for XML File Format
     Data<bool> writeEdges;
     Data<bool> writeTriangles;
     Data<bool> writeQuads;

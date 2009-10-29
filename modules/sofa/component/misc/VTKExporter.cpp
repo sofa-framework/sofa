@@ -28,6 +28,7 @@ int VTKExporterClass = core::RegisterObject("Read State vectors from file at eac
 
 VTKExporter::VTKExporter()
     : vtkFilename( initData(&vtkFilename, "filename", "output VTK file name"))
+    , fileFormat( initData(&fileFormat, (bool) true, "fileFormat", "file format"))
     , writeEdges( initData(&writeEdges, (bool) true, "edges", "write edge topology"))
     , writeTriangles( initData(&writeTriangles, (bool) false, "triangles", "write triangle topology"))
     , writeQuads( initData(&writeQuads, (bool) false, "quads", "write quad topology"))
@@ -192,6 +193,91 @@ void VTKExporter::writeData(const helper::vector<std::string>& objects, const he
     }
 }
 
+void VTKExporter::writeDataArray(const helper::vector<std::string>& objects, const helper::vector<std::string>& fields)
+{
+    sofa::core::objectmodel::BaseContext* context = this->getContext();
+
+    //std::cout << "List o: " << objects << std::endl;
+    //std::cout << "List f: " << fields << std::endl;
+
+    for (unsigned int i=0 ; i<objects.size() ; i++)
+    {
+        core::objectmodel::BaseObject* obj = context->get<core::objectmodel::BaseObject> (objects[i]);
+        core::objectmodel::BaseData* field = NULL;
+        //std::cout << objects[i] << std::endl;
+        if (obj)
+        {
+            std::vector< std::pair<std::string, core::objectmodel::BaseData*> > f = obj->getFields();
+
+            for (unsigned int j=0 ; j<f.size() && !field; j++)
+            {
+                if(fields[i].compare(f[j].first) == 0)
+                    field = f[j].second;
+            }
+        }
+
+        if (!obj || !field)
+        {
+            serr << "VTKExporter : error while fetching data field, check object name or field name " << sendl;
+        }
+        else
+        {
+            //std::cout << "Type: " << field->getValueTypeString() << std::endl;
+
+            //retrieve data file type
+//			if (dynamic_cast<Data< defaulttype::Vec3f >* >(field))
+//				std::cout << "Vec3f" << std::endl;
+//			if (dynamic_cast<Data< defaulttype::Vec3d >* >(field))
+//				std::cout << "Vec3d" << std::endl;
+
+            //Scalars
+            std::string type;
+            unsigned int sizeSeg=0;
+            if (dynamic_cast<sofa::core::objectmodel::TData< helper::vector<int> >* >(field))
+            {
+                type = "Int32";
+                sizeSeg = 1;
+            }
+            if (dynamic_cast<sofa::core::objectmodel::TData< helper::vector<unsigned int> >* >(field))
+            {
+                type = "UInt32";
+                sizeSeg = 1;
+            }
+            if (dynamic_cast<sofa::core::objectmodel::TData< helper::vector<float> >* >(field))
+            {
+                type = "Float32";
+                sizeSeg = 1;
+            }
+            if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector<double> >* >(field))
+            {
+                type = "Float64";
+                sizeSeg = 1;
+            }
+
+            //Vectors
+            if (type.empty())
+            {
+                if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< defaulttype::Vec3f > >* > (field))
+                {
+                    type = "Float32";
+                    sizeSeg = 3;
+                }
+                if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< defaulttype::Vec3d > >* >(field))
+                {
+                    type = "Float64";
+                    sizeSeg = 3;
+                }
+            }
+            *outfile << "        <DataArray Type=\""<< type << "\" Name=\"" << fields[i] << "\"";
+            if(sizeSeg > 1)
+                *outfile << " NumberOfComponents=\"" << sizeSeg << "\"";
+            *outfile << " Format=\"ASCII\">" << std::endl;
+            *outfile << segmentString(field->getValueString(),sizeSeg) << std::endl;
+            *outfile << "        </DataArray>" << std::endl;
+        }
+    }
+}
+
 
 std::string VTKExporter::segmentString(std::string str, unsigned int n)
 {
@@ -215,7 +301,7 @@ std::string VTKExporter::segmentString(std::string str, unsigned int n)
 }
 
 
-void VTKExporter::writeVTK()
+void VTKExporter::writeVTKSimple()
 {
     const helper::vector<std::string>& pointsData = dPointsDataFields.getValue();
     const helper::vector<std::string>& cellsData = dCellsDataFields.getValue();
@@ -236,7 +322,9 @@ void VTKExporter::writeVTK()
     *outfile << "POINTS " << topology->getNbPoints() << " float" << std::endl;
     //write Points
     for (int i=0 ; i<topology->getNbPoints() ; i++)
+    {
         *outfile << topology->getPX(i) << " " << topology->getPY(i) << " " << topology->getPZ(i) << std::endl;
+    }
 
     *outfile << std::endl;
 
@@ -334,6 +422,174 @@ void VTKExporter::writeVTK()
     std::cout << "VTK written" << std::endl;
 }
 
+void VTKExporter::writeVTKXML()
+{
+    const helper::vector<std::string>& pointsData = dPointsDataFields.getValue();
+    const helper::vector<std::string>& cellsData = dCellsDataFields.getValue();
+
+    unsigned int numberOfCells;
+    numberOfCells = ( (writeEdges.getValue()) ? topology->getNbEdges() : 0 )
+            +( (writeTriangles.getValue()) ? topology->getNbTriangles() : 0 )
+            +( (writeQuads.getValue()) ? topology->getNbQuads() : 0 )
+            +( (writeTetras.getValue()) ? topology->getNbTetras() : 0 )
+            +( (writeHexas.getValue()) ? topology->getNbHexas() : 0 );
+//	unsigned int totalSize =     ( (writeEdges.getValue()) ? 3 * topology->getNbEdges() : 0 )
+// 				   +( (writeTriangles.getValue()) ? 4 *topology->getNbTriangles() : 0 )
+// 				   +( (writeQuads.getValue()) ? 5 *topology->getNbQuads() : 0 )
+// 				   +( (writeTetras.getValue()) ? 5 *topology->getNbTetras() : 0 )
+// 				   +( (writeHexas.getValue()) ? 9 *topology->getNbHexas() : 0 );
+
+    //write header
+    *outfile << "<VTKFile Type=\"UnstructuredGrid\" Version=\"0.1\" Byte_order=\"LittleEndian\">" << std::endl;
+    *outfile << "  <UnstructuredGrid>" << std::endl;
+    //write piece
+    *outfile << "    <Piece NumberOfPoints=\"" << topology->getNbPoints() << "\" NumberOfCells=\""<< numberOfCells << "\">" << std::endl << std::endl;
+
+
+
+
+    //write point data
+    if (!pointsData.empty())
+    {
+        *outfile << "      <PointData>" << std::endl;
+        writeDataArray(pointsDataObject, pointsDataField);
+        *outfile << "      </PointData>" << std::endl << std::endl;
+    }
+    //write cell data
+    if (!cellsData.empty())
+    {
+        *outfile << "      <CellData>" << std::endl;
+        writeDataArray(cellsDataObject, cellsDataField);
+        *outfile << "      </CellData>" << std::endl << std::endl;
+    }
+
+
+
+    //write points
+    *outfile << "      <Points>" << std::endl;
+    *outfile << "        <DataArray Type=\"Float32\" NumberOfComponents=\"3\" Format=\"ASCII\">" << std::endl;
+    for (int i = 0; i < topology->getNbPoints(); i++)
+        *outfile << "          " << topology->getPX(i) << " " << topology->getPY(i) << " " << topology->getPZ(i) << std::endl;
+    *outfile << "        </DataArray>" << std::endl;
+    *outfile << "      </Points>" << std::endl << std::endl;
+    //write cells
+    *outfile << "      <Cells>" << std::endl;
+    //write connectivity
+    *outfile << "        <DataArray Type=\"Int32\" Name=\"connectivity\" Format=\"ASCII\"" << std::endl;
+    if (writeEdges.getValue())
+    {
+        for (int i=0 ; i<topology->getNbEdges() ; i++)
+            *outfile << "          " << topology->getEdge(i) << std::endl;
+    }
+
+    if (writeTriangles.getValue())
+    {
+        for (int i=0 ; i<topology->getNbTriangles() ; i++)
+            *outfile << "          " <<  topology->getTriangle(i) << std::endl;
+    }
+    if (writeQuads.getValue())
+    {
+        for (int i=0 ; i<topology->getNbQuads() ; i++)
+            *outfile << "          " << topology->getQuad(i) << std::endl;
+    }
+    if (writeTetras.getValue())
+    {
+        for (int i=0 ; i<topology->getNbTetras() ; i++)
+            *outfile << "          " <<  topology->getTetra(i) << std::endl;
+    }
+    if (writeHexas.getValue())
+    {
+        for (int i=0 ; i<topology->getNbHexas() ; i++)
+            *outfile << "          " <<  topology->getHexa(i) << std::endl;
+    }
+    *outfile << "        </DataArray>" << std::endl;
+    //write offsets
+    int num = 0;
+    *outfile << "        <DataArray Type=\"Int32\" Name=\"offsets\" Format=\"ASCII\"" << std::endl;
+    *outfile << "          ";
+    if (writeEdges.getValue())
+    {
+        for (int i=0 ; i<topology->getNbEdges() ; i++)
+        {
+            num += 2;
+            *outfile << num << " ";
+        }
+    }
+    if (writeTriangles.getValue())
+    {
+        for (int i=0 ; i<topology->getNbTriangles() ; i++, num+=3)
+        {
+            num += 3;
+            *outfile << num << " ";
+        }
+    }
+    if (writeQuads.getValue())
+    {
+        for (int i=0 ; i<topology->getNbQuads() ; i++, num+=4)
+        {
+            num += 4;
+            *outfile << num << " ";
+        }
+    }
+    if (writeTetras.getValue())
+    {
+        for (int i=0 ; i<topology->getNbTetras() ; i++, num+=4)
+        {
+            num += 4;
+            *outfile << num << " ";
+        }
+    }
+    if (writeHexas.getValue())
+    {
+        for (int i=0 ; i<topology->getNbHexas() ; i++, num+=6)
+        {
+            num += 6;
+            *outfile << num << " ";
+        }
+    }
+    *outfile << std::endl;
+    *outfile << "        </DataArray>" << std::endl;
+    //write types
+    *outfile << "        <DataArray Type=\"UInt8\" Name=\"types\" Format=\"ASCII\"" << std::endl;
+    *outfile << "          ";
+    if (writeEdges.getValue())
+    {
+        for (int i=0 ; i<topology->getNbEdges() ; i++)
+            *outfile << 3 << " ";
+    }
+    if (writeTriangles.getValue())
+    {
+        for (int i=0 ; i<topology->getNbTriangles() ; i++)
+            *outfile << 5 << " ";
+    }
+    if (writeQuads.getValue())
+    {
+        for (int i=0 ; i<topology->getNbQuads() ; i++)
+            *outfile << 9 << " ";
+    }
+    if (writeTetras.getValue())
+    {
+        for (int i=0 ; i<topology->getNbTetras() ; i++)
+            *outfile << 10 << " ";
+    }
+    if (writeHexas.getValue())
+    {
+        for (int i=0 ; i<topology->getNbHexas() ; i++)
+            *outfile << 12 << " ";
+    }
+    *outfile << std::endl;
+    *outfile << "        </DataArray>" << std::endl;
+    *outfile << "      </Cells>" << std::endl << std::endl;
+
+    //write end
+    *outfile << "    </Piece>" << std::endl;
+    *outfile << "  </UnstructuredGrid>" << std::endl;
+    *outfile << "</VTKFile>" << std::endl;
+    outfile->close();
+    std::cout << "VTK written" << std::endl;
+}
+
+
 void VTKExporter::handleEvent(sofa::core::objectmodel::Event *event)
 {
     if (sofa::core::objectmodel::KeypressedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeypressedEvent*>(event))
@@ -343,7 +599,10 @@ void VTKExporter::handleEvent(sofa::core::objectmodel::Event *event)
 
         case 'E':
         case 'e':
-            writeVTK();
+            if(fileFormat.getValue())
+                writeVTKXML();
+            else
+                writeVTKSimple();
             break;
         }
     }
