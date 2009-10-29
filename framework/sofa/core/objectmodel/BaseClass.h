@@ -59,7 +59,7 @@ public:
     std::string namespaceName;
     std::string className;
     std::string templateName;
-    std::string targetName;
+    //std::string targetName;
     helper::vector<const BaseClass*> parents;
 
     bool hasParent(const BaseClass* c) const
@@ -208,9 +208,9 @@ protected:
         namespaceName = T::namespaceName(ptr);
         className = T::className(ptr);
         templateName = T::templateName(ptr);
-#ifdef SOFA_TARGET
-        targetName = sofa_tostring(SOFA_TARGET);
-#endif
+//#ifdef SOFA_TARGET
+//        targetName = sofa_tostring(SOFA_TARGET);
+//#endif
         parents.resize(TClassParents<Parents>::nb());
         for (int i=0; i<TClassParents<Parents>::nb(); ++i)
             parents[i] = TClassParents<Parents>::get(i);
