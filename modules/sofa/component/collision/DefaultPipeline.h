@@ -41,6 +41,8 @@ namespace collision
 class SOFA_COMPONENT_COLLISION_API DefaultPipeline : public sofa::simulation::PipelineImpl
 {
 public:
+    SOFA_CLASS(DefaultPipeline,sofa::simulation::PipelineImpl);
+
     Data<bool> bVerbose;
     Data<bool> bDraw;
     Data<int> depth;

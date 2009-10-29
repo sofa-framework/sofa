@@ -83,6 +83,8 @@ public:
 class SOFA_COMPONENT_COLLISION_API TetrahedronModel : public core::CollisionModel
 {
 public:
+    SOFA_CLASS(TetrahedronModel, core::CollisionModel);
+
     typedef Vec3Types InDataTypes;
     typedef Vec3Types DataTypes;
     typedef DataTypes::VecCoord VecCoord;

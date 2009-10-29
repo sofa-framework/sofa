@@ -46,6 +46,7 @@ namespace collision
 class SOFA_COMPONENT_COLLISION_API MinProximityIntersection : public DiscreteIntersection
 {
 public:
+    SOFA_CLASS(MinProximityIntersection,DiscreteIntersection);
     Data<bool> useSphereTriangle;
     Data<bool> usePointPoint;
     Data<double> alarmDistance;

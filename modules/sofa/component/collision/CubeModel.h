@@ -58,6 +58,9 @@ public:
 
 class SOFA_COMPONENT_COLLISION_API CubeModel : public core::CollisionModel
 {
+public:
+    SOFA_CLASS(CubeModel,sofa::core::CollisionModel);
+
 protected:
 
     struct CubeData

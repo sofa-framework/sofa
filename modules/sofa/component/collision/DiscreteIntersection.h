@@ -48,6 +48,8 @@ namespace collision
 class SOFA_COMPONENT_COLLISION_API DiscreteIntersection : public core::componentmodel::collision::Intersection
 {
 public:
+    SOFA_CLASS(DiscreteIntersection,sofa::core::componentmodel::collision::Intersection);
+
     DiscreteIntersection();
 
     /// Return the intersector class handling the given pair of collision models, or NULL if not supported.

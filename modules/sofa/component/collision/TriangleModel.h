@@ -79,6 +79,8 @@ public:
 class SOFA_COMPONENT_COLLISION_API TriangleModel : public core::CollisionModel
 {
 public:
+    SOFA_CLASS(TriangleModel, core::CollisionModel);
+
     typedef Vec3Types InDataTypes;
     typedef Vec3Types DataTypes;
     typedef DataTypes::VecCoord VecCoord;

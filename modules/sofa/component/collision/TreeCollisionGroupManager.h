@@ -40,6 +40,8 @@ namespace collision
 class SOFA_COMPONENT_COLLISION_API TreeCollisionGroupManager : public DefaultCollisionGroupManager
 {
 public:
+    SOFA_CLASS(TreeCollisionGroupManager, DefaultCollisionGroupManager);
+
     TreeCollisionGroupManager() {};
 
     void clearGroups(core::objectmodel::BaseContext* scene);

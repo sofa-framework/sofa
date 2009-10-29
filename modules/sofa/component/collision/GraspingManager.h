@@ -47,6 +47,8 @@ namespace collision
 class SOFA_COMPONENT_COLLISION_API GraspingManager : public core::componentmodel::behavior::BaseController
 {
 public:
+    SOFA_CLASS(GraspingManager,sofa::core::componentmodel::behavior::BaseController);
+
     typedef TriangleModel::DataTypes DataTypes;
     typedef DataTypes::Coord Coord;
     typedef DataTypes::Real Real;

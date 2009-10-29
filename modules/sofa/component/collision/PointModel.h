@@ -75,6 +75,8 @@ public:
 class SOFA_COMPONENT_COLLISION_API PointModel : public core::CollisionModel
 {
 public:
+    SOFA_CLASS(PointModel, core::CollisionModel);
+
     typedef Vec3Types InDataTypes;
     typedef Vec3Types DataTypes;
     typedef DataTypes::VecCoord VecCoord;

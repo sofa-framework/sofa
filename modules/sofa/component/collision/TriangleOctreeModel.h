@@ -47,6 +47,8 @@ using namespace sofa::defaulttype;
 class SOFA_COMPONENT_COLLISION_API TriangleOctreeModel : public  TriangleModel, public TriangleOctreeRoot
 {
 public:
+    SOFA_CLASS(TriangleOctreeModel, TriangleModel);
+
     TriangleOctreeModel();
 
 #if 0

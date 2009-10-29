@@ -44,6 +44,8 @@ using namespace sofa::defaulttype;
 class SpatialGridPointModel : public PointModel
 {
 public:
+    SOFA_CLASS(SpatialGridPointModel, PointModel);
+
     typedef container::SpatialGridContainer<Vec3Types> GridContainer;
     typedef GridContainer::Grid Grid;
 

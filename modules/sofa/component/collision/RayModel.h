@@ -66,6 +66,8 @@ class BaseRayContact;
 class SOFA_COMPONENT_COLLISION_API RayModel : public core::CollisionModel
 {
 public:
+    SOFA_CLASS(RayModel, core::CollisionModel);
+
     typedef Vec3Types InDataTypes;
     typedef Vec3Types DataTypes;
     typedef Ray Element;

@@ -39,6 +39,8 @@ namespace collision
 class SOFA_COMPONENT_COLLISION_API RuleBasedContactManager : public DefaultContactManager
 {
 public:
+    SOFA_CLASS(RuleBasedContactManager, DefaultContactManager);
+
     class Rule
     {
     public:

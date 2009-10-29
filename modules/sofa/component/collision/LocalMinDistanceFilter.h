@@ -138,6 +138,8 @@ protected:
 class SOFA_COMPONENT_COLLISION_API LocalMinDistanceFilter : public virtual core::objectmodel::BaseObject
 {
 public:
+    SOFA_CLASS(LocalMinDistanceFilter,sofa::core::objectmodel::BaseObject);
+
     /**
      * @brief Default constructor.
      */
