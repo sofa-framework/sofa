@@ -190,7 +190,7 @@ void SpringForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *, 
 template<class DataTypes>
 void SpringForceField<DataTypes>::draw()
 {
-    if (!((this->mstate1 == this->mstate2)?getContext()->getShowForceFields():getContext()->getShowInteractionForceFields())) return;
+    if (!((this->mstate1 == this->mstate2)?this->getContext()->getShowForceFields():this->getContext()->getShowInteractionForceFields())) return;
     const VecCoord& p1 = *this->mstate1->getX();
     const VecCoord& p2 = *this->mstate2->getX();
     /*        serr<<"SpringForceField<DataTypes>::draw() "<<getName()<<sendl;
