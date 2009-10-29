@@ -52,6 +52,8 @@ template <class BasicMapping>
 class HexahedronCompositeFEMEdgeBasedMapping : public HexahedronCompositeFEMMapping<BasicMapping>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(HexahedronCompositeFEMEdgeBasedMapping,BasicMapping), SOFA_TEMPLATE(HexahedronCompositeFEMMapping,BasicMapping));
+
     typedef HexahedronCompositeFEMMapping<BasicMapping> Inherit;
     typedef typename Inherit::In In;
     typedef typename Inherit::Out Out;
@@ -66,11 +68,6 @@ public:
     typedef typename In::VecDeriv InVecDeriv;
     typedef typename OutCoord::value_type Real;
     typedef typename Inherit::Weight Weight;
-
-
-    using Inherit::sout;
-    using Inherit::serr;
-    using Inherit::sendl;
 
 
     HexahedronCompositeFEMEdgeBasedMapping ( In* from, Out* to ): Inherit ( from, to )

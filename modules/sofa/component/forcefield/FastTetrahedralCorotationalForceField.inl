@@ -161,7 +161,7 @@ template <class DataTypes> void FastTetrahedralCorotationalForceField<DataTypes>
 //	serr << "initializing FastTetrahedralCorotationalForceField" << sendl;
     this->Inherited::init();
 
-    _topology = getContext()->getMeshTopology();
+    _topology = this->getContext()->getMeshTopology();
 
     if (_topology->getNbTetrahedra()==0)
     {
@@ -490,14 +490,14 @@ void FastTetrahedralCorotationalForceField<DataTypes>::updateLameCoefficients()
 template<class DataTypes>
 void FastTetrahedralCorotationalForceField<DataTypes>::draw()
 {
-    if (!getContext()->getShowForceFields()) return;
+    if (!this->getContext()->getShowForceFields()) return;
     if (!this->mstate) return;
 
-    if (getContext()->getShowWireFrame())
+    if (this->getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 
-    if (getContext()->getShowWireFrame())
+    if (this->getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 

@@ -63,9 +63,6 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
 
-    using Inherited::sout;
-    using Inherited::serr;
-    using Inherited::sendl;
     typedef helper::vector<MassType> VecMass;
 
 

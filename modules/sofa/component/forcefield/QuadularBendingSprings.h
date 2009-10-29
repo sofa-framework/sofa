@@ -72,10 +72,6 @@ public:
     typedef typename Coord::value_type Real;
 
 
-    using Inherited::sout;
-    using Inherited::serr;
-    using Inherited::sendl;
-
     enum { N=Coord::static_size };
     typedef defaulttype::Mat<N,N,Real> Mat;
 
