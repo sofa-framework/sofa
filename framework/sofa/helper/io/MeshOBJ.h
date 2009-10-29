@@ -29,6 +29,7 @@
 
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/helper/helper.h>
+#include <fstream>
 
 namespace sofa
 {
@@ -47,7 +48,7 @@ private:
 
     std::vector<Material> materials;
 
-    void readOBJ (FILE *file, const char* filename);
+    void readOBJ (std::ifstream &file, const std::string &filename);
     void readMTL (const char *filename);
 
 public:
