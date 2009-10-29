@@ -22,7 +22,7 @@
 
 // IO
 #include <CGAL/IO/Polyhedron_iostream.h>
-#include <CGAL/IO/Polyhedron_VRML_1_ostream.h>
+//#include <CGAL/IO/Polyhedron_VRML_1_ostream.h>
 
 
 //CGAL
@@ -40,11 +40,11 @@ MeshGenerationFromPolyhedron<DataTypes>::MeshGenerationFromPolyhedron()
     , f_quads(initData(&f_quads, "inputQuads", "List of quads (if no triangles) "))
     , f_newX0( initData (&f_newX0, "outputPoints", "New Rest position coordinates from the tetrahedral generation") )
     , f_tetrahedra(initData(&f_tetrahedra, "outputTetras", "List of tetrahedra"))
-    , facetAngle(initData(&facetAngle, "facetAngle", "facetAngle"))
-    , facetSize(initData(&facetSize, "facetSize", "facetSize"))
-    , facetApproximation(initData(&facetApproximation, "facetApproximation", "facetApproximation"))
-    , cellRatio(initData(&cellRatio, "cellRatio", "cellRatio"))
-    , cellSize(initData(&cellSize, "cellSize", "cellSize"))
+    , facetAngle(initData(&facetAngle, 25.0, "facetAngle", "facetAngle"))
+    , facetSize(initData(&facetSize, 0.15, "facetSize", "facetSize"))
+    , facetApproximation(initData(&facetApproximation, 0.008, "facetApproximation", "facetApproximation"))
+    , cellRatio(initData(&cellRatio, 4.0, "cellRatio", "cellRatio"))
+    , cellSize(initData(&cellSize, 0.2, "cellSize", "cellSize"))
 {
 
 }
@@ -52,55 +52,6 @@ MeshGenerationFromPolyhedron<DataTypes>::MeshGenerationFromPolyhedron()
 template <class DataTypes>
 void MeshGenerationFromPolyhedron<DataTypes>::init()
 {
-    if (f_X0.getValue().empty())
-    {
-        core::componentmodel::behavior::MechanicalState<DataTypes>* mstate;
-        this->getContext()->get(mstate);
-        if (mstate)
-        {
-            core::objectmodel::BaseData* parent = mstate->findField("rest_position");
-            if (parent)
-            {
-                f_X0.setParent(parent);
-                f_X0.setReadOnly(true);
-            }
-        }
-    }
-    if (f_triangles.getValue().empty())
-    {
-        core::componentmodel::topology::BaseMeshTopology* topology = dynamic_cast<core::componentmodel::topology::BaseMeshTopology*>(getContext()->getTopology());
-        if (topology != NULL)
-        {
-            core::objectmodel::BaseData* parent = topology->findField("triangles");
-            if (parent != NULL)
-            {
-                f_triangles.setParent(parent);
-                f_triangles.setReadOnly(true);
-            }
-            else
-            {
-                if (f_quads.getValue().empty())
-                {
-                    parent = topology->findField("quads");
-                    if (parent != NULL)
-                    {
-                        f_quads.setParent(parent);
-                        f_quads.setReadOnly(true);
-                    }
-                    else
-                    {
-                        sout << "ERROR: Topology " << topology->getName() << " does not contain triangles or quads" << sendl;
-                    }
-
-                }
-            }
-        }
-        else
-        {
-            sout << "ERROR: Topology not found. Triangles in box can not be computed" << sendl;
-        }
-    }
-
     addInput(&f_X0);
     addInput(&f_triangles);
     addInput(&f_quads);
@@ -145,20 +96,28 @@ void MeshGenerationFromPolyhedron<DataTypes>::update()
     typedef typename Tr::Vertex_handle Vertex_handle;
     typedef typename Tr::Point Point_3;
 
-    const VecCoord& oldPoints =  *f_X0.beginEdit();
-    const SeqTriangles& triangles =  *f_triangles.beginEdit();
-    const SeqQuads& quads =  *f_quads.beginEdit();
+    const VecCoord& oldPoints = f_X0.getValue();
+    const SeqTriangles& triangles = f_triangles.getValue();
+    const SeqQuads& quads = f_quads.getValue();
 
-    VecCoord& newPoints =  *f_newX0.beginEdit();
-    SeqTetrahedra& tetrahedra =  *f_tetrahedra.beginEdit();
+    helper::WriteAccessor< Data<VecCoord> > newPoints = f_newX0;
+    helper::WriteAccessor< Data<SeqTetrahedra> > tetrahedra = f_tetrahedra;
+
+    if (triangles.empty() && quads.empty())
+    {
+        newPoints.clear();
+        tetrahedra.clear();
+        return;
+    }
+    if (!tetrahedra.empty()) return;
 
     // Create polyhedron
     Polyhedron polyhedron;
-    AddTriangles<HalfedgeDS> builder(oldPoints, triangles);
+    AddTriangles<HalfedgeDS> builder(oldPoints, triangles, quads);
     polyhedron.delegate(builder);
 
-    //std::ifstream input("share/mesh/elephant.off");
-    //input >> polyhedron;
+//	std::ifstream input("share/mesh/elephant.off");
+//        input >> polyhedron;
 
     CGAL::set_ascii_mode( std::cout);
     std::cout << "P : " << polyhedron.size_of_vertices() << std::endl;
@@ -172,12 +131,17 @@ void MeshGenerationFromPolyhedron<DataTypes>::update()
     Cell_criteria cell_criteria(cellRatio.getValue(), cellSize.getValue()); // radius-edge ratio, size
     Mesh_criteria criteria(facet_criteria, cell_criteria);
 
+    //Facet_criteria facet_criteria(25, 0.15, 0.008); // angle, size, approximation
+    //Cell_criteria cell_criteria(4, 0.2); // radius-edge ratio, size
+    //Mesh_criteria criteria(facet_criteria, cell_criteria);
+
     // Mesh generation
     C3t3 c3t3 = CGAL::make_mesh_3<C3t3>(domain, criteria);
 
     const Tr& tr = c3t3.triangulation();
+    CGAL::Default_cell_index_pmap<C3t3> cell_pmap(c3t3);
     std::map<Vertex_handle, int> V;
-
+    newPoints.clear();
     int inum = 0;
     for( Finite_vertices_iterator vit = tr.finite_vertices_begin(); vit != tr.finite_vertices_end(); ++vit)
     {
@@ -191,22 +155,15 @@ void MeshGenerationFromPolyhedron<DataTypes>::update()
         newPoints.push_back(p);
     }
 
+    tetrahedra.clear();
     for( Cell_iterator cit = c3t3.cells_begin() ; cit != c3t3.cells_end() ; ++cit )
     {
+        if (get(cell_pmap, cit)!=1) continue;
         Tetra tetra;
         for (int i=0; i<4; i++)
             tetra[i] = V[cit->vertex(i)];
-
         tetrahedra.push_back(tetra);
     }
-
-
-    f_X0.endEdit();
-    f_triangles.endEdit();
-    f_quads.endEdit();
-
-    f_newX0.endEdit();
-    f_tetrahedra.endEdit();
 
 }
 

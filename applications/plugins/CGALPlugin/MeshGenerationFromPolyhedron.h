@@ -76,11 +76,12 @@ public:
     class AddTriangles : public CGAL::Modifier_base<HDS>
     {
     public:
-        VecCoord points;
-        SeqTriangles triangles;
+        const VecCoord& points;
+        const SeqTriangles& triangles;
+        const SeqQuads& quads;
 
-        AddTriangles(const VecCoord& points, const SeqTriangles& triangles)
-            : points(points), triangles(triangles) {}
+        AddTriangles(const VecCoord& points, const SeqTriangles& triangles, const SeqQuads& quads)
+            : points(points), triangles(triangles), quads(quads) {}
 
         void operator()( HDS& hds)
         {
@@ -94,7 +95,7 @@ public:
                 //we assume that the point iterator gives point in ascendant order (0,.. n+1...)
                 //std::map<int, Vertex_handle> s2cVertices;
 
-                polyhedronBuilder.begin_surface(points.size(), triangles.size());
+                polyhedronBuilder.begin_surface(points.size(), triangles.size()+quads.size());
 
                 for (typename VecCoord::const_iterator itVertex = points.begin() ; itVertex != points.end() ; ++itVertex)
                 {
@@ -107,10 +108,21 @@ public:
                     Triangle t = (*itTriangle);
 
                     polyhedronBuilder.begin_facet();
-                    polyhedronBuilder.add_vertex_to_facet( t[2]);
                     polyhedronBuilder.add_vertex_to_facet( t[0]);
                     polyhedronBuilder.add_vertex_to_facet( t[1]);
+                    polyhedronBuilder.add_vertex_to_facet( t[2]);
+                    polyhedronBuilder.end_facet();
 
+                }
+                for (SeqQuads::const_iterator itQuad = quads.begin() ; itQuad != quads.end() ; ++itQuad)
+                {
+                    Quad t = (*itQuad);
+
+                    polyhedronBuilder.begin_facet();
+                    polyhedronBuilder.add_vertex_to_facet( t[0]);
+                    polyhedronBuilder.add_vertex_to_facet( t[1]);
+                    polyhedronBuilder.add_vertex_to_facet( t[2]);
+                    polyhedronBuilder.add_vertex_to_facet( t[3]);
                     polyhedronBuilder.end_facet();
 
                 }
@@ -119,7 +131,6 @@ public:
                     polyhedronBuilder.remove_unconnected_vertices();
                     std::cout << "Remove unconnect vertices" << std::endl;
                 }
-
 
                 polyhedronBuilder.end_surface();
             }
