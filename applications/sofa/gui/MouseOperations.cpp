@@ -32,9 +32,6 @@
 #include <sofa/component/collision/AttachBodyPerformer.h>
 #include <sofa/component/collision/FixParticlePerformer.h>
 #include <sofa/component/collision/PotentialInjectionPerformer.h>
-#ifdef SOFA_DEV
-#include <sofa/component/misc/SculptBodyPerformer.h>
-#endif
 #include <sofa/component/collision/RemovePrimitivePerformer.h>
 #include <sofa/component/collision/InciseAlongPathPerformer.h>
 
@@ -47,16 +44,10 @@ using namespace component::collision;
 #ifndef SOFA_DOUBLE
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer<defaulttype::Vec3fTypes> >  AttachBodyPerformerVec3fClass("AttachBody",true);
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, FixParticlePerformer<defaulttype::Vec3fTypes> >  FixParticlePerformerVec3fClass("FixParticle",true);
-#ifdef SOFA_DEV
-helper::Creator<InteractionPerformer::InteractionPerformerFactory, SculptBodyPerformer<defaulttype::Vec3fTypes> >  SculptBodyPerformerVec3fClass("SculptBody",true);
-#endif
 #endif
 #ifndef SOFA_FLOAT
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer<defaulttype::Vec3dTypes> >  AttachBodyPerformerVec3dClass("AttachBody",true);
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, FixParticlePerformer<defaulttype::Vec3dTypes> >  FixParticlePerformerVec3dClass("FixParticle",true);
-#ifdef SOFA_DEV
-helper::Creator<InteractionPerformer::InteractionPerformerFactory, SculptBodyPerformer<defaulttype::Vec3dTypes> >  SculptBodyPerformerVec3dClass("SculptBody",true);
-#endif
 #endif
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, RemovePrimitivePerformer >  RemovePrimitivePerformerClass("RemovePrimitive");
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, InciseAlongPathPerformer>  InciseAlongPathPerformerClass("InciseAlongPath");
@@ -150,8 +141,6 @@ void InciseOperation::end()
 {
 }
 
-
-
 //*******************************************************************************************
 void InjectOperation::start()
 {
@@ -177,62 +166,6 @@ void InjectOperation::end()
 {
     //   execution();
     //  pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
-}
-
-
-
-//*******************************************************************************************
-void SculptOperation::start()
-{
-#ifdef SOFA_DEV
-    if (performer == NULL) return;
-    component::collision::SculptBodyPerformerConfiguration *performerConfiguration=dynamic_cast<component::collision::SculptBodyPerformerConfiguration*>(performer);
-    performerConfiguration->setCheckedFix(isCheckedFix());
-    performerConfiguration->setForce(getForce()/500);
-#endif
-}
-
-void SculptOperation::execution()
-{
-}
-
-void SculptOperation::end()
-{
-#ifdef SOFA_DEV
-    if (performer == NULL) return;
-    component::collision::SculptBodyPerformerConfiguration *performerConfiguration=dynamic_cast<component::collision::SculptBodyPerformerConfiguration*>(performer);
-    performerConfiguration->setForce(0.0);
-    performerConfiguration->setCheckedFix(false);
-    component::collision::SculptBodyPerformer<defaulttype::Vec3Types>* sculptPerformer=dynamic_cast<component::collision::SculptBodyPerformer<defaulttype::Vec3Types>*>(performer);
-    sculptPerformer->end();
-    if (isAnimated())
-    {
-        sculptPerformer->animate(true);
-    }
-#endif
-}
-
-void SculptOperation::wait()
-{
-#ifdef SOFA_DEV
-    if (performer==NULL && pickHandle->getInteraction()->mouseInteractor->getBodyPicked().body != NULL)
-    {
-        performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("SculptBody", pickHandle->getInteraction()->mouseInteractor);
-        pickHandle->getInteraction()->mouseInteractor->addInteractionPerformer(performer);
-        component::collision::SculptBodyPerformerConfiguration *performerConfiguration=dynamic_cast<component::collision::SculptBodyPerformerConfiguration*>(performer);
-        performerConfiguration->setScale(getScale());
-        performerConfiguration->setForce(0.0);
-        performerConfiguration->setCheckedFix(false);
-    }
-#endif
-}
-
-SculptOperation::~SculptOperation()
-{
-#ifdef SOFA_DEV
-    if (performer != NULL)
-        pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
-#endif
 }
 
 }

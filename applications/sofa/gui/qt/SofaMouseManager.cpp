@@ -55,7 +55,6 @@ SofaMouseManager::SofaMouseManager()
     RegisterOperation("Fix")   .add< QFixOperation  >();
     RegisterOperation("Incise").add< InciseOperation  >();
     RegisterOperation("Remove").add< RemoveOperation  >();
-    RegisterOperation("Sculpt").add< QSculptOperation  >();
     RegisterOperation("Inject").add< QInjectOperation >();
 }
 
