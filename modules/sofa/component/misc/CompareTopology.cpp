@@ -92,6 +92,7 @@ void CompareTopology::processCompareTopology()
         //For one Timestep store all topology data available.
 
         std::string buff;
+        int tmp;
         std::istringstream str(*it);
 
         str >> buff;
@@ -99,7 +100,6 @@ void CompareTopology::processCompareTopology()
         if (buff == "T=")
         {
             //Nothing to do in this case.
-            std::cout << "cas T" << std::endl;
             ++it;
             continue;
         }
@@ -114,7 +114,10 @@ void CompareTopology::processCompareTopology()
                 const helper::vector <helper::fixed_array <unsigned int,2> >& SeqEdges = topo->getEdges();
 
                 if ((unsigned int)topo->getNbEdges() != nbr)
-                    EdgesError += abs (nbr - (unsigned int)topo->getNbEdges() );
+                {
+                    tmp = nbr - topo->getNbEdges();
+                    EdgesError += (unsigned int)abs (tmp);
+                }
                 else
                 {
                     std::istringstream Sedges(*it);
@@ -143,7 +146,10 @@ void CompareTopology::processCompareTopology()
                 const helper::vector <helper::fixed_array <unsigned int,3> >& SeqTriangles = topo->getTriangles();
 
                 if ((unsigned int)topo->getNbTriangles() != nbr)
-                    TrianglesError += abs (nbr - (unsigned int)topo->getNbTriangles() );
+                {
+                    tmp = nbr - topo->getNbTriangles();
+                    TrianglesError += (unsigned int)abs (tmp);
+                }
                 else
                 {
                     std::istringstream Stri(*it);
@@ -176,7 +182,10 @@ void CompareTopology::processCompareTopology()
                 const helper::vector <helper::fixed_array <unsigned int,4> >& SeqQuads = topo->getQuads();
 
                 if ((unsigned int)topo->getNbQuads() != nbr)
-                    QuadsError += abs (nbr - (unsigned int)topo->getNbQuads() );
+                {
+                    tmp = nbr - topo->getNbQuads();
+                    QuadsError += (unsigned int)abs (tmp);
+                }
                 else
                 {
                     std::istringstream Squads(*it);
@@ -209,7 +218,10 @@ void CompareTopology::processCompareTopology()
                 const helper::vector <helper::fixed_array <unsigned int,4> >& SeqTetrahedra = topo->getTetrahedra();
 
                 if ((unsigned int)topo->getNbTetrahedra() != nbr)
-                    TetrahedraError += abs (nbr - (unsigned int)topo->getNbTetrahedra() );
+                {
+                    tmp = nbr - topo->getNbTetrahedra();
+                    TetrahedraError += (unsigned int)abs (tmp);
+                }
                 else
                 {
                     std::istringstream Stetra(*it);
@@ -242,7 +254,10 @@ void CompareTopology::processCompareTopology()
                 const helper::vector <helper::fixed_array <unsigned int,8> >& SeqHexahedra = topo->getHexahedra();
 
                 if ((unsigned int)topo->getNbHexahedra() != nbr)
-                    HexahedraError += abs (nbr - (unsigned int)topo->getNbHexahedra() );
+                {
+                    tmp = nbr - topo->getNbHexahedra();
+                    HexahedraError += (unsigned int)abs (tmp);
+                }
                 else
                 {
                     std::istringstream Shexa(*it);
