@@ -32,17 +32,9 @@
 #ifdef SOFA_QT4
 #include <QWidget>
 #include <QLineEdit>
-#include <QSpinBox>
-#include <QSlider>
-#include <QRadioButton>
-#include <QPushButton>
 #else
 #include <qwidget.h>
 #include <qlineedit.h>
-#include <qspinbox.h>
-#include <qslider.h>
-#include <qradiobutton.h>
-#include <qpushbutton.h>
 #endif
 #include <iostream>
 
@@ -70,41 +62,6 @@ public:
 protected:
     QLineEdit *value;
 };
-
-
-
-class QSculptOperation : public QWidget, public SculptOperation
-{
-    Q_OBJECT
-public:
-    QSculptOperation();
-    void configure(PickHandler *picker, MOUSE_BUTTON b)
-    {
-        SculptOperation::configure(picker, b);
-    }
-
-    double getForce() const;
-    double getScale() const;
-    bool isCheckedFix() const;
-
-public slots:
-    void setScale();
-    void animate(bool checked);
-
-protected:
-    QSlider  *forceSlider;
-    QSpinBox *forceValue;
-
-    QSlider  *scaleSlider;
-    QSpinBox *scaleValue;
-
-    QRadioButton *sculptRadioButton;
-    QRadioButton *fixRadioButton;
-
-    QPushButton *animatePushButton;
-};
-
-
 
 class QFixOperation : public QWidget, public FixOperation
 {

@@ -56,6 +56,10 @@ public:
 
     void setPickHandler(PickHandler *);
 
+    std::map< int, std::string >& getMapIndexOperation()
+    {
+        return mapIndexOperation;
+    }
 
 public slots:
     void selectOperation(int);

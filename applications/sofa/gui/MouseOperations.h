@@ -123,31 +123,6 @@ protected:
     double stiffness;
 };
 
-class SOFA_SOFAGUI_API SculptOperation : public Operation
-{
-public:
-    SculptOperation():force(1), scale(50), checkedFix(false), animated(false) {}
-    virtual ~SculptOperation();
-    virtual void start() ;
-    virtual void execution();
-    virtual void end() ;
-    virtual void wait() ;
-
-    void setForce(double f) {force = f;}
-    virtual double getForce() const { return force;}
-    void setScale(double s) {scale = s;}
-    virtual double getScale() const {return scale;}
-    virtual bool isCheckedFix() const {return checkedFix;};
-    void setCheckedFix(bool b) {checkedFix = b;};
-    virtual bool isAnimated() const {return animated;};
-    static bool isModifiable() {return false;};
-
-    static std::string getDescription() {return "Sculpt an object using the Mouse";}
-protected:
-    double force, scale;
-    bool checkedFix, animated;
-};
-
 class SOFA_SOFAGUI_API InjectOperation : public Operation
 {
 public:
