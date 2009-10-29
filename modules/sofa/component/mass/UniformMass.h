@@ -43,17 +43,20 @@ namespace mass
 
 using namespace sofa::defaulttype;
 
-template <class DataTypes, class t_MassType>
-class UniformMass : public core::componentmodel::behavior::Mass<DataTypes>, public virtual core::objectmodel::BaseObject
+template <class DataTypes, class TMassType>
+class UniformMass : public core::componentmodel::behavior::Mass<DataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE2(UniformMass,DataTypes,TMassType), SOFA_TEMPLATE(core::componentmodel::behavior::Mass,DataTypes));
+
     typedef core::componentmodel::behavior::Mass<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
-    typedef t_MassType MassType;
+    typedef TMassType MassType;
+
 //protected:
     Data<MassType> mass;    ///< the mass of each particle
     Data<double> totalMass; ///< if >0 : total mass of this body

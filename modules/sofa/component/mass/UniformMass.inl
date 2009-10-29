@@ -119,7 +119,7 @@ void UniformMass<DataTypes, MassType>::handleTopologyChange()
 {
     using core::componentmodel::topology::TopologyChange;
 
-    core::componentmodel::topology::BaseMeshTopology *bmt = getContext()->getMeshTopology();
+    core::componentmodel::topology::BaseMeshTopology *bmt = this->getContext()->getMeshTopology();
 
     if (bmt != 0)
     {
@@ -271,15 +271,15 @@ void UniformMass<DataTypes, MassType>::addForce(VecDeriv& vf, const VecCoord& /*
 
 #ifdef SOFA_SUPPORT_MOVING_FRAMES
     // velocity-based stuff
-    core::objectmodel::BaseContext::SpatialVector vframe = getContext()->getVelocityInWorld();
-    core::objectmodel::BaseContext::Vec3 aframe = getContext()->getVelocityBasedLinearAccelerationInWorld() ;
+    core::objectmodel::BaseContext::SpatialVector vframe = this->getContext()->getVelocityInWorld();
+    core::objectmodel::BaseContext::Vec3 aframe = this->getContext()->getVelocityBasedLinearAccelerationInWorld() ;
 //     serr<<"UniformMass<DataTypes, MassType>::computeForce(), vFrame in world coordinates = "<<vframe<<sendl;
     //serr<<"UniformMass<DataTypes, MassType>::computeForce(), aFrame in world coordinates = "<<aframe<<sendl;
-//     serr<<"UniformMass<DataTypes, MassType>::computeForce(), getContext()->getLocalToWorld() = "<<getContext()->getPositionInWorld()<<sendl;
+//     serr<<"UniformMass<DataTypes, MassType>::computeForce(), this->getContext()->getLocalToWorld() = "<<this->getContext()->getPositionInWorld()<<sendl;
 
     // project back to local frame
-    vframe = getContext()->getPositionInWorld() / vframe;
-    aframe = getContext()->getPositionInWorld().backProjectVector( aframe );
+    vframe = this->getContext()->getPositionInWorld() / vframe;
+    aframe = this->getContext()->getPositionInWorld().backProjectVector( aframe );
 //     serr<<"UniformMass<DataTypes, MassType>::computeForce(), vFrame in local coordinates= "<<vframe<<sendl;
 //     serr<<"UniformMass<DataTypes, MassType>::computeForce(), aFrame in local coordinates= "<<aframe<<sendl;
 //     serr<<"UniformMass<DataTypes, MassType>::computeForce(), mg in local coordinates= "<<mg<<sendl;
@@ -404,7 +404,7 @@ void UniformMass<DataTypes, MassType>::getElementMass(unsigned int /* index */, 
 template <class DataTypes, class MassType>
 void UniformMass<DataTypes, MassType>::draw()
 {
-    if (!getContext()->getShowBehaviorModels())
+    if (!this->getContext()->getShowBehaviorModels())
         return;
     helper::ReadAccessor<VecCoord> x = *this->mstate->getX();
 
