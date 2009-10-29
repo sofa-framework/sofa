@@ -91,13 +91,13 @@ public:
 
     HexahedronCompositeFEMForceFieldAndMass()
         : HexahedronFEMForceFieldAndMassT()
-        , _finestToCoarse(initData(&this->_finestToCoarse,false,"finestToCoarse","Does the homogenization is done directly from the finest level to the coarse one?"))
-        , _homogenizationMethod(initData(&this->_homogenizationMethod,0,"homogenizationMethod","0->static, 1->constrained static, 2->modal analysis"))
-        , _completeInterpolation(initData(&this->_completeInterpolation,false,"completeInterpolation","Is the non-linear, complete interpolation used?"))
-        , _useRamification(initData(&this->_useRamification,true,"useRamification","If SparseGridRamification, are ramifications taken into account?"))
-        , _drawType(initData(&this->_drawType,0,"drawType",""))
-        , _drawColor(initData(&this->_drawColor,0,"drawColor",""))
-        , _drawSize(initData(&this->_drawSize,(float)-1.0,"drawSize",""))
+        , _finestToCoarse(initData(&_finestToCoarse,false,"finestToCoarse","Does the homogenization is done directly from the finest level to the coarse one?"))
+        , _homogenizationMethod(initData(&_homogenizationMethod,0,"homogenizationMethod","0->static, 1->constrained static, 2->modal analysis"))
+        , _completeInterpolation(initData(&_completeInterpolation,false,"completeInterpolation","Is the non-linear, complete interpolation used?"))
+        , _useRamification(initData(&_useRamification,true,"useRamification","If SparseGridRamification, are ramifications taken into account?"))
+        , _drawType(initData(&_drawType,0,"drawType",""))
+        , _drawColor(initData(&_drawColor,0,"drawColor",""))
+        , _drawSize(initData(&_drawSize,(float)-1.0,"drawSize",""))
     {
     }
 

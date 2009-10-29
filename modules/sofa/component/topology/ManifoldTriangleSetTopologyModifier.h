@@ -51,8 +51,8 @@ class SOFA_COMPONENT_CONTAINER_API ManifoldTriangleSetTopologyModifier : public 
 public:
     ManifoldTriangleSetTopologyModifier()
         : TriangleSetTopologyModifier()
-        , m_triSwap(this->initData(&m_triSwap,  "swap 2 triangles by their index", "Debug : Test swap function (only while animate)."))
-        , m_swapMesh(this->initData (&m_swapMesh, false, "Mesh Optimization", "If true, optimize the mesh only by swapping edges"))
+        , m_triSwap(initData(&m_triSwap,  "swap 2 triangles by their index", "Debug : Test swap function (only while animate)."))
+        , m_swapMesh(initData (&m_swapMesh, false, "Mesh Optimization", "If true, optimize the mesh only by swapping edges"))
     {
     }
 

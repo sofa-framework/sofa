@@ -61,6 +61,8 @@ template<class DataTypes>
 class NonUniformHexahedronFEMForceFieldAndMass : virtual public HexahedronFEMForceFieldAndMass<DataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(NonUniformHexahedronFEMForceFieldAndMass,DataTypes), SOFA_TEMPLATE(HexahedronFEMForceFieldAndMass,DataTypes));
+
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef VecCoord Vector;
@@ -94,9 +96,9 @@ public:
 
     NonUniformHexahedronFEMForceFieldAndMass()
         : HexahedronFEMForceFieldAndMassT()
-        , _nbVirtualFinerLevels(initData(&this->_nbVirtualFinerLevels,0,"nbVirtualFinerLevels","use virtual finer levels, in order to compte non-uniform stiffness"))
-        , _useMass(initData(&this->_useMass,true,"useMass","Using this ForceField like a Mass? (rather than using a separated Mass)"))
-        , _totalMass(initData(&this->_totalMass,(Real)0.0,"totalMass",""))
+        , _nbVirtualFinerLevels(initData(&_nbVirtualFinerLevels,0,"nbVirtualFinerLevels","use virtual finer levels, in order to compte non-uniform stiffness"))
+        , _useMass(initData(&_useMass,true,"useMass","Using this ForceField like a Mass? (rather than using a separated Mass)"))
+        , _totalMass(initData(&_totalMass,(Real)0.0,"totalMass",""))
     {
     }
 

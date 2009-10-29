@@ -315,7 +315,7 @@ void LCPForceFeedback<Rigid3fTypes>::computeForce(double x, double y, double z, 
     Rigid3fTypes::VecCoord state;
     Rigid3fTypes::VecDeriv forces;
     state.resize(1);
-    state[0].getCenter() = sofa::defaulttype::Vec3f(x,y,z);
+    state[0].getCenter() = sofa::defaulttype::Vec3f((float)x,(float)y,(float)z);
     computeForce(state,forces);
     fx = forces[0].getVCenter().x();
     fy = forces[0].getVCenter().x();

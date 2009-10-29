@@ -54,6 +54,8 @@ template <class DataTypes, class MassType>
 class MatrixMass : public core::componentmodel::behavior::Mass<DataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE2(MatrixMass,DataTypes,MassType), SOFA_TEMPLATE(core::componentmodel::behavior::Mass,DataTypes));
+
     typedef core::componentmodel::behavior::Mass<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -79,7 +81,7 @@ public:
 
     MatrixMass()
         :  f_mass( initData(&f_mass, "massMatrices", "values of the particles masses") )
-        , _lumped(initData( &this->_lumped, false, "lumped", ""))
+        , _lumped(initData( &_lumped, false, "lumped", ""))
         , _defaultValue( initData(&_defaultValue, (Real)1.0,"defaultValue", "real default value") )
         , _usingDefaultDiagonalMatrices(false)
     {

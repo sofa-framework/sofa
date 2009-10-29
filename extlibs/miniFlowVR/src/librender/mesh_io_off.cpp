@@ -45,18 +45,13 @@ bool Mesh::loadOff(const char* filename)
   char line[5000];
   
   //fscanf(fp,"%s\n",line);
-  fgets(line,sizeof(line),fp);
+  if (!fgets(line,sizeof(line),fp)) { fclose(fp); return false; }
   bool color = (strchr(line,'C')!=NULL);
   bool normals = (strchr(line,'N')!=NULL);
   bool texcoord = (strchr(line,'T')!=NULL);
-  if (line[0]>='0' && line[0]<='9')
-  { // no header
-    sscanf(line,"%d %d %d",&nbp, &nbf, &nbe);
-  }
-  else
-  {
-    fscanf(fp,"%d %d %d\n",&nbp, &nbf, &nbe);
-  }
+  if (!(line[0]>='0' && line[0]<='9'))
+      if (!fgets(line,sizeof(line),fp)) { fclose(fp); return false; }
+  sscanf(line,"%d %d %d",&nbp, &nbf, &nbe);
   
   int flags = MESH_POINTS_POSITION|MESH_FACES;
   if (texcoord) flags |= MESH_POINTS_TEXCOORD;
@@ -66,12 +61,12 @@ bool Mesh::loadOff(const char* filename)
   for(int i=0;i<nbp;i++)
   {
     Vec3f p;
-    fscanf(fp,"%f %f %f",&p[0], &p[1], &p[2]);
+    if (fscanf(fp,"%f %f %f",&p[0], &p[1], &p[2])!=3) { fclose(fp); return false; }
     PP(i) = p;
     if (normals)
     {
       Vec3f pn;
-      fscanf(fp,"%f %f %f",&pn[0], &pn[1], &pn[2]);
+      if (fscanf(fp,"%f %f %f",&pn[0], &pn[1], &pn[2])!=3) { fclose(fp); return false; }
       PN(i) = pn;
     }
     if (color)
@@ -81,7 +76,7 @@ bool Mesh::loadOff(const char* filename)
     if (texcoord)
     {
       Vec2f pt;
-      fscanf(fp,"%f %f",&pt[0], &pt[1]);
+      if (fscanf(fp,"%f %f",&pt[0], &pt[1])!=2) { fclose(fp); return false; }
       PT(i) = pt;
     }
   }
@@ -89,21 +84,25 @@ bool Mesh::loadOff(const char* filename)
   for(int i=0;i<nbf;i++)
   {
     int nv = 0;
-    fscanf(fp,"%d",&nv);
+    if (fscanf(fp,"%d",&nv)!=1) { fclose(fp); return false; }
     Vec3i f;
     if (0<nv)
-      fscanf(fp,"%d",&f[0]);
+    {
+        if (fscanf(fp,"%d",&f[0])!=1) { fclose(fp); return false; }
+    }
     if (1<nv)
-      fscanf(fp,"%d",&f[1]);
+    {
+        if (fscanf(fp,"%d",&f[1])!=1) { fclose(fp); return false; }
+    }
     for (int j=2;j<nv;j++)
     {
-      fscanf(fp,"%d",&f[2]);
+        if (fscanf(fp,"%d",&f[2])!=1) { fclose(fp); return false; }
       FP(fnum++)=f;
       f[1] = f[2];
     }
     // read the rest of the line
     line [sizeof(line)-1]='\0';
-    fgets(line, sizeof(line), fp);
+    if (!fgets(line, sizeof(line), fp)) { /*fclose(fp); return false;*/ }
   }
   fclose(fp);
   std::cout<<"Loaded file "<<filename<<std::endl;

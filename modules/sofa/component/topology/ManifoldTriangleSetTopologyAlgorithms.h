@@ -48,8 +48,8 @@ class TriangleSetGeometryAlgorithms;
 template < class DataTypes >
 class ManifoldTriangleSetTopologyAlgorithms : public TriangleSetTopologyAlgorithms<DataTypes>
 {
-
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(ManifoldTriangleSetTopologyAlgorithms,DataTypes), SOFA_TEMPLATE(TriangleSetTopologyAlgorithms,DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
@@ -58,8 +58,8 @@ public:
 
     ManifoldTriangleSetTopologyAlgorithms()
         : TriangleSetTopologyAlgorithms<DataTypes>()
-        , m_triSwap(this->initData(&m_triSwap,  "swap 2 triangles by their index", "Debug : Test swap function (only while animate)."))
-        , m_swapMesh(this->initData (&m_swapMesh, false, "Mesh Optimization", "If true, optimize the mesh only by swapping edges"))
+        , m_triSwap(initData(&m_triSwap,  "swap 2 triangles by their index", "Debug : Test swap function (only while animate)."))
+        , m_swapMesh(initData(&m_swapMesh, false, "Mesh Optimization", "If true, optimize the mesh only by swapping edges"))
     {
     }
 
