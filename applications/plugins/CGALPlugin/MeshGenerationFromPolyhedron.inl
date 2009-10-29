@@ -1,0 +1,215 @@
+/*
+ * MeshGenerationFromPolyhedron.inl
+ *
+ *  Created on: 27 oct. 2009
+ *      Author: froy
+ */
+#ifndef CGALPLUGIN_MESHGENERATIONFROMPOLYHEDRON_INL
+#define CGALPLUGIN_MESHGENERATIONFROMPOLYHEDRON_INL
+#include "MeshGenerationFromPolyhedron.h"
+
+#include <CGAL/AABB_intersections.h>
+#include <CGAL/Exact_predicates_inexact_constructions_kernel.h>
+#include <CGAL/Mesh_3/Robust_intersection_traits_3.h>
+
+#include <CGAL/Mesh_triangulation_3.h>
+#include <CGAL/Mesh_complex_3_in_triangulation_3.h>
+#include <CGAL/Mesh_criteria_3.h>
+
+#include <CGAL/Polyhedral_mesh_domain_3.h>
+#include <CGAL/make_mesh_3.h>
+#include <CGAL/refine_mesh_3.h>
+
+// IO
+#include <CGAL/IO/Polyhedron_iostream.h>
+#include <CGAL/IO/Polyhedron_VRML_1_ostream.h>
+
+
+//CGAL
+struct K: public CGAL::Exact_predicates_inexact_constructions_kernel {};
+
+using namespace sofa;
+
+namespace cgal
+{
+
+template <class DataTypes>
+MeshGenerationFromPolyhedron<DataTypes>::MeshGenerationFromPolyhedron()
+    : f_X0( initData (&f_X0, "inputPoints", "Rest position coordinates of the degrees of freedom") )
+    , f_triangles(initData(&f_triangles, "inputTriangles", "List of triangles"))
+    , f_quads(initData(&f_quads, "inputQuads", "List of quads (if no triangles) "))
+    , f_newX0( initData (&f_newX0, "outputPoints", "New Rest position coordinates from the tetrahedral generation") )
+    , f_tetrahedra(initData(&f_tetrahedra, "outputTetras", "List of tetrahedra"))
+    , facetAngle(initData(&facetAngle, "facetAngle", "facetAngle"))
+    , facetSize(initData(&facetSize, "facetSize", "facetSize"))
+    , facetApproximation(initData(&facetApproximation, "facetApproximation", "facetApproximation"))
+    , cellRatio(initData(&cellRatio, "cellRatio", "cellRatio"))
+    , cellSize(initData(&cellSize, "cellSize", "cellSize"))
+{
+
+}
+
+template <class DataTypes>
+void MeshGenerationFromPolyhedron<DataTypes>::init()
+{
+    if (f_X0.getValue().empty())
+    {
+        core::componentmodel::behavior::MechanicalState<DataTypes>* mstate;
+        this->getContext()->get(mstate);
+        if (mstate)
+        {
+            core::objectmodel::BaseData* parent = mstate->findField("rest_position");
+            if (parent)
+            {
+                f_X0.setParent(parent);
+                f_X0.setReadOnly(true);
+            }
+        }
+    }
+    if (f_triangles.getValue().empty())
+    {
+        core::componentmodel::topology::BaseMeshTopology* topology = dynamic_cast<core::componentmodel::topology::BaseMeshTopology*>(getContext()->getTopology());
+        if (topology != NULL)
+        {
+            core::objectmodel::BaseData* parent = topology->findField("triangles");
+            if (parent != NULL)
+            {
+                f_triangles.setParent(parent);
+                f_triangles.setReadOnly(true);
+            }
+            else
+            {
+                if (f_quads.getValue().empty())
+                {
+                    parent = topology->findField("quads");
+                    if (parent != NULL)
+                    {
+                        f_quads.setParent(parent);
+                        f_quads.setReadOnly(true);
+                    }
+                    else
+                    {
+                        sout << "ERROR: Topology " << topology->getName() << " does not contain triangles or quads" << sendl;
+                    }
+
+                }
+            }
+        }
+        else
+        {
+            sout << "ERROR: Topology not found. Triangles in box can not be computed" << sendl;
+        }
+    }
+
+    addInput(&f_X0);
+    addInput(&f_triangles);
+    addInput(&f_quads);
+
+    addOutput(&f_newX0);
+    addOutput(&f_tetrahedra);
+
+    setDirtyValue();
+}
+
+template <class DataTypes>
+void MeshGenerationFromPolyhedron<DataTypes>::reinit()
+{
+
+}
+
+template <class DataTypes>
+void MeshGenerationFromPolyhedron<DataTypes>::update()
+{
+    // Domain
+    // (we use exact intersection computation with Robust_intersection_traits_3)
+
+    typedef typename CGAL::Mesh_3::Robust_intersection_traits_3<K> Geom_traits;
+    typedef typename CGAL::Polyhedron_3<Geom_traits> Polyhedron;
+    typedef typename Polyhedron::HalfedgeDS HalfedgeDS;
+
+    typedef typename CGAL::Polyhedral_mesh_domain_3<Polyhedron, Geom_traits> Mesh_domain;
+
+    // Triangulation
+    typedef typename CGAL::Mesh_triangulation_3<Mesh_domain>::type Tr;
+    typedef typename CGAL::Mesh_complex_3_in_triangulation_3<Tr> C3t3;
+
+    // Mesh Criteria
+    typedef typename CGAL::Mesh_criteria_3<Tr> Mesh_criteria;
+    typedef typename Mesh_criteria::Facet_criteria Facet_criteria;
+    typedef typename Mesh_criteria::Cell_criteria Cell_criteria;
+
+    typedef typename C3t3::Facet_iterator Facet_iterator;
+    typedef typename C3t3::Cell_iterator Cell_iterator;
+
+    typedef typename Tr::Finite_vertices_iterator Finite_vertices_iterator;
+    typedef typename Tr::Vertex_handle Vertex_handle;
+    typedef typename Tr::Point Point_3;
+
+    const VecCoord& oldPoints =  *f_X0.beginEdit();
+    const SeqTriangles& triangles =  *f_triangles.beginEdit();
+    const SeqQuads& quads =  *f_quads.beginEdit();
+
+    VecCoord& newPoints =  *f_newX0.beginEdit();
+    SeqTetrahedra& tetrahedra =  *f_tetrahedra.beginEdit();
+
+    // Create polyhedron
+    Polyhedron polyhedron;
+    AddTriangles<HalfedgeDS> builder(oldPoints, triangles);
+    polyhedron.delegate(builder);
+
+    //std::ifstream input("share/mesh/elephant.off");
+    //input >> polyhedron;
+
+    CGAL::set_ascii_mode( std::cout);
+    std::cout << "P : " << polyhedron.size_of_vertices() << std::endl;
+    std::cout << "F : " << polyhedron.size_of_facets() << std::endl;
+
+    // Create domain
+    Mesh_domain domain(polyhedron);
+
+    // Set mesh criteria
+    Facet_criteria facet_criteria(facetAngle.getValue(), facetSize.getValue(), facetApproximation.getValue()); // angle, size, approximation
+    Cell_criteria cell_criteria(cellRatio.getValue(), cellSize.getValue()); // radius-edge ratio, size
+    Mesh_criteria criteria(facet_criteria, cell_criteria);
+
+    // Mesh generation
+    C3t3 c3t3 = CGAL::make_mesh_3<C3t3>(domain, criteria);
+
+    const Tr& tr = c3t3.triangulation();
+    std::map<Vertex_handle, int> V;
+
+    int inum = 0;
+    for( Finite_vertices_iterator vit = tr.finite_vertices_begin(); vit != tr.finite_vertices_end(); ++vit)
+    {
+        V[vit] = inum++;
+        Point_3 pointCgal = vit->point();
+        Point p;
+        p[0] = CGAL::to_double(pointCgal.x());
+        p[1] = CGAL::to_double(pointCgal.y());
+        p[2] = CGAL::to_double(pointCgal.z());
+
+        newPoints.push_back(p);
+    }
+
+    for( Cell_iterator cit = c3t3.cells_begin() ; cit != c3t3.cells_end() ; ++cit )
+    {
+        Tetra tetra;
+        for (int i=0; i<4; i++)
+            tetra[i] = V[cit->vertex(i)];
+
+        tetrahedra.push_back(tetra);
+    }
+
+
+    f_X0.endEdit();
+    f_triangles.endEdit();
+    f_quads.endEdit();
+
+    f_newX0.endEdit();
+    f_tetrahedra.endEdit();
+
+}
+
+} //cgal
+
+#endif //CGALPLUGIN_MESHGENERATIONFROMPOLYHEDRON_INL
