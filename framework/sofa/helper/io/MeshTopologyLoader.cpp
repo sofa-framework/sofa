@@ -27,15 +27,7 @@
 #include <sofa/helper/io/MeshTopologyLoader.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/defaulttype/Vec.h>
-
-#include <iostream>
-#include <vector>
-#include <string>
-#include <cstring>
-
-#include <set>
-#include <fstream>
-#include <sstream>
+#include <string.h>
 
 #ifdef WIN32
 #define strcasecmp stricmp
@@ -52,21 +44,6 @@ namespace io
 
 using namespace sofa::defaulttype;
 
-static void skipToEOL(FILE* f)
-{
-    int ch;
-    while ((ch = fgetc(f)) != EOF && ch != '\n') ;
-}
-
-static bool readLine(char* buf, int size, FILE* f)
-{
-    buf[0] = '\0';
-    if (fgets(buf, size, f) == NULL)
-        return false;
-    if ((int)strlen(buf)==size-1 && buf[size-1] != '\n')
-        skipToEOL(f);
-    return true;
-}
 
 bool MeshTopologyLoader::loadObj(const char *filename)
 {
@@ -135,52 +112,51 @@ bool MeshTopologyLoader::loadObj(const char *filename)
     return true;
 }
 
-bool MeshTopologyLoader::loadGmsh(FILE *file, const int gmshFormat)
+bool MeshTopologyLoader::loadGmsh(std::ifstream &file, const int gmshFormat)
 {
-    char cmd[1024];
     int npoints = 0;
     int nlines = 0;
     int ntris = 0;
     int nquads = 0;
     int ntetrahedra = 0;
     int ncubes = 0;
-    int result;
 
-// 	std::cout << "Loading Gmsh topology '" << filename << "'" << std::endl;
-    result = fscanf(file, "%d\n", &npoints);
+    std::string cmd;
+    std::string line;
+
+    file >> npoints; //nb points
     setNbPoints(npoints);
+
     std::vector<int> pmap;
     for (int i=0; i<npoints; ++i)
     {
         int index = i;
         double x,y,z;
-        result = fscanf(file, "%d %lf %lf %lf\n", &index, &x, &y, &z);
+        file >> index >> x >> y >> z;
         addPoint(x, y, z);
         if ((int)pmap.size() <= index) pmap.resize(index+1);
         pmap[index] = i;
         //std::cout << "pmap[" << index << "] = " << pmap[index] << std::endl;
     }
 
-    readLine(cmd, sizeof(cmd), file);
-    //std::cout << cmd << std::endl;
-    if (strncmp(cmd,"$ENDNOD",7) && strncmp(cmd,"$EndNodes",9))
+    file >> cmd;
+    if (cmd != "$ENDNOD" && cmd != "$EndNodes")
     {
         std::cerr << "'$ENDNOD' or '$EndNodes' expected, found '" << cmd << "'" << std::endl;
-        fclose(file);
         return false;
     }
 
-    readLine(cmd, sizeof(cmd), file);
-    //std::cout << cmd << std::endl;
-    if (strncmp(cmd,"$ELM",4) && strncmp(cmd,"$Elements",9))
+    file >> cmd;
+    if (cmd != "$ELM" && cmd != "$Elements")
     {
         std::cerr << "'$ELM' or '$Elements' expected, found '" << cmd << "'" << std::endl;
-        fclose(file);
         return false;
     }
 
+
+
     int nelems = 0;
-    result = fscanf(file, "%d\n", &nelems);
+    file >> nelems;
     for (int i=0; i<nelems; ++i)
     {
         int index, etype, rphys, relem, nnodes, ntags, tag;
@@ -188,15 +164,19 @@ bool MeshTopologyLoader::loadGmsh(FILE *file, const int gmshFormat)
         {
             // version 1.0 format is
             // elm-number elm-type reg-phys reg-elem number-of-nodes <node-number-list ...>
-            result = fscanf(file, "%d %d %d %d %d", &index, &etype, &rphys, &relem, &nnodes);
+            file >> index >> etype >> rphys >> relem >> nnodes;
         }
         else if (gmshFormat == 2)
         {
             // version 2.0 format is
             // elm-number elm-type number-of-tags < tag > ... node-number-list
-            result = fscanf(file, "%d %d %d", &index, &etype, &ntags);
+            file >> index >> etype >> ntags;
+
             for (int t=0; t<ntags; t++)
-                result = fscanf(file, "%d", &tag); // read the tag but don't use it
+            {
+                file >> tag;
+                // read the tag but don't use it
+            }
 
             switch (etype)
             {
@@ -223,14 +203,14 @@ bool MeshTopologyLoader::loadGmsh(FILE *file, const int gmshFormat)
             }
         }
 
-        std::vector<int> nodes;
+        helper::vector<int> nodes;
         nodes.resize(nnodes);
         for (int n=0; n<nnodes; ++n)
         {
             int t = 0;
-            result = fscanf(file, "%d",&t);
+            file >> t;
             nodes[n] = (((unsigned int)t)<pmap.size())?pmap[t]:0;
-            //std::cout << "nodes[" << n << "] = " << nodes[n] << std::endl;
+            // std::cout << "nodes[" << n << "] = " << nodes[n] << std::endl;
         }
         switch (etype)
         {
@@ -256,59 +236,51 @@ bool MeshTopologyLoader::loadGmsh(FILE *file, const int gmshFormat)
             ++ncubes;
             break;
         }
-        skipToEOL(file);
     }
-    readLine(cmd, sizeof(cmd), file);
-    if (strncmp(cmd,"$ENDELM",7) && strncmp(cmd,"$EndElements",12))
+
+    file >> cmd;
+    if (cmd != "$ENDELM" && cmd!="$EndElements")
     {
         std::cerr << "'$ENDELM' or '$EndElements' expected, found '" << cmd << "'" << std::endl;
-        fclose(file);
         return false;
     }
     else
     {
-// 			std::cout << "Done parsing Gmsh file." << std::endl;
+        // 			std::cout << "Done parsing Gmsh file." << std::endl;
     }
-// 	std::cout << "Loading topology complete:";
-// 	if (npoints>0) std::cout << ' ' << npoints << " points";
-// 	if (nlines>0)  std::cout << ' ' << nlines  << " lines";
-// 	if (ntris>0)   std::cout << ' ' << ntris   << " triangles";
-// 	if (nquads>0)  std::cout << ' ' << nquads  << " quads";
-// 	if (ntetrahedra>0) std::cout << ' ' << ntetrahedra << " tetrahedra";
-// 	if (ncubes>0)  std::cout << ' ' << ncubes  << " cubes";
-// 	std::cout << std::endl;
+    // 	std::cout << "Loading topology complete:";
+    // 	if (npoints>0) std::cout << ' ' << npoints << " points";
+    // 	if (nlines>0)  std::cout << ' ' << nlines  << " lines";
+    // 	if (ntris>0)   std::cout << ' ' << ntris   << " triangles";
+    // 	if (nquads>0)  std::cout << ' ' << nquads  << " quads";
+    // 	if (ntetrahedra>0) std::cout << ' ' << ntetrahedra << " tetrahedra";
+    // 	if (ncubes>0)  std::cout << ' ' << ncubes  << " cubes";
+    // 	std::cout << std::endl;
 
     return true;
 }
 
-bool MeshTopologyLoader::loadXsp(FILE *file, bool vector_spring)
+bool MeshTopologyLoader::loadXsp(std::ifstream &file, bool vector_spring)
 {
-    char cmd[1024];
+    std::string cmd;
     int npoints = 0;
     int nlines = 0;
-//	int ntris = 0;
-//	int nquads = 0;
-//	int ntetrahedra = 0;
-//	int ncubes = 0;
 
     int totalNumMasses;
     int totalNumSprings;
-    int result;
-
-
-    //		skipToEOL(file);
+    file >> cmd;
 
     // then find out number of masses and springs
-    if (fscanf(file, "%s", cmd) != EOF && !strcmp(cmd,"numm"))
+    if (cmd == "numm")
     {
-        result = fscanf(file, "%d", &totalNumMasses);
+        file >> totalNumMasses;
         setNbPoints(totalNumMasses);
         npoints=totalNumMasses;
     }
 
-    if (fscanf(file, "%s", cmd) != EOF && !strcmp(cmd,"nums"))
+    if (cmd=="nums")
     {
-        result = fscanf(file, "%d", &totalNumSprings);
+        file >> totalNumSprings;
         setNbLines(totalNumSprings);
         nlines=totalNumSprings;
         //		setNumSprings(totalNumSprings);
@@ -316,19 +288,16 @@ bool MeshTopologyLoader::loadXsp(FILE *file, bool vector_spring)
 
 // 		std::cout << "Model contains "<< totalNumMasses <<" masses and "<< totalNumSprings <<" springs"<<std::endl;
 
-    while (fscanf(file, "%s", cmd) != EOF)
+    while (!file.eof())
     {
-        if (!strcmp(cmd,"mass"))
+        file  >> cmd;
+        if (cmd=="mass")
         {
             int index;
             char location;
             double px,py,pz,vx,vy,vz,mass=0.0,elastic=0.0;
             bool fixed=false;
-            result = fscanf(file, "%d %c %lf %lf %lf %lf %lf %lf %lf %lf\n",
-                    &index, &location,
-                    &px, &py, &pz, &vx, &vy, &vz,
-                    &mass, &elastic);
-
+            file >> index >> location >> px >> py >> pz >> vx >> vy >> vz >> mass >> elastic;
             if (mass < 0)
             {
                 // fixed point initialization
@@ -337,50 +306,43 @@ bool MeshTopologyLoader::loadXsp(FILE *file, bool vector_spring)
             }
             addPoint(px,py,pz);
         }
-        else if (!strcmp(cmd,"lspg"))	// linear springs connector
+        else if (cmd=="lspg")	// linear springs connector
         {
             int	index;
             int m1,m2;
             double ks=0.0,kd=0.0,initpos=-1;
             double restx=0.0,resty=0.0,restz=0.0;
             if (vector_spring)
-                result = fscanf(file, "%d %d %d %lf %lf %lf %lf %lf %lf\n",
-                        &index,&m1,&m2,&ks,&kd,&initpos, &restx,&resty,&restz);
+                file >> index >> m1 >> m2 >> ks >> kd >> initpos >> restx >> resty >> restz;
             else
-                result = fscanf(file, "%d %d %d %lf %lf %lf\n",
-                        &index,&m1,&m2,&ks,&kd,&initpos);
+                file >> index >> m1 >> m2 >> ks >> kd >> initpos;
             --m1;
             --m2;
 
             addLine(m1,m2);
         }
-        else if (!strcmp(cmd,"grav"))
+        else if (cmd == "grav")
         {
             double gx,gy,gz;
-            result = fscanf(file, "%lf %lf %lf\n", &gx, &gy, &gz);
+            file >> gx >> gy >> gz;
         }
-        else if (!strcmp(cmd,"visc"))
+        else if (cmd == "visc")
         {
             double viscosity;
-            result = fscanf(file, "%lf\n", &viscosity);
+            file >> viscosity;
         }
-        else if (!strcmp(cmd,"step"))
+        else if (cmd == "step")
         {
-            //fscanf(file, "%lf\n", &(MSparams.default_dt));
-            skipToEOL(file);
         }
-        else if (!strcmp(cmd,"frce"))
+        else if (cmd == "frce")
         {
-            skipToEOL(file);
         }
         else if (cmd[0] == '#')	// it's a comment
         {
-            skipToEOL(file);
         }
         else		// it's an unknown keyword
         {
-            printf("Unknown MassSpring keyword: %s\n", cmd);
-            skipToEOL(file);
+            std::cerr << "Unknown MassSpring keyword:" << cmd;
             return false;
         }
     }
@@ -396,82 +358,74 @@ bool MeshTopologyLoader::loadXsp(FILE *file, bool vector_spring)
     return true;
 }
 
-bool MeshTopologyLoader::loadMesh(FILE *file)
+bool MeshTopologyLoader::loadMesh(std::ifstream &file)
 {
-    char cmd[1024];
+    std::string cmd;
     int npoints = 0;
     int nlines = 0;
     int ntris = 0;
     int nquads = 0;
     int ntetrahedra = 0;
     int ncubes = 0;
-    int result;
 
 
 // 	std::cout << "Loading mesh topology '" << filename << "'" << std::endl;
-    while (fscanf(file, "%s", cmd) != EOF)
+    while (!file.eof())
     {
-        if (!strcmp(cmd,"line"))
+        file >> cmd;
+        if (cmd=="line")
         {
             int p1,p2;
-            result = fscanf(file, "%d %d\n",
-                    &p1, &p2);
+            file >> p1 >> p2;
             addLine(p1, p2);
             ++nlines;
         }
-        else if (!strcmp(cmd,"triangle"))
+        else if (cmd=="triangle")
         {
             int p1,p2,p3;
-            result = fscanf(file, "%d %d %d\n",
-                    &p1, &p2, &p3);
+            file >> p1 >> p2 >> p3;
             addTriangle(p1, p2, p3);
             ++ntris;
         }
-        else if (!strcmp(cmd,"quad"))
+        else if (cmd=="quad")
         {
             int p1,p2,p3,p4;
-            result = fscanf(file, "%d %d %d %d\n",
-                    &p1, &p2, &p3, &p4);
+            file >> p1 >> p2 >> p3 >> p4;
             addQuad(p1, p2, p3, p4);
             ++nquads;
         }
-        else if (!strcmp(cmd,"tetra"))
+        else if (cmd=="tetra")
         {
             int p1,p2,p3,p4;
-            result = fscanf(file, "%d %d %d %d\n",
-                    &p1, &p2, &p3, &p4);
+            file >> p1 >> p2 >> p3 >> p4;
             addTetra(p1, p2, p3, p4);
             ++ntetrahedra;
         }
-        else if (!strcmp(cmd,"cube"))
+        else if (cmd=="cube")
         {
             int p1,p2,p3,p4,p5,p6,p7,p8;
-            result = fscanf(file, "%d %d %d %d %d %d %d %d\n",
-                    &p1, &p2, &p3, &p4, &p5, &p6, &p7, &p8);
+            file >> p1 >> p2 >> p3 >> p4 >> p5 >> p6 >> p7 >> p8;
             addCube(p1, p2, p3, p4, p5, p6, p7, p8);
             ++ncubes;
         }
-        else if (!strcmp(cmd,"point"))
+        else if (cmd=="point")
         {
             double px,py,pz;
-            result = fscanf(file, "%lf %lf %lf\n",
-                    &px, &py, &pz);
+            file >> px >> py >> pz;
             addPoint(px, py, pz);
             ++npoints;
         }
-        else if (!strcmp(cmd,"v"))
+        else if (cmd=="v")
         {
             double px,py,pz;
-            result = fscanf(file, "%lf %lf %lf\n",
-                    &px, &py, &pz);
+            file >> px >> py >> pz;
             addPoint(px, py, pz);
             ++npoints;
         }
-        else if (!strcmp(cmd,"f"))
+        else if (cmd=="f")
         {
             int p1,p2,p3,p4=0;
-            result = fscanf(file, "%d %d %d %d\n",
-                    &p1, &p2, &p3, &p4);
+            file >> p1 >> p2 >> p3 >> p4;
             if (p4)
             {
                 addQuad(p1-1, p2-1, p3-1, p4-1);
@@ -483,25 +437,21 @@ bool MeshTopologyLoader::loadMesh(FILE *file)
                 ++ntris;
             }
         }
-        else if (!strcmp(cmd,"mass"))
+        else if (cmd=="mass")
         {
             int index;
             char location;
             double px,py,pz,vx,vy,vz,mass=0.0,elastic=0.0;
-            result = fscanf(file, "%d %c %lf %lf %lf %lf %lf %lf %lf %lf\n",
-                    &index, &location,
-                    &px, &py, &pz, &vx, &vy, &vz,
-                    &mass, &elastic);
+            file >> index >> location >> px >> py >> pz >> vx >> vy >> vz >> mass >> elastic;
             addPoint(px, py, pz);
             ++npoints;
         }
-        else if (!strcmp(cmd,"lspg"))
+        else if (cmd=="lspg")
         {
             int	index;
             int m1,m2;
             double ks=0.0,kd=0.0,initpos=-1;
-            result = fscanf(file, "%d %d %d %lf %lf %lf\n", &index,
-                    &m1,&m2,&ks,&kd,&initpos);
+            file >> index >> m1 >> m2 >> ks >> kd >> initpos;
             --m1;
             --m2;
             addLine(m1,m2);
@@ -509,12 +459,10 @@ bool MeshTopologyLoader::loadMesh(FILE *file)
         }
         else if (cmd[0] == '#')	// it's a comment
         {
-            skipToEOL(file);
         }
         else		// it's an unknown keyword
         {
-            printf("Unknown Mesh keyword: %s\n", cmd);
-            skipToEOL(file);
+            std::cerr << "Unknown Mesh keyword:" << cmd;
             return false;
         }
     }
@@ -532,39 +480,34 @@ bool MeshTopologyLoader::loadMesh(FILE *file)
 
 bool MeshTopologyLoader::loadMeshFile(const char *filename)
 {
-    FILE* file;
-    char cmd[1024];
     bool fileLoaded = false;
 
-    if ((file = fopen(filename, "r")) == NULL)
-    {
-        std::cout << "ERROR: cannot read file '" << filename << "'. Exiting..." << std::endl;
-        return false;
-    }
-
-    // Check first line
-    if (!readLine(cmd, sizeof(cmd), file))
-    {
-        fclose(file);
-        return false;
-    }
+    std::ifstream file(filename);
+    if (!file.good()) return false;
 
 // 	std::cout << "Loading Gmsh topology '" << filename << "' - ";
 
     int gmshFormat = 0;
-    if (!strncmp(cmd,"$MeshFormat",11)) // Reading gmsh 2.0 file
+
+    std::string cmd;
+    file >> cmd;
+
+    if (cmd == "$MeshFormat") // Reading gmsh 2.0 file
     {
         gmshFormat = 2;
 // 		std::cout << "Gmsh format 2.0" << std::endl;
-        readLine(cmd, sizeof(cmd), file); // we don't care about this line
-        readLine(cmd, sizeof(cmd), file);
-        if (strncmp(cmd,"$EndMeshFormat",14)) // it should end with $EndMeshFormat
+        std::string line;
+        std::getline(file, line); // we don't care about this line
+        file >> cmd;
+        if (cmd != "$EndMeshFormat") // it should end with $EndMeshFormat
         {
-            fclose(file);
+            file.close();
             return false;
         }
         else
-            readLine(cmd, sizeof(cmd), file);
+        {
+            file >> cmd;
+        }
     }
     else
     {
@@ -572,14 +515,15 @@ bool MeshTopologyLoader::loadMeshFile(const char *filename)
 // 		std::cout << "Gmsh format 1.0" << std::endl;
     }
 
-    if (!strncmp(cmd,"$NOD",4) || !strncmp(cmd,"$Nodes",6)) // Gmsh format
+
+    if (cmd == "$NOD" || cmd == "$Nodes") // Gmsh format
     {
         fileLoaded = loadGmsh(file, gmshFormat);
     }
-    else if (!strncmp(cmd,"Xsp",3))
+    else if (cmd == "Xsp")
     {
         float version = 0.0f;
-        sscanf(cmd, "Xsp %f", &version);
+        file >> version;
 
         if (version == 3.0)
             fileLoaded = loadXsp(file, false);
@@ -590,8 +534,7 @@ bool MeshTopologyLoader::loadMeshFile(const char *filename)
     {
         fileLoaded = loadMesh(file);
     }
-
-    fclose(file);
+    file.close();
     return 	fileLoaded;
 }
 
@@ -765,6 +708,7 @@ bool MeshTopologyLoader::loadVtk(const char *filename)
     while(!inVTKFile.eof())
     {
         std::getline(inVTKFile, line);
+        if (line.empty()) continue;
         std::istringstream ln(line);
         std::string kw;
         ln >> kw;

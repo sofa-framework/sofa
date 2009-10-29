@@ -27,9 +27,9 @@
 #ifndef SOFA_HELPER_IO_MESHTOPOLOGYLOADER_H
 #define SOFA_HELPER_IO_MESHTOPOLOGYLOADER_H
 
-#include <stdio.h>
 #include <sofa/helper/helper.h>
 #include <sofa/helper/io/Mesh.h>
+#include <fstream>
 
 namespace sofa
 {
@@ -64,9 +64,9 @@ private:
     bool loadMeshFile(const char *filename);
     bool loadVtk(const char *filename);
 
-    bool loadGmsh(FILE *, const int);
-    bool loadXsp(FILE *, bool);
-    bool loadMesh(FILE *);
+    bool loadGmsh(std::ifstream &file, const int);
+    bool loadXsp(std::ifstream &file, bool);
+    bool loadMesh(std::ifstream &file);
 protected:
     helper::io::Mesh* mesh;
 };
