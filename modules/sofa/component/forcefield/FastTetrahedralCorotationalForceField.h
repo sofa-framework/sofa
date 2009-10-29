@@ -54,9 +54,11 @@ using namespace sofa::component::topology;
 
 
 template<class DataTypes>
-class FastTetrahedralCorotationalForceField : public core::componentmodel::behavior::ForceField<DataTypes>, public virtual core::objectmodel::BaseObject
+class FastTetrahedralCorotationalForceField : public core::componentmodel::behavior::ForceField<DataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(FastTetrahedralCorotationalForceField,DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::ForceField,DataTypes));
+
     typedef core::componentmodel::behavior::ForceField<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -64,10 +66,6 @@ public:
     typedef typename DataTypes::Deriv    Deriv   ;
     typedef typename Coord::value_type   Real    ;
     typedef Mat<3,3,Real>       Mat3x3  ;
-
-    using Inherited::sout;
-    using Inherited::serr;
-    using Inherited::sendl;
 
     typedef enum
     {

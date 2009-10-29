@@ -62,6 +62,8 @@ template<class DataTypes>
 class NonUniformHexahedronFEMForceFieldDensity :  public NonUniformHexahedronFEMForceFieldAndMass<DataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(NonUniformHexahedronFEMForceFieldDensity,DataTypes), SOFA_TEMPLATE(NonUniformHexahedronFEMForceFieldAndMass,DataTypes));
+
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef VecCoord Vector;
@@ -81,10 +83,6 @@ public:
     typedef typename HexahedronFEMForceFieldAndMassT::MaterialStiffness MaterialStiffness;
     typedef typename HexahedronFEMForceFieldAndMassT::MassT MassT;
     typedef typename HexahedronFEMForceFieldAndMassT::ElementMass ElementMass;
-
-    using HexahedronFEMForceFieldAndMassT::sout;
-    using HexahedronFEMForceFieldAndMassT::serr;
-    using HexahedronFEMForceFieldAndMassT::sendl;
 
 public:
 

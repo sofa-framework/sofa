@@ -61,10 +61,6 @@ public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
 
-    using core::componentmodel::topology::TopologyAlgorithms::sout;
-    using core::componentmodel::topology::TopologyAlgorithms::serr;
-    using core::componentmodel::topology::TopologyAlgorithms::sendl;
-
     TriangleSetTopologyAlgorithms()
         : EdgeSetTopologyAlgorithms<DataTypes>()
         , m_listTriRemove( initData(&m_listTriRemove,  "Remove triangles by index", "Debug : Remove a triangle or a list of triangles by using their indices (only while animate)."))

@@ -70,10 +70,6 @@ public:
     typedef typename HexahedralFEMForceFieldT::ElementStiffness ElementMass;
 
 
-    using HexahedralFEMForceFieldT::sout;
-    using HexahedralFEMForceFieldT::serr;
-    using HexahedralFEMForceFieldT::sendl;
-
     HexahedralFEMForceFieldAndMass();
 
     virtual void init( );

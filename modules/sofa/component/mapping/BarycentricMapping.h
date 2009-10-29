@@ -901,6 +901,8 @@ template <class BasicMapping>
 class BarycentricMapping : public BasicMapping
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(BarycentricMapping,BasicMapping), BasicMapping);
+
     typedef BasicMapping Inherit;
     typedef typename Inherit::In In;
     typedef typename Inherit::Out Out;
@@ -924,10 +926,6 @@ public:
     typedef TopologyBarycentricMapper<InDataTypes,OutDataTypes> Mapper;
     typedef BarycentricMapperRegularGridTopology<InDataTypes, OutDataTypes> RegularGridMapper;
     typedef BarycentricMapperHexahedronSetTopology<InDataTypes, OutDataTypes> HexaMapper;
-
-    using Inherit::sout;
-    using Inherit::serr;
-    using Inherit::sendl;
 
 
 protected:

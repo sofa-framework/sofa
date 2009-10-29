@@ -53,19 +53,17 @@ using namespace sofa::component::topology;
 
 
 template<class DataTypes>
-class TetrahedralTensorMassForceField : public core::componentmodel::behavior::ForceField<DataTypes>, public virtual core::objectmodel::BaseObject
+class TetrahedralTensorMassForceField : public core::componentmodel::behavior::ForceField<DataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(TetrahedralTensorMassForceField,DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::ForceField,DataTypes));
+
     typedef core::componentmodel::behavior::ForceField<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord    Coord   ;
     typedef typename DataTypes::Deriv    Deriv   ;
     typedef typename Coord::value_type   Real    ;
-
-    using Inherited::sout;
-    using Inherited::serr;
-    using Inherited::sendl;
 
     class Mat3 : public helper::fixed_array<Deriv,3>
     {

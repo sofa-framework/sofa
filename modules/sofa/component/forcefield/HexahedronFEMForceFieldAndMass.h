@@ -69,10 +69,6 @@ public:
     typedef helper::vector<Real> MassVector;
 
 
-    using HexahedronFEMForceFieldT::sout;
-    using HexahedronFEMForceFieldT::serr;
-    using HexahedronFEMForceFieldT::sendl;
-
     HexahedronFEMForceFieldAndMass();
 
 

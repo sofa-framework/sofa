@@ -40,6 +40,8 @@ template<class DataTypes>
 class RepulsiveSpringForceField : public forcefield::StiffSpringForceField<DataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(RepulsiveSpringForceField,DataTypes), SOFA_TEMPLATE(forcefield::StiffSpringForceField,DataTypes));
+
     typedef forcefield::StiffSpringForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -48,10 +50,6 @@ public:
     typedef typename Coord::value_type Real;
     typedef typename Inherit::Mat Mat;
     typedef typename Inherit::Spring Spring;
-
-    using Inherit::sout;
-    using Inherit::serr;
-    using Inherit::sendl;
 
     enum { N = Inherit::N };
 public:

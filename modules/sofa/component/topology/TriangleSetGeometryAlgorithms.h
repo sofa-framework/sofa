@@ -53,13 +53,11 @@ template < class DataTypes >
 class TriangleSetGeometryAlgorithms : public EdgeSetGeometryAlgorithms<DataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(TriangleSetGeometryAlgorithms,DataTypes), SOFA_TEMPLATE(EdgeSetGeometryAlgorithms,DataTypes));
+
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
-
-    using core::componentmodel::topology::GeometryAlgorithms::sout;
-    using core::componentmodel::topology::GeometryAlgorithms::serr;
-    using core::componentmodel::topology::GeometryAlgorithms::sendl;
 
     TriangleSetGeometryAlgorithms()
         : EdgeSetGeometryAlgorithms<DataTypes>()

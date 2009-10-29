@@ -52,12 +52,9 @@ class PointSetGeometryAlgorithms;
 template<class DataTypes>
 class PointSetTopologyAlgorithms : public core::componentmodel::topology::TopologyAlgorithms
 {
-    // no methods implemented yet
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(PointSetTopologyAlgorithms,DataTypes), core::componentmodel::topology::TopologyAlgorithms);
 
-    using core::componentmodel::topology::TopologyAlgorithms::sout;
-    using core::componentmodel::topology::TopologyAlgorithms::serr;
-    using core::componentmodel::topology::TopologyAlgorithms::sendl;
     PointSetTopologyAlgorithms()
         : TopologyAlgorithms()
     {}

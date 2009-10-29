@@ -76,10 +76,6 @@ public:
     typedef typename NonUniformHexahedronFEMForceFieldAndMassT::ElementMass ElementMass;
 
 
-    using NonUniformHexahedronFEMForceFieldAndMassT::sout;
-    using NonUniformHexahedronFEMForceFieldAndMassT::serr;
-    using NonUniformHexahedronFEMForceFieldAndMassT::sendl;
-
     typedef typename NonUniformHexahedronFEMForceFieldAndMassT::VecElement VecElement;
 
     typedef Mat<8*3, 8*3, Real> Weight;
