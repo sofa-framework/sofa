@@ -30,7 +30,7 @@
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/helper/map.h>
 
-//#define DISPLAY_TIME 500
+#define DISPLAY_TIME 200
 
 #include <math.h>
 
@@ -72,7 +72,7 @@ public:
         , f_tolerance( initData(&f_tolerance,1e-5,"tolerance","desired precision of the Conjugate Gradient Solution (ratio of current residual norm over initial residual norm)") )
         , f_smallDenominatorThreshold( initData(&f_smallDenominatorThreshold,1e-5,"threshold","minimum value of the denominator in the conjugate Gradient solution") )
         , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
-        , f_refresh( initData(&f_refresh,"refresh","Refresh iterations") )
+        , f_refresh( initData(&f_refresh,0,"refresh","Refresh iterations") )
         , use_precond( initData(&use_precond,true,"precond","Use preconditioners") )
         , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
     {

@@ -69,6 +69,8 @@ void PCGLinearSolver<TMatrix,TVector>::init()
         }
     }
 
+    sout<<"Find " << this->preconditioners.size() << " preconditioneurs"<<sendl;
+
 #ifdef DISPLAY_TIME
     time3 = 0.0;
     time1 = 0.0;
@@ -153,11 +155,14 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
     double tmp = 0.0;
 #endif
 
-    for (unsigned int i=0; i<this->preconditioners.size(); i++)
+    if (!no_precond)
     {
-        preconditioners[i]->setSystemLHVector(z);
-        preconditioners[i]->setSystemRHVector(r);
-        preconditioners[i]->invertSystem();
+        for (unsigned int i=0; i<this->preconditioners.size(); i++)
+        {
+            preconditioners[i]->setSystemLHVector(z);
+            preconditioners[i]->setSystemRHVector(r);
+            preconditioners[i]->invertSystem();
+        }
     }
 
 #ifdef DISPLAY_TIME
