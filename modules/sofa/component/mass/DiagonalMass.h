@@ -55,17 +55,19 @@ namespace mass
 
 // template<class Vec> void readVec1(Vec& vec, const char* str);
 
-template <class DataTypes, class t_MassType>
-class DiagonalMass : public core::componentmodel::behavior::Mass<DataTypes>, public virtual core::objectmodel::BaseObject
+template <class DataTypes, class TMassType>
+class DiagonalMass : public core::componentmodel::behavior::Mass<DataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE2(DiagonalMass,DataTypes,TMassType), SOFA_TEMPLATE(core::componentmodel::behavior::Mass,DataTypes));
+
     typedef core::componentmodel::behavior::Mass<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
-    typedef t_MassType MassType;
+    typedef TMassType MassType;
 
     typedef sofa::component::topology::PointData<MassType> VecMass;
     typedef helper::vector<MassType> MassVector;

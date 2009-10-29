@@ -509,7 +509,7 @@ template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::init()
 {
     /*  using sofa::component::topology::RegularGridTopology;
-      RegularGridTopology* reg = dynamic_cast<RegularGridTopology*>( getContext()->getMeshTopology() );
+      RegularGridTopology* reg = dynamic_cast<RegularGridTopology*>( this->getContext()->getMeshTopology() );
       if( reg != NULL )
       {
         Real weight = reg->getDx().norm() * reg->getDy().norm() * reg->getDz().norm() * m_massDensity.getValue()/8;
@@ -600,12 +600,12 @@ void DiagonalMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& x,
     DataTypes::set ( theGravity, g[0], g[1], g[2]);
 
     // velocity-based stuff
-    core::objectmodel::BaseContext::SpatialVector vframe = getContext()->getVelocityInWorld();
-    core::objectmodel::BaseContext::Vec3 aframe = getContext()->getVelocityBasedLinearAccelerationInWorld() ;
+    core::objectmodel::BaseContext::SpatialVector vframe = this->getContext()->getVelocityInWorld();
+    core::objectmodel::BaseContext::Vec3 aframe = this->getContext()->getVelocityBasedLinearAccelerationInWorld() ;
 
     // project back to local frame
-    vframe = getContext()->getPositionInWorld() / vframe;
-    aframe = getContext()->getPositionInWorld().backProjectVector( aframe );
+    vframe = this->getContext()->getPositionInWorld() / vframe;
+    aframe = this->getContext()->getPositionInWorld().backProjectVector( aframe );
 
     // add weight and inertia force
     for (unsigned int i=0; i<masses.size(); i++)
@@ -617,7 +617,7 @@ void DiagonalMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& x,
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::draw()
 {
-    if (!getContext()->getShowBehaviorModels()) return;
+    if (!this->getContext()->getShowBehaviorModels()) return;
     const MassVector &masses= f_mass.getValue();
     const VecCoord& x = *this->mstate->getX();
     Coord gravityCenter;

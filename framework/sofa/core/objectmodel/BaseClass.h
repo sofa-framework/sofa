@@ -135,7 +135,10 @@ public:
         res.group = GetClass()->className.c_str();                      \
         return res;                                                     \
     }                                                                   \
- 
+    using ::sofa::core::objectmodel::Base::sout;                        \
+    using ::sofa::core::objectmodel::Base::serr;                        \
+    using ::sofa::core::objectmodel::Base::sendl
+
 
 template <class Parents>
 class TClassParents
