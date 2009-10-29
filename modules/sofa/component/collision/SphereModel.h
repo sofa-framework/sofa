@@ -66,6 +66,8 @@ public:
 class SOFA_COMPONENT_COLLISION_API SphereModel : public core::CollisionModel
 {
 public:
+    SOFA_CLASS(SphereModel, core::CollisionModel);
+
     typedef Vec3Types InDataTypes;
     typedef Vec3Types DataTypes;
     typedef DataTypes::VecCoord VecCoord;

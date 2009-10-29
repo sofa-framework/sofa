@@ -43,6 +43,8 @@ namespace collision
 class SOFA_COMPONENT_COLLISION_API DefaultCollisionGroupManager : public core::componentmodel::collision::CollisionGroupManager
 {
 public:
+    SOFA_CLASS(DefaultCollisionGroupManager,sofa::core::componentmodel::collision::CollisionGroupManager);
+
     typedef std::set<simulation::Node*> GroupSet;
     GroupSet groupSet;
 public:

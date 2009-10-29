@@ -45,6 +45,8 @@ class TriangleModel;
 class TriangleModelInRegularGrid : public TriangleModel
 {
 public:
+    SOFA_CLASS(TriangleModelInRegularGrid, TriangleModel);
+
     TriangleModelInRegularGrid();
     ~TriangleModelInRegularGrid();
 

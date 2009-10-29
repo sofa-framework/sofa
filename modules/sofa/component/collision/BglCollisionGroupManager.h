@@ -41,6 +41,8 @@ class SOFA_COMPONENT_COLLISION_API BglCollisionGroupManager : public DefaultColl
 {
     ;
 public:
+    SOFA_CLASS(BglCollisionGroupManager,DefaultCollisionGroupManager);
+
     BglCollisionGroupManager() {};
 
     void clearGroups(core::objectmodel::BaseContext* scene);

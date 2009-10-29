@@ -112,6 +112,7 @@ protected:
 class SOFA_COMPONENT_COLLISION_API PointLocalMinDistanceFilter : public LocalMinDistanceFilter
 {
 public:
+    SOFA_CLASS(PointLocalMinDistanceFilter,LocalMinDistanceFilter);
 
     /**
      * @brief Scene graph initialization method.

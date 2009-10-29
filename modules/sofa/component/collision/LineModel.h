@@ -82,6 +82,8 @@ public:
 
 class SOFA_COMPONENT_COLLISION_API LineModel : public core::CollisionModel
 {
+public :
+    SOFA_CLASS(LineModel,sofa::core::CollisionModel);
 protected:
     struct LineData
     {

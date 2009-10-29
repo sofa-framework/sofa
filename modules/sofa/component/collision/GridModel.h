@@ -58,7 +58,8 @@ public:
 
 class GridModel : public core::CollisionModel
 {
-protected:
+public:
+    SOFA_CLASS(GridModel,sofa::core::CollisionModel);
 
 public:
     typedef core::CollisionElementIterator ChildIterator;

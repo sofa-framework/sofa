@@ -46,6 +46,8 @@ namespace collision
 class SOFA_COMPONENT_COLLISION_API LMDNewProximityIntersection : public DiscreteIntersection
 {
 public:
+    SOFA_CLASS(LMDNewProximityIntersection,DiscreteIntersection);
+
     Data<double> alarmDistance;
     Data<double> contactDistance;
     Data<bool> useLineLine;

@@ -85,6 +85,9 @@ public:
 
 class SOFA_COMPONENT_COLLISION_API RigidDistanceGridCollisionModel : public core::CollisionModel
 {
+public:
+    SOFA_CLASS(RigidDistanceGridCollisionModel,sofa::core::CollisionModel);
+
 protected:
 
     class ElementData
