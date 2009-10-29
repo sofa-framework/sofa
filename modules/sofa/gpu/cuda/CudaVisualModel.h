@@ -110,6 +110,8 @@ public:
     virtual void reinit();
     virtual void drawVisual();
     virtual void updateVisual();
+    virtual void updateTopology();
+    virtual void updateNormals();
 
     virtual std::string getTemplateName() const
     {
@@ -122,8 +124,7 @@ public:
 
 protected:
 
-    void updateTopology();
-    void updateNormals();
+
 
     void initV(int nbe, int nbv, int nbelemperv)
     {
