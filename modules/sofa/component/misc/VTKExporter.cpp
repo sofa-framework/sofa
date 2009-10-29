@@ -59,6 +59,7 @@ void VTKExporter::init()
     }
 
     const std::string& filename = vtkFilename.getFullPath();
+//	std::cout << filename << std::endl;
 
     outfile = new std::ofstream(filename.c_str());
     if( !outfile->is_open() )
@@ -268,10 +269,7 @@ void VTKExporter::writeDataArray(const helper::vector<std::string>& objects, con
                     sizeSeg = 3;
                 }
             }
-            *outfile << "        <DataArray Type=\""<< type << "\" Name=\"" << fields[i] << "\"";
-            if(sizeSeg > 1)
-                *outfile << " NumberOfComponents=\"" << sizeSeg << "\"";
-            *outfile << " Format=\"ASCII\">" << std::endl;
+            *outfile << "        <DataArray type=\""<< type << "\" Name=\"" << fields[i] << "\" Format=\"ascii\">" << std::endl;
             *outfile << segmentString(field->getValueString(),sizeSeg) << std::endl;
             *outfile << "        </DataArray>" << std::endl;
         }
@@ -440,10 +438,10 @@ void VTKExporter::writeVTKXML()
 // 				   +( (writeHexas.getValue()) ? 9 *topology->getNbHexas() : 0 );
 
     //write header
-    *outfile << "<VTKFile Type=\"UnstructuredGrid\" Version=\"0.1\" Byte_order=\"LittleEndian\">" << std::endl;
+    *outfile << "<VTKFile type=\"UnstructuredGrid\" version=\"0.1\" byte_order=\"BigEndian\">" << std::endl;
     *outfile << "  <UnstructuredGrid>" << std::endl;
     //write piece
-    *outfile << "    <Piece NumberOfPoints=\"" << topology->getNbPoints() << "\" NumberOfCells=\""<< numberOfCells << "\">" << std::endl << std::endl;
+    *outfile << "    <Piece NumberOfPoints=\"" << topology->getNbPoints() << "\" NumberOfCells=\""<< numberOfCells << "\">" << std::endl;
 
 
 
@@ -453,29 +451,29 @@ void VTKExporter::writeVTKXML()
     {
         *outfile << "      <PointData>" << std::endl;
         writeDataArray(pointsDataObject, pointsDataField);
-        *outfile << "      </PointData>" << std::endl << std::endl;
+        *outfile << "      </PointData>" << std::endl;
     }
     //write cell data
     if (!cellsData.empty())
     {
         *outfile << "      <CellData>" << std::endl;
         writeDataArray(cellsDataObject, cellsDataField);
-        *outfile << "      </CellData>" << std::endl << std::endl;
+        *outfile << "      </CellData>" << std::endl;
     }
 
 
 
     //write points
     *outfile << "      <Points>" << std::endl;
-    *outfile << "        <DataArray Type=\"Float32\" NumberOfComponents=\"3\" Format=\"ASCII\">" << std::endl;
+    *outfile << "        <DataArray type=\"Float32\" NumberOfComponents=\"3\" Format=\"ascii\">" << std::endl;
     for (int i = 0; i < topology->getNbPoints(); i++)
         *outfile << "          " << topology->getPX(i) << " " << topology->getPY(i) << " " << topology->getPZ(i) << std::endl;
     *outfile << "        </DataArray>" << std::endl;
-    *outfile << "      </Points>" << std::endl << std::endl;
+    *outfile << "      </Points>" << std::endl;
     //write cells
     *outfile << "      <Cells>" << std::endl;
     //write connectivity
-    *outfile << "        <DataArray Type=\"Int32\" Name=\"connectivity\" Format=\"ASCII\"" << std::endl;
+    *outfile << "        <DataArray type=\"Int32\" Name=\"connectivity\" Format=\"ascii\">" << std::endl;
     if (writeEdges.getValue())
     {
         for (int i=0 ; i<topology->getNbEdges() ; i++)
@@ -505,7 +503,7 @@ void VTKExporter::writeVTKXML()
     *outfile << "        </DataArray>" << std::endl;
     //write offsets
     int num = 0;
-    *outfile << "        <DataArray Type=\"Int32\" Name=\"offsets\" Format=\"ASCII\"" << std::endl;
+    *outfile << "        <DataArray type=\"Int32\" Name=\"offsets\" Format=\"ascii\">" << std::endl;
     *outfile << "          ";
     if (writeEdges.getValue())
     {
@@ -550,7 +548,7 @@ void VTKExporter::writeVTKXML()
     *outfile << std::endl;
     *outfile << "        </DataArray>" << std::endl;
     //write types
-    *outfile << "        <DataArray Type=\"UInt8\" Name=\"types\" Format=\"ASCII\"" << std::endl;
+    *outfile << "        <DataArray type=\"UInt8\" Name=\"types\" Format=\"ascii\">" << std::endl;
     *outfile << "          ";
     if (writeEdges.getValue())
     {
@@ -579,7 +577,7 @@ void VTKExporter::writeVTKXML()
     }
     *outfile << std::endl;
     *outfile << "        </DataArray>" << std::endl;
-    *outfile << "      </Cells>" << std::endl << std::endl;
+    *outfile << "      </Cells>" << std::endl;
 
     //write end
     *outfile << "    </Piece>" << std::endl;
