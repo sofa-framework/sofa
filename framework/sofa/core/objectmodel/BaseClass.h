@@ -93,21 +93,31 @@ public:
 // This macro should now be used at the beginning of all declarations of classes with 1 base class
 #define SOFA_CLASS(T,Parent) \
     typedef ::sofa::core::objectmodel::TClass< T, Parent > MyClass; \
+    typedef Parent Inherit1; \
     SOFA_CLASS_DECL
 
 // This macro should now be used at the beginning of all declarations of classes with 2 base classes
 #define SOFA_CLASS2(T,Parent1,Parent2) \
     typedef ::sofa::core::objectmodel::TClass< T, std::pair<Parent1,Parent2> > MyClass; \
+    typedef Parent1 Inherit1; \
+    typedef Parent2 Inherit2; \
     SOFA_CLASS_DECL
 
 // This macro should now be used at the beginning of all declarations of classes with 3 base classes
 #define SOFA_CLASS3(T,Parent1,Parent2,Parent3) \
     typedef ::sofa::core::objectmodel::TClass< T, std::pair<Parent1,std::pair<Parent2,Parent3> > > MyClass; \
+    typedef Parent1 Inherit1; \
+    typedef Parent2 Inherit2; \
+    typedef Parent3 Inherit3; \
     SOFA_CLASS_DECL
 
 // This macro should now be used at the beginning of all declarations of classes with 4 base classes
 #define SOFA_CLASS4(T,Parent1,Parent2,Parent3) \
     typedef ::sofa::core::objectmodel::TClass< T, std::pair<std::pair<Parent1,Parent2>,std::pair<Parent3,Parent4> > > MyClass; \
+    typedef Parent1 Inherit1; \
+    typedef Parent2 Inherit2; \
+    typedef Parent3 Inherit3; \
+    typedef Parent4 Inherit4; \
     SOFA_CLASS_DECL
 
 // Do not use this macro directly, use SOFA_CLASS instead
@@ -135,9 +145,9 @@ public:
         res.group = GetClass()->className.c_str();                      \
         return res;                                                     \
     }                                                                   \
-    using ::sofa::core::objectmodel::Base::sout;                        \
-    using ::sofa::core::objectmodel::Base::serr;                        \
-    using ::sofa::core::objectmodel::Base::sendl
+    using Inherit1::sout;                                               \
+    using Inherit1::serr;                                               \
+    using Inherit1::sendl
 
 
 template <class Parents>
