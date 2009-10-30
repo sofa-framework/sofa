@@ -56,8 +56,6 @@ public:
 
     ManifoldEdgeSetTopologyContainer();
 
-    ManifoldEdgeSetTopologyContainer(const sofa::helper::vector< Edge > &edges);
-
     virtual ~ManifoldEdgeSetTopologyContainer() {}
 
     virtual void init();

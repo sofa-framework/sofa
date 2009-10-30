@@ -65,7 +65,7 @@ void SimpleTesselatedTetraMechanicalMapping<BaseMapping>::apply( typename Out::V
 {
     if (!topoMap) return;
     const topology::PointData<int>& pointMap = topoMap->getPointMappedFromPoint();
-    const helper::vector<int>& edgeMap = topoMap->getPointMappedFromEdge().getValue();
+    const helper::vector<int>& edgeMap = topoMap->getPointMappedFromEdge();
     if (pointMap.getValue().empty() && edgeMap.empty()) return;
     const core::componentmodel::topology::BaseMeshTopology::SeqEdges& edges = inputTopo->getEdges();
 
@@ -87,7 +87,7 @@ void SimpleTesselatedTetraMechanicalMapping<BaseMapping>::applyJ( typename Out::
 {
     if (!topoMap) return;
     const topology::PointData<int>& pointMap = topoMap->getPointMappedFromPoint();
-    const helper::vector<int>& edgeMap = topoMap->getPointMappedFromEdge().getValue();
+    const helper::vector<int>& edgeMap = topoMap->getPointMappedFromEdge();
     if (pointMap.getValue().empty() && edgeMap.empty()) return;
     const core::componentmodel::topology::BaseMeshTopology::SeqEdges& edges = inputTopo->getEdges();
 
@@ -109,7 +109,7 @@ void SimpleTesselatedTetraMechanicalMapping<BaseMapping>::applyJT( typename In::
 {
     if (!topoMap) return;
     const topology::PointData<int>& pointMap = topoMap->getPointMappedFromPoint();
-    const helper::vector<int>& edgeMap = topoMap->getPointMappedFromEdge().getValue();
+    const helper::vector<int>& edgeMap = topoMap->getPointMappedFromEdge();
     if (pointMap.getValue().empty() && edgeMap.empty()) return;
     const core::componentmodel::topology::BaseMeshTopology::SeqEdges& edges = inputTopo->getEdges();
 

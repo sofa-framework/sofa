@@ -78,7 +78,8 @@ void TriangleSetTopologyModifier::addTrianglesProcess(const sofa::helper::vector
 {
     if (addTrianglesPreconditions(triangles)) // Test if the topology will still fullfil the conditions if these triangles are added.
     {
-        m_container->m_triangle.reserve(m_container->m_triangle.size() + triangles.size());
+        helper::WriteAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = m_container->d_triangle;
+        m_triangle.reserve(m_triangle.size() + triangles.size());
 
         for(unsigned int i=0; i<triangles.size(); ++i)
         {
@@ -120,6 +121,7 @@ void TriangleSetTopologyModifier::addSingleTriangleProcess(Triangle t)
 #endif
 
     const unsigned int triangleIndex = m_container->getNumberOfTriangles();
+    helper::WriteAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = m_container->d_triangle;
 
     if(m_container->hasTrianglesAroundVertex())
     {
@@ -165,7 +167,7 @@ void TriangleSetTopologyModifier::addSingleTriangleProcess(Triangle t)
         }
     }
 
-    m_container->m_triangle.push_back(t);
+    m_triangle.push_back(t);
 }
 
 
@@ -229,10 +231,10 @@ void TriangleSetTopologyModifier::removeTriangles(sofa::helper::vector< unsigned
         const bool removeIsolatedEdges,
         const bool removeIsolatedPoints)
 {
-
+    helper::ReadAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = m_container->d_triangle;
     for (unsigned int i = 0; i < triangles.size(); i++)
     {
-        if( triangles[i] >= m_container->m_triangle.size())
+        if( triangles[i] >= m_triangle.size())
         {
             std::cout << "Error: TriangleSetTopologyModifier::removeTriangles: Triangle: "<< triangles[i] <<" is out of bound" << std::endl;
             return;
@@ -303,12 +305,13 @@ void TriangleSetTopologyModifier::removeTrianglesProcess(const sofa::helper::vec
 
     sofa::helper::vector<unsigned int> edgeToBeRemoved;
     sofa::helper::vector<unsigned int> vertexToBeRemoved;
+    helper::WriteAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = m_container->d_triangle;
 
     unsigned int lastTriangle = m_container->getNumberOfTriangles() - 1;
     for(unsigned int i = 0; i<indices.size(); ++i, --lastTriangle)
     {
-        Triangle &t = m_container->m_triangle[ indices[i] ];
-        Triangle &q = m_container->m_triangle[ lastTriangle ];
+        Triangle &t = m_triangle[ indices[i] ];
+        Triangle &q = m_triangle[ lastTriangle ];
 
         if(m_container->hasTrianglesAroundVertex())
         {
@@ -365,8 +368,8 @@ void TriangleSetTopologyModifier::removeTrianglesProcess(const sofa::helper::vec
         }
 
         // removes the triangle from the triangleArray
-        m_container->m_triangle[ indices[i] ] = m_container->m_triangle[ lastTriangle ]; // overwriting with last valid value.
-        m_container->m_triangle.resize( lastTriangle ); // resizing to erase multiple occurence of the triangle.
+        m_triangle[ indices[i] ] = m_triangle[ lastTriangle ]; // overwriting with last valid value.
+        m_triangle.resize( lastTriangle ); // resizing to erase multiple occurence of the triangle.
     }
 
 
@@ -444,6 +447,8 @@ void TriangleSetTopologyModifier::removePointsProcess( sofa::helper::vector<unsi
         if(!m_container->hasTrianglesAroundVertex())
             m_container->createTrianglesAroundVertexArray();
 
+        helper::WriteAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = m_container->d_triangle;
+
         unsigned int lastPoint = m_container->getNbPoints() - 1;
         for(unsigned int i=0; i<indices.size(); ++i, --lastPoint)
         {
@@ -456,8 +461,8 @@ void TriangleSetTopologyModifier::removePointsProcess( sofa::helper::vector<unsi
                 const unsigned int q = shell[j];
                 for(unsigned int k=0; k<3; ++k)
                 {
-                    if(m_container->m_triangle[q][k] == lastPoint)
-                        m_container->m_triangle[q][k] = indices[i];
+                    if(m_triangle[q][k] == lastPoint)
+                        m_triangle[q][k] = indices[i];
                 }
             }
 
@@ -489,12 +494,13 @@ void TriangleSetTopologyModifier::renumberPointsProcess( const sofa::helper::vec
                 m_container->m_trianglesAroundVertex[i] = trianglesAroundVertex_cp[ index[i] ];
             }
         }
+        helper::WriteAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = m_container->d_triangle;
 
-        for(unsigned int i=0; i<m_container->m_triangle.size(); ++i)
+        for(unsigned int i=0; i<m_triangle.size(); ++i)
         {
-            m_container->m_triangle[i][0] = inv_index[ m_container->m_triangle[i][0] ];
-            m_container->m_triangle[i][1] = inv_index[ m_container->m_triangle[i][1] ];
-            m_container->m_triangle[i][2] = inv_index[ m_container->m_triangle[i][2] ];
+            m_triangle[i][0] = inv_index[ m_triangle[i][0] ];
+            m_triangle[i][1] = inv_index[ m_triangle[i][1] ];
+            m_triangle[i][2] = inv_index[ m_triangle[i][2] ];
         }
     }
 

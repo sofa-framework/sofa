@@ -60,7 +60,6 @@ public:
     Data< defaulttype::Vector3 > voxelSize;
 
     DynamicSparseGridTopologyContainer();
-    DynamicSparseGridTopologyContainer ( const sofa::helper::vector< Hexahedron > &hexahedra );
     virtual ~DynamicSparseGridTopologyContainer() {}
 
 protected:

@@ -91,8 +91,6 @@ public:
 
     HexahedronSetTopologyContainer();
 
-    HexahedronSetTopologyContainer(const sofa::helper::vector< Hexahedron > &hexahedra);
-
     virtual ~HexahedronSetTopologyContainer() {}
 
     virtual void init();
@@ -378,8 +376,7 @@ protected:
 protected:
 
     /// provides the set of hexahedra.
-    sofa::helper::vector<Hexahedron> m_hexahedron;
-    DataPtr< sofa::helper::vector<Hexahedron> > d_hexahedron;
+    Data< sofa::helper::vector<Hexahedron> > d_hexahedron;
 
     /// provides the set of edges for each hexahedron.
     sofa::helper::vector<EdgesInHexahedron> m_edgesInHexahedron;

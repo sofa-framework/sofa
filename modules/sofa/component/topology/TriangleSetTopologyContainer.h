@@ -61,8 +61,6 @@ public:
 
     TriangleSetTopologyContainer();
 
-    TriangleSetTopologyContainer(const sofa::helper::vector< Triangle > &triangles );
-
     virtual ~TriangleSetTopologyContainer() {}
 
     virtual void init();
@@ -300,8 +298,7 @@ protected:
 protected:
 
     /// provides the set of triangles.
-    sofa::helper::vector<Triangle> m_triangle;
-    DataPtr< sofa::helper::vector<Triangle> > d_triangle;
+    Data< sofa::helper::vector<Triangle> > d_triangle;
 
     /// provides the 3 edges in each triangle.
     sofa::helper::vector<EdgesInTriangle> m_edgesInTriangle;

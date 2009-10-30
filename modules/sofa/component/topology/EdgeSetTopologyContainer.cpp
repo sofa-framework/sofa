@@ -58,30 +58,16 @@ int EdgeSetTopologyContainerClass = core::RegisterObject("Edge set topology cont
 
 EdgeSetTopologyContainer::EdgeSetTopologyContainer()
     : PointSetTopologyContainer( )
-    , d_edge(initDataPtr(&d_edge, &m_edge, "edges", "List of edge indices"))
+    , d_edge(initData(&d_edge, "edges", "List of edge indices"))
 {
 }
 
-EdgeSetTopologyContainer::EdgeSetTopologyContainer(const sofa::helper::vector< Edge > &edges )
-    : PointSetTopologyContainer( )
-    , m_edge( edges )
-    , d_edge(initDataPtr(&d_edge, &m_edge, "edges", "List of edge indices"))
-{
-    for (unsigned int i=0; i<m_edge.size(); ++i)
-    {
-        for(unsigned int j=0; j<2; ++j)
-        {
-            int a = m_edge[i][j];
-            if (a >= (int)getNbPoints()) nbPoints.setValue(a+1);
-        }
-    }
-    serr << "Constructor" << sendl;
-}
 
 void EdgeSetTopologyContainer::init()
 {
     d_edge.updateIfDirty(); // make sure m_edge is up to date
 
+    helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
     if (!m_edge.empty())
     {
         for (unsigned int i=0; i<m_edge.size(); ++i)
@@ -100,19 +86,17 @@ void EdgeSetTopologyContainer::init()
 void EdgeSetTopologyContainer::loadFromMeshLoader(sofa::component::container::MeshLoader* loader)
 {
     // load points
+    helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
     if (!m_edge.empty()) return;
     PointSetTopologyContainer::loadFromMeshLoader(loader);
-    d_edge.beginEdit();
-    loader->getEdges(m_edge);
+    loader->getEdges(*(d_edge.beginEdit()));
     d_edge.endEdit();
 }
 
 void EdgeSetTopologyContainer::addEdge(int a, int b)
 {
-    serr << "ADD EDGE" << sendl;
-    d_edge.beginEdit();
+    helper::WriteAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
     m_edge.push_back(Edge(a,b));
-    d_edge.endEdit();
     if (a >= getNbPoints()) nbPoints.setValue(a+1);
     if (b >= getNbPoints()) nbPoints.setValue(b+1);
 }
@@ -132,6 +116,7 @@ void EdgeSetTopologyContainer::createEdgesAroundVertexArray()
         clearEdgesAroundVertex();
     }
 
+    helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
     m_edgesAroundVertex.resize( getNbPoints() );
     for (unsigned int edge=0; edge<m_edge.size(); ++edge)
     {
@@ -158,7 +143,7 @@ const sofa::helper::vector<Edge> &EdgeSetTopologyContainer::getEdgeArray()
         createEdgeSetArray();
     }
 
-    return m_edge;
+    return d_edge.getValue();
 }
 
 int EdgeSetTopologyContainer::getEdgeIndex(PointID v1, PointID v2)
@@ -175,6 +160,7 @@ int EdgeSetTopologyContainer::getEdgeIndex(PointID v1, PointID v2)
         createEdgesAroundVertexArray();
 
     const sofa::helper::vector< unsigned int > &es1 = getEdgesAroundVertex(v1) ;
+    helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
 
     int result = -1;
     for(unsigned int i=0; (i < es1.size()) && (result == -1); ++i)
@@ -191,7 +177,7 @@ const Edge EdgeSetTopologyContainer::getEdge (EdgeID i)
     if(!hasEdges())
         createEdgeSetArray();
 
-    return m_edge[i];
+    return (d_edge.getValue())[i];
 }
 
 
@@ -203,6 +189,7 @@ int EdgeSetTopologyContainer::getNumberConnectedComponents(sofa::helper::vector<
     typedef adjacency_list <vecS, vecS, undirectedS> Graph;
 
     Graph G;
+    helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
 
     for (unsigned int k=0; k<m_edge.size(); ++k)
     {
@@ -222,6 +209,7 @@ bool EdgeSetTopologyContainer::checkTopology() const
 
     if(hasEdgesAroundVertex())
     {
+        helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
         std::set<int> edgeSet;
         std::set<int>::iterator it;
 
@@ -262,7 +250,7 @@ bool EdgeSetTopologyContainer::checkTopology() const
 unsigned int EdgeSetTopologyContainer::getNumberOfEdges() const
 {
     d_edge.updateIfDirty();
-    return m_edge.size();
+    return (d_edge.getValue()).size();
 }
 
 const sofa::helper::vector< sofa::helper::vector<unsigned int> > &EdgeSetTopologyContainer::getEdgesAroundVertexArray()
@@ -315,7 +303,7 @@ sofa::helper::vector< unsigned int > &EdgeSetTopologyContainer::getEdgesAroundVe
 bool EdgeSetTopologyContainer::hasEdges() const
 {
     d_edge.updateIfDirty();
-    return !m_edge.empty();
+    return !(d_edge.getValue()).empty();
 }
 
 bool EdgeSetTopologyContainer::hasEdgesAroundVertex() const
@@ -325,9 +313,8 @@ bool EdgeSetTopologyContainer::hasEdgesAroundVertex() const
 
 void EdgeSetTopologyContainer::clearEdges()
 {
-    d_edge.beginEdit();
+    helper::WriteAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
     m_edge.clear();
-    d_edge.endEdit();
 }
 
 void EdgeSetTopologyContainer::clearEdgesAroundVertex()

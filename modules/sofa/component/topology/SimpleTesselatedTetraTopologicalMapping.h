@@ -173,24 +173,22 @@ public:
         if ( arg ) obj->parse ( arg );
     }
 
-    const PointData<int>& getPointMappedFromPoint() const { return pointMappedFromPoint; }
-    const EdgeData<int>& getPointMappedFromEdge() const { return pointMappedFromEdge; }
-    const PointData<int>& getPointSource() const { return pointSource; }
+    const helper::vector<int>& getPointMappedFromPoint() const { return d_pointMappedFromPoint.getValue(); }
+    const helper::vector<int>& getPointMappedFromEdge() const { return d_pointMappedFromEdge.getValue(); }
+    const helper::vector<int>& getPointSource() const { return d_pointSource.getValue(); }
 
 protected:
     Data< std::string > object1;
     Data< std::string > object2;
 
-    PointData<int> pointMappedFromPoint; ///< Each point of the input topology is mapped to the same point.
-    EdgeData<int> pointMappedFromEdge; ///< Each edge of the input topology is mapped to his midpoint.
     TetrahedronData< fixed_array<int, 8> > tetrahedraMappedFromTetra; ///< Each Tetrahedron of the input topology is mapped to the 8 tetrahedrons in which it can be divided.
 
-    PointData<int> pointSource; ///< Which input topology element map to a given point in the output topology : 0 -> none, > 0 -> point index + 1, < 0 , - edge index -1
+
     TetrahedronData<int> tetraSource; ///<Which tetra from the input topology map to a given tetra in the output topology (-1 if none)
 
-    DataPtr< helper::vector<int> > d_pointMappedFromPoint; ///< Show d_pointMappedFromPoint in the gui for debug
-    DataPtr< helper::vector<int> > d_pointMappedFromEdge; ///< Show d_pointMappedFromEdge in the gui for debug
-    DataPtr< helper::vector<int> > d_pointSource; ///< show d_pointSource in the gui for debug
+    Data< helper::vector<int> > d_pointMappedFromPoint; ///< Each point of the input topology is mapped to the same point.
+    Data< helper::vector<int> > d_pointMappedFromEdge; ///< Each edge of the input topology is mapped to his midpoint.
+    Data< helper::vector<int> > d_pointSource; ///< Which input topology element map to a given point in the output topology : 0 -> none, > 0 -> point index + 1, < 0 , - edge index -1
 
     void swapOutputPoints(int i1, int i2);
     void removeOutputPoints( const sofa::helper::vector<unsigned int>& tab );
@@ -201,23 +199,21 @@ protected:
 
     void setPointSource(int i, int source)
     {
-        helper::vector<int> *pointSourceData = pointSource.beginEdit();
-        helper::vector<int> *pointMappedFromPointData = pointMappedFromPoint.beginEdit();
-        helper::vector<int>& pointMappedFromEdgeData = *(pointMappedFromEdge.beginEdit());
+        helper::WriteAccessor< Data< sofa::helper::vector<int> > > pointSourceData = d_pointSource;
+        helper::WriteAccessor< Data< sofa::helper::vector<int> > > pointMappedFromPointData = d_pointMappedFromPoint;
+        helper::WriteAccessor< Data< sofa::helper::vector<int> > > pointMappedFromEdgeData = d_pointMappedFromEdge;
+
 
         if (i != -1)
-            (*pointSourceData)[i] = source;
+            pointSourceData[i] = source;
         if (source > 0)
         {
-            (*pointMappedFromPointData)[source-1] = i;
+            pointMappedFromPointData[source-1] = i;
         }
         else if (source < 0)
         {
             pointMappedFromEdgeData[-source-1] = i;
         }
-        pointSource.endEdit();
-        pointMappedFromPoint.endEdit();
-        pointMappedFromEdge.endEdit();
     }
     std::set<unsigned int> tetrahedraToRemove;
 

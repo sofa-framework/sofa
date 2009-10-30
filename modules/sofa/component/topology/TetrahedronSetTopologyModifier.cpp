@@ -71,7 +71,8 @@ void TetrahedronSetTopologyModifier::addTetrahedronProcess(Tetrahedron t)
     // check if there already exists a tetrahedron with the same indices
     // assert(m_container->getTetrahedronIndex(t[0], t[1], t[2], t[3])== -1);
 #endif
-    const unsigned int tetrahedronIndex = m_container->m_tetrahedron.size();
+    helper::WriteAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = m_container->d_tetrahedron;
+    const unsigned int tetrahedronIndex = m_tetrahedron.size();
 
     if (m_container->hasTrianglesInTetrahedron())
     {
@@ -140,7 +141,7 @@ void TetrahedronSetTopologyModifier::addTetrahedronProcess(Tetrahedron t)
         }
     }
 
-    m_container->m_tetrahedron.push_back(t);
+    m_tetrahedron.push_back(t);
 }
 
 
@@ -218,11 +219,13 @@ void TetrahedronSetTopologyModifier::removeTetrahedraProcess( const sofa::helper
     sofa::helper::vector<unsigned int> edgeToBeRemoved;
     sofa::helper::vector<unsigned int> vertexToBeRemoved;
 
+    helper::WriteAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = m_container->d_tetrahedron;
+
     unsigned int lastTetrahedron = m_container->getNumberOfTetrahedra() - 1;
     for (unsigned int i=0; i<indices.size(); ++i, --lastTetrahedron)
     {
-        Tetrahedron &t = m_container->m_tetrahedron[ indices[i] ];
-        Tetrahedron &h = m_container->m_tetrahedron[ lastTetrahedron ];
+        const Tetrahedron &t = m_tetrahedron[ indices[i] ];
+        const Tetrahedron &h = m_tetrahedron[ lastTetrahedron ];
 
         if (m_container->hasTetrahedraAroundVertex())
         {
@@ -303,8 +306,8 @@ void TetrahedronSetTopologyModifier::removeTetrahedraProcess( const sofa::helper
         }
 
         // removes the tetrahedron from the tetrahedronArray
-        m_container->m_tetrahedron[ indices[i] ] = m_container->m_tetrahedron[ lastTetrahedron ]; // overwriting with last valid value.
-        m_container->m_tetrahedron.resize( lastTetrahedron ); // resizing to erase multiple occurence of the tetrahedron.
+        m_tetrahedron[ indices[i] ] = m_tetrahedron[ lastTetrahedron ]; // overwriting with last valid value.
+        m_tetrahedron.resize( lastTetrahedron ); // resizing to erase multiple occurence of the tetrahedron.
     }
 
     if ( (!triangleToBeRemoved.empty()) || (!edgeToBeRemoved.empty()))
@@ -382,6 +385,7 @@ void TetrahedronSetTopologyModifier::removePointsProcess( sofa::helper::vector<u
             m_container->createTetrahedraAroundVertexArray();
         }
 
+        helper::WriteAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = m_container->d_tetrahedron;
         unsigned int lastPoint = m_container->getNbPoints() - 1;
         for (unsigned int i=0; i<indices.size(); ++i, --lastPoint)
         {
@@ -390,8 +394,8 @@ void TetrahedronSetTopologyModifier::removePointsProcess( sofa::helper::vector<u
             for (sofa::helper::vector<unsigned int>::iterator itt=m_container->m_tetrahedraAroundVertex[lastPoint].begin();
                     itt!=m_container->m_tetrahedraAroundVertex[lastPoint].end(); ++itt)
             {
-                unsigned int vertexIndex = m_container->getVertexIndexInTetrahedron(m_container->m_tetrahedron[(*itt)],lastPoint);
-                m_container->m_tetrahedron[(*itt)][vertexIndex]=indices[i];
+                unsigned int vertexIndex = m_container->getVertexIndexInTetrahedron(m_tetrahedron[(*itt)],lastPoint);
+                m_tetrahedron[(*itt)][vertexIndex]=indices[i];
             }
 
             // updating the edge shell itself (change the old index for the new one)
@@ -476,6 +480,7 @@ void TetrahedronSetTopologyModifier::renumberPointsProcess( const sofa::helper::
 {
     if(m_container->hasTetrahedra())
     {
+        helper::WriteAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = m_container->d_tetrahedron;
         if(m_container->hasTetrahedraAroundVertex())
         {
             sofa::helper::vector< sofa::helper::vector< unsigned int > > tetrahedraAroundVertex_cp = m_container->m_tetrahedraAroundVertex;
@@ -485,12 +490,12 @@ void TetrahedronSetTopologyModifier::renumberPointsProcess( const sofa::helper::
             }
         }
 
-        for (unsigned int i=0; i<m_container->m_tetrahedron.size(); ++i)
+        for (unsigned int i=0; i<m_tetrahedron.size(); ++i)
         {
-            m_container->m_tetrahedron[i][0]  = inv_index[ m_container->m_tetrahedron[i][0]  ];
-            m_container->m_tetrahedron[i][1]  = inv_index[ m_container->m_tetrahedron[i][1]  ];
-            m_container->m_tetrahedron[i][2]  = inv_index[ m_container->m_tetrahedron[i][2]  ];
-            m_container->m_tetrahedron[i][3]  = inv_index[ m_container->m_tetrahedron[i][3]  ];
+            m_tetrahedron[i][0]  = inv_index[ m_tetrahedron[i][0]  ];
+            m_tetrahedron[i][1]  = inv_index[ m_tetrahedron[i][1]  ];
+            m_tetrahedron[i][2]  = inv_index[ m_tetrahedron[i][2]  ];
+            m_tetrahedron[i][3]  = inv_index[ m_tetrahedron[i][3]  ];
         }
     }
 

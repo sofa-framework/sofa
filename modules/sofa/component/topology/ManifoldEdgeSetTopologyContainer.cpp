@@ -60,9 +60,6 @@ ManifoldEdgeSetTopologyContainer::ManifoldEdgeSetTopologyContainer()
     : EdgeSetTopologyContainer( )
 {}
 
-ManifoldEdgeSetTopologyContainer::ManifoldEdgeSetTopologyContainer(const sofa::helper::vector< Edge > &edges )
-    : EdgeSetTopologyContainer( edges )
-{}
 
 void ManifoldEdgeSetTopologyContainer::init()
 {
@@ -93,6 +90,7 @@ void ManifoldEdgeSetTopologyContainer::createEdgesAroundVertexArray()
 
     m_edgesAroundVertex.resize( getNbPoints() );
 
+    helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
     for (unsigned int edge = 0; edge < m_edge.size(); ++edge)
     {
         // check to how many edges is the end vertex of each edge connnected to

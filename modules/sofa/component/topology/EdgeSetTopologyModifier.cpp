@@ -102,7 +102,8 @@ void EdgeSetTopologyModifier::addEdgeProcess(Edge e)
         shell1.push_back(edgeId);
     }
 
-    m_container->m_edge.push_back(e);
+    helper::WriteAccessor< Data< sofa::helper::vector<Edge> > > m_edge = m_container->d_edge;
+    m_edge.push_back(e);
 }
 
 
@@ -182,6 +183,7 @@ void EdgeSetTopologyModifier::removeEdgesProcess(const sofa::helper::vector<unsi
     }
 
     sofa::helper::vector<unsigned int> vertexToBeRemoved;
+    helper::WriteAccessor< Data< sofa::helper::vector<Edge> > > m_edge = m_container->d_edge;
 
     unsigned int lastEdgeIndex = m_container->getNumberOfEdges() - 1;
     for (unsigned int i=0; i<indices.size(); ++i, --lastEdgeIndex)
@@ -189,8 +191,10 @@ void EdgeSetTopologyModifier::removeEdgesProcess(const sofa::helper::vector<unsi
         // now updates the shell information of the edge formely at the end of the array
         if(m_container->hasEdgesAroundVertex())
         {
-            const Edge &e = m_container->m_edge[ indices[i] ];
-            const Edge &q = m_container->m_edge[ lastEdgeIndex ];
+
+
+            const Edge &e = m_edge[ indices[i] ];
+            const Edge &q = m_edge[ lastEdgeIndex ];
             const unsigned int point0 = e[0], point1 = e[1];
             const unsigned int point2 = q[0], point3 = q[1];
 
@@ -221,8 +225,8 @@ void EdgeSetTopologyModifier::removeEdgesProcess(const sofa::helper::vector<unsi
         }
 
         // removes the edge from the edgelist
-        m_container->m_edge[ indices[i] ] = m_container->m_edge[ lastEdgeIndex ]; // overwriting with last valid value.
-        m_container->m_edge.resize( lastEdgeIndex ); // resizing to erase multiple occurence of the edge.
+        m_edge[ indices[i] ] = m_edge[ lastEdgeIndex ]; // overwriting with last valid value.
+        m_edge.resize( lastEdgeIndex ); // resizing to erase multiple occurence of the edge.
     }
 
     if (! vertexToBeRemoved.empty())
@@ -250,6 +254,7 @@ void EdgeSetTopologyModifier::removePointsProcess(sofa::helper::vector<unsigned 
 
     if(m_container->hasEdges())
     {
+        helper::WriteAccessor< Data< sofa::helper::vector<Edge> > > m_edge = m_container->d_edge;
         // forces the construction of the edge shell array if it does not exists
         if(!m_container->hasEdgesAroundVertex())
             m_container->createEdgesAroundVertexArray();
@@ -263,10 +268,10 @@ void EdgeSetTopologyModifier::removePointsProcess(sofa::helper::vector<unsigned 
             {
                 const int edgeId = m_container->m_edgesAroundVertex[lastPoint][j];
                 // change the old index for the new one
-                if ( m_container->m_edge[ edgeId ][0] == lastPoint )
-                    m_container->m_edge[ edgeId ][0] = indices[i];
+                if ( m_edge[ edgeId ][0] == lastPoint )
+                    m_edge[ edgeId ][0] = indices[i];
                 else
-                    m_container->m_edge[ edgeId ][1] = indices[i];
+                    m_edge[ edgeId ][1] = indices[i];
             }
 
             // updating the edge shell itself (change the old index for the new one)
@@ -287,6 +292,7 @@ void EdgeSetTopologyModifier::renumberPointsProcess( const sofa::helper::vector<
 {
     if(m_container->hasEdges())
     {
+        helper::WriteAccessor< Data< sofa::helper::vector<Edge> > > m_edge = m_container->d_edge;
         if(m_container->hasEdgesAroundVertex())
         {
             // copy of the the edge vertex shell array
@@ -298,10 +304,10 @@ void EdgeSetTopologyModifier::renumberPointsProcess( const sofa::helper::vector<
             }
         }
 
-        for (unsigned int i=0; i<m_container->m_edge.size(); ++i)
+        for (unsigned int i=0; i<m_edge.size(); ++i)
         {
-            const unsigned int p0 = inv_index[ m_container->m_edge[i][0]  ];
-            const unsigned int p1 = inv_index[ m_container->m_edge[i][1]  ];
+            const unsigned int p0 = inv_index[ m_edge[i][0]  ];
+            const unsigned int p1 = inv_index[ m_edge[i][1]  ];
 
             // FIXME : Edges should not be flipped during simulations as it will break code such as FEM storing a rest shape.
             // Commented by pierre-jean.bensoussan@digital-trainers.com
@@ -318,8 +324,8 @@ void EdgeSetTopologyModifier::renumberPointsProcess( const sofa::helper::vector<
             }
             */
 
-            m_container->m_edge[i][0] = p0;
-            m_container->m_edge[i][1] = p1;
+            m_edge[i][0] = p0;
+            m_edge[i][1] = p1;
         }
     }
 

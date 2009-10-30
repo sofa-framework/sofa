@@ -68,8 +68,6 @@ public:
 
     ManifoldTetrahedronSetTopologyContainer();
 
-    ManifoldTetrahedronSetTopologyContainer(const sofa::helper::vector< Tetrahedron >& tetrahedra );
-
     virtual ~ManifoldTetrahedronSetTopologyContainer() {}
 
     virtual void init();

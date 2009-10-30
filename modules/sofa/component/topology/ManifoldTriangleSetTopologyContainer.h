@@ -61,8 +61,6 @@ public:
 
     ManifoldTriangleSetTopologyContainer();
 
-    ManifoldTriangleSetTopologyContainer(const sofa::helper::vector< Triangle > &triangles );
-
     virtual ~ManifoldTriangleSetTopologyContainer() {}
 
     virtual void init();

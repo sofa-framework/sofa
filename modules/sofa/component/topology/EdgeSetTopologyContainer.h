@@ -53,8 +53,6 @@ public:
 
     EdgeSetTopologyContainer();
 
-    EdgeSetTopologyContainer(const sofa::helper::vector< Edge > &edges);
-
     virtual ~EdgeSetTopologyContainer() {}
 
 
@@ -194,8 +192,7 @@ protected:
 protected:
 
     /** The array that stores the set of edges in the edge set */
-    sofa::helper::vector<Edge> m_edge;
-    DataPtr< sofa::helper::vector<Edge> > d_edge;
+    Data< sofa::helper::vector<Edge> > d_edge;
 
     /** the array that stores the set of edge-vertex shells, ie for each vertex gives the set of adjacent edges */
     sofa::helper::vector< EdgesAroundVertex > m_edgesAroundVertex;
