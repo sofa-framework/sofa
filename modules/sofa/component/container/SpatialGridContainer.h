@@ -305,6 +305,7 @@ template<class DataTypes>
 class SpatialGridContainer : public virtual core::objectmodel::BaseObject
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(SpatialGridContainer,DataTypes),core::objectmodel::BaseObject);
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;

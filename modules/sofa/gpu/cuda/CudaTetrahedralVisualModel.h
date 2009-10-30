@@ -39,6 +39,7 @@ template<class TCoord, class TDeriv, class TReal>
 class OglTetrahedralModel< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> > : public core::VisualModel
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(OglTetrahedralModel,SOFA_TEMPLATE3(gpu::cuda::CudaVectorTypes,TCoord,TDeriv,TReal)),core::VisualModel);
     typedef gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> DataTypes;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;

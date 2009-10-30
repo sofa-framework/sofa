@@ -54,6 +54,7 @@ using namespace sofa::defaulttype;
 class CudaTetrahedronTLEDForceField : public core::componentmodel::behavior::ForceField<CudaVec3fTypes>
 {
 public:
+    SOFA_CLASS(CudaTetrahedronTLEDForceField,SOFA_TEMPLATE(core::componentmodel::behavior::ForceField,CudaVec3fTypes));
     typedef CudaVec3fTypes::Real Real;
     typedef CudaVec3fTypes::Coord Coord;
     typedef component::topology::MeshTopology::Tetra Element;

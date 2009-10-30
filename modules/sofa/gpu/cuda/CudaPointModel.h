@@ -62,6 +62,7 @@ public:
 class CudaPointModel : public core::CollisionModel
 {
 public:
+    SOFA_CLASS(CudaPointModel,core::CollisionModel);
     typedef CudaVec3fTypes InDataTypes;
     typedef CudaVec3fTypes DataTypes;
     typedef DataTypes::VecCoord VecCoord;

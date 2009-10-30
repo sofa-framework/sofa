@@ -197,7 +197,7 @@ using namespace sofa::component::collision;
 class CudaProximityIntersection : public sofa::component::collision::NewProximityIntersection
 {
 public:
-
+    SOFA_CLASS(CudaProximityIntersection,sofa::component::collision::NewProximityIntersection);
     virtual void init()
     {
         sofa::component::collision::NewProximityIntersection::init();

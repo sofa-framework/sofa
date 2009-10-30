@@ -437,6 +437,8 @@ public:
 
 class CudaRigidDistanceGridCollisionModel : public core::CollisionModel
 {
+public:
+    SOFA_CLASS(CudaRigidDistanceGridCollisionModel,core::CollisionModel);
 protected:
 
     class ElementData
