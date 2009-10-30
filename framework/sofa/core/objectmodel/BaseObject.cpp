@@ -137,9 +137,10 @@ void BaseObject::parse( BaseObjectDescription* arg )
             for (it_map =dataLoaderMap.begin(); it_map != dataLoaderMap.end(); ++it_map)
             {
                 BaseData* Data = obj->findField( (*it_map).first );
-
                 if (Data != NULL)
                 {
+                    std::string linkPath = valueString+"."+(*it_map).first;
+                    Data->setLinkPath(linkPath);
                     Data->setParent( (*it_map).second);
                 }
             }
@@ -158,6 +159,7 @@ void BaseObject::parse( BaseObjectDescription* arg )
                 /* test if data is a link */
                 if (valueString[0] == '@')
                 {
+                    dataModif[d]->setLinkPath(valueString);
                     std::size_t posPath = valueString.rfind('/');
                     if (posPath == std::string::npos) posPath = 0;
                     std::size_t posDot = valueString.rfind('.');

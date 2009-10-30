@@ -39,12 +39,12 @@ namespace objectmodel
 
 BaseData::BaseData( const char* h, bool isDisplayed, bool isReadOnly, Base* owner, const char* name)
     : help(h), group(""), widget("")
-    , m_counter(0), m_isDisplayed(isDisplayed), m_isReadOnly(isReadOnly), m_isPersistent(true), m_owner(owner), m_name(name), parentBaseData(NULL)
+    , m_counter(0), m_isDisplayed(isDisplayed), m_isReadOnly(isReadOnly), m_isPersistent(true), m_owner(owner), m_name(name), m_linkPath(std::string("")), parentBaseData(NULL)
 {}
 
 BaseData::BaseData( const BaseInitData& init)
     : help(init.helpMsg), group(init.group), widget(init.widget)
-    , m_counter(0), m_isDisplayed(init.isDisplayed), m_isReadOnly(init.isReadOnly), m_isPersistent(init.isPersistent), m_owner(init.owner), m_name(init.name), parentBaseData(NULL)
+    , m_counter(0), m_isDisplayed(init.isDisplayed), m_isReadOnly(init.isReadOnly), m_isPersistent(init.isPersistent), m_owner(init.owner), m_name(init.name), m_linkPath(std::string("")), parentBaseData(NULL)
 {
     if (init.data && init.data != this)
     {

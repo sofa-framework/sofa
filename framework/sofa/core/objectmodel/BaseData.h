@@ -157,6 +157,9 @@ public:
     void setReadOnly(bool b) {m_isReadOnly = b;}
     /// Can dynamically change the status of a Data, by making it persistent
     void setPersistent(bool b) {m_isPersistent = b;}
+    /// If we use the Data as a link and not as value directly
+    void setLinkPath(const std::string &path) {m_linkPath = path;};
+    std::string getLinkPath() const {return m_linkPath;};
 
     /// Return the Base component owning this Data
     Base* getOwner() const { return m_owner; }
@@ -209,6 +212,8 @@ protected:
     Base* m_owner;
     /// Data name within the Base component
     std::string m_name;
+    /// Link to another Data, if used as an input from another Data (@ typo).
+    std::string m_linkPath;
     /// Parent Data
     BaseData* parentBaseData;
 
