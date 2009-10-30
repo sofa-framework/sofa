@@ -51,6 +51,7 @@ class EvalPointsDistance: public virtual sofa::core::objectmodel::BaseObject
 {
 
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(EvalPointsDistance,TDataTypes), sofa::core::objectmodel::BaseObject);
 
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;

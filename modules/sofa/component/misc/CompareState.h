@@ -46,6 +46,7 @@ namespace misc
 class SOFA_COMPONENT_MISC_API CompareState: public ReadState
 {
 public:
+    SOFA_CLASS(CompareState,ReadState);
 
     /** Default constructor
     */

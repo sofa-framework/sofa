@@ -54,6 +54,7 @@ namespace misc
 class SOFA_COMPONENT_MISC_API ReadTopology: public core::objectmodel::BaseObject
 {
 public:
+    SOFA_CLASS(ReadTopology,core::objectmodel::BaseObject);
 
     sofa::core::objectmodel::DataFileName f_filename;
     Data < double > f_interval;

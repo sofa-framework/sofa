@@ -53,6 +53,7 @@ namespace misc
 class SOFA_COMPONENT_MISC_API MeshTetraStuffing : public virtual core::objectmodel::BaseObject
 {
 public:
+    SOFA_CLASS(MeshTetraStuffing,core::objectmodel::BaseObject);
 
     typedef defaulttype::Vec3Types::Real Real;
     typedef defaulttype::Vec3Types::Coord Point;

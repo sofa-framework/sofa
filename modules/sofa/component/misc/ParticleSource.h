@@ -60,9 +60,11 @@ namespace misc
 {
 
 template<class TDataTypes>
-class ParticleSource : public core::componentmodel::behavior::Constraint<TDataTypes>, public virtual core::objectmodel::BaseObject
+class ParticleSource : public core::componentmodel::behavior::Constraint<TDataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(ParticleSource,TDataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::Constraint,TDataTypes));
+
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
@@ -92,7 +94,7 @@ public:
         , f_start(initData(&f_start, (Real)0, "start", "Source starting time"))
         , f_stop(initData(&f_stop, (Real)1e10, "stop", "Source stopping time"))
     {
-        f_listening.setValue(true);
+        this->f_listening.setValue(true);
         f_center.beginEdit()->push_back(Coord()); f_center.endEdit();
     }
 
@@ -205,7 +207,7 @@ public:
 /// Handle topological changes
     void handleTopologyChange()
     {
-        sofa::core::componentmodel::topology::BaseMeshTopology* topology = getContext()->getMeshTopology();
+        sofa::core::componentmodel::topology::BaseMeshTopology* topology = this->getContext()->getMeshTopology();
         std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itBegin=topology->firstChange();
         std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itEnd=topology->lastChange();
         if (itBegin != itEnd)
@@ -236,7 +238,7 @@ public:
         if (!this->mstate) return;
         if (lastparticles.empty()) return;
         //sout << "ParticleSource: projectResponse of last particle ("<<lastparticle<<")."<<sendl;
-        double time = getContext()->getTime();
+        double time = this->getContext()->getTime();
         if (time < f_start.getValue() || time > f_stop.getValue()) return;
         // constraint the last value
         for (unsigned int s=0; s<lastparticles.size(); s++)
@@ -252,7 +254,7 @@ public:
     {
         if (!this->mstate) return;
         if (lastparticles.empty()) return;
-        double time = getContext()->getTime();
+        double time = this->getContext()->getTime();
         if (time < f_start.getValue() || time > f_stop.getValue()) return;
         // constraint the last value
         for (unsigned int s=0; s<lastparticles.size(); s++)
@@ -267,7 +269,7 @@ public:
     {
         if (!this->mstate) return;
         if (lastparticles.empty()) return;
-        double time = getContext()->getTime();
+        double time = this->getContext()->getTime();
         if (time < f_start.getValue() || time > f_stop.getValue()) return;
         // constraint the last value
         for (unsigned int s=0; s<lastparticles.size(); s++)
@@ -287,9 +289,9 @@ public:
     virtual void handleEvent(sofa::core::objectmodel::Event* event)
     {
         if (simulation::AnimateBeginEvent* ev = dynamic_cast<simulation::AnimateBeginEvent*>(event))
-            animateBegin(ev->getDt(), getContext()->getTime());
+            animateBegin(ev->getDt(), this->getContext()->getTime());
         if (simulation::AnimateEndEvent* ev = dynamic_cast<simulation::AnimateEndEvent*>(event))
-            animateEnd(ev->getDt(), getContext()->getTime());
+            animateEnd(ev->getDt(), this->getContext()->getTime());
     }
 
 

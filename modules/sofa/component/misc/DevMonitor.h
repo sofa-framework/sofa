@@ -43,6 +43,8 @@ template <class TDataTypes>
 class DevMonitor: public virtual core::DevBaseMonitor
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(DevMonitor,TDataTypes), core::DevBaseMonitor);
+
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;

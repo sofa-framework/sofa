@@ -63,6 +63,8 @@ namespace misc
 class SOFA_COMPONENT_MISC_API WriteTopology: public core::objectmodel::BaseObject
 {
 public:
+    SOFA_CLASS(WriteTopology,core::objectmodel::BaseObject);
+
     sofa::core::objectmodel::DataFileName f_filename;
     Data < bool > f_writeContainers;
     Data < bool > f_writeShellContainers;

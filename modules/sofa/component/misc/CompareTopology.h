@@ -46,6 +46,7 @@ namespace misc
 class SOFA_COMPONENT_MISC_API CompareTopology: public ReadTopology
 {
 public:
+    SOFA_CLASS(CompareTopology,ReadTopology);
 
     /** Default constructor
     */

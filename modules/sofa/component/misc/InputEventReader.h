@@ -47,6 +47,7 @@ namespace misc
 class InputEventReader : public core::objectmodel::BaseObject
 {
 public:
+    SOFA_CLASS(InputEventReader,core::objectmodel::BaseObject);
 
     /**
      * @brief Default Constructor.
