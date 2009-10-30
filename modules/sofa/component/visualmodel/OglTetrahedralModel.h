@@ -53,6 +53,8 @@ template<class DataTypes>
 class OglTetrahedralModel : public core::VisualModel
 {
 public:
+    SOFA_CLASS(OglTetrahedralModel, core::VisualModel);
+
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
 

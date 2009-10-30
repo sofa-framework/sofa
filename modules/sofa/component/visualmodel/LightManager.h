@@ -42,6 +42,7 @@
 #include <sofa/component/visualmodel/Light.h>
 #include <sofa/core/VisualManager.h>
 #include <sofa/core/objectmodel/Event.h>
+#include <sofa/defaulttype/Mat.h>
 
 #ifdef SOFA_HAVE_GLEW
 #include <sofa/component/visualmodel/OglShadowShader.h>
@@ -66,8 +67,13 @@ namespace visualmodel
 
 class SOFA_COMPONENT_VISUALMODEL_API LightManager : public core::VisualManager
 {
+public:
+    SOFA_CLASS(LightManager, core::VisualManager);
+
 private:
     std::vector<Light*> lights;
+    std::vector<defaulttype::Mat4x4f> lightModelViewMatrix;
+    std::vector<defaulttype::Mat4x4f> lightProjectionMatrix;
     Data<bool> shadowEnabled;
 #ifdef SOFA_HAVE_GLEW
     //OglShadowShader* shadowShader;
@@ -77,7 +83,7 @@ private:
 
 public:
 #ifndef __APPLE__
-    static const unsigned int MAX_NUMBER_OF_LIGHTS = /*GL_MAX_LIGHTS*/ 2 ;
+    static const unsigned int MAX_NUMBER_OF_LIGHTS = /*GL_MAX_LIGHTS*/ 5 ;
 #else
     static const unsigned int MAX_NUMBER_OF_LIGHTS = /*GL_MAX_LIGHTS*/ 3 ;
 #endif

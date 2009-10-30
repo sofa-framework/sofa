@@ -37,7 +37,7 @@
 #include <sofa/simulation/common/VisualVisitor.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <sofa/defaulttype/Mat.h>
+
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 
@@ -86,6 +86,8 @@ void LightManager::init()
     for(unsigned int i=0 ; i<shadowShaders.size() ; i++)
         shadowShaders[i]->initShaders(lights.size());
 #endif
+    lightModelViewMatrix.resize(lights.size());
+
 }
 
 
@@ -122,19 +124,77 @@ void LightManager::putLights(std::vector<Light*> lights)
 
 void LightManager::makeShadowMatrix(unsigned int i)
 {
+
+    const GLfloat* lp = lights[i]->getProjectionMatrix();
+    const GLfloat* lmv = lights[i]->getModelviewMatrix();
+
     glMatrixMode(GL_TEXTURE);
     glLoadIdentity();
     glTranslatef(0.5f, 0.5f, 0.5f +( -0.006f) );
     glScalef(0.5f, 0.5f, 0.5f);
 
-    glMultMatrixf(lights[i]->getProjectionMatrix()); // now multiply by the matrices we have retrieved before
-    glMultMatrixf(lights[i]->getModelviewMatrix());
-    sofa::defaulttype::Mat<4,4,float> model;
-    glGetFloatv(GL_MODELVIEW_MATRIX,model.ptr());
-    model.invert(model);
 
-    glMultMatrixf(model.ptr());
+
+    glMultMatrixf(lp); // now multiply by the matrices we have retrieved before
+    glMultMatrixf(lmv);
+    sofa::defaulttype::Mat<4,4,float> model2;
+    glGetFloatv(GL_MODELVIEW_MATRIX,model2.ptr());
+    model2.invert(model2);
+
+    glMultMatrixf(model2.ptr());
+
+    if (lightModelViewMatrix.size() > 0)
+    {
+        lightModelViewMatrix[i] = lmv;
+        lightProjectionMatrix[i] = lp;
+    }
+    else
+    {
+        lightModelViewMatrix.resize(lights.size());
+        lightProjectionMatrix.resize(lights.size());
+        lightModelViewMatrix[i] = lmv;
+        lightProjectionMatrix[i] = lp;
+    }
+    //std::cout << "lightModelViewMatrix[i] "<<i << " -> " << lightModelViewMatrix[i] << std::endl;
+    //std::cout << "lightProjectionMatrix[i] "<<i << " -> " << lightProjectionMatrix[i] << std::endl;
+
     glMatrixMode(GL_MODELVIEW);
+
+
+    /*
+       sofa::defaulttype::Mat4x4f m;
+       m.identity();
+       m[0][3] = 0.5f;
+       m[1][3] = 0.5f;
+       m[2][3] = 0.5f +( -0.006f);
+       m[0][0] = 0.5f;
+       m[1][1] = 0.5f;
+       m[2][2] = 0.5f;
+
+       sofa::defaulttype::Mat4x4f lightProj(lp); //lightProj.transpose();
+       sofa::defaulttype::Mat4x4f lightModelView(lmv);// lightModelView.transpose();
+
+       sofa::defaulttype::Mat4x4f model;
+       glGetFloatv(GL_MODELVIEW_MATRIX,model.ptr());
+       //model.transpose();
+       sofa::defaulttype::Mat4x4f modelInv;
+       modelInv.invert(model);
+
+       m = m * lightProj * lightModelView * modelInv;
+       //m.transpose();
+       //std::cout << "Computed " << modelInv << std::endl;
+
+
+       if (lightModelViewMatrix.size() > 0)
+       {
+    	   lightModelViewMatrix[i] = m;
+       }
+       else
+       {
+    	   lightModelViewMatrix.resize(lights.size());
+    	   lightModelViewMatrix[i] = m;
+       }
+    */
 }
 
 void LightManager::fwdDraw(Pass)
@@ -143,6 +203,7 @@ void LightManager::fwdDraw(Pass)
     GLint* lightFlag = new GLint[MAX_NUMBER_OF_LIGHTS];
     GLint* shadowTextureID = new GLint [MAX_NUMBER_OF_LIGHTS];
     GLfloat* lightModelViewProjectionMatrices = new GLfloat [MAX_NUMBER_OF_LIGHTS*16];
+
 
     if (!shadowShaders.empty())
     {
@@ -183,6 +244,8 @@ void LightManager::fwdDraw(Pass)
         {
             shadowShaders[i]->setIntVector(shadowShaders[i]->getCurrentIndex() , "lightFlag" , MAX_NUMBER_OF_LIGHTS, lightFlag);
             shadowShaders[i]->setIntVector(shadowShaders[i]->getCurrentIndex() , "shadowTexture" , MAX_NUMBER_OF_LIGHTS, shadowTextureID);
+            shadowShaders[i]->setMatrix4(shadowShaders[i]->getCurrentIndex() , "lightModelViewMatrix" , MAX_NUMBER_OF_LIGHTS, false, (lightModelViewMatrix[0].ptr()));
+            shadowShaders[i]->setMatrix4(shadowShaders[i]->getCurrentIndex() , "lightProjectionMatrix" , MAX_NUMBER_OF_LIGHTS, false, (lightModelViewMatrix[0].ptr()));
             //shadowShader->start();
         }
 

@@ -56,6 +56,8 @@ namespace visualmodel
 class SOFA_COMPONENT_VISUALMODEL_API PointSplatModel : public core::VisualModel
 {
 public:
+    SOFA_CLASS(PointSplatModel,core::VisualModel);
+
     PointSplatModel();
     virtual ~PointSplatModel();
 

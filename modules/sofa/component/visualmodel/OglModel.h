@@ -60,6 +60,9 @@ namespace visualmodel
 
 class SOFA_COMPONENT_VISUALMODEL_API OglModel : public VisualModelImpl
 {
+public:
+    SOFA_CLASS(OglModel, VisualModelImpl);
+
 protected:
     Data<bool> premultipliedAlpha, useVBO, writeZTransparent;
     helper::gl::Texture *tex;
