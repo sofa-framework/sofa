@@ -45,6 +45,7 @@ using sofa::defaulttype::Vec4f;
 class SOFA_COMPONENT_LOADER_API MeshObjLoader : public sofa::core::componentmodel::loader::MeshLoader
 {
 public:
+    SOFA_CLASS(MeshObjLoader,sofa::core::componentmodel::loader::MeshLoader);
 
     class SOFA_COMPONENT_LOADER_API Material
     {

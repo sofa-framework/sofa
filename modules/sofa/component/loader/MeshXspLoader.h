@@ -40,6 +40,7 @@ namespace loader
 class SOFA_COMPONENT_LOADER_API MeshXspLoader : public sofa::core::componentmodel::loader::MeshLoader
 {
 public:
+    SOFA_CLASS(MeshXspLoader,sofa::core::componentmodel::loader::MeshLoader);
 
     MeshXspLoader();
 
