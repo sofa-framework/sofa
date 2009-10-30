@@ -49,6 +49,8 @@ typedef BaseMeshTopology::EdgesInTriangle EdgesInTriangle;
 class SOFA_COMPONENT_CONTAINER_API ManifoldTriangleSetTopologyModifier : public TriangleSetTopologyModifier
 {
 public:
+    SOFA_CLASS(ManifoldTriangleSetTopologyModifier,TriangleSetTopologyModifier);
+
     ManifoldTriangleSetTopologyModifier()
         : TriangleSetTopologyModifier()
         , m_triSwap(initData(&m_triSwap,  "swap 2 triangles by their index", "Debug : Test swap function (only while animate)."))

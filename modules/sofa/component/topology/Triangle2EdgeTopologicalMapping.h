@@ -61,6 +61,7 @@ using namespace sofa::core;
 class Triangle2EdgeTopologicalMapping : public TopologicalMapping
 {
 public:
+    SOFA_CLASS(Triangle2EdgeTopologicalMapping,TopologicalMapping);
 
     /** \brief Constructor.
      *

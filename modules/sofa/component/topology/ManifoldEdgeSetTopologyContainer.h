@@ -52,6 +52,8 @@ class SOFA_COMPONENT_CONTAINER_API ManifoldEdgeSetTopologyContainer : public Edg
     friend class ManifoldEdgeSetTopologyModifier;
 
 public:
+    SOFA_CLASS(ManifoldEdgeSetTopologyContainer,EdgeSetTopologyContainer);
+
     ManifoldEdgeSetTopologyContainer();
 
     ManifoldEdgeSetTopologyContainer(const sofa::helper::vector< Edge > &edges);

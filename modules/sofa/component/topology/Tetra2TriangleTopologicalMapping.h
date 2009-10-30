@@ -61,6 +61,7 @@ using namespace sofa::core;
 class Tetra2TriangleTopologicalMapping : public TopologicalMapping
 {
 public:
+    SOFA_CLASS(Tetra2TriangleTopologicalMapping,TopologicalMapping);
 
     /** \brief Constructor.
      *

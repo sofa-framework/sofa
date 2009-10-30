@@ -62,6 +62,8 @@ template < class DataTypes >
 class EdgeSetGeometryAlgorithms : public PointSetGeometryAlgorithms<DataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(EdgeSetGeometryAlgorithms,DataTypes),SOFA_TEMPLATE(PointSetGeometryAlgorithms,DataTypes));
+
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;

@@ -51,6 +51,8 @@ typedef BaseMeshTopology::EdgesInQuad EdgesInQuad;
 class SOFA_COMPONENT_CONTAINER_API QuadSetTopologyModifier : public EdgeSetTopologyModifier
 {
 public:
+    SOFA_CLASS(QuadSetTopologyModifier,EdgeSetTopologyModifier);
+
     QuadSetTopologyModifier()
         : EdgeSetTopologyModifier()
     { }

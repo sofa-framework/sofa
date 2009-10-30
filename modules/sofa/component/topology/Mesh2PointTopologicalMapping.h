@@ -65,6 +65,8 @@ using namespace sofa::core;
 class Mesh2PointTopologicalMapping : public TopologicalMapping
 {
 public:
+    SOFA_CLASS(Mesh2PointTopologicalMapping,TopologicalMapping);
+
     /** \brief Constructor.
          *
      * @param from the topology issuing TopologyChange objects (the "source").

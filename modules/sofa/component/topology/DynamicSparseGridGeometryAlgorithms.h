@@ -38,9 +38,11 @@ namespace topology
 * A class that provides geometry information on an HexahedronSet.
 */
 template < class DataTypes >
-class DynamicSparseGridGeometryAlgorithms : public HexahedronSetGeometryAlgorithms<DataTypes>, public virtual sofa::core::objectmodel::BaseObject
+class DynamicSparseGridGeometryAlgorithms : public HexahedronSetGeometryAlgorithms<DataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(DynamicSparseGridGeometryAlgorithms,DataTypes),SOFA_TEMPLATE(HexahedronSetGeometryAlgorithms,DataTypes));
+
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;

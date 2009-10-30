@@ -44,6 +44,8 @@ class SOFA_COMPONENT_CONTAINER_API DynamicSparseGridTopologyContainer : public H
     friend class DynamicSparseGridTopologyModifier;
 
 public:
+    SOFA_CLASS(DynamicSparseGridTopologyContainer,HexahedronSetTopologyContainer);
+
     typedef Hexa Hexahedron;
     typedef EdgesInHexahedron EdgesInHexahedron;
     typedef QuadsInHexahedron QuadsInHexahedron;

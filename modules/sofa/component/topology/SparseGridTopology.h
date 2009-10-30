@@ -57,6 +57,7 @@ using sofa::component::container::VoxelGridLoader;
 class SOFA_COMPONENT_CONTAINER_API SparseGridTopology : public MeshTopology
 {
 public:
+    SOFA_CLASS(SparseGridTopology,MeshTopology);
 
     typedef fixed_array<Vector3,8> CubeCorners;
     typedef enum {OUTSIDE,INSIDE,BOUNDARY} Type; ///< each cube has a type depending on its filling ratio

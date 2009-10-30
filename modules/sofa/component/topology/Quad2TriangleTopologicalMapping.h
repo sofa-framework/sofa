@@ -63,6 +63,7 @@ class Quad2TriangleTopologicalMapping : public TopologicalMapping
 {
 
 public:
+    SOFA_CLASS(Quad2TriangleTopologicalMapping,TopologicalMapping);
 
     /** \brief Constructor.
      *

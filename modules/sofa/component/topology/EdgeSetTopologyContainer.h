@@ -49,6 +49,8 @@ class SOFA_COMPONENT_CONTAINER_API EdgeSetTopologyContainer : public PointSetTop
     friend class EdgeSetTopologyModifier;
 
 public:
+    SOFA_CLASS(EdgeSetTopologyContainer,PointSetTopologyContainer);
+
     EdgeSetTopologyContainer();
 
     EdgeSetTopologyContainer(const sofa::helper::vector< Edge > &edges);

@@ -64,6 +64,8 @@ using namespace sofa::core::componentmodel::behavior;
 class Edge2QuadTopologicalMapping : public TopologicalMapping
 {
 public:
+    SOFA_CLASS(Edge2QuadTopologicalMapping,TopologicalMapping);
+
     typedef State<Rigid3Types>::VecCoord VecCoord;
     typedef State<Rigid3Types>::Coord Coord;
     typedef Coord::value_type Real;

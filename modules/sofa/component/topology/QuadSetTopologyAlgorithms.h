@@ -47,6 +47,8 @@ template < class DataTypes >
 class QuadSetTopologyAlgorithms : public EdgeSetTopologyAlgorithms<DataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(QuadSetTopologyAlgorithms,DataTypes),SOFA_TEMPLATE(EdgeSetTopologyAlgorithms,DataTypes));
+
     typedef typename DataTypes::Real Real;
 
     QuadSetTopologyAlgorithms()

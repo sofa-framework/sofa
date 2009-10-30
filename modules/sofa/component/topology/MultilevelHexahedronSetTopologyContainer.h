@@ -59,9 +59,10 @@ class SOFA_COMPONENT_CONTAINER_API MultilevelHexahedronSetTopologyContainer : pu
     friend class MultilevelHexahedronSetTopologyModifier;
 
 public:
+    SOFA_CLASS(MultilevelHexahedronSetTopologyContainer,HexahedronSetTopologyContainer);
+
     typedef Vec<3,int>			Vec3i;
 
-public:
     MultilevelHexahedronSetTopologyContainer();
 
     MultilevelHexahedronSetTopologyContainer(const helper::vector< Hexahedron > &hexahedra);

@@ -49,6 +49,8 @@ typedef BaseMeshTopology::EdgesAroundVertex EdgesAroundVertex;
 class SOFA_COMPONENT_CONTAINER_API EdgeSetTopologyModifier : public PointSetTopologyModifier
 {
 public:
+    SOFA_CLASS(EdgeSetTopologyModifier,PointSetTopologyModifier);
+
     EdgeSetTopologyModifier()
         : PointSetTopologyModifier()
     {}

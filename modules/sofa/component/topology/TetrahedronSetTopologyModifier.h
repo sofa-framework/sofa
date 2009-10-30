@@ -57,6 +57,8 @@ typedef TrianglesInTetrahedron TrianglesInTetrahedron;
 class SOFA_COMPONENT_CONTAINER_API TetrahedronSetTopologyModifier : public TriangleSetTopologyModifier
 {
 public:
+    SOFA_CLASS(TetrahedronSetTopologyModifier,TriangleSetTopologyModifier);
+
     TetrahedronSetTopologyModifier()
         : TriangleSetTopologyModifier()
     {}

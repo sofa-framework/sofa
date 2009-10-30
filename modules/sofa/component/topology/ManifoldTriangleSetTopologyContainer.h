@@ -57,6 +57,7 @@ class SOFA_COMPONENT_CONTAINER_API ManifoldTriangleSetTopologyContainer : public
     friend class ManifoldTriangleSetTopologyModifier;
 
 public:
+    SOFA_CLASS(ManifoldTriangleSetTopologyContainer,TriangleSetTopologyContainer);
 
     ManifoldTriangleSetTopologyContainer();
 

@@ -64,6 +64,7 @@ class SOFA_COMPONENT_CONTAINER_API ManifoldTetrahedronSetTopologyContainer : pub
     friend class TetrahedronSetTopologyModifier; // To be change to manifold one
 
 public:
+    SOFA_CLASS(ManifoldTetrahedronSetTopologyContainer,TetrahedronSetTopologyContainer);
 
     ManifoldTetrahedronSetTopologyContainer();
 

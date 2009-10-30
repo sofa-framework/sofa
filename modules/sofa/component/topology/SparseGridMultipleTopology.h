@@ -47,6 +47,7 @@ A stiffness coefficient has to be assigned for each mesh. The last found stiffne
 class SOFA_COMPONENT_CONTAINER_API SparseGridMultipleTopology : public SparseGridRamificationTopology
 {
 public :
+    SOFA_CLASS(SparseGridMultipleTopology,SparseGridRamificationTopology);
 
     SparseGridMultipleTopology( bool _isVirtual=false );
 

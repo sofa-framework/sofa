@@ -54,6 +54,7 @@ using namespace sofa::core;
 class CenterPointTopologicalMapping : public TopologicalMapping
 {
 public:
+    SOFA_CLASS(CenterPointTopologicalMapping,TopologicalMapping);
     /** \brief Constructor.
          *
      * @param from the topology issuing TopologyChange objects (the "source").

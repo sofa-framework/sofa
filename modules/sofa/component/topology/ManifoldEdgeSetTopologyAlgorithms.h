@@ -49,6 +49,8 @@ template < class DataTypes >
 class ManifoldEdgeSetTopologyAlgorithms : public EdgeSetTopologyAlgorithms<DataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(ManifoldEdgeSetTopologyAlgorithms,DataTypes),SOFA_TEMPLATE(EdgeSetTopologyAlgorithms,DataTypes));
+
     ManifoldEdgeSetTopologyAlgorithms()
         : EdgeSetTopologyAlgorithms<DataTypes>()
     {}

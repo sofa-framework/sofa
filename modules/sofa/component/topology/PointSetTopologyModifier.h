@@ -48,6 +48,8 @@ typedef BaseMeshTopology::PointID PointID;
 class SOFA_COMPONENT_CONTAINER_API PointSetTopologyModifier : public core::componentmodel::topology::TopologyModifier
 {
 public:
+    SOFA_CLASS(PointSetTopologyModifier,core::componentmodel::topology::TopologyModifier);
+
     PointSetTopologyModifier()
         : TopologyModifier()
     {}

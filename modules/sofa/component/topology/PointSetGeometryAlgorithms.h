@@ -52,6 +52,8 @@ template<class DataTypes>
 class PointSetGeometryAlgorithms : public core::componentmodel::topology::GeometryAlgorithms
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(PointSetGeometryAlgorithms,DataTypes),core::componentmodel::topology::GeometryAlgorithms);
+
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
