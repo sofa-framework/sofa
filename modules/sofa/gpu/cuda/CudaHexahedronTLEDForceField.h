@@ -54,6 +54,7 @@ using namespace sofa::defaulttype;
 class CudaHexahedronTLEDForceField : public core::componentmodel::behavior::ForceField<CudaVec3fTypes>
 {
 public:
+    SOFA_CLASS(CudaHexahedronTLEDForceField,SOFA_TEMPLATE(core::componentmodel::behavior::ForceField,CudaVec3fTypes));
     typedef CudaVec3fTypes::Real Real;
     typedef CudaVec3fTypes::Coord Coord;
     typedef component::topology::MeshTopology::Hexa Element;

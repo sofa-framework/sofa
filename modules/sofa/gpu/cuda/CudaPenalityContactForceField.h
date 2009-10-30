@@ -54,6 +54,7 @@ template<>
 class PenalityContactForceField<CudaVec3fTypes> : public core::componentmodel::behavior::PairInteractionForceField<CudaVec3fTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(PenalityContactForceField,CudaVec3fTypes),SOFA_TEMPLATE(core::componentmodel::behavior::PairInteractionForceField,CudaVec3fTypes));
     typedef CudaVec3fTypes DataTypes;
     typedef core::componentmodel::behavior::PairInteractionForceField<DataTypes> Inherit;
     typedef DataTypes DataTypes1;

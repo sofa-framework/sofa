@@ -56,6 +56,7 @@ template <class DataTypes>
 class MappedObject : public MappedModel<DataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(MappedObject,DataTypes), SOFA_TEMPLATE(MappedModel,DataTypes));
     typedef MappedModel<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;

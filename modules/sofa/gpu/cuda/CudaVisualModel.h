@@ -57,6 +57,7 @@ template <class TDataTypes>
 class CudaVisualModel : public core::VisualModel
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(CudaVisualModel, TDataTypes), VisualModel);
     //typedef gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> DataTypes;
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;

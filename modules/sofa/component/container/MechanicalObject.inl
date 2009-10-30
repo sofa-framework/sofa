@@ -47,7 +47,7 @@
 #include <sofa/simulation/common/Visitor.h>
 #endif
 
-#include <sofa/component/linearsolver/FullMatrix.h>
+#include <sofa/component/linearsolver/SparseMatrix.h>
 
 #include <assert.h>
 #include <iostream>
@@ -2295,7 +2295,7 @@ std::list<core::componentmodel::behavior::BaseMechanicalState::ConstraintBlock> 
     const unsigned int dimensionDeriv = defaulttype::DataTypeInfo< Deriv >::size();
 
     // simple column/block map
-    typedef sofa::component::linearsolver::FullMatrix<SReal> matrix_t;
+    typedef sofa::component::linearsolver::SparseMatrix<SReal> matrix_t;
     typedef std::map<unsigned int, matrix_t* > blocks_t;
 
     blocks_t blocks;
@@ -2321,13 +2321,11 @@ std::list<core::componentmodel::behavior::BaseMechanicalState::ConstraintBlock> 
                 matrix_t* mat = new matrix_t(indices.size(), dimensionDeriv);
                 blocks[column] = mat;
 
-                for(unsigned int i = 0; i < mat->rowSize(); ++i)
-                {
-                    for(unsigned int j = 0; j < mat->colSize(); ++j)
-                    {
-                        mat->set(i, j, 0);
-                    }
-                }
+                // for(unsigned int i = 0; i < mat->rowSize(); ++i) {
+                //   for(unsigned int j = 0; j < mat->colSize(); ++j) {
+                //     mat->set(i, j, 0);
+                //   }
+                // }
 
             }
 

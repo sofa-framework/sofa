@@ -202,9 +202,10 @@ private:
 
 
 template<class real>
-class CudaMasterContactSolver : public sofa::simulation::MasterSolverImpl//, public sofa::component::odesolver::OdeSolverImpl
+class CudaMasterContactSolver : public sofa::simulation::MasterSolverImpl
 {
 public:
+    SOFA_CLASS(CudaMasterContactSolver,sofa::simulation::MasterSolverImpl);
     Data<int> useGPU_d;
 #ifdef DISPLAY_TIME
     Data<bool> print_info;

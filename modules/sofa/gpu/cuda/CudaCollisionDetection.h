@@ -215,6 +215,7 @@ namespace cuda
 class CudaCollisionDetection : public sofa::component::collision::BruteForceDetection
 {
 public:
+    SOFA_CLASS(CudaCollisionDetection, sofa::component::collision::BruteForceDetection);
     typedef sofa::component::collision::BruteForceDetection Inherit;
     struct GPUTest
     {
