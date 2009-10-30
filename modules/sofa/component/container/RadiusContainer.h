@@ -37,6 +37,8 @@ namespace container
 class RadiusContainer : public virtual sofa::core::objectmodel::BaseObject
 {
 public:
+    SOFA_CLASS(RadiusContainer,sofa::core::objectmodel::BaseObject);
+
     /// Get the radius around a given point
     virtual double getPointRadius(unsigned int index) = 0;
     /// Get the radius around a given edge

@@ -44,9 +44,11 @@ namespace component
 namespace container
 {
 
-class SOFA_COMPONENT_CONTAINER_API MultiMeshLoader : public virtual core::objectmodel::BaseObject,	public MeshLoader
+class SOFA_COMPONENT_CONTAINER_API MultiMeshLoader : public MeshLoader
 {
 public:
+    SOFA_CLASS(MultiMeshLoader,MeshLoader);
+
     typedef unsigned int index_type;
     typedef index_type PointID;
     typedef index_type EdgeID;

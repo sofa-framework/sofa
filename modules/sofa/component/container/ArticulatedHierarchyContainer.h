@@ -54,6 +54,7 @@ using namespace sofa::simulation;
 class SOFA_COMPONENT_CONTAINER_API ArticulatedHierarchyContainer : public virtual core::objectmodel::BaseObject
 {
 public:
+    SOFA_CLASS(ArticulatedHierarchyContainer,core::objectmodel::BaseObject);
 
     typedef SolidTypes<SReal>::Transform Transform;
 
@@ -70,6 +71,7 @@ public:
     class ArticulationCenter : public virtual core::objectmodel::BaseObject
     {
     public:
+        SOFA_CLASS(ArticulationCenter,core::objectmodel::BaseObject);
 
         /**
         *	This class defines an articulation.
