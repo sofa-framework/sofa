@@ -50,9 +50,11 @@ public:
 };
 
 template<class DataTypes1, class DataTypes2>
-class InteractionEllipsoidForceField : public core::componentmodel::behavior::MixedInteractionForceField<DataTypes1, DataTypes2>, public virtual core::objectmodel::BaseObject
+class InteractionEllipsoidForceField : public core::componentmodel::behavior::MixedInteractionForceField<DataTypes1, DataTypes2>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE2(InteractionEllipsoidForceField, DataTypes1, DataTypes2), SOFA_TEMPLATE2(core::componentmodel::behavior::MixedInteractionForceField, DataTypes1, DataTypes2));
+
     typedef core::componentmodel::behavior::MixedInteractionForceField<DataTypes1, DataTypes2> Inherit;
     typedef typename DataTypes1::VecCoord VecCoord1;
     typedef typename DataTypes1::VecDeriv VecDeriv1;
