@@ -55,9 +55,11 @@ using namespace sofa::defaulttype;
 	The motion between 2 key times is linearly interpolated
 */
 template <class DataTypes>
-class LinearMovementConstraint : public core::componentmodel::behavior::Constraint<DataTypes>, public virtual core::objectmodel::BaseObject
+class LinearMovementConstraint : public core::componentmodel::behavior::Constraint<DataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(LinearMovementConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::componentmodel::behavior::Constraint, DataTypes));
+
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;

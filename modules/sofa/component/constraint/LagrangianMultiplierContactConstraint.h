@@ -41,9 +41,11 @@ namespace constraint
 {
 
 template<class DataTypes>
-class LagrangianMultiplierContactConstraint : public LagrangianMultiplierConstraint<DataTypes>, public core::componentmodel::behavior::PairInteractionForceField<DataTypes>, public virtual core::objectmodel::BaseObject
+class LagrangianMultiplierContactConstraint : public LagrangianMultiplierConstraint<DataTypes>, public core::componentmodel::behavior::PairInteractionForceField<DataTypes>
 {
 public:
+    SOFA_CLASS2(SOFA_TEMPLATE(LagrangianMultiplierContactConstraint,DataTypes),SOFA_TEMPLATE(LagrangianMultiplierConstraint, DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::PairInteractionForceField, DataTypes));
+
     typedef typename core::componentmodel::behavior::PairInteractionForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;

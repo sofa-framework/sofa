@@ -43,9 +43,11 @@ namespace constraint
 	where \f$ x_m, A , \omega t , \phi \f$ are the mean value, the amplitude, the pulsation and the phase, respectively.
 	*/
 template <class DataTypes>
-class OscillatorConstraint : public core::componentmodel::behavior::Constraint<DataTypes>, public virtual core::objectmodel::BaseObject
+class OscillatorConstraint : public core::componentmodel::behavior::Constraint<DataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(OscillatorConstraint,DataTypes),SOFA_TEMPLATE(core::componentmodel::behavior::Constraint,DataTypes));
+
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;

@@ -125,7 +125,7 @@ void ParabolicConstraint<DataTypes>::reinit()
 template <class DataTypes>
 void ParabolicConstraint<DataTypes>::projectResponse(VecDeriv& dx)
 {
-    Real t = (Real) getContext()->getTime();
+    Real t = (Real) this->getContext()->getTime();
     if ( t >= m_tBegin.getValue() && t <= m_tEnd.getValue())
     {
         const SetIndexArray & indices = m_indices.getValue().getArray();
@@ -137,8 +137,8 @@ void ParabolicConstraint<DataTypes>::projectResponse(VecDeriv& dx)
 template <class DataTypes>
 void ParabolicConstraint<DataTypes>::projectVelocity(VecDeriv& dx)
 {
-    Real t = (Real) getContext()->getTime();
-    Real dt = (Real) getContext()->getDt();
+    Real t = (Real) this->getContext()->getTime();
+    Real dt = (Real) this->getContext()->getDt();
 
     if ( t >= m_tBegin.getValue() && t <= m_tEnd.getValue()	)
     {
@@ -166,7 +166,7 @@ void ParabolicConstraint<DataTypes>::projectVelocity(VecDeriv& dx)
 template <class DataTypes>
 void ParabolicConstraint<DataTypes>::projectPosition(VecCoord& x)
 {
-    Real t = (Real) getContext()->getTime();
+    Real t = (Real) this->getContext()->getTime();
 
     if ( t >= m_tBegin.getValue() && t <= m_tEnd.getValue()	)
     {
@@ -175,7 +175,7 @@ void ParabolicConstraint<DataTypes>::projectPosition(VecCoord& x)
 
         for(SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
-            //compute position from the equation of the parabol : Y = -y2/(x3*x2-x2²) * X² + (x3*y2)/(x3*x2-x2²) * X
+            //compute position from the equation of the parabol : Y = -y2/(x3*x2-x2ï¿½) * Xï¿½ + (x3*y2)/(x3*x2-x2ï¿½) * X
             //with P1:(0,0,0), P2:(x2,y2,z2), P3:(x3,y3,z3) , projected in parabol plan
             Real px = m_locP3.x()*relativeTime;
             Real py = (- m_locP2.y() / (m_locP3.x()*m_locP2.x() - m_locP2.x()*m_locP2.x())) * (px *px) + ( (m_locP3.x()*m_locP2.y()) / (m_locP3.x()*m_locP2.x() - m_locP2.x()*m_locP2.x())) * px;
@@ -193,9 +193,9 @@ void ParabolicConstraint<DataTypes>::projectPosition(VecCoord& x)
 template <class DataTypes>
 void ParabolicConstraint<DataTypes>::draw()
 {
-    if (!getContext()->getShowBehaviorModels()) return;
+    if (!this->getContext()->getShowBehaviorModels()) return;
 
-    Real dt = (Real) getContext()->getDt();
+    Real dt = (Real) this->getContext()->getDt();
     Real t = m_tEnd.getValue() - m_tBegin.getValue();
     Real nbStep = t/dt;
 

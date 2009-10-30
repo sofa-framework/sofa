@@ -85,6 +85,8 @@ template<class DataTypes>
 class UnilateralInteractionConstraint : public core::componentmodel::behavior::InteractionConstraint
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(UnilateralInteractionConstraint,DataTypes), core::componentmodel::behavior::InteractionConstraint);
+
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::VecConst VecConst;

@@ -55,6 +55,8 @@ template <class DataTypes>
 class FixedLMConstraint :  public core::componentmodel::behavior::LMConstraint<DataTypes,DataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(FixedLMConstraint,DataTypes),SOFA_TEMPLATE2(sofa::core::componentmodel::behavior::LMConstraint, DataTypes, DataTypes));
+
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecDeriv VecDeriv;

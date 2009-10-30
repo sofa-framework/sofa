@@ -421,7 +421,7 @@ void AttachConstraint<DataTypes>::init()
 {
     this->core::componentmodel::behavior::PairInteractionConstraint<DataTypes>::init();
 
-    topology = getContext()->getMeshTopology();
+    topology = this->getContext()->getMeshTopology();
 
     constraintReleased.resize(f_indices2.getValue().size());
 
@@ -689,8 +689,8 @@ void AttachConstraint<DataTypes>::applyConstraint(defaulttype::BaseVector *vect,
 template <class DataTypes>
 void AttachConstraint<DataTypes>::draw()
 {
-    if (!getContext()->
-        getShowBehaviorModels()) return;
+    if (!this->getContext()->getShowBehaviorModels())
+        return;
     const SetIndexArray & indices1 = f_indices1.getValue().getArray();
     const SetIndexArray & indices2 = f_indices2.getValue().getArray();
     VecCoord& x1 = *this->mstate1->getX();

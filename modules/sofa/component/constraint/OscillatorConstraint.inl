@@ -72,7 +72,7 @@ template <class DataTypes>
 void OscillatorConstraint<DataTypes>::projectResponse(VecDeriv& res)
 {
     const helper::vector< Oscillator > &oscillators = constraints.getValue();
-    //Real t = (Real) getContext()->getTime();
+    //Real t = (Real) this->getContext()->getTime();
     for( unsigned i=0; i<oscillators.size(); ++i )
     {
         const unsigned& index = oscillators[i].index;
@@ -89,7 +89,7 @@ template <class DataTypes>
 void OscillatorConstraint<DataTypes>::projectVelocity(VecDeriv& res)
 {
     const helper::vector< Oscillator > &oscillators = constraints.getValue();
-    Real t = (Real) getContext()->getTime();
+    Real t = (Real) this->getContext()->getTime();
     for( unsigned i=0; i<oscillators.size(); ++i )
     {
         const unsigned& index = oscillators[i].index;
@@ -105,7 +105,7 @@ template <class DataTypes>
 void OscillatorConstraint<DataTypes>::projectPosition(VecCoord& res)
 {
     const helper::vector< Oscillator > &oscillators = constraints.getValue();
-    Real t = (Real) getContext()->getTime();
+    Real t = (Real) this->getContext()->getTime();
     //serr<<"OscillatorConstraint<DataTypes>::projectPosition, t = "<<t<<sendl;
     for( unsigned i=0; i<oscillators.size(); ++i )
     {

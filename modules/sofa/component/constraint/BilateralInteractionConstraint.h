@@ -98,6 +98,8 @@ template<class DataTypes>
 class BilateralInteractionConstraint : public core::componentmodel::behavior::InteractionConstraint
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(BilateralInteractionConstraint,DataTypes),sofa::core::componentmodel::behavior::InteractionConstraint);
+
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::VecConst VecConst;

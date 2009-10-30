@@ -48,9 +48,11 @@ using namespace sofa::defaulttype;
 	The DOFs set in the "indices" list follow the computed parabol from "tBegin" to "tEnd".
 	*/
 template <class DataTypes>
-class ParabolicConstraint : public core::componentmodel::behavior::Constraint<DataTypes>, public virtual core::objectmodel::BaseObject
+class ParabolicConstraint : public core::componentmodel::behavior::Constraint<DataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(ParabolicConstraint,DataTypes),SOFA_TEMPLATE(core::componentmodel::behavior::Constraint,DataTypes));
+
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
