@@ -52,10 +52,12 @@ using sofa::core::objectmodel::Event;
 
 template<class DataTypes>
 class VectorSpringForceField
-    : public core::componentmodel::behavior::PairInteractionForceField<DataTypes>, public virtual core::objectmodel::BaseObject
+    : public core::componentmodel::behavior::PairInteractionForceField<DataTypes>
 //: public core::componentmodel::behavior::ForceField<DataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(VectorSpringForceField, DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::PairInteractionForceField, DataTypes));
+
     typedef typename core::componentmodel::behavior::PairInteractionForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
