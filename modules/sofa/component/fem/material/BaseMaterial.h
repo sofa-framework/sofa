@@ -54,6 +54,7 @@ using namespace sofa::defaulttype;
 class BaseMaterial : public virtual core::objectmodel::BaseObject
 {
 public:
+    SOFA_CLASS(BaseMaterial,core::objectmodel::BaseObject);
 
     BaseMaterial();
     virtual ~BaseMaterial() {}
