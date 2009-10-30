@@ -47,32 +47,16 @@ const unsigned int edgesInHexahedronArray[12][2]= {{0,1},{0,3},{0,4},{1,2},{1,5}
 
 HexahedronSetTopologyContainer::HexahedronSetTopologyContainer()
     : QuadSetTopologyContainer()
-    , d_hexahedron(initDataPtr(&d_hexahedron, &m_hexahedron, "hexahedra", "List of hexahedron indices"))
+    , d_hexahedron(initData(&d_hexahedron, "hexahedra", "List of hexahedron indices"))
 {
     addAlias(&d_hexahedron, "hexas");
 }
 
-HexahedronSetTopologyContainer::HexahedronSetTopologyContainer(const sofa::helper::vector< Hexahedron > &hexahedra )
-    : QuadSetTopologyContainer()
-    , m_hexahedron( hexahedra )
-    , d_hexahedron(initDataPtr(&d_hexahedron, &m_hexahedron, "hexahedra", "List of hexahedron indices"))
-{
-    addAlias(&d_hexahedron, "hexas");
-    for (unsigned int i=0; i<m_hexahedron.size(); ++i)
-    {
-        for(unsigned int j=0; j<8; ++j)
-        {
-            int a = m_hexahedron[i][j];
-            if (a >= getNbPoints()) nbPoints.setValue(a+1);
-        }
-    }
-}
 
 void HexahedronSetTopologyContainer::addHexa( int a, int b, int c, int d, int e, int f, int g, int h )
 {
-    d_hexahedron.beginEdit();
+    helper::WriteAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
     m_hexahedron.push_back(Hexahedron(a,b,c,d,e,f,g,h));
-    d_hexahedron.endEdit();
     if (a >= getNbPoints()) nbPoints.setValue(a+1);
     if (b >= getNbPoints()) nbPoints.setValue(b+1);
     if (c >= getNbPoints()) nbPoints.setValue(c+1);
@@ -92,10 +76,11 @@ void HexahedronSetTopologyContainer::init()
 void HexahedronSetTopologyContainer::loadFromMeshLoader(sofa::component::container::MeshLoader* loader)
 {
     // load points
+    helper::ReadAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
     if (!m_hexahedron.empty()) return;
     PointSetTopologyContainer::loadFromMeshLoader(loader);
-    d_hexahedron.beginEdit();
-    loader->getHexahedra(m_hexahedron);
+
+    loader->getHexahedra(*(d_hexahedron.beginEdit()));
     d_hexahedron.endEdit();
 }
 
@@ -108,7 +93,7 @@ void HexahedronSetTopologyContainer::createHexahedronSetArray()
 
 void HexahedronSetTopologyContainer::createEdgeSetArray()
 {
-    d_edge.beginEdit();
+
     if(hasEdges())
     {
         EdgeSetTopologyContainer::clear();
@@ -122,11 +107,13 @@ void HexahedronSetTopologyContainer::createEdgeSetArray()
 
     // create a temporary map to find redundant edges
     std::map<Edge,unsigned int> edgeMap;
+    helper::WriteAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
+    helper::ReadAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
 
     /// create the m_edge array at the same time than it fills the m_edgesInHexahedron array
     for(unsigned int i=0; i<m_hexahedron.size(); ++i)
     {
-        Hexahedron &t = m_hexahedron[i];
+        const Hexahedron &t = m_hexahedron[i];
         for(unsigned int j=0; j<12; ++j)
         {
             unsigned int v1 = t[edgesInHexahedronArray[j][0]];
@@ -142,7 +129,6 @@ void HexahedronSetTopologyContainer::createEdgeSetArray()
             }
         }
     }
-    d_edge.endEdit();
 }
 
 void HexahedronSetTopologyContainer::createEdgesInHexahedronArray()
@@ -154,10 +140,11 @@ void HexahedronSetTopologyContainer::createEdgesInHexahedronArray()
         clearEdgesInHexahedron();
 
     m_edgesInHexahedron.resize( getNumberOfHexahedra());
+    helper::ReadAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
 
     for(unsigned int i=0; i<m_hexahedron.size(); ++i)
     {
-        Hexahedron &t = m_hexahedron[i];
+        const Hexahedron &t = m_hexahedron[i];
 
         // adding edge i in the edge shell of both points
         for(unsigned int j=0; j<12; ++j)
@@ -182,10 +169,12 @@ void HexahedronSetTopologyContainer::createQuadSetArray()
 
     // create a temporary map to find redundant quads
     std::map<Quad,unsigned int> quadMap;
+    helper::WriteAccessor< Data< sofa::helper::vector<Quad> > > m_quad = d_quad;
+    helper::ReadAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
 
     for(unsigned int i=0; i<m_hexahedron.size(); ++i)
     {
-        Hexahedron &h = m_hexahedron[i];
+        const Hexahedron &h = m_hexahedron[i];
 
         unsigned int v[4], val;
 
@@ -360,10 +349,11 @@ void HexahedronSetTopologyContainer::createQuadsInHexahedronArray()
         clearQuadsInHexahedron();
 
     m_quadsInHexahedron.resize( getNumberOfHexahedra());
+    helper::ReadAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
 
-    for(unsigned int i = 0; i < m_hexahedron.size(); ++i)
+    for(unsigned int i = 0; i < getNumberOfHexahedra(); ++i)
     {
-        Hexahedron &h=m_hexahedron[i];
+        const Hexahedron &h=m_hexahedron[i];
         int quadIndex;
 
         // adding the 6 quads in the quad list of the ith hexahedron  i
@@ -400,6 +390,7 @@ void HexahedronSetTopologyContainer::createHexahedraAroundVertexArray()
         clearHexahedraAroundVertex();
 
     m_hexahedraAroundVertex.resize( getNbPoints() );
+    helper::ReadAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
 
     for(unsigned int i=0; i<m_hexahedron.size(); ++i)
     {
@@ -419,7 +410,7 @@ void HexahedronSetTopologyContainer::createHexahedraAroundEdgeArray ()
 
     m_hexahedraAroundEdge.resize(getNumberOfEdges());
 
-    for(unsigned int i=0; i<m_hexahedron.size(); ++i)
+    for(unsigned int i=0; i<getNumberOfHexahedra(); ++i)
     {
         // adding edge i in the edge shell
         for(unsigned int j=0; j<12; ++j)
@@ -439,7 +430,7 @@ void HexahedronSetTopologyContainer::createHexahedraAroundQuadArray()
 
     m_hexahedraAroundQuad.resize( getNumberOfQuads());
 
-    for(unsigned int i=0; i<m_hexahedron.size(); ++i)
+    for(unsigned int i=0; i<getNumberOfHexahedra(); ++i)
     {
         // adding quad i in the edge shell of both points
         for(unsigned int j=0; j<6; ++j)
@@ -459,7 +450,7 @@ const sofa::helper::vector<Hexahedron> &HexahedronSetTopologyContainer::getHexah
         createHexahedronSetArray();
     }
 
-    return m_hexahedron;
+    return d_hexahedron.getValue ();
 }
 
 int HexahedronSetTopologyContainer::getHexahedronIndex(PointID v1, PointID v2, PointID v3, PointID v4,
@@ -534,12 +525,12 @@ const Hexahedron HexahedronSetTopologyContainer::getHexahedron(HexaID i)
     if(!hasHexahedra())
         createHexahedronSetArray();
 
-    return m_hexahedron[i];
+    return (d_hexahedron.getValue())[i];
 }
 
 unsigned int HexahedronSetTopologyContainer::getNumberOfHexahedra() const
 {
-    return m_hexahedron.size();
+    return (d_hexahedron.getValue()).size();
 }
 
 const sofa::helper::vector< sofa::helper::vector<unsigned int> > &HexahedronSetTopologyContainer::getHexahedraAroundVertexArray()
@@ -830,7 +821,7 @@ bool HexahedronSetTopologyContainer::checkTopology() const
 bool HexahedronSetTopologyContainer::hasHexahedra() const
 {
     d_hexahedron.updateIfDirty();
-    return !m_hexahedron.empty();
+    return !(d_hexahedron.getValue()).empty();
 }
 
 bool HexahedronSetTopologyContainer::hasEdgesInHexahedron() const
@@ -860,9 +851,8 @@ bool HexahedronSetTopologyContainer::hasHexahedraAroundQuad() const
 
 void HexahedronSetTopologyContainer::clearHexahedra()
 {
-    d_hexahedron.beginEdit();
+    helper::WriteAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
     m_hexahedron.clear();
-    d_hexahedron.endEdit();
 }
 
 void HexahedronSetTopologyContainer::clearEdgesInHexahedron()

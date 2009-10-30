@@ -89,6 +89,8 @@ void QuadSetTopologyModifier::addQuadProcess(Quad t)
         }
     }
 
+    helper::WriteAccessor< Data< sofa::helper::vector<Quad> > > m_quad = m_container->d_quad;
+
     if(m_container->hasEdges())
     {
         for(unsigned int j=0; j<4; ++j)
@@ -124,13 +126,14 @@ void QuadSetTopologyModifier::addQuadProcess(Quad t)
         }
     }
 
-    m_container->m_quad.push_back(t);
+    m_quad.push_back(t);
 }
 
 
 void QuadSetTopologyModifier::addQuadsProcess(const sofa::helper::vector< Quad > &quads)
 {
-    m_container->m_quad.reserve(m_container->m_quad.size() + quads.size());
+    helper::WriteAccessor< Data< sofa::helper::vector<Quad> > > m_quad = m_container->d_quad;
+    m_quad.reserve(m_quad.size() + quads.size());
 
     for(unsigned int i=0; i<quads.size(); ++i)
     {
@@ -201,12 +204,13 @@ void QuadSetTopologyModifier::removeQuadsProcess(const sofa::helper::vector<unsi
 
     sofa::helper::vector<unsigned int> edgeToBeRemoved;
     sofa::helper::vector<unsigned int> vertexToBeRemoved;
+    helper::WriteAccessor< Data< sofa::helper::vector<Quad> > > m_quad = m_container->d_quad;
 
     unsigned int lastQuad = m_container->getNumberOfQuads() - 1;
     for(unsigned int i=0; i<indices.size(); ++i, --lastQuad)
     {
-        Quad &t = m_container->m_quad[ indices[i] ];
-        Quad &q = m_container->m_quad[ lastQuad ];
+        const Quad &t = m_quad[ indices[i] ];
+        const Quad &q = m_quad[ lastQuad ];
 
         // first check that the quad vertex shell array has been initialized
         if(m_container->hasQuadsAroundVertex())
@@ -261,8 +265,8 @@ void QuadSetTopologyModifier::removeQuadsProcess(const sofa::helper::vector<unsi
         }
 
         // removes the quad from the quadArray
-        m_container->m_quad[ indices[i] ] = m_container->m_quad[ lastQuad ]; // overwriting with last valid value.
-        m_container->m_quad.resize( lastQuad ); // resizing to erase multiple occurence of the quad.
+        m_quad[ indices[i] ] = m_quad[ lastQuad ]; // overwriting with last valid value.
+        m_quad.resize( lastQuad ); // resizing to erase multiple occurence of the quad.
     }
 
     if(!edgeToBeRemoved.empty())
@@ -316,6 +320,8 @@ void QuadSetTopologyModifier::removePointsProcess( sofa::helper::vector<unsigned
             m_container->createQuadsAroundVertexArray();
 
         unsigned int lastPoint = m_container->getNbPoints() - 1;
+        helper::WriteAccessor< Data< sofa::helper::vector<Quad> > > m_quad = m_container->d_quad;
+
         for(unsigned int i=0; i<indices.size(); ++i, --lastPoint)
         {
             // updating the quads connected to the point replacing the removed one:
@@ -327,8 +333,8 @@ void QuadSetTopologyModifier::removePointsProcess( sofa::helper::vector<unsigned
                 const unsigned int q = shell[j];
                 for(unsigned int k=0; k<4; ++k)
                 {
-                    if(m_container->m_quad[q][k] == lastPoint)
-                        m_container->m_quad[q][k] = indices[i];
+                    if(m_quad[q][k] == lastPoint)
+                        m_quad[q][k] = indices[i];
                 }
             }
 
@@ -383,6 +389,8 @@ void QuadSetTopologyModifier::renumberPointsProcess( const sofa::helper::vector<
 {
     if(m_container->hasQuads())
     {
+        helper::WriteAccessor< Data< sofa::helper::vector<Quad> > > m_quad = m_container->d_quad;
+
         if(m_container->hasQuadsAroundVertex())
         {
             sofa::helper::vector< sofa::helper::vector< unsigned int > > quadsAroundVertex_cp = m_container->m_quadsAroundVertex;
@@ -392,12 +400,12 @@ void QuadSetTopologyModifier::renumberPointsProcess( const sofa::helper::vector<
             }
         }
 
-        for(unsigned int i=0; i<m_container->m_quad.size(); ++i)
+        for(unsigned int i=0; i<m_quad.size(); ++i)
         {
-            m_container->m_quad[i][0]  = inv_index[ m_container->m_quad[i][0]  ];
-            m_container->m_quad[i][1]  = inv_index[ m_container->m_quad[i][1]  ];
-            m_container->m_quad[i][2]  = inv_index[ m_container->m_quad[i][2]  ];
-            m_container->m_quad[i][3]  = inv_index[ m_container->m_quad[i][3]  ];
+            m_quad[i][0]  = inv_index[ m_quad[i][0]  ];
+            m_quad[i][1]  = inv_index[ m_quad[i][1]  ];
+            m_quad[i][2]  = inv_index[ m_quad[i][2]  ];
+            m_quad[i][3]  = inv_index[ m_quad[i][3]  ];
         }
     }
 

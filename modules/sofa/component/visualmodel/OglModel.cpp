@@ -72,6 +72,8 @@ OglModel::~OglModel()
 
 void OglModel::internalDraw()
 {
+
+    field_vtexcoords.updateIfDirty();
     //serr<<" OglModel::internalDraw()"<<sendl;
     if (!getContext()->getShowVisualModels()) return;
 

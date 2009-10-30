@@ -70,6 +70,7 @@ void HexahedronSetTopologyModifier::addHexahedronProcess(Hexahedron t)
     assert(m_container->getHexahedronIndex(t[0],t[1],t[2],t[3],t[4],t[5],t[6],t[7])== -1);
 #endif
     const unsigned int hexahedronIndex = m_container->getNumberOfHexahedra();
+    helper::WriteAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = m_container->d_hexahedron;
 
     if(m_container->hasQuadsInHexahedron())
     {
@@ -235,7 +236,7 @@ void HexahedronSetTopologyModifier::addHexahedronProcess(Hexahedron t)
         }
     }
 
-    m_container->m_hexahedron.push_back(t);
+    m_hexahedron.push_back(t);
 }
 
 
@@ -314,10 +315,13 @@ void HexahedronSetTopologyModifier::removeHexahedraProcess( const sofa::helper::
     sofa::helper::vector<unsigned int> vertexToBeRemoved;
 
     unsigned int lastHexahedron = m_container->getNumberOfHexahedra() - 1;
+
+    helper::WriteAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = m_container->d_hexahedron;
+
     for(unsigned int i=0; i<indices.size(); ++i, --lastHexahedron)
     {
-        Hexahedron &t = m_container->m_hexahedron[ indices[i] ];
-        Hexahedron &h = m_container->m_hexahedron[ lastHexahedron ];
+        const Hexahedron &t = m_hexahedron[ indices[i] ];
+        const Hexahedron &h = m_hexahedron[ lastHexahedron ];
 
         if(m_container->hasHexahedraAroundVertex())
         {
@@ -398,8 +402,8 @@ void HexahedronSetTopologyModifier::removeHexahedraProcess( const sofa::helper::
         }
 
         // removes the hexahedron from the hexahedronArray
-        m_container->m_hexahedron[ indices[i] ] = m_container->m_hexahedron[ lastHexahedron ]; // overwriting with last valid value.
-        m_container->m_hexahedron.resize( lastHexahedron ); // resizing to erase multiple occurence of the hexa.
+        m_hexahedron[ indices[i] ] = m_hexahedron[ lastHexahedron ]; // overwriting with last valid value.
+        m_hexahedron.resize( lastHexahedron ); // resizing to erase multiple occurence of the hexa.
     }
 
     if( (!quadToBeRemoved.empty()) || (!edgeToBeRemoved.empty()))
@@ -476,6 +480,8 @@ void HexahedronSetTopologyModifier::removePointsProcess( sofa::helper::vector<un
             m_container->createHexahedraAroundVertexArray();
         }
 
+        helper::WriteAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = m_container->d_hexahedron;
+
         unsigned int lastPoint = m_container->getNbPoints() - 1;
         for(unsigned int i = 0; i < indices.size(); ++i, --lastPoint)
         {
@@ -484,8 +490,8 @@ void HexahedronSetTopologyModifier::removePointsProcess( sofa::helper::vector<un
             for(sofa::helper::vector<unsigned int>::iterator itt=m_container->m_hexahedraAroundVertex[lastPoint].begin();
                 itt!=m_container->m_hexahedraAroundVertex[lastPoint].end(); ++itt)
             {
-                unsigned int vertexIndex = m_container->getVertexIndexInHexahedron(m_container->m_hexahedron[*itt], lastPoint);
-                m_container->m_hexahedron[*itt][ vertexIndex] = indices[i];
+                unsigned int vertexIndex = m_container->getVertexIndexInHexahedron(m_hexahedron[*itt], lastPoint);
+                m_hexahedron[*itt][ vertexIndex] = indices[i];
             }
 
             // updating the edge shell itself (change the old index for the new one)
@@ -577,16 +583,18 @@ void HexahedronSetTopologyModifier::renumberPointsProcess( const sofa::helper::v
             }
         }
 
-        for(unsigned int i=0; i<m_container->m_hexahedron.size(); ++i)
+        helper::WriteAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = m_container->d_hexahedron;
+
+        for(unsigned int i=0; i<m_hexahedron.size(); ++i)
         {
-            m_container->m_hexahedron[i][0]  = inv_index[ m_container->m_hexahedron[i][0]  ];
-            m_container->m_hexahedron[i][1]  = inv_index[ m_container->m_hexahedron[i][1]  ];
-            m_container->m_hexahedron[i][2]  = inv_index[ m_container->m_hexahedron[i][2]  ];
-            m_container->m_hexahedron[i][3]  = inv_index[ m_container->m_hexahedron[i][3]  ];
-            m_container->m_hexahedron[i][4]  = inv_index[ m_container->m_hexahedron[i][4]  ];
-            m_container->m_hexahedron[i][5]  = inv_index[ m_container->m_hexahedron[i][5]  ];
-            m_container->m_hexahedron[i][6]  = inv_index[ m_container->m_hexahedron[i][6]  ];
-            m_container->m_hexahedron[i][7]  = inv_index[ m_container->m_hexahedron[i][7]  ];
+            m_hexahedron[i][0]  = inv_index[ m_hexahedron[i][0]  ];
+            m_hexahedron[i][1]  = inv_index[ m_hexahedron[i][1]  ];
+            m_hexahedron[i][2]  = inv_index[ m_hexahedron[i][2]  ];
+            m_hexahedron[i][3]  = inv_index[ m_hexahedron[i][3]  ];
+            m_hexahedron[i][4]  = inv_index[ m_hexahedron[i][4]  ];
+            m_hexahedron[i][5]  = inv_index[ m_hexahedron[i][5]  ];
+            m_hexahedron[i][6]  = inv_index[ m_hexahedron[i][6]  ];
+            m_hexahedron[i][7]  = inv_index[ m_hexahedron[i][7]  ];
         }
     }
 

@@ -60,14 +60,6 @@ ManifoldTetrahedronSetTopologyContainer::ManifoldTetrahedronSetTopologyContainer
 {
 }
 
-ManifoldTetrahedronSetTopologyContainer::ManifoldTetrahedronSetTopologyContainer(const sofa::helper::vector< Tetrahedron >& tetrahedra )
-    : TetrahedronSetTopologyContainer( tetrahedra)
-    , debugViewIndices( initData(&debugViewIndices, (bool) false, "debugViewTriangleIndices", "Debug : view triangles indices") )
-    , debugViewIndicesTetra( initData(&debugViewIndicesTetra, (bool) false, "debugViewTetraIndices", "Debug : view tetra indices") )
-    , shellDisplay( initData(&shellDisplay, (bool) false, "debugViewShells", "Debug : view shells tetra"))
-{
-}
-
 
 void ManifoldTetrahedronSetTopologyContainer::reinit()
 {
@@ -130,7 +122,7 @@ void ManifoldTetrahedronSetTopologyContainer::createTetrahedraAroundEdgeArray ()
 
     // Creating Tetrahedrons edges shell unordered
     TetrahedronSetTopologyContainer::createTetrahedraAroundEdgeArray();
-
+    helper::ReadAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
     //	for (unsigned int i = 0; i < m_tetrahedraAroundEdge.size(); i++)
     //  std::cout << i << " => " << m_tetrahedraAroundEdge[i] << std::endl;
 
@@ -274,7 +266,8 @@ void ManifoldTetrahedronSetTopologyContainer::createTetrahedraAroundTriangleArra
     // at most 2 tetrahedrons adjacent to one triangle.
 
     TetrahedronSetTopologyContainer::createTetrahedraAroundTriangleArray();
-
+    helper::ReadAccessor< Data< sofa::helper::vector<Tetrahedron> > > m_tetrahedron = d_tetrahedron;
+    helper::ReadAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = d_triangle;
     //	for (unsigned int i = 0; i <m_tetrahedraAroundTriangle.size();i++)
     // std::cout << i << " old => " << m_tetrahedraAroundTriangle[i] << std::endl;
 

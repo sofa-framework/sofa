@@ -52,12 +52,6 @@ ManifoldTriangleSetTopologyContainer::ManifoldTriangleSetTopologyContainer()
 
 
 
-ManifoldTriangleSetTopologyContainer::ManifoldTriangleSetTopologyContainer(const sofa::helper::vector< Triangle > &triangles )
-    : TriangleSetTopologyContainer(triangles)
-{
-}
-
-
 
 bool ManifoldTriangleSetTopologyContainer::checkTopology() const
 {
@@ -262,8 +256,6 @@ void ManifoldTriangleSetTopologyContainer::init()
 void ManifoldTriangleSetTopologyContainer::createEdgeSetArray()
 {
 
-    d_edge.beginEdit();
-
     if(!hasTriangles()) // this method should only be called when triangles exist
     {
 #ifndef NDEBUG
@@ -291,6 +283,8 @@ void ManifoldTriangleSetTopologyContainer::createEdgeSetArray()
 
     // create a temporary map to find redundant edges
     std::map<Edge, unsigned int> edgeMap;
+    helper::WriteAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
+    helper::ReadAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = d_triangle;
 
     for (unsigned int i=0; i<m_triangle.size(); ++i)
     {
@@ -315,7 +309,6 @@ void ManifoldTriangleSetTopologyContainer::createEdgeSetArray()
         }
     }
 
-    d_edge.endEdit();
 }
 
 
@@ -358,6 +351,7 @@ void ManifoldTriangleSetTopologyContainer::createEdgesAroundVertexArray()
     std::multimap<unsigned int, unsigned int>::iterator it_multimap;
     std::map<unsigned int, unsigned int>::iterator it_map;
 
+    helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
 
     m_edgesAroundVertex.resize(nbrVertices);
     map_Adjacents.resize(nbrVertices);
@@ -590,7 +584,8 @@ void ManifoldTriangleSetTopologyContainer::createTrianglesAroundEdgeArray()
     std::multimap<unsigned int, unsigned int> map_edgesInTriangle;
     std::multimap<unsigned int, unsigned int>::iterator it;
     std::pair< std::multimap <unsigned int, unsigned int>::iterator, std::multimap <unsigned int, unsigned int>::iterator> pair_equal_range;
-
+    helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
+    helper::ReadAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = d_triangle;
 
     m_trianglesAroundEdge.resize(nbrEdges);
 
@@ -679,7 +674,7 @@ int ManifoldTriangleSetTopologyContainer::getNextTrianglesAroundVertex(PointID v
         return -2;
     }
 
-    if( triangleIndex >= m_triangle.size())
+    if( triangleIndex >= (d_triangle.getValue()).size())
     {
 #ifndef NDEBUG
         std::cout << "Error. [ManifoldTriangleSetTopologyContainer::getNextTrianglesAroundVertex] Triangle index out of bounds." << std::endl;
@@ -752,7 +747,7 @@ int ManifoldTriangleSetTopologyContainer::getPreviousTrianglesAroundVertex(Point
         return -2;
     }
 
-    if( triangleIndex >= m_triangle.size())
+    if( triangleIndex >= (d_triangle.getValue()).size())
     {
 #ifndef NDEBUG
         std::cout << "Error. [ManifoldTriangleSetTopologyContainer::getPreviousTrianglesAroundVertex] Triangle index out of bounds." << std::endl;
@@ -825,7 +820,7 @@ int ManifoldTriangleSetTopologyContainer::getOppositeTrianglesAroundEdge(EdgeID 
         return -2;
     }
 
-    if (triangleIndex >= m_triangle.size())
+    if (triangleIndex >= (d_triangle.getValue()).size())
     {
 #ifndef NDEBUG
         std::cout << "Error. [ManifoldTriangleSetTopologyContainer::getNextTrianglesAroundVertex] Triangle index out of bounds." << std::endl;
@@ -871,6 +866,9 @@ int ManifoldTriangleSetTopologyContainer::getOppositeTrianglesAroundEdge(EdgeID 
 
 int ManifoldTriangleSetTopologyContainer::getNextEdgesAroundVertex(PointID vertexIndex, EdgeID edgeIndex)
 {
+
+    helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
+    helper::ReadAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = d_triangle;
 
     if(!hasEdgesAroundVertex())	// this method should only be called when the shell array exists
     {
@@ -967,6 +965,8 @@ int ManifoldTriangleSetTopologyContainer::getNextEdgesAroundVertex(PointID verte
 
 int ManifoldTriangleSetTopologyContainer::getPreviousEdgesAroundVertex(PointID vertexIndex, EdgeID edgeIndex)
 {
+    helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
+    helper::ReadAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = d_triangle;
 
     if(!hasEdgesAroundVertex())	// this method should only be called when the shell array exists
     {

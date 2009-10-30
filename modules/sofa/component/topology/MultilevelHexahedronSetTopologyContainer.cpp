@@ -54,12 +54,6 @@ MultilevelHexahedronSetTopologyContainer::MultilevelHexahedronSetTopologyContain
       _coarseResolution(0,0,0)
 { }
 
-MultilevelHexahedronSetTopologyContainer::MultilevelHexahedronSetTopologyContainer(const sofa::helper::vector< Hexahedron > &hexahedra )
-    : HexahedronSetTopologyContainer(hexahedra),
-      _level(initData(&_level, 0, "level", "Number of resolution levels between the fine and coarse mesh")),
-      _fineResolution(0,0,0),
-      _coarseResolution(0,0,0)
-{ }
 
 MultilevelHexahedronSetTopologyContainer::~MultilevelHexahedronSetTopologyContainer()
 {
@@ -79,8 +73,10 @@ void MultilevelHexahedronSetTopologyContainer::loadFromMeshLoader(sofa::componen
     {
         // load points
         PointSetTopologyContainer::loadFromMeshLoader(loader);
+        helper::ReadAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
+        rgLoader->getHexahedra(*(d_hexahedron.beginEdit()));
+        d_hexahedron.endEdit();
 
-        rgLoader->getHexahedra(m_hexahedron);
         helper::vector<unsigned int> hexaIndexInRegularGrid;
         rgLoader->getIndicesInRegularGrid(hexaIndexInRegularGrid);
 
@@ -182,6 +178,7 @@ void MultilevelHexahedronSetTopologyContainer::getHexaVertexNeighbors(const unsi
         const unsigned int vertexId,
         helper::vector<unsigned int> &neighbors)
 {
+    helper::ReadAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
     const sofa::helper::vector< unsigned int > &vertexShell = getHexahedraAroundVertex(m_hexahedron[hexa][vertexId]);
 
     neighbors.clear();

@@ -51,41 +51,23 @@ int TriangleSetTopologyContainerClass = core::RegisterObject("Triangle set topol
 
 TriangleSetTopologyContainer::TriangleSetTopologyContainer()
     : EdgeSetTopologyContainer()
-    , d_triangle(initDataPtr(&d_triangle, &m_triangle, "triangles", "List of triangle indices"))
+    , d_triangle(initData(&d_triangle, "triangles", "List of triangle indices"))
 {
 
 }
 
-TriangleSetTopologyContainer::TriangleSetTopologyContainer(const sofa::helper::vector< Triangle > &triangles )
-    : EdgeSetTopologyContainer()
-    , m_triangle( triangles )
-    , d_triangle(initDataPtr(&d_triangle, &m_triangle, "triangles", "List of triangle indices"))
-{
-
-    serr << getNbPoints() << "Constructor" << sendl;
-    for (unsigned int i=0; i<m_triangle.size(); ++i)
-    {
-        for(unsigned int j=0; j<3; ++j)
-        {
-            int a = m_triangle[i][j];
-            if (a >= getNbPoints())
-                nbPoints.setValue(a+1);
-        }
-    }
-
-    serr << "Constructor" << sendl;
-}
 
 void TriangleSetTopologyContainer::addTriangle( int a, int b, int c )
 {
-    d_triangle.beginEdit();
+    helper::WriteAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = d_triangle;
     m_triangle.push_back(Triangle(a,b,c));
-    d_triangle.endEdit();
     if (a >= getNbPoints()) nbPoints.setValue(a+1);
     if (b >= getNbPoints()) nbPoints.setValue(b+1);
     if (c >= getNbPoints()) nbPoints.setValue(c+1);
 
+#ifndef NDEBUG
     sout << "ADD TRIANGLE" << sendl;
+#endif
 }
 
 void TriangleSetTopologyContainer::init()
@@ -97,11 +79,11 @@ void TriangleSetTopologyContainer::init()
 void TriangleSetTopologyContainer::loadFromMeshLoader(sofa::component::container::MeshLoader* loader)
 {
     // load points
+    helper::ReadAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = d_triangle;
     if (m_triangle.empty())
     {
         PointSetTopologyContainer::loadFromMeshLoader(loader);
-        d_triangle.beginEdit();
-        loader->getTriangles(m_triangle);
+        loader->getTriangles(*(d_triangle.beginEdit()));
         d_triangle.endEdit();
     }
 }
@@ -129,6 +111,7 @@ void TriangleSetTopologyContainer::createTrianglesAroundVertexArray ()
     }
 
     m_trianglesAroundVertex.resize( getNbPoints() );
+    helper::ReadAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = d_triangle;
 
     for (unsigned int i = 0; i < m_triangle.size(); ++i)
     {
@@ -181,7 +164,7 @@ void TriangleSetTopologyContainer::createTrianglesAroundEdgeArray ()
 
 void TriangleSetTopologyContainer::createEdgeSetArray()
 {
-    d_edge.beginEdit();
+
     if(!hasTriangles()) // this method should only be called when triangles exist
     {
 #ifndef NDEBUG
@@ -208,6 +191,8 @@ void TriangleSetTopologyContainer::createEdgeSetArray()
 
     // create a temporary map to find redundant edges
     std::map<Edge, unsigned int> edgeMap;
+    helper::WriteAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
+    helper::ReadAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = d_triangle;
 
     for (unsigned int i=0; i<m_triangle.size(); ++i)
     {
@@ -229,7 +214,6 @@ void TriangleSetTopologyContainer::createEdgeSetArray()
             }
         }
     }
-    d_edge.endEdit();
 }
 
 void TriangleSetTopologyContainer::createEdgesInTriangleArray()
@@ -246,6 +230,8 @@ void TriangleSetTopologyContainer::createEdgesInTriangleArray()
     if(hasEdgesInTriangle())
         clearEdgesInTriangle();
 
+    helper::ReadAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = d_triangle;
+
     if(!hasEdges()) // To optimize, this method should be called without creating edgesArray before.
     {
 #ifndef NDEBUG
@@ -256,9 +242,10 @@ void TriangleSetTopologyContainer::createEdgesInTriangleArray()
         const unsigned int numTriangles = getNumberOfTriangles();
         m_edgesInTriangle.resize(numTriangles);
 
-        d_edge.beginEdit();
+
         // create a temporary map to find redundant edges
         std::map<Edge, unsigned int> edgeMap;
+        helper::WriteAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
 
         for (unsigned int i=0; i<m_triangle.size(); ++i)
         {
@@ -282,12 +269,11 @@ void TriangleSetTopologyContainer::createEdgesInTriangleArray()
                 m_edgesInTriangle[i][j] = edgeMap[e];
             }
         }
-        d_edge.endEdit();
     }
     else
     {
         /// there are already existing edges : must use an inefficient method. Parse all triangles and find the edge that match each triangle edge
-
+        helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
         const unsigned int numTriangles = getNumberOfTriangles();
         const unsigned int numEdges = getNumberOfEdges();
 
@@ -305,7 +291,7 @@ void TriangleSetTopologyContainer::createEdgesInTriangleArray()
 
         for(unsigned int i=0; i<numTriangles; ++i)
         {
-            Triangle &t = m_triangle[i];
+            const Triangle &t = m_triangle[i];
             // adding edge i in the edge shell of both points
             for(unsigned int j=0; j<3; ++j)
             {
@@ -359,7 +345,7 @@ void TriangleSetTopologyContainer::createElementsOnBorder()
     bool newEdge = true;
     bool newPoint = true;
 
-
+    helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
     for (unsigned int i = 0; i < nbrEdges; i++)
     {
         if (m_trianglesAroundEdge[i].size() == 1) // I.e this edge is on a border
@@ -432,7 +418,7 @@ const sofa::helper::vector<Triangle> & TriangleSetTopologyContainer::getTriangle
         createTriangleSetArray();
     }
 
-    return m_triangle;
+    return d_triangle.getValue();
 }
 
 
@@ -441,7 +427,7 @@ const Triangle TriangleSetTopologyContainer::getTriangle (TriangleID i)
     if(!hasTriangles())
         createTriangleSetArray();
 
-    return m_triangle[i];
+    return (d_triangle.getValue())[i];
 }
 
 
@@ -483,7 +469,7 @@ int TriangleSetTopologyContainer::getTriangleIndex(PointID v1, PointID v2, Point
 
 unsigned int TriangleSetTopologyContainer::getNumberOfTriangles() const
 {
-    return m_triangle.size();
+    return (d_triangle.getValue()).size();
 }
 
 const sofa::helper::vector< sofa::helper::vector<unsigned int> > &TriangleSetTopologyContainer::getTrianglesAroundVertexArray()
@@ -690,6 +676,7 @@ bool TriangleSetTopologyContainer::checkTopology() const
 
 #ifndef NDEBUG
     bool ret = true;
+    helper::ReadAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = d_triangle;
 
     if (hasTrianglesAroundVertex())
     {
@@ -771,7 +758,7 @@ bool TriangleSetTopologyContainer::checkTopology() const
 bool TriangleSetTopologyContainer::hasTriangles() const
 {
     d_triangle.updateIfDirty();
-    return !m_triangle.empty();
+    return !(d_triangle.getValue()).empty();
 }
 
 bool TriangleSetTopologyContainer::hasEdgesInTriangle() const
@@ -820,9 +807,9 @@ void TriangleSetTopologyContainer::clearEdgesInTriangle()
 
 void TriangleSetTopologyContainer::clearTriangles()
 {
-    d_triangle.beginEdit();
+    helper::WriteAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = d_triangle;
     m_triangle.clear();
-    d_triangle.endEdit();
+
 }
 
 void TriangleSetTopologyContainer::clearBorderElementLists()
