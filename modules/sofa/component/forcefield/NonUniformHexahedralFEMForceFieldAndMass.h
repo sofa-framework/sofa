@@ -102,10 +102,6 @@ public:
 
 public:
 
-    using HexahedralFEMForceFieldAndMass<DataTypes>::serr;
-    using HexahedralFEMForceFieldAndMass<DataTypes>::sout;
-    using HexahedralFEMForceFieldAndMass<DataTypes>::sendl;
-
     NonUniformHexahedralFEMForceFieldAndMass();
 
     virtual void init();
