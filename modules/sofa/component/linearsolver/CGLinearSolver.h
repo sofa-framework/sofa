@@ -51,9 +51,11 @@ using sofa::helper::system::thread::CTime;
 
 /// Linear system solver using the conjugate gradient iterative algorithm
 template<class TMatrix, class TVector>
-class SOFA_COMPONENT_LINEARSOLVER_API CGLinearSolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector>, public virtual sofa::core::objectmodel::BaseObject
+class SOFA_COMPONENT_LINEARSOLVER_API CGLinearSolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE2(CGLinearSolver,TMatrix,TVector),SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver,TMatrix,TVector));
+
     typedef TMatrix Matrix;
     typedef TVector Vector;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
@@ -108,7 +110,7 @@ public:
         Vector& q = *this->createVector();
         Vector& r = *this->createVector();
 
-        const bool printLog = f_printLog.getValue();
+        const bool printLog = this->f_printLog.getValue();
         const bool verbose  = f_verbose.getValue();
 
         // -- solve the system using a conjugate gradient solution

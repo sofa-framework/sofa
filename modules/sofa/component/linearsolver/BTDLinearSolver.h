@@ -45,6 +45,7 @@ template<int N, typename T>
 class BlocFullMatrix : public defaulttype::BaseMatrix
 {
 public:
+
     enum { BSIZE = N };
     typedef T Real;
     typedef int Index;
@@ -766,9 +767,11 @@ public:
 /// http://www.cfd-online.com/Wiki/Tridiagonal_matrix_algorithm_-_TDMA_(Thomas_algorithm)
 /// http://www4.ncsu.edu/eos/users/w/white/www/white/ma580/chap2.5.PDF
 template<class Matrix, class Vector>
-class BTDLinearSolver : public sofa::component::linearsolver::MatrixLinearSolver<Matrix,Vector>, public virtual sofa::core::objectmodel::BaseObject
+class BTDLinearSolver : public sofa::component::linearsolver::MatrixLinearSolver<Matrix,Vector>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE2(BTDLinearSolver, Matrix, Vector), SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver, Matrix, Vector));
+
     Data<bool> f_verbose;
     Data<bool> problem;
     Data<bool> subpartSolve;
@@ -906,7 +909,7 @@ public:
     }
     void invert(Matrix& M)
     {
-        const bool verbose  = f_verbose.getValue() || f_printLog.getValue();
+        const bool verbose  = this->f_verbose.getValue() || this->f_printLog.getValue();
 
         if( verbose )
         {
@@ -1145,7 +1148,7 @@ public:
     /// Solve Mx=b
     void solve (Matrix& /*M*/, Vector& x, Vector& b)
     {
-        const bool verbose  = f_verbose.getValue() || f_printLog.getValue();
+        const bool verbose  = this->f_verbose.getValue() || this->f_printLog.getValue();
 
         if( verbose )
         {
