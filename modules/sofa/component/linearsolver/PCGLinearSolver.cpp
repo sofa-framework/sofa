@@ -126,7 +126,7 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
     Vector& r = *this->createVector();
     Vector& z = *this->createVector();
 
-    const bool printLog = f_printLog.getValue();
+    const bool printLog =  this->f_printLog.getValue();
     const bool verbose  = f_verbose.getValue();
 
     // -- solve the system using a conjugate gradient solution

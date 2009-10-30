@@ -42,9 +42,11 @@ namespace linearsolver
 
 /// Linear system solver using the default (LU factorization) algorithm
 template<class Matrix, class Vector>
-class LULinearSolver : public sofa::component::linearsolver::MatrixLinearSolver<Matrix,Vector>, public virtual sofa::core::objectmodel::BaseObject
+class LULinearSolver : public sofa::component::linearsolver::MatrixLinearSolver<Matrix,Vector>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE2(LULinearSolver,Matrix,Vector),SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver,Matrix,Vector));
+
     Data<bool> f_verbose;
     typename Matrix::LUSolver* solver;
     typename Matrix::InvMatrixType Minv;

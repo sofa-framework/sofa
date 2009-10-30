@@ -53,6 +53,8 @@ template<class Matrix, class Vector>
 class SOFA_EXPORT_DYNAMIC_LIBRARY MatrixLinearSolver : public sofa::core::componentmodel::behavior::LinearSolver, public sofa::simulation::SolverImpl
 {
 public:
+    SOFA_CLASS2(SOFA_TEMPLATE2(MatrixLinearSolver,Matrix,Vector), sofa::core::componentmodel::behavior::LinearSolver, sofa::simulation::SolverImpl);
+
     typedef sofa::core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
     typedef  std::list<int> ListIndex;
 
