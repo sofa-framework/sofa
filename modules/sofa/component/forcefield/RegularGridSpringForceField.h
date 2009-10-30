@@ -45,6 +45,8 @@ class RegularGridSpringForceField : public StiffSpringForceField<DataTypes>
 {
     double m_potentialEnergy;
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(RegularGridSpringForceField, DataTypes), SOFA_TEMPLATE(StiffSpringForceField, DataTypes));
+
     typedef StiffSpringForceField<DataTypes> Inherit;
     typedef typename Inherit::Spring Spring;
     typedef typename DataTypes::VecCoord VecCoord;

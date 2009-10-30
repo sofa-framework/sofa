@@ -175,7 +175,7 @@ double SphereForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
 template<class DataTypes>
 void SphereForceField<DataTypes>::draw()
 {
-    if (!getContext()->getShowForceFields()) return;
+    if (!this->getContext()->getShowForceFields()) return;
     if (!bDraw.getValue()) return;
 
     const Coord center = sphereCenter.getValue();

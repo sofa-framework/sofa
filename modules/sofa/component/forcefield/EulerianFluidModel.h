@@ -65,6 +65,8 @@ template<class DataTypes>
 class EulerianFluidModel : public sofa::core::BehaviorModel
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(EulerianFluidModel, DataTypes), SOFA_TEMPLATE(sofa::core::BehaviorModel));
+
     typedef sofa::core::BehaviorModel Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;

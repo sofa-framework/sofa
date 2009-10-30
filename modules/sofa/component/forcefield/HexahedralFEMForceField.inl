@@ -105,7 +105,7 @@ void HexahedralFEMForceField<DataTypes>::init()
 {
     this->core::componentmodel::behavior::ForceField<DataTypes>::init();
 
-    getContext()->get(_topology);
+    this->getContext()->get(_topology);
 
     if (_topology==NULL)
     {
@@ -597,12 +597,12 @@ void HexahedralFEMForceField<DataTypes>::accumulateForcePolar( Vector& f, const 
 template<class DataTypes>
 void HexahedralFEMForceField<DataTypes>::draw()
 {
-    if (!getContext()->getShowForceFields()) return;
+    if (!this->getContext()->getShowForceFields()) return;
     if (!this->mstate) return;
 
     const VecCoord& x = *this->mstate->getX();
 
-    if (getContext()->getShowWireFrame())
+    if (this->getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     glDisable(GL_LIGHTING);
@@ -675,7 +675,7 @@ void HexahedralFEMForceField<DataTypes>::draw()
         glEnd();
     }
 
-    if (getContext()->getShowWireFrame())
+    if (this->getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 }

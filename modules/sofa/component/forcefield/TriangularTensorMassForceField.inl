@@ -281,7 +281,7 @@ template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init(
     serr << "initializing TriangularTensorMassForceField" << sendl;
     this->Inherited::init();
 
-    _topology = getContext()->getMeshTopology();
+    _topology = this->getContext()->getMeshTopology();
 
     if (_topology->getNbTriangles()==0)
     {
@@ -408,10 +408,10 @@ template<class DataTypes>
 void TriangularTensorMassForceField<DataTypes>::draw()
 {
     int i;
-    if (!getContext()->getShowForceFields()) return;
+    if (!this->getContext()->getShowForceFields()) return;
     if (!this->mstate) return;
 
-    if (getContext()->getShowWireFrame())
+    if (this->getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     VecCoord& x = *this->mstate->getX();
@@ -436,7 +436,7 @@ void TriangularTensorMassForceField<DataTypes>::draw()
     glEnd();
 
 
-    if (getContext()->getShowWireFrame())
+    if (this->getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 

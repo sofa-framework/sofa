@@ -143,7 +143,7 @@ double LennardJonesForceField<DataTypes>::getPotentialEnergy(const VecCoord& )
 template<class DataTypes>
 void LennardJonesForceField<DataTypes>::draw()
 {
-    if (!getContext()->getShowForceFields()) return;
+    if (!this->getContext()->getShowForceFields()) return;
     const VecCoord& p1 = *this->mstate->getX();
 
     std::vector< defaulttype::Vector3 > points[2];

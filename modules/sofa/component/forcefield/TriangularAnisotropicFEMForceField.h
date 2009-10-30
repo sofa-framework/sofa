@@ -55,10 +55,11 @@ using namespace sofa::component::topology;
 
 
 template<class DataTypes>
-class TriangularAnisotropicFEMForceField : public sofa::component::forcefield::TriangularFEMForceField<DataTypes>, public virtual core::objectmodel::BaseObject
+class TriangularAnisotropicFEMForceField : public sofa::component::forcefield::TriangularFEMForceField<DataTypes>
 {
 
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(TriangularAnisotropicFEMForceField, DataTypes), SOFA_TEMPLATE(TriangularFEMForceField, DataTypes));
 
     typedef sofa::component::forcefield::TriangularFEMForceField<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord VecCoord;

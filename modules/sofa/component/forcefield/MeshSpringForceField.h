@@ -38,9 +38,11 @@ namespace forcefield
 {
 
 template<class DataTypes>
-class MeshSpringForceField : public StiffSpringForceField<DataTypes>, public virtual core::objectmodel::BaseObject
+class MeshSpringForceField : public StiffSpringForceField<DataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(MeshSpringForceField, DataTypes), SOFA_TEMPLATE(StiffSpringForceField, DataTypes));
+
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;

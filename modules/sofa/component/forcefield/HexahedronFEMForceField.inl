@@ -1143,13 +1143,13 @@ template<class DataTypes>
 void HexahedronFEMForceField<DataTypes>::draw()
 {
 // 	serr<<"HexahedronFEMForceField<DataTypes>::draw()"<<sendl;
-    if (!getContext()->getShowForceFields()) return;
+    if (!this->getContext()->getShowForceFields()) return;
     if (!this->mstate) return;
 
 
     const VecCoord& x = *this->mstate->getX();
 
-    if (getContext()->getShowWireFrame())
+    if (this->getContext()->getShowWireFrame())
         simulation::getSimulation()->DrawUtility.setPolygonMode(0,true);
 
 
@@ -1283,7 +1283,7 @@ void HexahedronFEMForceField<DataTypes>::draw()
     }
 
 
-    if (getContext()->getShowWireFrame())
+    if (this->getContext()->getShowWireFrame())
         simulation::getSimulation()->DrawUtility.setPolygonMode(0,false);
 
     if(_sparseGrid )

@@ -302,7 +302,7 @@ double SPHFluidForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
 template<class DataTypes>
 void SPHFluidForceField<DataTypes>::draw()
 {
-    if (!getContext()->getShowForceFields()) return;
+    if (!this->getContext()->getShowForceFields()) return;
     //if (grid != NULL)
     //	grid->draw();
     const VecCoord& x = *this->mstate->getX();

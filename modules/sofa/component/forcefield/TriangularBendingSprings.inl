@@ -463,7 +463,7 @@ void TriangularBendingSprings<DataTypes>::init()
     //serr << "initializing TriangularBendingSprings" << sendl;
     this->Inherited::init();
 
-    _topology = getContext()->getMeshTopology();
+    _topology = this->getContext()->getMeshTopology();
 
     if (_topology->getNbTriangles()==0)
     {
@@ -695,10 +695,10 @@ template<class DataTypes>
 void TriangularBendingSprings<DataTypes>::draw()
 {
     unsigned int i;
-    if (!getContext()->getShowForceFields()) return;
+    if (!this->getContext()->getShowForceFields()) return;
     if (!this->mstate) return;
 
-    if (getContext()->getShowWireFrame())
+    if (this->getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     VecCoord& x = *this->mstate->getX();
@@ -765,7 +765,7 @@ void TriangularBendingSprings<DataTypes>::draw()
 
     edgeInfo.endEdit();
 
-    if (getContext()->getShowWireFrame())
+    if (this->getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 

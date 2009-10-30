@@ -53,9 +53,11 @@ public:
   Use stiffnessRot vector to specify the rotational stiffnesses (on each local axis)
 */
 template<class DataTypes>
-class FrameSpringForceField : public core::componentmodel::behavior::PairInteractionForceField<DataTypes>, public virtual core::objectmodel::BaseObject
+class FrameSpringForceField : public core::componentmodel::behavior::PairInteractionForceField<DataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(FrameSpringForceField, DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::PairInteractionForceField, DataTypes));
+
     typedef typename core::componentmodel::behavior::PairInteractionForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;

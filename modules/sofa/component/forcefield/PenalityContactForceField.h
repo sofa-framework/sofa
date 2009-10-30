@@ -43,9 +43,11 @@ namespace forcefield
 {
 
 template<class DataTypes>
-class PenalityContactForceField : public core::componentmodel::behavior::PairInteractionForceField<DataTypes>, public virtual core::objectmodel::BaseObject
+class PenalityContactForceField : public core::componentmodel::behavior::PairInteractionForceField<DataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(PenalityContactForceField, DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::PairInteractionForceField, DataTypes));
+
     typedef typename core::componentmodel::behavior::PairInteractionForceField<DataTypes> Inherit;
     typedef DataTypes DataTypes1;
     typedef DataTypes DataTypes2;

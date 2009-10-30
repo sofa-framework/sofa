@@ -71,7 +71,7 @@ template <class DataTypes>
 void SurfacePressureForceField<DataTypes>::init()
 {
     this->core::componentmodel::behavior::ForceField<DataTypes>::init();
-    m_topology = getContext()->getMeshTopology();
+    m_topology = this->getContext()->getMeshTopology();
 
     state = ( m_pressure.getValue() > 0 ) ? INCREASE : DECREASE;
 
@@ -284,10 +284,10 @@ const typename SurfacePressureForceField<DataTypes>::Real SurfacePressureForceFi
 template<class DataTypes>
 void SurfacePressureForceField<DataTypes>::draw()
 {
-    if (!getContext()->getShowForceFields()) return;
+    if (!this->getContext()->getShowForceFields()) return;
     if (!this->mstate) return;
 
-    if (getContext()->getShowWireFrame())
+    if (this->getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 
@@ -324,7 +324,7 @@ void SurfacePressureForceField<DataTypes>::draw()
     glEnd();
 
 
-    if (getContext()->getShowWireFrame())
+    if (this->getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 

@@ -47,9 +47,11 @@ namespace forcefield
 using namespace sofa::component::container;
 
 template<class DataTypes>
-class ParticlesRepulsionForceField : public sofa::core::componentmodel::behavior::ForceField<DataTypes>, public virtual core::objectmodel::BaseObject
+class ParticlesRepulsionForceField : public sofa::core::componentmodel::behavior::ForceField<DataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(ParticlesRepulsionForceField, DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::ForceField, DataTypes));
+
     typedef sofa::core::componentmodel::behavior::ForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
