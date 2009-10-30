@@ -41,6 +41,7 @@ namespace loader
 class SOFA_COMPONENT_LOADER_API MeshGmshLoader : public sofa::core::componentmodel::loader::MeshLoader
 {
 public:
+    SOFA_CLASS(MeshGmshLoader,sofa::core::componentmodel::loader::MeshLoader);
 
     virtual bool load();
 

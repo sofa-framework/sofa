@@ -49,6 +49,7 @@ using namespace sofa::defaulttype;
 class SOFA_COMPONENT_LOADER_API MeshTrianLoader : public sofa::core::componentmodel::loader::MeshLoader
 {
 public:
+    SOFA_CLASS(MeshTrianLoader,sofa::core::componentmodel::loader::MeshLoader);
 
     MeshTrianLoader();
 

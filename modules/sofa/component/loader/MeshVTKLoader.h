@@ -40,6 +40,7 @@ namespace loader
 class SOFA_COMPONENT_LOADER_API MeshVTKLoader : public sofa::core::componentmodel::loader::MeshLoader
 {
 public:
+    SOFA_CLASS(MeshVTKLoader,sofa::core::componentmodel::loader::MeshLoader);
 
     MeshVTKLoader();
 
