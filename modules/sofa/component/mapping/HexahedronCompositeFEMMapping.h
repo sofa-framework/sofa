@@ -50,9 +50,10 @@ using namespace sofa::core::componentmodel::behavior;
 using namespace sofa::defaulttype;
 
 template <class BasicMapping>
-class HexahedronCompositeFEMMapping : public BasicMapping, public virtual core::objectmodel::BaseObject
+class HexahedronCompositeFEMMapping : public BasicMapping
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(HexahedronCompositeFEMMapping,BasicMapping), BasicMapping);
     typedef BasicMapping Inherit;
     typedef typename Inherit::In In;
     typedef typename Inherit::Out Out;

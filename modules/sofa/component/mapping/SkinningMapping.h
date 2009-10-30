@@ -56,9 +56,10 @@ typedef enum
 } InterpolationType;
 
 template <class BasicMapping>
-class SkinningMapping : public BasicMapping, public virtual core::objectmodel::BaseObject
+class SkinningMapping : public BasicMapping
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(SkinningMapping,BasicMapping), BasicMapping);
     typedef BasicMapping Inherit;
     typedef typename Inherit::In In;
     typedef typename Inherit::Out Out;

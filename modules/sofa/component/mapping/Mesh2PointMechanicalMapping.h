@@ -41,9 +41,10 @@ namespace mapping
 
 
 template <class BasicMapping>
-class Mesh2PointMechanicalMapping : public BasicMapping, public virtual core::objectmodel::BaseObject
+class Mesh2PointMechanicalMapping : public BasicMapping
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(Mesh2PointMechanicalMapping,BasicMapping), BasicMapping);
     typedef BasicMapping Inherit;
     typedef typename Inherit::In In;
     typedef typename Inherit::Out Out;

@@ -46,9 +46,10 @@ namespace mapping
 using namespace sofa::defaulttype;
 
 template <class BasicMapping>
-class LineSetSkinningMapping : public BasicMapping, public virtual core::objectmodel::BaseObject
+class LineSetSkinningMapping : public BasicMapping
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(LineSetSkinningMapping,BasicMapping), BasicMapping);
     typedef BasicMapping Inherit;
     typedef typename Inherit::In In;
     typedef typename Inherit::Out Out;

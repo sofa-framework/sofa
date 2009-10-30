@@ -45,9 +45,10 @@ namespace mapping
 using namespace sofa::defaulttype;
 
 template <class BasicMapping>
-class RigidRigidMapping : public BasicMapping, public virtual core::objectmodel::BaseObject
+class RigidRigidMapping : public BasicMapping
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(RigidRigidMapping,BasicMapping), BasicMapping);
     typedef BasicMapping Inherit;
     typedef typename Inherit::In In;
     typedef typename Inherit::Out Out;
@@ -94,7 +95,7 @@ public:
           indexFromEnd( initData ( &indexFromEnd,false,"indexFromEnd","input DOF index starts from the end of input DOFs vector") ),
           globalToLocalCoords ( initData ( &globalToLocalCoords,"globalToLocalCoords","are the output DOFs initially expressed in global coordinates" ) )
     {
-        addAlias(&fileRigidRigidMapping,"filename");
+        this->addAlias(&fileRigidRigidMapping,"filename");
         maskFrom = NULL;
         if (core::componentmodel::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *>(from))
             maskFrom = &stateFrom->forceMask;

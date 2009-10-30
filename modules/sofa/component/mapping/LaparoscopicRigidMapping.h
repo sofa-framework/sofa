@@ -46,9 +46,10 @@ namespace mapping
 {
 
 template <class BasicMapping>
-class LaparoscopicRigidMapping : public BasicMapping, public virtual core::objectmodel::BaseObject
+class LaparoscopicRigidMapping : public BasicMapping
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(LaparoscopicRigidMapping,BasicMapping), BasicMapping);
     typedef BasicMapping Inherit;
     typedef typename Inherit::In In;
     typedef typename Inherit::Out Out;

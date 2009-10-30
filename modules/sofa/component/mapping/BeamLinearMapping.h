@@ -40,9 +40,10 @@ namespace mapping
 {
 
 template <class BasicMapping>
-class BeamLinearMapping : public BasicMapping, public virtual core::objectmodel::BaseObject
+class BeamLinearMapping : public BasicMapping
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(BeamLinearMapping,BasicMapping), BasicMapping);
     typedef BasicMapping Inherit;
     typedef typename Inherit::In In;
     typedef typename Inherit::Out Out;

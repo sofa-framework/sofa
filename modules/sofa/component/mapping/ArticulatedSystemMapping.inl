@@ -618,7 +618,7 @@ void ArticulatedSystemMapping<BasicMapping>::propagateX()
     if (this->fromModel!=NULL && this->toModel->getX()!=NULL && this->fromModel->getX()!=NULL)
         apply(*this->toModel->getX(), *this->fromModel->getX(), (rootModel==NULL ? NULL : rootModel->getX()));
 
-    if( f_printLog.getValue())
+    if( this->f_printLog.getValue())
     {
         serr<<"ArticulatedSystemMapping::propageX processed :"<<sendl;
         if (rootModel!=NULL)
@@ -634,7 +634,7 @@ void ArticulatedSystemMapping<BasicMapping>::propagateXfree()
     if (this->fromModel!=NULL && this->toModel->getXfree()!=NULL && this->fromModel->getXfree()!=NULL)
         apply(*this->toModel->getXfree(), *this->fromModel->getXfree(), (rootModel==NULL ? NULL : rootModel->getXfree()));
 
-    if( f_printLog.getValue())
+    if( this->f_printLog.getValue())
     {
         serr<<"ArticulatedSystemMapping::propageXfree processed"<<sendl;
         if (rootModel!=NULL)
@@ -650,7 +650,7 @@ void ArticulatedSystemMapping<BasicMapping>::propagateV()
     if (this->fromModel!=NULL && this->toModel->getV()!=NULL && this->fromModel->getV()!=NULL)
         applyJ(*this->toModel->getV(), *this->fromModel->getV(), (rootModel==NULL ? NULL : rootModel->getV()));
 
-    if( f_printLog.getValue())
+    if( this->f_printLog.getValue())
     {
         serr<<" propagateV processed"<<sendl;
         if (rootModel!=NULL)
@@ -668,7 +668,7 @@ void ArticulatedSystemMapping<BasicMapping>::propagateDx()
     if (this->fromModel!=NULL && this->toModel->getDx()!=NULL && this->fromModel->getDx()!=NULL)
         applyJ(*this->toModel->getDx(), *this->fromModel->getDx(), (rootModel==NULL ? NULL : rootModel->getDx()));
 
-    if( f_printLog.getValue())
+    if( this->f_printLog.getValue())
     {
         serr<<"ArticulatedSystemMapping::propagateDx processed"<<sendl;
         if (rootModel!=NULL)
@@ -685,7 +685,7 @@ void ArticulatedSystemMapping<BasicMapping>::accumulateForce()
     if (this->fromModel!=NULL && this->toModel->getF()!=NULL && this->fromModel->getF()!=NULL)
         applyJT(*this->fromModel->getF(), *this->toModel->getF(), (rootModel==NULL ? NULL : rootModel->getF()));
 
-    if( f_printLog.getValue())
+    if( this->f_printLog.getValue())
     {
         serr<<"ArticulatedSystemMapping::accumulateForce processed"<<sendl;
         serr<<" input f : "<<*this->toModel->getF();
@@ -703,7 +703,7 @@ void ArticulatedSystemMapping<BasicMapping>::accumulateDf()
     if (this->fromModel!=NULL && this->toModel->getF()!=NULL && this->fromModel->getF()!=NULL)
         applyJT(*this->fromModel->getF(), *this->toModel->getF(), (rootModel==NULL ? NULL : rootModel->getF()));
 
-    if( f_printLog.getValue())
+    if( this->f_printLog.getValue())
     {
         serr<<"ArticulatedSystemMapping::accumulateDf processed"<<sendl;
         serr<<" input df : "<<*this->toModel->getF();
