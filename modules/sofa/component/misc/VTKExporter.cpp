@@ -269,7 +269,10 @@ void VTKExporter::writeDataArray(const helper::vector<std::string>& objects, con
                     sizeSeg = 3;
                 }
             }
-            *outfile << "        <DataArray type=\""<< type << "\" Name=\"" << fields[i] << "\" Format=\"ascii\">" << std::endl;
+            *outfile << "        <DataArray type=\""<< type << "\" Name=\"" << fields[i];
+            if(sizeSeg > 1)
+                *outfile << "\" NumberOfComponents=\"" << sizeSeg;
+            *outfile << "\" Format=\"ascii\">" << std::endl;
             *outfile << segmentString(field->getValueString(),sizeSeg) << std::endl;
             *outfile << "        </DataArray>" << std::endl;
         }
@@ -515,7 +518,7 @@ void VTKExporter::writeVTKXML()
     }
     if (writeTriangles.getValue())
     {
-        for (int i=0 ; i<topology->getNbTriangles() ; i++, num+=3)
+        for (int i=0 ; i<topology->getNbTriangles() ; i++)
         {
             num += 3;
             *outfile << num << " ";
@@ -523,7 +526,7 @@ void VTKExporter::writeVTKXML()
     }
     if (writeQuads.getValue())
     {
-        for (int i=0 ; i<topology->getNbQuads() ; i++, num+=4)
+        for (int i=0 ; i<topology->getNbQuads() ; i++)
         {
             num += 4;
             *outfile << num << " ";
@@ -531,7 +534,7 @@ void VTKExporter::writeVTKXML()
     }
     if (writeTetras.getValue())
     {
-        for (int i=0 ; i<topology->getNbTetras() ; i++, num+=4)
+        for (int i=0 ; i<topology->getNbTetras() ; i++)
         {
             num += 4;
             *outfile << num << " ";
@@ -539,7 +542,7 @@ void VTKExporter::writeVTKXML()
     }
     if (writeHexas.getValue())
     {
-        for (int i=0 ; i<topology->getNbHexas() ; i++, num+=6)
+        for (int i=0 ; i<topology->getNbHexas() ; i++)
         {
             num += 6;
             *outfile << num << " ";
