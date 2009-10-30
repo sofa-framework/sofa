@@ -62,9 +62,11 @@ public:
 };
 
 template <class DataTypes>
-class MechanicalObject : public MechanicalState<DataTypes>, public virtual sofa::core::objectmodel::BaseObject
+class MechanicalObject : public MechanicalState<DataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(MechanicalObject, DataTypes),SOFA_TEMPLATE(MechanicalState, DataTypes));
+
     typedef MechanicalState<DataTypes> Inherited;
     typedef typename Inherited::VecId VecId;
     typedef typename Inherited::VMultiOp VMultiOp;

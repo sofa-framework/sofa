@@ -37,6 +37,8 @@ namespace container
 class StiffnessContainer : public virtual sofa::core::objectmodel::BaseObject
 {
 public:
+    SOFA_CLASS(StiffnessContainer,sofa::core::objectmodel::BaseObject);
+
     virtual double getStiffness(unsigned int index) = 0;
 };
 

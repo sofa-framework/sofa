@@ -37,6 +37,8 @@ namespace container
 class LengthContainer : public virtual sofa::core::objectmodel::BaseObject
 {
 public:
+    SOFA_CLASS(LengthContainer,core::objectmodel::BaseObject);
+
     virtual double getLength(unsigned int index) = 0;
 };
 

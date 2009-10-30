@@ -37,6 +37,8 @@ namespace container
 class PoissonContainer : public virtual sofa::core::objectmodel::BaseObject
 {
 public:
+    SOFA_CLASS(PoissonContainer,sofa::core::objectmodel::BaseObject);
+
     virtual double getPoisson(unsigned int index) = 0;
 };
 

@@ -49,6 +49,8 @@ class SOFA_COMPONENT_CONTAINER_API ImplicitSurface : public virtual core::object
 {
 
 public:
+    SOFA_CLASS(ImplicitSurface,core::objectmodel::BaseObject);
+
     ImplicitSurface( ) { }
     virtual ~ImplicitSurface() { }
     virtual double getValue(defaulttype::Vec3d& pos) = 0;
