@@ -41,9 +41,10 @@ namespace mapping
 
 
 template <class BasicMapping>
-class CenterPointMechanicalMapping : public BasicMapping, public virtual core::objectmodel::BaseObject
+class CenterPointMechanicalMapping : public BasicMapping
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(CenterPointMechanicalMapping,BasicMapping), BasicMapping);
     typedef BasicMapping Inherit;
     typedef typename Inherit::In In;
     typedef typename Inherit::Out Out;

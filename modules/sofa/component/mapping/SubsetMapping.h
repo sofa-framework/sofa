@@ -50,9 +50,10 @@ public:
  * @brief Compute a subset of input points
  */
 template <class BasicMapping>
-class SubsetMapping : public BasicMapping, public virtual core::objectmodel::BaseObject
+class SubsetMapping : public BasicMapping
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(SubsetMapping,BasicMapping), BasicMapping);
     typedef BasicMapping Inherit;
     typedef typename Inherit::In In;
     typedef typename Inherit::Out Out;

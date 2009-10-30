@@ -51,9 +51,10 @@ using namespace sofa::component::container;
 //using namespace sofa::simulation::tree;
 
 template <class BasicMapping>
-class ArticulatedSystemMapping : public BasicMapping, public virtual core::objectmodel::BaseObject
+class ArticulatedSystemMapping : public BasicMapping
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(ArticulatedSystemMapping,BasicMapping), BasicMapping);
     typedef BasicMapping Inherit;
     typedef typename Inherit::In In;
     typedef typename Inherit::Out Out;

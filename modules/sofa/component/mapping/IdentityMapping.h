@@ -46,6 +46,7 @@ template <class BasicMapping>
 class IdentityMapping : public BasicMapping
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(IdentityMapping,BasicMapping), BasicMapping);
     typedef BasicMapping Inherit;
     typedef typename Inherit::In In;
     typedef typename Inherit::Out Out;

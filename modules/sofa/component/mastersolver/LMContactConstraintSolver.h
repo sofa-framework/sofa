@@ -42,6 +42,8 @@ namespace mastersolver
 class SOFA_COMPONENT_MASTERSOLVER_API LMContactConstraintSolver : public sofa::simulation::MasterSolverImpl
 {
 public:
+    SOFA_CLASS(LMContactConstraintSolver, sofa::simulation::MasterSolverImpl);
+
     LMContactConstraintSolver();
     virtual ~LMContactConstraintSolver();
     void bwdInit();

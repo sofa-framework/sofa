@@ -179,9 +179,10 @@ public:
     void gaussSeidelConstraintTimed(double &timeout, int numItMax);
 
 };
-class SOFA_COMPONENT_MASTERSOLVER_API MasterConstraintSolver : public sofa::simulation::MasterSolverImpl//, public sofa::simulation::tree::OdeSolverImpl
+class SOFA_COMPONENT_MASTERSOLVER_API MasterConstraintSolver : public sofa::simulation::MasterSolverImpl
 {
 public:
+    SOFA_CLASS(MasterConstraintSolver, sofa::simulation::MasterSolverImpl);
 
     MasterConstraintSolver();
     virtual ~MasterConstraintSolver();

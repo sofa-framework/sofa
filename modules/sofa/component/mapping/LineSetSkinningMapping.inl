@@ -381,7 +381,7 @@ void LineSetSkinningMapping<BasicMapping>::propagateX()
     if (this->fromModel!=NULL && this->toModel->getX()!=NULL && this->fromModel->getX()!=NULL)
         apply(*this->toModel->getX(), *this->fromModel->getX() );
 
-    if( f_printLog.getValue())
+    if( this->f_printLog.getValue())
     {
         serr<<"propageX processed :"<<sendl;
         serr<<"  - input: "<<*this->fromModel->getX()<<"  output : "<<*this->toModel->getX()<<sendl;
@@ -395,7 +395,7 @@ void LineSetSkinningMapping<BasicMapping>::propagateXfree()
     if (this->fromModel!=NULL && this->toModel->getXfree()!=NULL && this->fromModel->getXfree()!=NULL)
         apply(*this->toModel->getXfree(), *this->fromModel->getXfree());
 
-    if( f_printLog.getValue())
+    if( this->f_printLog.getValue())
     {
         serr<<"propageXfree processed"<<sendl;
         serr<<"  - input: "<<*this->fromModel->getXfree()<<"  output : "<<*this->toModel->getXfree()<<sendl;
@@ -409,7 +409,7 @@ void LineSetSkinningMapping<BasicMapping>::propagateV()
     if (this->fromModel!=NULL && this->toModel->getV()!=NULL && this->fromModel->getV()!=NULL)
         applyJ(*this->toModel->getV(), *this->fromModel->getV());
 
-    if( f_printLog.getValue())
+    if( this->f_printLog.getValue())
     {
         serr<<" propagateV processed"<<sendl;
         serr<<"  - V input: "<<*this->fromModel->getV()<<"   V output : "<<*this->toModel->getV()<<sendl;
@@ -426,7 +426,7 @@ void LineSetSkinningMapping<BasicMapping>::propagateDx()
     if (this->fromModel!=NULL && this->toModel->getDx()!=NULL && this->fromModel->getDx()!=NULL)
         applyJ(*this->toModel->getDx(), *this->fromModel->getDx());
 
-    if( f_printLog.getValue())
+    if( this->f_printLog.getValue())
     {
         serr<<"propagateDx processed"<<sendl;
         serr<<"  - input: "<<*this->fromModel->getDx()<<"  output : "<<*this->toModel->getDx()<<sendl;
@@ -441,7 +441,7 @@ void LineSetSkinningMapping<BasicMapping>::accumulateForce()
     if (this->fromModel!=NULL && this->toModel->getF()!=NULL && this->fromModel->getF()!=NULL)
         applyJT(*this->fromModel->getF(), *this->toModel->getF());
 
-    if( f_printLog.getValue())
+    if( this->f_printLog.getValue())
     {
         serr<<"accumulateForce processed"<<sendl;
         serr<<" input f : "<<*this->toModel->getF();
@@ -457,7 +457,7 @@ void LineSetSkinningMapping<BasicMapping>::accumulateDf()
     if (this->fromModel!=NULL && this->toModel->getF()!=NULL && this->fromModel->getF()!=NULL)
         applyJT(*this->fromModel->getF(), *this->toModel->getF());
 
-    if( f_printLog.getValue())
+    if( this->f_printLog.getValue())
     {
         serr<<"accumulateDf processed"<<sendl;
         serr<<" input df : "<<*this->toModel->getF();

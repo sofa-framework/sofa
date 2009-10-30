@@ -52,9 +52,10 @@ public:
 
 
 template <class BasicMapping>
-class RigidMapping : public BasicMapping, public virtual core::objectmodel::BaseObject
+class RigidMapping : public BasicMapping
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(RigidMapping,BasicMapping), BasicMapping);
     typedef BasicMapping Inherit;
     typedef typename Inherit::In In;
     typedef typename Inherit::Out Out;
@@ -94,7 +95,7 @@ public:
           repartition ( initData ( &repartition,"repartition","number of dest dofs per entry dof" ) ),
           globalToLocalCoords ( initData ( &globalToLocalCoords,"globalToLocalCoords","are the output DOFs initially expressed in global coordinates" ) )
     {
-        addAlias(&fileRigidMapping,"filename");
+        this->addAlias(&fileRigidMapping,"filename");
         maskFrom = NULL;
         if (core::componentmodel::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *>(from))
             maskFrom = &stateFrom->forceMask;
