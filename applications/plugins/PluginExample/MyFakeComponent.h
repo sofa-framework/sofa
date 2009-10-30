@@ -60,7 +60,7 @@ namespace behaviormodel
 class  MyFakeComponent : public sofa::core::BehaviorModel
 {
 public:
-
+    SOFA_CLASS(MyFakeComponent,sofa::core::BehaviorModel);
     MyFakeComponent();
     ~MyFakeComponent();
 
