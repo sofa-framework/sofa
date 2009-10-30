@@ -45,6 +45,8 @@ using sofa::defaulttype::Vector3;
 class SOFA_COMPONENT_VISUALMODEL_API ClipPlane : public core::VisualModel
 {
 public:
+    SOFA_CLASS(ClipPlane, core::VisualModel);
+
     Data<Vector3> position;
     Data<Vector3> normal;
     Data<int> id;

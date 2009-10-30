@@ -382,6 +382,7 @@ void SpotLight::draw()
         glPushMatrix();
         glTranslated(pos[0], pos[1], pos[2]);
         glScalef(scale, scale, scale);
+        //glRotatef(scale, scale, scale);
         glPushMatrix();
         gluSphere(quad, 1.0, 16, 16);
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);

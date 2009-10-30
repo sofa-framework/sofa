@@ -56,6 +56,8 @@ namespace visualmodel
 template<class DataTypes>
 class OglVariable : public core::VisualModel, public OglShaderElement
 {
+public:
+    SOFA_CLASS2(OglVariable, core::VisualModel, OglShaderElement);
 protected:
     Data< DataTypes > value;
 public:
@@ -72,6 +74,8 @@ public:
 class SOFA_COMPONENT_VISUALMODEL_API OglIntVariable : public OglVariable< int>
 {
 public:
+    SOFA_CLASS(OglIntVariable, OglVariable< int>);
+
     OglIntVariable();
     virtual ~OglIntVariable() { }
 
@@ -82,6 +86,8 @@ class SOFA_COMPONENT_VISUALMODEL_API OglInt2Variable : public OglVariable<defaul
 {
 
 public:
+    SOFA_CLASS(OglInt2Variable, SOFA_TEMPLATE(OglVariable, SOFA_TEMPLATE2(defaulttype::Vec, 2, int)));
+
     OglInt2Variable();
     virtual ~OglInt2Variable() { }
 
@@ -91,6 +97,8 @@ public:
 class SOFA_COMPONENT_VISUALMODEL_API OglInt3Variable : public OglVariable<defaulttype::Vec<3, int> >
 {
 public:
+    SOFA_CLASS(OglInt3Variable, SOFA_TEMPLATE(OglVariable, SOFA_TEMPLATE2(defaulttype::Vec, 3, int)));
+
     OglInt3Variable();
     virtual ~OglInt3Variable() { }
 
@@ -100,6 +108,8 @@ public:
 class SOFA_COMPONENT_VISUALMODEL_API OglInt4Variable : public OglVariable<defaulttype::Vec<4, int> >
 {
 public:
+    SOFA_CLASS(OglInt4Variable, SOFA_TEMPLATE(OglVariable, SOFA_TEMPLATE2(defaulttype::Vec, 4, int)));
+
     OglInt4Variable();
     virtual ~OglInt4Variable() { }
 
@@ -111,6 +121,8 @@ public:
 class SOFA_COMPONENT_VISUALMODEL_API OglFloatVariable : public OglVariable<float>
 {
 public:
+    SOFA_CLASS(OglFloatVariable, OglVariable<float>);
+
     OglFloatVariable();
     virtual ~OglFloatVariable() { }
 
@@ -120,6 +132,8 @@ public:
 class SOFA_COMPONENT_VISUALMODEL_API OglFloat2Variable : public OglVariable<defaulttype::Vec2f>
 {
 public:
+    SOFA_CLASS(OglFloat2Variable, OglVariable<defaulttype::Vec2f>);
+
     OglFloat2Variable();
     virtual ~OglFloat2Variable() { }
 
@@ -129,6 +143,8 @@ public:
 class SOFA_COMPONENT_VISUALMODEL_API OglFloat3Variable : public OglVariable<defaulttype::Vec3f>
 {
 public:
+    SOFA_CLASS(OglFloat3Variable, OglVariable<defaulttype::Vec3f>);
+
     OglFloat3Variable();
     virtual ~OglFloat3Variable() { }
 
@@ -138,6 +154,8 @@ public:
 class SOFA_COMPONENT_VISUALMODEL_API OglFloat4Variable : public OglVariable<defaulttype::Vec4f>
 {
 public:
+    SOFA_CLASS(OglFloat4Variable, OglVariable<defaulttype::Vec4f>);
+
     OglFloat4Variable();
     virtual ~OglFloat4Variable() { }
 
@@ -148,6 +166,8 @@ public:
 class SOFA_COMPONENT_VISUALMODEL_API OglIntVectorVariable : public OglVariable<helper::vector<GLint> >
 {
 public:
+    SOFA_CLASS(OglIntVectorVariable, OglVariable<helper::vector<GLint> >);
+
     OglIntVectorVariable();
     virtual ~OglIntVectorVariable() { }
 
@@ -159,6 +179,8 @@ class SOFA_COMPONENT_VISUALMODEL_API OglIntVector2Variable : public OglIntVector
 {
 
 public:
+    SOFA_CLASS(OglIntVector2Variable, OglIntVectorVariable);
+
     OglIntVector2Variable();
     virtual ~OglIntVector2Variable() { }
 
@@ -169,6 +191,8 @@ public:
 class SOFA_COMPONENT_VISUALMODEL_API OglIntVector3Variable : public OglIntVectorVariable
 {
 public:
+    SOFA_CLASS(OglIntVector3Variable, OglIntVectorVariable);
+
     OglIntVector3Variable();
     virtual ~OglIntVector3Variable() { }
 
@@ -179,6 +203,8 @@ public:
 class SOFA_COMPONENT_VISUALMODEL_API OglIntVector4Variable : public OglIntVectorVariable
 {
 public:
+    SOFA_CLASS(OglIntVector4Variable, OglIntVectorVariable);
+
     OglIntVector4Variable();
     virtual ~OglIntVector4Variable() { }
 
@@ -190,6 +216,8 @@ public:
 class SOFA_COMPONENT_VISUALMODEL_API OglFloatVectorVariable : public OglVariable<helper::vector<float> >
 {
 public:
+    SOFA_CLASS(OglFloatVectorVariable, OglVariable<helper::vector<float> >);
+
     OglFloatVectorVariable();
     virtual ~OglFloatVectorVariable() { }
 
@@ -200,6 +228,8 @@ public:
 class SOFA_COMPONENT_VISUALMODEL_API OglFloatVector2Variable : public OglFloatVectorVariable
 {
 public:
+    SOFA_CLASS(OglFloatVector2Variable,OglFloatVectorVariable);
+
     OglFloatVector2Variable();
     virtual ~OglFloatVector2Variable() { }
 
@@ -210,6 +240,8 @@ public:
 class SOFA_COMPONENT_VISUALMODEL_API OglFloatVector3Variable : public OglFloatVectorVariable
 {
 public:
+    SOFA_CLASS(OglFloatVector3Variable,OglFloatVectorVariable);
+
     OglFloatVector3Variable();
     virtual ~OglFloatVector3Variable() { }
 
@@ -220,6 +252,8 @@ public:
 class SOFA_COMPONENT_VISUALMODEL_API OglFloatVector4Variable : public OglFloatVectorVariable
 {
 public:
+    SOFA_CLASS(OglFloatVector4Variable,OglFloatVectorVariable);
+
     OglFloatVector4Variable();
     virtual ~OglFloatVector4Variable() { }
 
@@ -231,6 +265,8 @@ public:
 class SOFA_COMPONENT_VISUALMODEL_API OglMatrix2Variable : public OglVariable<helper::vector<float> >
 {
 public:
+    SOFA_CLASS(OglMatrix2Variable,OglVariable<helper::vector<float> >);
+
     Data<bool> transpose;
 
     OglMatrix2Variable();
@@ -245,6 +281,8 @@ public:
 class SOFA_COMPONENT_VISUALMODEL_API OglMatrix3Variable : public OglMatrix2Variable
 {
 public:
+    SOFA_CLASS(OglMatrix3Variable,OglMatrix2Variable);
+
     OglMatrix3Variable();
     virtual ~OglMatrix3Variable() { }
 
@@ -255,6 +293,8 @@ public:
 class SOFA_COMPONENT_VISUALMODEL_API OglMatrix4Variable : public OglMatrix2Variable
 {
 public:
+    SOFA_CLASS(OglMatrix4Variable,OglMatrix2Variable);
+
     OglMatrix4Variable();
     virtual ~OglMatrix4Variable() { }
 
@@ -265,6 +305,8 @@ public:
 class SOFA_COMPONENT_VISUALMODEL_API OglMatrix2x3Variable : public OglMatrix2Variable
 {
 public:
+    SOFA_CLASS(OglMatrix2x3Variable,OglMatrix2Variable);
+
     OglMatrix2x3Variable();
     virtual ~OglMatrix2x3Variable() { }
 
@@ -275,6 +317,8 @@ public:
 class SOFA_COMPONENT_VISUALMODEL_API OglMatrix3x2Variable : public OglMatrix2Variable
 {
 public:
+    SOFA_CLASS(OglMatrix3x2Variable,OglMatrix2Variable);
+
     OglMatrix3x2Variable();
     virtual ~OglMatrix3x2Variable() { }
 
@@ -285,6 +329,8 @@ public:
 class SOFA_COMPONENT_VISUALMODEL_API OglMatrix2x4Variable : public OglMatrix2Variable
 {
 public:
+    SOFA_CLASS(OglMatrix2x4Variable,OglMatrix2Variable);
+
     OglMatrix2x4Variable();
     virtual ~OglMatrix2x4Variable() { }
 
@@ -295,6 +341,8 @@ public:
 class SOFA_COMPONENT_VISUALMODEL_API OglMatrix4x2Variable : public OglMatrix2Variable
 {
 public:
+    SOFA_CLASS(OglMatrix4x2Variable,OglMatrix2Variable);
+
     OglMatrix4x2Variable();
     virtual ~OglMatrix4x2Variable() { }
 
@@ -305,6 +353,8 @@ public:
 class SOFA_COMPONENT_VISUALMODEL_API OglMatrix3x4Variable : public OglMatrix2Variable
 {
 public:
+    SOFA_CLASS(OglMatrix3x4Variable,OglMatrix2Variable);
+
     OglMatrix3x4Variable();
     virtual ~OglMatrix3x4Variable() { }
 
@@ -315,6 +365,8 @@ public:
 class SOFA_COMPONENT_VISUALMODEL_API OglMatrix4x3Variable : public OglMatrix2Variable
 {
 public:
+    SOFA_CLASS(OglMatrix4x3Variable,OglMatrix2Variable);
+
     OglMatrix4x3Variable();
     virtual ~OglMatrix4x3Variable() { }
 

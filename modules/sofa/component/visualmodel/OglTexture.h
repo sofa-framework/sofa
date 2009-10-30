@@ -53,6 +53,8 @@ namespace visualmodel
 
 class SOFA_COMPONENT_VISUALMODEL_API OglTexture :  public core::VisualModel, public OglShaderElement
 {
+public:
+    SOFA_CLASS2(OglTexture, core::VisualModel, OglShaderElement);
 
 protected:
     Data<int> textureUnit;
@@ -88,6 +90,9 @@ protected:
 
 class SOFA_COMPONENT_VISUALMODEL_API OglTexture2D : public OglTexture
 {
+public:
+    SOFA_CLASS(OglTexture2D, OglTexture);
+
 private:
     sofa::core::objectmodel::DataFileName texture2DFilename;
     Data<bool> repeat;

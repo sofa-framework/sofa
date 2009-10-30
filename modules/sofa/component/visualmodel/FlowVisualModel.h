@@ -127,6 +127,9 @@ static defaulttype::Vec3f ColorMap[64] =
 template <class DataTypes>
 class SOFA_COMPONENT_VISUALMODEL_API FlowVisualModel : public core::VisualModel
 {
+public:
+    SOFA_CLASS(SOFA_TEMPLATE(FlowVisualModel,DataTypes), core::VisualModel);
+
     typedef typename core::componentmodel::behavior::MechanicalState<DataTypes> FluidState;
     typedef typename core::componentmodel::behavior::MechanicalState<DataTypes> TetraGeometry;
     typedef typename core::componentmodel::behavior::MechanicalState<DataTypes> TriangleGeometry;

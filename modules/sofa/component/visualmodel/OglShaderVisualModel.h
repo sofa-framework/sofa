@@ -48,6 +48,9 @@ namespace visualmodel
 
 class SOFA_COMPONENT_VISUALMODEL_API OglShaderVisualModel : public OglModel
 {
+public:
+    SOFA_CLASS(OglShaderVisualModel, OglModel);
+
 protected:
 
     typedef ExtVec3fTypes::Coord Coord;

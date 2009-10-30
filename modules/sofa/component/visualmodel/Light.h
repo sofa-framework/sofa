@@ -60,6 +60,8 @@ namespace visualmodel
 
 class SOFA_COMPONENT_VISUALMODEL_API Light : public virtual sofa::core::VisualModel
 {
+public:
+    SOFA_CLASS(Light, core::VisualModel);
 protected:
     GLint lightID;
     GLuint shadowTexWidth, shadowTexHeight;
@@ -105,10 +107,10 @@ public:
 
 class DirectionalLight : public Light
 {
-private:
-    Data<sofa::defaulttype::Vector3> direction;
-
 public:
+    SOFA_CLASS(DirectionalLight, Light);
+
+    Data<sofa::defaulttype::Vector3> direction;
 
     DirectionalLight();
     virtual ~DirectionalLight();
@@ -122,12 +124,12 @@ public:
 
 class SOFA_COMPONENT_VISUALMODEL_API PositionalLight : public Light
 {
-protected:
+public:
+    SOFA_CLASS(PositionalLight, Light);
+
     Data<bool> fixed;
     Data<sofa::defaulttype::Vector3> position;
     Data<float> attenuation;
-
-public:
 
     PositionalLight();
     virtual ~PositionalLight();
@@ -140,12 +142,13 @@ public:
 
 class SOFA_COMPONENT_VISUALMODEL_API SpotLight : public PositionalLight
 {
-protected:
+public:
+    SOFA_CLASS(SpotLight, PositionalLight);
+
     Data<sofa::defaulttype::Vector3> direction;
     Data<float> cutoff;
     Data<float> exponent;
 
-public:
     SpotLight();
     virtual ~SpotLight();
     virtual void initVisual() ;
