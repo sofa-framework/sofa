@@ -52,6 +52,7 @@ to each point. This set of point may be a subset of the DOF of the mechanical mo
 class SOFA_COMPONENT_CONTAINER_API PointSetTopologyContainer : public core::componentmodel::topology::TopologyContainer
 {
 public:
+    SOFA_CLASS(PointSetTopologyContainer,core::componentmodel::topology::TopologyContainer);
 
     PointSetTopologyContainer(int nPoints = 0);
 

@@ -42,6 +42,7 @@ using namespace sofa::defaulttype;
 class SOFA_COMPONENT_CONTAINER_API SparseGridRamificationTopology : public SparseGridTopology
 {
 public:
+    SOFA_CLASS(SparseGridRamificationTopology,SparseGridTopology);
 
     SparseGridRamificationTopology(bool _isVirtual=false);
     virtual ~SparseGridRamificationTopology();

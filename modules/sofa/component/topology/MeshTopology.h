@@ -57,6 +57,7 @@ using helper::fixed_array;
 class SOFA_COMPONENT_CONTAINER_API MeshTopology : public core::componentmodel::topology::BaseMeshTopology
 {
 public:
+    SOFA_CLASS(MeshTopology,core::componentmodel::topology::BaseMeshTopology);
 
     MeshTopology();
 

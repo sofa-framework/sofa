@@ -61,6 +61,7 @@ using namespace sofa::core;
 class Hexa2TetraTopologicalMapping : public TopologicalMapping
 {
 public:
+    SOFA_CLASS(Hexa2TetraTopologicalMapping,TopologicalMapping);
 
     /** \brief Constructor.
      *

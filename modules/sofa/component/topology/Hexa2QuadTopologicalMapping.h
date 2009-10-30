@@ -60,6 +60,7 @@ using namespace sofa::core;
 class Hexa2QuadTopologicalMapping : public TopologicalMapping
 {
 public:
+    SOFA_CLASS(Hexa2QuadTopologicalMapping,TopologicalMapping);
 
     /** \brief Constructor.
      *

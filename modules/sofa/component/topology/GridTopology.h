@@ -41,6 +41,8 @@ using namespace sofa::defaulttype;
 class SOFA_COMPONENT_CONTAINER_API GridTopology : public MeshTopology
 {
 public:
+    SOFA_CLASS(GridTopology,MeshTopology);
+
     GridTopology();
 
     GridTopology(int nx, int ny, int nz);

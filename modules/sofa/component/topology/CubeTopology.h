@@ -42,6 +42,7 @@ using namespace sofa::defaulttype;
 class SOFA_COMPONENT_CONTAINER_API CubeTopology : public MeshTopology
 {
 public:
+    SOFA_CLASS(CubeTopology,MeshTopology);
 
     CubeTopology(int nx, int ny, int nz);
     CubeTopology();

@@ -54,6 +54,8 @@ class SOFA_COMPONENT_CONTAINER_API QuadSetTopologyContainer : public EdgeSetTopo
     friend class QuadSetTopologyModifier;
 
 public:
+    SOFA_CLASS(QuadSetTopologyContainer,EdgeSetTopologyContainer);
+
     QuadSetTopologyContainer();
 
     QuadSetTopologyContainer(const sofa::helper::vector< Quad >& quads );

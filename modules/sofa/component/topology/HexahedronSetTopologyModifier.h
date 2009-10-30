@@ -55,6 +55,8 @@ typedef QuadsInHexahedron QuadsInHexahedron;
 class SOFA_COMPONENT_CONTAINER_API HexahedronSetTopologyModifier : public QuadSetTopologyModifier
 {
 public:
+    SOFA_CLASS(HexahedronSetTopologyModifier,QuadSetTopologyModifier);
+
     HexahedronSetTopologyModifier()
         : QuadSetTopologyModifier()
     { }

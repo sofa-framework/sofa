@@ -63,6 +63,8 @@ class SOFA_COMPONENT_CONTAINER_API TetrahedronSetTopologyContainer : public Tria
     friend class TetrahedronSetTopologyModifier;
 
 public:
+    SOFA_CLASS(TetrahedronSetTopologyContainer,TriangleSetTopologyContainer);
+
     typedef Tetra			Tetrahedron;
     typedef EdgesInTetrahedron		EdgesInTetrahedron;
     typedef TrianglesInTetrahedron	TrianglesInTetrahedron;

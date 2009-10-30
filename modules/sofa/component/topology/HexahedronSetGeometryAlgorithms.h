@@ -54,6 +54,8 @@ template < class DataTypes >
 class HexahedronSetGeometryAlgorithms : public QuadSetGeometryAlgorithms<DataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(HexahedronSetGeometryAlgorithms,DataTypes),SOFA_TEMPLATE(QuadSetGeometryAlgorithms,DataTypes));
+
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;

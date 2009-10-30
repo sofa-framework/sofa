@@ -57,6 +57,7 @@ class SOFA_COMPONENT_CONTAINER_API TriangleSetTopologyContainer : public EdgeSet
     friend class TriangleSetTopologyModifier;
 
 public:
+    SOFA_CLASS(TriangleSetTopologyContainer,EdgeSetTopologyContainer);
 
     TriangleSetTopologyContainer();
 

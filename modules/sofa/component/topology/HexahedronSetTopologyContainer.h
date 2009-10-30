@@ -83,6 +83,8 @@ class SOFA_COMPONENT_CONTAINER_API HexahedronSetTopologyContainer : public QuadS
     friend class HexahedronSetTopologyModifier;
 
 public:
+    SOFA_CLASS(HexahedronSetTopologyContainer,QuadSetTopologyContainer);
+
     typedef Hexa		Hexahedron;
     typedef EdgesInHexahedron	EdgesInHexahedron;
     typedef QuadsInHexahedron	QuadsInHexahedron;

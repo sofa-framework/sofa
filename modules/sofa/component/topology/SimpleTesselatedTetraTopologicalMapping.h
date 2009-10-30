@@ -62,6 +62,8 @@ using namespace sofa::core;
 class SimpleTesselatedTetraTopologicalMapping : public TopologicalMapping
 {
 public:
+    SOFA_CLASS(SimpleTesselatedTetraTopologicalMapping,TopologicalMapping);
+
     /** \brief Constructor.
          *
      * @param from the topology issuing TopologyChange objects (the "source").

@@ -43,6 +43,8 @@ using namespace sofa::defaulttype;
 class SOFA_COMPONENT_CONTAINER_API RegularGridTopology : public GridTopology
 {
 public:
+    SOFA_CLASS(RegularGridTopology,GridTopology);
+
     RegularGridTopology(int nx, int ny, int nz);
     RegularGridTopology();
 
