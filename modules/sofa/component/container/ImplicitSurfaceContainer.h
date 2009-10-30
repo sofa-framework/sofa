@@ -85,6 +85,8 @@ public:
 class SphereSurface  : public ImplicitSurface
 {
 public:
+    SOFA_CLASS(SphereSurface,ImplicitSurface);
+
     SphereSurface()
         : inside(initData(&inside, false, "inside", "if true the constraint object is inside the sphere"))
         , radiusSphere(initData(&radiusSphere, 1.0, "radius", "Radius of the Sphere Surface"))
