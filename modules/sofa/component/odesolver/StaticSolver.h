@@ -46,6 +46,7 @@ class SOFA_COMPONENT_ODESOLVER_API StaticSolver : public sofa::component::odesol
 {
 
 public:
+    SOFA_CLASS(StaticSolver, sofa::component::odesolver::OdeSolverImpl);
     StaticSolver();
 
     void solve (double dt);

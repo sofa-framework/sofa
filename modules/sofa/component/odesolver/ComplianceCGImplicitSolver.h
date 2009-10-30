@@ -46,6 +46,7 @@ using namespace sofa::defaulttype;
 class SOFA_COMPONENT_ODESOLVER_API ComplianceCGImplicitSolver : public sofa::component::odesolver::OdeSolverImpl
 {
 public:
+    SOFA_CLASS(ComplianceCGImplicitSolver, sofa::component::odesolver::OdeSolverImpl);
     ComplianceCGImplicitSolver();
 
     void solve (double dt);
