@@ -58,6 +58,7 @@ The angular value is v(t) = wt + v0 where w is the velocity and v0 the initial v
 class GuidedCoordinateSystem : public CoordinateSystem
 {
 public:
+    SOFA_CLASS(GuidedCoordinateSystem, CoordinateSystem);
     typedef CoordinateSystem::Frame Frame;
     typedef CoordinateSystem::SpatialVector SpatialVector;
     typedef CoordinateSystem::Vec Vec;

@@ -52,6 +52,7 @@ namespace bgl
 class SOFA_SIMULATION_BGL_API BglSimulation : public sofa::simulation::Simulation
 {
 public:
+    SOFA_CLASS(BglSimulation, sofa::simulation::Simulation);
 
     /// @name High-level interface
     /// @{
