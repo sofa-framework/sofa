@@ -51,9 +51,11 @@ public:
 };
 
 template<class DataTypes1, class DataTypes2>
-class LagrangeMultiplierInteraction : public core::componentmodel::behavior::MixedInteractionForceField<DataTypes1, DataTypes2>, public virtual core::objectmodel::BaseObject
+class LagrangeMultiplierInteraction : public core::componentmodel::behavior::MixedInteractionForceField<DataTypes1, DataTypes2>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE2(LagrangeMultiplierInteraction, DataTypes1, DataTypes2), SOFA_TEMPLATE2(core::componentmodel::behavior::MixedInteractionForceField, DataTypes1, DataTypes2));
+
     typedef core::componentmodel::behavior::BaseConstraint baseConstraint;
     typedef core::componentmodel::behavior::Constraint<DataTypes2> SimpleConstraint;
     typedef core::componentmodel::behavior::InteractionConstraint InteractionConstraint;

@@ -77,7 +77,7 @@ void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::init()
 
     // nouveau mécanisme: plusieurs contraintes
     simulation::FindByTypeVisitor< core::componentmodel::behavior::BaseConstraint > findConstraint;
-    findConstraint.execute(getContext());
+    findConstraint.execute(this->getContext());
     list_base_constraint = findConstraint.found;
 
 

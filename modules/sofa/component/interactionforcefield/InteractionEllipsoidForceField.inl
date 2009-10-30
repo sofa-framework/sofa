@@ -288,7 +288,7 @@ double InteractionEllipsoidForceField<DataTypes1, DataTypes2>::getPotentialEnerg
 template<class DataTypes1, class DataTypes2>
 void InteractionEllipsoidForceField<DataTypes1, DataTypes2>::draw()
 {
-    if (!getContext()->getShowForceFields()) return;
+    if (!this->getContext()->getShowForceFields()) return;
     if (!bDraw.getValue()) return;
 
     Real1 cx1=0, cy1=0, cz1=0;
