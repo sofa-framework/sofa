@@ -49,6 +49,7 @@ using namespace sofa::defaulttype;
 class SOFA_COMPONENT_CONTEXTOBJECT_API Gravity : public core::objectmodel::ContextObject
 {
 public:
+    SOFA_CLASS(Gravity, core::objectmodel::ContextObject);
     Gravity();
 
     Data<Vector3> f_gravity; ///< Gravity in the world coordinate system

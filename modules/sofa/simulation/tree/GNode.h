@@ -44,6 +44,7 @@ namespace tree
 class SOFA_SIMULATION_TREE_API GNode : public simulation::Node
 {
 public:
+    SOFA_CLASS(GNode, simulation::Node);
     GNode( const std::string& name="", GNode* parent=NULL  );
 
     virtual ~GNode();

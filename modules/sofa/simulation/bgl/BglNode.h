@@ -61,6 +61,7 @@ namespace bgl
 class SOFA_SIMULATION_BGL_API BglNode : public sofa::simulation::Node
 {
 public:
+    SOFA_CLASS(BglNode, simulation::Node);
     typedef Sequence< BglNode > Parents;
     typedef Parents::iterator ParentIterator;
     Parents parents;

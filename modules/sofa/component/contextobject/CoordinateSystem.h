@@ -63,6 +63,7 @@ namespace contextobject
 class SOFA_COMPONENT_CONTEXTOBJECT_API CoordinateSystem : public core::objectmodel::ContextObject
 {
 public:
+    SOFA_CLASS(CoordinateSystem, core::objectmodel::ContextObject);
     typedef core::objectmodel::BaseContext::SolidTypes SolidTypes;
     typedef SolidTypes::Vec Vec;
     typedef SolidTypes::Rot Rot;
