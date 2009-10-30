@@ -48,6 +48,8 @@ namespace misc
 class DevMonitorManager : public DevMonitor<sofa::defaulttype::Vec3dTypes>
 {
 public:
+    SOFA_CLASS(DevMonitorManager, SOFA_TEMPLATE(DevMonitor,sofa::defaulttype::Vec3dTypes));
+
     DevMonitorManager();
     virtual ~DevMonitorManager();
 

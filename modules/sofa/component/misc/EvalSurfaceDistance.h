@@ -50,10 +50,12 @@ namespace misc
 /** Compute the distance between surfaces in two objects
 */
 template<class TDataTypes>
-class EvalSurfaceDistance: public EvalPointsDistance<TDataTypes>, public virtual sofa::core::objectmodel::BaseObject
+class EvalSurfaceDistance: public EvalPointsDistance<TDataTypes>
 {
 
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(EvalSurfaceDistance,TDataTypes), SOFA_TEMPLATE(EvalPointsDistance,TDataTypes));
+
     typedef EvalPointsDistance<TDataTypes> Inherit;
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;

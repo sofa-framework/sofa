@@ -27,6 +27,9 @@ namespace misc
 
 class SOFA_COMPONENT_MISC_API VTKExporter : public core::objectmodel::BaseObject
 {
+public:
+    SOFA_CLASS(VTKExporter,core::objectmodel::BaseObject);
+
 private:
     sofa::core::componentmodel::topology::BaseMeshTopology* topology;
 

@@ -55,6 +55,7 @@ namespace misc
 class SOFA_COMPONENT_MISC_API ReadState: public core::objectmodel::BaseObject
 {
 public:
+    SOFA_CLASS(ReadState,core::objectmodel::BaseObject);
 
     sofa::core::objectmodel::DataFileName f_filename;
     Data < double > f_interval;

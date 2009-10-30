@@ -63,9 +63,11 @@ namespace misc
 {
 
 template<class TDataTypes>
-class ParticleSink : public core::componentmodel::behavior::Constraint<TDataTypes>, public virtual core::objectmodel::BaseObject
+class ParticleSink : public core::componentmodel::behavior::Constraint<TDataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(ParticleSink,TDataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::Constraint,TDataTypes));
+
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Coord;
@@ -91,7 +93,7 @@ public:
         , color(initData(&color, defaulttype::Vec3f(0.0f,.5f,.2f), "color", "plane color"))
         , showPlane(initData(&showPlane, false, "showPlane", "enable/disable drawing of plane"))
     {
-        f_listening.setValue(true);
+        this->f_listening.setValue(true);
         Deriv n;
         DataTypes::set(n, 0, 1, 0);
         planeNormal.setValue(n);
@@ -165,7 +167,7 @@ public:
     /// Handle topological changes
     void handleTopologyChange()
     {
-        sofa::core::componentmodel::topology::BaseMeshTopology* topology = getContext()->getMeshTopology();
+        sofa::core::componentmodel::topology::BaseMeshTopology* topology = this->getContext()->getMeshTopology();
         std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itBegin=topology->firstChange();
         std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itEnd=topology->lastChange();
         if (itBegin != itEnd)
@@ -210,9 +212,9 @@ public:
     virtual void handleEvent(sofa::core::objectmodel::Event* event)
     {
         if (simulation::AnimateBeginEvent* ev = dynamic_cast<simulation::AnimateBeginEvent*>(event))
-            animateBegin(ev->getDt(), getContext()->getTime());
+            animateBegin(ev->getDt(), this->getContext()->getTime());
         if (simulation::AnimateEndEvent* ev = dynamic_cast<simulation::AnimateEndEvent*>(event))
-            animateEnd(ev->getDt(), getContext()->getTime());
+            animateEnd(ev->getDt(), this->getContext()->getTime());
     }
 
     virtual void draw()

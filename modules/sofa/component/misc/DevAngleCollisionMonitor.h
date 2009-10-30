@@ -49,6 +49,8 @@ template <class TDataTypes>
 class DevAngleCollisionMonitor: public virtual DevMonitor<sofa::defaulttype::Vec1dTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(DevAngleCollisionMonitor,TDataTypes), SOFA_TEMPLATE(DevMonitor,sofa::defaulttype::Vec1dTypes));
+
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Coord Coord;
