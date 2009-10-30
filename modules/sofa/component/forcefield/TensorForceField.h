@@ -51,6 +51,7 @@ template <class DataTypes>
 class TensorForceField : public core::componentmodel::behavior::BaseForceField
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(TensorForceField, DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::BaseForceField, DataTypes));
 
     TensorForceField (const char *filename);
 

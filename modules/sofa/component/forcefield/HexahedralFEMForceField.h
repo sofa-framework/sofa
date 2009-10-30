@@ -74,9 +74,11 @@ using namespace sofa::component::topology;
 *     0---------1-->X
 */
 template<class DataTypes>
-class HexahedralFEMForceField : virtual public core::componentmodel::behavior::ForceField<DataTypes>, public virtual core::objectmodel::BaseObject
+class HexahedralFEMForceField : virtual public core::componentmodel::behavior::ForceField<DataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(HexahedralFEMForceField, DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::ForceField, DataTypes));
+
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef VecCoord Vector;

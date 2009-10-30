@@ -648,12 +648,12 @@ void TriangleFEMForceField<DataTypes>::applyStiffnessLarge(VecCoord &v, Real h, 
 template<class DataTypes>
 void TriangleFEMForceField<DataTypes>::draw()
 {
-    if (!getContext()->getShowForceFields())
+    if (!this->getContext()->getShowForceFields())
         return;
 //     if (!this->_object)
 //         return;
 
-    if (getContext()->getShowWireFrame())
+    if (this->getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     const VecCoord& x = *this->mstate->getX();
@@ -677,7 +677,7 @@ void TriangleFEMForceField<DataTypes>::draw()
     }
     glEnd();
 
-    if (getContext()->getShowWireFrame())
+    if (this->getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 

@@ -59,6 +59,8 @@ template<class DataTypes>
 class TriangleBendingSprings : public sofa::component::forcefield::StiffSpringForceField<DataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(TriangleBendingSprings, DataTypes), SOFA_TEMPLATE(StiffSpringForceField, DataTypes));
+
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::VecCoord VecCoord;
 

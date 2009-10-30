@@ -76,7 +76,7 @@ double WashingMachineForceField<DataTypes>::getPotentialEnergy(const VecCoord&x)
 template<class DataTypes>
 void WashingMachineForceField<DataTypes>::draw()
 {
-    if (!getContext()->getShowForceFields() || !_alreadyInit ) return;
+    if (!this->getContext()->getShowForceFields() || !_alreadyInit ) return;
     for(int i=0; i<6; ++i)
 // 				_planes[i]->drawPlane(_size.getValue()[0]);
         _planes[i]->draw();

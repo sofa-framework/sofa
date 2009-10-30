@@ -187,7 +187,7 @@ double ParticlesRepulsionForceField<DataTypes>::getPotentialEnergy(const VecCoor
 template<class DataTypes>
 void ParticlesRepulsionForceField<DataTypes>::draw()
 {
-    if (!getContext()->getShowForceFields() && !getContext()->getShowInteractionForceFields()) return;
+    if (!this->getContext()->getShowForceFields() && !this->getContext()->getShowInteractionForceFields()) return;
     //if (grid != NULL)
     //	grid->draw();
     const VecCoord& x = *this->mstate->getX();

@@ -71,9 +71,11 @@ The springs connect the vertices not belonging to the common edge. It compresses
 	@author The SOFA team </www.sofa-framework.org>
 */
 template<class DataTypes>
-class TriangularBendingSprings : public core::componentmodel::behavior::ForceField<DataTypes>, public virtual core::objectmodel::BaseObject
+class TriangularBendingSprings : public core::componentmodel::behavior::ForceField<DataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(TriangularBendingSprings, DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::ForceField, DataTypes));
+
     typedef core::componentmodel::behavior::ForceField<DataTypes> Inherited;
     //typedef typename DataTypes::Real Real;
     typedef typename DataTypes::VecCoord VecCoord;

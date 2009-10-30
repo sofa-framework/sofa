@@ -138,7 +138,7 @@ double PenalityContactForceField<DataTypes>::getPotentialEnergy(const VecCoord&,
 template<class DataTypes>
 void PenalityContactForceField<DataTypes>::draw()
 {
-    if (!((this->mstate1 == this->mstate2)?getContext()->getShowForceFields():getContext()->getShowInteractionForceFields())) return;
+    if (!((this->mstate1 == this->mstate2)?this->getContext()->getShowForceFields():this->getContext()->getShowInteractionForceFields())) return;
     const VecCoord& p1 = *this->mstate1->getX();
     const VecCoord& p2 = *this->mstate2->getX();
     glDisable(GL_LIGHTING);
@@ -178,7 +178,7 @@ void PenalityContactForceField<DataTypes>::draw()
 
 
     std::vector< defaulttype::Vector3 > pointsN;
-    if (getContext()->getShowNormals())
+    if (this->getContext()->getShowNormals())
     {
         for (unsigned int i=0; i<contacts.getValue().size(); i++)
         {

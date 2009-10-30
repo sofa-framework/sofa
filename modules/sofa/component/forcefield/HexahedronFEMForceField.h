@@ -79,9 +79,11 @@ public:
  *     0---------1-->X
 */
 template<class DataTypes>
-class HexahedronFEMForceField : virtual public core::componentmodel::behavior::ForceField<DataTypes>, public virtual core::objectmodel::BaseObject
+class HexahedronFEMForceField : virtual public core::componentmodel::behavior::ForceField<DataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(HexahedronFEMForceField, DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::ForceField, DataTypes));
+
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef VecCoord Vector;

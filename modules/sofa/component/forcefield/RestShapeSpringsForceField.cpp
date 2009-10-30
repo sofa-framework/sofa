@@ -507,7 +507,7 @@ template<>
 void RestShapeSpringsForceField<Vec3dTypes>::draw()
 {
 
-    if (!getContext()->getShowForceFields())
+    if (!this->getContext()->getShowForceFields())
         return;  /// \todo put this in the parent class
 
     VecCoord& p_0 = *this->mstate->getX0();

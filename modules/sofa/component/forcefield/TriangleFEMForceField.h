@@ -62,9 +62,11 @@ using namespace sofa::defaulttype;
 
 
 template<class DataTypes>
-class TriangleFEMForceField : public core::componentmodel::behavior::ForceField<DataTypes>, public virtual core::objectmodel::BaseObject
+class TriangleFEMForceField : public core::componentmodel::behavior::ForceField<DataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(TriangleFEMForceField, DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::ForceField, DataTypes));
+
     typedef core::componentmodel::behavior::ForceField<DataTypes> Inherited;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;

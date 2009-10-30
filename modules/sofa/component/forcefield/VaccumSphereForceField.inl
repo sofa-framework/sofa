@@ -190,7 +190,7 @@ void VaccumSphereForceField<DataTypes>::draw()
 {
     if (!active.getValue()) return;
 
-    if (!getContext()->getShowForceFields()) return;
+    if (!this->getContext()->getShowForceFields()) return;
     if (!bDraw.getValue()) return;
 
     const Coord center = sphereCenter.getValue();

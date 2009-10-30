@@ -276,9 +276,11 @@ public:
   Use ksr vector to specify the rotational stiffnesses (on each local axe)
 */
 template<class DataTypes>
-class JointSpringForceField : public core::componentmodel::behavior::PairInteractionForceField<DataTypes>, public virtual core::objectmodel::BaseObject
+class JointSpringForceField : public core::componentmodel::behavior::PairInteractionForceField<DataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(JointSpringForceField, DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::PairInteractionForceField, DataTypes));
+
     typedef typename core::componentmodel::behavior::PairInteractionForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;

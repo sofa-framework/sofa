@@ -66,7 +66,7 @@ template <class DataTypes> void TrianglePressureForceField<DataTypes>::init()
     //serr << "initializing TrianglePressureForceField" << sendl;
     this->core::componentmodel::behavior::ForceField<DataTypes>::init();
 
-    _topology = getContext()->getMeshTopology();
+    _topology = this->getContext()->getMeshTopology();
 
     if (dmin.getValue()!=dmax.getValue())
     {
@@ -189,10 +189,10 @@ void TrianglePressureForceField<DataTypes>::selectTrianglesFromString()
 template<class DataTypes>
 void TrianglePressureForceField<DataTypes>::draw()
 {
-    if (!getContext()->getShowForceFields()) return;
+    if (!this->getContext()->getShowForceFields()) return;
     if (!this->mstate) return;
 
-    if (getContext()->getShowWireFrame())
+    if (this->getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
 
@@ -214,7 +214,7 @@ void TrianglePressureForceField<DataTypes>::draw()
     glEnd();
 
 
-    if (getContext()->getShowWireFrame())
+    if (this->getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 

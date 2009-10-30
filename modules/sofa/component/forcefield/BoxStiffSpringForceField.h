@@ -47,6 +47,8 @@ template <class DataTypes>
 class BoxStiffSpringForceField : public StiffSpringForceField<DataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(BoxStiffSpringForceField, DataTypes), SOFA_TEMPLATE(StiffSpringForceField, DataTypes));
+
     typedef StiffSpringForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;

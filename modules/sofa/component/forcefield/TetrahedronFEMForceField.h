@@ -73,9 +73,11 @@ public:
 /** Compute Finite Element forces based on tetrahedral elements.
 */
 template<class DataTypes>
-class TetrahedronFEMForceField : public core::componentmodel::behavior::ForceField<DataTypes>, public virtual core::objectmodel::BaseObject
+class TetrahedronFEMForceField : public core::componentmodel::behavior::ForceField<DataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(TetrahedronFEMForceField, DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::ForceField, DataTypes));
+
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::VecReal VecReal;
@@ -179,17 +181,17 @@ public:
 #endif // SOFA_DEV
         , _indexedElements(NULL)
         , needUpdateTopology(false)
-        , f_initialPoints(initDataPtr(&f_initialPoints, &_initialPoints, "initialPoints", "Initial Position"))
+        , f_initialPoints(core::objectmodel::BaseObject::initDataPtr(&f_initialPoints, &_initialPoints, "initialPoints", "Initial Position"))
         , f_method(initData(&f_method,std::string("large"),"method","\"small\", \"large\" (by QR) or \"polar\" displacements"))
         ,  _poissonRatio((Real)0.45f)
-        , f_poissonRatio(initDataPtr(&f_poissonRatio,&_poissonRatio,"poissonRatio","FEM Poisson Ratio"))
+        , f_poissonRatio(core::objectmodel::BaseObject::initDataPtr(&f_poissonRatio,&_poissonRatio,"poissonRatio","FEM Poisson Ratio"))
         ,  _youngModulus((Real)5000)
-        , f_youngModulus(initDataPtr(&f_youngModulus,&_youngModulus,"youngModulus","FEM Young Modulus"))
-        , f_localStiffnessFactor(initDataPtr(&f_localStiffnessFactor,&_localStiffnessFactor,"localStiffnessFactor","Allow specification of different stiffness per element. If there are N element and M values are specified, the youngModulus factor for element i would be localStiffnessFactor[i*M/N]"))
+        , f_youngModulus(core::objectmodel::BaseObject::initDataPtr(&f_youngModulus,&_youngModulus,"youngModulus","FEM Young Modulus"))
+        , f_localStiffnessFactor(core::objectmodel::BaseObject::initDataPtr(&f_localStiffnessFactor,&_localStiffnessFactor,"localStiffnessFactor","Allow specification of different stiffness per element. If there are N element and M values are specified, the youngModulus factor for element i would be localStiffnessFactor[i*M/N]"))
         ,  _updateStiffnessMatrix(false)
-        , f_updateStiffnessMatrix(initDataPtr(&f_updateStiffnessMatrix,&_updateStiffnessMatrix,"updateStiffnessMatrix",""))
+        , f_updateStiffnessMatrix(core::objectmodel::BaseObject::initDataPtr(&f_updateStiffnessMatrix,&_updateStiffnessMatrix,"updateStiffnessMatrix",""))
         ,  _assembling(false)
-        , f_assembling(initDataPtr(&f_assembling,&_assembling,"assembling",""))
+        , f_assembling(core::objectmodel::BaseObject::initDataPtr(&f_assembling,&_assembling,"assembling",""))
     {}
 
     virtual bool canPrefetch() const { return false; }

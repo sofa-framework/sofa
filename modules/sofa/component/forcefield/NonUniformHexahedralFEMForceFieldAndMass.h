@@ -78,6 +78,8 @@ template<class DataTypes>
 class NonUniformHexahedralFEMForceFieldAndMass : virtual public HexahedralFEMForceFieldAndMass<DataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(NonUniformHexahedralFEMForceFieldAndMass, DataTypes), SOFA_TEMPLATE(HexahedralFEMForceFieldAndMass, DataTypes));
+
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef VecCoord Vector;

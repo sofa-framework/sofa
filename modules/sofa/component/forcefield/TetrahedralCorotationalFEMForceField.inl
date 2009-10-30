@@ -121,7 +121,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::init()
 
     this->core::componentmodel::behavior::ForceField<DataTypes>::init();
 
-    _topology = getContext()->getMeshTopology();
+    _topology = this->getContext()->getMeshTopology();
 
     if (_topology->getNbTetrahedra()==0)
     {
@@ -1066,12 +1066,12 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::applyStiffnessPolar( Vecto
 template<class DataTypes>
 void TetrahedralCorotationalFEMForceField<DataTypes>::draw()
 {
-    if (!getContext()->getShowForceFields()) return;
+    if (!this->getContext()->getShowForceFields()) return;
     if (!this->mstate) return;
 
     const VecCoord& x = *this->mstate->getX();
 
-    if (getContext()->getShowWireFrame())
+    if (this->getContext()->getShowWireFrame())
         simulation::getSimulation()->DrawUtility.setPolygonMode(0,true);
 
 
@@ -1116,7 +1116,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::draw()
     simulation::getSimulation()->DrawUtility.drawTriangles(points[2], Vec<4,float>(0.0,1.0,1.0,1.0));
     simulation::getSimulation()->DrawUtility.drawTriangles(points[3], Vec<4,float>(0.5,1.0,1.0,1.0));
 
-    if (getContext()->getShowWireFrame())
+    if (this->getContext()->getShowWireFrame())
         simulation::getSimulation()->DrawUtility.setPolygonMode(0,false);
 }
 

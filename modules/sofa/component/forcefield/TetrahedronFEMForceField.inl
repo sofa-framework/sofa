@@ -1338,12 +1338,12 @@ double TetrahedronFEMForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::draw()
 {
-    if (!getContext()->getShowForceFields()) return;
+    if (!this->getContext()->getShowForceFields()) return;
     if (!this->mstate) return;
 
     const VecCoord& x = *this->mstate->getX();
 
-    if (getContext()->getShowWireFrame())
+    if (this->getContext()->getShowWireFrame())
         simulation::getSimulation()->DrawUtility.setPolygonMode(0,true);
 
     simulation::getSimulation()->DrawUtility.setLightingEnabled(false);
@@ -1391,11 +1391,11 @@ void TetrahedronFEMForceField<DataTypes>::draw()
     simulation::getSimulation()->DrawUtility.drawTriangles(points[2], Vec<4,float>(0.0,1.0,1.0,1.0));
     simulation::getSimulation()->DrawUtility.drawTriangles(points[3], Vec<4,float>(0.5,1.0,1.0,1.0));
 
-    if (getContext()->getShowWireFrame())
+    if (this->getContext()->getShowWireFrame())
         simulation::getSimulation()->DrawUtility.setPolygonMode(0,false);
 
     ////////////// AFFICHAGE DES ROTATIONS ////////////////////////
-    if (getContext()->getShowNormals())
+    if (this->getContext()->getShowNormals())
     {
 
         std::vector< Vector3 > points[3];

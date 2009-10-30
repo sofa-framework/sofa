@@ -42,6 +42,8 @@ template<class DataTypes>
 class LennardJonesForceField : public sofa::core::componentmodel::behavior::ForceField<DataTypes>, public virtual core::objectmodel::BaseObject
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(LennardJonesForceField, DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::ForceField, DataTypes));
+
     typedef sofa::core::componentmodel::behavior::ForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
