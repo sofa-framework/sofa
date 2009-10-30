@@ -196,7 +196,7 @@ void VectorSpringForceField<DataTypes>::bwdInit()
             // create springs based on the mesh topology
             useTopology = true;
             createDefaultSprings();
-            f_listening.setValue(true);
+            this->f_listening.setValue(true);
         }
         else
         {
@@ -375,7 +375,7 @@ void VectorSpringForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& df2, 
 template<class DataTypes>
 void VectorSpringForceField<DataTypes>::draw()
 {
-    if (!((this->mstate1 == this->mstate2)?getContext()->getShowForceFields():getContext()->getShowInteractionForceFields()))
+    if (!((this->mstate1 == this->mstate2)?this->getContext()->getShowForceFields():this->getContext()->getShowInteractionForceFields()))
         return;
     //const VecCoord& p = *this->mstate->getX();
     const VecCoord& x1 = *this->mstate1->getX();
