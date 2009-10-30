@@ -369,7 +369,6 @@ bool MeshTopologyLoader::loadMesh(std::ifstream &file)
     int ncubes = 0;
 
 
-// 	std::cout << "Loading mesh topology '" << filename << "'" << std::endl;
     while (!file.eof())
     {
         file >> cmd;
@@ -532,6 +531,8 @@ bool MeshTopologyLoader::loadMeshFile(const char *filename)
     }
     else
     {
+        //Reset the stream to the beginning.
+        file.seekg(0, std::ios::beg);
         fileLoaded = loadMesh(file);
     }
     file.close();
