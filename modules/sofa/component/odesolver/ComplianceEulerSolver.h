@@ -43,6 +43,7 @@ the symplectic variant of Euler's method is applied
 class SOFA_COMPONENT_ODESOLVER_API ComplianceEulerSolver : public sofa::component::odesolver::OdeSolverImpl
 {
 public:
+    SOFA_CLASS(ComplianceEulerSolver, sofa::component::odesolver::OdeSolverImpl);
     ComplianceEulerSolver();
     void solve (double dt);
     Data<bool> firstCallToSolve;

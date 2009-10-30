@@ -41,6 +41,7 @@ namespace odesolver
 class SOFA_COMPONENT_ODESOLVER_API RungeKutta4Solver : public sofa::component::odesolver::OdeSolverImpl
 {
 public:
+    SOFA_CLASS(RungeKutta4Solver, sofa::component::odesolver::OdeSolverImpl);
     void solve (double dt);
 
 

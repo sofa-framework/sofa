@@ -48,6 +48,7 @@ using namespace sofa::defaulttype;
 class SOFA_COMPONENT_ODESOLVER_API CentralDifferenceSolver : public sofa::component::odesolver::OdeSolverImpl
 {
 public:
+    SOFA_CLASS(CentralDifferenceSolver, sofa::component::odesolver::OdeSolverImpl);
 
     CentralDifferenceSolver();
 

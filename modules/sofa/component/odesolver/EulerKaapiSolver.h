@@ -45,6 +45,7 @@ If false, the basic Euler's method is applied (less robust)
 class SOFA_COMPONENT_ODESOLVER_API EulerKaapiSolver : public sofa::component::odesolver::OdeSolverImpl
 {
 public:
+    SOFA_CLASS(EulerKaapiSolver, sofa::component::odesolver::OdeSolverImpl);
     EulerKaapiSolver();
     void solve (double dt);
     void computeAcc (double t, VecId a, VecId x, VecId v);

@@ -60,7 +60,7 @@ using namespace sofa::defaulttype;
 class SOFA_COMPONENT_ODESOLVER_API NewmarkImplicitSolver : public sofa::component::odesolver::OdeSolverImpl
 {
 public:
-
+    SOFA_CLASS(NewmarkImplicitSolver, sofa::component::odesolver::OdeSolverImpl);
     Data<double> f_rayleighStiffness;
     Data<double> f_rayleighMass;
     Data<double> f_velocityDamping;

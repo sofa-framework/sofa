@@ -43,6 +43,7 @@ This is not an ODE solver, but it can be used as a post-process after a real ODE
 class SOFA_COMPONENT_ODESOLVER_API DampVelocitySolver : public sofa::component::odesolver::OdeSolverImpl
 {
 public:
+    SOFA_CLASS(DampVelocitySolver, sofa::component::odesolver::OdeSolverImpl);
     DampVelocitySolver();
     void solve (double dt);
     Data<double> rate;

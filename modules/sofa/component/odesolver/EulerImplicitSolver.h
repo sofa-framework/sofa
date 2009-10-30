@@ -79,6 +79,7 @@ using namespace sofa::defaulttype;
 class SOFA_COMPONENT_ODESOLVER_API EulerImplicitSolver : public sofa::component::odesolver::OdeSolverImpl
 {
 public:
+    SOFA_CLASS(EulerImplicitSolver, sofa::component::odesolver::OdeSolverImpl);
 
     Data<double> f_rayleighStiffness;
     Data<double> f_rayleighMass;

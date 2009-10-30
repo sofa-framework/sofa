@@ -41,6 +41,7 @@ namespace odesolver
 class SOFA_COMPONENT_ODESOLVER_API RungeKutta2Solver : public sofa::component::odesolver::OdeSolverImpl
 {
 public:
+    SOFA_CLASS(RungeKutta2Solver, sofa::component::odesolver::OdeSolverImpl);
     void solve (double dt);
 
     /// Given an input derivative order (0 for position, 1 for velocity, 2 for acceleration),

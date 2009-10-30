@@ -44,6 +44,7 @@ namespace odesolver
 class SOFA_COMPONENT_ODESOLVER_API BiCGStabImplicitSolver : public sofa::component::odesolver::OdeSolverImpl
 {
 public:
+    SOFA_CLASS(BiCGStabImplicitSolver, sofa::component::odesolver::OdeSolverImpl);
     typedef core::componentmodel::behavior::OdeSolver Inherited;
 
     BiCGStabImplicitSolver();
