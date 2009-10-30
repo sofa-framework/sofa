@@ -56,6 +56,8 @@ template <class DataTypes>
 class DistanceConstraint :  public core::componentmodel::behavior::LMConstraint<DataTypes,DataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(DistanceConstraint,DataTypes),SOFA_TEMPLATE2(sofa::core::componentmodel::behavior::LMConstraint, DataTypes, DataTypes));
+
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Deriv Deriv;

@@ -52,6 +52,8 @@ template <class DataTypes>
 class LinearVelocityConstraint : public core::componentmodel::behavior::Constraint<DataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(LinearVelocityConstraint,DataTypes),SOFA_TEMPLATE(core::componentmodel::behavior::Constraint,DataTypes));
+
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;

@@ -40,9 +40,11 @@ namespace constraint
 {
 
 template<class DataTypes>
-class LagrangianMultiplierFixedConstraint : public LagrangianMultiplierConstraint<DataTypes>, public core::componentmodel::behavior::ForceField<DataTypes>, public virtual core::objectmodel::BaseObject
+class LagrangianMultiplierFixedConstraint : public LagrangianMultiplierConstraint<DataTypes>, public core::componentmodel::behavior::ForceField<DataTypes>
 {
 public:
+    SOFA_CLASS2(SOFA_TEMPLATE(LagrangianMultiplierFixedConstraint,DataTypes),SOFA_TEMPLATE(LagrangianMultiplierContactConstraint,DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::ForceField,DataTypes));
+
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;

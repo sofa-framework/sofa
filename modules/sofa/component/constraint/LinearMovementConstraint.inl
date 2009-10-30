@@ -161,7 +161,7 @@ void LinearMovementConstraint<DataTypes>::init()
 {
     this->core::componentmodel::behavior::Constraint<DataTypes>::init();
 
-    topology = getContext()->getMeshTopology();
+    topology = this->getContext()->getMeshTopology();
 
     // Initialize functions and parameters
     topology::PointSubset my_subset = m_indices.getValue();
@@ -285,7 +285,7 @@ void LinearMovementConstraint<DataTypes>::findKeyTimes()
 template <class DataTypes>
 void LinearMovementConstraint<DataTypes>::draw()
 {
-    if (!getContext()->getShowBehaviorModels() || m_keyTimes.getValue().size() == 0 ) return;
+    if (!this->getContext()->getShowBehaviorModels() || m_keyTimes.getValue().size() == 0 ) return;
     glDisable (GL_LIGHTING);
     glPointSize(10);
     glColor4f (1,0.5,0.5,1);

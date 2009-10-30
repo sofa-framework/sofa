@@ -43,6 +43,8 @@ template<class DataTypes>
 class SlidingConstraint : public core::componentmodel::behavior::InteractionConstraint
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(SlidingConstraint,DataTypes), core::componentmodel::behavior::InteractionConstraint);
+
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::VecConst VecConst;

@@ -50,6 +50,8 @@ template <class DataTypes>
 class FixedTranslationConstraint : public core::componentmodel::behavior::Constraint<DataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(FixedTranslationConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::componentmodel::behavior::Constraint, DataTypes));
+
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;

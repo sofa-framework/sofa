@@ -97,6 +97,8 @@ template<class DataTypes>
 class StopperConstraint : public core::componentmodel::behavior::BaseConstraint
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(StopperConstraint,DataTypes), core::componentmodel::behavior::BaseConstraint);
+
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::VecConst VecConst;

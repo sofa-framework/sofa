@@ -149,7 +149,7 @@ void HermiteSplineConstraint<DataTypes>::computeDerivateHermiteCoefs( const Real
 template <class DataTypes>
 void HermiteSplineConstraint<DataTypes>::projectResponse(VecDeriv& dx)
 {
-    Real t = (Real) getContext()->getTime();
+    Real t = (Real) this->getContext()->getTime();
     if ( t >= m_tBegin.getValue() && t <= m_tEnd.getValue())
     {
         const SetIndexArray & indices = m_indices.getValue().getArray();
@@ -161,7 +161,7 @@ void HermiteSplineConstraint<DataTypes>::projectResponse(VecDeriv& dx)
 template <class DataTypes>
 void HermiteSplineConstraint<DataTypes>::projectVelocity(VecDeriv& dx)
 {
-    Real t = (Real) getContext()->getTime();
+    Real t = (Real) this->getContext()->getTime();
 
     if ( t >= m_tBegin.getValue() && t <= m_tEnd.getValue()	)
     {
@@ -184,7 +184,7 @@ void HermiteSplineConstraint<DataTypes>::projectVelocity(VecDeriv& dx)
 template <class DataTypes>
 void HermiteSplineConstraint<DataTypes>::projectPosition(VecCoord& x)
 {
-    Real t = (Real) getContext()->getTime();
+    Real t = (Real) this->getContext()->getTime();
 
     if ( t >= m_tBegin.getValue() && t <= m_tEnd.getValue()	)
     {
@@ -208,9 +208,9 @@ void HermiteSplineConstraint<DataTypes>::projectPosition(VecCoord& x)
 template <class DataTypes>
 void HermiteSplineConstraint<DataTypes>::draw()
 {
-    if (!getContext()->getShowBehaviorModels()) return;
+    if (!this->getContext()->getShowBehaviorModels()) return;
 
-    Real dt = (Real) getContext()->getDt();
+    Real dt = (Real) this->getContext()->getDt();
     Real DT = m_tEnd.getValue() - m_tBegin.getValue();
 
     glDisable (GL_LIGHTING);

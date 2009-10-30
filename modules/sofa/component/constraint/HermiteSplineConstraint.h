@@ -52,9 +52,11 @@ using namespace sofa::defaulttype;
 	  - acceleration curve on the trajectory
 	*/
 template <class DataTypes>
-class HermiteSplineConstraint : public core::componentmodel::behavior::Constraint<DataTypes>, public virtual core::objectmodel::BaseObject
+class HermiteSplineConstraint : public core::componentmodel::behavior::Constraint<DataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(HermiteSplineConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::componentmodel::behavior::Constraint, DataTypes));
+
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;

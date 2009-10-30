@@ -135,7 +135,7 @@ void FixedPlaneConstraint<DataTypes>::init()
 {
     this->core::componentmodel::behavior::Constraint<DataTypes>::init();
 
-    topology = getContext()->getMeshTopology();
+    topology = this->getContext()->getMeshTopology();
 
     /// test that dmin or dmax are different from zero
     if (dmin.getValue()!=dmax.getValue())
@@ -168,7 +168,7 @@ template <class DataTypes> void FixedPlaneConstraint<DataTypes>::handleTopologyC
 template <class DataTypes>
 void FixedPlaneConstraint<DataTypes>::draw()
 {
-    if (!getContext()->getShowBehaviorModels()) return;
+    if (!this->getContext()->getShowBehaviorModels()) return;
     const VecCoord& x = *this->mstate->getX();
     glDisable (GL_LIGHTING);
     glPointSize(10);

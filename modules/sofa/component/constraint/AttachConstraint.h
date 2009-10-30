@@ -59,9 +59,11 @@ class AttachConstraintInternalData
 /** Attach given pair of particles, projecting the positions of the second particles to the first ones.
 */
 template <class DataTypes>
-class AttachConstraint : public core::componentmodel::behavior::PairInteractionConstraint<DataTypes>, public virtual core::objectmodel::BaseObject
+class AttachConstraint : public core::componentmodel::behavior::PairInteractionConstraint<DataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(AttachConstraint,DataTypes),SOFA_TEMPLATE(sofa::core::componentmodel::behavior::PairInteractionConstraint,DataTypes));
+
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;

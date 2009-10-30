@@ -81,6 +81,8 @@ template<class TDataTypes>
 class LinearSolverConstraintCorrection : public componentmodel::behavior::BaseConstraintCorrection
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(LinearSolverConstraintCorrection,TDataTypes),componentmodel::behavior::BaseConstraintCorrection);
+
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::Real Real;
     typedef typename componentmodel::behavior::BaseConstraintCorrection Inherit;

@@ -44,6 +44,8 @@ template<class DataTypes>
 class LagrangianMultiplierConstraint : public core::componentmodel::behavior::BaseConstraint
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(LagrangianMultiplierConstraint,DataTypes),core::componentmodel::behavior::BaseConstraint);
+
     typedef typename DataTypes::VecReal VecReal;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;

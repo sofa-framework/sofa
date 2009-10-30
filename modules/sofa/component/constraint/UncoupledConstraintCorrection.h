@@ -47,6 +47,8 @@ template<class TDataTypes>
 class UncoupledConstraintCorrection : public componentmodel::behavior::BaseConstraintCorrection
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(UncoupledConstraintCorrection,TDataTypes), core::componentmodel::behavior::BaseConstraintCorrection);
+
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;

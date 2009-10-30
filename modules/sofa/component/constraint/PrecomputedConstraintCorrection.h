@@ -52,6 +52,8 @@ template<class TDataTypes>
 class PrecomputedConstraintCorrection : public componentmodel::behavior::BaseConstraintCorrection
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(PrecomputedConstraintCorrection,TDataTypes),componentmodel::behavior::BaseConstraintCorrection);
+
     typedef TDataTypes DataTypes;
     typedef typename componentmodel::behavior::BaseConstraintCorrection Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
