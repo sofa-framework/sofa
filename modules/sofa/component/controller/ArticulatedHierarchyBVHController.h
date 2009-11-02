@@ -58,7 +58,7 @@ namespace controller
 class SOFA_COMPONENT_CONTROLLER_API ArticulatedHierarchyBVHController : public ArticulatedHierarchyController
 {
 public:
-
+    SOFA_CLASS(ArticulatedHierarchyBVHController,ArticulatedHierarchyController);
     /**
      * @brief Default Constructor.
      */

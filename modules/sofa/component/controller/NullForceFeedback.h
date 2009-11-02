@@ -44,6 +44,7 @@ class NullForceFeedback : public sofa::component::controller::ForceFeedback
 {
 
 public:
+    SOFA_CLASS(NullForceFeedback,sofa::component::controller::ForceFeedback);
     void init();
 
     virtual void computeForce(double x, double y, double z, double u, double v, double w, double q, double& fx, double& fy, double& fz);

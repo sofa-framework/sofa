@@ -63,9 +63,10 @@ namespace controller
  * Provides a Mouse & Keyboard user control on an EdgeSet Topology.
  */
 template<class DataTypes>
-class EdgeSetController : public MechanicalStateController<DataTypes>, public virtual core::objectmodel::BaseObject
+class EdgeSetController : public MechanicalStateController<DataTypes>
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(EdgeSetController,DataTypes),SOFA_TEMPLATE(MechanicalStateController,DataTypes));
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord    Coord   ;

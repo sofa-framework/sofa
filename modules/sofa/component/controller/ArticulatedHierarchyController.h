@@ -67,6 +67,7 @@ using sofa::component::container::ArticulatedHierarchyContainer;
 class SOFA_COMPONENT_CONTROLLER_API ArticulatedHierarchyController : public Controller
 {
 public:
+    SOFA_CLASS(ArticulatedHierarchyController,Controller);
     typedef std::vector< ArticulatedHierarchyContainer::ArticulationCenter * > ArtCenterVec;
     typedef ArtCenterVec::iterator ArtCenterVecIt;
     typedef std::vector< ArticulatedHierarchyContainer::ArticulationCenter::Articulation * > ArtVec;
