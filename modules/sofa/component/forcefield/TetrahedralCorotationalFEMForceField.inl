@@ -112,12 +112,6 @@ template <class DataTypes> void TetrahedralCorotationalFEMForceField<DataTypes>:
 template <class DataTypes>
 void TetrahedralCorotationalFEMForceField<DataTypes>::init()
 {
-    f_poissonRatio.beginEdit();
-    f_youngModulus.beginEdit();
-    f_localStiffnessFactor.beginEdit();
-    f_updateStiffnessMatrix.beginEdit();
-    f_assembling.beginEdit();
-
 
     this->core::componentmodel::behavior::ForceField<DataTypes>::init();
 
@@ -366,9 +360,9 @@ template<class DataTypes>
 void TetrahedralCorotationalFEMForceField<DataTypes>::computeMaterialStiffness(int i, Index&a, Index&b, Index&c, Index&d)
 {
 
-    const VecReal& localStiffnessFactor = _localStiffnessFactor;
-    const Real youngModulus = (localStiffnessFactor.empty() ? 1.0f : localStiffnessFactor[i*localStiffnessFactor.size()/_topology->getNbTetrahedra()])*_youngModulus;
-    const Real poissonRatio = _poissonRatio;
+    const VecReal& localStiffnessFactor = _localStiffnessFactor.getValue();
+    const Real youngModulus = (localStiffnessFactor.empty() ? 1.0f : localStiffnessFactor[i*localStiffnessFactor.size()/_topology->getNbTetrahedra()])*_youngModulus.getValue();
+    const Real poissonRatio = _poissonRatio.getValue();
 
     helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
 
@@ -567,7 +561,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForceSmall( Vect
 
     helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
 
-    if(!_assembling)
+    if(!_assembling.getValue())
     {
         computeForce( F, D,tetrahedronInf[elementIndex].materialMatrix,tetrahedronInf[elementIndex].strainDisplacementMatrix );
         //serr<<"TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForceSmall, force"<<F<<sendl;
@@ -784,7 +778,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForceLarge( Vect
     //serr<<"D : "<<D<<sendl;
 
     Displacement F;
-    if(_updateStiffnessMatrix)
+    if(_updateStiffnessMatrix.getValue())
     {
         tetrahedronInf[elementIndex].strainDisplacementMatrix[0][0]   = ( - deforme[2][1]*deforme[3][2] );
         tetrahedronInf[elementIndex].strainDisplacementMatrix[1][1] = ( deforme[2][0]*deforme[3][2] - deforme[1][0]*deforme[3][2] );
@@ -800,7 +794,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForceLarge( Vect
         tetrahedronInf[elementIndex].strainDisplacementMatrix[11][2] = ( deforme[1][0]*deforme[2][1] );
     }
 
-    if(!_assembling)
+    if(!_assembling.getValue())
     {
         // compute force on element
         computeForce( F, D, tetrahedronInf[elementIndex].materialMatrix, tetrahedronInf[elementIndex].strainDisplacementMatrix);
@@ -992,13 +986,13 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForcePolar( Vect
     //serr<<"D : "<<D<<sendl;
 
     Displacement F;
-    if(_updateStiffnessMatrix)
+    if(_updateStiffnessMatrix.getValue())
     {
         // shape functions matrix
         computeStrainDisplacement( tetrahedronInf[elementIndex].strainDisplacementMatrix, deforme[0],deforme[1],deforme[2],deforme[3]  );
     }
 
-    if(!_assembling)
+    if(!_assembling.getValue())
     {
         computeForce( F, D, tetrahedronInf[elementIndex].materialMatrix, tetrahedronInf[elementIndex].strainDisplacementMatrix );
         for(int i=0; i<12; i+=3)

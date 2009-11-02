@@ -154,41 +154,32 @@ protected:
 public:
     int method;
     Data<std::string> f_method; ///< the computation method of the displacements
-    Real   _poissonRatio;
-    DataPtr<Real> f_poissonRatio;
-    Real   _youngModulus;
-    DataPtr<Real> f_youngModulus;
-    VecReal   _localStiffnessFactor;
-    DataPtr<VecReal> f_localStiffnessFactor;
-    bool   _updateStiffnessMatrix;
-    DataPtr<bool> f_updateStiffnessMatrix;
-    bool   _assembling;
-    DataPtr<bool> f_assembling;
+    Data<Real> _poissonRatio;
+    Data<Real> _youngModulus;
+    Data<VecReal> _localStiffnessFactor;
+    Data<bool> _updateStiffnessMatrix;
+    Data<bool> _assembling;
 
     TetrahedralCorotationalFEMForceField()
         : f_method(initData(&f_method,std::string("large"),"method","\"small\", \"large\" (by QR) or \"polar\" displacements"))
-        ,  _poissonRatio((Real)0.45f)
-        , f_poissonRatio(core::objectmodel::BaseObject::initDataPtr(&f_poissonRatio,&_poissonRatio,"poissonRatio","FEM Poisson Ratio"))
-        ,  _youngModulus((Real)5000)
-        , f_youngModulus(core::objectmodel::BaseObject::initDataPtr(&f_youngModulus,&_youngModulus,"youngModulus","FEM Young Modulus"))
-        , f_localStiffnessFactor(core::objectmodel::BaseObject::initDataPtr(&f_localStiffnessFactor,&_localStiffnessFactor,"localStiffnessFactor","Allow specification of different stiffness per element. If there are N element and M values are specified, the youngModulus factor for element i would be localStiffnessFactor[i*M/N]"))
-        ,  _updateStiffnessMatrix(false)
-        , f_updateStiffnessMatrix(core::objectmodel::BaseObject::initDataPtr(&f_updateStiffnessMatrix,&_updateStiffnessMatrix,"updateStiffnessMatrix",""))
-        ,  _assembling(false)
-        , f_assembling(core::objectmodel::BaseObject::initDataPtr(&f_assembling,&_assembling,"assembling",""))
+        , _poissonRatio(core::objectmodel::BaseObject::initData(&_poissonRatio,(Real)0.45f,"poissonRatio","FEM Poisson Ratio"))
+        , _youngModulus(core::objectmodel::BaseObject::initData(&_youngModulus,(Real)5000,"youngModulus","FEM Young Modulus"))
+        , _localStiffnessFactor(core::objectmodel::BaseObject::initData(&_localStiffnessFactor,"localStiffnessFactor","Allow specification of different stiffness per element. If there are N element and M values are specified, the youngModulus factor for element i would be localStiffnessFactor[i*M/N]"))
+        , _updateStiffnessMatrix(core::objectmodel::BaseObject::initData(&_updateStiffnessMatrix,false,"updateStiffnessMatrix",""))
+        , _assembling(core::objectmodel::BaseObject::initData(&_assembling,false,"assembling",""))
     {}
 
     void parse(core::objectmodel::BaseObjectDescription* arg);
 
-    void setPoissonRatio(Real val) { this->f_poissonRatio.setValue(val); }
+    void setPoissonRatio(Real val) { this->_poissonRatio.setValue(val); }
 
-    void setYoungModulus(Real val) { this->f_youngModulus.setValue(val); }
+    void setYoungModulus(Real val) { this->_youngModulus.setValue(val); }
 
     void setMethod(int val) { method = val; }
 
-    void setUpdateStiffnessMatrix(bool val) { this->f_updateStiffnessMatrix.setValue(val); }
+    void setUpdateStiffnessMatrix(bool val) { this->_updateStiffnessMatrix.setValue(val); }
 
-    void setComputeGlobalMatrix(bool val) { this->f_assembling.setValue(val); }
+    void setComputeGlobalMatrix(bool val) { this->_assembling.setValue(val); }
 
     virtual void init();
     virtual void reinit();
