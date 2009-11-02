@@ -234,7 +234,7 @@ public:
             return;
         }
 #endif
-        data[i*pitch+j] = Real();
+        data[i*pitch+j] = (Real)0;
     }
 
     void clearRow(int i)
@@ -250,7 +250,7 @@ public:
         }
 #endif
         for (Index j=0; j<nCol; ++j)
-            data[i*pitch+j] = Real();
+            data[i*pitch+j] = (Real)0;
     }
 
     void clearCol(int j)
@@ -266,7 +266,7 @@ public:
         }
 #endif
         for (Index i=0; i<nRow; ++i)
-            data[i*pitch+j] = Real();
+            data[i*pitch+j] = (Real)0;
     }
 
     void clearRowCol(int i)
@@ -288,11 +288,11 @@ public:
     void clear()
     {
         //if (pitch == nCol)
-        //    std::fill(data, data+nRow*pitch, Real());
+        //    std::fill(data, data+nRow*pitch, (Real)0);
         //else
         for (Index i=0; i<nRow; ++i)
             for (Index j=0; j<nCol; ++j)
-                data[i*pitch+j] = Real();
+                data[i*pitch+j] = (Real)0;
     }
 
     template<class Real2>
