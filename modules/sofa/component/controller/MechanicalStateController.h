@@ -64,6 +64,7 @@ template<class DataTypes>
 class MechanicalStateController : public Controller
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(MechanicalStateController,DataTypes),Controller);
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord    Coord   ;

@@ -48,6 +48,7 @@ class EnslavementForceFeedback : public sofa::component::controller::ForceFeedba
 {
 
 public:
+    SOFA_CLASS(EnslavementForceFeedback,sofa::component::controller::ForceFeedback);
     EnslavementForceFeedback();
     virtual ~EnslavementForceFeedback();
 

@@ -76,6 +76,7 @@ class SOFA_COMPONENT_CONTROLLER_API Controller : public virtual core::componentm
 {
 
 public:
+    SOFA_CLASS(Controller,core::componentmodel::behavior::BaseController);
     /**
     * @brief Default constructor.
     */

@@ -52,6 +52,7 @@ class SOFA_COMPONENT_CONTROLLER_API LCPForceFeedback : public sofa::component::c
 {
 
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(LCPForceFeedback,DataType),sofa::component::controller::ForceFeedback);
     typedef defaulttype::SparseConstraint<typename DataType::Deriv> SparseConstraint;
     typedef typename SparseConstraint::const_data_iterator ConstraintIterator;
 
