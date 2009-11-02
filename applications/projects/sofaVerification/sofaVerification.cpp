@@ -33,10 +33,12 @@
 #include <sofa/helper/BackTrace.h>
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/helper/system/SetDirectory.h>
-#include <sofa/simulation/common/WriteStateVisitor.h>
 #include <sofa/component/misc/ReadState.h>
 #include <sofa/component/misc/WriteState.h>
 #include <sofa/component/misc/CompareState.h>
+#include <sofa/component/misc/ReadTopology.h>
+#include <sofa/component/misc/WriteTopology.h>
+#include <sofa/component/misc/CompareTopology.h>
 
 #include <ctime>
 
@@ -44,8 +46,16 @@
 // ---
 // ---------------------------------------------------------------------
 
-void apply(std::vector< std::string> &files, unsigned int iterations, bool reinit)
+void apply(std::vector< std::string> &files, unsigned int iterations, bool reinit, bool useTopology)
 {
+    std::cout <<"******* Args ********" << std::endl;
+    std::cout <<"files: " << files[0] << std::endl;
+    std::cout <<"iterations: " << iterations << std::endl;
+    std::cout <<"reinit: " << reinit << std::endl;
+    std::cout <<"useTopology: " << useTopology << std::endl;
+    std::cout <<"*********************" << std::endl;
+
+
     using namespace sofa::helper::system;
     sofa::simulation::tree::GNode* groot = NULL;
 
@@ -70,25 +80,56 @@ void apply(std::vector< std::string> &files, unsigned int iterations, bool reini
         //If we initialize the system, we add only WriteState components, to store the reference states
         if (reinit)
         {
-            sofa::component::misc::WriteStateCreator writeVisitor;
-            writeVisitor.setCreateInMapping(true);
-            writeVisitor.setSceneName(file);
-            writeVisitor.execute(groot);
+            if (useTopology)
+            {
+                sofa::component::misc::WriteTopologyCreator writeVisitor;
 
-            sofa::component::misc::WriteStateActivator v_write(true);
-            v_write.execute(groot);
+                writeVisitor.setCreateInMapping(true);
+                writeVisitor.setSceneName(file);
+                writeVisitor.execute(groot);
+
+                sofa::component::misc::WriteTopologyActivator v_write(true);
+                v_write.execute(groot);
+            }
+            else
+            {
+                sofa::component::misc::WriteStateCreator writeVisitor;
+
+                writeVisitor.setCreateInMapping(true);
+                writeVisitor.setSceneName(file);
+                writeVisitor.execute(groot);
+
+                sofa::component::misc::WriteStateActivator v_write(true);
+                v_write.execute(groot);
+            }
+
         }
         else
         {
-            //We add CompareState components: as it derives from the ReadState, we use the ReadStateActivator to enable them.
-            sofa::component::misc::CompareStateCreator compareVisitor;
-            compareVisitor.setCreateInMapping(true);
-            compareVisitor.setSceneName(file);
-            compareVisitor.execute(groot);
+            if (useTopology)
+            {
+                //We add CompareTopology components: as it derives from the ReadTopology, we use the ReadTopologyActivator to enable them.
+                sofa::component::misc::CompareTopologyCreator compareVisitor;
+                compareVisitor.setCreateInMapping(true);
+                compareVisitor.setSceneName(file);
+                compareVisitor.execute(groot);
 
-            sofa::component::misc::ReadStateActivator v_read(true);
-            v_read.execute(groot);
+                sofa::component::misc::ReadTopologyActivator v_read(true);
+                v_read.execute(groot);
+            }
+            else
+            {
+                //We add CompareState components: as it derives from the ReadState, we use the ReadStateActivator to enable them.
+                sofa::component::misc::CompareStateCreator compareVisitor;
+                compareVisitor.setCreateInMapping(true);
+                compareVisitor.setSceneName(file);
+                compareVisitor.execute(groot);
+
+                sofa::component::misc::ReadStateActivator v_read(true);
+                v_read.execute(groot);
+            }
         }
+
 
         //Save the initial time
         clock_t curtime = clock();
@@ -104,11 +145,35 @@ void apply(std::vector< std::string> &files, unsigned int iterations, bool reini
         //We read the final error: the summation of all the error made at each time step
         if (!reinit)
         {
-            sofa::component::misc::CompareStateResult result;
-            result.execute(groot);
-            std::cout << "ERROR " << result.getTotalError() << "\n";
-            std::cout << "ERRORBYDOF " << result.getErrorByDof()/(double)result.getNumCompareState() << "\n";
+            if (useTopology)
+            {
+                sofa::component::misc::CompareTopologyResult result;
+                result.execute(groot);
+                std::cout << "ERROR " << result.getTotalError() << "\n";
+
+                const std::vector<unsigned int> listResult = result.getErrors();
+                if (listResult.size() != 5)
+                {
+                    std::cout << "ERROR while reading detail of errors by topological element." << std::endl;
+                    break;
+                }
+
+                std::cout << "ERROR by element type " << "\n";
+                std::cout << "EDGES " << listResult[0]/(double)result.getNumCompareTopology() << "\n";
+                std::cout << "TRIANGLES " << listResult[0]/(double)result.getNumCompareTopology() << "\n";
+                std::cout << "QUADS " << listResult[0]/(double)result.getNumCompareTopology() << "\n";
+                std::cout << "TETRAHEDRA " << listResult[0]/(double)result.getNumCompareTopology() << "\n";
+                std::cout << "HEXAHEDRA " << listResult[0]/(double)result.getNumCompareTopology() << "\n";
+            }
+            else
+            {
+                sofa::component::misc::CompareStateResult result;
+                result.execute(groot);
+                std::cout << "ERROR " << result.getTotalError() << "\n";
+                std::cout << "ERRORBYDOF " << result.getErrorByDof()/(double)result.getNumCompareState() << "\n";
+            }
         }
+
         //Clear and prepare for next scene
         sofa::simulation::getSimulation()->unload(groot);
     }
@@ -122,6 +187,7 @@ int main(int argc, char** argv)
     std::vector<std::string> files;
     unsigned int iterations=100;
     bool reinit=false;
+    bool topology=false;
 
 
     sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
@@ -129,6 +195,7 @@ int main(int argc, char** argv)
     sofa::helper::parse(&files, "This is a SOFA verification. To use it, specify in the command line a \".ini\" file containing the path to the scenes you want to test. ")
     .option(&reinit,'r',"reinit","Recreate the references state files")
     .option(&iterations, 'i',"iteration", "Number of iterations for testing")
+    .option(&topology, 't',"topology", "Specific mode to run tests on topology")
     (argc,argv);
 
 
@@ -158,9 +225,8 @@ int main(int argc, char** argv)
 
     std::cout << "Files : " << files[0] << "\n";
 
-    if (reinit) apply(files, iterations, true);
-    else
-        apply(files, iterations, false);
+    apply(files, iterations, reinit, topology);
+
 
 
     return 0;
