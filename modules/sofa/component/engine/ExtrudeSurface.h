@@ -57,6 +57,7 @@ template <class DataTypes>
 class ExtrudeSurface : public virtual core::objectmodel::DataEngine, public virtual core::objectmodel::BaseObject
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(ExtrudeSurface,DataTypes),core::objectmodel::BaseObject);
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
