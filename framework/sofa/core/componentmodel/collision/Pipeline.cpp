@@ -55,6 +55,18 @@ Pipeline::~Pipeline()
 {
 }
 
+
+const BroadPhaseDetection *Pipeline::getBroadPhaseDetection() const
+{
+    return broadPhaseDetection;
+}
+
+
+const NarrowPhaseDetection *Pipeline::getNarrowPhaseDetection() const
+{
+    return narrowPhaseDetection;
+}
+
 #if 0
 
 void Pipeline::init()

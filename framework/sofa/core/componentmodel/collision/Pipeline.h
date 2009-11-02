@@ -100,6 +100,12 @@ public:
 
     //sofa::helper::vector<DetectionOutput*>& getDetectionOutputs() { return detectionOutputs; }
 
+    /// Broad phase collision detection method accessor.
+    const BroadPhaseDetection *getBroadPhaseDetection() const;
+
+    /// Narrow phase collision detection method accessor.
+    const NarrowPhaseDetection *getNarrowPhaseDetection() const;
+
 protected:
     /// Remove collision response from last step
     virtual void doCollisionReset() = 0;
