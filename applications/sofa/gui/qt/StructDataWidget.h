@@ -89,9 +89,9 @@ public:
     QCheckBox* check;
     struct_data_widget_container() : check(NULL) {}
     template<class Dialog, class Slot>
-    bool createWidgets(Dialog* dialog, Slot s, QWidget* parent, const data_type& d, bool readOnly)
+    bool createWidgets(DataWidget * _widget, Dialog* dialog, Slot s, QWidget* parent, const data_type& d, bool readOnly)
     {
-        if (!p.createWidgets(dialog, s, parent, d, readOnly))
+        if (!p.createWidgets(_widget, dialog, s, parent, d, readOnly))
             return false;
         const char* name = vhelper::name();
         bool checkable = vhelper::isCheckable();
@@ -108,7 +108,7 @@ public:
             if (name && *name && N > 1)
                 new QLabel(QString(name),parent);
         }
-        if (!w.createWidgets(dialog, s, parent, *vhelper::get(d), readOnly || vhelper::readOnly()))
+        if (!w.createWidgets(_widget, dialog, s, parent, *vhelper::get(d), readOnly || vhelper::readOnly()))
             return false;
         if (checkable)
         {
@@ -199,7 +199,7 @@ public:
     typedef struct_data_trait<data_type> shelper;
     struct_data_widget_container() {}
     template<class Dialog, class Slot>
-    bool createWidgets(Dialog* /*dialog*/, Slot /*s*/, QWidget* /*parent*/, const data_type& /*d*/, bool /*readOnly*/)
+    bool createWidgets(DataWidget * /*_widget*/, Dialog* /*dialog*/, Slot /*s*/, QWidget* /*parent*/, const data_type& /*d*/, bool /*readOnly*/)
     {
         return true;
     }

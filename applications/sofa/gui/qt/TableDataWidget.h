@@ -45,6 +45,45 @@ namespace gui
 namespace qt
 {
 
+class QPushButtonUpdater: public QPushButton
+{
+    Q_OBJECT
+public:
+
+    QPushButtonUpdater( DataWidget *d, const QString & text, QWidget * parent = 0 ): QPushButton(text,parent),widget(d) {};
+
+public slots:
+    void setDisplayed(bool b)
+    {
+        if (b)
+        {
+            this->setText(QString("Click to hide the values"));
+            widget->readFromData();
+        }
+        else
+        {
+            this->setText(QString("Click to display the values"));
+        }
+    }
+protected:
+    DataWidget *widget;
+
+};
+
+class QTableUpdater: public Q3Table
+{
+    Q_OBJECT
+public:
+    QTableUpdater ( int numRows, int numCols, QWidget * parent = 0, const char * name = 0 ):Q3Table(numRows, numCols, parent, name) {};
+
+public slots:
+    void setDisplayed(bool b) {this->setShown(b);}
+
+
+public slots:
+
+};
+
 enum
 {
     TYPE_SINGLE = 0,
@@ -291,12 +330,14 @@ public:
     typedef typename vhelper::value_type value_type;
 
     QSpinBox* wSize;
-    Q3Table* wTable;
-    QPushButton* wDisplay;
+    QTableUpdater* wTable;
+    QPushButtonUpdater* wDisplay;
+    DataWidget *widget;
 
-    table_data_widget_container() : wSize(NULL), wTable(NULL), wDisplay(NULL) {}
+    table_data_widget_container() : wSize(NULL), wTable(NULL), wDisplay(NULL), widget(NULL) {}
     int rows;
     int cols;
+
 
     void setRowHeader(int r, const std::string& s)
     {
@@ -351,7 +392,7 @@ public:
 
 
     template<class Dialog, class Slot>
-    bool createWidgets(Dialog* dialog, Slot s, QWidget* parent, const data_type& d, bool readOnly)
+    bool createWidgets(DataWidget *_widget, Dialog* dialog, Slot s, QWidget* parent, const data_type& d, bool readOnly)
     {
         rows = 0;
         int dataRows = rhelper::size(d);
@@ -362,15 +403,16 @@ public:
             cols = vhelper::size(row_type());
         wSize = new QSpinBox(0, INT_MAX, 1, parent);
         if (FLAGS & TABLE_HORIZONTAL)
-            wTable = new Q3Table(cols, 0, parent);
+            wTable = new QTableUpdater(cols, 0, parent);
         else
-            wTable = new Q3Table(0, cols, parent);
+            wTable = new QTableUpdater(0, cols, parent);
 
-        wDisplay = new QPushButton( QString("Click to display the values"), parent);
+        widget=_widget;
+
+        wDisplay = new QPushButtonUpdater( _widget, QString("Click to display the values"), parent);
         wDisplay->setToggleButton(true);
         wDisplay->setOn(dataRows < MAX_NUM_ELEM && dataRows != 0 );
-
-        updateVisibilityTable();
+        wDisplay->setAutoDefault(false);
 
         wSize->setValue(dataRows);
 
@@ -380,7 +422,7 @@ public:
             fillTable(d);
             rows = dataRows;
         }
-
+        wTable->setDisplayed(isDisplayed());
 
         if (readOnly)
         {
@@ -399,8 +441,8 @@ public:
             }
             dialog->connect(wTable, SIGNAL( valueChanged(int,int) ), dialog, s);
         }
-        dialog->connect(wDisplay, SIGNAL( clicked() ), dialog, s);
-
+        dialog->connect(wDisplay, SIGNAL( toggled(bool) ), wTable,   SLOT(setDisplayed(bool)));
+        dialog->connect(wDisplay, SIGNAL( toggled(bool) ), wDisplay, SLOT(setDisplayed(bool)));
         return true;
     }
     void setReadOnly(bool readOnly)
@@ -414,24 +456,6 @@ public:
         return (wDisplay->isOn());
     }
 
-    void updateVisibilityTable()
-    {
-        setDisplayed(wDisplay->isOn());
-    }
-
-    void setDisplayed( bool disp)
-    {
-        if (disp)
-        {
-            wDisplay->setText(QString("Click to hide the values"));
-        }
-        else
-        {
-            wDisplay->setText(QString("Click to display the values"));
-        }
-
-        wTable->setShown(disp);
-    }
 
     void readFromData(const data_type& d)
     {
@@ -458,27 +482,30 @@ public:
             int oldRows = rhelper::size(d);
             if (rows != oldRows)
             {
+                std::cout << "Different Rows->Erasing" << rows << " :" << oldRows << std::endl;
                 rhelper::resize(rows, d);
             }
 
-            if (isDisplayed())
+            int newRows = rhelper::size(d);
+            if (rows != newRows)
             {
-                int newRows = rhelper::size(d);
-                if (rows != newRows)
-                {
-                    // resize failed -> conform to the real size
-                    std::cout << "Resize to " << rows << " failed. New size is " << newRows << std::endl;
-                    wSize->setValue(newRows);
-                    if (FLAGS & TABLE_HORIZONTAL)
-                        wTable->setNumCols(newRows);
-                    else
-                        wTable->setNumRows(newRows);
-                    rows = newRows;
-                }
+                // resize failed -> conform to the real size
+                std::cout << "Resize to " << rows << " failed. New size is " << newRows << std::endl;
+                wSize->setValue(newRows);
+                if (FLAGS & TABLE_HORIZONTAL)
+                    wTable->setNumCols(newRows);
                 else
+                    wTable->setNumRows(newRows);
+                rows = newRows;
+            }
+            else
+            {
+                int widgetSize=wSize->value();
+                if (widgetSize != rows)
                 {
-                    std::cout << "Resize to " << rows << " succeeded." << std::endl;
+                    rhelper::resize(widgetSize, d);
                 }
+                std::cout << "Resize to " << widgetSize<< " succeeded." << std::endl;
             }
         }
 
@@ -557,7 +584,6 @@ public:
 
     bool processChange(const QObject* sender)
     {
-        updateVisibilityTable();
         data_type d=data_type();
 
         if (isDisplayed()) processTableModifications(d);
@@ -772,6 +798,7 @@ public:
         //d.resize(s);
     }
 };
+
 
 } // namespace qt
 
