@@ -62,9 +62,6 @@ public:
 
     typedef sofa::helper::vector< BaseNode* > Children;
     /// Get a list of child node
-    virtual Children getChildren() = 0;
-
-    /// Get a list of child node
     virtual const Children getChildren() const = 0;
 
     /// Add a child node
@@ -84,6 +81,10 @@ public:
 
     /// Move an object from a node to another node
     virtual void moveObject(BaseObject* obj) = 0;
+
+    /// Test if the given node is an ancestor of this node.
+    /// An ancestor is a parent or (recursively) the parent of an ancestor.
+    virtual bool hasAncestor(const BaseNode* node) const = 0;
 
     /// Remove the current node from the graph: depending on the type of Node, it can have one or several parents.
     virtual void detachFromGraph() = 0;

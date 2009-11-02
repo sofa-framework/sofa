@@ -288,6 +288,18 @@ const core::objectmodel::BaseNode* GNode::getParent() const
     return parent;
 }
 
+/// Test if the given context is an ancestor of this context.
+/// An ancestor is a parent or (recursively) the parent of an ancestor.
+bool GNode::hasAncestor(const BaseContext* context) const
+{
+    GNode* p = parent;
+    while (p)
+    {
+        if (p==context) return true;
+        p = p->parent;
+    }
+    return false;
+}
 
 /// Execute a recursive action starting from this node
 /// This method bypass the actionScheduler of this node if any.
