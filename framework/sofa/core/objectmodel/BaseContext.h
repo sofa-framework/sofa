@@ -426,6 +426,17 @@ public:
 
     /// @}
 
+
+    /// Test if the given context is an ancestor of this context.
+    /// An ancestor is a parent or (recursively) the parent of an ancestor.
+    ///
+    /// This method is an alias to BaseNode::hasAncestor, so that dynamic
+    /// casts are not required to test relationships between contexts.
+    virtual bool hasAncestor(const BaseContext* /*context*/) const
+    {
+        return false;
+    }
+
     /// @name Adding/Removing objects. Note that these methods can fail if the context doesn't support attached objects
     /// @{
 

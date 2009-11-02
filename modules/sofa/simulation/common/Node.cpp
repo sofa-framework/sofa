@@ -358,13 +358,6 @@ Node* Node::getTreeNode(const std::string& name) const
     return result;
 }
 
-sofa::core::objectmodel::BaseNode::Children Node::getChildren()
-{
-    Children list_children;
-    std::copy(child.begin(), child.end(), std::back_inserter(list_children));
-    return list_children;
-}
-
 /// Get parent node (or NULL if no hierarchy or for root node)
 const sofa::core::objectmodel::BaseNode::Children Node::getChildren() const
 {
@@ -372,7 +365,6 @@ const sofa::core::objectmodel::BaseNode::Children Node::getChildren() const
     std::copy(child.begin(), child.end(), std::back_inserter(list_children));
     return list_children;
 }
-
 
 
 

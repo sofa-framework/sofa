@@ -79,6 +79,17 @@ public:
     const core::objectmodel::BaseNode* getParent() const;
 
 
+    /// Test if the given context is an ancestor of this context.
+    /// An ancestor is a parent or (recursively) the parent of an ancestor.
+    bool hasAncestor(const BaseNode* node) const
+    {
+        return hasAncestor(node->getContext());
+    }
+
+    /// Test if the given context is an ancestor of this context.
+    /// An ancestor is a parent or (recursively) the parent of an ancestor.
+    bool hasAncestor(const BaseContext* context) const;
+
 
     /// Generic object access, given a set of required tags, possibly searching up or down from the current context
     ///

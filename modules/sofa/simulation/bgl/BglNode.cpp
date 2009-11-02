@@ -220,6 +220,19 @@ void BglNode::detachFromGraph()
 }
 
 
+/// Test if the given context is an ancestor of this context.
+/// An ancestor is a parent or (recursively) the parent of an ancestor.
+bool BglNode::hasAncestor(const BaseContext* context) const
+{
+    for (Sequence<BglNode>::iterator it=parents.begin(), it_end=parents.end(); it!=it_end; ++it)
+    {
+        BglNode* p = *it;
+        if (p==context) return true;
+        if (p->hasAncestor(context)) return true;
+    }
+    return false;
+}
+
 
 std::string BglNode::getPathName() const
 {
