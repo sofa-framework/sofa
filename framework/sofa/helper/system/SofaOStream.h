@@ -40,19 +40,21 @@ namespace helper
 namespace system
 {
 
-class SOFA_HELPER_API SofaOStreamContainer
-{
-public:
-    virtual ~SofaOStreamContainer();
-    virtual void processStream(std::ostream& out) = 0;
-};
+//class SOFA_HELPER_API SofaOStreamContainer
+//{
+//public:
+//    virtual ~SofaOStreamContainer();
+//    virtual void processStream(std::ostream& out) = 0;
+//};
 
-class SOFA_HELPER_API SofaOStream
+template<class Container>
+class SofaOStream
 {
 protected:
-    SofaOStreamContainer* parent;
+    Container* parent;
 public:
-    friend inline std::ostream &operator << (std::ostream& out, SofaOStream & s)
+
+    friend inline std::ostream &operator << (std::ostream& out, SofaOStream<Container> & s)
     {
         if (s.parent)
             s.parent->processStream(out);
@@ -60,11 +62,20 @@ public:
         return out;
     }
 
-    SofaOStream();
+    SofaOStream()
+        : parent(NULL)
+    {
+    }
 
-    ~SofaOStream();
+    ~SofaOStream()
+    {
+    }
 
-    void setParent(SofaOStreamContainer* p);
+    void setParent(Container* p)
+    {
+        parent = p;
+    }
+
 };
 
 }

@@ -56,7 +56,7 @@ namespace objectmodel
  *  Most importantly it defines how to retrieve information about an object (name, type, fields).
  *
  */
-class SOFA_CORE_API Base : public helper::system::SofaOStreamContainer
+class SOFA_CORE_API Base
 {
 public:
     typedef TClass< Base, void > MyClass;
@@ -65,6 +65,13 @@ public:
 
     Base();
     virtual ~Base();
+
+private:
+
+    /// Copy constructor is not allowed
+    Base(const Base& b);
+
+public:
 
     /// Accessor to the object name
     std::string getName() const;
@@ -218,7 +225,7 @@ public:
     /// Accessor to the map containing all the aliases of this object
     const std::multimap< std::string, BaseData* >& getAliases() const { return m_aliasData; }
 
-    mutable sofa::helper::system::SofaOStream sendl;
+    mutable sofa::helper::system::SofaOStream<Base> sendl;
     mutable std::ostringstream                serr;
     mutable std::ostringstream                sout;
 
@@ -228,9 +235,9 @@ public:
     void clearWarnings();
     void clearOutputs();
 
-protected:
-
     void processStream(std::ostream& out);
+
+protected:
 
     std::string warnings;
     std::string outputs;

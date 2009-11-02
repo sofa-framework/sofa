@@ -245,6 +245,8 @@ public:
 class SOFA_COMPONENT_COLLISION_API FFDDistanceGridCollisionModel : public core::CollisionModel
 {
 public:
+    SOFA_CLASS(FFDDistanceGridCollisionModel,sofa::core::CollisionModel);
+
     typedef SReal GSReal;
     typedef DistanceGrid::Coord GCoord;
     class DeformedCube

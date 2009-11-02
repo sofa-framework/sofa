@@ -22,9 +22,11 @@ namespace cgal
 {
 
 template <class DataTypes>
-class MeshGenerationFromPolyhedron : public virtual sofa::core::objectmodel::DataEngine, public virtual sofa::core::objectmodel::BaseObject
+class MeshGenerationFromPolyhedron : public virtual sofa::core::objectmodel::BaseObject, public virtual sofa::core::objectmodel::DataEngine
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(MeshGenerationFromPolyhedron,DataTypes),sofa::core::objectmodel::BaseObject);
+
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Point;
     typedef typename DataTypes::Coord Coord;
