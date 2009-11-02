@@ -58,6 +58,7 @@ template <class DataTypes>
 class TransformPosition : public virtual core::objectmodel::DataEngine, public virtual core::objectmodel::BaseObject
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(TransformPosition,DataTypes),core::objectmodel::BaseObject);
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;

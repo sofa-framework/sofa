@@ -51,6 +51,7 @@ template <class DataTypes>
 class Vertex2Frame : public virtual core::objectmodel::DataEngine, public virtual core::objectmodel::BaseObject
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(Vertex2Frame,DataTypes),core::objectmodel::BaseObject);
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::VecCoord VecCoord;
 

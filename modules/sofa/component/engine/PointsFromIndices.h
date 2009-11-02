@@ -56,6 +56,7 @@ template <class DataTypes>
 class PointsFromIndices : public virtual core::objectmodel::DataEngine, public virtual core::objectmodel::BaseObject
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(PointsFromIndices,DataTypes),core::objectmodel::BaseObject);
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef topology::PointSubset SetIndex;

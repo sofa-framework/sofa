@@ -53,9 +53,10 @@ using namespace core::objectmodel;
  * This class find all the points located inside a given box.
  */
 template <class DataTypes>
-class BoxROI : public virtual core::objectmodel::DataEngine, public virtual core::objectmodel::BaseObject
+class BoxROI : public virtual core::objectmodel::DataEngine, public core::objectmodel::BaseObject
 {
 public:
+    SOFA_CLASS(SOFA_TEMPLATE(BoxROI,DataTypes),core::objectmodel::BaseObject);
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
     typedef defaulttype::Vec<6,Real> Vec6;
