@@ -284,10 +284,7 @@ public:
 
     inline friend std::ostream & operator << (std::ostream &out, const Data& df)
     {
-        if (df.m_linkPath.empty())
-            out<<df.getValue();
-        else
-            out<<df.m_linkPath;
+        out<<df.getValue();
         return out;
     }
 
@@ -346,10 +343,7 @@ template<class T>
 inline
 void TData<T>::printValue( std::ostream& out=std::cout ) const
 {
-    if (m_linkPath.empty())
-        out << value() << " ";
-    else
-        out << m_linkPath << " ";
+    out << value() << " ";
 }
 
 /// General case for printing default value
