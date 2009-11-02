@@ -92,7 +92,7 @@ public:
     Widget* w;
     data_widget_container() : w(NULL) {}
     template<class Dialog, class Slot>
-    bool createWidgets(Dialog* dialog, Slot s, QWidget* parent, const data_type& d, bool readOnly)
+    bool createWidgets(DataWidget */*_widget*/, Dialog* dialog, Slot s, QWidget* parent, const data_type& d, bool readOnly)
     {
         w = helper::create(parent, d);
         if (w == NULL) return false;
@@ -141,7 +141,7 @@ public:
     virtual bool createWidgets(QWidget* parent)
     {
         const data_type& d = data->virtualGetValue();
-        if (!container.createWidgets(this->dialog, SLOT( changeValue() ), parent, d, this->readOnly))
+        if (!container.createWidgets(this, this->dialog, SLOT( changeValue() ), parent, d, this->readOnly))
             return false;
         return true;
     }
@@ -172,7 +172,9 @@ public:
     virtual void update()
     {
         if (!data->isCounterValid() || counter != data->getCounter())
+        {
             readFromData();
+        }
     }
 };
 
@@ -373,11 +375,11 @@ public:
     Container w[N];
     fixed_vector_data_widget_container() {}
     template<class Dialog, class Slot>
-    bool createWidgets(Dialog* dialog, Slot s, QWidget* parent, const data_type& d, bool readOnly)
+    bool createWidgets(DataWidget * _widget, Dialog* dialog, Slot s, QWidget* parent, const data_type& d, bool readOnly)
     {
         Q3Grid* grid= new Q3Grid(N,parent);
         for (int i=0; i<N; ++i)
-            if (!w[i].createWidgets(dialog, s, grid, *vhelper::get(d,i), readOnly))
+            if (!w[i].createWidgets(_widget, dialog, s, grid, *vhelper::get(d,i), readOnly))
                 return false;
         return true;
     }
@@ -423,12 +425,12 @@ public:
     Container w[L][C];
     fixed_grid_data_widget_container() {}
     template<class Dialog, class Slot>
-    bool createWidgets(Dialog* dialog, Slot s, QWidget* parent, const data_type& d, bool readOnly)
+    bool createWidgets(DataWidget * _widget, Dialog* dialog, Slot s, QWidget* parent, const data_type& d, bool readOnly)
     {
         Q3Grid* grid= new Q3Grid(C,parent);
         for (int y=0; y<L; ++y)
             for (int x=0; x<C; ++x)
-                if (!w[y][x].createWidgets(dialog, s, grid, *vhelper::get(*rhelper::get(d,y),x), readOnly))
+                if (!w[y][x].createWidgets(_widget, dialog, s, grid, *vhelper::get(*rhelper::get(d,y),x), readOnly))
                     return false;
         return true;
     }
