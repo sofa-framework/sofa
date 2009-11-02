@@ -4,7 +4,10 @@
 # Target is a library:  sofacore$$LIBSUFFIX
 
 HEADERS += \
-          core.h\ 
+          core.h \
+          VecId.h \
+          ExecParams.h \
+          MechanicalParams.h \
           BaseMapping.h \
           BehaviorModel.h \
           CollisionElement.h \
