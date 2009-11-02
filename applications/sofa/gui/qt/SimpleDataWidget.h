@@ -92,7 +92,7 @@ public:
     Widget* w;
     data_widget_container() : w(NULL) {}
     template<class Dialog, class Slot>
-    bool createWidgets(DataWidget */*_widget*/, Dialog* dialog, Slot s, QWidget* parent, const data_type& d, bool readOnly)
+    bool createWidgets(DataWidget * /* _widget */, Dialog* dialog, Slot s, QWidget* parent, const data_type& d, bool readOnly)
     {
         w = helper::create(parent, d);
         if (w == NULL) return false;
