@@ -112,12 +112,33 @@ public:
     SOFA_CLASS_DECL
 
 // This macro should now be used at the beginning of all declarations of classes with 4 base classes
-#define SOFA_CLASS4(T,Parent1,Parent2,Parent3) \
+#define SOFA_CLASS4(T,Parent1,Parent2,Parent3,Parent4) \
     typedef ::sofa::core::objectmodel::TClass< T, std::pair<std::pair<Parent1,Parent2>,std::pair<Parent3,Parent4> > > MyClass; \
     typedef Parent1 Inherit1; \
     typedef Parent2 Inherit2; \
     typedef Parent3 Inherit3; \
     typedef Parent4 Inherit4; \
+    SOFA_CLASS_DECL
+
+// This macro should now be used at the beginning of all declarations of classes with 5 base classes
+#define SOFA_CLASS5(T,Parent1,Parent2,Parent3,Parent4,Parent5) \
+    typedef ::sofa::core::objectmodel::TClass< T, std::pair<std::pair<Parent1,Parent2>,std::pair<Parent3,std::pair<Parent4,Parent5> > > > MyClass; \
+    typedef Parent1 Inherit1; \
+    typedef Parent2 Inherit2; \
+    typedef Parent3 Inherit3; \
+    typedef Parent4 Inherit4; \
+    typedef Parent5 Inherit5; \
+    SOFA_CLASS_DECL
+
+// This macro should now be used at the beginning of all declarations of classes with 5 base classes
+#define SOFA_CLASS6(T,Parent1,Parent2,Parent3,Parent4,Parent5,Parent6) \
+    typedef ::sofa::core::objectmodel::TClass< T, std::pair<std::pair<Parent1,Parent2>,std::pair<std::pair<Parent3,Parent4>,std::pair<Parent5,Parent6> > > > MyClass; \
+    typedef Parent1 Inherit1; \
+    typedef Parent2 Inherit2; \
+    typedef Parent3 Inherit3; \
+    typedef Parent4 Inherit4; \
+    typedef Parent5 Inherit5; \
+    typedef Parent6 Inherit6; \
     SOFA_CLASS_DECL
 
 // Do not use this macro directly, use SOFA_CLASS instead
