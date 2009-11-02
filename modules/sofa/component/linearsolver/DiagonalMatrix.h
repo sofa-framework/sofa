@@ -97,7 +97,7 @@ public:
 
     SReal element(int i, int j) const
     {
-        if (i!=j) return Real();
+        if (i!=j) return (Real)0;
         return data[i];
     }
 
@@ -113,22 +113,22 @@ public:
 
     void clear(int i, int /*j*/)
     {
-        data[i] = Real();
+        data[i] = (Real)0;
     }
 
     void clearRow(int i)
     {
-        data[i] = Real();
+        data[i] = (Real)0;
     }
 
     void clearCol(int j)
     {
-        data[j] = Real();
+        data[j] = (Real)0;
     }
 
     void clearRowCol(int i)
     {
-        data[i] = Real();
+        data[i] = (Real)0;
     }
 
     void clear()
