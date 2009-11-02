@@ -28,6 +28,7 @@
 #include <sofa/component/linearsolver/JacobiPreconditioner.h>
 #include <sofa/component/linearsolver/NewMatMatrix.h>
 #include <sofa/component/linearsolver/FullMatrix.h>
+#include <sofa/component/linearsolver/DiagonalMatrix.h>
 #include <sofa/component/linearsolver/SparseMatrix.h>
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>
@@ -69,11 +70,7 @@ JacobiPreconditioner<TMatrix,TVector>::JacobiPreconditioner()
 template<class TMatrix, class TVector>
 void JacobiPreconditioner<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& r)
 {
-    //double t2 = CTime::getRefTime();
-
     for (unsigned i=0; i<z.size(); i++) z.set(i,r.element(i) / M.element(i,i)); //si i==j;
-
-    //printf("%f ",(CTime::getRefTime() - t2) / (double)CTime::getRefTicksPerSec());
 }
 
 SOFA_DECL_CLASS(JacobiPreconditioner)
@@ -81,7 +78,9 @@ SOFA_DECL_CLASS(JacobiPreconditioner)
 int JacobiPreconditionerClass = core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm")
 //.add< JacobiPreconditioner<GraphScatteredMatrix,GraphScatteredVector> >(true)
         .add< JacobiPreconditioner< SparseMatrix<double>, FullVector<double> > >()
-        .add< JacobiPreconditioner<NewMatBandMatrix,NewMatVector> >(true)
+        .add< JacobiPreconditioner<NewMatBandMatrix,NewMatVector> >()
+        .add< JacobiPreconditioner<DiagonalMatrix<double>,FullVector<double> > >()
+        .add< JacobiPreconditioner<DiagonalMatrix<float>,FullVector<float> > >(true)
         .add< JacobiPreconditioner<NewMatMatrix,NewMatVector> >()
         .add< JacobiPreconditioner<NewMatSymmetricMatrix,NewMatVector> >()
         .add< JacobiPreconditioner<NewMatSymmetricBandMatrix,NewMatVector> >()
