@@ -30,6 +30,11 @@ HEADERS = \
 		  
 README_FILE = CGALPlugin.txt
 
+unix{
+	QMAKE_CFLAGS_RELEASE -= -fno-math-errno -funroll-loops -mfpmath=387
+	QMAKE_CXXFLAGS_RELEASE -= -fno-math-errno -funroll-loops -mfpmath=387
+}
+
 unix : QMAKE_POST_LINK = cp $$README_FILE $$DESTDIR 
 win32 : QMAKE_POST_LINK = copy \"$$README_FILE\" \"$$SOFA_DIR/lib/sofa-plugins\"
 
