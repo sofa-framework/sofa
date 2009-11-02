@@ -56,10 +56,10 @@ int FastTetrahedralCorotationalForceFieldClass = core::RegisterObject("Fast Coro
         ;
 
 #ifndef SOFA_FLOAT
-template class  FastTetrahedralCorotationalForceField<Vec3dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API FastTetrahedralCorotationalForceField<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class  FastTetrahedralCorotationalForceField<Vec3fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API FastTetrahedralCorotationalForceField<Vec3fTypes>;
 #endif
 
 
