@@ -37,7 +37,7 @@ namespace helper
 
 namespace system
 {
-
+#if 0
 SofaOStreamContainer::~SofaOStreamContainer()
 {
 }
@@ -55,6 +55,7 @@ void SofaOStream::setParent(SofaOStreamContainer* p)
 {
     parent = p;
 }
+#endif
 
 }
 }

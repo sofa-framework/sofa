@@ -81,6 +81,7 @@ public:
         class Articulation : public virtual core::objectmodel::BaseObject
         {
         public:
+            SOFA_CLASS(Articulation,core::objectmodel::BaseObject);
 
             /**
             *	An articulation is defined by an axis, an orientation and an index.

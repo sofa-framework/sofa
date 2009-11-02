@@ -158,7 +158,7 @@ void MeshGenerationFromPolyhedron<DataTypes>::update()
     tetrahedra.clear();
     for( Cell_iterator cit = c3t3.cells_begin() ; cit != c3t3.cells_end() ; ++cit )
     {
-        if (get(cell_pmap, cit)!=1) continue;
+        //if (get(cell_pmap, cit)!=1) continue;
         Tetra tetra;
         for (int i=0; i<4; i++)
             tetra[i] = V[cit->vertex(i)];
