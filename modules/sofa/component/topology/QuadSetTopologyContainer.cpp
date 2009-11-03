@@ -479,6 +479,7 @@ bool QuadSetTopologyContainer::checkTopology() const
 {
 #ifndef NDEBUG
     bool ret = true;
+    helper::ReadAccessor< Data< sofa::helper::vector<Quad> > > m_quad = d_quad;
 
     if(hasQuadsAroundVertex())
     {

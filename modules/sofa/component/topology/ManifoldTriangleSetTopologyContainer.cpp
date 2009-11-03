@@ -57,6 +57,8 @@ bool ManifoldTriangleSetTopologyContainer::checkTopology() const
 {
 #ifndef NDEBUG
     bool ret = true;
+    helper::ReadAccessor< Data< sofa::helper::vector<Triangle> > > m_triangle = d_triangle;
+    helper::ReadAccessor< Data< sofa::helper::vector<Edge> > > m_edge = d_edge;
 
     //Test the shell m_trianglesAroundVertex
     if(hasTrianglesAroundVertex())
