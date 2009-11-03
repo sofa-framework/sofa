@@ -736,7 +736,7 @@ bool HexahedronSetTopologyContainer::checkTopology() const
 {
 #ifndef NDEBUG
     bool ret = true;
-
+    helper::ReadAccessor< Data< sofa::helper::vector<Hexahedron> > > m_hexahedron = d_hexahedron;
     if(hasHexahedraAroundVertex())
     {
         for(unsigned int i=0; i<m_hexahedraAroundVertex.size(); ++i)
