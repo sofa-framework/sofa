@@ -325,6 +325,7 @@ void VTKExporter::writeVTKSimple()
     for (int i=0 ; i<topology->getNbPoints() ; i++)
     {
         *outfile << topology->getPX(i) << " " << topology->getPY(i) << " " << topology->getPZ(i) << std::endl;
+//		std::cout << topology->getPX(i) << " " << topology->getPY(i) << " " << topology->getPZ(i) << std::endl;
     }
 
     *outfile << std::endl;
