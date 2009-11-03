@@ -341,7 +341,7 @@ public:
 
 
 //TODO Move to a separate file
-class QTableUpdater : virtual public QTable
+class QTableUpdater : virtual public Q3Table
 {
     Q_OBJECT
 public:
