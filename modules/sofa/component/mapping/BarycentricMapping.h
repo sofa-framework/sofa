@@ -985,6 +985,8 @@ public:
 
     void init();
 
+    void reinit();
+
     void apply( typename Out::VecCoord& out, const typename In::VecCoord& in );
 
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );

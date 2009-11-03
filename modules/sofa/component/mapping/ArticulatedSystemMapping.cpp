@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_MAPPING_ARTICULATEDSYSTEMMAPPING_CPP
 #include <sofa/component/mapping/ArticulatedSystemMapping.inl>
 #include <sofa/core/componentmodel/behavior/MechanicalMapping.inl>
 #include <sofa/core/componentmodel/behavior/MappedModel.h>
@@ -63,19 +64,20 @@ int ArticulatedSystemMappingClass = core::RegisterObject("Mapping between a set 
         ;
 
 #ifndef SOFA_FLOAT
-template class ArticulatedSystemMapping< MechanicalMapping< MechanicalState<Vec1dTypes>, MechanicalState<Rigid3dTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API ArticulatedSystemMapping< MechanicalMapping< MechanicalState<Vec1dTypes>, MechanicalState<Rigid3dTypes> > >;
 #endif
 #ifndef SOFA_DOUBLE
-template class ArticulatedSystemMapping< MechanicalMapping< MechanicalState<Vec1fTypes>, MechanicalState<Rigid3fTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API ArticulatedSystemMapping< MechanicalMapping< MechanicalState<Vec1fTypes>, MechanicalState<Rigid3fTypes> > >;
 #endif
-/*
+
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class ArticulatedSystemMapping< MechanicalMapping< MechanicalState<Vec1fTypes>, MechanicalState<Rigid3dTypes> > >;
-template class ArticulatedSystemMapping< MechanicalMapping< MechanicalState<Vec1dTypes>, MechanicalState<Rigid3fTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API ArticulatedSystemMapping< MechanicalMapping< MechanicalState<Vec1fTypes>, MechanicalState<Rigid3dTypes> > >;
+template class SOFA_COMPONENT_MAPPING_API ArticulatedSystemMapping< MechanicalMapping< MechanicalState<Vec1dTypes>, MechanicalState<Rigid3fTypes> > >;
 #endif
 #endif
-*/
+
+
 } // namespace mapping
 
 } // namespace component

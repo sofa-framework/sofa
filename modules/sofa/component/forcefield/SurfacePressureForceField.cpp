@@ -22,6 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_FORCEFIELD_SURFACEPRESSUREFORCEFIELD_CPP
 #include <sofa/component/forcefield/SurfacePressureForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
@@ -38,8 +39,6 @@ namespace forcefield
 
 using namespace sofa::defaulttype;
 
-using namespace sofa::defaulttype;
-
 SOFA_DECL_CLASS(SurfacePressureForceField)
 
 int SurfacePressureForceFieldClass = core::RegisterObject("SurfacePressure")
@@ -52,10 +51,10 @@ int SurfacePressureForceFieldClass = core::RegisterObject("SurfacePressure")
         ;
 
 #ifndef SOFA_FLOAT
-template class SurfacePressureForceField<Vec3dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API SurfacePressureForceField<Vec3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SurfacePressureForceField<Vec3fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API SurfacePressureForceField<Vec3fTypes>;
 #endif
 
 
