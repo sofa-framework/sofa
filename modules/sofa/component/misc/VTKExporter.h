@@ -38,6 +38,7 @@ private:
     void fetchDataFields(const helper::vector<std::string>& strData, helper::vector<std::string>& objects, helper::vector<std::string>& fields);
     void writeVTKSimple();
     void writeVTKXML();
+    void writeParallelFile();
     void writeData(const helper::vector<std::string>& objects, const helper::vector<std::string>& fields);
     void writeDataArray(const helper::vector<std::string>& objects, const helper::vector<std::string>& fields);
     std::string segmentString(std::string str, unsigned int n);
