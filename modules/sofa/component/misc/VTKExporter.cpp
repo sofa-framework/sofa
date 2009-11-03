@@ -590,6 +590,45 @@ void VTKExporter::writeVTKXML()
     std::cout << "VTK written" << std::endl;
 }
 
+void VTKExporter::writeParallelFile()
+{
+    std::string filename = vtkFilename.getFullPath();
+    filename.insert(0, "P_");
+//	std::cout << filename << std::endl;
+
+    std::ofstream out(filename.c_str());
+    if(!out.is_open())
+    {
+        serr << "Error creating file "<<filename<<sendl;
+        return;
+    }
+
+    out << "<VTKFile type=\"PUnstructuredGrid\" version=\"0.1\" byte_order=\"BigEndian\">" << std::endl;
+    out << "  <PUnstructuredGrid GhostLevel=\"0\">" << std::endl;
+
+    //write type of the data
+    out << "    <PPointData>" << std::endl;
+    out << "      <PDataArray type=\"\" Name=\"\" NumberofComponents=\"\">" << std::endl;
+    out << "    </PPointData>" << std::endl;
+
+    out << "    <PCellData>" << std::endl;
+    out << "      <PDataArray type=\"\" Name=\"\" NumberofComponents=\"\">" << std::endl;
+    out << "    </PCellData>" << std::endl;
+
+    out << "    <PPoints>" << std::endl;
+    out << "      <PDataArray type=\"\" NumberofComponents=\"\">" << std::endl;
+    out << "    </PPoints>" << std::endl;
+
+    //write piece
+    out << "    <Piece Source=\"\"/>" << std::endl;
+
+    //write end
+    out << "  </PUnstructuredGrid>" << std::endl;
+    out << "</VTKFile>" << std::endl;
+    out.close();
+    std::cout << "parallel file written" << std::endl;
+}
+
 
 void VTKExporter::handleEvent(sofa::core::objectmodel::Event *event)
 {
