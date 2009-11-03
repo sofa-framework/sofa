@@ -68,7 +68,7 @@ protected:
 class SOFA_SOFAGUI_API AttachOperation : public Operation
 {
 public:
-    AttachOperation():stiffness(1000.0) {std::cout << "AttachOperation()" << std::endl;};
+    AttachOperation():stiffness(1000.0) {};
     virtual ~AttachOperation() {};
     virtual void start() ;
     virtual void execution() ;

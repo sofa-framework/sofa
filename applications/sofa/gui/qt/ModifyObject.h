@@ -339,6 +339,52 @@ public:
 };
 
 
+
+//TODO Move to a separate file
+class QTableUpdater : virtual public QTable
+{
+    Q_OBJECT
+public:
+    QTableUpdater ( int numRows, int numCols, QWidget * parent = 0, const char * name = 0 ):
+#ifdef SOFA_QT4
+        Q3Table(numRows, numCols, parent, name)
+#else
+        QTable(numRows, numCols, parent, name)
+#endif
+    {};
+
+public slots:
+    void setDisplayed(bool b) {this->setShown(b);}
+public slots:
+
+};
+
+class QPushButtonUpdater: public QPushButton
+{
+    Q_OBJECT
+public:
+
+    QPushButtonUpdater( DataWidget *d, const QString & text, QWidget * parent = 0 ): QPushButton(text,parent),widget(d) {};
+
+public slots:
+    void setDisplayed(bool b)
+    {
+        if (b)
+        {
+            this->setText(QString("Click to hide the values"));
+            widget->readFromData();
+        }
+        else
+        {
+            this->setText(QString("Click to display the values"));
+        }
+    }
+protected:
+    DataWidget *widget;
+
+};
+
+
 } // namespace qt
 
 } // namespace gui
