@@ -6,20 +6,20 @@
 	<CollisionResponse name="Response" response="default"/>
 	<CollisionGroup name="Group"/>
 	
-	<Node name="EdgeSet">
+	<Node name="BeamAdapted">
 		<EulerImplicit rayleighStiffness="0" printLog="false"/>
 		<BTDLinearSolver template="NewMatBand" bandWidth="11" threshold="0.000000001" tolerance="0.0000000001" printLog="false" verbose="false"/>
 		
-		<MeshLoader name="meshLoader" filename="mesh/edgeSet.mesh"/>
+		<MeshLoader name="meshLoader" filename="mesh/edgeSet2.mesh"/>
 		<MechanicalObject name="MechanicalDOFs" template="Rigid" position="0 0 0 0 0 0 1  1 0 0 0 0 0 1  2 0 0 0 0 0 1  3 0 0 0 0 0 1  4 0 0 0 0 0 1  5 0 0 0 0 0 1  6 0 0 0 0 0 1"/>
 		<FixedConstraint name="FixedConstraint" indices="0"/>
 		<UniformMass mass="1 1 0.01 0 0 0 0.1 0 0 0 0.1" printLog="false" showInitialCenterOfGravity="false"/>
 		
 		<include href="Objects/EdgeSetTopology.xml" template="Rigid"/>
 		
-		<EdgeSetController listening="true" mainDirection="1.0 0.0 0.0" reversed="false"/>
+	<!--	<EdgeSetController listening="true" mainDirection="1.0 0.0 0.0" reversed="false"/>	-->
 		
-		<BeamAdapter name="beamAdapter" listening="true" minCurvatureAngle="3" maxCurvatureAngle="12" activate="true"/>
+		<BeamAdapter name="beamAdapter" listening="true" minCurvatureAngle="3" maxCurvatureAngle="12" nbMaxBeams="12" activate="true"/>
 		
 		<BeamFEMForceField name="FEM" radius="0.05" youngModulus="500000000"/>
 		
@@ -49,5 +49,41 @@
 		</Node>
 		-->
 	</Node>
+	
+
+	<Node name="BodyVM">
+		<Object type="OglModel" name="Visual" color="1.0 1.0 1.0 1.0" />
+		<Object type="TubularMapping" nbPointsOnEachCircle="10" radius="1.0" object1="../../BeamAdapted/MechanicalDOFs" object2="Visual" />
+	</Node>
+	
+	<!--
+	<Node name="Beam">
+		<EulerImplicit rayleighStiffness="0" printLog="false"/>
+		<BTDLinearSolver template="NewMatBand" bandWidth="11" threshold="0.000000001" tolerance="0.0000000001" printLog="false" verbose="false"/>
+		
+		<MeshLoader name="meshLoader" filename="mesh/edgeSet2.mesh"/>
+		<MechanicalObject name="MechanicalDOFs" template="Rigid" position="0 0 2.0 0 0 0 1  1 0 2.0 0 0 0 1  2 0 2.0 0 0 0 1  3 0 2.0 0 0 0 1  4 0 2.0 0 0 0 1  5 0 2.0 0 0 0 1  6 0 2.0 0 0 0 1"/>
+		<FixedConstraint name="FixedConstraint" indices="0"/>
+		<UniformMass mass="1 1 0.01 0 0 0 0.1 0 0 0 0.1" printLog="false" showInitialCenterOfGravity="false"/>
+		
+		<include href="Objects/EdgeSetTopology.xml" template="Rigid"/>
+		
+		<EdgeSetController listening="true" mainDirection="1.0 0.0 0.0" reversed="false"/>
+		
+		<BeamFEMForceField name="FEM" radius="0.05" youngModulus="500000000"/>
+		
+		<Node name="CM">
+			<MechanicalObject name="CollisionDOFs" template="Vec3d" size="3"/>
+			<LineSet contactStiffness="100.0"/>
+			<IdentityMapping/>
+		</Node>
+		
+		<Node name="SPH_CM">
+			<MechanicalObject/>
+			<Sphere contactStiffness="10.0" radius="0.2"/>
+			<RigidMapping indexFromEnd="true" index="0"/>
+		</Node>
+	</Node>
+	-->
 	
 </Node>
