@@ -106,6 +106,7 @@
 #include <qbuttongroup.h>
 #include <qradiobutton.h>
 #include <qinputdialog.h>
+#include <qmime.h>
 #endif
 
 #include <GenGraphForm.h>
@@ -641,7 +642,13 @@ void RealGUI::init()
     QVBoxLayout *descriptionLayout = new QVBoxLayout(descriptionScene);
     htmlPage = new QTextBrowser(descriptionScene);
     descriptionLayout->addWidget(htmlPage);
+#ifdef SOFA_QT4
     connect(htmlPage, SIGNAL(sourceChanged(const QUrl&)), this, SLOT(changeHtmlPage(const QUrl&)));
+#else
+    // QMimeSourceFactory::defaultFactory()->setExtensionType("html", "text/utf8");
+    htmlPage->mimeSourceFactory()->setExtensionType("html", "text/utf8");;
+    connect(htmlPage, SIGNAL(sourceChanged(const QString&)), this, SLOT(changeHtmlPage(const QString&)));
+#endif
     //--------
     SofaPluginManager::getInstance()->hide();
     SofaMouseManager::getInstance()->hide();
@@ -1060,7 +1067,13 @@ void RealGUI::setScene ( Node* root, const char* filename, bool temporaryFile )
             htmlFile = "file:///"+htmlFile;
 #endif
             descriptionScene->show();
+#ifdef SOFA_QT4
             htmlPage->setSource(QUrl(QString(htmlFile.c_str())));
+#else
+            htmlPage->mimeSourceFactory()->setFilePath(QString(htmlFile.c_str()));
+            htmlPage->setSource(QString(htmlFile.c_str()));
+#endif
+
         }
 
     }
@@ -2008,13 +2021,19 @@ void RealGUI::dropEvent(QDropEvent* event)
     else  	                                    fileOpen(filename);
 }
 
-
+#ifdef SOFA_QT4
 void RealGUI::changeHtmlPage( const QUrl& u)
 {
     std::string path=u.path().ascii();
 #ifdef WIN32
     path = path.substr(1);
 #endif
+#else
+void RealGUI::changeHtmlPage( const QString& u)
+{
+    std::string path=u.ascii();
+#endif
+    std::cerr << path << " : " << std::endl;
     path  = sofa::helper::system::DataRepository.getFile(path);
     std::string extension=sofa::helper::system::SetDirectory::GetExtension(path.c_str());
     if (extension == "xml" || extension == "scn") fileOpen(path);

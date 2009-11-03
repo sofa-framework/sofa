@@ -32,6 +32,7 @@
 #include <sofa/component/topology/PointSubset.h>
 #include <sofa/component/topology/PointData.h>
 
+
 //If a table has higher than MAX_NUM_ELEM, its data won't be loaded at the creation of the window
 //user has to click on the button update to see the content
 #define MAX_NUM_ELEM 100
@@ -45,57 +46,20 @@ namespace gui
 namespace qt
 {
 
-class QPushButtonUpdater: public QPushButton
-{
-    Q_OBJECT
-public:
-
-    QPushButtonUpdater( DataWidget *d, const QString & text, QWidget * parent = 0 ): QPushButton(text,parent),widget(d) {};
-
-public slots:
-    void setDisplayed(bool b)
-    {
-        if (b)
-        {
-            this->setText(QString("Click to hide the values"));
-            widget->readFromData();
-        }
-        else
-        {
-            this->setText(QString("Click to display the values"));
-        }
-    }
-protected:
-    DataWidget *widget;
-
-};
-
-class QTableUpdater: public Q3Table
-{
-    Q_OBJECT
-public:
-    QTableUpdater ( int numRows, int numCols, QWidget * parent = 0, const char * name = 0 ):Q3Table(numRows, numCols, parent, name) {};
-
-public slots:
-    void setDisplayed(bool b) {this->setShown(b);}
-
-
-public slots:
-
-};
-
 enum
 {
     TYPE_SINGLE = 0,
     TYPE_VECTOR = 1,
     TYPE_STRUCT = 2,
 };
+
 template<class T, int TYPE>
 class flat_data_trait;
 
 template<class T>
-class default_flat_data_trait : public flat_data_trait< T, ((struct_data_trait<T>::NVAR>1) ? TYPE_STRUCT : (vector_data_trait<T>::NDIM>0) ? TYPE_VECTOR : TYPE_SINGLE) >
-{};
+class default_flat_data_trait : public flat_data_trait< T,  (  (struct_data_trait<T>::NVAR >1 ) ?      TYPE_STRUCT :     (       (vector_data_trait<T>::NDIM > 0) ?       TYPE_VECTOR :       TYPE_SINGLE ) ) > {};
+
+
 
 template<class T> inline std::string toString(const T& v)
 {
@@ -362,10 +326,15 @@ public:
     }
     std::string getCellText(int r, int c)
     {
+        QString text;
         if (FLAGS & TABLE_HORIZONTAL)
-            return std::string(wTable->text(c, r).ascii());
+            text=wTable->text(c, r);
         else
-            return std::string(wTable->text(r, c).ascii());
+            text=wTable->text(r, c);
+        if (!text.isNull())
+            return std::string(text.ascii());
+        else
+            return std::string("");
     }
     template<class V>
     void setCell(int r, int c, const V& v)
@@ -482,15 +451,13 @@ public:
             int oldRows = rhelper::size(d);
             if (rows != oldRows)
             {
-                std::cout << "Different Rows->Erasing" << rows << " :" << oldRows << std::endl;
                 rhelper::resize(rows, d);
             }
-
             int newRows = rhelper::size(d);
             if (rows != newRows)
             {
                 // resize failed -> conform to the real size
-                std::cout << "Resize to " << rows << " failed. New size is " << newRows << std::endl;
+                /* std::cout << "Resize to " << rows << " failed. New size is " << newRows << std::endl; */
                 wSize->setValue(newRows);
                 if (FLAGS & TABLE_HORIZONTAL)
                     wTable->setNumCols(newRows);
@@ -505,7 +472,7 @@ public:
                 {
                     rhelper::resize(widgetSize, d);
                 }
-                std::cout << "Resize to " << widgetSize<< " succeeded." << std::endl;
+                /* std::cout << "Resize to " << widgetSize<< " succeeded." << std::endl; */
             }
         }
 

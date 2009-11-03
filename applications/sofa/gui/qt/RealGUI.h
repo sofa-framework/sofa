@@ -197,7 +197,11 @@ public slots:
     void updateBackgroundColour();
     void updateBackgroundImage();
 
+#ifdef SOFA_QT4
     void changeHtmlPage( const QUrl&);
+#else
+    void changeHtmlPage( const QString&);
+#endif
     void changeInstrument(int);
 
     void clearGraph();
