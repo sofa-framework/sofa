@@ -90,28 +90,28 @@ using namespace sofa::defaulttype;
 #if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_CENTEROFMASSMAPPING_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< MechanicalMapping<MechanicalState<Rigid3dTypes>, MechanicalState<Vec3dTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< MechanicalMapping<MechanicalState<Rigid2dTypes>, MechanicalState<Vec2dTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3dTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3dTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3fTypes> > >;
+extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< MechanicalMapping<MechanicalState<defaulttype::Rigid3dTypes>, MechanicalState<defaulttype::Vec3dTypes> > >;
+extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< MechanicalMapping<MechanicalState<defaulttype::Rigid2dTypes>, MechanicalState<defaulttype::Vec2dTypes> > >;
+extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< Mapping< State<defaulttype::Rigid3dTypes>, MappedModel<defaulttype::Vec3dTypes> > >;
+extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< Mapping< State<defaulttype::Rigid3dTypes>, MappedModel<defaulttype::ExtVec3dTypes> > >;
+extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< Mapping< State<defaulttype::Rigid3dTypes>, MappedModel<defaulttype::ExtVec3fTypes> > >;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< MechanicalMapping<MechanicalState<Rigid3fTypes>, MechanicalState<Vec3fTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< MechanicalMapping<MechanicalState<Rigid2fTypes>, MechanicalState<Vec2fTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3fTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3dTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3fTypes> > >;
+extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< MechanicalMapping<MechanicalState<defaulttype::Rigid3fTypes>, MechanicalState<defaulttype::Vec3fTypes> > >;
+extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< MechanicalMapping<MechanicalState<defaulttype::Rigid2fTypes>, MechanicalState<defaulttype::Vec2fTypes> > >;
+extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< Mapping< State<defaulttype::Rigid3fTypes>, MappedModel<defaulttype::Vec3fTypes> > >;
+extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< Mapping< State<defaulttype::Rigid3fTypes>, MappedModel<defaulttype::ExtVec3dTypes> > >;
+extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< Mapping< State<defaulttype::Rigid3fTypes>, MappedModel<defaulttype::ExtVec3fTypes> > >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< MechanicalMapping<MechanicalState<Rigid3dTypes>, MechanicalState<Vec3fTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< MechanicalMapping<MechanicalState<Rigid3fTypes>, MechanicalState<Vec3dTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< MechanicalMapping<MechanicalState<Rigid2dTypes>, MechanicalState<Vec2fTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< MechanicalMapping<MechanicalState<Rigid2fTypes>, MechanicalState<Vec2dTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3fTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3dTypes> > >;
+extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< MechanicalMapping<MechanicalState<defaulttype::Rigid3dTypes>, MechanicalState<defaulttype::Vec3fTypes> > >;
+extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< MechanicalMapping<MechanicalState<defaulttype::Rigid3fTypes>, MechanicalState<defaulttype::Vec3dTypes> > >;
+extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< MechanicalMapping<MechanicalState<defaulttype::Rigid2dTypes>, MechanicalState<defaulttype::Vec2fTypes> > >;
+extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< MechanicalMapping<MechanicalState<defaulttype::Rigid2fTypes>, MechanicalState<defaulttype::Vec2dTypes> > >;
+extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< Mapping< State<defaulttype::Rigid3dTypes>, MappedModel<defaulttype::Vec3fTypes> > >;
+extern template class SOFA_COMPONENT_MAPPING_API CenterOfMassMapping< Mapping< State<defaulttype::Rigid3fTypes>, MappedModel<defaulttype::Vec3dTypes> > >;
 #endif
 #endif
 #endif
