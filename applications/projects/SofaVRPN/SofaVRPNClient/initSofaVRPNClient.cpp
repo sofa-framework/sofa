@@ -26,21 +26,7 @@
 ******************************************************************************/
 #include <sofa/helper/system/config.h>
 
-
-#ifndef WIN32
-#define SOFA_EXPORT_DYNAMIC_LIBRARY
-#define SOFA_IMPORT_DYNAMIC_LIBRARY
-#define SOFA_SOFAVRPNCLIENT_API
-#else
-#ifdef SOFA_BUILD_PLUGINEXAMPLE
-#define SOFA_EXPORT_DYNAMIC_LIBRARY __declspec( dllexport )
-#define SOFA_SOFAVRPNCLIENT_API SOFA_EXPORT_DYNAMIC_LIBRARY
-#else
-#define SOFA_IMPORT_DYNAMIC_LIBRARY __declspec( dllimport )
-#define SOFA_SOFAVRPNCLIENT_API SOFA_IMPORT_DYNAMIC_LIBRARY
-#endif
-#endif
-
+#include <vrpnclient_config.h>
 
 namespace sofa
 {
@@ -95,4 +81,6 @@ const char* getModuleComponentList()
 
 
 SOFA_LINK_CLASS(VRPNTracker)
+SOFA_LINK_CLASS(VRPNButton)
+SOFA_LINK_CLASS(VRPNAnalog)
 

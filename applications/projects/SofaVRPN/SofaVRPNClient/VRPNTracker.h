@@ -5,8 +5,8 @@
  *      Author: froy
  */
 
-#ifndef VRPNTRACKER_H_
-#define VRPNTRACKER_H_
+#ifndef SOFAVRPNCLIENT_VRPNTRACKER_H_
+#define SOFAVRPNCLIENT_VRPNTRACKER_H_
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec.h>
@@ -42,4 +42,4 @@ private:
 
 }
 
-#endif /* VRPNTRACKER_H_ */
+#endif /* SOFAVRPNCLIENT_VRPNTRACKER_H_ */
