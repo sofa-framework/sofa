@@ -36,10 +36,17 @@ void VRPNDevice::reinit()
 {
     deviceURL = deviceName.getValue() + std::string("@") + serverName.getValue();
 
-    bool connected = connectToServer();
+    bool connected = connect();
     if (!connected)
         std::cout << getName() << " : Not Connected" << std::endl;
 
+}
+
+bool VRPNDevice::connect()
+{
+    std::cout << "Opening: " << deviceURL << "." << std::endl;
+
+    return connectToServer();
 }
 
 }

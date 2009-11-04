@@ -19,6 +19,15 @@ namespace client
 class VRPNDevice :  public virtual sofa::core::objectmodel::BaseObject
 {
 public:
+    SOFA_CLASS(VRPNDevice,sofa::core::objectmodel::BaseObject);
+
+private:
+    bool connect();
+
+protected:
+    virtual bool connectToServer() =0;
+
+public:
     Data<std::string> deviceName;
     Data<std::string> serverName;
     Data<unsigned int> serverPort;
@@ -30,8 +39,6 @@ public:
 
     virtual void init();
     virtual void reinit();
-
-    virtual bool connectToServer() = 0;
 };
 
 }
