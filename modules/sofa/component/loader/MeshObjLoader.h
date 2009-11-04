@@ -113,7 +113,7 @@ public:
 
 protected:
 
-    bool readOBJ (FILE *file, const char* filename);
+    bool readOBJ (std::ifstream &file, const char* filename);
 
     bool readMTL (const char* filename, helper::vector <Material>& materials);
 

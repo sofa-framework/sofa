@@ -65,13 +65,13 @@ bool MeshTrianLoader::load()
 {
     sout << "Loading Trian file: " << m_filename << sendl;
 
-    FILE* file;
     bool fileRead = false;
 
     // -- Loading file
     const char* filename = m_filename.getFullPath().c_str();
+    std::ifstream file(filename);
 
-    if ((file = fopen(filename, "r")) == NULL)
+    if (!file.good())
     {
         serr << "Error: MeshTrianLoader: Cannot read file '" << m_filename << "'." << sendl;
         return false;
@@ -80,7 +80,7 @@ bool MeshTrianLoader::load()
     // -- Reading file
     fileRead = this->readTrian (filename);
 
-    fclose (file);
+    file.close();
     return fileRead;
 }
 
