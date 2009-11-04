@@ -83,8 +83,8 @@ void Base::processStream(std::ostream& out)
     if (&out == &serr)
     {
         serr << "\n";
-        if (f_printLog.getValue())
-            std::cerr<< "WARNING[" << getName() << "(" << getClassName() << ")]: "<<serr.str();
+        //if (f_printLog.getValue())
+        std::cerr<< "WARNING[" << getName() << "(" << getClassName() << ")]: "<<serr.str();
         warnings += serr.str();
         serr.str("");
     }
