@@ -58,7 +58,7 @@ public:
 
 protected:
 
-    bool readXsp (FILE *file, bool vector_spring);
+    bool readXsp (std::ifstream &file, bool vector_spring);
 
     Data <helper::vector <defaulttype::Vector3> > gravity;
     Data <helper::vector <double> > viscosity;

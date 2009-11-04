@@ -57,14 +57,14 @@ bool MeshXspLoader::load()
 
     sout << "Loading Xsp file: " << m_filename << sendl;
 
-    FILE* file;
-    char cmd[1024];
+    std::string cmd;
     bool fileRead = false;
 
     // -- Loading file
     const char* filename = m_filename.getFullPath().c_str();
+    std::ifstream file(filename);
 
-    if ((file = fopen(filename, "r")) == NULL)
+    if (!file.good())
     {
         serr << "Error: MeshXspLoader: Cannot read file '" << m_filename << "'." << sendl;
         return false;
@@ -72,19 +72,13 @@ bool MeshXspLoader::load()
 
 
     // -- Check first line.
-    if (!readLine(cmd, sizeof(cmd), file))
-    {
-        serr << "Error: MeshXspLoader: Cannot read first line in file '" << m_filename << "'." << sendl;
-        fclose(file);
-        return false;
-    }
-
+    file >> cmd;
 
     // -- Reading file version
-    if (!strncmp(cmd,"Xsp",3))
+    if (cmd == "Xsp")
     {
         float version = 0.0f;
-        sscanf(cmd, "Xsp %f", &version);
+        file >> version;
 
         if (version == 3.0)
             fileRead = readXsp(file, false);
@@ -94,44 +88,44 @@ bool MeshXspLoader::load()
     else
     {
         serr << "Error: MeshXspLoader: File '" << m_filename << "' finally appears not to be a Xsp file." << sendl;
-        fclose(file);
+        file.close();
         return false;
 
     }
 
-    fclose (file);
+    file.close();
     return fileRead;
 }
 
 
 
-bool MeshXspLoader::readXsp (FILE *file, bool vector_spring)
+bool MeshXspLoader::readXsp (std::ifstream &file, bool vector_spring)
 {
     sout << "Reading Xsp file: " << vector_spring << sendl;
 
 
-    char cmd[1024];
+    std::string cmd;
     int npoints = 0;
     int nlines = 0;
 
     int totalNumMasses;
     int totalNumSprings;
 
+    file >> cmd;
 
     // then find out number of masses and springs
-    if (fscanf(file, "%s", cmd) != EOF && !strcmp(cmd,"numm"))
+    if (cmd == "numm")
     {
-        if( fscanf(file, "%d", &totalNumMasses) == EOF)
-            serr << "Error: MeshXspLoader: fscanf function can't read element for total number of mass." << sendl;
+        file >> totalNumMasses;
         npoints=totalNumMasses;
     }
 
-    if (fscanf(file, "%s", cmd) != EOF && !strcmp(cmd,"nums"))
+    if (cmd=="nums")
     {
-        if( fscanf(file, "%d", &totalNumSprings) == EOF)
-            serr << "Error: MeshXspLoader: fscanf function can't read element for total number of springs." << sendl;
+        file >> totalNumSprings;
         nlines=totalNumSprings;
     }
+
 
     helper::vector<sofa::defaulttype::Vector3>& my_positions = *(positions.beginEdit());
     helper::vector<helper::fixed_array <unsigned int,2> >& my_edges = *(edges.beginEdit());
@@ -139,103 +133,76 @@ bool MeshXspLoader::readXsp (FILE *file, bool vector_spring)
     helper::vector <Vector3>& my_gravity = *(gravity.beginEdit());
     helper::vector <double>& my_viscosity = *(viscosity.beginEdit());
 
-
-    while (fscanf(file, "%s", cmd) != EOF)
+    while (!file.eof())
     {
-        if (!strcmp(cmd,"mass"))
+        file  >> cmd;
+        if (cmd=="mass")
         {
             int index;
             char location;
             double px,py,pz,vx,vy,vz,mass=0.0,elastic=0.0;
             bool fixed=false;
-            if (fscanf(file, "%d %c %lf %lf %lf %lf %lf %lf %lf %lf\n",
-                    &index, &location,
-                    &px, &py, &pz, &vx, &vy, &vz,
-                    &mass, &elastic) == EOF)
-                serr << "Error: MeshXspLoader: fscanf function can't read elements in main loop." << sendl;
-
+            file >> index >> location >> px >> py >> pz >> vx >> vy >> vz >> mass >> elastic;
             if (mass < 0)
             {
                 // fixed point initialization
                 mass = -mass;
                 fixed = true;
             }
-
-            // Adding positions
             my_positions.push_back(Vector3(px, py, pz));
         }
-        else if (!strcmp(cmd,"lspg"))	// linear springs connector
+        else if (cmd=="lspg")	// linear springs connector
         {
-            int index;
+            int	index;
             helper::fixed_array <unsigned int,2> m;
             double ks=0.0,kd=0.0,initpos=-1;
             double restx=0.0,resty=0.0,restz=0.0;
             if (vector_spring)
-            {
-                if(fscanf(file, "%d %d %d %lf %lf %lf %lf %lf %lf\n",
-                        &index,&m[0],&m[1],&ks,&kd,&initpos, &restx,&resty,&restz) == EOF)
-                    serr << "Error: MeshXspLoader: fscanf function can't read elements for linear springs connectors (vector_spring case)." << sendl;
-            }
+                file >> index >> m[0] >> m[1] >> ks >> kd >> initpos >> restx >> resty >> restz;
             else
-            {
-                if (fscanf(file, "%d %d %d %lf %lf %lf\n",
-                        &index,&m[0],&m[1],&ks,&kd,&initpos) == EOF)
-                    serr << "Error: MeshXspLoader: fscanf function can't read element for linear springs connectors." << sendl;
-            }
-
+                file >> index >> m[0] >> m[1] >> ks >> kd >> initpos;
             --m[0];
             --m[1];
 
             addEdge(&my_edges, m);
         }
-        else if (!strcmp(cmd,"grav"))
+        else if (cmd == "grav")
         {
             double gx,gy,gz;
-            if ( fscanf(file, "%lf %lf %lf\n", &gx, &gy, &gz) == EOF)
-                serr << "Error: MeshXspLoader: fscanf function can't read element for gravity." << sendl;
+            file >> gx >> gy >> gz;
             my_gravity.push_back(Vector3(gx, gy, gz));
         }
-        else if (!strcmp(cmd,"visc"))
+        else if (cmd == "visc")
         {
             double visc;
-            if ( fscanf(file, "%lf\n", &visc) == EOF)
-                serr << "Error: MeshXspLoader: fscanf function can't read element for viscosity." << sendl;
+            file >> visc;
             my_viscosity.push_back (visc);
         }
-        else if (!strcmp(cmd,"step"))
+        else if (cmd == "step")
         {
-            //fscanf(file, "%lf\n", &(MSparams.default_dt));
-            skipToEOL(file);
         }
-        else if (!strcmp(cmd,"frce"))
+        else if (cmd == "frce")
         {
-            skipToEOL(file);
         }
         else if (cmd[0] == '#')	// it's a comment
         {
-            skipToEOL(file);
         }
         else		// it's an unknown keyword
         {
-            serr << "Error: MeshXspLoader: Unknown MassSpring keyword '" << cmd << "'." << sendl;
-            skipToEOL(file);
-            fclose(file);
+            std::cerr << "Unknown MassSpring keyword:" << cmd;
             positions.endEdit();
             edges.endEdit();
             gravity.endEdit();
             viscosity.endEdit();
-
             return false;
         }
     }
-
 
     positions.endEdit();
     edges.endEdit();
     gravity.endEdit();
     viscosity.endEdit();
 
-    fclose(file);
     return true;
 }
 

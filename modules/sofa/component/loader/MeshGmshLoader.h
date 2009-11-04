@@ -63,7 +63,7 @@ public:
 
 protected:
 
-    bool readGmsh(FILE *file, const unsigned int gmshFormat);
+    bool readGmsh(std::ifstream &file, const unsigned int gmshFormat);
 
 
 public:

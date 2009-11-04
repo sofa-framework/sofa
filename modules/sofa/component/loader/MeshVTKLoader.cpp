@@ -56,32 +56,7 @@ MeshVTKLoader::MeshVTKLoader() : MeshLoader()
 {
 }
 
-static bool fgetline(FILE* f, std::string& line)
-{
-    line.clear();
-    char buf[256];
-    while (fgets(buf, sizeof(buf), f))
-    {
-        int n = strlen(buf);
-        if (n < (int)sizeof(buf)-1 || buf[n-1]=='\n')
-        {
-            // end of line
-            while (n > 0 && (buf[n-1]=='\n' || buf[n-1]=='\r'))
-                --n;
-            buf[n]='\0';
-            line+=buf;
-            return true;
-        }
-        else // partial line
-            line+=buf;
-    }
-    if (!line.empty() && feof(f)) return true; // we succeeding in reading the last line of the file
-    return false; // fgets returned an error
-}
-
 // --- VTK classes ---
-
-
 class BaseVTKDataIO
 {
 public:
@@ -89,8 +64,8 @@ public:
     BaseVTKDataIO() : dataSize(0) {}
     virtual ~BaseVTKDataIO() {}
     virtual void resize(int n) = 0;
-    virtual bool read(FILE* f, int n, int binary) = 0;
-    virtual bool write(FILE* f, int n, int groups, int binary) = 0;
+    virtual bool read(std::ifstream& f, int n, int binary) = 0;
+    virtual bool write(std::ofstream& f, int n, int groups, int binary) = 0;
     virtual void addPoints(helper::vector<sofa::defaulttype::Vec<3,SReal> >& my_positions) = 0;
     virtual void swap() = 0;
 };
@@ -128,28 +103,40 @@ public:
         for (int i=0; i<dataSize; ++i)
             data[i] = swapT(data[i]);
     }
-    virtual bool read(FILE* in, int n, int binary)
+    virtual bool read(std::ifstream& in, int n, int binary)
     {
         resize(n);
         if (binary)
         {
-            if ((int)fread(data, sizeof(T), n, in) < n)
+            in.read((char*)data, n * sizeof(T));
+            if (in.eof() || in.bad())
             {
                 resize(0);
                 return false;
             }
             if (binary == 2) // swap bytes
             {
-                swap();
+                for (int i=0; i<n; ++i)
+                {
+                    union T_chars
+                    {
+                        T t;
+                        char b[sizeof(T)];
+                    } tmp,rev;
+                    tmp.t = data[i];
+                    for (unsigned int c=0; c<sizeof(T); ++c)
+                        rev.b[c] = tmp.b[sizeof(T)-1-c];
+                    data[i] = rev.t;
+                }
             }
         }
         else
         {
             int i = 0;
             std::string line;
-            while(i < dataSize)
+            while(i < dataSize && !in.eof() && !in.bad())
             {
-                if (!fgetline(in, line)) break;
+                std::getline(in, line);
                 std::istringstream ln(line);
                 while (i < n && ln >> data[i])
                     ++i;
@@ -162,33 +149,26 @@ public:
         }
         return true;
     }
-    virtual bool write(FILE* out, int n, int groups, int binary)
+    virtual bool write(std::ofstream& out, int n, int groups, int binary)
     {
         if (n > dataSize && !data) return false;
         if (binary)
         {
-            if(fwrite(data, sizeof(T), n, out) != (size_t)n)
-                std::cerr << "Error: fwrite has encounter, count size differ from '" << n << "'." << std::endl;
+            out.write((char*)data, n * sizeof(T));
         }
         else
         {
-            std::ostringstream os;
             if (groups <= 0 || groups > n) groups = n;
             for (int i = 0; i < n; ++i)
             {
                 if ((i % groups) > 0)
-                    os << ' ';
-                os << data[i];
-                if (((i % groups) == groups-1) || i == n-1)
-                {
-                    os << '\n';
-                    std::string s = os.str();
-                    if (fwrite(s.c_str(), 1, s.length(), out) != s.length())
-                        std::cerr << "Error: fwrite has encounter, count size differ from '" << s.length() << "'." << std::endl;
-                }
+                    out << ' ';
+                out << data[i];
+                if ((i % groups) == groups-1)
+                    out << '\n';
             }
         }
-        if (ferror(out))
+        if (out.bad())
             return false;
         return true;
     }
@@ -244,35 +224,30 @@ bool MeshVTKLoader::readVTK (const char* filename)
 
     // Format doc: http://www.vtk.org/VTK/img/file-formats.pdf
     // http://www.cacr.caltech.edu/~slombey/asci/vtk/vtk_formats.simple.html
-    //std::ifstream inVTKFile(filename, std::ifstream::in & std::ifstream::binary);
-    //std::ifstream inVTKFile(filename, std::ifstream::in, std::ifstream::binary);
 
-    FILE* inVTKFile = fopen(filename, "rb");
-
-    if (inVTKFile == NULL)
+    std::ifstream inVTKFile(filename, std::ifstream::in & std::ifstream::binary);
+    if( !inVTKFile.is_open() )
     {
-        serr << "Error: Cannot read file '" << filename << "'." << sendl;
         return false;
     }
-
     std::string line;
 
     // Part 1
-    fgetline(inVTKFile, line);
+    std::getline(inVTKFile, line);
     if (std::string(line,0,23) != "# vtk DataFile Version ")
     {
         serr << "Error: Unrecognized header in file '" << filename << "'." << sendl;
-        fclose(inVTKFile);
+        inVTKFile.close();
         return false;
     }
     std::string version(line,23);
 
     // Part 2
     std::string header;
-    fgetline(inVTKFile, header);
+    std::getline(inVTKFile, header);
 
     // Part 3
-    fgetline(inVTKFile, line);
+    std::getline(inVTKFile, line);
 
     int binary;
     if (line == "BINARY") binary = 1;
@@ -280,7 +255,7 @@ bool MeshVTKLoader::readVTK (const char* filename)
     else
     {
         serr << "Error: Unrecognized format in file '" << filename << "'." << sendl;
-        fclose(inVTKFile);
+        inVTKFile.close();
         return false;
     }
 
@@ -290,12 +265,12 @@ bool MeshVTKLoader::readVTK (const char* filename)
 
     // Part 4
     do
-        fgetline(inVTKFile, line);
+        std::getline(inVTKFile, line);
     while (line == "");
     if (line != "DATASET POLYDATA" && line != "DATASET UNSTRUCTURED_GRID")
     {
         serr << "Error: Unsupported data type in file '" << filename << "'." << sendl;
-        fclose(inVTKFile);
+        inVTKFile.close();
         return false;
     }
 
@@ -305,9 +280,10 @@ bool MeshVTKLoader::readVTK (const char* filename)
     VTKDataIO<int>* inputCells = NULL;
     VTKDataIO<int>* inputCellTypes = NULL;
     int nbp = 0, nbf = 0;
-    while(!feof(inVTKFile))
+    while(!inVTKFile.eof())
     {
-        fgetline(inVTKFile, line);
+        std::getline(inVTKFile, line);
+        if (line.empty()) continue;
         std::istringstream ln(line);
         std::string kw;
         ln >> kw;
@@ -316,17 +292,17 @@ bool MeshVTKLoader::readVTK (const char* filename)
             int n;
             std::string typestr;
             ln >> n >> typestr;
-            sout << "Found " << n << " " << typestr << " points" << sendl;
+            std::cout << "Found " << n << " " << typestr << " points" << std::endl;
             inputPoints = newVTKDataIO(typestr);
             if (inputPoints == NULL) return false;
-            if (!inputPoints->read(inVTKFile, 3*n, binary)) {return false;}
+            if (!inputPoints->read(inVTKFile, 3*n, binary)) return false;
             nbp = n;
         }
         else if (kw == "POLYGONS")
         {
             int n, ni;
             ln >> n >> ni;
-            sout << "Found " << n << " polygons ( " << (ni - 3*n) << " triangles )" << sendl;
+            std::cout << "Found " << n << " polygons ( " << (ni - 3*n) << " triangles )" << std::endl;
             inputPolygons = new VTKDataIO<int>;
             if (!inputPolygons->read(inVTKFile, ni, binary)) return false;
             nbf = ni - 3*n;
@@ -335,7 +311,7 @@ bool MeshVTKLoader::readVTK (const char* filename)
         {
             int n, ni;
             ln >> n >> ni;
-            sout << "Found " << n << " cells" << sendl;
+            std::cout << "Found " << n << " cells" << std::endl;
             inputCells = new VTKDataIO<int>;
             if (!inputCells->read(inVTKFile, ni, binary)) return false;
             nbf = n;
@@ -348,7 +324,7 @@ bool MeshVTKLoader::readVTK (const char* filename)
             if (!inputCellTypes->read(inVTKFile, n, binary)) return false;
         }
         else if (!kw.empty())
-            serr << "WARNING: Unknown keyword " << kw << sendl;
+            std::cerr << "WARNING: Unknown keyword " << kw << std::endl;
         if (inputPoints && inputPolygons) break; // already found the mesh description, skip the rest
         if (inputPoints && inputCells && inputCellTypes) break; // already found the mesh description, skip the rest
     }
