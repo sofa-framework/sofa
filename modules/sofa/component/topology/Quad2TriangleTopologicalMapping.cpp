@@ -106,10 +106,12 @@ void Quad2TriangleTopologicalMapping::init()
 
             toModel->setNbPoints(fromModel->getNbPoints());
 
+
             for (int i=0; i<fromModel->getNbPoints(); i++)
             {
                 toModel->addPoint(fromModel->getPX(i), fromModel->getPY(i), fromModel->getPZ(i));
             }
+
 
             TriangleSetTopologyModifier *to_tstm;
             toModel->getContext()->get(to_tstm);
@@ -125,6 +127,7 @@ void Quad2TriangleTopologicalMapping::init()
             int nx = 2;
             int ny = 1;
             int nz = 1;
+
             {
                 topology::GridTopology* grid = dynamic_cast<topology::GridTopology*>(fromModel);
                 if (grid != NULL)
@@ -135,17 +138,29 @@ void Quad2TriangleTopologicalMapping::init()
                 }
             }
 
+            int scale = nx;
+
+            if (nx == 0)
+                scale = ny;
+
+            if (nx == 0 && ny == 0)
+            {
+                serr<<"Error: Input topology is only 1D, this topology can't be mapped into a triangulation." <<sendl;
+                return;
+            }
+
+
             for (unsigned int i=0; i<quadArray.size(); ++i)
             {
 
-                //sout << "INFO_print : Quad2TriangleTopologicalMapping - i = " << i << sendl;
-                //sout << "INFO_print : Quad2TriangleTopologicalMapping - quad = " << quadArray[i] << sendl;
+                //std::cout << "INFO_print : Quad2TriangleTopologicalMapping - i = " << i << std::endl;
+                //std::cout << "INFO_print : Quad2TriangleTopologicalMapping - quad = " << quadArray[i] << std::endl;
 
                 unsigned int p0 = quadArray[i][0];
                 unsigned int p1 = quadArray[i][1];
                 unsigned int p2 = quadArray[i][2];
                 unsigned int p3 = quadArray[i][3];
-                if (((i%nx) ^ (i/nx)) & 1)
+                if (((i%scale) ^ (i/scale)) & 1)
                 {
                     to_tstm->addTriangleProcess(Triangle(helper::make_array<unsigned int>((unsigned int) p0, (unsigned int) p1, (unsigned int) p3)));
                     to_tstm->addTriangleProcess(Triangle(helper::make_array<unsigned int>((unsigned int) p2, (unsigned int) p3, (unsigned int) p1)));
@@ -162,13 +177,13 @@ void Quad2TriangleTopologicalMapping::init()
                 out_info.push_back(Loc2GlobVec.size()-2);
                 out_info.push_back(Loc2GlobVec.size()-1);
                 In2OutMap[i]=out_info;
-
             }
 
             //to_tstm->propagateTopologicalChanges();
             to_tstm->notifyEndingEvent();
             //to_tstm->propagateTopologicalChanges();
             Loc2GlobDataVec.endEdit();
+
         }
 
     }
@@ -181,7 +196,6 @@ unsigned int Quad2TriangleTopologicalMapping::getFromIndex(unsigned int ind)
 
 void Quad2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 {
-
 
     // INITIALISATION of TRIANGULAR mesh from QUADULAR mesh :
 
