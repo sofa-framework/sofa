@@ -53,7 +53,7 @@ WriteTopologyCreator::WriteTopologyCreator()
     , extension(".txt")
 #endif
     , recordContainers(true)
-    , recordShellContainers(true)
+    , recordShellContainers(false)
     , createInMapping(false)
     , counterWriteTopology(0)
 {
