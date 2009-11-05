@@ -120,7 +120,7 @@ void TopologicalChangeProcessor::reset()
     const std::string& filename = m_filename.getFullPath();
     if (filename.empty())
     {
-        serr << "ERROR: empty filename"<<sendl;
+        serr << "TopologicalChangeProcessor: ERROR: empty filename"<<sendl;
     }
 #ifdef SOFA_HAVE_ZLIB
     else if (filename.size() >= 3 && filename.substr(filename.size()-3)==".gz")
@@ -128,7 +128,7 @@ void TopologicalChangeProcessor::reset()
         gzfile = gzopen(filename.c_str(),"rb");
         if( !gzfile )
         {
-            serr << "Error opening compressed file "<<filename<<sendl;
+            serr << "TopologicalChangeProcessor: Error opening compressed file "<<filename<<sendl;
         }
     }
 #endif
@@ -137,7 +137,7 @@ void TopologicalChangeProcessor::reset()
         infile = new std::ifstream(filename.c_str());
         if( !infile->is_open() )
         {
-            serr << "Error opening file "<<filename<<sendl;
+            serr << "TopologicalChangeProcessor: Error opening file "<<filename<<sendl;
             delete infile;
             infile = NULL;
         }
@@ -276,36 +276,112 @@ void TopologicalChangeProcessor::processTopologicalChanges()
         if (buff == "T=")
         {
             //Nothing to do in this case.
-            std::cout << "cas T" << std::endl;
+            //std::cout << "cas T" << std::endl;
             ++it;
             continue;
         }
         else if ( buff == "ADD=")
         {
-            /*	//Looking fo the number of element to add:
+            //Looking for the type of element.
+            std::string EleType;
+            str >> EleType;
+
+            //Looking fo the number of element to add:
             str >> nbr;
             ++it;
 
-            sofa::core::componentmodel::topology::TopologyModifier* topoMod;
-            m_topology->getContext()->get(topoMod);
+            std::istringstream Sin(*it);
 
-
-            if (nbr != 0)
+            if ( EleType == "Triangle" || EleType == "Triangles")
             {
-              helper::vector<helper::fixed_array <unsigned int,2> >& my_edges = *(edges.beginEdit());
-              std::istringstream Sedges(*it);
-              for (unsigned int i = 0; i<nbr; ++i)
-              {
-                helper::fixed_array <unsigned int,2> nodes;
-                Sedges >> nodes[0] >> nodes[1];
+                sofa::component::topology::TriangleSetTopologyModifier* topoMod;
+                m_topology->getContext()->get(topoMod);
 
-                my_edges.push_back (nodes);
-              }
-              edges.endEdit();
+                if (!topoMod)
+                {
+                    serr<< "TopologicalChangeProcessor: Error: No TriangleTopology available" << sendl;
+                    continue;
+                }
+
+                helper::vector<helper::fixed_array <unsigned int,3> > vitems;
+                vitems.resize (nbr);
+
+                for (unsigned int i = 0; i<nbr; ++i)
+                    Sin >> vitems[i][0] >> vitems[i][1] >> vitems[i][2];
+
+                //std::cout << "SIN: " << vitems << std::endl;
+
+                topoMod->addTrianglesProcess(vitems);
             }
-            */
+            else if ( EleType == "Quad" || EleType == "Quads")
+            {
+                sofa::component::topology::QuadSetTopologyModifier* topoMod;
+                m_topology->getContext()->get(topoMod);
 
-            std::cout << "Adding element not handle yet (buffer size problem) " << std::endl;
+                if (!topoMod)
+                {
+                    serr<< "TopologicalChangeProcessor: Error: No QuadTopology available" << sendl;
+                    continue;
+                }
+
+                helper::vector<helper::fixed_array <unsigned int,4> > vitems;
+                vitems.resize (nbr);
+
+                for (unsigned int i = 0; i<nbr; ++i)
+                    Sin >> vitems[i][0] >> vitems[i][1] >> vitems[i][2] >> vitems[i][3];
+
+                //std::cout << "SIN: " << vitems << std::endl;
+
+                topoMod->addQuadsProcess(vitems);
+            }
+            else if ( EleType == "Tetrahedron" || EleType == "Tetrahedra")
+            {
+                sofa::component::topology::TetrahedronSetTopologyModifier* topoMod;
+                m_topology->getContext()->get(topoMod);
+
+                if (!topoMod)
+                {
+                    serr<< "TopologicalChangeProcessor: Error: No TetrahedraTopology available" << sendl;
+                    continue;
+                }
+
+                helper::vector<helper::fixed_array <unsigned int,4> > vitems;
+                vitems.resize (nbr);
+
+                for (unsigned int i = 0; i<nbr; ++i)
+                    Sin >> vitems[i][0] >> vitems[i][1] >> vitems[i][2] >> vitems[i][3];
+
+                //std::cout << "SIN: " << vitems << std::endl;
+
+                topoMod->addTetrahedraProcess(vitems);
+            }
+            else if ( EleType == "Hexahedron" || EleType == "Hexahedra")
+            {
+                sofa::component::topology::HexahedronSetTopologyModifier* topoMod;
+                m_topology->getContext()->get(topoMod);
+
+                if (!topoMod)
+                {
+                    serr<< "TopologicalChangeProcessor: Error: No HexahedraTopology available" << sendl;
+                    continue;
+                }
+
+                helper::vector<helper::fixed_array <unsigned int,8> > vitems;
+                vitems.resize (nbr);
+
+                for (unsigned int i = 0; i<nbr; ++i)
+                    Sin >> vitems[i][0] >> vitems[i][1] >> vitems[i][2] >> vitems[i][3]
+                        >> vitems[i][4] >> vitems[i][5] >> vitems[i][6] >> vitems[i][7];
+
+                //std::cout << "SIN: " << vitems << std::endl;
+
+                topoMod->addHexahedraProcess(vitems);
+            }
+            else
+            {
+                serr<< "TopologicalChangeProcessor: Error: keyword: '" << EleType <<"' not expected."<< sendl;
+                continue;
+            }
 
             ++it;
             continue;
@@ -316,6 +392,8 @@ void TopologicalChangeProcessor::processTopologicalChanges()
             str >> nbr;
             ++it;
 
+            std::istringstream Sin(*it);
+
             sofa::core::componentmodel::topology::TopologyModifier* topoMod;
             m_topology->getContext()->get(topoMod);
 
@@ -323,7 +401,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
             vitems.resize (nbr);
 
             for (unsigned int i = 0; i<nbr; ++i)
-                str >> vitems[i];
+                Sin >> vitems[i];
 
             topoMod->removeItems(vitems);
 
@@ -426,107 +504,6 @@ void TopologicalChangeProcessor::processTopologicalChanges()
             continue;
         }
     }
-
-
-    /*
-    else if ( buff == "Triangles=")
-    {
-    //Looking fo the number of Triangles, if not null, then we store them..
-    str >> nbr;
-    ++it;
-
-    if (nbr != 0)
-    {
-      helper::vector<helper::fixed_array <unsigned int,3> >& my_triangles = *(triangles.beginEdit());
-      std::istringstream Stri(*it);
-      for (unsigned int i = 0; i<nbr; ++i)
-      {
-        helper::fixed_array <unsigned int,3> nodes;
-        Stri >> nodes[0] >> nodes[1] >> nodes[2];
-
-        my_triangles.push_back (nodes);
-      }
-      triangles.endEdit();
-    }
-
-    ++it;
-    continue;
-         }
-         else if ( buff == "Quads=")
-         {
-    //Looking fo the number of Quads, if not null, then we store them..
-    str >> nbr;
-    ++it;
-
-    if (nbr != 0)
-    {
-      helper::vector<helper::fixed_array <unsigned int,4> >& my_quads = *(quads.beginEdit());
-      std::istringstream Squads(*it);
-      for (unsigned int i = 0; i<nbr; ++i)
-      {
-        helper::fixed_array <unsigned int,4> nodes;
-        Squads >> nodes[0] >> nodes[1] >> nodes[2] >> nodes[3];
-
-        my_quads.push_back (nodes);
-      }
-      quads.endEdit();
-    }
-
-    ++it;
-    continue;
-         }
-         else if ( buff == "Tetrahedra=")
-         {
-    //Looking fo the number of Tetrahedra, if not null, then we store them..
-    str >> nbr;
-    ++it;
-
-    if (nbr != 0)
-    {
-      helper::vector<helper::fixed_array <unsigned int,4> >& my_tetrahedra = *(tetrahedra.beginEdit());
-      std::istringstream Stetra(*it);
-      for (unsigned int i = 0; i<nbr; ++i)
-      {
-        helper::fixed_array <unsigned int,4> nodes;
-        Stetra >> nodes[0] >> nodes[1] >> nodes[2] >> nodes[3];
-
-        my_tetrahedra.push_back (nodes);
-      }
-      tetrahedra.endEdit();
-    }
-
-    ++it;
-    continue;
-         }
-         else if ( buff == "Hexahedra=")
-         {
-    //Looking fo the number of Hexahedra, if not null, then we store them..
-    str >> nbr;
-    ++it;
-
-    if (nbr != 0)
-    {
-      helper::vector<helper::fixed_array <unsigned int,8> >& my_hexahedra = *(hexahedra.beginEdit());
-      std::istringstream Shexa(*it);
-      for (unsigned int i = 0; i<nbr; ++i)
-      {
-        helper::fixed_array <unsigned int,8> nodes;
-        Shexa >> nodes[0] >> nodes[1] >> nodes[2] >> nodes[3] >> nodes[4] >> nodes[5] >> nodes[6] >> nodes[7];
-
-        my_hexahedra.push_back (nodes);
-      }
-      hexahedra.endEdit();
-    }
-
-    ++it;
-    continue;
-         }
-         else
-         {
-    ++it;
-    continue;
-         }
-    */
 }
 
 
