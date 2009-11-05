@@ -50,12 +50,14 @@ SOFA_DECL_CLASS(SubsetMapping)
 int SubsetMappingClass = core::RegisterObject("TODO-SubsetMappingClass")
 #ifndef SOFA_FLOAT
         .add< SubsetMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3dTypes> > > >()
+        .add< SubsetMapping< MechanicalMapping< MechanicalState<Vec1dTypes>, MechanicalState<Vec1dTypes> > > >()
         .add< SubsetMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> > > >()
 // .add< SubsetMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3dTypes> > > >()
         .add< SubsetMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> > > >()
 #endif
 #ifndef SOFA_DOUBLE
         .add< SubsetMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes> > > >()
+        .add< SubsetMapping< MechanicalMapping< MechanicalState<Vec1fTypes>, MechanicalState<Vec1fTypes> > > >()
         .add< SubsetMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> > > >()
 // .add< SubsetMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3dTypes> > > >()
         .add< SubsetMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> > > >()
@@ -65,6 +67,8 @@ int SubsetMappingClass = core::RegisterObject("TODO-SubsetMappingClass")
 #ifndef SOFA_DOUBLE
         .add< SubsetMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3dTypes> > > >()
         .add< SubsetMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes> > > >()
+        .add< SubsetMapping< MechanicalMapping< MechanicalState<Vec1fTypes>, MechanicalState<Vec1dTypes> > > >()
+        .add< SubsetMapping< MechanicalMapping< MechanicalState<Vec1dTypes>, MechanicalState<Vec1fTypes> > > >()
         .add< SubsetMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3dTypes> > > >()
         .add< SubsetMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3fTypes> > > >()
 #endif
@@ -75,12 +79,14 @@ int SubsetMappingClass = core::RegisterObject("TODO-SubsetMappingClass")
 
 #ifndef SOFA_FLOAT
 template class SubsetMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3dTypes> > >;
+template class SubsetMapping< MechanicalMapping< MechanicalState<Vec1dTypes>, MechanicalState<Vec1dTypes> > >;
 template class SubsetMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> > >;
 // template class SubsetMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3dTypes> > >;
 template class SubsetMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> > >;
 #endif
 #ifndef SOFA_DOUBLE
 template class SubsetMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes> > >;
+template class SubsetMapping< MechanicalMapping< MechanicalState<Vec1fTypes>, MechanicalState<Vec1fTypes> > >;
 template class SubsetMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> > >;
 template class SubsetMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> > >;
 // template class SubsetMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3dTypes> > >;
@@ -90,6 +96,8 @@ template class SubsetMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3fTy
 #ifndef SOFA_DOUBLE
 template class SubsetMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes> > >;
 template class SubsetMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3dTypes> > >;
+template class SubsetMapping< MechanicalMapping< MechanicalState<Vec1dTypes>, MechanicalState<Vec1fTypes> > >;
+template class SubsetMapping< MechanicalMapping< MechanicalState<Vec1fTypes>, MechanicalState<Vec1dTypes> > >;
 template class SubsetMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3fTypes> > >;
 template class SubsetMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3dTypes> > >;
 #endif
