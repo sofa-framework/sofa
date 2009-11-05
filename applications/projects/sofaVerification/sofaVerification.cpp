@@ -160,10 +160,10 @@ void apply(std::vector< std::string> &files, unsigned int iterations, bool reini
 
                 std::cout << "ERROR by element type " << "\n";
                 std::cout << "EDGES " << listResult[0]/(double)result.getNumCompareTopology() << "\n";
-                std::cout << "TRIANGLES " << listResult[0]/(double)result.getNumCompareTopology() << "\n";
-                std::cout << "QUADS " << listResult[0]/(double)result.getNumCompareTopology() << "\n";
-                std::cout << "TETRAHEDRA " << listResult[0]/(double)result.getNumCompareTopology() << "\n";
-                std::cout << "HEXAHEDRA " << listResult[0]/(double)result.getNumCompareTopology() << "\n";
+                std::cout << "TRIANGLES " << listResult[1]/(double)result.getNumCompareTopology() << "\n";
+                std::cout << "QUADS " << listResult[2]/(double)result.getNumCompareTopology() << "\n";
+                std::cout << "TETRAHEDRA " << listResult[3]/(double)result.getNumCompareTopology() << "\n";
+                std::cout << "HEXAHEDRA " << listResult[4]/(double)result.getNumCompareTopology() << "\n";
             }
             else
             {

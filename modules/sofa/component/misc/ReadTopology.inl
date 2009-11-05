@@ -51,9 +51,9 @@ ReadTopology::ReadTopology()
 #ifdef SOFA_HAVE_ZLIB
     , gzfile(NULL)
 #endif
-    , nextTime(0)
-    , lastTime(0)
-    , loopTime(0)
+    , nextTime(0.0)
+    , lastTime(0.0)
+    , loopTime(0.0)
 {
     this->f_listening.setValue(true);
 }
@@ -156,11 +156,17 @@ bool ReadTopology::readNext(double time, std::vector<std::string>& validLines)
     lastTime = time;
     validLines.clear();
     std::string line, cmd;
-    while (nextTime <= time)
+
+    double epsilon = 0.00000001;
+
+
+    while ((double)nextTime <= (time + epsilon))
     {
+
 #ifdef SOFA_HAVE_ZLIB
         if (gzfile)
         {
+
             if (gzeof(gzfile))
             {
                 if (!f_loop.getValue())
@@ -202,12 +208,14 @@ bool ReadTopology::readNext(double time, std::vector<std::string>& validLines)
                 }
                 getline(*infile, line);
             }
-        //sout << "line= "<<line<<sendl;
+        //std::cout << "line= "<<line<<std::endl;
         std::istringstream str(line);
         str >> cmd;
+        //std::cout << "cmd:: " << cmd << std::endl;
         if (cmd == "T=")
         {
             str >> nextTime;
+
             nextTime += loopTime;
             //sout << "next time: " << nextTime << sendl;
             if (nextTime <= time)
@@ -223,6 +231,8 @@ bool ReadTopology::readNext(double time, std::vector<std::string>& validLines)
 void ReadTopology::processReadTopology()
 {
     double time = getContext()->getTime() + f_shift.getValue();
+    std::cout <<std::setprecision (9)<<time << std::endl;
+
     std::vector<std::string> validLines;
     if (!readNext(time, validLines)) return;
 
@@ -239,7 +249,7 @@ void ReadTopology::processReadTopology()
         if (buff == "T=")
         {
             //Nothing to do in this case.
-            std::cout << "cas T" << std::endl;
+            //std::cout << "cas T" << std::endl;
             ++it;
             continue;
         }
