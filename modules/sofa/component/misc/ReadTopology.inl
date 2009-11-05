@@ -231,7 +231,6 @@ bool ReadTopology::readNext(double time, std::vector<std::string>& validLines)
 void ReadTopology::processReadTopology()
 {
     double time = getContext()->getTime() + f_shift.getValue();
-    std::cout <<std::setprecision (9)<<time << std::endl;
 
     std::vector<std::string> validLines;
     if (!readNext(time, validLines)) return;
