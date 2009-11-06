@@ -225,7 +225,7 @@ bool MeshVTKLoader::readVTK (const char* filename)
     // Format doc: http://www.vtk.org/VTK/img/file-formats.pdf
     // http://www.cacr.caltech.edu/~slombey/asci/vtk/vtk_formats.simple.html
 
-    std::ifstream inVTKFile(filename, std::ifstream::in & std::ifstream::binary);
+    std::ifstream inVTKFile(filename, std::ifstream::in | std::ifstream::binary);
     if( !inVTKFile.is_open() )
     {
         return false;
