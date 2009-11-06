@@ -7,8 +7,13 @@
 
 #include "VTKExporter.h"
 
+#include <sstream>
+
 #include <sofa/core/ObjectFactory.h>
 
+#include <sofa/core/objectmodel/Event.h>
+#include <sofa/simulation/common/AnimateBeginEvent.h>
+#include <sofa/simulation/common/AnimateEndEvent.h>
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 
@@ -58,17 +63,18 @@ void VTKExporter::init()
         return;
     }
 
-    const std::string& filename = vtkFilename.getFullPath();
-//	std::cout << filename << std::endl;
-
-    outfile = new std::ofstream(filename.c_str());
-    if( !outfile->is_open() )
-    {
-        serr << "Error creating file "<<filename<<sendl;
-        delete outfile;
-        outfile = NULL;
-        return;
-    }
+    nbFiles = 0;
+// 	const std::string& filename = vtkFilename.getFullPath();
+// //	std::cout << filename << std::endl;
+//
+// 	outfile = new std::ofstream(filename.c_str());
+// 	if( !outfile->is_open() )
+// 	{
+// 		serr << "Error creating file "<<filename<<sendl;
+// 		delete outfile;
+// 		outfile = NULL;
+// 		return;
+// 	}
 
     const helper::vector<std::string>& pointsData = dPointsDataFields.getValue();
     const helper::vector<std::string>& cellsData = dCellsDataFields.getValue();
@@ -304,6 +310,19 @@ std::string VTKExporter::segmentString(std::string str, unsigned int n)
 
 void VTKExporter::writeVTKSimple()
 {
+    std::string filename = vtkFilename.getFullPath();
+    filename += ".vtu";
+//	std::cout << filename << std::endl;
+
+    outfile = new std::ofstream(filename.c_str());
+    if( !outfile->is_open() )
+    {
+        serr << "Error creating file "<<filename<<sendl;
+        delete outfile;
+        outfile = NULL;
+        return;
+    }
+
     const helper::vector<std::string>& pointsData = dPointsDataFields.getValue();
     const helper::vector<std::string>& cellsData = dCellsDataFields.getValue();
 
@@ -421,11 +440,25 @@ void VTKExporter::writeVTKSimple()
         writeData(cellsDataObject, cellsDataField);
     }
     outfile->close();
-    std::cout << "VTK written" << std::endl;
+    std::cout << filename << " written" << std::endl;
 }
 
 void VTKExporter::writeVTKXML()
 {
+    std::string filename = vtkFilename.getFullPath();
+    std::ostringstream oss;
+    oss << nbFiles;
+    filename += oss.str() + ".vtu";
+//	std::cout << filename << std::endl;
+
+    outfile = new std::ofstream(filename.c_str());
+    if( !outfile->is_open() )
+    {
+        serr << "Error creating file "<<filename<<sendl;
+        delete outfile;
+        outfile = NULL;
+        return;
+    }
     const helper::vector<std::string>& pointsData = dPointsDataFields.getValue();
     const helper::vector<std::string>& cellsData = dCellsDataFields.getValue();
 
@@ -588,46 +621,50 @@ void VTKExporter::writeVTKXML()
     *outfile << "  </UnstructuredGrid>" << std::endl;
     *outfile << "</VTKFile>" << std::endl;
     outfile->close();
-    std::cout << "VTK written" << std::endl;
+    std::cout << filename << " written" << std::endl;
+    ++nbFiles;
 }
 
 void VTKExporter::writeParallelFile()
 {
     std::string filename = vtkFilename.getFullPath();
     filename.insert(0, "P_");
+    filename += ".vtk";
 //	std::cout << filename << std::endl;
 
-    std::ofstream out(filename.c_str());
-    if(!out.is_open())
+    outfile = new std::ofstream(filename.c_str());
+    if( !outfile->is_open() )
     {
         serr << "Error creating file "<<filename<<sendl;
+        delete outfile;
+        outfile = NULL;
         return;
     }
 
-    out << "<VTKFile type=\"PUnstructuredGrid\" version=\"0.1\" byte_order=\"BigEndian\">" << std::endl;
-    out << "  <PUnstructuredGrid GhostLevel=\"0\">" << std::endl;
+    *outfile << "<VTKFile type=\"PUnstructuredGrid\" version=\"0.1\" byte_order=\"BigEndian\">" << std::endl;
+    *outfile << "  <PUnstructuredGrid GhostLevel=\"0\">" << std::endl;
 
     //write type of the data
-    out << "    <PPointData>" << std::endl;
-    out << "      <PDataArray type=\"\" Name=\"\" NumberofComponents=\"\">" << std::endl;
-    out << "    </PPointData>" << std::endl;
+    *outfile << "    <PPointData>" << std::endl;
+    *outfile << "      <PDataArray type=\"\" Name=\"\" NumberofComponents=\"\">" << std::endl;
+    *outfile << "    </PPointData>" << std::endl;
 
-    out << "    <PCellData>" << std::endl;
-    out << "      <PDataArray type=\"\" Name=\"\" NumberofComponents=\"\">" << std::endl;
-    out << "    </PCellData>" << std::endl;
+    *outfile << "    <PCellData>" << std::endl;
+    *outfile << "      <PDataArray type=\"\" Name=\"\" NumberofComponents=\"\">" << std::endl;
+    *outfile << "    </PCellData>" << std::endl;
 
-    out << "    <PPoints>" << std::endl;
-    out << "      <PDataArray type=\"\" NumberofComponents=\"\">" << std::endl;
-    out << "    </PPoints>" << std::endl;
+    *outfile << "    <PPoints>" << std::endl;
+    *outfile << "      <PDataArray type=\"\" NumberofComponents=\"\">" << std::endl;
+    *outfile << "    </PPoints>" << std::endl;
 
     //write piece
-    out << "    <Piece Source=\"\"/>" << std::endl;
+    *outfile << "    <Piece Source=\"\"/>" << std::endl;
 
     //write end
-    out << "  </PUnstructuredGrid>" << std::endl;
-    out << "</VTKFile>" << std::endl;
-    out.close();
-    std::cout << "parallel file written" << std::endl;
+    *outfile << "  </PUnstructuredGrid>" << std::endl;
+    *outfile << "</VTKFile>" << std::endl;
+    outfile->close();
+    std::cout << "parallel file " << filename << " written" << std::endl;
 }
 
 
@@ -646,6 +683,15 @@ void VTKExporter::handleEvent(sofa::core::objectmodel::Event *event)
                 writeVTKSimple();
             break;
         }
+    }
+
+
+    if ( /*simulation::AnimateBeginEvent* ev =*/  dynamic_cast<simulation::AnimateBeginEvent*>(event))
+    {
+        if(fileFormat.getValue())
+            writeVTKXML();
+        else
+            writeVTKSimple();
     }
 }
 
