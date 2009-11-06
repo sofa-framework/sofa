@@ -77,7 +77,7 @@ const char* getModuleDescription()
 
 const char* getModuleComponentList()
 {
-    return "MeshGenerationFromPolyhedron";
+    return "MeshGenerationFromPolyhedron, TriangularConvexHull3D";
 }
 
 
@@ -88,5 +88,5 @@ const char* getModuleComponentList()
 
 
 SOFA_LINK_CLASS(MeshGenerationFromPolyhedron)
-//SOFA_LINK_CLASS(OtherFakeComponent)
+SOFA_LINK_CLASS(TriangularConvexHull3D)
 
