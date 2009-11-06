@@ -644,21 +644,184 @@ void VTKExporter::writeParallelFile()
     *outfile << "<VTKFile type=\"PUnstructuredGrid\" version=\"0.1\" byte_order=\"BigEndian\">" << std::endl;
     *outfile << "  <PUnstructuredGrid GhostLevel=\"0\">" << std::endl;
 
-    //write type of the data
-    *outfile << "    <PPointData>" << std::endl;
-    *outfile << "      <PDataArray type=\"\" Name=\"\" NumberofComponents=\"\">" << std::endl;
-    *outfile << "    </PPointData>" << std::endl;
+    const helper::vector<std::string>& pointsData = dPointsDataFields.getValue();
+    const helper::vector<std::string>& cellsData = dCellsDataFields.getValue();
 
-    *outfile << "    <PCellData>" << std::endl;
-    *outfile << "      <PDataArray type=\"\" Name=\"\" NumberofComponents=\"\">" << std::endl;
-    *outfile << "    </PCellData>" << std::endl;
+    //write type of the data
+    sofa::core::objectmodel::BaseContext* context = this->getContext();
+    if (!pointsData.empty())
+    {
+        for (unsigned int i=0 ; i<pointsDataObject.size() ; i++)
+        {
+            core::objectmodel::BaseObject* obj = context->get<core::objectmodel::BaseObject> (pointsDataObject[i]);
+            core::objectmodel::BaseData* field = NULL;
+            //std::cout << objects[i] << std::endl;
+            if (obj)
+            {
+                std::vector< std::pair<std::string, core::objectmodel::BaseData*> > f = obj->getFields();
+
+                for (unsigned int j=0 ; j<f.size() && !field; j++)
+                {
+                    if(pointsDataField[i].compare(f[j].first) == 0)
+                        field = f[j].second;
+                }
+            }
+
+            if (!obj || !field)
+            {
+                serr << "VTKExporter : error while fetching data field, check object name or field name " << sendl;
+            }
+            else
+            {
+                //std::cout << "Type: " << field->getValueTypeString() << std::endl;
+
+                //retrieve data file type
+                //			if (dynamic_cast<Data< defaulttype::Vec3f >* >(field))
+                //				std::cout << "Vec3f" << std::endl;
+                //			if (dynamic_cast<Data< defaulttype::Vec3d >* >(field))
+                //				std::cout << "Vec3d" << std::endl;
+
+                //Scalars
+                std::string type;
+                unsigned int sizeSeg=0;
+                if (dynamic_cast<sofa::core::objectmodel::TData< helper::vector<int> >* >(field))
+                {
+                    type = "Int32";
+                    sizeSeg = 1;
+                }
+                if (dynamic_cast<sofa::core::objectmodel::TData< helper::vector<unsigned int> >* >(field))
+                {
+                    type = "UInt32";
+                    sizeSeg = 1;
+                }
+                if (dynamic_cast<sofa::core::objectmodel::TData< helper::vector<float> >* >(field))
+                {
+                    type = "Float32";
+                    sizeSeg = 1;
+                }
+                if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector<double> >* >(field))
+                {
+                    type = "Float64";
+                    sizeSeg = 1;
+                }
+
+                //Vectors
+                if (type.empty())
+                {
+                    if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< defaulttype::Vec3f > >* > (field))
+                    {
+                        type = "Float32";
+                        sizeSeg = 3;
+                    }
+                    if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< defaulttype::Vec3d > >* >(field))
+                    {
+                        type = "Float64";
+                        sizeSeg = 3;
+                    }
+                }
+
+                *outfile << "    <PPointData>" << std::endl;
+                *outfile << "      <PDataArray type=\""<< type << "\" Name=\"" << pointsDataField[i];
+                if(sizeSeg > 1)
+                    *outfile << "\" NumberOfComponents=\"" << sizeSeg;
+                *outfile << "\"/>" << std::endl;
+                *outfile << "    </PPointData>" << std::endl;
+            }
+        }
+    }
+
+    if (!cellsData.empty())
+    {
+        for (unsigned int i=0 ; i<cellsDataObject.size() ; i++)
+        {
+            core::objectmodel::BaseObject* obj = context->get<core::objectmodel::BaseObject> (cellsDataObject[i]);
+            core::objectmodel::BaseData* field = NULL;
+            //std::cout << objects[i] << std::endl;
+            if (obj)
+            {
+                std::vector< std::pair<std::string, core::objectmodel::BaseData*> > f = obj->getFields();
+
+                for (unsigned int j=0 ; j<f.size() && !field; j++)
+                {
+                    if(cellsDataField[i].compare(f[j].first) == 0)
+                        field = f[j].second;
+                }
+            }
+
+            if (!obj || !field)
+            {
+                serr << "VTKExporter : error while fetching data field, check object name or field name " << sendl;
+            }
+            else
+            {
+                //std::cout << "Type: " << field->getValueTypeString() << std::endl;
+
+                //retrieve data file type
+                //			if (dynamic_cast<Data< defaulttype::Vec3f >* >(field))
+                //				std::cout << "Vec3f" << std::endl;
+                //			if (dynamic_cast<Data< defaulttype::Vec3d >* >(field))
+                //				std::cout << "Vec3d" << std::endl;
+
+                //Scalars
+                std::string type;
+                unsigned int sizeSeg=0;
+                if (dynamic_cast<sofa::core::objectmodel::TData< helper::vector<int> >* >(field))
+                {
+                    type = "Int32";
+                    sizeSeg = 1;
+                }
+                if (dynamic_cast<sofa::core::objectmodel::TData< helper::vector<unsigned int> >* >(field))
+                {
+                    type = "UInt32";
+                    sizeSeg = 1;
+                }
+                if (dynamic_cast<sofa::core::objectmodel::TData< helper::vector<float> >* >(field))
+                {
+                    type = "Float32";
+                    sizeSeg = 1;
+                }
+                if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector<double> >* >(field))
+                {
+                    type = "Float64";
+                    sizeSeg = 1;
+                }
+
+                //Vectors
+                if (type.empty())
+                {
+                    if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< defaulttype::Vec3f > >* > (field))
+                    {
+                        type = "Float32";
+                        sizeSeg = 3;
+                    }
+                    if (dynamic_cast<sofa::core::objectmodel::TData<helper::vector< defaulttype::Vec3d > >* >(field))
+                    {
+                        type = "Float64";
+                        sizeSeg = 3;
+                    }
+                }
+
+                *outfile << "    <PCellData>" << std::endl;
+                *outfile << "      <PDataArray type=\""<< type << "\" Name=\"" << cellsDataField[i];
+                if(sizeSeg > 1)
+                    *outfile << "\" NumberOfComponents=\"" << sizeSeg;
+                *outfile << "\"/>" << std::endl;
+                *outfile << "    </PCellData>" << std::endl;
+            }
+        }
+    }
 
     *outfile << "    <PPoints>" << std::endl;
-    *outfile << "      <PDataArray type=\"\" NumberofComponents=\"\">" << std::endl;
+    *outfile << "      <PDataArray type=\"Float32\" NumberOfComponents=\"3\"/>" << std::endl;
     *outfile << "    </PPoints>" << std::endl;
 
     //write piece
-    *outfile << "    <Piece Source=\"\"/>" << std::endl;
+    for(int i = 1; i < nbFiles; ++i)
+    {
+        std::ostringstream oss;
+        oss << i;
+        *outfile << "    <Piece Source=\"" << vtkFilename.getFullPath() << oss.str() << ".vtu" << "\"/>" << std::endl;
+    }
 
     //write end
     *outfile << "  </PUnstructuredGrid>" << std::endl;
@@ -682,6 +845,11 @@ void VTKExporter::handleEvent(sofa::core::objectmodel::Event *event)
             else
                 writeVTKSimple();
             break;
+
+        case 'F':
+        case 'f':
+            if(fileFormat.getValue())
+                writeParallelFile();
         }
     }
 
