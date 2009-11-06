@@ -54,6 +54,8 @@ public:
     Data<helper::vector<std::string> > dPointsDataFields;
     Data<helper::vector<std::string> > dCellsDataFields;
 
+    int nbFiles;
+
     helper::vector<std::string> pointsDataObject;
     helper::vector<std::string> pointsDataField;
 
