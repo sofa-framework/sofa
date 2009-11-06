@@ -74,6 +74,7 @@ SkinningMapping<BasicMapping>::SkinningMapping ( In* from, Out* to )
     , repartition ( initData ( &repartition,"repartition","repartition between input DOFs and skinned vertices" ) )
     , coefs ( initData ( &coefs,"coefs","weights list for the influences of the references Dofs" ) )
     , nbRefs ( initData ( &nbRefs, ( unsigned ) 3,"nbRefs","nb references for skinning" ) )
+    , displayBlendedFrame ( initData ( &displayBlendedFrame,"1", "displayBlendedFrame","weights list for the influences of the references Dofs" ) )
     , computeWeights ( true )
     , wheighting ( WEIGHT_INVDIST )
     , interpolation ( INTERPOLATION_LINEAR )
@@ -372,6 +373,8 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
     const sofa::helper::vector<unsigned int>& m_reps = repartition.getValue();
     const sofa::helper::vector<double>& m_coefs = coefs.getValue();
     out.resize ( initPos.size() / nbRefs.getValue() );
+    x1.resize( out.size());
+    x2.resize( out.size());
     rotatedPoints.resize ( initPos.size() );
 
     switch ( interpolation )
@@ -399,8 +402,10 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
 #ifdef SOFA_DEV
     case INTERPOLATION_DUAL_QUATERNION:
     {
+        std::cout << "X1 size: " << x1.size() << std::endl;
         for ( unsigned int i=0 ; i<out.size(); i++ )
         {
+            x1[i] = out[i];
             DualQuat dq;
             for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
             {
@@ -419,6 +424,7 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
             dq.normalize(); // Normalize it
             out[i] = dq.transform ( initBlendedPos[i] ); // And apply it
         }
+        x2 = out;
         break;
     }
 #endif
@@ -431,24 +437,85 @@ void SkinningMapping<BasicMapping>::applyJ ( typename Out::VecDeriv& out, const 
 {
     const sofa::helper::vector<unsigned int>& m_reps = repartition.getValue();
     const sofa::helper::vector<double>& m_coefs = coefs.getValue();
+    vector<double> dq;
 
     Deriv v,omega;
     out.resize ( initPos.size() / nbRefs.getValue() );
+    dq.resize( out.size());
 
     if (!(maskTo->isInUse()) )
     {
-        for ( unsigned int i=0; i<out.size(); i++ )
+        switch ( interpolation )
         {
-            out[i] = Deriv();
-            for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
+        case INTERPOLATION_LINEAR:
+        {
+            for ( unsigned int i=0; i<out.size(); i++ )
             {
-                const int idx=nbRefs.getValue() *i+m;
-                const int idxReps=m_reps[idx];
+                out[i] = Deriv();
+                for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
+                {
+                    const int idx=nbRefs.getValue() *i+m;
+                    const int idxReps=m_reps[idx];
 
-                v = in[idxReps].getVCenter();
-                omega = in[idxReps].getVOrientation();
-                out[i] += ( v - cross ( rotatedPoints[idx],omega ) ) * m_coefs[idx];
+                    v = in[idxReps].getVCenter();
+                    omega = in[idxReps].getVOrientation();
+                    out[i] += ( v - cross ( rotatedPoints[idx],omega ) ) * m_coefs[idx];
+                }
             }
+            break;
+        }
+#ifdef SOFA_DEV
+        case INTERPOLATION_DUAL_QUATERNION:
+        {
+            for ( unsigned int i=0; i<out.size(); i++ )
+            {
+                /* // TODO after changing init and apply
+                	Mat38 Q;
+                	Mat88 N;
+                	Mat86 L;
+                	out[i] = Deriv();
+                	dq[i] = 0.0;
+                	for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
+                	{
+                		const int idx=nbRefs.getValue() *i+m;
+                		const int idxReps=m_reps[idx];
+
+                		//computeDqQ( Q, bn, p);
+                		//computeDqN( N, bn, b);
+                		//computeDqL( L, qi, ti);
+
+                		v = in[idxReps].getVCenter();
+                		omega = in[idxReps].getVOrientation();
+                		out[i] += ( v - cross ( rotatedPoints[idx],omega ) ) * m_coefs[idx];
+                		dq[i] += ( v[0]*v[0] + v[1]*v[1] + v[2]*v[2] + omega[0]*omega[0] + omega[1]*omega[1] + omega[2]*omega[2] ) * m_coefs[idx];
+                	}
+                	*/
+
+                /* Apply
+                x1[i] = out[i];
+                DualQuat dq;
+                for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
+                {
+                	const int idx=nbRefs.getValue() *i+m;
+                	const int idxReps=m_reps[idx];
+                	// Create a rigid transformation from global frame to "in" frame.
+                	DualQuat dqi ( in[idxReps].getCenter(),
+                								in[idxReps].getOrientation() );
+
+                	// Save rotated points for applyJ/JT
+                	rotatedPoints[idx] = dqi.transform ( initPos[idx] );
+
+                	// Blend all the transformations
+                	dq += dqi * m_coefs[idx];
+                }
+                dq.normalize(); // Normalize it
+                out[i] = dq.transform ( initBlendedPos[i] ); // And apply it
+                // Apply */
+            }
+            break;
+        }
+#endif
+        default: {}
         }
     }
     else
@@ -472,6 +539,18 @@ void SkinningMapping<BasicMapping>::applyJ ( typename Out::VecDeriv& out, const 
             }
         }
     }
+#ifdef SOFA_DEV
+    /**/ // verif de la convergence TODO: a virer
+    if( x1.empty() || x2.empty()) return;
+    std::cout << "Convergence test:" << std::endl;
+    for( unsigned int i = 0; i < out.size(); i++)
+    {
+        if( dq[i] == 0) {std::cout << "dqi equal 0" << std::endl; continue;}
+        if(( x1[i][0] != x2[i][0]) || ( x1[i][1] != x2[i][1]) || ( x1[i][2] != x2[i][2])) std::cout  << "2.Diff between pts: " << x1[i] << " " << x2[i] << std::endl;
+        std::cout << i << ": " << ((x2[i] - x1[i])/this->getContext()->getDt() - out[i]).norm() / sqrt(dq[i]) << std::endl;
+    }
+    //*/
+#endif
 }
 
 template <class BasicMapping>
@@ -600,8 +679,8 @@ void SkinningMapping<BasicMapping>::draw()
     }
 
 #ifdef SOFA_DEV
-    //*  Animation continue des repères le long de la poutre.
-    if ( interpolation == INTERPOLATION_DUAL_QUATERNION )
+    //*  Animation continue des rep�res le long de la poutre.
+    if ( displayBlendedFrame.getValue() && interpolation == INTERPOLATION_DUAL_QUATERNION )
     {
         bool anim = true;
         static unsigned int step = 0;
@@ -638,6 +717,208 @@ void SkinningMapping<BasicMapping>::draw()
     //*/
 #endif
 }
+
+
+template <class BasicMapping>
+void SkinningMapping<BasicMapping>::computeDqQ( Mat38& Q, const DualQuat& bn, const Coord& p)
+{
+    const double& x = p[0];
+    const double& y = p[1];
+    const double& z = p[2];
+    const double& a0 = bn[0][0];
+    const double& b0 = bn[0][1];
+    const double& c0 = bn[0][2];
+    const double& w0 = bn[0][3];
+    const double& ae = bn[1][0];
+    const double& be = bn[1][1];
+    const double& ce = bn[1][2];
+    const double& we = bn[1][3];
+    Q[0][0] =   ae + w0*x - c0*y + b0*z;
+    Q[0][1] = - we + a0*x + b0*y + c0*z;
+    Q[0][2] =   ce - b0*x + a0*y + w0*z;
+    Q[0][3] = - be - c0*x - w0*y + a0*z;
+    Q[0][4] = -a0;
+    Q[0][5] =  w0;
+    Q[0][6] = -c0;
+    Q[0][7] =  b0;
+    Q[1][0] =   be + c0*x + w0*y - a0*z;
+    Q[1][1] = - ce + b0*x - a0*y - w0*z;
+    Q[1][2] = - we + a0*x + b0*y + c0*z;
+    Q[1][3] =   ae + w0*x - c0*y + b0*z;
+    Q[1][4] = -b0;
+    Q[1][5] =  c0;
+    Q[1][6] =  w0;
+    Q[1][7] = -a0;
+    Q[2][0] =   ce - b0*x + a0*y + w0*z;
+    Q[2][1] =   be + c0*x + w0*y - a0*z;
+    Q[2][2] = - ae - w0*x + c0*y - b0*z;
+    Q[2][3] = - we + a0*x + b0*y + c0*z;
+    Q[2][4] = -c0;
+    Q[2][5] = -b0;
+    Q[2][6] =  a0;
+    Q[2][7] =  w0;
+
+    Q *= 2;
+}
+
+template <class BasicMapping>
+void SkinningMapping<BasicMapping>::computeDqN( Mat88& N, const DualQuat& bn, const DualQuat& b)
+{
+    const double& a0 = bn[0][0];
+    const double& b0 = bn[0][1];
+    const double& c0 = bn[0][2];
+    const double& w0 = bn[0][3];
+    const double& ae = bn[1][0];
+    const double& be = bn[1][1];
+    const double& ce = bn[1][2];
+    const double& we = bn[1][3];
+    const double& A0 = b[0][0];
+    const double& B0 = b[0][1];
+    const double& C0 = b[0][2];
+    const double& W0 = b[0][3];
+    const double& Ae = b[1][0];
+    const double& Be = b[1][1];
+    const double& Ce = b[1][2];
+    const double& We = b[1][3];
+    const double lQ0l2 = W0*W0 + A0*A0 + B0*B0 + C0*C0;
+    const double lQ0l = sqrt( lQ0l2 );
+    const double QeQ0 = W0*We + A0*Ae + B0*Be + C0*Ce;
+
+    N[0][0] = w0*w0-1;
+    N[0][1] = a0*w0;
+    N[0][2] = b0*w0;
+    N[0][3] = c0*w0;
+    N[0][4] = 0;
+    N[0][5] = 0;
+    N[0][6] = 0;
+    N[0][7] = 0;
+    N[1][0] = w0*a0;
+    N[1][1] = a0*a0-1;
+    N[1][2] = b0*a0;
+    N[1][3] = c0*a0;
+    N[1][4] = 0;
+    N[1][5] = 0;
+    N[1][6] = 0;
+    N[1][7] = 0;
+    N[2][0] = w0*b0;
+    N[2][1] = a0*b0;
+    N[2][2] = b0*b0-1;
+    N[2][3] = c0*b0;
+    N[2][4] = 0;
+    N[2][5] = 0;
+    N[2][6] = 0;
+    N[2][7] = 0;
+    N[3][0] = w0*c0;
+    N[3][1] = a0*c0;
+    N[3][2] = b0*c0;
+    N[3][3] = c0*c0-1;
+    N[3][4] = 0;
+    N[3][5] = 0;
+    N[3][6] = 0;
+    N[3][7] = 0;
+    N[4][0] = 3*w0*we + (QeQ0-W0*We)/lQ0l2;
+    N[4][1] = 3*a0*we + (Ae*W0-2*A0*We)/lQ0l2;
+    N[4][2] = 3*b0*we + (Be*W0-2*B0*We)/lQ0l2;
+    N[4][3] = 3*c0*we + (Ce*W0-2*C0*We)/lQ0l2;
+    N[4][4] = w0*w0-1;
+    N[4][5] = a0*w0;
+    N[4][6] = b0*w0;
+    N[4][7] = c0*w0;
+    N[5][0] = 3*w0*ae + (We*A0-2*W0*Ae)/lQ0l2;
+    N[5][1] = 3*a0*ae + (QeQ0-A0*Ae)/lQ0l2;
+    N[5][2] = 3*b0*ae + (Be*A0-2*B0*Ae)/lQ0l2;
+    N[5][3] = 3*c0*ae + (Ce*A0-2*C0*Ae)/lQ0l2;
+    N[5][4] = w0*a0;
+    N[5][5] = a0*a0-1;
+    N[5][6] = b0*a0;
+    N[5][7] = c0*a0;
+    N[6][0] = 3*w0*be + (We*B0-2*W0*Be)/lQ0l2;
+    N[6][1] = 3*a0*be + (Ae*B0-2*A0*Be)/lQ0l2;
+    N[6][2] = 3*b0*be + (QeQ0-B0*Be)/lQ0l2;
+    N[6][3] = 3*c0*be + (Ce*B0-2*C0*Be)/lQ0l2;
+    N[6][4] = w0*b0;
+    N[6][5] = a0*b0;
+    N[6][6] = b0*b0-1;
+    N[6][7] = c0*b0;
+    N[7][0] = 3*w0*ce + (We*C0-2*W0*Ce)/lQ0l2;
+    N[7][1] = 3*a0*ce + (Ae*C0-2*A0*Ce)/lQ0l2;
+    N[7][2] = 3*b0*ce + (Be*C0-2*B0*Ce)/lQ0l2;
+    N[7][3] = 3*c0*ce + (QeQ0-C0*Ce)/lQ0l2;
+    N[7][4] = w0*c0;
+    N[7][5] = a0*c0;
+    N[7][6] = b0*c0;
+    N[7][7] = c0*c0-1;
+
+    N *= -1/lQ0l;
+}
+
+template <class BasicMapping>
+void SkinningMapping<BasicMapping>::computeDqL( Mat86& L, const DualQuat& qi, const Coord& ti)
+{
+    const double& tx = ti[0];
+    const double& ty = ti[1];
+    const double& tz = ti[2];
+    const double& a0 = qi[0][0];
+    const double& b0 = qi[0][1];
+    const double& c0 = qi[0][2];
+    const double& w0 = qi[0][3];
+    const double& ae = qi[1][0];
+    const double& be = qi[1][1];
+    const double& ce = qi[1][2];
+    const double& we = qi[1][3];
+
+    L[0][0] = -a0;
+    L[0][1] = -b0;
+    L[0][2] = -c0;
+    L[0][3] = 0;
+    L[0][4] = 0;
+    L[0][5] = 0;
+    L[1][0] = w0;
+    L[1][1] = c0;
+    L[1][2] = -b0;
+    L[1][3] = 0;
+    L[1][4] = 0;
+    L[1][5] = 0;
+    L[2][0] = -c0;
+    L[2][1] = w0;
+    L[2][2] = a0;
+    L[2][3] = 0;
+    L[2][4] = 0;
+    L[2][5] = 0;
+    L[3][0] = b0;
+    L[3][1] = -a0;
+    L[3][2] = w0;
+    L[3][3] = 0;
+    L[3][4] = 0;
+    L[3][5] = 0;
+    L[4][0] = -ae-b0*tz+c0*ty;
+    L[4][1] = -be+a0*tz-c0*tx;
+    L[4][2] = -ce-a0*ty+b0*tx;
+    L[4][3] = -a0;
+    L[4][4] = -b0;
+    L[4][5] = -c0;
+    L[5][0] = we+c0*tz+b0*ty;
+    L[5][1] = ce-w0*tz-b0*tx;
+    L[5][2] = -be+w0*ty-c0*tx;
+    L[5][3] = w0;
+    L[5][4] = c0;
+    L[5][5] = -b0;
+    L[6][0] = -ce+w0*tz-a0*ty;
+    L[6][1] = we+c0*tz+a0*tx;
+    L[6][2] = ae-w0*tx-c0*ty;
+    L[6][3] = -c0;
+    L[6][4] = w0;
+    L[6][5] = a0;
+    L[7][0] = be-w0*ty-a0*tz;
+    L[7][1] = -ae+w0*tx-b0*tz;
+    L[7][2] = we+b0*ty+a0*tx;
+    L[7][3] = b0;
+    L[7][4] = -a0;
+    L[7][5] = w0;
+
+    L *= 0.5;
+}
+
 
 } // namespace mapping
 

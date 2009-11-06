@@ -76,6 +76,9 @@ public:
     typedef typename Coord::value_type Real;
     enum { N=Coord::static_size };
     typedef defaulttype::Mat<N,N,Real> Mat;
+    typedef defaulttype::Mat<8,8,Real> Mat88;
+    typedef defaulttype::Mat<3,8,Real> Mat38;
+    typedef defaulttype::Mat<8,6,Real> Mat86;
 
 #ifdef SOFA_DEV
     typedef typename helper::DualQuatd DualQuat;
@@ -92,10 +95,13 @@ protected:
     Data<sofa::helper::vector<unsigned int> > repartition;
     Data<sofa::helper::vector<double> >  coefs;
     Data<unsigned int> nbRefs;
+    Data<bool> displayBlendedFrame;
 
     bool computeWeights;
     WeightingType wheighting;
     InterpolationType interpolation;
+    typename Out::VecCoord x1; // TODO: virer ca avant de commit
+    typename Out::VecCoord x2; // TODO: virer ca avant de commit
 
     class Loader;
     void load ( const char* filename );
@@ -136,6 +142,11 @@ public:
     const sofa::helper::vector<double>& getWeightCoefs() { return coefs.getValue(); }
     const sofa::helper::vector<unsigned int>& getRepartition() { return repartition.getValue(); }
     bool getComputeWeights() { return computeWeights; }
+
+    // Dual quat J matrix
+    void computeDqQ( Mat38& Q, const DualQuat& bn, const Coord& p);
+    void computeDqN( Mat88& N, const DualQuat& bn, const DualQuat& b);
+    void computeDqL( Mat86& L, const DualQuat& qi, const Coord& ti);
 };
 
 using core::Mapping;
