@@ -119,9 +119,9 @@ void MeshGenerationFromPolyhedron<DataTypes>::update()
 //	std::ifstream input("share/mesh/elephant.off");
 //        input >> polyhedron;
 
-    CGAL::set_ascii_mode( std::cout);
-    std::cout << "P : " << polyhedron.size_of_vertices() << std::endl;
-    std::cout << "F : " << polyhedron.size_of_facets() << std::endl;
+//    CGAL::set_ascii_mode( std::cout);
+//    std::cout << "P : " << polyhedron.size_of_vertices() << std::endl;
+//    std::cout << "F : " << polyhedron.size_of_facets() << std::endl;
 
     // Create domain
     Mesh_domain domain(polyhedron);
