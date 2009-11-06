@@ -24,10 +24,12 @@ LIBS += $$SOFA_EXT_LIBS
 INCLUDEPATH += $$SOFA_DIR/extlibs
 
 SOURCES = initCGALPlugin.cpp \
-		  MeshGenerationFromPolyhedron.cpp
+		  MeshGenerationFromPolyhedron.cpp \
+		  TriangularConvexHull3D.cpp
 
 HEADERS = \
-		  MeshGenerationFromPolyhedron.h
+		  MeshGenerationFromPolyhedron.h \
+		  TriangularConvexHull3D.h
 		  
 README_FILE = CGALPlugin.txt
 
