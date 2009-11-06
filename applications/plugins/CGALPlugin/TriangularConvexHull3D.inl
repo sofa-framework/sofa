@@ -76,7 +76,7 @@ void TriangularConvexHull3D<DataTypes>::update()
     std::vector<Point_3> points;
     for (cloudPointsIt = cloudPoints.begin() ; cloudPointsIt != cloudPoints.end() ; cloudPointsIt++)
     {
-        std::cout << (*cloudPointsIt) << std::endl;
+        //std::cout << (*cloudPointsIt) << std::endl;
         Point_3 p((*cloudPointsIt)[0], (*cloudPointsIt)[1],(*cloudPointsIt)[2] );
 //		p[0] = (*cloudPointsIt)[0];
 //		p[1] = (*cloudPointsIt)[1];
