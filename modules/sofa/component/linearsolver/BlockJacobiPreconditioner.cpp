@@ -35,6 +35,7 @@
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/componentmodel/behavior/LinearSolver.h>
 #include <math.h>
+#include <sofa/component/linearsolver/DiagonalMatrix.h>
 
 namespace sofa
 {
@@ -75,6 +76,8 @@ void BlockJacobiPreconditioner<TMatrix,TVector>::solve (Matrix& M, Vector& z, Ve
             }
         }
     }
+
+    //M.mult(z,r);
 }
 
 template<class TMatrix, class TVector>
@@ -86,18 +89,21 @@ void BlockJacobiPreconditioner<TMatrix,TVector>::invert(Matrix& M)
     {
         M.setSubMatrix(l,l,bsize,bsize,M.sub(l,l,bsize,bsize).i());
     }
+
+    //M.i();
+
+    if (f_verbose.getValue()) sout<<M<<sendl;
 }
+
 
 SOFA_DECL_CLASS(BlockJacobiPreconditioner)
 
 int BlockJacobiPreconditionerClass = core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm")
-//.add< BlockJacobiPreconditioner<GraphScatteredMatrix,GraphScatteredVector> >(true)
-//.add< BlockJacobiPreconditioner< SparseMatrix<double>, FullVector<double> > >(true)
-        .add< BlockJacobiPreconditioner<NewMatBandMatrix,NewMatVector> >(true)
-//.add< BlockJacobiPreconditioner<NewMatMatrix,NewMatVector> >()
-//.add< BlockJacobiPreconditioner<NewMatSymmetricMatrix,NewMatVector> >()
-        .add< BlockJacobiPreconditioner<NewMatSymmetricBandMatrix,NewMatVector> >()
-//.add< BlockJacobiPreconditioner< FullMatrix<double>, FullVector<double> > >()
+        .add< BlockJacobiPreconditioner<NewMatBandMatrix,NewMatVector> >()
+        .add< BlockJacobiPreconditioner<BlockDiagonalMatrix3 ,FullVector<double> > >(true)
+        .add< BlockJacobiPreconditioner<BlockDiagonalMatrix6 ,FullVector<double> > >()
+        .add< BlockJacobiPreconditioner<BlockDiagonalMatrix9 ,FullVector<double> > >()
+        .add< BlockJacobiPreconditioner<BlockDiagonalMatrix12 ,FullVector<double> > >()
         .addAlias("BJCGSolver")
         .addAlias("BJConjugateGradient")
         ;
