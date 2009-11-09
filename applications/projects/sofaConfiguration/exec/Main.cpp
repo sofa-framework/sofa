@@ -39,8 +39,8 @@
 #if defined (__APPLE__)
 #include <sys/param.h>
 #include <mach-o/dyld.h>
+#include <CoreFoundation/CoreFoundation.h>
 #endif
-
 
 #include "SofaConfiguration.h"
 
