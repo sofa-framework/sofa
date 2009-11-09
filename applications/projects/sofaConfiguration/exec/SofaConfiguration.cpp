@@ -118,6 +118,7 @@ SofaConfiguration::SofaConfiguration(std::string p, std::vector< DEFINES >& conf
     global->setMaximumHeight(600);
     global->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
 
+
     std::string currentCategory;
 
     std::set< std::string > alreadyBuiltCategories;
@@ -357,20 +358,25 @@ void SofaConfiguration::saveConfiguration()
         }
 
     }
-    QStringList argv;
-#ifndef WIN32
+#ifdef WIN32
+    QString cmd("cd /d \""+ QString(path.c_str())+ "\" && \""+QString(projectVC->text())+"\"");
+//                std::cerr << "Executing : " << cmd.ascii() << std::endl;
+    system(cmd.ascii());
+#elif defined (__APPLE__)
+    QString cmd("cd " + QString(path.c_str())+ " && sh Project\\ MacOS.sh");
+//                std::cerr << "Executing : " << cmd.ascii() << std::endl;
+    system(cmd.ascii());
+#else
 #if SOFA_QT4
     argv << QString("qmake-qt4");
 #else
     argv << QString("qmake");
 #endif
+    QStringList argv;
     Q3Process *p = new Q3Process(argv,this);
     p->setCommunication(0);
     p->setWorkingDirectory(QDir(QString(path.c_str())));
     p->start();
-#else
-    QString cmd("cd /d \""+ QString(path.c_str())+ "\" && \""+QString(projectVC->text())+"\"");
-    system(cmd.ascii());
 #endif
     optionsModified.clear();
 }

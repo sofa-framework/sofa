@@ -20,6 +20,7 @@ LIBS += -lshell32
 }
 
 macx : {
+        LIBS += -framework  CoreFoundation
 	CONFIG +=app_bundle
 	RC_FILE = sofaConfiguration.icns
 	QMAKE_INFO_PLIST = Info.plist
