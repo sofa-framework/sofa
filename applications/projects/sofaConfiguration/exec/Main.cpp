@@ -54,6 +54,22 @@
 // ---
 // ---------------------------------------------------------------------
 
+#if defined (__APPLE__)
+#include <CoreFoundation/CoreFoundation.h>
+// This function will locate the path to our application on OS X,
+// unlike windows you can not rely on the curent working directory
+// for locating your configuration files and resources.
+std::string macBundlePath()
+{
+}
+#endif
+
+
+
+
+
+
+
 
 using sofa::gui::qt::DEFINES;
 using sofa::gui::qt::CONDITION;
@@ -227,6 +243,7 @@ void parse(std::ifstream &in, std::vector<DEFINES>  &listOptions)
                     listOptions.push_back(op);
                 }
 
+
                 listOptions.back().addConditions(conditions);
                 continue;
             }
@@ -332,11 +349,21 @@ std::string GetProcessFullPath(const char* filename)
     if (!filename || filename[0]!='/')
     {
         char path[1024];
-        unsigned int size;
-        _NSGetExecutablePath( path, &size );
-// 		std::cout << "Current process path: "<<path<<std::endl;
+        CFBundleRef mainBundle = CFBundleGetMainBundle();
+        assert(mainBundle);
 
-        return path;
+        CFURLRef mainBundleURL = CFBundleCopyBundleURL(mainBundle);
+        assert(mainBundleURL);
+
+        CFStringRef cfStringRef = CFURLCopyFileSystemPath( mainBundleURL, kCFURLPOSIXPathStyle);
+        assert(cfStringRef);
+
+        CFStringGetCString(cfStringRef, path, 1024, kCFStringEncodingASCII);
+
+        CFRelease(mainBundleURL);
+        CFRelease(cfStringRef);
+
+        return std::string(path);
     }
 #endif
 
@@ -346,7 +373,9 @@ std::string GetProcessFullPath(const char* filename)
 int main(int argc, char** argv)
 {
 
-    std::string file=GetProcessFullPath(argv[0]);
+    std::string file;
+    file=GetProcessFullPath(argv[0]);
+
     std::size_t bin = file.find("bin");
 
     if (bin != std::string::npos)
@@ -355,9 +384,12 @@ int main(int argc, char** argv)
     }
     else
     {
+
         std::cerr << "ERROR: $SOFA/bin directory not FOUND!" << std::endl;
         return 1;
     }
+
+    std::cerr << "Using " <<file << " as path for Sofa" << std::endl;
 
     std::ifstream sofa_default((file+"/sofa-default.cfg").c_str());
     std::ifstream sofa_local((file+"/sofa-local.cfg").c_str());
@@ -379,6 +411,7 @@ int main(int argc, char** argv)
 
     QApplication* application;
     application = new QApplication(argc, argv);
+
     sofa::gui::qt::SofaConfiguration* config = new sofa::gui::qt::SofaConfiguration(file,listOptions);
     application->setMainWidget(config);
 
