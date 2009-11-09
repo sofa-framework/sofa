@@ -77,7 +77,7 @@ SkinningMapping<BasicMapping>::SkinningMapping ( In* from, Out* to )
     , displayBlendedFrame ( initData ( &displayBlendedFrame,"1", "displayBlendedFrame","weights list for the influences of the references Dofs" ) )
     , computeWeights ( true )
     , wheighting ( WEIGHT_INVDIST )
-    , interpolation ( INTERPOLATION_DUAL_QUATERNION )
+    , interpolation ( INTERPOLATION_LINEAR )
 {
     maskFrom = NULL;
     if (core::componentmodel::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *>(from))
@@ -364,8 +364,8 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
     {
         rotatedPoints.resize ( initPos.size() );
         out.resize ( initPos.size() / nbRefs.getValue() );
-        x1.resize( out.size()); //TODO remove after test
-        x2.resize( out.size()); //TODO remove after test
+        //x1.resize( out.size()); //TODO remove after test
+        //x2.resize( out.size()); //TODO remove after test
         for ( unsigned int i=0 ; i<out.size(); i++ )
         {
             out[i] = Coord();
@@ -390,11 +390,11 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
         VecCoord& xto = *this->toModel->getX();
         //rotatedPoints.resize( xto.size());
         out.resize ( xto.size() );
-        x1.resize( out.size()); //TODO remove after test
-        x2.resize( out.size()); //TODO remove after test
+        //x1.resize( out.size()); //TODO remove after test
+        //x2.resize( out.size()); //TODO remove after test
         for ( unsigned int i=0 ; i<out.size(); i++ )
         {
-            x1[i] = out[i]; //TODO remove after test
+            //x1[i] = out[i]; //TODO remove after test
             DualQuat dq;
             for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
             {
@@ -411,7 +411,7 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
             dq.normalize(); // Normalize it
             out[i] = dq.transform ( initPos[i] ); // And apply it
         }
-        x2 = out; //TODO remove after test
+        //x2 = out; //TODO to remove after the convergence test
         break;
     }
 #endif
@@ -426,8 +426,8 @@ void SkinningMapping<BasicMapping>::applyJ ( typename Out::VecDeriv& out, const 
     const sofa::helper::vector<double>& m_coefs = coefs.getValue();
     VecCoord& xto = *this->toModel->getX();
     out.resize ( xto.size() );
-    vector<double> dqTest; //TODO to remove after the convergence test
-    dqTest.resize( out.size()); //TODO to remove after the convergence test
+    //vector<double> dqTest; //TODO to remove after the convergence test
+    //dqTest.resize( out.size()); //TODO to remove after the convergence test
     Deriv v,omega;
 
     if (!(maskTo->isInUse()) )
@@ -462,7 +462,7 @@ void SkinningMapping<BasicMapping>::applyJ ( typename Out::VecDeriv& out, const 
 
             for ( unsigned int i=0; i<out.size(); i++ )
             {
-                dqTest[i] = 0.0;
+                //dqTest[i] = 0.0; //TODO to remove after the convergence test
                 DualQuat dq;
                 for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
                 {
@@ -482,13 +482,14 @@ void SkinningMapping<BasicMapping>::applyJ ( typename Out::VecDeriv& out, const 
                 dqn.normalize(); // Normalize it
                 computeDqN( N, dqn, dq);
                 computeDqQ( Q, dqn, initPos[i]);
+                Mat38 QN = Q * N;
 
                 out[i] = Deriv();
                 for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
                 {
                     const int idx=nbRefs.getValue() *i+m;
                     const int idxReps=m_reps[idx];
-                    Mat36 res = Q * N * T[m] * L[m];
+                    Mat36 res = QN * T[m] * L[m];
                     Mat61 speed;
                     speed[0][0] = in[idxReps].getVOrientation()[0];
                     speed[1][0] = in[idxReps].getVOrientation()[1];
@@ -545,7 +546,7 @@ void SkinningMapping<BasicMapping>::applyJ ( typename Out::VecDeriv& out, const 
             for (it=indices.begin(); it!=indices.end(); it++)
             {
                 const int i=(int)(*it);
-                dqTest[i] = 0.0; //TODO to remove after the convergence test
+                //dqTest[i] = 0.0; //TODO to remove after the convergence test
                 DualQuat dq;
                 for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
                 {
@@ -663,12 +664,13 @@ void SkinningMapping<BasicMapping>::applyJT ( typename In::VecDeriv& out, const 
                 dqn.normalize(); // Normalize it
                 computeDqN( N, dqn, dq);
                 computeDqQ( Q, dqn, initPos[i]);
+                Mat38 QN = Q * N;
 
                 for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
                 {
                     const int idx=nbRefs.getValue() *i+m;
                     const int idxReps=m_reps[idx];
-                    Mat36 res = Q * N * T[m] * L[m];
+                    Mat36 res = QN * T[m] * L[m];
                     Mat63 resT;
                     resT.transpose( res);
 
