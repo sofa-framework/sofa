@@ -79,14 +79,17 @@ public:
     typedef defaulttype::Mat<8,8,Real> Mat88;
     typedef defaulttype::Mat<3,8,Real> Mat38;
     typedef defaulttype::Mat<8,6,Real> Mat86;
+    typedef defaulttype::Mat<3,6,Real> Mat36;
+    typedef defaulttype::Mat<6,1,Real> Mat61;
+    typedef defaulttype::Mat<6,3,Real> Mat63;
+    typedef defaulttype::Mat<3,1,Real> Mat31;
 
 #ifdef SOFA_DEV
     typedef typename helper::DualQuatd DualQuat;
 #endif
 protected:
     sofa::helper::vector<InCoord> initPosDOFs; // translation and rotation of the blended reference frame i, where i=0..n.
-    sofa::helper::vector<Coord> initPos; // pos: point coord in  the reference frame i, where i=0..n ( + 1 for the blended reference frame)
-    sofa::helper::vector<Coord> initBlendedPos; // pos: point coord in  the blended reference frames, where i=0..n ( + 1 for the blended reference frame)
+    sofa::helper::vector<Coord> initPos; // pos: point coord in the world reference frame
     sofa::helper::vector<Coord> rotatedPoints;
 
     core::componentmodel::behavior::BaseMechanicalState::ParticleMask* maskFrom;
@@ -100,8 +103,8 @@ protected:
     bool computeWeights;
     WeightingType wheighting;
     InterpolationType interpolation;
-    typename Out::VecCoord x1; // TODO: virer ca avant de commit
-    typename Out::VecCoord x2; // TODO: virer ca avant de commit
+    typename Out::VecCoord x1; //TODO remove after test
+    typename Out::VecCoord x2; //TODO remove after test
 
     class Loader;
     void load ( const char* filename );
@@ -143,9 +146,10 @@ public:
     const sofa::helper::vector<unsigned int>& getRepartition() { return repartition.getValue(); }
     bool getComputeWeights() { return computeWeights; }
 
-    // Dual quat J matrix
+    // Dual quat J matrix components
     void computeDqQ( Mat38& Q, const DualQuat& bn, const Coord& p);
     void computeDqN( Mat88& N, const DualQuat& bn, const DualQuat& b);
+    void computeDqT( Mat88& T, const DualQuat& qi0);
     void computeDqL( Mat86& L, const DualQuat& qi, const Coord& ti);
 };
 
