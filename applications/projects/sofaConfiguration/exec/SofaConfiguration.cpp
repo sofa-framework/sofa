@@ -367,12 +367,12 @@ void SofaConfiguration::saveConfiguration()
 //                std::cerr << "Executing : " << cmd.ascii() << std::endl;
     system(cmd.ascii());
 #else
+    QStringList argv;
 #if SOFA_QT4
     argv << QString("qmake-qt4");
 #else
     argv << QString("qmake");
 #endif
-    QStringList argv;
     Q3Process *p = new Q3Process(argv,this);
     p->setCommunication(0);
     p->setWorkingDirectory(QDir(QString(path.c_str())));
