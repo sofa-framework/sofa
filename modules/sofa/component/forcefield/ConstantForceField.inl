@@ -54,27 +54,44 @@ ConstantForceField<DataTypes>::ConstantForceField()
     , forces(initData(&forces, "forces", "applied forces at each point"))
     , force(initData(&force, "force", "applied force to all points if forces attribute is not specified"))
     , arrowSizeCoef(initData(&arrowSizeCoef,0.0, "arrowSizeCoef", "Size of the drawn arrows (0->no arrows, sign->direction of drawing"))
-{}
+    , indexFromEnd(initData(&indexFromEnd,(bool)false,"indexFromEnd", "Concerned DOFs indices are numbered from the end of the MState DOFs vector"))
+{
+
+}
 
 
 template<class DataTypes>
-void ConstantForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, const VecDeriv& )
+void ConstantForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, const VecDeriv&)
 {
     f1.resize(p1.size());
     const VecIndex& indices = points.getValue();
     const VecDeriv& f = forces.getValue();
     const Deriv f_end = (f.empty()? force.getValue() : f[f.size()-1]);
     unsigned int i = 0;
-    for (; i<f.size(); i++)
+
+    if (!indexFromEnd.getValue())
     {
-        f1[indices[i]]+=f[i];
+        for (; i < f.size(); i++)
+        {
+            f1[indices[i]] += f[i];
+        }
+        for (; i < indices.size(); i++)
+        {
+            f1[indices[i]] += f_end;
+        }
     }
-    for (; i<indices.size(); i++)
+    else
     {
-        f1[indices[i]]+=f_end;
+        for (; i < f.size(); i++)
+        {
+            f1[f1.size() - indices[i] - 1] += f[i];
+        }
+        for (; i < indices.size(); i++)
+        {
+            f1[f1.size() - indices[i] - 1] += f_end;
+        }
     }
 }
-
 
 
 template <class DataTypes>
@@ -83,21 +100,38 @@ double ConstantForceField<DataTypes>::getPotentialEnergy(const VecCoord& x)
     const VecIndex& indices = points.getValue();
     const VecDeriv& f = forces.getValue();
     const Deriv f_end = (f.empty()? force.getValue() : f[f.size()-1]);
-    double e=0;
+    double e = 0;
     unsigned int i = 0;
-    for (; i<f.size(); i++)
+
+    if (!indexFromEnd.getValue())
     {
-        e -= f[i]*x[indices[i]];
+        for (; i<f.size(); i++)
+        {
+            e -= f[i] * x[indices[i]];
+        }
+        for (; i<indices.size(); i++)
+        {
+            e -= f_end * x[indices[i]];
+        }
     }
-    for (; i<indices.size(); i++)
+    else
     {
-        e -= f_end*x[indices[i]];
+        for (; i < f.size(); i++)
+        {
+            e -= f[i] * x[x.size() - indices[i] -1];
+        }
+        for (; i < indices.size(); i++)
+        {
+            e -= f_end * x[x.size() - indices[i] -1];
+        }
     }
+
     return e;
 }
 
+
 template <class DataTypes>
-void ConstantForceField<DataTypes>::setForce( unsigned i, const Deriv& force )
+void ConstantForceField<DataTypes>::setForce(unsigned i, const Deriv& force)
 {
     VecIndex& indices = *points.beginEdit();
     VecDeriv& f = *forces.beginEdit();
@@ -140,7 +174,16 @@ void ConstantForceField<DataTypes>::draw()
         for (unsigned int i=0; i<indices.size(); i++)
         {
             Real xx,xy,xz,fx,fy,fz;
-            DataTypes::get(xx,xy,xz,x[indices[i]]);
+
+            if (!indexFromEnd.getValue())
+            {
+                DataTypes::get(xx,xy,xz,x[indices[i]]);
+            }
+            else
+            {
+                DataTypes::get(xx,xy,xz,x[x.size() - indices[i] - 1]);
+            }
+
             DataTypes::get(fx,fy,fz,(i<f.size())? f[i] : f_end);
             points.push_back(defaulttype::Vector3(xx, xy, xz ));
             points.push_back(defaulttype::Vector3(xx+fx, xy+fy, xz+fz ));
@@ -152,9 +195,17 @@ void ConstantForceField<DataTypes>::draw()
         for (unsigned int i=0; i<indices.size(); i++)
         {
             Real xx,xy,xz,fx,fy,fz;
-            DataTypes::get(xx,xy,xz,x[indices[i]]);
-            DataTypes::get(fx,fy,fz,(i<f.size())? f[i] : f_end);
 
+            if (!indexFromEnd.getValue())
+            {
+                DataTypes::get(xx,xy,xz,x[indices[i]]);
+            }
+            else
+            {
+                DataTypes::get(xx,xy,xz,x[x.size() - indices[i] - 1]);
+            }
+
+            DataTypes::get(fx,fy,fz,(i<f.size())? f[i] : f_end);
 
             defaulttype::Vector3 p1( xx, xy, xz);
             defaulttype::Vector3 p2( aSC*fx+xx, aSC*fy+xy, aSC*fz+xz );

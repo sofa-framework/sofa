@@ -1,4 +1,4 @@
-<Node name="root"  dt="0.005" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0">
+<Node name="root"  dt="0.005" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0">
 	
 	<CollisionPipeline depth="6" verbose="0" draw="0"/>
 	<BruteForceDetection name="N2"/>
@@ -18,20 +18,20 @@
 		<include href="Objects/EdgeSetTopology.xml" template="Rigid"/>
 		
 	<!--	<EdgeSetController listening="true" mainDirection="1.0 0.0 0.0" reversed="false"/>	-->
-		
-		<BeamAdapter name="beamAdapter" listening="true" minCurvatureAngle="3" maxCurvatureAngle="12" nbMaxBeams="12" activate="true"/>
-		
+		<BeamAdapter name="beamAdapter" listening="true" minCurvatureAngle="3" maxCurvatureAngle="12" nbMaxBeams="6" activate="true"/>
 		<BeamFEMForceField name="FEM" radius="0.05" youngModulus="500000000"/>
+		
+		<Object type="ConstantForceField" indexFromEnd="true" points="0" forces="0 -200.0 0 0 1 0"/>
 		
 		<Node name="CM">
 			<MechanicalObject name="CollisionDOFs" template="Vec3d" size="3"/>
-			<LineSet contactStiffness="100.0"/>
+			<LineSet contactStiffness="100.0" group="2"/>
 			<IdentityMapping/>
 		</Node>
 		
 		<Node name="SPH_CM">
 			<MechanicalObject/>
-			<Sphere contactStiffness="10.0" radius="0.2"/>
+			<Sphere contactStiffness="10.0" radius="0.2" group="2"/>
 			<RigidMapping indexFromEnd="true" index="0"/>
 		</Node>
 		
@@ -50,14 +50,7 @@
 		-->
 	</Node>
 	
-
-	<Node name="BodyVM">
-		<Object type="OglModel" name="Visual" color="1.0 1.0 1.0 1.0" />
-		<Object type="TubularMapping" nbPointsOnEachCircle="10" radius="1.0" object1="../../BeamAdapted/MechanicalDOFs" object2="Visual" />
-	</Node>
-	
-	<!--
-	<Node name="Beam">
+	<Node name="NonAdaptedBeam">
 		<EulerImplicit rayleighStiffness="0" printLog="false"/>
 		<BTDLinearSolver template="NewMatBand" bandWidth="11" threshold="0.000000001" tolerance="0.0000000001" printLog="false" verbose="false"/>
 		
@@ -68,22 +61,36 @@
 		
 		<include href="Objects/EdgeSetTopology.xml" template="Rigid"/>
 		
-		<EdgeSetController listening="true" mainDirection="1.0 0.0 0.0" reversed="false"/>
-		
+	<!--	<EdgeSetController listening="true" mainDirection="1.0 0.0 0.0" reversed="false"/>	-->
 		<BeamFEMForceField name="FEM" radius="0.05" youngModulus="500000000"/>
+		
+		<Object type="ConstantForceField" indexFromEnd="true" points="0" forces="0 -200.0 0 0 1 0"/>
 		
 		<Node name="CM">
 			<MechanicalObject name="CollisionDOFs" template="Vec3d" size="3"/>
-			<LineSet contactStiffness="100.0"/>
+			<LineSet contactStiffness="100.0" group="2"/>
 			<IdentityMapping/>
 		</Node>
 		
 		<Node name="SPH_CM">
 			<MechanicalObject/>
-			<Sphere contactStiffness="10.0" radius="0.2"/>
+			<Sphere contactStiffness="10.0" radius="0.2" group="2"/>
 			<RigidMapping indexFromEnd="true" index="0"/>
 		</Node>
+		
+		<!--
+		<Node name="VM">
+			<MechanicalObject name="VisualDOFs"/>
+			<include href="Objects/QuadSetTopology.xml"/>
+			<Edge2QuadTopologicalMapping nbPointsOnEachCircle="10" radius="0.5" object1="../../Container" object2="Container"/>
+			<TubularMapping nbPointsOnEachCircle="10" radius="0.5" object1="../../MechanicalDOFs" object2="../VisualDOFs"/>
+			
+			<Node name="Visu">
+				<OglModel name="Visual" color="1.0 0.25 0.25 1.0"/>
+				<IdentityMapping object1="../../VisualDOFs" object2="Visual"/>
+			</Node>
+		</Node>
+		-->
 	</Node>
-	-->
 	
 </Node>
