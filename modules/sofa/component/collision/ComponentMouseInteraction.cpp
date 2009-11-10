@@ -53,31 +53,43 @@ ComponentMouseInteraction::ComponentMouseInteraction():parentNode(NULL), nodeRay
 
 ComponentMouseInteraction::~ComponentMouseInteraction()
 {
-    nodeRayPick->execute< simulation::DeleteVisitor >();
-    delete nodeRayPick;
+    if (nodeRayPick)
+    {
+        nodeRayPick->execute< simulation::DeleteVisitor >();
+        delete nodeRayPick;
+    }
 }
 
 
 void ComponentMouseInteraction::init(Node* node)
 {
     parentNode = node;
+    //nodeRayPick = simulation::getSimulation()->newNode("RayPick");
+}
+
+void ComponentMouseInteraction::createRayPickNode(Node* /*node*/)
+{
+    //parentNode = node;
     nodeRayPick = simulation::getSimulation()->newNode("RayPick");
 }
 
 void ComponentMouseInteraction::activate()
 {
+    if (!nodeRayPick) createRayPickObjects(parentNode);
     parentNode->addChild(nodeRayPick);
     nodeRayPick->updateContext();
 }
 
 void ComponentMouseInteraction::deactivate()
 {
-    nodeRayPick->detachFromGraph();
+    if (nodeRayPick)
+        nodeRayPick->detachFromGraph();
 }
 
 void ComponentMouseInteraction::reset()
 {
-    mouseInteractor->cleanup();
+    if (mouseInteractor)
+        mouseInteractor->cleanup();
 }
 
 #ifndef SOFA_DOUBLE
