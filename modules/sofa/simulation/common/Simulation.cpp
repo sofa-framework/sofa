@@ -508,6 +508,7 @@ void Simulation::unload(Node * root)
     {
         instruments.clear();
         instrumentInUse.setValue(-1);
+        setContext(0);
     }
     root->detachFromGraph();
     root->execute<CleanupVisitor>();
