@@ -692,7 +692,10 @@ void QtGLViewer::DisplayOBJs()
     if (!groot->getMultiThreadSimulation())
 #endif // SOFA_DEV
     {
+        //Draw Debug information of the components
         simulation::getSimulation()->draw(groot, &visualParameters);
+        //Draw Visual Models
+        simulation::getSimulation()->draw(simulation::getSimulation()->getVisualRoot(), &visualParameters);
         if (_axis)
         {
             this->setSceneBoundingBox(qglviewer::Vec(visualParameters.minBBox[0], visualParameters.minBBox[1], visualParameters.minBBox[2]),
@@ -783,7 +786,10 @@ void QtGLViewer::DrawScene(void)
 
 void QtGLViewer::viewAll()
 {
+    if (!groot) return;
+
     getSimulation()->computeBBox(groot, visualParameters.minBBox.ptr(), visualParameters.maxBBox.ptr());
+    getSimulation()->computeBBox(getSimulation()->getVisualRoot(), visualParameters.minBBox.ptr(), visualParameters.maxBBox.ptr());
     sceneBBoxIsValid =  visualParameters.minBBox[0] <  visualParameters.maxBBox[0];
 
     QGLViewer::setSceneBoundingBox(   qglviewer::Vec(visualParameters.minBBox.ptr()),qglviewer::Vec(visualParameters.maxBBox.ptr()) );

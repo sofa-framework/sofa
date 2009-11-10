@@ -34,6 +34,7 @@
 #include <sofa/core/objectmodel/DataPtr.h>
 #include <sofa/core/objectmodel/Data.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
+#include <sofa/core/objectmodel/Tag.h>
 #include <string>
 #include <map>
 
@@ -217,6 +218,25 @@ public:
         m_aliasData.insert(std::make_pair(std::string(alias),field));
     }
 
+
+    /// @name tags
+    ///   Methods related to subsets belonging
+    /// @{
+
+    /// Represents the subsets the object belongs to
+
+    const sofa::core::objectmodel::TagSet& getTags() const { return f_tags.getValue(); }
+
+    /// Return true if the object belong to the given subset
+    bool hasTag( Tag t ) const;
+
+    /// Add a subset qualification to the object
+    void addTag(Tag t);
+    /// Remove a subset qualification to the object
+    void removeTag(Tag t);
+
+    /// @}
+
     /// Parse the given description to assign values to this object's fields and potentially other parameters
     virtual void parse ( BaseObjectDescription* arg );
 
@@ -293,6 +313,8 @@ public:
     Data<std::string> name;
 
     Data<bool> f_printLog;
+
+    Data< sofa::core::objectmodel::TagSet > f_tags;
 };
 
 } // namespace objectmodel

@@ -471,6 +471,55 @@
                         </widget>
                         <widget class="QWidget">
                             <property name="name">
+                                <cstring>TabVisualGraph</cstring>
+                            </property>
+                            <attribute name="title">
+                                <string>Visual</string>
+                            </attribute>
+                            <vbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QPushButton">
+                                    <property name="name">
+                                        <cstring>ExportVisualGraphButton</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>E&amp;xport Graph...</string>
+                                    </property>
+                                    <property name="accel">
+                                        <string>Alt+X</string>
+                                    </property>
+                                    <property name="iconSet">
+                                        <iconset>image1</iconset>
+                                    </property>
+                                </widget>
+                                <widget class="QListView">
+                                    <column>
+                                        <property name="text">
+                                            <string></string>
+                                        </property>
+                                        <property name="clickable">
+                                            <bool>false</bool>
+                                        </property>
+                                        <property name="resizable">
+                                            <bool>false</bool>
+                                        </property>
+                                    </column>
+                                    <property name="name">
+                                        <cstring>visualGraphView</cstring>
+                                    </property>
+                                    <property name="rootIsDecorated">
+                                        <bool>true</bool>
+                                    </property>
+                                    <property name="treeStepSize">
+                                        <number>15</number>
+                                    </property>
+                                </widget>
+                            </vbox>
+                        </widget>
+                        <widget class="QWidget">
+                            <property name="name">
                                 <cstring>TabPage</cstring>
                             </property>
                             <attribute name="title">
@@ -1210,6 +1259,18 @@
     </connection>
     <connection>
         <sender>graphView</sender>
+        <signal>rightButtonClicked(QListViewItem*,const QPoint&amp;,int)</signal>
+        <receiver>GUI</receiver>
+        <slot>RightClickedItemInSceneView(QListViewItem*,const QPoint&amp;,int)</slot>
+    </connection>
+    <connection>
+        <sender>visualGraphView</sender>
+        <signal>doubleClicked(QListViewItem*)</signal>
+        <receiver>GUI</receiver>
+        <slot>DoubleClickeItemInSceneView(QListViewItem*)</slot>
+    </connection>
+    <connection>
+        <sender>visualGraphView</sender>
         <signal>rightButtonClicked(QListViewItem*,const QPoint&amp;,int)</signal>
         <receiver>GUI</receiver>
         <slot>RightClickedItemInSceneView(QListViewItem*,const QPoint&amp;,int)</slot>

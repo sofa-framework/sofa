@@ -52,9 +52,8 @@ namespace simulation
 namespace bgl
 {
 
-BglGraphManager::BglGraphManager()
-{
-};
+BglGraphManager::BglGraphManager():visualNode(NULL)
+{};
 
 
 //----------------------------------------------------------------------------------
@@ -434,22 +433,6 @@ void BglGraphManager::reset()
 }
 
 
-void BglGraphManager::clear()
-{
-    interactions.clear();
-
-    hgraph.clear();
-    h_node_vertex_map.clear();
-
-    rgraph.clear();
-    r_node_vertex_map.clear();
-}
-
-
-
-
-
-
 bool BglGraphManager::needToComputeInteractions()
 {
     bool need=false;
@@ -645,11 +628,12 @@ void BglGraphManager::computeRoots()
     HvertexIterator it_begin, it_end;
     for (boost::tie(it_begin, it_end)=vertices(hgraph); it_begin!=it_end; ++it_begin)
     {
-        unsigned int degree = in_degree (*it_begin,hgraph);
+        Hvertex v=*it_begin;
+        unsigned int degree = in_degree (v,hgraph);
 
-        if (degree==0)
+        if (degree==0 && v!=visualRoot)
         {
-            hroots.push_back(*it_begin);
+            hroots.push_back(v);
         }
     }
 }
@@ -707,6 +691,18 @@ void BglGraphManager::printEdges(Graph &g)
                 << getNode(target(*it,g), g)->getName()  << "  ";
     }
     std::cout << std::endl;
+}
+
+Node *BglGraphManager::getVisualRoot()
+{
+    if (visualNode) return visualNode;
+    else
+    {
+        visualNode = new BglNode("VisualNode");
+        visualNode->addTag(core::objectmodel::Tag("Visual"));
+        addVertex(visualNode);
+        visualRoot = h_node_vertex_map[visualNode];
+    }
 }
 }
 }

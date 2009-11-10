@@ -46,7 +46,7 @@ Simulation* getSimulation()
     return simulation::getSimulation();
 }
 
-TreeSimulation::TreeSimulation()
+TreeSimulation::TreeSimulation(): visualNode(NULL)
 {
     //-------------------------------------------------------------------------------------------------------
     sofa::core::ObjectFactory::ClassEntry* classDefaultCollisionGroupManager;
@@ -56,6 +56,17 @@ TreeSimulation::TreeSimulation()
     sofa::core::ObjectFactory::ClassEntry* classCollisionGroup;
     sofa::core::ObjectFactory::AddAlias("CollisionGroup",
             "TreeCollisionGroupManager", true, &classCollisionGroup);
+}
+
+Node *TreeSimulation::getVisualRoot()
+{
+    if (visualNode) return visualNode;
+    else
+    {
+        visualNode= new GNode("VisualNode");
+        visualNode->addTag(core::objectmodel::Tag("Visual"));
+        return visualNode;
+    }
 }
 
 /// Create a new node

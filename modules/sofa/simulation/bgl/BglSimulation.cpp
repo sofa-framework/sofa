@@ -40,8 +40,6 @@
 
 #include <sofa/core/ObjectFactory.h>
 
-
-
 namespace sofa
 {
 namespace simulation
@@ -96,8 +94,8 @@ Node* BglSimulation::load(const char* f)
     BglGraphManager::getInstance()->update();
     return root;
 
-//         //Temporary: we need to change that: We could change getRoots by a getRoot.
-//         //if several roots are found, we return a master node, above the roots of the simulation
+    //Temporary: we need to change that: We could change getRoots by a getRoot.
+    //if several roots are found, we return a master node, above the roots of the simulation
 
 //         std::vector< Node* > roots;
 //         BglGraphManager::getInstance()->getRoots(roots);
@@ -106,22 +104,27 @@ Node* BglSimulation::load(const char* f)
 }
 
 
+Node *BglSimulation::getVisualRoot()
+{
+    return BglGraphManager::getInstance()->getVisualRoot();
+}
+
 void BglSimulation::reset(Node* root)
 {
     sofa::simulation::Simulation::reset(root);
     BglGraphManager::getInstance()->reset();
 }
 
-//       void BglSimulation::unload(Node* root)
-//       {
-//         Simulation::unload(root);
-//         //Clear should be called only if we unload the scene
-//         clear();
-//       }
-
-void BglSimulation::clear()
+void BglSimulation::unload(Node* root)
 {
-    BglGraphManager::getInstance()->clear();
+    BglNode *n=dynamic_cast<BglNode*>(root);
+    if (!n) return;
+    helper::vector< Node* > parents;
+    n->getParents(parents);
+    if (parents.empty()) //Root
+    {
+        Simulation::unload(getVisualRoot());
+    }
 }
 }
 }

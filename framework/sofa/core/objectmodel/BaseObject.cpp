@@ -47,7 +47,6 @@ namespace objectmodel
 BaseObject::BaseObject()
     : Base()
     , f_listening(initData( &f_listening, false, "listening", "if true, handle the events, otherwise ignore the events"))
-    , f_tags(initData( &f_tags, "tags", "list of the subsets the objet belongs to"))
     , context_(NULL)
 /*        , m_isListening(false)
         , m_printLog(false)*/
@@ -363,24 +362,6 @@ void BaseObject::handleStateChange(core::componentmodel::topology::Topology* t)
 double BaseObject::getTime() const
 {
     return getContext()->getTime();
-}
-
-bool BaseObject::hasTag(Tag t) const
-{
-    return (f_tags.getValue().count( t ) > 0 );
-}
-
-
-void BaseObject::addTag(Tag t)
-{
-    f_tags.beginEdit()->insert(t);
-    f_tags.endEdit();
-}
-
-void BaseObject::removeTag(Tag t)
-{
-    f_tags.beginEdit()->erase(t);
-    f_tags.endEdit();
 }
 
 #ifdef WIN32

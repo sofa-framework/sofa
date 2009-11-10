@@ -48,8 +48,12 @@ public:
 
     TreeSimulation();
 
+    Node *getVisualRoot();
+
     /// Create a new Node of the simulation
     Node* newNode(const std::string& name);
+protected:
+    Node *visualNode;
 };
 
 /** Get the (unique) simulation which controls the scene.

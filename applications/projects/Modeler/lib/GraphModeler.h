@@ -104,7 +104,7 @@ public:
     {
         for (unsigned int i=0; i<historyOperation.size(); ++i) editUndo();
         simulation::getSimulation()->unload(getRoot());
-
+        delete getRoot();
         delete graphListener;
         if (DialogAdd) delete DialogAdd;
     }

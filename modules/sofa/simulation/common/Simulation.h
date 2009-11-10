@@ -63,6 +63,9 @@ public:
     /// Execute one timestep. If dt is 0, the dt parameter in the graph will be used
     virtual void animate(Node* root, double dt=0.0);
 
+    /// Update the Visual Models: triggers the Mappings
+    virtual void updateVisual(Node* root, double dt=0.0);
+
     /// Reset to initial state
     virtual void reset(Node* root);
 
@@ -104,6 +107,7 @@ public:
     virtual void unload(Node * /* root */);
 
 
+    virtual Node *getVisualRoot()=0;
 
 
 

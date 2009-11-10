@@ -223,6 +223,8 @@ public:
     template <typename Container>
     void getRoots(Container &data);
 
+    Node *getVisualRoot();
+
     //*********************************************************************************
     //Visitors implementation
     /// breadth visit from the given vertex
@@ -237,7 +239,6 @@ public:
     //*********************************************************************************
     void update();
     void reset();
-    void clear();
     void printDebug();
 
 protected:
@@ -284,6 +285,8 @@ protected:
 
 
     HvertexVector hroots;           ///< the roots of the forest
+    Hvertex visualRoot;
+    BglNode*   visualNode;
 
     Interactions interactions;            ///< interactions between nodes at at any hierarchical levels
     Interactions previousInteractions;    ///< interactions between nodes at at any hierarchical levels at the previous time step

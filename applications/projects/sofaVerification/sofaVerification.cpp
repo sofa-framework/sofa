@@ -176,6 +176,7 @@ void apply(std::vector< std::string> &files, unsigned int iterations, bool reini
 
         //Clear and prepare for next scene
         sofa::simulation::getSimulation()->unload(groot);
+        delete groot;
     }
 }
 

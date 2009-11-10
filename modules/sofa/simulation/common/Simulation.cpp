@@ -144,7 +144,6 @@ void Simulation::init ( Node* root )
 
     //Get the list of instruments present in the scene graph
     getInstruments(root);
-
 }
 
 void Simulation::getInstruments( Node *node)
@@ -162,7 +161,7 @@ void Simulation::animate ( Node* root, double dt )
         return;
 
 #ifdef SOFA_DUMP_VISITOR_INFO
-    simulation::Visitor::printComment(std::string("Begin Step"));
+    simulation::Visitor::printNode(std::string("Step"));
 #endif
     {
         AnimateBeginEvent ev ( dt );
@@ -195,6 +194,26 @@ void Simulation::animate ( Node* root, double dt )
         root->execute ( act );
     }
 
+    //Visual Information update: Ray Pick add a MechanicalMapping used as VisualMapping
+    root->execute<UpdateMappingVisitor>();
+    {
+        UpdateMappingEndEvent ev ( dt );
+        PropagateEventVisitor act ( &ev );
+        root->execute ( act );
+    }
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printCloseNode(std::string("Step"));
+#endif
+    *(nbSteps.beginEdit()) = nbSteps.getValue() + 1;
+    nbSteps.endEdit();
+}
+
+
+void Simulation::updateVisual ( Node* root, double dt )
+{
+#ifdef SOFA_DUMP_VISITOR_INFO
+    simulation::Visitor::printNode(std::string("UpdateVisual"));
+#endif
     root->execute<UpdateMappingVisitor>();
     {
         UpdateMappingEndEvent ev ( dt );
@@ -203,12 +222,9 @@ void Simulation::animate ( Node* root, double dt )
     }
     root->execute<VisualUpdateVisitor>();
 #ifdef SOFA_DUMP_VISITOR_INFO
-    simulation::Visitor::printComment(std::string("End Step"));
+    simulation::Visitor::printCloseNode(std::string("UpdateVisual"));
 #endif
-    *(nbSteps.beginEdit()) = nbSteps.getValue() + 1;
-    nbSteps.endEdit();
 }
-
 
 /// Reset to initial state
 void Simulation::reset ( Node* root )
@@ -220,6 +236,8 @@ void Simulation::reset ( Node* root )
     root->execute<MechanicalPropagatePositionAndVelocityVisitor>();
     root->execute<UpdateMappingVisitor>();
     root->execute<VisualUpdateVisitor>();
+    if (root != getVisualRoot())
+        getVisualRoot()->execute<VisualUpdateVisitor>();
 
     *(nbSteps.beginEdit()) = 0;
     nbSteps.endEdit();
@@ -230,9 +248,13 @@ void Simulation::initTextures ( Node* root )
 {
     if ( !root ) return;
     root->execute<VisualInitVisitor>();
+    if (root != getVisualRoot())
+        getVisualRoot()->execute<VisualInitVisitor>();
     // Do a visual update now as it is not done in load() anymore
     /// \todo Separate this into another method?
     root->execute<VisualUpdateVisitor>();
+    if (root != getVisualRoot())
+        getVisualRoot()->execute<VisualUpdateVisitor>();
 }
 
 
@@ -268,7 +290,6 @@ void Simulation::updateVisualContext ( Node* root, Node::VISUAL_FLAG FILTER)
 void Simulation::draw ( Node* root, helper::gl::VisualParameters* params )
 {
     if ( !root ) return;
-
     if (root->visualManager.empty())
     {
         VisualDrawVisitor act ( core::VisualModel::Std );
@@ -508,12 +529,12 @@ void Simulation::unload(Node * root)
     {
         instruments.clear();
         instrumentInUse.setValue(-1);
-        setContext(0);
+        this->setContext(0);
     }
     root->detachFromGraph();
     root->execute<CleanupVisitor>();
     root->execute<DeleteVisitor>();
-    delete root;
+    //delete root; //We unload only, and don't destrory the Node
 }
 //      void Simulation::addStep ( )
 //      {

@@ -89,6 +89,7 @@ unsigned int BglNode::getUniqueId()
 
 bool BglNode::addObject(core::objectmodel::BaseObject* obj)
 {
+    using sofa::core::objectmodel::Tag;
     if (sofa::core::componentmodel::behavior::BaseMechanicalMapping* mm = dynamic_cast<sofa::core::componentmodel::behavior::BaseMechanicalMapping*>(obj))
     {
         sofa::core::componentmodel::behavior::BaseMechanicalState

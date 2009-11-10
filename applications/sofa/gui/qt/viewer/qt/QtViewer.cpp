@@ -749,8 +749,8 @@ void QtViewer::DisplayOBJs()
 
     {
 
-
         getSimulation()->draw(groot, &visualParameters);
+        getSimulation()->draw(simulation::getSimulation()->getVisualRoot(), &visualParameters);
         if (_axis)
         {
             DrawAxis(0.0, 0.0, 0.0, 10.0);
@@ -908,6 +908,7 @@ void QtViewer::calcProjection()
     if (groot && (!sceneBBoxIsValid || _axis))
     {
         getSimulation()->computeBBox(groot, visualParameters.minBBox.ptr(), visualParameters.maxBBox.ptr());
+        getSimulation()->computeBBox(getSimulation()->getVisualRoot(), visualParameters.minBBox.ptr(), visualParameters.maxBBox.ptr());
         sceneBBoxIsValid = true;
     }
     if (!sceneBBoxIsValid || visualParameters.maxBBox[0] > visualParameters.minBBox[0] || (visualParameters.maxBBox==Vector3() && visualParameters.minBBox==Vector3()))_zoomSpeed = _panSpeed = 2;
