@@ -63,7 +63,6 @@ void TComponentMouseInteraction<DataTypes>::init(Node* node)
     nodeRayPick->setName(nodeRayPick->getName() + "_" + DataTypes::Name());
     parentNode->addChild(nodeRayPick);
 
-    mouseInSofa =  new MouseContainer;
     mouseInSofa = new MouseContainer; mouseInSofa->resize(1);
     mouseInSofa->setName("MousePosition");
     nodeRayPick->addObject(mouseInSofa);
@@ -78,7 +77,10 @@ void TComponentMouseInteraction<DataTypes>::init(Node* node)
 
     mouseMapping->setMechanical(false);
 
-    parentNode->execute<simulation::InitVisitor>();
+    mouseInSofa->init();
+    mouseInteractor->init();
+    mouseMapping->init();
+
     parentNode->removeChild(nodeRayPick);
 }
 

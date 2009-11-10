@@ -320,10 +320,8 @@ Node* RealGUI::currentSimulation()
 
 
 RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*options*/ )
-    : viewerName ( viewername ), viewer ( NULL ), currentTab ( NULL ), tabInstrument (NULL),  graphListener ( NULL ), dialog ( NULL )
+    : viewerName ( viewername ), viewer ( NULL ), currentTab ( NULL ), tabInstrument (NULL),  graphListener ( NULL ), dialog ( NULL ), saveReloadFile(false)
 {
-
-
 
     connect(this, SIGNAL(quit()), this, SLOT(fileExit()));
 
@@ -417,6 +415,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     connect ( dtEdit, SIGNAL ( textChanged ( const QString& ) ), this, SLOT ( setDt ( const QString& ) ) );
     connect ( stepButton, SIGNAL ( clicked() ), this, SLOT ( step() ) );
     connect ( ExportGraphButton, SIGNAL ( clicked() ), this, SLOT ( exportGraph() ) );
+    connect ( ExportVisualGraphButton, SIGNAL ( clicked() ), this, SLOT ( exportGraph() ) );
     connect ( dumpStateCheckBox, SIGNAL ( toggled ( bool ) ), this, SLOT ( dumpState ( bool ) ) );
     connect ( displayComputationTimeCheckBox, SIGNAL ( toggled ( bool ) ), this, SLOT ( displayComputationTime ( bool ) ) );
     connect ( exportGnuplotFilesCheckbox, SIGNAL ( toggled ( bool ) ), this, SLOT ( setExportGnuplot ( bool ) ) );
@@ -459,7 +458,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     //ADD GUI for Background
     //------------------------------------------------------------------------
     //Informations
-    Q3GroupBox *groupInfo = new Q3GroupBox(QString("Background"), tabs->page(3));
+    Q3GroupBox *groupInfo = new Q3GroupBox(QString("Background"), TabPage);
     groupInfo->setColumns(4);
     QWidget     *global    = new QWidget(groupInfo);
     QGridLayout *globalLayout = new QGridLayout(global);
@@ -488,18 +487,16 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     globalLayout2->addWidget(backgroundImage,2,1);
     connect( backgroundImage, SIGNAL( returnPressed() ), this, SLOT( updateBackgroundImage() ) );
 
-
-#ifdef SOFA_QT4
-    vboxLayout4->insertWidget(1,groupInfo);
-#else
-    TabPageLayout->insertWidget(1,groupInfo);
-#endif
+    ((QVBoxLayout*)(TabPage->layout()))->insertWidget(1,groupInfo);
 
     //---------------------------------------------------------------------------------------------------
 #ifdef SOFA_PML
     pmlreader = NULL;
     lmlreader = NULL;
 #endif
+
+    graphListener = new GraphListenerQListView( graphView );
+    visualGraphListener = new GraphListenerQListView( visualGraphView);
 
     //Center the application
     const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->primaryScreen());
@@ -841,19 +838,25 @@ bool RealGUI::setViewer ( const char* name )
 
     if ( viewer->getScene() !=NULL )
     {
-        simulation::getSimulation()->unload ( viewer->getScene() );
+        simulation::getSimulation()->unload ( viewer->getScene() ); delete viewer->getScene() ;
+        simulation::getSimulation()->unload ( simulation::getSimulation()->getVisualRoot() );
+
         if ( graphListener!=NULL )
         {
             delete graphListener;
-            graphListener = NULL;
+            graphListener = new GraphListenerQListView( graphView );
+            simulation::getSimulation()->getVisualRoot()->removeListener(visualGraphListener);
+            delete visualGraphListener;
+            visualGraphListener = new GraphListenerQListView( visualGraphView );
+
         }
         graphView->clear();
+        visualGraphView->clear();
     }
 
 // 	fileOpen(filename);
 // 	GNode* groot = new GNode; // empty scene to do the transition
 // 	setScene ( groot,filename.c_str() ); // keep the current display flags
-
 
     viewer->removeViewerTab(tabs);
 
@@ -905,13 +908,11 @@ bool RealGUI::setViewer ( const char* name )
             }
 #endif
 
-
     viewerName = name;
 
     addViewer();
 
     viewer->configureViewerTab(tabs);
-
 
 
     if (filename.rfind(".simu") != std::string::npos)
@@ -923,7 +924,7 @@ bool RealGUI::setViewer ( const char* name )
     return true;
 }
 
-void RealGUI::fileOpen ( std::string filename )
+void RealGUI::fileOpen ( std::string filename, bool temporaryFile )
 {
     if (filename.substr(filename.size()-5) == ".simu")
     {
@@ -956,18 +957,26 @@ void RealGUI::fileOpen ( std::string filename )
     if ( viewer->getScene() !=NULL )
     {
         viewer->getPickHandler()->reset();//activateRay(false);
-        simulation::getSimulation()->unload ( viewer->getScene() );
+
+        simulation::getSimulation()->unload ( viewer->getScene() ); delete viewer->getScene() ;
+        simulation::getSimulation()->unload ( getSimulation()->getVisualRoot() );
+
         if ( graphListener!=NULL )
         {
             delete graphListener;
-            graphListener = NULL;
+            graphListener = new GraphListenerQListView( graphView );
+            simulation::getSimulation()->getVisualRoot()->removeListener(visualGraphListener);
+            delete visualGraphListener;
+            visualGraphListener = new GraphListenerQListView( visualGraphView );
         }
         graphView->clear();
+        visualGraphView->clear();
     }
+
+
     //Clear the list of modified dialog opened
     current_Id_modifyDialog=0;
     map_modifyDialogOpened.clear();
-
     simulation::Node* root = simulation::getSimulation()->load ( filename.c_str() );
     simulation::getSimulation()->init ( root );
     if ( root == NULL )
@@ -976,8 +985,7 @@ void RealGUI::fileOpen ( std::string filename )
         stopDumpVisitor();
         return;
     }
-
-    setScene ( root, filename.c_str() );
+    setScene ( root, filename.c_str(), temporaryFile );
     //need to create again the output streams !!
     simulation::getSimulation()->gnuplotDirectory.setValue(gnuplot_directory);
     setExportGnuplot(exportGnuplotFilesCheckbox->isChecked());
@@ -996,13 +1004,18 @@ void RealGUI::pmlOpen ( const char* filename, bool /*resetView*/ )
     }
     if ( viewer->getScene() !=NULL )
     {
-        simulation::getSimulation()->unload ( viewer->getScene() );
+        simulation::getSimulation()->unload ( viewer->getScene() ); delete viewer->getScene() ;
+        simulation::getSimulation()->unload ( simulation::getSimulation()->getVisualRoot() );
         if ( graphListener!=NULL )
         {
             delete graphListener;
-            graphListener = NULL;
+            graphListener = new GraphListenerQListView( graphView );
+            simulation::getSimulation()->getVisualRoot()->removeListener(visualGraphListener);
+            delete visualGraphListener;
+            visualGraphListener = new GraphListenerQListView( visualGraphView);
         }
         graphView->clear();
+        visualGraphView->clear();
     }
     GNode *simuNode = dynamic_cast< GNode *> (simulation::getSimulation()->load ( scene.c_str() ));
     getSimulation()->init(simuNode);
@@ -1049,6 +1062,18 @@ void RealGUI::initDesactivatedNode()
             }
         }
     }
+    for (graph_iterator = visualGraphListener->items.begin(); graph_iterator != visualGraphListener->items.end(); graph_iterator++)
+    {
+        node_clicked = dynamic_cast< Node* >(graph_iterator->first);
+        if (node_clicked!=NULL )
+        {
+            if (!node_clicked->isActive() )
+            {
+                item_clicked =  visualGraphListener->items[node_clicked];
+                graphDesactivateNode();
+            }
+        }
+    }
 }
 
 
@@ -1058,6 +1083,7 @@ void RealGUI::setScene ( Node* root, const char* filename, bool temporaryFile )
     {
         if (!temporaryFile) updateRecentlyOpened(filename);
         setTitle ( filename );
+        saveReloadFile=temporaryFile;
         std::string extension=sofa::helper::system::SetDirectory::GetExtension(filename);
         std::string htmlFile=filename; htmlFile.resize(htmlFile.size()-extension.size()-1);
         htmlFile+=".html";
@@ -1085,8 +1111,6 @@ void RealGUI::setScene ( Node* root, const char* filename, bool temporaryFile )
         tabInstrument = NULL;
     }
 
-
-    graphView->clear();
     viewer->setScene ( root, filename );
     viewer->resetView();
     initial_time = (root != NULL)?root->getTime():0;
@@ -1292,13 +1316,13 @@ void RealGUI::fileReload()
         else if (s.endsWith( ".simu") )
             fileOpenSimu(filename);
         else
-            fileOpen ( filename );
+            fileOpen ( filename, saveReloadFile);
     }
 #else
     if (s.endsWith( ".simu") )
         fileOpenSimu(s.ascii());
     else
-        fileOpen ( s.ascii() );
+        fileOpen ( s.ascii(),saveReloadFile );
 #endif
 
 }
@@ -1481,7 +1505,10 @@ void RealGUI::step()
 
 
         //root->setLogTime(true);
-        simulation::getSimulation()->animate ( root, root->getDt() );
+        //T=T+DT
+        SReal dt=root->getDt();
+        simulation::getSimulation()->animate ( root, dt );
+        simulation::getSimulation()->updateVisual( simulation::getSimulation()->getVisualRoot() , dt );
 
         if ( m_dumpState )
             simulation::getSimulation()->dumpState ( root, *m_dumpStateStream );
@@ -1719,6 +1746,7 @@ void RealGUI::resetScene()
     if ( root )
     {
         simulation::getSimulation()->reset ( root );
+        simulation::getSimulation()->reset ( simulation::getSimulation()->getVisualRoot() );
         root->setTime(initial_time);
         eventNewTime();
 
@@ -1734,7 +1762,10 @@ void RealGUI::resetScene()
 //
 void RealGUI::exportGraph()
 {
-    exportGraph ( getScene() );
+    if (currentTab == TabGraph)
+        exportGraph ( getScene() );
+    else if (currentTab == TabVisualGraph)
+        exportGraph ( getSimulation()->getVisualRoot());
 }
 
 
@@ -2033,7 +2064,6 @@ void RealGUI::changeHtmlPage( const QString& u)
 {
     std::string path=u.ascii();
 #endif
-    std::cerr << path << " : " << std::endl;
     path  = sofa::helper::system::DataRepository.getFile(path);
     std::string extension=sofa::helper::system::SetDirectory::GetExtension(path.c_str());
     if (extension == "xml" || extension == "scn") fileOpen(path);
@@ -2073,7 +2103,12 @@ void RealGUI::showhideElements(int FILTER, bool value)
             root->getContext()->setShowForceFields ( value );
             root->getContext()->setShowInteractionForceFields ( value );
             break;
-        case  Node::VISUALMODELS:            root->getContext()->setShowVisualModels ( value ); break;
+        case  Node::VISUALMODELS:
+        {
+            root->getContext()->setShowVisualModels ( value );
+            sofa::simulation::getSimulation()->getVisualRoot()->setShowVisualModels( value);
+            break;
+        }
         case  Node::BEHAVIORMODELS:          root->getContext()->setShowBehaviorModels ( value ); break;
         case  Node::COLLISIONMODELS:         root->getContext()->setShowCollisionModels ( value ); break;
         case  Node::BOUNDINGCOLLISIONMODELS: root->getContext()->setShowBoundingCollisionModels ( value );  break;
@@ -2085,6 +2120,7 @@ void RealGUI::showhideElements(int FILTER, bool value)
         case  Node::NORMALS:                 root->getContext()->setShowNormals ( value ); break;
         }
         sofa::simulation::getSimulation()->updateVisualContext ( root, (simulation::Node::VISUAL_FLAG) FILTER );
+        sofa::simulation::getSimulation()->updateVisualContext ( sofa::simulation::getSimulation()->getVisualRoot(), (simulation::Node::VISUAL_FLAG) FILTER );
     }
     viewer->getQWidget()->update();
 }

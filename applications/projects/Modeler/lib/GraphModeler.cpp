@@ -691,7 +691,7 @@ void GraphModeler::saveNode(Q3ListViewItem* item)
 
 void GraphModeler::saveNode(GNode* node, std::string file)
 {
-    simulation::getSimulation()->exportXML(node, file.c_str());
+    simulation::getSimulation()->exportXML(node, file.c_str(),true);
 }
 
 void GraphModeler::saveComponent(BaseObject* object, std::string file)
@@ -1067,7 +1067,11 @@ void GraphModeler::clearHistory()
         if (historyOperation[i].ID == Operation::DELETE_OBJECT)
             delete historyOperation[i].sofaComponent;
         else if (historyOperation[i].ID == Operation::DELETE_GNODE)
-            simulation::getSimulation()->unload(dynamic_cast<GNode*>(historyOperation[i].sofaComponent));
+        {
+            GNode *n=dynamic_cast<GNode*>(historyOperation[i].sofaComponent);
+            simulation::getSimulation()->unload(n);
+            delete n;
+        }
     }
     historyOperation.clear();
     emit( undo(false) );
@@ -1080,7 +1084,11 @@ void GraphModeler::clearHistoryUndo()
         if (historyUndoOperation[i].ID == Operation::DELETE_OBJECT)
             delete historyUndoOperation[i].sofaComponent;
         else if (historyUndoOperation[i].ID == Operation::DELETE_GNODE)
-            simulation::getSimulation()->unload(dynamic_cast<GNode*>(historyUndoOperation[i].sofaComponent));
+        {
+            GNode *n=dynamic_cast<GNode*>(historyUndoOperation[i].sofaComponent);
+            simulation::getSimulation()->unload(n);
+            delete n;
+        }
     }
     historyUndoOperation.clear();
     emit( redo(false) );

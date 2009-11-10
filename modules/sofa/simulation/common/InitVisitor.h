@@ -51,7 +51,7 @@ class SOFA_SIMULATION_COMMON_API InitVisitor : public Visitor
 {
 
 public:
-    InitVisitor() {}
+    InitVisitor():rootNode(NULL) {}
 
 
     virtual Result processNodeTopDown(simulation::Node* node);
@@ -64,6 +64,9 @@ public:
     /// Only used for debugging / profiling purposes
     virtual const char* getCategoryName() const { return "init"; }
     virtual const char* getClassName() const { return "InitVisitor"; }
+
+protected:
+    Node *rootNode;
 };
 
 } // namespace simulation

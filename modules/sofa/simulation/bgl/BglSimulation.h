@@ -60,11 +60,12 @@ public:
 
     /// Load a file, and update the graph
     Node* load(const char* filename);
+    void unload(Node* root);
 
     /// Delayed Creation of a graph node and attach a new Node to it, then return the Node
     Node* newNode(const std::string& name="");
 
-    void clear();
+    Node *getVisualRoot();
 
     void reset ( Node* root );
 
