@@ -57,9 +57,9 @@ using sofa::component::collision::BodyPicked;
 
 
 template <class DataTypes>
-void TComponentMouseInteraction<DataTypes>::init(Node* node)
+void TComponentMouseInteraction<DataTypes>::createRayPickObjects(Node* node)
 {
-    ComponentMouseInteraction::init(node);
+    ComponentMouseInteraction::createRayPickNode(node);
     nodeRayPick->setName(nodeRayPick->getName() + "_" + DataTypes::Name());
     parentNode->addChild(nodeRayPick);
 
@@ -83,7 +83,6 @@ void TComponentMouseInteraction<DataTypes>::init(Node* node)
 
     parentNode->removeChild(nodeRayPick);
 }
-
 
 template <class DataTypes>
 bool TComponentMouseInteraction<DataTypes>::isCompatible( core::objectmodel::BaseContext *context) const
