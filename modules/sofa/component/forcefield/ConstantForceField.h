@@ -62,6 +62,8 @@ public:
     Data< VecDeriv > forces;
     Data< Deriv > force;
     Data< double > arrowSizeCoef; // for drawing. The sign changes the direction, 0 doesn't draw arrow
+    /// Concerned DOFs indices are numbered from the end of the MState DOFs vector
+    Data< bool > indexFromEnd;
 
     ConstantForceField();
 
@@ -77,10 +79,8 @@ public:
 
     virtual double getPotentialEnergy(const VecCoord& x);
 
-
     void draw();
     bool addBBox(double* minBBox, double* maxBBox);
-
 };
 
 } // namespace forcefield
