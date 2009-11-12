@@ -109,10 +109,11 @@ void InitVisitor::processNodeBottomUp(simulation::Node* node)
         {
             std::list< core::BaseMapping* >::iterator itMapping=it;
             ++it;
-            if (core::componentmodel::behavior::BaseMechanicalMapping* m=dynamic_cast<core::componentmodel::behavior::BaseMechanicalMapping*>( *itMapping ))
+            if (// core::componentmodel::behavior::BaseMechanicalMapping* m=
+                dynamic_cast<core::componentmodel::behavior::BaseMechanicalMapping*>( *itMapping ))
             {
-                if (m->isMechanical())
-                    mappings.erase(itMapping);
+                // if (m->isMechanical())
+                mappings.erase(itMapping);
             }
         }
         MoveObjectFunctor< core::BaseMapping > moveVisualMappings;
