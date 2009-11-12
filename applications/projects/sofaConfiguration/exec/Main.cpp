@@ -399,5 +399,14 @@ int main(int argc, char** argv)
     application->setMainWidget(config);
 
     config->show();
+
+    //Setting the icon
+    QString pathIcon=(file + std::string( "/share/icons/SOFACONFIGURATION.png" )).c_str();
+#ifdef SOFA_QT4
+    application->setWindowIcon(QIcon(pathIcon));
+#else
+    config->setIcon(QPixmap(pathIcon));
+#endif
+
     return application->exec();
 }
