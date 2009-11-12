@@ -1317,23 +1317,23 @@ public:
     typedef typename container_type::const_iterator const_iterator;
 
 protected:
-    const container_type& ref;
+    const container_type& vref;
     const value_type* data;
 public:
-    ReadAccessor(const container_type& container) : ref(container), data(container.hostRead()) {}
+    ReadAccessor(const container_type& container) : vref(container), data(container.hostRead()) {}
     ~ReadAccessor() {}
 
-    size_type size() const { return ref.size(); }
-    bool empty() const { return ref.empty(); }
+    size_type size() const { return vref.size(); }
+    bool empty() const { return vref.empty(); }
 
     const_reference operator[](size_type i) const { return data[i]; }
 
     const_iterator begin() const { return data; }
-    const_iterator end() const { return data+ref.size(); }
+    const_iterator end() const { return data+vref.size(); }
 
     inline friend std::ostream& operator<< ( std::ostream& os, const ReadAccessor<container_type>& vec )
     {
-        return os << vec.ref;
+        return os << vec.vref;
     }
 };
 
@@ -1350,37 +1350,37 @@ public:
     typedef typename container_type::const_iterator const_iterator;
 
 protected:
-    container_type& ref;
+    container_type& vref;
     T* data;
 
 public:
-    WriteAccessor(container_type& container) : ref(container), data(container.hostWrite()) {}
+    WriteAccessor(container_type& container) : vref(container), data(container.hostWrite()) {}
     ~WriteAccessor() {}
 
-    size_type size() const { return ref.size(); }
-    bool empty() const { return ref.empty(); }
+    size_type size() const { return vref.size(); }
+    bool empty() const { return vref.empty(); }
 
     const_reference operator[](size_type i) const { return data[i]; }
     reference operator[](size_type i) { return data[i]; }
 
     const_iterator begin() const { return data; }
     iterator begin() { return data; }
-    const_iterator end() const { return data+ref.size(); }
-    iterator end() { return data+ref.size(); }
+    const_iterator end() const { return data+vref.size(); }
+    iterator end() { return data+vref.size(); }
 
-    void clear() { ref.clear(); }
-    void resize(size_type s, bool init = true) { if (init) ref.resize(s); else ref.fastResize(s); }
-    void reserve(size_type s) { ref.reserve(s); }
-    void push_back(const_reference v) { ref.push_back(v); }
+    void clear() { vref.clear(); }
+    void resize(size_type s, bool init = true) { if (init) vref.resize(s); else vref.fastResize(s); }
+    void reserve(size_type s) { vref.reserve(s); }
+    void push_back(const_reference v) { vref.push_back(v); }
 
     inline friend std::ostream& operator<< ( std::ostream& os, const WriteAccessor<container_type>& vec )
     {
-        return os << vec.ref;
+        return os << vec.vref;
     }
 
     inline friend std::istream& operator>> ( std::istream& in, WriteAccessor<container_type>& vec )
     {
-        return in >> vec.ref;
+        return in >> vec.vref;
     }
 
 };
