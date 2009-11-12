@@ -311,6 +311,8 @@ public:
         EMPTY_FLAG = true;
         RESIZABLE_FLAG = true;
         REINIT_FLAG = false;
+        LINKPATH_MODIFIABLE_FLAG = true;
+
         //remove the qwt graphes
         energy_curve[0]=energy_curve[1]=energy_curve[2]=NULL;
         outputTab = warningTab = NULL;

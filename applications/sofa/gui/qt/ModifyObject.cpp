@@ -89,6 +89,7 @@ ModifyObject::ModifyObject(void *Id_, core::objectmodel::Base* node_clicked, Q3L
     EMPTY_FLAG = false;
     RESIZABLE_FLAG = false;
     REINIT_FLAG = true;
+    LINKPATH_MODIFIABLE_FLAG = false;
 
     outputTab = warningTab = NULL;
     energy_curve[0]=NULL;	        energy_curve[1]=NULL;	        energy_curve[2]=NULL;
@@ -342,7 +343,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     number_line++;
                 }
                 counterWidget += number_line/3; //each 3lines, a new widget is counted
-                if (label_text != "TODO") new QDisplayDataInfoWidget(box,final_text,(*it).second->getLinkPath());
+                if (label_text != "TODO") new QDisplayDataInfoWidget(box,final_text,(*it).second->getLinkPath(),LINKPATH_MODIFIABLE_FLAG);
 
 
                 DataWidget::CreatorArgument dwarg;
@@ -1248,6 +1249,43 @@ void ModifyObject::readOnlyData(Q3Table *widget, core::objectmodel::BaseData* da
 void ModifyObject::readOnlyData(QWidget *widget, core::objectmodel::BaseData* data)
 {
     widget->setEnabled(!( (data->isReadOnly()) && READONLY_FLAG));
+}
+
+
+QDisplayDataInfoWidget::QDisplayDataInfoWidget(QWidget* parent, const std::string& helper,
+        const std::string& linkpath, bool modifiable):QWidget(parent)
+{
+    QHBoxLayout* layout = new QHBoxLayout(this);
+    if (modifiable)
+    {
+        QPushButton *helper_button = new QPushButton(QString(helper.c_str()),this);
+        layout->addWidget(helper_button);
+        connect(helper_button, SIGNAL( clicked() ), this, SLOT( linkModification()));
+    }
+    else
+    {
+        QLabel* helper_label = new QLabel(this);
+        helper_label->setText(QString(helper.c_str()));
+        layout->addWidget(helper_label);
+    }
+    if(modifiable || !linkpath.empty())
+    {
+        linkpath_edit = new QLineEdit(this);
+        linkpath_edit->setText(QString(linkpath.c_str()));
+        linkpath_edit->setEnabled(modifiable);
+        layout->addWidget(linkpath_edit);
+        linkpath_edit->setShown(!linkpath.empty());
+    }
+    else
+    {
+        linkpath_edit=NULL;
+    }
+}
+
+void QDisplayDataInfoWidget::linkModification()
+{
+    linkpath_edit->setShown(true);
+    //Open a dialog window to let the user select the data he wants to link
 }
 
 } // namespace qt
