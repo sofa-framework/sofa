@@ -55,7 +55,6 @@
 #include <QSpinBox>
 #include <Q3CheckListItem>
 #include <QVBoxLayout>
-#include <QLineEdit>
 #else
 #include <qdialog.h>
 #include <qwidget.h>
@@ -70,8 +69,7 @@
 #include <qlineedit.h>
 #include <qcheckbox.h>
 #include <qspinbox.h>
-#include <qboxlayout.h>
-#include <qlineedit.h>
+#include <qlayout.h>
 #endif
 
 #include "WFloatLineEdit.h"
@@ -110,26 +108,6 @@ typedef QGrid       Q3Grid;
 
 class DataWidget;
 
-
-class QDisplayDataInfoWidget: public QWidget
-{
-    Q_OBJECT
-public:
-    QDisplayDataInfoWidget(QWidget* parent, const std::string& helper,
-            const std::string& linkpath):QWidget(parent)
-    {
-        QVBoxLayout* layout = new QVBoxLayout();
-        QLabel* helper_label = new QLabel(helper.c_str());
-        layout->addWidget(helper_label);
-        if(!linkpath.empty())
-        {
-            QLineEdit* linkpath_edit = new QLineEdit(linkpath.c_str());
-            linkpath_edit->setEnabled(false);
-            layout->addWidget(linkpath_edit);
-        }
-        setLayout(layout);
-    };
-};
 
 class SOFA_SOFAGUIQT_API ModifyObject : public QDialog
 {
@@ -238,6 +216,7 @@ protected:
     bool EMPTY_FLAG;//if we allow empty datas
     bool RESIZABLE_FLAG;
     bool REINIT_FLAG;
+    bool LINKPATH_MODIFIABLE_FLAG; //if we allow to modify the links of the Data
 };
 
 class DataWidget
@@ -410,6 +389,20 @@ protected:
     DataWidget *widget;
 
 };
+
+//Widget used to display the name of a Data and if needed the link to another Data
+class QDisplayDataInfoWidget: public QWidget
+{
+    Q_OBJECT
+public:
+    QDisplayDataInfoWidget(QWidget* parent, const std::string& helper, const std::string& linkpath, bool modifiable);
+public slots:
+    void linkModification();
+
+protected:
+    QLineEdit *linkpath_edit;
+};
+
 
 
 } // namespace qt
