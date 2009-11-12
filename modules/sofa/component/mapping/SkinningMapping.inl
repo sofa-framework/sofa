@@ -77,7 +77,7 @@ SkinningMapping<BasicMapping>::SkinningMapping ( In* from, Out* to )
     , displayBlendedFrame ( initData ( &displayBlendedFrame,"1", "displayBlendedFrame","weights list for the influences of the references Dofs" ) )
     , computeWeights ( true )
     , wheighting ( WEIGHT_INVDIST )
-    , interpolation ( INTERPOLATION_LINEAR )
+    , interpolation ( INTERPOLATION_DUAL_QUATERNION )
 {
     maskFrom = NULL;
     if (core::componentmodel::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *>(from))
@@ -387,6 +387,13 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
 #ifdef SOFA_DEV
     case INTERPOLATION_DUAL_QUATERNION:
     {
+        Mat38 Q;
+        Mat88 N;
+        vector<Mat88> T; T.resize( nbRefs.getValue() );
+        vector<Mat86> L; L.resize( nbRefs.getValue() );
+        sofa::helper::vector<Mat36>& J = *(matJ.beginEdit());
+        J.resize( out.size()*nbRefs.getValue());
+
         VecCoord& xto = *this->toModel->getX();
         //rotatedPoints.resize( xto.size());
         out.resize ( xto.size() );
@@ -401,15 +408,33 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
                 const int idx=nbRefs.getValue() *i+m;
                 const int idxReps=m_reps[idx];
                 // Create a rigid transformation from the relative rigid transformation of the reference frame "idxReps".
-                DualQuat dqi ( initPosDOFs[idxReps].getCenter(),
+                DualQuat dqi ( in[idxReps].getCenter(),
+                        in[idxReps].getOrientation() );
+                DualQuat dqrel ( initPosDOFs[idxReps].getCenter(),
                         initPosDOFs[idxReps].getOrientation(),
                         in[idxReps].getCenter(),
                         in[idxReps].getOrientation() );
+
                 // Blend all the transformations
-                dq += dqi * m_coefs[idx];
+                dq += dqrel * m_coefs[idx];
+
+                DualQuat qi0( initPosDOFs[idxReps].getCenter(), initPosDOFs[idxReps].getOrientation());
+                computeDqT( T[m], qi0);
+                computeDqL( L[m], dqi, in[idxReps].getCenter());
             }
-            dq.normalize(); // Normalize it
-            out[i] = dq.transform ( initPos[i] ); // And apply it
+            DualQuat dqn( dq);
+            dqn.normalize(); // Normalize it
+            out[i] = dqn.transform ( initPos[i] ); // And apply it
+
+            // Store matrix J for applyJ/Jt
+            computeDqN( N, dqn, dq);
+            computeDqQ( Q, dqn, initPos[i]);
+            Mat38 QN = Q * N;
+            for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
+            {
+                const int idx=nbRefs.getValue() *i+m;
+                J[idx] = QN * T[m] * L[m];
+            }
         }
         //x2 = out; //TODO to remove after the convergence test
         break;
@@ -454,42 +479,15 @@ void SkinningMapping<BasicMapping>::applyJ ( typename Out::VecDeriv& out, const 
 #ifdef SOFA_DEV
         case INTERPOLATION_DUAL_QUATERNION:
         {
-            const VecInCoord& xfrom = *this->fromModel->getX();
-            Mat38 Q;
-            Mat88 N;
-            vector<Mat88> T; T.resize( nbRefs.getValue() );
-            vector<Mat86> L; L.resize( nbRefs.getValue() );
+            const sofa::helper::vector<Mat36>& J = matJ.getValue();
 
             for ( unsigned int i=0; i<out.size(); i++ )
             {
-                //dqTest[i] = 0.0; //TODO to remove after the convergence test
-                DualQuat dq;
-                for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
-                {
-                    const int idx=nbRefs.getValue() *i+m;
-                    const int idxReps=m_reps[idx];
-                    // Create a rigid transformation from the relative rigid transformation of the reference frame "idxReps".
-                    DualQuat dqi ( xfrom[idxReps].getCenter(),
-                            xfrom[idxReps].getOrientation() );
-                    // Blend all the transformations
-                    dq += dqi * m_coefs[idx];
-
-                    DualQuat qi0( initPosDOFs[idxReps].getCenter(), initPosDOFs[idxReps].getOrientation());
-                    computeDqT( T[m], qi0);
-                    computeDqL( L[m], dqi, xfrom[idxReps].getCenter());
-                }
-                DualQuat dqn( dq);
-                dqn.normalize(); // Normalize it
-                computeDqN( N, dqn, dq);
-                computeDqQ( Q, dqn, initPos[i]);
-                Mat38 QN = Q * N;
-
                 out[i] = Deriv();
                 for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
                 {
                     const int idx=nbRefs.getValue() *i+m;
                     const int idxReps=m_reps[idx];
-                    Mat36 res = QN * T[m] * L[m];
                     Mat61 speed;
                     speed[0][0] = in[idxReps].getVOrientation()[0];
                     speed[1][0] = in[idxReps].getVOrientation()[1];
@@ -498,7 +496,7 @@ void SkinningMapping<BasicMapping>::applyJ ( typename Out::VecDeriv& out, const 
                     speed[4][0] = in[idxReps].getVCenter()[1];
                     speed[5][0] = in[idxReps].getVCenter()[2];
 
-                    Mat31 f = (res * speed) * m_coefs[idx];
+                    Mat31 f = (J[idx] * speed) * m_coefs[idx];
                     out[i] += Deriv( f[0][0], f[1][0], f[2][0]);
                 }
             }
@@ -537,42 +535,17 @@ void SkinningMapping<BasicMapping>::applyJ ( typename Out::VecDeriv& out, const 
 #ifdef SOFA_DEV
         case INTERPOLATION_DUAL_QUATERNION:
         {
-            const VecInCoord& xfrom = *this->fromModel->getX();
-            Mat38 Q;
-            Mat88 N;
-            vector<Mat88> T; T.resize( nbRefs.getValue() );
-            vector<Mat86> L; L.resize( nbRefs.getValue() );
+            const sofa::helper::vector<Mat36>& J = matJ.getValue();
 
             for (it=indices.begin(); it!=indices.end(); it++)
             {
                 const int i=(int)(*it);
                 //dqTest[i] = 0.0; //TODO to remove after the convergence test
-                DualQuat dq;
-                for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
-                {
-                    const int idx=nbRefs.getValue() *i+m;
-                    const int idxReps=m_reps[idx];
-                    // Create a rigid transformation from the relative rigid transformation of the reference frame "idxReps".
-                    DualQuat dqi ( xfrom[idxReps].getCenter(),
-                            xfrom[idxReps].getOrientation() );
-                    // Blend all the transformations
-                    dq += dqi * m_coefs[idx];
-
-                    DualQuat qi0( initPosDOFs[idxReps].getCenter(), initPosDOFs[idxReps].getOrientation());
-                    computeDqT( T[m], qi0);
-                    computeDqL( L[m], dqi, xfrom[idxReps].getCenter());
-                }
-                DualQuat dqn( dq);
-                dqn.normalize(); // Normalize it
-                computeDqN( N, dqn, dq);
-                computeDqQ( Q, dqn, initPos[i]);
-
                 out[i] = Deriv();
                 for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
                 {
                     const int idx=nbRefs.getValue() *i+m;
                     const int idxReps=m_reps[idx];
-                    Mat36 res = Q * N * T[m] * L[m];
                     Mat61 speed;
                     speed[0][0] = in[idxReps].getVOrientation()[0];
                     speed[1][0] = in[idxReps].getVOrientation()[1];
@@ -581,7 +554,7 @@ void SkinningMapping<BasicMapping>::applyJ ( typename Out::VecDeriv& out, const 
                     speed[4][0] = in[idxReps].getVCenter()[1];
                     speed[5][0] = in[idxReps].getVCenter()[2];
 
-                    Mat31 f = (res * speed) * m_coefs[idx];
+                    Mat31 f = (J[idx] * speed) * m_coefs[idx];
                     out[i] += Deriv( f[0][0], f[1][0], f[2][0]);
                 }
             }
@@ -637,42 +610,16 @@ void SkinningMapping<BasicMapping>::applyJT ( typename In::VecDeriv& out, const 
 #ifdef SOFA_DEV
         case INTERPOLATION_DUAL_QUATERNION:
         {
-            const VecInCoord& xfrom = *this->fromModel->getX();
-            Mat38 Q;
-            Mat88 N;
-            vector<Mat88> T; T.resize( nbRefs.getValue() );
-            vector<Mat86> L; L.resize( nbRefs.getValue() );
+            const sofa::helper::vector<Mat36>& J = matJ.getValue();
 
             for ( unsigned int i=0; i<in.size(); i++ )
             {
-                DualQuat dq;
                 for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
                 {
                     const int idx=nbRefs.getValue() *i+m;
                     const int idxReps=m_reps[idx];
-                    // Create a rigid transformation from the relative rigid transformation of the reference frame "idxReps".
-                    DualQuat dqi ( xfrom[idxReps].getCenter(),
-                            xfrom[idxReps].getOrientation() );
-                    // Blend all the transformations
-                    dq += dqi * m_coefs[idx];
-
-                    DualQuat qi0( initPosDOFs[idxReps].getCenter(), initPosDOFs[idxReps].getOrientation());
-                    computeDqT( T[m], qi0);
-                    computeDqL( L[m], dqi, xfrom[idxReps].getCenter());
-                }
-                DualQuat dqn( dq);
-                dqn.normalize(); // Normalize it
-                computeDqN( N, dqn, dq);
-                computeDqQ( Q, dqn, initPos[i]);
-                Mat38 QN = Q * N;
-
-                for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
-                {
-                    const int idx=nbRefs.getValue() *i+m;
-                    const int idxReps=m_reps[idx];
-                    Mat36 res = QN * T[m] * L[m];
                     Mat63 resT;
-                    resT.transpose( res);
+                    resT.transpose( J[idx]);
 
                     Mat31 f;
                     f[0][0] = in[i][0];
@@ -726,42 +673,16 @@ void SkinningMapping<BasicMapping>::applyJT ( typename In::VecDeriv& out, const 
 #ifdef SOFA_DEV
         case INTERPOLATION_DUAL_QUATERNION:
         {
-            const VecInCoord& xfrom = *this->fromModel->getX();
-            Mat38 Q;
-            Mat88 N;
-            vector<Mat88> T; T.resize( nbRefs.getValue() );
-            vector<Mat86> L; L.resize( nbRefs.getValue() );
-
+            const sofa::helper::vector<Mat36>& J = matJ.getValue();
             for (it=indices.begin(); it!=indices.end(); it++)
             {
                 const int i=(int)(*it);
-                DualQuat dq;
                 for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
                 {
                     const int idx=nbRefs.getValue() *i+m;
                     const int idxReps=m_reps[idx];
-                    // Create a rigid transformation from the relative rigid transformation of the reference frame "idxReps".
-                    DualQuat dqi ( xfrom[idxReps].getCenter(),
-                            xfrom[idxReps].getOrientation() );
-                    // Blend all the transformations
-                    dq += dqi * m_coefs[idx];
-
-                    DualQuat qi0( initPosDOFs[idxReps].getCenter(), initPosDOFs[idxReps].getOrientation());
-                    computeDqT( T[m], qi0);
-                    computeDqL( L[m], dqi, xfrom[idxReps].getCenter());
-                }
-                DualQuat dqn( dq);
-                dqn.normalize(); // Normalize it
-                computeDqN( N, dqn, dq);
-                computeDqQ( Q, dqn, initPos[i]);
-
-                for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
-                {
-                    const int idx=nbRefs.getValue() *i+m;
-                    const int idxReps=m_reps[idx];
-                    Mat36 res = Q * N * T[m] * L[m];
                     Mat63 resT;
-                    resT.transpose( res);
+                    resT.transpose( J[idx]);
 
                     Mat31 f;
                     f[0][0] = in[i][0];
