@@ -1119,7 +1119,7 @@ Visitor::Result MechanicalSolveLMConstraintVisitor::fwdOdeSolver(simulation::Nod
     {
         bool active=s->constraintPos.getValue();
         s->constraintPos.setValue(true);
-        s->solveConstraint(propagateState,state);
+        s->solveConstraint(propagateState,state,isPositionChangeUpdateVelocity);
         s->constraintPos.setValue(active);
     }
     endProcess(node, s, t0);

@@ -93,7 +93,7 @@ void LMContactConstraintSolver::solveConstraints(bool needPropagation)
     JacobianVisitor.execute(this->getContext());
 
     core::componentmodel::behavior::BaseMechanicalState::VecId positionState=core::componentmodel::behavior::BaseMechanicalState::VecId::position();
-    simulation::MechanicalSolveLMConstraintVisitor solveConstraintsPosition(positionState,needPropagation);
+    simulation::MechanicalSolveLMConstraintVisitor solveConstraintsPosition(positionState,needPropagation, false);
     solveConstraintsPosition.execute(this->getContext());
 
     // core::componentmodel::behavior::BaseMechanicalState::VecId velocityState=core::componentmodel::behavior::BaseMechanicalState::VecId::velocity();
