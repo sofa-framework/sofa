@@ -91,7 +91,7 @@ public:
      * @param priorStatePropagation boolean indication if we need to propagate the state vector to the mapped dof before solving the constraint
      * @param Id nature of the constraint to be solved
      **/
-    virtual void solveConstraint(bool /*priorStatePropagation*/, BaseMechanicalState::VecId) {};
+    virtual void solveConstraint(bool /*priorStatePropagation*/, BaseMechanicalState::VecId, bool /*isPositionChangesUpdateVelocity*/=true) {};
 
     /// Propagate the given state (time, position and velocity) through all mappings
     ///
