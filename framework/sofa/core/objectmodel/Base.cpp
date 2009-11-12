@@ -558,16 +558,16 @@ void  Base::xmlWriteDatas ( std::ostream& out, unsigned level, bool compact )
         {
             BaseData* field = m_fieldVec[ i ].second;
 
-            if(  field->isPersistent() && field->isSet() )
+            if (!field->getLinkPath().empty() )
             {
-                if (field->getLinkPath().empty() )
+                out << " " << m_fieldVec[ i ].first << "=\""<< field->getLinkPath() << "\" ";
+            }
+            else
+            {
+                if(  field->isPersistent() && field->isSet())
                 {
-                    if (!field->getValueString().empty())
+                    if (!field->getValueString().empty() )
                         out << " " <<m_fieldVec[ i ].first << "=\""<< field->getValueString() << "\" ";
-                }
-                else
-                {
-                    out << " " << m_fieldVec[ i ].first << "=\""<< field->getLinkPath() << "\" ";
                 }
             }
         }
