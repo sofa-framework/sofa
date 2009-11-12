@@ -374,43 +374,25 @@ namespace helper
 {
 
 template<class T>
-class ReadAccessor< core::objectmodel::Data<T> >
+class ReadAccessor< core::objectmodel::Data<T> > : public ReadAccessor<T>
 {
 public:
+    typedef ReadAccessor<T> Inherit;
     typedef core::objectmodel::Data<T> data_container_type;
     typedef T container_type;
-    typedef typename container_type::size_type size_type;
-    typedef typename container_type::value_type value_type;
-    typedef typename container_type::reference reference;
-    typedef typename container_type::const_reference const_reference;
-    typedef typename container_type::iterator iterator;
-    typedef typename container_type::const_iterator const_iterator;
 
 protected:
     const data_container_type& data;
-    const container_type& ref;
 public:
-    ReadAccessor(const data_container_type& d) : data(d), ref(d.getValue()) {}
+    ReadAccessor(const data_container_type& d) : Inherit(d.getValue()), data(d) {}
     ~ReadAccessor() {}
-
-    size_type size() const { return ref.size(); }
-    bool empty() const { return ref.empty(); }
-
-    const_reference operator[](size_type i) const { return ref[i]; }
-
-    const_iterator begin() const { return ref.begin(); }
-    const_iterator end() const { return ref.end(); }
-
-    inline friend std::ostream& operator<< ( std::ostream& os, const ReadAccessor<data_container_type>& vec )
-    {
-        return os << vec.ref;
-    }
 };
 
 template<class T>
-class WriteAccessor< core::objectmodel::Data<T> >
+class WriteAccessor< core::objectmodel::Data<T> > : public WriteAccessor<T>
 {
 public:
+    typedef WriteAccessor<T> Inherit;
     typedef core::objectmodel::Data<T> data_container_type;
     typedef T container_type;
     typedef typename container_type::size_type size_type;
@@ -422,38 +404,10 @@ public:
 
 protected:
     data_container_type& data;
-    container_type& ref;
 
 public:
-    WriteAccessor(data_container_type& d) : data(d), ref(*d.beginEdit()) {}
+    WriteAccessor(data_container_type& d) : Inherit(*d.beginEdit()), data(d) {}
     ~WriteAccessor() { data.endEdit(); }
-
-    size_type size() const { return ref.size(); }
-    bool empty() const { return ref.empty(); }
-
-    const_reference operator[](size_type i) const { return ref[i]; }
-    reference operator[](size_type i) { return ref[i]; }
-
-    const_iterator begin() const { return ref.begin(); }
-    iterator begin() { return ref.begin(); }
-    const_iterator end() const { return ref.end(); }
-    iterator end() { return ref.end(); }
-
-    void clear() { ref.clear(); }
-    void resize(size_type s, bool /*init*/ = true) { /*if (init)*/ ref.resize(s); /*else ref.fastResize(s);*/ }
-    void reserve(size_type s) { ref.reserve(s); }
-    void push_back(const_reference v) { ref.push_back(v); }
-
-    inline friend std::ostream& operator<< ( std::ostream& os, const WriteAccessor<data_container_type>& vec )
-    {
-        return os << vec.ref;
-    }
-
-    inline friend std::istream& operator>> ( std::istream& in, WriteAccessor<data_container_type>& vec )
-    {
-        return in >> vec.ref;
-    }
-
 };
 
 } // namespace helper

@@ -28,6 +28,7 @@
 #define SOFA_HELPER_ACCESSOR_H
 
 #include <sofa/helper/helper.h>
+#include <sofa/helper/vector.h>
 #include <iostream>
 
 namespace sofa
@@ -49,38 +50,38 @@ namespace helper
  *  - No modifications to the container will be done by mistake
  *
  *  - Accesses can be logged for debugging or task dependencies analysis.
+ *
+ *  The default implementation provides only minimal set of methods and
+ *  operators, sufficient for scalar types but which should be overloaded for
+ *  more complex types.
  */
-
 template<class T>
 class ReadAccessor
 {
 public:
     typedef T container_type;
-    typedef typename container_type::size_type size_type;
-    typedef typename container_type::value_type value_type;
-    typedef typename container_type::reference reference;
-    typedef typename container_type::const_reference const_reference;
-    typedef typename container_type::iterator iterator;
-    typedef typename container_type::const_iterator const_iterator;
+    typedef T value_type;
+    typedef value_type& reference;
+    typedef const value_type& const_reference;
 
 protected:
-    const container_type& ref;
+    const container_type& vref;
 
 public:
-    ReadAccessor(const container_type& container) : ref(container) {}
+    explicit ReadAccessor(const container_type& container) : vref(container) {}
     ~ReadAccessor() {}
 
-    size_type size() const { return ref.size(); }
-    const_reference operator[](size_type i) const { return ref[i]; }
+    const_reference ref() const { return vref; }
 
-    const_iterator begin() const { return ref.begin(); }
-    const_iterator end() const { return ref.end(); }
+    operator value_type() const
+    {
+        return vref;
+    }
 
     inline friend std::ostream& operator<< ( std::ostream& os, const ReadAccessor<T>& vec )
     {
-        return os << vec;
+        return os << vec.vref;
     }
-
 };
 
 /** A WriteAccessor is a proxy class, holding a reference to a given container
@@ -94,10 +95,55 @@ public:
  *  constructor and destructor instead of at each item access.
  *
  *  - Accesses can be logged for debugging or task dependencies analysis.
+ *
+ *  The default implementation provides only minimal set of methods and
+ *  operators, sufficient for scalar types but which should be overloaded for
+ *  more complex types.
  */
-
 template<class T>
 class WriteAccessor
+{
+public:
+    typedef T container_type;
+    typedef T value_type;
+    typedef value_type& reference;
+    typedef const value_type& const_reference;
+
+protected:
+    container_type& vref;
+
+public:
+    explicit WriteAccessor(container_type& container) : vref(container) {}
+    ~WriteAccessor() {}
+
+    const_reference ref() const { return vref; }
+    reference wref() { return vref; }
+
+    operator value_type() const
+    {
+        return vref;
+    }
+
+    template<class T2>
+    void operator=(const T2& v)
+    {
+        vref = v;
+    }
+
+    inline friend std::ostream& operator<< ( std::ostream& os, const WriteAccessor<T>& vec )
+    {
+        return os << vec.vref;
+    }
+
+    inline friend std::istream& operator>> ( std::istream& in, WriteAccessor<T>& vec )
+    {
+        return in >> vec.vref;
+    }
+};
+
+/// ReadAccessor implementation class for vector types
+template<class T>
+class ReadAccessorVector
 {
 public:
     typedef T container_type;
@@ -109,37 +155,115 @@ public:
     typedef typename container_type::const_iterator const_iterator;
 
 protected:
-    container_type& ref;
+    const container_type& vref;
 
 public:
-    WriteAccessor(container_type& container) : ref(container) {}
-    ~WriteAccessor() {}
+    ReadAccessorVector(const container_type& container) : vref(container) {}
+    ~ReadAccessorVector() {}
 
-    size_type size() const { return ref.size(); }
+    const container_type& ref() const { return vref; }
 
-    const_reference operator[](size_type i) const { return ref[i]; }
-    reference operator[](size_type i) { return ref[i]; }
+    bool empty() const { return vref.empty(); }
+    size_type size() const { return vref.size(); }
+    const_reference operator[](size_type i) const { return vref[i]; }
 
-    const_iterator begin() const { return ref.begin(); }
-    iterator begin() { return ref.begin(); }
-    const_iterator end() const { return ref.end(); }
-    iterator end() { return ref.end(); }
+    const_iterator begin() const { return vref.begin(); }
+    const_iterator end() const { return vref.end(); }
 
-    void clear() { ref.clear(); }
-    void resize(size_type s, bool /*init*/ = true) { ref.resize(s); }
-    void reserve(size_type s) { ref.reserve(s); }
-    void push_back(const_reference v) { ref.push_back(v); }
-
-    inline friend std::ostream& operator<< ( std::ostream& os, const WriteAccessor<T>& vec )
+    inline friend std::ostream& operator<< ( std::ostream& os, const ReadAccessorVector<T>& vec )
     {
-        return os << vec.ref;
+        return os << vec.vref;
     }
 
-    inline friend std::istream& operator>> ( std::istream& in, WriteAccessor<T>& vec )
+};
+
+/// WriteAccessor implementation class for vector types
+template<class T>
+class WriteAccessorVector
+{
+public:
+    typedef T container_type;
+    typedef typename container_type::size_type size_type;
+    typedef typename container_type::value_type value_type;
+    typedef typename container_type::reference reference;
+    typedef typename container_type::const_reference const_reference;
+    typedef typename container_type::iterator iterator;
+    typedef typename container_type::const_iterator const_iterator;
+
+protected:
+    container_type& vref;
+
+public:
+    WriteAccessorVector(container_type& container) : vref(container) {}
+    ~WriteAccessorVector() {}
+
+    const container_type& ref() const { return vref; }
+    container_type& wref() { return vref; }
+
+    bool empty() const { return vref.empty(); }
+    size_type size() const { return vref.size(); }
+
+    const_reference operator[](size_type i) const { return vref[i]; }
+    reference operator[](size_type i) { return vref[i]; }
+
+    const_iterator begin() const { return vref.begin(); }
+    iterator begin() { return vref.begin(); }
+    const_iterator end() const { return vref.end(); }
+    iterator end() { return vref.end(); }
+
+    void clear() { vref.clear(); }
+    void resize(size_type s, bool /*init*/ = true) { vref.resize(s); }
+    void reserve(size_type s) { vref.reserve(s); }
+    void push_back(const_reference v) { vref.push_back(v); }
+
+    inline friend std::ostream& operator<< ( std::ostream& os, const WriteAccessorVector<T>& vec )
     {
-        return in >> vec.ref;
+        return os << vec.vref;
     }
 
+    inline friend std::istream& operator>> ( std::istream& in, WriteAccessorVector<T>& vec )
+    {
+        return in >> vec.vref;
+    }
+
+};
+
+// Support for std::vector
+
+template<class T, class Alloc>
+class ReadAccessor< std::vector<T,Alloc> > : public ReadAccessorVector< std::vector<T,Alloc> >
+{
+public:
+    typedef ReadAccessorVector< std::vector<T,Alloc> > Inherit;
+    typedef typename Inherit::container_type container_type;
+    ReadAccessor(const container_type& c) : Inherit(c) {}
+};
+
+template<class T, class Alloc>
+class WriteAccessor< std::vector<T,Alloc> > : public WriteAccessorVector< std::vector<T,Alloc> >
+{
+public:
+    typedef WriteAccessorVector< std::vector<T,Alloc> > Inherit;
+    typedef typename Inherit::container_type container_type;
+    WriteAccessor(container_type& c) : Inherit(c) {}
+};
+
+template<class T, class Alloc>
+class ReadAccessor< helper::vector<T,Alloc> > : public ReadAccessorVector< helper::vector<T,Alloc> >
+{
+public:
+    typedef ReadAccessorVector< helper::vector<T,Alloc> > Inherit;
+    typedef typename Inherit::container_type container_type;
+    ReadAccessor(const container_type& c) : Inherit(c) {}
+};
+
+template<class T, class Alloc>
+class WriteAccessor< helper::vector<T,Alloc> > : public WriteAccessorVector< helper::vector<T,Alloc> >
+{
+public:
+    typedef WriteAccessorVector< helper::vector<T,Alloc> > Inherit;
+    typedef typename Inherit::container_type container_type;
+    WriteAccessor(container_type& c) : Inherit(c) {}
 };
 
 } // namespace helper
