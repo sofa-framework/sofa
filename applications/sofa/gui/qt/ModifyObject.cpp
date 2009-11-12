@@ -313,7 +313,6 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                 box->setTitle(QString((*it).first.c_str()));
 
                 std::string label_text=(*it).second->getHelp();
-
                 std::string final_text;
                 unsigned int number_line=0;
                 while (!label_text.empty())
@@ -343,7 +342,8 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     number_line++;
                 }
                 counterWidget += number_line/3; //each 3lines, a new widget is counted
-                if (label_text != "TODO") new QLabel(final_text.c_str(), box);
+                if (label_text != "TODO") new QDisplayDataInfoWidget(box,final_text,(*it).second->getLinkPath());
+
 
                 DataWidget::CreatorArgument dwarg;
                 dwarg.node = node;

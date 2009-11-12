@@ -40,6 +40,7 @@
 #include <qglobal.h>
 #ifdef SOFA_QT4
 #include <QDialog>
+#include <QWidget>
 #include <Q3ListViewItem>
 #include <Q3ListView>
 #include <Q3Table>
@@ -53,8 +54,11 @@
 #include <QCheckBox>
 #include <QSpinBox>
 #include <Q3CheckListItem>
+#include <QVBoxLayout>
+#include <QLineEdit>
 #else
 #include <qdialog.h>
+#include <qwidget.h>
 #include <qlistview.h>
 #include <qtable.h>
 #include <qgroupbox.h>
@@ -66,6 +70,8 @@
 #include <qlineedit.h>
 #include <qcheckbox.h>
 #include <qspinbox.h>
+#include <qboxlayout.h>
+#include <qlineedit.h>
 #endif
 
 #include "WFloatLineEdit.h"
@@ -74,7 +80,7 @@
 
 #include <qwt_plot_curve.h>
 #include <sofa/gui/qt/DisplayFlagWidget.h>
-
+#include <string>
 #if !defined(INFINITY)
 #define INFINITY 9.0e10
 #endif
@@ -103,6 +109,27 @@ typedef QGrid       Q3Grid;
 #endif
 
 class DataWidget;
+
+
+class QDisplayDataInfoWidget: public QWidget
+{
+    Q_OBJECT
+public:
+    QDisplayDataInfoWidget(QWidget* parent, const std::string& helper,
+            const std::string& linkpath):QWidget(parent)
+    {
+        QVBoxLayout* layout = new QVBoxLayout();
+        QLabel* helper_label = new QLabel(helper.c_str());
+        layout->addWidget(helper_label);
+        if(!linkpath.empty())
+        {
+            QLineEdit* linkpath_edit = new QLineEdit(linkpath.c_str());
+            linkpath_edit->setEnabled(false);
+            layout->addWidget(linkpath_edit);
+        }
+        setLayout(layout);
+    };
+};
 
 class SOFA_SOFAGUIQT_API ModifyObject : public QDialog
 {
