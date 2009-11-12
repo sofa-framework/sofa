@@ -99,12 +99,13 @@ protected:
     Data<sofa::helper::vector<double> >  coefs;
     Data<unsigned int> nbRefs;
     Data<bool> displayBlendedFrame;
+    Data<sofa::helper::vector<Mat36> > matJ;
 
     bool computeWeights;
     WeightingType wheighting;
     InterpolationType interpolation;
-    typename Out::VecCoord x1; //TODO remove after test
-    typename Out::VecCoord x2; //TODO remove after test
+    //typename Out::VecCoord x1; //TODO remove after test
+    //typename Out::VecCoord x2; //TODO remove after test
 
     class Loader;
     void load ( const char* filename );
