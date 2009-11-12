@@ -52,6 +52,9 @@ int BatchGUI::mainLoop()
         for (int i=0; i<nbIter; i++)
         {
             sofa::simulation::getSimulation()->animate(groot);
+            //As no visualization is done by the Batch GUI, these two lines are not necessary.
+            sofa::simulation::getSimulation()->updateVisual(groot);
+            sofa::simulation::getSimulation()->updateVisual(simulation::getSimulation()->getVisualRoot());
         }
         std::cout << nbIter << " iterations done in "<< 1000.0*(sofa::helper::system::thread::CTime::getRefTime()-tSpent)/((double)sofa::helper::system::thread::CTime::getTicksPerSec()) << std::endl;
     }
