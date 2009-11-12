@@ -19,11 +19,12 @@
 		<TetrahedralCorotationalFEMForceField name="FEM" youngModulus="500" poissonRatio="0.3" computeGlobalMatrix="false" method="large"  />
                 <FixedConstraint name="FixedConstraint" indices="3 39 64"  />
 
-		<Node name="Visu">
+		<Node name="Visu" tags="Visual">
 		<!-- Using material contained in liver-smooth.obj -->
 			<OglModel name="VisualModel" fileMesh="mesh/liver-smooth.obj"  />
 			<BarycentricMapping object1="../.." object2="VisualModel" name="visual mapping"/>
 		</Node>
+
 		<Node name="Surf">
 			<Sphere name="CollisionModel" filename="mesh/liver.sph" />
 			<MechanicalObject  />

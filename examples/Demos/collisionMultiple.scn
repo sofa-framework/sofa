@@ -16,7 +16,7 @@
 			zmin="-1.75" zmax="1.75"
 			/>
 		<Object type="RegularGridSpringForceField" name="Springs" stiffness="350" damping="1" />
-		<Node name="Visu">
+		<Node name="VisuTorus" tags="Visual">
 			<Object type="OglModel" name="Visual" filename="mesh/torus2_scale3.obj"  dx="0" dy="20" dz="29" color="blue" />
 			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 		</Node>
@@ -43,7 +43,7 @@
 			zmin="-4" zmax="4"
 			/>
 		<Object type="RegularGridSpringForceField" name="Springs" stiffness="350" damping="1" />
-		<Node name="Visu">
+		<Node name="VisuDragon" tags="Visual">
 			<Object type="OglModel" name="Visual" filename="mesh/dragon.obj" dx="20" dy="20" dz="29" color="red" />
 			<Object type="BarycentricMapping" object1="../.." object2="Visual" />
 		</Node>
@@ -70,21 +70,23 @@
 			zmin="-7" zmax="7"
 			/>
 		<Object type="RegularGridSpringForceField" name="Springs" stiffness="350" damping="1" />
-		<Node name="Visu1">
-			<Object type="OglModel" name="VisualBody" filename="mesh/frog_body.obj" normals="0" dx="-20" dy="20" dz="29" color="0.17 0.70 0.05" />
-			<Object type="BarycentricMapping" object1="../.." object2="VisualBody" />
-		</Node>
-		<Node name="Visu2">
-			<Object type="OglModel" name="VisualEyes" filename="mesh/frog_eyes.obj" normals="0" dx="-20" dy="20" dz="29" color="0.04 0.19 0.52" />
-			<Object type="BarycentricMapping" object1="../.." object2="VisualEyes" />
-		</Node>
-		<Node name="Visu3">
-			<Object type="OglModel" name="VisualEyebrows" filename="mesh/frog_eyebrows.obj" normals="0" dx="-20" dy="20" dz="29" color="0.44 0.43 0.00" />
-			<Object type="BarycentricMapping" object1="../.." object2="VisualEyebrows" />
-		</Node>
-		<Node name="Visu4">
-			<Object type="OglModel" name="VisualLips" filename="mesh/frog_lips.obj" normals="0" dx="-20" dy="20" dz="29" color="0.47 0.25 0.03" />
-			<Object type="BarycentricMapping" object1="../.." object2="VisualLips" />
+		<Node name="VisualFrog" tags="Visual">
+			<Node name="Visu1">
+				<Object type="OglModel" name="VisualBody" filename="mesh/frog_body.obj" normals="0" dx="-20" dy="20" dz="29" color="0.17 0.70 0.05" />
+			        <Object type="BarycentricMapping" object1="../.." object2="VisualBody" />
+		        </Node>
+		        <Node name="Visu2">
+				<Object type="OglModel" name="VisualEyes" filename="mesh/frog_eyes.obj" normals="0" dx="-20" dy="20" dz="29" color="0.04 0.19 0.52" />
+			        <Object type="BarycentricMapping" object1="../.." object2="VisualEyes" />
+		        </Node>
+		        <Node name="Visu3">
+				<Object type="OglModel" name="VisualEyebrows" filename="mesh/frog_eyebrows.obj" normals="0" dx="-20" dy="20" dz="29" color="0.44 0.43 0.00" />
+			        <Object type="BarycentricMapping" object1="../.." object2="VisualEyebrows" />
+		        </Node>
+		        <Node name="Visu4">
+				<Object type="OglModel" name="VisualLips" filename="mesh/frog_lips.obj" normals="0" dx="-20" dy="20" dz="29" color="0.47 0.25 0.03" />
+			        <Object type="BarycentricMapping" object1="../.." object2="VisualLips" />
+		        </Node>
 		</Node>
 		<Node name="Surf">
         		<Object type="MeshLoader" name="meshLoader" filename="mesh/frog-push25.obj"/>
