@@ -395,11 +395,12 @@ class QDisplayDataInfoWidget: public QWidget
 {
     Q_OBJECT
 public:
-    QDisplayDataInfoWidget(QWidget* parent, const std::string& helper, const std::string& linkpath, bool modifiable);
+    QDisplayDataInfoWidget(QWidget* parent, const std::string& helper, core::objectmodel::BaseData* d, bool modifiable);
 public slots:
     void linkModification();
-
+    void linkEdited();
 protected:
+    core::objectmodel::BaseData* data;
     QLineEdit *linkpath_edit;
 };
 

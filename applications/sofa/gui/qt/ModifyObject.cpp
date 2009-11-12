@@ -343,7 +343,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     number_line++;
                 }
                 counterWidget += number_line/3; //each 3lines, a new widget is counted
-                if (label_text != "TODO") new QDisplayDataInfoWidget(box,final_text,(*it).second->getLinkPath(),LINKPATH_MODIFIABLE_FLAG);
+                if (label_text != "TODO") new QDisplayDataInfoWidget(box,final_text,(*it).second,LINKPATH_MODIFIABLE_FLAG);
 
 
                 DataWidget::CreatorArgument dwarg;
@@ -1253,12 +1253,14 @@ void ModifyObject::readOnlyData(QWidget *widget, core::objectmodel::BaseData* da
 
 
 QDisplayDataInfoWidget::QDisplayDataInfoWidget(QWidget* parent, const std::string& helper,
-        const std::string& linkpath, bool modifiable):QWidget(parent)
+        core::objectmodel::BaseData* d, bool modifiable):QWidget(parent), data(d)
 {
     QHBoxLayout* layout = new QHBoxLayout(this);
     if (modifiable)
     {
         QPushButton *helper_button = new QPushButton(QString(helper.c_str()),this);
+        // helper_button ->setFlat(true);
+        helper_button ->setAutoDefault(false);
         layout->addWidget(helper_button);
         connect(helper_button, SIGNAL( clicked() ), this, SLOT( linkModification()));
     }
@@ -1268,13 +1270,14 @@ QDisplayDataInfoWidget::QDisplayDataInfoWidget(QWidget* parent, const std::strin
         helper_label->setText(QString(helper.c_str()));
         layout->addWidget(helper_label);
     }
-    if(modifiable || !linkpath.empty())
+    if(modifiable || !data->getLinkPath().empty())
     {
         linkpath_edit = new QLineEdit(this);
-        linkpath_edit->setText(QString(linkpath.c_str()));
+        linkpath_edit->setText(QString(data->getLinkPath().c_str()));
         linkpath_edit->setEnabled(modifiable);
         layout->addWidget(linkpath_edit);
-        linkpath_edit->setShown(!linkpath.empty());
+        linkpath_edit->setShown(!data->getLinkPath().empty());
+        connect(linkpath_edit, SIGNAL( lostFocus()), this, SLOT( linkEdited()));
     }
     else
     {
@@ -1284,8 +1287,18 @@ QDisplayDataInfoWidget::QDisplayDataInfoWidget(QWidget* parent, const std::strin
 
 void QDisplayDataInfoWidget::linkModification()
 {
-    linkpath_edit->setShown(true);
-    //Open a dialog window to let the user select the data he wants to link
+    if (linkpath_edit->isShown() && linkpath_edit->text().isEmpty())
+        linkpath_edit->setShown(false);
+    else
+    {
+        linkpath_edit->setShown(true);
+        //Open a dialog window to let the user select the data he wants to link
+    }
+}
+void QDisplayDataInfoWidget::linkEdited()
+{
+    std::cerr << "linkEdited " << linkpath_edit->text().ascii() << std::endl;
+    data->setLinkPath(linkpath_edit->text().ascii() );
 }
 
 } // namespace qt
