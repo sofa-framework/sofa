@@ -702,6 +702,7 @@ Node *BglGraphManager::getVisualRoot()
         visualNode->addTag(core::objectmodel::Tag("Visual"));
         addVertex(visualNode);
         visualRoot = h_node_vertex_map[visualNode];
+        return visualNode;
     }
 }
 }
