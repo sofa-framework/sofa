@@ -323,9 +323,9 @@ std::string GetProcessFullPath(const char* filename)
     {
         char path[1024];
         memset(path,0,sizeof(path));
-        readlink("/proc/self/exe",path,sizeof(path)-1);
+        ssize_t l=readlink("/proc/self/exe",path,sizeof(path)-1);
 // 		std::cout << "Current process: "<< path <<std::endl;
-        if (path[0])
+        if (l != -1 && path[0])
             return path;
         else
             std::cout << "ERROR: can't get current process path..." << std::endl;
@@ -374,7 +374,7 @@ int main(int argc, char** argv)
         return 1;
     }
 
-    std::cerr << "Using " <<file << " as path for Sofa" << std::endl;
+    // std::cerr << "Using " <<file << " as path for Sofa" << std::endl;
 
     std::ifstream sofa_default((file+"/sofa-default.cfg").c_str());
     std::ifstream sofa_local((file+"/sofa-local.cfg").c_str());

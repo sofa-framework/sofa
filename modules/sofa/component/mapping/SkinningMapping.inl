@@ -525,7 +525,7 @@ void SkinningMapping<BasicMapping>::applyJ ( typename Out::VecDeriv& out, const 
                     speed[4][0] = (Real) in[idxReps].getVCenter()[1];
                     speed[5][0] = (Real) in[idxReps].getVCenter()[2];
 
-                    Mat31 f = (J[idx] * speed) * m_coefs[idx];
+                    Mat31 f = (J[idx] * speed) * ((Real) m_coefs[idx]);
 
                     //dqTest[i] = speed[0][0]*speed[0][0] + speed[1][0]*speed[1][0] + speed[2][0]*speed[2][0] + speed[3][0]*speed[3][0] + speed[4][0]*speed[4][0] + speed[5][0]*speed[5][0]; //TODO to remove after the convergence test
                     //dqJiWi[i] = Vec3d( f[0][0], f[1][0], f[2][0]); //TODO to remove after convergence test
@@ -588,7 +588,7 @@ void SkinningMapping<BasicMapping>::applyJ ( typename Out::VecDeriv& out, const 
                     speed[5][0] = (Real) in[idxReps].getVCenter()[2];
 
 
-                    Mat31 f = (J[idx] * speed) * m_coefs[idx];
+                    Mat31 f = (J[idx] * speed) * ((Real) m_coefs[idx]);
 
                     /*
                     dqTest[i] = speed[0][0]*speed[0][0] + speed[1][0]*speed[1][0] + speed[2][0]*speed[2][0] + speed[3][0]*speed[3][0] + speed[4][0]*speed[4][0] + speed[5][0]*speed[5][0]; //TODO to remove after the convergence test
@@ -899,17 +899,17 @@ void SkinningMapping<BasicMapping>::draw()
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::computeDqQ( Mat38& Q, const DualQuat& bn, const Coord& p)
 {
-    const Real x  = p[0];
-    const Real y  = p[1];
-    const Real z  = p[2];
-    const Real a0 = bn[0][0];
-    const Real b0 = bn[0][1];
-    const Real c0 = bn[0][2];
-    const Real w0 = bn[0][3];
-    const Real ae = bn[1][0];
-    const Real be = bn[1][1];
-    const Real ce = bn[1][2];
-    const Real we = bn[1][3];
+    const Real x  = (Real) p[0];
+    const Real y  = (Real) p[1];
+    const Real z  = (Real) p[2];
+    const Real a0 = (Real) bn[0][0];
+    const Real b0 = (Real) bn[0][1];
+    const Real c0 = (Real) bn[0][2];
+    const Real w0 = (Real) bn[0][3];
+    const Real ae = (Real) bn[1][0];
+    const Real be = (Real) bn[1][1];
+    const Real ce = (Real) bn[1][2];
+    const Real we = (Real) bn[1][3];
     Q[0][0] =   ae + w0*x - c0*y + b0*z;
     Q[0][1] = - we + a0*x + b0*y + c0*z;
     Q[0][2] =   ce - b0*x + a0*y + w0*z;
@@ -941,22 +941,22 @@ void SkinningMapping<BasicMapping>::computeDqQ( Mat38& Q, const DualQuat& bn, co
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::computeDqN( Mat88& N, const DualQuat& bn, const DualQuat& b)
 {
-    const Real a0 = bn[0][0];
-    const Real b0 = bn[0][1];
-    const Real c0 = bn[0][2];
-    const Real w0 = bn[0][3];
-    const Real ae = bn[1][0];
-    const Real be = bn[1][1];
-    const Real ce = bn[1][2];
-    const Real we = bn[1][3];
-    const Real A0 = b[0][0];
-    const Real B0 = b[0][1];
-    const Real C0 = b[0][2];
-    const Real W0 = b[0][3];
-    const Real Ae = b[1][0];
-    const Real Be = b[1][1];
-    const Real Ce = b[1][2];
-    const Real We = b[1][3];
+    const Real a0 = (Real) bn[0][0];
+    const Real b0 = (Real) bn[0][1];
+    const Real c0 = (Real) bn[0][2];
+    const Real w0 = (Real) bn[0][3];
+    const Real ae = (Real) bn[1][0];
+    const Real be = (Real) bn[1][1];
+    const Real ce = (Real) bn[1][2];
+    const Real we = (Real) bn[1][3];
+    const Real A0 = (Real) b[0][0];
+    const Real B0 = (Real) b[0][1];
+    const Real C0 = (Real) b[0][2];
+    const Real W0 = (Real) b[0][3];
+    const Real Ae = (Real) b[1][0];
+    const Real Be = (Real) b[1][1];
+    const Real Ce = (Real) b[1][2];
+    const Real We = (Real) b[1][3];
     const Real lQ0l2 = W0*W0 + A0*A0 + B0*B0 + C0*C0;
     const Real lQ0l  = (Real) sqrt( lQ0l2 );
     const Real QeQ0  = W0*We + A0*Ae + B0*Be + C0*Ce;
@@ -1032,14 +1032,14 @@ void SkinningMapping<BasicMapping>::computeDqN( Mat88& N, const DualQuat& bn, co
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::computeDqT( Mat88& T, const DualQuat& qi0)
 {
-    const Real a0 = qi0[0][0];
-    const Real b0 = qi0[0][1];
-    const Real c0 = qi0[0][2];
-    const Real w0 = qi0[0][3];
-    const Real ae = qi0[1][0];
-    const Real be = qi0[1][1];
-    const Real ce = qi0[1][2];
-    const Real we = qi0[1][3];
+    const Real a0 = (Real) qi0[0][0];
+    const Real b0 = (Real) qi0[0][1];
+    const Real c0 = (Real) qi0[0][2];
+    const Real w0 = (Real) qi0[0][3];
+    const Real ae = (Real) qi0[1][0];
+    const Real be = (Real) qi0[1][1];
+    const Real ce = (Real) qi0[1][2];
+    const Real we = (Real) qi0[1][3];
 
     T[0][0] = w0;
     T[0][1] = a0;
@@ -1110,17 +1110,17 @@ void SkinningMapping<BasicMapping>::computeDqT( Mat88& T, const DualQuat& qi0)
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::computeDqL( Mat86& L, const DualQuat& qi, const Coord& ti)
 {
-    const Real tx = ti[0];
-    const Real ty = ti[1];
-    const Real tz = ti[2];
-    const Real a0 = qi[0][0];
-    const Real b0 = qi[0][1];
-    const Real c0 = qi[0][2];
-    const Real w0 = qi[0][3];
-    const Real ae = qi[1][0];
-    const Real be = qi[1][1];
-    const Real ce = qi[1][2];
-    const Real we = qi[1][3];
+    const Real tx = (Real) ti[0];
+    const Real ty = (Real) ti[1];
+    const Real tz = (Real) ti[2];
+    const Real a0 = (Real) qi[0][0];
+    const Real b0 = (Real) qi[0][1];
+    const Real c0 = (Real) qi[0][2];
+    const Real w0 = (Real) qi[0][3];
+    const Real ae = (Real) qi[1][0];
+    const Real be = (Real) qi[1][1];
+    const Real ce = (Real) qi[1][2];
+    const Real we = (Real) qi[1][3];
 
     L[0][0] = -a0;
     L[0][1] = -b0;
