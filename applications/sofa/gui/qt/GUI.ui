@@ -315,6 +315,104 @@
                         </widget>
                         <widget class="QWidget">
                             <property name="name">
+                                <cstring>TabGraph</cstring>
+                            </property>
+                            <attribute name="title">
+                                <string>Graph</string>
+                            </attribute>
+                            <vbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QPushButton">
+                                    <property name="name">
+                                        <cstring>ExportGraphButton</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>E&amp;xport Graph...</string>
+                                    </property>
+                                    <property name="accel">
+                                        <string>Alt+X</string>
+                                    </property>
+                                    <property name="iconSet">
+                                        <iconset>image1</iconset>
+                                    </property>
+                                </widget>
+                                <widget class="QListView">
+                                    <column>
+                                        <property name="text">
+                                            <string></string>
+                                        </property>
+                                        <property name="clickable">
+                                            <bool>false</bool>
+                                        </property>
+                                        <property name="resizable">
+                                            <bool>false</bool>
+                                        </property>
+                                    </column>
+                                    <property name="name">
+                                        <cstring>graphView</cstring>
+                                    </property>
+                                    <property name="rootIsDecorated">
+                                        <bool>true</bool>
+                                    </property>
+                                    <property name="treeStepSize">
+                                        <number>15</number>
+                                    </property>
+                                </widget>
+                            </vbox>
+                        </widget>
+                        <widget class="QWidget">
+                            <property name="name">
+                                <cstring>TabVisualGraph</cstring>
+                            </property>
+                            <attribute name="title">
+                                <string>Visual</string>
+                            </attribute>
+                            <vbox>
+                                <property name="name">
+                                    <cstring>unnamed</cstring>
+                                </property>
+                                <widget class="QPushButton">
+                                    <property name="name">
+                                        <cstring>ExportVisualGraphButton</cstring>
+                                    </property>
+                                    <property name="text">
+                                        <string>E&amp;xport Graph...</string>
+                                    </property>
+                                    <property name="accel">
+                                        <string>Alt+X</string>
+                                    </property>
+                                    <property name="iconSet">
+                                        <iconset>image1</iconset>
+                                    </property>
+                                </widget>
+                                <widget class="QListView">
+                                    <column>
+                                        <property name="text">
+                                            <string></string>
+                                        </property>
+                                        <property name="clickable">
+                                            <bool>false</bool>
+                                        </property>
+                                        <property name="resizable">
+                                            <bool>false</bool>
+                                        </property>
+                                    </column>
+                                    <property name="name">
+                                        <cstring>visualGraphView</cstring>
+                                    </property>
+                                    <property name="rootIsDecorated">
+                                        <bool>true</bool>
+                                    </property>
+                                    <property name="treeStepSize">
+                                        <number>15</number>
+                                    </property>
+                                </widget>
+                            </vbox>
+                        </widget>
+                        <widget class="QWidget">
+                            <property name="name">
                                 <cstring>TabStats</cstring>
                             </property>
                             <attribute name="title">
@@ -416,104 +514,6 @@
                                     </property>
                                     <property name="resizeMode">
                                         <enum>LastColumn</enum>
-                                    </property>
-                                </widget>
-                            </vbox>
-                        </widget>
-                        <widget class="QWidget">
-                            <property name="name">
-                                <cstring>TabGraph</cstring>
-                            </property>
-                            <attribute name="title">
-                                <string>Graph</string>
-                            </attribute>
-                            <vbox>
-                                <property name="name">
-                                    <cstring>unnamed</cstring>
-                                </property>
-                                <widget class="QPushButton">
-                                    <property name="name">
-                                        <cstring>ExportGraphButton</cstring>
-                                    </property>
-                                    <property name="text">
-                                        <string>E&amp;xport Graph...</string>
-                                    </property>
-                                    <property name="accel">
-                                        <string>Alt+X</string>
-                                    </property>
-                                    <property name="iconSet">
-                                        <iconset>image1</iconset>
-                                    </property>
-                                </widget>
-                                <widget class="QListView">
-                                    <column>
-                                        <property name="text">
-                                            <string></string>
-                                        </property>
-                                        <property name="clickable">
-                                            <bool>false</bool>
-                                        </property>
-                                        <property name="resizable">
-                                            <bool>false</bool>
-                                        </property>
-                                    </column>
-                                    <property name="name">
-                                        <cstring>graphView</cstring>
-                                    </property>
-                                    <property name="rootIsDecorated">
-                                        <bool>true</bool>
-                                    </property>
-                                    <property name="treeStepSize">
-                                        <number>15</number>
-                                    </property>
-                                </widget>
-                            </vbox>
-                        </widget>
-                        <widget class="QWidget">
-                            <property name="name">
-                                <cstring>TabVisualGraph</cstring>
-                            </property>
-                            <attribute name="title">
-                                <string>Visual</string>
-                            </attribute>
-                            <vbox>
-                                <property name="name">
-                                    <cstring>unnamed</cstring>
-                                </property>
-                                <widget class="QPushButton">
-                                    <property name="name">
-                                        <cstring>ExportVisualGraphButton</cstring>
-                                    </property>
-                                    <property name="text">
-                                        <string>E&amp;xport Graph...</string>
-                                    </property>
-                                    <property name="accel">
-                                        <string>Alt+X</string>
-                                    </property>
-                                    <property name="iconSet">
-                                        <iconset>image1</iconset>
-                                    </property>
-                                </widget>
-                                <widget class="QListView">
-                                    <column>
-                                        <property name="text">
-                                            <string></string>
-                                        </property>
-                                        <property name="clickable">
-                                            <bool>false</bool>
-                                        </property>
-                                        <property name="resizable">
-                                            <bool>false</bool>
-                                        </property>
-                                    </column>
-                                    <property name="name">
-                                        <cstring>visualGraphView</cstring>
-                                    </property>
-                                    <property name="rootIsDecorated">
-                                        <bool>true</bool>
-                                    </property>
-                                    <property name="treeStepSize">
-                                        <number>15</number>
                                     </property>
                                 </widget>
                             </vbox>

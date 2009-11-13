@@ -259,17 +259,29 @@ void Simulation::initTextures ( Node* root )
 
 
 /// Compute the bounding box of the scene.
-void Simulation::computeBBox ( Node* root, SReal* minBBox, SReal* maxBBox )
+void Simulation::computeBBox ( Node* root, SReal* minBBox, SReal* maxBBox, bool init )
 {
     VisualComputeBBoxVisitor act;
     if ( root )
         root->execute ( act );
-    minBBox[0] = (SReal)(act.minBBox[0]);
-    minBBox[1] = (SReal)(act.minBBox[1]);
-    minBBox[2] = (SReal)(act.minBBox[2]);
-    maxBBox[0] = (SReal)(act.maxBBox[0]);
-    maxBBox[1] = (SReal)(act.maxBBox[1]);
-    maxBBox[2] = (SReal)(act.maxBBox[2]);
+    if (init)
+    {
+        minBBox[0] = (SReal)(act.minBBox[0]);
+        minBBox[1] = (SReal)(act.minBBox[1]);
+        minBBox[2] = (SReal)(act.minBBox[2]);
+        maxBBox[0] = (SReal)(act.maxBBox[0]);
+        maxBBox[1] = (SReal)(act.maxBBox[1]);
+        maxBBox[2] = (SReal)(act.maxBBox[2]);
+    }
+    else
+    {
+        if ((SReal)(act.minBBox[0]) < minBBox[0] ) minBBox[0] = (SReal)(act.minBBox[0]);
+        if ((SReal)(act.minBBox[1]) < minBBox[1] ) minBBox[1] = (SReal)(act.minBBox[1]);
+        if ((SReal)(act.minBBox[2]) < minBBox[2] ) minBBox[2] = (SReal)(act.minBBox[2]);
+        if ((SReal)(act.maxBBox[0]) > maxBBox[0] ) maxBBox[0] = (SReal)(act.maxBBox[0]);
+        if ((SReal)(act.maxBBox[1]) > maxBBox[1] ) maxBBox[1] = (SReal)(act.maxBBox[1]);
+        if ((SReal)(act.maxBBox[2]) > maxBBox[2] ) maxBBox[2] = (SReal)(act.maxBBox[2]);
+    }
 }
 
 /// Update contexts. Required before drawing the scene if root flags are modified.

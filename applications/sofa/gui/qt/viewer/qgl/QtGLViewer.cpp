@@ -789,7 +789,7 @@ void QtGLViewer::viewAll()
     if (!groot) return;
 
     getSimulation()->computeBBox(groot, visualParameters.minBBox.ptr(), visualParameters.maxBBox.ptr());
-    getSimulation()->computeBBox(getSimulation()->getVisualRoot(), visualParameters.minBBox.ptr(), visualParameters.maxBBox.ptr());
+    getSimulation()->computeBBox(getSimulation()->getVisualRoot(), visualParameters.minBBox.ptr(), visualParameters.maxBBox.ptr(),false);
     sceneBBoxIsValid =  visualParameters.minBBox[0] <  visualParameters.maxBBox[0];
 
     QGLViewer::setSceneBoundingBox(   qglviewer::Vec(visualParameters.minBBox.ptr()),qglviewer::Vec(visualParameters.maxBBox.ptr()) );
