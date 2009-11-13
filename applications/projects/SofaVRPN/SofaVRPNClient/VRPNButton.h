@@ -1,12 +1,12 @@
 /*
- * VRPNTracker.h
+ * VRPNButton.h
  *
  *  Created on: 8 sept. 2009
  *      Author: froy
  */
 
-#ifndef SOFAVRPNCLIENT_VRPNTRACKER_H_
-#define SOFAVRPNCLIENT_VRPNTRACKER_H_
+#ifndef VRPNButton_H_
+#define VRPNButton_H_
 
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec.h>
@@ -14,7 +14,7 @@
 
 #include <VRPNDevice.h>
 
-#include <vrpn/vrpn_Tracker.h>
+#include <vrpn/vrpn_Button.h>
 
 namespace sofavrpn
 {
@@ -22,17 +22,17 @@ namespace sofavrpn
 namespace client
 {
 
-class VRPNTracker :  public virtual VRPNDevice
+class VRPNButton :  public virtual VRPNDevice
 {
 public:
-    VRPNTracker();
-    virtual ~VRPNTracker();
+    VRPNButton();
+    virtual ~VRPNButton();
 
 //	void init();
 //	void reinit();
 
 private:
-    vrpn_Tracker_Remote* tkr;
+    vrpn_Button_Remote* btn;
 
     bool connectToServer();
     void update();
@@ -42,4 +42,4 @@ private:
 
 }
 
-#endif /* SOFAVRPNCLIENT_VRPNTRACKER_H_ */
+#endif /* VRPNBUTTON_H_ */

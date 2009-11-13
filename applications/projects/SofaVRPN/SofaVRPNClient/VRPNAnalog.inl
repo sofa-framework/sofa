@@ -22,10 +22,9 @@ template<class Datatypes>
 VRPNAnalog<Datatypes>::VRPNAnalog()
     : f_channels(initData(&f_channels, "channels", "Channels"))
 {
-    addOutput(&f_channels);;
+    anr = NULL;
 
-    setDirtyValue();
-
+    rg.initSeed( (long int) this );
 }
 
 template<class Datatypes>
@@ -38,8 +37,12 @@ VRPNAnalog<Datatypes>::~VRPNAnalog()
 template<class Datatypes>
 bool VRPNAnalog<Datatypes>::connectToServer()
 {
+    analogData.data.num_channel = 0;
+    analogData.modified = false;
     anr = new vrpn_Analog_Remote(deviceURL.c_str());
-    anr->register_change_handler(&analogData, handle_analog);
+    anr->register_change_handler((void*) &analogData, handle_analog);
+
+    anr->mainloop();
 
     return true;
 }
@@ -47,21 +50,43 @@ bool VRPNAnalog<Datatypes>::connectToServer()
 template<class Datatypes>
 void VRPNAnalog<Datatypes>::update()
 {
-    //sofa::helper::WriteAccessor< Data<unsigned int> > numberOfChannels = f_numberOfChannels;
     sofa::helper::WriteAccessor< Data<sofa::helper::vector<Real> > > channels = f_channels;
-    std::cout << "prout" << std::endl;
-    //get infos
-    anr->mainloop();
+    //std::cout << "read analog " << this->getName() << std::endl;
+    if (anr)
+    {
+        //get infos
+        analogData.modified = false;
+        anr->mainloop();
 
-    //put infos in Datas
-    //numberOfChannels = analogData.num_channel;
-    channels.clear();
-    channels.resize(analogData.num_channel);
-    for (unsigned int i=0  ; i < analogData.num_channel ; i++)
-        channels[i] = analogData.channel[i];
+        if(analogData.modified)
+        {
+            channels.clear();
 
-    setDirtyOutputs();
-    //setDirtyValue();
+            if (analogData.data.num_channel > 1 && analogData.data.num_channel < 256)
+            {
+                //std::cout << "Size :" << analogData.data.num_channel << std::endl;
+                //put infos in Datas
+
+                channels.resize(analogData.data.num_channel);
+
+                for (int i=0  ; i < analogData.data.num_channel ; i++)
+                    channels[i] = analogData.data.channel[i];
+
+            }
+            else
+            {
+                std::cout << "No Channels readable" << std::endl;
+            }
+        }
+
+    }
+//	channels.resize(64);
+//	for (unsigned int i=0 ; i<64 ;i++)
+//	{
+//		//channels[i] = i;
+//		channels[i] = (Real)rg.randomDouble(0, 639);
+//	}
+
 }
 
 }

@@ -9,6 +9,7 @@
 #define VRPNDEVICE_H_
 
 #include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/componentmodel/behavior/BaseController.h>
 
 namespace sofavrpn
 {
@@ -16,21 +17,23 @@ namespace sofavrpn
 namespace client
 {
 
-class VRPNDevice :  public virtual sofa::core::objectmodel::BaseObject
+class VRPNDevice :  public virtual sofa::core::objectmodel::BaseObject, public sofa::core::componentmodel::behavior::BaseController
 {
 public:
     SOFA_CLASS(VRPNDevice,sofa::core::objectmodel::BaseObject);
 
 private:
     bool connect();
+    void handleEvent(sofa::core::objectmodel::Event *);
 
 protected:
     virtual bool connectToServer() =0;
+    virtual void update() =0;
 
 public:
     Data<std::string> deviceName;
     Data<std::string> serverName;
-    Data<unsigned int> serverPort;
+    Data<std::string> serverPort;
 
     std::string deviceURL;
 
