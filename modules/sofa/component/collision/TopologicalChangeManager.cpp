@@ -58,10 +58,10 @@ using namespace sofa::component::topology;
 
 TopologicalChangeManager::TopologicalChangeManager()
 {
-    incision.a_last_init = (unsigned int)-1;
-    incision.b_last_init = (unsigned int)-1;
-    incision.ind_ta_init = (unsigned int)-1;
-    incision.ind_tb_init = (unsigned int)-1;
+    incision.a_last_init =
+        incision.b_last_init =
+                incision.ind_ta_init =
+                        incision.ind_tb_init =  BaseMeshTopology::InvalidID;
 }
 
 TopologicalChangeManager::~TopologicalChangeManager()
@@ -273,7 +273,7 @@ bool TopologicalChangeManager::incisionTriangleSetTopology(sofa::core::component
     // Point Indices
     unsigned int& a_last = incision.a_last_init;
     if(incision.is_first_cut)
-        a_last = (unsigned int)-1;
+        a_last =  BaseMeshTopology::InvalidID;
     else
     {
         core::componentmodel::behavior::MechanicalState<Vec3Types>* mstate = _topology->getContext()->get<core::componentmodel::behavior::MechanicalState<Vec3Types> >();
@@ -453,8 +453,8 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleModel *firstModel ,
         sofa::helper::vector<unsigned int> indices_list;
         sofa::helper::vector< Vec<3, double> > coords2_list;
 
-        PointID a_last=(unsigned int)-1;
-        PointID b_last=(unsigned int)-1;
+        PointID a_last=BaseMeshTopology::InvalidID;
+        PointID b_last=BaseMeshTopology::InvalidID;
 
         bool ok = triangleGeometry->computeIntersectedObjectsList(a_last, a, b, idxA, idxB, topoPath_list, indices_list, coords2_list);
 

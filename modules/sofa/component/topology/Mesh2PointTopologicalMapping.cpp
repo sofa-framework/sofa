@@ -367,7 +367,7 @@ void Mesh2PointTopologicalMapping::updateTopologicalMappingTopDown()
             }
             case core::componentmodel::topology::ENDING_EVENT:
             {
-                pointsToRemove.erase((unsigned int)-1);
+                pointsToRemove.erase(BaseMeshTopology::InvalidID);
                 if (to_pstm != NULL && !pointsToRemove.empty())
                 {
                     sofa::helper::vector<unsigned int> vitems;

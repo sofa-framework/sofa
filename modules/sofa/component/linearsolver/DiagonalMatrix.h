@@ -50,7 +50,6 @@ protected:
 public:
 
     DiagonalMatrix()
-        : data(NULL)
     {
     }
 
