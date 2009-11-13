@@ -175,6 +175,7 @@ public:
     BlockDiagonalMatrix()
     {
         bandWidth = LC-1;
+        cSize = 0;
     }
 
     ~BlockDiagonalMatrix() {}
@@ -257,7 +258,7 @@ public:
 
     void i()
     {
-        for (unsigned i=0; i<data.size(); i++) data[i].i();
+        for (unsigned b=0; b<data.size(); b++) data[b] = data[b].i();
     }
 
 
@@ -292,7 +293,7 @@ public:
     }
 
     template<class Real2>
-    void mult(FullVector<Real2>& res, const FullVector<Real2>& v) const
+    void mult(FullVector<Real2>& res, const FullVector<Real2>& v)
     {
         for (unsigned b=0; b<data.size()-1; b++)
         {
@@ -312,7 +313,7 @@ public:
             res[last_block+j] = 0;
             for (int i=0; i<LC; i++)
             {
-                res[j] += data[data.size()-1].element(i,j) * v[last_block+i];
+                res[last_block+j] += data[data.size()-1].element(i,j) * v[last_block+i];
             }
         }
     }

@@ -76,8 +76,6 @@ void BlockJacobiPreconditioner<TMatrix,TVector>::solve (Matrix& M, Vector& z, Ve
             }
         }
     }
-
-    //M.mult(z,r);
 }
 
 template<class TMatrix, class TVector>
@@ -90,8 +88,66 @@ void BlockJacobiPreconditioner<TMatrix,TVector>::invert(Matrix& M)
         M.setSubMatrix(l,l,bsize,bsize,M.sub(l,l,bsize,bsize).i());
     }
 
-    //M.i();
+    if (f_verbose.getValue()) sout<<M<<sendl;
+}
 
+template<>
+void BlockJacobiPreconditioner<BlockDiagonalMatrix3, FullVector<double> >::solve (BlockDiagonalMatrix3 & M, FullVector<double>& z, Vector& r)
+{
+    M.mult(z,r);
+}
+
+template<>
+void BlockJacobiPreconditioner<BlockDiagonalMatrix3, FullVector<double> >::invert(BlockDiagonalMatrix3 & M)
+{
+    if (!this->systemMatrix) return;
+    bsize = this->systemMatrix->bandWidth+1;
+    M.i();
+    if (f_verbose.getValue()) sout<<M<<sendl;
+}
+
+template<>
+void BlockJacobiPreconditioner<BlockDiagonalMatrix6, FullVector<double> >::solve (BlockDiagonalMatrix6 & M, FullVector<double>& z, Vector& r)
+{
+    M.mult(z,r);
+}
+
+template<>
+void BlockJacobiPreconditioner<BlockDiagonalMatrix6, FullVector<double> >::invert(BlockDiagonalMatrix6 & M)
+{
+    if (!this->systemMatrix) return;
+    bsize = this->systemMatrix->bandWidth+1;
+    M.i();
+    if (f_verbose.getValue()) sout<<M<<sendl;
+}
+
+template<>
+void BlockJacobiPreconditioner<BlockDiagonalMatrix9, FullVector<double> >::solve (BlockDiagonalMatrix9 & M, FullVector<double>& z, Vector& r)
+{
+    M.mult(z,r);
+}
+
+template<>
+void BlockJacobiPreconditioner<BlockDiagonalMatrix9, FullVector<double> >::invert(BlockDiagonalMatrix9 & M)
+{
+    if (!this->systemMatrix) return;
+    bsize = this->systemMatrix->bandWidth+1;
+    M.i();
+    if (f_verbose.getValue()) sout<<M<<sendl;
+}
+
+template<>
+void BlockJacobiPreconditioner<BlockDiagonalMatrix12, FullVector<double> >::solve (BlockDiagonalMatrix12 & M, FullVector<double>& z, Vector& r)
+{
+    M.mult(z,r);
+}
+
+template<>
+void BlockJacobiPreconditioner<BlockDiagonalMatrix12, FullVector<double> >::invert(BlockDiagonalMatrix12 & M)
+{
+    if (!this->systemMatrix) return;
+    bsize = this->systemMatrix->bandWidth+1;
+    M.i();
     if (f_verbose.getValue()) sout<<M<<sendl;
 }
 
