@@ -56,7 +56,7 @@ bool VRPNTracker::connectToServer()
     return true;
 }
 
-void VRPNTracker::handleEvent(sofa::core::objectmodel::Event *event)
+void VRPNTracker::update()
 {
 //	if (sofa::core::objectmodel::KeypressedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeypressedEvent*>(event))
 //	{

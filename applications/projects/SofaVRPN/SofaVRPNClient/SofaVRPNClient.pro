@@ -29,10 +29,14 @@ HEADERS +=  vrpnclient_config.h \
 			VRPNDevice.h \
 			VRPNAnalog.h \
 			VRPNButton.h \
-			VRPNTracker.h
+			VRPNTracker.h \
+			WiimoteDriver.h \
+			IRTracker.h
    
 SOURCES += 	initSofaVRPNClient.cpp \
 			VRPNDevice.cpp \
 			VRPNAnalog.cpp \
 			VRPNButton.cpp \
-		  	VRPNTracker.cpp
+		  	VRPNTracker.cpp \
+		  	WiimoteDriver.cpp \
+		  	IRTracker.cpp

@@ -12,6 +12,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/objectmodel/DataEngine.h>
+#include <sofa/helper/RandomGenerator.h>
 
 #include <VRPNDevice.h>
 
@@ -29,10 +30,16 @@ namespace client
 //	vrpn_float64	channel[vrpn_CHANNEL_MAX];  // analog values
 //} vrpn_ANALOGCB;
 
+struct VRPNAnalogData
+{
+    vrpn_ANALOGCB data;
+    bool modified;
+};
+
 void handle_analog(void *userdata, const vrpn_ANALOGCB a);
 
 template<class DataTypes>
-class VRPNAnalog : public virtual VRPNDevice, public virtual sofa::core::objectmodel::DataEngine
+class VRPNAnalog : public virtual VRPNDevice
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(VRPNAnalog, DataTypes), VRPNDevice);
@@ -42,10 +49,9 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
 
-    Data<unsigned int> f_numberOfChannels;
     Data<sofa::helper::vector<Real> > f_channels;
 
-    vrpn_ANALOGCB analogData;
+    VRPNAnalogData analogData;
 
     VRPNAnalog();
     virtual ~VRPNAnalog();
@@ -54,8 +60,10 @@ public:
 //	void reinit();
     void update();
 
+
 private:
     vrpn_Analog_Remote* anr;
+    sofa::helper::RandomGenerator rg;
 
     bool connectToServer();
     //callback
