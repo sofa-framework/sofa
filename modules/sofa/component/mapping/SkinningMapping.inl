@@ -77,7 +77,7 @@ SkinningMapping<BasicMapping>::SkinningMapping ( In* from, Out* to )
     , displayBlendedFrame ( initData ( &displayBlendedFrame,"1", "displayBlendedFrame","weights list for the influences of the references Dofs" ) )
     , computeWeights ( true )
     , wheighting ( WEIGHT_INVDIST )
-    , interpolation ( INTERPOLATION_DUAL_QUATERNION )
+    , interpolation ( INTERPOLATION_LINEAR )
 {
     maskFrom = NULL;
     if (core::componentmodel::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *>(from))
@@ -364,8 +364,6 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
     {
         rotatedPoints.resize ( initPos.size() );
         out.resize ( initPos.size() / nbRefs.getValue() );
-        //x1.resize( out.size()); //TODO remove after test
-        //x2.resize( out.size()); //TODO remove after test
         for ( unsigned int i=0 ; i<out.size(); i++ )
         {
             out[i] = Coord();
@@ -387,29 +385,31 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
 #ifdef SOFA_DEV
     case INTERPOLATION_DUAL_QUATERNION:
     {
+        //const typename In::VecDeriv& vfrom = *this->fromModel->getV();
+
         Mat38 Q;
         Mat88 N;
         vector<Mat88> T; T.resize( nbRefs.getValue() );
-        vector<Mat86> L; L.resize( nbRefs.getValue() );
+        vector<Mat86> L; L.resize( nbRefs.getValue() ); //TODO to comment
+        L.resize( out.size()*nbRefs.getValue() );
         sofa::helper::vector<Mat36>& J = *(matJ.beginEdit());
         J.resize( out.size()*nbRefs.getValue());
+        //q1.resize(out.size()*nbRefs.getValue());
+        //q2.resize(out.size()*nbRefs.getValue());
 
         VecCoord& xto = *this->toModel->getX();
-        //rotatedPoints.resize( xto.size());
         out.resize ( xto.size() );
-        //x1.resize( out.size()); //TODO remove after test
-        //x2.resize( out.size()); //TODO remove after test
+
         for ( unsigned int i=0 ; i<out.size(); i++ )
         {
-            //x1[i] = out[i]; //TODO remove after test
             DualQuat dq;
             for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
             {
                 const int idx=nbRefs.getValue() *i+m;
                 const int idxReps=m_reps[idx];
                 // Create a rigid transformation from the relative rigid transformation of the reference frame "idxReps".
-                DualQuat dqi ( in[idxReps].getCenter(),
-                        in[idxReps].getOrientation() );
+                DualQuat qi0( initPosDOFs[idxReps].getCenter(), initPosDOFs[idxReps].getOrientation());
+                DualQuat dqi ( in[idxReps].getCenter(), in[idxReps].getOrientation() );
                 DualQuat dqrel ( initPosDOFs[idxReps].getCenter(),
                         initPosDOFs[idxReps].getOrientation(),
                         in[idxReps].getCenter(),
@@ -418,9 +418,25 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
                 // Blend all the transformations
                 dq += dqrel * m_coefs[idx];
 
-                DualQuat qi0( initPosDOFs[idxReps].getCenter(), initPosDOFs[idxReps].getOrientation());
+                // Compute parts of J
                 computeDqT( T[m], qi0);
-                computeDqL( L[m], dqi, in[idxReps].getCenter());
+                computeDqL( L[idx], dqi, in[idxReps].getCenter());
+                //q1[idx] = q2[idx]; //TODO remove after test
+                //q2[idx] = dqi; //TODO remove after test
+
+                /*
+                if( idx == 93) // Print test ! TODO remove !
+                {
+                	std::cout << "temps: " << this->getContext()->getTime() << ", dt: " << this->getContext()->getDt() << ", idx: " << idx << std::endl;
+                	std::cout << "Xhi_i(0): [theta, t]=" << initPosDOFs[idxReps].getOrientation() << ", " << initPosDOFs[idxReps].getCenter() << std::endl; //TODO transcrire a b c w
+                	std::cout << "Xhi_i(t): [theta, t]=" << in[idxReps].getOrientation() << ", " << in[idxReps].getCenter() << std::endl; //TODO transcrire a b c w
+                	std::cout << "Wi: [theta, t]=" << vfrom[idxReps].getVOrientation() << ", " << vfrom[idxReps].getVCenter() << std::endl;
+
+                	std::cout << "poids: " << m_coefs[idx] << std::endl;
+
+                	std::cout << "q(0): q0=" << qi0[0][3] << ", " << qi0[0][0] << ", " << qi0[0][1] << ", " << qi0[0][2] << ", qe=" << qi0[1][3] << ", " << qi0[1][0] << ", " << qi0[1][1] << ", " << qi0[1][2] << ". (w, a, b, c)" << std::endl;
+                	std::cout << "q(t): q0=" << q2[idx][0][3] << ", " << q2[idx][0][0] << ", " << q2[idx][0][1] << ", " << q2[idx][0][2] << ", qe=" << q2[idx][1][3] << ", " << q2[idx][1][0] << ", " << q2[idx][1][1] << ", " << q2[idx][1][2] << ". (w, a, b, c)" << std::endl;
+                }*/
             }
             DualQuat dqn( dq);
             dqn.normalize(); // Normalize it
@@ -433,10 +449,16 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
             for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
             {
                 const int idx=nbRefs.getValue() *i+m;
-                J[idx] = QN * T[m] * L[m];
+                J[idx] = QN * T[m] * L[idx];
             }
         }
-        //x2 = out; //TODO to remove after the convergence test
+        /*
+        			x1.resize( out.size()); //TODO remove after test
+        			x2.resize( out.size()); //TODO remove after test
+        			x1 = x2; //TODO remove after test
+        			x2 = out; //TODO to remove after the convergence test
+        			*/
+        matJ.endEdit();
         break;
     }
 #endif
@@ -451,9 +473,16 @@ void SkinningMapping<BasicMapping>::applyJ ( typename Out::VecDeriv& out, const 
     const sofa::helper::vector<double>& m_coefs = coefs.getValue();
     VecCoord& xto = *this->toModel->getX();
     out.resize ( xto.size() );
-    //vector<double> dqTest; //TODO to remove after the convergence test
-    //dqTest.resize( out.size()); //TODO to remove after the convergence test
     Deriv v,omega;
+
+    /*
+    vector<double> dqTest; //TODO to remove after the convergence test
+    dqTest.resize( out.size()); //TODO to remove after the convergence test
+    vector<Vec3d> dqJiWi; //TODO to remove after the convergence test
+    dqJiWi.resize( out.size()); //TODO to remove after the convergence test
+    vector<Mat81> dqLi; //TODO to remove after the convergence test
+    dqLi.resize( out.size() * nbRefs.getValue()); //TODO to remove after the convergence test
+    */
 
     if (!(maskTo->isInUse()) )
     {
@@ -497,6 +526,11 @@ void SkinningMapping<BasicMapping>::applyJ ( typename Out::VecDeriv& out, const 
                     speed[5][0] = in[idxReps].getVCenter()[2];
 
                     Mat31 f = (J[idx] * speed) * m_coefs[idx];
+
+                    //dqTest[i] = speed[0][0]*speed[0][0] + speed[1][0]*speed[1][0] + speed[2][0]*speed[2][0] + speed[3][0]*speed[3][0] + speed[4][0]*speed[4][0] + speed[5][0]*speed[5][0]; //TODO to remove after the convergence test
+                    //dqJiWi[i] = Vec3d( f[0][0], f[1][0], f[2][0]); //TODO to remove after convergence test
+                    //dqLi[idx] = (L[idx] * speed) * m_coefs[idx]; //TODO to remove after convergence test
+
                     out[i] += Deriv( f[0][0], f[1][0], f[2][0]);
                 }
             }
@@ -540,7 +574,6 @@ void SkinningMapping<BasicMapping>::applyJ ( typename Out::VecDeriv& out, const 
             for (it=indices.begin(); it!=indices.end(); it++)
             {
                 const int i=(int)(*it);
-                //dqTest[i] = 0.0; //TODO to remove after the convergence test
                 out[i] = Deriv();
                 for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
                 {
@@ -554,7 +587,14 @@ void SkinningMapping<BasicMapping>::applyJ ( typename Out::VecDeriv& out, const 
                     speed[4][0] = in[idxReps].getVCenter()[1];
                     speed[5][0] = in[idxReps].getVCenter()[2];
 
+
                     Mat31 f = (J[idx] * speed) * m_coefs[idx];
+
+                    /*
+                    dqTest[i] = speed[0][0]*speed[0][0] + speed[1][0]*speed[1][0] + speed[2][0]*speed[2][0] + speed[3][0]*speed[3][0] + speed[4][0]*speed[4][0] + speed[5][0]*speed[5][0]; //TODO to remove after the convergence test
+                    dqJiWi[i] = Vec3d( f[0][0], f[1][0], f[2][0]); //TODO to remove after convergence test
+                    dqLi[idx] = (L[idx] * speed) * m_coefs[idx]; //TODO to remove after convergence test
+                    */
                     out[i] += Deriv( f[0][0], f[1][0], f[2][0]);
                 }
             }
@@ -567,12 +607,34 @@ void SkinningMapping<BasicMapping>::applyJ ( typename Out::VecDeriv& out, const 
 #ifdef SOFA_DEV
     /* convergence test: to remove
     if( x1.empty() || x2.empty()) return;
-    std::cout << "Convergence test:" << std::endl;
+    std::cout << "Convergence test for dt = " << this->getContext()->getDt() << std::endl;
     for( unsigned int i = 0; i < out.size(); i++)
     {
     	if( dqTest[i] == 0) {std::cout << "dqi equal 0" << std::endl; continue;}
-    	if(( x1[i][0] != x2[i][0]) || ( x1[i][1] != x2[i][1]) || ( x1[i][2] != x2[i][2])) std::cout  << "2.Diff between pts: " << x1[i] << " " << x2[i] << std::endl;
-    	std::cout << i << ": " << ((x2[i] - x1[i])/this->getContext()->getDt() - out[i]).norm() / sqrt(dqTest[i]) << std::endl;
+    	//if(( x1[i][0] != x2[i][0]) || ( x1[i][1] != x2[i][1]) || ( x1[i][2] != x2[i][2])) std::cout  << "2.Diff between pts: " << x1[i] << " " << x2[i] << std::endl;
+    	//double test = ((x2[i] - x1[i])/this->getContext()->getDt() - dqJiWi[i]).norm() / sqrt(dqTest[i]);
+    	//if( test > 0.000000000001 ) std::cout << i << ": " << test << std::endl; // > a 10^-12
+    	for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
+    	{
+    const int idx=nbRefs.getValue() *i+m;
+    		Mat81 qrel;
+    		qrel[0][0] = q2[idx][0][0] - q1[idx][0][0];
+    		qrel[1][0] = q2[idx][0][1] - q1[idx][0][1];
+    		qrel[2][0] = q2[idx][0][2] - q1[idx][0][2];
+    		qrel[3][0] = q2[idx][0][3] - q1[idx][0][3];
+    		qrel[4][0] = q2[idx][1][0] - q1[idx][1][0];
+    		qrel[5][0] = q2[idx][1][1] - q1[idx][1][1];
+    		qrel[6][0] = q2[idx][1][2] - q1[idx][1][2];
+    		qrel[7][0] = q2[idx][1][3] - q1[idx][1][3];
+
+    		if( idx != 93) continue; //TODO remove !!
+
+    		std::cout << "Diff between qrel and Li:" << std::endl << qrel << std::endl << dqLi[idx] << std::endl;
+
+    		Mat81 diff = (qrel)/this->getContext()->getDt() - dqLi[idx];
+    		double testL = sqrt(diff[0][0]*diff[0][0] + diff[1][0]*diff[1][0] + diff[2][0]*diff[2][0] + diff[3][0]*diff[3][0] + diff[4][0]*diff[4][0] + diff[5][0]*diff[5][0] + diff[6][0]*diff[6][0] + diff[7][0]*diff[7][0] ) / sqrt(dqTest[i]);
+    		if( testL > 0.000000000001 ) std::cout << idx << ": " << testL << std::endl; // > a 10^-12
+    	}
     }
     //*/
 #endif
@@ -618,15 +680,14 @@ void SkinningMapping<BasicMapping>::applyJT ( typename In::VecDeriv& out, const 
                 {
                     const int idx=nbRefs.getValue() *i+m;
                     const int idxReps=m_reps[idx];
-                    Mat63 resT;
-                    resT.transpose( J[idx]);
+                    Mat63 Jt;
+                    Jt.transpose( J[idx]);
 
                     Mat31 f;
                     f[0][0] = in[i][0];
                     f[1][0] = in[i][1];
                     f[2][0] = in[i][2];
-                    Mat61 speed;
-                    speed = resT * f;
+                    Mat61 speed = Jt * f;
 
                     omega = Deriv( speed[0][0], speed[1][0], speed[2][0]);
                     v = Deriv( speed[3][0], speed[4][0], speed[5][0]);
@@ -643,7 +704,6 @@ void SkinningMapping<BasicMapping>::applyJT ( typename In::VecDeriv& out, const 
     }
     else
     {
-
         typedef core::componentmodel::behavior::BaseMechanicalState::ParticleMask ParticleMask;
         const ParticleMask::InternalStorage &indices=maskTo->getEntries();
 
@@ -681,15 +741,14 @@ void SkinningMapping<BasicMapping>::applyJT ( typename In::VecDeriv& out, const 
                 {
                     const int idx=nbRefs.getValue() *i+m;
                     const int idxReps=m_reps[idx];
-                    Mat63 resT;
-                    resT.transpose( J[idx]);
+                    Mat63 Jt;
+                    Jt.transpose( J[idx]);
 
                     Mat31 f;
                     f[0][0] = in[i][0];
                     f[1][0] = in[i][1];
                     f[2][0] = in[i][2];
-                    Mat61 speed;
-                    speed = resT * f;
+                    Mat61 speed = Jt * f;
 
                     omega = Deriv( speed[0][0], speed[1][0], speed[2][0]);
                     v = Deriv( speed[3][0], speed[4][0], speed[5][0]);
@@ -719,34 +778,49 @@ void SkinningMapping<BasicMapping>::applyJT ( typename In::VecConst& out, const 
     sofa::helper::vector<bool> flags;
     int outSize = out.size();
     out.resize ( in.size() + outSize ); // we can accumulate in "out" constraints from several mappings
-    for ( unsigned int i=0; i<in.size(); i++ )
+    switch ( interpolation )
     {
-        v.clear();
-        v.resize ( nbi );
-        flags.clear();
-        flags.resize ( nbi );
-        OutConstraintIterator itOut;
-        std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
-
-        for (itOut=iter.first; itOut!=iter.second; itOut++)
+    case INTERPOLATION_LINEAR:
+    {
+        for ( unsigned int i=0; i<in.size(); i++ )
         {
-            unsigned int indexIn = itOut->first;
-            Deriv data = (Deriv) itOut->second;
-            Deriv f = data;
-            for ( unsigned int m=0 ; m<nbr; m++ )
+            v.clear();
+            v.resize ( nbi );
+            flags.clear();
+            flags.resize ( nbi );
+            OutConstraintIterator itOut;
+            std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
+
+            for (itOut=iter.first; itOut!=iter.second; itOut++)
             {
-                omega = cross ( rotatedPoints[nbr*indexIn+m],f );
-                flags[m_reps[nbr*indexIn+m] ] = true;
-                v[m_reps[nbr*indexIn+m] ].getVCenter() += f * m_coefs[nbr*indexIn+m];
-                v[m_reps[nbr*indexIn+m] ].getVOrientation() += omega * m_coefs[nbr*indexIn+m];
+                unsigned int indexIn = itOut->first;
+                Deriv data = (Deriv) itOut->second;
+                Deriv f = data;
+                for ( unsigned int m=0 ; m<nbr; m++ )
+                {
+                    omega = cross ( rotatedPoints[nbr*indexIn+m],f );
+                    flags[m_reps[nbr*indexIn+m] ] = true;
+                    v[m_reps[nbr*indexIn+m] ].getVCenter() += f * m_coefs[nbr*indexIn+m];
+                    v[m_reps[nbr*indexIn+m] ].getVOrientation() += omega * m_coefs[nbr*indexIn+m];
+                }
+            }
+            for ( unsigned int j=0 ; j<nbi; j++ )
+            {
+                //if (!(v[i] == typename In::Deriv()))
+                if ( flags[j] )
+                    out[outSize+i].add (j,v[j] );
             }
         }
-        for ( unsigned int j=0 ; j<nbi; j++ )
-        {
-            //if (!(v[i] == typename In::Deriv()))
-            if ( flags[j] )
-                out[outSize+i].add (j,v[j] );
-        }
+        break;
+    }
+#ifdef SOFA_DEV
+    case INTERPOLATION_DUAL_QUATERNION:
+    {
+        serr << "applyJT on VecConst is not implemented for dual quat." << sendl;
+        break;
+    }
+#endif
+    default: {}
     }
 }
 
