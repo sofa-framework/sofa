@@ -848,7 +848,7 @@ void VisualModelImpl::computeMesh()
 
 void VisualModelImpl::handleTopologyChange()
 {
-
+    if (!_topology) return;
     bool debug_mode = false;
 
     std::list<const TopologyChange *>::const_iterator itBegin=_topology->firstChange();
