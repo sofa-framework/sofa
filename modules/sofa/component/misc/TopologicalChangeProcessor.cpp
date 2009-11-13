@@ -426,8 +426,8 @@ void TopologicalChangeProcessor::processTopologicalChanges()
             Vector3 b;
             unsigned int ind_ta;
             unsigned int ind_tb;
-            unsigned int a_last = -1;
-            unsigned int b_last = -1;
+            unsigned int a_last = core::componentmodel::topology::BaseMeshTopology::InvalidID;
+            unsigned int b_last = core::componentmodel::topology::BaseMeshTopology::InvalidID;
             bool firstCut= true;
 
             str >> nbr;
@@ -452,7 +452,7 @@ void TopologicalChangeProcessor::processTopologicalChanges()
                 sofa::helper::vector< Vec<3, double> > coords2_list;
 
                 if(firstCut)
-                    a_last = (unsigned int)-1;
+                    a_last = core::componentmodel::topology::BaseMeshTopology::InvalidID;
                 else
                 {
                     core::componentmodel::behavior::MechanicalState<Vec3Types>* mstate = m_topology->getContext()->get<core::componentmodel::behavior::MechanicalState<Vec3Types> >();

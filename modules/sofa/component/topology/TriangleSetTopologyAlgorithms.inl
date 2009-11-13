@@ -144,7 +144,7 @@ void TriangleSetTopologyAlgorithms< DataTypes >::RemoveAlongTrianglesList(const 
 
     ind_tb_final=ind_tb;
     unsigned int ind_ta_final=ind_ta;
-    is_intersected = m_geometryAlgorithms->computeIntersectedPointsList((unsigned int)-1,a, b, ind_ta_final, ind_tb_final, triangles_list, edges_list, coords_list, is_on_boundary);
+    is_intersected = m_geometryAlgorithms->computeIntersectedPointsList(BaseMeshTopology::InvalidID,a, b, ind_ta_final, ind_tb_final, triangles_list, edges_list, coords_list, is_on_boundary);
 
     if(is_intersected)
     {
@@ -195,7 +195,7 @@ void TriangleSetTopologyAlgorithms< DataTypes >::InciseAlongLinesList(const sofa
         {
             // Call the method "computeIntersectedPointsList" to get the list of points (ind_edge,coord) intersected by the segment from point a to point b and the triangular mesh
             ind_tb_final=ind_tpb;
-            bool is_intersected = m_geometryAlgorithms->computeIntersectedPointsList((unsigned int)-1,pa, pb, ind_tpa, ind_tb_final, triangles_list, edges_list, coords_list, is_on_boundary);
+            bool is_intersected = m_geometryAlgorithms->computeIntersectedPointsList(BaseMeshTopology::InvalidID,pa, pb, ind_tpa, ind_tb_final, triangles_list, edges_list, coords_list, is_on_boundary);
             is_validated=is_intersected;
         }
         else
