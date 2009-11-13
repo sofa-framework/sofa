@@ -518,12 +518,12 @@ void SkinningMapping<BasicMapping>::applyJ ( typename Out::VecDeriv& out, const 
                     const int idx=nbRefs.getValue() *i+m;
                     const int idxReps=m_reps[idx];
                     Mat61 speed;
-                    speed[0][0] = in[idxReps].getVOrientation()[0];
-                    speed[1][0] = in[idxReps].getVOrientation()[1];
-                    speed[2][0] = in[idxReps].getVOrientation()[2];
-                    speed[3][0] = in[idxReps].getVCenter()[0];
-                    speed[4][0] = in[idxReps].getVCenter()[1];
-                    speed[5][0] = in[idxReps].getVCenter()[2];
+                    speed[0][0] = (Real) in[idxReps].getVOrientation()[0];
+                    speed[1][0] = (Real) in[idxReps].getVOrientation()[1];
+                    speed[2][0] = (Real) in[idxReps].getVOrientation()[2];
+                    speed[3][0] = (Real) in[idxReps].getVCenter()[0];
+                    speed[4][0] = (Real) in[idxReps].getVCenter()[1];
+                    speed[5][0] = (Real) in[idxReps].getVCenter()[2];
 
                     Mat31 f = (J[idx] * speed) * m_coefs[idx];
 
@@ -580,12 +580,12 @@ void SkinningMapping<BasicMapping>::applyJ ( typename Out::VecDeriv& out, const 
                     const int idx=nbRefs.getValue() *i+m;
                     const int idxReps=m_reps[idx];
                     Mat61 speed;
-                    speed[0][0] = in[idxReps].getVOrientation()[0];
-                    speed[1][0] = in[idxReps].getVOrientation()[1];
-                    speed[2][0] = in[idxReps].getVOrientation()[2];
-                    speed[3][0] = in[idxReps].getVCenter()[0];
-                    speed[4][0] = in[idxReps].getVCenter()[1];
-                    speed[5][0] = in[idxReps].getVCenter()[2];
+                    speed[0][0] = (Real) in[idxReps].getVOrientation()[0];
+                    speed[1][0] = (Real) in[idxReps].getVOrientation()[1];
+                    speed[2][0] = (Real) in[idxReps].getVOrientation()[2];
+                    speed[3][0] = (Real) in[idxReps].getVCenter()[0];
+                    speed[4][0] = (Real) in[idxReps].getVCenter()[1];
+                    speed[5][0] = (Real) in[idxReps].getVCenter()[2];
 
 
                     Mat31 f = (J[idx] * speed) * m_coefs[idx];
@@ -899,17 +899,17 @@ void SkinningMapping<BasicMapping>::draw()
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::computeDqQ( Mat38& Q, const DualQuat& bn, const Coord& p)
 {
-    const double& x = p[0];
-    const double& y = p[1];
-    const double& z = p[2];
-    const double& a0 = bn[0][0];
-    const double& b0 = bn[0][1];
-    const double& c0 = bn[0][2];
-    const double& w0 = bn[0][3];
-    const double& ae = bn[1][0];
-    const double& be = bn[1][1];
-    const double& ce = bn[1][2];
-    const double& we = bn[1][3];
+    const Real x  = p[0];
+    const Real y  = p[1];
+    const Real z  = p[2];
+    const Real a0 = bn[0][0];
+    const Real b0 = bn[0][1];
+    const Real c0 = bn[0][2];
+    const Real w0 = bn[0][3];
+    const Real ae = bn[1][0];
+    const Real be = bn[1][1];
+    const Real ce = bn[1][2];
+    const Real we = bn[1][3];
     Q[0][0] =   ae + w0*x - c0*y + b0*z;
     Q[0][1] = - we + a0*x + b0*y + c0*z;
     Q[0][2] =   ce - b0*x + a0*y + w0*z;
@@ -941,25 +941,25 @@ void SkinningMapping<BasicMapping>::computeDqQ( Mat38& Q, const DualQuat& bn, co
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::computeDqN( Mat88& N, const DualQuat& bn, const DualQuat& b)
 {
-    const double& a0 = bn[0][0];
-    const double& b0 = bn[0][1];
-    const double& c0 = bn[0][2];
-    const double& w0 = bn[0][3];
-    const double& ae = bn[1][0];
-    const double& be = bn[1][1];
-    const double& ce = bn[1][2];
-    const double& we = bn[1][3];
-    const double& A0 = b[0][0];
-    const double& B0 = b[0][1];
-    const double& C0 = b[0][2];
-    const double& W0 = b[0][3];
-    const double& Ae = b[1][0];
-    const double& Be = b[1][1];
-    const double& Ce = b[1][2];
-    const double& We = b[1][3];
-    const double lQ0l2 = W0*W0 + A0*A0 + B0*B0 + C0*C0;
-    const double lQ0l = sqrt( lQ0l2 );
-    const double QeQ0 = W0*We + A0*Ae + B0*Be + C0*Ce;
+    const Real a0 = bn[0][0];
+    const Real b0 = bn[0][1];
+    const Real c0 = bn[0][2];
+    const Real w0 = bn[0][3];
+    const Real ae = bn[1][0];
+    const Real be = bn[1][1];
+    const Real ce = bn[1][2];
+    const Real we = bn[1][3];
+    const Real A0 = b[0][0];
+    const Real B0 = b[0][1];
+    const Real C0 = b[0][2];
+    const Real W0 = b[0][3];
+    const Real Ae = b[1][0];
+    const Real Be = b[1][1];
+    const Real Ce = b[1][2];
+    const Real We = b[1][3];
+    const Real lQ0l2 = W0*W0 + A0*A0 + B0*B0 + C0*C0;
+    const Real lQ0l  = (Real) sqrt( lQ0l2 );
+    const Real QeQ0  = W0*We + A0*Ae + B0*Be + C0*Ce;
 
     N[0][0] = w0*w0-1;
     N[0][1] = a0*w0;
@@ -1032,14 +1032,14 @@ void SkinningMapping<BasicMapping>::computeDqN( Mat88& N, const DualQuat& bn, co
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::computeDqT( Mat88& T, const DualQuat& qi0)
 {
-    const double& a0 = qi0[0][0];
-    const double& b0 = qi0[0][1];
-    const double& c0 = qi0[0][2];
-    const double& w0 = qi0[0][3];
-    const double& ae = qi0[1][0];
-    const double& be = qi0[1][1];
-    const double& ce = qi0[1][2];
-    const double& we = qi0[1][3];
+    const Real a0 = qi0[0][0];
+    const Real b0 = qi0[0][1];
+    const Real c0 = qi0[0][2];
+    const Real w0 = qi0[0][3];
+    const Real ae = qi0[1][0];
+    const Real be = qi0[1][1];
+    const Real ce = qi0[1][2];
+    const Real we = qi0[1][3];
 
     T[0][0] = w0;
     T[0][1] = a0;
@@ -1110,17 +1110,17 @@ void SkinningMapping<BasicMapping>::computeDqT( Mat88& T, const DualQuat& qi0)
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::computeDqL( Mat86& L, const DualQuat& qi, const Coord& ti)
 {
-    const double& tx = ti[0];
-    const double& ty = ti[1];
-    const double& tz = ti[2];
-    const double& a0 = qi[0][0];
-    const double& b0 = qi[0][1];
-    const double& c0 = qi[0][2];
-    const double& w0 = qi[0][3];
-    const double& ae = qi[1][0];
-    const double& be = qi[1][1];
-    const double& ce = qi[1][2];
-    const double& we = qi[1][3];
+    const Real tx = ti[0];
+    const Real ty = ti[1];
+    const Real tz = ti[2];
+    const Real a0 = qi[0][0];
+    const Real b0 = qi[0][1];
+    const Real c0 = qi[0][2];
+    const Real w0 = qi[0][3];
+    const Real ae = qi[1][0];
+    const Real be = qi[1][1];
+    const Real ce = qi[1][2];
+    const Real we = qi[1][3];
 
     L[0][0] = -a0;
     L[0][1] = -b0;
