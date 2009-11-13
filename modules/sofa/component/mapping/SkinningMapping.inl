@@ -895,7 +895,7 @@ void SkinningMapping<BasicMapping>::draw()
 #endif
 }
 
-
+#ifdef SOFA_DEV
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::computeDqQ( Mat38& Q, const DualQuat& bn, const Coord& p)
 {
@@ -1173,7 +1173,7 @@ void SkinningMapping<BasicMapping>::computeDqL( Mat86& L, const DualQuat& qi, co
 
     L *= 0.5;
 }
-
+#endif
 
 } // namespace mapping
 
