@@ -83,6 +83,7 @@ public:
     typedef defaulttype::Mat<6,1,Real> Mat61;
     typedef defaulttype::Mat<6,3,Real> Mat63;
     typedef defaulttype::Mat<3,1,Real> Mat31;
+    typedef defaulttype::Mat<8,1,Real> Mat81;
 
 #ifdef SOFA_DEV
     typedef typename helper::DualQuatd DualQuat;
@@ -106,6 +107,9 @@ protected:
     InterpolationType interpolation;
     //typename Out::VecCoord x1; //TODO remove after test
     //typename Out::VecCoord x2; //TODO remove after test
+    //vector<DualQuat> q1; //TODO remove after test
+    //vector<DualQuat> q2; //TODO remove after test
+    //vector<Mat86> L;
 
     class Loader;
     void load ( const char* filename );
