@@ -80,6 +80,7 @@ int main(int argc, char** argv)
     int res = 16;
     int rx=0,ry=0,rz=0;
     float border = 0.25f;
+    float vsize = 0.0f;
     ftl::CmdLine cmd("Usage: meshconv [options] mesh.input [mesh.output]");
     cmd.opt("normalize",'n',"transform points so that the center is at <0,0,0> and the max coodinate is 1",&normalize);
     cmd.opt("flip",'f',"flip normals",&flip);
@@ -99,6 +100,7 @@ int main(int argc, char** argv)
     cmd.opt("rx",'X',"X resolution of distance field",&rx);
     cmd.opt("ry",'Y',"Y resolution of distance field",&ry);
     cmd.opt("rz",'Z',"Z resolution of distance field",&rz);
+    cmd.opt("vsize",'V',"size of each voxel in distance field",&vsize);
     cmd.opt("border",'B',"distance field border size relative to the object's BBox size (or negative for exact size)",&border);
     bool error=false;
     if (!cmd.parse(argc,argv,&error))
@@ -257,8 +259,20 @@ int main(int argc, char** argv)
             obj.close();
             std::cout << "Mesh is "<<(obj.isClosed()?"":"NOT ")<<"closed."<<std::endl;
         }
+        BBox bb = obj.calcBBox();
+        float bsize = (border<0 ? -border : bb.size()*border);
+        Vec3f bbsize = bb.b-bb.a;
+        bbsize[0] += 2*bsize;
+        bbsize[1] += 2*bsize;
+        bbsize[2] += 2*bsize;
+        if (vsize > 0)
+        {
+            rx = (int)ceilf(bbsize[0]/vsize);
+            ry = (int)ceilf(bbsize[1]/vsize);
+            rz = (int)ceilf(bbsize[2]/vsize);
+        }
         std::cout << "Computing "<<rx<<'x'<<ry<<'x'<<rz<<" DistMap..."<<std::endl;
-        obj.calcDistMap(rx,ry,rz,(border<0 ? -border : obj.calcBBox().size()*border));
+        obj.calcDistMap(rx,ry,rz,bsize);
     }
 
 
