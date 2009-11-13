@@ -2102,6 +2102,14 @@ void RealGUI::showhideElements(int FILTER, bool value)
             root->getContext()->setShowMechanicalMappings ( value );
             root->getContext()->setShowForceFields ( value );
             root->getContext()->setShowInteractionForceFields ( value );
+            sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowVisualModels ( value );
+            sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowBehaviorModels ( value );
+            sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowCollisionModels ( value );
+            sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowBoundingCollisionModels ( value );
+            sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowMappings ( value );
+            sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowMechanicalMappings ( value );
+            sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowForceFields ( value );
+            sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowInteractionForceFields ( value );
             break;
         case  Node::VISUALMODELS:
         {
@@ -2109,15 +2117,60 @@ void RealGUI::showhideElements(int FILTER, bool value)
             sofa::simulation::getSimulation()->getVisualRoot()->setShowVisualModels( value);
             break;
         }
-        case  Node::BEHAVIORMODELS:          root->getContext()->setShowBehaviorModels ( value ); break;
-        case  Node::COLLISIONMODELS:         root->getContext()->setShowCollisionModels ( value ); break;
-        case  Node::BOUNDINGCOLLISIONMODELS: root->getContext()->setShowBoundingCollisionModels ( value );  break;
-        case  Node::MAPPINGS:                root->getContext()->setShowMappings ( value ); break;
-        case  Node::MECHANICALMAPPINGS:      root->getContext()->setShowMechanicalMappings ( value ); break;
-        case  Node::FORCEFIELDS:             root->getContext()->setShowForceFields ( value ); break;
-        case  Node::INTERACTIONFORCEFIELDS:  root->getContext()->setShowInteractionForceFields ( value ); break;
-        case  Node::WIREFRAME:               root->getContext()->setShowWireFrame ( value ); break;
-        case  Node::NORMALS:                 root->getContext()->setShowNormals ( value ); break;
+        case  Node::BEHAVIORMODELS:
+        {
+            root->getContext()->setShowBehaviorModels ( value );
+            sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowBehaviorModels ( value );
+            break;
+        }
+        case  Node::COLLISIONMODELS:
+        {
+            root->getContext()->setShowCollisionModels ( value );
+            sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowCollisionModels ( value );
+            break;
+        }
+        case  Node::BOUNDINGCOLLISIONMODELS:
+        {
+            root->getContext()->setShowBoundingCollisionModels ( value );
+            sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowBoundingCollisionModels ( value );
+            break;
+        }
+        case  Node::MAPPINGS:
+        {
+            root->getContext()->setShowMappings ( value );
+            sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowMappings ( value );
+            break;
+        }
+        case  Node::MECHANICALMAPPINGS:
+        {
+            root->getContext()->setShowMechanicalMappings ( value );
+            sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowMechanicalMappings ( value );
+            break;
+        }
+        case  Node::FORCEFIELDS:
+        {
+            root->getContext()->setShowForceFields ( value );
+            sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowForceFields ( value );
+            break;
+        }
+        case  Node::INTERACTIONFORCEFIELDS:
+        {
+            root->getContext()->setShowInteractionForceFields ( value );
+            sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowWireFrame ( value );
+            break;
+        }
+        case  Node::WIREFRAME:
+        {
+            root->getContext()->setShowWireFrame ( value );
+            sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowWireFrame ( value );
+            break;
+        }
+        case  Node::NORMALS:
+        {
+            root->getContext()->setShowNormals ( value );
+            sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowNormals ( value );
+            break;
+        }
         }
         sofa::simulation::getSimulation()->updateVisualContext ( root, (simulation::Node::VISUAL_FLAG) FILTER );
         sofa::simulation::getSimulation()->updateVisualContext ( sofa::simulation::getSimulation()->getVisualRoot(), (simulation::Node::VISUAL_FLAG) FILTER );
