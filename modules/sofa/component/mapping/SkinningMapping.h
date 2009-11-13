@@ -151,11 +151,13 @@ public:
     const sofa::helper::vector<unsigned int>& getRepartition() { return repartition.getValue(); }
     bool getComputeWeights() { return computeWeights; }
 
+#ifdef SOFA_DEV
     // Dual quat J matrix components
     void computeDqQ( Mat38& Q, const DualQuat& bn, const Coord& p);
     void computeDqN( Mat88& N, const DualQuat& bn, const DualQuat& b);
     void computeDqT( Mat88& T, const DualQuat& qi0);
     void computeDqL( Mat86& L, const DualQuat& qi, const Coord& ti);
+#endif
 };
 
 using core::Mapping;
