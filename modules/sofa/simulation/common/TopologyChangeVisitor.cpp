@@ -106,6 +106,19 @@ void TopologyChangeVisitor::processNodeBottomUp(simulation::Node* node)
     }
 }
 
+
+Visitor::Result HandleTopologyChangeVisitor::processNodeTopDown(simulation::Node* node)
+{
+    for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
+    {
+        (*it)->handleTopologyChange();
+    }
+
+    return RESULT_CONTINUE;
+}
+
+
+
 } // namespace simulation
 
 } // namespace sofa
