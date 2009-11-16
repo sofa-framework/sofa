@@ -52,7 +52,7 @@ public:
     typedef Real value_type;
 
     Quater();
-    virtual ~Quater();
+    ~Quater();
     Quater(Real x, Real y, Real z, Real w);
     template<class Real2>
     Quater(const Real2 q[]) { for (int i=0; i<4; i++) _q[i] = (Real)q[i]; }
