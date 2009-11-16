@@ -142,6 +142,8 @@ HEADERS += \
        	CudaHexahedronFEMForceField.h \
        	CudaHexahedronFEMForceField.inl \
        	CudaHexahedronTLEDForceField.h \
+               CudaJointSpringForceField.h \
+               CudaJointSpringForceField.inl \
 		CudaTetrahedronSuperTLEDForceField.h \
        	CudaUncoupledConstraintCorrection.h \
 		CudaRasterizer.h \
@@ -161,6 +163,7 @@ SOURCES += \
        	CudaHexahedronFEMForceField.cpp \
      	CudaTetrahedronTLEDForceField.cpp \
        	CudaHexahedronTLEDForceField.cpp \
+               CudaJointSpringForceField.cpp \
 		CudaTetrahedronSuperTLEDForceField.cpp \
        	CudaUncoupledConstraintCorrection.cpp \
 		CudaRasterizer.cpp \
@@ -172,6 +175,7 @@ CUDA_SOURCES += \
 	   	CudaMatrixUtils.cu \
        	CudaSpatialGridContainer.cu \
         CudaHexahedronFEMForceField.cu \
+               CudaJointSpringForceField.cu \
        	CudaTetrahedronTLEDForceField.cu \
        	CudaHexahedronTLEDForceField.cu \
 		CudaTetrahedronSuperTLEDForceField.cu \
