@@ -31,20 +31,35 @@
 namespace sofa
 {
 
+namespace component
+{
+
+namespace constraint
+{
+
+template class FixedConstraint<CudaRigid3fTypes>;
+
+}// namespace constraint
+
+}// namespace component
+
 namespace gpu
 {
 
 namespace cuda
 {
 
+
 SOFA_DECL_CLASS(CudaFixedConstraint)
 
 int FixedConstraintCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< component::constraint::FixedConstraint<CudaVec3fTypes> >()
         .add< component::constraint::FixedConstraint<CudaVec3f1Types> >()
+        .add< component::constraint::FixedConstraint<CudaRigid3fTypes> >()
 #ifdef SOFA_GPU_CUDA_DOUBLE
         .add< component::constraint::FixedConstraint<CudaVec3dTypes> >()
         .add< component::constraint::FixedConstraint<CudaVec3d1Types> >()
+        .add< component::constraint::FixedConstraint<CudaRigid3dTypes> >()
 #endif // SOFA_GPU_CUDA_DOUBLE
         ;
 
