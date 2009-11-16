@@ -1329,8 +1329,13 @@ void RealGUI::fileReload()
 
 void RealGUI::fileSave()
 {
-    Node *node = viewer->getScene();
     std::string filename = viewer->getSceneFileName();
+    std::string message="You are about to overwrite your current scene: "  + filename + "\nAre you sure you want to do that ?";
+
+    if ( QMessageBox::warning ( this, "Saving the Scene",message.c_str(), QMessageBox::Yes | QMessageBox::Default, QMessageBox::No ) != QMessageBox::Yes )
+        return;
+
+    Node *node = viewer->getScene();
     fileSaveAs ( node,filename.c_str() );
 }
 
