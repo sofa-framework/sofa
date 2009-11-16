@@ -301,7 +301,76 @@ __device__ real norm(CudaVec3<real> a)
 template<class real>
 __device__ real invnorm(CudaVec3<real> a)
 {
-    return rsqrtf(norm2(a));
+    if (norm2(a) > 0.0)
+        return rsqrtf(norm2(a));
+    return 0.0;
+}
+
+template<class real>
+__device__ real norm2(CudaVec4<real> a)
+{
+    return a.x*a.x+a.y*a.y+a.z*a.z+a.w*a.w;
+}
+
+template<class real>
+__device__ real invnorm(CudaVec4<real> a)
+{
+    if (norm2(a) > 0.0)
+        return rsqrtf(norm2(a));
+    return 0.0;
+}
+
+template<class real>
+__device__ CudaVec4<real> inv(CudaVec4<real> a)
+{
+    real norm = norm2(a);
+    if (norm > 0)
+        return CudaVec4<real>::make(-a.x/norm, -a.y/norm, -a.z/norm, a.w/norm);
+    return CudaVec4<real>::make(0.0, 0.0, 0.0, 0.0);
+}
+
+template<class real>
+__device__ CudaVec4<real> operator*(CudaVec4<real> a, CudaVec4<real> b)
+{
+    CudaVec4<real> quat;
+    quat.w = a.w * b.w - (a.x * b.x + a.y * b.y + a.z * b.z);
+    quat.x = a.w * b.x + a.x * b.w + a.y * b.z - a.z * b.y;
+    quat.y = a.w * b.y + a.y * b.w + a.z * b.x - a.x * b.z;
+    quat.z = a.w * b.z + a.z * b.w + a.x * b.y - a.y * b.x;
+
+    return quat;
+}
+
+template<class real>
+__device__ CudaVec4<real> operator*(CudaVec4<real> a, real f)
+{
+    return CudaVec4<real>::make(a.x*f, a.y*f, a.z*f, a.w*f);
+}
+
+template<class real>
+__device__ CudaVec3<real> toEulerVector(CudaVec4<real> a)
+{
+    real angle = acos(a.w)*2;
+    CudaVec3<real> euler = CudaVec3<real>::make(a.x, a.y, a.z);
+    euler = euler*invnorm(euler);
+    return euler*angle;
+}
+
+template<class real>
+__device__ CudaVec4<real> createQuaterFromEuler(CudaVec3<real> v)
+{
+    CudaVec4<real> quat;
+    real a0 = v.x;
+    a0 /= (real)2.0;
+    real a1 = v.y;
+    a1 /= (real)2.0;
+    real a2 = v.z;
+    a2 /= (real)2.0;
+    quat.w = cos(a0)*cos(a1)*cos(a2) + sin(a0)*sin(a1)*sin(a2);
+    quat.x = sin(a0)*cos(a1)*cos(a2) - cos(a0)*sin(a1)*sin(a2);
+    quat.y = cos(a0)*sin(a1)*cos(a2) + sin(a0)*cos(a1)*sin(a2);
+    quat.z = cos(a0)*cos(a1)*sin(a2) - sin(a0)*sin(a1)*cos(a2);
+    return quat;
 }
 
 template<class real>
@@ -366,6 +435,33 @@ public:
         r.z.z = x.z * v.x.z + y.z * v.y.z + z.z * v.z.z;
         return r;
     }
+    __device__ real determinant(matrix3<real> v)
+    {
+        real det;
+        det = v.x.x*v.y.y*v.z.z;
+        det += v.y.x*v.z.y*v.x.z;
+        det += v.z.x*v.x.y*v.y.z;
+        det -= v.x.x*v.z.y*v.y.z;
+        det -= v.y.x*v.x.y*v.z.z;
+        det -= v.z.x*v.y.y*v.x.z;
+        return det;
+    }
+    __device__ matrix3<real> invert(matrix3<real> v)
+    {
+        real det = determinant(v);
+        matrix3<real> r;
+        r.x.x = (v.y.y*v.z.z - v.z.y*v.y.z)/det;
+        r.y.x = (v.y.z*v.z.x - v.z.z*v.y.x)/det;
+        r.z.x = (v.y.x*v.z.y - v.z.x*v.y.y)/det;
+        r.x.y = (v.z.y*v.x.z - v.x.y*v.z.z)/det;
+        r.y.y = (v.z.z*v.x.x - v.x.z*v.z.x)/det;
+        r.z.y = (v.z.x*v.x.y - v.x.x*v.z.y)/det;
+        r.x.z = (v.x.y*v.y.z - v.y.y*v.x.z)/det;
+        r.y.z = (v.x.z*v.y.x - v.y.z*v.x.x)/det;
+        r.z.z = (v.x.x*v.y.y - v.y.x*v.x.y)/det;
+
+        return r;
+    }
     __device__ real mulX(CudaVec3<real> v)
     {
         return dot(x,v);
@@ -403,6 +499,25 @@ public:
         *data=z.z; data+=bsize;
     }
 };
+
+template<class real>
+__device__ matrix3<real> toMatrix(CudaVec4<real> q)
+{
+    matrix3<real> mat;
+    mat.x.x = (real)(1.0f - 2.0f * (q.y * q.y + q.z * q.z));
+    mat.x.y = (real)(2.0f * (q.x * q.y - q.z * q.w));
+    mat.x.z = (real)(2.0f * (q.z * q.x + q.y * q.w));
+
+    mat.y.x = (real)(2.0f * (q.x * q.y + q.z * q.w));
+    mat.y.y = (real)(1.0f - 2.0f * (q.z * q.z + q.x * q.x));
+    mat.y.z = (real)(2.0f * (q.y * q.z - q.x * q.w));
+
+    mat.z.x = (real)(2.0f * (q.z * q.x - q.y * q.w));
+    mat.z.y = (real)(2.0f * (q.y * q.z + q.x * q.w));
+    mat.z.z = (real)(1.0f - 2.0f * (q.y * q.y + q.x * q.x));
+
+    return mat;
+}
 
 
 template<class real>
