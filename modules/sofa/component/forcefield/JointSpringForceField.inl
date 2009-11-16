@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_FORCEFIELD_JOINTSPRINGFORCEFIELD_INL
 
 #include <sofa/component/forcefield/JointSpringForceField.h>
+#include <sofa/core/componentmodel/behavior/PairInteractionForceField.inl>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/helper/gl/template.h>
@@ -74,7 +75,7 @@ JointSpringForceField<DataTypes>::~JointSpringForceField()
 template <class DataTypes>
 void JointSpringForceField<DataTypes>::bwdInit()
 {
-    this->Inherit::bwdInit();
+//   this->Inherit::bwdInit();
 
     const VecCoord& x1= *this->mstate1->getX();
 

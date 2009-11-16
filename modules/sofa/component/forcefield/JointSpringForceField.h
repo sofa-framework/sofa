@@ -307,6 +307,7 @@ protected:
     Data<float> showFactorSize;
 
     JointSpringForceFieldInternalData<DataTypes> data;
+    friend class JointSpringForceFieldInternalData<DataTypes>;
 
 
     /// Accumulate the spring force and compute and store its stiffness
