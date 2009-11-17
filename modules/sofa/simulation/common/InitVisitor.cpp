@@ -75,6 +75,9 @@ void InitVisitor::processNodeBottomUp(simulation::Node* node)
     {
         node->object[i]->bwdInit();
     }
+#ifdef SOFA_CLASSIC_SCENE_GRAPH
+    return ;
+#else
 
     using sofa::core::objectmodel::Tag;
 
@@ -119,6 +122,7 @@ void InitVisitor::processNodeBottomUp(simulation::Node* node)
         MoveObjectFunctor< core::BaseMapping > moveVisualMappings;
         std::for_each(mappings.begin(), mappings.end(), moveVisualMappings);
     }
+#endif
 
 }
 
