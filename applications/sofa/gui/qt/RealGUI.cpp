@@ -1513,7 +1513,12 @@ void RealGUI::step()
         //T=T+DT
         SReal dt=root->getDt();
         simulation::getSimulation()->animate ( root, dt );
+#ifdef SOFA_CLASSIC_SCENE_GRAPH
+        simulation::getSimulation()->updateVisual( root , dt );
+#else
         simulation::getSimulation()->updateVisual( simulation::getSimulation()->getVisualRoot() , dt );
+#endif
+
 
         if ( m_dumpState )
             simulation::getSimulation()->dumpState ( root, *m_dumpStateStream );
