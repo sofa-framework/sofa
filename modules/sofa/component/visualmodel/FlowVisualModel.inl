@@ -195,7 +195,7 @@ void FlowVisualModel<DataTypes>::initVisual()
         tetraShellPerTriangleVertex.resize(nbPoints);
         isPointInTetra.resize(nbPoints);
         tetraSize.resize(nbTetrahedra);
-        std::fill(tetraSize.begin(), tetraSize.end(), 0.0);
+        std::fill(tetraSize.begin(), tetraSize.end(), (float)0.0);
         std::fill(isPointInTetra.begin(), isPointInTetra.end(), true);
 
         //Store some data
