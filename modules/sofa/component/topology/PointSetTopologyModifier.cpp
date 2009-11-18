@@ -187,9 +187,6 @@ void PointSetTopologyModifier::propagateTopologicalChanges()
 // std:: cout << (*it)->getChangeType() << std::endl;
 
     getContext()->executeVisitor(&a);
-    //need to propagate the topology changes to the Visual Graph: VisualModels have to be updated
-    simulation::getSimulation()->getVisualRoot()->execute<simulation::HandleTopologyChangeVisitor>();
-
     // remove the changes we just propagated, so that we don't send then again next time
     m_container->resetTopologyChangeList();
 }
