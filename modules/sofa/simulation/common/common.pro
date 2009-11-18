@@ -12,6 +12,8 @@ HEADERS += common.h \
            CactusStackStorage.h \  
            ClassSystem.h \  
            CleanupVisitor.h \
+           CollisionBeginEvent.h \
+           CollisionEndEvent.h \
            CollisionVisitor.h \  
            Colors.h \
            DeleteVisitor.h \
