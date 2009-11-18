@@ -12,7 +12,7 @@ template <typename DataType>
 bool derivVectors(const typename DataType::VecCoord& x0, const typename DataType::VecCoord& x1, typename DataType::VecDeriv& d)
 {
     unsigned int sz0 = x0.size();
-    unsigned int szmin = std::min(sz0,x1.size());
+    unsigned int szmin = std::min(sz0,(unsigned int)x1.size());
 
     d.resize(sz0);
     for(unsigned int i=0; i<szmin; ++i)
@@ -30,7 +30,7 @@ template <typename DataType>
 bool derivRigid3Vectors(const typename DataType::VecCoord& x0, const typename DataType::VecCoord& x1, typename DataType::VecDeriv& d)
 {
     unsigned int sz0 = x0.size();
-    unsigned int szmin = std::min(sz0,x1.size());
+    unsigned int szmin = std::min(sz0,(unsigned int)x1.size());
 
     d.resize(sz0);
     for(unsigned int i=0; i<szmin; ++i)
