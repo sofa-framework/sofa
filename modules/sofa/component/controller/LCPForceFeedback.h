@@ -78,8 +78,9 @@ protected:
     /* 	typename DataType::VecConst *constraint; */
     /* 	std::vector<int> *id_buf; */
     /* 	typename DataType::VecCoord *val; */
-    unsigned char mNextBufferId;
-    unsigned char mCurBufferId;
+    unsigned char mNextBufferId; // Next buffer id to be use
+    unsigned char mCurBufferId; // Current buffer id in use
+    bool mIsCuBufferInUse; // Is current buffer currently in use right now
 
 
     //core::componentmodel::behavior::MechanicalState<defaulttype::Vec1dTypes> *mState1d; ///< The omni try to follow this mechanical state.

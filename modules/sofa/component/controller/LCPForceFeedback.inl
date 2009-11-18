@@ -9,13 +9,17 @@ namespace
 template <typename DataType>
 bool derivVectors(const typename DataType::VecCoord& x0, const typename DataType::VecCoord& x1, typename DataType::VecDeriv& d)
 {
-    unsigned int sz = x0.size();
-    if(x1.size()!=sz)
-        return false;
-    d.resize(sz);
-    for(unsigned int i=0; i<sz; ++i)
+    unsigned int sz0 = x0.size();
+    unsigned int szmin = std::min(sz0,x1.size());
+
+    d.resize(sz0);
+    for(unsigned int i=0; i<szmin; ++i)
     {
         d[i]=x1[i]-x0[i];
+    }
+    for(unsigned int i=szmin; i<sz0; ++i)
+    {
+        d[i]=-x0[i];
     }
     return true;
 }
@@ -23,14 +27,18 @@ bool derivVectors(const typename DataType::VecCoord& x0, const typename DataType
 template <typename DataType>
 bool derivRigid3Vectors(const typename DataType::VecCoord& x0, const typename DataType::VecCoord& x1, typename DataType::VecDeriv& d)
 {
-    unsigned int sz = x0.size();
-    if(x1.size()!=sz)
-        return false;
-    d.resize(sz);
-    for(unsigned int i=0; i<sz; ++i)
+    unsigned int sz0 = x0.size();
+    unsigned int szmin = std::min(sz0,x1.size());
+
+    d.resize(sz0);
+    for(unsigned int i=0; i<szmin; ++i)
     {
         d[i].getVCenter() = x1[i].getCenter() - x0[i].getCenter();
         // Pas de prise en charge des rotations
+    }
+    for(unsigned int i=szmin; i<sz0; ++i)
+    {
+        d[i].getVCenter() = - x0[i].getCenter();
     }
     return true;
 }
@@ -95,6 +103,7 @@ LCPForceFeedback<DataType>::LCPForceFeedback()
     mLcp[2] = 0;
     mCurBufferId = 0;
     mNextBufferId = 0;
+    mIsCuBufferInUse = false;
 }
 
 
@@ -133,7 +142,6 @@ void LCPForceFeedback<DataType>::init()
 template <class DataType>
 void LCPForceFeedback<DataType>::computeForce(const typename DataType::VecCoord& state, typename DataType::VecDeriv& forces)
 {
-
     const unsigned int stateSize = state.size();
     // Resize du vecteur force. Initialization à 0 ?
     forces.resize(stateSize);
@@ -152,6 +160,8 @@ void LCPForceFeedback<DataType>::computeForce(const typename DataType::VecCoord&
     //
     // Retrieve the last LCP and constraints computed by the Sofa thread.
     //
+    mIsCuBufferInUse = true;
+
 
     mCurBufferId = mNextBufferId;
 
@@ -161,13 +171,11 @@ void LCPForceFeedback<DataType>::computeForce(const typename DataType::VecCoord&
     component::odesolver::LCP* lcp = mLcp[mCurBufferId];
 
     if(!lcp)
-        return;
-
-    else if(val.size()!=stateSize)
     {
-        serr << "State size changed. Unable to compute LCP." << sendl;
+        mIsCuBufferInUse = false;
         return;
     }
+
 
 
     const unsigned int numConstraints = constraints.size();
@@ -230,6 +238,7 @@ void LCPForceFeedback<DataType>::computeForce(const typename DataType::VecCoord&
             forces[i] *= forceCoef.getValue();
         }
     }
+    mIsCuBufferInUse = false;
 }
 
 template <typename DataType>
@@ -293,7 +302,10 @@ void LCPForceFeedback<DataType>::handleEvent(sofa::core::objectmodel::Event *eve
     mNextBufferId = buf_index;
 
     // Lock lcp to prevent its use by the SOfa thread while it is used by haptic thread
-    mastersolver->lockLCP(mLcp[mCurBufferId],mLcp[mNextBufferId]);
+    if(mIsCuBufferInUse)
+        mastersolver->lockLCP(mLcp[mCurBufferId],mLcp[mNextBufferId]);
+    else
+        mastersolver->lockLCP(mLcp[mNextBufferId]);
 }
 
 
@@ -318,7 +330,7 @@ void LCPForceFeedback<Rigid3fTypes>::computeForce(double x, double y, double z, 
     state[0].getCenter() = sofa::defaulttype::Vec3f((float)x,(float)y,(float)z);
     computeForce(state,forces);
     fx = forces[0].getVCenter().x();
-    fy = forces[0].getVCenter().x();
+    fy = forces[0].getVCenter().y();
     fz = forces[0].getVCenter().z();
 }
 #endif
@@ -334,7 +346,7 @@ void LCPForceFeedback<Rigid3dTypes>::computeForce(double x, double y, double z, 
     state[0].getCenter() = sofa::defaulttype::Vec3d(x,y,z);
     computeForce(state,forces);
     fx = forces[0].getVCenter().x();
-    fy = forces[0].getVCenter().x();
+    fy = forces[0].getVCenter().y();
     fz = forces[0].getVCenter().z();
 }
 #endif
