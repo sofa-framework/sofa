@@ -108,20 +108,20 @@ void FlowVisualModel<DataTypes>::init()
     //TetraGeometry
     if (!tetraGeometry)
     {
-        std::cerr << "WARNING: FlowVisualModel has no binding TetraGeometry, will considerer 2D model" <<endl;
+        serr << "WARNING: FlowVisualModel has no binding TetraGeometry, will considerer 2D model" <<sendl;
     }
     else
     {
         this->getContext()->get(surfaceVolume, tetraSurfaceTS, core::objectmodel::BaseContext::SearchRoot);
         if (!surfaceVolume)
         {
-            std::cerr << "WARNING: FlowVisualModel has no surface" <<endl;
+            serr << "WARNING: FlowVisualModel has no surface" <<sendl;
         }
 
         this->getContext()->get(tetraCenters, tetraStateTS, core::objectmodel::BaseContext::SearchRoot);
         if (!tetraCenters)
         {
-            std::cerr << "WARNING: FlowVisualModel has no binding FluidState" <<endl;
+            serr << "WARNING: FlowVisualModel has no binding FluidState" <<sendl;
             return;
         }
         else
@@ -129,7 +129,7 @@ void FlowVisualModel<DataTypes>::init()
             this->getContext()->get (m_tetraTopo, tetraTS,core::objectmodel::BaseContext::SearchRoot);
             if (m_tetraTopo == NULL)
             {
-                std::cerr << "WARNING: FlowVisualModel has no binding TetrahedraSetTopology" <<endl;
+                serr << "WARNING: FlowVisualModel has no binding TetrahedraSetTopology" <<sendl;
                 return;
             }
             else
@@ -137,7 +137,7 @@ void FlowVisualModel<DataTypes>::init()
                 this->getContext()->get (m_tetraGeo, tetraTS, core::objectmodel::BaseContext::SearchRoot);
                 if (m_tetraGeo == NULL)
                 {
-                    std::cerr << "WARNING: FlowVisualModel has no binding TetrahedraSetGeometry" <<endl;
+                    serr << "WARNING: FlowVisualModel has no binding TetrahedraSetGeometry" <<sendl;
                     return;
                 }
             }
@@ -145,7 +145,7 @@ void FlowVisualModel<DataTypes>::init()
         this->getContext()->get(shader, tetraTS,core::objectmodel::BaseContext::SearchRoot);
         if(!shader)
         {
-            std::cerr << "WARNING: FlowVisualModel has no binding Shader ; no volumic rendering" <<endl;
+            serr << "WARNING: FlowVisualModel has no binding Shader ; no volumic rendering" <<sendl;
         }
     }
 
@@ -154,7 +154,7 @@ void FlowVisualModel<DataTypes>::init()
     //TriangleGeometry
     if (!triangleGeometry)
     {
-        std::cerr << "WARNING: FlowVisualModel has no binding TriangleGeometry" <<endl;
+        serr << "WARNING: FlowVisualModel has no binding TriangleGeometry" <<sendl;
         return;
     }
     else
@@ -163,14 +163,14 @@ void FlowVisualModel<DataTypes>::init()
         this->getContext()->get (m_triTopo, trianglesTS,core::objectmodel::BaseContext::SearchRoot);
         if (m_triTopo == NULL)
         {
-            std::cerr << "WARNING: FlowVisualModel has no binding TriangleSetTopology" <<endl;
+            serr << "WARNING: FlowVisualModel has no binding TriangleSetTopology" <<sendl;
             return;
         }
 
         this->getContext()->get (m_triGeo, trianglesTS,core::objectmodel::BaseContext::SearchRoot);
         if (m_triGeo == NULL)
         {
-            std::cerr << "WARNING: FlowVisualModel has no binding TriangleSetGeometry" <<endl;
+            serr << "WARNING: FlowVisualModel has no binding TriangleSetGeometry" <<sendl;
             return;
         }
     }

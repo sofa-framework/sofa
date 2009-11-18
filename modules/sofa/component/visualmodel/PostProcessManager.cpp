@@ -75,7 +75,7 @@ void PostProcessManager::init()
 
     if (!dofShader)
     {
-        std::cerr << "PostProcessingManager: OglShader not found ; no post process applied."<< std::endl;
+        serr << "PostProcessingManager: OglShader not found ; no post process applied."<< sendl;
         postProcessEnabled = false;
         return;
     }

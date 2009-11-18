@@ -308,7 +308,7 @@ void OglModel::initVisual()
 
     if (useVBO.getValue() && !canUseVBO)
     {
-        std::cerr << "OglModel : VBO is not supported by your GPU ; will use display list instead" << std::endl;
+        serr << "OglModel : VBO is not supported by your GPU ; will use display list instead" << sendl;
     }
 
     updateBuffers();

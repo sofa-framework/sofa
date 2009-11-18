@@ -44,12 +44,7 @@ namespace component
 namespace mapping
 {
 
-using std::cerr;
-using std::endl;
-
 using namespace sofa::defaulttype;
-
-
 
 
 template <class BasicMapping>

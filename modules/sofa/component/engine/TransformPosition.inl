@@ -91,7 +91,7 @@ void TransformPosition<DataTypes>::init()
     else
     {
         transformationMethod=TRANSLATION;
-        std::cerr << "Error : Method " << method << "is unknown" <<std::endl;
+        serr << "Error : Method " << method << "is unknown" <<sendl;
     }
 
     /// check if the normal is of norm 1

@@ -115,7 +115,7 @@ void StopperConstraint<DataTypes>::getConstraintValue(defaulttype::BaseVector* v
 
     else
     {
-        std::cerr<<"WARNING: StopperConstraint with no freeMotion not implemented "<<std::endl;
+        serr<<"WARNING: StopperConstraint with no freeMotion not implemented "<<sendl;
         /*
         double positionFactor = ode_integrator->getIntegrationFactor(0, 0);
         double velocityFactor = ode_integrator->getIntegrationFactor(1, 0);

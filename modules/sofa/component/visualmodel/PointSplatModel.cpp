@@ -328,7 +328,7 @@ void PointSplatModel::setColor(std::string color)
     else if (color == "gray")     { r = 0.5f; g = 0.5f; b = 0.5f; }
     else
     {
-        std::cerr << "Unknown color "<<color<<std::endl;
+        serr << "Unknown color "<<color<<sendl;
         return;
     }
     setColor(r,g,b,a);

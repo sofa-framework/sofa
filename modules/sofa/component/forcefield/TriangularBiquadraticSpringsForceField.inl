@@ -115,7 +115,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleCreationFunc
             if (ff->f_printLog.getValue())
             {
                 if (cotangent[j]<0)
-                    std::cerr<<"negative cotangent["<<triangleIndex<<"]["<<j<<"]"<<std::endl;
+                    ff->serr<<"negative cotangent["<<triangleIndex<<"]["<<j<<"]"<<ff->sendl;
             }
         }
         for(j=0; j<3; ++j)

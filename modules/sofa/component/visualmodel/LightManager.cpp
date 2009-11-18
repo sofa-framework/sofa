@@ -78,7 +78,7 @@ void LightManager::init()
 
     if (shadowShaders.empty())
     {
-        std::cerr << "LightManager: No OglShadowShaders found ; shadow will be disabled."<< std::endl;
+        serr << "LightManager: No OglShadowShaders found ; shadow will be disabled."<< sendl;
         shadowEnabled.setValue(false);
         return;
     }

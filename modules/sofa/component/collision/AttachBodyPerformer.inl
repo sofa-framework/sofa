@@ -49,7 +49,7 @@ void AttachBodyPerformer<DataTypes>::start()
 
         if (!mapper)
         {
-            std::cerr << "Problem with Mouse Mapper creation : " << std::endl;
+            this->interactor->serr << "Problem with Mouse Mapper creation : " << this->interactor->sendl;
             return;
         }
         std::string name = "contactMouse";

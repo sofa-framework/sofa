@@ -56,7 +56,7 @@ public:
         // Handle Removing of topological element (from any type of topology)
         if(topologyModifier)
         {
-            std::cerr << "Cutting from " << previousBody.point << " -------> " << currentBody.point << "\n";
+            this->interactor->serr << "Cutting from " << previousBody.point << " -------> " << currentBody.point << this->interactor->sendl;
             // core::componentmodel::topology::BaseMeshTopology::PointID point=
             topologyChangeManager.incisionCollisionModel(previousBody.body, previousBody.indexCollisionElement, previousBody.point,
                     currentBody.body,  currentBody.indexCollisionElement,  currentBody.point);

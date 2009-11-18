@@ -123,7 +123,7 @@ void ArticulatedHierarchyContainer::buildCenterArticulationsTree(sofa::helper::i
     sofa::helper::io::bvh::BVHChannels* channels = bvhjoint->getChannels();
     sofa::helper::io::bvh::BVHMotion* motion = bvhjoint->getMotion();
 
-    std::cerr<<"num Frames found in BVH ="<<motion->frameCount<<std::endl;
+    serr<<"num Frames found in BVH ="<<motion->frameCount<<sendl;
 
     ArticulationCenter::Articulation* a;
 

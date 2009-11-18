@@ -1418,7 +1418,7 @@ public:
                     {
 
                         if (current_block > block)
-                            std::cerr<<"WARNING step1 forces en entrée: current_block= "<<current_block<<" should be inferior or equal to  block= "<<block<<" problem with sort in Iin"<<std::endl;
+                            serr<<"WARNING step1 forces en entrée: current_block= "<<current_block<<" should be inferior or equal to  block= "<<block<<" problem with sort in Iin"<<sendl;
                         else
                         {
                             //std::cout<<"la force sur le block en entrée vient du block "<<block<<" et le block courant est"<<current_block<<" ajout à _acc_rh_current_block"<<std::endl;
@@ -1525,7 +1525,7 @@ public:
             SubVector DF;
             DF = Vec_df[0];
             if (DF.norm()> 0.0)
-                std::cerr<<"WARNING: Vec_df added on block 0... strange..."<<std::endl;
+                serr<<"WARNING: Vec_df added on block 0... strange..."<<sendl;
 
 
             //_acc_result.asub(0, bsize) += alpha_inv[0] * this->systemRHVector->asub(0,bsize);
@@ -1542,18 +1542,18 @@ public:
 
 
             // Fbuf = Fn
-            //std::cerr<<"Fbuf = Fn"<<std::endl;
+            //serr<<"Fbuf = Fn"<<sendl;
             // la contribution du block [current_block+1] est prise en compte dans le mouvement actuel : ne sert à rien ?? = _rh_buf n'est utilisé que pour calculer DF
             //_rh_buf.asub((current_block+1),bsize)  =  this->systemRHVector->asub((current_block+1),bsize) ;
 
             // Facc = Hn+1,n * Facc
-            //std::cerr<<"Facc = Hn+1,n * Facc"<<std::endl;
+            //serr<<"Facc = Hn+1,n * Facc"<<sendl;
             // on accumule les forces le long de la structure
             /*
             H_it = H.find( IndexPair(current_block+1,current_block) );
             if (H_it==H.end())
             {
-            	std::cerr<<"WARNING : H["<<current_block+1<<"]["<<current_block<<"] not found"<<std::endl;
+                                serr<<"WARNING : H["<<current_block+1<<"]["<<current_block<<"] not found"<<sendl;
             }
             iHj=H_it->second;
             // debug
@@ -1566,7 +1566,7 @@ public:
 
             if (test.norm()>0.0000000001*_acc_rh_current_block.norm())
             {
-            	std::cerr<<"WARNING matrix iHj = \n"<<iHj<<"\n and lambda["<<current_block<<"].t() =\n"<<lambda[current_block].t()<<"\n are not equal !!!"<<std::endl;
+                                serr<<"WARNING matrix iHj = \n"<<iHj<<"\n and lambda["<<current_block<<"].t() =\n"<<lambda[current_block].t()<<"\n are not equal !!!"<<sendl;
 
             }
             */
@@ -1603,7 +1603,7 @@ public:
             int block = *block_it;
             // debug
             if (current_block>block)
-                std::cerr<<"WARNING : step 4 : blocks en sortie : current_block= "<<current_block<<" must be inferior or equal to  block= "<<block<<" problem with sort in Iout"<<std::endl;
+                serr<<"WARNING : step 4 : blocks en sortie : current_block= "<<current_block<<" must be inferior or equal to  block= "<<block<<" problem with sort in Iout"<<sendl;
 
             SubVector LH_block;
             LH_block.resize(bsize);

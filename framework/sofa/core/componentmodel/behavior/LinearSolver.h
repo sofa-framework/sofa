@@ -78,7 +78,7 @@ public:
     virtual void solveSystem() = 0;
 
     ///
-    virtual void partial_solve(std::list<int>& /*I_last_Disp*/, std::list<int>& /*I_last_Dforce*/, bool /*NewIn*/) {std::cerr<<"WARNING : partial_solve is not implemented yet"<<std::endl; }
+    virtual void partial_solve(std::list<int>& /*I_last_Disp*/, std::list<int>& /*I_last_Dforce*/, bool /*NewIn*/) {serr<<"WARNING : partial_solve is not implemented yet"<<sendl; }
 
     /// Invert the system, this method is optional because it's call when solveSystem() is called for the first time
     virtual void invertSystem() {}

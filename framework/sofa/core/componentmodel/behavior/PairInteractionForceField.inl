@@ -45,9 +45,6 @@ namespace componentmodel
 namespace behavior
 {
 
-using std::cerr;
-using std::endl;
-
 template<class DataTypes>
 PairInteractionForceField<DataTypes>::PairInteractionForceField(MechanicalState<DataTypes> *mm1, MechanicalState<DataTypes> *mm2)
     : _object1(initData(&_object1, "object1", "First object in interaction")),
