@@ -62,6 +62,7 @@ TopologicalChangeManager::TopologicalChangeManager()
         incision.b_last_init =
                 incision.ind_ta_init =
                         incision.ind_tb_init =  BaseMeshTopology::InvalidID;
+    incision.is_first_cut = true;
 }
 
 TopologicalChangeManager::~TopologicalChangeManager()
@@ -286,6 +287,13 @@ bool TopologicalChangeManager::incisionTriangleSetTopology(sofa::core::component
     // Triangle Indices
     unsigned int &ind_ta = incision.ind_ta_init;
     unsigned int &ind_tb = incision.ind_tb_init;
+    /*
+    std::cout << "a: " << a <<std::endl;
+    std::cout << "b: " << b <<std::endl;
+    std::cout << "ind_ta: " << ind_ta <<std::endl;
+    std::cout << "ind_tb: " << ind_tb <<std::endl;
+    */
+
 
     bool is_prepared=!((a[0]==b[0] && a[1]==b[1] && a[2]==b[2]) || incision.is_cut_completed);
 
@@ -393,7 +401,7 @@ bool TopologicalChangeManager::incisionCollisionModel(sofa::core::CollisionEleme
 }
 
 bool TopologicalChangeManager::incisionCollisionModel(sofa::core::CollisionModel *firstModel , PointID idxA, const Vector3& firstPoint,
-        sofa::core::CollisionModel *secondModel, PointID idxB, const Vector3& secondPoint ) const
+        sofa::core::CollisionModel *secondModel, PointID idxB, const Vector3& secondPoint )
 {
 
     TriangleModel* firstCollisionModel = dynamic_cast< TriangleModel* >(firstModel);
@@ -405,7 +413,7 @@ bool TopologicalChangeManager::incisionCollisionModel(sofa::core::CollisionModel
 
 
 bool TopologicalChangeManager::incisionTriangleModel(TriangleModel *firstModel , PointID idxA, const Vector3& firstPoint,
-        TriangleModel *secondModel, PointID idxB, const Vector3& secondPoint ) const
+        TriangleModel *secondModel, PointID idxB, const Vector3& secondPoint )
 {
 
     TriangleModel* firstCollisionModel = dynamic_cast< TriangleModel* >(firstModel);
@@ -453,8 +461,26 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleModel *firstModel ,
         sofa::helper::vector<unsigned int> indices_list;
         sofa::helper::vector< Vec<3, double> > coords2_list;
 
-        PointID a_last=BaseMeshTopology::InvalidID;
-        PointID b_last=BaseMeshTopology::InvalidID;
+        unsigned int& a_last = incision.a_last_init;
+        PointID& b_last = incision.b_last_init;
+
+        if(incision.is_first_cut)
+            a_last =  BaseMeshTopology::InvalidID;
+        else
+        {
+            //std::cout << " seconde initialisation. " << std::endl;
+            core::componentmodel::behavior::MechanicalState<Vec3Types>* mstate = currentTopology->getContext()->get<core::componentmodel::behavior::MechanicalState<Vec3Types> >();
+            helper::vector<Vector3> &v_coords =  *mstate->getX();
+            a = v_coords[a_last];
+        }
+
+        /*
+        std::cout << "a_last: " << a_last <<std::endl;
+        std::cout << "a: " << a <<std::endl;
+        std::cout << "b: " << b <<std::endl;
+        std::cout << "ind_ta: " << idxA <<std::endl;
+        std::cout << "ind_tb: " << idxB <<std::endl;
+        */
 
         bool ok = triangleGeometry->computeIntersectedObjectsList(a_last, a, b, idxA, idxB, topoPath_list, indices_list, coords2_list);
 
@@ -470,10 +496,21 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleModel *firstModel ,
 
         sofa::helper::vector<unsigned int> new_points;
         sofa::helper::vector<unsigned int> end_points;
-        bool reachBorder = true;
+        bool reachBorder = false;
 
         bool incision_ok =  triangleAlgorithm->InciseAlongEdgeList(new_edges, new_points, end_points, reachBorder);
+        //std::cout << "end_points: " << end_points << std::endl;
 
+        if (!end_points.empty())
+        {
+            incision.a_last_init = end_points.back();
+            incision.is_first_cut = false;
+        }
+        else
+        {
+            incision.is_cut_completed = true;
+            incision.is_first_cut = true;
+        }
 
         triangleModifier->propagateTopologicalChanges();
         // notify the end for the current sequence of topological change events
@@ -481,6 +518,12 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleModel *firstModel ,
 
         triangleModifier->propagateTopologicalChanges();
 
+        if (reachBorder)
+        {
+            //std::cout << "Cut has reach a border" << std::endl;
+            incision.is_first_cut = true;
+            return false;
+        }
 
 //       // Compute the number of connected components
 //       sofa::helper::vector<unsigned int> components;
@@ -490,7 +533,6 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleModel *firstModel ,
 
 //       int num = edgeCont->getNumberConnectedComponents(components);
 //       std::cout << "Number of connected components : " << num << std::endl;
-
 
         return incision_ok;
     }
