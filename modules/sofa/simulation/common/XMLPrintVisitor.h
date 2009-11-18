@@ -45,6 +45,8 @@ class SOFA_SIMULATION_COMMON_API XMLPrintVisitor : public Visitor
 protected:
     std::ostream& m_out;
     int level;
+    //Print in compact mode or expanded mode
+    bool compact;
 public:
     XMLPrintVisitor(std::ostream& out, bool c=false) : m_out(out),level(0), compact(c) {}
 
@@ -59,9 +61,9 @@ public:
     virtual Result processNodeTopDown(simulation::Node* node);
     virtual void processNodeBottomUp(simulation::Node* node);
     virtual const char* getClassName() const { return "XMLPrintVisitor"; }
-protected:
-    //Print in compact mode or expanded mode
-    bool compact;
+    int getLevel() const {return level;}
+    void setLevel(int l) {level=l;};
+
 };
 
 } // namespace simulation

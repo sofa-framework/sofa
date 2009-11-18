@@ -56,14 +56,34 @@ Visitor::Result InitVisitor::processNodeTopDown(simulation::Node* node)
     return RESULT_CONTINUE;
 }
 
+//Move a component from the current node to the Visual Root
 template <class T>
 struct MoveObjectFunctor
 {
     void operator()(T *object)
     {
+        Node *node=(Node*) (object->getContext());
+        registerMovedComponent(node,object);
         getSimulation()->getVisualRoot()->moveObject(object);
     }
+
+    void registerMovedComponent(Node *node, T *object)
+    {
+        node->componentInVisualGraph.add(object);
+    }
 };
+template <>
+void MoveObjectFunctor<core::BaseMapping>::registerMovedComponent(Node *node, core::BaseMapping *object)
+{
+    node->visualMappingInVisualGraph.add(object);
+    node->componentInVisualGraph.add(object);
+}
+template <>
+void MoveObjectFunctor<core::VisualModel>::registerMovedComponent(Node *node, core::VisualModel *object)
+{
+    node->visualModelInVisualGraph.add(object);
+    node->componentInVisualGraph.add(object);
+}
 
 
 void InitVisitor::processNodeBottomUp(simulation::Node* node)
@@ -85,11 +105,12 @@ void InitVisitor::processNodeBottomUp(simulation::Node* node)
     core::objectmodel::BaseNode::Children children=node->getChildren();
     for (core::objectmodel::BaseNode::Children::iterator it=children.begin(); it!= children.end(); ++it)
     {
-        core::objectmodel::BaseNode *node=(*it);
+        core::objectmodel::BaseNode *child=(*it);
         //If the Node is tagged as Visual, we move it to the Visual Graph
-        if ( node->hasTag(Tag("Visual")) )
+        if ( child->hasTag(Tag("Visual")) )
         {
-            getSimulation()->getVisualRoot()->moveChild(node);
+            getSimulation()->getVisualRoot()->moveChild(child);
+            node->childInVisualGraph.add((Node*)child);
         }
     }
 

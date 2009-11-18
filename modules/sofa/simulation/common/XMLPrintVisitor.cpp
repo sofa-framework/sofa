@@ -124,6 +124,10 @@ Visitor::Result XMLPrintVisitor::processNodeTopDown(simulation::Node* node)
                 && dynamic_cast<sofa::core::componentmodel::behavior::BaseLMConstraint*> (obj) == NULL)
             this->processObject(obj);
     }
+    for (simulation::Node::ObjectIterator it = node->componentInVisualGraph.begin(); it != node->componentInVisualGraph.end(); ++it)
+    {
+        this->processObject(*it);
+    }
 
     return RESULT_CONTINUE;
 }
@@ -138,6 +142,14 @@ void XMLPrintVisitor::processNodeBottomUp(simulation::Node* node)
                 || dynamic_cast<sofa::core::componentmodel::behavior::BaseLMConstraint*> (obj) != NULL   )
             this->processObject(obj);
     }
+
+    for (simulation::Node::ChildIterator itChild = node->childInVisualGraph.begin(); itChild != node->childInVisualGraph.end(); ++itChild)
+    {
+        simulation::Node *child=*itChild;
+        XMLPrintVisitor printVisualChild(m_out,compact); printVisualChild.setLevel(level);
+        child->executeVisitor(&printVisualChild);
+    }
+
     --level;
 
     for (int i=0; i<level; i++)
