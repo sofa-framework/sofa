@@ -162,7 +162,7 @@ public:
         TriangleInfo &Ti = m_triangleInfo[triangleIndex];
         if(&Ti==NULL)
         {
-            std::cerr<<"Ti == NULL"<<std::endl;
+            serr<<"Ti == NULL"<<sendl;
             return true;
         }
 

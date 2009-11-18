@@ -523,13 +523,18 @@ void GraphModeler::configureElement(Base* b, xml::BaseElement *elem)
         elem->setAttribute(nameAttribute, valueAttribute.c_str());
     }
 
+
     std::vector< std::pair<std::string, BaseData*> > vecDatas=b->getFields();
     for (unsigned int i=0; i<vecDatas.size(); ++i)
     {
         std::string result = elem->getAttribute(vecDatas[i].first, "");
+
         if (!result.empty())
         {
-            vecDatas[i].second->read(result);
+            if (result[0] == '@')
+                vecDatas[i].second->setLinkPath(result);
+            else
+                vecDatas[i].second->read(result);
         }
     }
 }

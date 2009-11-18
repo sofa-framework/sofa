@@ -42,8 +42,6 @@ namespace componentmodel
 namespace behavior
 {
 
-using std::cerr;
-using std::endl;
 
 template<class DataTypes>
 ForceField<DataTypes>::ForceField(MechanicalState<DataTypes> *mm)

@@ -98,7 +98,7 @@ void TextureInterpolation<DataTypes>::update()
             maxVal = _maxVal.getValue();
         }
         else
-            std::cerr << "Error: in scale for TextureInterpolation, min_value is not smaller than max_value." << std::endl;
+            serr << "Error: in scale for TextureInterpolation, min_value is not smaller than max_value." << sendl;
     }
     else
     {

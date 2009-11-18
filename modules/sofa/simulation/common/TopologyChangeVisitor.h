@@ -45,7 +45,7 @@ public:
 
     virtual ~TopologyChangeVisitor() {}
 
-    virtual void processTopologyChange(core::objectmodel::BaseObject* obj);
+    virtual void processTopologyChange(simulation::Node* node, core::objectmodel::BaseObject* obj);
 
     virtual Result processNodeTopDown(simulation::Node* node);
     virtual void processNodeBottomUp(simulation::Node* node);

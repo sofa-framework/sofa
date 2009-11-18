@@ -444,8 +444,8 @@ void LinearSolverConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doub
         if(id_to_localIndex[indexC]!=-1)
         {
 
-            std::cerr<<" WARNING: id_to_localIndex["<<indexC<<"] has already a constraint : "<<id_to_localIndex[indexC]<<" concurrent constraint ="<<c<<std::endl;
-            std::cerr<<" mstate->getConstraintId()["<<c<<"] = "<<mstate->getConstraintId()[c]<<std::endl;
+            serr<<" WARNING: id_to_localIndex["<<indexC<<"] has already a constraint : "<<id_to_localIndex[indexC]<<" concurrent constraint ="<<c<<sendl;
+            serr<<" mstate->getConstraintId()["<<c<<"] = "<<mstate->getConstraintId()[c]<<sendl;
 
         }
         // buf the table of local indices

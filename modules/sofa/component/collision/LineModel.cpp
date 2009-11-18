@@ -449,7 +449,7 @@ bool LineModel::canCollideWithElement(int index, CollisionModel* model2, int ind
 
     if (!topology)
     {
-        std::cerr<<"no topology found"<<std::endl;
+        serr<<"no topology found"<<sendl;
         return true;
     }
     const helper::vector <unsigned int>& EdgesAroundVertex11 =topology->getEdgesAroundVertex(p11);

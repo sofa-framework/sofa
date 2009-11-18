@@ -55,7 +55,7 @@ void DistanceGridForceField<DataTypes>::init()
     if (fileDistanceGrid.getValue().empty())
     {
         if (grid==NULL)
-            std::cerr << "ERROR: DistanceGridForceField requires an input filename.\n";
+            serr << "ERROR: DistanceGridForceField requires an input filename." << sendl;
         // else the grid has already been set
         return;
     }

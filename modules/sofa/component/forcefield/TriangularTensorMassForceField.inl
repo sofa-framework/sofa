@@ -121,7 +121,7 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMTriangleCreationFunc
                 if (ff->f_printLog.getValue())
                 {
                     if (cotangent[j]<0)
-                        std::cerr<<"negative cotangent["<<triangleAdded[i]<<"]["<<j<<"]"<<std::endl;
+                        ff->serr<<"negative cotangent["<<triangleAdded[i]<<"]["<<j<<"]"<<ff->sendl;
                 }
             }
             for(j=0; j<3; ++j)
@@ -211,7 +211,7 @@ void TriangularTensorMassForceField<DataTypes>::TriangularTMTriangleDestructionF
                 if (ff->f_printLog.getValue())
                 {
                     if (cotangent[j]<0)
-                        std::cerr<<"negative cotangent["<<triangleRemoved[i]<<"]["<<j<<"]"<<std::endl;
+                        ff->serr<<"negative cotangent["<<triangleRemoved[i]<<"]["<<j<<"]"<<ff->sendl;
                 }
             }
             for(j=0; j<3; ++j)

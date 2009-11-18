@@ -79,11 +79,9 @@ public:
 
     /// @name Types defined for local coordinate system handling
     /// @{
-#ifdef SOFA_FLOAT
-    typedef defaulttype::SolidTypes<float> SolidTypes;
-#else
-    typedef defaulttype::SolidTypes<double> SolidTypes;
-#endif
+
+    typedef defaulttype::SolidTypes<SReal> SolidTypes;
+
     typedef SolidTypes::Transform Frame;
     typedef SolidTypes::Vec Vec3;
     typedef SolidTypes::Rot Quat;

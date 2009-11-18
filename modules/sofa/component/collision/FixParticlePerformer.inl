@@ -54,7 +54,7 @@ void FixParticlePerformer<DataTypes>::start()
 
     if (!mapFixation)
     {
-        std::cerr << "Problem with Mouse MapFixation creation : " << DataTypes::Name() << std::endl;
+        this->interactor->serr << "Problem with Mouse MapFixation creation : " << DataTypes::Name() << this->interactor->sendl;
         return;
     }
     std::string name = "contactMouse";

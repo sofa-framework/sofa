@@ -153,7 +153,7 @@ protected:
         }
         else
         {
-            std::cerr << "ERROR: Invalid face "<<p1<<" "<<p2<<" "<<p3<<std::endl;
+            serr << "ERROR: Invalid face "<<p1<<" "<<p2<<" "<<p3<<sendl;
             return -1;
         }
     }

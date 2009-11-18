@@ -42,12 +42,11 @@ using namespace sofa::core::componentmodel::topology;
 using namespace sofa::core;
 
 
-void TopologyChangeVisitor::processTopologyChange(core::objectmodel::BaseObject* obj)
+void TopologyChangeVisitor::processTopologyChange(simulation::Node *node, core::objectmodel::BaseObject* obj)
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printComment("processTopologyChange");
 #endif
-    simulation::Node* node=(simulation::Node*)obj->getContext();
     ctime_t t0=begin(node,obj);
     obj->handleTopologyChange(source);
     end(node,obj,t0);
@@ -82,10 +81,7 @@ Visitor::Result TopologyChangeVisitor::processNodeTopDown(simulation::Node* node
         //return RESULT_PRUNE; // stop the propagation of topological changes
     }
 
-    for (simulation::Node::ObjectIterator it = node->object.begin(); it != node->object.end(); ++it)
-    {
-        this->processTopologyChange(*it);
-    }
+    for_each(this, node, node->object,  &TopologyChangeVisitor::processTopologyChange);
     return RESULT_CONTINUE;
 }
 
