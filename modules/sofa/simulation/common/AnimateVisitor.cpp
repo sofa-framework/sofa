@@ -25,6 +25,11 @@
 #include <sofa/simulation/common/AnimateVisitor.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/CollisionVisitor.h>
+
+#include <sofa/simulation/common/PropagateEventVisitor.h>
+#include <sofa/simulation/common/CollisionBeginEvent.h>
+#include <sofa/simulation/common/CollisionEndEvent.h>
+
 //#include "MechanicalIntegration.h"
 
 namespace sofa
@@ -59,7 +64,7 @@ void AnimateVisitor::processOdeSolver(simulation::Node* /*node*/, core::componen
 {
     /*    MechanicalIntegrationVisitor act(getDt());
         node->execute(&act);*/
-    cerr<<"AnimateVisitor::processOdeSolver "<<solver->getName()<<endl;
+//  cerr<<"AnimateVisitor::processOdeSolver "<<solver->getName()<<endl;
     solver->solve(getDt());
 }
 
@@ -79,7 +84,17 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
     if (node->collisionPipeline != NULL)
     {
         //ctime_t t0 = begin(node, node->collisionPipeline);
+        {
+            CollisionBeginEvent evBegin;
+            PropagateEventVisitor eventPropagation(&evBegin);
+            eventPropagation.execute(node);
+        }
         processCollisionPipeline(node, node->collisionPipeline);
+        {
+            CollisionEndEvent evEnd;
+            PropagateEventVisitor eventPropagation(&evEnd);
+            eventPropagation.execute(node);
+        }
         //end(node, node->collisionPipeline, t0);
     }
     /*	if (node->solver != NULL)
