@@ -4,6 +4,8 @@
 
 #include <sofa/core/objectmodel/BaseContext.h>
 
+#include <algorithm>
+
 namespace
 {
 template <typename DataType>
