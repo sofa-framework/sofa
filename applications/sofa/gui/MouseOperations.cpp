@@ -77,6 +77,8 @@ void AttachOperation::execution()
 
 void AttachOperation::end()
 {
+    std::cout << "AttachOperation::end()" << std::endl;
+
     pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
 }
 
@@ -126,19 +128,56 @@ void RemoveOperation::end()
 //*******************************************************************************************
 void InciseOperation::start()
 {
-    performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("InciseAlongPath", pickHandle->getInteraction()->mouseInteractor);
-    pickHandle->getInteraction()->mouseInteractor->addInteractionPerformer(performer);
-    performer->start();
+    int currentMethod = getIncisionMethod();
+
+    if (currentMethod == 0) // incision clic by clic.
+    {
+        if (cpt == 0) // First clic => initialisation
+        {
+            performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("InciseAlongPath", pickHandle->getInteraction()->mouseInteractor);
+
+            component::collision::InciseAlongPathPerformerconfiguration *performerConfiguration=dynamic_cast<component::collision::InciseAlongPathPerformerconfiguration*>(performer);
+            performerConfiguration->setIncisionMethod(getIncisionMethod());
+
+            pickHandle->getInteraction()->mouseInteractor->addInteractionPerformer(performer);
+            performer->start();
+            cpt++;
+        }
+        else // Second clic(s) only perform start() method
+        {
+            performer->start();
+        }
+    }
+    else
+    {
+        performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("InciseAlongPath", pickHandle->getInteraction()->mouseInteractor);
+
+        component::collision::InciseAlongPathPerformerconfiguration *performerConfiguration=dynamic_cast<component::collision::InciseAlongPathPerformerconfiguration*>(performer);
+        performerConfiguration->setIncisionMethod(getIncisionMethod());
+
+        pickHandle->getInteraction()->mouseInteractor->addInteractionPerformer(performer);
+        performer->start();
+    }
 }
 
 
 void InciseOperation::execution()
 {
-//       performer->execute();
 }
+
+
+void InciseOperation::wait()
+{
+}
+
 
 void InciseOperation::end()
 {
+    std::cout <<"InciseOperation::end" << std::endl;
+    // WARNING THERE IS A PROBLEME OF DISTINCTION OF END FONCTION, BUG AT REINITIALISATION
+
+    //      if (cpt ==0)
+    //	pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
 }
 
 //*******************************************************************************************

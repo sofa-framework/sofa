@@ -32,9 +32,11 @@
 #ifdef SOFA_QT4
 #include <QWidget>
 #include <QLineEdit>
+#include <QRadioButton>
 #else
 #include <qwidget.h>
 #include <qlineedit.h>
+#include <QRadioButton.h>
 #endif
 #include <iostream>
 
@@ -62,6 +64,25 @@ public:
 protected:
     QLineEdit *value;
 };
+
+
+class QInciseOperation : public QWidget, public InciseOperation
+{
+    Q_OBJECT
+public:
+    QInciseOperation();
+    int getIncisionMethod() const;
+    void configure(PickHandler *picker, MOUSE_BUTTON b)
+    {
+        InciseOperation::configure(picker, b);
+    }
+
+protected:
+    QGroupBox* incisionMethodChoiceGroup;
+    QRadioButton* method1;
+    QRadioButton* method2;
+};
+
 
 class QFixOperation : public QWidget, public FixOperation
 {

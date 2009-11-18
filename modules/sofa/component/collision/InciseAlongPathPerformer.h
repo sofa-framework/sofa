@@ -38,39 +38,34 @@ namespace component
 
 namespace collision
 {
-class SOFA_COMPONENT_COLLISION_API InciseAlongPathPerformer: public InteractionPerformer
+
+class InciseAlongPathPerformerconfiguration
+{
+public:
+    void setIncisionMethod (int m) {currentMethod=m;}
+
+protected:
+    int currentMethod;
+};
+
+
+class SOFA_COMPONENT_COLLISION_API InciseAlongPathPerformer: public InteractionPerformer, public InciseAlongPathPerformerconfiguration
 {
 public:
     InciseAlongPathPerformer(BaseMouseInteractor *i):InteractionPerformer(i) {};
 
-    void start() {previousBody=this->interactor->getBodyPicked();};
-    void execute()
-    {
+    void start();
 
-        BodyPicked currentBody=this->interactor->getBodyPicked();
-        if (currentBody.body == NULL || previousBody.body == NULL) return;
+    void execute();
 
-        sofa::core::componentmodel::topology::TopologyModifier* topologyModifier;
-        previousBody.body->getContext()->get(topologyModifier);
-
-        // Handle Removing of topological element (from any type of topology)
-        if(topologyModifier)
-        {
-            this->interactor->serr << "Cutting from " << previousBody.point << " -------> " << currentBody.point << this->interactor->sendl;
-            // core::componentmodel::topology::BaseMeshTopology::PointID point=
-            topologyChangeManager.incisionCollisionModel(previousBody.body, previousBody.indexCollisionElement, previousBody.point,
-                    currentBody.body,  currentBody.indexCollisionElement,  currentBody.point);
-        }
-        previousBody=currentBody;
-
-        currentBody.body=NULL;
-        this->interactor->setBodyPicked(currentBody);
-    };
     void draw() {};
 
 protected:
     TopologicalChangeManager topologyChangeManager;
-    BodyPicked previousBody;
+    BodyPicked startBody;
+    BodyPicked firstBody;
+    BodyPicked secondBody;
+    int cpt;
 };
 }
 }

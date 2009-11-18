@@ -64,6 +64,35 @@ double QAttachOperation::getStiffness() const
     return atof(value->displayText().ascii());
 }
 
+
+QInciseOperation::QInciseOperation()
+{
+    //Building the GUI for the Injection Operation
+    QHBoxLayout *layout=new QHBoxLayout(this);
+    incisionMethodChoiceGroup = new QGroupBox(tr("Incision method choice"));
+
+    method1 = new QRadioButton(tr("&Throw segment: Incise from click to click."));
+    method2 = new QRadioButton(tr("&Continually: Incise continually from first click localization."));
+
+    method1->setChecked (true);
+
+    QVBoxLayout *vbox = new QVBoxLayout;
+    vbox->addWidget(method1);
+    vbox->addWidget(method2);
+    //	vbox->addStretch(1);
+    incisionMethodChoiceGroup->setLayout(vbox);
+    layout->addWidget(incisionMethodChoiceGroup);
+}
+
+int QInciseOperation::getIncisionMethod() const
+{
+    if (method2->isChecked())
+        return 1;
+    else
+        return 0;
+}
+
+
 QFixOperation::QFixOperation()
 {
     //Building the GUI for the Fix Operation

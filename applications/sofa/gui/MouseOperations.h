@@ -86,12 +86,22 @@ protected:
 class SOFA_SOFAGUI_API InciseOperation : public Operation
 {
 public:
+    InciseOperation():cpt (0) {};
     virtual ~InciseOperation() {};
     virtual void start() ;
     virtual void execution() ;
     virtual void end() ;
-    static std::string getDescription() {return "Incise along a path";}
+    virtual void wait() ;
+
+    void setIncisionMethod (int m) {method = m;}
+    virtual int getIncisionMethod() const { return method;}
+
     static bool isModifiable() {return false;};
+
+    static std::string getDescription() {return "Incise along a path";}
+protected:
+    int method;
+    int cpt;
 };
 
 class SOFA_SOFAGUI_API RemoveOperation : public Operation
