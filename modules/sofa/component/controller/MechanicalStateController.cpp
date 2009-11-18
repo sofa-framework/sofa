@@ -95,7 +95,7 @@ void MechanicalStateController<Vec1dTypes>::applyController()
     using sofa::defaulttype::Vec;
 
 
-    //sout<<" applyController() : omni "<< omni << "  buttonOmni " <<buttonOmni<<sendl;
+    //std::cout<<" applyController() : omni "<< omni << "  buttonOmni " <<buttonOmni<<std::endl;
 
     if(omni)
     {
@@ -118,15 +118,15 @@ void MechanicalStateController<Vec1dTypes>::applyController()
             {
                 //sout<<"mouseMode==Release"<<sendl;
 
-                if ((*mState->getX0())[0].x() > -0.7)
+                if ((*mState->getX0())[0].x() > -0.3)
                     (*mState->getX0())[0].x() -= 0.05;
                 else
-                    (*mState->getX0())[0].x() = -0.7;
+                    (*mState->getX0())[0].x() = -0.3;
 
-                if ((*mState->getX0())[1].x() < 0.7)
+                if ((*mState->getX0())[1].x() < 0.3)
                     (*mState->getX0())[1].x() += 0.05;
                 else
-                    (*mState->getX0())[1].x() = 0.7;
+                    (*mState->getX0())[1].x() = 0.3;
 
             }
 
