@@ -1825,7 +1825,11 @@ void RealGUI::setExportGnuplot ( bool exp )
 
 //*****************************************************************************************
 //
+#ifdef SOFA_DUMP_VISITOR_INFO
+void RealGUI::setExportVisitor ( bool exp )
+#else
 void RealGUI::setExportVisitor ( bool /*exp*/ )
+#endif
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     if (exp)
