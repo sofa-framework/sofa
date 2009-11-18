@@ -60,17 +60,42 @@ Visitor::Result InitVisitor::processNodeTopDown(simulation::Node* node)
 template <class T>
 struct MoveObjectFunctor
 {
+    typedef  std::map< simulation::Node*, simulation::Node*> MapSimuToVisu;
+
+    MoveObjectFunctor(MapSimuToVisu  &m):simuToVisu(m) {};
+
     void operator()(T *object)
     {
         Node *node=(Node*) (object->getContext());
+        simulation::Node *nodeInVisualGraph;
+
+        //we verify if we already created a node in the Visual Graph corresponding to this current Node in the Simulation Graph,
+        MapSimuToVisu::iterator itFound=simuToVisu.find(node);
+        if (itFound == simuToVisu.end())
+        {
+            //If not, we create a new node, and add it to the Visual Graph
+            nodeInVisualGraph = getSimulation()->newNode(node->getName());
+            getSimulation()->getVisualRoot()->addChild(nodeInVisualGraph);
+            simuToVisu.insert(std::make_pair(node, nodeInVisualGraph));
+            node->nodeInVisualGraph.add(nodeInVisualGraph);
+        }
+        else
+        {
+            nodeInVisualGraph = itFound->second;
+        }
+
+        //Fill in the containers of visual components
         registerMovedComponent(node,object);
-        getSimulation()->getVisualRoot()->moveObject(object);
+        //Effectively move the component from the node in the simulation graph to the node in the visual graph
+        nodeInVisualGraph->moveObject(object);
     }
 
     void registerMovedComponent(Node *node, T *object)
     {
         node->componentInVisualGraph.add(object);
     }
+protected:
+    MapSimuToVisu &simuToVisu;
 };
 template <>
 void MoveObjectFunctor<core::BaseMapping>::registerMovedComponent(Node *node, core::BaseMapping *object)
@@ -117,11 +142,12 @@ void InitVisitor::processNodeBottomUp(simulation::Node* node)
     //If we reached the Root node, we search Visual components like Visual Models and Visual Mappings to move them into the Visual Graph
     if (rootNode == node && rootNode != getSimulation()->getVisualRoot())
     {
+        std::map< simulation::Node*, simulation::Node*> simuToVisu;
         //********************************************************
         //Moving Visual Models
         std::list< core::VisualModel* > visualModels;
         node->getContext()->get<core::VisualModel>(&visualModels, core::objectmodel::BaseContext::SearchDown);
-        MoveObjectFunctor< core::VisualModel > moveVisualModels;
+        MoveObjectFunctor< core::VisualModel > moveVisualModels(simuToVisu);
         std::for_each(visualModels.begin(), visualModels.end(), moveVisualModels);
         //********************************************************
         //Moving Visual Mappings
@@ -140,7 +166,7 @@ void InitVisitor::processNodeBottomUp(simulation::Node* node)
                 mappings.erase(itMapping);
             }
         }
-        MoveObjectFunctor< core::BaseMapping > moveVisualMappings;
+        MoveObjectFunctor< core::BaseMapping > moveVisualMappings(simuToVisu);
         std::for_each(mappings.begin(), mappings.end(), moveVisualMappings);
     }
 #endif

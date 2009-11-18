@@ -40,9 +40,12 @@ namespace simulation
 class SOFA_SIMULATION_COMMON_API DesactivationVisitor : public Visitor
 {
 public:
-    DesactivationVisitor(bool _active=false):active(_active) {}
+    DesactivationVisitor(bool _active=false):active(_active)
+    {}
 
     virtual Result processNodeTopDown(simulation::Node* node);
+    virtual void processNodeBottomUp(simulation::Node* node);
+
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const { return true; }

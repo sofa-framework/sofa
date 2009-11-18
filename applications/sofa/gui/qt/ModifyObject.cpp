@@ -741,6 +741,11 @@ void ModifyObject::updateContext( Node *node )
 {
     if (node == NULL) return;
     node->execute< sofa::simulation::UpdateVisualContextVisitor >();
+    if (!node->nodeInVisualGraph.empty())
+    {
+        node->nodeInVisualGraph->copyContext((core::objectmodel::Context&) *(node->getContext()));
+        node->nodeInVisualGraph->execute< sofa::simulation::UpdateVisualContextVisitor >();
+    }
 }
 
 

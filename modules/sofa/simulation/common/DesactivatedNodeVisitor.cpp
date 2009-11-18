@@ -32,8 +32,40 @@ namespace simulation
 
 Visitor::Result DesactivationVisitor::processNodeTopDown(simulation::Node* node)
 {
-    node->is_activated.setValue(active);
+    if (active)
+    {
+        for (simulation::Node::ChildIterator itChild = node->child.begin(); itChild != node->child.end(); ++itChild)
+        {
+            simulation::Node *child=*itChild;
+            child->setActive(active);
+        }
+
+        if (!node->nodeInVisualGraph.empty())
+        {
+            simulation::Node *visualNode=node->nodeInVisualGraph;
+            visualNode->setActive(active);
+
+            DesactivationVisitor activationVisitor(active);
+            visualNode->executeVisitor(&activationVisitor);
+        }
+    }
     return RESULT_CONTINUE;
+}
+
+void DesactivationVisitor::processNodeBottomUp(simulation::Node* node)
+{
+    if (!active)
+    {
+        node->is_activated.setValue(active);
+
+        if (!node->nodeInVisualGraph.empty())
+        {
+            simulation::Node *visualNode=node->nodeInVisualGraph;
+            DesactivationVisitor deactivationVisitor(active);
+            visualNode->executeVisitor(&deactivationVisitor);
+        }
+    }
+
 }
 
 

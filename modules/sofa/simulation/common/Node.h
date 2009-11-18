@@ -332,6 +332,7 @@ public:
     Single<core::componentmodel::collision::Pipeline> collisionPipeline;
     Sequence<core::objectmodel::BaseObject> unsorted;
 
+    Single<Node>                nodeInVisualGraph;
     Sequence<Node>              childInVisualGraph;
     Sequence<core::objectmodel::BaseObject> componentInVisualGraph;
 
