@@ -75,7 +75,11 @@ public:
 
     virtual void init();
 
+    virtual void reinit();
+
     void draw();
+
+    void computeIndicesScale();
 
     /** return the centroid of the set of points */
     Coord getPointSetCenter() const;

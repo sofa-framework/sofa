@@ -51,11 +51,24 @@ void PointSetGeometryAlgorithms< DataTypes >::init()
     this->m_topology = this->getContext()->getMeshTopology();
 
     // Initialization PointIndicesScale
+    this->computeIndicesScale();
+}
+
+template <class DataTypes>
+void PointSetGeometryAlgorithms< DataTypes >::reinit()
+{
+    this->computeIndicesScale();
+}
+
+template <class DataTypes>
+void PointSetGeometryAlgorithms< DataTypes >::computeIndicesScale()
+{
     Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
     sofa::simulation::Node* context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
     sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
     PointIndicesScale = (sceneMaxBBox - sceneMinBBox).norm() * debugViewIndicesScale.getValue();
 }
+
 
 template <class DataTypes>
 typename DataTypes::Coord PointSetGeometryAlgorithms<DataTypes>::getPointSetCenter() const
