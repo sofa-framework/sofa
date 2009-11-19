@@ -77,8 +77,6 @@ void AttachOperation::execution()
 
 void AttachOperation::end()
 {
-    std::cout << "AttachOperation::end()" << std::endl;
-
     pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
 }
 
@@ -150,6 +148,9 @@ void InciseOperation::start()
     }
     else
     {
+        if (cpt != 0)
+            pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
+
         performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("InciseAlongPath", pickHandle->getInteraction()->mouseInteractor);
 
         component::collision::InciseAlongPathPerformerconfiguration *performerConfiguration=dynamic_cast<component::collision::InciseAlongPathPerformerconfiguration*>(performer);
@@ -157,6 +158,7 @@ void InciseOperation::start()
 
         pickHandle->getInteraction()->mouseInteractor->addInteractionPerformer(performer);
         performer->start();
+        cpt++;
     }
 }
 

@@ -1679,6 +1679,7 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
 
     bool is_reached = (ind_tb==ind_triangle && coord_k_test>=1.0);
 
+#ifndef NDEBUG
     if(is_reached)
     {
         std::cout << "INFO_print - TriangleSetTopology.inl : Cut is reached" << std::endl;
@@ -1686,12 +1687,17 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
 
     if(is_on_boundary)
     {
+
         std::cout << "INFO_print - TriangleSetTopology.inl : Cut meets a mesh boundary" << std::endl;
     }
+#endif
+
 
     if(!is_reached && !is_on_boundary)
     {
+#ifndef NDEBUG
         std::cout << "INFO_print - TriangleSetTopology.inl : Cut is not reached" << std::endl;
+#endif
         ind_tb=ind_triangle;
     }
 
