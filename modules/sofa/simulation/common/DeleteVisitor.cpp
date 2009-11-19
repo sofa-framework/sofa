@@ -32,8 +32,26 @@ namespace simulation
 {
 
 
-Visitor::Result DeleteVisitor::processNodeTopDown(Node* /*node*/)
+Visitor::Result DeleteVisitor::processNodeTopDown(Node* node)
 {
+
+    if (!node->nodeInVisualGraph.empty())
+    {
+        DeleteVisitor deleteV;
+        node->nodeInVisualGraph->executeVisitor(&deleteV);
+        node->nodeInVisualGraph->detachFromGraph();
+        delete node->nodeInVisualGraph;
+    }
+
+    for (simulation::Node::ChildIterator itChild = node->childInVisualGraph.begin(); itChild != node->childInVisualGraph.end(); ++itChild)
+    {
+        simulation::Node *child=*itChild;
+        DeleteVisitor deleteV;
+        child->executeVisitor(&deleteV);
+        child->detachFromGraph();
+        delete child;
+    }
+
     return RESULT_CONTINUE;
 }
 

@@ -30,7 +30,6 @@
 #include <sofa/component/collision/RayContact.h>
 
 #include <sofa/simulation/common/InitVisitor.h>
-#include <sofa/simulation/common/DeleteVisitor.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 
 #include <iostream>

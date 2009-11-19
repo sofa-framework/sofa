@@ -839,7 +839,6 @@ bool RealGUI::setViewer ( const char* name )
     if ( viewer->getScene() !=NULL )
     {
         simulation::getSimulation()->unload ( viewer->getScene() ); delete viewer->getScene() ;
-        simulation::getSimulation()->unload ( simulation::getSimulation()->getVisualRoot() );
 
         if ( graphListener!=NULL )
         {
@@ -959,7 +958,6 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile )
         viewer->getPickHandler()->reset();//activateRay(false);
 
         simulation::getSimulation()->unload ( viewer->getScene() ); delete viewer->getScene() ;
-        simulation::getSimulation()->unload ( getSimulation()->getVisualRoot() );
 
         if ( graphListener!=NULL )
         {
@@ -1005,7 +1003,6 @@ void RealGUI::pmlOpen ( const char* filename, bool /*resetView*/ )
     if ( viewer->getScene() !=NULL )
     {
         simulation::getSimulation()->unload ( viewer->getScene() ); delete viewer->getScene() ;
-        simulation::getSimulation()->unload ( simulation::getSimulation()->getVisualRoot() );
         if ( graphListener!=NULL )
         {
             delete graphListener;
@@ -1945,7 +1942,7 @@ void RealGUI::transformObject ( Node *node, double dx, double dy, double dz,  do
     TransformationVisitor transform;
     transform.setTranslation(dx,dy,dz);
     transform.setRotation(rx,ry,rz);
-    transform.setScale(scale);
+    transform.setScale(scale,scale,scale);
     transform.execute(node);
 
 }
