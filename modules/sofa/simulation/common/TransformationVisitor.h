@@ -48,12 +48,12 @@ public:
     {
         translation = Vector3();
         rotation = Vector3();
-        scale = (SReal)1.0;
+        scale = Vector3(1.0,1.0,1.0);
     }
 
     void setTranslation(SReal dx, SReal dy, SReal dz) { translation = Vector3(dx,dy,dz);}
     void setRotation(SReal rx, SReal ry, SReal rz) {    rotation=Vector3(rx,ry,rz);	}
-    void setScale(SReal s) {scale = s;}
+    void setScale(SReal sx, SReal sy, SReal sz) {scale=Vector3(sx,sy,sz);}
 
 
     void processVisualModel(simulation::Node* node, core::VisualModel* v);
@@ -71,7 +71,7 @@ public:
 protected:
     Vector3 translation;
     Vector3 rotation;
-    SReal scale;
+    Vector3 scale;
 };
 
 } // namespace simulation

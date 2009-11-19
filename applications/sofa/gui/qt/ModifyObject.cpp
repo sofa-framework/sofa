@@ -188,6 +188,14 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
             transformation[6]->setMinFloatValue( (float)-INFINITY );
             transformation[6]->setMaxFloatValue( (float)INFINITY );
 
+            transformation[7] = new WFloatLineEdit( box, "transformation[7]" );
+            transformation[7]->setMinFloatValue( (float)-INFINITY );
+            transformation[7]->setMaxFloatValue( (float)INFINITY );
+
+            transformation[8] = new WFloatLineEdit( box, "transformation[8]" );
+            transformation[8]->setMinFloatValue( (float)-INFINITY );
+            transformation[8]->setMaxFloatValue( (float)INFINITY );
+
 
             //********************************************************************************
             //Default values
@@ -200,6 +208,8 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
             transformation[5]->setFloatValue(0);
 
             transformation[6]->setFloatValue(1);
+            transformation[7]->setFloatValue(1);
+            transformation[8]->setFloatValue(1);
 
             connect( transformation[0], SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
             connect( transformation[1], SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
@@ -208,10 +218,14 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
             connect( transformation[4], SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
             connect( transformation[5], SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
             connect( transformation[6], SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
+            connect( transformation[7], SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
+            connect( transformation[8], SIGNAL( textChanged(const QString&) ), this, SLOT( changeValue() ) );
 
             //Option still experimental : disabled !!!!
             textScale->hide();
             transformation[6]->hide();
+            transformation[7]->hide();
+            transformation[8]->hide();
 
 
             tabPropertiesLayout->addWidget( box );
@@ -649,13 +663,15 @@ void ModifyObject::updateValues()
                     transformation[3]->getFloatValue() == 0 &&
                     transformation[4]->getFloatValue() == 0 &&
                     transformation[5]->getFloatValue() == 0 &&
-                    transformation[6]->getFloatValue() == 1 ))
+                    transformation[6]->getFloatValue() == 1 &&
+                    transformation[7]->getFloatValue() == 1 &&
+                    transformation[8]->getFloatValue() == 1 ))
             {
 
                 sofa::simulation::TransformationVisitor transform;
                 transform.setTranslation(transformation[0]->getFloatValue(),transformation[1]->getFloatValue(),transformation[2]->getFloatValue());
                 transform.setRotation(transformation[3]->getFloatValue(),transformation[4]->getFloatValue(),transformation[5]->getFloatValue());
-                transform.setScale(transformation[6]->getFloatValue());
+                transform.setScale(transformation[6]->getFloatValue(),transformation[7]->getFloatValue(),transformation[8]->getFloatValue());
                 transform.execute(current_node);
 
                 transformation[0]->setFloatValue(0);
@@ -667,6 +683,8 @@ void ModifyObject::updateValues()
                 transformation[5]->setFloatValue(0);
 
                 transformation[6]->setFloatValue(1);
+                transformation[7]->setFloatValue(1);
+                transformation[8]->setFloatValue(1);
 
             }
         }

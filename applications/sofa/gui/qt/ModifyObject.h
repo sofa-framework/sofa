@@ -189,7 +189,7 @@ protected:
     std::map< core::objectmodel::BaseData*, int >                      dataIndexTab;
     std::map< QSpinBox*, Q3Table* >                                    resizeMap;
     std::set< Q3Table* >                                               setResize;
-    WFloatLineEdit* transformation[7]; //Data added to manage transformation of a whole node
+    WFloatLineEdit* transformation[9]; //Data added to manage transformation of a whole node
 
     QWidget *warningTab;
     Q3TextEdit *logWarningEdit;
