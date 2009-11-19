@@ -45,7 +45,6 @@ public:
     virtual ~OperationCreator() {};
     virtual Operation* create() const =0;
     virtual std::string getDescription() const=0;
-    virtual bool isModifiable() const=0;
 };
 
 template<class RealOperation>
@@ -54,7 +53,6 @@ class TOperationCreator: public OperationCreator
 public:
     Operation* create() const {return new RealOperation();};
     std::string getDescription() const { return RealOperation::getDescription();};
-    bool isModifiable() const { return RealOperation::isModifiable();};
 };
 
 
@@ -71,17 +69,6 @@ public:
         return &instance;
     };
 
-    static bool IsModifiable(const std::string &name)
-    {
-        const RegisterStorage &reg = getInstance()->registry;
-        const RegisterStorage::const_iterator it = reg.find(name);
-        if (it != reg.end())
-        {
-            return it->second->isModifiable();
-        }
-        else return false;
-
-    }
     static std::string GetDescription(const std::string &name)
     {
         const RegisterStorage &reg = getInstance()->registry;

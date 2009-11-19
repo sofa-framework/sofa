@@ -56,18 +56,25 @@ helper::Creator<InteractionPerformer::InteractionPerformerFactory, PotentialInje
 
 namespace gui
 {
+
+
+AttachOperation::AttachOperation():stiffness(1000.0)
+{
+};
 //*******************************************************************************************
 void AttachOperation::start()
 {
-    //Creation
-    performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("AttachBody", pickHandle->getInteraction()->mouseInteractor);
-    pickHandle->getInteraction()->mouseInteractor->addInteractionPerformer(performer);
-    //Configuration
-    component::collision::AttachBodyPerformerConfiguration *performerConfiguration=dynamic_cast<component::collision::AttachBodyPerformerConfiguration*>(performer);
-    performerConfiguration->setStiffness(getStiffness());
-
-    //Start
-    performer->start();
+    if (!performer)
+    {
+        //Creation
+        performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("AttachBody", pickHandle->getInteraction()->mouseInteractor);
+        pickHandle->getInteraction()->mouseInteractor->addInteractionPerformer(performer);
+        //Configuration
+        component::collision::AttachBodyPerformerConfiguration *performerConfiguration=dynamic_cast<component::collision::AttachBodyPerformerConfiguration*>(performer);
+        performerConfiguration->setStiffness(getStiffness());
+        //Start
+        performer->start();
+    }
 }
 
 void AttachOperation::execution()
@@ -76,6 +83,12 @@ void AttachOperation::execution()
 }
 
 void AttachOperation::end()
+{
+    pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
+    delete performer; performer=0;
+}
+
+void AttachOperation::endOperation()
 {
     pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
 }
@@ -119,6 +132,7 @@ void RemoveOperation::execution()
 void RemoveOperation::end()
 {
     pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
+    delete performer; performer=0;
 }
 
 
@@ -149,7 +163,10 @@ void InciseOperation::start()
     else
     {
         if (cpt != 0)
+        {
             pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
+            delete performer; performer=0;
+        }
 
         performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("InciseAlongPath", pickHandle->getInteraction()->mouseInteractor);
 
@@ -175,7 +192,7 @@ void InciseOperation::endOperation()
 {
     cpt = 0; //reinitialization
     pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
-
+    delete performer; performer=0;
 }
 
 
@@ -205,6 +222,7 @@ void InjectOperation::end()
 {
     //   execution();
     pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
+    delete performer; performer=0;
 }
 
 }

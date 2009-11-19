@@ -53,7 +53,6 @@ public:
     virtual bool isCheckedFix() const {return checkedFix;};
     void setCheckedFix(bool b) {checkedFix = b;};
     virtual bool isAnimated() const {return animated;};
-    static bool isModifiable() {return false;};
 
     static std::string getDescription() {return "Sculpt an object using the Mouse";}
 protected:

@@ -69,15 +69,15 @@ protected:
 class SOFA_SOFAGUI_API AttachOperation : public Operation
 {
 public:
-    AttachOperation():stiffness(1000.0) {};
+    AttachOperation();
     virtual ~AttachOperation() {};
     virtual void start() ;
     virtual void execution() ;
     virtual void end() ;
+    virtual void endOperation() ;
 
     void setStiffness(double s) {stiffness = s;}
     virtual double getStiffness() const { return stiffness;}
-    static bool isModifiable() {return true;};
 
     static std::string getDescription() {return "Attach an object to the Mouse";}
 protected:
@@ -97,8 +97,6 @@ public:
     void setIncisionMethod (int m) {method = m;}
     virtual int getIncisionMethod() const { return method;}
 
-    static bool isModifiable() {return false;};
-
     static std::string getDescription() {return "Incise along a path";}
 protected:
     int method;
@@ -113,7 +111,6 @@ public:
     virtual void execution() ;
     virtual void end() ;
     static std::string getDescription() {return "Remove a primitive";}
-    static bool isModifiable() {return false;};
 };
 
 class SOFA_SOFAGUI_API FixOperation : public Operation
@@ -127,7 +124,6 @@ public:
 
     void setStiffness(double s) {stiffness = s;}
     virtual double getStiffness() const { return stiffness;}
-    static bool isModifiable() {return true;};
 
     static std::string getDescription() {return "Fix Picked particle";}
 protected:
@@ -147,7 +143,6 @@ public:
     virtual double getPotentialValue() const {; return potentialValue;}
     void setStateTag(std::string s) {stateTag = s;}
     virtual std::string getStateTag() const {; return stateTag;}
-    static bool isModifiable() {return true;};
 
     static std::string getDescription() {return "Set action potential using the Mouse";}
 protected:
