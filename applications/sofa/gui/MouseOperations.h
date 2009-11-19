@@ -53,9 +53,10 @@ public:
     Operation(): pickHandle(NULL), performer(NULL),button(NONE) {};
     virtual ~Operation() {};
     virtual void configure(PickHandler *picker, MOUSE_BUTTON b) {pickHandle=picker; button=b; }
-    virtual void start() =0;
+    virtual void start() =0;                   /// This function is called each time the mouse is clicked.
     virtual void execution() =0;
-    virtual void end()     =0;
+    virtual void end()     =0;                 /// This function is called after each mouse click.
+    virtual void endOperation() {this->end();}; /// This function is called when shift key is released.
     virtual void wait() {};
 protected:
     PickHandler *pickHandle;
@@ -91,7 +92,7 @@ public:
     virtual void start() ;
     virtual void execution() ;
     virtual void end() ;
-    virtual void wait() ;
+    virtual void endOperation() ;
 
     void setIncisionMethod (int m) {method = m;}
     virtual int getIncisionMethod() const { return method;}

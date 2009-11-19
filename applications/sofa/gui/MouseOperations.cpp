@@ -165,20 +165,18 @@ void InciseOperation::execution()
 {
 }
 
-
-void InciseOperation::wait()
-{
-}
-
-
 void InciseOperation::end()
 {
-    std::cout <<"InciseOperation::end" << std::endl;
-    // WARNING THERE IS A PROBLEME OF DISTINCTION OF END FONCTION, BUG AT REINITIALISATION
-
-    //      if (cpt ==0)
-    //	pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
 }
+
+void InciseOperation::endOperation()
+{
+    cpt = 0; //reinitialization
+    pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
+
+}
+
+
 
 //*******************************************************************************************
 void InjectOperation::start()
@@ -204,7 +202,7 @@ void InjectOperation::execution()
 void InjectOperation::end()
 {
     //   execution();
-    //  pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
+    pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
 }
 
 }
