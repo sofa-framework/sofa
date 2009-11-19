@@ -138,16 +138,16 @@ public:
         {
             out<<"BEGIN_SPRING  "<<s.m1<<" "<<s.m2<<"  ";
 
-            if ( s.stiffnessTrans != 0.0 )
-                out<<"KS_T "<<s.stiffnessTrans<<"  ";
-            if ( s.stiffnessRot != 0.0 )
-                out<<"KS_R "<<s.stiffnessRot<<"  ";
-            if ( s.kd != 0.0 )
-                out<<"KD "<<s.kd<<"  ";
-            if ( s.vec1!= VecN ( 0, 0, 0 ) )
-                out<<"VEC1 "<<s.vec1<<"  ";
-            if ( s.vec2!= VecN ( 0, 0, 0 ) )
-                out<<"VEC2 "<<s.vec2<<"  ";
+            //if ( s.stiffnessTrans != 0.0 )
+            out<<"KS_T "<<s.stiffnessTrans<<"  ";
+            //if ( s.stiffnessRot != 0.0 )
+            out<<"KS_R "<<s.stiffnessRot<<"  ";
+            //if ( s.kd != 0.0 )
+            out<<"KD "<<s.kd<<"  ";
+            //if ( s.vec1!= VecN ( 0, 0, 0 ) )
+            out<<"VEC1 "<<s.vec1<<"  ";
+            //if ( s.vec2!= VecN ( 0, 0, 0 ) )
+            out<<"VEC2 "<<s.vec2<<"  ";
 
             out<<"END_SPRING"<<std::endl;
             return out;

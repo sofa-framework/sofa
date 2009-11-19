@@ -42,12 +42,24 @@ namespace sofa
 namespace component
 {
 
+namespace topology
+{
+template<class T>
+class HexahedronGeodesicalDistance;
+}
+
 namespace mapping
 {
+using sofa::component::topology::HexahedronGeodesicalDistance;
 
 typedef enum
 {
-    WEIGHT_LINEAR, WEIGHT_INVDIST, WEIGHT_HERMITE
+    DISTANCE_EUCLIDIAN, DISTANCE_GEODESIC
+} DistanceType;
+
+typedef enum
+{
+    WEIGHT_LINEAR, WEIGHT_INVDIST_SQUARE, WEIGHT_HERMITE
 } WeightingType;
 
 typedef enum
@@ -86,6 +98,9 @@ public:
     typedef defaulttype::Mat<8,1,Real> Mat81;
 
 #ifdef SOFA_DEV
+    // These typedef are here to avoid compilation pb encountered with ResizableExtVect Type.
+    typedef typename sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<N, Real>, sofa::defaulttype::Vec<N, Real>, Real> GeoType; // = Vec3fTypes or Vec3dTypes
+    typedef typename GeoType::VecCoord GeoVecCoord;
     typedef typename helper::DualQuatd DualQuat;
 #endif
 protected:
@@ -97,7 +112,9 @@ protected:
     core::componentmodel::behavior::BaseMechanicalState::ParticleMask* maskTo;
 
     Data<sofa::helper::vector<unsigned int> > repartition;
-    Data<sofa::helper::vector<double> >  coefs;
+    Data<sofa::helper::vector<double> > coefs;
+    Data<sofa::helper::vector<double> > distances;
+    Data<sofa::helper::vector<Coord> > distGradients;
     Data<unsigned int> nbRefs;
     Data<bool> displayBlendedFrame;
     Data<sofa::helper::vector<Mat36> > matJ;
@@ -105,11 +122,16 @@ protected:
     bool computeWeights;
     WeightingType wheighting;
     InterpolationType interpolation;
-    //typename Out::VecCoord x1; //TODO remove after test
-    //typename Out::VecCoord x2; //TODO remove after test
-    //vector<DualQuat> q1; //TODO remove after test
-    //vector<DualQuat> q2; //TODO remove after test
-    //vector<Mat86> L;
+    DistanceType distance;
+    typename Out::VecCoord x1; //TODO remove after test
+    typename Out::VecCoord x2; //TODO remove after test
+    vector<DualQuat> q1; //TODO remove after test
+    vector<DualQuat> q2; //TODO remove after test
+    vector<Mat86> L;
+    vector<Mat81> dqLi_previous, dqLi; //TODO to remove after the convergence test
+#ifdef SOFA_DEV
+    HexahedronGeodesicalDistance< GeoType>* geoDist;
+#endif
 
     class Loader;
     void load ( const char* filename );
