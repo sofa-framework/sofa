@@ -36,6 +36,7 @@
 #else
 #include <qlayout.h>
 #include <qlabel.h>
+#include <qgroupbox.h>
 /*#include <qradiobutton.h>
 #include <qpushbutton.h>*/
 #endif
@@ -69,10 +70,10 @@ QInciseOperation::QInciseOperation()
 {
     //Building the GUI for the Injection Operation
     QHBoxLayout *layout=new QHBoxLayout(this);
-    incisionMethodChoiceGroup = new QGroupBox(tr("Incision method choice"));
+    incisionMethodChoiceGroup = new QGroupBox(tr("Incision method choice"),this);
 
-    method1 = new QRadioButton(tr("&Throw segment: Incise from click to click."));
-    method2 = new QRadioButton(tr("&Continually: Incise continually from first click localization."));
+    method1 = new QRadioButton(tr("&Throw segment: Incise from click to click."), incisionMethodChoiceGroup);
+    method2 = new QRadioButton(tr("&Continually: Incise continually from first click localization."), incisionMethodChoiceGroup);
 
     method1->setChecked (true);
 
