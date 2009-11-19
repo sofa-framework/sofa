@@ -60,6 +60,7 @@ public:
     void start();
     void execute();
     void draw();
+    void clear();
 
 protected:
     MouseContactMapper   *mapper;

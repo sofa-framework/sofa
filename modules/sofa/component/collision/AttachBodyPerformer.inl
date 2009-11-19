@@ -38,6 +38,12 @@ namespace collision
 template <class DataTypes>
 void AttachBodyPerformer<DataTypes>::start()
 {
+    if (forcefield)
+    {
+        clear();
+        return;
+    }
+
     BodyPicked picked=this->interactor->getBodyPicked();
     if (!picked.body && !picked.mstate) return;
     core::componentmodel::behavior::MechanicalState<DataTypes>* mstateCollision=NULL;
@@ -116,9 +122,8 @@ AttachBodyPerformer<DataTypes>::AttachBodyPerformer(BaseMouseInteractor *i):TInt
 {
 }
 
-
 template <class DataTypes>
-AttachBodyPerformer<DataTypes>::~AttachBodyPerformer()
+void AttachBodyPerformer<DataTypes>::clear()
 {
     if (forcefield)
     {
@@ -135,7 +140,16 @@ AttachBodyPerformer<DataTypes>::~AttachBodyPerformer()
 
     this->interactor->setDistanceFromMouse(0);
     this->interactor->setMouseAttached(false);
+}
+
+
+template <class DataTypes>
+AttachBodyPerformer<DataTypes>::~AttachBodyPerformer()
+{
+    clear();
 };
+
+
 /*
 #ifdef WIN32
 #ifndef SOFA_DOUBLE
