@@ -61,8 +61,8 @@ void InciseAlongPathPerformer::execute()
             //	      startBody = this->interactor->getBodyPicked();
             if (firstBody.indexCollisionElement != startBody.indexCollisionElement)
             {
-                std::cout << firstBody.indexCollisionElement << std::endl;
-                std::cout << startBody.indexCollisionElement << std::endl;
+                //std::cout << firstBody.indexCollisionElement << std::endl;
+                //std::cout << startBody.indexCollisionElement << std::endl;
                 //std::cout << "Ecrit Second time" << std::endl;
                 secondBody=startBody;
             }
