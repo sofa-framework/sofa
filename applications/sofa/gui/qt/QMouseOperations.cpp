@@ -77,11 +77,10 @@ QInciseOperation::QInciseOperation()
 
     method1->setChecked (true);
 
-    QVBoxLayout *vbox = new QVBoxLayout;
+    QVBoxLayout *vbox = new QVBoxLayout(incisionMethodChoiceGroup);
     vbox->addWidget(method1);
     vbox->addWidget(method2);
     //	vbox->addStretch(1);
-    incisionMethodChoiceGroup->setLayout(vbox);
     layout->addWidget(incisionMethodChoiceGroup);
 }
 
