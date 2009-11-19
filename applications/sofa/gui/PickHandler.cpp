@@ -109,9 +109,9 @@ void PickHandler::activateRay(bool act)
         mouseNode->detachFromGraph();
 
 
-        operations[LEFT]->end();
-        operations[MIDDLE]->end();
-        operations[RIGHT]->end();
+        operations[LEFT]->endOperation();
+        operations[MIDDLE]->endOperation();
+        operations[RIGHT]->endOperation();
 
         interaction->deactivate();
 
