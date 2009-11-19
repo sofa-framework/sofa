@@ -139,10 +139,14 @@ void InitVisitor::processNodeBottomUp(simulation::Node* node)
         }
     }
 
+
     //If we reached the Root node, we search Visual components like Visual Models and Visual Mappings to move them into the Visual Graph
     if (rootNode == node && rootNode != getSimulation()->getVisualRoot())
     {
         std::map< simulation::Node*, simulation::Node*> simuToVisu;
+        if ( (Node*)(getSimulation()->getContext())  == node) //Root of the Simulation Graph
+            simuToVisu.insert(std::make_pair(node, getSimulation()->getVisualRoot()));
+
         //********************************************************
         //Moving Visual Models
         std::list< core::VisualModel* > visualModels;
