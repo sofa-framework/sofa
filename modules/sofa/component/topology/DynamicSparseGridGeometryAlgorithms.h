@@ -58,7 +58,7 @@ public:
 
     virtual void init();
 
-    HexaID getTopoIndexFromRegularGridIndex ( unsigned int index );
+    HexaID getTopoIndexFromRegularGridIndex ( unsigned int index, bool& existing );
     unsigned int getRegularGridIndexFromTopoIndex ( HexaID index );
 
 protected:
