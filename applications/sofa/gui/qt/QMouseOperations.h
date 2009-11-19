@@ -36,7 +36,7 @@
 #else
 #include <qwidget.h>
 #include <qlineedit.h>
-#include <QRadioButton.h>
+#include <qradiobutton.h>
 #endif
 #include <iostream>
 
