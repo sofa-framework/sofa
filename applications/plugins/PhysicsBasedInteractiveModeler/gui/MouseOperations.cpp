@@ -87,7 +87,10 @@ void SculptOperation::wait()
 SculptOperation::~SculptOperation()
 {
     if (performer != NULL)
+    {
         pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
+        delete performer; performer=NULL;
+    }
 }
 
 } // namespace gui
