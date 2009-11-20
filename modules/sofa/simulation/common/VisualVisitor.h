@@ -83,17 +83,20 @@ public:
 #endif
 };
 
-class SOFA_SIMULATION_COMMON_API VisualUpdateVisitor : public VisualVisitor
+class SOFA_SIMULATION_COMMON_API VisualUpdateVisitor : public Visitor
 {
 public:
     virtual void processVisualModel(simulation::Node*, core::VisualModel* vm);
+    virtual Result processNodeTopDown(simulation::Node* node);
+
     virtual const char* getClassName() const { return "VisualUpdateVisitor"; }
 };
 
-class SOFA_SIMULATION_COMMON_API VisualInitVisitor : public VisualVisitor
+class SOFA_SIMULATION_COMMON_API VisualInitVisitor : public Visitor
 {
 public:
     virtual void processVisualModel(simulation::Node*, core::VisualModel* vm);
+    virtual Result processNodeTopDown(simulation::Node* node);
     virtual const char* getClassName() const { return "VisualInitVisitor"; }
 };
 
