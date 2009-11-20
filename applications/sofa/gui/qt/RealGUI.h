@@ -212,6 +212,7 @@ public slots:
     void graphModify();
     void graphCollapse();
     void graphExpand();
+    void graphActivation(Node* node, GraphListenerQListView *listener, bool activate);
     void graphDesactivateNode();
     void graphActivateNode();
     //When adding an object in the graph

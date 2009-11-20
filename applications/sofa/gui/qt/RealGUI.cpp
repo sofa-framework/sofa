@@ -1045,26 +1045,18 @@ void RealGUI::initDesactivatedNode()
 
     for (graph_iterator = graphListener->items.begin(); graph_iterator != graphListener->items.end(); graph_iterator++)
     {
-        node_clicked = dynamic_cast< Node* >(graph_iterator->first);
-        if (node_clicked!=NULL )
+        Node* node = dynamic_cast< Node* >(graph_iterator->first);
+        if (node!=NULL && !node->isActive())
         {
-            if (!node_clicked->isActive() )
-            {
-                item_clicked =  graphListener->items[node_clicked];
-                graphDesactivateNode();
-            }
+            graphActivation(node, graphListener, false);
         }
     }
     for (graph_iterator = visualGraphListener->items.begin(); graph_iterator != visualGraphListener->items.end(); graph_iterator++)
     {
-        node_clicked = dynamic_cast< Node* >(graph_iterator->first);
-        if (node_clicked!=NULL )
+        Node *node = dynamic_cast< Node* >(graph_iterator->first);
+        if (node!=NULL  && !node->isActive())
         {
-            if (!node_clicked->isActive() )
-            {
-                item_clicked =  visualGraphListener->items[node_clicked];
-                graphDesactivateNode();
-            }
+            graphActivation(node, visualGraphListener, false);
         }
     }
 }
