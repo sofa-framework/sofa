@@ -1393,7 +1393,8 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
         unsigned int& ind_tb,
         sofa::helper::vector< unsigned int > &triangles_list,
         sofa::helper::vector<unsigned int> &edges_list,
-        sofa::helper::vector< double >& coords_list, bool& is_on_boundary) const
+        sofa::helper::vector< double >& coords_list,
+        bool& is_on_boundary) const
 {
 
     bool is_validated=true;
@@ -1438,6 +1439,15 @@ bool TriangleSetGeometryAlgorithms< DataTypes >::computeIntersectedPointsList(co
             }
         }
     }
+
+    if (ind_ta == ind_tb)
+    {
+#ifndef NDEBUG
+        std::cout << "INFO_print - TriangleSetTopology.inl : Cut is not reached because inputs elements are the same element." << std::endl;
+#endif
+        return false;
+    }
+
 
     /*
       std::cout << "*********************************" << std::endl;
@@ -1723,9 +1733,9 @@ bool TriangleSetGeometryAlgorithms<DataTypes>::computeIntersectedObjectsList (co
     sofa::helper::vector<unsigned int> triangles_list;
     sofa::helper::vector<unsigned int> edges_list;
     sofa::helper::vector< double > coordsEdge_list;
-    bool is_on_boundary = false;
     bool pathOK;
     bool isOnPoint = false;
+    bool is_on_boundary = false;
 
     // using old function:
     pathOK = this->computeIntersectedPointsList (last_point, a, b, ind_ta, ind_tb, triangles_list, edges_list, coordsEdge_list, is_on_boundary);
