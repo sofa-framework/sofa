@@ -203,6 +203,7 @@ void SkinningMapping<BasicMapping>::sortReferences ()
     }
     case DISTANCE_GEODESIC:
     {
+#ifdef SOFA_DEV
         if ( !geoDist )
         {
             serr << "Error during init: Geodesical distance component missing while geodesical distance is requested." << sendl;
@@ -248,6 +249,7 @@ void SkinningMapping<BasicMapping>::sortReferences ()
             }
         }
         repartition.setValue ( m_reps );
+#endif
         break;
     }
     default:
