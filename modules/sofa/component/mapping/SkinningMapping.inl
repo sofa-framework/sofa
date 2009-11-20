@@ -266,6 +266,7 @@ void SkinningMapping<BasicMapping>::init()
     if ( !geoDist )
     {
         serr << "Can nt find the geodesical distance component." << sendl;
+        distance = DISTANCE_EUCLIDIAN;
     }
 #endif
 
@@ -478,8 +479,8 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
         L.resize ( out.size() *nbRefs.getValue() );
         sofa::helper::vector<Mat36>& J = * ( matJ.beginEdit() );
         J.resize ( out.size() *nbRefs.getValue() );
-        q1.resize ( out.size() *nbRefs.getValue() );
-        q2.resize ( out.size() *nbRefs.getValue() );
+//             q1.resize ( out.size() *nbRefs.getValue() );
+//             q2.resize ( out.size() *nbRefs.getValue() );
 
         VecCoord& xto = *this->toModel->getX();
         out.resize ( xto.size() );
@@ -505,8 +506,8 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
                 // Compute parts of J
                 computeDqT ( T[m], qi0 );
                 computeDqL ( L[idx], dqi, in[idxReps].getCenter() );
-                q1[idx] = q2[idx]; //TODO remove after test
-                q2[idx] = dqi; //TODO remove after test
+//                     q1[idx] = q2[idx]; //TODO remove after test
+//                     q2[idx] = dqi; //TODO remove after test
 
                 /*
                 if( idx == 93) // Print test ! TODO remove !
@@ -539,10 +540,10 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
             }
         }
 
-        x1.resize ( out.size() ); //TODO remove after test
-        x2.resize ( out.size() ); //TODO remove after test
-        x1 = x2; //TODO remove after test
-        x2 = out; //TODO to remove after the convergence test
+        //x1.resize ( out.size() ); //TODO remove after test
+        //x2.resize ( out.size() ); //TODO remove after test
+        //x1 = x2; //TODO remove after test
+        //x2 = out; //TODO to remove after the convergence test
         matJ.endEdit();
         break;
     }
@@ -561,13 +562,13 @@ void SkinningMapping<BasicMapping>::applyJ ( typename Out::VecDeriv& out, const 
     out.resize ( xto.size() );
     Deriv v,omega;
 
-    vector<double> dqTest; //TODO to remove after the convergence test
-    dqTest.resize ( out.size() ); //TODO to remove after the convergence test
-    vector<Vec3d> dqJiWi; //TODO to remove after the convergence test
-    dqJiWi.resize ( out.size() ); //TODO to remove after the convergence test
-    dqLi_previous.resize ( out.size() * nbRefs.getValue() ); //TODO to remove after the convergence test
-    dqLi.resize ( out.size() * nbRefs.getValue() ); //TODO to remove after the convergence test
-
+    /*        vector<double> dqTest; //TODO to remove after the convergence test
+            dqTest.resize ( out.size() ); //TODO to remove after the convergence test
+            vector<Vec3d> dqJiWi; //TODO to remove after the convergence test
+            dqJiWi.resize ( out.size() ); //TODO to remove after the convergence test
+             dqLi_previous.resize ( out.size() * nbRefs.getValue() ); //TODO to remove after the convergence test
+             dqLi.resize ( out.size() * nbRefs.getValue() ); //TODO to remove after the convergence test
+    */
     if ( ! ( maskTo->isInUse() ) )
     {
         switch ( interpolation )
@@ -611,9 +612,9 @@ void SkinningMapping<BasicMapping>::applyJ ( typename Out::VecDeriv& out, const 
 
                     Mat31 f = ( J[idx] * speed ) * m_coefs[idx];
 
-                    dqTest[i] = speed[0][0]*speed[0][0] + speed[1][0]*speed[1][0] + speed[2][0]*speed[2][0] + speed[3][0]*speed[3][0] + speed[4][0]*speed[4][0] + speed[5][0]*speed[5][0]; //TODO to remove after the convergence test
-                    dqJiWi[i] = Vec3d ( f[0][0], f[1][0], f[2][0] ); //TODO to remove after convergence test
-                    dqLi[idx] = ( L[idx] * speed ); //TODO to remove after convergence test
+                    /*                        dqTest[i] = speed[0][0]*speed[0][0] + speed[1][0]*speed[1][0] + speed[2][0]*speed[2][0] + speed[3][0]*speed[3][0] + speed[4][0]*speed[4][0] + speed[5][0]*speed[5][0]; //TODO to remove after the convergence test
+                                            dqJiWi[i] = Vec3d ( f[0][0], f[1][0], f[2][0] ); //TODO to remove after convergence test*/
+//                         dqLi[idx] = ( L[idx] * speed ); //TODO to remove after convergence test
 
                     out[i] += Deriv ( f[0][0], f[1][0], f[2][0] );
                 }
@@ -675,9 +676,9 @@ void SkinningMapping<BasicMapping>::applyJ ( typename Out::VecDeriv& out, const 
 
                     Mat31 f = ( J[idx] * speed ) * m_coefs[idx];
 
-                    dqTest[i] = speed[0][0]*speed[0][0] + speed[1][0]*speed[1][0] + speed[2][0]*speed[2][0] + speed[3][0]*speed[3][0] + speed[4][0]*speed[4][0] + speed[5][0]*speed[5][0]; //TODO to remove after the convergence test
-                    dqJiWi[i] = Vec3d ( f[0][0], f[1][0], f[2][0] ); //TODO to remove after convergence test
-                    dqLi[idx] = ( L[idx] * speed ); //TODO to remove after convergence test
+                    /*                        dqTest[i] = speed[0][0]*speed[0][0] + speed[1][0]*speed[1][0] + speed[2][0]*speed[2][0] + speed[3][0]*speed[3][0] + speed[4][0]*speed[4][0] + speed[5][0]*speed[5][0]; //TODO to remove after the convergence test
+                                            dqJiWi[i] = Vec3d ( f[0][0], f[1][0], f[2][0] ); //TODO to remove after convergence test*/
+//                         dqLi[idx] = ( L[idx] * speed ); //TODO to remove after convergence test
 
                     out[i] += Deriv ( f[0][0], f[1][0], f[2][0] );
                 }

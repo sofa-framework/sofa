@@ -123,13 +123,13 @@ protected:
     WeightingType wheighting;
     InterpolationType interpolation;
     DistanceType distance;
-    typename Out::VecCoord x1; //TODO remove after test
-    typename Out::VecCoord x2; //TODO remove after test
-    vector<DualQuat> q1; //TODO remove after test
-    vector<DualQuat> q2; //TODO remove after test
-    vector<Mat86> L;
-    vector<Mat81> dqLi_previous, dqLi; //TODO to remove after the convergence test
 #ifdef SOFA_DEV
+    /*					typename Out::VecCoord x1; //TODO remove after test
+    					typename Out::VecCoord x2; //TODO remove after test
+    					vector<DualQuat> q1; //TODO remove after test
+    					vector<DualQuat> q2; //TODO remove after test
+    					vector<Mat81> dqLi_previous, dqLi; //TODO to remove after the convergence test*/
+    vector<Mat86> L;
     HexahedronGeodesicalDistance< GeoType>* geoDist;
 #endif
 
