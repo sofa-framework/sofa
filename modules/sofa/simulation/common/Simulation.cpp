@@ -236,8 +236,6 @@ void Simulation::reset ( Node* root )
     root->execute<MechanicalPropagatePositionAndVelocityVisitor>();
     root->execute<UpdateMappingVisitor>();
     root->execute<VisualUpdateVisitor>();
-    if (root != getVisualRoot())
-        getVisualRoot()->execute<VisualUpdateVisitor>();
 
     *(nbSteps.beginEdit()) = 0;
     nbSteps.endEdit();
@@ -248,13 +246,9 @@ void Simulation::initTextures ( Node* root )
 {
     if ( !root ) return;
     root->execute<VisualInitVisitor>();
-    if (root != getVisualRoot())
-        getVisualRoot()->execute<VisualInitVisitor>();
     // Do a visual update now as it is not done in load() anymore
     /// \todo Separate this into another method?
     root->execute<VisualUpdateVisitor>();
-    if (root != getVisualRoot())
-        getVisualRoot()->execute<VisualUpdateVisitor>();
 }
 
 

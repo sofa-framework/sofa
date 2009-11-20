@@ -101,11 +101,41 @@ void VisualDrawVisitor::processVisualModel(simulation::Node* node, core::VisualM
     }
 }
 
+
+Visitor::Result VisualUpdateVisitor::processNodeTopDown(simulation::Node* node)
+{
+    for_each(this, node, node->visualModel,              &VisualUpdateVisitor::processVisualModel);
+    for_each(this, node, node->visualModelInVisualGraph, &VisualUpdateVisitor::processVisualModel);
+
+    {
+        for (simulation::Node::ChildIterator itChild = node->childInVisualGraph.begin(); itChild != node->childInVisualGraph.end(); ++itChild)
+        {
+            simulation::Node *child=*itChild;
+            child->execute<VisualUpdateVisitor>();
+        }
+    }
+    return RESULT_CONTINUE;
+}
+
 void VisualUpdateVisitor::processVisualModel(simulation::Node*, core::VisualModel* vm)
 {
     vm->updateVisual();
 }
 
+Visitor::Result VisualInitVisitor::processNodeTopDown(simulation::Node* node)
+{
+    for_each(this, node, node->visualModel,              &VisualInitVisitor::processVisualModel);
+    for_each(this, node, node->visualModelInVisualGraph, &VisualInitVisitor::processVisualModel);
+
+    {
+        for (simulation::Node::ChildIterator itChild = node->childInVisualGraph.begin(); itChild != node->childInVisualGraph.end(); ++itChild)
+        {
+            simulation::Node *child=*itChild;
+            child->execute<VisualInitVisitor>();
+        }
+    }
+    return RESULT_CONTINUE;
+}
 void VisualInitVisitor::processVisualModel(simulation::Node*, core::VisualModel* vm)
 {
     vm->initVisual();

@@ -41,8 +41,6 @@
 #endif
 
 
-#include <sofa/simulation/common/InitVisitor.h>
-#include <sofa/simulation/common/DesactivatedNodeVisitor.h>
 
 #ifdef SOFA_DEV
 
@@ -64,6 +62,9 @@
 #include <sofa/simulation/common/Visitor.h>
 #include <sofa/simulation/common/xml/XML.h>
 #include <sofa/simulation/common/TransformationVisitor.h>
+#include <sofa/simulation/common/InitVisitor.h>
+#include <sofa/simulation/common/DesactivatedNodeVisitor.h>
+
 #include <sofa/helper/system/FileRepository.h>
 
 #define MAX_RECENTLY_OPENED 10
@@ -110,8 +111,6 @@
 #endif
 
 #include <GenGraphForm.h>
-
-#include <stdio.h>
 
 
 namespace sofa
@@ -942,9 +941,6 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile )
 
     frameCounter = 0;
     sofa::simulation::xml::numDefault = 0;
-    list_object_added.clear();
-    list_object_removed.clear();
-    list_object_initial.clear();
     writeSceneName="";
 
     update();
@@ -1701,51 +1697,6 @@ void RealGUI::resetScene()
     std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator graph_iterator;
 
 
-    //Remove all the objects added
-    bool node_removed ;
-    for ( it=list_object_added.begin(); it != list_object_added.end(); it++ )
-    {
-        node_removed = false;
-
-        //Verify if they have not been removed before
-        std::list< Node *>::iterator it_removed;
-        for ( it_removed=list_object_removed.begin(); it_removed != list_object_removed.end(); it_removed++ )
-        {
-            if ( ( *it_removed ) == ( *it ) ) { node_removed=true; continue;} //node already removed
-        }
-        if ( node_removed ) continue;
-        ( *it )->detachFromGraph();
-        graphListener->removeChild ( NULL, ( *it ) );
-        delete ( *it );
-    }
-
-    list_object_added.clear();
-
-
-    //Add all the objects present at initial time
-    //Begin from the last removed item: the last one can be the parent of one removed lately in the simulation
-    it=list_object_removed.end();
-
-    while ( true )
-    {
-        if ( it == list_object_removed.begin() ) break;
-        --it;
-        std::list< std::pair<Node *,Node *> >::iterator it_initial;
-        for ( it_initial=list_object_initial.begin(); it_initial != list_object_initial.end(); it_initial++ )
-        {
-            if ( ( it_initial->second ) == ( *it ) )
-            {
-                ( it_initial->first )->addChild ( (Node*)( *it ) );
-                graphListener->addObject (  ( it_initial->second ), ( core::objectmodel::BaseObject* ) ( *it ) );
-                continue;
-            }
-        }
-    }
-
-    list_object_removed.clear();
-
-
-
 
     if ( root && isFrozen ) graphListener->freeze ( root );
 
@@ -1753,7 +1704,6 @@ void RealGUI::resetScene()
     if ( root )
     {
         simulation::getSimulation()->reset ( root );
-        simulation::getSimulation()->reset ( simulation::getSimulation()->getVisualRoot() );
         root->setTime(initial_time);
         eventNewTime();
 
@@ -1951,17 +1901,13 @@ void RealGUI::transformObject ( Node *node, double dx, double dy, double dz,  do
 void RealGUI::loadObject ( std::string path, double dx, double dy, double dz,  double rx, double ry, double rz,double scale )
 {
     //Verify if the file exists
-    if ( !sofa::helper::system::DataRepository.findFile ( path ) )
-    {
-        return;
-    }
+    if ( !sofa::helper::system::DataRepository.findFile ( path ) ) return;
     path = sofa::helper::system::DataRepository.getFile ( path );
 
     //Desactivate the animate-> no more graph modification
-
     bool isAnimated = startButton->isOn();
-
     playpauseGUI ( false );
+
     //If we add the object without clicking on the graph (direct use of the method),
     //the object will be added to the root node
     if ( node_clicked == NULL )
@@ -1985,17 +1931,12 @@ void RealGUI::loadObject ( std::string path, double dx, double dy, double dz,  d
     simulation::xml::BaseElement* xml = simulation::xml::loadFromFile ( path.c_str() );
     if ( xml == NULL ) return;
 
-
-    helper::system::SetDirectory chdir ( path.c_str() );
+    // helper::system::SetDirectory chdir ( path.c_str() );
 
     //std::cout << "Initializing objects"<<std::endl;
-    if ( !xml->init() )
-    {
-        std::cerr << "Objects initialization failed."<<std::endl;
-    }
+    if ( !xml->init() )  std::cerr << "Objects initialization failed."<<std::endl;
 
     Node* new_node = dynamic_cast<Node*> ( xml->getObject() );
-
     if ( new_node == NULL )
     {
         std::cerr << "Objects initialization failed."<<std::endl;
@@ -2003,26 +1944,23 @@ void RealGUI::loadObject ( std::string path, double dx, double dy, double dz,  d
         return ;
     }
 
-    //std::cout << "Initializing simulation "<<new_node->getName() <<std::endl;
-    new_node->execute<InitVisitor>();
+    new_node->addListener(graphListener);
     if (node_clicked && new_node)
     {
         if ( node_clicked->child.empty() &&  node_clicked->object.empty() )
         {
             //Temporary Root : the current graph is empty, and has only a single node "Root"
+            node_clicked->detachFromGraph();
+            // graphListener->removeChild ( NULL, node_clicked );
             viewer->setScene ( new_node, path.c_str() );
-            graphListener->removeChild ( NULL, node_clicked );
             graphListener->addChild ( NULL, new_node );
         }
         else
         {
             node_clicked->addChild (new_node );
-            graphListener->addObject ( node_clicked, (sofa::core::objectmodel::BaseObject*) new_node );
-
-            list_object_added.push_back ( new_node );
-
         }
     }
+    simulation::getSimulation()->init(new_node);
     //update the stats graph
     graphCreateStats(viewer->getScene());
     //Apply the Transformation

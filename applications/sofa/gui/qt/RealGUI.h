@@ -253,7 +253,6 @@ protected:
     void graphAddCollisionModelsStat(sofa::helper::vector< sofa::core::CollisionModel* > &v);
     void graphSummary();
 
-    void addInitialNodes( Node* node);
     bool isErasable(core::objectmodel::Base* element);
 
     void startDumpVisitor();
@@ -344,10 +343,6 @@ private:
     int frameCounter;
     //At initialization: list of the path to the basic objects you can add to the scene
     std::vector< std::string > list_object;
-    std::list< Node *> list_object_added;
-    std::list< Node *> list_object_removed;
-    //Pair: parent->child
-    std::list< std::pair< Node *, Node* > > list_object_initial;
     bool record_simulation;
 
     bool setViewer(const char* name);
