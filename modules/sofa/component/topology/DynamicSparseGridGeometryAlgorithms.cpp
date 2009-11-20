@@ -23,7 +23,6 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #define SOFA_COMPONENT_TOPOLOGY_DYNAMICSPARSEGRIDGEOMETRYALGORITHMS_CPP
-#include <sofa/component/topology/DynamicSparseGridGeometryAlgorithms.h>
 #include <sofa/component/topology/DynamicSparseGridGeometryAlgorithms.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
@@ -58,9 +57,16 @@ int DynamicSparseGridGeometryAlgorithmsClass = core::RegisterObject ( "Hexahedro
 
 #ifndef SOFA_FLOAT
 template <>
-int DynamicSparseGridGeometryAlgorithms<Vec2dTypes>::findNearestElementInRestPos(const Coord& pos, Vector3& baryC, Real& distance) const { return HexahedronSetGeometryAlgorithms<Vec2dTypes>::findNearestElementInRestPos(pos, baryC, distance);}
+int DynamicSparseGridGeometryAlgorithms<Vec2dTypes>::findNearestElementInRestPos(const Coord& pos, Vector3& baryC, Real& distance) const
+{
+    return HexahedronSetGeometryAlgorithms<Vec2dTypes>::findNearestElementInRestPos(pos, baryC, distance);
+}
+
 template <>
-int DynamicSparseGridGeometryAlgorithms<Vec1dTypes>::findNearestElementInRestPos(const Coord& pos, Vector3& baryC, Real& distance) const { return HexahedronSetGeometryAlgorithms<Vec1dTypes>::findNearestElementInRestPos(pos, baryC, distance);}
+int DynamicSparseGridGeometryAlgorithms<Vec1dTypes>::findNearestElementInRestPos(const Coord& pos, Vector3& baryC, Real& distance) const
+{
+    return HexahedronSetGeometryAlgorithms<Vec1dTypes>::findNearestElementInRestPos(pos, baryC, distance);
+}
 
 template class SOFA_COMPONENT_TOPOLOGY_API DynamicSparseGridGeometryAlgorithms<Vec3dTypes>;
 template class SOFA_COMPONENT_TOPOLOGY_API DynamicSparseGridGeometryAlgorithms<Vec2dTypes>;
@@ -69,9 +75,16 @@ template class SOFA_COMPONENT_TOPOLOGY_API DynamicSparseGridGeometryAlgorithms<V
 
 #ifndef SOFA_DOUBLE
 template <>
-int DynamicSparseGridGeometryAlgorithms<Vec2fTypes>::findNearestElementInRestPos(const Coord& pos, Vector3& baryC, Real& distance) const { return HexahedronSetGeometryAlgorithms<Vec2fTypes>::findNearestElementInRestPos( pos, baryC, distance);}
+int DynamicSparseGridGeometryAlgorithms<Vec2fTypes>::findNearestElementInRestPos(const Coord& pos, Vector3& baryC, Real& distance) const
+{
+    return HexahedronSetGeometryAlgorithms<Vec2fTypes>::findNearestElementInRestPos( pos, baryC, distance);
+}
+
 template <>
-int DynamicSparseGridGeometryAlgorithms<Vec1fTypes>::findNearestElementInRestPos(const Coord& pos, Vector3& baryC, Real& distance) const { return HexahedronSetGeometryAlgorithms<Vec1fTypes>::findNearestElementInRestPos( pos, baryC, distance);}
+int DynamicSparseGridGeometryAlgorithms<Vec1fTypes>::findNearestElementInRestPos(const Coord& pos, Vector3& baryC, Real& distance) const
+{
+    return HexahedronSetGeometryAlgorithms<Vec1fTypes>::findNearestElementInRestPos( pos, baryC, distance);
+}
 
 template class SOFA_COMPONENT_TOPOLOGY_API DynamicSparseGridGeometryAlgorithms<Vec3fTypes>;
 template class SOFA_COMPONENT_TOPOLOGY_API DynamicSparseGridGeometryAlgorithms<Vec2fTypes>;
