@@ -1191,6 +1191,7 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalSolveLMConstraintVisitor"; }
+    virtual std::string getInfos() const { std::string name= "["+state.getName()+"]"; return name; }
 
     virtual bool isThreadSafe() const
     {

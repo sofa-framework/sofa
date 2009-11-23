@@ -24,6 +24,10 @@
 ******************************************************************************/
 #include <sofa/component/mastersolver/LMContactConstraintSolver.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/simulation/common/CollisionVisitor.h>
+#include <sofa/simulation/common/CollisionBeginEvent.h>
+#include <sofa/simulation/common/CollisionEndEvent.h>
+#include <sofa/simulation/common/PropagateEventVisitor.h>
 #include <sofa/gpu/cuda/CudaRasterizer.h>
 #include <sofa/core/ObjectFactory.h>
 #include <math.h>
@@ -48,7 +52,7 @@ int LMContactConstraintSolverClass = core::RegisterObject("invert the Sofa simul
 SOFA_DECL_CLASS(LMContactConstraintSolver);
 
 LMContactConstraintSolver::LMContactConstraintSolver()
-    : maxCollisionSteps( initData(&maxCollisionSteps,1,"maxSteps", "number of collision steps between each frame rendering") )
+    : maxCollisionSteps( initData(&maxCollisionSteps,(unsigned int)1,"maxSteps", "number of collision steps between each frame rendering") )
 {
 }
 
@@ -59,7 +63,7 @@ LMContactConstraintSolver::~LMContactConstraintSolver()
 
 void LMContactConstraintSolver::bwdInit()
 {
-    sout << "collision" << sendl;
+//  sout << "collision" << sendl;
     computeCollision();
 }
 
@@ -88,7 +92,7 @@ void LMContactConstraintSolver::solveConstraints(bool needPropagation)
     simulation::MechanicalResetConstraintVisitor resetConstraints;
     resetConstraints.execute(this->getContext());
 
-    sout << "apply constraints" << sendl;
+//  sout << "apply constraints" << sendl;
     simulation::MechanicalExpressJacobianVisitor JacobianVisitor;
     JacobianVisitor.execute(this->getContext());
 
@@ -96,43 +100,63 @@ void LMContactConstraintSolver::solveConstraints(bool needPropagation)
     simulation::MechanicalSolveLMConstraintVisitor solveConstraintsPosition(positionState,needPropagation, false);
     solveConstraintsPosition.execute(this->getContext());
 
-    // core::componentmodel::behavior::BaseMechanicalState::VecId velocityState=core::componentmodel::behavior::BaseMechanicalState::VecId::velocity();
-    // simulation::MechanicalSolveLMConstraintVisitor solveConstraintsVelocity(velocityState, needPropagation);
-    // solveConstraintsVelocity.execute(this->getContext());
-
-    simulation::MechanicalPropagatePositionAndVelocityVisitor propagateState;
+    simulation::MechanicalPropagatePositionVisitor propagateState;
     propagateState.execute(this->getContext());
 }
 
 bool LMContactConstraintSolver::isCollisionDetected()
 {
-    sout << "collision" << sendl;
-    computeCollision();
+//  sout << "collision" << sendl;
+    {
+        simulation::CollisionBeginEvent evBegin;
+        simulation::PropagateEventVisitor eventPropagation(&evBegin);
+        eventPropagation.execute(getContext());
+    }
+    ((simulation::Node*) getContext())->execute<simulation::CollisionDetectionVisitor>();
+    {
+        simulation::CollisionEndEvent evEnd;
+        simulation::PropagateEventVisitor eventPropagation(&evEnd);
+        eventPropagation.execute(getContext());
+    }
+
+
+
+
     gpu::cuda::CudaRasterizer< defaulttype::Vec3dTypes > *rasterizer;
     this->getContext()->get(rasterizer);
 
     if (!rasterizer) return false;
 
-    sout << "intersections : " << rasterizer->getDVDX_index().size() << sendl;
-    return (rasterizer->getDVDX_index().size() != 0);
+//  sout << "intersections : " << rasterizer->getNbPairs() << sendl;
+    return (rasterizer->getNbPairs() != 0);
 }
 
 void LMContactConstraintSolver::step(double dt)
 {
-    const int maxSteps = maxCollisionSteps.getValue();
+    const unsigned int maxSteps = maxCollisionSteps.getValue();
 
     // Then integrate the time step
-    sout << "integration" << sendl;
+//    sout << "integration" << sendl;
     integrate(dt);
 
     bool propagateState=needPriorStatePropagation();
 
-    int numStep=0;
-    while ((numStep < maxSteps && isCollisionDetected()) || numStep==0)
+    for (unsigned int step=0; step<maxSteps; ++step)
     {
-        sout << "Iteration " << numStep << sendl;
-        solveConstraints(propagateState);
-        ++numStep;
+
+        if (isCollisionDetected())
+        {
+            ((simulation::Node*) getContext())->execute<simulation::CollisionResponseVisitor>();
+            solveConstraints(propagateState);
+        }
+        else
+        {
+            //No collision --> no constraint
+            simulation::MechanicalResetConstraintVisitor resetConstraints;
+            resetConstraints.execute(this->getContext());
+            ((simulation::Node*) getContext())->execute<simulation::CollisionResetVisitor>();
+            break;
+        }
     }
 }
 

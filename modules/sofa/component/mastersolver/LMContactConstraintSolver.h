@@ -54,7 +54,7 @@ public:
 protected:
     bool needPriorStatePropagation();
 
-    Data<int> maxCollisionSteps;
+    Data< unsigned int > maxCollisionSteps;
 
 };
 
