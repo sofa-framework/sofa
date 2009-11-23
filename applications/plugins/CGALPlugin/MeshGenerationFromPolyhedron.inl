@@ -22,13 +22,16 @@
 
 // IO
 #include <CGAL/IO/Polyhedron_iostream.h>
-//#include <CGAL/IO/Polyhedron_VRML_1_ostream.h>
 
 
 //CGAL
 struct K: public CGAL::Exact_predicates_inexact_constructions_kernel {};
 
 using namespace sofa;
+
+#ifdef SOFA_NEW_CGAL_MESH
+using namespace CGAL::parameters;
+#endif
 
 namespace cgal
 {
@@ -131,15 +134,13 @@ void MeshGenerationFromPolyhedron<DataTypes>::update()
     Cell_criteria cell_criteria(cellRatio.getValue(), cellSize.getValue()); // radius-edge ratio, size
     Mesh_criteria criteria(facet_criteria, cell_criteria);
 
-    //Facet_criteria facet_criteria(25, 0.15, 0.008); // angle, size, approximation
-    //Cell_criteria cell_criteria(4, 0.2); // radius-edge ratio, size
-    //Mesh_criteria criteria(facet_criteria, cell_criteria);
-
-    // Mesh generation
+#ifdef SOFA_NEW_CGAL_MESH
+    C3t3 c3t3 = CGAL::make_mesh_3<C3t3>(domain, criteria, no_exude(), no_perturb());
+#else
     C3t3 c3t3 = CGAL::make_mesh_3<C3t3>(domain, criteria);
-
+#endif
     const Tr& tr = c3t3.triangulation();
-    CGAL::Default_cell_index_pmap<C3t3> cell_pmap(c3t3);
+
     std::map<Vertex_handle, int> V;
     newPoints.clear();
     int inum = 0;
@@ -158,7 +159,6 @@ void MeshGenerationFromPolyhedron<DataTypes>::update()
     tetrahedra.clear();
     for( Cell_iterator cit = c3t3.cells_begin() ; cit != c3t3.cells_end() ; ++cit )
     {
-        //if (get(cell_pmap, cit)!=1) continue;
         Tetra tetra;
         for (int i=0; i<4; i++)
             tetra[i] = V[cit->vertex(i)];

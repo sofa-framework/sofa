@@ -15,6 +15,8 @@ CONFIG += $$CONFIGLIBRARIES
 CONFIG -= staticlib
 CONFIG += dll
 
+#DEFINES += SOFA_NEW_CGAL_MESH
+
 ###### SPECIFIC PLUGIN CONFIGURATION, you should modify it to configure your plugin
 
 DEFINES += SOFA_BUILD_CGALPLUGIN
