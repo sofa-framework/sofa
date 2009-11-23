@@ -33,10 +33,14 @@
 #include <QWidget>
 #include <QLineEdit>
 #include <QRadioButton>
+#include <QSpinBox>
+#include <QSlider>
 #else
 #include <qwidget.h>
 #include <qlineedit.h>
 #include <qradiobutton.h>
+#include <qspinbox.h>
+#include <qslider.h>
 #endif
 #include <iostream>
 
@@ -72,6 +76,9 @@ class QInciseOperation : public QWidget, public InciseOperation
 public:
     QInciseOperation();
     int getIncisionMethod() const;
+    int getSnapingBorderValue() const;
+    int getSnapingValue() const;
+
     void configure(PickHandler *picker, MOUSE_BUTTON b)
     {
         InciseOperation::configure(picker, b);
@@ -81,6 +88,13 @@ protected:
     QGroupBox* incisionMethodChoiceGroup;
     QRadioButton* method1;
     QRadioButton* method2;
+
+    QGroupBox* advancedOptions;
+    QSlider  *snapingBorderSlider;
+    QSpinBox *snapingBorderValue;
+
+    QSlider  *snapingSlider;
+    QSpinBox *snapingValue;
 };
 
 

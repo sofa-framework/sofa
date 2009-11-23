@@ -58,15 +58,8 @@ using namespace sofa::component::topology;
 
 TopologicalChangeManager::TopologicalChangeManager()
 {
-    //incision.a_last_init =
-    //incision.b_last_init =
-    //incision.ind_ta_init =
-    //incision.ind_tb_init =  BaseMeshTopology::InvalidID;
-    //incision.is_first_cut = true;
-
     incision.firstCut = true;
     incision.indexPoint = BaseMeshTopology::InvalidID;
-    //incision.indexPointB = BaseMeshTopology::InvalidID;
 }
 
 TopologicalChangeManager::~TopologicalChangeManager()
@@ -269,7 +262,8 @@ void TopologicalChangeManager::removeItemsFromCollisionModel(sofa::core::Collisi
 
 
 // Handle Cutting (activated only for a triangular topology), using global variables to register the two last input points
-bool TopologicalChangeManager::incisionCollisionModel(sofa::core::CollisionElementIterator elem, Vector3& pos, const bool firstInput)
+bool TopologicalChangeManager::incisionCollisionModel(sofa::core::CollisionElementIterator elem, Vector3& pos, const bool firstInput,
+        int snapingValue, int snapingBorderValue)
 {
     Triangle triangle(elem);
     TriangleModel* model = triangle.getCollisionModel();
@@ -289,7 +283,7 @@ bool TopologicalChangeManager::incisionCollisionModel(sofa::core::CollisionEleme
         }
         else // if it is not the first contact, cut
         {
-            bool isCut = this->incisionTriangleModel (model, incision.indexTriangle, incision.coordPoint, model, elem.getIndex(), pos);
+            bool isCut = this->incisionTriangleModel (model, incision.indexTriangle, incision.coordPoint, model, elem.getIndex(), pos, snapingValue, snapingBorderValue);
 
             if (isCut && !incision.firstCut) // cut has been reached, and will possible be continue. Stocking informations.
             {
@@ -310,21 +304,24 @@ bool TopologicalChangeManager::incisionCollisionModel(sofa::core::CollisionEleme
 
 // Handle Cutting for general model (only Triangle for the moment)
 bool TopologicalChangeManager::incisionCollisionModel(sofa::core::CollisionModel *firstModel , unsigned int idxA, const Vector3& firstPoint,
-        sofa::core::CollisionModel *secondModel, unsigned int idxB, const Vector3& secondPoint )
+        sofa::core::CollisionModel *secondModel, unsigned int idxB, const Vector3& secondPoint,
+        int snapingValue, int snapingBorderValue)
 {
 
     TriangleModel* firstCollisionModel = dynamic_cast< TriangleModel* >(firstModel);
     TriangleModel* secondCollisionModel = dynamic_cast< TriangleModel* >(secondModel);
     if (!firstCollisionModel || firstCollisionModel != secondCollisionModel) return false;
     return incisionTriangleModel(firstCollisionModel,  idxA, firstPoint,
-            secondCollisionModel, idxB, secondPoint);
+            secondCollisionModel, idxB, secondPoint,
+            snapingValue, snapingBorderValue);
 }
 
 
 
 // Perform incision in triangulation
 bool TopologicalChangeManager::incisionTriangleModel(TriangleModel *firstModel , TriangleID idxA, const Vector3& firstPoint,
-        TriangleModel *secondModel, TriangleID idxB, const Vector3& secondPoint )
+        TriangleModel *secondModel, TriangleID idxB, const Vector3& secondPoint,
+        int snapingValue, int snapingBorderValue)
 {
 
     // -- STEP 1: looking for collision model and topology components
@@ -390,6 +387,10 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleModel *firstModel ,
         sofa::helper::vector<unsigned int> indices_list;
         sofa::helper::vector< Vec<3, double> > coords2_list;
 
+        // Snaping value: input are pourcentage, we need to transform it as real epsilon value;
+        double epsilonSnap = (double)snapingValue/200;
+        double epsilonBorderSnap = (double)snapingBorderValue/210; // magic number (0.5 is max value and must not be reached, as threshold is compared to barycoord value)
+
 
         // -- STEP 4: Creating path throw different elements
         bool path_ok = triangleGeometry->computeIntersectedObjectsList(last_indexPoint, coord_a, coord_b, idxA, idxB, topoPath_list, indices_list, coords2_list);
@@ -403,10 +404,9 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleModel *firstModel ,
         }
 
 
-
         // -- STEP 5: Spliting elements along path (incision path is stock inside "new_edges")
         sofa::helper::vector< unsigned int > new_edges;
-        triangleAlgorithm->SplitAlongPath(last_indexPoint, coord_a, BaseMeshTopology::InvalidID, coord_b, topoPath_list, indices_list, coords2_list, new_edges, 0.0, 0.0);
+        triangleAlgorithm->SplitAlongPath(last_indexPoint, coord_a, BaseMeshTopology::InvalidID, coord_b, topoPath_list, indices_list, coords2_list, new_edges, epsilonSnap, epsilonBorderSnap);
 
 
         // -- STEP 6: Incise along new_edges path (i.e duplicating edges to create an incision)
@@ -417,7 +417,9 @@ bool TopologicalChangeManager::incisionTriangleModel(TriangleModel *firstModel ,
 
         if (!incision_ok)
         {
+#ifndef NDEBUG
             std::cout << "ERROR in InciseAlongEdgeList" << std::endl;
+#endif
             return false;
         }
 

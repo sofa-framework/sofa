@@ -69,20 +69,62 @@ double QAttachOperation::getStiffness() const
 QInciseOperation::QInciseOperation()
 {
     //Building the GUI for the Injection Operation
-    QHBoxLayout *layout=new QHBoxLayout(this);
+    QVBoxLayout *layout=new QVBoxLayout(this);
+
+    // First group box for incision method choice
     incisionMethodChoiceGroup = new QGroupBox(tr("Incision method choice"),this);
+    QVBoxLayout *vbox1 = new QVBoxLayout(incisionMethodChoiceGroup);
 
     method1 = new QRadioButton(tr("&Throw segment: Incise from click to click."), incisionMethodChoiceGroup);
     method2 = new QRadioButton(tr("&Continually: Incise continually from first click localization."), incisionMethodChoiceGroup);
-
     method1->setChecked (true);
 
-    QVBoxLayout *vbox = new QVBoxLayout(incisionMethodChoiceGroup);
-    vbox->addWidget(method1);
-    vbox->addWidget(method2);
-    //	vbox->addStretch(1);
+    vbox1->addWidget(method1);
+    vbox1->addWidget(method2);
+
+    // Second group box for advanced settings (only snping % value for the moment)
+    advancedOptions = new QGroupBox(tr("Advanced settings"),this);
+    QVBoxLayout *vbox2 = new QVBoxLayout(advancedOptions);
+
+    // first slider for border snaping
+    QHBoxLayout *slider1=new QHBoxLayout();
+    QLabel *label1=new QLabel(QString("Distance to snap from border (in %)"), this);
+    snapingBorderSlider=new QSlider(Qt::Horizontal, this);
+    snapingBorderValue=new QSpinBox(0,100,1,this);
+    snapingBorderValue->setEnabled(true);
+
+    slider1->addWidget (label1);
+    slider1->addWidget (snapingBorderSlider);
+    slider1->addWidget (snapingBorderValue);
+    vbox2->addLayout (slider1);
+
+    // second slider for along path snaping
+    QHBoxLayout *slider2=new QHBoxLayout();
+    QLabel *label2=new QLabel(QString("Distance to snap along path (in %)"), this);
+    snapingSlider=new QSlider(Qt::Horizontal, this);
+    snapingValue=new QSpinBox(0,100,1,this);
+    snapingValue->setEnabled(true);
+    snapingBorderValue->setValue(0);
+
+    slider2->addWidget (label2);
+    slider2->addWidget (snapingSlider);
+    slider2->addWidget (snapingValue);
+    vbox2->addLayout (slider2);
+
+
+    // Creating UI
     layout->addWidget(incisionMethodChoiceGroup);
+    layout->addWidget(advancedOptions);
+
+    connect(snapingBorderSlider,SIGNAL(valueChanged(int)), snapingBorderValue, SLOT(setValue(int)));
+    connect(snapingBorderValue,SIGNAL(valueChanged(int)), snapingBorderSlider, SLOT(setValue(int)));
+
+    connect(snapingSlider,SIGNAL(valueChanged(int)), snapingValue, SLOT(setValue(int)));
+    connect(snapingValue,SIGNAL(valueChanged(int)), snapingSlider, SLOT(setValue(int)));
+
+    snapingBorderValue->setValue(50);
 }
+
 
 int QInciseOperation::getIncisionMethod() const
 {
@@ -90,6 +132,16 @@ int QInciseOperation::getIncisionMethod() const
         return 1;
     else
         return 0;
+}
+
+int QInciseOperation::getSnapingBorderValue() const
+{
+    return snapingBorderValue->value();
+}
+
+int QInciseOperation::getSnapingValue() const
+{
+    return snapingValue->value();
 }
 
 
