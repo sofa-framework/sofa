@@ -33,7 +33,7 @@
 
 namespace sofa
 {
-
+using namespace core::objectmodel;
 namespace gui
 {
 
@@ -386,6 +386,97 @@ void GraphListenerQListView::unfreeze(Node* groot)
     if (!items.count(groot)) return;
     frozen = false;
     addChild(NULL, groot);
+}
+
+/*****************************************************************************************************************/
+core::objectmodel::Base* GraphListenerQListView::findObject(const Q3ListViewItem* item)
+{
+    core::objectmodel::Base* base = NULL;
+
+    if(item)
+    {
+        for ( std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator it = items.begin() ; it != items.end() ; ++ it )
+        {
+            if ( ( *it ).second == item )
+            {
+                base = (*it).first;
+            }
+        }
+    }
+    return base;
+}
+
+
+/*****************************************************************************************************************/
+core::objectmodel::BaseData* GraphListenerQListView::findData(const Q3ListViewItem* item)
+// returns NULL if nothing is found.
+{
+    BaseData* data = NULL;
+    if(item)
+    {
+        std::map<BaseData*,Q3ListViewItem*>::const_iterator it;
+        for( it = datas.begin(); it != datas.end(); ++it)
+        {
+            if((*it).second == item)
+            {
+                data = (*it).first;
+            }
+        }
+    }
+    return data;
+}
+/*****************************************************************************************************************/
+void GraphListenerQListView::removeDatas(core::objectmodel::BaseObject* parent)
+{
+
+    BaseData* data = NULL;
+    std::string name;
+    if (frozen) return;
+
+    if( items.count(parent) )
+    {
+        const std::vector< std::pair<std::string, core::objectmodel::BaseData*> >& fields = parent->getFields();
+        for( std::vector< std::pair<std::string, core::objectmodel::BaseData*> >::const_iterator it = fields.begin();
+                it != fields.end();
+                ++it)
+        {
+            data = (*it).second;
+            if(datas.count(data))
+            {
+                delete datas[data];
+                datas.erase(data);
+            }
+        }
+    }
+}
+
+/*****************************************************************************************************************/
+void GraphListenerQListView::addDatas(sofa::core::objectmodel::BaseObject *parent)
+{
+    Q3ListViewItem* new_item;
+    std::string name;
+    BaseData* data = NULL;
+    if(items.count(parent))
+    {
+
+        const std::vector< std::pair<std::string, core::objectmodel::BaseData*> >& fields = parent->getFields();
+        for( std::vector< std::pair<std::string, core::objectmodel::BaseData*> >::const_iterator it = fields.begin();
+                it!=fields.end();
+                ++it)
+        {
+            data = (*it).second;
+            if(!datas.count(data))
+            {
+                new_item = createItem(items[parent]);
+                name += "  ";
+                name += data->getName();
+                datas.insert(std::pair<BaseData*,Q3ListViewItem*>(data,new_item));
+                new_item->setText(0, name.c_str());
+                widget->ensureItemVisible(new_item);
+                name.clear();
+            }
+        }
+    }
 }
 
 

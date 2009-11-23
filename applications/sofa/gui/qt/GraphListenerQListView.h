@@ -68,6 +68,7 @@ public:
     Q3ListView* widget;
     bool frozen;
     std::map<core::objectmodel::Base*, Q3ListViewItem* > items;
+    std::map<core::objectmodel::BaseData*, Q3ListViewItem* > datas;
     GraphListenerQListView(Q3ListView* w)
         : widget(w), frozen(false)
     {
@@ -83,9 +84,13 @@ public:
     virtual void addObject(Node* parent, core::objectmodel::BaseObject* object);
     virtual void removeObject(Node* /*parent*/, core::objectmodel::BaseObject* object);
     virtual void moveObject(Node* previous, Node* parent, core::objectmodel::BaseObject* object);
-
+    virtual void addDatas(core::objectmodel::BaseObject* parent);
+    virtual void removeDatas(core::objectmodel::BaseObject* parent);
     virtual void freeze(Node* groot);
     virtual void unfreeze(Node* groot);
+    core::objectmodel::Base* findObject(const Q3ListViewItem* item);
+    core::objectmodel::BaseData* findData(const Q3ListViewItem* item);
+
 };
 
 }

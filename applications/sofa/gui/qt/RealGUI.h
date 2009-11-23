@@ -215,6 +215,8 @@ public slots:
     void graphActivation(Node* node, GraphListenerQListView *listener, bool activate);
     void graphDesactivateNode();
     void graphActivateNode();
+    void graphShowDatas();
+    void graphHideDatas();
     //When adding an object in the graph
     void loadObject(std::string path, double dx, double dy, double dz,double rx, double ry, double rz, double scale=1.0);
     //refresh the visualization window
