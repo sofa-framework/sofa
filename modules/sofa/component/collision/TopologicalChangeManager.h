@@ -85,10 +85,13 @@ public:
      * @param elem - iterator to collision model.
      * @param pos - picked point coordinates.
      * @param firstInput - bool, if yes this is the first incision point.
+     * @param snapingValue - threshold distance from point to incision path where point has to be snap on incision path.
+     * @param snapingBorderValue - threshold distance from point to mesh border where incision is considered to reach the border..
      *
      * @return bool - true if incision has been performed.
      */
-    bool incisionCollisionModel(sofa::core::CollisionElementIterator elem, Vector3& pos, bool firstInput);
+    bool incisionCollisionModel(sofa::core::CollisionElementIterator elem, Vector3& pos, bool firstInput,
+            int snapingValue = 0, int snapingBorderValue = 0);
 
 
     /** Handles Cutting for general model collision (activated only for a triangular topology for the moment).
@@ -102,11 +105,14 @@ public:
      * @param model2 - second collision model.
      * @param idx2 - second element index.
      * @param secondPoint - second picked point coordinates.
+     * @param snapingValue - threshold distance from point to incision path where point has to be snap on incision path.
+     * @param snapingBorderValue - threshold distance from point to mesh border where incision is considered to reach the border..
      *
      * @return bool - true if incision has been performed.
      */
     bool incisionCollisionModel(sofa::core::CollisionModel* model1, unsigned int idx1, const Vector3& firstPoint,
-            sofa::core::CollisionModel *model2, unsigned int idx2, const Vector3& secondPoint );
+            sofa::core::CollisionModel *model2, unsigned int idx2, const Vector3& secondPoint,
+            int snapingValue = 0, int snapingBorderValue = 0);
 
 protected:
 
@@ -122,11 +128,14 @@ private:
      * @param model2 - second triangle collision model.
      * @param idx2 - second triangle index.
      * @param secondPoint - second picked point coordinates.
+     * @param snapingValue - threshold distance from point to incision path where point has to be snap on incision path.
+     * @param snapingBorderValue - threshold distance from point to mesh border where incision is considered to reach the border..
      *
      * @return bool - true if incision has been performed.
      */
     bool incisionTriangleModel(TriangleModel* model1, unsigned int idx1, const Vector3& firstPoint,
-            TriangleModel *model2, unsigned int idx2, const Vector3& secondPoint );
+            TriangleModel *model2, unsigned int idx2, const Vector3& secondPoint,
+            int snapingValue = 0, int snapingBorderValue = 0);
 
     void removeItemsFromTriangleModel(sofa::component::collision::TriangleModel* model, const std::vector<int>& indices) const;
 

@@ -43,9 +43,14 @@ class InciseAlongPathPerformerconfiguration
 {
 public:
     void setIncisionMethod (int m) {currentMethod=m;}
+    void setSnapingBorderValue (int m) {snapingBorderValue = m;}
+    void setSnapingValue (int m) {snapingValue = m;}
 
 protected:
     int currentMethod;
+    int snapingBorderValue;
+    int snapingValue;
+
 };
 
 
@@ -65,7 +70,6 @@ protected:
     BodyPicked startBody;
     BodyPicked firstBody;
     BodyPicked secondBody;
-    int cpt;
 };
 }
 }

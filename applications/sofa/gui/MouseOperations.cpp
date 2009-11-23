@@ -150,6 +150,8 @@ void InciseOperation::start()
 
             component::collision::InciseAlongPathPerformerconfiguration *performerConfiguration=dynamic_cast<component::collision::InciseAlongPathPerformerconfiguration*>(performer);
             performerConfiguration->setIncisionMethod(getIncisionMethod());
+            performerConfiguration->setSnapingBorderValue(getSnapingBorderValue());
+            performerConfiguration->setSnapingValue(getSnapingValue());
 
             pickHandle->getInteraction()->mouseInteractor->addInteractionPerformer(performer);
             performer->start();
@@ -172,6 +174,8 @@ void InciseOperation::start()
 
         component::collision::InciseAlongPathPerformerconfiguration *performerConfiguration=dynamic_cast<component::collision::InciseAlongPathPerformerconfiguration*>(performer);
         performerConfiguration->setIncisionMethod(getIncisionMethod());
+        performerConfiguration->setSnapingBorderValue(getSnapingBorderValue());
+        performerConfiguration->setSnapingValue(getSnapingValue());
 
         pickHandle->getInteraction()->mouseInteractor->addInteractionPerformer(performer);
         performer->start();

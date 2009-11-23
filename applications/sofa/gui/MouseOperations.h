@@ -95,11 +95,18 @@ public:
     virtual void endOperation() ;
 
     void setIncisionMethod (int m) {method = m;}
+    void setSnapingBorderValue (int m) {snapingBorderValue = m;}
+    void setSnapingValue (int m) {snapingValue = m;}
+
     virtual int getIncisionMethod() const { return method;}
+    virtual int getSnapingBorderValue() const { return snapingBorderValue;}
+    virtual int getSnapingValue() const { return snapingValue;}
 
     static std::string getDescription() {return "Incise along a path";}
 protected:
     int method;
+    int snapingBorderValue;
+    int snapingValue;
     int cpt;
 };
 
