@@ -9,12 +9,15 @@
 
 namespace sofa
 {
+namespace helper
+{
+template class Factory<std::string, gui::qt::DataWidget, gui::qt::DataWidget::CreatorArgument>;
+}
 namespace gui
 {
 namespace qt
 {
-using namespace sofa::helper;
-template class Factory<std::string, DataWidget, DataWidget::CreatorArgument>;
+
 
 bool DefaultDataWidget::createWidgets(QWidget *parent)
 {
