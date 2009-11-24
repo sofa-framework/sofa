@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include <sofa/simulation/common/DeleteVisitor.h>
 #include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/common/Simulation.h>
 
 namespace sofa
 {
@@ -34,15 +35,28 @@ namespace simulation
 
 Visitor::Result DeleteVisitor::processNodeTopDown(Node* node)
 {
-
+    //If a corresponding visual node exists...
     if (!node->nodeInVisualGraph.empty())
     {
-        DeleteVisitor deleteV;
-        node->nodeInVisualGraph->executeVisitor(&deleteV);
-        node->nodeInVisualGraph->detachFromGraph();
-        delete node->nodeInVisualGraph;
+        //... and is the Visual Root, we remove all the component (we cannot launch a DeleteVisitor from the VisualRoot, as it would delete eventual visual child node, with no way of inform the simulation nodes
+        if (node->nodeInVisualGraph == getSimulation()->getVisualRoot())
+        {
+            while (!node->componentInVisualGraph.empty())
+            {
+                core::objectmodel::BaseObject* object = *node->componentInVisualGraph.begin();
+                node->nodeInVisualGraph->removeObject(object);
+                node->componentInVisualGraph.remove(object);
+                delete object;
+            }
+        }
+        else
+        {
+            DeleteVisitor deleteV;
+            node->nodeInVisualGraph->executeVisitor(&deleteV);
+            node->nodeInVisualGraph->detachFromGraph();
+            delete node->nodeInVisualGraph;
+        }
     }
-
     for (simulation::Node::ChildIterator itChild = node->childInVisualGraph.begin(); itChild != node->childInVisualGraph.end(); ++itChild)
     {
         simulation::Node *child=*itChild;
@@ -66,7 +80,7 @@ void DeleteVisitor::processNodeBottomUp(Node* node)
     while (!node->object.empty())
     {
         core::objectmodel::BaseObject* object = *node->object.begin();
-        node->simulation::Node::removeObject(object);
+        node->removeObject(object);
         delete object;
     }
 }
