@@ -145,7 +145,10 @@ void InitVisitor::processNodeBottomUp(simulation::Node* node)
     {
         std::map< simulation::Node*, simulation::Node*> simuToVisu;
         if ( (Node*)(getSimulation()->getContext())  == node) //Root of the Simulation Graph
+        {
+            node->nodeInVisualGraph.add(getSimulation()->getVisualRoot());
             simuToVisu.insert(std::make_pair(node, getSimulation()->getVisualRoot()));
+        }
 
         //********************************************************
         //Moving Visual Models
