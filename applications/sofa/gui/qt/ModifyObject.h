@@ -35,7 +35,7 @@
 #include <sofa/helper/fixed_array.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/component/misc/Monitor.h>
-#include <sofa/helper/Factory.h>
+
 
 #include <qglobal.h>
 #ifdef SOFA_QT4
@@ -219,152 +219,6 @@ protected:
     bool LINKPATH_MODIFIABLE_FLAG; //if we allow to modify the links of the Data
 };
 
-class DataWidget
-{
-protected:
-    core::objectmodel::Base* node;
-    core::objectmodel::BaseData* baseData;
-    QWidget* parent;
-    ModifyObject* dialog;
-    std::string name;
-    bool readOnly;
-public:
-    typedef core::objectmodel::BaseData MyData;
-
-    DataWidget(MyData* d) : node(NULL), baseData(d), dialog(NULL), readOnly(false) {}
-    virtual ~DataWidget() {}
-    void setNode(core::objectmodel::Base* n) { node = n; }
-    void setDialog(ModifyObject* d) { dialog = d; }
-    void setReadOnly(bool b) { readOnly = b; }
-    void setParent(QWidget *p) { parent=p; }
-    void setName(std::string n) { name = n;};
-    virtual bool createWidgets(QWidget* parent) = 0;
-    virtual void readFromData() = 0;
-    virtual void writeToData() {}
-    virtual bool processChange(const QObject* /*sender*/) { return false; }
-    virtual bool isModified() { return false; }
-    std::string getName() { return name;};
-    virtual void update()
-    {
-        readFromData();
-    }
-    virtual void updateVisibility()
-    {
-        parent->setShown(baseData->isDisplayed());
-    };
-
-    virtual unsigned int sizeWidget() {return 1;}
-    //
-    // Factory related code
-    //
-
-    struct CreatorArgument
-    {
-        core::objectmodel::Base* node;
-        std::string name;
-        core::objectmodel::BaseData* data;
-        ModifyObject* dialog;
-        QWidget* parent;
-        bool readOnly;
-    };
-
-    template<class T>
-    static void create(T*& instance, const CreatorArgument& arg)
-    {
-        typename T::MyData* data = dynamic_cast<typename T::MyData*>(arg.data);
-        if (!data) return;
-        instance = new T(data);
-        instance->setNode(arg.node);
-        instance->setDialog(arg.dialog);
-        instance->setReadOnly(arg.readOnly);
-        instance->setParent(arg.parent);
-        instance->setName(arg.name);
-        if (!instance->createWidgets(arg.parent))
-        {
-            delete instance;
-            instance = NULL;
-        }
-        else instance->updateVisibility();
-    }
-};
-
-typedef sofa::helper::Factory<std::string, DataWidget, DataWidget::CreatorArgument> DataWidgetFactory;
-
-class DefaultDataWidget : public DataWidget
-{
-protected:
-    typedef QLineEdit Widget;
-    MyData* data;
-    Widget* w;
-    int counter;
-    bool modified;
-public:
-    DefaultDataWidget(MyData* d) : DataWidget(d), data(d), w(NULL), counter(-1), modified(false) {}
-    virtual bool createWidgets(QWidget* parent)
-    {
-        w = new QLineEdit(parent);
-        if (w == NULL) return false;
-        std::string s = data->getValueString();
-        w->setText(QString(s.c_str()));
-        counter = data->getCounter();
-        if (this->readOnly)
-            w->setEnabled(false);
-        else
-            dialog->connect(w, SIGNAL( textChanged(const QString&) ), dialog, SLOT( changeValue() ));
-        return true;
-    }
-    virtual void readFromData()
-    {
-        std::string s = data->getValueString();
-        w->setText(QString(s.c_str()));
-        modified = false;
-        counter = data->getCounter();
-    }
-    virtual bool isModified() { return modified; }
-    virtual void writeToData()
-    {
-        if (!modified) return;
-        std::string s = w->text().ascii();
-        data->read(s);
-        counter = data->getCounter();
-    }
-    virtual bool processChange(const QObject* sender)
-    {
-        if (sender == w)
-        {
-            modified = true;
-            return true;
-        }
-        else return false;
-    }
-    virtual void update()
-    {
-        if (counter != data->getCounter())
-            readFromData();
-    }
-};
-
-
-
-//TODO Move to a separate file
-class QTableUpdater : virtual public Q3Table
-{
-    Q_OBJECT
-public:
-    QTableUpdater ( int numRows, int numCols, QWidget * parent = 0, const char * name = 0 ):
-#ifdef SOFA_QT4
-        Q3Table(numRows, numCols, parent, name)
-#else
-        QTable(numRows, numCols, parent, name)
-#endif
-    {};
-
-public slots:
-    void setDisplayed(bool b) {this->setShown(b);}
-public slots:
-
-};
-
 class QPushButtonUpdater: public QPushButton
 {
     Q_OBJECT
@@ -373,18 +227,7 @@ public:
     QPushButtonUpdater( DataWidget *d, const QString & text, QWidget * parent = 0 ): QPushButton(text,parent),widget(d) {};
 
 public slots:
-    void setDisplayed(bool b)
-    {
-        if (b)
-        {
-            this->setText(QString("Click to hide the values"));
-            widget->readFromData();
-        }
-        else
-        {
-            this->setText(QString("Click to display the values"));
-        }
-    }
+    void setDisplayed(bool b);
 protected:
     DataWidget *widget;
 

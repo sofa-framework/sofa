@@ -27,7 +27,7 @@
 #ifndef SOFA_GUI_QT_TABLEDATAWIDGET_H
 #define SOFA_GUI_QT_TABLEDATAWIDGET_H
 
-#include <sofa/gui/qt/ModifyObject.h>
+#include "SimpleDataWidget.h"
 #include <sofa/gui/qt/StructDataWidget.h>
 #include <sofa/component/topology/PointSubset.h>
 #include <sofa/component/topology/PointData.h>
