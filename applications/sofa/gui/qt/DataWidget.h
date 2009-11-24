@@ -188,9 +188,8 @@ public slots:
 
 };
 
-#if defined WIN32 && !defined(SOFA_GUI_QT_DATAWIDGET_CPP)
-extern template class SOFA_SOFAGUIQT_API helper::Factory<std::string, DataWidget, DataWidget::CreatorArgument>;
-#endif
+//     extern template class SOFA_SOFAGUIQT_API helper::Factory<std::string, DataWidget, DataWidget::CreatorArgument>;
+
 
 
 
