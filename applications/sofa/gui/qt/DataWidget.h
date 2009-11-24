@@ -64,7 +64,6 @@ class ModifyObject;
 class DataWidget
 {
 protected:
-    //core::objectmodel::Base* node;
     core::objectmodel::BaseData* baseData;
     QWidget* parent;
     ModifyObject* dialog;
