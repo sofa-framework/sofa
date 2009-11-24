@@ -57,8 +57,10 @@ HEADERS += viewer/SofaViewer.h \
            AddObject.h \
            Main.h \
            RealGUI.h \
+		   DataWidget.h \
            DisplayFlagWidget.h \
            GraphDataWidget.h \
+		   ModifyData.h \
            ModifyObject.h \
            SimpleDataWidget.h \
 		   SofaGUIQt.h \
@@ -78,8 +80,10 @@ SOURCES += Main.cpp \
            RealGUI_graph.cpp \
            RealGUI_record.cpp \
            RealGUI.cpp \
+		   DataWidget.cpp \ 
            DisplayFlagWidget.cpp \
            GraphDataWidget.cpp \  
+		   ModifyData.cpp \
            ModifyObject.cpp \
            SimpleDataWidget.cpp \
            StructDataWidget.cpp \

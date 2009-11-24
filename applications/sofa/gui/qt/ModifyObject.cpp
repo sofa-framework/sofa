@@ -25,7 +25,8 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <sofa/gui/qt/ModifyObject.h>
+#include "ModifyObject.h"
+#include "DataWidget.h"
 #include <iostream>
 #ifdef SOFA_QT4
 #include <QPushButton>
@@ -1322,6 +1323,21 @@ void QDisplayDataInfoWidget::linkEdited()
 {
     std::cerr << "linkEdited " << linkpath_edit->text().ascii() << std::endl;
     data->setLinkPath(linkpath_edit->text().ascii() );
+}
+
+void QPushButtonUpdater::setDisplayed(bool b)
+{
+
+    if (b)
+    {
+        this->setText(QString("Click to hide the values"));
+        widget->readFromData();
+    }
+    else
+    {
+        this->setText(QString("Click to display the values"));
+    }
+
 }
 
 } // namespace qt
