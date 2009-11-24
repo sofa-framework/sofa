@@ -32,7 +32,6 @@
 #include "SofaGUIQt.h"
 #include "ModifyObject.h"
 #include <sofa/helper/Factory.h>
-#include <qglobal.h>
 #ifdef SOFA_QT4
 #include <QDialog>
 #include <QLineEdit>
@@ -198,3 +197,4 @@ public slots:
 } // sofa
 
 #endif // SOFA_GUI_QT_DATAWIDGET_H
+
