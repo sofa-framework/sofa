@@ -362,7 +362,6 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
 
 
                 DataWidget::CreatorArgument dwarg;
-                dwarg.node = node;
                 dwarg.name = (*it).first;
                 dwarg.data = (*it).second;
                 dwarg.readOnly = (dwarg.data->isReadOnly() && READONLY_FLAG);

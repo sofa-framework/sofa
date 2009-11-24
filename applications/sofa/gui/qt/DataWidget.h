@@ -59,11 +59,12 @@ namespace gui
 {
 namespace qt
 {
+
 class ModifyObject;
 class DataWidget
 {
 protected:
-    core::objectmodel::Base* node;
+    //core::objectmodel::Base* node;
     core::objectmodel::BaseData* baseData;
     QWidget* parent;
     ModifyObject* dialog;
@@ -72,9 +73,8 @@ protected:
 public:
     typedef core::objectmodel::BaseData MyData;
 
-    DataWidget(MyData* d) : node(NULL), baseData(d), dialog(NULL), readOnly(false) {}
+    DataWidget(MyData* d) : baseData(d), dialog(NULL), readOnly(false) {}
     virtual ~DataWidget() {}
-    void setNode(core::objectmodel::Base* n) { node = n; }
     void setDialog(ModifyObject* d) { dialog = d; }
     void setReadOnly(bool b) { readOnly = b; }
     void setParent(QWidget *p) { parent=p; }
@@ -101,7 +101,6 @@ public:
 
     struct CreatorArgument
     {
-        core::objectmodel::Base* node;
         std::string name;
         core::objectmodel::BaseData* data;
         ModifyObject* dialog;
@@ -115,7 +114,6 @@ public:
         typename T::MyData* data = dynamic_cast<typename T::MyData*>(arg.data);
         if (!data) return;
         instance = new T(data);
-        instance->setNode(arg.node);
         instance->setDialog(arg.dialog);
         instance->setReadOnly(arg.readOnly);
         instance->setParent(arg.parent);
