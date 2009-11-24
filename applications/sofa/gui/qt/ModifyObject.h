@@ -37,7 +37,6 @@
 #include <sofa/component/misc/Monitor.h>
 
 
-#include <qglobal.h>
 #ifdef SOFA_QT4
 #include <QDialog>
 #include <QWidget>
