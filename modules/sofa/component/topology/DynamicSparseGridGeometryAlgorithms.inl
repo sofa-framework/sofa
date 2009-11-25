@@ -57,7 +57,7 @@ HexaID DynamicSparseGridGeometryAlgorithms<DataTypes>::getTopoIndexFromRegularGr
     existing = !(it == topoContainer->idInRegularGrid2IndexInTopo.getValue().end());
     if( !existing)
     {
-        serr << "getTopoIndexFromRegularGridIndex(): Warning ! unexisting given index " << index << " !" << sendl;
+        //serr << "getTopoIndexFromRegularGridIndex(): Warning ! unexisting given index " << index << " !" << sendl;
         return 0;
     }
     return it->second;
