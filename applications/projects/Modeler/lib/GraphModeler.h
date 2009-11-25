@@ -47,6 +47,7 @@
 #include <Q3PopupMenu>
 #include <Q3Header>
 #else
+#include <qheader.h>
 #include <qlistview.h>
 #include <qdragobject.h>
 #include <qpopupmenu.h>

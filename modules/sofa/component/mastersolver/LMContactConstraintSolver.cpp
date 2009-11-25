@@ -134,29 +134,35 @@ bool LMContactConstraintSolver::isCollisionDetected()
 void LMContactConstraintSolver::step(double dt)
 {
     const unsigned int maxSteps = maxCollisionSteps.getValue();
+    simulation::Node *node = (simulation::Node*)getContext();
 
     // Then integrate the time step
-//    sout << "integration" << sendl;
+    //    sout << "integration" << sendl;
     integrate(dt);
 
-    bool propagateState=needPriorStatePropagation();
 
+    bool propagateState=needPriorStatePropagation();
+    bool noConstraint=true;
     for (unsigned int step=0; step<maxSteps; ++step)
     {
-
         if (isCollisionDetected())
         {
-            ((simulation::Node*) getContext())->execute<simulation::CollisionResponseVisitor>();
+            node->execute<simulation::CollisionResetVisitor>();
+            node->execute<simulation::CollisionResponseVisitor>();
             solveConstraints(propagateState);
+            noConstraint=false;
         }
         else
         {
             //No collision --> no constraint
-            simulation::MechanicalResetConstraintVisitor resetConstraints;
-            resetConstraints.execute(this->getContext());
-            ((simulation::Node*) getContext())->execute<simulation::CollisionResetVisitor>();
             break;
         }
+    }
+
+    if (noConstraint)
+    {
+        node->execute<simulation::MechanicalResetConstraintVisitor>();
+        node->execute<simulation::CollisionResetVisitor>();
     }
 }
 
