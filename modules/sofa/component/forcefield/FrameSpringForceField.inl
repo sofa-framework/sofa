@@ -73,7 +73,7 @@ void FrameSpringForceField<DataTypes>::init()
 }
 
 template<class DataTypes>
-void FrameSpringForceField<DataTypes>::addSpringForce ( double& /*potentialEnergy*/, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int , /*const*/ Spring& spring )
+void FrameSpringForceField<DataTypes>::addSpringForce ( double& /*potentialEnergy*/, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int , const Spring& spring )
 {
     int a = spring.m1;
     int b = spring.m2;
@@ -109,7 +109,7 @@ void FrameSpringForceField<DataTypes>::addSpringForce ( double& /*potentialEnerg
 }
 
 template<class DataTypes>
-void FrameSpringForceField<DataTypes>::addSpringDForce ( VecDeriv& f1, const VecDeriv& dx1, VecDeriv& f2, const VecDeriv& dx2, int , /*const*/ Spring& spring )
+void FrameSpringForceField<DataTypes>::addSpringDForce ( VecDeriv& f1, const VecDeriv& dx1, VecDeriv& f2, const VecDeriv& dx2, int , const Spring& spring )
 {
     const int a = spring.m1;
     const int b = spring.m2;
@@ -136,18 +136,15 @@ void FrameSpringForceField<DataTypes>::addSpringDForce ( VecDeriv& f1, const Vec
 template<class DataTypes>
 void FrameSpringForceField<DataTypes>::addForce ( VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2 )
 {
-    helper::vector<Spring>& springs = *this->springs.beginEdit();
-
     springRef.resize ( x1.size() );
-
     f1.resize ( x1.size() );
     f2.resize ( x2.size() );
     m_potentialEnergy = 0;
-    for ( unsigned int i=0; i<springs.size(); i++ )
+    const sofa::helper::vector<Spring>& springsVec = springs.getValue();
+    for ( unsigned int i=0; i<springsVec.size(); i++ )
     {
-        this->addSpringForce ( m_potentialEnergy,f1,x1,v1,f2,x2,v2, i, springs[i] );
+        this->addSpringForce ( m_potentialEnergy,f1,x1,v1,f2,x2,v2, i, springsVec[i] );
     }
-    this->springs.endEdit();
 }
 
 template<class DataTypes>
@@ -156,13 +153,11 @@ void FrameSpringForceField<DataTypes>::addDForce ( VecDeriv& df1, VecDeriv& df2,
     df1.resize ( dx1.size() );
     df2.resize ( dx2.size() );
 
-    //const helper::vector<Spring>& springs = this->springs.getValue();
-    helper::vector<Spring>& springs = *this->springs.beginEdit();
-    for ( unsigned int i=0; i<springs.size(); i++ )
+    const sofa::helper::vector<Spring>& springsVec = springs.getValue();
+    for ( unsigned int i=0; i<springsVec.size(); i++ )
     {
-        this->addSpringDForce ( df1,dx1,df2,dx2, i, springs[i] );
+        this->addSpringDForce ( df1,dx1,df2,dx2, i, springsVec[i] );
     }
-    this->springs.endEdit();
 }
 
 template<class DataTypes>
@@ -231,6 +226,8 @@ void FrameSpringForceField<DataTypes>::addSpring ( int m1, int m2, Real softKst,
 {
     Spring s ( m1,m2,softKst,softKsr, kd );
     //TODO// Init vec1 et vec2. Encore mieux a la creation du ressort mais il manque les positions des DOFs...
+//const MechanicalState<DataTypes> obj1 = *(getMState1());
+//const MechanicalState<DataTypes> obj2 = *(getMState2());
 
     springs.beginEdit()->push_back ( s );
     springs.endEdit();

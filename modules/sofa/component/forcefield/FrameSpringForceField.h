@@ -173,9 +173,9 @@ protected:
 
 
     /// Accumulate the spring force and compute and store its stiffness
-    void addSpringForce ( double& potentialEnergy, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int i, /*const*/ Spring& spring );
+    void addSpringForce ( double& potentialEnergy, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int i, const Spring& spring );
     /// Apply the stiffness, i.e. accumulate df given dx
-    void addSpringDForce ( VecDeriv& df1, const VecDeriv& dx1, VecDeriv& df2, const VecDeriv& dx2, int i, /*const*/ Spring& spring );
+    void addSpringDForce ( VecDeriv& df1, const VecDeriv& dx1, VecDeriv& df2, const VecDeriv& dx2, int i, const Spring& spring );
 
 
 
