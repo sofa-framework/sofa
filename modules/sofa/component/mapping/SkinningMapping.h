@@ -54,7 +54,7 @@ using sofa::component::topology::HexahedronGeodesicalDistance;
 
 typedef enum
 {
-    DISTANCE_EUCLIDIAN, DISTANCE_GEODESIC
+    DISTANCE_EUCLIDIAN, DISTANCE_GEODESIC, DISTANCE_HARMONIC
 } DistanceType;
 
 typedef enum
