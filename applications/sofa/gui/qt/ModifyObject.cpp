@@ -89,13 +89,13 @@ ModifyObject::ModifyObject(
     bool modal, Qt::WFlags f )
     :ModifyObjectModel(Id_,item_clicked,parent_,name,modal,f),
      node(node_clicked),
-     visualContentModified(false),
-     dialogFlags_(dialogFlags),
      outputTab(NULL),
      warningTab(NULL),
-     logWarningEdit(NULL),
      logOutputEdit(NULL),
-     graphEnergy(NULL)
+     logWarningEdit(NULL),
+     graphEnergy(NULL),
+     visualContentModified(false),
+     dialogFlags_(dialogFlags)
 {
     energy_curve[0]=NULL;	        energy_curve[1]=NULL;	        energy_curve[2]=NULL;
     //Initialization of the Widget

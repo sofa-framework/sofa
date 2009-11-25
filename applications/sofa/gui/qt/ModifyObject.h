@@ -232,10 +232,14 @@ protected:
     std::set< Q3Table* >                                               setResize;
     WFloatLineEdit* transformation[9]; //Data added to manage transformation of a whole node
 
-    QWidget *warningTab;
-    Q3TextEdit *logWarningEdit;
     QWidget *outputTab;
+    QWidget *warningTab;
     Q3TextEdit *logOutputEdit;
+    Q3TextEdit *logWarningEdit;
+    std::vector< double > history;
+    std::vector< double > energy_history[3];
+    QwtPlot *graphEnergy;
+    QwtPlotCurve *energy_curve[3];
 
     typedef std::map<core::objectmodel::BaseData*, DataWidget*> DataWidgetMap;
     DataWidgetMap dataWidgets;
@@ -245,10 +249,6 @@ protected:
     //Visual Flags
     DisplayFlagWidget *displayFlag;
 
-    std::vector< double > history;
-    std::vector< double > energy_history[3];
-    QwtPlot *graphEnergy;
-    QwtPlotCurve *energy_curve[3];
     unsigned int counterWidget;
 };
 
