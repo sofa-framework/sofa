@@ -81,7 +81,7 @@ SkinningMapping<BasicMapping>::SkinningMapping ( In* from, Out* to )
     , computeWeights ( true )
     , wheighting ( WEIGHT_INVDIST_SQUARE )
     , interpolation ( INTERPOLATION_LINEAR )
-    , distance ( DISTANCE_GEODESIC )
+    , distance ( DISTANCE_HARMONIC )
 {
     maskFrom = NULL;
     if ( core::componentmodel::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *> ( from ) )
@@ -206,7 +206,7 @@ void SkinningMapping<BasicMapping>::sortReferences ()
 #ifdef SOFA_DEV
         if ( !geoDist )
         {
-            serr << "Error during init: Geodesical distance component missing while geodesical distance is requested." << sendl;
+            serr << "Error during init: Geodesical distance component missing." << sendl;
             break;
         }
 
@@ -252,6 +252,55 @@ void SkinningMapping<BasicMapping>::sortReferences ()
 #endif
         break;
     }
+    case DISTANCE_HARMONIC:
+    {
+#ifdef SOFA_DEV
+        if ( !geoDist )
+        {
+            serr << "Error during init: Geodesical distance component missing." << sendl;
+            break;
+        }
+        GeoVecCoord tmpTo, tmpFrom;
+        tmpFrom.resize ( xfrom.size() );
+        for ( unsigned int i = 0; i < xfrom.size(); i++ )
+            tmpFrom[i] = xfrom[i].getCenter();
+        tmpTo.resize ( xto.size() );
+        for ( unsigned int i = 0; i < xto.size(); i++ )
+            tmpTo[i] = xto[i];
+
+        const unsigned int& nbRef = nbRefs.getValue();
+        for ( unsigned int i=0 ; i<xto.size() *nbRef ; i++ )
+            m_distances[i] = 9999999. ;
+
+        sofa::helper::vector<sofa::helper::vector<double> > dists;
+        sofa::helper::vector<sofa::helper::vector<Coord> > grads;
+        geoDist->computeHarmonicCoords ( dists, grads, tmpTo, tmpFrom );
+        for ( unsigned int j=0; j<xfrom.size(); j++ )
+        {
+            for ( unsigned int i=0; i<xto.size(); i++ )
+            {
+                for ( unsigned int k=0; k<nbRef; k++ )
+                {
+                    if ( dists[j][i] < m_distances[nbRef *i+k] )
+                    {
+                        for ( unsigned int m=nbRef-1 ; m>k ; m-- )
+                        {
+                            m_distances[nbRef *i+m] = m_distances[nbRef *i+m-1];
+                            m_gradients[nbRef *i+m] = m_gradients[nbRef *i+m-1];
+                            m_reps[nbRef *i+m] = m_reps[nbRef *i+m-1];
+                        }
+                        m_distances[nbRef *i+k] = dists[j][i]+1;
+                        m_gradients[nbRef *i+k] = grads[j][i];
+                        m_reps[nbRef *i+k] = j;
+                        k = nbRef;
+                    }
+                }
+            }
+        }
+        repartition.setValue ( m_reps );
+#endif
+        break;
+    }
     default:
     {}
     }
@@ -267,9 +316,11 @@ void SkinningMapping<BasicMapping>::init()
     this->getContext()->get ( geoDist );
     if ( !geoDist )
     {
-        serr << "Can nt find the geodesical distance component." << sendl;
+        serr << "Can not find the geodesical distance component: distances used are euclidian." << sendl;
         distance = DISTANCE_EUCLIDIAN;
     }
+#else
+    distance = DISTANCE_EUCLIDIAN;
 #endif
 
     if ( this->initPos.empty() && this->toModel!=NULL && computeWeights==true && coefs.getValue().size() ==0 )
