@@ -4,6 +4,7 @@
  *  Created on: 27 oct. 2009
  *      Author: froy
  */
+
 #ifndef CGALPLUGIN_MESHGENERATIONFROMPOLYHEDRON_INL
 #define CGALPLUGIN_MESHGENERATIONFROMPOLYHEDRON_INL
 #include "MeshGenerationFromPolyhedron.h"
@@ -48,6 +49,16 @@ MeshGenerationFromPolyhedron<DataTypes>::MeshGenerationFromPolyhedron()
     , facetApproximation(initData(&facetApproximation, 0.008, "facetApproximation", "facetApproximation"))
     , cellRatio(initData(&cellRatio, 4.0, "cellRatio", "cellRatio"))
     , cellSize(initData(&cellSize, 0.2, "cellSize", "cellSize"))
+
+    , odt(initData(&odt, false, "odt", "activate odt optimization"))
+    , lloyd(initData(&lloyd, false, "lloyd", "activate lloyd optimization"))
+    , perturb(initData(&perturb, false, "perturb", "activate perturb optimization"))
+    , exude(initData(&exude, false, "exude", "activate exude optimization"))
+
+    , odt_max_it(initData(&odt_max_it, 200, "odt_max_it", "odt max iteration number"))
+    , lloyd_max_it(initData(&lloyd_max_it, 200, "lloyd_max_it", "lloyd max iteration number"))
+    , perturb_max_time(initData(&perturb_max_time, 20.0, "perturb_max_time", "perturb maxtime"))
+    , exude_max_time(initData(&exude_max_time, 20.0, "exude_max_time", "exude max time"))
 {
 
 }
@@ -135,7 +146,52 @@ void MeshGenerationFromPolyhedron<DataTypes>::update()
     Mesh_criteria criteria(facet_criteria, cell_criteria);
 
 #ifdef SOFA_NEW_CGAL_MESH
+    std::cout << "mesh creation" << std::endl;
     C3t3 c3t3 = CGAL::make_mesh_3<C3t3>(domain, criteria, no_exude(), no_perturb());
+    std::cout << "mesh optimization" << std::endl;
+    if(odt.getValue())
+        CGAL::odt_optimize_mesh_3(c3t3, domain, max_iteration_number=odt_max_it.getValue());
+    if(lloyd.getValue())
+        CGAL::lloyd_optimize_mesh_3(c3t3, domain, max_iteration_number=lloyd_max_it.getValue());
+    if(perturb.getValue())
+        CGAL::perturb_mesh_3(c3t3, domain, max_time=perturb_max_time.getValue());
+    if(exude.getValue())
+        CGAL::exude_mesh_3(c3t3, max_time=exude_max_time.getValue());
+
+    //test mesh quality
+    int nb_in = 0;
+    int nb_out = 0;
+    int nb_bad = 0;
+    const Tr& tri = c3t3.triangulation();
+    for (C3t3::Cell_iterator cit = c3t3.cells_begin(); cit != c3t3.cells_end(); ++cit )
+    {
+        Geom_traits::Tetrahedron_3 tet = tri.tetrahedron(cit);
+        Geom_traits::Point_3 cc = tri.dual(cit);
+
+        if (K().has_on_bounded_side_3_object()(tet,cc))
+        {
+            ++nb_in;
+        }
+// 		else
+// 			// change cell label (not required)
+// 			c3t3.set_subdomain_index(cit, 2);
+
+// 		if(K().has_on_boundary_3(tet,cc))
+// 		{
+// 			++nb_bad;
+// 			continue;
+// 		}
+// 		if(K().Has_on_negative_side_3(tet,cc))
+// 		{
+// 			++nb_out;
+// 		}
+
+
+    }
+
+    std::cout << "number of tetra: " << c3t3.number_of_cells() << std::endl;
+//	std::cout << "bad tetra: " << (double)nb_bad/c3t3.number_of_cells()*100 << "%" << std::endl;
+    std::cout << "well-centered tetra: " << ((double)nb_in/(double)c3t3.number_of_cells())*100 << "%" << std::endl;
 #else
     C3t3 c3t3 = CGAL::make_mesh_3<C3t3>(domain, criteria);
 #endif
