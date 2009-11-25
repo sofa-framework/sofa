@@ -87,6 +87,7 @@ public:
     behavior::MechanicalState<DataTypes>* getMState() { return mstate; }
 
     virtual void getCompliance(defaulttype::BaseMatrix* W);
+    virtual void getComplianceMatrix(defaulttype::BaseMatrix* m);
     virtual void applyContactForce(const defaulttype::BaseVector *f);
 
 
@@ -143,6 +144,7 @@ protected:
     std::string invName;
     InverseStorage* invM;
     const Real* appCompliance;
+    unsigned int dimensionAppCompliance;
 
     static std::map<std::string, InverseStorage>& getInverseMap()
     {

@@ -146,17 +146,17 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
         invName = ss.str();
     }
     invM = getInverse(invName);
+    dimensionAppCompliance=nbRows;
 
     if (invM->data == NULL)
     {
         invM->data = new Real[nbRows * nbCols];
 
-        std::ifstream compFileIn(invName.c_str(), std::ifstream::binary);
-
         sout << "try to open : " << invName << endl;
-
-        if(compFileIn.good() && recompute.getValue()==false)
+        if (sofa::helper::system::DataRepository.findFile(invName) && recompute.getValue()==false)
         {
+            invName=sofa::helper::system::DataRepository.getFile(invName);
+            std::ifstream compFileIn(invName.c_str(), std::ifstream::binary);
             sout << "file open : " << invName << " compliance being loaded" << endl;
             //complianceLoaded = true;
             compFileIn.read((char*)invM->data, nbCols * nbRows*sizeof(double));
@@ -231,8 +231,9 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
             ///////////////////////////////////////////////////////////////////////////////////////////////
 
             VecDeriv& velocity = *mstate->getV();
+            VecDeriv velocity0 = *mstate->getV();
             VecCoord& pos=*mstate->getX();
-            VecCoord& pos0=*mstate->getX0();
+            VecCoord  pos0=*mstate->getX();
 
 
             /// christian : it seems necessary to called the integration one time for initialization
@@ -338,6 +339,11 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
             std::ofstream compFileOut(invName.c_str(), std::fstream::out | std::fstream::binary);
             compFileOut.write((char*)invM->data, nbCols * nbRows*sizeof(double));
             compFileOut.close();
+
+            //Reset the velocity
+            for (unsigned int i=0; i<velocity.size(); i++) velocity[i]=velocity0[i];
+            //Reset the position
+            for (unsigned int i=0; i<pos.size(); i++)      pos[i]=pos0[i];
         }
     }
 
@@ -639,6 +645,19 @@ void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const default
 }
 
 
+
+template<class DataTypes>
+void PrecomputedConstraintCorrection<DataTypes>::getComplianceMatrix(defaulttype::BaseMatrix* m)
+{
+    m->resize(dimensionAppCompliance,dimensionAppCompliance);
+    for (unsigned int l=0; l<dimensionAppCompliance; ++l)
+    {
+        for (unsigned int c=0; c<dimensionAppCompliance; ++c)
+        {
+            m->set(l,c,appCompliance[l*dimensionAppCompliance+c]);
+        }
+    }
+}
 
 /*
 template<>

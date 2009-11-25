@@ -167,7 +167,7 @@ void UncoupledConstraintCorrection<DataTypes>::getCompliance(defaulttype::BaseMa
         sout<<" : "<<sendl;
     }
 
-// debug : verifie qu'il n'y a pas de 0 sur la diagonale de W
+    // debug : verifie qu'il n'y a pas de 0 sur la diagonale de W
     //printf("\n index : ");
     //for(unsigned int curRowConst = 0; curRowConst < numConstraints; curRowConst++)
     //{
@@ -181,6 +181,21 @@ void UncoupledConstraintCorrection<DataTypes>::getCompliance(defaulttype::BaseMa
     //}
 
 
+}
+
+template<class DataTypes>
+void UncoupledConstraintCorrection<DataTypes>::getComplianceMatrix(defaulttype::BaseMatrix *m)
+{
+    const VecReal &comp=compliance.getValue();
+    const unsigned int s=comp.size();
+    m->resize(s,s); //resize must set to zero the content of the matrix
+    for (unsigned int l=0; l<s; ++l)
+    {
+        for (unsigned int c=0; c<s; ++c)
+        {
+            if (l==c) m->set(l,c,comp[l]);
+        }
+    }
 }
 
 template<class DataTypes>

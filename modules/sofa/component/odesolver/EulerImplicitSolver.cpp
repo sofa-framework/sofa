@@ -66,6 +66,7 @@ void EulerImplicitSolver::init()
         for (unsigned int i=0; i<objs.size(); ++i)
             sout << "  " << objs[i]->getClassName() << ' ' << objs[i]->getName() << sendl;
     }
+    sofa::component::odesolver::OdeSolverImpl::init();
 }
 
 void EulerImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior::BaseMechanicalState::VecId xResult, sofa::core::componentmodel::behavior::BaseMechanicalState::VecId vResult)
