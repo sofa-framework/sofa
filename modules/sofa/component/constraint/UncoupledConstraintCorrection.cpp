@@ -181,6 +181,48 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getCompliance(defa
 
 }
 
+template<>
+void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getComplianceMatrix(defaulttype::BaseMatrix *m)
+{
+    const VecReal &comp=compliance.getValue();
+    const unsigned int dimension = defaulttype::DataTypeInfo<Deriv>::size();
+    const unsigned int numDofs   = comp.size() / 7;
+
+    m->resize(dimension*numDofs,dimension*numDofs);
+
+    for (unsigned int d=0; d<numDofs; ++d)
+    {
+        const SReal invM=comp[d*7];
+        m->set(d*6+0, d*6+0, invM);
+        m->set(d*6+1, d*6+1, invM);
+        m->set(d*6+2, d*6+2, invM);
+
+        m->set(d*6+3, d*6+3, comp[d*7+1]);
+
+        m->set(d*6+3, d*6+4, comp[d*7+2]);
+        m->set(d*6+4, d*6+3, comp[d*7+2]);
+
+        m->set(d*6+3, d*6+5, comp[d*7+3]);
+        m->set(d*6+5, d*6+3, comp[d*7+3]);
+
+        m->set(d*6+4, d*6+4, comp[d*7+4]);
+
+        m->set(d*6+4, d*6+5, comp[d*7+5]);
+        m->set(d*6+5, d*6+4, comp[d*7+5]);
+
+        m->set(d*6+5, d*6+5, comp[d*7+6]);
+    }
+
+
+//        for (unsigned int l=0;l<s;++l)
+//        {
+//            for (unsigned int c=0;c<s;++c)
+//            {
+//                if (l==c) m->set(l,c,comp[l]);
+//                else      m->set(l,c,0);
+//            }
+//        }
+}
 
 template<>
 void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::applyContactForce(const defaulttype::BaseVector *f)
