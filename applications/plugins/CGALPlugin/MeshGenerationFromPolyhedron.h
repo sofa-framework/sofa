@@ -14,6 +14,8 @@
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 
+//#define CGAL_MESH_3_VERBOSE
+
 #include <CGAL/Polyhedron_3.h>
 #include <CGAL/Polyhedron_incremental_builder_3.h>
 
@@ -72,6 +74,9 @@ public:
     //Parameters
     Data<double> facetAngle, facetSize, facetApproximation;
     Data<double> cellRatio, cellSize;
+    Data<bool> odt, lloyd, perturb, exude;
+    Data<int> odt_max_it, lloyd_max_it;
+    Data<double> perturb_max_time, exude_max_time;
 
     // A modifier creating a triangle with the incremental builder.
     template <class HDS>
