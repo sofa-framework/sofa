@@ -79,35 +79,32 @@ using sofa::core::objectmodel::BaseData;
 typedef QScrollView Q3ScrollView;
 #endif
 
-ModifyObject::ModifyObject(void *Id_, core::objectmodel::Base* node_clicked, Q3ListViewItem* item_clicked,  QWidget* parent_, const char* name, bool, Qt::WFlags /*f*/ )
-    : parent(parent_), node(NULL), Id(Id_),visualContentModified(false)
+ModifyObject::ModifyObject(
+    void *Id_,
+    core::objectmodel::Base* node_clicked,
+    Q3ListViewItem* item_clicked,
+    QWidget* parent_,
+    const ModifyObjectFlags& dialogFlags,
+    const char* name,
+    bool modal, Qt::WFlags f )
+    :ModifyObjectModel(Id_,item_clicked,parent_,name,modal,f),
+     node(node_clicked),
+     visualContentModified(false),
+     dialogFlags_(dialogFlags),
+     outputTab(NULL),
+     warningTab(NULL),
+     logWarningEdit(NULL),
+     logOutputEdit(NULL),
+     graphEnergy(NULL)
 {
-    //Title of the Dialog
-    setCaption(name);
-
-    HIDE_FLAG = true;
-    READONLY_FLAG = true;
-    EMPTY_FLAG = false;
-    RESIZABLE_FLAG = false;
-    REINIT_FLAG = true;
-    LINKPATH_MODIFIABLE_FLAG = false;
-
-    outputTab = warningTab = NULL;
     energy_curve[0]=NULL;	        energy_curve[1]=NULL;	        energy_curve[2]=NULL;
-
-    logWarningEdit=NULL; logOutputEdit=NULL;
-
     //Initialization of the Widget
-    setNode(node_clicked, item_clicked);
-    connect ( this, SIGNAL( objectUpdated() ), parent_, SLOT( redraw() ));
-    connect ( this, SIGNAL( dialogClosed(void *) ) , parent_, SLOT( modifyUnlock(void *)));
+    setNode();
 }
 
 //Set the default file
-void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem* item_clicked)
+void ModifyObject::setNode()
 {
-    node = node_clicked;
-    item = item_clicked;
     //Layout to organize the whole window
     QVBoxLayout *generalLayout = new QVBoxLayout(this, 0, 1, "generalLayout");
 
@@ -126,7 +123,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
 
 
     bool visualTab = false;
-    bool isNode = (dynamic_cast< Node *>(node_clicked) != NULL);
+    bool isNode = (dynamic_cast< Node *>(node) != NULL);
     QWidget *tabVisualization = NULL; //tab for visualization info: only created if needed ( boolean visualTab gives this answer ).
 
     QVBoxLayout *currentTabLayout = NULL;
@@ -134,10 +131,10 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
     QVBoxLayout *tabVisualizationLayout = NULL;
 
     // displayWidget
-    if (node_clicked)
+    if (node)
     {
         //If the current element is a node, we add a box to perform geometric transformation: translation, rotation, scaling
-        if(REINIT_FLAG && isNode)
+        if(dialogFlags_.REINIT_FLAG && isNode)
         {
             emptyTab = false;
             currentTab_save  = currentTab= new QWidget();
@@ -358,13 +355,13 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     number_line++;
                 }
                 counterWidget += number_line/3; //each 3lines, a new widget is counted
-                if (label_text != "TODO") new QDisplayDataInfoWidget(box,final_text,(*it).second,LINKPATH_MODIFIABLE_FLAG);
+                if (label_text != "TODO") new QDisplayDataInfoWidget(box,final_text,(*it).second,dialogFlags_.LINKPATH_MODIFIABLE_FLAG);
 
 
                 DataWidget::CreatorArgument dwarg;
                 dwarg.name = (*it).first;
                 dwarg.data = (*it).second;
-                dwarg.readOnly = (dwarg.data->isReadOnly() && READONLY_FLAG);
+                dwarg.readOnly = (dwarg.data->isReadOnly() && dialogFlags_.READONLY_FLAG);
                 dwarg.dialog = this;
                 dwarg.parent = box;
                 std::string widget = dwarg.data->getWidget();
@@ -399,7 +396,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     textedit->setText(QString((*it).second->getValueString().c_str()));
                     //if empty field, we don't display it
 
-                    if ((*it).second->getValueString().empty() && !EMPTY_FLAG)
+                    if ((*it).second->getValueString().empty() && !dialogFlags_.EMPTY_FLAG)
                     {
                         box->hide();
                         std::cerr << (*it).first << " : " << (*it).second->getValueTypeString() << " Not added because empty \n";
@@ -445,9 +442,9 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                         QString("Properties ") + QString::number(indexTab+1) + QString("/") + QString::number(counterTab));
         }
 
-        if (Node* node = dynamic_cast< Node* >(node_clicked))
+        if (Node* real_node = dynamic_cast< Node* >(node))
         {
-            if (REINIT_FLAG && (node->mass!= NULL || node->forceField.size()!=0 ) )
+            if (dialogFlags_.REINIT_FLAG && (real_node->mass!= NULL || real_node->forceField.size()!=0 ) )
             {
                 createGraphMass(dialogTab);
             }
@@ -467,26 +464,26 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                 box->setColumns(2);
                 box->setTitle(QString("Instance"));
                 new QLabel(QString("Name"), box);
-                new QLabel(QString(node_clicked->getName().c_str()), box);
+                new QLabel(QString(node->getName().c_str()), box);
                 new QLabel(QString("Class"), box);
-                new QLabel(QString(node_clicked->getClassName().c_str()), box);
-                std::string namespacename = node_clicked->decodeNamespaceName(typeid(*node_clicked));
+                new QLabel(QString(node->getClassName().c_str()), box);
+                std::string namespacename = node->decodeNamespaceName(typeid(*node));
                 if (!namespacename.empty())
                 {
                     new QLabel(QString("Namespace"), box);
                     new QLabel(QString(namespacename.c_str()), box);
                 }
-                if (!node_clicked->getTemplateName().empty())
+                if (!node->getTemplateName().empty())
                 {
                     new QLabel(QString("Template"), box);
-                    new QLabel(QString(node_clicked->getTemplateName().c_str()), box);
+                    new QLabel(QString(node->getTemplateName().c_str()), box);
                 }
 
                 tabLayout->addWidget( box );
             }
 
             //Class description
-            core::ObjectFactory::ClassEntry* entry = core::ObjectFactory::getInstance()->getEntry(node_clicked->getClassName());
+            core::ObjectFactory::ClassEntry* entry = core::ObjectFactory::getInstance()->getEntry(node->getClassName());
             if (entry != NULL && ! entry->creatorList.empty())
             {
                 Q3GroupBox *box = new Q3GroupBox(tab, QString("Class"));
@@ -497,7 +494,7 @@ void ModifyObject::setNode(core::objectmodel::Base* node_clicked, Q3ListViewItem
                     new QLabel(QString("Description"), box);
                     new QLabel(QString(entry->description.c_str()), box);
                 }
-                std::map<std::string, core::ObjectFactory::Creator*>::iterator it = entry->creatorMap.find(node_clicked->getTemplateName());
+                std::map<std::string, core::ObjectFactory::Creator*>::iterator it = entry->creatorMap.find(node->getTemplateName());
                 if (it != entry->creatorMap.end() && *it->second->getTarget())
                 {
                     new QLabel(QString("Provided by"), box);
@@ -654,7 +651,7 @@ void ModifyObject::updateValues()
     {
         std::string oldName = node->getName();
         //If the current element is a node of the graph, we first apply the transformations
-        if (REINIT_FLAG && dynamic_cast< Node *>(node))
+        if (dialogFlags_.REINIT_FLAG && dynamic_cast< Node *>(node))
         {
             Node* current_node = dynamic_cast< Node *>(node);
             if (!(transformation[0]->getFloatValue() == 0 &&
@@ -712,20 +709,20 @@ void ModifyObject::updateValues()
         {
             if( !dynamic_cast< Node *>(node))
             {
-                std::string name=item->text(0).ascii();
+                std::string name=item_->text(0).ascii();
                 std::string::size_type pos = name.find(' ');
                 if (pos != std::string::npos)
                     name.resize(pos);
                 name += "  ";
 
                 name+=newName;
-                item->setText(0,name.c_str());
+                item_->setText(0,name.c_str());
             }
             else if (dynamic_cast< Node *>(node))
-                item->setText(0,newName.c_str());
+                item_->setText(0,newName.c_str());
         }
 
-        if (REINIT_FLAG)
+        if (dialogFlags_.REINIT_FLAG)
         {
             if (sofa::core::objectmodel::BaseObject *obj = dynamic_cast< sofa::core::objectmodel::BaseObject* >(node))
             {
@@ -972,7 +969,7 @@ bool ModifyObject::createMonitorQtTable(Data<typename sofa::component::misc::Mon
     if (!vectorTable || !vectorTable2 || !vectorTable3)
     {
         if (!MonitorDataTemp.sizeIdxPos() && !MonitorDataTemp.sizeIdxVels()
-            && !MonitorDataTemp.sizeIdxForces() && !EMPTY_FLAG )
+            && !MonitorDataTemp.sizeIdxForces() && !dialogFlags_.EMPTY_FLAG )
             return false;
 
         box->setColumns(2);
@@ -1266,12 +1263,12 @@ void ModifyObject::resizeTable(int number)
 
 void ModifyObject::readOnlyData(Q3Table *widget, core::objectmodel::BaseData* data)
 {
-    widget->setReadOnly(( (data->isReadOnly()) && READONLY_FLAG));
+    widget->setReadOnly(( (data->isReadOnly()) && dialogFlags_.READONLY_FLAG));
 }
 
 void ModifyObject::readOnlyData(QWidget *widget, core::objectmodel::BaseData* data)
 {
-    widget->setEnabled(!( (data->isReadOnly()) && READONLY_FLAG));
+    widget->setEnabled(!( (data->isReadOnly()) && dialogFlags_.READONLY_FLAG));
 }
 
 
