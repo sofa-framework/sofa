@@ -51,6 +51,8 @@
 #include <Q3Process>
 #else
 #include "QSofaLibrary.h"
+#include <qheader.h>
+#include <qlabel.h>
 #include <qlistview.h>
 #include <qdragobject.h>
 #include <qpushbutton.h>
