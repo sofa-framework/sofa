@@ -62,6 +62,7 @@ HEADERS += viewer/SofaViewer.h \
            GraphDataWidget.h \
 		   ModifyData.h \
            ModifyObject.h \
+		   ModifyObjectModel.h \
            SimpleDataWidget.h \
 		   SofaGUIQt.h \
            StructDataWidget.h \
@@ -85,6 +86,7 @@ SOURCES += Main.cpp \
            GraphDataWidget.cpp \  
 		   ModifyData.cpp \
            ModifyObject.cpp \
+		   ModifyObjectModel.cpp \
            SimpleDataWidget.cpp \
            StructDataWidget.cpp \
            TableDataWidget.cpp \

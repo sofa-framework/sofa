@@ -38,12 +38,14 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 
 #include <sofa/gui/qt/GraphListenerQListView.h>
-#include <sofa/gui/qt/ModifyObject.h>
+//#include <sofa/gui/qt/ModifyObject.h>
 
 #ifdef SOFA_QT4
 #include <Q3ListView>
 #include <Q3ListViewItem>
 #include <Q3TextDrag>
+#include <Q3PopupMenu>
+#include <Q3Header>
 #else
 #include <qlistview.h>
 #include <qdragobject.h>
@@ -280,48 +282,6 @@ protected:
     std::vector< Operation > historyOperation;
     std::vector< Operation > historyUndoOperation;
     //-----------------------------------------------------------------------------//
-
-};
-
-
-
-
-
-
-
-
-
-
-
-
-
-///Overloading ModifyObject to display all the elements
-class ModifyObjectModeler: public ModifyObject
-{
-public:
-    ModifyObjectModeler( void *Id_, core::objectmodel::Base* node_clicked, Q3ListViewItem* item_clicked, QWidget* parent_, const char* name= 0 )
-    {
-        parent = parent_;
-        node = NULL;
-        Id = Id_;
-        visualContentModified=false;
-        setCaption(name);
-        HIDE_FLAG = false;
-        READONLY_FLAG=false; //everything will be editable
-        EMPTY_FLAG = true;
-        RESIZABLE_FLAG = true;
-        REINIT_FLAG = false;
-        LINKPATH_MODIFIABLE_FLAG = true;
-
-        //remove the qwt graphes
-        energy_curve[0]=energy_curve[1]=energy_curve[2]=NULL;
-        outputTab = warningTab = NULL;
-        logWarningEdit=NULL; logOutputEdit=NULL;
-        graphEnergy=NULL;
-        //Initialization of the Widget
-        setNode(node_clicked, item_clicked);
-        connect ( this, SIGNAL( dialogClosed(void *) ) , parent_, SLOT( modifyUnlock(void *)));
-    }
 
 };
 
