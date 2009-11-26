@@ -8,13 +8,15 @@
 #ifndef CGALPLUGIN_MESHGENERATIONFROMPOLYHEDRON_H
 #define CGALPLUGIN_MESHGENERATIONFROMPOLYHEDRON_H
 
+#define CGAL_MESH_3_VERBOSE
+
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/objectmodel/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 
-//#define CGAL_MESH_3_VERBOSE
+
 
 #include <CGAL/Polyhedron_3.h>
 #include <CGAL/Polyhedron_incremental_builder_3.h>
