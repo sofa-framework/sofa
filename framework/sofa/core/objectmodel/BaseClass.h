@@ -144,10 +144,10 @@ public:
 // Do not use this macro directly, use SOFA_CLASS instead
 #define SOFA_CLASS_DECL                                                 \
     static const MyClass* GetClass() { return MyClass::get(); }         \
-    virtual const ::sofa::core::objectmodel::BaseClass* getClass() const\
+    virtual const ::sofa::core::objectmodel::BaseClass* getClass() const \
     { return GetClass(); }                                              \
-    template<class T> ::sofa::core::objectmodel::BaseData::BaseInitData \
-    initData(Data<T>* field, const char* name, const char* help,        \
+    template<class SOFA_T> ::sofa::core::objectmodel::BaseData::BaseInitData \
+    initData(Data<SOFA_T>* field, const char* name, const char* help,   \
              bool isDisplayed=true, bool isReadOnly=false)              \
     {                                                                   \
         ::sofa::core::objectmodel::BaseData::BaseInitData res;          \
@@ -156,11 +156,11 @@ public:
         res.group = GetClass()->className.c_str();                      \
         return res;                                                     \
     }                                                                   \
-    template<class T> typename Data<T>::InitData initData(              \
-        Data<T>* field, const T& value, const char* name,               \
+    template<class SOFA_T> typename Data<SOFA_T>::InitData initData(    \
+        Data<SOFA_T>* field, const SOFA_T& value, const char* name,     \
         const char* help, bool isDisplayed=true, bool isReadOnly=false) \
     {                                                                   \
-        typename Data<T>::InitData res;                                 \
+        typename Data<SOFA_T>::InitData res;                            \
         this->initData0(field, res, value, name, help,                  \
                         isDisplayed, isReadOnly);                       \
         res.group = GetClass()->className.c_str();                      \
@@ -169,7 +169,6 @@ public:
     using Inherit1::sout;                                               \
     using Inherit1::serr;                                               \
     using Inherit1::sendl
-
 
 template <class Parents>
 class TClassParents
