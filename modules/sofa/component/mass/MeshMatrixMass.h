@@ -194,21 +194,21 @@ public:
 
 };
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_MASS_DIAGONALMASS_CPP)
+#if defined(WIN32) && !defined(SOFA_COMPONENT_MASS_MESHMATRIXMASS_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
 extern template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Vec3dTypes,double>;
 extern template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Vec2dTypes,double>;
 extern template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Vec1dTypes,double>;
-extern template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Rigid3dTypes,defaulttype::Rigid3dMass>;
-extern template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Rigid2dTypes,defaulttype::Rigid2dMass>;
+//extern template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Rigid3dTypes,defaulttype::Rigid3dMass>;
+//extern template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Rigid2dTypes,defaulttype::Rigid2dMass>;
 #endif
 #ifndef SOFA_DOUBLE
 extern template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Vec3fTypes,float>;
 extern template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Vec2fTypes,float>;
 extern template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Vec1fTypes,float>;
-extern template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Rigid3fTypes,defaulttype::Rigid3fMass>;
-extern template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Rigid2fTypes,defaulttype::Rigid2fMass>;
+//extern template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Rigid3fTypes,defaulttype::Rigid3fMass>;
+//extern template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Rigid2fTypes,defaulttype::Rigid2fMass>;
 #endif
 #endif
 
