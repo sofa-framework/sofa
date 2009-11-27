@@ -51,6 +51,7 @@ class HexahedronGeodesicalDistance;
 namespace mapping
 {
 using sofa::component::topology::HexahedronGeodesicalDistance;
+using sofa::helper::vector;
 
 typedef enum
 {
@@ -67,11 +68,71 @@ typedef enum
     INTERPOLATION_LINEAR, INTERPOLATION_DUAL_QUATERNION
 } InterpolationType;
 
+template <class T>
+class Coefs: public vector<vector<T> >
+{
+public:
+    Coefs() {};
+
+    std::ostream& write ( std::ostream& os ) const
+    {
+        if ( !this->empty() )
+        {
+            os << "[";
+            typename vector<vector<T> >::const_iterator i = this->begin();
+            os << *i;
+            ++i;
+            for ( ; i!=this->end(); ++i )
+                os << "],[" << *i;
+            os << "]";
+        }
+        return os;
+    }
+
+    std::istream& read ( std::istream& in )
+    {
+        T t;
+        this->clear();
+        while ( in.rdstate() & std::ios_base::eofbit )
+        {
+            char c;
+            in >> c;
+            if ( c == '[' ) break;
+            this->push_back ( vector<T>() );
+            vector<T>& nextElt = this->back();
+            while ( in>>t )
+            {
+                nextElt.push_back ( t );
+            }
+            in >> c; // ']'
+            in >> c; // ','
+        }
+        if ( in.rdstate() & std::ios_base::eofbit )
+        {
+            in.clear();
+        }
+        return in;
+    }
+
+    /// Output stream
+    inline friend std::ostream& operator<< ( std::ostream& os, const Coefs<T>& vec )
+    {
+        return vec.write ( os );
+    }
+
+    /// Input stream
+    inline friend std::istream& operator>> ( std::istream& in, Coefs<T>& vec )
+    {
+        return vec.read ( in );
+    }
+};
+
+
 template <class BasicMapping>
 class SkinningMapping : public BasicMapping
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(SkinningMapping,BasicMapping), BasicMapping);
+    SOFA_CLASS ( SOFA_TEMPLATE ( SkinningMapping,BasicMapping ), BasicMapping );
     typedef BasicMapping Inherit;
     typedef typename Inherit::In In;
     typedef typename Inherit::Out Out;
@@ -88,48 +149,80 @@ public:
     typedef typename Coord::value_type Real;
     enum { N=Coord::static_size };
     typedef defaulttype::Mat<N,N,Real> Mat;
-    typedef defaulttype::Mat<8,8,Real> Mat88;
-    typedef defaulttype::Mat<3,8,Real> Mat38;
-    typedef defaulttype::Mat<8,6,Real> Mat86;
+    //typedef defaulttype::Mat<3,1,Real> Mat31;
+    typedef defaulttype::Mat<3,3,Real> Mat33;
     typedef defaulttype::Mat<3,6,Real> Mat36;
-    typedef defaulttype::Mat<6,1,Real> Mat61;
+    typedef vector<Mat36> VMat36;
+    typedef vector<VMat36> VVMat36;
+    typedef defaulttype::Mat<3,8,Real> Mat38;
+    typedef defaulttype::Mat<4,4,Real> Mat44;
+    //typedef defaulttype::Mat<6,1,Real> Mat61;
     typedef defaulttype::Mat<6,3,Real> Mat63;
-    typedef defaulttype::Mat<3,1,Real> Mat31;
-    typedef defaulttype::Mat<8,1,Real> Mat81;
+    typedef defaulttype::Mat<6,6,Real> Mat66;
+    typedef vector<Mat66> VMat66;
+    typedef vector<VMat66> VVMat66;
+    //typedef defaulttype::Mat<8,1,Real> Mat81;
+    typedef defaulttype::Mat<8,3,Real> Mat83;
+    typedef defaulttype::Mat<8,6,Real> Mat86;
+    typedef vector<Mat86> VMat86;
+    typedef defaulttype::Mat<8,8,Real> Mat88;
+    typedef vector<Mat88> VMat88;
+    typedef defaulttype::Vec<3,Real> Vec3;
+    typedef vector<Vec3> VVec3;
+    typedef vector<VVec3> VVVec3;
+    typedef defaulttype::Vec<4,Real> Vec4;
+    typedef defaulttype::Vec<6,Real> Vec6;
+    typedef vector<Vec6> VVec6;
+    typedef vector<VVec6> VVVec6;
+    typedef defaulttype::Vec<8,Real> Vec8;
 
 #ifdef SOFA_DEV
     // These typedef are here to avoid compilation pb encountered with ResizableExtVect Type.
     typedef typename sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<N, Real>, sofa::defaulttype::Vec<N, Real>, Real> GeoType; // = Vec3fTypes or Vec3dTypes
     typedef typename GeoType::VecCoord GeoVecCoord;
     typedef typename helper::DualQuatd DualQuat;
+
+    typedef struct
+    {
+        Vec4 q0;
+        Vec4 qe;
+    } DUALQUAT;
+    typedef vector<DUALQUAT> VDUALQUAT;
+
 #endif
 protected:
-    sofa::helper::vector<InCoord> initPosDOFs; // translation and rotation of the blended reference frame i, where i=0..n.
-    sofa::helper::vector<Coord> initPos; // pos: point coord in the world reference frame
-    sofa::helper::vector<Coord> rotatedPoints;
+    vector<InCoord> initPosDOFs; // translation and rotation of the blended reference frame i, where i=0..n.
+    vector<Coord> initPos; // pos: point coord in the world reference frame
+    vector<Coord> rotatedPoints;
 
     core::componentmodel::behavior::BaseMechanicalState::ParticleMask* maskFrom;
     core::componentmodel::behavior::BaseMechanicalState::ParticleMask* maskTo;
 
-    Data<sofa::helper::vector<unsigned int> > repartition;
-    Data<sofa::helper::vector<double> > coefs;
-    Data<sofa::helper::vector<double> > distances;
-    Data<sofa::helper::vector<Coord> > distGradients;
+    Data<vector<int> > repartition;
+    Data<Coefs<double> > coefs;
     Data<unsigned int> nbRefs;
     Data<bool> displayBlendedFrame;
-    Data<sofa::helper::vector<Mat36> > matJ;
 
     bool computeWeights;
     WeightingType wheighting;
     InterpolationType interpolation;
     DistanceType distance;
+    vector<vector<double> > distances;
+    vector<vector<Coord> > distGradients;
 #ifdef SOFA_DEV
-    /*					typename Out::VecCoord x1; //TODO remove after test
-    					typename Out::VecCoord x2; //TODO remove after test
-    					vector<DualQuat> q1; //TODO remove after test
-    					vector<DualQuat> q2; //TODO remove after test
-    					vector<Mat81> dqLi_previous, dqLi; //TODO to remove after the convergence test*/
-    vector<Mat86> L;
+    /*
+    typename Out::VecCoord x1; //TODO remove after test
+    typename Out::VecCoord x2; //TODO remove after test
+    vector<DualQuat> q1; //TODO remove after test
+    vector<DualQuat> q2; //TODO remove after test
+    vector<Mat81> dqLi_previous, dqLi; //TODO to remove after the convergence test*/
+    VMat86 L;
+    VMat88 T;
+    VVMat36 J;
+    VVMat66 B;
+    VVec6 deformationTensors;
+    vector<double> det;
+    VVVec6 ddet;
     HexahedronGeodesicalDistance< GeoType>* geoDist;
 #endif
 
@@ -164,21 +257,55 @@ public:
     void setInterpolationToDualQuaternion();
 
     // Accessors
-    void setNbRefs ( unsigned int nb ) { nbRefs.setValue ( nb ); }
-    void setWeightCoefs ( sofa::helper::vector<double> &weights );
-    void setRepartition ( sofa::helper::vector<unsigned int> &rep );
-    void setComputeWeights ( bool val ) {computeWeights=val;}
-    unsigned int getNbRefs() { return nbRefs.getValue(); }
-    const sofa::helper::vector<double>& getWeightCoefs() { return coefs.getValue(); }
-    const sofa::helper::vector<unsigned int>& getRepartition() { return repartition.getValue(); }
-    bool getComputeWeights() { return computeWeights; }
+    void setNbRefs ( unsigned int nb )
+    {
+        nbRefs.setValue ( nb );
+    }
+    void setWeightCoefs ( vector<vector<double> > &weights );
+    void setRepartition ( vector<int> &rep );
+    void setComputeWeights ( bool val )
+    {
+        computeWeights=val;
+    }
+    unsigned int getNbRefs()
+    {
+        return nbRefs.getValue();
+    }
+    const vector<vector<double> >& getWeightCoefs()
+    {
+        return coefs.getValue();
+    }
+    const vector<int>& getRepartition()
+    {
+        return repartition.getValue();
+    }
+    bool getComputeWeights()
+    {
+        return computeWeights;
+    }
 
 #ifdef SOFA_DEV
     // Dual quat J matrix components
-    void computeDqQ( Mat38& Q, const DualQuat& bn, const Coord& p);
-    void computeDqN( Mat88& N, const DualQuat& bn, const DualQuat& b);
-    void computeDqT( Mat88& T, const DualQuat& qi0);
-    void computeDqL( Mat86& L, const DualQuat& qi, const Coord& ti);
+    void computeDqQ ( Mat38& Q, const DualQuat& bn, const Coord& p );
+    void computeDqN ( Mat88& N, const DualQuat& bn, const DualQuat& b );
+    void computeDqT ( Mat88& T, const DualQuat& qi0 );
+    void computeDqL ( Mat86& L, const DualQuat& qi, const Coord& ti );
+    void computeDqL ( Mat86& L, const DUALQUAT& qi, const Coord& ti );
+    void BlendDualQuat ( DUALQUAT& b, DUALQUAT& bn, double& QEQ0, double& Q0Q0, double& Q0, const int& indexp, const VDUALQUAT& qrel, const vector<vector<double> >& w );
+
+    void computeQrel ( DUALQUAT& qrel, const Mat88& T, const DUALQUAT& q );
+    void computeDqRigid ( Mat33& R, Vec3& t, const DUALQUAT& bn );
+    void computeDqN ( Mat88& N, const Mat44& q0q0T, const Mat44& q0qeT, const Mat44& qeq0T , const double& QEQ0, const double& Q0Q0, const double& Q0 );
+    void computeDqN_constants ( Mat44& q0q0T, Mat44& q0qeT, Mat44& qeq0T, const DUALQUAT& bn );
+    void computeDqDN ( Mat88& DN, const Mat44& q0q0T, const Mat44& q0qeT, const Mat44& qeq0T, const double& QEQ0, const double& Q0Q0, const double& Q0, const Mat44& q0V0T, const Mat44& V0q0T, const double& q0V0, const Mat44& q0VeT, const Mat44& Veq0T, const double& q0Ve, const Mat44& qeV0T, const Mat44& V0qeT, const double& qeV0, const DUALQUAT& V );
+    void computeDqDN_constants ( Mat44& q0V0T, Mat44& V0q0T, double& q0V0, Mat44& q0VeT, Mat44& Veq0T,double& q0Ve, Mat44& qeV0T, Mat44& V0qeT, double& qeV0, const DUALQUAT& bn, const DUALQUAT& V );
+    void XItoQ ( DUALQUAT& q, const InCoord& xi );
+    void getCov ( Mat44& q1q2T, const Vec4& q1, const Vec4& q2 );
+    void computeDqQ ( Mat38& Q, const DUALQUAT& bn, const Vec3& p );
+    void computeDqDR ( Mat33& DR, const DUALQUAT& bn, const DUALQUAT& V );
+    void computeDqDQ ( Mat38& DQ, const Vec3& p, const DUALQUAT& V );
+    void computeDqT( Mat88& T, const DUALQUAT& qi0);
+
 #endif
 };
 
