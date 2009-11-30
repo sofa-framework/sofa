@@ -72,6 +72,10 @@ public:
     typedef TMassType                                       MassType;
     typedef helper::vector<MassType> MassVector;
 
+    // In case of non 3D template
+    typedef Vec<3,MassType>                            Vec3;
+    typedef StdVectorTypes< Vec3, Vec3, MassType >     MechanicalTypes ; /// assumes the geometry object type is 3D
+
     /// Topological enum to classify encounter meshes
     typedef enum
     {
@@ -88,8 +92,6 @@ public:
     PointData<MassType>  vertexMassInfo;
     EdgeData<MassType>   edgeMassInfo;
 
-    PointData<MassType>  f_mass;
-
 
     /// the mass density used to compute the mass from a mesh topology and geometry
     Data< Real >         m_massDensity;
@@ -98,10 +100,9 @@ public:
     Data< bool >         showCenterOfGravity;
     Data< float >        showAxisSize;
 
-protected:
-    //VecMass masses;
 
-    class Loader;
+protected:
+
     /// The type of topology to build the mass from the topology
     TopologyType topologyType;
 
@@ -109,17 +110,15 @@ public:
 
     sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
 
-    sofa::component::topology::EdgeSetGeometryAlgorithms<DataTypes>* edgeGeo;
-    sofa::component::topology::TriangleSetGeometryAlgorithms<DataTypes>* triangleGeo;
-    sofa::component::topology::QuadSetGeometryAlgorithms<DataTypes>* quadGeo;
-    sofa::component::topology::TetrahedronSetGeometryAlgorithms<DataTypes>* tetraGeo;
-    sofa::component::topology::HexahedronSetGeometryAlgorithms<DataTypes>* hexaGeo;
+    sofa::component::topology::EdgeSetGeometryAlgorithms<MechanicalTypes>* edgeGeo;
+    sofa::component::topology::TriangleSetGeometryAlgorithms<MechanicalTypes>* triangleGeo;
+    sofa::component::topology::QuadSetGeometryAlgorithms<MechanicalTypes>* quadGeo;
+    sofa::component::topology::TetrahedronSetGeometryAlgorithms<MechanicalTypes>* tetraGeo;
+    sofa::component::topology::HexahedronSetGeometryAlgorithms<MechanicalTypes>* hexaGeo;
 
     MeshMatrixMass();
 
     ~MeshMatrixMass();
-
-    //virtual const char* getTypeName() const { return "MeshMatrixMass"; }
 
     void clear();
 
@@ -175,23 +174,6 @@ public:
 
     bool addBBox(double* minBBox, double* maxBBox);
 
-
-    // Creation/Destruction functions
-
-    /*  void VertexMassTriangleCreationFunction(const sofa::helper::vector<unsigned int> &triangleAdded,
-    				    void* param, sofa::helper::vector<MassType> &VertexMasses);
-
-    void EdgeMassTriangleCreationFunction(const sofa::helper::vector<unsigned int> &triangleAdded,
-    				  void* param, sofa::helper::vector<MassType> &EdgeMasses);
-
-    void VertexMassTriangleDestroyFunction(const sofa::helper::vector<unsigned int> &triangleRemoved,
-    				   void* param, vector<MassType> &VertexMasses);
-
-    void EdgeMassTriangleDestroyFunction(const sofa::helper::vector<unsigned int> &triangleRemoved,
-    				 void* param, vector<MassType> &EdgeMasses);
-    */
-
-
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_MASS_MESHMATRIXMASS_CPP)
@@ -200,15 +182,11 @@ public:
 extern template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Vec3dTypes,double>;
 extern template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Vec2dTypes,double>;
 extern template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Vec1dTypes,double>;
-//extern template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Rigid3dTypes,defaulttype::Rigid3dMass>;
-//extern template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Rigid2dTypes,defaulttype::Rigid2dMass>;
 #endif
 #ifndef SOFA_DOUBLE
 extern template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Vec3fTypes,float>;
 extern template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Vec2fTypes,float>;
 extern template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Vec1fTypes,float>;
-//extern template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Rigid3fTypes,defaulttype::Rigid3fMass>;
-//extern template class SOFA_COMPONENT_MASS_API MeshMatrixMass<defaulttype::Rigid2fTypes,defaulttype::Rigid2fMass>;
 #endif
 #endif
 

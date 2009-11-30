@@ -666,6 +666,8 @@ void MeshMatrixMass<DataTypes, MassType>::init()
     this->Inherited::init();
 
     _topology = this->getContext()->getMeshTopology();
+    //    sofa::core::objectmodel::Tag mechanicalTag(m_tagMeshMechanics.getValue());
+    //    this->getContext()->get(triangleGeo, mechanicalTag,sofa::core::objectmodel::BaseContext::SearchUp);
 
     this->getContext()->get(edgeGeo);
     this->getContext()->get(triangleGeo);
@@ -706,7 +708,7 @@ void MeshMatrixMass<DataTypes, MassType>::init()
     //edgeMassInfo.setCreateHexahedronFunction(EdgeMassHexahedronCreationFunction<DataTypes,MassType>);
     //edgeMassInfo.setDestroyHexahedronFunction(EdgeMassHexahedronDestroyFunction<DataTypes,MassType>);
 
-    if ((f_mass.getValue().size()==0) && (_topology!=0))
+    if ((vertexMassInfo.getValue().size()==0 || edgeMassInfo.getValue().size()==0) && (_topology!=0))
     {
         reinit();
     }
@@ -715,7 +717,8 @@ void MeshMatrixMass<DataTypes, MassType>::init()
 template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::reinit()
 {
-    if (_topology && (m_massDensity.getValue() > 0 || f_mass.getValue().size() == 0))
+
+    if (_topology && (m_massDensity.getValue() > 0 && (vertexMassInfo.getValue().size() == 0 || edgeMassInfo.getValue().size() == 0)))
     {
         // resize array
         clear();
@@ -724,21 +727,22 @@ void MeshMatrixMass<DataTypes, MassType>::reinit()
         vector<MassType>& my_edgeMassInfo = *edgeMassInfo.beginEdit();
 
         unsigned int ndof = this->mstate->getSize();
+        unsigned int nbEdges=_topology->getNbEdges();
 
         my_vertexMassInfo.resize(ndof);
-        my_edgeMassInfo.resize(ndof);
+        my_edgeMassInfo.resize(nbEdges);
 
         // Mass initialisation to 0
         for (unsigned int i = 0; i<ndof; ++i)
-        {
             VertexMassCreationFunction (i, (void*) this, my_vertexMassInfo[i],
                     (const sofa::helper::vector< unsigned int > )0,
                     (const sofa::helper::vector< double >)0);
 
+        for (unsigned int i = 0; i<nbEdges; ++i)
             EdgeMassCreationFunction (i, (void*) this, my_edgeMassInfo[i], _topology->getEdge(i),
                     (const sofa::helper::vector< unsigned int > )0,
                     (const sofa::helper::vector< double >)0);
-        }
+
 
 
         typename DataTypes::Real densityM = getMassDensity();
@@ -759,7 +763,6 @@ void MeshMatrixMass<DataTypes, MassType>::reinit()
                 {
                     mass=(densityM * triangleGeo->computeRestTriangleArea(i))/(typename DataTypes::Real)6.0;
                 }
-
                 // Adding mass
                 for (unsigned int j=0; j<3; ++j)
                     my_vertexMassInfo[ t[j] ] += mass;
@@ -892,8 +895,8 @@ void MeshMatrixMass<DataTypes, MassType>::addMDx(VecDeriv& res, const VecDeriv& 
             v0=_topology->getEdge(i)[0];
             v1=_topology->getEdge(i)[1];
 
-            res[i] += dx[v0] * edgeMass[v0];
-            res[i] += dx[v1] * edgeMass[v1];
+            res[v0] += dx[v0] * edgeMass[i];
+            res[v1] += dx[v1] * edgeMass[i];
         }
     }
     else
@@ -908,8 +911,8 @@ void MeshMatrixMass<DataTypes, MassType>::addMDx(VecDeriv& res, const VecDeriv& 
             v0=_topology->getEdge(i)[0];
             v1=_topology->getEdge(i)[1];
 
-            res[i] += (dx[v0] * edgeMass[v0]) * (Real)factor;
-            res[i] += (dx[v1] * edgeMass[v1]) * (Real)factor;
+            res[v0] += (dx[v0] * edgeMass[i]) * (Real)factor;
+            res[v1] += (dx[v1] * edgeMass[i]) * (Real)factor;
         }
     }
 }
@@ -964,8 +967,8 @@ void MeshMatrixMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& 
         v0=_topology->getEdge(i)[0];
         v1=_topology->getEdge(i)[1];
 
-        f[i] += theGravity*edgeMass[v0] + core::componentmodel::behavior::inertiaForce(vframe,aframe,edgeMass[v0],x[v0],v[v0]);
-        f[i] += theGravity*edgeMass[v1] + core::componentmodel::behavior::inertiaForce(vframe,aframe,edgeMass[v1],x[v1],v[v1]);
+        f[v0] += theGravity*edgeMass[i] + core::componentmodel::behavior::inertiaForce(vframe,aframe,edgeMass[i],x[v0],v[v0]);
+        f[v1] += theGravity*edgeMass[i] + core::componentmodel::behavior::inertiaForce(vframe,aframe,edgeMass[i],x[v1],v[v1]);
     }
 }
 
@@ -993,8 +996,8 @@ double MeshMatrixMass<DataTypes, MassType>::getKineticEnergy( const VecDeriv& v 
         v0=_topology->getEdge(i)[0];
         v1=_topology->getEdge(i)[1];
 
-        e += v[v0]*edgeMass[v0]*v[v0];
-        e += v[v1]*edgeMass[v0]*v[v1];
+        e += v[v0]*edgeMass[i]*v[v0];
+        e += v[v1]*edgeMass[i]*v[v1];
     }
 
     return e/2;
@@ -1027,8 +1030,8 @@ double MeshMatrixMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord& 
         v0=_topology->getEdge(i)[0];
         v1=_topology->getEdge(i)[1];
 
-        e -= theGravity*edgeMass[v0]*x[v0];
-        e -= theGravity*edgeMass[v1]*x[v1];
+        e -= theGravity*edgeMass[i]*x[v0];
+        e -= theGravity*edgeMass[i]*x[v1];
     }
 
     return e;
@@ -1079,8 +1082,8 @@ void MeshMatrixMass<DataTypes, MassType>::addMToMatrix(defaulttype::BaseMatrix *
         v0=_topology->getEdge(i)[0];
         v1=_topology->getEdge(i)[1];
 
-        calc(mat, edgeMass[v0], offset + N*v0, mFact);
-        calc(mat, edgeMass[v1], offset + N*v1, mFact);
+        calc(mat, edgeMass[i], offset + N*v0, mFact);
+        calc(mat, edgeMass[i], offset + N*v1, mFact);
     }
 }
 
