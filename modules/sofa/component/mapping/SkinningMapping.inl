@@ -1040,7 +1040,7 @@ void SkinningMapping<BasicMapping>::draw()
                 for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
                 {
                     const int idxReps=m_reps[nbRefs.getValue() *i+m];
-                    unsigned int coef = m_coefs[idxReps][i];
+                    double coef = m_coefs[idxReps][i];
                     if ( coef > 0.0 )
                     {
                         glColor4d ( coef,coef,0,1 );
