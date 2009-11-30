@@ -85,9 +85,6 @@ public:
     /// Control the keepAlive flag of the contact. Note that not all contacts support this method
     virtual void setKeepAlive(bool /* val */) {}
 
-    virtual void getCorrespondingCollisionModels( const core::componentmodel::behavior::InteractionForceField *,
-            core::CollisionModel*& /* */, core::CollisionModel*& /* */) {};
-
     class Factory : public helper::Factory< std::string, Contact, std::pair<std::pair<core::CollisionModel*,core::CollisionModel*>,Intersection*> >
     {
     public:

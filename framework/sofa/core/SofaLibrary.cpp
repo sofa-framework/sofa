@@ -57,7 +57,7 @@ void SofaLibrary::build( const std::vector< std::string >& examples)
             inventory.insert(std::make_pair((*it), entries[i]));
         }
         //If no inheritance was found for the given component, we store it in a default category
-        if (entries[i]->baseClasses.size() == 0)
+        if (entries[i]->baseClasses.empty())
         {
             mainCategories.insert("_Miscellaneous");
             inventory.insert(std::make_pair("_Miscellaneous", entries[i]));

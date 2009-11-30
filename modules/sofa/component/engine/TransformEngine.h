@@ -30,7 +30,7 @@
 #endif
 
 #include <sofa/component/component.h>
-#include <sofa/core/objectmodel/DataEngine.h>
+#include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 
 #include <sofa/defaulttype/Quat.h>
@@ -51,10 +51,10 @@ namespace engine
 This transformation can be either translation, rotation, scale
  */
 template <class DataTypes>
-class TransformEngine : public virtual core::objectmodel::DataEngine, public virtual core::objectmodel::BaseObject
+class TransformEngine : public core::DataEngine
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(TransformEngine,DataTypes),core::objectmodel::BaseObject);
+    SOFA_CLASS(SOFA_TEMPLATE(TransformEngine,DataTypes),core::DataEngine);
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;

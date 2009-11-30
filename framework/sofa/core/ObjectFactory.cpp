@@ -31,26 +31,25 @@
 #include <sofa/core/BehaviorModel.h>
 #include <sofa/core/CollisionModel.h>
 #include <sofa/core/BaseMapping.h>
-#include <sofa/core/componentmodel/topology/TopologicalMapping.h>
+#include <sofa/core/DataEngine.h>
+#include <sofa/core/componentmodel/collision/CollisionAlgorithm.h>
+#include <sofa/core/componentmodel/collision/Pipeline.h>
+#include <sofa/core/componentmodel/collision/Intersection.h>
 #include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
 #include <sofa/core/componentmodel/behavior/BaseForceField.h>
 #include <sofa/core/componentmodel/behavior/InteractionForceField.h>
 #include <sofa/core/componentmodel/behavior/BaseConstraint.h>
+#include <sofa/core/componentmodel/behavior/BaseController.h>
 #include <sofa/core/componentmodel/behavior/BaseLMConstraint.h>
 #include <sofa/core/componentmodel/behavior/BaseMechanicalMapping.h>
 #include <sofa/core/componentmodel/behavior/BaseMass.h>
 #include <sofa/core/componentmodel/behavior/OdeSolver.h>
 #include <sofa/core/componentmodel/behavior/LinearSolver.h>
 #include <sofa/core/componentmodel/behavior/MasterSolver.h>
-#include <sofa/core/componentmodel/topology/Topology.h>
 #include <sofa/core/componentmodel/topology/BaseTopologyObject.h>
-#include <sofa/core/componentmodel/behavior/BaseController.h>
+#include <sofa/core/componentmodel/topology/Topology.h>
+#include <sofa/core/componentmodel/topology/TopologicalMapping.h>
 #include <sofa/core/componentmodel/loader/BaseLoader.h>
-
-#include <iostream>
-using std::cout;
-using std::cerr;
-using std::endl;
 
 // Uncomment to output a warning in the console each time a class is registered without corresponding SOFA_CLASS
 #define LOG_MISSING_CLASS
@@ -378,6 +377,8 @@ RegisterObject& RegisterObject::addBaseClasses(const core::objectmodel::BaseClas
         entry.baseClasses.insert("Constraint");
     if (mclass->hasParent(core::BaseMapping::GetClass()))
         entry.baseClasses.insert("Mapping");
+    if (mclass->hasParent(core::DataEngine::GetClass()))
+        entry.baseClasses.insert("Engine");
     if (mclass->hasParent(core::componentmodel::behavior::BaseMechanicalMapping::GetClass()))
         entry.baseClasses.insert("MechanicalMapping");
     if (mclass->hasParent(core::componentmodel::topology::TopologicalMapping::GetClass()))
@@ -398,7 +399,12 @@ RegisterObject& RegisterObject::addBaseClasses(const core::objectmodel::BaseClas
         entry.baseClasses.insert("Controller");
     if (mclass->hasParent(core::componentmodel::loader::BaseLoader::GetClass()))
         entry.baseClasses.insert("Loader");
-
+    if (mclass->hasParent(core::componentmodel::collision::CollisionAlgorithm::GetClass()))
+        entry.baseClasses.insert("CollisionAlgorithm");
+    if (mclass->hasParent(core::componentmodel::collision::Pipeline::GetClass()))
+        entry.baseClasses.insert("CollisionAlgorithm");
+    if (mclass->hasParent(core::componentmodel::collision::Intersection::GetClass()))
+        entry.baseClasses.insert("CollisionAlgorithm");
     return *this;
 }
 

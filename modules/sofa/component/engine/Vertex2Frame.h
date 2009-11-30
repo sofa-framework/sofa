@@ -29,7 +29,7 @@
 #pragma once
 #endif
 
-#include <sofa/core/objectmodel/DataEngine.h>
+#include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 
@@ -48,10 +48,10 @@ using namespace core::componentmodel::behavior;
  * This class gets as inputs the vertices, texCoords, normals and facets of any mesh and returns as output a rigid position
  */
 template <class DataTypes>
-class Vertex2Frame : public virtual core::objectmodel::DataEngine, public virtual core::objectmodel::BaseObject
+class Vertex2Frame : public  core::DataEngine
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(Vertex2Frame,DataTypes),core::objectmodel::BaseObject);
+    SOFA_CLASS(SOFA_TEMPLATE(Vertex2Frame,DataTypes),core::DataEngine);
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::VecCoord VecCoord;
 

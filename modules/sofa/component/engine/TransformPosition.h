@@ -30,7 +30,7 @@
 #endif
 
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/core/objectmodel/DataEngine.h>
+#include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/component/topology/PointSubset.h>
@@ -55,10 +55,10 @@ This transformation can be either : projection on a plane (plane defined by an o
 translation, rotation, scale and some combinations of translation, rotation and scale
  */
 template <class DataTypes>
-class TransformPosition : public virtual core::objectmodel::DataEngine, public virtual core::objectmodel::BaseObject
+class TransformPosition : public core::DataEngine
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(TransformPosition,DataTypes),core::objectmodel::BaseObject);
+    SOFA_CLASS(SOFA_TEMPLATE(TransformPosition,DataTypes),core::DataEngine);
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;

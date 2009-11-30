@@ -31,7 +31,7 @@
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/core/objectmodel/DataEngine.h>
+#include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/component/component.h>
 
@@ -51,10 +51,10 @@ using namespace sofa::defaulttype;
  * This class give texture coordinate in 1D according to an imput state vector.
  */
 template <class DataTypes>
-class TextureInterpolation : public virtual core::objectmodel::DataEngine, public virtual core::objectmodel::BaseObject
+class TextureInterpolation : public core::DataEngine
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(TextureInterpolation,DataTypes),core::objectmodel::BaseObject);
+    SOFA_CLASS(SOFA_TEMPLATE(TextureInterpolation,DataTypes),core::DataEngine);
     typedef typename DataTypes::Coord         Coord;
     typedef typename DataTypes::VecCoord      VecCoord;
     typedef typename DataTypes::Real          Real;
