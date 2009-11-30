@@ -74,7 +74,7 @@ public:
 
     // In case of non 3D template
     typedef Vec<3,MassType>                            Vec3;
-    typedef StdVectorTypes< Vec3, Vec3, MassType >     MechanicalTypes ; /// assumes the geometry object type is 3D
+    typedef StdVectorTypes< Vec3, Vec3, MassType >     GeometricalTypes ; /// assumes the geometry object type is 3D
 
     typedef sofa::component::topology::PointData<MassType> VecMass;
     typedef helper::vector<MassType> MassVector;
@@ -109,11 +109,11 @@ public:
 
     sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
 
-    sofa::component::topology::EdgeSetGeometryAlgorithms<MechanicalTypes>* edgeGeo;
-    sofa::component::topology::TriangleSetGeometryAlgorithms<MechanicalTypes>* triangleGeo;
-    sofa::component::topology::QuadSetGeometryAlgorithms<MechanicalTypes>* quadGeo;
-    sofa::component::topology::TetrahedronSetGeometryAlgorithms<MechanicalTypes>* tetraGeo;
-    sofa::component::topology::HexahedronSetGeometryAlgorithms<MechanicalTypes>* hexaGeo;
+    sofa::component::topology::EdgeSetGeometryAlgorithms<GeometricalTypes>* edgeGeo;
+    sofa::component::topology::TriangleSetGeometryAlgorithms<GeometricalTypes>* triangleGeo;
+    sofa::component::topology::QuadSetGeometryAlgorithms<GeometricalTypes>* quadGeo;
+    sofa::component::topology::TetrahedronSetGeometryAlgorithms<GeometricalTypes>* tetraGeo;
+    sofa::component::topology::HexahedronSetGeometryAlgorithms<GeometricalTypes>* hexaGeo;
 
     DiagonalMass();
 

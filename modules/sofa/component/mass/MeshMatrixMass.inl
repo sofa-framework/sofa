@@ -687,7 +687,7 @@ void MeshMatrixMass<DataTypes, MassType>::init()
     // Tetrahedron
     vertexMassInfo.setCreateTetrahedronFunction(VertexMassTetrahedronCreationFunction<DataTypes,MassType>);
     vertexMassInfo.setDestroyTetrahedronFunction(VertexMassTetrahedronDestroyFunction<DataTypes,MassType>);
-    // Hexahedron (NOT YET HANDLE)
+    // Hexahedron (NOT HANDLE YET)
     //vertexMassInfo.setCreateHexahedronFunction(VertexMassHexahedronCreationFunction<DataTypes,MassType>);
     //vertexMassInfo.setDestroyHexahedronFunction(VertexMassHexahedronDestroyFunction<DataTypes,MassType>);
 
@@ -704,7 +704,7 @@ void MeshMatrixMass<DataTypes, MassType>::init()
     // Tetrahedron
     edgeMassInfo.setCreateTetrahedronFunction(EdgeMassTetrahedronCreationFunction<DataTypes,MassType>);
     edgeMassInfo.setDestroyTetrahedronFunction(EdgeMassTetrahedronDestroyFunction<DataTypes,MassType>);
-    // Hexahedron (NOT YET HANDLE)
+    // Hexahedron (NOT HANDLE YET)
     //edgeMassInfo.setCreateHexahedronFunction(EdgeMassHexahedronCreationFunction<DataTypes,MassType>);
     //edgeMassInfo.setDestroyHexahedronFunction(EdgeMassHexahedronDestroyFunction<DataTypes,MassType>);
 
@@ -1197,37 +1197,6 @@ bool MeshMatrixMass<DataTypes, MassType>::addBBox(double* minBBox, double* maxBB
     return true;
 }
 
-
-//   // Specialization for rigids
-// #ifndef SOFA_FLOAT
-//   /*template <>
-//     inline void MassEdgeDestroyFunction<Rigid3dTypes, Rigid3dMass>(const sofa::helper::vector<unsigned int> &,
-//     void* , vector<Rigid3dMass> &);
-
-//     template <>
-//     inline void MassEdgeCreationFunction<Rigid3dTypes, Rigid3dMass>(const sofa::helper::vector<unsigned int> &,
-//     void* , vector<Rigid3dMass> &);*/
-
-//   template <>
-//   double MeshMatrixMass<Rigid3dTypes, Rigid3dMass>::getPotentialEnergy( const VecCoord& x );
-//   template <>
-//   double MeshMatrixMass<Rigid2dTypes, Rigid2dMass>::getPotentialEnergy( const VecCoord& x );
-//   template <>
-//   void MeshMatrixMass<Rigid3dTypes, Rigid3dMass>::draw();
-//   template <>
-//   void MeshMatrixMass<Rigid2dTypes, Rigid2dMass>::draw();
-// #endif
-// #ifndef SOFA_DOUBLE
-//   template <>
-//   double MeshMatrixMass<Rigid3fTypes, Rigid3fMass>::getPotentialEnergy( const VecCoord& x );
-//   template <>
-//   double MeshMatrixMass<Rigid2fTypes, Rigid2fMass>::getPotentialEnergy( const VecCoord& x );
-
-//   template <>
-//   void MeshMatrixMass<Rigid3fTypes, Rigid3fMass>::draw();
-//   template <>
-//   void MeshMatrixMass<Rigid2fTypes, Rigid2fMass>::draw();
-// #endif
 
 } // namespace mass
 
