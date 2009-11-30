@@ -9,7 +9,7 @@
 #define CGALPLUGIN_TRIANGULARCONVEXHULL3D_H
 
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/core/objectmodel/DataEngine.h>
+#include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 
@@ -17,10 +17,10 @@ namespace cgal
 {
 
 template <class DataTypes>
-class TriangularConvexHull3D : public virtual sofa::core::objectmodel::BaseObject, public virtual sofa::core::objectmodel::DataEngine
+class TriangularConvexHull3D : public sofa::core::DataEngine
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(TriangularConvexHull3D,DataTypes),sofa::core::objectmodel::BaseObject);
+    SOFA_CLASS(SOFA_TEMPLATE(TriangularConvexHull3D,DataTypes),sofa::core::DataEngine);
 
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Point;
