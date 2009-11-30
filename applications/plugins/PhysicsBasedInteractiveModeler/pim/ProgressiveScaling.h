@@ -30,7 +30,7 @@
 #endif
 
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/core/objectmodel/DataEngine.h>
+#include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
@@ -50,13 +50,13 @@ using namespace sofa::core::objectmodel;
  * This class apply a progresive scaling all over the points of a mechanical object.
  */
 template <class DataTypes>
-class ProgressiveScaling : public virtual sofa::core::objectmodel::DataEngine, public virtual sofa::core::objectmodel::BaseObject
+class ProgressiveScaling : public sofa::core::DataEngine
 {
 public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
 public:
-
+    SOFA_CLASS(SOFA_TEMPLATE(ProgressiveScaling,DataTypes),sofa::core::DataEngine);
     ProgressiveScaling();
 
     ~ProgressiveScaling() {}

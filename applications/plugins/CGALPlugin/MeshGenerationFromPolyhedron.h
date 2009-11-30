@@ -11,8 +11,7 @@
 #define CGAL_MESH_3_VERBOSE
 
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/core/objectmodel/DataEngine.h>
-#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/DataEngine.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 
@@ -26,10 +25,10 @@ namespace cgal
 {
 
 template <class DataTypes>
-class MeshGenerationFromPolyhedron : public virtual sofa::core::objectmodel::BaseObject, public virtual sofa::core::objectmodel::DataEngine
+class MeshGenerationFromPolyhedron : public sofa::core::objectmodel::DataEngine
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(MeshGenerationFromPolyhedron,DataTypes),sofa::core::objectmodel::BaseObject);
+    SOFA_CLASS(SOFA_TEMPLATE(MeshGenerationFromPolyhedron,DataTypes),sofa::core::DataEngine);
 
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Point;
