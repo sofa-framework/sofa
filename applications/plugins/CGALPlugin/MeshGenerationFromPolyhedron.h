@@ -25,7 +25,7 @@ namespace cgal
 {
 
 template <class DataTypes>
-class MeshGenerationFromPolyhedron : public sofa::core::objectmodel::DataEngine
+class MeshGenerationFromPolyhedron : public sofa::core::DataEngine
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(MeshGenerationFromPolyhedron,DataTypes),sofa::core::DataEngine);
