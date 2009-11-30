@@ -89,19 +89,21 @@ bool LMContactConstraintSolver::needPriorStatePropagation()
 
 void LMContactConstraintSolver::solveConstraints(bool needPropagation)
 {
+    simulation::Node *node=(simulation::Node*) this->getContext();
     simulation::MechanicalResetConstraintVisitor resetConstraints;
-    resetConstraints.execute(this->getContext());
+    resetConstraints.execute(node);
 
 //  sout << "apply constraints" << sendl;
-    simulation::MechanicalExpressJacobianVisitor JacobianVisitor;
-    JacobianVisitor.execute(this->getContext());
+    simulation::MechanicalExpressJacobianVisitor JacobianVisitor(node);
+    JacobianVisitor.execute(node);
 
     core::componentmodel::behavior::BaseMechanicalState::VecId positionState=core::componentmodel::behavior::BaseMechanicalState::VecId::position();
     simulation::MechanicalSolveLMConstraintVisitor solveConstraintsPosition(positionState,needPropagation, false);
-    solveConstraintsPosition.execute(this->getContext());
+    solveConstraintsPosition.execute(node);
 
     simulation::MechanicalPropagatePositionVisitor propagateState;
-    propagateState.execute(this->getContext());
+    propagateState.ignoreMask=false;
+    propagateState.execute(node);
 }
 
 bool LMContactConstraintSolver::isCollisionDetected()

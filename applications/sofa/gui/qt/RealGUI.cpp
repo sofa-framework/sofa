@@ -1696,6 +1696,7 @@ void RealGUI::resetScene()
     if ( root )
     {
         simulation::getSimulation()->reset ( root );
+        simulation::getSimulation()->reset ( simulation::getSimulation()->getVisualRoot() );
         root->setTime(initial_time);
         eventNewTime();
 
