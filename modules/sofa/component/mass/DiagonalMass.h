@@ -53,6 +53,9 @@ namespace component
 namespace mass
 {
 
+using namespace sofa::component::topology;
+
+
 // template<class Vec> void readVec1(Vec& vec, const char* str);
 
 template <class DataTypes, class TMassType>
@@ -68,6 +71,10 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
     typedef TMassType MassType;
+
+    // In case of non 3D template
+    typedef Vec<3,MassType>                            Vec3;
+    typedef StdVectorTypes< Vec3, Vec3, MassType >     MechanicalTypes ; /// assumes the geometry object type is 3D
 
     typedef sofa::component::topology::PointData<MassType> VecMass;
     typedef helper::vector<MassType> MassVector;
@@ -102,11 +109,11 @@ public:
 
     sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
 
-    sofa::component::topology::EdgeSetGeometryAlgorithms<DataTypes>* edgeGeo;
-    sofa::component::topology::TriangleSetGeometryAlgorithms<DataTypes>* triangleGeo;
-    sofa::component::topology::QuadSetGeometryAlgorithms<DataTypes>* quadGeo;
-    sofa::component::topology::TetrahedronSetGeometryAlgorithms<DataTypes>* tetraGeo;
-    sofa::component::topology::HexahedronSetGeometryAlgorithms<DataTypes>* hexaGeo;
+    sofa::component::topology::EdgeSetGeometryAlgorithms<MechanicalTypes>* edgeGeo;
+    sofa::component::topology::TriangleSetGeometryAlgorithms<MechanicalTypes>* triangleGeo;
+    sofa::component::topology::QuadSetGeometryAlgorithms<MechanicalTypes>* quadGeo;
+    sofa::component::topology::TetrahedronSetGeometryAlgorithms<MechanicalTypes>* tetraGeo;
+    sofa::component::topology::HexahedronSetGeometryAlgorithms<MechanicalTypes>* hexaGeo;
 
     DiagonalMass();
 
