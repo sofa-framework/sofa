@@ -98,17 +98,6 @@ public:
     void removeResponse();
 
     void draw();
-
-
-    void getCorrespondingCollisionModels( const core::componentmodel::behavior::InteractionForceField *_ff,
-            core::CollisionModel* &_model1, core::CollisionModel* &_model2)
-    {
-        if (static_cast< core::componentmodel::behavior::InteractionForceField * >(ff) == _ff)
-        {
-            _model1 = static_cast< core::CollisionModel *>(model1);
-            _model2 = static_cast< core::CollisionModel *>(model2);
-        }
-    };
 };
 
 } // namespace collision

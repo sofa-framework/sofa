@@ -12,6 +12,7 @@ HEADERS += \
           BehaviorModel.h \
           CollisionElement.h \
           CollisionModel.h \
+          DataEngine.h \
           componentmodel/behavior/BaseController.h \
           componentmodel/behavior/BaseConstraint.h \
           componentmodel/behavior/BaseConstraintCorrection.h \
@@ -79,7 +80,6 @@ HEADERS += \
           objectmodel/Context.h \
           objectmodel/ContextObject.h \
           objectmodel/Data.h \
-          objectmodel/DataEngine.h \
           objectmodel/DataFileName.h \
 	  objectmodel/DDGNode.h \
           objectmodel/DetachNodeEvent.h \
@@ -115,7 +115,6 @@ SOURCES +=  \
 	  objectmodel/DDGNode.cpp \
           objectmodel/DetachNodeEvent.cpp \
           objectmodel/Event.cpp \
-          objectmodel/DataEngine.cpp \
           objectmodel/DataFileName.cpp \
           objectmodel/DataPtr.cpp \
 	  objectmodel/JoystickEvent.cpp \
@@ -130,6 +129,7 @@ SOURCES +=  \
           ComponentLibrary.cpp \
           Mapping.cpp \	   
           CollisionModel.cpp \
+          DataEngine.cpp \
           componentmodel/behavior/LinearSolver.cpp \
           componentmodel/behavior/MasterSolver.cpp \
           componentmodel/behavior/MultiMatrix.cpp \

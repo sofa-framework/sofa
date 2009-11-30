@@ -30,7 +30,7 @@
 #endif
 
 #include <sofa/defaulttype/Vec.h>
-#include <sofa/core/objectmodel/DataEngine.h>
+#include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
@@ -54,10 +54,10 @@ using namespace core::objectmodel;
  * This class turns on spiral any topological model
  */
 template <class DataTypes>
-class Spiral : public virtual core::objectmodel::DataEngine, public virtual core::objectmodel::BaseObject
+class Spiral : public core::DataEngine
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(Spiral,DataTypes),core::objectmodel::BaseObject);
+    SOFA_CLASS(SOFA_TEMPLATE(Spiral,DataTypes),core::DataEngine);
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Real Real;
     typedef defaulttype::Vec<6,Real> Vec6;
