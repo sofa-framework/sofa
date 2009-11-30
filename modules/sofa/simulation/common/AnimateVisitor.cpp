@@ -112,7 +112,7 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
         node->execute(&beginVisitor);
 
 #ifdef SOFA_HAVE_EIGEN2
-        MechanicalExpressJacobianVisitor JacobianVisitor;
+        MechanicalExpressJacobianVisitor JacobianVisitor(node);
         node->execute(&JacobianVisitor);
 #endif
 

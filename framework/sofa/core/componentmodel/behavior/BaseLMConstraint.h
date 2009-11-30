@@ -182,8 +182,42 @@ public:
     virtual ConstraintGroup* addGroupConstraint( ConstOrder Order);
 
     /// Get Left Hand Term
-    virtual void getIndicesUsed1(ConstOrder Order, helper::vector< unsigned int > &used0);
-    virtual void getIndicesUsed2(ConstOrder Order, helper::vector< unsigned int > &used1);
+    template <typename DataStorage>
+    void getIndicesUsed1(ConstOrder Order, DataStorage &used0)
+    {
+        const helper::vector< BaseLMConstraint::ConstraintGroup* > &constraints=constraintOrder[Order];
+
+        for (unsigned int idxGroupConstraint=0; idxGroupConstraint<constraints.size(); ++idxGroupConstraint)
+        {
+            ConstraintGroup *group=constraints[idxGroupConstraint];
+            std::pair< ConstraintGroup::EquationIterator, ConstraintGroup::EquationIterator > range=group->data();
+
+            for (ConstraintGroup::EquationIterator equation=range.first; equation!=range.second; ++equation)
+            {
+                if (equation->idxInConstrainedDOF1 >= 0)
+                    used0.push_back(linesInSimulatedObject1[equation->idxInConstrainedDOF1]);
+            }
+        }
+    }
+
+    template <typename DataStorage>
+    void getIndicesUsed2(ConstOrder Order, DataStorage &used1)
+    {
+        const helper::vector< BaseLMConstraint::ConstraintGroup* > &constraints=constraintOrder[Order];
+
+        for (unsigned int idxGroupConstraint=0; idxGroupConstraint<constraints.size(); ++idxGroupConstraint)
+        {
+            ConstraintGroup *group=constraints[idxGroupConstraint];
+            std::pair< ConstraintGroup::EquationIterator, ConstraintGroup::EquationIterator > range=group->data();
+
+            for (ConstraintGroup::EquationIterator equation=range.first; equation!=range.second; ++equation)
+            {
+                if (equation->idxInConstrainedDOF2 >= 0)
+                    used1.push_back(linesInSimulatedObject2[equation->idxInConstrainedDOF2]);
+            }
+        }
+    }
+
     /// Get Right Hand Term
     virtual void getCorrections(ConstOrder Order, helper::vector<SReal>& c);
 

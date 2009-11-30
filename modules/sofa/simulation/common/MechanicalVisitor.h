@@ -1144,33 +1144,17 @@ public:
 class SOFA_SIMULATION_COMMON_API MechanicalExpressJacobianVisitor: public MechanicalVisitor
 {
 public:
-    MechanicalExpressJacobianVisitor()
-    {
-#ifdef SOFA_DUMP_VISITOR_INFO
-        setReadWriteVectors();
-#endif
-    };
-
-
-    virtual Result fwdLMConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseLMConstraint* c);
+    MechanicalExpressJacobianVisitor(simulation::Node* n);
     virtual void bwdMechanicalMapping(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalMapping* map);
-
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalExpressJacobianVisitor"; }
-
-    virtual bool isThreadSafe() const
-    {
-        return false;
-    }
+    virtual bool isThreadSafe() const { return false;}
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
     }
 #endif
-
-protected:
-    helper::vector< core::componentmodel::behavior::BaseLMConstraint* > constraintUsed;
 };
 
 
