@@ -158,8 +158,7 @@ __global__ void UniformMassCuda3t_addForce_kernel(int size, const CudaVec3<real>
     //f[index] += mg;
     f += umul24(blockIdx.x,BSIZE*3); //blockIdx.x*BSIZE*3;
     int index = threadIdx.x;
-    //! Dynamically allocated shared memory to reorder global memory access
-    extern  __shared__  real temp[];
+    __shared__  real temp[BSIZE*3];
     temp[index] = f[index];
     temp[index+BSIZE] = f[index+BSIZE];
     temp[index+2*BSIZE] = f[index+2*BSIZE];
@@ -240,7 +239,7 @@ void UniformMassCuda3f_addForce(unsigned int size, const float *mg, void* f)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    UniformMassCuda3t_addForce_kernel<float><<< grid, threads, BSIZE*3*sizeof(float) >>>(size, CudaVec3<float>::make(mg[0],mg[1],mg[2]), (float*)f);
+    UniformMassCuda3t_addForce_kernel<float><<< grid, threads >>>(size, CudaVec3<float>::make(mg[0],mg[1],mg[2]), (float*)f);
 }
 
 void UniformMassCuda3f1_addForce(unsigned int size, const float *mg, void* f)
@@ -292,7 +291,7 @@ void UniformMassCuda3d_addForce(unsigned int size, const double *mg, void* f)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    UniformMassCuda3t_addForce_kernel<double><<< grid, threads, BSIZE*3*sizeof(double) >>>(size, CudaVec3<double>::make(mg[0],mg[1],mg[2]), (double*)f);
+    UniformMassCuda3t_addForce_kernel<double><<< grid, threads, >>>(size, CudaVec3<double>::make(mg[0],mg[1],mg[2]), (double*)f);
 }
 
 void UniformMassCuda3d1_addForce(unsigned int size, const double *mg, void* f)
