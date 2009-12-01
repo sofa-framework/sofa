@@ -49,15 +49,14 @@ using namespace core::objectmodel;
 
 template <class DataTypes>
 TransformPosition<DataTypes>::TransformPosition()
-    : originPtr( initDataPtr(&originPtr,&origin, "origin", "a 3d point on the plane") )
+    : f_origin( initData(&f_origin, "origin", "a 3d point on the plane") )
     , f_inputX( initData (&f_inputX, "input_position", "input array of 3d points") )
     , f_outputX( initData (&f_outputX, "output_position", "output array of 3d points projected on a plane") )
-    , normalPtr(initDataPtr(&normalPtr,&normal, "normal", "plane normal") )
-    , translationPtr(initDataPtr(&translationPtr,&translation, "translation", "translation vector ") )
-    , rotationPtr(initDataPtr(&rotationPtr,&rotation, "rotation", "rotation vector ") )
-    , scalePtr(initDataPtr(&scalePtr,&scale, "scale", "scale factor") )
+    , f_normal(initData(&f_normal, "normal", "plane normal") )
+    , f_translation(initData(&f_translation, "translation", "translation vector ") )
+    , f_rotation(initData(&f_rotation, "rotation", "rotation vector ") )
+    , f_scale(initData(&f_scale, (Real) 1.0, "scale", "scale factor") )
     , method(initData(&method, "method", "transformation method either translation or scale or rotation or projectOnPlane") )
-    ,scale ((Real) 1.0)
 {
 }
 
@@ -94,11 +93,15 @@ void TransformPosition<DataTypes>::init()
         serr << "Error : Method " << method << "is unknown" <<sendl;
     }
 
+    Coord& normal = *(f_normal.beginEdit());
+
     /// check if the normal is of norm 1
     if (fabs((normal.norm2()-1.0))>1e-10)
     {
         normal/=normal.norm();
     }
+
+    f_normal.endEdit();
 
     addInput(&f_inputX);
     addOutput(&f_outputX);
@@ -119,9 +122,13 @@ void TransformPosition<DataTypes>::update()
 {
     cleanDirty();
 
-
-    const helper::vector<Coord>& in = f_inputX.getValue();
-    helper::vector<Coord>& out = *(f_outputX.beginEdit());
+    helper::ReadAccessor< Data<VecCoord> > in = f_inputX;
+    helper::WriteAccessor< Data<VecCoord> > out = f_outputX;
+    helper::ReadAccessor< Data<Coord> > normal = f_normal;
+    helper::ReadAccessor< Data<Coord> > origin = f_origin;
+    helper::ReadAccessor< Data<Coord> > translation = f_translation;
+    helper::ReadAccessor< Data<Real> > scale = f_scale;
+    helper::ReadAccessor< Data<Coord> > rotation = f_rotation;
 
     out.resize(in.size());
     unsigned int i;
@@ -130,13 +137,13 @@ void TransformPosition<DataTypes>::update()
     case PROJECT_ON_PLANE :
         for (i=0; i< in.size(); ++i)
         {
-            out[i]=in[i]+normal*dot((origin-in[i]),normal);
+            out[i]=in[i]+normal.ref()*dot((origin.ref()-in[i]),normal.ref());
         }
         break;
     case TRANSLATION :
         for (i=0; i< in.size(); ++i)
         {
-            out[i]=in[i]+translation;
+            out[i]=in[i]+translation.ref();
         }
         break;
     case SCALE :
@@ -148,12 +155,12 @@ void TransformPosition<DataTypes>::update()
     case SCALE_TRANSLATION :
         for (i=0; i< in.size(); ++i)
         {
-            out[i]=in[i]*scale +translation;
+            out[i]=in[i]*scale.ref() +translation.ref();
         }
         break;
     case ROTATION :
     {
-        Quaternion q=helper::Quater<Real>::createQuaterFromEuler( rotation*M_PI/180.0);
+        Quaternion q=helper::Quater<Real>::createQuaterFromEuler( rotation.ref()*M_PI/180.0);
 
         for (i=0; i< in.size(); ++i)
         {
@@ -163,17 +170,15 @@ void TransformPosition<DataTypes>::update()
     break;
     case SCALE_ROTATION_TRANSLATION :
     {
-        Quaternion q=helper::Quater<Real>::createQuaterFromEuler( rotation*M_PI/180.0);
+        Quaternion q=helper::Quater<Real>::createQuaterFromEuler( rotation.ref()*M_PI/180.0);
 
         for (i=0; i< in.size(); ++i)
         {
-            out[i]=q.rotate(in[i]*scale) +translation;
+            out[i]=q.rotate(in[i]*scale) +translation.ref();
         }
         break;
     }
     }
-
-    f_outputX.endEdit();
 
 }
 

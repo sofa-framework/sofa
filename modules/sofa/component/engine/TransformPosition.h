@@ -120,20 +120,14 @@ public:
 protected:
 
     TransformationMethod transformationMethod;
-    DataPtr<Coord> originPtr; // origin used by projectOnPlane
+    Data<Coord> f_origin; // origin used by projectOnPlane
     Data<VecCoord> f_inputX; // input position
     Data<VecCoord> f_outputX; // ouput position
-    DataPtr<Coord> normalPtr; // normal used by projectOnPlane
-    DataPtr<Coord> translationPtr; // translation
-    DataPtr<Coord> rotationPtr; // rotation
-    DataPtr<Real> scalePtr; // scale
+    Data<Coord> f_normal; // normal used by projectOnPlane
+    Data<Coord> f_translation; // translation
+    Data<Coord> f_rotation; // rotation
+    Data<Real> f_scale; // scale
     Data<std::string> method; // the method of the transformation
-
-    Coord origin;
-    Coord normal;
-    Coord translation;
-    Coord rotation;
-    Real scale;
 
     MechanicalState<DataTypes>* mstate;
     const VecCoord* x0;
