@@ -30,6 +30,7 @@
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/core/VisualModel.h>
+#include <sofa/helper/gl/VisualParameters.h>
 #include <sofa/component/component.h>
 
 #ifdef SOFA_HAVE_GLEW
@@ -67,8 +68,6 @@ protected:
     GLuint shadowTexWidth, shadowTexHeight;
 
     Data<sofa::defaulttype::Vector3> color;
-    Data<GLdouble> zNear;
-    Data<GLdouble> zFar;
     Data<GLuint> shadowTextureSize;
     Data<bool> drawSource;
 #ifdef SOFA_HAVE_GLEW
@@ -97,7 +96,7 @@ public:
     void update() {} ;
 
     //CastShadowModel
-    virtual void preDrawShadow();
+    virtual void preDrawShadow(helper::gl::VisualParameters* vp);
     virtual void postDrawShadow();
     virtual GLuint getShadowMapSize();
     virtual GLuint getShadowTexture() { return 0 ;};
@@ -156,7 +155,7 @@ public:
     virtual void draw();
     virtual void reinit();
 
-    void preDrawShadow();
+    void preDrawShadow(helper::gl::VisualParameters* vp);
     GLuint getShadowTexture();
     GLfloat* getProjectionMatrix();
     GLfloat* getModelviewMatrix();
