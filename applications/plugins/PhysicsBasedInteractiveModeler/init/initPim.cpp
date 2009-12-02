@@ -24,74 +24,74 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef PLUGINS_PIM_GUI_QT_QMOUSEOPERATIONS_H
-#define PLUGINS_PIM_GUI_QT_QMOUSEOPERATIONS_H
+#include <sofa/helper/system/config.h>
+#include <plugins/PhysicsBasedInteractiveModeler/gui/qt/QMouseOperations.h>
+#include <sofa/gui/OperationFactory.h>
+#include <sofa/gui/qt/SofaMouseManager.h>
 
-#include <plugins/PhysicsBasedInteractiveModeler/gui/MouseOperations.h>
-//#include <sofa/gui/qt/SofaMouseManager.h>
-#include <sofa/gui/PickHandler.h>
-#ifdef SOFA_QT4
-#include <QWidget>
-#include <QLineEdit>
-#include <QSpinBox>
-#include <QSlider>
-#include <QRadioButton>
-#include <QPushButton>
+#ifndef WIN32
+#define SOFA_EXPORT_DYNAMIC_LIBRARY
+#define SOFA_IMPORT_DYNAMIC_LIBRARY
+#define SOFA_PIM_API
 #else
-#include <qwidget.h>
-#include <qlineedit.h>
-#include <qspinbox.h>
-#include <qslider.h>
-#include <qradiobutton.h>
-#include <qpushbutton.h>
+#ifdef SOFA_BUILD_PIM
+#define SOFA_PIM_API SOFA_EXPORT_DYNAMIC_LIBRARY
+#else
+#define SOFA_PIM_API SOFA_IMPORT_DYNAMIC_LIBRARY
 #endif
-#include <iostream>
+#endif
 
-namespace plugins
+namespace sofa
 {
-namespace pim
-{
-namespace gui
-{
-namespace qt
+
+namespace component
 {
 
 using namespace sofa::gui;
+using namespace sofa::gui::qt;
+using namespace plugins::pim::gui::qt;
 
-class QSculptOperation : public QWidget, public SculptOperation
+//Here are just several convenient functions to help user to know what contains the plugin
+
+extern "C" {
+    SOFA_PIM_API void initExternalModule();
+    SOFA_PIM_API const char* getModuleName();
+    SOFA_PIM_API const char* getModuleVersion();
+    SOFA_PIM_API const char* getModuleDescription();
+    SOFA_PIM_API const char* getModuleComponentList();
+}
+
+void initExternalModule()
 {
-    Q_OBJECT
-public:
-    QSculptOperation();
-    void configure(PickHandler *picker, MOUSE_BUTTON b)
-    {
-        SculptOperation::configure(picker, b);
-    }
+    RegisterOperation("Sculpt").add< QSculptOperation >();
+    SofaMouseManager::getInstance()->LeftOperationCombo->insertItem(QString(OperationFactory::GetDescription("Sculpt").c_str()));
+    SofaMouseManager::getInstance()->MiddleOperationCombo->insertItem(QString(OperationFactory::GetDescription("Sculpt").c_str()));
+    SofaMouseManager::getInstance()->RightOperationCombo->insertItem(QString(OperationFactory::GetDescription("Sculpt").c_str()));
+    SofaMouseManager::getInstance()->getMapIndexOperation().insert(std::make_pair(SofaMouseManager::getInstance()->getMapIndexOperation().size(), "Sculpt"));
+}
 
-    double getForce() const;
-    double getScale() const;
-    bool isCheckedFix() const;
+const char* getModuleName()
+{
+    return "Plugin PIM";
+}
 
-public slots:
-    void setScale();
-    void animate(bool checked);
+const char* getModuleVersion()
+{
+    return "beta 1.0";
+}
 
-protected:
-    QSlider  *forceSlider;
-    QSpinBox *forceValue;
+const char* getModuleDescription()
+{
+    return "PIM port into SOFA Framework";
+}
 
-    QSlider  *scaleSlider;
-    QSpinBox *scaleValue;
+const char* getModuleComponentList()
+{
+    return "SculptBodyPerformer, ProgressiveScaling ";
+}
 
-    QRadioButton *sculptRadioButton;
-    QRadioButton *fixRadioButton;
 
-    QPushButton *animatePushButton;
-};
+SOFA_LINK_CLASS(ProgressiveScaling)
+}
 
-} // namespace qt
-} // namespace gui
-} // namespace pim
-} // namespace plugins
-
-#endif
+}

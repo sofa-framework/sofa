@@ -39,7 +39,7 @@ namespace gui
 class SOFA_SOFAGUI_API SculptOperation : public sofa::gui::Operation
 {
 public:
-    SculptOperation():force(1), scale(50), checkedFix(false), animated(false) {}
+    SculptOperation():force(1), scale(20), checkedFix(false), animated(false) {}
     virtual ~SculptOperation();
     virtual void start() ;
     virtual void execution() {};

@@ -1,0 +1,18 @@
+
+*********************************************
+*    PhysicsBasedInteractiveModeler.txt     *
+*********************************************
+
+
+
+AUTHOR :
+ - Juan Pablo de la Plata Alcalde (Telecom Paristech (TSI))
+
+
+
+LICENCE :
+ - None
+
+
+
+OTHER COMMENTS :

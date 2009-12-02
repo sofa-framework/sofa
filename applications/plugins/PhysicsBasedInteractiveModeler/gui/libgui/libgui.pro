@@ -14,7 +14,7 @@ CONFIG += dll
 
 LIBS += -lsofagui$$LIBSUFFIX
 LIBS += -lsofacomponentcollision$$LIBSUFFIX
-LIBS += -lPhysicsBasedInteractiveModeler
+LIBS += -lpim
 
 SOURCES = ../MouseOperations.cpp
 
