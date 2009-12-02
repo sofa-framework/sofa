@@ -50,10 +50,6 @@ void BaseConstraint::applyConstraint(defaulttype::BaseMatrix *, unsigned int &)
 {
 }
 
-void BaseConstraint::applyInvMassConstraint(defaulttype::BaseVector *, unsigned int &)
-{
-}
-
 void BaseConstraint::applyConstraint(defaulttype::BaseVector *, unsigned int &)
 {
 }

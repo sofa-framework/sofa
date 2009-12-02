@@ -647,7 +647,7 @@ void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const default
 
 
 template<class DataTypes>
-void PrecomputedConstraintCorrection<DataTypes>::getComplianceMatrix(defaulttype::BaseMatrix* m)
+void PrecomputedConstraintCorrection<DataTypes>::getComplianceMatrix(defaulttype::BaseMatrix* m) const
 {
     m->resize(dimensionAppCompliance,dimensionAppCompliance);
     for (unsigned int l=0; l<dimensionAppCompliance; ++l)

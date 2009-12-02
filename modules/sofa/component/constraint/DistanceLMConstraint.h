@@ -22,12 +22,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONSTRAINT_DISTANCECONSTRAINT_H
-#define SOFA_COMPONENT_CONSTRAINT_DISTANCECONSTRAINT_H
+#ifndef SOFA_COMPONENT_CONSTRAINT_DISTANCELMCONSTRAINT_H
+#define SOFA_COMPONENT_CONSTRAINT_DISTANCELMCONSTRAINT_H
 
 #include <sofa/core/componentmodel/behavior/BaseMass.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/core/componentmodel/behavior/LMConstraint.h>
+#include <sofa/simulation/common/Node.h>
 namespace sofa
 {
 
@@ -43,7 +44,7 @@ using namespace sofa::core::objectmodel;
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template <class DataTypes>
-class DistanceConstraintInternalData
+class DistanceLMConstraintInternalData
 {
 };
 
@@ -53,10 +54,10 @@ class DistanceConstraintInternalData
 /** Keep two particules at an initial distance
  */
 template <class DataTypes>
-class DistanceConstraint :  public core::componentmodel::behavior::LMConstraint<DataTypes,DataTypes>
+class DistanceLMConstraint :  public core::componentmodel::behavior::LMConstraint<DataTypes,DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(DistanceConstraint,DataTypes),SOFA_TEMPLATE2(sofa::core::componentmodel::behavior::LMConstraint, DataTypes, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(DistanceLMConstraint,DataTypes),SOFA_TEMPLATE2(sofa::core::componentmodel::behavior::LMConstraint, DataTypes, DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
@@ -72,22 +73,22 @@ public:
     typedef core::componentmodel::behavior::BaseLMConstraint::ConstOrder ConstOrder;
 
 protected:
-    DistanceConstraintInternalData<DataTypes> data;
-    friend class DistanceConstraintInternalData<DataTypes>;
+    DistanceLMConstraintInternalData<DataTypes> data;
+    friend class DistanceLMConstraintInternalData<DataTypes>;
 
 public:
-    DistanceConstraint( MechanicalState *dof):
+    DistanceLMConstraint( MechanicalState *dof):
         core::componentmodel::behavior::LMConstraint<DataTypes,DataTypes>(dof,dof),
         vecConstraint(Base::initData(&vecConstraint, "vecConstraint", "List of the edges to constrain"))
     {};
-    DistanceConstraint( MechanicalState *dof1, MechanicalState * dof2):
+    DistanceLMConstraint( MechanicalState *dof1, MechanicalState * dof2):
         core::componentmodel::behavior::LMConstraint<DataTypes,DataTypes>(dof1,dof2),
         vecConstraint(Base::initData(&vecConstraint, "vecConstraint", "List of the edges to constrain"))
     {};
-    DistanceConstraint():
+    DistanceLMConstraint():
         vecConstraint(Base::initData(&vecConstraint, "vecConstraint", "List of the edges to constrain")) {}
 
-    ~DistanceConstraint() {};
+    ~DistanceLMConstraint() {};
 
     void init();
     void reinit();
@@ -102,8 +103,13 @@ public:
 
     virtual void draw();
 
-    /// we compute the length with the constrained dof
-    bool isCorrectionComputedWithSimulatedDOF() {return false;}
+    bool isCorrectionComputedWithSimulatedDOF()
+    {
+        simulation::Node* node1=(simulation::Node*) this->constrainedObject1->getContext();
+        simulation::Node* node2=(simulation::Node*) this->constrainedObject2->getContext();
+        if (node1->mechanicalMapping.empty() && node2->mechanicalMapping.empty()) return true;
+        else return false;
+    }
     bool useMask() {return true;}
 
 
@@ -113,7 +119,7 @@ public:
     {
         return templateName(this);
     }
-    static std::string templateName(const DistanceConstraint<DataTypes>* = NULL)
+    static std::string templateName(const DistanceLMConstraint<DataTypes>* = NULL)
     {
         return DataTypes::Name();
     }

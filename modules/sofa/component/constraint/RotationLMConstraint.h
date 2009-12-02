@@ -28,6 +28,7 @@
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/core/componentmodel/behavior/LMConstraint.h>
 #include <sofa/component/topology/PointSubset.h>
+#include <sofa/simulation/common/Node.h>
 
 
 namespace sofa
@@ -82,13 +83,13 @@ public:
         factorAxis(core::objectmodel::Base::initData(&factorAxis, "factorAxis", "Factor to apply in order to block only a certain amount of rotation along the axis")),
         f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed")),
         showSizeAxis(core::objectmodel::Base::initData(&showSizeAxis,(SReal)1.0,"showSizeAxis","size of the vector used to display the constrained axis") )
-    {};
+    { };
     RotationLMConstraint():
         rotationAxis(core::objectmodel::Base::initData(&rotationAxis, "rotationAxis", "List of rotation axis to constrain")),
         factorAxis(core::objectmodel::Base::initData(&factorAxis, "factorAxis", "Factor to apply in order to block only a certain amount of rotation along the axis")),
         f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed")),
         showSizeAxis(core::objectmodel::Base::initData(&showSizeAxis,(SReal)1.0,"showSizeAxis","size of the vector used to display the constrained axis") )
-    {}
+    { };
 
     ~RotationLMConstraint() {};
 
@@ -119,16 +120,20 @@ public:
     }
 
 
-
-
-
+    bool isCorrectionComputedWithSimulatedDOF()
+    {
+        simulation::Node* node=(simulation::Node*) this->constrainedObject1->getContext();
+        if (node->mechanicalMapping.empty()) return true;
+        else return false;
+    }
     bool useMask() {return true;}
-protected :
-    helper::vector<SetIndexArray> idxEquations;
 
     Data<helper::vector<Deriv> > rotationAxis;
     Data<helper::vector<SReal> > factorAxis;
     Data<SetIndex> f_indices;
+
+protected :
+    helper::vector<SetIndexArray> idxEquations;
     Data<SReal> showSizeAxis;
 
 

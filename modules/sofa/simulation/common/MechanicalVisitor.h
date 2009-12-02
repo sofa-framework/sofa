@@ -820,7 +820,13 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalPropagatePositionVisitor";}
-    virtual std::string getInfos() const { std::string name="x["+x.getName()+"]"; return name; }
+    virtual std::string getInfos() const
+    {
+        std::string name="x["+x.getName()+"]";
+        if (ignoreMask) name += " Mask DISABLED";
+        else            name += " Mask ENABLED";
+        return name;
+    }
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const

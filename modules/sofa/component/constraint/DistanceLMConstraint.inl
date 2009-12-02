@@ -22,12 +22,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONSTRAINT_DISTANCECONSTRAINT_INL
-#define SOFA_COMPONENT_CONSTRAINT_DISTANCECONSTRAINT_INL
+#ifndef SOFA_COMPONENT_CONSTRAINT_DISTANCELMCONSTRAINT_INL
+#define SOFA_COMPONENT_CONSTRAINT_DISTANCELMCONSTRAINT_INL
 
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/core/componentmodel/behavior/BaseLMConstraint.h>
-#include <sofa/component/constraint/DistanceConstraint.h>
+#include <sofa/component/constraint/DistanceLMConstraint.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/defaulttype/VecTypes.h>
@@ -58,7 +58,7 @@ using namespace sofa::core::componentmodel::behavior;
 
 
 template <class DataTypes>
-void DistanceConstraint<DataTypes>::init()
+void DistanceLMConstraint<DataTypes>::init()
 {
     LMConstraint<DataTypes,DataTypes>::init();
     topology = this->getContext()->getMeshTopology();
@@ -66,14 +66,14 @@ void DistanceConstraint<DataTypes>::init()
 }
 
 template <class DataTypes>
-void DistanceConstraint<DataTypes>::reinit()
+void DistanceLMConstraint<DataTypes>::reinit()
 {
     updateRestLength();
 }
 
 
 template <class DataTypes>
-void DistanceConstraint<DataTypes>::addConstraint(unsigned int i1, unsigned int i2)
+void DistanceLMConstraint<DataTypes>::addConstraint(unsigned int i1, unsigned int i2)
 {
     SeqEdges &constraints = *(vecConstraint.beginEdit());
     constraints.resize(constraints.size()+1);
@@ -85,7 +85,7 @@ void DistanceConstraint<DataTypes>::addConstraint(unsigned int i1, unsigned int 
 
 
 template <class DataTypes>
-double DistanceConstraint<DataTypes>::lengthEdge(const Edge &e, const VecCoord &x1, const VecCoord &x2) const
+double DistanceLMConstraint<DataTypes>::lengthEdge(const Edge &e, const VecCoord &x1, const VecCoord &x2) const
 {
     return (x2[e[1]] -  x1[e[0]]).norm();
 }
@@ -93,7 +93,7 @@ double DistanceConstraint<DataTypes>::lengthEdge(const Edge &e, const VecCoord &
 
 
 template <class DataTypes>
-void DistanceConstraint<DataTypes>::updateRestLength()
+void DistanceLMConstraint<DataTypes>::updateRestLength()
 {
     const VecCoord &x0_1=*this->constrainedObject1->getX();
     const VecCoord &x0_2=*this->constrainedObject2->getX();
@@ -107,15 +107,15 @@ void DistanceConstraint<DataTypes>::updateRestLength()
 
 #ifndef SOFA_FLOAT
 template<>
-Rigid3dTypes::Deriv DistanceConstraint<Rigid3dTypes>::getDirection(const Edge &e, const VecCoord &x1, const VecCoord &x2) const;
+Rigid3dTypes::Deriv DistanceLMConstraint<Rigid3dTypes>::getDirection(const Edge &e, const VecCoord &x1, const VecCoord &x2) const;
 #endif
 #ifndef SOFA_DOUBLE
 template<>
-Rigid3fTypes::Deriv DistanceConstraint<Rigid3fTypes>::getDirection(const Edge &e, const VecCoord &x1, const VecCoord &x2) const;
+Rigid3fTypes::Deriv DistanceLMConstraint<Rigid3fTypes>::getDirection(const Edge &e, const VecCoord &x1, const VecCoord &x2) const;
 #endif
 
 template<class DataTypes>
-typename DataTypes::Deriv DistanceConstraint<DataTypes>::getDirection(const Edge &e, const VecCoord &x1, const VecCoord &x2) const
+typename DataTypes::Deriv DistanceLMConstraint<DataTypes>::getDirection(const Edge &e, const VecCoord &x1, const VecCoord &x2) const
 {
     Deriv V12 = (x2[e[1]] - x1[e[0]]);
     V12.normalize();
@@ -124,7 +124,7 @@ typename DataTypes::Deriv DistanceConstraint<DataTypes>::getDirection(const Edge
 
 
 template<class DataTypes>
-void DistanceConstraint<DataTypes>::buildJacobian()
+void DistanceLMConstraint<DataTypes>::buildJacobian()
 {
     const VecCoord &x1=*(this->constrainedObject1->getX());
     const VecCoord &x2=*(this->constrainedObject2->getX());
@@ -156,7 +156,7 @@ void DistanceConstraint<DataTypes>::buildJacobian()
 
 
 template<class DataTypes>
-void DistanceConstraint<DataTypes>::writeConstraintEquations(ConstOrder Order)
+void DistanceLMConstraint<DataTypes>::writeConstraintEquations(ConstOrder Order)
 {
     const VecCoord &x1=*(this->constrainedObject1->getX());
     const VecCoord &x2=*(this->constrainedObject2->getX());
@@ -201,15 +201,15 @@ void DistanceConstraint<DataTypes>::writeConstraintEquations(ConstOrder Order)
 
 #ifndef SOFA_FLOAT
 template <>
-void DistanceConstraint<defaulttype::Rigid3dTypes>::draw();
+void DistanceLMConstraint<defaulttype::Rigid3dTypes>::draw();
 #endif
 #ifndef SOFA_DOUBLE
 template <>
-void DistanceConstraint<defaulttype::Rigid3fTypes>::draw();
+void DistanceLMConstraint<defaulttype::Rigid3fTypes>::draw();
 #endif
 
 template <class DataTypes>
-void DistanceConstraint<DataTypes>::draw()
+void DistanceLMConstraint<DataTypes>::draw()
 {
     if (this->l0.size() != vecConstraint.getValue().size()) updateRestLength();
 
