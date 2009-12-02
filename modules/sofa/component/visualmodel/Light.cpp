@@ -74,8 +74,6 @@ using sofa::defaulttype::Vector3;
 Light::Light()
     : lightID(0), shadowTexWidth(0),shadowTexHeight(0)
     , color(initData(&color, (Vector3) Vector3(1,1,1), "color", "Set the color of the light"))
-    , zNear(initData(&zNear, (GLdouble) 4.0, "zNear", "Set minimum distance for view field"))
-    , zFar(initData(&zFar, (GLdouble) 50.0, "zFar", "Set maximum distance for view field"))
     , shadowTextureSize (initData(&shadowTextureSize, (GLuint) 0, "shadowTextureSize", "Set size for shadow texture "))
     , drawSource(initData(&drawSource, (bool) false, "drawSource", "Draw Light Source"))
     , enableShadow(initData(&enableShadow, (bool) true, "enableShadow", "Enable Shadow from this light"))
@@ -132,7 +130,7 @@ void Light::drawLight()
 
 }
 
-void Light::preDrawShadow()
+void Light::preDrawShadow(helper::gl::VisualParameters* /* vp */)
 {
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
@@ -363,60 +361,103 @@ void SpotLight::drawLight()
 
 void SpotLight::draw()
 {
-    if (drawSource.getValue() && getContext()->getShowVisualModels())
-    {
-        Vector3 sceneMinBBox, sceneMaxBBox;
-        sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)this->getContext(), sceneMinBBox.ptr(), sceneMaxBBox.ptr());
-        float scale = (float)((sceneMaxBBox - sceneMinBBox).norm());
-        scale *= 0.01f;
-        float width = 5.0f;
-        float base =(float)(tan(cutoff.getValue()*M_PI/360)*width*2);
+    /*	if (drawSource.getValue() && getContext()->getShowVisualModels())
+    	{
+    	    Vector3 sceneMinBBox, sceneMaxBBox;
+    		sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)this->getContext(), sceneMinBBox.ptr(), sceneMaxBBox.ptr());
+    		float scale = (float)((sceneMaxBBox - sceneMinBBox).norm());
+    		scale *= 0.01f;
+    		float width = 5.0f;
+    		float base =(float)(tan(cutoff.getValue()*M_PI/360)*width*2);
 
-        GLUquadric* quad = gluNewQuadric();
-        const Vector3& pos = position.getValue();
-        const Vector3& col = color.getValue();
+    		GLUquadric* quad = gluNewQuadric();
+    		const Vector3& pos = position.getValue();
+    		const Vector3& dir = direction.getValue();
+    		const Vector3& col = color.getValue();
 
-        glDisable(GL_LIGHTING);
-        glColor3dv(col.ptr());
+    		//get Rotation
+    		defaulttype::Quat q = defaulttype::Quat::createQuaterFrom2Vectors( dir , Vector3(0,0,1));
+    		GLfloat rotMat[16];
+    		q.writeOpenGlMatrix(rotMat);
+    		glDisable(GL_LIGHTING);
+    		glColor3dv(col.ptr());
 
-        glPushMatrix();
-        glTranslated(pos[0], pos[1], pos[2]);
-        glScalef(scale, scale, scale);
-        //glRotatef(scale, scale, scale);
-        glPushMatrix();
-        gluSphere(quad, 1.0, 16, 16);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-        glTranslatef(0.0,0.0,-width);
-        gluCylinder(quad,base, 0.0, width, 16, 16);
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-        glPopMatrix();
-        glPopMatrix();
+    		glPushMatrix();
+    		glTranslated(pos[0], pos[1], pos[2]);
+    		glMultMatrixf(rotMat);
+    		glScalef(scale, scale, scale);
+    		glPushMatrix();
+    		gluSphere(quad, 1.0, 16, 16);
+    		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    		glTranslatef(0.0,0.0,-width);
+    		gluCylinder(quad,base, 0.0, width, 16, 16);
+    		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    		glPopMatrix();
+    		glPopMatrix();
 
-        glEnable(GL_LIGHTING);
-    }
+    		glEnable(GL_LIGHTING);
+    	}
+    	*/
 }
 
-void SpotLight::preDrawShadow()
+void SpotLight::preDrawShadow(helper::gl::VisualParameters* vp)
 {
-    Light::preDrawShadow();
+    Light::preDrawShadow(vp);
+    const Vector3 &pos = position.getValue();
+    const Vector3 &dir = direction.getValue();
 
-    //float d = 4.0 * tan(cutoff.getValue()*3.14159/180);
+    helper::gl::Transformation transform;
+    for (unsigned int i=0 ; i< 3 ; i++)
+    {
+        transform.translation[i] = pos[i];
+        transform.scale[i] = 1.0;
+    }
+    Vector3 xAxis, yAxis;
+    yAxis = Vector3(0.0,1.0,0.0);
+    xAxis = yAxis.cross(dir);
+    xAxis.normalize();
+    defaulttype::Quat q;
+    q = q.createQuaterFromFrame(xAxis, yAxis, dir);
+    q.buildRotationMatrix(transform.rotation);
+
+    //compute zNear, zFar from light point of view
+    double zNear=1e10, zFar=-1e10;
+    for (int corner=0; corner<8; ++corner)
+    {
+        Vector3 p((corner&1)?vp->minBBox[0]:vp->maxBBox[0],
+                (corner&2)?vp->minBBox[1]:vp->maxBBox[1],
+                (corner&4)?vp->minBBox[2]:vp->maxBBox[2]);
+        p = transform * p;
+        double z = -p[2];
+        if (z < zNear) zNear = z;
+        if (z > zFar)  zFar = z;
+    }
+
+    if (zNear <= 0)
+        zNear = 1;
+    if (zFar >= 1000.0)
+        zFar = 1000.0;
+
+    if (zNear > 0 && zFar < 1000)
+    {
+        zNear *= 0.8; // add some margin
+        zFar *= 1.2;
+        if (zNear < zFar*0.01)
+            zNear = zFar*0.01;
+        if (zNear < 0.1) zNear = 0.1;
+        if (zFar < 2.0) zFar = 2.0;
+    }
 
     //Projection matrix
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    //glFrustum(-d, d, -d, d, ZNEAR, ZFAR);
-    gluPerspective(2*cutoff.getValue(),1.0, zNear.getValue(), zFar.getValue());
+    //gluPerspective(2*cutoff.getValue(),1.0, p_zNear.getValue(), p_zFar.getValue());
+    gluPerspective(2*cutoff.getValue(),1.0, zNear, zFar);
 
     //Modelview matrix
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-//	gluLookAt(position.getValue()[0], position.getValue()[1], position.getValue()[2],
-//			position.getValue()[0] + direction.getValue()[0],
-//			position.getValue()[1] + direction.getValue()[1],
-//			position.getValue()[2] + direction.getValue()[2],
-//			0,1,0);
-    gluLookAt(position.getValue()[0], position.getValue()[1], position.getValue()[2],0 ,0 ,0, direction.getValue()[0], direction.getValue()[1], direction.getValue()[2]);
+    gluLookAt(pos[0], pos[1], pos[2],dir[0]+pos[0], dir[1]+pos[1], dir[2]+pos[2], 0.0,1.0,0.0);
 
     //Save the two matrices
     glGetFloatv(GL_PROJECTION_MATRIX, lightMatProj);
