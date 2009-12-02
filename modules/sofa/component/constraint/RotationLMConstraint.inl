@@ -159,9 +159,9 @@ void RotationLMConstraint<DataTypes>::writeConstraintEquations(ConstOrder Order)
     {
         const unsigned int index = *it;
 
-        core::componentmodel::behavior::BaseLMConstraint::ConstraintGroup *constraint = this->addGroupConstraint(Order);
         for (unsigned int i=0; i<idxEquations[index].size(); ++i)
         {
+            core::componentmodel::behavior::BaseLMConstraint::ConstraintGroup *constraint = this->addGroupConstraint(Order);
             SReal correction=0;
             switch(Order)
             {

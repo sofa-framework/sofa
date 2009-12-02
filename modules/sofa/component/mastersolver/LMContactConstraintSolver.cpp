@@ -89,11 +89,8 @@ bool LMContactConstraintSolver::needPriorStatePropagation()
 
 void LMContactConstraintSolver::solveConstraints(bool needPropagation)
 {
-    simulation::Node *node=(simulation::Node*) this->getContext();
-    simulation::MechanicalResetConstraintVisitor resetConstraints;
-    resetConstraints.execute(node);
-
 //  sout << "apply constraints" << sendl;
+    simulation::Node *node = (simulation::Node*)getContext();
     simulation::MechanicalExpressJacobianVisitor JacobianVisitor(node);
     JacobianVisitor.execute(node);
 
@@ -143,28 +140,23 @@ void LMContactConstraintSolver::step(double dt)
     integrate(dt);
 
 
+
     bool propagateState=needPriorStatePropagation();
-    bool noConstraint=true;
     for (unsigned int step=0; step<maxSteps; ++step)
     {
+        node->execute<simulation::MechanicalResetConstraintVisitor>();
+        node->execute<simulation::CollisionResetVisitor>();
         if (isCollisionDetected())
         {
             node->execute<simulation::CollisionResetVisitor>();
             node->execute<simulation::CollisionResponseVisitor>();
             solveConstraints(propagateState);
-            noConstraint=false;
         }
         else
         {
             //No collision --> no constraint
             break;
         }
-    }
-
-    if (noConstraint)
-    {
-        node->execute<simulation::MechanicalResetConstraintVisitor>();
-        node->execute<simulation::CollisionResetVisitor>();
     }
 }
 

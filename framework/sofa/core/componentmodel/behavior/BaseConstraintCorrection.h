@@ -57,7 +57,7 @@ public:
 
     virtual void getCompliance(defaulttype::BaseMatrix* W) = 0;
     //Fill the matrix m with the full Compliance Matrix
-    virtual void getComplianceMatrix(defaulttype::BaseMatrix* m)=0;
+    virtual void getComplianceMatrix(defaulttype::BaseMatrix* m) const=0;
 
 
 

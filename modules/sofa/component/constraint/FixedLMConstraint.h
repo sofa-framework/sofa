@@ -28,6 +28,7 @@
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/core/componentmodel/behavior/LMConstraint.h>
 #include <sofa/component/topology/PointSubset.h>
+#include <sofa/simulation/common/Node.h>
 
 
 namespace sofa
@@ -120,6 +121,12 @@ public:
 
 
 
+    bool isCorrectionComputedWithSimulatedDOF()
+    {
+        simulation::Node* node=(simulation::Node*) this->constrainedObject1->getContext();
+        if (node->mechanicalMapping.empty()) return true;
+        else return false;
+    }
     bool useMask() {return true;}
 protected :
 

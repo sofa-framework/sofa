@@ -182,7 +182,7 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getCompliance(defa
 }
 
 template<>
-void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getComplianceMatrix(defaulttype::BaseMatrix *m)
+void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getComplianceMatrix(defaulttype::BaseMatrix *m) const
 {
     const VecReal &comp=compliance.getValue();
     const unsigned int dimension = defaulttype::DataTypeInfo<Deriv>::size();

@@ -97,7 +97,6 @@ public:
     void applyConstraint(defaulttype::BaseMatrix *mat, unsigned int &offset);
     void applyConstraint(defaulttype::BaseVector *vect, unsigned int &offset);
 
-    void applyInvMassConstraint(defaulttype::BaseVector *, unsigned int &);
     // Handle topological changes
     virtual void handleTopologyChange();
 

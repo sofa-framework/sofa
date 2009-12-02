@@ -134,9 +134,6 @@ public:
     /// Project the global Mechanical Matrix to constrained space using offset parameter
     virtual void applyConstraint(defaulttype::BaseMatrix *, unsigned int & /*offset*/);
 
-    /// Apply constraint to the inverse of the mass matrix
-    virtual void applyInvMassConstraint(defaulttype::BaseVector *, unsigned int &);
-
     /// Project the global Mechanical Vector to constrained space using offset parameter
     virtual void applyConstraint(defaulttype::BaseVector *, unsigned int & /*offset*/);
 

@@ -1080,17 +1080,17 @@ MechanicalExpressJacobianVisitor::MechanicalExpressJacobianVisitor(simulation::N
     n->get<core::componentmodel::behavior::BaseLMConstraint>(&listC, core::objectmodel::BaseContext::SearchDown);
     for (unsigned int i=0; i<listC.size(); ++i)
     {
-        simulation::Node *node=(simulation::Node*) listC[i]->getContext();
-        ctime_t t0 = beginProcess(node, listC[i]);
+        // simulation::Node *node=(simulation::Node*) listC[i]->getContext();
+        // ctime_t t0 = beginProcess(node, listC[i]);
         listC[i]->buildJacobian();
-        endProcess(node, listC[i], t0);
+        // endProcess(node, listC[i], t0);
     }
     for (unsigned int i=0; i<listC.size(); ++i)
     {
-        simulation::Node *node=(simulation::Node*) listC[i]->getContext();
-        ctime_t t0 = beginProcess(node, listC[i]);
+        // simulation::Node *node=(simulation::Node*) listC[i]->getContext();
+        // ctime_t t0 = beginProcess(node, listC[i]);
         listC[i]->propagateJacobian();
-        endProcess(node, listC[i], t0);
+        // endProcess(node, listC[i], t0);
     }
 }
 

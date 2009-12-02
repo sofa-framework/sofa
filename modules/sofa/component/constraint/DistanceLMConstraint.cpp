@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/constraint/DistanceConstraint.inl>
+#include <sofa/component/constraint/DistanceLMConstraint.inl>
 #include <sofa/core/componentmodel/behavior/LMConstraint.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
@@ -42,39 +42,39 @@ using namespace sofa::helper;
 
 ///TODO: handle combinaison of Rigid and Deformable bodies.
 
-SOFA_DECL_CLASS(DistanceConstraint)
+SOFA_DECL_CLASS(DistanceLMConstraint)
 
-int DistanceConstraintClass = core::RegisterObject("Maintain constant the length of some edges of a pair of objects")
+int DistanceLMConstraintClass = core::RegisterObject("Maintain constant the length of some edges of a pair of objects")
 #ifndef SOFA_FLOAT
-        .add< DistanceConstraint<Vec3dTypes> >()
-        .add< DistanceConstraint<Rigid3dTypes> >()
+        .add< DistanceLMConstraint<Vec3dTypes> >()
+        .add< DistanceLMConstraint<Rigid3dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< DistanceConstraint<Vec3fTypes> >()
-        .add< DistanceConstraint<Rigid3fTypes> >()
+        .add< DistanceLMConstraint<Vec3fTypes> >()
+        .add< DistanceLMConstraint<Rigid3fTypes> >()
 #endif
         ;
 
 #ifndef SOFA_FLOAT
-template class DistanceConstraint<Vec3dTypes>;
-template class DistanceConstraint<Rigid3dTypes>;
+template class DistanceLMConstraint<Vec3dTypes>;
+template class DistanceLMConstraint<Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class DistanceConstraint<Vec3fTypes>;
-template class DistanceConstraint<Rigid3fTypes>;
+template class DistanceLMConstraint<Vec3fTypes>;
+template class DistanceLMConstraint<Rigid3fTypes>;
 #endif
 
 
 
 #ifndef SOFA_FLOAT
 template<>
-Rigid3dTypes::Deriv DistanceConstraint<Rigid3dTypes>::getDirection(const Edge &e, const VecCoord &x1, const VecCoord &x2) const
+Rigid3dTypes::Deriv DistanceLMConstraint<Rigid3dTypes>::getDirection(const Edge &e, const VecCoord &x1, const VecCoord &x2) const
 {
     Vector3 V12=(x2[e[1]].getCenter() - x1[e[0]].getCenter()); V12.normalize();
     return Deriv(V12, Vector3());
 }
 template<>
-void DistanceConstraint<Rigid3dTypes>::draw()
+void DistanceLMConstraint<Rigid3dTypes>::draw()
 {
     if (this->l0.size() != vecConstraint.getValue().size()) updateRestLength();
 
@@ -100,13 +100,13 @@ void DistanceConstraint<Rigid3dTypes>::draw()
 
 #ifndef SOFA_DOUBLE
 template<>
-Rigid3fTypes::Deriv DistanceConstraint<Rigid3fTypes>::getDirection(const Edge &e, const VecCoord &x1, const VecCoord &x2) const
+Rigid3fTypes::Deriv DistanceLMConstraint<Rigid3fTypes>::getDirection(const Edge &e, const VecCoord &x1, const VecCoord &x2) const
 {
     Vector3 V12=(x2[e[1]].getCenter() - x1[e[0]].getCenter()); V12.normalize();
     return Deriv(V12, Vector3());
 }
 template<>
-void DistanceConstraint<Rigid3fTypes>::draw()
+void DistanceLMConstraint<Rigid3fTypes>::draw()
 {
     if (this->l0.size() != vecConstraint.getValue().size()) updateRestLength();
 
