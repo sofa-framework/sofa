@@ -195,8 +195,8 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
     //unsigned int numConstraints = constraints.size();
     VecCoord& x = *mstate->getX();
     VecDeriv& v = *mstate->getV();
-    VecDeriv v_free = *mstate->getVfree();
-    VecCoord x_free = *mstate->getXfree();
+    v_free = *mstate->getVfree();
+    x_free = *mstate->getXfree();
     //double dt = this->getContext()->getDt();
 
     const unsigned int numDOFs = mstate->getSize();
