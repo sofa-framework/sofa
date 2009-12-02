@@ -69,9 +69,11 @@ class Ogden: public HyperelasticMaterial<DataTypes>
     typedef Mat<3,3,Real> Matrix3;
     typedef Mat<6,6,Real> Matrix6;
     typedef MatSym<3,Real> MatrixSym;
-    typedef typename Eigen::SelfAdjointEigenSolver<Matrix<Real,3,3>>::MatrixType EigenMatrix;
     typedef Vec<3,Real> Vect;
+#ifdef SOFA_HAVE_EIGEN2
+    typedef typename Eigen::SelfAdjointEigenSolver<Matrix<Real,3,3>>::MatrixType EigenMatrix;
     typedef typename Eigen::SelfAdjointEigenSolver<Matrix<Real,3,3>>::RealVectorType CoordEigen;
+#endif
     typedef typename fem::HyperelasticMaterial<DataTypes>::triplet triplet;
     typedef typename std::pair<Real,MatrixSym> MatrixCoeffPair;
 
@@ -117,8 +119,10 @@ class Ogden: public HyperelasticMaterial<DataTypes>
 
             CEigen(0,0)=C[0]; CEigen(0,1)=C[1]; CEigen(1,0)=C[1]; CEigen(1,1)=C[2]; CEigen(1,2)=C[4]; CEigen(2,1)=C[4];
             CEigen(2,0)=C[3]; CEigen(0,2)=C[3]; CEigen(2,2)=C[5];
+#ifdef SOFA_HAVE_EIGEN2
             Eigen::SelfAdjointEigenSolver<EigenMatrix> Vect(CEigen,true);
             CoordEigen Evalue=Vect.eigenvalues();
+#endif
 
             Real val=pow(Evalue[0],alpha1/(Real)2)+pow(Evalue[1],alpha1/(Real)2)+pow(Evalue[2],alpha1/(Real)2);
             return val*mu1/(alpha1*alpha1);
@@ -131,9 +135,11 @@ class Ogden: public HyperelasticMaterial<DataTypes>
             EigenMatrix CEigen;
             CEigen(0,0)=C[0]; CEigen(0,1)=C[1]; CEigen(1,0)=C[1]; CEigen(1,1)=C[2]; CEigen(1,2)=C[4]; CEigen(2,1)=C[4];
             CEigen(2,0)=C[3]; CEigen(0,2)=C[3]; CEigen(2,2)=C[5];
+#ifdef SOFA_HAVE_EIGEN2
             Eigen::SelfAdjointEigenSolver<EigenMatrix> Vect(CEigen,true);
             EigenMatrix Evect=Vect.eigenvectors();
             CoordEigen Evalue=Vect.eigenvalues();
+#endif
             Matrix3 Pinverse;
             Pinverse(0,0)=Evect(0,0); Pinverse(1,1)=Evect(1,1); Pinverse(2,2)=Evect(2,2); Pinverse(0,1)=Evect(1,0); Pinverse(1,0)=Evect(0,1); Pinverse(2,0)=Evect(0,2);
             Pinverse(0,2)=Evect(2,0); Pinverse(2,1)=Evect(1,2); Pinverse(1,2)=Evect(2,1);
@@ -155,9 +161,11 @@ class Ogden: public HyperelasticMaterial<DataTypes>
             EigenMatrix CEigen;
             CEigen(0,0)=C[0]; CEigen(0,1)=C[1]; CEigen(1,0)=C[1]; CEigen(1,1)=C[2]; CEigen(1,2)=C[4]; CEigen(2,1)=C[4];
             CEigen(2,0)=C[3]; CEigen(0,2)=C[3]; CEigen(2,2)=C[5];
+#ifdef SOFA_HAVE_EIGEN2
             Eigen::SelfAdjointEigenSolver<EigenMatrix> Vect(CEigen,true);
             EigenMatrix Evect=Vect.eigenvectors();
             CoordEigen Evalue=Vect.eigenvalues();
+#endif
             Matrix3 Pinverse;
             Pinverse(0,0)=Evect(0,0); Pinverse(1,1)=Evect(1,1); Pinverse(2,2)=Evect(2,2); Pinverse(0,1)=Evect(1,0); Pinverse(1,0)=Evect(0,1); Pinverse(2,0)=Evect(0,2);
             Pinverse(0,2)=Evect(2,0); Pinverse(2,1)=Evect(1,2); Pinverse(1,2)=Evect(2,1);
@@ -240,9 +248,11 @@ public:
         EigenMatrix CEigen;
         CEigen(0,0)=C[0]; CEigen(0,1)=C[1]; CEigen(1,0)=C[1]; CEigen(1,1)=C[2]; CEigen(1,2)=C[4]; CEigen(2,1)=C[4];
         CEigen(2,0)=C[3]; CEigen(0,2)=C[3]; CEigen(2,2)=C[5];
+#ifdef SOFA_HAVE_EIGEN2
         Eigen::SelfAdjointEigenSolver<EigenMatrix> Vect(CEigen,true);
         EigenMatrix Evect=Vect.eigenvectors();
         CoordEigen Evalue=Vect.eigenvalues();
+#endif
         Real trCalpha=pow(Evalue[0],alpha1/(Real)2)+pow(Evalue[1],alpha1/(Real)2)+pow(Evalue[2],alpha1/(Real)2);
         Matrix3 Pinverse;
         Pinverse(0,0)=Evect(0,0); Pinverse(1,1)=Evect(1,1); Pinverse(2,2)=Evect(2,2); Pinverse(0,1)=Evect(1,0); Pinverse(1,0)=Evect(0,1); Pinverse(2,0)=Evect(0,2);
@@ -267,9 +277,11 @@ public:
         EigenMatrix CEigen;
         CEigen(0,0)=C[0]; CEigen(0,1)=C[1]; CEigen(1,0)=C[1]; CEigen(1,1)=C[2]; CEigen(1,2)=C[4]; CEigen(2,1)=C[4];
         CEigen(2,0)=C[3]; CEigen(0,2)=C[3]; CEigen(2,2)=C[5];
+#ifdef SOFA_HAVE_EIGEN2
         Eigen::SelfAdjointEigenSolver<EigenMatrix> Vect(CEigen,true);
         EigenMatrix Evect=Vect.eigenvectors();
         CoordEigen Evalue=Vect.eigenvalues();
+#endif
         Real trCalpha=pow(Evalue[0],alpha1/(Real)2)+pow(Evalue[1],alpha1/(Real)2)+pow(Evalue[2],alpha1/(Real)2);
         Matrix3 Pinverse;
         Pinverse(0,0)=Evect(0,0); Pinverse(1,1)=Evect(1,1); Pinverse(2,2)=Evect(2,2); Pinverse(0,1)=Evect(1,0); Pinverse(1,0)=Evect(0,1); Pinverse(2,0)=Evect(0,2);
@@ -305,9 +317,11 @@ public:
         EigenMatrix CEigen;
         CEigen(0,0)=C[0]; CEigen(0,1)=C[1]; CEigen(1,0)=C[1]; CEigen(1,1)=C[2]; CEigen(1,2)=C[4]; CEigen(2,1)=C[4];
         CEigen(2,0)=C[3]; CEigen(0,2)=C[3]; CEigen(2,2)=C[5];
+#ifdef SOFA_HAVE_EIGEN2
         Eigen::SelfAdjointEigenSolver<EigenMatrix> Vect(CEigen,true);
         EigenMatrix Evect=Vect.eigenvectors();
         CoordEigen Evalue=Vect.eigenvalues();
+#endif
         Real trCalpha=pow(Evalue[0],alpha1/(Real)2)+pow(Evalue[1],alpha1/(Real)2)+pow(Evalue[2],alpha1/(Real)2);
         Matrix3 Pinverse;
         Pinverse(0,0)=Evect(0,0); Pinverse(1,1)=Evect(1,1); Pinverse(2,2)=Evect(2,2); Pinverse(0,1)=Evect(1,0); Pinverse(1,0)=Evect(0,1); Pinverse(2,0)=Evect(0,2);
