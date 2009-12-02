@@ -112,34 +112,36 @@ class Ogden: public HyperelasticMaterial<DataTypes>
 
         virtual Real InvariantFunction(const typename HyperelasticMaterial<DataTypes>::StrainInformation *sinfo,const  typename HyperelasticMaterial<DataTypes>::MaterialParameters &param)
         {
+#ifdef SOFA_HAVE_EIGEN2
             Real alpha1=param.parameterArray[2];
             Real mu1=param.parameterArray[1];
             MatrixSym C=sinfo->deformationTensor;
-            EigenMatrix CEigen;
 
+            EigenMatrix CEigen;
             CEigen(0,0)=C[0]; CEigen(0,1)=C[1]; CEigen(1,0)=C[1]; CEigen(1,1)=C[2]; CEigen(1,2)=C[4]; CEigen(2,1)=C[4];
             CEigen(2,0)=C[3]; CEigen(0,2)=C[3]; CEigen(2,2)=C[5];
-#ifdef SOFA_HAVE_EIGEN2
             Eigen::SelfAdjointEigenSolver<EigenMatrix> Vect(CEigen,true);
             CoordEigen Evalue=Vect.eigenvalues();
-#endif
+
 
             Real val=pow(Evalue[0],alpha1/(Real)2)+pow(Evalue[1],alpha1/(Real)2)+pow(Evalue[2],alpha1/(Real)2);
             return val*mu1/(alpha1*alpha1);
+#endif
         }
         virtual void InvariantFunctionSPKTensor(const typename HyperelasticMaterial<DataTypes>::StrainInformation *sinfo, const  typename HyperelasticMaterial<DataTypes>::MaterialParameters &param, MatrixSym &SPKTensor)
         {
+#ifdef SOFA_HAVE_EIGEN2
             Real alpha1=param.parameterArray[2];
             Real mu1=param.parameterArray[1];
             MatrixSym C=sinfo->deformationTensor;
+
             EigenMatrix CEigen;
             CEigen(0,0)=C[0]; CEigen(0,1)=C[1]; CEigen(1,0)=C[1]; CEigen(1,1)=C[2]; CEigen(1,2)=C[4]; CEigen(2,1)=C[4];
             CEigen(2,0)=C[3]; CEigen(0,2)=C[3]; CEigen(2,2)=C[5];
-#ifdef SOFA_HAVE_EIGEN2
             Eigen::SelfAdjointEigenSolver<EigenMatrix> Vect(CEigen,true);
             EigenMatrix Evect=Vect.eigenvectors();
             CoordEigen Evalue=Vect.eigenvalues();
-#endif
+
             Matrix3 Pinverse;
             Pinverse(0,0)=Evect(0,0); Pinverse(1,1)=Evect(1,1); Pinverse(2,2)=Evect(2,2); Pinverse(0,1)=Evect(1,0); Pinverse(1,0)=Evect(0,1); Pinverse(2,0)=Evect(0,2);
             Pinverse(0,2)=Evect(2,0); Pinverse(2,1)=Evect(1,2); Pinverse(1,2)=Evect(2,1);
@@ -148,6 +150,7 @@ class Ogden: public HyperelasticMaterial<DataTypes>
             Ca=Pinverse.transposed()*Dalpha_1.SymMatMultiply(Pinverse);
             Calpha_1.Mat2Sym(Ca,Calpha_1);
             SPKTensor=mu1/alpha1*Calpha_1;
+#endif
 
 
         }
@@ -155,17 +158,18 @@ class Ogden: public HyperelasticMaterial<DataTypes>
                 std::vector<triplet> &,
                 std::vector<MatrixCoeffPair> &matrixsecond)
         {
+#ifdef SOFA_HAVE_EIGEN2
             Real alpha1=param.parameterArray[2];
             Real mu1=param.parameterArray[1];
             MatrixSym C=sinfo->deformationTensor;
             EigenMatrix CEigen;
             CEigen(0,0)=C[0]; CEigen(0,1)=C[1]; CEigen(1,0)=C[1]; CEigen(1,1)=C[2]; CEigen(1,2)=C[4]; CEigen(2,1)=C[4];
             CEigen(2,0)=C[3]; CEigen(0,2)=C[3]; CEigen(2,2)=C[5];
-#ifdef SOFA_HAVE_EIGEN2
+
             Eigen::SelfAdjointEigenSolver<EigenMatrix> Vect(CEigen,true);
             EigenMatrix Evect=Vect.eigenvectors();
             CoordEigen Evalue=Vect.eigenvalues();
-#endif
+
             Matrix3 Pinverse;
             Pinverse(0,0)=Evect(0,0); Pinverse(1,1)=Evect(1,1); Pinverse(2,2)=Evect(2,2); Pinverse(0,1)=Evect(1,0); Pinverse(1,0)=Evect(0,1); Pinverse(2,0)=Evect(0,2);
             Pinverse(0,2)=Evect(2,0); Pinverse(2,1)=Evect(1,2); Pinverse(1,2)=Evect(2,1);
@@ -174,6 +178,7 @@ class Ogden: public HyperelasticMaterial<DataTypes>
             Ca=Pinverse.transposed()*Dalpha_2.SymMatMultiply(Pinverse);
             Calpha_2.Mat2Sym(Ca,Calpha_2);
             matrixsecond.push_back(pair<Real,MatrixSym>(mu1*(alpha1/(Real)2.0-(Real)1.0)/alpha1,Calpha_2));
+#endif
         }
     };
 
@@ -241,6 +246,7 @@ public:
     }
     virtual void deriveSPKTensor(typename HyperelasticMaterial<DataTypes>::StrainInformation *sinfo, const typename HyperelasticMaterial<DataTypes>::MaterialParameters &param,MatrixSym &SPKTensorGeneral)
     {
+#ifdef SOFA_HAVE_EIGEN2
         Real k0=param.parameterArray[0];
         Real mu1=param.parameterArray[1];
         Real alpha1=param.parameterArray[2];
@@ -248,11 +254,11 @@ public:
         EigenMatrix CEigen;
         CEigen(0,0)=C[0]; CEigen(0,1)=C[1]; CEigen(1,0)=C[1]; CEigen(1,1)=C[2]; CEigen(1,2)=C[4]; CEigen(2,1)=C[4];
         CEigen(2,0)=C[3]; CEigen(0,2)=C[3]; CEigen(2,2)=C[5];
-#ifdef SOFA_HAVE_EIGEN2
+
         Eigen::SelfAdjointEigenSolver<EigenMatrix> Vect(CEigen,true);
         EigenMatrix Evect=Vect.eigenvectors();
         CoordEigen Evalue=Vect.eigenvalues();
-#endif
+
         Real trCalpha=pow(Evalue[0],alpha1/(Real)2)+pow(Evalue[1],alpha1/(Real)2)+pow(Evalue[2],alpha1/(Real)2);
         Matrix3 Pinverse;
         Pinverse(0,0)=Evect(0,0); Pinverse(1,1)=Evect(1,1); Pinverse(2,2)=Evect(2,2); Pinverse(0,1)=Evect(1,0); Pinverse(1,0)=Evect(0,1); Pinverse(2,0)=Evect(0,2);
@@ -264,12 +270,13 @@ public:
         MatrixSym inversematrix;
         invertMatrix(inversematrix,sinfo->deformationTensor);
         SPKTensorGeneral=mu1/alpha1*pow(sinfo->J,-alpha1/(Real)3.0)*(-(Real)1.0/(Real)3.0*inversematrix*trCalpha+Calpha_1)+k0*log(sinfo->J)*inversematrix;
-
+#endif
     }
 
 
     virtual void applyElasticityTensor(typename HyperelasticMaterial<DataTypes>::StrainInformation *sinfo, const typename HyperelasticMaterial<DataTypes>::MaterialParameters &param,const MatrixSym inputTensor, MatrixSym &outputTensor)
     {
+#ifdef SOFA_HAVE_EIGEN2
         Real k0=param.parameterArray[0];
         Real mu1=param.parameterArray[1];
         Real alpha1=param.parameterArray[2];
@@ -277,11 +284,10 @@ public:
         EigenMatrix CEigen;
         CEigen(0,0)=C[0]; CEigen(0,1)=C[1]; CEigen(1,0)=C[1]; CEigen(1,1)=C[2]; CEigen(1,2)=C[4]; CEigen(2,1)=C[4];
         CEigen(2,0)=C[3]; CEigen(0,2)=C[3]; CEigen(2,2)=C[5];
-#ifdef SOFA_HAVE_EIGEN2
         Eigen::SelfAdjointEigenSolver<EigenMatrix> Vect(CEigen,true);
         EigenMatrix Evect=Vect.eigenvectors();
         CoordEigen Evalue=Vect.eigenvalues();
-#endif
+
         Real trCalpha=pow(Evalue[0],alpha1/(Real)2)+pow(Evalue[1],alpha1/(Real)2)+pow(Evalue[2],alpha1/(Real)2);
         Matrix3 Pinverse;
         Pinverse(0,0)=Evect(0,0); Pinverse(1,1)=Evect(1,1); Pinverse(2,2)=Evect(2,2); Pinverse(0,1)=Evect(1,0); Pinverse(1,0)=Evect(0,1); Pinverse(2,0)=Evect(0,2);
@@ -306,10 +312,12 @@ public:
         Secondmatrix.Mat2Sym(Calpha_2.SymMatMultiply(inputTensor.SymSymMultiply(Calpha_2)),Secondmatrix);
         outputTensor=mu1/alpha1*pow(sinfo->J,-alpha1/(Real)3.0)*(_trHC*(-alpha1/(Real)6.0)*(-(Real)1.0/(Real)3.0*inversematrix*trCalpha+Calpha_1)+(Real)1.0/(Real)3.0*Firstmatrix*trCalpha-(Real)1.0/(Real)3.0*inversematrix*_trHCalpha_1*alpha1/(Real)2.0
                 +(alpha1/(Real)2.0-(Real)1)*Secondmatrix)+k0/(Real)2.0*_trHC*inversematrix-(Real)(k0*log(sinfo->J))*Firstmatrix;
+#endif
 
     }
     virtual void ElasticityTensor(typename HyperelasticMaterial<DataTypes>::StrainInformation *sinfo, const typename HyperelasticMaterial<DataTypes>::MaterialParameters &param, Matrix6 &outputTensor)
     {
+#ifdef SOFA_HAVE_EIGEN2
         Real k0=param.parameterArray[0];
         Real mu1=param.parameterArray[1];
         Real alpha1=param.parameterArray[2];
@@ -317,11 +325,11 @@ public:
         EigenMatrix CEigen;
         CEigen(0,0)=C[0]; CEigen(0,1)=C[1]; CEigen(1,0)=C[1]; CEigen(1,1)=C[2]; CEigen(1,2)=C[4]; CEigen(2,1)=C[4];
         CEigen(2,0)=C[3]; CEigen(0,2)=C[3]; CEigen(2,2)=C[5];
-#ifdef SOFA_HAVE_EIGEN2
+
         Eigen::SelfAdjointEigenSolver<EigenMatrix> Vect(CEigen,true);
         EigenMatrix Evect=Vect.eigenvectors();
         CoordEigen Evalue=Vect.eigenvalues();
-#endif
+
         Real trCalpha=pow(Evalue[0],alpha1/(Real)2)+pow(Evalue[1],alpha1/(Real)2)+pow(Evalue[2],alpha1/(Real)2);
         Matrix3 Pinverse;
         Pinverse(0,0)=Evect(0,0); Pinverse(1,1)=Evect(1,1); Pinverse(2,2)=Evect(2,2); Pinverse(0,1)=Evect(1,0); Pinverse(1,0)=Evect(0,1); Pinverse(2,0)=Evect(0,2);
@@ -391,7 +399,7 @@ public:
 
         outputTensor=(Real)2.0*(mu1/alpha1*pow(sinfo->J,-alpha1/(Real)3.0)*((-alpha1/(Real)6.0)*(-(Real)1.0/(Real)3.0*trC_HC_*trCalpha+trCalpha_HC_)+(Real)1.0/(Real)3.0*C_H_C*trCalpha-(Real)1.0/(Real)3.0*trC_HCalpha*alpha1/(Real)2.0
                 +(alpha1/(Real)2.0-(Real)1)*Calpha_H_Calpha)+k0/(Real)2.0*trC_HC_-(Real)(k0*log(sinfo->J))*C_H_C);
-
+#endif
     }
 
 };
