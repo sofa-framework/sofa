@@ -32,11 +32,13 @@
 #include <sofa/component/misc/MeshTetraStuffing.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/component/collision/TriangleModel.h>
-#include <sofa/component/forcefield/TetrahedronFEMForceField.h>
+#include <sofa/component/forcefield/TetrahedralCorotationalFEMForceField.h>
 #include <sofa/component/container/MechanicalObject.h>
 #include <sofa/component/odesolver/EulerImplicitSolver.h>
 #include <sofa/component/linearsolver/CGLinearSolver.h>
 #include <sofa/component/mass/UniformMass.h>
+#include <sofa/component/constraint/FixedConstraint.h>
+#include <sofa/component/topology/PointSubset.h>
 #include <set>
 #include <map>
 
@@ -70,6 +72,9 @@ template <class DataTypes>
 class SculptBodyPerformer: public TInteractionPerformer<DataTypes>, public SculptBodyPerformerConfiguration
 {
     typedef typename DataTypes::Coord                                         Coord;
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef sofa::component::topology::PointSubset SetIndex;
+
 public:
     SculptBodyPerformer(BaseMouseInteractor *i);
     ~SculptBodyPerformer() {};
@@ -81,6 +86,9 @@ public:
     void animate(bool checked);
 
 protected:
+
+    void createMatterNode();
+
     std::set<unsigned int> vertexNeighborhood, vertexInInfluenceZone, alreadyCheckedVertex, fixedPoints, drawFacets, fixedFacets;
     BodyPicked picked;
     void computeNeighborhood();
@@ -88,17 +96,20 @@ protected:
 
     unsigned int vertexIndex;
     sofa::component::topology::MeshTopology* fatMesh;
-    std::set<unsigned int> modifiedVertex, triangleChecked;
+    std::set<unsigned int> modifiedVertex, triangleChecked, modified;
     misc::MeshTetraStuffing* meshStuffed;
-    sofa::component::topology::TetrahedronSetTopologyContainer* tetraMesh;
+    sofa::core::componentmodel::topology::BaseMeshTopology* matterMesh;
+//        sofa::component::topology::TetrahedronSetTopologyContainer* matterMesh;
     vector<defaulttype::Vec<3,SReal> > seqPoints;
-    simulation::Node *addedMateriaNode, *root;
+    simulation::Node *addedMateriaNode, *root, *collisionNode, *SubsetNode, *springNode, *mergeNode, *fixedMateria, *visualFat, *subsetPoints, *matterNode, *dynamicMatterNode, *staticMatterNode, *sculptedPointsNode, *bodyNode, *sculptedPointsNode2;
     std::multimap<unsigned int, unsigned int> vertexMap;
-    container::MechanicalObject<defaulttype::Vec3Types>* mstate;
-    forcefield::TetrahedronFEMForceField<defaulttype::Vec3Types>* fem;
+    core::componentmodel::behavior::MechanicalState<DataTypes>* matterMstate;
+    forcefield::TetrahedralCorotationalFEMForceField<defaulttype::Vec3Types>* matterFem;
     odesolver::EulerImplicitSolver* ei;
     linearsolver::CGLinearSolver<GraphScatteredMatrix,GraphScatteredVector>* cgls;
-    mass::UniformMass<defaulttype::Vec3dTypes,double>* mass;
+    mass::UniformMass<defaulttype::Vec3dTypes,double>* matterMass;
+
+    VecCoord surfacePoint;
 };
 
 

@@ -11,10 +11,11 @@ TARGET = pimguiqt$$LIBSUFFIX
 CONFIG += $$CONFIGLIBRARIES qt
 CONFIG -= staticlib
 CONFIG += dll
+QT += opengl qt3support xml
 
 LIBS += -lpimgui$$LIBSUFFIX
 LIBS += -lsofacomponentcollision$$LIBSUFFIX
-LIBS += -lPhysicsBasedInteractiveModeler
+LIBS += -lpim
 
 SOURCES = QMouseOperations.cpp
 

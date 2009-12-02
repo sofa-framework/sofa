@@ -96,7 +96,7 @@ QSculptOperation::QSculptOperation()
     connect(animatePushButton,SIGNAL(toggled(bool)), this, SLOT(animate(bool)));
 
     forceSlider->setValue(1);
-    scaleSlider->setValue(50);
+    scaleSlider->setValue(20);
 }
 
 double QSculptOperation::getForce() const

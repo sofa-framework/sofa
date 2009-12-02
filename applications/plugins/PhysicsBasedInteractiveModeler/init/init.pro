@@ -13,7 +13,7 @@ contains (DEFINES, SOFA_QT4) {
 
 	  CONFIG += $$CONFIGLIBRARIES qt
 	  CONFIG -= staticlib
-	  CONFIG += dll
+          CONFIG += dll
 	  QT += opengl qt3support xml
 }
 else {
@@ -25,7 +25,7 @@ else {
 
 ###### SPECIFIC PLUGIN CONFIGURATION, you should modify it to configure your plugin
 
-TARGET = pim
+TARGET = PhysicsBasedInteractiveModeler
 DEFINES += SOFA_BUILD_PIM
 
 
@@ -42,19 +42,13 @@ LIBS += -lsofacomponentbase$$LIBSUFFIX
 LIBS += -lsofacomponentmapping$$LIBSUFFIX
 LIBS += -lsofacomponentengine$$LIBSUFFIX
 LIBS += -lsofacomponentvisualmodel$$LIBSUFFIX
-#LIBS += -lpimguiqt$$LIBSUFFIX
-#LIBS += -lsofaguiqt$$LIBSUFFIX
+LIBS += -lpim$$LIBSUFFIX
+LIBS += -lpimguiqt$$LIBSUFFIX
+LIBS += -lsofaguiqt$$LIBSUFFIX
 
-SOURCES = SculptBodyPerformer.cpp \
-          ProgressiveScaling.cpp \
-          PointsOnSurface.cpp \
-#          InsertEntryEachStep.cpp \
+SOURCES = initPim.cpp
 
-HEADERS = SculptBodyPerformer.h \
-          SculptBodyPerformer.inl \
-          ProgressiveScaling.h \
-          ProgressiveScaling.inl \
-          PointsOnSurface.h \
-          PointsOnSurface.inl \
-#          InsertEntryEachStep.h \
-#          InsertEntryEachStep.inl \
+README_FILE = PhysicsBasedInteractiveModeler.txt
+
+unix : QMAKE_POST_LINK = cp $$README_FILE $$DESTDIR 
+win32 : QMAKE_POST_LINK = copy \"$$README_FILE\" \"$$SOFA_DIR/lib/sofa-plugins\"
