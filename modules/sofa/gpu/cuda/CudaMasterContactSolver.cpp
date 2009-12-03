@@ -109,6 +109,8 @@ void CudaMasterContactSolver<real>::build_LCP()
 
     _realNumConstraints = _numConstraints;
 
+    //if (_realNumConstraints==0) return;
+
     if (_numConstraints > MAX_NUM_CONSTRAINTS)
     {
         serr<<sendl<<"Error in CudaMasterContactSolver, maximum number of contacts exceeded, "<< _numConstraints/3 <<" contacts detected"<<endl;
