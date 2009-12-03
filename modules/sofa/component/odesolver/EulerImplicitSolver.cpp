@@ -93,11 +93,6 @@ void EulerImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior:
     const bool verbose  = f_verbose.getValue();
     const bool firstOrder = f_firstOrder.getValue();
 
-#ifdef SOFA_HAVE_EIGEN2
-    bool propagateState=needPriorStatePropagation();
-#endif
-
-
 
 
     //projectResponse(vel);          // initial velocities are projected to the constrained space
@@ -160,26 +155,18 @@ void EulerImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior:
     if (firstOrder)
     {
         newVel.eq(x);                         // vel = x
-#ifdef SOFA_HAVE_EIGEN2
-        solveConstraint(propagateState,VecId::velocity());
-#endif
+        if (constraintSolver) constraintSolver->solveConstraint(dt,VecId::velocity());
         newPos.eq(pos, newVel, h);            // pos = pos + h vel
-#ifdef SOFA_HAVE_EIGEN2
-        solveConstraint(propagateState,VecId::position());
-#endif
+        if (constraintSolver) constraintSolver->solveConstraint(dt,VecId::position());
     }
     else
     {
         //vel.peq( x );                       // vel = vel + x
         newVel.eq(vel, x);
-#ifdef SOFA_HAVE_EIGEN2
-        solveConstraint(propagateState,VecId::velocity());
-#endif
+        if (constraintSolver) constraintSolver->solveConstraint(dt,VecId::velocity());
         //pos.peq( vel, h );                  // pos = pos + h vel
         newPos.eq(pos, newVel, h);
-#ifdef SOFA_HAVE_EIGEN2
-        solveConstraint(propagateState,VecId::position());
-#endif
+        if (constraintSolver) constraintSolver->solveConstraint(dt,VecId::position());
     }
 
 
@@ -211,10 +198,11 @@ void EulerImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior:
         vmop.setTags(this->getTags());
         vmop.execute(this->getContext());
 
-#ifdef SOFA_HAVE_EIGEN2
-        solveConstraint(propagateState,VecId::velocity());
-        solveConstraint(propagateState,VecId::position());
-#endif
+        if (constraintSolver)
+        {
+            constraintSolver->solveConstraint(dt,VecId::velocity());
+            constraintSolver->solveConstraint(dt,VecId::position());
+        }
     }
 #endif
 

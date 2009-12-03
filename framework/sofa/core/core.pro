@@ -23,6 +23,7 @@ HEADERS += \
           componentmodel/behavior/BaseMechanicalState.h \
           componentmodel/behavior/Constraint.h \
           componentmodel/behavior/Constraint.inl \
+          componentmodel/behavior/ConstraintSolver.h \
           componentmodel/behavior/ForceField.h \
           componentmodel/behavior/ForceField.inl \
           componentmodel/behavior/InteractionForceField.h \
@@ -135,6 +136,7 @@ SOURCES +=  \
           componentmodel/behavior/MultiMatrix.cpp \
           componentmodel/behavior/OdeSolver.cpp \
           componentmodel/collision/Contact.cpp \
+          componentmodel/behavior/ConstraintSolver.cpp \
           componentmodel/collision/Intersection.cpp \
           componentmodel/collision/Pipeline.cpp \
           componentmodel/topology/BaseMeshTopology.cpp \

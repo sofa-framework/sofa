@@ -216,7 +216,7 @@ private:
 
 };
 
-} // namespace odesolver
+} // namespace mastersolver
 
 } // namespace component
 

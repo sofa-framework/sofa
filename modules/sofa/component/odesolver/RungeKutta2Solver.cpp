@@ -64,11 +64,6 @@ void RungeKutta2Solver::solve(double dt)
 
     double startTime = this->getTime();
 
-#ifdef SOFA_HAVE_EIGEN2
-    bool propagateState=needPriorStatePropagation();
-#endif
-
-
     addSeparateGravity(dt);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
 
     // Compute state derivative. vel is the derivative of pos
@@ -104,13 +99,9 @@ void RungeKutta2Solver::solve(double dt)
     // Use the derivative at newX, newV to update the state
 #ifdef SOFA_NO_VMULTIOP // unoptimized version
     pos.peq(newV,dt);
-#ifdef SOFA_HAVE_EIGEN2
-    solveConstraint(propagateState,VecId::position(), true);
-#endif
+    if (constraintSolver) constraintSolver->solveConstraint(dt,VecId::position());
     vel.peq(acc,dt);
-#ifdef SOFA_HAVE_EIGEN2
-    solveConstraint(propagateState,VecId::velocity());
-#endif
+    if (constraintSolver) constraintSolver->solveConstraint(dt,VecId::velocity());
 #else // single-operation optimization
     {
         typedef core::componentmodel::behavior::BaseMechanicalState::VMultiOp VMultiOp;
@@ -124,10 +115,12 @@ void RungeKutta2Solver::solve(double dt)
         ops[1].second.push_back(std::make_pair((VecId)acc,dt));
         simulation::MechanicalVMultiOpVisitor vmop(ops);
         vmop.execute(this->getContext());
-#ifdef SOFA_HAVE_EIGEN2
-        solveConstraint(propagateState,VecId::velocity());
-        solveConstraint(propagateState,VecId::position());
-#endif
+
+        if (constraintSolver)
+        {
+            constraintSolver->solveConstraint(dt,VecId::velocity());
+            constraintSolver->solveConstraint(dt,VecId::position());
+        }
     }
 #endif
 

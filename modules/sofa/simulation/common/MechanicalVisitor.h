@@ -97,6 +97,11 @@ public:
         return RESULT_CONTINUE;
     }
 
+    /// Process the OdeSolver
+    virtual Result fwdConstraintSolver(simulation::Node* /*node*/, core::componentmodel::behavior::ConstraintSolver* /*solver*/)
+    {
+        return RESULT_CONTINUE;
+    }
     /// Process the BaseMechanicalMapping
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
     {
@@ -180,6 +185,10 @@ public:
 
     /// Process the OdeSolver
     virtual void bwdOdeSolver(simulation::Node* /*node*/, core::componentmodel::behavior::OdeSolver* /*solver*/)
+    {}
+
+    /// Process the ConstraintSolver
+    virtual void bwdConstraintSolver(simulation::Node* /*node*/, core::componentmodel::behavior::ConstraintSolver* /*solver*/)
     {}
 
 
@@ -1176,7 +1185,7 @@ public:
     };
 
 
-    virtual Result fwdOdeSolver(simulation::Node* /*node*/, core::componentmodel::behavior::OdeSolver* s);
+    virtual Result fwdConstraintSolver(simulation::Node* /*node*/, core::componentmodel::behavior::ConstraintSolver* s);
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes

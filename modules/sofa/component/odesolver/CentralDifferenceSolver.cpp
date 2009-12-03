@@ -93,12 +93,6 @@ void CentralDifferenceSolver::solve(double dt)
     const double r = f_rayleighMass.getValue();
 
 
-#ifdef SOFA_HAVE_EIGEN2
-    bool propagateState=needPriorStatePropagation();
-#endif
-
-
-
     addSeparateGravity(dt);                // v += dt*g . Used if mass wants to added G separately from the other forces to v.
 
     //projectVelocity(vel);                  // initial velocities are projected to the constrained space
@@ -111,21 +105,15 @@ void CentralDifferenceSolver::solve(double dt)
 
     projectResponse(dx);                    // dx is projected to the constrained space
 
-#ifdef SOFA_HAVE_EIGEN2
-    solveConstraint(propagateState,VecId::dx());
-#endif
+    if (constraintSolver) constraintSolver->solveConstraint(dt,VecId::dx());
     // apply the solution
     if (r==0)
     {
 #ifdef SOFA_NO_VMULTIOP // unoptimized version
         vel.peq( dx, dt );                  // vel = vel + dt M^{-1} ( P_n - K u_n )
-#ifdef SOFA_HAVE_EIGEN2
-        solveConstraint(propagateState,VecId::velocity());
-#endif
+        if (constraintSolver) constraintSolver->solveConstraint(dt,VecId::velocity());
         pos.peq( vel, dt );                    // pos = pos + h vel
-#ifdef SOFA_HAVE_EIGEN2
-        solveConstraint(propagateState,VecId::position());
-#endif
+        if (constraintSolver) constraintSolver->solveConstraint(dt,VecId::position());
 
 #else // single-operation optimization
 
@@ -165,10 +153,11 @@ void CentralDifferenceSolver::solve(double dt)
         simulation::MechanicalVMultiOpVisitor vmop(ops);
         vmop.execute(getContext());
 
-#ifdef SOFA_HAVE_EIGEN2
-        solveConstraint(propagateState,VecId::velocity());
-        solveConstraint(propagateState,VecId::position());
-#endif
+        if (constraintSolver)
+        {
+            constraintSolver->solveConstraint(dt,VecId::velocity());
+            constraintSolver->solveConstraint(dt,VecId::position());
+        }
 
 #endif
     }

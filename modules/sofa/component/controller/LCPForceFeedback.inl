@@ -1,6 +1,10 @@
 
+#ifndef SOFA_COMPONENT_CONTROLLER_LCPFORCEFEEDBACK_INL
+#define SOFA_COMPONENT_CONTROLLER_LCPFORCEFEEDBACK_INL
+
+#include <sofa/component/controller/LCPForceFeedback.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
-#include <sofa/component/mastersolver/MasterContactSolver.h>
+#include <sofa/component/constraint/LCPConstraintSolver.h>
 
 #include <sofa/core/objectmodel/BaseContext.h>
 
@@ -121,9 +125,9 @@ void LCPForceFeedback<DataType>::init()
         return;
     }
 
-    mastersolver = c->get< odesolver::MasterContactSolver >();
+    c->get(constraintSolver);
 
-    if (!mastersolver)
+    if (!constraintSolver)
     {
         serr << "LCPForceFeedback has no binding MasterContactSolver. Initialisation failed." << sendl;
         return;
@@ -149,7 +153,7 @@ void LCPForceFeedback<DataType>::computeForce(const typename DataType::VecCoord&
     forces.resize(stateSize);
 
 
-    if(!mastersolver||!mState)
+    if(!constraintSolver||!mState)
         return;
 
 
@@ -170,7 +174,7 @@ void LCPForceFeedback<DataType>::computeForce(const typename DataType::VecCoord&
     typename DataType::VecConst& constraints = mConstraints[mCurBufferId];
     std::vector<int> &id_buf = mId_buf[mCurBufferId];
     typename DataType::VecCoord &val = mVal[mCurBufferId];
-    component::odesolver::LCP* lcp = mLcp[mCurBufferId];
+    component::constraint::LCP* lcp = mLcp[mCurBufferId];
 
     if(!lcp)
     {
@@ -249,11 +253,11 @@ void LCPForceFeedback<DataType>::handleEvent(sofa::core::objectmodel::Event *eve
     if(!dynamic_cast<sofa::simulation::AnimateEndEvent*>(event))
         return;
 
-    if(!mastersolver)
+    if(!constraintSolver)
         return;
     if(!mState)
         return;
-    component::odesolver::LCP* new_lcp = mastersolver->getLCP();
+    component::constraint::LCP* new_lcp = constraintSolver->getLCP();
     if(!new_lcp)
         return;
 
@@ -305,9 +309,9 @@ void LCPForceFeedback<DataType>::handleEvent(sofa::core::objectmodel::Event *eve
 
     // Lock lcp to prevent its use by the SOfa thread while it is used by haptic thread
     if(mIsCuBufferInUse)
-        mastersolver->lockLCP(mLcp[mCurBufferId],mLcp[mNextBufferId]);
+        constraintSolver->lockLCP(mLcp[mCurBufferId],mLcp[mNextBufferId]);
     else
-        mastersolver->lockLCP(mLcp[mNextBufferId]);
+        constraintSolver->lockLCP(mLcp[mNextBufferId]);
 }
 
 
@@ -356,3 +360,5 @@ void LCPForceFeedback<Rigid3dTypes>::computeForce(double x, double y, double z, 
 } // namespace controller
 } // namespace component
 } // namespace sofa
+
+#endif

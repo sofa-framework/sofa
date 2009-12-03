@@ -77,13 +77,6 @@ void EulerSolver::solve(double dt)
 // 	bool printLog = f_printLog.getValue();
     //---------------------------------------------------------------
 
-
-#ifdef SOFA_HAVE_EIGEN2
-    bool propagateState=needPriorStatePropagation();
-#endif
-
-
-
     addSeparateGravity(dt);	// v += dt*g . Used if mass wants to added G separately from the other forces to v.
     computeForce(f);
 // 	if( printLog )
@@ -101,40 +94,24 @@ void EulerSolver::solve(double dt)
 // 	  }
 
 
-
-#ifdef SOFA_HAVE_EIGEN2
-    solveConstraint(propagateState,VecId::dx());
-#endif
+    if (constraintSolver) constraintSolver->solveConstraint(dt,VecId::dx());
 
     // update state
 #ifdef SOFA_NO_VMULTIOP // unoptimized version
     if( symplectic.getValue() )
     {
         vel.peq(acc,dt);
-
-#ifdef SOFA_HAVE_EIGEN2
-        solveConstraint(propagateState,VecId::velocity());
-#endif
+        if (constraintSolver) constraintSolver->solveConstraint(dt,VecId::velocity());
         pos.peq(vel,dt);
-
-#ifdef SOFA_HAVE_EIGEN2
-        solveConstraint(propagateState,VecId::position());
-#endif
+        if (constraintSolver) constraintSolver->solveConstraint(dt,VecId::position());
 
     }
     else
     {
         pos.peq(vel,dt);
-
-#ifdef SOFA_HAVE_EIGEN2
-        solveConstraint(propagateState,VecId::position());
-#endif
-
+        if (constraintSolver) constraintSolver->solveConstraint(dt,VecId::position());
         vel.peq(acc,dt);
-
-#ifdef SOFA_HAVE_EIGEN2
-        solveConstraint(propagateState,VecId::velocity());
-#endif
+        if (constraintSolver) constraintSolver->solveConstraint(dt,VecId::velocity());
     }
 #else // single-operation optimization
     {
@@ -153,10 +130,11 @@ void EulerSolver::solve(double dt)
         simulation::MechanicalVMultiOpVisitor vmop(ops);
         vmop.execute(this->getContext());
 
-#ifdef SOFA_HAVE_EIGEN2
-        solveConstraint(propagateState,VecId::velocity());
-        solveConstraint(propagateState,VecId::position());
-#endif
+        if (constraintSolver)
+        {
+            constraintSolver->solveConstraint(dt,VecId::velocity());
+            constraintSolver->solveConstraint(dt,VecId::position());
+        }
     }
 #endif
 

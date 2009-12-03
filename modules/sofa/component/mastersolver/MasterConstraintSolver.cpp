@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/mastersolver/MasterConstraintSolver.h>
-#include <sofa/component/mastersolver/MasterContactSolver.h>
+#include <sofa/component/constraint/LCPConstraintSolver.h>
 
 #include <sofa/simulation/common/AnimateVisitor.h>
 #include <sofa/simulation/common/BehaviorUpdatePositionVisitor.h>
@@ -345,9 +345,9 @@ void MasterConstraintSolver::step ( double dt )
         serr<<"   2. compute violation"<<sendl;
     // calling getConstraintValue
     if (doubleBuffer.getValue() && bufCP1)
-        MechanicalGetConstraintValueVisitor(CP2.getDfree()).execute(context);
+        constraint::MechanicalGetConstraintValueVisitor(CP2.getDfree()).execute(context);
     else
-        MechanicalGetConstraintValueVisitor(CP1.getDfree()).execute(context);
+        constraint::MechanicalGetConstraintValueVisitor(CP1.getDfree()).execute(context);
 
     /// calling getConstraintResolution: each constraint provides a method that is used to solve it during GS iterations
     if (debug)

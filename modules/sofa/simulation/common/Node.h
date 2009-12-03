@@ -58,6 +58,7 @@
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/core/componentmodel/behavior/LinearSolver.h>
 #include <sofa/core/componentmodel/behavior/OdeSolver.h>
+#include <sofa/core/componentmodel/behavior/ConstraintSolver.h>
 #include <sofa/core/componentmodel/behavior/MasterSolver.h>
 #include <sofa/core/componentmodel/collision/Pipeline.h>
 #include <sofa/core/componentmodel/loader/BaseLoader.h>
@@ -306,6 +307,7 @@ public:
 
     Single<core::componentmodel::behavior::MasterSolver> masterSolver;
     Sequence<core::componentmodel::behavior::OdeSolver> solver;
+    Sequence<core::componentmodel::behavior::ConstraintSolver> constraintSolver;
     Sequence<core::componentmodel::behavior::LinearSolver> linearSolver;
     Single<core::componentmodel::behavior::BaseMechanicalState> mechanicalState;
     Single<core::componentmodel::behavior::BaseMechanicalMapping> mechanicalMapping;
