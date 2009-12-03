@@ -592,8 +592,13 @@ void TriangleModel::draw()
 {
     if (getContext()->getShowCollisionModels())
     {
-        if (getContext()->getShowWireFrame())
-            simulation::getSimulation()->DrawUtility.setPolygonMode(0,true);
+        if (bothSide.getValue() || getContext()->getShowWireFrame())
+            simulation::getSimulation()->DrawUtility.setPolygonMode(0,getContext()->getShowWireFrame());
+        else
+        {
+            simulation::getSimulation()->DrawUtility.setPolygonMode(2,true);
+            simulation::getSimulation()->DrawUtility.setPolygonMode(1,false);
+        }
 
         std::vector< Vector3 > points;
         std::vector< Vec<3,int> > indices;
@@ -613,8 +618,7 @@ void TriangleModel::draw()
         sofa::simulation::getSimulation()->DrawUtility.setLightingEnabled(true);
         simulation::getSimulation()->DrawUtility.drawTriangles(points, indices, normals, Vec<4,float>(getColor4f()));
         sofa::simulation::getSimulation()->DrawUtility.setLightingEnabled(false);
-        if (getContext()->getShowWireFrame())
-            simulation::getSimulation()->DrawUtility.setPolygonMode(0,false);
+        simulation::getSimulation()->DrawUtility.setPolygonMode(0,false);
 
 
         if (getContext()->getShowNormals())
