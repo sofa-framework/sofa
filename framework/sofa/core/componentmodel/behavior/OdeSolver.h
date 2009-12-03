@@ -31,6 +31,7 @@
 #include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
 #include <sofa/core/componentmodel/behavior/MultiVector.h>
 #include <sofa/core/componentmodel/behavior/MultiMatrix.h>
+#include <sofa/core/componentmodel/behavior/ConstraintSolver.h>
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/defaulttype/BaseVector.h>
 
@@ -73,6 +74,8 @@ public:
     OdeSolver();
 
     virtual ~OdeSolver();
+
+    virtual void init();
 
     /// Main computation method.
     ///
@@ -137,17 +140,7 @@ public:
         return getSolutionIntegrationFactor(0);
     }
 
-    //Constraint resolution using Eigen2
-#ifdef SOFA_HAVE_EIGEN2
-
-    Data<bool> constraintAcc;
-    Data<bool> constraintVel;
-    Data<bool> constraintPos;
-
-    Data<unsigned int> numIterations;
-    Data<double> maxError;
-#endif
-
+    ConstraintSolver* constraintSolver;
 };
 
 } // namespace behavior

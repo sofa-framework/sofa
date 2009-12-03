@@ -70,10 +70,6 @@ void NewmarkImplicitSolver::solve(double dt, sofa::core::componentmodel::behavio
     const double rK = f_rayleighStiffness.getValue();
     const bool verbose  = f_verbose.getValue();
 
-#ifdef SOFA_HAVE_EIGEN2
-    bool propagateState=needPriorStatePropagation();
-#endif
-
     /* This integration scheme is based on the following equations:
     *
     *   $x_{t+h} = x_t + h v_t + h^2/2 ( (1-2\beta) a_t + 2\beta a_{t+h} )$
@@ -156,15 +152,11 @@ void NewmarkImplicitSolver::solve(double dt, sofa::core::componentmodel::behavio
     b.eq(vel, a, h*(0.5-beta));
     b.peq(aResult, h*beta);
     newPos.eq(pos, b, h);
-#ifdef SOFA_HAVE_EIGEN2
-    solveConstraint(propagateState,VecId::position(),true);
-#endif
+    if (constraintSolver) constraintSolver->solveConstraint(dt,VecId::position());
     // v_{t+h} = v_t + h ( (1-\gamma) a_t + \gamma a_{t+h} )
     newVel.eq(vel, a, h*(1-gamma));
     newVel.peq(aResult, h*gamma);
-#ifdef SOFA_HAVE_EIGEN2
-    solveConstraint(propagateState,VecId::velocity());
-#endif
+    if (constraintSolver) constraintSolver->solveConstraint(dt,VecId::velocity());
 
 #else // single-operation optimization
     typedef core::componentmodel::behavior::BaseMechanicalState::VMultiOp VMultiOp;
@@ -184,10 +176,11 @@ void NewmarkImplicitSolver::solve(double dt, sofa::core::componentmodel::behavio
     simulation::MechanicalVMultiOpVisitor vmop(ops);
     vmop.execute(this->getContext());
 
-#ifdef SOFA_HAVE_EIGEN2
-    solveConstraint(propagateState,VecId::velocity());
-    solveConstraint(propagateState,VecId::position());
-#endif
+    if (constraintSolver)
+    {
+        constraintSolver->solveConstraint(dt,VecId::velocity());
+        constraintSolver->solveConstraint(dt,VecId::position());
+    }
 
 #endif
 

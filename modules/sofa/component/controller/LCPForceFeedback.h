@@ -34,9 +34,9 @@ namespace sofa
 
 namespace component
 {
-namespace odesolver
+namespace constraint
 {
-class MasterContactSolver;
+class LCPConstraintSolver;
 class LCP;
 }
 
@@ -69,12 +69,12 @@ public:
     void handleEvent(sofa::core::objectmodel::Event *event);
 
 protected:
-    component::odesolver::LCP* lcp, *next_lcp;
+    component::constraint::LCP* lcp, *next_lcp;
     core::componentmodel::behavior::MechanicalState<DataType> *mState; ///< The omni try to follow this mechanical state.
     typename DataType::VecCoord mVal[3];
     typename DataType::VecConst mConstraints[3];
     std::vector<int> mId_buf[3];
-    component::odesolver::LCP* mLcp[3];
+    component::constraint::LCP* mLcp[3];
     /* 	typename DataType::VecConst *constraint; */
     /* 	std::vector<int> *id_buf; */
     /* 	typename DataType::VecCoord *val; */
@@ -84,7 +84,7 @@ protected:
 
 
     //core::componentmodel::behavior::MechanicalState<defaulttype::Vec1dTypes> *mState1d; ///< The omni try to follow this mechanical state.
-    sofa::component::odesolver::MasterContactSolver* mastersolver;
+    sofa::component::constraint::LCPConstraintSolver* constraintSolver;
 };
 
 } // namespace controller

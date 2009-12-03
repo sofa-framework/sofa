@@ -30,7 +30,6 @@
 #include <sofa/defaulttype/RigidTypes.h>
 
 #include <sofa/simulation/common/Node.h>
-#include <sofa/component/mass/UniformMass.h>
 
 namespace sofa
 {

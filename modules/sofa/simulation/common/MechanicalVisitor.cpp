@@ -111,6 +111,10 @@ Visitor::Result MechanicalVisitor::processNodeTopDown(simulation::Node* node)
     }
     if (res != RESULT_PRUNE)
     {
+        res = for_each_r(this, node, node->constraintSolver, &MechanicalVisitor::fwdConstraintSolver);
+    }
+    if (res != RESULT_PRUNE)
+    {
         res = for_each_r(this, node, node->forceField, &MechanicalVisitor::fwdForceField);
     }
     if (res != RESULT_PRUNE)
@@ -132,6 +136,7 @@ void MechanicalVisitor::processNodeBottomUp(simulation::Node* node)
 {
     for_each(this, node, node->constraint, &MechanicalVisitor::bwdConstraint);
     for_each(this, node, node->LMConstraint, &MechanicalVisitor::bwdLMConstraint);
+    for_each(this, node, node->constraintSolver, &MechanicalVisitor::bwdConstraintSolver);
     if (node->mechanicalState != NULL)
     {
         if (node->mechanicalMapping != NULL)
@@ -1104,7 +1109,7 @@ void MechanicalExpressJacobianVisitor::bwdMechanicalMapping(simulation::Node* no
 
 
 
-Visitor::Result MechanicalSolveLMConstraintVisitor::fwdOdeSolver(simulation::Node* node, core::componentmodel::behavior::OdeSolver* s)
+Visitor::Result MechanicalSolveLMConstraintVisitor::fwdConstraintSolver(simulation::Node* node, core::componentmodel::behavior::ConstraintSolver* s)
 {
     typedef core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
     ctime_t t0 = beginProcess(node, s);

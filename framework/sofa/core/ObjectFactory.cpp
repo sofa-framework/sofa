@@ -39,11 +39,13 @@
 #include <sofa/core/componentmodel/behavior/BaseForceField.h>
 #include <sofa/core/componentmodel/behavior/InteractionForceField.h>
 #include <sofa/core/componentmodel/behavior/BaseConstraint.h>
+#include <sofa/core/componentmodel/behavior/BaseConstraintCorrection.h>
 #include <sofa/core/componentmodel/behavior/BaseController.h>
 #include <sofa/core/componentmodel/behavior/BaseLMConstraint.h>
 #include <sofa/core/componentmodel/behavior/BaseMechanicalMapping.h>
 #include <sofa/core/componentmodel/behavior/BaseMass.h>
 #include <sofa/core/componentmodel/behavior/OdeSolver.h>
+#include <sofa/core/componentmodel/behavior/ConstraintSolver.h>
 #include <sofa/core/componentmodel/behavior/LinearSolver.h>
 #include <sofa/core/componentmodel/behavior/MasterSolver.h>
 #include <sofa/core/componentmodel/topology/BaseTopologyObject.h>
@@ -387,6 +389,10 @@ RegisterObject& RegisterObject::addBaseClasses(const core::objectmodel::BaseClas
         entry.baseClasses.insert("Mass");
     if (mclass->hasParent(core::componentmodel::behavior::OdeSolver::GetClass()))
         entry.baseClasses.insert("OdeSolver");
+    if (mclass->hasParent(core::componentmodel::behavior::ConstraintSolver::GetClass()))
+        entry.baseClasses.insert("ConstraintSolver");
+    if (mclass->hasParent(core::componentmodel::behavior::BaseConstraintCorrection::GetClass()))
+        entry.baseClasses.insert("ConstraintSolver");
     if (mclass->hasParent(core::componentmodel::behavior::LinearSolver::GetClass()))
         entry.baseClasses.insert("LinearSolver");
     if (mclass->hasParent(core::componentmodel::behavior::MasterSolver::GetClass()))

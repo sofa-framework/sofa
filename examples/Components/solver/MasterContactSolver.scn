@@ -1,5 +1,6 @@
 <Node name="root"  dt="0.01" showBehaviorModels="1" showCollisionModels="0" showMappings="0" showForceFields="0" gravity="0 981 0">
-	<Object type="MasterContactSolver" tolerance="1e-3" maxIt="1000"/>
+	<Object type="MasterContactSolver" />
+	<Object type="LCPConstraintSolver" tolerance="1e-3" maxIt="1000"/>
 	<Object type="CollisionPipeline" depth="6" verbose="0" draw="0"/>
 	<Object type="BruteForceDetection" name="N2" />
 	<Object type="LocalMinDistance" name="Proximity" alarmDistance="2.5" contactDistance="1.0" angleCone="0.0"/>

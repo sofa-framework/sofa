@@ -24,9 +24,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/componentmodel/behavior/OdeSolver.h>
-#include <stdlib.h>
-#include <math.h>
+#ifndef SOFA_CORE_COMPONENTMODEL_BEHAVIOR_CONSTRAINTSOLVER_H
+#define SOFA_CORE_COMPONENTMODEL_BEHAVIOR_CONSTRAINTSOLVER_H
+
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
 
 namespace sofa
 {
@@ -40,21 +42,52 @@ namespace componentmodel
 namespace behavior
 {
 
-OdeSolver::OdeSolver()
-    : constraintSolver(NULL)
-{}
-
-OdeSolver::~OdeSolver()
-{}
-
-void OdeSolver::init()
+/**
+ *  \brief Component responsible for the expression and solution of system of equations related to constraints
+ *
+ */
+class SOFA_CORE_API ConstraintSolver : public virtual objectmodel::BaseObject
 {
-    getContext()->get(constraintSolver);
-}
+public:
+    SOFA_CLASS(ConstraintSolver, objectmodel::BaseObject);
 
-//const OdeSolver::MechanicalMatrix OdeSolver::M(1,0,0);
-//const OdeSolver::MechanicalMatrix OdeSolver::B(0,1,0);
-//const OdeSolver::MechanicalMatrix OdeSolver::K(0,0,1);
+    ConstraintSolver();
+    virtual ~ConstraintSolver();
+
+    /** Launch the sequence of operations in order to solve the constraints
+     * @param Id order of the constraint to be solved
+     * @param priorStatePropagation boolean indication if we need to propagate the state vector to the mapped dof before solving the constraint
+     * @param isPositionChangesUpdateVelocity boolean indication if we need to propagate the change of position to a modification of velocity dv=dx/dt
+     **/
+    virtual void solveConstraint(double /*dt*/, VecId,  bool /*isPositionChangesUpdateVelocity*/=true);
+
+
+
+    /**
+     * Do the precomputation: compute free state, or propagate the states to the mapped mechanical states, where the constraint can be expressed
+     */
+    virtual void prepareStates(double /*dt*/, VecId)=0;
+
+    /**
+     * Create the system corresponding to the constraints
+     */
+    virtual void buildSystem(double /*dt*/, VecId)=0;
+
+    /**
+     * Use the system previously build and solve it with the appropriate algorithm
+     */
+    virtual void solveSystem(double /*dt*/, VecId)=0;
+
+    /**
+     * Correct the Mechanical State with the solution found
+     */
+    virtual void applyCorrection(double /*dt*/, VecId, bool /*isPositionChangesUpdateVelocity*/)=0;
+
+
+    Data<bool> constraintAcc;
+    Data<bool> constraintVel;
+    Data<bool> constraintPos;
+};
 
 } // namespace behavior
 
@@ -64,3 +97,4 @@ void OdeSolver::init()
 
 } // namespace sofa
 
+#endif
