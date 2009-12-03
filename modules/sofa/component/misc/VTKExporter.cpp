@@ -440,7 +440,7 @@ void VTKExporter::writeVTKSimple()
         writeData(cellsDataObject, cellsDataField);
     }
     outfile->close();
-    std::cout << filename << " written" << std::endl;
+    sout << filename << " written" << sendl;
 }
 
 void VTKExporter::writeVTKXML()
@@ -621,7 +621,7 @@ void VTKExporter::writeVTKXML()
     *outfile << "  </UnstructuredGrid>" << std::endl;
     *outfile << "</VTKFile>" << std::endl;
     outfile->close();
-    std::cout << filename << " written" << std::endl;
+    sout << filename << " written" << sendl;
     ++nbFiles;
 }
 
@@ -827,7 +827,7 @@ void VTKExporter::writeParallelFile()
     *outfile << "  </PUnstructuredGrid>" << std::endl;
     *outfile << "</VTKFile>" << std::endl;
     outfile->close();
-    std::cout << "parallel file " << filename << " written" << std::endl;
+    sout << "parallel file " << filename << " written" << sendl;
 }
 
 

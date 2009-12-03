@@ -111,7 +111,7 @@ void PointModel::init()
     if (path.size()==0)
     {
         myActiver = new PointActiver();
-        std::cout<<"no Point Activer founded path ="<<path<<std::endl;
+        std::cout<<"no Point Activer found path ="<<path<<std::endl;
     }
     else
     {
@@ -123,7 +123,7 @@ void PointModel::init()
             std::cout<<"wrong path for Point Activer  "<<std::endl;
         }
         else
-            std::cout<<"Point Activer founded if founded !"<<std::endl;
+            std::cout<<"Point Activer found !"<<std::endl;
     }
 
 }

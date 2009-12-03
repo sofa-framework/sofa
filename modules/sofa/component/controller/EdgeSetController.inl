@@ -67,7 +67,7 @@ EdgeSetController<DataTypes>::EdgeSetController()
     , maxDepl(initData(&maxDepl,(Real)0.5,"maxDepl","max depl when changing beam length"))
     , speed(initData(&speed,(Real)0.0,"speed","continuous beam length increase/decrease"))
     , reversed(initData(&reversed,false,"reversed","Extend or retract edgeSet from end"))
-    , startingIndex(initData(&startingIndex,0,"startingIndex","index of the edge where a topological change occurs"))
+    , startingIndex(initData(&startingIndex,0,"startingIndex","index of the edge where a topological change occurs (negative for index relative to last point)"))
     , depl(0.0)
 {
 
@@ -88,7 +88,7 @@ void EdgeSetController<DataTypes>::init()
     if (edgeMod == NULL)
         serr << "EdgeSetController has no binding EdgeSetTopologyModifier." << sendl;
 
-    if (reversed.getValue() && startingIndex.getValue() > 0)
+    if (reversed.getValue() && startingIndex.getValue() != 0)
         serr << "WARNING : startingIndex different from 0 is not implemented for reversed case." << sendl;
 
     Inherit::init();
@@ -226,6 +226,11 @@ void EdgeSetController<DataTypes>::applyController()
     using sofa::defaulttype::Quat;
     using sofa::defaulttype::Vec;
 
+    int startId = startingIndex.getValue();
+    if (startId < 0) startId += this->mState->getSize();
+    if (startId < 0) startId = 0;
+    if (startId >= (int)this->mState->getSize()-1) startId = (int)this->mState->getSize()-1;
+
     if (depl != 0 || speed.getValue() != 0)
     {
         depl += (Real)(speed.getValue() * this->getContext()->getDt());
@@ -235,9 +240,9 @@ void EdgeSetController<DataTypes>::applyController()
         {
             if (!reversed.getValue())
             {
-                if (startingIndex.getValue() != 0)
+                if (startId != 0)
                 {
-                    for(int index_it = 0; index_it <= startingIndex.getValue(); index_it++)
+                    for(int index_it = 0; index_it <= startId; index_it++)
                     {
                         Coord& pos = (*this->mState->getX0())[index_it];
 
@@ -360,23 +365,38 @@ void EdgeSetController<DataTypes>::modifyTopology(void)
 {
     assert(edgeGeo != 0);
 
+    int startId = startingIndex.getValue();
+    if (startId < 0) startId += this->mState->getSize();
+    if (startId < 0) startId = 0;
+    if (startId >= (int)this->mState->getSize()-1) startId = (int)this->mState->getSize()-1;
+
     // Split
 
     if (!reversed.getValue())
     {
         sofa::helper::vector< unsigned int > baseEdge(0);
-        baseEdge = _topology->getEdgesAroundVertex(startingIndex.getValue());
+        baseEdge = _topology->getEdgesAroundVertex(startId);
         /// if the startingIndex is not on the base or on the tip of the wire, then we choose the second edge shared by the starting point.
         if (baseEdge.size() == 2)
         {
-            unsigned int startingEdge = baseEdge[1];
-            baseEdge.pop_back();
-            baseEdge[0] = startingEdge;
+            //unsigned int startingEdge = baseEdge[1];
+            //baseEdge.pop_back();
+            //baseEdge[0] = startingEdge;
+            // we keep the edge with the next point and not the previous point
+            int e0 = baseEdge[0];
+            int e1 = baseEdge[1];
+            core::componentmodel::topology::BaseMeshTopology::Edge ei0 = _topology->getEdge(e0);
+            core::componentmodel::topology::BaseMeshTopology::Edge ei1 = _topology->getEdge(e1);
+            baseEdge.resize(1);
+            if (ei0[0]+ei0[1] > ei1[0]+ei1[1])
+                baseEdge[0] = e0;
+            else
+                baseEdge[0] = e1;
         }
 
         if (baseEdge.size() == 1)
         {
-            if (fabs(vertexT[startingIndex.getValue()+1] - vertexT[startingIndex.getValue()]) > ( 2 * edgeTLength ))
+            if (fabs(vertexT[startId+1] - vertexT[startId]) > ( 2 * edgeTLength ))
             {
                 // First Edge makes 2
                 sofa::helper::vector<unsigned int> indices(0);
@@ -387,25 +407,25 @@ void EdgeSetController<DataTypes>::modifyTopology(void)
                 Coord& pos = (*this->mState->getX0())[this->mState->getSize() - 1];
 
                 // point placed in the middle of the edge
-                pos = getNewRestPos((	*this->mState->getX0())[startingIndex.getValue()],
-                        vertexT[startingIndex.getValue()],
-                        (vertexT[startingIndex.getValue() + 1] - vertexT[startingIndex.getValue()]) / static_cast<Real>(2.0));
+                pos = getNewRestPos((	*this->mState->getX0())[startId],
+                        vertexT[startId],
+                        (vertexT[startId + 1] - vertexT[startId]) / static_cast<Real>(2.0));
 
                 // Update vertexT
-                vertexT.insert(	vertexT.begin()+ startingIndex.getValue() + 1,
-                        (vertexT[startingIndex.getValue()] + vertexT[startingIndex.getValue() + 1]) / static_cast<Real>(2.0));
+                vertexT.insert(	vertexT.begin()+ startId + 1,
+                        (vertexT[startId] + vertexT[startId + 1]) / static_cast<Real>(2.0));
 
                 // Renumber vertices
                 int numPoints = _topology->getNbPoints();
 
-                // Last created vertex must come on the startingIndex.getValue() + 1 position of the position vector.
+                // Last created vertex must come on the startId + 1 position of the position vector.
                 sofa::helper::vector<unsigned int> permutations(numPoints);
-                for (int i = 0 ; i <= startingIndex.getValue(); i++)
+                for (int i = 0 ; i <= startId; i++)
                     permutations[i] = i;
 
-                permutations[numPoints - 1] = startingIndex.getValue()+1;
+                permutations[numPoints - 1] = startId+1;
 
-                for ( int i = startingIndex.getValue()+1; i < numPoints - 1; i++)
+                for ( int i = startId+1; i < numPoints - 1; i++)
                     permutations[i] = i + 1;
 
                 sofa::helper::vector<unsigned int> inverse_permutations(numPoints);
@@ -413,10 +433,12 @@ void EdgeSetController<DataTypes>::modifyTopology(void)
                     inverse_permutations[permutations[i]] = i;
 
                 edgeMod->renumberPoints((const sofa::helper::vector<unsigned int> &) inverse_permutations, (const sofa::helper::vector<unsigned int> &) permutations);
+
+                //startingIndex.setValue(startId+1);
             }
         }
     }
-    else // reversed case // TODO implementation for startingIndex.getValue() !=0
+    else // reversed case // TODO implementation for startId !=0
     {
         int n = this->mState->getSize();
 
@@ -463,7 +485,7 @@ void EdgeSetController<DataTypes>::modifyTopology(void)
     if (!reversed.getValue())
     {
         sofa::helper::vector< unsigned int > baseEdge;
-        baseEdge = _topology->getEdgesAroundVertex(startingIndex.getValue()+1);
+        baseEdge = _topology->getEdgesAroundVertex(startId+1);
 
         if (baseEdge.size()==1)
         {
@@ -472,7 +494,7 @@ void EdgeSetController<DataTypes>::modifyTopology(void)
 
         if (baseEdge.size() == 2)
         {
-            if (fabs(vertexT[startingIndex.getValue()+1] - vertexT[startingIndex.getValue()]) < ( 0.5 * edgeTLength ))
+            if (fabs(vertexT[startId+1] - vertexT[startId]) < ( 0.5 * edgeTLength ))
             {
                 // Fuse Edges (0-1)
                 sofa::helper::vector< sofa::helper::vector<unsigned int> > edges_fuse(0);
@@ -483,21 +505,21 @@ void EdgeSetController<DataTypes>::modifyTopology(void)
                 edgeMod->fuseEdges(edges_fuse, true);
 
                 // update vertexT
-                vertexT.erase(vertexT.begin() + startingIndex.getValue() + 1);
+                vertexT.erase(vertexT.begin() + startId + 1);
 
                 // Renumber Vertices
                 int numPoints = _topology->getNbPoints();
 
                 // The vertex to delete has to be set to the last position of the position vector.
                 sofa::helper::vector<unsigned int> permutations(numPoints);
-                for ( int i = 0; i <= startingIndex.getValue() ; i++)
+                for ( int i = 0; i <= startId ; i++)
                 {
                     permutations[i]=i;
                 }
 
-                permutations[startingIndex.getValue()+1] = numPoints - 1;
+                permutations[startId+1] = numPoints - 1;
 
-                for ( int i = startingIndex.getValue()+2; i < numPoints; i++)
+                for ( int i = startId+2; i < numPoints; i++)
                     permutations[i] = i-1;
 
                 sofa::helper::vector<unsigned int> inverse_permutations(numPoints);
@@ -505,10 +527,12 @@ void EdgeSetController<DataTypes>::modifyTopology(void)
                     inverse_permutations[permutations[i]] = i;
 
                 edgeMod->renumberPoints((const sofa::helper::vector<unsigned int> &) inverse_permutations, (const sofa::helper::vector<unsigned int> &) permutations);
+
+                //if(startId > 0) startingIndex.setValue(startId-1);
             }
         }
     }
-    else // reversed // TODO implementation for startingIndex.getValue() !=0
+    else // reversed // TODO implementation for startId !=0
     {
         int n = this->mState->getSize();
 
@@ -570,17 +594,18 @@ void EdgeSetController<DataTypes>::draw()
             helper::gl::glVertexT((*this->mState->getX())[_topology->getEdge(i)[1]]);
         }
         glEnd();
-
-        glPointSize(10);
-        glBegin(GL_POINTS);
-        for (int i=0; i<_topology->getNbEdges(); i++)
-        {
-            glColor4f(1.0,0.0,0.0,1.0);
-            helper::gl::glVertexT((*this->mState->getX())[_topology->getEdge(i)[0]]);
-            helper::gl::glVertexT((*this->mState->getX())[_topology->getEdge(i)[1]]);
-        }
-        glEnd();
-        glPointSize(1);
+        /*
+        		glPointSize(10);
+        		glBegin(GL_POINTS);
+        		for (int i=0; i<_topology->getNbEdges(); i++)
+        		{
+        			glColor4f(1.0,0.0,0.0,1.0);
+        			helper::gl::glVertexT((*this->mState->getX())[_topology->getEdge(i)[0]]);
+        			helper::gl::glVertexT((*this->mState->getX())[_topology->getEdge(i)[1]]);
+        		}
+        		glEnd();
+        		glPointSize(1);
+        */
     }
 }
 
