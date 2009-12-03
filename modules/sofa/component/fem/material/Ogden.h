@@ -37,7 +37,7 @@
 
 #ifdef SOFA_HAVE_EIGEN2
 //#include <Eigen/Core>
-#include <Eigen/Qr>
+#include <Eigen/QR>
 USING_PART_OF_NAMESPACE_EIGEN
 #endif
 namespace sofa
@@ -71,8 +71,8 @@ class Ogden: public HyperelasticMaterial<DataTypes>
     typedef MatSym<3,Real> MatrixSym;
     typedef Vec<3,Real> Vect;
 #ifdef SOFA_HAVE_EIGEN2
-    typedef typename Eigen::SelfAdjointEigenSolver<Matrix<Real,3,3>>::MatrixType EigenMatrix;
-    typedef typename Eigen::SelfAdjointEigenSolver<Matrix<Real,3,3>>::RealVectorType CoordEigen;
+    typedef typename Eigen::SelfAdjointEigenSolver<Matrix<Real,3,3> >::MatrixType EigenMatrix;
+    typedef typename Eigen::SelfAdjointEigenSolver<Matrix<Real,3,3> >::RealVectorType CoordEigen;
 #endif
     typedef typename fem::HyperelasticMaterial<DataTypes>::triplet triplet;
     typedef typename std::pair<Real,MatrixSym> MatrixCoeffPair;
