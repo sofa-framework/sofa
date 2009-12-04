@@ -101,7 +101,7 @@ void SparseTAUCSSolver<TMatrix,TVector>::invert(Matrix& M)
     if (f_symmetric.getValue())
     {
         matrix_taucs.flags |= TAUCS_SYMMETRIC;
-        matrix_taucs.flags |= TAUCS_LOWER; // Upper on row-major is actually lower or column-major transposed matrix
+        matrix_taucs.flags |= TAUCS_LOWER; // Upper on row-major is actually lower on column-major transposed matrix
     }
     matrix_taucs.colptr = (int *) &(Mfiltered.getRowBegin()[0]);
     matrix_taucs.rowind = (int *) &(Mfiltered.getColsIndex()[0]);
@@ -169,7 +169,7 @@ void SparseTAUCSSolver<TMatrix,TVector>::solve (Matrix& /*M*/, Vector& z, Vector
 
 SOFA_DECL_CLASS(SparseTAUCSSolver)
 
-int SparseTAUCSSolverClass = core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm")
+int SparseTAUCSSolverClass = core::RegisterObject("Linear system solver using the TAUCS sparse solvers library")
         .add< SparseTAUCSSolver< CompressedRowSparseMatrix<double>,FullVector<double> > >(true)
         .addAlias("TAUCSSolver")
         ;

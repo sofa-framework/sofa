@@ -502,6 +502,97 @@ public:
             rowBegin[j] = b;
     }
 
+    /// Make sure all diagonal entries are present even if they are zero
+    void fullDiagonal()
+    {
+        compress();
+        int ndiag = 0;
+        for (unsigned int r=0; r<rowIndex.size(); ++r)
+        {
+            int i = rowIndex[r];
+            int b = rowBegin[r];
+            int e = rowBegin[r+1];
+            int t = b;
+            while (b < e && colsIndex[t] != i)
+            {
+                if (colsIndex[t] < i)
+                    b = t+1;
+                else
+                    e = t;
+                t = (b+e)>>1;
+            }
+            if (b<e) ++ndiag;
+        }
+        if (ndiag == nRow) return;
+
+        oldRowIndex.swap(rowIndex);
+        oldRowBegin.swap(rowBegin);
+        oldColsIndex.swap(colsIndex);
+        oldColsValue.swap(colsValue);
+        rowIndex.resize(nRow);
+        rowBegin.resize(nRow+1);
+        colsIndex.resize(oldColsIndex.size()+nRow-ndiag);
+        colsValue.resize(oldColsValue.size()+nRow-ndiag);
+        int nv = 0;
+        for (int i=0; i<nRow; ++i) rowIndex[i] = i;
+        int j = 0;
+        for (unsigned int i=0; i<oldRowIndex.size(); ++i)
+        {
+            for (; j<oldRowIndex[i]; ++j)
+            {
+                rowBegin[j] = nv;
+                colsIndex[nv] = j;
+                traits::clear(colsValue[nv]);
+                ++nv;
+            }
+            rowBegin[j] = nv;
+            int b = oldRowBegin[i];
+            int e = oldRowBegin[i+1];
+            for (; b<e && oldColsIndex[b] < j; ++b)
+            {
+                colsIndex[nv] = oldColsIndex[b];
+                colsValue[nv] = oldColsValue[b];
+                ++nv;
+            }
+            if (b>=e || oldColsIndex[b] > j)
+            {
+                colsIndex[nv] = j;
+                traits::clear(colsValue[nv]);
+                ++nv;
+            }
+            for (; b<e; ++b)
+            {
+                colsIndex[nv] = oldColsIndex[b];
+                colsValue[nv] = oldColsValue[b];
+                ++nv;
+            }
+            ++j;
+        }
+        for (; j<nRow; ++j)
+        {
+            rowBegin[j] = nv;
+            colsIndex[nv] = j;
+            traits::clear(colsValue[nv]);
+            ++nv;
+        }
+        rowBegin[j] = nv;
+    }
+
+    /// Add the given base to all indices.
+    /// Use 1 to convert do Fortran 1-based notation.
+    /// Note that the matrix will no longer be valid
+    /// from the point of view of C/C++ codes. You need
+    /// to call again with -1 as base to undo it.
+    void shiftIndices(int base)
+    {
+        for (unsigned int i=0; i<rowIndex.size(); ++i)
+            rowIndex[i] += base;
+        for (unsigned int i=0; i<rowBegin.size(); ++i)
+            rowBegin[i] += base;
+        for (unsigned int i=0; i<colsIndex.size(); ++i)
+            colsIndex[i] += base;
+    }
+
     // filtering-out part of a matrix
     typedef bool filter_fn    (int   i  , int   j  , Bloc& val, const Bloc&   ref  );
     static bool       nonzeros(int /*i*/, int /*j*/, Bloc& val, const Bloc& /*ref*/) { return (!traits::empty(val)); }
@@ -1104,7 +1195,7 @@ public:
             return false;
         }
 
-        std::cerr << "Check_matrix passed succefull" << std::endl;
+        std::cerr << "Check_matrix passed successfully" << std::endl;
         return true;
     }
 };
