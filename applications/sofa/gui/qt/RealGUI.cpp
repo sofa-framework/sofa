@@ -1811,7 +1811,7 @@ void RealGUI::dumpState ( bool value )
 //
 void RealGUI::exportOBJ ( bool exportMTL )
 {
-    Node* root = getScene();
+    Node* root = simulation::getSimulation()->getVisualRoot();
     if ( !root ) return;
     std::string sceneFileName = viewer->getSceneFileName();
     std::ostringstream ofilename;
