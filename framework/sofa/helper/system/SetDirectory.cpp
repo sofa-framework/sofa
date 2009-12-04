@@ -216,7 +216,7 @@ std::string SetDirectory::GetProcessFullPath(const char* filename)
 #elif defined (__APPLE__)
     if (!filename || filename[0]!='/')
     {
-        char path[10240];
+        char path[4096];
         unsigned int size;
         _NSGetExecutablePath( path, &size );
         //std::cout << "Current process path: "<<path<<std::endl;
