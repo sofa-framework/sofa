@@ -144,6 +144,29 @@ void OglShaderVisualModel::handleTopologyChange()
     vrestnormals.handleTopologyChange();
 
     VisualModelImpl::handleTopologyChange();
+    if (_topology)
+    {
+        bool update=false;
+        std::list<const TopologyChange *>::const_iterator itBegin=_topology->firstChange();
+        std::list<const TopologyChange *>::const_iterator itEnd=_topology->lastChange();
+
+        while( itBegin != itEnd )
+        {
+            core::componentmodel::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
+            if ((changeType==core::componentmodel::topology::TRIANGLESREMOVED) ||
+                (changeType==core::componentmodel::topology::TRIANGLESADDED) ||
+                (changeType==core::componentmodel::topology::QUADSADDED) ||
+                (changeType==core::componentmodel::topology::QUADSREMOVED))
+                update=true;
+            itBegin++;
+        }
+        if (update)
+        {
+            computeRestNormals();
+            std::cerr<< "OglShaderVisualModel - Updating Rest Normals"<<std::endl;
+        }
+    }
+
     //TODO// update the rest position when inserting a point. Then, call computeNormals() to update the attributes.
     // Not done here because we don't have the rest position of the model.
     // For the moment, the only class using dynamic topology is HexaToTriangleTopologicalMapping which update itself the attributes...
