@@ -35,6 +35,8 @@
 #include <sofa/component/component.h>
 #ifdef SOFA_DEV
 #include <sofa/helper/DualQuat.h>
+//#include <sofa/component/mapping/DualQuatStorage.h>
+#include "DualQuatStorage.h"
 #endif
 namespace sofa
 {
@@ -129,7 +131,11 @@ public:
 
 
 template <class BasicMapping>
+#ifdef SOFA_DEV
+class SkinningMapping : public BasicMapping, public DualQuatStorage<BasicMapping::Out::Coord::static_size, typename BasicMapping::Out::Coord::value_type>
+#else
 class SkinningMapping : public BasicMapping
+#endif
 {
 public:
     SOFA_CLASS ( SOFA_TEMPLATE ( SkinningMapping,BasicMapping ), BasicMapping );
@@ -180,15 +186,11 @@ public:
     // These typedef are here to avoid compilation pb encountered with ResizableExtVect Type.
     typedef typename sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<N, Real>, sofa::defaulttype::Vec<N, Real>, Real> GeoType; // = Vec3fTypes or Vec3dTypes
     typedef typename GeoType::VecCoord GeoVecCoord;
+
     typedef typename helper::DualQuatd DualQuat;
 
-    typedef struct
-    {
-        Vec4 q0;
-        Vec4 qe;
-    } DUALQUAT;
-    typedef vector<DUALQUAT> VDUALQUAT;
-
+    typedef typename DualQuatStorage<N, Real>::DUALQUAT DUALQUAT;
+    typedef typename DualQuatStorage<N, Real>::VDUALQUAT VDUALQUAT;
 #endif
 protected:
     vector<InCoord> initPosDOFs; // translation and rotation of the blended reference frame i, where i=0..n.
@@ -210,19 +212,6 @@ protected:
     vector<vector<double> > distances;
     vector<vector<Coord> > distGradients;
 #ifdef SOFA_DEV
-    /*
-    typename Out::VecCoord x1; //TODO remove after test
-    typename Out::VecCoord x2; //TODO remove after test
-    vector<DualQuat> q1; //TODO remove after test
-    vector<DualQuat> q2; //TODO remove after test
-    vector<Mat81> dqLi_previous, dqLi; //TODO to remove after the convergence test*/
-    VMat86 L;
-    VMat88 T;
-    VVMat36 J;
-    VVMat66 B;
-    VVec6 deformationTensors;
-    vector<double> det;
-    VVVec6 ddet;
     HexahedronGeodesicalDistance< GeoType>* geoDist;
 #endif
 
@@ -286,10 +275,10 @@ public:
 
 #ifdef SOFA_DEV
     // Dual quat J matrix components
-    void computeDqQ ( Mat38& Q, const DualQuat& bn, const Coord& p );
-    void computeDqN ( Mat88& N, const DualQuat& bn, const DualQuat& b );
-    void computeDqT ( Mat88& T, const DualQuat& qi0 );
-    void computeDqL ( Mat86& L, const DualQuat& qi, const Coord& ti );
+    //void computeDqQ ( Mat38& Q, const DualQuat& bn, const Coord& p );
+    //void computeDqN ( Mat88& N, const DualQuat& bn, const DualQuat& b );
+    //void computeDqT ( Mat88& T, const DualQuat& qi0 );
+    //void computeDqL ( Mat86& L, const DualQuat& qi, const Coord& ti );
     void computeDqL ( Mat86& L, const DUALQUAT& qi, const Coord& ti );
     void BlendDualQuat ( DUALQUAT& b, DUALQUAT& bn, double& QEQ0, double& Q0Q0, double& Q0, const int& indexp, const VDUALQUAT& qrel, const vector<vector<double> >& w );
 

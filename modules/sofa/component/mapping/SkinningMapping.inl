@@ -253,13 +253,13 @@ void SkinningMapping<BasicMapping>::init()
     {
         DUALQUAT qi0;
         VecInCoord& xfrom = *this->fromModel->getX();
-        T.resize ( xfrom.size() );
+        this->T.resize ( xfrom.size() );
         for ( unsigned int i = 0; i < xfrom.size(); i++ )
         {
             //DualQuat qi0 ( initPosDOFs[i].getCenter(), initPosDOFs[i].getOrientation() );
             //computeDqT ( T[i], qi0 );
             XItoQ( qi0, initPosDOFs[i]);
-            computeDqT ( T[i], qi0 );
+            computeDqT ( this->T[i], qi0 );
         }
     }
 #endif
@@ -526,17 +526,18 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
         Mat44 q0q0T,q0qeT,qeq0T,q0V0T,V0q0T,q0VeT,Veq0T,qeV0T,V0qeT;
         const vector<vector<double> >& w = coefs.getValue();
         const vector<vector<Coord> >& dw = distGradients;
-        VVec6& e = deformationTensors;
+        VVec6& e = this->deformationTensors;
+
 
         // Resize vectors
         e.resize ( nbP );
-        det.resize ( nbP );
-        J.resize ( nbDOF );
-        B.resize ( nbDOF );
+        this->det.resize ( nbP );
+        this->J.resize ( nbDOF );
+        this->B.resize ( nbDOF );
         for ( i=0; i<nbDOF; i++ )
         {
-            J[i].resize ( nbP );
-            B[i].resize ( nbP );
+            this->J[i].resize ( nbP );
+            this->B[i].resize ( nbP );
         }
 
         //apply
@@ -544,8 +545,8 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
         {
             XItoQ ( q,in[i] );		//update DOF quats
             computeDqL ( L[i],q,in[i].getCenter() );	//update L=d(q)/Omega
-            TL[i]=T[i]*L[i];	//update TL
-            computeQrel ( qrel[i], T[i], q ); //update qrel=Tq
+            TL[i]=this->T[i]*L[i];	//update TL
+            computeQrel ( qrel[i], this->T[i], q ); //update qrel=Tq
         }
 
         for ( i=0; i<nbP; i++ )
@@ -590,19 +591,19 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
             e[i][4]=E[0][2];
             e[i][5]=E[1][2]; // column form
 
-            det[i]=determinant ( A );
+            this->det[i]=determinant ( A );
             invertMatrix ( Ainv,A );
 
             for ( j=0; j<nbDOF; j++ )
             {
                 // J = d(P_i)/Omega_j
                 NTL=N*TL[j]; // update NTL
-                J[j][i]=Q*NTL;
-                J[j][i]*=w[j][i]; // Update J=wiQNTL
-                QNT=QN*T[j]; // Update QNT
+                this->J[j][i]=Q*NTL;
+                this->J[j][i]*=w[j][i]; // Update J=wiQNTL
+                QNT=QN*this->T[j]; // Update QNT
 
                 // B = d(strain)/Omega_j
-                B[j][i].fill ( 0 );
+                this->B[j][i].fill ( 0 );
                 for ( l=0; l<6; l++ )
                 {
                     if ( w[j][i]==0 ) dE.fill(0);
@@ -631,17 +632,20 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
                     }
                     for ( k=0; k<3; k++ )  for ( m=0; m<3; m++ ) for ( n=0; n<8; n++ ) dE[k][m]+=QNT[k][n]*L[j][n][l]*dw[j][i][m];
 
-                    //TO UPDATE!! ddet[i][6*j+l]=0; for(k=0;k<3;k++)  for(m=0;m<3;m++) ddet[i][6*j+l]+=
+                    // determinant derivatives
+                    this->ddet[j][i][l]=0;
+                    for(k=0; k<3; k++)  for(m=0; m<3; m++) this->ddet[j][i][l]+=dE[k][m]*Ainv[m][k];
+                    this->ddet[j][i][l]*=this->det[i];
 
                     // B=1/2(graddef^T.d(graddef)/Omega_j + d(graddef)/Omega_j^T.graddef)
                     for ( n=0; n<3; n++ )
                     {
-                        B[j][i][0][l]+= ( dE[n][0]*A[n][0] );
-                        B[j][i][1][l]+= ( dE[n][1]*A[n][1] );
-                        B[j][i][2][l]+= ( dE[n][2]*A[n][2] );
-                        B[j][i][3][l]+=0.5* ( dE[n][0]*A[n][1]+A[n][0]*dE[n][1] );
-                        B[j][i][4][l]+=0.5* ( dE[n][0]*A[n][2]+A[n][0]*dE[n][2] );
-                        B[j][i][5][l]+=0.5* ( dE[n][1]*A[n][2]+A[n][1]*dE[n][2] );
+                        this->B[j][i][0][l]+= ( dE[n][0]*A[n][0] );
+                        this->B[j][i][1][l]+= ( dE[n][1]*A[n][1] );
+                        this->B[j][i][2][l]+= ( dE[n][2]*A[n][2] );
+                        this->B[j][i][3][l]+=0.5* ( dE[n][0]*A[n][1]+A[n][0]*dE[n][1] );
+                        this->B[j][i][4][l]+=0.5* ( dE[n][0]*A[n][2]+A[n][0]*dE[n][2] );
+                        this->B[j][i][5][l]+=0.5* ( dE[n][1]*A[n][2]+A[n][1]*dE[n][2] );
                     }
                 }
             }
@@ -719,7 +723,7 @@ void SkinningMapping<BasicMapping>::applyJ ( typename Out::VecDeriv& out, const 
                     speed[4] = in[idxReps].getVCenter() [1];
                     speed[5] = in[idxReps].getVCenter() [2];
 
-                    Vec3 f = ( J[idxReps][i] * speed ) * m_coefs[idxReps][i];
+                    Vec3 f = ( this->J[idxReps][i] * speed ) * m_coefs[idxReps][i];
 
                     /*                        dqTest[i] = speed[0][0]*speed[0][0] + speed[1][0]*speed[1][0] + speed[2][0]*speed[2][0] + speed[3][0]*speed[3][0] + speed[4][0]*speed[4][0] + speed[5][0]*speed[5][0]; //TODO to remove after the convergence test
                                             dqJiWi[i] = Vec3d ( f[0][0], f[1][0], f[2][0] ); //TODO to remove after convergence test*/
@@ -781,7 +785,7 @@ void SkinningMapping<BasicMapping>::applyJ ( typename Out::VecDeriv& out, const 
                     speed[5] = in[idxReps].getVCenter() [2];
 
 
-                    Vec3 f = ( J[idxReps][i] * speed ) * m_coefs[idxReps][i];
+                    Vec3 f = ( this->J[idxReps][i] * speed ) * m_coefs[idxReps][i];
 
                     /*                        dqTest[i] = speed[0][0]*speed[0][0] + speed[1][0]*speed[1][0] + speed[2][0]*speed[2][0] + speed[3][0]*speed[3][0] + speed[4][0]*speed[4][0] + speed[5][0]*speed[5][0]; //TODO to remove after the convergence test
                                             dqJiWi[i] = Vec3d ( f[0][0], f[1][0], f[2][0] ); //TODO to remove after convergence test*/
@@ -873,7 +877,7 @@ void SkinningMapping<BasicMapping>::applyJT ( typename In::VecDeriv& out, const 
                     const int idx=nbRefs.getValue() *i+m;
                     const int idxReps=m_reps[idx];
                     Mat63 Jt;
-                    Jt.transpose ( J[idxReps][i] );
+                    Jt.transpose ( this->J[idxReps][i] );
 
                     Vec3 f;
                     f[0] = in[i][0];
@@ -934,7 +938,7 @@ void SkinningMapping<BasicMapping>::applyJT ( typename In::VecDeriv& out, const 
                     const int idx=nbRefs.getValue() *i+m;
                     const int idxReps=m_reps[idx];
                     Mat63 Jt;
-                    Jt.transpose ( J[idxReps][i] );
+                    Jt.transpose ( this->J[idxReps][i] );
 
                     Vec3 f;
                     f[0] = in[i][0];
@@ -1094,283 +1098,284 @@ void SkinningMapping<BasicMapping>::draw()
 }
 
 #ifdef SOFA_DEV
-template <class BasicMapping>
-void SkinningMapping<BasicMapping>::computeDqQ ( Mat38& Q, const DualQuat& bn, const Coord& p )
-{
-    const double& x = p[0];
-    const double& y = p[1];
-    const double& z = p[2];
-    const double& a0 = bn[0][0];
-    const double& b0 = bn[0][1];
-    const double& c0 = bn[0][2];
-    const double& w0 = bn[0][3];
-    const double& ae = bn[1][0];
-    const double& be = bn[1][1];
-    const double& ce = bn[1][2];
-    const double& we = bn[1][3];
-    Q[0][0] =   ae + w0*x - c0*y + b0*z;
-    Q[0][1] = - we + a0*x + b0*y + c0*z;
-    Q[0][2] =   ce - b0*x + a0*y + w0*z;
-    Q[0][3] = - be - c0*x - w0*y + a0*z;
-    Q[0][4] = -a0;
-    Q[0][5] =  w0;
-    Q[0][6] = -c0;
-    Q[0][7] =  b0;
-    Q[1][0] =   be + c0*x + w0*y - a0*z;
-    Q[1][1] = - ce + b0*x - a0*y - w0*z;
-    Q[1][2] = - we + a0*x + b0*y + c0*z;
-    Q[1][3] =   ae + w0*x - c0*y + b0*z;
-    Q[1][4] = -b0;
-    Q[1][5] =  c0;
-    Q[1][6] =  w0;
-    Q[1][7] = -a0;
-    Q[2][0] =   ce - b0*x + a0*y + w0*z;
-    Q[2][1] =   be + c0*x + w0*y - a0*z;
-    Q[2][2] = - ae - w0*x + c0*y - b0*z;
-    Q[2][3] = - we + a0*x + b0*y + c0*z;
-    Q[2][4] = -c0;
-    Q[2][5] = -b0;
-    Q[2][6] =  a0;
-    Q[2][7] =  w0;
+/*
+      template <class BasicMapping>
+      void SkinningMapping<BasicMapping>::computeDqQ ( Mat38& Q, const DualQuat& bn, const Coord& p )
+      {
+        const double& x = p[0];
+        const double& y = p[1];
+        const double& z = p[2];
+        const double& a0 = bn[0][0];
+        const double& b0 = bn[0][1];
+        const double& c0 = bn[0][2];
+        const double& w0 = bn[0][3];
+        const double& ae = bn[1][0];
+        const double& be = bn[1][1];
+        const double& ce = bn[1][2];
+        const double& we = bn[1][3];
+        Q[0][0] =   ae + w0*x - c0*y + b0*z;
+        Q[0][1] = - we + a0*x + b0*y + c0*z;
+        Q[0][2] =   ce - b0*x + a0*y + w0*z;
+        Q[0][3] = - be - c0*x - w0*y + a0*z;
+        Q[0][4] = -a0;
+        Q[0][5] =  w0;
+        Q[0][6] = -c0;
+        Q[0][7] =  b0;
+        Q[1][0] =   be + c0*x + w0*y - a0*z;
+        Q[1][1] = - ce + b0*x - a0*y - w0*z;
+        Q[1][2] = - we + a0*x + b0*y + c0*z;
+        Q[1][3] =   ae + w0*x - c0*y + b0*z;
+        Q[1][4] = -b0;
+        Q[1][5] =  c0;
+        Q[1][6] =  w0;
+        Q[1][7] = -a0;
+        Q[2][0] =   ce - b0*x + a0*y + w0*z;
+        Q[2][1] =   be + c0*x + w0*y - a0*z;
+        Q[2][2] = - ae - w0*x + c0*y - b0*z;
+        Q[2][3] = - we + a0*x + b0*y + c0*z;
+        Q[2][4] = -c0;
+        Q[2][5] = -b0;
+        Q[2][6] =  a0;
+        Q[2][7] =  w0;
 
-    Q *= 2;
-}
+        Q *= 2;
+      }
 
-template <class BasicMapping>
-void SkinningMapping<BasicMapping>::computeDqN ( Mat88& N, const DualQuat& bn, const DualQuat& b )
-{
-    const double& a0 = bn[0][0];
-    const double& b0 = bn[0][1];
-    const double& c0 = bn[0][2];
-    const double& w0 = bn[0][3];
-    const double& ae = bn[1][0];
-    const double& be = bn[1][1];
-    const double& ce = bn[1][2];
-    const double& we = bn[1][3];
-    const double& A0 = b[0][0];
-    const double& B0 = b[0][1];
-    const double& C0 = b[0][2];
-    const double& W0 = b[0][3];
-    const double& Ae = b[1][0];
-    const double& Be = b[1][1];
-    const double& Ce = b[1][2];
-    const double& We = b[1][3];
-    const double lQ0l2 = W0*W0 + A0*A0 + B0*B0 + C0*C0;
-    const double lQ0l = sqrt ( lQ0l2 );
-    const double QeQ0 = W0*We + A0*Ae + B0*Be + C0*Ce;
+      template <class BasicMapping>
+      void SkinningMapping<BasicMapping>::computeDqN ( Mat88& N, const DualQuat& bn, const DualQuat& b )
+      {
+        const double& a0 = bn[0][0];
+        const double& b0 = bn[0][1];
+        const double& c0 = bn[0][2];
+        const double& w0 = bn[0][3];
+        const double& ae = bn[1][0];
+        const double& be = bn[1][1];
+        const double& ce = bn[1][2];
+        const double& we = bn[1][3];
+        const double& A0 = b[0][0];
+        const double& B0 = b[0][1];
+        const double& C0 = b[0][2];
+        const double& W0 = b[0][3];
+        const double& Ae = b[1][0];
+        const double& Be = b[1][1];
+        const double& Ce = b[1][2];
+        const double& We = b[1][3];
+        const double lQ0l2 = W0*W0 + A0*A0 + B0*B0 + C0*C0;
+        const double lQ0l = sqrt ( lQ0l2 );
+        const double QeQ0 = W0*We + A0*Ae + B0*Be + C0*Ce;
 
-    N[0][0] = w0*w0-1;
-    N[0][1] = a0*w0;
-    N[0][2] = b0*w0;
-    N[0][3] = c0*w0;
-    N[0][4] = 0;
-    N[0][5] = 0;
-    N[0][6] = 0;
-    N[0][7] = 0;
-    N[1][0] = w0*a0;
-    N[1][1] = a0*a0-1;
-    N[1][2] = b0*a0;
-    N[1][3] = c0*a0;
-    N[1][4] = 0;
-    N[1][5] = 0;
-    N[1][6] = 0;
-    N[1][7] = 0;
-    N[2][0] = w0*b0;
-    N[2][1] = a0*b0;
-    N[2][2] = b0*b0-1;
-    N[2][3] = c0*b0;
-    N[2][4] = 0;
-    N[2][5] = 0;
-    N[2][6] = 0;
-    N[2][7] = 0;
-    N[3][0] = w0*c0;
-    N[3][1] = a0*c0;
-    N[3][2] = b0*c0;
-    N[3][3] = c0*c0-1;
-    N[3][4] = 0;
-    N[3][5] = 0;
-    N[3][6] = 0;
-    N[3][7] = 0;
-    N[4][0] = 3*w0*we + ( QeQ0-W0*We ) /lQ0l2;
-    N[4][1] = 3*a0*we + ( Ae*W0-2*A0*We ) /lQ0l2;
-    N[4][2] = 3*b0*we + ( Be*W0-2*B0*We ) /lQ0l2;
-    N[4][3] = 3*c0*we + ( Ce*W0-2*C0*We ) /lQ0l2;
-    N[4][4] = w0*w0-1;
-    N[4][5] = a0*w0;
-    N[4][6] = b0*w0;
-    N[4][7] = c0*w0;
-    N[5][0] = 3*w0*ae + ( We*A0-2*W0*Ae ) /lQ0l2;
-    N[5][1] = 3*a0*ae + ( QeQ0-A0*Ae ) /lQ0l2;
-    N[5][2] = 3*b0*ae + ( Be*A0-2*B0*Ae ) /lQ0l2;
-    N[5][3] = 3*c0*ae + ( Ce*A0-2*C0*Ae ) /lQ0l2;
-    N[5][4] = w0*a0;
-    N[5][5] = a0*a0-1;
-    N[5][6] = b0*a0;
-    N[5][7] = c0*a0;
-    N[6][0] = 3*w0*be + ( We*B0-2*W0*Be ) /lQ0l2;
-    N[6][1] = 3*a0*be + ( Ae*B0-2*A0*Be ) /lQ0l2;
-    N[6][2] = 3*b0*be + ( QeQ0-B0*Be ) /lQ0l2;
-    N[6][3] = 3*c0*be + ( Ce*B0-2*C0*Be ) /lQ0l2;
-    N[6][4] = w0*b0;
-    N[6][5] = a0*b0;
-    N[6][6] = b0*b0-1;
-    N[6][7] = c0*b0;
-    N[7][0] = 3*w0*ce + ( We*C0-2*W0*Ce ) /lQ0l2;
-    N[7][1] = 3*a0*ce + ( Ae*C0-2*A0*Ce ) /lQ0l2;
-    N[7][2] = 3*b0*ce + ( Be*C0-2*B0*Ce ) /lQ0l2;
-    N[7][3] = 3*c0*ce + ( QeQ0-C0*Ce ) /lQ0l2;
-    N[7][4] = w0*c0;
-    N[7][5] = a0*c0;
-    N[7][6] = b0*c0;
-    N[7][7] = c0*c0-1;
+        N[0][0] = w0*w0-1;
+        N[0][1] = a0*w0;
+        N[0][2] = b0*w0;
+        N[0][3] = c0*w0;
+        N[0][4] = 0;
+        N[0][5] = 0;
+        N[0][6] = 0;
+        N[0][7] = 0;
+        N[1][0] = w0*a0;
+        N[1][1] = a0*a0-1;
+        N[1][2] = b0*a0;
+        N[1][3] = c0*a0;
+        N[1][4] = 0;
+        N[1][5] = 0;
+        N[1][6] = 0;
+        N[1][7] = 0;
+        N[2][0] = w0*b0;
+        N[2][1] = a0*b0;
+        N[2][2] = b0*b0-1;
+        N[2][3] = c0*b0;
+        N[2][4] = 0;
+        N[2][5] = 0;
+        N[2][6] = 0;
+        N[2][7] = 0;
+        N[3][0] = w0*c0;
+        N[3][1] = a0*c0;
+        N[3][2] = b0*c0;
+        N[3][3] = c0*c0-1;
+        N[3][4] = 0;
+        N[3][5] = 0;
+        N[3][6] = 0;
+        N[3][7] = 0;
+        N[4][0] = 3*w0*we + ( QeQ0-W0*We ) /lQ0l2;
+        N[4][1] = 3*a0*we + ( Ae*W0-2*A0*We ) /lQ0l2;
+        N[4][2] = 3*b0*we + ( Be*W0-2*B0*We ) /lQ0l2;
+        N[4][3] = 3*c0*we + ( Ce*W0-2*C0*We ) /lQ0l2;
+        N[4][4] = w0*w0-1;
+        N[4][5] = a0*w0;
+        N[4][6] = b0*w0;
+        N[4][7] = c0*w0;
+        N[5][0] = 3*w0*ae + ( We*A0-2*W0*Ae ) /lQ0l2;
+        N[5][1] = 3*a0*ae + ( QeQ0-A0*Ae ) /lQ0l2;
+        N[5][2] = 3*b0*ae + ( Be*A0-2*B0*Ae ) /lQ0l2;
+        N[5][3] = 3*c0*ae + ( Ce*A0-2*C0*Ae ) /lQ0l2;
+        N[5][4] = w0*a0;
+        N[5][5] = a0*a0-1;
+        N[5][6] = b0*a0;
+        N[5][7] = c0*a0;
+        N[6][0] = 3*w0*be + ( We*B0-2*W0*Be ) /lQ0l2;
+        N[6][1] = 3*a0*be + ( Ae*B0-2*A0*Be ) /lQ0l2;
+        N[6][2] = 3*b0*be + ( QeQ0-B0*Be ) /lQ0l2;
+        N[6][3] = 3*c0*be + ( Ce*B0-2*C0*Be ) /lQ0l2;
+        N[6][4] = w0*b0;
+        N[6][5] = a0*b0;
+        N[6][6] = b0*b0-1;
+        N[6][7] = c0*b0;
+        N[7][0] = 3*w0*ce + ( We*C0-2*W0*Ce ) /lQ0l2;
+        N[7][1] = 3*a0*ce + ( Ae*C0-2*A0*Ce ) /lQ0l2;
+        N[7][2] = 3*b0*ce + ( Be*C0-2*B0*Ce ) /lQ0l2;
+        N[7][3] = 3*c0*ce + ( QeQ0-C0*Ce ) /lQ0l2;
+        N[7][4] = w0*c0;
+        N[7][5] = a0*c0;
+        N[7][6] = b0*c0;
+        N[7][7] = c0*c0-1;
 
-    N *= -1/lQ0l;
-}
+        N *= -1/lQ0l;
+      }
 
-template <class BasicMapping>
-void SkinningMapping<BasicMapping>::computeDqT ( Mat88& T, const DualQuat& qi0 )
-{
-    const double& a0 = qi0[0][0];
-    const double& b0 = qi0[0][1];
-    const double& c0 = qi0[0][2];
-    const double& w0 = qi0[0][3];
-    const double& ae = qi0[1][0];
-    const double& be = qi0[1][1];
-    const double& ce = qi0[1][2];
-    const double& we = qi0[1][3];
+      template <class BasicMapping>
+      void SkinningMapping<BasicMapping>::computeDqT ( Mat88& T, const DualQuat& qi0 )
+      {
+        const double& a0 = qi0[0][0];
+        const double& b0 = qi0[0][1];
+        const double& c0 = qi0[0][2];
+        const double& w0 = qi0[0][3];
+        const double& ae = qi0[1][0];
+        const double& be = qi0[1][1];
+        const double& ce = qi0[1][2];
+        const double& we = qi0[1][3];
 
-    T[0][0] = w0;
-    T[0][1] = a0;
-    T[0][2] = b0;
-    T[0][3] = c0;
-    T[0][4] = 0;
-    T[0][5] = 0;
-    T[0][6] = 0;
-    T[0][7] = 0;
-    T[1][0] = -a0;
-    T[1][1] = w0;
-    T[1][2] = -c0;
-    T[1][3] = b0;
-    T[1][4] = 0;
-    T[1][5] = 0;
-    T[1][6] = 0;
-    T[1][7] = 0;
-    T[2][0] = -b0;
-    T[2][1] = c0;
-    T[2][2] = w0;
-    T[2][3] = -a0;
-    T[2][4] = 0;
-    T[2][5] = 0;
-    T[2][6] = 0;
-    T[2][7] = 0;
-    T[3][0] = -c0;
-    T[3][1] = -b0;
-    T[3][2] = a0;
-    T[3][3] = w0;
-    T[3][4] = 0;
-    T[3][5] = 0;
-    T[3][6] = 0;
-    T[3][7] = 0;
-    T[4][0] = we;
-    T[4][1] = ae;
-    T[4][2] = be;
-    T[4][3] = ce;
-    T[4][4] = w0;
-    T[4][5] = a0;
-    T[4][6] = b0;
-    T[4][7] = c0;
-    T[5][0] = -ae;
-    T[5][1] = we;
-    T[5][2] = -ce;
-    T[5][3] = be;
-    T[5][4] = -a0;
-    T[5][5] = w0;
-    T[5][6] = -c0;
-    T[5][7] = b0;
-    T[6][0] = -be;
-    T[6][1] = ce;
-    T[6][2] = we;
-    T[6][3] = -ae;
-    T[6][4] = -b0;
-    T[6][5] = c0;
-    T[6][6] = w0;
-    T[6][7] = -a0;
-    T[7][0] = -ce;
-    T[7][1] = -be;
-    T[7][2] = ae;
-    T[7][3] = we;
-    T[7][4] = -c0;
-    T[7][5] = -b0;
-    T[7][6] = a0;
-    T[7][7] = w0;
-}
+        T[0][0] = w0;
+        T[0][1] = a0;
+        T[0][2] = b0;
+        T[0][3] = c0;
+        T[0][4] = 0;
+        T[0][5] = 0;
+        T[0][6] = 0;
+        T[0][7] = 0;
+        T[1][0] = -a0;
+        T[1][1] = w0;
+        T[1][2] = -c0;
+        T[1][3] = b0;
+        T[1][4] = 0;
+        T[1][5] = 0;
+        T[1][6] = 0;
+        T[1][7] = 0;
+        T[2][0] = -b0;
+        T[2][1] = c0;
+        T[2][2] = w0;
+        T[2][3] = -a0;
+        T[2][4] = 0;
+        T[2][5] = 0;
+        T[2][6] = 0;
+        T[2][7] = 0;
+        T[3][0] = -c0;
+        T[3][1] = -b0;
+        T[3][2] = a0;
+        T[3][3] = w0;
+        T[3][4] = 0;
+        T[3][5] = 0;
+        T[3][6] = 0;
+        T[3][7] = 0;
+        T[4][0] = we;
+        T[4][1] = ae;
+        T[4][2] = be;
+        T[4][3] = ce;
+        T[4][4] = w0;
+        T[4][5] = a0;
+        T[4][6] = b0;
+        T[4][7] = c0;
+        T[5][0] = -ae;
+        T[5][1] = we;
+        T[5][2] = -ce;
+        T[5][3] = be;
+        T[5][4] = -a0;
+        T[5][5] = w0;
+        T[5][6] = -c0;
+        T[5][7] = b0;
+        T[6][0] = -be;
+        T[6][1] = ce;
+        T[6][2] = we;
+        T[6][3] = -ae;
+        T[6][4] = -b0;
+        T[6][5] = c0;
+        T[6][6] = w0;
+        T[6][7] = -a0;
+        T[7][0] = -ce;
+        T[7][1] = -be;
+        T[7][2] = ae;
+        T[7][3] = we;
+        T[7][4] = -c0;
+        T[7][5] = -b0;
+        T[7][6] = a0;
+        T[7][7] = w0;
+      }
 
-template <class BasicMapping>
-void SkinningMapping<BasicMapping>::computeDqL ( Mat86& L, const DualQuat& qi, const Coord& ti )
-{
-    const double& tx = ti[0];
-    const double& ty = ti[1];
-    const double& tz = ti[2];
-    const double& a0 = qi[0][0];
-    const double& b0 = qi[0][1];
-    const double& c0 = qi[0][2];
-    const double& w0 = qi[0][3];
-    const double& ae = qi[1][0];
-    const double& be = qi[1][1];
-    const double& ce = qi[1][2];
-    const double& we = qi[1][3];
+      template <class BasicMapping>
+      void SkinningMapping<BasicMapping>::computeDqL ( Mat86& L, const DualQuat& qi, const Coord& ti )
+      {
+        const double& tx = ti[0];
+        const double& ty = ti[1];
+        const double& tz = ti[2];
+        const double& a0 = qi[0][0];
+        const double& b0 = qi[0][1];
+        const double& c0 = qi[0][2];
+        const double& w0 = qi[0][3];
+        const double& ae = qi[1][0];
+        const double& be = qi[1][1];
+        const double& ce = qi[1][2];
+        const double& we = qi[1][3];
 
-    L[0][0] = -a0;
-    L[0][1] = -b0;
-    L[0][2] = -c0;
-    L[0][3] = 0;
-    L[0][4] = 0;
-    L[0][5] = 0;
-    L[1][0] = w0;
-    L[1][1] = c0;
-    L[1][2] = -b0;
-    L[1][3] = 0;
-    L[1][4] = 0;
-    L[1][5] = 0;
-    L[2][0] = -c0;
-    L[2][1] = w0;
-    L[2][2] = a0;
-    L[2][3] = 0;
-    L[2][4] = 0;
-    L[2][5] = 0;
-    L[3][0] = b0;
-    L[3][1] = -a0;
-    L[3][2] = w0;
-    L[3][3] = 0;
-    L[3][4] = 0;
-    L[3][5] = 0;
-    L[4][0] = -ae-b0*tz+c0*ty;
-    L[4][1] = -be+a0*tz-c0*tx;
-    L[4][2] = -ce-a0*ty+b0*tx;
-    L[4][3] = -a0;
-    L[4][4] = -b0;
-    L[4][5] = -c0;
-    L[5][0] = we+c0*tz+b0*ty;
-    L[5][1] = ce-w0*tz-b0*tx;
-    L[5][2] = -be+w0*ty-c0*tx;
-    L[5][3] = w0;
-    L[5][4] = c0;
-    L[5][5] = -b0;
-    L[6][0] = -ce+w0*tz-a0*ty;
-    L[6][1] = we+c0*tz+a0*tx;
-    L[6][2] = ae-w0*tx-c0*ty;
-    L[6][3] = -c0;
-    L[6][4] = w0;
-    L[6][5] = a0;
-    L[7][0] = be-w0*ty-a0*tz;
-    L[7][1] = -ae+w0*tx-b0*tz;
-    L[7][2] = we+b0*ty+a0*tx;
-    L[7][3] = b0;
-    L[7][4] = -a0;
-    L[7][5] = w0;
+        L[0][0] = -a0;
+        L[0][1] = -b0;
+        L[0][2] = -c0;
+        L[0][3] = 0;
+        L[0][4] = 0;
+        L[0][5] = 0;
+        L[1][0] = w0;
+        L[1][1] = c0;
+        L[1][2] = -b0;
+        L[1][3] = 0;
+        L[1][4] = 0;
+        L[1][5] = 0;
+        L[2][0] = -c0;
+        L[2][1] = w0;
+        L[2][2] = a0;
+        L[2][3] = 0;
+        L[2][4] = 0;
+        L[2][5] = 0;
+        L[3][0] = b0;
+        L[3][1] = -a0;
+        L[3][2] = w0;
+        L[3][3] = 0;
+        L[3][4] = 0;
+        L[3][5] = 0;
+        L[4][0] = -ae-b0*tz+c0*ty;
+        L[4][1] = -be+a0*tz-c0*tx;
+        L[4][2] = -ce-a0*ty+b0*tx;
+        L[4][3] = -a0;
+        L[4][4] = -b0;
+        L[4][5] = -c0;
+        L[5][0] = we+c0*tz+b0*ty;
+        L[5][1] = ce-w0*tz-b0*tx;
+        L[5][2] = -be+w0*ty-c0*tx;
+        L[5][3] = w0;
+        L[5][4] = c0;
+        L[5][5] = -b0;
+        L[6][0] = -ce+w0*tz-a0*ty;
+        L[6][1] = we+c0*tz+a0*tx;
+        L[6][2] = ae-w0*tx-c0*ty;
+        L[6][3] = -c0;
+        L[6][4] = w0;
+        L[6][5] = a0;
+        L[7][0] = be-w0*ty-a0*tz;
+        L[7][1] = -ae+w0*tx-b0*tz;
+        L[7][2] = we+b0*ty+a0*tx;
+        L[7][3] = b0;
+        L[7][4] = -a0;
+        L[7][5] = w0;
 
-    L *= 0.5;
-}
+        L *= 0.5;
+      }*/
 
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::computeDqL ( Mat86& L, const DUALQUAT& qi, const Coord& ti )
@@ -1564,7 +1569,7 @@ void SkinningMapping<BasicMapping>::computeDqDR ( Mat33& DR, const DUALQUAT& bn,
     {
         DR[0][0] = -2.* ( bn.q0[1]*V.q0[1]+bn.q0[2]*V.q0[2] );
         DR[0][1]= -bn.q0[2]*V.q0[3]+bn.q0[1]*V.q0[0]+bn.q0[0]*V.q0[1]-bn.q0[3]*V.q0[2];
-        DR[0][2] = bn.q0[1]*V.q0[3]+bn.q0[2]*V.q0[0]+bn.q0[3]*V.q0[1]-bn.q0[0]*V.q0[2];
+        DR[0][2] = bn.q0[1]*V.q0[3]+bn.q0[2]*V.q0[0]+bn.q0[3]*V.q0[1]+bn.q0[0]*V.q0[2];
         DR[1][0] = bn.q0[2]*V.q0[3]+bn.q0[1]*V.q0[0]+bn.q0[0]*V.q0[1]+bn.q0[3]*V.q0[2];
         DR[1][1] = -2.* ( bn.q0[0]*V.q0[0]+bn.q0[2]*V.q0[2] );
         DR[1][2] = -bn.q0[0]*V.q0[3]-bn.q0[3]*V.q0[0]+bn.q0[2]*V.q0[1]+bn.q0[1]*V.q0[2];
