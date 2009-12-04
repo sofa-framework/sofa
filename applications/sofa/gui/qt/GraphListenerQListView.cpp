@@ -153,7 +153,11 @@ QPixmap* getPixmap(core::objectmodel::Base* obj)
             }
         for (int y=0 ; y < iconHeight ; y++)
             img->setPixel(2+iconWidth*nc-1,y,qRgba(0,0,0,255));
+#ifdef SOFA_QT4
+        pixmaps[flags] = new QPixmap(QPixmap::fromImage(*img));
+#else
         pixmaps[flags] = new QPixmap(*img);
+#endif
         delete img;
     }
     return pixmaps[flags];

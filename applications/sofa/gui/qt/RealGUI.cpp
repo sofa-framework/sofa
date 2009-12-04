@@ -573,7 +573,12 @@ void RealGUI::setPixmap(std::string pixmap_filename, QPushButton* b)
 {
     if ( sofa::helper::system::DataRepository.findFile ( pixmap_filename ) )
         pixmap_filename = sofa::helper::system::DataRepository.getFile ( pixmap_filename );
+
+#ifdef SOFA_QT4
+    b->setPixmap(QPixmap(QPixmap::fromImage(QImage(pixmap_filename.c_str()))));
+#else
     b->setPixmap(QPixmap(QImage(pixmap_filename.c_str())));
+#endif
 }
 
 RealGUI::~RealGUI()

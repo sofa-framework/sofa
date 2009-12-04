@@ -118,12 +118,18 @@ WindowVisitor::WindowVisitor()
         {
             img[OTHER]   ->setPixel(x,y,qRgba(0,0,255,255));
         }
-
+#ifdef SOFA_QT4
+    icons[NODE]    = new QPixmap(QPixmap::fromImage(*img[NODE]));
+    icons[COMMENT]    = new QPixmap(QPixmap::fromImage(*img[COMMENT]));
+    icons[COMPONENT]    = new QPixmap(QPixmap::fromImage(*img[COMPONENT]));
+    icons[OTHER]    = new QPixmap(QPixmap::fromImage(*img[OTHER]));
+#else
 
     icons[NODE]    = new QPixmap(*img[NODE]   );
     icons[COMMENT] = new QPixmap(*img[COMMENT]);
     icons[COMPONENT] = new QPixmap(*img[COMPONENT]);
     icons[OTHER]   = new QPixmap(*img[OTHER]  );
+#endif
 
 #ifdef SOFA_QT4
     statsWidget=new QWidget(splitterStats);
