@@ -52,7 +52,7 @@ namespace behavior
  *  between a pair of bodies using a given type of DOFs.
  */
 template<class TDataTypes1, class TDataTypes2>
-class SOFA_CORE_API MixedInteractionConstraint : public InteractionConstraint
+class  MixedInteractionConstraint : public InteractionConstraint
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE2(MixedInteractionConstraint,TDataTypes1,TDataTypes2), InteractionConstraint);
