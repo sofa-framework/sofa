@@ -70,6 +70,7 @@ protected:
 };
 
 
+
 class QInciseOperation : public QWidget, public InciseOperation
 {
     Q_OBJECT
@@ -98,6 +99,7 @@ protected:
 };
 
 
+
 class QFixOperation : public QWidget, public FixOperation
 {
     Q_OBJECT
@@ -112,6 +114,35 @@ public:
 protected:
     QLineEdit *value;
 };
+
+
+
+class QTopologyOperation : public QWidget, public TopologyOperation
+{
+    Q_OBJECT
+public:
+    QTopologyOperation();
+    double getScale() const;
+    int getTopologicalOperation() const;
+    bool getVolumicMesh() const;
+
+    void configure(PickHandler *picker, MOUSE_BUTTON b)
+    {
+        TopologyOperation::configure(picker, b);
+    }
+
+protected:
+
+    QComboBox *operationChoice;
+
+    QGroupBox *advancedOptions;
+    QRadioButton *meshType1;
+    QRadioButton *meshType2;
+
+    QSlider *scaleSlider;
+    QSpinBox *scaleValue;
+};
+
 
 
 class QInjectOperation : public QWidget, public InjectOperation

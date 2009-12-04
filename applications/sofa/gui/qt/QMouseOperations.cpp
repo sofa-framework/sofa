@@ -49,6 +49,7 @@ namespace gui
 
 namespace qt
 {
+//*******************************************************************************************
 QAttachOperation::QAttachOperation()
 {
     //Building the GUI for the Attach Operation
@@ -65,7 +66,10 @@ double QAttachOperation::getStiffness() const
     return atof(value->displayText().ascii());
 }
 
+//*******************************************************************************************
 
+
+//*******************************************************************************************
 QInciseOperation::QInciseOperation()
 {
     //Building the GUI for the Injection Operation
@@ -144,7 +148,10 @@ int QInciseOperation::getSnapingValue() const
     return snapingValue->value();
 }
 
+//*******************************************************************************************
 
+
+//*******************************************************************************************
 QFixOperation::QFixOperation()
 {
     //Building the GUI for the Fix Operation
@@ -161,6 +168,99 @@ double QFixOperation::getStiffness() const
     return atof(value->displayText().ascii());
 }
 
+//*******************************************************************************************
+
+
+//*******************************************************************************************
+QTopologyOperation::QTopologyOperation()
+{
+    //Building the GUI for Topological Operation
+
+    QVBoxLayout *layout=new QVBoxLayout(this);
+
+    // First part: selection of topological operation:
+    QHBoxLayout *HLayout1 = new QHBoxLayout();
+    QLabel *label1=new QLabel(QString("Topological operation: "), this);
+    operationChoice = new QComboBox(this);
+    operationChoice->setObjectName(QString::fromUtf8("comboBox"));
+    operationChoice->insertItems(0, QStringList()
+            << QApplication::translate("Dialog", "Remove one element", 0, QApplication::UnicodeUTF8)
+            << QApplication::translate("Dialog", "Remove a zone of elements", 0, QApplication::UnicodeUTF8));
+
+    HLayout1->addWidget (label1);
+    HLayout1->addWidget (operationChoice);
+
+
+    // Second part: advanced settings
+    advancedOptions = new QGroupBox(tr("Advanced settings"),this);
+    QVBoxLayout *VLayout1 = new QVBoxLayout(advancedOptions);
+
+    // First setting: type of mesh, either surface or volume
+    QHBoxLayout *HLayout2 = new QHBoxLayout();
+
+    QLabel *label2 = new QLabel(QString("Remove area type: "), this);
+    meshType1 = new QRadioButton(tr("&Surface"), advancedOptions);
+    meshType2 = new QRadioButton(tr("&Volume"), advancedOptions);
+    meshType1->setChecked (true);
+
+    HLayout2->addWidget (label2);
+    HLayout2->addWidget (meshType1);
+    HLayout2->addWidget (meshType2);
+    VLayout1->addLayout (HLayout2);
+
+    // Second setting: selector scale
+    QHBoxLayout *HLayout3 = new QHBoxLayout();
+
+    QLabel *label3=new QLabel(QString("Selector scale: "), this);
+    scaleSlider = new QSlider (Qt::Horizontal, this);
+    scaleValue = new QSpinBox(0,100,1,this);
+    scaleValue->setEnabled(true);
+
+    HLayout3->addWidget (label3);
+    HLayout3->addWidget (scaleSlider);
+    HLayout3->addWidget (scaleValue);
+    VLayout1->addLayout (HLayout3);
+
+
+    // Creating UI
+    layout->addLayout (HLayout1);
+    layout->addWidget(advancedOptions);
+
+    connect(scaleSlider,SIGNAL(valueChanged(int)), scaleValue, SLOT(setValue(int)));
+    connect(scaleValue,SIGNAL(valueChanged(int)), scaleSlider, SLOT(setValue(int)));
+
+    scaleValue->setValue(0);
+    //	operationChoice->setCurrentIndex ( 0 ); ?
+
+    /*if (operationChoice->currentIndex() == 0)
+      advancedOptions->setEnabled (false);
+    else
+    advancedOptions->setEnabled (true);*/
+}
+
+
+double QTopologyOperation::getScale() const
+{
+    return scaleValue->value();
+}
+
+int QTopologyOperation::getTopologicalOperation() const
+{
+    return operationChoice->currentIndex();
+}
+
+bool QTopologyOperation::getVolumicMesh() const
+{
+    if (meshType2->isChecked())
+        return 1;
+    else
+        return 0;
+}
+
+//*******************************************************************************************
+
+
+//*******************************************************************************************
 QInjectOperation::QInjectOperation()
 {
     //Building the GUI for the Injection Operation
@@ -188,6 +288,10 @@ std::string QInjectOperation::getStateTag() const
     return (std::string)(tag->displayText()).ascii();
 }
 
-}
-}
-}
+//*******************************************************************************************
+
+} // namespace sofa
+} // namespace gui
+} // namespace qt
+
+

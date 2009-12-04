@@ -355,7 +355,7 @@ SimpleGUI::SimpleGUI()
     RegisterOperation("Attach").add< AttachOperation >();
     RegisterOperation("Fix").add< FixOperation >();
     RegisterOperation("Incise").add< InciseOperation >();
-    RegisterOperation("Remove").add< RemoveOperation >();
+    RegisterOperation("Remove").add< TopologyOperation >();
 
     //Add to each button of the mouse an operation
     pick.changeOperation(LEFT,   "Attach");
