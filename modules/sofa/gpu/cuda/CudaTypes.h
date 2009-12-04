@@ -587,6 +587,14 @@ public:
         return sizeX==0 || sizeY==0;
     }
 
+    void memsetHost(int v = 0)
+    {
+        memset(hostPointer,v,sizeY*sizeX*sizeof(T));
+        hostIsValid = true;
+        deviceIsValid = false;
+    }
+
+
     void fastResize(size_type x,size_type y,size_type WARP_SIZE)
     {
         size_type s = x*y;
