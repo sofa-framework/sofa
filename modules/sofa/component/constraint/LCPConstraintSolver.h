@@ -51,7 +51,7 @@ using namespace sofa::component::linearsolver;
 using namespace helper::system::thread;
 
 
-class  LCP
+class   LCP
 {
 public:
     int maxConst;
@@ -219,7 +219,7 @@ private:
 };
 
 
-class LCPConstraintSolver : public sofa::core::componentmodel::behavior::ConstraintSolver
+class SOFA_COMPONENT_CONSTRAINT_API LCPConstraintSolver : public sofa::core::componentmodel::behavior::ConstraintSolver
 {
     typedef std::vector<core::componentmodel::behavior::BaseConstraintCorrection*> list_cc;
     typedef std::vector<list_cc> VecListcc;

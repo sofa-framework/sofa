@@ -465,7 +465,7 @@ void LMConstraintSolver::buildLMatrices( ConstOrder Order,
 
 void LMConstraintSolver::buildInverseMassMatrices( const SetDof &setDofs, DofToMatrix& invMassMatrices)
 {
-    for (SetDof::iterator itDofs=setDofs.begin(); itDofs!=setDofs.end(); itDofs++)
+    for (SetDof::const_iterator itDofs=setDofs.begin(); itDofs!=setDofs.end(); itDofs++)
     {
         const sofa::core::componentmodel::behavior::BaseMechanicalState* dofs=*itDofs;
         const unsigned int dimensionDofs=dofs->getDerivDimension();
