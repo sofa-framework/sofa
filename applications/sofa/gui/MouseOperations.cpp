@@ -64,8 +64,10 @@ AttachOperation::AttachOperation():stiffness(1000.0)
 //*******************************************************************************************
 void AttachOperation::start()
 {
+    std::cout <<"AttachOperation::start()"<< std::endl;
     if (!performer)
     {
+        std::cout <<"AttachOperation::performer()"<< std::endl;
         //Creation
         performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("AttachBody", pickHandle->getInteraction()->mouseInteractor);
         pickHandle->getInteraction()->mouseInteractor->addInteractionPerformer(performer);
@@ -118,18 +120,54 @@ void FixOperation::end()
 
 
 //*******************************************************************************************
-void RemoveOperation::start()
+void TopologyOperation::start()
 {
-    performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("RemovePrimitive", pickHandle->getInteraction()->mouseInteractor);
-    pickHandle->getInteraction()->mouseInteractor->addInteractionPerformer(performer);
+    //std::cout <<"TopologyOperation::start()"<< std::endl;
+
+    if (!performer)
+    {
+        if (getTopologicalOperation() == 0)  // Remove one element
+        {
+            performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("RemovePrimitive", pickHandle->getInteraction()->mouseInteractor);
+            pickHandle->getInteraction()->mouseInteractor->addInteractionPerformer(performer);
+
+            performer->start();
+        }
+        else
+        {
+            /*
+              std::cout <<"TopologyOperation::performer()"<< std::endl;
+              performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("RemovePrimitive", pickHandle->getInteraction()->mouseInteractor);
+              pickHandle->getInteraction()->mouseInteractor->addInteractionPerformer(performer);
+
+              component::collision::RemovePrimitivePerformerConfiguration *performerConfiguration=dynamic_cast<component::collision::RemovePrimitivePerformerConfiguration*>(performer);
+
+              performerConfiguration->setTopologicalOperation( getTopologicalOperation() );
+              performerConfiguration->setVolumicMesh( getVolumicMesh() );
+              performerConfiguration->setScale( getScale() );
+
+
+              performer->start();*/
+        }
+    }
 }
 
-void RemoveOperation::execution()
+void TopologyOperation::execution()
 {
 //       performer->execute();
 }
 
-void RemoveOperation::end()
+void TopologyOperation::end()
+{
+    if (getTopologicalOperation() == 0)
+    {
+        pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
+        delete performer; performer=0;
+    }
+
+}
+
+void TopologyOperation::endOperation()
 {
     pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
     delete performer; performer=0;
@@ -148,7 +186,7 @@ void InciseOperation::start()
         {
             performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("InciseAlongPath", pickHandle->getInteraction()->mouseInteractor);
 
-            component::collision::InciseAlongPathPerformerconfiguration *performerConfiguration=dynamic_cast<component::collision::InciseAlongPathPerformerconfiguration*>(performer);
+            component::collision::InciseAlongPathPerformerConfiguration *performerConfiguration=dynamic_cast<component::collision::InciseAlongPathPerformerConfiguration*>(performer);
             performerConfiguration->setIncisionMethod(getIncisionMethod());
             performerConfiguration->setSnapingBorderValue(getSnapingBorderValue());
             performerConfiguration->setSnapingValue(getSnapingValue());
@@ -172,7 +210,7 @@ void InciseOperation::start()
 
         performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("InciseAlongPath", pickHandle->getInteraction()->mouseInteractor);
 
-        component::collision::InciseAlongPathPerformerconfiguration *performerConfiguration=dynamic_cast<component::collision::InciseAlongPathPerformerconfiguration*>(performer);
+        component::collision::InciseAlongPathPerformerConfiguration *performerConfiguration=dynamic_cast<component::collision::InciseAlongPathPerformerConfiguration*>(performer);
         performerConfiguration->setIncisionMethod(getIncisionMethod());
         performerConfiguration->setSnapingBorderValue(getSnapingBorderValue());
         performerConfiguration->setSnapingValue(getSnapingValue());
