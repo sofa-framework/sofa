@@ -595,38 +595,45 @@ void BeamFEMForceField<DataTypes>::draw()
 
     const VecCoord& x = *this->mstate->getX();
 
-    //sout << 	_indexedElements->size() << " edges, " << x.size() << " points."<<sendl;
-
-    typename VecElement::const_iterator it;
-    int i;
-
     std::vector< Vector3 > points[3];
-    for(it = _indexedElements->begin(), i = 0 ; it != _indexedElements->end() ; ++it, ++i)
-    {
-        Index a = (*it)[0];
-        Index b = (*it)[1];
-        //sout << "edge " << i << " : "<<a<<" "<<b<<" = "<<x[a].getCenter()<<"  -  "<<x[b].getCenter()<<" = "<<beamsData[i]._L<<sendl;
-        Vec3d p; p = (x[a].getCenter()+x[b].getCenter())*0.5;
-        Vec3d beamVec;
-        beamVec[0]=beamsData.getValue()[i]._L*0.5; beamVec[1] = 0.0; beamVec[2] = 0.0;
 
-        const Quat& q = beamQuat(i);
-        // axis X
-        points[0].push_back(p - q.rotate(beamVec) );
-        points[0].push_back(p + q.rotate(beamVec) );
-        // axis Y
-        beamVec[0]=0.0; beamVec[1] = beamsData.getValue()[i]._L*0.5;
-        points[1].push_back(p );
-        points[1].push_back(p + q.rotate(beamVec) );
-        // axis Z
-        beamVec[1]=0.0; beamVec[2] = beamsData.getValue()[i]._L*0.5;
-        points[2].push_back(p);
-        points[2].push_back(p + q.rotate(beamVec) );
+    if (_partial_list_segment)
+    {
+        for (unsigned int j=0; j<_list_segment.getValue().size(); j++)
+            drawElement(_list_segment.getValue()[j], points, x);
+    }
+    else
+    {
+        for (unsigned int i=0; i<_indexedElements->size(); ++i)
+            drawElement(i, points, x);
     }
     simulation::getSimulation()->DrawUtility.drawLines(points[0], 1, Vec<4,float>(1,0,0,1));
     simulation::getSimulation()->DrawUtility.drawLines(points[1], 1, Vec<4,float>(0,1,0,1));
     simulation::getSimulation()->DrawUtility.drawLines(points[2], 1, Vec<4,float>(0,0,1,1));
+}
 
+template<class DataTypes>
+void BeamFEMForceField<DataTypes>::drawElement(int i, std::vector< Vector3 >* points, const VecCoord& x)
+{
+    Index a = (*_indexedElements)[i][0];
+    Index b = (*_indexedElements)[i][1];
+    //sout << "edge " << i << " : "<<a<<" "<<b<<" = "<<x[a].getCenter()<<"  -  "<<x[b].getCenter()<<" = "<<beamsData[i]._L<<sendl;
+    Vec3d p; p = (x[a].getCenter()+x[b].getCenter())*0.5;
+    Vec3d beamVec;
+    beamVec[0]=beamsData.getValue()[i]._L*0.5; beamVec[1] = 0.0; beamVec[2] = 0.0;
+
+    const Quat& q = beamQuat(i);
+    // axis X
+    points[0].push_back(p - q.rotate(beamVec) );
+    points[0].push_back(p + q.rotate(beamVec) );
+    // axis Y
+    beamVec[0]=0.0; beamVec[1] = beamsData.getValue()[i]._r*0.5;
+    points[1].push_back(p );
+    points[1].push_back(p + q.rotate(beamVec) );
+    // axis Z
+    beamVec[1]=0.0; beamVec[2] = beamsData.getValue()[i]._r*0.5;
+    points[2].push_back(p);
+    points[2].push_back(p + q.rotate(beamVec) );
 }
 
 template<class DataTypes>

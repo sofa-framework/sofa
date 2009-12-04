@@ -138,7 +138,7 @@ public:
     /**
      * @brief
      */
-    virtual void modifyTopology(void);
+    virtual bool modifyTopology(void);
 
     /**
      * @brief
