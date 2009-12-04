@@ -35,7 +35,7 @@ namespace gui
 {
 
 BatchGUI::BatchGUI()
-    : groot(NULL), nbIter(500)
+    : groot(NULL), nbIter(1000)
 {
 }
 
@@ -47,8 +47,17 @@ int BatchGUI::mainLoop()
 {
     if (groot)
     {
-        sofa::simulation::Node::ctime_t tSpent = sofa::helper::system::thread::CTime::getRefTime();
+
+        sofa::simulation::getSimulation()->animate(groot);
+        //As no visualization is done by the Batch GUI, these two lines are not necessary.
+        sofa::simulation::getSimulation()->updateVisual(groot);
+        sofa::simulation::getSimulation()->updateVisual(simulation::getSimulation()->getVisualRoot());
+
         std::cout << "Computing "<<nbIter<<" iterations." << std::endl;
+        sofa::simulation::Node::ctime_t rtfreq = sofa::helper::system::thread::CTime::getRefTicksPerSec();
+        sofa::simulation::Node::ctime_t tfreq = sofa::helper::system::thread::CTime::getTicksPerSec();
+        sofa::simulation::Node::ctime_t rt = sofa::helper::system::thread::CTime::getRefTime();
+        sofa::simulation::Node::ctime_t t = sofa::helper::system::thread::CTime::getFastTime();
         for (int i=0; i<nbIter; i++)
         {
             sofa::simulation::getSimulation()->animate(groot);
@@ -56,7 +65,11 @@ int BatchGUI::mainLoop()
             sofa::simulation::getSimulation()->updateVisual(groot);
             sofa::simulation::getSimulation()->updateVisual(simulation::getSimulation()->getVisualRoot());
         }
-        std::cout << nbIter << " iterations done in "<< 1000.0*(sofa::helper::system::thread::CTime::getRefTime()-tSpent)/((double)sofa::helper::system::thread::CTime::getTicksPerSec()) << std::endl;
+        t = sofa::helper::system::thread::CTime::getFastTime()-t;
+        rt = sofa::helper::system::thread::CTime::getRefTime()-rt;
+
+        std::cout << nbIter << " iterations done in "<< ((double)t)/((double)tfreq) << " s ( " << (((double)tfreq)*nbIter)/((double)t) << " FPS)." << std::endl;
+        std::cout << nbIter << " iterations done in "<< ((double)rt)/((double)rtfreq) << " s ( " << (((double)rtfreq)*nbIter)/((double)rt) << " FPS)." << std::endl;
     }
     return 0;
 }

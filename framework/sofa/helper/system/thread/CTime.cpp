@@ -136,12 +136,24 @@ ctime_t CTime::getFastTime()
     return (((ctime_t)t_u)<<32UL) | t_l;
 }
 #elif defined(__GNUC__)
+#if defined(__amd64__)
+//#warning 64-bits RDTSC
+ctime_t CTime::getFastTime()
+{
+    unsigned t_u, t_l;
+    __asm__ volatile ("rdtsc" : "=a" (t_l), "=d" (t_u) );
+    return (((ctime_t)t_u)<<32UL) | t_l;
+}
+#else
+//#warning 32-bits RDTSC
 ctime_t CTime::getFastTime()
 {
     ctime_t t;
     __asm__ volatile ("rdtsc" : "=A" (t) );
+
     return t;
 }
+#endif
 #else
 #error RDTSC not supported on this platform
 #endif
