@@ -210,6 +210,8 @@ public:
 
 protected:
 
+    void drawElement(int i, std::vector< Vector3 >* points, const VecCoord& x);
+
     //void computeStrainDisplacement( StrainDisplacement &J, Coord a, Coord b, Coord c, Coord d );
     Real peudo_determinant_for_coef ( const Mat<2, 3, Real>&  M );
 

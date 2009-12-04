@@ -13,6 +13,7 @@
 #include <sofa/component/component.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
 
 #include <fstream>
 
@@ -32,6 +33,7 @@ public:
 
 private:
     sofa::core::componentmodel::topology::BaseMeshTopology* topology;
+    sofa::core::componentmodel::behavior::BaseMechanicalState* mstate;
 
     std::ofstream* outfile;
 

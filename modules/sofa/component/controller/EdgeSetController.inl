@@ -348,12 +348,17 @@ void EdgeSetController<DataTypes>::applyController()
 
             }
         }
-
-        sofa::simulation::Node *node = static_cast<sofa::simulation::Node*> (this->getContext());
-        sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor mechaVisitor; mechaVisitor.execute(node);
-        sofa::simulation::UpdateMappingVisitor updateVisitor; updateVisitor.execute(node);
-
-        modifyTopology();
+        {
+            sofa::simulation::Node *node = static_cast<sofa::simulation::Node*> (this->getContext());
+            sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor mechaVisitor; mechaVisitor.execute(node);
+            sofa::simulation::UpdateMappingVisitor updateVisitor; updateVisitor.execute(node);
+        }
+        if (modifyTopology())
+        {
+            sofa::simulation::Node *node = static_cast<sofa::simulation::Node*> (this->getContext());
+            sofa::simulation::MechanicalPropagatePositionAndVelocityVisitor mechaVisitor; mechaVisitor.execute(node);
+            sofa::simulation::UpdateMappingVisitor updateVisitor; updateVisitor.execute(node);
+        }
     }
     //serr<<"applyController ended"<<sendl;
 }
@@ -361,10 +366,10 @@ void EdgeSetController<DataTypes>::applyController()
 
 
 template <class DataTypes>
-void EdgeSetController<DataTypes>::modifyTopology(void)
+bool EdgeSetController<DataTypes>::modifyTopology(void)
 {
     assert(edgeGeo != 0);
-
+    bool changed = false;
     int startId = startingIndex.getValue();
     if (startId < 0) startId += this->mState->getSize();
     if (startId < 0) startId = 0;
@@ -433,6 +438,7 @@ void EdgeSetController<DataTypes>::modifyTopology(void)
                     inverse_permutations[permutations[i]] = i;
 
                 edgeMod->renumberPoints((const sofa::helper::vector<unsigned int> &) inverse_permutations, (const sofa::helper::vector<unsigned int> &) permutations);
+                changed = true;
 
                 //startingIndex.setValue(startId+1);
             }
@@ -475,6 +481,7 @@ void EdgeSetController<DataTypes>::modifyTopology(void)
                         inverse_permutations[permutations[i]] = i;
 
                     edgeMod->renumberPoints((const sofa::helper::vector<unsigned int> &) permutations, (const sofa::helper::vector<unsigned int> &) inverse_permutations);
+                    changed = true;
                 }
             }
         }
@@ -527,6 +534,7 @@ void EdgeSetController<DataTypes>::modifyTopology(void)
                     inverse_permutations[permutations[i]] = i;
 
                 edgeMod->renumberPoints((const sofa::helper::vector<unsigned int> &) inverse_permutations, (const sofa::helper::vector<unsigned int> &) permutations);
+                changed = true;
 
                 //if(startId > 0) startingIndex.setValue(startId-1);
             }
@@ -570,10 +578,12 @@ void EdgeSetController<DataTypes>::modifyTopology(void)
                         inverse_permutations[permutations[i]] = i;
 
                     edgeMod->renumberPoints((const sofa::helper::vector<unsigned int> &) permutations, (const sofa::helper::vector<unsigned int> &) inverse_permutations);
+                    changed = true;
                 }
             }
         }
     }
+    return changed;
 }
 
 

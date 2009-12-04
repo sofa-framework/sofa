@@ -56,6 +56,7 @@ void VTKExporter::init()
 {
     sofa::core::objectmodel::BaseContext* context = this->getContext();
     context->get(topology);
+    context->get(mstate);
 
     if (!topology)
     {
@@ -341,10 +342,20 @@ void VTKExporter::writeVTKSimple()
     *outfile << "DATASET " << "UNSTRUCTURED_GRID" << std::endl;
     *outfile << "POINTS " << topology->getNbPoints() << " float" << std::endl;
     //write Points
-    for (int i=0 ; i<topology->getNbPoints() ; i++)
+    if (mstate && mstate->getSize() == topology->getNbPoints())
     {
-        *outfile << topology->getPX(i) << " " << topology->getPY(i) << " " << topology->getPZ(i) << std::endl;
+        for (int i=0 ; i<mstate->getSize() ; i++)
+        {
+            *outfile << mstate->getPX(i) << " " << mstate->getPY(i) << " " << mstate->getPZ(i) << std::endl;
+        }
+    }
+    else
+    {
+        for (int i=0 ; i<topology->getNbPoints() ; i++)
+        {
+            *outfile << topology->getPX(i) << " " << topology->getPY(i) << " " << topology->getPZ(i) << std::endl;
 //		std::cout << topology->getPX(i) << " " << topology->getPY(i) << " " << topology->getPZ(i) << std::endl;
+        }
     }
 
     *outfile << std::endl;
@@ -503,8 +514,16 @@ void VTKExporter::writeVTKXML()
     //write points
     *outfile << "      <Points>" << std::endl;
     *outfile << "        <DataArray type=\"Float32\" NumberOfComponents=\"3\" Format=\"ascii\">" << std::endl;
-    for (int i = 0; i < topology->getNbPoints(); i++)
-        *outfile << "          " << topology->getPX(i) << " " << topology->getPY(i) << " " << topology->getPZ(i) << std::endl;
+    if (mstate && mstate->getSize() == topology->getNbPoints())
+    {
+        for (int i = 0; i < mstate->getSize(); i++)
+            *outfile << "          " << mstate->getPX(i) << " " << mstate->getPY(i) << " " << mstate->getPZ(i) << std::endl;
+    }
+    else
+    {
+        for (int i = 0; i < topology->getNbPoints(); i++)
+            *outfile << "          " << topology->getPX(i) << " " << topology->getPY(i) << " " << topology->getPZ(i) << std::endl;
+    }
     *outfile << "        </DataArray>" << std::endl;
     *outfile << "      </Points>" << std::endl;
     //write cells

@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_MAPPING_SUBSETMAPPING_INL
 
 #include "SubsetMapping.h"
+#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 
 namespace sofa
 {
@@ -72,6 +73,17 @@ int SubsetMapping<BaseMapping>::addPoint(int index)
     return i;
 }
 
+// Handle topological changes
+template <class BaseMapping>
+void SubsetMapping<BaseMapping>::handleTopologyChange(core::componentmodel::topology::Topology* t)
+{
+    core::componentmodel::topology::BaseMeshTopology* topoFrom = this->fromModel->getContext()->getMeshTopology();
+    if (t != topoFrom) return;
+    std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itBegin=topoFrom->firstChange();
+    std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itEnd=topoFrom->lastChange();
+    f_indices.beginEdit()->handleTopologyEvents(itBegin,itEnd,this->fromModel->getX()->size());
+    f_indices.endEdit();
+}
 
 template <class BaseMapping>
 void SubsetMapping<BaseMapping>::init()
@@ -131,7 +143,8 @@ void SubsetMapping<BaseMapping>::init()
             if ((unsigned)indices[i] >= inSize)
             {
                 serr << "ERROR(SubsetMapping): incorrect index "<<indices[i]<<" (input size "<<inSize<<")"<<sendl;
-                indices.erase(indices.begin()+i);
+                //indices.getArray().erase(indices.begin()+i);
+                helper::vector<unsigned int> a; indices.swap(a); a.erase(a.begin()+i); indices.swap(a);
                 --i;
             }
         }

@@ -28,6 +28,7 @@
 #include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/helper/vector.h>
+#include <sofa/component/topology/PointSubset.h>
 
 namespace sofa
 {
@@ -71,8 +72,10 @@ public:
     typedef typename InCoord::value_type Real;
 
     /// Correspondance array
-    typedef helper::vector<unsigned int> IndexArray;
+    //typedef helper::vector<unsigned int> IndexArray;
+    typedef topology::PointSubset IndexArray;
     Data < IndexArray > f_indices;
+
     Data < int > f_first;
     Data < int > f_last;
     Data < Real > f_radius;
@@ -86,6 +89,9 @@ public:
     int addPoint(int index);
 
     void init();
+
+    // handle topology changes depending on the topology
+    void handleTopologyChange(core::componentmodel::topology::Topology* t);
 
     virtual ~SubsetMapping();
 
