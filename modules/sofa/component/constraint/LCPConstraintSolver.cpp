@@ -87,6 +87,12 @@ void LCPConstraintSolver::prepareStates(double /*dt*/, VecId id)
     timeTotal=0.0;
     timeScale = 1000.0 / (double)CTime::getTicksPerSec();
 
+    for (unsigned int i=0; i<constraintCorrections.size(); i++)
+    {
+        core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
+        cc->resetContactForce();
+    }
+
     if ( displayTime.getValue() )
     {
         time = (double) timer.getTime();
@@ -98,12 +104,6 @@ void LCPConstraintSolver::buildSystem(double /*dt*/, VecId)
 {
     if (!isActive) return;
     //sout<<"constraintCorrections is called"<<sendl;
-
-    for (unsigned int i=0; i<constraintCorrections.size(); i++)
-    {
-        core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
-        cc->resetContactForce();
-    }
 
     if(build_lcp.getValue())
     {
