@@ -291,7 +291,7 @@ void UniformMassCuda3d_addForce(unsigned int size, const double *mg, void* f)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    UniformMassCuda3t_addForce_kernel<double><<< grid, threads, >>>(size, CudaVec3<double>::make(mg[0],mg[1],mg[2]), (double*)f);
+    UniformMassCuda3t_addForce_kernel<double><<< grid, threads >>>(size, CudaVec3<double>::make(mg[0],mg[1],mg[2]), (double*)f);
 }
 
 void UniformMassCuda3d1_addForce(unsigned int size, const double *mg, void* f)
