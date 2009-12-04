@@ -172,6 +172,12 @@ SofaModeler::SofaModeler()
     QGridLayout* GraphLayout = new QGridLayout(GraphSupport, 1,1,5,2,"GraphLayout");
     sceneTab = new QTabWidget(GraphSupport);
     GraphLayout->addWidget(sceneTab,0,0);
+
+#ifdef SOFA_QT4
+    sceneTab->setTabsClosable(true);
+    connect( sceneTab, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
+#endif
+
     connect( sceneTab, SIGNAL(currentChanged( QWidget*)), this, SLOT( changeCurrentScene( QWidget*)));
 
     GraphSupport->resize(200,550);
@@ -395,8 +401,17 @@ void SofaModeler::createTab()
 void SofaModeler::closeTab()
 {
     if (sceneTab->count() == 0) return;
+    closeTab(tabGraph);
+}
 
-    QWidget* curTab = tabGraph;
+void SofaModeler::closeTab(int i)
+{
+    if (i<0) return;
+    closeTab(sceneTab->page(i));
+}
+
+void SofaModeler::closeTab(QWidget *curTab)
+{
     //If the scene has been launch in Sofa
     if (mapSofa.size() &&
         mapSofa.find(curTab) != mapSofa.end())
@@ -422,7 +437,7 @@ void SofaModeler::closeTab()
     mapWindow.erase(it->first);
 
     //Closing the Modify Dialog opened
-    GraphModeler *mod = graph;
+    GraphModeler *mod = mapGraph[curTab];
     if (dynamic_cast< GraphModeler* >(mod))
     {
         mod->closeDialogs();
