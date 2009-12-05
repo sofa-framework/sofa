@@ -75,6 +75,7 @@ RigidDistanceGridCollisionModel::RigidDistanceGridCollisionModel()
     , nz( initData( &nz, 64, "nz", "number of values on Z axis") )
     , dumpfilename( initData( &dumpfilename, "dumpfilename","write distance grid to specified file"))
     , usePoints( initData( &usePoints, true, "usePoints", "use mesh vertices for collision detection"))
+    , flipNormals( initData( &flipNormals, false, "flipNormals", "reverse surface direction, i.e. points are considered in collision if they move outside of the object instead of inside"))
 {
     rigid = NULL;
     addAlias(&fileRigidDistanceGrid,"filename");
@@ -163,6 +164,8 @@ void RigidDistanceGridCollisionModel::computeBoundingTree(int maxDepth)
 
     updateGrid();
 
+    const bool flipped = isFlipped();
+
     cubeModel->resize(size);
     for (int i=0; i<size; i++)
     {
@@ -178,21 +181,26 @@ void RigidDistanceGridCollisionModel::computeBoundingTree(int maxDepth)
         if (elems[i].isTransformed)
         {
             //std::cout << "Grid "<<i<<" transformation: <"<<elems[i].rotation<<"> x + <"<<elems[i].translation<<">"<<std::endl;
-            Vector3 corner = elems[i].translation + elems[i].rotation * elems[i].grid->getBBCorner(0);
-            emin = corner;
-            emax = emin;
-            for (int j=1; j<8; j++)
+            for (int j=0; j<8; j++)
             {
-                corner = elems[i].translation + elems[i].rotation * elems[i].grid->getBBCorner(j);
-                for(int c=0; c<3; c++)
-                    if (corner[c] < emin[c]) emin[c] = corner[c];
-                    else if (corner[c] > emax[c]) emax[c] = corner[c];
+                Vector3 corner = elems[i].translation + elems[i].rotation * (flipped ? elems[i].grid->getCorner(j) : elems[i].grid->getBBCorner(j));
+                if (j == 0)
+                {
+                    emin = corner;
+                    emax = emin;
+                }
+                else
+                {
+                    for(int c=0; c<3; c++)
+                        if (corner[c] < emin[c]) emin[c] = corner[c];
+                        else if (corner[c] > emax[c]) emax[c] = corner[c];
+                }
             }
         }
         else
         {
-            emin = elems[i].grid->getBBMin();
-            emax = elems[i].grid->getBBMax();
+            emin = flipped ? elems[i].grid->getPMin() : elems[i].grid->getBBMin();
+            emax = flipped ? elems[i].grid->getPMax() : elems[i].grid->getBBMax();
         }
         cubeModel->setParentOf(i, emin, emax); // define the bounding box of the current element
         //std::cout << "Grid "<<i<<" within  <"<<emin<<">-<"<<emax<<">"<<std::endl;
@@ -229,6 +237,8 @@ void RigidDistanceGridCollisionModel::draw()
 
 void RigidDistanceGridCollisionModel::draw(int index)
 {
+    const bool flipped = isFlipped();
+
     if (elems[index].isTransformed)
     {
         glPushMatrix();
@@ -320,6 +330,7 @@ void RigidDistanceGridCollisionModel::draw(int index)
                         int x = (ix*(grid->getNx()-1))/(dnx-1);
                         DistanceGrid::Coord p = grid->coord(x,y,z);
                         SReal d = (*grid)[grid->index(x,y,z)];
+                        if (flipped) d = -d;
                         if (d < mindist || d > maxdist) continue;
                         d /= maxdist;
                         if (d<0)
@@ -349,11 +360,13 @@ void RigidDistanceGridCollisionModel::draw(int index)
             DistanceGrid::Coord p = grid->meshPts[i];
             glColor3d(1, 1 ,1);
             DistanceGrid::Coord grad = grid->grad(p);
+            if (flipped) grad = -grad;
             grad.normalize();
             for (int j = -2; j <= 2; j++)
             {
                 DistanceGrid::Coord p2 = p + grad * (j*maxdist/2);
                 SReal d = grid->eval(p2);
+                if (flipped) d = -d;
                 //if (rabs(d) > maxdist) continue;
                 d /= maxdist;
                 if (d<0)

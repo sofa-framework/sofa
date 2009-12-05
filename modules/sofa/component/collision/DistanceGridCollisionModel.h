@@ -67,6 +67,7 @@ public:
     bool isTransformed();
     const Matrix3& getRotation();
     const Vector3& getTranslation();
+    bool isFlipped();
 
     void setGrid(DistanceGrid* surf);
 
@@ -131,6 +132,7 @@ public:
     typedef RigidDistanceGridCollisionElement Element;
 
     Data< bool > usePoints;
+    Data< bool > flipNormals;
 
     RigidDistanceGridCollisionModel();
 
@@ -145,17 +147,22 @@ public:
     {
         return elems[index].grid;
     }
-    bool isTransformed(int index=0)
+    bool isTransformed(int index=0) const
     {
         return elems[index].isTransformed;
     }
-    const Matrix3& getRotation(int index=0)
+    const Matrix3& getRotation(int index=0) const
     {
         return elems[index].rotation;
     }
-    const Vector3& getTranslation(int index=0)
+    const Vector3& getTranslation(int index=0) const
     {
         return elems[index].translation;
+    }
+
+    bool isFlipped() const
+    {
+        return flipNormals.getValue();
     }
 
     void setGrid(DistanceGrid* surf, int index=0);
@@ -164,15 +171,15 @@ public:
     {
         return elems[index].prevGrid;
     }
-    const Matrix3& getPrevRotation(int index=0)
+    const Matrix3& getPrevRotation(int index=0) const
     {
         return elems[index].prevRotation;
     }
-    const Vector3& getPrevTranslation(int index=0)
+    const Vector3& getPrevTranslation(int index=0) const
     {
         return elems[index].prevTranslation;
     }
-    double getPrevDt(int index=0)
+    double getPrevDt(int index=0) const
     {
         return elems[index].prevDt;
     }
@@ -212,6 +219,7 @@ inline void RigidDistanceGridCollisionElement::setGrid(DistanceGrid* surf) { ret
 inline bool RigidDistanceGridCollisionElement::isTransformed() { return model->isTransformed(index); }
 inline const Matrix3& RigidDistanceGridCollisionElement::getRotation() { return model->getRotation(index); }
 inline const Vector3& RigidDistanceGridCollisionElement::getTranslation() { return model->getTranslation(index); }
+inline bool RigidDistanceGridCollisionElement::isFlipped() { return model->isFlipped(); }
 
 inline DistanceGrid* RigidDistanceGridCollisionElement::getPrevGrid() { return model->getPrevGrid(index); }
 inline const Matrix3& RigidDistanceGridCollisionElement::getPrevRotation() { return model->getPrevRotation(index); }
