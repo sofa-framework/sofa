@@ -41,17 +41,57 @@ namespace component
 
 namespace collision
 {
-class SOFA_COMPONENT_COLLISION_API RemovePrimitivePerformer: public InteractionPerformer
+
+class RemovePrimitivePerformerConfiguration
 {
 public:
-    RemovePrimitivePerformer(BaseMouseInteractor *i):InteractionPerformer(i) {};
+    void setTopologicalOperation (int m) {topologicalOperation = m;}
+    void setVolumicMesh (bool v) {volumicMesh = v;}
+    void setScale (double s) {selectorScale = s;}
 
-    void start() {};
+protected:
+    int topologicalOperation;
+    bool volumicMesh;
+    double selectorScale;
+
+};
+
+template <class DataTypes>
+class SOFA_COMPONENT_COLLISION_API RemovePrimitivePerformer: public       TInteractionPerformer<DataTypes>, public RemovePrimitivePerformerConfiguration
+{
+    typedef typename DataTypes::Coord              Coord;
+    typedef typename DataTypes::VecCoord           VecCoord;
+    typedef sofa::helper::vector <unsigned int>    VecIds;
+
+
+public:
+    RemovePrimitivePerformer(BaseMouseInteractor *i);
+    ~RemovePrimitivePerformer() {}
+
+
+    void start();
     void execute();
-    void draw() {};
+    void end();
+    void draw();
+
+protected:
+
+    VecIds getNeighboorElements (VecIds& elementsToTest);
+
+    VecIds getElementInZone (VecIds& elementsToTest);
+
 
 protected:
     sofa::component::collision::TopologicalChangeManager topologyChangeManager;
+
+    core::componentmodel::behavior::MechanicalState<DataTypes>* mstateCollision;
+    BodyPicked picked;
+    bool firstClick;
+
+    VecIds selectedElem;
+    VecIds rejectedElem;
+    VecIds testElem;
+    VecIds tmp_testElem;//?
 };
 }
 }

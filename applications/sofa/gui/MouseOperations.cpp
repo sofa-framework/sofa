@@ -64,10 +64,8 @@ AttachOperation::AttachOperation():stiffness(1000.0)
 //*******************************************************************************************
 void AttachOperation::start()
 {
-    std::cout <<"AttachOperation::start()"<< std::endl;
     if (!performer)
     {
-        std::cout <<"AttachOperation::performer()"<< std::endl;
         //Creation
         performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("AttachBody", pickHandle->getInteraction()->mouseInteractor);
         pickHandle->getInteraction()->mouseInteractor->addInteractionPerformer(performer);
@@ -124,30 +122,33 @@ void TopologyOperation::start()
 {
     //std::cout <<"TopologyOperation::start()"<< std::endl;
 
-    if (!performer)
+    if (getTopologicalOperation() == 0)  // Remove one element
     {
-        if (getTopologicalOperation() == 0)  // Remove one element
+        performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("RemovePrimitive", pickHandle->getInteraction()->mouseInteractor);
+        pickHandle->getInteraction()->mouseInteractor->addInteractionPerformer(performer);
+
+        performer->start();
+    }
+    else if (getTopologicalOperation() == 1)
+    {
+        if (firstClick)
         {
             performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("RemovePrimitive", pickHandle->getInteraction()->mouseInteractor);
             pickHandle->getInteraction()->mouseInteractor->addInteractionPerformer(performer);
 
+            component::collision::RemovePrimitivePerformerConfiguration *performerConfiguration=dynamic_cast<component::collision::RemovePrimitivePerformerConfiguration*>(performer);
+
+            performerConfiguration->setTopologicalOperation( getTopologicalOperation() );
+            performerConfiguration->setVolumicMesh( getVolumicMesh() );
+            performerConfiguration->setScale( getScale() );
+
             performer->start();
+            firstClick = false;
         }
         else
         {
-            /*
-              std::cout <<"TopologyOperation::performer()"<< std::endl;
-              performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("RemovePrimitive", pickHandle->getInteraction()->mouseInteractor);
-              pickHandle->getInteraction()->mouseInteractor->addInteractionPerformer(performer);
-
-              component::collision::RemovePrimitivePerformerConfiguration *performerConfiguration=dynamic_cast<component::collision::RemovePrimitivePerformerConfiguration*>(performer);
-
-              performerConfiguration->setTopologicalOperation( getTopologicalOperation() );
-              performerConfiguration->setVolumicMesh( getVolumicMesh() );
-              performerConfiguration->setScale( getScale() );
-
-
-              performer->start();*/
+            performer->start();
+            firstClick = true;
         }
     }
 }
@@ -159,7 +160,7 @@ void TopologyOperation::execution()
 
 void TopologyOperation::end()
 {
-    if (getTopologicalOperation() == 0)
+    if (getTopologicalOperation() == 0 || (getTopologicalOperation() == 1 && firstClick))
     {
         pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
         delete performer; performer=0;
@@ -169,8 +170,12 @@ void TopologyOperation::end()
 
 void TopologyOperation::endOperation()
 {
-    pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
-    delete performer; performer=0;
+    if (performer)
+    {
+        pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
+        delete performer; performer=0;
+        firstClick = true;
+    }
 }
 
 

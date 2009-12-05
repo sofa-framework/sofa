@@ -37,6 +37,7 @@
 #include <qlayout.h>
 #include <qlabel.h>
 #include <qgroupbox.h>
+#include <qcombobox.h>
 /*#include <qradiobutton.h>
 #include <qpushbutton.h>*/
 #endif
