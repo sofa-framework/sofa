@@ -113,7 +113,7 @@ protected:
 class SOFA_SOFAGUI_API TopologyOperation : public Operation
 {
 public:
-    TopologyOperation():scale (0.0), volumicMesh (0) {};
+    TopologyOperation():scale (0.0), volumicMesh (0), firstClick(1) {};
 
     virtual ~TopologyOperation() {};
     virtual void start();
@@ -122,21 +122,20 @@ public:
     virtual void endOperation();
 
     void setTopologicalOperation(int m) {topologicalOperation = m;}
-    virtual int getTopologicalOperation() const { return volumicMesh;}
-
     void setScale (double s) {scale = s;}
-    virtual double getScale() const {return scale;}
-
     void setVolumicMesh (bool v) {volumicMesh = v;}
+
+    virtual int getTopologicalOperation() const { return volumicMesh;}
+    virtual double getScale() const {return scale;}
     virtual bool getVolumicMesh() const {return volumicMesh;}
 
-
     static std::string getDescription() {return "Perform topological operations";}
+
 protected:
     int topologicalOperation;
     double scale;
     bool volumicMesh;
-
+    bool firstClick;
 };
 
 class SOFA_SOFAGUI_API FixOperation : public Operation
