@@ -93,6 +93,11 @@ protected:
     VecIds testElem;
     VecIds tmp_testElem;//?
 };
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_COLLISION_REMOVEPRIMITIVEPERFORMER_CPP)
+extern template class SOFA_COMPONENT_COLLISION_API RemovePrimitivePerformer<defaulttype::Vec3Types>;
+#endif
+
 }
 }
 }
