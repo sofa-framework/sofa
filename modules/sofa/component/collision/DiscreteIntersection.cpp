@@ -834,9 +834,11 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
     bool useXForm = e1.isTransformed();
     const Vector3& t1 = e1.getTranslation();
     const Matrix3& r1 = e1.getRotation();
+    const bool flipped = e1.isFlipped();
 
     const double d0 = e1.getProximity() + e2.getProximity() + getContactDistance();
     const SReal margin = 0.001f + (SReal)d0;
+
 
     Vector3 p2 = e2.p();
     DistanceGrid::Coord p1;
@@ -847,17 +849,26 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
     }
     else p1 = p2;
 
-    if (!grid1->inBBox( p1, margin )) return 0;
-    if (!grid1->inGrid( p1 ))
+    if (flipped)
     {
-        serr << "WARNING: margin less than "<<margin<<" in DistanceGrid "<<e1.getCollisionModel()->getName()<<sendl;
-        return 0;
+        if (!grid1->inGrid( p1 )) return 0;
+    }
+    else
+    {
+        if (!grid1->inBBox( p1, margin )) return 0;
+        if (!grid1->inGrid( p1 ))
+        {
+            serr << "WARNING: margin less than "<<margin<<" in DistanceGrid "<<e1.getCollisionModel()->getName()<<sendl;
+            return 0;
+        }
     }
 
     SReal d = grid1->interp(p1);
+    if (flipped) d = -d;
     if (d >= margin) return 0;
 
     Vector3 grad = grid1->grad(p1); // note that there are some redundant computations between interp() and grad()
+    if (flipped) grad = -grad;
     grad.normalize();
 
     //p1 -= grad * d; // push p1 back to the surface
