@@ -183,10 +183,8 @@ QTopologyOperation::QTopologyOperation()
     QHBoxLayout *HLayout1 = new QHBoxLayout();
     QLabel *label1=new QLabel(QString("Topological operation: "), this);
     operationChoice = new QComboBox(this);
-    operationChoice->setObjectName(QString::fromUtf8("comboBox"));
-    operationChoice->insertItems(0, QStringList()
-            << QApplication::translate("Dialog", "Remove one element", 0, QApplication::UnicodeUTF8)
-            << QApplication::translate("Dialog", "Remove a zone of elements", 0, QApplication::UnicodeUTF8));
+    operationChoice->insertItem("Remove one element");
+    operationChoice->insertItem("Remove a zone of elements");
 
     HLayout1->addWidget (label1);
     HLayout1->addWidget (operationChoice);
