@@ -176,7 +176,7 @@ SofaModeler::SofaModeler()
 #ifdef SOFA_QT4
 
     //option available only since Qt 4.5
-#if QT_VERSION >= 0x045000
+#if QT_VERSION >= 0x040500
     sceneTab->setTabsClosable(true);
     connect( sceneTab, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
 #endif
