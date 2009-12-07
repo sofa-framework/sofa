@@ -245,7 +245,11 @@ double QTopologyOperation::getScale() const
 
 int QTopologyOperation::getTopologicalOperation() const
 {
+#ifdef SOFA_QT4
     return operationChoice->currentIndex();
+#else
+    return operationChoice->currentItem();
+#endif
 }
 
 bool QTopologyOperation::getVolumicMesh() const

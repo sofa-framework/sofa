@@ -51,6 +51,7 @@ namespace component
 namespace collision
 {
 class TriangleModel;
+class TetrahedronModel;
 class SphereModel;
 }
 }
@@ -71,7 +72,8 @@ public:
 
     /// Handles Removing of topological element (from any type of topology)
     void removeItemsFromCollisionModel(sofa::core::CollisionElementIterator) const;
-    void removeItemsFromCollisionModel(sofa::core::CollisionModel* model, const std::vector<int>& indices) const;
+    void removeItemsFromCollisionModel(sofa::core::CollisionModel* model, const int& index) const;
+    void removeItemsFromCollisionModel(sofa::core::CollisionModel* model, const helper::vector<int>& indices) const;
 
 
     /** Handles Cutting (activated only for a triangular topology)
@@ -137,9 +139,13 @@ private:
             TriangleModel *model2, unsigned int idx2, const Vector3& secondPoint,
             int snapingValue = 0, int snapingBorderValue = 0);
 
-    void removeItemsFromTriangleModel(sofa::component::collision::TriangleModel* model, const std::vector<int>& indices) const;
 
-    void removeItemsFromSphereModel(sofa::component::collision::SphereModel* model, const std::vector<int>& indices) const;
+
+    void removeItemsFromTriangleModel(sofa::component::collision::TriangleModel* model, const helper::vector<int>& indices) const;
+
+    void removeItemsFromTetrahedronModel(sofa::component::collision::TetrahedronModel* model, const helper::vector<int>& indices) const;
+
+    void removeItemsFromSphereModel(sofa::component::collision::SphereModel* model, const helper::vector<int>& indices) const;
 
 private:
     /// Global variables to register intermediate informations for point to point incision.(incision along one segment in a triangular mesh)
