@@ -105,15 +105,15 @@ void CentralDifferenceSolver::solve(double dt)
 
     projectResponse(dx);                    // dx is projected to the constrained space
 
-    if (constraintSolver) constraintSolver->solveConstraint(dt,VecId::dx());
+    solveConstraint(dt,VecId::dx());
     // apply the solution
     if (r==0)
     {
 #ifdef SOFA_NO_VMULTIOP // unoptimized version
         vel.peq( dx, dt );                  // vel = vel + dt M^{-1} ( P_n - K u_n )
-        if (constraintSolver) constraintSolver->solveConstraint(dt,VecId::velocity());
+        solveConstraint(dt,VecId::velocity());
         pos.peq( vel, dt );                    // pos = pos + h vel
-        if (constraintSolver) constraintSolver->solveConstraint(dt,VecId::position());
+        solveConstraint(dt,VecId::position());
 
 #else // single-operation optimization
 
@@ -153,11 +153,8 @@ void CentralDifferenceSolver::solve(double dt)
         simulation::MechanicalVMultiOpVisitor vmop(ops);
         vmop.execute(getContext());
 
-        if (constraintSolver)
-        {
-            constraintSolver->solveConstraint(dt,VecId::velocity());
-            constraintSolver->solveConstraint(dt,VecId::position());
-        }
+        solveConstraint(dt,VecId::velocity());
+        solveConstraint(dt,VecId::position());
 
 #endif
     }

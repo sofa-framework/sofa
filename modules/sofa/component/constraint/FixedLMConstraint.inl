@@ -196,9 +196,9 @@ void FixedLMConstraint<DataTypes>::writeConstraintEquations(ConstOrder Order)
         }
         case core::componentmodel::behavior::BaseLMConstraint::VEL :
         {
-            correctionX =this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxX[counter],core::componentmodel::behavior::BaseMechanicalState::VecId::velocity());
-            correctionY =this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxY[counter],core::componentmodel::behavior::BaseMechanicalState::VecId::velocity());
-            correctionZ =this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxZ[counter],core::componentmodel::behavior::BaseMechanicalState::VecId::velocity());
+            correctionX = this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxX[counter],core::componentmodel::behavior::BaseMechanicalState::VecId::velocity());
+            correctionY = this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxY[counter],core::componentmodel::behavior::BaseMechanicalState::VecId::velocity());
+            correctionZ = this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxZ[counter],core::componentmodel::behavior::BaseMechanicalState::VecId::velocity());
             break;
         }
         case core::componentmodel::behavior::BaseLMConstraint::POS :
@@ -212,7 +212,7 @@ void FixedLMConstraint<DataTypes>::writeConstraintEquations(ConstOrder Order)
             }
 
 
-            Coord v=restPosition[index]-x[index];
+            Coord v=x[index]-restPosition[index];
             correctionX=v[0];
             correctionY=v[1];
             correctionZ=v[2];
@@ -220,9 +220,9 @@ void FixedLMConstraint<DataTypes>::writeConstraintEquations(ConstOrder Order)
         }
         };
 
-        constraint->addConstraint( idxX[counter], correctionX, core::componentmodel::behavior::BaseLMConstraint::BILATERAL);
-        constraint->addConstraint( idxY[counter], correctionY, core::componentmodel::behavior::BaseLMConstraint::BILATERAL);
-        constraint->addConstraint( idxZ[counter], correctionZ, core::componentmodel::behavior::BaseLMConstraint::BILATERAL);
+        constraint->addConstraint( idxX[counter], -correctionX, core::componentmodel::behavior::BaseLMConstraint::BILATERAL);
+        constraint->addConstraint( idxY[counter], -correctionY, core::componentmodel::behavior::BaseLMConstraint::BILATERAL);
+        constraint->addConstraint( idxZ[counter], -correctionZ, core::componentmodel::behavior::BaseLMConstraint::BILATERAL);
 
     }
 }

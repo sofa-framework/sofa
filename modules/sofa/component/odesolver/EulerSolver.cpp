@@ -94,24 +94,24 @@ void EulerSolver::solve(double dt)
 // 	  }
 
 
-    if (constraintSolver) constraintSolver->solveConstraint(dt,VecId::dx());
+    solveConstraint(dt,VecId::dx());
 
     // update state
 #ifdef SOFA_NO_VMULTIOP // unoptimized version
     if( symplectic.getValue() )
     {
         vel.peq(acc,dt);
-        if (constraintSolver) constraintSolver->solveConstraint(dt,VecId::velocity());
+        solveConstraint(dt,VecId::velocity());
         pos.peq(vel,dt);
-        if (constraintSolver) constraintSolver->solveConstraint(dt,VecId::position());
+        solveConstraint(dt,VecId::position());
 
     }
     else
     {
         pos.peq(vel,dt);
-        if (constraintSolver) constraintSolver->solveConstraint(dt,VecId::position());
+        solveConstraint(dt,VecId::position());
         vel.peq(acc,dt);
-        if (constraintSolver) constraintSolver->solveConstraint(dt,VecId::velocity());
+        solveConstraint(dt,VecId::velocity());
     }
 #else // single-operation optimization
     {
@@ -130,11 +130,8 @@ void EulerSolver::solve(double dt)
         simulation::MechanicalVMultiOpVisitor vmop(ops);
         vmop.execute(this->getContext());
 
-        if (constraintSolver)
-        {
-            constraintSolver->solveConstraint(dt,VecId::velocity());
-            constraintSolver->solveConstraint(dt,VecId::position());
-        }
+        solveConstraint(dt,VecId::velocity());
+        solveConstraint(dt,VecId::position());
     }
 #endif
 

@@ -231,10 +231,10 @@ public:
     void init();
 
 
-    void prepareStates(double dt, VecId);
-    void buildSystem(double dt, VecId);
-    void solveSystem(double dt, VecId);
-    void applyCorrection(double dt, VecId, bool isPositionChangesUpdateVelocity);
+    bool prepareStates(double dt, VecId);
+    bool buildSystem(double dt, VecId);
+    bool solveSystem(double dt, VecId);
+    bool applyCorrection(double dt, VecId, bool isPositionChangesUpdateVelocity);
 
 
 

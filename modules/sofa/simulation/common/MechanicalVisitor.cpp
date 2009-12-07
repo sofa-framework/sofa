@@ -1113,27 +1113,7 @@ Visitor::Result MechanicalSolveLMConstraintVisitor::fwdConstraintSolver(simulati
 {
     typedef core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
     ctime_t t0 = beginProcess(node, s);
-    if ( state==VecId::dx())
-    {
-        bool active=s->constraintAcc.getValue();
-        s->constraintAcc.setValue(true);
-        s->solveConstraint(propagateState,state);
-        s->constraintAcc.setValue(active);
-    }
-    else if (state==VecId::velocity())
-    {
-        bool active=s->constraintVel.getValue();
-        s->constraintVel.setValue(true);
-        s->solveConstraint(propagateState,state);
-        s->constraintVel.setValue(active);
-    }
-    else if (state==VecId::position())
-    {
-        bool active=s->constraintPos.getValue();
-        s->constraintPos.setValue(true);
-        s->solveConstraint(propagateState,state,isPositionChangeUpdateVelocity);
-        s->constraintPos.setValue(active);
-    }
+    s->solveConstraint(propagateState,state);
     endProcess(node, s, t0);
     return RESULT_PRUNE;
 }

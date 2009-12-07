@@ -41,16 +41,11 @@ namespace behavior
 {
 
 OdeSolver::OdeSolver()
-    : constraintSolver(NULL)
 {}
 
 OdeSolver::~OdeSolver()
 {}
 
-void OdeSolver::init()
-{
-    getContext()->get(constraintSolver);
-}
 
 //const OdeSolver::MechanicalMatrix OdeSolver::M(1,0,0);
 //const OdeSolver::MechanicalMatrix OdeSolver::B(0,1,0);

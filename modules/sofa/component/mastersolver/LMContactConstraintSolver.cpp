@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/mastersolver/LMContactConstraintSolver.h>
+#include <sofa/component/constraint/LMConstraintSolver.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/CollisionVisitor.h>
 #include <sofa/simulation/common/CollisionBeginEvent.h>
@@ -94,9 +95,24 @@ void LMContactConstraintSolver::solveConstraints(bool needPropagation)
     simulation::MechanicalExpressJacobianVisitor JacobianVisitor(node);
     JacobianVisitor.execute(node);
 
+    helper::vector< constraint::LMConstraintSolver* > listSolver;
+    node->get<constraint::LMConstraintSolver>(&listSolver, core::objectmodel::BaseContext::SearchDown);
+
+    helper::vector< bool > constraintActive(listSolver.size(), false);
+    for (unsigned int i=0; i<listSolver.size(); ++i)
+    {
+        if (listSolver[i]->constraintPos.getValue()) constraintActive[i]=true;
+        else                                         listSolver[i]->constraintPos.setValue(true);
+    }
+
     core::componentmodel::behavior::BaseMechanicalState::VecId positionState=core::componentmodel::behavior::BaseMechanicalState::VecId::position();
     simulation::MechanicalSolveLMConstraintVisitor solveConstraintsPosition(positionState,needPropagation, false);
     solveConstraintsPosition.execute(node);
+
+    for (unsigned int i=0; i<listSolver.size(); ++i)
+    {
+        listSolver[i]->constraintPos.setValue(constraintActive[i]);
+    }
 
     simulation::MechanicalPropagatePositionVisitor propagateState;
     propagateState.ignoreMask=false;

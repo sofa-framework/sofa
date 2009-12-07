@@ -64,13 +64,19 @@ public:
     void init();
 
 
-    void prepareStates(double dt, VecId);
-    void buildSystem(double dt, VecId);
-    void solveSystem(double dt, VecId);
-    void applyCorrection(double dt, VecId, bool isPositionChangesUpdateVelocity);
+    bool prepareStates(double dt, VecId);
+    bool buildSystem(double dt, VecId);
+    bool solveSystem(double dt, VecId);
+    bool applyCorrection(double dt, VecId, bool isPositionChangesUpdateVelocity);
 
 
 
+
+    Data<bool> constraintAcc;
+    Data<bool> constraintVel;
+    Data<bool> constraintPos;
+    Data<unsigned int> numIterations;
+    Data<double> maxError;
 
 protected:
     /// Explore the graph, looking for LMConstraints: each LMConstraint can tell if they need State Propagation in order to compute the right hand term of the system
@@ -121,7 +127,6 @@ protected:
             SparseMatrixEigen& matrix) const;
 
     core::componentmodel::behavior::BaseLMConstraint::ConstOrder orderState;
-    bool isActive;
     unsigned int numConstraint;
 
     //Variables used to do the computation
@@ -139,8 +144,6 @@ protected:
     DofToMatrix invMassMatrix;
     DofToConstraintCorrection constraintCorrections;
 
-    Data<unsigned int> numIterations;
-    Data<double> maxError;
 };
 
 } // namespace constraint

@@ -65,14 +65,9 @@ void LCP::reset(void)
 }
 
 
-void LCPConstraintSolver::prepareStates(double /*dt*/, VecId id)
+bool LCPConstraintSolver::prepareStates(double /*dt*/, VecId id)
 {
-    isActive=true;
-    if (id != VecId::freePosition())
-    {
-        isActive=false;
-        return;
-    }
+    if (id != VecId::freePosition()) return false;
 
 
     last_lcp = lcp;
@@ -98,11 +93,10 @@ void LCPConstraintSolver::prepareStates(double /*dt*/, VecId id)
         time = (double) timer.getTime();
         timeTotal = (double) timerTotal.getTime();
     }
-
+    return true;
 }
-void LCPConstraintSolver::buildSystem(double /*dt*/, VecId)
+bool LCPConstraintSolver::buildSystem(double /*dt*/, VecId)
 {
-    if (!isActive) return;
     //sout<<"constraintCorrections is called"<<sendl;
 
     if(build_lcp.getValue())
@@ -126,10 +120,10 @@ void LCPConstraintSolver::buildSystem(double /*dt*/, VecId)
             time = (double) timer.getTime();
         }
     }
+    return true;
 }
-void LCPConstraintSolver::solveSystem(double /*dt*/, VecId)
+bool LCPConstraintSolver::solveSystem(double /*dt*/, VecId)
 {
-    if (!isActive) return;
     if(build_lcp.getValue())
     {
 
@@ -184,10 +178,10 @@ void LCPConstraintSolver::solveSystem(double /*dt*/, VecId)
         sout<<" TOTAL solve_LCP " <<( (double) timer.getTime() - time)*timeScale<<" ms" <<sendl;
         time = (double) timer.getTime();
     }
+    return true;
 }
-void LCPConstraintSolver::applyCorrection(double /*dt*/, VecId, bool )
+bool LCPConstraintSolver::applyCorrection(double /*dt*/, VecId, bool )
 {
-    if (!isActive) return;
     if (initial_guess.getValue())
         keepContactForcesValue();
 
@@ -227,6 +221,7 @@ void LCPConstraintSolver::applyCorrection(double /*dt*/, VecId, bool )
     {
         sout<<" TotalTime " <<( (double) timerTotal.getTime() - timeTotal)*timeScale <<" ms" <<sendl;
     }
+    return true;
 }
 
 

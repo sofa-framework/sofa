@@ -66,27 +66,22 @@ public:
     /**
      * Do the precomputation: compute free state, or propagate the states to the mapped mechanical states, where the constraint can be expressed
      */
-    virtual void prepareStates(double /*dt*/, VecId)=0;
+    virtual bool prepareStates(double /*dt*/, VecId)=0;
 
     /**
      * Create the system corresponding to the constraints
      */
-    virtual void buildSystem(double /*dt*/, VecId)=0;
+    virtual bool buildSystem(double /*dt*/, VecId)=0;
 
     /**
      * Use the system previously build and solve it with the appropriate algorithm
      */
-    virtual void solveSystem(double /*dt*/, VecId)=0;
+    virtual bool solveSystem(double /*dt*/, VecId)=0;
 
     /**
      * Correct the Mechanical State with the solution found
      */
-    virtual void applyCorrection(double /*dt*/, VecId, bool /*isPositionChangesUpdateVelocity*/)=0;
-
-
-    Data<bool> constraintAcc;
-    Data<bool> constraintVel;
-    Data<bool> constraintPos;
+    virtual bool applyCorrection(double /*dt*/, VecId, bool /*isPositionChangesUpdateVelocity*/)=0;
 };
 
 } // namespace behavior
