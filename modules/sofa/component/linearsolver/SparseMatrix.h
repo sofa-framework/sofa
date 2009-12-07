@@ -27,6 +27,7 @@
 
 #include <sofa/defaulttype/BaseMatrix.h>
 #include "FullVector.h"
+#include "MatrixExpr.h"
 
 #include <map>
 
@@ -54,6 +55,11 @@ public:
     typedef typename Line::const_iterator LElementConstIterator;
     typedef typename Data::iterator LineIterator;
     typedef typename Data::const_iterator LineConstIterator;
+
+    typedef SparseMatrix<T> Expr;
+    typedef SparseMatrix<double> matrix_type;
+    enum { category = MATRIX_SPARSE };
+    enum { operand = 1 };
 
 protected:
     Data data;
@@ -345,47 +351,201 @@ public:
         mul(res,v);
         return res;
     }
+    /*
+        template<class Real2>
+        void mul(SparseMatrix<T>* res, const SparseMatrix<Real2>& m) const
+        {
+            res->resize(rowSize(), m.colSize());
+            for (LineConstIterator itl = begin(), itlend=end(); itl!=itlend; ++itl)
+            {
+    	    const int this_line = itl->first;
+                for (LElementConstIterator ite = itl->second.begin(), iteend=itl->second.end(); ite!=iteend; ++ite)
+    	    {
+    		Real v = ite->second;
+    		const typename SparseMatrix<Real2>::Line& ml = m[ite->first];
+    		for (typename SparseMatrix<Real2>::LElementConstIterator ite2 = ml.begin(), ite2end=ml.end(); ite2!=ite2end; ++ite2)
+    		{
+    		    Real2 v2 = ite2->second;
+    		    const int m_col = ite2->first;
+    		    res->add(this_line, m_col, (Real)(v*v2));
+    		}
+    	    }
+            }
+        }
+
+        template<class Real2>
+        void addmul(SparseMatrix<T>* res, const SparseMatrix<Real2>& m) const
+        {
+            //res->resize(rowSize(), m.colSize());
+            for (LineConstIterator itl = begin(), itlend=end(); itl!=itlend; ++itl)
+            {
+    	    const int this_line = itl->first;
+                for (LElementConstIterator ite = itl->second.begin(), iteend=itl->second.end(); ite!=iteend; ++ite)
+    	    {
+    		Real v = ite->second;
+    		const typename SparseMatrix<Real2>::Line& ml = m[ite->first];
+    		for (typename SparseMatrix<Real2>::LElementConstIterator ite2 = ml.begin(), ite2end=ml.end(); ite2!=ite2end; ++ite2)
+    		{
+    		    Real2 v2 = ite2->second;
+    		    const int m_col = ite2->first;
+    		    res->add(this_line, m_col, (Real)(v*v2));
+    		}
+    	    }
+            }
+        }
+    */
+
+
+    MatrixExpr< MatrixTranspose< SparseMatrix<T> > > t() const
+    {
+        return MatrixExpr< MatrixTranspose< SparseMatrix<T> > >(MatrixTranspose< SparseMatrix<T> >(*this));
+    }
+
+    MatrixExpr< MatrixNegative< SparseMatrix<T> > > operator-() const
+    {
+        return MatrixExpr< MatrixNegative< SparseMatrix<T> > >(MatrixNegative< SparseMatrix<T> >(*this));
+    }
 
     template<class Real2>
-    void mul(SparseMatrix<T>* res, const SparseMatrix<Real2>& m) const
+    MatrixExpr< MatrixProduct< SparseMatrix<T>, SparseMatrix<Real2> > > operator*(const SparseMatrix<Real2>& m) const
     {
-        res->resize(rowSize(), m.colSize());
+        return MatrixExpr< MatrixProduct< SparseMatrix<T>, SparseMatrix<Real2> > >(MatrixProduct< SparseMatrix<T>, SparseMatrix<Real2> >(*this, m));
+    }
+
+    MatrixExpr< MatrixScale< SparseMatrix<T>, double > > operator*(const double& r) const
+    {
+        return MatrixExpr< MatrixScale< SparseMatrix<T>, double > >(MatrixScale< SparseMatrix<T>, double >(*this, r));
+    }
+
+    // template<class Expr2>
+    // MatrixExpr< MatrixProduct< SparseMatrix<T>, Expr2 > > operator*(const MatrixExpr<Expr2>& m) const
+    // {
+    //     return MatrixExpr< MatrixProduct< SparseMatrix<T>, Expr2 > >(MatrixProduct< SparseMatrix<T>, Expr2 >(*this, m));
+    // }
+
+    template<class Real2>
+    MatrixExpr< MatrixAddition< SparseMatrix<T>, SparseMatrix<Real2> > > operator+(const SparseMatrix<Real2>& m) const
+    {
+        return MatrixExpr< MatrixAddition< SparseMatrix<T>, SparseMatrix<Real2> > >(MatrixAddition< SparseMatrix<T>, SparseMatrix<Real2> >(*this, m));
+    }
+
+    // template<class Expr2>
+    // MatrixExpr< MatrixAddition< SparseMatrix<T>, Expr2 > > operator+(const MatrixExpr<Expr2>& m) const
+    // {
+    //     return MatrixExpr< MatrixAddition< SparseMatrix<T>, Expr2 > >(MatrixAddition< SparseMatrix<T>, Expr2 >(*this, m));
+    // }
+
+    template<class Real2>
+    MatrixExpr< MatrixAddition< SparseMatrix<T>, SparseMatrix<Real2> > > operator-(const SparseMatrix<Real2>& m) const
+    {
+        return MatrixExpr< MatrixAddition< SparseMatrix<T>, SparseMatrix<Real2> > >(MatrixAddition< SparseMatrix<T>, SparseMatrix<Real2> >(*this, m));
+    }
+
+    // template<class Expr2>
+    // MatrixExpr< MatrixAddition< SparseMatrix<T>, Expr2 > > operator-(const MatrixExpr<Expr2>& m) const
+    // {
+    //     return MatrixExpr< MatrixAddition< SparseMatrix<T>, Expr2 > >(MatrixAddition< SparseMatrix<T>, Expr2 >(*this, m));
+    // }
+
+    void swap(SparseMatrix<T>& m)
+    {
+        data.swap(m.data);
+        Index t;
+        t = nRow; nRow = m.nRow; m.nRow = t;
+        t = nCol; nCol = m.nCol; m.nCol = t;
+    }
+
+    template<class M2>
+    bool hasRef(const M2* m) const
+    {
+        return (const void*)this == (const void*)m;
+    }
+
+    std::string expr() const
+    {
+        return std::string(Name());
+    }
+
+    bool valid() const
+    {
+        return true;
+    }
+
+    template<class Dest>
+    void doCompute(Dest* dest) const
+    {
         for (LineConstIterator itl = begin(), itlend=end(); itl!=itlend; ++itl)
         {
-            const int this_line = itl->first;
+            const int l = itl->first;
             for (LElementConstIterator ite = itl->second.begin(), iteend=itl->second.end(); ite!=iteend; ++ite)
             {
+                const int c = ite->first;
                 Real v = ite->second;
-                const typename SparseMatrix<Real2>::Line& ml = m[ite->first];
-                for (typename SparseMatrix<Real2>::LElementConstIterator ite2 = ml.begin(), ite2end=ml.end(); ite2!=ite2end; ++ite2)
-                {
-                    Real2 v2 = ite2->second;
-                    const int m_col = ite2->first;
-                    res->add(this_line, m_col, (Real)(v*v2));
-                }
+                dest->add(l,c,v);
             }
         }
     }
 
-    template<class Real2>
-    void addmul(SparseMatrix<T>* res, const SparseMatrix<Real2>& m) const
+protected:
+
+    template<class M>
+    void compute(const M& m, bool add = false)
     {
-        //res->resize(rowSize(), m.colSize());
-        for (LineConstIterator itl = begin(), itlend=end(); itl!=itlend; ++itl)
+        if (m.hasRef(this))
         {
-            const int this_line = itl->first;
-            for (LElementConstIterator ite = itl->second.begin(), iteend=itl->second.end(); ite!=iteend; ++ite)
-            {
-                Real v = ite->second;
-                const typename SparseMatrix<Real2>::Line& ml = m[ite->first];
-                for (typename SparseMatrix<Real2>::LElementConstIterator ite2 = ml.begin(), ite2end=ml.end(); ite2!=ite2end; ++ite2)
-                {
-                    Real2 v2 = ite2->second;
-                    const int m_col = ite2->first;
-                    res->add(this_line, m_col, (Real)(v*v2));
-                }
-            }
+            SparseMatrix<T> tmp;
+            tmp.resize(m.rowSize(), m.colSize());
+            m.doCompute(&tmp);
+            if (add)
+                tmp.doCompute(this);
+            else
+                swap(tmp);
         }
+        else
+        {
+            if (!add)
+                resize(m.rowSize(), m.colSize());
+            m.doCompute(this);
+        }
+    }
+public:
+
+    template<class Real2>
+    void operator=(const SparseMatrix<Real2>& m)
+    {
+        if (&m == this) return;
+        resize(m.rowSize(), m.colSize());
+        m.doCompute(this);
+    }
+
+    template<class Real2>
+    void operator+=(const SparseMatrix<Real2>& m)
+    {
+        compute(m, true);
+    }
+
+    template<class Real2>
+    void operator-=(const SparseMatrix<Real2>& m)
+    {
+        compute(MatrixExpr< MatrixNegative< SparseMatrix<Real2> > >(MatrixNegative< SparseMatrix<Real2> >(m)), true);
+    }
+
+    template<class Expr2>
+    void operator=(const MatrixExpr< Expr2 >& m)
+    {
+        compute(m, false);
+    }
+
+    template<class Expr2>
+    void operator+=(const MatrixExpr< Expr2 >& m)
+    {
+        compute(m, true);
+    }
+
+    template<class Expr2>
+    void operator-=(const MatrixExpr< Expr2 >& m)
+    {
+        compute(MatrixExpr< MatrixNegative< Expr2 > >(MatrixNegative< Expr2 >(m)), true);
     }
 
     friend std::ostream& operator << (std::ostream& out, const SparseMatrix<T>& v )
@@ -407,6 +567,37 @@ public:
     }
 
     static const char* Name() { return "SparseMatrix"; }
+};
+
+template<class R1, class R2>
+class MatrixProductOp<SparseMatrix<R1>, SparseMatrix<R2> >
+{
+public:
+    typedef SparseMatrix<R1> M1;
+    typedef SparseMatrix<R2> M2;
+    typedef typename type_selector<(sizeof(R2)>sizeof(R1)),M1,M2>::T matrix_type;
+    enum { category = matrix_type::category };
+
+    template<class Dest>
+    void operator()(const SparseMatrix<R1>& m1, const SparseMatrix<R2>& m2, Dest* d)
+    {
+        for (typename SparseMatrix<R1>::LineConstIterator itl = m1.begin(), itlend=m1.end(); itl!=itlend; ++itl)
+        {
+            const int l1 = itl->first;
+            for (typename SparseMatrix<R1>::LElementConstIterator ite = itl->second.begin(), iteend=itl->second.end(); ite!=iteend; ++ite)
+            {
+                const int c1 = ite->first;
+                R1 v = ite->second;
+                const typename SparseMatrix<R2>::Line& m2l = m2[c1];
+                for (typename SparseMatrix<R2>::LElementConstIterator ite2 = m2l.begin(), ite2end=m2l.end(); ite2!=ite2end; ++ite2)
+                {
+                    R2 v2 = ite2->second;
+                    const int c2 = ite2->first;
+                    d->add(l1, c2, (v*v2));
+                }
+            }
+        }
+    }
 };
 
 #ifdef SPARSEMATRIX_CHECK

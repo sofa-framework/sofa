@@ -136,6 +136,15 @@ public:
             std::fill( this->begin(), this->end(), T() );
     }
 
+    void swap(FullVector<T>& v)
+    {
+        Index t;
+        t = cursize; cursize = v.cursize; v.cursize = t;
+        t = allocsize; allocsize = v.allocsize; v.allocsize = t;
+        T* d;
+        d = data; data = v.data; v.data = d;
+    }
+
     // for compatibility with baseVector
     void clear(int dim)
     {
