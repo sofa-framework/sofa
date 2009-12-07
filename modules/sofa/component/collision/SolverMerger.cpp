@@ -34,7 +34,10 @@
 #include <sofa/component/odesolver/StaticSolver.h>
 #include <sofa/component/odesolver/EulerImplicitSolver.h>
 #include <sofa/component/linearsolver/CGLinearSolver.h>
-
+#include <sofa/component/constraint/LCPConstraintSolver.h>
+#ifdef SOFA_HAVE_EIGEN2
+#include <sofa/component/constraint/LMConstraintSolver.h>
+#endif
 namespace sofa
 {
 
@@ -45,6 +48,7 @@ namespace collision
 {
 using sofa::core::componentmodel::behavior::OdeSolver;
 using sofa::core::componentmodel::behavior::LinearSolver;
+using sofa::core::componentmodel::behavior::ConstraintSolver;
 
 namespace solvermergers
 {
@@ -64,16 +68,77 @@ T* copySolver(const T& s)
     return res;
 }
 
-// First the easy cases...
 
-SolverSet createSolverEulerEuler(odesolver::EulerSolver& solver1, odesolver::EulerSolver& /*solver2*/)
+ConstraintSolver* createConstraintSolver(OdeSolver* solver1, OdeSolver* solver2)
 {
-    return SolverSet(copySolver<odesolver::EulerSolver>(solver1), NULL);
+    ConstraintSolver* csolver1 = NULL; if (solver1!=NULL) solver1->getContext()->get(csolver1, core::objectmodel::BaseContext::SearchDown);
+    ConstraintSolver* csolver2 = NULL; if (solver2!=NULL) solver2->getContext()->get(csolver2, core::objectmodel::BaseContext::SearchDown);
+
+    if (!csolver1 && !csolver2) return NULL;
+    if (!csolver1)
+    {
+        if (constraint::LCPConstraintSolver* cs=dynamic_cast<constraint::LCPConstraintSolver*>(csolver2))
+            return copySolver<constraint::LCPConstraintSolver>(*cs);
+#ifdef SOFA_HAVE_EIGEN2
+        else if (constraint::LMConstraintSolver* cs=dynamic_cast<constraint::LMConstraintSolver*>(csolver2))
+            return copySolver<constraint::LMConstraintSolver>(*cs);
+#endif
+    }
+    else if (!csolver2)
+    {
+        if (constraint::LCPConstraintSolver* cs=dynamic_cast<constraint::LCPConstraintSolver*>(csolver1))
+            return copySolver<constraint::LCPConstraintSolver>(*cs);
+#ifdef SOFA_HAVE_EIGEN2
+        else if (constraint::LMConstraintSolver* cs=dynamic_cast<constraint::LMConstraintSolver*>(csolver1))
+            return copySolver<constraint::LMConstraintSolver>(*cs);
+#endif
+    }
+    else
+    {
+        if (dynamic_cast<constraint::LCPConstraintSolver*>(csolver2) && dynamic_cast<constraint::LCPConstraintSolver*>(csolver1))
+        {
+            constraint::LCPConstraintSolver* lcp1=dynamic_cast<constraint::LCPConstraintSolver*>(csolver1);
+            constraint::LCPConstraintSolver* lcp2=dynamic_cast<constraint::LCPConstraintSolver*>(csolver2);
+            constraint::LCPConstraintSolver* newSolver = new constraint::LCPConstraintSolver();
+            newSolver->displayTime.setValue(lcp1->displayTime.getValue() | lcp2->displayTime.getValue());
+            newSolver->initial_guess.setValue(lcp1->initial_guess.getValue() | lcp2->initial_guess.getValue());
+            newSolver->build_lcp.setValue(lcp1->build_lcp.getValue() | lcp2->build_lcp.getValue());
+            newSolver->tol.setValue(lcp1->tol.getValue() < lcp2->tol.getValue() ? lcp1->tol.getValue() : lcp2->tol.getValue() );
+            newSolver->maxIt.setValue(lcp1->maxIt.getValue() > lcp2->maxIt.getValue() ? lcp1->maxIt.getValue() : lcp2->maxIt.getValue() );
+            newSolver->maxIt.setValue((lcp1->mu.getValue() + lcp2->mu.getValue())*0.5);
+            return newSolver;
+        }
+#ifdef SOFA_HAVE_EIGEN2
+        else if (dynamic_cast<constraint::LMConstraintSolver*>(csolver2) && dynamic_cast<constraint::LMConstraintSolver*>(csolver1))
+        {
+            constraint::LMConstraintSolver* lm1=dynamic_cast<constraint::LMConstraintSolver*>(csolver1);
+            constraint::LMConstraintSolver* lm2=dynamic_cast<constraint::LMConstraintSolver*>(csolver2);
+            constraint::LMConstraintSolver* newSolver = new constraint::LMConstraintSolver();
+            newSolver->numIterations.setValue(lm1->numIterations.getValue() > lm2->numIterations.getValue() ? lm1->numIterations.getValue() : lm2->numIterations.getValue() );
+            newSolver->maxError.setValue(lm1->maxError.getValue() < lm2->maxError.getValue() ? lm1->maxError.getValue() : lm2->maxError.getValue() );
+
+            newSolver->constraintAcc.setValue(lm1->constraintAcc.getValue() | lm2->constraintAcc.getValue());
+            newSolver->constraintVel.setValue(lm1->constraintVel.getValue() | lm2->constraintVel.getValue());
+            newSolver->constraintPos.setValue(lm1->constraintPos.getValue() | lm2->constraintPos.getValue());
+            return newSolver;
+        }
+#endif
+    }
+
+    return NULL;
 }
 
-SolverSet createSolverRungeKutta4RungeKutta4(odesolver::RungeKutta4Solver& solver1, odesolver::RungeKutta4Solver& /*solver2*/)
+
+// First the easy cases...
+
+SolverSet createSolverEulerEuler(odesolver::EulerSolver& solver1, odesolver::EulerSolver& solver2)
 {
-    return SolverSet(copySolver<odesolver::RungeKutta4Solver>(solver1), NULL);
+    return SolverSet(copySolver<odesolver::EulerSolver>(solver1), NULL,createConstraintSolver(&solver1, &solver2));
+}
+
+SolverSet createSolverRungeKutta4RungeKutta4(odesolver::RungeKutta4Solver& solver1, odesolver::RungeKutta4Solver& solver2)
+{
+    return SolverSet(copySolver<odesolver::RungeKutta4Solver>(solver1), NULL,createConstraintSolver(&solver1, &solver2));
 }
 
 SolverSet createSolverCGImplicitCGImplicit(odesolver::CGImplicitSolver& solver1, odesolver::CGImplicitSolver& solver2)
@@ -87,7 +152,7 @@ SolverSet createSolverCGImplicitCGImplicit(odesolver::CGImplicitSolver& solver1,
 
     solver->f_rayleighMass.setValue( solver1.f_rayleighMass.getValue() < solver2.f_rayleighMass.getValue() ? solver1.f_rayleighMass.getValue() : solver2.f_rayleighMass.getValue() );
     solver->f_velocityDamping.setValue( solver1.f_velocityDamping.getValue() > solver2.f_velocityDamping.getValue() ? solver1.f_velocityDamping.getValue() : solver2.f_velocityDamping.getValue());
-    return SolverSet(solver, NULL);
+    return SolverSet(solver, NULL,createConstraintSolver(&solver1, &solver2));
 }
 
 typedef linearsolver::CGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector> DefaultCGLinearSolver;
@@ -125,44 +190,54 @@ SolverSet createSolverEulerImplicitEulerImplicit(odesolver::EulerImplicitSolver&
 
     solver->f_rayleighMass.setValue( solver1.f_rayleighMass.getValue() < solver2.f_rayleighMass.getValue() ? solver1.f_rayleighMass.getValue() : solver2.f_rayleighMass.getValue() );
     solver->f_velocityDamping.setValue( solver1.f_velocityDamping.getValue() > solver2.f_velocityDamping.getValue() ? solver1.f_velocityDamping.getValue() : solver2.f_velocityDamping.getValue());
-    return SolverSet(solver, createLinearSolver(&solver1, &solver2));
+    return SolverSet(solver,
+            createLinearSolver(&solver1, &solver2),
+            createConstraintSolver(&solver1, &solver2));
 }
 
 SolverSet createSolverStaticSolver(odesolver::StaticSolver& solver1, odesolver::StaticSolver& solver2)
 {
-    return SolverSet(copySolver<odesolver::StaticSolver>(solver1), createLinearSolver(&solver1, &solver2));
+    return SolverSet(copySolver<odesolver::StaticSolver>(solver1),
+            createLinearSolver(&solver1, &solver2),
+            createConstraintSolver(&solver1, &solver2));
 }
 
 // Then the other, with the policy of taking the more precise solver
 
-SolverSet createSolverRungeKutta4Euler(odesolver::RungeKutta4Solver& solver1, odesolver::EulerSolver& /*solver2*/)
+SolverSet createSolverRungeKutta4Euler(odesolver::RungeKutta4Solver& solver1, odesolver::EulerSolver& solver2)
 {
-    return SolverSet(copySolver<odesolver::RungeKutta4Solver>(solver1), NULL);
+    return SolverSet(copySolver<odesolver::RungeKutta4Solver>(solver1), NULL,createConstraintSolver(&solver1, &solver2));
 }
 
-SolverSet createSolverCGImplicitEuler(odesolver::CGImplicitSolver& solver1, odesolver::EulerSolver& /*solver2*/)
+SolverSet createSolverCGImplicitEuler(odesolver::CGImplicitSolver& solver1, odesolver::EulerSolver& solver2)
 {
-    return SolverSet(copySolver<odesolver::CGImplicitSolver>(solver1), NULL);
+    return SolverSet(copySolver<odesolver::CGImplicitSolver>(solver1), NULL,createConstraintSolver(&solver1, &solver2));
 }
 
-SolverSet createSolverCGImplicitRungeKutta4(odesolver::CGImplicitSolver& solver1, odesolver::RungeKutta4Solver& /*solver2*/)
+SolverSet createSolverCGImplicitRungeKutta4(odesolver::CGImplicitSolver& solver1, odesolver::RungeKutta4Solver& solver2)
 {
-    return SolverSet(copySolver<odesolver::CGImplicitSolver>(solver1), NULL);
+    return SolverSet(copySolver<odesolver::CGImplicitSolver>(solver1), NULL,createConstraintSolver(&solver1, &solver2));
 }
 
-SolverSet createSolverEulerImplicitEuler(odesolver::EulerImplicitSolver& solver1, odesolver::EulerSolver& /*solver2*/)
+SolverSet createSolverEulerImplicitEuler(odesolver::EulerImplicitSolver& solver1, odesolver::EulerSolver& solver2)
 {
-    return SolverSet(copySolver<odesolver::EulerImplicitSolver>(solver1), createLinearSolver(&solver1, NULL));
+    return SolverSet(copySolver<odesolver::EulerImplicitSolver>(solver1),
+            createLinearSolver(&solver1, NULL),
+            createConstraintSolver(&solver1, &solver2));
 }
 
-SolverSet createSolverEulerImplicitRungeKutta4(odesolver::EulerImplicitSolver& solver1, odesolver::RungeKutta4Solver& /*solver2*/)
+SolverSet createSolverEulerImplicitRungeKutta4(odesolver::EulerImplicitSolver& solver1, odesolver::RungeKutta4Solver& solver2)
 {
-    return SolverSet(copySolver<odesolver::EulerImplicitSolver>(solver1), createLinearSolver(&solver1, NULL));
+    return SolverSet(copySolver<odesolver::EulerImplicitSolver>(solver1),
+            createLinearSolver(&solver1, NULL),
+            createConstraintSolver(&solver1, &solver2));
 }
 
-SolverSet createSolverEulerImplicitCGImplicit(odesolver::EulerImplicitSolver& solver1, odesolver::CGImplicitSolver& /*solver2*/)
+SolverSet createSolverEulerImplicitCGImplicit(odesolver::EulerImplicitSolver& solver1, odesolver::CGImplicitSolver& solver2)
 {
-    return SolverSet(copySolver<odesolver::EulerImplicitSolver>(solver1), createLinearSolver(&solver1, NULL));
+    return SolverSet(copySolver<odesolver::EulerImplicitSolver>(solver1),
+            createLinearSolver(&solver1, NULL),
+            createConstraintSolver(&solver1, &solver2));
 }
 
 }// namespace SolverMergers
@@ -173,13 +248,8 @@ SolverSet SolverMerger::merge(core::componentmodel::behavior::OdeSolver* solver1
 {
     static SolverMerger instance;
     SolverSet obj=instance.solverDispatcher.go(*solver1, *solver2);
-// #ifdef SOFA_HAVE_EIGEN2
-//     obj.first->constraintAcc.setValue( (solver1->constraintAcc.getValue() || solver2->constraintAcc.getValue() ) );
-//     obj.first->constraintVel.setValue( (solver1->constraintVel.getValue() || solver2->constraintVel.getValue() ) );
-//     obj.first->constraintPos.setValue( (solver1->constraintPos.getValue() || solver2->constraintPos.getValue() ) );
-//     obj.first->numIterations.setValue( std::max(solver1->numIterations.getValue(), solver2->numIterations.getValue() ) );
-//     obj.first->maxError.setValue( std::min(solver1->maxError.getValue(), solver2->maxError.getValue() ) );
-// #endif
+
+
     return obj;
 }
 

@@ -223,6 +223,7 @@ void Node::doAddObject(BaseObject* obj)
     inserted+= masterSolver.add(dynamic_cast< core::componentmodel::behavior::MasterSolver* >(obj));
     inserted+= solver.add(dynamic_cast< core::componentmodel::behavior::OdeSolver* >(obj));
     inserted+= linearSolver.add(dynamic_cast< core::componentmodel::behavior::LinearSolver* >(obj));
+    inserted+= constraintSolver.add(dynamic_cast< core::componentmodel::behavior::ConstraintSolver* >(obj));
     inserted+= mechanicalState.add(dynamic_cast< core::componentmodel::behavior::BaseMechanicalState* >(obj));
     bool isMechanicalMapping = mechanicalMapping.add(dynamic_cast< core::componentmodel::behavior::BaseMechanicalMapping* >(obj));
     inserted+= isMechanicalMapping;
@@ -266,6 +267,7 @@ void Node::doRemoveObject(BaseObject* obj)
     masterSolver.remove(dynamic_cast< core::componentmodel::behavior::MasterSolver* >(obj));
     solver.remove(dynamic_cast< core::componentmodel::behavior::OdeSolver* >(obj));
     linearSolver.remove(dynamic_cast< core::componentmodel::behavior::LinearSolver* >(obj));
+    constraintSolver.remove(dynamic_cast< core::componentmodel::behavior::ConstraintSolver* >(obj));
     mechanicalState.remove(dynamic_cast< core::componentmodel::behavior::BaseMechanicalState* >(obj));
     mechanicalMapping.remove(dynamic_cast< core::componentmodel::behavior::BaseMechanicalMapping* >(obj));
     mass.remove(dynamic_cast< core::componentmodel::behavior::BaseMass* >(obj));
@@ -603,6 +605,9 @@ void Node::printComponents()
         cerr<<(*i)->getName()<<" ";
     cerr<<endl<<"LinearSolver: ";
     for ( Sequence<LinearSolver>::iterator i=linearSolver.begin(), iend=linearSolver.end(); i!=iend; i++ )
+        cerr<<(*i)->getName()<<" ";
+    cerr<<endl<<"ConstraintSolver: ";
+    for ( Sequence<ConstraintSolver>::iterator i=constraintSolver.begin(), iend=constraintSolver.end(); i!=iend; i++ )
         cerr<<(*i)->getName()<<" ";
     cerr<<endl<<"InteractionForceField: ";
     for ( Sequence<InteractionForceField>::iterator i=interactionForceField.begin(), iend=interactionForceField.end(); i!=iend; i++ )
