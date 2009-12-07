@@ -202,6 +202,11 @@ int mycudaInit(int device)
 
 }
 
+int mycudaGetMultiProcessorCount()
+{
+    return mycudaDeviceProp.multiProcessorCount;
+}
+
 void mycudaMalloc(void **devPtr, size_t size)
 {
     if (!cudaInitCalled) mycudaInit();
