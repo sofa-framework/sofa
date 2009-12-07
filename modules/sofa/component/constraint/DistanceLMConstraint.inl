@@ -172,17 +172,17 @@ void DistanceLMConstraint<DataTypes>::writeConstraintEquations(ConstOrder Order)
         {
         case core::componentmodel::behavior::BaseLMConstraint::ACC :
         {
-            correction = -this->constrainedObject1->getConstraintJacobianTimesVecDeriv(registeredConstraints[i].first,
+            correction = this->constrainedObject1->getConstraintJacobianTimesVecDeriv(registeredConstraints[i].first,
                     core::componentmodel::behavior::BaseMechanicalState::VecId::dx());
-            correction+= -this->constrainedObject2->getConstraintJacobianTimesVecDeriv(registeredConstraints[i].second,
+            correction+= this->constrainedObject2->getConstraintJacobianTimesVecDeriv(registeredConstraints[i].second,
                     core::componentmodel::behavior::BaseMechanicalState::VecId::dx());
             break;
         }
         case core::componentmodel::behavior::BaseLMConstraint::VEL :
         {
-            correction = -this->constrainedObject1->getConstraintJacobianTimesVecDeriv(registeredConstraints[i].first,
+            correction = this->constrainedObject1->getConstraintJacobianTimesVecDeriv(registeredConstraints[i].first,
                     core::componentmodel::behavior::BaseMechanicalState::VecId::velocity());
-            correction+= -this->constrainedObject2->getConstraintJacobianTimesVecDeriv(registeredConstraints[i].second,
+            correction+= this->constrainedObject2->getConstraintJacobianTimesVecDeriv(registeredConstraints[i].second,
                     core::componentmodel::behavior::BaseMechanicalState::VecId::velocity());
             break;
         }
@@ -190,11 +190,11 @@ void DistanceLMConstraint<DataTypes>::writeConstraintEquations(ConstOrder Order)
         {
             SReal length     = lengthEdge(edges[i],x1,x2);
             SReal restLength = this->l0[i];
-            correction= length-restLength;
+            correction= restLength-length;
             break;
         }
         };
-        constraint->addConstraint( registeredConstraints[i].first, registeredConstraints[i].second, correction, core::componentmodel::behavior::BaseLMConstraint::BILATERAL);
+        constraint->addConstraint( registeredConstraints[i].first, registeredConstraints[i].second, -correction, core::componentmodel::behavior::BaseLMConstraint::BILATERAL);
     }
 }
 

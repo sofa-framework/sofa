@@ -45,9 +45,13 @@ namespace constraint
 
 using linearsolver::FullVector;
 using linearsolver::FullMatrix;
-LMConstraintSolver::LMConstraintSolver(): A(NULL), c(NULL), Lambda(NULL),
+LMConstraintSolver::LMConstraintSolver():
+    constraintAcc( initData( &constraintAcc, false, "constraintAcc", "Constraint the acceleration")),
+    constraintVel( initData( &constraintVel, false, "constraintVel", "Constraint the velocity")),
+    constraintPos( initData( &constraintPos, false, "constraintPos", "Constraint the position")),
     numIterations( initData( &numIterations, (unsigned int)25, "numIterations", "Number of iterations for Gauss-Seidel when solving the Constraints")),
-    maxError( initData( &maxError, 0.0000001, "maxError", "Max error for Gauss-Seidel algorithm when solving the constraints"))
+    maxError( initData( &maxError, 0.0000001, "maxError", "Max error for Gauss-Seidel algorithm when solving the constraints")),
+    A(NULL), c(NULL), Lambda(NULL)
 {
 }
 
@@ -88,7 +92,7 @@ bool LMConstraintSolver::needPriorStatePropagation()
             if (!c[i]->isCorrectionComputedWithSimulatedDOF())
             {
                 needPriorPropagation=true;
-                sout << "Propagating the State because of "<< c[i]->getName() << sendl;
+                if (f_printLog.getValue()) sout << "Propagating the State because of "<< c[i]->getName() << sendl;
                 break;
             }
         }
@@ -98,13 +102,12 @@ bool LMConstraintSolver::needPriorStatePropagation()
 
 
 
-void LMConstraintSolver::prepareStates(double /*dt*/, VecId Order)
+bool LMConstraintSolver::prepareStates(double /*dt*/, VecId Order)
 {
     //Get the matrices through mappings
     //************************************************************
     // Update the State of the Mapped dofs                      //
     //************************************************************
-    isActive=false;
 #ifdef SOFA_DUMP_VISITOR_INFO
     sofa::simulation::Visitor::TRACE_ARGUMENT arg;
 #endif
@@ -113,7 +116,7 @@ void LMConstraintSolver::prepareStates(double /*dt*/, VecId Order)
 
     if      (Order==VecId::dx())
     {
-        if (!constraintAcc.getValue()) return;
+        if (!constraintAcc.getValue()) return false;
         orderState=BaseLMConstraint::ACC;
         if (needPriorStatePropagation())
         {
@@ -130,7 +133,7 @@ void LMConstraintSolver::prepareStates(double /*dt*/, VecId Order)
     }
     else if (Order==VecId::velocity())
     {
-        if (!constraintVel.getValue()) return;
+        if (!constraintVel.getValue()) return false;
         orderState=BaseLMConstraint::VEL;
         if (needPriorStatePropagation())
         {
@@ -150,7 +153,7 @@ void LMConstraintSolver::prepareStates(double /*dt*/, VecId Order)
     }
     else
     {
-        if (!constraintPos.getValue()) return;
+        if (!constraintPos.getValue()) return false;
         orderState=BaseLMConstraint::POS;
 
         if (needPriorStatePropagation())
@@ -167,8 +170,6 @@ void LMConstraintSolver::prepareStates(double /*dt*/, VecId Order)
 #endif
     }
 
-    isActive=true;
-
     //************************************************************
     // Find the number of constraints                           //
     //************************************************************
@@ -180,8 +181,7 @@ void LMConstraintSolver::prepareStates(double /*dt*/, VecId Order)
     }
     if (numConstraint == 0)
     {
-        isActive=false;
-        return; //Nothing to solve
+        return false; //Nothing to solve
     }
 
     if (f_printLog.getValue())
@@ -198,15 +198,13 @@ void LMConstraintSolver::prepareStates(double /*dt*/, VecId Order)
     setDofs.clear();
     dofUsed.clear();
     invMass_Ltrans.clear();
+    return true;
 }
 
 
 
-void LMConstraintSolver::buildSystem(double /*dt*/, VecId)
+bool LMConstraintSolver::buildSystem(double /*dt*/, VecId)
 {
-    if (!isActive) return;
-
-
 #ifdef SOFA_DUMP_VISITOR_INFO
     sofa::simulation::Visitor::printNode("SystemCreation");
 #endif
@@ -278,14 +276,13 @@ void LMConstraintSolver::buildSystem(double /*dt*/, VecId)
 #ifdef SOFA_DUMP_VISITOR_INFO
     sofa::simulation::Visitor::printCloseNode("SystemCreation");
 #endif
+    return true;
 }
 
 
 
-void LMConstraintSolver::solveSystem(double /*dt*/, VecId)
+bool LMConstraintSolver::solveSystem(double /*dt*/, VecId)
 {
-
-    if (!isActive) return;
 #ifdef SOFA_DUMP_VISITOR_INFO
     sofa::simulation::Visitor::printNode("SystemSolution");
 #endif
@@ -306,17 +303,17 @@ void LMConstraintSolver::solveSystem(double /*dt*/, VecId)
     Lambda=new VectorEigen(numConstraint);
     Lambda->setZero(numConstraint);
 
-    isActive=solveConstraintSystemUsingGaussSeidel(orderState,LMConstraints, *A, *c, *Lambda);
+    bool solutionFound=solveConstraintSystemUsingGaussSeidel(orderState,LMConstraints, *A, *c, *Lambda);
 #ifdef SOFA_DUMP_VISITOR_INFO
     sofa::simulation::Visitor::printCloseNode("SystemSolution");
 #endif
+    return solutionFound;
 }
 
 
 
-void LMConstraintSolver::applyCorrection(double /*dt*/, VecId id, bool isPositionChangesUpdateVelocity)
+bool LMConstraintSolver::applyCorrection(double /*dt*/, VecId id, bool isPositionChangesUpdateVelocity)
 {
-    if (!isActive) return;
     //************************************************************
     // Constraint Correction
     //************************************************************
@@ -336,7 +333,7 @@ void LMConstraintSolver::applyCorrection(double /*dt*/, VecId id, bool isPositio
 #ifdef SOFA_DUMP_VISITOR_INFO
     sofa::simulation::Visitor::printCloseNode("SystemCorrection");
 #endif
-
+    return true;
 }
 
 
@@ -650,7 +647,7 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( ConstOrder Order
 
                 varEigen = A.block(idxConstraint,0,numConstraintToProcess,numConstraint)*Lambda;
                 error=0;
-                bool groupDesactivated=false;
+                bool groupDeactivated=false;
                 unsigned int i=0;
                 for (i=0; i<numConstraintToProcess; ++i)
                 {
@@ -658,14 +655,14 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( ConstOrder Order
                     Lambda(idxConstraint+i)=(c(idxConstraint+i) - varEigen(i))/A(idxConstraint+i,idxConstraint+i);
                     if (constraintOrder[constraintEntry]->getConstraint(i).nature == BaseLMConstraint::UNILATERAL && Lambda(idxConstraint+i) < 0)
                     {
-                        groupDesactivated=true;
-                        if (f_printLog.getValue()) sout << "Constraint : " << i << " from group " << idxConstraint << " Desactivated" << sendl;
+                        groupDeactivated=true;
+                        if (f_printLog.getValue()) sout << "Constraint : " << i << " from group " << idxConstraint << " Deactivated" << sendl;
                         break;
                     }
                     error += pow(previousIterationEigen(i)-Lambda(idxConstraint+i),2);
                 }
-                //One of the Unilateral Constraint is not active anymore. We desactivate the whole group
-                if (groupDesactivated)
+                //One of the Unilateral Constraint is not active anymore. We deactivate the whole group
+                if (groupDeactivated)
                 {
                     for (unsigned int j=0; j<numConstraintToProcess; ++j)
                     {
@@ -704,7 +701,7 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( ConstOrder Order
     }
     if (iteration == numIterations.getValue())
     {
-        serr << "no convergence in Gauss-Seidel"<<sendl;
+        serr << "no convergence in Gauss-Seidel for " << Order <<sendl;
         return false;
     }
 

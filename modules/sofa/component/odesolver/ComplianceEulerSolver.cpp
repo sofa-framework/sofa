@@ -102,10 +102,10 @@ void ComplianceEulerSolver::solve(double dt)
     computeAcc(getTime(), acc, pos, vel);
     vel.eq(vel);
     vel.peq(acc,dt);
-    if (constraintSolver) constraintSolver->solveConstraint(dt,VecId::velocity());
+    solveConstraint(dt,VecId::velocity());
     pos.eq(pos);
     pos.peq(vel,dt);
-    if (constraintSolver) constraintSolver->solveConstraint(dt,VecId::position());
+    solveConstraint(dt,VecId::position());
 
     //simulation::tree::MechanicalPropagateFreePositionVisitor().execute(context);
 

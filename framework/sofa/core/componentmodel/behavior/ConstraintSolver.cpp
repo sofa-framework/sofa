@@ -38,10 +38,7 @@ namespace componentmodel
 namespace behavior
 {
 
-ConstraintSolver::ConstraintSolver():
-    constraintAcc( initData( &constraintAcc, false, "constraintAcc", "Constraint the acceleration")),
-    constraintVel( initData( &constraintVel, false, "constraintVel", "Constraint the velocity")),
-    constraintPos( initData( &constraintPos, false, "constraintPos", "Constraint the position"))
+ConstraintSolver::ConstraintSolver()
 {}
 
 ConstraintSolver::~ConstraintSolver()
@@ -49,12 +46,14 @@ ConstraintSolver::~ConstraintSolver()
 
 void ConstraintSolver::solveConstraint(double dt, VecId id,   bool isPositionChangesUpdateVelocity)
 {
-
-    prepareStates(dt, id);
-    buildSystem(dt, id);
-    solveSystem(dt, id);
-    applyCorrection(dt, id, isPositionChangesUpdateVelocity);
-
+    bool continueSolving=true;
+    continueSolving=prepareStates(dt, id);
+    if (continueSolving) continueSolving=buildSystem(dt, id);
+    else return;
+    if (continueSolving) continueSolving=solveSystem(dt, id);
+    else return;
+    if (continueSolving) continueSolving=applyCorrection(dt, id, isPositionChangesUpdateVelocity);
+    else return;
 }
 } // namespace behavior
 

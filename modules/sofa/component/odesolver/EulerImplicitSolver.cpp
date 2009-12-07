@@ -155,18 +155,18 @@ void EulerImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior:
     if (firstOrder)
     {
         newVel.eq(x);                         // vel = x
-        if (constraintSolver) constraintSolver->solveConstraint(dt,VecId::velocity());
+        solveConstraint(dt,VecId::velocity());
         newPos.eq(pos, newVel, h);            // pos = pos + h vel
-        if (constraintSolver) constraintSolver->solveConstraint(dt,VecId::position());
+        solveConstraint(dt,VecId::position());
     }
     else
     {
         //vel.peq( x );                       // vel = vel + x
         newVel.eq(vel, x);
-        if (constraintSolver) constraintSolver->solveConstraint(dt,VecId::velocity());
+        solveConstraint(dt,VecId::velocity());
         //pos.peq( vel, h );                  // pos = pos + h vel
         newPos.eq(pos, newVel, h);
-        if (constraintSolver) constraintSolver->solveConstraint(dt,VecId::position());
+        solveConstraint(dt,VecId::position());
     }
 
 
@@ -197,12 +197,8 @@ void EulerImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior:
         simulation::MechanicalVMultiOpVisitor vmop(ops);
         vmop.setTags(this->getTags());
         vmop.execute(this->getContext());
-
-        if (constraintSolver)
-        {
-            constraintSolver->solveConstraint(dt,VecId::velocity());
-            constraintSolver->solveConstraint(dt,VecId::position());
-        }
+        solveConstraint(dt,VecId::velocity());
+        solveConstraint(dt,VecId::position());
     }
 #endif
 

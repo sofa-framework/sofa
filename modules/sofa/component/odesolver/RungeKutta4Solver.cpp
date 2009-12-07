@@ -164,9 +164,9 @@ void RungeKutta4Solver::solve(double dt)
     pos.peq(k3v,stepBy3);
     vel.peq(k3a,stepBy3);
     pos.peq(k4v,stepBy6);
-    if (constraintSolver) constraintSolver->solveConstraint(dt,VecId::position());
+    solveConstraint(dt,VecId::position());
     vel.peq(k4a,stepBy6);
-    if (constraintSolver) constraintSolver->solveConstraint(dt,VecId::velocity());
+    solveConstraint(dt,VecId::velocity());
 #else // single-operation optimization
     {
         typedef core::componentmodel::behavior::BaseMechanicalState::VMultiOp VMultiOp;
@@ -186,11 +186,9 @@ void RungeKutta4Solver::solve(double dt)
         ops[1].second.push_back(std::make_pair((VecId)k4a,stepBy6));
         simulation::MechanicalVMultiOpVisitor vmop(ops);
         vmop.execute(this->getContext());
-        if (constraintSolver)
-        {
-            constraintSolver->solveConstraint(dt,VecId::velocity());
-            constraintSolver->solveConstraint(dt,VecId::position());
-        }
+
+        solveConstraint(dt,VecId::velocity());
+        solveConstraint(dt,VecId::position());
     }
 #endif
 
