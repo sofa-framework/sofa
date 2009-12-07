@@ -809,3 +809,30 @@ void CudaNLCP_FullKernel_V12d(int dim,int itMax,float tol,float mu,const void * 
 
 #endif
 }
+
+void CudaNLCP_FullKernel_V13f(int dim,int itMax,float tol,float mu,const void * m,int mP,const void * q,void * f,void * err,void * share)
+{
+    const int V_NBPROC = mycudaGetMultiProcessorCount() * 2;
+
+    dim3 threads(V12_BSIZE,V12_BSIZE/2);
+    dim3 grid(1,V_NBPROC);
+    int dim_n = (dim+V12_BSIZE-1)/V12_BSIZE * V12_BSIZE;
+
+    CudaNLCP_FullKernel_V13_kernel<<< grid, threads>>>(V_NBPROC,dim,dim_n,dim_n*itMax,tol,mu,(const float *) m,mP,(const float *) q,(float *) f,(float *) err,(int *) share);
+}
+void CudaNLCP_FullKernel_V13d(int dim,int itMax,float tol,float mu,const void * m,int mP,const void * q,void * f,void * err,void * share)
+{
+    const int V_NBPROC = mycudaGetMultiProcessorCount() * 2;
+
+#if !defined(__CUDA_ARCH__) ||  __CUDA_ARCH__ < 130
+    myprintf("CUDA ERROR: double precision not supported.\n");
+#else
+
+    dim3 threads(V12_BSIZE,V12_BSIZE/2);
+    dim3 grid(1,V_NBPROC);
+    int dim_n = (dim+V12_BSIZE-1)/V12_BSIZE * V12_BSIZE;
+
+    CudaNLCP_FullKernel_V13_kernel<<< grid, threads>>>(V_NBPROC,dim,dim_n,dim_n*itMax,(double)tol,(double) mu,(const double *) m,mP,(const double *) q,(double *) f,(double *) err,(int *) share);
+
+#endif
+}
