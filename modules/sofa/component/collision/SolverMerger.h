@@ -29,6 +29,7 @@
 
 #include <sofa/core/componentmodel/behavior/OdeSolver.h>
 #include <sofa/core/componentmodel/behavior/LinearSolver.h>
+#include <sofa/core/componentmodel/behavior/ConstraintSolver.h>
 #include <sofa/helper/FnDispatcher.h>
 
 
@@ -40,8 +41,16 @@ namespace component
 
 namespace collision
 {
+struct SolverSet
+{
+    SolverSet(core::componentmodel::behavior::OdeSolver* o=NULL,core::componentmodel::behavior::LinearSolver* l=NULL,core::componentmodel::behavior::ConstraintSolver* c=NULL):
+        odeSolver(o),linearSolver(l),constraintSolver(c)
+    {}
 
-typedef std::pair<core::componentmodel::behavior::OdeSolver*,core::componentmodel::behavior::LinearSolver*> SolverSet;
+    core::componentmodel::behavior::OdeSolver* odeSolver;
+    core::componentmodel::behavior::LinearSolver* linearSolver;
+    core::componentmodel::behavior::ConstraintSolver* constraintSolver;
+};
 
 class SolverMerger
 {
