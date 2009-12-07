@@ -45,6 +45,7 @@ namespace collision
 class RemovePrimitivePerformerConfiguration
 {
 public:
+    RemovePrimitivePerformerConfiguration():topologicalOperation(0) {}
     void setTopologicalOperation (int m) {topologicalOperation = m;}
     void setVolumicMesh (bool v) {volumicMesh = v;}
     void setScale (double s) {selectorScale = s;}
@@ -76,6 +77,8 @@ public:
 
 protected:
 
+    void createElementList ();
+
     VecIds getNeighboorElements (VecIds& elementsToTest);
 
     VecIds getElementInZone (VecIds& elementsToTest);
@@ -89,9 +92,11 @@ protected:
     bool firstClick;
 
     VecIds selectedElem;
-    VecIds rejectedElem;
-    VecIds testElem;
-    VecIds tmp_testElem;//?
+    //VecIds rejectedElem;
+    //VecIds testElem;
+    //VecIds tmp_testElem;//?
+
+    sofa::core::componentmodel::topology::TopologyObjectType topoType;
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_COLLISION_REMOVEPRIMITIVEPERFORMER_CPP)
