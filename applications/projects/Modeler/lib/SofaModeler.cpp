@@ -174,8 +174,13 @@ SofaModeler::SofaModeler()
     GraphLayout->addWidget(sceneTab,0,0);
 
 #ifdef SOFA_QT4
+
+    //option available only since Qt 4.5
+#if QT_VERSION >= 0x045000
     sceneTab->setTabsClosable(true);
     connect( sceneTab, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
+#endif
+
 #endif
 
     connect( sceneTab, SIGNAL(currentChanged( QWidget*)), this, SLOT( changeCurrentScene( QWidget*)));
