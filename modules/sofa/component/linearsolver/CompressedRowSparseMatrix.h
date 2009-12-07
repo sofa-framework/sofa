@@ -179,6 +179,12 @@ public:
     enum { NL = traits::NL };
     enum { NC = traits::NC };
     typedef int Index;
+
+    typedef Matrix Expr;
+    typedef CompressedRowSparseMatrix<double> matrix_type;
+    enum { category = MATRIX_SPARSE };
+    enum { operand = 1 };
+
     typedef TVecBloc VecBloc;
     typedef TVecIndex VecIndex;
     struct IndexedBloc
@@ -477,6 +483,24 @@ public:
 //#endif
         btemp.clear();
         compressed = true;
+    }
+
+    void swap(Matrix& m)
+    {
+        Index t;
+        t = nRow; nRow = m.nRow; m.nRow = t;
+        t = nCol; nCol = m.nCol; m.nCol = t;
+        t = nBlocRow; nBlocRow = m.nBlocRow; m.nBlocRow = t;
+        t = nBlocCol; nBlocCol = m.nBlocCol; m.nBlocCol = t;
+        bool b;
+        b = compressed; compressed = m.compressed; m.compressed = b;
+        rowIndex.swap(m.rowIndex);
+        rowBegin.swap(m.rowBegin);
+        colsIndex.swap(m.colsIndex);
+        rowBegin.swap(m.rowBegin);
+        colsIndex.swap(m.colsIndex);
+        colsValue.swap(m.colsValue);
+        btemp.swap(m.btemp);
     }
 
     /// Make sure all rows have an entry even if they are empty
@@ -1087,6 +1111,136 @@ public:
         FullVector<Real2> res;
         mul(res,v);
         return res;
+    }
+
+    // methods for MatrixExpr support
+
+    template<class M2>
+    bool hasRef(const M2* m) const
+    {
+        return (const void*)this == (const void*)m;
+    }
+
+    std::string expr() const
+    {
+        return std::string(Name());
+    }
+
+    bool valid() const
+    {
+        return true;
+    }
+
+    template<class Dest>
+    void doCompute(Dest* dest) const
+    {
+        for (unsigned int xi = 0; xi < rowIndex.size(); ++xi)
+        {
+            Index iN = rowIndex[xi] * NL;
+            Range rowRange(rowBegin[xi], rowBegin[xi+1]);
+            for (int xj = rowRange.begin(); xj < rowRange.end(); ++xj)
+            {
+                Index jN = colsIndex[xj] * NC;
+                const Bloc& b = colsValue[xj];
+                for (int bi = 0; bi < NL; ++bi)
+                    for (int bj = 0; bj < NC; ++bj)
+                        dest->add(iN+bi, jN+bj, traits::v(b, bi, bj));
+            }
+        }
+        if (!btemp.empty())
+        {
+            for (typename VecIndexedBloc::const_iterator it = btemp.begin(), itend = btemp.end(); it != itend; ++it)
+            {
+                Index iN = it->l * NL;
+                Index jN = it->c * NC;
+                const Bloc& b = it->value;
+                for (int bi = 0; bi < NL; ++bi)
+                    for (int bj = 0; bj < NC; ++bj)
+                        dest->add(iN+bi, jN+bj, traits::v(b, bi, bj));
+            }
+        }
+    }
+
+protected:
+
+    template<class M>
+    void compute(const M& m, bool add = false)
+    {
+        if (m.hasRef(this))
+        {
+            Matrix tmp;
+            tmp.resize(m.rowSize(), m.colSize());
+            m.doCompute(&tmp);
+            if (add)
+                tmp.doCompute(this);
+            else
+                swap(tmp);
+        }
+        else
+        {
+            if (!add)
+                resize(m.rowSize(), m.colSize());
+            m.doCompute(this);
+        }
+    }
+public:
+
+    template<class TBloc2, class TVecBloc2, class TVecIndex2>
+    void operator=(const CompressedRowSparseMatrix<TBloc2, TVecBloc2, TVecIndex2>& m)
+    {
+        if (&m == this) return;
+        resize(m.rowSize(), m.colSize());
+        m.doCompute(this);
+    }
+
+    template<class TBloc2, class TVecBloc2, class TVecIndex2>
+    void operator+=(const CompressedRowSparseMatrix<TBloc2, TVecBloc2, TVecIndex2>& m)
+    {
+        compute(m, true);
+    }
+
+    template<class TBloc2, class TVecBloc2, class TVecIndex2>
+    void operator-=(const CompressedRowSparseMatrix<TBloc2, TVecBloc2, TVecIndex2>& m)
+    {
+        compute(MatrixExpr< MatrixNegative< CompressedRowSparseMatrix<TBloc2, TVecBloc2, TVecIndex2> > >(MatrixNegative< CompressedRowSparseMatrix<TBloc2, TVecBloc2, TVecIndex2> >(m)), true);
+    }
+
+    template<class Expr2>
+    void operator=(const MatrixExpr< Expr2 >& m)
+    {
+        compute(m, false);
+    }
+
+    template<class Expr2>
+    void operator+=(const MatrixExpr< Expr2 >& m)
+    {
+        compute(m, true);
+    }
+
+    template<class Expr2>
+    void operator-=(const MatrixExpr< Expr2 >& m)
+    {
+        compute(MatrixExpr< MatrixNegative< Expr2 > >(MatrixNegative< Expr2 >(m)), true);
+    }
+
+    MatrixExpr< MatrixTranspose< Matrix > > t() const
+    {
+        return MatrixExpr< MatrixTranspose< Matrix > >(MatrixTranspose< Matrix >(*this));
+    }
+
+    MatrixExpr< MatrixInverse< Matrix > > i() const
+    {
+        return MatrixExpr< MatrixInverse< Matrix > >(MatrixInverse< Matrix >(*this));
+    }
+
+    MatrixExpr< MatrixNegative< Matrix > > operator-() const
+    {
+        return MatrixExpr< MatrixNegative< Matrix > >(MatrixNegative< Matrix >(*this));
+    }
+
+    MatrixExpr< MatrixScale< Matrix, double > > operator*(const double& r) const
+    {
+        return MatrixExpr< MatrixScale< Matrix, double > >(MatrixScale< Matrix, double >(*this, r));
     }
 
     friend std::ostream& operator << (std::ostream& out, const Matrix& v )
