@@ -62,6 +62,8 @@ extern "C" {
 
     extern void SOFA_GPU_CUDA_API mycudaLogError(const char* err, const char* src);
     extern int myprintf(const char* fmt, ...);
+    extern int mycudaGetMultiProcessorCount();
+
     extern const char* mygetenv(const char* name);
 
     enum MycudaVerboseLevel
