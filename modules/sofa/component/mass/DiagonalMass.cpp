@@ -320,17 +320,17 @@ void DiagonalMass<Rigid2fTypes, Rigid2fMass>::draw()
 #ifdef SOFA_DEV
 #ifndef SOFA_FLOAT
 //////////////////////////////////////////////////////////////////////
-//     Specialisation of UniformMass<Rigid3dTypes, Frame3dMass>     //
+//     Specialisation of UniformMass<Frame3dTypes, Frame3dMass>     //
 //////////////////////////////////////////////////////////////////////
 
 template <>
-void DiagonalMass<Rigid3dTypes, Frame3dMass>::reinit()
+void DiagonalMass<Frame3dTypes, Frame3dMass>::reinit()
 {
     Inherited::reinit();
 }
 
 template <>
-double DiagonalMass<Rigid3dTypes, Frame3dMass>::getPotentialEnergy ( const VecCoord& x )
+double DiagonalMass<Frame3dTypes, Frame3dMass>::getPotentialEnergy ( const VecCoord& x )
 {
     double e = 0;
     const MassVector &masses= f_mass.getValue();
@@ -347,13 +347,13 @@ double DiagonalMass<Rigid3dTypes, Frame3dMass>::getPotentialEnergy ( const VecCo
 }
 
 template <>
-void DiagonalMass<Rigid3dTypes, Frame3dMass>::init()
+void DiagonalMass<Frame3dTypes, Frame3dMass>::init()
 {
     Inherited::init();
 }
 
 template <>
-void DiagonalMass<Rigid3dTypes, Frame3dMass>::draw()
+void DiagonalMass<Frame3dTypes, Frame3dMass>::draw()
 {
     const MassVector &masses= f_mass.getValue();
     if ( !getContext()->getShowBehaviorModels() ) return;
@@ -425,7 +425,7 @@ int DiagonalMassClass = core::RegisterObject("Define a specific mass for each pa
 #endif
 #ifdef SOFA_DEV
 #ifndef SOFA_FLOAT
-        .add< DiagonalMass<Rigid3dTypes, Frame3dMass> >()
+        .add< DiagonalMass<Frame3dTypes, Frame3dMass> >()
 #endif
 #ifndef SOFA_DOUBLE
 //                           .add< DiagonalMass<Rigid3fTypes,Frame3fMass> >()
@@ -451,7 +451,7 @@ template class SOFA_COMPONENT_MASS_API DiagonalMass<Rigid2fTypes,Rigid2fMass>;
 
 #ifdef SOFA_DEV
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_MASS_API DiagonalMass<Rigid3dTypes, Frame3dMass>;
+template class SOFA_COMPONENT_MASS_API DiagonalMass<Frame3dTypes, Frame3dMass>;
 #endif
 #ifndef SOFA_DOUBLE
 //      template class SOFA_COMPONENT_MASS_API DiagonalMass<Rigid3fTypes,Frame3fMass>;
