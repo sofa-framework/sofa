@@ -204,6 +204,8 @@ protected:
     Data<Coefs<double> > coefs;
     Data<unsigned int> nbRefs;
     Data<bool> displayBlendedFrame;
+    Data<bool> computeJ;
+    Data<bool> computeAllMatrices;
 
     bool computeWeights;
     WeightingType wheighting;
