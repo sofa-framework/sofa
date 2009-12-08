@@ -24,7 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_MISC_MONITOR_H
 #define SOFA_COMPONENT_MISC_MONITOR_H
-#include <sofa/core/VisualModel.h>
+#include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/defaulttype/Vec.h>
 
@@ -41,10 +41,10 @@ using namespace core::objectmodel;
 using namespace std;
 
 template <class DataTypes>
-class Monitor: public virtual core::VisualModel
+class Monitor: public virtual core::objectmodel::BaseObject
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(Monitor,DataTypes), core::VisualModel);
+    SOFA_CLASS(SOFA_TEMPLATE(Monitor,DataTypes), core::objectmodel::BaseObject);
 
     typedef typename DataTypes::VecReal VecReal;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -211,68 +211,88 @@ public:
 
         inline friend std::ostream& operator << ( std::ostream& out, const MonitorData& m )
         {
-            out << "P";
-            out << m.sizeIdxPos();
-            out << " [";
-            for (unsigned int i = 0; i < m.sizeIdxPos(); i++)
-                out << (m.getIndPos())[i] << " ";
+            bool previousInsertion=false;
+            if ( m.sizeIdxPos() )
+            {
+                out << "P [";
+                for (unsigned int i = 0; i < m.sizeIdxPos(); i++)
+                    out << (m.getIndPos())[i] << " ";
+                out << "] ";
+                previousInsertion=true;
+            }
+            if (m.sizeIdxVels())
+            {
+                if (previousInsertion) out << " ";
+                out << "V [";
+                for (unsigned int i = 0; i < m.sizeIdxVels(); i++)
+                    out << (m.getIndVels())[i] << " ";
 
-            out << "] ";
-            out << "V";
-            out << m.sizeIdxVels();
-            out << " [";
-            for (unsigned int i = 0; i < m.sizeIdxVels(); i++)
-                out << (m.getIndVels())[i] << " ";
-
-            out << "] ";
-            out << "F";
-            out << m.sizeIdxForces();
-            out << " [";
-            for (unsigned int i = 0; i < m.sizeIdxForces(); i++)
-                out << (m.getIndForces())[i] << " ";
-
+                out << "] ";
+                previousInsertion=true;
+            }
+            if (m.sizeIdxForces())
+            {
+                if (previousInsertion) out << " ";
+                out << "F [";
+                for (unsigned int i = 0; i < m.sizeIdxForces(); i++)
+                    out << (m.getIndForces())[i] << " ";
+                out << "]";
+                previousInsertion=true;
+            }
             return out;
         }
 
         /**Indices vector initialization MUST be written like :
-        *	P"Number of particles to monitor(put 0 if none)" [ "indices of the particles" ]
-        *	V"Number of particles to monitor(put 0 if none)" [ "indices of the particles" ]
-        *	F"Number of particles to monitor(put 0 if none)" [ "indices of the particles" ]
-        *	Example : P2 [0 1] V4 [3 2 1 0] F0 []
+        *	P [ "indices of the particles" ]
+        *	V [ "indices of the particles" ]
+        *	F [ "indices of the particles" ]
+        *	Example : P [0 1] V [3 2 1 0]
         **/
         inline friend std::istream& operator >> ( std::istream& in, MonitorData &m )
         {
-            char temp;
-            int nbParticles = 0;
-            int number = 0;
+            //don't know why the flag eof is not triggered...
+            long pos = in.tellg();
+            in.seekg( 0 , std::ios_base::end );
+            long size = in.tellg() ;
+            in.seekg( pos,  std::ios_base::beg ) ;
 
-            in >> temp; // skip the "P"
-            in >> nbParticles; //number of positions to monitor
-            in >> temp; //skip the "["
-            for (int i = 0; i < nbParticles; i++)
+            while (!in.eof() && in.tellg() < size)
             {
-                in >> number;
-                m.posIndices.push_back(number);
-            }
+                std::string token;
+                in >> token;
+                sofa::helper::vector<int> *indices;
+                if      (token == "P" || token == "p") indices=&(m.posIndices);
+                else if (token == "V" || token == "v") indices=&(m.velsIndices);
+                else if (token == "F" || token == "f") indices=&(m.forcesIndices);
+                else
+                {
+                    std::cerr << "Error Parsing value: " << token <<  std::endl;
+                    return in;
+                }
 
-            in >> temp; //skip the "]"
-            in >> temp; //skip the "V"
-            in >> nbParticles; //number of velocities to monitor
-            in >> temp; //skip the "["
-            for (int i = 0; i < nbParticles; i++)
-            {
-                in >> number;
-                m.velsIndices.push_back(number);
-            }
+                char temp;
+                in >> temp;
+                if (temp != '[')
+                {
+                    std::cerr << "Error Parsing value: no[ found" << std::endl;
+                    return in;
+                }
 
-            in >> temp; //skip the "]"
-            in >> temp; //skip the "F"
-            in >> nbParticles; //number of forces to monitor
-            in >> temp; //skip the "["
-            for (int i = 0; i < nbParticles; i++)
-            {
-                in >> number;
-                m.forcesIndices.push_back(number);
+                std::string setIndices;
+                while (!in.eof())
+                {
+                    char temp;
+                    in.get(temp);
+                    if (temp == ']') break;
+                    setIndices.push_back(temp);
+                }
+                std::istringstream ss(setIndices,std::istringstream::in);
+                while (!ss.eof())
+                {
+                    int idx;
+                    ss >> idx;
+                    indices->push_back(idx);
+                }
             }
             return in;
         }
@@ -380,7 +400,9 @@ public:
     *store mechanical state vectors (forces, positions, velocities) into
     *the MonitorData nested class. The filter (which position(s), velocity(ies) or *force(s) are displayed) is made in the gui
     */
-    virtual void fwdDraw ( Pass );
+    virtual void handleEvent( core::objectmodel::Event* ev );
+
+    virtual void draw ( );
 
     ///create gnuplot files
     virtual void initGnuplot ( const std::string path );
