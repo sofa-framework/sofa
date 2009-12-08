@@ -104,8 +104,8 @@ public:
     QwtDoubleRect rect;
     graph_data_widget_container() : w(NULL) {}
 
-    template<class Dialog, class Slot>
-    bool createWidgets(DataWidget * /* _widget*/, Dialog* /*dialog*/, Slot /*s*/, QWidget* parent, const data_type& d, bool /*readOnly*/)
+
+    bool createWidgets(DataWidget  * /* _widget*/ , QWidget* parent, const data_type& d, bool /*readOnly*/)
     {
         if (Q3GroupBox* box = dynamic_cast<Q3GroupBox*>(parent)) box->setColumns(1);
 #ifdef SOFA_QT4
