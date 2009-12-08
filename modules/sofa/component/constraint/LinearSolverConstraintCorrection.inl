@@ -266,6 +266,8 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
         x[i] = x_free[i] + dxi;
         v[i] = v_free[i] + dvi;
         dx[i] = dxi;
+
+        if (this->f_printLog.getValue()) std::cout << "dx[i] = " << dx[i] << std::endl;
     }
     mstate->vFree(forceID);
 }
