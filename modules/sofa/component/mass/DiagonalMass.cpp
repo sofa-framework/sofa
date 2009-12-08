@@ -317,7 +317,92 @@ void DiagonalMass<Rigid2fTypes, Rigid2fMass>::draw()
 #endif
 
 
+#ifdef SOFA_DEV
+#ifndef SOFA_FLOAT
+//////////////////////////////////////////////////////////////////////
+//     Specialisation of UniformMass<Rigid3dTypes, Frame3dMass>     //
+//////////////////////////////////////////////////////////////////////
 
+template <>
+void DiagonalMass<Rigid3dTypes, Frame3dMass>::reinit()
+{
+    Inherited::reinit();
+}
+
+template <>
+double DiagonalMass<Rigid3dTypes, Frame3dMass>::getPotentialEnergy ( const VecCoord& x )
+{
+    double e = 0;
+    const MassVector &masses= f_mass.getValue();
+    // gravity
+    Vec3d g ( this->getContext()->getLocalGravity() );
+    Deriv theGravity;
+    DataTypes::set
+    ( theGravity, g[0], g[1], g[2] );
+    for ( unsigned int i=0; i<x.size(); i++ )
+    {
+        e -= theGravity.getVCenter() *masses[i].mass*x[i].getCenter();
+    }
+    return e;
+}
+
+template <>
+void DiagonalMass<Rigid3dTypes, Frame3dMass>::init()
+{
+    Inherited::init();
+}
+
+template <>
+void DiagonalMass<Rigid3dTypes, Frame3dMass>::draw()
+{
+    const MassVector &masses= f_mass.getValue();
+    if ( !getContext()->getShowBehaviorModels() ) return;
+    VecCoord& x = *mstate->getX();
+    Real totalMass=0;
+    RigidTypes::Vec3 gravityCenter;
+    for ( unsigned int i=0; i<x.size(); i++ )
+    {
+        const Quat& orient = x[i].getOrientation();
+        //orient[3] = -orient[3];
+        const RigidTypes::Vec3& center = x[i].getCenter();
+        RigidTypes::Vec3 len;
+        // The moment of inertia of a box is:
+        //   m->_I(0,0) = M/REAL(12.0) * (ly*ly + lz*lz);
+        //   m->_I(1,1) = M/REAL(12.0) * (lx*lx + lz*lz);
+        //   m->_I(2,2) = M/REAL(12.0) * (lx*lx + ly*ly);
+        // So to get lx,ly,lz back we need to do
+        //   lx = sqrt(12/M * (m->_I(1,1)+m->_I(2,2)-m->_I(0,0)))
+        // Note that RigidMass inertiaMatrix is already divided by M
+        double m00 = masses[i].inertiaMatrix[0][0];
+        double m11 = masses[i].inertiaMatrix[1][1];
+        double m22 = masses[i].inertiaMatrix[2][2];
+        len[0] = sqrt ( m11+m22-m00 );
+        len[1] = sqrt ( m00+m22-m11 );
+        len[2] = sqrt ( m00+m11-m22 );
+
+        helper::gl::Axis::draw ( center, orient, len*showAxisSize.getValue() );
+
+        gravityCenter += ( center * masses[i].mass );
+        totalMass += masses[i].mass;
+    }
+
+    if ( showCenterOfGravity.getValue() )
+    {
+        glColor3f ( 1,1,0 );
+        glBegin ( GL_LINES );
+        gravityCenter /= totalMass;
+        helper::gl::glVertexT ( gravityCenter - RigidTypes::Vec3 ( showAxisSize.getValue(),0,0 ) );
+        helper::gl::glVertexT ( gravityCenter + RigidTypes::Vec3 ( showAxisSize.getValue(),0,0 ) );
+        helper::gl::glVertexT ( gravityCenter - RigidTypes::Vec3 ( 0,showAxisSize.getValue(),0 ) );
+        helper::gl::glVertexT ( gravityCenter + RigidTypes::Vec3 ( 0,showAxisSize.getValue(),0 ) );
+        helper::gl::glVertexT ( gravityCenter - RigidTypes::Vec3 ( 0,0,showAxisSize.getValue() ) );
+        helper::gl::glVertexT ( gravityCenter + RigidTypes::Vec3 ( 0,0,showAxisSize.getValue() ) );
+        glEnd();
+    }
+}
+
+#endif
+#endif
 
 
 SOFA_DECL_CLASS(DiagonalMass)
@@ -338,6 +423,14 @@ int DiagonalMassClass = core::RegisterObject("Define a specific mass for each pa
         .add< DiagonalMass<Rigid3fTypes,Rigid3fMass> >()
         .add< DiagonalMass<Rigid2fTypes,Rigid2fMass> >()
 #endif
+#ifdef SOFA_DEV
+#ifndef SOFA_FLOAT
+        .add< DiagonalMass<Rigid3dTypes, Frame3dMass> >()
+#endif
+#ifndef SOFA_DOUBLE
+//                           .add< DiagonalMass<Rigid3fTypes,Frame3fMass> >()
+#endif
+#endif
         ;
 
 #ifndef SOFA_FLOAT
@@ -353,6 +446,16 @@ template class SOFA_COMPONENT_MASS_API DiagonalMass<Vec2fTypes,float>;
 template class SOFA_COMPONENT_MASS_API DiagonalMass<Vec1fTypes,float>;
 template class SOFA_COMPONENT_MASS_API DiagonalMass<Rigid3fTypes,Rigid3fMass>;
 template class SOFA_COMPONENT_MASS_API DiagonalMass<Rigid2fTypes,Rigid2fMass>;
+#endif
+
+
+#ifdef SOFA_DEV
+#ifndef SOFA_FLOAT
+template class SOFA_COMPONENT_MASS_API DiagonalMass<Rigid3dTypes, Frame3dMass>;
+#endif
+#ifndef SOFA_DOUBLE
+//      template class SOFA_COMPONENT_MASS_API DiagonalMass<Rigid3fTypes,Frame3fMass>;
+#endif
 #endif
 
 

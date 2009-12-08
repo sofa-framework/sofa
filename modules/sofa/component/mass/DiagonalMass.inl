@@ -30,6 +30,9 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
+#ifdef SOFA_DEV
+#include <sofa/defaulttype/FrameMass.h>
+#endif
 #include <sofa/component/topology/TopologyChangedEvent.h>
 #include <sofa/component/topology/PointData.inl>
 #include <sofa/component/topology/RegularGridTopology.h>

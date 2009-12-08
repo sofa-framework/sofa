@@ -40,3 +40,13 @@ HEADERS += \
 SOURCES += \
           Frame.cpp \
           SolidTypes.cpp
+
+contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
+
+HEADERS += FrameMass.h \
+           FrameMass.inl
+
+SOURCES += 
+
+} # END SOFA_DEV
+

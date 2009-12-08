@@ -73,6 +73,8 @@ SkinningMapping<BasicMapping>::SkinningMapping ( In* from, Out* to )
     , coefs ( initData ( &coefs,"coefs","weights list for the influences of the references Dofs" ) )
     , nbRefs ( initData ( &nbRefs, ( unsigned ) 3,"nbRefs","nb references for skinning" ) )
     , displayBlendedFrame ( initData ( &displayBlendedFrame,"1", "displayBlendedFrame","weights list for the influences of the references Dofs" ) )
+    , computeJ ( initData ( &computeJ, "0", "computeJ","compute matrix J in addition to apply for the dual quat interpolation method." ) )
+    , computeAllMatrices ( initData ( &computeAllMatrices, "0", "computeAllMatrices","compute all the matrices in addition to apply for the dual quat interpolation method." ) )
     , computeWeights ( true )
     , wheighting ( WEIGHT_INVDIST_SQUARE )
     , interpolation ( INTERPOLATION_DUAL_QUATERNION )
@@ -192,8 +194,9 @@ void SkinningMapping<BasicMapping>::sortReferences ()
         for ( unsigned int i = 0; i < xto.size(); i++ )
             tmpTo[i] = xto[i];
 
-        if ( distance == DISTANCE_GEODESIC ) geoDist->computeGeodesicalDistanceAtRest ( distances, distGradients, tmpTo, tmpFrom );
-        if ( distance == DISTANCE_HARMONIC ) geoDist->computeHarmonicCoords ( distances, distGradients, tmpTo, tmpFrom );
+        if ( distance == DISTANCE_GEODESIC && computeAllMatrices.getValue()) geoDist->computeGeodesicalDistanceMap ( tmpFrom );
+        if ( distance == DISTANCE_HARMONIC && computeAllMatrices.getValue()) geoDist->computeHarmonicCoordsDistanceMap ( tmpFrom );
+        geoDist->getDistances( distances, distGradients, tmpTo);
 #endif
         break;
     }
@@ -516,7 +519,7 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
         VDUALQUAT qrel ( nbDOF );
 
         DUALQUAT q,b,bn,V;
-        Mat33 R,dR,A,Ainv,E,dE;
+        Mat33 R,dR,Ainv,E,dE;
         Mat88 N,dN;
         Mat86 NTL;
         Mat38 Q,dQ,QN,QNT;
@@ -528,12 +531,12 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
         const vector<vector<Coord> >& dw = distGradients;
         VVec6& e = this->deformationTensors;
 
-
         // Resize vectors
         e.resize ( nbP );
         this->det.resize ( nbP );
         this->J.resize ( nbDOF );
         this->B.resize ( nbDOF );
+        this->A.resize( nbP);
         for ( i=0; i<nbDOF; i++ )
         {
             this->J[i].resize ( nbP );
@@ -558,6 +561,9 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
                 out[i][k]=t[k];  //update skinned points
                 for ( j=0; j<3; j++ ) out[i][k]+=R[k][j]*initPos[i][j];
             }
+
+            if( !computeJ.getValue()) continue; // if we don't want to compute all the matrices
+
             computeDqN_constants ( q0q0T, q0qeT, qeq0T, bn );
             computeDqN ( N, q0q0T, q0qeT, qeq0T, QEQ0, Q0Q0, Q0 );	//update N=d(bn)/d(b)
             computeDqQ ( Q, bn, initPos[i] );	//update Q=d(P)/d(bn)
@@ -571,7 +577,7 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
             QN=Q*N; // update QN
 
             // grad def = d(P)/d(p0)
-            A=R+Q*NW; // update A=R+QNW
+            this->A[i]=R+Q*NW; // update A=R+QNW
 
             // strain
             for ( k=0; k<3; k++ )
@@ -579,7 +585,7 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
                 for ( l=0; l<3; l++ )
                 {
                     E[k][l]=0;
-                    for ( m=0; m<3; m++ ) E[k][l]+=A[m][l]*A[m][k];
+                    for ( m=0; m<3; m++ ) E[k][l]+=this->A[i][m][l]*this->A[i][m][k];
                 }
                 E[k][k]-=1.;
             }
@@ -591,8 +597,8 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
             e[i][4]=E[0][2];
             e[i][5]=E[1][2]; // column form
 
-            this->det[i]=determinant ( A );
-            invertMatrix ( Ainv,A );
+            this->det[i]=determinant ( this->A[i] );
+            invertMatrix ( Ainv,this->A[i] );
 
             for ( j=0; j<nbDOF; j++ )
             {
@@ -600,6 +606,9 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
                 NTL=N*TL[j]; // update NTL
                 this->J[j][i]=Q*NTL;
                 this->J[j][i]*=w[j][i]; // Update J=wiQNTL
+
+                if( !computeAllMatrices.getValue()) continue; // if we want to compute just the J matrix
+
                 QNT=QN*this->T[j]; // Update QNT
 
                 // B = d(strain)/Omega_j
@@ -640,12 +649,12 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
                     // B=1/2(graddef^T.d(graddef)/Omega_j + d(graddef)/Omega_j^T.graddef)
                     for ( n=0; n<3; n++ )
                     {
-                        this->B[j][i][0][l]+= ( dE[n][0]*A[n][0] );
-                        this->B[j][i][1][l]+= ( dE[n][1]*A[n][1] );
-                        this->B[j][i][2][l]+= ( dE[n][2]*A[n][2] );
-                        this->B[j][i][3][l]+=0.5* ( dE[n][0]*A[n][1]+A[n][0]*dE[n][1] );
-                        this->B[j][i][4][l]+=0.5* ( dE[n][0]*A[n][2]+A[n][0]*dE[n][2] );
-                        this->B[j][i][5][l]+=0.5* ( dE[n][1]*A[n][2]+A[n][1]*dE[n][2] );
+                        this->B[j][i][0][l]+= ( dE[n][0]*this->A[i][n][0] );
+                        this->B[j][i][1][l]+= ( dE[n][1]*this->A[i][n][1] );
+                        this->B[j][i][2][l]+= ( dE[n][2]*this->A[i][n][2] );
+                        this->B[j][i][3][l]+=0.5* ( dE[n][0]*this->A[i][n][1]+this->A[i][n][0]*dE[n][1] );
+                        this->B[j][i][4][l]+=0.5* ( dE[n][0]*this->A[i][n][2]+this->A[i][n][0]*dE[n][2] );
+                        this->B[j][i][5][l]+=0.5* ( dE[n][1]*this->A[i][n][2]+this->A[i][n][1]*dE[n][2] );
                     }
                 }
             }
