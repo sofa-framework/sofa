@@ -497,6 +497,7 @@ bool MeshTopologyLoader::loadMeshFile(const char *filename)
 // 		std::cout << "Gmsh format 2.0" << std::endl;
         std::string line;
         std::getline(file, line); // we don't care about this line
+        if (line=="") std::getline(file, line);
         file >> cmd;
         if (cmd != "$EndMeshFormat") // it should end with $EndMeshFormat
         {
