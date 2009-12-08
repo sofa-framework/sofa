@@ -105,7 +105,7 @@ ConstraintSolver* createConstraintSolver(OdeSolver* solver1, OdeSolver* solver2)
             newSolver->build_lcp.setValue(lcp1->build_lcp.getValue() | lcp2->build_lcp.getValue());
             newSolver->tol.setValue(lcp1->tol.getValue() < lcp2->tol.getValue() ? lcp1->tol.getValue() : lcp2->tol.getValue() );
             newSolver->maxIt.setValue(lcp1->maxIt.getValue() > lcp2->maxIt.getValue() ? lcp1->maxIt.getValue() : lcp2->maxIt.getValue() );
-            newSolver->maxIt.setValue((lcp1->mu.getValue() + lcp2->mu.getValue())*0.5);
+            newSolver->mu.setValue((lcp1->mu.getValue() + lcp2->mu.getValue())*0.5);
             return newSolver;
         }
 #ifdef SOFA_HAVE_EIGEN2
