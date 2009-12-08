@@ -69,8 +69,6 @@ struct  dataTime
 };
 
 
-
-
 class PieWidget: public QWidget
 {
 public:
