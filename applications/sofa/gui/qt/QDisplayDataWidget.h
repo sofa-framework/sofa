@@ -1,0 +1,74 @@
+#ifndef SOFA_GUI_QT_DISPLAYDATAWIDGET_H
+#define SOFA_GUI_QT_DISPLAYDATAWIDGET_H
+
+#ifdef SOFA_QT4
+#include <QWidget>
+#include <QTextEdit>
+#include <Q3GroupBox>
+#else
+#include <qwidget.h>
+#include <qtextedit.h>
+#include <qgroupbox.h>
+#endif
+
+namespace sofa
+{
+namespace core
+{
+namespace objectmodel
+{
+class BaseData;
+}
+}
+namespace gui
+{
+namespace qt
+{
+
+class DataWidget;
+class QDisplayDataInfoWidget;
+struct ModifyObjectFlags;
+
+class QDisplayDataWidget : public Q3GroupBox
+{
+    Q_OBJECT
+public:
+    QDisplayDataWidget(QWidget* parent,
+            core::objectmodel::BaseData* data,
+            const ModifyObjectFlags& flags);
+    unsigned int getNumWidgets() const { return numWidgets_;};
+
+public slots:
+    void UpdateData();              //QWidgets ---> BaseData
+    void UpdateWidgets();           //BaseData ---> QWidget
+signals:
+    void WidgetHasChanged(bool);
+    void WidgetUpdate();
+    void DataUpdate();
+    void DataParentNameChanged();
+protected:
+    core::objectmodel::BaseData* data_;
+    DataWidget* datawidget_;
+    QDisplayDataInfoWidget*  datainfowidget_;
+    unsigned int numWidgets_;
+protected slots:
+    void TextChange();
+};
+
+class QDataTextEdit : public QTextEdit
+{
+    Q_OBJECT
+public:
+    QDataTextEdit(QWidget* parent,core::objectmodel::BaseData*,const ModifyObjectFlags& flags);
+public slots:
+    void UpdateData();
+    void UpdateWidget();
+protected:
+    core::objectmodel::BaseData* data_;
+};
+
+} // qt
+} // gui
+} //sofa
+
+#endif // SOFA_GUI_QT_DISPLAYDATAWIDGET_H

@@ -26,9 +26,8 @@
 ******************************************************************************/
 #include "GraphModeler.h"
 #include "AddPreset.h"
+
 #include <sofa/core/ComponentLibrary.h>
-
-
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/gui/qt/ModifyObject.h>
 #include <sofa/gui/qt/FileManagement.h> //static functions to manage opening/ saving of files

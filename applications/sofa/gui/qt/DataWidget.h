@@ -30,16 +30,21 @@
 
 
 #include "SofaGUIQt.h"
-#include "ModifyObject.h"
+#include <sofa/core/objectmodel/BaseData.h>
+#include <sofa/core/objectmodel/Base.h>
 #include <sofa/helper/Factory.h>
 #ifdef SOFA_QT4
 #include <QDialog>
 #include <QLineEdit>
 #include <Q3Table>
+#include <QPushButton>
+#include <QTextEdit>
 #else
 #include <qdialog.h>
 #include <qlineedit.h>
 #include <qtable.h>
+#include <qpushbutton.h>
+#include <qtextedit.h>
 #endif // SOFA_QT4
 
 
@@ -51,7 +56,6 @@ namespace core
 namespace objectmodel
 {
 class Base;
-class BaseData;
 }
 }
 namespace gui
@@ -60,27 +64,48 @@ namespace qt
 {
 
 class ModifyObject;
-class DataWidget
+class DataWidget : public QWidget
 {
+    Q_OBJECT
+public slots:
+    void updateData()
+    {
+        std::string previousName = baseData->getOwner()->getName();
+        writeToData();
+        updateVisibility();
+        if(baseData->getOwner()->getName() != previousName)
+        {
+            emit dataParentNameChanged();
+        }
+        modified = false;
+        emit requestChange(modified);
+    }
+    void updateWidget() { readFromData();}
+signals:
+    void requestChange(bool );
+    void dataParentNameChanged();
+
 protected:
     core::objectmodel::BaseData* baseData;
     QWidget* parent;
-    ModifyObject* dialog;
     std::string name;
     bool readOnly;
+    bool modified;
+protected slots:
+    void setModified() { modified = true; emit requestChange(modified); }
+
 public:
     typedef core::objectmodel::BaseData MyData;
 
-    DataWidget(MyData* d) : baseData(d), dialog(NULL), readOnly(false) {}
+    DataWidget(MyData* d) : baseData(d),  readOnly(false), modified(false) {}
     virtual ~DataWidget() {}
-    void setDialog(ModifyObject* d) { dialog = d; }
     void setReadOnly(bool b) { readOnly = b; }
     void setParent(QWidget *p) { parent=p; }
     void setName(std::string n) { name = n;};
+    core::objectmodel::BaseData* getBaseData() const { return baseData; }
     virtual bool createWidgets(QWidget* parent) = 0;
-    virtual void readFromData() = 0;
-    virtual void writeToData() {}
-    virtual bool processChange(const QObject* /*sender*/) { return false; }
+    virtual void readFromData() {};
+    virtual void writeToData() {};
     virtual bool isModified() { return false; }
     std::string getName() { return name;};
     virtual void update()
@@ -101,7 +126,6 @@ public:
     {
         std::string name;
         core::objectmodel::BaseData* data;
-        ModifyObject* dialog;
         QWidget* parent;
         bool readOnly;
     };
@@ -112,7 +136,6 @@ public:
         typename T::MyData* data = dynamic_cast<typename T::MyData*>(arg.data);
         if (!data) return;
         instance = new T(data);
-        instance->setDialog(arg.dialog);
         instance->setReadOnly(arg.readOnly);
         instance->setParent(arg.parent);
         instance->setName(arg.name);
@@ -154,15 +177,6 @@ public:
         data->read(s);
         counter = data->getCounter();
     }
-    virtual bool processChange(const QObject* sender)
-    {
-        if (sender == w)
-        {
-            modified = true;
-            return true;
-        }
-        else return false;
-    }
     virtual void update()
     {
         if (counter != data->getCounter())
@@ -189,8 +203,37 @@ public slots:
 
 //     extern template class SOFA_SOFAGUIQT_API helper::Factory<std::string, DataWidget, DataWidget::CreatorArgument>;
 
+class QPushButtonUpdater: public QPushButton
+{
+    Q_OBJECT
+public:
 
+    QPushButtonUpdater( DataWidget *d, const QString & text, QWidget * parent = 0 ): QPushButton(text,parent),widget(d) {};
 
+public slots:
+    void setDisplayed(bool b);
+protected:
+    DataWidget *widget;
+
+};
+
+//Widget used to display the name of a Data and if needed the link to another Data
+class QDisplayDataInfoWidget: public QWidget
+{
+    Q_OBJECT
+public:
+    QDisplayDataInfoWidget(QWidget* parent, const std::string& helper, core::objectmodel::BaseData* d, bool modifiable);
+public slots:
+    void linkModification();
+    void linkEdited();
+    unsigned int getNumLines() const { return numLines_;}
+protected:
+    void formatHelperString(const std::string& helper, std::string& final_text);
+    static unsigned int numLines(const std::string& str);
+    unsigned int numLines_;
+    core::objectmodel::BaseData* data;
+    QLineEdit *linkpath_edit;
+};
 
 } // qt
 } // gui

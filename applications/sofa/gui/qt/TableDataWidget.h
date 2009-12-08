@@ -358,10 +358,7 @@ public:
         s = getCellText(r,c);
     }
 
-
-
-    template<class Dialog, class Slot>
-    bool createWidgets(DataWidget *_widget, Dialog* dialog, Slot s, QWidget* parent, const data_type& d, bool readOnly)
+    bool createWidgets(DataWidget *_widget, QWidget* parent, const data_type& d, bool readOnly)
     {
         rows = 0;
         int dataRows = rhelper::size(d);
@@ -402,16 +399,16 @@ public:
         {
             if (!(FLAGS & TABLE_FIXEDSIZE))
             {
-                dialog->connect(wSize, SIGNAL( valueChanged(int) ), dialog, s);
+                _widget->connect(wSize, SIGNAL( valueChanged(int) ), _widget, SLOT(setModified()) );
             }
             else
             {
                 wSize->setEnabled(false);
             }
-            dialog->connect(wTable, SIGNAL( valueChanged(int,int) ), dialog, s);
+            _widget->connect(wTable, SIGNAL( valueChanged(int,int) ), _widget, SLOT(setModified()) );
         }
-        dialog->connect(wDisplay, SIGNAL( toggled(bool) ), wTable,   SLOT(setDisplayed(bool)));
-        dialog->connect(wDisplay, SIGNAL( toggled(bool) ), wDisplay, SLOT(setDisplayed(bool)));
+        _widget->connect(wDisplay, SIGNAL( toggled(bool) ), wTable,   SLOT(setDisplayed(bool)));
+        _widget->connect(wDisplay, SIGNAL( toggled(bool) ), wDisplay, SLOT(setDisplayed(bool)));
         return true;
     }
     void setReadOnly(bool readOnly)
