@@ -11,6 +11,11 @@
 #include <qgroupbox.h>
 #endif
 
+#ifndef SOFA_QT4
+typedef QGroupBox Q3GroupBox;
+typedef QTextEdit   Q3TextEdit;
+#endif
+
 namespace sofa
 {
 namespace core

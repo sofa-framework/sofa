@@ -38,14 +38,16 @@
 #include <QLineEdit>
 #include <Q3Table>
 #include <QPushButton>
-#include <QTextEdit>
 #else
 #include <qdialog.h>
 #include <qlineedit.h>
 #include <qtable.h>
 #include <qpushbutton.h>
-#include <qtextedit.h>
 #endif // SOFA_QT4
+
+#ifndef SOFA_QT4
+typedef QTable    Q3Table;
+#endif
 
 
 namespace sofa
@@ -194,7 +196,6 @@ public:
         QTable(numRows, numCols, parent, name)
 #endif
     {};
-
 public slots:
     void setDisplayed(bool b) {this->setShown(b);}
 public slots:
