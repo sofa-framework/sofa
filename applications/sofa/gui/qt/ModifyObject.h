@@ -28,7 +28,6 @@
 #define SOFA_GUI_QT_MODIFYOBJECT_H
 
 #include "SofaGUIQt.h"
-#include "ModifyObjectModel.h"
 #include <sofa/core/objectmodel/BaseObject.h>
 
 #include <sofa/defaulttype/Vec.h>
@@ -85,7 +84,14 @@
 
 namespace sofa
 {
-
+namespace core
+{
+namespace objectmodel
+{
+class Base;
+class BaseData;
+}
+}
 namespace gui
 {
 
@@ -106,8 +112,6 @@ typedef QTextEdit   Q3TextEdit;
 typedef QGrid       Q3Grid;
 #endif
 
-class DataWidget;
-
 typedef struct ModifyObjectFlags
 {
 
@@ -118,7 +122,7 @@ typedef struct ModifyObjectFlags
     bool REINIT_FLAG;
     bool LINKPATH_MODIFIABLE_FLAG; //if we allow to modify the links of the Data
 
-    explicit ModifyObjectFlags():
+    ModifyObjectFlags():
         HIDE_FLAG(true),
         READONLY_FLAG(true),
         EMPTY_FLAG(false),
@@ -145,10 +149,11 @@ typedef struct ModifyObjectFlags
         REINIT_FLAG = false;
         LINKPATH_MODIFIABLE_FLAG = true;
     };
-} ModifyDialogFlags;
+} ModifyObjectFlags;
 
+class DataWidget;
 
-class SOFA_SOFAGUIQT_API ModifyObject : public ModifyObjectModel
+class SOFA_SOFAGUIQT_API ModifyObject : public QDialog
 {
     Q_OBJECT
 public:
@@ -167,6 +172,8 @@ public:
         delete buttonUpdate;
     }
 
+    const ModifyObjectFlags& getFlags() { return dialogFlags_;}
+
     void setNode(); //create all the widgets of the dialog window
 
     bool hideData(core::objectmodel::BaseData* data) { return (!data->isDisplayed()) && dialogFlags_.HIDE_FLAG;};
@@ -174,112 +181,65 @@ public:
     void readOnlyData(QWidget *widget, core::objectmodel::BaseData* data);
 
 
+signals:
+
+
 public slots:
-    virtual void updateValues();              //update the node with the values of the field
-    void updateTextEdit();            //update the text fields due to unknown data field
-    void updateConsole();             //update the console log of warnings and outputs
-    void updateTables();              //update the tables of value at each step of the simulation
-    void saveTables();                //Save in datafield the content of a QTable
-    void saveTextEdit();                //Save in datafield the content of a QTextEdit
-    virtual void changeValue();               //each time a field is modified
-    void changeVisualValue();               //each time a field of the Visualization tab is modified
+    void reject   () {                 emit(dialogClosed(Id_)); deleteLater(); QDialog::reject();} //When closing a window, inform the parent.
+    void accept   () { updateValues(); emit(dialogClosed(Id_)); deleteLater(); QDialog::accept();} //if closing by using Ok button, update the values
     void closeNow () {emit(reject());} //called from outside to close the current widget
-    void resizeTable(int);
+    virtual void closeEvent ( QCloseEvent * ) {emit(reject());}
+
+    virtual void updateValues();              //update the node with the values of the field
+    virtual void changeValue();               //each time a field is modified
+    void updateListViewItem();
+signals:
+    void updateDataWidgets();             // emitted eachtime updateValues is called to propagate the changes to the widgets.
+    void objectUpdated();                 //update done
+    void dialogClosed(void *);            //the current window has been closed: we give the Id of the current window
+protected slots:
+    void updateTables();              //update the tables of value at each step of the simulation
+    void changeVisualValue();               //each time a field of the Visualization tab is modified
     void clearWarnings() {node->clearWarnings(); logWarningEdit->clear();}
     void clearOutputs() {node->clearOutputs(); logOutputEdit->clear();}
-signals:
-    void objectUpdated();              //update done
-    void dialogClosed(void *);            //the current window has been closed: we give the Id of the current window
-    void transformObject(Node * current_node, double translationX, double translationY, double translationZ,
-            double rotationX, double rotationY, double rotationZ,
-            double scale);
 
 protected:
 
-
+    void updateConsole();             //update the console log of warnings and outputs
     const core::objectmodel::BaseData* getData(const QObject *object);
-    virtual void closeEvent ( QCloseEvent * ) {emit(reject());}
     void updateContext( Node *node );
-
     void createGraphMass(QTabWidget *);
     void updateHistory();
     void updateEnergy();
 
-    bool createTable(core::objectmodel::BaseData* field, Q3GroupBox *box=NULL, Q3Table* vectorTable=NULL, Q3Table* vectorTable2=NULL, Q3Table* vectorTable3=NULL );
-    void storeTable(std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table);
-
-    //*********************************************************
-
-    //Monitor Special class
-    template< class T>
-    bool createMonitorQtTable(Data<typename sofa::component::misc::Monitor<T>::MonitorData >* ff, Q3GroupBox *box, Q3Table* vectorTable, Q3Table* vectorTable2, Q3Table* vectorTable3 );
-    template< class T>
-    void storeMonitorQtTable( std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, Data< typename sofa::component::misc::Monitor<T>::MonitorData >* ff );
-    //*********************************************************
-
-    Q3Table* addResizableTable(Q3GroupBox *box,int size, int column=1);
-    QTabWidget *dialogTab;
+    bool visualContentModified;
     core::objectmodel::Base* node;
-    QPushButton *buttonUpdate;
-    ModifyObjectFlags dialogFlags_;
-    std::vector<std::pair< core::objectmodel::BaseData*,  QObject*> >  objectGUI;  //vector of all the Qt Object added in the window
+    QWidget* parent_;
+    Q3ListViewItem* item_;
+    void* Id_;
+    const ModifyObjectFlags dialogFlags_;
+    unsigned int counterWidget;
 
-    std::set< const core::objectmodel::BaseData* >                     setUpdates; //set of objects that have been modified
-    std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >    list_Table;
-    std::list< std::pair< Q3TextEdit*, core::objectmodel::BaseData*> > list_TextEdit;
-    std::map< core::objectmodel::BaseData*, int >                      dataIndexTab;
-    std::map< QSpinBox*, Q3Table* >                                    resizeMap;
-    std::set< Q3Table* >                                               setResize;
     WFloatLineEdit* transformation[9]; //Data added to manage transformation of a whole node
-
-    QWidget *outputTab;
     QWidget *warningTab;
-    Q3TextEdit *logOutputEdit;
     Q3TextEdit *logWarningEdit;
+    QWidget* outputTab;
+    Q3TextEdit *logOutputEdit;
+    QTabWidget *dialogTab;
+    QPushButton *buttonUpdate;
+
+    std::vector<std::pair< core::objectmodel::BaseData*,  QObject*> >  objectGUI;  //vector of all the Qt Object added in the window
+    std::set< const core::objectmodel::BaseData* >                     setUpdates; //set of objects that have been modified
+    std::map< core::objectmodel::BaseData*, int >                      dataIndexTab;
+
+    //Visual Flags
+    DisplayFlagWidget *displayFlag;
     std::vector< double > history;
     std::vector< double > energy_history[3];
     QwtPlot *graphEnergy;
     QwtPlotCurve *energy_curve[3];
 
-    typedef std::map<core::objectmodel::BaseData*, DataWidget*> DataWidgetMap;
-    DataWidgetMap dataWidgets;
-
-    bool visualContentModified;
-
-    //Visual Flags
-    DisplayFlagWidget *displayFlag;
-
-    unsigned int counterWidget;
 };
-
-class QPushButtonUpdater: public QPushButton
-{
-    Q_OBJECT
-public:
-
-    QPushButtonUpdater( DataWidget *d, const QString & text, QWidget * parent = 0 ): QPushButton(text,parent),widget(d) {};
-
-public slots:
-    void setDisplayed(bool b);
-protected:
-    DataWidget *widget;
-
-};
-
-//Widget used to display the name of a Data and if needed the link to another Data
-class QDisplayDataInfoWidget: public QWidget
-{
-    Q_OBJECT
-public:
-    QDisplayDataInfoWidget(QWidget* parent, const std::string& helper, core::objectmodel::BaseData* d, bool modifiable);
-public slots:
-    void linkModification();
-    void linkEdited();
-protected:
-    core::objectmodel::BaseData* data;
-    QLineEdit *linkpath_edit;
-};
-
 
 
 } // namespace qt

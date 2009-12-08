@@ -27,6 +27,7 @@
 
 #include "ModifyObject.h"
 #include "DataWidget.h"
+#include "QDisplayDataWidget.h"
 #include <iostream>
 #ifdef SOFA_QT4
 #include <QPushButton>
@@ -55,7 +56,7 @@
 
 
 #define WIDGET_BY_TAB 15
-#define SIZE_TEXT     75
+
 
 namespace sofa
 {
@@ -80,31 +81,39 @@ typedef QScrollView Q3ScrollView;
 #endif
 
 ModifyObject::ModifyObject(
-    void *Id_,
+    void *Id,
     core::objectmodel::Base* node_clicked,
     Q3ListViewItem* item_clicked,
-    QWidget* parent_,
+    QWidget* parent,
     const ModifyObjectFlags& dialogFlags,
     const char* name,
     bool modal, Qt::WFlags f )
-    :ModifyObjectModel(Id_,item_clicked,parent_,name,modal,f),
-     node(node_clicked),
+    :Id_(Id),
+     item_(item_clicked),
+     parent_(parent),
      dialogFlags_(dialogFlags),
+     node(node_clicked),
+     visualContentModified(false),
      outputTab(NULL),
      warningTab(NULL),
-     logOutputEdit(NULL),
      logWarningEdit(NULL),
+     logOutputEdit(NULL),
      graphEnergy(NULL),
-     visualContentModified(false)
+     QDialog(parent, name, modal, f)
 {
-    energy_curve[0]=NULL;	        energy_curve[1]=NULL;	        energy_curve[2]=NULL;
-    //Initialization of the Widget
+    setCaption(name);
+    connect ( this, SIGNAL( objectUpdated() ), parent_, SLOT( redraw() ));
+    connect ( this, SIGNAL( dialogClosed(void *) ) , parent_, SLOT( modifyUnlock(void *)));
+    energy_curve[0]=NULL;
+    energy_curve[1]=NULL;
+    energy_curve[2]=NULL;
     setNode();
 }
 
 //Set the default file
 void ModifyObject::setNode()
 {
+
     //Layout to organize the whole window
     QVBoxLayout *generalLayout = new QVBoxLayout(this, 0, 1, "generalLayout");
 
@@ -129,6 +138,16 @@ void ModifyObject::setNode()
     QVBoxLayout *currentTabLayout = NULL;
     QVBoxLayout *tabPropertiesLayout=NULL;
     QVBoxLayout *tabVisualizationLayout = NULL;
+
+    buttonUpdate = new QPushButton( this, "buttonUpdate" );
+    buttonUpdate->setText("&Update");
+    buttonUpdate->setEnabled(false);
+    QPushButton *buttonOk = new QPushButton( this, "buttonOk" );
+    buttonOk->setText( tr( "&OK" ) );
+
+    QPushButton *buttonCancel = new QPushButton( this, "buttonCancel" );
+
+    buttonCancel->setText( tr( "&Cancel" ) );
 
     // displayWidget
     if (node)
@@ -249,11 +268,7 @@ void ModifyObject::setNode()
             std::ostringstream oss;
             oss << "itemLayout_" << i;
             Q3GroupBox *box = NULL;;
-            // The label
-            //QLabel *label = new QLabel(QString((*it).first.c_str()), box,0);
-            //label->setGeometry( 10, i*25+5, 200, 20 );
 
-            // 		const std::string& fieldname = (*it).second->getValueTypeString();
             std::string name((*it).first);
             name.resize(4);
             if (name == "show")
@@ -317,101 +332,11 @@ void ModifyObject::setNode()
                 currentTabLayout = new QVBoxLayout( currentTab, 0, 1, QString("tabBIGLayout") + QString::number(counterWidget));
                 dialogTab->addTab(currentTab, QString((*it).first.c_str()));
             }
-
-            {
-                if (hideData(it->second)) continue;
-                std::string box_name(oss.str());
-                box = new Q3GroupBox(currentTab, QString(box_name.c_str()));
-                box->setColumns(4);
-                box->setTitle(QString((*it).first.c_str()));
-
-                std::string label_text=(*it).second->getHelp();
-                std::string final_text;
-                unsigned int number_line=0;
-                while (!label_text.empty())
-                {
-                    std::string::size_type pos = label_text.find('\n');
-                    std::string current_sentence;
-                    if (pos != std::string::npos)
-                        current_sentence  = label_text.substr(0,pos+1);
-                    else
-                        current_sentence = label_text;
-
-
-                    if (current_sentence.size() > SIZE_TEXT)
-                    {
-                        unsigned int index_cut;
-                        unsigned int cut = current_sentence.size()/SIZE_TEXT;
-                        for (index_cut=1; index_cut<=cut; index_cut++)
-                        {
-                            std::string::size_type numero_char=current_sentence.rfind(' ',SIZE_TEXT*index_cut);
-                            current_sentence = current_sentence.insert(numero_char+1,1,'\n');
-                            number_line++;
-                        }
-                    }
-                    if (pos != std::string::npos) label_text = label_text.substr(pos+1);
-                    else label_text = "";
-                    final_text += current_sentence;
-                    number_line++;
-                }
-                counterWidget += number_line/3; //each 3lines, a new widget is counted
-                if (label_text != "TODO") new QDisplayDataInfoWidget(box,final_text,(*it).second,dialogFlags_.LINKPATH_MODIFIABLE_FLAG);
-
-
-                DataWidget::CreatorArgument dwarg;
-                dwarg.name = (*it).first;
-                dwarg.data = (*it).second;
-                dwarg.readOnly = (dwarg.data->isReadOnly() && dialogFlags_.READONLY_FLAG);
-                dwarg.dialog = this;
-                dwarg.parent = box;
-                std::string widget = dwarg.data->getWidget();
-                box->setColumns(2);
-                DataWidget* dw;
-                if (widget.empty())
-                    dw = DataWidgetFactory::CreateAnyObject(dwarg);
-                else
-                    dw = DataWidgetFactory::CreateObject(dwarg.data->getWidget(), dwarg);
-                if (dw == NULL)
-                {
-                    box->setColumns(4);
-                    std::cout << "WIDGET FAILED for data " << dwarg.name << " : " << dwarg.data->getValueTypeString() << std::endl;
-                }
-                if (dw != NULL)
-                {
-                    //std::cout << "WIDGET created for data " << dwarg.data << " : " << dwarg.name << " : " << dwarg.data->getValueTypeString() << std::endl;
-                    dataWidgets[dwarg.data] = dw;
-                    counterWidget+=dw->sizeWidget();
-                }
-                //********************************************************************************************************//
-                //Types that needs a QTable: vector of elements
-                else if (createTable( (*it).second, box))
-                {
-                    ++counterWidget; //count for two classic widgets
-                }
-                else
-                {
-                    Q3TextEdit* textedit = new Q3TextEdit(box);
-                    // 		      objectGUI.push_back(std::make_pair( (*it).second,  (QObject *) textedit);
-
-                    textedit->setText(QString((*it).second->getValueString().c_str()));
-                    //if empty field, we don't display it
-
-                    if ((*it).second->getValueString().empty() && !dialogFlags_.EMPTY_FLAG)
-                    {
-                        box->hide();
-                        std::cerr << (*it).first << " : " << (*it).second->getValueTypeString() << " Not added because empty \n";
-                        --counterWidget;
-                    }
-                    else
-                    {
-                        list_TextEdit.push_back(std::make_pair(textedit, (*it).second));
-                        ++counterWidget; //count for two classic widgets
-                        connect( textedit, SIGNAL( textChanged() ), this, SLOT( changeValue() ) );
-                    }
-                }
-            }
+            if (hideData(it->second)) continue;
+            std::string box_name(oss.str());
+            QDisplayDataWidget* displaydatawidget = new QDisplayDataWidget(currentTab,(*it).second,getFlags());
             ++i;
-            if (box != NULL)
+            if (displaydatawidget->getNumWidgets())
             {
                 if (currentTab == currentTab_save && emptyTab && counterWidget/WIDGET_BY_TAB == counterTab)
                 {
@@ -422,7 +347,13 @@ void ModifyObject::setNode()
 
                 dataIndexTab.insert(std::make_pair((*it).second, dialogTab->count()-1));
                 ++counterWidget;
-                currentTabLayout->addWidget( box );
+                currentTabLayout->addWidget(displaydatawidget);
+                counterWidget += displaydatawidget->getNumWidgets();
+                connect(buttonUpdate,   SIGNAL( clicked() ), displaydatawidget, SLOT( UpdateData() ) );
+                connect(displaydatawidget, SIGNAL( WidgetHasChanged(bool) ), buttonUpdate, SLOT( setEnabled(bool) ) );
+                connect(buttonOk, SIGNAL(clicked() ), displaydatawidget, SLOT( UpdateData() ) );
+                connect(displaydatawidget, SIGNAL(DataParentNameChanged()), this, SLOT( updateListViewItem() ) );
+                connect(this, SIGNAL(updateDataWidgets()), displaydatawidget, SLOT(UpdateWidgets()) );
             }
         }
 
@@ -525,22 +456,17 @@ void ModifyObject::setNode()
         //Adding buttons at the bottom of the dialog
         QHBoxLayout *lineLayout = new QHBoxLayout( 0, 0, 6, "Button Layout");
 
-        buttonUpdate = new QPushButton( this, "buttonUpdate" );
+
+
         lineLayout->addWidget(buttonUpdate);
-        buttonUpdate->setText("&Update");
-        buttonUpdate->setEnabled(false);
+
 
         QSpacerItem *Horizontal_Spacing = new QSpacerItem( 20, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
         lineLayout->addItem( Horizontal_Spacing );
 
-        QPushButton *buttonOk = new QPushButton( this, "buttonOk" );
+
         lineLayout->addWidget(buttonOk);
-        buttonOk->setText( tr( "&OK" ) );
-
-        QPushButton *buttonCancel = new QPushButton( this, "buttonCancel" );
         lineLayout->addWidget(buttonCancel);
-        buttonCancel->setText( tr( "&Cancel" ) );
-
         generalLayout->addLayout( lineLayout );
 
 
@@ -615,17 +541,7 @@ void ModifyObject::updateConsole()
 void ModifyObject::changeValue()
 {
     const QObject* s = sender();
-    for (DataWidgetMap::iterator it = dataWidgets.begin(), itend = dataWidgets.end(); it != itend; ++it)
-    {
-        DataWidget* dw = it->second;
-        if (dw->processChange(s))
-        {
-            s = NULL;
-            break;
-        }
-    }
-    if (s != NULL)
-        setUpdates.insert(getData(s));
+    setUpdates.insert(getData(s));
     if (buttonUpdate == NULL) return;
     buttonUpdate->setEnabled(true);
 }
@@ -637,19 +553,25 @@ void ModifyObject::changeVisualValue()
     buttonUpdate->setEnabled(true);
     visualContentModified = true;
 }
+
+const core::objectmodel::BaseData* ModifyObject::getData(const QObject *object)
+{
+    for (unsigned int i=0; i<objectGUI.size(); ++i)
+    {
+        if (objectGUI[i].second == object) return  objectGUI[i].first;
+    }
+    return false;
+}
+
 //*******************************************************************************************************************
 void ModifyObject::updateValues()
 {
     if (buttonUpdate == NULL // || !buttonUpdate->isEnabled()
        ) return;
 
-    saveTextEdit();
-    saveTables();
-
     //Make the update of all the values
     if (node)
     {
-        std::string oldName = node->getName();
         //If the current element is a node of the graph, we first apply the transformations
         if (dialogFlags_.REINIT_FLAG && dynamic_cast< Node *>(node))
         {
@@ -685,11 +607,7 @@ void ModifyObject::updateValues()
 
             }
         }
-        for (DataWidgetMap::iterator it = dataWidgets.begin(), itend = dataWidgets.end(); it != itend; ++it)
-        {
-            DataWidget* dw = it->second;
-            dw->writeToData();
-        }
+
         //Special Treatment for visual flags
         for (unsigned int index_object=0; index_object < objectGUI.size(); ++index_object)
         {
@@ -704,23 +622,6 @@ void ModifyObject::updateValues()
                 index_object--;
             }
         }
-        std::string newName = node->getName();
-        if (newName != oldName)
-        {
-            if( !dynamic_cast< Node *>(node))
-            {
-                std::string name=item_->text(0).ascii();
-                std::string::size_type pos = name.find(' ');
-                if (pos != std::string::npos)
-                    name.resize(pos);
-                name += "  ";
-
-                name+=newName;
-                item_->setText(0,name.c_str());
-            }
-            else if (dynamic_cast< Node *>(node))
-                item_->setText(0,newName.c_str());
-        }
 
         if (dialogFlags_.REINIT_FLAG)
         {
@@ -734,18 +635,9 @@ void ModifyObject::updateValues()
 
     if (visualContentModified) updateContext(dynamic_cast< Node *>(node));
 
-    updateTables();
     emit (objectUpdated());
     buttonUpdate->setEnabled(false);
     visualContentModified = false;
-
-
-    for (DataWidgetMap::iterator it = dataWidgets.begin(), itend = dataWidgets.end(); it != itend; ++it)
-    {
-        DataWidget* dw = it->second;
-        dw->updateVisibility();
-    }
-
     setUpdates.clear();
 }
 
@@ -835,506 +727,32 @@ void ModifyObject::updateEnergy()
 
 }
 
-
-
-
-void ModifyObject::updateTextEdit()
+void ModifyObject::updateListViewItem()
 {
-    updateConsole();
-
-    std::list< std::pair< Q3TextEdit*, BaseData*> >::iterator it_list_TextEdit;
-    for (it_list_TextEdit = list_TextEdit.begin(); it_list_TextEdit != list_TextEdit.end(); it_list_TextEdit++)
+    if( !dynamic_cast< Node *>(node))
     {
-        if ((dataIndexTab.find((*it_list_TextEdit).second))->second == dialogTab->currentPageIndex())
-        {
-            (*it_list_TextEdit).first->setText( QString((*it_list_TextEdit).second->getValueString().c_str()));
-        }
+        std::string name=item_->text(0).ascii();
+        std::string::size_type pos = name.find(' ');
+        if (pos != std::string::npos)
+            name.resize(pos);
+        name += "  ";
+        name += node->getName();
+        item_->setText(0,name.c_str());
     }
+    else if (dynamic_cast< Node *>(node))
+        item_->setText(0,node->getName().c_str());
 }
+
 //**************************************************************************************************************************************
 //Called each time a new step of the simulation if computed
 void ModifyObject::updateTables()
 {
-
+    emit updateDataWidgets();
     if (graphEnergy) updateHistory();
-    updateTextEdit();
-    for (DataWidgetMap::iterator it = dataWidgets.begin(), itend = dataWidgets.end(); it != itend; ++it)
-    {
-        DataWidget* dw = it->second;
-        dw->update();
-    }
-    std::list< std::pair< Q3Table*, BaseData*> >::iterator it_list_Table;
-    for (it_list_Table = list_Table.begin(); it_list_Table != list_Table.end(); it_list_Table++)
-    {
-
-        if ( dynamic_cast < Data<sofa::component::misc::Monitor< Vec3Types >::MonitorData > *> ( (*it_list_Table).second ) )
-        {
-            std::list< std::pair< Q3Table*, BaseData*> >::iterator it_center = it_list_Table;
-            it_list_Table++;
-            std::list< std::pair< Q3Table*, BaseData*> >::iterator it_center2 = it_list_Table;
-            it_list_Table++; //two times because a monitor is composed of 3 baseData
-            createTable((*it_list_Table).second,NULL,(*it_center).first,(*it_center2).first, (*it_list_Table).first);
-        }
-        else createTable((*it_list_Table).second,NULL,(*it_list_Table).first);
-    }
-}
-
-
-//**************************************************************************************************************************************
-//create or update an existing table with the contents of a field
-bool ModifyObject::createTable( BaseData* field,Q3GroupBox *box, Q3Table* vectorTable, Q3Table* vectorTable2, Q3Table* vectorTable3)
-{
-    //********************************************************************************************************//
-    if(  Data<sofa::component::misc::Monitor< Vec3dTypes >::MonitorData >  *ff = dynamic_cast< Data<sofa::component::misc::Monitor< Vec3dTypes >::MonitorData >   * >( field))
-    {
-        return createMonitorQtTable < Vec3dTypes >(ff,box,vectorTable, vectorTable2, vectorTable3);
-    }
-
-    //********************************************************************************************************//
-    else if(  Data<sofa::component::misc::Monitor< Vec3fTypes >::MonitorData >  *ff = dynamic_cast< Data<sofa::component::misc::Monitor< Vec3fTypes >::MonitorData >   * >( field))
-    {
-        return createMonitorQtTable < Vec3fTypes >(ff,box,vectorTable, vectorTable2, vectorTable3);
-    }
-
-    return false;
 }
 
 
 
-
-//**************************************************************************************************************************************
-//save in datafield the values of the text edit
-void ModifyObject::saveTextEdit()
-{
-
-    std::list< std::pair< Q3TextEdit*, core::objectmodel::BaseData*> >::iterator it_list_TextEdit;
-    for (it_list_TextEdit = list_TextEdit.begin(); it_list_TextEdit != list_TextEdit.end(); it_list_TextEdit++)
-    {
-        std::string value = it_list_TextEdit->first->text().ascii();
-        it_list_TextEdit->second->read(value);
-    }
-}
-
-
-//**************************************************************************************************************************************
-//save in datafield the values of the tables
-void ModifyObject::saveTables()
-{
-
-    std::list< std::pair< Q3Table*, BaseData*> >::iterator it_list_Table;
-    for (it_list_Table = list_Table.begin(); it_list_Table != list_Table.end(); it_list_Table++)
-    {
-
-        if (setUpdates.find(getData(it_list_Table->first)) == setUpdates.end()) continue;
-        storeTable(it_list_Table);
-    }
-}
-
-
-//**************************************************************************************************************************************
-//Read the content of a QTable and store its values in a datafield
-void ModifyObject::storeTable(std::list< std::pair< Q3Table*, BaseData*> >::
-        iterator &it_list_table)
-{
-    ///////////////////////////////////////////
-    //it_list_table->first is a Q3Table* table
-    //it_list_table->second is a BaseData* field
-    ///////////////////////////////////////////
-
-    //**************************************************************************************************************************************
-    if (  Data<sofa::component::misc::Monitor< Vec3dTypes >::MonitorData >  *ff = dynamic_cast< Data<sofa::component::misc::Monitor< Vec3dTypes >::MonitorData > * >( it_list_table->second))
-    {
-        storeMonitorQtTable< Vec3dTypes >(it_list_table, ff);
-    }
-    //**************************************************************************************************************************************
-    else if (  Data<sofa::component::misc::Monitor< Vec3fTypes >::MonitorData >  *ff = dynamic_cast< Data<sofa::component::misc::Monitor< Vec3fTypes >::MonitorData > * >( it_list_table->second))
-    {
-        storeMonitorQtTable< Vec3fTypes >(it_list_table, ff);
-    }
-    //**************************************************************************************************************************************
-}
-
-//********************************************************************************************************************
-//TEMPLATE FUNCTIONS
-//********************************************************************************************************************
-
-template< class T>
-bool ModifyObject::createMonitorQtTable(Data<typename sofa::component::misc::Monitor<T>::MonitorData >* ff, Q3GroupBox *box, Q3Table* vectorTable, Q3Table* vectorTable2, Q3Table* vectorTable3 )
-{
-    //internal monitorData
-    typename sofa::component::misc::Monitor<T>::MonitorData MonitorDataTemp = ff->getValue();
-    //number of rows
-    unsigned short int nbRowVels = 0, nbRowForces = 0, nbRowPos = 0;
-
-    if (!vectorTable || !vectorTable2 || !vectorTable3)
-    {
-        if (!MonitorDataTemp.sizeIdxPos() && !MonitorDataTemp.sizeIdxVels()
-            && !MonitorDataTemp.sizeIdxForces() && !dialogFlags_.EMPTY_FLAG )
-            return false;
-
-        box->setColumns(2);
-        new QLabel("", box);
-        new QLabel("Positions", box);
-
-        vectorTable = addResizableTable(box,MonitorDataTemp.sizeIdxPos(),4);
-        new QLabel (" ", box);
-
-        vectorTable->setReadOnly(false);
-
-        list_Table.push_back(std::make_pair(vectorTable, ff));
-        objectGUI.push_back(std::make_pair(ff,vectorTable));
-
-        vectorTable->horizontalHeader()->setLabel(0,QString("particle Indices"));
-        vectorTable->setColumnStretchable(0,true);
-        vectorTable->horizontalHeader()->setLabel(1,QString("X"));      vectorTable->setColumnStretchable(1,true);
-        vectorTable->horizontalHeader()->setLabel(2,QString("Y"));      vectorTable->setColumnStretchable(2,true);
-        vectorTable->horizontalHeader()->setLabel(3,QString("Z"));      vectorTable->setColumnStretchable(3,true);
-
-        connect( vectorTable, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
-
-        new QLabel("Velocities", box);
-
-        vectorTable2 = addResizableTable(box,MonitorDataTemp.sizeIdxVels(),4);
-        new QLabel (" ", box);
-        vectorTable2->setReadOnly(false);
-
-        list_Table.push_back(std::make_pair(vectorTable2, ff));
-        objectGUI.push_back(std::make_pair(ff,vectorTable2));
-
-        vectorTable2->horizontalHeader()->setLabel(0,QString("particle Indices"));
-        vectorTable2->setColumnStretchable(0,true);
-        vectorTable2->horizontalHeader()->setLabel(1,QString("X"));
-        vectorTable2->setColumnStretchable(1,true);
-        vectorTable2->horizontalHeader()->setLabel(2,QString("Y"));
-        vectorTable2->setColumnStretchable(2,true);
-        vectorTable2->horizontalHeader()->setLabel(3,QString("Z"));
-        vectorTable2->setColumnStretchable(3,true);
-
-        connect( vectorTable2, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
-
-        new QLabel("Forces", box);
-
-        vectorTable3 = addResizableTable(box,MonitorDataTemp.sizeIdxForces(),4);
-        new QLabel (" ", box);
-        vectorTable3->setReadOnly(false);
-
-        list_Table.push_back(std::make_pair(vectorTable3, ff));
-        objectGUI.push_back(std::make_pair(ff,vectorTable3));
-
-        vectorTable3->horizontalHeader()->setLabel(0,QString("particle Indices"));
-        vectorTable3->setColumnStretchable(0,true);
-        vectorTable3->horizontalHeader()->setLabel(1,QString("X"));
-        vectorTable3->setColumnStretchable(1,true);
-        vectorTable3->horizontalHeader()->setLabel(2,QString("Y"));
-        vectorTable3->setColumnStretchable(2,true);
-        vectorTable3->horizontalHeader()->setLabel(3,QString("Z"));
-        vectorTable3->setColumnStretchable(3,true);
-
-        connect( vectorTable3, SIGNAL( valueChanged(int,int) ), this, SLOT( changeValue() ) );
-
-    } //fin if (!vectorTable)
-
-    //number of rows for positions
-    if (MonitorDataTemp.getSizeVecVels())
-    {
-        if (setResize.find(vectorTable) != setResize.end())
-        {
-            sofa::helper::vector < int > NewIndPos;
-            NewIndPos = MonitorDataTemp.getIndPos();
-            NewIndPos.resize(vectorTable->numRows(), 0);
-            nbRowPos = NewIndPos.size();
-            MonitorDataTemp.setIndPos (NewIndPos);
-        }
-        else
-        {
-            nbRowPos = MonitorDataTemp.sizeIdxPos();
-            vectorTable->setNumRows(nbRowPos);
-        }
-    }
-    else
-    {
-        vectorTable->setNumRows(nbRowPos);
-    }
-
-    //number of rows for velocities
-    if (MonitorDataTemp.getSizeVecVels())
-    {
-        if (setResize.find(vectorTable2) != setResize.end())
-        {
-            sofa::helper::vector < int > NewIndVels;
-            NewIndVels = MonitorDataTemp.getIndVels();
-            NewIndVels.resize(vectorTable2->numRows(), 0);
-            nbRowVels = NewIndVels.size();
-            MonitorDataTemp.setIndVels (NewIndVels);
-        }
-        else
-        {
-            nbRowVels = MonitorDataTemp.sizeIdxVels();
-            vectorTable2->setNumRows(nbRowVels);
-        }
-    }
-    else
-    {
-        vectorTable2->setNumRows(nbRowVels);
-    }
-
-    //number of rows for forces
-    if (MonitorDataTemp.getSizeVecForces())
-    {
-        if (setResize.find(vectorTable3) != setResize.end())
-        {
-            sofa::helper::vector < int > NewIndForces;
-            NewIndForces = MonitorDataTemp.getIndForces();
-            NewIndForces.resize(vectorTable3->numRows(), 0);
-            nbRowForces = NewIndForces.size();
-            MonitorDataTemp.setIndForces (NewIndForces);
-        }
-        else
-        {
-            nbRowForces = MonitorDataTemp.sizeIdxForces();
-            vectorTable3->setNumRows(nbRowForces);
-        }
-    }
-    else
-    {
-        vectorTable3->setNumRows(nbRowForces);
-    }
-
-
-    for (unsigned int i=0; i<3; i++)
-    {
-        std::ostringstream *oss = new std::ostringstream[nbRowPos];
-        for (unsigned int j=0; j<nbRowPos; j++)
-        {
-            oss[j] << (MonitorDataTemp.getPos(j))[i];
-            vectorTable->setText(j,i+1,std::string(oss[j].str()).c_str());
-        }
-
-        std::ostringstream * oss2 = new std::ostringstream[nbRowVels];
-        for (unsigned int j=0; j<nbRowVels; j++)
-        {
-            oss2[j] << (MonitorDataTemp.getVel(j))[i];
-            vectorTable2->setText(j,i+1,std::string(oss2[j].str()).c_str());
-        }
-
-        std::ostringstream * oss3 = new std::ostringstream[nbRowForces];
-        for (unsigned int j=0; j<nbRowForces; j++)
-        {
-            oss3[j] << (MonitorDataTemp.getForce(j))[i];
-            vectorTable3->setText(j,i+1,std::string(oss3[j].str()).c_str());
-        }
-        delete [] oss;
-        delete [] oss2;
-        delete [] oss3;
-    }
-    //vectorTable1
-    std::ostringstream  * oss = new std::ostringstream[nbRowPos];
-    for (unsigned int j=0; j<nbRowPos; j++)
-    {
-        oss[j] << MonitorDataTemp.getIndPos()[j];
-        vectorTable->setText(j,0,std::string(oss[j].str()).c_str());
-    }
-    //vectorTable2
-    std::ostringstream * oss2 = new std::ostringstream[nbRowVels];
-    for (unsigned int j=0; j<nbRowVels; j++)
-    {
-        oss2[j] << MonitorDataTemp.getIndVels()[j];
-        vectorTable2->setText(j,0,std::string(oss2[j].str()).c_str());
-    }
-    //vectorTable3
-    std::ostringstream * oss3 = new std::ostringstream[nbRowForces];
-    for (unsigned int j=0; j<nbRowForces; j++)
-    {
-        oss3[j] << MonitorDataTemp.getIndForces()[j];
-        vectorTable3->setText(j,0,std::string(oss3[j].str()).c_str());
-    }
-    if (vectorTable ) readOnlyData(vectorTable ,ff);
-    if (vectorTable2) readOnlyData(vectorTable2,ff);
-    if (vectorTable3) readOnlyData(vectorTable3,ff);
-    delete [] oss;
-    delete [] oss2;
-    delete [] oss3;
-
-    counterWidget+=3;
-    ff->setValue (MonitorDataTemp);
-    return true;
-}
-
-//********************************************************************************************************************
-template<class T>
-void ModifyObject::storeMonitorQtTable( std::list< std::pair< Q3Table*, core::objectmodel::BaseData*> >::iterator &it_list_table, Data<typename sofa::component::misc::Monitor<T>::MonitorData >* ff )
-{
-    Q3Table* table = it_list_table->first;
-    //internal monitorData
-    typename sofa::component::misc::Monitor<T>::MonitorData NewMonitorData = ff->getValue();
-
-
-    //Qtable positions
-    if (NewMonitorData.getSizeVecPos())
-    {
-        int valueBox;
-        sofa::helper::vector < int > values = NewMonitorData.getIndPos();
-        for (int i=0; i < table -> numRows(); i++)
-        {
-            valueBox = (int)atof(table->text(i,0));
-            if(valueBox >= 0 && valueBox <= (int)(NewMonitorData.getSizeVecPos() - 1))
-                values[i] = valueBox;
-        }
-
-        NewMonitorData.setIndPos(values);
-    }
-    it_list_table++;
-    table = it_list_table->first;
-
-
-    //Qtable velocities
-
-    if (NewMonitorData.getSizeVecVels())
-    {
-        int valueBox;
-        sofa::helper::vector < int > values = NewMonitorData.getIndVels();
-        for (int i=0; i < table -> numRows(); i++)
-        {
-            valueBox = (int)atof(table->text(i,0));
-            if(valueBox >= 0 && valueBox <= (int)(NewMonitorData.getSizeVecVels() - 1))
-                values[i] = valueBox;
-        }
-
-        NewMonitorData.setIndVels(values);
-    }
-    it_list_table++;
-    table=it_list_table->first;
-
-
-    //Qtable forces
-
-    if (NewMonitorData.getSizeVecForces())
-    {
-        int valueBox;
-        sofa::helper::vector < int > values = NewMonitorData.getIndForces();
-
-        for (int i=0; i < table -> numRows(); i++)
-        {
-            valueBox = (int)atof(table->text(i,0));
-            if(valueBox >= 0 && valueBox <= (int)(NewMonitorData.getSizeVecForces() - 1))
-                values[i] = valueBox;
-        }
-
-        NewMonitorData.setIndForces(values);
-    }
-
-    ff->setValue(NewMonitorData);
-}
-
-//********************************************************************************************************************
-
-Q3Table *ModifyObject::addResizableTable(Q3GroupBox *box,int number, int column)
-{
-    box->setColumns(2);
-    QSpinBox *spinBox = new QSpinBox(0,INT_MAX, 1, box);
-    Q3Table* table = new Q3Table(number,column, box);
-    spinBox->setValue(number);
-    resizeMap.insert(std::make_pair(spinBox, table));
-    connect( spinBox, SIGNAL( valueChanged(int) ), this, SLOT( resizeTable(int) ) );
-    return  table;
-}
-
-const core::objectmodel::BaseData* ModifyObject::getData(const QObject *object)
-{
-    for (unsigned int i=0; i<objectGUI.size(); ++i)
-    {
-        if (objectGUI[i].second == object) return  objectGUI[i].first;
-    }
-    return false;
-}
-
-void ModifyObject::resizeTable(int number)
-{
-    QSpinBox *spinBox = (QSpinBox *) sender();
-    Q3Table *table = resizeMap[spinBox];
-    if (number != table->numRows())
-    {
-        table->setNumRows(number);
-        setResize.insert(table);
-    }
-    updateTables();
-    setResize.clear();
-}
-
-void ModifyObject::readOnlyData(Q3Table *widget, core::objectmodel::BaseData* data)
-{
-    widget->setReadOnly(( (data->isReadOnly()) && dialogFlags_.READONLY_FLAG));
-}
-
-void ModifyObject::readOnlyData(QWidget *widget, core::objectmodel::BaseData* data)
-{
-    widget->setEnabled(!( (data->isReadOnly()) && dialogFlags_.READONLY_FLAG));
-}
-
-
-QDisplayDataInfoWidget::QDisplayDataInfoWidget(QWidget* parent, const std::string& helper,
-        core::objectmodel::BaseData* d, bool modifiable):QWidget(parent), data(d)
-{
-    QHBoxLayout* layout = new QHBoxLayout(this);
-    if (modifiable)
-    {
-        QPushButton *helper_button = new QPushButton(QString(helper.c_str()),this);
-        // helper_button ->setFlat(true);
-        helper_button ->setAutoDefault(false);
-        layout->addWidget(helper_button);
-        connect(helper_button, SIGNAL( clicked() ), this, SLOT( linkModification()));
-    }
-    else
-    {
-        QLabel* helper_label = new QLabel(this);
-        helper_label->setText(QString(helper.c_str()));
-        layout->addWidget(helper_label);
-    }
-    if(modifiable || !data->getLinkPath().empty())
-    {
-        linkpath_edit = new QLineEdit(this);
-        linkpath_edit->setText(QString(data->getLinkPath().c_str()));
-        linkpath_edit->setEnabled(modifiable);
-        layout->addWidget(linkpath_edit);
-        linkpath_edit->setShown(!data->getLinkPath().empty());
-        connect(linkpath_edit, SIGNAL( lostFocus()), this, SLOT( linkEdited()));
-    }
-    else
-    {
-        linkpath_edit=NULL;
-    }
-}
-
-void QDisplayDataInfoWidget::linkModification()
-{
-    if (linkpath_edit->isShown() && linkpath_edit->text().isEmpty())
-        linkpath_edit->setShown(false);
-    else
-    {
-        linkpath_edit->setShown(true);
-        //Open a dialog window to let the user select the data he wants to link
-    }
-}
-void QDisplayDataInfoWidget::linkEdited()
-{
-    std::cerr << "linkEdited " << linkpath_edit->text().ascii() << std::endl;
-    data->setLinkPath(linkpath_edit->text().ascii() );
-}
-
-void QPushButtonUpdater::setDisplayed(bool b)
-{
-
-    if (b)
-    {
-        this->setText(QString("Click to hide the values"));
-        widget->readFromData();
-    }
-    else
-    {
-        this->setText(QString("Click to display the values"));
-    }
-
-}
 
 } // namespace qt
 

@@ -88,10 +88,9 @@ public:
     Container w;
     QCheckBox* check;
     struct_data_widget_container() : check(NULL) {}
-    template<class Dialog, class Slot>
-    bool createWidgets(DataWidget * _widget, Dialog* dialog, Slot s, QWidget* parent, const data_type& d, bool readOnly)
+    bool createWidgets(DataWidget * _widget, QWidget* parent, const data_type& d, bool readOnly)
     {
-        if (!p.createWidgets(_widget, dialog, s, parent, d, readOnly))
+        if (!p.createWidgets(_widget, parent, d, readOnly))
             return false;
         const char* name = vhelper::name();
         bool checkable = vhelper::isCheckable();
@@ -108,7 +107,7 @@ public:
             if (name && *name && N > 1)
                 new QLabel(QString(name),parent);
         }
-        if (!w.createWidgets(_widget, dialog, s, parent, *vhelper::get(d), readOnly || vhelper::readOnly()))
+        if (!w.createWidgets(_widget, parent, *vhelper::get(d), readOnly || vhelper::readOnly()))
             return false;
         if (checkable)
         {
@@ -120,7 +119,7 @@ public:
             {
                 if (!isChecked)
                     w.setReadOnly(true);
-                dialog->connect(check, SIGNAL( toggled(bool) ), dialog, s);
+                _widget->connect(check, SIGNAL( toggled(bool) ), _widget, SLOT( setModified() ));
             }
         }
         return true;
@@ -175,20 +174,6 @@ public:
             readConstantsFromData(d); // reread constant fields
         }
     }
-    bool processChange(const QObject* sender)
-    {
-        if (p.processChange(sender))
-            return true;
-        if (check && sender == check)
-        {
-            bool isChecked = check->isOn();
-            w.setReadOnly(!isChecked);
-            return true;
-        }
-        if (w.processChange(sender))
-            return true;
-        return false;
-    }
 };
 
 template<class T>
@@ -198,8 +183,7 @@ public:
     typedef T data_type;
     typedef struct_data_trait<data_type> shelper;
     struct_data_widget_container() {}
-    template<class Dialog, class Slot>
-    bool createWidgets(DataWidget * /*_widget*/, Dialog* /*dialog*/, Slot /*s*/, QWidget* /*parent*/, const data_type& /*d*/, bool /*readOnly*/)
+    bool createWidgets(DataWidget * /*_widget*/, QWidget* /*parent*/, const data_type& /*d*/, bool /*readOnly*/)
     {
         return true;
     }
@@ -215,10 +199,7 @@ public:
     void writeToData(data_type& /*d*/)
     {
     }
-    bool processChange(const QObject* /*sender*/)
-    {
-        return false;
-    }
+
 };
 
 template<class T, int I>
@@ -235,44 +216,44 @@ public:
 };
 
 #define STRUCT_DATA_VAR(parent, vid, vname, sname, vtype, var)	\
-    class struct_data_trait_var < parent, vid > : public default_struct_data_trait_var < parent, vid > \
-    { \
-    public: \
-        typedef parent data_type; \
-	typedef vtype value_type; \
-	static const char* name() { return vname; } \
-	static const char* shortname() { return sname; } \
-	static const value_type* get(const data_type& d) { return &(d.var); } \
-	static void set( const value_type& v, data_type& d) { d.var = v; } \
-    }
+      class struct_data_trait_var < parent, vid > : public default_struct_data_trait_var < parent, vid > \
+      { \
+      public: \
+      typedef parent data_type; \
+      typedef vtype value_type; \
+      static const char* name() { return vname; } \
+      static const char* shortname() { return sname; } \
+      static const value_type* get(const data_type& d) { return &(d.var); } \
+      static void set( const value_type& v, data_type& d) { d.var = v; } \
+      }
 
 #define STRUCT_DATA_VAR_READONLY(parent, vid, vname, sname, vtype, var) \
-    class struct_data_trait_var < parent, vid > : public default_struct_data_trait_var < parent, vid > \
-    { \
-    public: \
-        typedef parent data_type; \
-	typedef vtype value_type; \
-	static const char* name() { return vname; } \
-	static const char* shortname() { return sname; } \
-	static bool readOnly() { return true; }	\
-	static const value_type* get(const data_type& d) { return &(d.var); } \
-	static void set( const value_type& v, data_type& d) { d.var = v; } \
-    }
+      class struct_data_trait_var < parent, vid > : public default_struct_data_trait_var < parent, vid > \
+      { \
+      public: \
+      typedef parent data_type; \
+      typedef vtype value_type; \
+      static const char* name() { return vname; } \
+      static const char* shortname() { return sname; } \
+      static bool readOnly() { return true; }	\
+      static const value_type* get(const data_type& d) { return &(d.var); } \
+      static void set( const value_type& v, data_type& d) { d.var = v; } \
+      }
 
 #define STRUCT_DATA_VAR_CHECK(parent, vid, vname, sname, vtype, var, check) \
-    class struct_data_trait_var < parent, vid > : public default_struct_data_trait_var < parent, vid > \
-    { \
-    public: \
-        typedef parent data_type; \
-	typedef vtype value_type; \
-	static const char* name() { return vname; } \
-	static const char* shortname() { return sname; } \
-	static const value_type* get(const data_type& d) { return &(d.var); } \
-	static void set( const value_type& v, data_type& d) { d.var = v; } \
-	static bool isCheckable() { return true; } \
-	static bool isChecked(const data_type& d) { return d.check; } \
-	static void setChecked(bool b, data_type& d) { d.check = b; } \
-    }
+      class struct_data_trait_var < parent, vid > : public default_struct_data_trait_var < parent, vid > \
+      { \
+      public: \
+      typedef parent data_type; \
+      typedef vtype value_type; \
+      static const char* name() { return vname; } \
+      static const char* shortname() { return sname; } \
+      static const value_type* get(const data_type& d) { return &(d.var); } \
+      static void set( const value_type& v, data_type& d) { d.var = v; } \
+      static bool isCheckable() { return true; } \
+      static bool isChecked(const data_type& d) { return d.check; } \
+      static void setChecked(bool b, data_type& d) { d.check = b; } \
+      }
 
 // A comma can't appear in a macro argument...
 #define COMMA ,

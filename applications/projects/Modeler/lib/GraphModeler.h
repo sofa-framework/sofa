@@ -38,7 +38,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 
 #include <sofa/gui/qt/GraphListenerQListView.h>
-//#include <sofa/gui/qt/ModifyObject.h>
+
 
 #ifdef SOFA_QT4
 #include <Q3ListView>

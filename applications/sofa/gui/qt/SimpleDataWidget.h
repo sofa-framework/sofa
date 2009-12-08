@@ -73,10 +73,9 @@ public:
         std::istringstream i(s);
         i >> d;
     }
-    template<class P, class S>
-    static void connectChanged(Widget* w, P* p, S s)
+    static void connectChanged(Widget* w, DataWidget* datawidget)
     {
-        p->connect(w, SIGNAL( textChanged(const QString&) ), p, s);
+        datawidget->connect(w, SIGNAL( textChanged(const QString&) ), datawidget, SLOT(setModified()));
     }
 };
 
@@ -92,8 +91,8 @@ public:
     typedef typename helper::Widget Widget;
     Widget* w;
     data_widget_container() : w(NULL) {}
-    template<class Dialog, class Slot>
-    bool createWidgets(DataWidget * /* _widget */, Dialog* dialog, Slot s, QWidget* parent, const data_type& d, bool readOnly)
+
+    bool createWidgets(DataWidget * datawidget, QWidget* parent, const data_type& d, bool readOnly)
     {
         w = helper::create(parent, d);
         if (w == NULL) return false;
@@ -101,7 +100,7 @@ public:
         if (readOnly)
             w->setEnabled(false);
         else
-            helper::connectChanged(w, dialog, s);
+            helper::connectChanged(w, datawidget);
         return true;
     }
     void setReadOnly(bool readOnly)
@@ -116,12 +115,7 @@ public:
     {
         helper::writeToData(w, d);
     }
-    bool processChange(const QObject* sender)
-    {
-        if (sender == w)
-            return true;
-        return false;
-    }
+
 };
 
 /// This class manages the GUI of a BaseData, using the corresponding instance of data_widget_container
@@ -136,13 +130,13 @@ protected:
     typedef data_widget_trait<data_type> helper;
     MyData* data;
     int counter;
-    bool modified;
+
 public:
-    SimpleDataWidget(MyData* d) : DataWidget(d), data(d), counter(-1), modified(false) {}
+    SimpleDataWidget(MyData* d) : DataWidget(d), data(d), counter(-1) {}
     virtual bool createWidgets(QWidget* parent)
     {
         const data_type& d = data->virtualGetValue();
-        if (!container.createWidgets(this, this->dialog, SLOT( changeValue() ), parent, d, this->readOnly))
+        if (!container.createWidgets(this, parent, d, this->readOnly))
             return false;
         return true;
     }
@@ -155,20 +149,12 @@ public:
     virtual bool isModified() { return modified; }
     virtual void writeToData()
     {
+
         if (!modified) return;
         data_type d = data->virtualGetValue();
         container.writeToData(d);
         data->virtualSetValue(d);
         counter = data->getCounter();
-    }
-    virtual bool processChange(const QObject* sender)
-    {
-        if (container.processChange(sender))
-        {
-            modified = true;
-            return true;
-        }
-        else return false;
     }
     virtual void update()
     {
@@ -202,10 +188,9 @@ public:
     {
         d = w->text().ascii();
     }
-    template<class P, class S>
-    static void connectChanged(Widget* w, P* p, S s)
+    static void connectChanged(Widget* w, DataWidget* datawidget)
     {
-        p->connect(w, SIGNAL( textChanged(const QString&) ), p, s);
+        datawidget->connect(w, SIGNAL( textChanged(const QString&) ), datawidget, SLOT(setModified()) );
     }
 };
 
@@ -232,10 +217,9 @@ public:
     {
         d = (data_type) w->isOn();
     }
-    template<class P, class S>
-    static void connectChanged(Widget* w, P* p, S s)
+    static void connectChanged(Widget* w, DataWidget* datawidget)
     {
-        p->connect(w, SIGNAL( toggled(bool) ), p, s);
+        datawidget->connect(w, SIGNAL( toggled(bool) ), datawidget, SLOT(setModified()));
     }
 };
 
@@ -264,10 +248,9 @@ public:
     {
         d = (data_type) w->getFloatValue();
     }
-    template<class P, class S>
-    static void connectChanged(Widget* w, P* p, S s)
+    static void connectChanged(Widget* w, DataWidget* datawidget)
     {
-        p->connect(w, SIGNAL( textChanged(const QString&) ), p, s);
+        datawidget->connect(w, SIGNAL( textChanged(const QString&) ), datawidget, SLOT(setModified()));
     }
 };
 
@@ -303,10 +286,9 @@ public:
     {
         d = (data_type) w->value();
     }
-    template<class P, class S>
-    static void connectChanged(Widget* w, P* p, S s)
+    static void connectChanged(Widget* w, DataWidget* datawidget)
     {
-        p->connect(w, SIGNAL( valueChanged(int) ), p, s);
+        datawidget->connect(w, SIGNAL( valueChanged(int) ), datawidget, SLOT(setModified()));
     }
 };
 
@@ -375,12 +357,13 @@ public:
     enum { N = vhelper::SIZE };
     Container w[N];
     fixed_vector_data_widget_container() {}
-    template<class Dialog, class Slot>
-    bool createWidgets(DataWidget * _widget, Dialog* dialog, Slot s, QWidget* parent, const data_type& d, bool readOnly)
+
+    bool createWidgets(DataWidget * _widget, QWidget* parent, const data_type& d, bool readOnly)
     {
         Q3Grid* grid= new Q3Grid(N,parent);
         for (int i=0; i<N; ++i)
-            if (!w[i].createWidgets(_widget, dialog, s, grid, *vhelper::get(d,i), readOnly))
+            if (!w[i].createWidgets(_widget,
+                    grid, *vhelper::get(d,i), readOnly))
                 return false;
         return true;
     }
@@ -403,13 +386,7 @@ public:
             vhelper::set(v,d,i);
         }
     }
-    bool processChange(const QObject* sender)
-    {
-        for (int i=0; i<N; ++i)
-            if (w[i].processChange(sender))
-                return true;
-        return false;
-    }
+
 };
 
 template<class T, class Container = data_widget_container< typename vector_data_trait< typename vector_data_trait<T>::value_type >::value_type> >
@@ -425,13 +402,13 @@ public:
     enum { C = vhelper::SIZE };
     Container w[L][C];
     fixed_grid_data_widget_container() {}
-    template<class Dialog, class Slot>
-    bool createWidgets(DataWidget * _widget, Dialog* dialog, Slot s, QWidget* parent, const data_type& d, bool readOnly)
+
+    bool createWidgets(DataWidget * _widget, QWidget* parent, const data_type& d, bool readOnly)
     {
         Q3Grid* grid= new Q3Grid(C,parent);
         for (int y=0; y<L; ++y)
             for (int x=0; x<C; ++x)
-                if (!w[y][x].createWidgets(_widget, dialog, s, grid, *vhelper::get(*rhelper::get(d,y),x), readOnly))
+                if (!w[y][x].createWidgets(_widget, grid, *vhelper::get(*rhelper::get(d,y),x), readOnly))
                     return false;
         return true;
     }
@@ -461,14 +438,7 @@ public:
             rhelper::set(r,d,y);
         }
     }
-    bool processChange(const QObject* sender)
-    {
-        for (int y=0; y<L; ++y)
-            for (int x=0; x<C; ++x)
-                if (w[y][x].processChange(sender))
-                    return true;
-        return false;
-    }
+
 };
 
 ////////////////////////////////////////////////////////////////

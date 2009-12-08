@@ -60,9 +60,7 @@ HEADERS += viewer/SofaViewer.h \
 		   DataWidget.h \
            DisplayFlagWidget.h \
            GraphDataWidget.h \
-		   ModifyData.h \
            ModifyObject.h \
-		   ModifyObjectModel.h \
            SimpleDataWidget.h \
 		   SofaGUIQt.h \
            StructDataWidget.h \
@@ -70,7 +68,10 @@ HEADERS += viewer/SofaViewer.h \
            WFloatLineEdit.h \ 
            FileManagement.h \
            SofaPluginManager.h \
-           SofaMouseManager.h \
+           SofaMouseManager.h \		   
+		   QDisplayDataWidget.h \
+		   QMonitorTableWidget.h \
+		   QMonitorTableWidget.inl \
            QMouseOperations.h \
            ImageQt.h
 
@@ -84,9 +85,7 @@ SOURCES += Main.cpp \
 		   DataWidget.cpp \ 
            DisplayFlagWidget.cpp \
            GraphDataWidget.cpp \  
-		   ModifyData.cpp \
            ModifyObject.cpp \
-		   ModifyObjectModel.cpp \
            SimpleDataWidget.cpp \
            StructDataWidget.cpp \
            TableDataWidget.cpp \
@@ -94,7 +93,9 @@ SOURCES += Main.cpp \
            FileManagement.cpp \
            SofaPluginManager.cpp \
            SofaMouseManager.cpp \
-           QMouseOperations.cpp \
+		   QDisplayDataWidget.cpp \
+		   QMonitorTableWidget.cpp \
+		   QMouseOperations.cpp \
            ImageQt.cpp
 
 contains (DEFINES, SOFA_DUMP_VISITOR_INFO){

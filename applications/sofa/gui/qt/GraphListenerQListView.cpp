@@ -404,6 +404,7 @@ core::objectmodel::Base* GraphListenerQListView::findObject(const Q3ListViewItem
             if ( ( *it ).second == item )
             {
                 base = (*it).first;
+                break;
             }
         }
     }
