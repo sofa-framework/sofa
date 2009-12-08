@@ -227,14 +227,11 @@ QTopologyOperation::QTopologyOperation()
 
     connect(scaleSlider,SIGNAL(valueChanged(int)), scaleValue, SLOT(setValue(int)));
     connect(scaleValue,SIGNAL(valueChanged(int)), scaleSlider, SLOT(setValue(int)));
+    connect(operationChoice, SIGNAL(activated(int)), this, SLOT(setEnableBox(int)));
 
     scaleValue->setValue(0);
-    //	operationChoice->setCurrentIndex ( 0 ); ?
+    advancedOptions->setEnabled (false);
 
-    /*if (operationChoice->currentIndex() == 0)
-      advancedOptions->setEnabled (false);
-    else
-    advancedOptions->setEnabled (true);*/
 }
 
 
@@ -258,6 +255,21 @@ bool QTopologyOperation::getVolumicMesh() const
         return 1;
     else
         return 0;
+}
+
+void QTopologyOperation::setEnableBox(int i)
+{
+    switch (i)
+    {
+    case 0:
+        advancedOptions->setEnabled(false);
+        break;
+    case 1:
+        advancedOptions->setEnabled(true);
+        break;
+    default:
+        break;
+    }
 }
 
 //*******************************************************************************************

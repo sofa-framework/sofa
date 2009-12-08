@@ -131,6 +131,9 @@ public:
         TopologyOperation::configure(picker, b);
     }
 
+public slots:
+    void setEnableBox (int i);
+
 protected:
 
     QComboBox *operationChoice;
