@@ -145,6 +145,7 @@ void CudaMasterContactSolver<real>::build_LCP()
     _f.resize(_realNumConstraints);
 
     _W.clear();
+    _dFree.clear();
 
     CudaMechanicalGetConstraintValueVisitor(&_dFree).execute(context);
     //simulation::MechanicalComputeComplianceVisitor(_W).execute(context);
@@ -341,21 +342,6 @@ void CudaMasterContactSolver<real>::step(double dt)
 #else
     if (_mu > 0.0)
     {
-// 			_wTmp.resize(_realNumConstraints,_realNumConstraints);
-//
-// 			_wTmp.clear();
-//
-// 			for (unsigned k=0;k<_numConstraints;k++) {
-// 			  int j = k + k/15;
-// 			  for (unsigned l=0;l<_numConstraints;l++) {
-// 			    int i = l + l/15;
-// 			    _wTmp.set(i,j,_W.element(l,k));
-// 			  }
-// 			}
-//
-// 			for (unsigned k=_numConstraints+_numConstraints/15;k<_realNumConstraints;k++) {
-// 			  _wTmp.set(k,k,1.0);
-// 			}
 
         real toln = ((int) (_realNumConstraints/3) + 1) * (real)_tol;
         error = sofa::gpu::cuda::CudaLCP<real>::CudaNlcp_gaussseidel(useGPU_d.getValue(),_realNumConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), _f.getCudaVector(), _mu,toln, _maxIt);
@@ -368,27 +354,33 @@ void CudaMasterContactSolver<real>::step(double dt)
 
 // 			real toln = ((int) (_numConstraints/3) + 1) * (real)_tol;
 // 			error = sofa::gpu::cuda::CudaLCP<real>::CudaNlcp_gaussseidel(useGPU_d.getValue(),_realNumConstraints, _dFree.getCudaVector(), _W.getCudaMatrix(), _f.getCudaVector(), _mu,toln, _maxIt);
+        if (this->f_printLog.getValue())
+        {
+            printf("M = [\n");
+            for (unsigned j=0; j<_numConstraints; j++)
+            {
+                for (unsigned i=0; i<_numConstraints; i++)
+                {
+                    printf("%f\t",_W.element(i,j));
+                }
+                printf("\n");
+            }
+            printf("]\n");
 
-// 			printf("M = [\n");
-// 			for (unsigned j=0;j<_W.rowSize();j++) {
-// 				for (unsigned i=0;i<_W.colSize();i++) {
-// 					printf("%f\t",_W.element(i,j));
-// 				}
-// 				printf("\n");
-// 			}
-// 			printf("]\n");
-//
-// 			printf("q = [");
-// 			for (unsigned j=0;j<_f.size();j++) {
-// 				printf("%f\t",_dFree.element(j));
-// 			}
-// 			printf("]\n");
-//
-// 			printf("FS = [");
-// 			for (unsigned j=0;j<_numConstraints;j++) {
-// 				printf("%f ",_f.element(j));
-// 			}
-// 			printf("]\n");
+            printf("q = [");
+            for (unsigned j=0; j<_numConstraints; j++)
+            {
+                printf("%f\t",_dFree.element(j));
+            }
+            printf("]\n");
+
+            printf("FS = [");
+            for (unsigned j=0; j<_numConstraints; j++)
+            {
+                printf("%f ",_f.element(j));
+            }
+            printf("]\n");
+        }
     }
     else
     {
