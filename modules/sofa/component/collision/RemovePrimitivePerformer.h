@@ -42,6 +42,15 @@ namespace component
 namespace collision
 {
 
+/** Class to configure primitiv removal. Several parameters:
+  * - topologicalOperation: if 0, other parameters arn't use.
+  *   0 = "remove on element"
+  *   1 = "remove a zone of elements"
+  * - volumicMesh:
+  *   false = surfacique mesh
+  *   true = volumique mesh
+  * - selectorScale: size of zone
+  */
 class RemovePrimitivePerformerConfiguration
 {
 public:
@@ -57,6 +66,9 @@ protected:
 
 };
 
+
+/** Class to perform removing of topological elements (either one element or a an area) and handling topological mapping
+  */
 template <class DataTypes>
 class SOFA_COMPONENT_COLLISION_API RemovePrimitivePerformer: public       TInteractionPerformer<DataTypes>, public RemovePrimitivePerformerConfiguration
 {
@@ -69,7 +81,7 @@ public:
     RemovePrimitivePerformer(BaseMouseInteractor *i);
     ~RemovePrimitivePerformer() {}
 
-
+    /// Functions called by TopologicalOperation performer
     void start();
     void execute();
     void end();
@@ -77,26 +89,59 @@ public:
 
 protected:
 
-    void createElementList ();
+    /** Function creating a list of elements concerned by the removal operation.
+      * This function detect if a volume or a surface or a volume on the surface is going to be removed.
+      * Elements are stored in @see selectedElem.
+      * Calling @see getNeighboorElements and @see getElementInZone.
+      *
+      * @return bool: false if method has encounter an error.
+      */
+    bool createElementList ();
 
+
+    /** Function to get all elements directly neighboor of a given list of elements
+      * compute the list without redundancy using container xxAroundVertex() (where xx is the type of element).
+      * @param elementsToTest: vector of element Id to test.
+      * @return VecIds: vector of element Id containing neighbour (without already accepted elements and redundancy).
+      */
     VecIds getNeighboorElements (VecIds& elementsToTest);
 
+
+    /** Function testing if elements are in the range of a given zone
+      * The zone is given by the selectorScale.
+      * Test is done on Barycentric point of elements. I.e if this point is in the range of the area. then, element is accepted otherwise, element is rejected.
+      * @param elementsToTest: vector of element Id to test.
+      * @return VecIds: vector of element Id containing accepted element.
+      */
     VecIds getElementInZone (VecIds& elementsToTest);
 
 
-protected:
-    sofa::component::collision::TopologicalChangeManager topologyChangeManager;
 
-    core::componentmodel::behavior::MechanicalState<DataTypes>* mstateCollision;
+protected:
+    /// picked structure from mouseInteractor.
     BodyPicked picked;
+
+    /// bool: true if first click (when removing zone, first clic show zone, second delete it).
     bool firstClick;
 
-    VecIds selectedElem;
-    //VecIds rejectedElem;
-    //VecIds testElem;
-    //VecIds tmp_testElem;//?
+    /// bool: true if a surface zone is going to be removed on a volumique mesh.
+    bool surfaceOnVolume;
 
+    /// bool: true if a volumique zone is going to be removed at the surface of a volumique mesh.
+    bool volumeOnSurface;
+
+    /// vector of element Id concerned by the operation
+    VecIds selectedElem;
+
+private:
+    /// Class containing removal functions (given collision model)
+    sofa::component::collision::TopologicalChangeManager topologyChangeManager;
+    /// Point to collision class
+    core::componentmodel::behavior::MechanicalState<DataTypes>* mstateCollision;
+    /// Enum storing the type to current topolgy: TRIANGLE, QUAD, TETRAHEDRON or HEXAHEDRON
     sofa::core::componentmodel::topology::TopologyObjectType topoType;
+    /// Pointer to current topology detect by picking
+    sofa::core::componentmodel::topology::BaseMeshTopology* topo_curr;
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_COLLISION_REMOVEPRIMITIVEPERFORMER_CPP)
