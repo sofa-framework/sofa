@@ -234,7 +234,7 @@ protected:
     void moveItem(Q3ListViewItem *item, Q3ListViewItem *above);
 
     /// Verify if no component is being edited, starting from the current GNode passed, and going through all the children
-    bool isNodeErasable ( core::objectmodel::Base* element );
+    bool isNodeErasable ( core::objectmodel::BaseNode* element );
     /// Verigy if the present component is being edited
     bool isObjectErasable ( core::objectmodel::Base* element );
     /// Change a preset node, update the paths to the files and the initial position
@@ -247,7 +247,7 @@ protected:
 
     //Modify windows management: avoid duplicity, and dependencies
     void *current_Id_modifyDialog;
-    std::map< void*, Base* >       map_modifyDialogOpened;
+    std::map< void*, Q3ListViewItem* >       map_modifyDialogOpened;
     std::map< void*, QDialog* >    map_modifyObjectWindow;
 
     std::string filenameXML; //name associated to the current graph

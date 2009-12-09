@@ -67,13 +67,11 @@ namespace gui
 namespace qt
 {
 
-SOFA_LINK_CLASS(GraphDataWidget);
-SOFA_LINK_CLASS(SimpleDataWidget);
-SOFA_LINK_CLASS(StructDataWidget);
-SOFA_LINK_CLASS(TableDataWidget);
+
 
 using namespace  sofa::defaulttype;
-using sofa::core::objectmodel::BaseData;
+using namespace  sofa::core::objectmodel;
+
 
 
 #ifndef SOFA_QT4
@@ -82,7 +80,6 @@ typedef QScrollView Q3ScrollView;
 
 ModifyObject::ModifyObject(
     void *Id,
-    core::objectmodel::Base* node_clicked,
     Q3ListViewItem* item_clicked,
     QWidget* parent,
     const ModifyObjectFlags& dialogFlags,
@@ -91,8 +88,9 @@ ModifyObject::ModifyObject(
     :Id_(Id),
      item_(item_clicked),
      parent_(parent),
+     node(NULL),
+     data_(NULL),
      dialogFlags_(dialogFlags),
-     node(node_clicked),
      visualContentModified(false),
      outputTab(NULL),
      warningTab(NULL),
@@ -102,18 +100,21 @@ ModifyObject::ModifyObject(
      QDialog(parent, name, modal, f)
 {
     setCaption(name);
-    connect ( this, SIGNAL( objectUpdated() ), parent_, SLOT( redraw() ));
+    //connect ( this, SIGNAL( objectUpdated() ), parent_, SLOT( redraw() ));
     connect ( this, SIGNAL( dialogClosed(void *) ) , parent_, SLOT( modifyUnlock(void *)));
     energy_curve[0]=NULL;
     energy_curve[1]=NULL;
     energy_curve[2]=NULL;
-    setNode();
 }
 
-//Set the default file
-void ModifyObject::setNode()
+void ModifyObject::createDialog(Base* base)
 {
-
+    if(base == NULL)
+    {
+        return;
+    }
+    node = base;
+    data_ = NULL;
     //Layout to organize the whole window
     QVBoxLayout *generalLayout = new QVBoxLayout(this, 0, 1, "generalLayout");
 
@@ -468,22 +469,47 @@ void ModifyObject::setNode()
         lineLayout->addWidget(buttonOk);
         lineLayout->addWidget(buttonCancel);
         generalLayout->addLayout( lineLayout );
-
-
-
         //Signals and slots connections
         connect( buttonUpdate,   SIGNAL( clicked() ), this, SLOT( updateValues() ) );
         connect( buttonOk,       SIGNAL( clicked() ), this, SLOT( accept() ) );
         connect( buttonCancel,   SIGNAL( clicked() ), this, SLOT( reject() ) );
-
-
-
         resize( QSize(553, 130).expandedTo(minimumSizeHint()) );
     }
-
-
 }
 
+void ModifyObject::createDialog(BaseData* data)
+{
+    data_ = data;
+    node = NULL;
+    QVBoxLayout *generalLayout = new QVBoxLayout(this, 0, 1, "generalLayout");
+    QHBoxLayout *lineLayout = new QHBoxLayout( 0, 0, 6, "Button Layout");
+    buttonUpdate = new QPushButton( this, "buttonUpdate" );
+    buttonUpdate->setText("&Update");
+    buttonUpdate->setEnabled(false);
+    QPushButton *buttonOk = new QPushButton( this, "buttonOk" );
+    buttonOk->setText( tr( "&OK" ) );
+    QPushButton *buttonCancel = new QPushButton( this, "buttonCancel" );
+    buttonCancel->setText( tr( "&Cancel" ) );
+
+    QDisplayDataWidget* displaydatawidget = new QDisplayDataWidget(this,data,getFlags());
+    generalLayout->addWidget(displaydatawidget);
+    lineLayout->addWidget(buttonUpdate);
+
+
+    QSpacerItem *Horizontal_Spacing = new QSpacerItem( 20, 20, QSizePolicy::Expanding, QSizePolicy::Minimum );
+    lineLayout->addItem( Horizontal_Spacing );
+
+
+    lineLayout->addWidget(buttonOk);
+    lineLayout->addWidget(buttonCancel);
+    generalLayout->addLayout( lineLayout );
+    connect(buttonUpdate,   SIGNAL( clicked() ), displaydatawidget, SLOT( UpdateData() ) );
+    connect(displaydatawidget, SIGNAL( WidgetHasChanged(bool) ), buttonUpdate, SLOT( setEnabled(bool) ) );
+    connect(buttonOk, SIGNAL(clicked() ), displaydatawidget, SLOT( UpdateData() ) );
+    connect(displaydatawidget, SIGNAL(DataParentNameChanged()), this, SLOT( updateListViewItem() ) );
+    connect( buttonOk,       SIGNAL( clicked() ), this, SLOT( accept() ) );
+    connect( buttonCancel,   SIGNAL( clicked() ), this, SLOT( reject() ) );
+}
 
 //******************************************************************************************
 void ModifyObject::updateConsole()
@@ -729,18 +755,33 @@ void ModifyObject::updateEnergy()
 
 void ModifyObject::updateListViewItem()
 {
-    if( !dynamic_cast< Node *>(node))
+    if(node)
     {
-        std::string name=item_->text(0).ascii();
+        if( !dynamic_cast< Node *>(node))
+        {
+            std::string name=item_->text(0).ascii();
+            std::string::size_type pos = name.find(' ');
+            if (pos != std::string::npos)
+                name.resize(pos);
+            name += "  ";
+            name += node->getName();
+            item_->setText(0,name.c_str());
+        }
+        else if (dynamic_cast< Node *>(node))
+            item_->setText(0,node->getName().c_str());
+    }
+    if(data_)
+    {
+        Q3ListViewItem* parent = item_->parent();
+        std::string name = parent->text(0).ascii();
         std::string::size_type pos = name.find(' ');
         if (pos != std::string::npos)
             name.resize(pos);
         name += "  ";
-        name += node->getName();
-        item_->setText(0,name.c_str());
+        name += data_->getOwner()->getName();
+        parent->setText(0,name.c_str());
     }
-    else if (dynamic_cast< Node *>(node))
-        item_->setText(0,node->getName().c_str());
+
 }
 
 //**************************************************************************************************************************************

@@ -411,7 +411,6 @@ core::objectmodel::Base* GraphListenerQListView::findObject(const Q3ListViewItem
     return base;
 }
 
-
 /*****************************************************************************************************************/
 core::objectmodel::BaseData* GraphListenerQListView::findData(const Q3ListViewItem* item)
 // returns NULL if nothing is found.
