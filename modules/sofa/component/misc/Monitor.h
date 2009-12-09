@@ -215,37 +215,36 @@ public:
             if ( m.sizeIdxPos() )
             {
                 out << "P [";
-                for (unsigned int i = 0; i < m.sizeIdxPos(); i++)
+                for (unsigned int i = 0; i < m.sizeIdxPos()-1; i++)
                     out << (m.getIndPos())[i] << " ";
-                out << "] ";
+                out << (m.getIndPos()).back() << "]";
                 previousInsertion=true;
             }
             if (m.sizeIdxVels())
             {
                 if (previousInsertion) out << " ";
                 out << "V [";
-                for (unsigned int i = 0; i < m.sizeIdxVels(); i++)
+                for (unsigned int i = 0; i < m.sizeIdxVels()-1; i++)
                     out << (m.getIndVels())[i] << " ";
-
-                out << "] ";
+                out << (m.getIndVels()).back() << "]";
                 previousInsertion=true;
             }
             if (m.sizeIdxForces())
             {
                 if (previousInsertion) out << " ";
                 out << "F [";
-                for (unsigned int i = 0; i < m.sizeIdxForces(); i++)
+                for (unsigned int i = 0; i < m.sizeIdxForces()-1; i++)
                     out << (m.getIndForces())[i] << " ";
-                out << "]";
+                out << (m.getIndForces()).back() << "]";
                 previousInsertion=true;
             }
             return out;
         }
 
         /**Indices vector initialization MUST be written like :
-        *	P [ "indices of the particles" ]
-        *	V [ "indices of the particles" ]
-        *	F [ "indices of the particles" ]
+        *	P ["indices of the particles"]
+        *	V ["indices of the particles"]
+        *	F ["indices of the particles"]
         *	Example : P [0 1] V [3 2 1 0]
         **/
         inline friend std::istream& operator >> ( std::istream& in, MonitorData &m )

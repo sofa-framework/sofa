@@ -156,7 +156,7 @@ void Monitor<DataTypes>::reset()
 {
     MonitorData *data=monitoring.beginEdit();
     data->clearVecIndices();
-    data ->setValues (mmodel -> getV(), mmodel -> getF(), mmodel -> getX());
+    // data ->setValues (mmodel -> getV(), mmodel -> getF(), mmodel -> getX());
     sofa::helper::vector < int > initialPosIndices = data->getIndPosInit();
     sofa::helper::vector < int > initialVelsIndices = data->getIndVelsInit();
     sofa::helper::vector < int > initialForcesIndices = data->getIndForcesInit();
