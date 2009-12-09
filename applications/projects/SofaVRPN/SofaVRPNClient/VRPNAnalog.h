@@ -11,7 +11,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/objectmodel/DataEngine.h>
+#include <sofa/core/DataEngine.h>
 #include <sofa/helper/RandomGenerator.h>
 
 #include <VRPNDevice.h>

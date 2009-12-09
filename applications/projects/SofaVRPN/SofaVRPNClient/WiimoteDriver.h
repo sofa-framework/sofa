@@ -11,7 +11,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/objectmodel/DataEngine.h>
+#include <sofa/core/DataEngine.h>
 
 #include <VRPNDevice.h>
 
@@ -24,7 +24,7 @@ namespace client
 {
 
 template<class DataTypes>
-class WiimoteDriver : public virtual sofa::core::objectmodel::BaseObject, public virtual sofa::core::objectmodel::DataEngine
+class WiimoteDriver : public virtual sofa::core::objectmodel::BaseObject, public virtual sofa::core::DataEngine
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(WiimoteDriver, DataTypes), sofa::core::objectmodel::BaseObject);
@@ -42,12 +42,16 @@ public:
     //output
     Data<VecCoord> f_dots;
 
+    //Parameters
+    Data<bool> p_viewDots;
+
     WiimoteDriver();
     virtual ~WiimoteDriver();
 
 //	void init();
 //	void reinit();
     void update();
+    void draw();
 
 private:
 

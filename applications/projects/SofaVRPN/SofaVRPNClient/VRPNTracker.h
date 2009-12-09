@@ -11,6 +11,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/core/objectmodel/Event.h>
 
 #include <VRPNDevice.h>
 
@@ -36,6 +37,8 @@ private:
 
     bool connectToServer();
     void update();
+
+    void handleEvent(sofa::core::objectmodel::Event* event);
 };
 
 }

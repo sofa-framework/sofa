@@ -12,6 +12,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 
+
 namespace sofavrpn
 {
 
@@ -69,9 +70,13 @@ template<class Datatypes>
 IRTracker<Datatypes>::IRTracker()
     : f_leftDots(initData(&f_leftDots, "leftDots", "IR dots from L camera"))
     , f_rightDots(initData(&f_rightDots, "rightDots", "IR dots from R camera"))
-    , f_distance(initData(&f_distance, "distance", "Distance between the 2 cameras"))
+    , f_distance(initData(&f_distance, "distanceCamera", "Distance between the 2 cameras"))
+    , f_distanceSide(initData(&f_distanceSide, "distanceSide", "Distance of a side"))
     , f_scale(initData(&f_scale, "scale", "Scale"))
     , f_points(initData(&f_points, "points", "Computed 3D Points"))
+    , p_yErrorCoeff(initData(&p_yErrorCoeff, 1.0, "yErrorCoeff", "Y Error Coefficient"))
+    , p_sideErrorCoeff(initData(&p_sideErrorCoeff, 1.0, "sideErrorCoeff", "Side Error Coefficient"))
+    , p_realSideErrorCoeff(initData(&p_realSideErrorCoeff, 1.0, "realSideErrorCoeff", "Real Side Error Coefficient"))
 {
     addInput(&f_leftDots);
     addInput(&f_rightDots);
@@ -89,6 +94,37 @@ IRTracker<Datatypes>::~IRTracker()
     // TODO Auto-generated destructor stub
 }
 
+template<class Datatypes>
+typename Datatypes::Coord IRTracker<Datatypes>::get3DPoint(double lx, double ly, double rx, double /* ry */)
+{
+    //right or left ?
+//	if (lx < rx)
+//	{
+//		Coord t = ldot;
+//		ldot = rdot;
+//		rdot = t;
+//	}
+    Coord p;
+    const double &distanceCam = f_distance.getValue();
+
+    double XHalfAngleRad = M_PI*(WIIMOTE_X_ANGLE*0.5)/180.0;
+    double YHalfAngleRad = M_PI*(WIIMOTE_Y_ANGLE*0.5)/180.0;
+
+    double lxnormalized = (lx/(WIIMOTE_X_RESOLUTION/2)) - 1;
+    double rxnormalized = (rx/(WIIMOTE_X_RESOLUTION/2)) - 1;
+    double lynormalized = (ly/(WIIMOTE_Y_RESOLUTION/2)) - 1;
+
+    p[2] =  distanceCam / ( (lxnormalized*tan(XHalfAngleRad) - rxnormalized*tan(XHalfAngleRad)));
+
+    //X
+    p[0] = (distanceCam*0.5) + rxnormalized*tan(XHalfAngleRad)*p[2];
+
+    //Y
+    p[1] = lynormalized*tan(YHalfAngleRad)*p[2];
+
+    return p;
+}
+
 //Frame is from user, not the wiimote
 template<class Datatypes>
 void IRTracker<Datatypes>::update()
@@ -97,63 +133,100 @@ void IRTracker<Datatypes>::update()
 
     sofa::helper::ReadAccessor< Data<VecCoord > > leftDots = f_leftDots;
     sofa::helper::ReadAccessor< Data<VecCoord > > rightDots = f_rightDots;
-    const double &distanceCam = f_distance.getValue();
-    const double &scale = f_scale.getValue();
 
-    double XHalfAngleRad = M_PI*(WIIMOTE_X_ANGLE*0.5)/180.0;
-    double YHalfAngleRad = M_PI*(WIIMOTE_Y_ANGLE*0.5)/180.0;
+    const double &scale = f_scale.getValue();
+    const double &distanceSide = f_distanceSide.getValue();
 
     sofa::helper::WriteAccessor< Data<VecCoord > > points = f_points;
 
-    points.clear();
-    points.resize(1);
-    double minimalDistance = ((distanceCam*0.5)/tan(XHalfAngleRad));
-    //std::cout << "Min Distance is " << minimalDistance << std::endl;
-    //for (unsigned int i=0 ; i< 1 ;i++)
-    for (unsigned int i=0 ; i< leftDots.size() && i < rightDots.size() ; i++)
+    if (leftDots.size() != rightDots.size())
     {
-        Coord p;
-        Coord ldot = leftDots[i];
-        Coord rdot = rightDots[i];
-
-        /*if (ldot[0] < 0.0 || ldot[1] < 0.0)
-        	std::cout << "Dot " << i << " out of range of camera 1" << std::endl;
-        if (rdot[0] < 0.0 || rdot[1] < 0.0)
-        	std::cout << "Dot " << i << " out of range of camera 2" << std::endl;
-        */
-
-        //if we see the dot on 2 cameras
-        //if (!((ldot[0] < 0.0 || ldot[1] < 0.0) && (rdot[0] < 0.0 || rdot[1] < 0.0)))
-        if ((ldot[0] > 0.0 && ldot[1] > 0.0) && (rdot[0] > 0.0 && rdot[1] > 0.0))
-        {
-            //right or left ?
-            if (ldot[0] < rdot[0])
-            {
-                Coord t = ldot;
-                ldot = rdot;
-                rdot = t;
-            }
-
-            double lxnormalized = (ldot[0]/(WIIMOTE_X_RESOLUTION/2)) - 1;
-            double rxnormalized = (rdot[0]/(WIIMOTE_X_RESOLUTION/2)) - 1;
-            double lynormalized = (ldot[1]/(WIIMOTE_Y_RESOLUTION/2)) - 1;
-
-            p[2] =  distanceCam / ( (lxnormalized*tan(XHalfAngleRad) - rxnormalized*tan(XHalfAngleRad)));
-
-            //X
-            p[0] = (distanceCam*0.5) + rxnormalized*tan(XHalfAngleRad)*p[2];
-
-            //Y
-            p[1] = lynormalized*tan(YHalfAngleRad)*p[2];
-
-            //std::cout << "Point " << i << " : " << p*100 << std::endl;
-
-            points.push_back(p);
-        }
-        //else
-        //	p = Coord(0.0,0.0,0.0);
+        std::cout << "Left != Right"<< std::endl;
+        return ;
     }
+
+    unsigned int numberOfVisibleDots = 0;
+    for (unsigned int i=0 ; i<leftDots.size() ; i++)
+    {
+        if (leftDots[i][0] > 0.0 && rightDots[i][0] > 0.0)
+            numberOfVisibleDots++;
+    }
+
+    if (numberOfVisibleDots != 3)
+    {
+        std::cout << "Detect only "<< numberOfVisibleDots << " dots !" << std::endl;
+        return ;
+    }
+
+    points.clear();
+
+    unsigned int table[36] =
+    {
+        0, 0, 1, 1, 2, 2,
+        0, 0, 1, 2, 2, 1,
+        0, 1, 1, 2, 2, 0,
+        0, 1, 1, 0, 2, 2,
+        0, 2, 1, 0, 2, 1,
+        0, 2, 1, 1, 2, 0,
+    };
+
+    double minError = 999999.0;
+    VecCoord bestPoints;
+    //Guess the correct mapping between dots
+    for (unsigned int i=0 ; i< 6 ; i++)
+    {
+        VecCoord tempPoints;
+        bool valid = true;
+        double yError = 0.0;
+        double sideError = 0.0;
+        double realSideError = 0.0;
+
+        for (unsigned int j=0 ; j<numberOfVisibleDots && valid; j++)
+        {
+            Coord ldot = leftDots [table[i*6+j*2]];
+            Coord rdot = rightDots[table[i*6+j*2+1]];
+
+            //valid if the right dot's X < left dot's X
+            if ( (valid = (ldot[0] > rdot[0])) )
+            {
+                //compute Y error
+                yError += abs(ldot[1] - rdot[1]);
+                //get 3D position
+                tempPoints.push_back(get3DPoint(ldot[0], ldot[1], rdot[0], rdot[1]));
+            }
+        }
+
+        if (valid)
+        {
+            std::vector<double> lengths;
+            //get the (possible) top point
+            double length01 = (tempPoints[1] - tempPoints[0]).norm();
+            lengths.push_back(length01);
+            double length02 = (tempPoints[2] - tempPoints[0]).norm();
+            lengths.push_back(length02);
+            double length12 = (tempPoints[2] - tempPoints[1]).norm();
+            lengths.push_back(length12);
+
+            std::sort(lengths.begin(), lengths.end());
+            //first is the less so it is not a side
+            sideError = lengths[2]-lengths[1];
+            realSideError = abs(distanceSide - (lengths[2]/lengths[1])*0.5);
+
+            if (minError > yError + sideError + realSideError)
+            {
+                minError = p_yErrorCoeff.getValue()*yError
+                        + p_sideErrorCoeff.getValue()*sideError
+                        + p_realSideErrorCoeff.getValue()*realSideError;
+                bestPoints = tempPoints;
+            }
+        }
+
+    }
+    for (unsigned int i=0 ; i<bestPoints.size() ; i++)
+        points.push_back(bestPoints[i]);
+
 }
+
 
 }
 

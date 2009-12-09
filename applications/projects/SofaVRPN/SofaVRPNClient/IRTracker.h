@@ -11,7 +11,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/objectmodel/DataEngine.h>
+#include <sofa/core/DataEngine.h>
 
 #include <VRPNDevice.h>
 
@@ -24,7 +24,7 @@ namespace client
 {
 
 template<class DataTypes>
-class IRTracker : public virtual sofa::core::objectmodel::BaseObject, public virtual sofa::core::objectmodel::DataEngine
+class IRTracker : public virtual sofa::core::objectmodel::BaseObject, public virtual sofa::core::DataEngine
 {
 public:
     SOFA_CLASS(SOFA_TEMPLATE(IRTracker, DataTypes), sofa::core::objectmodel::BaseObject);
@@ -38,22 +38,27 @@ public:
     static const double WIIMOTE_Y_RESOLUTION;
     static const double WIIMOTE_X_ANGLE;
     static const double WIIMOTE_Y_ANGLE;
+
+    IRTracker();
+    virtual ~IRTracker();
+
+
     //input
     Data<VecCoord > f_leftDots;
     Data<VecCoord > f_rightDots;
     Data<Real> f_distance;
+    Data<Real> f_distanceSide;
     Data<Real> f_scale;
 
     //output
     Data<VecCoord> f_points;
 
-    IRTracker();
-    virtual ~IRTracker();
+    //Parameters
+    Data<double> p_yErrorCoeff, p_sideErrorCoeff, p_realSideErrorCoeff;
 
-//	void init();
-//	void reinit();
     void update();
 
+    Coord get3DPoint(double lx, double ly, double rx, double ry);
 private:
 
 };

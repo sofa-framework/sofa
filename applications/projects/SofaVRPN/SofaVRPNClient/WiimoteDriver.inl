@@ -11,6 +11,7 @@
 #include <WiimoteDriver.h>
 
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/gl/template.h>
 
 namespace sofavrpn
 {
@@ -60,6 +61,7 @@ template<class Datatypes>
 WiimoteDriver<Datatypes>::WiimoteDriver()
     : f_channels(initData(&f_channels, "channels", "Channels from VRPN Analog"))
     , f_dots(initData(&f_dots, "dots", "IR dots in Wiimote camera view"))
+    , p_viewDots(initData(&p_viewDots, false, "viewDots", "View Dots"))
 {
     addInput(&f_channels);;
 
@@ -99,6 +101,46 @@ void WiimoteDriver<Datatypes>::update()
         }
         //std::cout << std::endl;
     }
+
+}
+
+
+template<class Datatypes>
+void WiimoteDriver<Datatypes>::draw()
+{
+    sofa::helper::ReadAccessor< Data<VecCoord > > points = f_dots;
+
+    if (p_viewDots.getValue())
+    {
+        glMatrixMode (GL_PROJECTION);
+        glPushMatrix();
+
+        glLoadIdentity ();
+        glOrtho (0, 1024, 768, 0, 0, 1);
+
+        glMatrixMode (GL_MODELVIEW);
+        glPushMatrix();
+        glLoadIdentity();
+        glDisable(GL_LIGHTING);
+
+        glPointSize(5);
+
+        glBegin(GL_POINTS);
+        for (unsigned int i = 0 ; i<points.size() ; i++)
+        {
+            glColor3f(1.0,1.0,1.0);
+            glVertex3f(points[i][0], points[i][1],0.0);
+        }
+
+        glEnd();
+        glEnable(GL_LIGHTING);
+
+        glMatrixMode (GL_PROJECTION);
+        glPopMatrix();
+        glMatrixMode (GL_MODELVIEW);
+        glPopMatrix();
+    }
+
 }
 
 }

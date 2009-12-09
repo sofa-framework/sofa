@@ -31,7 +31,10 @@ HEADERS +=  vrpnclient_config.h \
 			VRPNButton.h \
 			VRPNTracker.h \
 			WiimoteDriver.h \
-			IRTracker.h
+			IRTracker.h \
+			#ContactWarning.h \
+			#ContactDisabler.h \
+			ToolFinder.h
    
 SOURCES += 	initSofaVRPNClient.cpp \
 			VRPNDevice.cpp \
@@ -39,4 +42,7 @@ SOURCES += 	initSofaVRPNClient.cpp \
 			VRPNButton.cpp \
 		  	VRPNTracker.cpp \
 		  	WiimoteDriver.cpp \
-		  	IRTracker.cpp
+		  	IRTracker.cpp \
+		  	#ContactWarning.cpp \
+		  	#ContactDisabler.cpp \
+		  	ToolFinder.cpp
