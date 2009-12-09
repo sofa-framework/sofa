@@ -256,7 +256,7 @@ protected:
     void graphAddCollisionModelsStat(sofa::helper::vector< sofa::core::CollisionModel* > &v);
     void graphSummary();
 
-    bool isErasable(core::objectmodel::Base* element);
+    bool isNodeErasable ( core::objectmodel::BaseNode* node);
 
     void startDumpVisitor();
     void stopDumpVisitor();
@@ -329,7 +329,7 @@ protected:
 
 private:
     //Map: Id -> Node currently modified. Used to avoid dependancies during removing actions
-    std::map< void*, core::objectmodel::Base* >            map_modifyDialogOpened;
+    std::map< void*, Q3ListViewItem* > map_modifyDialogOpened;
 
     std::map< void*, QDialog* >                       map_modifyObjectWindow;
     std::vector<std::pair<core::objectmodel::Base*, Q3ListViewItem*> > items_stats;

@@ -19,6 +19,10 @@ namespace sofa
 {
 
 using namespace core::objectmodel;
+SOFA_LINK_CLASS(GraphDataWidget);
+SOFA_LINK_CLASS(SimpleDataWidget);
+SOFA_LINK_CLASS(StructDataWidget);
+SOFA_LINK_CLASS(TableDataWidget);
 
 namespace gui
 {
@@ -38,7 +42,7 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,BaseData* data,const Modi
 
     setTitle(data_->getName().c_str());
 
-    setColumns(4);
+
     const std::string label_text = data_->getHelp();
     if (label_text != "TODO")
     {
@@ -59,6 +63,7 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,BaseData* data,const Modi
         datawidget_ = DataWidgetFactory::CreateObject(dwarg.data->getWidget(), dwarg);
     if (datawidget_ == NULL)
     {
+        setColumns(4);
         Data<sofa::component::misc::Monitor< defaulttype::Vec3Types >::MonitorData > *  ff;
         if ( ff = dynamic_cast < Data<sofa::component::misc::Monitor< defaulttype::Vec3Types >::MonitorData > *> (data_) )
         {
@@ -78,6 +83,7 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,BaseData* data,const Modi
     }
     else
     {
+        setColumns(2);
         //std::cout << "WIDGET created for data " << dwarg.data << " : " << dwarg.name << " : " << dwarg.data->getValueTypeString() << std::endl;
         numWidgets_+=datawidget_->sizeWidget();
         connect(datawidget_,SIGNAL(requestChange(bool)), this, SIGNAL ( WidgetHasChanged(bool) ) );

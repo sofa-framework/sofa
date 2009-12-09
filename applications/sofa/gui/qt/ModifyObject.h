@@ -159,7 +159,6 @@ class SOFA_SOFAGUIQT_API ModifyObject : public QDialog
 public:
 
     explicit ModifyObject( void *Id,
-            core::objectmodel::Base* node,
             Q3ListViewItem* item_clicked,
             QWidget* parent,
             const ModifyObjectFlags& dialogFlags,
@@ -174,8 +173,8 @@ public:
 
     const ModifyObjectFlags& getFlags() { return dialogFlags_;}
 
-    void setNode(); //create all the widgets of the dialog window
-
+    void createDialog(core::objectmodel::Base* node);
+    void createDialog(core::objectmodel::BaseData* data);
     bool hideData(core::objectmodel::BaseData* data) { return (!data->isDisplayed()) && dialogFlags_.HIDE_FLAG;};
     void readOnlyData(Q3Table *widget, core::objectmodel::BaseData* data);
     void readOnlyData(QWidget *widget, core::objectmodel::BaseData* data);
@@ -214,6 +213,7 @@ protected:
 
     bool visualContentModified;
     core::objectmodel::Base* node;
+    core::objectmodel::BaseData* data_;
     QWidget* parent_;
     Q3ListViewItem* item_;
     void* Id_;

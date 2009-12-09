@@ -310,19 +310,31 @@ void GraphModeler::openModifyObject(Q3ListViewItem *item)
 {
     if (!item) return;
 
-    std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator it;
-    for (it = graphListener->items.begin(); it != graphListener->items.end(); it++)
+    Base* object = graphListener->findObject(item);
+    BaseData* data = graphListener->findData(item);
+    if( data == NULL && object == NULL)
     {
-        if (it->second == item)
+        assert(0);
+    }
+
+    if (data)       //user clicked on a data
+    {
+        current_Id_modifyDialog = data;
+    }
+    else
+    {
+        if(object)
         {
-            break;
+            current_Id_modifyDialog = object;
+        }
+        else
+        {
+            assert(0);
         }
     }
-    if (it == graphListener->items.end()) return;
-
 
     //Unicity and identification of the windows
-    current_Id_modifyDialog = it->first;
+
     std::map< void*, QDialog* >::iterator testWindow =  map_modifyObjectWindow.find( current_Id_modifyDialog);
     if ( testWindow != map_modifyObjectWindow.end())
     {
@@ -332,11 +344,20 @@ void GraphModeler::openModifyObject(Q3ListViewItem *item)
     }
     ModifyObjectFlags dialogFlags = ModifyObjectFlags();
     dialogFlags.setFlagsForModeler();
-    ModifyObject *dialogModify = new ModifyObject( current_Id_modifyDialog, it->first, item,this,dialogFlags,item->text(0));
+    ModifyObject *dialogModify = new ModifyObject( current_Id_modifyDialog,item,this,dialogFlags,item->text(0));
+    if(data)
+    {
+        dialogModify->createDialog(data);
+    }
+    if(object)
+    {
+        dialogModify->createDialog(object);
+    }
+
     map_modifyObjectWindow.insert( std::make_pair(current_Id_modifyDialog, dialogModify));
     //If the item clicked is a node, we add it to the list of the element modified
 
-    map_modifyDialogOpened.insert ( std::make_pair ( current_Id_modifyDialog, it->first ) );
+    map_modifyDialogOpened.insert ( std::make_pair ( current_Id_modifyDialog, item ) );
 
     dialogModify->show();
     dialogModify->raise();
@@ -557,8 +578,6 @@ GNode* GraphModeler::loadNode(GNode *node, std::string path)
 
 void GraphModeler::loadPreset(std::string presetName)
 {
-
-
     xml::BaseElement* newXML = xml::loadFromFile (presetName.c_str() );
     if (newXML == NULL) return;
 
@@ -867,45 +886,41 @@ void GraphModeler::keyPressEvent ( QKeyEvent * e )
 }
 /*****************************************************************************************************************/
 // Test if a node can be erased in the graph : the condition is that none of its children has a menu modify opened
-bool GraphModeler::isNodeErasable ( core::objectmodel::Base* element )
+bool GraphModeler::isNodeErasable ( BaseNode* node)
 {
-    std::map< void*, core::objectmodel::Base*>::iterator it;
+    Q3ListViewItem* item = graphListener->items[node];
+    if(item == NULL)
+    {
+        return false;
+    }
+    // check if there is already a dialog opened for that item in the graph
+    std::map< void*, Q3ListViewItem*>::iterator it;
     for (it = map_modifyDialogOpened.begin(); it != map_modifyDialogOpened.end(); it++)
     {
-
-        if (dynamic_cast< BaseObject* >(it->second))
-        {
-            if (getGNode(graphListener->items[it->second]) == element) return false;
-        }
-        else if (it->second == element) return false;
-
+        if (it->second == item) return false;
     }
 
-    std::map< core::objectmodel::Base*, Q3ListViewItem*>::iterator it_item;
-    it_item = graphListener->items.find(element);
-
-    Q3ListViewItem *child = it_item->second->firstChild();
+    //check the item childs
+    Q3ListViewItem *child = item->firstChild();
     while (child != NULL)
     {
-        for (it_item = graphListener->items.begin(); it_item != graphListener->items.end(); it_item++)
+        for( it = map_modifyDialogOpened.begin(); it != map_modifyDialogOpened.end(); it++)
         {
-            if  (it_item->second == child)
-            {
-                if (!isNodeErasable(it_item->first)) return false;
-                break;
-            }
+            if( it->second == child) return false;
         }
         child = child->nextSibling();
     }
     return true;
+
 }
 
 bool GraphModeler::isObjectErasable ( core::objectmodel::Base* element )
 {
-    std::map< void*, core::objectmodel::Base*>::iterator it;
+    Q3ListViewItem* item = graphListener->items[element];
+    std::map< void*, Q3ListViewItem*>::iterator it;
     for (it = map_modifyDialogOpened.begin(); it != map_modifyDialogOpened.end(); it++)
     {
-        if (it->second == element) return false;
+        if (it->second == item) return false;
     }
 
     return true;
