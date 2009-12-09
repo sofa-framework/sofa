@@ -36,6 +36,7 @@
 #include <sofa/component/mass/AddMToMatrixFunctor.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/defaulttype/FrameMass.h>
+#include <sofa/helper/gl/Axis.h>
 
 namespace sofa
 {
@@ -343,16 +344,16 @@ double FrameDiagonalMass<DataTypes, MassType>::getKineticEnergy( const VecDeriv&
 template <class DataTypes, class MassType>
 double FrameDiagonalMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord& x )
 {
-
+    double e = 0;
     const MassVector &masses= f_mass.getValue();
-    SReal e = 0;
     // gravity
     Vec3d g ( this->getContext()->getLocalGravity() );
     Deriv theGravity;
-    DataTypes::set ( theGravity, g[0], g[1], g[2]);
-    for (unsigned int i=0; i<masses.size(); i++)
+    DataTypes::set
+    ( theGravity, g[0], g[1], g[2]);
+    for (unsigned int i=0; i<x.size(); i++)
     {
-        e -= theGravity*masses[i]*x[i];
+        e -= theGravity.getVCenter()*masses[i].mass*x[i].getCenter();
     }
     return e;
 }
@@ -401,168 +402,13 @@ void FrameDiagonalMass<DataTypes, MassType>::handleTopologyChange()
 template <class DataTypes, class MassType>
 void FrameDiagonalMass<DataTypes, MassType>::reinit()
 {
-    if (_topology && (m_massDensity.getValue() > 0 || f_mass.getValue().size() == 0))
-    {
-        if (_topology->getNbTetrahedra()>0 && tetraGeo)
-        {
-
-            MassVector& masses = *f_mass.beginEdit();
-            topologyType=TOPOLOGY_TETRAHEDRONSET;
-
-            // resize array
-            clear();
-            masses.resize(this->mstate->getSize());
-
-            for(unsigned int i=0; i<masses.size(); ++i)
-                masses[i]=(Real)0;
-
-            Real md=m_massDensity.getValue();
-            Real mass=(Real)0;
-
-            for (int i=0; i<_topology->getNbTetrahedra(); ++i)
-            {
-
-                const Tetrahedron &t=_topology->getTetrahedron(i);
-                if(tetraGeo)
-                {
-                    mass=(md*tetraGeo->computeRestTetrahedronVolume(i))/(Real)4.0;
-                }
-                masses[t[0]]+=mass;
-                masses[t[1]]+=mass;
-                masses[t[2]]+=mass;
-                masses[t[3]]+=mass;
-            }
-            f_mass.endEdit();
-        }
-        else if (_topology->getNbTriangles()>0 && triangleGeo)
-        {
-            MassVector& masses = *f_mass.beginEdit();
-            topologyType=TOPOLOGY_TRIANGLESET;
-
-            // resize array
-            clear();
-            masses.resize(this->mstate->getSize());
-
-            for(unsigned int i=0; i<masses.size(); ++i)
-                masses[i]=(Real)0;
-
-            Real md=m_massDensity.getValue();
-            Real mass=(Real)0;
-
-            for (int i=0; i<_topology->getNbTriangles(); ++i)
-            {
-                const Triangle &t=_topology->getTriangle(i);
-                if(triangleGeo)
-                {
-                    mass=(md*triangleGeo->computeRestTriangleArea(i))/(Real)3.0;
-                }
-                masses[t[0]]+=mass;
-                masses[t[1]]+=mass;
-                masses[t[2]]+=mass;
-            }
-            f_mass.endEdit();
-        }
-        /*
-          else if (_topology->getNbHexahedra()>0) {
-
-          // TODO : Hexahedra
-          topologyType=TOPOLOGY_HEXAHEDRONSET;
-          }
-          else if (_topology->getNbQuads()>0) {
-
-          // TODO : Quads
-          topologyType=TOPOLOGY_QUADSET;
-          }
-        */
-        else if (_topology->getNbEdges()>0 && edgeGeo)
-        {
-
-            MassVector& masses = *f_mass.beginEdit();
-            topologyType=TOPOLOGY_EDGESET;
-
-            // resize array
-            clear();
-            masses.resize(this->mstate->getSize());
-
-            for(unsigned int i=0; i<masses.size(); ++i)
-                masses[i]=(Real)0;
-
-            Real md=m_massDensity.getValue();
-            Real mass=(Real)0;
-
-            for (int i=0; i<_topology->getNbEdges(); ++i)
-            {
-                const Edge &e=_topology->getEdge(i);
-                if(edgeGeo)
-                {
-                    mass=(md*edgeGeo->computeEdgeLength(i))/(Real)2.0;
-                }
-                masses[e[0]]+=mass;
-                masses[e[1]]+=mass;
-            }
-            f_mass.endEdit();
-        }
-    }
+    Inherited::init();
 }
 
 template <class DataTypes, class MassType>
 void FrameDiagonalMass<DataTypes, MassType>::init()
 {
-    /*  using sofa::component::topology::RegularGridTopology;
-      RegularGridTopology* reg = dynamic_cast<RegularGridTopology*>( this->getContext()->getMeshTopology() );
-      if( reg != NULL )
-      {
-        Real weight = reg->getDx().norm() * reg->getDy().norm() * reg->getDz().norm() * m_massDensity.getValue()/8;
-        VecMass& m = *f_mass.beginEdit();
-        for( int i=0; i<reg->getNx()-1; i++ )
-        {
-          for( int j=0; j<reg->getNy()-1; j++ )
-          {
-            for( int k=0; k<reg->getNz()-1; k++ )
-            {
-              m[reg->point(i,j,k)] += weight;
-              m[reg->point(i,j,k+1)] += weight;
-              m[reg->point(i,j+1,k)] += weight;
-              m[reg->point(i,j+1,k+1)] += weight;
-              m[reg->point(i+1,j,k)] += weight;
-              m[reg->point(i+1,j,k+1)] += weight;
-              m[reg->point(i+1,j+1,k)] += weight;
-              m[reg->point(i+1,j+1,k+1)] += weight;
-            }
-          }
-        }
-        f_mass.endEdit();
-      }*/
-
-    _topology = this->getContext()->getMeshTopology();
-
-    this->getContext()->get(edgeGeo);
-    this->getContext()->get(triangleGeo);
-    this->getContext()->get(quadGeo);
-    this->getContext()->get(tetraGeo);
-    this->getContext()->get(hexaGeo);
-
     Inherited::init();
-
-    // add the functions to handle topology changes.
-
-//	VecMass& masses = *f_mass.beginEdit();
-    f_mass.setCreateFunction(MassPointCreationFunction<MassType>);
-    f_mass.setCreateEdgeFunction(MassEdgeCreationFunction<DataTypes,MassType>);
-    f_mass.setDestroyEdgeFunction(MassEdgeDestroyFunction<DataTypes,MassType>);
-    f_mass.setCreateTriangleFunction(MassTriangleCreationFunction<DataTypes,MassType>);
-    f_mass.setDestroyTriangleFunction(MassTriangleDestroyFunction<DataTypes,MassType>);
-    f_mass.setCreateTetrahedronFunction(MassTetrahedronCreationFunction<DataTypes,MassType>);
-    f_mass.setDestroyTetrahedronFunction(MassTetrahedronDestroyFunction<DataTypes,MassType>);
-
-    f_mass.setCreateParameter( (void *) this );
-    f_mass.setDestroyParameter( (void *) this );
-//    f_mass.endEdit();
-
-    if ((f_mass.getValue().size()==0) && (_topology!=0))
-    {
-        reinit();
-    }
 }
 
 template <class DataTypes, class MassType>
@@ -617,40 +463,49 @@ void FrameDiagonalMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoor
 template <class DataTypes, class MassType>
 void FrameDiagonalMass<DataTypes, MassType>::draw()
 {
-    if (!this->getContext()->getShowBehaviorModels()) return;
+
     const MassVector &masses= f_mass.getValue();
-    const VecCoord& x = *this->mstate->getX();
-    Coord gravityCenter;
-    Real totalMass=0.0;
-
-    std::vector<  Vector3 > points;
-    std::vector< Vec<2,int> > indices;
-
+    if (!this->getContext()->getShowBehaviorModels()) return;
+    VecCoord& x = *this->mstate->getX();
+    Real totalMass=0;
+    RigidTypes::Vec3 gravityCenter;
     for (unsigned int i=0; i<x.size(); i++)
     {
-        Vector3 p;
-        for (unsigned int j=0; j< Coord::static_size; ++j)
-            p[j] = x[i][j];
+        const Quat& orient = x[i].getOrientation();
+        //orient[3] = -orient[3];
+        const RigidTypes::Vec3& center = x[i].getCenter();
+        RigidTypes::Vec3 len;
+        // The moment of inertia of a box is:
+        //   m->_I(0,0) = M/REAL(12.0) * (ly*ly + lz*lz);
+        //   m->_I(1,1) = M/REAL(12.0) * (lx*lx + lz*lz);
+        //   m->_I(2,2) = M/REAL(12.0) * (lx*lx + ly*ly);
+        // So to get lx,ly,lz back we need to do
+        //   lx = sqrt(12/M * (m->_I(1,1)+m->_I(2,2)-m->_I(0,0)))
+        // Note that RigidMass inertiaMatrix is already divided by M
+        double m00 = masses[i].inertiaMatrix[0][0];
+        double m11 = masses[i].inertiaMatrix[1][1];
+        double m22 = masses[i].inertiaMatrix[2][2];
+        len[0] = sqrt(m11+m22-m00);
+        len[1] = sqrt(m00+m22-m11);
+        len[2] = sqrt(m00+m11-m22);
 
-        points.push_back(p);
-        gravityCenter += x[i]*masses[i];
-        totalMass += masses[i];
+        helper::gl::Axis::draw(center, orient, len*showAxisSize.getValue());
+
+        gravityCenter += (center * masses[i].mass);
+        totalMass += masses[i].mass;
     }
-    simulation::getSimulation()->DrawUtility.drawPoints(points, 2, Vec<4,float>(1,1,1,1));
 
     if(showCenterOfGravity.getValue())
     {
+        glColor3f (1,1,0);
         glBegin (GL_LINES);
-        glColor4f (1,1,0,1);
-        glPointSize(5);
         gravityCenter /= totalMass;
-        for(unsigned int i=0 ; i<Coord::static_size ; i++)
-        {
-            Coord v;
-            v[i] = showAxisSize.getValue();
-            helper::gl::glVertexT(gravityCenter-v);
-            helper::gl::glVertexT(gravityCenter+v);
-        }
+        helper::gl::glVertexT(gravityCenter - RigidTypes::Vec3(showAxisSize.getValue(),0,0) );
+        helper::gl::glVertexT(gravityCenter + RigidTypes::Vec3(showAxisSize.getValue(),0,0) );
+        helper::gl::glVertexT(gravityCenter - RigidTypes::Vec3(0,showAxisSize.getValue(),0) );
+        helper::gl::glVertexT(gravityCenter + RigidTypes::Vec3(0,showAxisSize.getValue(),0) );
+        helper::gl::glVertexT(gravityCenter - RigidTypes::Vec3(0,0,showAxisSize.getValue()) );
+        helper::gl::glVertexT(gravityCenter + RigidTypes::Vec3(0,0,showAxisSize.getValue()) );
         glEnd();
     }
 }
@@ -696,37 +551,6 @@ bool FrameDiagonalMass<DataTypes, MassType>::load(const char *filename)
     }
     else return false;
 }
-
-// Specialization for rigids
-#ifndef SOFA_FLOAT
-/*template <>
-    inline void MassEdgeDestroyFunction<Rigid3dTypes, Rigid3dMass>(const sofa::helper::vector<unsigned int> &,
-    void* , vector<Rigid3dMass> &);
-
-template <>
-    inline void MassEdgeCreationFunction<Rigid3dTypes, Rigid3dMass>(const sofa::helper::vector<unsigned int> &,
-    void* , vector<Rigid3dMass> &);*/
-
-template <>
-double FrameDiagonalMass<Rigid3dTypes, Rigid3dMass>::getPotentialEnergy( const VecCoord& x );
-template <>
-double FrameDiagonalMass<Rigid2dTypes, Rigid2dMass>::getPotentialEnergy( const VecCoord& x );
-template <>
-void FrameDiagonalMass<Rigid3dTypes, Rigid3dMass>::draw();
-template <>
-void FrameDiagonalMass<Rigid2dTypes, Rigid2dMass>::draw();
-#endif
-#ifndef SOFA_DOUBLE
-template <>
-double FrameDiagonalMass<Rigid3fTypes, Rigid3fMass>::getPotentialEnergy( const VecCoord& x );
-template <>
-double FrameDiagonalMass<Rigid2fTypes, Rigid2fMass>::getPotentialEnergy( const VecCoord& x );
-
-template <>
-void FrameDiagonalMass<Rigid3fTypes, Rigid3fMass>::draw();
-template <>
-void FrameDiagonalMass<Rigid2fTypes, Rigid2fMass>::draw();
-#endif
 
 
 template<class DataTypes, class MassType>
