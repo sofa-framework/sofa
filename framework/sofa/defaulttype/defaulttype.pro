@@ -43,8 +43,7 @@ SOURCES += \
 
 contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 
-HEADERS += FrameMass.h \
-           FrameMass.inl
+HEADERS += FrameMass.h
 
 SOURCES += 
 

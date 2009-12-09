@@ -22,10 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_MASS_DIAGONALMASS_INL
-#define SOFA_COMPONENT_MASS_DIAGONALMASS_INL
+#ifndef SOFA_COMPONENT_MASS_FRAMEDIAGONALMASS_INL
+#define SOFA_COMPONENT_MASS_FRAMEDIAGONALMASS_INL
 
-#include <sofa/component/mass/DiagonalMass.h>
+#include <sofa/component/mass/FrameDiagonalMass.h>
 #include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -35,6 +35,7 @@
 #include <sofa/component/topology/RegularGridTopology.h>
 #include <sofa/component/mass/AddMToMatrixFunctor.h>
 #include <sofa/simulation/common/Simulation.h>
+#include <sofa/defaulttype/FrameMass.h>
 
 namespace sofa
 {
@@ -62,8 +63,8 @@ template< class DataTypes, class MassType>
 inline void MassEdgeCreationFunction(const sofa::helper::vector<unsigned int> &edgeAdded,
         void* param, vector<MassType> &masses)
 {
-    DiagonalMass<DataTypes, MassType> *dm= (DiagonalMass<DataTypes, MassType> *)param;
-    if (dm->getMassTopologyType()==DiagonalMass<DataTypes, MassType>::TOPOLOGY_EDGESET)
+    FrameDiagonalMass<DataTypes, MassType> *dm= (FrameDiagonalMass<DataTypes, MassType> *)param;
+    if (dm->getMassTopologyType()==FrameDiagonalMass<DataTypes, MassType>::TOPOLOGY_EDGESET)
     {
 
         typename DataTypes::Real md=dm->getMassDensity();
@@ -91,8 +92,8 @@ template< class DataTypes, class MassType>
 inline void MassEdgeDestroyFunction(const sofa::helper::vector<unsigned int> &edgeRemoved,
         void* param, vector<MassType> &masses)
 {
-    DiagonalMass<DataTypes, MassType> *dm= (DiagonalMass<DataTypes, MassType> *)param;
-    if (dm->getMassTopologyType()==DiagonalMass<DataTypes, MassType>::TOPOLOGY_EDGESET)
+    FrameDiagonalMass<DataTypes, MassType> *dm= (FrameDiagonalMass<DataTypes, MassType> *)param;
+    if (dm->getMassTopologyType()==FrameDiagonalMass<DataTypes, MassType>::TOPOLOGY_EDGESET)
     {
 
         typename DataTypes::Real md=dm->getMassDensity();
@@ -120,8 +121,8 @@ template< class DataTypes, class MassType>
 inline void MassTriangleCreationFunction(const sofa::helper::vector<unsigned int> &triangleAdded,
         void* param, vector<MassType> &masses)
 {
-    DiagonalMass<DataTypes, MassType> *dm= (DiagonalMass<DataTypes, MassType> *)param;
-    if (dm->getMassTopologyType()==DiagonalMass<DataTypes, MassType>::TOPOLOGY_TRIANGLESET)
+    FrameDiagonalMass<DataTypes, MassType> *dm= (FrameDiagonalMass<DataTypes, MassType> *)param;
+    if (dm->getMassTopologyType()==FrameDiagonalMass<DataTypes, MassType>::TOPOLOGY_TRIANGLESET)
     {
 
         typename DataTypes::Real md=dm->getMassDensity();
@@ -150,8 +151,8 @@ template< class DataTypes, class MassType>
 inline void MassTriangleDestroyFunction(const sofa::helper::vector<unsigned int> &triangleRemoved,
         void* param, vector<MassType> &masses)
 {
-    DiagonalMass<DataTypes, MassType> *dm= (DiagonalMass<DataTypes, MassType> *)param;
-    if (dm->getMassTopologyType()==DiagonalMass<DataTypes, MassType>::TOPOLOGY_TRIANGLESET)
+    FrameDiagonalMass<DataTypes, MassType> *dm= (FrameDiagonalMass<DataTypes, MassType> *)param;
+    if (dm->getMassTopologyType()==FrameDiagonalMass<DataTypes, MassType>::TOPOLOGY_TRIANGLESET)
     {
 
         typename DataTypes::Real md=dm->getMassDensity();
@@ -184,8 +185,8 @@ template< class DataTypes, class MassType>
 inline void MassTetrahedronCreationFunction(const sofa::helper::vector<unsigned int> &tetrahedronAdded,
         void* param, vector<MassType> &masses)
 {
-    DiagonalMass<DataTypes, MassType> *dm= (DiagonalMass<DataTypes, MassType> *)param;
-    if (dm->getMassTopologyType()==DiagonalMass<DataTypes, MassType>::TOPOLOGY_TETRAHEDRONSET)
+    FrameDiagonalMass<DataTypes, MassType> *dm= (FrameDiagonalMass<DataTypes, MassType> *)param;
+    if (dm->getMassTopologyType()==FrameDiagonalMass<DataTypes, MassType>::TOPOLOGY_TETRAHEDRONSET)
     {
 
         typename DataTypes::Real md=dm->getMassDensity();
@@ -216,8 +217,8 @@ template< class DataTypes, class MassType>
 inline void MassTetrahedronDestroyFunction(const sofa::helper::vector<unsigned int> &tetrahedronRemoved,
         void* param, vector<MassType> &masses)
 {
-    DiagonalMass<DataTypes, MassType> *dm= (DiagonalMass<DataTypes, MassType> *)param;
-    if (dm->getMassTopologyType()==DiagonalMass<DataTypes, MassType>::TOPOLOGY_TETRAHEDRONSET)
+    FrameDiagonalMass<DataTypes, MassType> *dm= (FrameDiagonalMass<DataTypes, MassType> *)param;
+    if (dm->getMassTopologyType()==FrameDiagonalMass<DataTypes, MassType>::TOPOLOGY_TETRAHEDRONSET)
     {
 
         typename DataTypes::Real md=dm->getMassDensity();
@@ -249,7 +250,7 @@ using namespace sofa::core::componentmodel::behavior;
 
 
 template <class DataTypes, class MassType>
-DiagonalMass<DataTypes, MassType>::DiagonalMass()
+FrameDiagonalMass<DataTypes, MassType>::FrameDiagonalMass()
     : f_mass( initData(&f_mass, "mass", "values of the particles masses") )
     , m_massDensity( initData(&m_massDensity, (Real)1.0,"massDensity", "mass density that allows to compute the  particles masses from a mesh topology and geometry.\nOnly used if > 0") )
     , showCenterOfGravity( initData(&showCenterOfGravity, false, "showGravityCenter", "display the center of gravity of the system" ) )
@@ -263,12 +264,12 @@ DiagonalMass<DataTypes, MassType>::DiagonalMass()
 
 
 template <class DataTypes, class MassType>
-DiagonalMass<DataTypes, MassType>::~DiagonalMass()
+FrameDiagonalMass<DataTypes, MassType>::~FrameDiagonalMass()
 {
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::clear()
+void FrameDiagonalMass<DataTypes, MassType>::clear()
 {
     MassVector& masses = *f_mass.beginEdit();
     masses.clear();
@@ -276,7 +277,7 @@ void DiagonalMass<DataTypes, MassType>::clear()
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::addMass(const MassType& m)
+void FrameDiagonalMass<DataTypes, MassType>::addMass(const MassType& m)
 {
     MassVector& masses = *f_mass.beginEdit();
     masses.push_back(m);
@@ -284,7 +285,7 @@ void DiagonalMass<DataTypes, MassType>::addMass(const MassType& m)
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::resize(int vsize)
+void FrameDiagonalMass<DataTypes, MassType>::resize(int vsize)
 {
     MassVector& masses = *f_mass.beginEdit();
     masses.resize(vsize);
@@ -293,7 +294,7 @@ void DiagonalMass<DataTypes, MassType>::resize(int vsize)
 
 // -- Mass interface
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::addMDx(VecDeriv& res, const VecDeriv& dx, double factor)
+void FrameDiagonalMass<DataTypes, MassType>::addMDx(VecDeriv& res, const VecDeriv& dx, double factor)
 {
 
     const MassVector &masses= f_mass.getValue();
@@ -316,7 +317,7 @@ void DiagonalMass<DataTypes, MassType>::addMDx(VecDeriv& res, const VecDeriv& dx
 
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::accFromF(VecDeriv& a, const VecDeriv& f)
+void FrameDiagonalMass<DataTypes, MassType>::accFromF(VecDeriv& a, const VecDeriv& f)
 {
 
     const MassVector &masses= f_mass.getValue();
@@ -327,7 +328,7 @@ void DiagonalMass<DataTypes, MassType>::accFromF(VecDeriv& a, const VecDeriv& f)
 }
 
 template <class DataTypes, class MassType>
-double DiagonalMass<DataTypes, MassType>::getKineticEnergy( const VecDeriv& v )
+double FrameDiagonalMass<DataTypes, MassType>::getKineticEnergy( const VecDeriv& v )
 {
 
     const MassVector &masses= f_mass.getValue();
@@ -340,7 +341,7 @@ double DiagonalMass<DataTypes, MassType>::getKineticEnergy( const VecDeriv& v )
 }
 
 template <class DataTypes, class MassType>
-double DiagonalMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord& x )
+double FrameDiagonalMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord& x )
 {
 
     const MassVector &masses= f_mass.getValue();
@@ -357,7 +358,7 @@ double DiagonalMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord& x 
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::addMToMatrix(defaulttype::BaseMatrix * mat, double mFact, unsigned int &offset)
+void FrameDiagonalMass<DataTypes, MassType>::addMToMatrix(defaulttype::BaseMatrix * mat, double mFact, unsigned int &offset)
 {
     const MassVector &masses= f_mass.getValue();
     const int N = defaulttype::DataTypeInfo<Deriv>::size();
@@ -368,7 +369,7 @@ void DiagonalMass<DataTypes, MassType>::addMToMatrix(defaulttype::BaseMatrix * m
 
 
 template <class DataTypes, class MassType>
-double DiagonalMass<DataTypes, MassType>::getElementMass(unsigned int index) const
+double FrameDiagonalMass<DataTypes, MassType>::getElementMass(unsigned int index) const
 {
     return (SReal)(f_mass.getValue()[index]);
 }
@@ -376,7 +377,7 @@ double DiagonalMass<DataTypes, MassType>::getElementMass(unsigned int index) con
 
 //TODO: special case for Rigid Mass
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const
+void FrameDiagonalMass<DataTypes, MassType>::getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const
 {
     const unsigned int dimension = defaulttype::DataTypeInfo<Deriv>::size();
     if (m->rowSize() != dimension || m->colSize() != dimension) m->resize(dimension,dimension);
@@ -386,7 +387,7 @@ void DiagonalMass<DataTypes, MassType>::getElementMass(unsigned int index, defau
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::handleTopologyChange()
+void FrameDiagonalMass<DataTypes, MassType>::handleTopologyChange()
 {
     std::list<const TopologyChange *>::const_iterator itBegin=_topology->firstChange();
     std::list<const TopologyChange *>::const_iterator itEnd=_topology->lastChange();
@@ -398,7 +399,7 @@ void DiagonalMass<DataTypes, MassType>::handleTopologyChange()
 
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::reinit()
+void FrameDiagonalMass<DataTypes, MassType>::reinit()
 {
     if (_topology && (m_massDensity.getValue() > 0 || f_mass.getValue().size() == 0))
     {
@@ -505,7 +506,7 @@ void DiagonalMass<DataTypes, MassType>::reinit()
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::init()
+void FrameDiagonalMass<DataTypes, MassType>::init()
 {
     /*  using sofa::component::topology::RegularGridTopology;
       RegularGridTopology* reg = dynamic_cast<RegularGridTopology*>( this->getContext()->getMeshTopology() );
@@ -565,7 +566,7 @@ void DiagonalMass<DataTypes, MassType>::init()
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::addGravityToV(double dt)
+void FrameDiagonalMass<DataTypes, MassType>::addGravityToV(double dt)
 {
     if(this->mstate)
     {
@@ -585,7 +586,7 @@ void DiagonalMass<DataTypes, MassType>::addGravityToV(double dt)
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
+void FrameDiagonalMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
 {
     //if gravity was added separately (in solver's "solve" method), then nothing to do here
     if(this->m_separateGravity.getValue())
@@ -614,7 +615,7 @@ void DiagonalMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& x,
 }
 
 template <class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::draw()
+void FrameDiagonalMass<DataTypes, MassType>::draw()
 {
     if (!this->getContext()->getShowBehaviorModels()) return;
     const MassVector &masses= f_mass.getValue();
@@ -655,7 +656,7 @@ void DiagonalMass<DataTypes, MassType>::draw()
 }
 
 template <class DataTypes, class MassType>
-bool DiagonalMass<DataTypes, MassType>::addBBox(double* minBBox, double* maxBBox)
+bool FrameDiagonalMass<DataTypes, MassType>::addBBox(double* minBBox, double* maxBBox)
 {
     const VecCoord& x = *this->mstate->getX();
     for (unsigned int i=0; i<x.size(); i++)
@@ -673,11 +674,11 @@ bool DiagonalMass<DataTypes, MassType>::addBBox(double* minBBox, double* maxBBox
 }
 
 template <class DataTypes, class MassType>
-class DiagonalMass<DataTypes, MassType>::Loader : public helper::io::MassSpringLoader
+class FrameDiagonalMass<DataTypes, MassType>::Loader : public helper::io::MassSpringLoader
 {
 public:
-    DiagonalMass<DataTypes, MassType>* dest;
-    Loader(DiagonalMass<DataTypes, MassType>* dest) : dest(dest) {}
+    FrameDiagonalMass<DataTypes, MassType>* dest;
+    Loader(FrameDiagonalMass<DataTypes, MassType>* dest) : dest(dest) {}
     virtual void addMass(SReal /*px*/, SReal /*py*/, SReal /*pz*/, SReal /*vx*/, SReal /*vy*/, SReal /*vz*/, SReal mass, SReal /*elastic*/, bool /*fixed*/, bool /*surface*/)
     {
         dest->addMass(MassType((Real)mass));
@@ -685,7 +686,7 @@ public:
 };
 
 template <class DataTypes, class MassType>
-bool DiagonalMass<DataTypes, MassType>::load(const char *filename)
+bool FrameDiagonalMass<DataTypes, MassType>::load(const char *filename)
 {
     clear();
     if (filename!=NULL && filename[0]!='\0')
@@ -707,29 +708,29 @@ template <>
     void* , vector<Rigid3dMass> &);*/
 
 template <>
-double DiagonalMass<Rigid3dTypes, Rigid3dMass>::getPotentialEnergy( const VecCoord& x );
+double FrameDiagonalMass<Rigid3dTypes, Rigid3dMass>::getPotentialEnergy( const VecCoord& x );
 template <>
-double DiagonalMass<Rigid2dTypes, Rigid2dMass>::getPotentialEnergy( const VecCoord& x );
+double FrameDiagonalMass<Rigid2dTypes, Rigid2dMass>::getPotentialEnergy( const VecCoord& x );
 template <>
-void DiagonalMass<Rigid3dTypes, Rigid3dMass>::draw();
+void FrameDiagonalMass<Rigid3dTypes, Rigid3dMass>::draw();
 template <>
-void DiagonalMass<Rigid2dTypes, Rigid2dMass>::draw();
+void FrameDiagonalMass<Rigid2dTypes, Rigid2dMass>::draw();
 #endif
 #ifndef SOFA_DOUBLE
 template <>
-double DiagonalMass<Rigid3fTypes, Rigid3fMass>::getPotentialEnergy( const VecCoord& x );
+double FrameDiagonalMass<Rigid3fTypes, Rigid3fMass>::getPotentialEnergy( const VecCoord& x );
 template <>
-double DiagonalMass<Rigid2fTypes, Rigid2fMass>::getPotentialEnergy( const VecCoord& x );
+double FrameDiagonalMass<Rigid2fTypes, Rigid2fMass>::getPotentialEnergy( const VecCoord& x );
 
 template <>
-void DiagonalMass<Rigid3fTypes, Rigid3fMass>::draw();
+void FrameDiagonalMass<Rigid3fTypes, Rigid3fMass>::draw();
 template <>
-void DiagonalMass<Rigid2fTypes, Rigid2fMass>::draw();
+void FrameDiagonalMass<Rigid2fTypes, Rigid2fMass>::draw();
 #endif
 
 
 template<class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::parse(core::objectmodel::BaseObjectDescription* arg)
+void FrameDiagonalMass<DataTypes, MassType>::parse(core::objectmodel::BaseObjectDescription* arg)
 {
 
     if (arg->getAttribute("filename"))
