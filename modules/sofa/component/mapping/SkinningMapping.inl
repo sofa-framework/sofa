@@ -72,9 +72,9 @@ SkinningMapping<BasicMapping>::SkinningMapping ( In* from, Out* to )
     , repartition ( initData ( &repartition,"repartition","repartition between input DOFs and skinned vertices" ) )
     , coefs ( initData ( &coefs,"coefs","weights list for the influences of the references Dofs" ) )
     , nbRefs ( initData ( &nbRefs, ( unsigned ) 3,"nbRefs","nb references for skinning" ) )
-    , displayBlendedFrame ( initData ( &displayBlendedFrame,"1", "displayBlendedFrame","weights list for the influences of the references Dofs" ) )
-    , computeJ ( initData ( &computeJ, "0", "computeJ","compute matrix J in addition to apply for the dual quat interpolation method." ) )
-    , computeAllMatrices ( initData ( &computeAllMatrices, "0", "computeAllMatrices","compute all the matrices in addition to apply for the dual quat interpolation method." ) )
+    , displayBlendedFrame ( initData ( &displayBlendedFrame, true, "displayBlendedFrame","weights list for the influences of the references Dofs" ) )
+    , computeJ ( initData ( &computeJ, false, "computeJ", "compute matrix J in addition to apply for the dual quat interpolation method." ) )
+    , computeAllMatrices ( initData ( &computeAllMatrices, false, "computeAllMatrices","compute all the matrices in addition to apply for the dual quat interpolation method." ) )
     , computeWeights ( true )
     , wheighting ( WEIGHT_INVDIST_SQUARE )
     , interpolation ( INTERPOLATION_DUAL_QUATERNION )
@@ -537,10 +537,12 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
         this->J.resize ( nbDOF );
         this->B.resize ( nbDOF );
         this->A.resize( nbP);
+        this->ddet.resize( nbDOF);
         for ( i=0; i<nbDOF; i++ )
         {
             this->J[i].resize ( nbP );
             this->B[i].resize ( nbP );
+            this->ddet[i].resize( nbP);
         }
 
         //apply
@@ -1022,7 +1024,7 @@ void SkinningMapping<BasicMapping>::applyJT ( typename In::VecConst& out, const 
 #ifdef SOFA_DEV
     case INTERPOLATION_DUAL_QUATERNION:
     {
-        serr << "applyJT on VecConst is not implemented for dual quat." << sendl;
+        //serr << "applyJT on VecConst is not implemented for dual quat." << sendl;
         break;
     }
 #endif
