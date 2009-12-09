@@ -28,7 +28,7 @@
 #include <sofa/helper/system/glut.h>
 
 #include <sofa/component/collision/TetrahedronModel.h>
-
+#include <sofa/simulation/common/Simulation.h>
 
 namespace sofa
 {
@@ -106,6 +106,9 @@ void RemovePrimitivePerformer<DataTypes>::execute()
         }
         else // second clic removing zone stored in selectedElem
         {
+            if (selectedElem.empty())
+                return;
+
             core::CollisionElementIterator collisionElement( picked.body, picked.indexCollisionElement);
 
             sofa::core::componentmodel::topology::TopologyModifier* topologyModifier;
@@ -133,6 +136,8 @@ void RemovePrimitivePerformer<DataTypes>::execute()
             if(topologyModifier) topologyChangeManager.removeItemsFromCollisionModel(model,ElemList_int );
             picked.body=NULL;
             this->interactor->setBodyPicked(picked);
+
+            selectedElem.clear();
         }
     }
 }
@@ -424,6 +429,7 @@ sofa::helper::vector <unsigned int> RemovePrimitivePerformer<DataTypes>::getNeig
     VecIds vertexList;
     VecIds neighboorList;
 
+
     // - STEP 1: get list of element vertices
     for (unsigned int i = 0; i<elementsToTest.size(); ++i)
     {
@@ -550,27 +556,18 @@ sofa::helper::vector <unsigned int> RemovePrimitivePerformer<DataTypes>::getNeig
 template <class DataTypes>
 sofa::helper::vector <unsigned int> RemovePrimitivePerformer<DataTypes>::getElementInZone(VecIds& elementsToTest)
 {
-    // COmpute appropriate scale from BB ?? => STEP 0
-
-    // - STEP 1: Create zone: here a cube for the moment
-    Coord center = picked.point;
-
-    VecCoord scale_min;
-    VecCoord scale_max;
-    scale_min.resize( center.size());
-    scale_max.resize( center.size());
-
-    for (unsigned int i = 0; i<center.size(); ++i)
+    // - STEP 0: Compute appropriate scale from BB:  selectorScale = 100 => zone = all mesh
+    Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
+    sofa::simulation::getSimulation()->computeBBox((simulation::Node*)sofa::simulation::getSimulation()->getContext(), sceneMinBBox.ptr(), sceneMaxBBox.ptr());
+    Real BB_size = (sceneMaxBBox - sceneMinBBox).norm();
+    if (BB_size == 0)
     {
-        scale_min[i] = center;
-        scale_max[i] = center;
-
-        for (unsigned int j = 0; j<center.size(); ++j)
-        {
-            scale_max[i][j] += selectorScale/10; //magic number to have a better sencibility with the selector scale
-            scale_min[i][j] -= selectorScale/10;
-        }
+        std::cerr << "Error while computing Boundingbox size, size return null." << std::endl;
+        BB_size = 1; // not to crash program
     }
+    Real zone_size = (BB_size*selectorScale)/200;
+    Real dist;
+    Coord center = picked.point;
 
     // - STEP 2: Compute baryCoord of elements in list:
     typename DataTypes::VecCoord& X = *mstateCollision->getX();
@@ -628,29 +625,13 @@ sofa::helper::vector <unsigned int> RemovePrimitivePerformer<DataTypes>::getElem
 
 
     VecIds elemInside;
-    // - STEP 2: Test if barycentric points are inside the zone
+    // - STEP 3: Test if barycentric points are inside the zone
     for (unsigned int i = 0; i<elementsToTest.size(); ++i)
     {
-        bool inSide = true;
+        //compute distance from barycenter to center zone
+        dist = (baryCoord[i] - center).norm();
 
-        for (unsigned int j = 0; j<center.size(); ++j)
-        {
-            for (unsigned int k = 0; k<center.size(); ++k)
-            {
-                if (baryCoord[i][k] <= scale_min[j][k]) // check min boundary
-                {
-                    inSide = false;
-                    break;
-                }
-                if (baryCoord[i][k] >= scale_max[j][k]) // check max boundary
-                {
-                    inSide = false;
-                    break;
-                }
-            }
-        }
-
-        if (inSide)
+        if (dist < zone_size)
             elemInside.push_back (elementsToTest[i]);
     }
 
@@ -673,8 +654,14 @@ void RemovePrimitivePerformer<DataTypes>::draw()
     //core::componentmodel::topology::BaseMeshTopology* topo = picked.body->getMeshTopology();
 
     glDisable(GL_LIGHTING);
-    glColor3f(0.2,0.8,0.8);
-    glBegin(GL_TRIANGLES);
+    glColor3f(0.3,0.8,0.3);
+
+
+    if (topoType == QUAD || topoType == HEXAHEDRON)
+        glBegin (GL_QUADS);
+    else
+        glBegin (GL_TRIANGLES);
+
 
     for (unsigned int i=0; i<selectedElem.size(); ++i)
     {
@@ -685,33 +672,56 @@ void RemovePrimitivePerformer<DataTypes>::draw()
         case HEXAHEDRON:
         {
             const BaseMeshTopology::Hexa& hexa = topo_curr->getHexahedron(selectedElem[i]);
-            elem.resize(8);
+            Coord coordP[8];
+
+            for (unsigned int j = 0; j<8; j++)
+                coordP[j] = X[hexa[j]];
+
             for (unsigned int j = 0; j<8; ++j)
-                elem[j] = hexa[j];
+            {
+                glVertex3d(coordP[j][0], coordP[j][1], coordP[j][2]);
+                glVertex3d(coordP[(j+1)%4][0], coordP[(j+1)%4][1], coordP[(j+1)%4][2]);
+                glVertex3d(coordP[(j+2)%4][0], coordP[(j+2)%4][1], coordP[(j+2)%4][2]);
+                glVertex3d(coordP[(j+3)%4][0], coordP[(j+3)%4][1], coordP[(j+3)%4][2]);
+            }
             break;
         }
         case TETRAHEDRON:
         {
             const BaseMeshTopology::Tetra& tetra = topo_curr->getTetrahedron(selectedElem[i]);
-            elem.resize(4);
+            Coord coordP[4];
+
+            for (unsigned int j = 0; j<4; j++)
+                coordP[j] = X[tetra[j]];
+
             for (unsigned int j = 0; j<4; ++j)
-                elem[j] = tetra[j];
+            {
+                glVertex3d(coordP[j][0], coordP[j][1], coordP[j][2]);
+                glVertex3d(coordP[(j+1)%4][0], coordP[(j+1)%4][1], coordP[(j+1)%4][2]);
+                glVertex3d(coordP[(j+2)%4][0], coordP[(j+2)%4][1], coordP[(j+2)%4][2]);
+            }
             break;
         }
         case QUAD:
         {
             const BaseMeshTopology::Quad& quad = topo_curr->getQuad(selectedElem[i]);
-            elem.resize(4);
-            for (unsigned int j = 0; j<4; ++j)
-                elem[j] = quad[j];
+
+            for (unsigned int j = 0; j<4; j++)
+            {
+                Coord coordP = X[quad[j]];
+                glVertex3d(coordP[0], coordP[1], coordP[2]);
+            }
             break;
         }
         case TRIANGLE:
         {
             const BaseMeshTopology::Triangle& tri = topo_curr->getTriangle(selectedElem[i]);
-            elem.resize(3);
-            for (unsigned int j = 0; j<3; ++j)
-                elem[j] = tri[j];
+
+            for (unsigned int j = 0; j<3; j++)
+            {
+                Coord coordP = X[tri[j]];
+                glVertex3d(coordP[0], coordP[1], coordP[2]);
+            }
             break;
         }
         default:
@@ -719,11 +729,7 @@ void RemovePrimitivePerformer<DataTypes>::draw()
         }
 
 
-        for (unsigned int j = 0; j<elem.size(); j++)
-        {
-            Coord coordP = X[elem[j]];
-            glVertex3d(coordP[0], coordP[1], coordP[2]);
-        }
+
     }
     glEnd();
 }
