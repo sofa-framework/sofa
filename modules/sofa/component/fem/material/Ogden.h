@@ -126,6 +126,8 @@ class Ogden: public HyperelasticMaterial<DataTypes>
 
             Real val=pow(Evalue[0],alpha1/(Real)2)+pow(Evalue[1],alpha1/(Real)2)+pow(Evalue[2],alpha1/(Real)2);
             return val*mu1/(alpha1*alpha1);
+#else
+            return 1; // function must return a value!
 #endif
         }
         virtual void InvariantFunctionSPKTensor(const typename HyperelasticMaterial<DataTypes>::StrainInformation *sinfo, const  typename HyperelasticMaterial<DataTypes>::MaterialParameters &param, MatrixSym &SPKTensor)
