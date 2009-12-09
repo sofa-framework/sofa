@@ -230,7 +230,7 @@ QTopologyOperation::QTopologyOperation()
     connect(operationChoice, SIGNAL(activated(int)), this, SLOT(setEnableBox(int)));
 
     scaleValue->setValue(0);
-    advancedOptions->setEnabled (false);
+    advancedOptions->setHidden(true);
 
 }
 
@@ -262,10 +262,10 @@ void QTopologyOperation::setEnableBox(int i)
     switch (i)
     {
     case 0:
-        advancedOptions->setEnabled(false);
+        advancedOptions->setHidden(true);
         break;
     case 1:
-        advancedOptions->setEnabled(true);
+        advancedOptions->setHidden(false);
         break;
     default:
         break;

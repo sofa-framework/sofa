@@ -72,10 +72,10 @@ protected:
 template <class DataTypes>
 class SOFA_COMPONENT_COLLISION_API RemovePrimitivePerformer: public       TInteractionPerformer<DataTypes>, public RemovePrimitivePerformerConfiguration
 {
+    typedef typename DataTypes::Real               Real;
     typedef typename DataTypes::Coord              Coord;
     typedef typename DataTypes::VecCoord           VecCoord;
     typedef sofa::helper::vector <unsigned int>    VecIds;
-
 
 public:
     RemovePrimitivePerformer(BaseMouseInteractor *i);
