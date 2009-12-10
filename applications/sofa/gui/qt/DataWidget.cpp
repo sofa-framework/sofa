@@ -118,10 +118,11 @@ unsigned int QDisplayDataInfoWidget::numLines(const std::string& str)
 {
     std::string::size_type newline_pos;
     unsigned int numlines = 1;
-    newline_pos = -1;
-    while( (newline_pos = str.find('\n',newline_pos+1)) != std::string::npos )
+    newline_pos = str.find('\n',0);
+    while( newline_pos != std::string::npos )
     {
         numlines++;
+        newline_pos = str.find('\n',newline_pos+1);
     }
     return numlines;
 }
