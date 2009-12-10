@@ -231,8 +231,8 @@ public slots:
 protected:
     void formatHelperString(const std::string& helper, std::string& final_text);
     static unsigned int numLines(const std::string& str);
-    unsigned int numLines_;
     core::objectmodel::BaseData* data;
+    unsigned int numLines_;
     QLineEdit *linkpath_edit;
 };
 

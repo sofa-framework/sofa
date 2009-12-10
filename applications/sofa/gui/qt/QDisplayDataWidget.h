@@ -53,8 +53,8 @@ signals:
     void DataParentNameChanged();
 protected:
     core::objectmodel::BaseData* data_;
-    DataWidget* datawidget_;
     QDisplayDataInfoWidget*  datainfowidget_;
+    DataWidget* datawidget_;
     unsigned int numWidgets_;
 protected slots:
     void TextChange();
@@ -77,3 +77,4 @@ protected:
 } //sofa
 
 #endif // SOFA_GUI_QT_DISPLAYDATAWIDGET_H
+
