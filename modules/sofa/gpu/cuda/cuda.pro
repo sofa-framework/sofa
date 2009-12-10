@@ -42,6 +42,7 @@ LIBS += $$SOFA_EXT_LIBS
 
 HEADERS += mycuda.h \
            gpucuda.h \
+           BaseCudaLDIContactResponse.h \
            CudaTypes.h \
 	   CudaTypesBase.h \
            CudaCommon.h \
