@@ -93,10 +93,11 @@ ModifyObject::ModifyObject(
      dialogFlags_(dialogFlags),
      visualContentModified(false),
      outputTab(NULL),
+     logOutputEdit(NULL),
      warningTab(NULL),
      logWarningEdit(NULL),
-     logOutputEdit(NULL),
      graphEnergy(NULL),
+     counterWidget(0),
      QDialog(parent, name, modal, f)
 {
     setCaption(name);

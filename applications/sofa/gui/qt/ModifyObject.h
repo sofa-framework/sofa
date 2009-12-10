@@ -211,22 +211,30 @@ protected:
     void updateHistory();
     void updateEnergy();
 
-    bool visualContentModified;
+    void* Id_;
+    Q3ListViewItem* item_;
+    QWidget* parent_;
     core::objectmodel::Base* node;
     core::objectmodel::BaseData* data_;
-    QWidget* parent_;
-    Q3ListViewItem* item_;
-    void* Id_;
     const ModifyObjectFlags dialogFlags_;
+    bool visualContentModified;
+
+    QWidget* outputTab;
+    Q3TextEdit *logOutputEdit;
+    QWidget *warningTab;
+
+    Q3TextEdit *logWarningEdit;
+    QTabWidget *dialogTab;
+    QPushButton *buttonUpdate;
+    QwtPlot *graphEnergy;
+    QwtPlotCurve *energy_curve[3];
+
+
     unsigned int counterWidget;
 
     WFloatLineEdit* transformation[9]; //Data added to manage transformation of a whole node
-    QWidget *warningTab;
-    Q3TextEdit *logWarningEdit;
-    QWidget* outputTab;
-    Q3TextEdit *logOutputEdit;
-    QTabWidget *dialogTab;
-    QPushButton *buttonUpdate;
+
+
 
     std::vector<std::pair< core::objectmodel::BaseData*,  QObject*> >  objectGUI;  //vector of all the Qt Object added in the window
     std::set< const core::objectmodel::BaseData* >                     setUpdates; //set of objects that have been modified
@@ -236,8 +244,7 @@ protected:
     DisplayFlagWidget *displayFlag;
     std::vector< double > history;
     std::vector< double > energy_history[3];
-    QwtPlot *graphEnergy;
-    QwtPlotCurve *energy_curve[3];
+
 
 };
 

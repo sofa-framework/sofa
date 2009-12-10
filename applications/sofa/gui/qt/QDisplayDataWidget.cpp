@@ -28,7 +28,9 @@ namespace gui
 {
 namespace qt
 {
-QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,BaseData* data,const ModifyObjectFlags& flags):
+QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
+        BaseData* data,
+        const ModifyObjectFlags& flags):
     data_(data),
     datainfowidget_(NULL),
     datawidget_(NULL),
@@ -143,3 +145,4 @@ void QDataTextEdit::UpdateData()
 } // qt
 } //gui
 } //sofa
+
