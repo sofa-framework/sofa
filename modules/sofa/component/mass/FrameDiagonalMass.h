@@ -37,6 +37,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/component/mapping/DualQuatStorage.h>
 
 #include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
 #include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
@@ -54,6 +55,7 @@ namespace mass
 {
 
 using namespace sofa::component::topology;
+using namespace sofa::component::mapping;
 
 
 // template<class Vec> void readVec1(Vec& vec, const char* str);
@@ -71,10 +73,40 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename DataTypes::Real Real;
     typedef TMassType MassType;
+    enum { N=Coord::static_size };
+    typedef defaulttype::Mat<N,N,Real> Mat;
+    //typedef defaulttype::Mat<3,1,Real> Mat31;
+    typedef defaulttype::Mat<3,3,Real> Mat33;
+    typedef defaulttype::Mat<3,6,Real> Mat36;
+    typedef vector<Mat36> VMat36;
+    typedef vector<VMat36> VVMat36;
+    typedef defaulttype::Mat<3,8,Real> Mat38;
+    typedef defaulttype::Mat<4,4,Real> Mat44;
+    //typedef defaulttype::Mat<6,1,Real> Mat61;
+    typedef defaulttype::Mat<6,3,Real> Mat63;
+    typedef defaulttype::Mat<6,6,Real> Mat66;
+    typedef vector<Mat66> VMat66;
+    typedef vector<VMat66> VVMat66;
+    //typedef defaulttype::Mat<8,1,Real> Mat81;
+    typedef defaulttype::Mat<8,3,Real> Mat83;
+    typedef defaulttype::Mat<8,6,Real> Mat86;
+    typedef vector<Mat86> VMat86;
+    typedef defaulttype::Mat<8,8,Real> Mat88;
+    typedef vector<Mat88> VMat88;
+    typedef defaulttype::Vec<3,Real> Vec3;
+    typedef vector<Vec3> VVec3;
+    typedef vector<VVec3> VVVec3;
+    typedef defaulttype::Vec<4,Real> Vec4;
+    typedef defaulttype::Vec<6,Real> Vec6;
+    typedef vector<Vec6> VVec6;
+    typedef vector<VVec6> VVVec6;
+    typedef defaulttype::Vec<8,Real> Vec8;
+    typedef vector<double> VD;
+    typedef core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalState;
 
     // In case of non 3D template
-    typedef Vec<3,MassType>                            Vec3;
-    typedef StdVectorTypes< Vec3, Vec3, MassType >     GeometricalTypes ; /// assumes the geometry object type is 3D
+    typedef Vec<3,MassType>                            Vec3Mass;
+    typedef StdVectorTypes< Vec3Mass, Vec3Mass, MassType >     GeometricalTypes ; /// assumes the geometry object type is 3D
 
     typedef sofa::component::topology::PointData<MassType> VecMass;
     typedef helper::vector<MassType> MassVector;
@@ -127,6 +159,7 @@ public:
 
     virtual void reinit();
     virtual void init();
+    virtual void bwdInit();
     virtual void parse(core::objectmodel::BaseObjectDescription* arg);
 
     TopologyType getMassTopologyType() const
@@ -176,23 +209,24 @@ public:
     void draw();
 
     bool addBBox(double* minBBox, double* maxBBox);
+
+private:
+    MechanicalState* dofs;
+    DualQuatStorage<N, Real>* dqStorage;
+    VD* vol;
+    VVMat36* J;
+
+    void updateMass ( const VVMat36& J, const VD& vol, const VD& volmass );
+
 };
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_MASS_DIAGONALMASS_CPP)
+#if defined(WIN32) && !defined(SOFA_COMPONENT_MASS_FRAMEDIAGONALMASS_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_MASS_API FrameDiagonalMass<defaulttype::Vec3dTypes,double>;
-extern template class SOFA_COMPONENT_MASS_API FrameDiagonalMass<defaulttype::Vec2dTypes,double>;
-extern template class SOFA_COMPONENT_MASS_API FrameDiagonalMass<defaulttype::Vec1dTypes,double>;
-extern template class SOFA_COMPONENT_MASS_API FrameDiagonalMass<defaulttype::Rigid3dTypes,defaulttype::Rigid3dMass>;
-extern template class SOFA_COMPONENT_MASS_API FrameDiagonalMass<defaulttype::Rigid2dTypes,defaulttype::Rigid2dMass>;
+extern template class SOFA_COMPONENT_MASS_API FrameDiagonalMass<defaulttype::Rigid3dTypes,defaulttype::Frame3dMass>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_MASS_API FrameDiagonalMass<defaulttype::Vec3fTypes,float>;
-extern template class SOFA_COMPONENT_MASS_API FrameDiagonalMass<defaulttype::Vec2fTypes,float>;
-extern template class SOFA_COMPONENT_MASS_API FrameDiagonalMass<defaulttype::Vec1fTypes,float>;
-extern template class SOFA_COMPONENT_MASS_API FrameDiagonalMass<defaulttype::Rigid3fTypes,defaulttype::Rigid3fMass>;
-extern template class SOFA_COMPONENT_MASS_API FrameDiagonalMass<defaulttype::Rigid2fTypes,defaulttype::Rigid2fMass>;
+extern template class SOFA_COMPONENT_MASS_API FrameDiagonalMass<defaulttype::Rigid3fTypes,defaulttype::Frame3fMass>;
 #endif
 #endif
 
