@@ -454,7 +454,7 @@ void LCPConstraintSolver::keepContactForcesValue()
 int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f)
 {
 
-    CTime timer;
+    helper::system::thread::CTime timer;
     double time = 0.0;
     double timeScale = 1000.0 / (double)CTime::getTicksPerSec();
     if ( displayTime.getValue() )
@@ -780,7 +780,7 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f)
 
 int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f)
 {
-    CTime timer;
+    helper::system::thread::CTime timer;
     double time = 0.0;
     double timeScale = 1.0;
     if ( displayTime.getValue() )
