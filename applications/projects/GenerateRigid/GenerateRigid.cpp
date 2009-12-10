@@ -131,7 +131,7 @@ bool GenerateRigid(sofa::defaulttype::Rigid3Mass& mass, sofa::defaulttype::Vec3d
 
     // mass
     mass.volume = afIntegral[0];
-    mass.mass = 1000 * mass.volume; // using standard metrics, 1 cubic meter of a material with density 1 weights 1000 kg
+    mass.mass = mass.volume;
 
     // center of mass
     center = Vector3(afIntegral[1]/afIntegral[0],afIntegral[2]/afIntegral[0],afIntegral[3]/afIntegral[0]);
