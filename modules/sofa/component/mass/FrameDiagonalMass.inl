@@ -37,6 +37,7 @@
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/defaulttype/FrameMass.h>
 #include <sofa/helper/gl/Axis.h>
+#include <sofa/component/topology/HexahedronSetGeometryAlgorithms.inl>
 
 namespace sofa
 {
