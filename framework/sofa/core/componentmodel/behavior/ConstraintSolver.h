@@ -56,7 +56,6 @@ public:
 
     /** Launch the sequence of operations in order to solve the constraints
      * @param Id order of the constraint to be solved
-     * @param priorStatePropagation boolean indication if we need to propagate the state vector to the mapped dof before solving the constraint
      * @param isPositionChangesUpdateVelocity boolean indication if we need to propagate the change of position to a modification of velocity dv=dx/dt
      **/
     virtual void solveConstraint(double /*dt*/, VecId,  bool /*isPositionChangesUpdateVelocity*/=true);
@@ -74,7 +73,7 @@ public:
     virtual bool buildSystem(double /*dt*/, VecId)=0;
 
     /**
-     * Use the system previously build and solve it with the appropriate algorithm
+     * Use the system previously built and solve it with the appropriate algorithm
      */
     virtual bool solveSystem(double /*dt*/, VecId)=0;
 

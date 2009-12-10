@@ -34,7 +34,7 @@ namespace simulation
 using std::cerr;
 using std::endl;
 //Max size for vector to be allowed to be dumped
-#define DUMP_VISITOR_MAX_SIZE_VECTOR 20
+#define DUMP_VISITOR_MAX_SIZE_VECTOR 50
 
 Visitor::Result MechanicalVisitor::processNodeTopDown(simulation::Node* node)
 {

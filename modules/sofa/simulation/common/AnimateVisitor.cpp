@@ -72,6 +72,7 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
 {
     //cerr<<"AnimateVisitor::process Node  "<<node->getName()<<endl;
     if (!node->is_activated.getValue()) return Visitor::RESULT_PRUNE;
+
     if (dt == 0) setDt(node->getDt());
 // 	for_each(this, node, node->behaviorModel, &AnimateVisitor::processBehaviorModel);
     if (node->masterSolver != NULL)
@@ -126,10 +127,6 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
 
         MechanicalPropagatePositionAndVelocityVisitor(nextTime,core::componentmodel::behavior::OdeSolver::VecId::position(),core::componentmodel::behavior::OdeSolver::VecId::velocity()).execute( node );
 
-#ifdef SOFA_HAVE_EIGEN2
-        MechanicalResetConstraintVisitor resetConstraint;
-        node->execute(&resetConstraint);
-#endif
 
         MechanicalEndIntegrationVisitor endVisitor(dt);
         node->execute(&endVisitor);
