@@ -80,6 +80,8 @@ public:
     virtual void setIntersectionMethod(Intersection* v) { intersectionMethod = v;    }
     Intersection* getIntersectionMethod() const         { return intersectionMethod; }
 
+    virtual std::string getContactResponse(core::CollisionModel* model1, core::CollisionModel* model2)=0;
+
 protected:
     /// Current intersection method
     Intersection* intersectionMethod;

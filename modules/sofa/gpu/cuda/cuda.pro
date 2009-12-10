@@ -84,7 +84,9 @@ HEADERS += mycuda.h \
            CudaTetrahedralVisualModel.h \
            CudaTetrahedralVisualModel.inl \
            CudaParticleSource.h \
-           CudaParticleSource.inl
+           CudaParticleSource.inl \
+           VolumetricContact.h \
+           VolumetricContact.inl
 
 SOURCES += mycuda.cpp \
            CudaBoxROI.cpp  \
@@ -109,7 +111,8 @@ SOURCES += mycuda.cpp \
            CudaVisualModel.cpp \
            CudaTetrahedralVisualModel.cpp \
            CudaSetTopology.cpp \
-           CudaParticleSource.cpp
+           CudaParticleSource.cpp \
+           VolumetricContact.cpp
 
 CUDA_SOURCES += mycuda.cu \
            CudaMechanicalObject.cu \

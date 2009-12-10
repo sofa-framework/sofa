@@ -177,6 +177,11 @@ void Simulation::animate ( Node* root, double dt )
     // CHANGE to support MasterSolvers : CollisionVisitor is now activated within AnimateVisitor
     //root->execute<CollisionVisitor>();
 
+#ifdef SOFA_HAVE_EIGEN2
+    MechanicalResetConstraintVisitor resetConstraint;
+    root->execute(&resetConstraint);
+#endif
+
     AnimateVisitor act;
     act.setDt ( mechanicalDt );
     BehaviorUpdatePositionVisitor beh(root->getDt());
