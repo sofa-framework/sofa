@@ -412,6 +412,34 @@ void FrameDiagonalMass<DataTypes, MassType>::init()
 }
 
 template <class DataTypes, class MassType>
+void FrameDiagonalMass<DataTypes, MassType>::bwdInit()
+{
+    this->getContext()->get( dqStorage, core::objectmodel::BaseContext::SearchRoot);
+    if(! dqStorage)
+    {
+        serr << "Can't find dqStorage component." << sendl;
+        return;
+    }
+
+    this->getContext()->get( dofs);
+    if(! dofs)
+    {
+        serr << "Can't find dofs component." << sendl;
+        return;
+    }
+
+    this->J = & dqStorage->J;
+    this->vol = & dqStorage->vol;
+
+    vector<double> vm;
+    unsigned int nbElt = this->dofs->getX()->size();
+    vm.resize( nbElt);
+    for( unsigned int i = 0; i < nbElt; i++) vm[i] = 0.0;
+    updateMass ( *J, *vol, vm);//volmass );
+
+}
+
+template <class DataTypes, class MassType>
 void FrameDiagonalMass<DataTypes, MassType>::addGravityToV(double dt)
 {
     if(this->mstate)
@@ -566,6 +594,39 @@ void FrameDiagonalMass<DataTypes, MassType>::parse(core::objectmodel::BaseObject
 }
 
 
+template<class DataTypes, class MassType>
+void FrameDiagonalMass<DataTypes, MassType>::updateMass ( const VVMat36& J, const VD& vol, const VD& volmass )
+{
+    // Mass_ij=sum(d.p.Ji^TTJj)
+    int i,j,k,nbDOF=J.size(),nbP=vol.size();
+    Mat63 JT;
+    Mat66 JJT;
+
+    this->resize(nbDOF);
+    MassVector& vecMass = *(f_mass.beginEdit());
+    for ( i=0; i<nbDOF; i++ )
+    {
+        vecMass[i].mass = volmass[i];
+        Mat66 frameMass = vecMass[i].inertiaMatrix;
+        // Init the diagonal block
+        for( unsigned int l = 0; l < 6; l++)
+            for( unsigned int m = 0; m < 6; m++)
+                frameMass[l][m] = 0.0;
+
+        for ( j=0; j<nbP; j++ )
+        {
+            JT.transpose ( J[i][j] );
+            JT*=vol[j]*volmass[j];
+            for ( k=0; k<nbDOF; k++ )
+            {
+                JJT=JT*J[k][j];
+                frameMass += JJT;
+            }
+        }
+        vecMass[i].recalc();
+    }
+    f_mass.endEdit();
+}
 
 } // namespace mass
 
