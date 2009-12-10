@@ -19,6 +19,7 @@ namespace sofa
 {
 
 using namespace core::objectmodel;
+using namespace sofa::component::misc;
 SOFA_LINK_CLASS(GraphDataWidget);
 SOFA_LINK_CLASS(SimpleDataWidget);
 SOFA_LINK_CLASS(StructDataWidget);
@@ -66,8 +67,9 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
     if (datawidget_ == NULL)
     {
         setColumns(4);
-        Data<sofa::component::misc::Monitor< defaulttype::Vec3Types >::MonitorData > *  ff;
-        if ( ff = dynamic_cast < Data<sofa::component::misc::Monitor< defaulttype::Vec3Types >::MonitorData > *> (data_) )
+        Data<Monitor< defaulttype::Vec3Types >::MonitorData > *  ff;
+        ff = dynamic_cast < Data<Monitor< defaulttype::Vec3Types >::MonitorData > *> (data_);
+        if (ff )
         {
             QMonitorTableWidget<defaulttype::Vec3Types>* tableWidget = new QMonitorTableWidget<defaulttype::Vec3Types>(ff,flags,this);
             connect(this,SIGNAL(WidgetUpdate()),tableWidget,SLOT(UpdateWidget()) ) ;
