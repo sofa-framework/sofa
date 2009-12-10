@@ -53,6 +53,7 @@ public:
     typedef typename StdRigidTypes<3,Real>::Deriv Deriv;
     typedef Mat<36,6,Real> Mat36;
     typedef Mat<6,6,Real> Mat66;
+    typedef Vec<6,Real> Vec6;
     typedef vector<double> VD;
     Real mass,volume;
     Mat66 inertiaMatrix;	      // Inertia matrix of the object
@@ -87,7 +88,7 @@ public:
     /// compute ma = M*a
     Deriv operator * ( const Deriv& a ) const
     {
-        Vec6d va, vma;
+        Vec6 va, vma;
         va[0] = a.getVCenter() [0];
         va[1] = a.getVCenter() [1];
         va[2] = a.getVCenter() [2];
@@ -111,7 +112,7 @@ public:
     /// compute a = f/a
     Deriv operator / ( const Deriv& f ) const
     {
-        Vec6d va, vma;
+        Vec6 va, vma;
         vma[0] = f.getVCenter() [0];
         vma[1] = f.getVCenter() [1];
         vma[2] = f.getVCenter() [2];
