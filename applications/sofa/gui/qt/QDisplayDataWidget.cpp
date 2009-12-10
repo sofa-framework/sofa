@@ -30,12 +30,12 @@ namespace qt
 {
 QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
         BaseData* data,
-        const ModifyObjectFlags& flags):
+        const ModifyObjectFlags& flags):Q3GroupBox(parent),
     data_(data),
     datainfowidget_(NULL),
     datawidget_(NULL),
-    numWidgets_(0),
-    Q3GroupBox(parent)
+    numWidgets_(0)
+
 {
     if(data_ == NULL)
     {
@@ -111,8 +111,8 @@ void QDisplayDataWidget::UpdateWidgets()
 }
 
 QDataTextEdit::QDataTextEdit(QWidget* parent, BaseData* data, const ModifyObjectFlags& flags):
-    data_(data),
-    QTextEdit(parent)
+    QTextEdit(parent),
+    data_(data)
 {
     if( data_ )
     {

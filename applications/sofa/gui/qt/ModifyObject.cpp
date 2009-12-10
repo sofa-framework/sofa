@@ -85,7 +85,8 @@ ModifyObject::ModifyObject(
     const ModifyObjectFlags& dialogFlags,
     const char* name,
     bool modal, Qt::WFlags f )
-    :Id_(Id),
+    :QDialog(parent, name, modal, f),
+     Id_(Id),
      item_(item_clicked),
      parent_(parent),
      node(NULL),
@@ -97,8 +98,7 @@ ModifyObject::ModifyObject(
      warningTab(NULL),
      logWarningEdit(NULL),
      graphEnergy(NULL),
-     counterWidget(0),
-     QDialog(parent, name, modal, f)
+     counterWidget(0)
 {
     setCaption(name);
     //connect ( this, SIGNAL( objectUpdated() ), parent_, SLOT( redraw() ));
