@@ -57,12 +57,10 @@ int main(int argc, char** argv)
 
     projects::GenerateRigid(mass, center, mesh);
 
-    double density = 1;
+    double density = 1000;
     if (argc >= 4) density = atof( argv[3] );
-    std::cout << "Using density = " << density << std::endl;
-    double correctedDensity = 1000 * density; // using standard metrics, 1 cubic meter of a material with density 1 weights 1000 kg
-    mass.mass *= correctedDensity;
-    //mass.inertiaMatrix *= correctedDensity;
+    std::cout << "Using density = " << density << "kg/m^3" << std::endl;
+    mass.mass *= density;
 
     std::ostream* out = &std::cout;
     if (argc >= 3)
