@@ -96,8 +96,8 @@ public:
     helper::vector<Real> lastDist;
     helper::vector<defaulttype::Quat> restRotations;
 
+    AttachConstraint(core::componentmodel::behavior::MechanicalState<DataTypes> *mm1, core::componentmodel::behavior::MechanicalState<DataTypes> *mm2);
     AttachConstraint();
-
     virtual ~AttachConstraint();
 
     void clearConstraints();

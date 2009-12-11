@@ -379,6 +379,28 @@ AttachConstraint<DataTypes>::AttachConstraint()
 //     f_indices2.endEdit();
 }
 
+template <class DataTypes>
+AttachConstraint<DataTypes>::AttachConstraint(core::componentmodel::behavior::MechanicalState<DataTypes> *mm1, core::componentmodel::behavior::MechanicalState<DataTypes> *mm2)
+    : core::componentmodel::behavior::PairInteractionConstraint<DataTypes>(mm1,mm2)
+    ,f_indices1( initData(&f_indices1,"indices1","Indices of the source points on the first model") )
+    , f_indices2( initData(&f_indices2,"indices2","Indices of the fixed points on the second model") )
+    , f_radius( initData(&f_radius,(Real)-1,"radius", "Radius to search corresponding fixed point if no indices are given") )
+    , f_twoWay( initData(&f_twoWay,false,"twoWay", "true if forces should be projected back from model2 to model1") )
+    , f_freeRotations( initData(&f_freeRotations,false,"freeRotations", "true to keep rotations free (only used for Rigid DOFs)") )
+    , f_lastFreeRotation( initData(&f_lastFreeRotation,false,"lastFreeRotation", "true to keep rotation of the last attached point free (only used for Rigid DOFs)") )
+    , f_restRotations( initData(&f_restRotations,false,"restRotations", "true to use rest rotations local offsets (only used for Rigid DOFs)") )
+    , f_lastPos( initData(&f_lastPos,"lastPos", "position at which the attach constraint should become inactive") )
+    , f_lastDir( initData(&f_lastDir,"lastDir", "direction from lastPos at which the attach coustraint should become inactive") )
+    , f_clamp( initData(&f_clamp, false,"clamp", "true to clamp particles at lastPos instead of freeing them.") )
+    , f_minDistance( initData(&f_minDistance, (Real)-1,"minDistance", "the constraint become inactive if the distance between the points attached is bigger than minDistance.") )
+{
+    // default to indice 0
+//     f_indices1.beginEdit()->push_back(0);
+//     f_indices1.endEdit();
+//     f_indices2.beginEdit()->push_back(0);
+//     f_indices2.endEdit();
+}
+
 #if 0
 // Handle topological changes
 template <class DataTypes> void AttachConstraint<DataTypes>::handleTopologyChange()
