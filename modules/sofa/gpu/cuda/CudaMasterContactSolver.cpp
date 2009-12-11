@@ -340,6 +340,8 @@ void CudaMasterContactSolver<real>::step(double dt)
     }
 
 #else
+    sout << "numcontacts = " << _realNumConstraints << " RealNumContacts =" <<  _numConstraints << sendl;
+
     if (_mu > 0.0)
     {
 

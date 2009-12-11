@@ -276,8 +276,8 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
     // x is the solution of the system
 #ifdef DISPLAY_TIME
     step_simu++;
-    it_simu+=nb_iter;
-    if (step_simu>DISPLAY_TIME)
+    it_simu+=nb_iter-1;
+    if (display_time.getValue() && step_simu>DISPLAY_TIME)
     {
         time1 /= (double)((double)CTime::getRefTicksPerSec());
         time2 /= (double)((double)CTime::getRefTicksPerSec());
