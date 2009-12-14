@@ -130,6 +130,12 @@ public:
         return topologyType;
     }
 
+    void setMassTopologyType(TopologyType t)
+    {
+        topologyType = t;
+    }
+
+
     Real getMassDensity() const
     {
         return m_massDensity.getValue();
