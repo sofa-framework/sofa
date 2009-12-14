@@ -29,6 +29,7 @@
 #include <sofa/core/componentmodel/behavior/BaseLMConstraint.h>
 #include <sofa/core/componentmodel/behavior/BaseConstraintCorrection.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/component/component.h>
 
 #include <Eigen/Core>
 #include <Eigen/Sparse>
@@ -44,7 +45,7 @@ namespace constraint
 {
 
 using core::componentmodel::behavior::BaseLMConstraint;
-class LMConstraintSolver : public sofa::core::componentmodel::behavior::ConstraintSolver
+class SOFA_COMPONENT_CONSTRAINT_API LMConstraintSolver : public sofa::core::componentmodel::behavior::ConstraintSolver
 {
     typedef sofa::core::VecId VecId;
     typedef sofa::core::componentmodel::behavior::BaseLMConstraint::ConstOrder ConstOrder;
