@@ -379,7 +379,7 @@ void LMConstraintSolver::buildLeftMatrix(const DofToMatrix& invMassMatrix, DofTo
                 {
                     accumulatingDof = currentIndexDof;
                     column = it.row();
-                    value.clear();
+                    value.resize( dimensionDofs, 0 );
                 }
                 else if (accumulatingDof != (int)currentIndexDof)
                 {
@@ -395,7 +395,7 @@ void LMConstraintSolver::buildLeftMatrix(const DofToMatrix& invMassMatrix, DofTo
 
                     accumulatingDof = currentIndexDof;
                     column = it.row();
-                    value.clear();
+                    value.resize( dimensionDofs, 0 );
                 }
 
                 value[d] = it.value();
