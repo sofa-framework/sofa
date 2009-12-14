@@ -743,32 +743,23 @@ void MeshMatrixMass<DataTypes, MassType>::reinit()
 
 
         // Create mass matrix depending on current Topology:
-        if (_topology->getNbTriangles()>0 && triangleGeo) // Triangle topology
+        if (_topology->getNbHexahedra()>0 && hexaGeo)  // Hexahedron topology
         {
-            // create vector tensor by calling the triangle creation function on the entire mesh
-            sofa::helper::vector<unsigned int> trianglesAdded;
+            // create vector tensor by calling the hexahedron creation function on the entire mesh
+            sofa::helper::vector<unsigned int> hexahedraAdded;
+            setMassTopologyType(TOPOLOGY_HEXAHEDRONSET);
 
-            for (int i = 0; i<_topology->getNbTriangles(); ++i)
-                trianglesAdded.push_back(i);
+            for (int i = 0; i<_topology->getNbHexahedra(); ++i)
+                hexahedraAdded.push_back(i);
 
-            VertexMassTriangleCreationFunction(trianglesAdded, (void*) this, my_vertexMassInfo);
-            EdgeMassTriangleCreationFunction(trianglesAdded, (void*) this, my_edgeMassInfo);
-        }
-        else if (_topology->getNbQuads()>0 && quadGeo)  // Quad topology
-        {
-            // create vector tensor by calling the quad creation function on the entire mesh
-            sofa::helper::vector<unsigned int> quadsAdded;
-
-            for (int i = 0; i<_topology->getNbQuads(); ++i)
-                quadsAdded.push_back(i);
-
-            VertexMassQuadCreationFunction(quadsAdded, (void*) this, my_vertexMassInfo);
-            EdgeMassQuadCreationFunction(quadsAdded, (void*) this, my_edgeMassInfo);
+            VertexMassHexahedronCreationFunction(hexahedraAdded, (void*) this, my_vertexMassInfo);
+            EdgeMassHexahedronCreationFunction(hexahedraAdded, (void*) this, my_edgeMassInfo);
         }
         else if (_topology->getNbTetrahedra()>0 && tetraGeo)  // Tetrahedron topology
         {
             // create vector tensor by calling the tetrahedron creation function on the entire mesh
             sofa::helper::vector<unsigned int> tetrahedraAdded;
+            setMassTopologyType(TOPOLOGY_TETRAHEDRONSET);
 
             for (int i = 0; i<_topology->getNbTetrahedra(); ++i)
                 tetrahedraAdded.push_back(i);
@@ -776,16 +767,29 @@ void MeshMatrixMass<DataTypes, MassType>::reinit()
             VertexMassTetrahedronCreationFunction(tetrahedraAdded, (void*) this, my_vertexMassInfo);
             EdgeMassTetrahedronCreationFunction(tetrahedraAdded, (void*) this, my_edgeMassInfo);
         }
-        else if (_topology->getNbHexahedra()>0 && hexaGeo)  // Hexahedron topology
+        else if (_topology->getNbQuads()>0 && quadGeo)  // Quad topology
         {
-            // create vector tensor by calling the hexahedron creation function on the entire mesh
-            sofa::helper::vector<unsigned int> hexahedraAdded;
+            // create vector tensor by calling the quad creation function on the entire mesh
+            sofa::helper::vector<unsigned int> quadsAdded;
+            setMassTopologyType(TOPOLOGY_QUADSET);
 
-            for (int i = 0; i<_topology->getNbHexahedra(); ++i)
-                hexahedraAdded.push_back(i);
+            for (int i = 0; i<_topology->getNbQuads(); ++i)
+                quadsAdded.push_back(i);
 
-            VertexMassHexahedronCreationFunction(hexahedraAdded, (void*) this, my_vertexMassInfo);
-            EdgeMassHexahedronCreationFunction(hexahedraAdded, (void*) this, my_edgeMassInfo);
+            VertexMassQuadCreationFunction(quadsAdded, (void*) this, my_vertexMassInfo);
+            EdgeMassQuadCreationFunction(quadsAdded, (void*) this, my_edgeMassInfo);
+        }
+        else if (_topology->getNbTriangles()>0 && triangleGeo) // Triangle topology
+        {
+            // create vector tensor by calling the triangle creation function on the entire mesh
+            sofa::helper::vector<unsigned int> trianglesAdded;
+            setMassTopologyType(TOPOLOGY_TRIANGLESET);
+
+            for (int i = 0; i<_topology->getNbTriangles(); ++i)
+                trianglesAdded.push_back(i);
+
+            VertexMassTriangleCreationFunction(trianglesAdded, (void*) this, my_vertexMassInfo);
+            EdgeMassTriangleCreationFunction(trianglesAdded, (void*) this, my_edgeMassInfo);
         }
     }
 }
