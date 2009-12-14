@@ -118,7 +118,7 @@ public:
 
     MeshMatrixMass();
 
-    ~MeshMatrixMass();
+    ~MeshMatrixMass() {};
 
     void clear();
 
@@ -173,6 +173,92 @@ public:
     void draw();
 
     bool addBBox(double* minBBox, double* maxBBox);
+
+
+protected:
+    /// Mass initialization Creation Functions:
+    /// Vertex mass coefficient matrix creation function
+    static void VertexMassCreationFunction(int, void* , MassType & VertexMass,
+            const sofa::helper::vector< unsigned int > &,
+            const sofa::helper::vector< double >&);
+
+    /// Edge mass coefficient matrix creation function
+    static void EdgeMassCreationFunction(int, void* , MassType & EdgeMass,
+            const Edge&,
+            const sofa::helper::vector< unsigned int > &,
+            const sofa::helper::vector< double >&);
+
+
+    /// Mass coefficient Creation/Destruction functions for Triangular Mesh:
+    /// Vertex coefficient of mass matrix creation function to handle creation of new triangles
+    static void VertexMassTriangleCreationFunction(const sofa::helper::vector<unsigned int> &triangleAdded,
+            void* param, vector<MassType> &VertexMasses);
+
+    /// Edge coefficient of mass matrix creation function to handle creation of new triangles
+    static void EdgeMassTriangleCreationFunction(const sofa::helper::vector<unsigned int> &triangleAdded,
+            void* param, vector<MassType> &EdgeMasses);
+
+    /// Vertex coefficient of mass matrix destruction function to handle creation of new triangles
+    static void VertexMassTriangleDestroyFunction(const sofa::helper::vector<unsigned int> &triangleRemoved,
+            void* param, vector<MassType> &VertexMasses);
+
+    /// Edge coefficient of mass matrix destruction function to handle creation of new triangles
+    static void EdgeMassTriangleDestroyFunction(const sofa::helper::vector<unsigned int> &triangleRemoved,
+            void* param, vector<MassType> &EdgeMasses);
+
+
+    /// Mass coefficient Creation/Destruction functions for Quad Mesh:
+    /// Vertex coefficient of mass matrix creation function to handle creation of new quads
+    static void VertexMassQuadCreationFunction(const sofa::helper::vector<unsigned int> &quadAdded,
+            void* param, vector<MassType> &VertexMasses);
+
+    /// Edge coefficient of mass matrix creation function to handle creation of new quads
+    static void EdgeMassQuadCreationFunction(const sofa::helper::vector<unsigned int> &quadAdded,
+            void* param, vector<MassType> &EdgeMasses);
+
+    /// Vertex coefficient of mass matrix destruction function to handle creation of new quads
+    static void VertexMassQuadDestroyFunction(const sofa::helper::vector<unsigned int> &quadRemoved,
+            void* param, vector<MassType> &VertexMasses);
+
+    /// Edge coefficient of mass matrix destruction function to handle creation of new quads
+    static void EdgeMassQuadDestroyFunction(const sofa::helper::vector<unsigned int> &quadRemoved,
+            void* param, vector<MassType> &EdgeMasses);
+
+
+    /// Mass coefficient Creation/Destruction functions for Tetrahedral Mesh:
+    /// Vertex coefficient of mass matrix creation function to handle creation of new tetrahedra
+    static void VertexMassTetrahedronCreationFunction(const sofa::helper::vector<unsigned int> &tetrahedronAdded,
+            void* param, vector<MassType> &VertexMasses);
+
+    /// Edge coefficient of mass matrix creation function to handle creation of new tetrahedra
+    static void EdgeMassTetrahedronCreationFunction(const sofa::helper::vector<unsigned int>  &tetrahedronAdded,
+            void* param, vector<MassType> &EdgeMasses);
+
+    /// Vertex coefficient of mass matrix destruction function to handle creation of new tetrahedra
+    static void VertexMassTetrahedronDestroyFunction(const sofa::helper::vector<unsigned int> &tetrahedronRemoved,
+            void* param, vector<MassType> &VertexMasses);
+
+    /// Edge coefficient of mass matrix destruction function to handle creation of new tetrahedra
+    static void EdgeMassTetrahedronDestroyFunction(const sofa::helper::vector<unsigned int> &tetrahedronRemoved,
+            void* param, vector<MassType> &EdgeMasses);
+
+
+    /// Mass coefficient Creation/Destruction functions for Hexahedral Mesh:
+    /// Vertex coefficient of mass matrix creation function to handle creation of new hexahedra
+    static void VertexMassHexahedronCreationFunction(const sofa::helper::vector<unsigned int> &hexahedronAdded,
+            void* param, vector<MassType> &VertexMasses);
+
+    /// Edge coefficient of mass matrix creation function to handle creation of new hexahedra
+    static void EdgeMassHexahedronCreationFunction(const sofa::helper::vector<unsigned int> &hexahedronAdded,
+            void* param, vector<MassType> &EdgeMasses);
+
+    /// Vertex coefficient of mass matrix destruction function to handle creation of new hexahedra
+    static void VertexMassHexahedronDestroyFunction(const sofa::helper::vector<unsigned int> &hexahedronRemoved,
+            void* param, vector<MassType> &VertexMasses);
+
+    /// Edge coefficient of mass matrix destruction function to handle creation of new hexahedra
+    static void EdgeMassHexahedronDestroyFunction(const sofa::helper::vector<unsigned int> &hexahedronRemoved,
+            void* param, vector<MassType> &EdgeMasses);
 
 };
 
