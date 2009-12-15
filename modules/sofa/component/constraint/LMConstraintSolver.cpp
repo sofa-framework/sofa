@@ -33,6 +33,7 @@
 #include <sofa/core/ObjectFactory.h>
 
 #include <Eigen/LU>
+#include <Eigen/QR>
 
 namespace sofa
 {
@@ -265,8 +266,8 @@ bool LMConstraintSolver::buildSystem(double /*dt*/, VecId)
     A=new MatrixEigen((int)numConstraint, (int)numConstraint);
     A->setZero((int)numConstraint, (int)numConstraint);
 
-    MatrixEigen &AEigen = *A;
 
+    MatrixEigen &AEigen = *A;
     for (int k=0; k<AEi.outerSize(); ++k)
         for (SparseMatrixEigen::InnerIterator it(AEi,k); it; ++it)
         {
@@ -351,73 +352,18 @@ void LMConstraintSolver::buildLeftMatrix(const DofToMatrix& invMassMatrix, DofTo
     for (DofToMatrix::const_iterator itDofs=invMassMatrix.begin(); itDofs!=invMassMatrix.end(); itDofs++)
     {
         const sofa::core::componentmodel::behavior::BaseMechanicalState* dofs=itDofs->first;
-        const unsigned int dimensionDofs=dofs->getDerivDimension();
         const SparseMatrixEigen &invMass=itDofs->second;
-        SparseMatrixEigen &L=LMatrix[dofs];
-        L.endFill();
+
+        SparseMatrixEigen &L=LMatrix[dofs]; L.endFill();
+
         if (f_printLog.getValue()) sout << "Matrix L for " << dofs->getName() << "\n" << L << sendl;
-        //************************************************************
-        //Accumulation
-        //Simple way to compute
-        //const SparseMatrixEigen &invM_LtransMatrix = invMass->matrix*L.transpose();
         if (f_printLog.getValue())  sout << "Matrix M-1 for " << dofs->getName() << "\n" << invMass << sendl;
 
-        //Taking into account that invM is block tridiagonal
-
-        SparseMatrixEigen invM_LtransMatrix(L.rows(),invMass.rows());
-        invM_LtransMatrix.startFill(L.nonZeros()*dimensionDofs);
-        for (int k=0; k<L.outerSize(); ++k)
-        {
-            int accumulatingDof=-1;
-            unsigned int column=0;
-            std::vector< SReal > value(dimensionDofs,0);
-            for (SparseMatrixEigen::InnerIterator it(L,k); it; ++it)
-            {
-                const unsigned int currentIndexDof = it.col()/dimensionDofs;
-                const unsigned int d = it.col()%dimensionDofs;
-                if (accumulatingDof < 0)
-                {
-                    accumulatingDof = currentIndexDof;
-                    column = it.row();
-                    value.resize( dimensionDofs, 0 );
-                }
-                else if (accumulatingDof != (int)currentIndexDof)
-                {
-                    for (unsigned int iM=0; iM<dimensionDofs; ++iM)
-                    {
-                        SReal finalValue=SReal(0);
-                        for (unsigned int iL=0; iL<dimensionDofs; ++iL)
-                        {
-                            finalValue += invMass.coeff(dimensionDofs*accumulatingDof+iM,dimensionDofs*accumulatingDof+iL) * value[iL];
-                        }
-                        invM_LtransMatrix.fill(column,dimensionDofs*accumulatingDof+iM)=finalValue;
-                    }
-
-                    accumulatingDof = currentIndexDof;
-                    column = it.row();
-                    value.resize( dimensionDofs, 0 );
-                }
-
-                value[d] = it.value();
-            }
-            if (accumulatingDof >= 0)
-            {
-                for (unsigned int iM=0; iM<dimensionDofs; ++iM)
-                {
-                    SReal finalValue=SReal(0);
-                    for (unsigned int iL=0; iL<dimensionDofs; ++iL)
-                    {
-                        finalValue += invMass.coeff(dimensionDofs*accumulatingDof+iM,dimensionDofs*accumulatingDof+iL) * value[iL];
-                    }
-                    invM_LtransMatrix.fill(column,dimensionDofs*accumulatingDof+iM)=finalValue;
-                }
-            }
-        }
-        invM_LtransMatrix.endFill();
-
-        //Optimized way is
-        invMass_Ltrans.insert( std::make_pair(dofs,invM_LtransMatrix.transpose()) );
-        LeftMatrix = LeftMatrix + L*invMass_Ltrans[dofs];
+        const SparseMatrixEigen &invM_LTrans=invMass.marked<Eigen::SelfAdjoint|Eigen::UpperTriangular>()*L.transpose();
+        invMass_Ltrans.insert( std::make_pair(dofs,invM_LTrans) );
+        LeftMatrix += L*invM_LTrans;
+//            const SparseMatrixEigen &result=L*invM_LTrans;
+//            LeftMatrix += result.marked<Eigen::SelfAdjoint>();
     }
 }
 
@@ -519,7 +465,7 @@ void LMConstraintSolver::buildInverseMassMatrix( const sofa::core::componentmode
     //Then convert it into a Sparse Matrix: as it is done only at the init, or when topological changes occur, this should not be a burden for the framerate
     for (unsigned int i=0; i<computationInvM.rowSize(); ++i)
     {
-        for (unsigned int j=0; j<computationInvM.colSize(); ++j)
+        for (unsigned int j=i; j<computationInvM.colSize(); ++j)
         {
             SReal value=computationInvM.element(i,j);
             if (value != 0) invMass.fill(i,j)=value;
@@ -546,7 +492,7 @@ void LMConstraintSolver::buildInverseMassMatrix( const sofa::core::componentmode
         //Store into the sparse matrix the block corresponding to the inverse of the mass matrix of a particle
         for (unsigned int r=0; r<dimensionDofs; ++r)
         {
-            for (unsigned int c=0; c<dimensionDofs; ++c)
+            for (unsigned int c=r; c<dimensionDofs; ++c)
             {
                 if (invMEigen(r,c) != 0)
                     invMass.fill(i*dimensionDofs+r,i*dimensionDofs+c)=invMEigen(r,c);
@@ -701,7 +647,13 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( ConstOrder Order
     }
     if (iteration == numIterations.getValue())
     {
-        serr << "no convergence in Gauss-Seidel for " << Order <<sendl;
+        serr << "no convergence in Gauss-Seidel for ";
+        switch (Order)
+        {
+        case BaseLMConstraint::ACC: serr << "Acceleration" << sendl; break;
+        case BaseLMConstraint::VEL: serr << "Velocity" << sendl; break;
+        case BaseLMConstraint::POS: serr << "Position" << sendl; break;
+        }
         return false;
     }
 

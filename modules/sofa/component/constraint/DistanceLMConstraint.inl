@@ -163,7 +163,7 @@ void DistanceLMConstraint<DataTypes>::writeConstraintEquations(ConstOrder Order)
 
     const SeqEdges &edges =  vecConstraint.getValue();
 
-
+    if (registeredConstraints.empty()) return;
     for (unsigned int i=0; i<edges.size(); ++i)
     {
         core::componentmodel::behavior::BaseLMConstraint::ConstraintGroup *constraint = this->addGroupConstraint(Order);
