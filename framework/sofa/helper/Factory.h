@@ -165,6 +165,10 @@ public:
         (*constructor)(instance, arg);
         return instance;
     }
+    const std::type_info& type()
+    {
+        return typeid(RealObject);
+    }
 };
 
 
