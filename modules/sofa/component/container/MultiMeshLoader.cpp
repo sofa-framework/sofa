@@ -52,17 +52,20 @@ void MultiMeshLoader::parse(core::objectmodel::BaseObjectDescription* arg)
 {
     this->BaseObject::parse(arg);
     clear();
-    int cptPoints=0;
     for (unsigned int i=0 ; i<filenameList.getValue().size() ; i++)
     {
         if (filenameList.getValue()[i] != "")
         {
-            currentMeshIndex = cptPoints;
-            load(filenameList.getValue()[i].c_str());
-            nbPointsPerMesh.push_back(seqPoints.size() - cptPoints);
-            cptPoints = seqPoints.size();
+            pushMesh(filenameList.getValue()[i].c_str());
         }
     }
+}
+
+void MultiMeshLoader::pushMesh(const char* filename)
+{
+    int cptPoints = seqPoints.size();
+    load(filename);
+    nbPointsPerMesh.push_back(seqPoints.size() - cptPoints);
 }
 
 
