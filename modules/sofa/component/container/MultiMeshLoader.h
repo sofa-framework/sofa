@@ -99,6 +99,9 @@ public:
 
     void parse(core::objectmodel::BaseObjectDescription* arg);
 
+    /// adds a mesh to the loader
+    void pushMesh(const char* filename);
+
 protected:
     // helper::io::MeshTopologyLoader API
     void addPoint(double px, double py, double pz);
