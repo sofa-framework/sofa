@@ -192,6 +192,8 @@ public:
 
     void setYoungModulus(Real val) { this->_youngModulus.setValue(val); }
 
+    void setComputeGlobalMatrix(bool val) { this->_assembling.setValue(val); }
+
     void setMethod(std::string methodName)
     {
         if (methodName == "small")	this->setMethod(SMALL);
