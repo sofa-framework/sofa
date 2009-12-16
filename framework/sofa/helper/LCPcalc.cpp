@@ -1248,7 +1248,7 @@ struct listSortAscending
     }
 };
 
-int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, double tol, int numItMax, bool useInitialF)
+int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, double tol, int numItMax, bool useInitialF, bool verbose)
 {
     double test = dim/3;
     double zero = 0.0;
@@ -1356,13 +1356,17 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, do
         delete W33[i];
     free(W33);
 
-    std::cerr<<"\n No convergence in  nlcp_gaussseidel function : error ="<<error <<" after"<< it<<" iterations"<<std::endl;
-    //afficheLCP(dfree,W,f,dim);
+    if (verbose)
+    {
+        std::cerr<<"\n No convergence in  nlcp_gaussseidel function : error ="<<error <<" after"<< it<<" iterations"<<std::endl;
+        afficheLCP(dfree,W,f,dim);
+    }
+
     return 0;
 
 }
 
-int nlcp_gaussseidelTimed(int dim, double *dfree, double**W, double *f, double mu, double tol, int numItMax, bool useInitialF, double timeout)
+int nlcp_gaussseidelTimed(int dim, double *dfree, double**W, double *f, double mu, double tol, int numItMax, bool useInitialF, double timeout, bool verbose)
 {
     double test = dim/3;
     double zero = 0.0;
@@ -1480,8 +1484,12 @@ int nlcp_gaussseidelTimed(int dim, double *dfree, double**W, double *f, double m
         delete W33[i];
     free(W33);
 
-    //printf("\n No convergence in nlcp_gaussseidel function : error =%f after %d iterations", error, it);
-    //afficheLCP(dfree,W,f,dim);
+    if (verbose)
+    {
+        printf("\n No convergence in nlcp_gaussseidel function : error =%f after %d iterations", error, it);
+        afficheLCP(dfree,W,f,dim);
+    }
+
     return 0;
 
 }

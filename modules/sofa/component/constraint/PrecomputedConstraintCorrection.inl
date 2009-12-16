@@ -55,6 +55,7 @@ namespace component
 
 namespace constraint
 {
+
 //#define	MAX_NUM_CONSTRAINT_PER_NODE 10000
 //#define EPS_UNITARY_FORCE 0.01
 
@@ -400,14 +401,6 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
     //sout<<"q_test = "<<q_test<<sendl;
 
     //sout<<"Alpha = "<<q_test.toEulerVector()<< " doit valoir une rotation de Pi/2 autour de l'axe y"<<sendl;
-
-
-
-
-
-
-
-
 }
 
 
@@ -662,123 +655,120 @@ void PrecomputedConstraintCorrection<DataTypes>::getComplianceMatrix(defaulttype
 template<>
 void PrecomputedConstraintCorrection<defaulttype::Rigid3Types>::applyContactForce(double *f)
 {
-VecDeriv& force = *mstate->getExternalForces();
-const VecConst& constraints = *mstate->getC();
-Deriv weighedNormal;
+	VecDeriv& force = *mstate->getExternalForces();
+	const VecConst& constraints = *mstate->getC();
+	Deriv weighedNormal;
 
-const sofa::defaulttype::Rigid3Mass* massValue;
+	const sofa::defaulttype::Rigid3Mass* massValue;
 
-simulation::tree::GNode *node = dynamic_cast<simulation::tree::GNode *>(getContext());
+	simulation::tree::GNode *node = dynamic_cast<simulation::tree::GNode *>(getContext());
 
-if (node != NULL)
-{
-core::componentmodel::behavior::BaseMass*_m = node->mass;
-component::mass::UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass> *m = dynamic_cast<component::mass::UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass>*> (_m);
-massValue = &( m->getMass());
-}
-else
-{
-massValue = new sofa::defaulttype::Rigid3Mass();
-printf("\n WARNING : node is not found => massValue could be false in getCompliance function");
-}
-
-
-double dt = this->getContext()->getDt();
-
-force.resize(0);
-force.resize(1);
-force[0] = Deriv();
-
-int numConstraints = constraints.size();
-
-for(int c1 = 0; c1 < numConstraints; c1++)
-{
-int indexC1 = mstate->getConstraintId()[c1];
-
-if (f[indexC1] != 0.0)
-{
-int sizeC1 = constraints[c1].size();
-for(int i = 0; i < sizeC1; i++)
-{
-weighedNormal = constraints[c1][i].data; // weighted normal
-force[0].getVCenter() += weighedNormal.getVCenter() * f[indexC1];
-force[0].getVOrientation() += weighedNormal.getVOrientation() * f[indexC1];
-}
-}
-}
+	if (node != NULL)
+	{
+		core::componentmodel::behavior::BaseMass*_m = node->mass;
+		component::mass::UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass> *m = dynamic_cast<component::mass::UniformMass<defaulttype::Rigid3Types, defaulttype::Rigid3Mass>*> (_m);
+		massValue = &( m->getMass());
+	}
+	else
+	{
+		massValue = new sofa::defaulttype::Rigid3Mass();
+		printf("\n WARNING : node is not found => massValue could be false in getCompliance function");
+	}
 
 
-VecDeriv& dx = *mstate->getDx();
-VecCoord& x = *mstate->getX();
-VecDeriv& v = *mstate->getV();
-VecDeriv& v_free = *mstate->getVfree();
-VecCoord& x_free = *mstate->getXfree();
+	double dt = this->getContext()->getDt();
+
+	force.resize(0);
+	force.resize(1);
+	force[0] = Deriv();
+
+	int numConstraints = constraints.size();
+
+	for(int c1 = 0; c1 < numConstraints; c1++)
+	{
+		int indexC1 = mstate->getConstraintId()[c1];
+
+		if (f[indexC1] != 0.0)
+		{
+			int sizeC1 = constraints[c1].size();
+			for(int i = 0; i < sizeC1; i++)
+			{
+				weighedNormal = constraints[c1][i].data; // weighted normal
+				force[0].getVCenter() += weighedNormal.getVCenter() * f[indexC1];
+				force[0].getVOrientation() += weighedNormal.getVOrientation() * f[indexC1];
+			}
+		}
+	}
 
 
-//	mstate->setX(x_free);
-//	mstate->setV(v_free);
-x[0]=x_free[0];
-v[0]=v_free[0];
+	VecDeriv& dx = *mstate->getDx();
+	VecCoord& x = *mstate->getX();
+	VecDeriv& v = *mstate->getV();
+	VecDeriv& v_free = *mstate->getVfree();
+	VecCoord& x_free = *mstate->getXfree();
 
-// Euler integration... will be done in the "integrator" as soon as it exists !
-dx.resize(v.size());
-dx[0] = force[0] / (*massValue);
-dx[0] *= dt;
-v[0] += dx[0];
-dx[0] *= dt;
-x[0] += dx[0];
-//	simulation::tree::MechanicalPropagateAndAddDxVisitor(dx).execute(this->getContext());
 
+	//	mstate->setX(x_free);
+	//	mstate->setV(v_free);
+	x[0]=x_free[0];
+	v[0]=v_free[0];
+
+	// Euler integration... will be done in the "integrator" as soon as it exists !
+	dx.resize(v.size());
+	dx[0] = force[0] / (*massValue);
+	dx[0] *= dt;
+	v[0] += dx[0];
+	dx[0] *= dt;
+	x[0] += dx[0];
+	//	simulation::tree::MechanicalPropagateAndAddDxVisitor(dx).execute(this->getContext());
 }
 
 
 template<>
-void PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>::applyContactForce(double *f){
-
-
-VecDeriv& force = *mstate->getExternalForces();
-const VecConst& constraints = *mstate->getC();
-unsigned int numConstraints = constraints.size();
-
-force.resize((*mstate->getX()).size());
-
-for(unsigned int c1 = 0; c1 < numConstraints; c1++)
+void PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>::applyContactForce(double *f)
 {
-int indexC1 = mstate->getConstraintId()[c1];
+	VecDeriv& force = *mstate->getExternalForces();
+	const VecConst& constraints = *mstate->getC();
+	unsigned int numConstraints = constraints.size();
 
-if (f[indexC1] != 0.0)
-{
-int sizeC1 = constraints[c1].size();
-for(int i = 0; i < sizeC1; i++)
-{
-force[constraints[c1][i].index] += constraints[c1][i].data * f[indexC1];
+	force.resize((*mstate->getX()).size());
+
+	for(unsigned int c1 = 0; c1 < numConstraints; c1++)
+	{
+		int indexC1 = mstate->getConstraintId()[c1];
+
+		if (f[indexC1] != 0.0)
+		{
+			int sizeC1 = constraints[c1].size();
+			for(int i = 0; i < sizeC1; i++)
+			{
+				force[constraints[c1][i].index] += constraints[c1][i].data * f[indexC1];
+			}
+		}
+	}
+
+	VecDeriv& dx = *mstate->getDx();
+	VecCoord& x = *mstate->getX();
+	VecDeriv& v = *mstate->getV();
+	VecDeriv& v_free = *mstate->getVfree();
+	VecCoord& x_free = *mstate->getXfree();
+	double dt = this->getContext()->getDt();
+
+
+	// Euler integration... will be done in the "integrator" as soon as it exists !
+	dx.resize(v.size());
+
+	for (unsigned int i=0; i<dx.size(); i++)
+	{
+		x[i] = x_free[i];
+		v[i] = v_free[i];
+		dx[i] = force[i]/10000.0;
+		x[i] += dx[i];
+		v[i] += dx[i]/dt;
+	}
 }
-}
-}
+*/
 
-VecDeriv& dx = *mstate->getDx();
-VecCoord& x = *mstate->getX();
-VecDeriv& v = *mstate->getV();
-VecDeriv& v_free = *mstate->getVfree();
-VecCoord& x_free = *mstate->getXfree();
-double dt = this->getContext()->getDt();
-
-
-// Euler integration... will be done in the "integrator" as soon as it exists !
-dx.resize(v.size());
-
-for (unsigned int i=0; i<dx.size(); i++)
-{
-x[i] = x_free[i];
-v[i] = v_free[i];
-dx[i] = force[i]/10000.0;
-x[i] += dx[i];
-v[i] += dx[i]/dt;
-}
-}
-
-
-     */
 template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::resetContactForce()
 {
@@ -796,68 +786,7 @@ void PrecomputedConstraintCorrection<DataTypes>::draw()
 
 #ifndef SOFA_FLOAT
 template<>
-void PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::draw()
-{
-
-    if (!getContext()->getShowBehaviorModels() || !_rotations) return;
-
-    // we draw the rotations associated to each node //
-
-    simulation::Node *node = dynamic_cast<simulation::Node *>(getContext());
-
-    sofa::component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3dTypes>* forceField = NULL;
-    sofa::component::container::RotationFinder<defaulttype::Vec3dTypes>* rotationFinder = NULL;
-
-    if (node != NULL)
-    {
-        //		core::componentmodel::behavior::BaseForceField* _forceField = node->forceField[1];
-        forceField = node->get<component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3dTypes> > ();
-        if (forceField == NULL)
-        {
-            rotationFinder = node->get<component::container::RotationFinder<defaulttype::Vec3dTypes> > ();
-            if (rotationFinder == NULL)
-            {
-                sout << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";
-                return;
-            }
-        }
-    }
-
-    VecCoord& x = *mstate->getX();
-    for (unsigned int i=0; i< x.size(); i++)
-    {
-        Transformation Ri;
-        if (forceField != NULL)
-        {
-            forceField->getRotation(Ri, i);
-        }
-        else // rotationFinder has been defined
-        {
-            Ri = rotationFinder->getRotations()[i];
-        }
-
-
-        sofa::defaulttype::Matrix3 RotMat;
-
-        for (unsigned int a=0; a<3; a++)
-        {
-            for (unsigned int b=0; b<3; b++)
-            {
-                RotMat[a][b] = Ri(a,b);
-            }
-        }
-
-        sofa::defaulttype::Quat q;
-        q.fromMatrix(RotMat);
-
-
-        helper::gl::Axis::draw(x[i], q  , 10.0);
-
-    }
-
-
-
-}
+void PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::draw();
 
 template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::rotateConstraints()
@@ -931,52 +860,11 @@ void PrecomputedConstraintCorrection<DataTypes>::rotateConstraints()
     }
 }
 
+template<>
+void PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>::rotateConstraints();
 
 template<>
-void PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>::rotateConstraints()
-{
-    VecCoord& x = *mstate->getX();
-    VecConst& constraints = *mstate->getC();
-    VecCoord& x0 = *mstate->getX0();
-
-    unsigned int numConstraints = constraints.size();
-    //	int sizemax=0;
-    //	int index_const = -1;
-    // on fait tourner les normales (en les ramenant dans le "pseudo" repere initial) //
-    for(unsigned int curRowConst = 0; curRowConst < numConstraints; curRowConst++)
-    {
-        ConstraintIterator itConstraint;
-        std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[curRowConst].data();
-        for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
-        {
-            unsigned int dof = itConstraint->first;
-            Deriv& n = itConstraint->second;
-            const int localRowNodeIdx = dof;
-            Quat q;
-            if (_restRotations)
-                q = x[localRowNodeIdx].getOrientation() * x0[localRowNodeIdx].getOrientation().inverse();
-            else
-                q = x[localRowNodeIdx].getOrientation();
-
-
-            Vec3d n_i = q.inverseRotate(n.getVCenter());
-            Vec3d wn_i= q.inverseRotate(n.getVOrientation());
-
-            // on passe les normales du repere global au repere local
-            n.getVCenter() = n_i;
-            n.getVOrientation() = wn_i;
-
-        }
-    }
-}
-
-
-
-template<>
-void PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>::rotateConstraints()
-{
-}
-
+void PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>::rotateConstraints();
 
 template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::rotateResponse()
@@ -1024,231 +912,34 @@ void PrecomputedConstraintCorrection<DataTypes>::rotateResponse()
     }
 }
 
-
+template<>
+void PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>::rotateResponse();
 
 template<>
-void PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>::rotateResponse()
-{
+void PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>::rotateResponse();
 
-    VecDeriv& dx = *mstate->getDx();
-    VecCoord& x = *mstate->getX();
-    VecCoord& x0 = *mstate->getX0();
-    for(unsigned int j = 0; j < dx.size(); j++)
-    {
-        // on passe les deplacements du repere local (au repos) au repere global
-        Deriv temp ;
-        Quat q;
-        if (_restRotations)
-            q = x[j].getOrientation() * x0[j].getOrientation().inverse();
-        else
-            q = x[j].getOrientation();
-
-        temp.getVCenter()		= q.rotate(dx[j].getVCenter());
-        temp.getVOrientation()  = q.rotate(dx[j].getVOrientation());
-        dx[j] = temp;
-    }
-}
-
-template<>
-void PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>::rotateResponse()
-{
-}
 #endif
 #ifndef SOFA_DOUBLE
-template<>
-void PrecomputedConstraintCorrection<defaulttype::Vec3fTypes>::rotateConstraints()
-{
-    VecConst& constraints = *mstate->getC();
-    unsigned int numConstraints = constraints.size();
-
-    simulation::Node *node = dynamic_cast<simulation::Node *>(getContext());
-
-    sofa::component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3fTypes>* forceField = NULL;
-    sofa::component::container::RotationFinder<defaulttype::Vec3fTypes>* rotationFinder = NULL;
-
-    if (node != NULL)
-    {
-        forceField = node->get<component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3fTypes> > ();
-        if (forceField == NULL)
-        {
-            rotationFinder = node->get<component::container::RotationFinder<defaulttype::Vec3fTypes> > ();
-            if (rotationFinder == NULL)
-            {
-                sout << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";
-                return;
-            }
-        }
-    }
-    else
-    {
-        sout << "Error getting context in method: PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::rotateConstraints()";
-        return;
-    }
-
-    //sout << "start rotating normals " << g_timer_elapsed(timer, &micro) << sendl;
-    //	int sizemax=0;
-    //	int index_const = -1;
-    // on fait tourner les normales (en les ramenant dans le "pseudo" repere initial) //
-    for(unsigned int curRowConst = 0; curRowConst < numConstraints; curRowConst++)
-    {
-        ConstraintIterator itConstraint;
-
-        std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[curRowConst].data();
-        for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
-        {
-            unsigned int dof = itConstraint->first;
-            Deriv& n = itConstraint->second;
-            const int localRowNodeIdx = dof;
-            Transformation Ri;
-            if (forceField != NULL)
-            {
-                forceField->getRotation(Ri, localRowNodeIdx);
-            }
-            else // rotationFinder has been defined
-            {
-                Ri = rotationFinder->getRotations()[localRowNodeIdx];
-            }
-            Ri.transpose();
-            // on passe les normales du repere global au repere local
-            Deriv n_i = Ri * n;
-            n.x() =  n_i.x();
-            n.y() =  n_i.y();
-            n.z() =  n_i.z();
-        }
-        /*
-        // test pour voir si on peut reduire le nombre de contrainte
-        if (sizeCurRowConst > sizemax)
-        {
-        sizemax = sizeCurRowConst;
-        index_const = curRowConst;
-        }
-        */
-    }
-}
 
 template<>
-void PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>::rotateConstraints()
-{
-    VecCoord& x = *mstate->getX();
-    VecConst& constraints = *mstate->getC();
-    VecCoord& x0 = *mstate->getX0();
-
-    unsigned int numConstraints = constraints.size();
-    //	int sizemax=0;
-    //	int index_const = -1;
-    // on fait tourner les normales (en les ramenant dans le "pseudo" repere initial) //
-    for(unsigned int curRowConst = 0; curRowConst < numConstraints; curRowConst++)
-    {
-        ConstraintIterator itConstraint;
-
-        std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[curRowConst].data();
-        for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
-        {
-            unsigned int dof = itConstraint->first;
-            Deriv& n = itConstraint->second;
-            const int localRowNodeIdx = dof;
-            Quat q;
-            if (_restRotations)
-                q = x[localRowNodeIdx].getOrientation() * x0[localRowNodeIdx].getOrientation().inverse();
-            else
-                q = x[localRowNodeIdx].getOrientation();
-
-
-            Vec3d n_i = n.getVCenter();
-            Vec3d wn_i= n.getVOrientation();
-
-            // on passe les normales du repere global au repere local
-            n.getVCenter() = n_i;
-            n.getVOrientation() = wn_i;
-
-        }
-    }
-}
+void PrecomputedConstraintCorrection<defaulttype::Vec3fTypes>::rotateConstraints();
 
 template<>
-void PrecomputedConstraintCorrection<defaulttype::Vec1fTypes>::rotateConstraints()
-{
-}
-
+void PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>::rotateConstraints();
 
 template<>
-void PrecomputedConstraintCorrection<defaulttype::Vec3fTypes>::rotateResponse()
-{
-    simulation::Node *node = dynamic_cast<simulation::Node *>(getContext());
-
-    sofa::component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3fTypes>* forceField = NULL;
-    sofa::component::container::RotationFinder<defaulttype::Vec3fTypes>* rotationFinder = NULL;
-
-    if (node != NULL)
-    {
-        //		core::componentmodel::behavior::BaseForceField* _forceField = node->forceField[1];
-        forceField = node->get<component::forcefield::TetrahedronFEMForceField<defaulttype::Vec3fTypes> > ();
-        if (forceField == NULL)
-        {
-            rotationFinder = node->get<component::container::RotationFinder<defaulttype::Vec3fTypes> > ();
-            if (rotationFinder == NULL)
-            {
-                sout << "No rotation defined : only defined for TetrahedronFEMForceField and RotationFinder!";
-                return;
-            }
-        }
-    }
-    else
-    {
-        sout << "Error getting context in method: PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::rotateConstraints()";
-        return;
-    }
-
-    VecDeriv& dx = *mstate->getDx();
-    for(unsigned int j = 0; j < dx.size(); j++)
-    {
-        Transformation Rj;
-        if (forceField != NULL)
-        {
-            forceField->getRotation(Rj, j);
-        }
-        else // rotationFinder has been defined
-        {
-            Rj = rotationFinder->getRotations()[j];
-        }
-        // on passe les deplacements du repere local au repere global
-        const Deriv& temp = Rj * dx[j];
-        dx[j] = temp;
-    }
-}
-
+void PrecomputedConstraintCorrection<defaulttype::Vec1fTypes>::rotateConstraints();
 
 template<>
-void PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>::rotateResponse()
-{
-
-    VecDeriv& dx = *mstate->getDx();
-    VecCoord& x = *mstate->getX();
-    VecCoord& x0 = *mstate->getX0();
-    for(unsigned int j = 0; j < dx.size(); j++)
-    {
-        // on passe les deplacements du repere local (au repos) au repere global
-        Deriv temp ;
-        Quat q;
-        if (_restRotations)
-            q = x[j].getOrientation() * x0[j].getOrientation().inverse();
-        else
-            q = x[j].getOrientation();
-
-        temp.getVCenter()		= q.rotate(dx[j].getVCenter());
-        temp.getVOrientation()  = q.rotate(dx[j].getVOrientation());
-        dx[j] = temp;
-    }
-}
+void PrecomputedConstraintCorrection<defaulttype::Vec3fTypes>::rotateResponse();
 
 template<>
-void PrecomputedConstraintCorrection<defaulttype::Vec1fTypes>::rotateResponse()
-{
-}
+void PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>::rotateResponse();
+
+template<>
+void PrecomputedConstraintCorrection<defaulttype::Vec1fTypes>::rotateResponse();
 
 #endif
-
-
 
 
 // new API for non building the constraint system during solving process //
@@ -1426,7 +1117,6 @@ void PrecomputedConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(defa
 }
 
 /////////////////////////////////////////////////////////////////////////////////
-
 
 } // namespace collision
 
