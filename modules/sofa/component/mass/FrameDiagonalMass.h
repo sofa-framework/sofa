@@ -133,6 +133,7 @@ public:
     Data< bool > showCenterOfGravity;
     Data< float > showAxisSize;
     core::objectmodel::DataFileName fileMass;
+    Data< float > damping;
 
 protected:
     //VecMass masses;
@@ -213,12 +214,12 @@ public:
     bool addBBox(double* minBBox, double* maxBBox);
 
 private:
-    MechanicalState* dofs;
     DualQuatStorage<N, Real>* dqStorage;
     VD* vol;
+    VD* volMass;
     VVMat36* J;
 
-    void updateMass ( const VVMat36& J, const VD& vol, const VD& volmass );
+    void updateMass ( const VVMat36& J, const VD& vol, const VD& volmass);
 
 };
 

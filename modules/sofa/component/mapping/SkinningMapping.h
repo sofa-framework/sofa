@@ -206,6 +206,7 @@ protected:
     Data<bool> displayBlendedFrame;
     Data<bool> computeJ;
     Data<bool> computeAllMatrices;
+    Data<bool> displayDefTensors;
 
     bool computeWeights;
     WeightingType wheighting;
@@ -296,6 +297,8 @@ public:
     void computeDqDR ( Mat33& DR, const DUALQUAT& bn, const DUALQUAT& V );
     void computeDqDQ ( Mat38& DQ, const Vec3& p, const DUALQUAT& V );
     void computeDqT( Mat88& T, const DUALQUAT& qi0);
+
+    bool doJustOnce;
 
 #endif
 };

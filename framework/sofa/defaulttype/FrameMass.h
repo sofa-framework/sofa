@@ -82,29 +82,44 @@ public:
     {
         inertiaMassMatrix = inertiaMatrix * mass;
         invInertiaMatrix.invert ( inertiaMatrix );
+        bool nullMatrix = true;
+        for ( int i = 0; i < 6; i++ )
+            for ( int j = 0; j < 6; j++ )
+                if ( invInertiaMatrix[i][j] != 0 ) nullMatrix = false;
+        if ( nullMatrix )
+            for ( int i = 0; i < 6; i++ )
+                invInertiaMatrix[i][i] = 1.0;
         invInertiaMassMatrix.invert ( inertiaMassMatrix );
+        nullMatrix = true;
+        for ( int i = 0; i < 6; i++ )
+            for ( int j = 0; j < 6; j++ )
+                if ( invInertiaMassMatrix[i][j] != 0 ) nullMatrix = false;
+        if ( nullMatrix )
+            for ( int i = 0; i < 6; i++ )
+                invInertiaMassMatrix[i][i] = mass;
     }
 
     /// compute ma = M*a
     Deriv operator * ( const Deriv& a ) const
     {
         Vec6 va, vma;
-        va[0] = a.getVCenter() [0];
-        va[1] = a.getVCenter() [1];
-        va[2] = a.getVCenter() [2];
-        va[3] = a.getVOrientation() [0];
-        va[4] = a.getVOrientation() [1];
-        va[5] = a.getVOrientation() [2];
+        va[0] = a.getVOrientation() [0];
+        va[1] = a.getVOrientation() [1];
+        va[2] = a.getVOrientation() [2];
+        va[3] = a.getVCenter() [0];
+        va[4] = a.getVCenter() [1];
+        va[5] = a.getVCenter() [2];
 
         vma = inertiaMassMatrix * va;
+        std::cerr << "inertiaMassMatrix: " << inertiaMassMatrix << std::endl;
 
         Deriv ma;
-        ma.getVCenter() [0] = vma[0];
-        ma.getVCenter() [1] = vma[1];
-        ma.getVCenter() [2] = vma[2];
-        ma.getVOrientation() [0] = vma[3];
-        ma.getVOrientation() [1] = vma[4];
-        ma.getVOrientation() [2] = vma[5];
+        ma.getVOrientation() [0] = vma[0];
+        ma.getVOrientation() [1] = vma[1];
+        ma.getVOrientation() [2] = vma[2];
+        ma.getVCenter() [0] = vma[3];
+        ma.getVCenter() [1] = vma[4];
+        ma.getVCenter() [2] = vma[5];
 
         return ma;
     }
@@ -113,22 +128,22 @@ public:
     Deriv operator / ( const Deriv& f ) const
     {
         Vec6 va, vma;
-        vma[0] = f.getVCenter() [0];
-        vma[1] = f.getVCenter() [1];
-        vma[2] = f.getVCenter() [2];
-        vma[3] = f.getVOrientation() [0];
-        vma[4] = f.getVOrientation() [1];
-        vma[5] = f.getVOrientation() [2];
+        vma[0] = f.getVOrientation() [0];
+        vma[1] = f.getVOrientation() [1];
+        vma[2] = f.getVOrientation() [2];
+        vma[3] = f.getVCenter() [0];
+        vma[4] = f.getVCenter() [1];
+        vma[5] = f.getVCenter() [2];
 
         va = invInertiaMassMatrix * vma;
-
+        std::cerr << "invInertiaMassMatrix: " << invInertiaMassMatrix << std::endl;
         Deriv a;
-        a.getVCenter() [0] = va[0];
-        a.getVCenter() [1] = va[1];
-        a.getVCenter() [2] = va[2];
-        a.getVOrientation() [0] = va[3];
-        a.getVOrientation() [1] = va[4];
-        a.getVOrientation() [2] = va[5];
+        a.getVOrientation() [0] = va[0];
+        a.getVOrientation() [1] = va[1];
+        a.getVOrientation() [2] = va[2];
+        a.getVCenter() [0] = va[3];
+        a.getVCenter() [1] = va[4];
+        a.getVCenter() [2] = va[5];
 
         return a;
     }
