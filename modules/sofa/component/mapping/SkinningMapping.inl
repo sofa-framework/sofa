@@ -80,9 +80,9 @@ SkinningMapping<BasicMapping>::SkinningMapping ( In* from, Out* to )
     , computeAllMatrices ( initData ( &computeAllMatrices, false, "computeAllMatrices","compute all the matrices in addition to apply for the dual quat interpolation method." ) )
     , displayDefTensors ( initData ( &displayDefTensors, false, "displayDefTensors","display computed deformation tensors." ) )
     , computeWeights ( true )
-    , wheighting ( WEIGHT_LINEAR )
+    , wheighting ( WEIGHT_INVDIST_SQUARE )
     , interpolation ( INTERPOLATION_DUAL_QUATERNION )
-    , distance ( DISTANCE_EUCLIDIAN )
+    , distance ( DISTANCE_HARMONIC )
 {
     maskFrom = NULL;
     if ( core::componentmodel::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *> ( from ) )
@@ -574,10 +574,10 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
             doJustOnce = false;
             /*						xfrom[0].getCenter() = Vec3d( 0, 0, 200);
             						xfrom[0].getOrientation() = Quat( sqrt(0.5), 0, 0, sqrt(0.5));
-            */
-            xfrom[1].getCenter() = Vec3d( 0, 0, 200);
-            xfrom[1].getOrientation() = Quat( 0.0, 0.0, 0, 1);//sqrt(0.5), sqrt(0.5));
 
+            						xfrom[1].getCenter() = Vec3d( 0, 0, 200);
+            						xfrom[1].getOrientation() = Quat( 0.0, 0.0, 0, 1);//sqrt(0.5), sqrt(0.5));
+            */
         }
 
         //apply
