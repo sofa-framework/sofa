@@ -80,7 +80,7 @@ QInciseOperation::QInciseOperation()
     incisionMethodChoiceGroup = new QGroupBox(tr("Incision method choice"),this);
     QVBoxLayout *vbox1 = new QVBoxLayout(incisionMethodChoiceGroup);
 
-    method1 = new QRadioButton(tr("&Throw segment: Incise from click to click."), incisionMethodChoiceGroup);
+    method1 = new QRadioButton(tr("&Through segment: Incise from click to click."), incisionMethodChoiceGroup);
     method2 = new QRadioButton(tr("&Continually: Incise continually from first click localization."), incisionMethodChoiceGroup);
     method1->setChecked (true);
 
@@ -116,7 +116,6 @@ QInciseOperation::QInciseOperation()
     slider2->addWidget (snapingValue);
     vbox2->addLayout (slider2);
 
-
     // Creating UI
     layout->addWidget(incisionMethodChoiceGroup);
     layout->addWidget(advancedOptions);
@@ -127,9 +126,28 @@ QInciseOperation::QInciseOperation()
     connect(snapingSlider,SIGNAL(valueChanged(int)), snapingValue, SLOT(setValue(int)));
     connect(snapingValue,SIGNAL(valueChanged(int)), snapingSlider, SLOT(setValue(int)));
 
-    snapingBorderValue->setValue(50);
+    connect(method1, SIGNAL(toggled(bool)), this, SLOT(setEnableBox(bool)));
+
+    if ( method1->isChecked())
+        snapingBorderValue->setValue(50);
+
+    advancedOptions->setHidden(false);
 }
 
+void QInciseOperation::setEnableBox(bool i)
+{
+    switch (i)
+    {
+    case true:
+        advancedOptions->setHidden(false);
+        break;
+    case false:
+        advancedOptions->setHidden(true);
+        break;
+    default:
+        break;
+    }
+}
 
 int QInciseOperation::getIncisionMethod() const
 {
@@ -281,7 +299,7 @@ QInjectOperation::QInjectOperation()
     //Building the GUI for the Injection Operation
     QHBoxLayout *layout=new QHBoxLayout(this);
     QLabel *label1=new QLabel(QString("Potential Value"), this);
-    value=new QLineEdit(QString("100.0"), this);
+    value=new QLineEdit(QString("1.0"), this);
 
     QLabel *label2=new QLabel(QString("State Tag"), this);
     tag=new QLineEdit(QString("elec"), this);
