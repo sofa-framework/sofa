@@ -193,7 +193,8 @@ public:
 
 protected:
     int nbPoints;
-    Data< vector< defaulttype::Vec<3,SReal> > > seqPoints;
+    typedef vector<defaulttype::Vec<3, SReal > > SeqPoints;
+    Data< SeqPoints > seqPoints;
 
     Data<SeqEdges> seqEdges;
     bool validEdges;
