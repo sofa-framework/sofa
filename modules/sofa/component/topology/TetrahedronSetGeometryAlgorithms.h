@@ -110,7 +110,7 @@ public:
     void writeMSHfile(const char *filename) const;
 
     /// finds the intersection point with plane which is defined by c and normal
-    void getIntersectionPointWithPlane(const TetraID ind_ta, Vec<3,Real>& c, Vec<3,Real>& normal, sofa::helper::vector<Vec<3,Real>>& intersectedPoint, SeqEdges& intersectedEdge);
+    void getIntersectionPointWithPlane(const TetraID ind_ta, Vec<3,Real>& c, Vec<3,Real>& normal, sofa::helper::vector< Vec<3,Real> >& intersectedPoint, SeqEdges& intersectedEdge);
 
     /// finds the intersection point between edge and plane
     bool computeIntersectionEdgeWithPlane(Vec<3,Real>& p1, Vec<3,Real>& p2, Vec<3,Real>& c, Vec<3,Real>& normal, Vec<3,Real>& intersection);
