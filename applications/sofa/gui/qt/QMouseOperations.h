@@ -85,6 +85,11 @@ public:
         InciseOperation::configure(picker, b);
     }
 
+public slots:
+    void setEnableBox (bool i);
+
+
+
 protected:
     QGroupBox* incisionMethodChoiceGroup;
     QRadioButton* method1;
