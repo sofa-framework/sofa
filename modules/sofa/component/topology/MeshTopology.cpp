@@ -70,6 +70,7 @@ MeshTopology::MeshTopology()
 
 void MeshTopology::init()
 {
+    BaseMeshTopology::init();
     if (nbPoints==0)
     {
         sofa::component::container::MeshLoader* loader;
