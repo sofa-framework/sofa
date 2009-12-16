@@ -66,17 +66,12 @@ SpringForceField<DataTypes>::SpringForceField(SReal _ks, SReal _kd)
     , ks(initData(&ks,_ks,"stiffness","uniform stiffness for the all springs"))
     , kd(initData(&kd,_kd,"damping","uniform damping for the all springs"))
     , springs(initData(&springs,"spring","pairs of indices, stiffness, damping, rest length"))
+    , fileSprings(initData(&fileSprings, "fileSprings", "File describing the springs"))
 {
+    this->addAlias(&fileSprings, "filename");
 }
 
 
-template<class DataTypes>
-void SpringForceField<DataTypes>::parse(core::objectmodel::BaseObjectDescription* arg)
-{
-    if (arg->getAttribute("filename"))
-        this->load(arg->getAttribute("filename"));
-    this->Inherit::parse(arg);
-}
 
 template <class DataTypes>
 class SpringForceField<DataTypes>::Loader : public helper::io::MassSpringLoader

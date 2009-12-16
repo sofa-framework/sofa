@@ -61,8 +61,6 @@ public:
 
     MeshTopology();
 
-    virtual void parse(core::objectmodel::BaseObjectDescription* arg);
-
     virtual void init();
 
     virtual int getNbPoints() const;

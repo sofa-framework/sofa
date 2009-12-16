@@ -987,13 +987,6 @@ inline void TetrahedronFEMForceField<DataTypes>::applyStiffnessPolar( Vector& f,
 ////////////////  generic main computations methods  /////////////////
 //////////////////////////////////////////////////////////////////////
 
-template<class DataTypes>
-void TetrahedronFEMForceField<DataTypes>::parse(core::objectmodel::BaseObjectDescription* arg)
-{
-    this->core::componentmodel::behavior::ForceField<DataTypes>::parse(arg);
-    this->setComputeGlobalMatrix(std::string(arg->getAttribute("computeGlobalMatrix","false"))=="true");
-}
-
 template <class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::init()
 {

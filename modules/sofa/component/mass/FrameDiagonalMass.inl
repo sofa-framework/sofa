@@ -257,9 +257,10 @@ FrameDiagonalMass<DataTypes, MassType>::FrameDiagonalMass()
     , m_massDensity( initData(&m_massDensity, (Real)1.0,"massDensity", "mass density that allows to compute the  particles masses from a mesh topology and geometry.\nOnly used if > 0") )
     , showCenterOfGravity( initData(&showCenterOfGravity, false, "showGravityCenter", "display the center of gravity of the system" ) )
     , showAxisSize( initData(&showAxisSize, 1.0f, "showAxisSizeFactor", "factor length of the axis displayed (only used for rigids)" ) )
+    , fileMass( initData(&fileMass,  "fileMass", "File to specify the mass" ) )
     , topologyType(TOPOLOGY_UNKNOWN)
 {
-
+    this->addAlias(&fileMass,"filename");
 }
 
 
@@ -401,14 +402,9 @@ void FrameDiagonalMass<DataTypes, MassType>::handleTopologyChange()
 
 
 template <class DataTypes, class MassType>
-void FrameDiagonalMass<DataTypes, MassType>::reinit()
-{
-    Inherited::init();
-}
-
-template <class DataTypes, class MassType>
 void FrameDiagonalMass<DataTypes, MassType>::init()
 {
+    if (!fileMass.getValue().empty()) load(fileMass.getFullPath().c_str());
     Inherited::init();
 }
 
@@ -580,20 +576,6 @@ bool FrameDiagonalMass<DataTypes, MassType>::load(const char *filename)
     }
     else return false;
 }
-
-
-template<class DataTypes, class MassType>
-void FrameDiagonalMass<DataTypes, MassType>::parse(core::objectmodel::BaseObjectDescription* arg)
-{
-
-    if (arg->getAttribute("filename"))
-    {
-        this->load(arg->getAttribute("filename"));
-        arg->removeAttribute("filename");
-    }
-    this->Inherited::parse(arg);
-}
-
 
 template<class DataTypes, class MassType>
 void FrameDiagonalMass<DataTypes, MassType>::updateMass ( const VVMat36& J, const VD& vol, const VD& volmass )

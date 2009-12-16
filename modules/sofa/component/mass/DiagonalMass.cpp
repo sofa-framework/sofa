@@ -151,12 +151,14 @@ void DiagonalMass<Rigid2dTypes, Rigid2dMass>::reinit()
 template <>
 void DiagonalMass<Rigid3dTypes, Rigid3dMass>::init()
 {
+    if (!fileMass.getValue().empty()) load(fileMass.getFullPath().c_str());
     Inherited::init();
 }
 
 template <>
 void DiagonalMass<Rigid2dTypes, Rigid2dMass>::init()
 {
+    if (!fileMass.getValue().empty()) load(fileMass.getFullPath().c_str());
     Inherited::init();
 }
 

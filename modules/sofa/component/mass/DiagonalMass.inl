@@ -254,9 +254,10 @@ DiagonalMass<DataTypes, MassType>::DiagonalMass()
     , m_massDensity( initData(&m_massDensity, (Real)1.0,"massDensity", "mass density that allows to compute the  particles masses from a mesh topology and geometry.\nOnly used if > 0") )
     , showCenterOfGravity( initData(&showCenterOfGravity, false, "showGravityCenter", "display the center of gravity of the system" ) )
     , showAxisSize( initData(&showAxisSize, 1.0f, "showAxisSizeFactor", "factor length of the axis displayed (only used for rigids)" ) )
+    , fileMass( initData(&fileMass,  "fileMass", "File to specify the mass" ) )
     , topologyType(TOPOLOGY_UNKNOWN)
 {
-
+    this->addAlias(&fileMass,"filename");
 }
 
 
@@ -507,31 +508,7 @@ void DiagonalMass<DataTypes, MassType>::reinit()
 template <class DataTypes, class MassType>
 void DiagonalMass<DataTypes, MassType>::init()
 {
-    /*  using sofa::component::topology::RegularGridTopology;
-      RegularGridTopology* reg = dynamic_cast<RegularGridTopology*>( this->getContext()->getMeshTopology() );
-      if( reg != NULL )
-      {
-        Real weight = reg->getDx().norm() * reg->getDy().norm() * reg->getDz().norm() * m_massDensity.getValue()/8;
-        VecMass& m = *f_mass.beginEdit();
-        for( int i=0; i<reg->getNx()-1; i++ )
-        {
-          for( int j=0; j<reg->getNy()-1; j++ )
-          {
-            for( int k=0; k<reg->getNz()-1; k++ )
-            {
-              m[reg->point(i,j,k)] += weight;
-              m[reg->point(i,j,k+1)] += weight;
-              m[reg->point(i,j+1,k)] += weight;
-              m[reg->point(i,j+1,k+1)] += weight;
-              m[reg->point(i+1,j,k)] += weight;
-              m[reg->point(i+1,j,k+1)] += weight;
-              m[reg->point(i+1,j+1,k)] += weight;
-              m[reg->point(i+1,j+1,k+1)] += weight;
-            }
-          }
-        }
-        f_mass.endEdit();
-      }*/
+    if (!fileMass.getValue().empty()) load(fileMass.getFullPath().c_str());
 
     _topology = this->getContext()->getMeshTopology();
 
@@ -727,18 +704,6 @@ template <>
 void DiagonalMass<Rigid2fTypes, Rigid2fMass>::draw();
 #endif
 
-
-template<class DataTypes, class MassType>
-void DiagonalMass<DataTypes, MassType>::parse(core::objectmodel::BaseObjectDescription* arg)
-{
-
-    if (arg->getAttribute("filename"))
-    {
-        this->load(arg->getAttribute("filename"));
-        arg->removeAttribute("filename");
-    }
-    this->Inherited::parse(arg);
-}
 
 
 

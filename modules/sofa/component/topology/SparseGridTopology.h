@@ -72,7 +72,6 @@ public:
     static const float WEIGHT27[8][27];
     static const int cornerIndicesFromFineToCoarse[8][8];
 
-    bool load(const char* filename);
     virtual void init();
 
     /// building from a mesh file

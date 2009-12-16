@@ -63,18 +63,9 @@ MeshTopology::MeshTopology()
     , _draw(initData(&_draw, false, "drawHexahedra","if true, draw the topology hexahedra"))
 {
     addAlias(&seqPoints,"points");
+    addAlias(&seqEdges,"lines");
     addAlias(&seqTetrahedra,"tetras");
     addAlias(&seqHexahedra,"hexas");
-}
-
-void MeshTopology::parse(core::objectmodel::BaseObjectDescription* arg)
-{
-    if (arg->getAttribute("lines")) // old name for edges
-    {
-        std::string s = arg->getAttribute("lines");
-        seqEdges.read(s);
-    }
-    BaseMeshTopology::parse(arg);
 }
 
 void MeshTopology::init()

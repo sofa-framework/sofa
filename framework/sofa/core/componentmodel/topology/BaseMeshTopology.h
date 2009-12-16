@@ -122,7 +122,6 @@ public:
 
     BaseMeshTopology();
     virtual void init();
-    void parse(core::objectmodel::BaseObjectDescription* arg);
 
     /// Load the topology from a file.
     ///

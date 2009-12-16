@@ -91,14 +91,6 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::CFTetrahedronCreationFunct
     }
 }
 
-template<class DataTypes>
-void TetrahedralCorotationalFEMForceField<DataTypes>::parse(core::objectmodel::BaseObjectDescription* arg)
-{
-    this->core::componentmodel::behavior::ForceField<DataTypes>::parse(arg);
-
-    this->setComputeGlobalMatrix(std::string(arg->getAttribute("computeGlobalMatrix","false"))=="true");
-}
-
 template <class DataTypes> void TetrahedralCorotationalFEMForceField<DataTypes>::handleTopologyChange()
 {
     std::list<const TopologyChange *>::const_iterator itBegin=_topology->firstChange();
