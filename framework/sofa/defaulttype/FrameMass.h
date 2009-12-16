@@ -111,7 +111,7 @@ public:
         va[5] = a.getVCenter() [2];
 
         vma = inertiaMassMatrix * va;
-        std::cerr << "inertiaMassMatrix: " << inertiaMassMatrix << std::endl;
+        //std::cerr << "inertiaMassMatrix: " << inertiaMassMatrix << std::endl;
 
         Deriv ma;
         ma.getVOrientation() [0] = vma[0];
@@ -136,7 +136,7 @@ public:
         vma[5] = f.getVCenter() [2];
 
         va = invInertiaMassMatrix * vma;
-        std::cerr << "invInertiaMassMatrix: " << invInertiaMassMatrix << std::endl;
+        //std::cerr << "invInertiaMassMatrix: " << invInertiaMassMatrix << std::endl;
         Deriv a;
         a.getVOrientation() [0] = va[0];
         a.getVOrientation() [1] = va[1];

@@ -310,18 +310,18 @@ void FrameDiagonalMass<DataTypes, MassType>::addMDx ( VecDeriv& res, const VecDe
     {
         for ( unsigned int i=0; i<dx.size(); i++ )
         {
-            serr << "a["<<i<<"]: " << dx[i] << sendl;
+//						serr << "a["<<i<<"]: " << dx[i] << sendl;
             res[i] += dx[i] * masses[i];
-            serr << "f["<<i<<"]: " << res[i] << sendl;
+//						serr << "f["<<i<<"]: " << res[i] << sendl;
         }
     }
     else
     {
         for ( unsigned int i=0; i<dx.size(); i++ )
         {
-            serr << "a["<<i<<"]: " << dx[i] << sendl;
+//						serr << "a["<<i<<"]: " << dx[i] << sendl;
             res[i] += ( dx[i] * masses[i] ) * ( Real ) factor;
-            serr << "f["<<i<<"]: " << res[i] << sendl;
+//						serr << "f["<<i<<"]: " << res[i] << sendl;
         }
     }
 }
@@ -335,9 +335,9 @@ void FrameDiagonalMass<DataTypes, MassType>::accFromF ( VecDeriv& a, const VecDe
     const MassVector &masses= f_mass.getValue();
     for ( unsigned int i=0; i<f.size(); i++ )
     {
-        serr << "f["<<i<<"]: " << f[i] << sendl;
+//						serr << "f["<<i<<"]: " << f[i] << sendl;
         a[i] = f[i] / masses[i];
-        serr << "a["<<i<<"]: " << a[i] << sendl;
+//						serr << "a["<<i<<"]: " << a[i] << sendl;
     }
 }
 
