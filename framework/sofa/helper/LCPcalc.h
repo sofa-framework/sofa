@@ -140,9 +140,9 @@ public:
 };
 
 // Gauss-Seidel like algorithm for contacts
-SOFA_HELPER_API int nlcp_gaussseidel(int, double *, double**, double *, double , double , int , bool );
+SOFA_HELPER_API int nlcp_gaussseidel(int, double *, double**, double *, double, double, int, bool, bool verbose=false);
 // Timed Gauss-Seidel like algorithm for contacts
-SOFA_HELPER_API int nlcp_gaussseidelTimed(int, double *, double**, double *, double , double , int , bool, double timeout );
+SOFA_HELPER_API int nlcp_gaussseidelTimed(int, double *, double**, double *, double, double, int, bool, double timeout, bool verbose=false);
 } // namespace helper
 
 } // namespace sofa

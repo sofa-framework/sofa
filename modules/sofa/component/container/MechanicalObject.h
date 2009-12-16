@@ -184,8 +184,6 @@ public:
     virtual const VecCoord* getXfree() const { return xfree; }
     virtual const VecDeriv* getVfree()  const { return vfree;  }
 
-    virtual Vector3 getScale() const {return scale.getValue();};
-
     virtual void init();
     virtual void reinit();
 
@@ -301,9 +299,16 @@ public:
 
 
     void setFilename(std::string s) {filename.setValue(s);};
-    void setTranslation(double dx,double dy,double dz) {translation.setValue(Vector3(dx,dy,dz));};
-    void setRotation(double rx,double ry,double rz) {rotation.setValue(Vector3(rx,ry,rz));};
+
+    void setTranslation(double dx, double dy, double dz) {translation.setValue(Vector3(dx,dy,dz));};
+    void setRotation(double rx, double ry, double rz) {rotation.setValue(Vector3(rx,ry,rz));};
     void setScale(double sx, double sy, double sz) {scale.setValue(Vector3(sx,sy,sz));};
+
+    virtual Vector3 getTranslation() const {return translation.getValue();};
+    virtual Vector3 getRotation() const {return rotation.getValue();};
+    virtual Vector3 getScale() const {return scale.getValue();};
+
+
     void setIgnoreLoader(bool b) {ignoreLoader.setValue(b);}
 
 

@@ -221,6 +221,12 @@ MasterConstraintSolver::~MasterConstraintSolver()
 
 void MasterConstraintSolver::init()
 {
+    // Prevents ConstraintCorrection accumulation due to multiple MasterSolver initialization on dynamic components Add/Remove operations.
+    if (!constraintCorrections.empty())
+    {
+        constraintCorrections.clear();
+    }
+
     getContext()->get<core::componentmodel::behavior::BaseConstraintCorrection> ( &constraintCorrections, core::objectmodel::BaseContext::SearchDown );
 }
 
@@ -389,13 +395,13 @@ void MasterConstraintSolver::step ( double dt )
         double mu=0.8;
         if (doubleBuffer.getValue() && bufCP1)
         {
-            helper::nlcp_gaussseidel(numConstraints, CP2.getDfree()->ptr(), CP2.getW()->lptr(), CP2.getF()->ptr(), mu, _tol.getValue(), _maxIt.getValue(), false);
+            helper::nlcp_gaussseidel(numConstraints, CP2.getDfree()->ptr(), CP2.getW()->lptr(), CP2.getF()->ptr(), mu, _tol.getValue(), _maxIt.getValue(), false, debug);
             CP2.getF()->clear();
             CP2.getF()->resize(numConstraints);
         }
         else
         {
-            helper::nlcp_gaussseidel(numConstraints, CP1.getDfree()->ptr(), CP1.getW()->lptr(), CP1.getF()->ptr(), mu, _tol.getValue(), _maxIt.getValue(), false);
+            helper::nlcp_gaussseidel(numConstraints, CP1.getDfree()->ptr(), CP1.getW()->lptr(), CP1.getF()->ptr(), mu, _tol.getValue(), _maxIt.getValue(), false, debug);
             CP1.getF()->clear();
             CP1.getF()->resize(numConstraints);
         }
