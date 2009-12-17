@@ -51,6 +51,14 @@ public:
         for (unsigned int i=0; i<Deriv::size(); ++i)
             mat->add(pos+i, pos+i, m);
     }
+
+    ///Method to add non-diagonal terms
+    void operator()(defaulttype::BaseMatrix * mat, const MassType& mass, int posRow, int posColumn, double fact)
+    {
+        const double m = mass*fact;
+        for (unsigned int i=0; i<Deriv::size(); ++i)
+            mat->add(posRow+i, posColumn+i, m);
+    }
 };
 
 template<int N, typename Real>

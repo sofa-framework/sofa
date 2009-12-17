@@ -26,9 +26,7 @@
 #define SOFA_COMPONENT_MASS_MESHMATRIXMASS_INL
 
 #include <sofa/component/mass/MeshMatrixMass.h>
-//#include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/helper/gl/template.h>
-//#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/component/topology/TopologyChangedEvent.h>
 #include <sofa/component/topology/PointData.inl>
@@ -625,6 +623,7 @@ MeshMatrixMass<DataTypes, MassType>::MeshMatrixMass()
     , showCenterOfGravity( initData(&showCenterOfGravity, false, "showGravityCenter", "display the center of gravity of the system" ) )
     , showAxisSize( initData(&showAxisSize, 1.0f, "showAxisSizeFactor", "factor length of the axis displayed (only used for rigids)" ) )
     , topologyType(TOPOLOGY_UNKNOWN)
+    , massLumpingCoeff(0.0)
 {
 
 }
@@ -754,6 +753,7 @@ void MeshMatrixMass<DataTypes, MassType>::reinit()
 
             VertexMassHexahedronCreationFunction(hexahedraAdded, (void*) this, my_vertexMassInfo);
             EdgeMassHexahedronCreationFunction(hexahedraAdded, (void*) this, my_edgeMassInfo);
+            massLumpingCoeff = 2.5;
         }
         else if (_topology->getNbTetrahedra()>0 && tetraGeo)  // Tetrahedron topology
         {
@@ -766,6 +766,7 @@ void MeshMatrixMass<DataTypes, MassType>::reinit()
 
             VertexMassTetrahedronCreationFunction(tetrahedraAdded, (void*) this, my_vertexMassInfo);
             EdgeMassTetrahedronCreationFunction(tetrahedraAdded, (void*) this, my_edgeMassInfo);
+            massLumpingCoeff = 2.5;
         }
         else if (_topology->getNbQuads()>0 && quadGeo)  // Quad topology
         {
@@ -778,6 +779,7 @@ void MeshMatrixMass<DataTypes, MassType>::reinit()
 
             VertexMassQuadCreationFunction(quadsAdded, (void*) this, my_vertexMassInfo);
             EdgeMassQuadCreationFunction(quadsAdded, (void*) this, my_edgeMassInfo);
+            massLumpingCoeff = 2.0;
         }
         else if (_topology->getNbTriangles()>0 && triangleGeo) // Triangle topology
         {
@@ -790,6 +792,7 @@ void MeshMatrixMass<DataTypes, MassType>::reinit()
 
             VertexMassTriangleCreationFunction(trianglesAdded, (void*) this, my_vertexMassInfo);
             EdgeMassTriangleCreationFunction(trianglesAdded, (void*) this, my_edgeMassInfo);
+            massLumpingCoeff = 2.0;
         }
     }
 }
@@ -825,42 +828,16 @@ void MeshMatrixMass<DataTypes, MassType>::addMDx(VecDeriv& res, const VecDeriv& 
 {
 
     const MassVector &vertexMass= vertexMassInfo.getValue();
-    const MassVector &edgeMass= edgeMassInfo.getValue();
-
-    unsigned int nbEdges=_topology->getNbEdges();
-    unsigned int v0,v1;
 
     if (factor == 1.0)
     {
         for (unsigned int i=0; i<dx.size(); i++)
-        {
-            res[i] += dx[i] * vertexMass[i];
-        }
-
-        for (unsigned int i=0; i<nbEdges; ++i)
-        {
-            v0=_topology->getEdge(i)[0];
-            v1=_topology->getEdge(i)[1];
-
-            res[v0] += dx[v0] * edgeMass[i];
-            res[v1] += dx[v1] * edgeMass[i];
-        }
+            res[i] += dx[i] * vertexMass[i]  * massLumpingCoeff;
     }
     else
     {
         for (unsigned int i=0; i<dx.size(); i++)
-        {
-            res[i] += (dx[i] * vertexMass[i]) * (Real)factor;
-        }
-
-        for (unsigned int i=0; i<nbEdges; ++i)
-        {
-            v0=_topology->getEdge(i)[0];
-            v1=_topology->getEdge(i)[1];
-
-            res[v0] += (dx[v0] * edgeMass[i]) * (Real)factor;
-            res[v1] += (dx[v1] * edgeMass[i]) * (Real)factor;
-        }
+            res[i] += (dx[i] * vertexMass[i] * massLumpingCoeff) * (Real)factor;
     }
 }
 
@@ -884,11 +861,6 @@ void MeshMatrixMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& 
         return;
 
     const MassVector &vertexMass= vertexMassInfo.getValue();
-    const MassVector &edgeMass= edgeMassInfo.getValue();
-
-    unsigned int nbEdges=_topology->getNbEdges();
-    unsigned int v0,v1;
-
 
     // gravity
     Vec3d g ( this->getContext()->getLocalGravity() );
@@ -905,18 +877,7 @@ void MeshMatrixMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& 
 
     // add weight and inertia force
     for (unsigned int i=0; i<x.size(); ++i)
-    {
-        f[i] += theGravity * vertexMass[i] + core::componentmodel::behavior::inertiaForce(vframe,aframe,vertexMass[i],x[i],v[i]);
-    }
-
-    for (unsigned int i=0; i<nbEdges; ++i)
-    {
-        v0=_topology->getEdge(i)[0];
-        v1=_topology->getEdge(i)[1];
-
-        f[v0] += theGravity*edgeMass[i] + core::componentmodel::behavior::inertiaForce(vframe,aframe,edgeMass[i],x[v0],v[v0]);
-        f[v1] += theGravity*edgeMass[i] + core::componentmodel::behavior::inertiaForce(vframe,aframe,edgeMass[i],x[v1],v[v1]);
-    }
+        f[i] += theGravity * vertexMass[i] * massLumpingCoeff + core::componentmodel::behavior::inertiaForce(vframe,aframe,vertexMass[i] * massLumpingCoeff ,x[i],v[i]);
 }
 
 
@@ -924,7 +885,6 @@ void MeshMatrixMass<DataTypes, MassType>::addForce(VecDeriv& f, const VecCoord& 
 template <class DataTypes, class MassType>
 double MeshMatrixMass<DataTypes, MassType>::getKineticEnergy( const VecDeriv& v )
 {
-
     const MassVector &vertexMass= vertexMassInfo.getValue();
     const MassVector &edgeMass= edgeMassInfo.getValue();
 
@@ -935,7 +895,7 @@ double MeshMatrixMass<DataTypes, MassType>::getKineticEnergy( const VecDeriv& v 
 
     for (unsigned int i=0; i<v.size(); i++)
     {
-        e += v[i]*vertexMass[i]*v[i]; // v[i]*v[i]*masses[i] would be more efficient but less generic
+        e += dot(v[i],v[i]) * vertexMass[i]; // v[i]*v[i]*masses[i] would be more efficient but less generic
     }
 
     for (unsigned int i=0; i<nbEdges; ++i)
@@ -943,8 +903,7 @@ double MeshMatrixMass<DataTypes, MassType>::getKineticEnergy( const VecDeriv& v 
         v0=_topology->getEdge(i)[0];
         v1=_topology->getEdge(i)[1];
 
-        e += v[v0]*edgeMass[i]*v[v0];
-        e += v[v1]*edgeMass[i]*v[v1];
+        e += 2*dot(v[v0],v[v1])*edgeMass[i];
     }
 
     return e/2;
@@ -954,12 +913,7 @@ double MeshMatrixMass<DataTypes, MassType>::getKineticEnergy( const VecDeriv& v 
 template <class DataTypes, class MassType>
 double MeshMatrixMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord& x )
 {
-
     const MassVector &vertexMass= vertexMassInfo.getValue();
-    const MassVector &edgeMass= edgeMassInfo.getValue();
-
-    unsigned int nbEdges=_topology->getNbEdges();
-    unsigned int v0,v1;
 
     SReal e = 0;
     // gravity
@@ -968,18 +922,7 @@ double MeshMatrixMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord& 
     DataTypes::set ( theGravity, g[0], g[1], g[2]);
 
     for (unsigned int i=0; i<x.size(); i++)
-    {
-        e -= theGravity*vertexMass[i]*x[i];
-    }
-
-    for (unsigned int i=0; i<nbEdges; ++i)
-    {
-        v0=_topology->getEdge(i)[0];
-        v1=_topology->getEdge(i)[1];
-
-        e -= theGravity*edgeMass[i]*x[v0];
-        e -= theGravity*edgeMass[i]*x[v1];
-    }
+        e -= dot(theGravity,x[i])*vertexMass[i] * massLumpingCoeff;
 
     return e;
 }
@@ -1029,8 +972,8 @@ void MeshMatrixMass<DataTypes, MassType>::addMToMatrix(defaulttype::BaseMatrix *
         v0=_topology->getEdge(i)[0];
         v1=_topology->getEdge(i)[1];
 
-        calc(mat, edgeMass[i], offset + N*v0, mFact);
-        calc(mat, edgeMass[i], offset + N*v1, mFact);
+        calc(mat, edgeMass[i], offset + v0, offset + v1, mFact);
+        calc(mat, edgeMass[i], offset + v1, offset + v0, mFact);
     }
 }
 
@@ -1040,10 +983,10 @@ void MeshMatrixMass<DataTypes, MassType>::addMToMatrix(defaulttype::BaseMatrix *
 template <class DataTypes, class MassType>
 double MeshMatrixMass<DataTypes, MassType>::getElementMass(unsigned int index) const
 {
-    //return (SReal)(f_mass.getValue()[index]);
-    (void)index;
-    serr << "WARNING: the methode 'getElementMass' can't be used with MeshMatrixMass as this mass matrix is stored on two different Data." << sendl;
-    return 0.0;
+    const MassVector &vertexMass= vertexMassInfo.getValue();
+    double mass = vertexMass[index] * massLumpingCoeff;
+
+    return mass;
 }
 
 
@@ -1051,16 +994,12 @@ double MeshMatrixMass<DataTypes, MassType>::getElementMass(unsigned int index) c
 template <class DataTypes, class MassType>
 void MeshMatrixMass<DataTypes, MassType>::getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const
 {
-    /*
+
     const unsigned int dimension = defaulttype::DataTypeInfo<Deriv>::size();
     if (m->rowSize() != dimension || m->colSize() != dimension) m->resize(dimension,dimension);
 
     m->clear();
-    AddMToMatrixFunctor<Deriv,MassType>()(m, f_mass.getValue()[index], 0, 1);
-    */
-    (void)index;
-    (void)m;
-    serr << "WARNING: the methode 'getElementMass' can't be used with MeshMatrixMass as this mass matrix is stored on two different Data." << sendl;
+    AddMToMatrixFunctor<Deriv,MassType>()(m, vertexMassInfo.getValue()[index] * massLumpingCoeff, 0, 1);
 }
 
 
