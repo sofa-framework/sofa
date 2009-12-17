@@ -105,6 +105,7 @@ protected:
 
     /// The type of topology to build the mass from the topology
     TopologyType topologyType;
+    float massLumpingCoeff;
 
 public:
 
@@ -164,6 +165,8 @@ public:
 
     void addGravityToV(double dt/*, defaulttype::BaseVector& v*/);
 
+    bool isDiagonal() {return false;}
+
 
 
     /// Add Mass contribution to global Matrix assembling
@@ -171,10 +174,6 @@ public:
 
     double getElementMass(unsigned int index) const;
     void getElementMass(unsigned int index, defaulttype::BaseMatrix *m) const;
-
-
-
-    bool isDiagonal() {return false;};
 
     void draw();
 
