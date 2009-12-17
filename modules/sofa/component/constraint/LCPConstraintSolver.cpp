@@ -268,7 +268,15 @@ LCPConstraintSolver::LCPConstraintSolver()
 void LCPConstraintSolver::init()
 {
     core::componentmodel::behavior::ConstraintSolver::init();
+
+    // Prevents ConstraintCorrection accumulation due to multiple MasterSolver initialization on dynamic components Add/Remove operations.
+    if (!constraintCorrections.empty())
+    {
+        constraintCorrections.clear();
+    }
+
     getContext()->get<core::componentmodel::behavior::BaseConstraintCorrection>(&constraintCorrections, core::objectmodel::BaseContext::SearchDown);
+
     context = (simulation::Node*) getContext();
 }
 
