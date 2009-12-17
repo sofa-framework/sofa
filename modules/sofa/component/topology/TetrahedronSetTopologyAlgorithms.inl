@@ -50,7 +50,8 @@ void TetrahedronSetTopologyAlgorithms< DataTypes >::init()
     this->getContext()->get(m_container);
     this->getContext()->get(m_modifier);
     this->getContext()->get(m_geometryAlgorithms);
-    m_mstat=dynamic_cast< sofa::core::componentmodel::behavior::MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
+
+    m_mstat= dynamic_cast< core::componentmodel::behavior::MechanicalState<DataTypes>* > (this->getContext()->getMechanicalState());
 }
 
 template<class DataTypes>
@@ -67,7 +68,7 @@ void TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronAlongWit
     int nbTetra=this->m_container->getNbTetrahedra();
 
     //To be added components
-    sofa::helper::vector<Vec<3,Real>>	toBeAddedPoint;
+    sofa::helper::vector<Vec<3,Real> >	toBeAddedPoint;
     sofa::helper::vector<int>			toBeAddedPointIndex;
     sofa::helper::vector<Tetra>			toBeAddedTetra;
     sofa::helper::vector<TetraID>		toBeAddedTetraIndex;
@@ -78,7 +79,7 @@ void TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronAlongWit
 
     //intersected edges and points
     SeqEdges intersectedEdge;
-    sofa::helper::vector<Vec<3,Real>> intersectedPoint;
+    sofa::helper::vector<Vec<3,Real> > intersectedPoint;
 
     //Compute intersection between tetra and plane
     const Tetrahedron ta=this->m_container->getTetra(ind_ta);
@@ -89,7 +90,7 @@ void TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronAlongWit
     toBeAddedPoint.resize(intersectedPoint.size()*2);
 
     //added point index and coordinate
-    for(int i=0; i<intersectedPoint.size(); i++)
+    for(unsigned int i=0; i<intersectedPoint.size(); i++)
     {
         toBeAddedPointIndex[i]=nbPoint+i;
         toBeAddedPoint[i]=intersectedPoint[i];
@@ -229,7 +230,7 @@ void TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronAlongWit
 
     typename DataTypes::VecCoord& x0=*(m_mstat->getX0());
     typename DataTypes::VecCoord& x=*(m_mstat->getX());
-    for(int i=0; i<toBeAddedPoint.size(); i++)
+    for(unsigned int i=0; i<toBeAddedPoint.size(); i++)
     {
         x0[currDof+i]=toBeAddedPoint[i];
         x[currDof+i]=toBeAddedPoint[i];
@@ -248,14 +249,14 @@ template<class DataTypes>
 void TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronsAlongWithPlane(sofa::helper::vector<TetraID>& ind_ta, sofa::defaulttype::Vec<3,Real>& c, sofa::defaulttype::Vec<3,Real>& normal, SeqTetrahedra& subTetra)
 {
     int pointIndex=this->m_container->getNbPoints();
-    sofa::helper::vector<Vec<3,Real>> addedPoint;
+    sofa::helper::vector<Vec<3,Real> > addedPoint;
     sofa::helper::vector<Tetra> addedTetra;
     sofa::helper::vector<Tetra> removedTetra;
 
-    for(int i=0; i<ind_ta.size(); i++)
+    for(unsigned int i=0; i<ind_ta.size(); i++)
     {
         SeqEdges intersectedEdge;
-        sofa::helper::vector<Vec<3,Real>> intersectedPoint;
+        sofa::helper::vector<Vec<3,Real> > intersectedPoint;
         sofa::helper::vector<int> intersectedPointIndex;
 
         const Tetrahedron ta=this->m_container->getTetra(ind_ta[i]);
@@ -263,10 +264,10 @@ void TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronsAlongWi
         intersectedPointIndex.resize(intersectedPoint.size());
 
         //add the intersection points to added point list and set the intersection point index
-        for(int j=0; j<intersectedPoint.size(); j++)
+        for(unsigned int j=0; j<intersectedPoint.size(); j++)
         {
             bool added=true;
-            for(int k=0; k<addedPoint.size(); k++)
+            for(unsigned int k=0; k<addedPoint.size(); k++)
             {
                 if(addedPoint[k]==intersectedPoint[j])
                 {
