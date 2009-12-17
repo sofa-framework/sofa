@@ -375,7 +375,7 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const Coord& 
 
 /// Compute intersection point with plane which is defined by c and normal
 template <typename DataTypes>
-void TetrahedronSetGeometryAlgorithms<DataTypes>::getIntersectionPointWithPlane(const TetraID ind_ta, Vec<3,Real>& c, Vec<3,Real>& normal, sofa::helper::vector<Vec<3,Real>>& intersectedPoint, SeqEdges& intersectedEdge)
+void TetrahedronSetGeometryAlgorithms<DataTypes>::getIntersectionPointWithPlane(const TetraID ind_ta, Vec<3,Real>& c, Vec<3,Real>& normal, sofa::helper::vector< Vec<3,Real> >& intersectedPoint, SeqEdges& intersectedEdge)
 {
     const typename DataTypes::VecCoord& vect_c = *(this->object->getX0());
     const Tetrahedron ta=this->m_topology->getTetrahedron(ind_ta);
