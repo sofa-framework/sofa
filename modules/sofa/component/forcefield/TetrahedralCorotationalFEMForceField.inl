@@ -694,6 +694,80 @@ inline void TetrahedralCorotationalFEMForceField<DataTypes>::computeRotationLarg
     r[2][2] = edgez[2];
 }
 
+template <class DataTypes>
+inline void TetrahedralCorotationalFEMForceField<DataTypes>::getElementRotation(Transformation& R, unsigned int elementIdx)
+{
+    helper::vector<TetrahedronInformation>& tetraInf = *(tetrahedronInfo.beginEdit());
+    TetrahedronInformation *tinfo = &tetraInf[elementIdx];
+    Transformation r01,r21;
+    r01=tinfo->initialTransformation;
+    r21=tinfo->rotation*r01;
+    R=r21;
+}
+
+template <class DataTypes>
+inline void TetrahedralCorotationalFEMForceField<DataTypes>::getRotation(Transformation& R, unsigned int nodeIdx)
+{
+    helper::vector<TetrahedronInformation>& tetraInf = *(tetrahedronInfo.beginEdit());
+    int numNeiTetra=_topology->getTetrahedraAroundVertex(nodeIdx).size();
+    Transformation r;
+    r.clear();
+
+    for(int i=0; i<numNeiTetra; i++)
+    {
+        int tetraIdx=_topology->getTetrahedraAroundVertex(nodeIdx)[i];
+        TetrahedronInformation *tinfo = &tetraInf[tetraIdx];
+        Transformation r01,r21;
+        r01=tinfo->initialTransformation;
+        r21=tinfo->rotation*r01;
+        r+=r21;
+    }
+    R=r/numNeiTetra;
+
+    //orthogonalization
+    Coord ex,ey,ez;
+    for(int i=0; i<3; i++)
+    {
+        ex[i]=R[0][i];
+        ey[i]=R[1][i];
+    }
+    ex.normalize();
+    ey.normalize();
+
+    ez=cross(ex,ey);
+    ez.normalize();
+
+    ey=cross(ez,ex);
+    ey.normalize();
+
+    for(int i=0; i<3; i++)
+    {
+        R[0][i]=ex[i];
+        R[1][i]=ey[i];
+        R[2][i]=ez[i];
+    }
+    tetrahedronInfo.endEdit();
+}
+
+template <class DataTypes>
+inline void TetrahedralCorotationalFEMForceField<DataTypes>::getElementStiffnessMatrix(Real* stiffness, unsigned int elementIndex)
+{
+    helper::vector<TetrahedronInformation>& tetraInf = *(tetrahedronInfo.beginEdit());
+    Transformation Rot;
+    StiffnessMatrix JKJt,tmp;
+    Rot[0][0]=Rot[1][1]=Rot[2][2]=1;
+    Rot[0][1]=Rot[0][2]=0;
+    Rot[1][0]=Rot[1][2]=0;
+    Rot[2][0]=Rot[2][1]=0;
+    computeStiffnessMatrix(JKJt,tmp,tetraInf[elementIndex].materialMatrix, tetraInf[elementIndex].strainDisplacementMatrix,Rot);
+    for(int i=0; i<12; i++)
+    {
+        for(int j=0; j<12; j++)
+            stiffness[i*12+j]=JKJt(i,j);
+    }
+    tetrahedronInfo.endEdit();
+}
+
 template<class DataTypes>
 void TetrahedralCorotationalFEMForceField<DataTypes>::initLarge(int i, Index&a, Index&b, Index&c, Index&d)
 {
@@ -713,6 +787,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::initLarge(int i, Index&a, 
     tetrahedronInf[i].rotatedInitialElements[2] = R_0_1*(*X0)[c];
     tetrahedronInf[i].rotatedInitialElements[3] = R_0_1*(*X0)[d];
 
+    tetrahedronInf[i].initialTransformation = R_0_1;
 //	serr<<"a,b,c : "<<a<<" "<<b<<" "<<c<<sendl;
 //	serr<<"_initialPoints : "<<_initialPoints<<sendl;
 //	serr<<"R_0_1 large : "<<R_0_1<<sendl;
