@@ -402,22 +402,6 @@ int ContactCorrectionClass = core::RegisterObject("Component computing contact f
         ;
 
 #ifndef SOFA_FLOAT
-template class PrecomputedConstraintCorrection<Vec3dTypes>;
-//     template class PrecomputedConstraintCorrection<Vec2dTypes>;
-template class PrecomputedConstraintCorrection<Vec1dTypes>;
-template class PrecomputedConstraintCorrection<Rigid3dTypes>;
-//     template class PrecomputedConstraintCorrection<Rigid2dTypes>;
-#endif
-#ifndef SOFA_DOUBLE
-template class PrecomputedConstraintCorrection<Vec3fTypes>;
-//     template class PrecomputedConstraintCorrection<Vec2fTypes>;
-template class PrecomputedConstraintCorrection<Vec1fTypes>;
-template class PrecomputedConstraintCorrection<Rigid3fTypes>;
-//     template class PrecomputedConstraintCorrection<Rigid2fTypes>;
-#endif
-
-
-#ifndef SOFA_FLOAT
 template class SOFA_COMPONENT_CONSTRAINT_API PrecomputedConstraintCorrection<Vec3dTypes>;
 //template class SOFA_COMPONENT_CONSTRAINT_API PrecomputedConstraintCorrection<Vec2dTypes>;
 template class SOFA_COMPONENT_CONSTRAINT_API PrecomputedConstraintCorrection<Vec1dTypes>;
