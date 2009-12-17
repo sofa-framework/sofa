@@ -28,6 +28,8 @@
 #include <sofa/core/componentmodel/behavior/BaseConstraintCorrection.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/component/forcefield/TetrahedronFEMForceField.h>
+#include <sofa/component/forcefield/TriangularFEMForceField.h>
+#include <sofa/component/forcefield/TetrahedralCorotationalFEMForceField.h>
 
 #include <sofa/component/linearsolver/FullMatrix.h>
 #include <sofa/defaulttype/Mat.h>
@@ -131,8 +133,8 @@ public:
         return DataTypes::Name();
     }
 
-
-protected:
+//protected:
+public:
     behavior::MechanicalState<DataTypes> *mstate;
 
     struct InverseStorage
@@ -143,7 +145,7 @@ protected:
     };
     std::string invName;
     InverseStorage* invM;
-    const Real* appCompliance;
+    Real* appCompliance;
     unsigned int dimensionAppCompliance;
 
     static std::map<std::string, InverseStorage>& getInverseMap()
@@ -183,6 +185,16 @@ protected:
     sofa::helper::vector<unsigned int>* localConstraintId;
     linearsolver::FullMatrix<Real> localW;
     double* constraint_force;
+
+public:
+    Real* getInverse()
+    {
+        if(invM->data)
+            return invM->data;
+        else
+            serr<<"Inverse is not computed yet"<<sendl;
+        return NULL;
+    }
 
 };
 
