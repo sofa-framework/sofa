@@ -26,6 +26,8 @@
 #define SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETTOPOLOGYALGORITHMS_H
 
 #include <sofa/component/topology/TriangleSetTopologyAlgorithms.h>
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/defaulttype/Vec.h>
 
 namespace sofa
 {
@@ -52,6 +54,10 @@ public:
     SOFA_CLASS(SOFA_TEMPLATE(TetrahedronSetTopologyAlgorithms,DataTypes),SOFA_TEMPLATE(TriangleSetTopologyAlgorithms,DataTypes));
 
     typedef typename DataTypes::Real Real;
+    typedef BaseMeshTopology::TetraID TetraID;
+    typedef BaseMeshTopology::Tetra Tetra;
+    typedef BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
+    typedef BaseMeshTopology::EdgesInTetrahedron EdgesInTetrahedron;
 
     TetrahedronSetTopologyAlgorithms()
         : TriangleSetTopologyAlgorithms<DataTypes>()
@@ -61,10 +67,16 @@ public:
 
     virtual void init();
 
+    void removeTetra(sofa::helper::vector<TetraID>& ind_ta);
+    void subDivideTetrahedronsAlongWithPlane();
+    void subDivideTetrahedronAlongWithPlane(TetraID ind_ta, sofa::defaulttype::Vec<3,Real>& c, sofa::defaulttype::Vec<3,Real>& normal);
+    void subDivideTetrahedronsAlongWithPlane(sofa::helper::vector<TetraID>& ind_ta, sofa::defaulttype::Vec<3,Real>& c, sofa::defaulttype::Vec<3,Real>& normal, SeqTetrahedra& subTetra);
+
 private:
     TetrahedronSetTopologyContainer*					m_container;
     TetrahedronSetTopologyModifier*						m_modifier;
     TetrahedronSetGeometryAlgorithms< DataTypes >*		m_geometryAlgorithms;
+    sofa::core::componentmodel::behavior::MechanicalState<DataTypes>* m_mstat;
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETTOPOLOGYALGORITHMS_CPP)

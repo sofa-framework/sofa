@@ -788,6 +788,19 @@ void TetrahedronSetTopologyContainer::clear()
     TriangleSetTopologyContainer::clear();
 }
 
+//add removed tetrahedron index
+void TetrahedronSetTopologyContainer::addRemovedTetraIndex(sofa::helper::vector< unsigned int >& tetrahedra)
+{
+    for(int i=0; i<tetrahedra.size(); i++)
+        m_removedTetraIndex.push_back(tetrahedra[i]);
+}
+
+//get removed tetrahedron index
+sofa::helper::vector< unsigned int >& TetrahedronSetTopologyContainer::getRemovedTetraIndex()
+{
+    return m_removedTetraIndex;
+}
+
 } // namespace topology
 
 } // namespace component

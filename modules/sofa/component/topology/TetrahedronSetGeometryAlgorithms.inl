@@ -135,6 +135,8 @@ typename DataTypes::Real TetrahedronSetGeometryAlgorithms< DataTypes >::computeT
     const Tetrahedron t = this->m_topology->getTetrahedron(i);
     const typename DataTypes::VecCoord& p = *(this->object->getX());
     Real volume = (Real)(tripleProduct(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]],p[t[3]]-p[t[0]])/6.0);
+    if(volume<0)
+        volume=-volume;
     return volume;
 }
 
@@ -144,6 +146,8 @@ typename DataTypes::Real TetrahedronSetGeometryAlgorithms< DataTypes >::computeR
     const Tetrahedron t=this->m_topology->getTetrahedron(i);
     const typename DataTypes::VecCoord& p = *(this->object->getX0());
     Real volume = (Real)(tripleProduct(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]],p[t[3]]-p[t[0]])/6.0);
+    if(volume<0)
+        volume=-volume;
     return volume;
 }
 
@@ -371,7 +375,7 @@ void TetrahedronSetGeometryAlgorithms< DataTypes >::getTetraInBall(const Coord& 
 
 /// Compute intersection point with plane which is defined by c and normal
 template <typename DataTypes>
-void TetrahedronSetGeometryAlgorithms<DataTypes>::getIntersectionPointWithPlane(const TetraID ind_ta, Vec<3,Real>& c, Vec<3,Real>& normal, sofa::helper::vector< Vec<3,Real> >& intersectedPoint, SeqEdges& intersectedEdge)
+void TetrahedronSetGeometryAlgorithms<DataTypes>::getIntersectionPointWithPlane(const TetraID ind_ta, Vec<3,Real>& c, Vec<3,Real>& normal, sofa::helper::vector<Vec<3,Real>>& intersectedPoint, SeqEdges& intersectedEdge)
 {
     const typename DataTypes::VecCoord& vect_c = *(this->object->getX0());
     const Tetrahedron ta=this->m_topology->getTetrahedron(ind_ta);
@@ -382,7 +386,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::getIntersectionPointWithPlane(
     Vec<3,Real> intersection;
 
     //intersection with edge
-    for(unsigned int i=0; i<edgesInTetra.size(); i++)
+    for(int i=0; i<edgesInTetra.size(); i++)
     {
         p1=vect_c[edges[edgesInTetra[i]][0]]; p2=vect_c[edges[edgesInTetra[i]][1]];
         if(computeIntersectionEdgeWithPlane(p1,p2,c,normal,intersection))
@@ -401,7 +405,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::getIntersectionPointWithPlane(
             p1=vect_c[ta[i]];
             fprintf(f1,"%d %f %f %f\n",ta[i],p1[0],p1[1],p1[2]);
         }
-        for(unsigned int i=0; i<intersectedPoint.size(); i++)
+        for(int i=0; i<intersectedPoint.size(); i++)
         {
             fprintf(f2,"%f %f %f\n",intersectedPoint[i][0],intersectedPoint[i][1],intersectedPoint[i][2]);
         }
