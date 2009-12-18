@@ -362,8 +362,6 @@ void LMConstraintSolver::buildLeftMatrix(const DofToMatrix& invMassMatrix, DofTo
         const SparseMatrixEigen &invM_LTrans=invMass.marked<Eigen::SelfAdjoint|Eigen::UpperTriangular>()*L.transpose();
         invMass_Ltrans.insert( std::make_pair(dofs,invM_LTrans) );
         LeftMatrix += L*invM_LTrans;
-//            const SparseMatrixEigen &result=L*invM_LTrans;
-//            LeftMatrix += result.marked<Eigen::SelfAdjoint>();
     }
 }
 
@@ -446,7 +444,6 @@ void LMConstraintSolver::buildInverseMassMatrices( const SetDof &setDofs, DofToM
                 buildInverseMassMatrix(dofs, mass, invMass);
             }
             invMass.endFill();
-
             //Store the matrix in memory
             if (mFound != invMassMatrices.end())
                 invMassMatrices[dofs]=invMass;
@@ -461,14 +458,16 @@ void LMConstraintSolver::buildInverseMassMatrix( const sofa::core::componentmode
     //Get the Full Matrix from the constraint correction
     FullMatrix<SReal> computationInvM;
     constraintCorrection->getComplianceMatrix(&computationInvM);
-
     //Then convert it into a Sparse Matrix: as it is done only at the init, or when topological changes occur, this should not be a burden for the framerate
     for (unsigned int i=0; i<computationInvM.rowSize(); ++i)
     {
         for (unsigned int j=i; j<computationInvM.colSize(); ++j)
         {
             SReal value=computationInvM.element(i,j);
-            if (value != 0) invMass.fill(i,j)=value;
+            if (value != 0)
+            {
+                invMass.fill(i,j)=value;
+            }
         }
     }
 }
@@ -487,7 +486,7 @@ void LMConstraintSolver::buildInverseMassMatrix( const sofa::core::componentmode
 
         //Translate the FullMatrix into a Eigen Matrix to invert it
         MatrixEigen mapMEigen=Eigen::Map<MatrixEigen>(computationM[0],(int)computationM.rowSize(),(int)computationM.colSize());
-        mapMEigen.computeInverse(&invMEigen);
+        mapMEigen.marked<Eigen::SelfAdjoint|Eigen::UpperTriangular>().computeInverse(&invMEigen);
 
         //Store into the sparse matrix the block corresponding to the inverse of the mass matrix of a particle
         for (unsigned int r=0; r<dimensionDofs; ++r)
@@ -495,7 +494,9 @@ void LMConstraintSolver::buildInverseMassMatrix( const sofa::core::componentmode
             for (unsigned int c=r; c<dimensionDofs; ++c)
             {
                 if (invMEigen(r,c) != 0)
+                {
                     invMass.fill(i*dimensionDofs+r,i*dimensionDofs+c)=invMEigen(r,c);
+                }
             }
         }
     }

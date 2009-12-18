@@ -123,9 +123,16 @@ template <class DataTypes> void RotationLMConstraint<DataTypes>::handleTopologyC
 
 
 template<class DataTypes>
+void RotationLMConstraint<DataTypes>::resetConstraint()
+{
+    core::componentmodel::behavior::LMConstraint<DataTypes,DataTypes>::resetConstraint();
+    idxEquations.clear();
+}
+
+template<class DataTypes>
 void RotationLMConstraint<DataTypes>::buildJacobian()
 {
-    idxEquations.clear();
+    if (!idxEquations.empty()) return;
     const SetIndexArray &indices = f_indices.getValue().getArray();
     const helper::vector<Deriv> &axis=rotationAxis.getValue();
 
@@ -141,6 +148,7 @@ void RotationLMConstraint<DataTypes>::buildJacobian()
         }
         this->constrainedObject1->forceMask.insertEntry(index);
     }
+
 }
 
 
@@ -149,7 +157,8 @@ void RotationLMConstraint<DataTypes>::writeConstraintEquations(ConstOrder Order)
 {
 
     //We don't constrain the Position, only the velocities and accelerations
-    if (Order==core::componentmodel::behavior::BaseLMConstraint::POS) return;
+    if (idxEquations.empty() ||
+        Order==core::componentmodel::behavior::BaseLMConstraint::POS) return;
 
 
     const SetIndexArray & indices = f_indices.getValue().getArray();
@@ -187,6 +196,7 @@ void RotationLMConstraint<DataTypes>::writeConstraintEquations(ConstOrder Order)
         }
 
     }
+
 }
 
 
