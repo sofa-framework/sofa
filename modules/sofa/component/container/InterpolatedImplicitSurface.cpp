@@ -46,7 +46,10 @@ int InterpolatedImplicitSurfaceClass = core::RegisterObject("This class allows t
 InterpolatedImplicitSurface::InterpolatedImplicitSurface()
     : ImplicitSurface(),
       distanceMapHeader( initData( &distanceMapHeader, "file", "MHD file for the distance map" ) ),
-      maxDomains( initData( &maxDomains, 1, "maxDomains", "Number of domains available for caching" ) )
+      maxDomains( initData( &maxDomains, 1, "maxDomains", "Number of domains available for caching" ) ),
+      dx( initData( &dx, 0.0, "dx", "x translation" ) ),
+      dy( initData( &dy, 0.0, "dy", "y translation" ) ),
+      dz( initData( &dz, 0.0, "dz", "z translation" ) )
 {
     usedDomains = 0;
     imgData = 0;

@@ -60,9 +60,9 @@ public:
     InterpolatedImplicitSurface();
     ~InterpolatedImplicitSurface();
     virtual void init();
-    virtual double getValue(defaulttype::Vec3d& pos);
-    virtual double getValue( defaulttype::Vec3d& pos, int& domain );
-    virtual unsigned int getDomain(sofa::defaulttype::Vec3d& pos, int ref_domain) { (void)pos; return ref_domain; }
+    virtual double getValue( defaulttype::Vec3d &transformedPos );
+    virtual double getValue( defaulttype::Vec3d &transformedPos, int &domain );
+    virtual unsigned int getDomain( sofa::defaulttype::Vec3d &pos, int ref_domain ) { (void)pos; return ref_domain; }
 
 
 
@@ -77,6 +77,7 @@ protected:
 
     sofa::core::objectmodel::DataFileName distanceMapHeader;
     Data< int > maxDomains;
+    Data< double > dx, dy, dz;    // translation of original image
 
     int usedDomains;              // number of domains already given out
     unsigned int imgSize[3];      // number of voxels

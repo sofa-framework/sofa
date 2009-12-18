@@ -101,8 +101,13 @@ int InterpolatedImplicitSurface::getNextDomain()
 }
 
 
-double InterpolatedImplicitSurface::getValue( defaulttype::Vec3d& pos, int& domain )
+double InterpolatedImplicitSurface::getValue( defaulttype::Vec3d &transformedPos, int &domain )
 {
+    // use translation
+    defaulttype::Vec3d pos;
+    pos[0] = transformedPos[0] - dx.getValue();
+    pos[1] = transformedPos[1] - dy.getValue();
+    pos[2] = transformedPos[2] - dz.getValue();
     // find cache domain and check if it needs an update
     DomainCache *cache;
     if (domain < 0)
@@ -144,10 +149,10 @@ double InterpolatedImplicitSurface::getValue( defaulttype::Vec3d& pos, int& doma
 }
 
 
-double InterpolatedImplicitSurface::getValue( defaulttype::Vec3d& pos )
+double InterpolatedImplicitSurface::getValue( defaulttype::Vec3d &transformedPos )
 {
     static int domain=-1;
-    return getValue( pos, domain );
+    return getValue( transformedPos, domain );
 }
 
 
@@ -156,13 +161,3 @@ double InterpolatedImplicitSurface::getValue( defaulttype::Vec3d& pos )
 } // namespace sofa
 
 #endif
-
-/*
-  double a = wMin[0]*wMin[1];
-  double b = wMax[0]*wMin[1];
-  double c = wMin[0]*wMax[1];
-  double d = wMax[0]*wMax[1];
-  double res = ( val[0]*a + val[1]*b + val[2]*c + val[3]*d ) * wMin[2]
-             + ( val[4]*a + val[5]*b + val[6]*c + val[7]*d ) * wMax[2];
-
-*/
