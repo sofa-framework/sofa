@@ -43,8 +43,11 @@ class SOFA_SIMULATION_COMMON_API AnimateVisitor : public Visitor
 {
 protected:
     double dt;
+#ifdef SOFA_HAVE_EIGEN2
+    bool firstNodeVisited;
+#endif
 public:
-    AnimateVisitor(double dt=0.0) : dt(dt) {}
+    AnimateVisitor(double dt=0.0);
 
     void setDt(double v) { dt = v; }
     double getDt() const { return dt; }
