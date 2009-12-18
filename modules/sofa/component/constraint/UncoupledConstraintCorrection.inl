@@ -188,12 +188,16 @@ void UncoupledConstraintCorrection<DataTypes>::getComplianceMatrix(defaulttype::
 {
     const VecReal &comp=compliance.getValue();
     const unsigned int s=comp.size();
-    m->resize(s,s); //resize must set to zero the content of the matrix
+    const unsigned int dimension=Coord::size();
+    m->resize(s*dimension,s*dimension); //resize must set to zero the content of the matrix
     for (unsigned int l=0; l<s; ++l)
     {
         for (unsigned int c=0; c<s; ++c)
         {
-            if (l==c) m->set(l,c,comp[l]);
+            if (l==c)
+            {
+                for (unsigned int d=0; d<dimension; ++d) m->set(dimension*l+d,dimension*c+d,comp[l]);
+            }
         }
     }
 }

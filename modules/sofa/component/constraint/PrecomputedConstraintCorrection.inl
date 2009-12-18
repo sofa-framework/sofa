@@ -43,6 +43,11 @@
 #include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/Quater.h>
 
+#ifdef SOFA_HAVE_EIGEN2
+#include <sofa/component/constraint/LMConstraintSolver.h>
+#include <sofa/simulation/common/Node.h>
+#endif
+
 //#include <glib.h>
 #include <sstream>
 #include <list>
@@ -110,6 +115,8 @@ void PrecomputedConstraintCorrection<DataTypes>::releaseInverse(std::string name
     }
 }
 
+
+struct ConstraintActivation { bool acc, vel, pos; };
 
 template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
@@ -181,15 +188,26 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
             this->getContext()->get(CGlinearSolver);
             this->getContext()->get(linearSolver);
 
+            simulation::Node *solvernode=NULL;
             if(odeSolver)
+            {
                 sout << "use CGImplicitSolver " << sendl;
+                solvernode=(simulation::Node*)odeSolver->getContext();
+            }
             else if(EulerSolver && CGlinearSolver)
+            {
                 sout << "use EulerImplicitSolver &  CGLinearSolver" << sendl;
+                solvernode=(simulation::Node*)EulerSolver->getContext();
+            }
             else if(EulerSolver && linearSolver)
+            {
                 sout << "use EulerImplicitSolver &  LinearSolver" << sendl;
+                solvernode=(simulation::Node*)EulerSolver->getContext();
+            }
             else if(EulerSolver)
             {
                 sout << "use EulerImplicitSolver" << sendl;
+                solvernode=(simulation::Node*)EulerSolver->getContext();
             }
             else
             {
@@ -197,6 +215,22 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
                 return;
             }
 
+#ifdef SOFA_HAVE_EIGEN2
+            helper::vector< sofa::component::constraint::LMConstraintSolver* > listLMConstraintSolver;
+            solvernode->get< sofa::component::constraint::LMConstraintSolver >(&listLMConstraintSolver, core::objectmodel::BaseContext::SearchDown);
+            helper::vector< ConstraintActivation > listConstraintActivation(listLMConstraintSolver.size());
+            for (unsigned int i=0; i<listLMConstraintSolver.size(); ++i)
+            {
+                listConstraintActivation[i].acc=listLMConstraintSolver[i]->constraintAcc.getValue();
+                listLMConstraintSolver[i]->constraintAcc.setValue(false);
+
+                listConstraintActivation[i].vel=listLMConstraintSolver[i]->constraintVel.getValue();
+                listLMConstraintSolver[i]->constraintVel.setValue(false);
+
+                listConstraintActivation[i].pos=listLMConstraintSolver[i]->constraintPos.getValue();
+                listLMConstraintSolver[i]->constraintPos.setValue(false);
+            }
+#endif
 
 
             //complianceLoaded = true;
@@ -344,6 +378,17 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
             for (unsigned int i=0; i<velocity.size(); i++) velocity[i]=velocity0[i];
             //Reset the position
             for (unsigned int i=0; i<pos.size(); i++)      pos[i]=pos0[i];
+
+
+#ifdef SOFA_HAVE_EIGEN2
+            for (unsigned int i=0; i<listLMConstraintSolver.size(); ++i)
+            {
+                listLMConstraintSolver[i]->constraintAcc.setValue(listConstraintActivation[i].acc);
+                listLMConstraintSolver[i]->constraintVel.setValue(listConstraintActivation[i].vel);
+                listLMConstraintSolver[i]->constraintPos.setValue(listConstraintActivation[i].pos);
+            }
+#endif
+
         }
     }
 
