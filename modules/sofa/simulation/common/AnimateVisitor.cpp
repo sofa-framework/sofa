@@ -39,7 +39,11 @@ namespace simulation
 {
 
 
-AnimateVisitor::AnimateVisitor(double dt) : dt(dt), firstNodeVisited(false) {}
+AnimateVisitor::AnimateVisitor(double dt) : dt(dt)
+#ifdef SOFA_HAVE_EIGEN2
+    , firstNodeVisited(false)
+#endif
+{}
 
 void AnimateVisitor::processMasterSolver(simulation::Node*, core::componentmodel::behavior::MasterSolver* obj)
 {
