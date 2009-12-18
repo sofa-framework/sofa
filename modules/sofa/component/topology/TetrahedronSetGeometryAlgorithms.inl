@@ -386,7 +386,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::getIntersectionPointWithPlane(
     Vec<3,Real> intersection;
 
     //intersection with edge
-    for(int i=0; i<edgesInTetra.size(); i++)
+    for(unsigned int i=0; i<edgesInTetra.size(); i++)
     {
         p1=vect_c[edges[edgesInTetra[i]][0]]; p2=vect_c[edges[edgesInTetra[i]][1]];
         if(computeIntersectionEdgeWithPlane(p1,p2,c,normal,intersection))
@@ -405,7 +405,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::getIntersectionPointWithPlane(
             p1=vect_c[ta[i]];
             fprintf(f1,"%d %f %f %f\n",ta[i],p1[0],p1[1],p1[2]);
         }
-        for(int i=0; i<intersectedPoint.size(); i++)
+        for(unsigned int i=0; i<intersectedPoint.size(); i++)
         {
             fprintf(f2,"%f %f %f\n",intersectedPoint[i][0],intersectedPoint[i][1],intersectedPoint[i][2]);
         }

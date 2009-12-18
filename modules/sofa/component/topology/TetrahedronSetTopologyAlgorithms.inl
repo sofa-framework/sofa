@@ -157,6 +157,8 @@ void TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronAlongWit
         sofa::helper::vector<int> localIndex;
         localIndex.resize(4);
         tetra[0]=intersectedEdge[0][0]; tetra[1]=intersectedEdge[0][1];
+        // Initialize to null to avoid possible segmentation fault.
+        tetra[2] = tetra[3] = 0;
         localIndex[0]=0;
 
         for(int j=1; j<4; j++)
@@ -248,6 +250,7 @@ void TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronAlongWit
 template<class DataTypes>
 void TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronsAlongWithPlane(sofa::helper::vector<TetraID>& ind_ta, sofa::defaulttype::Vec<3,Real>& c, sofa::defaulttype::Vec<3,Real>& normal, SeqTetrahedra& subTetra)
 {
+    (void)subTetra;
     int pointIndex=this->m_container->getNbPoints();
     sofa::helper::vector<Vec<3,Real> > addedPoint;
     sofa::helper::vector<Tetra> addedTetra;

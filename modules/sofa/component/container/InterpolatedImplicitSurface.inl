@@ -96,7 +96,7 @@ void InterpolatedImplicitSurface::updateCache( DomainCache *cache, defaulttype::
 int InterpolatedImplicitSurface::getNextDomain()
 {
     // while we have free domains always return the next one, afterwards always use the last one
-    if (usedDomains < domainCache.size()) usedDomains++;
+    if (usedDomains < (int)domainCache.size()) usedDomains++;
     return usedDomains-1;
 }
 
