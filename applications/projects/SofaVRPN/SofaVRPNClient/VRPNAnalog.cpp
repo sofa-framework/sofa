@@ -12,7 +12,6 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <vrpnclient_config.h>
 
-
 namespace sofavrpn
 {
 namespace client
