@@ -79,10 +79,10 @@ SkinningMapping<BasicMapping>::SkinningMapping ( In* from, Out* to )
     , computeJ ( initData ( &computeJ, false, "computeJ", "compute matrix J in addition to apply for the dual quat interpolation method." ) )
     , computeAllMatrices ( initData ( &computeAllMatrices, false, "computeAllMatrices","compute all the matrices in addition to apply for the dual quat interpolation method." ) )
     , displayDefTensors ( initData ( &displayDefTensors, false, "displayDefTensors","display computed deformation tensors." ) )
+    , wheightingType ( initData ( &wheightingType, WEIGHT_INVDIST_SQUARE, "wheightingType","Weighting computation method." ) )
+    , interpolationType ( initData ( &interpolationType, INTERPOLATION_DUAL_QUATERNION, "interpolationType","Interpolation method." ) )
+    , distanceType ( initData ( &distanceType, DISTANCE_HARMONIC, "distanceType","Distance computation method." ) )
     , computeWeights ( true )
-    , wheighting ( WEIGHT_INVDIST_SQUARE )
-    , interpolation ( INTERPOLATION_DUAL_QUATERNION )
-    , distance ( DISTANCE_HARMONIC )
 {
     maskFrom = NULL;
     if ( core::componentmodel::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *> ( from ) )
@@ -105,8 +105,8 @@ void SkinningMapping<BasicMapping>::load ( const char * /*filename*/ )
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::computeInitPos ( )
 {
-    const VecCoord& xto = *this->toModel->getX();
-    const VecInCoord& xfrom = *this->fromModel->getX();
+    const VecCoord& xto = *this->toModel->getX0();
+    const VecInCoord& xfrom = *this->fromModel->getX0();
     initPosDOFs.resize ( xfrom.size() );
 
     const vector<int>& m_reps = repartition.getValue();
@@ -116,7 +116,7 @@ void SkinningMapping<BasicMapping>::computeInitPos ( )
         initPosDOFs[i] = xfrom[i];
     }
 
-    switch ( interpolation )
+    switch ( interpolationType.getValue() )
     {
     case INTERPOLATION_LINEAR:
     {
@@ -146,8 +146,8 @@ template <class BasicMapping>
 void SkinningMapping<BasicMapping>::sortReferences ()
 {
     Coord posTo;
-    VecCoord& xto = *this->toModel->getX();
-    VecInCoord& xfrom = *this->fromModel->getX();
+    VecCoord& xto = *this->toModel->getX0();
+    VecInCoord& xfrom = *this->fromModel->getX0();
 
     vector<int>& m_reps = * ( repartition.beginEdit() );
     m_reps.clear();
@@ -159,7 +159,7 @@ void SkinningMapping<BasicMapping>::sortReferences ()
     distGradients.clear();
     const unsigned int& nbRef = nbRefs.getValue();
 
-    switch ( distance )
+    switch ( distanceType.getValue() )
     {
     case DISTANCE_EUCLIDIAN:
     {
@@ -197,8 +197,8 @@ void SkinningMapping<BasicMapping>::sortReferences ()
         for ( unsigned int i = 0; i < xto.size(); i++ )
             tmpTo[i] = xto[i];
 
-        if ( distance == DISTANCE_GEODESIC && computeAllMatrices.getValue()) geoDist->computeGeodesicalDistanceMap ( tmpFrom );
-        if ( distance == DISTANCE_HARMONIC && computeAllMatrices.getValue()) geoDist->computeHarmonicCoordsDistanceMap ( tmpFrom );
+        if ( distanceType.getValue() == DISTANCE_GEODESIC && computeAllMatrices.getValue()) geoDist->computeGeodesicalDistanceMap ( tmpFrom );
+        if ( distanceType.getValue() == DISTANCE_HARMONIC && computeAllMatrices.getValue()) geoDist->computeHarmonicCoordsDistanceMap ( tmpFrom );
         geoDist->getDistances( distances, distGradients, tmpTo);
 #endif
         break;
@@ -234,25 +234,25 @@ void SkinningMapping<BasicMapping>::sortReferences ()
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::init()
 {
+    VecInCoord& xfrom = *this->fromModel->getX0();
 #ifdef SOFA_DEV
-    if( distance != DISTANCE_EUCLIDIAN)
+    if( distanceType.getValue() != DISTANCE_EUCLIDIAN)
     {
         this->getContext()->get ( geoDist );
         if ( !geoDist )
         {
             serr << "Can not find the geodesical distance component: distances used are euclidian." << sendl;
-            distance = DISTANCE_EUCLIDIAN;
+            distanceType.setValue( DISTANCE_EUCLIDIAN);
         }
     }
 #else
-    distance = DISTANCE_EUCLIDIAN;
+    distanceType.setValue( DISTANCE_EUCLIDIAN);
 #endif
     if ( this->initPos.empty() && this->toModel!=NULL && computeWeights==true && coefs.getValue().size() ==0 )
     {
-        if ( wheighting == WEIGHT_LINEAR || wheighting == WEIGHT_HERMITE )
+        if ( wheightingType.getValue() == WEIGHT_LINEAR || wheightingType.getValue() == WEIGHT_HERMITE )
             nbRefs.setValue ( 2 );
 
-        VecInCoord& xfrom = *this->fromModel->getX();
         if( xfrom.size() < nbRefs.getValue())
             nbRefs.setValue ( xfrom.size() );
 
@@ -266,10 +266,9 @@ void SkinningMapping<BasicMapping>::init()
     }
 
 #ifdef SOFA_DEV
-    if ( interpolation == INTERPOLATION_DUAL_QUATERNION )
+    if ( interpolationType.getValue() == INTERPOLATION_DUAL_QUATERNION )
     {
         DUALQUAT qi0;
-        VecInCoord& xfrom = *this->fromModel->getX();
         this->T.resize ( xfrom.size() );
         for ( unsigned int i = 0; i < xfrom.size(); i++ )
         {
@@ -278,7 +277,7 @@ void SkinningMapping<BasicMapping>::init()
             XItoQ( qi0, initPosDOFs[i]);
             computeDqT ( this->T[i], qi0 );
         }
-        VecCoord& xto = *this->toModel->getX();
+        VecCoord& xto = *this->toModel->getX0();
         this->vol.resize( xto.size());
         for( unsigned int i = 0; i < xto.size(); i++) this->vol[i] = 1.0;
         this->volMass.resize( xto.size());
@@ -309,38 +308,38 @@ void SkinningMapping<BasicMapping>::clear()
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::setWeightsToHermite()
 {
-    wheighting = WEIGHT_HERMITE;
+    wheightingType.setValue( WEIGHT_HERMITE);
 }
 
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::setWeightsToLinear()
 {
-    wheighting = WEIGHT_LINEAR;
+    wheightingType.setValue( WEIGHT_LINEAR);
 }
 
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::setWieghtsToInvDist()
 {
-    wheighting = WEIGHT_INVDIST_SQUARE;
+    wheightingType.setValue( WEIGHT_INVDIST_SQUARE);
 }
 
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::setInterpolationToLinear()
 {
-    interpolation = INTERPOLATION_LINEAR;
+    interpolationType.setValue( INTERPOLATION_LINEAR);
 }
 
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::setInterpolationToDualQuaternion()
 {
-    interpolation = INTERPOLATION_DUAL_QUATERNION;
+    interpolationType.setValue( INTERPOLATION_DUAL_QUATERNION);
 }
 
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::updateWeights ()
 {
-    VecCoord& xto = *this->toModel->getX();
-    VecInCoord& xfrom = *this->fromModel->getX();
+    VecCoord& xto = *this->toModel->getX0();
+    VecInCoord& xfrom = *this->fromModel->getX0();
 
     vector<vector<double> >& m_coefs = * ( coefs.beginEdit() );
     const vector<int>& m_reps = repartition.getValue();
@@ -349,7 +348,7 @@ void SkinningMapping<BasicMapping>::updateWeights ()
     for ( unsigned int i=0; i<xfrom.size(); i++ )
         m_coefs[i].resize ( xto.size() );
 
-    switch ( wheighting )
+    switch ( wheightingType.getValue() )
     {
     case WEIGHT_LINEAR:
     {
@@ -444,7 +443,7 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
     const vector<int>& m_reps = repartition.getValue();
     const vector<vector<double> >& m_coefs = coefs.getValue();
 
-    switch ( interpolation )
+    switch ( interpolationType.getValue() )
     {
     case INTERPOLATION_LINEAR:
     {
@@ -574,10 +573,10 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
             doJustOnce = false;
             /*						xfrom[0].getCenter() = Vec3d( 0, 0, 200);
             						xfrom[0].getOrientation() = Quat( sqrt(0.5), 0, 0, sqrt(0.5));
-
-            						xfrom[1].getCenter() = Vec3d( 0, 0, 200);
-            						xfrom[1].getOrientation() = Quat( 0.0, 0.0, 0, 1);//sqrt(0.5), sqrt(0.5));
             */
+            //xfrom[1].getCenter() = Vec3d( 0, 0, 200);
+            //xfrom[1].getOrientation() = Quat( 0.0, 0.0, sqrt(0.5), sqrt(0.5));
+//*/
         }
 
         //apply
@@ -764,7 +763,7 @@ void SkinningMapping<BasicMapping>::applyJ ( typename Out::VecDeriv& out, const 
     */
     if ( ! ( maskTo->isInUse() ) )
     {
-        switch ( interpolation )
+        switch ( interpolationType.getValue() )
         {
         case INTERPOLATION_LINEAR:
         {
@@ -823,7 +822,7 @@ void SkinningMapping<BasicMapping>::applyJ ( typename Out::VecDeriv& out, const 
         const ParticleMask::InternalStorage &indices=maskTo->getEntries();
 
         ParticleMask::InternalStorage::const_iterator it;
-        switch ( interpolation )
+        switch ( interpolationType.getValue() )
         {
         case INTERPOLATION_LINEAR:
         {
@@ -925,7 +924,7 @@ void SkinningMapping<BasicMapping>::applyJT ( typename In::VecDeriv& out, const 
     Deriv v,omega;
     if ( ! ( maskTo->isInUse() ) )
     {
-        switch ( interpolation )
+        switch ( interpolationType.getValue() )
         {
         case INTERPOLATION_LINEAR:
         {
@@ -983,7 +982,7 @@ void SkinningMapping<BasicMapping>::applyJT ( typename In::VecDeriv& out, const 
         const ParticleMask::InternalStorage &indices=maskTo->getEntries();
 
         ParticleMask::InternalStorage::const_iterator it;
-        switch ( interpolation )
+        switch ( interpolationType.getValue() )
         {
         case INTERPOLATION_LINEAR:
         {
@@ -1053,7 +1052,7 @@ void SkinningMapping<BasicMapping>::applyJT ( typename In::VecConst& out, const 
     vector<bool> flags;
     int outSize = out.size();
     out.resize ( in.size() + outSize ); // we can accumulate in "out" constraints from several mappings
-    switch ( interpolation )
+    switch ( interpolationType.getValue() )
     {
     case INTERPOLATION_LINEAR:
     {
@@ -1110,7 +1109,7 @@ void SkinningMapping<BasicMapping>::draw()
 
     if ( this->getShow() )
     {
-        if ( interpolation != INTERPOLATION_DUAL_QUATERNION )
+        if ( interpolationType.getValue() != INTERPOLATION_DUAL_QUATERNION )
         {
             glDisable ( GL_LIGHTING );
             glPointSize ( 1 );
@@ -1137,7 +1136,7 @@ void SkinningMapping<BasicMapping>::draw()
 
 #ifdef SOFA_DEV
     //*  Continuous animation of the reference frames along the beam (between frames i and i+1)
-    if ( displayBlendedFrame.getValue() && interpolation == INTERPOLATION_DUAL_QUATERNION )
+    if ( displayBlendedFrame.getValue() && interpolationType.getValue() == INTERPOLATION_DUAL_QUATERNION )
     {
         bool anim = true;
         static unsigned int step = 0;
@@ -1174,7 +1173,7 @@ void SkinningMapping<BasicMapping>::draw()
     //*/
 
     // Deformation tensor display
-    if ( displayDefTensors.getValue() && interpolation == INTERPOLATION_DUAL_QUATERNION && computeAllMatrices.getValue() )
+    if ( displayDefTensors.getValue() && interpolationType.getValue() == INTERPOLATION_DUAL_QUATERNION && computeAllMatrices.getValue() )
     {
         const VecCoord& xto = *this->toModel->getX();
         TriangleSetTopologyContainer *mesh;

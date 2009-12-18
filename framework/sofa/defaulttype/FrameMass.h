@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_MASS_FRAMEMASS_H
 
 #include <sofa/defaulttype/RigidTypes.h>
+#include <sofa/simulation/common/Visitor.h>
 
 namespace sofa
 {
@@ -36,6 +37,7 @@ namespace defaulttype
 template<int N, typename real>
 class FrameMass;
 
+using sofa::simulation::Visitor;
 
 //=============================================================================
 // 3D Frames
@@ -55,7 +57,7 @@ public:
     typedef Mat<6,6,Real> Mat66;
     typedef Vec<6,Real> Vec6;
     typedef vector<double> VD;
-    Real mass,volume;
+    Real mass;
     Mat66 inertiaMatrix;	      // Inertia matrix of the object
     Mat66 inertiaMassMatrix;    // Inertia matrix of the object * mass of the object
     Mat66 invInertiaMatrix;	  // inverse of inertiaMatrix
@@ -64,39 +66,44 @@ public:
     FrameMass ( Real m=1 )
     {
         mass = m;
-        volume = 1;
-        recalc();
+        //recalc();
     }
 
     void operator= ( Real m )
     {
         mass = m;
-        recalc();
+        //recalc();
     }
+
     // operator to cast to const Real
     operator const Real() const
     {
         return mass;
     }
+
     void recalc()
     {
         inertiaMassMatrix = inertiaMatrix * mass;
         invInertiaMatrix.invert ( inertiaMatrix );
+        /*
         bool nullMatrix = true;
         for ( int i = 0; i < 6; i++ )
-            for ( int j = 0; j < 6; j++ )
-                if ( invInertiaMatrix[i][j] != 0 ) nullMatrix = false;
+          for ( int j = 0; j < 6; j++ )
+            if ( invInertiaMatrix[i][j] != 0 ) nullMatrix = false;
         if ( nullMatrix )
-            for ( int i = 0; i < 6; i++ )
-                invInertiaMatrix[i][i] = 1.0;
+          for ( int i = 0; i < 6; i++ )
+            invInertiaMatrix[i][i] = 1.0;
+        	*/
         invInertiaMassMatrix.invert ( inertiaMassMatrix );
+        /*
         nullMatrix = true;
         for ( int i = 0; i < 6; i++ )
-            for ( int j = 0; j < 6; j++ )
-                if ( invInertiaMassMatrix[i][j] != 0 ) nullMatrix = false;
+          for ( int j = 0; j < 6; j++ )
+            if ( invInertiaMassMatrix[i][j] != 0 ) nullMatrix = false;
         if ( nullMatrix )
-            for ( int i = 0; i < 6; i++ )
-                invInertiaMassMatrix[i][i] = mass;
+          for ( int i = 0; i < 6; i++ )
+            invInertiaMassMatrix[i][i] = mass;
+        	*/
     }
 
     /// compute ma = M*a
@@ -164,14 +171,12 @@ public:
     inline friend std::ostream& operator << ( std::ostream& out, const FrameMass<3, real>& m )
     {
         out<<m.mass;
-        out<<" "<<m.volume;
         out<<" "<<m.inertiaMatrix;
         return out;
     }
     inline friend std::istream& operator >> ( std::istream& in, FrameMass<3, real>& m )
     {
         in>>m.mass;
-        in>>m.volume;
         in>>m.inertiaMatrix;
         return in;
     }
