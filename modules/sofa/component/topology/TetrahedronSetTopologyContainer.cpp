@@ -791,7 +791,7 @@ void TetrahedronSetTopologyContainer::clear()
 //add removed tetrahedron index
 void TetrahedronSetTopologyContainer::addRemovedTetraIndex(sofa::helper::vector< unsigned int >& tetrahedra)
 {
-    for(int i=0; i<tetrahedra.size(); i++)
+    for(unsigned int i=0; i<tetrahedra.size(); i++)
         m_removedTetraIndex.push_back(tetrahedra[i]);
 }
 

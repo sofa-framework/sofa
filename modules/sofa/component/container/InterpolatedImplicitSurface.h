@@ -62,7 +62,7 @@ public:
     virtual void init();
     virtual double getValue(defaulttype::Vec3d& pos);
     virtual double getValue( defaulttype::Vec3d& pos, int& domain );
-    virtual unsigned int getDomain(sofa::defaulttype::Vec3d& pos, int ref_domain) { return ref_domain; }
+    virtual unsigned int getDomain(sofa::defaulttype::Vec3d& pos, int ref_domain) { (void)pos; return ref_domain; }
 
 
 
@@ -75,8 +75,8 @@ protected:
 
 protected:
 
-    Data< int > maxDomains;
     sofa::core::objectmodel::DataFileName distanceMapHeader;
+    Data< int > maxDomains;
 
     int usedDomains;              // number of domains already given out
     unsigned int imgSize[3];      // number of voxels
