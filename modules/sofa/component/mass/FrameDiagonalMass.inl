@@ -311,18 +311,18 @@ void FrameDiagonalMass<DataTypes, MassType>::addMDx ( VecDeriv& res, const VecDe
     {
         for ( unsigned int i=0; i<dx.size(); i++ )
         {
-            serr << "a["<<i<<"]: " << dx[i] << sendl;
             res[i] += dx[i] * masses[i];
-            serr << "f["<<i<<"]: " << res[i] << sendl;
         }
     }
     else
     {
         for ( unsigned int i=0; i<dx.size(); i++ )
         {
-            serr << "a["<<i<<"]: " << dx[i] << sendl;
-            res[i] += ( dx[i] * masses[i] ) * ( Real ) factor;
-            serr << "f["<<i<<"]: " << res[i] << sendl;
+            serr << "dx2["<<i<<"]: " << dx[i] << sendl;
+            res[i] += ( dx[i]* masses[i] ) * ( Real ) factor;
+
+            serr << "factor: " << factor << sendl;
+            serr << "f2["<<i<<"]: " << res[i] << sendl;
         }
     }
     Visitor::printComment("plop");
@@ -461,7 +461,7 @@ void FrameDiagonalMass<DataTypes, MassType>::addGravityToV ( double dt )
 }
 
 template <class DataTypes, class MassType>
-void FrameDiagonalMass<DataTypes, MassType>::addForce ( VecDeriv& f, const VecCoord& x, const VecDeriv& v )
+void FrameDiagonalMass<DataTypes, MassType>::addForce ( VecDeriv& f, const VecCoord& /*x*/, const VecDeriv& v )
 {
     // Update the mass
     updateMass ( *J, *vol, *volMass );
