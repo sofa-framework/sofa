@@ -22,6 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_CONSTRAINT_DISTANCELMCONSTRAINT_CPP
+#include <sofa/component/component.h>
 #include <sofa/component/constraint/DistanceLMConstraint.inl>
 #include <sofa/core/componentmodel/behavior/LMConstraint.inl>
 #include <sofa/core/ObjectFactory.h>
@@ -56,12 +58,12 @@ int DistanceLMConstraintClass = core::RegisterObject("Maintain constant the leng
         ;
 
 #ifndef SOFA_FLOAT
-template class DistanceLMConstraint<Vec3dTypes>;
-template class DistanceLMConstraint<Rigid3dTypes>;
+template class SOFA_COMPONENT_CONSTRAINT_API DistanceLMConstraint<Vec3dTypes>;
+template class SOFA_COMPONENT_CONSTRAINT_API DistanceLMConstraint<Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class DistanceLMConstraint<Vec3fTypes>;
-template class DistanceLMConstraint<Rigid3fTypes>;
+template class SOFA_COMPONENT_CONSTRAINT_API DistanceLMConstraint<Vec3fTypes>;
+template class SOFA_COMPONENT_CONSTRAINT_API DistanceLMConstraint<Rigid3fTypes>;
 #endif
 
 
