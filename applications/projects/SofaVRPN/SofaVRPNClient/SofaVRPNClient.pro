@@ -23,13 +23,15 @@ INCLUDEPATH += .
 LIBS += $$SOFA_GUI_LIBS
 LIBS += $$SOFA_LIBS
 
-LIBS += $$EXT_LIBS
+LIBS += $$EXT_LIBS -lvrpn_client
 
 HEADERS +=  vrpnclient_config.h \
 			VRPNDevice.h \
 			VRPNAnalog.h \
+			VRPNAnalog.inl \
 			VRPNButton.h \
 			VRPNTracker.h \
+			VRPNTracker.inl \
 			WiimoteDriver.h \
 			IRTracker.h \
 			#ContactWarning.h \

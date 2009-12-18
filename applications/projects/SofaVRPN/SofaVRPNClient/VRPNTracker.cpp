@@ -5,13 +5,13 @@
  *      Author: froy
  */
 
-#include "VRPNTracker.h"
+#define SOFAVRPNCLIENT_VRPNTRACKER_CPP_
+
+#include "VRPNTracker.inl"
 
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/objectmodel/KeypressedEvent.h>
-#include <sofa/core/objectmodel/KeyreleasedEvent.h>
-#include <sofa/core/objectmodel/KeypressedEvent.h>
-#include <sofa/core/objectmodel/KeyreleasedEvent.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <vrpnclient_config.h>
 
 namespace sofavrpn
 {
@@ -19,66 +19,48 @@ namespace sofavrpn
 namespace client
 {
 
-int VRPNTrackerClass = sofa::core::RegisterObject("VRPN Tracker")
-        .add< VRPNTracker >();
 
-SOFA_DECL_CLASS(VRPNTracker)
 
 void handle_tracker(void *userdata, const vrpn_TRACKERCB t)
 {
-    printf("Sensor %3d is now at (%11f, %11f, %11f, %11f, %11f, %11f, %11f)           \r",
-            t.sensor, t.pos[0], t.pos[1], t.pos[2],
-            t.quat[0], t.quat[1], t.quat[2], t.quat[3]);
-    fflush(stdout);
-}
+    VRPNTrackerData* trackerData = (VRPNTrackerData*) userdata;
 
-VRPNTracker::VRPNTracker()
-{
-    // TODO Auto-generated constructor stub
+    trackerData->modified = true;
 
-}
+    if ((int)trackerData->data.size() < t.sensor + 1)
+        trackerData->data.resize(t.sensor+1);
 
-VRPNTracker::~VRPNTracker()
-{
-    // TODO Auto-generated destructor stub
-}
+    trackerData->data[t.sensor].sensor = t.sensor;
 
-bool VRPNTracker::connectToServer()
-{
-    tkr = new vrpn_Tracker_Remote(deviceURL.c_str());
-    tkr->register_change_handler(NULL, handle_tracker);
-
-    tkr->reset_origin();
-
-    //main interactive loop
-
-    // Let the tracker do its thing
-    //while(1)
-    tkr->mainloop();
-
-    return true;
-}
-
-void VRPNTracker::update()
-{
-    tkr->mainloop();
-}
-
-void VRPNTracker::handleEvent(sofa::core::objectmodel::Event* event)
-{
-    if (sofa::core::objectmodel::KeypressedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeypressedEvent*>(event))
+    for (unsigned int i=0 ; i<3 ; i++)
     {
-        switch(ev->getKey())
-        {
-
-        case 'T':
-        case 't':
-            update();
-            std::cout << "Tracker : " << std::endl;
-            break;
-        }
+        trackerData->data[t.sensor].pos[i] = t.pos[i];
+        trackerData->data[t.sensor].quat[i] = t.quat[i];
     }
+
+    trackerData->data[t.sensor].quat[3] = t.quat[3];
 }
+
+using namespace sofa::defaulttype;
+using namespace sofavrpn::client;
+
+SOFA_DECL_CLASS(VRPNTracker)
+
+int VRPNTrackerClass = sofa::core::RegisterObject("VRPN Tracker")
+#ifndef SOFA_FLOAT
+        .add< VRPNTracker<Vec3dTypes> >()
+#endif //SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+        .add< VRPNTracker<Vec3fTypes> >()
+#endif //SOFA_DOUBLE
+        ;
+
+#ifndef SOFA_FLOAT
+template class SOFA_SOFAVRPNCLIENT_API VRPNTracker<Vec3dTypes>;
+#endif //SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+template class SOFA_SOFAVRPNCLIENT_API VRPNTracker<Vec3fTypes>;
+#endif //SOFA_DOUBLE
 
 }
 
