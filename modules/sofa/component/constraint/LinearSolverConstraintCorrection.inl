@@ -92,16 +92,13 @@ void LinearSolverConstraintCorrection<DataTypes>::init()
     int n = mstate->getSize()*Deriv::size();
 
     std::stringstream ss;
-
     ss << this->getContext()->getName() << ".comp";
-
-    std::ifstream compFileIn(ss.str().c_str(), std::ifstream::binary);
-
+    std::string file=ss.str();
     sout << "try to open : " << ss.str() << endl;
-
-    if(compFileIn.good())
+    if (sofa::helper::system::DataRepository.findFile(file))
     {
-        sout << "file open : " << ss.str() << " compliance being loaded" << endl;
+        std::string invName=sofa::helper::system::DataRepository.getFile(ss.str());
+        std::ifstream compFileIn(invName.c_str(), std::ifstream::binary);
         refMinv.resize(n,n);
         //complianceLoaded = true;
         compFileIn.read((char*)refMinv.ptr(), n*n*sizeof(double));
@@ -148,8 +145,8 @@ void LinearSolverConstraintCorrection<DataTypes>::getCompliance(defaulttype::Bas
                     fact += 1.0f;
                 }
             }
-        sout << "LinearSolverConstraintCorrection: mean relative error: "<<err/(numDOFReals*numDOFReals)<<sendl;
-        sout << "LinearSolverConstraintCorrection: mean relative factor: "<<fact/(numDOFReals*numDOFReals)<<sendl;
+        sout << "LinearSolverConstraintCorrection: mean relative error: "<<err/(SReal)(numDOFReals*numDOFReals)<<sendl;
+        sout << "LinearSolverConstraintCorrection: mean relative factor: "<<fact/(SReal)(numDOFReals*numDOFReals)<<sendl;
         refMinv.resize(0,0);
     }
     // Compute J
@@ -175,6 +172,50 @@ void LinearSolverConstraintCorrection<DataTypes>::getCompliance(defaulttype::Bas
 
     // use the Linear solver to compute J*inv(M)*Jt, where M is the mechanical linear system matrix
     linearsolver->addJMInvJt(W, &J, factor);
+}
+
+template<class DataTypes>
+void LinearSolverConstraintCorrection<DataTypes>::getComplianceMatrix(defaulttype::BaseMatrix* Minv) const
+{
+    if (!mstate || !odesolver || !linearsolver) return;
+
+    // use the OdeSolver to get the position integration factor
+    //const double factor = 1.0;
+    //const double factor = odesolver->getPositionIntegrationFactor(); // dt
+    const double factor = odesolver->getPositionIntegrationFactor(); //*odesolver->getPositionIntegrationFactor(); // dt*dt
+
+    const unsigned int numDOFs = mstate->getSize();
+    const unsigned int N = Deriv::size();
+    const unsigned int numDOFReals = numDOFs*N;
+    static linearsolver::SparseMatrix<SReal> J; //local J
+    if (J.rowSize() != numDOFReals)
+    {
+        J.resize(numDOFReals,numDOFReals);
+        for (unsigned int i=0; i<numDOFReals; ++i)
+            J.set(i,i,1);
+    }
+
+    Minv->resize(numDOFReals,numDOFReals);
+    // use the Linear solver to compute J*inv(M)*Jt, where M is the mechanical linear system matrix
+    linearsolver->addJMInvJt(Minv, &J, factor);
+    double err=0,fact=0;
+    for (unsigned int i=0; i<numDOFReals; ++i)
+        for (unsigned int j=0; j<numDOFReals; ++j)
+        {
+            //sout << "Minv("<<i<<","<<j<<") = "<<Minv.element(i,j)<<"\t refMinv("<<i<<","<<j<<") = "<<refMinv.element(i,j)<<sendl;
+            if (fabs(refMinv.element(i,j)) > 1.0e-30)
+            {
+                err += fabs(Minv->element(i,j)-refMinv.element(i,j))/refMinv.element(i,j);
+                fact += fabs(Minv->element(i,j)/refMinv.element(i,j));
+            }
+            else
+            {
+                err += fabs(Minv->element(i,j)-refMinv.element(i,j));
+                fact += 1.0f;
+            }
+        }
+    sout << "LinearSolverConstraintCorrection: mean relative error: "<<err/(SReal)(numDOFReals*numDOFReals)<<sendl;
+    sout << "LinearSolverConstraintCorrection: mean relative factor: "<<fact/(SReal)(numDOFReals*numDOFReals)<<sendl;
 }
 
 template<class DataTypes>
