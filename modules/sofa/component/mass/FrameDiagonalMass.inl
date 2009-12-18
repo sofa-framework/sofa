@@ -305,25 +305,27 @@ void FrameDiagonalMass<DataTypes, MassType>::resize ( int vsize )
 template <class DataTypes, class MassType>
 void FrameDiagonalMass<DataTypes, MassType>::addMDx ( VecDeriv& res, const VecDeriv& dx, double factor )
 {
+    Visitor::printComment("plop");
     const MassVector &masses= f_mass.getValue();
     if ( factor == 1.0 )
     {
         for ( unsigned int i=0; i<dx.size(); i++ )
         {
-//						serr << "a["<<i<<"]: " << dx[i] << sendl;
+            serr << "a["<<i<<"]: " << dx[i] << sendl;
             res[i] += dx[i] * masses[i];
-//						serr << "f["<<i<<"]: " << res[i] << sendl;
+            serr << "f["<<i<<"]: " << res[i] << sendl;
         }
     }
     else
     {
         for ( unsigned int i=0; i<dx.size(); i++ )
         {
-//						serr << "a["<<i<<"]: " << dx[i] << sendl;
+            serr << "a["<<i<<"]: " << dx[i] << sendl;
             res[i] += ( dx[i] * masses[i] ) * ( Real ) factor;
-//						serr << "f["<<i<<"]: " << res[i] << sendl;
+            serr << "f["<<i<<"]: " << res[i] << sendl;
         }
     }
+    Visitor::printComment("plop");
 }
 
 
@@ -484,9 +486,11 @@ void FrameDiagonalMass<DataTypes, MassType>::addForce ( VecDeriv& f, const VecCo
     aframe = this->getContext()->getPositionInWorld().backProjectVector ( aframe );
 
     // add weight and inertia force
+    const double& invDt = 1./this->getContext()->getDt();
     for ( unsigned int i=0; i<masses.size(); i++ )
     {
-        f[i] += theGravity*masses[i] + core::componentmodel::behavior::inertiaForce ( vframe,aframe,masses[i],x[i],v[i] ) - v[i] * damping.getValue();
+        Deriv fDamping = - (masses[i] * v[i] * damping.getValue() * invDt);
+        f[i] += theGravity*masses[i] + fDamping;// + core::componentmodel::behavior::inertiaForce ( vframe,aframe,masses[i],x[i],v[i] );
     }
 }
 

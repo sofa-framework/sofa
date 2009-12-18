@@ -55,20 +55,31 @@ namespace mapping
 using sofa::component::topology::HexahedronGeodesicalDistance;
 using sofa::helper::vector;
 
+#define DISTANCE_EUCLIDIAN 0
+#define DISTANCE_GEODESIC 1
+#define DISTANCE_HARMONIC 2
+
+#define WEIGHT_LINEAR 0
+#define WEIGHT_INVDIST_SQUARE 1
+#define WEIGHT_HERMITE 2
+
+#define INTERPOLATION_LINEAR 0
+#define INTERPOLATION_DUAL_QUATERNION 1
+/*
 typedef enum
 {
-    DISTANCE_EUCLIDIAN, DISTANCE_GEODESIC, DISTANCE_HARMONIC
+  DISTANCE_EUCLIDIAN, DISTANCE_GEODESIC, DISTANCE_HARMONIC
 } DistanceType;
 
 typedef enum
 {
-    WEIGHT_LINEAR, WEIGHT_INVDIST_SQUARE, WEIGHT_HERMITE
+  WEIGHT_LINEAR, WEIGHT_INVDIST_SQUARE, WEIGHT_HERMITE
 } WeightingType;
 
 typedef enum
 {
-    INTERPOLATION_LINEAR, INTERPOLATION_DUAL_QUATERNION
-} InterpolationType;
+  INTERPOLATION_LINEAR, INTERPOLATION_DUAL_QUATERNION
+} InterpolationType;*/
 
 template <class T>
 class Coefs: public vector<vector<T> >
@@ -208,10 +219,10 @@ protected:
     Data<bool> computeAllMatrices;
     Data<bool> displayDefTensors;
 
+    Data<int /* = WeightingType*/> wheightingType;
+    Data<int /* = InterpolationType*/> interpolationType;
+    Data<int /* = DistanceType*/> distanceType;
     bool computeWeights;
-    WeightingType wheighting;
-    InterpolationType interpolation;
-    DistanceType distance;
     vector<vector<double> > distances;
     vector<vector<Coord> > distGradients;
 #ifdef SOFA_DEV
@@ -296,7 +307,7 @@ public:
     void computeDqQ ( Mat38& Q, const DUALQUAT& bn, const Vec3& p );
     void computeDqDR ( Mat33& DR, const DUALQUAT& bn, const DUALQUAT& V );
     void computeDqDQ ( Mat38& DQ, const Vec3& p, const DUALQUAT& V );
-    void computeDqT( Mat88& T, const DUALQUAT& qi0);
+    void computeDqT ( Mat88& T, const DUALQUAT& qi0 );
 #endif
     bool doJustOnce; //TO remove after unitary tests.
 };
