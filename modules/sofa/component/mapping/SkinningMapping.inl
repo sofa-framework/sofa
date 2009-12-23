@@ -143,21 +143,14 @@ void SkinningMapping<BasicMapping>::computeInitPos ( )
 }
 
 template <class BasicMapping>
-void SkinningMapping<BasicMapping>::sortReferences ()
+void SkinningMapping<BasicMapping>::computeDistances ()
 {
     Coord posTo;
     VecCoord& xto = *this->toModel->getX0();
     VecInCoord& xfrom = *this->fromModel->getX0();
 
-    vector<int>& m_reps = * ( repartition.beginEdit() );
-    m_reps.clear();
-    m_reps.resize ( nbRefs.getValue() *xto.size() );
-    for ( unsigned int i=0; i<nbRefs.getValue() *xto.size(); i++ )
-        m_reps[i] = -1;
-
     distances.clear();
     distGradients.clear();
-    const unsigned int& nbRef = nbRefs.getValue();
 
     switch ( distanceType.getValue() )
     {
@@ -206,6 +199,21 @@ void SkinningMapping<BasicMapping>::sortReferences ()
     default:
     {}
     }
+}
+
+
+template <class BasicMapping>
+void SkinningMapping<BasicMapping>::sortReferences()
+{
+    VecCoord& xto = *this->toModel->getX0();
+    VecInCoord& xfrom = *this->fromModel->getX0();
+    const unsigned int& nbRef = nbRefs.getValue();
+
+    vector<int>& m_reps = * ( repartition.beginEdit() );
+    m_reps.clear();
+    m_reps.resize ( nbRefs.getValue() *xto.size() );
+    for ( unsigned int i=0; i<nbRefs.getValue() *xto.size(); i++ )
+        m_reps[i] = -1;
 
     for ( unsigned int i=0; i<xfrom.size(); i++ )
     {
@@ -228,8 +236,8 @@ void SkinningMapping<BasicMapping>::sortReferences ()
     //for ( unsigned int j=0;j<xto.size();j++ )
     //  for ( unsigned int k=0;k<nbRef;k++ )
     //    serr << "m_reps["<<j<<"]["<<k<<"] " << m_reps[nbRef *j+k] << sendl;
-
 }
+
 
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::init()
@@ -256,6 +264,7 @@ void SkinningMapping<BasicMapping>::init()
         if( xfrom.size() < nbRefs.getValue())
             nbRefs.setValue ( xfrom.size() );
 
+        computeDistances();
         sortReferences ();
         updateWeights ();
         computeInitPos ();
@@ -1814,7 +1823,7 @@ void SkinningMapping<BasicMapping>::computeDqT ( Mat88& T, const DUALQUAT& qi0 )
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::insertFrame( const Coord& pos, const Quat& rot)
 {
-    //VecCoord& xto0 = *this->toModel->getX0();
+    VecCoord& xto0 = *this->toModel->getX0();
     VecInCoord& xfrom0 = *this->fromModel->getX0();
     //VecCoord& xto = *this->toModel->getX();
     VecInCoord& xfrom = *this->fromModel->getX();
@@ -1834,21 +1843,45 @@ void SkinningMapping<BasicMapping>::insertFrame( const Coord& pos, const Quat& r
     tmpTo.push_back( newX.getCenter());
     geoDist->addElt( newX0.getCenter());
 
-    // Update initPos, initPosDOFs, distances, distGradients, coefs, m_reps
-    //TODO
-    VVD dists;
-    VecVecCoord gradients;
-    computeWeight( dists, gradients, newX0.getCenter());
-
+    // Get Distances
+    int lastElt = distances.size();
     distances.resize( distances.size()+1);
     distGradients.resize( distGradients.size()+1);
-    for( unsigned int i = 0; i < distances[i].size(); i++)
-    {
 
+    switch ( distanceType.getValue() )
+    {
+    case DISTANCE_EUCLIDIAN:
+    {
+        distances[lastElt].resize ( xto0.size() );
+        distGradients[lastElt].resize ( xto0.size() );
+        for ( unsigned int j=0; j<xto0.size(); j++ )
+        {
+            distGradients[lastElt][j] = xto0[j] - newX0.getCenter();
+            distances[lastElt][j] = distGradients[lastElt][j].norm();
+            distGradients[lastElt][j].normalize();
+        }
+    }
+    case DISTANCE_GEODESIC:
+    case DISTANCE_HARMONIC:
+    {
+        VVD dist;
+        GeoVecVecCoord ddist;
+        GeoVecCoord goals;
+        goals.resize ( xto0.size() );
+        for ( unsigned int i = 0; i < xto0.size(); i++ )
+            goals[i] = xto0[i];
+        geoDist->getDistances ( dist, ddist, goals );
+
+        for( unsigned int i = 0; i < xto0.size(); i++)
+        {
+            distances[lastElt][i] = dist[lastElt][i];
+            distGradients[lastElt][i] = ddist[lastElt][i];
+        }
+    }
     }
 
     // Update weights
-    // TODO compute only the last one with geo dist and invDistSquare weights using distances and gradients.
+    //TODO only compute for the last frame.
     sortReferences ();
     updateWeights ();
     computeInitPos ();
