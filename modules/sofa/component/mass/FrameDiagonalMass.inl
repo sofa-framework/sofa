@@ -305,7 +305,6 @@ void FrameDiagonalMass<DataTypes, MassType>::resize ( int vsize )
 template <class DataTypes, class MassType>
 void FrameDiagonalMass<DataTypes, MassType>::addMDx ( VecDeriv& res, const VecDeriv& dx, double factor )
 {
-    Visitor::printComment("plop");
     const MassVector &masses= f_mass.getValue();
     if ( factor == 1.0 )
     {
@@ -318,14 +317,9 @@ void FrameDiagonalMass<DataTypes, MassType>::addMDx ( VecDeriv& res, const VecDe
     {
         for ( unsigned int i=0; i<dx.size(); i++ )
         {
-            serr << "dx2["<<i<<"]: " << dx[i] << sendl;
-            res[i] += ( dx[i]* masses[i] ) * ( Real ) factor;
-
-            serr << "factor: " << factor << sendl;
-            serr << "f2["<<i<<"]: " << res[i] << sendl;
+            res[i] += ( dx[i]* masses[i] ) * ( Real ) factor; // damping.getValue() * invSqrDT;
         }
     }
-    Visitor::printComment("plop");
 }
 
 
@@ -337,9 +331,7 @@ void FrameDiagonalMass<DataTypes, MassType>::accFromF ( VecDeriv& a, const VecDe
     const MassVector &masses= f_mass.getValue();
     for ( unsigned int i=0; i<f.size(); i++ )
     {
-//						serr << "f["<<i<<"]: " << f[i] << sendl;
         a[i] = f[i] / masses[i];
-//						serr << "a["<<i<<"]: " << a[i] << sendl;
     }
 }
 
@@ -490,7 +482,7 @@ void FrameDiagonalMass<DataTypes, MassType>::addForce ( VecDeriv& f, const VecCo
     for ( unsigned int i=0; i<masses.size(); i++ )
     {
         Deriv fDamping = - (masses[i] * v[i] * damping.getValue() * invDt);
-        f[i] += theGravity*masses[i] + fDamping;// + core::componentmodel::behavior::inertiaForce ( vframe,aframe,masses[i],x[i],v[i] );
+        f[i] += theGravity*masses[i] + fDamping; //  + core::componentmodel::behavior::inertiaForce ( vframe,aframe,masses[i],x[i],v[i] );
     }
 }
 

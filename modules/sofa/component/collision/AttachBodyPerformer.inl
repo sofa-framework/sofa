@@ -25,6 +25,7 @@
 
 #include <sofa/component/collision/AttachBodyPerformer.h>
 #include <sofa/component/collision/MouseInteractor.h>
+#include <sofa/component/mapping/SkinningMapping.inl>
 
 namespace sofa
 {
@@ -82,6 +83,12 @@ void AttachBodyPerformer<DataTypes>::start()
             mstateCollision->setName("AttachedPoint");
             mappedNode->mechanicalMapping->setName("MouseMapping");
         }
+        /*/ TODO TEMPORARY ! To remove later.
+        sofa::component::mapping::SkinningMapping<sofa::component::mapping::MechanicalMapping< core::componentmodel::behavior::MechanicalState<Rigid3dTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> > > mapping;
+        this->getContext()->get( mapping);
+        if( mapping && mapping->computeAllMatrices.getValue())
+        	mapping->insertFrame( pointPicked, Quater<double>(0, 0, 0, 1) );
+        */ // TODO until here.
     }
     else
     {

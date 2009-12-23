@@ -131,7 +131,7 @@ public:
         return ma;
     }
 
-    /// compute a = f/a
+    /// compute a = f/m
     Deriv operator / ( const Deriv& f ) const
     {
         Vec6 va, vma;
