@@ -240,6 +240,7 @@ protected:
     class Loader;
     void load ( const char* filename );
     inline void computeInitPos();
+    inline void computeDistances();
     inline void sortReferences();
 
 public:
