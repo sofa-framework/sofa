@@ -80,7 +80,7 @@ SkinningMapping<BasicMapping>::SkinningMapping ( In* from, Out* to )
     , computeAllMatrices ( initData ( &computeAllMatrices, false, "computeAllMatrices","compute all the matrices in addition to apply for the dual quat interpolation method." ) )
     , displayDefTensors ( initData ( &displayDefTensors, false, "displayDefTensors","display computed deformation tensors." ) )
     , wheightingType ( initData ( &wheightingType, WEIGHT_INVDIST_SQUARE, "wheightingType","Weighting computation method." ) )
-    , interpolationType ( initData ( &interpolationType, INTERPOLATION_DUAL_QUATERNION, "interpolationType","Interpolation method." ) )
+    , interpolationType ( initData ( &interpolationType, INTERPOLATION_LINEAR, "interpolationType","Interpolation method." ) )
     , distanceType ( initData ( &distanceType, DISTANCE_HARMONIC, "distanceType","Distance computation method." ) )
     , computeWeights ( true )
 {
@@ -259,6 +259,8 @@ void SkinningMapping<BasicMapping>::init()
         sortReferences ();
         updateWeights ();
         computeInitPos ();
+        this->J.resize ( xfrom.size() );
+
     }
     else if ( computeWeights == false || coefs.getValue().size() !=0 )
     {
@@ -1807,6 +1809,245 @@ void SkinningMapping<BasicMapping>::computeDqT ( Mat88& T, const DUALQUAT& qi0 )
     int i,j;
     for ( i=0; i<4; i++ ) for ( j=4; j<8; j++ ) T[i][j] = 0;
     for ( i=4; i<8; i++ ) for ( j=4; j<8; j++ ) T[i][j] = T[i-4][j-4];
+}
+
+template <class BasicMapping>
+void SkinningMapping<BasicMapping>::insertFrame( const Coord& pos, const Quat& rot)
+{
+    //VecCoord& xto0 = *this->toModel->getX0();
+    VecInCoord& xfrom0 = *this->fromModel->getX0();
+    //VecCoord& xto = *this->toModel->getX();
+    VecInCoord& xfrom = *this->fromModel->getX();
+
+    // Insert a new DOF
+    unsigned int indexFrom = xfrom.size();
+    xfrom.resize( indexFrom + 1);
+
+    // Compute the rest position of the frame.
+    InCoord& newX = xfrom[indexFrom];
+    InCoord& newX0 = xfrom0[indexFrom];
+    InCoord targetDOF( pos, rot);
+    inverseSkinning( newX0, newX, targetDOF);
+
+    // Compute geodesical distance for this frame.
+    GeoVecCoord tmpTo;
+    tmpTo.push_back( newX.getCenter());
+    geoDist->addElt( newX0.getCenter());
+
+    // Update initPos, initPosDOFs, distances, distGradients, coefs, m_reps
+    //TODO
+    VVD dists;
+    VecVecCoord gradients;
+    computeWeight( dists, gradients, newX0.getCenter());
+
+    distances.resize( distances.size()+1);
+    distGradients.resize( distGradients.size()+1);
+    for( unsigned int i = 0; i < distances[i].size(); i++)
+    {
+
+    }
+
+    // Update weights
+    // TODO compute only the last one with geo dist and invDistSquare weights using distances and gradients.
+    sortReferences ();
+    updateWeights ();
+    computeInitPos ();
+}
+
+
+template <class BasicMapping>
+void SkinningMapping<BasicMapping>::Multi_Q(Quat& q, const Vec4& q1, const Quat& q2)
+{
+    Vec3 qv1; qv1[0]=q1[0]; qv1[1]=q1[1]; qv1[2]=q1[2];
+    Vec3 qv2; qv2[0]=q2[0]; qv2[1]=q2[1]; qv2[2]=q2[2];
+    q[3]=q1[3]*q2[3]-qv1*qv2;
+    Vec3 cr=cross(qv1,qv2); q[0]=cr[0]; q[1]=cr[1]; q[2]=cr[2];
+    q[0]+=q2[3]*q1[0]+q1[3]*q2[0];
+    q[1]+=q2[3]*q1[1]+q1[3]*q2[1];
+    q[2]+=q2[3]*q1[2]+q1[3]*q2[2];
+}
+
+template <class BasicMapping>
+bool SkinningMapping<BasicMapping>::inverseSkinning( InCoord& X0, InCoord& X, const InCoord& Xtarget)
+// compute position in reference configuration from deformed position
+{
+    VecCoord& xto = *this->toModel->getX();
+    VecInCoord& xfrom = *this->fromModel->getX();
+    const VecInCoord& xi = xfrom;
+    const VMat88& T = this->T;
+    //const VecInCoord& xi0 = initPosDOFs;
+    const vector<Coord>& P0 = initPos;
+    const VecCoord& P = xto;
+
+
+    int i,j,k,l,nbP=P0.size(),nbDOF=xi.size();
+    VDUALQUAT qrel(nbDOF);
+    DUALQUAT q,b,bn;
+    Vec3 t;
+    Vec4 qinv;
+    Mat33 R,U,Uinv;
+    Mat88 N;
+    Mat38 Q;
+    Mat83 W,NW;
+    double QEQ0,Q0Q0,Q0,d,dmin=1E5;
+    Mat44 q0q0T,q0qeT,qeq0T;
+    VVD w(nbDOF,VD(1));
+    VecVecCoord dw(nbDOF);
+    for( int i = 0; i < nbDOF; i++) dw[i].resize(1);
+    X.getOrientation() = Xtarget.getOrientation();
+
+// init skinning
+    for(i=0; i<nbDOF; i++)
+    {
+        XItoQ( q, xi[i]); //update DOF quats
+        computeQrel( qrel[i], T[i], q); //update qrel=Tq
+    }
+
+// get closest material point
+    for(i=0; i<nbP; i++)
+    {
+        t = Xtarget.getCenter() - P[i]; d = t * t;
+        if(d<dmin)
+        {
+            dmin = d;
+            X0.getCenter() = P0[i];
+        }
+    }
+    if(dmin==1E5) return false;
+
+// iterate: pos0(t+1)=pos0(t) + (dPos/dPos0)^-1 (Pos - Pos(t))
+    double eps=1E-5;
+    bool stop=false;
+    int count=0;
+
+    while(!stop)
+    {
+// update weigths
+        computeWeight( w, dw, X0.getCenter());
+
+// update skinning
+        BlendDualQuat( b, bn, QEQ0, Q0Q0, Q0, 0, qrel, w); //skinning: sum(wTq)
+        computeDqRigid( R, t, bn); //update Rigid
+
+        qinv[0]=-bn.q0[0]; qinv[1]=-bn.q0[1]; qinv[2]=-bn.q0[2]; qinv[3]=bn.q0[3];
+        Multi_Q( X0.getOrientation(), qinv, Xtarget.getOrientation());
+        for(k=0; k<3; k++) {X.getCenter()[k] = t[k]; for(j=0; j<3; j++) X.getCenter()[k] += R[k][j] * X0.getCenter()[j];}
+//update skinned points
+
+        t = Xtarget.getCenter()- X.getCenter();
+
+//std::cout<<" "<<t*t;
+
+        if( t*t < eps || count >= 10) stop = true;
+        count++;
+
+        if(!stop)
+        {
+            computeDqN_constants( q0q0T, q0qeT, qeq0T, bn);
+            computeDqN( N, q0q0T, q0qeT, qeq0T, QEQ0, Q0Q0, Q0); //update N=d(bn)/d(b)
+            computeDqQ( Q, bn, X0.getCenter()); //update Q=d(P)/d(bn)
+            W.fill(0); for(j=0; j<nbDOF; j++) for(k=0; k<4; k++) for(l=0; l<3; l++)
+                    {W[k][l]+=dw[j][0][l]*qrel[j].q0[k]; W[k+4][l]+=dw[j][0][l]*qrel[j].qe[k]; }
+//update W=sum(wrel.dw)=d(b)/d(p)
+            NW=N*W; // update NW
+// grad def = d(P)/d(p0)
+            U=R+Q*NW; // update A=R+QNW
+            invertMatrix(Uinv,U);
+
+// Update pos0
+            X0.getCenter() += Uinv * t;
+        }
+    }
+//std::cout<<"err:"<<t*t;
+    return true;
+}
+
+template <class BasicMapping>
+void SkinningMapping<BasicMapping>::computeWeight( VVD& w, VecVecCoord& dw, const Coord& x0)
+{
+    // Get Distances
+    VVD dist;
+    GeoVecVecCoord ddist;
+    GeoVecCoord goals;
+    goals.push_back( x0);
+    geoDist->getDistances ( dist, ddist, goals );
+
+    // Compute Weights
+    VecCoord& xto0 = *this->toModel->getX0();
+    VecInCoord& xfrom0 = *this->fromModel->getX0();
+
+    switch ( wheightingType.getValue() )
+    {
+    case WEIGHT_LINEAR:
+    {
+        for ( unsigned int j=0; j<xto0.size(); j++ )
+        {
+            for ( unsigned int i=0; i<xfrom0.size(); i++ )
+            {
+                Vec3d r1r2, r1p;
+                r1r2 = xfrom0[(i+1)%(xto0.size())].getCenter() - xfrom0[i].getCenter();
+                r1p  = xto0[j] - xfrom0[i].getCenter();
+                double r1r2NormSquare = r1r2.norm()*r1r2.norm();
+                double wi = ( r1r2*r1p ) / ( r1r2NormSquare);
+
+                // Abscisse curviligne
+                w[i][j]                   = ( 1 - wi );
+                w[(i+1)%(xto0.size())][j] = wi;
+                dw[i][j]                   = -r1r2 / r1r2NormSquare;
+                dw[(i+1)%(xto0.size())][j] = r1r2 / r1r2NormSquare;
+            }
+        }
+        break;
+    }
+    case WEIGHT_INVDIST_SQUARE:
+    {
+        for ( unsigned int j=0; j<xto0.size(); j++ )
+        {
+            for ( unsigned int i=0; i<xfrom0.size(); i++ )
+                w[i][j] = 1 / dist[i][j];
+            //m_coefs.normalize();
+            //normalize the coefs vector such as the sum is equal to 1
+            double norm=0.0;
+            for ( unsigned int i=0; i<xfrom0.size(); i++ )
+                norm += w[i][j]*w[i][j];
+            norm = helper::rsqrt ( norm );
+
+            for ( unsigned int i=0; i<xfrom0.size(); i++ )
+            {
+                w[i][j] /= norm;
+                w[i][j] = w[i][j]*w[i][j];
+                dw[i][j] = ddist[i][j];
+            }
+        }
+
+        break;
+    }
+    case WEIGHT_HERMITE:
+    {
+        for ( unsigned int j=0; j<xto0.size(); j++ )
+        {
+            for ( unsigned int i=0; i<xfrom0.size(); i++ )
+            {
+                Vec3d r1r2, r1p;
+                double wi;
+                r1r2 = xfrom0[i+1].getCenter() - xfrom0[i].getCenter();
+                r1p  = xto0[j] - xfrom0[i].getCenter();
+                wi = ( r1r2*r1p ) / ( r1r2.norm() *r1r2.norm() );
+
+                // Fonctions d'Hermite
+                w[i][j]                   = 1-3*wi*wi+2*wi*wi*wi;
+                w[(i+1)%(xto0.size())][j] = 3*wi*wi-2*wi*wi*wi;
+
+                r1r2.normalize();
+                dw[i][j]                   = -r1r2;
+                dw[(i+1)%(xto0.size())][j] = r1r2;
+            }
+        }
+        break;
+    }
+    default:
+    {}
+    }
 }
 
 #endif

@@ -35,6 +35,7 @@
 #include <sofa/component/component.h>
 #ifdef SOFA_DEV
 #include <sofa/helper/DualQuat.h>
+#include <sofa/helper/Quater.h>
 //#include <sofa/component/mapping/DualQuatStorage.h>
 #include "DualQuatStorage.h"
 #endif
@@ -54,6 +55,7 @@ namespace mapping
 {
 using sofa::component::topology::HexahedronGeodesicalDistance;
 using sofa::helper::vector;
+using sofa::helper::Quater;
 
 #define DISTANCE_EUCLIDIAN 0
 #define DISTANCE_GEODESIC 1
@@ -163,6 +165,7 @@ public:
     typedef typename In::Coord InCoord;
     typedef typename In::Deriv InDeriv;
     typedef typename In::VecCoord VecInCoord;
+    typedef typename InCoord::value_type InReal;
     typedef typename Coord::value_type Real;
     enum { N=Coord::static_size };
     typedef defaulttype::Mat<N,N,Real> Mat;
@@ -192,11 +195,16 @@ public:
     typedef vector<Vec6> VVec6;
     typedef vector<VVec6> VVVec6;
     typedef defaulttype::Vec<8,Real> Vec8;
+    typedef Quater<InReal> Quat;
+    typedef sofa::helper::vector< VecCoord > VecVecCoord;
+    typedef vector<double> VD;
+    typedef vector<VD> VVD;
 
 #ifdef SOFA_DEV
     // These typedef are here to avoid compilation pb encountered with ResizableExtVect Type.
     typedef typename sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<N, Real>, sofa::defaulttype::Vec<N, Real>, Real> GeoType; // = Vec3fTypes or Vec3dTypes
-    typedef typename GeoType::VecCoord GeoVecCoord;
+    typedef typename HexahedronGeodesicalDistance< GeoType>::VecCoord GeoVecCoord;
+    typedef typename HexahedronGeodesicalDistance< GeoType>::VecVecCoord GeoVecVecCoord;
 
     typedef typename helper::DualQuatd DualQuat;
 
@@ -308,6 +316,12 @@ public:
     void computeDqDR ( Mat33& DR, const DUALQUAT& bn, const DUALQUAT& V );
     void computeDqDQ ( Mat38& DQ, const Vec3& p, const DUALQUAT& V );
     void computeDqT ( Mat88& T, const DUALQUAT& qi0 );
+    void Multi_Q(Quat& q, const Vec4& q1, const Quat& q2);
+
+    void insertFrame( const Coord& pos, const Quat& rot);
+    bool inverseSkinning( InCoord& X0, InCoord& X, const InCoord& Xtarget);
+    void computeWeight( VVD& w, VecVecCoord& dw, const Coord& x0);
+
 #endif
     bool doJustOnce; //TO remove after unitary tests.
 };
