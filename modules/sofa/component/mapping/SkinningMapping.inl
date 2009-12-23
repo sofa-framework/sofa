@@ -268,8 +268,10 @@ void SkinningMapping<BasicMapping>::init()
         sortReferences ();
         updateWeights ();
         computeInitPos ();
-        this->J.resize ( xfrom.size() );
 
+#ifdef SOFA_DEV
+        this->J.resize ( xfrom.size() );
+#endif
     }
     else if ( computeWeights == false || coefs.getValue().size() !=0 )
     {
