@@ -90,7 +90,7 @@ QInciseOperation::QInciseOperation()
     vbox1->addWidget(method2);
 
     // Second group box for easy use
-    advancedOperations = new Q3GroupBox(tr("Advanced operations"),this);
+    advancedOperations = new QGroupBox(tr("Advanced operations"),this);
     QVBoxLayout *vbox2 = new QVBoxLayout(advancedOperations);
 
     // on push button and one check box with labels
