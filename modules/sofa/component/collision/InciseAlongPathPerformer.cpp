@@ -41,10 +41,24 @@ helper::Creator<InteractionPerformer::InteractionPerformerFactory, InciseAlongPa
 void InciseAlongPathPerformer::start()
 {
     startBody=this->interactor->getBodyPicked();
+
+    if (cpt == 0) // register first position of incision
+    {
+        firstIncisionBody = startBody;
+        cpt++;
+        initialNbTriangles = startBody.body->getMeshTopology()->getNbTriangles();
+    }
 }
 
 void InciseAlongPathPerformer::execute()
 {
+
+    if (freezePerformer) // This performer has been freezed
+    {
+        startBody=this->interactor->getBodyPicked();
+        return;
+    }
+
     if (currentMethod == 0) // incise from clic to clic
     {
         if (firstBody.body == NULL) // first clic
@@ -92,12 +106,62 @@ void InciseAlongPathPerformer::execute()
                     currentBody.body,  currentBody.indexCollisionElement,  currentBody.point,
                     snapingValue, snapingBorderValue );
         }
-        startBody=currentBody;
+        startBody = currentBody;
+        firstBody = currentBody;
 
         currentBody.body=NULL;
         this->interactor->setBodyPicked(currentBody);
     }
 
+}
+
+void InciseAlongPathPerformer::setPerformerFreeze()
+{
+    freezePerformer = true;
+    if (fullcut)
+        this->PerformCompleteIncision();
+
+    fullcut = true;
+}
+
+void InciseAlongPathPerformer::PerformCompleteIncision()
+{
+    if (firstIncisionBody.body == NULL || startBody.body == NULL) return;
+
+    if (firstIncisionBody.indexCollisionElement == startBody.indexCollisionElement) return;
+
+    sofa::core::componentmodel::topology::TopologyModifier* topologyModifier;
+    startBody.body->getContext()->get(topologyModifier);
+
+    // Handle Removing of topological element (from any type of topology)
+    if(topologyModifier)
+    {
+        topologyChangeManager.incisionCollisionModel(firstIncisionBody.body, initialNbTriangles, firstIncisionBody.point,
+                startBody.body,  startBody.indexCollisionElement,  startBody.point,
+                snapingValue, snapingBorderValue );
+    }
+
+    startBody = firstIncisionBody;
+    firstIncisionBody.body = NULL;
+
+    finishIncision = false; //Incure no second cut
+}
+
+InciseAlongPathPerformer::~InciseAlongPathPerformer()
+{
+    if (secondBody.body)
+        secondBody.body= NULL;
+
+    if (firstBody.body)
+        firstBody.body = NULL;
+
+    if (startBody.body)
+        startBody.body = NULL;
+
+    if (firstIncisionBody.body)
+        firstIncisionBody.body = NULL;
+
+    this->interactor->setBodyPicked(firstIncisionBody);
 }
 
 

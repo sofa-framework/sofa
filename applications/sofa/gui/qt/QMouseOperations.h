@@ -35,12 +35,16 @@
 #include <QRadioButton>
 #include <QSpinBox>
 #include <QSlider>
+#include <QPushButton>
+#include <QCheckBox>
 #else
 #include <qwidget.h>
 #include <qlineedit.h>
 #include <qradiobutton.h>
 #include <qspinbox.h>
 #include <qslider.h>
+#include <qpushbutton.h>
+#include <qcheckbox.h>
 #endif
 #include <iostream>
 
@@ -80,14 +84,21 @@ public:
     int getSnapingBorderValue() const;
     int getSnapingValue() const;
 
+    bool getCompleteIncision () {return finishIncision;}
+    bool getKeepPoint () {return keepPoint;}
+
     void configure(PickHandler *picker, MOUSE_BUTTON b)
     {
         InciseOperation::configure(picker, b);
     }
 
+    bool finishIncision;
+    bool keepPoint;
+
 public slots:
     void setEnableBox (bool i);
-
+    void setFinishIncision (bool i);
+    void setkeepPoint (bool i);
 
 
 protected:
@@ -95,10 +106,13 @@ protected:
     QRadioButton* method1;
     QRadioButton* method2;
 
+    QGroupBox *advancedOperations;
+    QCheckBox *finishCut;
+    QCheckBox *storeLastPoint;
+
     QGroupBox* advancedOptions;
     QSlider  *snapingBorderSlider;
     QSpinBox *snapingBorderValue;
-
     QSlider  *snapingSlider;
     QSpinBox *snapingValue;
 };
@@ -131,6 +145,8 @@ public:
     int getTopologicalOperation() const;
     bool getVolumicMesh() const;
 
+
+
     void configure(PickHandler *picker, MOUSE_BUTTON b)
     {
         TopologyOperation::configure(picker, b);
@@ -142,11 +158,10 @@ public slots:
 protected:
 
     QComboBox *operationChoice;
-
-    QGroupBox *advancedOptions;
     QRadioButton *meshType1;
     QRadioButton *meshType2;
 
+    QGroupBox *advancedOptions;
     QSlider *scaleSlider;
     QSpinBox *scaleValue;
 };

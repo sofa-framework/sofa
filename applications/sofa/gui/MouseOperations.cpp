@@ -186,6 +186,19 @@ void InciseOperation::start()
 {
     int currentMethod = getIncisionMethod();
 
+    if (!startPerformer)
+    {
+        startPerformer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("InciseAlongPath", pickHandle->getInteraction()->mouseInteractor);
+        component::collision::InciseAlongPathPerformerConfiguration *performerConfigurationStart=dynamic_cast<component::collision::InciseAlongPathPerformerConfiguration*>(startPerformer);
+        performerConfigurationStart->setIncisionMethod(getIncisionMethod());
+        performerConfigurationStart->setSnapingBorderValue(getSnapingBorderValue());
+        performerConfigurationStart->setSnapingValue(getSnapingValue());
+
+        pickHandle->getInteraction()->mouseInteractor->addInteractionPerformer(startPerformer);
+        startPerformer->setPerformerFreeze();
+        startPerformer->start();
+    }
+
     if (currentMethod == 0) // incision clic by clic.
     {
         if (cpt == 0) // First clic => initialisation
@@ -196,6 +209,8 @@ void InciseOperation::start()
             performerConfiguration->setIncisionMethod(getIncisionMethod());
             performerConfiguration->setSnapingBorderValue(getSnapingBorderValue());
             performerConfiguration->setSnapingValue(getSnapingValue());
+            performerConfiguration->setCompleteIncision(getCompleteIncision());
+            performerConfiguration->setKeepPoint(getKeepPoint());
 
             pickHandle->getInteraction()->mouseInteractor->addInteractionPerformer(performer);
             performer->start();
@@ -213,7 +228,6 @@ void InciseOperation::start()
             pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
             delete performer; performer=0;
         }
-
         performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("InciseAlongPath", pickHandle->getInteraction()->mouseInteractor);
 
         component::collision::InciseAlongPathPerformerConfiguration *performerConfiguration=dynamic_cast<component::collision::InciseAlongPathPerformerConfiguration*>(performer);
@@ -238,9 +252,31 @@ void InciseOperation::end()
 
 void InciseOperation::endOperation()
 {
-    cpt = 0; //reinitialization
-    pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
-    delete performer; performer=0;
+    // On fini la coupure ici!
+    if (getCompleteIncision() && startPerformer)
+    {
+        startPerformer->setPerformerFreeze();
+
+        //Remove startPerformer
+        pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(startPerformer);
+        delete startPerformer; startPerformer=0;
+    }
+
+    if (!getKeepPoint())
+    {
+        cpt = 0; //reinitialization
+        pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
+        delete performer; performer=0;
+    }
+}
+
+InciseOperation::~InciseOperation()
+{
+    if (performer)
+    {
+        pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
+        delete performer; performer=0;
+    }
 }
 
 

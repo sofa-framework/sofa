@@ -50,16 +50,17 @@ class SOFA_COMPONENT_COLLISION_API InteractionPerformer
 public:
     typedef helper::Factory<std::string, InteractionPerformer, BaseMouseInteractor*> InteractionPerformerFactory;
 
-    InteractionPerformer(BaseMouseInteractor *i):interactor(i) {};
+    InteractionPerformer(BaseMouseInteractor *i):interactor(i),freezePerformer(0) {};
     virtual ~InteractionPerformer() {};
 
 
     virtual void start()=0;
     virtual void execute()=0;
 
-
     virtual void handleEvent(core::objectmodel::Event * ) {};
     virtual void draw() {};
+
+    virtual void setPerformerFreeze() {freezePerformer = true;}
 
     template <class RealObject>
     static void create( RealObject*& obj, BaseMouseInteractor* interactor)
@@ -67,6 +68,7 @@ public:
         obj = new RealObject(interactor);
     }
     BaseMouseInteractor *interactor;
+    bool freezePerformer;
 };
 
 

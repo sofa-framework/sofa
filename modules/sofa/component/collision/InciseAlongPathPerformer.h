@@ -45,11 +45,16 @@ public:
     void setIncisionMethod (int m) {currentMethod=m;}
     void setSnapingBorderValue (int m) {snapingBorderValue = m;}
     void setSnapingValue (int m) {snapingValue = m;}
+    void setCompleteIncision (bool m) {finishIncision = m;}
+    void setKeepPoint (bool m) {keepPoint = m;}
+
 
 protected:
     int currentMethod;
     int snapingBorderValue;
     int snapingValue;
+    bool finishIncision;
+    bool keepPoint;
 
 };
 
@@ -57,7 +62,13 @@ protected:
 class SOFA_COMPONENT_COLLISION_API InciseAlongPathPerformer: public InteractionPerformer, public InciseAlongPathPerformerConfiguration
 {
 public:
-    InciseAlongPathPerformer(BaseMouseInteractor *i):InteractionPerformer(i) {};
+    InciseAlongPathPerformer(BaseMouseInteractor *i)
+        : InteractionPerformer(i)
+        , cpt(0)
+        , fullcut(0)
+        , initialNbTriangles(0) {};
+
+    ~InciseAlongPathPerformer();
 
     void start();
 
@@ -65,11 +76,25 @@ public:
 
     void draw() {};
 
+    BodyPicked& getFirstIncisionBodyPicked() {return firstIncisionBody;}
+
+    BodyPicked& getLastBodyPicked() {return firstBody;}
+
+    void setPerformerFreeze();
+
 protected:
+    /// Incision will be perfomed between firstIncisionBody (first point clicked) and firstBody (last point clicked in memory)
+    void PerformCompleteIncision( );
+
     TopologicalChangeManager topologyChangeManager;
     BodyPicked startBody;
     BodyPicked firstBody;
     BodyPicked secondBody;
+    BodyPicked firstIncisionBody;
+
+    int cpt;
+    bool fullcut;
+    int initialNbTriangles;
 };
 }
 }
