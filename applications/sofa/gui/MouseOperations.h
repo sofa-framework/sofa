@@ -87,8 +87,8 @@ protected:
 class SOFA_SOFAGUI_API InciseOperation : public Operation
 {
 public:
-    InciseOperation():cpt (0) {};
-    virtual ~InciseOperation() {};
+    InciseOperation():startPerformer(NULL), cpt (0) {};
+    virtual ~InciseOperation();
     virtual void start() ;
     virtual void execution() ;
     virtual void end() ;
@@ -97,17 +97,25 @@ public:
     void setIncisionMethod (int m) {method = m;}
     void setSnapingBorderValue (int m) {snapingBorderValue = m;}
     void setSnapingValue (int m) {snapingValue = m;}
+    void setCompleteIncision (bool m) {finishIncision = m;}
+    void setKeepPoint (bool m) {keepPoint = m;}
 
     virtual int getIncisionMethod() const { return method;}
     virtual int getSnapingBorderValue() const { return snapingBorderValue;}
     virtual int getSnapingValue() const { return snapingValue;}
+    virtual bool getCompleteIncision() {return finishIncision;}
+    virtual bool getKeepPoint() {return keepPoint;}
 
     static std::string getDescription() {return "Incise along a path";}
 protected:
+    sofa::component::collision::InteractionPerformer *startPerformer;
+
     int method;
     int snapingBorderValue;
     int snapingValue;
     int cpt;
+    bool finishIncision;
+    bool keepPoint;
 };
 
 class SOFA_SOFAGUI_API TopologyOperation : public Operation

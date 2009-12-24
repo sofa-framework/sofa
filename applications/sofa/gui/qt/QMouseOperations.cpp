@@ -72,6 +72,8 @@ double QAttachOperation::getStiffness() const
 
 //*******************************************************************************************
 QInciseOperation::QInciseOperation()
+    : finishIncision(0)
+    , keepPoint(0)
 {
     //Building the GUI for the Injection Operation
     QVBoxLayout *layout=new QVBoxLayout(this);
@@ -87,9 +89,21 @@ QInciseOperation::QInciseOperation()
     vbox1->addWidget(method1);
     vbox1->addWidget(method2);
 
-    // Second group box for advanced settings (only snping % value for the moment)
+    // Second group box for easy use
+    advancedOperations = new Q3GroupBox(tr("Advanced operations"),this);
+    QVBoxLayout *vbox2 = new QVBoxLayout(advancedOperations);
+
+    // on push button and one check box with labels
+    finishCut = new QCheckBox(QString("Complete incision"), this);
+    storeLastPoint = new QCheckBox (QString("Keep in memory last incision point."), this);
+
+    vbox2->addWidget(finishCut);
+    vbox2->addWidget(storeLastPoint);
+
+
+    // Third group box for advanced settings (only snping % value for the moment)
     advancedOptions = new QGroupBox(tr("Advanced settings"),this);
-    QVBoxLayout *vbox2 = new QVBoxLayout(advancedOptions);
+    QVBoxLayout *vbox3 = new QVBoxLayout(advancedOptions);
 
     // first slider for border snaping
     QHBoxLayout *slider1=new QHBoxLayout();
@@ -101,7 +115,7 @@ QInciseOperation::QInciseOperation()
     slider1->addWidget (label1);
     slider1->addWidget (snapingBorderSlider);
     slider1->addWidget (snapingBorderValue);
-    vbox2->addLayout (slider1);
+    vbox3->addLayout (slider1);
 
     // second slider for along path snaping
     QHBoxLayout *slider2=new QHBoxLayout();
@@ -114,11 +128,15 @@ QInciseOperation::QInciseOperation()
     slider2->addWidget (label2);
     slider2->addWidget (snapingSlider);
     slider2->addWidget (snapingValue);
-    vbox2->addLayout (slider2);
+    vbox3->addLayout (slider2);
 
     // Creating UI
     layout->addWidget(incisionMethodChoiceGroup);
+    layout->addWidget(advancedOperations);
     layout->addWidget(advancedOptions);
+
+    connect(finishCut, SIGNAL(clicked(bool)), this, SLOT(setFinishIncision(bool)));
+    connect(storeLastPoint, SIGNAL(clicked(bool)), this, SLOT(setkeepPoint(bool)));
 
     connect(snapingBorderSlider,SIGNAL(valueChanged(int)), snapingBorderValue, SLOT(setValue(int)));
     connect(snapingBorderValue,SIGNAL(valueChanged(int)), snapingBorderSlider, SLOT(setValue(int)));
@@ -148,6 +166,24 @@ void QInciseOperation::setEnableBox(bool i)
         break;
     }
 }
+
+void QInciseOperation::setFinishIncision(bool i)
+{
+    if (i)
+        finishIncision = true;
+    else
+        finishIncision = false;
+}
+
+void QInciseOperation::setkeepPoint(bool i)
+{
+    if (i)
+        keepPoint = true;
+    else
+        keepPoint = false;
+}
+
+
 
 int QInciseOperation::getIncisionMethod() const
 {
