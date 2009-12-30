@@ -29,8 +29,6 @@
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/componentmodel/behavior/MappedModel.h>
 
-#include <sofa/component/topology/HexahedronGeodesicalDistance.h>
-
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
 
@@ -39,6 +37,8 @@
 #include <sofa/component/component.h>
 
 #ifdef SOFA_DEV
+#include <sofa/component/topology/HexahedronGeodesicalDistance.h>
+
 #include <sofa/helper/DualQuat.h>
 #include <sofa/helper/Quater.h>
 //#include <sofa/component/mapping/DualQuatStorage.h>
@@ -54,7 +54,10 @@ namespace component
 namespace mapping
 {
 
+#ifdef SOFA_DEV
 using sofa::component::topology::HexahedronGeodesicalDistance;
+#endif
+
 using sofa::helper::vector;
 using sofa::helper::Quater;
 
