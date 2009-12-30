@@ -27,32 +27,33 @@
 
 #include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/componentmodel/behavior/MappedModel.h>
+
+#include <sofa/component/topology/HexahedronGeodesicalDistance.h>
 
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
-#include <sofa/core/componentmodel/behavior/MappedModel.h>
+
 #include <vector>
+
 #include <sofa/component/component.h>
+
 #ifdef SOFA_DEV
 #include <sofa/helper/DualQuat.h>
 #include <sofa/helper/Quater.h>
 //#include <sofa/component/mapping/DualQuatStorage.h>
 #include "DualQuatStorage.h"
 #endif
+
 namespace sofa
 {
 
 namespace component
 {
 
-namespace topology
-{
-template<class T>
-class HexahedronGeodesicalDistance;
-}
-
 namespace mapping
 {
+
 using sofa::component::topology::HexahedronGeodesicalDistance;
 using sofa::helper::vector;
 using sofa::helper::Quater;
@@ -203,8 +204,8 @@ public:
 #ifdef SOFA_DEV
     // These typedef are here to avoid compilation pb encountered with ResizableExtVect Type.
     typedef typename sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<N, Real>, sofa::defaulttype::Vec<N, Real>, Real> GeoType; // = Vec3fTypes or Vec3dTypes
-    typedef typename HexahedronGeodesicalDistance< GeoType>::VecCoord GeoVecCoord;
-    typedef typename HexahedronGeodesicalDistance< GeoType>::VecVecCoord GeoVecVecCoord;
+    typedef typename HexahedronGeodesicalDistance< GeoType >::VecCoord GeoVecCoord;
+    typedef typename HexahedronGeodesicalDistance< GeoType >::VecVecCoord GeoVecVecCoord;
 
     typedef typename helper::DualQuatd DualQuat;
 
