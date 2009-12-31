@@ -163,6 +163,21 @@ public:
 
     virtual void getConstraintId(long* id, unsigned int &offset);
 
+    int getIndex()
+    {
+        return index.getValue();
+    }
+
+    double getMin()
+    {
+        return min.getValue();
+    }
+
+    double getMax()
+    {
+        return max.getValue();
+    }
+
 #ifdef SOFA_DEV
     virtual void getConstraintResolution(std::vector<core::componentmodel::behavior::ConstraintResolution*>& resTab, unsigned int& offset);
 #endif
