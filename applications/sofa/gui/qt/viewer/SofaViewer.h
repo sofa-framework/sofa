@@ -45,6 +45,7 @@
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/gui/PickHandler.h>
 
+#include <qcursor.h>
 
 #ifdef SOFA_DEV
 
