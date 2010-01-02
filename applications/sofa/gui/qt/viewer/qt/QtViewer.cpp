@@ -1244,7 +1244,7 @@ void QtViewer::keyPressEvent ( QKeyEvent * e )
         if (e->key() == Qt::Key_Escape)
         {
             m_grabActived = false;
-            this->setCursor(Qt::ArrowCursor);
+            this->setCursor(QCursor(Qt::ArrowCursor));
         }
         else
         {
@@ -1263,7 +1263,7 @@ void QtViewer::keyPressEvent ( QKeyEvent * e )
         if (e->key() == Qt::Key_T)
         {
             m_grabActived = true;
-            this->setCursor(Qt::BlankCursor);
+            this->setCursor(QCursor(Qt::BlankCursor));
             QPoint p = mapToGlobal(this->pos()) + QPoint((this->width()+2)/2,(this->height()+2)/2);
             QCursor::setPos(p);
         }
