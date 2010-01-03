@@ -37,6 +37,10 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/defaulttype/Mat.h>
+
+
 // forward declarations
 namespace sofa
 {
@@ -91,6 +95,7 @@ namespace component
 namespace mapping
 {
 /// Base class for barycentric mapping topology-specific mappers
+using sofa::defaulttype::Matrix3;
 template<class In, class Out>
 class BarycentricMapper
 {
@@ -732,8 +737,14 @@ public:
     typedef typename defaulttype::SparseConstraint<InDeriv> InSparseConstraint;
     typedef typename InSparseConstraint::const_data_iterator InConstraintIterator;
     typedef typename Inherit::MappingData3D MappingData;
+
+    typedef typename In::VecCoord VecCoord;
 protected:
     topology::PointData< MappingData >  map;
+    topology::PointData< MappingData >  mapOrient[3];
+    defaulttype::Vec3dTypes::VecCoord initialTetraPos;
+    VecCoord glPointPositions, glVertexPositions[4];
+
     topology::TetrahedronSetTopologyContainer*			_container;
     topology::TetrahedronSetGeometryAlgorithms<In>*	_geomAlgo;
     core::componentmodel::behavior::BaseMechanicalState::ParticleMask *maskFrom;
@@ -754,6 +765,7 @@ public:
     void clear(int reserve=0);
 
     int addPointInTetra(const int index, const SReal* baryCoords);
+    int addPointOrientationInTetra ( const int tetraIndex, const Matrix3 baryCoorsOrient) { return 0; }
 
     void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
 
