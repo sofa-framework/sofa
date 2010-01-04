@@ -605,17 +605,17 @@ void FrameDiagonalMass<DataTypes, MassType>::updateMass ( const VVMat36& J, cons
         {
             JT.transpose ( J[i][j] );
             JT*=vol[j] * volmass[j];
-            /*/ Without lumping
+            //*/ Without lumping
             JJT=JT*J[i][j];
             frameMass += JJT;
             /*/
-//					serr << "J[i][j]: " << J[i][j] << sendl;
-            for ( k=0; k<nbDOF; k++ )
+            //					serr << "J[i][j]: " << J[i][j] << sendl;
+            for ( k=0;k<nbDOF;k++ )
             {
-                JJT=JT*J[k][j];
-                frameMass += JJT;
+            JJT=JT*J[k][j];
+            frameMass += JJT;
             }
-            //*/
+            	//*/
         }
         vecMass[i].recalc();
         //serr << "Mass["<<i<<"]: " << vecMass[i] << sendl;

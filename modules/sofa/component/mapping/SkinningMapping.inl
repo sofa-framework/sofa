@@ -1832,7 +1832,7 @@ void SkinningMapping<BasicMapping>::insertFrame( const Coord& pos, const Quat& r
 
     // Insert a new DOF
     unsigned int indexFrom = xfrom.size();
-    xfrom.resize( indexFrom + 1);
+    this->fromModel->resize( indexFrom + 1);
 
     // Compute the rest position of the frame.
     InCoord& newX = xfrom[indexFrom];
