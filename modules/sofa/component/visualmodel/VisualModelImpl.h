@@ -86,7 +86,7 @@ public:
     {
     }
 
-    virtual void resize(int vsize) { modified = true; inputVertices->resize( vsize); inputRestVertices->resize( vsize); inputNormals->resize( vsize);}
+    virtual void resize(int vsize) { modified = true; if( inputVertices)inputVertices->resize( vsize); if( inputRestVertices)inputRestVertices->resize( vsize); if( inputNormals)inputNormals->resize( vsize);}
 
     const VecCoord* getX()  const { return inputVertices; }
     const VecDeriv* getV()  const { return NULL; }
