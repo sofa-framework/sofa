@@ -226,11 +226,13 @@ protected:
     Data<vector<int> > repartition;
     Data<Coefs<double> > coefs;
     Data<unsigned int> nbRefs;
+public:
     Data<bool> displayBlendedFrame;
     Data<bool> computeJ;
     Data<bool> computeAllMatrices;
     Data<bool> displayDefTensors;
 
+protected:
     Data<int /* = WeightingType*/> wheightingType;
     Data<int /* = InterpolationType*/> interpolationType;
     Data<int /* = DistanceType*/> distanceType;
