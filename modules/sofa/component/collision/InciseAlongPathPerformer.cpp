@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/collision/InciseAlongPathPerformer.h>
+#include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
 
 #include <sofa/helper/Factory.inl>
 
@@ -34,7 +35,6 @@ namespace component
 
 namespace collision
 {
-
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, InciseAlongPathPerformer>  InciseAlongPathPerformerClass("InciseAlongPath");
 
 
