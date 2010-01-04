@@ -47,13 +47,14 @@ void InciseAlongPathPerformer::start()
         firstIncisionBody = startBody;
         cpt++;
         initialNbTriangles = startBody.body->getMeshTopology()->getNbTriangles();
+        initialNbPoints = startBody.body->getMeshTopology()->getNbPoints();
     }
 }
 
 void InciseAlongPathPerformer::execute()
 {
 
-    if (freezePerformer) // This performer has been freezed
+    if (freezePerformer && currentMethod == 1) // This performer has been freezed
     {
         startBody=this->interactor->getBodyPicked();
         return;
@@ -126,18 +127,64 @@ void InciseAlongPathPerformer::setPerformerFreeze()
 
 void InciseAlongPathPerformer::PerformCompleteIncision()
 {
-    if (firstIncisionBody.body == NULL || startBody.body == NULL) return;
+    if (firstIncisionBody.body == NULL || startBody.body == NULL)
+    {
+        std::cout << "Error: One picked body is null." << std::endl;
+        return;
+    }
 
-    if (firstIncisionBody.indexCollisionElement == startBody.indexCollisionElement) return;
+
+    if (firstIncisionBody.indexCollisionElement == startBody.indexCollisionElement)
+    {
+        std::cout << "Error: picked body are the same." << std::endl;
+        return;
+    }
+
+    // Initial point could have move due to gravity: looking for new coordinates of first incision point and triangle index.
+    bool findTri = false;
+    sofa::helper::vector <unsigned int> triAroundVertex = startBody.body->getMeshTopology()->getTrianglesAroundVertex(initialNbPoints);
+
+    // Check if point index and triangle index are consistent.
+    for (unsigned int j = 0; j<triAroundVertex.size(); ++j)
+        if (triAroundVertex[j] == initialNbTriangles)
+        {
+            findTri = true;
+            break;
+        }
+
+    if (!findTri)
+    {
+        std::cout << "Error: initial point of incision has not been found." << std::endl;
+        return;
+    }
+
+
+    // Get new coordinate of first incision point:
+    sofa::component::container::MechanicalObject<defaulttype::Vec3dTypes>* MechanicalObject=NULL;
+    startBody.body->getContext()->get(MechanicalObject, sofa::core::objectmodel::BaseContext::SearchRoot);
+    sofa::defaulttype::Vector3& the_point = (*MechanicalObject->getX())[initialNbPoints];
+
+    // Get triangle index that will be incise
+    // - Creating direction of incision
+    sofa::defaulttype::Vector3 dir = startBody.point - the_point;
+    // - looking for triangle in this direction
+    sofa::component::topology::TriangleSetGeometryAlgorithms<Vec3Types>* triangleGeometry;
+    startBody.body->getContext()->get(triangleGeometry);
+    int the_triangle = triangleGeometry->getTriangleInDirection(initialNbPoints, dir);
+
+    if (the_triangle == -1)
+    {
+        std::cout << "Error: initial triangle of incision has not been found." << std::endl;
+        return;
+    }
 
     sofa::core::componentmodel::topology::TopologyModifier* topologyModifier;
     startBody.body->getContext()->get(topologyModifier);
-
     // Handle Removing of topological element (from any type of topology)
     if(topologyModifier)
     {
-        topologyChangeManager.incisionCollisionModel(firstIncisionBody.body, initialNbTriangles, firstIncisionBody.point,
-                startBody.body,  startBody.indexCollisionElement,  startBody.point,
+        topologyChangeManager.incisionCollisionModel(startBody.body,  startBody.indexCollisionElement,  startBody.point,
+                firstIncisionBody.body, (unsigned int)the_triangle, the_point,
                 snapingValue, snapingBorderValue );
     }
 

@@ -219,6 +219,7 @@ void InciseOperation::start()
         else // Second clic(s) only perform start() method
         {
             performer->start();
+            startPerformer->start();
         }
     }
     else
