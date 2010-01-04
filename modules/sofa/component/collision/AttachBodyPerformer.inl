@@ -83,12 +83,16 @@ void AttachBodyPerformer<DataTypes>::start()
             mstateCollision->setName("AttachedPoint");
             mappedNode->mechanicalMapping->setName("MouseMapping");
         }
-        /*/ TODO TEMPORARY ! To remove later.
-        sofa::component::mapping::SkinningMapping<sofa::component::mapping::MechanicalMapping< core::componentmodel::behavior::MechanicalState<Rigid3dTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> > > mapping;
-        this->getContext()->get( mapping);
+        //*/ TODO TEMPORARY ! To remove later.
+        sofa::component::mapping::SkinningMapping<sofa::component::mapping::MechanicalMapping< core::componentmodel::behavior::MechanicalState<Rigid3dTypes>, core::componentmodel::behavior::MechanicalState<DataTypes> > >* mapping;
+        mstateCollision->getContext()->get( mapping);
+        std::cerr << "plop !! Victory is not mine..." << std::endl;
         if( mapping && mapping->computeAllMatrices.getValue())
-        	mapping->insertFrame( pointPicked, Quater<double>(0, 0, 0, 1) );
-        */ // TODO until here.
+        {
+            std::cerr << "plop !! Victory is mine !!" << std::endl;
+            mapping->insertFrame( pointPicked, Quater<double>(0, 0, 0, 1) );
+        }
+        //*/ // TODO until here.
     }
     else
     {

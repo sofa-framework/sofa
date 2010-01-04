@@ -508,12 +508,14 @@ void FrameDiagonalMass<DataTypes, MassType>::draw()
         // So to get lx,ly,lz back we need to do
         //   lx = sqrt(12/M * (m->_I(1,1)+m->_I(2,2)-m->_I(0,0)))
         // Note that RigidMass inertiaMatrix is already divided by M
+        /*
         double m00 = masses[i].inertiaMatrix[0][0];
         double m11 = masses[i].inertiaMatrix[1][1];
         double m22 = masses[i].inertiaMatrix[2][2];
-        len[0] = sqrt ( m11+m22-m00 );
-        len[1] = sqrt ( m00+m22-m11 );
-        len[2] = sqrt ( m00+m11-m22 );
+        */
+        len[0] = 1.0; //sqrt ( m11+m22-m00 );
+        len[1] = 1.0; //sqrt ( m00+m22-m11 );
+        len[2] = 1.0; //sqrt ( m00+m11-m22 );
 
         helper::gl::Axis::draw ( center, orient, len*showAxisSize.getValue() );
 
