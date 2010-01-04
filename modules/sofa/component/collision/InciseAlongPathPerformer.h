@@ -66,7 +66,8 @@ public:
         : InteractionPerformer(i)
         , cpt(0)
         , fullcut(0)
-        , initialNbTriangles(0) {};
+        , initialNbTriangles(0)
+        , initialNbPoints(0) {};
 
     ~InciseAlongPathPerformer();
 
@@ -94,7 +95,8 @@ protected:
 
     int cpt;
     bool fullcut;
-    int initialNbTriangles;
+    unsigned int initialNbTriangles;
+    unsigned int initialNbPoints;
 };
 }
 }
