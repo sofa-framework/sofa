@@ -79,6 +79,8 @@ public:
     Data<VecCoord> f_X;
     Data<VecDeriv> f_V;
 
+    virtual void resize(int vsize) { f_X.beginEdit()->resize(vsize); f_X.endEdit(); f_V.beginEdit()->resize(vsize); f_V.endEdit(); }
+
     VecCoord* getX()  { return f_X.beginEdit(); }
     VecDeriv* getV()  { return f_V.beginEdit(); }
 
