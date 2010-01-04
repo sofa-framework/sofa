@@ -126,7 +126,6 @@ void AttachBodyPerformer<DataTypes>::start()
     mstateCollision->getContext()->get( sMapping);
     if( sMapping && sMapping->computeAllMatrices.getValue())
     {
-        //std::cerr << "plop !! Victory is mine..." << std::endl;
         sMapping->insertFrame( (*mstateCollision->getX())[index], Quater<double>(0, 0, 0, 1) );
     }
 #endif
