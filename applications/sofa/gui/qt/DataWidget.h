@@ -89,7 +89,7 @@ public slots:
     }
     void updateWidget()
     {
-        if(baseData->isDirty())
+        if(!modified)
         {
             readFromData();
         }
