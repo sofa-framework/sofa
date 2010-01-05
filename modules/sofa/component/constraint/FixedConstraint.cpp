@@ -86,18 +86,20 @@ void FixedConstraint<Rigid3dTypes>::draw()
 {
     const SetIndexArray & indices = f_indices.getValue().getArray();
     if (!getContext()->getShowBehaviorModels()) return;
+    std::vector< Vector3 > points;
+
     VecCoord& x = *mstate->getX();
-    glDisable (GL_LIGHTING);
-    glPointSize(10);
-    glColor4f (1,0.5,0.5,1);
-    glBegin (GL_POINTS);
     if( f_fixAll.getValue()==true )
         for (unsigned i=0; i<x.size(); i++ )
-            gl::glVertexT(x[i].getCenter());
+            points.push_back(x[i].getCenter());
     else
         for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
-            gl::glVertexT(x[*it].getCenter());
-    glEnd();
+            points.push_back(x[*it].getCenter());
+
+    if( _drawSize.getValue() == 0) // old classical drawing by points
+        simulation::getSimulation()->DrawUtility.drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
+    else
+        simulation::getSimulation()->DrawUtility.drawSpheres(points, (float)_drawSize.getValue(), Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
 }
 
 template <>
@@ -105,6 +107,8 @@ void FixedConstraint<Rigid2dTypes>::draw()
 {
     const SetIndexArray & indices = f_indices.getValue().getArray();
     if (!getContext()->getShowBehaviorModels()) return;
+    std::vector< Vector3 > points;
+
     VecCoord& x = *mstate->getX();
     glDisable (GL_LIGHTING);
     glPointSize(10);
@@ -117,6 +121,7 @@ void FixedConstraint<Rigid2dTypes>::draw()
         for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
             gl::glVertexT(x[*it].getCenter());
     glEnd();
+    glPointSize(1);
 }
 #endif
 
@@ -126,18 +131,20 @@ void FixedConstraint<Rigid3fTypes>::draw()
 {
     const SetIndexArray & indices = f_indices.getValue().getArray();
     if (!getContext()->getShowBehaviorModels()) return;
+    std::vector< Vector3 > points;
+
     VecCoord& x = *mstate->getX();
-    glDisable (GL_LIGHTING);
-    glPointSize(10);
-    glColor4f (1,0.5,0.5,1);
-    glBegin (GL_POINTS);
     if( f_fixAll.getValue()==true )
         for (unsigned i=0; i<x.size(); i++ )
-            gl::glVertexT(x[i].getCenter());
+            points.push_back(x[i].getCenter());
     else
         for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
-            gl::glVertexT(x[*it].getCenter());
-    glEnd();
+            points.push_back(x[*it].getCenter());
+
+    if( _drawSize.getValue() == 0) // old classical drawing by points
+        simulation::getSimulation()->DrawUtility.drawPoints(points, 10, Vec<4,float>(1,0.5,0.5,1));
+    else
+        simulation::getSimulation()->DrawUtility.drawSpheres(points, (float)_drawSize.getValue(), Vec<4,float>(1.0f,0.35f,0.35f,1.0f));
 }
 
 template <>
@@ -157,6 +164,7 @@ void FixedConstraint<Rigid2fTypes>::draw()
         for (SetIndex::const_iterator it = indices.begin(); it != indices.end(); ++it)
             gl::glVertexT(x[*it].getCenter());
     glEnd();
+    glPointSize(1);
 }
 #endif
 

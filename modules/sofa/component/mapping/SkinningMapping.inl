@@ -26,8 +26,6 @@
 #define SOFA_COMPONENT_MAPPING_SKINNINGMAPPING_INL
 
 #include <sofa/component/mapping/SkinningMapping.h>
-#include <sofa/helper/io/MassSpringLoader.h>
-#include <sofa/helper/io/SphereLoader.h>
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/Axis.h>
@@ -55,19 +53,6 @@ namespace mapping
 using namespace sofa::defaulttype;
 using sofa::component::topology::TriangleSetTopologyContainer;
 
-template <class BasicMapping>
-class SkinningMapping<BasicMapping>::Loader : public helper::io::MassSpringLoader, public helper::io::SphereLoader
-{
-public:
-    SkinningMapping<BasicMapping>* dest;
-    Loader ( SkinningMapping<BasicMapping>* dest ) : dest ( dest ) {}
-    virtual void addMass ( SReal /*px*/, SReal /*py*/, SReal /*pz*/, SReal, SReal, SReal, SReal, SReal, bool, bool )
-    {
-    }
-    virtual void addSphere ( SReal /*px*/, SReal /*py*/, SReal /*pz*/, SReal )
-    {
-    }
-};
 
 template <class BasicMapping>
 SkinningMapping<BasicMapping>::SkinningMapping ( In* from, Out* to )
@@ -75,10 +60,10 @@ SkinningMapping<BasicMapping>::SkinningMapping ( In* from, Out* to )
     , repartition ( initData ( &repartition,"repartition","repartition between input DOFs and skinned vertices" ) )
     , coefs ( initData ( &coefs,"coefs","weights list for the influences of the references Dofs" ) )
     , nbRefs ( initData ( &nbRefs, ( unsigned ) 3,"nbRefs","nb references for skinning" ) )
-    , displayBlendedFrame ( initData ( &displayBlendedFrame, false, "displayBlendedFrame","weights list for the influences of the references Dofs" ) )
+    , showBlendedFrame ( initData ( &showBlendedFrame, false, "showBlendedFrame","weights list for the influences of the references Dofs" ) )
     , computeJ ( initData ( &computeJ, false, "computeJ", "compute matrix J in addition to apply for the dual quat interpolation method." ) )
     , computeAllMatrices ( initData ( &computeAllMatrices, false, "computeAllMatrices","compute all the matrices in addition to apply for the dual quat interpolation method." ) )
-    , displayDefTensors ( initData ( &displayDefTensors, false, "displayDefTensors","display computed deformation tensors." ) )
+    , showDefTensors ( initData ( &showDefTensors, false, "showDefTensors","show computed deformation tensors." ) )
     , wheightingType ( initData ( &wheightingType, WEIGHT_INVDIST_SQUARE, "wheightingType","Weighting computation method." ) )
     , interpolationType ( initData ( &interpolationType, INTERPOLATION_LINEAR, "interpolationType","Interpolation method." ) )
     , distanceType ( initData ( &distanceType, DISTANCE_HARMONIC, "distanceType","Distance computation method." ) )
@@ -97,15 +82,11 @@ SkinningMapping<BasicMapping>::~SkinningMapping ()
 {
 }
 
-template <class BasicMapping>
-void SkinningMapping<BasicMapping>::load ( const char * /*filename*/ )
-{
-}
 
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::computeInitPos ( )
 {
-    const VecCoord& xto = *this->toModel->getX0();
+    const VecCoord& xto = *this->toModel->getX();;
     const VecInCoord& xfrom = *this->fromModel->getX0();
     initPosDOFs.resize ( xfrom.size() );
 
@@ -146,7 +127,7 @@ template <class BasicMapping>
 void SkinningMapping<BasicMapping>::computeDistances ()
 {
     Coord posTo;
-    VecCoord& xto = *this->toModel->getX0();
+    VecCoord& xto = *this->toModel->getX();
     VecInCoord& xfrom = *this->fromModel->getX0();
 
     distances.clear();
@@ -205,7 +186,7 @@ void SkinningMapping<BasicMapping>::computeDistances ()
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::sortReferences()
 {
-    VecCoord& xto = *this->toModel->getX0();
+    VecCoord& xto = *this->toModel->getX();
     VecInCoord& xfrom = *this->fromModel->getX0();
     const unsigned int& nbRef = nbRefs.getValue();
 
@@ -290,25 +271,19 @@ void SkinningMapping<BasicMapping>::init()
             XItoQ( qi0, initPosDOFs[i]);
             computeDqT ( this->T[i], qi0 );
         }
-        VecCoord& xto = *this->toModel->getX0();
+
+        const VecCoord& xto = *this->toModel->getX();
         this->vol.resize( xto.size());
         for( unsigned int i = 0; i < xto.size(); i++) this->vol[i] = 1.0;
         this->volMass.resize( xto.size());
         for( unsigned int i = 0; i < xto.size(); i++) this->volMass[i] = 1.0;
+
     }
 #endif
 
     doJustOnce = true; //TODO to remove. Used to place the DOFs after init
 
     this->BasicMapping::init();
-}
-
-template <class BasicMapping>
-void SkinningMapping<BasicMapping>::parse ( core::objectmodel::BaseObjectDescription* arg )
-{
-    if ( arg->getAttribute ( "filename" ) )
-        this->load ( arg->getAttribute ( "filename" ) );
-    this->Inherit::parse ( arg );
 }
 
 template <class BasicMapping>
@@ -351,7 +326,7 @@ void SkinningMapping<BasicMapping>::setInterpolationToDualQuaternion()
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::updateWeights ()
 {
-    VecCoord& xto = *this->toModel->getX0();
+    VecCoord& xto = *this->toModel->getX();
     VecInCoord& xfrom = *this->fromModel->getX0();
 
     vector<vector<double> >& m_coefs = * ( coefs.beginEdit() );
@@ -1149,7 +1124,7 @@ void SkinningMapping<BasicMapping>::draw()
 
 #ifdef SOFA_DEV
     //*  Continuous animation of the reference frames along the beam (between frames i and i+1)
-    if ( displayBlendedFrame.getValue() && interpolationType.getValue() == INTERPOLATION_DUAL_QUATERNION )
+    if ( showBlendedFrame.getValue() && interpolationType.getValue() == INTERPOLATION_DUAL_QUATERNION )
     {
         bool anim = true;
         static unsigned int step = 0;
@@ -1185,8 +1160,8 @@ void SkinningMapping<BasicMapping>::draw()
     }
     //*/
 
-    // Deformation tensor display
-    if ( displayDefTensors.getValue() && interpolationType.getValue() == INTERPOLATION_DUAL_QUATERNION && computeAllMatrices.getValue() )
+    // Deformation tensor show
+    if ( showDefTensors.getValue() && interpolationType.getValue() == INTERPOLATION_DUAL_QUATERNION && computeAllMatrices.getValue() )
     {
         const VecCoord& xto = *this->toModel->getX();
         TriangleSetTopologyContainer *mesh;
@@ -1211,7 +1186,7 @@ void SkinningMapping<BasicMapping>::draw()
             glEnd();
             glPopAttrib();
         }
-        else // Display by points
+        else // Show by points
         {
             glBegin( GL_POINTS);
             for( unsigned int i = 0; i < xto.size(); i++)
@@ -1825,6 +1800,7 @@ void SkinningMapping<BasicMapping>::computeDqT ( Mat88& T, const DUALQUAT& qi0 )
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::insertFrame( const Coord& pos, const Quat& rot)
 {
+    if (!this->toModel->getX0()) return;
     VecCoord& xto0 = *this->toModel->getX0();
     VecInCoord& xfrom0 = *this->fromModel->getX0();
     //VecCoord& xto = *this->toModel->getX();
@@ -2008,7 +1984,7 @@ void SkinningMapping<BasicMapping>::computeWeight( VVD& w, VecVecCoord& dw, cons
     geoDist->getDistances ( dist, ddist, goals );
 
     // Compute Weights
-    VecCoord& xto0 = *this->toModel->getX0();
+    VecCoord& xto0 = *this->toModel->getX();
     VecInCoord& xfrom0 = *this->fromModel->getX0();
 
     switch ( wheightingType.getValue() )
