@@ -57,8 +57,7 @@ public:
 
     virtual void init();
 
-    virtual void reinit() {};
-
+    virtual void reinit();
 
     /** \brief Sends a message to warn that some triangles were added in this topology.
      *

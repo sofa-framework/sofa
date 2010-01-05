@@ -56,6 +56,10 @@ void TetrahedronSetTopologyModifier::init()
     this->getContext()->get(m_container);
 }
 
+void TetrahedronSetTopologyModifier::reinit()
+{
+}
+
 
 void TetrahedronSetTopologyModifier::addTetrahedronProcess(Tetrahedron t)
 {

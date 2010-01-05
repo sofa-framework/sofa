@@ -714,6 +714,126 @@ bool TetrahedronSetTopologyContainer::checkTopology() const
 #endif
 }
 
+
+bool TetrahedronSetTopologyContainer::checkConnexity()
+{
+    if(!hasTetrahedraAroundTriangle())	// this method should only be called when the shell array exists
+    {
+#ifndef NDEBUG
+        sout << "Warning. [TetrahedronSetTopologyContainer::checkConnexity] TetrahedraAroundTriangle shell array is empty." << endl;
+#endif
+        createTetrahedraAroundTriangleArray();
+    }
+
+    bool end = false;
+    int cpt = 0;
+
+    sofa::helper::vector <TetraID> tetra_T0;
+    sofa::helper::vector <TetraID> tetra_T1;
+    sofa::helper::vector <TetraID> tetra_T2;
+    sofa::helper::vector <TetraID> tetra_Tmp;
+
+    tetra_T1.push_back(0);
+    cpt = 1;
+
+    while (!end && cpt < this->getNbTetrahedra())
+    {
+        // First Step - Create new region
+        for (unsigned int i = 0; i<tetra_T1.size(); ++i)
+        {
+            TetraID tetraIndex = tetra_T1[i];
+            TrianglesInTetrahedron triTetra = m_trianglesInTetrahedron[ tetraIndex ];
+
+            for (unsigned int j = 0; j<4; ++j)
+            {
+                sofa::helper::vector<unsigned int> tetraATri = m_tetrahedraAroundTriangle[ triTetra[j] ];
+                sofa::helper::vector<TetraID> nextTetra;
+
+                if (tetraATri.size() == 1) // reach border
+                    continue;
+                else
+                {
+                    for (unsigned int k = 0; k<tetraATri.size(); ++k)
+                    {
+                        if (tetraATri[k] != tetraIndex) //not himself
+                            nextTetra.push_back(tetraATri[k]);
+                    }
+                }
+
+                // avoid redundancy
+                for (unsigned int k = 0; k<nextTetra.size(); ++k)
+                {
+                    bool tetraFound = false;
+                    TetraID elem = nextTetra[k];
+
+                    for (unsigned int l = 0; l<tetra_Tmp.size(); ++l)
+                        if (tetra_Tmp[l] == elem)
+                        {
+                            tetraFound = true;
+                            break;
+                        }
+
+                    if (!tetraFound)
+                        tetra_Tmp.push_back(elem);
+
+                }
+            }
+        }
+
+        // Second Step - Avoid backward direction
+        for (unsigned int i = 0; i<tetra_Tmp.size(); ++i)
+        {
+            bool tetraFound = false;
+            TetraID elem = tetra_Tmp[i];
+
+            for (unsigned int j = 0; j<tetra_T0.size(); ++j)
+                if (tetra_T0[j] == elem)
+                {
+                    tetraFound = true;
+                    break;
+                }
+
+            if (!tetraFound)
+            {
+                for (unsigned int j = 0; j<tetra_T1.size(); ++j)
+                    if (tetra_T1[j] == elem)
+                    {
+                        tetraFound = true;
+                        break;
+                    }
+            }
+
+            if (!tetraFound)
+                tetra_T2.push_back(elem);
+        }
+
+        // cpt for connexity
+        cpt +=tetra_T2.size();
+
+        if (tetra_T2.size() == 0) // reach end
+        {
+            end = true;
+#ifndef NDEBUG
+            sout << "Loop for computing connexity has reach end." << sendl;
+#endif
+        }
+
+        // iterate
+        tetra_T0 = tetra_T1;
+        tetra_T1 = tetra_T2;
+        tetra_T2.clear();
+        tetra_Tmp.clear();
+    }
+
+    if (cpt != this->getNbTetrahedra())
+    {
+        serr << "Warning: in computing connexity, tetrahedra are missings. There is more than one connexe component." << sendl;
+        return false;
+    }
+
+    return true;
+}
+
 bool TetrahedronSetTopologyContainer::hasTetrahedra() const
 {
     d_tetrahedron.updateIfDirty(); // make sure m_tetrahedron is valid

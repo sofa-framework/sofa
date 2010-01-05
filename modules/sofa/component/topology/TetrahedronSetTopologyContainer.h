@@ -212,6 +212,13 @@ public:
     virtual bool checkTopology() const;
 
 
+    /** \brief Checks if the topology has only one connex component
+      *
+      * @return true if only one connex component
+      */
+    virtual bool checkConnexity();
+
+
     /** \brief Returns the number of tetrahedra in this topology.
      *	The difference to getNbTetrahedra() is that this method does not generate the tetra array if it does not exist.
      */

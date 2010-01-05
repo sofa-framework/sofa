@@ -55,6 +55,10 @@ void TriangleSetTopologyModifier::init()
     this->getContext()->get(m_container);
 }
 
+void TriangleSetTopologyModifier::reinit()
+{
+}
+
 
 
 void TriangleSetTopologyModifier::addTriangleProcess(Triangle t)
