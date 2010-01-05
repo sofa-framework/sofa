@@ -399,7 +399,13 @@ public:
         {
             if (!(FLAGS & TABLE_FIXEDSIZE))
             {
-                _widget->connect(wSize, SIGNAL( valueChanged(int) ), _widget, SLOT(setModified()) );
+                // _widget->connect(wSize, SIGNAL( valueChanged(int) ), _widget, SLOT(setModified()) );
+
+
+                if( FLAGS & TABLE_HORIZONTAL)
+                    _widget->connect(wSize, SIGNAL( valueChanged(int) ), wTable, SLOT(resizeTableH(int) ) );
+                else
+                    _widget->connect(wSize, SIGNAL( valueChanged(int) ), wTable, SLOT(resizeTableV(int) ) );
             }
             else
             {
@@ -425,52 +431,19 @@ public:
 
     void readFromData(const data_type& d)
     {
-        int newRows = rhelper::size(d);
-        wSize->setValue(newRows);
-
         if (isDisplayed())
         {
-            int newCols;
-            if (rows > 0)
-                newCols = vhelper::size(d[0]);
-            else
-                newCols = vhelper::size(row_type());
-
             processTableModifications(d);
             fillTable(d);
-            rows=newRows;
         }
     }
     void writeToData(data_type& d)
     {
+        processTableModifications(d);
         if (!(FLAGS & TABLE_FIXEDSIZE))
         {
             int oldRows = rhelper::size(d);
-            if (rows != oldRows)
-            {
-                rhelper::resize(rows, d);
-            }
-            int newRows = rhelper::size(d);
-            if (rows != newRows)
-            {
-                // resize failed -> conform to the real size
-                /* std::cout << "Resize to " << rows << " failed. New size is " << newRows << std::endl; */
-                wSize->setValue(newRows);
-                if (FLAGS & TABLE_HORIZONTAL)
-                    wTable->setNumCols(newRows);
-                else
-                    wTable->setNumRows(newRows);
-                rows = newRows;
-            }
-            else
-            {
-                int widgetSize=wSize->value();
-                if (widgetSize != rows)
-                {
-                    rhelper::resize(widgetSize, d);
-                }
-                /* std::cout << "Resize to " << widgetSize<< " succeeded." << std::endl; */
-            }
+            rows = wSize->value();
         }
 
         if (isDisplayed())
@@ -537,8 +510,10 @@ public:
     void fillTable(const data_type &d)
     {
         int currentNum;
-        if (FLAGS & TABLE_HORIZONTAL)  currentNum=wTable->numCols();
-        else                           currentNum=wTable->numRows();
+        if (FLAGS & TABLE_HORIZONTAL)
+            currentNum=wTable->numCols() > d.size() ? d.size() : wTable->numCols();
+        else
+            currentNum=wTable->numRows() > d.size()? d.size() : wTable->numRows();
 
         for (int y=0; y<currentNum; ++y)
             for (int x=0; x<cols; ++x)
@@ -546,23 +521,6 @@ public:
 
     }
 
-    bool processChange(const QObject* sender)
-    {
-        data_type d=data_type();
-
-        if (isDisplayed()) processTableModifications(d);
-
-        if (!(FLAGS & TABLE_FIXEDSIZE) && sender == wSize)
-        {
-            int newRows = wSize->value();
-            if (rows == newRows) return false;
-            if (isDisplayed())  rows = newRows;
-            return true;
-        }
-        if (sender == wTable)
-            return true;
-        return false;
-    }
 };
 
 template<class T, int FLAGS = TABLE_NORMAL>
