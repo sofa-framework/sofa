@@ -585,7 +585,7 @@ template<class DataTypes, class MassType>
 void FrameDiagonalMass<DataTypes, MassType>::updateMass ( const VVMat36& J, const VD& vol, const VD& volmass )
 {
     // Mass_ij=sum(d.p.Ji^TTJj)
-    int i,j,k,nbDOF=J.size(),nbP=vol.size();
+    int i,j,nbDOF=J.size(),nbP=vol.size();
     Mat63 JT;
     Mat66 JJT;
 
@@ -610,7 +610,7 @@ void FrameDiagonalMass<DataTypes, MassType>::updateMass ( const VVMat36& J, cons
             frameMass += JJT;
             /*/
             //					serr << "J[i][j]: " << J[i][j] << sendl;
-            for ( k=0;k<nbDOF;k++ )
+            for ( unsigned int k=0;k<nbDOF;k++ )
             {
             JJT=JT*J[k][j];
             frameMass += JJT;

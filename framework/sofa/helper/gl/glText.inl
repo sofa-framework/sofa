@@ -24,6 +24,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#ifndef SOFA_HELPER_GL_GLTEXT_INL
+#define SOFA_HELPER_GL_GLTEXT_INL
 #include <sofa/helper/gl/glText.h>
 
 #include <sofa/helper/system/gl.h>
@@ -161,3 +163,5 @@ void GlText::draw ( const T& text, const Vector3& position, const double& scale 
 } // namespace helper
 
 } // namespace sofa
+
+#endif
