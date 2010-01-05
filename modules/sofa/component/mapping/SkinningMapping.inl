@@ -215,10 +215,6 @@ void SkinningMapping<BasicMapping>::sortReferences()
             }
         }
     }
-
-    //for ( unsigned int j=0;j<xto.size();j++ )
-    //  for ( unsigned int k=0;k<nbRef;k++ )
-    //    serr << "m_reps["<<j<<"]["<<k<<"] " << m_reps[nbRef *j+k] << sendl;
 }
 
 
@@ -268,8 +264,6 @@ void SkinningMapping<BasicMapping>::init()
         this->T.resize ( xfrom.size() );
         for ( unsigned int i = 0; i < xfrom.size(); i++ )
         {
-            //DualQuat qi0 ( initPosDOFs[i].getCenter(), initPosDOFs[i].getOrientation() );
-            //computeDqT ( T[i], qi0 );
             XItoQ( qi0, initPosDOFs[i]);
             computeDqT ( this->T[i], qi0 );
         }
@@ -282,9 +276,6 @@ void SkinningMapping<BasicMapping>::init()
 
     }
 #endif
-
-    doJustOnce = true; //TODO to remove. Used to place the DOFs after init
-
     this->BasicMapping::init();
 }
 
@@ -353,11 +344,8 @@ void SkinningMapping<BasicMapping>::updateWeights ()
             // Abscisse curviligne
             m_coefs[m_reps[nbRefs.getValue() *i+0]][i] = ( 1 - wi );
             m_coefs[m_reps[nbRefs.getValue() *i+1]][i] = wi;
-//								int j = m_reps[nbRefs.getValue() *i+0];
-//serr << "coeff["<<j<<"]["<<i<<"]: " << m_coefs[m_reps[nbRefs.getValue() *i+0]][i] << ", " << m_coefs[m_reps[nbRefs.getValue() *i+1]][i] << sendl;
             distGradients[m_reps[nbRefs.getValue() *i+0]][i] = -r1r2 / r1r2NormSquare;
             distGradients[m_reps[nbRefs.getValue() *i+1]][i] = r1r2 / r1r2NormSquare;
-//serr << "gradient["<<j<<"]["<<i<<"]: " << distGradients[m_reps[nbRefs.getValue() *i+0]][i] << ", " << distGradients[m_reps[nbRefs.getValue() *i+1]][i] << sendl;
         }
         break;
     }
@@ -460,68 +448,6 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
 #ifdef SOFA_DEV
     case INTERPOLATION_DUAL_QUATERNION:
     {
-        //const typename In::VecDeriv& vfrom = *this->fromModel->getV();
-        /*
-        Mat38 Q;
-        Mat88 N;
-        vector<Mat88> T;
-        T.resize ( nbRefs.getValue() );
-        //vector<Mat86> L; L.resize( nbRefs.getValue() ); //TODO to comment
-        L.resize ( out.size() *nbRefs.getValue() );
-        J.resize ( in.size() );
-        for ( unsigned int i = 0; i < in.size(); i++ )
-          J[i].resize ( out.size() );
-        //             q1.resize ( out.size() *nbRefs.getValue() );
-        //             q2.resize ( out.size() *nbRefs.getValue() );
-
-        VecCoord& xto = *this->toModel->getX();
-        out.resize ( xto.size() );
-
-        for ( unsigned int i=0 ; i<out.size(); i++ )
-          {
-            DualQuat dq;
-            for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
-              {
-                const int& idx=nbRefs.getValue() *i+m;
-                const int& idxReps=m_reps[idx];
-                // Create a rigid transformation from the relative rigid transformation of the reference frame "idxReps".
-                DualQuat qi0 ( initPosDOFs[idxReps].getCenter(), initPosDOFs[idxReps].getOrientation() );
-                DualQuat dqi ( in[idxReps].getCenter(), in[idxReps].getOrientation() );
-                DualQuat dqrel ( initPosDOFs[idxReps].getCenter(),
-                                 initPosDOFs[idxReps].getOrientation(),
-                                 in[idxReps].getCenter(),
-                                 in[idxReps].getOrientation() );
-
-                // Blend all the transformations
-                dq += dqrel * m_coefs[idxReps][i];
-
-                // Compute parts of J
-                computeDqT ( T[m], qi0 );
-                computeDqL ( L[idx], dqi, in[idxReps].getCenter() );
-                //                     q1[idx] = q2[idx]; //TODO remove after test
-                //                     q2[idx] = dqi; //TODO remove after test
-              }
-            DualQuat dqn ( dq );
-            dqn.normalize(); // Normalize it
-            out[i] = dqn.transform ( initPos[i] ); // And apply it
-
-            // Store matrix J for applyJ/Jt
-            computeDqN ( N, dqn, dq );
-            computeDqQ ( Q, dqn, initPos[i] );
-            Mat38 QN = Q * N;
-            for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
-              {
-                const int idx=nbRefs.getValue() *i+m;
-                const int idxReps=m_reps[idx];
-                J[idxReps][i] = QN * T[m] * L[idx];
-              }
-          }
-
-        //x1.resize ( out.size() ); //TODO remove after test
-        //x2.resize ( out.size() ); //TODO remove after test
-        //x1 = x2; //TODO remove after test
-        //x2 = out; //TODO to remove after the convergence test
-        /*/
         int i,j,k,l,m,n, nbDOF=in.size(), nbP=out.size();
 
         // allocate temporary variables
@@ -558,22 +484,11 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
 
         VecInCoord& xfrom = *this->fromModel->getX();
 
-        if( doJustOnce)
-        {
-            doJustOnce = false;
-            /*						xfrom[0].getCenter() = Vec3d( 0, 0, 200);
-            						xfrom[0].getOrientation() = Quat( sqrt(0.5), 0, 0, sqrt(0.5));
-            */
-            //xfrom[1].getCenter() = Vec3d( 0, 0, 200);
-            //xfrom[1].getOrientation() = Quat( 0.0, 0.0, sqrt(0.5), sqrt(0.5));
-//*/
-        }
-
         //apply
         for ( i=0; i<nbDOF; i++ )
         {
-            XItoQ ( q,xfrom[i] );		//update DOF quats //TODO remplacer xFrom par in
-            computeDqL ( L[i],q,xfrom[i].getCenter() );	//update L=d(q)/Omega //TODO remplacer xFrom par in
+            XItoQ ( q,xfrom[i] );		//update DOF quats
+            computeDqL ( L[i],q,xfrom[i].getCenter() );	//update L=d(q)/Omega
             TL[i]=this->T[i]*L[i];	//update TL
             computeQrel ( qrel[i], this->T[i], q ); //update qrel=Tq
         }
@@ -626,23 +541,6 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
             this->det[i]=determinant ( this->A[i] );
             invertMatrix ( Ainv,this->A[i] );
 
-            if( i == 0)
-            {
-//std::cout<<std::endl<<"b:"<<std::endl; for(j=0;j<4;j++)  std::cout<<b.q0[j]<<std::endl;  for(j=0;j<4;j++)  std::cout<<b.qe[j]<<std::endl;
-//std::cout<<std::endl<<"bn:"<<std::endl; for(j=0;j<4;j++)  std::cout<<bn.q0[j]<<std::endl;  for(j=0;j<4;j++)  std::cout<<bn.qe[j]<<std::endl;
-//std::cout<<std::endl<<"R:"<<std::endl; for(j=0;j<3;j++) {for(k=0;k<3;k++) std::cout<<R[j][k]<<" "; std::cout<<std::endl;}
-//std::cout<<std::endl<<"Q:"<<std::endl; for(j=0;j<3;j++) {for(k=0;k<8;k++) std::cout<<Q[j][k]<<" "; std::cout<<std::endl;}
-//std::cout<<std::endl<<"N0:"<<std::endl; for(j=0;j<4;j++) {for(k=0;k<4;k++) std::cout<<N[j][k]<<" "; std::cout<<std::endl;}
-//std::cout<<std::endl<<"Ne:"<<std::endl; for(j=4;j<8;j++) {for(k=0;k<4;k++) std::cout<<N[j][k]<<" "; std::cout<<std::endl;}
-//std::cout<<std::endl<<"QN:"<<std::endl; for(j=0;j<3;j++) {for(k=0;k<8;k++) std::cout<<QN[j][k]<<" "; std::cout<<std::endl;}
-//std::cout<<std::endl<<"W:"<<std::endl; for(j=0;j<8;j++) {for(k=0;k<3;k++) std::cout<<W[j][k]<<" "; std::cout<<std::endl;}
-//std::cout<<std::endl<<"A:"<<std::endl; for(j=0;j<3;j++) {for(k=0;k<3;k++) std::cout<<A[j][k]<<" "; std::cout<<std::endl;}
-//std::cout<<std::endl<<"E:"<<std::endl; for(j=0;j<3;j++) {for(k=0;k<3;k++) std::cout<<E[j][k]<<" "; std::cout<<std::endl;}
-//std::cout<<std::endl<<"e:"<<std::endl; for(j=0;j<6;j++)  std::cout<<e[i][j]<<" ";std::cout<<std::endl;
-//std::cout<<std::endl<<"T:"<<std::endl; for(j=0;j<8;j++) {for(k=0;k<8;k++) std::cout<<this->T[i][j][k]<<" "; std::cout<<std::endl;}
-//std::cout<<std::endl<<"L:"<<std::endl; for(j=0;j<8;j++) {for(k=0;k<6;k++) std::cout<<L[i][j][k]<<" "; std::cout<<std::endl;}
-            }
-
             for ( j=0; j<nbDOF; j++ )
             {
                 // J = d(P_i)/Omega_j
@@ -653,11 +551,6 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
                 if( !computeAllMatrices.getValue()) continue; // if we want to compute just the J matrix
 
                 QNT=QN*this->T[j]; // Update QNT
-
-//if( i == 50)
-                {
-                    //std::cout<<std::endl<<"J["<<j<<"]["<<i<<"]:"<<std::endl; for(k=0;k<3;k++) {for(m=0;m<6;m++) std::cout<<this->J[j][i][k][m]<<" "; std::cout<<std::endl;}
-                }
 
                 // B = d(strain)/Omega_j
                 this->B[j][i].fill ( 0 );
@@ -704,29 +597,9 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
                         this->B[j][i][4][l]+=0.5* ( dE[n][0]*this->A[i][n][2]+this->A[i][n][0]*dE[n][2] );
                         this->B[j][i][5][l]+=0.5* ( dE[n][1]*this->A[i][n][2]+this->A[i][n][1]*dE[n][2] );
                     }
-                    if( i == 50)
-                    {
-//std::cout<<std::endl<<"QNT("<<l<<"):"<<std::endl; for(k=0;k<3;k++) {for(m=0;m<8;m++) std::cout<<QNT[k][m]<<" "; std::cout<<std::endl;}
-//std::cout<<std::endl<<"NTL("<<l<<"):"<<std::endl; for(k=0;k<8;k++) std::cout<<NTL[k][l]<<std::endl;
-//std::cout<<std::endl<<"dR("<<l<<"):"<<std::endl; for(k=0;k<3;k++) {for(m=0;m<3;m++) std::cout<<dR[k][m]<<" "; std::cout<<std::endl;}
-//std::cout<<std::endl<<"dQ("<<l<<"):"<<std::endl; for(k=0;k<3;k++) {for(m=0;m<8;m++) std::cout<<dQ[k][m]<<" "; std::cout<<std::endl;}
-//std::cout<<std::endl<<"dN("<<l<<"):"<<std::endl; for(k=0;k<8;k++) {for(m=0;m<8;m++) std::cout<<dN[k][m]<<" "; std::cout<<std::endl;}
-//std::cout<<std::endl<<"dE("<<l<<"):"<<std::endl; for(k=0;k<3;k++) {for(m=0;m<3;m++) std::cout<<dE[k][m]<<" "; std::cout<<std::endl;}
-//std::cout<<std::endl<<"B("<<l<<"):"<<std::endl; for(k=0;k<6;k++) std::cout<<this->B[j][i][k][l] << " ";std::cout << std::endl;
-                    }
                 }
             }
         }
-        //*/
-
-
-
-
-
-
-
-
-
         break;
     }
 #endif
@@ -744,13 +617,6 @@ void SkinningMapping<BasicMapping>::applyJ ( typename Out::VecDeriv& out, const 
     out.resize ( xto.size() );
     Deriv v,omega;
 
-    /*        vector<double> dqTest; //TODO to remove after the convergence test
-            dqTest.resize ( out.size() ); //TODO to remove after the convergence test
-            vector<Vec3d> dqJiWi; //TODO to remove after the convergence test
-            dqJiWi.resize ( out.size() ); //TODO to remove after the convergence test
-             dqLi_previous.resize ( out.size() * nbRefs.getValue() ); //TODO to remove after the convergence test
-             dqLi.resize ( out.size() * nbRefs.getValue() ); //TODO to remove after the convergence test
-    */
     if ( ! ( maskTo->isInUse() ) )
     {
         switch ( interpolationType.getValue() )
@@ -790,11 +656,7 @@ void SkinningMapping<BasicMapping>::applyJ ( typename Out::VecDeriv& out, const 
                     speed[4] = in[idxReps].getVCenter() [1];
                     speed[5] = in[idxReps].getVCenter() [2];
 
-                    Vec3 f = ( this->J[idxReps][i] * speed );// * m_coefs[idxReps][i];
-
-                    /*                        dqTest[i] = speed[0][0]*speed[0][0] + speed[1][0]*speed[1][0] + speed[2][0]*speed[2][0] + speed[3][0]*speed[3][0] + speed[4][0]*speed[4][0] + speed[5][0]*speed[5][0]; //TODO to remove after the convergence test
-                                            dqJiWi[i] = Vec3d ( f[0][0], f[1][0], f[2][0] ); //TODO to remove after convergence test*/
-//                         dqLi[idx] = ( L[idx] * speed ); //TODO to remove after convergence test
+                    Vec3 f = ( this->J[idxReps][i] * speed );
 
                     out[i] += Deriv ( f[0], f[1], f[2] );
                 }
@@ -852,11 +714,7 @@ void SkinningMapping<BasicMapping>::applyJ ( typename Out::VecDeriv& out, const 
                     speed[5] = in[idxReps].getVCenter() [2];
 
 
-                    Vec3 f = ( this->J[idxReps][i] * speed );// * m_coefs[idxReps][i];
-
-                    /*                        dqTest[i] = speed[0][0]*speed[0][0] + speed[1][0]*speed[1][0] + speed[2][0]*speed[2][0] + speed[3][0]*speed[3][0] + speed[4][0]*speed[4][0] + speed[5][0]*speed[5][0]; //TODO to remove after the convergence test
-                                            dqJiWi[i] = Vec3d ( f[0][0], f[1][0], f[2][0] ); //TODO to remove after convergence test*/
-//                         dqLi[idx] = ( L[idx] * speed ); //TODO to remove after convergence test
+                    Vec3 f = ( this->J[idxReps][i] * speed );
 
                     out[i] += Deriv ( f[0], f[1], f[2] );
                 }
@@ -868,41 +726,6 @@ void SkinningMapping<BasicMapping>::applyJ ( typename Out::VecDeriv& out, const 
         {}
         }
     }
-#ifdef SOFA_DEV
-    /* convergence test: to remove
-    if( x1.empty() || x2.empty()) return;
-    std::cout << "Convergence test for dt = " << this->getContext()->getDt() << std::endl;
-    for( unsigned int i = 0; i < out.size(); i++)
-    {
-    	if( dqTest[i] == 0) {std::cout << "dqi equal 0" << std::endl; continue;}
-    	//if(( x1[i][0] != x2[i][0]) || ( x1[i][1] != x2[i][1]) || ( x1[i][2] != x2[i][2])) std::cout  << "2.Diff between pts: " << x1[i] << " " << x2[i] << std::endl;
-    	//double test = ((x2[i] - x1[i])/this->getContext()->getDt() - dqJiWi[i]).norm() / sqrt(dqTest[i]);
-    	//if( test > 0.000000000001 ) std::cout << i << ": " << test << std::endl; // > a 10^-12
-    	for ( unsigned int m=0 ; m<nbRefs.getValue(); m++ )
-    	{
-    const int idx=nbRefs.getValue() *i+m;
-    		Mat81 qrel;
-    		qrel[0][0] = q2[idx][0][0] - q1[idx][0][0];
-    		qrel[1][0] = q2[idx][0][1] - q1[idx][0][1];
-    		qrel[2][0] = q2[idx][0][2] - q1[idx][0][2];
-    		qrel[3][0] = q2[idx][0][3] - q1[idx][0][3];
-    		qrel[4][0] = q2[idx][1][0] - q1[idx][1][0];
-    		qrel[5][0] = q2[idx][1][1] - q1[idx][1][1];
-    		qrel[6][0] = q2[idx][1][2] - q1[idx][1][2];
-    		qrel[7][0] = q2[idx][1][3] - q1[idx][1][3];
-
-    		if( idx != 93) continue; //TODO remove !!
-
-    		std::cout << "Diff between qrel and Li:" << std::endl << qrel << std::endl << dqLi[idx] << std::endl;
-
-    		Mat81 diff = (qrel)/this->getContext()->getDt() - dqLi_previous[idx];
-    		double testL = sqrt(diff[0][0]*diff[0][0] + diff[1][0]*diff[1][0] + diff[2][0]*diff[2][0] + diff[3][0]*diff[3][0] + diff[4][0]*diff[4][0] + diff[5][0]*diff[5][0] + diff[6][0]*diff[6][0] + diff[7][0]*diff[7][0] ) / sqrt(dqTest[i]);
-    		if( testL > 0.000000000001 ) std::cout << idx << ": " << testL << std::endl; // > a 10^-12
-    		dqLi_previous[idx] = dqLi[idx];
-    	}
-    }
-    //*/
-#endif
 }
 
 template <class BasicMapping>
@@ -955,8 +778,8 @@ void SkinningMapping<BasicMapping>::applyJT ( typename In::VecDeriv& out, const 
                     omega = Deriv ( speed[0], speed[1], speed[2] );
                     v = Deriv ( speed[3], speed[4], speed[5] );
 
-                    out[idxReps].getVCenter() += v;// * m_coefs[idxReps][i];
-                    out[idxReps].getVOrientation() += omega;// * m_coefs[idxReps][i];
+                    out[idxReps].getVCenter() += v;
+                    out[idxReps].getVOrientation() += omega;
                 }
             }
             break;
@@ -1016,8 +839,8 @@ void SkinningMapping<BasicMapping>::applyJT ( typename In::VecDeriv& out, const 
                     omega = Deriv ( speed[0], speed[1], speed[2] );
                     v = Deriv ( speed[3], speed[4], speed[5] );
 
-                    out[idxReps].getVCenter() += v;// * m_coefs[idxReps][i];
-                    out[idxReps].getVOrientation() += omega;// * m_coefs[idxReps][i];
+                    out[idxReps].getVCenter() += v;
+                    out[idxReps].getVOrientation() += omega;
                 }
             }
             break;
@@ -1213,285 +1036,6 @@ void SkinningMapping<BasicMapping>::draw()
 }
 
 #ifdef SOFA_DEV
-/*
-      template <class BasicMapping>
-      void SkinningMapping<BasicMapping>::computeDqQ ( Mat38& Q, const DualQuat& bn, const Coord& p )
-      {
-        const double& x = p[0];
-        const double& y = p[1];
-        const double& z = p[2];
-        const double& a0 = bn[0][0];
-        const double& b0 = bn[0][1];
-        const double& c0 = bn[0][2];
-        const double& w0 = bn[0][3];
-        const double& ae = bn[1][0];
-        const double& be = bn[1][1];
-        const double& ce = bn[1][2];
-        const double& we = bn[1][3];
-        Q[0][0] =   ae + w0*x - c0*y + b0*z;
-        Q[0][1] = - we + a0*x + b0*y + c0*z;
-        Q[0][2] =   ce - b0*x + a0*y + w0*z;
-        Q[0][3] = - be - c0*x - w0*y + a0*z;
-        Q[0][4] = -a0;
-        Q[0][5] =  w0;
-        Q[0][6] = -c0;
-        Q[0][7] =  b0;
-        Q[1][0] =   be + c0*x + w0*y - a0*z;
-        Q[1][1] = - ce + b0*x - a0*y - w0*z;
-        Q[1][2] = - we + a0*x + b0*y + c0*z;
-        Q[1][3] =   ae + w0*x - c0*y + b0*z;
-        Q[1][4] = -b0;
-        Q[1][5] =  c0;
-        Q[1][6] =  w0;
-        Q[1][7] = -a0;
-        Q[2][0] =   ce - b0*x + a0*y + w0*z;
-        Q[2][1] =   be + c0*x + w0*y - a0*z;
-        Q[2][2] = - ae - w0*x + c0*y - b0*z;
-        Q[2][3] = - we + a0*x + b0*y + c0*z;
-        Q[2][4] = -c0;
-        Q[2][5] = -b0;
-        Q[2][6] =  a0;
-        Q[2][7] =  w0;
-
-        Q *= 2;
-      }
-
-      template <class BasicMapping>
-      void SkinningMapping<BasicMapping>::computeDqN ( Mat88& N, const DualQuat& bn, const DualQuat& b )
-      {
-        const double& a0 = bn[0][0];
-        const double& b0 = bn[0][1];
-        const double& c0 = bn[0][2];
-        const double& w0 = bn[0][3];
-        const double& ae = bn[1][0];
-        const double& be = bn[1][1];
-        const double& ce = bn[1][2];
-        const double& we = bn[1][3];
-        const double& A0 = b[0][0];
-        const double& B0 = b[0][1];
-        const double& C0 = b[0][2];
-        const double& W0 = b[0][3];
-        const double& Ae = b[1][0];
-        const double& Be = b[1][1];
-        const double& Ce = b[1][2];
-        const double& We = b[1][3];
-        const double lQ0l2 = W0*W0 + A0*A0 + B0*B0 + C0*C0;
-        const double lQ0l = sqrt ( lQ0l2 );
-        const double QeQ0 = W0*We + A0*Ae + B0*Be + C0*Ce;
-
-        N[0][0] = w0*w0-1;
-        N[0][1] = a0*w0;
-        N[0][2] = b0*w0;
-        N[0][3] = c0*w0;
-        N[0][4] = 0;
-        N[0][5] = 0;
-        N[0][6] = 0;
-        N[0][7] = 0;
-        N[1][0] = w0*a0;
-        N[1][1] = a0*a0-1;
-        N[1][2] = b0*a0;
-        N[1][3] = c0*a0;
-        N[1][4] = 0;
-        N[1][5] = 0;
-        N[1][6] = 0;
-        N[1][7] = 0;
-        N[2][0] = w0*b0;
-        N[2][1] = a0*b0;
-        N[2][2] = b0*b0-1;
-        N[2][3] = c0*b0;
-        N[2][4] = 0;
-        N[2][5] = 0;
-        N[2][6] = 0;
-        N[2][7] = 0;
-        N[3][0] = w0*c0;
-        N[3][1] = a0*c0;
-        N[3][2] = b0*c0;
-        N[3][3] = c0*c0-1;
-        N[3][4] = 0;
-        N[3][5] = 0;
-        N[3][6] = 0;
-        N[3][7] = 0;
-        N[4][0] = 3*w0*we + ( QeQ0-W0*We ) /lQ0l2;
-        N[4][1] = 3*a0*we + ( Ae*W0-2*A0*We ) /lQ0l2;
-        N[4][2] = 3*b0*we + ( Be*W0-2*B0*We ) /lQ0l2;
-        N[4][3] = 3*c0*we + ( Ce*W0-2*C0*We ) /lQ0l2;
-        N[4][4] = w0*w0-1;
-        N[4][5] = a0*w0;
-        N[4][6] = b0*w0;
-        N[4][7] = c0*w0;
-        N[5][0] = 3*w0*ae + ( We*A0-2*W0*Ae ) /lQ0l2;
-        N[5][1] = 3*a0*ae + ( QeQ0-A0*Ae ) /lQ0l2;
-        N[5][2] = 3*b0*ae + ( Be*A0-2*B0*Ae ) /lQ0l2;
-        N[5][3] = 3*c0*ae + ( Ce*A0-2*C0*Ae ) /lQ0l2;
-        N[5][4] = w0*a0;
-        N[5][5] = a0*a0-1;
-        N[5][6] = b0*a0;
-        N[5][7] = c0*a0;
-        N[6][0] = 3*w0*be + ( We*B0-2*W0*Be ) /lQ0l2;
-        N[6][1] = 3*a0*be + ( Ae*B0-2*A0*Be ) /lQ0l2;
-        N[6][2] = 3*b0*be + ( QeQ0-B0*Be ) /lQ0l2;
-        N[6][3] = 3*c0*be + ( Ce*B0-2*C0*Be ) /lQ0l2;
-        N[6][4] = w0*b0;
-        N[6][5] = a0*b0;
-        N[6][6] = b0*b0-1;
-        N[6][7] = c0*b0;
-        N[7][0] = 3*w0*ce + ( We*C0-2*W0*Ce ) /lQ0l2;
-        N[7][1] = 3*a0*ce + ( Ae*C0-2*A0*Ce ) /lQ0l2;
-        N[7][2] = 3*b0*ce + ( Be*C0-2*B0*Ce ) /lQ0l2;
-        N[7][3] = 3*c0*ce + ( QeQ0-C0*Ce ) /lQ0l2;
-        N[7][4] = w0*c0;
-        N[7][5] = a0*c0;
-        N[7][6] = b0*c0;
-        N[7][7] = c0*c0-1;
-
-        N *= -1/lQ0l;
-      }
-
-      template <class BasicMapping>
-      void SkinningMapping<BasicMapping>::computeDqT ( Mat88& T, const DualQuat& qi0 )
-      {
-        const double& a0 = qi0[0][0];
-        const double& b0 = qi0[0][1];
-        const double& c0 = qi0[0][2];
-        const double& w0 = qi0[0][3];
-        const double& ae = qi0[1][0];
-        const double& be = qi0[1][1];
-        const double& ce = qi0[1][2];
-        const double& we = qi0[1][3];
-
-        T[0][0] = w0;
-        T[0][1] = a0;
-        T[0][2] = b0;
-        T[0][3] = c0;
-        T[0][4] = 0;
-        T[0][5] = 0;
-        T[0][6] = 0;
-        T[0][7] = 0;
-        T[1][0] = -a0;
-        T[1][1] = w0;
-        T[1][2] = -c0;
-        T[1][3] = b0;
-        T[1][4] = 0;
-        T[1][5] = 0;
-        T[1][6] = 0;
-        T[1][7] = 0;
-        T[2][0] = -b0;
-        T[2][1] = c0;
-        T[2][2] = w0;
-        T[2][3] = -a0;
-        T[2][4] = 0;
-        T[2][5] = 0;
-        T[2][6] = 0;
-        T[2][7] = 0;
-        T[3][0] = -c0;
-        T[3][1] = -b0;
-        T[3][2] = a0;
-        T[3][3] = w0;
-        T[3][4] = 0;
-        T[3][5] = 0;
-        T[3][6] = 0;
-        T[3][7] = 0;
-        T[4][0] = we;
-        T[4][1] = ae;
-        T[4][2] = be;
-        T[4][3] = ce;
-        T[4][4] = w0;
-        T[4][5] = a0;
-        T[4][6] = b0;
-        T[4][7] = c0;
-        T[5][0] = -ae;
-        T[5][1] = we;
-        T[5][2] = -ce;
-        T[5][3] = be;
-        T[5][4] = -a0;
-        T[5][5] = w0;
-        T[5][6] = -c0;
-        T[5][7] = b0;
-        T[6][0] = -be;
-        T[6][1] = ce;
-        T[6][2] = we;
-        T[6][3] = -ae;
-        T[6][4] = -b0;
-        T[6][5] = c0;
-        T[6][6] = w0;
-        T[6][7] = -a0;
-        T[7][0] = -ce;
-        T[7][1] = -be;
-        T[7][2] = ae;
-        T[7][3] = we;
-        T[7][4] = -c0;
-        T[7][5] = -b0;
-        T[7][6] = a0;
-        T[7][7] = w0;
-      }
-
-      template <class BasicMapping>
-      void SkinningMapping<BasicMapping>::computeDqL ( Mat86& L, const DualQuat& qi, const Coord& ti )
-      {
-        const double& tx = ti[0];
-        const double& ty = ti[1];
-        const double& tz = ti[2];
-        const double& a0 = qi[0][0];
-        const double& b0 = qi[0][1];
-        const double& c0 = qi[0][2];
-        const double& w0 = qi[0][3];
-        const double& ae = qi[1][0];
-        const double& be = qi[1][1];
-        const double& ce = qi[1][2];
-        const double& we = qi[1][3];
-
-        L[0][0] = -a0;
-        L[0][1] = -b0;
-        L[0][2] = -c0;
-        L[0][3] = 0;
-        L[0][4] = 0;
-        L[0][5] = 0;
-        L[1][0] = w0;
-        L[1][1] = c0;
-        L[1][2] = -b0;
-        L[1][3] = 0;
-        L[1][4] = 0;
-        L[1][5] = 0;
-        L[2][0] = -c0;
-        L[2][1] = w0;
-        L[2][2] = a0;
-        L[2][3] = 0;
-        L[2][4] = 0;
-        L[2][5] = 0;
-        L[3][0] = b0;
-        L[3][1] = -a0;
-        L[3][2] = w0;
-        L[3][3] = 0;
-        L[3][4] = 0;
-        L[3][5] = 0;
-        L[4][0] = -ae-b0*tz+c0*ty;
-        L[4][1] = -be+a0*tz-c0*tx;
-        L[4][2] = -ce-a0*ty+b0*tx;
-        L[4][3] = -a0;
-        L[4][4] = -b0;
-        L[4][5] = -c0;
-        L[5][0] = we+c0*tz+b0*ty;
-        L[5][1] = ce-w0*tz-b0*tx;
-        L[5][2] = -be+w0*ty-c0*tx;
-        L[5][3] = w0;
-        L[5][4] = c0;
-        L[5][5] = -b0;
-        L[6][0] = -ce+w0*tz-a0*ty;
-        L[6][1] = we+c0*tz+a0*tx;
-        L[6][2] = ae-w0*tx-c0*ty;
-        L[6][3] = -c0;
-        L[6][4] = w0;
-        L[6][5] = a0;
-        L[7][0] = be-w0*ty-a0*tz;
-        L[7][1] = -ae+w0*tx-b0*tz;
-        L[7][2] = we+b0*ty+a0*tx;
-        L[7][3] = b0;
-        L[7][4] = -a0;
-        L[7][5] = w0;
-
-        L *= 0.5;
-      }*/
-
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::computeDqL ( Mat86& L, const DUALQUAT& qi, const Coord& ti )
 {
@@ -1888,11 +1432,16 @@ void SkinningMapping<BasicMapping>::insertFrame( const Coord& pos, const Quat& r
     }
 
     // Update weights
-    //TODO only compute for the last frame.
-    nbRefs.setValue ( xfrom.size() );
-    sortReferences ();
-    updateWeights ();
-    computeInitPos ();
+    vector<vector<double> >& m_coefs = * ( coefs.beginEdit() );
+    m_coefs.resize ( xfrom.size() );
+    m_coefs[indexFrom].resize ( xto.size() );
+    for ( unsigned int j=0; j<xto.size(); j++ )
+    {
+        m_coefs[indexFrom][j] = 1 / distances[indexFrom][j];
+        m_coefs[indexFrom][j] = m_coefs[indexFrom][j]*m_coefs[indexFrom][j];
+    }
+
+    // Recompute matrices
     apply( xto, xfrom);
 }
 

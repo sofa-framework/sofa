@@ -301,11 +301,6 @@ public:
     }
 
 #ifdef SOFA_DEV
-    // Dual quat J matrix components
-    //void computeDqQ ( Mat38& Q, const DualQuat& bn, const Coord& p );
-    //void computeDqN ( Mat88& N, const DualQuat& bn, const DualQuat& b );
-    //void computeDqT ( Mat88& T, const DualQuat& qi0 );
-    //void computeDqL ( Mat86& L, const DualQuat& qi, const Coord& ti );
     void computeDqL ( Mat86& L, const DUALQUAT& qi, const Coord& ti );
     void BlendDualQuat ( DUALQUAT& b, DUALQUAT& bn, double& QEQ0, double& Q0Q0, double& Q0, const int& indexp, const VDUALQUAT& qrel, const vector<vector<double> >& w );
 
@@ -326,9 +321,7 @@ public:
     void insertFrame( const Coord& pos, const Quat& rot);
     bool inverseSkinning( InCoord& X0, InCoord& X, const InCoord& Xtarget);
     void computeWeight( VVD& w, VecVecCoord& dw, const Coord& x0);
-
 #endif
-    bool doJustOnce; //TO remove after unitary tests.
 };
 
 using core::Mapping;
