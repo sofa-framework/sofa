@@ -231,6 +231,7 @@ public:
     Data<bool> computeJ;
     Data<bool> computeAllMatrices;
     Data<bool> showDefTensors;
+    Data<unsigned int> displayedFromIndex;
 
 protected:
     Data<int /* = WeightingType*/> wheightingType;
