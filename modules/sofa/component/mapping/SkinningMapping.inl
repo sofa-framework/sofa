@@ -223,11 +223,13 @@ void SkinningMapping<BasicMapping>::sortReferences()
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::init()
 {
+    geoDist=NULL;
     VecInCoord& xfrom = *this->fromModel->getX0();
 #ifdef SOFA_DEV
     if( distanceType.getValue() != DISTANCE_EUCLIDIAN)
     {
         this->getContext()->get ( geoDist );
+        serr << geoDist << "TESTING" << sendl;
         if ( !geoDist )
         {
             serr << "Can not find the geodesical distance component: distances used are euclidian." << sendl;
@@ -1801,18 +1803,23 @@ template <class BasicMapping>
 void SkinningMapping<BasicMapping>::insertFrame( const Coord& pos, const Quat& rot)
 {
     if (!this->toModel->getX0()) return;
+    if (!geoDist)
+    {
+        serr << "NO GEODIST component found: not inserting Frame at " << pos << sendl;
+        return;
+    }
     VecCoord& xto0 = *this->toModel->getX0();
     VecInCoord& xfrom0 = *this->fromModel->getX0();
     //VecCoord& xto = *this->toModel->getX();
     VecInCoord& xfrom = *this->fromModel->getX();
-
     // Insert a new DOF
-    unsigned int indexFrom = xfrom.size();
-    this->fromModel->resize( indexFrom + 1);
+    this->T.resize(xfrom.size()+ 1);
+    this->fromModel->resize( xfrom.size()+ 1);
 
     // Compute the rest position of the frame.
-    InCoord& newX = xfrom[indexFrom];
-    InCoord& newX0 = xfrom0[indexFrom];
+    InCoord& newX = xfrom.back();
+    InCoord& newX0 = xfrom0.back();
+
     InCoord targetDOF( pos, rot);
     inverseSkinning( newX0, newX, targetDOF);
 
@@ -1890,7 +1897,6 @@ bool SkinningMapping<BasicMapping>::inverseSkinning( InCoord& X0, InCoord& X, co
     const vector<Coord>& P0 = initPos;
     const VecCoord& P = xto;
 
-
     int i,j,k,l,nbP=P0.size(),nbDOF=xi.size();
     VDUALQUAT qrel(nbDOF);
     DUALQUAT q,b,bn;
@@ -1906,15 +1912,13 @@ bool SkinningMapping<BasicMapping>::inverseSkinning( InCoord& X0, InCoord& X, co
     VecVecCoord dw(nbDOF);
     for( int i = 0; i < nbDOF; i++) dw[i].resize(1);
     X.getOrientation() = Xtarget.getOrientation();
-
-// init skinning
+    // init skinning
     for(i=0; i<nbDOF; i++)
     {
         XItoQ( q, xi[i]); //update DOF quats
         computeQrel( qrel[i], T[i], q); //update qrel=Tq
     }
-
-// get closest material point
+    // get closest material point
     for(i=0; i<nbP; i++)
     {
         t = Xtarget.getCenter() - P[i]; d = t * t;
@@ -1925,29 +1929,26 @@ bool SkinningMapping<BasicMapping>::inverseSkinning( InCoord& X0, InCoord& X, co
         }
     }
     if(dmin==1E5) return false;
-
-// iterate: pos0(t+1)=pos0(t) + (dPos/dPos0)^-1 (Pos - Pos(t))
+    // iterate: pos0(t+1)=pos0(t) + (dPos/dPos0)^-1 (Pos - Pos(t))
     double eps=1E-5;
     bool stop=false;
     int count=0;
-
     while(!stop)
     {
-// update weigths
+        // update weigths
         computeWeight( w, dw, X0.getCenter());
 
-// update skinning
+        // update skinning
         BlendDualQuat( b, bn, QEQ0, Q0Q0, Q0, 0, qrel, w); //skinning: sum(wTq)
         computeDqRigid( R, t, bn); //update Rigid
 
         qinv[0]=-bn.q0[0]; qinv[1]=-bn.q0[1]; qinv[2]=-bn.q0[2]; qinv[3]=bn.q0[3];
         Multi_Q( X0.getOrientation(), qinv, Xtarget.getOrientation());
         for(k=0; k<3; k++) {X.getCenter()[k] = t[k]; for(j=0; j<3; j++) X.getCenter()[k] += R[k][j] * X0.getCenter()[j];}
-//update skinned points
+        //update skinned points
 
         t = Xtarget.getCenter()- X.getCenter();
-
-//std::cout<<" "<<t*t;
+        //std::cout<<" "<<t*t;
 
         if( t*t < eps || count >= 10) stop = true;
         count++;
@@ -1957,25 +1958,40 @@ bool SkinningMapping<BasicMapping>::inverseSkinning( InCoord& X0, InCoord& X, co
             computeDqN_constants( q0q0T, q0qeT, qeq0T, bn);
             computeDqN( N, q0q0T, q0qeT, qeq0T, QEQ0, Q0Q0, Q0); //update N=d(bn)/d(b)
             computeDqQ( Q, bn, X0.getCenter()); //update Q=d(P)/d(bn)
-            W.fill(0); for(j=0; j<nbDOF; j++) for(k=0; k<4; k++) for(l=0; l<3; l++)
-                    {W[k][l]+=dw[j][0][l]*qrel[j].q0[k]; W[k+4][l]+=dw[j][0][l]*qrel[j].qe[k]; }
-//update W=sum(wrel.dw)=d(b)/d(p)
+            W.fill(0);
+
+            for(j=0; j<nbDOF; j++)
+            {
+                for(k=0; k<4; k++)
+                {
+                    for(l=0; l<3; l++)
+                    {
+                        W[k][l]+=dw[j][0][l]*qrel[j].q0[k];
+                        W[k+4][l]+=dw[j][0][l]*qrel[j].qe[k];
+                    }
+                }
+            }
+            //update W=sum(wrel.dw)=d(b)/d(p)
             NW=N*W; // update NW
-// grad def = d(P)/d(p0)
+            // grad def = d(P)/d(p0)
             U=R+Q*NW; // update A=R+QNW
             invertMatrix(Uinv,U);
-
-// Update pos0
+            // Update pos0
             X0.getCenter() += Uinv * t;
         }
     }
-//std::cout<<"err:"<<t*t;
+    //std::cout<<"err:"<<t*t;
     return true;
 }
 
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::computeWeight( VVD& w, VecVecCoord& dw, const Coord& x0)
 {
+    if (!geoDist)
+    {
+        serr << "Error during init: Geodesical distance component missing." << sendl;
+        return;
+    }
     // Get Distances
     VVD dist;
     GeoVecVecCoord ddist;
