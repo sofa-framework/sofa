@@ -36,6 +36,10 @@
 #endif
 #endif
 
+#if PNG_LIBPNG_VER >= 10209
+#define RECENT_LIBPNG
+#endif
+
 namespace sofa
 {
 
@@ -129,7 +133,11 @@ bool ImagePNG::load(std::string filename)
 
     if (color_type == PNG_COLOR_TYPE_GRAY && bit_depth < 8)
     {
-        png_set_gray_1_2_4_to_8(PNG_reader);
+#ifdef RECENT_LIBPNG
+        png_set_expand_gray_1_2_4_to_8(PNG_reader);
+#else
+        png_set_gray_1_2_4_to_8(PNG_reader);    // deprecated from libpng 1.2.9
+#endif
         changed = true;
     }
 
