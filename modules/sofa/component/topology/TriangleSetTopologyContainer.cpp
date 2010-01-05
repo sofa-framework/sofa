@@ -755,6 +755,127 @@ bool TriangleSetTopologyContainer::checkTopology() const
 #endif
 }
 
+
+bool TriangleSetTopologyContainer::checkConnexity()
+{
+    if(!hasTrianglesAroundEdge())	// this method should only be called when the shell array exists
+    {
+#ifndef NDEBUG
+        sout << "Warning. [TriangleSetTopologyContainer::checkConnexity] TrianglesAroundEdge shell array is empty." << endl;
+#endif
+        createTrianglesAroundEdgeArray();
+    }
+
+    bool end = false;
+    int cpt = 0;
+
+    sofa::helper::vector <TriangleID> tri_T0;
+    sofa::helper::vector <TriangleID> tri_T1;
+    sofa::helper::vector <TriangleID> tri_T2;
+    sofa::helper::vector <TriangleID> tri_Tmp;
+
+    tri_T1.push_back(0);
+    cpt = 1;
+
+    while (!end && cpt < this->getNbTriangles())
+    {
+        // First Step - Create new region
+        for (unsigned int i = 0; i<tri_T1.size(); ++i)
+        {
+            TriangleID triIndex = tri_T1[i];
+            EdgesInTriangle edgesTri = m_edgesInTriangle[ triIndex ];
+
+            for (unsigned int j = 0; j<3; ++j)
+            {
+                sofa::helper::vector<unsigned int> triAEdge = m_trianglesAroundEdge[ edgesTri[j] ];
+                sofa::helper::vector<TriangleID> nextTri;
+
+                if (triAEdge.size() == 1) // reach border
+                    continue;
+                else
+                {
+                    for (unsigned int k = 0; k<triAEdge.size(); ++k)
+                    {
+                        if (triAEdge[k] != triIndex) //not himself
+                            nextTri.push_back(triAEdge[k]);
+                    }
+                }
+
+                // avoid redundancy
+                for (unsigned int k = 0; k<nextTri.size(); ++k)
+                {
+                    bool triFound = false;
+                    TriangleID elem = nextTri[k];
+
+                    for (unsigned int l = 0; l<tri_Tmp.size(); ++l)
+                        if (tri_Tmp[l] == elem)
+                        {
+                            triFound = true;
+                            break;
+                        }
+
+                    if (!triFound)
+                        tri_Tmp.push_back(elem);
+
+                }
+            }
+        }
+
+        // Second Step - Avoid backward direction
+        for (unsigned int i = 0; i<tri_Tmp.size(); ++i)
+        {
+            bool triFound = false;
+            TriangleID elem = tri_Tmp[i];
+
+            for (unsigned int j = 0; j<tri_T0.size(); ++j)
+                if (tri_T0[j] == elem)
+                {
+                    triFound = true;
+                    break;
+                }
+
+            if (!triFound)
+            {
+                for (unsigned int j = 0; j<tri_T1.size(); ++j)
+                    if (tri_T1[j] == elem)
+                    {
+                        triFound = true;
+                        break;
+                    }
+            }
+
+            if (!triFound)
+                tri_T2.push_back(elem);
+        }
+
+        // cpt for connexity
+        cpt +=tri_T2.size();
+
+        if (tri_T2.size() == 0) // reach end
+        {
+            end = true;
+#ifndef NDEBUG
+            sout << "Loop for computing connexity has reach end." << sendl;
+#endif
+        }
+
+        // iterate
+        tri_T0 = tri_T1;
+        tri_T1 = tri_T2;
+        tri_T2.clear();
+        tri_Tmp.clear();
+    }
+
+    if (cpt != this->getNbTriangles())
+    {
+        serr << "Warning: in computing connexity, triangles are missings. There is more than one connexe component." << sendl;
+        return false;
+    }
+
+    return true;
+}
+
+
 bool TriangleSetTopologyContainer::hasTriangles() const
 {
     d_triangle.updateIfDirty();

@@ -67,6 +67,8 @@ public:
 
     virtual void init();
 
+    virtual void reinit();
+
     /** \brief Sends a message to warn that some tetrahedra were added in this topology.
     *
     * \sa addTetrahedraProcess

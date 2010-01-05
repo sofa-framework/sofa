@@ -54,9 +54,11 @@ void InciseAlongPathPerformer::start()
 void InciseAlongPathPerformer::execute()
 {
 
-    if (freezePerformer && currentMethod == 1) // This performer has been freezed
+    if (freezePerformer) // This performer has been freezed
     {
-        startBody=this->interactor->getBodyPicked();
+        if (currentMethod == 1)
+            startBody=this->interactor->getBodyPicked();
+
         return;
     }
 

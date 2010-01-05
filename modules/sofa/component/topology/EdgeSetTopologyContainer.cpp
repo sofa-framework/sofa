@@ -247,6 +247,126 @@ bool EdgeSetTopologyContainer::checkTopology() const
 #endif
 }
 
+
+bool EdgeSetTopologyContainer::checkConnexity()
+{
+    if(!hasEdgesAroundVertex())	// this method should only be called when the shell array exists
+    {
+#ifndef NDEBUG
+        sout << "Warning. [EdgeSetTopologyContainer::checkConnexity] EdgesAroundVertex shell array is empty." << endl;
+#endif
+        createEdgesAroundVertexArray();
+    }
+
+    bool end = false;
+    int cpt = 0;
+
+    sofa::helper::vector <EdgeID> edge_T0;
+    sofa::helper::vector <EdgeID> edge_T1;
+    sofa::helper::vector <EdgeID> edge_T2;
+    sofa::helper::vector <EdgeID> edge_Tmp;
+
+    edge_T1.push_back(0);
+    cpt = 1;
+
+    while (!end && cpt < this->getNbEdges())
+    {
+        // First Step - Create new region
+        for (unsigned int i = 0; i<edge_T1.size(); ++i)
+        {
+            EdgeID edgeIndex = edge_T1[i];
+            Edge edge = this->getEdge(edgeIndex);
+
+            for (unsigned int j = 0; j<2; ++j)
+            {
+                sofa::helper::vector<unsigned int> edgeAVertex = m_edgesAroundVertex[ edge[j] ];
+                sofa::helper::vector<EdgeID> nextEdges;
+
+                if (edgeAVertex.size() == 1) // reach border
+                    continue;
+                else
+                {
+                    for (unsigned int k = 0; k<edgeAVertex.size(); ++k)
+                    {
+                        if (edgeAVertex[k] != edgeIndex) //not himself
+                            nextEdges.push_back(edgeAVertex[k]);
+                    }
+                }
+
+                // avoid redundancy
+                for (unsigned int k = 0; k<nextEdges.size(); ++k)
+                {
+                    bool edgeFound = false;
+                    EdgeID elem = nextEdges[k];
+
+                    for (unsigned int l = 0; l<edge_Tmp.size(); ++l)
+                        if ( elem == edge_Tmp[l])
+                        {
+                            edgeFound = true;
+                            break;
+                        }
+
+                    if (!edgeFound)
+                        edge_Tmp.push_back (elem);
+                }
+            }
+        }
+
+        // Second Step - Avoid backward direction
+        for (unsigned int i = 0; i<edge_Tmp.size(); ++i)
+        {
+            bool edgeFound = false;
+            EdgeID elem = edge_Tmp[i];
+
+            for (unsigned int j = 0; j<edge_T0.size(); ++j)
+                if (edge_T0[j] == elem)
+                {
+                    edgeFound = true;
+                    break;
+                }
+
+            if (!edgeFound)
+            {
+                for (unsigned int j = 0; j<edge_T1.size(); ++j)
+                    if (edge_T1[j] == elem)
+                    {
+                        edgeFound = true;
+                        break;
+                    }
+            }
+
+            if (!edgeFound)
+                edge_T2.push_back(elem);
+        }
+
+        // cpt for connexity
+        cpt +=edge_T2.size();
+
+        if (edge_T2.size() == 0) // reach end
+        {
+            end = true;
+#ifndef NDEBUG
+            sout << "Loop for computing connexity has reach end." << sendl;
+#endif
+        }
+
+        // iterate
+        edge_T0 = edge_T1;
+        edge_T1 = edge_T2;
+        edge_T2.clear();
+        edge_Tmp.clear();
+    }
+
+    if (cpt != this->getNbEdges())
+    {
+        serr << "Warning: in computing connexity, edges are missings. There is more than one connexe component." << sendl;
+        return false;
+    }
+
+    return true;
+}
+
+
 unsigned int EdgeSetTopologyContainer::getNumberOfEdges() const
 {
     d_edge.updateIfDirty();
