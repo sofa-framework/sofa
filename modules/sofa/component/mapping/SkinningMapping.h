@@ -227,10 +227,10 @@ protected:
     Data<Coefs<double> > coefs;
     Data<unsigned int> nbRefs;
 public:
-    Data<bool> displayBlendedFrame;
+    Data<bool> showBlendedFrame;
     Data<bool> computeJ;
     Data<bool> computeAllMatrices;
-    Data<bool> displayDefTensors;
+    Data<bool> showDefTensors;
 
 protected:
     Data<int /* = WeightingType*/> wheightingType;
@@ -243,8 +243,6 @@ protected:
     HexahedronGeodesicalDistance< GeoType>* geoDist;
 #endif
 
-    class Loader;
-    void load ( const char* filename );
     inline void computeInitPos();
     inline void computeDistances();
     inline void sortReferences();
@@ -254,7 +252,6 @@ public:
     virtual ~SkinningMapping();
 
     void init();
-    void parse ( core::objectmodel::BaseObjectDescription* arg );
 
     void apply ( typename Out::VecCoord& out, const typename In::VecCoord& in );
     void applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
