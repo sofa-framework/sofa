@@ -442,7 +442,6 @@ public:
         processTableModifications(d);
         if (!(FLAGS & TABLE_FIXEDSIZE))
         {
-            int oldRows = rhelper::size(d);
             rows = wSize->value();
         }
 
@@ -510,10 +509,11 @@ public:
     void fillTable(const data_type &d)
     {
         int currentNum;
+        int dsize = (int)d.size();
         if (FLAGS & TABLE_HORIZONTAL)
-            currentNum=wTable->numCols() > d.size() ? d.size() : wTable->numCols();
+            currentNum=wTable->numCols() > dsize ? dsize : wTable->numCols();
         else
-            currentNum=wTable->numRows() > d.size()? d.size() : wTable->numRows();
+            currentNum=wTable->numRows() > dsize ? dsize : wTable->numRows();
 
         for (int y=0; y<currentNum; ++y)
             for (int x=0; x<cols; ++x)
