@@ -159,7 +159,6 @@ public:
     typedef typename DualQuatStorage<N, Real>::VDUALQUAT VDUALQUAT;
 #endif
 protected:
-    vector<InCoord> initPosDOFs; // translation and rotation of the blended reference frame i, where i=0..n.
     vector<Coord> initPos; // pos: point coord in the world reference frame
     vector<Coord> rotatedPoints;
 
