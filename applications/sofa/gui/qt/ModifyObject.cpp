@@ -88,7 +88,6 @@ ModifyObject::ModifyObject(
     :QDialog(parent, name, modal, f),
      Id_(Id),
      item_(item_clicked),
-     parent_(parent),
      node(NULL),
      data_(NULL),
      dialogFlags_(dialogFlags),
@@ -101,8 +100,7 @@ ModifyObject::ModifyObject(
      counterWidget(0)
 {
     setCaption(name);
-    //connect ( this, SIGNAL( objectUpdated() ), parent_, SLOT( redraw() ));
-    connect ( this, SIGNAL( dialogClosed(void *) ) , parent_, SLOT( modifyUnlock(void *)));
+
     energy_curve[0]=NULL;
     energy_curve[1]=NULL;
     energy_curve[2]=NULL;
