@@ -922,6 +922,17 @@ void SkinningMapping<BasicMapping>::draw()
 
     if ( this->getShow() )
     {
+
+        /*/ Display  m_reps for each points
+        for ( unsigned int i=0;i<xto.size();i++ )
+                sofa::helper::gl::GlText::draw ( m_reps[nbRefs.getValue() *i+0], xto[i], 0.05 );
+        //*/
+
+        // Display coefs for each points
+        for ( unsigned int i=0; i<xto.size(); i++ )
+            sofa::helper::gl::GlText::draw ( (int)(m_coefs[displayedFromIndex.getValue()%nbRefs.getValue()][i]*100), xto[i], 0.05 );
+        //*/
+
         if ( interpolationType.getValue() != INTERPOLATION_DUAL_QUATERNION )
         {
             glDisable ( GL_LIGHTING );
@@ -947,15 +958,6 @@ void SkinningMapping<BasicMapping>::draw()
         }
     }
 
-    /*/ Display  m_reps for each points
-    for ( unsigned int i=0;i<xto.size();i++ )
-    	sofa::helper::gl::GlText::draw ( m_reps[nbRefs.getValue() *i+0], xto[i], 0.05 );
-    //*/
-
-    // Display coefs for each points
-    for ( unsigned int i=0; i<xto.size(); i++ )
-        sofa::helper::gl::GlText::draw ( (int)(m_coefs[displayedFromIndex.getValue()%nbRefs.getValue()][i]*100), xto[i], 0.05 );
-    //*/
 
 #ifdef SOFA_DEV
     //*  Continuous animation of the reference frames along the beam (between frames i and i+1)
@@ -1482,7 +1484,7 @@ bool SkinningMapping<BasicMapping>::inverseSkinning( InCoord& X0, InCoord& X, co
     Mat83 W,NW;
     double QEQ0,Q0Q0,Q0,d,dmin=1E5;
     Mat44 q0q0T,q0qeT,qeq0T;
-    VVD w(nbDOF);
+    VVD w; w.resize(nbDOF);
     for( int i = 0; i < nbDOF; i++) w[i].resize(xto.size());
     VecVecCoord dw(nbDOF);
     for( int i = 0; i < nbDOF; i++) dw[i].resize(xto.size());
