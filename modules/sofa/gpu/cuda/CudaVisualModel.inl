@@ -249,6 +249,27 @@ void CudaVisualModel< TDataTypes >::updateVisual()
 template<class TDataTypes>
 void CudaVisualModel< TDataTypes >::drawVisual()
 {
+    bool transparent = (matDiffuse.getValue()[3] < 1.0);
+    if (!transparent) internalDraw();
+}
+
+template<class TDataTypes>
+void CudaVisualModel< TDataTypes >::drawTransparent()
+{
+    bool transparent = (matDiffuse.getValue()[3] < 1.0);
+    if (transparent) internalDraw();
+}
+
+template<class TDataTypes>
+void CudaVisualModel< TDataTypes >::drawShadow()
+{
+    bool transparent = (matDiffuse.getValue()[3] < 1.0);
+    if (!transparent /* && getCastShadow() */ ) internalDraw();
+}
+
+template<class TDataTypes>
+void CudaVisualModel< TDataTypes >::internalDraw()
+{
     if (!getContext()->getShowVisualModels()) return;
 
     if (!topology || !state || !state->getX()->size()) return;
@@ -257,6 +278,8 @@ void CudaVisualModel< TDataTypes >::drawVisual()
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     glEnable(GL_LIGHTING);
+
+    bool transparent = (matDiffuse.getValue()[3] < 1.0);
 
     //Enable<GL_BLEND> blending;
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
@@ -273,11 +296,25 @@ void CudaVisualModel< TDataTypes >::drawVisual()
         shininess = 1;
     }
 
+    if (transparent)
+    {
+        ambient[3] = 0;
+        specular[3] = 0;
+        emissive[3] = 0;
+    }
+
     glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT, ambient.ptr());
     glMaterialfv (GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse.ptr());
     glMaterialfv (GL_FRONT_AND_BACK, GL_SPECULAR, specular.ptr());
     glMaterialfv (GL_FRONT_AND_BACK, GL_EMISSION, emissive.ptr());
     glMaterialf (GL_FRONT_AND_BACK, GL_SHININESS, shininess);
+
+    if (transparent)
+    {
+        glEnable(GL_BLEND);
+        glDepthMask(GL_FALSE);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    }
 
     VecCoord& x = *state->getX();
 
@@ -336,6 +373,13 @@ void CudaVisualModel< TDataTypes >::drawVisual()
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
     glDisableClientState(GL_NORMAL_ARRAY);
+    glDisable(GL_LIGHTING);
+
+    if (transparent)
+    {
+        glDisable(GL_BLEND);
+        glDepthMask(GL_TRUE);
+    }
     glDisable(GL_LIGHTING);
 
     if (getContext()->getShowWireFrame())
