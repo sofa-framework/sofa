@@ -213,7 +213,6 @@ protected:
 
     void* Id_;
     Q3ListViewItem* item_;
-    QWidget* parent_;
     core::objectmodel::Base* node;
     core::objectmodel::BaseData* data_;
     const ModifyObjectFlags dialogFlags_;
