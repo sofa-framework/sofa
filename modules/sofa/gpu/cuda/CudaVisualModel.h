@@ -109,7 +109,10 @@ public:
 
     virtual void init();
     virtual void reinit();
+    virtual void internalDraw();
     virtual void drawVisual();
+    virtual void drawTransparent();
+    virtual void drawShadow();
     virtual void updateVisual();
     virtual void updateTopology();
     virtual void updateNormals();
