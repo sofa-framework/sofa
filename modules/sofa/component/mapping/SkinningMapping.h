@@ -60,6 +60,7 @@ using sofa::component::topology::HexahedronGeodesicalDistance;
 
 using sofa::helper::vector;
 using sofa::helper::Quater;
+using sofa::component::topology::Coefs;
 
 #define DISTANCE_EUCLIDIAN 0
 #define DISTANCE_GEODESIC 1
@@ -87,64 +88,6 @@ typedef enum
   INTERPOLATION_LINEAR, INTERPOLATION_DUAL_QUATERNION
 } InterpolationType;*/
 
-template <class T>
-class Coefs: public vector<vector<T> >
-{
-public:
-    Coefs() {};
-
-    std::ostream& write ( std::ostream& os ) const
-    {
-        if ( !this->empty() )
-        {
-            os << "[";
-            typename vector<vector<T> >::const_iterator i = this->begin();
-            os << *i;
-            ++i;
-            for ( ; i!=this->end(); ++i )
-                os << "],[" << *i;
-            os << "]";
-        }
-        return os;
-    }
-
-    std::istream& read ( std::istream& in )
-    {
-        T t;
-        this->clear();
-        while ( in.rdstate() & std::ios_base::eofbit )
-        {
-            char c;
-            in >> c;
-            if ( c == '[' ) break;
-            this->push_back ( vector<T>() );
-            vector<T>& nextElt = this->back();
-            while ( in>>t )
-            {
-                nextElt.push_back ( t );
-            }
-            in >> c; // ']'
-            in >> c; // ','
-        }
-        if ( in.rdstate() & std::ios_base::eofbit )
-        {
-            in.clear();
-        }
-        return in;
-    }
-
-    /// Output stream
-    inline friend std::ostream& operator<< ( std::ostream& os, const Coefs<T>& vec )
-    {
-        return vec.write ( os );
-    }
-
-    /// Input stream
-    inline friend std::istream& operator>> ( std::istream& in, Coefs<T>& vec )
-    {
-        return vec.read ( in );
-    }
-};
 
 
 template <class BasicMapping>
@@ -202,7 +145,7 @@ public:
     typedef Quater<InReal> Quat;
     typedef sofa::helper::vector< VecCoord > VecVecCoord;
     typedef vector<double> VD;
-    typedef vector<VD> VVD;
+    typedef Coefs<double> VVD;
 
 #ifdef SOFA_DEV
     // These typedef are here to avoid compilation pb encountered with ResizableExtVect Type.
@@ -238,7 +181,7 @@ protected:
     Data<int /* = InterpolationType*/> interpolationType;
     Data<int /* = DistanceType*/> distanceType;
     bool computeWeights;
-    vector<vector<double> > distances;
+    Coefs<double> distances;
     vector<vector<Coord> > distGradients;
 #ifdef SOFA_DEV
     HexahedronGeodesicalDistance< GeoType>* geoDist;
