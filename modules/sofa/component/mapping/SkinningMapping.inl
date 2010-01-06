@@ -90,14 +90,8 @@ void SkinningMapping<BasicMapping>::computeInitPos ( )
 {
     const VecCoord& xto = ( this->toModel->getX0() == NULL)?*this->toModel->getX():*this->toModel->getX0();
     const VecInCoord& xfrom = *this->fromModel->getX0();
-    initPosDOFs.resize ( xfrom.size() );
 
     const vector<int>& m_reps = repartition.getValue();
-
-    for ( unsigned int i = 0; i < xfrom.size(); i++ )
-    {
-        initPosDOFs[i] = xfrom[i];
-    }
 
     switch ( interpolationType.getValue() )
     {
@@ -158,12 +152,6 @@ void SkinningMapping<BasicMapping>::computeDistances ()
     case DISTANCE_HARMONIC:
     {
 #ifdef SOFA_DEV
-        if ( !geoDist )
-        {
-            serr << "Error during init: Geodesical distance component missing." << sendl;
-            break;
-        }
-
         // Force Vec3fType or Vec3dType of 'xto' to avoid compilation problems with ResizableExtVectorType.
         GeoVecCoord tmpTo, tmpFrom;
         tmpFrom.resize ( xfrom.size() );
@@ -264,7 +252,7 @@ void SkinningMapping<BasicMapping>::init()
         this->T.resize ( xfrom.size() );
         for ( unsigned int i = 0; i < xfrom.size(); i++ )
         {
-            XItoQ( qi0, initPosDOFs[i]);
+            XItoQ( qi0, xfrom[i]);
             computeDqT ( this->T[i], qi0 );
         }
 
@@ -283,7 +271,6 @@ template <class BasicMapping>
 void SkinningMapping<BasicMapping>::clear()
 {
     this->initPos.clear();
-    this->initPosDOFs.clear();
 }
 
 template <class BasicMapping>
@@ -1372,6 +1359,9 @@ void SkinningMapping<BasicMapping>::insertFrame( const Coord& pos, const Quat& r
     inverseSkinning( newX0, newX, targetDOF);
 
     serr << "diff newX / targetX: " << (newX - targetDOF).norm() << sendl;
+    serr << "newX0: " << newX0 << sendl;
+    serr << "newX: " << newX << sendl;
+    serr << "targetDOF: " << targetDOF << sendl;
 
     // Insert a new DOF
     this->fromModel->resize( indexFrom + 1);
@@ -1401,6 +1391,7 @@ void SkinningMapping<BasicMapping>::insertFrame( const Coord& pos, const Quat& r
         {
             distGradients[indexFrom][j] = xto0[j] - newX0.getCenter();
             distances[indexFrom][j] = distGradients[indexFrom][j].norm();
+            serr << "distance["<<j<<"]: " << distances[indexFrom][j] << ", ("<< xto0[j] <<")" << sendl;
             distGradients[indexFrom][j].normalize();
         }
         break;
@@ -1439,7 +1430,7 @@ void SkinningMapping<BasicMapping>::insertFrame( const Coord& pos, const Quat& r
     m_coefs[indexFrom].resize ( xto.size() );
     for ( unsigned int j=0; j<xto.size(); j++ )
     {
-        m_coefs[indexFrom][j] = 1 / distances[indexFrom][j];
+        m_coefs[indexFrom][j] = (distances[indexFrom][j])?1 / distances[indexFrom][j]:1.0;
         m_coefs[indexFrom][j] = m_coefs[indexFrom][j]*m_coefs[indexFrom][j];
     }
 
@@ -1464,13 +1455,11 @@ template <class BasicMapping>
 bool SkinningMapping<BasicMapping>::inverseSkinning( InCoord& X0, InCoord& X, const InCoord& Xtarget)
 // compute position in reference configuration from deformed position
 {
-    VecCoord& xto = *this->toModel->getX0();
-    VecInCoord& xfrom = *this->fromModel->getX0();
-    const VecInCoord& xi = xfrom;
+    const VecInCoord& xi = *this->fromModel->getX();
     const VMat88& T = this->T;
-    //const VecInCoord& xi0 = initPosDOFs;
-    const vector<Coord>& P0 = initPos;
-    const VecCoord& P = xto;
+    //const VecInCoord& xi0 = xfrom0;
+    const VecCoord& P0 = *this->toModel->getX0();
+    const VecCoord& P = *this->toModel->getX();
 
 
     int i,j,k,l,nbP=P0.size(),nbDOF=xi.size();
@@ -1485,9 +1474,9 @@ bool SkinningMapping<BasicMapping>::inverseSkinning( InCoord& X0, InCoord& X, co
     double QEQ0,Q0Q0,Q0,d,dmin=1E5;
     Mat44 q0q0T,q0qeT,qeq0T;
     VVD w; w.resize(nbDOF);
-    for( int i = 0; i < nbDOF; i++) w[i].resize(xto.size());
+    for( int i = 0; i < nbDOF; i++) w[i].resize(P.size());
     VecVecCoord dw(nbDOF);
-    for( int i = 0; i < nbDOF; i++) dw[i].resize(xto.size());
+    for( int i = 0; i < nbDOF; i++) dw[i].resize(P.size());
     X.getOrientation() = Xtarget.getOrientation();
 
 // init skinning
