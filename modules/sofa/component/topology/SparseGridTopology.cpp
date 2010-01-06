@@ -208,7 +208,8 @@ void SparseGridTopology::buildAsFinest(  )
     }
     else
     {
-        std::string _filename=fileTopology.getValue();
+        std::string _filename = fileTopology.getFullPath();
+
         if (vertices.getValue().empty() )
         {
             if (_filename.empty())
