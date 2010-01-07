@@ -1352,21 +1352,24 @@ void SkinningMapping<BasicMapping>::insertFrame( const Coord& pos, const Quat& r
     //VecCoord& xto = *this->toModel->getX();
     VecInCoord& xfrom = *this->fromModel->getX();
     unsigned int indexFrom = xfrom.size();
+    MechanicalState<StdRigidTypes<N, Real> >* mstateFrom = dynamic_cast<MechanicalState<StdRigidTypes<N, Real> >* >( this->fromModel);
+    if( !mstateFrom) { serr << "Error: try to insert a new frame on fromModel, which is not a mechanical state !" << sendl; return;}
 
     // Compute the rest position of the frame.
     InCoord newX, newX0;
     InCoord targetDOF( pos, rot);
     inverseSkinning( newX0, newX, targetDOF);
-
+    /*
     serr << "diff newX / targetX: " << (newX - targetDOF).norm() << sendl;
     serr << "newX0: " << newX0 << sendl;
     serr << "newX: " << newX << sendl;
     serr << "targetDOF: " << targetDOF << sendl;
-
+    */
     // Insert a new DOF
     this->fromModel->resize( indexFrom + 1);
     xfrom[indexFrom] = newX;
     xfrom0[indexFrom] = newX0;
+    (*mstateFrom->getXReset())[indexFrom] = newX0;
 
     // Resize T
     if ( interpolationType.getValue() == INTERPOLATION_DUAL_QUATERNION )
@@ -1391,8 +1394,9 @@ void SkinningMapping<BasicMapping>::insertFrame( const Coord& pos, const Quat& r
         {
             distGradients[indexFrom][j] = xto0[j] - newX0.getCenter();
             distances[indexFrom][j] = distGradients[indexFrom][j].norm();
-            serr << "distance["<<j<<"]: " << distances[indexFrom][j] << ", ("<< xto0[j] <<")" << sendl;
+            //serr << "distance["<<j<<"]: " << distances[indexFrom][j] << ", ("<< xto0[j] <<")" << sendl;
             distGradients[indexFrom][j].normalize();
+            distGradients[indexFrom][j] = - distGradients[indexFrom][j] / (distances[indexFrom][j]*distances[indexFrom][j]) * 2.0;
         }
         break;
     }
@@ -1430,8 +1434,13 @@ void SkinningMapping<BasicMapping>::insertFrame( const Coord& pos, const Quat& r
     m_coefs[indexFrom].resize ( xto.size() );
     for ( unsigned int j=0; j<xto.size(); j++ )
     {
-        m_coefs[indexFrom][j] = (distances[indexFrom][j])?1 / distances[indexFrom][j]:1.0;
-        m_coefs[indexFrom][j] = m_coefs[indexFrom][j]*m_coefs[indexFrom][j];
+        if( !distances[indexFrom][j])
+            m_coefs[indexFrom][j] = 0xFFFF;
+        else
+        {
+            m_coefs[indexFrom][j] = 1.0 / distances[indexFrom][j];
+            m_coefs[indexFrom][j] = m_coefs[indexFrom][j]*m_coefs[indexFrom][j];
+        }
     }
 
     // Recompute matrices

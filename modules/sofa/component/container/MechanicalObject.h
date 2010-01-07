@@ -172,6 +172,7 @@ public:
     virtual VecCoord* getXfree() { f_Xfree->beginEdit(); return xfree; }
     virtual VecDeriv* getVfree() { f_Vfree->beginEdit(); return vfree;  }
     VecCoord* getX0() { f_X0->beginEdit(); return x0;}
+    virtual VecCoord* getXReset() { return reset_position; }
 
     virtual const VecCoord* getX()  const { return x;  }
     virtual const VecCoord* getX0()  const { return x0;  }
@@ -183,6 +184,7 @@ public:
     virtual const VecConst* getC() const { return c; }
     virtual const VecCoord* getXfree() const { return xfree; }
     virtual const VecDeriv* getVfree()  const { return vfree;  }
+    virtual const VecCoord* getXReset() const { return reset_position; }
 
     virtual void init();
     virtual void reinit();
