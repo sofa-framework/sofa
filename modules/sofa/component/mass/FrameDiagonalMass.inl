@@ -489,35 +489,19 @@ void FrameDiagonalMass<DataTypes, MassType>::addForce ( VecDeriv& f, const VecCo
 template <class DataTypes, class MassType>
 void FrameDiagonalMass<DataTypes, MassType>::draw()
 {
-
     const MassVector &masses= f_mass.getValue();
     if ( !this->getContext()->getShowBehaviorModels() ) return;
+    glDisable ( GL_LIGHTING );
+    glDisable ( GL_TEXTURE );
     VecCoord& x = *this->mstate->getX();
     Real totalMass=0;
     RigidTypes::Vec3 gravityCenter;
     for ( unsigned int i=0; i<x.size(); i++ )
     {
         const Quat& orient = x[i].getOrientation();
-        //orient[3] = -orient[3];
         const RigidTypes::Vec3& center = x[i].getCenter();
-        RigidTypes::Vec3 len;
-        // The moment of inertia of a box is:
-        //   m->_I(0,0) = M/REAL(12.0) * (ly*ly + lz*lz);
-        //   m->_I(1,1) = M/REAL(12.0) * (lx*lx + lz*lz);
-        //   m->_I(2,2) = M/REAL(12.0) * (lx*lx + ly*ly);
-        // So to get lx,ly,lz back we need to do
-        //   lx = sqrt(12/M * (m->_I(1,1)+m->_I(2,2)-m->_I(0,0)))
-        // Note that RigidMass inertiaMatrix is already divided by M
-        /*
-        double m00 = masses[i].inertiaMatrix[0][0];
-        double m11 = masses[i].inertiaMatrix[1][1];
-        double m22 = masses[i].inertiaMatrix[2][2];
-        */
-        len[0] = 1.0; //sqrt ( m11+m22-m00 );
-        len[1] = 1.0; //sqrt ( m00+m22-m11 );
-        len[2] = 1.0; //sqrt ( m00+m11-m22 );
 
-        helper::gl::Axis::draw ( center, orient, len*showAxisSize.getValue() );
+        helper::gl::Axis::draw ( center, orient, Vec3(1.0, 1.0, 1.0)*showAxisSize.getValue() );
 
         gravityCenter += ( center * masses[i].mass );
         totalMass += masses[i].mass;
