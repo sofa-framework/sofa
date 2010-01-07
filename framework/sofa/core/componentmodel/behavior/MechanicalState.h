@@ -114,6 +114,9 @@ public:
     virtual VecCoord* getX() = 0;
     /// Return the current position vector (read-write access).
     virtual VecCoord* getX0() = 0;
+    /// Return the current reset position vector (read-write access)
+    /// (return NULL if the state does not store rest position .
+    virtual VecCoord* getXReset() = 0;
     // Mechanical State does not store any normal
     virtual VecCoord* getN() { return NULL; };
 
@@ -135,6 +138,9 @@ public:
     virtual const VecDeriv* getVfree() const = 0;
     /// Return the current position vector (read-only access).
     virtual const VecCoord* getX0()  const = 0;
+    /// Return the current reset position vector (read-write access)
+    /// (return NULL if the state does not store rest position .
+    virtual const VecCoord* getXReset() const = 0;
     /// Return the initial velocity vector (read-only access).
     virtual const VecDeriv* getV0()  const = 0;
     // Mechanical State does not store any normal
