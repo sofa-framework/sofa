@@ -491,9 +491,10 @@ void FrameDiagonalMass<DataTypes, MassType>::draw()
 {
     const MassVector &masses= f_mass.getValue();
     if ( !this->getContext()->getShowBehaviorModels() ) return;
+    VecCoord& x = *this->mstate->getX();
+    if( x.size() != masses.size()) return;
     glDisable ( GL_LIGHTING );
     glDisable ( GL_TEXTURE );
-    VecCoord& x = *this->mstate->getX();
     Real totalMass=0;
     RigidTypes::Vec3 gravityCenter;
     for ( unsigned int i=0; i<x.size(); i++ )
