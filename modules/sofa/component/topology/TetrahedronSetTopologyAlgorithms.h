@@ -68,7 +68,7 @@ public:
     virtual void init();
 
     void removeTetra(sofa::helper::vector<TetraID>& ind_ta);
-    void subDivideTetrahedronsAlongWithPlane();
+    void subDivideTetrahedronsAlongWithPlane() {};
     void subDivideTetrahedronAlongWithPlane(TetraID ind_ta, sofa::defaulttype::Vec<3,Real>& c, sofa::defaulttype::Vec<3,Real>& normal);
     void subDivideTetrahedronsAlongWithPlane(sofa::helper::vector<TetraID>& ind_ta, sofa::defaulttype::Vec<3,Real>& c, sofa::defaulttype::Vec<3,Real>& normal, SeqTetrahedra& subTetra);
 
