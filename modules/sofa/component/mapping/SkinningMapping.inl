@@ -186,22 +186,27 @@ void SkinningMapping<BasicMapping>::sortReferences()
     for ( unsigned int i=0; i<nbRefs.getValue() *xto.size(); i++ )
         m_reps[i] = -1;
 
-    for ( unsigned int i=0; i<xfrom.size(); i++ )
+    if( interpolationType.getValue() == INTERPOLATION_LINEAR)
     {
-        for ( unsigned int j=0; j<xto.size(); j++ )
-        {
-            for ( unsigned int k=0; k<nbRef; k++ )
-            {
-                const int idxReps=m_reps[nbRef*j+k];
-                if ( ( idxReps == -1 ) || ( distances[i][j] < distances[idxReps][j] ) )
+        for ( unsigned int i=0; i<xfrom.size(); i++ )
+            for ( unsigned int j=0; j<xto.size(); j++ )
+                for ( unsigned int k=0; k<nbRef; k++ )
                 {
-                    for ( unsigned int m=nbRef-1 ; m>k ; m-- )
-                        m_reps[nbRef *j+m] = m_reps[nbRef *j+m-1];
-                    m_reps[nbRef *j+k] = i;
-                    break;
+                    const int idxReps=m_reps[nbRef*j+k];
+                    if ( ( idxReps == -1 ) || ( distances[i][j] < distances[idxReps][j] ) )
+                    {
+                        for ( unsigned int m=nbRef-1 ; m>k ; m-- )
+                            m_reps[nbRef *j+m] = m_reps[nbRef *j+m-1];
+                        m_reps[nbRef *j+k] = i;
+                        break;
+                    }
                 }
-            }
-        }
+    }
+    else if( INTERPOLATION_DUAL_QUATERNION)
+    {
+        for ( unsigned int i=0; i<xfrom.size(); i++ )
+            for ( unsigned int j=0; j<xto.size(); j++ )
+                m_reps[nbRef *j+i] = i;
     }
 }
 
@@ -209,7 +214,6 @@ void SkinningMapping<BasicMapping>::sortReferences()
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::init()
 {
-    VecInCoord& xfrom = *this->fromModel->getX0();
 #ifdef SOFA_DEV
     if( distanceType.getValue() != DISTANCE_EUCLIDIAN)
     {
@@ -223,12 +227,13 @@ void SkinningMapping<BasicMapping>::init()
 #else
     distanceType.setValue( DISTANCE_EUCLIDIAN);
 #endif
+    VecInCoord& xfrom = *this->fromModel->getX0();
     if ( this->initPos.empty() && this->toModel!=NULL && computeWeights==true && coefs.getValue().size() ==0 )
     {
         if ( wheightingType.getValue() == WEIGHT_LINEAR || wheightingType.getValue() == WEIGHT_HERMITE )
             nbRefs.setValue ( 2 );
 
-        if( xfrom.size() < nbRefs.getValue())
+        if( xfrom.size() < nbRefs.getValue() || interpolationType.getValue() == INTERPOLATION_DUAL_QUATERNION)
             nbRefs.setValue ( xfrom.size() );
 
         computeDistances();
@@ -237,7 +242,26 @@ void SkinningMapping<BasicMapping>::init()
         computeInitPos ();
 
 #ifdef SOFA_DEV
-        this->J.resize ( xfrom.size() );
+        if ( interpolationType.getValue() == INTERPOLATION_DUAL_QUATERNION )
+        {
+            if( computeJ.getValue() || computeAllMatrices.getValue())
+                this->J.resize ( xfrom.size() );
+
+            DUALQUAT qi0;
+            this->T.resize ( xfrom.size() );
+            for ( unsigned int i = 0; i < xfrom.size(); i++ )
+            {
+                XItoQ( qi0, xfrom[i]);
+                computeDqT ( this->T[i], qi0 );
+            }
+
+            const VecCoord& xto = *this->toModel->getX();
+            this->vol.resize( xto.size());
+            for( unsigned int i = 0; i < xto.size(); i++) this->vol[i] = 1.0;
+            this->volMass.resize( xto.size());
+            for( unsigned int i = 0; i < xto.size(); i++) this->volMass[i] = 1.0;
+
+        }
 #endif
     }
     else if ( computeWeights == false || coefs.getValue().size() !=0 )
@@ -245,25 +269,6 @@ void SkinningMapping<BasicMapping>::init()
         computeInitPos();
     }
 
-#ifdef SOFA_DEV
-    if ( interpolationType.getValue() == INTERPOLATION_DUAL_QUATERNION )
-    {
-        DUALQUAT qi0;
-        this->T.resize ( xfrom.size() );
-        for ( unsigned int i = 0; i < xfrom.size(); i++ )
-        {
-            XItoQ( qi0, xfrom[i]);
-            computeDqT ( this->T[i], qi0 );
-        }
-
-        const VecCoord& xto = *this->toModel->getX();
-        this->vol.resize( xto.size());
-        for( unsigned int i = 0; i < xto.size(); i++) this->vol[i] = 1.0;
-        this->volMass.resize( xto.size());
-        for( unsigned int i = 0; i < xto.size(); i++) this->volMass[i] = 1.0;
-
-    }
-#endif
     this->BasicMapping::init();
 }
 
@@ -340,20 +345,24 @@ void SkinningMapping<BasicMapping>::updateWeights ()
     {
         for ( unsigned int j=0; j<xto.size(); j++ )
         {
-            for ( unsigned int i=0; i<xfrom.size(); i++ )
-                m_coefs[i][j] = 1 / distances[i][j];
-            //m_coefs.normalize();
+            for ( unsigned int i=0; i<nbRefs.getValue(); i++ )
+            {
+                int indexFrom = m_reps[nbRefs.getValue() *j + i];
+                m_coefs[indexFrom][j] = 1 / (distances[indexFrom][j]*distances[indexFrom][j]);
+                if( distanceType.getValue() == DISTANCE_EUCLIDIAN)
+                    distGradients[indexFrom][j] = - distGradients[indexFrom][j] / (double)(distances[indexFrom][j]*distances[indexFrom][j]*distances[indexFrom][j]) * 2.0;
+            }
+
+            /* TODO normalize later. Store the weights to be able to recompute the coeffs as the normalized weights (for each frame) even when we insert a new frame
             //normalize the coefs vector such as the sum is equal to 1
             double norm=0.0;
-            for ( unsigned int i=0; i<xfrom.size(); i++ )
-                norm += m_coefs[i][j]*m_coefs[i][j];
+            for ( unsigned int i=0;i<xfrom.size();i++ )
+              norm += m_coefs[i][j];
             norm = helper::rsqrt ( norm );
 
-            for ( unsigned int i=0; i<xfrom.size(); i++ )
-            {
-                m_coefs[i][j] /= norm;
-                m_coefs[i][j] = m_coefs[i][j]*m_coefs[i][j];
-            }
+            for ( unsigned int i=0;i<xfrom.size();i++ )
+              m_coefs[i][j] /= norm;
+            //*/
         }
 
         break;
@@ -906,6 +915,7 @@ void SkinningMapping<BasicMapping>::draw()
     const typename In::VecCoord& xfrom = *this->fromModel->getX();
     const vector<int>& m_reps = repartition.getValue();
     const vector<vector<double> >& m_coefs = coefs.getValue();
+    const unsigned int nbRef = nbRefs.getValue();
 
     if ( this->getShow() )
     {
@@ -917,7 +927,7 @@ void SkinningMapping<BasicMapping>::draw()
 
         // Display coefs for each points
         for ( unsigned int i=0; i<xto.size(); i++ )
-            sofa::helper::gl::GlText::draw ( (int)(m_coefs[displayedFromIndex.getValue()%nbRefs.getValue()][i]*100), xto[i], 0.05 );
+            sofa::helper::gl::GlText::draw ( (int)(m_coefs[m_reps[nbRef * i + displayedFromIndex.getValue()%nbRefs.getValue()]][i]*10000), xto[i], 0.05 );
         //*/
 
         if ( interpolationType.getValue() != INTERPOLATION_DUAL_QUATERNION )
@@ -1344,6 +1354,7 @@ void SkinningMapping<BasicMapping>::computeDqT ( Mat88& T, const DUALQUAT& qi0 )
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::insertFrame( const Coord& pos, const Quat& rot)
 {
+    return; // TODO remove this temporary call
     if (!this->toModel->getX0()) return;
     // Get references
     VecCoord& xto0 = *this->toModel->getX0();
@@ -1396,7 +1407,10 @@ void SkinningMapping<BasicMapping>::insertFrame( const Coord& pos, const Quat& r
             distances[indexFrom][j] = distGradients[indexFrom][j].norm();
             //serr << "distance["<<j<<"]: " << distances[indexFrom][j] << ", ("<< xto0[j] <<")" << sendl;
             distGradients[indexFrom][j].normalize();
-            distGradients[indexFrom][j] = - distGradients[indexFrom][j] / (distances[indexFrom][j]*distances[indexFrom][j]) * 2.0;
+            if( distances[indexFrom][j])
+                distGradients[indexFrom][j] = - distGradients[indexFrom][j] / (distances[indexFrom][j]*distances[indexFrom][j]*distances[indexFrom][j]) * 2.0;
+            else
+                distGradients[indexFrom][j] = - Coord( 0xFFF, 0xFFF, 0xFFF);
         }
         break;
     }
@@ -1435,12 +1449,9 @@ void SkinningMapping<BasicMapping>::insertFrame( const Coord& pos, const Quat& r
     for ( unsigned int j=0; j<xto.size(); j++ )
     {
         if( !distances[indexFrom][j])
-            m_coefs[indexFrom][j] = 0xFFFF;
+            m_coefs[indexFrom][j] = 0xFFF;
         else
-        {
-            m_coefs[indexFrom][j] = 1.0 / distances[indexFrom][j];
-            m_coefs[indexFrom][j] = m_coefs[indexFrom][j]*m_coefs[indexFrom][j];
-        }
+            m_coefs[indexFrom][j] = 1.0 / (distances[indexFrom][j]*distances[indexFrom][j]);
     }
 
     // Recompute matrices
@@ -1466,7 +1477,7 @@ bool SkinningMapping<BasicMapping>::inverseSkinning( InCoord& X0, InCoord& X, co
 {
     const VecInCoord& xi = *this->fromModel->getX();
     const VMat88& T = this->T;
-    //const VecInCoord& xi0 = xfrom0;
+    //const VecInCoord& xi0 = *this->fromModel->getX0();
     const VecCoord& P0 = *this->toModel->getX0();
     const VecCoord& P = *this->toModel->getX();
 
@@ -1556,17 +1567,41 @@ bool SkinningMapping<BasicMapping>::inverseSkinning( InCoord& X0, InCoord& X, co
 }
 
 template <class BasicMapping>
-void SkinningMapping<BasicMapping>::computeWeight( VVD& w, VecVecCoord& dw, const Coord& x0)
+void SkinningMapping<BasicMapping>::computeWeight( VVD& /*w*/, VecVecCoord& /*dw*/, const Coord& /*x0*/)
 {
+    /*
+    const VecInCoord& xfrom0 = *this->fromModel->getX0();
+    // Get Distances
     VVD dist;
     GeoVecVecCoord ddist;
-    GeoVecCoord goals;
-    // Get Distances
-    if( wheightingType.getValue() == WEIGHT_INVDIST_SQUARE)
-    {
-        goals.push_back( x0);
-        geoDist->getDistances ( dist, ddist, goals );
-    }
+
+    switch ( distanceType.getValue() )
+    	{
+    	case DISTANCE_EUCLIDIAN:
+    	{
+    		for( int i = 0; i < xfrom0.size(); i++)
+    		{
+    			ddist[i][0] = x0 - xfrom0[i]();
+    			dist[i][0] = ddist[i][0].norm();
+    			//serr << "distance["<<j<<"]: " << distances[indexFrom][j] << ", ("<< xto0[j] <<")" << sendl;
+    			ddist[i][0].normalize();
+    			if( dist[i][0])
+    				ddist[i][0] = - ddist[i][0] / (dist[i][0]*dist[i][0]*dist[i][0]) * 2.0;
+    			else
+    				ddist[i][0] = - Coord( 0xFFF, 0xFFF, 0xFFF);
+    		}
+    		break;
+    	}
+    	case DISTANCE_GEODESIC:
+    	case DISTANCE_HARMONIC:
+    	{
+    		GeoVecCoord goals;
+    		goals.push_back( x0);
+    		geoDist->getDistances ( dist, ddist, goals );
+    		break;
+    	}
+    	default:{}
+    	}
 
     // Compute Weights
     VecCoord& xto0 = *this->toModel->getX0();
@@ -1576,74 +1611,74 @@ void SkinningMapping<BasicMapping>::computeWeight( VVD& w, VecVecCoord& dw, cons
     {
     case WEIGHT_LINEAR:
     {
-        for ( unsigned int j=0; j<xto0.size(); j++ )
-        {
-            for ( unsigned int i=0; i<xfrom0.size(); i++ )
-            {
-                Vec3d r1r2, r1p;
-                r1r2 = xfrom0[(i+1)%(xfrom0.size())].getCenter() - xfrom0[i].getCenter();
-                r1p  = xto0[j] - xfrom0[i].getCenter();
-                double r1r2NormSquare = r1r2.norm()*r1r2.norm();
-                double wi = ( r1r2*r1p ) / ( r1r2NormSquare);
+    	for ( unsigned int j=0;j<xto0.size();j++ )
+    		{
+    			for ( unsigned int i=0;i<xfrom0.size();i++ )
+    				{
+    					Vec3d r1r2, r1p;
+    					r1r2 = xfrom0[(i+1)%(xfrom0.size())].getCenter() - xfrom0[i].getCenter();
+    					r1p  = xto0[j] - xfrom0[i].getCenter();
+    					double r1r2NormSquare = r1r2.norm()*r1r2.norm();
+    					double wi = ( r1r2*r1p ) / ( r1r2NormSquare);
 
-                // Abscisse curviligne
-                w[i][j]                   = ( 1 - wi );
-                w[(i+1)%(xfrom0.size())][j] = wi;
-                dw[i][j]                   = -r1r2 / r1r2NormSquare;
-                dw[(i+1)%(xfrom0.size())][j] = r1r2 / r1r2NormSquare;
-            }
-        }
-        break;
+    					// Abscisse curviligne
+    					w[i][j]                   = ( 1 - wi );
+    					w[(i+1)%(xfrom0.size())][j] = wi;
+    					dw[i][j]                   = -r1r2 / r1r2NormSquare;
+    					dw[(i+1)%(xfrom0.size())][j] = r1r2 / r1r2NormSquare;
+    				}
+    		}
+    	break;
     }
     case WEIGHT_INVDIST_SQUARE:
     {
-        for ( unsigned int j=0; j<xto0.size(); j++ )
-        {
-            for ( unsigned int i=0; i<xfrom0.size(); i++ )
-                w[i][j] = 1 / dist[i][j];
-            //m_coefs.normalize();
-            //normalize the coefs vector such as the sum is equal to 1
-            double norm=0.0;
-            for ( unsigned int i=0; i<xfrom0.size(); i++ )
-                norm += w[i][j]*w[i][j];
-            norm = helper::rsqrt ( norm );
+    	for ( unsigned int j=0;j<xto0.size();j++ )
+    	{
+    		for ( unsigned int i=0;i<xfrom0.size();i++ )
+    			w[i][j] = 1 / dist[i][j];
+    		//m_coefs.normalize();
+    		//normalize the coefs vector such as the sum is equal to 1
+    		double norm=0.0;
+    		for ( unsigned int i=0;i<xfrom0.size();i++ )
+    			norm += w[i][j]*w[i][j];
+    		norm = helper::rsqrt ( norm );
 
-            for ( unsigned int i=0; i<xfrom0.size(); i++ )
-            {
-                w[i][j] /= norm;
-                w[i][j] = w[i][j]*w[i][j];
-                dw[i][j] = ddist[i][j];
-            }
-        }
+    		for ( unsigned int i=0;i<xfrom0.size();i++ )
+    		{
+    			w[i][j] /= norm;
+    			w[i][j] = w[i][j]*w[i][j];
+    			dw[i][j] = ddist[i][j];
+    		}
+    	}
 
-        break;
+    	break;
     }
     case WEIGHT_HERMITE:
     {
-        for ( unsigned int j=0; j<xto0.size(); j++ )
-        {
-            for ( unsigned int i=0; i<xfrom0.size(); i++ )
-            {
-                Vec3d r1r2, r1p;
-                double wi;
-                r1r2 = xfrom0[(i+1)%xfrom0.size()].getCenter() - xfrom0[i].getCenter();
-                r1p  = xto0[j] - xfrom0[i].getCenter();
-                wi = ( r1r2*r1p ) / ( r1r2.norm() *r1r2.norm() );
+    	for ( unsigned int j=0;j<xto0.size();j++ )
+    	{
+    		for ( unsigned int i=0;i<xfrom0.size();i++ )
+    		{
+    			Vec3d r1r2, r1p;
+    			double wi;
+    			r1r2 = xfrom0[(i+1)%xfrom0.size()].getCenter() - xfrom0[i].getCenter();
+    			r1p  = xto0[j] - xfrom0[i].getCenter();
+    			wi = ( r1r2*r1p ) / ( r1r2.norm() *r1r2.norm() );
 
-                // Fonctions d'Hermite
-                w[i][j]                   = 1-3*wi*wi+2*wi*wi*wi;
-                w[(i+1)%(xfrom0.size())][j] = 3*wi*wi-2*wi*wi*wi;
+    			// Fonctions d'Hermite
+    			w[i][j]                   = 1-3*wi*wi+2*wi*wi*wi;
+    			w[(i+1)%(xfrom0.size())][j] = 3*wi*wi-2*wi*wi*wi;
 
-                r1r2.normalize();
-                dw[i][j]                   = -r1r2;
-                dw[(i+1)%(xfrom0.size())][j] = r1r2;
-            }
-        }
-        break;
+    			r1r2.normalize();
+    			dw[i][j]                   = -r1r2;
+    			dw[(i+1)%(xfrom0.size())][j] = r1r2;
+    		}
+    	}
+    	break;
     }
     default:
     {}
-    }
+    }*/
 }
 
 #endif
