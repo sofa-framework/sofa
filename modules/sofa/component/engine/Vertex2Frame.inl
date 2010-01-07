@@ -50,6 +50,7 @@ Vertex2Frame<DataTypes>::Vertex2Frame():
     , normals(initData(&normals,"normals","Normals of the mesh loaded"))
     , facets(initData(&facets,"facets","Facets of the mesh loaded"))
     , frames( initData (&frames, "frames", "Frames at output") )
+    , invertNormals( initData (&invertNormals, false, "invertNormals", "Swap normals") )
 {
 }
 
@@ -93,7 +94,7 @@ void Vertex2Frame<DataTypes>::update()
     for (unsigned int i=0 ; i<nbVertices ; i++)
     {
         Quat q;
-        Vector3 zAxis = fNormals[i];
+        Vector3 zAxis = (!invertNormals.getValue()) ? fNormals[i] : -fNormals[i];
         zAxis.normalize();
         Vector3 xAxis;
         Vector3 yAxis(1.0, 0.0, 0.0);

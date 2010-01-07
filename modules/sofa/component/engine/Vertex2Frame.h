@@ -84,6 +84,7 @@ protected:
     Data< helper::vector<sofa::defaulttype::Vector3> > normals;
     Data< helper::vector< helper::vector < helper::vector <int> > > > facets;
     Data<VecCoord> frames;
+    Data<bool> invertNormals;
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_ENGINE_VERTEX2FRAME_CPP)
