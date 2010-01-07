@@ -58,6 +58,7 @@ public:
     typedef typename DataTypes::Coord         Coord;
     typedef typename DataTypes::VecCoord      VecCoord;
     typedef typename DataTypes::Real          Real;
+    typedef Vec<1,Real>                       Coord1D;
     typedef Vec<2,Real>                       Coord2D;
     typedef Vec<3,Real>                       Coord3D;
     typedef ResizableExtVector <Coord2D>      ResizableExtVector2D;
@@ -98,6 +99,9 @@ protected:
 
     /// output texture coordinate vector
     Data <ResizableExtVector2D> _outputCoord;
+
+    /// bool used to specify scalar input field (if higher template is needed)
+    Data<bool> _scalarField;
 
     /// Data for interpolation scale:
     Data <Real> _minVal;

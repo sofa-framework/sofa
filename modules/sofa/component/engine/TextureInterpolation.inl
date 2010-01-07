@@ -52,6 +52,7 @@ TextureInterpolation<DataTypes>::TextureInterpolation()
     : _inputField (initData (&_inputField, "input_states", "input array of state values."))
     , _inputCoords (initData (&_inputCoords, "input_coordinates", "input array of coordinates values."))
     , _outputCoord (initData (&_outputCoord, "output_coordinates", "output array of texture coordinates."))
+    , _scalarField (initData (&_scalarField, (bool) false, "scalarField", "To interpolate only the first dimension of input field (useful if this component need to be templated in higher dimension)."))
     , _minVal (initData (&_minVal, (Real)0, "min_value", "minimum value of state value for interpolation."))
     , _maxVal (initData (&_maxVal, (Real)0, "max_value", "maximum value of state value for interpolation."))
     , _changeScale (initData (&_changeScale, false, "manual_scale", "compute texture interpolation on manually scale defined above."))
@@ -82,9 +83,35 @@ void TextureInterpolation<DataTypes>::update()
 {
     cleanDirty();
 
-    const sofa::helper::vector <Coord>& inputs = _inputField.getValue();
+    const sofa::helper::vector <Coord>& realInputs = _inputField.getValue();
     ResizableExtVector2D& outputs = *(_outputCoord.beginEdit());
-    outputs.resize (inputs.size());
+    outputs.resize (realInputs.size());
+
+    if (realInputs.size() == 0)
+    {
+        _outputCoord.endEdit();
+        return;
+    }
+
+    sofa::helper::vector < Coord1D > inputs;
+    inputs.resize(realInputs.size());
+
+    if (!_scalarField.getValue() && (realInputs[0].size() > 1)) // > 1D template and use all dim.
+    {
+        for (unsigned int i = 0; i<inputs.size(); ++i)
+        {
+            Real tmp = 0;
+            for (unsigned int j = 0; j<realInputs[0].size(); ++j)
+                tmp += realInputs[i][j];
+
+            inputs[i] = tmp/realInputs[0].size();
+        }
+    }
+    else
+    {
+        for (unsigned int i = 0; i<inputs.size(); ++i)
+            inputs[i] = realInputs[i][0];
+    }
 
     Real minVal = 0;
     Real maxVal = 0;
@@ -102,8 +129,8 @@ void TextureInterpolation<DataTypes>::update()
     }
     else
     {
-        Coord min_tmp = *(std::min_element (inputs.begin(), inputs.end()));
-        Coord max_tmp = *(std::max_element (inputs.begin(), inputs.end()));
+        Coord1D min_tmp = *(std::min_element (inputs.begin(), inputs.end()));
+        Coord1D max_tmp = *(std::max_element (inputs.begin(), inputs.end()));
 
         minVal = min_tmp[0];
         maxVal = max_tmp[0];
@@ -134,8 +161,32 @@ void TextureInterpolation<DataTypes>::draw()
         Mat<4,4, GLfloat> modelviewM;
         Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
 
-        const VecCoord& potentiels = _inputField.getValue();
+        const VecCoord& realPotentiels = _inputField.getValue();
         const VecCoord3D& coords = _inputCoords.getValue();
+
+        if (realPotentiels.size() == 0)
+            return;
+
+        sofa::helper::vector< Coord1D > potentiels;
+        potentiels.resize(realPotentiels.size());
+
+        if (!_scalarField.getValue() && (realPotentiels[0].size() > 1)) // > 1D template and use all dim.
+        {
+            for (unsigned int i = 0; i<potentiels.size(); ++i)
+            {
+                Real tmp = 0;
+                for (unsigned int j = 0; j<potentiels[0].size(); ++j)
+                    tmp += realPotentiels[i][j];
+
+                potentiels[i][0] = tmp/potentiels[0].size();
+            }
+        }
+        else
+        {
+            for (unsigned int i = 0; i<potentiels.size(); ++i)
+                potentiels[i] = realPotentiels[i][0];
+        }
+
 
         if(potentiels.size() != coords.size())
         {
