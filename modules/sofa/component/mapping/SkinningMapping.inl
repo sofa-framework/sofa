@@ -1354,7 +1354,7 @@ void SkinningMapping<BasicMapping>::computeDqT ( Mat88& T, const DUALQUAT& qi0 )
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::insertFrame( const Coord& pos, const Quat& rot)
 {
-    return; // TODO remove this temporary call
+    return;
     if (!this->toModel->getX0()) return;
     // Get references
     VecCoord& xto0 = *this->toModel->getX0();
@@ -1370,12 +1370,12 @@ void SkinningMapping<BasicMapping>::insertFrame( const Coord& pos, const Quat& r
     InCoord newX, newX0;
     InCoord targetDOF( pos, rot);
     inverseSkinning( newX0, newX, targetDOF);
-    /*
+
     serr << "diff newX / targetX: " << (newX - targetDOF).norm() << sendl;
     serr << "newX0: " << newX0 << sendl;
     serr << "newX: " << newX << sendl;
     serr << "targetDOF: " << targetDOF << sendl;
-    */
+
     // Insert a new DOF
     this->fromModel->resize( indexFrom + 1);
     xfrom[indexFrom] = newX;
@@ -1567,118 +1567,116 @@ bool SkinningMapping<BasicMapping>::inverseSkinning( InCoord& X0, InCoord& X, co
 }
 
 template <class BasicMapping>
-void SkinningMapping<BasicMapping>::computeWeight( VVD& /*w*/, VecVecCoord& /*dw*/, const Coord& /*x0*/)
+void SkinningMapping<BasicMapping>::computeWeight( VVD& w, VecVecCoord& dw, const Coord& x0)
 {
-    /*
-    const VecInCoord& xfrom0 = *this->fromModel->getX0();
+    VecCoord& xto0 = *this->toModel->getX0();
+    VecInCoord& xfrom0 = *this->fromModel->getX0();
     // Get Distances
     VVD dist;
     GeoVecVecCoord ddist;
 
     switch ( distanceType.getValue() )
-    	{
-    	case DISTANCE_EUCLIDIAN:
-    	{
-    		for( int i = 0; i < xfrom0.size(); i++)
-    		{
-    			ddist[i][0] = x0 - xfrom0[i]();
-    			dist[i][0] = ddist[i][0].norm();
-    			//serr << "distance["<<j<<"]: " << distances[indexFrom][j] << ", ("<< xto0[j] <<")" << sendl;
-    			ddist[i][0].normalize();
-    			if( dist[i][0])
-    				ddist[i][0] = - ddist[i][0] / (dist[i][0]*dist[i][0]*dist[i][0]) * 2.0;
-    			else
-    				ddist[i][0] = - Coord( 0xFFF, 0xFFF, 0xFFF);
-    		}
-    		break;
-    	}
-    	case DISTANCE_GEODESIC:
-    	case DISTANCE_HARMONIC:
-    	{
-    		GeoVecCoord goals;
-    		goals.push_back( x0);
-    		geoDist->getDistances ( dist, ddist, goals );
-    		break;
-    	}
-    	default:{}
-    	}
+    {
+    case DISTANCE_EUCLIDIAN:
+    {
+        for( unsigned int i = 0; i < xfrom0.size(); i++)
+        {
+            ddist[i][0] = x0 - xfrom0[i].getCenter();
+            dist[i][0] = ddist[i][0].norm();
+            //serr << "distance["<<j<<"]: " << distances[indexFrom][j] << ", ("<< xto0[j] <<")" << sendl;
+            ddist[i][0].normalize();
+            if( dist[i][0])
+                ddist[i][0] = - ddist[i][0] / (dist[i][0]*dist[i][0]*dist[i][0]) * 2.0;
+            else
+                ddist[i][0] = - Coord( 0xFFF, 0xFFF, 0xFFF);
+        }
+        break;
+    }
+    case DISTANCE_GEODESIC:
+    case DISTANCE_HARMONIC:
+    {
+        GeoVecCoord goals;
+        goals.push_back( x0);
+        geoDist->getDistances ( dist, ddist, goals );
+        break;
+    }
+    default: {}
+    }
 
     // Compute Weights
-    VecCoord& xto0 = *this->toModel->getX0();
-    VecInCoord& xfrom0 = *this->fromModel->getX0();
 
     switch ( wheightingType.getValue() )
     {
     case WEIGHT_LINEAR:
     {
-    	for ( unsigned int j=0;j<xto0.size();j++ )
-    		{
-    			for ( unsigned int i=0;i<xfrom0.size();i++ )
-    				{
-    					Vec3d r1r2, r1p;
-    					r1r2 = xfrom0[(i+1)%(xfrom0.size())].getCenter() - xfrom0[i].getCenter();
-    					r1p  = xto0[j] - xfrom0[i].getCenter();
-    					double r1r2NormSquare = r1r2.norm()*r1r2.norm();
-    					double wi = ( r1r2*r1p ) / ( r1r2NormSquare);
+        for ( unsigned int j=0; j<xto0.size(); j++ )
+        {
+            for ( unsigned int i=0; i<xfrom0.size(); i++ )
+            {
+                Vec3d r1r2, r1p;
+                r1r2 = xfrom0[(i+1)%(xfrom0.size())].getCenter() - xfrom0[i].getCenter();
+                r1p  = xto0[j] - xfrom0[i].getCenter();
+                double r1r2NormSquare = r1r2.norm()*r1r2.norm();
+                double wi = ( r1r2*r1p ) / ( r1r2NormSquare);
 
-    					// Abscisse curviligne
-    					w[i][j]                   = ( 1 - wi );
-    					w[(i+1)%(xfrom0.size())][j] = wi;
-    					dw[i][j]                   = -r1r2 / r1r2NormSquare;
-    					dw[(i+1)%(xfrom0.size())][j] = r1r2 / r1r2NormSquare;
-    				}
-    		}
-    	break;
+                // Abscisse curviligne
+                w[i][j]                   = ( 1 - wi );
+                w[(i+1)%(xfrom0.size())][j] = wi;
+                dw[i][j]                   = -r1r2 / r1r2NormSquare;
+                dw[(i+1)%(xfrom0.size())][j] = r1r2 / r1r2NormSquare;
+            }
+        }
+        break;
     }
     case WEIGHT_INVDIST_SQUARE:
     {
-    	for ( unsigned int j=0;j<xto0.size();j++ )
-    	{
-    		for ( unsigned int i=0;i<xfrom0.size();i++ )
-    			w[i][j] = 1 / dist[i][j];
-    		//m_coefs.normalize();
-    		//normalize the coefs vector such as the sum is equal to 1
-    		double norm=0.0;
-    		for ( unsigned int i=0;i<xfrom0.size();i++ )
-    			norm += w[i][j]*w[i][j];
-    		norm = helper::rsqrt ( norm );
+        for ( unsigned int j=0; j<xto0.size(); j++ )
+        {
+            for ( unsigned int i=0; i<xfrom0.size(); i++ )
+                w[i][j] = 1 / dist[i][j];
+            //m_coefs.normalize();
+            //normalize the coefs vector such as the sum is equal to 1
+            double norm=0.0;
+            for ( unsigned int i=0; i<xfrom0.size(); i++ )
+                norm += w[i][j]*w[i][j];
+            norm = helper::rsqrt ( norm );
 
-    		for ( unsigned int i=0;i<xfrom0.size();i++ )
-    		{
-    			w[i][j] /= norm;
-    			w[i][j] = w[i][j]*w[i][j];
-    			dw[i][j] = ddist[i][j];
-    		}
-    	}
+            for ( unsigned int i=0; i<xfrom0.size(); i++ )
+            {
+                w[i][j] /= norm;
+                w[i][j] = w[i][j]*w[i][j];
+                dw[i][j] = ddist[i][j];
+            }
+        }
 
-    	break;
+        break;
     }
     case WEIGHT_HERMITE:
     {
-    	for ( unsigned int j=0;j<xto0.size();j++ )
-    	{
-    		for ( unsigned int i=0;i<xfrom0.size();i++ )
-    		{
-    			Vec3d r1r2, r1p;
-    			double wi;
-    			r1r2 = xfrom0[(i+1)%xfrom0.size()].getCenter() - xfrom0[i].getCenter();
-    			r1p  = xto0[j] - xfrom0[i].getCenter();
-    			wi = ( r1r2*r1p ) / ( r1r2.norm() *r1r2.norm() );
+        for ( unsigned int j=0; j<xto0.size(); j++ )
+        {
+            for ( unsigned int i=0; i<xfrom0.size(); i++ )
+            {
+                Vec3d r1r2, r1p;
+                double wi;
+                r1r2 = xfrom0[(i+1)%xfrom0.size()].getCenter() - xfrom0[i].getCenter();
+                r1p  = xto0[j] - xfrom0[i].getCenter();
+                wi = ( r1r2*r1p ) / ( r1r2.norm() *r1r2.norm() );
 
-    			// Fonctions d'Hermite
-    			w[i][j]                   = 1-3*wi*wi+2*wi*wi*wi;
-    			w[(i+1)%(xfrom0.size())][j] = 3*wi*wi-2*wi*wi*wi;
+                // Fonctions d'Hermite
+                w[i][j]                   = 1-3*wi*wi+2*wi*wi*wi;
+                w[(i+1)%(xfrom0.size())][j] = 3*wi*wi-2*wi*wi*wi;
 
-    			r1r2.normalize();
-    			dw[i][j]                   = -r1r2;
-    			dw[(i+1)%(xfrom0.size())][j] = r1r2;
-    		}
-    	}
-    	break;
+                r1r2.normalize();
+                dw[i][j]                   = -r1r2;
+                dw[(i+1)%(xfrom0.size())][j] = r1r2;
+            }
+        }
+        break;
     }
     default:
     {}
-    }*/
+    }
 }
 
 #endif
