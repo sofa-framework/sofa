@@ -22,8 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_CONTAINER_SPATIALGRIDCONTAINER_CPP
 #include <sofa/component/container/SpatialGridContainer.inl>
 #include <sofa/core/ObjectFactory.h>
+
 
 namespace sofa
 {
@@ -51,11 +53,11 @@ int SpatialGridContainerClass = core::RegisterObject("Hashing spatial grid conta
 
 #ifndef SOFA_FLOAT
 template class SpatialGridContainer< Vec3dTypes >;
-template class SpatialGrid< SpatialGridTypes< Vec3dTypes > >;
+template class SOFA_COMPONENT_CONTAINER_API SpatialGrid< SpatialGridTypes< Vec3dTypes > >;
 #endif
 #ifndef SOFA_DOUBLE
 template class SpatialGridContainer< Vec3fTypes >;
-template class SpatialGrid< SpatialGridTypes< Vec3fTypes > >;
+template class SOFA_COMPONENT_CONTAINER_API SpatialGrid< SpatialGridTypes< Vec3fTypes > >;
 #endif
 
 } // namespace container
