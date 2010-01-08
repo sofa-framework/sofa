@@ -128,8 +128,6 @@ bool LCPConstraintSolver::solveSystem(double /*dt*/, VecId)
     {
 
         std::map < std::string, sofa::helper::vector<double> >& graph = *f_graph.beginEdit();
-        sofa::helper::vector<double>& graph_error = graph["Error"];
-        graph_error.clear();
 
         double _tol = tol.getValue();
         int _maxIt = maxIt.getValue();
@@ -138,26 +136,35 @@ bool LCPConstraintSolver::solveSystem(double /*dt*/, VecId)
 
             lcp->setNbConst(_numConstraints);
             lcp->setTol(_tol);
-            std::cout<<"+++++++++++++ \n SOLVE WITH MULTIGRID \n ++++++++++++++++"<<std::endl;
-
-            MultigridConstraintsMerge();
-            //build_Coarse_Compliance(_constraint_group, 3*_group_lead.size());
-            std::cerr<<"out from build_Coarse_Compliance"<<std::endl;
-
 
             if (multi_grid.getValue())
             {
+                std::cout<<"+++++++++++++ \n SOLVE WITH MULTIGRID \n ++++++++++++++++"<<std::endl;
+
+                MultigridConstraintsMerge();
+                //build_Coarse_Compliance(_constraint_group, 3*_group_lead.size());
+                std::cerr<<"out from build_Coarse_Compliance"<<std::endl;
+
+                sofa::helper::vector<double>& graph_error1 = graph["Error"];
+                graph_error1.clear();
+                sofa::helper::vector<double>& graph_error2 = graph["Error Coarse"];
+                graph_error2.clear();
+
                 helper::nlcp_multiGrid_2levels(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue(),
-                        _contact_group, _group_lead.size(), this->f_printLog.getValue());
+                        _contact_group, _group_lead.size(), this->f_printLog.getValue(), &graph_error1, &graph_error2);
                 std::cout<<"+++++++++++++ \n SOLVE WITH GAUSSSEIDEL \n ++++++++++++++++"<<std::endl;
-                helper::nlcp_gaussseidel(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue(), &graph_error);
+                helper::nlcp_gaussseidel(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue(), this->f_printLog.getValue(), &graph_error1);
                 if (this->f_printLog.getValue()) helper::afficheLCP(_dFree->ptr(), _W->lptr(), _result->ptr(),_numConstraints);
 
             }
             else
-                helper::nlcp_gaussseidel(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue(), &graph_error);
+            {
+                sofa::helper::vector<double>& graph_error = graph["Error"];
+                graph_error.clear();
+                helper::nlcp_gaussseidel(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue(), this->f_printLog.getValue(), &graph_error);
 
-
+                //std::cout << "errors: " << graph_error << std::endl;
+            }
 
         }
         else
@@ -165,6 +172,8 @@ bool LCPConstraintSolver::solveSystem(double /*dt*/, VecId)
             // warning _A has been being suppr... need to be allocated
             //
             //		helper::lcp_lexicolemke(_numConstraints, _dFree->ptr(), _W->lptr(), _A.lptr(), _result->ptr());
+            sofa::helper::vector<double>& graph_error = graph["Error"];
+            graph_error.clear();
             helper::gaussSeidelLCP1(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _tol, _maxIt, &graph_error);
             if (this->f_printLog.getValue()) helper::afficheLCP(_dFree->ptr(), _W->lptr(), _result->ptr(),_numConstraints);
         }

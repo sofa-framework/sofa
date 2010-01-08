@@ -153,12 +153,12 @@ void LCP::setLCP(unsigned int input_dim, double *input_dfree, double **input_W, 
 
 }
 
-void LCP::solveNLCP(bool convergenceTest)
+void LCP::solveNLCP(bool convergenceTest, std::vector<double>* residuals)
 {
     double error;
     double f_1[3],dn, ds, dt;
     int numContacts = dim/3;
-
+    const bool computeError = (convergenceTest || residuals);
     for (int it=0; it<numItMax; it++)
     {
         error =0;
@@ -183,7 +183,7 @@ void LCP::solveNLCP(bool convergenceTest)
             if (f[3*c]<0)
             {
 
-                if (f_1[0]>0 && convergenceTest)  // the point was in contact and is no more in contact..
+                if (f_1[0]>0 && computeError)  // the point was in contact and is no more in contact..
                 {
 
                     for (int j=0; j<3; j++ )
@@ -220,7 +220,7 @@ void LCP::solveNLCP(bool convergenceTest)
                 f[3*c+2] *=mu*f[3*c]/normFt;
             }
 
-            if(convergenceTest)
+            if(computeError)
             {
 
                 for (int j=0; j<3; j++ )
@@ -233,8 +233,9 @@ void LCP::solveNLCP(bool convergenceTest)
                 error += sqrt(Ddn*Ddn + Ddt*Ddt + Dds*Dds);
             }
         }
+        if (residuals) residuals->push_back(error);
 
-        if (error < tol*(numContacts+1) && convergenceTest)
+        if (convergenceTest && error < tol*(numContacts+1))
         {
             return;
         }
@@ -1610,7 +1611,7 @@ void prolongation(LCP &fineLevel, LCP &coarseLevel, const std::vector<int> &proj
 /// new multigrid resolution of a problem with projection & prolongation
 
 int nlcp_multiGrid_2levels(int dim, double *dfree, double**W, double *f, double mu, double tol, int numItMax, bool useInitialF,
-        std::vector< int> &contact_group, unsigned int num_group, bool verbose)
+        std::vector< int> &contact_group, unsigned int num_group, bool verbose, std::vector<double>* residuals1, std::vector<double>* residuals2)
 {
 
     LCP *fineLevel = new LCP();
@@ -1622,8 +1623,8 @@ int nlcp_multiGrid_2levels(int dim, double *dfree, double**W, double *f, double 
     // iterations at the fine Level (no test of convergence)
     bool convergenceTest= false;
     fineLevel->setNumItMax(0);
-    fineLevel->solveNLCP(convergenceTest);
-
+    fineLevel->solveNLCP(convergenceTest, residuals1);
+    //if (residuals1 && residuals2) while (residuals2->size() < residuals1->size()) residuals2->push_back(0);
 
     // projection step & construction of the coarse LCP
     LCP *coarseLevel = new LCP();
@@ -1639,7 +1640,8 @@ int nlcp_multiGrid_2levels(int dim, double *dfree, double**W, double *f, double 
     convergenceTest = true;
     coarseLevel->setNumItMax(numItMax);
     coarseLevel->setTol(tol);
-    coarseLevel->solveNLCP(convergenceTest);
+    coarseLevel->solveNLCP(convergenceTest, residuals2);
+    //if (residuals1 && residuals2) while (residuals1->size() < residuals2->size()) residuals1->push_back(0);
 
 
     // prolongation (interpolation) at the fine level
@@ -1649,7 +1651,8 @@ int nlcp_multiGrid_2levels(int dim, double *dfree, double**W, double *f, double 
     // iterations at the fine level (till convergence)
     convergenceTest = true;
     fineLevel->setNumItMax(10);
-    fineLevel->solveNLCP(convergenceTest);
+    fineLevel->solveNLCP(convergenceTest, residuals1);
+    //if (residuals1 && residuals2) while (residuals2->size() < residuals1->size()) residuals2->push_back(0);
 
     return 1;
 
