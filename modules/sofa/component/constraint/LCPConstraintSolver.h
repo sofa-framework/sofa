@@ -35,6 +35,7 @@
 #include <sofa/component/linearsolver/SparseMatrix.h>
 
 #include <sofa/helper/set.h>
+#include <sofa/helper/map.h>
 #include <sofa/helper/LCPcalc.h>
 
 namespace sofa
@@ -256,6 +257,7 @@ public:
 
     Data < helper::set<int> > constraintGroups;
 
+    Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
 
     LCP* getLCP();
     void lockLCP(LCP* l1, LCP* l2=0); ///< Do not use the following LCPs until the next call to this function. This is used to prevent concurent access to the LCP when using a LCPForceFeedback through an haptic thread

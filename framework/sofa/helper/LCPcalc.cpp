@@ -2034,7 +2034,7 @@ int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, doub
 
 }
 
-int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, double tol, int numItMax, bool useInitialF, bool verbose)
+int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, double tol, int numItMax, bool useInitialF, bool verbose, std::vector<double>* residuals)
 
 {
     double test = dim/3;
@@ -2127,6 +2127,7 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, do
 
         }
 
+        if (residuals) residuals->push_back(error);
         if (error < tol*(numContacts+1))
         {
             free(d);
@@ -2287,7 +2288,7 @@ int nlcp_gaussseidelTimed(int dim, double *dfree, double**W, double *f, double m
  * res[0..dim-1] = U
  * res[dim..2*dim-1] = F
  */
-void gaussSeidelLCP1(int dim, FemClipsReal * q, FemClipsReal ** M, FemClipsReal * res, double tol, int numItMax)
+void gaussSeidelLCP1(int dim, FemClipsReal * q, FemClipsReal ** M, FemClipsReal * res, double tol, int numItMax, std::vector<double>* residuals)
 {
     int compteur;	// compteur de boucle
     int compteur2, compteur3;	// compteur de boucle
@@ -2323,7 +2324,7 @@ void gaussSeidelLCP1(int dim, FemClipsReal * q, FemClipsReal ** M, FemClipsReal 
 
 
         }
-
+        if (residuals) residuals->push_back(error);
         if (error < tol)
         {
             //	std::cout << "convergence in gaussSeidelLCP1 with " << compteur << " iterations\n";

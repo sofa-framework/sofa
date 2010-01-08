@@ -127,6 +127,10 @@ bool LCPConstraintSolver::solveSystem(double /*dt*/, VecId)
     if(build_lcp.getValue())
     {
 
+        std::map < std::string, sofa::helper::vector<double> >& graph = *f_graph.beginEdit();
+        sofa::helper::vector<double>& graph_error = graph["Error"];
+        graph_error.clear();
+
         double _tol = tol.getValue();
         int _maxIt = maxIt.getValue();
         if (_mu > 0.0)
@@ -146,12 +150,12 @@ bool LCPConstraintSolver::solveSystem(double /*dt*/, VecId)
                 helper::nlcp_multiGrid_2levels(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue(),
                         _contact_group, _group_lead.size(), this->f_printLog.getValue());
                 std::cout<<"+++++++++++++ \n SOLVE WITH GAUSSSEIDEL \n ++++++++++++++++"<<std::endl;
-                helper::nlcp_gaussseidel(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue());
+                helper::nlcp_gaussseidel(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue(), &graph_error);
                 if (this->f_printLog.getValue()) helper::afficheLCP(_dFree->ptr(), _W->lptr(), _result->ptr(),_numConstraints);
 
             }
             else
-                helper::nlcp_gaussseidel(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue());
+                helper::nlcp_gaussseidel(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue(), &graph_error);
 
 
 
@@ -161,7 +165,7 @@ bool LCPConstraintSolver::solveSystem(double /*dt*/, VecId)
             // warning _A has been being suppr... need to be allocated
             //
             //		helper::lcp_lexicolemke(_numConstraints, _dFree->ptr(), _W->lptr(), _A.lptr(), _result->ptr());
-            helper::gaussSeidelLCP1(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _tol, _maxIt);
+            helper::gaussSeidelLCP1(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _tol, _maxIt, &graph_error);
             if (this->f_printLog.getValue()) helper::afficheLCP(_dFree->ptr(), _W->lptr(), _result->ptr(),_numConstraints);
         }
     }
@@ -197,6 +201,8 @@ bool LCPConstraintSolver::solveSystem(double /*dt*/, VecId)
         sout<<" TOTAL solve_LCP " <<( (double) timer.getTime() - time)*timeScale<<" ms" <<sendl;
         time = (double) timer.getTime();
     }
+
+    f_graph.endEdit();
     return true;
 }
 bool LCPConstraintSolver::applyCorrection(double /*dt*/, VecId )
@@ -263,6 +269,7 @@ LCPConstraintSolver::LCPConstraintSolver()
     ,maxIt( initData(&maxIt, 1000, "maxIt", ""))
     ,mu( initData(&mu, 0.6, "mu", ""))
     , constraintGroups( initData(&constraintGroups, "group", "list of ID of groups of constraints to be handled by this solver.") )
+    , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
     ,_mu(0.6)
     , lcp1(MAX_NUM_CONSTRAINTS)
     , lcp2(MAX_NUM_CONSTRAINTS)
@@ -277,6 +284,9 @@ LCPConstraintSolver::LCPConstraintSolver()
     _mu = 0.0;
     constraintGroups.beginEdit()->insert(0);
     constraintGroups.endEdit();
+
+    f_graph.setWidget("graph");
+    f_graph.setReadOnly(true);
 
     //_numPreviousContact=0;
     //_PreviousContactList = (contactBuf *)malloc(MAX_NUM_CONSTRAINTS * sizeof(contactBuf));
