@@ -24,6 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_CONSTRAINT_UNCOUPLEDCONSTRAINTCORRECTION_INL
 #define SOFA_COMPONENT_CONSTRAINT_UNCOUPLEDCONSTRAINTCORRECTION_INL
+#define DEBUG
 
 #include "UncoupledConstraintCorrection.h"
 #include <sofa/simulation/common/MechanicalVisitor.h>
@@ -109,20 +110,154 @@ void UncoupledConstraintCorrection<DataTypes>::init()
     }
 }
 
+template<class DataTypes>
+void  UncoupledConstraintCorrection<DataTypes>::getComplianceWithConstraintMerge(defaulttype::BaseMatrix* Wmerged, std::vector<int> &constraint_merge)
+{
+
+    std::cout<<"getComplianceWithConstraintMerge is called"<<std::endl;
+    VecConst& constraints = *mstate->getC();
+    sofa::helper::vector<unsigned int> &constraintId =  mstate->getConstraintId();
+
+    ConstraintIterator itConstraint;
+    /////////// COPY OF THE CURRENT CONSTRAINT SET//////////////
+    unsigned int numConstraints = constraints.size();
+    VecConst constraintCopy;
+    sofa::helper::vector<unsigned int> constraintIdCopy;
+
+    std::cout<<"******\n Constraint before Merge  \n *******"<<std::endl;
+    for(unsigned int c = 0; c < numConstraints; c++)
+    {
+        constraintIdCopy.push_back(constraintId[c]);
+        SparseVecDeriv svd;
+        std::cout<<"constraint["<<c<<"] : "<<std::endl;
+
+        std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[c].data();
+        for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
+        {
+            unsigned int dof = itConstraint->first;
+            Deriv n = itConstraint->second;
+
+            svd.add(dof,n);
+            std::cout<<"       [ "<<dof<<"]="<<n<<std::endl;
+
+        }
+        constraintCopy.push_back(svd);
+    }
+
+    /////////// MERGE OF THE CONSTRAINTS //////////////
+    constraints.clear();
+    constraintId.clear();
+
+    // look for the number of group;
+    unsigned int numGroup=0;
+    for (unsigned int cm=0; cm<constraint_merge.size(); cm++)
+    {
+        if(constraint_merge[cm]>(int) numGroup)
+            numGroup = (unsigned int) constraint_merge[cm];
+    }
+    numGroup+=1;
+
+
+    std::cout<<"******\n Constraint after Merge  \n *******"<<std::endl;
+    for (unsigned int group=0; group<numGroup; group++)
+    {
+        bool isProjected=false;
+        SparseVecDeriv svd;
+
+        std::cout<<"constraint["<<group<<"] : "<<std::endl;
+
+        for(unsigned int c = 0; c < numConstraints; c++)
+        {
+            unsigned int cId = constraintIdCopy[c];
+
+            //std::cerr<<"for constraint "<<c<<" on a total of "<<numConstraints<<"call constraint_merge["<<cId<<"] and  constraint_merge.size ="<< constraint_merge.size()<<std::endl;
+
+            unsigned int group_projection = constraint_merge[cId];
+
+            if (group_projection == group)
+            {
+                isProjected=true;
+
+
+                std::pair< ConstraintIterator, ConstraintIterator > iter=constraintCopy[c].data();
+                for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
+                {
+                    unsigned int dof = itConstraint->first;
+                    Deriv n = itConstraint->second;
+
+                    svd.add(dof,n);
+                    std::cout<<"       [ "<<dof<<"]="<<n<<std::endl;
+                }
+
+            }
+
+        }
+
+
+        if(isProjected)
+        {
+
+            constraintId.push_back(group);
+            constraints.push_back(svd);
+
+        }
+
+    }
+
+
+    //////////// compliance computation call //////////
+    this->getCompliance(Wmerged);
+
+
+    /////////// BACK TO THE INITIAL CONSTRAINT SET//////////////
+    unsigned int numConstraintsCopy = constraintCopy.size();
+
+
+    constraintId.clear();
+    constraints.clear();
+    std::cout<<"******\n Constraint back to initial values  \n *******"<<std::endl;
+    for(unsigned int c = 0; c < numConstraintsCopy; c++)
+    {
+
+        std::cout<<"constraint["<<c<<"] : "<<std::endl;
+        constraintId.push_back(constraintIdCopy[c]);
+        SparseVecDeriv svd;
+
+
+        std::pair< ConstraintIterator, ConstraintIterator > iter=constraintCopy[c].data();
+        for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
+        {
+            unsigned int dof = itConstraint->first;
+            Deriv n = itConstraint->second;
+
+            svd.add(dof,n);
+            std::cout<<"       [ "<<dof<<"]="<<n<<std::endl;
+        }
+        constraints.push_back(svd);
+    }
+
+
+}
 
 template<class DataTypes>
 void UncoupledConstraintCorrection<DataTypes>::getCompliance(defaulttype::BaseMatrix *W)
 {
     const VecConst& constraints = *mstate->getC();
     unsigned int numConstraints = constraints.size();
-    //std::cout<<"UncoupledConstraintCorrection ("<<this->getName()<<")::getCompliance is called on "<< mstate->getName()<<std::endl;
-    //std::cout<<"numConstraints ="<<numConstraints<<std::endl;
+//  std::cout<<"UncoupledConstraintCorrection ("<<this->getName()<<")::getCompliance is called on "<< mstate->getName()<<std::endl;
+
+
+#ifdef DEBUG
+    std::cout<<"numConstraints ="<<numConstraints<<std::endl;
+#endif
 
     for(unsigned int curRowConst = 0; curRowConst < numConstraints; curRowConst++)
     {
 
         int indexCurRowConst = mstate->getConstraintId()[curRowConst];
-        //std::cout<<"constraint["<<curRowConst<<"] : ";
+#ifdef DEBUG
+        std::cout<<"constraint["<<curRowConst<<"] : ";
+#endif
         ConstraintIterator itConstraint;
         std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[curRowConst].data();
 
@@ -132,8 +267,9 @@ void UncoupledConstraintCorrection<DataTypes>::getCompliance(defaulttype::BaseMa
             Deriv n = itConstraint->second;
 
             int indexCurColConst;
-            //std::cout<<" [ "<<dof<<"]="<<n<<std::endl;
-
+#ifdef DEBUG
+            std::cout<<" [ "<<dof<<"]="<<n<<std::endl;
+#endif
             for(unsigned int curColConst = curRowConst; curColConst < numConstraints; curColConst++)
             {
 
@@ -164,7 +300,6 @@ void UncoupledConstraintCorrection<DataTypes>::getCompliance(defaulttype::BaseMa
                 }
             */
         }
-        sout<<" : "<<sendl;
     }
 
     // debug : verifie qu'il n'y a pas de 0 sur la diagonale de W

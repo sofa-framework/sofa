@@ -31,6 +31,8 @@
 #include <stdlib.h>
 #include <math.h>
 #include <sofa/helper/system/thread/CTime.h>
+#include <vector>
+
 
 namespace sofa
 {
@@ -52,17 +54,19 @@ private:
     int maxConst;
     double* dfree;
     double** W;
-    double* f;
+    double* f, *f_1;
+    double* d;
     double tol;
     int numItMax;
     bool useInitialF;
     double mu;
-    int dim;
-    unsigned int nbConst;
+    int dim;  //=3*nbContact !!
+    //unsigned int nbConst;
 public:
-    LCP(unsigned int maxConstraint);
+    LCP();
     ~LCP();
     void reset(void);
+    void allocate (unsigned int maxConst);
     //LCP& operator=(LCP& lcp);
     inline double** getW(void) {return W;};
     inline double& getMu(void) { return mu;};
@@ -70,11 +74,23 @@ public:
     inline double getTolerance(void) {return tol;};
     inline double getMaxIter(void) {return numItMax;};
     inline double* getF(void) {return f;};
+    inline double* getF_1(void) {return f_1;};
+    inline double* getD(void) {return d;};
     inline bool useInitialGuess(void) {return useInitialF;};
-    inline unsigned int getNbConst(void) {return nbConst;};
-    inline unsigned int setNbConst(unsigned int nbC) {nbConst = nbC; return 0;};
+    inline unsigned int getDim(void) {return dim;};
+    inline unsigned int setDim(unsigned int nbC) {dim = nbC; return 0;};
     inline unsigned int getMaxConst(void) {return maxConst;};
+    inline void setNumItMax(int input_numItMax) {numItMax = input_numItMax;};
+    inline void setTol(double &input_tol) {tol = input_tol;};
+
+    void setLCP(unsigned int input_dim, double *input_dfree, double **input_W, double *input_f, double &input_mu, double &input_tol, int input_numItMax);
+
+
+    void solveNLCP(bool convergenceTest);
+
+
 };
+
 
 
 
@@ -101,6 +117,7 @@ SOFA_HELPER_API int lcp_lexicolemke(int, double *, double **, double **, double 
 SOFA_HELPER_API void afficheSyst(double *q,double **M, int *base, double **mat, int dim);
 SOFA_HELPER_API void afficheLCP(double *q, double **M, int dim);
 SOFA_HELPER_API void afficheLCP(double *q, double **M, double *f, int dim);
+SOFA_HELPER_API void afficheResult(double *f, int dim);
 
 typedef SOFA_HELPER_API double FemClipsReal;
 SOFA_HELPER_API void gaussSeidelLCP1(int, FemClipsReal *,FemClipsReal **, FemClipsReal *, double , int );
@@ -138,6 +155,11 @@ public:
     double det;
     double f_1[3]; // previous value of force
 };
+
+// Multigrid algorithm for contacts
+SOFA_HELPER_API int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, double tol, int numItMax, bool useInitialF, double** W_coarse, std::vector<int> &contact_group, unsigned int num_group,  bool verbose=false);
+SOFA_HELPER_API int nlcp_multiGrid_2levels(int dim, double *dfree, double**W, double *f, double mu, double tol, int numItMax, bool useInitialF,
+        std::vector< int> &contact_group, unsigned int num_group, bool verbose);
 
 // Gauss-Seidel like algorithm for contacts
 SOFA_HELPER_API int nlcp_gaussseidel(int, double *, double**, double *, double, double, int, bool, bool verbose=false);

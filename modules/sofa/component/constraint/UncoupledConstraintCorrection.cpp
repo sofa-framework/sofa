@@ -118,13 +118,15 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getCompliance(defa
     VecReal UsedComp = compliance.getValue();
     //serr<<" UsedComp ok"<<sendl;
 
+    std::cout<<"numConstraints ="<<numConstraints<<std::endl;
+
     for(unsigned int curRowConst=0; curRowConst < numConstraints; curRowConst++)
     {
-        //serr<<"constraint["<<curRowConst<<"] : ";
+
 
         int indexCurRowConst = mstate->getConstraintId()[curRowConst];
 
-
+        std::cout<<"constraint["<<curRowConst<<"] : index :  "<<indexCurRowConst<<std::endl;
 
 
 
@@ -135,6 +137,7 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getCompliance(defa
         {
             unsigned int dof = itConstraint->first;
             Deriv n = itConstraint->second;
+            std::cout<<"    [ "<<dof<<"]="<<n<<std::endl;
 
             weighedNormal.getVCenter() = n.getVCenter(); // weighed normal
             weighedNormal.getVOrientation() = n.getVOrientation();
@@ -290,7 +293,6 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::applyContactForce(
         v[i] += dx[i];
         dx[i] *= dt;
         x[i] += dx[i];
-
 
     }
     //std::cout<<"dx -- resultante: "<<dx[0].getVCenter()<<"   -- moment: "<<dx[0].getVOrientation()<<std::endl;

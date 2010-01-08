@@ -134,8 +134,27 @@ bool LCPConstraintSolver::solveSystem(double /*dt*/, VecId)
 
             lcp->setNbConst(_numConstraints);
             lcp->setTol(_tol);
-            helper::nlcp_gaussseidel(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue());
-            if (this->f_printLog.getValue()) helper::afficheLCP(_dFree->ptr(), _W->lptr(), _result->ptr(),_numConstraints);
+            std::cout<<"+++++++++++++ \n SOLVE WITH MULTIGRID \n ++++++++++++++++"<<std::endl;
+
+            MultigridConstraintsMerge();
+            //build_Coarse_Compliance(_constraint_group, 3*_group_lead.size());
+            std::cerr<<"out from build_Coarse_Compliance"<<std::endl;
+
+
+            if (multi_grid.getValue())
+            {
+                helper::nlcp_multiGrid_2levels(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue(),
+                        _contact_group, _group_lead.size(), this->f_printLog.getValue());
+                std::cout<<"+++++++++++++ \n SOLVE WITH GAUSSSEIDEL \n ++++++++++++++++"<<std::endl;
+                helper::nlcp_gaussseidel(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue());
+                if (this->f_printLog.getValue()) helper::afficheLCP(_dFree->ptr(), _W->lptr(), _result->ptr(),_numConstraints);
+
+            }
+            else
+                helper::nlcp_gaussseidel(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue());
+
+
+
         }
         else
         {
@@ -239,6 +258,7 @@ LCPConstraintSolver::LCPConstraintSolver()
     :displayTime(initData(&displayTime, false, "displayTime","Display time for each important step of LCPConstraintSolver."))
     ,initial_guess(initData(&initial_guess, true, "initial_guess","activate LCP results history to improve its resolution performances."))
     ,build_lcp(initData(&build_lcp, true, "build_lcp", "LCP is not fully built to increase performance in some case."))
+    ,multi_grid(initData(&multi_grid, false, "multi_grid","activate multi_grid resolution (NOT STABLE YET)"))
     ,tol( initData(&tol, 0.001, "tolerance", ""))
     ,maxIt( initData(&maxIt, 1000, "maxIt", ""))
     ,mu( initData(&mu, 0.6, "mu", ""))
@@ -263,6 +283,7 @@ LCPConstraintSolver::LCPConstraintSolver()
     //_cont_id_list = (long *)malloc(MAX_NUM_CONSTRAINTS * sizeof(long));
 
     _Wdiag = new SparseMatrix<double>();
+
 }
 
 void LCPConstraintSolver::init()
@@ -329,6 +350,73 @@ void LCPConstraintSolver::build_LCP()
         computeInitialGuess();
     }
 }
+
+void LCPConstraintSolver::build_Coarse_Compliance(std::vector<int> &constraint_merge, int sizeCoarseSystem)
+{
+    /* constraint_merge => tableau donne l'indice du groupe de contraintes dans le système grossier en fonction de l'indice de la contrainte dans le système de départ */
+    std::cout<<"build_Coarse_Compliance is called : size="<<sizeCoarseSystem<<std::endl;
+
+    _Wcoarse.clear();
+    if (sizeCoarseSystem==0)
+    {
+        std::cerr<<"no constraint"<<std::endl;
+        return;
+    }
+    _Wcoarse.resize(sizeCoarseSystem,sizeCoarseSystem);
+    for (unsigned int i=0; i<constraintCorrections.size(); i++)
+    {
+        core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
+        cc->getComplianceWithConstraintMerge(&_Wcoarse, constraint_merge);
+    }
+}
+
+void LCPConstraintSolver::MultigridConstraintsMerge()
+{
+    /////// Analyse des contacts à regrouper //////
+    double criterion=0.0;
+    int numContacts = _numConstraints/3;
+    _contact_group.clear();
+    _contact_group.resize(numContacts);
+    _group_lead.clear();
+    _constraint_group.clear();
+    _constraint_group.resize(_numConstraints);
+
+    for (int c=0; c<numContacts; c++)
+    {
+        bool new_group = true;
+        for(int g=0; g<(int)_group_lead.size() ; g++)
+        {
+
+            if (_W->lptr()[3*c][3*_group_lead[g]] > criterion * (_W->lptr()[3*c][3*c] +_W->lptr()[3*_group_lead[g]][3*_group_lead[g]]) )  // on regarde les couplages selon la normale...
+            {
+                new_group =false;
+                _contact_group[c] = g;
+
+
+            }
+        }
+        if (new_group)
+        {
+            _contact_group[c]=_group_lead.size();
+            _group_lead.push_back(c);
+
+        }
+    }
+
+    if(this->f_printLog.getValue())
+    {
+        std::cout<<"contacts merged in "<<_group_lead.size()<<" list(s)"<<std::endl;
+    }
+
+    for (int c=0; c<numContacts; c++)
+    {
+        _constraint_group[3*c] = 3*_contact_group[c];
+        _constraint_group[3*c+1] = 3*_contact_group[c]+1;
+        _constraint_group[3*c+2] = 3*_contact_group[c]+2;
+
+    }
+}
+
 
 /// build_problem_info
 /// When the LCP or the NLCP is not fully built, the  diagonal blocks of the matrix are still needed for the resolution
