@@ -413,6 +413,19 @@ void FrameDiagonalMass<DataTypes, MassType>::init()
     Inherited::init();
 }
 
+
+template <class DataTypes, class MassType>
+void FrameDiagonalMass<DataTypes, MassType>::reinit()
+{
+    unsigned int nbPt = this->volMass->size();
+    for( unsigned int i = 0; i < nbPt; i++) (*this->volMass)[i] = m_massDensity.getValue() / (double)nbPt;
+
+    updateMass ( *J, *vol, *volMass );
+
+    Inherited::reinit();
+}
+
+
 template <class DataTypes, class MassType>
 void FrameDiagonalMass<DataTypes, MassType>::bwdInit()
 {
@@ -428,8 +441,10 @@ void FrameDiagonalMass<DataTypes, MassType>::bwdInit()
     this->vol = & dqStorage->vol;
     this->volMass = & dqStorage->volMass;
 
-    updateMass ( *J, *vol, *volMass );
+    unsigned int nbPt = this->volMass->size();
+    for( unsigned int i = 0; i < nbPt; i++) (*this->volMass)[i] = m_massDensity.getValue() / (double)nbPt;
 
+    updateMass ( *J, *vol, *volMass );
 }
 
 template <class DataTypes, class MassType>
