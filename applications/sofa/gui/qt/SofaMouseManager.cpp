@@ -52,6 +52,7 @@ SofaMouseManager::SofaMouseManager()
     connect( RightOperationCombo,  SIGNAL(activated(int)), this, SLOT( selectOperation(int) ));
 
     RegisterOperation("Attach").add< QAttachOperation >();
+    RegisterOperation("AddFrame").add< AddFrameOperation >();
     RegisterOperation("Fix")   .add< QFixOperation  >();
     RegisterOperation("Incise").add< QInciseOperation  >();
     RegisterOperation("Remove").add< QTopologyOperation  >();
