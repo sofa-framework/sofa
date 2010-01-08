@@ -175,6 +175,10 @@ public:
     Data<bool> showDefTensors;
     Data<unsigned int> displayedFromIndex;
     Data<double> showTextScaleFactor;
+#ifdef SOFA_DEV
+    HexahedronGeodesicalDistance< GeoType>* geoDist;
+    Data<double> newFrameMinDist;
+#endif
 
 protected:
     Data<int /* = WeightingType*/> wheightingType;
@@ -183,10 +187,6 @@ protected:
     bool computeWeights;
     Coefs<double> distances;
     vector<vector<Coord> > distGradients;
-#ifdef SOFA_DEV
-    HexahedronGeodesicalDistance< GeoType>* geoDist;
-    Data<double> newFrameMinDist;
-#endif
 
     inline void computeInitPos();
     inline void computeDistances();
