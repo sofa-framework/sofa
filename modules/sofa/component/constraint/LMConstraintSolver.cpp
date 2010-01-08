@@ -313,7 +313,7 @@ bool LMConstraintSolver::solveSystem(double /*dt*/, VecId)
 
 
 
-bool LMConstraintSolver::applyCorrection(double /*dt*/, VecId id, bool isPositionChangesUpdateVelocity)
+bool LMConstraintSolver::applyCorrection(double /*dt*/, VecId id)
 {
     //************************************************************
     // Constraint Correction
@@ -328,7 +328,8 @@ bool LMConstraintSolver::applyCorrection(double /*dt*/, VecId id, bool isPositio
     {
         sofa::core::componentmodel::behavior::BaseMechanicalState* dofs=*itDofs;
         const VectorEigen &LambdaVector=*Lambda;
-        constraintStateCorrection(id, isPositionChangesUpdateVelocity,invMass_Ltrans[dofs] , LambdaVector, dofUsed[dofs], dofs);
+        bool updateVelocities=!constraintVel.getValue();
+        constraintStateCorrection(id, updateVelocities,invMass_Ltrans[dofs] , LambdaVector, dofUsed[dofs], dofs);
     }
 
 #ifdef SOFA_DUMP_VISITOR_INFO

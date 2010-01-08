@@ -44,7 +44,7 @@ ConstraintSolver::ConstraintSolver()
 ConstraintSolver::~ConstraintSolver()
 {}
 
-void ConstraintSolver::solveConstraint(double dt, VecId id,   bool isPositionChangesUpdateVelocity)
+void ConstraintSolver::solveConstraint(double dt, VecId id)
 {
     bool continueSolving=true;
     continueSolving=prepareStates(dt, id);
@@ -52,7 +52,7 @@ void ConstraintSolver::solveConstraint(double dt, VecId id,   bool isPositionCha
     else return;
     if (continueSolving) continueSolving=solveSystem(dt, id);
     else return;
-    if (continueSolving) continueSolving=applyCorrection(dt, id, isPositionChangesUpdateVelocity);
+    if (continueSolving) continueSolving=applyCorrection(dt, id);
     else return;
 }
 } // namespace behavior

@@ -91,7 +91,7 @@ public:
 
     /** Find all the Constraint present in the scene graph, build the constraint equation system, solve and apply the correction
      **/
-    virtual void solveConstraint(double /*dt*/, VecId,  bool /*isPositionChangesUpdateVelocity*/=true) {};
+    virtual void solveConstraint(double /*dt*/, VecId) {};
 
     /// Propagate the given state (time, position and velocity) through all mappings
     ///
