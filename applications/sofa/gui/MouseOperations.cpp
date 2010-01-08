@@ -34,6 +34,8 @@
 #include <sofa/component/collision/PotentialInjectionPerformer.h>
 #include <sofa/component/collision/RemovePrimitivePerformer.h>
 #include <sofa/component/collision/InciseAlongPathPerformer.h>
+#include <sofa/component/collision/AddFramePerformer.h>
+
 
 namespace sofa
 {
