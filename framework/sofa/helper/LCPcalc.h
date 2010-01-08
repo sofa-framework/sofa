@@ -120,7 +120,7 @@ SOFA_HELPER_API void afficheLCP(double *q, double **M, double *f, int dim);
 SOFA_HELPER_API void afficheResult(double *f, int dim);
 
 typedef SOFA_HELPER_API double FemClipsReal;
-SOFA_HELPER_API void gaussSeidelLCP1(int, FemClipsReal *,FemClipsReal **, FemClipsReal *, double , int );
+SOFA_HELPER_API void gaussSeidelLCP1(int, FemClipsReal *,FemClipsReal **, FemClipsReal *, double , int, std::vector<double>* residuals = NULL );
 
 
 
@@ -162,7 +162,7 @@ SOFA_HELPER_API int nlcp_multiGrid_2levels(int dim, double *dfree, double**W, do
         std::vector< int> &contact_group, unsigned int num_group, bool verbose);
 
 // Gauss-Seidel like algorithm for contacts
-SOFA_HELPER_API int nlcp_gaussseidel(int, double *, double**, double *, double, double, int, bool, bool verbose=false);
+SOFA_HELPER_API int nlcp_gaussseidel(int, double *, double**, double *, double, double, int, bool, bool verbose=false, std::vector<double>* residuals = NULL);
 // Timed Gauss-Seidel like algorithm for contacts
 SOFA_HELPER_API int nlcp_gaussseidelTimed(int, double *, double**, double *, double, double, int, bool, double timeout, bool verbose=false);
 } // namespace helper

@@ -258,7 +258,7 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
     if (fcast)
         J.mulTranspose(F, *fcast); // fast
     else
-        J.mulTranspose(F, fcast); // slow but generic
+        J.mulTranspose(F, f); // slow but generic
     for (unsigned int i=0; i< numDOFs; i++)
         for (unsigned int r=0; r<N; ++r)
             force[i][r] = F[i*N+r];
