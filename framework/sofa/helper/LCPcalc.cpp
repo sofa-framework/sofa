@@ -41,19 +41,9 @@ namespace helper
 using namespace std;
 
 
-LCP::LCP(unsigned int mxC) : maxConst(mxC), tol(0.00001), numItMax(1000), useInitialF(true), mu(0.0), dim(0)
+LCP::LCP() : maxConst(0), tol(0.00001), numItMax(1000), useInitialF(true), mu(0.0), dim(0)
 {
-    W = new double*[maxConst];
-    for (int i = 0; i < maxConst; i++)
-    {
-        W[i] = new double[maxConst];
-        memset(W[i], 0, maxConst * sizeof(double));
-    }
-    dfree = new double[maxConst];
-    f = new double[2 * maxConst + 1];
 
-    memset(dfree, 0, maxConst * sizeof(double));
-    memset(f, 0, (2 * maxConst + 1) * sizeof(double));
 }
 /*
 LCP& LCP::operator=(LCP& lcp)
@@ -85,7 +75,7 @@ LCP& LCP::operator=(LCP& lcp)
 	tol = lcp.tol;
 	numItMax = lcp.numItMax;
 	useInitialF = lcp.useInitialF;
-	nbConst = lcp.nbConst;
+        dim = lcp.dim;
 
 	for (unsigned int i = 0; i < maxConst; i++)
 		memcpy(W[i], lcp.W[i], maxConst * sizeof(double));
@@ -99,6 +89,9 @@ LCP& LCP::operator=(LCP& lcp)
 LCP::~LCP()
 {
     delete [] dfree;
+    delete [] d;
+    delete [] f;
+    delete [] f_1;
     for (int i = 0; i < maxConst; i++)
     {
         delete [] W[i];
@@ -116,8 +109,138 @@ void LCP::reset(void)
     }
 
     memset(dfree, 0, maxConst * sizeof(double));
+    memset(f, 0, (2 * maxConst + 1) * sizeof(double));
+
+
 }
 
+
+void LCP::allocate (unsigned int input_maxConst)
+{
+    this->maxConst = input_maxConst;
+
+    W = new double*[maxConst];
+    for (int i = 0; i < (int)maxConst; i++)
+    {
+        W[i] = new double[maxConst];
+        memset(W[i], 0, maxConst * sizeof(double));
+    }
+    dfree = new double[maxConst];
+    d = new double[maxConst];
+    f = new double[2 * maxConst + 1];
+    f_1= new double[maxConst];
+
+    memset(dfree, 0, maxConst * sizeof(double));
+    memset(f, 0, (2 * maxConst + 1) * sizeof(double));
+    memset(f_1, 0, maxConst * sizeof(double));
+
+}
+
+void LCP::setLCP(unsigned int input_dim, double *input_dfree, double **input_W, double *input_f, double &input_mu, double &input_tol, int input_numItMax)
+{
+    dim = input_dim;
+    dfree = input_dfree;
+    W = input_W;
+    f = input_f;
+    numItMax = input_numItMax;
+    tol = input_tol;
+    mu = input_mu;
+
+    d = new double[maxConst];
+    f_1= new double[maxConst];
+    memset(d, 0, maxConst * sizeof(double));
+    memset(f_1, 0, maxConst * sizeof(double));
+
+}
+
+void LCP::solveNLCP(bool convergenceTest)
+{
+    double error;
+    double f_1[3],dn, ds, dt;
+    int numContacts = dim/3;
+
+    for (int it=0; it<numItMax; it++)
+    {
+        error =0;
+        for (int c=0;  c<numContacts ; c++)
+        {
+            f_1[0] = f[3*c]; f_1[1] = f[3*c+1]; f_1[2] = f[3*c+2];
+            dn =dfree[3*c];  dt=dfree[3*c+1]; ds =dfree[3*c+2];
+            for (int i=0; i<dim; i++)
+            {
+                dn += W[3*c  ][i]*f[i];
+                dt += W[3*c+1][i]*f[i];
+                ds += W[3*c+2][i]*f[i];
+            }
+
+
+            // error measure
+            double Ddn, Ddt, Dds;
+            Ddn=0; Ddt=0; Dds=0;
+
+            /////// CONTACT
+            f[3*c] -= dn / W[3*c  ][3*c  ];
+            if (f[3*c]<0)
+            {
+
+                if (f_1[0]>0 && convergenceTest)  // the point was in contact and is no more in contact..
+                {
+
+                    for (int j=0; j<3; j++ )
+                    {
+                        Ddn -= W[3*c  ][3*c+j]*f_1[j];
+                        Ddt -= W[3*c+1][3*c+j]*f_1[j];
+                        Dds -= W[3*c+2][3*c+j]*f_1[j];
+                    }
+                    error += sqrt(Ddn*Ddn + Ddt*Ddt + Dds*Dds);
+                }
+                f[3*c  ]=0;
+                f[3*c+1]=0;
+                f[3*c+2]=0;
+
+                continue;
+            }
+
+            ////// FRICTION
+
+            // evaluation of the current tangent positions (motion du to force change along normal)
+            dt +=  W[3*c+1][3*c]*(f[3*c]-f_1[0]);
+            ds +=  W[3*c+2][3*c]*(f[3*c]-f_1[0]);
+
+            // envaluation of the new fricton forces
+
+            f[3*c+1] -= 2*dt/(W[3*c+1][3*c+1]+W[3*c+2][3*c+2]);
+            f[3*c+2] -= 2*ds/(W[3*c+1][3*c+1]+W[3*c+2][3*c+2]);
+
+            double normFt=sqrt(f[3*c+1]*f[3*c+1]+ f[3*c+2]* f[3*c+2]);
+
+            if (normFt > mu*f[3*c])
+            {
+                f[3*c+1] *=mu*f[3*c]/normFt;
+                f[3*c+2] *=mu*f[3*c]/normFt;
+            }
+
+            if(convergenceTest)
+            {
+
+                for (int j=0; j<3; j++ )
+                {
+                    Ddn -= W[3*c  ][3*c+j]*(f[3*c+j]-f_1[j]);
+                    Ddt -= W[3*c+1][3*c+j]*(f[3*c+j]-f_1[j]);
+                    Dds -= W[3*c+2][3*c+j]*(f[3*c+j]-f_1[j]);
+                }
+
+                error += sqrt(Ddn*Ddn + Ddt*Ddt + Dds*Dds);
+            }
+        }
+
+        if (error < tol*(numContacts+1) && convergenceTest)
+        {
+            return;
+        }
+    }
+
+}
 
 
 //#include "mex.h"
@@ -1000,6 +1123,18 @@ void afficheLCP(double *q, double **M, double *f, int dim)
 }
 
 
+void afficheResult(double *f, int dim)
+{
+    int compteur;
+    // affichage de f
+    printf("f = [");
+    for(compteur=0; compteur<dim; compteur++)
+    {
+        printf("\t%.9f\n",f[compteur]);
+    }
+    printf("      ];\n\n");
+}
+
 /********************************************************************************************/
 // special class to obtain the inverse of a symetric matrix 3x3
 void LocalBlock33::compute(double &w11, double &w12, double &w13, double &w22, double &w23, double &w33)
@@ -1248,7 +1383,659 @@ struct listSortAscending
     }
 };
 
+
+/* Fonctions "de base" à définir pour le MultiGrid :
+   - Projection -
+   - Calcul à 1 niveau donné -
+   - Prolongation -
+
+   Classe
+   - NLCP {dim , dfree, W , f
+
+    void NLCPSolve( int numIteration, const double &tol, bool convergenceTest)
+    }
+
+
+
+   void projection(const NLCP &fineLevel, NLCP &coarseLevel, const std::vector<int> &projectionTable )
+   *computation of W
+   *computation of dfree
+
+   void prolongation(const NLCP &coarseLevel, NLCP &fineLevel, const std::vector<int> &projectionTable )
+
+
+
+*/
+
+/// projection function
+/// input values: LCP &fineLevel => LCP at the fine level
+///               nbContactsCoarse => number of contacts wanted at the coarse level
+///               projectionTable => Table (size = fine level) => for each contact at the fine level, provide the coarse contact
+///               verbose =>
+/// output values: LCP &coarseLevel
+///                contact_is_projected => (size= fine level) => for each contact at the fine level, tell if the contact is projected or not
+
+
+void projection (LCP &fineLevel, LCP &coarseLevel, int nbContactsCoarse , const std::vector<int> &projectionTable, std::vector<double> & /*projectionValues*/, std::vector<bool> &contact_is_projected, bool verbose)
+
+{
+    // preliminary step: set values to 0
+
+    if (3*nbContactsCoarse > (int) coarseLevel.getMaxConst())
+    {
+        std::cerr<<"ERROR : allocation pb for the coarseLevel. size needed : "<<3*nbContactsCoarse<<" - size allocated : "<<coarseLevel.getMaxConst()<<std::endl;
+        return;
+    }
+
+    for (int c=0;  c<3*nbContactsCoarse ; c++)
+    {
+        memset(coarseLevel.getW()[c], 0, 3*nbContactsCoarse*sizeof(double));
+    }
+
+    memset(coarseLevel.getDfree(), 0, 3*nbContactsCoarse*sizeof(double));
+    memset(coarseLevel.getF(), 0, 3*nbContactsCoarse*sizeof(double));
+    memset(coarseLevel.getF_1(), 0, 3*nbContactsCoarse*sizeof(double));
+    memset(coarseLevel.getD(), 0, 3*nbContactsCoarse*sizeof(double));
+
+
+    // STEP1 => which contact is being projected ?
+    // Only active or interpenetrated ones !!
+    int numContactFine = (int)fineLevel.getDim()/3;
+
+    std::vector<int> size_of_group;
+    //std::vector<bool> contact_is_projected;
+    contact_is_projected.clear();
+    std::vector<bool> group_has_projection;
+    contact_is_projected.resize(numContactFine);
+    group_has_projection.resize(nbContactsCoarse);
+    size_of_group.resize(nbContactsCoarse);
+
+    double dn;
+
+    for (int c=0;  c<nbContactsCoarse ; c++)
+        group_has_projection[c] = false;
+
+    for (int c1=0; c1<numContactFine; c1++)
+    {
+        size_of_group[projectionTable[c1]] +=1;
+        dn=fineLevel.getDfree()[3*c1];
+        for (int i=0; i<(int)fineLevel.getDim(); i++)
+        {
+            dn += fineLevel.getW()[3*c1  ][i]*fineLevel.getF()[i];
+        }
+        fineLevel.getD()[3*c1]=dn;
+
+        if (fineLevel.getF()[3*c1] > 0 || dn < 0)  //contact actif uniquement ???
+        {
+            contact_is_projected[c1]= true;
+            group_has_projection[projectionTable[c1]]=true;
+        }
+        else
+            contact_is_projected[c1]= false;
+
+        std::cout<<"contact "<<c1<<" is in group "<< projectionTable[c1]<<std::endl;
+    }
+    std::cout<<"STEP 2, d = "<<std::endl;
+    afficheResult(fineLevel.getD(),fineLevel.getDim());
+
+    // STEP2
+    // For group with no active contact, the closest to the contact one is chosen
+    for (int g=0;  g<nbContactsCoarse ; g++)
+    {
+        if (!group_has_projection[g])
+        {
+            std::cout<<"WARNING ! NO PROJECTION FOR GROUP "<<g<<" projection of the closest contact"<<std::endl;
+
+            double dmin = 9.9e99;
+            int projected_contact=-1;
+            for (int c1=0; c1<numContactFine; c1++)
+            {
+                if (projectionTable[c1]==g && dmin > fineLevel.getD()[3*c1] )
+                {
+                    dmin = fineLevel.getD()[3*c1];
+                    projected_contact = c1;
+                    contact_is_projected[c1]= true;
+                }
+
+            }
+            if (projected_contact >=0)
+            {
+                group_has_projection[g]=true;
+
+
+            }
+            else
+            {
+                std::cerr<<"ERROR in nlcp_multiGrid: no projection found for group" << g << std::endl;
+                return;
+            }
+
+
+        }
+    }
+
+
+    // STEP 3: set up the new coarse LCP
+
+    for (int c1=0; c1<numContactFine; c1++)
+    {
+        if (contact_is_projected[c1])
+        {
+
+            int group = projectionTable[c1];
+
+            ////////////
+            // on calcule le système grossier
+            ////////////
+            coarseLevel.getDfree()[3*group  ] += fineLevel.getDfree()[3*c1  ]; //projectionValues[c1] * fineLevel.getDfree()[3*c1  ];
+            coarseLevel.getDfree()[3*group+1] += fineLevel.getDfree()[3*c1+1];
+            coarseLevel.getDfree()[3*group+2] += fineLevel.getDfree()[3*c1+2];
+
+
+            coarseLevel.getF_1()[3*group  ] += fineLevel.getF()[3*c1  ]/size_of_group[group];
+            coarseLevel.getF_1()[3*group+1] += fineLevel.getF()[3*c1+1]/size_of_group[group];
+            coarseLevel.getF_1()[3*group+2] += fineLevel.getF()[3*c1+2]/size_of_group[group];
+            coarseLevel.getF()[3*group  ]   += fineLevel.getF()[3*c1  ]/size_of_group[group];
+            coarseLevel.getF()[3*group+1]   += fineLevel.getF()[3*c1+1]/size_of_group[group];
+            coarseLevel.getF()[3*group+2]   += fineLevel.getF()[3*c1+2]/size_of_group[group];
+
+
+            for (int c2=0; c2<numContactFine; c2++)
+            {
+                if (contact_is_projected[c2])
+                {
+                    int group2 = projectionTable[c2];
+
+                    coarseLevel.getW()[3*group  ][3*group2] += fineLevel.getW()[3*c1  ][3*c2];   coarseLevel.getW()[3*group  ][3*group2+1] += fineLevel.getW()[3*c1  ][3*c2+1];   coarseLevel.getW()[3*group  ][3*group2+2] += fineLevel.getW()[3*c1  ][3*c2+2];
+                    coarseLevel.getW()[3*group+1][3*group2] += fineLevel.getW()[3*c1+1][3*c2];   coarseLevel.getW()[3*group+1][3*group2+1] += fineLevel.getW()[3*c1+1][3*c2+1];   coarseLevel.getW()[3*group+1][3*group2+2] += fineLevel.getW()[3*c1+1][3*c2+2];
+                    coarseLevel.getW()[3*group+2][3*group2] += fineLevel.getW()[3*c1+2][3*c2];   coarseLevel.getW()[3*group+2][3*group2+1] += fineLevel.getW()[3*c1+2][3*c2+1];   coarseLevel.getW()[3*group+2][3*group2+2] += fineLevel.getW()[3*c1+2][3*c2+2];
+
+                }
+
+            }
+
+
+        }
+    }
+
+    if(verbose)
+    {
+        std::cout<<"LCP at the COARSE LEVEL: "<<std::endl;
+        afficheLCP(coarseLevel.getDfree(), coarseLevel.getW(), coarseLevel.getF(), nbContactsCoarse*3);
+    }
+
+
+
+}
+
+/// prolongation function
+/// all parameters as input
+/// output=> change value of F in fineLevel
+
+void prolongation(LCP &fineLevel, LCP &coarseLevel, const std::vector<int> &projectionTable, std::vector<double> & /*projectionValues*/, std::vector<bool> &contact_is_projected, bool verbose)
+
+{
+
+    int numContactsFine = fineLevel.getDim()/3;
+
+    if (numContactsFine != (int)contact_is_projected.size() || numContactsFine != (int)projectionTable.size() )
+    {
+        std::cerr<<"WARNING in prolongation: problem with the size of tables "<<std::endl;
+    }
+
+    // STEP 4: PROLONGATION DU RESULTAT AU NIVEAU FIN
+    for (int c1=0; c1<numContactsFine; c1++)
+    {
+        if (contact_is_projected[c1])
+        {
+            int group = projectionTable[c1];
+            fineLevel.getF()[3*c1  ]  +=  ( coarseLevel.getF()[3*group]   - coarseLevel.getF_1()[3*group] );
+            fineLevel.getF()[3*c1+1]  +=  ( coarseLevel.getF()[3*group+1] - coarseLevel.getF_1()[3*group+1] );
+            fineLevel.getF()[3*c1+2]  +=  ( coarseLevel.getF()[3*group+2] - coarseLevel.getF_1()[3*group+2] );
+
+            if ( fineLevel.getF()[3*c1  ] < 0)
+            {
+                fineLevel.getF()[3*c1  ]=0;  fineLevel.getF()[3*c1+1]=0;  fineLevel.getF()[3*c1+2]=0;
+            }
+        }
+    }
+
+    if(verbose)
+    {
+        std::cout<<"projection at the finer LEVEL: "<<std::endl;
+        afficheResult(  fineLevel.getF(), fineLevel.getDim());
+    }
+}
+
+/// new multigrid resolution of a problem with projection & prolongation
+
+int nlcp_multiGrid_2levels(int dim, double *dfree, double**W, double *f, double mu, double tol, int numItMax, bool useInitialF,
+        std::vector< int> &contact_group, unsigned int num_group, bool verbose)
+{
+
+    LCP *fineLevel = new LCP();
+    fineLevel->setLCP(dim,dfree, W, f, mu,tol,numItMax);
+    if (!useInitialF)
+        memset(fineLevel->getF(), 0, dim*sizeof(double));
+
+
+    // iterations at the fine Level (no test of convergence)
+    bool convergenceTest= false;
+    fineLevel->setNumItMax(0);
+    fineLevel->solveNLCP(convergenceTest);
+
+
+    // projection step & construction of the coarse LCP
+    LCP *coarseLevel = new LCP();
+    if(verbose)
+        std::cout<<"allocation of size"<<num_group<<" at coarse level"<<std::endl;
+    coarseLevel->allocate(3*num_group); // allocation of the memory for the coarse LCP
+
+    std::vector<bool> contact_is_projected;
+    std::vector<double> not_used_yet; // if we want to give different value (not 1 for all) of the projection value
+    projection((*fineLevel), (*coarseLevel), num_group, contact_group, not_used_yet , contact_is_projected, verbose);
+
+    // iterations  at the coarse level (till convergence)
+    convergenceTest = true;
+    coarseLevel->setNumItMax(numItMax);
+    coarseLevel->setTol(tol);
+    coarseLevel->solveNLCP(convergenceTest);
+
+
+    // prolongation (interpolation) at the fine level
+    prolongation((*fineLevel), (*coarseLevel), contact_group, not_used_yet , contact_is_projected, verbose);
+
+
+    // iterations at the fine level (till convergence)
+    convergenceTest = true;
+    fineLevel->setNumItMax(10);
+    fineLevel->solveNLCP(convergenceTest);
+
+    return 1;
+
+}
+
+
+int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, double tol, int numItMax, bool useInitialF,
+        double** W_coarse, std::vector< int> &contact_group, unsigned int num_group, bool verbose)
+{
+
+
+    std::cerr<<"entering nlcp_multiGrid fct"<<std::endl;
+
+    double test = dim/3;
+    double zero = 0.0;
+    int numContacts =  (int) floor(test);
+    test = dim/3 - numContacts;
+
+    if (test>0.01)
+    {
+        printf("\n WARNING dim should be dividable by 3 in nlcp_gaussseidel");
+        return 0;
+    }
+
+    // iterators
+    int it,c1,i;
+
+    // memory allocation of vector d
+    double *d;
+    d = (double*)malloc(dim*sizeof(double));
+    memset(d, 0, dim*sizeof(double));
+    // put the vector force to zero
+    if (!useInitialF)
+        memset(f, 0, dim*sizeof(double));
+
+    std::cerr<<"step 1 allocation ok"<<std::endl;
+
+    // previous value of the force and the displacment
+    double f_1[3];
+    double d_1[3];
+
+
+
+
+    ////////////////////////////////
+    // allocation du système grossier
+    ////////////////////////////////
+    //double **W_coarse;
+    double *d_free_coarse;
+    double *F_coarse_1, *F_coarse;
+    double *d_coarse;
+
+
+    // W_coarse = (double **) malloc (3*num_group * sizeof(double*));
+    d_free_coarse= (double*) malloc (3*num_group * sizeof(double));
+    F_coarse_1 = (double*) malloc (3*num_group * sizeof(double));
+    F_coarse= (double*) malloc (3*num_group * sizeof(double));
+    d_coarse= (double*) malloc (3*num_group * sizeof(double));
+    std::cerr<<"step 2 allocation ok"<<std::endl;
+
+    for (unsigned int g=0;  g<3*num_group ; g++)
+    {
+        W_coarse[g] = (double*) malloc(3*num_group * sizeof(double));
+        memset(W_coarse[g], 0, 3*num_group*sizeof(double));
+    }
+
+    memset(d_free_coarse, 0, 3*num_group*sizeof(double));
+    memset(F_coarse_1, 0, 3*num_group*sizeof(double));
+    memset(F_coarse, 0, 3*num_group*sizeof(double));
+    memset(d_coarse, 0, 3*num_group*sizeof(double));
+    if(verbose)
+    {
+        std::cout<<"allocation ok"<<std::endl;
+    }
+    ////////////////////////////////
+    /////////// CALCUL EN V /////////
+    ////////////////////////////////
+
+    // STEP1: 3 premières itérations au niveau fin
+
+    double dn, dt, ds, fn, ft, fs;
+    // allocation of the inverted system 3x3
+    LocalBlock33 **W33;
+    W33 = (LocalBlock33 **) malloc (dim*sizeof(LocalBlock33));
+    for (c1=0; c1<numContacts; c1++)
+        W33[c1] = new LocalBlock33();
+    double error = 0;
+
+
+    for (int it_fin =0; it_fin<0; it_fin++)
+    {
+        error=0;
+        for (c1=0; c1<numContacts; c1++)
+        {
+            // index of contact
+            int index1 = c1;
+
+            // put the previous value of the contact force in a buffer and put the current value to 0
+            f_1[0] = f[3*index1]; f_1[1] = f[3*index1+1]; f_1[2] = f[3*index1+2];
+            set3Dof(f,index1,zero,zero,zero); //		f[3*index] = 0.0; f[3*index+1] = 0.0; f[3*index+2] = 0.0;
+
+            // computation of actual d due to contribution of other contacts
+            dn=dfree[3*index1]; dt=dfree[3*index1+1]; ds=dfree[3*index1+2];
+            for (i=0; i<dim; i++)
+            {
+                dn += W[3*index1  ][i]*f[i];
+                dt += W[3*index1+1][i]*f[i];
+                ds += W[3*index1+2][i]*f[i];
+            }
+            d_1[0] = dn + W[3*index1  ][3*index1  ]*f_1[0]+W[3*index1  ][3*index1+1]*f_1[1]+W[3*index1  ][3*index1+2]*f_1[2];
+            d_1[1] = dt + W[3*index1+1][3*index1  ]*f_1[0]+W[3*index1+1][3*index1+1]*f_1[1]+W[3*index1+1][3*index1+2]*f_1[2];
+            d_1[2] = ds + W[3*index1+2][3*index1  ]*f_1[0]+W[3*index1+2][3*index1+1]*f_1[1]+W[3*index1+2][3*index1+2]*f_1[2];
+
+            if(W33[index1]->computed==false)
+            {
+                W33[index1]->compute(W[3*index1][3*index1],W[3*index1][3*index1+1],W[3*index1][3*index1+2],
+                        W[3*index1+1][3*index1+1], W[3*index1+1][3*index1+2],W[3*index1+2][3*index1+2]);
+            }
+
+            fn=f_1[0]; ft=f_1[1]; fs=f_1[2];
+            W33[index1]->GS_State(mu,dn,dt,ds,fn,ft,fs);
+
+            error += absError(dn,dt,ds,d_1[0],d_1[1],d_1[2]);
+
+            set3Dof(f,index1,fn,ft,fs);
+        }
+    }
+
+    if(verbose)
+    {
+        std::cout<<"initial steps at the finest level "<<std::endl;
+        afficheLCP(dfree, W, f, dim);
+    }
+
+    // STEP 2: DESCENTE AU NIVEAU GROSSIER => PROJECTION
+
+
+    std::vector<int> size_of_group;
+    std::vector<bool> contact_is_projected;
+    std::vector<bool> group_has_projection;
+    contact_is_projected.resize(numContacts);
+    group_has_projection.resize(num_group);
+    size_of_group.resize(num_group);
+
+    for (unsigned int g=0;  g<num_group ; g++)
+        group_has_projection[g] = false;
+
+
+
+
+    for (c1=0; c1<numContacts; c1++)
+    {
+        size_of_group[contact_group[c1]] +=1;
+        dn=dfree[3*c1];
+        for (i=0; i<dim; i++)
+        {
+            dn += W[3*c1  ][i]*f[i];
+        }
+        d[3*c1]=dn;
+
+        if (f[3*c1] > 0 || dn < 0)  //contact actif uniquement ???
+        {
+            contact_is_projected[c1]= true;
+            group_has_projection[contact_group[c1]]=true;
+        }
+        else
+            contact_is_projected[c1]= false;
+
+        std::cout<<"contact "<<c1<<" is in group "<< contact_group[c1]<<std::endl;
+    }
+    std::cout<<"STEP 2, d = "<<std::endl;
+    afficheResult(d,dim);
+
+
+    for (unsigned int g=0;  g<num_group ; g++)
+    {
+        if (!group_has_projection[g])
+        {
+            std::cout<<"WARNING ! NO PROJECTION FOR GROUP "<<g<<" projection of the closest contact"<<std::endl;
+
+            double dmin = 9.9e99;
+            int projected_contact=-1;
+            for (c1=0; c1<numContacts; c1++)
+            {
+                if (contact_group[c1]==(int)g && dmin > d[3*c1] )
+                {
+                    dmin = d[3*c1];
+                    projected_contact = c1;
+                    contact_is_projected[c1]= true;
+                }
+                if(contact_group[c1]==7)
+                    std::cout<<"dmin > d["<<3*c1<<"] (=" << d[3*c1] << ")"<<std::endl;
+
+            }
+            if (projected_contact >=0)
+            {
+                group_has_projection[g]=true;
+
+
+            }
+            else
+            {
+                std::cerr<<"ERROR in nlcp_multiGrid: no projection found for group" << g << std::endl;
+                return 0;
+            }
+
+
+        }
+    }
+
+
+
+    for (c1=0; c1<numContacts; c1++)
+    {
+        if (contact_is_projected[c1])
+        {
+
+            int group = contact_group[c1];
+
+            ////////////
+            // on calcule le système grossier
+            ////////////
+            d_free_coarse[3*group  ] += dfree[3*c1  ];
+            d_free_coarse[3*group+1] += dfree[3*c1+1];
+            d_free_coarse[3*group+2] += dfree[3*c1+2];
+
+            F_coarse_1[3*group  ] += f[3*c1  ]/size_of_group[group];
+            F_coarse_1[3*group+1] += f[3*c1+1]/size_of_group[group];
+            F_coarse_1[3*group+2] += f[3*c1+2]/size_of_group[group];
+            F_coarse[3*group  ] += f[3*c1  ]/size_of_group[group];
+            F_coarse[3*group+1] += f[3*c1+1]/size_of_group[group];
+            F_coarse[3*group+2] += f[3*c1+2]/size_of_group[group];
+
+
+            for (int c2=0; c2<numContacts; c2++)
+            {
+                if (contact_is_projected[c2])
+                {
+                    int group2 = contact_group[c2];
+                    W_coarse[3*group  ][3*group2] += W[3*c1  ][3*c2];   W_coarse[3*group  ][3*group2+1] += W[3*c1  ][3*c2+1];   W_coarse[3*group  ][3*group2+2] += W[3*c1  ][3*c2+2];
+                    W_coarse[3*group+1][3*group2] += W[3*c1+1][3*c2];   W_coarse[3*group+1][3*group2+1] += W[3*c1+1][3*c2+1];   W_coarse[3*group+1][3*group2+2] += W[3*c1+1][3*c2+2];
+                    W_coarse[3*group+2][3*group2] += W[3*c1+2][3*c2];   W_coarse[3*group+2][3*group2+1] += W[3*c1+2][3*c2+1];   W_coarse[3*group+2][3*group2+2] += W[3*c1+2][3*c2+2];
+
+                }
+
+            }
+
+
+        }
+    }
+
+    if(verbose)
+    {
+        std::cout<<"LCP at the COARSE LEVEL: "<<std::endl;
+        afficheLCP(d_free_coarse, W_coarse, F_coarse,num_group*3);
+    }
+
+
+    // STEP 3: CALCUL GS AU NIVEAU GROSSIER !!
+    int dim_coarse = 3*num_group;
+    for (it=0; it<numItMax; it++)
+    {
+        error =0;
+        for (unsigned int g1=0;  g1<num_group ; g1++)
+        {
+            f_1[0] = F_coarse[3*g1]; f_1[1] = F_coarse[3*g1+1]; f_1[2] = F_coarse[3*g1+2];
+            dn =d_free_coarse[3*g1];  dt=d_free_coarse[3*g1+1]; ds =d_free_coarse[3*g1+2];
+            for (i=0; i<dim_coarse; i++)
+            {
+                dn += W_coarse[3*g1  ][i]*F_coarse[i];
+                dt += W_coarse[3*g1+1][i]*F_coarse[i];
+                ds += W_coarse[3*g1+2][i]*F_coarse[i];
+            }
+            d_1[0] = dn;  d_1[1] = dt;  d_1[2] = ds;
+
+            // error measure
+            double Ddn, Ddt, Dds;
+            Ddn=0; Ddt=0; Dds=0;
+
+            /////// CONTACT
+            F_coarse[3*g1] -= dn / W_coarse[3*g1  ][3*g1  ];
+            if (F_coarse[3*g1]<0)
+            {
+
+                if (f_1[0]>0)  // the point was in contact and is no more in contact..
+                {
+
+                    for (int j=0; j<3; j++ )
+                    {
+                        Ddn -= W_coarse[3*g1  ][3*g1+j]*f_1[j];
+                        Ddt -= W_coarse[3*g1+1][3*g1+j]*f_1[j];
+                        Dds -= W_coarse[3*g1+2][3*g1+j]*f_1[j];
+                    }
+                    error += sqrt(Ddn*Ddn + Ddt*Ddt + Dds*Dds);
+                }
+                F_coarse[3*g1  ]=0;
+                F_coarse[3*g1+1]=0;
+                F_coarse[3*g1+2]=0;
+
+                continue;
+            }
+
+            ////// FRICTION
+
+            // evaluation of the current tangent positions (motion du to force change along normal)
+            dt +=  W_coarse[3*g1+1][3*g1]*(F_coarse[3*g1]-f_1[0]);
+            ds +=  W_coarse[3*g1+2][3*g1]*(F_coarse[3*g1]-f_1[0]);
+
+            // envaluation of the new fricton forces
+
+            F_coarse[3*g1+1] -= 2*dt/(W_coarse[3*g1+1][3*g1+1]+W_coarse[3*g1+2][3*g1+2]);
+            F_coarse[3*g1+2] -= 2*ds/(W_coarse[3*g1+1][3*g1+1]+W_coarse[3*g1+2][3*g1+2]);
+
+            double normFt=sqrt(F_coarse[3*g1+1]*F_coarse[3*g1+1]+ F_coarse[3*g1+2]* F_coarse[3*g1+2]);
+
+            if (normFt > mu*F_coarse[3*g1])
+            {
+                F_coarse[3*g1+1] *=mu*F_coarse[3*g1]/normFt;
+                F_coarse[3*g1+2] *=mu*F_coarse[3*g1]/normFt;
+            }
+
+            for (int j=0; j<3; j++ )
+            {
+                Ddn -= W_coarse[3*g1  ][3*g1+j]*(F_coarse[3*g1+j]-f_1[j]);
+                Ddt -= W_coarse[3*g1+1][3*g1+j]*(F_coarse[3*g1+j]-f_1[j]);
+                Dds -= W_coarse[3*g1+2][3*g1+j]*(F_coarse[3*g1+j]-f_1[j]);
+            }
+
+            error += sqrt(Ddn*Ddn + Ddt*Ddt + Dds*Dds);
+        }
+
+        if (error < tol*(numContacts+1))
+        {
+            continue;
+        }
+    }
+
+    if(verbose)
+    {
+        std::cout<<"Result at the COARSE LEVEL: "<<std::endl;
+        afficheResult( F_coarse,num_group*3);
+    }
+
+
+    // STEP 4: PROLONGATION DU RESULTAT AU NIVEAU FIN
+    for (c1=0; c1<numContacts; c1++)
+    {
+        if (contact_is_projected[c1])
+        {
+            int group = contact_group[c1];
+            f[3*c1  ]  +=  ( F_coarse[3*group]   - F_coarse_1[3*group] );
+            f[3*c1+1]  +=  ( F_coarse[3*group+1] - F_coarse_1[3*group+1] );
+            f[3*c1+2]  +=  ( F_coarse[3*group+2] - F_coarse_1[3*group+2] );
+
+            if (f[3*c1  ] < 0)
+            {
+                f[3*c1  ]=0; f[3*c1+1]=0; f[3*c1+2]=0;
+            }
+        }
+    }
+
+    if(verbose)
+    {
+        std::cout<<"projection at the finer LEVEL: "<<std::endl;
+        afficheResult( f,dim);
+    }
+
+
+    // STEP 5: RELAXATION AU NIVEAU FIN : 10 iterations
+    int result =  nlcp_gaussseidel(dim, dfree, W, f,  mu,  tol, 10 , true, true);
+
+
+    if(verbose)
+    {
+        std::cout<<"after 10 iteration at the finer LEVEL: "<<std::endl;
+        afficheResult( f,dim);
+    }
+
+    return result;
+
+
+
+}
+
 int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, double tol, int numItMax, bool useInitialF, bool verbose)
+
 {
     double test = dim/3;
     double zero = 0.0;

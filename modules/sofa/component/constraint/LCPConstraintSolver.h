@@ -51,6 +51,7 @@ using namespace sofa::component::linearsolver;
 using namespace helper::system::thread;
 
 
+/// Christian : WARNING: this class is already defined in sofa::helper
 class   LCP
 {
 public:
@@ -248,6 +249,7 @@ public:
     Data<bool> displayTime;
     Data<bool> initial_guess;
     Data<bool> build_lcp;
+    Data<bool> multi_grid;
     Data < double > tol;
     Data < int > maxIt;
     Data < double > mu;
@@ -272,6 +274,14 @@ private:
     LCP lcp1, lcp2, lcp3; // Triple buffer for LCP.
     LPtrFullMatrix<double>  *_W;
     LCP *lcp,*last_lcp; /// use of last_lcp allows several LCPForceFeedback to be used in the same scene
+
+    /// multi-grid approach ///
+    void MultigridConstraintsMerge();
+    void build_Coarse_Compliance(std::vector<int> &/*constraint_merge*/, int /*sizeCoarseSystem*/);
+    LPtrFullMatrix<double>  _Wcoarse;
+    std::vector< int> _contact_group;
+    std::vector< int> _constraint_group;
+    std::vector<int> _group_lead;
 
     /// common built-unbuilt
     simulation::Node *context;

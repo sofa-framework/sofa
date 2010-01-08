@@ -53,6 +53,7 @@ public:
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::VecConst VecConst;
+    typedef typename DataTypes::SparseVecDeriv SparseVecDeriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename defaulttype::SparseConstraint<Deriv> SparseConstraint;
@@ -73,6 +74,9 @@ public:
 
     virtual void getCompliance(defaulttype::BaseMatrix *W);
     virtual void getComplianceMatrix(defaulttype::BaseMatrix* ) const;
+
+    // for multigrid approach => constraints are merged
+    virtual void  getComplianceWithConstraintMerge(defaulttype::BaseMatrix* Wmerged, std::vector<int> &constraint_merge);
 
     virtual void applyContactForce(const defaulttype::BaseVector *f);
 
