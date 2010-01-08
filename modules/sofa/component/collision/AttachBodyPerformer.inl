@@ -25,7 +25,6 @@
 
 #include <sofa/component/collision/AttachBodyPerformer.h>
 #include <sofa/component/collision/MouseInteractor.h>
-#include <sofa/component/mapping/SkinningMapping.inl>
 
 namespace sofa
 {
@@ -118,18 +117,6 @@ void AttachBodyPerformer<DataTypes>::start()
     mstateCollision->getContext()->addObject(forcefield);
     forcefield->init();
     this->interactor->setMouseAttached(true);
-
-
-    //*/ TODO TEMPORARY ! To remove later.
-#ifdef SOFA_DEV
-    sofa::component::mapping::SkinningMapping<sofa::component::mapping::MechanicalMapping< core::componentmodel::behavior::MechanicalState<StdRigidTypes<3, typename DataTypes::Real> >, core::componentmodel::behavior::MechanicalState<DataTypes> > >* sMapping;
-    mstateCollision->getContext()->get( sMapping);
-    if( sMapping && sMapping->computeAllMatrices.getValue())
-    {
-        sMapping->insertFrame( (*mstateCollision->getX())[index], Quater<double>(0, 0, 0, 1) );
-    }
-#endif
-    //*/ // TODO until here.
 }
 
 template <class DataTypes>

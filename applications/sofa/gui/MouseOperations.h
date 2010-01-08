@@ -183,6 +183,18 @@ protected:
     double potentialValue;
     std::string stateTag;
 };
+
+
+class SOFA_SOFAGUI_API AddFrameOperation : public Operation
+{
+public:
+    virtual void start() ;
+    virtual void execution() {};
+    virtual void end() {};
+
+    static std::string getDescription() {return "Add a Frame to a Skinned model";}
+};
+
 }
 }
 

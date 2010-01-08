@@ -43,11 +43,13 @@ using namespace component::collision;
 #ifdef WIN32
 #ifndef SOFA_DOUBLE
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer<defaulttype::Vec3fTypes> >  AttachBodyPerformerVec3fClass("AttachBody",true);
+helper::Creator<InteractionPerformer::InteractionPerformerFactory, AddFramePerformer<defaulttype::Vec3fTypes> >  AddFramePerformerVec3fClass("AddFrame",true);
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, FixParticlePerformer<defaulttype::Vec3fTypes> >  FixParticlePerformerVec3fClass("FixParticle",true);
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, RemovePrimitivePerformer<defaulttype::Vec3fTypes> >  RemovePrimitivePerformerVec3fClass("RemovePrimitive",true);
 #endif
 #ifndef SOFA_FLOAT
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer<defaulttype::Vec3dTypes> >  AttachBodyPerformerVec3dClass("AttachBody",true);
+helper::Creator<InteractionPerformer::InteractionPerformerFactory, AddFramePerformer<defaulttype::Vec3dTypes> >  AddFramePerformerVec3dClass("AddFrame",true);
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, FixParticlePerformer<defaulttype::Vec3dTypes> >  FixParticlePerformerVec3dClass("FixParticle",true);
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, RemovePrimitivePerformer<defaulttype::Vec3dTypes> >  RemovePrimitivePerformerVec3dClass("RemovePrimitive",true);
 #endif
@@ -93,6 +95,7 @@ void AttachOperation::endOperation()
 {
     pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
 }
+
 
 //*******************************************************************************************
 void FixOperation::start()
@@ -310,5 +313,14 @@ void InjectOperation::end()
     delete performer; performer=0;
 }
 
+//*******************************************************************************************
+void AddFrameOperation::start()
+{
+    //Creation
+    performer=component::collision::InteractionPerformer::InteractionPerformerFactory::getInstance()->createObject("AddFrame", pickHandle->getInteraction()->mouseInteractor);
+    pickHandle->getInteraction()->mouseInteractor->addInteractionPerformer(performer);
+    //Start
+    performer->start();
+}
 }
 }
