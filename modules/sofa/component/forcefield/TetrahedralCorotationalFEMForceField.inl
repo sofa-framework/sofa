@@ -722,7 +722,7 @@ inline void TetrahedralCorotationalFEMForceField<DataTypes>::getRotation(Transfo
         r21=tinfo->rotation*r01;
         r+=r21;
     }
-    R=r/numNeiTetra;
+    R=r*(1.0f/numNeiTetra);
 
     //orthogonalization
     Coord ex,ey,ez;

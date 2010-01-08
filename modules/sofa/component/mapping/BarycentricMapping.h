@@ -752,13 +752,13 @@ protected:
     topology::PointData< MappingData >  mapOrient[3];
     defaulttype::Vec3dTypes::VecCoord initialTetraPos;
     VecCoord glPointPositions, glVertexPositions[4];
-    TetraFF* forceField;
     sofa::helper::vector<sofa::defaulttype::Quat> prevTetraRotation;
 
     topology::TetrahedronSetTopologyContainer*			_container;
     topology::TetrahedronSetGeometryAlgorithms<In>*	_geomAlgo;
     core::componentmodel::behavior::BaseMechanicalState::ParticleMask *maskFrom;
     core::componentmodel::behavior::BaseMechanicalState::ParticleMask *maskTo;
+    TetraFF* forceField;
 
 public:
     BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* topology,

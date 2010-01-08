@@ -197,8 +197,9 @@ public:
     //for tetra mapping, should be removed in future
     Transformation getActualTetraRotation(unsigned int index)
     {
-        if (_rotations.size() )
+        if (index < _rotations.size() )
             return _rotations[index];
+        else { Transformation t; t.identity(); return t; }
     }
 
 
