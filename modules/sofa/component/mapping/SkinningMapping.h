@@ -174,6 +174,7 @@ public:
     Data<bool> computeAllMatrices;
     Data<bool> showDefTensors;
     Data<unsigned int> displayedFromIndex;
+    Data<double> showTextScaleFactor;
 
 protected:
     Data<int /* = WeightingType*/> wheightingType;
@@ -184,6 +185,7 @@ protected:
     vector<vector<Coord> > distGradients;
 #ifdef SOFA_DEV
     HexahedronGeodesicalDistance< GeoType>* geoDist;
+    Data<double> newFrameMinDist;
 #endif
 
     inline void computeInitPos();

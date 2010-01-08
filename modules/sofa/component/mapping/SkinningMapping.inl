@@ -40,6 +40,7 @@
 #ifdef SOFA_DEV
 #include <sofa/helper/DualQuat.h>
 #include <sofa/component/topology/HexahedronGeodesicalDistance.inl>
+#include <sofa/component/topology/DynamicSparseGridTopologyContainer.h>
 #endif
 
 namespace sofa
@@ -66,10 +67,14 @@ SkinningMapping<BasicMapping>::SkinningMapping ( In* from, Out* to )
     , computeAllMatrices ( initData ( &computeAllMatrices, false, "computeAllMatrices","compute all the matrices in addition to apply for the dual quat interpolation method." ) )
     , showDefTensors ( initData ( &showDefTensors, false, "showDefTensors","show computed deformation tensors." ) )
     , displayedFromIndex ( initData ( &displayedFromIndex, ( unsigned ) 0, "displayedFromIndex","Displayed From Index." ) )
+    , showTextScaleFactor ( initData ( &showTextScaleFactor, 0.00005, "showTextScaleFactor","Text Scale Factor." ) )
     , wheightingType ( initData ( &wheightingType, WEIGHT_INVDIST_SQUARE, "wheightingType","Weighting computation method." ) )
     , interpolationType ( initData ( &interpolationType, INTERPOLATION_LINEAR, "interpolationType","Interpolation method." ) )
     , distanceType ( initData ( &distanceType, DISTANCE_HARMONIC, "distanceType","Distance computation method." ) )
     , computeWeights ( true )
+#ifdef SOFA_DEV
+    , newFrameMinDist ( initData ( &newFrameMinDist, 0.1, "newFrameMinDist","Minimal distance to insert a new frame." ) )
+#endif
 {
     maskFrom = NULL;
     if ( core::componentmodel::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *> ( from ) )
@@ -255,9 +260,13 @@ void SkinningMapping<BasicMapping>::init()
                 computeDqT ( this->T[i], qi0 );
             }
 
+            sofa::component::topology::DynamicSparseGridTopologyContainer* hexaContainer;
+            this->getContext()->get( hexaContainer);
+            double volume = 1.0;
+            if( hexaContainer) volume = hexaContainer->voxelSize.getValue()[0]*hexaContainer->voxelSize.getValue()[1]*hexaContainer->voxelSize.getValue()[2];
             const VecCoord& xto = *this->toModel->getX();
             this->vol.resize( xto.size());
-            for( unsigned int i = 0; i < xto.size(); i++) this->vol[i] = 1.0;
+            for( unsigned int i = 0; i < xto.size(); i++) this->vol[i] = volume;
             this->volMass.resize( xto.size());
             for( unsigned int i = 0; i < xto.size(); i++) this->volMass[i] = 1.0;
 
@@ -913,14 +922,14 @@ void SkinningMapping<BasicMapping>::draw()
 
         /*/ Display  m_reps for each points
         for ( unsigned int i=0;i<xto.size();i++ )
-                sofa::helper::gl::GlText::draw ( m_reps[nbRefs.getValue() *i+0], xto[i], 0.05 );
+                sofa::helper::gl::GlText::draw ( m_reps[nbRefs.getValue() *i+0], xto[i], showTextScaleFactor.getValue() );
         //*/
 
         // Display coefs for each points
         glDisable ( GL_LIGHTING );
         glColor3f( 1.0, 1.0, 1.0);
         for ( unsigned int i=0; i<xto.size(); i++ )
-            sofa::helper::gl::GlText::draw ( (int)(m_coefs[displayedFromIndex.getValue()%xfrom.size()][i]*10000), xto[i], 0.05 );
+            sofa::helper::gl::GlText::draw ( (int)(m_coefs[displayedFromIndex.getValue()%xfrom.size()][i]*10000), xto[i], showTextScaleFactor.getValue() );
         //*/
 
         // Display mapping links between in and out elements

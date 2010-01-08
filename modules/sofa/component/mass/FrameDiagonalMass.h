@@ -163,6 +163,7 @@ public:
     void clear();
 
     virtual void init();
+    virtual void reinit();
     virtual void bwdInit();
 
     TopologyType getMassTopologyType() const
