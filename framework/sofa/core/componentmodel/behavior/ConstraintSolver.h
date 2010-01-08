@@ -58,7 +58,7 @@ public:
      * @param Id order of the constraint to be solved
      * @param isPositionChangesUpdateVelocity boolean indication if we need to propagate the change of position to a modification of velocity dv=dx/dt
      **/
-    virtual void solveConstraint(double /*dt*/, VecId,  bool /*isPositionChangesUpdateVelocity*/=true);
+    virtual void solveConstraint(double /*dt*/, VecId);
 
 
 
@@ -80,7 +80,7 @@ public:
     /**
      * Correct the Mechanical State with the solution found
      */
-    virtual bool applyCorrection(double /*dt*/, VecId, bool /*isPositionChangesUpdateVelocity*/)=0;
+    virtual bool applyCorrection(double /*dt*/, VecId)=0;
 };
 
 } // namespace behavior

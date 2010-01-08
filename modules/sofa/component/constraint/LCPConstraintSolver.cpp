@@ -180,7 +180,7 @@ bool LCPConstraintSolver::solveSystem(double /*dt*/, VecId)
     }
     return true;
 }
-bool LCPConstraintSolver::applyCorrection(double /*dt*/, VecId, bool )
+bool LCPConstraintSolver::applyCorrection(double /*dt*/, VecId )
 {
     if (initial_guess.getValue())
         keepContactForcesValue();
