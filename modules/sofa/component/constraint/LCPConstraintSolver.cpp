@@ -258,7 +258,7 @@ LCPConstraintSolver::LCPConstraintSolver()
     constraintGroups.beginEdit()->insert(0);
     constraintGroups.endEdit();
 
-    _numPreviousContact=0;
+    //_numPreviousContact=0;
     //_PreviousContactList = (contactBuf *)malloc(MAX_NUM_CONSTRAINTS * sizeof(contactBuf));
     //_cont_id_list = (long *)malloc(MAX_NUM_CONSTRAINTS * sizeof(long));
 
@@ -320,8 +320,12 @@ void LCPConstraintSolver::build_LCP()
 
     if ((initial_guess.getValue()) && (_numConstraints != 0))
     {
-        _cont_id_list.resize(_numConstraints);
-        MechanicalGetContactIDVisitor(&(_cont_id_list[0])).execute(context);
+        //_cont_id_list.resize(_numConstraints);
+        //MechanicalGetContactIDVisitor(&(_cont_id_list[0])).execute(context);
+        _constraintGroupInfo.clear();
+        _constraintIds.clear();
+        _constraintPositions.clear();
+        MechanicalGetConstraintInfoVisitor(_constraintGroupInfo, _constraintIds, _constraintPositions).execute(context);
         computeInitialGuess();
     }
 }
@@ -370,8 +374,10 @@ void LCPConstraintSolver::build_problem_info()
 
     if (initial_guess.getValue())
     {
-        _cont_id_list.resize(_numConstraints);
-        MechanicalGetContactIDVisitor(&(_cont_id_list[0])).execute(context);
+        _constraintGroupInfo.clear();
+        _constraintIds.clear();
+        _constraintPositions.clear();
+        MechanicalGetConstraintInfoVisitor(_constraintGroupInfo, _constraintIds, _constraintPositions).execute(context);
         computeInitialGuess();
     }
 
@@ -402,24 +408,24 @@ void LCPConstraintSolver::computeInitialGuess()
             (*_result)[c+numContact] =  0.0;
         }
     }
-
-
-    for (int c=0; c<numContact; c++)
+    for (unsigned cg = 0; cg < _constraintGroupInfo.size(); ++cg)
     {
-        for (unsigned int pc=0; pc<_numPreviousContact; pc++)
+        const ConstraintGroupInfo& info = _constraintGroupInfo[cg];
+        if (!info.hasId) continue;
+        std::map<core::componentmodel::behavior::BaseConstraint*, ConstraintGroupBuf>::const_iterator previt = _previousConstraints.find(info.parent);
+        if (previt == _previousConstraints.end()) continue;
+        const ConstraintGroupBuf& buf = previt->second;
+        const int c0 = info.const0;
+        const int nbl = (info.nbLines < buf.nbLines) ? info.nbLines : buf.nbLines;
+        for (int c = 0; c < info.nbGroups; ++c)
         {
-            if (_cont_id_list[c] == _PreviousContactList[pc].id)
+            std::map<PersistentID,int>::const_iterator it = buf.persistentToConstraintIdMap.find(_constraintIds[info.offsetId + c]);
+            if (it == buf.persistentToConstraintIdMap.end()) continue;
+            int prevIndex = it->second;
+            if (prevIndex >= 0 && prevIndex+nbl <= (int) _previousForces.size())
             {
-                if (_mu>0.0)
-                {
-                    (*_result)[3*c  ] = _PreviousContactList[pc].F.x();
-                    (*_result)[3*c+1] = _PreviousContactList[pc].F.y();
-                    (*_result)[3*c+2] = _PreviousContactList[pc].F.z();
-                }
-                else
-                {
-                    (*_result)[c+numContact] =  _PreviousContactList[pc].F.x();
-                }
+                for (int l=0; l<nbl; ++l)
+                    (*_result)[c0 + c*nbl + l] = _previousForces[prevIndex + l];
             }
         }
     }
@@ -427,34 +433,29 @@ void LCPConstraintSolver::computeInitialGuess()
 
 void LCPConstraintSolver::keepContactForcesValue()
 {
-    _numPreviousContact=0;
-
-    int numContact = (_mu > 0.0) ? _numConstraints/3 : _numConstraints;
-    _PreviousContactList.resize(numContact);
-
-    for (int c=0; c<numContact; c++)
+    // store current force
+    _previousForces.resize(_numConstraints);
+    for (unsigned int c=0; c<_numConstraints; ++c)
+        _previousForces[c] = (*_result)[c];
+    // clear previous history
+    for (std::map<core::componentmodel::behavior::BaseConstraint*, ConstraintGroupBuf>::iterator it = _previousConstraints.begin(), itend = _previousConstraints.end(); it != itend; ++it)
     {
-        if (_mu>0.0)
-        {
-            if ((*_result)[3*c]>0.0)//((_result[3*c]>0.0)||(_result[3*c+1]>0.0)||(_result[3*c+2]>0.0))
-            {
-                _PreviousContactList[_numPreviousContact].id = (_cont_id_list[c] >= 0) ? _cont_id_list[c] : -_cont_id_list[c];
-                _PreviousContactList[_numPreviousContact].F.x() = (*_result)[3*c];
-                _PreviousContactList[_numPreviousContact].F.y() = (*_result)[3*c+1];
-                _PreviousContactList[_numPreviousContact].F.z() = (*_result)[3*c+2];
-                _numPreviousContact++;
-            }
-        }
-        else
-        {
-            if ((*_result)[c]>0.0)
-            {
-                _PreviousContactList[_numPreviousContact].id = (_cont_id_list[c] >= 0) ? _cont_id_list[c] : -_cont_id_list[c];
-                _PreviousContactList[_numPreviousContact].F.x() = (*_result)[c];
-                _numPreviousContact++;
-            }
-
-        }
+        ConstraintGroupBuf& buf = it->second;
+        for (std::map<PersistentID,int>::iterator it2 = buf.persistentToConstraintIdMap.begin(), it2end = buf.persistentToConstraintIdMap.end(); it2 != it2end; ++it2)
+            it2->second = -1;
+    }
+    // fill info from current ids
+    for (unsigned cg = 0; cg < _constraintGroupInfo.size(); ++cg)
+    {
+        const ConstraintGroupInfo& info = _constraintGroupInfo[cg];
+        if (!info.parent) continue;
+        if (!info.hasId) continue;
+        ConstraintGroupBuf& buf = _previousConstraints[info.parent];
+        int c0 = info.const0;
+        int nbl = info.nbLines;
+        buf.nbLines = nbl;
+        for (int c = 0; c < info.nbGroups; ++c)
+            buf.persistentToConstraintIdMap[_constraintIds[info.offsetId + c]] = c0 + c*nbl;
     }
 }
 

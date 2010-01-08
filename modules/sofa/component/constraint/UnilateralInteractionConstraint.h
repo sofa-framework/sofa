@@ -95,6 +95,9 @@ public:
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
     typedef typename core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalState;
+    typedef core::componentmodel::behavior::BaseConstraint::PersistentID PersistentID;
+    typedef core::componentmodel::behavior::BaseConstraint::ConstCoord ConstCoord;
+    typedef core::componentmodel::behavior::BaseConstraint::ConstraintGroupInfo ConstraintGroupInfo;
 
 protected:
     MechanicalState* object1;
@@ -113,6 +116,7 @@ protected:
         Real dfree_s;   ///< QPfree * s
         unsigned int id;
         long contactId;
+        PersistentID localId;
         double mu;		///< angle for friction
 
         // for visu
@@ -163,21 +167,23 @@ public:
 
     virtual void applyConstraint(unsigned int & /*contactId*/);
 
-    virtual void addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord Pfree, Coord Qfree, long id=0);
+    virtual void addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord Pfree, Coord Qfree, long id=0, PersistentID localid=0);
 
-    void addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, long id=0)
+    void addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, long id=0, PersistentID localid=0)
     {
-        addContact(mu, norm, P, Q, contactDistance, m1, m2, (*getObject2()->getXfree())[m2], (*getObject1()->getXfree())[m1], id);
+        addContact(mu, norm, P, Q, contactDistance, m1, m2, (*getObject2()->getXfree())[m2], (*getObject1()->getXfree())[m1], id, localid);
     }
 
-    void addContact(double mu, Deriv norm, Real contactDistance, int m1, int m2, long id=0)
+    void addContact(double mu, Deriv norm, Real contactDistance, int m1, int m2, long id=0, PersistentID localid=0)
     {
-        addContact(mu, norm, (*getObject2()->getX())[m2], (*getObject1()->getX())[m1], contactDistance, m1, m2, (*getObject2()->getXfree())[m2], (*getObject1()->getXfree())[m1], id);
+        addContact(mu, norm, (*getObject2()->getX())[m2], (*getObject1()->getX())[m1], contactDistance, m1, m2, (*getObject2()->getXfree())[m2], (*getObject1()->getXfree())[m1], id, localid);
     }
 
     virtual void getConstraintValue(defaulttype::BaseVector *, bool freeMotion);
 
     virtual void getConstraintId(long* id, unsigned int &offset);
+    virtual void getConstraintInfo(std::vector<ConstraintGroupInfo>& groups, std::vector<PersistentID>& ids, std::vector<ConstCoord>& positions);
+
 #ifdef SOFA_DEV
     virtual void getConstraintResolution(std::vector<core::componentmodel::behavior::ConstraintResolution*>& resTab, unsigned int& offset);
 #endif

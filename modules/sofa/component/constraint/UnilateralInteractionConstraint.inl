@@ -154,7 +154,7 @@ void UnilateralConstraintResolutionSticky::resolution(int line, double** /*w*/, 
 #endif // SOFA_DEV
 
 template<class DataTypes>
-void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord Pfree, Coord Qfree, long id)
+void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv norm, Coord P, Coord Q, Real contactDistance, int m1, int m2, Coord Pfree, Coord Qfree, long id, PersistentID localid)
 {
     // compute dt and delta
     Real delta = dot(P-Q, norm) - contactDistance;
@@ -185,6 +185,7 @@ void UnilateralInteractionConstraint<DataTypes>::addContact(double mu, Deriv nor
     c.t = cross((-norm), c.s);
     c.mu = mu;
     c.contactId = id;
+    c.localId = localid;
 
 
     if (rabs(delta - deltaFree) > 0.001 * delta)
@@ -363,6 +364,39 @@ void UnilateralInteractionConstraint<DataTypes>::getConstraintId(long* id, unsig
             id[offset++] = c.contactId;
         }
     }
+}
+
+template<class DataTypes>
+void UnilateralInteractionConstraint<DataTypes>::getConstraintInfo(std::vector<ConstraintGroupInfo>& groups, std::vector<PersistentID>& ids, std::vector<ConstCoord>& /*positions*/)
+{
+    if (contacts.empty()) return;
+    ConstraintGroupInfo info;
+    info.parent = this;
+    info.const0 = contacts[0].id;
+    info.nbLines = contacts[0].mu > 0.0 ? 3 : 1; /// @TODO: can there be both friction-less and friction contacts in the same UnilateralInteractionConstraint ???
+    info.hasId = true;
+    info.offsetId = ids.size();
+    info.nbGroups = contacts.size();
+
+    if (!yetIntegrated)
+    {
+        for (unsigned int i=0; i<contacts.size(); i++)
+        {
+            Contact& c = contacts[i];
+            ids.push_back(-c.contactId);
+        }
+
+        yetIntegrated = true;
+    }
+    else
+    {
+        for (unsigned int i=0; i<contacts.size(); i++)
+        {
+            Contact& c = contacts[i];
+            ids.push_back(c.contactId);
+        }
+    }
+    groups.push_back(info);
 }
 
 #ifdef SOFA_DEV

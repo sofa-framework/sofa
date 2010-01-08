@@ -143,6 +143,26 @@ public:
     /// Set an Id for each constraint
     virtual void getConstraintId(long * /*id*/, unsigned int & /*offset*/) {}
 
+    typedef long long PersistentID;
+    typedef defaulttype::Vec<3,int> ConstCoord;
+    class ConstraintGroupInfo
+    {
+    public:
+        BaseConstraint* parent;
+        int const0; ///< index of first constraint
+        int nbLines; ///< how many dofs (i.e. lines in the matrix) are used by each constraint
+        int nbGroups; ///< how many groups of constraints are active
+        bool hasId; ///< true if this constraint has persistent ID information
+        bool hasPosition; ///< true if this constraint has coordinates information
+        int offsetId; ///< index of first constraint group info in vector of persistent ids and coordinates
+        int offsetPosition; ///< index of first constraint group info in vector of coordinates
+        ConstraintGroupInfo() : parent(NULL), const0(0), nbLines(1), nbGroups(0), hasId(false), hasPosition(false), offsetId(0), offsetPosition(0)
+        {}
+    };
+
+    /// Get information for each constraint: pointer to parent BaseConstraint, unique persistent ID, 3D position
+    virtual void getConstraintInfo(std::vector<ConstraintGroupInfo>& /*groups*/, std::vector<PersistentID>& /*ids*/, std::vector<ConstCoord>& /*positions*/) {}
+
 #ifdef SOFA_DEV
     /// Add the corresponding ConstraintResolution using the offset parameter
     virtual void getConstraintResolution(std::vector<ConstraintResolution*>& /*resTab*/, unsigned int& /*offset*/) {};

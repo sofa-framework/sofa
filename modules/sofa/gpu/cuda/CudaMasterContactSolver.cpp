@@ -73,10 +73,6 @@ CudaMasterContactSolver<real>::CudaMasterContactSolver()
     constraintGroups.beginEdit()->insert(0);
     constraintGroups.endEdit();
 
-    _numPreviousContact=0;
-    _PreviousContactList.resize(MAX_NUM_CONSTRAINTS);
-    _cont_id_list.resize(MAX_NUM_CONSTRAINTS);
-
     constraintRenumbering.resize(MAX_NUM_CONSTRAINTS);
     for (unsigned int i=0; i<MAX_NUM_CONSTRAINTS; ++i)
         constraintRenumbering[i] = i+(i/15);
@@ -113,9 +109,6 @@ void CudaMasterContactSolver<real>::build_LCP()
     {
         serr<<sendl<<"Error in CudaMasterContactSolver, maximum number of contacts exceeded, "<< _numConstraints/3 <<" contacts detected"<<endl;
         MAX_NUM_CONSTRAINTS=MAX_NUM_CONSTRAINTS+MAX_NUM_CONSTRAINTS;
-
-        _PreviousContactList.resize(MAX_NUM_CONSTRAINTS * sizeof(contactBuf));
-        _cont_id_list.resize(MAX_NUM_CONSTRAINTS * sizeof(long));
 
         constraintRenumbering.resize(MAX_NUM_CONSTRAINTS);
         for (unsigned int i=0; i<MAX_NUM_CONSTRAINTS; ++i)
@@ -167,7 +160,10 @@ void CudaMasterContactSolver<real>::build_LCP()
 
     if (initial_guess.getValue())
     {
-        MechanicalGetContactIDVisitor(&(_cont_id_list[0])).execute(context);
+        _constraintGroupInfo.clear();
+        _constraintIds.clear();
+        _constraintPositions.clear();
+        MechanicalGetConstraintInfoVisitor(_constraintGroupInfo, _constraintIds, _constraintPositions).execute(context);
         computeInitialGuess();
     }
 }
@@ -175,74 +171,73 @@ void CudaMasterContactSolver<real>::build_LCP()
 template<class real>
 void CudaMasterContactSolver<real>::computeInitialGuess()
 {
-    int numContact = (_mu > 0.0) ? _numConstraints/3 : _numConstraints;
+    for (unsigned c=0; c<_numConstraints; c++)
+        _f[c] = 0.0;
 
-    for (int c=0; c<numContact; c++)
+    for (unsigned cg = 0; cg < _constraintGroupInfo.size(); ++cg)
     {
-        if (_mu>0.0)
+        const ConstraintGroupInfo& info = _constraintGroupInfo[cg];
+        if (!info.hasId) continue;
+        //std::cout << "CONST G" << cg << ": from index " << info.const0 << " with " << info.nbGroups << "*" << info.nbLines << " constraints:";
+        typename std::map<core::componentmodel::behavior::BaseConstraint*, ConstraintGroupBuf>::const_iterator previt = _previousConstraints.find(info.parent);
+        if (previt == _previousConstraints.end())
         {
-            _f[3*c  ] = 0.0;
-            _f[3*c+1] = 0.0;
-            _f[3*c+2] = 0.0;
+            //std::cout << " NOT FOUND" << std::endl;
+            continue;
         }
-        else
+        const ConstraintGroupBuf& buf = previt->second;
+        const int c0 = info.const0;
+        const int nbl = (info.nbLines < buf.nbLines) ? info.nbLines : buf.nbLines;
+        for (int c = 0; c < info.nbGroups; ++c)
         {
-            _f[c] =  0.0;
-        }
-    }
-
-    for (int c=0; c<numContact; c++)
-    {
-        for (unsigned int pc=0; pc<_numPreviousContact; pc++)
-        {
-            if (_cont_id_list[c] == _PreviousContactList[pc].id)
+            //std::cout << " " << c0 + c*nbl << "->0x" << std::hex << _constraintIds[info.offsetId + c] << std::dec << "->";
+            std::map<PersistentID,int>::const_iterator it = buf.persistentToConstraintIdMap.find(_constraintIds[info.offsetId + c]);
+            if (it == buf.persistentToConstraintIdMap.end())
             {
-                if (_mu>0.0)
+                //std::cout << "???";
+                continue;
+            }
+            int prevIndex = it->second;
+            //std::cout << prevIndex;
+            if (prevIndex >= 0 && prevIndex+nbl <= (int) _previousForces.size())
+            {
+                for (int l=0; l<nbl; ++l)
                 {
-                    _f[3*c  ] = (real)_PreviousContactList[pc].F.x();
-                    _f[3*c+1] = (real)_PreviousContactList[pc].F.y();
-                    _f[3*c+2] = (real)_PreviousContactList[pc].F.z();
-                }
-                else
-                {
-                    _f[c] =  (real)_PreviousContactList[pc].F.x();
+                    _f[c0 + c*nbl + l] = _previousForces[prevIndex + l];
+                    //std::cout << ' ' << _previousForces[prevIndex + l];
                 }
             }
         }
+        //std::cout << std::endl;
     }
 }
 
 template<class real>
 void CudaMasterContactSolver<real>::keepContactForcesValue()
 {
-    _numPreviousContact=0;
-
-    int numContact = (_mu > 0.0) ? _numConstraints/3 : _numConstraints;
-    //_PreviousContactList.resize(numContact);
-
-    for (int c=0; c<numContact; c++)
+    // store current force
+    _previousForces.resize(_numConstraints);
+    for (unsigned int c=0; c<_numConstraints; ++c)
+        _previousForces[c] = _f[c];
+    // clear previous history
+    for (typename std::map<core::componentmodel::behavior::BaseConstraint*, ConstraintGroupBuf>::iterator it = _previousConstraints.begin(), itend = _previousConstraints.end(); it != itend; ++it)
     {
-        if (_mu>0.0)
-        {
-            if (_f[3*c]>0.0)
-            {
-                _PreviousContactList[_numPreviousContact].id = (_cont_id_list[c] >= 0) ? _cont_id_list[c] : -_cont_id_list[c];
-                _PreviousContactList[_numPreviousContact].F.x() = _f[3*c];
-                _PreviousContactList[_numPreviousContact].F.y() = _f[3*c+1];
-                _PreviousContactList[_numPreviousContact].F.z() = _f[3*c+2];
-                _numPreviousContact++;
-            }
-        }
-        else
-        {
-            if (_f[c]>0.0)
-            {
-                _PreviousContactList[_numPreviousContact].id = (_cont_id_list[c] >= 0) ? _cont_id_list[c] : -_cont_id_list[c];
-                _PreviousContactList[_numPreviousContact].F.x() = _f[c];
-                _numPreviousContact++;
-            }
-
-        }
+        ConstraintGroupBuf& buf = it->second;
+        for (std::map<PersistentID,int>::iterator it2 = buf.persistentToConstraintIdMap.begin(), it2end = buf.persistentToConstraintIdMap.end(); it2 != it2end; ++it2)
+            it2->second = -1;
+    }
+    // fill info from current ids
+    for (unsigned cg = 0; cg < _constraintGroupInfo.size(); ++cg)
+    {
+        const ConstraintGroupInfo& info = _constraintGroupInfo[cg];
+        if (!info.parent) continue;
+        if (!info.hasId) continue;
+        ConstraintGroupBuf& buf = _previousConstraints[info.parent];
+        int c0 = info.const0;
+        int nbl = info.nbLines;
+        buf.nbLines = nbl;
+        for (int c = 0; c < info.nbGroups; ++c)
+            buf.persistentToConstraintIdMap[_constraintIds[info.offsetId + c]] = c0 + c*nbl;
     }
 }
 

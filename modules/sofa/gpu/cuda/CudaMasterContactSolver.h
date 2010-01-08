@@ -38,7 +38,7 @@
 #include "CudaTypesBase.h"
 
 //#define CHECK 0.01
-//#define DISPLAY_TIME
+#define DISPLAY_TIME
 
 namespace sofa
 {
@@ -173,20 +173,26 @@ private:
     defaulttype::BaseVector * _v;
 };
 
-class MechanicalGetContactIDVisitor : public simulation::MechanicalVisitor
+class MechanicalGetConstraintInfoVisitor : public simulation::MechanicalVisitor
 {
 public:
-    MechanicalGetContactIDVisitor(long *id, unsigned int offset = 0)
-        : _id(id),_offset(offset)
+    typedef core::componentmodel::behavior::BaseConstraint::PersistentID PersistentID;
+    typedef core::componentmodel::behavior::BaseConstraint::ConstCoord ConstCoord;
+    typedef core::componentmodel::behavior::BaseConstraint::ConstraintGroupInfo ConstraintGroupInfo;
+
+    MechanicalGetConstraintInfoVisitor(std::vector<ConstraintGroupInfo>& groups, std::vector<PersistentID>& ids, std::vector<ConstCoord>& positions)
+        : _groups(groups), _ids(ids), _positions(positions)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
     }
 
-    virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c)
+    virtual Result fwdConstraint(simulation::Node* node, core::componentmodel::behavior::BaseConstraint* c)
     {
-        c->getConstraintId(_id, _offset);
+        ctime_t t0 = begin(node, c);
+        c->getConstraintInfo(_groups, _ids, _positions);
+        end(node, c, t0);
         return RESULT_CONTINUE;
     }
 
@@ -196,8 +202,9 @@ public:
     }
 #endif
 private:
-    long *_id;
-    unsigned int _offset;
+    std::vector<ConstraintGroupInfo>& _groups;
+    std::vector<PersistentID>& _ids;
+    std::vector<ConstCoord>& _positions;
 };
 
 
@@ -245,19 +252,27 @@ private:
 #ifdef CHECK
     CudaBaseVector<real> f_check;
 #endif
-    typedef struct
+
+
+    typedef core::componentmodel::behavior::BaseConstraint::PersistentID PersistentID;
+    typedef core::componentmodel::behavior::BaseConstraint::ConstCoord ConstCoord;
+    typedef core::componentmodel::behavior::BaseConstraint::ConstraintGroupInfo ConstraintGroupInfo;
+
+    class ConstraintGroupBuf
     {
-        Vector3 n;
-        Vector3 t;
-        Vector3 s;
-        Vector3 F;
-        long id;
+    public:
+        std::map<PersistentID,int> persistentToConstraintIdMap;
+        int nbLines; ///< how many dofs (i.e. lines in the matrix) are used by each constraint
+    };
 
-    } contactBuf;
+    std::map<core::componentmodel::behavior::BaseConstraint*, ConstraintGroupBuf> _previousConstraints;
+    helper::vector< double > _previousForces;
 
-    std::vector<contactBuf> _PreviousContactList;
-    unsigned int _numPreviousContact;
-    std::vector<long> _cont_id_list;
+    helper::vector<ConstraintGroupInfo> _constraintGroupInfo;
+    helper::vector<PersistentID> _constraintIds;
+    helper::vector<ConstCoord> _constraintPositions;
+
+
     helper::vector<unsigned> constraintRenumbering,constraintReinitialize;
 };
 

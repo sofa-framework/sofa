@@ -189,11 +189,15 @@ private:
 };
 
 
-class MechanicalGetContactIDVisitor : public simulation::MechanicalVisitor
+class MechanicalGetConstraintInfoVisitor : public simulation::MechanicalVisitor
 {
 public:
-    MechanicalGetContactIDVisitor(long *id, unsigned int offset = 0)
-        : _id(id),_offset(offset)
+    typedef core::componentmodel::behavior::BaseConstraint::PersistentID PersistentID;
+    typedef core::componentmodel::behavior::BaseConstraint::ConstCoord ConstCoord;
+    typedef core::componentmodel::behavior::BaseConstraint::ConstraintGroupInfo ConstraintGroupInfo;
+
+    MechanicalGetConstraintInfoVisitor(std::vector<ConstraintGroupInfo>& groups, std::vector<PersistentID>& ids, std::vector<ConstCoord>& positions)
+        : _groups(groups), _ids(ids), _positions(positions)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
@@ -203,7 +207,7 @@ public:
     virtual Result fwdConstraint(simulation::Node* node, core::componentmodel::behavior::BaseConstraint* c)
     {
         ctime_t t0 = begin(node, c);
-        c->getConstraintId(_id, _offset);
+        c->getConstraintInfo(_groups, _ids, _positions);
         end(node, c, t0);
         return RESULT_CONTINUE;
     }
@@ -214,8 +218,9 @@ public:
     }
 #endif
 private:
-    long *_id;
-    unsigned int _offset;
+    std::vector<ConstraintGroupInfo>& _groups;
+    std::vector<PersistentID>& _ids;
+    std::vector<ConstCoord>& _positions;
 };
 
 
@@ -226,6 +231,7 @@ class SOFA_COMPONENT_CONSTRAINT_API LCPConstraintSolver : public sofa::core::com
     typedef sofa::core::VecId VecId;
 public:
     SOFA_CLASS(LCPConstraintSolver, sofa::core::componentmodel::behavior::ConstraintSolver);
+
     LCPConstraintSolver();
 
     void init();
@@ -290,22 +296,23 @@ private:
     std::vector<core::componentmodel::behavior::BaseConstraintCorrection*> _cclist_elem1;
     std::vector<core::componentmodel::behavior::BaseConstraintCorrection*> _cclist_elem2;
 
+    typedef core::componentmodel::behavior::BaseConstraint::PersistentID PersistentID;
+    typedef core::componentmodel::behavior::BaseConstraint::ConstCoord ConstCoord;
+    typedef core::componentmodel::behavior::BaseConstraint::ConstraintGroupInfo ConstraintGroupInfo;
 
-
-
-    typedef struct
+    class ConstraintGroupBuf
     {
-        Vector3 n;
-        Vector3 t;
-        Vector3 s;
-        Vector3 F;
-        long id;
+    public:
+        std::map<PersistentID,int> persistentToConstraintIdMap;
+        int nbLines; ///< how many dofs (i.e. lines in the matrix) are used by each constraint
+    };
 
-    } contactBuf;
+    std::map<core::componentmodel::behavior::BaseConstraint*, ConstraintGroupBuf> _previousConstraints;
+    helper::vector< double > _previousForces;
 
-    helper::vector<contactBuf> _PreviousContactList;
-    unsigned int _numPreviousContact;
-    helper::vector<long> _cont_id_list;
+    helper::vector<ConstraintGroupInfo> _constraintGroupInfo;
+    helper::vector<PersistentID> _constraintIds;
+    helper::vector<ConstCoord> _constraintPositions;
 
     // for gaussseidel_unbuilt
     helper::vector< helper::LocalBlock33 > unbuilt_W33;
