@@ -87,10 +87,7 @@ HEADERS += mycuda.h \
            CudaParticleSource.h \
            CudaParticleSource.inl \
            VolumetricContact.h \
-           VolumetricContact.inl \
-           VolumetricFrameContact.h \
-           VolumetricFrameContact.inl
-
+           VolumetricContact.inl 
 SOURCES += mycuda.cpp \
            CudaBoxROI.cpp  \
            CudaMechanicalObject.cpp \
@@ -115,8 +112,7 @@ SOURCES += mycuda.cpp \
            CudaTetrahedralVisualModel.cpp \
            CudaSetTopology.cpp \
            CudaParticleSource.cpp \
-           VolumetricContact.cpp \
-           VolumetricFrameContact.cpp
+           VolumetricContact.cpp 
 
 CUDA_SOURCES += mycuda.cu \
            CudaMechanicalObject.cu \
@@ -208,10 +204,14 @@ SOURCES += \
 
 contains(DEFINES,SOFA_HAVE_EIGEN2){
 HEADERS += \
-                CudaLDIContactLMConstraint.h
+                CudaLDIContactLMConstraint.h \
+                VolumetricFrameContact.h \
+                VolumetricFrameContact.inl
+           
 	   	
 SOURCES += \	
-                CudaLDIContactLMConstraint.cpp
+                CudaLDIContactLMConstraint.cpp \
+                VolumetricFrameContact.cpp
 }
 
 HEADERS += \
