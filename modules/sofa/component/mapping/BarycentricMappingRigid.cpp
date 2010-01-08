@@ -312,9 +312,9 @@ template <>
 void BarycentricMapperTetrahedronSetTopology<defaulttype::Vec3dTypes, defaulttype::Rigid3dTypes>::applyJT ( defaulttype::Vec3dTypes::VecDeriv& out, const defaulttype::Rigid3dTypes::VecDeriv& in )
 {
     const sofa::helper::vector<topology::Tetrahedron>& tetrahedra = this->topology->getTetrahedra();
-    unsigned int nbTetra = this->topology->getTetrahedra().size();
 #ifdef SOFA_IP_TRACES
     IPTR_BARCPP_APPLYJT( "BarycentricMapperTetrahedronSetTopology::applyJT BEGIN " << endl);
+    //unsigned int nbTetra = this->topology->getTetrahedra().size();
     //IPTR_BARCPP_APPLYJT( "  number of tetrahedra = " << nbTetra );
 #endif
     if ((!maskTo)||(maskTo&& !(maskTo->isInUse())) )
@@ -461,7 +461,9 @@ void BarycentricMapperTetrahedronSetTopology<defaulttype::Vec3dTypes, defaulttyp
                     + in[tetra[3]] * fz );
         }
     }
+#ifdef SOFA_IP_TRACES
     IPTR_BARCPP_APPLYJ( "BarycentricMapperTetrahedronSetTopology::applyJ END " << endl);
+#endif
 } //applyJ
 
 
