@@ -439,11 +439,26 @@ public:
     }
     void writeToData(data_type& d)
     {
-        processTableModifications(d);
+        rows = wSize->value();
         if (!(FLAGS & TABLE_FIXEDSIZE))
         {
-            rows = wSize->value();
+            int oldrows = rhelper::size(d);
+            if( rows != oldrows)
+            {
+                rhelper::resize(rows,d);
+            }
+            int newrows = rhelper::size(d);
+            if( rows != newrows)
+            {
+                wSize->setValue(newrows);
+                rows = newrows;
+                if (FLAGS & TABLE_HORIZONTAL)
+                    wTable->setNumCols(newrows);
+                else
+                    wTable->setNumRows(newrows);
+            }
         }
+        processTableModifications(d);
 
         if (isDisplayed())
         {
@@ -478,6 +493,8 @@ public:
             wTable->setNumCols(dataRows);
         else
             wTable->setNumRows(dataRows);
+
+        rows = dataRows;
 
         for (int x=0; x<cols; ++x)
         {
