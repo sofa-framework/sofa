@@ -86,7 +86,7 @@ public:
     void setLCP(unsigned int input_dim, double *input_dfree, double **input_W, double *input_f, double &input_mu, double &input_tol, int input_numItMax);
 
 
-    void solveNLCP(bool convergenceTest);
+    void solveNLCP(bool convergenceTest, std::vector<double>* residuals);
 
 
 };
@@ -120,8 +120,7 @@ SOFA_HELPER_API void afficheLCP(double *q, double **M, double *f, int dim);
 SOFA_HELPER_API void afficheResult(double *f, int dim);
 
 typedef SOFA_HELPER_API double FemClipsReal;
-SOFA_HELPER_API void gaussSeidelLCP1(int, FemClipsReal *,FemClipsReal **, FemClipsReal *, double , int, std::vector<double>* residuals = NULL );
-
+SOFA_HELPER_API void gaussSeidelLCP1(int dim, FemClipsReal * q, FemClipsReal ** M, FemClipsReal * res, double tol, int numItMax, std::vector<double>* residuals = NULL);
 
 
 
@@ -159,10 +158,10 @@ public:
 // Multigrid algorithm for contacts
 SOFA_HELPER_API int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, double tol, int numItMax, bool useInitialF, double** W_coarse, std::vector<int> &contact_group, unsigned int num_group,  bool verbose=false);
 SOFA_HELPER_API int nlcp_multiGrid_2levels(int dim, double *dfree, double**W, double *f, double mu, double tol, int numItMax, bool useInitialF,
-        std::vector< int> &contact_group, unsigned int num_group, bool verbose);
+        std::vector< int> &contact_group, unsigned int num_group, bool verbose, std::vector<double>* residuals1 = NULL, std::vector<double>* residuals2 = NULL);
 
 // Gauss-Seidel like algorithm for contacts
-SOFA_HELPER_API int nlcp_gaussseidel(int, double *, double**, double *, double, double, int, bool, bool verbose=false, std::vector<double>* residuals = NULL);
+SOFA_HELPER_API int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, double tol, int numItMax, bool useInitialF, bool verbose = false, std::vector<double>* residuals = NULL);
 // Timed Gauss-Seidel like algorithm for contacts
 SOFA_HELPER_API int nlcp_gaussseidelTimed(int, double *, double**, double *, double, double, int, bool, double timeout, bool verbose=false);
 } // namespace helper
