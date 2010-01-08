@@ -194,6 +194,14 @@ public:
 
     void setComputeGlobalMatrix(bool val) { this->_assembling.setValue(val); }
 
+    //for tetra mapping, should be removed in future
+    Transformation getActualTetraRotation(unsigned int index)
+    {
+        if (_rotations.size() )
+            return _rotations[index];
+    }
+
+
     void setMethod(std::string methodName)
     {
         if (methodName == "small")	this->setMethod(SMALL);
