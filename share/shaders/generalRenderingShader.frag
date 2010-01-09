@@ -1,5 +1,6 @@
 #version 120
 #extension GL_EXT_gpu_shader4 : enable
+
 varying vec4 diffuse, ambient, /*ambientGlobal,*/ specular;
 varying vec3 positionW, normalW;
 
@@ -346,7 +347,7 @@ void main()
 	n = normalize(texture2D(normalMap, gl_TexCoord[0].xy ).xyz * 2.0 - 1.0);
 #endif //BUMP_MAPPING
 
-#if defined(PHONG) && !defined(BUMP_MAPPING) && !defined(TRI_TEXTURING)
+#if defined(PHONG) && !defined(BUMP_MAPPING)
 	//normal as usual
 	n = normalize(normalView);
 #endif //PHONG
