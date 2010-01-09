@@ -61,7 +61,7 @@ RandomPointDistributionInSurface<DataTypes>::RandomPointDistributionInSurface()
     , f_vertices( initData (&f_vertices, "vertices", "Vertices") )
     , f_triangles( initData (&f_triangles, "triangles", "Triangles indices") )
     , f_inPoints( initData (&f_inPoints, "inPoints", "Points inside the surface") )
-    , f_outPoints( initData (&f_inPoints, "outPoints", "Points outside the surface") )
+    , f_outPoints( initData (&f_outPoints, "outPoints", "Points outside the surface") )
     , safeCounter(0), safeLimit(UINT_MAX)
 {
 }
