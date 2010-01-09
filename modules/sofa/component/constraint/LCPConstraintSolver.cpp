@@ -150,11 +150,16 @@ bool LCPConstraintSolver::solveSystem(double /*dt*/, VecId)
                 sofa::helper::vector<double>& graph_error2 = graph["Error Coarse"];
                 graph_error2.clear();
 
+                /*helper::nlcp_multiGrid(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue(),
+                                       _Wcoarse.lptr(),
+                                       _contact_group, _group_lead.size(), this->f_printLog.getValue());*/
+
                 helper::nlcp_multiGrid_2levels(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue(),
                         _contact_group, _group_lead.size(), this->f_printLog.getValue(), &graph_error1, &graph_error2);
                 std::cout<<"+++++++++++++ \n SOLVE WITH GAUSSSEIDEL \n ++++++++++++++++"<<std::endl;
                 helper::nlcp_gaussseidel(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue(), this->f_printLog.getValue(), &graph_error1);
-                if (this->f_printLog.getValue()) helper::afficheLCP(_dFree->ptr(), _W->lptr(), _result->ptr(),_numConstraints);
+
+                // if (this->f_printLog.getValue()) helper::afficheLCP(_dFree->ptr(), _W->lptr(), _result->ptr(),_numConstraints);
 
             }
             else

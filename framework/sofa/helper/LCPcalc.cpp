@@ -145,6 +145,7 @@ void LCP::setLCP(unsigned int input_dim, double *input_dfree, double **input_W, 
     numItMax = input_numItMax;
     tol = input_tol;
     mu = input_mu;
+    maxConst = dim;
 
     d = new double[maxConst];
     f_1= new double[maxConst];
@@ -159,7 +160,7 @@ void LCP::solveNLCP(bool convergenceTest, std::vector<double>* residuals)
     double f_1[3],dn, ds, dt;
     int numContacts = dim/3;
     const bool computeError = (convergenceTest || residuals);
-    for (int it=0; it<numItMax; it++)
+    for (it=0; it<numItMax; it++)
     {
         error =0;
         for (int c=0;  c<numContacts ; c++)
@@ -1476,8 +1477,7 @@ void projection (LCP &fineLevel, LCP &coarseLevel, int nbContactsCoarse , const 
 
         std::cout<<"contact "<<c1<<" is in group "<< projectionTable[c1]<<std::endl;
     }
-    std::cout<<"STEP 2, d = "<<std::endl;
-    afficheResult(fineLevel.getD(),fineLevel.getDim());
+
 
     // STEP2
     // For group with no active contact, the closest to the contact one is chosen
@@ -1561,8 +1561,8 @@ void projection (LCP &fineLevel, LCP &coarseLevel, int nbContactsCoarse , const 
 
     if(verbose)
     {
-        std::cout<<"LCP at the COARSE LEVEL: "<<std::endl;
-        afficheLCP(coarseLevel.getDfree(), coarseLevel.getW(), coarseLevel.getF(), nbContactsCoarse*3);
+        //std::cout<<"LCP at the COARSE LEVEL: "<<std::endl;
+        //afficheLCP(coarseLevel.getDfree(), coarseLevel.getW(), coarseLevel.getF(), nbContactsCoarse*3);
     }
 
 
@@ -1603,8 +1603,8 @@ void prolongation(LCP &fineLevel, LCP &coarseLevel, const std::vector<int> &proj
 
     if(verbose)
     {
-        std::cout<<"projection at the finer LEVEL: "<<std::endl;
-        afficheResult(  fineLevel.getF(), fineLevel.getDim());
+        // std::cout<<"projection at the finer LEVEL: "<<std::endl;
+        // afficheResult(  fineLevel.getF(), fineLevel.getDim());
     }
 }
 
@@ -1616,8 +1616,12 @@ int nlcp_multiGrid_2levels(int dim, double *dfree, double**W, double *f, double 
 
     LCP *fineLevel = new LCP();
     fineLevel->setLCP(dim,dfree, W, f, mu,tol,numItMax);
+
+
     if (!useInitialF)
         memset(fineLevel->getF(), 0, dim*sizeof(double));
+
+
 
 
     // iterations at the fine Level (no test of convergence)
@@ -1626,11 +1630,15 @@ int nlcp_multiGrid_2levels(int dim, double *dfree, double**W, double *f, double 
     fineLevel->solveNLCP(convergenceTest, residuals1);
     //if (residuals1 && residuals2) while (residuals2->size() < residuals1->size()) residuals2->push_back(0);
 
+
+
     // projection step & construction of the coarse LCP
     LCP *coarseLevel = new LCP();
     if(verbose)
         std::cout<<"allocation of size"<<num_group<<" at coarse level"<<std::endl;
     coarseLevel->allocate(3*num_group); // allocation of the memory for the coarse LCP
+    coarseLevel->setDim(3*num_group);
+
 
     std::vector<bool> contact_is_projected;
     std::vector<double> not_used_yet; // if we want to give different value (not 1 for all) of the projection value
@@ -1643,6 +1651,11 @@ int nlcp_multiGrid_2levels(int dim, double *dfree, double**W, double *f, double 
     coarseLevel->solveNLCP(convergenceTest, residuals2);
     //if (residuals1 && residuals2) while (residuals1->size() < residuals2->size()) residuals1->push_back(0);
 
+    if(verbose)
+    {
+        std::cout<<"after  "<<coarseLevel->it<<" iteration(s) to solve NLCP at the coarse level: (dim = "<< coarseLevel->getDim()<<") "<<std::endl;
+        afficheResult(  coarseLevel->getF(), coarseLevel->getDim());
+    }
 
     // prolongation (interpolation) at the fine level
     prolongation((*fineLevel), (*coarseLevel), contact_group, not_used_yet , contact_is_projected, verbose);
@@ -1650,9 +1663,14 @@ int nlcp_multiGrid_2levels(int dim, double *dfree, double**W, double *f, double 
 
     // iterations at the fine level (till convergence)
     convergenceTest = true;
-    fineLevel->setNumItMax(10);
+    fineLevel->setNumItMax(100);
     fineLevel->solveNLCP(convergenceTest, residuals1);
     //if (residuals1 && residuals2) while (residuals2->size() < residuals1->size()) residuals2->push_back(0);
+    if(verbose)
+    {
+        std::cout<<"after  "<<fineLevel->it<<" iteration(s) to solve NLCP at the fine Level : (dim = "<< fineLevel->getDim()<<") "<<std::endl;
+        afficheResult(  fineLevel->getF(), fineLevel->getDim());
+    }
 
     return 1;
 
@@ -2137,7 +2155,8 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, do
             for (int i = 0; i < numContacts; i++)
                 delete W33[i];
             free(W33);
-            //printf("Convergence after %d iteration(s) with tolerance : %f and error : %f with dim : %d\n",it, tol, error, dim);
+            if (verbose)
+                printf("Convergence after %d iteration(s) with tolerance : %f and error : %f with dim : %d\n",it, tol, error, dim);
             //afficheLCP(dfree,W,f,dim);
             return 1;
         }
