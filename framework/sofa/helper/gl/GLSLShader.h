@@ -163,7 +163,7 @@ public:
 
 protected:
 
-    bool CompileShader(GLint target, const std::string& source, GLhandleARB& shader);
+    bool CompileShader(GLint target, const std::string& fileName, const std::string& header, GLhandleARB& shader);
 
     std::string header;
 

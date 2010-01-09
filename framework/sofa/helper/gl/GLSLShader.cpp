@@ -147,8 +147,10 @@ std::string CombineHeaders(const std::string& header, const std::string& source)
 }
 
 ///	This function compiles a shader and check the log
-bool GLSLShader::CompileShader(GLint target, const std::string& source, GLhandleARB& shader)
+bool GLSLShader::CompileShader(GLint target, const std::string& fileName, const std::string& header, GLhandleARB& shader)
 {
+    std::string source = LoadTextFile(fileName);
+    if (!header.empty()) source = CombineHeaders(header, source);
     const char* stype = "";
     if (target == GL_VERTEX_SHADER_ARB) stype = "vertex";
     else if (target == GL_FRAGMENT_SHADER_ARB) stype = "fragment";
@@ -169,8 +171,10 @@ bool GLSLShader::CompileShader(GLint target, const std::string& source, GLhandle
     if (!compiled) std::cerr << "ERROR: Compilation of "<<stype<<" shader failed:\n"<<src<<std::endl;
 //     else std::cout << "Compilation of "<<stype<<" shader OK" << std::endl;
     glGetObjectParameterivARB(shader, GL_OBJECT_INFO_LOG_LENGTH_ARB, &length);
-    if (length)
+    if (length > 1)
     {
+        std::cerr << "File: " << fileName << std::endl;
+        if (!header.empty()) std::cerr << "Header:\n" << header << std::endl;
         GLcharARB *logString = (GLcharARB *)malloc((length+1) * sizeof(GLcharARB));
         glGetInfoLogARB(shader, length, &laux, logString);
         std::cerr << logString << std::endl;
@@ -193,17 +197,17 @@ void GLSLShader::InitShaders(const std::string& strVertex, const std::string& st
     bool ready = true;
 
     // Now we load and compile the shaders from their respective files
-    ready &= CompileShader( GL_VERTEX_SHADER_ARB, CombineHeaders(header, LoadTextFile(strVertex)), m_hVertexShader );
+    ready &= CompileShader( GL_VERTEX_SHADER_ARB, strVertex, header, m_hVertexShader );
     if (!strGeometry.empty())
     {
 #ifdef GL_GEOMETRY_SHADER_EXT
-        ready &= CompileShader( GL_GEOMETRY_SHADER_EXT, CombineHeaders(header, LoadTextFile(strGeometry)), m_hGeometryShader );
+        ready &= CompileShader( GL_GEOMETRY_SHADER_EXT, strGeometry, header, m_hGeometryShader );
 #else
         std::cerr << "SHADER ERROR: GL_GEOMETRY_SHADER_EXT not defined. Please use a recent version of GLEW.\n";
         ready = false;
 #endif
     }
-    ready &= CompileShader( GL_FRAGMENT_SHADER_ARB, CombineHeaders(header, LoadTextFile(strFragment)), m_hFragmentShader );
+    ready &= CompileShader( GL_FRAGMENT_SHADER_ARB, strFragment, header, m_hFragmentShader );
 
     if (!ready)
     {
@@ -238,12 +242,16 @@ void GLSLShader::InitShaders(const std::string& strVertex, const std::string& st
     if (!linked) std::cerr << "ERROR: Link of program shader failed:\n"<<std::endl;
 //     else std::cout << "Link of program shader OK" << std::endl;
     glGetObjectParameterivARB(m_hProgramObject, GL_OBJECT_INFO_LOG_LENGTH_ARB, &length);
-    if (length)
+    if (length > 1)
     {
         GLcharARB *logString = (GLcharARB *)malloc((length+1) * sizeof(GLcharARB));
         glGetInfoLogARB(m_hProgramObject, length, &laux, logString);
         std::cerr << logString << std::endl;
         free(logString);
+        std::cerr << "Vertex shader file: " << strVertex << std::endl;
+        if (!strGeometry.empty())
+            std::cerr << "Geometry shader file: " << strGeometry << std::endl;
+        std::cerr << "Fragment shader file: " << strFragment << std::endl;
     }
 
     // Now, let's turn off the shader initially.
