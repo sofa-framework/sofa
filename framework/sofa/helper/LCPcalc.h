@@ -62,6 +62,8 @@ private:
     double mu;
     int dim;  //=3*nbContact !!
     //unsigned int nbConst;
+
+
 public:
     LCP();
     ~LCP();
@@ -87,6 +89,7 @@ public:
 
 
     void solveNLCP(bool convergenceTest, std::vector<double>* residuals);
+    int it; // to get the number of iteration that is necessary for convergence
 
 
 };
