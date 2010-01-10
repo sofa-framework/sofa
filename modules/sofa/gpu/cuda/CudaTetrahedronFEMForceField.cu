@@ -846,6 +846,8 @@ __global__ void TetrahedronFEMForceFieldCuda3t_getRotations_kernel(int nbVertex,
     int index1 = threadIdx.x;
     int index = index0+index1;
 
+    if (index>=nbVertex) return;
+
     const int elemIdx = rotationIdx[index];
     const int stateIdx = ((elemIdx / BSIZE) * (9*BSIZE)) + (elemIdx % BSIZE);
 
