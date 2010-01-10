@@ -22,9 +22,6 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <fstream>
-#include <string>
-
 #include <sofa/simulation/common/Node.h>
 #include <sofa/component/topology/SparseGridTopology.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
@@ -35,6 +32,9 @@
 #include <sofa/helper/system/FileRepository.h>
 #include <sofa/defaulttype/VecTypes.h>
 
+#include <fstream>
+#include <string>
+#include <math.h>
 
 
 
@@ -103,6 +103,7 @@ SparseGridTopology::SparseGridTopology(bool _isVirtual)
     n(initData(&n, Vec3i(2,2,2), "n", "grid resolution")),
     _min(initData(&_min, Vector3(0,0,0), "min","Min")),
     _max(initData(&_max, Vector3(0,0,0), "max","Max")),
+    _cellWidth(initData(&_cellWidth, 0.0, "cellWidth","if > 0 : dimension of each cell in the created grid")),
     _nbVirtualFinerLevels( initData(&_nbVirtualFinerLevels, 0, "nbVirtualFinerLevels", "create virtual (not in the animation tree) finer sparse grids in order to dispose of finest information (usefull to compute better mechanical properties for example)")),
     dataResolution(initData(&dataResolution, Vec3i(0,0,0), "dataResolution", "Dimension of the voxel File")),
     voxelSize(initData(&voxelSize, Vector3(1.0f,1.0f,1.0f), "voxelSize", "Dimension of one voxel")),
@@ -666,6 +667,16 @@ void SparseGridTopology::buildFromTriangleMesh(const std::string& filename)
 
         _min.setValue(Vector3( xMin - diff[0], yMin - diff[1], zMin - diff[2] ));
         _max.setValue(Vector3( xMax + diff[0], yMax + diff[1], zMax + diff[2] ));
+        sout << "BBox size: " << (_max.getValue() - _min.getValue()) << sendl;
+    }
+
+    // if cellWidth is given, update n
+    if (_cellWidth.getValue())
+    {
+        double w = _cellWidth.getValue();
+        Vector3 diff = _max.getValue() - _min.getValue();
+        setN(Vec3i((int)ceil(diff[0] / w)+1, (int)ceil(diff[1] / w)+1, (int)ceil(diff[2] / w)+1));
+        sout << "Grid size: " << n.getValue() << sendl;
     }
 
     _regularGrid.setSize(getNx(),getNy(),getNz());

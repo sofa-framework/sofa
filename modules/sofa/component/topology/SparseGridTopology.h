@@ -207,6 +207,7 @@ protected:
     Data< Vec< 3, int > > n;
     Data< Vector3 > _min;
     Data< Vector3 > _max;
+    Data< double > _cellWidth; ///< if > 0 : dimension of each cell in the created grid
     Data< int > _nbVirtualFinerLevels; ///< create virtual (not in the animation tree) finer sparse grids in order to dispose of finest information (usefull to compute better mechanical properties for example)
 
     Data< Vec3i >			dataResolution;
