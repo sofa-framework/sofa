@@ -13,7 +13,7 @@
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/DataEngine.h>
-
+#include <sofa/defaulttype/Quat.h>
 #include <VRPNDevice.h>
 
 #include <vrpn/vrpn_Analog.h>
@@ -23,6 +23,11 @@ namespace sofavrpn
 
 namespace client
 {
+
+/*
+ * Find a tool given various parameters...
+ *
+ */
 
 template<class DataTypes>
 class ToolFinder : public virtual sofa::core::objectmodel::BaseObject, public virtual sofa::core::DataEngine
@@ -40,14 +45,14 @@ public:
 
     //input
     Data<VecCoord > f_points;
-    Data<Real> f_distance;
+    //distances between each point for the given tool
+    Data<sofa::helper::vector<double> > f_distances;
 
     //output
-    Data<Coord> f_leftPoint;
-    Data<Coord> f_rightPoint;
-    Data<RCoord> f_topPoint;
-    Data<Real> f_angle;
-    Data<sofa::helper::vector<double> > f_angleArticulated;
+    Data<Coord> f_center;
+    Data<sofa::defaulttype::Quat> f_orientation;
+    //the same...
+    Data<RCoord> f_rigidCenter;
 
     ToolFinder();
     virtual ~ToolFinder();
