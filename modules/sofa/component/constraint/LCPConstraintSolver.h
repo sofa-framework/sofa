@@ -250,10 +250,12 @@ public:
     Data<bool> displayTime;
     Data<bool> initial_guess;
     Data<bool> build_lcp;
-    Data<bool> multi_grid;
     Data < double > tol;
     Data < int > maxIt;
     Data < double > mu;
+    Data<bool> multi_grid;
+    Data<int>  merge_method;
+    Data<int>  merge_spatial_step;
 
     Data < helper::set<int> > constraintGroups;
 
@@ -279,6 +281,8 @@ private:
 
     /// multi-grid approach ///
     void MultigridConstraintsMerge();
+    void MultigridConstraintsMerge_Compliance();
+    void MultigridConstraintsMerge_Spatial();
     void build_Coarse_Compliance(std::vector<int> &/*constraint_merge*/, int /*sizeCoarseSystem*/);
     LPtrFullMatrix<double>  _Wcoarse;
     std::vector< int> _contact_group;
