@@ -375,7 +375,7 @@ public:
 
         widget=_widget;
 
-        wDisplay = new QPushButtonUpdater( _widget, QString("Click to display the values"), parent);
+        wDisplay = new QPushButtonUpdater( QString("Click to display the values"), parent);
         wDisplay->setToggleButton(true);
         wDisplay->setOn(dataRows < MAX_NUM_ELEM && dataRows != 0 );
         wDisplay->setAutoDefault(false);
@@ -399,7 +399,8 @@ public:
         {
             if (!(FLAGS & TABLE_FIXEDSIZE))
             {
-                // _widget->connect(wSize, SIGNAL( valueChanged(int) ), _widget, SLOT(setModified()) );
+                _widget->connect(wSize, SIGNAL( valueChanged(int) ), _widget, SLOT(setModified()) );
+                _widget->connect(wSize, SIGNAL( valueChanged(int) ), _widget, SLOT(update()) );
 
 
                 if( FLAGS & TABLE_HORIZONTAL)
@@ -415,8 +416,11 @@ public:
         }
         _widget->connect(wDisplay, SIGNAL( toggled(bool) ), wTable,   SLOT(setDisplayed(bool)));
         _widget->connect(wDisplay, SIGNAL( toggled(bool) ), wDisplay, SLOT(setDisplayed(bool)));
+        _widget->connect(wDisplay, SIGNAL( toggled(bool) ), _widget, SLOT(setDisplayed(bool)));
         return true;
     }
+
+
     void setReadOnly(bool readOnly)
     {
         wSize->setEnabled(!readOnly);
@@ -479,26 +483,18 @@ public:
 
     void processTableModifications(const data_type &d)
     {
-        int currentNumRow;
+        int currentTableNumRows;
         if (FLAGS & TABLE_HORIZONTAL)
-            currentNumRow=wTable->numCols();
+            currentTableNumRows=wTable->numCols();
         else
-            currentNumRow=wTable->numRows();
+            currentTableNumRows=wTable->numRows();
 
-        int dataRows = wSize->value();
+        int rows = wSize->value();
 
-        if (dataRows == currentNumRow) return;
-
-        if (FLAGS & TABLE_HORIZONTAL)
-            wTable->setNumCols(dataRows);
-        else
-            wTable->setNumRows(dataRows);
-
-        rows = dataRows;
 
         for (int x=0; x<cols; ++x)
         {
-            const char* h = (dataRows > 0) ? vhelper::header(*rhelper::get(d,0),x) : vhelper::header(row_type(),x);
+            const char* h = (rows > 0) ? vhelper::header(*rhelper::get(d,0),x) : vhelper::header(row_type(),x);
             if (h && *h)
                 setColHeader(x,h);
             else
@@ -508,8 +504,29 @@ public:
                 setColHeader(x,o.str());
             }
         }
+        for (int y=0; y<currentTableNumRows; ++y)
+        {
+            const char* h = rhelper::header(d,y);
+            if (h && *h)
+                setRowHeader(y,h);
+            else
+            {
+                std::ostringstream o;
+                o << y;
+                setRowHeader(y,o.str());
+            }
+        }
+        if (rows == currentTableNumRows)
+        {
+            return;
+        }
 
-        for (int y=currentNumRow; y<dataRows; ++y)
+        if (FLAGS & TABLE_HORIZONTAL)
+            wTable->setNumCols(rows);
+        else
+            wTable->setNumRows(rows);
+
+        for (int y=currentTableNumRows; y<rows; ++y)
         {
             const char* h = rhelper::header(d,y);
             if (h && *h)
@@ -549,6 +566,11 @@ public:
 public:
     TableDataWidget(MyData* d) : Inherit(d) {}
     virtual unsigned int sizeWidget() {return 3;}
+    virtual void update()
+    {
+        const data_type& d = data->virtualGetValue();
+        container.processTableModifications(d);
+    }
 };
 
 
