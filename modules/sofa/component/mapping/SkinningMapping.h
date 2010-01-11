@@ -173,7 +173,7 @@ public:
     Data<bool> computeJ;
     Data<bool> computeAllMatrices;
     Data<bool> showDefTensors;
-    Data<unsigned int> displayedFromIndex;
+    Data<unsigned int> showFromIndex;
     Data<double> showTextScaleFactor;
 #ifdef SOFA_DEV
     HexahedronGeodesicalDistance< GeoType>* geoDist;
