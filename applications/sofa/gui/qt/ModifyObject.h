@@ -179,10 +179,6 @@ public:
     void readOnlyData(Q3Table *widget, core::objectmodel::BaseData* data);
     void readOnlyData(QWidget *widget, core::objectmodel::BaseData* data);
 
-
-signals:
-
-
 public slots:
     void reject   () {                 emit(dialogClosed(Id_)); deleteLater(); QDialog::reject();} //When closing a window, inform the parent.
     void accept   () { updateValues(); emit(dialogClosed(Id_)); deleteLater(); QDialog::accept();} //if closing by using Ok button, update the values

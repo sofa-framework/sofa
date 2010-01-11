@@ -136,7 +136,6 @@ void QPushButtonUpdater::setDisplayed(bool b)
     if (b)
     {
         this->setText(QString("Click to hide the values"));
-        widget->readFromData();
     }
     else
     {

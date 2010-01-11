@@ -94,6 +94,18 @@ public slots:
             readFromData();
         }
     }
+    void setDisplayed(bool b)
+    {
+        if(b)
+        {
+            readFromData();
+        }
+    }
+    virtual void update()
+    {
+        readFromData();
+    }
+
 signals:
     void requestChange(bool );
     void dataParentNameChanged();
@@ -124,10 +136,8 @@ public:
     virtual void writeToData() = 0;
     virtual bool isModified() { return false; }
     std::string getName() { return name;};
-    virtual void update()
-    {
-        readFromData();
-    }
+
+
     virtual void updateVisibility()
     {
         parent->setShown(baseData->isDisplayed());
@@ -215,6 +225,7 @@ public slots:
     void resizeTableV( int number )
     {
         QSpinBox *spinBox = (QSpinBox *) sender();
+        QString header;
         if( spinBox == NULL)
         {
             return;
@@ -222,12 +233,14 @@ public slots:
         if (number != numRows())
         {
             setNumRows(number);
+
         }
     }
 
     void resizeTableH( int number )
     {
         QSpinBox *spinBox = (QSpinBox *) sender();
+        QString header;
         if( spinBox == NULL)
         {
             return;
@@ -235,6 +248,7 @@ public slots:
         if (number != numCols())
         {
             setNumCols(number);
+
         }
     }
 
@@ -247,13 +261,10 @@ class QPushButtonUpdater: public QPushButton
     Q_OBJECT
 public:
 
-    QPushButtonUpdater( DataWidget *d, const QString & text, QWidget * parent = 0 ): QPushButton(text,parent),widget(d) {};
+    QPushButtonUpdater( const QString & text, QWidget * parent = 0 ): QPushButton(text,parent) {};
 
 public slots:
     void setDisplayed(bool b);
-protected:
-    DataWidget *widget;
-
 };
 
 //Widget used to display the name of a Data and if needed the link to another Data
