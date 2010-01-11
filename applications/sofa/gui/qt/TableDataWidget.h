@@ -561,6 +561,7 @@ template<class T, int FLAGS = TABLE_NORMAL>
 class TableDataWidget : public SimpleDataWidget<T, table_data_widget_container< T , FLAGS > >
 {
 public:
+    typedef T data_type;
     typedef SimpleDataWidget<T, table_data_widget_container< T , FLAGS > > Inherit;
     typedef sofa::core::objectmodel::TData<T> MyData;
 public:
@@ -568,8 +569,8 @@ public:
     virtual unsigned int sizeWidget() {return 3;}
     virtual void update()
     {
-        const data_type& d = data->virtualGetValue();
-        container.processTableModifications(d);
+        const data_type& d = this->data->virtualGetValue();
+        this->container.processTableModifications(d);
     }
 };
 
