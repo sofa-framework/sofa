@@ -157,7 +157,7 @@ bool LCPConstraintSolver::solveSystem(double /*dt*/, VecId)
                 helper::nlcp_multiGrid_2levels(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue(),
                         _contact_group, _group_lead.size(), this->f_printLog.getValue(), &graph_error1, &graph_error2);
                 std::cout<<"+++++++++++++ \n SOLVE WITH GAUSSSEIDEL \n ++++++++++++++++"<<std::endl;
-                helper::nlcp_gaussseidel(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue(), this->f_printLog.getValue(), &graph_error1);
+                helper::nlcp_gaussseidel(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, true, /*initial_guess.getValue(),*/ this->f_printLog.getValue(), &graph_error1);
 
                 // if (this->f_printLog.getValue()) helper::afficheLCP(_dFree->ptr(), _W->lptr(), _result->ptr(),_numConstraints);
 
@@ -275,16 +275,18 @@ bool LCPConstraintSolver::applyCorrection(double /*dt*/, VecId )
 //#define DISPLAY_TIME
 
 LCPConstraintSolver::LCPConstraintSolver()
-    :displayTime(initData(&displayTime, false, "displayTime","Display time for each important step of LCPConstraintSolver."))
-    ,initial_guess(initData(&initial_guess, true, "initial_guess","activate LCP results history to improve its resolution performances."))
-    ,build_lcp(initData(&build_lcp, true, "build_lcp", "LCP is not fully built to increase performance in some case."))
-    ,multi_grid(initData(&multi_grid, false, "multi_grid","activate multi_grid resolution (NOT STABLE YET)"))
-    ,tol( initData(&tol, 0.001, "tolerance", ""))
-    ,maxIt( initData(&maxIt, 1000, "maxIt", ""))
-    ,mu( initData(&mu, 0.6, "mu", ""))
+    : displayTime(initData(&displayTime, false, "displayTime","Display time for each important step of LCPConstraintSolver."))
+    , initial_guess(initData(&initial_guess, true, "initial_guess","activate LCP results history to improve its resolution performances."))
+    , build_lcp(initData(&build_lcp, true, "build_lcp", "LCP is not fully built to increase performance in some case."))
+    , tol( initData(&tol, 0.001, "tolerance", "residual error threshold for termination of the Gauss-Seidel algorithm"))
+    , maxIt( initData(&maxIt, 1000, "maxIt", "maximal number of iterations of the Gauss-Seidel algorithm"))
+    , mu( initData(&mu, 0.6, "mu", "Friction coefficient"))
+    , multi_grid(initData(&multi_grid, false, "multi_grid","activate multi_grid resolution (NOT STABLE YET)"))
+    , merge_method( initData(&merge_method, 0, "merge_method","if multi_grid is active: which method to use to merge constraints (0 = compliance-based, 1 = spatial coordinates)"))
+    , merge_spatial_step( initData(&merge_spatial_step, 2, "merge_spatial_step", "if merge_method is 1: grid size reduction between multigrid levels"))
     , constraintGroups( initData(&constraintGroups, "group", "list of ID of groups of constraints to be handled by this solver.") )
     , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
-    ,_mu(0.6)
+    , _mu(0.6)
     , lcp1(MAX_NUM_CONSTRAINTS)
     , lcp2(MAX_NUM_CONSTRAINTS)
     , lcp3(MAX_NUM_CONSTRAINTS)
@@ -363,7 +365,7 @@ void LCPConstraintSolver::build_LCP()
     }
     //sout<<" computeCompliance_done "  <<sendl;
 
-    if ((initial_guess.getValue()) && (_numConstraints != 0))
+    if ((initial_guess.getValue() || multi_grid.getValue()) && (_numConstraints != 0))
     {
         //_cont_id_list.resize(_numConstraints);
         //MechanicalGetContactIDVisitor(&(_cont_id_list[0])).execute(context);
@@ -371,7 +373,8 @@ void LCPConstraintSolver::build_LCP()
         _constraintIds.clear();
         _constraintPositions.clear();
         MechanicalGetConstraintInfoVisitor(_constraintGroupInfo, _constraintIds, _constraintPositions).execute(context);
-        computeInitialGuess();
+        if (initial_guess.getValue())
+            computeInitialGuess();
     }
 }
 
@@ -395,6 +398,21 @@ void LCPConstraintSolver::build_Coarse_Compliance(std::vector<int> &constraint_m
 }
 
 void LCPConstraintSolver::MultigridConstraintsMerge()
+{
+    switch(merge_method.getValue())
+    {
+    case 0:
+        MultigridConstraintsMerge_Compliance();
+        break;
+    case 1:
+        MultigridConstraintsMerge_Spatial();
+        break;
+    default:
+        serr << "Unsupported merge method " << merge_method.getValue() << sendl;
+    }
+}
+
+void LCPConstraintSolver::MultigridConstraintsMerge_Compliance()
 {
     /////// Analyse des contacts à regrouper //////
     double criterion=0.0;
@@ -438,6 +456,54 @@ void LCPConstraintSolver::MultigridConstraintsMerge()
         _constraint_group[3*c+1] = 3*_contact_group[c]+1;
         _constraint_group[3*c+2] = 3*_contact_group[c]+2;
 
+    }
+}
+
+void LCPConstraintSolver::MultigridConstraintsMerge_Spatial()
+{
+    //std::cout << "Merge_Spatial" << std::endl;
+    const int merge_spatial_step = this->merge_spatial_step.getValue();
+    int numContacts = _numConstraints/3;
+    _contact_group.clear();
+    _contact_group.resize(numContacts);
+    _constraint_group.clear();
+    _constraint_group.resize(_numConstraints);
+    _group_lead.clear();
+    std::map<ConstCoord, int> coord2coarseId;
+    // fill info from current ids
+    for (unsigned cg = 0; cg < _constraintGroupInfo.size(); ++cg)
+    {
+        const ConstraintGroupInfo& info = _constraintGroupInfo[cg];
+        if (!info.hasPosition)
+        {
+            serr << "MultigridConstraintsMerge_Spatial: constraints from " << (info.parent ? info.parent->getName() : std::string("NULL")) << " have no position data" << sendl;
+            continue;
+        }
+        const int c0 = info.const0;
+        const int nbl = info.nbLines;
+        for (int c = 0; c < info.nbGroups; ++c)
+        {
+            int idFine = c0 + c*nbl;
+            ConstCoord posFine = _constraintPositions[info.offsetPosition + c];
+            ConstCoord posCoarse;
+            for (int i=0; i<3; ++i) posCoarse[i] = posFine[i]/merge_spatial_step;
+            std::pair< std::map<ConstCoord,int>::iterator, bool > res = coord2coarseId.insert(std::map<ConstCoord,int>::value_type(posCoarse, (int)_group_lead.size()));
+            if (res.second)
+            {
+                // new group
+                //std::cout << "New group: " << posCoarse << std::endl;
+                _group_lead.push_back(idFine/3);
+            }
+            int idCoarse = res.first->second * 3;
+            _contact_group[idFine/3] = idCoarse/3;
+            _constraint_group[idFine+0] = idCoarse+0;
+            _constraint_group[idFine+1] = idCoarse+1;
+            _constraint_group[idFine+2] = idCoarse+2;
+        }
+        // the following line clears the coarse group map between blocks
+        // of constraints, hence disallowing any merging of constraints
+        // not created by the same BaseConstraint component
+        coord2coarseId.clear();
     }
 }
 
