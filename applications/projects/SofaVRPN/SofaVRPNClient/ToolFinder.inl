@@ -94,7 +94,7 @@ void ToolFinder<Datatypes>::update()
     //Guess current mapping between incoming edges and real edges
     std::map<Edge, Edge> mapEdges;
     PointID p1, p2;
-    double EPSILON = 0.00001;
+    double EPSILON = 0.0000001;
 
     bool first = true;
     for (unsigned int i=0 ; i<realDistances.size() ; i++)
@@ -104,14 +104,15 @@ void ToolFinder<Datatypes>::update()
         currentRealEdge = Edge(i, ((i+1)%realDistances.size()) );
 
         unsigned int minIndex=0;
-        double min = abs(dist - computedDistances[minIndex]);
-
+        double min = fabs(dist - computedDistances[minIndex]);
+        std::cout << "? " << 0 << " " << min << std::endl;
         //search the nearest distances we have
         for (unsigned int j=1 ; j<computedDistances.size() ; j++)
         {
+            //std::cout << "? " << j << " " << fabs(dist - computedDistances[j]) << std::endl;
             if(fabs(dist - computedDistances[j]) - min < EPSILON )
             {
-                min = abs(dist - computedDistances[j]);
+                min = fabs(dist - computedDistances[j]);
                 minIndex = j;
             }
         }
@@ -190,21 +191,43 @@ void ToolFinder<Datatypes>::update()
     Coord leftPoint = mapRealPoints[0];
     Coord rightPoint = mapRealPoints[1];
     Coord topPoint = mapRealPoints[2];
+    /*
+    	Coord xAxis = topPoint - leftPoint;
+    	xAxis.normalize();
+    	Coord yAxis = (leftPoint - topPoint).cross(rightPoint - topPoint);
+    	yAxis.normalize();
+    	Coord zAxis = xAxis.cross(yAxis);
+    	zAxis.normalize();
 
-    Coord xAxis = (leftPoint+rightPoint)*0.5 - topPoint;
+    	sofa::defaulttype::Quat q;
+    	q = q.createQuaterFromFrame(xAxis, yAxis, zAxis);
+    	q.normalize();
+    	//Compute center
+    	centerPoint = topPoint;
+    	orientation = q;
+    	rigidPoint.getCenter() = topPoint;
+    	rigidPoint.getOrientation() = q;
+    */
+    Coord centerTool = (leftPoint + rightPoint + topPoint)/3.0;
+    centerPoint = centerTool;
+    rigidPoint.getCenter() = centerTool;
+
+    Coord xAxis = topPoint - centerTool;
     xAxis.normalize();
     Coord yAxis = (leftPoint - topPoint).cross(rightPoint - topPoint);
     yAxis.normalize();
     Coord zAxis = xAxis.cross(yAxis);
     zAxis.normalize();
 
+    //std::cout << "X: " << xAxis << std::endl;
+    //std::cout << "Y: " << yAxis << std::endl;
+    //std::cout << "Z: " << zAxis << std::endl;
+
     sofa::defaulttype::Quat q;
     q = q.createQuaterFromFrame(xAxis, yAxis, zAxis);
     q.normalize();
-    //Compute center
-    centerPoint = topPoint;
+
     orientation = q;
-    rigidPoint.getCenter() = topPoint;
     rigidPoint.getOrientation() = q;
 
     f_rigidCenter.endEdit();
