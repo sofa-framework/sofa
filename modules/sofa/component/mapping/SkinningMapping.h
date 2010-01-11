@@ -262,6 +262,7 @@ public:
     void computeDqT ( Mat88& T, const DUALQUAT& qi0 );
     void Multi_Q(Quat& q, const Vec4& q1, const Quat& q2);
 
+    void removeFrame( const unsigned int index);
     void insertFrame( const Coord& pos, const Quat& rot);
     bool inverseSkinning( InCoord& X0, InCoord& X, const InCoord& Xtarget);
     void computeWeight( VVD& w, VecVecCoord& dw, const Coord& x0);
