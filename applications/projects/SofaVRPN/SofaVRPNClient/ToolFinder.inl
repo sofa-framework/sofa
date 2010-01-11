@@ -200,7 +200,7 @@ void ToolFinder<Datatypes>::update()
 
     sofa::defaulttype::Quat q;
     q = q.createQuaterFromFrame(xAxis, yAxis, zAxis);
-
+    q.normalize();
     //Compute center
     centerPoint = topPoint;
     orientation = q;
