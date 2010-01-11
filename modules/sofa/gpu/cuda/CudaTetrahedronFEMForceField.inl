@@ -447,6 +447,66 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
 
 
 template<class TCoord, class TDeriv, class TReal>
+void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addKToMatrix(Main* m, sofa::defaulttype::BaseMatrix *mat, double k, unsigned int &offset)
+{
+    Data& data = m->data;
+
+    const VecElement& elems = *m->_indexedElements;
+
+    helper::ReadAccessor< gpu::cuda::CudaVector<GPUElementState> > state = data.state;
+
+    // Build Matrix Block for this ForceField
+    int i,j,n1, n2, row, column, ROW, COLUMN;
+
+    typename Main::Transformation Rot;
+    typename Main::StiffnessMatrix JKJt,tmp;
+
+    Index noeud1, noeud2;
+
+    Rot[0][0]=Rot[1][1]=Rot[2][2]=1;
+    Rot[0][1]=Rot[0][2]=0;
+    Rot[1][0]=Rot[1][2]=0;
+    Rot[2][0]=Rot[2][1]=0;
+
+    for (int ei=0; ei<data.nbElement; ++ei)
+    {
+        const Element& e = elems[ei];
+
+        int blockIdx = ei / BSIZE;
+        int threadIdx = ei % BSIZE;
+        for(i=0; i<3; i++)
+            for (j=0; j<3; j++)
+                Rot[j][i] = state[blockIdx].Rt[i][j][threadIdx];
+
+        m->computeStiffnessMatrix(JKJt, tmp, m->_materialsStiffnesses[ei], m->_strainDisplacements[ei], Rot);
+
+        // find index of node 1
+        for (n1=0; n1<4; n1++)
+        {
+            noeud1 = e[n1];
+
+            for(i=0; i<3; i++)
+            {
+                ROW = offset+3*noeud1+i;
+                row = 3*n1+i;
+                // find index of node 2
+                for (n2=0; n2<4; n2++)
+                {
+                    noeud2 = e[n2];
+
+                    for (j=0; j<3; j++)
+                    {
+                        COLUMN = offset+3*noeud2+j;
+                        column = 3*n2+j;
+                        mat->add(ROW, COLUMN, - tmp[row][column]*k);
+                    }
+                }
+            }
+        }
+    }
+}
+
+template<class TCoord, class TDeriv, class TReal>
 void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::getRotations(Main* m, VecReal& rotations, bool prefetch)
 {
     if (prefetch) return;
@@ -492,10 +552,12 @@ void TetrahedronFEMForceFieldInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDe
     { data.reinit(this); } \
     template<> void TetrahedronFEMForceField< T >::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v) \
     { data.addForce(this, f, x, v, this->isPrefetching()); }		\
+	template<> void TetrahedronFEMForceField< T >::getRotations(VecReal& rotations) \
+	{ data.getRotations(this, rotations, this->isPrefetching()); } \
     template<> void TetrahedronFEMForceField< T >::addDForce(VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor) \
     { data.addDForce(this, df, dx, kFactor, bFactor, this->isPrefetching()); } \
-	template<> void TetrahedronFEMForceField< T >::getRotations(VecReal& rotations) \
-	{ data.getRotations(this, rotations, this->isPrefetching()); }
+    template<> void TetrahedronFEMForceField< T >::addKToMatrix(sofa::defaulttype::BaseMatrix* mat, SReal kFactor, unsigned int& offset) \
+    { data.addKToMatrix(this, mat, kFactor, offset); }
 
 CudaTetrahedronFEMForceField_ImplMethods(gpu::cuda::CudaVec3fTypes);
 CudaTetrahedronFEMForceField_ImplMethods(gpu::cuda::CudaVec3f1Types);
