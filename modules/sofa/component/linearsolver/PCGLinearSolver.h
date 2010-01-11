@@ -66,6 +66,7 @@ public:
     Data<bool> f_verbose;
     Data<int> f_refresh;
     Data<bool> use_precond;
+    Data< helper::vector< std::string > > f_preconditioners;
 #ifdef DISPLAY_TIME
     Data<bool> display_time;
 #endif
@@ -79,6 +80,7 @@ public:
         , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
         , f_refresh( initData(&f_refresh,0,"refresh","Refresh iterations") )
         , use_precond( initData(&use_precond,true,"precond","Use preconditioners") )
+        , f_preconditioners( initData(&f_preconditioners, "preconditioners", "If not empty: path to the solvers to use as preconditioners") )
 #ifdef DISPLAY_TIME
         , display_time( initData(&display_time,false,"display_time","display time information") )
 #endif

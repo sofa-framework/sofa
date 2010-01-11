@@ -59,17 +59,34 @@ void PCGLinearSolver<TMatrix,TVector>::init()
 {
     std::vector<sofa::core::componentmodel::behavior::LinearSolver*> solvers;
     BaseContext * c = this->getContext();
-    c->get<LinearSolver>(&solvers,BaseContext::SearchDown);
+
+    const helper::vector<std::string>& precondNames = f_preconditioners.getValue();
+    if (precondNames.empty())
+    {
+        c->get<sofa::core::componentmodel::behavior::LinearSolver>(&solvers,BaseContext::SearchDown);
+    }
+    else
+    {
+        for (unsigned int i=0; i<precondNames.size(); ++i)
+        {
+            sofa::core::componentmodel::behavior::LinearSolver* s = NULL;
+            c->get(s, precondNames[i]);
+            if (s)
+                solvers.push_back(s);
+            else
+                serr << "Solver \"" << precondNames[i] << "\" not found." << sendl;
+        }
+    }
 
     for (unsigned int i=0; i<solvers.size(); ++i)
     {
-        if (solvers[i] != this)
+        if (solvers[i] && solvers[i] != this)
         {
             this->preconditioners.push_back(solvers[i]);
         }
     }
 
-    sout<<"Find " << this->preconditioners.size() << " preconditioneurs"<<sendl;
+    sout<<"Found " << this->preconditioners.size() << " preconditioners"<<sendl;
 
 #ifdef DISPLAY_TIME
     time3 = 0.0;
