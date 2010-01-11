@@ -919,7 +919,32 @@ void SkinningMapping<BasicMapping>::applyJT ( typename In::VecConst& out, const 
 #ifdef SOFA_DEV
     case INTERPOLATION_DUAL_QUATERNION:
     {
-        //serr << "applyJT on VecConst is not implemented for dual quat." << sendl;
+        const unsigned int numOut=this->J.size();
+
+        for ( unsigned int i=0; i<in.size(); i++ )
+        {
+            OutConstraintIterator itOut;
+            std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
+
+            for ( itOut=iter.first; itOut!=iter.second; itOut++ )
+            {
+                unsigned int indexIn = itOut->first;
+                Deriv data = ( Deriv ) itOut->second;
+
+                for (unsigned int j=0; j<numOut; ++j)
+                {
+                    Mat63 Jt;
+                    Jt.transpose ( this->J[j][indexIn] );
+
+                    Vec6 speed = Jt * data;
+
+                    const Vec3 pos( speed[3], speed[4], speed[5] );
+                    const Vec3 ori(speed[0], speed[1], speed[2] );
+                    InDeriv value(pos,ori);
+                    out[outSize+i].add(j,value);
+                }
+            }
+        }
         break;
     }
 #endif
