@@ -66,7 +66,7 @@ SkinningMapping<BasicMapping>::SkinningMapping ( In* from, Out* to )
     , computeJ ( initData ( &computeJ, false, "computeJ", "compute matrix J in addition to apply for the dual quat interpolation method." ) )
     , computeAllMatrices ( initData ( &computeAllMatrices, false, "computeAllMatrices","compute all the matrices in addition to apply for the dual quat interpolation method." ) )
     , showDefTensors ( initData ( &showDefTensors, false, "showDefTensors","show computed deformation tensors." ) )
-    , displayedFromIndex ( initData ( &displayedFromIndex, ( unsigned ) 0, "displayedFromIndex","Displayed From Index." ) )
+    , showFromIndex ( initData ( &showFromIndex, ( unsigned ) 0, "showFromIndex","Displayed From Index." ) )
     , showTextScaleFactor ( initData ( &showTextScaleFactor, 0.00005, "showTextScaleFactor","Text Scale Factor." ) )
 #ifdef SOFA_DEV
     , newFrameMinDist ( initData ( &newFrameMinDist, 0.1, "newFrameMinDist","Minimal distance to insert a new frame." ) )
@@ -352,26 +352,46 @@ void SkinningMapping<BasicMapping>::updateWeights ()
     }
     case WEIGHT_INVDIST_SQUARE:
     {
-        for ( unsigned int j=0; j<xto.size(); j++ )
+        if( distanceType.getValue() == DISTANCE_HARMONIC)
         {
-            for ( unsigned int i=0; i<nbRefs.getValue(); i++ )
+            for ( unsigned int j=0; j<xto.size(); j++ )
+                for ( unsigned int i=0; i<nbRefs.getValue(); i++ )
+                {
+                    int indexFrom = m_reps[nbRefs.getValue() *j + i];
+                    m_coefs[indexFrom][j] = distances[indexFrom][j];
+                }
+        }
+        else
+        {
+            for ( unsigned int j=0; j<xto.size(); j++ )
             {
-                int indexFrom = m_reps[nbRefs.getValue() *j + i];
-                m_coefs[indexFrom][j] = 1 / (distances[indexFrom][j]*distances[indexFrom][j]);
-                if( distanceType.getValue() == DISTANCE_EUCLIDIAN)
-                    distGradients[indexFrom][j] = - distGradients[indexFrom][j] / (double)(distances[indexFrom][j]*distances[indexFrom][j]*distances[indexFrom][j]) * 2.0;
+                for ( unsigned int i=0; i<nbRefs.getValue(); i++ )
+                {
+                    int indexFrom = m_reps[nbRefs.getValue() *j + i];
+                    if( distances[indexFrom][j])
+                        m_coefs[indexFrom][j] = 1 / (distances[indexFrom][j]*distances[indexFrom][j]);
+                    else
+                        m_coefs[indexFrom][j] = 0xFFF;
+                    if( distanceType.getValue() == DISTANCE_EUCLIDIAN)
+                    {
+                        if( distances[indexFrom][j])
+                            distGradients[indexFrom][j] = - distGradients[indexFrom][j] / (double)(distances[indexFrom][j]*distances[indexFrom][j]*distances[indexFrom][j]) * 2.0;
+                        else
+                            distGradients[indexFrom][j] = Coord();
+                    }
+                }
+
+                /* TODO normalize later. Store the weights to be able to recompute the coeffs as the normalized weights (for each frame) even when we insert a new frame
+                //normalize the coefs vector such as the sum is equal to 1
+                double norm=0.0;
+                for ( unsigned int i=0;i<xfrom.size();i++ )
+                  norm += m_coefs[i][j];
+                norm = helper::rsqrt ( norm );
+
+                for ( unsigned int i=0;i<xfrom.size();i++ )
+                  m_coefs[i][j] /= norm;
+                //*/
             }
-
-            /* TODO normalize later. Store the weights to be able to recompute the coeffs as the normalized weights (for each frame) even when we insert a new frame
-            //normalize the coefs vector such as the sum is equal to 1
-            double norm=0.0;
-            for ( unsigned int i=0;i<xfrom.size();i++ )
-              norm += m_coefs[i][j];
-            norm = helper::rsqrt ( norm );
-
-            for ( unsigned int i=0;i<xfrom.size();i++ )
-              m_coefs[i][j] /= norm;
-            //*/
         }
 
         break;
@@ -929,7 +949,7 @@ void SkinningMapping<BasicMapping>::draw()
         glDisable ( GL_LIGHTING );
         glColor3f( 1.0, 1.0, 1.0);
         for ( unsigned int i=0; i<xto.size(); i++ )
-            sofa::helper::gl::GlText::draw ( (int)(m_coefs[displayedFromIndex.getValue()%xfrom.size()][i]*10000), xto[i], showTextScaleFactor.getValue() );
+            sofa::helper::gl::GlText::draw ( (int)(m_coefs[showFromIndex.getValue()%xfrom.size()][i]*10000), xto[i], showTextScaleFactor.getValue() );
         //*/
 
         // Display mapping links between in and out elements
@@ -1426,7 +1446,7 @@ void SkinningMapping<BasicMapping>::insertFrame( const Coord& pos, const Quat& r
             if( distances[indexFrom][j])
                 distGradients[indexFrom][j] = - distGradients[indexFrom][j] / (distances[indexFrom][j]*distances[indexFrom][j]*distances[indexFrom][j]) * 2.0;
             else
-                distGradients[indexFrom][j] = - Coord( 0xFFF, 0xFFF, 0xFFF);
+                distGradients[indexFrom][j] = - Coord();
         }
         break;
     }
@@ -1609,7 +1629,7 @@ void SkinningMapping<BasicMapping>::computeWeight( VVD& w, VecVecCoord& dw, cons
             if( dist[i][0])
                 ddist[i][0] = - ddist[i][0] / (dist[i][0]*dist[i][0]*dist[i][0]) * 2.0;
             else
-                ddist[i][0] = - Coord( 0xFFF, 0xFFF, 0xFFF);
+                ddist[i][0] = - Coord();
         }
         break;
     }
