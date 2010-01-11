@@ -222,7 +222,7 @@ void SkinningMapping<BasicMapping>::init()
 #ifdef SOFA_DEV
     if( distanceType.getValue() != DISTANCE_EUCLIDIAN)
     {
-        this->getContext()->get ( geoDist );
+        this->getContext()->get ( geoDist, core::objectmodel::BaseContext::SearchRoot );
         if ( !geoDist )
         {
             serr << "Can not find the geodesical distance component: distances used are euclidian." << sendl;
@@ -1355,6 +1355,21 @@ void SkinningMapping<BasicMapping>::computeDqT ( Mat88& T, const DUALQUAT& qi0 )
 }
 
 template <class BasicMapping>
+void SkinningMapping<BasicMapping>::removeFrame( const unsigned int /*index*/)
+{
+    //VecCoord& xto0 = *this->toModel->getX0();
+    VecCoord& xto = *this->toModel->getX();
+    //VecInCoord& xfrom0 = *this->fromModel->getX0();
+    VecInCoord& xfrom = *this->fromModel->getX();
+
+    // this->T.erase( T.begin()+index);
+    // coeffs
+
+    // Recompute matrices
+    apply( xto, xfrom);
+}
+
+template <class BasicMapping>
 void SkinningMapping<BasicMapping>::insertFrame( const Coord& pos, const Quat& rot)
 {
     if (!this->toModel->getX0()) return;
@@ -1362,7 +1377,6 @@ void SkinningMapping<BasicMapping>::insertFrame( const Coord& pos, const Quat& r
     VecCoord& xto0 = *this->toModel->getX0();
     VecCoord& xto = *this->toModel->getX();
     VecInCoord& xfrom0 = *this->fromModel->getX0();
-    //VecCoord& xto = *this->toModel->getX();
     VecInCoord& xfrom = *this->fromModel->getX();
     unsigned int indexFrom = xfrom.size();
     MechanicalState<StdRigidTypes<N, Real> >* mstateFrom = dynamic_cast<MechanicalState<StdRigidTypes<N, Real> >* >( this->fromModel);
