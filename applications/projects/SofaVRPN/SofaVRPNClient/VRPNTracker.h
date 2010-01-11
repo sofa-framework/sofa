@@ -59,6 +59,8 @@ private:
     void update();
 
     void handleEvent(sofa::core::objectmodel::Event* event);
+    //DEBUG
+    double angleX, angleY, angleZ;
 };
 
 #if defined(WIN32) && !defined(SOFAVRPNCLIENT_VRPNTRACKER_CPP_)
