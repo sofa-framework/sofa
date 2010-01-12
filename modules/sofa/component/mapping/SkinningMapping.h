@@ -174,7 +174,11 @@ public:
     Data<bool> computeAllMatrices;
     Data<bool> showDefTensors;
     Data<unsigned int> showFromIndex;
+    Data<bool> showCoefs;
+    Data<bool> showReps;
     Data<double> showTextScaleFactor;
+    Data<bool> showGradients;
+    Data<double> showGradientsScaleFactor;
 #ifdef SOFA_DEV
     HexahedronGeodesicalDistance< GeoType>* geoDist;
     Data<double> newFrameMinDist;

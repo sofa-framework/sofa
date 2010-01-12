@@ -418,7 +418,7 @@ template <class DataTypes, class MassType>
 void FrameDiagonalMass<DataTypes, MassType>::reinit()
 {
     unsigned int nbPt = this->volMass->size();
-    for( unsigned int i = 0; i < nbPt; i++) (*this->volMass)[i] = m_massDensity.getValue() / (double)nbPt;
+    for( unsigned int i = 0; i < nbPt; i++) (*this->volMass)[i] = m_massDensity.getValue();
 
     updateMass ( *J, *vol, *volMass );
 
@@ -442,7 +442,7 @@ void FrameDiagonalMass<DataTypes, MassType>::bwdInit()
     this->volMass = & dqStorage->volMass;
 
     unsigned int nbPt = this->volMass->size();
-    for( unsigned int i = 0; i < nbPt; i++) (*this->volMass)[i] = m_massDensity.getValue() / (double)nbPt;
+    for( unsigned int i = 0; i < nbPt; i++) (*this->volMass)[i] = m_massDensity.getValue();
 
     updateMass ( *J, *vol, *volMass );
 }
