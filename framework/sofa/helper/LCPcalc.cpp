@@ -1628,7 +1628,7 @@ int nlcp_multiGrid_2levels(int dim, double *dfree, double**W, double *f, double 
     bool convergenceTest= false;
     fineLevel->setNumItMax(0);
     fineLevel->solveNLCP(convergenceTest, residuals1);
-    if (residuals1 && residuals2) while (residuals2->size() < residuals1->size()) residuals2->push_back(pow(10.0,0));
+    if (residuals1 && residuals2) while (residuals2->size() < residuals1->size()) residuals2->push_back(pow(10.0,0.0));
 
     // projection step & construction of the coarse LCP
     LCP *coarseLevel = new LCP();
@@ -1647,7 +1647,7 @@ int nlcp_multiGrid_2levels(int dim, double *dfree, double**W, double *f, double 
     coarseLevel->setNumItMax(numItMax);
     coarseLevel->setTol(tol);
     coarseLevel->solveNLCP(convergenceTest, residuals1);
-    if (residuals1 && residuals2) while (residuals2->size() < residuals1->size()) residuals2->push_back(pow(10.0,1));
+    if (residuals1 && residuals2) while (residuals2->size() < residuals1->size()) residuals2->push_back(pow(10.0,1.0));
 
     if(verbose)
     {
@@ -1663,7 +1663,7 @@ int nlcp_multiGrid_2levels(int dim, double *dfree, double**W, double *f, double 
     convergenceTest = true;
     fineLevel->setNumItMax(1000);
     fineLevel->solveNLCP(convergenceTest, residuals1);
-    if (residuals1 && residuals2) while (residuals2->size() < residuals1->size()) residuals2->push_back(pow(10.0,0));
+    if (residuals1 && residuals2) while (residuals2->size() < residuals1->size()) residuals2->push_back(pow(10.0,0.0));
     if(verbose)
     {
         std::cout<<"after  "<<fineLevel->it<<" iteration(s) to solve NLCP at the fine Level : (dim = "<< fineLevel->getDim()<<")  error ="<<fineLevel->error<<std::endl;
@@ -1714,7 +1714,7 @@ int nlcp_multiGrid_Nlevels(int dim, double *dfree, double**W, double *f, double 
 
         if (residualsN && residualLevels)
             while(residualsN->size() > residualLevels->size())
-                residualLevels->push_back(pow(10.0,h));
+                residualLevels->push_back(pow(10.0,(double)h));
 
         // projection step & construction of the coarse LCP
         hierarchicalLevels[h+1] = new LCP();
@@ -1738,7 +1738,7 @@ int nlcp_multiGrid_Nlevels(int dim, double *dfree, double**W, double *f, double 
 
     if (residualsN && residualLevels)
         while(residualsN->size() > residualLevels->size())
-            residualLevels->push_back(pow(10.0,num_hierarchies));
+            residualLevels->push_back(pow(10.0,(double)num_hierarchies));
 
     if(verbose)
     {
@@ -1759,7 +1759,7 @@ int nlcp_multiGrid_Nlevels(int dim, double *dfree, double**W, double *f, double 
         hierarchicalLevels[h]->solveNLCP(convergenceTest, residualsN);
         if (residualsN && residualLevels)
             while(residualsN->size() > residualLevels->size())
-                residualLevels->push_back(pow(10.0,h));
+                residualLevels->push_back(pow(10.0,(double)h));
 
         if(verbose)
         {
