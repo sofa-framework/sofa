@@ -68,6 +68,7 @@ SkinningMapping<BasicMapping>::SkinningMapping ( In* from, Out* to )
     , showDefTensors ( initData ( &showDefTensors, false, "showDefTensors","show computed deformation tensors." ) )
     , showFromIndex ( initData ( &showFromIndex, ( unsigned ) 0, "showFromIndex","Displayed From Index." ) )
     , showCoefs ( initData ( &showCoefs, false, "showCoefs","Show coeficients." ) )
+    , showCoefsValues ( initData ( &showCoefsValues, false, "showCoefsValues","Show coeficients values." ) )
     , showReps ( initData ( &showReps, false, "showReps","Show repartition." ) )
     , showTextScaleFactor ( initData ( &showTextScaleFactor, 0.00005, "showTextScaleFactor","Text Scale Factor." ) )
     , showGradients ( initData ( &showGradients, false, "showGradients","Show gradients." ) )
@@ -376,7 +377,7 @@ void SkinningMapping<BasicMapping>::updateWeights ()
                         m_coefs[indexFrom][j] = 1 / (distances[indexFrom][j]*distances[indexFrom][j]);
                     else
                         m_coefs[indexFrom][j] = 0xFFF;
-                    if( distanceType.getValue() == DISTANCE_EUCLIDIAN)
+                    if( distanceType.getValue() != DISTANCE_HARMONIC)
                     {
                         if( distances[indexFrom][j])
                             distGradients[indexFrom][j] = - distGradients[indexFrom][j] / (double)(distances[indexFrom][j]*distances[indexFrom][j]*distances[indexFrom][j]) * 2.0;
@@ -966,41 +967,10 @@ void SkinningMapping<BasicMapping>::draw()
     const vector<vector<double> >& m_coefs = coefs.getValue();
     const unsigned int nbRef = nbRefs.getValue();
 
+    glDisable ( GL_LIGHTING );
+
     if ( this->getShow() )
     {
-        glDisable ( GL_LIGHTING );
-
-        // Display  m_reps for each points
-        if( showReps.getValue())
-        {
-            for ( unsigned int i=0; i<xto.size(); i++ )
-                sofa::helper::gl::GlText::draw ( m_reps[nbRefs.getValue() *i+0], xto[i], showTextScaleFactor.getValue() );
-        }
-
-        // Display coefs for each points
-        if( showCoefs.getValue())
-        {
-            glColor3f( 1.0, 1.0, 1.0);
-            for ( unsigned int i=0; i<xto.size(); i++ )
-                sofa::helper::gl::GlText::draw ( (int)(m_coefs[showFromIndex.getValue()%xfrom.size()][i]), xto[i], showTextScaleFactor.getValue() );
-        }
-
-        // Display gradient for each points
-        if ( showGradients.getValue())
-        {
-            glColor3f ( 0.0, 1.0, 0.3 );
-            glBegin ( GL_LINES );
-            const vector<Coord>& gradMap = distGradients[showFromIndex.getValue()%distGradients.size()];
-            for ( unsigned int j = 0; j < gradMap.size(); j++ )
-            {
-                const Coord& point = xto[j];
-                glVertex3f ( point[0], point[1], point[2] );
-                glVertex3f ( point[0] + gradMap[j][0] * showGradientsScaleFactor.getValue(), point[1] + gradMap[j][1] * showGradientsScaleFactor.getValue(), point[2] + gradMap[j][2] * showGradientsScaleFactor.getValue() );
-            }
-            glEnd();
-        }
-        //*/
-
         // Display mapping links between in and out elements
         if ( interpolationType.getValue() != INTERPOLATION_DUAL_QUATERNION )
         {
@@ -1027,6 +997,36 @@ void SkinningMapping<BasicMapping>::draw()
         }
     }
 
+    // Display  m_reps for each points
+    if( showReps.getValue())
+    {
+        for ( unsigned int i=0; i<xto.size(); i++ )
+            sofa::helper::gl::GlText::draw ( m_reps[nbRefs.getValue() *i+0], xto[i], showTextScaleFactor.getValue() );
+    }
+
+    // Display coefs for each points
+    if( showCoefsValues.getValue())
+    {
+        glColor3f( 1.0, 1.0, 1.0);
+        for ( unsigned int i=0; i<xto.size(); i++ )
+            sofa::helper::gl::GlText::draw ( (int)(m_coefs[showFromIndex.getValue()%xto.size()][i]), xto[i], showTextScaleFactor.getValue() );
+    }
+
+    // Display gradient for each points
+    if ( showGradients.getValue())
+    {
+        glColor3f ( 0.0, 1.0, 0.3 );
+        glBegin ( GL_LINES );
+        const vector<Coord>& gradMap = distGradients[showFromIndex.getValue()%distGradients.size()];
+        for ( unsigned int j = 0; j < gradMap.size(); j++ )
+        {
+            const Coord& point = xto[j];
+            glVertex3f ( point[0], point[1], point[2] );
+            glVertex3f ( point[0] + gradMap[j][0] * showGradientsScaleFactor.getValue(), point[1] + gradMap[j][1] * showGradientsScaleFactor.getValue(), point[2] + gradMap[j][2] * showGradientsScaleFactor.getValue() );
+        }
+        glEnd();
+    }
+    //*/
 
 #ifdef SOFA_DEV
     //*  Continuous animation of the reference frames along the beam (between frames i and i+1)
@@ -1100,6 +1100,53 @@ void SkinningMapping<BasicMapping>::draw()
                 const Vec6& e = this->deformationTensors[i];
                 double color = 0.5 + ( e[0] + e[1] + e[2])/2.0;
                 glColor3f( 0.0, color, 1.0-color);// /*e[0]*/, e[1], e[2]);
+                glVertex3f( xto[i][0], xto[i][1], xto[i][2]);
+            }
+            glEnd();
+        }
+    }
+
+
+    // Coefs show
+    if ( showCoefs.getValue())
+    {
+        // Compute min and max values.
+        double minValue = 0xFFFF;
+        double maxValue = -0xFFF;
+        for( unsigned int j = 0; j < xto.size(); j++)
+        {
+            if( m_coefs[showFromIndex.getValue()%m_coefs.size()][j] < minValue) minValue = m_coefs[showFromIndex.getValue()%m_coefs.size()][j];
+            if( m_coefs[showFromIndex.getValue()%m_coefs.size()][j] > maxValue) maxValue = m_coefs[showFromIndex.getValue()%m_coefs.size()][j];
+        }
+
+        TriangleSetTopologyContainer *mesh;
+        this->getContext()->get( mesh);
+        if( mesh)
+        {
+            glPushAttrib( GL_LIGHTING_BIT || GL_COLOR_BUFFER_BIT || GL_ENABLE_BIT);
+            glDisable( GL_LIGHTING);
+            glBegin( GL_TRIANGLES);
+            const TriangleSetTopologyContainer::SeqTriangles& tri = mesh->getTriangles();
+            for( unsigned int i = 0; i < mesh->getNumberOfTriangles(); i++)
+            {
+                for( unsigned int j = 0; j < 3; j++)
+                {
+                    double color = (m_coefs[showFromIndex.getValue()%m_coefs.size()][tri[i][j]] - minValue) / (maxValue - minValue);
+                    glColor3f( 1.0, 1.0-color, 0.0);
+                    glVertex3f( xto[tri[i][j]][0], xto[tri[i][j]][1], xto[tri[i][j]][2]);
+                }
+            }
+            glEnd();
+            glPopAttrib();
+        }
+        else // Show by points
+        {
+            glPointSize( 10);
+            glBegin( GL_POINTS);
+            for( unsigned int i = 0; i < xto.size(); i++)
+            {
+                double color = (m_coefs[showFromIndex.getValue()%m_coefs.size()][i] - minValue) / (maxValue - minValue);
+                glColor3f( 1.0, 1.0-color, 0.0);
                 glVertex3f( xto[i][0], xto[i][1], xto[i][2]);
             }
             glEnd();
@@ -1646,6 +1693,7 @@ bool SkinningMapping<BasicMapping>::inverseSkinning( InCoord& X0, InCoord& X, co
 
 // Update pos0
             X0.getCenter() += Uinv * t;
+            serr << "X0: " << X0.getCenter() << sendl;
         }
     }
 //std::cout<<"err:"<<t*t;
@@ -1678,9 +1726,15 @@ void SkinningMapping<BasicMapping>::computeWeight( VVD& w, VecVecCoord& dw, cons
             //serr << "distance["<<j<<"]: " << distances[indexFrom][j] << ", ("<< xto0[j] <<")" << sendl;
             ddist[i][0].normalize();
             if( dist[i][0])
+            {
                 ddist[i][0] = - ddist[i][0] / (dist[i][0]*dist[i][0]*dist[i][0]) * 2.0;
+                dist[i][0] = 1 / (dist[i][0]*dist[i][0]);
+            }
             else
-                ddist[i][0] = - Coord();
+            {
+                ddist[i][0] = Coord();
+                dist[i][0] = 0xFFF;
+            }
         }
         break;
     }
@@ -1719,18 +1773,8 @@ void SkinningMapping<BasicMapping>::computeWeight( VVD& w, VecVecCoord& dw, cons
     case WEIGHT_INVDIST_SQUARE:
     {
         for ( unsigned int i=0; i<xfrom0.size(); i++ )
-            w[i][0] = 1 / dist[i][0];
-        //m_coefs.normalize();
-        //normalize the coefs vector such as the sum is equal to 1
-        double norm=0.0;
-        for ( unsigned int i=0; i<xfrom0.size(); i++ )
-            norm += w[i][0]*w[i][0];
-        norm = helper::rsqrt ( norm );
-
-        for ( unsigned int i=0; i<xfrom0.size(); i++ )
         {
-            w[i][0] /= norm;
-            w[i][0] = w[i][0]*w[i][0];
+            w[i][0] = dist[i][0];
             dw[i][0] = ddist[i][0];
         }
         break;
