@@ -12,6 +12,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/helper/gl/template.h>
 
 namespace sofavrpn
 {
@@ -30,6 +31,7 @@ ToolTracker<Datatypes>::ToolTracker()
     , f_center(initData(&f_center, "center", "Tool's center"))
     , f_orientation(initData(&f_orientation, "orientation", "Tool's orientation"))
     , f_rigidCenter(initData(&f_rigidCenter, "rigidCenter", "Rigid center of the tool"))
+    , f_drawTool(initData(&f_drawTool, false, "drawTool", "Draw tool's contour"))
 {
     addInput(&f_points);
     addInput(&f_distances);
@@ -93,33 +95,68 @@ void ToolTracker<Datatypes>::update()
 
     //Guess current mapping between incoming edges and real edges
     std::map<Edge, Edge> mapEdges;
-    PointID p1, p2;
-    double EPSILON = 0.0000001;
 
-    bool first = true;
-    for (unsigned int i=0 ; i<realDistances.size() ; i++)
+    //
+    unsigned int table[18] =
     {
-        double dist = realDistances[i];
+        0, 1, 2,
+        0, 2, 1,
+        1, 0, 2,
+        1, 2, 0,
+        2, 0, 1,
+        2, 1, 0,
+    };
+
+    double min = 99999.0;
+    unsigned int bestCombi=0;
+
+    for (unsigned int i=0 ; i<18 ; i+=3)
+    {
+        double temp;
+        temp = fabs (realDistances[0] - computedDistances[table[i]])
+                + fabs (realDistances[1] - computedDistances[table[i+1]])
+                + fabs (realDistances[2] - computedDistances[table[i+2]]);
+
+        if(temp < min)
+        {
+            min = temp;
+            bestCombi = i;
+        }
+    }
+    for (unsigned int i=0 ; i<3 ; i++)
+    {
         Edge currentRealEdge;
         currentRealEdge = Edge(i, ((i+1)%realDistances.size()) );
 
-        unsigned int minIndex=0;
-        double min = fabs(dist - computedDistances[minIndex]);
-        std::cout << "? " << 0 << " " << min << std::endl;
-        //search the nearest distances we have
-        for (unsigned int j=1 ; j<computedDistances.size() ; j++)
-        {
-            //std::cout << "? " << j << " " << fabs(dist - computedDistances[j]) << std::endl;
-            if(fabs(dist - computedDistances[j]) - min < EPSILON )
-            {
-                min = fabs(dist - computedDistances[j]);
-                minIndex = j;
-            }
-        }
-        mapEdges[currentRealEdge] = computedEdges[minIndex];
-        //std::cout << currentRealEdge << " <-->" << computedEdges[minIndex]<< std::endl;
+        mapEdges[currentRealEdge] = computedEdges[table[bestCombi+i]];
+        //std::cout << currentRealEdge << " <-->" << computedEdges[table[bestCombi+i]] << std::endl;
     }
 
+    /*
+     * 	double EPSILON = 0.0000001;
+    for (unsigned int i=0 ; i<realDistances.size() ; i++)
+    {
+    	double dist = realDistances[i];
+    	Edge currentRealEdge;
+    	currentRealEdge = Edge(i, ((i+1)%realDistances.size()) );
+
+    	unsigned int minIndex=0;
+    	double min = fabs(dist - computedDistances[minIndex]);
+    	std::cout << "Diff? " << 0 << " " << min << std::endl;
+    	//search the nearest distances we have
+    	for (unsigned int j=1 ; j<computedDistances.size() ; j++)
+    	{
+    		std::cout << "Diff? " << j << " " << fabs(dist - computedDistances[j]) << std::endl;
+    		if(fabs(dist - computedDistances[j]) < min )
+    		{
+    			min = fabs(dist - computedDistances[j]);
+    			minIndex = j;
+    		}
+    	}
+    	mapEdges[currentRealEdge] = computedEdges[minIndex];
+    	std::cout << currentRealEdge << " <-->" << computedEdges[minIndex]<< " -> error " << min << std::endl;
+    }
+    */
 
     //Finally, get the real points from the mapping
     std::map<PointID, Coord> mapRealPoints;
@@ -131,7 +168,7 @@ void ToolTracker<Datatypes>::update()
 
     Edge currentRealEdge, currentIREdge;
     PointID commonRealPoint, commonIRPoint;
-    unsigned int nb=0;
+
     for (edgeIt++ ; edgeIt != mapEdges.end(); edgeIt++)
         //for (edgeIt++ ; mapRealPoints.size() < inPoints.size(); edgeIt++)
     {
@@ -191,53 +228,51 @@ void ToolTracker<Datatypes>::update()
     Coord leftPoint = mapRealPoints[0];
     Coord rightPoint = mapRealPoints[1];
     Coord topPoint = mapRealPoints[2];
-    /*
-    	Coord xAxis = topPoint - leftPoint;
-    	xAxis.normalize();
-    	Coord yAxis = (leftPoint - topPoint).cross(rightPoint - topPoint);
-    	yAxis.normalize();
-    	Coord zAxis = xAxis.cross(yAxis);
-    	zAxis.normalize();
 
-    	sofa::defaulttype::Quat q;
-    	q = q.createQuaterFromFrame(xAxis, yAxis, zAxis);
-    	q.normalize();
-    	//Compute center
-    	centerPoint = topPoint;
-    	orientation = q;
-    	rigidPoint.getCenter() = topPoint;
-    	rigidPoint.getOrientation() = q;
-    */
-    Coord centerTool = (leftPoint + rightPoint + topPoint)/3.0;
-    centerPoint = centerTool;
-    rigidPoint.getCenter() = centerTool;
-
-    Coord xAxis = topPoint - centerTool;
+    Coord xAxis = topPoint - leftPoint;
     xAxis.normalize();
     Coord yAxis = (leftPoint - topPoint).cross(rightPoint - topPoint);
     yAxis.normalize();
     Coord zAxis = xAxis.cross(yAxis);
     zAxis.normalize();
 
-    //std::cout << "X: " << xAxis << std::endl;
-    //std::cout << "Y: " << yAxis << std::endl;
-    //std::cout << "Z: " << zAxis << std::endl;
-
     sofa::defaulttype::Quat q;
     q = q.createQuaterFromFrame(xAxis, yAxis, zAxis);
     q.normalize();
-
+    //Compute center
+    centerPoint = topPoint;
     orientation = q;
+    rigidPoint.getCenter() = topPoint;
     rigidPoint.getOrientation() = q;
-
-    f_rigidCenter.endEdit();
-    f_orientation.endEdit();
-
-
-
     /*
 
+    	Real truc = dot((topPoint - leftPoint), (rightPoint-leftPoint));
+    	Coord projection = leftPoint+((rightPoint-leftPoint)*truc);
+    	Coord centerTool = (topPoint+projection)/2.0;
 
+
+    	Coord xAxis = (topPoint - projection);
+    	xAxis.normalize();
+    	Coord yAxis = rightPoint -leftPoint;
+    	yAxis.normalize();
+    	Coord zAxis = xAxis.cross(yAxis);
+    	zAxis.normalize();
+
+    	//std::cout << "X: " << xAxis << std::endl;
+    	//std::cout << "Y: " << yAxis << std::endl;
+    	//std::cout << "Z: " << zAxis << std::endl;
+    	centerPoint = centerTool;
+    	rigidPoint.getCenter() = centerTool;
+
+    	sofa::defaulttype::Quat q;
+    	q = q.createQuaterFromFrame(xAxis, yAxis, zAxis);
+    	q.normalize();
+
+    	orientation = q;
+    	rigidPoint.getOrientation() = q;
+
+    	f_rigidCenter.endEdit();
+    	f_orientation.endEdit();
 
     	//Get the Top Point
     	std::vector<double> lengths;
@@ -314,6 +349,29 @@ void ToolTracker<Datatypes>::update()
     	f_angle.endEdit();
     	f_angleArticulated.endEdit();
     	*/
+}
+
+template<class Datatypes>
+void ToolTracker<Datatypes>::draw()
+{
+    sofa::helper::ReadAccessor< Data<VecCoord > > inPoints = f_points;
+
+    if (!f_drawTool.getValue() || inPoints.empty()) return ;
+
+    glDisable(GL_LIGHTING);
+
+    glLineWidth(2);
+    glBegin(GL_LINES);
+    for (unsigned int i=0 ; i<inPoints.size() ; i++)
+    {
+        glColor3f(1.0,1.0,1.0);
+        helper::gl::glVertexT(inPoints[i]);
+        helper::gl::glVertexT(inPoints[((i+1)%inPoints.size())]);
+    }
+
+    glEnd();
+    glEnable(GL_LIGHTING);
+
 }
 
 }
