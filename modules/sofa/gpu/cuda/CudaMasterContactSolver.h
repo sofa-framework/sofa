@@ -176,12 +176,14 @@ private:
 class MechanicalGetConstraintInfoVisitor : public simulation::MechanicalVisitor
 {
 public:
-    typedef core::componentmodel::behavior::BaseConstraint::PersistentID PersistentID;
-    typedef core::componentmodel::behavior::BaseConstraint::ConstCoord ConstCoord;
-    typedef core::componentmodel::behavior::BaseConstraint::ConstraintGroupInfo ConstraintGroupInfo;
+    typedef core::componentmodel::behavior::BaseConstraint::VecConstraintBlockInfo VecConstraintBlockInfo;
+    typedef core::componentmodel::behavior::BaseConstraint::VecPersistentID VecPersistentID;
+    typedef core::componentmodel::behavior::BaseConstraint::VecConstCoord VecConstCoord;
+    typedef core::componentmodel::behavior::BaseConstraint::VecConstDeriv VecConstDeriv;
+    typedef core::componentmodel::behavior::BaseConstraint::VecConstArea VecConstArea;
 
-    MechanicalGetConstraintInfoVisitor(std::vector<ConstraintGroupInfo>& groups, std::vector<PersistentID>& ids, std::vector<ConstCoord>& positions)
-        : _groups(groups), _ids(ids), _positions(positions)
+    MechanicalGetConstraintInfoVisitor(VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& positions, VecConstDeriv& directions, VecConstArea& areas)
+        : _blocks(blocks), _ids(ids), _positions(positions), _directions(directions), _areas(areas)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
@@ -191,7 +193,7 @@ public:
     virtual Result fwdConstraint(simulation::Node* node, core::componentmodel::behavior::BaseConstraint* c)
     {
         ctime_t t0 = begin(node, c);
-        c->getConstraintInfo(_groups, _ids, _positions);
+        c->getConstraintInfo(_blocks, _ids, _positions, _directions, _areas);
         end(node, c, t0);
         return RESULT_CONTINUE;
     }
@@ -202,11 +204,12 @@ public:
     }
 #endif
 private:
-    std::vector<ConstraintGroupInfo>& _groups;
-    std::vector<PersistentID>& _ids;
-    std::vector<ConstCoord>& _positions;
+    VecConstraintBlockInfo& _blocks;
+    VecPersistentID& _ids;
+    VecConstCoord& _positions;
+    VecConstDeriv& _directions;
+    VecConstArea& _areas;
 };
-
 
 template<class real>
 class CudaMasterContactSolver : public sofa::simulation::MasterSolverImpl
@@ -254,24 +257,33 @@ private:
 #endif
 
 
+    typedef core::componentmodel::behavior::BaseConstraint::ConstraintBlockInfo ConstraintBlockInfo;
     typedef core::componentmodel::behavior::BaseConstraint::PersistentID PersistentID;
     typedef core::componentmodel::behavior::BaseConstraint::ConstCoord ConstCoord;
-    typedef core::componentmodel::behavior::BaseConstraint::ConstraintGroupInfo ConstraintGroupInfo;
+    typedef core::componentmodel::behavior::BaseConstraint::ConstDeriv ConstDeriv;
+    typedef core::componentmodel::behavior::BaseConstraint::ConstArea ConstArea;
 
-    class ConstraintGroupBuf
+    typedef core::componentmodel::behavior::BaseConstraint::VecConstraintBlockInfo VecConstraintBlockInfo;
+    typedef core::componentmodel::behavior::BaseConstraint::VecPersistentID VecPersistentID;
+    typedef core::componentmodel::behavior::BaseConstraint::VecConstCoord VecConstCoord;
+    typedef core::componentmodel::behavior::BaseConstraint::VecConstDeriv VecConstDeriv;
+    typedef core::componentmodel::behavior::BaseConstraint::VecConstArea VecConstArea;
+
+    class ConstraintBlockBuf
     {
     public:
         std::map<PersistentID,int> persistentToConstraintIdMap;
         int nbLines; ///< how many dofs (i.e. lines in the matrix) are used by each constraint
     };
 
-    std::map<core::componentmodel::behavior::BaseConstraint*, ConstraintGroupBuf> _previousConstraints;
+    std::map<core::componentmodel::behavior::BaseConstraint*, ConstraintBlockBuf> _previousConstraints;
     helper::vector< double > _previousForces;
 
-    helper::vector<ConstraintGroupInfo> _constraintGroupInfo;
-    helper::vector<PersistentID> _constraintIds;
-    helper::vector<ConstCoord> _constraintPositions;
-
+    VecConstraintBlockInfo _constraintBlockInfo;
+    VecPersistentID _constraintIds;
+    VecConstCoord _constraintPositions;
+    VecConstDeriv _constraintDirections;
+    VecConstArea _constraintAreas;
 
     helper::vector<unsigned> constraintRenumbering,constraintReinitialize;
 };

@@ -160,10 +160,12 @@ void CudaMasterContactSolver<real>::build_LCP()
 
     if (initial_guess.getValue())
     {
-        _constraintGroupInfo.clear();
+        _constraintBlockInfo.clear();
         _constraintIds.clear();
         _constraintPositions.clear();
-        MechanicalGetConstraintInfoVisitor(_constraintGroupInfo, _constraintIds, _constraintPositions).execute(context);
+        _constraintDirections.clear();
+        _constraintAreas.clear();
+        MechanicalGetConstraintInfoVisitor(_constraintBlockInfo, _constraintIds, _constraintPositions, _constraintDirections, _constraintAreas).execute(context);
         computeInitialGuess();
     }
 }
@@ -174,18 +176,18 @@ void CudaMasterContactSolver<real>::computeInitialGuess()
     for (unsigned c=0; c<_numConstraints; c++)
         _f[c] = 0.0;
 
-    for (unsigned cg = 0; cg < _constraintGroupInfo.size(); ++cg)
+    for (unsigned cg = 0; cg < _constraintBlockInfo.size(); ++cg)
     {
-        const ConstraintGroupInfo& info = _constraintGroupInfo[cg];
+        const ConstraintBlockInfo& info = _constraintBlockInfo[cg];
         if (!info.hasId) continue;
         //std::cout << "CONST G" << cg << ": from index " << info.const0 << " with " << info.nbGroups << "*" << info.nbLines << " constraints:";
-        typename std::map<core::componentmodel::behavior::BaseConstraint*, ConstraintGroupBuf>::const_iterator previt = _previousConstraints.find(info.parent);
+        typename std::map<core::componentmodel::behavior::BaseConstraint*, ConstraintBlockBuf>::const_iterator previt = _previousConstraints.find(info.parent);
         if (previt == _previousConstraints.end())
         {
             //std::cout << " NOT FOUND" << std::endl;
             continue;
         }
-        const ConstraintGroupBuf& buf = previt->second;
+        const ConstraintBlockBuf& buf = previt->second;
         const int c0 = info.const0;
         const int nbl = (info.nbLines < buf.nbLines) ? info.nbLines : buf.nbLines;
         for (int c = 0; c < info.nbGroups; ++c)
@@ -220,19 +222,19 @@ void CudaMasterContactSolver<real>::keepContactForcesValue()
     for (unsigned int c=0; c<_numConstraints; ++c)
         _previousForces[c] = _f[c];
     // clear previous history
-    for (typename std::map<core::componentmodel::behavior::BaseConstraint*, ConstraintGroupBuf>::iterator it = _previousConstraints.begin(), itend = _previousConstraints.end(); it != itend; ++it)
+    for (typename std::map<core::componentmodel::behavior::BaseConstraint*, ConstraintBlockBuf>::iterator it = _previousConstraints.begin(), itend = _previousConstraints.end(); it != itend; ++it)
     {
-        ConstraintGroupBuf& buf = it->second;
+        ConstraintBlockBuf& buf = it->second;
         for (std::map<PersistentID,int>::iterator it2 = buf.persistentToConstraintIdMap.begin(), it2end = buf.persistentToConstraintIdMap.end(); it2 != it2end; ++it2)
             it2->second = -1;
     }
     // fill info from current ids
-    for (unsigned cg = 0; cg < _constraintGroupInfo.size(); ++cg)
+    for (unsigned cg = 0; cg < _constraintBlockInfo.size(); ++cg)
     {
-        const ConstraintGroupInfo& info = _constraintGroupInfo[cg];
+        const ConstraintBlockInfo& info = _constraintBlockInfo[cg];
         if (!info.parent) continue;
         if (!info.hasId) continue;
-        ConstraintGroupBuf& buf = _previousConstraints[info.parent];
+        ConstraintBlockBuf& buf = _previousConstraints[info.parent];
         int c0 = info.const0;
         int nbl = info.nbLines;
         buf.nbLines = nbl;

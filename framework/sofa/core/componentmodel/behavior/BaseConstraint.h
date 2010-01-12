@@ -144,8 +144,15 @@ public:
     virtual void getConstraintId(long * /*id*/, unsigned int & /*offset*/) {}
 
     typedef long long PersistentID;
+    typedef helper::vector<PersistentID> VecPersistentID;
     typedef defaulttype::Vec<3,int> ConstCoord;
-    class ConstraintGroupInfo
+    typedef helper::vector<ConstCoord> VecConstCoord;
+    typedef defaulttype::Vec<3,double> ConstDeriv;
+    typedef helper::vector<ConstDeriv> VecConstDeriv;
+    typedef double ConstArea;
+    typedef helper::vector<ConstArea> VecConstArea;
+
+    class ConstraintBlockInfo
     {
     public:
         BaseConstraint* parent;
@@ -154,14 +161,19 @@ public:
         int nbGroups; ///< how many groups of constraints are active
         bool hasId; ///< true if this constraint has persistent ID information
         bool hasPosition; ///< true if this constraint has coordinates information
+        bool hasDirection; ///< true if this constraint has direction information
+        bool hasArea; ///< true if this constraint has area information
         int offsetId; ///< index of first constraint group info in vector of persistent ids and coordinates
         int offsetPosition; ///< index of first constraint group info in vector of coordinates
-        ConstraintGroupInfo() : parent(NULL), const0(0), nbLines(1), nbGroups(0), hasId(false), hasPosition(false), offsetId(0), offsetPosition(0)
+        int offsetDirection; ///< index of first constraint info in vector of directions
+        int offsetArea; ///< index of first constraint group info in vector of areas
+        ConstraintBlockInfo() : parent(NULL), const0(0), nbLines(1), nbGroups(0), hasId(false), hasPosition(false), hasDirection(false), hasArea(false), offsetId(0), offsetPosition(0), offsetDirection(0), offsetArea(0)
         {}
     };
+    typedef helper::vector<ConstraintBlockInfo> VecConstraintBlockInfo;
 
     /// Get information for each constraint: pointer to parent BaseConstraint, unique persistent ID, 3D position
-    virtual void getConstraintInfo(std::vector<ConstraintGroupInfo>& /*groups*/, std::vector<PersistentID>& /*ids*/, std::vector<ConstCoord>& /*positions*/) {}
+    virtual void getConstraintInfo(VecConstraintBlockInfo& /*blocks*/, VecPersistentID& /*ids*/, VecConstCoord& /*positions*/, VecConstDeriv& /*directions*/, VecConstArea& /*areas*/) {}
 
 #ifdef SOFA_DEV
     /// Add the corresponding ConstraintResolution using the offset parameter

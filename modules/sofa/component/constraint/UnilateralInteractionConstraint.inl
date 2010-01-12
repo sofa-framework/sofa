@@ -367,36 +367,35 @@ void UnilateralInteractionConstraint<DataTypes>::getConstraintId(long* id, unsig
 }
 
 template<class DataTypes>
-void UnilateralInteractionConstraint<DataTypes>::getConstraintInfo(std::vector<ConstraintGroupInfo>& groups, std::vector<PersistentID>& ids, std::vector<ConstCoord>& /*positions*/)
+void UnilateralInteractionConstraint<DataTypes>::getConstraintInfo(VecConstraintBlockInfo& blocks, VecPersistentID& ids, VecConstCoord& /*positions*/, VecConstDeriv& directions, VecConstArea& /*areas*/)
 {
     if (contacts.empty()) return;
-    ConstraintGroupInfo info;
+    const bool friction = (contacts[0].mu > 0.0); /// @TODO: can there be both friction-less and friction contacts in the same UnilateralInteractionConstraint ???
+    ConstraintBlockInfo info;
     info.parent = this;
     info.const0 = contacts[0].id;
-    info.nbLines = contacts[0].mu > 0.0 ? 3 : 1; /// @TODO: can there be both friction-less and friction contacts in the same UnilateralInteractionConstraint ???
+    info.nbLines = friction ? 3 : 1;
     info.hasId = true;
     info.offsetId = ids.size();
+    info.hasDirection = true;
+    info.offsetDirection = directions.size();
     info.nbGroups = contacts.size();
 
-    if (!yetIntegrated)
+    for (unsigned int i=0; i<contacts.size(); i++)
     {
-        for (unsigned int i=0; i<contacts.size(); i++)
+        Contact& c = contacts[i];
+        ids.push_back( yetIntegrated ? c.contactId : -c.contactId);
+        directions.push_back( c.norm );
+        if (friction)
         {
-            Contact& c = contacts[i];
-            ids.push_back(-c.contactId);
+            directions.push_back( c.t );
+            directions.push_back( c.s );
         }
+    }
 
-        yetIntegrated = true;
-    }
-    else
-    {
-        for (unsigned int i=0; i<contacts.size(); i++)
-        {
-            Contact& c = contacts[i];
-            ids.push_back(c.contactId);
-        }
-    }
-    groups.push_back(info);
+    yetIntegrated = true;
+
+    blocks.push_back(info);
 }
 
 #ifdef SOFA_DEV

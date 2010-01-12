@@ -372,14 +372,17 @@ void LCPConstraintSolver::build_LCP()
     }
     //sout<<" computeCompliance_done "  <<sendl;
 
+    _constraintBlockInfo.clear();
+    _constraintIds.clear();
+    _constraintPositions.clear();
+    _constraintDirections.clear();
+    _constraintAreas.clear();
+
     if ((initial_guess.getValue() || multi_grid.getValue()) && (_numConstraints != 0))
     {
         //_cont_id_list.resize(_numConstraints);
         //MechanicalGetContactIDVisitor(&(_cont_id_list[0])).execute(context);
-        _constraintGroupInfo.clear();
-        _constraintIds.clear();
-        _constraintPositions.clear();
-        MechanicalGetConstraintInfoVisitor(_constraintGroupInfo, _constraintIds, _constraintPositions).execute(context);
+        MechanicalGetConstraintInfoVisitor(_constraintBlockInfo, _constraintIds, _constraintPositions, _constraintDirections, _constraintAreas).execute(context);
         if (initial_guess.getValue())
             computeInitialGuess();
     }
@@ -476,19 +479,27 @@ void LCPConstraintSolver::MultigridConstraintsMerge_Compliance()
 void LCPConstraintSolver::MultigridConstraintsMerge_Spatial()
 {
     //std::cout << "Merge_Spatial" << std::endl;
+
     const int merge_spatial_step = this->merge_spatial_step.getValue();
     int numContacts = _numConstraints/3;
     int nLevels = multi_grid_levels.getValue();
     if (nLevels < 2) nLevels = 2;
+
+    sout << "Multigrid merge from " << numContacts << " contacts." << sendl;
+
     hierarchy_contact_group.resize(nLevels-1);
     hierarchy_constraint_group.resize(nLevels-1);
     hierarchy_num_group.resize(nLevels-1);
 
-    helper::vector<ConstraintGroupInfo> constraintGroupInfo;
-    helper::vector<ConstCoord> constraintPositions;
+    VecConstraintBlockInfo constraintBlockInfo;
+    VecConstCoord constraintPositions;
+    VecConstDeriv constraintDirections;
+    VecConstArea constraintAreas;
 
-    constraintGroupInfo = _constraintGroupInfo;
+    constraintBlockInfo = _constraintBlockInfo;
     constraintPositions = _constraintPositions;
+    constraintDirections = _constraintDirections;
+    constraintAreas = _constraintAreas;
 
     for (int level = 1; level < nLevels; ++level)
     {
@@ -502,28 +513,38 @@ void LCPConstraintSolver::MultigridConstraintsMerge_Spatial()
         constraint_group.resize(_numConstraints);
         num_group = 0;
 
-        helper::vector<ConstraintGroupInfo> newConstraintGroupInfo;
-        helper::vector<ConstCoord> newConstraintPositions;
+
+        VecConstraintBlockInfo newConstraintBlockInfo;
+        VecConstCoord newConstraintPositions;
+        VecConstDeriv newConstraintDirections;
+        VecConstArea newConstraintAreas;
 
         std::map<ConstCoord, int> coord2coarseId;
         // fill info from current ids
-        for (unsigned cg = 0; cg < constraintGroupInfo.size(); ++cg)
+        for (unsigned cb = 0; cb < constraintBlockInfo.size(); ++cb)
         {
-            const ConstraintGroupInfo& info = constraintGroupInfo[cg];
+            const ConstraintBlockInfo& info = constraintBlockInfo[cb];
             if (!info.hasPosition)
             {
                 serr << "MultigridConstraintsMerge_Spatial: constraints from " << (info.parent ? info.parent->getName() : std::string("NULL")) << " have no position data" << sendl;
                 continue;
             }
-            ConstraintGroupInfo newInfo;
+            ConstraintBlockInfo newInfo;
             newInfo = info;
             newInfo.offsetPosition = newConstraintPositions.size();
+            newInfo.offsetDirection = newConstraintDirections.size();
+            newInfo.offsetArea = newConstraintAreas.size();
             newInfo.const0 = num_group * 3;
             const int c0 = info.const0;
             const int nbl = info.nbLines;
             for (int c = 0; c < info.nbGroups; ++c)
             {
                 int idFine = c0 + c*nbl;
+                if (level == 1 && idFine + 2 >= _numConstraints)
+                {
+                    serr << "MultigridConstraintsMerge_Spatial: constraint " << idFine << " from " << (info.parent ? info.parent->getName() : std::string("NULL")) << " has invalid index" << sendl;
+                    break;
+                }
                 ConstCoord posFine = constraintPositions[info.offsetPosition + c];
                 ConstCoord posCoarse;
                 for (int i=0; i<3; ++i) posCoarse[i] = posFine[i]/merge_spatial_step;
@@ -542,15 +563,17 @@ void LCPConstraintSolver::MultigridConstraintsMerge_Spatial()
                 constraint_group[idFine+2] = idCoarse+2;
             }
             newInfo.nbGroups = num_group - newInfo.const0 / 3;
-            newConstraintGroupInfo.push_back(newInfo);
+            newConstraintBlockInfo.push_back(newInfo);
             // the following line clears the coarse group map between blocks
             // of constraints, hence disallowing any merging of constraints
             // not created by the same BaseConstraint component
             coord2coarseId.clear();
         }
-        sout << "Multigrid merge level " << level << ": " << num_group << " groups." << std::endl;
-        constraintGroupInfo.swap(newConstraintGroupInfo);
+        sout << "Multigrid merge level " << level << ": " << num_group << " groups." << sendl;
+        constraintBlockInfo.swap(newConstraintBlockInfo);
         constraintPositions.swap(newConstraintPositions);
+        constraintDirections.swap(newConstraintDirections);
+        constraintAreas.swap(newConstraintAreas);
     }
 }
 
@@ -597,20 +620,16 @@ void LCPConstraintSolver::build_problem_info()
     //std::cout<<" computeCompliance in "  << constraintCorrections.size()<< " constraintCorrections" <<std::endl;
 
 
+    _constraintBlockInfo.clear();
+    _constraintIds.clear();
+    _constraintPositions.clear();
+    _constraintDirections.clear();
+    _constraintAreas.clear();
     if (initial_guess.getValue())
     {
-        _constraintGroupInfo.clear();
-        _constraintIds.clear();
-        _constraintPositions.clear();
-        MechanicalGetConstraintInfoVisitor(_constraintGroupInfo, _constraintIds, _constraintPositions).execute(context);
+        MechanicalGetConstraintInfoVisitor(_constraintBlockInfo, _constraintIds, _constraintPositions, _constraintDirections, _constraintAreas).execute(context);
         computeInitialGuess();
     }
-
-
-
-
-
-
 }
 
 
@@ -633,13 +652,13 @@ void LCPConstraintSolver::computeInitialGuess()
             (*_result)[c+numContact] =  0.0;
         }
     }
-    for (unsigned cg = 0; cg < _constraintGroupInfo.size(); ++cg)
+    for (unsigned cb = 0; cb < _constraintBlockInfo.size(); ++cb)
     {
-        const ConstraintGroupInfo& info = _constraintGroupInfo[cg];
+        const ConstraintBlockInfo& info = _constraintBlockInfo[cb];
         if (!info.hasId) continue;
-        std::map<core::componentmodel::behavior::BaseConstraint*, ConstraintGroupBuf>::const_iterator previt = _previousConstraints.find(info.parent);
+        std::map<core::componentmodel::behavior::BaseConstraint*, ConstraintBlockBuf>::const_iterator previt = _previousConstraints.find(info.parent);
         if (previt == _previousConstraints.end()) continue;
-        const ConstraintGroupBuf& buf = previt->second;
+        const ConstraintBlockBuf& buf = previt->second;
         const int c0 = info.const0;
         const int nbl = (info.nbLines < buf.nbLines) ? info.nbLines : buf.nbLines;
         for (int c = 0; c < info.nbGroups; ++c)
@@ -663,19 +682,19 @@ void LCPConstraintSolver::keepContactForcesValue()
     for (unsigned int c=0; c<_numConstraints; ++c)
         _previousForces[c] = (*_result)[c];
     // clear previous history
-    for (std::map<core::componentmodel::behavior::BaseConstraint*, ConstraintGroupBuf>::iterator it = _previousConstraints.begin(), itend = _previousConstraints.end(); it != itend; ++it)
+    for (std::map<core::componentmodel::behavior::BaseConstraint*, ConstraintBlockBuf>::iterator it = _previousConstraints.begin(), itend = _previousConstraints.end(); it != itend; ++it)
     {
-        ConstraintGroupBuf& buf = it->second;
+        ConstraintBlockBuf& buf = it->second;
         for (std::map<PersistentID,int>::iterator it2 = buf.persistentToConstraintIdMap.begin(), it2end = buf.persistentToConstraintIdMap.end(); it2 != it2end; ++it2)
             it2->second = -1;
     }
     // fill info from current ids
-    for (unsigned cg = 0; cg < _constraintGroupInfo.size(); ++cg)
+    for (unsigned cb = 0; cb < _constraintBlockInfo.size(); ++cb)
     {
-        const ConstraintGroupInfo& info = _constraintGroupInfo[cg];
+        const ConstraintBlockInfo& info = _constraintBlockInfo[cb];
         if (!info.parent) continue;
         if (!info.hasId) continue;
-        ConstraintGroupBuf& buf = _previousConstraints[info.parent];
+        ConstraintBlockBuf& buf = _previousConstraints[info.parent];
         int c0 = info.const0;
         int nbl = info.nbLines;
         buf.nbLines = nbl;
