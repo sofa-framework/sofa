@@ -197,7 +197,7 @@ public:
     void quatToAxis(defaulttype::Vec<3,Real> & a, Real &phi);
 
 
-    Quater createQuaterFromFrame(const defaulttype::Vec<3, Real> &lox, const defaulttype::Vec<3, Real> &loy,const defaulttype::Vec<3, Real> &loz);
+    static Quater createQuaterFromFrame(const defaulttype::Vec<3, Real> &lox, const defaulttype::Vec<3, Real> &loy,const defaulttype::Vec<3, Real> &loz);
 
     /// Create using rotation vector (axis*angle) given in parent coordinates
     template<class V>
