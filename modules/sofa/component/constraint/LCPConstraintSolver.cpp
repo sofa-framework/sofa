@@ -147,7 +147,7 @@ bool LCPConstraintSolver::solveSystem(double /*dt*/, VecId)
 
                 sofa::helper::vector<double>& graph_error1 = graph["Error"];
                 graph_error1.clear();
-                sofa::helper::vector<double>& graph_error2 = graph["Error Coarse"];
+                sofa::helper::vector<double>& graph_error2 = graph["Level"];
                 graph_error2.clear();
 
                 /*helper::nlcp_multiGrid(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue(),
@@ -155,19 +155,14 @@ bool LCPConstraintSolver::solveSystem(double /*dt*/, VecId)
                                        _contact_group, _group_lead.size(), this->f_printLog.getValue());*/
 
 
-                std::vector< std::vector< int> > contact_group_hierarchy;
-                std::vector<unsigned int> Tab_num_group;
-                contact_group_hierarchy.push_back(_contact_group);
-                Tab_num_group.push_back(_group_lead.size());
-
                 helper::nlcp_multiGrid_Nlevels(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue(),
-                        contact_group_hierarchy, Tab_num_group, this->f_printLog.getValue(), &graph_error1, &graph_error2);
+                        hierarchy_contact_group, hierarchy_num_group, this->f_printLog.getValue(), &graph_error1, &graph_error2);
 
                 //helper::nlcp_multiGrid_2levels(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue(),
                 //                       _contact_group, _group_lead.size(), this->f_printLog.getValue(), &graph_error1, &graph_error2);
-                std::cout<<"+++++++++++++ \n SOLVE WITH GAUSSSEIDEL \n ++++++++++++++++"<<std::endl;
-                helper::nlcp_gaussseidel(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue(),
-                        this->f_printLog.getValue(), &graph_error1);
+                //std::cout<<"+++++++++++++ \n SOLVE WITH GAUSSSEIDEL \n ++++++++++++++++"<<std::endl;
+                //helper::nlcp_gaussseidel(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue(),
+                //                         this->f_printLog.getValue(), &graph_error1);
 
                 // if (this->f_printLog.getValue()) helper::afficheLCP(_dFree->ptr(), _W->lptr(), _result->ptr(),_numConstraints);
 
@@ -293,6 +288,7 @@ LCPConstraintSolver::LCPConstraintSolver()
     , maxIt( initData(&maxIt, 1000, "maxIt", "maximal number of iterations of the Gauss-Seidel algorithm"))
     , mu( initData(&mu, 0.6, "mu", "Friction coefficient"))
     , multi_grid(initData(&multi_grid, false, "multi_grid","activate multi_grid resolution (NOT STABLE YET)"))
+    , multi_grid_levels(initData(&multi_grid_levels, 2, "multi_grid_levels","if multi_grid is active: how many levels to create (>=2)"))
     , merge_method( initData(&merge_method, 0, "merge_method","if multi_grid is active: which method to use to merge constraints (0 = compliance-based, 1 = spatial coordinates)"))
     , merge_spatial_step( initData(&merge_spatial_step, 2, "merge_spatial_step", "if merge_method is 1: grid size reduction between multigrid levels"))
     , constraintGroups( initData(&constraintGroups, "group", "list of ID of groups of constraints to be handled by this solver.") )
@@ -428,45 +424,52 @@ void LCPConstraintSolver::MultigridConstraintsMerge_Compliance()
     /////// Analyse des contacts à regrouper //////
     double criterion=0.0;
     int numContacts = _numConstraints/3;
-    _contact_group.clear();
-    _contact_group.resize(numContacts);
-    _group_lead.clear();
-    _constraint_group.clear();
-    _constraint_group.resize(_numConstraints);
+
+    hierarchy_contact_group.resize(1);
+    hierarchy_constraint_group.resize(1);
+    hierarchy_num_group.resize(1);
+    std::vector<int> group_lead;
+    std::vector<int>& contact_group = hierarchy_contact_group[0];
+    std::vector<int>& constraint_group = hierarchy_constraint_group[0];
+    unsigned int& num_group = hierarchy_num_group[0];
+    contact_group.clear();
+    contact_group.resize(numContacts);
+    group_lead.clear();
+    constraint_group.clear();
+    constraint_group.resize(_numConstraints);
 
     for (int c=0; c<numContacts; c++)
     {
         bool new_group = true;
-        for(int g=0; g<(int)_group_lead.size() ; g++)
+        for(int g=0; g<(int)group_lead.size() ; g++)
         {
 
-            if (_W->lptr()[3*c][3*_group_lead[g]] > criterion * (_W->lptr()[3*c][3*c] +_W->lptr()[3*_group_lead[g]][3*_group_lead[g]]) )  // on regarde les couplages selon la normale...
+            if (_W->lptr()[3*c][3*group_lead[g]] > criterion * (_W->lptr()[3*c][3*c] +_W->lptr()[3*group_lead[g]][3*group_lead[g]]) )  // on regarde les couplages selon la normale...
             {
                 new_group =false;
-                _contact_group[c] = g;
+                contact_group[c] = g;
 
 
             }
         }
         if (new_group)
         {
-            _contact_group[c]=_group_lead.size();
-            _group_lead.push_back(c);
+            contact_group[c]=group_lead.size();
+            group_lead.push_back(c);
 
         }
     }
-
+    num_group = group_lead.size();
     if(this->f_printLog.getValue())
     {
-        std::cout<<"contacts merged in "<<_group_lead.size()<<" list(s)"<<std::endl;
+        std::cout<<"contacts merged in "<<num_group<<" list(s)"<<std::endl;
     }
 
     for (int c=0; c<numContacts; c++)
     {
-        _constraint_group[3*c] = 3*_contact_group[c];
-        _constraint_group[3*c+1] = 3*_contact_group[c]+1;
-        _constraint_group[3*c+2] = 3*_contact_group[c]+2;
-
+        constraint_group[3*c] = 3*contact_group[c];
+        constraint_group[3*c+1] = 3*contact_group[c]+1;
+        constraint_group[3*c+2] = 3*contact_group[c]+2;
     }
 }
 
@@ -475,46 +478,79 @@ void LCPConstraintSolver::MultigridConstraintsMerge_Spatial()
     //std::cout << "Merge_Spatial" << std::endl;
     const int merge_spatial_step = this->merge_spatial_step.getValue();
     int numContacts = _numConstraints/3;
-    _contact_group.clear();
-    _contact_group.resize(numContacts);
-    _constraint_group.clear();
-    _constraint_group.resize(_numConstraints);
-    _group_lead.clear();
-    std::map<ConstCoord, int> coord2coarseId;
-    // fill info from current ids
-    for (unsigned cg = 0; cg < _constraintGroupInfo.size(); ++cg)
+    int nLevels = multi_grid_levels.getValue();
+    if (nLevels < 2) nLevels = 2;
+    hierarchy_contact_group.resize(nLevels-1);
+    hierarchy_constraint_group.resize(nLevels-1);
+    hierarchy_num_group.resize(nLevels-1);
+
+    helper::vector<ConstraintGroupInfo> constraintGroupInfo;
+    helper::vector<ConstCoord> constraintPositions;
+
+    constraintGroupInfo = _constraintGroupInfo;
+    constraintPositions = _constraintPositions;
+
+    for (int level = 1; level < nLevels; ++level)
     {
-        const ConstraintGroupInfo& info = _constraintGroupInfo[cg];
-        if (!info.hasPosition)
+        std::vector<int>& contact_group = hierarchy_contact_group[level-1];
+        std::vector<int>& constraint_group = hierarchy_constraint_group[level-1];
+        unsigned int& num_group = hierarchy_num_group[level-1];
+
+        contact_group.clear();
+        contact_group.resize(numContacts);
+        constraint_group.clear();
+        constraint_group.resize(_numConstraints);
+        num_group = 0;
+
+        helper::vector<ConstraintGroupInfo> newConstraintGroupInfo;
+        helper::vector<ConstCoord> newConstraintPositions;
+
+        std::map<ConstCoord, int> coord2coarseId;
+        // fill info from current ids
+        for (unsigned cg = 0; cg < constraintGroupInfo.size(); ++cg)
         {
-            serr << "MultigridConstraintsMerge_Spatial: constraints from " << (info.parent ? info.parent->getName() : std::string("NULL")) << " have no position data" << sendl;
-            continue;
-        }
-        const int c0 = info.const0;
-        const int nbl = info.nbLines;
-        for (int c = 0; c < info.nbGroups; ++c)
-        {
-            int idFine = c0 + c*nbl;
-            ConstCoord posFine = _constraintPositions[info.offsetPosition + c];
-            ConstCoord posCoarse;
-            for (int i=0; i<3; ++i) posCoarse[i] = posFine[i]/merge_spatial_step;
-            std::pair< std::map<ConstCoord,int>::iterator, bool > res = coord2coarseId.insert(std::map<ConstCoord,int>::value_type(posCoarse, (int)_group_lead.size()));
-            if (res.second)
+            const ConstraintGroupInfo& info = constraintGroupInfo[cg];
+            if (!info.hasPosition)
             {
-                // new group
-                //std::cout << "New group: " << posCoarse << std::endl;
-                _group_lead.push_back(idFine/3);
+                serr << "MultigridConstraintsMerge_Spatial: constraints from " << (info.parent ? info.parent->getName() : std::string("NULL")) << " have no position data" << sendl;
+                continue;
             }
-            int idCoarse = res.first->second * 3;
-            _contact_group[idFine/3] = idCoarse/3;
-            _constraint_group[idFine+0] = idCoarse+0;
-            _constraint_group[idFine+1] = idCoarse+1;
-            _constraint_group[idFine+2] = idCoarse+2;
+            ConstraintGroupInfo newInfo;
+            newInfo = info;
+            newInfo.offsetPosition = newConstraintPositions.size();
+            newInfo.const0 = num_group * 3;
+            const int c0 = info.const0;
+            const int nbl = info.nbLines;
+            for (int c = 0; c < info.nbGroups; ++c)
+            {
+                int idFine = c0 + c*nbl;
+                ConstCoord posFine = constraintPositions[info.offsetPosition + c];
+                ConstCoord posCoarse;
+                for (int i=0; i<3; ++i) posCoarse[i] = posFine[i]/merge_spatial_step;
+                std::pair< std::map<ConstCoord,int>::iterator, bool > res = coord2coarseId.insert(std::map<ConstCoord,int>::value_type(posCoarse, (int)num_group));
+                if (res.second)
+                {
+                    // new group
+                    //std::cout << "New group: " << posCoarse << std::endl;
+                    newConstraintPositions.push_back(posCoarse);
+                    ++num_group;
+                }
+                int idCoarse = res.first->second * 3;
+                contact_group[idFine/3] = idCoarse/3;
+                constraint_group[idFine+0] = idCoarse+0;
+                constraint_group[idFine+1] = idCoarse+1;
+                constraint_group[idFine+2] = idCoarse+2;
+            }
+            newInfo.nbGroups = num_group - newInfo.const0 / 3;
+            newConstraintGroupInfo.push_back(newInfo);
+            // the following line clears the coarse group map between blocks
+            // of constraints, hence disallowing any merging of constraints
+            // not created by the same BaseConstraint component
+            coord2coarseId.clear();
         }
-        // the following line clears the coarse group map between blocks
-        // of constraints, hence disallowing any merging of constraints
-        // not created by the same BaseConstraint component
-        coord2coarseId.clear();
+        sout << "Multigrid merge level " << level << ": " << num_group << " groups." << std::endl;
+        constraintGroupInfo.swap(newConstraintGroupInfo);
+        constraintPositions.swap(newConstraintPositions);
     }
 }
 
