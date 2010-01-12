@@ -67,7 +67,11 @@ SkinningMapping<BasicMapping>::SkinningMapping ( In* from, Out* to )
     , computeAllMatrices ( initData ( &computeAllMatrices, false, "computeAllMatrices","compute all the matrices in addition to apply for the dual quat interpolation method." ) )
     , showDefTensors ( initData ( &showDefTensors, false, "showDefTensors","show computed deformation tensors." ) )
     , showFromIndex ( initData ( &showFromIndex, ( unsigned ) 0, "showFromIndex","Displayed From Index." ) )
+    , showCoefs ( initData ( &showCoefs, false, "showCoefs","Show coeficients." ) )
+    , showReps ( initData ( &showReps, false, "showReps","Show repartition." ) )
     , showTextScaleFactor ( initData ( &showTextScaleFactor, 0.00005, "showTextScaleFactor","Text Scale Factor." ) )
+    , showGradients ( initData ( &showGradients, false, "showGradients","Show gradients." ) )
+    , showGradientsScaleFactor ( initData ( &showGradientsScaleFactor, 0.0001, "showGradientsScaleFactor","Gradients Scale Factor." ) )
 #ifdef SOFA_DEV
     , newFrameMinDist ( initData ( &newFrameMinDist, 0.1, "newFrameMinDist","Minimal distance to insert a new frame." ) )
 #endif
@@ -277,6 +281,12 @@ void SkinningMapping<BasicMapping>::init()
     {
         computeInitPos();
     }
+    /*
+    for( typename vector<vector<Coord> >::iterator it = distGradients.begin(); it != distGradients.end(); it++)
+    		for( typename vector<Coord>::iterator it2 = it->begin(); it2 != it->end(); it2++)
+    			serr << "gradients: " << *it2 << sendl;
+    */
+
 
     this->BasicMapping::init();
 }
@@ -964,17 +974,37 @@ void SkinningMapping<BasicMapping>::draw()
 
     if ( this->getShow() )
     {
+        glDisable ( GL_LIGHTING );
 
-        /*/ Display  m_reps for each points
-        for ( unsigned int i=0;i<xto.size();i++ )
+        // Display  m_reps for each points
+        if( showReps.getValue())
+        {
+            for ( unsigned int i=0; i<xto.size(); i++ )
                 sofa::helper::gl::GlText::draw ( m_reps[nbRefs.getValue() *i+0], xto[i], showTextScaleFactor.getValue() );
-        //*/
+        }
 
         // Display coefs for each points
-        glDisable ( GL_LIGHTING );
-        glColor3f( 1.0, 1.0, 1.0);
-        for ( unsigned int i=0; i<xto.size(); i++ )
-            sofa::helper::gl::GlText::draw ( (int)(m_coefs[showFromIndex.getValue()%xfrom.size()][i]*10000), xto[i], showTextScaleFactor.getValue() );
+        if( showCoefs.getValue())
+        {
+            glColor3f( 1.0, 1.0, 1.0);
+            for ( unsigned int i=0; i<xto.size(); i++ )
+                sofa::helper::gl::GlText::draw ( (int)(m_coefs[showFromIndex.getValue()%xfrom.size()][i]), xto[i], showTextScaleFactor.getValue() );
+        }
+
+        // Display gradient for each points
+        if ( showGradients.getValue())
+        {
+            glColor3f ( 0.0, 1.0, 0.3 );
+            glBegin ( GL_LINES );
+            const vector<Coord>& gradMap = distGradients[showFromIndex.getValue()%distGradients.size()];
+            for ( unsigned int j = 0; j < gradMap.size(); j++ )
+            {
+                const Coord& point = xto[j];
+                glVertex3f ( point[0], point[1], point[2] );
+                glVertex3f ( point[0] + gradMap[j][0] * showGradientsScaleFactor.getValue(), point[1] + gradMap[j][1] * showGradientsScaleFactor.getValue(), point[2] + gradMap[j][2] * showGradientsScaleFactor.getValue() );
+            }
+            glEnd();
+        }
         //*/
 
         // Display mapping links between in and out elements
@@ -1069,11 +1099,14 @@ void SkinningMapping<BasicMapping>::draw()
         }
         else // Show by points
         {
+            glPointSize( 10);
             glBegin( GL_POINTS);
             for( unsigned int i = 0; i < xto.size(); i++)
             {
+                //serr << "def tensor for i = " << i << ": " << this->deformationTensors[i] << sendl;
                 const Vec6& e = this->deformationTensors[i];
-                glColor3f( e[0], e[1], e[2]);
+                double color = 0.5 + ( e[0] + e[1] + e[2])/2.0;
+                glColor3f( 0.0, color, 1.0-color);// /*e[0]*/, e[1], e[2]);
                 glVertex3f( xto[i][0], xto[i][1], xto[i][2]);
             }
             glEnd();
