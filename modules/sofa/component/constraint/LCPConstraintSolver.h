@@ -295,8 +295,9 @@ private:
     //std::vector< int> _constraint_group;
     //std::vector<int> _group_lead;
 
-    std::vector< std::vector< int> > hierarchy_contact_group;
-    std::vector< std::vector< int> > hierarchy_constraint_group;
+    std::vector< std::vector< int > > hierarchy_contact_group;
+    std::vector< std::vector< int > > hierarchy_constraint_group;
+    std::vector< std::vector< double > > hierarchy_constraint_group_fact;
     std::vector< unsigned int > hierarchy_num_group;
 
 
