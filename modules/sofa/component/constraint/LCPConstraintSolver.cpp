@@ -363,14 +363,14 @@ void LCPConstraintSolver::build_LCP()
 
     if (this->f_printLog.getValue()) sout<<"LCPConstraintSolver: "<<_numConstraints<<" constraints, mu = "<<_mu<<sendl;
 
-    //sout<<" computeCompliance in "  << constraintCorrections.size()<< " constraintCorrections" <<sendl;
+    if (this->f_printLog.getValue()) sout<<" computeCompliance in "  << constraintCorrections.size()<< " constraintCorrections" <<sendl;
 
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
     {
         core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
         cc->getCompliance(_W);
     }
-    //sout<<" computeCompliance_done "  <<sendl;
+    if (this->f_printLog.getValue()) sout<<" computeCompliance_done "  <<sendl;
 
     _constraintBlockInfo.clear();
     _constraintIds.clear();
@@ -430,16 +430,20 @@ void LCPConstraintSolver::MultigridConstraintsMerge_Compliance()
 
     hierarchy_contact_group.resize(1);
     hierarchy_constraint_group.resize(1);
+    hierarchy_constraint_group_fact.resize(1);
     hierarchy_num_group.resize(1);
     std::vector<int> group_lead;
     std::vector<int>& contact_group = hierarchy_contact_group[0];
     std::vector<int>& constraint_group = hierarchy_constraint_group[0];
+    std::vector<double>& constraint_group_fact = hierarchy_constraint_group_fact[0];
     unsigned int& num_group = hierarchy_num_group[0];
     contact_group.clear();
     contact_group.resize(numContacts);
     group_lead.clear();
     constraint_group.clear();
     constraint_group.resize(_numConstraints);
+    constraint_group_fact.clear();
+    constraint_group_fact.resize(_numConstraints);
 
     for (int c=0; c<numContacts; c++)
     {
@@ -470,9 +474,9 @@ void LCPConstraintSolver::MultigridConstraintsMerge_Compliance()
 
     for (int c=0; c<numContacts; c++)
     {
-        constraint_group[3*c] = 3*contact_group[c];
-        constraint_group[3*c+1] = 3*contact_group[c]+1;
-        constraint_group[3*c+2] = 3*contact_group[c]+2;
+        constraint_group[3*c  ] = 3*contact_group[c]  ; constraint_group_fact[3*c  ] = 1.0;
+        constraint_group[3*c+1] = 3*contact_group[c]+1; constraint_group_fact[3*c+1] = 1.0;
+        constraint_group[3*c+2] = 3*contact_group[c]+2; constraint_group_fact[3*c+2] = 1.0;
     }
 }
 
@@ -481,7 +485,8 @@ void LCPConstraintSolver::MultigridConstraintsMerge_Spatial()
     //std::cout << "Merge_Spatial" << std::endl;
 
     const int merge_spatial_step = this->merge_spatial_step.getValue();
-    int numContacts = _numConstraints/3;
+    int numConstraints = _numConstraints;
+    int numContacts = numConstraints/3;
     int nLevels = multi_grid_levels.getValue();
     if (nLevels < 2) nLevels = 2;
 
@@ -489,6 +494,7 @@ void LCPConstraintSolver::MultigridConstraintsMerge_Spatial()
 
     hierarchy_contact_group.resize(nLevels-1);
     hierarchy_constraint_group.resize(nLevels-1);
+    hierarchy_constraint_group_fact.resize(nLevels-1);
     hierarchy_num_group.resize(nLevels-1);
 
     VecConstraintBlockInfo constraintBlockInfo;
@@ -505,12 +511,15 @@ void LCPConstraintSolver::MultigridConstraintsMerge_Spatial()
     {
         std::vector<int>& contact_group = hierarchy_contact_group[level-1];
         std::vector<int>& constraint_group = hierarchy_constraint_group[level-1];
+        std::vector<double>& constraint_group_fact = hierarchy_constraint_group_fact[level-1];
         unsigned int& num_group = hierarchy_num_group[level-1];
 
         contact_group.clear();
         contact_group.resize(numContacts);
         constraint_group.clear();
-        constraint_group.resize(_numConstraints);
+        constraint_group.resize(numConstraints);
+        constraint_group_fact.clear();
+        constraint_group_fact.resize(numConstraints);
         num_group = 0;
 
 
@@ -520,17 +529,25 @@ void LCPConstraintSolver::MultigridConstraintsMerge_Spatial()
         VecConstArea newConstraintAreas;
 
         std::map<ConstCoord, int> coord2coarseId;
-        // fill info from current ids
+
         for (unsigned cb = 0; cb < constraintBlockInfo.size(); ++cb)
         {
             const ConstraintBlockInfo& info = constraintBlockInfo[cb];
+            sout << "MultigridConstraintsMerge_Spatial level " << level-1 << " constraint block " << cb << " from " << (info.parent ? info.parent->getName() : std::string("NULL"))
+                    << " : c0 = " << info.const0 << " nbl = " << info.nbLines << " nbg = " << info.nbGroups << " offsetPosition = " << info.offsetPosition << " offsetDirection = " << info.offsetDirection << " offsetArea = " << info.offsetArea << sendl;
             if (!info.hasPosition)
             {
                 serr << "MultigridConstraintsMerge_Spatial: constraints from " << (info.parent ? info.parent->getName() : std::string("NULL")) << " have no position data" << sendl;
                 continue;
             }
+            if (!info.hasDirection)
+            {
+                serr << "MultigridConstraintsMerge_Spatial: constraints from " << (info.parent ? info.parent->getName() : std::string("NULL")) << " have no direction data" << sendl;
+                continue;
+            }
             ConstraintBlockInfo newInfo;
             newInfo = info;
+            newInfo.hasArea = true;
             newInfo.offsetPosition = newConstraintPositions.size();
             newInfo.offsetDirection = newConstraintDirections.size();
             newInfo.offsetArea = newConstraintAreas.size();
@@ -540,27 +557,66 @@ void LCPConstraintSolver::MultigridConstraintsMerge_Spatial()
             for (int c = 0; c < info.nbGroups; ++c)
             {
                 int idFine = c0 + c*nbl;
-                if (level == 1 && idFine + 2 >= _numConstraints)
+                if (idFine + 2 >= numConstraints)
                 {
-                    serr << "MultigridConstraintsMerge_Spatial: constraint " << idFine << " from " << (info.parent ? info.parent->getName() : std::string("NULL")) << " has invalid index" << sendl;
+                    serr << "MultigridConstraintsMerge_Spatial level " << level << ": constraint " << idFine << " from " << (info.parent ? info.parent->getName() : std::string("NULL")) << " has invalid index" << sendl;
+                    break;
+                }
+                if ((unsigned)(info.offsetPosition + c) >= constraintPositions.size())
+                {
+                    serr << "MultigridConstraintsMerge_Spatial level " << level << ": constraint " << idFine << " from " << (info.parent ? info.parent->getName() : std::string("NULL")) << " has invalid position index" << sendl;
                     break;
                 }
                 ConstCoord posFine = constraintPositions[info.offsetPosition + c];
+                ConstDeriv dirFineN  = constraintDirections[info.offsetDirection + c + 0];
+                ConstDeriv dirFineT1 = constraintDirections[info.offsetDirection + c + 1];
+                ConstDeriv dirFineT2 = constraintDirections[info.offsetDirection + c + 2];
+                ConstArea area = (info.hasArea) ? constraintAreas[info.offsetArea + c] : (ConstArea)1.0;
                 ConstCoord posCoarse;
                 for (int i=0; i<3; ++i) posCoarse[i] = posFine[i]/merge_spatial_step;
                 std::pair< std::map<ConstCoord,int>::iterator, bool > res = coord2coarseId.insert(std::map<ConstCoord,int>::value_type(posCoarse, (int)num_group));
+                int idCoarse = res.first->second * 3;
                 if (res.second)
                 {
                     // new group
                     //std::cout << "New group: " << posCoarse << std::endl;
                     newConstraintPositions.push_back(posCoarse);
+                    newConstraintDirections.push_back(dirFineN*area);
+                    newConstraintDirections.push_back(dirFineT1*area);
+                    newConstraintDirections.push_back(dirFineT2*area);
+                    newConstraintAreas.push_back(area);
                     ++num_group;
                 }
-                int idCoarse = res.first->second * 3;
+                else
+                {
+                    // add to existing group
+                    newConstraintAreas[idCoarse/3] += area;
+                    ConstDeriv& dirCoarseN  = newConstraintDirections[idCoarse+0];
+                    ConstDeriv& dirCoarseT1 = newConstraintDirections[idCoarse+1];
+                    ConstDeriv& dirCoarseT2 = newConstraintDirections[idCoarse+2];
+                    double dotNN   = dirCoarseN  * dirFineN;
+                    double dotT1T1 = dirCoarseT1 * dirFineT1;
+                    double dotT2T2 = dirCoarseT2 * dirFineT2;
+                    double dotT2T1 = dirCoarseT2 * dirFineT1;
+                    double dotT1T2 = dirCoarseT1 * dirFineT2;
+                    dirCoarseN  += dirFineN  * ((dotNN < 0) ? -area : area);
+                    if (fabs(dotT1T1) + fabs(dotT2T2) > fabs(dotT1T2) + fabs(dotT2T1))
+                    {
+                        // friction axes are aligned
+                        dirCoarseT1 += dirFineT1 * ((dotT1T1 < 0) ? -area : area);
+                        dirCoarseT2 += dirFineT2 * ((dotT2T2 < 0) ? -area : area);
+                    }
+                    else
+                    {
+                        // friction axes are swapped
+                        dirCoarseT1 += dirFineT2 * ((dotT1T2 < 0) ? -area : area);
+                        dirCoarseT2 += dirFineT1 * ((dotT2T1 < 0) ? -area : area);
+                    }
+                }
                 contact_group[idFine/3] = idCoarse/3;
-                constraint_group[idFine+0] = idCoarse+0;
-                constraint_group[idFine+1] = idCoarse+1;
-                constraint_group[idFine+2] = idCoarse+2;
+                //constraint_group[idFine+0] = idCoarse+0;  constraint_group_fact[idFine+0] = 1.0;
+                //constraint_group[idFine+1] = idCoarse+1;  constraint_group_fact[idFine+1] = 1.0;
+                //constraint_group[idFine+2] = idCoarse+2;  constraint_group_fact[idFine+2] = 1.0;
             }
             newInfo.nbGroups = num_group - newInfo.const0 / 3;
             newConstraintBlockInfo.push_back(newInfo);
@@ -569,11 +625,76 @@ void LCPConstraintSolver::MultigridConstraintsMerge_Spatial()
             // not created by the same BaseConstraint component
             coord2coarseId.clear();
         }
+        // Finalize
         sout << "Multigrid merge level " << level << ": " << num_group << " groups." << sendl;
+
+        // Normalize and orthogonalize constraint directions
+        for (unsigned int g=0; g<num_group; ++g)
+        {
+            int idCoarse = g*3;
+            ConstDeriv& dirCoarseN  = newConstraintDirections[idCoarse+0];
+            ConstDeriv& dirCoarseT1 = newConstraintDirections[idCoarse+1];
+            ConstDeriv& dirCoarseT2 = newConstraintDirections[idCoarse+2];
+            dirCoarseT2 = dirCoarseN.cross(dirCoarseT1);
+            dirCoarseT1 = dirCoarseT2.cross(dirCoarseN);
+            dirCoarseN.normalize();
+            dirCoarseT1.normalize();
+            dirCoarseT2.normalize();
+        }
+
+        // Compute final constraint associations, accounting for possible friction axis flips and swaps
+        for (int c=0; c<numContacts; ++c)
+        {
+            int g = contact_group[c];
+            int idFine = c*3;
+            int idCoarse = g*3;
+
+            ConstDeriv dirFineN  = constraintDirections[idFine+0];
+            ConstDeriv dirFineT1 = constraintDirections[idFine+1];
+            ConstDeriv dirFineT2 = constraintDirections[idFine+2];
+            ConstDeriv& dirCoarseN  = newConstraintDirections[idCoarse+0];
+            ConstDeriv& dirCoarseT1 = newConstraintDirections[idCoarse+1];
+            ConstDeriv& dirCoarseT2 = newConstraintDirections[idCoarse+2];
+            double dotNN   = dirCoarseN  * dirFineN;
+            if (dotNN < 0)
+            {
+                // constraint direction is flipped, so relative velocities for friction are reversed
+                dirFineT1 = -dirFineT1;
+                dirFineT2 = -dirFineT2;
+            }
+
+            double dotT1T1 = dirCoarseT1 * dirFineT1;
+            double dotT2T2 = dirCoarseT2 * dirFineT2;
+            double dotT2T1 = dirCoarseT2 * dirFineT1;
+            double dotT1T2 = dirCoarseT1 * dirFineT2;
+            constraint_group[idFine+0] = idCoarse+0;  constraint_group_fact[idFine+0] = 1.0;
+
+            if (fabs(dotT1T1) + fabs(dotT2T2) > fabs(dotT1T2) + fabs(dotT2T1))
+            {
+                // friction axes are aligned
+                constraint_group[idFine+1] = idCoarse+1;  constraint_group_fact[idFine+1] = ((dotT1T1 < 0) ? -1.0 : 1.0);
+                constraint_group[idFine+2] = idCoarse+2;  constraint_group_fact[idFine+2] = ((dotT2T2 < 0) ? -1.0 : 1.0);
+            }
+            else
+            {
+                // friction axes are swapped
+                constraint_group[idFine+1] = idCoarse+2;  constraint_group_fact[idFine+1] = ((dotT2T1 < 0) ? -1.0 : 1.0);
+                constraint_group[idFine+2] = idCoarse+1;  constraint_group_fact[idFine+2] = ((dotT1T2 < 0) ? -1.0 : 1.0);
+            }
+        }
+
         constraintBlockInfo.swap(newConstraintBlockInfo);
         constraintPositions.swap(newConstraintPositions);
         constraintDirections.swap(newConstraintDirections);
         constraintAreas.swap(newConstraintAreas);
+        numContacts = num_group;
+        numConstraints = numContacts*3;
+    }
+    for (unsigned cb = 0; cb < constraintBlockInfo.size(); ++cb)
+    {
+        const ConstraintBlockInfo& info = constraintBlockInfo[cb];
+        sout << "MultigridConstraintsMerge_Spatial level " << nLevels-1 << " constraint block " << cb << " from " << (info.parent ? info.parent->getName() : std::string("NULL"))
+                << " : c0 = " << info.const0 << " nbl = " << info.nbLines << " nbg = " << info.nbGroups << " offsetPosition = " << info.offsetPosition << " offsetDirection = " << info.offsetDirection << " offsetArea = " << info.offsetArea << sendl;
     }
 }
 
