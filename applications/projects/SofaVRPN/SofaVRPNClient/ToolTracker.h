@@ -48,11 +48,15 @@ public:
     //distances between each point for the given tool
     Data<sofa::helper::vector<double> > f_distances;
 
+
     //output
     Data<Coord> f_center;
     Data<sofa::defaulttype::Quat> f_orientation;
     //the same...
     Data<RCoord> f_rigidCenter;
+
+    //parameters
+    Data<bool> f_drawTool;
 
     ToolTracker();
     virtual ~ToolTracker();
@@ -60,6 +64,7 @@ public:
 //	void init();
 //	void reinit();
     void update();
+    void draw();
 
 private:
 
