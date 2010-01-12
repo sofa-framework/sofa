@@ -175,6 +175,7 @@ public:
     Data<bool> showDefTensors;
     Data<unsigned int> showFromIndex;
     Data<bool> showCoefs;
+    Data<bool> showCoefsValues;
     Data<bool> showReps;
     Data<double> showTextScaleFactor;
     Data<bool> showGradients;
