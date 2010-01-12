@@ -254,6 +254,7 @@ public:
     Data < int > maxIt;
     Data < double > mu;
     Data<bool> multi_grid;
+    Data<int>  multi_grid_levels;
     Data<int>  merge_method;
     Data<int>  merge_spatial_step;
 
@@ -285,9 +286,15 @@ private:
     void MultigridConstraintsMerge_Spatial();
     void build_Coarse_Compliance(std::vector<int> &/*constraint_merge*/, int /*sizeCoarseSystem*/);
     LPtrFullMatrix<double>  _Wcoarse;
-    std::vector< int> _contact_group;
-    std::vector< int> _constraint_group;
-    std::vector<int> _group_lead;
+
+    //std::vector< int> _contact_group;
+    //std::vector< int> _constraint_group;
+    //std::vector<int> _group_lead;
+
+    std::vector< std::vector< int> > hierarchy_contact_group;
+    std::vector< std::vector< int> > hierarchy_constraint_group;
+    std::vector< unsigned int > hierarchy_num_group;
+
 
     /// common built-unbuilt
     simulation::Node *context;
