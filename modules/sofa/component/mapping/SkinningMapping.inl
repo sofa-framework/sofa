@@ -281,12 +281,6 @@ void SkinningMapping<BasicMapping>::init()
     {
         computeInitPos();
     }
-    /*
-    for( typename vector<vector<Coord> >::iterator it = distGradients.begin(); it != distGradients.end(); it++)
-    		for( typename vector<Coord>::iterator it2 = it->begin(); it2 != it->end(); it2++)
-    			serr << "gradients: " << *it2 << sendl;
-    */
-
 
     this->BasicMapping::init();
 }
@@ -1103,7 +1097,6 @@ void SkinningMapping<BasicMapping>::draw()
             glBegin( GL_POINTS);
             for( unsigned int i = 0; i < xto.size(); i++)
             {
-                //serr << "def tensor for i = " << i << ": " << this->deformationTensors[i] << sendl;
                 const Vec6& e = this->deformationTensors[i];
                 double color = 0.5 + ( e[0] + e[1] + e[2])/2.0;
                 glColor3f( 0.0, color, 1.0-color);// /*e[0]*/, e[1], e[2]);
