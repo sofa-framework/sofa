@@ -90,6 +90,7 @@ public:
 
     void solveNLCP(bool convergenceTest, std::vector<double>* residuals);
     int it; // to get the number of iteration that is necessary for convergence
+    double error; // to get the error at the end of the convergence
 
 
 };
@@ -162,6 +163,8 @@ public:
 SOFA_HELPER_API int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, double tol, int numItMax, bool useInitialF, double** W_coarse, std::vector<int> &contact_group, unsigned int num_group,  bool verbose=false);
 SOFA_HELPER_API int nlcp_multiGrid_2levels(int dim, double *dfree, double**W, double *f, double mu, double tol, int numItMax, bool useInitialF,
         std::vector< int> &contact_group, unsigned int num_group, bool verbose, std::vector<double>* residuals1 = NULL, std::vector<double>* residuals2 = NULL);
+SOFA_HELPER_API int nlcp_multiGrid_Nlevels(int dim, double *dfree, double**W, double *f, double mu, double tol, int numItMax, bool useInitialF,
+        std::vector< std::vector< int> > &contact_group_hierarchy, std::vector<unsigned int> Tab_num_group, bool verbose, std::vector<double> *residualsN = NULL, std::vector<double> *residualLevels = NULL);
 
 // Gauss-Seidel like algorithm for contacts
 SOFA_HELPER_API int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, double tol, int numItMax, bool useInitialF, bool verbose = false, std::vector<double>* residuals = NULL);

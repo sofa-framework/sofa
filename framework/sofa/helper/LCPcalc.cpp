@@ -156,7 +156,7 @@ void LCP::setLCP(unsigned int input_dim, double *input_dfree, double **input_W, 
 
 void LCP::solveNLCP(bool convergenceTest, std::vector<double>* residuals)
 {
-    double error;
+    //double error;
     double f_1[3],dn, ds, dt;
     int numContacts = dim/3;
     const bool computeError = (convergenceTest || residuals);
@@ -1663,18 +1663,113 @@ int nlcp_multiGrid_2levels(int dim, double *dfree, double**W, double *f, double 
 
     // iterations at the fine level (till convergence)
     convergenceTest = true;
-    fineLevel->setNumItMax(100);
+    fineLevel->setNumItMax(1000);
     fineLevel->solveNLCP(convergenceTest, residuals1);
     //if (residuals1 && residuals2) while (residuals2->size() < residuals1->size()) residuals2->push_back(0);
     if(verbose)
     {
-        std::cout<<"after  "<<fineLevel->it<<" iteration(s) to solve NLCP at the fine Level : (dim = "<< fineLevel->getDim()<<") "<<std::endl;
+        std::cout<<"after  "<<fineLevel->it<<" iteration(s) to solve NLCP at the fine Level : (dim = "<< fineLevel->getDim()<<")  error ="<<fineLevel->error<<std::endl;
         afficheResult(  fineLevel->getF(), fineLevel->getDim());
     }
 
     return 1;
 
 }
+
+
+int nlcp_multiGrid_Nlevels(int dim, double *dfree, double**W, double *f, double mu, double tol, int numItMax, bool useInitialF, std::vector< std::vector< int> > &contact_group_hierarchy, std::vector<unsigned int> Tab_num_group, bool verbose, std::vector<double> *residualsN, std::vector<double> *residualLevels)
+{
+
+    unsigned int num_hierarchies = Tab_num_group.size();
+    if (num_hierarchies != contact_group_hierarchy.size())
+    {
+        std::cerr<<" ERRROR in nlcp_multiGrid_Nlevels size of Tab_num_group must be equal to size of contact_group_hierarchy"<<std::endl;
+        return 0;
+    }
+
+
+
+    std::vector<LCP *> hierarchicalLevels;
+    hierarchicalLevels.resize(num_hierarchies+1);
+
+    hierarchicalLevels[0] = new LCP(); // finest level !
+    hierarchicalLevels[0]->setLCP(dim,dfree, W, f, mu,tol,numItMax);
+
+    if (!useInitialF)
+        memset(hierarchicalLevels[0]->getF(), 0, dim*sizeof(double));
+
+
+
+    /////////// projection (with few iterations before projection)
+
+    std::vector< std::vector<bool> > contact_is_projected;
+    contact_is_projected.resize(num_hierarchies+1);
+    std::vector<double> not_used_yet; // if we want to give different value (not 1 for all) of the projection value
+
+    bool convergenceTest= false;
+    for(unsigned int h = 0; h<num_hierarchies; h++)
+    {
+        // iterations at the fine Level (no test of convergence)
+
+        hierarchicalLevels[h]->setNumItMax(0);
+        hierarchicalLevels[h]->solveNLCP(convergenceTest, residualsN);
+
+        while(residualsN->size() > residualLevels->size()  )
+            residualLevels->push_back((double)h);
+
+        // projection step & construction of the coarse LCP
+        hierarchicalLevels[h+1] = new LCP();
+        if(verbose)
+            std::cout<<"Hierarchical level "<<h<<": allocation of size"<<Tab_num_group[h]<<" at coarse level"<<std::endl;
+        hierarchicalLevels[h+1]->allocate(3*Tab_num_group[h]); // allocation of the memory for the coarse LCP
+        hierarchicalLevels[h+1]->setDim(3*Tab_num_group[h]);
+
+        // call to projection function
+
+        projection((*hierarchicalLevels[h]), (*hierarchicalLevels[h+1]), Tab_num_group[h], contact_group_hierarchy[h], not_used_yet , contact_is_projected[h], verbose);
+    }
+
+
+
+    // iterations  at the coarse level (till convergence)
+    convergenceTest = true;
+    hierarchicalLevels[num_hierarchies]->setNumItMax(numItMax);
+    hierarchicalLevels[num_hierarchies]->setTol(tol);  // TODO => régler la tolérance en fonction de la taille !!
+    hierarchicalLevels[num_hierarchies]->solveNLCP(convergenceTest, residualsN);
+
+    if (residualsN && residualLevels) while( residualsN->size() > residualLevels->size()  ) residualLevels->push_back((double)num_hierarchies);
+
+    if(verbose)
+    {
+        std::cout<<"after  "<<hierarchicalLevels[num_hierarchies]->it<<" iteration(s) to solve NLCP at the level "<<num_hierarchies<<" : (dim = "<< hierarchicalLevels[num_hierarchies]->getDim()<<") "<<std::endl;
+        afficheResult(  hierarchicalLevels[num_hierarchies]->getF(), hierarchicalLevels[num_hierarchies]->getDim());
+    }
+
+    for( int h = num_hierarchies-1; h>=0; h--)
+    {
+
+        // prolongation (interpolation) at the fine level
+        prolongation((*hierarchicalLevels[h]), (*hierarchicalLevels[h+1]), contact_group_hierarchy[h], not_used_yet , contact_is_projected[h], verbose);
+
+        // iterations at the fine level (till convergence)
+        convergenceTest = true;
+        hierarchicalLevels[h]->setNumItMax(numItMax);
+        hierarchicalLevels[h]->setTol(tol);
+        hierarchicalLevels[h]->solveNLCP(convergenceTest, residualsN);
+        if (residualsN && residualLevels) while(residualsN->size() > residualLevels->size()  ) residualLevels->push_back((double)h);
+
+        if(verbose)
+        {
+            std::cout<<"after  "<<hierarchicalLevels[h]->it<<" iteration(s) to solve NLCP at the Level "<<h<<" : (dim = "<< hierarchicalLevels[h]->getDim()<<")  error ="<<hierarchicalLevels[h]->error<<std::endl;
+            afficheResult(  hierarchicalLevels[h]->getF(), hierarchicalLevels[h]->getDim());
+        }
+    }
+
+    return 1;
+
+}
+
+
 
 
 int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, double tol, int numItMax, bool useInitialF,

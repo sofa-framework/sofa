@@ -154,10 +154,20 @@ bool LCPConstraintSolver::solveSystem(double /*dt*/, VecId)
                                        _Wcoarse.lptr(),
                                        _contact_group, _group_lead.size(), this->f_printLog.getValue());*/
 
-                helper::nlcp_multiGrid_2levels(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue(),
-                        _contact_group, _group_lead.size(), this->f_printLog.getValue(), &graph_error1, &graph_error2);
+
+                std::vector< std::vector< int> > contact_group_hierarchy;
+                std::vector<unsigned int> Tab_num_group;
+                contact_group_hierarchy.push_back(_contact_group);
+                Tab_num_group.push_back(_group_lead.size());
+
+                helper::nlcp_multiGrid_Nlevels(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue(),
+                        contact_group_hierarchy, Tab_num_group, this->f_printLog.getValue(), &graph_error1, &graph_error2);
+
+                //helper::nlcp_multiGrid_2levels(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue(),
+                //                       _contact_group, _group_lead.size(), this->f_printLog.getValue(), &graph_error1, &graph_error2);
                 std::cout<<"+++++++++++++ \n SOLVE WITH GAUSSSEIDEL \n ++++++++++++++++"<<std::endl;
-                helper::nlcp_gaussseidel(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, true, /*initial_guess.getValue(),*/ this->f_printLog.getValue(), &graph_error1);
+                helper::nlcp_gaussseidel(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue(),
+                        this->f_printLog.getValue(), &graph_error1);
 
                 // if (this->f_printLog.getValue()) helper::afficheLCP(_dFree->ptr(), _W->lptr(), _result->ptr(),_numConstraints);
 
@@ -166,7 +176,8 @@ bool LCPConstraintSolver::solveSystem(double /*dt*/, VecId)
             {
                 sofa::helper::vector<double>& graph_error = graph["Error"];
                 graph_error.clear();
-                helper::nlcp_gaussseidel(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue(), this->f_printLog.getValue(), &graph_error);
+                helper::nlcp_gaussseidel(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue(),
+                        this->f_printLog.getValue(), &graph_error);
 
                 //std::cout << "errors: " << graph_error << std::endl;
             }
