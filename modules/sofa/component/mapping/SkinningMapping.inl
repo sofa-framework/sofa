@@ -66,6 +66,7 @@ SkinningMapping<BasicMapping>::SkinningMapping ( In* from, Out* to )
     , computeJ ( initData ( &computeJ, false, "computeJ", "compute matrix J in addition to apply for the dual quat interpolation method." ) )
     , computeAllMatrices ( initData ( &computeAllMatrices, false, "computeAllMatrices","compute all the matrices in addition to apply for the dual quat interpolation method." ) )
     , showDefTensors ( initData ( &showDefTensors, false, "showDefTensors","show computed deformation tensors." ) )
+    , showDefTensorScale ( initData ( &showDefTensorScale, 1.0, "showDefTensorScale","deformation tensor scale." ) )
     , showFromIndex ( initData ( &showFromIndex, ( unsigned ) 0, "showFromIndex","Displayed From Index." ) )
     , showCoefs ( initData ( &showCoefs, false, "showCoefs","Show coeficients." ) )
     , showCoefsValues ( initData ( &showCoefsValues, false, "showCoefsValues","Show coeficients values." ) )
@@ -1083,7 +1084,7 @@ void SkinningMapping<BasicMapping>::draw()
                 {
                     const Vec6& e = this->deformationTensors[tri[i][j]];
                     //serr << "e: " << e << sendl;
-                    double color = 0.5 + ( e[0] + e[1] + e[2])/2.0;
+                    double color = 0.5 + ( e[0] + e[1] + e[2])/showDefTensorScale.getValue();
                     glColor3f( 0.0, color, 1.0-color);// /*e[0]*/, e[1], e[2]);
                     glVertex3f( xto[tri[i][j]][0], xto[tri[i][j]][1], xto[tri[i][j]][2]);
                 }
@@ -1132,7 +1133,7 @@ void SkinningMapping<BasicMapping>::draw()
                 for( unsigned int j = 0; j < 3; j++)
                 {
                     double color = (m_coefs[showFromIndex.getValue()%m_coefs.size()][tri[i][j]] - minValue) / (maxValue - minValue);
-                    glColor3f( 1.0, 1.0-color, 0.0);
+                    glColor3f( color, 0.0, 0.0);
                     glVertex3f( xto[tri[i][j]][0], xto[tri[i][j]][1], xto[tri[i][j]][2]);
                 }
             }
@@ -1146,7 +1147,7 @@ void SkinningMapping<BasicMapping>::draw()
             for( unsigned int i = 0; i < xto.size(); i++)
             {
                 double color = (m_coefs[showFromIndex.getValue()%m_coefs.size()][i] - minValue) / (maxValue - minValue);
-                glColor3f( 1.0, 1.0-color, 0.0);
+                glColor3f( color, 0.0, 0.0);
                 glVertex3f( xto[i][0], xto[i][1], xto[i][2]);
             }
             glEnd();

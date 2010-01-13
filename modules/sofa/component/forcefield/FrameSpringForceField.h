@@ -22,15 +22,20 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-#ifndef SOFA_COMPONENT_FORCEFIELD_FRAMESPRINGFORCEFIELD_H
-#define SOFA_COMPONENT_FORCEFIELD_FRAMESPRINGFORCEFIELD_H
+// Author: François Faure, INRIA-UJF, (C) 2006
+//
+// Copyright: See COPYING file that comes with this distribution
+#ifndef SOFA_COMPONENT_FORCEFIELD_SPRINGFORCEFIELD_H
+#define SOFA_COMPONENT_FORCEFIELD_SPRINGFORCEFIELD_H
 
 #include <sofa/core/componentmodel/behavior/PairInteractionForceField.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/defaulttype/Vec.h>
-#include <vector>
-#include <sofa/defaulttype/Mat.h>
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/helper/vector.h>
+#include <sofa/helper/accessor.h>
+#include <sofa/component/component.h>
+
+#include <sofa/core/objectmodel/DataFileName.h>
 
 namespace sofa
 {
@@ -42,21 +47,56 @@ namespace forcefield
 {
 
 using namespace sofa::defaulttype;
+
+/// This class contains the description of one linear spring
+template<class T>
+class LinearSpring
+{
+public:
+    typedef T Real;
+    int     m1, m2;  ///< the two extremities of the spring: masses m1 and m2
+    Real  ks;      ///< spring stiffness
+    Real  kd;      ///< damping factor
+    Real  initpos; ///< rest length of the spring
+
+    LinearSpring(int m1=0, int m2=0, double ks=0.0, double kd=0.0, double initpos=0.0)
+        : m1(m1), m2(m2), ks((Real)ks), kd((Real)kd), initpos((Real)initpos)
+    {
+    }
+
+    LinearSpring(int m1, int m2, float ks, float kd=0, float initpos=0)
+        : m1(m1), m2(m2), ks((Real)ks), kd((Real)kd), initpos((Real)initpos)
+    {
+    }
+
+    inline friend std::istream& operator >> ( std::istream& in, LinearSpring<Real>& s )
+    {
+        in>>s.m1>>s.m2>>s.ks>>s.kd>>s.initpos;
+        return in;
+    }
+
+    inline friend std::ostream& operator << ( std::ostream& out, const LinearSpring<Real>& s )
+    {
+        out<<s.m1<<" "<<s.m2<<" "<<s.ks<<" "<<s.kd<<" "<<s.initpos<<"\n";
+        return out;
+    }
+
+};
+
+
+/// This class can be overridden if needed for additionnal storage within template specializations.
 template<class DataTypes>
-class FrameSpringForceFieldInternalData
+class SpringForceFieldInternalData
 {
 public:
 };
 
-/** FrameSpringForceField simulates 6D springs between moving frames
-  Use stiffnessTrans vector to specify the directionnal stiffnesses (on each local axis)
-  Use stiffnessRot vector to specify the rotational stiffnesses (on each local axis)
-*/
+/// Set of simple springs between particles
 template<class DataTypes>
-class FrameSpringForceField : public core::componentmodel::behavior::PairInteractionForceField<DataTypes>
+class SpringForceField : public core::componentmodel::behavior::PairInteractionForceField<DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(FrameSpringForceField, DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::PairInteractionForceField, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(SpringForceField,DataTypes), SOFA_TEMPLATE(core::componentmodel::behavior::PairInteractionForceField,DataTypes));
 
     typedef typename core::componentmodel::behavior::PairInteractionForceField<DataTypes> Inherit;
     typedef typename DataTypes::VecCoord VecCoord;
@@ -64,149 +104,100 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
+
+    typedef helper::ReadAccessor<VecCoord> RRefVecCoord;
+    typedef helper::WriteAccessor<VecCoord> WRefVecCoord;
+    typedef helper::ReadAccessor<VecDeriv> RRefVecDeriv;
+    typedef helper::WriteAccessor<VecDeriv> WRefVecDeriv;
+
     typedef core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalState;
-    enum { N=Coord::static_size };
-    typedef defaulttype::Mat<N,N,Real> Mat;
-    typedef Vec<N,Real> VecN;
 
-
-    class Spring
-    {
-    public:
-        int  m1, m2;             /// the two extremities of the spring: masses m1 and m2 ( indexes of the DOFs)
-        VecN vec1, vec2;
-        Real kd;                 /// damping factor
-
-        Real stiffnessTrans;  ///stiffness to apply on axis where the translations are free (default 0.0)
-        Real stiffnessRot;    ///stiffness to apply on axis where the rotations are free (default 0.0)
-
-        ///constructors
-        Spring ( int m1=0, int m2=0, Real softKst=0, Real softKsr=0, Real kd=0 )
-            : m1 ( m1 ), m2 ( m2 ), kd ( kd ), stiffnessTrans ( softKst ), stiffnessRot ( softKsr )
-        {
-        }
-
-        //accessors
-        Real getStiffnessRotation() {return stiffnessRot;}
-        Real getStiffnessTranslation() {return stiffnessTrans;}
-        VecN getInitVec1() {return vec1;}
-
-        //affectors
-        void setStiffnessRotation ( Real ksr ) {    stiffnessRot = ksr;  }
-        void setStiffnessTranslation ( Real kst ) { stiffnessTrans = kst;  }
-        void setInitVec1 ( const VecN& l ) { vec1=l; }
-        void setInitVec2 ( const VecN& l ) { vec2=l; }
-        void setDamping ( Real _kd ) {  kd = _kd;   }
-
-
-        inline friend std::istream& operator >> ( std::istream& in, Spring& s )
-        {
-            //default joint is a free rotation joint --> translation is bloqued, rotation is free
-
-            std::string str;
-            in>>str;
-            if ( str == "BEGIN_SPRING" )
-            {
-                in>>s.m1>>s.m2; //read references
-                in>>str;
-                while ( str != "END_SPRING" )
-                {
-                    if ( str == "KS_T" )
-                        in>>s.stiffnessTrans;
-                    else if ( str == "KS_R" )
-                        in>>s.stiffnessRot;
-                    else if ( str == "KD" )
-                        in>>s.kd;
-                    else if ( str == "VEC1" )
-                        in>>s.vec1;
-                    else if ( str == "VEC2" )
-                        in>>s.vec2;
-                    else
-                    {
-                        std::cerr<<"Error parsing Spring : Unknown Attribute "<<str<<std::endl;
-                        return in;
-                    }
-
-                    in>>str;
-                }
-            }
-
-            return in;
-        }
-
-        friend std::ostream& operator << ( std::ostream& out, const Spring& s )
-        {
-            out<<"BEGIN_SPRING  "<<s.m1<<" "<<s.m2<<"  ";
-
-            //if ( s.stiffnessTrans != 0.0 )
-            out<<"KS_T "<<s.stiffnessTrans<<"  ";
-            //if ( s.stiffnessRot != 0.0 )
-            out<<"KS_R "<<s.stiffnessRot<<"  ";
-            //if ( s.kd != 0.0 )
-            out<<"KD "<<s.kd<<"  ";
-            //if ( s.vec1!= VecN ( 0, 0, 0 ) )
-            out<<"VEC1 "<<s.vec1<<"  ";
-            //if ( s.vec2!= VecN ( 0, 0, 0 ) )
-            out<<"VEC2 "<<s.vec2<<"  ";
-
-            out<<"END_SPRING"<<std::endl;
-            return out;
-        }
-
-    };
-// end inner class spring
-
-
+    typedef LinearSpring<Real> Spring;
 
 protected:
-
-    double m_potentialEnergy;
-    /// the list of the springs
+    bool maskInUse;
+    SReal m_potentialEnergy;
+    Data<SReal> ks;
+    Data<SReal> kd;
     Data<sofa::helper::vector<Spring> > springs;
-    /// the list of the local referentials of the springs
-    VecCoord springRef;
-    /// bool to allow the display of the 2 parts of springs torsions
-    Data<bool> showLawfulTorsion;
-    Data<bool> showExtraTorsion;
+    core::objectmodel::DataFileName fileSprings;
+    class Loader;
 
-    FrameSpringForceFieldInternalData<DataTypes> data;
+    SpringForceFieldInternalData<DataTypes> data;
+    friend class SpringForceFieldInternalData<DataTypes>;
 
-
-    /// Accumulate the spring force and compute and store its stiffness
-    void addSpringForce ( double& potentialEnergy, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int i, const Spring& spring );
-    /// Apply the stiffness, i.e. accumulate df given dx
-    void addSpringDForce ( VecDeriv& df1, const VecDeriv& dx1, VecDeriv& df2, const VecDeriv& dx2, int i, const Spring& spring );
-
-
-
+    void addSpringForce(SReal& potentialEnergy, WRefVecDeriv& f1, RRefVecCoord& p1, RRefVecDeriv& v1, WRefVecDeriv& f2, RRefVecCoord& p2, RRefVecDeriv& v2, int i, const Spring& spring);
+    void updateMaskStatus();
 public:
-    FrameSpringForceField ( MechanicalState* object1, MechanicalState* object2 );
-    FrameSpringForceField();
+    SpringForceField(MechanicalState* object1, MechanicalState* object2, SReal _ks=100.0, SReal _kd=5.0);
+    SpringForceField(SReal _ks=100.0, SReal _kd=5.0);
+
+    virtual bool canPrefetch() const { return false; }
+
+
+    bool load(const char *filename);
 
     core::componentmodel::behavior::MechanicalState<DataTypes>* getObject1() { return this->mstate1; }
     core::componentmodel::behavior::MechanicalState<DataTypes>* getObject2() { return this->mstate2; }
 
+    sofa::helper::vector< Spring > getSprings() {return springs.getValue();}
+
+    virtual void reinit();
     virtual void init();
 
-    virtual void addForce ( VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2 );
+    virtual void addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2);
+    virtual void addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2);
+    virtual double getPotentialEnergy(const VecCoord&, const VecCoord&) { return m_potentialEnergy; }
 
-    virtual void addDForce ( VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2 );
 
-    virtual double getPotentialEnergy ( const VecCoord&, const VecCoord& ) { return m_potentialEnergy; }
+    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, double /*kFact*/, unsigned int &/*offset*/);
 
-    sofa::helper::vector<Spring> * getSprings() { return springs.beginEdit(); }
+    SReal getStiffness() { return ks.getValue(); }
+    SReal getDamping() { return kd.getValue(); }
+    void setStiffness(SReal _ks) { ks.setValue(_ks); }
+    void setDamping(SReal _kd) { kd.setValue(_kd); }
 
     void draw();
 
     // -- Modifiers
 
-    void clear ( int reserve=0 );
+    void clear(int reserve=0)
+    {
+        sofa::helper::vector<Spring>& springs = *this->springs.beginEdit();
+        springs.clear();
+        if (reserve) springs.reserve(reserve);
+        this->springs.endEdit();
+    }
 
-    void addSpring ( const Spring& s );
+    void addSpring(int m1, int m2, SReal ks, SReal kd, SReal initlen)
+    {
+        springs.beginEdit()->push_back(Spring(m1,m2,ks,kd,initlen));
+        springs.endEdit();
+        updateMaskStatus();
+    }
 
-    void addSpring ( int m1, int m2, Real softKst, Real softKsr, Real kd );
+    virtual void handleTopologyChange(core::componentmodel::topology::Topology *topo);
+
+    virtual bool useMask();
+
 
 };
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_FORCEFIELD_SPRINGFORCEFIELD_CPP)
+#pragma warning(disable : 4231)
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_FORCEFIELD_API SpringForceField<defaulttype::Vec3dTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API SpringForceField<defaulttype::Vec2dTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API SpringForceField<defaulttype::Vec1dTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API SpringForceField<defaulttype::Vec6dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_FORCEFIELD_API SpringForceField<defaulttype::Vec3fTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API SpringForceField<defaulttype::Vec2fTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API SpringForceField<defaulttype::Vec1fTypes>;
+extern template class SOFA_COMPONENT_FORCEFIELD_API SpringForceField<defaulttype::Vec6fTypes>;
+#endif
+#endif
 
 } // namespace forcefield
 
