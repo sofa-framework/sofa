@@ -273,6 +273,7 @@ public:
     void insertFrame( const Coord& pos, const Quat& rot);
     bool inverseSkinning( InCoord& X0, InCoord& X, const InCoord& Xtarget);
     void computeWeight( VVD& w, VecVecCoord& dw, const Coord& x0);
+    void updateDataAfterInsertion();
 #endif
 };
 
