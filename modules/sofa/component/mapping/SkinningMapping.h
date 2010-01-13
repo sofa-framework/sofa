@@ -149,8 +149,9 @@ public:
 
 #ifdef SOFA_DEV
     // These typedef are here to avoid compilation pb encountered with ResizableExtVect Type.
-    typedef typename sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<N, Real>, sofa::defaulttype::Vec<N, Real>, Real> GeoType; // = Vec3fTypes or Vec3dTypes
+    typedef typename sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<N, double>, sofa::defaulttype::Vec<N, double>, double> GeoType; // = Vec3fTypes or Vec3dTypes
     typedef typename HexahedronGeodesicalDistance< GeoType >::VecCoord GeoVecCoord;
+    typedef typename HexahedronGeodesicalDistance< GeoType >::Coord GeoCoord;
     typedef typename HexahedronGeodesicalDistance< GeoType >::VecVecCoord GeoVecVecCoord;
 
     typedef typename helper::DualQuatd DualQuat;
@@ -191,7 +192,7 @@ protected:
     Data<int /* = DistanceType*/> distanceType;
     bool computeWeights;
     Coefs<double> distances;
-    vector<vector<Coord> > distGradients;
+    vector<vector<GeoCoord> > distGradients;
 
     inline void computeInitPos();
     inline void computeDistances();
