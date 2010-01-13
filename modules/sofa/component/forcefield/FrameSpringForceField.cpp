@@ -22,16 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-// Author: François Faure, INRIA-UJF, (C) 2006
-//
-// Copyright: See COPYING file that comes with this distribution
-#define SOFA_COMPONENT_FORCEFIELD_SPRINGFORCEFIELD_CPP
-#include <sofa/component/forcefield/SpringForceField.inl>
-#include <sofa/core/componentmodel/behavior/PairInteractionForceField.inl>
-#include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+
 #include <sofa/core/ObjectFactory.h>
-//#include <typeinfo>
+#include <sofa/core/componentmodel/behavior/PairInteractionForceField.inl>
+#include <sofa/component/forcefield/FrameSpringForceField.inl>
+#include <sofa/defaulttype/RigidTypes.h>
 
 
 namespace sofa
@@ -43,43 +38,30 @@ namespace component
 namespace forcefield
 {
 
-SOFA_DECL_CLASS(SpringForceField)
-
 using namespace sofa::defaulttype;
 
 
+SOFA_DECL_CLASS ( FrameSpringForceField );
 // Register in the Factory
-int SpringForceFieldClass = core::RegisterObject("Springs")
+
+int FrameSpringForceFieldClass = core::RegisterObject ( "Springs for Flexibles" )
 #ifndef SOFA_FLOAT
-        .add< SpringForceField<Vec3dTypes> >()
-        .add< SpringForceField<Vec2dTypes> >()
-        .add< SpringForceField<Vec1dTypes> >()
-        .add< SpringForceField<Vec6dTypes> >()
+        .add< FrameSpringForceField<Rigid3dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< SpringForceField<Vec3fTypes> >()
-        .add< SpringForceField<Vec2fTypes> >()
-        .add< SpringForceField<Vec1fTypes> >()
-        .add< SpringForceField<Vec6fTypes> >()
+        .add< FrameSpringForceField<Rigid3fTypes> >()
 #endif
         ;
+
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_FORCEFIELD_API SpringForceField<Vec3dTypes>;
-template class SOFA_COMPONENT_FORCEFIELD_API SpringForceField<Vec2dTypes>;
-template class SOFA_COMPONENT_FORCEFIELD_API SpringForceField<Vec1dTypes>;
-template class SOFA_COMPONENT_FORCEFIELD_API SpringForceField<Vec6dTypes>;
+template class FrameSpringForceField<Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_FORCEFIELD_API SpringForceField<Vec3fTypes>;
-template class SOFA_COMPONENT_FORCEFIELD_API SpringForceField<Vec2fTypes>;
-template class SOFA_COMPONENT_FORCEFIELD_API SpringForceField<Vec1fTypes>;
-template class SOFA_COMPONENT_FORCEFIELD_API SpringForceField<Vec6fTypes>;
+template class FrameSpringForceField<Rigid3fTypes>;
 #endif
-
 
 } // namespace forcefield
 
 } // namespace component
 
 } // namespace sofa
-
