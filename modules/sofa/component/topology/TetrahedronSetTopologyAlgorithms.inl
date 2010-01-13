@@ -70,8 +70,8 @@ void TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronsWithPla
     int nbTobeAddedPoints=intersectedEdgeID.size()*2;
 
     //barycentric coodinates of to be added points
-    sofa::helper::vector< sofa::helper::vector<unsigned int>> ancestors;
-    sofa::helper::vector< sofa::helper::vector<double>> coefs;
+    sofa::helper::vector< sofa::helper::vector<unsigned int> > ancestors;
+    sofa::helper::vector< sofa::helper::vector<double> > coefs;
     for(int i=0; i<intersectedPoints.size(); i++)
     {
         Edge theEdge=m_container->getEdge(intersectedEdgeID[i]);
@@ -96,7 +96,7 @@ void TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronsWithPla
     sofa::helper::vector<TetraID>		toBeRemovedTetraIndex;
 
     sofa::helper::vector<TetraID> intersectedTetras;
-    sofa::helper::vector<sofa::helper::vector<EdgeID>> intersectedEdgesInTetra;
+    sofa::helper::vector<sofa::helper::vector<EdgeID> > intersectedEdgesInTetra;
     int nbIntersectedTetras=0;
 
     //Getting intersected tetrahedron

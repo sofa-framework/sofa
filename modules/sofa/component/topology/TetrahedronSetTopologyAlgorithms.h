@@ -58,6 +58,7 @@ public:
     typedef BaseMeshTopology::Tetra Tetra;
     typedef BaseMeshTopology::SeqTetrahedra SeqTetrahedra;
     typedef BaseMeshTopology::EdgesInTetrahedron EdgesInTetrahedron;
+    typedef typename DataTypes::Coord Coord;
 
     TetrahedronSetTopologyAlgorithms()
         : TriangleSetTopologyAlgorithms<DataTypes>()
