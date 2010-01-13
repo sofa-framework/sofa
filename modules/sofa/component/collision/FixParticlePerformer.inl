@@ -138,16 +138,6 @@ FixParticlePerformer<DataTypes>::~FixParticlePerformer()
     fixationConstraint.clear();
 };
 
-
-#ifdef WIN32
-#ifndef SOFA_DOUBLE
-helper::Creator<InteractionPerformer::InteractionPerformerFactory, FixParticlePerformer<defaulttype::Vec3fTypes> >  FixParticlePerformerVec3fClass("FixParticle",true);
-#endif
-#ifndef SOFA_FLOAT
-helper::Creator<InteractionPerformer::InteractionPerformerFactory, FixParticlePerformer<defaulttype::Vec3dTypes> >  FixParticlePerformerVec3dClass("FixParticle",true);
-#endif
-#endif
-
 }
 }
 }

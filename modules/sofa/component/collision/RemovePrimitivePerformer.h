@@ -145,7 +145,12 @@ private:
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_COLLISION_REMOVEPRIMITIVEPERFORMER_CPP)
-extern template class SOFA_COMPONENT_COLLISION_API RemovePrimitivePerformer<defaulttype::Vec3Types>;
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_COLLISION_API RemovePrimitivePerformer<defaulttype::Vec3fTypes>;
+#endif
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_COLLISION_API RemovePrimitivePerformer<defaulttype::Vec3dTypes>;
+#endif
 #endif
 
 }

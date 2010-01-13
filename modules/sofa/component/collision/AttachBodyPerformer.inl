@@ -1,30 +1,32 @@
 /******************************************************************************
- *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
- *                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
- *                                                                             *
- * This library is free software; you can redistribute it and/or modify it     *
- * under the terms of the GNU Lesser General Public License as published by    *
- * the Free Software Foundation; either version 2.1 of the License, or (at     *
- * your option) any later version.                                             *
- *                                                                             *
- * This library is distributed in the hope that it will be useful, but WITHOUT *
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
- * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
- * for more details.                                                           *
- *                                                                             *
- * You should have received a copy of the GNU Lesser General Public License    *
- * along with this library; if not, write to the Free Software Foundation,     *
- * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
- *******************************************************************************
- *                               SOFA :: Modules                               *
- *                                                                             *
- * Authors: The SOFA Team and external contributors (see Authors.txt)          *
- *                                                                             *
- * Contact information: contact@sofa-framework.org                             *
- ******************************************************************************/
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+*                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+*                                                                             *
+* This library is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This library is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this library; if not, write to the Free Software Foundation,     *
+* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+*******************************************************************************
+*                               SOFA :: Modules                               *
+*                                                                             *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
 
 #include <sofa/component/collision/AttachBodyPerformer.h>
 #include <sofa/component/collision/MouseInteractor.h>
+#include <sofa/component/forcefield/StiffSpringForceField.h>
+
 
 namespace sofa
 {
@@ -45,9 +47,78 @@ void AttachBodyPerformer<DataTypes>::start()
     }
     BodyPicked picked=this->interactor->getBodyPicked();
     if (!picked.body && !picked.mstate) return;
+
+    start_partial(picked); //template specialized code is here
+
+    double distanceFromMouse=picked.rayLength;
+    this->interactor->setDistanceFromMouse(distanceFromMouse);
+    this->interactor->getMouseRayModel()->getRay(0).origin() += this->interactor->getMouseRayModel()->getRay(0).direction()*distanceFromMouse;
+    sofa::core::BaseMapping *mapping;
+    this->interactor->getContext()->get(mapping); assert(mapping);
+    mapping->updateMapping();
+    forcefield->init();
+    this->interactor->setMouseAttached(true);
+}
+
+
+
+template <class DataTypes>
+void AttachBodyPerformer<DataTypes>::execute()
+{
+}
+
+template <class DataTypes>
+void AttachBodyPerformer<DataTypes>::draw()
+{
+    if (forcefield)
+    {
+        bool b = forcefield->getContext()->getShowInteractionForceFields();
+        forcefield->getContext()->setShowInteractionForceFields(true);
+        forcefield->draw();
+        forcefield->getContext()->setShowInteractionForceFields(b);
+    }
+}
+
+template <class DataTypes>
+AttachBodyPerformer<DataTypes>::AttachBodyPerformer(BaseMouseInteractor *i):
+    TInteractionPerformer<DataTypes>(i),
+    mapper(NULL),
+    forcefield(NULL)
+{
+}
+
+template <class DataTypes>
+void AttachBodyPerformer<DataTypes>::clear()
+{
+    if (forcefield)
+    {
+        forcefield->cleanup();
+        forcefield->getContext()->removeObject(forcefield);
+        delete forcefield; forcefield=NULL;
+    }
+    if (mapper)
+    {
+        mapper->cleanup();
+        delete mapper; mapper=NULL;
+    }
+
+    this->interactor->setDistanceFromMouse(0);
+    this->interactor->setMouseAttached(false);
+}
+
+
+template <class DataTypes>
+AttachBodyPerformer<DataTypes>::~AttachBodyPerformer()
+{
+    clear();
+}
+
+template <class DataTypes>
+void AttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& picked)
+{
+
     core::componentmodel::behavior::MechanicalState<DataTypes>* mstateCollision=NULL;
     int index;
-    double restLength=0;
     if (picked.body)
     {
         mapper = MouseContactMapper::Create(picked.body);
@@ -93,92 +164,29 @@ void AttachBodyPerformer<DataTypes>::start()
             return;
         }
     }
-    double distanceFromMouse=picked.rayLength;
-    restLength=picked.dist;
-    this->interactor->setDistanceFromMouse(picked.rayLength);
-    const double friction=0.0;
 
-    forcefield = new MouseForceField(dynamic_cast<MouseContainer*>(this->interactor->getMouseContainer()), mstateCollision); forcefield->setName("Spring-Mouse-Contact");
+    forcefield = new StiffSpringForceField<DataTypes>(dynamic_cast<MouseContainer*>(this->interactor->getMouseContainer()), mstateCollision);
+    StiffSpringForceField<DataTypes>* stiffspringforcefield = static_cast<StiffSpringForceField<DataTypes>*>(forcefield);
+    stiffspringforcefield->setName("Spring-Mouse-Contact");
 
-    forcefield->addSpring(0,index, stiffness, friction, restLength);
-
-    this->interactor->getMouseRayModel()->getRay(0).origin() += this->interactor->getMouseRayModel()->getRay(0).direction()*distanceFromMouse;
-
-    sofa::core::BaseMapping *mapping;
-    this->interactor->getContext()->get(mapping); assert(mapping);
-    mapping->updateMapping();
-
-
+    stiffspringforcefield->addSpring(0,index, stiffness, 0.0, picked.dist);
     const core::objectmodel::TagSet &tags=mstateCollision->getTags();
-    for (core::objectmodel::TagSet::const_iterator it=tags.begin(); it!=tags.end(); ++it) forcefield->addTag(*it);
+    for (core::objectmodel::TagSet::const_iterator it=tags.begin(); it!=tags.end(); ++it)
+        stiffspringforcefield->addTag(*it);
 
-
-
-    mstateCollision->getContext()->addObject(forcefield);
-    forcefield->init();
-    this->interactor->setMouseAttached(true);
+    mstateCollision->getContext()->addObject(stiffspringforcefield);
 }
 
-template <class DataTypes>
-void AttachBodyPerformer<DataTypes>::execute()
-{
-};
-
-template <class DataTypes>
-void AttachBodyPerformer<DataTypes>::draw()
-{
-    if (forcefield)
-    {
-        bool b = forcefield->getContext()->getShowInteractionForceFields();
-        forcefield->getContext()->setShowInteractionForceFields(true);
-        forcefield->draw();
-        forcefield->getContext()->setShowInteractionForceFields(b);
-    }
-}
-
-template <class DataTypes>
-AttachBodyPerformer<DataTypes>::AttachBodyPerformer(BaseMouseInteractor *i):TInteractionPerformer<DataTypes>(i), mapper(NULL),forcefield(NULL)
-{
-}
-
-template <class DataTypes>
-void AttachBodyPerformer<DataTypes>::clear()
-{
-    if (forcefield)
-    {
-        forcefield->cleanup();
-        forcefield->getContext()->removeObject(forcefield);
-        delete forcefield; forcefield=NULL;
-    }
-
-    if (mapper)
-    {
-        mapper->cleanup();
-        delete mapper; mapper=NULL;
-    }
-
-    this->interactor->setDistanceFromMouse(0);
-    this->interactor->setMouseAttached(false);
-}
-
-
-template <class DataTypes>
-AttachBodyPerformer<DataTypes>::~AttachBodyPerformer()
-{
-    clear();
-};
-
-
-/*
-#ifdef WIN32
-#ifndef SOFA_DOUBLE
-      helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer<defaulttype::Vec3fTypes> >  AttachBodyPerformerVec3fClass("AttachBody",true);
-#endif
 #ifndef SOFA_FLOAT
-      helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer<defaulttype::Vec3dTypes> >  AttachBodyPerformerVec3dClass("AttachBody",true);
+template<>
+void AttachBodyPerformer<defaulttype::Rigid3dTypes>::start_partial(const BodyPicked& picked);
 #endif
+
+#ifndef SOFA_DOUBLE
+template<>
+void AttachBodyPerformer<defaulttype::Rigid3fTypes>::start_partial(const BodyPicked& picked);
 #endif
-*/
+
 }
 }
 }

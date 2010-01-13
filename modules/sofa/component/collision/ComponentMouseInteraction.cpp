@@ -31,6 +31,7 @@
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/DeleteVisitor.h>
 #include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/component/component.h>
 #include <sofa/helper/Factory.inl>
 
@@ -94,16 +95,20 @@ void ComponentMouseInteraction::reset()
 
 #ifndef SOFA_DOUBLE
 template class TComponentMouseInteraction<defaulttype::Vec3fTypes>;
+template class TComponentMouseInteraction<defaulttype::Rigid3fTypes>;
 #endif
 #ifndef SOFA_FLOAT
 template class TComponentMouseInteraction<defaulttype::Vec3dTypes>;
+template class TComponentMouseInteraction<defaulttype::Rigid3dTypes>;
 #endif
 
 #ifndef SOFA_DOUBLE
 helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory, TComponentMouseInteraction<defaulttype::Vec3fTypes> > ComponentMouseInteractionVec3fClass ("MouseSpringVec3f",true);
+helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory, TComponentMouseInteraction<defaulttype::Rigid3fTypes> > ComponentMouseInteractionRigid3fClass ("MouseSpringRigid3f",true);
 #endif
 #ifndef SOFA_FLOAT
 helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory, TComponentMouseInteraction<defaulttype::Vec3dTypes> > ComponentMouseInteractionVec3dClass ("MouseSpringVec3d",true);
+helper::Creator<ComponentMouseInteraction::ComponentMouseInteractionFactory, TComponentMouseInteraction<defaulttype::Rigid3dTypes> > ComponentMouseInteractionRigid3dClass ("MouseSpringRigid3d",true);
 #endif
 
 }

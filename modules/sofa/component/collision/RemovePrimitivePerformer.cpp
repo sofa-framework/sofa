@@ -38,7 +38,6 @@ namespace component
 namespace collision
 {
 
-
 #ifndef SOFA_DOUBLE
 template class SOFA_COMPONENT_COLLISION_API RemovePrimitivePerformer<defaulttype::Vec3fTypes>;
 #endif
@@ -46,13 +45,11 @@ template class SOFA_COMPONENT_COLLISION_API RemovePrimitivePerformer<defaulttype
 template class SOFA_COMPONENT_COLLISION_API RemovePrimitivePerformer<defaulttype::Vec3dTypes>;
 #endif
 
-#ifndef WIN32
 #ifndef SOFA_DOUBLE
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, RemovePrimitivePerformer<defaulttype::Vec3fTypes> >  RemovePrimitivePerformerVec3fClass("RemovePrimitive",true);
 #endif
 #ifndef SOFA_FLOAT
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, RemovePrimitivePerformer<defaulttype::Vec3dTypes> >  RemovePrimitivePerformerVec3dClass("RemovePrimitive",true);
-#endif
 #endif
 
 }

@@ -25,6 +25,7 @@
 #define SOFA_COMPONENT_COLLISION_MOUSEINTERACTOR_CPP
 #include <sofa/component/collision/MouseInteractor.inl>
 #include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
 
 namespace sofa
@@ -46,12 +47,24 @@ int MouseInteractorClass = core::RegisterObject("Perform tasks related to the in
         .add< MouseInteractor<defaulttype::Vec3dTypes> >()
 #endif
         ;
+int MouseInteractorRigidClass = core::RegisterObject("Perform tasks related to the interaction with the mouse and rigid objects")
+#ifndef SOFA_DOUBLE
+        .add< MouseInteractor<defaulttype::Rigid3fTypes> >()
+#endif
+#ifndef SOFA_FLOAT
+        .add< MouseInteractor<defaulttype::Rigid3dTypes> >()
+#endif
+        ;
 
 #ifndef SOFA_DOUBLE
 template class SOFA_COMPONENT_COLLISION_API MouseInteractor<defaulttype::Vec3fTypes>;
+template class SOFA_COMPONENT_COLLISION_API MouseInteractor<defaulttype::Rigid3fTypes>;
+
 #endif
 #ifndef SOFA_FLOAT
 template class SOFA_COMPONENT_COLLISION_API MouseInteractor<defaulttype::Vec3dTypes>;
+template class SOFA_COMPONENT_COLLISION_API MouseInteractor<defaulttype::Rigid3fTypes>;
+
 #endif
 
 

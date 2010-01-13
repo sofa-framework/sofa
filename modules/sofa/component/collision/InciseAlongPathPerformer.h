@@ -38,7 +38,6 @@ namespace component
 
 namespace collision
 {
-
 class InciseAlongPathPerformerConfiguration
 {
 public:
