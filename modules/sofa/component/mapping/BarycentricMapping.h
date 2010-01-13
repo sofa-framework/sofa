@@ -750,15 +750,19 @@ public:
 protected:
     topology::PointData< MappingData >  map;
     topology::PointData< MappingData >  mapOrient[3];
-    defaulttype::Vec3dTypes::VecCoord initialTetraPos;
-    VecCoord glPointPositions, glVertexPositions[4];
-    sofa::helper::vector<sofa::defaulttype::Quat> prevTetraRotation;
+    //defaulttype::Vec3dTypes::VecCoord initialTetraPos;
+    //VecCoord glPointPositions, glVertexPositions[4];
+    //sofa::helper::vector<sofa::defaulttype::Quat> prevTetraRotation, initTetraRotation, initRigidOrientation;
+    //TetraFF* forceField;
+    //core::objectmodel::BaseContext* mappingContext;
+    VecCoord actualTetraPosition;
 
     topology::TetrahedronSetTopologyContainer*			_container;
     topology::TetrahedronSetGeometryAlgorithms<In>*	_geomAlgo;
     core::componentmodel::behavior::BaseMechanicalState::ParticleMask *maskFrom;
     core::componentmodel::behavior::BaseMechanicalState::ParticleMask *maskTo;
-    TetraFF* forceField;
+
+
 
 public:
     BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* topology,
@@ -770,18 +774,20 @@ public:
           maskFrom(_maskFrom), maskTo(_maskTo)
     {}
 
-    //IPB
+    /*  //IPB
     BarycentricMapperTetrahedronSetTopology(topology::TetrahedronSetTopologyContainer* topology,
-            core::componentmodel::behavior::BaseMechanicalState::ParticleMask *_maskFrom,
-            core::componentmodel::behavior::BaseMechanicalState::ParticleMask *_maskTo,
-            TetraFF *_forceField)
-        : TopologyBarycentricMapper<In,Out>(topology),
-          _container(topology),
-          _geomAlgo(NULL),
-          maskFrom(_maskFrom), maskTo(_maskTo),
-          forceField(_forceField)
-    {}
-    //IPE
+                                         core::componentmodel::behavior::BaseMechanicalState::ParticleMask *_maskFrom,
+                                         core::componentmodel::behavior::BaseMechanicalState::ParticleMask *_maskTo,
+                                         core::objectmodel::BaseContext *_mappingContext)
+     : TopologyBarycentricMapper<In,Out>(topology),
+    _container(topology),
+    _geomAlgo(NULL),
+      maskFrom(_maskFrom), maskTo(_maskTo),
+      mappingContext(_mappingContext)
+    {
+        //mappingContext->get(forceField);
+    }
+    //IPE*/
 
     virtual ~BarycentricMapperTetrahedronSetTopology() {}
 
@@ -962,9 +968,7 @@ public:
     typedef BarycentricMapperRegularGridTopology<InDataTypes, OutDataTypes> RegularGridMapper;
     typedef BarycentricMapperHexahedronSetTopology<InDataTypes, OutDataTypes> HexaMapper;
 
-    //IPB
-    typedef forcefield::TetrahedronFEMForceField<InDataTypes> TetraFF;
-    //IPE
+    //typedef forcefield::TetrahedronFEMForceField<InDataTypes> TetraFF;
 
 protected:
 
@@ -1045,11 +1049,6 @@ public:
 protected:
     sofa::core::componentmodel::topology::BaseMeshTopology* topology_from;
     sofa::core::componentmodel::topology::BaseMeshTopology* topology_to;
-
-    //IP
-    TetraFF* tetForceField;
-    //sofa::helper::vector<Quat> prevTetraRotations;
-    //IP
 
 private:
     void createMapperFromTopology(BaseMeshTopology * topology);

@@ -112,8 +112,10 @@ void BarycentricMapperTetrahedronSetTopology<defaulttype::Vec3dTypes, defaulttyp
 #endif
 
     _container->getContext()->get ( _geomAlgo );
-    initialTetraPos = in;
-    prevTetraRotation.resize(out.size());
+    //initialTetraPos = in;
+    //prevTetraRotation.resize(out.size());
+    //initTetraRotation.resize(out.size());
+    //initRigidOrientation.resize(out.size());
 
     int outside = 0;
     const sofa::helper::vector<topology::Tetrahedron>& tetrahedra = this->topology->getTetrahedra();
@@ -138,7 +140,6 @@ void BarycentricMapperTetrahedronSetTopology<defaulttype::Vec3dTypes, defaulttyp
     //find the closest tetra for given points of beam
     for ( unsigned int i=0; i<out.size(); i++ )
     {
-        //IPB
         Vector3 pos = out[i].getCenter(); // Rigid3dTypes::GetCPos(out[i]); // pos = defaulttype::Rigid3dType::getCPos(out[i]);
 
         //associate the point with the tetrahedron, point in Barycentric coors wrt. the closest tetra, store to an associated structure
@@ -159,6 +160,7 @@ void BarycentricMapperTetrahedronSetTopology<defaulttype::Vec3dTypes, defaulttyp
 
         //convert the orientation to basis given by closest tetrahedron
         Quat quatA = out[i].getOrientation();
+        //initRigidOrientation[i]=quatA;
         Matrix3 orientationMatrix, orientationMatrixBary;
         quatA.toMatrix(orientationMatrix);    //direction vectors stored as columns
         orientationMatrix.transpose(); //to simplify the multiplication below
@@ -174,14 +176,19 @@ void BarycentricMapperTetrahedronSetTopology<defaulttype::Vec3dTypes, defaulttyp
         addPointOrientationInTetra(index, orientationMatrixBary);
 
         //get tetraorientation (in the initial position)
-        Quat quatInitRot;
-        quatInitRot.fromMatrix(forceField->getActualTetraRotation(index));
-        prevTetraRotation[i]=quatInitRot;
-#ifdef SOFA_IP_TRACES
-        IPTR_BARCPP_INIT("Initial tetra["<<index<<"] rotation matrix = " << forceField->getActualTetraRotation(index) << endl);
-        IPTR_BARCPP_INIT("Initial tetra["<<index<<"] rotation quaternion = " << prevTetraRotation[i] << endl);
-#endif
-
+        /*if (forceField != 0) {
+            Matrix3 matInitRot = forceField->getInitialTetraRotation(index);
+            initTetraRotation[i].fromMatrix(matInitRot);
+            prevTetraRotation[i]=initTetraRotation[i];
+        #ifdef SOFA_IP_TRACES
+            IPTR_BARCPP_INIT("Initial tetra["<<index<<"] rotation matrix = " << matInitRot << endl);
+            IPTR_BARCPP_INIT("Initial tetra["<<index<<"] rotation quaternion = " << prevTetraRotation[i] << endl);
+        #endif
+        } else {
+        #ifdef SOFA_IP_TRACES
+            IPTR_BARCPP_INIT("FORCEFIELD == 0" << endl);
+        #endif
+        }*/
     }
 #ifdef SOFA_IP_TRACES
     IPTR_BARCPP_INIT("BarycentricMapperTetrahedronSetTopology::init END" << endl);
@@ -195,13 +202,14 @@ void BarycentricMapperTetrahedronSetTopology<defaulttype::Vec3dTypes, defaulttyp
     IPTR_BARCPP_APPLY( "BarycentricMapperTetrahedronSetTopology<SPEC>::apply BEGIN" << endl);
 #endif
 
+    actualTetraPosition=in;
     //get number of point being mapped
     unsigned int nbPoints = map.getValue().size();
     out.resize (nbPoints);
     const sofa::helper::vector<topology::Tetrahedron>& tetrahedra = this->topology->getTetrahedra();
-    glPointPositions.resize( nbPoints );
-    for (int vt=0; vt < 4; vt++)
-        glVertexPositions[vt].resize( nbPoints );
+    //glPointPositions.resize( nbPoints );
+    //for (int vt=0; vt < 4; vt++)
+    //    glVertexPositions[vt].resize( nbPoints );
 
     defaulttype::Vec3dTypes::VecCoord inCopy = in;
 
@@ -215,17 +223,23 @@ void BarycentricMapperTetrahedronSetTopology<defaulttype::Vec3dTypes, defaulttyp
         const topology::Tetrahedron& tetra = tetrahedra[index];
 
         //set the modified position
-        for (unsigned int vt=0; vt < 4; vt++)
-            glVertexPositions[vt][i] =  in[tetra[vt]];
-        glPointPositions[i] = in[tetra[0]] * ( 1-fx-fy-fz ) + in[tetra[1]] * fx + in[tetra[2]] * fy + in[tetra[3]] * fz ;
-        defaulttype::Rigid3dTypes::setCPos(out[i] , glPointPositions[i] );
+        //for (unsigned int vt=0; vt < 4; vt++)
+        //    glVertexPositions[vt][i] =  in[tetra[vt]];
+        //glPointPositions[i];
+        Vector3 rotatedPosition= in[tetra[0]] * ( 1-fx-fy-fz ) + in[tetra[1]] * fx + in[tetra[2]] * fy + in[tetra[3]] * fz ;
+        defaulttype::Rigid3dTypes::setCPos(out[i] , rotatedPosition); // glPointPositions[i] );
     }
 
+    //sofa::helper::vector<Vector3> vectors
+    sofa::helper::vector< sofa::defaulttype::Mat<12,3> > rotJ;
+    rotJ.resize(map.getValue().size());
     //point running over each DoF (assoc. with frame) in the out vector; get it from the mapOrient[0]
     for (unsigned int point = 0; point < mapOrient[0].getValue().size(); point++)
     {
         int index = mapOrient[0].getValue()[point].in_index;
         const topology::Tetrahedron& tetra = tetrahedra[index];
+
+        //compute the rotation of the rigid point using the "basis" approach
         Matrix3 orientationMatrix, polarMatrixQ, polarMatrixS; // orthogMatrix
         Matrix3 m,basis;
         m[0] = in[tetra[1]]-in[tetra[0]];
@@ -249,36 +263,96 @@ void BarycentricMapperTetrahedronSetTopology<defaulttype::Vec3dTypes, defaulttyp
         quatA.fromMatrix(polarMatrixQ);
         defaulttype::Rigid3dTypes::setCRot(out[point], quatA);
 
-        if (forceField != 0)
-        {
+        //comput the rotation of the rigid using the rotation of tetra taken from FEM
+
+
+        /*if (forceField != 0) {
             Matrix3 tetraOrientation = forceField->getActualTetraRotation(index);
-            Quat tetraOrientQuat, tetraOrientDiffQuat;
-            tetraOrientQuat.fromMatrix(tetraOrientation);
-            tetraOrientDiffQuat = tetraOrientQuat.quatDiff(tetraOrientQuat, prevTetraRotation[point]);
-            Vector3 tetraOrientDiffEuler = tetraOrientDiffQuat.toEulerVector();
-            prevTetraRotation[point] = tetraOrientQuat;
+            if ( fabs(determinant(tetraOrientation) - 1.0) < 0.01) {
+                Quat tetraOrientQuat, tetraOrientDiffQuat;
+                tetraOrientQuat.fromMatrix(tetraOrientation);
+                tetraOrientDiffQuat = tetraOrientDiffQuat.quatDiff(tetraOrientQuat,initTetraRotation[point]);
 
-#ifdef SOFA_IP_TRACES
-            IPTR_BARCPP_APPLY("Matrix ["<<index<<"] orientation quaternion: " << tetraOrientation << endl);
-            IPTR_BARCPP_APPLY("Tetrahedron ["<<index<<"] orientation quaternion: " << tetraOrientQuat << endl);
-            IPTR_BARCPP_APPLY("previous position: " << prevTetraRotation[point] << endl);
-            IPTR_BARCPP_APPLY("Euler difference: " << tetraOrientDiffEuler << endl);
-#endif
+                Quat actualRigidOrientation = tetraOrientDiffQuat*initRigidOrientation[point];
+            }
+        }*/
 
+
+
+        /*if (forceField != 0) {
+            Matrix3 tetraOrientation = forceField->getActualTetraRotation(index);
+            if ( fabs(determinant(tetraOrientation) - 1.0) < 0.01) {
+                Quat tetraOrientQuat, tetraOrientDiffQuat;
+                Vector3 tetraOrientAxis;
+                Real tetraOrientAngle;
+
+                tetraOrientQuat.fromMatrix(tetraOrientation);
+
+                Quat actualRigidOrientation = tetraOrientQuat*initRigidOrientations;
+                if (fabs(tetraOrientQuat[3]-1.0) > 10e-7)
+                    tetraOrientQuat.quatToAxis(tetraOrientAxis, tetraOrientAngle);
+                else
+                    tetraOrientAngle = 0;
+
+                if (fabs(prevTetraRotation[point][3]-1.0) > 10e-7)
+                    prevTetraRotation[point].quatToAxis(tetraOrientAxis, tetraOrientAngle);
+                else
+                    tetraOrientAngle = 0;
+
+                Vector3 temp1(1,0,0), temp2(1,0,0), temp3;
+                temp1=prevTetraRotation[point].rotate(temp1);
+                temp2=tetraOrientQuat.rotate(temp2);
+                temp1.normalize();
+                temp2.normalize();
+                temp3=cross(temp1, temp2);
+                temp3.normalize();
+
+                std::cout << "  == Axis of rotation = " << temp3 << " angle = " << (dot(temp1, temp2))/2 << endl;
+                std::cout << "  == just verify:  prev * act " << prevTetraRotation[point] * tetraOrientQuat << endl;
+
+                tetraOrientDiffQuat = tetraOrientQuat.quatDiff(prevTetraRotation[point], tetraOrientQuat);
+                tetraOrientDiffQuat.normalize();
+
+                tetraOrientDiffQuat.quatToAxis(tetraOrientAxis, tetraOrientAngle);
+                if (tetraOrientAngle != tetraOrientAngle)  { //i.e. isNan
+                    tetraOrientAngle=0;
+                    tetraOrientAxis.clear();
+                }
+
+        #ifdef SOFA_IP_TRACES
+                IPTR_BARCPP_APPLY("  Matrix ["<<index<<"] orientation quaternion: " << tetraOrientation << endl);
+                IPTR_BARCPP_APPLY("  Tetrahedron ["<<index<<"] actual quaternion: " << tetraOrientQuat << endl);
+                IPTR_BARCPP_APPLY("                   previous position: " << prevTetraRotation[point] << endl);
+                if (fabs(tetraOrientAngle) >  10e-10) {
+                    IPTR_BARCPP_APPLY("  Diff quat = " << tetraOrientDiffQuat << " axis = " << tetraOrientAxis << " non-angle = " << tetraOrientAngle << endl);
+                }
+                else {
+                    IPTR_BARCPP_APPLY("  Diff quat = " << tetraOrientDiffQuat << " axis = " << tetraOrientAxis << " zero angle = " << tetraOrientAngle << endl);
+                }
+
+                IPTR_BARCPP_APPLY("  Angular velocity for step " << mappingContext->getDt() << "s: " << tetraOrientAxis*tetraOrientAngle/mappingContext->getDt() << endl);
+        #endif
+                prevTetraRotation[point] = tetraOrientQuat;
+
+            } else {
+        #ifdef SOFA_IP_TRACES
+                IPTR_BARCPP_APPLY("NOT A ROTATION: determinant = " << determinant(tetraOrientation) << endl);
+        #endif
+            }
         }
 
-#ifdef SOFA_IP_TRACES
+
+        #ifdef SOFA_IP_TRACES
         IPTR_BARCPP_APPLY("orientation Matrix for point["<<point<<"] in updated frame = " << orientationMatrix << endl);
         IPTR_BARCPP_APPLY("polarQ Matrix for point["<<point<<"] in updated frame = " << polarMatrixQ << endl);
         IPTR_BARCPP_APPLY("Quaternion: " << quatA << endl);
-#endif
+        #endif
+        */
 
-
-
-
-        //BRUTE force for numerical approximation of the jacobian for rotation part
+        //BRUTE force for numerical approximation of the jacobian for the rotational part
         //pertube each component of each vertex and compute the rotation
-        /*Real delta = 0.001;
+        /*Real delta = 0.00001;
+        Quat quatB, quatDiff;
         for (unsigned int v = 0; v < 4; v++) {
             for (unsigned int dim = 0; dim < 3; dim++) {
                 Vector3 pertVector;
@@ -300,9 +374,24 @@ void BarycentricMapperTetrahedronSetTopology<defaulttype::Vec3dTypes, defaulttyp
                 }
                 orientationMatrix.transpose();
                 polar_decomp(orientationMatrix, polarMatrixQ, polarMatrixS);
-                quatA.fromMatrix(polarMatrixQ);
+                quatB.fromMatrix(polarMatrixQ);
+                quatDiff=quatB.quatDiff(quatA, quatB);
+                Vector3 diffAxis;
+                Real diffAngle;
+                quatDiff.quatToAxis(diffAxis, diffAngle);
+        #ifdef SOFA_IP_TRACES
+                IPTR_BARCPP_APPLYJ( "  Perturb [" << v<<"]["<<dim<<"]: axis = " << diffAxis << " diff angle = " << diffAngle << endl);
+        #endif
+                diffAxis = diffAxis*diffAngle/delta;
+                for (unsigned int i=0; i < 3; i++)
+                    rotJ[point][v*3+dim][i] = diffAxis[i];
             }
-        }*/
+        }
+        #ifdef SOFA_IP_TRACES
+        IPTR_BARCPP_APPLYJ( "Rotational part of J for point ["<<point<<"] = " << endl);
+        printMatlab(std::cout, rotJ[point]);
+        #endif
+        */
     }
 
 
@@ -324,10 +413,10 @@ void BarycentricMapperTetrahedronSetTopology<defaulttype::Vec3dTypes, defaulttyp
         {
             //get velocity of the DoF
             const defaulttype::Rigid3dTypes::DPos v = defaulttype::Rigid3dTypes::getDPos(in[i]);
-            const defaulttype::Rigid3dTypes::DRot torque = defaulttype::Rigid3dTypes::getDRot(in[i]);
-            defaulttype::Rigid3dTypes::DRot torqueNormalized = torque;
-            torqueNormalized.normalize();
-            Real torqueMagnitude = torque.norm();
+            //const defaulttype::Rigid3dTypes::DRot torque = defaulttype::Rigid3dTypes::getDRot(in[i]);
+            //defaulttype::Rigid3dTypes::DRot torqueNormalized = torque;
+            //torqueNormalized.normalize();
+            //Real torqueMagnitude = torque.norm();
 
             //get its coordinated wrt to the associated tetra with given index
             const OutReal fx = ( OutReal ) map.getValue()[i].baryCoords[0];
@@ -341,32 +430,28 @@ void BarycentricMapperTetrahedronSetTopology<defaulttype::Vec3dTypes, defaulttyp
             out[tetra[2]] += v * fy;
             out[tetra[3]] += v * fz;
 
-            //compute the linear forces for each vertex from the torque
-
+            //compute the linear forces for each vertex from the torque, inspired by rigid mapping
+            Vector3 torque = in[i].getVOrientation();
+            if (torque.norm() > 10e-6)
+            {
+                for (unsigned int ti = 0; ti<4; ti++)
+                    out[tetra[ti]] -= cross(actualTetraPosition[tetra[ti]],torque);
+            }
 
 #ifdef SOFA_IP_TRACES
-            IPNTR_BARCPP_APPLYJT(v*(1-fx - fy - fz) << endl);
-            IPNTR_BARCPP_APPLYJT(v*fx << endl);
-            IPNTR_BARCPP_APPLYJT(v*fy << endl);
-            IPNTR_BARCPP_APPLYJT(v*fz << endl);
-            IPTR_BARCPP_APPLYJT("tetra[" << index << "]: " << glVertexPositions[0][i] << "; "
-                    << glVertexPositions[1][i] << "; "
-                    << glVertexPositions[2][i] << "; "
-                    << glVertexPositions[3][i] << endl);
-            IPTR_BARCPP_APPLYJT("torque = " << torque  <<  " |"<<torqueMagnitude<<"| in point = " << glPointPositions[i] << endl);
+            //IPTR_BARCPP_APPLYJT("torque = " << torque  << endl); //  " |"<<torqueMagnitude<<"| "<< endl); // in point = " << glPointPositions[i] << endl);
+            //IPTR_BARCPP_APPLYJT("   change of force due to the torque = " << cross(actualTetraPosition[tetra[0]],torque) << endl);*/
 #endif
-            if (torqueMagnitude > 10e-4)
-            {
-                for (unsigned int vt = 0; vt < 4; vt++)
-                {
+            /*if (torqueMagnitude > 10e-4) {
+                for (unsigned int vt = 0; vt < 4; vt++) {
                     //compute the normal from vertex to the axis of rotation
-                    /*Real numer = 0, denom = torque.norm();
-                    IPTR_BARCPP_APPLYJT("   vertex["<<vt<<"]: " << glVertexPositions[vt][i] << endl);
-                    for (unsigned int dim = 0; dim < 3; dim++)
-                        numer += torque[dim] * (glPointPositions[i][dim]-glVertexPositions[vt][i][dim]);
-                    Real parT = (denom != 0) ? -numer/denom : 0;
-                    IPTR_BARCPP_APPLYJT("       nomin = " << numer << "  denomin = " << denom << "   parT = " << parT << endl);
-                    Vector3 normalToAxis = glVertexPositions[vt][i] - (glPointPositions[i] + torque*parT);*/
+                    //eal numer = 0, denom = torque.norm();
+                    //IPTR_BARCPP_APPLYJT("   vertex["<<vt<<"]: " << glVertexPositions[vt][i] << endl);
+                    //for (unsigned int dim = 0; dim < 3; dim++)
+                    //    numer += torque[dim] * (glPointPositions[i][dim]-glVertexPositions[vt][i][dim]);
+                    //Real parT = (denom != 0) ? -numer/denom : 0;
+                    //IPTR_BARCPP_APPLYJT("       nomin = " << numer << "  denomin = " << denom << "   parT = " << parT << endl);
+                    //Vector3 normalToAxis = glVertexPositions[vt][i] - (glPointPositions[i] + torque*parT);
 
                     Vector3 vectorRigidVertex, vectorRigidVertexNormalized, forceDirection(0, 0, 0);
                     vectorRigidVertex =  glVertexPositions[vt][i] - glPointPositions[i];  //distance RIGID-vertex
@@ -390,26 +475,57 @@ void BarycentricMapperTetrahedronSetTopology<defaulttype::Vec3dTypes, defaulttyp
                     forceSize = forceDirection.norm(); // torqueMagnitude / denom;
                     //forceDirection = forceDirection * forceSize;
 
-#ifdef SOFA_IP_TRACES
+            #ifdef SOFA_IP_TRACES
                     IPTR_BARCPP_APPLYJT("distance: " << vectorRigidVertex.norm()<< endl);
                     IPTR_BARCPP_APPLYJT("theta = " << theta << "  forceSize = " << forceSize << endl);
-                    if (toApply)
-                    {
+                    if (toApply) {
                         IPTR_BARCPP_APPLYJT("adding linear force: " << forceDirection << endl);
                     }
-                    else
-                    {
+                    else {
                         IPTR_BARCPP_APPLYJT("not adding linear force: " << forceDirection << endl);
                     }
-#endif
-                    if (toApply)
-                    {
-                        out[tetra[vt]] += forceDirection;
+            #endif
+                    if (toApply) {
+                        //out[tetra[vt]] += forceDirection;
                     }
                 }
+            }*/
+
+
+        }
+    }
+    else
+    {
+        typedef core::componentmodel::behavior::BaseMechanicalState::ParticleMask ParticleMask;
+        const ParticleMask::InternalStorage &indices=maskTo->getEntries();
+
+
+        ParticleMask::InternalStorage::const_iterator it;
+        for (it=indices.begin(); it!=indices.end(); it++)
+        {
+            const int i=(int)(*it);
+            const defaulttype::Rigid3dTypes::DPos v = defaulttype::Rigid3dTypes::getDPos(in[i]);
+            const OutReal fx = ( OutReal ) map.getValue()[i].baryCoords[0];
+            const OutReal fy = ( OutReal ) map.getValue()[i].baryCoords[1];
+            const OutReal fz = ( OutReal ) map.getValue()[i].baryCoords[2];
+            int index = map.getValue()[i].in_index;
+            const topology::Tetrahedron& tetra = tetrahedra[index];
+            out[tetra[0]] += v * ( 1-fx-fy-fz );
+            out[tetra[1]] += v * fx;
+            out[tetra[2]] += v * fy;
+            out[tetra[3]] += v * fz;
+
+            //compute the linear forces for each vertex from the torque, inspired by rigid mapping
+            Vector3 torque = in[i].getVOrientation();
+            if (torque.norm() > 10e-6)
+            {
+                for (unsigned int ti = 0; ti<4; ti++)
+                    out[tetra[ti]] -= cross(actualTetraPosition[tetra[ti]],torque);
             }
-
-
+            maskFrom->insertEntry(tetra[0]);
+            maskFrom->insertEntry(tetra[1]);
+            maskFrom->insertEntry(tetra[2]);
+            maskFrom->insertEntry(tetra[3]);
         }
     }
 }  //applyJT
@@ -434,10 +550,22 @@ void BarycentricMapperTetrahedronSetTopology<defaulttype::Vec3dTypes, defaulttyp
             const Real fz = map.getValue()[i].baryCoords[2];
             int index = map.getValue()[i].in_index;
             const topology::Tetrahedron& tetra = tetrahedra[index];
-            defaulttype::Rigid3dTypes::setDPos(out[i] , in[tetra[0]] * ( 1-fx-fy-fz )
+            Vector3 actualDPos = in[tetra[0]] * ( 1-fx-fy-fz )
                     + in[tetra[1]] * fx
                     + in[tetra[2]] * fy
-                    + in[tetra[3]] * fz );
+                    + in[tetra[3]] * fz;
+            defaulttype::Rigid3dTypes::setDPos(out[i], actualDPos);
+
+            Vector3 actualDRot(0,0,0);
+            for (unsigned int vert = 0; vert < 4; vert++)
+            {
+                if (in[tetra[i]].norm() > 10e-6)
+                    actualDRot += cross(actualTetraPosition[tetra[i]], in[tetra[i]]);
+            }
+
+            defaulttype::Rigid3Types::setDRot(out[i], actualDRot);
+
+
         }
     }
     else
@@ -459,6 +587,15 @@ void BarycentricMapperTetrahedronSetTopology<defaulttype::Vec3dTypes, defaulttyp
                     + in[tetra[1]] * fx
                     + in[tetra[2]] * fy
                     + in[tetra[3]] * fz );
+
+            Vector3 actualDRot(0,0,0);
+            for (unsigned int vert = 0; vert < 4; vert++)
+            {
+                if (in[tetra[i]].norm() > 10e-6)
+                    actualDRot += cross(actualTetraPosition[tetra[i]], in[tetra[i]]);
+            }
+
+            defaulttype::Rigid3Types::setDRot(out[i], actualDRot);
         }
     }
 #ifdef SOFA_IP_TRACES
