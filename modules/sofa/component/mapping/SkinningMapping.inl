@@ -495,7 +495,7 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
         double QEQ0,Q0Q0,Q0,q0V0,q0Ve,qeV0;
         Mat44 q0q0T,q0qeT,qeq0T,q0V0T,V0q0T,q0VeT,Veq0T,qeV0T,V0qeT;
         const vector<vector<double> >& w = coefs.getValue();
-        const vector<vector<Coord> >& dw = distGradients;
+        const vector<vector<GeoCoord> >& dw = distGradients;
         VVec6& e = this->deformationTensors;
 
         // Resize vectors
@@ -1017,7 +1017,7 @@ void SkinningMapping<BasicMapping>::draw()
     {
         glColor3f ( 0.0, 1.0, 0.3 );
         glBegin ( GL_LINES );
-        const vector<Coord>& gradMap = distGradients[showFromIndex.getValue()%distGradients.size()];
+        const vector<GeoCoord>& gradMap = distGradients[showFromIndex.getValue()%distGradients.size()];
         for ( unsigned int j = 0; j < gradMap.size(); j++ )
         {
             const Coord& point = xto[j];
