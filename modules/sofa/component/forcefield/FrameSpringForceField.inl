@@ -22,22 +22,21 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-// Author: François Faure, INRIA-UJF, (C) 2006
-//
-// Copyright: See COPYING file that comes with this distribution
-#ifndef SOFA_COMPONENT_FORCEFIELD_SPRINGFORCEFIELD_INL
-#define SOFA_COMPONENT_FORCEFIELD_SPRINGFORCEFIELD_INL
+#ifndef SOFA_COMPONENT_FORCEFIELD_FRAMESPRINGFORCEFIELD_INL
+#define SOFA_COMPONENT_FORCEFIELD_FRAMESPRINGFORCEFIELD_INL
 
-#include <sofa/component/forcefield/SpringForceField.h>
-#include <sofa/core/componentmodel/behavior/PairInteractionForceField.inl>
+#include <sofa/component/forcefield/FrameSpringForceField.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
-#include <sofa/component/topology/PointSetTopologyChange.h>
-#include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/helper/gl/template.h>
+#include <sofa/helper/gl/Cylinder.h>
+#include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/system/config.h>
 #include <assert.h>
 #include <iostream>
+
+
+
 
 namespace sofa
 {
@@ -49,311 +48,189 @@ namespace forcefield
 {
 
 
-
-
 template<class DataTypes>
-SpringForceField<DataTypes>::SpringForceField(MechanicalState* mstate1, MechanicalState* mstate2, SReal _ks, SReal _kd)
-    : Inherit(mstate1, mstate2), maskInUse(false)
-    , ks(initData(&ks,_ks,"stiffness","uniform stiffness for the all springs"))
-    , kd(initData(&kd,_kd,"damping","uniform damping for the all springs"))
-    , springs(initData(&springs,"spring","pairs of indices, stiffness, damping, rest length"))
+FrameSpringForceField<DataTypes>::FrameSpringForceField ( MechanicalState* object1, MechanicalState* object2 )
+    : Inherit ( object1, object2 )
+    , springs ( initData ( &springs,"spring","pairs of indices, stiffness, damping, rest length" ) )
+    , showLawfulTorsion ( initData ( &showLawfulTorsion, false, "show lawful Torsion", "dislpay the lawful part of the joint rotation" ) )
+    , showExtraTorsion ( initData ( &showExtraTorsion, false, "show illicit Torsion", "dislpay the illicit part of the joint rotation" ) )
 {
 }
 
 template<class DataTypes>
-SpringForceField<DataTypes>::SpringForceField(SReal _ks, SReal _kd)
-    : maskInUse(false)
-    , ks(initData(&ks,_ks,"stiffness","uniform stiffness for the all springs"))
-    , kd(initData(&kd,_kd,"damping","uniform damping for the all springs"))
-    , springs(initData(&springs,"spring","pairs of indices, stiffness, damping, rest length"))
-    , fileSprings(initData(&fileSprings, "fileSprings", "File describing the springs"))
+FrameSpringForceField<DataTypes>::FrameSpringForceField()
+    : springs ( initData ( &springs,"spring","pairs of indices, stiffness, damping, rest length" ) )
+    , showLawfulTorsion ( initData ( &showLawfulTorsion, false, "show lawful Torsion", "dislpay the lawful part of the joint rotation" ) )
+    , showExtraTorsion ( initData ( &showExtraTorsion, false, "show illicit Torsion", "dislpay the illicit part of the joint rotation" ) )
 {
-    this->addAlias(&fileSprings, "filename");
-}
-
-
-
-template <class DataTypes>
-class SpringForceField<DataTypes>::Loader : public helper::io::MassSpringLoader
-{
-public:
-    SpringForceField<DataTypes>* dest;
-    Loader(SpringForceField<DataTypes>* dest) : dest(dest) {}
-    virtual void addSpring(int m1, int m2, SReal ks, SReal kd, SReal initpos)
-    {
-        helper::vector<Spring>& springs = *dest->springs.beginEdit();
-        springs.push_back(Spring(m1,m2,ks,kd,initpos));
-        dest->springs.endEdit();
-    }
-};
-
-template <class DataTypes>
-bool SpringForceField<DataTypes>::load(const char *filename)
-{
-    bool ret = true;
-    if (filename && filename[0])
-    {
-        Loader loader(this);
-        ret &= loader.load(filename);
-    }
-    else ret = false;
-    return ret;
 }
 
 
 template <class DataTypes>
-void SpringForceField<DataTypes>::reinit()
-{
-    for (unsigned int i=0; i<springs.getValue().size(); ++i)
-    {
-        (*springs.beginEdit())[i].ks = (Real) ks.getValue();
-        (*springs.beginEdit())[i].kd = (Real) kd.getValue();
-    }
-    updateMaskStatus();
-}
-
-template <class DataTypes>
-void SpringForceField<DataTypes>::init()
+void FrameSpringForceField<DataTypes>::init()
 {
     this->Inherit::init();
-    updateMaskStatus();
 }
 
 template<class DataTypes>
-void SpringForceField<DataTypes>::addSpringForce(SReal& ener, WRefVecDeriv& f1, RRefVecCoord& p1, RRefVecDeriv& v1, WRefVecDeriv& f2, RRefVecCoord& p2, RRefVecDeriv& v2, int /*i*/, const Spring& spring)
+void FrameSpringForceField<DataTypes>::addSpringForce ( double& /*potentialEnergy*/, VecDeriv& f1, const VecCoord& p1, const VecDeriv& v1, VecDeriv& f2, const VecCoord& p2, const VecDeriv& v2, int , const Spring& spring )
 {
     int a = spring.m1;
     int b = spring.m2;
-    Coord u = p2[b]-p1[a];
-    Real d = u.norm();
-    Real inverseLength = 1.0f/d;
-    if( d>1.0e-4 ) // null length => no force
-        return;
-    u *= inverseLength;
-    Real elongation = (Real)(d - spring.initpos);
-    ener += elongation * elongation * spring.ks /2;
-    Deriv relativeVelocity = v2[b]-v1[a];
-    Real elongationVelocity = dot(u,relativeVelocity);
-    Real forceIntensity = (Real)(spring.ks*elongation+spring.kd*elongationVelocity);
-    Deriv force = u*forceIntensity;
-    f1[a]+=force;
-    f2[b]-=force;
-    if (this->maskInUse)
-    {
-        this->mstate1->forceMask.insertEntry(a);
-        this->mstate2->forceMask.insertEntry(b);
-    }
+
+    Mat Mr01, Mr10, Mr02, Mr20;
+    p1[a].writeRotationMatrix ( Mr01 );
+    invertMatrix ( Mr10, Mr01 );
+    p2[b].writeRotationMatrix ( Mr02 );
+    invertMatrix ( Mr20, Mr02 );
+
+    Deriv Vp1p2 = v2[b] - v1[a];
+
+    VecN damping ( spring.kd, spring.kd, spring.kd );
+    VecN kst ( spring.stiffnessTrans, spring.stiffnessTrans, spring.stiffnessTrans );
+    VecN ksr ( spring.stiffnessRot, spring.stiffnessRot, spring.stiffnessRot );
+
+    //store the referential of the spring (p1) to use it in addSpringDForce()
+    springRef[a] = p1[a];
+
+    VecN fT = kst.linearProduct( ( p2[b].getCenter() + Mr02 * ( spring.vec2)) - ( p1[a].getCenter() + Mr01 * ( spring.vec1))) + damping.linearProduct ( Vp1p2.getVCenter());
+    VecN fR = ksr.linearProduct( ( p1[a].getOrientation().inverse() * p2[b].getOrientation()).toEulerVector());
+
+    VecN C1 = fR + cross( Mr01 * ( spring.vec1), fT) + damping.linearProduct ( Vp1p2.getVOrientation() );
+    VecN C2 = fR + cross( Mr02 * ( spring.vec2), fT) + damping.linearProduct ( -Vp1p2.getVOrientation() );
+
+    f1[a] += Deriv ( fT, C1);
+    f2[b] -= Deriv ( fT, C2);
+
+    /*serr << "f1: " << fT1 << ", " << fR1 << endl;
+    serr << "f2: " << fT2 << ", " << fR2 << endl;
+    serr << "sum: " << fT2 + fT1 << ", " << fR2 + fR1 << endl;
+    serr << "diff: " << fT2 - fT1 << ", " << fR2 - fR1 << endl;*/
 }
 
 template<class DataTypes>
-void SpringForceField<DataTypes>::addForce(VecDeriv& vf1, VecDeriv& vf2, const VecCoord& vx1, const VecCoord& vx2, const VecDeriv& vv1, const VecDeriv& vv2)
+void FrameSpringForceField<DataTypes>::addSpringDForce ( VecDeriv& f1, const VecDeriv& dx1, VecDeriv& f2, const VecDeriv& dx2, int , const Spring& spring )
 {
-    WRefVecDeriv f1 = vf1;
-    RRefVecCoord x1 = vx1;
-    RRefVecDeriv v1 = vv1;
-    WRefVecDeriv f2 = vf2;
-    RRefVecCoord x2 = vx2;
-    RRefVecDeriv v2 = vv2;
+    const int a = spring.m1;
+    const int b = spring.m2;
+    const Deriv Mdx1dx2 = dx2[b] - dx1[a];
 
-    const helper::vector<Spring>& springs= this->springs.getValue();
+    Mat Mr01, Mr10;
+    springRef[a].writeRotationMatrix ( Mr01 );
+    invertMatrix ( Mr10, Mr01 );
 
-    f1.resize(x1.size());
-    f2.resize(x2.size());
+    VecN kst ( spring.stiffnessTrans, spring.stiffnessTrans, spring.stiffnessTrans );
+    VecN ksr ( spring.stiffnessRot, spring.stiffnessRot, spring.stiffnessRot );
+
+    //compute directional force
+    VecN df0 = Mr01 * ( kst.linearProduct ( Mr10*Mdx1dx2.getVCenter() ) );
+    //compute rotational force
+    VecN dR0 = Mr01 * ( ksr.linearProduct ( Mr10* Mdx1dx2.getVOrientation() ) );
+
+    const Deriv dforce ( df0,dR0);
+
+    f1[a] += dforce;
+    f2[b] -= dforce;
+}
+
+template<class DataTypes>
+void FrameSpringForceField<DataTypes>::addForce ( VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2 )
+{
+    springRef.resize ( x1.size() );
+    f1.resize ( x1.size() );
+    f2.resize ( x2.size() );
     m_potentialEnergy = 0;
-    for (unsigned int i=0; i<this->springs.getValue().size(); i++)
+    const sofa::helper::vector<Spring>& springsVec = springs.getValue();
+    for ( unsigned int i=0; i<springsVec.size(); i++ )
     {
-        this->addSpringForce(m_potentialEnergy,f1,x1,v1,f2,x2,v2, i, springs[i]);
+        this->addSpringForce ( m_potentialEnergy,f1,x1,v1,f2,x2,v2, i, springsVec[i] );
     }
 }
 
 template<class DataTypes>
-void SpringForceField<DataTypes>::addDForce(VecDeriv&, VecDeriv&, const VecDeriv&, const VecDeriv&)
+void FrameSpringForceField<DataTypes>::addDForce ( VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2 )
 {
-    serr << "SpringForceField does not support implicit integration. Use StiffSpringForceField instead."<<sendl;
+    df1.resize ( dx1.size() );
+    df2.resize ( dx2.size() );
+
+    const sofa::helper::vector<Spring>& springsVec = springs.getValue();
+    for ( unsigned int i=0; i<springsVec.size(); i++ )
+    {
+        this->addSpringDForce ( df1,dx1,df2,dx2, i, springsVec[i] );
+    }
 }
 
-
-
 template<class DataTypes>
-void SpringForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *, double, unsigned int &)
+void FrameSpringForceField<DataTypes>::draw()
 {
-    serr << "SpringForceField does not support implicit integration. Use StiffSpringForceField instead."<<sendl;
-}
-
-
-
-template<class DataTypes>
-void SpringForceField<DataTypes>::draw()
-{
-    if (!((this->mstate1 == this->mstate2)?this->getContext()->getShowForceFields():this->getContext()->getShowInteractionForceFields())) return;
+    if ( ! ( ( this->mstate1 == this->mstate2 ) ?this->getContext()->getShowForceFields() :this->getContext()->getShowInteractionForceFields() ) ) return;
     const VecCoord& p1 = *this->mstate1->getX();
     const VecCoord& p2 = *this->mstate2->getX();
-    /*        serr<<"SpringForceField<DataTypes>::draw() "<<getName()<<sendl;
-            serr<<"SpringForceField<DataTypes>::draw(), p1.size = "<<p1.size()<<sendl;
-            serr<<"SpringForceField<DataTypes>::draw(), p1 = "<<p1<<sendl;
-            serr<<"SpringForceField<DataTypes>::draw(), p2 = "<<p2<<sendl;*/
 
-    std::vector< Vector3 > points[4];
-    bool external = (this->mstate1!=this->mstate2);
-    //if (!external)
-    //	glColor4f(1,1,1,1);
+    glDisable ( GL_LIGHTING );
+    bool external = ( this->mstate1!=this->mstate2 );
     const helper::vector<Spring>& springs = this->springs.getValue();
 
-    for (unsigned int i=0; i<springs.size(); i++)
+    for ( unsigned int i=0; i<springs.size(); i++ )
     {
-        Real d = (p2[springs[i].m2]-p1[springs[i].m1]).norm();
-        Vector3 point1,point2;
-        unsigned int sizePoints= (Coord::static_size <=3)?Coord::static_size:3;
-        for (unsigned int s=0; s<sizePoints; ++s)
+        double restLength = (springs[i].vec1.norm() + springs[i].vec2.norm());
+        Real d = ( p2[springs[i].m2].getCenter()-p1[springs[i].m1].getCenter()).norm();
+        if ( external )
         {
-            point1[s] = p1[springs[i].m1][s];
-            point2[s] = p2[springs[i].m2][s];
-        }
-        if (external)
-        {
-            if (d<springs[i].initpos*0.9999)
-            {
-                points[0].push_back(point1);
-                points[0].push_back(point2);
-            }
+            if ( d < restLength *0.9999 )
+                glColor4f ( 1,0,0,1 );
             else
-            {
-                points[1].push_back(point1);
-                points[1].push_back(point2);
-            }
+                glColor4f ( 0,1,0,1 );
         }
         else
         {
-            if (d<springs[i].initpos*0.9999)
-            {
-                points[2].push_back(point1);
-                points[2].push_back(point2);
-            }
+            if ( d < restLength *0.9999 )
+                glColor4f ( 1,0.5f,0,1 );
             else
-            {
-                points[3].push_back(point1);
-                points[3].push_back(point2);
-            }
+                glColor4f ( 0,1,0.5f,1 );
         }
+        glBegin ( GL_LINES );
+        helper::gl::glVertexT ( p1[springs[i].m1].getCenter() );
+        helper::gl::glVertexT ( p2[springs[i].m2].getCenter() );
+
+        //Debug: display fT: the virtual displacement of the spring( see the model on top of FrameSpringForceField.h
+        /*
+        glColor4f ( 1,1,1,1 );
+        helper::gl::glVertexT ( p1[springs[i].m1].getCenter() + p1[springs[i].m1].getOrientation().rotate ( springs[i].initRot1.rotate ( VecN ( springs[i].initLength/2, 0, 0 ) ) ) );
+        helper::gl::glVertexT ( p2[springs[i].m2].getCenter() + p2[springs[i].m2].getOrientation().rotate ( springs[i].initRot2.rotate ( VecN ( -springs[i].initLength/2, 0, 0 ) ) ) );
+        //*/
+        glEnd();
     }
+}
 
 
-    simulation::getSimulation()->DrawUtility.drawLines(points[0], 1, Vec<4,float>(1,0,0,1));
-    simulation::getSimulation()->DrawUtility.drawLines(points[1], 1, Vec<4,float>(0,1,0,1));
-    simulation::getSimulation()->DrawUtility.drawLines(points[2], 1, Vec<4,float>(1,0.5,0,1));
-    simulation::getSimulation()->DrawUtility.drawLines(points[3], 1, Vec<4,float>(0,1,0.5,1));
-
+template<class DataTypes>
+void FrameSpringForceField<DataTypes>::clear ( int reserve )
+{
+    helper::vector<Spring>& springs = *this->springs.beginEdit();
+    springs.clear();
+    if ( reserve ) springs.reserve ( reserve );
+    this->springs.endEdit();
 }
 
 template<class DataTypes>
-void SpringForceField<DataTypes>::handleTopologyChange(core::componentmodel::topology::Topology *topo)
+void FrameSpringForceField<DataTypes>::addSpring ( const Spring& s )
 {
-    if(this->mstate1->getContext()->getTopology() == topo)
-    {
-        core::componentmodel::topology::BaseMeshTopology*	_topology = dynamic_cast<core::componentmodel::topology::BaseMeshTopology*> (topo);
-
-        if(_topology != NULL)
-        {
-            std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itBegin=_topology->firstChange();
-            std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itEnd=_topology->lastChange();
-
-            while( itBegin != itEnd )
-            {
-                core::componentmodel::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
-
-                switch( changeType )
-                {
-                case core::componentmodel::topology::POINTSREMOVED:
-                {
-
-                    break;
-                }
-
-                default:
-                    break;
-                }; // switch( changeType )
-
-                ++itBegin;
-            } // while( changeIt != last; )
-        }
-    }
-
-    if(this->mstate2->getContext()->getTopology() == topo)
-    {
-        core::componentmodel::topology::BaseMeshTopology*	_topology = dynamic_cast<core::componentmodel::topology::BaseMeshTopology*> (topo);
-
-        if(_topology != NULL)
-        {
-            std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator changeIt=_topology->firstChange();
-            std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itEnd=_topology->lastChange();
-
-            while( changeIt != itEnd )
-            {
-                core::componentmodel::topology::TopologyChangeType changeType = (*changeIt)->getChangeType();
-
-                switch( changeType )
-                {
-                case core::componentmodel::topology::POINTSREMOVED:
-                {
-                    int nbPoints = _topology->getNbPoints();
-                    const sofa::helper::vector<unsigned int>& tab = (static_cast<const component::topology::PointsRemoved *>(*changeIt))->getArray();
-
-                    helper::vector<Spring>& springs = *this->springs.beginEdit();
-                    // springs.push_back(Spring(m1,m2,ks,kd,initpos));
-
-                    for(unsigned int i=0; i<tab.size(); ++i)
-                    {
-                        int pntId = tab[i];
-                        nbPoints -= 1;
-
-                        for(unsigned int j=0; j<springs.size(); ++j)
-                        {
-                            Spring& spring = springs[j];
-                            if(spring.m2 == pntId)
-                            {
-                                spring = springs[springs.size() - 1];
-                                springs.resize(springs.size() - 1);
-                            }
-
-                            if(spring.m2 == nbPoints)
-                            {
-                                spring.m2 = pntId;
-                            }
-                        }
-                    }
-
-                    this->springs.endEdit();
-
-                    break;
-                }
-
-                default:
-                    break;
-                }; // switch( changeType )
-
-                ++changeIt;
-            } // while( changeIt != last; )
-        }
-    }
+    springs.beginEdit()->push_back ( s );
+    springs.endEdit();
 }
 
-
-template <class DataTypes>
-void SpringForceField<DataTypes>::updateMaskStatus()
-{
-    if (this->getMechModel1() == this->getMechModel2()) maskInUse = false;
-    else
-    {
-        if (springs.getValue().size() < 0.5*this->getMechModel1()->getSize() ||
-            springs.getValue().size() < 0.5*this->getMechModel2()->getSize() ) maskInUse = true;
-        else maskInUse=false;
-    }
-}
 
 template<class DataTypes>
-bool SpringForceField<DataTypes>::useMask()
+void FrameSpringForceField<DataTypes>::addSpring ( int m1, int m2, Real softKst, Real softKsr, Real kd )
 {
-    return maskInUse;
+    Spring s ( m1,m2,softKst,softKsr, kd );
+    //TODO// Init vec1 et vec2. Encore mieux a la creation du ressort mais il manque les positions des DOFs...
+//const MechanicalState<DataTypes> obj1 = *(getMState1());
+//const MechanicalState<DataTypes> obj2 = *(getMState2());
+
+    springs.beginEdit()->push_back ( s );
+    springs.endEdit();
 }
 
 } // namespace forcefield
@@ -363,3 +240,4 @@ bool SpringForceField<DataTypes>::useMask()
 } // namespace sofa
 
 #endif
+
