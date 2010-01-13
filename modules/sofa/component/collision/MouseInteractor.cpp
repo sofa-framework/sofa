@@ -63,8 +63,7 @@ template class SOFA_COMPONENT_COLLISION_API MouseInteractor<defaulttype::Rigid3f
 #endif
 #ifndef SOFA_FLOAT
 template class SOFA_COMPONENT_COLLISION_API MouseInteractor<defaulttype::Vec3dTypes>;
-template class SOFA_COMPONENT_COLLISION_API MouseInteractor<defaulttype::Rigid3fTypes>;
-
+template class SOFA_COMPONENT_COLLISION_API MouseInteractor<defaulttype::Rigid3dTypes>;
 #endif
 
 
