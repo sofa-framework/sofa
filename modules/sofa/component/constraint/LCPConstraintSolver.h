@@ -248,7 +248,7 @@ public:
     bool solveSystem(double dt, VecId);
     bool applyCorrection(double dt, VecId);
 
-
+    void draw();
 
 
     Data<bool> displayTime;
@@ -261,10 +261,16 @@ public:
     Data<int>  multi_grid_levels;
     Data<int>  merge_method;
     Data<int>  merge_spatial_step;
+    Data<int>  merge_local_levels;
 
     Data < helper::set<int> > constraintGroups;
 
     Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
+
+    Data<int> showLevels;
+    Data<double> showCellWidth;
+    Data<defaulttype::Vector3> showTranslation;
+    Data<defaulttype::Vector3> showLevelTranslation;
 
     LCP* getLCP();
     void lockLCP(LCP* l1, LCP* l2=0); ///< Do not use the following LCPs until the next call to this function. This is used to prevent concurent access to the LCP when using a LCPForceFeedback through an haptic thread
@@ -346,11 +352,11 @@ private:
     std::map<core::componentmodel::behavior::BaseConstraint*, ConstraintBlockBuf> _previousConstraints;
     helper::vector< double > _previousForces;
 
-    VecConstraintBlockInfo _constraintBlockInfo;
-    VecPersistentID _constraintIds;
-    VecConstCoord _constraintPositions;
-    VecConstDeriv _constraintDirections;
-    VecConstArea _constraintAreas;
+    helper::vector< VecConstraintBlockInfo > hierarchy_constraintBlockInfo;
+    helper::vector< VecPersistentID > hierarchy_constraintIds;
+    helper::vector< VecConstCoord > hierarchy_constraintPositions;
+    helper::vector< VecConstDeriv > hierarchy_constraintDirections;
+    helper::vector< VecConstArea > hierarchy_constraintAreas;
 
     // for gaussseidel_unbuilt
     helper::vector< helper::LocalBlock33 > unbuilt_W33;
