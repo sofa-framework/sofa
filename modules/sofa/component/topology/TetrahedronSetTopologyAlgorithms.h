@@ -68,15 +68,16 @@ public:
     virtual void init();
 
     void removeTetra(sofa::helper::vector<TetraID>& ind_ta);
-    void subDivideTetrahedronsAlongWithPlane() {};
-    void subDivideTetrahedronAlongWithPlane(TetraID ind_ta, sofa::defaulttype::Vec<3,Real>& c, sofa::defaulttype::Vec<3,Real>& normal);
-    void subDivideTetrahedronsAlongWithPlane(sofa::helper::vector<TetraID>& ind_ta, sofa::defaulttype::Vec<3,Real>& c, sofa::defaulttype::Vec<3,Real>& normal, SeqTetrahedra& subTetra);
+
+    void subDivideTetrahedronsWithPlane(sofa::helper::vector<Coord>& intersectedPoints, sofa::helper::vector<EdgeID>& intersectedEdgeID, Coord planePos, Coord planeNormal);
+    int subDivideTetrahedronWithPlane(TetraID tetraIdx, sofa::helper::vector<EdgeID>& intersectedEdgeID, sofa::helper::vector<unsigned int>& intersectedPointID, Coord planeNormal, sofa::helper::vector<Tetra>& toBeAddedTetra);
+
 
 private:
     TetrahedronSetTopologyContainer*					m_container;
     TetrahedronSetTopologyModifier*						m_modifier;
     TetrahedronSetGeometryAlgorithms< DataTypes >*		m_geometryAlgorithms;
-    sofa::core::componentmodel::behavior::MechanicalState<DataTypes>* m_mstat;
+    unsigned int	m_intialNbPoints;
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETTOPOLOGYALGORITHMS_CPP)
