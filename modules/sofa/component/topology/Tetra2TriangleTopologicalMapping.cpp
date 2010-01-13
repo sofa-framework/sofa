@@ -278,14 +278,100 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                         }
                         else
                         {
-
                             sout << "INFO_print : Tetra2TriangleTopologicalMapping - Glob2LocMap should have the visible triangle " << tab[i] << sendl;
                             sout << "INFO_print : Tetra2TriangleTopologicalMapping - nb triangles = " << ind_last << sendl;
+
+                            std::map<unsigned int, unsigned int>::iterator iter_2 = Glob2LocMap.find(last);
+                            if(iter_2 != Glob2LocMap.end())
+                            {
+
+                                ind_real_last = Glob2LocMap[last];
+                                Glob2LocMap.erase(Glob2LocMap.find(last));
+                                Glob2LocMap[k] = ind_real_last;
+                                Loc2GlobVec[ind_real_last]=k;
+                            }
                         }
 
                         --last;
                     }
+                    break;
+                }
 
+                case core::componentmodel::topology::TRIANGLESADDED:
+                {
+                    const sofa::helper::vector<unsigned int> &tab = ( static_cast< const TrianglesAdded *>( *itBegin ) )->getArray();
+
+                    const sofa::helper::vector<Tetrahedron> &tetrahedronArray=fromModel->getTetrahedra();
+                    sofa::helper::vector< Triangle > triangles_to_create;
+                    sofa::helper::vector< unsigned int > trianglesIndexList;
+                    int nb_elems = toModel->getNbTriangles();
+                    int nb_tris= fromModel->getNbTriangles();
+
+                    for (unsigned int i = 0; i <tab.size(); ++i)
+                    {
+                        Triangle t;
+                        t=fromModel->getTriangle(tab[i]);
+                        const TetrahedraAroundTriangle tetraId=fromModel->getTetrahedraAroundTriangle(tab[i]);
+
+                        if(tetraId.size()==1)
+                        {
+                            std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(tab[i]);
+                            if(iter_1 != Glob2LocMap.end() )
+                            {
+                                serr << "INFO_print : Tetra2TriangleTopologicalMapping - fail to add triangle " << tab[i] << "which already exists" << sendl;
+                            }
+                            else
+                            {
+                                Tetrahedron te=tetrahedronArray[tetraId[0]];
+
+                                for(int j=0; j<4; j++)
+                                {
+                                    bool flag=true;
+                                    for(int k=0; k<3; k++)
+                                    {
+                                        if(t[k]==te[j])
+                                        {
+                                            flag=false;
+                                            break;
+                                        }
+                                    }
+                                    if(flag)
+                                    {
+                                        if ((j%2))
+                                        {
+                                            t[0]=(int)(te[(j+1)%4]); t[1]=(int)(te[(j+2)%4]); t[2]=(int)(te[(j+3)%4]);
+                                        }
+                                        else
+                                        {
+                                            t[0]=(int)(te[(j+1)%4]); t[2]=(int)(te[(j+2)%4]); t[1]=(int)(te[(j+3)%4]);
+                                        }
+                                        if(flipNormals.getValue()==true)
+                                        {
+                                            unsigned int temp=t[2];
+                                            t[2]=t[1];
+                                            t[1]=temp;
+                                        }
+                                    }
+                                }
+
+                                // sort t such that t[0] is the smallest one
+                                while ((t[0]>t[1]) || (t[0]>t[2]))
+                                {
+                                    int val=t[0]; t[0]=t[1]; t[1]=t[2]; t[2]=val;
+                                }
+
+                                triangles_to_create.push_back(t);
+                                trianglesIndexList.push_back(nb_elems);
+                                nb_elems+=1;
+
+                                Loc2GlobVec.push_back(tab[i]);
+                                Glob2LocMap[tab[i]]=Loc2GlobVec.size()-1;
+                            }
+                        }
+                    }
+
+                    to_tstm->addTrianglesProcess(triangles_to_create) ;
+                    to_tstm->addTrianglesWarning(triangles_to_create.size(), triangles_to_create, trianglesIndexList) ;
                     break;
                 }
 
@@ -293,99 +379,109 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                 {
                     //sout << "INFO_print : Tetra2TriangleTopologicalMapping - TETRAHEDRAREMOVED" << sendl;
 
-                    if ((fromModel) && (noNewTriangles.getValue()==false))
-                    {
+                    /*	if ((fromModel) && (noNewTriangles.getValue()==false)) {
 
-                        const sofa::helper::vector<Tetrahedron> &tetrahedronArray=fromModel->getTetrahedra();
+                    		const sofa::helper::vector<Tetrahedron> &tetrahedronArray=fromModel->getTetrahedra();
+                    		const sofa::helper::vector<unsigned int> &tab = ( static_cast< const TetrahedraRemoved *>( *itBegin ) )->getArray();
+                    		sofa::helper::vector< unsigned int > triangles_to_remove;
 
-                        const sofa::helper::vector<unsigned int> &tab = ( static_cast< const TetrahedraRemoved *>( *itBegin ) )->getArray();
+                    		int last;
+                    		int ind_last;
+                    		last= fromModel->getNbTriangles() - 1;
+                    		unsigned int ind_tmp;
+                    		unsigned int ind_real_last;
+                    		ind_last=toModel->getNbTriangles();
 
-                        sofa::helper::vector< Triangle > triangles_to_create;
-                        sofa::helper::vector< unsigned int > trianglesIndexList;
-                        int nb_elems = toModel->getNbTriangles();
+                    		for (unsigned int i = 0; i < tab.size(); ++i)
+                    		{
 
-                        for (unsigned int i = 0; i < tab.size(); ++i)
-                        {
+                    			for (unsigned int j = 0; j < 4; ++j)
+                    			{
+                    				unsigned int k = (fromModel->getTrianglesInTetrahedron(tab[i]))[j];
 
-                            for (unsigned int j = 0; j < 4; ++j)
-                            {
-                                unsigned int k = (fromModel->getTrianglesInTetrahedron(tab[i]))[j];
+                    				std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(k);
+                    				if(iter_1 != Glob2LocMap.end() )
+                    				{
+                    					bool flag=true;
+                    					for(unsigned int l=0;l<triangles_to_remove.size();l++)
+                    					{
+                    						if(triangles_to_remove[l]==k)
+                    							flag=false;
+                    					}
+                    					if(flag)
+                    						triangles_to_remove.push_back(k);
+                    				}
+                    				else
+                    				{
+                    					sout << "INFO_print : Tetra2TriangleTopologicalMapping - fail to remove triangle " << k << "which is not exists" << sendl;
+                    				}
+                    			}
+                    		}
 
-                                if (fromModel->getTetrahedraAroundTriangle(k).size()==1)   // remove as visible the triangle indexed by k
-                                {
+                    		for(unsigned int i=0;i<triangles_to_remove.size();i++)
+                    		{
+                    			unsigned int k = triangles_to_remove[i];
+                    			unsigned int ind_k;
 
-                                    // do nothing
+                    			std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(k);
+                    			if(iter_1 != Glob2LocMap.end()) {
 
-                                }
-                                else   // fromModel->getTetrahedraAroundTriangle(k).size()==2 // add as visible the triangle indexed by k
-                                {
+                    				ind_last = ind_last - 1;
 
-                                    unsigned int ind_test;
-                                    if(tab[i] == fromModel->getTetrahedraAroundTriangle(k)[0])
-                                    {
+                    				ind_k = Glob2LocMap[k];
+                    				ind_real_last = ind_k;
 
-                                        ind_test = fromModel->getTetrahedraAroundTriangle(k)[1];
+                    				std::map<unsigned int, unsigned int>::iterator iter_2 = Glob2LocMap.find(last);
+                    				if(iter_2 != Glob2LocMap.end()) {
 
-                                    }
-                                    else   // tab[i] == fromModel->getTetrahedraAroundTriangle(k)[1]
-                                    {
+                    					ind_real_last = Glob2LocMap[last];
 
-                                        ind_test = fromModel->getTetrahedraAroundTriangle(k)[0];
-                                    }
+                    					if((int) k != last){
 
-                                    bool is_present = false;
-                                    unsigned int k0 = 0;
-                                    /** HD may be a buf here k0<tab.size() */
-                                    while((!is_present) && k0 < i)
-                                    {
-                                        is_present = (ind_test == tab[k0]);
-                                        k0+=1;
-                                    }
-                                    if(!is_present)
-                                    {
+                    						Glob2LocMap.erase(Glob2LocMap.find(k));
+                    						Glob2LocMap[k] = ind_real_last;
 
-                                        Triangle t;
+                    						Glob2LocMap.erase(Glob2LocMap.find(last));
+                    						Glob2LocMap[last] = ind_k;
 
-                                        const Tetrahedron &te=tetrahedronArray[ind_test];
-                                        int h = fromModel->getTriangleIndexInTetrahedron(fromModel->getTrianglesInTetrahedron(ind_test),k);
+                    						ind_tmp = Loc2GlobVec[ind_real_last];
+                    						Loc2GlobVec[ind_real_last] = Loc2GlobVec[ind_k];
+                    						Loc2GlobVec[ind_k] = ind_tmp;
+                    					}
+                    				}
 
-                                        if ((h%2) && (flipNormals.getValue()==false))
-                                        {
-                                            t[0]=(int)(te[(h+1)%4]); t[1]=(int)(te[(h+2)%4]); t[2]=(int)(te[(h+3)%4]);
-                                        }
-                                        else
-                                        {
-                                            t[0]=(int)(te[(h+1)%4]); t[2]=(int)(te[(h+2)%4]); t[1]=(int)(te[(h+3)%4]);
-                                        }
+                    				if((int) ind_k != ind_last){
 
-                                        // sort t such that t[0] is the smallest one
-                                        while ((t[0]>t[1]) || (t[0]>t[2]))
-                                        {
-                                            int val=t[0]; t[0]=t[1]; t[1]=t[2]; t[2]=val;
-                                        }
+                    					Glob2LocMap.erase(Glob2LocMap.find(Loc2GlobVec[ind_last]));
+                    					Glob2LocMap[Loc2GlobVec[ind_last]] = ind_k;
 
-                                        triangles_to_create.push_back(t);
-                                        trianglesIndexList.push_back(nb_elems);
-                                        nb_elems+=1;
+                    					Glob2LocMap.erase(Glob2LocMap.find(Loc2GlobVec[ind_k]));
+                    					Glob2LocMap[Loc2GlobVec[ind_k]] = ind_last;
 
-                                        Loc2GlobVec.push_back(k);
-                                        std::map<unsigned int, unsigned int>::iterator iter_1 = Glob2LocMap.find(k);
-                                        if(iter_1 != Glob2LocMap.end() )
-                                        {
-                                            sout << "INFO_print : Tetra2TriangleTopologicalMapping - fail to add triangle " << k << "which already exists" << sendl;
-                                            Glob2LocMap.erase(Glob2LocMap.find(k));
-                                        }
-                                        Glob2LocMap[k]=Loc2GlobVec.size()-1;
-                                    }
-                                }
-                            }
-                        }
+                    					ind_tmp = Loc2GlobVec[ind_k];
+                    					Loc2GlobVec[ind_k] = Loc2GlobVec[ind_last];
+                    					Loc2GlobVec[ind_last] = ind_tmp;
 
-                        to_tstm->addTrianglesProcess(triangles_to_create) ;
-                        to_tstm->addTrianglesWarning(triangles_to_create.size(), triangles_to_create, trianglesIndexList) ;
+                    				}
 
-                    }
+                    				Glob2LocMap.erase(Glob2LocMap.find(Loc2GlobVec[Loc2GlobVec.size() - 1]));
+                    				Loc2GlobVec.resize( Loc2GlobVec.size() - 1 );
 
+                    				sofa::helper::vector< unsigned int > triangle_to_remove;
+                    				triangle_to_remove.push_back(ind_k);
+
+                    				TriangleSetTopologyModifier *triangleMod;
+                    				toModel->getContext()->get(triangleMod);
+                    				triangleMod->removeTriangles(triangle_to_remove, true, false);
+
+                    			}else{
+
+                    				sout << "INFO_print : Tetra2TriangleTopologicalMapping - Glob2LocMap should have the visible triangle " << k << sendl;
+                    				sout << "INFO_print : Tetra2TriangleTopologicalMapping - nb triangles = " << ind_last << sendl;
+                    			}
+                    			--last;
+                    		}
+                    	}*/
                     break;
                 }
 

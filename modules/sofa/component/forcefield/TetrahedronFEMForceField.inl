@@ -167,6 +167,7 @@ void TetrahedronFEMForceField<DataTypes>::computeStiffnessMatrix( StiffnessMatri
     SR = S*RRt;
 }
 
+
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(int i, Index&a, Index&b, Index&c, Index&d)
 {

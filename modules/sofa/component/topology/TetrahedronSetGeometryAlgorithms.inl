@@ -434,6 +434,22 @@ bool TetrahedronSetGeometryAlgorithms<DataTypes>::computeIntersectionEdgeWithPla
         return false;
 }
 
+template <typename DataTypes>
+bool TetrahedronSetGeometryAlgorithms<DataTypes>::checkNodeSequence(Tetra& tetra)
+{
+    const typename DataTypes::VecCoord& vect_c = *(this->object->getX0());
+    Vec<3,Real> vec[3];
+    for(int i=1; i<4; i++)
+    {
+        vec[i-1]=vect_c[tetra[i]]-vect_c[tetra[0]];
+        vec[i-1].normalize();
+    }
+    Real dotProduct=(vec[1].cross(vec[0]))*vec[2];
+    if(dotProduct<0)
+        return true;
+    else
+        return false;
+}
 
 /// Write the current mesh into a msh file
 template <typename DataTypes>

@@ -97,6 +97,7 @@ public:
     Coord computeEdgeCenter(const EdgeID i) const;
 
     Coord computeEdgeDirection(const EdgeID i) const;
+    Coord computeRestEdgeDirection(const EdgeID i) const;
 
     void getEdgeVertexCoordinates(const EdgeID i, Coord[2]) const;
 
@@ -107,6 +108,7 @@ public:
 
     // compute barycentric coefficients
     sofa::helper::vector< double > compute2PointsBarycoefs(const Vec<3,double> &p, unsigned int ind_p1, unsigned int ind_p2) const;
+    sofa::helper::vector< double > computeRest2PointsBarycoefs(const Vec<3,double> &p, unsigned int ind_p1, unsigned int ind_p2) const;
 
     /** \brief Compute the projection coordinate of a point C on the edge i. Using compute2EdgesIntersection().
      * @param i edgeID on which point is projected.
@@ -123,6 +125,8 @@ public:
      * @return Coord of intersection point, 0 if no intersection.
      */
     Coord compute2EdgesIntersection (const Coord edge1[2], const Coord edge2[2], bool& intersected);
+
+    bool computeEdgePlaneIntersection (EdgeID edgeID, Vec<3,Real> pointOnPlane, Vec<3,Real> normalOfPlane, Vec<3,Real>& intersection);
 
     void writeMSHfile(const char *filename) const;
 

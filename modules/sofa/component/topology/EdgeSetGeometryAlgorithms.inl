@@ -129,6 +129,14 @@ typename DataTypes::Coord EdgeSetGeometryAlgorithms<DataTypes>::computeEdgeDirec
     return (p[e[1]] - p[e[0]]);
 }
 
+template<class DataTypes>
+typename DataTypes::Coord EdgeSetGeometryAlgorithms<DataTypes>::computeRestEdgeDirection(const EdgeID i) const
+{
+    const Edge &e = this->m_topology->getEdge(i);
+    const typename DataTypes::VecCoord& p = *(this->object->getX0());
+    return (p[e[1]] - p[e[0]]);
+}
+
 // test if a point is on the triangle indexed by ind_e
 template<class DataTypes>
 bool EdgeSetGeometryAlgorithms<DataTypes>::isPointOnEdge(const sofa::defaulttype::Vec<3,double> &pt, const unsigned int ind_e) const
@@ -245,6 +253,45 @@ bool is_point_on_edge(const Vec& p, const Vec& a, const Vec& b)
         return false;
 }
 
+template<class DataTypes>
+sofa::helper::vector< double > EdgeSetGeometryAlgorithms<DataTypes>::computeRest2PointsBarycoefs(
+    const Vec<3,double> &p,
+    unsigned int ind_p1,
+    unsigned int ind_p2) const
+{
+    const double ZERO = 1e-6;
+
+    sofa::helper::vector< double > baryCoefs;
+
+    const typename DataTypes::VecCoord& vect_c = *(this->object->getX0());
+    const typename DataTypes::Coord& c0 = vect_c[ind_p1];
+    const typename DataTypes::Coord& c1 = vect_c[ind_p2];
+
+    Vec<3,double> a; DataTypes::get(a[0], a[1], a[2], c0);
+    Vec<3,double> b; DataTypes::get(b[0], b[1], b[2], c1);
+
+    double dis = (b - a).norm();
+    double coef_a, coef_b;
+
+
+    if(dis < ZERO)
+    {
+        coef_a = 0.5;
+        coef_b = 0.5;
+    }
+    else
+    {
+        coef_a = (p - b).norm() / dis;
+        coef_b = (p - a).norm() / dis;
+    }
+
+    baryCoefs.push_back(coef_a);
+    baryCoefs.push_back(coef_b);
+
+    return baryCoefs;
+
+}
+
 template<class Vec>
 sofa::helper::vector< double > compute_2points_barycoefs(const Vec& p, const Vec& a, const Vec& b)
 {
@@ -320,7 +367,30 @@ sofa::helper::vector< double > EdgeSetGeometryAlgorithms<DataTypes>::computePoin
 
 }
 
+template<class DataTypes>
+bool EdgeSetGeometryAlgorithms<DataTypes>::computeEdgePlaneIntersection (EdgeID edgeID, Vec<3,Real> pointOnPlane, Vec<3,Real> normalOfPlane, Vec<3,Real>& intersection)
+{
+    const Edge &e = this->m_topology->getEdge(edgeID);
+    const VecCoord& p = *(this->object->getX0());
 
+    Vec<3,Real> p1,p2;
+    p1[0]=p[e[0]][0]; p1[1]=p[e[0]][1]; p1[2]=p[e[0]][2];
+    p2[0]=p[e[1]][0]; p2[1]=p[e[1]][1]; p2[2]=p[e[1]][2];
+
+    //plane equation
+    normalOfPlane.normalize();
+    double d=normalOfPlane*pointOnPlane;
+    double t=(d-normalOfPlane*p1)/(normalOfPlane*(p2-p1));
+
+    if((t<1)&&(t>0))
+    {
+        intersection=p1+(p2-p1)*t;
+        return true;
+    }
+    else
+        return false;
+
+}
 
 
 template<class DataTypes>

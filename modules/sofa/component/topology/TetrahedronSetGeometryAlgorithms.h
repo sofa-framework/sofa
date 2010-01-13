@@ -115,6 +115,8 @@ public:
     /// finds the intersection point between edge and plane
     bool computeIntersectionEdgeWithPlane(Vec<3,Real>& p1, Vec<3,Real>& p2, Vec<3,Real>& c, Vec<3,Real>& normal, Vec<3,Real>& intersection);
 
+    bool checkNodeSequence(Tetra& tetra);
+
 protected:
     Data<bool> debugViewTetrahedraIndices;
     Data<bool> _draw;
