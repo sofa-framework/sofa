@@ -81,7 +81,8 @@ void DeleteVisitor::processNodeBottomUp(Node* node)
     {
         core::objectmodel::BaseObject* object = *node->object.begin();
         node->removeObject(object);
-        delete object;
+        if (object != (core::objectmodel::BaseObject*)getSimulation())
+            delete object;
     }
 }
 
