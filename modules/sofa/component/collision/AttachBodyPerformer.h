@@ -27,7 +27,7 @@
 
 #include "InteractionPerformer.h"
 #include "BarycentricContactMapper.h"
-#include <sofa/core/componentmodel/behavior/BaseforceField.h>
+#include <sofa/core/componentmodel/behavior/BaseForceField.h>
 
 namespace sofa
 {

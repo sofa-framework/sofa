@@ -165,8 +165,8 @@ void AttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& picked)
         }
     }
 
-    forcefield = new StiffSpringForceField<DataTypes>(dynamic_cast<MouseContainer*>(this->interactor->getMouseContainer()), mstateCollision);
-    StiffSpringForceField<DataTypes>* stiffspringforcefield = static_cast<StiffSpringForceField<DataTypes>*>(forcefield);
+    forcefield = new sofa::component::forcefield::StiffSpringForceField<DataTypes>(dynamic_cast<MouseContainer*>(this->interactor->getMouseContainer()), mstateCollision);
+    sofa::component::forcefield::StiffSpringForceField<DataTypes>* stiffspringforcefield = static_cast<StiffSpringForceField<DataTypes>*>(forcefield);
     stiffspringforcefield->setName("Spring-Mouse-Contact");
 
     stiffspringforcefield->addSpring(0,index, stiffness, 0.0, picked.dist);
