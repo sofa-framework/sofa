@@ -154,7 +154,7 @@ void LCP::setLCP(unsigned int input_dim, double *input_dfree, double **input_W, 
 
 }
 
-void LCP::solveNLCP(bool convergenceTest, std::vector<double>* residuals)
+void LCP::solveNLCP(bool convergenceTest, std::vector<double>* residuals, std::vector<double>* violations)
 {
     //double error;
     double f_1[3],dn, ds, dt;
@@ -162,7 +162,7 @@ void LCP::solveNLCP(bool convergenceTest, std::vector<double>* residuals)
     const bool computeError = (convergenceTest || residuals);
     for (it=0; it<numItMax; it++)
     {
-        error =0;
+        error = 0;
         for (int c=0;  c<numContacts ; c++)
         {
             f_1[0] = f[3*c]; f_1[1] = f[3*c+1]; f_1[2] = f[3*c+2];
@@ -235,6 +235,23 @@ void LCP::solveNLCP(bool convergenceTest, std::vector<double>* residuals)
             }
         }
         if (residuals) residuals->push_back(error);
+        if (violations)
+        {
+            double sum_d = 0;
+            for (int c=0;  c<numContacts ; c++)
+            {
+                dn = dfree[3*c];  //dt = dfree[3*c+1]; ds = dfree[3*c+2];
+                for (int i=0; i<dim; i++)
+                {
+                    dn += W[3*c  ][i]*f[i];
+                    //dt += W[3*c+1][i]*f[i];
+                    //ds += W[3*c+2][i]*f[i];
+                }
+                if (dn < 0)
+                    sum_d += -dn;
+            }
+            violations->push_back(sum_d);
+        }
 
         if (convergenceTest && error < tol*(numContacts+1))
         {
@@ -1418,7 +1435,7 @@ struct listSortAscending
 ///                contact_is_projected => (size= fine level) => for each contact at the fine level, tell if the contact is projected or not
 
 
-void projection (LCP &fineLevel, LCP &coarseLevel, int nbContactsCoarse , const std::vector<int> &projectionTable, std::vector<double> & /*projectionValues*/, std::vector<bool> &contact_is_projected, bool verbose)
+void projection(LCP &fineLevel, LCP &coarseLevel, int nbContactsCoarse, const std::vector<int> &projectionTable, const std::vector<int> &projectionConstraints, std::vector<double> & projectionValues, std::vector<bool> &contact_is_projected, bool verbose)
 
 {
     // preliminary step: set values to 0
@@ -1459,7 +1476,6 @@ void projection (LCP &fineLevel, LCP &coarseLevel, int nbContactsCoarse , const 
 
     for (int c1=0; c1<numContactFine; c1++)
     {
-        size_of_group[projectionTable[c1]] +=1;
         dn=fineLevel.getDfree()[3*c1];
         for (int i=0; i<(int)fineLevel.getDim(); i++)
         {
@@ -1470,6 +1486,7 @@ void projection (LCP &fineLevel, LCP &coarseLevel, int nbContactsCoarse , const 
         if (fineLevel.getF()[3*c1] > 0 || dn < 0)  //contact actif uniquement ???
         {
             contact_is_projected[c1]= true;
+            size_of_group[projectionTable[c1]] +=1;
             group_has_projection[projectionTable[c1]]=true;
         }
         else
@@ -1487,11 +1504,11 @@ void projection (LCP &fineLevel, LCP &coarseLevel, int nbContactsCoarse , const 
         {
             std::cout<<"WARNING ! NO PROJECTION FOR GROUP "<<g<<" projection of the closest contact"<<std::endl;
 
-            double dmin = 9.9e99;
+            double dmin = 0.0;
             int projected_contact=-1;
             for (int c1=0; c1<numContactFine; c1++)
             {
-                if (projectionTable[c1]==g && dmin > fineLevel.getD()[3*c1] )
+                if (projectionTable[c1]==g && (projected_contact == -1 || dmin > fineLevel.getD()[3*c1] ))
                 {
                     dmin = fineLevel.getD()[3*c1];
                     projected_contact = c1;
@@ -1502,8 +1519,7 @@ void projection (LCP &fineLevel, LCP &coarseLevel, int nbContactsCoarse , const 
             if (projected_contact >=0)
             {
                 group_has_projection[g]=true;
-
-
+                size_of_group[g] +=1;
             }
             else
             {
@@ -1517,45 +1533,45 @@ void projection (LCP &fineLevel, LCP &coarseLevel, int nbContactsCoarse , const 
 
 
     // STEP 3: set up the new coarse LCP
-
+    double** fineW = fineLevel.getW();
+    double** coarseW = coarseLevel.getW();
     for (int c1=0; c1<numContactFine; c1++)
     {
         if (contact_is_projected[c1])
         {
 
             int group = projectionTable[c1];
-
+            int g_n_id = projectionConstraints[3*c1  ]; double g_n_f = projectionValues[3*c1  ];
+            int g_t_id = projectionConstraints[3*c1+1]; double g_t_f = projectionValues[3*c1+1];
+            int g_s_id = projectionConstraints[3*c1+2]; double g_s_f = projectionValues[3*c1+2];
             ////////////
             // on calcule le système grossier
             ////////////
-            coarseLevel.getDfree()[3*group  ] += fineLevel.getDfree()[3*c1  ]; //projectionValues[c1] * fineLevel.getDfree()[3*c1  ];
-            coarseLevel.getDfree()[3*group+1] += fineLevel.getDfree()[3*c1+1];
-            coarseLevel.getDfree()[3*group+2] += fineLevel.getDfree()[3*c1+2];
+            coarseLevel.getDfree()[g_n_id] += fineLevel.getDfree()[3*c1  ] * g_n_f;
+            coarseLevel.getDfree()[g_t_id] += fineLevel.getDfree()[3*c1+1] * g_t_f;
+            coarseLevel.getDfree()[g_s_id] += fineLevel.getDfree()[3*c1+2] * g_s_f;
 
-
-            coarseLevel.getF_1()[3*group  ] += fineLevel.getF()[3*c1  ]/size_of_group[group];
-            coarseLevel.getF_1()[3*group+1] += fineLevel.getF()[3*c1+1]/size_of_group[group];
-            coarseLevel.getF_1()[3*group+2] += fineLevel.getF()[3*c1+2]/size_of_group[group];
-            coarseLevel.getF()[3*group  ]   += fineLevel.getF()[3*c1  ]/size_of_group[group];
-            coarseLevel.getF()[3*group+1]   += fineLevel.getF()[3*c1+1]/size_of_group[group];
-            coarseLevel.getF()[3*group+2]   += fineLevel.getF()[3*c1+2]/size_of_group[group];
-
+            coarseLevel.getF_1()[g_n_id] += fineLevel.getF()[3*c1  ] * g_n_f/size_of_group[group];
+            coarseLevel.getF_1()[g_t_id] += fineLevel.getF()[3*c1+1] * g_t_f/size_of_group[group];
+            coarseLevel.getF_1()[g_s_id] += fineLevel.getF()[3*c1+2] * g_s_f/size_of_group[group];
+            coarseLevel.getF()[g_n_id]   += fineLevel.getF()[3*c1  ] * g_n_f/size_of_group[group];
+            coarseLevel.getF()[g_t_id]   += fineLevel.getF()[3*c1+1] * g_t_f/size_of_group[group];
+            coarseLevel.getF()[g_s_id]   += fineLevel.getF()[3*c1+2] * g_s_f/size_of_group[group];
 
             for (int c2=0; c2<numContactFine; c2++)
             {
                 if (contact_is_projected[c2])
                 {
-                    int group2 = projectionTable[c2];
+                    //int group2 = projectionTable[c2];
+                    int g_n2_id = projectionConstraints[3*c2  ]; double g_n2_f = projectionValues[3*c2  ];
+                    int g_t2_id = projectionConstraints[3*c2+1]; double g_t2_f = projectionValues[3*c2+1];
+                    int g_s2_id = projectionConstraints[3*c2+2]; double g_s2_f = projectionValues[3*c2+2];
 
-                    coarseLevel.getW()[3*group  ][3*group2] += fineLevel.getW()[3*c1  ][3*c2];   coarseLevel.getW()[3*group  ][3*group2+1] += fineLevel.getW()[3*c1  ][3*c2+1];   coarseLevel.getW()[3*group  ][3*group2+2] += fineLevel.getW()[3*c1  ][3*c2+2];
-                    coarseLevel.getW()[3*group+1][3*group2] += fineLevel.getW()[3*c1+1][3*c2];   coarseLevel.getW()[3*group+1][3*group2+1] += fineLevel.getW()[3*c1+1][3*c2+1];   coarseLevel.getW()[3*group+1][3*group2+2] += fineLevel.getW()[3*c1+1][3*c2+2];
-                    coarseLevel.getW()[3*group+2][3*group2] += fineLevel.getW()[3*c1+2][3*c2];   coarseLevel.getW()[3*group+2][3*group2+1] += fineLevel.getW()[3*c1+2][3*c2+1];   coarseLevel.getW()[3*group+2][3*group2+2] += fineLevel.getW()[3*c1+2][3*c2+2];
-
+                    coarseW[g_n_id][g_n2_id] += fineW[3*c1  ][3*c2  ]*g_n_f*g_n2_f;   coarseW[g_n_id][g_t2_id] += fineW[3*c1  ][3*c2+1]*g_n_f*g_t2_f;   coarseW[g_n_id][g_s2_id] += fineW[3*c1  ][3*c2+2]*g_n_f*g_s2_f;
+                    coarseW[g_t_id][g_n2_id] += fineW[3*c1+1][3*c2  ]*g_t_f*g_n2_f;   coarseW[g_t_id][g_t2_id] += fineW[3*c1+1][3*c2+1]*g_t_f*g_t2_f;   coarseW[g_t_id][g_s2_id] += fineW[3*c1+1][3*c2+2]*g_t_f*g_s2_f;
+                    coarseW[g_s_id][g_n2_id] += fineW[3*c1+2][3*c2  ]*g_s_f*g_n2_f;   coarseW[g_s_id][g_t2_id] += fineW[3*c1+2][3*c2+1]*g_s_f*g_t2_f;   coarseW[g_s_id][g_s2_id] += fineW[3*c1+2][3*c2+2]*g_s_f*g_s2_f;
                 }
-
             }
-
-
         }
     }
 
@@ -1573,7 +1589,7 @@ void projection (LCP &fineLevel, LCP &coarseLevel, int nbContactsCoarse , const 
 /// all parameters as input
 /// output=> change value of F in fineLevel
 
-void prolongation(LCP &fineLevel, LCP &coarseLevel, const std::vector<int> &projectionTable, std::vector<double> & /*projectionValues*/, std::vector<bool> &contact_is_projected, bool verbose)
+void prolongation(LCP &fineLevel, LCP &coarseLevel, const std::vector<int> &projectionTable, const std::vector<int> &projectionConstraints, std::vector<double> & projectionValues, std::vector<bool> &contact_is_projected, bool verbose)
 
 {
 
@@ -1589,10 +1605,14 @@ void prolongation(LCP &fineLevel, LCP &coarseLevel, const std::vector<int> &proj
     {
         if (contact_is_projected[c1])
         {
-            int group = projectionTable[c1];
-            fineLevel.getF()[3*c1  ]  +=  ( coarseLevel.getF()[3*group]   - coarseLevel.getF_1()[3*group] );
-            fineLevel.getF()[3*c1+1]  +=  ( coarseLevel.getF()[3*group+1] - coarseLevel.getF_1()[3*group+1] );
-            fineLevel.getF()[3*c1+2]  +=  ( coarseLevel.getF()[3*group+2] - coarseLevel.getF_1()[3*group+2] );
+            //int group = projectionTable[c1];
+            int g_n_id = projectionConstraints[3*c1  ]; double g_n_f = projectionValues[3*c1  ];
+            int g_t_id = projectionConstraints[3*c1+1]; double g_t_f = projectionValues[3*c1+1];
+            int g_s_id = projectionConstraints[3*c1+2]; double g_s_f = projectionValues[3*c1+2];
+
+            fineLevel.getF()[3*c1  ]  +=  ( coarseLevel.getF()[g_n_id] - coarseLevel.getF_1()[g_n_id] ) * g_n_f;
+            fineLevel.getF()[3*c1+1]  +=  ( coarseLevel.getF()[g_t_id] - coarseLevel.getF_1()[g_t_id] ) * g_t_f;
+            fineLevel.getF()[3*c1+2]  +=  ( coarseLevel.getF()[g_s_id] - coarseLevel.getF_1()[g_s_id] ) * g_s_f;
 
             if ( fineLevel.getF()[3*c1  ] < 0)
             {
@@ -1610,8 +1630,11 @@ void prolongation(LCP &fineLevel, LCP &coarseLevel, const std::vector<int> &proj
 
 /// new multigrid resolution of a problem with projection & prolongation
 
-int nlcp_multiGrid_2levels(int dim, double *dfree, double**W, double *f, double mu, double tol, int numItMax, bool useInitialF,
-        std::vector< int> &contact_group, unsigned int num_group, bool verbose, std::vector<double>* residuals1, std::vector<double>* residuals2)
+int nlcp_multiGrid_2levels(int dim, double *dfree, double**W, double *f, double mu,
+        double tol, int numItMax, bool useInitialF,
+        std::vector< int> &contact_group, unsigned int num_group,
+        std::vector< int> &constraint_group, std::vector<double> &constraint_group_fact,
+        bool verbose, std::vector<double>* residuals1, std::vector<double>* residuals2)
 {
 
     LCP *fineLevel = new LCP();
@@ -1639,8 +1662,7 @@ int nlcp_multiGrid_2levels(int dim, double *dfree, double**W, double *f, double 
 
 
     std::vector<bool> contact_is_projected;
-    std::vector<double> not_used_yet; // if we want to give different value (not 1 for all) of the projection value
-    projection((*fineLevel), (*coarseLevel), num_group, contact_group, not_used_yet , contact_is_projected, verbose);
+    projection((*fineLevel), (*coarseLevel), num_group, contact_group, constraint_group, constraint_group_fact, contact_is_projected, verbose);
 
     // iterations  at the coarse level (till convergence)
     convergenceTest = true;
@@ -1656,7 +1678,7 @@ int nlcp_multiGrid_2levels(int dim, double *dfree, double**W, double *f, double 
     }
 
     // prolongation (interpolation) at the fine level
-    prolongation((*fineLevel), (*coarseLevel), contact_group, not_used_yet , contact_is_projected, verbose);
+    prolongation((*fineLevel), (*coarseLevel), contact_group, constraint_group, constraint_group_fact, contact_is_projected, verbose);
 
 
     // iterations at the fine level (till convergence)
@@ -1675,17 +1697,25 @@ int nlcp_multiGrid_2levels(int dim, double *dfree, double**W, double *f, double 
 }
 
 
-int nlcp_multiGrid_Nlevels(int dim, double *dfree, double**W, double *f, double mu, double tol, int numItMax, bool useInitialF, std::vector< std::vector< int> > &contact_group_hierarchy, std::vector<unsigned int> Tab_num_group, bool verbose, std::vector<double> *residualsN, std::vector<double> *residualLevels)
+int nlcp_multiGrid_Nlevels(int dim, double *dfree, double**W, double *f, double mu, double tol, int numItMax, bool useInitialF, std::vector< std::vector< int> > &contact_group_hierarchy, std::vector<unsigned int> Tab_num_group, std::vector< std::vector< int> > &constraint_group_hierarchy, std::vector< std::vector< double> > &constraint_group_fact_hierarchy, bool verbose, std::vector<double> *residualsN, std::vector<double> *residualLevels, std::vector<double> *violations)
 {
-
+    if (dim == 0) return 1; // nothing to do
     unsigned int num_hierarchies = Tab_num_group.size();
     if (num_hierarchies != contact_group_hierarchy.size())
     {
         std::cerr<<" ERRROR in nlcp_multiGrid_Nlevels size of Tab_num_group must be equal to size of contact_group_hierarchy"<<std::endl;
         return 0;
     }
-
-
+    if (num_hierarchies != constraint_group_hierarchy.size())
+    {
+        std::cerr<<" ERRROR in nlcp_multiGrid_Nlevels size of Tab_num_group must be equal to size of constraint_group_hierarchy"<<std::endl;
+        return 0;
+    }
+    if (num_hierarchies != constraint_group_fact_hierarchy.size())
+    {
+        std::cerr<<" ERRROR in nlcp_multiGrid_Nlevels size of Tab_num_group must be equal to size of constraint_group_fact_hierarchy"<<std::endl;
+        return 0;
+    }
 
     std::vector<LCP *> hierarchicalLevels;
     hierarchicalLevels.resize(num_hierarchies+1);
@@ -1702,7 +1732,6 @@ int nlcp_multiGrid_Nlevels(int dim, double *dfree, double**W, double *f, double 
 
     std::vector< std::vector<bool> > contact_is_projected;
     contact_is_projected.resize(num_hierarchies+1);
-    std::vector<double> not_used_yet; // if we want to give different value (not 1 for all) of the projection value
 
     bool convergenceTest= false;
     for(unsigned int h = 0; h<num_hierarchies; h++)
@@ -1710,7 +1739,7 @@ int nlcp_multiGrid_Nlevels(int dim, double *dfree, double**W, double *f, double 
         // iterations at the fine Level (no test of convergence)
 
         hierarchicalLevels[h]->setNumItMax(0);
-        hierarchicalLevels[h]->solveNLCP(convergenceTest, residualsN);
+        hierarchicalLevels[h]->solveNLCP(convergenceTest, residualsN, violations);
 
         if (residualsN && residualLevels)
             while(residualsN->size() > residualLevels->size())
@@ -1725,7 +1754,7 @@ int nlcp_multiGrid_Nlevels(int dim, double *dfree, double**W, double *f, double 
 
         // call to projection function
 
-        projection((*hierarchicalLevels[h]), (*hierarchicalLevels[h+1]), Tab_num_group[h], contact_group_hierarchy[h], not_used_yet , contact_is_projected[h], verbose);
+        projection((*hierarchicalLevels[h]), (*hierarchicalLevels[h+1]), Tab_num_group[h], contact_group_hierarchy[h], constraint_group_hierarchy[h], constraint_group_fact_hierarchy[h], contact_is_projected[h], verbose);
     }
 
 
@@ -1733,8 +1762,8 @@ int nlcp_multiGrid_Nlevels(int dim, double *dfree, double**W, double *f, double 
     // iterations  at the coarse level (till convergence)
     convergenceTest = true;
     hierarchicalLevels[num_hierarchies]->setNumItMax(numItMax);
-    hierarchicalLevels[num_hierarchies]->setTol(tol);  // TODO => régler la tolérance en fonction de la taille !!
-    hierarchicalLevels[num_hierarchies]->solveNLCP(convergenceTest, residualsN);
+    hierarchicalLevels[num_hierarchies]->setTol((tol * (dim/3+1))/(hierarchicalLevels[num_hierarchies]->getDim()/3+1));
+    hierarchicalLevels[num_hierarchies]->solveNLCP(convergenceTest, residualsN, violations);
 
     if (residualsN && residualLevels)
         while(residualsN->size() > residualLevels->size())
@@ -1750,13 +1779,14 @@ int nlcp_multiGrid_Nlevels(int dim, double *dfree, double**W, double *f, double 
     {
 
         // prolongation (interpolation) at the fine level
-        prolongation((*hierarchicalLevels[h]), (*hierarchicalLevels[h+1]), contact_group_hierarchy[h], not_used_yet , contact_is_projected[h], verbose);
+        prolongation((*hierarchicalLevels[h]), (*hierarchicalLevels[h+1]), contact_group_hierarchy[h], constraint_group_hierarchy[h], constraint_group_fact_hierarchy[h], contact_is_projected[h], verbose);
 
         // iterations at the fine level (till convergence)
         convergenceTest = true;
         hierarchicalLevels[h]->setNumItMax(numItMax);
-        hierarchicalLevels[h]->setTol(tol);
-        hierarchicalLevels[h]->solveNLCP(convergenceTest, residualsN);
+        //hierarchicalLevels[h]->setTol(tol);
+        hierarchicalLevels[h]->setTol((tol * (dim/3+1))/(hierarchicalLevels[h]->getDim()/3+1));
+        hierarchicalLevels[h]->solveNLCP(convergenceTest, residualsN, violations);
         if (residualsN && residualLevels)
             while(residualsN->size() > residualLevels->size())
                 residualLevels->push_back(pow(10.0,(double)h));
@@ -2153,7 +2183,7 @@ int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, doub
 
 }
 
-int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, double tol, int numItMax, bool useInitialF, bool verbose, std::vector<double>* residuals)
+int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, double tol, int numItMax, bool useInitialF, bool verbose, std::vector<double>* residuals, std::vector<double>* violations)
 
 {
     double test = dim/3;
@@ -2245,8 +2275,25 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, do
             set3Dof(f,index1,fn,ft,fs);
 
         }
-
         if (residuals) residuals->push_back(error);
+        if (violations)
+        {
+            double sum_d = 0;
+            for (int c=0;  c<numContacts ; c++)
+            {
+                dn = dfree[3*c];  //dt = dfree[3*c+1]; ds = dfree[3*c+2];
+                for (int i=0; i<dim; i++)
+                {
+                    dn += W[3*c  ][i]*f[i];
+                    //dt += W[3*c+1][i]*f[i];
+                    //ds += W[3*c+2][i]*f[i];
+                }
+                if (dn < 0)
+                    sum_d += -dn;
+            }
+            violations->push_back(sum_d);
+        }
+
         if (error < tol*(numContacts+1))
         {
             free(d);
