@@ -63,6 +63,8 @@ public:
      * @brief Default Constructor.
      */
     ArticulatedHierarchyBVHController()
+        : useExternalTime( initData(&useExternalTime, false, "useExternalTime", "use the external time line"))
+        , externalTime( initData(&externalTime, 0.0, "externalTime", " value of the External Time") )
     {
         this->f_listening.setValue(true);
     };
@@ -88,6 +90,8 @@ public:
     virtual void applyController(void);
 
 protected:
+    Data< bool > useExternalTime;
+    Data< double > externalTime;
     ArtCenterVec m_artCenterVec; ///< List of ArticulationCenters controlled by the controller.
     ArticulatedHierarchyContainer* ahc;
     int frame;
