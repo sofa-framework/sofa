@@ -174,6 +174,7 @@ public:
     Data<bool> computeJ;
     Data<bool> computeAllMatrices;
     Data<bool> showDefTensors;
+    Data<double> showDefTensorScale;
     Data<unsigned int> showFromIndex;
     Data<bool> showCoefs;
     Data<bool> showCoefsValues;
