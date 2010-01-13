@@ -25,19 +25,25 @@
 #ifndef SOFA_COMPONENT_COLLISION_ATTACHBODYPERFORMER_H
 #define SOFA_COMPONENT_COLLISION_ATTACHBODYPERFORMER_H
 
-#include <sofa/component/collision/InteractionPerformer.h>
-
-#include <sofa/component/collision/BarycentricContactMapper.h>
-#include <sofa/component/forcefield/StiffSpringForceField.h>
+#include "InteractionPerformer.h"
+#include "BarycentricContactMapper.h"
+#include <sofa/core/componentmodel/behavior/BaseforceField.h>
 
 namespace sofa
 {
-
+namespace core
+{
+namespace objectmodel
+{
+class TagSet;
+}
+}
 namespace component
 {
 
 namespace collision
 {
+struct BodyPicked;
 
 class AttachBodyPerformerConfiguration
 {
@@ -50,9 +56,11 @@ protected:
 template <class DataTypes>
 class AttachBodyPerformer: public TInteractionPerformer<DataTypes>, public AttachBodyPerformerConfiguration
 {
+
     typedef sofa::component::collision::BaseContactMapper< DataTypes >        MouseContactMapper;
-    typedef sofa::component::forcefield::StiffSpringForceField< DataTypes >   MouseForceField;
     typedef sofa::component::container::MechanicalObject< DataTypes >         MouseContainer;
+    typedef sofa::core::componentmodel::behavior::BaseForceField              MouseForceField;
+
 public:
     AttachBodyPerformer(BaseMouseInteractor *i);
     ~AttachBodyPerformer();
@@ -62,7 +70,16 @@ public:
     void draw();
     void clear();
 
+
+
 protected:
+    void start_partial(const BodyPicked& picked);
+    /*
+    initialise MouseForceField according to template.
+    StiffSpringForceField for Vec3
+    JointSpringForceField for Rigid3
+    */
+
     MouseContactMapper   *mapper;
     MouseForceField      *forcefield;
 };
@@ -70,7 +87,15 @@ protected:
 
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_COLLISION_ATTACHBODYPERFORMER_CPP)
-extern template class SOFA_COMPONENT_COLLISION_API AttachBodyPerformer<defaulttype::Vec3Types>;
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_COLLISION_API  AttachBodyPerformer<defaulttype::Vec3fTypes>;
+extern template class SOFA_COMPONENT_COLLISION_API  AttachBodyPerformer<defaulttype::Rigid3fTypes>;
+
+#endif
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_COLLISION_API  AttachBodyPerformer<defaulttype::Vec3dTypes>;
+extern template class SOFA_COMPONENT_COLLISION_API  AttachBodyPerformer<defaulttype::Rigid3dTypes>;
+#endif
 #endif
 
 

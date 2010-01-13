@@ -41,19 +41,11 @@ namespace collision
 
 #ifndef SOFA_DOUBLE
 template class SOFA_COMPONENT_COLLISION_API FixParticlePerformer<defaulttype::Vec3fTypes>;
-#endif
-#ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_COLLISION_API FixParticlePerformer<defaulttype::Vec3dTypes>;
-#endif
-
-
-#ifndef WIN32
-#ifndef SOFA_DOUBLE
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, FixParticlePerformer<defaulttype::Vec3fTypes> >  FixParticlePerformerVec3fClass("FixParticle",true);
 #endif
 #ifndef SOFA_FLOAT
+template class SOFA_COMPONENT_COLLISION_API FixParticlePerformer<defaulttype::Vec3dTypes>;
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, FixParticlePerformer<defaulttype::Vec3dTypes> >  FixParticlePerformerVec3dClass("FixParticle",true);
-#endif
 #endif
 }
 }

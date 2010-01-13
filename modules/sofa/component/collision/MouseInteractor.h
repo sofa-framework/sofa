@@ -133,7 +133,17 @@ protected:
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_COLLISION_MOUSEINTERACTOR_CPP)
-extern template class SOFA_COMPONENT_COLLISION_API MouseInteractor<defaulttype::Vec3Types>;
+
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_COLLISION_API MouseInteractor<defaulttype::Vec3fTypes>;
+extern template class SOFA_COMPONENT_COLLISION_API MouseInteractor<defaulttype::Rigid3fTypes>;
+
+#endif
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_COLLISION_API MouseInteractor<defaulttype::Vec3dTypes>;
+extern template class SOFA_COMPONENT_COLLISION_API MouseInteractor<defaulttype::Rigid3fTypes>;
+
+#endif
 #endif
 
 

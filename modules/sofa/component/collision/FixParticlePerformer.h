@@ -72,7 +72,12 @@ protected:
 
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_COLLISION_FIXPARTICLEPERFORMER_CPP)
-extern template class SOFA_COMPONENT_COLLISION_API FixParticlePerformer<defaulttype::Vec3Types>;
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_COLLISION_API FixParticlePerformer<defaulttype::Vec3fTypes>;
+#endif
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_COLLISION_API FixParticlePerformer<defaulttype::Vec3dTypes>;
+#endif
 #endif
 
 
