@@ -202,6 +202,13 @@ public:
         else { Transformation t; t.identity(); return t; }
     }
 
+    Transformation getInitialTetraRotation(unsigned int index)
+    {
+        if (index < _rotations.size() )
+            return _initialRotations[index];
+        else { Transformation t; t.identity(); return t; }
+    }
+
 
     void setMethod(std::string methodName)
     {

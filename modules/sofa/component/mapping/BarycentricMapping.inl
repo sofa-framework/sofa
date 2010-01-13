@@ -889,7 +889,7 @@ void BarycentricMapping<BasicMapping>::createMapperFromTopology ( BaseMeshTopolo
             if ( t2 != NULL )
             {
                 typedef BarycentricMapperTetrahedronSetTopology<InDataTypes, OutDataTypes> TetrahedronSetMapper;
-                mapper = new TetrahedronSetMapper ( t2, maskFrom, maskTo, tetForceField );
+                mapper = new TetrahedronSetMapper ( t2, maskFrom, maskTo); //, this->fromModel->getContext());
             }
             else
             {
@@ -968,8 +968,9 @@ void BarycentricMapping<BasicMapping>::init()
     topology_to = this->toModel->getContext()->getMeshTopology();
 
     //IPB
-    this->fromModel->getContext()->get(tetForceField);
-    this->fromModel->getContext()->getDt();
+    //core::objectmodel::BaseContext* context = this->fromModel->getContext();
+    //->get(tetForceField);
+    //serr << "!!!!!!!!!!!! getDT = " <<  this->fromModel->getContext()->getDt() << sendl;
     //IPE
 
     f_grid->beginEdit();
