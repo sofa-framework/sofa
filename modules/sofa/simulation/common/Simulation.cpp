@@ -49,6 +49,7 @@
 
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/PipeProcess.h>
+#include <sofa/helper/AdvancedTimer.h>
 
 #include <sofa/core/ObjectFactory.h>
 
@@ -163,6 +164,9 @@ void Simulation::animate ( Node* root, double dt )
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode(std::string("Step"));
 #endif
+
+    sofa::helper::AdvancedTimer::begin("Animate");
+
     {
         AnimateBeginEvent ev ( dt );
         PropagateEventVisitor act ( &ev );
@@ -195,18 +199,23 @@ void Simulation::animate ( Node* root, double dt )
         root->execute ( act );
     }
 
+    sofa::helper::AdvancedTimer::stepBegin("UpdateMapping");
     //Visual Information update: Ray Pick add a MechanicalMapping used as VisualMapping
     root->execute<UpdateMappingVisitor>();
+    sofa::helper::AdvancedTimer::step("UpdateMappingEndEvent");
     {
         UpdateMappingEndEvent ev ( dt );
         PropagateEventVisitor act ( &ev );
         root->execute ( act );
     }
+    sofa::helper::AdvancedTimer::stepEnd("UpdateMapping");
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode(std::string("Step"));
 #endif
     *(nbSteps.beginEdit()) = nbSteps.getValue() + 1;
     nbSteps.endEdit();
+
+    sofa::helper::AdvancedTimer::end("Animate");
 }
 
 
@@ -215,13 +224,18 @@ void Simulation::updateVisual ( Node* root, double dt )
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode(std::string("UpdateVisual"));
 #endif
+    sofa::helper::AdvancedTimer::begin("UpdateVisual");
+    sofa::helper::AdvancedTimer::stepBegin("UpdateMapping");
     root->execute<UpdateMappingVisitor>();
+    sofa::helper::AdvancedTimer::step("UpdateMappingEndEvent");
     {
         UpdateMappingEndEvent ev ( dt );
         PropagateEventVisitor act ( &ev );
         root->execute ( act );
     }
+    sofa::helper::AdvancedTimer::stepEnd("UpdateMapping");
     root->execute<VisualUpdateVisitor>();
+    sofa::helper::AdvancedTimer::end("UpdateVisual");
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode(std::string("UpdateVisual"));
 #endif

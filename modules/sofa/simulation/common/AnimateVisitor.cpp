@@ -30,6 +30,8 @@
 #include <sofa/simulation/common/CollisionBeginEvent.h>
 #include <sofa/simulation/common/CollisionEndEvent.h>
 
+#include <sofa/helper/AdvancedTimer.h>
+
 //#include "MechanicalIntegration.h"
 
 namespace sofa
@@ -47,31 +49,42 @@ AnimateVisitor::AnimateVisitor(double dt) : dt(dt)
 
 void AnimateVisitor::processMasterSolver(simulation::Node*, core::componentmodel::behavior::MasterSolver* obj)
 {
+    sofa::helper::AdvancedTimer::stepBegin("MasterSolver",obj);
     obj->step(getDt());
+    sofa::helper::AdvancedTimer::stepEnd("MasterSolver",obj);
 }
 
 void AnimateVisitor::processBehaviorModel(simulation::Node*, core::BehaviorModel* obj)
 {
+    sofa::helper::AdvancedTimer::stepBegin("BehaviorModel",obj);
     obj->updatePosition(getDt());
+    sofa::helper::AdvancedTimer::stepEnd("BehaviorModel",obj);
 }
 
 void AnimateVisitor::fwdInteractionForceField(simulation::Node*, core::componentmodel::behavior::InteractionForceField* obj)
 {
+    //cerr<<"AnimateVisitor::IFF "<<obj->getName()<<endl;
+    sofa::helper::AdvancedTimer::stepBegin("InteractionFF",obj);
     obj->addForce();
+    sofa::helper::AdvancedTimer::stepEnd("InteractionFF",obj);
 }
 
-void AnimateVisitor::processCollisionPipeline(simulation::Node* node, core::componentmodel::collision::Pipeline*)
+void AnimateVisitor::processCollisionPipeline(simulation::Node* node, core::componentmodel::collision::Pipeline* obj)
 {
+    sofa::helper::AdvancedTimer::stepBegin("Collision",obj);
     CollisionVisitor act;
     node->execute(&act);
+    sofa::helper::AdvancedTimer::stepEnd("Collision",obj);
 }
 
-void AnimateVisitor::processOdeSolver(simulation::Node* /*node*/, core::componentmodel::behavior::OdeSolver* solver)
+void AnimateVisitor::processOdeSolver(simulation::Node* node, core::componentmodel::behavior::OdeSolver* solver)
 {
+    sofa::helper::AdvancedTimer::stepBegin("Mechanical",node);
     /*    MechanicalIntegrationVisitor act(getDt());
         node->execute(&act);*/
 //  cerr<<"AnimateVisitor::processOdeSolver "<<solver->getName()<<endl;
     solver->solve(getDt());
+    sofa::helper::AdvancedTimer::stepEnd("Mechanical",node);
 }
 
 Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
@@ -129,6 +142,7 @@ Visitor::Result AnimateVisitor::processNodeTopDown(simulation::Node* node)
             }*/
     if (!node->solver.empty() )
     {
+        sofa::helper::AdvancedTimer::StepVar timer("Mechanical",node);
         double nextTime = node->getTime() + dt;
 
         MechanicalBeginIntegrationVisitor beginVisitor(dt);

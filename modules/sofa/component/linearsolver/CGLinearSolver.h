@@ -28,6 +28,7 @@
 #include <sofa/core/componentmodel/behavior/LinearSolver.h>
 #include <sofa/component/linearsolver/MatrixLinearSolver.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/map.h>
 #include <math.h>
 
@@ -230,6 +231,9 @@ public:
 #endif
 
         f_graph.endEdit();
+
+        sofa::helper::AdvancedTimer::valSet("CG iterations", nb_iter);
+
         // x is the solution of the system
         if( printLog )
         {

@@ -34,7 +34,7 @@
 #include "sofa/helper/system/thread/CTime.h"
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/componentmodel/behavior/LinearSolver.h>
-#include <sofa/helper/system/thread/CTime.h>
+#include <sofa/helper/AdvancedTimer.h>
 
 namespace sofa
 {
@@ -283,6 +283,7 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
         //printf("%f\n",(CTime::getRefTime() - time1)  / (double)CTime::getRefTicksPerSec());
 
     }
+    sofa::helper::AdvancedTimer::valSet("PCG iterations", nb_iter);
 
 #ifdef DISPLAY_TIME
     time1 += ((double) CTime::getTime() - tmp3) - tmp;

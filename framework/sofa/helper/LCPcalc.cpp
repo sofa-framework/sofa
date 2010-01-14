@@ -25,6 +25,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/LCPcalc.h>
+#include <sofa/helper/AdvancedTimer.h>
 #include <vector>
 #include <algorithm>
 #include <functional>
@@ -2303,9 +2304,11 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, do
             if (verbose)
                 printf("Convergence after %d iteration(s) with tolerance : %f and error : %f with dim : %d\n",it, tol, error, dim);
             //afficheLCP(dfree,W,f,dim);
+            sofa::helper::AdvancedTimer::valSet("GS iterations", it);
             return 1;
         }
     }
+    sofa::helper::AdvancedTimer::valSet("GS iterations", it);
     free(d);
     for (int i = 0; i < numContacts; i++)
         delete W33[i];
@@ -2431,9 +2434,11 @@ int nlcp_gaussseidelTimed(int dim, double *dfree, double**W, double *f, double m
             free(W33);
             //printf("Convergence after %d iteration(s) with tolerance : %f and error : %f with dim : %d\n",it, tol, error, dim);
             //afficheLCP(dfree,W,f,dim);
+            sofa::helper::AdvancedTimer::valSet("GS iterations", it);
             return 1;
         }
     }
+    sofa::helper::AdvancedTimer::valSet("GS iterations", it);
     free(d);
     for (int i = 0; i < numContacts; i++)
         delete W33[i];
@@ -2499,6 +2504,7 @@ void gaussSeidelLCP1(int dim, FemClipsReal * q, FemClipsReal ** M, FemClipsReal 
         }
 
     }
+    sofa::helper::AdvancedTimer::valSet("GS iterations", compteur);
 
     for (compteur=0; compteur<dim; compteur++)
         res[compteur] = res[compteur+dim];

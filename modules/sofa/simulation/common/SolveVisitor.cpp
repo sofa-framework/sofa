@@ -25,18 +25,22 @@
 #include <sofa/simulation/common/SolveVisitor.h>
 #include <sofa/core/componentmodel/behavior/BaseMechanicalState.h>
 
+#include <sofa/helper/AdvancedTimer.h>
+
 namespace sofa
 {
 
 namespace simulation
 {
 
-void SolveVisitor::processSolver(simulation::Node* /*node */, core::componentmodel::behavior::OdeSolver* s)
+void SolveVisitor::processSolver(simulation::Node* node, core::componentmodel::behavior::OdeSolver* s)
 {
+    sofa::helper::AdvancedTimer::stepBegin("Mechanical",node);
     if (freeMotion)
         s->solve(dt, sofa::core::componentmodel::behavior::BaseMechanicalState::VecId::freePosition(), sofa::core::componentmodel::behavior::BaseMechanicalState::VecId::freeVelocity());
     else
         s->solve(dt);
+    sofa::helper::AdvancedTimer::stepEnd("Mechanical",node);
 }
 
 Visitor::Result SolveVisitor::processNodeTopDown(simulation::Node* node)
@@ -49,8 +53,6 @@ Visitor::Result SolveVisitor::processNodeTopDown(simulation::Node* node)
     else
         return RESULT_CONTINUE;
 }
-
-
 
 } // namespace simulation
 
