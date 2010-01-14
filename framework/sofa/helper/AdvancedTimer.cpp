@@ -103,10 +103,10 @@ AdvancedTimer::Id<Base>::operator std::string() const
     else return IdFactory<Base>::getName(id);
 }
 
-template class AdvancedTimer::Id<AdvancedTimer::Timer>;
-template class AdvancedTimer::Id<AdvancedTimer::Step>;
-template class AdvancedTimer::Id<AdvancedTimer::Obj>;
-template class AdvancedTimer::Id<AdvancedTimer::Val>;
+template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Timer>;
+template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Step>;
+template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Obj>;
+template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Val>;
 
 class Record
 {

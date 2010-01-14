@@ -227,6 +227,13 @@ public:
     static void valAdd(IdVal id, double val);
 };
 
+#if defined(WIN32) && !defined(SOFA_BUILD_HELPER)
+extern template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Timer>;
+extern template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Step>;
+extern template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Obj>;
+extern template class SOFA_HELPER_API AdvancedTimer::Id<AdvancedTimer::Val>;
+#endif
+
 }
 
 }
