@@ -474,7 +474,7 @@ public:
     {
         return dot(z,v);
     }
-    __device__ void readAoS(const real* data, int bsize = blockDim.x)
+    __device__ void readAoS(const real* data, int bsize)
     {
         x.x=*data; data+=bsize;
         x.y=*data; data+=bsize;
@@ -486,7 +486,11 @@ public:
         z.y=*data; data+=bsize;
         z.z=*data; data+=bsize;
     }
-    __device__ void writeAoS(real* data, int bsize = blockDim.x)
+    __device__ void readAoS(const real* data)
+    {
+        readAoS(data, blockDim.x);
+    }
+    __device__ void writeAoS(real* data, int bsize)
     {
         *data=x.x; data+=bsize;
         *data=x.y; data+=bsize;
@@ -497,6 +501,11 @@ public:
         *data=z.x; data+=bsize;
         *data=z.y; data+=bsize;
         *data=z.z; data+=bsize;
+    }
+
+    __device__ void writeAoS(real* data)
+    {
+        writeAoS(data, blockDim.x);
     }
 };
 
@@ -602,7 +611,7 @@ public:
     {
         return dot(z,v);
     }
-    __device__ void readAoS(const real* data, int bsize = blockDim.x)
+    __device__ void readAoS(const real* data, int bsize)
     {
         x.x=*data; data+=bsize;
         x.y=*data; data+=bsize;
@@ -621,7 +630,11 @@ public:
         w.z=*data; data+=bsize;
         w.w=*data; data+=bsize;
     }
-    __device__ void writeAoS(real* data, int bsize = blockDim.x)
+    __device__ void readAoS(const real* data)
+    {
+        readAoS(data, blockDim.x)
+    }
+    __device__ void writeAoS(real* data, int bsize)
     {
         *data=x.x; data+=bsize;
         *data=x.y; data+=bsize;
@@ -639,6 +652,10 @@ public:
         *data=w.y; data+=bsize;
         *data=w.z; data+=bsize;
         *data=w.w; data+=bsize;
+    }
+    __device__ void writeAoS(real* data)
+    {
+        writeAoS(data, blockDim.x);
     }
 };
 
