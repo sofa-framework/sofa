@@ -86,7 +86,9 @@ HEADERS += \
           vector.h \
           polygon_cube_intersection/vec.h \
           polygon_cube_intersection/polygon_cube_intersection.h \
-	  proximity.h
+          proximity.h \
+          SimpleTimer.h \
+          AdvancedTimer.h
 
 SOURCES += \
           ArgumentParser.cpp \
@@ -129,8 +131,8 @@ SOURCES += \
           polygon_cube_intersection/polygon_cube_intersection.cpp \
           polygon_cube_intersection/fast_polygon_cube_intersection.cpp \
           vector.cpp \
-	  proximity.cpp
-
+          proximity.cpp \
+          AdvancedTimer.cpp
 
 contains(DEFINES,SOFA_HAVE_GLEW){
 

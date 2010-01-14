@@ -34,6 +34,7 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/Axis.h>
 #include <sofa/helper/gl/Cylinder.h>
+#include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <math.h>
 #include <iostream>
@@ -64,15 +65,13 @@ LCP::~LCP()
 void LCP::reset(void)
 {
     W.clear();
-    W.clear();
     dFree.clear();
 }
-
 
 bool LCPConstraintSolver::prepareStates(double /*dt*/, VecId id)
 {
     if (id != VecId::freePosition()) return false;
-
+    sofa::helper::AdvancedTimer::StepVar vtimer("PrepareStates");
 
     last_lcp = lcp;
     core::componentmodel::behavior::BaseMechanicalState::VecId dx_id = core::componentmodel::behavior::BaseMechanicalState::VecId::dx();
@@ -99,6 +98,7 @@ bool LCPConstraintSolver::prepareStates(double /*dt*/, VecId id)
     }
     return true;
 }
+
 bool LCPConstraintSolver::buildSystem(double /*dt*/, VecId)
 {
     //sout<<"constraintCorrections is called"<<sendl;
@@ -126,6 +126,7 @@ bool LCPConstraintSolver::buildSystem(double /*dt*/, VecId)
     }
     return true;
 }
+
 bool LCPConstraintSolver::solveSystem(double /*dt*/, VecId)
 {
     if(build_lcp.getValue())
@@ -143,11 +144,13 @@ bool LCPConstraintSolver::solveSystem(double /*dt*/, VecId)
 
             if (multi_grid.getValue())
             {
-                std::cout<<"+++++++++++++ \n SOLVE WITH MULTIGRID \n ++++++++++++++++"<<std::endl;
+                //std::cout<<"+++++++++++++ \n SOLVE WITH MULTIGRID \n ++++++++++++++++"<<std::endl;
 
+                sofa::helper::AdvancedTimer::stepBegin("ConstraintsMerge");
                 MultigridConstraintsMerge();
+                sofa::helper::AdvancedTimer::stepEnd  ("ConstraintsMerge");
                 //build_Coarse_Compliance(_constraint_group, 3*_group_lead.size());
-                std::cerr<<"out from build_Coarse_Compliance"<<std::endl;
+                //std::cerr<<"out from build_Coarse_Compliance"<<std::endl;
 
                 sofa::helper::vector<double>& graph_residuals = graph["Error"];
                 graph_residuals.clear();
@@ -161,8 +164,10 @@ bool LCPConstraintSolver::solveSystem(double /*dt*/, VecId)
                                        _contact_group, _group_lead.size(), this->f_printLog.getValue());*/
 
 
+                sofa::helper::AdvancedTimer::stepBegin("NLCP MultiGrid");
                 helper::nlcp_multiGrid_Nlevels(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue(),
                         hierarchy_contact_group, hierarchy_num_group, hierarchy_constraint_group, hierarchy_constraint_group_fact, this->f_printLog.getValue(), &graph_residuals, &graph_levels, &graph_violations);
+                sofa::helper::AdvancedTimer::stepEnd("NLCP MultiGrid");
 
                 //helper::nlcp_multiGrid_2levels(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue(),
                 //                       _contact_group, _group_lead.size(), this->f_printLog.getValue(), &graph_residuals, &graph_levels);
@@ -179,8 +184,10 @@ bool LCPConstraintSolver::solveSystem(double /*dt*/, VecId)
                 graph_error.clear();
                 sofa::helper::vector<double>& graph_violations = graph["Violation"];
                 graph_violations.clear();
+                sofa::helper::AdvancedTimer::stepBegin("NLCP GaussSeidel");
                 helper::nlcp_gaussseidel(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue(),
                         this->f_printLog.getValue(), &graph_error, &graph_violations);
+                sofa::helper::AdvancedTimer::stepEnd("NLCP GaussSeidel");
 
                 //std::cout << "errors: " << graph_error << std::endl;
             }
@@ -193,7 +200,9 @@ bool LCPConstraintSolver::solveSystem(double /*dt*/, VecId)
             //		helper::lcp_lexicolemke(_numConstraints, _dFree->ptr(), _W->lptr(), _A.lptr(), _result->ptr());
             sofa::helper::vector<double>& graph_error = graph["Error"];
             graph_error.clear();
+            sofa::helper::AdvancedTimer::stepBegin("LCP GaussSeidel");
             helper::gaussSeidelLCP1(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _tol, _maxIt, &graph_error);
+            sofa::helper::AdvancedTimer::stepEnd  ("LCP GaussSeidel");
             if (this->f_printLog.getValue()) helper::afficheLCP(_dFree->ptr(), _W->lptr(), _result->ptr(),_numConstraints);
         }
     }
@@ -202,7 +211,9 @@ bool LCPConstraintSolver::solveSystem(double /*dt*/, VecId)
 
         //std::cout<<"gaussseidel_unbuilt"<<std::endl;
         //std::cout<<"_result-before :"<<_result<<std::endl;
+        sofa::helper::AdvancedTimer::stepBegin("NLCP GaussSeidel Unbuild");
         gaussseidel_unbuilt(_dFree->ptr(), _result->ptr());
+        sofa::helper::AdvancedTimer::stepBegin("NLCP GaussSeidel Unbuild");
         //std::cout<<"\n_result unbuilt:"<<(*_result)<<std::endl;
 
         /////// debug
@@ -233,42 +244,41 @@ bool LCPConstraintSolver::solveSystem(double /*dt*/, VecId)
     f_graph.endEdit();
     return true;
 }
+
 bool LCPConstraintSolver::applyCorrection(double /*dt*/, VecId )
 {
     if (initial_guess.getValue())
         keepContactForcesValue();
 
     if(this->f_printLog.getValue())
-    {
         serr<<"keepContactForces done"<<sendl;
 
-    }
-
+    sofa::helper::AdvancedTimer::stepBegin("Apply Contact Force");
     //	MechanicalApplyContactForceVisitor(_result).execute(context);
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
     {
         core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
         cc->applyContactForce(_result);
     }
+    sofa::helper::AdvancedTimer::stepEnd  ("Apply Contact Force");
+
     if(this->f_printLog.getValue())
-    {
         serr<<"applyContactForce in constraintCorrection done"<<sendl;
 
-    }
-
+    sofa::helper::AdvancedTimer::stepBegin("Propagate Contact Dx");
     simulation::MechanicalPropagateAndAddDxVisitor().execute( context);
+    sofa::helper::AdvancedTimer::stepEnd  ("Propagate Contact Dx");
 
     if(this->f_printLog.getValue())
-    {
         serr<<"propagate corrective motion done"<<sendl;
 
-    }
-
+    sofa::helper::AdvancedTimer::stepBegin("Reset Contact Force");
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
     {
         core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
         cc->resetContactForce();
     }
+    sofa::helper::AdvancedTimer::stepEnd ("Reset Contact Force");
 
     if (displayTime.getValue())
     {
@@ -352,11 +362,13 @@ void LCPConstraintSolver::build_LCP()
     _numConstraints = 0;
     //sout<<" accumulateConstraint "  <<sendl;
 
+    sofa::helper::AdvancedTimer::stepBegin("Accumulate Constraint");
     // mechanical action executed from root node to propagate the constraints
     simulation::MechanicalResetConstraintVisitor().execute(context);
     simulation::MechanicalAccumulateConstraint(_numConstraints).execute(context);
+    sofa::helper::AdvancedTimer::stepEnd  ("Accumulate Constraint");
     _mu = mu.getValue();
-
+    sofa::helper::AdvancedTimer::valSet("numConstraints", _numConstraints);
 
     //sout<<" accumulateConstraint_done "  <<sendl;
 
@@ -369,20 +381,22 @@ void LCPConstraintSolver::build_LCP()
     lcp->getMu() = _mu;
 
     _dFree->resize(_numConstraints);
-    _W->resize(_numConstraints,_numConstraints);
-
+    sofa::helper::AdvancedTimer::stepBegin("Get Constraint Value");
     MechanicalGetConstraintValueVisitor(_dFree).execute(context);
+    sofa::helper::AdvancedTimer::stepEnd ("Get Constraint Value");
     //	simulation::MechanicalComputeComplianceVisitor(_W).execute(context);
 
     if (this->f_printLog.getValue()) sout<<"LCPConstraintSolver: "<<_numConstraints<<" constraints, mu = "<<_mu<<sendl;
 
+    _W->resize(_numConstraints,_numConstraints);
+    sofa::helper::AdvancedTimer::stepBegin("Get Compliance");
     if (this->f_printLog.getValue()) sout<<" computeCompliance in "  << constraintCorrections.size()<< " constraintCorrections" <<sendl;
-
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
     {
         core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
         cc->getCompliance(_W);
     }
+    sofa::helper::AdvancedTimer::stepEnd  ("Get Compliance");
     if (this->f_printLog.getValue()) sout<<" computeCompliance_done "  <<sendl;
 
     int nLevels = 1;
@@ -407,9 +421,9 @@ void LCPConstraintSolver::build_LCP()
 
     if ((initial_guess.getValue() || multi_grid.getValue() || showLevels.getValue()) && (_numConstraints != 0))
     {
-        //_cont_id_list.resize(_numConstraints);
-        //MechanicalGetContactIDVisitor(&(_cont_id_list[0])).execute(context);
+        sofa::helper::AdvancedTimer::stepBegin("Get Constraint Info");
         MechanicalGetConstraintInfoVisitor(hierarchy_constraintBlockInfo[0], hierarchy_constraintIds[0], hierarchy_constraintPositions[0], hierarchy_constraintDirections[0], hierarchy_constraintAreas[0]).execute(context);
+        sofa::helper::AdvancedTimer::stepEnd  ("Get Constraint Info");
         if (initial_guess.getValue())
             computeInitialGuess();
     }
@@ -748,10 +762,13 @@ void LCPConstraintSolver::build_problem_info()
     // debug
     //std::cout<<" accumulateConstraint "  <<std::endl;
     _numConstraints = 0;
+    sofa::helper::AdvancedTimer::stepBegin("Accumulate Constraint");
     // mechanical action executed from root node to propagate the constraints
     simulation::MechanicalResetConstraintVisitor().execute(context);
     simulation::MechanicalAccumulateConstraint(_numConstraints).execute(context);
+    sofa::helper::AdvancedTimer::stepEnd  ("Accumulate Constraint");
     _mu = mu.getValue();
+    sofa::helper::AdvancedTimer::valSet("numConstraints", _numConstraints);
 
     // debug
     //std::cout<<" accumulateConstraint_done "  <<std::endl;
@@ -773,7 +790,9 @@ void LCPConstraintSolver::build_problem_info()
     // debug
     //std::cout<<" resize done "  <<std::endl;
 
+    sofa::helper::AdvancedTimer::stepBegin("Get Constraint Value");
     MechanicalGetConstraintValueVisitor(_dFree).execute(context);
+    sofa::helper::AdvancedTimer::stepEnd  ("Get Constraint Value");
 
     if (this->f_printLog.getValue()) sout<<"LCPConstraintSolver: "<<_numConstraints<<" constraints, mu = "<<_mu<<sendl;
 
@@ -802,7 +821,9 @@ void LCPConstraintSolver::build_problem_info()
 
     if ((initial_guess.getValue() || multi_grid.getValue() || showLevels.getValue()) && (_numConstraints != 0))
     {
+        sofa::helper::AdvancedTimer::stepBegin("Get Constraint Info");
         MechanicalGetConstraintInfoVisitor(hierarchy_constraintBlockInfo[0], hierarchy_constraintIds[0], hierarchy_constraintPositions[0], hierarchy_constraintDirections[0], hierarchy_constraintAreas[0]).execute(context);
+        sofa::helper::AdvancedTimer::stepEnd  ("Get Constraint Info");
         if (initial_guess.getValue())
             computeInitialGuess();
     }
@@ -810,6 +831,8 @@ void LCPConstraintSolver::build_problem_info()
 
 void LCPConstraintSolver::computeInitialGuess()
 {
+    sofa::helper::AdvancedTimer::StepVar vtimer("InitialGuess");
+
     const VecConstraintBlockInfo& constraintBlockInfo = hierarchy_constraintBlockInfo[0];
     const VecPersistentID& constraintIds = hierarchy_constraintIds[0];
     int numContact = (_mu > 0.0) ? _numConstraints/3 : _numConstraints;
@@ -853,6 +876,7 @@ void LCPConstraintSolver::computeInitialGuess()
 
 void LCPConstraintSolver::keepContactForcesValue()
 {
+    sofa::helper::AdvancedTimer::StepVar vtimer("KeepForces");
     const VecConstraintBlockInfo& constraintBlockInfo = hierarchy_constraintBlockInfo[0];
     const VecPersistentID& constraintIds = hierarchy_constraintIds[0];
     // store current force
