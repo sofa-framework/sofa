@@ -174,9 +174,9 @@ public:
     virtual void end() ;
 
     void setPotentialValue(double f) {potentialValue = f;}
-    virtual double getPotentialValue() const {; return potentialValue;}
+    virtual double getPotentialValue() const {return potentialValue;}
     void setStateTag(std::string s) {stateTag = s;}
-    virtual std::string getStateTag() const {; return stateTag;}
+    virtual std::string getStateTag() const {return stateTag;}
 
     static std::string getDescription() {return "Set action potential using the Mouse";}
 protected:
@@ -193,6 +193,27 @@ public:
     virtual void end() {};
 
     static std::string getDescription() {return "Add a Frame to a Skinned model";}
+};
+
+class SOFA_SOFAGUI_API AddSutureOperation : public Operation
+{
+public:
+    AddSutureOperation():stiffness(10.0), damping(1.0) {};
+    virtual ~AddSutureOperation() {};
+    virtual void start();
+    virtual void execution() {};
+    virtual void end() {};
+    virtual void endOperation();
+
+    void setStiffness(double f) { stiffness = f;}
+    virtual double getStiffness() const {return stiffness;}
+    void setDamping(double f) {damping = f;}
+    virtual double getDamping() const {return damping;}
+
+    static std::string getDescription() {return "Add a spring to suture two points.";}
+protected:
+    double stiffness;
+    double damping;
 };
 
 }

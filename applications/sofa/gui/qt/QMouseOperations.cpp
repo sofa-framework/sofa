@@ -359,6 +359,41 @@ std::string QInjectOperation::getStateTag() const
 
 //*******************************************************************************************
 
+
+//*******************************************************************************************
+QAddSutureOperation::QAddSutureOperation()
+{
+    //Building the GUI for the Suture Operation
+    QVBoxLayout *layout=new QVBoxLayout(this);
+
+    QHBoxLayout *option1=new QHBoxLayout();
+    QLabel *label1=new QLabel(QString("Spring stiffness"), this);
+    stiffness = new QLineEdit(QString("10.0"), this);
+    option1->addWidget(label1);
+    option1->addWidget(stiffness);
+
+    QHBoxLayout *option2=new QHBoxLayout();
+    QLabel *label2=new QLabel(QString("Spring damping"), this);
+    damping = new QLineEdit(QString("1.0"), this);
+    option1->addWidget(label2);
+    option1->addWidget(damping);
+
+    layout->addLayout(option1);
+    layout->addLayout(option2);
+}
+
+double QAddSutureOperation::getStiffness() const
+{
+    return atof(stiffness->displayText().ascii());
+}
+
+double QAddSutureOperation::getDamping() const
+{
+    return atof(damping->displayText().ascii());
+}
+
+//*******************************************************************************************
+
 } // namespace sofa
 } // namespace gui
 } // namespace qt
