@@ -269,7 +269,7 @@ void SkinningMapping<BasicMapping>::init()
             sofa::component::topology::DynamicSparseGridTopologyContainer* hexaContainer;
             this->getContext()->get( hexaContainer);
             double volume = 1.0;
-            if( hexaContainer) volume = pow( geoDist->initTargetStep.getValue(), 3) * hexaContainer->voxelSize.getValue()[0]*hexaContainer->voxelSize.getValue()[1]*hexaContainer->voxelSize.getValue()[2];
+            if( hexaContainer) volume = pow( (double)geoDist->initTargetStep.getValue(), 3) * hexaContainer->voxelSize.getValue()[0]*hexaContainer->voxelSize.getValue()[1]*hexaContainer->voxelSize.getValue()[2];
             const VecCoord& xto = *this->toModel->getX();
             this->vol.resize( xto.size());
             for( unsigned int i = 0; i < xto.size(); i++) this->vol[i] = volume;
