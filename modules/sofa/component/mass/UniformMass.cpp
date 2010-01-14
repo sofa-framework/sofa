@@ -230,7 +230,7 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::draw()
 
     for (unsigned int i=0; i<x.size(); i++)
     {
-        helper::gl::Axis::draw(x[i].getCenter(), x[i].getOrientation(), len*showAxisSize.getValue());
+        simulation::getSimulation()->DrawUtility.drawFrame(x[i].getCenter(), x[i].getOrientation(), len*showAxisSize.getValue() );
         gravityCenter += (x[i].getCenter());
     }
 
@@ -276,7 +276,8 @@ void UniformMass<Rigid2dTypes, Rigid2dMass>::draw()
     {
         Quat orient(Vec3d(0,0,1), x[i].getOrientation());
         Vec3d center; center = x[i].getCenter();
-        helper::gl::Axis::draw(center, orient, len);
+
+        simulation::getSimulation()->DrawUtility.drawFrame(center, orient, len*showAxisSize.getValue() );
     }
 }
 
@@ -521,7 +522,7 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::draw()
 
     for (unsigned int i=0; i<x.size(); i++)
     {
-        helper::gl::Axis::draw(x[i].getCenter(), x[i].getOrientation(), len*showAxisSize.getValue());
+        simulation::getSimulation()->DrawUtility.drawFrame(x[i].getCenter(), x[i].getOrientation(), len*showAxisSize.getValue() );
         gravityCenter += (x[i].getCenter());
     }
 
@@ -555,7 +556,8 @@ void UniformMass<Rigid2fTypes, Rigid2fMass>::draw()
     {
         Quat orient(Vec3d(0,0,1), x[i].getOrientation());
         Vec3d center; center = x[i].getCenter();
-        helper::gl::Axis::draw(center, orient, len);
+
+        simulation::getSimulation()->DrawUtility.drawFrame(center, orient, len*showAxisSize.getValue() );
     }
 }
 
