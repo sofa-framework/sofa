@@ -42,6 +42,7 @@ public:
     typedef typename DataTypes::Real Real;
     typedef typename DataTypes::Coord Point;
     typedef typename DataTypes::Coord Coord;
+
     typedef typename DataTypes::VecCoord VecCoord;
 
     VRPNTracker();
