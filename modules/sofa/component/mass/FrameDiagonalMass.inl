@@ -508,8 +508,6 @@ void FrameDiagonalMass<DataTypes, MassType>::draw()
     if ( !this->getContext()->getShowBehaviorModels() ) return;
     VecCoord& x = *this->mstate->getX();
     if( x.size() != masses.size()) return;
-    glDisable ( GL_LIGHTING );
-    glDisable ( GL_TEXTURE );
     Real totalMass=0;
     RigidTypes::Vec3 gravityCenter;
     for ( unsigned int i=0; i<x.size(); i++ )
@@ -517,7 +515,7 @@ void FrameDiagonalMass<DataTypes, MassType>::draw()
         const Quat& orient = x[i].getOrientation();
         const RigidTypes::Vec3& center = x[i].getCenter();
 
-        helper::gl::Axis::draw ( center, orient, Vec3(1.0, 1.0, 1.0)*showAxisSize.getValue() );
+        simulation::getSimulation()->DrawUtility.drawFrame(center, orient, Vec3d(1,1,1)*showAxisSize.getValue() );
 
         gravityCenter += ( center * masses[i].mass );
         totalMass += masses[i].mass;
