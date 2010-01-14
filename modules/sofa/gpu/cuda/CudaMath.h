@@ -632,7 +632,7 @@ public:
     }
     __device__ void readAoS(const real* data)
     {
-        readAoS(data, blockDim.x)
+        readAoS(data, blockDim.x);
     }
     __device__ void writeAoS(real* data, int bsize)
     {
