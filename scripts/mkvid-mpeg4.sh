@@ -30,7 +30,7 @@ if [ "${TRANSVER:0:4}" == "v1.0" ]; then
   OPTS="$OPTS --use_rgb"
 elif [ "${TRANSVER:0:4}" == "v1.1" ]; then
   echo Identified transcode v1.1.x
-  OPTS="$OPTS --V rgb24"
+  OPTS="$OPTS -V rgb24"
 else
   echo Unknown transcode version $TRANSVER
 fi
