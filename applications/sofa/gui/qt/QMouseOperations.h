@@ -185,6 +185,25 @@ protected:
     QLineEdit *tag;
 };
 
+
+class QAddSutureOperation : public QWidget, public AddSutureOperation
+{
+    Q_OBJECT
+public:
+    QAddSutureOperation();
+    double getStiffness() const;
+    double getDamping() const;
+
+    void configure(PickHandler *picker, MOUSE_BUTTON b)
+    {
+        AddSutureOperation::configure(picker, b);
+    }
+
+protected:
+    QLineEdit *stiffness;
+    QLineEdit *damping;
+};
+
 }
 }
 }

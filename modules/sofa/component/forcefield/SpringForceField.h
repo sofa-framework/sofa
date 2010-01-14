@@ -169,6 +169,18 @@ public:
         this->springs.endEdit();
     }
 
+    void removeSpring(unsigned int idSpring)
+    {
+        if (idSpring >= (this->springs.getValue()).size())
+            return;
+
+        sofa::helper::vector<Spring>& springs = *this->springs.beginEdit();
+        springs.erase(springs.begin() +idSpring );
+        this->springs.endEdit();
+
+        updateMaskStatus();
+    }
+
     void addSpring(int m1, int m2, SReal ks, SReal kd, SReal initlen)
     {
         springs.beginEdit()->push_back(Spring(m1,m2,ks,kd,initlen));
