@@ -117,6 +117,7 @@ protected:
     // Input data parameters
     sofa::core::objectmodel::DataFileName fileRigidDistanceGrid;
     Data< double > scale;
+    Data< Vector3 > translation;
     Data< helper::fixed_array<DistanceGrid::Coord,2> > box;
     Data< int > nx;
     Data< int > ny;
@@ -160,6 +161,11 @@ public:
         return elems[index].translation;
     }
 
+    const Vector3& getInitTranslation() const
+    {
+        return translation.getValue();
+    }
+
     bool isFlipped() const
     {
         return flipNormals.getValue();
@@ -191,6 +197,9 @@ public:
 
     /// Set new grid and transform, keeping the old state to estimate velocity
     void setNewState(double dt, DistanceGrid* grid, const Matrix3& rotation, const Vector3& translation);
+
+    /// Update transformation matrices from current rigid state
+    void updateState();
 
     // -- CollisionModel interface
 

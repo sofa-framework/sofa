@@ -69,6 +69,7 @@ RigidDistanceGridCollisionModel::RigidDistanceGridCollisionModel()
     : modified(true)
     , fileRigidDistanceGrid( initData( &fileRigidDistanceGrid, "fileRigidDistanceGrid", "load distance grid from specified file"))
     , scale( initData( &scale, 1.0, "scale", "scaling factor for input file"))
+    , translation( initData( &translation, "translation", "translation to apply to input file"))
     , box( initData( &box, "box", "Field bounding box defined by xmin,ymin,zmin, xmax,ymax,zmax") )
     , nx( initData( &nx, 64, "nx", "number of values on X axis") )
     , ny( initData( &ny, 64, "ny", "number of values on Y axis") )
@@ -117,6 +118,7 @@ void RigidDistanceGridCollisionModel::init()
         std::cout << "RigidDistanceGridCollisionModel: dump grid to "<<dumpfilename.getValue()<<std::endl;
         grid->save(dumpfilename.getFullPath());
     }
+    updateState();
     std::cout << "< RigidDistanceGridCollisionModel::init()"<<std::endl;
 }
 
@@ -155,18 +157,11 @@ void RigidDistanceGridCollisionModel::setNewState(int index, double dt, Distance
     modified = true;
 }
 
-/// Create or update the bounding volume hierarchy.
-void RigidDistanceGridCollisionModel::computeBoundingTree(int maxDepth)
+/// Update transformation matrices from current rigid state
+void RigidDistanceGridCollisionModel::updateState()
 {
-    CubeModel* cubeModel = this->createPrevious<CubeModel>();
-
-    if (!modified && !isMoving() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
-
-    updateGrid();
-
-    const bool flipped = isFlipped();
-
-    cubeModel->resize(size);
+    const Vector3& initTranslation = this->translation.getValue();
+    bool useInitTranslation = (initTranslation != DistanceGrid::Coord());
     for (int i=0; i<size; i++)
     {
         //static_cast<DistanceGridCollisionElement*>(elems[i])->recalcBBox();
@@ -176,8 +171,35 @@ void RigidDistanceGridCollisionModel::computeBoundingTree(int maxDepth)
             const RigidTypes::Coord& xform = (*rigid->getX())[i];
             elems[i].translation = xform.getCenter();
             xform.getOrientation().toMatrix(elems[i].rotation);
+            if (useInitTranslation)
+                elems[i].translation += elems[i].rotation * initTranslation;
             elems[i].isTransformed = true;
         }
+        else if (useInitTranslation)
+        {
+            elems[i].translation = initTranslation;
+            elems[i].rotation.identity();
+            elems[i].isTransformed = true;
+        }
+    }
+}
+
+/// Create or update the bounding volume hierarchy.
+void RigidDistanceGridCollisionModel::computeBoundingTree(int maxDepth)
+{
+    CubeModel* cubeModel = this->createPrevious<CubeModel>();
+
+    if (!modified && !isMoving() && !cubeModel->empty()) return; // No need to recompute BBox if immobile
+
+    updateGrid();
+    updateState();
+
+    const bool flipped = isFlipped();
+    cubeModel->resize(size);
+    for (int i=0; i<size; i++)
+    {
+        //static_cast<DistanceGridCollisionElement*>(elems[i])->recalcBBox();
+        Vector3 emin, emax;
         if (elems[i].isTransformed)
         {
             //std::cout << "Grid "<<i<<" transformation: <"<<elems[i].rotation<<"> x + <"<<elems[i].translation<<">"<<std::endl;
