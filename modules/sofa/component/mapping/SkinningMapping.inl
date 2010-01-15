@@ -41,6 +41,7 @@
 #include <sofa/helper/DualQuat.h>
 #include <sofa/component/topology/HexahedronGeodesicalDistance.inl>
 #include <sofa/component/topology/DynamicSparseGridTopologyContainer.h>
+#include <sofa/simulation/common/Simulation.h>
 #endif
 
 namespace sofa
@@ -1144,19 +1145,20 @@ void SkinningMapping<BasicMapping>::draw()
         if( mesh)
         {
             glPushAttrib( GL_LIGHTING_BIT || GL_COLOR_BUFFER_BIT || GL_ENABLE_BIT);
-            glDisable( GL_LIGHTING);
-            glBegin( GL_TRIANGLES);
+            std::vector< defaulttype::Vector3 > points;
+            std::vector< defaulttype::Vector3 > normals;
+            std::vector< defaulttype::Vec<4,float> > colors;
             const TriangleSetTopologyContainer::SeqTriangles& tri = mesh->getTriangles();
             for( unsigned int i = 0; i < mesh->getNumberOfTriangles(); i++)
             {
                 for( unsigned int j = 0; j < 3; j++)
                 {
                     double color = (m_coefs[showFromIndex.getValue()%m_coefs.size()][tri[i][j]] - minValue) / (maxValue - minValue);
-                    glColor3f( color, 0.0, 0.0);
-                    glVertex3f( xto[tri[i][j]][0], xto[tri[i][j]][1], xto[tri[i][j]][2]);
+                    points.push_back(defaulttype::Vector3(xto[tri[i][j]][0],xto[tri[i][j]][1],xto[tri[i][j]][2]));
+                    colors.push_back(defaulttype::Vec<4,float>(color, 0.0, 0.0,1.0));
                 }
             }
-            glEnd();
+            simulation::getSimulation()->DrawUtility.drawTriangles(points, normals, colors);
             glPopAttrib();
         }
         else // Show by points
