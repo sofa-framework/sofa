@@ -1510,8 +1510,7 @@ void SkinningMapping<BasicMapping>::removeFrame( const unsigned int /*index*/)
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::insertFrame( const Coord& pos, const Quat& rot, double distMax)
 {
-    wheightingType.setValue( WEIGHT_INVDIST_SQUARE);
-    distanceType.setValue( DISTANCE_EUCLIDIAN);
+    changeSettingsDueToInsertion();
 
     if (!this->toModel->getX0()) return;
     // Get references
@@ -1774,6 +1773,8 @@ void SkinningMapping<BasicMapping>::updateDataAfterInsertion()
     vector<vector<double> >& m_coefs = * ( coefs.beginEdit() );
     vector<double>& radius = (*newFrameWeightingRadius.beginEdit());
 
+    changeSettingsDueToInsertion();
+
     //TODO fix it ! Synchro between many SMapping
     if( radius.size() != xfrom.size())
     {
@@ -1918,6 +1919,14 @@ void SkinningMapping<BasicMapping>::temporaryUpdateWeightsAfterInsertion( VVD& w
 	}
 }
 */
+
+template <class BasicMapping>
+void SkinningMapping<BasicMapping>::changeSettingsDueToInsertion()
+{
+    wheightingType.setValue( WEIGHT_INVDIST_SQUARE);
+    distanceType.setValue( DISTANCE_EUCLIDIAN);
+}
+
 #endif
 
 } // namespace mapping
