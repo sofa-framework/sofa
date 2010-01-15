@@ -517,13 +517,20 @@ void FrameDiagonalMass<DataTypes, MassType>::addForce ( VecDeriv& f, const VecCo
         {
             // Update the mass
             MassVector& vecMasses0 = * ( f_mass0.beginEdit() );
-            updateMass ( vecMasses0, *J, *vol, *volMass );
+            MassVector& vecMasses = * ( f_mass.beginEdit() );
+            updateMass ( vecMasses, *J, *vol, *volMass );
+            for( unsigned int i = xfrom.size()-1; i < xfrom.size(); ++i)
+                rotateM( vecMasses0[i].inertiaMatrix, vecMasses[i].inertiaMatrix, xfrom0[i].getOrientation(), xfrom[i].getOrientation());
             f_mass0.endEdit();
+            f_mass.endEdit();
         }
-        vecMass.resize( xfrom.size());
-        for( unsigned int i = 0; i < xfrom.size(); ++i)
-            rotateM( vecMass[i].inertiaMatrix, vecMass0[i].inertiaMatrix, xfrom[i].getOrientation(), xfrom0[i].getOrientation());
-        f_mass.endEdit();
+        else
+        {
+            vecMass.resize( xfrom.size());
+            for( unsigned int i = 0; i < xfrom.size(); ++i)
+                rotateM( vecMass[i].inertiaMatrix, vecMass0[i].inertiaMatrix, xfrom[i].getOrientation(), xfrom0[i].getOrientation());
+            f_mass.endEdit();
+        }
     }
     else
     {
