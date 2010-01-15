@@ -126,6 +126,7 @@ public:
     } TopologyType;
 
     VecMass f_mass;
+    VecMass f_mass0;
     /// the mass density used to compute the mass from a mesh topology and geometry
     Data< Real > m_massDensity;
 
@@ -134,6 +135,7 @@ public:
     Data< float > showAxisSize;
     core::objectmodel::DataFileName fileMass;
     Data< float > damping;
+    Data<bool> rotateMass;
 
 protected:
     //VecMass masses;
@@ -220,8 +222,10 @@ private:
     VD* volMass;
     VVMat36* J;
 
-    void updateMass ( const VVMat36& J, const VD& vol, const VD& volmass);
-
+    void updateMass ( MassVector& vecMass, const VVMat36& J, const VD& vol, const VD& volmass);
+    void rotateM( Mat66& M, const Mat66& M0, const Quat& q, const Quat& q0);
+    void Multi_Q( Quat& q, const Quat& q1, const Quat& q2);
+    void QtoR( Mat33& M, const Quat& q);
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_MASS_FRAMEDIAGONALMASS_CPP)

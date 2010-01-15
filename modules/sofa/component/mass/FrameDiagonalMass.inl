@@ -259,11 +259,13 @@ using namespace sofa::core::componentmodel::behavior;
 template <class DataTypes, class MassType>
 FrameDiagonalMass<DataTypes, MassType>::FrameDiagonalMass()
     : f_mass ( initData ( &f_mass, "mass", "values of the particles masses" ) )
+    , f_mass0 ( initData ( &f_mass0, "mass0", "values of the particles masses" ) )
     , m_massDensity ( initData ( &m_massDensity, ( Real ) 1.0,"massDensity", "mass density that allows to compute the  particles masses from a mesh topology and geometry.\nOnly used if > 0" ) )
     , showCenterOfGravity ( initData ( &showCenterOfGravity, false, "showGravityCenter", "display the center of gravity of the system" ) )
     , showAxisSize ( initData ( &showAxisSize, 1.0f, "showAxisSizeFactor", "factor length of the axis displayed (only used for rigids)" ) )
     , fileMass( initData(&fileMass,  "fileMass", "File to specify the mass" ) )
     , damping ( initData ( &damping, 0.0f, "damping", "add a force which is \"- damping * speed\"" ) )
+    , rotateMass ( initData ( &rotateMass, false, "rotateMass", "Rotate mass matrices instead of computing it at each step." ) )
     , topologyType ( TOPOLOGY_UNKNOWN )
 {
     this->addAlias(&fileMass,"filename");
@@ -299,6 +301,12 @@ void FrameDiagonalMass<DataTypes, MassType>::resize ( int vsize )
     MassVector& masses = *f_mass.beginEdit();
     masses.resize ( vsize );
     f_mass.endEdit();
+    if( rotateMass.getValue())
+    {
+        MassVector& masses0 = *f_mass0.beginEdit();
+        masses0.resize ( vsize );
+        f_mass0.endEdit();
+    }
 }
 
 // -- Mass interface
@@ -420,7 +428,21 @@ void FrameDiagonalMass<DataTypes, MassType>::reinit()
     unsigned int nbPt = this->volMass->size();
     for( unsigned int i = 0; i < nbPt; i++) (*this->volMass)[i] = m_massDensity.getValue();
 
-    updateMass ( *J, *vol, *volMass );
+    if( rotateMass.getValue())
+    {
+        MassVector& vecMass0 = * ( f_mass0.beginEdit() );
+        updateMass ( vecMass0, *J, *vol, *volMass );
+        f_mass.endEdit();
+        MassVector& vecMass = * ( f_mass.beginEdit() );
+        updateMass ( vecMass, *J, *vol, *volMass );
+        f_mass.endEdit();
+    }
+    else
+    {
+        MassVector& vecMass = * ( f_mass.beginEdit() );
+        updateMass ( vecMass, *J, *vol, *volMass );
+        f_mass.endEdit();
+    }
 
     Inherited::reinit();
 }
@@ -444,7 +466,21 @@ void FrameDiagonalMass<DataTypes, MassType>::bwdInit()
     unsigned int nbPt = this->volMass->size();
     for( unsigned int i = 0; i < nbPt; i++) (*this->volMass)[i] = m_massDensity.getValue();
 
-    updateMass ( *J, *vol, *volMass );
+    if( rotateMass.getValue())
+    {
+        MassVector& vecMass0 = * ( f_mass0.beginEdit() );
+        updateMass ( vecMass0, *J, *vol, *volMass );
+        f_mass.endEdit();
+        MassVector& vecMass = * ( f_mass.beginEdit() );
+        updateMass ( vecMass, *J, *vol, *volMass );
+        f_mass.endEdit();
+    }
+    else
+    {
+        MassVector& vecMass = * ( f_mass.beginEdit() );
+        updateMass ( vecMass, *J, *vol, *volMass );
+        f_mass.endEdit();
+    }
 }
 
 template <class DataTypes, class MassType>
@@ -470,8 +506,32 @@ void FrameDiagonalMass<DataTypes, MassType>::addGravityToV ( double dt )
 template <class DataTypes, class MassType>
 void FrameDiagonalMass<DataTypes, MassType>::addForce ( VecDeriv& f, const VecCoord& /*x*/, const VecDeriv& v )
 {
-    // Update the mass
-    updateMass ( *J, *vol, *volMass );
+    if( rotateMass.getValue())
+    {
+        // Rotate the mass
+        const VecCoord& xfrom0 = *this->mstate->getX0();
+        const VecCoord& xfrom = *this->mstate->getX();
+        const MassVector& vecMass0 = f_mass0.getValue();
+        MassVector& vecMass = (*f_mass.beginEdit());
+        if( vecMass0.size() != xfrom.size())
+        {
+            // Update the mass
+            MassVector& vecMasses0 = * ( f_mass0.beginEdit() );
+            updateMass ( vecMasses0, *J, *vol, *volMass );
+            f_mass0.endEdit();
+        }
+        vecMass.resize( xfrom.size());
+        for( unsigned int i = 0; i < xfrom.size(); ++i)
+            rotateM( vecMass[i].inertiaMatrix, vecMass0[i].inertiaMatrix, xfrom[i].getOrientation(), xfrom0[i].getOrientation());
+        f_mass.endEdit();
+    }
+    else
+    {
+        // Update the mass
+        MassVector& vecMass = * ( f_mass.beginEdit() );
+        updateMass ( vecMass, *J, *vol, *volMass );
+        f_mass.endEdit();
+    }
 
     //if gravity was added separately (in solver's "solve" method), then nothing to do here
     if ( this->m_separateGravity.getValue() )
@@ -580,7 +640,7 @@ bool FrameDiagonalMass<DataTypes, MassType>::load ( const char *filename )
 
 
 template<class DataTypes, class MassType>
-void FrameDiagonalMass<DataTypes, MassType>::updateMass ( const VVMat36& J, const VD& vol, const VD& volmass )
+void FrameDiagonalMass<DataTypes, MassType>::updateMass ( MassVector& vecMass, const VVMat36& J, const VD& vol, const VD& volmass )
 {
     // Mass_ij=sum(d.p.Ji^TTJj)
     int i,j,nbDOF=(*this->mstate->getX()).size(),nbP=vol.size();
@@ -588,11 +648,10 @@ void FrameDiagonalMass<DataTypes, MassType>::updateMass ( const VVMat36& J, cons
     Mat66 JJT;
 
     this->resize ( nbDOF );
-    MassVector& vecMass = * ( f_mass.beginEdit() );
     //serr << "Mass computation: nbDof: " << nbDOF << ", nbPt " << nbP << sendl;
     for ( i=0; i<nbDOF; i++ )
     {
-        vecMass[i].mass = 1.0;//volmass[i] * vol[i]; (in skinning method, mass are computed depending on each point and so, are directly stored in the inertia matrix)
+        vecMass[i].mass = 1.0;//volmass[i] * vol[i]; (in skinning method, each point mass is distributed on frames depending on weights and so, are directly stored in the inertia matrix)
         Mat66& frameMass = vecMass[i].inertiaMatrix;
         // Init the diagonal block 'i'
         for ( unsigned int l = 0; l < 6; l++ )
@@ -618,8 +677,59 @@ void FrameDiagonalMass<DataTypes, MassType>::updateMass ( const VVMat36& J, cons
         vecMass[i].recalc();
         //serr << "Mass["<<i<<"]: " << vecMass[i] << sendl;
     }
-    f_mass.endEdit();
 }
+
+template<class DataTypes, class MassType>
+void FrameDiagonalMass<DataTypes, MassType>::rotateM( Mat66& M, const Mat66& M0, const Quat& q, const Quat& q0)
+{
+    int i,j,k;
+
+    Quat q0_inv; q0_inv[0]=-q0[0]; q0_inv[1]=-q0[1]; q0_inv[2]=-q0[2]; q0_inv[3]=q0[3];
+    Quat qrel; Multi_Q( qrel, q, q0_inv); // qrel=q.q0*
+    Mat33 R; QtoR( R, qrel);
+    Mat66 M1; M1.fill(0);
+    M.fill(0);
+    for(i=0; i<3; i++) for(j=0; j<3; j++) for(k=0; k<3; k++)
+            {
+                M1[i][j]+=R[i][k]*M0[k][j];
+                M1[i][j+3]+=R[i][k]*M0[k][j+3];
+                M1[i+3][j]+=R[i][k]*M0[k+3][j];
+                M1[i+3][j+3]+=R[i][k]*M0[k+3][j+3];
+            }
+    for(i=0; i<3; i++) for(j=0; j<3; j++) for(k=0; k<3; k++)
+            {
+                M[i][j]+=M1[i][k]*R[j][k];
+                M[i][j+3]+=M1[i][k+3]*R[j][k];
+                M[i+3][j]+=M1[i+3][k]*R[j][k];
+                M[i+3][j+3]+=M1[i+3][k+3]*R[j][k];
+            }
+}
+
+template<class DataTypes, class MassType>
+void FrameDiagonalMass<DataTypes, MassType>::Multi_Q( Quat& q, const Quat& q1, const Quat& q2)
+{
+    Vec3 qv1; qv1[0]=q1[0]; qv1[1]=q1[1]; qv1[2]=q1[2];
+    Vec3 qv2; qv2[0]=q2[0]; qv2[1]=q2[1]; qv2[2]=q2[2];
+    q[3]=q1[3]*q2[3]-qv1*qv2;
+    Vec3 cr=cross(qv1,qv2); q[0]=cr[0]; q[1]=cr[1]; q[2]=cr[2];
+    q[0]+=q2[3]*q1[0]+q1[3]*q2[0];
+    q[1]+=q2[3]*q1[1]+q1[3]*q2[1];
+    q[2]+=q2[3]*q1[2]+q1[3]*q2[2];
+}
+
+template<class DataTypes, class MassType>
+void FrameDiagonalMass<DataTypes, MassType>::QtoR( Mat33& M, const Quat& q)
+{
+// q to M
+    double xs = q[0]*2., ys = q[1]*2., zs = q[2]*2.;
+    double wx = q[3]*xs, wy = q[3]*ys, wz = q[3]*zs;
+    double xx = q[0]*xs, xy = q[0]*ys, xz = q[0]*zs;
+    double yy = q[1]*ys, yz = q[1]*zs, zz = q[2]*zs;
+    M[0][0] = 1.0 - (yy + zz); M[0][1]= xy - wz; M[0][2] = xz + wy;
+    M[1][0] = xy + wz; M[1][1] = 1.0 - (xx + zz); M[1][2] = yz - wx;
+    M[2][0] = xz - wy; M[2][1] = yz + wx; M[2][2] = 1.0 - (xx + yy);
+}
+
 
 } // namespace mass
 
