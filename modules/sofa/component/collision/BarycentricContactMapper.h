@@ -447,7 +447,8 @@ public:
 
     int addPoint(const Coord& P, int index, Real& r)
     {
-        int i = Inherit::addPoint(P, index, r);
+        Coord trans = this->model->getInitTranslation();
+        int i = Inherit::addPoint(P+trans, index, r);
         if (!this->mapping)
         {
             MCollisionModel* model = this->model;
