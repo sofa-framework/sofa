@@ -66,9 +66,10 @@ using sofa::component::topology::Coefs;
 #define DISTANCE_GEODESIC 1
 #define DISTANCE_HARMONIC 2
 
-#define WEIGHT_LINEAR 0
+#define WEIGHT_NONE 0
 #define WEIGHT_INVDIST_SQUARE 1
-#define WEIGHT_HERMITE 2
+#define WEIGHT_LINEAR 2 // TODO use the two nearest 'from' primitives
+#define WEIGHT_HERMITE 3 // TODO use the two nearest 'from' primitives
 
 #define INTERPOLATION_LINEAR 0
 #define INTERPOLATION_DUAL_QUATERNION 1
@@ -176,6 +177,7 @@ public:
     Data<bool> showDefTensors;
     Data<double> showDefTensorScale;
     Data<unsigned int> showFromIndex;
+    Data<bool> showDistancesValues;
     Data<bool> showCoefs;
     Data<bool> showCoefsValues;
     Data<bool> showReps;
@@ -185,6 +187,8 @@ public:
 #ifdef SOFA_DEV
     HexahedronGeodesicalDistance< GeoType>* geoDist;
     Data<double> newFrameMinDist;
+    Data<vector<double> > newFrameWeightingRadius;
+    Data<double> newFrameDefaultCutOffDistance;
 #endif
 
 protected:
@@ -215,9 +219,11 @@ public:
 
     // Weights
     void setWeightsToHermite();
-    void setWieghtsToInvDist();
+    void setWeightsToInvDist();
     void setWeightsToLinear();
     inline void updateWeights();
+    inline void getDistances( int xfromBegin);
+    //inline void temporaryUpdateWeightsAfterInsertion( VVD& w, VecVecCoord& dw, int xfromBegin);
 
     // Interpolations
     void setInterpolationToLinear();
@@ -270,7 +276,7 @@ public:
     void Multi_Q(Quat& q, const Vec4& q1, const Quat& q2);
 
     void removeFrame( const unsigned int index);
-    void insertFrame( const Coord& pos, const Quat& rot);
+    void insertFrame( const Coord& pos, const Quat& rot, double distMax = 0.0);
     bool inverseSkinning( InCoord& X0, InCoord& X, const InCoord& Xtarget);
     void computeWeight( VVD& w, VecVecCoord& dw, const Coord& x0);
     void updateDataAfterInsertion();
