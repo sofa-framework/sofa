@@ -78,7 +78,7 @@ SkinningMapping<BasicMapping>::SkinningMapping ( In* from, Out* to )
 #ifdef SOFA_DEV
     , newFrameMinDist ( initData ( &newFrameMinDist, 0.1, "newFrameMinDist","Minimal distance to insert a new frame." ) )
     , newFrameWeightingRadius ( initData ( &newFrameWeightingRadius, "newFrameWeightingRadius","new frame weightin radius." ) )
-    , newFrameDefaultCutOffDistance ( initData ( &newFrameDefaultCutOffDistance, 0.1, "newFrameDefaultCutOffDistance","new frame defaultCut off distance." ) )
+    , newFrameDefaultCutOffDistance ( initData ( &newFrameDefaultCutOffDistance, (double)0xFFF, "newFrameDefaultCutOffDistance","new frame defaultCut off distance." ) )
 #endif
     , wheightingType ( initData ( &wheightingType, WEIGHT_INVDIST_SQUARE, "wheightingType","Weighting computation method." ) )
     , interpolationType ( initData ( &interpolationType, INTERPOLATION_LINEAR, "interpolationType","Interpolation method." ) )
