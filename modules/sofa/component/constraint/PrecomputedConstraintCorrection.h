@@ -78,6 +78,7 @@ public:
     DataPtr<bool> f_restRotations;
     Data<bool> recompute;
     Data<std::string> filePrefix;
+    //Data<bool> newUnbuilt;
 
     PrecomputedConstraintCorrection(behavior::MechanicalState<DataTypes> *mm = NULL);
 
@@ -185,6 +186,12 @@ public:
     sofa::helper::vector<unsigned int>* localConstraintId;
     linearsolver::FullMatrix<Real> localW;
     double* constraint_force;
+
+// NEW METHOD FOR UNBUILT
+    // new :  for non building the constraint system during solving process //
+    VecDeriv constraint_D, constraint_F;
+    std::list<int> constraint_dofs;		// list of indices of each point which is involve with constraint
+
 
 public:
     Real* getInverse()
