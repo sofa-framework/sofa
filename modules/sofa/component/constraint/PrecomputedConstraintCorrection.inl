@@ -51,6 +51,9 @@
 //#include <glib.h>
 #include <sstream>
 #include <list>
+#include <iomanip>
+
+#define NEW_METHOD_UNBUILT
 
 namespace sofa
 {
@@ -992,10 +995,22 @@ void PrecomputedConstraintCorrection<defaulttype::Vec1fTypes>::rotateResponse();
 template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(double * f, std::list<int>& /*renumbering*/)
 {
+
+
     constraint_force = f;
     VecConst& constraints = *mstate->getC();
     localConstraintId = &(mstate->getConstraintId());
     unsigned int numConstraints = constraints.size();
+
+#ifdef NEW_METHOD_UNBUILT
+    constraint_D.clear();
+    constraint_D.resize(mstate->getSize());
+
+    constraint_F.clear();
+    constraint_F.resize(mstate->getSize());
+
+    constraint_dofs.clear();
+#endif
 
     /////////// The constraints on the same nodes are gathered //////////////////////
     //gatherConstraints();
@@ -1008,7 +1023,7 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
 
 
     /////////// Which node are involved with the contact ?/////
-    std::list<int> activeDof;
+
     for(unsigned int c1 = 0; c1 < numConstraints; c1++)
     {
         ConstConstraintIterator itConstraint;
@@ -1016,17 +1031,55 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
         for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
         {
             unsigned int dof = itConstraint->first;
-            activeDof.push_back(dof);
+            constraint_dofs.push_back(dof);
         }
     }
+
     //unsigned int numNodes1 = activeDof.size();
     //sout<< "numNodes : avant = "<<numNodes1;
-    activeDof.sort();
-    activeDof.unique();
+    constraint_dofs.sort();
+    constraint_dofs.unique();
     //	unsigned int numNodes = activeDof.size();
     //sout<< " apres = "<<numNodes<<sendl;
 
+    id_to_localIndex.clear();
+    for(unsigned int i=0; i<numConstraints; ++i)
+    {
+        unsigned int c = (*localConstraintId)[i];
+        if (c >= id_to_localIndex.size()) id_to_localIndex.resize(c+1,-1);
+        if (id_to_localIndex[c] != -1)
+            serr << "duplicate entry in constraints for id " << c << " : " << id_to_localIndex[c] << " + " << i << sendl;
+        id_to_localIndex[c] = i;
 
+#ifdef NEW_METHOD_UNBUILT  // Fill constraint_F => provide the present constraint forces
+        double fC = f[c];
+        // debug
+        //std::cout<<"f["<<indexC<<"] = "<<fC<<std::endl;
+
+        if (fC != 0.0)
+        {
+            ConstraintIterator itConstraint;
+            std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[i].data();
+
+            for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
+            {
+
+                unsigned int dof = itConstraint->first;
+                Deriv n = itConstraint->second;
+                constraint_F[dof] +=n * fC;
+
+                // TODO : remplacer pour faire + rapide !!
+                setConstraintDForce(&fC, (int)c, (int)c, true);
+
+            }
+        }
+
+#endif
+
+    }
+
+
+#ifndef NEW_METHOD_UNBUILT
     ////////////////////////////////////////////////////////////
     unsigned int offset, offset2;
     unsigned int ii,jj, curRowConst, curColConst, it;
@@ -1034,11 +1087,13 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
     //int indexCurColConst, indexCurRowConst;
     it=0;
 
+
+
     //////////////////////////////////////////
     //std::vector<Deriv> sparseCompliance;
-    _sparseCompliance.resize(activeDof.size()*numConstraints);
+    _sparseCompliance.resize(constraint_dofs.size()*numConstraints);
     std::list<int>::iterator IterateurListe;
-    for(IterateurListe=activeDof.begin(); IterateurListe!=activeDof.end(); IterateurListe++)
+    for(IterateurListe=constraint_dofs.begin(); IterateurListe!=constraint_dofs.end(); IterateurListe++)
     {
         int NodeIdx = (*IterateurListe);
         _indexNodeSparseCompliance[NodeIdx]=it;
@@ -1069,15 +1124,8 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
         }
     }
 
-    id_to_localIndex.clear();
-    for(unsigned int i=0; i<numConstraints; ++i)
-    {
-        unsigned int c = (*localConstraintId)[i];
-        if (c >= id_to_localIndex.size()) id_to_localIndex.resize(c+1,-1);
-        if (id_to_localIndex[c] != -1)
-            serr << "duplicate entry in constraints for id " << c << " : " << id_to_localIndex[c] << " + " << i << sendl;
-        id_to_localIndex[c] = i;
-    }
+
+
 
     localW.resize(numConstraints,numConstraints);
 
@@ -1117,6 +1165,9 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
         }
         */
     }
+
+#endif
+
 }
 
 template<class DataTypes>
@@ -1128,25 +1179,287 @@ bool PrecomputedConstraintCorrection<DataTypes>::hasConstraintNumber(int index)
 template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::addConstraintDisplacement(double *d, int begin,int end)
 {
-    unsigned int numConstraints = localConstraintId->size();
+#ifdef NEW_METHOD_UNBUILT
+
+    const VecConst& constraints = *mstate->getC();
+
+
+
+
     for (int id_=begin; id_<=end; id_++)
     {
         int c = id_to_localIndex[id_];
+
+        ConstConstraintIterator itConstraint;
+        std::pair< ConstConstraintIterator, ConstConstraintIterator > iter=constraints[c].data();
+        double dc = d[id_];
+
+        for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
+        {
+            Deriv n = itConstraint->second;
+            dc += n * constraint_D[itConstraint->first];
+        }
+        d[id_] = dc;
+    }
+
+
+
+#else
+    unsigned int numConstraints = localConstraintId->size();
+
+    for (int id_=begin; id_<=end; id_++)
+    {
+        int c = id_to_localIndex[id_];
+
         double dc = d[id_];
         for (unsigned int j=0; j<numConstraints; ++j)
             dc += localW.element(c,j) * constraint_force[(*localConstraintId)[j]];
+
+
         d[id_] = dc;
     }
+#endif
 }
 
 template<class DataTypes>
+#ifdef NEW_METHOD_UNBUILT
+void PrecomputedConstraintCorrection<DataTypes>::setConstraintDForce(double * df, int begin, int end, bool update)
+#else
 void PrecomputedConstraintCorrection<DataTypes>::setConstraintDForce(double * /*df*/, int /*begin*/, int /*end*/, bool /*update*/)
+#endif
 {
+
+#ifdef NEW_METHOD_UNBUILT
+
+    /// set a force difference on a set of constraints (between constraint number "begin" and constraint number "end"
+    /// if update is false, do nothing
+    /// if update is true, it computes the displacements due to this delta of force.
+    /// As the contact are uncoupled, a displacement is obtained only on dof involved with the constraints
+
+    const VecConst& constraints = *mstate->getC();
+
+    if (!update)
+        return;
+    // debug
+    //if (end<6)
+    //    std::cout<<"addDf - df["<<begin<<" to "<<end<<"] ="<< df[begin] << " " << df[begin+1] << " "<< df[begin+2] << std::endl;
+
+
+
+
+    //for (unsigned int i=0; i< force.size(); i++)
+    //    sout << "f("<<i<<")="<<force[i]<<sendl;
+
+    std::list<int>::iterator IterateurListe;
+    unsigned int i;
+    unsigned int offset, offset2;
+
+    for ( int id_=begin; id_<=end; id_++)
+    {
+        int c = id_to_localIndex[id_];
+
+        ConstConstraintIterator itConstraint;
+        std::pair< ConstConstraintIterator, ConstConstraintIterator > iter=constraints[c].data();
+        for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
+        {
+            Deriv n = itConstraint->second;
+            unsigned int dof = itConstraint->first;
+
+            constraint_F[dof] += n * df[id_];
+
+            for (i=0; i< dof_on_node; i++)
+            {
+                Fbuf[i] = n[i] * df[id_];
+            }
+
+            for(IterateurListe=constraint_dofs.begin(); IterateurListe!=constraint_dofs.end(); IterateurListe++)
+            {
+                int dof2 = (*IterateurListe);
+                offset = dof2 * dof_on_node * nbCols + dof*dof_on_node;
+                for (unsigned int j=0; j< dof_on_node; j++)
+                {
+                    offset2 =offset+ j*nbCols;
+                    DXbuf=0.0;
+                    for (i=0; i< dof_on_node; i++)
+                    {
+                        DXbuf += appCompliance[ offset2 + i ] * Fbuf[i];
+                    }
+                    constraint_D[dof2][j]+=DXbuf;
+
+
+                }
+            }
+
+        }
+    }
+
+
+
+
+
+
+
+
+
+#endif
 }
 
 template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, int begin, int end)
+
 {
+#ifdef NEW_METHOD_UNBUILT
+
+    VecConst& constraints = *mstate->getC();
+
+    int numLocalConstraints = 0;
+
+
+
+    std::list<int> localActiveDof;
+    std::list<int>::iterator IterateurListe;
+    std::vector<int> constraintLocalID;
+
+
+
+
+    for ( int id_=begin; id_<=end; id_++)
+    {
+        numLocalConstraints++;
+        int c = id_to_localIndex[id_];
+        constraintLocalID.push_back(id_);
+
+        ConstConstraintIterator itConstraint;
+        std::pair< ConstConstraintIterator, ConstConstraintIterator > iter=constraints[c].data();
+        for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
+        {
+
+            unsigned int dof = itConstraint->first;
+            localActiveDof.push_back(dof);
+        }
+    }
+
+
+    localActiveDof.sort();
+    localActiveDof.unique();
+
+
+
+    ////////////////////////////////////////////////////////////
+    unsigned int offset, offset2;
+    unsigned int ii,jj;
+    Deriv Vbuf;
+    int indexColInMatrixW, indexRowInMatrixW;
+    int it=0;
+    int it_localActiveDof=0;
+
+    _sparseCompliance.resize(localActiveDof.size()*numLocalConstraints);
+
+
+
+
+
+
+
+
+    for(IterateurListe=localActiveDof.begin(); IterateurListe!=localActiveDof.end(); IterateurListe++)
+    {
+        int dof1 = (*IterateurListe);
+        _indexNodeSparseCompliance[dof1] = it_localActiveDof;
+        //_indexNodeSparseCompliance.push_back(dof1);
+        it_localActiveDof++;
+
+        for ( int id_=begin; id_<=end; id_++)
+        {
+
+            int c = id_to_localIndex[id_];
+
+            Vbuf.clear();  // displacement obtained on the active node  dof 1  when apply contact force 1 on constraint c
+
+            ConstConstraintIterator itConstraint;
+            std::pair< ConstConstraintIterator, ConstConstraintIterator > iter=constraints[c].data();
+            for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
+            {
+                unsigned int dof2 = itConstraint->first;
+                const Deriv n2 = itConstraint->second;
+
+                offset = dof_on_node*(dof1 * nbCols +  dof2);
+
+                for (ii=0; ii<dof_on_node; ii++)
+                {
+                    offset2 = offset+ii*nbCols;
+                    for (jj=0; jj<dof_on_node; jj++)
+                    {
+                        Vbuf[ii] += appCompliance[offset2 + jj] * n2[jj];
+                    }
+                }
+
+            }
+            //
+            _sparseCompliance[it]=Vbuf;   // [it = numLocalConstraints *
+            it++;
+        }
+
+    }
+//////////////
+
+
+    ConstConstraintIterator itConstraint;
+    it=0;
+
+
+
+
+
+    for ( int id_=begin; id_<=end; id_++)
+    {
+
+        int c1 = id_to_localIndex[id_];
+        indexRowInMatrixW = mstate->getConstraintId()[c1];//global index of constraint
+
+
+
+        std::pair< ConstConstraintIterator, ConstConstraintIterator > iter=constraints[c1].data();
+        for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
+        {
+            const int NodeIdx = itConstraint->first;
+            const Deriv n1 = itConstraint->second;
+
+            unsigned int c1_loc =(unsigned int) _indexNodeSparseCompliance[NodeIdx];
+
+
+            for(int c2_loc = it; c2_loc < numLocalConstraints; c2_loc++)
+            {
+                int id2 = constraintLocalID[c2_loc];
+                int c2 = id_to_localIndex[id2];
+
+
+                indexColInMatrixW = mstate->getConstraintId()[c2];
+
+
+                double w = n1* _sparseCompliance[c1_loc * numLocalConstraints + c2_loc];
+
+
+
+
+
+                W->add(id_, id2, w);
+                if (id_ != id2)
+                {
+                    W->add(id2, id_, w);
+
+                }
+            }
+        }
+        it++;
+    }
+
+
+
+#else
+
+
+
     for (int id1=begin; id1<=end; id1++)
     {
         int c1 = id_to_localIndex[id1];
@@ -1154,11 +1467,14 @@ void PrecomputedConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(defa
         {
             int c2 = id_to_localIndex[id2];
             Real w = localW.element(c1,c2);
+
             W->add(id1, id2, w);
             if (id1 != id2)
                 W->add(id2, id1, w);
         }
     }
+#endif
+
 }
 
 /////////////////////////////////////////////////////////////////////////////////
