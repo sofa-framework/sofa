@@ -80,6 +80,7 @@ SkinningMapping<BasicMapping>::SkinningMapping ( In* from, Out* to )
     , newFrameMinDist ( initData ( &newFrameMinDist, 0.1, "newFrameMinDist","Minimal distance to insert a new frame." ) )
     , newFrameWeightingRadius ( initData ( &newFrameWeightingRadius, "newFrameWeightingRadius","new frame weightin radius." ) )
     , newFrameDefaultCutOffDistance ( initData ( &newFrameDefaultCutOffDistance, (double)0xFFF, "newFrameDefaultCutOffDistance","new frame defaultCut off distance." ) )
+    , enableSkinning ( initData ( &enableSkinning, true, "enableSkinning","enable skinning." ) )
 #endif
     , wheightingType ( initData ( &wheightingType, WEIGHT_INVDIST_SQUARE, "wheightingType","Weighting computation method." ) )
     , interpolationType ( initData ( &interpolationType, INTERPOLATION_LINEAR, "interpolationType","Interpolation method." ) )
@@ -291,6 +292,8 @@ void SkinningMapping<BasicMapping>::init()
             for (unsigned int i = 0; i < xfrom.size(); ++i) vRadius[i] = 0xFFF;
             newFrameWeightingRadius.endEdit();
         }
+
+        apply0();
 #endif
     }
     else if ( computeWeights == false || coefs.getValue().size() !=0 )
@@ -491,6 +494,8 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
 #ifdef SOFA_DEV
     case INTERPOLATION_DUAL_QUATERNION:
     {
+        if( this->T.size() != in.size()) apply0();
+        if( !enableSkinning.getValue()) return;
         unsigned int i,j,k,l,m,n, nbDOF=in.size(), nbP=out.size();
 
         // allocate temporary variables
@@ -686,6 +691,7 @@ void SkinningMapping<BasicMapping>::applyJ ( typename Out::VecDeriv& out, const 
 #ifdef SOFA_DEV
         case INTERPOLATION_DUAL_QUATERNION:
         {
+            if( !enableSkinning.getValue()) return;
             for ( unsigned int j=0; j<out.size(); j++ )
             {
                 out[j] = Deriv();
@@ -740,6 +746,7 @@ void SkinningMapping<BasicMapping>::applyJ ( typename Out::VecDeriv& out, const 
 #ifdef SOFA_DEV
         case INTERPOLATION_DUAL_QUATERNION:
         {
+            if( !enableSkinning.getValue()) return;
             for ( it=indices.begin(); it!=indices.end(); it++ )
             {
                 const int j= ( int ) ( *it );
@@ -800,6 +807,7 @@ void SkinningMapping<BasicMapping>::applyJT ( typename In::VecDeriv& out, const 
 #ifdef SOFA_DEV
         case INTERPOLATION_DUAL_QUATERNION:
         {
+            if( !enableSkinning.getValue()) return;
             for ( unsigned int j=0; j<in.size(); j++ )
             {
                 for ( unsigned int i=0 ; i<out.size(); i++ )
@@ -858,6 +866,7 @@ void SkinningMapping<BasicMapping>::applyJT ( typename In::VecDeriv& out, const 
 #ifdef SOFA_DEV
         case INTERPOLATION_DUAL_QUATERNION:
         {
+            if( !enableSkinning.getValue()) return;
             for ( it=indices.begin(); it!=indices.end(); it++ )
             {
                 const int j= ( int ) ( *it );
@@ -939,6 +948,7 @@ void SkinningMapping<BasicMapping>::applyJT ( typename In::VecConst& out, const 
 #ifdef SOFA_DEV
     case INTERPOLATION_DUAL_QUATERNION:
     {
+        if( !enableSkinning.getValue()) return;
         const unsigned int numOut=this->J.size();
 
         for ( unsigned int i=0; i<in.size(); i++ )
@@ -1928,7 +1938,300 @@ void SkinningMapping<BasicMapping>::changeSettingsDueToInsertion()
     wheightingType.setValue( WEIGHT_INVDIST_SQUARE);
     distanceType.setValue( DISTANCE_EUCLIDIAN);
 }
+/*
+      template <class BasicMapping>
+      void SkinningMapping<BasicMapping>::apply0()
+{
+        const VecCoord& out = (this->toModel->getX0())?*this->toModel->getX0():*this->toModel->getX();
+        const VecInCoord& in = *this->fromModel->getX0();
+            if( !enableSkinning.getValue()) return;
+            unsigned int i,j,k,l,m,n, nbDOF=in.size(), nbP=out.size();
 
+            // allocate temporary variables
+            VMat86 L ( nbDOF );
+            VMat86 TL ( nbDOF );
+            VDUALQUAT qrel ( nbDOF );
+
+            DUALQUAT q,b,bn,V;
+            Mat33 R,dR,Ainv,E,dE;
+            Mat88 N,dN;
+            Mat86 NTL;
+            Mat38 Q,dQ,QN,QNT;
+            Mat83 W,NW,dNW;
+            Vec3 t;
+            double QEQ0,Q0Q0,Q0,q0V0,q0Ve,qeV0;
+            Mat44 q0q0T,q0qeT,qeq0T,q0V0T,V0q0T,q0VeT,Veq0T,qeV0T,V0qeT;
+            const vector<vector<double> >& w = coefs.getValue();
+            const vector<vector<GeoCoord> >& dw = distGradients;
+            VVec6& e = this->deformationTensors;
+
+            // Resize vectors
+            e.resize ( nbP );
+            this->det.resize ( nbP );
+            this->J0.resize ( nbDOF );
+            this->B.resize ( nbDOF );
+						this->A.resize( nbP);
+						this->ddet.resize( nbDOF);
+            for ( i=0;i<nbDOF;i++ )
+              {
+                this->J0[i].resize ( nbP );
+                this->B[i].resize ( nbP );
+								this->ddet[i].resize( nbP);
+              }
+
+            VecInCoord& xfrom = *this->fromModel->getX();
+
+						if( this->T.size() != nbDOF) updateDataAfterInsertion();
+
+            //apply
+            for ( i=0;i<nbDOF;i++ )
+              {
+                XItoQ ( q,xfrom[i] );		//update DOF quats
+                computeDqL ( L[i],q,xfrom[i].getCenter() );	//update L=d(q)/Omega
+                TL[i]=this->T[i]*L[i];	//update TL
+                computeQrel ( qrel[i], this->T[i], q ); //update qrel=Tq
+              }
+
+            for ( i=0;i<nbP;i++ )
+              {
+                BlendDualQuat ( b,bn,QEQ0,Q0Q0,Q0,i,qrel,w );	//skinning: sum(wTq)
+                computeDqRigid ( R, t, bn );			//update Rigid
+
+                if( !(computeJ.getValue() || computeAllMatrices.getValue())) continue; // if we don't want to compute all the matrices
+
+                computeDqN_constants ( q0q0T, q0qeT, qeq0T, bn );
+                computeDqN ( N, q0q0T, q0qeT, qeq0T, QEQ0, Q0Q0, Q0 );	//update N=d(bn)/d(b)
+                computeDqQ ( Q, bn, initPos[i] );	//update Q=d(P)/d(bn)
+                W.fill ( 0 );
+                for ( j=0;j<nbDOF;j++ )  for ( k=0;k<4;k++ ) for ( l=0;l<3;l++ )
+                        {
+                          W[k][l]+=dw[j][i][l]*qrel[j].q0[k];  //update W=sum(wrel.dw)=d(b)/d(p)
+                          W[k+4][l]+=dw[j][i][l]*qrel[j].qe[k];
+                        }
+                NW=N*W; // update NW
+                QN=Q*N; // update QN
+
+                // grad def = d(P)/d(p0)
+                this->A[i]=R+Q*NW; // update A=R+QNW
+
+                // strain
+                for ( k=0;k<3;k++ )
+                  {
+                    for ( l=0;l<3;l++ )
+                      {
+                        E[k][l]=0;
+                        for ( m=0;m<3;m++ ) E[k][l]+=this->A[i][m][l]*this->A[i][m][k];
+                      }
+                    E[k][k]-=1.;
+                  }
+                for ( k=0;k<3;k++ ) for ( l=0;l<3;l++ ) E[k][l]/=2.; // update E=1/2(A^TA-I)
+                e[i][0]=E[0][0];
+                e[i][1]=E[1][1];
+                e[i][2]=E[2][2];
+                e[i][3]=E[0][1];
+                e[i][4]=E[0][2];
+                e[i][5]=E[1][2]; // column form
+
+                this->det[i]=determinant ( this->A[i] );
+                invertMatrix ( Ainv,this->A[i] );
+
+                for ( j=0;j<nbDOF;j++ )
+                       {
+                      // J = d(P_i)/Omega_j
+                      NTL=N*TL[j]; // update NTL
+                      this->J0[j][i]=Q*NTL;
+                      this->J0[j][i]*=w[j][i]; // Update J=wiQNTL
+
+											if( !computeAllMatrices.getValue()) continue; // if we want to compute just the J matrix
+
+                      QNT=QN*this->T[j]; // Update QNT
+
+                      // B = d(strain)/Omega_j
+                      this->B[j][i].fill ( 0 );
+                      for ( l=0;l<6;l++ )
+                        {
+								        if ( w[j][i]==0 ) dE.fill(0);
+												else
+												{
+                          // d(grad def)/Omega_j
+                          for ( k=0;k<4;k++ )
+                            {
+                              V.q0[k]=NTL[k][l];
+                              V.qe[k]=NTL[k+4][l];
+                            }
+                          computeDqDR ( dR, bn, V );
+                          dE=dR;
+                          computeDqDQ ( dQ, initPos[i], V );
+                          dE+=dQ*NW;
+                          for ( k=0;k<4;k++ )
+                            {
+                              V.q0[k]=TL[j][k][l];
+                              V.qe[k]=TL[j][k+4][l];
+                            }
+                          computeDqDN_constants ( q0V0T, V0q0T, q0V0, q0VeT, Veq0T, q0Ve, qeV0T, V0qeT, qeV0, bn, V );
+                          computeDqDN ( dN, q0q0T, q0qeT, qeq0T, QEQ0, Q0Q0, Q0, q0V0T, V0q0T, q0V0, q0VeT, Veq0T, q0Ve, qeV0T, V0qeT, qeV0, V );
+                          dNW=dN*W;
+                          dE+=Q*dNW;
+                          dE*=w[j][i];
+												}
+                          for ( k=0;k<3;k++ )  for ( m=0;m<3;m++ ) for ( n=0;n<8;n++ ) dE[k][m]+=QNT[k][n]*L[j][n][l]*dw[j][i][m];
+
+                          // determinant derivatives
+                          this->ddet[j][i][l]=0;
+                          for(k=0;k<3;k++)  for(m=0;m<3;m++) this->ddet[j][i][l]+=dE[k][m]*Ainv[m][k];
+                          this->ddet[j][i][l]*=this->det[i];
+
+                          // B=1/2(graddef^T.d(graddef)/Omega_j + d(graddef)/Omega_j^T.graddef)
+                          for ( n=0;n<3;n++ )
+                            {
+                              this->B[j][i][0][l]+= ( dE[n][0]*this->A[i][n][0] );
+                              this->B[j][i][1][l]+= ( dE[n][1]*this->A[i][n][1] );
+                              this->B[j][i][2][l]+= ( dE[n][2]*this->A[i][n][2] );
+                              this->B[j][i][3][l]+=0.5* ( dE[n][0]*this->A[i][n][1]+this->A[i][n][0]*dE[n][1] );
+                              this->B[j][i][4][l]+=0.5* ( dE[n][0]*this->A[i][n][2]+this->A[i][n][0]*dE[n][2] );
+                              this->B[j][i][5][l]+=0.5* ( dE[n][1]*this->A[i][n][2]+this->A[i][n][1]*dE[n][2] );
+                            }
+                        }
+                    }
+              }
+}
+/*/
+template <class BasicMapping>
+void SkinningMapping<BasicMapping>::apply0()
+{
+    const VecCoord& p0 = (this->toModel->getX0())?*this->toModel->getX0():*this->toModel->getX();
+    const VecInCoord& in = *this->fromModel->getX0();
+
+    unsigned int i,j,k,l,m,n, nbDOF=in.size(), nbP=p0.size();
+
+    // allocate temporary variables
+    VMat86 L ( nbDOF );
+    VMat86 TL ( nbDOF );
+
+    DUALQUAT q,bn,V;
+    Mat33 R,dR,Ainv,E,dE;
+    Mat88 N,dN;
+    Mat86 NTL;
+    Mat38 Q,dQ,QN,QNT;
+    Mat83 W,NW,dNW;
+    Vec3 t;
+    double QEQ0=0,Q0Q0,Q0,q0V0,q0Ve,qeV0;
+    Mat44 q0q0T,q0qeT,qeq0T,q0V0T,V0q0T,q0VeT,Veq0T,qeV0T,V0qeT;
+    const vector<vector<double> >& w = coefs.getValue();
+    const vector<vector<GeoCoord> >& dw = distGradients;
+    VVec6& e = this->deformationTensors;
+
+    // Resize vectors
+    e.resize ( nbP );
+    this->det.resize ( nbP );
+    this->J0.resize ( nbDOF );
+    this->B.resize ( nbDOF );
+    this->A.resize( nbP);
+    this->ddet.resize( nbDOF);
+    for ( i=0; i<nbDOF; i++ )
+    {
+        this->J0[i].resize ( nbP );
+        this->B[i].resize ( nbP );
+        this->ddet[i].resize( nbP);
+    }
+
+
+    if( this->T.size() != nbDOF) updateDataAfterInsertion();
+
+    for (unsigned int i = 0; i < 3; ++i) R[i][i] = 1.0;
+    bn.q0[3]=1;
+    q0q0T[3][3]=1;
+
+    //apply
+    for ( i=0; i<nbDOF; i++ )
+    {
+        XItoQ ( q,in[i] );		//update DOF quats
+        computeDqL ( L[i],q,in[i].getCenter() );	//update L=d(q)/Omega
+        TL[i]=this->T[i]*L[i];	//update TL
+    }
+
+    for ( i=0; i<nbP; i++ )
+    {
+        Q0=0; for ( k=0; k<nbDOF; k++ ) Q0+=w[k][i]; Q0Q0=Q0*Q0;
+
+        if( !(computeJ.getValue() || computeAllMatrices.getValue())) continue; // if we don't want to compute all the matrices
+
+        computeDqN ( N, q0q0T, q0qeT, qeq0T, QEQ0, Q0Q0, Q0 );	//update N=d(bn)/d(b)
+        computeDqQ ( Q, bn, initPos[i] );	//update Q=d(P)/d(bn)
+        W.fill ( 0 );
+        for ( j=0; j<nbDOF; j++ )  for ( l=0; l<3; l++ )
+            {
+                W[3][l]+=dw[j][i][l];  //update W=sum(wrel.dw)=d(b)/d(p)
+                W[3+4][l]+=dw[j][i][l];
+            }
+        NW=N*W; // update NW
+        QN=Q*N; // update QN
+
+        // grad def = d(P)/d(p0)
+        this->A[i]=Ainv=R;
+        this->det[i]=1;
+
+        for ( j=0; j<nbDOF; j++ )
+        {
+            // J = d(P_i)/Omega_j
+            NTL=N*TL[j]; // update NTL
+            this->J0[j][i]=Q*NTL;
+            this->J0[j][i]*=w[j][i]; // Update J=wiQNTL
+
+            if( !computeAllMatrices.getValue()) continue; // if we want to compute just the J matrix
+
+            QNT=QN*this->T[j]; // Update QNT
+
+            // B = d(strain)/Omega_j
+            this->B[j][i].fill ( 0 );
+            for ( l=0; l<6; l++ )
+            {
+                if ( w[j][i]==0 ) dE.fill(0);
+                else
+                {
+                    // d(grad def)/Omega_j
+                    for ( k=0; k<4; k++ )
+                    {
+                        V.q0[k]=NTL[k][l];
+                        V.qe[k]=NTL[k+4][l];
+                    }
+                    computeDqDR ( dR, bn, V );
+                    dE=dR;
+                    computeDqDQ ( dQ, initPos[i], V );
+                    dE+=dQ*NW;
+                    for ( k=0; k<4; k++ )
+                    {
+                        V.q0[k]=TL[j][k][l];
+                        V.qe[k]=TL[j][k+4][l];
+                    }
+                    computeDqDN_constants ( q0V0T, V0q0T, q0V0, q0VeT, Veq0T, q0Ve, qeV0T, V0qeT, qeV0, bn, V );
+                    computeDqDN ( dN, q0q0T, q0qeT, qeq0T, QEQ0, Q0Q0, Q0, q0V0T, V0q0T, q0V0, q0VeT, Veq0T, q0Ve, qeV0T, V0qeT, qeV0, V );
+                    dNW=dN*W;
+                    dE+=Q*dNW;
+                    dE*=w[j][i];
+                }
+                for ( k=0; k<3; k++ )  for ( m=0; m<3; m++ ) for ( n=0; n<8; n++ ) dE[k][m]+=QNT[k][n]*L[j][n][l]*dw[j][i][m];
+
+                // determinant derivatives
+                this->ddet[j][i][l]=0;
+                for(k=0; k<3; k++)  for(m=0; m<3; m++) this->ddet[j][i][l]+=dE[k][m]*Ainv[m][k];
+                this->ddet[j][i][l]*=this->det[i];
+
+                // B=1/2(graddef^T.d(graddef)/Omega_j + d(graddef)/Omega_j^T.graddef)
+                for ( n=0; n<3; n++ )
+                {
+                    this->B[j][i][0][l]+= ( dE[n][0]*this->A[i][n][0] );
+                    this->B[j][i][1][l]+= ( dE[n][1]*this->A[i][n][1] );
+                    this->B[j][i][2][l]+= ( dE[n][2]*this->A[i][n][2] );
+                    this->B[j][i][3][l]+=0.5* ( dE[n][0]*this->A[i][n][1]+this->A[i][n][0]*dE[n][1] );
+                    this->B[j][i][4][l]+=0.5* ( dE[n][0]*this->A[i][n][2]+this->A[i][n][0]*dE[n][2] );
+                    this->B[j][i][5][l]+=0.5* ( dE[n][1]*this->A[i][n][2]+this->A[i][n][1]*dE[n][2] );
+                }
+            }
+        }
+    }
+}
+//*/
 #endif
 
 } // namespace mapping
