@@ -138,9 +138,9 @@ void SkinningMapping<BasicMapping>::computeInitPos ( )
 template <class BasicMapping>
 void SkinningMapping<BasicMapping>::computeDistances ()
 {
+#ifdef SOFA_DEV
     VecInCoord& xfrom0 = *this->fromModel->getX0();
 
-#ifdef SOFA_DEV
     GeoVecCoord tmpFrom;
     tmpFrom.resize ( xfrom0.size() );
     for ( unsigned int i = 0; i < xfrom0.size(); i++ )
