@@ -156,7 +156,6 @@ public:
     typedef typename HexahedronGeodesicalDistance< GeoType >::VecVecCoord GeoVecVecCoord;
 
     typedef typename helper::DualQuatd DualQuat;
-
     typedef typename DualQuatStorage<N, Real>::DUALQUAT DUALQUAT;
     typedef typename DualQuatStorage<N, Real>::VDUALQUAT VDUALQUAT;
 #endif
@@ -189,6 +188,7 @@ public:
     Data<double> newFrameMinDist;
     Data<vector<double> > newFrameWeightingRadius;
     Data<double> newFrameDefaultCutOffDistance;
+    Data<bool> enableSkinning;
 #endif
 
 protected:
@@ -281,6 +281,9 @@ public:
     void computeWeight( VVD& w, VecVecCoord& dw, const Coord& x0);
     void updateDataAfterInsertion();
     inline void changeSettingsDueToInsertion();
+
+    void apply0 ();
+
 #endif
 };
 

@@ -221,10 +221,10 @@ private:
     VD* vol;
     VD* volMass;
     VVMat36* J;
+    VVMat36* J0;
 
-    void updateMass ( MassVector& vecMass, const VVMat36& J, const VD& vol, const VD& volmass);
+    void updateMass ( MassType& mass, const VMat36& J, const VD& vol, const VD& volmass );
     void rotateM( Mat66& M, const Mat66& M0, const Quat& q, const Quat& q0);
-    void Multi_Q( Quat& q, const Quat& q1, const Quat& q2);
     void QtoR( Mat33& M, const Quat& q);
 };
 
