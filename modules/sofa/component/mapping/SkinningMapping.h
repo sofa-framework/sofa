@@ -126,7 +126,9 @@ public:
 
 using sofa::helper::vector;
 using sofa::helper::Quater;
+#ifdef SOFA_DEV
 using sofa::component::topology::Coefs;
+#endif
 
 #define DISTANCE_EUCLIDIAN 0
 #define DISTANCE_GEODESIC 1
