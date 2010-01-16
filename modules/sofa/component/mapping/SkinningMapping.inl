@@ -1056,7 +1056,7 @@ void SkinningMapping<BasicMapping>::draw()
     {
         glColor3f( 1.0, 1.0, 1.0);
         for ( unsigned int i=0; i<xto.size(); i++ )
-            sofa::helper::gl::GlText::draw ( (int)(m_coefs[showFromIndex.getValue()%m_coefs.size()][i]), xto[i], showTextScaleFactor.getValue() );
+            sofa::helper::gl::GlText::draw ( (int)(m_coefs[showFromIndex.getValue()%m_coefs.size()][i]*100), xto[i], showTextScaleFactor.getValue() );
     }
 
     // Display gradient for each points

@@ -305,7 +305,6 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                     sofa::helper::vector< Triangle > triangles_to_create;
                     sofa::helper::vector< unsigned int > trianglesIndexList;
                     int nb_elems = toModel->getNbTriangles();
-                    int nb_tris= fromModel->getNbTriangles();
 
                     for (unsigned int i = 0; i <tab.size(); ++i)
                     {

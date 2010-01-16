@@ -66,14 +66,14 @@ void ArticulatedHierarchyBVHController::reset()
 
 void ArticulatedHierarchyBVHController::applyController(void)
 {
-    double ndiv;
+    double ndiv = 0.0;
     int frameInc = 0;
     double alpha;
 
     if (useExternalTime.getValue())
     {
 
-        frame = floor(externalTime.getValue() / ahc->dtbvh) ;
+        frame = (int)(floor(externalTime.getValue() / ahc->dtbvh));
 
         double residu = (externalTime.getValue() / ahc->dtbvh) - (double) frame;
 
