@@ -57,6 +57,7 @@ namespace mapping
 #ifdef SOFA_DEV
 using sofa::component::topology::HexahedronGeodesicalDistance;
 #else
+using sofa::helper::vector;
 // TODO temporary declaration to avoid NO_DEV compilation errors.
 // TODO Create a DataVector type which is a Data<vector<T> > but which is serialized with delimiters.
 template <class T>
@@ -226,6 +227,8 @@ public:
     typedef typename helper::DualQuatd DualQuat;
     typedef typename DualQuatStorage<N, Real>::DUALQUAT DUALQUAT;
     typedef typename DualQuatStorage<N, Real>::VDUALQUAT VDUALQUAT;
+#else
+    typedef Coord GeoCoord;
 #endif
 protected:
     vector<Coord> initPos; // pos: point coord in the world reference frame
