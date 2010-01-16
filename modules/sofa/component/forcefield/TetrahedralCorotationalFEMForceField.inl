@@ -405,7 +405,7 @@ template<class DataTypes>
 void TetrahedralCorotationalFEMForceField<DataTypes>::computeMaterialStiffness(MaterialStiffness& materialMatrix, Index&a, Index&b, Index&c, Index&d)
 {
 
-    const VecReal& localStiffnessFactor = _localStiffnessFactor.getValue();
+    //const VecReal& localStiffnessFactor = _localStiffnessFactor.getValue();
     const Real youngModulus = _youngModulus.getValue();
     const Real poissonRatio = _poissonRatio.getValue();
 

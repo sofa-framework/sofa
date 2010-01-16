@@ -60,7 +60,7 @@ void TetrahedronSetTopologyAlgorithms< DataTypes >::removeTetra(sofa::helper::ve
 }
 
 template<class DataTypes>
-void TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronsWithPlane(sofa::helper::vector<Coord>& intersectedPoints, sofa::helper::vector<EdgeID>& intersectedEdgeID, Coord planePos, Coord planeNormal)
+void TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronsWithPlane(sofa::helper::vector<Coord>& intersectedPoints, sofa::helper::vector<EdgeID>& intersectedEdgeID, Coord /*planePos*/, Coord planeNormal)
 {
     //Current topological state
     int nbPoint=this->m_container->getNbPoints();
@@ -72,7 +72,7 @@ void TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronsWithPla
     //barycentric coodinates of to be added points
     sofa::helper::vector< sofa::helper::vector<unsigned int> > ancestors;
     sofa::helper::vector< sofa::helper::vector<double> > coefs;
-    for(int i=0; i<intersectedPoints.size(); i++)
+    for( unsigned int i=0; i<intersectedPoints.size(); i++)
     {
         Edge theEdge=m_container->getEdge(intersectedEdgeID[i]);
         sofa::defaulttype::Vec<3,double> p;
@@ -100,14 +100,14 @@ void TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronsWithPla
     int nbIntersectedTetras=0;
 
     //Getting intersected tetrahedron
-    for(int i=0; i<intersectedEdgeID.size(); i++)
+    for( unsigned int i=0; i<intersectedEdgeID.size(); i++)
     {
         //Getting the tetrahedron around each intersected edge
         TetrahedraAroundEdge tetrasIdx=m_container->getTetrahedraAroundEdge(intersectedEdgeID[i]);
-        for(int j=0; j<tetrasIdx.size(); j++)
+        for( unsigned int j=0; j<tetrasIdx.size(); j++)
         {
             bool flag=true;
-            for(int k=0; k<intersectedTetras.size(); k++)
+            for( unsigned int k=0; k<intersectedTetras.size(); k++)
             {
                 if(intersectedTetras[k]==tetrasIdx[j])
                 {
@@ -130,14 +130,14 @@ void TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronsWithPla
     m_modifier->addPointsWarning(nbTobeAddedPoints, ancestors, coefs, true);
 
     //sub divide the each intersected tetrahedron
-    for(int i=0; i<intersectedTetras.size(); i++)
+    for( unsigned int i=0; i<intersectedTetras.size(); i++)
     {
         //determine the index of intersected point
         sofa::helper::vector<unsigned int> intersectedPointID;
         intersectedPointID.resize(intersectedEdgesInTetra[i].size());
-        for(int j=0; j<intersectedEdgesInTetra[i].size(); j++)
+        for( unsigned int j=0; j<intersectedEdgesInTetra[i].size(); j++)
         {
-            for(int k=0; k<intersectedEdgeID.size(); k++)
+            for( unsigned int k=0; k<intersectedEdgeID.size(); k++)
             {
                 if(intersectedEdgesInTetra[i][j]==intersectedEdgeID[k])
                 {
@@ -173,7 +173,7 @@ int TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronWithPlane
     int nbAddedTetra;
     Coord edgeDirec;
 
-    for(int i=0; i<intersectedEdgeID.size(); i++)
+    for( unsigned int i=0; i<intersectedEdgeID.size(); i++)
     {
         Edge intersectedEdge=this->m_container->getEdge(intersectedEdgeID[i]);
         if(intersectedEdge[0]>=m_intialNbPoints)

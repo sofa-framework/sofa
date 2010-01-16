@@ -195,40 +195,30 @@ void SkinningMapping<BasicMapping>::getDistances( int xfromBegin)
 }
 
 template <class BasicMapping>
-void SkinningMapping<BasicMapping>::sortReferences()
+void SkinningMapping<BasicMapping>::sortReferences( vector<int>& references)
 {
     VecCoord& xto = ( this->toModel->getX0() == NULL)?*this->toModel->getX():*this->toModel->getX0();
     VecInCoord& xfrom = *this->fromModel->getX0();
     const unsigned int& nbRef = nbRefs.getValue();
 
-    vector<int>& m_reps = * ( repartition.beginEdit() );
-    m_reps.clear();
-    m_reps.resize ( nbRefs.getValue() *xto.size() );
+    references.clear();
+    references.resize ( nbRefs.getValue() *xto.size() );
     for ( unsigned int i=0; i<nbRefs.getValue() *xto.size(); i++ )
-        m_reps[i] = -1;
+        references[i] = -1;
 
-    if( interpolationType.getValue() == INTERPOLATION_LINEAR)
-    {
-        for ( unsigned int i=0; i<xfrom.size(); i++ )
-            for ( unsigned int j=0; j<xto.size(); j++ )
-                for ( unsigned int k=0; k<nbRef; k++ )
+    for ( unsigned int i=0; i<xfrom.size(); i++ )
+        for ( unsigned int j=0; j<xto.size(); j++ )
+            for ( unsigned int k=0; k<nbRef; k++ )
+            {
+                const int idxReps=references[nbRef*j+k];
+                if ( ( idxReps == -1 ) || ( distances[i][j] < distances[idxReps][j] ) )
                 {
-                    const int idxReps=m_reps[nbRef*j+k];
-                    if ( ( idxReps == -1 ) || ( distances[i][j] < distances[idxReps][j] ) )
-                    {
-                        for ( unsigned int m=nbRef-1 ; m>k ; m-- )
-                            m_reps[nbRef *j+m] = m_reps[nbRef *j+m-1];
-                        m_reps[nbRef *j+k] = i;
-                        break;
-                    }
+                    for ( unsigned int m=nbRef-1 ; m>k ; m-- )
+                        references[nbRef *j+m] = references[nbRef *j+m-1];
+                    references[nbRef *j+k] = i;
+                    break;
                 }
-    }
-    else if( INTERPOLATION_DUAL_QUATERNION)
-    {
-        for ( unsigned int i=0; i<xfrom.size(); i++ )
-            for ( unsigned int j=0; j<xto.size(); j++ )
-                m_reps[nbRef *j+i] = i;
-    }
+            }
 }
 
 
@@ -257,8 +247,25 @@ void SkinningMapping<BasicMapping>::init()
         if( xfrom.size() < nbRefs.getValue() || interpolationType.getValue() == INTERPOLATION_DUAL_QUATERNION)
             nbRefs.setValue ( xfrom.size() );
 
+
         computeDistances();
-        sortReferences ();
+        vector<int>& m_reps = * ( repartition.beginEdit() );
+        if( interpolationType.getValue() == INTERPOLATION_LINEAR)
+        {
+            sortReferences ( m_reps);
+        }
+        else if( INTERPOLATION_DUAL_QUATERNION)
+        {
+            VecCoord& xto = ( this->toModel->getX0() == NULL)?*this->toModel->getX():*this->toModel->getX0();
+            VecInCoord& xfrom = *this->fromModel->getX0();
+            const unsigned int& nbRef = nbRefs.getValue();
+            m_reps.clear();
+            m_reps.resize ( nbRefs.getValue() *xto.size() );
+            for ( unsigned int i=0; i<xfrom.size(); i++ )
+                for ( unsigned int j=0; j<xto.size(); j++ )
+                    m_reps[nbRef *j+i] = i;
+        }
+        repartition.endEdit();
         updateWeights ();
         computeInitPos ();
 
@@ -381,19 +388,26 @@ void SkinningMapping<BasicMapping>::updateWeights ()
     }
     case WEIGHT_LINEAR:
     {
+        vector<int> tmpReps;
+        sortReferences( tmpReps); // We sort references even for DUALQUAT_INTERPOLATION
         for ( unsigned int i=0; i<xto.size(); i++ )
         {
+            for ( unsigned int j=0; j<xfrom.size(); j++ )
+            {
+                m_coefs[j][i] = 0.0;
+                distGradients[j][i] = Coord();
+            }
             Vec3d r1r2, r1p;
-            r1r2 = xfrom[m_reps[nbRefs.getValue() *i+1]].getCenter() - xfrom[m_reps[nbRefs.getValue() *i+0]].getCenter();
-            r1p  = xto[i] - xfrom[m_reps[nbRefs.getValue() *i+0]].getCenter();
+            r1r2 = xfrom[tmpReps[nbRefs.getValue() *i+1]].getCenter() - xfrom[tmpReps[nbRefs.getValue() *i+0]].getCenter();
+            r1p  = xto[i] - xfrom[tmpReps[nbRefs.getValue() *i+0]].getCenter();
             double r1r2NormSquare = r1r2.norm()*r1r2.norm();
             double wi = ( r1r2*r1p ) / ( r1r2NormSquare);
 
             // Abscisse curviligne
-            m_coefs[m_reps[nbRefs.getValue() *i+0]][i] = ( 1 - wi );
-            m_coefs[m_reps[nbRefs.getValue() *i+1]][i] = wi;
-            distGradients[m_reps[nbRefs.getValue() *i+0]][i] = -r1r2 / r1r2NormSquare;
-            distGradients[m_reps[nbRefs.getValue() *i+1]][i] = r1r2 / r1r2NormSquare;
+            m_coefs[tmpReps[nbRefs.getValue() *i+0]][i] = ( 1 - wi );
+            m_coefs[tmpReps[nbRefs.getValue() *i+1]][i] = wi;
+            distGradients[tmpReps[nbRefs.getValue() *i+0]][i] = -r1r2 / r1r2NormSquare;
+            distGradients[tmpReps[nbRefs.getValue() *i+1]][i] = r1r2 / r1r2NormSquare;
         }
         break;
     }
