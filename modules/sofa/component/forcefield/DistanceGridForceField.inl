@@ -63,7 +63,7 @@ void DistanceGridForceField<DataTypes>::init()
     if (scale.getValue()!=1.0) std::cout<<" scale="<<scale.getValue();
     if (box.getValue()[0][0]<box.getValue()[1][0]) std::cout<<" bbox=<"<<box.getValue()[0]<<">-<"<<box.getValue()[0]<<">";
     std::cout << std::endl;
-    grid = DistanceGrid::loadShared(fileDistanceGrid.getFullPath(), scale.getValue(), nx.getValue(),ny.getValue(),nz.getValue(),box.getValue()[0],box.getValue()[1]);
+    grid = DistanceGrid::loadShared(fileDistanceGrid.getFullPath(), scale.getValue(), 0.0, nx.getValue(),ny.getValue(),nz.getValue(),box.getValue()[0],box.getValue()[1]);
 
     if (this->stiffnessArea.getValue() != 0 && this->mstate)
     {

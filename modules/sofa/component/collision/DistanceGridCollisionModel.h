@@ -118,6 +118,7 @@ protected:
     sofa::core::objectmodel::DataFileName fileRigidDistanceGrid;
     Data< double > scale;
     Data< Vector3 > translation;
+    Data< double > sampling;
     Data< helper::fixed_array<DistanceGrid::Coord,2> > box;
     Data< int > nx;
     Data< int > ny;
@@ -413,6 +414,7 @@ protected:
     // Input data parameters
     sofa::core::objectmodel::DataFileName  fileFFDDistanceGrid;
     Data< double > scale;
+    Data< double > sampling;
     Data< helper::fixed_array<DistanceGrid::Coord,2> > box;
     Data< int > nx;
     Data< int > ny;

@@ -65,10 +65,10 @@ protected:
 public:
 
     /// Load a distance grid
-    static CudaDistanceGrid* load(const std::string& filename, double scale=1.0, int nx=64, int ny=64, int nz=64, Coord pmin = Coord(), Coord pmax = Coord());
+    static CudaDistanceGrid* load(const std::string& filename, double scale=1.0, double sampling=0.0, int nx=64, int ny=64, int nz=64, Coord pmin = Coord(), Coord pmax = Coord());
 
     /// Load or reuse a distance grid
-    static CudaDistanceGrid* loadShared(const std::string& filename, double scale=1.0, int nx=64, int ny=64, int nz=64, Coord pmin = Coord(), Coord pmax = Coord());
+    static CudaDistanceGrid* loadShared(const std::string& filename, double scale=1.0, double sampling=0.0, int nx=64, int ny=64, int nz=64, Coord pmin = Coord(), Coord pmax = Coord());
 
     /// Add one reference to this grid. Note that loadShared already does this.
     CudaDistanceGrid* addRef();
@@ -85,6 +85,9 @@ public:
     /// Compute distance field for a cube of the given half-size.
     /// Also create a mesh of points using np points per axis
     void calcCubeDistance(Real dim=1, int np=5);
+
+    /// Sample the surface with points approximately separated by the given sampling distance (expressed in voxels if the value is negative)
+    void sampleSurface(double sampling=-1.0);
 
     /// Update bbox
     void computeBBox();
@@ -328,12 +331,14 @@ protected:
     {
         std::string filename;
         double scale;
+        double sampling;
         int nx,ny,nz;
         Coord pmin,pmax;
         bool operator==(const CudaDistanceGridParams& v) const
         {
             if (!(filename == v.filename)) return false;
             if (!(scale    == v.scale   )) return false;
+            if (!(sampling == v.sampling)) return false;
             if (!(nx       == v.nx      )) return false;
             if (!(ny       == v.ny      )) return false;
             if (!(nz       == v.nz      )) return false;
@@ -347,10 +352,12 @@ protected:
         }
         bool operator<(const CudaDistanceGridParams& v) const
         {
-            if (filename < v.filename) return true;
-            if (filename > v.filename) return false;
-            if (scale    < v.scale   ) return true;
-            if (scale    > v.scale   ) return false;
+            if (filename < v.filename) return false;
+            if (filename > v.filename) return true;
+            if (scale    < v.scale   ) return false;
+            if (scale    > v.scale   ) return true;
+            if (sampling < v.sampling) return false;
+            if (sampling > v.sampling) return true;
             if (nx       < v.nx      ) return false;
             if (nx       > v.nx      ) return true;
             if (ny       < v.ny      ) return false;
@@ -373,10 +380,12 @@ protected:
         }
         bool operator>(const CudaDistanceGridParams& v) const
         {
-            if (filename > v.filename) return true;
-            if (filename < v.filename) return false;
-            if (scale    > v.scale   ) return true;
-            if (scale    < v.scale   ) return false;
+            if (filename > v.filename) return false;
+            if (filename < v.filename) return true;
+            if (scale    > v.scale   ) return false;
+            if (scale    < v.scale   ) return true;
+            if (sampling < v.sampling) return false;
+            if (sampling > v.sampling) return true;
             if (nx       > v.nx      ) return false;
             if (nx       < v.nx      ) return true;
             if (ny       > v.ny      ) return false;
@@ -467,6 +476,7 @@ protected:
     // Input data parameters
     sofa::core::objectmodel::DataFileName fileCudaRigidDistanceGrid;
     Data< double > scale;
+    Data< double > sampling;
     Data< helper::fixed_array<CudaDistanceGrid::Coord,2> > box;
     Data< int > nx;
     Data< int > ny;

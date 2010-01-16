@@ -202,7 +202,7 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::setDetectionOutputs(Out
 //#else
         // as we called updateXfree on the mappings, the contact class can now use the Xfree value of the contact points instead of relying on the collision detection method to fill freePoint[0] and freePoint[1]
         //c->addContact(mu, o->normal, o->point[1], o->point[0], distance, index1, index2, index);
-        c->addContact(mu, o->normal, distance, index1, index2, index);
+        c->addContact(mu, o->normal, distance, index1, index2, index, o->id);
 //#endif
     }
 }

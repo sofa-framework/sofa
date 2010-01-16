@@ -33,6 +33,7 @@
 #include <sofa/component/collision/CubeModel.h>
 #include <fstream>
 #include <sofa/helper/gl/template.h>
+#include <sofa/helper/rmath.h>
 
 namespace sofa
 {
@@ -93,7 +94,7 @@ bool CudaDistanceGrid::release()
     return true;
 }
 
-CudaDistanceGrid* CudaDistanceGrid::load(const std::string& filename, double scale, int nx, int ny, int nz, Coord pmin, Coord pmax)
+CudaDistanceGrid* CudaDistanceGrid::load(const std::string& filename, double scale, double sampling, int nx, int ny, int nz, Coord pmin, Coord pmax)
 {
     if (filename == "#cube")
     {
@@ -120,6 +121,8 @@ CudaDistanceGrid* CudaDistanceGrid::load(const std::string& filename, double sca
         std::cout << "Creating cube distance grid in <"<<pmin<<">-<"<<pmax<<">"<<std::endl;
         CudaDistanceGrid* grid = new CudaDistanceGrid(nx, ny, nz, pmin, pmax);
         grid->calcCubeDistance(dim, np);
+        if (sampling)
+            grid->sampleSurface(sampling);
         std::cout << "Distance grid creation DONE."<<std::endl;
         return grid;
     }
@@ -134,6 +137,8 @@ CudaDistanceGrid* CudaDistanceGrid::load(const std::string& filename, double sca
                 grid->dists[i] *= (float)scale;
         }
         grid->computeBBox();
+        if (sampling)
+            grid->sampleSurface(sampling);
         return grid;
     }
 //#ifdef SOFA_HAVE_FLOWVR
@@ -164,7 +169,9 @@ CudaDistanceGrid* CudaDistanceGrid::load(const std::string& filename, double sca
         for (int i=0; i< grid->nxnynz; i++)
             grid->dists[i] = mesh.distmap->data[i]*(float)scale;
 
-        if (mesh.getAttrib(flowvr::render::Mesh::MESH_POINTS_GROUP))
+        if (sampling)
+            grid->sampleSurface(sampling);
+        else if (mesh.getAttrib(flowvr::render::Mesh::MESH_POINTS_GROUP))
         {
             int nbpos = 0;
             for (int i=0; i<mesh.nbg(); i++)
@@ -265,6 +272,8 @@ CudaDistanceGrid* CudaDistanceGrid::load(const std::string& filename, double sca
         }
         std::cout << "Computing distance field."<<std::endl;
         grid->calcDistance();
+        if (sampling)
+            grid->sampleSurface(sampling);
         grid->computeBBox();
         std::cout << "Distance grid creation DONE."<<std::endl;
         delete mesh;
@@ -314,6 +323,66 @@ void CudaDistanceGrid::computeBBox()
         /// \TODO compute the real bbox from the grid content
     }
 }
+
+/// Sample the surface with points approximately separated by the given sampling distance (expressed in voxels if the value is negative)
+void CudaDistanceGrid::sampleSurface(double sampling)
+{
+    std::cout << "CudaDistanceGrid: sample surface with sampling distance " << sampling << std::endl;
+    int stepX, stepY, stepZ;
+    if (sampling < 0)
+    {
+        stepX = stepY = stepZ = (int)(-sampling);
+    }
+    else
+    {
+        stepX = (int)(sampling/cellWidth[0]);
+        stepY = (int)(sampling/cellWidth[1]);
+        stepZ = (int)(sampling/cellWidth[2]);
+    }
+    if (stepX < 1) stepX = 1;
+    if (stepY < 1) stepY = 1;
+    if (stepZ < 1) stepZ = 1;
+    std::cout << "CudaDistanceGrid: sampling steps: " << stepX << " " << stepY << " " << stepZ << std::endl;
+
+    SReal maxD = (SReal)sqrt((cellWidth[0]*stepX)*(cellWidth[0]*stepX) + (cellWidth[1]*stepY)*(cellWidth[1]*stepY) + (cellWidth[2]*stepZ)*(cellWidth[2]*stepZ));
+    std::vector<Coord> pts;
+    for (int z=1; z<nz-1; z+=stepZ)
+        for (int y=1; y<ny-1; y+=stepY)
+            for (int x=1; x<nx-1; x+=stepX)
+            {
+                SReal d = dists[index(x,y,z)];
+                if (helper::rabs(d) > maxD) continue;
+
+                Vector3 pos = coord(x,y,z);
+                Vector3 n = grad(index(x,y,z), Coord()); // note that there are some redundant computations between interp() and grad()
+                n.normalize();
+                pos -= n * (d * 0.99); // push pos back to the surface
+                d = interp(pos);
+                int it = 1;
+                while (helper::rabs(d) > 0.01f*maxD && it < 10)
+                {
+                    n = grad(pos);
+                    n.normalize();
+                    pos -= n * (d * 0.99); // push pos back to the surface
+                    d = interp(pos);
+                    ++it;
+                }
+                if (it == 10 && helper::rabs(d) > 0.1f*maxD)
+                {
+                    std::cout << "Failed to converge at ("<<x<<","<<y<<","<<z<<"):"
+                            << " pos0 = " << coord(x,y,z) << " d0 = " << dists[index(x,y,z)] << " grad0 = " << grad(index(x,y,z), Coord())
+                            << " pos = " << pos << " d = " << d << " grad = " << n << std::endl;
+                    continue;
+                }
+                Coord p = pos;
+                pts.push_back(p);
+            }
+    std::cout << "CudaDistanceGrid: " << pts.size() << " sampling points created." << std::endl;
+    meshPts.resize(pts.size());
+    for (unsigned int p=0; p<pts.size(); ++p)
+        meshPts[p] = pts[p];
+}
+
 
 
 /// Compute distance field for a cube of the given half-size.
@@ -415,11 +484,12 @@ void CudaDistanceGrid::calcDistance()
 #endif
 }
 
-CudaDistanceGrid* CudaDistanceGrid::loadShared(const std::string& filename, double scale, int nx, int ny, int nz, Coord pmin, Coord pmax)
+CudaDistanceGrid* CudaDistanceGrid::loadShared(const std::string& filename, double scale, double sampling, int nx, int ny, int nz, Coord pmin, Coord pmax)
 {
     CudaDistanceGridParams params;
     params.filename = filename;
     params.scale = scale;
+    params.sampling = sampling;
     params.nx = nx;
     params.ny = ny;
     params.nz = nz;
@@ -431,7 +501,7 @@ CudaDistanceGrid* CudaDistanceGrid::loadShared(const std::string& filename, doub
         return it->second->addRef();
     else
     {
-        return shared[params] = load(filename, scale, nx, ny, nz, pmin, pmax);
+        return shared[params] = load(filename, scale, sampling, nx, ny, nz, pmin, pmax);
     }
 }
 
@@ -450,6 +520,7 @@ CudaRigidDistanceGridCollisionModel::CudaRigidDistanceGridCollisionModel()
     : modified(true)
     , fileCudaRigidDistanceGrid( initData( &fileCudaRigidDistanceGrid, "fileCudaRigidDistanceGrid", "load distance grid from specified file"))
     , scale( initData( &scale, 1.0, "scale", "scaling factor for input file"))
+    , sampling( initData( &sampling, 0.0, "sampling", "if not zero: sample the surface with points approximately separated by the given sampling distance (expressed in voxels if the value is negative)"))
     , box( initData( &box, "box", "Field bounding box defined by xmin,ymin,zmin, xmax,ymax,zmax") )
     , nx( initData( &nx, 64, "nx", "number of values on X axis") )
     , ny( initData( &ny, 64, "ny", "number of values on Y axis") )
@@ -486,9 +557,10 @@ void CudaRigidDistanceGridCollisionModel::init()
     }
     std::cout << "CudaRigidDistanceGridCollisionModel: creating "<<nx.getValue()<<"x"<<ny.getValue()<<"x"<<nz.getValue()<<" DistanceGrid from file "<<fileCudaRigidDistanceGrid.getValue();
     if (scale.getValue()!=1.0) std::cout<<" scale="<<scale.getValue();
+    if (sampling.getValue()!=0.0) std::cout<<" sampling="<<sampling.getValue();
     if (box.getValue()[0][0]<box.getValue()[1][0]) std::cout<<" bbox=<"<<box.getValue()[0]<<">-<"<<box.getValue()[0]<<">";
     std::cout << std::endl;
-    grid = CudaDistanceGrid::loadShared(fileCudaRigidDistanceGrid.getFullPath(), scale.getValue(), nx.getValue(),ny.getValue(),nz.getValue(),box.getValue()[0],box.getValue()[1]);
+    grid = CudaDistanceGrid::loadShared(fileCudaRigidDistanceGrid.getFullPath(), scale.getValue(), sampling.getValue(), nx.getValue(),ny.getValue(),nz.getValue(),box.getValue()[0],box.getValue()[1]);
 
     resize(1);
     elems[0].grid = grid;

@@ -92,7 +92,7 @@ bool DistanceGrid::release()
     return true;
 }
 
-DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, int nx, int ny, int nz, Coord pmin, Coord pmax)
+DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, double sampling, int nx, int ny, int nz, Coord pmin, Coord pmax)
 {
     if (filename == "#cube")
     {
@@ -119,6 +119,8 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, int 
         std::cout << "Creating cube distance grid in <"<<pmin<<">-<"<<pmax<<">"<<std::endl;
         DistanceGrid* grid = new DistanceGrid(nx, ny, nz, pmin, pmax);
         grid->calcCubeDistance(dim, np);
+        if (sampling)
+            grid->sampleSurface(sampling);
         std::cout << "Distance grid creation DONE."<<std::endl;
         return grid;
     }
@@ -133,11 +135,13 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, int 
                 grid->dists[i] *= (float)scale;
         }
         grid->computeBBox();
+        if (sampling)
+            grid->sampleSurface(sampling);
         return grid;
     }
     else if (filename.length()>4 && filename.substr(filename.length()-4) == ".vtk")
     {
-        return loadVTKFile(filename, scale);
+        return loadVTKFile(filename, scale, sampling);
     }
 //#ifdef SOFA_HAVE_FLOWVR
     else if (filename.length()>6 && filename.substr(filename.length()-6) == ".fmesh")
@@ -166,8 +170,9 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, int 
         DistanceGrid* grid = new DistanceGrid(nx, ny, nz, pmin, pmax);
         for (int i=0; i< grid->nxnynz; i++)
             grid->dists[i] = mesh.distmap->data[i]*scale;
-
-        if (mesh.getAttrib(flowvr::render::Mesh::MESH_POINTS_GROUP))
+        if (sampling)
+            grid->sampleSurface(sampling);
+        else if (mesh.getAttrib(flowvr::render::Mesh::MESH_POINTS_GROUP))
         {
             int nbpos = 0;
             for (int i=0; i<mesh.nbg(); i++)
@@ -238,12 +243,17 @@ DistanceGrid* DistanceGrid::load(const std::string& filename, double scale, int 
         }
         std::cout << "Creating distance grid in <"<<pmin<<">-<"<<pmax<<">"<<std::endl;
         DistanceGrid* grid = new DistanceGrid(nx, ny, nz, pmin, pmax);
-        std::cout << "Copying "<<vertices.size()<<" mesh vertices."<<std::endl;
-        grid->meshPts.resize(vertices.size());
-        for(unsigned int i=0; i<vertices.size(); i++)
-            grid->meshPts[i] = vertices[i]*scale;
         std::cout << "Computing distance field."<<std::endl;
         grid->calcDistance(mesh, scale);
+        if (sampling)
+            grid->sampleSurface(sampling);
+        else
+        {
+            std::cout << "Copying "<<vertices.size()<<" mesh vertices."<<std::endl;
+            grid->meshPts.resize(vertices.size());
+            for(unsigned int i=0; i<vertices.size(); i++)
+                grid->meshPts[i] = vertices[i]*scale;
+        }
         grid->computeBBox();
         std::cout << "Distance grid creation DONE."<<std::endl;
         delete mesh;
@@ -311,7 +321,7 @@ template<class T> bool readData(std::istream& in, int dataSize, bool binary, Dis
     }
 }
 
-DistanceGrid* DistanceGrid::loadVTKFile(const std::string& filename, double scale)
+DistanceGrid* DistanceGrid::loadVTKFile(const std::string& filename, double scale, double sampling)
 {
     // Format doc: http://www.vtk.org/pdf/file-formats.pdf
     // http://www.cacr.caltech.edu/~slombey/asci/vtk/vtk_formats.simple.html
@@ -413,6 +423,8 @@ DistanceGrid* DistanceGrid::loadVTKFile(const std::string& filename, double scal
             }
             std::cout << "Volume data loading OK." << std::endl;
             grid->computeBBox();
+            if (sampling)
+                grid->sampleSurface(sampling);
             return grid; // we read one scalar field, stop here.
         }
     }
@@ -1095,11 +1107,73 @@ void DistanceGrid::fmm_push(int index)
 #endif
 }
 
-DistanceGrid* DistanceGrid::loadShared(const std::string& filename, double scale, int nx, int ny, int nz, Coord pmin, Coord pmax)
+
+/// Sample the surface with points approximately separated by the given sampling distance (expressed in voxels if the value is negative)
+void DistanceGrid::sampleSurface(double sampling)
+{
+    std::cout << "DistanceGrid: sample surface with sampling distance " << sampling << std::endl;
+    int stepX, stepY, stepZ;
+    if (sampling < 0)
+    {
+        stepX = stepY = stepZ = (int)(-sampling);
+    }
+    else
+    {
+        stepX = (int)(sampling/cellWidth[0]);
+        stepY = (int)(sampling/cellWidth[1]);
+        stepZ = (int)(sampling/cellWidth[2]);
+    }
+    if (stepX < 1) stepX = 1;
+    if (stepY < 1) stepY = 1;
+    if (stepZ < 1) stepZ = 1;
+    std::cout << "DistanceGrid: sampling steps: " << stepX << " " << stepY << " " << stepZ << std::endl;
+
+    SReal maxD = (SReal)sqrt((cellWidth[0]*stepX)*(cellWidth[0]*stepX) + (cellWidth[1]*stepY)*(cellWidth[1]*stepY) + (cellWidth[2]*stepZ)*(cellWidth[2]*stepZ));
+    std::vector<Coord> pts;
+    for (int z=1; z<nz-1; z+=stepZ)
+        for (int y=1; y<ny-1; y+=stepY)
+            for (int x=1; x<nx-1; x+=stepX)
+            {
+                SReal d = dists[index(x,y,z)];
+                if (rabs(d) > maxD) continue;
+
+                Vector3 pos = coord(x,y,z);
+                Vector3 n = grad(index(x,y,z), Coord()); // note that there are some redundant computations between interp() and grad()
+                n.normalize();
+                pos -= n * (d * 0.99); // push pos back to the surface
+                d = interp(pos);
+                int it = 1;
+                while (rabs(d) > 0.01f*maxD && it < 10)
+                {
+                    n = grad(pos);
+                    n.normalize();
+                    pos -= n * (d * 0.99); // push pos back to the surface
+                    d = interp(pos);
+                    ++it;
+                }
+                if (it == 10 && rabs(d) > 0.1f*maxD)
+                {
+                    std::cout << "Failed to converge at ("<<x<<","<<y<<","<<z<<"):"
+                            << " pos0 = " << coord(x,y,z) << " d0 = " << dists[index(x,y,z)] << " grad0 = " << grad(index(x,y,z), Coord())
+                            << " pos = " << pos << " d = " << d << " grad = " << n << std::endl;
+                    continue;
+                }
+                Coord p = pos;
+                pts.push_back(p);
+            }
+    std::cout << "DistanceGrid: " << pts.size() << " sampling points created." << std::endl;
+    meshPts.resize(pts.size());
+    for (unsigned int p=0; p<pts.size(); ++p)
+        meshPts[p] = pts[p];
+}
+
+
+DistanceGrid* DistanceGrid::loadShared(const std::string& filename, double scale, double sampling, int nx, int ny, int nz, Coord pmin, Coord pmax)
 {
     DistanceGridParams params;
     params.filename = filename;
     params.scale = scale;
+    params.sampling = sampling;
     params.nx = nx;
     params.ny = ny;
     params.nz = nz;
@@ -1111,7 +1185,7 @@ DistanceGrid* DistanceGrid::loadShared(const std::string& filename, double scale
         return it->second->addRef();
     else
     {
-        return shared[params] = load(filename, scale, nx, ny, nz, pmin, pmax);
+        return shared[params] = load(filename, scale, sampling, nx, ny, nz, pmin, pmax);
     }
 }
 
