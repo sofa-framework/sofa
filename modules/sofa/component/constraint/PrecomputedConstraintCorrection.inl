@@ -53,7 +53,7 @@
 #include <list>
 #include <iomanip>
 
-#define NEW_METHOD_UNBUILT
+//#define NEW_METHOD_UNBUILT
 
 namespace sofa
 {
@@ -1010,6 +1010,8 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
     constraint_F.resize(mstate->getSize());
 
     constraint_dofs.clear();
+
+    bool error_message_not_displayed=true;
 #endif
 
     /////////// The constraints on the same nodes are gathered //////////////////////
@@ -1035,14 +1037,17 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
         }
     }
 
-    //unsigned int numNodes1 = activeDof.size();
-    //sout<< "numNodes : avant = "<<numNodes1;
+    unsigned int numNodes1 = constraint_dofs.size();
+    sout<< "numNodes : avant = "<<numNodes1;
     constraint_dofs.sort();
     constraint_dofs.unique();
-    //	unsigned int numNodes = activeDof.size();
-    //sout<< " apres = "<<numNodes<<sendl;
+    unsigned int numNodes = constraint_dofs.size();
+    sout<< " apres = "<<numNodes<<sendl;
+    sout<< "numConstraints = "<< numConstraints<<sendl;
 
     id_to_localIndex.clear();
+
+
     for(unsigned int i=0; i<numConstraints; ++i)
     {
         unsigned int c = (*localConstraintId)[i];
@@ -1058,20 +1063,33 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
 
         if (fC != 0.0)
         {
-            ConstraintIterator itConstraint;
-            std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[i].data();
 
-            for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
+            if(error_message_not_displayed)
             {
-
-                unsigned int dof = itConstraint->first;
-                Deriv n = itConstraint->second;
-                constraint_F[dof] +=n * fC;
-
-                // TODO : remplacer pour faire + rapide !!
-                setConstraintDForce(&fC, (int)c, (int)c, true);
-
+                serr<<"Initial_guess not supported yet in unbuilt mode with NEW_METHOD_UNBUILT!=> PUT F to 0"<<sendl;
+                error_message_not_displayed = false;
             }
+
+            f[c] = 0.0;
+            /*
+                ConstraintIterator itConstraint;
+                std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[i].data();
+
+                for (itConstraint=iter.first;itConstraint!=iter.second;itConstraint++)
+                {
+
+                        unsigned int dof = itConstraint->first;
+                        Deriv n = itConstraint->second;
+                        constraint_F[dof] +=n * fC;
+
+
+
+
+                        // TODO : remplacer pour faire + rapide !!
+                        //setConstraintDForce(&fC, (int)c, (int)c, true);
+
+                }
+                */
         }
 
 #endif
@@ -1292,7 +1310,6 @@ void PrecomputedConstraintCorrection<DataTypes>::setConstraintDForce(double * /*
 
         }
     }
-
 
 
 
