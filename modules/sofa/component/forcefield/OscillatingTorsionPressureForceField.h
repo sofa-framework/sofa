@@ -106,8 +106,8 @@ public:
     OscillatingTorsionPressureForceField():
         moment(initData(&moment, "moment", "Moment force applied on the entire surface"))
         , triangleList(initData(&triangleList,std::string(),"triangleList", "Indices of triangles separated with commas where a pressure is applied"))
-        , center(initData(&center,"center", "Center of rotation"))
         , axis(initData(&axis, Coord(0,0,1), "axis", "Axis of rotation and normal direction for the plane selection of triangles"))
+        , center(initData(&center,"center", "Center of rotation"))
         , penalty(initData(&penalty, (Real)1000, "penalty", "Strength of the penalty force"))
         , frequency(initData(&frequency, (Real)1, "frequency", "frequency of oscillation"))
         , dmin(initData(&dmin,(Real)0.0, "dmin", "Minimum distance from the origin along the normal direction"))

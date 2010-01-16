@@ -560,7 +560,7 @@ int TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronWithPlane
             else
                 edgeDirec=this->m_geometryAlgorithms->computeRestEdgeDirection(intersectedEdgeID[0]);
 
-            int secondIntersectedEdgeIndex, thirdIntersectedEdgeIndex;
+            int secondIntersectedEdgeIndex = 0, thirdIntersectedEdgeIndex = 0;
             int conectedIndex, nonConectedIndex;
 
             if(pointsID[0]==intersectedEdge[0][0])

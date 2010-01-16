@@ -56,6 +56,72 @@ namespace mapping
 
 #ifdef SOFA_DEV
 using sofa::component::topology::HexahedronGeodesicalDistance;
+#else
+// TODO temporary declaration to avoid NO_DEV compilation errors.
+// TODO Create a DataVector type which is a Data<vector<T> > but which is serialized with delimiters.
+template <class T>
+class Coefs: public vector<vector<T> >
+{
+public:
+    Coefs() {};
+
+    std::ostream& write ( std::ostream& os ) const
+    {
+        if ( !this->empty() )
+        {
+            os << "[ ";
+            typename vector<vector<T> >::const_iterator i = this->begin();
+            os <<  i->size() << " " << *i ;
+            ++i;
+            for ( ; i!=this->end(); ++i )
+                os << " ],[ " << i->size() << " " << *i;
+            os << " ]";
+        }
+        return os;
+    }
+
+    std::istream& read ( std::istream& in )
+    {
+        T t;
+        this->clear();
+        while ( !in.eof() )
+        {
+            char c;
+            in >> c;
+            if ( c != '[' )
+            {
+                std::cerr << "Bad character : " << c << std::endl;
+                break;
+            }
+            this->push_back ( vector<T>() );
+            vector<T>& nextElt = this->back();
+            unsigned int sizeVec;
+            in >> sizeVec;
+            for (unsigned int i=0; i<sizeVec; ++i)
+            {
+                in >> t;
+                nextElt.push_back ( t );
+            }
+
+            in >> c; // ']'
+            in >> c; // ','
+        }
+        return in;
+    }
+
+    /// Output stream
+    inline friend std::ostream& operator<< ( std::ostream& os, const Coefs<T>& vec )
+    {
+        return vec.write ( os );
+    }
+
+    /// Input stream
+    inline friend std::istream& operator>> ( std::istream& in, Coefs<T>& vec )
+    {
+        return vec.read ( in );
+    }
+};
+
 #endif
 
 using sofa::helper::vector;
