@@ -443,21 +443,24 @@ void SkinningMapping<BasicMapping>::updateWeights ()
     }
     case WEIGHT_HERMITE:
     {
+        vector<int> tmpReps;
+        sortReferences( tmpReps); // We sort references even for DUALQUAT_INTERPOLATION
         for ( unsigned int i=0; i<xto.size(); i++ )
         {
             Vec3d r1r2, r1p;
             double wi;
-            r1r2 = xfrom[m_reps[nbRefs.getValue() *i+1]].getCenter() - xfrom[m_reps[nbRefs.getValue() *i+0]].getCenter();
-            r1p  = xto[i] - xfrom[m_reps[nbRefs.getValue() *i+0]].getCenter();
-            wi = ( r1r2*r1p ) / ( r1r2.norm() *r1r2.norm() );
+            r1r2 = xfrom[tmpReps[nbRefs.getValue() *i+1]].getCenter() - xfrom[tmpReps[nbRefs.getValue() *i+0]].getCenter();
+            r1p  = xto[i] - xfrom[tmpReps[nbRefs.getValue() *i+0]].getCenter();
+            double r1r2NormSquare = r1r2.norm()*r1r2.norm();
+            wi = ( r1r2*r1p ) / r1r2NormSquare;
 
             // Fonctions d'Hermite
-            m_coefs[m_reps[nbRefs.getValue() *i+0]][i] = 1-3*wi*wi+2*wi*wi*wi;
-            m_coefs[m_reps[nbRefs.getValue() *i+1]][i] = 3*wi*wi-2*wi*wi*wi;
+            m_coefs[tmpReps[nbRefs.getValue() *i+0]][i] = 1-3*wi*wi+2*wi*wi*wi;
+            m_coefs[tmpReps[nbRefs.getValue() *i+1]][i] = 3*wi*wi-2*wi*wi*wi;
 
             r1r2.normalize();
-            m_dweight[m_reps[nbRefs.getValue() *i+0]][i] = -r1r2;
-            m_dweight[m_reps[nbRefs.getValue() *i+1]][i] = r1r2;
+            m_dweight[tmpReps[nbRefs.getValue() *i+0]][i] = -r1r2 * (6*wi-6*wi*wi) / (r1r2NormSquare);
+            m_dweight[tmpReps[nbRefs.getValue() *i+1]][i] = r1r2 * (6*wi-6*wi*wi) / (r1r2NormSquare);
         }
         break;
     }
