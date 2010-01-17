@@ -527,6 +527,7 @@ void FrameDiagonalMass<DataTypes, MassType>::addForce ( VecDeriv& f, const VecCo
         for( unsigned int i = 0; i < xfrom.size(); ++i)
         {
             rotateM( vecMass[i].inertiaMatrix, vecMass0[i].inertiaMatrix, xfrom[i].getOrientation(), xfrom0[i].getOrientation());
+            serr << "M["<<i<<"]: " << vecMass[i].inertiaMatrix << sendl;
             vecMass[i].recalc();
         }
         f_mass.endEdit();
