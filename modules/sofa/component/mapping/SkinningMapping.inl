@@ -289,9 +289,8 @@ void SkinningMapping<BasicMapping>::init()
 
             sofa::component::topology::DynamicSparseGridTopologyContainer* hexaContainer;
             this->getContext()->get( hexaContainer);
-            double volume = 1.0;
-            if ( hexaContainer) volume = geoDist->initTargetStep.getValue()*geoDist->initTargetStep.getValue()*geoDist->initTargetStep.getValue() * hexaContainer->voxelSize.getValue()[0]*hexaContainer->voxelSize.getValue()[1]*hexaContainer->voxelSize.getValue()[2];
-            else volume = voxelVolume.getValue();
+            double volume = voxelVolume.getValue();
+            if ( hexaContainer && geoDist) volume = geoDist->initTargetStep.getValue()*geoDist->initTargetStep.getValue()*geoDist->initTargetStep.getValue() * hexaContainer->voxelSize.getValue()[0]*hexaContainer->voxelSize.getValue()[1]*hexaContainer->voxelSize.getValue()[2];
             const VecCoord& xto = *this->toModel->getX();
             this->vol.resize( xto.size());
             for ( unsigned int i = 0; i < xto.size(); i++) this->vol[i] = volume;
@@ -1080,6 +1079,7 @@ void SkinningMapping<BasicMapping>::draw()
         }
     }
 
+#ifdef SOFA_DEV
     // Display distances values for each points
     if ( showDefTensorsValues.getValue())
     {
@@ -1093,6 +1093,7 @@ void SkinningMapping<BasicMapping>::draw()
             sofa::helper::gl::GlText::draw ( txt, xto[i], textScale );
         }
     }
+#endif
 
     // Display gradient for each points
     if ( showGradients.getValue())
