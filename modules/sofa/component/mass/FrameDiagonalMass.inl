@@ -451,7 +451,7 @@ void FrameDiagonalMass<DataTypes, MassType>::reinit()
 template <class DataTypes, class MassType>
 void FrameDiagonalMass<DataTypes, MassType>::bwdInit()
 {
-    this->getContext()->get ( dqStorage, core::objectmodel::BaseContext::SearchRoot );
+    this->getContext()->get ( dqStorage, core::objectmodel::BaseContext::SearchDown );
     if ( ! dqStorage )
     {
         serr << "Can't find dqStorage component." << sendl;
