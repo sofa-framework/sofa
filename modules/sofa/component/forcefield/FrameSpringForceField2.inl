@@ -161,6 +161,11 @@ void FrameSpringForceField2<DataTypes>::addForce(VecDeriv& vf, const VecCoord& v
     }
 
     updateForce( vf, K, vx, K0 );
+    for ( unsigned int i=0; i<size; ++i )
+        for ( unsigned int j=0; j<size; ++j )
+            serr << "K["<<i<<"]["<<j<<"]: " << K[i][j] << sendl;
+    for ( unsigned int i=0; i<size; ++i )
+        serr << "F["<<i<<"]: " << vf[i] << sendl;
 }
 
 template<class DataTypes>
