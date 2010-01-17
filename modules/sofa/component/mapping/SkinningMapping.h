@@ -252,7 +252,7 @@ public:
     Data<bool> showCoefs;
     Data<bool> showCoefsValues;
     Data<bool> showReps;
-    Data<int> showValuesScaleFactor;
+    Data<int> showValuesNbDecimals;
     Data<double> showTextScaleFactor;
     Data<bool> showGradients;
     Data<bool> showGradientsValues;
