@@ -131,18 +131,6 @@ void FrameSpringForceField2<DataTypes>::computeK0()
                 K0[k][j]-=BTHB;
             }
         }
-    /*
-    	for ( i=0;i<nbP;++i )
-    		serr << "vol["<<i<<"]: " << (*vol)[i] << sendl;
-    	for ( i=0;i<6;++i )
-    		for ( j=0;j<6;++j )
-    			serr << "H: " << H << sendl;
-    	for ( i=0;i<nbDOF;++i )
-    		for ( j=0;j<nbDOF;++j )
-    			serr << "B["<<i<<"]["<<j<<"]: " << (*B)[i][j] << sendl;*/
-    for ( i=0; i<nbDOF; ++i )
-        for ( j=0; j<nbDOF; ++j )
-            serr << "K0["<<i<<"]["<<j<<"]: " << K0[i][j] << sendl;
 }
 
 template<class DataTypes>
@@ -168,11 +156,6 @@ void FrameSpringForceField2<DataTypes>::addForce(VecDeriv& vf, const VecCoord& v
     }
 
     updateForce( vf, K, vx, K0 );
-    for ( unsigned int i=0; i<size; ++i )
-        for ( unsigned int j=0; j<size; ++j )
-            serr << "K["<<i<<"]["<<j<<"]: " << K[i][j] << sendl;
-    for ( unsigned int i=0; i<size; ++i )
-        serr << "F["<<i<<"]: " << vf[i] << sendl;
 }
 
 template<class DataTypes>
@@ -279,7 +262,6 @@ void FrameSpringForceField2<DataTypes>::updateForce( VecDeriv& Force, VVMat66& K
                         df.getVCenter()[k]+=K2[k+3][l]*Theta.getVOrientation()[l]; df.getVCenter()[k]+=K2[k+3][l+3]*Theta.getVCenter()[l];
                     }
                 Force[i].getVOrientation()+=df.getVOrientation(); Force[i].getVCenter()+=df.getVCenter();
-                serr << "F["<<i<<"]: " << Force[i] << sendl;
 
 //qDebug()<<"thetaj"<<Theta.getVOrientation()[0]<<","<<Theta.getVOrientation()[1]<<","<<Theta.getVOrientation()[2]<<","<<Theta.getVCenter()[0]<<","<<Theta.getVCenter()[1]<<","<<Theta.getVCenter()[2];
 //qDebug()<<"fji"<<df.getVOrientation()[0]<<","<<df.getVOrientation()[1]<<","<<df.getVOrientation()[2]<<","<<df.getVCenter()[0]<<","<<df.getVCenter()[1]<<","<<df.getVCenter()[2];
@@ -287,7 +269,6 @@ void FrameSpringForceField2<DataTypes>::updateForce( VecDeriv& Force, VVMat66& K
 // reciprocal force: Df_j= -Df_i (moved to j)
                 df.getVOrientation()-=Crossp*df.getVCenter();
                 Force[j].getVOrientation()-=df.getVOrientation(); Force[j].getVCenter()-=df.getVCenter();
-                serr << "F["<<j<<"]: " << Force[j] << sendl;
 
 //qDebug()<<"fjj"<<-df.getVOrientation()[0]<<","<<-df.getVOrientation()[1]<<","<<-df.getVOrientation()[2]<<","<<-df.getVCenter()[0]<<","<<-df.getVCenter()[1]<<","<<-df.getVCenter()[2];
 // new stiffness: Kij=d f_ij/Omega_j=K2 R(T) Kjj=d f_jj/Omega_j=d f_jj/d f_ij Kij
