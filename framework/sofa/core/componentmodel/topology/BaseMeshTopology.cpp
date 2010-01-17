@@ -243,7 +243,7 @@ void BaseMeshTopology::init()
 {
     if (!fileTopology.getValue().empty())
     {
-        this->load(fileTopology.getValue().c_str());
+        this->load(fileTopology.getFullPath().c_str());
     }
 }
 
