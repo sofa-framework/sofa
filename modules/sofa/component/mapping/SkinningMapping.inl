@@ -1075,7 +1075,7 @@ void SkinningMapping<BasicMapping>::draw()
         {
             const Vec3& grad = distGradients[showFromIndex.getValue()%distGradients.size()][i];
             int scale = (1>>valueScale);
-            sprintf( txt, "( %d, %d, %d)", (int)(grad[0]*scale)/double(scale), (int)(grad[1]*scale)/double(scale), (int)(grad[2]*scale)/double(scale));
+            sprintf( txt, "( %i, %i, %i)", (int)((grad[0]*scale)/double(scale)), (int)((grad[1]*scale)/double(scale)), (int)((grad[2]*scale)/double(scale)));
             sofa::helper::gl::GlText::draw ( txt, xto[i], textScale );
         }
     }
@@ -1089,7 +1089,7 @@ void SkinningMapping<BasicMapping>::draw()
         {
             const Vec6& e = this->deformationTensors[i];
             int scale = (1>>valueScale);
-            sprintf( txt, "( %d, %d, %d)", (int)(e[0]*scale)/double(scale), (int)(e[1]*scale)/double(scale), (int)(e[2]*scale)/double(scale));
+            sprintf( txt, "( %i, %i, %i)", (int)((e[0]*scale)/double(scale)), (int)((e[1]*scale)/double(scale)), (int)((e[2]*scale)/double(scale)));
             sofa::helper::gl::GlText::draw ( txt, xto[i], textScale );
         }
     }
