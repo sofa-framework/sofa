@@ -67,20 +67,24 @@ SkinningMapping<BasicMapping>::SkinningMapping ( In* from, Out* to )
     , computeJ ( initData ( &computeJ, false, "computeJ", "compute matrix J in addition to apply for the dual quat interpolation method." ) )
     , computeAllMatrices ( initData ( &computeAllMatrices, false, "computeAllMatrices","compute all the matrices in addition to apply for the dual quat interpolation method." ) )
     , showDefTensors ( initData ( &showDefTensors, false, "showDefTensors","show computed deformation tensors." ) )
+    , showDefTensorsValues ( initData ( &showDefTensorsValues, false, "showDefTensorsValues","Show Deformation Tensors Values." ) )
     , showDefTensorScale ( initData ( &showDefTensorScale, 1.0, "showDefTensorScale","deformation tensor scale." ) )
     , showFromIndex ( initData ( &showFromIndex, ( unsigned ) 0, "showFromIndex","Displayed From Index." ) )
     , showDistancesValues ( initData ( &showDistancesValues, false, "showDistancesValues","Show dstances values." ) )
     , showCoefs ( initData ( &showCoefs, false, "showCoefs","Show coeficients." ) )
     , showCoefsValues ( initData ( &showCoefsValues, false, "showCoefsValues","Show coeficients values." ) )
     , showReps ( initData ( &showReps, false, "showReps","Show repartition." ) )
+    , showValuesScaleFactor ( initData ( &showValuesScaleFactor, 1, "showValuesScaleFactor","Number of decimals displayed after dot." ) )
     , showTextScaleFactor ( initData ( &showTextScaleFactor, 0.00005, "showTextScaleFactor","Text Scale Factor." ) )
     , showGradients ( initData ( &showGradients, false, "showGradients","Show gradients." ) )
+    , showGradientsValues ( initData ( &showGradientsValues, false, "showGradientsValues","Show Gradients Values." ) )
     , showGradientsScaleFactor ( initData ( &showGradientsScaleFactor, 0.0001, "showGradientsScaleFactor","Gradients Scale Factor." ) )
 #ifdef SOFA_DEV
     , newFrameMinDist ( initData ( &newFrameMinDist, 0.1, "newFrameMinDist","Minimal distance to insert a new frame." ) )
     , newFrameWeightingRadius ( initData ( &newFrameWeightingRadius, "newFrameWeightingRadius","new frame weightin radius." ) )
     , newFrameDefaultCutOffDistance ( initData ( &newFrameDefaultCutOffDistance, (double)0xFFF, "newFrameDefaultCutOffDistance","new frame defaultCut off distance." ) )
     , enableSkinning ( initData ( &enableSkinning, true, "enableSkinning","enable skinning." ) )
+    , voxelVolume ( initData ( &voxelVolume, 1.0, "voxelVolume","default volume voxel. Use if no hexa topo is found." ) )
 #endif
     , wheightingType ( initData ( &wheightingType, WEIGHT_INVDIST_SQUARE, "wheightingType","Weighting computation method." ) )
     , interpolationType ( initData ( &interpolationType, INTERPOLATION_LINEAR, "interpolationType","Interpolation method." ) )
@@ -286,7 +290,8 @@ void SkinningMapping<BasicMapping>::init()
             sofa::component::topology::DynamicSparseGridTopologyContainer* hexaContainer;
             this->getContext()->get( hexaContainer);
             double volume = 1.0;
-            if( hexaContainer) volume = pow( (double)geoDist->initTargetStep.getValue(), 3) * hexaContainer->voxelSize.getValue()[0]*hexaContainer->voxelSize.getValue()[1]*hexaContainer->voxelSize.getValue()[2];
+            if( hexaContainer) volume = geoDist->initTargetStep.getValue()*geoDist->initTargetStep.getValue()*geoDist->initTargetStep.getValue() * hexaContainer->voxelSize.getValue()[0]*hexaContainer->voxelSize.getValue()[1]*hexaContainer->voxelSize.getValue()[2];
+            else volume = voxelVolume.getValue();
             const VecCoord& xto = *this->toModel->getX();
             this->vol.resize( xto.size());
             for( unsigned int i = 0; i < xto.size(); i++) this->vol[i] = volume;
@@ -1005,6 +1010,8 @@ void SkinningMapping<BasicMapping>::draw()
     const vector<int>& m_reps = repartition.getValue();
     const vector<vector<double> >& m_coefs = coefs.getValue();
     const unsigned int nbRef = nbRefs.getValue();
+    const int valueScale = showValuesScaleFactor.getValue();
+    const double textScale = showTextScaleFactor.getValue();
 
     glDisable ( GL_LIGHTING );
 
@@ -1040,7 +1047,7 @@ void SkinningMapping<BasicMapping>::draw()
     if( showReps.getValue())
     {
         for ( unsigned int i=0; i<xto.size(); i++ )
-            sofa::helper::gl::GlText::draw ( m_reps[nbRefs.getValue() *i+0], xto[i], showTextScaleFactor.getValue() );
+            sofa::helper::gl::GlText::draw ( m_reps[nbRefs.getValue() *i+0]*valueScale, xto[i], textScale );
     }
 
     // Display distances for each points
@@ -1048,7 +1055,7 @@ void SkinningMapping<BasicMapping>::draw()
     {
         glColor3f( 1.0, 1.0, 1.0);
         for ( unsigned int i=0; i<xto.size(); i++ )
-            sofa::helper::gl::GlText::draw ( (int)(distances[showFromIndex.getValue()%distances.size()][i]), xto[i], showTextScaleFactor.getValue() );
+            sofa::helper::gl::GlText::draw ( (int)(distances[showFromIndex.getValue()%distances.size()][i]*valueScale), xto[i], textScale );
     }
 
     // Display coefs for each points
@@ -1056,7 +1063,35 @@ void SkinningMapping<BasicMapping>::draw()
     {
         glColor3f( 1.0, 1.0, 1.0);
         for ( unsigned int i=0; i<xto.size(); i++ )
-            sofa::helper::gl::GlText::draw ( (int)(m_coefs[showFromIndex.getValue()%m_coefs.size()][i]*100), xto[i], showTextScaleFactor.getValue() );
+            sofa::helper::gl::GlText::draw ( (int)(m_coefs[showFromIndex.getValue()%m_coefs.size()][i]*valueScale), xto[i], textScale );
+    }
+
+    // Display gradient values for each points
+    if( showGradientsValues.getValue())
+    {
+        char txt[100];
+        glColor3f( 0.5, 0.5, 0.5);
+        for ( unsigned int i=0; i<xto.size(); i++ )
+        {
+            const Vec3& grad = distGradients[showFromIndex.getValue()%distGradients.size()][i];
+            int scale = (1>>valueScale);
+            sprintf( txt, "( %d, %d, %d)", (int)(grad[0]*scale)/double(scale), (int)(grad[1]*scale)/double(scale), (int)(grad[2]*scale)/double(scale));
+            sofa::helper::gl::GlText::draw ( txt, xto[i], textScale );
+        }
+    }
+
+    // Display distances values for each points
+    if( showDefTensorsValues.getValue())
+    {
+        char txt[100];
+        glColor3f( 0.5, 0.5, 0.5);
+        for ( unsigned int i=0; i<xto.size(); i++ )
+        {
+            const Vec6& e = this->deformationTensors[i];
+            int scale = (1>>valueScale);
+            sprintf( txt, "( %d, %d, %d)", (int)(e[0]*scale)/double(scale), (int)(e[1]*scale)/double(scale), (int)(e[2]*scale)/double(scale));
+            sofa::helper::gl::GlText::draw ( txt, xto[i], textScale );
+        }
     }
 
     // Display gradient for each points

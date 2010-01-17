@@ -245,14 +245,17 @@ public:
     Data<bool> computeJ;
     Data<bool> computeAllMatrices;
     Data<bool> showDefTensors;
+    Data<bool> showDefTensorsValues;
     Data<double> showDefTensorScale;
     Data<unsigned int> showFromIndex;
     Data<bool> showDistancesValues;
     Data<bool> showCoefs;
     Data<bool> showCoefsValues;
     Data<bool> showReps;
+    Data<int> showValuesScaleFactor;
     Data<double> showTextScaleFactor;
     Data<bool> showGradients;
+    Data<bool> showGradientsValues;
     Data<double> showGradientsScaleFactor;
 #ifdef SOFA_DEV
     HexahedronGeodesicalDistance< GeoType>* geoDist;
@@ -260,6 +263,7 @@ public:
     Data<vector<double> > newFrameWeightingRadius;
     Data<double> newFrameDefaultCutOffDistance;
     Data<bool> enableSkinning;
+    Data<double> voxelVolume;
 #endif
 
 protected:
