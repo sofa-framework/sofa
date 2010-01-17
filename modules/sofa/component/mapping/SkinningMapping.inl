@@ -74,7 +74,7 @@ SkinningMapping<BasicMapping>::SkinningMapping ( In* from, Out* to )
     , showCoefs ( initData ( &showCoefs, false, "showCoefs","Show coeficients." ) )
     , showCoefsValues ( initData ( &showCoefsValues, false, "showCoefsValues","Show coeficients values." ) )
     , showReps ( initData ( &showReps, false, "showReps","Show repartition." ) )
-    , showValuesScaleFactor ( initData ( &showValuesScaleFactor, 1, "showValuesScaleFactor","Number of decimals displayed after dot." ) )
+    , showValuesNbDecimals ( initData ( &showValuesNbDecimals, 1, "showValuesNbDecimals","Multiply floating point by 10^n." ) )
     , showTextScaleFactor ( initData ( &showTextScaleFactor, 0.00005, "showTextScaleFactor","Text Scale Factor." ) )
     , showGradients ( initData ( &showGradients, false, "showGradients","Show gradients." ) )
     , showGradientsValues ( initData ( &showGradientsValues, false, "showGradientsValues","Show Gradients Values." ) )
@@ -1009,7 +1009,8 @@ void SkinningMapping<BasicMapping>::draw()
     const vector<int>& m_reps = repartition.getValue();
     const vector<vector<double> >& m_coefs = coefs.getValue();
     const unsigned int nbRef = nbRefs.getValue();
-    const int valueScale = showValuesScaleFactor.getValue();
+    const int valueScale = showValuesNbDecimals.getValue();
+    const int scale = (1<<valueScale);
     const double textScale = showTextScaleFactor.getValue();
 
     glDisable ( GL_LIGHTING );
@@ -1046,7 +1047,7 @@ void SkinningMapping<BasicMapping>::draw()
     if ( showReps.getValue())
     {
         for ( unsigned int i=0; i<xto.size(); i++ )
-            sofa::helper::gl::GlText::draw ( m_reps[nbRefs.getValue() *i+0]*valueScale, xto[i], textScale );
+            sofa::helper::gl::GlText::draw ( m_reps[nbRefs.getValue() *i+0]*scale, xto[i], textScale );
     }
 
     // Display distances for each points
@@ -1054,7 +1055,7 @@ void SkinningMapping<BasicMapping>::draw()
     {
         glColor3f( 1.0, 1.0, 1.0);
         for ( unsigned int i=0; i<xto.size(); i++ )
-            sofa::helper::gl::GlText::draw ( (int)(distances[showFromIndex.getValue()%distances.size()][i]*valueScale), xto[i], textScale );
+            sofa::helper::gl::GlText::draw ( (int)(distances[showFromIndex.getValue()%distances.size()][i]*scale), xto[i], textScale );
     }
 
     // Display coefs for each points
@@ -1062,7 +1063,7 @@ void SkinningMapping<BasicMapping>::draw()
     {
         glColor3f( 1.0, 1.0, 1.0);
         for ( unsigned int i=0; i<xto.size(); i++ )
-            sofa::helper::gl::GlText::draw ( (int)(m_coefs[showFromIndex.getValue()%m_coefs.size()][i]*valueScale), xto[i], textScale );
+            sofa::helper::gl::GlText::draw ( (int)(m_coefs[showFromIndex.getValue()%m_coefs.size()][i]*scale), xto[i], textScale );
     }
 
     // Display gradient values for each points
@@ -1073,8 +1074,7 @@ void SkinningMapping<BasicMapping>::draw()
         for ( unsigned int i=0; i<xto.size(); i++ )
         {
             const Vec3& grad = distGradients[showFromIndex.getValue()%distGradients.size()][i];
-            int scale = (1>>valueScale);
-            sprintf( txt, "( %i, %i, %i)", (int)((grad[0]*scale)/double(scale)), (int)((grad[1]*scale)/double(scale)), (int)((grad[2]*scale)/double(scale)));
+            sprintf( txt, "( %i, %i, %i)", (int)(grad[0]*scale), (int)(grad[1]*scale), (int)(grad[2]*scale));
             sofa::helper::gl::GlText::draw ( txt, xto[i], textScale );
         }
     }
@@ -1088,8 +1088,7 @@ void SkinningMapping<BasicMapping>::draw()
         for ( unsigned int i=0; i<xto.size(); i++ )
         {
             const Vec6& e = this->deformationTensors[i];
-            int scale = (1>>valueScale);
-            sprintf( txt, "( %i, %i, %i)", (int)((e[0]*scale)/double(scale)), (int)((e[1]*scale)/double(scale)), (int)((e[2]*scale)/double(scale)));
+            sprintf( txt, "( %i, %i, %i)", (int)(e[0]*scale), (int)(e[1]*scale), (int)(e[2]*scale));
             sofa::helper::gl::GlText::draw ( txt, xto[i], textScale );
         }
     }
