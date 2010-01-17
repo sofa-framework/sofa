@@ -239,6 +239,7 @@ protected:
 
     Data<vector<int> > repartition;
     Data<Coefs<double> > coefs;
+    Data<Coefs<GeoCoord> > weightGradients;
     Data<unsigned int> nbRefs;
 public:
     Data<bool> showBlendedFrame;
