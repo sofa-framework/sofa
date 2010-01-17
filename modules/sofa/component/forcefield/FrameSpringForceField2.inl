@@ -132,10 +132,17 @@ void FrameSpringForceField2<DataTypes>::computeK0()
             }
         }
     /*
-    for ( i=0;i<nbDOF;++i )
-    for ( j=0;j<nbDOF;++j )
-    serr << "K0["<<i<<"]["<<j<<"]: " << K0[i][j] << sendl;
-    */
+    	for ( i=0;i<nbP;++i )
+    		serr << "vol["<<i<<"]: " << (*vol)[i] << sendl;
+    	for ( i=0;i<6;++i )
+    		for ( j=0;j<6;++j )
+    			serr << "H: " << H << sendl;
+    	for ( i=0;i<nbDOF;++i )
+    		for ( j=0;j<nbDOF;++j )
+    			serr << "B["<<i<<"]["<<j<<"]: " << (*B)[i][j] << sendl;*/
+    for ( i=0; i<nbDOF; ++i )
+        for ( j=0; j<nbDOF; ++j )
+            serr << "K0["<<i<<"]["<<j<<"]: " << K0[i][j] << sendl;
 }
 
 template<class DataTypes>
@@ -161,13 +168,11 @@ void FrameSpringForceField2<DataTypes>::addForce(VecDeriv& vf, const VecCoord& v
     }
 
     updateForce( vf, K, vx, K0 );
-    /*
-    for ( unsigned int i=0;i<size;++i )
-    	for ( unsigned int j=0;j<size;++j )
-    		serr << "K["<<i<<"]["<<j<<"]: " << K[i][j] << sendl;
-    for ( unsigned int i=0;i<size;++i )
-    		serr << "F["<<i<<"]: " << vf[i] << sendl;
-    */
+    for ( unsigned int i=0; i<size; ++i )
+        for ( unsigned int j=0; j<size; ++j )
+            serr << "K["<<i<<"]["<<j<<"]: " << K[i][j] << sendl;
+    for ( unsigned int i=0; i<size; ++i )
+        serr << "F["<<i<<"]: " << vf[i] << sendl;
 }
 
 template<class DataTypes>
@@ -244,7 +249,7 @@ void FrameSpringForceField2<DataTypes>::updateForce( VecDeriv& Force, VVMat66& K
 // intermediate frames and registration
                 GetIntermediateFrame( xmean,xi[i],xi[j]);
                 GetIntermediateFrame( xmeanref,xiref[i],xiref[j]);
-                xmeaninv = Coord() - xmean;
+                Invert_Rigid( xmeaninv, xmean);
                 Multi_Rigid( T,xmeanref,xmeaninv);
                 QtoR( R,T.getOrientation()); // 3x3 rotation
 
@@ -257,6 +262,7 @@ void FrameSpringForceField2<DataTypes>::updateForce( VecDeriv& Force, VVMat66& K
                 Multi_Rigid( xjbar,T,xi[j]);
 // in ref pos: Theta.dt=jbar.jo-1
                 PostoSpeed( Theta,xiref[j],xjbar);
+
 // in current pos: Df_i= R(irel_q^1) Kij Theta.dt = K2 Theta.dt
                 K2.fill(0);
                 for(l=0; l<3; l++) for(m=0; m<3; m++) for(k=0; k<3; k++)
@@ -266,12 +272,14 @@ void FrameSpringForceField2<DataTypes>::updateForce( VecDeriv& Force, VVMat66& K
                             K2[l+3][m]+=Kref[i][j][k+3][m] * R[k][l];
                             K2[l+3][m+3]+=Kref[i][j][k+3][m+3] * R[k][l];
                         }
+                df = Deriv();
                 for(k=0; k<3; k++) for(l=0; l<3; l++)
                     {
                         df.getVOrientation()[k]+=K2[k][l]*Theta.getVOrientation()[l]; df.getVOrientation()[k]+=K2[k][l+3]*Theta.getVCenter()[l];
                         df.getVCenter()[k]+=K2[k+3][l]*Theta.getVOrientation()[l]; df.getVCenter()[k]+=K2[k+3][l+3]*Theta.getVCenter()[l];
                     }
                 Force[i].getVOrientation()+=df.getVOrientation(); Force[i].getVCenter()+=df.getVCenter();
+                serr << "F["<<i<<"]: " << Force[i] << sendl;
 
 //qDebug()<<"thetaj"<<Theta.getVOrientation()[0]<<","<<Theta.getVOrientation()[1]<<","<<Theta.getVOrientation()[2]<<","<<Theta.getVCenter()[0]<<","<<Theta.getVCenter()[1]<<","<<Theta.getVCenter()[2];
 //qDebug()<<"fji"<<df.getVOrientation()[0]<<","<<df.getVOrientation()[1]<<","<<df.getVOrientation()[2]<<","<<df.getVCenter()[0]<<","<<df.getVCenter()[1]<<","<<df.getVCenter()[2];
@@ -279,6 +287,7 @@ void FrameSpringForceField2<DataTypes>::updateForce( VecDeriv& Force, VVMat66& K
 // reciprocal force: Df_j= -Df_i (moved to j)
                 df.getVOrientation()-=Crossp*df.getVCenter();
                 Force[j].getVOrientation()-=df.getVOrientation(); Force[j].getVCenter()-=df.getVCenter();
+                serr << "F["<<j<<"]: " << Force[j] << sendl;
 
 //qDebug()<<"fjj"<<-df.getVOrientation()[0]<<","<<-df.getVOrientation()[1]<<","<<-df.getVOrientation()[2]<<","<<-df.getVCenter()[0]<<","<<-df.getVCenter()[1]<<","<<-df.getVCenter()[2];
 // new stiffness: Kij=d f_ij/Omega_j=K2 R(T) Kjj=d f_jj/Omega_j=d f_jj/d f_ij Kij
@@ -315,7 +324,7 @@ void FrameSpringForceField2<DataTypes>::updateForce( VecDeriv& Force, VVMat66& K
                             K2[l+3][m+3]+=Kref[j][i][k+3][m+3] * R[k][l];
                         }
 
-                df.getVOrientation().fill(0); df.getVCenter().fill(0);
+                df = Deriv();
                 for(k=0; k<3; k++) for(l=0; l<3; l++)
                     {
                         df.getVOrientation()[k]+=K2[k][l]*Theta.getVOrientation()[l]; df.getVOrientation()[k]+=K2[k][l+3]*Theta.getVCenter()[l];
@@ -461,6 +470,14 @@ void FrameSpringForceField2<DataTypes>::Multi_Q( Quat& q, const Quat& q1, const 
     q[0]+=q2[3]*q1[0]+q1[3]*q2[0];
     q[1]+=q2[3]*q1[1]+q1[3]*q2[1];
     q[2]+=q2[3]*q1[2]+q1[3]*q2[2];
+}
+
+template<class DataTypes>
+void FrameSpringForceField2<DataTypes>::Invert_Rigid( Coord& xinv, const Coord& x)
+{
+    xinv.getOrientation()[0]=-x.getOrientation()[0];    xinv.getOrientation()[1]=-x.getOrientation()[1];    xinv.getOrientation()[2]=-x.getOrientation()[2];
+    xinv.getOrientation()[3]=x.getOrientation()[3];
+    Transform_Q( xinv.getCenter(),-x.getCenter(),xinv.getOrientation());
 }
 
 template<class DataTypes>

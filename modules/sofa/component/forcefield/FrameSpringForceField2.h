@@ -186,6 +186,7 @@ private:
     void Transform_Q( Vec3& pout, const Vec3& pin, const Quat& q, const bool& invert=false);
     void PostoSpeed( Deriv& Omega, const Coord& xi, const Coord& xi2);
     void Multi_Q( Quat& q, const Quat& q1, const Quat& q2);
+    void Invert_Rigid( Coord& xinv, const Coord& x);
     void getH_isotropic ( Mat66& H, const double& E, const double& v );
 
 };
