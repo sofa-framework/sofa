@@ -63,6 +63,7 @@ public:
 
     sofa::core::objectmodel::DataFileName f_filename;
     Data < bool > f_writeX;
+    Data < bool > f_writeX0;
     Data < bool > f_writeV;
     Data < double > f_interval;
     Data < helper::vector<double> > f_time;
