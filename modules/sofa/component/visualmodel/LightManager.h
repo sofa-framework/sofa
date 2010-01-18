@@ -75,6 +75,7 @@ private:
     std::vector<defaulttype::Mat4x4f> lightModelViewMatrix;
     std::vector<defaulttype::Mat4x4f> lightProjectionMatrix;
     Data<bool> shadowEnabled;
+    Data<defaulttype::Vec4f> ambient;
 #ifdef SOFA_HAVE_GLEW
     //OglShadowShader* shadowShader;
     helper::vector<OglShadowShader*> shadowShaders;
@@ -83,9 +84,9 @@ private:
 
 public:
 #ifndef __APPLE__
-    static const unsigned int MAX_NUMBER_OF_LIGHTS = /*GL_MAX_LIGHTS*/ 5 ;
+    enum { MAX_NUMBER_OF_LIGHTS = /*GL_MAX_LIGHTS*/ 5 };
 #else
-    static const unsigned int MAX_NUMBER_OF_LIGHTS = /*GL_MAX_LIGHTS*/ 3 ;
+    enum { MAX_NUMBER_OF_LIGHTS = /*GL_MAX_LIGHTS*/ 3 };
 #endif
 
     LightManager();

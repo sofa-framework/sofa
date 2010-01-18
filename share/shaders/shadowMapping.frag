@@ -52,9 +52,9 @@ void main()
 				if (spotEffect > gl_LightSource[i].spotCosCutoff)
 				{
 					spotEffect = isLit * smoothstep(gl_LightSource[i].spotCosCutoff, 1.0, spotEffect); //pow(spotEffect, gl_LightSource[0].spotExponent);
-					att = spotEffect / (gl_LightSource[i].constantAttenuation +
+					att = spotEffect /* / (gl_LightSource[i].constantAttenuation +
 							gl_LightSource[i].linearAttenuation * dist[i] +
-							gl_LightSource[i].quadraticAttenuation * dist[i] * dist[i]);
+							gl_LightSource[i].quadraticAttenuation * dist[i] * dist[i]) */;
 
 					final_color += att * (diffuse * NdotL) ;
 
