@@ -361,43 +361,50 @@ void SpotLight::drawLight()
 
 void SpotLight::draw()
 {
-    /*	if (drawSource.getValue() && getContext()->getShowVisualModels())
-    	{
-    	    Vector3 sceneMinBBox, sceneMaxBBox;
-    		sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)this->getContext(), sceneMinBBox.ptr(), sceneMaxBBox.ptr());
-    		float scale = (float)((sceneMaxBBox - sceneMinBBox).norm());
-    		scale *= 0.01f;
-    		float width = 5.0f;
-    		float base =(float)(tan(cutoff.getValue()*M_PI/360)*width*2);
+    if (drawSource.getValue() && getContext()->getShowVisualModels())
+    {
+        Vector3 sceneMinBBox, sceneMaxBBox;
+        sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)this->getContext(), sceneMinBBox.ptr(), sceneMaxBBox.ptr());
+        float scale = (float)((sceneMaxBBox - sceneMinBBox).norm());
+        scale *= 0.01f;
+        float width = 5.0f;
+        float base =(float)(tan(cutoff.getValue()*M_PI/360)*width*2);
 
-    		GLUquadric* quad = gluNewQuadric();
-    		const Vector3& pos = position.getValue();
-    		const Vector3& dir = direction.getValue();
-    		const Vector3& col = color.getValue();
+        GLUquadric* quad = gluNewQuadric();
+        const Vector3& pos = position.getValue();
+        const Vector3& dir = direction.getValue();
+        const Vector3& col = color.getValue();
 
-    		//get Rotation
-    		defaulttype::Quat q = defaulttype::Quat::createQuaterFrom2Vectors( dir , Vector3(0,0,1));
-    		GLfloat rotMat[16];
-    		q.writeOpenGlMatrix(rotMat);
-    		glDisable(GL_LIGHTING);
-    		glColor3dv(col.ptr());
+        //get Rotation
+        Vector3 xAxis, yAxis;
+        yAxis = (fabs(dir[1]) > fabs(dir[2])) ? Vector3(0.0,0.0,1.0) : Vector3(0.0,1.0,0.0);
+        xAxis = yAxis.cross(dir);
+        yAxis = dir.cross(xAxis);
+        xAxis.normalize();
+        yAxis.normalize();
+        defaulttype::Quat q;
+        q = q.createQuaterFromFrame(xAxis, yAxis, dir).inverse();
 
-    		glPushMatrix();
-    		glTranslated(pos[0], pos[1], pos[2]);
-    		glMultMatrixf(rotMat);
-    		glScalef(scale, scale, scale);
-    		glPushMatrix();
-    		gluSphere(quad, 1.0, 16, 16);
-    		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    		glTranslatef(0.0,0.0,-width);
-    		gluCylinder(quad,base, 0.0, width, 16, 16);
-    		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    		glPopMatrix();
-    		glPopMatrix();
+        GLfloat rotMat[16];
+        q.writeOpenGlMatrix(rotMat);
+        glDisable(GL_LIGHTING);
+        glColor3dv(col.ptr());
 
-    		glEnable(GL_LIGHTING);
-    	}
-    	*/
+        glPushMatrix();
+        glTranslated(pos[0], pos[1], pos[2]);
+        glMultMatrixf(rotMat);
+        glScalef(scale, scale, scale);
+        glPushMatrix();
+        gluSphere(quad, 1.0, 16, 16);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+        glTranslatef(0.0,0.0,-width);
+        gluCylinder(quad,base, 0.0, width, 16, 16);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        glPopMatrix();
+        glPopMatrix();
+
+        glEnable(GL_LIGHTING);
+    }
 }
 
 void SpotLight::preDrawShadow(helper::gl::VisualParameters* vp)
@@ -406,19 +413,14 @@ void SpotLight::preDrawShadow(helper::gl::VisualParameters* vp)
     const Vector3 &pos = position.getValue();
     const Vector3 &dir = direction.getValue();
 
-    helper::gl::Transformation transform;
-    for (unsigned int i=0 ; i< 3 ; i++)
-    {
-        transform.translation[i] = pos[i];
-        transform.scale[i] = 1.0;
-    }
     Vector3 xAxis, yAxis;
-    yAxis = Vector3(0.0,1.0,0.0);
+    yAxis = (fabs(dir[1]) > fabs(dir[2])) ? Vector3(0.0,0.0,1.0) : Vector3(0.0,1.0,0.0);
     xAxis = yAxis.cross(dir);
+    yAxis = dir.cross(xAxis);
     xAxis.normalize();
+    yAxis.normalize();
     defaulttype::Quat q;
     q = q.createQuaterFromFrame(xAxis, yAxis, dir);
-    q.buildRotationMatrix(transform.rotation);
 
     //compute zNear, zFar from light point of view
     double zNear=1e10, zFar=-1e10;
@@ -427,16 +429,22 @@ void SpotLight::preDrawShadow(helper::gl::VisualParameters* vp)
         Vector3 p((corner&1)?vp->minBBox[0]:vp->maxBBox[0],
                 (corner&2)?vp->minBBox[1]:vp->maxBBox[1],
                 (corner&4)?vp->minBBox[2]:vp->maxBBox[2]);
-        p = transform * p;
+        p = q.rotate(p - pos);
         double z = -p[2];
         if (z < zNear) zNear = z;
         if (z > zFar)  zFar = z;
     }
+    serr << "zNear = " << zNear << "  zFar = " << zFar << sendl;
 
     if (zNear <= 0)
         zNear = 1;
     if (zFar >= 1000.0)
         zFar = 1000.0;
+    if (zFar <= 0)
+    {
+        zNear = vp->zNear;
+        zFar = vp->zFar;
+    }
 
     if (zNear > 0 && zFar < 1000)
     {

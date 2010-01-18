@@ -61,6 +61,7 @@ int LightManagerClass = core::RegisterObject("LightManager")
 
 LightManager::LightManager()
     :shadowEnabled(initData(&shadowEnabled, (bool) false, "shadowEnabled", "Enable Shadow in the scene"))
+    ,ambient(initData(&ambient, defaulttype::Vec4f(0.0f,0.0f,0.0f,0.0f), "ambient", "Ambient lights contribution"))
 {
 
 }
@@ -200,10 +201,9 @@ void LightManager::makeShadowMatrix(unsigned int i)
 void LightManager::fwdDraw(Pass)
 {
 #ifdef SOFA_HAVE_GLEW
-    GLint* lightFlag = new GLint[MAX_NUMBER_OF_LIGHTS];
-    GLint* shadowTextureID = new GLint [MAX_NUMBER_OF_LIGHTS];
-    GLfloat* lightModelViewProjectionMatrices = new GLfloat [MAX_NUMBER_OF_LIGHTS*16];
-
+    GLint lightFlag[MAX_NUMBER_OF_LIGHTS];
+    GLint shadowTextureID[MAX_NUMBER_OF_LIGHTS];
+    GLfloat lightModelViewProjectionMatrices[MAX_NUMBER_OF_LIGHTS*16];
 
     if (!shadowShaders.empty())
     {
@@ -250,10 +250,6 @@ void LightManager::fwdDraw(Pass)
         }
 
     }
-
-    delete lightFlag;
-    delete shadowTextureID;
-    delete lightModelViewProjectionMatrices;
 #endif
 }
 
@@ -273,7 +269,7 @@ void LightManager::bwdDraw(Pass)
 
 void LightManager::draw()
 {
-
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient.getValue().ptr());
     unsigned int id = 0;
     for (std::vector<Light*>::iterator itl = lights.begin(); itl != lights.end() ; itl++)
     {

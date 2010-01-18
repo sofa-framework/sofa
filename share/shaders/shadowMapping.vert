@@ -40,7 +40,7 @@ void main()
 
 			// Compute the diffuse, ambient and globalAmbient terms
 			//diffuse[i] = gl_FrontMaterial.diffuse * gl_LightSource[i].diffuse;
-			ambientGlobal += gl_FrontMaterial.ambient * gl_LightSource[i].ambient;
+			//ambientGlobal += gl_FrontMaterial.ambient * gl_LightSource[i].ambient;
 
 			if (lightFlag[i] == 2)
 				//shadowTexCoord[i] = shadowMatrix[i] * gl_ModelViewMatrix * gl_Vertex;
