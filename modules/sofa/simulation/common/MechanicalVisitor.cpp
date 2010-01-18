@@ -61,7 +61,7 @@ Visitor::Result MechanicalVisitor::processNodeTopDown(simulation::Node* node)
             if (node->mechanicalMapping != NULL)
             {
                 //cerr<<"MechanicalVisitor::processNodeTopDown, node "<<node->getName()<<" is a mapped model"<<endl;
-                if (!node->mechanicalMapping->isMechanical())
+                if (stopAtMechanicalMapping(node, node->mechanicalMapping))
                 {
                     // stop all mechanical computations
                     return RESULT_PRUNE;
@@ -141,7 +141,7 @@ void MechanicalVisitor::processNodeBottomUp(simulation::Node* node)
     {
         if (node->mechanicalMapping != NULL)
         {
-            if (node->mechanicalMapping->isMechanical())
+            if (!stopAtMechanicalMapping(node, node->mechanicalMapping))
             {
                 if(testTags(node->mechanicalState))
                 {

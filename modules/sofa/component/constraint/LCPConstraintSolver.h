@@ -117,6 +117,13 @@ public:
         end(node, ms, t0);
         return RESULT_CONTINUE;
     }
+
+    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
+    {
+        return false; // !map->isMechanical();
+    }
+
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
@@ -147,6 +154,14 @@ public:
         end(node, ms, t0);
         return RESULT_CONTINUE;
     }
+
+
+    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
+    {
+        return false; // !map->isMechanical();
+    }
+
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
@@ -180,6 +195,14 @@ public:
         end(node, c, t0);
         return RESULT_CONTINUE;
     }
+
+
+    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
+    {
+        return false; // !map->isMechanical();
+    }
+
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
@@ -214,6 +237,13 @@ public:
         c->getConstraintInfo(_blocks, _ids, _positions, _directions, _areas);
         end(node, c, t0);
         return RESULT_CONTINUE;
+    }
+
+
+    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
+    {
+        return false; // !map->isMechanical();
     }
 
 #ifdef SOFA_DUMP_VISITOR_INFO
