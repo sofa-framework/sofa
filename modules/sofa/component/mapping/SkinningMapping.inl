@@ -479,6 +479,11 @@ void SkinningMapping<BasicMapping>::updateWeights ()
     }
     case WEIGHT_SPLINE:
     {
+        if( xfrom.size() < 4 || nbRefs.getValue() < 4)
+        {
+            serr << "Error ! To use WEIGHT_SPLINE, you must use at least 4 DOFs and set nbRefs to 4.\n WEIGHT_SPLINE requires also the DOFs are ordered along z-axis." << sendl;
+            return;
+        }
         vector<int> tmpReps;
         sortReferences( tmpReps); // We sort references even for DUALQUAT_INTERPOLATION
         for ( unsigned int i=0; i<xto.size(); i++ )
@@ -494,6 +499,23 @@ void SkinningMapping<BasicMapping>::updateWeights ()
             for( unsigned int j = 0; j < 4; ++j)
                 sortedFrames.push_back( tmpReps[nbRefs.getValue() *i+j]);
             std::sort( sortedFrames.begin(), sortedFrames.end());
+
+            if( xto[i][2] < xfrom[sortedFrames[1]].getCenter()[2])
+            {
+                sortedFrames.clear();
+                sortedFrames.push_back( 0);
+                sortedFrames.push_back( 0);
+                sortedFrames.push_back( 1);
+                sortedFrames.push_back( 2);
+            }
+            else if( xto[i][2] > xfrom[sortedFrames[2]].getCenter()[2])
+            {
+                sortedFrames.clear();
+                sortedFrames.push_back( sortedFrames[1]);
+                sortedFrames.push_back( sortedFrames[2]);
+                sortedFrames.push_back( sortedFrames[3]);
+                sortedFrames.push_back( sortedFrames[3]);
+            }
 
             // Compute u
             Vec3d r1r2 = xfrom[sortedFrames[2]].getCenter() - xfrom[sortedFrames[1]].getCenter();
