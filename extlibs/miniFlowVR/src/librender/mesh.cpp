@@ -861,6 +861,148 @@ void Mesh::optimize()
 }
 
 
+/// Merge vertices closer than the given distance
+void Mesh::mergeVertices(float dist)
+{
+    std::vector<int> old2new_v;
+    std::vector<Vec3f> new_pos;
+    std::vector<Vec3f> new_pos_sum;
+    std::vector<int> new_pos_count;
+    std::map<Vec3f,int> pos2new;
+    
+    bool group    = getAttrib(MESH_POINTS_GROUP);
+    int nbp0 = (group) ? nbg() : nbp();
+    int new_nbp = 0;
+    old2new_v.resize(nbp0);
+    new_pos.reserve(nbp0);
+    new_pos_sum.reserve(nbp0);
+    new_pos_count.reserve(nbp0);
+    for (int p0 = 0; p0 < nbp0; ++p0)
+    {
+        Vec3f pos = (group) ? getPP(getGP0(p0)) : getPP(p0);
+        int new_p = -1;
+        float new_d2 = dist*dist;
+        std::pair<std::map<Vec3f,int>::iterator,bool> it = pos2new.insert(std::pair<Vec3f,int>(pos,new_nbp));
+        if (!it.second)
+        {
+            new_p = it.first->second;
+            new_d2 = 0;
+        }
+        else if (dist > 0.0f)
+        {
+            for (int p1 = 0; p1 < new_nbp; ++p1)
+            {
+                float d2 = (new_pos[p1] - pos).norm2();
+                if (d2 <= new_d2)
+                {
+                    new_p = p1;
+                    new_d2 = d2;
+                }
+            }
+        }
+        if (new_p != -1)
+        {
+            //std::cout << "vertex " << p0 << " merged, dist=" << sqrtf(new_d2) << std::endl;
+            new_pos_sum[new_p] += pos;
+            new_pos_count[new_p] += 1;
+            if (new_d2 > 0.0f)
+                new_pos[new_p] = new_pos_sum[new_p] / new_pos_count[new_p];
+        }
+        else
+        {
+            new_p = new_nbp;
+            ++new_nbp;
+            new_pos_sum.push_back(pos);
+            new_pos_count.push_back(1);
+            new_pos.push_back(pos);
+        }
+        old2new_v[p0] = new_p;
+    }
+    if (new_nbp == nbp0)
+    {
+        std::cout << "No vertices merged with distance = " << dist << std::endl;
+        return;
+    }
+    std::cout << nbp0 - new_nbp << "/"<<nbp0<<" vertices merged with distance = " << dist << std::endl;
+    if (!group)
+    {
+        points_p.resize(new_nbp);
+        for (int p = 0; p < new_nbp; ++p)
+            points_p[p] = new_pos[p];
+
+        if (getAttrib(MESH_POINTS_TEXCOORD))
+        { // compute mean texcoords
+            std::vector<Vec2f> sums;
+            sums.resize(new_nbp);
+            for (int p0 = 0; p0 < nbp0; ++p0)
+                sums[old2new_v[p0]] += getPT(p0);
+            points_t.resize(new_nbp);
+            for (int p = 0; p < new_nbp; ++p)
+                points_t[p] = sums[p] / new_pos_count[p];
+        }
+
+        if (getAttrib(MESH_POINTS_NORMAL))
+        { // compute mean normals
+            std::vector<Vec3f> sums;
+            sums.resize(new_nbp);
+            for (int p0 = 0; p0 < nbp0; ++p0)
+                sums[old2new_v[p0]] += getPN(p0);
+            points_n.resize(new_nbp);
+            for (int p = 0; p < new_nbp; ++p)
+            {
+                points_n[p] = sums[p];
+                points_n[p].normalize();
+            }
+        }
+
+        if (getAttrib(MESH_POINTS_COLOR))
+        { // compute mean colors
+            std::vector<Vec4f> sums;
+            sums.resize(new_nbp);
+            for (int p0 = 0; p0 < nbp0; ++p0)
+                sums[old2new_v[p0]] += Vec4f(getPC(p0));
+            points_c.resize(new_nbp);
+            for (int p = 0; p < new_nbp; ++p)
+            {
+                Vec4f c = sums[p] / new_pos_count[p];
+                Vec4f cb;
+                for (int i=0;i<4;++i)
+                {
+                    int v = (int)(c[i]+0.5f);
+                    if (v<0) v = 0; else if (v>255) v = 255;
+                    cb[i] = v;
+                }
+                points_c[p] = cb;
+            }
+        }
+
+        if (getAttrib(MESH_POINTS_VALUE))
+        { // compute mean values
+            std::vector<float> sums;
+            sums.resize(new_nbp);
+            for (int p0 = 0; p0 < nbp0; ++p0)
+                sums[old2new_v[p0]] += getPV(p0);
+            points_v.resize(new_nbp);
+            for (int p = 0; p < new_nbp; ++p)
+                points_v[p] = sums[p] / new_pos_count[p];
+        }
+
+        for (int f=0;f<nbf();++f)
+        {
+            Vec3i fp = getFP(f);
+            for (int i = 0; i < 3; ++i)
+                fp[i] = old2new_v[fp[i]];
+            if (fp[0] == fp[1] || fp[0] == fp[2] || fp[1] == fp[2])
+                std::cerr << "Warning: face " << f << " is now degenerated." << std::endl;
+            FP(f) = fp;
+        }
+    }
+    else
+    {
+        std::cerr << "Vertices merging not yet implemented with groups." << std::endl;
+    }
+}
+
 } // namespace render
 
 } // namespace flowvr

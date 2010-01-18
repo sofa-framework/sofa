@@ -45,7 +45,9 @@
 #include <sofa/defaulttype/Quat.h>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/helper/io/Mesh.h>
+#include <sofa/helper/io/MeshOBJ.h>
 #include <sofa/helper/rmath.h>
+#include <sofa/helper/accessor.h>
 #include <sstream>
 
 #include <map>
@@ -147,7 +149,9 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
        scaleTex          (initData   (&scaleTex, TexCoord(1.0,1.0), "scaleTex", "Scale of the texture")),
        translationTex    (initData   (&translationTex, TexCoord(1.0,1.0), "translationTex", "Translation of the texture")),
        material(initData(&material,"material","Material")), // tex(NULL)
-       putOnlyTexCoords(initData(&putOnlyTexCoords, (bool) false, "putOnlyTexCoords", "Give Texture Coordinates without the texture binding"))
+       putOnlyTexCoords(initData(&putOnlyTexCoords, (bool) false, "putOnlyTexCoords", "Give Texture Coordinates without the texture binding")),
+       materials(initData(&materials,"materials","List of materials")),
+       groups(initData(&groups,"groups","Groups of triangles and quads using a given material"))
 {
     inputVertices = &vertices;
     inputNormals = &vnormals;
@@ -162,29 +166,62 @@ VisualModelImpl::~VisualModelImpl()
     if (inputVertices != &vertices) delete inputVertices;
 }
 
-bool VisualModelImpl::isTransparent()
+bool VisualModelImpl::hasTransparent()
 {
-    return (material.getValue().useDiffuse && material.getValue().diffuse[3] < 1.0);
+    const helper::io::Mesh::Material& material = this->material.getValue();
+    helper::ReadAccessor< Data< helper::vector<FaceGroup> > > groups = this->groups;
+    helper::ReadAccessor< Data< helper::vector<helper::io::Mesh::Material> > > materials = this->materials;
+    if (groups.empty())
+        return (material.useDiffuse && material.diffuse[3] < 1.0);
+    else
+    {
+        for (unsigned int i = 0; i < groups.size(); ++i)
+        {
+            const helper::io::Mesh::Material& m = (groups[i].materialId == -1) ? material : materials[groups[i].materialId];
+            if (m.useDiffuse && m.diffuse[3] < 1.0)
+                return true;
+        }
+    }
+    return false;
+}
+
+bool VisualModelImpl::hasOpaque()
+{
+    const helper::io::Mesh::Material& material = this->material.getValue();
+    helper::ReadAccessor< Data< helper::vector<FaceGroup> > > groups = this->groups;
+    helper::ReadAccessor< Data< helper::vector<helper::io::Mesh::Material> > > materials = this->materials;
+    if (groups.empty())
+        return !(material.useDiffuse && material.diffuse[3] < 1.0);
+    else
+    {
+        for (unsigned int i = 0; i < groups.size(); ++i)
+        {
+            const helper::io::Mesh::Material& m = (groups[i].materialId == -1) ? material : materials[groups[i].materialId];
+            if (!(m.useDiffuse && m.diffuse[3] < 1.0))
+                return true;
+        }
+    }
+    return false;
 }
 
 void VisualModelImpl::drawVisual()
 {
-    if (!isTransparent())
-        internalDraw();
+    if (hasOpaque())
+        internalDraw(false);
 }
 
 void VisualModelImpl::drawTransparent()
 {
-    if (isTransparent())
-        internalDraw();
+    if (hasTransparent())
+        internalDraw(true);
 }
 
 void VisualModelImpl::drawShadow()
 {
-    if (!isTransparent() && getCastShadow())
+    if (hasOpaque() && getCastShadow())
     {
         //sout << "drawShadow for "<<getName()<<sendl;
-        internalDraw();
+        internalDraw(false);
     }
 }
 
@@ -202,6 +239,50 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
         helper::io::Mesh::Material M;
         M = materialImport;
         material.setValue(M);
+    }
+
+    if (!objLoader.getGroups().empty())
+    {
+        // get informations about the multiple materials
+        helper::WriteAccessor< Data< helper::vector<sofa::helper::io::Mesh::Material> > > materials = this->materials;
+        helper::WriteAccessor< Data< helper::vector<FaceGroup> > > groups = this->groups;
+        materials.resize(objLoader.getMaterials().size());
+        for (unsigned i=0; i<materials.size(); ++i)
+            materials[i] = objLoader.getMaterials()[i];
+        // compute the triangle and quad index corresponding to each facet
+        // convert the groups info
+        int nbt = 0, nbq = 0;
+        helper::vector< std::pair<int, int> > facet2tq;
+        facet2tq.resize(facetsImport.size()+1);
+        for (unsigned int i = 0; i < facetsImport.size(); i++)
+        {
+            facet2tq[i] = std::make_pair(nbt, nbq);
+            const vector<vector <int> >& vertNormTexIndex = facetsImport[i];
+            const vector<int>& verts = vertNormTexIndex[0];
+            if (verts.size() < 3)
+                ; // ignore lines
+            else if (verts.size() == 4)
+                nbq += 1;
+            else
+                nbt += verts.size()-2;
+        }
+        facet2tq[facetsImport.size()] = std::make_pair(nbt, nbq);
+        groups.resize(objLoader.getGroups().size());
+        for (unsigned int ig = 0; ig < groups.size(); ig++)
+        {
+            const helper::io::Mesh::FaceGroup& g0 = objLoader.getGroups()[ig];
+            FaceGroup& g = groups[ig];
+            g.materialName = g0.materialName;
+            g.groupName = g0.groupName;
+            g.materialId = g0.materialId;
+            g.t0 = facet2tq[g0.f0].first;
+            g.nbt = facet2tq[g0.f0+g0.nbf].first - g.t0;
+            g.q0 = facet2tq[g0.f0].second;
+            g.nbq = facet2tq[g0.f0+g0.nbf].second - g.q0;
+            if (g.materialId == -1 && !g.materialName.empty())
+                serr << "face group " << ig << " name " << g.materialName << " uses missing material " << g.materialName << sendl;
+
+        }
     }
 
 //             sout << "Vertices Import size : " << verticesImport.size() << " (" << normalsImport.size() << " normals)." << sendl;
@@ -869,6 +950,11 @@ void VisualModelImpl::handleTopologyChange()
 
         case core::componentmodel::topology::TRIANGLESADDED:
         {
+            if (!groups.getValue().empty())
+            {
+                groups.beginEdit()->clear();
+                groups.endEdit();
+            }
             //sout << "INFO_print : Vis - TRIANGLESADDED" << sendl;
 
             const sofa::component::topology::TrianglesAdded *ta=static_cast< const sofa::component::topology::TrianglesAdded * >( *itBegin );
@@ -888,6 +974,11 @@ void VisualModelImpl::handleTopologyChange()
 
         case core::componentmodel::topology::QUADSADDED:
         {
+            if (!groups.getValue().empty())
+            {
+                groups.beginEdit()->clear();
+                groups.endEdit();
+            }
             //sout << "INFO_print : Vis - QUADSADDED" << sendl;
 
             const sofa::component::topology::QuadsAdded *ta_const=static_cast< const sofa::component::topology::QuadsAdded * >( *itBegin );
@@ -909,6 +1000,11 @@ void VisualModelImpl::handleTopologyChange()
 
         case core::componentmodel::topology::TRIANGLESREMOVED:
         {
+            if (!groups.getValue().empty())
+            {
+                groups.beginEdit()->clear();
+                groups.endEdit();
+            }
             //sout << "INFO_print : Vis - TRIANGLESREMOVED" << sendl;
 
             unsigned int last;
@@ -949,6 +1045,11 @@ void VisualModelImpl::handleTopologyChange()
 
         case core::componentmodel::topology::QUADSREMOVED:
         {
+            if (!groups.getValue().empty())
+            {
+                groups.beginEdit()->clear();
+                groups.endEdit();
+            }
             //sout << "INFO_print : Vis - QUADSREMOVED" << sendl;
 
             unsigned int last;

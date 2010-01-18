@@ -70,6 +70,7 @@ int main(int argc, char** argv)
     bool rtexcoords = false;
     bool closemesh = false;
     float closedist = 0.0f;
+    float mergedist = -1.0f;
     Vec3f translation;
     Vec3f rotation;
     Vec3f scale(1,1,1);
@@ -89,6 +90,7 @@ int main(int argc, char** argv)
     cmd.opt("rtexcoords",'T',"remove texcoords",&rtexcoords);
     cmd.opt("close",'c',"close mesh",&closemesh);
     cmd.opt("close2",'C',"close mesh creating intermediate vertices no further appart than given dist",&closedist);
+    cmd.opt("merge",'m',"merge vertices closer than the given distance",&mergedist);
     cmd.opt("translate",'t',"translate the mesh",&translation);
     cmd.opt("rotate",'r',"rotate the mesh using euler angles in degree",&rotation);
     cmd.opt("scale",'s',"scale the mesh using 3 coefficients",&scale);
@@ -206,6 +208,11 @@ int main(int argc, char** argv)
         BBox bb = obj.calcBBox();
         std::cout << "Mesh bbox = "<<bb<<std::endl;
         std::cout << "Mesh center and radius = "<<(bb.a+bb.b)*0.5<<"  "<<(bb.b-bb.a)*0.5 << std::endl;
+    }
+    if (mergedist >= 0.0f)
+    {
+        std::cout << "Merging vertices closer than " << mergedist <<std::endl;
+        obj.mergeVertices(mergedist);
     }
     if (flip)
     {

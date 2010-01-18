@@ -389,14 +389,15 @@ public:
     BBox bb;
     if (filter && *filter=='<')
     {
-	int len = 0;
-	sscanf(filter,"<%f,%f,%f>-<%f,%f,%f>%n",&bb.a[0],&bb.a[1],&bb.a[2],&bb.b[0],&bb.b[1],&bb.b[2],&len);
-	filter+=len;
+        int len = 0;
+        sscanf(filter,"<%f,%f,%f>-<%f,%f,%f>%n",&bb.a[0],&bb.a[1],&bb.a[2],&bb.b[0],&bb.b[1],&bb.b[2],&len);
+        filter+=len;
     }
     bool simple=false;
     if (filter && std::string(filter)=="simple")
     {
-	simple = true;
+        simple = true;
+        filter += 6;
     }
 
     std::string gname = "default";
