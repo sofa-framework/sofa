@@ -254,6 +254,9 @@ void SkinningMapping<BasicMapping>::init()
         if ( wheightingType.getValue() == WEIGHT_LINEAR || wheightingType.getValue() == WEIGHT_HERMITE )
             nbRefs.setValue ( 2 );
 
+        if ( wheightingType.getValue() == WEIGHT_SPLINE)
+            nbRefs.setValue ( 4 );
+
         if ( xfrom.size() < nbRefs.getValue() || interpolationType.getValue() == INTERPOLATION_DUAL_QUATERNION)
             nbRefs.setValue ( xfrom.size() );
 
@@ -452,6 +455,11 @@ void SkinningMapping<BasicMapping>::updateWeights ()
         sortReferences( tmpReps); // We sort references even for DUALQUAT_INTERPOLATION
         for ( unsigned int i=0; i<xto.size(); i++ )
         {
+            for ( unsigned int j=0; j<xfrom.size(); j++ )
+            {
+                m_coefs[j][i] = 0.0;
+                m_dweight[j][i] = Coord();
+            }
             Vec3d r1r2, r1p;
             double wi;
             r1r2 = xfrom[tmpReps[nbRefs.getValue() *i+1]].getCenter() - xfrom[tmpReps[nbRefs.getValue() *i+0]].getCenter();
@@ -466,6 +474,44 @@ void SkinningMapping<BasicMapping>::updateWeights ()
             r1r2.normalize();
             m_dweight[tmpReps[nbRefs.getValue() *i+0]][i] = -r1r2 * (6*wi-6*wi*wi) / (r1r2NormSquare);
             m_dweight[tmpReps[nbRefs.getValue() *i+1]][i] = r1r2 * (6*wi-6*wi*wi) / (r1r2NormSquare);
+        }
+        break;
+    }
+    case WEIGHT_SPLINE:
+    {
+        vector<int> tmpReps;
+        sortReferences( tmpReps); // We sort references even for DUALQUAT_INTERPOLATION
+        for ( unsigned int i=0; i<xto.size(); i++ )
+        {
+            // Clear all weights and dweights.
+            for ( unsigned int j=0; j<xfrom.size(); j++ )
+            {
+                m_coefs[j][i] = 0.0;
+                m_dweight[j][i] = Coord();
+            }
+            // Get the 4 nearest DOFs.
+            vector<unsigned int> sortedFrames;
+            for( unsigned int j = 0; j < 4; ++j)
+                sortedFrames.push_back( tmpReps[nbRefs.getValue() *i+j]);
+            std::sort( sortedFrames.begin(), sortedFrames.end());
+
+            // Compute u
+            Vec3d r1r2 = xfrom[sortedFrames[2]].getCenter() - xfrom[sortedFrames[1]].getCenter();
+            Vec3d r1p  = xto[i] - xfrom[sortedFrames[1]].getCenter();
+            double r1r2NormSquare = r1r2.norm()*r1r2.norm();
+            double u = ( r1r2*r1p ) / r1r2NormSquare;
+
+            // Set weights and dweights.
+            m_coefs[sortedFrames[0]][i] = 1-3*u*u+2*u*u*u;
+            m_coefs[sortedFrames[1]][i] = u*u*u - 2*u*u + u;
+            m_coefs[sortedFrames[2]][i] = 3*u*u-2*u*u*u;
+            m_coefs[sortedFrames[3]][i] = u*u*u - u*u;
+
+            r1r2.normalize();
+            m_dweight[sortedFrames[0]][i] = -r1r2 * (6*u - 6*u*u) / (r1r2NormSquare);
+            m_dweight[sortedFrames[1]][i] = r1r2 * (3*u*u - 4*u + 1) / (r1r2NormSquare);
+            m_dweight[sortedFrames[2]][i] = r1r2 * (6*u - 6*u*u) / (r1r2NormSquare);
+            m_dweight[sortedFrames[3]][i] = r1r2 * (3*u*u - 2*u) / (r1r2NormSquare);
         }
         break;
     }
