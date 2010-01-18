@@ -86,7 +86,8 @@ void OglViewport::preDrawScene(helper::gl::VisualParameters* vp)
     cameraOrientation.normalize();
     helper::gl::Transformation transform;
 
-    cameraOrientation.buildRotationMatrix(transform.rotation);
+    //cameraOrientation.buildRotationMatrix(transform.rotation);
+    cameraOrientation.writeOpenGlMatrix((SReal*) transform.rotation);
 
     for (unsigned int i=0 ; i< 3 ; i++)
     {
