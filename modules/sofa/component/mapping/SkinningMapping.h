@@ -229,6 +229,7 @@ public:
     typedef typename DualQuatStorage<N, Real>::VDUALQUAT VDUALQUAT;
 #else
     typedef Coord GeoCoord;
+    typedef VecCoord GeoVecCoord;
 #endif
 protected:
     vector<Coord> initPos; // pos: point coord in the world reference frame
@@ -352,7 +353,7 @@ public:
     void Multi_Q(Quat& q, const Vec4& q1, const Quat& q2);
 
     void removeFrame( const unsigned int index);
-    void insertFrame( const Coord& pos, const Quat& rot, double distMax = 0.0);
+    void insertFrame( const Coord& pos, const Quat& rot, GeoVecCoord beginPointSet = GeoVecCoord(), double distMax = 0.0);
     bool inverseSkinning( InCoord& X0, InCoord& X, const InCoord& Xtarget);
     void computeWeight( VVD& w, VecVecCoord& dw, const Coord& x0);
     void updateDataAfterInsertion();

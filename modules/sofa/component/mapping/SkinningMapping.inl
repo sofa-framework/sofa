@@ -1580,7 +1580,7 @@ void SkinningMapping<BasicMapping>::removeFrame( const unsigned int /*index*/)
 }
 
 template <class BasicMapping>
-void SkinningMapping<BasicMapping>::insertFrame( const Coord& pos, const Quat& rot, double distMax)
+void SkinningMapping<BasicMapping>::insertFrame( const Coord& pos, const Quat& rot, GeoVecCoord beginPointSet, double distMax)
 {
     changeSettingsDueToInsertion();
 
@@ -1613,7 +1613,7 @@ void SkinningMapping<BasicMapping>::insertFrame( const Coord& pos, const Quat& r
 
     // Compute geodesical/euclidian distance for this frame.
     if ( distanceType.getValue() == DISTANCE_GEODESIC || distanceType.getValue() == DISTANCE_HARMONIC)
-        geoDist->addElt( newX0.getCenter(), distMax);
+        geoDist->addElt( newX0.getCenter(), beginPointSet, distMax);
     vector<double>& vRadius = (*newFrameWeightingRadius.beginEdit());
     vRadius.resize( indexFrom + 1);
     vRadius[indexFrom] = distMax;
