@@ -1922,10 +1922,21 @@ void SkinningMapping<BasicMapping>::updateDataAfterInsertion()
                             m_coefs[i][j] = 0xFFF;
                             dw[i][j] = Coord();
                         }
+                        else if( distances[i][j] > radius[i])
+                        {
+                            m_coefs[i][j] = 0.0;
+                            dw[i][j] = Coord();
+                        }
                         else
                         {
-                            m_coefs[i][j] = 0xFFF / (maximizeWeightDist - radius[i]) * (distances[i][j] - radius[i]);
-                            dw[i][j] = distGradients[i][j] * 0xFFF / (maximizeWeightDist - radius[i]);
+                            // linear interpolation from 0 to 0xFFF
+                            //m_coefs[i][j] = 0xFFF / (maximizeWeightDist - radius[i]) * (distances[i][j] - radius[i]);
+                            //dw[i][j] = distGradients[i][j] * 0xFFF / (maximizeWeightDist - radius[i]);
+
+                            // Hermite between 0 and 0xFFF
+                            double dPrime = (distances[i][j] - maximizeWeightDist) / (radius[i]-maximizeWeightDist);
+                            m_coefs[i][j] = (1-3*dPrime*dPrime+2*dPrime*dPrime*dPrime) * 0xFFF;
+                            dw[i][j] = - distGradients[i][j] * (6*dPrime-6*dPrime*dPrime) / (radius[i]-maximizeWeightDist ) * 0xFFF;
                         }
                     }
                     else
