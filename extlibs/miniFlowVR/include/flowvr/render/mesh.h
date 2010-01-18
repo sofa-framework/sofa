@@ -390,6 +390,9 @@ public:
   /// Optimize mesh by merging identical groups and reordering faces
   void optimize();
 
+  /// Merge vertices closer than the given distance
+  void mergeVertices(float dist);
+
   /// Return true if some materials requires tangent vectors
   bool needTangents() const;
 

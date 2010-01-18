@@ -184,12 +184,36 @@ protected:
 
     Vec3f bbox[2];
 
-    virtual void internalDraw()
+    virtual void internalDraw(bool /*transparent*/)
     {}
 
 public:
     Data< sofa::helper::io::Mesh::Material > material;
     Data< bool > putOnlyTexCoords;
+
+    class FaceGroup
+    {
+    public:
+        int t0, nbt;
+        int q0, nbq;
+        std::string materialName;
+        std::string groupName;
+        int materialId;
+        FaceGroup() : t0(0), nbt(0), q0(0), nbq(0), materialId(-1) {}
+        inline friend std::ostream& operator << (std::ostream& out, const FaceGroup &g)
+        {
+            out << g.groupName << " " << g.materialName << " " << g.materialId << " " << g.t0 << " " << g.nbt << " " << g.q0 << " " << g.nbq;
+            return out;
+        }
+        inline friend std::istream& operator >> (std::istream& in, FaceGroup &g)
+        {
+            in >> g.groupName >> g.materialName >> g.materialId >> g.t0 >> g.nbt >> g.q0 >> g.nbq;
+            return in;
+        }
+    };
+
+    Data< helper::vector<sofa::helper::io::Mesh::Material> > materials;
+    Data< helper::vector<FaceGroup> > groups;
 
     VisualModelImpl();
 
@@ -197,7 +221,8 @@ public:
 
     void parse(core::objectmodel::BaseObjectDescription* arg);
 
-    bool isTransparent();
+    bool hasTransparent();
+    bool hasOpaque();
 
     void drawVisual();
     void drawTransparent();

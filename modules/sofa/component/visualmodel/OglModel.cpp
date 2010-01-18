@@ -70,7 +70,104 @@ OglModel::~OglModel()
     if (tex!=NULL) delete tex;
 }
 
-void OglModel::internalDraw()
+void OglModel::drawGroup(int ig, bool transparent)
+{
+    FaceGroup g;
+    if (ig < 0)
+    {
+        g.materialId = -1;
+        g.t0 = 0;
+        g.nbt = triangles.size();
+        g.q0 = 0;
+        g.nbq = quads.size();
+    }
+    else
+    {
+        g = this->groups.getValue()[ig];
+    }
+    helper::io::Mesh::Material m;
+    if (g.materialId < 0)
+        m = this->material.getValue();
+    else
+        m = this->materials.getValue()[g.materialId];
+    bool isTransparent = (m.useDiffuse && m.diffuse[3] < 1.0);
+    if (transparent ^ isTransparent) return;
+
+    Vec4f ambient = m.useAmbient?m.ambient:Vec4f();
+    Vec4f diffuse = m.useDiffuse?m.diffuse:Vec4f();
+    Vec4f specular = m.useSpecular?m.specular:Vec4f();
+    Vec4f emissive = m.useEmissive?m.emissive:Vec4f();
+    float shininess = m.useShininess?m.shininess:45;
+
+    if (shininess == 0.0f)
+    {
+        specular.clear();
+        shininess = 1;
+    }
+
+    if (isTransparent)
+    {
+        emissive[3] = 0; //diffuse[3];
+        ambient[3] = 0; //diffuse[3];
+        //diffuse[3] = 0;
+        specular[3] = 0;
+    }
+    glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT, ambient.ptr());
+    glMaterialfv (GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse.ptr());
+    glMaterialfv (GL_FRONT_AND_BACK, GL_SPECULAR, specular.ptr());
+    glMaterialfv (GL_FRONT_AND_BACK, GL_EMISSION, emissive.ptr());
+    glMaterialf (GL_FRONT_AND_BACK, GL_SHININESS, shininess);
+
+    if(VBOGenDone && useVBO.getValue())
+    {
+#ifdef SOFA_HAVE_GLEW
+        if (g.nbt > 0)
+        {
+            glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
+            glDrawElements(GL_TRIANGLES, g.nbt * 3, GL_UNSIGNED_INT, (unsigned int*)NULL + (g.t0 * 3));
+            glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
+        }
+        if (g.nbq > 0)
+        {
+            glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
+            glDrawElements(GL_QUADS, g.nbq * 4, GL_UNSIGNED_INT, (unsigned int*)NULL + (g.q0 * 4));
+            glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
+        }
+#endif
+    }
+    else
+    {
+        if (g.nbt > 0)
+            glDrawElements(GL_TRIANGLES, g.nbt * 3, GL_UNSIGNED_INT, triangles.getData() + g.t0);
+        if (g.nbq > 0)
+            glDrawElements(GL_QUADS, g.nbq * 4, GL_UNSIGNED_INT, quads.getData() + g.q0);
+    }
+}
+
+void OglModel::drawGroups(bool transparent)
+{
+    helper::ReadAccessor< Data< helper::vector<FaceGroup> > > groups = this->groups;
+
+    for (unsigned int i=0; i<xforms.size(); i++)
+    {
+        float matrix[16];
+        xforms[i].writeOpenGlMatrix(matrix);
+        glPushMatrix();
+        glMultMatrixf(matrix);
+
+        if (groups.empty())
+            drawGroup(-1, transparent);
+        else
+        {
+            for (unsigned int i=0; i<groups.size(); ++i)
+                drawGroup(i, transparent);
+        }
+
+        glPopMatrix();
+    }
+}
+
+void OglModel::internalDraw(bool transparent)
 {
 
     field_vtexcoords.updateIfDirty();
@@ -85,30 +182,6 @@ void OglModel::internalDraw()
     //Enable<GL_BLEND> blending;
     glLightModeli(GL_LIGHT_MODEL_TWO_SIDE, GL_TRUE);
     glColor3f(1.0 , 1.0, 1.0);
-    Vec4f ambient = material.getValue().useAmbient?material.getValue().ambient:Vec4f();
-    Vec4f diffuse = material.getValue().useDiffuse?material.getValue().diffuse:Vec4f();
-    Vec4f specular = material.getValue().useSpecular?material.getValue().specular:Vec4f();
-    Vec4f emissive = material.getValue().useEmissive?material.getValue().emissive:Vec4f();
-    float shininess = material.getValue().useShininess?material.getValue().shininess:45;
-
-    if (shininess == 0.0f)
-    {
-        specular.clear();
-        shininess = 1;
-    }
-
-    if (isTransparent())
-    {
-        emissive[3] = 0; //diffuse[3];
-        ambient[3] = 0; //diffuse[3];
-        //diffuse[3] = 0;
-        specular[3] = 0;
-    }
-    glMaterialfv (GL_FRONT_AND_BACK, GL_AMBIENT, ambient.ptr());
-    glMaterialfv (GL_FRONT_AND_BACK, GL_DIFFUSE, diffuse.ptr());
-    glMaterialfv (GL_FRONT_AND_BACK, GL_SPECULAR, specular.ptr());
-    glMaterialfv (GL_FRONT_AND_BACK, GL_EMISSION, emissive.ptr());
-    glMaterialf (GL_FRONT_AND_BACK, GL_SHININESS, shininess);
 
     if(VBOGenDone && useVBO.getValue())
     {
@@ -151,7 +224,7 @@ void OglModel::internalDraw()
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     }
 
-    if (isTransparent())
+    if (transparent)
     {
         glEnable(GL_BLEND);
         if (writeZTransparent.getValue())
@@ -168,30 +241,8 @@ void OglModel::internalDraw()
             xforms[i].writeOpenGlMatrix(matrix);
             glPushMatrix();
             glMultMatrixf(matrix);
-            if(VBOGenDone && useVBO.getValue())
-            {
-#ifdef SOFA_HAVE_GLEW
-                if (!triangles.empty())
-                {
-                    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
-                    glDrawElements(GL_TRIANGLES, triangles.size() * 3, GL_UNSIGNED_INT, (char*)NULL + 0);
-                    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
-                }
-                if (!quads.empty())
-                {
-                    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
-                    glDrawElements(GL_QUADS, quads.size() * 4, GL_UNSIGNED_INT, (char*)NULL + 0);
-                    glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
-                }
-#endif
-            }
-            else
-            {
-                if (!triangles.empty())
-                    glDrawElements(GL_TRIANGLES, triangles.size() * 3, GL_UNSIGNED_INT, triangles.getData());
-                if (!quads.empty())
-                    glDrawElements(GL_QUADS, quads.size() * 4, GL_UNSIGNED_INT, quads.getData());
-            }
+
+            drawGroups(transparent);
         }
 
         glPopMatrix();
@@ -202,43 +253,8 @@ void OglModel::internalDraw()
             glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     }
 
-    for (unsigned int i=0; i<xforms.size(); i++)
-    {
-        //serr<<"OglModel::internalDraw() 4, quads.size() = "<<quads.size()<<sendl;
-        float matrix[16];
-        xforms[i].writeOpenGlMatrix(matrix);
-        //for( int k=0; k<16; k++ ) serr<<matrix[k]<<" "; serr<<sendl;
-        glPushMatrix();
-        glMultMatrixf(matrix);
+    drawGroups(transparent);
 
-        //glutWireCube( 3 );
-        if (VBOGenDone && useVBO.getValue())
-        {
-#ifdef SOFA_HAVE_GLEW
-            if (!triangles.empty())
-            {
-                glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
-                glDrawElements(GL_TRIANGLES, triangles.size() * 3, GL_UNSIGNED_INT, (char*)NULL + 0);
-                glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
-            }
-            if (!quads.empty())
-            {
-                glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
-                glDrawElements(GL_QUADS, quads.size() * 4, GL_UNSIGNED_INT, (char*)NULL + 0);
-                glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
-            }
-#endif
-        }
-        else
-        {
-            if (!triangles.empty())
-                glDrawElements(GL_TRIANGLES, triangles.size() * 3, GL_UNSIGNED_INT, triangles.getData());
-            if (!quads.empty())
-                glDrawElements(GL_QUADS, quads.size() * 4, GL_UNSIGNED_INT, quads.getData());
-        }
-
-        glPopMatrix();
-    }
     if (tex || putOnlyTexCoords.getValue())
     {
         if (tex)
@@ -248,7 +264,7 @@ void OglModel::internalDraw()
     }
     glDisableClientState(GL_NORMAL_ARRAY);
     glDisable(GL_LIGHTING);
-    if (isTransparent())
+    if (transparent)
     {
         glDisable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);

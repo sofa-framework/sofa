@@ -63,8 +63,11 @@ void MeshOBJ::readOBJ (std::ifstream &file, const std::string &filename)
     Vec3d result;
     Vec3d texCoord;
     Vec3d normal;
+    int nbf = facets.size();
 
     std::string line;
+
+    FaceGroup curGroup;
 
     while( std::getline(file,line) )
     {
@@ -104,30 +107,45 @@ void MeshOBJ::readOBJ (std::ifstream &file, const std::string &filename)
                 readMTL(mtlfile.c_str());
             }
         }
-        else if (token == "usemtl")
+        else if (token == "usemtl" || token == "g")
         {
-            std::string materialName;
-            values >> materialName;
-            vector<Material>::iterator it = materials.begin();
-            vector<Material>::iterator itEnd = materials.end();
-            for (; it != itEnd; it++)
+            // end of current group
+            curGroup.nbf = nbf - curGroup.f0;
+            if (curGroup.nbf > 0) groups.push_back(curGroup);
+            curGroup.f0 = nbf;
+            curGroup.nbf = 0;
+            if (token == "usemtl")
             {
-                if (it->name == materialName)
+                curGroup.materialId = -1;
+                values >> curGroup.materialName;
+                vector<Material>::iterator it = materials.begin();
+                vector<Material>::iterator itEnd = materials.end();
+                for (; it != itEnd; it++)
                 {
-                    // std::cout << "Using material "<<it->name<<std::endl;
-                    (*it).activated = true;
-                    material = *it;
+                    if (it->name == curGroup.materialName)
+                    {
+                        // std::cout << "Using material "<<it->name<<std::endl;
+                        (*it).activated = true;
+                        if (!material.activated)
+                            material = *it;
+                        curGroup.materialId = it - materials.begin();
+                        break;
+                    }
                 }
             }
-        }
-        else if (token == "g")
-        {
-            while (!values.eof())
+            else if (token == "g")
             {
-                std::string groupName;
-                values >> groupName;
-                //Do Nothing....
+                curGroup.groupName.clear();
+                while (!values.eof())
+                {
+                    std::string g;
+                    values >> g;
+                    if (!curGroup.groupName.empty())
+                        curGroup.groupName += " ";
+                    curGroup.groupName += g;
+                }
             }
+
         }
         else if (token == "l" || token == "f")
         {
@@ -167,6 +185,7 @@ void MeshOBJ::readOBJ (std::ifstream &file, const std::string &filename)
             vertNormTexIndices.push_back (nIndices);
             vertNormTexIndices.push_back (tIndices);
             facets.push_back(vertNormTexIndices);
+            ++nbf;
         }
         else
         {
@@ -174,6 +193,9 @@ void MeshOBJ::readOBJ (std::ifstream &file, const std::string &filename)
         }
     }
 
+    // end of current group
+    curGroup.nbf = nbf - curGroup.f0;
+    if (curGroup.nbf > 0) groups.push_back(curGroup);
 
     // announce the model statistics
     // std::cout << " Vertices: " << vertices.size() << std::endl;

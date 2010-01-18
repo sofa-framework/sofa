@@ -44,13 +44,6 @@ using namespace sofa::defaulttype;
 
 class SOFA_HELPER_API MeshOBJ : public Mesh
 {
-private:
-
-    std::vector<Material> materials;
-
-    void readOBJ (std::ifstream &file, const std::string &filename);
-    void readMTL (const char *filename);
-
 public:
 
     MeshOBJ(const std::string& filename)
@@ -59,6 +52,12 @@ public:
     }
 
     void init (std::string filename);
+
+protected:
+
+    void readOBJ (std::ifstream &file, const std::string &filename);
+    void readMTL (const char *filename);
+
 };
 
 } // namespace io

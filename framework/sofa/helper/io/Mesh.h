@@ -99,6 +99,26 @@ public:
         Material();
     };
 
+    class SOFA_HELPER_API FaceGroup
+    {
+    public:
+        int f0, nbf;
+        std::string materialName;
+        std::string groupName;
+        int materialId;
+        inline friend std::ostream& operator << (std::ostream& out, const FaceGroup &g)
+        {
+            out << g.groupName << " " << g.materialName << " " << g.materialId << " " << g.f0 << " " << g.nbf;
+            return out;
+        }
+        inline friend std::istream& operator >> (std::istream& in, FaceGroup &g)
+        {
+            in >> g.groupName >> g.materialName >> g.materialId >> g.f0 >> g.nbf;
+            return in;
+        }
+        FaceGroup() : f0(0), nbf(0), materialId(-1) {}
+    };
+
 protected:
     vector<Vector3> vertices;
     vector<Vector3> texCoords; // for the moment, we suppose that texCoords is order 2 (2 texCoords for a vertex)
@@ -106,6 +126,9 @@ protected:
     vector< vector < vector <int> > > facets;
     //sofa::core::objectmodel::Data< Material > material;
     Material material;
+
+    std::vector<Material> materials;
+    std::vector<FaceGroup> groups;
 
     std::string textureName;
 public:
@@ -123,6 +146,9 @@ public:
         return facets;
     };
     const Material& getMaterial() {return material; }
+
+    const std::vector<Material>& getMaterials() {return materials; }
+    const std::vector<FaceGroup>& getGroups() {return groups; }
 
     std::string& getTextureName()
     {

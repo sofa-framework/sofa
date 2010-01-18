@@ -69,7 +69,10 @@ protected:
     GLuint vbo, iboTriangles, iboQuads;
     bool canUseVBO, VBOGenDone, initDone, useTriangles, useQuads;
     unsigned int oldVerticesSize, oldTrianglesSize, oldQuadsSize;
-    void internalDraw();
+    void internalDraw(bool transparent);
+
+    void drawGroup(int ig, bool transparent);
+    void drawGroups(bool transparent);
 
 public:
 
