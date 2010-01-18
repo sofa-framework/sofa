@@ -99,6 +99,10 @@ SkinningMapping<BasicMapping>::SkinningMapping ( In* from, Out* to )
     maskTo = NULL;
     if ( core::componentmodel::behavior::BaseMechanicalState *stateTo = dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *> ( to ) )
         maskTo = &stateTo->forceMask;
+
+#ifdef SOFA_DEV
+    geoDist = NULL;
+#endif
 }
 
 template <class BasicMapping>
@@ -1969,7 +1973,8 @@ template <class BasicMapping>
 void SkinningMapping<BasicMapping>::changeSettingsDueToInsertion()
 {
     wheightingType.setValue( WEIGHT_INVDIST_SQUARE);
-    distanceType.setValue( DISTANCE_GEODESIC);
+    if( geoDist) distanceType.setValue( DISTANCE_GEODESIC);
+    else distanceType.setValue( DISTANCE_EUCLIDIAN);
 }
 
 
