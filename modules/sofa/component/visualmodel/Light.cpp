@@ -76,6 +76,8 @@ Light::Light()
     , color(initData(&color, (Vector3) Vector3(1,1,1), "color", "Set the color of the light"))
     , shadowTextureSize (initData(&shadowTextureSize, (GLuint) 0, "shadowTextureSize", "Set size for shadow texture "))
     , drawSource(initData(&drawSource, (bool) false, "drawSource", "Draw Light Source"))
+    , p_zNear(initData(&p_zNear, "zNear", "Camera's ZNear"))
+    , p_zFar(initData(&p_zFar, "zFar", "Camera's ZFar"))
     , enableShadow(initData(&enableShadow, (bool) true, "enableShadow", "Enable Shadow from this light"))
 {
 
@@ -422,38 +424,46 @@ void SpotLight::preDrawShadow(helper::gl::VisualParameters* vp)
     defaulttype::Quat q;
     q = q.createQuaterFromFrame(xAxis, yAxis, dir);
 
-    //compute zNear, zFar from light point of view
     double zNear=1e10, zFar=-1e10;
-    for (int corner=0; corner<8; ++corner)
+    if (!p_zNear.isSet() || !p_zFar.isSet())
     {
-        Vector3 p((corner&1)?vp->minBBox[0]:vp->maxBBox[0],
-                (corner&2)?vp->minBBox[1]:vp->maxBBox[1],
-                (corner&4)?vp->minBBox[2]:vp->maxBBox[2]);
-        p = q.rotate(p - pos);
-        double z = -p[2];
-        if (z < zNear) zNear = z;
-        if (z > zFar)  zFar = z;
-    }
-    serr << "zNear = " << zNear << "  zFar = " << zFar << sendl;
+        //compute zNear, zFar from light point of view
+        for (int corner=0; corner<8; ++corner)
+        {
+            Vector3 p((corner&1)?vp->minBBox[0]:vp->maxBBox[0],
+                    (corner&2)?vp->minBBox[1]:vp->maxBBox[1],
+                    (corner&4)?vp->minBBox[2]:vp->maxBBox[2]);
+            p = q.rotate(p - pos);
+            double z = -p[2];
+            if (z < zNear) zNear = z;
+            if (z > zFar)  zFar = z;
+        }
+        serr << "zNear = " << zNear << "  zFar = " << zFar << sendl;
 
-    if (zNear <= 0)
-        zNear = 1;
-    if (zFar >= 1000.0)
-        zFar = 1000.0;
-    if (zFar <= 0)
-    {
-        zNear = vp->zNear;
-        zFar = vp->zFar;
-    }
+        if (zNear <= 0)
+            zNear = 1;
+        if (zFar >= 1000.0)
+            zFar = 1000.0;
+        if (zFar <= 0)
+        {
+            zNear = vp->zNear;
+            zFar = vp->zFar;
+        }
 
-    if (zNear > 0 && zFar < 1000)
+        if (zNear > 0 && zFar < 1000)
+        {
+            zNear *= 0.8; // add some margin
+            zFar *= 1.2;
+            if (zNear < zFar*0.01)
+                zNear = zFar*0.01;
+            if (zNear < 0.1) zNear = 0.1;
+            if (zFar < 2.0) zFar = 2.0;
+        }
+    }
+    else
     {
-        zNear *= 0.8; // add some margin
-        zFar *= 1.2;
-        if (zNear < zFar*0.01)
-            zNear = zFar*0.01;
-        if (zNear < 0.1) zNear = 0.1;
-        if (zFar < 2.0) zFar = 2.0;
+        zNear = p_zNear.getValue();
+        zFar = p_zFar.getValue();
     }
 
     //Projection matrix
