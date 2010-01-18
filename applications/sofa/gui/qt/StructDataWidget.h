@@ -120,10 +120,19 @@ public:
                 if (!isChecked)
                     w.setReadOnly(true);
                 _widget->connect(check, SIGNAL( toggled(bool) ), _widget, SLOT( setModified() ));
+                if( w.parent_w)
+                {
+                    _widget->connect(check, SIGNAL( toggled(bool) ), w.parent_w, SLOT( setEnabled(bool) ));
+                }
+                else
+                {
+                    _widget->connect(check, SIGNAL( toggled(bool) ),_widget, SLOT( propagateReadOnly(bool) ));
+                }
             }
         }
         return true;
     }
+
     void setReadOnly(bool readOnly)
     {
         p.setReadOnly(readOnly);
