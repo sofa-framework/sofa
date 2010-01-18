@@ -47,7 +47,6 @@ namespace qt
 
 using sofa::helper::Quater;
 
-
 /// This class is used to specify how to graphically represent a data type,
 /// by default using a simple QLineEdit
 template<class T>
@@ -80,6 +79,22 @@ public:
 };
 
 
+template<class T>
+class parent_data_widget_trait
+{
+public:
+    typedef T data_type;
+    typedef Q3Grid Widget;
+    Widget* w;
+
+    static Widget* create(QWidget* parent, const data_type& )
+    {
+        return NULL;
+    }
+
+};
+
+
 /// This class is used to create and manage the GUI of a data type,
 /// using data_widget_trait to know which widgets to use
 template<class T>
@@ -89,12 +104,18 @@ public:
     typedef T data_type;
     typedef data_widget_trait<data_type> helper;
     typedef typename helper::Widget Widget;
+    typedef Q3Grid ParentWidget;
     Widget* w;
-    data_widget_container() : w(NULL) {}
+    ParentWidget* parent_w;
+
+    data_widget_container() : w(NULL),parent_w(NULL) {}
 
     bool createWidgets(DataWidget * datawidget, QWidget* parent, const data_type& d, bool readOnly)
     {
-        w = helper::create(parent, d);
+        parent_w = createParentWidget(parent,1);
+        assert(parent_w != NULL);
+        w = helper::create(parent_w,d);
+
         if (w == NULL) return false;
         helper::readFromData(w, d);
         if (readOnly)
@@ -105,7 +126,7 @@ public:
     }
     void setReadOnly(bool readOnly)
     {
-        w->setEnabled(!readOnly);
+        parent_w->setEnabled(!readOnly);
     }
     void readFromData(const data_type& d)
     {
@@ -116,6 +137,10 @@ public:
         helper::writeToData(w, d);
     }
 
+    ParentWidget* createParentWidget(QWidget* parent, int n )
+    {
+        return new ParentWidget(n,parent);
+    }
 };
 
 /// This class manages the GUI of a BaseData, using the corresponding instance of data_widget_container
@@ -317,6 +342,7 @@ template<class T>
 class vector_data_trait
 {
 public:
+
     typedef T data_type;
     /// Type of a row if this data type is viewed in a table or list
     typedef T value_type;
@@ -345,7 +371,10 @@ public:
     static void resize( int /*s*/, data_type& /*d*/)
     {
     }
+
+
 };
+
 
 template<class T, class Container = data_widget_container< typename vector_data_trait<T>::value_type> >
 class fixed_vector_data_widget_container
@@ -354,23 +383,27 @@ public:
     typedef T data_type;
     typedef vector_data_trait<data_type> vhelper;
     typedef typename vhelper::value_type value_type;
+    typedef Q3Grid ParentWidget;
     enum { N = vhelper::SIZE };
     Container w[N];
+    ParentWidget* parent_w;
     fixed_vector_data_widget_container() {}
 
     bool createWidgets(DataWidget * _widget, QWidget* parent, const data_type& d, bool readOnly)
     {
-        Q3Grid* grid= new Q3Grid(N,parent);
+        parent_w = createParentWidget(parent,N);
+        assert(parent_w != NULL);
         for (int i=0; i<N; ++i)
             if (!w[i].createWidgets(_widget,
-                    grid, *vhelper::get(d,i), readOnly))
+                    parent_w, *vhelper::get(d,i), readOnly))
                 return false;
         return true;
     }
     void setReadOnly(bool readOnly)
     {
-        for (int i=0; i<N; ++i)
-            w[i].setReadOnly(readOnly);
+        parent_w->setEnabled(!readOnly);
+        /*for (int i=0; i<N; ++i)
+          w[i].setReadOnly(readOnly);*/
     }
     void readFromData(const data_type& d)
     {
@@ -387,6 +420,10 @@ public:
         }
     }
 
+    ParentWidget* createParentWidget(QWidget* parent, int n = 1)
+    {
+        return new ParentWidget(n,parent);
+    }
 };
 
 template<class T, class Container = data_widget_container< typename vector_data_trait< typename vector_data_trait<T>::value_type >::value_type> >
@@ -398,25 +435,29 @@ public:
     typedef typename rhelper::value_type row_type;
     typedef vector_data_trait<row_type> vhelper;
     typedef typename vhelper::value_type value_type;
+    typedef Q3Grid ParentWidget;
+
     enum { L = rhelper::SIZE };
     enum { C = vhelper::SIZE };
+
+    ParentWidget* parent_w;
     Container w[L][C];
     fixed_grid_data_widget_container() {}
 
     bool createWidgets(DataWidget * _widget, QWidget* parent, const data_type& d, bool readOnly)
     {
-        Q3Grid* grid= new Q3Grid(C,parent);
+
+        parent_w = createParentWidget(parent,C);
+        assert(parent_w);
         for (int y=0; y<L; ++y)
             for (int x=0; x<C; ++x)
-                if (!w[y][x].createWidgets(_widget, grid, *vhelper::get(*rhelper::get(d,y),x), readOnly))
+                if (!w[y][x].createWidgets(_widget, parent_w, *vhelper::get(*rhelper::get(d,y),x), readOnly))
                     return false;
         return true;
     }
     void setReadOnly(bool readOnly)
     {
-        for (int y=0; y<L; ++y)
-            for (int x=0; x<C; ++x)
-                w[y][x].setReadOnly(readOnly);
+        parent_w->setEnabled(!readOnly);
     }
     void readFromData(const data_type& d)
     {
@@ -438,7 +479,11 @@ public:
             rhelper::set(r,d,y);
         }
     }
+    ParentWidget* createParentWidget(QWidget* parent, int n = 1)
+    {
+        return new ParentWidget(n,parent);
 
+    }
 };
 
 ////////////////////////////////////////////////////////////////
@@ -470,6 +515,7 @@ public:
     static void resize( int s, data_type& d)
     {
     }
+
 };
 
 template<class T, std::size_t N>

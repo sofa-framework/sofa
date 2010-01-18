@@ -76,14 +76,6 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
             connect(this, SIGNAL( DataUpdate() ), tableWidget, SLOT(UpdateData() ) );
             numWidgets_ += 3;
         }
-        else
-        {
-            QDataTextEdit* textedit = new QDataTextEdit(this,data_,flags);
-            connect( textedit, SIGNAL( textChanged() ), this, SLOT( TextChange() ) );
-            connect( this, SIGNAL (WidgetUpdate() ), textedit, SLOT( UpdateWidget() ) );
-            connect( this, SIGNAL( DataUpdate() ), textedit, SLOT( UpdateData() ) );
-            numWidgets_ += 1;
-        }
     }
     else
     {
@@ -97,11 +89,6 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
     }
 }
 
-void QDisplayDataWidget::TextChange()
-{
-    emit WidgetHasChanged(true);
-}
-
 void QDisplayDataWidget::UpdateData()
 {
     emit DataUpdate();
@@ -112,33 +99,6 @@ void QDisplayDataWidget::UpdateWidgets()
     emit WidgetUpdate();
 }
 
-QDataTextEdit::QDataTextEdit(QWidget* parent, BaseData* data, const ModifyObjectFlags& flags):
-    QTextEdit(parent),
-    data_(data)
-{
-    if( data_ )
-    {
-        setText( QString( data_->getValueString().c_str() ) );
-        if( data_->getValueString().empty() && !flags.EMPTY_FLAG )
-        {
-            hide();
-            std::cerr << data_->getValueTypeString() << " Not added because empty \n";
-        }
-    }
-}
-void QDataTextEdit::UpdateWidget()
-{
-    if(data_) setText( data_->getValueString().c_str() );
-}
-
-void QDataTextEdit::UpdateData()
-{
-    if(data_)
-    {
-        std::string value = text().ascii();
-        data_->read(value);
-    }
-}
 
 
 

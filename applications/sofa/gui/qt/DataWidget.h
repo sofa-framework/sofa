@@ -72,6 +72,9 @@ class DataWidget : public QWidget
 {
     Q_OBJECT
 public slots:
+
+
+
     void updateData()
     {
         if(modified)
