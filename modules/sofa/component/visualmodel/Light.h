@@ -70,6 +70,8 @@ protected:
     Data<sofa::defaulttype::Vector3> color;
     Data<GLuint> shadowTextureSize;
     Data<bool> drawSource;
+    Data<double> p_zNear, p_zFar;
+
 #ifdef SOFA_HAVE_GLEW
     helper::gl::FrameBufferObject shadowFBO;
 #endif
