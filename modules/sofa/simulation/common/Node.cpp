@@ -51,6 +51,7 @@
 //#include <sofa/core/objectmodel/BaseObject.h>
 #include <boost/graph/topological_sort.hpp>
 
+//#define DEBUG_VISITOR
 
 namespace sofa
 {
@@ -566,10 +567,25 @@ void Node::updateVisualContext(VISUAL_FLAG/* FILTER*/)
 void Node::executeVisitor(Visitor* action)
 {
     if (!this->is_activated.getValue()) return;
+
+#ifdef DEBUG_VISITOR
+    static int level = 0;
+    for (int i=0; i<level; ++i) std::cerr << " ";
+    std::cerr << ">" << decodeClassName(typeid(*action)) << " on " << this->getPathName() << std::endl;
+    ++level;
+#endif
+
     if (actionScheduler)
         actionScheduler->executeVisitor(this,action);
     else
         doExecuteVisitor(action);
+
+#ifdef DEBUG_VISITOR
+    --level;
+    for (int i=0; i<level; ++i) std::cerr << " ";
+    std::cerr << "<" << decodeClassName(typeid(*action)) << " on " << this->getPathName() << std::endl;
+#endif
+
 }
 
 /// Propagate an event

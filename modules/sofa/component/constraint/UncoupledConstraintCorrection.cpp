@@ -118,7 +118,9 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getCompliance(defa
     VecReal UsedComp = compliance.getValue();
     //serr<<" UsedComp ok"<<sendl;
 
+#ifdef DEBUG
     std::cout<<"numConstraints ="<<numConstraints<<std::endl;
+#endif
 
     for(unsigned int curRowConst=0; curRowConst < numConstraints; curRowConst++)
     {
@@ -126,8 +128,9 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getCompliance(defa
 
         int indexCurRowConst = mstate->getConstraintId()[curRowConst];
 
+#ifdef DEBUG
         std::cout<<"constraint["<<curRowConst<<"] : index :  "<<indexCurRowConst<<std::endl;
-
+#endif
 
 
         ConstraintIterator itConstraint;
@@ -137,7 +140,9 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getCompliance(defa
         {
             unsigned int dof = itConstraint->first;
             Deriv n = itConstraint->second;
+#ifdef DEBUG
             std::cout<<"    [ "<<dof<<"]="<<n<<std::endl;
+#endif
 
             weighedNormal.getVCenter() = n.getVCenter(); // weighed normal
             weighedNormal.getVOrientation() = n.getVOrientation();
@@ -182,7 +187,9 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getCompliance(defa
         }
 
     }
+#ifdef DEBUG
     //std::cout<<" Wnew = "<<Wnew<<std::endl;
+#endif
 
 }
 

@@ -24,6 +24,8 @@
 ******************************************************************************/
 #include <sofa/simulation/common/VisualVisitor.h>
 
+//#define DEBUG_DRAW
+
 namespace sofa
 {
 
@@ -55,17 +57,37 @@ void VisualDrawVisitor::processNodeBottomUp(simulation::Node* node)
 void VisualDrawVisitor::processObject(simulation::Node* /*node*/, core::objectmodel::BaseObject* o)
 {
     if (pass == core::VisualModel::Std || pass == core::VisualModel::Shadow)
+    {
+#ifdef DEBUG_DRAW
+        std::cerr << ">" << o->getClassName() << "::draw() of " << o->getName() << std::endl;
+#endif
         o->draw();
+#ifdef DEBUG_DRAW
+        std::cerr << "<" << o->getClassName() << "::draw() of " << o->getName() << std::endl;
+#endif
+    }
 }
 
 void VisualDrawVisitor::fwdVisualModel(simulation::Node* /*node*/, core::VisualModel* vm)
 {
+#ifdef DEBUG_DRAW
+    std::cerr << ">" << vm->getClassName() << "::fwdDraw() of " << vm->getName() << std::endl;
+#endif
     vm->fwdDraw(pass);
+#ifdef DEBUG_DRAW
+    std::cerr << "<" << vm->getClassName() << "::fwdDraw() of " << vm->getName() << std::endl;
+#endif
 }
 
 void VisualDrawVisitor::bwdVisualModel(simulation::Node* /*node*/, core::VisualModel* vm)
 {
+#ifdef DEBUG_DRAW
+    std::cerr << ">" << vm->getClassName() << "::bwdDraw() of " << vm->getName() << std::endl;
+#endif
     vm->bwdDraw(pass);
+#ifdef DEBUG_DRAW
+    std::cerr << "<" << vm->getClassName() << "::bwdDraw() of " << vm->getName() << std::endl;
+#endif
 }
 
 void VisualDrawVisitor::processVisualModel(simulation::Node* node, core::VisualModel* vm)
@@ -81,7 +103,13 @@ void VisualDrawVisitor::processVisualModel(simulation::Node* node, core::VisualM
     {
         if (shader && shader->isActive())
             shader->start();
+#ifdef DEBUG_DRAW
+        std::cerr << ">" << vm->getClassName() << "::drawVisual() of " << vm->getName() << std::endl;
+#endif
         vm->drawVisual();
+#ifdef DEBUG_DRAW
+        std::cerr << "<" << vm->getClassName() << "::drawVisual() of " << vm->getName() << std::endl;
+#endif
         if (shader && shader->isActive())
             shader->stop();
         break;
@@ -90,13 +118,25 @@ void VisualDrawVisitor::processVisualModel(simulation::Node* node, core::VisualM
     {
         if (shader && shader->isActive())
             shader->start();
+#ifdef DEBUG_DRAW
+        std::cerr << ">" << vm->getClassName() << "::drawTransparent() of " << vm->getName() << std::endl;
+#endif
         vm->drawTransparent();
+#ifdef DEBUG_DRAW
+        std::cerr << "<" << vm->getClassName() << "::drawTransparent() of " << vm->getName() << std::endl;
+#endif
         if (shader && shader->isActive())
             shader->stop();
         break;
     }
     case core::VisualModel::Shadow:
+#ifdef DEBUG_DRAW
+        std::cerr << ">" << vm->getClassName() << "::drawShadow() of " << vm->getName() << std::endl;
+#endif
         vm->drawShadow();
+#ifdef DEBUG_DRAW
+        std::cerr << "<" << vm->getClassName() << "::drawShadow() of " << vm->getName() << std::endl;
+#endif
         break;
     }
 }

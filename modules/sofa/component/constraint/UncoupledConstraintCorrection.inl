@@ -24,7 +24,7 @@
 ******************************************************************************/
 #ifndef SOFA_COMPONENT_CONSTRAINT_UNCOUPLEDCONSTRAINTCORRECTION_INL
 #define SOFA_COMPONENT_CONSTRAINT_UNCOUPLEDCONSTRAINTCORRECTION_INL
-#define DEBUG
+//#define DEBUG
 
 #include "UncoupledConstraintCorrection.h"
 #include <sofa/simulation/common/MechanicalVisitor.h>
