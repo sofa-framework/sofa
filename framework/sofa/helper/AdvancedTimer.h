@@ -225,6 +225,10 @@ public:
 
     static void valSet(IdVal id, double val);
     static void valAdd(IdVal id, double val);
+
+
+    typedef void (*SyncCallBack)(void* userData);
+    static std::pair<SyncCallBack,void*> setSyncCallBack(SyncCallBack cb, void* userData = NULL);
 };
 
 #if defined(WIN32) && !defined(SOFA_BUILD_HELPER)

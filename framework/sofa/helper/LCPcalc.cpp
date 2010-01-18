@@ -2304,7 +2304,7 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, do
             if (verbose)
                 printf("Convergence after %d iteration(s) with tolerance : %f and error : %f with dim : %d\n",it, tol, error, dim);
             //afficheLCP(dfree,W,f,dim);
-            sofa::helper::AdvancedTimer::valSet("GS iterations", it);
+            sofa::helper::AdvancedTimer::valSet("GS iterations", it+1);
             return 1;
         }
     }
@@ -2434,7 +2434,7 @@ int nlcp_gaussseidelTimed(int dim, double *dfree, double**W, double *f, double m
             free(W33);
             //printf("Convergence after %d iteration(s) with tolerance : %f and error : %f with dim : %d\n",it, tol, error, dim);
             //afficheLCP(dfree,W,f,dim);
-            sofa::helper::AdvancedTimer::valSet("GS iterations", it);
+            sofa::helper::AdvancedTimer::valSet("GS iterations", it+1);
             return 1;
         }
     }
@@ -2504,7 +2504,7 @@ void gaussSeidelLCP1(int dim, FemClipsReal * q, FemClipsReal ** M, FemClipsReal 
         }
 
     }
-    sofa::helper::AdvancedTimer::valSet("GS iterations", compteur);
+    sofa::helper::AdvancedTimer::valSet("GS iterations", (compteur < numItMax) ? compteur+1 : compteur);
 
     for (compteur=0; compteur<dim; compteur++)
         res[compteur] = res[compteur+dim];

@@ -438,7 +438,8 @@ void SpotLight::preDrawShadow(helper::gl::VisualParameters* vp)
             if (z < zNear) zNear = z;
             if (z > zFar)  zFar = z;
         }
-        serr << "zNear = " << zNear << "  zFar = " << zFar << sendl;
+        if (this->f_printLog.getValue())
+            sout << "zNear = " << zNear << "  zFar = " << zFar << sendl;
 
         if (zNear <= 0)
             zNear = 1;

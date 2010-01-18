@@ -109,6 +109,7 @@ public:
     PrefetchOp< VResetForce > preVResetForce;
 
     static void accumulateForce(Main* m, bool prefetch = false);
+    static void addDxToCollisionModel(Main* m, bool prefetch = false);
     static void vAlloc(Main* m, VecId v);
     static void vOp(Main* m, VecId v, VecId a, VecId b, double f, bool prefetch = false);
     static void vMultiOp(Main* m, const VMultiOp& ops, bool prefetch = false);
@@ -123,7 +124,8 @@ public:
     template<> void MechanicalObject< T >::vOp(VecId v, VecId a, VecId b, double f); \
     template<> void MechanicalObject< T >::vMultiOp(const VMultiOp& ops); \
     template<> double MechanicalObject< T >::vDot(VecId a, VecId b); \
-    template<> void MechanicalObject< T >::resetForce();
+    template<> void MechanicalObject< T >::resetForce(); \
+    template <> void MechanicalObject< T >::addDxToCollisionModel();
 
 CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec3fTypes);
 CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec3f1Types);

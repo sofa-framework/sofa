@@ -31,6 +31,7 @@
 #include <math.h>
 #include <iostream>
 #include "sofa/helper/system/thread/CTime.h"
+#include "sofa/helper/AdvancedTimer.h"
 
 
 
@@ -97,9 +98,13 @@ void EulerImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior:
 
     //projectResponse(vel);          // initial velocities are projected to the constrained space
 
+    sofa::helper::AdvancedTimer::stepBegin("ComputeForce");
+
     // compute the right-hand term of the equation system
     // accumulation through mappings is disabled as it will be done by addMBKv after all factors are computed
     computeForce(b, true, false);             // b = f0
+
+    sofa::helper::AdvancedTimer::stepNext ("ComputeForce", "ComputeRHTerm");
 
     if (!firstOrder)
     {
@@ -119,6 +124,7 @@ void EulerImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior:
     if( verbose )
         serr<<"EulerImplicitSolver, projected f0 = "<< b <<sendl;
 
+    sofa::helper::AdvancedTimer::stepEnd("ComputeRHTerm");
 
     MultiMatrix matrix(this);
 
@@ -133,7 +139,9 @@ void EulerImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior:
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode("SystemSolution");
 #endif
+    sofa::helper::AdvancedTimer::stepBegin("MBKSolve");
     matrix.solve(x, b); //Call to ODE resolution.
+    sofa::helper::AdvancedTimer::stepEnd  ("MBKSolve");
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode("SystemSolution");
 #endif
@@ -154,19 +162,29 @@ void EulerImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior:
 #ifdef SOFA_NO_VMULTIOP // unoptimized version
     if (firstOrder)
     {
+        sofa::helper::AdvancedTimer::stepBegin("UpdateV");
         newVel.eq(x);                         // vel = x
+        sofa::helper::AdvancedTimer::stepNext ("UpdateV", "CorrectV");
         solveConstraint(dt,VecId::velocity());
+        sofa::helper::AdvancedTimer::stepNext ("CorrectV", "UpdateX");
         newPos.eq(pos, newVel, h);            // pos = pos + h vel
+        sofa::helper::AdvancedTimer::stepNext ("UpdateX", "CorrectX");
         solveConstraint(dt,VecId::position());
+        sofa::helper::AdvancedTimer::stepEnd  ("CorrectX");
     }
     else
     {
+        sofa::helper::AdvancedTimer::stepBegin("UpdateV");
         //vel.peq( x );                       // vel = vel + x
         newVel.eq(vel, x);
+        sofa::helper::AdvancedTimer::stepNext ("UpdateV", "CorrectV");
         solveConstraint(dt,VecId::velocity());
+        sofa::helper::AdvancedTimer::stepNext ("CorrectV", "UpdateX");
         //pos.peq( vel, h );                  // pos = pos + h vel
         newPos.eq(pos, newVel, h);
+        sofa::helper::AdvancedTimer::stepNext ("UpdateX", "CorrectX");
         solveConstraint(dt,VecId::position());
+        sofa::helper::AdvancedTimer::stepEnd  ("CorrectX");
     }
 
 
@@ -194,11 +212,15 @@ void EulerImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior:
             ops[1].second.push_back(std::make_pair((VecId)newVel,h));
         }
 
+        sofa::helper::AdvancedTimer::stepBegin("UpdateVAndX");
         simulation::MechanicalVMultiOpVisitor vmop(ops);
         vmop.setTags(this->getTags());
         vmop.execute(this->getContext());
+        sofa::helper::AdvancedTimer::stepNext ("UpdateVAndX", "CorrectV");
         solveConstraint(dt,VecId::velocity());
+        sofa::helper::AdvancedTimer::stepNext ("CorrectV", "CorrectX");
         solveConstraint(dt,VecId::position());
+        sofa::helper::AdvancedTimer::stepEnd  ("CorrectX");
     }
 #endif
 

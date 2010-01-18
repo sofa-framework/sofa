@@ -186,6 +186,20 @@ std::map< AdvancedTimer::IdTimer, TimerData > timers;
 std::stack<AdvancedTimer::IdTimer> curTimer;
 helper::vector<Record>* curRecords = NULL;
 
+
+AdvancedTimer::SyncCallBack syncCallBack = NULL;
+void* syncCallBackData = NULL;
+
+std::pair<AdvancedTimer::SyncCallBack,void*> AdvancedTimer::setSyncCallBack(SyncCallBack cb, void* userData)
+{
+    std::pair<AdvancedTimer::SyncCallBack,void*> old;
+    old.first = syncCallBack;
+    old.second = syncCallBackData;
+    syncCallBack = cb;
+    syncCallBackData = userData;
+    return old;
+}
+
 void AdvancedTimer::clear()
 {
     curRecords = NULL;
@@ -209,6 +223,7 @@ void AdvancedTimer::begin(IdTimer id)
     }
     curRecords = &(data.records);
     curRecords->clear();
+    if (syncCallBack) (*syncCallBack)(syncCallBackData);
     Record r;
     r.time = CTime::getTime();
     r.type = Record::RBEGIN;
@@ -230,6 +245,7 @@ void AdvancedTimer::end(IdTimer id)
     }
     if (curRecords)
     {
+        if (syncCallBack) (*syncCallBack)(syncCallBackData);
         Record r;
         r.time = CTime::getTime();
         r.type = Record::REND;
@@ -281,6 +297,7 @@ void AdvancedTimer::stepBegin(IdStep id, IdObj obj)
 void AdvancedTimer::stepEnd  (IdStep id)
 {
     if (!curRecords) return;
+    if (syncCallBack) (*syncCallBack)(syncCallBackData);
     Record r;
     r.time = CTime::getTime();
     r.type = Record::RSTEP_END;
@@ -303,6 +320,7 @@ void AdvancedTimer::stepNext (IdStep prevId, IdStep nextId)
 {
     if (!curRecords) return;
     Record r;
+    if (syncCallBack) (*syncCallBack)(syncCallBackData);
     r.time = CTime::getTime();
     r.type = Record::RSTEP_END;
     r.id = prevId;
@@ -315,6 +333,7 @@ void AdvancedTimer::stepNext (IdStep prevId, IdStep nextId)
 void AdvancedTimer::step     (IdStep id)
 {
     if (!curRecords) return;
+    if (syncCallBack) (*syncCallBack)(syncCallBackData);
     Record r;
     r.time = CTime::getTime();
     r.type = Record::RSTEP;
@@ -325,6 +344,7 @@ void AdvancedTimer::step     (IdStep id)
 void AdvancedTimer::step     (IdStep id, IdObj obj)
 {
     if (!curRecords) return;
+    if (syncCallBack) (*syncCallBack)(syncCallBackData);
     Record r;
     r.time = CTime::getTime();
     r.type = Record::RSTEP;

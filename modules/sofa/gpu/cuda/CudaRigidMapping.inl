@@ -27,6 +27,7 @@
 
 #include "CudaRigidMapping.h"
 #include <sofa/component/mapping/RigidMapping.inl>
+#include <sofa/helper/accessor.h>
 
 namespace sofa
 {
@@ -44,7 +45,7 @@ extern "C"
 {
     void RigidMappingCuda3f_apply(unsigned int size, const Mat3x3f& rotation, const Vec3f& translation, void* out, void* rotated, const void* in);
     void RigidMappingCuda3f_applyJ(unsigned int size, const Vec3f& v, const Vec3f& omega, void* out, const void* rotated);
-    void RigidMappingCuda3f_applyJT(unsigned int size, void* out, const void* rotated, const void* in);
+    void RigidMappingCuda3f_applyJT(unsigned int size, unsigned int nbloc, void* out, const void* rotated, const void* in);
 }
 
 } // namespace cuda
@@ -66,7 +67,7 @@ void RigidMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa:
     Coord translation;
     Mat rotation;
     rotatedPoints.resize(points.size());
-    out.fastResize(points.size());
+    out.recreate(points.size());
 
     translation = in[index.getValue()].getCenter();
     in[index.getValue()].writeRotationMatrix(rotation);
@@ -85,7 +86,7 @@ void RigidMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa:
 {
     const VecCoord& points = this->points.getValue();
     Deriv v,omega;
-    out.fastResize(points.size());
+    out.recreate(points.size());
     v = in[index.getValue()].getVCenter();
     omega = in[index.getValue()].getVOrientation();
     //for(unsigned int i=0;i<points.size();i++)
@@ -103,12 +104,14 @@ void RigidMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa:
     const VecCoord& points = this->points.getValue();
     Deriv v,omega;
     int nbloc = ((points.size()+BSIZE-1)/BSIZE);
-    data.tmp.fastResize(2*nbloc);
-    RigidMappingCuda3f_applyJT(points.size(), data.tmp.deviceWrite(), rotatedPoints.deviceRead(), in.deviceRead());
+    if (nbloc > 512) nbloc = 512;
+    data.tmp.recreate(2*nbloc);
+    RigidMappingCuda3f_applyJT(points.size(), nbloc, data.tmp.deviceWrite(), rotatedPoints.deviceRead(), in.deviceRead());
+    helper::ReadAccessor<gpu::cuda::CudaVec3fTypes::VecDeriv> tmp = data.tmp;
     for(int i=0; i<nbloc; i++)
     {
-        v += data.tmp[i];
-        omega += data.tmp[i+nbloc];
+        v += tmp[2*i];
+        omega += tmp[2*i+1];
     }
     out[index.getValue()].getVCenter() += v;
     out[index.getValue()].getVOrientation() += omega;
@@ -121,7 +124,7 @@ void RigidMapping<sofa::core::Mapping< sofa::core::componentmodel::behavior::Sta
     Coord translation;
     Mat rotation;
     rotatedPoints.resize(points.size());
-    out.fastResize(points.size());
+    out.recreate(points.size());
 
     translation = in[index.getValue()].getCenter();
     in[index.getValue()].writeRotationMatrix(rotation);
@@ -140,7 +143,7 @@ void RigidMapping<sofa::core::Mapping< sofa::core::componentmodel::behavior::Sta
 {
     const VecCoord& points = this->points.getValue();
     Deriv v,omega;
-    out.fastResize(points.size());
+    out.recreate(points.size());
     v = in[index.getValue()].getVCenter();
     omega = in[index.getValue()].getVOrientation();
     //for(unsigned int i=0;i<points.size();i++)
@@ -151,6 +154,202 @@ void RigidMapping<sofa::core::Mapping< sofa::core::componentmodel::behavior::Sta
     //}
     RigidMappingCuda3f_applyJ(points.size(), v, omega, out.deviceWrite(), rotatedPoints.deviceRead());
 }
+
+//////// Rigid3d ////////
+
+template <>
+void RigidMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa::core::componentmodel::behavior::MechanicalState<defaulttype::Rigid3dTypes>, sofa::core::componentmodel::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes> > >::apply( Out::VecCoord& out, const In::VecCoord& in )
+{
+    const VecCoord& points = this->points.getValue();
+    Coord translation;
+    Mat rotation;
+    rotatedPoints.resize(points.size());
+    out.recreate(points.size());
+
+    translation = in[index.getValue()].getCenter();
+    in[index.getValue()].writeRotationMatrix(rotation);
+
+    //for(unsigned int i=0;i<points.size();i++)
+    //{
+    //    rotatedPoints[i] = rotation*points[i];
+    //    out[i] = rotatedPoints[i];
+    //    out[i] += translation;
+    //}
+    RigidMappingCuda3f_apply(points.size(), rotation, translation, out.deviceWrite(), rotatedPoints.deviceWrite(), points.deviceRead());
+}
+
+template <>
+void RigidMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa::core::componentmodel::behavior::MechanicalState<defaulttype::Rigid3dTypes>, sofa::core::componentmodel::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
+{
+    const VecCoord& points = this->points.getValue();
+    Deriv v,omega;
+    out.recreate(points.size());
+    v = in[index.getValue()].getVCenter();
+    omega = in[index.getValue()].getVOrientation();
+    //for(unsigned int i=0;i<points.size();i++)
+    //{
+    //    // out = J in
+    //    // J = [ I -OM^ ]
+    //    out[i] =  v - cross(rotatedPoints[i],omega);
+    //}
+    RigidMappingCuda3f_applyJ(points.size(), v, omega, out.deviceWrite(), rotatedPoints.deviceRead());
+}
+
+template <>
+void RigidMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa::core::componentmodel::behavior::MechanicalState<defaulttype::Rigid3dTypes>, sofa::core::componentmodel::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes> > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
+{
+    const VecCoord& points = this->points.getValue();
+    Deriv v,omega;
+    int nbloc = ((points.size()+BSIZE-1)/BSIZE);
+    if (nbloc > 512) nbloc = 512;
+    data.tmp.recreate(2*nbloc);
+    RigidMappingCuda3f_applyJT(points.size(), nbloc, data.tmp.deviceWrite(), rotatedPoints.deviceRead(), in.deviceRead());
+    helper::ReadAccessor<gpu::cuda::CudaVec3fTypes::VecDeriv> tmp = data.tmp;
+    for(int i=0; i<nbloc; i++)
+    {
+        v += tmp[2*i];
+        omega += tmp[2*i+1];
+    }
+    out[index.getValue()].getVCenter() += v;
+    out[index.getValue()].getVOrientation() += omega;
+}
+
+template <>
+void RigidMapping<sofa::core::Mapping< sofa::core::componentmodel::behavior::State<defaulttype::Rigid3dTypes>, sofa::core::componentmodel::behavior::MappedModel<gpu::cuda::CudaVec3fTypes> > >::apply( Out::VecCoord& out, const In::VecCoord& in )
+{
+    const VecCoord& points = this->points.getValue();
+    Coord translation;
+    Mat rotation;
+    rotatedPoints.resize(points.size());
+    out.recreate(points.size());
+
+    translation = in[index.getValue()].getCenter();
+    in[index.getValue()].writeRotationMatrix(rotation);
+
+    //for(unsigned int i=0;i<points.size();i++)
+    //{
+    //    rotatedPoints[i] = rotation*points[i];
+    //    out[i] = rotatedPoints[i];
+    //    out[i] += translation;
+    //}
+    RigidMappingCuda3f_apply(points.size(), rotation, translation, out.deviceWrite(), rotatedPoints.deviceWrite(), points.deviceRead());
+}
+
+template <>
+void RigidMapping<sofa::core::Mapping< sofa::core::componentmodel::behavior::State<defaulttype::Rigid3dTypes>, sofa::core::componentmodel::behavior::MappedModel<gpu::cuda::CudaVec3fTypes> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
+{
+    const VecCoord& points = this->points.getValue();
+    Deriv v,omega;
+    out.recreate(points.size());
+    v = in[index.getValue()].getVCenter();
+    omega = in[index.getValue()].getVOrientation();
+    //for(unsigned int i=0;i<points.size();i++)
+    //{
+    //    // out = J in
+    //    // J = [ I -OM^ ]
+    //    out[i] =  v - cross(rotatedPoints[i],omega);
+    //}
+    RigidMappingCuda3f_applyJ(points.size(), v, omega, out.deviceWrite(), rotatedPoints.deviceRead());
+}
+
+
+//////// Rigid3f ////////
+
+template <>
+void RigidMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa::core::componentmodel::behavior::MechanicalState<defaulttype::Rigid3fTypes>, sofa::core::componentmodel::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes> > >::apply( Out::VecCoord& out, const In::VecCoord& in )
+{
+    const VecCoord& points = this->points.getValue();
+    Coord translation;
+    Mat rotation;
+    rotatedPoints.resize(points.size());
+    out.recreate(points.size());
+
+    translation = in[index.getValue()].getCenter();
+    in[index.getValue()].writeRotationMatrix(rotation);
+
+    //for(unsigned int i=0;i<points.size();i++)
+    //{
+    //    rotatedPoints[i] = rotation*points[i];
+    //    out[i] = rotatedPoints[i];
+    //    out[i] += translation;
+    //}
+    RigidMappingCuda3f_apply(points.size(), rotation, translation, out.deviceWrite(), rotatedPoints.deviceWrite(), points.deviceRead());
+}
+
+template <>
+void RigidMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa::core::componentmodel::behavior::MechanicalState<defaulttype::Rigid3fTypes>, sofa::core::componentmodel::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
+{
+    const VecCoord& points = this->points.getValue();
+    Deriv v,omega;
+    out.recreate(points.size());
+    v = in[index.getValue()].getVCenter();
+    omega = in[index.getValue()].getVOrientation();
+    //for(unsigned int i=0;i<points.size();i++)
+    //{
+    //    // out = J in
+    //    // J = [ I -OM^ ]
+    //    out[i] =  v - cross(rotatedPoints[i],omega);
+    //}
+    RigidMappingCuda3f_applyJ(points.size(), v, omega, out.deviceWrite(), rotatedPoints.deviceRead());
+}
+
+template <>
+void RigidMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa::core::componentmodel::behavior::MechanicalState<defaulttype::Rigid3fTypes>, sofa::core::componentmodel::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes> > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in )
+{
+    const VecCoord& points = this->points.getValue();
+    Deriv v,omega;
+    int nbloc = ((points.size()+BSIZE-1)/BSIZE);
+    if (nbloc > 512) nbloc = 512;
+    data.tmp.recreate(2*nbloc);
+    RigidMappingCuda3f_applyJT(points.size(), nbloc, data.tmp.deviceWrite(), rotatedPoints.deviceRead(), in.deviceRead());
+    helper::ReadAccessor<gpu::cuda::CudaVec3fTypes::VecDeriv> tmp = data.tmp;
+    for(int i=0; i<nbloc; i++)
+    {
+        v += tmp[2*i];
+        omega += tmp[2*i+1];
+    }
+    out[index.getValue()].getVCenter() += v;
+    out[index.getValue()].getVOrientation() += omega;
+}
+
+template <>
+void RigidMapping<sofa::core::Mapping< sofa::core::componentmodel::behavior::State<defaulttype::Rigid3fTypes>, sofa::core::componentmodel::behavior::MappedModel<gpu::cuda::CudaVec3fTypes> > >::apply( Out::VecCoord& out, const In::VecCoord& in )
+{
+    const VecCoord& points = this->points.getValue();
+    Coord translation;
+    Mat rotation;
+    rotatedPoints.resize(points.size());
+    out.recreate(points.size());
+
+    translation = in[index.getValue()].getCenter();
+    in[index.getValue()].writeRotationMatrix(rotation);
+
+    //for(unsigned int i=0;i<points.size();i++)
+    //{
+    //    rotatedPoints[i] = rotation*points[i];
+    //    out[i] = rotatedPoints[i];
+    //    out[i] += translation;
+    //}
+    RigidMappingCuda3f_apply(points.size(), rotation, translation, out.deviceWrite(), rotatedPoints.deviceWrite(), points.deviceRead());
+}
+
+template <>
+void RigidMapping<sofa::core::Mapping< sofa::core::componentmodel::behavior::State<defaulttype::Rigid3fTypes>, sofa::core::componentmodel::behavior::MappedModel<gpu::cuda::CudaVec3fTypes> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in )
+{
+    const VecCoord& points = this->points.getValue();
+    Deriv v,omega;
+    out.recreate(points.size());
+    v = in[index.getValue()].getVCenter();
+    omega = in[index.getValue()].getVOrientation();
+    //for(unsigned int i=0;i<points.size();i++)
+    //{
+    //    // out = J in
+    //    // J = [ I -OM^ ]
+    //    out[i] =  v - cross(rotatedPoints[i],omega);
+    //}
+    RigidMappingCuda3f_applyJ(points.size(), v, omega, out.deviceWrite(), rotatedPoints.deviceRead());
+}
+
 
 } // namespace mapping
 

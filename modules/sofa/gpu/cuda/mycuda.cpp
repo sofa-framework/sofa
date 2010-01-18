@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/helper/system/config.h>
+#include <sofa/helper/AdvancedTimer.h>
 #include <sofa/helper/BackTrace.h>
 #include <iostream>
 #include <fstream>
@@ -78,6 +79,19 @@ extern "C"
 //MycudaVerboseLevel mycudaVerboseLevel = LOG_TRACE;
 
     int mycudaMultiOpMax = 0;
+}
+
+static void timerSyncCB(void*)
+{
+    mycudaThreadSynchronize();
+}
+
+void mycudaPrivateInit(int /*device*/)
+{
+    sofa::helper::AdvancedTimer::setSyncCallBack(timerSyncCB, NULL);
+    const char* verbose = getenv("CUDA_VERBOSE");
+    if (verbose && *verbose)
+        mycudaVerboseLevel = (MycudaVerboseLevel) atoi(verbose);
 }
 
 void mycudaLogError(const char* err, const char* src)

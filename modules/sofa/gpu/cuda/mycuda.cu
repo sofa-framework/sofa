@@ -197,9 +197,9 @@ int mycudaInit(int device)
         cudaCheck(cudaGetDeviceProperties(&dev,device));
         myprintf("CUDA: Using device %d : \"%s\"\n",device,dev.name);
         cudaCheck(cudaSetDevice(device));
+        mycudaPrivateInit(device);
         return 1;
     }
-
 }
 
 int mycudaGetMultiProcessorCount()
@@ -277,6 +277,14 @@ void mycudaMemcpyDeviceToHost2D(void *dst, size_t dpitch, const void *src, size_
 void mycudaMemset(void *devPtr, int val, size_t size)
 {
     cudaCheck(cudaMemset(devPtr, val,size),"mycudaMemset");
+}
+
+
+void mycudaThreadSynchronize()
+{
+    if (!cudaInitCalled) return; // no need to synchronize if no-one used cuda yet
+
+    cudaThreadSynchronize();
 }
 
 void mycudaGLRegisterBufferObject(int id)
