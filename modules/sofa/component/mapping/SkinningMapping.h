@@ -139,6 +139,7 @@ using sofa::component::topology::Coefs;
 #define WEIGHT_INVDIST_SQUARE 1
 #define WEIGHT_LINEAR 2 // TODO use the two nearest 'from' primitives
 #define WEIGHT_HERMITE 3 // TODO use the two nearest 'from' primitives
+#define WEIGHT_SPLINE 4
 
 #define INTERPOLATION_LINEAR 0
 #define INTERPOLATION_DUAL_QUATERNION 1
