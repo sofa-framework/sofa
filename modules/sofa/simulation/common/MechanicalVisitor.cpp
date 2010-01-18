@@ -64,6 +64,7 @@ Visitor::Result MechanicalVisitor::processNodeTopDown(simulation::Node* node)
                 if (stopAtMechanicalMapping(node, node->mechanicalMapping))
                 {
                     // stop all mechanical computations
+                    std::cerr << "Pruning " << this->getClassName() << " at " << node->getPathName() << " because of mapping" << std::endl;
                     return RESULT_PRUNE;
                 }
                 Result res2 = RESULT_CONTINUE;

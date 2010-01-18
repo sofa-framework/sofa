@@ -374,6 +374,13 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
 }
 
 template<class TCoord, class TDeriv, class TReal>
+void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::addDxToCollisionModel(Main* m, bool prefetch)
+{
+    if (prefetch) return;
+    Kernels::vAdd(m->xfree->size(), m->x->deviceWrite(), m->xfree->deviceRead(), m->dx->deviceRead());
+}
+
+template<class TCoord, class TDeriv, class TReal>
 void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::vAlloc(Main* m, VecId v)
 {
     if (v.type == VecId::V_COORD && v.index >= VecId::V_FIRST_DYNAMIC_INDEX)
@@ -965,7 +972,9 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
     template<> double MechanicalObject< T >::vDot(VecId a, VecId b) \
     { return data.vDot(this, a, b, this->isPrefetching()); }				    \
     template<> void MechanicalObject< T >::resetForce() \
-    { data.resetForce(this, this->isPrefetching()); }
+    { data.resetForce(this, this->isPrefetching()); } \
+    template<> void MechanicalObject< T >::addDxToCollisionModel() \
+    { data.addDxToCollisionModel(this, this->isPrefetching()); }
 
 CudaMechanicalObject_ImplMethods(gpu::cuda::CudaVec3fTypes);
 CudaMechanicalObject_ImplMethods(gpu::cuda::CudaVec3f1Types);

@@ -59,10 +59,12 @@ extern "C" {
     extern void SOFA_GPU_CUDA_API mycudaGLUnmapBufferObject(int id);
 
     extern void SOFA_GPU_CUDA_API mycudaMemset(void * devPtr, int val , size_t size);
+    extern void SOFA_GPU_CUDA_API mycudaThreadSynchronize();
 
     extern void SOFA_GPU_CUDA_API mycudaLogError(const char* err, const char* src);
     extern int myprintf(const char* fmt, ...);
     extern int mycudaGetMultiProcessorCount();
+    extern void mycudaPrivateInit(int device=-1);
 
     extern const char* mygetenv(const char* name);
 

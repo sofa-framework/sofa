@@ -62,6 +62,54 @@ void RigidMapping<sofa::core::Mapping< sofa::core::componentmodel::behavior::Sta
 template <>
 void RigidMapping<sofa::core::Mapping< sofa::core::componentmodel::behavior::State<gpu::cuda::CudaRigid3fTypes>, sofa::core::componentmodel::behavior::MappedModel<gpu::cuda::CudaVec3fTypes> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in );
 
+//////// Rigid3d ////////
+
+template <>
+class RigidMappingInternalData<defaulttype::Rigid3dTypes, gpu::cuda::CudaVec3fTypes>
+{
+public:
+    gpu::cuda::CudaVec3fTypes::VecDeriv tmp;
+};
+
+template <>
+void RigidMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa::core::componentmodel::behavior::MechanicalState<defaulttype::Rigid3dTypes>, sofa::core::componentmodel::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes> > >::apply( Out::VecCoord& out, const In::VecCoord& in );
+
+template <>
+void RigidMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa::core::componentmodel::behavior::MechanicalState<defaulttype::Rigid3dTypes>, sofa::core::componentmodel::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in );
+
+template <>
+void RigidMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa::core::componentmodel::behavior::MechanicalState<defaulttype::Rigid3dTypes>, sofa::core::componentmodel::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes> > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in );
+
+template <>
+void RigidMapping<sofa::core::Mapping< sofa::core::componentmodel::behavior::State<defaulttype::Rigid3dTypes>, sofa::core::componentmodel::behavior::MappedModel<gpu::cuda::CudaVec3fTypes> > >::apply( Out::VecCoord& out, const In::VecCoord& in );
+
+template <>
+void RigidMapping<sofa::core::Mapping< sofa::core::componentmodel::behavior::State<defaulttype::Rigid3dTypes>, sofa::core::componentmodel::behavior::MappedModel<gpu::cuda::CudaVec3fTypes> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in );
+
+//////// Rigid3f ////////
+
+template <>
+class RigidMappingInternalData<defaulttype::Rigid3fTypes, gpu::cuda::CudaVec3fTypes>
+{
+public:
+    gpu::cuda::CudaVec3fTypes::VecDeriv tmp;
+};
+
+template <>
+void RigidMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa::core::componentmodel::behavior::MechanicalState<defaulttype::Rigid3fTypes>, sofa::core::componentmodel::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes> > >::apply( Out::VecCoord& out, const In::VecCoord& in );
+
+template <>
+void RigidMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa::core::componentmodel::behavior::MechanicalState<defaulttype::Rigid3fTypes>, sofa::core::componentmodel::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in );
+
+template <>
+void RigidMapping<sofa::core::componentmodel::behavior::MechanicalMapping< sofa::core::componentmodel::behavior::MechanicalState<defaulttype::Rigid3fTypes>, sofa::core::componentmodel::behavior::MechanicalState<gpu::cuda::CudaVec3fTypes> > >::applyJT( In::VecDeriv& out, const Out::VecDeriv& in );
+
+template <>
+void RigidMapping<sofa::core::Mapping< sofa::core::componentmodel::behavior::State<defaulttype::Rigid3fTypes>, sofa::core::componentmodel::behavior::MappedModel<gpu::cuda::CudaVec3fTypes> > >::apply( Out::VecCoord& out, const In::VecCoord& in );
+
+template <>
+void RigidMapping<sofa::core::Mapping< sofa::core::componentmodel::behavior::State<defaulttype::Rigid3fTypes>, sofa::core::componentmodel::behavior::MappedModel<gpu::cuda::CudaVec3fTypes> > >::applyJ( Out::VecDeriv& out, const In::VecDeriv& in );
+
 } // namespace mapping
 
 } // namespace component

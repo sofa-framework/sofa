@@ -915,7 +915,7 @@ void MechanicalObject<DataTypes>::loadInVector(defaulttype::BaseVector * dest, V
 {
     if (src.type == VecId::V_COORD)
     {
-        const VecCoord* vSrc = getVecCoord(src.index);
+        helper::ReadAccessor<VecCoord> vSrc = *getVecCoord(src.index);
 
         const unsigned int coordDim = DataTypeInfo<Coord>::size();
         const unsigned int nbEntries = dest->size()/coordDim;
@@ -924,14 +924,14 @@ void MechanicalObject<DataTypes>::loadInVector(defaulttype::BaseVector * dest, V
             for (unsigned int j=0; j<coordDim; ++j)
             {
                 Real tmp;
-                DataTypeInfo<Coord>::getValue((*vSrc)[offset + i],j,tmp);
+                DataTypeInfo<Coord>::getValue(vSrc[offset + i],j,tmp);
                 dest->set(i * coordDim + j, tmp);
             }
-        // offset += vSrc->size() * coordDim;
+        // offset += vSrc.size() * coordDim;
     }
     else
     {
-        const VecDeriv* vSrc = getVecDeriv(src.index);
+        helper::ReadAccessor<VecDeriv> vSrc = *getVecDeriv(src.index);
 
         const unsigned int derivDim = DataTypeInfo<Deriv>::size();
         const unsigned int nbEntries = dest->size()/derivDim;
@@ -940,10 +940,10 @@ void MechanicalObject<DataTypes>::loadInVector(defaulttype::BaseVector * dest, V
             for (unsigned int j=0; j<derivDim; j++)
             {
                 Real tmp;
-                DataTypeInfo<Deriv>::getValue((*vSrc)[i + offset],j,tmp);
+                DataTypeInfo<Deriv>::getValue(vSrc[i + offset],j,tmp);
                 dest->set(i * derivDim + j, tmp);
             }
-        // offset += vSrc->size() * derivDim;
+        // offset += vSrc.size() * derivDim;
     }
 }
 
@@ -1049,7 +1049,7 @@ void MechanicalObject<DataTypes>::addVectorToState(VecId dest, defaulttype::Base
 
     if (dest.type == VecId::V_COORD)
     {
-        VecCoord* vDest = getVecCoord(dest.index);
+        helper::WriteAccessor<VecCoord> vDest = *getVecCoord(dest.index);
         const unsigned int coordDim = DataTypeInfo<Coord>::size();
         const unsigned int nbEntries = src->size()/coordDim;
         for (unsigned int i=0; i<nbEntries; i++)
@@ -1057,15 +1057,15 @@ void MechanicalObject<DataTypes>::addVectorToState(VecId dest, defaulttype::Base
             for (unsigned int j=0; j<coordDim; ++j)
             {
                 Real tmp;
-                DataTypeInfo<Coord>::getValue((*vDest)[i+offset],j,tmp);
-                DataTypeInfo<Coord>::setValue((*vDest)[i+offset],j, tmp + src->element(i*coordDim+j));
+                DataTypeInfo<Coord>::getValue(vDest[i+offset],j,tmp);
+                DataTypeInfo<Coord>::setValue(vDest[i+offset],j, tmp + src->element(i*coordDim+j));
             }
         }
         offset += nbEntries;
     }
     else
     {
-        VecDeriv* vDest = getVecDeriv(dest.index);
+        helper::WriteAccessor<VecDeriv> vDest = *getVecDeriv(dest.index);
 
         const unsigned int derivDim = DataTypeInfo<Deriv>::size();
         const unsigned int nbEntries = src->size()/derivDim;
@@ -1074,8 +1074,8 @@ void MechanicalObject<DataTypes>::addVectorToState(VecId dest, defaulttype::Base
             for (unsigned int j=0; j<derivDim; ++j)
             {
                 Real tmp;
-                DataTypeInfo<Deriv>::getValue((*vDest)[i+offset],j,tmp);
-                DataTypeInfo<Deriv>::setValue((*vDest)[i+offset],j, tmp + src->element(i*derivDim+j));
+                DataTypeInfo<Deriv>::getValue(vDest[i+offset],j,tmp);
+                DataTypeInfo<Deriv>::setValue(vDest[i+offset],j, tmp + src->element(i*derivDim+j));
             }
         }
         offset += nbEntries;
@@ -1088,10 +1088,12 @@ void MechanicalObject<DataTypes>::addVectorToState(VecId dest, defaulttype::Base
 template <class DataTypes>
 void MechanicalObject<DataTypes>::addDxToCollisionModel()
 {
-    for (unsigned int i=0; i < this->xfree->size(); i++)
-        (*this->x)[i] = (*this->xfree)[i] + (*this->dx)[i];
+    helper::WriteAccessor<VecCoord> x = *this->x;
+    helper::ReadAccessor<VecCoord> xfree = *this->xfree;
+    helper::ReadAccessor<VecDeriv> dx = *this->dx;
+    for (unsigned int i=0; i < xfree.size(); i++)
+        x[i] = xfree[i] + dx[i];
 }
-
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::init()
@@ -1440,10 +1442,13 @@ void MechanicalObject<DataTypes>::accumulateForce()
 {
     if (!this->externalForces->empty())
     {
+        helper::WriteAccessor<VecDeriv> f = *this->f;
+        helper::ReadAccessor<VecDeriv> externalForces = *this->externalForces;
+
         if (!this->forceMask.isInUse())
         {
-            for (unsigned int i=0; i < this->externalForces->size(); i++)
-                (*this->f)[i] += (*this->externalForces)[i];
+            for (unsigned int i=0; i < externalForces.size(); i++)
+                f[i] += externalForces[i];
         }
         else
         {
@@ -1453,7 +1458,7 @@ void MechanicalObject<DataTypes>::accumulateForce()
             for (it=indices.begin(); it!=indices.end(); it++)
             {
                 const int i=(*it);
-                (*this->f)[i] += (*this->externalForces)[i];
+                f[i] += externalForces[i];
             }
         }
     }
@@ -2036,12 +2041,12 @@ void MechanicalObject<DataTypes>::vThreshold(VecId v, double t)
 {
     if( v.type==VecId::V_DERIV)
     {
-        VecDeriv* vv = getVecDeriv(v.index);
+        helper::WriteAccessor<VecDeriv> vv = *getVecDeriv(v.index);
         Real t2 = (Real)(t*t);
-        for (unsigned int i=0; i<vv->size(); i++)
+        for (unsigned int i=0; i<vv.size(); i++)
         {
-            if( (*vv)[i]*(*vv)[i] < t2 )
-                clear((*vv)[i]);
+            if( vv[i]*vv[i] < t2 )
+                clear(vv[i]);
         }
     }
     else

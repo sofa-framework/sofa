@@ -39,7 +39,7 @@ extern "C"
 {
     void RigidMappingCuda3f_apply(unsigned int size, const matrix3<float>& rotation, const CudaVec3<float>& translation, void* out, void* rotated, const void* in);
     void RigidMappingCuda3f_applyJ(unsigned int size, const CudaVec3<float>& v, const CudaVec3<float>& omega, void* out, const void* rotated);
-    void RigidMappingCuda3f_applyJT(unsigned int size, void* out, const void* rotated, const void* in);
+    void RigidMappingCuda3f_applyJT(unsigned int size, unsigned int nbloc, void* out, const void* rotated, const void* in);
 }
 
 //////////////////////
@@ -126,7 +126,7 @@ __global__ void RigidMappingCuda3f_applyJ_kernel(unsigned int size, CudaVec3<flo
     out[index1+2*BSIZE] = temp[index1+2*BSIZE];
 }
 
-__global__ void RigidMappingCuda3f_applyJT_kernel(unsigned int size, float* out, const float* rotated, const float* in)
+__global__ void RigidMappingCuda3f_applyJT_kernel(unsigned int size, unsigned int nbloc, float* out, const float* rotated, const float* in)
 {
     int index0 = umul24(blockIdx.x,BSIZE); //blockDim.x;
     int index1 = threadIdx.x;
@@ -134,33 +134,38 @@ __global__ void RigidMappingCuda3f_applyJT_kernel(unsigned int size, float* out,
     //! Dynamically allocated shared memory to reorder global memory access
     extern  __shared__  float temp[];
 
-    int base = umul24(index0,3);
-    in  += base;
-    rotated += base;
-
-    temp[index1        ] = in[index1        ];
-    temp[index1+  BSIZE] = in[index1+  BSIZE];
-    temp[index1+2*BSIZE] = in[index1+2*BSIZE];
-    temp[index1+3*BSIZE] = rotated[index1        ];
-    temp[index1+4*BSIZE] = rotated[index1+  BSIZE];
-    temp[index1+5*BSIZE] = rotated[index1+2*BSIZE];
-
-    __syncthreads();
+    CudaVec3<float> t = CudaVec3<float>::make(0.0f, 0.0f, 0.0f);
+    CudaVec3<float> r = CudaVec3<float>::make(0.0f, 0.0f, 0.0f);
 
     int index3 = umul24(3,index1);
-    CudaVec3<float> r;
-    if (index0+index1 < size)
+
+    while (index0 < size)
     {
-        r = cross(CudaVec3<float>::make(temp[index3  +3*BSIZE],temp[index3+1+3*BSIZE],temp[index3+2+3*BSIZE]),CudaVec3<float>::make(temp[index3  ],temp[index3+1],temp[index3+2]));
-    }
-    else
-    {
-        temp[index3  ] = 0;
-        temp[index3+1] = 0;
-        temp[index3+2] = 0;
-        r = CudaVec3<float>::make(0,0,0);
+
+        int base = umul24(index0,3);
+
+        temp[index1        ] = in[base+index1        ];
+        temp[index1+  BSIZE] = in[base+index1+  BSIZE];
+        temp[index1+2*BSIZE] = in[base+index1+2*BSIZE];
+        temp[index1+3*BSIZE] = rotated[base+index1        ];
+        temp[index1+4*BSIZE] = rotated[base+index1+  BSIZE];
+        temp[index1+5*BSIZE] = rotated[base+index1+2*BSIZE];
+
+        __syncthreads();
+
+        if (index0+index1 < size)
+        {
+            CudaVec3<float> v = CudaVec3<float>::make(temp[index3  ],temp[index3+1],temp[index3+2]);
+            t += v;
+            r += cross(CudaVec3<float>::make(temp[index3  +3*BSIZE],temp[index3+1+3*BSIZE],temp[index3+2+3*BSIZE]),v);
+        }
+        __syncthreads();
+        index0 += umul24(nbloc, BSIZE);
     }
 
+    temp[index3  ] = t.x;
+    temp[index3+1] = t.y;
+    temp[index3+2] = t.z;
     temp[index3  +3*BSIZE] = r.x;
     temp[index3+1+3*BSIZE] = r.y;
     temp[index3+2+3*BSIZE] = r.z;
@@ -190,8 +195,7 @@ __global__ void RigidMappingCuda3f_applyJT_kernel(unsigned int size, float* out,
     __syncthreads();
     if (index1 < 6)
     {
-        out += umul24(blockIdx.x,6);
-        out[index1] = temp[index1];
+        out[umul24(blockIdx.x,6) + index1] = temp[index1];
     }
 }
 
@@ -213,11 +217,11 @@ void RigidMappingCuda3f_applyJ(unsigned int size, const CudaVec3<float>& v, cons
     RigidMappingCuda3f_applyJ_kernel<<< grid, threads, BSIZE*3*sizeof(float) >>>(size, v, omega, (float*)out, (const float*)rotated);
 }
 
-void RigidMappingCuda3f_applyJT(unsigned int size, void* out, const void* rotated, const void* in)
+void RigidMappingCuda3f_applyJT(unsigned int size, unsigned int nbloc, void* out, const void* rotated, const void* in)
 {
     dim3 threads(BSIZE,1);
-    dim3 grid((size+BSIZE-1)/BSIZE,1);
-    RigidMappingCuda3f_applyJT_kernel<<< grid, threads, BSIZE*6*sizeof(float) >>>(size, (float*)out, (const float*)rotated, (const float*)in);
+    dim3 grid(nbloc,1);
+    RigidMappingCuda3f_applyJT_kernel<<< grid, threads, BSIZE*6*sizeof(float) >>>(size, nbloc, (float*)out, (const float*)rotated, (const float*)in);
 }
 
 #if defined(__cplusplus) && CUDA_VERSION < 2000

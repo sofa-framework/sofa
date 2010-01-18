@@ -76,7 +76,7 @@ bool LCPConstraintSolver::prepareStates(double /*dt*/, VecId id)
     last_lcp = lcp;
     core::componentmodel::behavior::BaseMechanicalState::VecId dx_id = core::componentmodel::behavior::BaseMechanicalState::VecId::dx();
     simulation::MechanicalVOpVisitor(dx_id).execute( context); //dX=0
-    simulation::MechanicalPropagateDxVisitor(dx_id,true).execute( context); //Propagate dX //ignore the mask here
+    simulation::MechanicalPropagateDxVisitor(dx_id,true,true).execute( context); //Propagate dX //ignore the mask here
 
     if( f_printLog.getValue())
         serr<<" propagate DXn performed - collision called"<<sendl;
@@ -1198,10 +1198,7 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f)
             }
             //debug
             //std::cout<<" f : ["<<std::endl;
-            for (int i = 0; i < numContacts; i++)
-            {
-                //	std::cout<<f[3*i]<<"\n"<<f[3*i+1] <<"\n"<<f[3*i+2] <<std::endl;
-            }
+            //for (int i = 0; i < numContacts; i++) std::cout<<f[3*i]<<"\n"<<f[3*i+1] <<"\n"<<f[3*i+2] <<std::endl;
             //std::cout<<"];"<<std::endl;
             //delete[] W33;
             if ( displayTime.getValue() )
@@ -1210,10 +1207,13 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f)
 
             }
 
+            sofa::helper::AdvancedTimer::valSet("GS iterations", it+1);
 
             return 1;
         }
     }
+    sofa::helper::AdvancedTimer::valSet("GS iterations", it);
+
     //free(d);
     //for (int i = 0; i < numContacts; i++)
     //	delete W33[i];
@@ -1421,6 +1421,8 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f)
                 sout<<" GAUSS_SEIDEL iterations  " << ( (double) timer.getTime() - time)*timeScale<<" ms" <<sendl;
 
             }
+            sofa::helper::AdvancedTimer::valSet("GS iterations", it+1);
+
             return 1;
         }
     }
@@ -1428,6 +1430,8 @@ int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f)
     {
         sout<<" GAUSS_SEIDEL iterations " << ( (double) timer.getTime() - time)*timeScale<<" ms" <<sendl;
     }
+
+    sofa::helper::AdvancedTimer::valSet("GS iterations", it);
 
     serr<<"No convergence in  unbuilt lcp gaussseidel function : error ="<<error <<" after"<< it<<" iterations"<<sendl;
     //afficheLCP(dfree,W,f,dim);
