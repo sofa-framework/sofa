@@ -75,7 +75,7 @@ SkinningMapping<BasicMapping>::SkinningMapping ( In* from, Out* to )
     , showCoefs ( initData ( &showCoefs, false, "showCoefs","Show coeficients." ) )
     , showCoefsValues ( initData ( &showCoefsValues, false, "showCoefsValues","Show coeficients values." ) )
     , showReps ( initData ( &showReps, false, "showReps","Show repartition." ) )
-    , showValuesNbDecimals ( initData ( &showValuesNbDecimals, 1, "showValuesNbDecimals","Multiply floating point by 10^n." ) )
+    , showValuesNbDecimals ( initData ( &showValuesNbDecimals, 0, "showValuesNbDecimals","Multiply floating point by 10^n." ) )
     , showTextScaleFactor ( initData ( &showTextScaleFactor, 0.00005, "showTextScaleFactor","Text Scale Factor." ) )
     , showGradients ( initData ( &showGradients, false, "showGradients","Show gradients." ) )
     , showGradientsValues ( initData ( &showGradientsValues, false, "showGradientsValues","Show Gradients Values." ) )
@@ -84,6 +84,7 @@ SkinningMapping<BasicMapping>::SkinningMapping ( In* from, Out* to )
     , newFrameMinDist ( initData ( &newFrameMinDist, 0.1, "newFrameMinDist","Minimal distance to insert a new frame." ) )
     , newFrameWeightingRadius ( initData ( &newFrameWeightingRadius, "newFrameWeightingRadius","new frame weightin radius." ) )
     , newFrameDefaultCutOffDistance ( initData ( &newFrameDefaultCutOffDistance, (double)0xFFF, "newFrameDefaultCutOffDistance","new frame defaultCut off distance." ) )
+    , newFrameDistanceToMaximizeWeight ( initData ( &newFrameDistanceToMaximizeWeight, 0.0, "newFrameDistanceToMaximizeWeight","new frame distance used to maximize weights." ) )
     , enableSkinning ( initData ( &enableSkinning, true, "enableSkinning","enable skinning." ) )
     , voxelVolume ( initData ( &voxelVolume, 1.0, "voxelVolume","default volume voxel. Use if no hexa topo is found." ) )
 #endif
@@ -1891,6 +1892,7 @@ void SkinningMapping<BasicMapping>::updateDataAfterInsertion()
     getDistances( size);
 
     // for each new frame
+    const double& maximizeWeightDist = newFrameDistanceToMaximizeWeight.getValue();
     for ( unsigned int i = size; i < xfrom.size(); ++i )
     {
         // Get T
@@ -1913,14 +1915,30 @@ void SkinningMapping<BasicMapping>::updateDataAfterInsertion()
                 }
                 else
                 {
-                    m_coefs[i][j] = 1.0 / (distances[i][j]*distances[i][j]) - 1.0 / (radius[i]*radius[i]);
-                    if (m_coefs[i][j] < 0)
+                    if( maximizeWeightDist != 0.0)
                     {
-                        m_coefs[i][j] = 0.0;
-                        dw[i][j] = Coord();
+                        if( distances[i][j] < maximizeWeightDist)
+                        {
+                            m_coefs[i][j] = 0xFFF;
+                            dw[i][j] = Coord();
+                        }
+                        else
+                        {
+                            m_coefs[i][j] = 0xFFF / (maximizeWeightDist - radius[i]) * (distances[i][j] - radius[i]);
+                            dw[i][j] = distGradients[i][j] * 0xFFF / (maximizeWeightDist - radius[i]);
+                        }
                     }
                     else
-                        dw[i][j] = - distGradients[i][j] / (distances[i][j]*distances[i][j]*distances[i][j]) * 2.0;
+                    {
+                        m_coefs[i][j] = 1.0 / (distances[i][j]*distances[i][j]) - 1.0 / (radius[i]*radius[i]);
+                        if (m_coefs[i][j] < 0)
+                        {
+                            m_coefs[i][j] = 0.0;
+                            dw[i][j] = Coord();
+                        }
+                        else
+                            dw[i][j] = - distGradients[i][j] / (distances[i][j]*distances[i][j]*distances[i][j]) * 2.0;
+                    }
                 }
             }
             else

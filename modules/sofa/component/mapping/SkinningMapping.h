@@ -264,6 +264,7 @@ public:
     Data<double> newFrameMinDist;
     Data<vector<double> > newFrameWeightingRadius;
     Data<double> newFrameDefaultCutOffDistance;
+    Data<double> newFrameDistanceToMaximizeWeight;
     Data<bool> enableSkinning;
     Data<double> voxelVolume;
 #endif
