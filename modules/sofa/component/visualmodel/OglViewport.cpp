@@ -34,6 +34,7 @@ OglViewport::OglViewport()
     ,p_screenSize(initData(&p_screenSize, "screenSize", "Viewport size"))
     ,p_cameraPosition(initData(&p_cameraPosition, Vec3f(0.0,0.0,0.0), "cameraPosition", "Camera's position in eye's space"))
     ,p_cameraOrientation(initData(&p_cameraOrientation,Quat(), "cameraOrientation", "Camera's orientation"))
+    ,p_cameraRigid(initData(&p_cameraRigid, "cameraRigid", "Camera's rigid coord"))
 {
     // TODO Auto-generated constructor stub
 
@@ -63,8 +64,25 @@ void OglViewport::initVisual()
 
 void OglViewport::preDrawScene(helper::gl::VisualParameters* vp)
 {
-    const Vec3f &cameraPosition = *p_cameraPosition.beginEdit();
-    Quat &cameraOrientation = *p_cameraOrientation.beginEdit();
+    Vec3f cameraPosition;
+    Quat cameraOrientation;
+    //const Vec3f &cameraPosition = *p_cameraPosition.beginEdit();
+    //const Quat &cameraOrientation = *p_cameraOrientation.beginEdit();
+    //defaulttype::RigidCoord &rigidCamera = *p_cameraRigid.beginEdit();
+
+    //Take the rigid if it is connected to something
+    if (p_cameraRigid.isSet() || p_cameraRigid.getParent())
+    {
+        RigidCoord rcam = p_cameraRigid.getValue();
+        cameraPosition =  rcam.getCenter() ;
+        cameraOrientation = rcam.getOrientation();
+    }
+    else
+    {
+        cameraPosition = p_cameraPosition.getValue();
+        cameraOrientation = p_cameraOrientation.getValue();
+    }
+
     cameraOrientation.normalize();
     helper::gl::Transformation transform;
 
