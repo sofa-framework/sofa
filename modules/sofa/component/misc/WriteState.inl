@@ -45,6 +45,7 @@ namespace misc
 WriteState::WriteState()
     : f_filename( initData(&f_filename, "filename", "output file name"))
     , f_writeX( initData(&f_writeX, true, "writeX", "flag enabling output of X vector"))
+    , f_writeX0( initData(&f_writeX0, false, "writeX0", "flag enabling output of X0 vector"))
     , f_writeV( initData(&f_writeV, false, "writeV", "flag enabling output of V vector"))
     , f_interval( initData(&f_interval, 0.0, "interval", "time duration between outputs"))
     , f_time( initData(&f_time, helper::vector<double>(0), "time", "set time to write outputs"))
@@ -213,6 +214,14 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
                     mmodel->writeX(str);
                     str << "\n";
                 }
+                if (f_writeX0.getValue())
+                {
+                    str << "  X0= ";
+                    mmodel->setX(core::VecId::restPosition());
+                    mmodel->writeX(str);
+                    mmodel->setX(core::VecId::position());
+                    str << "\n";
+                }
                 //write the V state
                 if (f_writeV.getValue())
                 {
@@ -233,6 +242,14 @@ void WriteState::handleEvent(sofa::core::objectmodel::Event* event)
                     {
                         (*outfile) << "  X= ";
                         mmodel->writeX(*outfile);
+                        (*outfile) << "\n";
+                    }
+                    if (f_writeX0.getValue())
+                    {
+                        (*outfile) << "  X0= ";
+                        mmodel->setX(core::VecId::restPosition());
+                        mmodel->writeX((*outfile));
+                        mmodel->setX(core::VecId::position());
                         (*outfile) << "\n";
                     }
                     //write the V state
