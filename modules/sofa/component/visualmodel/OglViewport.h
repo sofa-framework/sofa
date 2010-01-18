@@ -34,6 +34,7 @@ public:
     Data<defaulttype::Vec3f> p_cameraPosition;
     Data<defaulttype::Quat> p_cameraOrientation;
     Data<RigidCoord > p_cameraRigid;
+    Data<double> p_zNear, p_zFar;
 
     helper::gl::FrameBufferObject fbo;
 
