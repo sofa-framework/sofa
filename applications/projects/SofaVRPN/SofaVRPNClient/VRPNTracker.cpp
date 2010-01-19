@@ -65,12 +65,15 @@ void VRPNTracker<RigidTypes>::update()
             {
                 RigidTypes::Coord::Pos pos;
                 RigidTypes::Coord::Rot rot;
-                for (unsigned int j=0 ; j<3 ; j++)
-                {
-                    pos[j] = copyTrackerData.data[i].pos[j];
+
+                pos[0] = copyTrackerData.data[i].pos[0] + p_dx.getValue();
+                pos[1] = copyTrackerData.data[i].pos[1] + p_dy.getValue();
+                pos[2] = copyTrackerData.data[i].pos[2] + p_dz.getValue();
+
+                //TODO: modify quat too
+                for (unsigned int j=0 ; j<4 ; j++)
                     rot[j] = copyTrackerData.data[i].quat[j];
-                }
-                rot[3] = copyTrackerData.data[i].quat[3];
+
                 Coord p;
                 p.getCenter() = pos;
                 p.getOrientation() = rot;
