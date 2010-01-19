@@ -85,6 +85,7 @@ public:
     inline unsigned int getNbConst(void) {return nbConst;};
     inline void setNbConst(unsigned int nbC) {nbConst = nbC;};
     inline unsigned int getMaxConst(void) {return maxConst;};
+    void setMaxConst(unsigned int nbC);
 
     inline bool isLocked(void) {return false;};
     inline void lock(void) {lok = true;};
@@ -124,6 +125,10 @@ public:
         return false; // !map->isMechanical();
     }
 
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalResetContactForceVisitor";}
+
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
@@ -161,6 +166,10 @@ public:
     {
         return false; // !map->isMechanical();
     }
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalApplyContactForceVisitor";}
 
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
@@ -202,6 +211,10 @@ public:
     {
         return false; // !map->isMechanical();
     }
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalGetConstraintValueVisitor";}
 
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
@@ -245,6 +258,10 @@ public:
     {
         return false; // !map->isMechanical();
     }
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalGetConstraintInfoVisitor";}
 
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()

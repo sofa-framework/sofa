@@ -541,7 +541,9 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
             for (unsigned int i=0; i<x1.size(); i++)
             {
                 DistanceGrid::Coord p1 = x1[i];
-                DistanceGrid::Coord p2 = translation + rotation*p1;
+                Vector3 n1 = grid1->grad(p1); // note that there are some redundant computations between interp() and grad()
+                n1.normalize();
+                DistanceGrid::Coord p2 = translation + rotation*(p1 + n1*margin);
 #ifdef DEBUG_XFORM
                 DistanceGrid::Coord p1b = rotation.multTranspose(p2-translation);
                 DistanceGrid::Coord gp1 = t1+r1*p1;
@@ -552,7 +554,7 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
                     serr << "ERROR1b: " << p1 << " -> " << gp1 << "    " << p2 << " -> " << gp2 << sendl;
 #endif
 
-                if (!grid2->inBBox( p2, margin )) continue;
+                if (!grid2->inBBox( p2 /*, margin*/ )) continue;
                 if (!grid2->inGrid( p2 ))
                 {
                     serr << "WARNING: margin less than "<<margin<<" in DistanceGrid "<<e2.getCollisionModel()->getName()<<sendl;
@@ -560,7 +562,7 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
                 }
 
                 SReal d = grid2->interp(p2);
-                if (d >= margin) continue;
+                if (d >= 0 /* margin */ ) continue;
 
                 Vector3 grad = grid2->grad(p2); // note that there are some redundant computations between interp() and grad()
                 grad.normalize();
@@ -573,7 +575,7 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
                 detection->point[0] = Vector3(p1);
                 detection->point[1] = Vector3(p2) - grad * d;
                 detection->normal = r2 * -grad; // normal in global space from p1's surface
-                detection->value = d - d0;
+                detection->value = d + margin - d0;
                 detection->elem.first = e1;
                 detection->elem.second = e2;
                 detection->id = i;
@@ -782,7 +784,10 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
             for (unsigned int i=0; i<x2.size(); i++)
             {
                 DistanceGrid::Coord p2 = x2[i];
-                DistanceGrid::Coord p1 = rotation.multTranspose(p2-translation);
+                Vector3 n2 = grid2->grad(p2); // note that there are some redundant computations between interp() and grad()
+                n2.normalize();
+
+                DistanceGrid::Coord p1 = rotation.multTranspose(p2 + n2*margin - translation);
 #ifdef DEBUG_XFORM
                 DistanceGrid::Coord p2b = translation + rotation*p1;
                 DistanceGrid::Coord gp1 = t1+r1*p1;
@@ -793,7 +798,7 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
                     serr << "ERROR2b: " << p1 << " -> " << gp1 << "    " << p2 << " -> " << gp2 << sendl;
 #endif
 
-                if (!grid1->inBBox( p1, margin )) continue;
+                if (!grid1->inBBox( p1 /*, margin*/ )) continue;
                 if (!grid1->inGrid( p1 ))
                 {
                     serr << "WARNING: margin less than "<<margin<<" in DistanceGrid "<<e1.getCollisionModel()->getName()<<sendl;
@@ -801,7 +806,7 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
                 }
 
                 SReal d = grid1->interp(p1);
-                if (d >= margin) continue;
+                if (d >= 0 /* margin */ ) continue;
 
                 Vector3 grad = grid1->grad(p1); // note that there are some redundant computations between interp() and grad()
                 grad.normalize();
@@ -814,7 +819,7 @@ int DiscreteIntersection::computeIntersection(RigidDistanceGridCollisionElement&
                 detection->point[0] = Vector3(p1) - grad * d;
                 detection->point[1] = Vector3(p2);
                 detection->normal = r1 * grad; // normal in global space from p1's surface
-                detection->value = d - d0;
+                detection->value = d + margin - d0;
                 detection->elem.first = e1;
                 detection->elem.second = e2;
                 detection->id = i0+i;

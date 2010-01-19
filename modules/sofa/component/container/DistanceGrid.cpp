@@ -1112,55 +1112,88 @@ void DistanceGrid::fmm_push(int index)
 void DistanceGrid::sampleSurface(double sampling)
 {
     std::cout << "DistanceGrid: sample surface with sampling distance " << sampling << std::endl;
-    int stepX, stepY, stepZ;
-    if (sampling < 0)
-    {
-        stepX = stepY = stepZ = (int)(-sampling);
-    }
-    else
-    {
-        stepX = (int)(sampling/cellWidth[0]);
-        stepY = (int)(sampling/cellWidth[1]);
-        stepZ = (int)(sampling/cellWidth[2]);
-    }
-    if (stepX < 1) stepX = 1;
-    if (stepY < 1) stepY = 1;
-    if (stepZ < 1) stepZ = 1;
-    std::cout << "DistanceGrid: sampling steps: " << stepX << " " << stepY << " " << stepZ << std::endl;
-
-    SReal maxD = (SReal)sqrt((cellWidth[0]*stepX)*(cellWidth[0]*stepX) + (cellWidth[1]*stepY)*(cellWidth[1]*stepY) + (cellWidth[2]*stepZ)*(cellWidth[2]*stepZ));
     std::vector<Coord> pts;
-    for (int z=1; z<nz-1; z+=stepZ)
-        for (int y=1; y<ny-1; y+=stepY)
-            for (int x=1; x<nx-1; x+=stepX)
-            {
-                SReal d = dists[index(x,y,z)];
-                if (rabs(d) > maxD) continue;
+    if (sampling <= -1.0 && sampling == floor(sampling))
+    {
+        int stepX, stepY, stepZ;
+        stepX = stepY = stepZ = (int)(-sampling);
+        std::cout << "DistanceGrid: sampling steps: " << stepX << " " << stepY << " " << stepZ << std::endl;
 
-                Vector3 pos = coord(x,y,z);
-                Vector3 n = grad(index(x,y,z), Coord()); // note that there are some redundant computations between interp() and grad()
-                n.normalize();
-                pos -= n * (d * 0.99); // push pos back to the surface
-                d = interp(pos);
-                int it = 1;
-                while (rabs(d) > 0.01f*maxD && it < 10)
+        SReal maxD = (SReal)sqrt((cellWidth[0]*stepX)*(cellWidth[0]*stepX) + (cellWidth[1]*stepY)*(cellWidth[1]*stepY) + (cellWidth[2]*stepZ)*(cellWidth[2]*stepZ));
+        for (int z=1; z<nz-1; z+=stepZ)
+            for (int y=1; y<ny-1; y+=stepY)
+                for (int x=1; x<nx-1; x+=stepX)
                 {
-                    n = grad(pos);
+                    SReal d = dists[index(x,y,z)];
+                    if (rabs(d) > maxD) continue;
+
+                    Vector3 pos = coord(x,y,z);
+                    Vector3 n = grad(index(x,y,z), Coord()); // note that there are some redundant computations between interp() and grad()
                     n.normalize();
                     pos -= n * (d * 0.99); // push pos back to the surface
                     d = interp(pos);
-                    ++it;
+                    int it = 1;
+                    while (rabs(d) > 0.01f*maxD && it < 10)
+                    {
+                        n = grad(pos);
+                        n.normalize();
+                        pos -= n * (d * 0.99); // push pos back to the surface
+                        d = interp(pos);
+                        ++it;
+                    }
+                    if (it == 10 && rabs(d) > 0.1f*maxD)
+                    {
+                        std::cout << "Failed to converge at ("<<x<<","<<y<<","<<z<<"):"
+                                << " pos0 = " << coord(x,y,z) << " d0 = " << dists[index(x,y,z)] << " grad0 = " << grad(index(x,y,z), Coord())
+                                << " pos = " << pos << " d = " << d << " grad = " << n << std::endl;
+                        continue;
+                    }
+                    Coord p = pos;
+                    pts.push_back(p);
                 }
-                if (it == 10 && rabs(d) > 0.1f*maxD)
+    }
+    else
+    {
+        if (sampling < 0) sampling = cellWidth[0] * (-sampling);
+        SReal maxD = (SReal)(sqrt(3.0)*sampling);
+        int nstepX = (int)ceil((pmax[0] - pmin[0])/sampling);
+        int nstepY = (int)ceil((pmax[1] - pmin[1])/sampling);
+        int nstepZ = (int)ceil((pmax[2] - pmin[2])/sampling);
+        Coord p0 = pmin + ((pmax-pmin) - Coord((nstepX)*sampling, (nstepY)*sampling, (nstepZ)*sampling))*0.5f;
+        std::cout << "DistanceGrid: sampling bbox " << pmin << " - " << pmax << " starting at " << p0 << " with number of steps: " << nstepX << " " << nstepY << " " << nstepZ << std::endl;
+
+        for (int z=0; z<=nstepZ; z++)
+            for (int y=0; y<=nstepY; y++)
+                for (int x=0; x<=nstepX; x++)
                 {
-                    std::cout << "Failed to converge at ("<<x<<","<<y<<","<<z<<"):"
-                            << " pos0 = " << coord(x,y,z) << " d0 = " << dists[index(x,y,z)] << " grad0 = " << grad(index(x,y,z), Coord())
-                            << " pos = " << pos << " d = " << d << " grad = " << n << std::endl;
-                    continue;
+                    Coord pos = p0 + Coord(x*sampling, y*sampling, z*sampling);
+                    if (!inGrid(pos)) continue;
+                    SReal d = interp(pos);
+                    if (rabs(d) > maxD) continue;
+                    Vector3 n = grad(pos);
+                    n.normalize();
+                    pos -= n * (d * 0.99); // push pos back to the surface
+                    d = interp(pos);
+                    int it = 1;
+                    while (rabs(d) > 0.01f*maxD && it < 10)
+                    {
+                        n = grad(pos);
+                        n.normalize();
+                        pos -= n * (d * 0.99); // push pos back to the surface
+                        d = interp(pos);
+                        ++it;
+                    }
+                    if (it == 10 && rabs(d) > 0.1f*maxD)
+                    {
+                        std::cout << "Failed to converge at ("<<x<<","<<y<<","<<z<<"):"
+                                << " pos0 = " << coord(x,y,z) << " d0 = " << dists[index(x,y,z)] << " grad0 = " << grad(index(x,y,z), Coord())
+                                << " pos = " << pos << " d = " << d << " grad = " << n << std::endl;
+                        continue;
+                    }
+                    Coord p = pos;
+                    pts.push_back(p);
                 }
-                Coord p = pos;
-                pts.push_back(p);
-            }
+    }
     std::cout << "DistanceGrid: " << pts.size() << " sampling points created." << std::endl;
     meshPts.resize(pts.size());
     for (unsigned int p=0; p<pts.size(); ++p)

@@ -58,6 +58,14 @@ LCP::LCP(unsigned int mxC) : maxConst(mxC), tol(0.00001), numItMax(1000), useIni
     f.resize(2*maxConst+1);
 }
 
+void LCP::setMaxConst(unsigned int nbC)
+{
+    maxConst = nbC;
+    W.resize(maxConst,maxConst);
+    dFree.resize(maxConst);
+    f.resize(2*maxConst+1);
+}
+
 LCP::~LCP()
 {
 }
@@ -372,10 +380,14 @@ void LCPConstraintSolver::build_LCP()
 
     //sout<<" accumulateConstraint_done "  <<sendl;
 
-    if (_numConstraints > MAX_NUM_CONSTRAINTS)
+    if (_numConstraints > lcp->getMaxConst())
     {
-        serr<<sendl<<"Error in LCPConstraintSolver, maximum number of contacts exceeded, "<< _numConstraints/3 <<" contacts detected"<<sendl;
-        exit(-1);
+        serr<<sendl<<"maximum number of contacts exceeded, "<< _numConstraints/3 <<" contacts detected"<<sendl;
+        int maxC = (_numConstraints > 2*lcp->getMaxConst()) ? _numConstraints : 2*lcp->getMaxConst();
+        lcp1.setMaxConst(maxC);
+        lcp2.setMaxConst(maxC);
+        lcp3.setMaxConst(maxC);
+        //exit(-1);
     }
 
     lcp->getMu() = _mu;
@@ -772,14 +784,18 @@ void LCPConstraintSolver::build_problem_info()
 
     // debug
     //std::cout<<" accumulateConstraint_done "  <<std::endl;
-
-    // necessary ///////
-    if (_numConstraints > MAX_NUM_CONSTRAINTS)
-    {
-        serr<<sendl<<"WARNING in LCPConstraintSolver: maximum number of contacts exceeded, "<< _numConstraints/3 <<" contacts detected"<<sendl;
-        //exit(-1);
-    }
-
+    /*
+    	// necessary ///////
+    	if (_numConstraints > lcp->getMaxConst())
+        {
+            serr<<sendl<<"maximum number of contacts exceeded, "<< _numConstraints/3 <<" contacts detected"<<sendl;
+            int maxC = (_numConstraints > 2*lcp->getMaxConst()) ? _numConstraints : 2*lcp->getMaxConst();
+            lcp1.setMaxConst(maxC);
+            lcp2.setMaxConst(maxC);
+            lcp3.setMaxConst(maxC);
+            //exit(-1);
+        }
+    */
     lcp->getMu() = _mu;
 
     _dFree->resize(_numConstraints);

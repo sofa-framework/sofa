@@ -64,9 +64,11 @@ Visitor::Result MechanicalVisitor::processNodeTopDown(simulation::Node* node)
                 if (stopAtMechanicalMapping(node, node->mechanicalMapping))
                 {
                     // stop all mechanical computations
-                    std::cerr << "Pruning " << this->getClassName() << " at " << node->getPathName() << " because of mapping" << std::endl;
+                    //std::cerr << "Pruning " << this->getClassName() << " at " << node->getPathName() << " with non-mechanical mapping" << std::endl;
                     return RESULT_PRUNE;
                 }
+                //else if (!node->mechanicalMapping->isMechanical()) std::cerr << "Continuing " << this->getClassName() << " at " << node->getPathName() << " with non-mechanical mapping" << std::endl;
+
                 Result res2 = RESULT_CONTINUE;
                 if(testTags(node->mechanicalMapping))
                 {
