@@ -33,6 +33,9 @@
 #include <poll.h>
 #endif
 
+#include <sofa/core/objectmodel/KeypressedEvent.h>
+#include <sofa/core/objectmodel/KeyreleasedEvent.h>
+
 namespace sofa
 {
 
@@ -51,9 +54,15 @@ int InputEventReaderClass = core::RegisterObject("Read events from file")
 InputEventReader::InputEventReader()
     : filename( initData(&filename, std::string("/dev/input/mouse2"), "filename", "input events file name"))
     , inverseSense(initData(&inverseSense, false, "inverseSense", "inverse the sense of the mouvement"))
+    , p_printEvent(initData(&p_printEvent, false, "printEvent", "Print event informations"))
 //, timeout( initData(&timeout, 0, "timeout", "time out to get an event from file" ))
+    , p_key1(initData(&p_key1, '0', "key1","Key event generated when the left pedal is pressed"))
+    , p_key2(initData(&p_key2, '1', "key2","Key event generated when the right pedal is pressed"))
     , fd(-1)
     , deplX(0), deplY(0)
+    , pedalValue(-1)
+    , currentPedalState(NO_PEDAL)
+    , oldPedalState(NO_PEDAL)
 {
 }
 void InputEventReader::init()
@@ -83,11 +92,13 @@ void InputEventReader::getInputEvents()
 
     while (poll(&pfd, 1, 0 /*timeout.getValue()*/)>0 && (pfd.revents & POLLIN))
     {
-        input_event ev;
-        if (read(fd, &ev, sizeof(input_event)) == -1)
+        struct input_event ev;
+        if (read(fd, &ev, sizeof(struct input_event)) == -1)
             serr << "Error: read function return an error." << sendl;
 
-//		sout << "event type 0x" << std::hex << ev.type << std::dec << " code 0x" << std::hex << ev.code << std::dec << " value " << ev.value << sendl;
+        if (p_printEvent.getValue())
+            serr << "event type 0x" << std::hex << ev.type << std::dec << " code 0x" << std::hex << ev.code << std::dec << " value " << ev.value << sendl;
+
         if (ev.type == EV_REL)
         {
             switch (ev.code)
@@ -112,16 +123,45 @@ void InputEventReader::getInputEvents()
                 }
             }
         }
+
+        pedalValue = -1;
+
+        if (ev.type == EV_ABS)
+        {
+            switch (ev.code)
+            {
+            case ABS_Y:
+                pedalValue = ev.value;
+                oldPedalState = currentPedalState;
+                //TODO: less specific
+                if (pedalValue > 156)
+                {
+                    //Left
+                    currentPedalState = LEFT_PEDAL;
+                }
+                else if (pedalValue < 100)
+                {
+                    //Right
+                    currentPedalState = RIGHT_PEDAL;
+                }
+                else
+                {
+                    //Nothing
+                    currentPedalState = NO_PEDAL;
+                }
+                break;
+            }
+        }
     }
 #endif
 }
 
 void InputEventReader::handleEvent(core::objectmodel::Event *event)
 {
-
     if (dynamic_cast<sofa::simulation::AnimateBeginEvent *>(event))
     {
         getInputEvents();
+        //Mouse event
         if (deplX || deplY)
         {
             sofa::core::objectmodel::MouseEvent mouseEvent(sofa::core::objectmodel::MouseEvent::Move, deplX, deplY);
@@ -129,6 +169,50 @@ void InputEventReader::handleEvent(core::objectmodel::Event *event)
             deplY = 0;
             getContext()->propagateEvent(&mouseEvent);
         }
+
+        //Pedals Value
+        //get root
+        //sofa::simulation::common::GNode* node = static_cast<sofa::simulation::tree::GNode*>(this->getContext());
+        //while (node->getParent() != NULL)
+        //	node = static_cast<sofa::simulation::tree::GNode*>(node->getParent());
+
+        if (currentPedalState != NO_PEDAL)
+        {
+            if (oldPedalState == NO_PEDAL)
+            {
+                if (currentPedalState == LEFT_PEDAL)
+                {
+                    //std::cout << "//left press event" << std::endl;
+                    sofa::core::objectmodel::KeypressedEvent ev(p_key1.getValue());
+                    this->getContext()->propagateEvent(&ev);
+                }
+                else
+                {
+                    //std::cout << "//right press event" << std::endl;
+                    sofa::core::objectmodel::KeypressedEvent ev(p_key2.getValue());
+                    this->getContext()->propagateEvent(&ev);
+                }
+            }
+        }
+        else
+        {
+            if (oldPedalState != NO_PEDAL)
+            {
+                if (oldPedalState == LEFT_PEDAL)
+                {
+                    //std::cout << "//left release event"<< std::endl;
+                    sofa::core::objectmodel::KeyreleasedEvent ev(p_key1.getValue());
+                    this->getContext()->propagateEvent(&ev);
+                }
+                else
+                {
+                    //std::cout << "//right release event"<< std::endl;
+                    sofa::core::objectmodel::KeyreleasedEvent ev(p_key2.getValue());
+                    this->getContext()->propagateEvent(&ev);
+                }
+            }
+        }
+
     }
 }
 
