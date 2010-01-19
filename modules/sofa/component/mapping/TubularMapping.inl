@@ -44,6 +44,15 @@ namespace mapping
 template <class BasicMapping>
 void TubularMapping<BasicMapping>::init()
 {
+    if (!m_radius.isSet())
+    {
+        this->getContext()->get(radiusContainer);
+        sout << "get Radius Container" << std::endl;
+        if(!radiusContainer)
+            serr << "TubularMapping : No Radius defined" << sendl;
+    }
+    else sout << "get Radius tout court" << std::endl;
+
     this->BasicMapping::init();
 
 }
@@ -69,8 +78,11 @@ void TubularMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const ty
 
     for (unsigned int i=0; i<in.size(); i++)
     {
+        if(radiusContainer)
+            rho = radiusContainer->getPointRadius(i);
 
         // allows for peak at the beginning or at the end of the Tubular Mapping
+
         Real radius_rho = (Real) rho;
         if(peak>0)
         {
@@ -92,8 +104,6 @@ void TubularMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const ty
             }
 
         }
-
-
 
         Vec curPos = in[i].getCenter();
 
