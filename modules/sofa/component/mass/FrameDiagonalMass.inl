@@ -38,6 +38,7 @@
 #include <sofa/defaulttype/FrameMass.h>
 #include <sofa/helper/gl/Axis.h>
 #include <sofa/component/topology/HexahedronSetGeometryAlgorithms.inl>
+#include <sofa/component/mapping/SkinningMapping.inl>
 
 
 #include <sofa/simulation/common/Visitor.h>
@@ -451,18 +452,32 @@ void FrameDiagonalMass<DataTypes, MassType>::reinit()
 template <class DataTypes, class MassType>
 void FrameDiagonalMass<DataTypes, MassType>::bwdInit()
 {
-    this->getContext()->get ( dqStorage, core::objectmodel::BaseContext::SearchDown );
+    dqStorage = NULL;
+    vector<SMapping*> vSMapping;
+    sofa::core::objectmodel::BaseContext* context=  this->getContext();
+    context->get<SMapping>( &vSMapping, core::objectmodel::BaseContext::SearchDown);
+    SMapping* sMapping = NULL;
+    for( typename vector<SMapping *>::iterator it = vSMapping.begin(); it != vSMapping.end(); it++)
+    {
+        sMapping = (*it);
+        if( sMapping && sMapping->computeAllMatrices.getValue() )
+        {
+            dqStorage = sMapping;
+            break;
+        }
+    }
     if ( ! dqStorage )
     {
         serr << "Can't find dqStorage component." << sendl;
         return;
     }
-
-
-    this->J = & dqStorage->J;
-    this->J0 = & dqStorage->J0;
-    this->vol = & dqStorage->vol;
-    this->volMass = & dqStorage->volMass;
+    else
+    {
+        this->J = & dqStorage->J;
+        this->J0 = & dqStorage->J0;
+        this->vol = & dqStorage->vol;
+        this->volMass = & dqStorage->volMass;
+    }
 
     unsigned int nbPt = this->volMass->size();
     for( unsigned int i = 0; i < nbPt; i++) (*this->volMass)[i] = m_massDensity.getValue();
