@@ -45,6 +45,7 @@
 #include <sofa/component/topology/TetrahedronSetGeometryAlgorithms.h>
 #include <sofa/component/topology/QuadSetGeometryAlgorithms.h>
 #include <sofa/component/topology/HexahedronSetGeometryAlgorithms.h>
+#include <sofa/component/mapping/SkinningMapping.h>
 
 #include <sofa/core/objectmodel/DataFileName.h>
 
@@ -106,6 +107,7 @@ public:
     typedef defaulttype::Vec<8,Real> Vec8;
     typedef vector<double> VD;
     typedef core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalState;
+    typedef typename sofa::component::mapping::SkinningMapping<sofa::component::mapping::MechanicalMapping< core::componentmodel::behavior::MechanicalState<DataTypes>, core::componentmodel::behavior::MechanicalState<StdVectorTypes<Vec<3, typename DataTypes::Real>, Vec<3, typename DataTypes::Real>, typename DataTypes::Real> > > > SMapping;
 
     // In case of non 3D template
     typedef Vec<3,MassType>                            Vec3Mass;
