@@ -369,8 +369,10 @@ void MechanicalObjectInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TRea
     if (prefetch) return;
     if (!m->externalForces->empty())
     {
+        //std::cout << "ADD: external forces, size = "<< m->externalForces->size() << std::endl;
         Kernels::vAssign(m->externalForces->size(), m->f->deviceWrite(), m->externalForces->deviceRead());
     }
+    //else std::cout << "NO external forces" << std::endl;
 }
 
 template<class TCoord, class TDeriv, class TReal>

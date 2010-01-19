@@ -1467,6 +1467,12 @@ public:
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalBeginIntegrationVisitor"; }
 
+    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
+    {
+        return false; // !map->isMechanical();
+    }
+
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
     {
@@ -1498,6 +1504,12 @@ public:
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
     virtual const char* getClassName() const { return "MechanicalEndIntegrationVisitor"; }
+
+    // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
+    virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
+    {
+        return false; // !map->isMechanical();
+    }
 
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
