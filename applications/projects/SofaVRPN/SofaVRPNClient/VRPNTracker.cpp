@@ -92,7 +92,7 @@ int VRPNTrackerClass = sofa::core::RegisterObject("VRPN Tracker")
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
         .add< VRPNTracker<Vec3fTypes> >()
-        .add< VRPNTracker<RigidfTypes> >()
+        .add< VRPNTracker<Rigid3fTypes> >()
 #endif //SOFA_DOUBLE
         ;
 
