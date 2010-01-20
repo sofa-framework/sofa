@@ -77,11 +77,15 @@ SofaPluginManager::SofaPluginManager()
     this->connect(listPlugins, SIGNAL(selectionChanged(QListViewItem*) ), this, SLOT(updateComponentList(QListViewItem*) ));
     this->connect(listPlugins, SIGNAL(selectionChanged(QListViewItem*) ), this, SLOT(updateDescription(QListViewItem*) ));
 #endif
+
+    //for compatibility with previous version : transfer plugin list from SOFA to sofa path (to be removed one day...)
+    transferPluginsToNewPath();
+
     //read the plugin list in the settings
     QSettings settings;
-    settings.setPath( "SOFA-FRAMEWORK", "SOFA",QSettings::User);
+    std::string binPath = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str());
+    settings.setPath( "SOFA-FRAMEWORK", QString(binPath.c_str()), QSettings::User);
 
-// 			int size = settings.beginReadArray("plugins");
     settings.beginGroup("/plugins");
     int size = settings.readNumEntry("/size");
 
@@ -91,7 +95,6 @@ SofaPluginManager::SofaPluginManager()
 
     for (int i=1 ; i<=size; i++)
     {
-// 				settings.setArrayIndex(i);
         QString titi;
         titi = titi.setNum(i);
 
@@ -191,7 +194,8 @@ void SofaPluginManager::addLibrary()
 
         //add to the settings (to record it)
         QSettings settings;
-        settings.setPath( "SOFA-FRAMEWORK", "SOFA",QSettings::User);
+        std::string binPath = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str());
+        settings.setPath( "SOFA-FRAMEWORK", QString(binPath.c_str()), QSettings::User);
         settings.beginGroup("/plugins");
         int size = settings.readNumEntry("/size");
         QString titi;
@@ -226,7 +230,8 @@ void SofaPluginManager::removeLibrary()
 
     //remove it from the settings
     QSettings settings;
-    settings.setPath( "SOFA-FRAMEWORK", "SOFA",QSettings::User);
+    std::string binPath = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str());
+    settings.setPath( "SOFA-FRAMEWORK", QString(binPath.c_str()), QSettings::User);
     settings.beginGroup("/plugins");
     int size = settings.readNumEntry("/size");
 
@@ -287,6 +292,51 @@ void SofaPluginManager::updateDescription(Q3ListViewItem* curItem)
     {
         description->setText(QString(componentDescFunc()));
     }
+}
+
+
+void SofaPluginManager::transferPluginsToNewPath()
+{
+    //read the plugin list in the settings
+    QSettings oldSettings;
+    oldSettings.setPath( "SOFA-FRAMEWORK", "SOFA", QSettings::User);
+    oldSettings.beginGroup("/plugins");
+    int size = oldSettings.readNumEntry("/size");
+
+    QSettings newSettings;
+    std::string binPath = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str());
+    newSettings.setPath( "SOFA-FRAMEWORK", QString(binPath.c_str()), QSettings::User);
+    newSettings.beginGroup("/plugins");
+
+    listPlugins->clear();
+
+    for (int i=1 ; i<=size; i++)
+    {
+        QString plugId;
+        plugId = plugId.setNum(i);
+
+        //get the plugin location in the old list
+        oldSettings.beginGroup(plugId);
+        QString sfile = oldSettings.readEntry("/location");
+        oldSettings.endGroup();
+
+        //put it in the new one
+        int sizeNewList = newSettings.readNumEntry("/size");
+        QString titi;
+        titi = titi.setNum(sizeNewList+1);
+        newSettings.beginGroup(titi);
+        newSettings.writeEntry("/location", sfile);
+        newSettings.endGroup();
+        newSettings.writeEntry("/size", sizeNewList+1);
+
+        //remove it from the old list
+        oldSettings.beginGroup(plugId);
+        oldSettings.removeEntry("/location");
+        oldSettings.endGroup();
+    }
+    oldSettings.writeEntry("/size", 0);
+    oldSettings.endGroup();
+    newSettings.endGroup();
 }
 
 }
