@@ -42,9 +42,13 @@
 #include <iostream>
 
 
-
-
-
+/*!
+ *   This mapping is derived from the RigidMapping. The difference is :
+ *   In the RigidMapping, the rigid is considered like a perfect rigid (non-deformable)
+ *   In this one, the rigid allow a low deformation of the rigid.
+ *
+ *   Principale difference with the RigidMapping is in the fonctions apply, applyJ and applyJT
+ */
 
 namespace sofa
 {
@@ -62,7 +66,7 @@ DeformableOnRigidFrameMapping<BasicMapping>::DeformableOnRigidFrameMapping( In* 
     :Inherit ( from, to )
     , rootModel(NULL)
     , m_rootModelName(initData(&m_rootModelName, std::string(""), "rootModel", "Root position if a rigid root model is specified."))
-    , points ( initData ( &points,"initialPoints", "Local Coordinates of the points" ) )
+//, points ( initData ( &points,"initialPoints", "Local Coordinates of the points" ) )
     , index ( initData ( &index, ( unsigned ) 0,"index","input DOF index" ) )
     , fileDeformableOnRigidFrameMapping ( initData ( &fileDeformableOnRigidFrameMapping,"fileDeformableOnRigidFrameMapping","Filename" ) )
     , useX0( initData ( &useX0,false,"useX0","Use x0 instead of local copy of initial positions (to support topo changes)") )
@@ -86,146 +90,35 @@ public:
 
     DeformableOnRigidFrameMapping<BasicMapping>* dest;
     Loader(DeformableOnRigidFrameMapping<BasicMapping>* dest) : dest(dest) {}
-    virtual void addMass(SReal px, SReal py, SReal pz, SReal, SReal, SReal, SReal, SReal, bool, bool)
-    {
-        Coord c;
-        Out::DataTypes::set(c,px,py,pz);
-        dest->points.beginEdit()->push_back(c); //Coord((Real)px,(Real)py,(Real)pz));
-    }
-    virtual void addSphere(SReal px, SReal py, SReal pz, SReal)
-    {
-        Coord c;
-        Out::DataTypes::set(c,px,py,pz);
-        dest->points.beginEdit()->push_back(c); //Coord((Real)px,(Real)py,(Real)pz));
-    }
+
 };
 
 template <class BasicMapping>
-void DeformableOnRigidFrameMapping<BasicMapping>::load(const char *filename)
+void DeformableOnRigidFrameMapping<BasicMapping>::load(const char * /*filename*/)
 {
-    points.beginEdit()->resize(0);
 
-    if (strlen(filename)>4 && !strcmp(filename+strlen(filename)-4,".xs3"))
-    {
-        Loader loader(this);
-        loader.helper::io::MassSpringLoader::load(filename);
-    }
-    else if (strlen(filename)>4 && !strcmp(filename+strlen(filename)-4,".sph"))
-    {
-        Loader loader(this);
-        loader.helper::io::SphereLoader::load(filename);
-    }
-    else if (strlen(filename)>0)
-    {
-        // Default to mesh loader
-        helper::io::Mesh* mesh = helper::io::Mesh::Create(filename);
-        if (mesh!=NULL)
-        {
-            points.beginEdit()->resize(mesh->getVertices().size());
-            for (unsigned int i=0; i<mesh->getVertices().size(); i++)
-            {
-                Out::DataTypes::set((*points.beginEdit())[i], mesh->getVertices()[i][0], mesh->getVertices()[i][1], mesh->getVertices()[i][2]);
-            }
-            delete mesh;
-        }
-    }
 }
 
 template <class BasicMapping>
-int DeformableOnRigidFrameMapping<BasicMapping>::addPoint(const Coord& c)
+int DeformableOnRigidFrameMapping<BasicMapping>::addPoint(const Coord& /*c*/)
 {
-    int i = points.getValue().size();
-    points.beginEdit()->push_back(c);
-    return i;
+    //int i = points.getValue().size();
+    //points.beginEdit()->push_back(c);
+    std::cout<<"addPoint should be supress"<<std::endl;
+    return 0;
 }
 
 template <class BasicMapping>
 int DeformableOnRigidFrameMapping<BasicMapping>::addPoint(const Coord& c, int indexFrom)
 {
-    int i = points.getValue().size();
-    points.beginEdit()->push_back(c);
-    if (!repartition.getValue().empty())
-    {
-        repartition.beginEdit()->push_back(indexFrom);
-        repartition.endEdit();
-    }
-    else if (!i)
-    {
-        index.setValue(indexFrom);
-    }
-    else if ((int)index.getValue() != indexFrom)
-    {
-        sofa::helper::vector<unsigned int>& rep = *repartition.beginEdit();
-        rep.clear();
-        rep.reserve(i+1);
-        rep.insert(rep.end(),index.getValue(),i);
-        rep.push_back(indexFrom);
-        repartition.endEdit();
-    }
-    return i;
+    std::cout<<"addPoint should be supress"<<std::endl;
+    return 0;
 }
 
 template <class BasicMapping>
 void DeformableOnRigidFrameMapping<BasicMapping>::init()
 {
-    if ( !fileDeformableOnRigidFrameMapping.getValue().empty() ) this->load ( fileDeformableOnRigidFrameMapping.getFullPath().c_str() );
 
-    if (this->points.getValue().empty() && this->toModel!=NULL && !useX0.getValue())
-    {
-        VecCoord& x = *this->toModel->getX();
-        points.beginEdit()->resize(x.size());
-        unsigned int i=0, cpt=0;
-        if(globalToLocalCoords.getValue() == true) //test booleen fromWorldCoord
-        {
-            typename InRoot::VecCoord& xfrom = *this->rootModel->getX();
-            switch (repartition.getValue().size())
-            {
-            case 0 :
-                for (i=0; i<x.size(); i++)
-                    (*points.beginEdit())[i] = xfrom[0].inverseRotate(x[i]-xfrom[0].getCenter());
-                break;
-            case 1 :
-                for (i=0; i<xfrom.size(); i++)
-                    for(unsigned int j=0; j<repartition.getValue()[0]; j++,cpt++)
-                        (*points.beginEdit())[cpt] = xfrom[i].inverseRotate(x[cpt]-xfrom[i].getCenter());
-                break;
-            default :
-                for (i=0; i<xfrom.size(); i++)
-                    for(unsigned int j=0; j<repartition.getValue()[i]; j++,cpt++)
-                        (*points.beginEdit())[cpt] = xfrom[i].inverseRotate(x[cpt]-xfrom[i].getCenter());
-                break;
-            }
-        }
-        else
-        {
-            for (i=0; i<x.size(); i++)
-                (*points.beginEdit())[i] = x[i];
-        }
-    }
-
-    this->BasicMapping::init();
-
-    sofa::component::container::MultiMeshLoader * loader;
-    this->getContext()->get(loader);
-    if (loader)
-    {
-        sofa::helper::vector<unsigned int>& rep = *repartition.beginEdit();
-        unsigned int cpt=0;
-        typename InRoot::VecCoord& xfrom = *this->rootModel->getX();
-        VecCoord& xto = *this->toModel->getX();
-        for (unsigned int i=0 ; i<loader->getNbMeshs() ; i++)
-        {
-            rep.push_back(loader->getNbPoints(i));
-            if(globalToLocalCoords.getValue() == true)
-            {
-                for (unsigned int j=0 ; j<loader->getNbPoints(i) ; j++, cpt++)
-                {
-                    (*points.beginEdit())[cpt] = xfrom[i].inverseRotate(xto[cpt]-xfrom[i].getCenter());
-                }
-            }
-        }
-        repartition.endEdit();
-    }
 
     if (!m_rootModelName.getValue().empty())
     {
@@ -242,27 +135,11 @@ void DeformableOnRigidFrameMapping<BasicMapping>::init()
     else
         std::cerr << " NO ROOT MODEL FOUND"<<sendl;
 }
-/*
+
 template <class BasicMapping>
-void DeformableOnRigidFrameMapping<BasicMapping>::disable()
+void DeformableOnRigidFrameMapping<BasicMapping>::clear(int /*reserve*/)
 {
 
-	if (!this->points.getValue().empty() && this->toModel!=NULL)
-	{
-		VecCoord& x = *this->toModel->getX();
-		x.resize(points.getValue().size());
-		for (unsigned int i=0;i<points.getValue().size();i++)
-			x[i] = points.getValue()[i];
-	}
-}
-*/
-template <class BasicMapping>
-void DeformableOnRigidFrameMapping<BasicMapping>::clear(int reserve)
-{
-    this->points.beginEdit()->clear();
-    if (reserve) this->points.beginEdit()->reserve(reserve);
-    this->repartition.beginEdit()->clear();
-    this->repartition.endEdit();
 }
 
 template <class BasicMapping>
@@ -275,19 +152,9 @@ void DeformableOnRigidFrameMapping<BasicMapping>::setRepartition(unsigned int va
 }
 
 template <class BasicMapping>
-void DeformableOnRigidFrameMapping<BasicMapping>::setRepartition(sofa::helper::vector<unsigned int> values)
+void DeformableOnRigidFrameMapping<BasicMapping>::setRepartition(sofa::helper::vector<unsigned int> /*values*/)
 {
-    vector<unsigned int>& rep = *this->repartition.beginEdit();
-    rep.clear();
-    rep.reserve(values.size());
-    //repartition.setValue(values);
-    sofa::helper::vector<unsigned int>::iterator it = values.begin();
-    while (it != values.end())
-    {
-        rep.push_back(*it);
-        it++;
-    }
-    this->repartition.endEdit();
+
 }
 
 template<class DataTypes>
@@ -305,39 +172,354 @@ const typename DataTypes::VecCoord* M_getX0(core::componentmodel::behavior::Mapp
 template <class BasicMapping>
 const typename DeformableOnRigidFrameMapping<BasicMapping>::VecCoord & DeformableOnRigidFrameMapping<BasicMapping>::getPoints()
 {
-    if(useX0.getValue())
+
+    return VecCoord();
+}
+
+template <class BasicMapping>
+void DeformableOnRigidFrameMapping<BasicMapping>::apply( typename Out::VecCoord& out  , const typename In::VecCoord & inDeformed  , const typename InRoot::VecCoord * inRigid  )
+{
+//Fin the rigid center[s] and its displacement
+//Apply the displacement to all the located points
+
+    if (rootModel)
     {
-        const VecCoord* v = M_getX0(this->toModel);
-        if (v) return *v;
-        else serr << "DeformableOnRigidFrameMapping: ERROR useX0 can only be used in MechanicalMappings." << sendl;
+        unsigned int cptOut;
+        unsigned int val;
+        Coord translation;
+        Mat rotation;
+
+        rotatedPoints.resize(inDeformed.size());
+        out.resize(inDeformed.size());
+        switch (repartition.getValue().size())
+        {
+        case 0 :
+            if (indexFromEnd.getValue())
+            {
+                translation = (*inRigid)[(*inRigid).size() - 1 - index.getValue()].getCenter();
+                (*inRigid)[(*inRigid).size() - 1 - index.getValue()].writeRotationMatrix(rotation);
+                rootX = (*inRigid)[(*inRigid).size() - 1 - index.getValue()];
+            }
+            else
+            {
+                translation = (*inRigid)[index.getValue()].getCenter();
+                (*inRigid)[index.getValue()].writeRotationMatrix(rotation);
+                rootX = (*inRigid)[index.getValue()];
+            }
+
+            for(unsigned int i=0; i<inDeformed.size(); i++)
+            {
+                rotatedPoints[i] = rotation*inDeformed[i];
+                out[i] = rotatedPoints[i];
+                out[i] += translation;
+            }
+            break;
+
+        case 1 ://one value specified : uniform repartition mapping on the input dofs
+            val = repartition.getValue()[0];
+            cptOut=0;
+            for (unsigned int ifrom=0 ; ifrom<(*inRigid).size() ; ifrom++)
+            {
+                translation = (*inRigid)[ifrom].getCenter();
+                (*inRigid)[ifrom].writeRotationMatrix(rotation);
+                rootX = (*inRigid)[ifrom];
+
+                for(unsigned int ito=0; ito<val; ito++)
+                {
+                    rotatedPoints[cptOut] = rotation*inDeformed[cptOut];
+                    out[cptOut] = rotatedPoints[cptOut];
+                    out[cptOut] += translation;
+                    cptOut++;
+                }
+            }
+            break;
+
+        default :
+            if (repartition.getValue().size() != (*inRigid).size())
+            {
+                serr<<"Error : mapping dofs repartition is not correct"<<sendl;
+                return;
+            }
+            cptOut=0;
+
+            for (unsigned int ifrom=0 ; ifrom<(*inRigid).size() ; ifrom++)
+            {
+                translation = (*inRigid)[ifrom].getCenter();
+                (*inRigid)[ifrom].writeRotationMatrix(rotation);
+                rootX = (*inRigid)[ifrom];
+
+                for(unsigned int ito=0; ito<repartition.getValue()[ifrom]; ito++)
+                {
+                    rotatedPoints[cptOut] = rotation*inDeformed[cptOut];
+                    out[cptOut] = rotatedPoints[cptOut];
+                    out[cptOut] += translation;
+                    cptOut++;
+                }
+            }
+            break;
+        }
     }
-    return points.getValue();
+    else  // no rootModel found => mapping is identity !
+    {
+        rootX = InRoot::Coord();
+        out.resize(inDeformed.size()); rotatedPoints.resize(inDeformed.size());
+        for(unsigned int i=0; i<inDeformed.size(); i++)
+        {
+            rotatedPoints[i] = inDeformed[i];
+            out[i] = rotatedPoints[i];
+        }
+    }
 }
 
 template <class BasicMapping>
-void DeformableOnRigidFrameMapping<BasicMapping>::apply( typename Out::VecCoord& /* out */ , const typename In::VecCoord& /* in */ , const typename InRoot::VecCoord* /* inroot  */ )
+void DeformableOnRigidFrameMapping<BasicMapping>::applyJ( typename Out::VecDeriv&  out , const typename In::VecDeriv& inDeformed , const typename InRoot::VecDeriv* inRigid)
 {
+    if (rootModel)
+    {
+        Deriv v,omega;//Vec3d
+        out.resize(inDeformed.size());
+        unsigned int cptOut;
+        unsigned int val;
 
+
+        //switch (repartition.getValue().size())
+        //  {
+        //  case 0:
+        if (indexFromEnd.getValue())
+        {
+            v = (*inRigid)[(*inRigid).size() - 1 - index.getValue()].getVCenter();
+            omega = (*inRigid)[(*inRigid).size() - 1 - index.getValue()].getVOrientation();
+        }
+        else
+        {
+            v = (*inRigid)[index.getValue()].getVCenter();
+            omega = (*inRigid)[index.getValue()].getVOrientation();
+        }
+
+
+        for(unsigned int i=0; i<inDeformed.size(); i++)
+        {
+            out[i] = cross(omega,rotatedPoints[i]);
+            out[i] += rootX.getOrientation().rotate(inDeformed[i]); //velocity on the local system : (Vrigid + Vdeform)
+            out[i]+= v; //center velocity
+        }
+        //         break;
+        /* case 1://one value specified : uniform repartition mapping on the input dofs
+                 val = repartition.getValue()[0];
+                 cptOut=0;
+                 for (unsigned int ifrom=0 ; ifrom<(*inRigid).size() ; ifrom++){
+                         v = (*inRigid)[ifrom].getVCenter();
+                         omega = (*inRigid)[ifrom].getVOrientation();
+
+                         for(unsigned int ito=0; ito<val; ito++){
+                                 out[cptOut] = -cross(rotatedPoints[ito],omega)+ rootX.getOrientation().rotate(inDeformed[ito]);
+                                 out[cptOut] += v;
+                                 cptOut++;
+                         }
+                 }
+                 break;
+         default:
+                 if (repartition.getValue().size() != (*inRigid).size()){
+                         serr<<"Error : mapping dofs repartition is not correct"<<sendl;
+                         return;
+                 }
+                 cptOut=0;
+                 for (unsigned int ifrom=0 ; ifrom<(*inRigid).size() ; ifrom++){
+                         v = (*inRigid)[ifrom].getVCenter();
+                         omega = (*inRigid)[ifrom].getVOrientation();
+
+                         for(unsigned int ito=0; ito<repartition.getValue()[ifrom]; ito++){
+                                 out[cptOut] = -cross(rotatedPoints[cptOut],omega) + rootX.getOrientation().rotate(inDeformed[cptOut]);
+                                 out[cptOut] += v;
+                                 cptOut++;
+                         }
+                 }
+                 break;
+         }
+         */
+    }
+
+
+
+    else // no root model!
+    {
+        serr<<"NO ROOT MODEL"<<sendl;
+        out.resize(inDeformed.size());
+        for(unsigned int i=0; i<inDeformed.size(); i++)
+        {
+            out[i] = inDeformed[i];
+        }
+    }
+}
+template <class BasicMapping>
+void DeformableOnRigidFrameMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in, typename InRoot::VecDeriv* outRoot)
+{
+    if (rootModel)
+    {
+        Deriv v,omega;
+        unsigned int val;
+        unsigned int cpt;
+
+        switch (repartition.getValue().size())
+        {
+        case 0:
+            for(unsigned int i=0; i<in.size(); i++)
+            {
+                Deriv f = in[i];
+                v += f;
+                omega += cross(rotatedPoints[i],f);
+            }
+
+            if (indexFromEnd.getValue())
+            {
+                (*outRoot)[(*outRoot).size() - 1 - index.getValue()].getVCenter() += v;
+                (*outRoot)[(*outRoot).size() - 1 - index.getValue()].getVOrientation() += omega;
+                for(unsigned int i=0; i<in.size(); i++)
+                    out[i]+=rootX.getOrientation().inverseRotate(in[i]);
+            }
+            else
+            {
+                (*outRoot)[index.getValue()].getVCenter() += v;
+                (*outRoot)[index.getValue()].getVOrientation() += omega;
+                for(unsigned int i=0; i<in.size(); i++)
+                    out[i]+=rootX.getOrientation().inverseRotate(in[i]);
+            }
+            break;
+
+        case 1://one value specified : uniform repartition mapping on the input dofs
+            std::cout<<"case 1"<<std::endl;
+            val = repartition.getValue()[0];
+            cpt=0;
+            for(unsigned int ito=0; ito<(*outRoot).size(); ito++)
+            {
+                v=Deriv(); omega=Deriv(); /////////////////
+                for(unsigned int i=0; i<val; i++)
+                {
+                    Deriv f = in[cpt];
+                    v += f;
+                    omega += cross(rotatedPoints[cpt],f);
+                    out[cpt]= rootX.getOrientation().inverseRotate(in[cpt]);
+                    cpt++;
+                }
+                (*outRoot)[ito].getVCenter() += v;
+                (*outRoot)[ito].getVOrientation() += omega;
+
+
+            }
+            break;
+
+        default:
+            std::cout<<"case default"<<std::endl;
+            if (repartition.getValue().size() != (*outRoot).size())
+            {
+                serr<<"Error : mapping dofs repartition is not correct"<<sendl;
+                return;
+            }
+
+            cpt=0;
+            for(unsigned int ito=0; ito<(*outRoot).size(); ito++)
+            {
+                v=Deriv(); omega=Deriv(); ////////////////////////
+                for(unsigned int i=0; i<repartition.getValue()[ito]; i++)
+                {
+                    Deriv f = in[cpt];
+                    out[cpt]= rootX.getOrientation().inverseRotate(in[cpt]);
+                    v += f;
+                    omega += cross(rotatedPoints[cpt],f);
+                    cpt++;
+                }
+                (*outRoot)[ito].getVCenter() += v;
+                (*outRoot)[ito].getVOrientation() += omega;
+
+            }
+            break;
+        }
+    }
+
+
+    else
+    {
+        out.resize(in.size());
+        for(unsigned int i=0; i<in.size(); i++)
+        {
+            out[i] = in[i];
+        }
+    }
 }
 
 template <class BasicMapping>
-void DeformableOnRigidFrameMapping<BasicMapping>::applyJ( typename Out::VecDeriv& /* out*/ , const typename In::VecDeriv& /* in */ , const typename InRoot::VecDeriv* /* inroot */ )
+void DeformableOnRigidFrameMapping<BasicMapping>::applyJT( typename In::VecConst&  out , const typename Out::VecConst&  in , typename InRoot::VecConst*  outroot)
 {
+    int outSize=out.size();
+    out.resize(in.size() + outSize); // we can accumulate in "out" constraints from several mappings
+    if (rootModel)
+    {
+        int outRootSize = outroot->size();
+        outroot->resize(in.size() + outRootSize); // we can accumulate in "out" constraints from several mappings
+
+        switch (repartition.getValue().size())
+        {
+        case 0:
+        {
+            for(unsigned int i=0; i<in.size(); i++)
+            {
+                Vector v,omega;
+                OutConstraintIterator itOut;
+                std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
+
+                for (itOut=iter.first; itOut!=iter.second; itOut++)
+                {
+                    const unsigned int node_index = itOut->first;// index of the node
+                    // out = Jt in
+                    // Jt = [ I     ]
+                    //      [ -OM^t ]
+                    // -OM^t = OM^
+
+                    const Deriv f = (Deriv) itOut->second;
+                    v += f;
+                    omega += cross(rotatedPoints[node_index],f);
+
+                    InDeriv f_deform;
+                    if (!indexFromEnd.getValue())
+                        f_deform = rootX.getOrientation().inverseRotate(f);
+                    else
+                        f_deform = rootX.getOrientation().inverseRotate(f);
+
+                    out[outSize+i].add(node_index,f_deform);
+
+                }
+
+                const InRoot::Deriv result(v, omega);
+                if (!indexFromEnd.getValue())
+                {
+                    (*outroot)[outRootSize+i].add(index.getValue(), result);
+                }
+                else
+                {
+                    (*outroot)[outRootSize+i].add(out.size() - 1 - index.getValue(), result);
+                }
+            }
+            break;
+        }
+
+        case 1://one value specified : uniform repartition mapping on the input dofs
+            std::cout<<"DeformableOnRigidFrameMapping:Case 1 not implemented yet"<<std::endl;
+            break;
+
+        default:
+            std::cout<<"DeformableOnRigidFrameMapping:Defaut case not implemented yet"<<std::endl;
+            break;
+        }
+    }
+
+
+    else
+    {
+
+    }
+
 
 }
-
-template <class BasicMapping>
-void DeformableOnRigidFrameMapping<BasicMapping>::applyJT( typename In::VecDeriv& /* out */, const typename Out::VecDeriv& /* in */, typename InRoot::VecDeriv* /* outroot */)
-{
-
-}
-
-template <class BasicMapping>
-void DeformableOnRigidFrameMapping<BasicMapping>::applyJT( typename In::VecConst& /* out */, const typename Out::VecConst& /* in */, typename InRoot::VecConst* /* outroot */)
-{
-
-}
-
 
 /// Template specialization for 2D rigids
 // template<typename real1, typename real2>
@@ -401,6 +583,146 @@ void DeformableOnRigidFrameMapping<BasicMapping>::applyJT( typename In::VecConst
 //     out[index.getValue()].getVCenter() += v;
 //     out[index.getValue()].getVOrientation() += (typename In::Real)omega;
 // }
+
+
+
+template <class BasicMapping>
+void DeformableOnRigidFrameMapping<BasicMapping>::propagateX()
+{
+    if (this->fromModel!=NULL && this->toModel->getX()!=NULL && this->fromModel->getX()!=NULL)
+        apply(*this->toModel->getX(), *this->fromModel->getX(), (rootModel==NULL ? NULL : rootModel->getX()));
+
+
+    if( this->f_printLog.getValue())
+    {
+        serr<<"DeformableOnRigidFrameMapping::propageX processed :"<<sendl;
+        if (rootModel!=NULL)
+            serr<<"input root: "<<*rootModel->getX();
+        serr<<"  - input: "<<*this->fromModel->getX()<<"  output : "<<*this->toModel->getX()<<sendl;
+    }
+
+
+}
+
+template <class BasicMapping>
+void DeformableOnRigidFrameMapping<BasicMapping>::propagateXfree()
+{
+    if (this->fromModel!=NULL && this->toModel->getXfree()!=NULL && this->fromModel->getXfree()!=NULL)
+        apply(*this->toModel->getXfree(), *this->fromModel->getXfree(), (rootModel==NULL ? NULL : rootModel->getXfree()));
+
+    if( this->f_printLog.getValue())
+    {
+        serr<<"DeformableOnRigidFrameMapping::propageXfree processed"<<sendl;
+        if (rootModel!=NULL)
+            serr<<"input root: "<<*rootModel->getXfree();
+        serr<<"  - input: "<<*this->fromModel->getXfree()<<"  output : "<<*this->toModel->getXfree()<<sendl;
+    }
+
+}
+
+
+template <class BasicMapping>
+void DeformableOnRigidFrameMapping<BasicMapping>::propagateV()
+{
+    if (this->fromModel!=NULL && this->toModel->getV()!=NULL && this->fromModel->getV()!=NULL)
+        applyJ(*this->toModel->getV(), *this->fromModel->getV(), (rootModel==NULL ? NULL : rootModel->getV()));
+
+    if( this->f_printLog.getValue())
+    {
+        serr<<"DeformableOnRigidFrameMapping::propagateV processed"<<sendl;
+        if (rootModel!=NULL)
+            serr<<"V input root: "<<*rootModel->getV();
+        serr<<"  - V input: "<<*this->fromModel->getV()<<"   V output : "<<*this->toModel->getV()<<sendl;
+    }
+
+}
+
+
+
+template <class BasicMapping>
+void DeformableOnRigidFrameMapping<BasicMapping>::propagateDx()
+{
+    if (this->fromModel!=NULL && this->toModel->getDx()!=NULL && this->fromModel->getDx()!=NULL)
+        applyJ(*this->toModel->getDx(), *this->fromModel->getDx(), (rootModel==NULL ? NULL : rootModel->getDx()));
+
+
+    if( this->f_printLog.getValue())
+    {
+        serr<<"DeformableOnRigidFrameMapping::propagateDx processed"<<sendl;
+        if (rootModel!=NULL)
+            serr<<"input root: "<<*rootModel->getDx();
+        serr<<"  - input: "<<*this->fromModel->getDx()<<"  output : "<<*this->toModel->getDx()<<sendl;
+    }
+
+}
+
+
+
+template <class BasicMapping>
+void DeformableOnRigidFrameMapping<BasicMapping>::accumulateForce()
+{
+    if (this->fromModel!=NULL && this->toModel->getF()!=NULL && this->fromModel->getF()!=NULL)
+        applyJT(*this->fromModel->getF(), *this->toModel->getF(), (rootModel==NULL ? NULL : rootModel->getF()));
+
+
+    if( this->f_printLog.getValue())
+    {
+        serr<<"DeformableOnRigidFrameMapping::accumulateForce processed"<<sendl;
+        serr<<" input f : "<<*this->toModel->getF();
+        if (rootModel!=NULL)
+            serr<<"- output root: "<<*rootModel->getF();
+        serr<<"  - output F: "<<*this->fromModel->getF()<<sendl;
+    }
+
+}
+
+
+
+template <class BasicMapping>
+void DeformableOnRigidFrameMapping<BasicMapping>::accumulateDf()
+{
+    //if (this->fromModel!=NULL && this->toModel->getF()!=NULL && this->fromModel->getF()!=NULL)
+    applyJT(*this->fromModel->getF(), *this->toModel->getF(), (rootModel==NULL ? NULL : rootModel->getF()));
+
+
+    if( this->f_printLog.getValue())
+    {
+        serr<<"DeformableOnRigidFrameMapping::accumulateDf processed"<<sendl;
+        serr<<" input df : "<<*this->toModel->getF();
+        if (rootModel!=NULL)
+            serr<<"- output root: "<<*rootModel->getF();
+        serr<<"  - output: "<<*this->fromModel->getF()<<sendl;
+    }
+
+}
+
+
+
+template <class BasicMapping>
+void DeformableOnRigidFrameMapping<BasicMapping>::accumulateConstraint()
+{
+    if (this->fromModel!=NULL && this->toModel->getC()!=NULL && this->fromModel->getC()!=NULL)
+    {
+        //propagateX();
+        applyJT(*this->fromModel->getC(), *this->toModel->getC(), (rootModel==NULL ? NULL : rootModel->getC()));
+
+        // Accumulate contacts indices through the MechanicalMapping
+        std::vector<unsigned int>::iterator it = this->toModel->getConstraintId().begin();
+        std::vector<unsigned int>::iterator itEnd = this->toModel->getConstraintId().end();
+
+        while (it != itEnd)
+        {
+            this->fromModel->setConstraintId(*it);
+            // in case of a "multi-mapping" (the articulation system is placed on a  simulated object)
+            // the constraints are transmitted to the rootModle (the <rigidtype> object which is the root of the articulated system)
+            if (rootModel!=NULL)
+                rootModel->setConstraintId(*it);
+            it++;
+        }
+    }
+}
+
+
 
 
 

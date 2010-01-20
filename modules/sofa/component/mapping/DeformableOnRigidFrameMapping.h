@@ -73,7 +73,9 @@ public:
     typedef defaulttype::Vec<N,Real> Vector ;
 
     typedef sofa::core::componentmodel::behavior::MechanicalState<defaulttype::Rigid3dTypes> InRoot;
+    typedef typename InRoot::Coord InRootCoord;
     typedef typename InRoot::VecCoord InRootVecCoord;
+    typedef typename InRoot::Deriv InRootDeriv;
     typedef typename InRoot::VecDeriv InRootVecDeriv;
     typedef typename InRoot::VecConst InRootVecConst;
 
@@ -82,7 +84,7 @@ public:
     InRoot* rootModel;
     Data<std::string> m_rootModelName;
 
-    Data< VecCoord > points;
+    //Data< VecCoord > points;
     VecCoord rotatedPoints;
     DeformableOnRigidFrameMappingInternalData<typename In::DataTypes, typename Out::DataTypes> data;
     Data<unsigned int> index;
@@ -107,7 +109,7 @@ public:
     void init();
 
     //override mapping methods to handle a second "In" component
-    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in, const typename InRoot::VecCoord* inroot  );
+    void apply( typename Out::VecCoord& out, const typename In::VecCoord& in, const typename InRoot::VecCoord * inroot  );
 
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in, const typename InRoot::VecDeriv* inroot );
 
@@ -118,6 +120,7 @@ public:
 
     void apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
     {
+        //serr<<"WARNING apply without rigid frame is called "<<sendl;
         apply(out, in, NULL);
     }
     void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
@@ -135,6 +138,48 @@ public:
         applyJT(out,in, NULL);
     }
 
+    /**
+    	 * @name
+    	 */
+    //@{
+    /**
+     * @brief
+     */
+    void propagateX();
+
+    /**
+     * @brief
+     */
+    void propagateXfree();
+
+
+    /**
+     * @brief
+     */
+    void propagateV();
+
+    /**
+     * @brief
+     */
+    void propagateDx();
+
+    /**
+     * @brief
+     */
+    void accumulateForce();
+
+    /**
+     * @brief
+     */
+    void accumulateDf();
+
+    /**
+     * @brief
+     */
+    void accumulateConstraint();
+
+    //@}
+
     void draw();
 
     void clear ( int reserve=0 );
@@ -144,8 +189,9 @@ public:
 
 protected:
     class Loader;
-    void load ( const char* filename );
-    const VecCoord& getPoints();
+    void load ( const char* filename );  /// SUPRESS ? ///
+    const VecCoord& getPoints();         /// SUPRESS ? ///
+    InRoot::Coord rootX;
 };
 
 using core::Mapping;
@@ -165,23 +211,24 @@ using sofa::defaulttype::Rigid3dTypes;
 using sofa::defaulttype::Rigid2fTypes;
 using sofa::defaulttype::Rigid3fTypes;
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_DEFORMABLEONRIGIDFRAME_CPP)
+#if defined(WIN32) && !defined(SOFA_COMPONENT_MAPPING_DEFORMABLEONRIGIDFRAME_CPP)  //// ATTENTION PB COMPIL WIN3Z
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
 extern template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< MechanicalMapping<MechanicalState<Rigid3dTypes>, MechanicalState<Vec3dTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< MechanicalMapping<MechanicalState<Rigid2dTypes>, MechanicalState<Vec2dTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3dTypes> > >;
+//extern template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< MechanicalMapping<MechanicalState<Rigid2dTypes>, MechanicalState<Vec2dTypes> > >;
+//extern template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping< State<Rigid3dTypes>, MappedModel<Vec3dTypes> > >;
 // extern template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3dTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3fTypes> > >;
+//extern template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping< State<Rigid3dTypes>, MappedModel<ExtVec3fTypes> > >;
 #endif
 #ifndef SOFA_DOUBLE
 extern template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< MechanicalMapping<MechanicalState<Rigid3fTypes>, MechanicalState<Vec3fTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< MechanicalMapping<MechanicalState<Rigid2fTypes>, MechanicalState<Vec2fTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3fTypes> > >;
+//extern template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< MechanicalMapping<MechanicalState<Rigid2fTypes>, MechanicalState<Vec2fTypes> > >;
+//extern template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3fTypes> > >;
 // extern template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3dTypes> > >;
-extern template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3fTypes> > >;
+//extern template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping< State<Rigid3fTypes>, MappedModel<ExtVec3fTypes> > >;
 #endif
 
+/*
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
 extern template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< MechanicalMapping<MechanicalState<Rigid3dTypes>, MechanicalState<Vec3fTypes> > >;
@@ -192,6 +239,7 @@ extern template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< 
 extern template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping< State<Rigid3fTypes>, MappedModel<Vec3dTypes> > >;
 #endif
 #endif
+*/
 #endif
 
 } // namespace mapping
