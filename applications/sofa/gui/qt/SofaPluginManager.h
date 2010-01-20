@@ -53,12 +53,15 @@ class SofaPluginManager: public PluginManager
 public:
 
     SofaPluginManager();
+
     static SofaPluginManager* getInstance()
     {
         static SofaPluginManager instance;
         return &instance;
     }
+
 public slots:
+
     void addLibrary();
     void removeLibrary();
 #ifdef SOFA_QT4
@@ -68,6 +71,9 @@ public slots:
     void updateComponentList(QListViewItem*);
     void updateDescription(QListViewItem*);
 #endif
+
+private :
+    void transferPluginsToNewPath();
 };
 
 
