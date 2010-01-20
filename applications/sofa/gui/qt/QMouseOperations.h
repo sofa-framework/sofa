@@ -65,12 +65,14 @@ public:
     QAttachOperation();
 
     double getStiffness() const;
+    double getArrowSize() const;
     void configure(PickHandler *picker, MOUSE_BUTTON b)
     {
         AttachOperation::configure(picker, b);
     }
 protected:
     QLineEdit *value;
+    QLineEdit *size;
 };
 
 

@@ -56,6 +56,8 @@ SpringForceField<DataTypes>::SpringForceField(MechanicalState* mstate1, Mechanic
     : Inherit(mstate1, mstate2), maskInUse(false)
     , ks(initData(&ks,_ks,"stiffness","uniform stiffness for the all springs"))
     , kd(initData(&kd,_kd,"damping","uniform damping for the all springs"))
+    , showArrowSize(initData(&showArrowSize,0.01,"showArrowSize","size of the axis"))
+    , drawMode(initData(&drawMode,0,"drawMode","The way springs will be drawn:\n- 0: Line\n- 1:Cylinder\n- 2: Arrow"))
     , springs(initData(&springs,"spring","pairs of indices, stiffness, damping, rest length"))
 {
 }
@@ -65,6 +67,8 @@ SpringForceField<DataTypes>::SpringForceField(SReal _ks, SReal _kd)
     : maskInUse(false)
     , ks(initData(&ks,_ks,"stiffness","uniform stiffness for the all springs"))
     , kd(initData(&kd,_kd,"damping","uniform damping for the all springs"))
+    , showArrowSize(initData(&showArrowSize,0.01,"showArrowSize","size of the axis"))
+    , drawMode(initData(&drawMode,0,"drawMode","The way springs will be drawn:\n- 0: Line\n- 1:Cylinder\n- 2: Arrow"))
     , springs(initData(&springs,"spring","pairs of indices, stiffness, damping, rest length"))
     , fileSprings(initData(&fileSprings, "fileSprings", "File describing the springs"))
 {
@@ -104,6 +108,7 @@ bool SpringForceField<DataTypes>::load(const char *filename)
 template <class DataTypes>
 void SpringForceField<DataTypes>::reinit()
 {
+    serr << drawMode.getValue() << "!!!!!!!!!!!!!!!!!!!!!!!" << sendl;
     for (unsigned int i=0; i<springs.getValue().size(); ++i)
     {
         (*springs.beginEdit())[i].ks = (Real) ks.getValue();
@@ -188,10 +193,6 @@ void SpringForceField<DataTypes>::draw()
     if (!((this->mstate1 == this->mstate2)?this->getContext()->getShowForceFields():this->getContext()->getShowInteractionForceFields())) return;
     const VecCoord& p1 = *this->mstate1->getX();
     const VecCoord& p2 = *this->mstate2->getX();
-    /*        serr<<"SpringForceField<DataTypes>::draw() "<<getName()<<sendl;
-            serr<<"SpringForceField<DataTypes>::draw(), p1.size = "<<p1.size()<<sendl;
-            serr<<"SpringForceField<DataTypes>::draw(), p1 = "<<p1<<sendl;
-            serr<<"SpringForceField<DataTypes>::draw(), p2 = "<<p2<<sendl;*/
 
     std::vector< Vector3 > points[4];
     bool external = (this->mstate1!=this->mstate2);
@@ -202,7 +203,7 @@ void SpringForceField<DataTypes>::draw()
     for (unsigned int i=0; i<springs.size(); i++)
     {
         Real d = (p2[springs[i].m2]-p1[springs[i].m1]).norm();
-        Vector3 point1,point2;
+        Vector3 point2,point1;
         unsigned int sizePoints= (Coord::static_size <=3)?Coord::static_size:3;
         for (unsigned int s=0; s<sizePoints; ++s)
         {
@@ -237,11 +238,45 @@ void SpringForceField<DataTypes>::draw()
         }
     }
 
+    const Vec<4,float> c0(1,0,0,1);
+    const Vec<4,float> c1(0,1,0,1);
+    const Vec<4,float> c2(1,0.5,0,1);
+    const Vec<4,float> c3(0,1,0.5,1);
 
-    simulation::getSimulation()->DrawUtility.drawLines(points[0], 1, Vec<4,float>(1,0,0,1));
-    simulation::getSimulation()->DrawUtility.drawLines(points[1], 1, Vec<4,float>(0,1,0,1));
-    simulation::getSimulation()->DrawUtility.drawLines(points[2], 1, Vec<4,float>(1,0.5,0,1));
-    simulation::getSimulation()->DrawUtility.drawLines(points[3], 1, Vec<4,float>(0,1,0.5,1));
+
+    if (showArrowSize.getValue()==0 || drawMode.getValue() == 0)
+    {
+        simulation::getSimulation()->DrawUtility.drawLines(points[0], 1, c0);
+        simulation::getSimulation()->DrawUtility.drawLines(points[1], 1, c1);
+        simulation::getSimulation()->DrawUtility.drawLines(points[2], 1, c2);
+        simulation::getSimulation()->DrawUtility.drawLines(points[3], 1, c3);
+    }
+    else if (drawMode.getValue() == 1)
+    {
+        const unsigned int numLines0=points[0].size()/2;
+        const unsigned int numLines1=points[1].size()/2;
+        const unsigned int numLines2=points[2].size()/2;
+        const unsigned int numLines3=points[3].size()/2;
+
+        for (unsigned int i=0; i<numLines0; ++i) simulation::getSimulation()->DrawUtility.drawCylinder(points[0][2*i+1], points[0][2*i], showArrowSize.getValue(), c0);
+        for (unsigned int i=0; i<numLines1; ++i) simulation::getSimulation()->DrawUtility.drawCylinder(points[1][2*i+1], points[1][2*i], showArrowSize.getValue(), c1);
+        for (unsigned int i=0; i<numLines2; ++i) simulation::getSimulation()->DrawUtility.drawCylinder(points[2][2*i+1], points[2][2*i], showArrowSize.getValue(), c2);
+        for (unsigned int i=0; i<numLines3; ++i) simulation::getSimulation()->DrawUtility.drawCylinder(points[3][2*i+1], points[3][2*i], showArrowSize.getValue(), c3);
+
+    }
+    else if (drawMode.getValue() == 2)
+    {
+        const unsigned int numLines0=points[0].size()/2;
+        const unsigned int numLines1=points[1].size()/2;
+        const unsigned int numLines2=points[2].size()/2;
+        const unsigned int numLines3=points[3].size()/2;
+
+        for (unsigned int i=0; i<numLines0; ++i) simulation::getSimulation()->DrawUtility.drawArrow(points[0][2*i+1], points[0][2*i], showArrowSize.getValue(), c0);
+        for (unsigned int i=0; i<numLines1; ++i) simulation::getSimulation()->DrawUtility.drawArrow(points[1][2*i+1], points[1][2*i], showArrowSize.getValue(), c1);
+        for (unsigned int i=0; i<numLines2; ++i) simulation::getSimulation()->DrawUtility.drawArrow(points[2][2*i+1], points[2][2*i], showArrowSize.getValue(), c2);
+        for (unsigned int i=0; i<numLines3; ++i) simulation::getSimulation()->DrawUtility.drawArrow(points[3][2*i+1], points[3][2*i], showArrowSize.getValue(), c3);
+    }
+    else serr << "No proper drawing mode found!" << sendl;
 
 }
 

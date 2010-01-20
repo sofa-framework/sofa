@@ -269,9 +269,8 @@ void ModifyObject::createDialog(Base* base)
             oss << "itemLayout_" << i;
             Q3GroupBox *box = NULL;;
 
-            std::string name((*it).first);
-            name.resize(4);
-            if (name == "show")
+            const std::string name = ((*it).first).substr(0,4);
+            if (name == "show" || name=="draw")
             {
                 if (!visualTab)
                 {
@@ -332,7 +331,9 @@ void ModifyObject::createDialog(Base* base)
                 currentTabLayout = new QVBoxLayout( currentTab, 0, 1, QString("tabBIGLayout") + QString::number(counterWidget));
                 dialogTab->addTab(currentTab, QString((*it).first.c_str()));
             }
+
             if (hideData(it->second)) continue;
+
             std::string box_name(oss.str());
             QDisplayDataWidget* displaydatawidget = new QDisplayDataWidget(currentTab,(*it).second,getFlags());
             ++i;

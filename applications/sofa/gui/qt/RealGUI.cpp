@@ -447,11 +447,11 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
 
     initRecentlyOpened();
 
-
     //Dialog Add Object
     connect ( tabs, SIGNAL ( currentChanged ( QWidget* ) ), this, SLOT ( currentTabChanged ( QWidget* ) ) );
 
     addViewer();
+
     currentTabChanged ( tabs->currentPage() );
 
     //ADD GUI for Background
@@ -776,6 +776,7 @@ void RealGUI::addViewer()
     setGUI();
 
     SofaMouseManager::getInstance()->setPickHandler(viewer->getPickHandler());
+
 }
 
 void RealGUI::viewerOpenGL()
@@ -916,7 +917,7 @@ bool RealGUI::setViewer ( const char* name )
     addViewer();
 
     viewer->configureViewerTab(tabs);
-
+    viewer->getPickHandler()->reset();
 
     if (filename.rfind(".simu") != std::string::npos)
         fileOpenSimu(filename.c_str() );

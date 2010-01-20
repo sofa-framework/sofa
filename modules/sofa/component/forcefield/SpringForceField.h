@@ -119,6 +119,8 @@ protected:
     SReal m_potentialEnergy;
     Data<SReal> ks;
     Data<SReal> kd;
+    Data<SReal> showArrowSize;
+    Data<int> drawMode; //Draw Mode: 0=Line - 1=Cylinder - 2=Arrow
     Data<sofa::helper::vector<Spring> > springs;
     core::objectmodel::DataFileName fileSprings;
     class Loader;
@@ -129,6 +131,7 @@ protected:
     void addSpringForce(SReal& potentialEnergy, WRefVecDeriv& f1, RRefVecCoord& p1, RRefVecDeriv& v1, WRefVecDeriv& f2, RRefVecCoord& p2, RRefVecDeriv& v2, int i, const Spring& spring);
     void updateMaskStatus();
 public:
+
     SpringForceField(MechanicalState* object1, MechanicalState* object2, SReal _ks=100.0, SReal _kd=5.0);
     SpringForceField(SReal _ks=100.0, SReal _kd=5.0);
 
@@ -152,10 +155,14 @@ public:
 
     virtual void addKToMatrix(sofa::defaulttype::BaseMatrix * /*mat*/, double /*kFact*/, unsigned int &/*offset*/);
 
-    SReal getStiffness() { return ks.getValue(); }
-    SReal getDamping() { return kd.getValue(); }
+    SReal getStiffness() const { return ks.getValue(); }
+    SReal getDamping() const { return kd.getValue(); }
     void setStiffness(SReal _ks) { ks.setValue(_ks); }
     void setDamping(SReal _kd) { kd.setValue(_kd); }
+    SReal getArrowSize() const {return showArrowSize.getValue();}
+    void setArrowSize(SReal s) {showArrowSize.setValue(s);}
+    int getDrawMode() const {return drawMode.getValue();}
+    void setDrawMode(int m) {drawMode.setValue(m);}
 
     void draw();
 

@@ -83,6 +83,10 @@ PickHandler::PickHandler():interactorInUse(false), mouseStatus(DEACTIVATED),mous
 
 PickHandler::~PickHandler()
 {
+    for (unsigned int i=0; i<operations.size(); ++i)
+    {
+        delete operations[i];
+    }
 //       for (unsigned int i=0;i<instanceComponents.size();++i) delete instanceComponents[i];
 }
 
@@ -173,6 +177,7 @@ void PickHandler::setCompatibleInteractor()
 void PickHandler::updateRay(const sofa::defaulttype::Vector3 &position,const sofa::defaulttype::Vector3 &orientation)
 {
     if (!interactorInUse) return;
+
     mouseCollision->getRay(0).origin() = position+orientation*interaction->mouseInteractor->getDistanceFromMouse();
     mouseCollision->getRay(0).direction() = orientation;
 
@@ -183,6 +188,7 @@ void PickHandler::updateRay(const sofa::defaulttype::Vector3 &position,const sof
         interaction->mouseInteractor->setMouseRayModel(mouseCollision);
         interaction->mouseInteractor->setBodyPicked(lastPicked);
     }
+
 
     if(mouseButton != NONE)
     {
@@ -209,6 +215,7 @@ void PickHandler::updateRay(const sofa::defaulttype::Vector3 &position,const sof
         }
         }
     }
+
     for (unsigned int i=0; i<operations.size(); ++i)
     {
         operations[i]->wait();
