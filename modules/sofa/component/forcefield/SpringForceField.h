@@ -160,7 +160,7 @@ public:
     void setStiffness(SReal _ks) { ks.setValue(_ks); }
     void setDamping(SReal _kd) { kd.setValue(_kd); }
     SReal getArrowSize() const {return showArrowSize.getValue();}
-    void setArrowSize(SReal s) {showArrowSize.setValue(s);}
+    void setArrowSize(float s) {showArrowSize.setValue(s);}
     int getDrawMode() const {return drawMode.getValue();}
     void setDrawMode(int m) {drawMode.setValue(m);}
 
