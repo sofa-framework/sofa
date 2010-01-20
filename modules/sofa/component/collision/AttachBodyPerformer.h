@@ -49,7 +49,7 @@ class AttachBodyPerformerConfiguration
 {
 public:
     void setStiffness(double s) {stiffness=s;}
-    void setArrowSize(double s) {size=s;}
+    void setArrowSize(float s) {size=s;}
 protected:
     SReal stiffness;
     SReal size;

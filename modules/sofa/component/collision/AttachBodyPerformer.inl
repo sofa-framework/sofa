@@ -168,7 +168,7 @@ void AttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& picked)
     forcefield = new sofa::component::forcefield::StiffSpringForceField<DataTypes>(dynamic_cast<MouseContainer*>(this->interactor->getMouseContainer()), mstateCollision);
     sofa::component::forcefield::StiffSpringForceField<DataTypes>* stiffspringforcefield = static_cast<sofa::component::forcefield::StiffSpringForceField<DataTypes>*>(forcefield);
     stiffspringforcefield->setName("Spring-Mouse-Contact");
-    stiffspringforcefield->setArrowSize(this->size);
+    stiffspringforcefield->setArrowSize((float)this->size);
     stiffspringforcefield->setDrawMode(2); //Arrow mode if size > 0
 
 

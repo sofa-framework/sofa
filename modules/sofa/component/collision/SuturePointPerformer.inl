@@ -177,7 +177,7 @@ void SuturePointPerformer<DataTypes>::start()
         newSpring.m1 = pointToSuture[0];
         newSpring.m2 = pointToSuture[1];
         newSpring.ks = 100000;
-        newSpring.kd = damping;
+        newSpring.kd = (Real)damping;
         newSpring.initpos = 0;
 
         addedSprings.push_back(newSpring);
