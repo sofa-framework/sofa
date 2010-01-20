@@ -50,13 +50,16 @@ simulation::Node* TreeCollisionGroupManager::findCommonParent(simulation::Node *
                              *gnodeGroup2=static_cast<simulation::tree::GNode*>(group2);
     helper::vector<simulation::tree::GNode*> hierarchyParent;
 
-    while ( gnodeGroup1=static_cast<simulation::tree::GNode*>(gnodeGroup1->getParent()) )
+    gnodeGroup1=static_cast<simulation::tree::GNode*>(gnodeGroup1->getParent());
+    while ( gnodeGroup1)
     {
         hierarchyParent.push_back(gnodeGroup1);
+        gnodeGroup1=static_cast<simulation::tree::GNode*>(gnodeGroup1->getParent());
     }
     if (hierarchyParent.empty())   return NULL;
 
-    while (gnodeGroup2=static_cast<simulation::tree::GNode*>(gnodeGroup2->getParent()))
+    gnodeGroup2=static_cast<simulation::tree::GNode*>(gnodeGroup2->getParent());
+    while (gnodeGroup2)
     {
         helper::vector<simulation::tree::GNode*>::iterator it=std::find(hierarchyParent.begin(), hierarchyParent.end(), gnodeGroup2);
         if (it != hierarchyParent.end())
@@ -64,6 +67,7 @@ simulation::Node* TreeCollisionGroupManager::findCommonParent(simulation::Node *
             return gnodeGroup2;
             break;
         }
+        gnodeGroup2=static_cast<simulation::tree::GNode*>(gnodeGroup2->getParent());
     }
 
     return NULL;
