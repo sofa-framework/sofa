@@ -29,6 +29,7 @@
 #include <sofa/simulation/common/Colors.h>
 #include "iconnode.xpm"
 #include "iconwarning.xpm"
+#include "icondata.xpm"
 
 
 namespace sofa
@@ -471,11 +472,13 @@ void GraphListenerQListView::addDatas(sofa::core::objectmodel::BaseObject *paren
             data = (*it).second;
             if(!datas.count(data))
             {
+                static QPixmap pixData((const char**)icondata_xpm);
                 new_item = createItem(items[parent]);
                 name += "  ";
                 name += data->getName();
                 datas.insert(std::pair<BaseData*,Q3ListViewItem*>(data,new_item));
                 new_item->setText(0, name.c_str());
+                new_item->setPixmap(0,pixData);
                 widget->ensureItemVisible(new_item);
                 name.clear();
             }

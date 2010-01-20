@@ -80,6 +80,7 @@ void AttachOperation::start()
         //Configuration
         component::collision::AttachBodyPerformerConfiguration *performerConfiguration=dynamic_cast<component::collision::AttachBodyPerformerConfiguration*>(performer);
         performerConfiguration->setStiffness(getStiffness());
+        performerConfiguration->setArrowSize(getArrowSize());
         //Start
         performer->start();
     }

@@ -78,10 +78,12 @@ public:
 
     void setStiffness(double s) {stiffness = s;}
     virtual double getStiffness() const { return stiffness;}
+    virtual double getArrowSize() const { return arrowSize;}
 
     static std::string getDescription() {return "Attach an object to the Mouse";}
 protected:
     double stiffness;
+    double arrowSize;
 };
 
 class SOFA_SOFAGUI_API InciseOperation : public Operation

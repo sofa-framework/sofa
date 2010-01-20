@@ -58,13 +58,23 @@ QAttachOperation::QAttachOperation()
     QLabel *label=new QLabel(QString("Stiffness"), this);
     value=new QLineEdit(QString("1000.0"), this);
 
+    QLabel *labelSize=new QLabel(QString("Arrow Size"), this);
+    size=new QLineEdit(QString("0.0"), this);
+
     layout->addWidget(label);
     layout->addWidget(value);
+    layout->addWidget(labelSize);
+    layout->addWidget(size);
 }
 
 double QAttachOperation::getStiffness() const
 {
     return atof(value->displayText().ascii());
+}
+
+double QAttachOperation::getArrowSize() const
+{
+    return atof(size->displayText().ascii());
 }
 
 //*******************************************************************************************
