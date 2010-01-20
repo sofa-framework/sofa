@@ -44,7 +44,7 @@
 #include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
 #include <sofa/component/topology/TetrahedronSetGeometryAlgorithms.h>
 #include <sofa/component/topology/QuadSetGeometryAlgorithms.h>
-#include <sofa/component/topology/HexahedronSetGeometryAlgorithms.h>
+//#include <sofa/component/topology/HexahedronSetGeometryAlgorithms.h>
 #include <sofa/component/mapping/SkinningMapping.h>
 
 #include <sofa/core/objectmodel/DataFileName.h>
@@ -154,7 +154,7 @@ public:
     sofa::component::topology::TriangleSetGeometryAlgorithms<GeometricalTypes>* triangleGeo;
     sofa::component::topology::QuadSetGeometryAlgorithms<GeometricalTypes>* quadGeo;
     sofa::component::topology::TetrahedronSetGeometryAlgorithms<GeometricalTypes>* tetraGeo;
-    sofa::component::topology::HexahedronSetGeometryAlgorithms<GeometricalTypes>* hexaGeo;
+    //sofa::component::topology::HexahedronSetGeometryAlgorithms<GeometricalTypes>* hexaGeo;
 
     FrameDiagonalMass();
 
