@@ -50,23 +50,23 @@ using namespace core::componentmodel::behavior;
 int DeformableOnRigidFrameMappingClass = core::RegisterObject("Set the positions and velocities of points attached to a rigid parent")
 #ifndef SOFA_FLOAT
         .add< DeformableOnRigidFrameMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3dTypes> > > >()
-        .add< DeformableOnRigidFrameMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> > > >()
-        .add< DeformableOnRigidFrameMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> > > >()
-// .add< DeformableOnRigidFrameMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3dTypes> > > >()
+//.add< DeformableOnRigidFrameMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> > > >()
+//.add< DeformableOnRigidFrameMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> > > >()
+//.add< DeformableOnRigidFrameMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3dTypes> > > >()
 #endif
 #ifndef SOFA_DOUBLE
         .add< DeformableOnRigidFrameMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes> > > >()
-        .add< DeformableOnRigidFrameMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> > > >()
-        .add< DeformableOnRigidFrameMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> > > >()
-// .add< DeformableOnRigidFrameMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3dTypes> > > >()
+//.add< DeformableOnRigidFrameMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> > > >()
+//.add< DeformableOnRigidFrameMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> > > >()
+//.add< DeformableOnRigidFrameMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3dTypes> > > >()
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-        .add< DeformableOnRigidFrameMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes> > > >()
-        .add< DeformableOnRigidFrameMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3dTypes> > > >()
-        .add< DeformableOnRigidFrameMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3fTypes> > > >()
-        .add< DeformableOnRigidFrameMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3dTypes> > > >()
+//.add< DeformableOnRigidFrameMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes> > > >()
+//.add< DeformableOnRigidFrameMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<Vec3dTypes> > > >()
+//.add< DeformableOnRigidFrameMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3fTypes> > > >()
+//.add< DeformableOnRigidFrameMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3dTypes> > > >()
 #endif
 #endif
         ;
@@ -75,23 +75,23 @@ int DeformableOnRigidFrameMappingClass = core::RegisterObject("Set the positions
 
 #ifndef SOFA_FLOAT
 template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< MechanicalMapping<MechanicalState<Vec3dTypes>, MechanicalState<Vec3dTypes> > >;
-template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> > >;
-// template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3dTypes> > >;
-template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> > >;
+//template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3dTypes> > >;
+//template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3dTypes> > >;
+//template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> > >;
 #endif
 #ifndef SOFA_DOUBLE
 template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< MechanicalMapping<MechanicalState<Vec3fTypes>, MechanicalState<Vec3fTypes> > >;
-template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> > >;
-// template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3dTypes> > >;
-template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> > >;
+//template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3fTypes> > >;
+//template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3dTypes> > >;
+//template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping< State<Vec3fTypes>, MappedModel<ExtVec3fTypes> > >;
 #endif
 
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< MechanicalMapping<MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes> > >;
-template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< MechanicalMapping<MechanicalState<Vec3fTypes>, MechanicalState<Vec3dTypes> > >;
-template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3fTypes> > >;
-template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3dTypes> > >;
+//template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< MechanicalMapping<MechanicalState<Vec3dTypes>, MechanicalState<Vec3fTypes> > >;
+//template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< MechanicalMapping<MechanicalState<Vec3fTypes>, MechanicalState<Vec3dTypes> > >;
+//template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping< State<Vec3dTypes>, MappedModel<Vec3fTypes> > >;
+//template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping< State<Vec3fTypes>, MappedModel<Vec3dTypes> > >;
 #endif
 #endif
 
@@ -100,5 +100,4 @@ template class SOFA_COMPONENT_MAPPING_API DeformableOnRigidFrameMapping< Mapping
 
 } // namespace component
 
-} // namespace sofa
-
+} // namespace sofa.
