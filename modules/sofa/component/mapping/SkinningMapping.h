@@ -253,6 +253,7 @@ public:
     Data<unsigned int> showFromIndex;
     Data<bool> showDistancesValues;
     Data<bool> showCoefs;
+    Data<double> showGammaCorrection;
     Data<bool> showCoefsValues;
     Data<bool> showReps;
     Data<int> showValuesNbDecimals;

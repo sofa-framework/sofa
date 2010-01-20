@@ -73,6 +73,7 @@ SkinningMapping<BasicMapping>::SkinningMapping ( In* from, Out* to )
     , showFromIndex ( initData ( &showFromIndex, ( unsigned ) 0, "showFromIndex","Displayed From Index." ) )
     , showDistancesValues ( initData ( &showDistancesValues, false, "showDistancesValues","Show dstances values." ) )
     , showCoefs ( initData ( &showCoefs, false, "showCoefs","Show coeficients." ) )
+    , showGammaCorrection ( initData ( &showGammaCorrection, 1.0, "showGammaCorrection","Correction of the Gamma by a power" ) )
     , showCoefsValues ( initData ( &showCoefsValues, false, "showCoefsValues","Show coeficients values." ) )
     , showReps ( initData ( &showReps, false, "showReps","Show repartition." ) )
     , showValuesNbDecimals ( initData ( &showValuesNbDecimals, 0, "showValuesNbDecimals","Multiply floating point by 10^n." ) )
@@ -1297,6 +1298,7 @@ void SkinningMapping<BasicMapping>::draw()
                 for ( unsigned int j = 0; j < 3; j++)
                 {
                     double color = (m_coefs[showFromIndex.getValue()%m_coefs.size()][tri[i][j]] - minValue) / (maxValue - minValue);
+                    color = pow(color, showGammaCorrection.getValue());
                     points.push_back(defaulttype::Vector3(xto[tri[i][j]][0],xto[tri[i][j]][1],xto[tri[i][j]][2]));
                     colors.push_back(defaulttype::Vec<4,float>(color, 0.0, 0.0,1.0));
                 }
@@ -1311,6 +1313,7 @@ void SkinningMapping<BasicMapping>::draw()
             for ( unsigned int i = 0; i < xto.size(); i++)
             {
                 double color = (m_coefs[showFromIndex.getValue()%m_coefs.size()][i] - minValue) / (maxValue - minValue);
+                color = pow(color, showGammaCorrection.getValue());
                 glColor3f( color, 0.0, 0.0);
                 glVertex3f( xto[i][0], xto[i][1], xto[i][2]);
             }
