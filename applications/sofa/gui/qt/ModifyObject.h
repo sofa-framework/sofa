@@ -35,7 +35,10 @@
 #include <sofa/helper/fixed_array.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/component/misc/Monitor.h>
-
+#include <sofa/gui/qt/QTransformationWidget.h>
+#include <sofa/gui/qt/QEnergyStatWidget.h>
+#include <sofa/gui/qt/DisplayFlagWidget.h>
+#include "WFloatLineEdit.h"
 
 #ifdef SOFA_QT4
 #include <QDialog>
@@ -71,17 +74,6 @@
 #include <qlayout.h>
 #endif
 
-#include "WFloatLineEdit.h"
-
-#include <qwt_plot.h>
-
-#include <qwt_plot_curve.h>
-#include <sofa/gui/qt/DisplayFlagWidget.h>
-#include <string>
-#if !defined(INFINITY)
-#define INFINITY 9.0e10
-#endif
-
 namespace sofa
 {
 namespace core
@@ -98,9 +90,6 @@ namespace gui
 namespace qt
 {
 
-using namespace sofa::defaulttype;
-using sofa::simulation::Node;
-using sofa::helper::fixed_array;
 
 #ifndef SOFA_QT4
 typedef QListView   Q3ListView;
@@ -186,7 +175,6 @@ public slots:
     virtual void closeEvent ( QCloseEvent * ) {emit(reject());}
 
     virtual void updateValues();              //update the node with the values of the field
-    virtual void changeValue();               //each time a field is modified
     void updateListViewItem();
 signals:
     void updateDataWidgets();             // emitted eachtime updateValues is called to propagate the changes to the widgets.
@@ -194,53 +182,33 @@ signals:
     void dialogClosed(void *);            //the current window has been closed: we give the Id of the current window
 protected slots:
     void updateTables();              //update the tables of value at each step of the simulation
-    void changeVisualValue();               //each time a field of the Visualization tab is modified
     void clearWarnings() {node->clearWarnings(); logWarningEdit->clear();}
     void clearOutputs() {node->clearOutputs(); logOutputEdit->clear();}
 
 protected:
-
     void updateConsole();             //update the console log of warnings and outputs
-    const core::objectmodel::BaseData* getData(const QObject *object);
-    void updateContext( Node *node );
-    void createGraphMass(QTabWidget *);
-    void updateHistory();
-    void updateEnergy();
 
     void* Id_;
     Q3ListViewItem* item_;
     core::objectmodel::Base* node;
     core::objectmodel::BaseData* data_;
     const ModifyObjectFlags dialogFlags_;
-    bool visualContentModified;
 
     QWidget* outputTab;
     Q3TextEdit *logOutputEdit;
     QWidget *warningTab;
-
     Q3TextEdit *logWarningEdit;
+
     QTabWidget *dialogTab;
     QPushButton *buttonUpdate;
-    QwtPlot *graphEnergy;
-    QwtPlotCurve *energy_curve[3];
 
-
-    unsigned int counterWidget;
-
-    WFloatLineEdit* transformation[9]; //Data added to manage transformation of a whole node
-
-
-
-    std::vector<std::pair< core::objectmodel::BaseData*,  QObject*> >  objectGUI;  //vector of all the Qt Object added in the window
-    std::set< const core::objectmodel::BaseData* >                     setUpdates; //set of objects that have been modified
-    std::map< core::objectmodel::BaseData*, int >                      dataIndexTab;
-
+    //Widget specific to Node:
+    //Transformation widget: translation, rotation, scale ( only experimental and deactivated)
+    QTransformationWidget* transformation;
+    //Energy widget: plot the kinetic & potential energy
+    QEnergyStatWidget* energy;
     //Visual Flags
-    DisplayFlagWidget *displayFlag;
-    std::vector< double > history;
-    std::vector< double > energy_history[3];
-
-
+    QDisplayFlagWidget *displayFlag;
 };
 
 

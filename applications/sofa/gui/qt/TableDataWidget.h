@@ -375,7 +375,7 @@ public:
 
         widget=_widget;
 
-        wDisplay = new QPushButtonUpdater( QString("Click to display the values"), parent);
+        wDisplay = new QPushButtonUpdater( QString("Display the values"), parent);
         wDisplay->setToggleButton(true);
         wDisplay->setOn(dataRows < MAX_NUM_ELEM && dataRows != 0 );
         wDisplay->setAutoDefault(false);
