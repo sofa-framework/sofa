@@ -36,6 +36,9 @@
 #include "WFloatLineEdit.h"
 #include <limits.h>
 
+#if !defined(INFINITY)
+#define INFINITY 9.0e10
+#endif
 namespace sofa
 {
 
