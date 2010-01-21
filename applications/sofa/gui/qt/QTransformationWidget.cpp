@@ -13,6 +13,9 @@
 #include <qgroupbox.h>
 #endif
 
+#if !defined(INFINITY)
+#define INFINITY 9.0e10
+#endif
 
 
 namespace sofa

@@ -49,7 +49,6 @@ typedef QListView Q3ListView;
 typedef QCheckListItem Q3CheckListItem;
 typedef QListViewItem Q3ListViewItem;
 typedef QGroupBox Q3GroupBox;
-typedef QTextEdit   Q3TextEdit;
 #endif
 namespace sofa
 {
