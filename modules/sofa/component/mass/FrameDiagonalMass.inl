@@ -30,19 +30,12 @@
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
-#include <sofa/component/topology/TopologyChangedEvent.h>
-#include <sofa/component/topology/PointData.inl>
-#include <sofa/component/topology/RegularGridTopology.h>
 #include <sofa/component/mass/AddMToMatrixFunctor.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/defaulttype/FrameMass.h>
 #include <sofa/helper/gl/Axis.h>
-//#include <sofa/component/topology/HexahedronSetGeometryAlgorithms.inl>
 #include <sofa/component/mapping/SkinningMapping.inl>
-
-
 #include <sofa/simulation/common/Visitor.h>
-
 
 
 namespace sofa
@@ -53,205 +46,6 @@ namespace component
 
 namespace mass
 {
-
-
-using namespace	sofa::component::topology;
-using namespace core::componentmodel::topology;
-
-template<class MassType>
-void MassPointCreationFunction ( int ,
-        void* , MassType & t,
-        const sofa::helper::vector< unsigned int > &,
-        const sofa::helper::vector< double >& )
-{
-    t=0;
-}
-
-template< class DataTypes, class MassType>
-inline void MassEdgeCreationFunction ( const sofa::helper::vector<unsigned int> &edgeAdded,
-        void* param, vector<MassType> &masses )
-{
-    FrameDiagonalMass<DataTypes, MassType> *dm= ( FrameDiagonalMass<DataTypes, MassType> * ) param;
-    if ( dm->getMassTopologyType() ==FrameDiagonalMass<DataTypes, MassType>::TOPOLOGY_EDGESET )
-    {
-
-        typename DataTypes::Real md=dm->getMassDensity();
-        typename DataTypes::Real mass= ( typename DataTypes::Real ) 0;
-        unsigned int i;
-
-        for ( i=0; i<edgeAdded.size(); ++i )
-        {
-            /// get the edge to be added
-            const Edge &e=dm->_topology->getEdge ( edgeAdded[i] );
-            // compute its mass based on the mass density and the edge length
-            if ( dm->edgeGeo )
-            {
-                mass= ( md*dm->edgeGeo->computeRestEdgeLength ( edgeAdded[i] ) ) / ( typename DataTypes::Real ) 2.0;
-            }
-            // added mass on its two vertices
-            masses[e[0]]+=mass;
-            masses[e[1]]+=mass;
-        }
-
-    }
-}
-
-template< class DataTypes, class MassType>
-inline void MassEdgeDestroyFunction ( const sofa::helper::vector<unsigned int> &edgeRemoved,
-        void* param, vector<MassType> &masses )
-{
-    FrameDiagonalMass<DataTypes, MassType> *dm= ( FrameDiagonalMass<DataTypes, MassType> * ) param;
-    if ( dm->getMassTopologyType() ==FrameDiagonalMass<DataTypes, MassType>::TOPOLOGY_EDGESET )
-    {
-
-        typename DataTypes::Real md=dm->getMassDensity();
-        typename DataTypes::Real mass= ( typename DataTypes::Real ) 0;
-        unsigned int i;
-
-        for ( i=0; i<edgeRemoved.size(); ++i )
-        {
-            /// get the edge to be added
-            const Edge &e=dm->_topology->getEdge ( edgeRemoved[i] );
-            // compute its mass based on the mass density and the edge length
-            if ( dm->edgeGeo )
-            {
-                mass= ( md*dm->edgeGeo->computeRestEdgeLength ( edgeRemoved[i] ) ) / ( typename DataTypes::Real ) 2.0;
-            }
-            // added mass on its two vertices
-            masses[e[0]]-=mass;
-            masses[e[1]]-=mass;
-        }
-
-    }
-}
-
-template< class DataTypes, class MassType>
-inline void MassTriangleCreationFunction ( const sofa::helper::vector<unsigned int> &triangleAdded,
-        void* param, vector<MassType> &masses )
-{
-    FrameDiagonalMass<DataTypes, MassType> *dm= ( FrameDiagonalMass<DataTypes, MassType> * ) param;
-    if ( dm->getMassTopologyType() ==FrameDiagonalMass<DataTypes, MassType>::TOPOLOGY_TRIANGLESET )
-    {
-
-        typename DataTypes::Real md=dm->getMassDensity();
-        typename DataTypes::Real mass= ( typename DataTypes::Real ) 0;
-        unsigned int i;
-
-        for ( i=0; i<triangleAdded.size(); ++i )
-        {
-            /// get the triangle to be added
-            const Triangle &t=dm->_topology->getTriangle ( triangleAdded[i] );
-            // compute its mass based on the mass density and the triangle area
-            if ( dm->triangleGeo )
-            {
-                mass= ( md*dm->triangleGeo->computeRestTriangleArea ( triangleAdded[i] ) ) / ( typename DataTypes::Real ) 3.0;
-            }
-            // removed  mass on its three vertices
-            masses[t[0]]+=mass;
-            masses[t[1]]+=mass;
-            masses[t[2]]+=mass;
-        }
-
-    }
-}
-
-template< class DataTypes, class MassType>
-inline void MassTriangleDestroyFunction ( const sofa::helper::vector<unsigned int> &triangleRemoved,
-        void* param, vector<MassType> &masses )
-{
-    FrameDiagonalMass<DataTypes, MassType> *dm= ( FrameDiagonalMass<DataTypes, MassType> * ) param;
-    if ( dm->getMassTopologyType() ==FrameDiagonalMass<DataTypes, MassType>::TOPOLOGY_TRIANGLESET )
-    {
-
-        typename DataTypes::Real md=dm->getMassDensity();
-        typename DataTypes::Real mass= ( typename DataTypes::Real ) 0;
-        unsigned int i;
-
-        for ( i=0; i<triangleRemoved.size(); ++i )
-        {
-            /// get the triangle to be added
-            const Triangle &t=dm->_topology->getTriangle ( triangleRemoved[i] );
-            // compute its mass based on the mass density and the triangle area
-            if ( dm->triangleGeo )
-            {
-                mass= ( md*dm->triangleGeo->computeRestTriangleArea ( triangleRemoved[i] ) ) / ( typename DataTypes::Real ) 3.0;
-            }
-            // removed  mass on its three vertices
-            masses[t[0]]-=mass;
-            masses[t[1]]-=mass;
-            masses[t[2]]-=mass;
-            // Commented to prevent from printing in case of triangle removal
-            //serr<< "mass vertex " << t[0]<< " = " << masses[t[0]]<<sendl;
-            //serr<< "mass vertex " << t[1]<< " = " << masses[t[1]]<<sendl;
-            //serr<< "mass vertex " << t[2]<< " = " << masses[t[2]]<<sendl;
-        }
-
-    }
-}
-
-template< class DataTypes, class MassType>
-inline void MassTetrahedronCreationFunction ( const sofa::helper::vector<unsigned int> &tetrahedronAdded,
-        void* param, vector<MassType> &masses )
-{
-    FrameDiagonalMass<DataTypes, MassType> *dm= ( FrameDiagonalMass<DataTypes, MassType> * ) param;
-    if ( dm->getMassTopologyType() ==FrameDiagonalMass<DataTypes, MassType>::TOPOLOGY_TETRAHEDRONSET )
-    {
-
-        typename DataTypes::Real md=dm->getMassDensity();
-        typename DataTypes::Real mass= ( typename DataTypes::Real ) 0;
-        unsigned int i;
-
-        for ( i=0; i<tetrahedronAdded.size(); ++i )
-        {
-            /// get the tetrahedron to be added
-            const Tetrahedron &t=dm->_topology->getTetrahedron ( tetrahedronAdded[i] );
-            // compute its mass based on the mass density and the tetrahedron volume
-            if ( dm->tetraGeo )
-            {
-                mass= ( md*dm->tetraGeo->computeRestTetrahedronVolume ( tetrahedronAdded[i] ) ) / ( typename DataTypes::Real ) 4.0;
-            }
-            // removed  mass on its four vertices
-            masses[t[0]]+=mass;
-            masses[t[1]]+=mass;
-            masses[t[2]]+=mass;
-            masses[t[3]]+=mass;
-
-        }
-
-    }
-}
-
-template< class DataTypes, class MassType>
-inline void MassTetrahedronDestroyFunction ( const sofa::helper::vector<unsigned int> &tetrahedronRemoved,
-        void* param, vector<MassType> &masses )
-{
-    FrameDiagonalMass<DataTypes, MassType> *dm= ( FrameDiagonalMass<DataTypes, MassType> * ) param;
-    if ( dm->getMassTopologyType() ==FrameDiagonalMass<DataTypes, MassType>::TOPOLOGY_TETRAHEDRONSET )
-    {
-
-        typename DataTypes::Real md=dm->getMassDensity();
-        typename DataTypes::Real mass= ( typename DataTypes::Real ) 0;
-        unsigned int i;
-
-        for ( i=0; i<tetrahedronRemoved.size(); ++i )
-        {
-            /// get the tetrahedron to be added
-            const Tetrahedron &t=dm->_topology->getTetrahedron ( tetrahedronRemoved[i] );
-            if ( dm->tetraGeo )
-            {
-                // compute its mass based on the mass density and the tetrahedron volume
-                mass= ( md*dm->tetraGeo->computeRestTetrahedronVolume ( tetrahedronRemoved[i] ) ) / ( typename DataTypes::Real ) 4.0;
-            }
-            // removed  mass on its four vertices
-            masses[t[0]]-=mass;
-            masses[t[1]]-=mass;
-            masses[t[2]]-=mass;
-            masses[t[3]]-=mass;
-        }
-
-    }
-}
-
 
 using namespace sofa::defaulttype;
 using namespace sofa::core::componentmodel::behavior;
@@ -267,12 +61,9 @@ FrameDiagonalMass<DataTypes, MassType>::FrameDiagonalMass()
     , fileMass( initData(&fileMass,  "fileMass", "File to specify the mass" ) )
     , damping ( initData ( &damping, 0.0f, "damping", "add a force which is \"- damping * speed\"" ) )
     , rotateMass ( initData ( &rotateMass, false, "rotateMass", "Rotate mass matrices instead of computing it at each step." ) )
-    , topologyType ( TOPOLOGY_UNKNOWN )
 {
     this->addAlias(&fileMass,"filename");
 }
-
-
 
 
 template <class DataTypes, class MassType>
@@ -401,17 +192,6 @@ void FrameDiagonalMass<DataTypes, MassType>::getElementMass ( unsigned int index
 
     m->clear();
     AddMToMatrixFunctor<Deriv,MassType>() ( m, f_mass.getValue() [index], 0, 1 );
-}
-
-template <class DataTypes, class MassType>
-void FrameDiagonalMass<DataTypes, MassType>::handleTopologyChange()
-{
-    std::list<const TopologyChange *>::const_iterator itBegin=_topology->firstChange();
-    std::list<const TopologyChange *>::const_iterator itEnd=_topology->lastChange();
-
-//	VecMass& masses = *f_mass.beginEdit();
-    f_mass.handleTopologyEvents ( itBegin,itEnd );
-//	f_mass.endEdit();
 }
 
 
@@ -684,7 +464,7 @@ void FrameDiagonalMass<DataTypes, MassType>::updateMass ( MassType& mass, const 
         //*/ Without lumping
         JJT=JT*J[j];
         frameMass += JJT;
-        /*/
+        /*/ // With lumping
         //					serr << "J[i][j]: " << J[i][j] << sendl;
         for ( unsigned int k=0;k<nbDOF;k++ )
         	{

@@ -39,14 +39,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/FrameMass.h>
 #include <sofa/component/mapping/DualQuatStorage.h>
-
-#include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
-#include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
-#include <sofa/component/topology/TetrahedronSetGeometryAlgorithms.h>
-#include <sofa/component/topology/QuadSetGeometryAlgorithms.h>
-//#include <sofa/component/topology/HexahedronSetGeometryAlgorithms.h>
 #include <sofa/component/mapping/SkinningMapping.h>
-
 #include <sofa/core/objectmodel/DataFileName.h>
 
 namespace sofa
@@ -58,11 +51,8 @@ namespace component
 namespace mass
 {
 
-using namespace sofa::component::topology;
 using namespace sofa::component::mapping;
-
-
-// template<class Vec> void readVec1(Vec& vec, const char* str);
+using namespace sofa::defaulttype;
 
 template <class DataTypes, class TMassType>
 class FrameDiagonalMass : public core::componentmodel::behavior::Mass<DataTypes>
@@ -106,26 +96,16 @@ public:
     typedef vector<VVec6> VVVec6;
     typedef defaulttype::Vec<8,Real> Vec8;
     typedef vector<double> VD;
-    typedef core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalState;
-    typedef typename sofa::component::mapping::SkinningMapping<sofa::component::mapping::MechanicalMapping< core::componentmodel::behavior::MechanicalState<DataTypes>, core::componentmodel::behavior::MechanicalState<StdVectorTypes<Vec<3, typename DataTypes::Real>, Vec<3, typename DataTypes::Real>, typename DataTypes::Real> > > > SMapping;
+    typedef core::componentmodel::behavior::MechanicalState<DataTypes> MStateRigid;
+    typedef core::componentmodel::behavior::MechanicalState<StdVectorTypes<Vec<3, typename DataTypes::Real>, Vec<3, typename DataTypes::Real>, typename DataTypes::Real> > MStateVec;
+    typedef typename sofa::component::mapping::SkinningMapping<sofa::component::mapping::MechanicalMapping< MStateRigid, MStateVec > > SMapping;
 
     // In case of non 3D template
     typedef Vec<3,MassType>                            Vec3Mass;
-    typedef StdVectorTypes< Vec3Mass, Vec3Mass, MassType >     GeometricalTypes ; /// assumes the geometry object type is 3D
+    typedef StdVectorTypes< Vec3Mass, Vec3Mass, MassType > GeometricalTypes ; /// assumes the geometry object type is 3D
 
     typedef sofa::component::topology::PointData<MassType> VecMass;
     typedef helper::vector<MassType> MassVector;
-
-
-    typedef enum
-    {
-        TOPOLOGY_UNKNOWN=0,
-        TOPOLOGY_EDGESET=1,
-        TOPOLOGY_TRIANGLESET=2,
-        TOPOLOGY_TETRAHEDRONSET=3,
-        TOPOLOGY_QUADSET=4,
-        TOPOLOGY_HEXAHEDRONSET=5
-    } TopologyType;
 
     VecMass f_mass;
     VecMass f_mass0;
@@ -143,18 +123,8 @@ protected:
     //VecMass masses;
 
     class Loader;
-    /// The type of topology to build the mass from the topology
-    TopologyType topologyType;
 
 public:
-
-    sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
-
-    sofa::component::topology::EdgeSetGeometryAlgorithms<GeometricalTypes>* edgeGeo;
-    sofa::component::topology::TriangleSetGeometryAlgorithms<GeometricalTypes>* triangleGeo;
-    sofa::component::topology::QuadSetGeometryAlgorithms<GeometricalTypes>* quadGeo;
-    sofa::component::topology::TetrahedronSetGeometryAlgorithms<GeometricalTypes>* tetraGeo;
-    //sofa::component::topology::HexahedronSetGeometryAlgorithms<GeometricalTypes>* hexaGeo;
 
     FrameDiagonalMass();
 
@@ -170,18 +140,10 @@ public:
     virtual void reinit();
     virtual void bwdInit();
 
-    TopologyType getMassTopologyType() const
-    {
-        return topologyType;
-    }
     Real getMassDensity() const
     {
         return m_massDensity.getValue();
     }
-
-
-    // handle topological changes
-    virtual void handleTopologyChange();
 
     void setMassDensity(Real m)
     {
