@@ -50,7 +50,7 @@ namespace forcefield
 
 
 template<class DataTypes>
-FrameSpringForceField2<DataTypes>::FrameSpringForceField2(MechanicalState* obj)
+FrameSpringForceField2<DataTypes>::FrameSpringForceField2(MStateRigid* obj)
     : Inherit( obj), maskInUse(false)
     , youngModulus ( initData ( &youngModulus, 2000.0, "youngModulus","Young Modulus" ) )
     , poissonRatio ( initData ( &poissonRatio, 0.3, "poissonRatio","Poisson Ratio." ) )
@@ -131,6 +131,11 @@ void FrameSpringForceField2<DataTypes>::computeK0()
                 K0[k][j]-=BTHB;
             }
         }
+    /*
+    for ( i=0;i<nbDOF;++i )
+    for ( j=0;j<nbDOF;++j )
+    serr << "K0["<<i<<"]["<<j<<"]: " << K0[i][j] << sendl;
+    */
 }
 
 template<class DataTypes>
