@@ -75,9 +75,9 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
-
-    typedef core::componentmodel::behavior::MechanicalState<DataTypes> MechanicalState;
-    typedef SkinningMapping< MechanicalMapping< MechanicalState, core::componentmodel::behavior::MechanicalState<Vec3dTypes> > > SMapping;
+    typedef typename core::componentmodel::behavior::MechanicalState<DataTypes> MStateRigid;
+    typedef typename core::componentmodel::behavior::MechanicalState<StdVectorTypes<Vec<3, typename DataTypes::Real>, Vec<3, typename DataTypes::Real>, typename DataTypes::Real> > MStateVec;
+    typedef typename sofa::component::mapping::SkinningMapping<sofa::component::mapping::MechanicalMapping< MStateRigid, MStateVec > > SMapping;
 
     enum { N = Coord::static_size };
     typedef defaulttype::Mat<N, N, Real> Mat;
@@ -135,7 +135,7 @@ protected:
     friend class FrameSpringForceField2InternalData<DataTypes>;
 
 public:
-    FrameSpringForceField2 ( MechanicalState* obj);
+    FrameSpringForceField2 ( MStateRigid* obj);
     FrameSpringForceField2 ( );
 
     virtual bool canPrefetch() const
