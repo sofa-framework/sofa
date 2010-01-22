@@ -193,7 +193,6 @@ void TetrahedronSetTopologyModifier::removeTetrahedraWarning( sofa::helper::vect
     addTopologyChange(e);
 }
 
-
 void TetrahedronSetTopologyModifier::removeTetrahedraProcess( const sofa::helper::vector<unsigned int> &indices,
         const bool removeIsolatedItems)
 {
