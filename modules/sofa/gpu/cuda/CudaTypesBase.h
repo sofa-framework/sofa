@@ -49,12 +49,12 @@ public :
         return m;
     }
 
-    void resize(int nbCol, int nbRow)
+    void resize(int nbRow, int nbCol)
     {
         m.resize(nbCol,nbRow,BSIZE);
     }
 
-    void resize(int nbCol, int nbRow,int ws)
+    void resize(int nbRow, int nbCol,int ws)
     {
         m.resize(nbCol,nbRow,ws);
     }
@@ -71,7 +71,7 @@ public :
 
     SReal element(int i, int j) const
     {
-        return m[j][i];
+        return m[i][j];
     }
 
     const T* operator[] ( int i ) const
@@ -98,7 +98,7 @@ public :
             exit(1);
         }
 #endif
-        m[j][i] = (T)v;
+        m[i][j] = (T)v;
     }
 
     void add(int i, int j, double v)
@@ -110,7 +110,7 @@ public :
             exit(1);
         }
 #endif
-        m[j][i] += (T)v;
+        m[i][j] += (T)v;
     }
 
     static std::string Name()
