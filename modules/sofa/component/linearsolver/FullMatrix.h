@@ -107,7 +107,7 @@ public:
     ~FullMatrix()
     {
         if (allocsize>0)
-            delete data;
+            delete[] data;
     }
 
     Real* ptr() { return data; }
