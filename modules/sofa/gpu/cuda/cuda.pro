@@ -165,7 +165,8 @@ SOURCES += \
        	CudaMasterContactSolver.cpp \
        	CudaSpatialGridContainer.cpp \
 	   	CudaUnilateralInteractionConstraint.cpp \
-	   	CudaPrecomputedWarpPreconditioner.cpp \  	
+	   	CudaPrecomputedWarpPreconditioner.cpp \
+		CudaPrecomputedLinearSolver.cpp \  	  	
        	CudaHexahedronFEMForceField.cpp \
 		#CudaHexahedronGeodesicalDistance.cpp \
      	CudaTetrahedronTLEDForceField.cpp \

@@ -316,18 +316,10 @@ void PrecomputedLinearSolver<TMatrix,TVector>::invert(TMatrix& /*M*/) {}
 SOFA_DECL_CLASS(PrecomputedLinearSolver)
 
 int PrecomputedLinearSolverClass = core::RegisterObject("linearSolveur M0inv to solve")
-//.add< CudaPrecomputedWarpPreconditioner<GraphScatteredMatrix,GraphScatteredVector> >(true)
-//.add< CudaPrecomputedWarpPreconditioner< CompressedRowSparseMatrix<double>, FullVector<double> > >()
-//.add< CudaPrecomputedWarpPreconditioner< SparseMatrix<double>, FullVector<double> > >()
-//.add< CudaPrecomputedWarpPreconditioner<NewMatBandMatrix,NewMatVector> >(true)
-//.add< CudaPrecomputedWarpPreconditioner<NewMatMatrix,NewMatVector> >()
-//.add< CudaPrecomputedWarpPreconditioner< NewMatSymmetricMatrix,NewMatVector> >()
-//.add< CudaPrecomputedWarpPreconditioner<NewMatSymmetricBandMatrix,NewMatVector> >()
 #ifndef SOFA_FLOAT
-        .add< PrecomputedLinearSolver< FullMatrix<double> , FullVector<double> > >()
+        .add< PrecomputedLinearSolver< FullMatrix<double> , FullVector<double> > >(true)
 #endif
         .add< PrecomputedLinearSolver< FullMatrix<float> , FullVector<float> > >()
-        .addAlias("CudaPrecomputedWarpPrecond")
         ;
 
 } // namespace linearsolver
