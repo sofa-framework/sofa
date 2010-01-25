@@ -65,8 +65,6 @@ SkinningMapping<BasicMapping>::SkinningMapping ( In* from, Out* to )
     , weightGradients ( initData ( &weightGradients,"weightGradients","weight gradients list for the influences of the references Dofs" ) )
     , nbRefs ( initData ( &nbRefs, ( unsigned ) 3,"nbRefs","nb references for skinning" ) )
     , showBlendedFrame ( initData ( &showBlendedFrame, false, "showBlendedFrame","weights list for the influences of the references Dofs" ) )
-    , computeJ ( initData ( &computeJ, false, "computeJ", "compute matrix J in addition to apply for the dual quat interpolation method." ) )
-    , computeAllMatrices ( initData ( &computeAllMatrices, false, "computeAllMatrices","compute all the matrices in addition to apply for the dual quat interpolation method." ) )
     , showDefTensors ( initData ( &showDefTensors, false, "showDefTensors","show computed deformation tensors." ) )
     , showDefTensorsValues ( initData ( &showDefTensorsValues, false, "showDefTensorsValues","Show Deformation Tensors Values." ) )
     , showDefTensorScale ( initData ( &showDefTensorScale, 1.0, "showDefTensorScale","deformation tensor scale." ) )
@@ -150,15 +148,18 @@ template <class BasicMapping>
 void SkinningMapping<BasicMapping>::computeDistances ()
 {
 #ifdef SOFA_DEV
-    VecInCoord& xfrom0 = *this->fromModel->getX0();
+    if( this->computeAllMatrices.getValue())
+    {
+        VecInCoord& xfrom0 = *this->fromModel->getX0();
 
-    GeoVecCoord tmpFrom;
-    tmpFrom.resize ( xfrom0.size() );
-    for ( unsigned int i = 0; i < xfrom0.size(); i++ )
-        tmpFrom[i] = xfrom0[i].getCenter();
+        GeoVecCoord tmpFrom;
+        tmpFrom.resize ( xfrom0.size() );
+        for ( unsigned int i = 0; i < xfrom0.size(); i++ )
+            tmpFrom[i] = xfrom0[i].getCenter();
 
-    if ( distanceType.getValue() == DISTANCE_GEODESIC && computeAllMatrices.getValue()) geoDist->computeGeodesicalDistanceMap ( tmpFrom );
-    if ( distanceType.getValue() == DISTANCE_HARMONIC && computeAllMatrices.getValue()) geoDist->computeHarmonicCoordsDistanceMap ( tmpFrom );
+        if ( distanceType.getValue() == DISTANCE_GEODESIC && this->computeAllMatrices.getValue()) geoDist->computeGeodesicalDistanceMap ( tmpFrom );
+        if ( distanceType.getValue() == DISTANCE_HARMONIC && this->computeAllMatrices.getValue()) geoDist->computeHarmonicCoordsDistanceMap ( tmpFrom );
+    }
 #endif
 
     getDistances( 0);
@@ -268,7 +269,7 @@ void SkinningMapping<BasicMapping>::init()
         {
             sortReferences ( m_reps);
         }
-        else if ( INTERPOLATION_DUAL_QUATERNION)
+        else if ( interpolationType.getValue() == INTERPOLATION_DUAL_QUATERNION)
         {
             VecCoord& xto = ( this->toModel->getX0() == NULL)?*this->toModel->getX():*this->toModel->getX0();
             VecInCoord& xfrom = *this->fromModel->getX0();
@@ -286,7 +287,7 @@ void SkinningMapping<BasicMapping>::init()
 #ifdef SOFA_DEV
         if ( interpolationType.getValue() == INTERPOLATION_DUAL_QUATERNION )
         {
-            if ( computeJ.getValue() || computeAllMatrices.getValue())
+            if ( this->computeJ.getValue() || this->computeAllMatrices.getValue())
                 this->J.resize ( xfrom.size() );
 
             DUALQUAT qi0;
@@ -367,8 +368,8 @@ void SkinningMapping<BasicMapping>::updateWeights ()
     VecCoord& xto = ( this->toModel->getX0() == NULL)?*this->toModel->getX():*this->toModel->getX0();
     VecInCoord& xfrom = *this->fromModel->getX0();
 
-    vector<vector<double> >& m_coefs = * ( coefs.beginEdit() );
-    Coefs<GeoCoord>& m_dweight = * ( weightGradients.beginEdit());
+    VVD& m_coefs = * ( coefs.beginEdit() );
+    SVector<SVector<GeoCoord> >& m_dweight = * ( weightGradients.beginEdit());
     const vector<int>& m_reps = repartition.getValue();
 
     m_coefs.resize ( xfrom.size() );
@@ -544,9 +545,9 @@ void SkinningMapping<BasicMapping>::updateWeights ()
 }
 
 template <class BasicMapping>
-void SkinningMapping<BasicMapping>::setWeightCoefs ( vector<vector<double> > &weights )
+void SkinningMapping<BasicMapping>::setWeightCoefs ( VVD &weights )
 {
-    vector<vector<double> > * m_coefs = coefs.beginEdit();
+    VVD * m_coefs = coefs.beginEdit();
     m_coefs->clear();
     m_coefs->insert ( m_coefs->begin(), weights.begin(), weights.end() );
     coefs.endEdit();
@@ -566,7 +567,7 @@ template <class BasicMapping>
 void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
     const vector<int>& m_reps = repartition.getValue();
-    const vector<vector<double> >& m_coefs = coefs.getValue();
+    const VVD& m_coefs = coefs.getValue();
 
     switch ( interpolationType.getValue() )
     {
@@ -613,8 +614,8 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
         Vec3 t;
         double QEQ0,Q0Q0,Q0,q0V0,q0Ve,qeV0;
         Mat44 q0q0T,q0qeT,qeq0T,q0V0T,V0q0T,q0VeT,Veq0T,qeV0T,V0qeT;
-        const vector<vector<double> >& w = coefs.getValue();
-        const Coefs<GeoCoord>& dw = weightGradients.getValue();
+        const VVD& w = coefs.getValue();
+        const SVector<SVector<GeoCoord> >& dw = weightGradients.getValue();
         VVec6& e = this->deformationTensors;
 
         // Resize vectors
@@ -654,7 +655,7 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
                 for ( j=0; j<3; j++ ) out[i][k]+=R[k][j]*initPos[i][j];
             }
 
-            if ( !(computeJ.getValue() || computeAllMatrices.getValue())) continue; // if we don't want to compute all the matrices
+            if ( !(this->computeJ.getValue() || this->computeAllMatrices.getValue())) continue; // if we don't want to compute all the matrices
 
             computeDqN_constants ( q0q0T, q0qeT, qeq0T, bn );
             computeDqN ( N, q0q0T, q0qeT, qeq0T, QEQ0, Q0Q0, Q0 );	//update N=d(bn)/d(b)
@@ -699,7 +700,7 @@ void SkinningMapping<BasicMapping>::apply ( typename Out::VecCoord& out, const t
                 this->J[j][i]=Q*NTL;
                 this->J[j][i]*=w[j][i]; // Update J=wiQNTL
 
-                if ( !computeAllMatrices.getValue()) continue; // if we want to compute just the J matrix
+                if ( !this->computeAllMatrices.getValue()) continue; // if we want to compute just the J matrix
 
                 QNT=QN*this->T[j]; // Update QNT
 
@@ -763,7 +764,7 @@ template <class BasicMapping>
 void SkinningMapping<BasicMapping>::applyJ ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
     const vector<int>& m_reps = repartition.getValue();
-    const vector<vector<double> >& m_coefs = coefs.getValue();
+    const VVD& m_coefs = coefs.getValue();
     VecCoord& xto = *this->toModel->getX();
     out.resize ( xto.size() );
     Deriv v,omega;
@@ -880,7 +881,7 @@ template <class BasicMapping>
 void SkinningMapping<BasicMapping>::applyJT ( typename In::VecDeriv& out, const typename Out::VecDeriv& in )
 {
     const vector<int>& m_reps = repartition.getValue();
-    const vector<vector<double> >& m_coefs = coefs.getValue();
+    const VVD& m_coefs = coefs.getValue();
 
     Deriv v,omega;
     if ( ! ( maskTo->isInUse() ) )
@@ -1003,7 +1004,7 @@ template <class BasicMapping>
 void SkinningMapping<BasicMapping>::applyJT ( typename In::VecConst& out, const typename Out::VecConst& in )
 {
     const vector<int>& m_reps = repartition.getValue();
-    const vector<vector<double> >& m_coefs = coefs.getValue();
+    const VVD& m_coefs = coefs.getValue();
     const unsigned int nbr = nbRefs.getValue();
     const unsigned int nbi = this->fromModel->getX()->size();
     Deriv omega;
@@ -1090,8 +1091,8 @@ void SkinningMapping<BasicMapping>::draw()
     const typename Out::VecCoord& xto = *this->toModel->getX();
     const typename In::VecCoord& xfrom = *this->fromModel->getX();
     const vector<int>& m_reps = repartition.getValue();
-    const vector<vector<double> >& m_coefs = coefs.getValue();
-    const Coefs<GeoCoord>& dw = weightGradients.getValue();
+    const VVD& m_coefs = coefs.getValue();
+    const SVector<SVector<GeoCoord> >& dw = weightGradients.getValue();
     const unsigned int nbRef = nbRefs.getValue();
     const int valueScale = showValuesNbDecimals.getValue();
     int scale = 1;
@@ -1234,7 +1235,7 @@ void SkinningMapping<BasicMapping>::draw()
     //*/
 
     // Deformation tensor show
-    if ( showDefTensors.getValue() && interpolationType.getValue() == INTERPOLATION_DUAL_QUATERNION && computeAllMatrices.getValue() )
+    if ( showDefTensors.getValue() && interpolationType.getValue() == INTERPOLATION_DUAL_QUATERNION && this->computeAllMatrices.getValue() )
     {
         TriangleSetTopologyContainer *mesh;
         this->getContext()->get( mesh);
@@ -1361,7 +1362,7 @@ void SkinningMapping<BasicMapping>::computeDqL ( Mat86& L, const DUALQUAT& qi, c
 }
 
 template <class BasicMapping>
-void SkinningMapping<BasicMapping>::BlendDualQuat ( DUALQUAT& b, DUALQUAT& bn, double& QEQ0, double& Q0Q0, double& Q0, const int& indexp, const VDUALQUAT& qrel, const vector<vector<double> >& w )
+void SkinningMapping<BasicMapping>::BlendDualQuat ( DUALQUAT& b, DUALQUAT& bn, double& QEQ0, double& Q0Q0, double& Q0, const int& indexp, const VDUALQUAT& qrel, const VVD& w )
 {
     int i,j,nbDOF=qrel.size();
     for ( i=0; i<4; i++ )
@@ -1944,8 +1945,8 @@ void SkinningMapping<BasicMapping>::updateDataAfterInsertion()
     const VecCoord& xto = *this->toModel->getX();
     const VecInCoord& xfrom0 = *this->fromModel->getX0();
     const VecInCoord& xfrom = *this->fromModel->getX();
-    vector<vector<double> >& m_coefs = * ( coefs.beginEdit() );
-    Coefs<GeoCoord>& dw = *(weightGradients.beginEdit());
+    VVD& m_coefs = * ( coefs.beginEdit() );
+    SVector<SVector<GeoCoord> >& dw = *(weightGradients.beginEdit());
     vector<double>& radius = (*newFrameWeightingRadius.beginEdit());
 
     changeSettingsDueToInsertion();
@@ -1974,7 +1975,7 @@ void SkinningMapping<BasicMapping>::updateDataAfterInsertion()
         XItoQ( qi0, xfrom0[i]);
         computeDqT ( this->T[i], qi0 );
 
-        // Update weights // TODO refaire generique
+        // Update weights
         m_coefs.resize ( xfrom.size() );
         m_coefs[i].resize ( xto.size() );
         dw.resize ( xfrom.size() );
@@ -2070,8 +2071,8 @@ void SkinningMapping<BasicMapping>::apply0()
     Vec3 t;
     double QEQ0=0,Q0Q0,Q0,q0V0,q0Ve,qeV0;
     Mat44 q0q0T,q0qeT,qeq0T,q0V0T,V0q0T,q0VeT,Veq0T,qeV0T,V0qeT;
-    const vector<vector<double> >& w = coefs.getValue();
-    const vector<vector<GeoCoord> >& dw = weightGradients.getValue();
+    const VVD& w = coefs.getValue();
+    const SVector<SVector<GeoCoord> >& dw = weightGradients.getValue();
     VVec6& e = this->deformationTensors;
 
     // Resize vectors
@@ -2109,7 +2110,7 @@ void SkinningMapping<BasicMapping>::apply0()
         for ( k=0; k<nbDOF; k++ ) Q0+=w[k][i];
         Q0Q0=Q0*Q0;
 
-        if ( !(computeJ.getValue() || computeAllMatrices.getValue())) continue; // if we don't want to compute all the matrices
+        if ( !(this->computeJ.getValue() || this->computeAllMatrices.getValue())) continue; // if we don't want to compute all the matrices
 
         computeDqN ( N, q0q0T, q0qeT, qeq0T, QEQ0, Q0Q0, Q0 );	//update N=d(bn)/d(b)
         computeDqQ ( Q, bn, initPos[i] );	//update Q=d(P)/d(bn)
@@ -2133,7 +2134,7 @@ void SkinningMapping<BasicMapping>::apply0()
             this->J0[j][i]=Q*NTL;
             this->J0[j][i]*=w[j][i]; // Update J=wiQNTL
 
-            if ( !computeAllMatrices.getValue()) continue; // if we want to compute just the J matrix
+            if ( !this->computeAllMatrices.getValue()) continue; // if we want to compute just the J matrix
 
             QNT=QN*this->T[j]; // Update QNT
 

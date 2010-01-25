@@ -32,6 +32,8 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/VecTypes.h>
 
+#include <sofa/helper/SVector.h>
+
 #include <vector>
 
 #include <sofa/component/component.h>
@@ -54,81 +56,11 @@ namespace component
 namespace mapping
 {
 
-#ifdef SOFA_DEV
-using sofa::component::topology::HexahedronGeodesicalDistance;
-#else
-using sofa::helper::vector;
-// TODO temporary declaration to avoid NO_DEV compilation errors.
-// TODO Create a DataVector type which is a Data<vector<T> > but which is serialized with delimiters.
-template <class T>
-class Coefs: public vector<vector<T> >
-{
-public:
-    Coefs() {};
-
-    std::ostream& write ( std::ostream& os ) const
-    {
-        if ( !this->empty() )
-        {
-            os << "[ ";
-            typename vector<vector<T> >::const_iterator i = this->begin();
-            os <<  i->size() << " " << *i ;
-            ++i;
-            for ( ; i!=this->end(); ++i )
-                os << " ],[ " << i->size() << " " << *i;
-            os << " ]";
-        }
-        return os;
-    }
-
-    std::istream& read ( std::istream& in )
-    {
-        T t;
-        this->clear();
-        while ( !in.eof() )
-        {
-            char c;
-            in >> c;
-            if ( c != '[' )
-            {
-                std::cerr << "Bad character : " << c << std::endl;
-                break;
-            }
-            this->push_back ( vector<T>() );
-            vector<T>& nextElt = this->back();
-            unsigned int sizeVec;
-            in >> sizeVec;
-            for (unsigned int i=0; i<sizeVec; ++i)
-            {
-                in >> t;
-                nextElt.push_back ( t );
-            }
-
-            in >> c; // ']'
-            in >> c; // ','
-        }
-        return in;
-    }
-
-    /// Output stream
-    inline friend std::ostream& operator<< ( std::ostream& os, const Coefs<T>& vec )
-    {
-        return vec.write ( os );
-    }
-
-    /// Input stream
-    inline friend std::istream& operator>> ( std::istream& in, Coefs<T>& vec )
-    {
-        return vec.read ( in );
-    }
-};
-
-#endif
-
 using sofa::helper::vector;
 using sofa::helper::Quater;
+using sofa::helper::SVector;
 #ifdef SOFA_DEV
-using sofa::component::topology::Coefs;
+using sofa::component::topology::HexahedronGeodesicalDistance;
 #endif
 
 #define DISTANCE_EUCLIDIAN 0
@@ -137,28 +69,28 @@ using sofa::component::topology::Coefs;
 
 #define WEIGHT_NONE 0
 #define WEIGHT_INVDIST_SQUARE 1
-#define WEIGHT_LINEAR 2 // TODO use the two nearest 'from' primitives
-#define WEIGHT_HERMITE 3 // TODO use the two nearest 'from' primitives
+#define WEIGHT_LINEAR 2
+#define WEIGHT_HERMITE 3
 #define WEIGHT_SPLINE 4
 
 #define INTERPOLATION_LINEAR 0
 #define INTERPOLATION_DUAL_QUATERNION 1
+
 /*
 typedef enum
 {
-  DISTANCE_EUCLIDIAN, DISTANCE_GEODESIC, DISTANCE_HARMONIC
+	DISTANCE_EUCLIDIAN, DISTANCE_GEODESIC, DISTANCE_HARMONIC
 } DistanceType;
 
 typedef enum
 {
-  WEIGHT_LINEAR, WEIGHT_INVDIST_SQUARE, WEIGHT_HERMITE
+	WEIGHT_LINEAR, WEIGHT_INVDIST_SQUARE, WEIGHT_HERMITE
 } WeightingType;
 
 typedef enum
 {
-  INTERPOLATION_LINEAR, INTERPOLATION_DUAL_QUATERNION
+	INTERPOLATION_LINEAR, INTERPOLATION_DUAL_QUATERNION
 } InterpolationType;*/
-
 
 
 template <class BasicMapping>
@@ -215,8 +147,8 @@ public:
     typedef defaulttype::Vec<8,Real> Vec8;
     typedef Quater<InReal> Quat;
     typedef sofa::helper::vector< VecCoord > VecVecCoord;
-    typedef vector<double> VD;
-    typedef Coefs<double> VVD;
+    typedef SVector<double> VD;
+    typedef SVector<SVector<double> > VVD;
 
 #ifdef SOFA_DEV
     // These typedef are here to avoid compilation pb encountered with ResizableExtVect Type.
@@ -240,13 +172,11 @@ protected:
     core::componentmodel::behavior::BaseMechanicalState::ParticleMask* maskTo;
 
     Data<vector<int> > repartition;
-    Data<Coefs<double> > coefs;
-    Data<Coefs<GeoCoord> > weightGradients;
+    Data<VVD > coefs;
+    Data<SVector<SVector<GeoCoord> > > weightGradients;
     Data<unsigned int> nbRefs;
 public:
     Data<bool> showBlendedFrame;
-    Data<bool> computeJ;
-    Data<bool> computeAllMatrices;
     Data<bool> showDefTensors;
     Data<bool> showDefTensorsValues;
     Data<double> showDefTensorScale;
@@ -276,7 +206,7 @@ protected:
     Data<int /* = InterpolationType*/> interpolationType;
     Data<int /* = DistanceType*/> distanceType;
     bool computeWeights;
-    Coefs<double> distances;
+    VVD distances;
     vector<vector<GeoCoord> > distGradients;
 
     inline void computeInitPos();
@@ -314,7 +244,7 @@ public:
     {
         nbRefs.setValue ( nb );
     }
-    void setWeightCoefs ( vector<vector<double> > &weights );
+    void setWeightCoefs ( VVD& weights );
     void setRepartition ( vector<int> &rep );
     void setComputeWeights ( bool val )
     {
@@ -324,7 +254,7 @@ public:
     {
         return nbRefs.getValue();
     }
-    const vector<vector<double> >& getWeightCoefs()
+    const VVD& getWeightCoefs()
     {
         return coefs.getValue();
     }
@@ -339,7 +269,7 @@ public:
 
 #ifdef SOFA_DEV
     void computeDqL ( Mat86& L, const DUALQUAT& qi, const Coord& ti );
-    void BlendDualQuat ( DUALQUAT& b, DUALQUAT& bn, double& QEQ0, double& Q0Q0, double& Q0, const int& indexp, const VDUALQUAT& qrel, const vector<vector<double> >& w );
+    void BlendDualQuat ( DUALQUAT& b, DUALQUAT& bn, double& QEQ0, double& Q0Q0, double& Q0, const int& indexp, const VDUALQUAT& qrel, const VVD& w );
 
     void computeQrel ( DUALQUAT& qrel, const Mat88& T, const DUALQUAT& q );
     void computeDqRigid ( Mat33& R, Vec3& t, const DUALQUAT& bn );
