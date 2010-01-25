@@ -204,7 +204,7 @@ bool LMConstraintSolver::prepareStates(double /*dt*/, VecId Order)
 
 
 
-bool LMConstraintSolver::buildSystem(double /*dt*/, VecId)
+bool LMConstraintSolver::buildSystem(double /*dt*/, VecId id)
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     sofa::simulation::Visitor::printNode("SystemCreation");
@@ -224,6 +224,14 @@ bool LMConstraintSolver::buildSystem(double /*dt*/, VecId)
         ++it;
 
         if (!(*currentIt)->getContext()->getMass()) setDofs.erase(currentIt);
+#ifdef SOFA_DUMP_VISITOR_INFO
+        else if (sofa::simulation::Visitor::IsExportStateVectorEnabled())
+        {
+            sofa::simulation::Visitor::printNode("Input_"+(*currentIt)->getName());
+            sofa::simulation::Visitor::printVector(*currentIt, id);
+            sofa::simulation::Visitor::printCloseNode("Input_"+(*currentIt)->getName());
+        }
+#endif
     }
 
 
@@ -330,6 +338,15 @@ bool LMConstraintSolver::applyCorrection(double /*dt*/, VecId id)
         const VectorEigen &LambdaVector=*Lambda;
         bool updateVelocities=!constraintVel.getValue();
         constraintStateCorrection(id, updateVelocities,invMass_Ltrans[dofs] , LambdaVector, dofUsed[dofs], dofs);
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+        if (sofa::simulation::Visitor::IsExportStateVectorEnabled())
+        {
+            sofa::simulation::Visitor::printNode("Output_"+dofs->getName());
+            sofa::simulation::Visitor::printVector(dofs, id);
+            sofa::simulation::Visitor::printCloseNode("Output_"+dofs->getName());
+        }
+#endif
     }
 
 #ifdef SOFA_DUMP_VISITOR_INFO
