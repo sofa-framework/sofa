@@ -71,6 +71,7 @@ HEADERS += \
           rmath.h \
           RandomGenerator.h \
           set.h \
+          SVector.h \
           system/config.h \
           system/gl.h \
           system/glu.h \
