@@ -114,10 +114,10 @@ void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrix()
 // 	unsigned dof_on_node = v0[0].size();
 // 	unsigned nbNodes = v0.size();
 
-// 	EulerImplicitSolver* EulerSolver;
-// 	this->getContext()->get(EulerSolver);
+    EulerImplicitSolver* EulerSolver;
+    this->getContext()->get(EulerSolver);
     double factInt = 1.0; // christian : it is not a compliance... but an admittance that is computed !
-//  	if (EulerSolver) factInt = EulerSolver->getPositionIntegrationFactor(); // here, we compute a compliance
+    if (EulerSolver) factInt = EulerSolver->getPositionIntegrationFactor(); // here, we compute a compliance
 
     std::stringstream ss;
     ss << this->getContext()->getName() << "-" << systemSyze << "-" << dt << ".comp";
