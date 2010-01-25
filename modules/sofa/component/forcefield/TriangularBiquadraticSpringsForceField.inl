@@ -91,9 +91,11 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleCreationFunc
         typename DataTypes::Real area,restSquareLength[3],cotangent[3];
         typename DataTypes::Real lambda=ff->getLambda();
         typename DataTypes::Real mu=ff->getMu();
-
+        const typename DataTypes::VecCoord *restPosition=ff->mstate->getX0();
         helper::vector<typename TriangularBiquadraticSpringsForceField<DataTypes>::EdgeRestInformation>& edgeInf = *(edgeInfo.beginEdit());
 
+        ///describe the indices of the 3 triangle vertices
+        const Triangle &t= ff->_topology->getTriangle(triangleIndex);
         /// describe the jth edge index of triangle no i
         const EdgesInTriangle &te= ff->_topology->getEdgesInTriangle(triangleIndex);
         // store square rest length
@@ -108,6 +110,9 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::TRBSTriangleCreationFunc
             area+=restSquareLength[j]*(restSquareLength[(j+1)%3] +restSquareLength[(j+2)%3]-restSquareLength[j]);
         }
         area=sqrt(area)/4;
+        tinfo.restArea=area;
+        tinfo.currentNormal= cross<Real>((*restPosition)[t[1]]-(*restPosition)[t[0]],(*restPosition)[t[2]]-(*restPosition)[t[0]])/(2*area);
+        tinfo.lastValidNormal=tinfo.currentNormal;
 
         for(j=0; j<3; ++j)
         {
@@ -162,6 +167,8 @@ template <class DataTypes> TriangularBiquadraticSpringsForceField<DataTypes>::Tr
     , f_youngModulus(initData(&f_youngModulus,(Real)1000.,"youngModulus","Young modulus in Hooke's law"))
     , f_dampingRatio(initData(&f_dampingRatio,(Real)0.,"dampingRatio","Ratio damping/stiffness"))
     , f_useAngularSprings(initData(&f_useAngularSprings,true,"useAngularSprings","If Angular Springs should be used or not"))
+    , f_compressible(initData(&f_compressible,true,"compressible","If additional energy penalizing compressibility should be used"))
+    , f_stiffnessMatrixRegularizationWeight(initData(&f_stiffnessMatrixRegularizationWeight,(Real)0.4,"matrixRegularization","Regularization of the Stiffnes Matrix (between 0 and 1)"))
     , lambda(0)
     , mu(0)
 {
@@ -183,9 +190,8 @@ template <class DataTypes> TriangularBiquadraticSpringsForceField<DataTypes>::~T
 
 template <class DataTypes> void TriangularBiquadraticSpringsForceField<DataTypes>::init()
 {
-    serr << "initializing TriangularBiquadraticSpringsForceField" << sendl;
+//	serr << "initializing TriangularBiquadraticSpringsForceField" << sendl;
     this->Inherited::init();
-
     _topology = this->getContext()->getMeshTopology();
 
     if (_topology->getNbTriangles()==0)
@@ -249,6 +255,8 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(VecDeriv& f, co
     unsigned int j,k,l,v0,v1;
     int nbEdges=_topology->getNbEdges();
     int nbTriangles=_topology->getNbTriangles();
+    bool compressible=f_compressible.getValue();
+    Real areaStiffness=(getLambda()+getMu())*3;
 
     Real val,L;
     TriangleRestInformation *tinfo;
@@ -282,6 +290,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(VecDeriv& f, co
     }
     if (f_useAngularSprings.getValue()==true)
     {
+        Real JJ;
         for(int i=0; i<nbTriangles; i++ )
         {
             tinfo=&triangleInf[i];
@@ -295,10 +304,46 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(VecDeriv& f, co
             {
                 k=(j+1)%3;
                 l=(j+2)%3;
-                force=(x[ta[k]] - x[ta[l]])*
+                tinfo->dp[j]=x[ta[l]] - x[ta[k]];
+                force= -tinfo->dp[j]*
                         (edgeInf[tea[k]].deltaL2 * tinfo->gamma[l] +edgeInf[tea[l]].deltaL2 * tinfo->gamma[k]);
                 f[ta[l]]+=force;
                 f[ta[k]]-=force;
+            }
+            if (compressible)
+            {
+                tinfo->currentNormal= -cross<Real>(tinfo->dp[2],tinfo->dp[1]);
+                tinfo->area=tinfo->currentNormal.norm()/2;
+                tinfo->J=(tinfo->area/tinfo->restArea);
+                if (tinfo->J<1)   // only apply compressible force if the triangle is compressed
+                {
+                    JJ=tinfo->J-1;
+                    if (tinfo->J<1e-2)
+                    {
+                        /// if the current area is too small compared to its original value, then the normal is considered to
+                        // be non valid. It is replaced by its last reasonable value
+                        // this is to cope with very flat triangles
+                        tinfo->currentNormal=tinfo->lastValidNormal;
+                    }
+                    else
+                    {
+                        tinfo->currentNormal/= (2*tinfo->area);
+                        if (dot(tinfo->currentNormal,tinfo->lastValidNormal) >-0.5) // if the normal has suddenly flipped (= angle changed is large)
+                            tinfo->lastValidNormal=tinfo->currentNormal;
+                        else
+                        {
+                            cerr << "triangle "<<i<<" has flipped"<<endl;
+                            tinfo->currentNormal*= -1.0;
+                        }
+                    }
+                    val= areaStiffness*JJ*JJ*JJ;
+                    // computes area vector
+                    for(j=0; j<3; ++j)
+                    {
+                        tinfo->areaVector[j]=cross(tinfo->currentNormal,tinfo->dp[j])/2;
+                        f[ta[j]]-= tinfo->areaVector[j]*val;
+                    }
+                }
             }
         }
         //	serr << "tinfo->gamma[0] "<<tinfo->gamma[0]<<sendl;
@@ -307,6 +352,7 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addForce(VecDeriv& f, co
     edgeInfo.endEdit();
     triangleInfo.endEdit();
     updateMatrix=true;
+
 }
 
 
@@ -315,14 +361,15 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addDForce(VecDeriv& df, 
 {
     unsigned int i,j,k;
     int nbTriangles=_topology->getNbTriangles();
-
+    bool compressible=f_compressible.getValue();
+    Real areaStiffness=(getLambda()+getMu())*3;
     TriangleRestInformation *tinfo;
 
 //	serr << "start addDForce" << sendl;
 
 
-    assert(this->mstate);
-    VecDeriv& x = *this->mstate->getX();
+//	assert(this->mstate);
+//	VecDeriv& x = *this->mstate->getX();
 
 
     Deriv deltax,res;
@@ -335,8 +382,9 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addDForce(VecDeriv& df, 
     if (updateMatrix)
     {
         int u,v;
-        Real val1,val2,vali,valj,valk;
-        Coord dpj,dpk,dpi;
+        Real val1,val2,vali,valj,valk,JJ,dpij,h,lengthSquare[3],totalLength;
+        Coord dpj,dpk,dpi,dp;
+        Mat3 m1,m2;
 
         //	serr <<"updating matrix"<<sendl;
         updateMatrix=false;
@@ -346,20 +394,17 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addDForce(VecDeriv& df, 
             /// describe the jth edge index of triangle no i
             const EdgesInTriangle &tea= _topology->getEdgesInTriangle(l);
             /// describe the jth vertex index of triangle no i
-            const Triangle &ta= _topology->getTriangle(l);
+//			const Triangle &ta= _topology->getTriangle(l);
 
             // store points
             for(k=0; k<3; ++k)
             {
-                i=(k+1)%3;
-                j=(k+2)%3;
                 Mat3 &m=tinfo->DfDx[k];
-                dpk = x[ta[i]]- x[ta[j]];
+                dpk = -tinfo->dp[k];
 
                 if (f_useAngularSprings.getValue()==false)
                 {
                     val1 = -tinfo->stiffness[k]*edgeInf[tea[k]].deltaL2;
-
                     val2= -2*tinfo->stiffness[k];
 
                     for (u=0; u<3; ++u)
@@ -370,12 +415,13 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addDForce(VecDeriv& df, 
                         }
                         m[u][u]+=val1;
                     }
-
                 }
                 else
                 {
-                    dpj = x[ta[i]]- x[ta[k]];
-                    dpi = x[ta[j]]- x[ta[k]];
+                    i=(k+1)%3;
+                    j=(k+2)%3;
+                    dpj = tinfo->dp[j];//x[ta[i]]- x[ta[k]];
+                    dpi = -tinfo->dp[i];//x[ta[j]]- x[ta[k]];
 
                     val1 = -(tinfo->stiffness[k]*edgeInf[tea[k]].deltaL2+
                             tinfo->gamma[i]*edgeInf[tea[j]].deltaL2+
@@ -386,7 +432,6 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addDForce(VecDeriv& df, 
                     vali=2*tinfo->gamma[i];
                     valj=2*tinfo->gamma[j];
 
-
                     for (u=0; u<3; ++u)
                     {
                         for (v=0; v<3; ++v)
@@ -395,14 +440,64 @@ void TriangularBiquadraticSpringsForceField<DataTypes>::addDForce(VecDeriv& df, 
                                     +dpj[u]*dpi[v]*valk
                                     -dpj[u]*dpk[v]*vali
                                     +dpk[u]*dpi[v]*valj;
-
                         }
                         m[u][u]+=val1;
                     }
                 }
             }
-        }
+            if ((compressible) && (tinfo->J<1.0))
+            {
+                JJ=tinfo->J-1;
 
+                h=- -JJ;
+                val2= 3*areaStiffness*JJ*JJ/tinfo->restArea;
+                val1= areaStiffness*JJ*JJ*JJ/2;
+                dp= -tinfo->currentNormal*val1; // vector for antisymmetric matrix
+                // compute m1 as the tensor product of n X n
+                val1/=2*tinfo->area;
+                for (u=0; u<3; ++u)
+                {
+                    for (v=0; v<3; ++v)
+                    {
+                        m1[u][v]=tinfo->currentNormal[u]*tinfo->currentNormal[v]*val1;
+                    }
+                }
+                lengthSquare[0]=edgeInf[tea[0]].currentSquareLength;
+                lengthSquare[1]=edgeInf[tea[1]].currentSquareLength;
+                lengthSquare[2]=edgeInf[tea[2]].currentSquareLength;
+                totalLength=lengthSquare[0]+lengthSquare[1]+lengthSquare[2];
+                for(k=0; k<3; ++k)
+                {
+                    Mat3 &m=tinfo->DfDx[k];
+                    val1= totalLength-2*lengthSquare[k];
+                    // add antisymmetric matrix
+                    m[0][1]+=dp[2];
+                    m[0][2]-=dp[1];
+                    m[1][0]-=dp[2];
+                    m[1][2]+=dp[0];
+                    m[2][0]+=dp[1];
+                    m[2][1]-=dp[0];
+                    dpi=tinfo->areaVector[(k+1)%3];
+                    dpj=tinfo->areaVector[(k+2)%3];
+                    /// the trace of the tensor product av[k]^T av[l]
+                    dpij=dot(dpi,dpj);
+                    /// adds a weighted average between the tensor product of av[k]^T av[l] and the trace* Identity
+                    /// if h = 0 matrix is singular if h=1 matrix is proportional to identity
+                    for (u=0; u<3; ++u)
+                    {
+                        for (v=0; v<3; ++v)
+                        {
+                            m[u][v]+=(1-h)*dpi[u]*dpj[v]*val2;
+                            m[u][v]+=m1[u][v]*val1;
+                            if (u==v)
+                            {
+                                m[u][v]+=h*val2*dpij;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     for(int l=0; l<nbTriangles; l++ )
