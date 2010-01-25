@@ -130,12 +130,13 @@ WindowVisitor::WindowVisitor()
     icons[COMPONENT] = new QPixmap(*img[COMPONENT]);
     icons[OTHER]   = new QPixmap(*img[OTHER]  );
 #endif
+    //Add Control Panel
+    controlPanel = new QVisitorControlPanel(this);
+    static_cast<QVBoxLayout*>(this->layout())->insertWidget(0, controlPanel);
+    connect( controlPanel, SIGNAL(focusOn(QString)), this, SLOT(focusOn(QString)));
 
-#ifdef SOFA_QT4
+
     statsWidget=new QWidget(splitterStats);
-#else
-    statsWidget=new QWidget(splitterStats);
-#endif
 
     QGridLayout *statsLayout=new QGridLayout(statsWidget);
 
@@ -159,9 +160,6 @@ WindowVisitor::WindowVisitor()
     statsLayout->addWidget(typeOfCharts,0,0);
     statsLayout->addWidget(chartsComponent,1,0);
     statsLayout->addWidget(chartsVisitor,2,0);
-
-
-
     connect(typeOfCharts, SIGNAL(activated(int)), this, SLOT(setCurrentCharts(int)));
 }
 
@@ -213,6 +211,47 @@ void WindowVisitor::rightClick(Q3ListViewItem *item, const QPoint &point, int in
     }
 }
 
+void WindowVisitor::focusOn(QString text)
+{
+    Q3ListViewItem *item = graphView->firstChild();
+
+    while (item)
+    {
+        bool found=setFocusOn(item, text);
+        if (found) return;
+        item = item->nextSibling();
+    }
+    graphView->clearSelection();
+
+}
+
+bool WindowVisitor::setFocusOn(Q3ListViewItem *item, QString text)
+{
+    for ( int c=0; c<graphView->columns(); ++c)
+    {
+        if (item->text(c).contains(text, false))
+        {
+            if ( !graphView->selectedItem() ||
+                    graphView->itemPos(graphView->selectedItem()) < graphView->itemPos(item) )
+            {
+                graphView->ensureItemVisible(item);
+                graphView->clearSelection();
+                graphView->setSelected(item,true);
+                item->setOpen(true);
+                return true;
+            }
+        }
+    }
+
+    item = item->firstChild();
+    while (item)
+    {
+        bool found=setFocusOn(item, text);
+        if (found) return true;
+        item = item->nextSibling();
+    }
+    return false;
+}
 
 void WindowVisitor::expandNode()
 {
@@ -241,19 +280,26 @@ void WindowVisitor::expandNode(Q3ListViewItem* item)
 void WindowVisitor::collapseNode()
 {
     collapseNode(graphView->currentItem());
+    Q3ListViewItem* item = graphView->currentItem();
+    item = item->firstChild();
+    while (item)
+    {
+        collapseNode(item);
+        item = item->nextSibling();
+    }
+    graphView->currentItem()->setOpen(true);
 }
 void WindowVisitor::collapseNode(Q3ListViewItem* item)
 {
     if (!item) return;
 
-    Q3ListViewItem* child;
-    child = item->firstChild();
-    while ( child != NULL )
+    item->setOpen(false);
+    item = item->firstChild();
+    while ( item )
     {
-        child->setOpen ( false );
-        child = child->nextSibling();
+        collapseNode(item);
+        item = item->nextSibling();
     }
-    item->setOpen ( true );
 }
 
 

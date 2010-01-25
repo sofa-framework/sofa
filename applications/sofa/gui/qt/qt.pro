@@ -76,6 +76,7 @@ HEADERS += viewer/SofaViewer.h \
 		   QMonitorTableWidget.inl \
                    QTabulationModifyObject.h \
                    QTransformationWidget.h \
+                   QVisitorControlPanel.h \
            QMouseOperations.h \
            ImageQt.h
 
@@ -104,6 +105,7 @@ SOURCES += Main.cpp \
 		   QMouseOperations.cpp \               
                    QTabulationModifyObject.cpp \
                    QTransformationWidget.cpp \
+                   QVisitorControlPanel.cpp \
            ImageQt.cpp
 
 contains (DEFINES, SOFA_DUMP_VISITOR_INFO){
