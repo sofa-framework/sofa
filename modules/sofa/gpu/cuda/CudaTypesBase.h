@@ -30,6 +30,31 @@
 
 //#define DEBUG_BASE
 
+extern "C"
+{
+    void matrix_vector_productf(int dim,const void * M,int mPitch,const void * r,void * z);
+    void matrix_vector_productd(int dim,const void * M,int mPitch,const void * r,void * z);
+}
+
+template<typename real> class CudaBaseMatrixKernels;
+
+template<> class CudaBaseMatrixKernels<float>
+{
+public:
+    static void matrix_vector_product(int dim,const void * M,int mPitch,const void * r,void * z)
+    {   matrix_vector_productf(dim,M,mPitch,r,z); }
+};
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template<> class CudaBaseMatrixKernels<double>
+{
+public:
+    static void matrix_vector_product(int dim,const void * M,int mPitch,const void * r,void * z)
+    {   matrix_vector_productd(dim,M,mPitch,r,z); }
+};
+#endif
+
+
 namespace sofa
 {
 namespace gpu
@@ -40,9 +65,75 @@ namespace cuda
 using namespace sofa::defaulttype;
 
 template <class T>
+class CudaBaseVector : public BaseVector
+{
+
+public :
+    CudaVector<T>& getCudaVector()
+    {
+        return v;
+    }
+
+    T& operator[](int i)
+    {
+        return v[i];
+    }
+
+    const T& operator[](int i) const
+    {
+        return v[i];
+    }
+
+    void resize(int nbRow)
+    {
+        v.resize(nbRow);
+    }
+
+    void resize(int nbRow,int warp_size)
+    {
+        v.resize(nbRow,warp_size);
+    }
+
+    unsigned int size() const
+    {
+        return v.size();
+    }
+
+    SReal element(int i) const
+    {
+        return v[i];
+    }
+
+    void clear()
+    {
+        //for (unsigned int i=0; i<size(); i++) v[i]=(T)(0.0);
+        v.memsetHost();
+    }
+
+    void set(int i, SReal val)
+    {
+        v[i] = (T) val;
+    }
+
+    void add(int i, SReal val)
+    {
+        v[i] += (T)val;
+    }
+
+    static std::string Name()
+    {
+        return "CudaBaseVector";
+    }
+
+private :
+    CudaVector<T> v;
+};
+
+template <class T>
 class CudaBaseMatrix : public BaseMatrix
 {
 public :
+    typedef T Real;
 
     CudaMatrix<T> & getCudaMatrix()
     {
@@ -118,74 +209,31 @@ public :
         return "CudaBaseMatrix";
     }
 
+    CudaBaseVector<Real> operator*(const CudaBaseVector<Real> & v) const
+    {
+        CudaBaseVector<Real> res(rowSize());
+        CudaBaseMatrixKernels<Real>::matrix_vector_product(rowSize(),
+                m.deviceRead(),
+                m.getPitch(),
+                v.getCudaVector().deviceRead(),
+                res.getCudaVector().deviceWrite());
+        return res;
+    }
+
+    void mult(CudaBaseVector<Real>& v,CudaBaseVector<Real> & r)
+    {
+        CudaBaseMatrixKernels<Real>::matrix_vector_product(rowSize(),
+                m.deviceRead(),
+                m.getPitch(),
+                r.getCudaVector().deviceRead(),
+                v.getCudaVector().deviceWrite());
+    }
+
+
 private :
     CudaMatrix<T> m;
 };
 
-template <class T>
-class CudaBaseVector : public BaseVector
-{
-
-public :
-    CudaVector<T>& getCudaVector()
-    {
-        return v;
-    }
-
-    T& operator[](int i)
-    {
-        return v[i];
-    }
-
-    const T& operator[](int i) const
-    {
-        return v[i];
-    }
-
-    void resize(int nbRow)
-    {
-        v.resize(nbRow);
-    }
-
-    void resize(int nbRow,int warp_size)
-    {
-        v.resize(nbRow,warp_size);
-    }
-
-    unsigned int size() const
-    {
-        return v.size();
-    }
-
-    SReal element(int i) const
-    {
-        return v[i];
-    }
-
-    void clear()
-    {
-        //for (unsigned int i=0; i<size(); i++) v[i]=(T)(0.0);
-        v.memsetHost();
-    }
-
-    void set(int i, SReal val)
-    {
-        v[i] = (T) val;
-    }
-
-    void add(int i, SReal val)
-    {
-        v[i] += (T)val;
-    }
-
-    static std::string Name()
-    {
-        return "CudaBaseVector";
-    }
-
-private :
-    CudaVector<T> v;
-};
 
 } // namespace cuda
 } // namespace gpu
