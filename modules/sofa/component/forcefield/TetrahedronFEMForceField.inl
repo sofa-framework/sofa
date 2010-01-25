@@ -167,6 +167,69 @@ void TetrahedronFEMForceField<DataTypes>::computeStiffnessMatrix( StiffnessMatri
     SR = S*RRt;
 }
 
+template <class DataTypes>
+inline void TetrahedronFEMForceField<DataTypes>::getElementStiffnessMatrix(Real* stiffness, unsigned int elementIndex)
+{
+// 	helper::vector<TetrahedronInformation>& tetraInf = *(tetrahedronInfo.beginEdit());
+    Transformation Rot;
+    StiffnessMatrix JKJt,tmp;
+    Rot[0][0]=Rot[1][1]=Rot[2][2]=1;
+    Rot[0][1]=Rot[0][2]=0;
+    Rot[1][0]=Rot[1][2]=0;
+    Rot[2][0]=Rot[2][1]=0;
+    computeStiffnessMatrix(JKJt,tmp,_materialsStiffnesses[elementIndex], _strainDisplacements[elementIndex],Rot);
+    for(int i=0; i<12; i++)
+    {
+        for(int j=0; j<12; j++)
+            stiffness[i*12+j]=JKJt(i,j);
+    }
+// 	tetrahedronInfo.endEdit();
+}
+
+template <class DataTypes>
+inline void TetrahedronFEMForceField<DataTypes>::getElementStiffnessMatrix(Real* stiffness, Tetra& te)
+{
+    const VecCoord *X0=this->mstate->getX0();
+
+    Index a = te[0];
+    Index b = te[1];
+    Index c = te[2];
+    Index d = te[3];
+
+    Transformation R_0_1;
+    computeRotationLarge( R_0_1, (*X0), a, b, c);
+
+    MaterialStiffness	materialMatrix;
+    StrainDisplacement	strainMatrix;
+    helper::fixed_array<Coord,4> rotatedInitialElements;
+
+    rotatedInitialElements[0] = R_0_1*(*X0)[a];
+    rotatedInitialElements[1] = R_0_1*(*X0)[b];
+    rotatedInitialElements[2] = R_0_1*(*X0)[c];
+    rotatedInitialElements[3] = R_0_1*(*X0)[d];
+
+    rotatedInitialElements[1] -= rotatedInitialElements[0];
+    rotatedInitialElements[2] -= rotatedInitialElements[0];
+    rotatedInitialElements[3] -= rotatedInitialElements[0];
+    rotatedInitialElements[0] = Coord(0,0,0);
+
+    computeMaterialStiffness(materialMatrix,a,b,c,d);
+    computeStrainDisplacement(strainMatrix, rotatedInitialElements[0], rotatedInitialElements[1], rotatedInitialElements[2], rotatedInitialElements[3]);
+
+    Transformation Rot;
+    StiffnessMatrix JKJt,tmp;
+    Rot[0][0]=Rot[1][1]=Rot[2][2]=1;
+    Rot[0][1]=Rot[0][2]=0;
+    Rot[1][0]=Rot[1][2]=0;
+    Rot[2][0]=Rot[2][1]=0;
+    computeStiffnessMatrix(JKJt, tmp, materialMatrix, strainMatrix, Rot);
+    for(int i=0; i<12; i++)
+    {
+        for(int j=0; j<12; j++)
+            stiffness[i*12+j]=JKJt(i,j);
+    }
+}
+
 
 template<class DataTypes>
 void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(int i, Index&a, Index&b, Index&c, Index&d)
@@ -215,6 +278,40 @@ void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(int i, Index&
         serr << "ERROR: Negative volume for tetra "<<i<<" <"<<a<<','<<b<<','<<c<<','<<d<<"> = "<<volumes6/6<<sendl;
     }
     _materialsStiffnesses[i] /= volumes6*6; // 36*Volume in the formula
+}
+
+template<class DataTypes>
+void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(MaterialStiffness& materialMatrix, Index&a, Index&b, Index&c, Index&d)
+{
+
+    //const VecReal& localStiffnessFactor = _localStiffnessFactor.getValue();
+    const Real youngModulus = _youngModulus.getValue();
+    const Real poissonRatio = _poissonRatio.getValue();
+
+    materialMatrix[0][0] = materialMatrix[1][1] = materialMatrix[2][2] = 1;
+    materialMatrix[0][1] = materialMatrix[0][2] = materialMatrix[1][0] = materialMatrix[1][2] = materialMatrix[2][0] = materialMatrix[2][1] = poissonRatio/(1-poissonRatio);
+    materialMatrix[0][3] = materialMatrix[0][4] = materialMatrix[0][5] = 0;
+    materialMatrix[1][3] = materialMatrix[1][4] = materialMatrix[1][5] = 0;
+    materialMatrix[2][3] = materialMatrix[2][4] = materialMatrix[2][5] = 0;
+    materialMatrix[3][0] = materialMatrix[3][1] = materialMatrix[3][2] = materialMatrix[3][4] = materialMatrix[3][5] = 0;
+    materialMatrix[4][0] = materialMatrix[4][1] = materialMatrix[4][2] = materialMatrix[4][3] = materialMatrix[4][5] = 0;
+    materialMatrix[5][0] = materialMatrix[5][1] = materialMatrix[5][2] = materialMatrix[5][3] = materialMatrix[5][4] = 0;
+    materialMatrix[3][3] = materialMatrix[4][4] = materialMatrix[5][5] = (1-2*poissonRatio)/(2*(1-poissonRatio));
+    materialMatrix *= (youngModulus*(1-poissonRatio))/((1+poissonRatio)*(1-2*poissonRatio));
+
+    // divide by 36 times volumes of the element
+    const VecCoord *X0=this->mstate->getX0();
+
+    Coord A = (*X0)[b] - (*X0)[a];
+    Coord B = (*X0)[c] - (*X0)[a];
+    Coord C = (*X0)[d] - (*X0)[a];
+    Coord AB = cross(A, B);
+    Real volumes6 = fabs( dot( AB, C ) );
+    if (volumes6<0)
+    {
+        serr << "ERROR: Negative volume for tetra"<<a<<','<<b<<','<<c<<','<<d<<"> = "<<volumes6/6<<sendl;
+    }
+    materialMatrix  /= volumes6;
 }
 
 template<class DataTypes>
