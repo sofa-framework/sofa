@@ -189,6 +189,12 @@ inline void TetrahedronFEMForceField<DataTypes>::getElementStiffnessMatrix(Real*
 template <class DataTypes>
 inline void TetrahedronFEMForceField<DataTypes>::getElementStiffnessMatrix(Real* stiffness, Tetra& te)
 {
+    if (needUpdateTopology)
+    {
+        reinit();
+        needUpdateTopology = false;
+    }
+
     const VecCoord *X0=this->mstate->getX0();
 
     Index a = te[0];
