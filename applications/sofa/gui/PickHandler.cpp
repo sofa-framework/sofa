@@ -180,6 +180,7 @@ void PickHandler::updateRay(const sofa::defaulttype::Vector3 &position,const sof
 
     mouseCollision->getRay(0).origin() = position+orientation*interaction->mouseInteractor->getDistanceFromMouse();
     mouseCollision->getRay(0).direction() = orientation;
+    simulation::MechanicalPropagatePositionVisitor().execute(mouseCollision->getContext());
 
     if (needToCastRay())
     {
