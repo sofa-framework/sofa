@@ -59,10 +59,10 @@ using std::endl;
 
 /// Linear system solver using the conjugate gradient iterative algorithm
 template<class TDataTypes>
-class PrecomputedWarpPreconditioner : public LinearSolver
+class WarpPreconditioner : public LinearSolver
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(PrecomputedWarpPreconditioner,TDataTypes),sofa::core::componentmodel::behavior::LinearSolver);
+    SOFA_CLASS(SOFA_TEMPLATE2(WarpPreconditioner,TDataTypes),sofa::core::componentmodel::behavior::LinearSolver);
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecConst VecConst;
     typedef typename TDataTypes::VecDeriv VecDeriv;
@@ -78,28 +78,94 @@ public:
     typedef MatNoInit<3, 3, Real> Transformation;
 
     Data<bool> f_verbose;
-    Data<bool> use_file;
     Data <std::string> solverName;
-    Data<int> init_MaxIter;
-    Data<double> init_Tolerance;
-    Data<double> init_Threshold;
-    Data<bool> init_bw;
-    Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
 
-    double init_mFact;
-    double init_bFact;
-    double init_kFact;
-
-    CudaPrecomputedWarpPreconditioner();
-    void solve (TMatrix& M, TVector& x, TVector& b);
-    void invert(TMatrix& M);
-    void setSystemMBKMatrix(double mFact=0.0, double bFact=0.0, double kFact=0.0);
-    bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact);
+    WarpPreconditioner();
+    //void solve (TMatrix& M, TVector& x, TVector& b);
+    //void invert(TMatrix& M);
+    //void setSystemMBKMatrix(double mFact=0.0, double bFact=0.0, double kFact=0.0);
+    //bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact);
     void bwdInit();
-    void loadMatrix();
+    //void loadMatrix();
 
-    template<class JMatrix>
-    void ComputeCudaResult(CudaBaseMatrix<float>& result,JMatrix& J, float fact, bool localW);
+    /// Reset the current linear system.
+    virtual void resetSystem()
+    { if (realSolver) realSolver->resetSystem(); }
+
+    /// Set the linear system matrix, combining the mechanical M,B,K matrices using the given coefficients
+    ///
+    /// @todo Should we put this method in a specialized class for mechanical systems, or express it using more general terms (i.e. coefficients of the second order ODE to solve)
+    virtual void setSystemMBKMatrix(double mFact=0.0, double bFact=0.0, double kFact=0.0)
+    { if (realSolver) realSolver->setSystemMBKMatrix(mFact, bFact, kFact); }
+
+    /// Set the linear system right-hand term vector, from the values contained in the (Mechanical/Physical)State objects
+    virtual void setSystemRHVector(VecId v)
+    { if (realSolver) realSolver->setSystemRHVector(v); }
+
+    /// Set the initial estimate of the linear system left-hand term vector, from the values contained in the (Mechanical/Physical)State objects
+    /// This vector will be replaced by the solution of the system once solveSystem is called
+    virtual void setSystemLHVector(VecId v)
+    { if (realSolver) realSolver->setSystemLHVector(v); }
+
+    /// Solve the system as constructed using the previous methods
+    virtual void solveSystem()
+    { if (realSolver) realSolver->solveSystem(); }
+
+    /// Invert the system, this method is optional because it's call when solveSystem() is called for the first time
+    virtual void invertSystem()
+    { if (realSolver) realSolver->invertSystem(); }
+
+    /// Multiply the inverse of the system matrix by the transpose of the given matrix J
+    ///
+    /// @param result the variable where the result will be added
+    /// @param J the matrix J to use
+    /// @return false if the solver does not support this operation, of it the system matrix is not invertible
+    virtual bool addMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact)
+    { if (realSolver) return realSolver->addMInvJt(result, J, fact); else return false; }
+
+    /// Multiply the inverse of the system matrix by the transpose of the given matrix, and multiply the result with the given matrix J
+    ///
+    /// @param result the variable where the result will be added
+    /// @param J the matrix J to use
+    /// @return false if the solver does not support this operation, of it the system matrix is not invertible
+    virtual bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact)
+    { if (realSolver) return realSolver->addJMInvJt(result, J, fact); else return false; }
+
+    /// Get the linear system matrix, or NULL if this solver does not build it
+    virtual defaulttype::BaseMatrix* getSystemBaseMatrix()
+    { if (realSolver) return realSolver->getSystemBaseMatrix(); else return NULL; }
+
+    /// Get the linear system right-hand term vector, or NULL if this solver does not build it
+    virtual defaulttype::BaseVector* getSystemRHBaseVector()
+    { if (realSolver) return realSolver->getSystemRHBaseVector(); else return NULL; }
+
+    /// Get the linear system left-hand term vector, or NULL if this solver does not build it
+    virtual defaulttype::BaseVector* getSystemLHBaseVector()
+    { if (realSolver) return realSolver->getSystemLHBaseVector(); else return NULL; }
+
+    /// Get the linear system inverse matrix, or NULL if this solver does not build it
+    virtual defaulttype::BaseMatrix* getSystemInverseBaseMatrix()
+    { if (realSolver) return realSolver->getSystemInverseBaseMatrix(); else return NULL; }
+
+    /// Read the Matrix solver from a file
+    virtual bool readFile(std::istream& in)
+    { if (realSolver) return realSolver->readFile(in); else return false; }
+
+    /// Read the Matrix solver from a file
+    virtual bool writeFile(std::ostream& out)
+    { if (realSolver) return realSolver->writeFile(out); else return false; }
+
+    /// Ask the solver to no longer update the system matrix
+    virtual void freezeSystemMatrix()
+    { if (realSolver) realSolver->freezeSystemMatrix(); }
+
+    /// Ask the solver to no update the system matrix at the next iteration
+    virtual void updateSystemMatrix()
+    { if (realSolver) realSolver->updateSystemMatrix(); }
+
+
+    //template<class JMatrix>
+    //void ComputeCudaResult(CudaBaseMatrix<float>& result,JMatrix& J, float fact, bool localW);
 
 
     /// Pre-construction check method called by ObjectFactory.
@@ -123,12 +189,12 @@ public:
     }
 
 private :
-    CudaBaseVector<cuda_real> CudaR;
-    CudaBaseVector<cuda_real> CudaT;
+    //CudaBaseVector<cuda_real> CudaR;
+    //CudaBaseVector<cuda_real> CudaT;
 
+    sofa::core::componentmodel::behavior::LinearSolver* realSolver;
 
-
-    CudaMatrixUtils Utils;
+    //CudaMatrixUtils Utils;
 
     void rotateConstraints();
 
