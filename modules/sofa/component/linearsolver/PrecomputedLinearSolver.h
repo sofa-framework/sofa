@@ -81,7 +81,7 @@ public:
     void invert(TMatrix& M);
     void setSystemMBKMatrix(double mFact=0.0, double bFact=0.0, double kFact=0.0);
     void loadMatrix();
-    TMatrix * getSystemInv()
+    TMatrix * getSystemMatrixInv()
     {
         return &systemInv;
     }
