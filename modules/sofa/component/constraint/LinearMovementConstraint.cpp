@@ -94,7 +94,6 @@ void LinearMovementConstraint<Rigid3dTypes>::projectPosition(VecCoord& x)
         Deriv m = prevM + (nextM-prevM)*dt;
         Quater<double> prevOrientation = Quater<double>::createQuaterFromEuler(prevM.getVOrientation());
         Quater<double> nextOrientation = Quater<double>::createQuaterFromEuler(nextM.getVOrientation());
-        serr<<"prevM : "<<prevM<<"        nextM : "<<nextM<<sendl;
         //set the motion to the Dofs
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {

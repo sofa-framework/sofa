@@ -188,8 +188,6 @@ void LinearMovementConstraint<DataTypes>::reset()
 
     currentTime = -1.0;
     finished = false;
-
-    serr<<"******  RESET ******"<<sendl;
 }
 
 
@@ -260,7 +258,6 @@ template <class DataTypes>
 void LinearMovementConstraint<DataTypes>::findKeyTimes()
 {
     Real cT = (Real) this->getContext()->getTime();
-    serr<<" findKeyTimes:: cT : "<<cT<<sendl;
     finished = false;
 
     if(m_keyTimes.getValue().size() != 0 && cT >= *m_keyTimes.getValue().begin() && cT <= *m_keyTimes.getValue().rbegin())
