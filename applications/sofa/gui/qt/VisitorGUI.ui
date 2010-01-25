@@ -15,7 +15,7 @@
     <property name="caption">
         <string>VisitorGUI</string>
     </property>
-    <grid>
+    <vbox>
         <property name="name">
             <cstring>unnamed</cstring>
         </property>
@@ -84,7 +84,7 @@
                 <string>Clear</string>
             </property>
         </widget>
-    </grid>
+    </vbox>
 </widget>
 <toolbars>
 </toolbars>
