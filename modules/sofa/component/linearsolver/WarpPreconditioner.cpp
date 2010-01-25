@@ -25,7 +25,7 @@
 // Author: Hadrien Courtecuisse
 //
 // Copyright: See COPYING file that comes with this distribution
-#include <sofa/component/linearsolver/PrecomputedWarpPreconditioner.h>
+#include <sofa/component/linearsolver/WarpPreconditioner.h>
 #include <sofa/component/linearsolver/NewMatMatrix.h>
 #include <sofa/component/linearsolver/FullMatrix.h>
 #include <sofa/component/linearsolver/SparseMatrix.h>
@@ -57,18 +57,24 @@ namespace component
 namespace linearsolver
 {
 
-template<class TMatrix, class TVector,class TDataTypes>
-PrecomputedWarpPreconditioner<TMatrix,TVector,TDataTypes>::PrecomputedWarpPreconditioner()
+template<class DataTypes>
+WarpPreconditioner<DataTypes>::WarpPreconditioner()
     : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
-    , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
+    , realSolver(NULL)
 {
-    f_graph.setWidget("graph");
-    f_graph.setReadOnly(true);
     first = true;
 }
 
+
+template<class DataTypes>
+void WarpPreconditioner<DataTypes>::init()
+{
+    this->getContext()->get(realSolver);
+}
+
+#if 0
 template<class TMatrix, class TVector,class TDataTypes>
-void PrecomputedWarpPreconditioner<TMatrix,TVector,TDataTypes>::setSystemMBKMatrix(double mFact, double bFact, double kFact)
+void WarpPreconditioner<TMatrix,TVector,TDataTypes>::setSystemMBKMatrix(double mFact, double bFact, double kFact)
 {
     // Update the matrix only the first time
     if (first) Inherit::setSystemMBKMatrix(mFact,bFact,kFact);
@@ -77,7 +83,7 @@ void PrecomputedWarpPreconditioner<TMatrix,TVector,TDataTypes>::setSystemMBKMatr
 
 //Solve x = R * M^-1 * R^t * b
 template<class TMatrix, class TVector,class TDataTypes>
-void PrecomputedWarpPreconditioner<TMatrix,TVector,TDataTypes>::solve (Matrix& M, Vector& z, Vector& r)
+void WarpPreconditioner<TMatrix,TVector,TDataTypes>::solve (Matrix& M, Vector& z, Vector& r)
 {
     //Solve z = R^t * b
     for (unsigned i=0; i<R.size(); i++)
@@ -110,7 +116,7 @@ void PrecomputedWarpPreconditioner<TMatrix,TVector,TDataTypes>::solve (Matrix& M
 #ifdef SOFA_HAVE_CSPARSE
 
 template<class TMatrix, class TVector,class TDataTypes>
-void PrecomputedWarpPreconditioner<TMatrix,TVector,TDataTypes>::precompute(Matrix& M)
+void WarpPreconditioner<TMatrix,TVector,TDataTypes>::precompute(Matrix& M)
 {
     std::stringstream ss;
     ss << this->getContext()->getName() << ".comp";
@@ -165,7 +171,7 @@ void PrecomputedWarpPreconditioner<TMatrix,TVector,TDataTypes>::precompute(Matri
 
         sparsecholesky.invert(Mc); //creat LU decomposition in cholesky
 
-        //Compute M^-1 in the systemMatrix of PrecomputedWarpPreconditioner (M)
+        //Compute M^-1 in the systemMatrix of WarpPreconditioner (M)
         for (unsigned i=0; i<n; i++)
         {
             b.clear();
@@ -191,7 +197,7 @@ void PrecomputedWarpPreconditioner<TMatrix,TVector,TDataTypes>::precompute(Matri
 #else
 
 template<class TMatrix, class TVector,class TDataTypes>
-void PrecomputedWarpPreconditioner<TMatrix,TVector,TDataTypes>::precompute(Matrix& M)
+void WarpPreconditioner<TMatrix,TVector,TDataTypes>::precompute(Matrix& M)
 {
     std::stringstream ss;
     ss << this->getContext()->getName() << ".comp";
@@ -219,7 +225,7 @@ void PrecomputedWarpPreconditioner<TMatrix,TVector,TDataTypes>::precompute(Matri
 
         cholesky.invert(M); //creat LU decomposition in cholesky
 
-        //Compute M^-1 in the systemMatrix of PrecomputedWarpPreconditioner (M)
+        //Compute M^-1 in the systemMatrix of WarpPreconditioner (M)
         for (unsigned i=0; i<n; i++)
         {
             b.clear();
@@ -243,7 +249,7 @@ void PrecomputedWarpPreconditioner<TMatrix,TVector,TDataTypes>::precompute(Matri
 #endif
 
 template<class TMatrix, class TVector,class TDataTypes>
-void PrecomputedWarpPreconditioner<TMatrix,TVector,TDataTypes>::invert(Matrix& M)
+void WarpPreconditioner<TMatrix,TVector,TDataTypes>::invert(Matrix& M)
 {
     if (first)
     {
@@ -269,7 +275,7 @@ void PrecomputedWarpPreconditioner<TMatrix,TVector,TDataTypes>::invert(Matrix& M
 }
 
 template<class TMatrix, class TVector,class TDataTypes>
-void PrecomputedWarpPreconditioner<TMatrix,TVector,TDataTypes>::rotateConstraints()
+void WarpPreconditioner<TMatrix,TVector,TDataTypes>::rotateConstraints()
 {
     simulation::Node *node = dynamic_cast<simulation::Node *>(this->getContext());
 
@@ -287,19 +293,12 @@ void PrecomputedWarpPreconditioner<TMatrix,TVector,TDataTypes>::rotateConstraint
     VecDeriv& dx = *mstate->getDx();
     for(unsigned int j = 0; j < dx.size(); j++)	forceField->getRotation(R[j], j);
 }
+#endif
 
-SOFA_DECL_CLASS(PrecomputedWarpPreconditioner)
+SOFA_DECL_CLASS(WarpPreconditioner)
 
-int PrecomputedWarpPreconditionerClass = core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm")
-//.add< PrecomputedWarpPreconditioner<GraphScatteredMatrix,GraphScatteredVector> >(true)
-//.add< PrecomputedWarpPreconditioner< CompressedRowSparseMatrix<double>, FullVector<double> > >()
-//.add< PrecomputedWarpPreconditioner< SparseMatrix<double>, FullVector<double> > >()
-//.add< PrecomputedWarpPreconditioner<NewMatBandMatrix,NewMatVector> >(true)
-//.add< PrecomputedWarpPreconditioner<NewMatMatrix,NewMatVector> >()
-//.add< PrecomputedWarpPreconditioner< NewMatSymmetricMatrix,NewMatVector> >()
-//.add< PrecomputedWarpPreconditioner<NewMatSymmetricBandMatrix,NewMatVector> >()
-        .add< PrecomputedWarpPreconditioner< FullMatrix<double>, FullVector<double> , defaulttype::Vec3dTypes > >(true)
-        .addAlias("PrecomputedWarpPrecond")
+int WarpPreconditionerClass = core::RegisterObject("")
+        .add< WarpPreconditioner< defaulttype::Vec3dTypes >(true)
         ;
 
 } // namespace linearsolver
