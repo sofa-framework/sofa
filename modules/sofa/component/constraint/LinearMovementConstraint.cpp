@@ -65,7 +65,48 @@ void LinearMovementConstraint<Rigid3dTypes>::draw()
     }
     glEnd();
 }
+
+template <>
+void LinearMovementConstraint<Rigid3dTypes>::projectPosition(VecCoord& x)
+{
+    Real cT = (Real) this->getContext()->getTime();
+
+    //initialize initial Dofs positions, if it's not done
+    if (x0.size() == 0)
+    {
+        const SetIndexArray & indices = m_indices.getValue().getArray();
+        x0.resize( x.size() );
+        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+            x0[*it] = x[*it];
+    }
+
+    if ((cT != currentTime) || !finished)
+    {
+        findKeyTimes();
+    }
+
+    //if we found 2 keyTimes, we have to interpolate a velocity (linear interpolation)
+    if(finished && nextT != prevT)
+    {
+        const SetIndexArray & indices = m_indices.getValue().getArray();
+
+        Real dt = (cT - prevT) / (nextT - prevT);
+        Deriv m = prevM + (nextM-prevM)*dt;
+        Quater<double> prevOrientation = Quater<double>::createQuaterFromEuler(prevM.getVOrientation());
+        Quater<double> nextOrientation = Quater<double>::createQuaterFromEuler(nextM.getVOrientation());
+        serr<<"prevM : "<<prevM<<"        nextM : "<<nextM<<sendl;
+        //set the motion to the Dofs
+        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        {
+            x[*it].getCenter() = x0[*it].getCenter() + m.getVCenter() ;
+            x[*it].getOrientation() = prevOrientation.slerp2(nextOrientation, dt);
+        }
+    }
+}
+
 #endif
+
+
 #ifndef SOFA_DOUBLE
 template <>
 void LinearMovementConstraint<Rigid3fTypes>::draw()
@@ -86,6 +127,45 @@ void LinearMovementConstraint<Rigid3fTypes>::draw()
     }
     glEnd();
 }
+
+template <>
+void LinearMovementConstraint<Rigid3fTypes>::projectPosition(VecCoord& x)
+{
+    Real cT = (Real) this->getContext()->getTime();
+
+    //initialize initial Dofs positions, if it's not done
+    if (x0.size() == 0)
+    {
+        const SetIndexArray & indices = m_indices.getValue().getArray();
+        x0.resize( x.size() );
+        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+            x0[*it] = x[*it];
+    }
+
+    if ((cT != currentTime) || !finished)
+    {
+        findKeyTimes();
+    }
+
+    //if we found 2 keyTimes, we have to interpolate a velocity (linear interpolation)
+    if(finished && nextT != prevT)
+    {
+        const SetIndexArray & indices = m_indices.getValue().getArray();
+
+        Real dt = (cT - prevT) / (nextT - prevT);
+        Deriv m = prevM + (nextM-prevM)*dt;
+        Quater<double> prevOrientation = Quater<double>::createQuaterFromEuler(prevM.getVOrientation());
+        Quater<double> nextOrientation = Quater<double>::createQuaterFromEuler(nextM.getVOrientation());
+
+        //set the motion to the Dofs
+        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        {
+            x[*it].getCenter() = x0[*it].getCenter() + m.getVCenter() ;
+            x[*it].getOrientation() = prevOrientation.slerp2(nextOrientation, dt);
+        }
+    }
+}
+
 #endif
 
 //declaration of the class, for the factory
