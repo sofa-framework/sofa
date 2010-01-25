@@ -34,7 +34,6 @@
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/defaulttype/FrameMass.h>
 #include <sofa/helper/gl/Axis.h>
-#include <sofa/component/mapping/SkinningMapping.inl>
 #include <sofa/simulation/common/Visitor.h>
 
 
@@ -232,17 +231,18 @@ void FrameDiagonalMass<DataTypes, MassType>::reinit()
 template <class DataTypes, class MassType>
 void FrameDiagonalMass<DataTypes, MassType>::bwdInit()
 {
+    // Get the first DQStorage which has 'computeAllMatrices' to true
     dqStorage = NULL;
-    vector<SMapping*> vSMapping;
+    vector<DQStorage*> vDQStorage;
     sofa::core::objectmodel::BaseContext* context=  this->getContext();
-    context->get<SMapping>( &vSMapping, core::objectmodel::BaseContext::SearchDown);
-    SMapping* sMapping = NULL;
-    for( typename vector<SMapping *>::iterator it = vSMapping.begin(); it != vSMapping.end(); it++)
+    context->get<DQStorage>( &vDQStorage, core::objectmodel::BaseContext::SearchDown);
+    DQStorage* tmpDqStorage = NULL;
+    for( typename vector<DQStorage *>::iterator it = vDQStorage.begin(); it != vDQStorage.end(); it++)
     {
-        sMapping = (*it);
-        if( sMapping && sMapping->computeAllMatrices.getValue() )
+        tmpDqStorage = (*it);
+        if( tmpDqStorage && tmpDqStorage->computeAllMatrices.getValue() )
         {
-            dqStorage = sMapping;
+            dqStorage = tmpDqStorage;
             break;
         }
     }

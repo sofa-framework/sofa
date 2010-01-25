@@ -39,7 +39,6 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/defaulttype/FrameMass.h>
 #include <sofa/component/mapping/DualQuatStorage.h>
-#include <sofa/component/mapping/SkinningMapping.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
 namespace sofa
@@ -51,7 +50,7 @@ namespace component
 namespace mass
 {
 
-using namespace sofa::component::mapping;
+using sofa::component::mapping::DualQuatStorage;
 using namespace sofa::defaulttype;
 
 template <class DataTypes, class TMassType>
@@ -96,9 +95,7 @@ public:
     typedef vector<VVec6> VVVec6;
     typedef defaulttype::Vec<8,Real> Vec8;
     typedef vector<double> VD;
-    typedef core::componentmodel::behavior::MechanicalState<DataTypes> MStateRigid;
-    typedef core::componentmodel::behavior::MechanicalState<StdVectorTypes<Vec<3, typename DataTypes::Real>, Vec<3, typename DataTypes::Real>, typename DataTypes::Real> > MStateVec;
-    typedef typename sofa::component::mapping::SkinningMapping<sofa::component::mapping::MechanicalMapping< MStateRigid, MStateVec > > SMapping;
+    typedef DualQuatStorage<N, Real> DQStorage;
 
     // In case of non 3D template
     typedef Vec<3,MassType>                            Vec3Mass;
@@ -181,7 +178,7 @@ public:
     bool addBBox(double* minBBox, double* maxBBox);
 
 private:
-    DualQuatStorage<N, Real>* dqStorage;
+    DQStorage* dqStorage;
     VD* vol;
     VD* volMass;
     VVMat36* J;
