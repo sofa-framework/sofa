@@ -102,6 +102,7 @@ public :
 
     /// -- Constraint interface
     void init();
+    void reset();
     void projectResponse(VecDeriv& dx);
     virtual void projectVelocity(VecDeriv& dx); ///< project dx to constrained space (dx models a velocity)
     virtual void projectPosition(VecCoord& x); ///< project x to constrained space (x models a position)

@@ -181,6 +181,19 @@ void LinearMovementConstraint<DataTypes>::init()
 
 
 template <class DataTypes>
+void LinearMovementConstraint<DataTypes>::reset()
+{
+    nextT = prevT = 0.0;
+    nextM = prevM = Deriv();
+
+    currentTime = -1.0;
+    finished = false;
+
+    serr<<"******  RESET ******"<<sendl;
+}
+
+
+template <class DataTypes>
 void LinearMovementConstraint<DataTypes>::projectResponse(VecDeriv& )
 {
 
@@ -247,12 +260,11 @@ template <class DataTypes>
 void LinearMovementConstraint<DataTypes>::findKeyTimes()
 {
     Real cT = (Real) this->getContext()->getTime();
-
+    serr<<" findKeyTimes:: cT : "<<cT<<sendl;
     finished = false;
 
     if(m_keyTimes.getValue().size() != 0 && cT >= *m_keyTimes.getValue().begin() && cT <= *m_keyTimes.getValue().rbegin())
     {
-
         nextT = *m_keyTimes.getValue().begin();
         prevT = nextT;
 

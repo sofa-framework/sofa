@@ -64,6 +64,7 @@
 #include <sofa/simulation/common/TransformationVisitor.h>
 #include <sofa/simulation/common/InitVisitor.h>
 #include <sofa/simulation/common/DesactivatedNodeVisitor.h>
+#include <sofa/simulation/common/UpdateContextVisitor.h>
 
 #include <sofa/helper/system/FileRepository.h>
 
@@ -1701,10 +1702,12 @@ void RealGUI::resetScene()
     //Reset the scene
     if ( root )
     {
-        simulation::getSimulation()->reset ( root );
-        simulation::getSimulation()->reset ( simulation::getSimulation()->getVisualRoot() );
         root->setTime(initial_time);
         eventNewTime();
+        simulation::getSimulation()->reset ( root );
+        simulation::getSimulation()->reset ( simulation::getSimulation()->getVisualRoot() );
+        UpdateContextVisitor().execute(root);
+        UpdateContextVisitor().execute(simulation::getSimulation()->getVisualRoot());
 
         emit newStep();
     }
