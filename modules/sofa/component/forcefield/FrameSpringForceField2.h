@@ -30,7 +30,7 @@
 
 #include <sofa/core/componentmodel/behavior/ForceField.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/component/mapping/SkinningMapping.h>
+#include <sofa/component/mapping/DualQuatStorage.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/helper/vector.h>
 #include <sofa/helper/accessor.h>
@@ -48,7 +48,7 @@ namespace forcefield
 {
 
 using namespace sofa::defaulttype;
-using namespace sofa::component::mapping;
+using sofa::component::mapping::DualQuatStorage;
 
 
 /// This class can be overridden if needed for additionnal storage within template specializations.
@@ -75,9 +75,7 @@ public:
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
     typedef typename Coord::value_type Real;
-    typedef typename core::componentmodel::behavior::MechanicalState<DataTypes> MStateRigid;
-    typedef typename core::componentmodel::behavior::MechanicalState<StdVectorTypes<Vec<3, typename DataTypes::Real>, Vec<3, typename DataTypes::Real>, typename DataTypes::Real> > MStateVec;
-    typedef typename sofa::component::mapping::SkinningMapping<sofa::component::mapping::MechanicalMapping< MStateRigid, MStateVec > > SMapping;
+    typedef typename core::componentmodel::behavior::MechanicalState<DataTypes> MState;
 
     enum { N = Coord::static_size };
     typedef defaulttype::Mat<N, N, Real> Mat;
@@ -109,6 +107,7 @@ public:
     typedef vector<VVec6> VVVec6;
     typedef defaulttype::Vec<8, Real> Vec8;
     typedef vector<double> VD;
+    typedef DualQuatStorage<N, Real> DQStorage;
 
     typedef struct
     {
@@ -135,7 +134,7 @@ protected:
     friend class FrameSpringForceField2InternalData<DataTypes>;
 
 public:
-    FrameSpringForceField2 ( MStateRigid* obj);
+    FrameSpringForceField2 ( MState* obj);
     FrameSpringForceField2 ( );
 
     virtual bool canPrefetch() const
@@ -176,7 +175,7 @@ public:
     }
 
 private:
-    SMapping* sMapping;
+    DQStorage* dqInfos;
 
     void computeK0();
     void XItoQ ( DUALQUAT& q, const Coord& xi );

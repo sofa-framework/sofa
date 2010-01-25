@@ -30,7 +30,6 @@
 
 #include <sofa/component/forcefield/FrameSpringForceField2.h>
 #include <sofa/core/componentmodel/behavior/ForceField.inl>
-#include <sofa/component/mapping/SkinningMapping.inl>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/system/config.h>
@@ -46,11 +45,8 @@ namespace component
 namespace forcefield
 {
 
-
-
-
 template<class DataTypes>
-FrameSpringForceField2<DataTypes>::FrameSpringForceField2(MStateRigid* obj)
+FrameSpringForceField2<DataTypes>::FrameSpringForceField2(MState* obj)
     : Inherit( obj), maskInUse(false)
     , youngModulus ( initData ( &youngModulus, 2000.0, "youngModulus","Young Modulus" ) )
     , poissonRatio ( initData ( &poissonRatio, 0.3, "poissonRatio","Poisson Ratio." ) )
@@ -77,7 +73,7 @@ void FrameSpringForceField2<DataTypes>::reinit()
 template <class DataTypes>
 void FrameSpringForceField2<DataTypes>::init()
 {
-    sMapping = NULL;
+    dqInfos = NULL;
     this->Inherit::init();
 }
 
@@ -85,16 +81,31 @@ void FrameSpringForceField2<DataTypes>::init()
 template<class DataTypes>
 void FrameSpringForceField2<DataTypes>::bwdInit()
 {
-    this->getContext()->get( sMapping, core::objectmodel::BaseContext::SearchDown);
-    if(! sMapping)
+    // Get the first DQStorage which has 'computeAllMatrices' to true
+    dqInfos = NULL;
+    vector<DQStorage*> vDQStorage;
+    sofa::core::objectmodel::BaseContext* context=  this->getContext();
+    context->get<DQStorage>( &vDQStorage, core::objectmodel::BaseContext::SearchDown);
+    DQStorage* tmpDqStorage = NULL;
+    for( typename vector<DQStorage *>::iterator it = vDQStorage.begin(); it != vDQStorage.end(); it++)
+    {
+        tmpDqStorage = (*it);
+        if( tmpDqStorage && tmpDqStorage->computeAllMatrices.getValue() )
+        {
+            dqInfos = tmpDqStorage;
+            break;
+        }
+    }
+
+    if(! dqInfos)
     {
         serr << "Can not find the skinning mappping component." << sendl;
         return;
     }
-    B = & ( sMapping->B );
-    det = & ( sMapping->det );
-    ddet = & ( sMapping->ddet );
-    vol = & ( sMapping->vol );
+    B = & ( dqInfos->B );
+    det = & ( dqInfos->det );
+    ddet = & ( dqInfos->ddet );
+    vol = & ( dqInfos->vol );
 
     getH_isotropic ( H, youngModulus.getValue(), poissonRatio.getValue() );
     computeK0();
