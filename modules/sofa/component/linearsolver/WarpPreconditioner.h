@@ -22,16 +22,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_PrecomputedWarpPreconditioner_H
-#define SOFA_COMPONENT_LINEARSOLVER_PrecomputedWarpPreconditioner_H
+#ifndef SOFA_COMPONENT_LINEARSOLVER_WARPPRECONDITIONER_H
+#define SOFA_COMPONENT_LINEARSOLVER_WARPPRECONDITIONER_H
 
 #include <sofa/core/componentmodel/behavior/LinearSolver.h>
-#include <sofa/component/linearsolver/MatrixLinearSolver.h>
-#include <sofa/simulation/common/MechanicalVisitor.h>
-#include <sofa/component/linearsolver/SparseMatrix.h>
-#include <sofa/component/linearsolver/FullMatrix.h>
-#include <sofa/helper/map.h>
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/component/forcefield/TetrahedronFEMForceField.h>
+#include <sofa/defaulttype/Mat.h>
 #include <math.h>
+
+#include <map>
 
 namespace sofa
 {
@@ -42,40 +42,35 @@ namespace component
 namespace linearsolver
 {
 
-using namespace sofa::core;
-using namespace sofa::core::componentmodel;
-using namespace sofa::defaulttype;
-
-using namespace sofa::core::componentmodel::behavior;
-using namespace sofa::simulation;
-using namespace sofa::core::objectmodel;
-
-using namespace sofa::component::linearsolver;
-
-using sofa::helper::system::thread::CTime;
-using sofa::helper::system::thread::ctime_t;
-using std::cerr;
-using std::endl;
+/// Linear system solver using the conjugate gradient iterative algorithm
+template<class TDataTypes>
+class WarpPreconditionerInternalData
+{
+public:
+    typedef TDataTypes DataTypes;
+    typedef typename DataTypes::Real Real;
+    typedef defaulttype::MatNoInit<3, 3, Real> Rotation;
+    typedef helper::vector<Rotation> VecRotation;
+    VecRotation R;
+};
 
 /// Linear system solver using the conjugate gradient iterative algorithm
 template<class TDataTypes>
-class WarpPreconditioner : public LinearSolver
+class WarpPreconditioner : public core::componentmodel::behavior::LinearSolver
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE2(WarpPreconditioner,TDataTypes),sofa::core::componentmodel::behavior::LinearSolver);
+    SOFA_CLASS(SOFA_TEMPLATE(WarpPreconditioner,TDataTypes),sofa::core::componentmodel::behavior::LinearSolver);
     typedef TDataTypes DataTypes;
     typedef typename DataTypes::VecConst VecConst;
-    typedef typename TDataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename TDataTypes::Coord Coord;
+    typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
+    typedef typename DataTypes::Real Real;
     typedef typename std::map<unsigned int, Deriv>::const_iterator ConstraintIterator;
 
-    typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
     typedef sofa::core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
 
-    typedef typename Coord::value_type Real;
-    typedef MatNoInit<3, 3, Real> Transformation;
 
     Data<bool> f_verbose;
     Data <std::string> solverName;
@@ -89,31 +84,25 @@ public:
     //void loadMatrix();
 
     /// Reset the current linear system.
-    virtual void resetSystem()
-    { if (realSolver) realSolver->resetSystem(); }
+    virtual void resetSystem();
 
     /// Set the linear system matrix, combining the mechanical M,B,K matrices using the given coefficients
     ///
     /// @todo Should we put this method in a specialized class for mechanical systems, or express it using more general terms (i.e. coefficients of the second order ODE to solve)
-    virtual void setSystemMBKMatrix(double mFact=0.0, double bFact=0.0, double kFact=0.0)
-    { if (realSolver) realSolver->setSystemMBKMatrix(mFact, bFact, kFact); }
+    virtual void setSystemMBKMatrix(double mFact=0.0, double bFact=0.0, double kFact=0.0);
 
     /// Set the linear system right-hand term vector, from the values contained in the (Mechanical/Physical)State objects
-    virtual void setSystemRHVector(VecId v)
-    { if (realSolver) realSolver->setSystemRHVector(v); }
+    virtual void setSystemRHVector(VecId v);
 
     /// Set the initial estimate of the linear system left-hand term vector, from the values contained in the (Mechanical/Physical)State objects
     /// This vector will be replaced by the solution of the system once solveSystem is called
-    virtual void setSystemLHVector(VecId v)
-    { if (realSolver) realSolver->setSystemLHVector(v); }
+    virtual void setSystemLHVector(VecId v);
 
     /// Solve the system as constructed using the previous methods
-    virtual void solveSystem()
-    { if (realSolver) realSolver->solveSystem(); }
+    virtual void solveSystem();
 
     /// Invert the system, this method is optional because it's call when solveSystem() is called for the first time
-    virtual void invertSystem()
-    { if (realSolver) realSolver->invertSystem(); }
+    virtual void invertSystem();
 
     /// Multiply the inverse of the system matrix by the transpose of the given matrix J
     ///
@@ -173,7 +162,7 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (dynamic_cast<behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+        if (dynamic_cast<core::componentmodel::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
             return false;
         return BaseObject::canCreate(obj, context, arg);
     }
@@ -183,7 +172,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const CudaPrecomputedWarpPreconditioner<cuda_real,DataTypes>* = NULL)
+    static std::string templateName(const WarpPreconditioner<DataTypes>* = NULL)
     {
         return DataTypes::Name();
     }
@@ -192,11 +181,20 @@ private :
     //CudaBaseVector<cuda_real> CudaR;
     //CudaBaseVector<cuda_real> CudaT;
 
-    sofa::core::componentmodel::behavior::LinearSolver* realSolver;
+    core::componentmodel::behavior::LinearSolver* realSolver;
+    core::componentmodel::behavior::MechanicalState<DataTypes>* mstate;
+    component::forcefield::TetrahedronFEMForceField<DataTypes>* forceField;
+
+    VecId systemLHVId;
+    VecId systemRHVId;
+    VecId rotatedLHVId;
+    VecId rotatedRHVId;
+
+    WarpPreconditionerInternalData<DataTypes> data;
 
     //CudaMatrixUtils Utils;
 
-    void rotateConstraints();
+    void getRotations();
 
     bool first;
     bool _rotate;
