@@ -33,8 +33,6 @@ namespace simulation
 {
 using std::cerr;
 using std::endl;
-//Max size for vector to be allowed to be dumped
-#define DUMP_VISITOR_MAX_SIZE_VECTOR 50
 
 Visitor::Result MechanicalVisitor::processNodeTopDown(simulation::Node* node)
 {
@@ -174,47 +172,19 @@ void MechanicalVisitor::processNodeBottomUp(simulation::Node* node)
 #ifdef SOFA_DUMP_VISITOR_INFO
 void MechanicalVisitor::printReadVectors(core::componentmodel::behavior::BaseMechanicalState* mm)
 {
-    if (!mm || !readVector.size() || !Visitor::printActivated) return;
+    if (!mm || !readVector.size() || !Visitor::printActivated || !Visitor::outputStateVector) return;
 
     printNode("Input");
-
-    for (unsigned int i=0; i<readVector.size(); ++i)
-    {
-        std::ostringstream infoStream;
-        TRACE_ARGUMENT arg;
-        if (mm->getSize() < DUMP_VISITOR_MAX_SIZE_VECTOR)
-        {
-            mm->printDOF(readVector[i], infoStream);
-            arg.push_back(std::make_pair("value", infoStream.str()));
-        }
-
-        printNode("Vector", readVector[i].getName(), arg);
-        printCloseNode("Vector");
-    }
-
+    for (unsigned int i=0; i<readVector.size(); ++i) printVector(mm, readVector[i]);
     printCloseNode("Input");
 }
 
 void MechanicalVisitor::printWriteVectors(core::componentmodel::behavior::BaseMechanicalState* mm)
 {
-    if (!mm || !writeVector.size() || !Visitor::printActivated) return;
+    if (!mm || !writeVector.size() || !Visitor::printActivated || !Visitor::outputStateVector) return;
 
     printNode("Output");
-
-    for (unsigned int i=0; i<writeVector.size(); ++i)
-    {
-        std::ostringstream infoStream;
-        TRACE_ARGUMENT arg;
-        if (mm->getSize() < DUMP_VISITOR_MAX_SIZE_VECTOR)
-        {
-            mm->printDOF(writeVector[i], infoStream);
-            arg.push_back(std::make_pair("value", infoStream.str()));
-        }
-
-        printNode("Vector", writeVector[i].getName(), arg);
-        printCloseNode("Vector");
-    }
-
+    for (unsigned int i=0; i<writeVector.size(); ++i) printVector(mm, writeVector[i]);
     printCloseNode("Output");
 }
 

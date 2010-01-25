@@ -59,6 +59,10 @@ void Visitor::execute(sofa::core::objectmodel::BaseContext* c, bool doPrefetch)
 Visitor::ctime_t Visitor::initDumpTime;
 std::vector< Visitor::ctime_t  > Visitor::initNodeTime=std::vector< Visitor::ctime_t >();
 bool Visitor::printActivated=false;
+bool Visitor::outputStateVector=false;
+unsigned int Visitor::firstIndexStateVector=0;
+int Visitor::rangeStateVector=20;
+
 std::ostream *Visitor::outputVisitor=NULL;
 
 void Visitor::setNode(core::objectmodel::Base* c)
@@ -153,6 +157,18 @@ void Visitor::stopDumpVisitor()
 double Visitor::getTimeSpent(ctime_t initTime, ctime_t endTime)
 {
     return (double)(endTime-initTime);
+}
+
+
+void Visitor::printVector(core::componentmodel::behavior::BaseMechanicalState *mm, core::VecId id)
+{
+    std::ostringstream infoStream;
+    TRACE_ARGUMENT arg;
+    mm->printDOF(id, infoStream,firstIndexStateVector, rangeStateVector);
+    arg.push_back(std::make_pair("value", infoStream.str()));
+
+    printNode("Vector", id.getName(), arg);
+    printCloseNode("Vector");
 }
 
 void Visitor::printNode(const std::string &type, const std::string &name, const TRACE_ARGUMENT &arguments)
