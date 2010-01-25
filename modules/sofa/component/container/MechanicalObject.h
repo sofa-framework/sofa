@@ -381,7 +381,7 @@ public:
 
     /// @name Debug
     /// @{
-    virtual void printDOF( VecId, std::ostream& =std::cerr );
+    virtual void printDOF( VecId, std::ostream& =std::cerr, unsigned int firstIndex=0, int range=-1 ) const ;
     virtual unsigned printDOFWithElapsedTime(VecId, unsigned =0, unsigned =0, std::ostream& =std::cerr );
     //
     void draw();

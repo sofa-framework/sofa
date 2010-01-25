@@ -2183,18 +2183,22 @@ void MechanicalObject<DataTypes>::setC(VecId v)
 
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::printDOF( VecId v, std::ostream& out)
+void MechanicalObject<DataTypes>::printDOF( VecId v, std::ostream& out, unsigned int firstIndex, int range) const
 {
-    if( v.type==VecId::V_COORD )
+    if( v.type==VecId::V_COORD && getVecCoord(v.index))
     {
-        VecCoord& x= *getVecCoord(v.index);
-        for( unsigned i=0; i<x.size(); ++i )
+        const VecCoord& x= *getVecCoord(v.index);
+        if (firstIndex >= x.size()) return;
+        const unsigned max=( (range>=0) && ( (range+firstIndex)<x.size() ) )?(range+firstIndex):x.size();
+        for( unsigned i=firstIndex; i<max; ++i )
             out<<x[i]<<" ";
     }
-    else if( v.type==VecId::V_DERIV )
+    else if( v.type==VecId::V_DERIV && getVecDeriv(v.index))
     {
-        VecDeriv& x= *getVecDeriv(v.index);
-        for( unsigned i=0; i<x.size(); ++i )
+        const VecDeriv& x= *getVecDeriv(v.index);
+        if (firstIndex >= x.size()) return;
+        const unsigned max=( (range>=0) && ( (range+firstIndex)<x.size() ) )?(range+firstIndex):x.size();
+        for( unsigned i=firstIndex; i<max; ++i )
             out<<x[i]<<" ";
     }
     else
