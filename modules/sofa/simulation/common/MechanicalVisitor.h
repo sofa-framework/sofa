@@ -1264,6 +1264,7 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
+        addReadWriteVector(state);
     }
 #endif
     VecId state;

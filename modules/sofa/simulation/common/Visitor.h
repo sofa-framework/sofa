@@ -237,6 +237,9 @@ protected:
 
     static std::ostream *outputVisitor;  //Ouput stream to dump the info
     static bool printActivated;          //bool to know if the stream is opened or not
+    static bool outputStateVector;       //bool to know if we trace the evolution of the state vectors
+    static unsigned int firstIndexStateVector; //numero of the first index of the particules to trace
+    static int rangeStateVector;         //number of particules to trace
     static ctime_t initDumpTime;
     static std::vector< ctime_t > initNodeTime;
 
@@ -250,9 +253,19 @@ public:
     typedef std::vector< std::pair< std::string,std::string > > TRACE_ARGUMENT;
     static void printComment(const std::string &s) ;
     static void printNode(const std::string &type, const std::string &name=std::string(), const TRACE_ARGUMENT &arguments=TRACE_ARGUMENT() ) ;
+    static void printVector(core::componentmodel::behavior::BaseMechanicalState *mm, core::VecId id);
     static void printCloseNode(const std::string &type) ;
     virtual void printInfo(const core::objectmodel::BaseContext* context, bool dirDown);
     void setNode(core::objectmodel::Base* c);
+
+    static void EnableExportStateVector(bool activation) {outputStateVector=activation;}
+    static void SetFirstIndexStateVector(unsigned int first) {firstIndexStateVector=first;}
+    static void SetRangeStateVector(int range) {rangeStateVector=range;}
+
+    static bool IsExportStateVectorEnabled() {return outputStateVector;}
+    static unsigned int GetFirstIndexStateVector() { return firstIndexStateVector;}
+    static int GetRangeStateVector() {return rangeStateVector;}
+
 private:
     static void dumpInfo( const std::string &info);
 #endif
