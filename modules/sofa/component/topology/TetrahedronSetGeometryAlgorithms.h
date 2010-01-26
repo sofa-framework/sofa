@@ -95,6 +95,7 @@ public:
 
     /// computes the tetrahedron volume  of tetrahedron no i and returns it
     Real computeRestTetrahedronVolume(const TetraID i) const;
+    Real computeRestTetrahedronVolume(const Tetrahedron t) const;
 
     /// finds the indices of all tetrahedra in the ball of center ind_ta and of radius dist(ind_ta, ind_tb)
     void getTetraInBall(const TetraID ind_ta, const TetraID ind_tb,

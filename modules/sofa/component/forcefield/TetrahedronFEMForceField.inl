@@ -171,6 +171,11 @@ template <class DataTypes>
 inline void TetrahedronFEMForceField<DataTypes>::getElementStiffnessMatrix(Real* stiffness, unsigned int elementIndex)
 {
 // 	helper::vector<TetrahedronInformation>& tetraInf = *(tetrahedronInfo.beginEdit());
+    if(needUpdateTopology)
+    {
+        reinit();
+        needUpdateTopology = false;
+    }
     Transformation Rot;
     StiffnessMatrix JKJt,tmp;
     Rot[0][0]=Rot[1][1]=Rot[2][2]=1;
@@ -194,9 +199,7 @@ inline void TetrahedronFEMForceField<DataTypes>::getElementStiffnessMatrix(Real*
         reinit();
         needUpdateTopology = false;
     }
-
     const VecCoord *X0=this->mstate->getX0();
-
     Index a = te[0];
     Index b = te[1];
     Index c = te[2];
@@ -317,7 +320,7 @@ void TetrahedronFEMForceField<DataTypes>::computeMaterialStiffness(MaterialStiff
     {
         serr << "ERROR: Negative volume for tetra"<<a<<','<<b<<','<<c<<','<<d<<"> = "<<volumes6/6<<sendl;
     }
-    materialMatrix  /= volumes6;
+    materialMatrix  /= volumes6*6;
 }
 
 template<class DataTypes>

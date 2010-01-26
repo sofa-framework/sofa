@@ -151,6 +151,16 @@ typename DataTypes::Real TetrahedronSetGeometryAlgorithms< DataTypes >::computeR
     return volume;
 }
 
+template< class DataTypes>
+typename DataTypes::Real TetrahedronSetGeometryAlgorithms< DataTypes >::computeRestTetrahedronVolume( const Tetrahedron t) const
+{
+    const typename DataTypes::VecCoord& p = *(this->object->getX0());
+    Real volume = (Real)(tripleProduct(p[t[1]]-p[t[0]],p[t[2]]-p[t[0]],p[t[3]]-p[t[0]])/6.0);
+    if(volume<0)
+        volume=-volume;
+    return volume;
+}
+
 /// computes the edge length of all edges are store in the array interface
 template<class DataTypes>
 void TetrahedronSetGeometryAlgorithms<DataTypes>::computeTetrahedronVolume( BasicArrayInterface<Real> &ai) const
