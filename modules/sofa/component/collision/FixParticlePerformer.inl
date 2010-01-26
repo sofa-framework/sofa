@@ -49,6 +49,7 @@ void FixParticlePerformer<DataTypes>::start()
     BodyPicked picked=this->interactor->getBodyPicked();
     if (picked.body)
     {
+        if (mapper) delete mapper;
         mapper = MouseContactMapper::Create(picked.body);
         if (!mapper)
         {
@@ -138,13 +139,13 @@ void FixParticlePerformer<DataTypes>::draw()
 
 
 template <class DataTypes>
-FixParticlePerformer<DataTypes>::FixParticlePerformer(BaseMouseInteractor *i):TInteractionPerformer<DataTypes>(i)
+FixParticlePerformer<DataTypes>::FixParticlePerformer(BaseMouseInteractor *i):TInteractionPerformer<DataTypes>(i), mapper(NULL)
 {
 }
 template <class DataTypes>
 FixParticlePerformer<DataTypes>::~FixParticlePerformer()
 {
-    delete mapper;
+    if (mapper) delete mapper;
     fixations.clear();
 };
 
