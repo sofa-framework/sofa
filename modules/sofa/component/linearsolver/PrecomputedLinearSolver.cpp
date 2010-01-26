@@ -48,7 +48,12 @@
 #include <sofa/component/linearsolver/CGLinearSolver.h>
 #include <sofa/component/linearsolver/PCGLinearSolver.h>
 
+#ifdef SOFA_HAVE_CSPARSE
+#include <sofa/component/linearsolver/SparseCholeskySolver.h>
+#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
+#else
 #include <sofa/component/linearsolver/CholeskySolver.h>
+#endif
 
 namespace sofa
 {
@@ -82,13 +87,15 @@ template<class TMatrix,class TVector>
 void PrecomputedLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(double mFact, double bFact, double kFact)
 {
     // Update the matrix only the first time
+    init_mFact = mFact;
+    init_bFact = bFact;
+    init_kFact = kFact;
+
     if (first)
     {
-        init_mFact = mFact;
-        init_bFact = bFact;
-        init_kFact = kFact;
         Inherit::setSystemMBKMatrix(mFact,bFact,kFact);
         loadMatrix();
+        first = false;
     }
 }
 
@@ -102,8 +109,133 @@ void PrecomputedLinearSolver<TMatrix,TVector>::solve (TMatrix& M, TVector& z, TV
 template<class TMatrix,class TVector>
 void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrix()
 {
-    unsigned systemSyze = this->systemMatrix->rowSize();
-    double dt = this->getContext()->getDt();
+    systemSyze = this->systemMatrix->rowSize();
+    dt = this->getContext()->getDt();
+
+    EulerImplicitSolver* EulerSolver;
+    this->getContext()->get(EulerSolver);
+    factInt = 1.0; // christian : it is not a compliance... but an admittance that is computed !
+    if (EulerSolver) factInt = EulerSolver->getPositionIntegrationFactor(); // here, we compute a compliance
+
+    std::stringstream ss;
+    ss << this->getContext()->getName() << "-" << systemSyze << "-" << dt << ".comp";
+    std::ifstream compFileIn(ss.str().c_str(), std::ifstream::binary);
+
+    if(compFileIn.good() && use_file.getValue())
+    {
+        cout << "file open : " << ss.str() << " compliance being loaded" << endl;
+        compFileIn.read((char*) (*this->systemMatrix)[0], systemSyze * systemSyze * sizeof(Real));
+        compFileIn.close();
+    }
+    else
+    {
+        if (solverName.getValue().empty())
+        {
+            loadMatrixCSparse();
+        }
+        else
+        {
+
+        }
+
+        if (use_file.getValue())
+        {
+            std::ofstream compFileOut(ss.str().c_str(), std::fstream::out | std::fstream::binary);
+            compFileOut.write((char*)(*this->systemMatrix)[0], systemSyze * systemSyze*sizeof(Real));
+            compFileOut.close();
+        }
+    }
+
+    for (unsigned int j=0; j<systemSyze; j++)
+    {
+        for (unsigned i=0; i<systemSyze; i++)
+        {
+            this->systemMatrix->set(j,i,this->systemMatrix->element(j,i)/factInt);
+        }
+    }
+}
+
+
+template<class TMatrix,class TVector>
+void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixCSparse()
+{
+#ifdef SOFA_HAVE_CSPARSE
+    cout << "Compute the initial invert matrix with CS_PARSE" << endl;
+
+    CompressedRowSparseMatrix<double> matSolv;
+    FullVector<double> r;
+    FullVector<double> b;
+
+    matSolv.resize(systemSyze,systemSyze);
+    r.resize(systemSyze);
+    b.resize(systemSyze);
+    SparseCholeskySolver<CompressedRowSparseMatrix<double>, FullVector<double> > solver;
+
+    for (unsigned int j=0; j<systemSyze; j++)
+    {
+        for (unsigned int i=0; i<systemSyze; i++)
+        {
+            if (this->systemMatrix->element(j,i)!=0) matSolv.set(j,i,(double)this->systemMatrix->element(j,i));
+        }
+        b.set(j,0.0);
+    }
+
+    solver.invert(matSolv);
+
+    for (unsigned int j=0; j<systemSyze; j++)
+    {
+        if (j>0) b.set(j-1,0.0);
+        b.set(j,1.0);
+
+        solver.solve(matSolv,r,b);
+        for (unsigned int i=0; i<systemSyze; i++)
+        {
+            this->systemMatrix->set(j,i,r.element(i) * factInt);
+        }
+    }
+
+#else
+    loadMatrixCG()
+#endif
+}
+
+template<class TMatrix,class TVector>
+void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixDirectSolver()
+{
+    cout << "Compute the initial invert matrix with " << solverName.getValue() << endl;
+
+// 	CompressedRowSparseMatrix<double> matSolv;
+// 	FullVector<double> r;
+// 	FullVector<double> b;
+//
+// 	matSolv.resize(systemSyze,systemSyze);
+// 	r.resize(systemSyze);
+// 	b.resize(systemSyze);
+// 	SparseCholeskySolver<CompressedRowSparseMatrix<double>, FullVector<double> > solver;
+//
+// 	for (unsigned int j=0; j<systemSyze; j++) {
+// 		for (unsigned int i=0; i<systemSyze; i++) {
+// 			if (this->systemMatrix->element(j,i)!=0) matSolv.set(j,i,(double)this->systemMatrix->element(j,i));
+// 		}
+// 		b.set(j,0.0);
+// 	}
+//
+// 	solver.invert(matSolv);
+//
+// 	for (unsigned int j=0; j<systemSyze; j++) {
+// 		if (j>0) b.set(j-1,0.0);
+// 		b.set(j,1.0);
+//
+// 		solver.solve(matSolv,r,b);
+// 		for (unsigned int i=0; i<systemSyze; i++) {
+// 			  this->systemMatrix->set(j,i,r.element(i) * factInt);
+// 		}
+// 	}
+}
+
+template<class TMatrix,class TVector>
+void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixCG()
+{
 
 // 	behavior::MechanicalState<DataTypes>* mstate = dynamic_cast< behavior::MechanicalState<DataTypes>* >(this->getContext()->getMechanicalState());
 // 	if (mstate==NULL) {
@@ -119,19 +251,7 @@ void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrix()
     double factInt = 1.0; // christian : it is not a compliance... but an admittance that is computed !
     if (EulerSolver) factInt = EulerSolver->getPositionIntegrationFactor(); // here, we compute a compliance
 
-    std::stringstream ss;
-    ss << this->getContext()->getName() << "-" << systemSyze << "-" << dt << ".comp";
-    std::ifstream compFileIn(ss.str().c_str(), std::ifstream::binary);
-
-    if(compFileIn.good() && use_file.getValue())
-    {
-        cout << "file open : " << ss.str() << " compliance being loaded" << endl;
-        compFileIn.read((char*) (*this->systemMatrix)[0], systemSyze * systemSyze * sizeof(Real));
-        compFileIn.close();
-    }
-    else
-    {
-        cout << "Compute the initial invert matrix" << endl;
+    cout << "Compute the initial invert matrix" << endl;
 
 // 		// for the initial computation, the gravity has to be put at 0
 // 		const Vec3d gravity = this->getContext()->getGravityInWorld();
@@ -262,13 +382,6 @@ void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrix()
 // 		}
 
 // 		///////////////////////////////////////////////////////////////////////////////////////////////
-        if (use_file.getValue())
-        {
-            std::ofstream compFileOut(ss.str().c_str(), std::fstream::out | std::fstream::binary);
-            compFileOut.write((char*)(*this->systemMatrix)[0], systemSyze * systemSyze*sizeof(Real));
-            compFileOut.close();
-        }
-
 // 		if (linearSolver) linearSolver->updateSystemMatrix(); // do not recompute the matrix for the rest of the precomputation
 //
 // 		///////////////////////// RESET PARAMETERS AT THEIR PREVIOUS VALUE /////////////////////////////////
@@ -295,17 +408,6 @@ void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrix()
 //             mstate->vFree(lhId);
 //             mstate->vFree(rhId);
 //         }
-    }
-
-    for (unsigned int j=0; j<systemSyze; j++)
-    {
-        for (unsigned i=0; i<systemSyze; i++)
-        {
-            this->systemMatrix->set(j,i,this->systemMatrix->element(j,i)/factInt);
-        }
-    }
-
-    first = false;
 }
 
 template<class TMatrix,class TVector>
@@ -318,8 +420,9 @@ SOFA_DECL_CLASS(PrecomputedLinearSolver)
 int PrecomputedLinearSolverClass = core::RegisterObject("linearSolveur M0inv to solve")
 #ifndef SOFA_FLOAT
         .add< PrecomputedLinearSolver< FullMatrix<double> , FullVector<double> > >(true)
+//#else
+//.add< PrecomputedLinearSolver< FullMatrix<float> , FullVector<float> > >(true)
 #endif
-        .add< PrecomputedLinearSolver< FullMatrix<float> , FullVector<float> > >()
         ;
 
 } // namespace linearsolver

@@ -81,6 +81,10 @@ public:
     void invert(TMatrix& M);
     void setSystemMBKMatrix(double mFact=0.0, double bFact=0.0, double kFact=0.0);
     void loadMatrix();
+    void loadMatrixCSparse();
+    void loadMatrixDirectSolver();
+    void loadMatrixCG();
+
     TMatrix * getSystemMatrixInv()
     {
         return &systemInv;
@@ -112,6 +116,9 @@ private :
     double init_bFact;
     double init_kFact;
     bool first;
+    unsigned systemSyze;
+    double dt;
+    double factInt;
 
 };
 

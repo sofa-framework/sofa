@@ -234,6 +234,24 @@ private :
     CudaMatrix<T> m;
 };
 
+class CudaBaseMatrixf : public CudaBaseMatrix<float>
+{
+public :
+    static std::string Name()
+    {
+        return "CudaBaseMatrixf";
+    }
+};
+
+class CudaBaseMatrixd : public CudaBaseMatrix<double>
+{
+public :
+    static std::string Name()
+    {
+        return "CudaBaseMatrixd";
+    }
+};
+
 
 } // namespace cuda
 } // namespace gpu
