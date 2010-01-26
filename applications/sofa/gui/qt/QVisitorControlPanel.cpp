@@ -51,10 +51,10 @@ QVisitorControlPanel::QVisitorControlPanel(QWidget* parent): QWidget(parent)
     hboxParameters->addWidget(activation);
 
     hboxParameters->addWidget(spinIndex);
-    hboxParameters->addWidget(new QLabel(QString("First Index")));
+    hboxParameters->addWidget(new QLabel(QString("First Index"), exportStateParameters));
 
     hboxParameters->addWidget(spinRange);
-    hboxParameters->addWidget(new QLabel(QString("Range")));
+    hboxParameters->addWidget(new QLabel(QString("Range"), exportStateParameters));
 
     hboxParameters->addStretch();
 
@@ -71,7 +71,7 @@ QVisitorControlPanel::QVisitorControlPanel(QWidget* parent): QWidget(parent)
     QPushButton *findFilter = new QPushButton(QString("Find"), filterResult);
     findFilter->setAutoDefault(true);
 
-    hboxFilers->addWidget(new QLabel(QString("Focus on:")));
+    hboxFilers->addWidget(new QLabel(QString("Focus on:"), filterResult));
     hboxFilers->addWidget(textFilter);
     hboxFilers->addWidget(findFilter);
 
