@@ -42,29 +42,61 @@ template <class DataTypes>
 void FixParticlePerformer<DataTypes>::start()
 {
 
-    BodyPicked picked=this->interactor->getBodyPicked();
-    if (!picked.body) return;
-    MouseContactMapper *mapFixation;
-    if (mapperFixations.find(picked.body) == mapperFixations.end())
-    {
-        mapFixation = MouseContactMapper::Create(picked.body);
-        mapperFixations.insert(std::make_pair(picked.body, mapFixation));
-    }
-    else mapFixation=mapperFixations[picked.body];
+    core::componentmodel::behavior::MechanicalState<DataTypes>* mstateCollision=NULL;
+    int index;
+    typename DataTypes::Coord pointPicked;
 
-    if (!mapFixation)
+    BodyPicked picked=this->interactor->getBodyPicked();
+    if (picked.body)
     {
-        this->interactor->serr << "Problem with Mouse MapFixation creation : " << DataTypes::Name() << this->interactor->sendl;
-        return;
+        mapper = MouseContactMapper::Create(picked.body);
+        if (!mapper)
+        {
+            this->interactor->serr << "Problem with Mouse Mapper creation : " << this->interactor->sendl;
+            return;
+        }
+        std::string name = "contactMouse";
+        mstateCollision = mapper->createMapping(name.c_str());
+        mapper->resize(1);
+
+        const int idx=picked.indexCollisionElement;
+        pointPicked=(*(mstateCollision->getX()))[idx];
+        typename DataTypes::Real r=0.0;
+
+        index = mapper->addPoint(pointPicked, idx, r);
+        mapper->update();
+
+        if (mstateCollision->getContext() != picked.body->getContext())
+        {
+
+            simulation::Node *mappedNode=(simulation::Node *) mstateCollision->getContext();
+            simulation::Node *mainNode=(simulation::Node *) picked.body->getContext();
+            core::componentmodel::behavior::BaseMechanicalState *mainDof=dynamic_cast<core::componentmodel::behavior::BaseMechanicalState *>(mainNode->getMechanicalState());
+            const core::objectmodel::TagSet &tags=mainDof->getTags();
+            for (core::objectmodel::TagSet::const_iterator it=tags.begin(); it!=tags.end(); ++it)
+            {
+                mstateCollision->addTag(*it);
+                mappedNode->mechanicalMapping->addTag(*it);
+            }
+            mstateCollision->setName("AttachedPoint");
+            mappedNode->mechanicalMapping->setName("MouseMapping");
+        }
     }
+    else
+    {
+        mstateCollision = dynamic_cast< core::componentmodel::behavior::MechanicalState<DataTypes>*  >(picked.mstate);
+        index = picked.indexCollisionElement;
+        pointPicked=(*(mstateCollision->getX()))[index];
+        if (!mstateCollision)
+        {
+            this->interactor->serr << "uncompatible MState during Mouse Interaction " << this->interactor->sendl;
+            return;
+        }
+    }
+
+
+
     std::string name = "contactMouse";
-    core::componentmodel::behavior::MechanicalState<DataTypes>* mstateCollision = mapFixation->createMapping(name.c_str());
-    mapFixation->resize(1);
-    const typename DataTypes::Coord pointPicked=picked.point;
-    const int idx=picked.indexCollisionElement;
-    typename DataTypes::Real r=0.0;
-    const int index = mapFixation->addPoint(pointPicked, idx, r);
-    mapFixation->update();
     simulation::Node* nodeCollision = static_cast<simulation::Node*>(mstateCollision->getContext());
     simulation::Node* nodeFixation = simulation::getSimulation()->newNode("FixationPoint");
     fixations.push_back( nodeFixation );
@@ -74,7 +106,6 @@ void FixParticlePerformer<DataTypes>::start()
     (*mstateFixation->getX())[0] = pointPicked;
     nodeFixation->addObject(mstateFixation);
     constraint::FixedConstraint<DataTypes> *fixFixation = new constraint::FixedConstraint<DataTypes>();
-    fixationConstraint.push_back(fixFixation);
 
 
     nodeFixation->addObject(fixFixation);
@@ -96,46 +127,25 @@ void FixParticlePerformer<DataTypes>::execute()
 template <class DataTypes>
 void FixParticlePerformer<DataTypes>::draw()
 {
-    if (!fixationConstraint.empty())
+    for (unsigned int i=0; i<fixations.size(); ++i)
     {
-        for (unsigned int i=0; i<fixationConstraint.size(); ++i)
-        {
-            bool b = fixationConstraint[i]->getContext()->getShowBehaviorModels();
-            fixationConstraint[i]->getContext()->setShowBehaviorModels(true);
-            fixationConstraint[i]->draw();
-            fixationConstraint[i]->getContext()->setShowBehaviorModels(b);
-        }
+        bool b = fixations[i]->getContext()->getShowBehaviorModels();
+        fixations[i]->getContext()->setShowBehaviorModels(true);
+        simulation::getSimulation()->draw(fixations[i]);
+        fixations[i]->getContext()->setShowBehaviorModels(b);
     }
 }
+
+
 template <class DataTypes>
 FixParticlePerformer<DataTypes>::FixParticlePerformer(BaseMouseInteractor *i):TInteractionPerformer<DataTypes>(i)
 {
 }
-
-
-
 template <class DataTypes>
 FixParticlePerformer<DataTypes>::~FixParticlePerformer()
 {
-
-    while (!fixations.empty())
-    {
-        simulation::Node *node=*fixations.begin();
-        node->detachFromGraph();
-        node->execute<simulation::DeleteVisitor>();
-        delete node;
-        fixations.erase(fixations.begin());
-    }
-
-    while (!mapperFixations.empty())
-    {
-        MouseContactMapper *mapFixation = mapperFixations.begin()->second;
-        mapFixation->cleanup();
-        delete mapFixation;
-        mapperFixations.erase(mapperFixations.begin());
-    }
-
-    fixationConstraint.clear();
+    delete mapper;
+    fixations.clear();
 };
 
 }
