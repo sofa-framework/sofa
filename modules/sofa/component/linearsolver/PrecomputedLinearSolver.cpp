@@ -87,12 +87,12 @@ template<class TMatrix,class TVector>
 void PrecomputedLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(double mFact, double bFact, double kFact)
 {
     // Update the matrix only the first time
-    init_mFact = mFact;
-    init_bFact = bFact;
-    init_kFact = kFact;
 
     if (first)
     {
+        init_mFact = mFact;
+        init_bFact = bFact;
+        init_kFact = kFact;
         Inherit::setSystemMBKMatrix(mFact,bFact,kFact);
         loadMatrix();
         first = false;
@@ -195,7 +195,7 @@ void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixCSparse()
     }
 
 #else
-    loadMatrixCG()
+    loadMatrixCG();
 #endif
 }
 
