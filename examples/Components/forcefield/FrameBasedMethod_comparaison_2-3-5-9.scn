@@ -31,7 +31,7 @@
 			<SkinningMapping template="MechanicalMapping&lt;Rigid,Vec3d&gt;" name="default2"  object1="../../DOFs"  object2="PointSet" computeJ="1"  computeAllMatrices="1"  wheightingType="2"  interpolationType="1"  distanceType="0" voxelVolume="0.002222222" showValuesNbDecimals="3" showTextScaleFactor="0.0005" enableSkinning="1"/>
 		</Node>
 		<Node name="visualNode">
-			<OglModel template="ExtVec3f" name="Visual" fileMesh="data/bar2.obj" color="0 1 0" scale3d="1.1 1.1 1" translation="8 0 0"/>
+			<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/bar2.obj" color="0 1 0" scale3d="1.1 1.1 1" translation="8 0 0"/>
 			<SkinningMapping template="MechanicalMapping&lt;Rigid,ExtVec3f&gt;" name="default2"  object1="../../DOFs" object2="Visual" computeJ="0"  computeAllMatrices="0" wheightingType="2"  interpolationType="1"  distanceType="0" voxelVolume="0.002222222" showValuesNbDecimals="3" showTextScaleFactor="0.0005"/>
 		</Node>
 	</Node>
@@ -53,7 +53,7 @@
 			<SkinningMapping template="MechanicalMapping&lt;Rigid,Vec3d&gt;" name="default2"  object1="../../DOFs"  object2="PointSet" computeJ="1"  computeAllMatrices="1"  wheightingType="2"  interpolationType="1"  distanceType="0" voxelVolume="0.002222222" showValuesNbDecimals="3" showTextScaleFactor="0.0005" enableSkinning="1"/>
 		</Node>
 		<Node name="visualNode">
-			<OglModel template="ExtVec3f" name="Visual" fileMesh="data/bar2.obj" color="0 1 0" scale3d="1.1 1.1 1" translation="6 0 0"/>
+			<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/bar2.obj" color="0 1 0" scale3d="1.1 1.1 1" translation="6 0 0"/>
 			<SkinningMapping template="MechanicalMapping&lt;Rigid,ExtVec3f&gt;" name="default2"  object1="../../DOFs" object2="Visual" computeJ="0"  computeAllMatrices="0" wheightingType="2"  interpolationType="1"  distanceType="0" voxelVolume="0.002222222" showValuesNbDecimals="3" showTextScaleFactor="0.0005"/>
 		</Node>
 	</Node>
@@ -75,7 +75,7 @@
 			<SkinningMapping template="MechanicalMapping&lt;Rigid,Vec3d&gt;" name="default2"  object1="../../DOFs"  object2="PointSet" computeJ="1"  computeAllMatrices="1"  wheightingType="2"  interpolationType="1"  distanceType="0" voxelVolume="0.002222222" showValuesNbDecimals="3" showTextScaleFactor="0.0005" enableSkinning="1"/>
 		</Node>
 		<Node name="visualNode">
-			<OglModel template="ExtVec3f" name="Visual" fileMesh="data/bar2.obj" color="0 1 0" scale3d="1.1 1.1 1" translation="4 0 0"/>
+			<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/bar2.obj" color="0 1 0" scale3d="1.1 1.1 1" translation="4 0 0"/>
 			<SkinningMapping template="MechanicalMapping&lt;Rigid,ExtVec3f&gt;" name="default2"  object1="../../DOFs" object2="Visual" computeJ="0"  computeAllMatrices="0" wheightingType="2"  interpolationType="1"  distanceType="0" voxelVolume="0.002222222" showValuesNbDecimals="3" showTextScaleFactor="0.0005"/>
 		</Node>
 	</Node>
@@ -98,7 +98,7 @@
 			<SkinningMapping template="MechanicalMapping&lt;Rigid,Vec3d&gt;" name="default2"  object1="../../DOFs"  object2="PointSet" computeJ="1"  computeAllMatrices="1"  wheightingType="2"  interpolationType="1"  distanceType="0" voxelVolume="0.002222222" showValuesNbDecimals="3" showTextScaleFactor="0.0005" enableSkinning="1"/>
 		</Node>
 		<Node name="visualNode">
-			<OglModel template="ExtVec3f" name="Visual" fileMesh="data/bar2.obj" color="0 1 0" scale3d="1.1 1.1 1" translation="2 0 0"/>
+			<OglModel template="ExtVec3f" name="Visual" fileMesh="mesh/bar2.obj" color="0 1 0" scale3d="1.1 1.1 1" translation="2 0 0"/>
 			<SkinningMapping template="MechanicalMapping&lt;Rigid,ExtVec3f&gt;" name="default2"  object1="../../DOFs" object2="Visual" computeJ="0"  computeAllMatrices="0" wheightingType="2"  interpolationType="1"  distanceType="0" voxelVolume="0.002222222" showValuesNbDecimals="3" showTextScaleFactor="0.0005"/>
 		</Node>
 	</Node>
