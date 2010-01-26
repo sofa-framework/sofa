@@ -25,10 +25,12 @@ class QVisitorControlPanel : public QWidget
 public:
     QVisitorControlPanel(QWidget* parent);
 
-public slots:
-    void activateTraceStateVectors(bool);
     void changeFirstIndex(int);
     void changeRange(int);
+public slots:
+    void activateTraceStateVectors(bool);
+    void changeFirstIndex();
+    void changeRange();
     void filterResults();
 signals:
     void focusOn(QString);

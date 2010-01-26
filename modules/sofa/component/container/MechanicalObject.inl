@@ -2183,22 +2183,43 @@ void MechanicalObject<DataTypes>::setC(VecId v)
 
 
 template <class DataTypes>
-void MechanicalObject<DataTypes>::printDOF( VecId v, std::ostream& out, unsigned int firstIndex, int range) const
+void MechanicalObject<DataTypes>::printDOF( VecId v, std::ostream& out, int firstIndex, int range) const
 {
+    const unsigned int size=this->getSize();
+    unsigned int first=0;
+    unsigned int max=0;
+
+    if (firstIndex>=0)
+    {
+        first = firstIndex;
+        if (first >= size) return;
+        if ( (range >= 0) && ( (range+first)<size) )
+            max = range+first;
+        else
+            max = size;
+    }
+    else
+    {
+        firstIndex *=-1;
+        first=firstIndex;
+        if (first >= size) return;
+        if ( (range >= 0) && ( (range+ (size-first) )<size) )
+            max = range+(size-first);
+        else
+            max = size;
+        first = size-first;
+    }
+
     if( v.type==VecId::V_COORD && getVecCoord(v.index))
     {
         const VecCoord& x= *getVecCoord(v.index);
-        if (firstIndex >= x.size()) return;
-        const unsigned max=( (range>=0) && ( (range+firstIndex)<x.size() ) )?(range+firstIndex):x.size();
-        for( unsigned i=firstIndex; i<max; ++i )
+        for( unsigned i=first; i<max; ++i )
             out<<x[i]<<" ";
     }
     else if( v.type==VecId::V_DERIV && getVecDeriv(v.index))
     {
         const VecDeriv& x= *getVecDeriv(v.index);
-        if (firstIndex >= x.size()) return;
-        const unsigned max=( (range>=0) && ( (range+firstIndex)<x.size() ) )?(range+firstIndex):x.size();
-        for( unsigned i=firstIndex; i<max; ++i )
+        for( unsigned i=first; i<max; ++i )
             out<<x[i]<<" ";
     }
     else

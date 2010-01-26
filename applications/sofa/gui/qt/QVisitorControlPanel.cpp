@@ -5,18 +5,17 @@
 #ifdef SOFA_QT4
 #include <QPushButton>
 #include <QCheckBox>
-#include <QSpinBox>
 #include <QLabel>
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #else
 #include <qpushbutton.h>
 #include <qcheckbox.h>
-#include <qspinbox.h>
 #include <qlabel.h>
 #include <qlayout.h>
 #endif
 
+#include "WFloatLineEdit.h"
 
 
 namespace sofa
@@ -37,15 +36,19 @@ QVisitorControlPanel::QVisitorControlPanel(QWidget* parent): QWidget(parent)
 
     QCheckBox *activation=new QCheckBox(QString("Trace State Vector"), exportStateParameters);
 
-    QSpinBox *spinIndex = new QSpinBox(exportStateParameters);
-    spinIndex->setMinValue(0); spinIndex->setValue(sofa::simulation::Visitor::GetFirstIndexStateVector());
-    QSpinBox *spinRange = new QSpinBox(exportStateParameters);
-    spinRange->setValue(sofa::simulation::Visitor::GetRangeStateVector());
+    WFloatLineEdit *spinIndex = new WFloatLineEdit(exportStateParameters, "index");
+    spinIndex->setMinFloatValue( (float)-INFINITY );
+    spinIndex->setMaxFloatValue( (float)INFINITY );
+    spinIndex->setIntValue(sofa::simulation::Visitor::GetFirstIndexStateVector());
+    WFloatLineEdit *spinRange = new WFloatLineEdit(exportStateParameters, "range");
+    spinRange->setMinFloatValue( (float)-INFINITY );
+    spinRange->setMaxFloatValue( (float)INFINITY );
+    spinRange->setIntValue(sofa::simulation::Visitor::GetRangeStateVector());
 
 
     connect(activation, SIGNAL(toggled(bool)), this, SLOT(activateTraceStateVectors(bool)));
-    connect(spinIndex, SIGNAL(valueChanged(int)), this, SLOT(changeFirstIndex(int)));
-    connect(spinRange, SIGNAL(valueChanged(int)), this, SLOT(changeRange(int)));
+    connect(spinIndex, SIGNAL(lostFocus()), this, SLOT(changeFirstIndex()));
+    connect(spinRange, SIGNAL(lostFocus()), this, SLOT(changeRange()));
 
 
     hboxParameters->addWidget(activation);
@@ -87,6 +90,19 @@ void QVisitorControlPanel::activateTraceStateVectors(bool active)
 {
     sofa::simulation::Visitor::EnableExportStateVector(active);
 }
+void QVisitorControlPanel::changeFirstIndex()
+{
+    WFloatLineEdit *w=(WFloatLineEdit *) sender();
+    int value=w->getIntValue();
+    changeFirstIndex(value);
+}
+void QVisitorControlPanel::changeRange()
+{
+    WFloatLineEdit *w=(WFloatLineEdit *) sender();
+    int value=w->getIntValue();
+    changeRange(value);
+}
+
 void QVisitorControlPanel::changeFirstIndex(int idx)
 {
     sofa::simulation::Visitor::SetFirstIndexStateVector(idx);
