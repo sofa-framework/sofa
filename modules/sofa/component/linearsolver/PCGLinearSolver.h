@@ -30,7 +30,7 @@
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/helper/map.h>
 
-#define DISPLAY_TIME 200
+//#define DISPLAY_TIME 200
 
 #include <math.h>
 
