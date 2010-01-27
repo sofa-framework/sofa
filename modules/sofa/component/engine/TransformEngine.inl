@@ -40,7 +40,7 @@ namespace engine
 template <class DataTypes>
 TransformEngine<DataTypes>::TransformEngine()
     : f_inputX ( initData (&f_inputX, "input_position", "input array of 3d points") )
-    , f_outputX( initData (&f_outputX, "output_position", "output array of 3d points projected on a plane") )
+    , f_outputX( initData (&f_outputX, "output_position", "output array of 3d points") )
     , translation(initData(&translation, defaulttype::Vector3(0,0,0),"translation", "translation vector ") )
     , rotation(initData(&rotation, defaulttype::Vector3(0,0,0), "rotation", "rotation vector ") )
     , scale(initData(&scale, defaulttype::Vector3(1,1,1),"scale", "scale factor") )
@@ -106,8 +106,7 @@ struct Rotation : public TransformOperation<DataTypes>
         DataTypes::get(pos[0],pos[1],pos[2],p);
         pos=q.rotate(pos);
         DataTypes::set(p,pos[0],pos[1],pos[2]);
-    };
-
+    }
 
     void configure(const defaulttype::Vector3 &r)
     {
@@ -220,11 +219,6 @@ void TransformEngine<DataTypes>::update()
         delete operations.back();
         operations.pop_back();
     }
-
-    //Reseting to default values
-    translation.setValue(defaulttype::Vector3(0,0,0));
-    rotation   .setValue(defaulttype::Vector3(0,0,0));
-    scale      .setValue(defaulttype::Vector3(1,1,1));
 
     f_outputX.endEdit();
 }
