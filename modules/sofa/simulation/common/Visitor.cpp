@@ -61,7 +61,7 @@ std::vector< Visitor::ctime_t  > Visitor::initNodeTime=std::vector< Visitor::cti
 bool Visitor::printActivated=false;
 bool Visitor::outputStateVector=false;
 unsigned int Visitor::firstIndexStateVector=0;
-int Visitor::rangeStateVector=20;
+int Visitor::rangeStateVector=2;
 
 std::ostream *Visitor::outputVisitor=NULL;
 
@@ -162,10 +162,18 @@ double Visitor::getTimeSpent(ctime_t initTime, ctime_t endTime)
 
 void Visitor::printVector(core::componentmodel::behavior::BaseMechanicalState *mm, core::VecId id)
 {
+    if (id.type != core::VecId::V_COORD && id.type != core::VecId::V_DERIV) return;
     std::ostringstream infoStream;
     TRACE_ARGUMENT arg;
     mm->printDOF(id, infoStream,firstIndexStateVector, rangeStateVector);
-    arg.push_back(std::make_pair("value", infoStream.str()));
+    std::string vectorValue=infoStream.str();
+    if (vectorValue.empty()) return;
+
+    infoStream.str("");
+    if      (id.type == core::VecId::V_COORD) infoStream << mm->getCoordDimension() << " ";
+    else if (id.type == core::VecId::V_DERIV) infoStream << mm->getDerivDimension() << " ";
+    vectorValue = infoStream.str()+vectorValue;
+    arg.push_back(std::make_pair("value", vectorValue));
 
     printNode("Vector", id.getName(), arg);
     printCloseNode("Vector");

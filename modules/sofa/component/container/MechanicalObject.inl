@@ -2186,41 +2186,32 @@ template <class DataTypes>
 void MechanicalObject<DataTypes>::printDOF( VecId v, std::ostream& out, int firstIndex, int range) const
 {
     const unsigned int size=this->getSize();
-    unsigned int first=0;
-    unsigned int max=0;
-
-    if (firstIndex>=0)
+    if ((unsigned int) (abs(firstIndex)) >= size) return;
+    const unsigned int first=((firstIndex>=0)?firstIndex:size+firstIndex);
+    const unsigned int max=( ( (range >= 0) && ( (range+first)<size) ) ? (range+first):size);
+    if( v.type==VecId::V_COORD)
     {
-        first = firstIndex;
-        if (first >= size) return;
-        if ( (range >= 0) && ( (range+first)<size) )
-            max = range+first;
-        else
-            max = size;
+        if (getVecCoord(v.index))
+        {
+            const VecCoord& x= *getVecCoord(v.index);
+            for( unsigned i=first; i<max; ++i )
+            {
+                out<<x[i];
+                if (i != max-1) out <<" ";
+            }
+        }
     }
-    else
+    else if( v.type==VecId::V_DERIV)
     {
-        firstIndex *=-1;
-        first=firstIndex;
-        if (first >= size) return;
-        if ( (range >= 0) && ( (range+ (size-first) )<size) )
-            max = range+(size-first);
-        else
-            max = size;
-        first = size-first;
-    }
-
-    if( v.type==VecId::V_COORD && getVecCoord(v.index))
-    {
-        const VecCoord& x= *getVecCoord(v.index);
-        for( unsigned i=first; i<max; ++i )
-            out<<x[i]<<" ";
-    }
-    else if( v.type==VecId::V_DERIV && getVecDeriv(v.index))
-    {
-        const VecDeriv& x= *getVecDeriv(v.index);
-        for( unsigned i=first; i<max; ++i )
-            out<<x[i]<<" ";
+        if (getVecDeriv(v.index))
+        {
+            const VecDeriv& x= *getVecDeriv(v.index);
+            for( unsigned i=first; i<max; ++i )
+            {
+                out<<x[i];
+                if (i != max-1) out <<" ";
+            }
+        }
     }
     else
         out<<"MechanicalObject<DataTypes>::printDOF, unknown v.type = "<<v.type<<std::endl;

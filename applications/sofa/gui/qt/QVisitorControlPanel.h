@@ -5,11 +5,11 @@
 
 #ifdef SOFA_QT4
 #include <QWidget>
-#include <QLineEdit>
 #else
 #include <qwidget.h>
-#include <qlineedit.h>
 #endif
+
+#include "WFloatLineEdit.h"
 
 
 namespace sofa
@@ -34,8 +34,11 @@ public slots:
     void filterResults();
 signals:
     void focusOn(QString);
+    void clearGraph();
 protected:
     QLineEdit *textFilter;
+    WFloatLineEdit *spinIndex;
+    WFloatLineEdit *spinRange;
 };
 
 
