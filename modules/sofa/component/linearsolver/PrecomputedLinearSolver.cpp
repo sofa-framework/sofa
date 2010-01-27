@@ -101,9 +101,9 @@ void PrecomputedLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(double mFact, 
 
 //Solve x = R * M^-1 * R^t * b
 template<class TMatrix,class TVector>
-void PrecomputedLinearSolver<TMatrix,TVector>::solve (TMatrix& M, TVector& z, TVector& r)
+void PrecomputedLinearSolver<TMatrix,TVector>::solve (TMatrix& /*M*/, TVector& z, TVector& r)
 {
-    z = M * r;
+    z = *this->systemMatrix * r;
 }
 
 template<class TMatrix,class TVector>
