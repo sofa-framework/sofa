@@ -130,12 +130,6 @@ WindowVisitor::WindowVisitor()
     icons[COMPONENT] = new QPixmap(*img[COMPONENT]);
     icons[OTHER]   = new QPixmap(*img[OTHER]  );
 #endif
-    //Add Control Panel
-    controlPanel = new QVisitorControlPanel(this);
-    static_cast<QVBoxLayout*>(this->layout())->insertWidget(0, controlPanel);
-    connect( controlPanel, SIGNAL(focusOn(QString)), this, SLOT(focusOn(QString)));
-
-
     statsWidget=new QWidget(splitterStats);
 
     QGridLayout *statsLayout=new QGridLayout(statsWidget);
@@ -161,6 +155,13 @@ WindowVisitor::WindowVisitor()
     statsLayout->addWidget(chartsComponent,1,0);
     statsLayout->addWidget(chartsVisitor,2,0);
     connect(typeOfCharts, SIGNAL(activated(int)), this, SLOT(setCurrentCharts(int)));
+
+
+    //Add Control Panel
+    controlPanel = new QVisitorControlPanel(splitterWindow);
+    connect( controlPanel, SIGNAL(focusOn(QString)), this, SLOT(focusOn(QString)));
+    connect( controlPanel, SIGNAL(clearGraph()), this, SLOT(clearGraph()));
+    controlPanel->setMaximumHeight(110);
 }
 
 
