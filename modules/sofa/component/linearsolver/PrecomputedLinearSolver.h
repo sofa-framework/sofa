@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_PrecomputedWarpPreconditioner_H
-#define SOFA_COMPONENT_LINEARSOLVER_PrecomputedWarpPreconditioner_H
+#ifndef SOFA_COMPONENT_LINEARSOLVER_PrecomputedLinearSolver_H
+#define SOFA_COMPONENT_LINEARSOLVER_PrecomputedLinearSolver_H
 
 #include <sofa/core/componentmodel/behavior/LinearSolver.h>
 #include <sofa/component/linearsolver/MatrixLinearSolver.h>
@@ -87,7 +87,8 @@ public:
 
     TMatrix * getSystemMatrixInv()
     {
-        return &systemInv;
+        if (!this->systemMatrix) this->systemMatrix = new TMatrix();
+        return this->systemMatrix;
     }
 
     /// Pre-construction check method called by ObjectFactory.
@@ -110,8 +111,6 @@ public:
 
 
 private :
-    TMatrix systemInv;
-
     double init_mFact;
     double init_bFact;
     double init_kFact;

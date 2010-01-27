@@ -99,6 +99,11 @@ public:
     void setSystemMBKMatrix(double mFact=0.0, double bFact=0.0, double kFact=0.0);
     bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact);
 
+    TMatrix * getSystemMatrixInv()
+    {
+        if (!this->systemMatrix) this->systemMatrix = new TMatrix();
+        return this->systemMatrix;
+    }
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
