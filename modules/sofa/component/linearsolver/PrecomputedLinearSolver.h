@@ -103,7 +103,11 @@ public:
         return TMatrix::Name();
     }
 
-
+    TMatrix * getSystemMatrixInv()
+    {
+        if (!this->systemMatrix) this->systemMatrix = new TMatrix();
+        return this->systemMatrix;
+    }
 private :
     double init_mFact;
     double init_bFact;

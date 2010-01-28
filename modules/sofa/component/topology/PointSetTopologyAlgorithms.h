@@ -63,6 +63,12 @@ public:
 
     virtual void init();
 
+    template<class T>
+    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    {
+        return BaseObject::canCreate(obj, context, arg);
+    }
+
     virtual std::string getTemplateName() const
     {
         return templateName(this);
