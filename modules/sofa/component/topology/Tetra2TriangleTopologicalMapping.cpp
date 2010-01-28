@@ -505,7 +505,8 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
                                     bool is_present = false;
                                     unsigned int k0 = 0;
-                                    /** HD may be a buf here k0<tab.size() */
+
+                                    // HD may be a buf here k0<tab.size()
                                     while((!is_present) && k0 < i)
                                     {
                                         is_present = (ind_test == tab[k0]);
@@ -515,8 +516,8 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                                     {
 
                                         Triangle t;
-
                                         const Tetrahedron &te=tetrahedronArray[ind_test];
+
                                         int h = fromModel->getTriangleIndexInTetrahedron(fromModel->getTrianglesInTetrahedron(ind_test),k);
 
                                         if ((h%2) && (flipNormals.getValue()==false))
@@ -527,6 +528,37 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                                         {
                                             t[0]=(int)(te[(h+1)%4]); t[2]=(int)(te[(h+2)%4]); t[1]=(int)(te[(h+3)%4]);
                                         }
+
+                                        for(int j=0; j<4; j++)
+                                        {
+                                            bool flag=true;
+                                            for(int k=0; k<3; k++)
+                                            {
+                                                if(t[k]==te[j])
+                                                {
+                                                    flag=false;
+                                                    break;
+                                                }
+                                            }
+                                            if(flag)
+                                            {
+                                                if ((j%2))
+                                                {
+                                                    t[0]=(int)(te[(j+1)%4]); t[1]=(int)(te[(j+2)%4]); t[2]=(int)(te[(j+3)%4]);
+                                                }
+                                                else
+                                                {
+                                                    t[0]=(int)(te[(j+1)%4]); t[2]=(int)(te[(j+2)%4]); t[1]=(int)(te[(j+3)%4]);
+                                                }
+                                                if(flipNormals.getValue()==true)
+                                                {
+                                                    unsigned int temp=t[2];
+                                                    t[2]=t[1];
+                                                    t[1]=temp;
+                                                }
+                                            }
+                                        }
+
 
                                         // sort t such that t[0] is the smallest one
                                         while ((t[0]>t[1]) || (t[0]>t[2]))
