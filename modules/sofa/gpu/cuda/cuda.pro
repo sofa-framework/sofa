@@ -178,7 +178,12 @@ SOURCES += \
 		CudaRasterizer.cpp \
 		CudaLDIPenalityContactForceField.cpp \
 		CudaLDISimpleContactConstraint.cpp \
-	CudaComplianceMatrixUpdateManager.cpp
+	CudaComplianceMatrixUpdateManager.cpp \
+	CudaTetrahedronCuttingManager.cpp \
+	CudaTetrahedronSetGeometryAlgorithms.cpp \
+	CudaTetrahedronSetTopologyAlgorithms.cpp \
+	CudaPointSetGeometryAlgorithms.cpp \
+	CudaEdgeSetGeometryAlgorithms.cpp \
 
 CUDA_SOURCES += \
 	   	CudaLCP.cu \

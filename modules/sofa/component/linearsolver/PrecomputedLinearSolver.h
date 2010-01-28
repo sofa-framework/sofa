@@ -85,12 +85,6 @@ public:
     void loadMatrixDirectSolver();
     void loadMatrixCG();
 
-    TMatrix * getSystemMatrixInv()
-    {
-        if (!this->systemMatrix) this->systemMatrix = new TMatrix();
-        return this->systemMatrix;
-    }
-
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
     template<class T>
