@@ -111,7 +111,6 @@ public:
         return BaseObject::canCreate(obj, context, arg);
     }
 
-
     virtual std::string getTemplateName() const
     {
         return templateName(this);
