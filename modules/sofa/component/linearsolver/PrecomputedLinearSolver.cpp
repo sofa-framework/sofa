@@ -103,7 +103,9 @@ void PrecomputedLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(double mFact, 
 template<class TMatrix,class TVector>
 void PrecomputedLinearSolver<TMatrix,TVector>::solve (TMatrix& /*M*/, TVector& z, TVector& r)
 {
+    printf("solve start system=%d z=%d r=%d\n",this->systemMatrix->rowSize(),z.size(),r.size());
     z = *this->systemMatrix * r;
+    printf("solve end\n");
 }
 
 template<class TMatrix,class TVector>

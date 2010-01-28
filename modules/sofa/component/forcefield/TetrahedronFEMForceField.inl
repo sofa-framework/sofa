@@ -182,11 +182,11 @@ inline void TetrahedronFEMForceField<DataTypes>::getElementStiffnessMatrix(Real*
     Rot[0][1]=Rot[0][2]=0;
     Rot[1][0]=Rot[1][2]=0;
     Rot[2][0]=Rot[2][1]=0;
-    computeStiffnessMatrix(JKJt,tmp,_materialsStiffnesses[elementIndex], _strainDisplacements[elementIndex],Rot);
+    computeStiffnessMatrix(JKJt,tmp,_materialsStiffnesses[elementIndex], _strainDisplacements[elementIndex],_initialRotations[elementIndex]);
     for(int i=0; i<12; i++)
     {
         for(int j=0; j<12; j++)
-            stiffness[i*12+j]=JKJt(i,j);
+            stiffness[i*12+j]=tmp(i,j);
     }
 // 	tetrahedronInfo.endEdit();
 }
@@ -231,11 +231,13 @@ inline void TetrahedronFEMForceField<DataTypes>::getElementStiffnessMatrix(Real*
     Rot[0][1]=Rot[0][2]=0;
     Rot[1][0]=Rot[1][2]=0;
     Rot[2][0]=Rot[2][1]=0;
-    computeStiffnessMatrix(JKJt, tmp, materialMatrix, strainMatrix, Rot);
+
+    R_0_1.transpose();
+    computeStiffnessMatrix(JKJt, tmp, materialMatrix, strainMatrix, R_0_1);
     for(int i=0; i<12; i++)
     {
         for(int j=0; j<12; j++)
-            stiffness[i*12+j]=JKJt(i,j);
+            stiffness[i*12+j]=tmp(i,j);
     }
 }
 
