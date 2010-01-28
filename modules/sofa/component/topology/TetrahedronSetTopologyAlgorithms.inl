@@ -388,7 +388,7 @@ int TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronWithPlane
 
         if(pointsID[3]>=m_intialNbPoints)
         {
-            if((pointsID[3]-m_intialNbPoints)%2==0)//normal ¹Ý´ë
+            if((pointsID[3]-m_intialNbPoints)%2==0)//normal ï¿½Ý´ï¿½
             {
                 if(dot>0)
                 {
