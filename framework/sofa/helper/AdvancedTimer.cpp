@@ -137,6 +137,7 @@ public:
         ctime_t tmin;
         ctime_t tmax;
         ctime_t ttotal;
+        ctime_t ttotal2;
         int lastIt;
         ctime_t lastTime;
         StepData() : level(0), num(0), numIt(0), tstart(0), tmin(0), tmax(0), ttotal(0), lastIt(-1), lastTime(0) {}
@@ -152,6 +153,7 @@ public:
         double vmin;
         double vmax;
         double vtotal;
+        double vtotal2;
         double vtotalIt;
         int lastIt;
         ValData() : num(0), numIt(0), vmin(0), vmax(0), vtotal(0), vtotalIt(0), lastIt(-1) {}
@@ -433,6 +435,7 @@ void TimerData::process()
             {
                 ctime_t dur = t - data.lastTime;
                 data.ttotal += dur;
+                data.ttotal2 += dur*dur;
                 if (data.num == 1 || dur > data.tmax) data.tmax = dur;
                 if (data.num == 1 || dur < data.tmin) data.tmin = dur;
             }
@@ -456,6 +459,7 @@ void TimerData::process()
                 data.lastIt = nbIter;
                 data.vtotalIt = r.val;
                 data.vtotal += r.val;
+                data.vtotal2 += r.val*r.val;
                 ++data.numIt;
                 ++data.num;
             }
@@ -463,12 +467,14 @@ void TimerData::process()
             {
                 data.vtotalIt = r.val;
                 data.vtotal += r.val;
+                data.vtotal2 += r.val*r.val;
                 ++data.num;
             }
             else
             {
                 data.vtotalIt += r.val;
                 data.vtotal += r.val;
+                data.vtotal2 += r.val*r.val;
             }
             break;
         }
@@ -667,7 +673,7 @@ void TimerData::print()
     if (!steps.empty())
     {
         out << "\nSteps Duration Statistics (in ms) :\n";
-        out << " LEVEL\t START\t  NUM\t   MIN\t   MAX\t MEAN\t TOTAL\tPERCENT\tID\n";
+        out << " LEVEL\t START\t  NUM\t   MIN\t   MAX\t MEAN\t  DEV\t TOTAL\tPERCENT\tID\n";
         ctime_t ttotal = stepData[AdvancedTimer::IdStep()].ttotal;
         for (unsigned int s=0; s<steps.size(); ++s)
         {
@@ -684,6 +690,8 @@ void TimerData::print()
             out << '\t';
             printTime(out, data.ttotal, data.num);
             out << '\t';
+            printTime(out, sqrt((double)data.ttotal2 - data.ttotal), data.num);
+            out << '\t';
             printTime(out, data.ttotal, (s == 0) ? 1 : nbIter);
             out << '\t';
             printVal(out, 100.0*data.ttotal / (double) ttotal);
@@ -698,7 +706,7 @@ void TimerData::print()
     if (!vals.empty())
     {
         out << "\nValues Statistics :\n";
-        out << " NUM\t  MIN\t  MAX\t MEAN\t TOTAL\tID\n";
+        out << " NUM\t  MIN\t  MAX\t MEAN\t  DEV\t TOTAL\tID\n";
         for (unsigned int s=0; s<vals.size(); ++s)
         {
             ValData& data = valData[vals[s]];
@@ -709,6 +717,8 @@ void TimerData::print()
             printVal(out, data.vmax);
             out << '\t';
             printVal(out, data.vtotal, data.num);
+            out << '\t';
+            printVal(out, sqrt(data.vtotal2 - data.vtotal), data.num);
             out << '\t';
             printVal(out, data.vtotal, nbIter);
             out << '\t';
