@@ -520,6 +520,7 @@ template<class TDataTypes,class TMatrix,class TVector>
 bool PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact)
 {
     if (! _rotate) this->rotateConstraints();  //already rotate with Preconditionner
+    _rotate = false;
 
     if (SparseMatrix<double>* j = dynamic_cast<SparseMatrix<double>*>(J))
     {
