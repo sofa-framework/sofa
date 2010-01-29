@@ -1,4 +1,5 @@
 #include "QSofaListView.h"
+#include "RealGUI.h"
 #include "GraphListenerQListView.h"
 #include "AddObject.h"
 #include "ModifyObject.h"
@@ -107,7 +108,7 @@ QSofaListView::QSofaListView(const SofaListViewAttribute& attribute,
     header()->setClickEnabled(false, header()->count() - 1);
     header()->setResizeEnabled(false, header()->count() - 1);
     header()->setLabel(0, QString());
-    setObjectName(QString::fromUtf8(name));
+
     setRootIsDecorated(true);
     setTreeStepSize(15);
     graphListener_ = new GraphListenerQListView(this);
