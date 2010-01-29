@@ -1,6 +1,5 @@
 #include "QSofaRecorder.h"
 #include "RealGUI.h"
-
 #include <time.h>
 
 #include <sofa/core/objectmodel/Tag.h>
@@ -269,7 +268,7 @@ void QSofaRecorder::slot_recordSimulation(bool value)
         //Halt the simulation.
         emit RecordSimulation(false);
         //Save simulation file
-        std::string FileName(QApplication::mainWidget()->windowFilePath().ascii());
+        std::string FileName(qApp->mainWidget()->windowFilePath().ascii());
         std::string simulationFileName = simulationBaseName_ + ".simu";
         std::ofstream out(simulationFileName.c_str());
 
@@ -454,7 +453,7 @@ bool QSofaRecorder::querySimulationName()
 
     std::string dir;
     bool ok;
-    std::string filename(QApplication::mainWidget()->windowFilePath().ascii());
+    std::string filename(qApp->mainWidget()->windowFilePath().ascii());
     dir = sofa::helper::system::SetDirectory::GetParentDir(filename.c_str()) + "/";
 
     QString text = QInputDialog::getText("Record Simulation", "Enter the name of your simulation:", QLineEdit::Normal,
