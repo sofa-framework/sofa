@@ -1,5 +1,5 @@
-#ifndef SOFA_GUI_QT_QSOFAGRAPH_H
-#define SOFA_GUI_QT_QSOFAGRAPH_H
+#ifndef SOFA_GUI_QT_QSOFALISTVIEW_H
+#define SOFA_GUI_QT_QSOFALISTVIEW_H
 
 #ifdef SOFA_QT4
 #include <QWidget>
@@ -121,6 +121,6 @@ protected:
 } //gui
 }//qt
 
-#endif // SOFA_GUI_QT_QSOFAGRAPH_H
+#endif // SOFA_GUI_QT_QSOFALISTVIEW_H
 
 
