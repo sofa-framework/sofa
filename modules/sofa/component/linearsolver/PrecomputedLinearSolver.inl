@@ -106,15 +106,13 @@ void PrecomputedLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(double mFact, 
 template<class TMatrix,class TVector>
 void PrecomputedLinearSolver<TMatrix,TVector>::solve (TMatrix& /*M*/, TVector& z, TVector& r)
 {
-    printf("solve start system=%d z=%d r=%d\n",this->systemMatrix->rowSize(),z.size(),r.size());
     z = *this->systemMatrix * r;
-    printf("solve end\n");
 }
 
 template<class TMatrix,class TVector>
-void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrix()
+void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix()
 {
-    systemSyze = this->systemMatrix->rowSize();
+    unsigned systemSyze = this->systemMatrix->rowSize();
     dt = this->getContext()->getDt();
 
     EulerImplicitSolver* EulerSolver;
@@ -134,14 +132,8 @@ void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrix()
     }
     else
     {
-        if (solverName.getValue().empty())
-        {
-            loadMatrixCSparse();
-        }
-        else
-        {
-
-        }
+        if (solverName.getValue().empty()) loadMatrixWithCSparse();
+        else loadMatrixWithSolver();
 
         if (use_file.getValue())
         {
@@ -160,9 +152,8 @@ void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrix()
     }
 }
 
-
 template<class TMatrix,class TVector>
-void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixCSparse()
+void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixWithCSparse()
 {
 #ifdef SOFA_HAVE_CSPARSE
     cout << "Compute the initial invert matrix with CS_PARSE" << endl;
@@ -170,6 +161,8 @@ void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixCSparse()
     CompressedRowSparseMatrix<double> matSolv;
     FullVector<double> r;
     FullVector<double> b;
+
+    unsigned systemSyze = this->systemMatrix->colSize();
 
     matSolv.resize(systemSyze,systemSyze);
     r.resize(systemSyze);
@@ -185,10 +178,15 @@ void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixCSparse()
         b.set(j,0.0);
     }
 
+    std::cout << "Precomputing constraint correction LU decomposition " << std::endl;
     solver.invert(matSolv);
 
     for (unsigned int j=0; j<systemSyze; j++)
     {
+        std::cout.precision(2);
+        std::cout << "Precomputing constraint correction : " << std::fixed << (float)j/(float)systemSyze*100.0f << " %   " << '\xd';
+        std::cout.flush();
+
         if (j>0) b.set(j-1,0.0);
         b.set(j,1.0);
 
@@ -198,225 +196,254 @@ void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixCSparse()
             this->systemMatrix->set(j,i,r.element(i) * factInt);
         }
     }
+    std::cout << "Precomputing constraint correction : " << std::fixed << 100.0f << " %   " << '\xd';
+    std::cout.flush();
 
 #else
-    loadMatrixCG();
+    std::cout << "WARNING ; you don't have CS_parse solvername will be use" << std::endl;
+    loadMatrixWithSolver();
 #endif
 }
 
 template<class TMatrix,class TVector>
-void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixDirectSolver()
+void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrixWithSolver()
 {
-    cout << "Compute the initial invert matrix with " << solverName.getValue() << endl;
-
-// 	CompressedRowSparseMatrix<double> matSolv;
-// 	FullVector<double> r;
-// 	FullVector<double> b;
+// 	usePrecond = false;//Don'Use precond during precomputing
 //
-// 	matSolv.resize(systemSyze,systemSyze);
-// 	r.resize(systemSyze);
-// 	b.resize(systemSyze);
-// 	SparseCholeskySolver<CompressedRowSparseMatrix<double>, FullVector<double> > solver;
+// 	cout << "Compute the initial invert matrix with solver" << endl;
 //
-// 	for (unsigned int j=0; j<systemSyze; j++) {
-// 		for (unsigned int i=0; i<systemSyze; i++) {
-// 			if (this->systemMatrix->element(j,i)!=0) matSolv.set(j,i,(double)this->systemMatrix->element(j,i));
-// 		}
-// 		b.set(j,0.0);
-// 	}
-//
-// 	solver.invert(matSolv);
-//
-// 	for (unsigned int j=0; j<systemSyze; j++) {
-// 		if (j>0) b.set(j-1,0.0);
-// 		b.set(j,1.0);
-//
-// 		solver.solve(matSolv,r,b);
-// 		for (unsigned int i=0; i<systemSyze; i++) {
-// 			  this->systemMatrix->set(j,i,r.element(i) * factInt);
-// 		}
-// 	}
-}
-
-template<class TMatrix,class TVector>
-void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixCG()
-{
-
 // 	behavior::MechanicalState<DataTypes>* mstate = dynamic_cast< behavior::MechanicalState<DataTypes>* >(this->getContext()->getMechanicalState());
 // 	if (mstate==NULL) {
-// 		serr << "CudaPrecomputedWarpPreconditioner can't find Mstate" << sendl;
+// 		serr << "PrecomputedWarpPreconditioner can't find Mstate" << sendl;
 // 		return;
 // 	}
 // 	const VecDeriv& v0 = *mstate->getV();
 // 	unsigned dof_on_node = v0[0].size();
 // 	unsigned nbNodes = v0.size();
-
-    EulerImplicitSolver* EulerSolver;
-    this->getContext()->get(EulerSolver);
-    double factInt = 1.0; // christian : it is not a compliance... but an admittance that is computed !
-    if (EulerSolver) factInt = EulerSolver->getPositionIntegrationFactor(); // here, we compute a compliance
-
-    cout << "Compute the initial invert matrix" << endl;
-
-// 		// for the initial computation, the gravity has to be put at 0
-// 		const Vec3d gravity = this->getContext()->getGravityInWorld();
-// 		const Vec3d gravity_zero(0.0,0.0,0.0);
-// 		this->getContext()->setGravityInWorld(gravity_zero);
+// 	unsigned systemSyze = nbNodes*dof_on_node;
 //
-// 		PCGLinearSolver<GraphScatteredMatrix,GraphScatteredVector>* PCGlinearSolver;
-// 		CGLinearSolver<GraphScatteredMatrix,GraphScatteredVector>* CGlinearSolver;
-// 		core::componentmodel::behavior::LinearSolver* linearSolver;
-
-// 		if (solverName.getValue().empty()) {
-// 	            this->getContext()->get(CGlinearSolver);
-// 	            this->getContext()->get(PCGlinearSolver);
-// 	            this->getContext()->get(linearSolver);
-// 		} else {
-// 		    core::objectmodel::BaseObject* ptr = NULL;
-// 		    this->getContext()->get(ptr, solverName.getValue());
-// 		    PCGlinearSolver = dynamic_cast<PCGLinearSolver<GraphScatteredMatrix,GraphScatteredVector>*>(ptr);
-// 		    CGlinearSolver = dynamic_cast<CGLinearSolver<GraphScatteredMatrix,GraphScatteredVector>*>(ptr);
-// 		    linearSolver = dynamic_cast<core::componentmodel::behavior::LinearSolver*>(ptr);
-// 		}
-
-// 		if(EulerSolver && CGlinearSolver)
-// 			sout << "use EulerImplicitSolver &  CGLinearSolver" << sendl;
-// 		else if(EulerSolver && PCGlinearSolver)
-// 			sout << "use EulerImplicitSolver &  PCGLinearSolver" << sendl;
-// 		else if(EulerSolver && linearSolver)
-// 			sout << "use EulerImplicitSolver &  LinearSolver" << sendl;
-// 		else if(EulerSolver) {
-// 			sout << "use EulerImplicitSolver" << sendl;
-// 		} else {
-// 			serr<<"PrecomputedContactCorrection must be associated with EulerImplicitSolver+LinearSolver for the precomputation\nNo Precomputation" << sendl;
-// 			return;
-// 		}
-// 		VecId lhId = core::componentmodel::behavior::BaseMechanicalState::VecId::velocity();
-// 		VecId rhId = core::componentmodel::behavior::BaseMechanicalState::VecId::force();
-//         if (!init_bw.getValue())
-//         {
-//             mstate->vAvail(lhId);
-//             mstate->vAlloc(lhId);
-//             mstate->vAvail(rhId);
-//             mstate->vAlloc(rhId);
-//             std::cout << "System: (" << init_mFact << " * M + " << init_bFact << " * B + " << init_kFact << " * K) " << lhId << " = " << rhId << std::endl;
-//             if (linearSolver)
-//             {
-//                 std::cout << "System Init Solver: " << linearSolver->getName() << " (" << linearSolver->getClassName() << ")" << std::endl;
-//                 linearSolver->setSystemMBKMatrix(init_mFact, init_bFact, init_kFact);
-//             }
+// 	std::stringstream ss;
+// 	//ss << this->getContext()->getName() << "_CPP.comp";
+// 	ss << this->getContext()->getName() << "-" << systemSyze << "-" << dt << ".comp";
+// 	std::ifstream compFileIn(ss.str().c_str(), std::ifstream::binary);
+//
+// 	EulerImplicitSolver* EulerSolver;
+// 	this->getContext()->get(EulerSolver);
+//
+// 	// for the initial computation, the gravity has to be put at 0
+// 	const Vec3d gravity = this->getContext()->getGravityInWorld();
+// 	const Vec3d gravity_zero(0.0,0.0,0.0);
+// 	this->getContext()->setGravityInWorld(gravity_zero);
+//
+// 	PCGLinearSolver<GraphScatteredMatrix,GraphScatteredVector>* PCGlinearSolver;
+// 	CGLinearSolver<GraphScatteredMatrix,GraphScatteredVector>* CGlinearSolver;
+// 	core::componentmodel::behavior::LinearSolver* linearSolver;
+//
+//         if (solverName.getValue().empty()) {
+//             this->getContext()->get(CGlinearSolver);
+//             this->getContext()->get(PCGlinearSolver);
+//             this->getContext()->get(linearSolver);
+//         } else {
+//             core::objectmodel::BaseObject* ptr = NULL;
+//             this->getContext()->get(ptr, solverName.getValue());
+//             PCGlinearSolver = dynamic_cast<PCGLinearSolver<GraphScatteredMatrix,GraphScatteredVector>*>(ptr);
+//             CGlinearSolver = dynamic_cast<CGLinearSolver<GraphScatteredMatrix,GraphScatteredVector>*>(ptr);
+//             linearSolver = dynamic_cast<core::componentmodel::behavior::LinearSolver*>(ptr);
 //         }
-// 		VecDeriv& force = init_bw.getValue() ? *mstate->getExternalForces() : *mstate->getVecDeriv(rhId.index);
-// 		force.clear();
-// 		force.resize(nbNodes);
 //
-// 		///////////////////////// CHANGE THE PARAMETERS OF THE SOLVER /////////////////////////////////
-// 		double buf_tolerance=0, buf_threshold=0;
-// 		int buf_maxIter=0;
-// 		if(CGlinearSolver) {
-// 			buf_tolerance = (double) CGlinearSolver->f_tolerance.getValue();
-// 			buf_maxIter   = (int) CGlinearSolver->f_maxIter.getValue();
-// 			buf_threshold = (double) CGlinearSolver->f_smallDenominatorThreshold.getValue();
-// 			CGlinearSolver->f_tolerance.setValue(init_Tolerance.getValue());
-// 			CGlinearSolver->f_maxIter.setValue(init_MaxIter.getValue());
-// 			CGlinearSolver->f_smallDenominatorThreshold.setValue(init_Threshold.getValue());
-// 		} else if(PCGlinearSolver) {
-// 			buf_tolerance = (double) PCGlinearSolver->f_tolerance.getValue();
-// 			buf_maxIter   = (int) PCGlinearSolver->f_maxIter.getValue();
-// 			buf_threshold = (double) PCGlinearSolver->f_smallDenominatorThreshold.getValue();
-// 			PCGlinearSolver->f_tolerance.setValue(init_Tolerance.getValue());
-// 			PCGlinearSolver->f_maxIter.setValue(init_MaxIter.getValue());
-// 			PCGlinearSolver->f_smallDenominatorThreshold.setValue(init_Threshold.getValue());
+//         if(EulerSolver && CGlinearSolver)
+// 		sout << "use EulerImplicitSolver &  CGLinearSolver" << sendl;
+// 	else if(EulerSolver && PCGlinearSolver)
+// 		sout << "use EulerImplicitSolver &  PCGLinearSolver" << sendl;
+// 	else if(EulerSolver && linearSolver)
+// 		sout << "use EulerImplicitSolver &  LinearSolver" << sendl;
+// 	else if(EulerSolver) {
+// 		sout << "use EulerImplicitSolver" << sendl;
+// 	} else {
+// 		serr<<"PrecomputedContactCorrection must be associated with EulerImplicitSolver+LinearSolver for the precomputation\nNo Precomputation" << sendl;
+// 		return;
+// 	}
+// 	VecId lhId = core::componentmodel::behavior::BaseMechanicalState::VecId::velocity();
+// 	VecId rhId = core::componentmodel::behavior::BaseMechanicalState::VecId::force();
+//
+//
+// 	mstate->vAvail(lhId);
+// 	mstate->vAlloc(lhId);
+// 	mstate->vAvail(rhId);
+// 	mstate->vAlloc(rhId);
+// 	std::cout << "System: (" << init_mFact << " * M + " << init_bFact << " * B + " << init_kFact << " * K) " << lhId << " = " << rhId << std::endl;
+// 	if (linearSolver) {
+// 	    std::cout << "System Init Solver: " << linearSolver->getName() << " (" << linearSolver->getClassName() << ")" << std::endl;
+// 	    linearSolver->setSystemMBKMatrix(init_mFact, init_bFact, init_kFact);
+// 	}
+//
+// 	VecDeriv& force = *mstate->getVecDeriv(rhId.index);
+// 	force.clear();
+// 	force.resize(nbNodes);
+//
+// 	///////////////////////// CHANGE THE PARAMETERS OF THE SOLVER /////////////////////////////////
+// 	double buf_tolerance=0, buf_threshold=0;
+// 	int buf_maxIter=0;
+// 	if(CGlinearSolver) {
+// 		buf_tolerance = (double) CGlinearSolver->f_tolerance.getValue();
+// 		buf_maxIter   = (int) CGlinearSolver->f_maxIter.getValue();
+// 		buf_threshold = (double) CGlinearSolver->f_smallDenominatorThreshold.getValue();
+// 		CGlinearSolver->f_tolerance.setValue(init_Tolerance.getValue());
+// 		CGlinearSolver->f_maxIter.setValue(init_MaxIter.getValue());
+// 		CGlinearSolver->f_smallDenominatorThreshold.setValue(init_Threshold.getValue());
+// 	} else if(PCGlinearSolver) {
+// 		buf_tolerance = (double) PCGlinearSolver->f_tolerance.getValue();
+// 		buf_maxIter   = (int) PCGlinearSolver->f_maxIter.getValue();
+// 		buf_threshold = (double) PCGlinearSolver->f_smallDenominatorThreshold.getValue();
+// 		PCGlinearSolver->f_tolerance.setValue(init_Tolerance.getValue());
+// 		PCGlinearSolver->f_maxIter.setValue(init_MaxIter.getValue());
+// 		PCGlinearSolver->f_smallDenominatorThreshold.setValue(init_Threshold.getValue());
+// 	}
+// 	///////////////////////////////////////////////////////////////////////////////////////////////
+//
+// 	VecDeriv& velocity = *mstate->getVecDeriv(lhId.index);
+// 	VecDeriv velocity0 = velocity;
+// 	VecCoord& pos = *mstate->getX();
+// 	VecCoord pos0 = pos;
+//
+// 	for(unsigned int f = 0 ; f < nbNodes ; f++) {
+// 		std::cout.precision(2);
+// 		std::cout << "Precomputing constraint correction : " << std::fixed << (float)f/(float)nbNodes*100.0f << " %   " << '\xd';
+// 		std::cout.flush();
+// 		Deriv unitary_force;
+//
+// 		for (unsigned int i=0; i<dof_on_node; i++) {
+// 			unitary_force.clear();
+// 			unitary_force[i]=1.0;
+// 			force[f] = unitary_force;
+//
+// 			velocity.clear();
+// 			velocity.resize(nbNodes);
+//
+// 			if(f*dof_on_node+i <2 ) {
+// 				EulerSolver->f_verbose.setValue(true);
+// 				EulerSolver->f_printLog.setValue(true);
+// 				serr<<"getF : "<<force<<sendl;
+// 			}
+//
+// 			if (linearSolver) {
+// 				linearSolver->setSystemRHVector(rhId);
+// 				linearSolver->setSystemLHVector(lhId);
+// 				linearSolver->solveSystem();
+// 			}
+//
+// 			if (linearSolver && f*dof_on_node+i == 0) linearSolver->freezeSystemMatrix(); // do not recompute the matrix for the rest of the precomputation
+//
+// 			//velocity = *mstate->getV();
+// 			double fact = factInt / unitary_force[i];
+//
+// 			if(f*dof_on_node+i < 2) {
+// 				EulerSolver->f_verbose.setValue(false);
+// 				EulerSolver->f_printLog.setValue(false);
+// 				serr<<"getV : "<<velocity<<sendl;
+// 			}
+// 			for (unsigned int v=0; v<nbNodes; v++) {
+// 				for (unsigned int j=0; j<dof_on_node; j++) {
+// 					this->systemMatrix->set(v*dof_on_node+j,f*dof_on_node+i,(Real)(fact * velocity[v][j]));
+// 				}
+// 			}
 // 		}
-// 		///////////////////////////////////////////////////////////////////////////////////////////////
+// 		unitary_force.clear();
+// 		force[f] = unitary_force;
+// 	}
+// 	std::cout << "Precomputing constraint correction : " << std::fixed << 100.0f << " %   " << '\xd';
+// 	std::cout.flush();
 //
-// 		VecDeriv& velocity = init_bw.getValue() ? *mstate->getV() : *mstate->getVecDeriv(lhId.index);
-// 		VecDeriv velocity0 = velocity;
-// 		VecCoord& pos = *mstate->getX();
-// 		VecCoord pos0 = pos;
+// 	///////////////////////////////////////////////////////////////////////////////////////////////
 //
-// 		for(unsigned int f = 0 ; f < nbNodes ; f++) {
-// 			std::cout.precision(2);
-// 			std::cout << "Precomputing constraint correction : " << std::fixed << (float)f/(float)nbNodes*100.0f << " %   " << '\xd';
-// 			std::cout.flush();
-// 			Deriv unitary_force;
+// 	if (linearSolver) linearSolver->updateSystemMatrix(); // do not recompute the matrix for the rest of the precomputation
 //
-// 			for (unsigned int i=0; i<dof_on_node; i++) {
-// 				unitary_force.clear();
-// 				unitary_force[i]=1.0;
-// 				force[f] = unitary_force;
+// 	///////////////////////// RESET PARAMETERS AT THEIR PREVIOUS VALUE /////////////////////////////////
+// 	// gravity is reset at its previous value
+// 	this->getContext()->setGravityInWorld(gravity);
 //
-// 				velocity.clear();
-// 				velocity.resize(nbNodes);
-//                 if (init_bw.getValue())
-//                     for (unsigned int n=0; n<nbNodes; n++) pos[n] = pos0[n];
+// 	if(CGlinearSolver) {
+// 		CGlinearSolver->f_tolerance.setValue(buf_tolerance);
+// 		CGlinearSolver->f_maxIter.setValue(buf_maxIter);
+// 		CGlinearSolver->f_smallDenominatorThreshold.setValue(buf_threshold);
+// 	} else if(PCGlinearSolver) {
+// 		PCGlinearSolver->f_tolerance.setValue(buf_tolerance);
+// 		PCGlinearSolver->f_maxIter.setValue(buf_maxIter);
+// 		PCGlinearSolver->f_smallDenominatorThreshold.setValue(buf_threshold);
+// 	}
 //
-// 				if(f*dof_on_node+i <2 ) {
-// 					EulerSolver->f_verbose.setValue(true);
-// 					EulerSolver->f_printLog.setValue(true);
-// 					serr<<"getF : "<<force<<sendl;
-// 				}
+// 	//Reset the velocity
+// 	for (unsigned int i=0; i<velocity0.size(); i++) velocity[i]=velocity0[i];
+// 	//Reset the position
+// 	for (unsigned int i=0; i<pos0.size(); i++) pos[i]=pos0[i];
 //
-// 				if(EulerSolver && init_bw.getValue()){
-// 					EulerSolver->solve(dt, core::componentmodel::behavior::BaseMechanicalState::VecId::position(), core::componentmodel::behavior::BaseMechanicalState::VecId::velocity());
-// 				}
-//                 else if (linearSolver && !init_bw.getValue())
-//                 {
-//                     linearSolver->setSystemRHVector(rhId);
-//                     linearSolver->setSystemLHVector(lhId);
-//                     linearSolver->solveSystem();
-//                 }
-//                 if (linearSolver && f*dof_on_node+i == 0) linearSolver->freezeSystemMatrix(); // do not recompute the matrix for the rest of the precomputation
+// 	mstate->vFree(lhId);
+// 	mstate->vFree(rhId);
 //
-// 				//velocity = *mstate->getV();
-// 				double fact = factInt / unitary_force[i];
-//
-// 				if(f*dof_on_node+i < 2) {
-// 					EulerSolver->f_verbose.setValue(false);
-// 					EulerSolver->f_printLog.setValue(false);
-// 					serr<<"getV : "<<velocity<<sendl;
-// 				}
-// 				for (unsigned int v=0; v<nbNodes; v++) {
-// 					for (unsigned int j=0; j<dof_on_node; j++) {
-// 						this->systemMatrix->set(v*dof_on_node+j,f*dof_on_node+i,(Real)(fact * velocity[v][j]));
-// 					}
-// 				}
-//             }
-//             unitary_force.clear();
-//             force[f] = unitary_force;
-// 		}
-
-// 		///////////////////////////////////////////////////////////////////////////////////////////////
-// 		if (linearSolver) linearSolver->updateSystemMatrix(); // do not recompute the matrix for the rest of the precomputation
-//
-// 		///////////////////////// RESET PARAMETERS AT THEIR PREVIOUS VALUE /////////////////////////////////
-// 		// gravity is reset at its previous value
-// 		this->getContext()->setGravityInWorld(gravity);
-//
-// 		if(CGlinearSolver) {
-// 			CGlinearSolver->f_tolerance.setValue(buf_tolerance);
-// 			CGlinearSolver->f_maxIter.setValue(buf_maxIter);
-// 			CGlinearSolver->f_smallDenominatorThreshold.setValue(buf_threshold);
-// 		} else if(PCGlinearSolver) {
-// 			PCGlinearSolver->f_tolerance.setValue(buf_tolerance);
-// 			PCGlinearSolver->f_maxIter.setValue(buf_maxIter);
-// 			PCGlinearSolver->f_smallDenominatorThreshold.setValue(buf_threshold);
-// 		}
-//
-// 		//Reset the velocity
-// 		for (unsigned int i=0; i<velocity0.size(); i++) velocity[i]=velocity0[i];
-// 		//Reset the position
-// 		for (unsigned int i=0; i<pos0.size(); i++) pos[i]=pos0[i];
-//
-//         if (!init_bw.getValue())
-//         {
-//             mstate->vFree(lhId);
-//             mstate->vFree(rhId);
-//         }
+// 	usePrecond = true;
 }
 
 template<class TMatrix,class TVector>
 void PrecomputedLinearSolver<TMatrix,TVector>::invert(TMatrix& /*M*/) {}
+
+template<class TMatrix,class TVector>
+bool PrecomputedLinearSolver<TMatrix,TVector>::addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact)
+{
+    if (SparseMatrix<double>* j = dynamic_cast<SparseMatrix<double>*>(J))
+    {
+        ComputeResult(result, *j, (float) fact);
+    }
+    else if (SparseMatrix<float>* j = dynamic_cast<SparseMatrix<float>*>(J))
+    {
+        ComputeResult(result, *j, (float) fact);
+    } return false;
+
+    return true;
+}
+
+template<class TMatrix,class TVector> template<class JMatrix>
+void PrecomputedLinearSolver<TMatrix,TVector>::ComputeResult(defaulttype::BaseMatrix * result,JMatrix& J, float fact)
+{
+    unsigned nl = 0;
+    for (typename JMatrix::LineConstIterator jit1 = J.begin(); jit1 != J.end(); jit1++) nl++;
+
+    internalData.JMinv.clear();
+    internalData.JMinv.resize(nl,this->systemMatrix->rowSize());
+
+    nl = 0;
+    for (typename JMatrix::LineConstIterator jit1 = J.begin(); jit1 != J.end(); jit1++)
+    {
+        for (unsigned c = 0; c<this->systemMatrix->rowSize(); c++)
+        {
+            Real v = 0.0;
+            for (typename JMatrix::LElementConstIterator i1 = jit1->second.begin(); i1 != jit1->second.end(); i1++)
+            {
+                v += this->systemMatrix->element(i1->first,c) * i1->second;
+            }
+            internalData.JMinv.add(nl,c,v);
+        }
+        nl++;
+    }
+
+    //compute Result = JRMinv * Jt
+
+    nl = 0;
+    for (typename JMatrix::LineConstIterator jit1 = J.begin(); jit1 != J.end(); jit1++)
+    {
+        int l = jit1->first;
+        for (typename JMatrix::LineConstIterator jit2 = J.begin(); jit2 != J.end(); jit2++)
+        {
+            int c = jit2->first;
+            Real res = 0.0;
+            for (typename JMatrix::LElementConstIterator i1 = jit2->second.begin(); i1 != jit2->second.end(); i1++)
+            {
+                res += internalData.JMinv.element(nl,i1->first) * i1->second;
+            }
+            result->add(l,c,res*fact);
+        }
+        nl++;
+    }
+}
 
 } // namespace linearsolver
 

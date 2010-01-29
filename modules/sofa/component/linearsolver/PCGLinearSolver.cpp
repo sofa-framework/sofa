@@ -61,7 +61,7 @@ void PCGLinearSolver<TMatrix,TVector>::init()
     BaseContext * c = this->getContext();
 
     const helper::vector<std::string>& precondNames = f_preconditioners.getValue();
-    if (precondNames.empty() && use_precond.getValue())
+    if (precondNames.empty() || !use_precond.getValue())
     {
         c->get<sofa::core::componentmodel::behavior::LinearSolver>(&solvers,BaseContext::SearchDown);
     }
@@ -96,7 +96,7 @@ void PCGLinearSolver<TMatrix,TVector>::init()
     step_simu=0;
     it_simu=0;
 #endif
-    first = false;
+    first = true;
 }
 
 template<class TMatrix, class TVector>
@@ -107,10 +107,11 @@ void PCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(double mFact, double b
 #ifdef DISPLAY_TIME
     double t3 = (double) CTime::getTime();
 #endif
-    no_precond = use_precond.getValue();
+    usePrecond = use_precond.getValue();
 
-    if (first || no_precond)
+    if (first || usePrecond)
     {
+        first = false;
         if (iteration<=0)
         {
             for (unsigned int i=0; i<this->preconditioners.size(); ++i)
@@ -123,7 +124,7 @@ void PCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(double mFact, double b
         {
             iteration--;
         }
-        first = false;
+
     }
 
 #ifdef DISPLAY_TIME
@@ -172,7 +173,7 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
     double tmp = 0.0;
 #endif
 
-    if (!no_precond)
+    if (usePrecond)
     {
         for (unsigned int i=0; i<this->preconditioners.size(); i++)
         {
@@ -196,13 +197,8 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
         simulation::Visitor::printComment(comment.str());
 #endif
 
-        if (this->preconditioners.size()==0 || (!no_precond))
+        if (this->preconditioners.size()>0 && usePrecond)
         {
-            z = r;
-        }
-        else
-        {
-
             for (unsigned int i=0; i<this->preconditioners.size(); i++)
             {
 #ifdef DISPLAY_TIME
@@ -216,6 +212,11 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
 #endif
             }
         }
+        else
+        {
+            z = r;
+        }
+
 
         rho = r.dot(z);
 

@@ -57,6 +57,15 @@ using sofa::helper::system::thread::ctime_t;
 using std::cerr;
 using std::endl;
 
+template<class TMatrix, class TVector>
+class PrecomputedLinearSolverInternalData
+{
+public :
+    typedef typename TMatrix::Real Real;
+
+    FullMatrix<Real> JMinv;
+};
+
 /// Linear system solver using the conjugate gradient iterative algorithm
 template<class TMatrix, class TVector>
 class PrecomputedLinearSolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector>
@@ -81,9 +90,10 @@ public:
     void invert(TMatrix& M);
     void setSystemMBKMatrix(double mFact=0.0, double bFact=0.0, double kFact=0.0);
     void loadMatrix();
-    void loadMatrixCSparse();
-    void loadMatrixDirectSolver();
-    void loadMatrixCG();
+    void loadMatrixWithCSparse();
+    void loadMatrixWithSolver();
+    bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact);
+
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
@@ -108,6 +118,13 @@ public:
         if (!this->systemMatrix) this->systemMatrix = new TMatrix();
         return this->systemMatrix;
     }
+
+protected :
+    template<class JMatrix>
+    void ComputeResult(defaulttype::BaseMatrix * result,JMatrix& J, float fact);
+
+    PrecomputedLinearSolverInternalData<TMatrix,TVector> internalData;
+
 private :
     double init_mFact;
     double init_bFact;

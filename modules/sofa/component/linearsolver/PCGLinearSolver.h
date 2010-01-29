@@ -89,7 +89,7 @@ public:
         f_graph.setWidget("graph");
         f_graph.setReadOnly(true);
         iteration = 0;
-        no_precond = false;
+        usePrecond = true;
 #ifdef DISPLAY_TIME
         timeStamp = 1.0 / (double)CTime::getRefTicksPerSec();
 #endif
@@ -103,7 +103,7 @@ public:
 
 private :
     int iteration;
-    bool no_precond;
+    bool usePrecond;
     bool first;
 #ifdef DISPLAY_TIME
     double time1;
