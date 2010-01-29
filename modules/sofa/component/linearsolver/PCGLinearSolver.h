@@ -79,7 +79,7 @@ public:
         , f_smallDenominatorThreshold( initData(&f_smallDenominatorThreshold,1e-5,"threshold","minimum value of the denominator in the conjugate Gradient solution") )
         , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
         , f_refresh( initData(&f_refresh,0,"refresh","Refresh iterations") )
-        , use_precond( initData(&use_precond,true,"precond","Use preconditioners") )
+        , use_precond( initData(&use_precond,true,"use_precond","Use preconditioners") )
         , f_preconditioners( initData(&f_preconditioners, "preconditioners", "If not empty: path to the solvers to use as preconditioners") )
 #ifdef DISPLAY_TIME
         , display_time( initData(&display_time,false,"display_time","display time information") )
@@ -104,6 +104,7 @@ public:
 private :
     int iteration;
     bool no_precond;
+    bool first;
 #ifdef DISPLAY_TIME
     double time1;
     double time2;
