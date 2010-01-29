@@ -140,7 +140,7 @@ public:
         ctime_t ttotal2;
         int lastIt;
         ctime_t lastTime;
-        StepData() : level(0), num(0), numIt(0), tstart(0), tmin(0), tmax(0), ttotal(0), lastIt(-1), lastTime(0) {}
+        StepData() : level(0), num(0), numIt(0), tstart(0), tmin(0), tmax(0), ttotal(0), ttotal2(0), lastIt(-1), lastTime(0) {}
     };
 
     std::map<AdvancedTimer::IdStep, StepData> stepData;
@@ -156,7 +156,7 @@ public:
         double vtotal2;
         double vtotalIt;
         int lastIt;
-        ValData() : num(0), numIt(0), vmin(0), vmax(0), vtotal(0), vtotalIt(0), lastIt(-1) {}
+        ValData() : num(0), numIt(0), vmin(0), vmax(0), vtotal(0), vtotal2(0), vtotalIt(0), lastIt(-1) {}
     };
 
     std::map<AdvancedTimer::IdVal, ValData> valData;
@@ -688,9 +688,10 @@ void TimerData::print()
             out << '\t';
             printTime(out, data.tmax);
             out << '\t';
-            printTime(out, data.ttotal, data.num);
+            double mean = (double)data.ttotal / data.num;
+            printTime(out, mean);
             out << '\t';
-            printTime(out, sqrt((double)data.ttotal2 - data.ttotal), data.num);
+            printTime(out, sqrt((double)data.ttotal2/data.num - mean*mean));
             out << '\t';
             printTime(out, data.ttotal, (s == 0) ? 1 : nbIter);
             out << '\t';
@@ -716,9 +717,10 @@ void TimerData::print()
             out << '\t';
             printVal(out, data.vmax);
             out << '\t';
-            printVal(out, data.vtotal, data.num);
+            double mean = data.vtotal / data.num;
+            printVal(out, mean);
             out << '\t';
-            printVal(out, sqrt(data.vtotal2 - data.vtotal), data.num);
+            printVal(out, sqrt(data.vtotal2/data.num - mean*mean) );
             out << '\t';
             printVal(out, data.vtotal, nbIter);
             out << '\t';
