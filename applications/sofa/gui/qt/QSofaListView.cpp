@@ -438,7 +438,8 @@ void QSofaListView::RaiseAddObject()
 {
     emit Lock(true);
     assert(AddObjectDialog_);
-    AddObjectDialog_->setPath ( QApplication::mainWidget()->windowFilePath().ascii());
+    std::string path(QApplication::mainWidget()->windowFilePath().ascii());
+    AddObjectDialog_->setPath ( path );
     AddObjectDialog_->show();
     AddObjectDialog_->raise();
     emit Lock(false);
