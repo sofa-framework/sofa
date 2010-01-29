@@ -69,22 +69,23 @@ HEADERS += viewer/SofaViewer.h \
            FileManagement.h \
            SofaPluginManager.h \
            SofaMouseManager.h \		   
-                   QDataDescriptionWidget.h \
+           QDataDescriptionWidget.h \
 		   QDisplayDataWidget.h \     
-                   QEnergyStatWidget.h \              
+           QEnergyStatWidget.h \              
 		   QMonitorTableWidget.h \
 		   QMonitorTableWidget.inl \
-                   QTabulationModifyObject.h \
-                   QTransformationWidget.h \
+           QTabulationModifyObject.h \
+           QTransformationWidget.h \
            QMouseOperations.h \
+		   QSofaListView.h \
+		   QSofaRecorder.h \
+		   QSofaStatWidget.h \
            ImageQt.h
 
 SOURCES += Main.cpp \
            GraphListenerQListView.cpp \
            GenGraphForm.cpp \
            AddObject.cpp \
-           RealGUI_graph.cpp \
-           RealGUI_record.cpp \
            RealGUI.cpp \
 		   DataWidget.cpp \ 
            DisplayFlagWidget.cpp \
@@ -97,13 +98,16 @@ SOURCES += Main.cpp \
            FileManagement.cpp \
            SofaPluginManager.cpp \
            SofaMouseManager.cpp \
-                   QDataDescriptionWidget.cpp \
+           QDataDescriptionWidget.cpp \
 		   QDisplayDataWidget.cpp \
-                   QEnergyStatWidget.cpp \       
+           QEnergyStatWidget.cpp \       
 		   QMonitorTableWidget.cpp \
 		   QMouseOperations.cpp \               
-                   QTabulationModifyObject.cpp \
-                   QTransformationWidget.cpp \
+           QTabulationModifyObject.cpp \
+           QTransformationWidget.cpp \
+		   QSofaListView.cpp \
+		   QSofaRecorder.cpp \
+		   QSofaStatWidget.cpp \
            ImageQt.cpp
 
 contains (DEFINES, SOFA_DUMP_VISITOR_INFO){

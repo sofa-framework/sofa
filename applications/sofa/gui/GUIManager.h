@@ -18,7 +18,6 @@ and thus links against all the gui libs.
 Its original purpose is to allow dynamic linking of the gui by seperating the lib responsible
 for the registration of guis and the one responsible for the definition of what a gui should do
 in Sofa. Prior both these operations where done by sofagui.lib.
-From my understanding a step forward would be to use a Composite/Component pattern
 */
 
 namespace sofa
