@@ -437,7 +437,7 @@ void QSofaListView::RaiseAddObject()
 {
     emit Lock(true);
     assert(AddObjectDialog_);
-    AddObjectDialog_->setPath ( QApplication::mainWidget()->windowFilePath().toStdString());
+    AddObjectDialog_->setPath ( QApplication::mainWidget()->windowFilePath().ascii());
     AddObjectDialog_->show();
     AddObjectDialog_->raise();
     emit Lock(false);
@@ -597,7 +597,7 @@ void QSofaListView::Export()
     assert(root);
     GenGraphForm* form = new sofa::gui::qt::GenGraphForm;
     form->setScene ( root );
-    std::string gname = QApplication::mainWidget()->windowFilePath ().toStdString();
+    std::string gname(QApplication::mainWidget()->windowFilePath ().ascii());
     std::size_t gpath = gname.find_last_of("/\\");
     std::size_t gext = gname.rfind('.');
     if (gext != std::string::npos && (gpath == std::string::npos || gext > gpath))

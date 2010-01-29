@@ -759,7 +759,7 @@ bool RealGUI::setViewer ( const char* name )
         return false;
 
 
-    std::string filename = this->windowFilePath ().toStdString();
+    std::string filename(this->windowFilePath().ascii());
 
     if ( viewer->getScene() !=NULL )
     {
@@ -881,7 +881,7 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile )
         stopDumpVisitor();
         return;
     }
-    this->setWindowFilePath(QString::fromStdString(filename));
+    this->setWindowFilePath(filename.c_str());
     setScene ( root, filename.c_str(), temporaryFile );
     //need to create again the output streams !!
     simulation::getSimulation()->gnuplotDirectory.setValue(gnuplot_directory);
@@ -913,7 +913,7 @@ void RealGUI::pmlOpen ( const char* filename, bool /*resetView*/ )
         if ( !pmlreader ) pmlreader = new PMLReader;
         pmlreader->BuildStructure ( filename, simuNode );
         setScene ( simuNode, filename );
-        this->setWindowFilePath(QString::fromStdString(filename));
+        this->setWindowFilePath(filename.c_str());
     }
 }
 
@@ -971,7 +971,7 @@ void RealGUI::setScene ( Node* root, const char* filename, bool temporaryFile )
         tabInstrument = NULL;
     }
     viewer->setScene ( root, filename );
-    this->setWindowFilePath(QString::fromStdString(filename));
+    this->setWindowFilePath(filename);
     viewer->resetView();
     eventNewTime();
 
@@ -1159,7 +1159,7 @@ void RealGUI::fileOpenSimu ( std::string s )
             std::string::size_type pointSimu = simulation_name.rfind(".simu");
             simulation_name.resize(pointSimu);
             fileOpen(filename.c_str());
-            this->setWindowFilePath(QString::fromStdString(filename));
+            this->setWindowFilePath(filename.c_str());
             dtEdit->setText(QString(dT.c_str()));
             recorder->SetSimulation(initT,endT,writeName);
         }
@@ -1173,7 +1173,7 @@ void RealGUI::fileNew()
 }
 void RealGUI::fileOpen()
 {
-    std::string filename = this->windowFilePath().toStdString();
+    std::string filename(this->windowFilePath().ascii());
 
     QString s = getOpenFileName ( this, filename.empty() ?NULL:filename.c_str(),
 #ifdef SOFA_PML
@@ -1204,7 +1204,7 @@ void RealGUI::fileOpen()
 void RealGUI::fileReload()
 {
 
-    std::string filename = this->windowFilePath ().toStdString();
+    std::string filename(this->windowFilePath().ascii());
     QString s = filename.c_str();
 
     if ( filename.empty() ) { std::cerr << "Reload failed: no file loaded.\n"; return;}
@@ -1232,7 +1232,7 @@ void RealGUI::fileReload()
 
 void RealGUI::fileSave()
 {
-    std::string filename = this->windowFilePath().toStdString();
+    std::string filename(this->windowFilePath().ascii());
     std::string message="You are about to overwrite your current scene: "  + filename + "\nAre you sure you want to do that ?";
 
     if ( QMessageBox::warning ( this, "Saving the Scene",message.c_str(), QMessageBox::Yes | QMessageBox::Default, QMessageBox::No ) != QMessageBox::Yes )
@@ -1247,7 +1247,7 @@ void RealGUI::fileSaveAs(Node *node)
 {
     if (node == NULL) node = viewer->getScene();
     QString s;
-    std::string filename = this->windowFilePath().toStdString();
+    std::string filename(this->windowFilePath().ascii());
 #ifdef SOFA_PML
     s = getSaveFileName ( this, filename.empty() ?NULL:filename.c_str(), "Scenes (*.scn *.xml *.pml)", "save file dialog",  "Choose where the scene will be saved" );
     if ( s.length() >0 )
@@ -1285,7 +1285,7 @@ void RealGUI::saveXML()
 
 void RealGUI::editRecordDirectory()
 {
-    std::string filename = this->windowFilePath().toStdString();
+    std::string filename(this->windowFilePath().ascii());
     std::string record_directory;
     QString s = getExistingDirectory ( this, filename.empty() ?NULL:filename.c_str(), "open directory dialog",  "Choose a directory" );
     if (s.length() > 0)
@@ -1309,7 +1309,7 @@ void RealGUI::showMouseManager()
 
 void RealGUI::editGnuplotDirectory()
 {
-    std::string filename = this->windowFilePath ().toStdString();
+    std::string filename(this->windowFilePath().ascii());
     QString s = getExistingDirectory ( this, filename.empty() ?NULL:filename.c_str(), "open directory dialog",  "Choose a directory" );
     if (s.length() > 0)
     {
@@ -1681,7 +1681,7 @@ void RealGUI::exportOBJ ( bool exportMTL )
 {
     Node* root = simulation::getSimulation()->getVisualRoot();
     if ( !root ) return;
-    std::string sceneFileName = this->windowFilePath ().toStdString();
+    std::string sceneFileName(this->windowFilePath ().ascii());
     std::ostringstream ofilename;
     if ( !sceneFileName.empty() )
     {
