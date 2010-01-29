@@ -53,9 +53,8 @@ class SOFA_CORE_API BaseLMConstraint: public virtual core::objectmodel::BaseObje
 public:
     SOFA_CLASS(BaseLMConstraint, core::objectmodel::BaseObject);
 
-    /// Description of the nature of the constraint
+    /// Description of the order of the constraint
     enum ConstOrder {POS,VEL,ACC};
-    enum ConstNature {UNILATERAL,BILATERAL};
 
 
     /**
@@ -64,14 +63,12 @@ public:
      * @param idxInConstrainedDOF1 index of the line of the Jacobian in the Constrained DOF1 (can be a mapped dof)
      * @param idxInConstrainedDOF2 index of the line of the Jacobian in the Constrained DOF2 (can be a mapped dof)
          * @param correction           right hand term of the equation: corresponds to a correction we have to apply to the system
-         * @param nature               If the constraint is Unilateral or Bilateral
      **/
     struct ConstraintEquation
     {
         int idxInConstrainedDOF1;
         int idxInConstrainedDOF2;
         SReal correction;
-        ConstNature nature;
     };
 
     /**
@@ -95,32 +92,28 @@ public:
          * @param i0 index of the entry in the VecConst for the first object
          * @param i1 index of the entry in the VecConst for the second object
          * @param c  correction we need to apply in order to solve the constraint
-             * @param n  nature of the constraint (Unilateral or Bilateral) @see ConstNature
-         **/
-        void addConstraint(  unsigned int i0, unsigned int i1, SReal c, ConstNature n)
+             **/
+        void addConstraint(  unsigned int i0, unsigned int i1, SReal c)
         {
             equations.resize(equations.size()+1);
             ConstraintEquation &eq=equations.back();
             eq.idxInConstrainedDOF1 = i0;
             eq.idxInConstrainedDOF2 = i1;
             eq.correction=c;
-            eq.nature=n;
         }
         /**
          * Method to add a constraint to the group
          *
          * @param i  index of the entry in the VecConst for the first object
          * @param c  correction we need to apply in order to solve the constraint
-             * @param n  nature of the constraint (Unilateral or Bilateral) @see ConstNature
-         **/
-        void addConstraint(  unsigned int i0,  SReal c, ConstNature n)
+             **/
+        void addConstraint(  unsigned int i0,  SReal c)
         {
             equations.resize(equations.size()+1);
             ConstraintEquation &eq=equations.back();
             eq.idxInConstrainedDOF1 = i0;
             eq.idxInConstrainedDOF2 = -1; //Not used
             eq.correction=c;
-            eq.nature=n;
         }
 
 
@@ -177,7 +170,11 @@ public:
 
     /// Called by MechanicalWriteLMConstaint: The Object will compute the constraints present in the current state, and create the ConstraintGroup related.
     virtual void writeConstraintEquations(ConstOrder id)=0;
-    /// Interface to construct a group of constraint: Giving the nature of these constraints, it returns a pointer to the structure
+
+    /// Gives a response impulse for a given group of constraint: This way, we can modify the Lagrange Multipliers, and handle Unilateral constraint, and more complex solutions: return a boolean indicating if the constraint group is active or not
+    virtual bool LagrangeMultiplierEvaluation(SReal * /*lambda*/,core::componentmodel::behavior::BaseLMConstraint::ConstraintGroup * /*group*/) { return true;};
+
+    /// Interface to construct a group of constraint: Giving the order of these constraints, it returns a pointer to the structure
     /// @see ConstraintGroup
     virtual ConstraintGroup* addGroupConstraint( ConstOrder Order);
 

@@ -220,9 +220,9 @@ void FixedLMConstraint<DataTypes>::writeConstraintEquations(ConstOrder Order)
         }
         };
 
-        constraint->addConstraint( idxX[counter], -correctionX, core::componentmodel::behavior::BaseLMConstraint::BILATERAL);
-        constraint->addConstraint( idxY[counter], -correctionY, core::componentmodel::behavior::BaseLMConstraint::BILATERAL);
-        constraint->addConstraint( idxZ[counter], -correctionZ, core::componentmodel::behavior::BaseLMConstraint::BILATERAL);
+        constraint->addConstraint( idxX[counter], -correctionX);
+        constraint->addConstraint( idxY[counter], -correctionY);
+        constraint->addConstraint( idxZ[counter], -correctionZ);
 
     }
 }
