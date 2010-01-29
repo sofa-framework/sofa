@@ -69,6 +69,7 @@ public:
 
     Data<double> aRTrackScale;
     Data<Vector3> localTrackerPos;
+    Data<double> scaleAngleFinger;
 
 private:
 

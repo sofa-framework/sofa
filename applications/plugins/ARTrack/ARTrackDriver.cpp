@@ -49,6 +49,7 @@ int ARTrackDriverClass = core::RegisterObject("Driver for ARTrack system")
 ARTrackDriver::ARTrackDriver()
     : aRTrackScale( initData(&aRTrackScale,double(1.0),"aRTrackScale","ARTrack scale") )
     , localTrackerPos( initData(&localTrackerPos,Vector3(0,0,0),"localTrackerPos","Local tracker position") )
+    , scaleAngleFinger( initData(&scaleAngleFinger,double(0.2),"scaleAngleFinger","Angle Finger scale") )
 {
 }
 
@@ -100,9 +101,11 @@ void ARTrackDriver::initARTrack()
     int port, rport;
     char ip_address[16];
 
+    std::cout<<" INIT TRACK "<<std::endl;
+
     port = 5000; /* local port for communications with the tracker */
     rport = 5002; /* remote port of the machine controlling the tracker */
-    strcpy(ip_address, "192.168.10.2"); /* IP address of the machine controlling the tracker */
+    strcpy(ip_address, "192.168.1.3"); /* IP address of the machine controlling the tracker */
 
     if(!( dataARTrack.handle = dtracklib_init(port, ip_address, rport, UDPBUFSIZE, UDPTIMEOUT)))
     {
@@ -129,6 +132,7 @@ void ARTrackDriver::computeTracking(void *sarg)
 void* ARTrackDriver::computeTracking(void *sarg)
 #endif
 {
+    std::cout<<"computeTracking"<<std::endl;
     Vector3 wirstCurrentPos, wirstfilteredPos, tempPos;
     Mat3x3d T(Vector3(0.0,0.0,-1.0), Vector3(-1.0,0.0,0.0), Vector3(0.0,1.0,0.0));
     Mat3x3d wirstRotMat;
@@ -148,15 +152,27 @@ void* ARTrackDriver::computeTracking(void *sarg)
             if(dtracklib_parseerror(arg->handle))
                 std::cout << "--- error while parsing udp data" << std::endl;
         }
+        int glove_id;
+        if(arg->glove[0].lr)
+            glove_id=0;
+        else
+            glove_id=1;
+
+
 
         for (int i=0; i<3; i++)
+        {
             for (int j=0; j<3; j++)
-                wirstRotMat(j,i) = arg->glove[0].rot[(i*3)+j];
+                wirstRotMat(j,i) = arg->glove[glove_id].rot[(i*3)+j];
+        }
+
 
         wirstRotMat = wirstRotMat * T;
 
 #ifdef WIN32
+
         WaitForSingleObject(arg->mutex, INFINITE);
+
 #else
         pthread_mutex_lock( &arg->mutex );
 #endif
@@ -164,30 +180,42 @@ void* ARTrackDriver::computeTracking(void *sarg)
 
 #ifdef WIN32
         ReleaseMutex(arg->mutex);
+
 #else
         pthread_mutex_unlock( &arg->mutex );
 #endif
 
-        wirstCurrentPos = arg->glove[0].loc;
+        wirstCurrentPos = arg->glove[glove_id].loc;
 
-        wirstfilteredPos = (arg->wristInitPos + wirstCurrentPos)/2;
+
+
+        wirstfilteredPos = wirstCurrentPos ;
+
+        //std::cout<<"wirstfilteredPos :"<<wirstfilteredPos<<std::endl;
 
 #ifdef WIN32
+
         WaitForSingleObject(arg->mutex, INFINITE);
 #else
         pthread_mutex_lock( &arg->mutex );
 #endif
 
         arg->wirstTranslation = wirstfilteredPos - arg->wristInitPos;
+
+
+
         for (unsigned int i=0; i<arg->angle_finger.size(); ++i)
         {
-//			std::cout<<"angle finger["<<i<<"] = "<<arg->glove[0].finger[i].anglephalanx[1]<<std::endl;
-            arg->angle_finger[i] = (arg->glove[0].finger[i].anglephalanx[1] - arg->rest_angle_finger[i]) * 0.017444; // *pi/180
+            std::cout<<"angle finger["<<i<<"] = "<<arg->glove[0].finger[i].anglephalanx[1]<<std::endl;
+            arg->angle_finger[i] = (arg->glove[glove_id].finger[i].anglephalanx[1] - arg->rest_angle_finger[i]) * 0.017444; // *pi/180
+            arg->angle_finger[i] *= 0.2;
+            arg->angle_finger[i] -= 1.5;
         }
+
 
         for (unsigned int i=0; i<fingersLocalPos.size(); ++i)
         {
-            fingersLocalPos[i] = arg->glove[0].finger[i].loc;
+            fingersLocalPos[i] = arg->glove[glove_id].finger[i].loc;
             tempPos[0] = -fingersLocalPos[i][1];
             tempPos[1] = fingersLocalPos[i][2];
             tempPos[2] = -fingersLocalPos[i][0];
@@ -198,6 +226,7 @@ void* ARTrackDriver::computeTracking(void *sarg)
 
 #ifdef WIN32
         ReleaseMutex(arg->mutex);
+
 #else
         pthread_mutex_unlock( &arg->mutex );
 #endif
@@ -213,9 +242,12 @@ void* ARTrackDriver::computeTracking(void *sarg)
 
 void ARTrackDriver::handleEvent(core::objectmodel::Event *event)
 {
+    //std::cout<<"ARTrack handleEvent "<<std::endl;
     if (dynamic_cast<sofa::simulation::AnimateBeginEvent *>(event))
     {
+        std::cout<<"ARTrack AnimateBeginEvent "<<std::endl;
         core::objectmodel::ARTrackEvent aRTrackEvent(dataARTrack.wirstTranslation, dataARTrack.wristRotation, dataARTrack.angle_finger, dataARTrack.fingersGlobalPos);
+
         this->getContext()->propagateEvent(&aRTrackEvent);
     }
 }

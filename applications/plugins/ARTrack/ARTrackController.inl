@@ -42,6 +42,8 @@ namespace controller
 template <class DataTypes>
 void ARTrackController<DataTypes>::init()
 {
+
+    std::cout<<" ARTrackController<DataTypes>::init"<<std::endl;
 }
 
 template <>
@@ -70,6 +72,7 @@ void ARTrackController<Vec3dTypes>::onARTrackEvent(core::objectmodel::ARTrackEve
 template <>
 void ARTrackController<RigidTypes>::onARTrackEvent(core::objectmodel::ARTrackEvent *aev)
 {
+    std::cout<<"AR track event detected"<<std::endl;
     if(mstate)
     {
         if(!(*mstate->getXfree()).empty() && !(*mstate->getX()).empty())
@@ -93,6 +96,7 @@ void ARTrackController<RigidTypes>::onARTrackEvent(core::objectmodel::ARTrackEve
 template <>
 void ARTrackController<Vec1dTypes>::onARTrackEvent(core::objectmodel::ARTrackEvent *aev)
 {
+    std::cout<<"AR track event detected"<<std::endl;
     if(mstate)
     {
         if(!(*mstate->getXfree()).empty() && !(*mstate->getX()).empty())
@@ -149,18 +153,73 @@ void ARTrackController<DataTypes>::onMouseEvent(core::objectmodel::MouseEvent * 
 }
 
 template <>
+void ARTrackController<Vec1dTypes>::onMouseEvent(core::objectmodel::MouseEvent * mev)
+{
+    std::cout<<" onMouseEvent on Vec1Types called "<<std::endl;
+    switch (mev->getState())
+    {
+    case core::objectmodel::MouseEvent::Wheel:
+        wheel=true;
+        break;
+    default:
+        break;
+    }
+    if(wheel)
+    {
+        int delta = mev->getWheelDelta() ;
+        double Delta = ((double)delta )/3000.0;
+        std::cout<<"Delta Wheel ="<<Delta<<std::endl;
+
+        if(mstate)
+        {
+            if(!(*mstate->getXfree()).empty() && !(*mstate->getX()).empty())
+            {
+
+
+
+                for (unsigned int i=6; i<9; ++i) // thumb
+                {
+                    (*mstate->getX0())[i].x() += Delta;// * articulations[i]->coeff.getValue() - articulations[i]->correction.getValue();
+
+
+                }
+
+                for (unsigned int i=9; i<12; ++i) // index
+                {
+                    (*mstate->getX0())[i].x() += Delta;// * articulations[i]->coeff.getValue() - articulations[i]->correction.getValue();
+
+
+                }
+
+                for(unsigned int i=12; i<21; ++i) // middle, ring, little.
+                {
+                    (*mstate->getX0())[i].x() += Delta;// * articulations[i]->coeff.getValue() - articulations[i]->correction.getValue();
+
+
+                }
+            }
+        }
+
+        wheel=false;
+    }
+}
+
+template <>
 void ARTrackController<RigidTypes>::onMouseEvent(core::objectmodel::MouseEvent *mev)
 {
+    std::cout<<" onMouseEvent on RigidTypes called "<<std::endl;
+
     switch (mev->getState())
     {
     case core::objectmodel::MouseEvent::RightPressed :
+        beginLocalPosition = Vec3d(0, -mev->getPosY(),0);
         rightPressed = true;
         break;
     case core::objectmodel::MouseEvent::RightReleased :
         rightPressed = false;
         break;
     case core::objectmodel::MouseEvent::LeftPressed :
-        beginLocalPosition = Vec3d(-mev->getPosX(), 0, mev->getPosY());
+        beginLocalPosition = Vec3d(mev->getPosX(), 0, mev->getPosY());
         leftPressed = true;
         break;
     case core::objectmodel::MouseEvent::LeftReleased :
@@ -176,17 +235,22 @@ void ARTrackController<RigidTypes>::onMouseEvent(core::objectmodel::MouseEvent *
 
     if(leftPressed)
     {
-        endLocalPosition = Vec3d(-mev->getPosX(), 0, mev->getPosY());
+        endLocalPosition = Vec3d(mev->getPosX(), 0, mev->getPosY());
         (*mstate->getXfree())[0].getCenter() += (endLocalPosition - beginLocalPosition);
         (*mstate->getX())[0].getCenter() += (endLocalPosition - beginLocalPosition);
         beginLocalPosition = endLocalPosition;
     }
     if(rightPressed)
     {
+        endLocalPosition = Vec3d(0, -mev->getPosY(),0);
         //TODO: build a quat using mouse events to turn the hand.
-        (*mstate->getXfree())[0].getOrientation() = Quat(mev->getPosX(), 0, 0, 1);
-        (*mstate->getX())[0].getOrientation() = Quat(mev->getPosX(), 0, 0, 1);
+        (*mstate->getXfree())[0].getCenter() += (endLocalPosition - beginLocalPosition);
+        (*mstate->getX())[0].getCenter() +=(endLocalPosition- beginLocalPosition);
+        beginLocalPosition = endLocalPosition;
     }
+
+    (*mstate->getXfree())[0].getOrientation() = Quat( 0.0,0.0, sin(3.14/2), cos(3.14/2));
+    (*mstate->getX())[0].getOrientation() = Quat( 0.0,0.0, sin(3.14/2), cos(3.14/2));
 }
 
 template <class DataTypes>

@@ -42,6 +42,65 @@ namespace controller
 
 using namespace sofa::defaulttype;
 
+
+class ARTrackVirtualTimeController : public Controller
+{
+public:
+    /**
+     * @brief Default Constructor.
+     */
+    ARTrackVirtualTimeController();
+
+    /**
+     * @brief Default Destructor.
+     */
+    virtual ~ARTrackVirtualTimeController () {};
+
+    /**
+     * @brief SceneGraph callback initialization method.
+     */
+    void init();
+
+    /**
+     * @brief SceneGraph callback re-initialization method.
+     */
+    void reinit();
+
+    virtual void reset() {init();}
+
+    /**
+     * @brief Mouse event callback.
+     */
+
+
+    void handleEvent(core::objectmodel::Event *);
+
+    void onMouseEvent(core::objectmodel::MouseEvent *mev);
+
+    void onARTrackEvent(core::objectmodel::ARTrackEvent *aev);
+
+    /**
+     * @brief Apply the controller modifications to the controlled MechanicalState.
+     */
+    void applyController(void);
+
+private:
+    Data< double > virtualTime; ///<
+    Data< double > step1, step2, step3; ///<
+    Data< double > maxMotion; ///<
+    int mousePosX, mousePosY; ///< Last recorded mouse position
+    int mouseWheel;
+    double ARTrackMotion;
+    double ARTrackResetPos;
+    double ARTrackIntermediatePos; /// pos when changing from forward to backward
+    double TotalMouseDisplacement;
+
+    bool resetBool;
+
+    bool backward;
+
+};
+
 template<class DataTypes>
 class ARTrackController : public virtual component::controller::Controller
 {
@@ -93,7 +152,7 @@ public:
 protected:
     core::componentmodel::behavior::MechanicalState<DataTypes> *mstate; ///< Controlled MechanicalState.
     vector<sofa::component::container::ArticulatedHierarchyContainer::ArticulationCenter::Articulation*> articulations;
-    bool leftPressed, rightPressed;
+    bool leftPressed, rightPressed, wheel;
     Vec3d beginLocalPosition,endLocalPosition;
 };
 
