@@ -612,33 +612,27 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( ConstOrder Order
 
                 varEigen = A.block(idxConstraint,0,numConstraintToProcess,numConstraint)*Lambda;
                 error=0;
-                bool groupDeactivated=false;
-                unsigned int i=0;
-                for (i=0; i<numConstraintToProcess; ++i)
+                for (unsigned int i=0; i<numConstraintToProcess; ++i)
                 {
-                    //TODO: handle the nature of the constraint, and error evaluation inside the constraint
+                    const unsigned int idx=idxConstraint+i;
                     //X^(k)= (c^(0)-A[c,c]*X^(k-1))/A[c,c]
-                    Lambda(idxConstraint+i)=(c(idxConstraint+i) - varEigen(i))/A(idxConstraint+i,idxConstraint+i);
-                    if (constraintOrder[constraintEntry]->getConstraint(i).nature == BaseLMConstraint::UNILATERAL && Lambda(idxConstraint+i) < 0)
-                    {
-                        groupDeactivated=true;
-                        Lambda(idxConstraint+i) = 0;
-                        if (f_printLog.getValue()) sout << "Constraint : " << i << " from group " << idxConstraint << " Deactivated" << sendl;
-                        break;
-                    }
-                    error += pow(previousIterationEigen(i)-Lambda(idxConstraint+i),2);
+                    Lambda(idx)=(c(idx) - varEigen(i))/A(idx,idx);
                 }
-                //One of the Unilateral Constraint is not active anymore. We deactivate the whole group
-                if (groupDeactivated)
+                bool activated=constraint->LagrangeMultiplierEvaluation(Lambda.data()+idxConstraint, constraintOrder[constraintEntry]);
+                if (activated)
                 {
-                    /*
-                     for (unsigned int j=0;j<numConstraintToProcess;++j)
-                       {
-                         if (j<i) error -= pow(previousIterationEigen(j)-Lambda(idxConstraint+j),2);
-                         Lambda(idxConstraint+j) = 0;
-                         error += pow(previousIterationEigen(j)-Lambda(idxConstraint+j),2);
-                       }*/
+                    for (unsigned int i=0; i<numConstraintToProcess; ++i)
+                        error += pow(previousIterationEigen(i)-Lambda(idxConstraint+i),2);
                 }
+                else
+                {
+                    for (unsigned int i=0; i<numConstraintToProcess; ++i)
+                        Lambda(idxConstraint+i)=0;
+
+                    idxConstraint+=numConstraintToProcess;
+                    continue;
+                }
+
                 error = sqrt(error);
                 //****************************************************************
                 if (this->f_printLog.getValue())
@@ -651,14 +645,10 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( ConstOrder Order
                 if (error < maxError.getValue())
                 {
                     for (unsigned int i=0; i<numConstraintToProcess; ++i)
-                    {
                         Lambda(idxConstraint+i)=previousIterationEigen(i);
-                    }
                 }
-                else
-                {
-                    continueIteration=true;
-                }
+                else continueIteration=true;
+
                 idxConstraint+=numConstraintToProcess;
             }
         }
