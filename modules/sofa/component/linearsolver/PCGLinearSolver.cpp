@@ -107,7 +107,6 @@ void PCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(double mFact, double b
 #ifdef DISPLAY_TIME
     double t3 = (double) CTime::getTime();
 #endif
-
     no_precond = use_precond.getValue();
 
     if (no_precond)
