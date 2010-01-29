@@ -121,7 +121,7 @@ template<>
 void Rotation<defaulttype::Rigid3fTypes>::execute(defaulttype::Rigid3fTypes::Coord &p) const
 {
     p.getCenter() = q.rotate(p.getCenter());
-    p.getOrientation() *= q;
+    p.getOrientation() = q*p.getOrientation();
 }
 
 #endif
@@ -130,7 +130,7 @@ template<>
 void Rotation<defaulttype::Rigid3dTypes>::execute(defaulttype::Rigid3dTypes::Coord &p) const
 {
     p.getCenter() = q.rotate(p.getCenter());
-    p.getOrientation() *= q;
+    p.getOrientation() = q*p.getOrientation();
 }
 #endif
 
