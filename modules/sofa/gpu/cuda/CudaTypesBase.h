@@ -204,10 +204,7 @@ public :
         m[i][j] += (T)v;
     }
 
-    static std::string Name()
-    {
-        return "CudaBaseMatrix";
-    }
+    static std::string Name();
 
     CudaBaseVector<Real> operator*(const CudaBaseVector<Real> & v) const
     {
@@ -234,23 +231,11 @@ private :
     CudaMatrix<T> m;
 };
 
-class CudaBaseMatrixf : public CudaBaseMatrix<float>
-{
-public :
-    static std::string Name()
-    {
-        return "CudaBaseMatrixf";
-    }
-};
+template <>
+inline std::string CudaBaseMatrix<float>::Name() { return "CudaBaseMatrixf"; }
 
-class CudaBaseMatrixd : public CudaBaseMatrix<double>
-{
-public :
-    static std::string Name()
-    {
-        return "CudaBaseMatrixd";
-    }
-};
+template <>
+inline std::string CudaBaseMatrix<double>::Name() { return "CudaBaseMatrixd"; }
 
 
 } // namespace cuda
