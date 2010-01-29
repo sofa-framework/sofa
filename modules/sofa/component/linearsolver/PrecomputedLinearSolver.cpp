@@ -43,7 +43,7 @@ SOFA_DECL_CLASS(PrecomputedLinearSolver)
 
 int PrecomputedLinearSolverClass = core::RegisterObject("linearSolveur M0inv to solve")
 #ifndef SOFA_FLOAT
-        .add< PrecomputedLinearSolver< FullMatrix<double> , FullVector<double> > >(true)
+        .add< PrecomputedLinearSolver< FullMatrix<double> , FullVector<double> > >()
 //#else
 //.add< PrecomputedLinearSolver< FullMatrix<float> , FullVector<float> > >(true)
 #endif
