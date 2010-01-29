@@ -1,5 +1,4 @@
 #include "QSofaListView.h"
-#include "RealGUI.h"
 #include "GraphListenerQListView.h"
 #include "AddObject.h"
 #include "ModifyObject.h"
@@ -438,7 +437,8 @@ void QSofaListView::RaiseAddObject()
 {
     emit Lock(true);
     assert(AddObjectDialog_);
-    std::string path(QApplication::mainWidget()->windowFilePath().ascii());
+
+    std::string path( qApp->mainWidget()->windowFilePath().ascii());
     AddObjectDialog_->setPath ( path );
     AddObjectDialog_->show();
     AddObjectDialog_->raise();
@@ -599,7 +599,7 @@ void QSofaListView::Export()
     assert(root);
     GenGraphForm* form = new sofa::gui::qt::GenGraphForm;
     form->setScene ( root );
-    std::string gname(QApplication::mainWidget()->windowFilePath ().ascii());
+    std::string gname(qApp->mainWidget()->windowFilePath ().ascii());
     std::size_t gpath = gname.find_last_of("/\\");
     std::size_t gext = gname.rfind('.');
     if (gext != std::string::npos && (gpath == std::string::npos || gext > gpath))
