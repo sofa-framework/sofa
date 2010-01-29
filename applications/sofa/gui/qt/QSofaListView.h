@@ -7,13 +7,11 @@
 #include <Q3ListViewItem>
 #include <Q3Header>
 #include <QPushButton>
-#include <Q3PopupMenu>
 #else
 #include <qwidget.h>
 #include <qlistview.h>
 #include <qheader.h>
 #include <qpushbutton.h>
-#include <q3popupmenu.h>
 #endif
 
 #include <sofa/simulation/common/Node.h>
@@ -34,10 +32,6 @@ namespace gui
 {
 namespace qt
 {
-
-
-
-
 
 class AddObject;
 class GraphListenerQListView;

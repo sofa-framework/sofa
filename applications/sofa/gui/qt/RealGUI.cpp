@@ -365,12 +365,12 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     initRecentlyOpened();
     connect ( tabs, SIGNAL ( currentChanged ( QWidget* ) ), this, SLOT ( currentTabChanged ( QWidget* ) ) );
     recorder = new QSofaRecorder(statusBar());
-    statusBar()->layout()->addWidget(recorder);
+    ((QVBoxLayout*)statusBar()->layout())->addWidget(recorder);
 
     connect(startButton, SIGNAL(  toggled ( bool ) ), recorder, SLOT( TimerStart(bool) ) );
 
     statWidget = new QSofaStatWidget(TabStats);
-    TabStats->layout()->addWidget(statWidget);
+    ((QVBoxLayout*)TabStats->layout())->addWidget(statWidget);
 
 
     addViewer();
@@ -416,9 +416,9 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     lmlreader = NULL;
 #endif
     simulationGraph = new QSofaListView(SIMULATION,TabGraph,"SimuGraph");
-    TabGraph->layout()->addWidget(simulationGraph);
+    ((QVBoxLayout*)TabGraph->layout())->addWidget(simulationGraph);
     visualGraph = new QSofaListView(VISUAL,TabVisualGraph,"VisualGraph");
-    TabVisualGraph->layout()->addWidget(visualGraph);
+    ((QVBoxLayout*)TabVisualGraph->layout())->addWidget(visualGraph);
     connect ( ExportGraphButton, SIGNAL ( clicked() ), simulationGraph, SLOT ( Export() ) );
     connect ( ExportVisualGraphButton, SIGNAL ( clicked() ), visualGraph, SLOT ( Export() ) );
 

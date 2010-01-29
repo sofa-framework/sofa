@@ -120,6 +120,11 @@ class SOFA_SOFAGUIQT_API RealGUI : public ::GUI, public SofaGUI
 
 public:
 
+#ifndef SOFA_QT4
+    void setWindowFilePath(const QString &filePath);
+    QString windowFilePath() const { QString filePath = filePath_; return filePath; }
+#endif
+
     static int InitGUI(const char* name, const std::vector<std::string>& options);
     static SofaGUI* CreateGUI(const char* name, const std::vector<std::string>& options, sofa::simulation::Node* groot = NULL, const char* filename = NULL);
 
@@ -259,8 +264,9 @@ protected:
 
 private:
 
-
-
+#ifndef SOFA_QT4
+    QString filePath_;
+#endif
     //currently unused: scale is experimental
     float object_Scale[2];
     bool saveReloadFile;

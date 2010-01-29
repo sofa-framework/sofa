@@ -11,7 +11,7 @@
 #ifdef SOFA_QT4
 #include <Q3PopupMenu>
 #else
-#include "q3popupmenu.h"
+#include <qpopupmenu.h>
 #endif
 
 
