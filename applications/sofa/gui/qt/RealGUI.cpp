@@ -26,7 +26,10 @@
 ******************************************************************************/
 #include <sofa/gui/qt/RealGUI.h>
 #include <sofa/gui/qt/ImageQt.h>
-
+#include "QSofaRecorder.h"
+#include "QSofaStatWidget.h"
+#include "GenGraphForm.h"
+#include "QSofaListView.h"
 
 #ifdef SOFA_GUI_QTOGREVIEWER
 #include <sofa/gui/qt/viewer/qtogre/QtOgreViewer.h>
@@ -58,12 +61,9 @@
 
 
 #include <sofa/component/visualmodel/VisualModelImpl.h>
-
 #include <sofa/simulation/common/Visitor.h>
 #include <sofa/simulation/common/xml/XML.h>
-#include <sofa/simulation/common/TransformationVisitor.h>
 #include <sofa/simulation/common/InitVisitor.h>
-#include <sofa/simulation/common/DesactivatedNodeVisitor.h>
 #include <sofa/simulation/common/UpdateContextVisitor.h>
 
 #include <sofa/helper/system/FileRepository.h>
@@ -111,7 +111,6 @@
 #include <qmime.h>
 #endif
 
-#include <GenGraphForm.h>
 
 
 namespace sofa
@@ -231,7 +230,11 @@ SofaGUI* RealGUI::CreateGUI ( const char* name, const std::vector<std::string>& 
     }
     // create interface
     gui = new RealGUI ( name, options );
-    if ( root ) gui->setScene ( root, filename );
+    if ( root )
+    {
+        gui->setScene ( root, filename );
+        gui->setWindowFilePath(QString(filename));
+    }
 
     //gui->viewer->resetView();
 
@@ -294,9 +297,6 @@ int RealGUI::mainLoop()
 
         fileOpenSimu(title_str.c_str() );
     }
-
-
-
     return application->exec();
 }
 
@@ -316,11 +316,14 @@ Node* RealGUI::currentSimulation()
     return viewer->getScene();
 }
 
-
-
-
 RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*options*/ )
-    : viewerName ( viewername ), viewer ( NULL ), currentTab ( NULL ), tabInstrument (NULL),  graphListener ( NULL ), dialog ( NULL ), saveReloadFile(false)
+    : viewerName ( viewername ),
+      viewer ( NULL ),
+      currentTab ( NULL ),
+      tabInstrument (NULL),
+      simulationGraph(NULL),
+      visualGraph(NULL),
+      saveReloadFile(false)
 {
 
     connect(this, SIGNAL(quit()), this, SLOT(fileExit()));
@@ -336,102 +339,15 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
 
     left_stack = new QWidgetStack ( splitter2 );
     connect ( startButton, SIGNAL ( toggled ( bool ) ), this , SLOT ( playpauseGUI ( bool ) ) );
-
-    //Status Bar Configuration
-    fpsLabel = new QLabel ( "9999.9 FPS", statusBar() );
-    fpsLabel->setMinimumSize ( fpsLabel->sizeHint() );
-    fpsLabel->clear();
-
-    timeLabel = new QLabel ( "Time: 999.9999 s", statusBar() );
-    timeLabel->setMinimumSize ( timeLabel->sizeHint() );
-    timeLabel->clear();
-
-    initialTime = new QLabel( "Init:", statusBar() );
-    initialTime->setMinimumSize ( initialTime->sizeHint() );
-
-    timeSlider = new QSlider( Qt::Horizontal, statusBar(), "Time Slider");
-    timeSlider->setTickmarks(QSlider::Both);
-    timeSlider->setMinValue(0);
-    timeSlider->setMaxValue(0);
-
-    finalTime = new QLabel( "End:", statusBar() );
-    finalTime->setMinimumSize ( finalTime->sizeHint() );
-
-    std::string pixmap_filename;
-
-    record                 = new QPushButton( statusBar(), "Record");  	record->setToggleButton(true);
-    backward_record        = new QPushButton( statusBar(), "Backward");
-    stepbackward_record    = new QPushButton( statusBar(), "Step Backward");
-    playforward_record     = new QPushButton( statusBar(), "Play Forward"); playforward_record->setToggleButton(true);
-    stepforward_record     = new QPushButton( statusBar(), "Step Forward");
-    forward_record         = new QPushButton( statusBar(), "Forward");
-
-    QToolTip::add(record               , tr( "Record" ) );
-    QToolTip::add(backward_record      , tr( "Load Initial Time" ) );
-    QToolTip::add(stepbackward_record  , tr( "Make one step backward" ) );
-    QToolTip::add(playforward_record   , tr( "Continuous play forward" ) );
-    QToolTip::add(stepforward_record   , tr( "Make one step forward" ) );
-    QToolTip::add(forward_record       , tr( "Load Final Time" ) );
-
-
-    setPixmap("textures/media-record.png", record);
-    setPixmap("textures/media-seek-backward.png", backward_record);
-    setPixmap("textures/media-skip-backward.png", stepbackward_record);
-    setPixmap("textures/media-playback-start.png", playforward_record);
-    setPixmap("textures/media-skip-forward.png", stepforward_record);
-    setPixmap("textures/media-seek-forward.png", forward_record);
-
-
-    QLabel *timeRecord = new QLabel("T=",statusBar());
-    loadRecordTime = new QLineEdit(statusBar());
-    loadRecordTime->setMaximumSize(QSize(75, 100));
-
-
-    statusBar()->addWidget ( fpsLabel );
-    statusBar()->addWidget ( timeLabel );
-
-
-    statusBar()->addWidget( record);
-    statusBar()->addWidget( backward_record);
-    statusBar()->addWidget( stepbackward_record);
-    statusBar()->addWidget( playforward_record);
-    statusBar()->addWidget( stepforward_record);
-    statusBar()->addWidget( forward_record);
-    statusBar()->addWidget( timeRecord);
-
-    statusBar()->addWidget( loadRecordTime);
-
-    statusBar()->addWidget ( initialTime );
-    statusBar()->addWidget( timeSlider);
-    statusBar()->addWidget ( finalTime );
-
-    timerStep       = new QTimer ( this );
-    timerRecordStep = new QTimer ( this );
-
-
-    connect ( timerStep, SIGNAL ( timeout() ), this, SLOT ( step() ) );
-    connect ( timerRecordStep, SIGNAL ( timeout() ), this, SLOT ( slot_stepforward() ) );
     connect ( ResetSceneButton, SIGNAL ( clicked() ), this, SLOT ( resetScene() ) );
     connect ( dtEdit, SIGNAL ( textChanged ( const QString& ) ), this, SLOT ( setDt ( const QString& ) ) );
     connect ( stepButton, SIGNAL ( clicked() ), this, SLOT ( step() ) );
-    connect ( ExportGraphButton, SIGNAL ( clicked() ), this, SLOT ( exportGraph() ) );
-    connect ( ExportVisualGraphButton, SIGNAL ( clicked() ), this, SLOT ( exportGraph() ) );
     connect ( dumpStateCheckBox, SIGNAL ( toggled ( bool ) ), this, SLOT ( dumpState ( bool ) ) );
     connect ( displayComputationTimeCheckBox, SIGNAL ( toggled ( bool ) ), this, SLOT ( displayComputationTime ( bool ) ) );
     connect ( exportGnuplotFilesCheckbox, SIGNAL ( toggled ( bool ) ), this, SLOT ( setExportGnuplot ( bool ) ) );
 #ifdef SOFA_DUMP_VISITOR_INFO
     connect ( exportVisitorCheckbox, SIGNAL ( toggled ( bool ) ), this, SLOT ( setExportVisitor ( bool ) ) );
 #endif
-    connect ( record, SIGNAL (toggled (bool) ),              this, SLOT( slot_recordSimulation( bool) ) );
-    connect ( backward_record, SIGNAL (clicked () ),         this, SLOT( slot_backward( ) ) );
-    connect ( stepbackward_record, SIGNAL (clicked () ),     this, SLOT( slot_stepbackward( ) ) );
-    connect ( playforward_record,  SIGNAL (clicked () ),     this, SLOT( slot_playforward( ) ) );
-    connect ( stepforward_record,  SIGNAL (clicked () ),     this, SLOT( slot_stepforward( ) ) );
-    connect ( forward_record, SIGNAL (clicked () ),          this, SLOT( slot_forward( ) ) );
-    connect ( loadRecordTime, SIGNAL(returnPressed ()),       this, SLOT( slot_loadrecord_timevalue()));
-    connect ( timeSlider, SIGNAL (sliderMoved (int) ),   this, SLOT( slot_sliderValue( int) ) );
-
-
     connect( recentlyOpened, SIGNAL(activated(int)), this, SLOT(fileRecentlyOpened(int)));
     //Recently Opened Files
     std::string scenes ( "config/Sofa.ini" );
@@ -447,12 +363,17 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     scenes = sofa::helper::system::DataRepository.getFile ( scenes );
 
     initRecentlyOpened();
-
-    //Dialog Add Object
     connect ( tabs, SIGNAL ( currentChanged ( QWidget* ) ), this, SLOT ( currentTabChanged ( QWidget* ) ) );
+    recorder = new QSofaRecorder(statusBar());
+    statusBar()->layout()->addWidget(recorder);
+
+    connect(startButton, SIGNAL(  toggled ( bool ) ), recorder, SLOT( TimerStart(bool) ) );
+
+    statWidget = new QSofaStatWidget(TabStats);
+    TabStats->layout()->addWidget(statWidget);
+
 
     addViewer();
-
     currentTabChanged ( tabs->currentPage() );
 
     //ADD GUI for Background
@@ -494,14 +415,33 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     pmlreader = NULL;
     lmlreader = NULL;
 #endif
-
-    graphListener = new GraphListenerQListView( graphView );
-    visualGraphListener = new GraphListenerQListView( visualGraphView);
+    simulationGraph = new QSofaListView(SIMULATION,TabGraph,"SimuGraph");
+    TabGraph->layout()->addWidget(simulationGraph);
+    visualGraph = new QSofaListView(VISUAL,TabVisualGraph,"VisualGraph");
+    TabVisualGraph->layout()->addWidget(visualGraph);
+    connect ( ExportGraphButton, SIGNAL ( clicked() ), simulationGraph, SLOT ( Export() ) );
+    connect ( ExportVisualGraphButton, SIGNAL ( clicked() ), visualGraph, SLOT ( Export() ) );
 
     //Center the application
     const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->primaryScreen());
     this->move(  ( screen.width()- this->width()  ) / 2,  ( screen.height() - this->height()) / 2  );
 
+    connect(simulationGraph, SIGNAL( RootNodeChanged(sofa::simulation::Node*, const char*) ), this, SLOT ( NewRootNode(sofa::simulation::Node* , const char*) ) );
+    connect(simulationGraph, SIGNAL( NodeRemoved() ), this, SLOT( Update() ) );
+    connect(simulationGraph, SIGNAL( Lock(bool) ), this, SLOT( LockAnimation(bool) ) );
+    connect(simulationGraph, SIGNAL( RequestSaving(sofa::simulation::Node*) ), this, SLOT( fileSaveAs(sofa::simulation::Node*) ) );
+    connect(simulationGraph, SIGNAL( currentActivated(bool) ), viewer->getQWidget(), SLOT( resetView() ) );
+    connect(simulationGraph, SIGNAL( currentActivated(bool) ), this, SLOT( Update() ) );
+    connect(simulationGraph, SIGNAL( Updated() ), this, SLOT( redraw() ) );
+    connect(simulationGraph, SIGNAL( NodeAdded() ), this, SLOT( Update() ) );
+    connect(this, SIGNAL( newScene() ), simulationGraph, SLOT( CloseAllDialogs() ) );
+    connect(this, SIGNAL( newStep() ), simulationGraph, SLOT( UpdateOpenedDialogs() ) );
+    connect( recorder, SIGNAL( RecordSimulation(bool) ), startButton, SLOT( setOn(bool) ) );
+    connect( recorder, SIGNAL( NewTime() ), viewer->getQWidget(), SLOT( update() ) );
+    timerStep = new QTimer(this);
+    connect ( timerStep, SIGNAL ( timeout() ), this, SLOT ( step() ) );
+
+    animationState = false;
 }
 
 void RealGUI::fileRecentlyOpened(int id)
@@ -602,7 +542,6 @@ RealGUI::~RealGUI()
     delete windowTraceVisitor;
     delete handleTraceVisitor;
 #endif
-    if (dialog) delete dialog;
     delete viewer;
 }
 
@@ -610,20 +549,15 @@ void RealGUI::init()
 {
 
     frameCounter = 0;
-    node_clicked = NULL;
-    item_clicked = NULL;
     _animationOBJ = false;
     _animationOBJcounter = 0;
     m_dumpState = false;
     m_dumpStateStream = 0;
     m_displayComputationTime = false;
     m_exportGnuplot = false;
-    record_directory = sofa::helper::system::SetDirectory::GetRelativeFromDir("../../examples/Simulation/",sofa::helper::system::SetDirectory::GetProcessFullPath("").c_str());
     gnuplot_directory = "";
-    writeSceneName = "";
 
-    current_Id_modifyDialog = 0;
-    map_modifyDialogOpened.clear();
+
 
 
 
@@ -654,22 +588,7 @@ void RealGUI::init()
     //--------
     SofaPluginManager::getInstance()->hide();
     SofaMouseManager::getInstance()->hide();
-    //*********************************************************************************************************************************
-    //List of objects
-    //Read the object.txt that contains the information about the objects which can be added to the scenes whithin a given BoundingBox and scale range
-    std::string object ( "config/object.txt" );
-    if ( !sofa::helper::system::DataRepository.findFile ( object ) )
-        return;
 
-    object = sofa::helper::system::DataRepository.getFile ( object );
-    list_object.clear();
-    std::ifstream end(object.c_str());
-    std::string s;
-    while( end >> s )
-    {
-        list_object.push_back(s);
-    }
-    end.close();
 }
 
 void RealGUI::addViewer()
@@ -840,28 +759,19 @@ bool RealGUI::setViewer ( const char* name )
         return false;
 
 
-    std::string filename = viewer->getSceneFileName();
+    std::string filename = this->windowFilePath ().toStdString();
 
     if ( viewer->getScene() !=NULL )
     {
         simulation::getSimulation()->unload ( viewer->getScene() ); delete viewer->getScene() ;
 
-        if ( graphListener!=NULL )
-        {
-            delete graphListener;
-            graphListener = new GraphListenerQListView( graphView );
-            simulation::getSimulation()->getVisualRoot()->removeListener(visualGraphListener);
-            delete visualGraphListener;
-            visualGraphListener = new GraphListenerQListView( visualGraphView );
-
-        }
-        graphView->clear();
-        visualGraphView->clear();
+        simulationGraph->Clear(dynamic_cast<Node*>( simulation::getSimulation()->getContext()) );
+        visualGraph->Clear(dynamic_cast<Node*>( simulation::getSimulation()->getVisualRoot()) );
     }
 
-// 	fileOpen(filename);
-// 	GNode* groot = new GNode; // empty scene to do the transition
-// 	setScene ( groot,filename.c_str() ); // keep the current display flags
+    // 	fileOpen(filename);
+    // 	GNode* groot = new GNode; // empty scene to do the transition
+    // 	setScene ( groot,filename.c_str() ); // keep the current display flags
 
     viewer->removeViewerTab(tabs);
 
@@ -922,9 +832,7 @@ bool RealGUI::setViewer ( const char* name )
 
     if (filename.rfind(".simu") != std::string::npos)
         fileOpenSimu(filename.c_str() );
-    //else if (filename.rfind(".pscn") != std::string::npos)
-    //  fileOpenScript(filename.c_str(), PHP );
-    //else
+
     fileOpen ( filename.c_str() ); // keep the current display flags
     return true;
 }
@@ -948,11 +856,8 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile )
 
     frameCounter = 0;
     sofa::simulation::xml::numDefault = 0;
-    writeSceneName="";
 
     update();
-    //Hide the dialog to add a new object in the graph
-    if ( dialog != NULL ) dialog->hide();
     //Hide all the dialogs to modify the graph
     emit ( newScene() );
 
@@ -961,23 +866,13 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile )
         viewer->getPickHandler()->reset();//activateRay(false);
 
         simulation::getSimulation()->unload ( viewer->getScene() ); delete viewer->getScene() ;
+        if(visualGraph->getListener() != NULL )
+            simulation::getSimulation()->getVisualRoot()->removeListener(visualGraph->getListener());
 
-        if ( graphListener!=NULL )
-        {
-            delete graphListener;
-            graphListener = new GraphListenerQListView( graphView );
-            simulation::getSimulation()->getVisualRoot()->removeListener(visualGraphListener);
-            delete visualGraphListener;
-            visualGraphListener = new GraphListenerQListView( visualGraphView );
-        }
-        graphView->clear();
-        visualGraphView->clear();
+
     }
-
-
     //Clear the list of modified dialog opened
-    current_Id_modifyDialog=0;
-    map_modifyDialogOpened.clear();
+
     simulation::Node* root = simulation::getSimulation()->load ( filename.c_str() );
     simulation::getSimulation()->init ( root );
     if ( root == NULL )
@@ -986,6 +881,7 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile )
         stopDumpVisitor();
         return;
     }
+    this->setWindowFilePath(QString::fromStdString(filename));
     setScene ( root, filename.c_str(), temporaryFile );
     //need to create again the output streams !!
     simulation::getSimulation()->gnuplotDirectory.setValue(gnuplot_directory);
@@ -1006,16 +902,9 @@ void RealGUI::pmlOpen ( const char* filename, bool /*resetView*/ )
     if ( viewer->getScene() !=NULL )
     {
         simulation::getSimulation()->unload ( viewer->getScene() ); delete viewer->getScene() ;
-        if ( graphListener!=NULL )
-        {
-            delete graphListener;
-            graphListener = new GraphListenerQListView( graphView );
-            simulation::getSimulation()->getVisualRoot()->removeListener(visualGraphListener);
-            delete visualGraphListener;
-            visualGraphListener = new GraphListenerQListView( visualGraphView);
-        }
-        graphView->clear();
-        visualGraphView->clear();
+        if(visualGraph->getListener() != NULL )
+            simulation::getSimulation()->getVisualRoot()->removeListener(visualGraph->getListener());
+
     }
     GNode *simuNode = dynamic_cast< GNode *> (simulation::getSimulation()->load ( scene.c_str() ));
     getSimulation()->init(simuNode);
@@ -1024,6 +913,7 @@ void RealGUI::pmlOpen ( const char* filename, bool /*resetView*/ )
         if ( !pmlreader ) pmlreader = new PMLReader;
         pmlreader->BuildStructure ( filename, simuNode );
         setScene ( simuNode, filename );
+        this->setWindowFilePath(QString::fromStdString(filename));
     }
 }
 
@@ -1045,28 +935,6 @@ void RealGUI::lmlOpen ( const char* filename )
 }
 #endif
 
-void RealGUI::initDesactivatedNode()
-{
-
-    std::map<core::objectmodel::Base*, QListViewItem* >::iterator graph_iterator;
-
-    for (graph_iterator = graphListener->items.begin(); graph_iterator != graphListener->items.end(); graph_iterator++)
-    {
-        Node* node = dynamic_cast< Node* >(graph_iterator->first);
-        if (node!=NULL && !node->isActive())
-        {
-            graphActivation(node, graphListener, false);
-        }
-    }
-    for (graph_iterator = visualGraphListener->items.begin(); graph_iterator != visualGraphListener->items.end(); graph_iterator++)
-    {
-        Node *node = dynamic_cast< Node* >(graph_iterator->first);
-        if (node!=NULL  && !node->isActive())
-        {
-            graphActivation(node, visualGraphListener, false);
-        }
-    }
-}
 
 
 void RealGUI::setScene ( Node* root, const char* filename, bool temporaryFile )
@@ -1102,17 +970,9 @@ void RealGUI::setScene ( Node* root, const char* filename, bool temporaryFile )
         delete tabInstrument;
         tabInstrument = NULL;
     }
-
     viewer->setScene ( root, filename );
+    this->setWindowFilePath(QString::fromStdString(filename));
     viewer->resetView();
-    initial_time = (root != NULL)?root->getTime():0;
-
-    record_simulation = false;
-    clearRecord();
-    clearGraph();
-
-    initDesactivatedNode();
-
     eventNewTime();
 
     if (root)
@@ -1132,8 +992,13 @@ void RealGUI::setScene ( Node* root, const char* filename, bool temporaryFile )
         //simulation::getSimulation()->updateVisualContext ( root );
         startButton->setOn ( root->getContext()->getAnimate() );
         dtEdit->setText ( QString::number ( root->getDt() ) );
+
+        simulationGraph->Clear(root);
+        visualGraph->Clear(dynamic_cast<Node*>(simulation::getSimulation()->getVisualRoot()) );
+        statWidget->CreateStats(dynamic_cast<Node*>(simulation::getSimulation()->getContext()) );
+        recorder->Clear();
+
     }
-    record->setOn(false);
 
 #ifdef SOFA_HAVE_CHAI3D
     // Tell nodes that openGl is initialized
@@ -1147,6 +1012,68 @@ void RealGUI::setScene ( Node* root, const char* filename, bool temporaryFile )
     if (std::string(sofa::gui::SofaGUI::GetGUIName()) == "ogre")
         resetScene();
 #endif
+
+}
+
+void RealGUI::Clear()
+{
+    simulation::Simulation *s = simulation::getSimulation();
+
+    //In case instruments are present in the scene, we create a new tab, and display the listr
+    if (s->instruments.size() != 0)
+    {
+        tabInstrument = new QWidget();
+        tabs->addTab(tabInstrument, QString("Instrument"));
+
+        QVBoxLayout *layout = new QVBoxLayout( tabInstrument, 0, 1, "tabInstrument");
+
+        QButtonGroup *list_instrument = new QButtonGroup(tabInstrument);
+        list_instrument->setExclusive(true);
+
+#ifdef SOFA_QT4
+        connect ( list_instrument, SIGNAL ( buttonClicked(int) ), this, SLOT ( changeInstrument(int) ) );
+#else
+        connect ( list_instrument, SIGNAL ( clicked(int) ), this, SLOT ( changeInstrument(int) ) );
+#endif
+
+        QRadioButton *button = new QRadioButton(tabInstrument); button->setText("None");
+#ifdef SOFA_QT4
+        list_instrument->addButton(button, 0);
+#else
+        list_instrument->insert(button);
+#endif
+        layout->addWidget(button);
+
+        for (unsigned int i=0; i<s->instruments.size(); i++)
+        {
+            QRadioButton *button = new QRadioButton(tabInstrument);  button->setText(QString( s->instruments[i]->getName().c_str() ) );
+#ifdef SOFA_QT4
+            list_instrument->addButton(button, i+1);
+#else
+            list_instrument->insert(button);
+#endif
+            layout->addWidget(button);
+            if (i==0)
+            {
+                button->setChecked(true); changeInstrument(1);
+            }
+            else
+                s->instruments[i]->setActive(false);
+
+        }
+#ifdef SOFA_QT4
+        layout->addStretch(1);
+#endif
+#ifndef SOFA_QT4
+        layout->addWidget(list_instrument);
+#endif
+    }
+
+    recorder->Clear();
+    simulationGraph->Clear(dynamic_cast<Node*>(simulation::getSimulation()->getContext()));
+    visualGraph->Clear(dynamic_cast<Node*>(simulation::getSimulation()->getVisualRoot()));
+    statWidget->CreateStats(dynamic_cast<Node*>(simulation::getSimulation()->getContext()));
+
 
 }
 
@@ -1232,25 +1159,9 @@ void RealGUI::fileOpenSimu ( std::string s )
             std::string::size_type pointSimu = simulation_name.rfind(".simu");
             simulation_name.resize(pointSimu);
             fileOpen(filename.c_str());
-
-            writeSceneName = writeName;
-            addReadState(true);
-
-
-            char buf[100];
-
-            sprintf ( buf, "Init: %s s",initT.c_str()  );
-            initialTime->setText ( buf );
-
-            sprintf ( buf, "End: %s s",endT.c_str()  );
-            finalTime->setText ( buf );
-
-            loadRecordTime->setText( QString(initT.c_str()) );
-
+            this->setWindowFilePath(QString::fromStdString(filename));
             dtEdit->setText(QString(dT.c_str()));
-            timeSlider->setMaxValue( (int)((atof(endT.c_str())-atof(initT.c_str()))/(atof(dT.c_str()))+0.5));
-
-            record_directory = sofa::helper::system::SetDirectory::GetParentDir(filename.c_str()) + "/";
+            recorder->SetSimulation(initT,endT,writeName);
         }
     }
 }
@@ -1262,7 +1173,7 @@ void RealGUI::fileNew()
 }
 void RealGUI::fileOpen()
 {
-    std::string filename = viewer->getSceneFileName();
+    std::string filename = this->windowFilePath().toStdString();
 
     QString s = getOpenFileName ( this, filename.empty() ?NULL:filename.c_str(),
 #ifdef SOFA_PML
@@ -1293,7 +1204,7 @@ void RealGUI::fileOpen()
 void RealGUI::fileReload()
 {
 
-    std::string filename = viewer->getSceneFileName();
+    std::string filename = this->windowFilePath ().toStdString();
     QString s = filename.c_str();
 
     if ( filename.empty() ) { std::cerr << "Reload failed: no file loaded.\n"; return;}
@@ -1321,7 +1232,7 @@ void RealGUI::fileReload()
 
 void RealGUI::fileSave()
 {
-    std::string filename = viewer->getSceneFileName();
+    std::string filename = this->windowFilePath().toStdString();
     std::string message="You are about to overwrite your current scene: "  + filename + "\nAre you sure you want to do that ?";
 
     if ( QMessageBox::warning ( this, "Saving the Scene",message.c_str(), QMessageBox::Yes | QMessageBox::Default, QMessageBox::No ) != QMessageBox::Yes )
@@ -1336,7 +1247,7 @@ void RealGUI::fileSaveAs(Node *node)
 {
     if (node == NULL) node = viewer->getScene();
     QString s;
-    std::string filename = viewer->getSceneFileName();
+    std::string filename = this->windowFilePath().toStdString();
 #ifdef SOFA_PML
     s = getSaveFileName ( this, filename.empty() ?NULL:filename.c_str(), "Scenes (*.scn *.xml *.pml)", "save file dialog",  "Choose where the scene will be saved" );
     if ( s.length() >0 )
@@ -1374,12 +1285,14 @@ void RealGUI::saveXML()
 
 void RealGUI::editRecordDirectory()
 {
-    std::string filename = viewer->getSceneFileName();
+    std::string filename = this->windowFilePath().toStdString();
+    std::string record_directory;
     QString s = getExistingDirectory ( this, filename.empty() ?NULL:filename.c_str(), "open directory dialog",  "Choose a directory" );
     if (s.length() > 0)
     {
         record_directory = s.ascii();
         if (record_directory.at(record_directory.size()-1) != '/') record_directory+="/";
+        recorder->SetRecordDirectory(record_directory);
     }
 
 }
@@ -1396,7 +1309,7 @@ void RealGUI::showMouseManager()
 
 void RealGUI::editGnuplotDirectory()
 {
-    std::string filename = viewer->getSceneFileName();
+    std::string filename = this->windowFilePath ().toStdString();
     QString s = getExistingDirectory ( this, filename.empty() ?NULL:filename.c_str(), "open directory dialog",  "Choose a directory" );
     if (s.length() > 0)
     {
@@ -1428,9 +1341,15 @@ void RealGUI::setTitle ( std::string windowTitle )
 void RealGUI::playpauseGUI ( bool value )
 {
     startButton->setOn ( value );
-    if ( value ) {timerStep->start ( 0 );}
-    else {timerStep->stop();}
     if ( getScene() )  getScene()->getContext()->setAnimate ( value );
+    if(value)
+    {
+        timerStep->start(0);
+    }
+    else
+    {
+        timerStep->stop();
+    }
 }
 
 
@@ -1521,10 +1440,6 @@ void RealGUI::step()
 
         eventNewStep();
         eventNewTime();
-
-//    	    viewer->getQWidget()->update();
-
-        if (currentTab == TabStats) graphCreateStats(viewer->getScene());
     }
 
 
@@ -1564,13 +1479,9 @@ void RealGUI::eventNewStep()
         ctime_t curtime = CTime::getRefTime();
         int i = ( ( frameCounter/10 ) %10 );
         double fps = ( ( double ) timeTicks / ( curtime - beginTime[i] ) ) * ( frameCounter<100?frameCounter:100 );
-        // 	    emit newFPS(fps);
-        char buf[100];
-        sprintf ( buf, "%.1f FPS", fps );
-        fpsLabel->setText ( buf );
-        // 	    emit newFPS(buf);
+
+        recorder->setFPS(fps);
         beginTime[i] = curtime;
-        //frameCounter = 0;
     }
 
     if ( m_displayComputationTime && ( frameCounter%100 ) == 0 && root!=NULL )
@@ -1614,37 +1525,41 @@ void RealGUI::eventNewStep()
     }
 }
 
+void RealGUI::currentTabChanged ( QWidget* widget )
+{
+    if ( widget == currentTab ) return;
+    if ( currentTab == NULL )
+    {
+        currentTab = widget;
+    }
+    if ( widget == TabGraph )
+    {
+        simulationGraph->Unfreeze( );
+    }
+    else if ( currentTab == TabGraph )
+    {
+        simulationGraph->Freeze();
+    }
+    else if ( widget == TabVisualGraph )
+    {
+        visualGraph->Unfreeze( );
+    }
+    else if ( currentTab == TabVisualGraph )
+    {
+        visualGraph->Freeze( );
+
+    }
+    else if (widget == TabStats)
+        statWidget->CreateStats(dynamic_cast<Node*>(simulation::getSimulation()->getContext()));
+
+    currentTab = widget;
+}
+
 
 
 void RealGUI::eventNewTime()
 {
-    Node* root = getScene();
-    if ( root )
-    {
-
-        double time = root->getTime();
-        char buf[100];
-        sprintf ( buf, "Time: %.3g s", time );
-        timeLabel->setText ( buf );
-
-        if (record_simulation)
-        {
-            setRecordTime(time);
-            double final_time = getRecordFinalTime();
-
-            if ((int)(1000*final_time) < (int)(1000*time))
-            {
-                setRecordFinalTime(time);
-                timeSlider->setMaxValue(timeSlider->maxValue()+1);
-                timeSlider->setValue(timeSlider->maxValue());
-            }
-            else
-            {
-                timeSlider->setValue(timeSlider->value()+1);
-            }
-            timeSlider->update();
-        }
-    }
+    recorder->UpdateTime();
 }
 
 
@@ -1675,75 +1590,24 @@ void RealGUI::setDt ( const QString& value )
 void RealGUI::resetScene()
 {
     Node* root = getScene();
-
-
     startDumpVisitor();
-    //Hide the dialog to add a new object in the graph
-    if ( dialog != NULL ) dialog->hide();
-    //Hide all the dialogs to modify the graph
     emit ( newScene() );
-
-    //Clear the list of modified dialog opened
-    current_Id_modifyDialog=0;
-    map_modifyDialogOpened.clear();
-
-
-    std::list< Node *>::iterator it;
-    //**************************************************************
-    //GRAPH MANAGER
-    bool isFrozen = graphListener->frozen;
-    if (root) graphListener->unfreeze ( root );
-    std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator graph_iterator;
-
-
-
-    if ( root && isFrozen ) graphListener->freeze ( root );
-
     //Reset the scene
     if ( root )
     {
-        root->setTime(initial_time);
+        root->setTime(0.);
         eventNewTime();
         simulation::getSimulation()->reset ( root );
         simulation::getSimulation()->reset ( simulation::getSimulation()->getVisualRoot() );
         UpdateContextVisitor().execute(root);
         UpdateContextVisitor().execute(simulation::getSimulation()->getVisualRoot());
-
         emit newStep();
     }
+
     viewer->getPickHandler()->reset();
     stopDumpVisitor();
 
 }
-
-
-//*****************************************************************************************
-//
-void RealGUI::exportGraph()
-{
-    if (currentTab == TabGraph)
-        exportGraph ( getScene() );
-    else if (currentTab == TabVisualGraph)
-        exportGraph ( getSimulation()->getVisualRoot());
-}
-
-
-void RealGUI::exportGraph ( sofa::simulation::Node* root )
-{
-
-    if ( root == NULL ) return;
-    sofa::gui::qt::GenGraphForm* form = new sofa::gui::qt::GenGraphForm;
-    form->setScene ( root );
-    std::string gname = viewer->getSceneFileName();
-    std::size_t gpath = gname.find_last_of("/\\");
-    std::size_t gext = gname.rfind('.');
-    if (gext != std::string::npos && (gpath == std::string::npos || gext > gpath))
-        gname = gname.substr(0,gext);
-    form->filename->setText(gname.c_str());
-    form->show();
-}
-
-
 
 //*****************************************************************************************
 //
@@ -1817,7 +1681,7 @@ void RealGUI::exportOBJ ( bool exportMTL )
 {
     Node* root = simulation::getSimulation()->getVisualRoot();
     if ( !root ) return;
-    std::string sceneFileName = viewer->getSceneFileName();
+    std::string sceneFileName = this->windowFilePath ().toStdString();
     std::ostringstream ofilename;
     if ( !sceneFileName.empty() )
     {
@@ -1880,105 +1744,6 @@ void RealGUI::keyPressEvent ( QKeyEvent * e )
         break;
     }
     }
-}
-
-
-/*****************************************************************************************************************/
-//Translate an object
-void RealGUI::transformObject ( Node *node, double dx, double dy, double dz,  double rx, double ry, double rz, double scale )
-{
-    if ( node == NULL ) return;
-    const SReal conversionDegRad = 3.141592653/180.0;
-    Vector3 rotationVector = Vector3(rx,ry,rz)*conversionDegRad;
-
-    TransformationVisitor transform;
-    transform.setTranslation(dx,dy,dz);
-    transform.setRotation(rx,ry,rz);
-    transform.setScale(scale,scale,scale);
-    transform.execute(node);
-
-}
-
-/*****************************************************************************************************************/
-void RealGUI::loadObject ( std::string path, double dx, double dy, double dz,  double rx, double ry, double rz,double scale )
-{
-    //Verify if the file exists
-    if ( !sofa::helper::system::DataRepository.findFile ( path ) ) return;
-    path = sofa::helper::system::DataRepository.getFile ( path );
-
-    //Desactivate the animate-> no more graph modification
-    bool isAnimated = startButton->isOn();
-    playpauseGUI ( false );
-
-    //If we add the object without clicking on the graph (direct use of the method),
-    //the object will be added to the root node
-    if ( node_clicked == NULL )
-    {
-        for ( std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator it = graphListener->items.begin() ; it != graphListener->items.end() ; ++ it )
-        {
-            if ( ( *it ).second->itemPos() == 0 ) //Root node position
-            {
-                node_clicked = dynamic_cast< sofa::simulation::Node *> ( ( *it ).first );
-                break;
-            }
-        }
-        if ( node_clicked == NULL ) return;
-    }
-
-    //We allow unlock the graph to make all the changes now
-    if ( currentTab != TabGraph )
-        graphListener->unfreeze ( node_clicked );
-
-    //Loading of the xml file
-    simulation::xml::BaseElement* xml = simulation::xml::loadFromFile ( path.c_str() );
-    if ( xml == NULL ) return;
-
-    // helper::system::SetDirectory chdir ( path.c_str() );
-
-    //std::cout << "Initializing objects"<<std::endl;
-    if ( !xml->init() )  std::cerr << "Objects initialization failed."<<std::endl;
-
-    Node* new_node = dynamic_cast<Node*> ( xml->getObject() );
-    if ( new_node == NULL )
-    {
-        std::cerr << "Objects initialization failed."<<std::endl;
-        delete xml;
-        return ;
-    }
-
-    new_node->addListener(graphListener);
-    if (node_clicked && new_node)
-    {
-        if ( node_clicked->child.empty() &&  node_clicked->object.empty() )
-        {
-            //Temporary Root : the current graph is empty, and has only a single node "Root"
-            node_clicked->detachFromGraph();
-            // graphListener->removeChild ( NULL, node_clicked );
-            viewer->setScene ( new_node, path.c_str() );
-            graphListener->addChild ( NULL, new_node );
-        }
-        else
-        {
-            node_clicked->addChild (new_node );
-        }
-    }
-    simulation::getSimulation()->init(new_node);
-    //update the stats graph
-    graphCreateStats(viewer->getScene());
-    //Apply the Transformation
-    transformObject ( new_node, dx, dy, dz, rx,ry,rz,scale );
-
-    //Update the view
-    viewer->resetView();
-    viewer->getQWidget()->update();
-
-    //freeze the graph if needed and animate
-    if ( currentTab != TabGraph )
-        graphListener->freeze ( node_clicked );
-
-    node_clicked = NULL;
-    item_clicked = NULL;
-    playpauseGUI ( isAnimated );
 }
 
 
@@ -2129,7 +1894,41 @@ void RealGUI::showhideElements(int FILTER, bool value)
     viewer->getQWidget()->update();
 }
 
+void RealGUI::Update()
+{
+    viewer->getQWidget()->update();
+    statWidget->CreateStats(dynamic_cast<Node*>(simulation::getSimulation()->getContext()));
+}
 
+
+
+void RealGUI::NewRootNode(sofa::simulation::Node* root, const char* path)
+{
+    if(path != NULL)
+    {
+        viewer->setScene ( root, viewer->getSceneFileName().c_str() );
+    }
+    else
+    {
+        viewer->setScene(root , path);
+    }
+    viewer->resetView();
+    viewer->getQWidget()->update();
+    statWidget->CreateStats(root);
+}
+
+void RealGUI::LockAnimation(bool value)
+{
+    if(value)
+    {
+        animationState = startButton->isOn();
+        playpauseGUI(false);
+    }
+    else
+    {
+        playpauseGUI(animationState);
+    }
+}
 } // namespace qt
 
 } // namespace gui

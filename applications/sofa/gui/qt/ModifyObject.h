@@ -173,7 +173,7 @@ public slots:
     void accept   () { updateValues(); emit(dialogClosed(Id_)); deleteLater(); QDialog::accept();} //if closing by using Ok button, update the values
     void closeNow () {emit(reject());} //called from outside to close the current widget
     virtual void closeEvent ( QCloseEvent * ) {emit(reject());}
-
+    void updateTables();
     virtual void updateValues();              //update the node with the values of the field
     void updateListViewItem();
 signals:
@@ -181,7 +181,7 @@ signals:
     void objectUpdated();                 //update done
     void dialogClosed(void *);            //the current window has been closed: we give the Id of the current window
 protected slots:
-    void updateTables();              //update the tables of value at each step of the simulation
+    //update the tables of value at each step of the simulation
     void clearWarnings() {node->clearWarnings(); logWarningEdit->clear();}
     void clearOutputs() {node->clearOutputs(); logOutputEdit->clear();}
 

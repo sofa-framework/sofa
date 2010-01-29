@@ -458,6 +458,7 @@ void GraphListenerQListView::removeDatas(core::objectmodel::BaseObject* parent)
 /*****************************************************************************************************************/
 void GraphListenerQListView::addDatas(sofa::core::objectmodel::BaseObject *parent)
 {
+    if (frozen) return;
     Q3ListViewItem* new_item;
     std::string name;
     BaseData* data = NULL;
