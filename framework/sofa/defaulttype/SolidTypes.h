@@ -247,6 +247,8 @@ public:
         /// Matrix which projects vectors from child coordinates to parent coordinates. The columns of the matrix are the axes of the child base axes in the parent coordinate system.
         Mat3x3 getRotationMatrix() const;
 
+        SpatialVector DTrans();
+
 
         /**
          * \brief Adjoint matrix to the transform
