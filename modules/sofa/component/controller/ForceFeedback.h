@@ -27,7 +27,10 @@
 
 #include <sofa/simulation/common/Node.h>
 #include <sofa/core/componentmodel/behavior/BaseController.h>
+#include <sofa/defaulttype/SolidTypes.h>
+#include <sofa/component/component.h>
 
+using namespace sofa::defaulttype;
 namespace sofa
 {
 
@@ -37,10 +40,11 @@ namespace component
 namespace controller
 {
 
+
 /**
 * Omni driver force field
 */
-class ForceFeedback : public core::componentmodel::behavior::BaseController
+class SOFA_COMPONENT_CONTROLLER_API ForceFeedback : public core::componentmodel::behavior::BaseController
 {
 
 public:
@@ -56,6 +60,7 @@ public:
 
     virtual void init() {context = dynamic_cast<simulation::Node *>(this->getContext());};
     virtual void computeForce(double x, double y, double z, double u, double v, double w, double q, double& fx, double& fy, double& fz) = 0;
+    virtual void computeWrench(const SolidTypes<double>::Transform &, const SolidTypes<double>::SpatialVector &, SolidTypes<double>::SpatialVector & )=0;
 };
 
 } // namespace controller

@@ -44,9 +44,12 @@ void NullForceFeedback::computeForce(double /*x*/, double /*y*/, double /*z*/, d
     fx = fy = fz = 0.0;
 };
 
+void NullForceFeedback::computeWrench(const SolidTypes<double>::Transform &/*world_H_tool*/, const SolidTypes<double>::SpatialVector &/*V_tool_world*/, SolidTypes<double>::SpatialVector &W_tool_world )
+{
+    W_tool_world.clear();
+};
 
-
-int nullForceFeedbackClass = sofa::core::RegisterObject("Null force feedback for the omni")
+int nullForceFeedbackClass = sofa::core::RegisterObject("Null force feedback for haptic feedback device")
         .add< NullForceFeedback >();
 
 SOFA_DECL_CLASS(NullForceFeedback)

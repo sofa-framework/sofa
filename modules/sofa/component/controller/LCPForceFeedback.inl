@@ -101,7 +101,8 @@ namespace controller
 
 template <class DataType>
 LCPForceFeedback<DataType>::LCPForceFeedback()
-    : forceCoef(initData(&forceCoef, 0.03, "forceCoef","multiply haptic force by this coef."))
+    : forceCoef(initData(&forceCoef, 0.03, "forceCoef","multiply haptic force by this coef.")),
+      haptic_freq(0.0)
 {
     this->f_listening.setValue(true);
     mLcp[0] = 0;
@@ -110,6 +111,8 @@ LCPForceFeedback<DataType>::LCPForceFeedback()
     mCurBufferId = 0;
     mNextBufferId = 0;
     mIsCuBufferInUse = false;
+    _timer = new CTime();
+
 }
 
 
@@ -125,9 +128,9 @@ void LCPForceFeedback<DataType>::init()
         return;
     }
 
-    c->get(constraintSolver);
+    c->get(lcpconstraintSolver);
 
-    if (!constraintSolver)
+    if (!lcpconstraintSolver)
     {
         serr << "LCPForceFeedback has no binding MasterContactSolver. Initialisation failed." << sendl;
         return;
@@ -153,7 +156,7 @@ void LCPForceFeedback<DataType>::computeForce(const typename DataType::VecCoord&
     forces.resize(stateSize);
 
 
-    if(!constraintSolver||!mState)
+    if(!lcpconstraintSolver||!mState)
         return;
 
 
@@ -253,11 +256,11 @@ void LCPForceFeedback<DataType>::handleEvent(sofa::core::objectmodel::Event *eve
     if(!dynamic_cast<sofa::simulation::AnimateEndEvent*>(event))
         return;
 
-    if(!constraintSolver)
+    if(!lcpconstraintSolver)
         return;
     if(!mState)
         return;
-    component::constraint::LCP* new_lcp = constraintSolver->getLCP();
+    component::constraint::LCP* new_lcp = lcpconstraintSolver->getLCP();
     if(!new_lcp)
         return;
 
@@ -309,9 +312,9 @@ void LCPForceFeedback<DataType>::handleEvent(sofa::core::objectmodel::Event *eve
 
     // Lock lcp to prevent its use by the SOfa thread while it is used by haptic thread
     if(mIsCuBufferInUse)
-        constraintSolver->lockLCP(mLcp[mCurBufferId],mLcp[mNextBufferId]);
+        lcpconstraintSolver->lockLCP(mLcp[mCurBufferId],mLcp[mNextBufferId]);
     else
-        constraintSolver->lockLCP(mLcp[mNextBufferId]);
+        lcpconstraintSolver->lockLCP(mLcp[mNextBufferId]);
 }
 
 
@@ -356,6 +359,48 @@ void LCPForceFeedback<Rigid3dTypes>::computeForce(double x, double y, double z, 
     fz = forces[0].getVCenter().z();
 }
 #endif
+
+// 6D rendering of contacts
+#ifndef SOFA_FLOAT
+using sofa::defaulttype::Rigid3dTypes;
+template <>
+void LCPForceFeedback<Rigid3dTypes>::computeWrench(const SolidTypes<double>::Transform &world_H_tool,
+        const SolidTypes<double>::SpatialVector &/*V_tool_world*/,
+        SolidTypes<double>::SpatialVector &W_tool_world )
+{
+    //std::cerr<<"WARNING : LCPForceFeedback::computeWrench is not implemented"<<std::endl;
+
+    if (!f_activate.getValue())
+    {
+        return;
+    }
+
+    bool old = true;
+
+
+
+    Vec3d Force(0.0,0.0,0.0);
+
+    this->computeForce(world_H_tool.getOrigin()[0], world_H_tool.getOrigin()[1],world_H_tool.getOrigin()[2],
+            world_H_tool.getOrientation()[0], world_H_tool.getOrientation()[1], world_H_tool.getOrientation()[2], world_H_tool.getOrientation()[3],
+            Force[0],  Force[1], Force[2]);
+
+    W_tool_world.setForce(Force);
+
+
+
+};
+
+
+#endif
+
+
+template <typename DataType>
+void LCPForceFeedback<DataType>::computeWrench(const SolidTypes<double>::Transform &,
+        const SolidTypes<double>::SpatialVector &,
+        SolidTypes<double>::SpatialVector & )
+{}
+
 
 } // namespace controller
 } // namespace component

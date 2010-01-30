@@ -88,7 +88,51 @@ void EnslavementForceFeedback::computeForce(double x, double y, double z,
     fz = 0.0;
 }
 
-int enslavementForceFeedbackClass = sofa::core::RegisterObject("Eslavement force feedback for the omni")
+
+void EnslavementForceFeedback::computeWrench(const SolidTypes<double>::Transform &world_H_tool,
+        const SolidTypes<double>::SpatialVector &/*V_tool_world*/,
+        SolidTypes<double>::SpatialVector &W_tool_world )
+{
+
+    if (!f_activate.getValue())
+    {
+        W_tool_world.clear();
+        return;
+    }
+    bool is_in_contact = false;
+    for (unsigned int i=0; i<collisionModels.size(); i++)
+    {
+        // find first contact and generate a force proportional to the difference of interface position and
+        // contact position on object surface
+        if (collisionModels[i]->getNumberOfContacts() > 0)
+        {
+            is_in_contact = true;
+        }
+    }
+
+    if (is_in_contact)
+    {
+        SolidTypes<double>::Transform world_H_tool_simu(  (*mState->getX())[0].getCenter(), (*mState->getX())[0].getOrientation()  );
+        SolidTypes<double>::Transform tool_H_tool_simu = world_H_tool.inversed() * world_H_tool_simu;
+        SolidTypes<double>::SpatialVector DX_tool_tool = tool_H_tool_simu.DTrans();
+
+        SolidTypes<double>::SpatialVector W_tool_tool(DX_tool_tool.getLinearVelocity() * stiffness.getValue(),
+                DX_tool_tool.getAngularVelocity() * angular_stiffness.getValue());
+
+        W_tool_world.setForce (world_H_tool.projectVector( W_tool_tool.getForce() ) );
+        W_tool_world.setTorque(world_H_tool.projectVector( W_tool_tool.getTorque() ) );
+    }
+    else
+    {
+        W_tool_world.clear();
+    }
+
+
+
+
+}
+
+int enslavementForceFeedbackClass = sofa::core::RegisterObject("Eslavement force feedback for the haptic device")
         .add< EnslavementForceFeedback >();
 
 SOFA_DECL_CLASS(EnslavementForceFeedback)
