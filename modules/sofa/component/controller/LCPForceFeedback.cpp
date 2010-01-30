@@ -48,6 +48,14 @@ int lCPForceFeedbackClass = sofa::core::RegisterObject("LCP force feedback for t
 #endif
         ;
 
+#ifndef SOFA_FLOAT
+template class SOFA_COMPONENT_CONTROLLER_API LCPForceFeedback<Vec1dTypes>;
+template class SOFA_COMPONENT_CONTROLLER_API LCPForceFeedback<Rigid3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+template class SOFA_COMPONENT_CONTROLLER_API LCPForceFeedback<Vec1fTypes>;
+template class SOFA_COMPONENT_CONTROLLER_API LCPForceFeedback<Rigid3dTypes>;
+#endif
 SOFA_DECL_CLASS(LCPForceFeedback)
 
 

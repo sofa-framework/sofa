@@ -40,7 +40,7 @@ using namespace std;
 /**
 * Omni driver force field
 */
-class NullForceFeedback : public sofa::component::controller::ForceFeedback
+class SOFA_COMPONENT_CONTROLLER_API NullForceFeedback : public sofa::component::controller::ForceFeedback
 {
 
 public:
@@ -48,6 +48,9 @@ public:
     void init();
 
     virtual void computeForce(double x, double y, double z, double u, double v, double w, double q, double& fx, double& fy, double& fz);
+    virtual void computeWrench(const SolidTypes<double>::Transform &world_H_tool, const SolidTypes<double>::SpatialVector &V_tool_world, SolidTypes<double>::SpatialVector &W_tool_world );
+
+
 };
 
 } // namespace controller
