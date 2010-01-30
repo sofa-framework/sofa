@@ -375,7 +375,6 @@ void LCPForceFeedback<Rigid3dTypes>::computeWrench(const SolidTypes<double>::Tra
         return;
     }
 
-    bool old = true;
 
 
 
