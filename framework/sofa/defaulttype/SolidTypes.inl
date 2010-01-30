@@ -54,9 +54,20 @@ template<class R>
 SolidTypes<R>::SpatialVector::SpatialVector()
 {}
 
+
+
 template<class R>
 SolidTypes<R>::SpatialVector::SpatialVector( const Vec& l, const Vec& f ):lineVec(l),freeVec(f)
 {}
+
+/*
+template<class R>
+SolidTypes<R>::SpatialVector::SpatialVector(const SolidTypes<R>::Transform &DTrans)
+{
+	freeVec = DTrans.getOrigin();
+	lineVec = DTrans.getOrientation().toEulerVector();
+}
+*/
 
 template<class R>
 void SolidTypes<R>::SpatialVector::clear()
@@ -221,8 +232,8 @@ void SolidTypes<R>::Transform::setOrientation( const Rot& q )
 template<class R>
 typename SolidTypes<R>::SpatialVector SolidTypes<R>::Transform::DTrans()
 {
-    SolidTypes<R>::Vec3 eulerVector = orientation_.toEulerVector();
-    return SolidTypes<R>::SpatialVector(eulerVector, this->getOrigin());
+
+    return SpatialVector(orientation_.toEulerVector(), this->getOrigin());
 }
 
 template<class R>
@@ -296,6 +307,13 @@ typename SolidTypes<R>::Transform& SolidTypes<R>::Transform::operator *= (const 
     orientation_ *= f2.getOrientation();
     origin_ = f2.getOriginOfParentInChild() + f2.getOrientation().inverseRotate(origin_);
     return (*this);
+}
+
+
+template<class R>
+typename SolidTypes<R>::SpatialVector  SolidTypes<R>::Transform::CreateSpatialVector()
+{
+    return SpatialVector(this->getOrientation().toEulerVector(),  this->getOrigin() );
 }
 
 template<class R>
