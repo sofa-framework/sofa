@@ -60,6 +60,10 @@ Base types for the ArticulatedSolid: position, orientation, velocity, angular ve
 
 @author François Faure, INRIA-UJF, 2006
 */
+
+class SOFA_DEFAULTTYPE_API Transform;
+
+
 template< class R=float >
 class SOFA_DEFAULTTYPE_API SolidTypes
 {
@@ -91,6 +95,8 @@ public:
         \param f The free vector: linear velocity, or torque
         */
         SpatialVector( const Vec& l, const Vec& f );
+
+
         SpatialVector& operator += (const SpatialVector& v);
 
         //template<class Real2>
@@ -247,7 +253,9 @@ public:
         /// Matrix which projects vectors from child coordinates to parent coordinates. The columns of the matrix are the axes of the child base axes in the parent coordinate system.
         Mat3x3 getRotationMatrix() const;
 
-        SpatialVector DTrans();
+
+
+
 
 
         /**
@@ -278,6 +286,10 @@ public:
         	*  parent_wrench = this->inversed * child_wrench
         	*  (this doc needs to be douv-ble checked !)
         	*/
+        // create a spatial Vector from a small transformation
+        SpatialVector  CreateSpatialVector();
+        SpatialVector DTrans();
+
         SpatialVector operator * (const SpatialVector& sv ) const;
         /// Project a spatial vector from parent to child (the inverse of operator *). This method computes (*this).inversed()*sv without inverting (*this).
         SpatialVector operator / (const SpatialVector& sv ) const;
