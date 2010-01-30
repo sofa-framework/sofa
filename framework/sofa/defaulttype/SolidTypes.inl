@@ -218,6 +218,12 @@ void SolidTypes<R>::Transform::setOrientation( const Rot& q )
 {
     orientation_=q;
 }
+template<class R>
+typename SolidTypes<R>::SpatialVector SolidTypes<R>::Transform::DTrans()
+{
+
+    return SolidTypes<R>::SpatialVector(orientation_.toEulerVector(), getOrigin());
+}
 
 template<class R>
 typename SolidTypes<R>::Vec SolidTypes<R>::Transform::projectVector( const Vec& v ) const
