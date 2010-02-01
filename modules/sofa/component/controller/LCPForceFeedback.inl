@@ -12,8 +12,8 @@
 
 namespace
 {
-template <typename DataType>
-bool derivVectors(const typename DataType::VecCoord& x0, const typename DataType::VecCoord& x1, typename DataType::VecDeriv& d)
+template <typename DataTypes>
+bool derivVectors(const typename DataTypes::VecCoord& x0, const typename DataTypes::VecCoord& x1, typename DataTypes::VecDeriv& d)
 {
     unsigned int sz0 = x0.size();
     unsigned int szmin = std::min(sz0,(unsigned int)x1.size());
@@ -30,8 +30,8 @@ bool derivVectors(const typename DataType::VecCoord& x0, const typename DataType
     return true;
 }
 
-template <typename DataType>
-bool derivRigid3Vectors(const typename DataType::VecCoord& x0, const typename DataType::VecCoord& x1, typename DataType::VecDeriv& d)
+template <typename DataTypes>
+bool derivRigid3Vectors(const typename DataTypes::VecCoord& x0, const typename DataTypes::VecCoord& x1, typename DataTypes::VecDeriv& d)
 {
     unsigned int sz0 = x0.size();
     unsigned int szmin = std::min(sz0,(unsigned int)x1.size());
@@ -50,8 +50,8 @@ bool derivRigid3Vectors(const typename DataType::VecCoord& x0, const typename Da
 }
 
 
-template <typename DataType>
-double computeDot(const typename DataType::Deriv& v0, const typename DataType::Deriv& v1)
+template <typename DataTypes>
+double computeDot(const typename DataTypes::Deriv& v0, const typename DataTypes::Deriv& v1)
 {
     return v0.x()*v1.x();
 }
@@ -99,8 +99,8 @@ namespace component
 namespace controller
 {
 
-template <class DataType>
-LCPForceFeedback<DataType>::LCPForceFeedback()
+template <class DataTypes>
+LCPForceFeedback<DataTypes>::LCPForceFeedback()
     : forceCoef(initData(&forceCoef, 0.03, "forceCoef","multiply haptic force by this coef.")),
       haptic_freq(0.0)
 {
@@ -116,8 +116,8 @@ LCPForceFeedback<DataType>::LCPForceFeedback()
 }
 
 
-template <class DataType>
-void LCPForceFeedback<DataType>::init()
+template <class DataTypes>
+void LCPForceFeedback<DataTypes>::init()
 {
     core::objectmodel::BaseContext* c = this->getContext();
 
@@ -136,7 +136,7 @@ void LCPForceFeedback<DataType>::init()
         return;
     }
 
-    mState = dynamic_cast<core::componentmodel::behavior::MechanicalState<DataType> *> (c->getMechanicalState());
+    mState = dynamic_cast<core::componentmodel::behavior::MechanicalState<DataTypes> *> (c->getMechanicalState());
     if (!mState)
     {
         serr << "LCPForceFeedback has no binding MechanicalState. Initialisation failed." << sendl;
@@ -148,8 +148,8 @@ void LCPForceFeedback<DataType>::init()
 
 
 
-template <class DataType>
-void LCPForceFeedback<DataType>::computeForce(const typename DataType::VecCoord& state, typename DataType::VecDeriv& forces)
+template <class DataTypes>
+void LCPForceFeedback<DataTypes>::computeForce(const typename DataTypes::VecCoord& state, typename DataTypes::VecDeriv& forces)
 {
     const unsigned int stateSize = state.size();
     // Resize du vecteur force. Initialization à 0 ?
@@ -174,9 +174,9 @@ void LCPForceFeedback<DataType>::computeForce(const typename DataType::VecCoord&
 
     mCurBufferId = mNextBufferId;
 
-    typename DataType::VecConst& constraints = mConstraints[mCurBufferId];
+    typename DataTypes::VecConst& constraints = mConstraints[mCurBufferId];
     std::vector<int> &id_buf = mId_buf[mCurBufferId];
-    typename DataType::VecCoord &val = mVal[mCurBufferId];
+    typename DataTypes::VecCoord &val = mVal[mCurBufferId];
     component::constraint::LCP* lcp = mLcp[mCurBufferId];
 
     if(!lcp)
@@ -191,8 +191,8 @@ void LCPForceFeedback<DataType>::computeForce(const typename DataType::VecCoord&
 
     if((lcp->getMu() > 0.0) && (numConstraints!=0))
     {
-        typename DataType::VecDeriv dx;
-        derivVectors<DataType>(val,state,dx);
+        typename DataTypes::VecDeriv dx;
+        derivVectors<DataTypes>(val,state,dx);
 
         // Modify Dfree
         for(unsigned int c1 = 0; c1 < numConstraints; c1++)
@@ -203,7 +203,7 @@ void LCPForceFeedback<DataType>::computeForce(const typename DataType::VecCoord&
 
             for(itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
             {
-                lcp->getDfree()[indexC1] += computeDot<DataType>(itConstraint->second, dx[itConstraint->first]);
+                lcp->getDfree()[indexC1] += computeDot<DataTypes>(itConstraint->second, dx[itConstraint->first]);
             }
         }
 
@@ -224,7 +224,7 @@ void LCPForceFeedback<DataType>::computeForce(const typename DataType::VecCoord&
 
             for(itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
             {
-                lcp->getDfree()[indexC1] -= computeDot<DataType>(itConstraint->second, dx[itConstraint->first]);
+                lcp->getDfree()[indexC1] -= computeDot<DataTypes>(itConstraint->second, dx[itConstraint->first]);
             }
         }
 
@@ -250,8 +250,8 @@ void LCPForceFeedback<DataType>::computeForce(const typename DataType::VecCoord&
     mIsCuBufferInUse = false;
 }
 
-template <typename DataType>
-void LCPForceFeedback<DataType>::handleEvent(sofa::core::objectmodel::Event *event)
+template <typename DataTypes>
+void LCPForceFeedback<DataTypes>::handleEvent(sofa::core::objectmodel::Event *event)
 {
     if(!dynamic_cast<sofa::simulation::AnimateEndEvent*>(event))
         return;
@@ -276,9 +276,9 @@ void LCPForceFeedback<DataType>::handleEvent(sofa::core::objectmodel::Event *eve
 
     // Compute constraints, id_buf lcp and val for the current lcp.
 
-    typename DataType::VecConst& constraints = mConstraints[buf_index];
+    typename DataTypes::VecConst& constraints = mConstraints[buf_index];
     std::vector<int>& id_buf = mId_buf[buf_index];
-    typename DataType::VecCoord& val = mVal[buf_index];
+    typename DataTypes::VecCoord& val = mVal[buf_index];
 
     // Update LCP
     mLcp[buf_index] = new_lcp;
@@ -293,7 +293,7 @@ void LCPForceFeedback<DataType>::handleEvent(sofa::core::objectmodel::Event *eve
     {
         int indexC1 = mState->getConstraintId()[c1];
         id_buf.push_back(indexC1);
-        typename DataType::SparseVecDeriv v;
+        typename DataTypes::SparseVecDeriv v;
         ConstraintIterator itConstraint;
 
         std::pair< ConstraintIterator, ConstraintIterator > iter;
@@ -324,8 +324,8 @@ void LCPForceFeedback<DataType>::handleEvent(sofa::core::objectmodel::Event *eve
 // Those functions are here for compatibility with the sofa::component::controller::Forcefeedback scheme
 //
 
-template <typename DataType>
-void LCPForceFeedback<DataType>::computeForce(double , double, double, double, double, double, double, double&, double&, double&)
+template <typename DataTypes>
+void LCPForceFeedback<DataTypes>::computeForce(double , double, double, double, double, double, double, double&, double&, double&)
 {}
 
 #ifndef SOFA_DOUBLE
@@ -378,6 +378,7 @@ void LCPForceFeedback<Rigid3dTypes>::computeWrench(const SolidTypes<double>::Tra
 
 
 
+
     Vec3d Force(0.0,0.0,0.0);
 
     this->computeForce(world_H_tool.getOrigin()[0], world_H_tool.getOrigin()[1],world_H_tool.getOrigin()[2],
@@ -394,8 +395,8 @@ void LCPForceFeedback<Rigid3dTypes>::computeWrench(const SolidTypes<double>::Tra
 #endif
 
 
-template <typename DataType>
-void LCPForceFeedback<DataType>::computeWrench(const SolidTypes<double>::Transform &,
+template <typename DataTypes>
+void LCPForceFeedback<DataTypes>::computeWrench(const SolidTypes<double>::Transform &,
         const SolidTypes<double>::SpatialVector &,
         SolidTypes<double>::SpatialVector & )
 {}
