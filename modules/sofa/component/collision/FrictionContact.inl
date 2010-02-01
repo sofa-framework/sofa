@@ -232,6 +232,8 @@ void FrictionContact<TCollisionModel1,TCollisionModel2>::removeResponse()
 {
     if (c!=NULL)
     {
+        mapper1.resize(0);
+        mapper2.resize(0);
         if (parent!=NULL)
         {
             //sout << "Removing contact response from "<<parent->getName()<<sendl;
