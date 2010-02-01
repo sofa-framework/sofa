@@ -104,8 +104,8 @@ QInciseOperation::QInciseOperation()
     QVBoxLayout *vbox2 = new QVBoxLayout(advancedOperations);
 
     // on push button and one check box with labels
-    finishCut = new QCheckBox(QString("Complete incision"), this);
-    storeLastPoint = new QCheckBox (QString("Keep in memory last incision point."), this);
+    finishCut = new QCheckBox(QString("Complete incision"),advancedOperations);
+    storeLastPoint = new QCheckBox (QString("Keep in memory last incision point."),advancedOperations);
 
     vbox2->addWidget(finishCut);
     vbox2->addWidget(storeLastPoint);
@@ -145,8 +145,8 @@ QInciseOperation::QInciseOperation()
     layout->addWidget(advancedOperations);
     layout->addWidget(advancedOptions);
 
-    connect(finishCut, SIGNAL(clicked(bool)), this, SLOT(setFinishIncision(bool)));
-    connect(storeLastPoint, SIGNAL(clicked(bool)), this, SLOT(setkeepPoint(bool)));
+    connect(finishCut, SIGNAL(toggled(bool)), this, SLOT(setFinishIncision(bool)));
+    connect(storeLastPoint, SIGNAL(toggled(bool)), this, SLOT(setkeepPoint(bool)));
 
     connect(snapingBorderSlider,SIGNAL(valueChanged(int)), snapingBorderValue, SLOT(setValue(int)));
     connect(snapingBorderValue,SIGNAL(valueChanged(int)), snapingBorderSlider, SLOT(setValue(int)));

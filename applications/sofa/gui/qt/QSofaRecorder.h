@@ -1,6 +1,8 @@
 #ifndef SOFA_GUI_QT_QSOFARECORDER_H
 #define SOFA_GUI_QT_QSOFARECORDER_H
 #include <math.h>
+#include <stdio.h>
+#include <stdlib.h>
 #ifdef SOFA_QT4
 #include <QWidget>
 #include <QPushButton>

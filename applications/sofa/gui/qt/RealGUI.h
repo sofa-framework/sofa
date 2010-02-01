@@ -121,7 +121,7 @@ class SOFA_SOFAGUIQT_API RealGUI : public ::GUI, public SofaGUI
 public:
 
 #ifndef SOFA_QT4
-    void setWindowFilePath(const QString &filePath);
+    void setWindowFilePath(const QString &filePath) { filePath_=filePath;};
     QString windowFilePath() const { QString filePath = filePath_; return filePath; }
 #endif
 

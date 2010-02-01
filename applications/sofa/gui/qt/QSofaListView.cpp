@@ -3,6 +3,7 @@
 #include "AddObject.h"
 #include "ModifyObject.h"
 #include "GenGraphForm.h"
+#include <sofa/gui/qt/RealGUI.h>
 #include <sofa/simulation/common/DeleteVisitor.h>
 #include <sofa/simulation/common/DesactivatedNodeVisitor.h>
 #include <sofa/simulation/common/TransformationVisitor.h>
@@ -11,6 +12,7 @@
 #ifdef SOFA_QT4
 #include <Q3PopupMenu>
 #else
+#include <qapplication.h>
 #include <qpopupmenu.h>
 #endif
 
@@ -111,9 +113,16 @@ QSofaListView::QSofaListView(const SofaListViewAttribute& attribute,
     setRootIsDecorated(true);
     setTreeStepSize(15);
     graphListener_ = new GraphListenerQListView(this);
+#ifdef SOFA_QT4
     connect(this,SIGNAL(rightButtonClicked(Q3ListViewItem*,const QPoint&, int)) ,this,SLOT(RunSofaRightClicked(Q3ListViewItem*,const QPoint&, int)) );
     connect(this,SIGNAL(doubleClicked(Q3ListViewItem*) ), this, SLOT(RunSofaDoubleClicked(Q3ListViewItem*)) );
     connect(this,SIGNAL(clicked(Q3ListViewItem*) ), this, SLOT(updateMatchingObjectmodel(Q3ListViewItem*)) );
+#else
+    connect(this,SIGNAL(rightButtonClicked(QListViewItem*,const QPoint&, int)) ,this,SLOT(RunSofaRightClicked(QListViewItem*,const QPoint&, int)) );
+    connect(this,SIGNAL(doubleClicked(QListViewItem*) ), this, SLOT(RunSofaDoubleClicked(QListViewItem*)) );
+    connect(this,SIGNAL(clicked(QListViewItem*) ), this, SLOT(updateMatchingObjectmodel(QListViewItem*)) );
+
+#endif
 }
 
 QSofaListView::~QSofaListView()
@@ -438,7 +447,7 @@ void QSofaListView::RaiseAddObject()
     emit Lock(true);
     assert(AddObjectDialog_);
 
-    std::string path( qApp->mainWidget()->windowFilePath().ascii());
+    std::string path( ((RealGUI*) (qApp->mainWidget()))->windowFilePath().ascii());
     AddObjectDialog_->setPath ( path );
     AddObjectDialog_->show();
     AddObjectDialog_->raise();
@@ -599,7 +608,7 @@ void QSofaListView::Export()
     assert(root);
     GenGraphForm* form = new sofa::gui::qt::GenGraphForm;
     form->setScene ( root );
-    std::string gname(qApp->mainWidget()->windowFilePath ().ascii());
+    std::string gname(((RealGUI*) (qApp->mainWidget()))->windowFilePath().ascii());
     std::size_t gpath = gname.find_last_of("/\\");
     std::size_t gext = gname.rfind('.');
     if (gext != std::string::npos && (gpath == std::string::npos || gext > gpath))

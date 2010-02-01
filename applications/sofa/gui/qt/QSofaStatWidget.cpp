@@ -7,14 +7,15 @@
 
 
 
-#ifndef SOFA_QT4
+#ifdef SOFA_QT4
 #include <QApplication>
 #include <QPixmap>
 #include <QVBoxLayout>
 #else
 #include "qapplication.h"
 #include "qpixmap.h"
-#include "qboxlayout.h"
+#include "qlabel.h"
+#include "qlayout.h"
 #endif
 
 using namespace sofa::simulation;
@@ -30,27 +31,27 @@ QSofaStatWidget::QSofaStatWidget(QWidget* parent):QWidget(parent)
 {
     QVBoxLayout* layout = new QVBoxLayout(this);
     statsLabel = new QLabel(this);
-    statsLabel->setText(QApplication::translate("GUI", "Collision Elements present :", 0, QApplication::UnicodeUTF8));
-    statsLabel->setObjectName(QString::fromUtf8("statsLabel"));
+    statsLabel->setText(QString("Collision Elements present :"));
+//        statsLabel->setObjectName(QString("statsLabel"));
 
-
+#ifdef SOFA_QT4
     statsLabel->setWordWrap(false);
+#endif
     layout->addWidget(statsLabel);
     statsCounter = new Q3ListView(this);
-    statsCounter->addColumn(QApplication::translate("GUI", "Name", 0, QApplication::UnicodeUTF8));
+    statsCounter->addColumn(QString("Name"));
     statsCounter->header()->setClickEnabled(true, statsCounter->header()->count() - 1);
     statsCounter->header()->setResizeEnabled(true, statsCounter->header()->count() - 1);
-    statsCounter->addColumn(QApplication::translate("GUI", "Type", 0, QApplication::UnicodeUTF8));
+    statsCounter->addColumn(QString("Type"));
     statsCounter->header()->setClickEnabled(true, statsCounter->header()->count() - 1);
     statsCounter->header()->setResizeEnabled(true, statsCounter->header()->count() - 1);
-    statsCounter->addColumn(QApplication::translate("GUI", "Size", 0, QApplication::UnicodeUTF8));
+    statsCounter->addColumn(QString("Size"));
     statsCounter->header()->setClickEnabled(true, statsCounter->header()->count() - 1);
     statsCounter->header()->setResizeEnabled(true, statsCounter->header()->count() - 1);
-    statsCounter->setObjectName(QString::fromUtf8("StatsCounter"));
     statsCounter->setResizeMode(Q3ListView::LastColumn);
-    statsCounter->header()->setLabel(0, QApplication::translate("GUI", "Name", 0, QApplication::UnicodeUTF8));
-    statsCounter->header()->setLabel(1, QApplication::translate("GUI", "Type", 0, QApplication::UnicodeUTF8));
-    statsCounter->header()->setLabel(2, QApplication::translate("GUI", "Size", 0, QApplication::UnicodeUTF8));
+    statsCounter->header()->setLabel(0, QString("Name"));
+    statsCounter->header()->setLabel(1, QString("Type"));
+    statsCounter->header()->setLabel(2, QString("Size"));
     layout->addWidget(statsCounter);
 
 
