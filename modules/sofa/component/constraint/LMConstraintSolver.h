@@ -99,7 +99,7 @@ protected:
     bool solveConstraintSystemUsingGaussSeidel(ConstOrder Order,
             const helper::vector< core::componentmodel::behavior::BaseLMConstraint* > &LMConstraints,
             const MatrixEigen &A,
-            const VectorEigen  &c,
+            VectorEigen  c,
             VectorEigen &Lambda) const;
 
     /** Apply the correction to the state corresponding

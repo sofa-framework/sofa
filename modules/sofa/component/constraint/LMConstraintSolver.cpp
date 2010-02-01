@@ -574,9 +574,10 @@ void LMConstraintSolver::buildRightHandTerm( ConstOrder Order, const helper::vec
     }
 }
 
-bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( ConstOrder Order, const helper::vector< core::componentmodel::behavior::BaseLMConstraint* > &LMConstraints, const MatrixEigen &A, const VectorEigen  &c, VectorEigen &Lambda) const
+bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( ConstOrder Order, const helper::vector< core::componentmodel::behavior::BaseLMConstraint* > &LMConstraints, const MatrixEigen &A, VectorEigen c, VectorEigen &Lambda) const
 {
     if (f_printLog.getValue()) sout << "Using Gauss-Seidel solution"<<sendl;
+
 
     const unsigned int numConstraint=A.rows();
     //-- Initialization of X, solution of the system
@@ -586,8 +587,8 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( ConstOrder Order
     for (; iteration < numIterations.getValue() && continueIteration; ++iteration)
     {
         unsigned int idxConstraint=0;
-        VectorEigen varEigen;
-        VectorEigen previousIterationEigen;
+        VectorEigen LambdaCorrection;
+        VectorEigen LambdaPreviousIteration;
         continueIteration=false;
         //Iterate on all the Constraint components
         for (unsigned int componentConstraint=0; componentConstraint<LMConstraints.size(); ++componentConstraint)
@@ -601,28 +602,25 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( ConstOrder Order
                 //-------------------------------------
                 //Initialize the variables, and store X^(k-1) in previousIteration
                 unsigned int numConstraintToProcess=constraintOrder[constraintEntry]->getNumConstraint();
-                varEigen = VectorEigen::Zero(numConstraintToProcess);
-                previousIterationEigen = VectorEigen::Zero(numConstraintToProcess);
-                for (unsigned int i=0; i<numConstraintToProcess; ++i)
-                {
-                    previousIterationEigen(i)=Lambda(idxConstraint+i);
-                    Lambda(idxConstraint+i)=0;
-                }
-                //    operation: A.X^k --> var
-
-                varEigen = A.block(idxConstraint,0,numConstraintToProcess,numConstraint)*Lambda;
+                LambdaPreviousIteration = LambdaCorrection = VectorEigen(numConstraintToProcess);
                 error=0;
-                for (unsigned int i=0; i<numConstraintToProcess; ++i)
+                unsigned int idx=idxConstraint;
+                for (unsigned int i=0; i<numConstraintToProcess; ++i,++idx)
                 {
-                    const unsigned int idx=idxConstraint+i;
+                    LambdaPreviousIteration(i)=Lambda(idx);
                     //X^(k)= (c^(0)-A[c,c]*X^(k-1))/A[c,c]
-                    Lambda(idx)=(c(idx) - varEigen(i))/A(idx,idx);
+                    LambdaCorrection(i)=c(idx)/A(idx,idx);
                 }
+
+//                    c      -= A*LambdaCorrection;
+                c -= A.block(0,idxConstraint,numConstraint, numConstraintToProcess)*LambdaCorrection;
+                Lambda.block(idxConstraint,0,numConstraintToProcess,1) += LambdaCorrection;
+
                 bool activated=constraint->LagrangeMultiplierEvaluation(Lambda.data()+idxConstraint, constraintOrder[constraintEntry]);
                 if (activated)
                 {
                     for (unsigned int i=0; i<numConstraintToProcess; ++i)
-                        error += pow(previousIterationEigen(i)-Lambda(idxConstraint+i),2);
+                        error += pow(LambdaPreviousIteration(i)-Lambda(idxConstraint+i),2);
                 }
                 else
                 {
@@ -645,7 +643,7 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( ConstOrder Order
                 if (error < maxError.getValue())
                 {
                     for (unsigned int i=0; i<numConstraintToProcess; ++i)
-                        Lambda(idxConstraint+i)=previousIterationEigen(i);
+                        Lambda(idxConstraint+i)=LambdaPreviousIteration(i);
                 }
                 else continueIteration=true;
 
