@@ -16,6 +16,7 @@
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileRepository.h>
 
+#include <sofa/gui/qt/RealGUI.h>
 #ifdef SOFA_QT4
 #include <QToolTip>
 #include <QInputDialog>
@@ -23,7 +24,7 @@
 #else
 #include <qtooltip.h>
 #include <qinputdialog.h>
-#include <qboxlayout.h>
+#include <qlayout.h>
 #endif
 
 using namespace sofa::simulation;
@@ -42,47 +43,47 @@ QSofaRecorder::QSofaRecorder(QWidget* parent):QWidget(parent)
     QHBoxLayout* layout = new QHBoxLayout(this);
     timerStep = new QTimer(parent);
 
-    fpsLabel = new QLabel ( "9999.9 FPS", parent );
+    fpsLabel = new QLabel ( "9999.9 FPS", this );
     fpsLabel->setMinimumSize ( fpsLabel->sizeHint() );
     fpsLabel->clear();
     layout->addWidget(fpsLabel);
 
-    timeLabel = new QLabel ( "Time: 999.9999 s", parent );
+    timeLabel = new QLabel ( "Time: 999.9999 s", this );
     timeLabel->setMinimumSize ( timeLabel->sizeHint() );
     timeLabel->clear();
     layout->addWidget(timeLabel);
 
-    initialTime = new QLabel( "Init:", parent);
+    initialTime = new QLabel( "Init:", this);
     initialTime->setMinimumSize( initialTime->sizeHint() );
     layout->addWidget(initialTime);
-    record                 = new QPushButton( parent, "Record");
+    record                 = new QPushButton( this, "Record");
     record->setToggleButton(true);
     record->setOn(false);
     layout->addWidget(record);
-    backward               = new QPushButton( parent, "Backward");
+    backward               = new QPushButton( this, "Backward");
     layout->addWidget(backward);
-    stepbackward           = new QPushButton( parent, "Step Backward");
+    stepbackward           = new QPushButton( this, "Step Backward");
     layout->addWidget(stepbackward);
-    playforward            = new QPushButton( parent, "Play Forward");
+    playforward            = new QPushButton( this, "Play Forward");
     playforward->setToggleButton(true);
     layout->addWidget(playforward);
-    stepforward            = new QPushButton( parent, "Step Forward");
+    stepforward            = new QPushButton( this, "Step Forward");
     layout->addWidget(stepforward);
-    forward                = new QPushButton( parent, "Forward");
+    forward                = new QPushButton( this, "Forward");
     layout->addWidget(forward);
 
-    timeRecord = new QLabel("T=",parent);
+    timeRecord = new QLabel("T=",this);
     layout->addWidget(timeRecord);
-    loadRecordTime = new QLineEdit(parent);
+    loadRecordTime = new QLineEdit(this);
     loadRecordTime->setMaximumSize(QSize(75, 100));
     layout->addWidget(loadRecordTime);
-    timeSlider = new QSlider( Qt::Horizontal, parent, "Time Slider");
+    timeSlider = new QSlider( Qt::Horizontal, this, "Time Slider");
     timeSlider->setTickmarks(QSlider::Both);
     timeSlider->setMinValue(0);
     timeSlider->setMaxValue(0);
     layout->addWidget(timeSlider);
 
-    finalTime = new QLabel( "End:", parent );
+    finalTime = new QLabel( "End:", this );
     finalTime->setMinimumSize ( finalTime->sizeHint() );
     layout->addWidget(finalTime);
 
@@ -268,7 +269,7 @@ void QSofaRecorder::slot_recordSimulation(bool value)
         //Halt the simulation.
         emit RecordSimulation(false);
         //Save simulation file
-        std::string FileName(qApp->mainWidget()->windowFilePath().ascii());
+        std::string FileName(((RealGUI*)(qApp->mainWidget()))->windowFilePath().ascii());
         std::string simulationFileName = simulationBaseName_ + ".simu";
         std::ofstream out(simulationFileName.c_str());
 
@@ -453,7 +454,7 @@ bool QSofaRecorder::querySimulationName()
 
     std::string dir;
     bool ok;
-    std::string filename(qApp->mainWidget()->windowFilePath().ascii());
+    std::string filename(((RealGUI*)(qApp->mainWidget()))->windowFilePath().ascii());
     dir = sofa::helper::system::SetDirectory::GetParentDir(filename.c_str()) + "/";
 
     QString text = QInputDialog::getText("Record Simulation", "Enter the name of your simulation:", QLineEdit::Normal,

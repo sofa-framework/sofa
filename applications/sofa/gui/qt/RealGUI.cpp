@@ -365,12 +365,12 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     initRecentlyOpened();
     connect ( tabs, SIGNAL ( currentChanged ( QWidget* ) ), this, SLOT ( currentTabChanged ( QWidget* ) ) );
     recorder = new QSofaRecorder(statusBar());
-    ((QVBoxLayout*)statusBar()->layout())->addWidget(recorder);
+    statusBar()->layout()->add(recorder);
 
     connect(startButton, SIGNAL(  toggled ( bool ) ), recorder, SLOT( TimerStart(bool) ) );
 
     statWidget = new QSofaStatWidget(TabStats);
-    ((QVBoxLayout*)TabStats->layout())->addWidget(statWidget);
+    TabStats->layout()->add(statWidget);
 
 
     addViewer();
@@ -1159,7 +1159,7 @@ void RealGUI::fileOpenSimu ( std::string s )
             std::string::size_type pointSimu = simulation_name.rfind(".simu");
             simulation_name.resize(pointSimu);
             fileOpen(filename.c_str());
-            this->setWindowFilePath(filename.c_str());
+            this->setWindowFilePath(QString(filename.c_str()));
             dtEdit->setText(QString(dT.c_str()));
             recorder->SetSimulation(initT,endT,writeName);
         }
