@@ -319,10 +319,10 @@ Node* RealGUI::currentSimulation()
 RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*options*/ )
     : viewerName ( viewername ),
       viewer ( NULL ),
-      currentTab ( NULL ),
-      tabInstrument (NULL),
       simulationGraph(NULL),
       visualGraph(NULL),
+      currentTab ( NULL ),
+      tabInstrument (NULL),
       saveReloadFile(false)
 {
 

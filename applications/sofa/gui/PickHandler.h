@@ -57,7 +57,11 @@ using simulation::Node;
 using sofa::component::collision::BodyPicked;
 using sofa::component::collision::ComponentMouseInteraction;
 
-
+class CallBackPicker
+{
+public:
+    virtual void execute(const sofa::component::collision::BodyPicked &body)=0;
+};
 
 class SOFA_SOFAGUI_API PickHandler
 {
@@ -89,6 +93,9 @@ public:
         return mouseOp;
     }
 
+    void addCallBack(CallBackPicker *c) {callbacks.push_back(c);}
+    helper::vector< CallBackPicker* > getCallBackPicker() {return callbacks;}
+    void clearCallBacks() {for (unsigned int i=0; i<callbacks.size(); ++i) delete callbacks[i]; callbacks.clear();}
 
     static BodyPicked findCollisionUsingBruteForce(const defaulttype::Vector3& origin, const defaulttype::Vector3& direction, double maxLength);
 
@@ -123,6 +130,7 @@ protected:
     //NONE is the number of Operations in use.
     helper::fixed_array< Operation*,NONE > operations;
     bool useCollisions;
+    helper::vector< CallBackPicker* > callbacks;
 };
 }
 }
