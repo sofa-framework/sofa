@@ -60,6 +60,7 @@ using sofa::component::collision::ComponentMouseInteraction;
 class CallBackPicker
 {
 public:
+    virtual ~CallBackPicker() {};
     virtual void execute(const sofa::component::collision::BodyPicked &body)=0;
 };
 
