@@ -45,17 +45,27 @@ namespace controller
 {
 using namespace std;
 using namespace helper::system::thread;
+using namespace core::componentmodel::behavior;
+using namespace core;
 
 /**
 * LCP force field
 */
-template <class DataType>
+template <class TDataTypes>
 class SOFA_COMPONENT_CONTROLLER_API LCPForceFeedback : public sofa::component::controller::ForceFeedback
 {
 
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(LCPForceFeedback,DataType),sofa::component::controller::ForceFeedback);
-    typedef defaulttype::SparseConstraint<typename DataType::Deriv> SparseConstraint;
+
+    SOFA_CLASS(SOFA_TEMPLATE(LCPForceFeedback,TDataTypes),sofa::component::controller::ForceFeedback);
+
+
+    typedef TDataTypes DataTypes;
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::Deriv Deriv;
+    typedef defaulttype::SparseConstraint<typename TDataTypes::Deriv> SparseConstraint;
     typedef typename SparseConstraint::const_data_iterator ConstraintIterator;
 
     void init();
@@ -72,7 +82,7 @@ public:
 
     virtual void computeForce(double x, double y, double z, double u, double v, double w, double q, double& fx, double& fy, double& fz);
     virtual void computeWrench(const SolidTypes<double>::Transform &world_H_tool, const SolidTypes<double>::SpatialVector &V_tool_world, SolidTypes<double>::SpatialVector &W_tool_world );
-    virtual void computeForce(const typename DataType::VecCoord& state, typename DataType::VecDeriv& forces);
+    virtual void computeForce(const typename VecCoord& state, typename VecDeriv& forces);
 
     //void computeForce(double pitch0, double yaw0, double roll0, double z0, double pitch1, double yaw1, double roll1, double z1, double& fpitch0, double& fyaw0, double& froll0, double& fz0, double& fpitch1, double& fyaw1, double& froll1, double& fz1);
 
@@ -83,11 +93,34 @@ public:
     }
     void handleEvent(sofa::core::objectmodel::Event *event);
 
+
+    /// Pre-construction check method called by ObjectFactory.
+    /// Check that DataTypes matches the MechanicalState.
+    template<class T>
+    static bool canCreate(T*& obj, objectmodel::BaseContext* context, objectmodel::BaseObjectDescription* arg)
+    {
+        if (dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+            return false;
+        return BaseObject::canCreate(obj, context, arg);
+    }
+
+    virtual std::string getTemplateName() const
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const LCPForceFeedback<DataTypes>* = NULL)
+    {
+        return DataTypes::Name();
+    }
+
+
+
 protected:
     component::constraint::LCP* lcp, *next_lcp;
-    core::componentmodel::behavior::MechanicalState<DataType> *mState; ///< The omni try to follow this mechanical state.
-    typename DataType::VecCoord mVal[3];
-    typename DataType::VecConst mConstraints[3];
+    core::componentmodel::behavior::MechanicalState<DataTypes> *mState; ///< The omni try to follow this mechanical state.
+    VecCoord mVal[3];
+    typename DataTypes::VecConst mConstraints[3];
     std::vector<int> mId_buf[3];
     component::constraint::LCP* mLcp[3];
     /* 	typename DataType::VecConst *constraint; */
