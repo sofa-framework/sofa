@@ -590,6 +590,7 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( ConstOrder Order
         VectorEigen LambdaCorrection;
         VectorEigen LambdaPreviousIteration;
         continueIteration=false;
+
         //Iterate on all the Constraint components
         for (unsigned int componentConstraint=0; componentConstraint<LMConstraints.size(); ++componentConstraint)
         {
@@ -611,16 +612,15 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( ConstOrder Order
                     //X^(k)= (c^(0)-A[c,c]*X^(k-1))/A[c,c]
                     LambdaCorrection(i)=c(idx)/A(idx,idx);
                 }
-
-//                    c      -= A*LambdaCorrection;
-                c -= A.block(0,idxConstraint,numConstraint, numConstraintToProcess)*LambdaCorrection;
                 Lambda.block(idxConstraint,0,numConstraintToProcess,1) += LambdaCorrection;
-
                 bool activated=constraint->LagrangeMultiplierEvaluation(Lambda.data()+idxConstraint, constraintOrder[constraintEntry]);
                 if (activated)
                 {
+                    c -= A.block(0,idxConstraint,numConstraint, numConstraintToProcess)*LambdaCorrection;
+
                     for (unsigned int i=0; i<numConstraintToProcess; ++i)
                         error += pow(LambdaPreviousIteration(i)-Lambda(idxConstraint+i),2);
+                    error = sqrt(error);
                 }
                 else
                 {
@@ -631,7 +631,6 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( ConstOrder Order
                     continue;
                 }
 
-                error = sqrt(error);
                 //****************************************************************
                 if (this->f_printLog.getValue())
                 {
