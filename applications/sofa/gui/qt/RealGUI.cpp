@@ -696,7 +696,7 @@ void RealGUI::addViewer()
     setGUI();
 
     SofaMouseManager::getInstance()->setPickHandler(viewer->getPickHandler());
-
+    viewer->getPickHandler()->addCallBack(new InformationOnPickCallBack(this));
 }
 
 void RealGUI::viewerOpenGL()

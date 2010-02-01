@@ -147,6 +147,7 @@ public:
     };
 
     virtual unsigned int sizeWidget() {return 1;}
+    virtual unsigned int numColumnWidget() {return 2;}
     //
     // Factory related code
     //
