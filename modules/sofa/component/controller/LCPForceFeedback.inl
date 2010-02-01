@@ -149,7 +149,7 @@ void LCPForceFeedback<DataTypes>::init()
 
 
 template <class DataTypes>
-void LCPForceFeedback<DataTypes>::computeForce(const typename DataTypes::VecCoord& state, typename DataTypes::VecDeriv& forces)
+void LCPForceFeedback<DataTypes>::computeForce(const VecCoord& state,  VecDeriv& forces)
 {
     const unsigned int stateSize = state.size();
     // Resize du vecteur force. Initialization à 0 ?
@@ -176,7 +176,7 @@ void LCPForceFeedback<DataTypes>::computeForce(const typename DataTypes::VecCoor
 
     typename DataTypes::VecConst& constraints = mConstraints[mCurBufferId];
     std::vector<int> &id_buf = mId_buf[mCurBufferId];
-    typename DataTypes::VecCoord &val = mVal[mCurBufferId];
+    VecCoord &val = mVal[mCurBufferId];
     component::constraint::LCP* lcp = mLcp[mCurBufferId];
 
     if(!lcp)
@@ -191,7 +191,7 @@ void LCPForceFeedback<DataTypes>::computeForce(const typename DataTypes::VecCoor
 
     if((lcp->getMu() > 0.0) && (numConstraints!=0))
     {
-        typename DataTypes::VecDeriv dx;
+        VecDeriv dx;
         derivVectors<DataTypes>(val,state,dx);
 
         // Modify Dfree
@@ -278,7 +278,7 @@ void LCPForceFeedback<DataTypes>::handleEvent(sofa::core::objectmodel::Event *ev
 
     typename DataTypes::VecConst& constraints = mConstraints[buf_index];
     std::vector<int>& id_buf = mId_buf[buf_index];
-    typename DataTypes::VecCoord& val = mVal[buf_index];
+    VecCoord& val = mVal[buf_index];
 
     // Update LCP
     mLcp[buf_index] = new_lcp;
