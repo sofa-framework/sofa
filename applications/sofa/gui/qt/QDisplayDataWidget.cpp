@@ -66,20 +66,21 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
         datawidget_ = DataWidgetFactory::CreateObject(dwarg.data->getWidget(), dwarg);
     if (datawidget_ == NULL)
     {
-        setColumns(4);
         Data<Monitor< defaulttype::Vec3Types >::MonitorData > *  ff;
         ff = dynamic_cast < Data<Monitor< defaulttype::Vec3Types >::MonitorData > *> (data_);
         if (ff )
         {
             QMonitorTableWidget<defaulttype::Vec3Types>* tableWidget = new QMonitorTableWidget<defaulttype::Vec3Types>(ff,flags,this);
-            connect(this,SIGNAL(WidgetUpdate()),tableWidget,SLOT(UpdateWidget()) ) ;
+            connect(this, SIGNAL(WidgetUpdate()), tableWidget, SLOT(UpdateWidget()) ) ;
             connect(this, SIGNAL( DataUpdate() ), tableWidget, SLOT(UpdateData() ) );
-            numWidgets_ += 3;
+
+            setColumns(tableWidget->numColumnWidget());
+            numWidgets_ += tableWidget->sizeWidget();
         }
     }
     else
     {
-        setColumns(2);
+        setColumns(datawidget_->numColumnWidget());
         //std::cout << "WIDGET created for data " << dwarg.data << " : " << dwarg.name << " : " << dwarg.data->getValueTypeString() << std::endl;
         numWidgets_+=datawidget_->sizeWidget();
         connect(datawidget_,SIGNAL(requestChange(bool)), this, SIGNAL ( WidgetHasChanged(bool) ) );

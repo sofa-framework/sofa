@@ -37,6 +37,7 @@
 #include <sofa/gui/SofaGUI.h>
 #include <time.h>
 
+#include <sofa/gui/qt/QSofaListView.h>
 #include <sofa/gui/qt/GraphListenerQListView.h>
 #include <sofa/gui/qt/FileManagement.h>
 #include <sofa/gui/qt/viewer/SofaViewer.h>
@@ -96,6 +97,9 @@ namespace sofa
 namespace gui
 {
 
+class CallBackPicker;
+
+
 namespace qt
 {
 
@@ -139,6 +143,8 @@ public:
     const char* viewerName;
 
     sofa::gui::qt::viewer::SofaViewer* viewer;
+    QSofaListView* simulationGraph;
+    QSofaListView* visualGraph;
 
     RealGUI( const char* viewername, const std::vector<std::string>& options = std::vector<std::string>() );
     ~RealGUI();
@@ -240,8 +246,6 @@ protected:
 
     QWidget* currentTab;
     QWidget *tabInstrument;
-    QSofaListView* simulationGraph;
-    QSofaListView* visualGraph;
     QSofaRecorder* recorder;
     QSofaStatWidget* statWidget;
     QTimer* timerStep;
@@ -293,6 +297,35 @@ private:
     QDialog* descriptionScene;
     QTextBrowser* htmlPage;
     bool animationState;
+};
+
+
+class InformationOnPickCallBack: public CallBackPicker
+{
+public:
+    InformationOnPickCallBack(RealGUI *g):gui(g) {};
+
+    virtual void execute(const sofa::component::collision::BodyPicked &body)
+    {
+        if (body.body)
+        {
+            Q3ListViewItem* item=gui->simulationGraph->getListener()->items[body.body];
+            gui->simulationGraph->ensureItemVisible(item);
+            gui->simulationGraph->clearSelection();
+            gui->simulationGraph->setSelected(item,true);
+        }
+        else if (body.mstate)
+        {
+            Q3ListViewItem* item=gui->simulationGraph->getListener()->items[body.mstate];
+            gui->simulationGraph->ensureItemVisible(item);
+            gui->simulationGraph->clearSelection();
+            gui->simulationGraph->setSelected(item,true);
+        }
+        else
+            gui->simulationGraph->clearSelection();
+    }
+protected:
+    RealGUI *gui;
 };
 
 } // namespace qt

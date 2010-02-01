@@ -208,6 +208,7 @@ public:
 public:
     GraphDataWidget(MyData* d) : Inherit(d) {}
     virtual unsigned int sizeWidget() {return 3;}
+    virtual unsigned int numColumnWidget() {return 1;}
 };
 
 } // namespace qt
