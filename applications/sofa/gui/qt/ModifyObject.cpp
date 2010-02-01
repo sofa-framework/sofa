@@ -147,6 +147,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
                 else if ( propertyTabs.back()->isFull() || data->getGroup() == std::string("BIG"))
                 {
                     propertyTabs.push_back(new QTabulationModifyObject(this,node, item_,propertyTabs.size()+1));
+                    propertyTabs.back()->setFull();
                 }
                 currentTab = propertyTabs.back();
                 break;
