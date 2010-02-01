@@ -65,7 +65,7 @@ public:
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Deriv Deriv;
-    typedef defaulttype::SparseConstraint<typename TDataTypes::Deriv> SparseConstraint;
+    typedef defaulttype::SparseConstraint<Deriv> SparseConstraint;
     typedef typename SparseConstraint::const_data_iterator ConstraintIterator;
 
     void init();
@@ -82,7 +82,7 @@ public:
 
     virtual void computeForce(double x, double y, double z, double u, double v, double w, double q, double& fx, double& fy, double& fz);
     virtual void computeWrench(const SolidTypes<double>::Transform &world_H_tool, const SolidTypes<double>::SpatialVector &V_tool_world, SolidTypes<double>::SpatialVector &W_tool_world );
-    virtual void computeForce(const typename VecCoord& state, typename VecDeriv& forces);
+    virtual void computeForce(const  VecCoord& state,  VecDeriv& forces);
 
     //void computeForce(double pitch0, double yaw0, double roll0, double z0, double pitch1, double yaw1, double roll1, double z1, double& fpitch0, double& fyaw0, double& froll0, double& fz0, double& fpitch1, double& fyaw1, double& froll1, double& fz1);
 
