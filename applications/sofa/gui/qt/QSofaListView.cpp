@@ -168,16 +168,9 @@ void QSofaListView::Clear(Node* rootNode)
 
 void QSofaListView::CloseAllDialogs()
 {
-    std::map<void*, QDialog*>::iterator dialog_iterator;
-    for( dialog_iterator = map_modifyObjectWindow.begin();
-            dialog_iterator != map_modifyObjectWindow.end();
-            dialog_iterator++)
-    {
-        QDialog* dialog = dialog_iterator->second;
-        dialog->close();
-    }
-    map_modifyObjectWindow.clear();
-    map_modifyDialogOpened.clear();
+    emit( Close() );
+    assert( map_modifyObjectWindow.empty() );
+    assert( map_modifyDialogOpened.empty() );
 
 }
 
@@ -536,6 +529,7 @@ void QSofaListView::Modify()
         map_modifyDialogOpened.insert( std::make_pair ( current_Id_modifyDialog, currentItem()) );
         map_modifyObjectWindow.insert( std::make_pair(current_Id_modifyDialog, dialogModifyObject));
         connect ( dialogModifyObject, SIGNAL( objectUpdated() ), this, SIGNAL( Updated() ));
+        connect ( this, SIGNAL( Close() ), dialogModifyObject, SLOT( closeNow() ) );
         connect ( dialogModifyObject, SIGNAL( dialogClosed(void *) ) , this, SLOT( modifyUnlock(void *)));
         dialogModifyObject->show();
         dialogModifyObject->raise();
