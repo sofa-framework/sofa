@@ -76,6 +76,7 @@ public slots:
     void CloseAllDialogs();
     void UpdateOpenedDialogs();
 signals:
+    void Close();
     void Lock(bool);
     void RequestSaving(sofa::simulation::Node*);
     void currentActivated(bool);
