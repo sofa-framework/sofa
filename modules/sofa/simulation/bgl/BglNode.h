@@ -107,6 +107,15 @@ public:
     }
 
 
+    /// Test if the given node is a parent of this node.
+    bool hasParent(const BaseNode* node) const
+    {
+        return hasParent(node == NULL ? NULL : node->getContext());
+    }
+
+    /// Test if the given context is a parent of this context.
+    bool hasParent(const BaseContext* context) const;
+
     /// Test if the given context is an ancestor of this context.
     /// An ancestor is a parent or (recursively) the parent of an ancestor.
     bool hasAncestor(const BaseNode* node) const
