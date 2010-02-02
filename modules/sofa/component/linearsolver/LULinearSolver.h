@@ -105,11 +105,11 @@ public:
             if (solver)
                 Minv = solver->i();
             else
-                Minv = this->systemMatrix->i();
+                Minv = this->currentGroup->systemMatrix->i();
             computedMinv = true;
         }
         /*typename Matrix::InvMatrixType I;
-        I = ((*this->systemMatrix)*Minv);
+        I = ((*this->currentGroup->systemMatrix)*Minv);
         for (int i=0;i<I.rowSize();++i)
             for (int j=0;j<I.rowSize();++j)
             {
@@ -129,7 +129,7 @@ public:
     {
         const unsigned int Jrows = J.rowSize();
         const unsigned int Jcols = J.colSize();
-        if (Jcols != this->systemMatrix->rowSize())
+        if (Jcols != this->currentGroup->systemMatrix->rowSize())
         {
             serr << "LULinearSolver::addJMInvJt ERROR: incompatible J matrix size." << sendl;
             return false;

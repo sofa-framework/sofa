@@ -41,6 +41,7 @@
 #include <sofa/simulation/common/AnimateVisitor.h>
 #include <sofa/simulation/common/DesactivatedNodeVisitor.h>
 #include <sofa/simulation/common/InitVisitor.h>
+#include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/VisualVisitor.h>
 #include <sofa/simulation/common/UpdateMappingVisitor.h>
 
@@ -570,8 +571,22 @@ void Node::executeVisitor(Visitor* action)
 
 #ifdef DEBUG_VISITOR
     static int level = 0;
-    for (int i=0; i<level; ++i) std::cerr << " ";
-    std::cerr << ">" << decodeClassName(typeid(*action)) << " on " << this->getPathName() << std::endl;
+    for (int i=0; i<level; ++i) std::cerr << ' ';
+    std::cerr << ">" << decodeClassName(typeid(*action)) << " on " << this->getPathName();
+    if (MechanicalVisitor* v = dynamic_cast<MechanicalVisitor*>(action))
+    {
+        MultiNodeDataMap* nodeMap = v->getNodeMap();
+        if (nodeMap && !nodeMap->empty())
+        {
+            MultiNodeDataMap::const_iterator it = nodeMap->find(this);
+            if (it != nodeMap->end())
+                std::cerr << " [SELECTED, value = " << it->second << "]";
+        }
+    }
+    std::string infos = action->getInfos();
+    if (!infos.empty())
+        std::cerr << "  : " << infos << std::endl;
+    std::cerr << std::endl;
     ++level;
 #endif
 
@@ -582,8 +597,19 @@ void Node::executeVisitor(Visitor* action)
 
 #ifdef DEBUG_VISITOR
     --level;
-    for (int i=0; i<level; ++i) std::cerr << " ";
-    std::cerr << "<" << decodeClassName(typeid(*action)) << " on " << this->getPathName() << std::endl;
+    for (int i=0; i<level; ++i) std::cerr << ' ';
+    std::cerr << "<" << decodeClassName(typeid(*action)) << " on " << this->getPathName();
+    if (MechanicalVisitor* v = dynamic_cast<MechanicalVisitor*>(action))
+    {
+        MultiNodeDataMap* nodeMap = v->getNodeMap();
+        if (nodeMap)
+        {
+            MultiNodeDataMap::const_iterator it = nodeMap->find(this);
+            if (it != nodeMap->end())
+                std::cerr << " [SELECTED, value = " << it->second << "]";
+        }
+    }
+    std::cerr << std::endl;
 #endif
 
 }

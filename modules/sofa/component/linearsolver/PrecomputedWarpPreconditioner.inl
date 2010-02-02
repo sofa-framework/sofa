@@ -129,7 +129,7 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::setSystemMBKMat
     }
 #endif
 
-    Inherit::needInvert = usePrecond;
+    this->currentGroup->needInvert = usePrecond;
 }
 
 //Solve x = R * M^-1 * R^t * b
@@ -142,7 +142,7 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::solve (TMatrix&
         unsigned int l = 0;
 
         //Solve z = R^t * b
-        while (l < this->systemMatrix->colSize())
+        while (l < this->currentGroup->systemMatrix->colSize())
         {
             z[l+0] = R[k + 0] * r[l + 0] + R[k + 3] * r[l + 1] + R[k + 6] * r[l + 2];
             z[l+1] = R[k + 1] * r[l + 0] + R[k + 4] * r[l + 1] + R[k + 7] * r[l + 2];
@@ -152,11 +152,11 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::solve (TMatrix&
         }
 
         //Solve tmp = M^-1 * z
-        T = *(this->systemMatrix) * z;
+        T = *(this->currentGroup->systemMatrix) * z;
 
         //Solve z = R * tmp
         k = 0; l = 0;
-        while (l < this->systemMatrix->colSize())
+        while (l < this->currentGroup->systemMatrix->colSize())
         {
             z[l+0] = R[k + 0] * T[l + 0] + R[k + 1] * T[l + 1] + R[k + 2] * T[l + 2];
             z[l+1] = R[k + 3] * T[l + 0] + R[k + 4] * T[l + 1] + R[k + 5] * T[l + 2];
@@ -172,16 +172,16 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::solve (TMatrix&
 template<class TDataTypes,class TMatrix,class TVector>
 void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::loadMatrix()
 {
-    unsigned systemSyze = this->systemMatrix->rowSize();
+    unsigned systemSize = this->currentGroup->systemMatrix->rowSize();
     dt = this->getContext()->getDt();
 
 #ifdef VALIDATE_ALGORITM_PrecomputedWarpPreconditioner
     this->realSystem = new TMatrix();
-    this->realSystem->resize(systemSyze,systemSyze);
+    this->realSystem->resize(systemSize,systemSize);
     this->invertSystem = this->systemMatrix;
-    for (unsigned int j=0; j<systemSyze; j++)
+    for (unsigned int j=0; j<systemSize; j++)
     {
-        for (unsigned i=0; i<systemSyze; i++)
+        for (unsigned i=0; i<systemSize; i++)
         {
             this->realSystem->set(j,i,this->systemMatrix->element(j,i));
         }
@@ -194,21 +194,21 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::loadMatrix()
     if (EulerSolver) factInt = EulerSolver->getPositionIntegrationFactor(); // here, we compute a compliance
 
     std::stringstream ss;
-    ss << this->getContext()->getName() << "-" << systemSyze << "-" << dt << ".comp";
+    ss << this->getContext()->getName() << "-" << systemSize << "-" << dt << ".comp";
     std::ifstream compFileIn(ss.str().c_str(), std::ifstream::binary);
 
     if(compFileIn.good() && use_file.getValue())
     {
         FullVector<Real> checkSys;
-        checkSys.resize(systemSyze);
-        for (unsigned int j=0; j<systemSyze; j++) checkSys[j] = this->systemMatrix->element(0,j);
+        checkSys.resize(systemSize);
+        for (unsigned int j=0; j<systemSize; j++) checkSys[j] = this->currentGroup->systemMatrix->element(0,j);
 
         cout << "file open : " << ss.str() << " compliance being loaded" << endl;
-        compFileIn.read((char*) (*this->systemMatrix)[0], systemSyze * systemSyze * sizeof(Real));
+        compFileIn.read((char*) (*this->currentGroup->systemMatrix)[0], systemSize * systemSize * sizeof(Real));
         compFileIn.close();
 
         double check = 0.0;
-        for (unsigned int j=0; j<systemSyze; j++) check += checkSys[j] * this->systemMatrix->element(j,0);
+        for (unsigned int j=0; j<systemSize; j++) check += checkSys[j] * this->currentGroup->systemMatrix->element(j,0);
 
         if (!((check>0.99) || (check<1.01)))
         {
@@ -224,22 +224,22 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::loadMatrix()
         if (use_file.getValue())
         {
             std::ofstream compFileOut(ss.str().c_str(), std::fstream::out | std::fstream::binary);
-            compFileOut.write((char*)(*this->systemMatrix)[0], systemSyze * systemSyze*sizeof(Real));
+            compFileOut.write((char*)(*this->currentGroup->systemMatrix)[0], systemSize * systemSize*sizeof(Real));
             compFileOut.close();
         }
     }
 
-    for (unsigned int j=0; j<systemSyze; j++)
+    for (unsigned int j=0; j<systemSize; j++)
     {
-        for (unsigned i=0; i<systemSyze; i++)
+        for (unsigned i=0; i<systemSize; i++)
         {
-            this->systemMatrix->set(j,i,this->systemMatrix->element(j,i)/factInt);
+            this->currentGroup->systemMatrix->set(j,i,this->currentGroup->systemMatrix->element(j,i)/factInt);
         }
     }
 
-    R.resize(3*systemSyze);
-    T.resize(systemSyze);
-    for(unsigned int k = 0; k < systemSyze/3; k++)
+    R.resize(3*systemSize);
+    T.resize(systemSize);
+    for(unsigned int k = 0; k < systemSize/3; k++)
     {
         R[k*9] = R[k*9+4] = R[k*9+8] = 1.0f;
         R[k*9+1] = R[k*9+2] = R[k*9+3] = R[k*9+5] = R[k*9+6] = R[k*9+7] = 0.0f;
@@ -256,18 +256,18 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector>::loadMatrixWithCS
     FullVector<double> r;
     FullVector<double> b;
 
-    unsigned systemSyze = this->systemMatrix->colSize();
+    unsigned systemSize = this->currentGroup->systemMatrix->colSize();
 
-    matSolv.resize(systemSyze,systemSyze);
-    r.resize(systemSyze);
-    b.resize(systemSyze);
+    matSolv.resize(systemSize,systemSize);
+    r.resize(systemSize);
+    b.resize(systemSize);
     SparseLDLSolver<CompressedRowSparseMatrix<double>, FullVector<double> > solver;
 
-    for (unsigned int j=0; j<systemSyze; j++)
+    for (unsigned int j=0; j<systemSize; j++)
     {
-        for (unsigned int i=0; i<systemSyze; i++)
+        for (unsigned int i=0; i<systemSize; i++)
         {
-            if (this->systemMatrix->element(j,i)!=0) matSolv.set(j,i,(double)this->systemMatrix->element(j,i));
+            if (this->currentGroup->systemMatrix->element(j,i)!=0) matSolv.set(j,i,(double)this->currentGroup->systemMatrix->element(j,i));
         }
         b.set(j,0.0);
     }
@@ -275,19 +275,19 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector>::loadMatrixWithCS
     std::cout << "Precomputing constraint correction LU decomposition " << std::endl;
     solver.invert(matSolv);
 
-    for (unsigned int j=0; j<systemSyze; j++)
+    for (unsigned int j=0; j<systemSize; j++)
     {
         std::cout.precision(2);
-        std::cout << "Precomputing constraint correction : " << std::fixed << (float)j/(float)systemSyze*100.0f << " %   " << '\xd';
+        std::cout << "Precomputing constraint correction : " << std::fixed << (float)j/(float)systemSize*100.0f << " %   " << '\xd';
         std::cout.flush();
 
         if (j>0) b.set(j-1,0.0);
         b.set(j,1.0);
 
         solver.solve(matSolv,r,b);
-        for (unsigned int i=0; i<systemSyze; i++)
+        for (unsigned int i=0; i<systemSize; i++)
         {
-            this->systemMatrix->set(j,i,r.element(i)*factInt);
+            this->currentGroup->systemMatrix->set(j,i,r.element(i)*factInt);
         }
     }
     std::cout << "Precomputing constraint correction : " << std::fixed << 100.0f << " %   " << '\xd';
@@ -315,11 +315,11 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::loadMatrixWithS
     const VecDeriv& v0 = *mstate->getV();
     unsigned dof_on_node = v0[0].size();
     unsigned nbNodes = v0.size();
-    unsigned systemSyze = nbNodes*dof_on_node;
+    unsigned systemSize = nbNodes*dof_on_node;
 
     std::stringstream ss;
     //ss << this->getContext()->getName() << "_CPP.comp";
-    ss << this->getContext()->getName() << "-" << systemSyze << "-" << dt << ".comp";
+    ss << this->getContext()->getName() << "-" << systemSize << "-" << dt << ".comp";
     std::ifstream compFileIn(ss.str().c_str(), std::ifstream::binary);
 
     EulerImplicitSolver* EulerSolver;
@@ -456,7 +456,7 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::loadMatrixWithS
             {
                 for (unsigned int j=0; j<dof_on_node; j++)
                 {
-                    this->systemMatrix->set(v*dof_on_node+j,f*dof_on_node+i,(Real)(fact * velocity[v][j]));
+                    this->currentGroup->systemMatrix->set(v*dof_on_node+j,f*dof_on_node+i,(Real)(fact * velocity[v][j]));
                 }
             }
         }
@@ -508,11 +508,11 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::invert(TMatrix&
 template<class TDataTypes,class TMatrix,class TVector>
 void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::rotateConstraints()
 {
-    unsigned systemSyze3 = this->systemMatrix->colSize()/3;
-    if (R.size() != systemSyze3*9)
+    unsigned systemSize3 = this->currentGroup->systemMatrix->colSize()/3;
+    if (R.size() != systemSize3*9)
     {
-        T.resize(this->systemMatrix->colSize());
-        R.resize(systemSyze3*9);
+        T.resize(this->currentGroup->systemMatrix->colSize());
+        R.resize(systemSize3*9);
     }
 
     simulation::Node *node = dynamic_cast<simulation::Node *>(this->getContext());
@@ -534,7 +534,7 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::rotateConstrain
     Transformation Rotation;
     if (forceField != NULL)
     {
-        for(unsigned int k = 0; k < systemSyze3; k++)
+        for(unsigned int k = 0; k < systemSize3; k++)
         {
             forceField->getRotation(Rotation, k);
             for (int j=0; j<3; j++)
@@ -547,7 +547,7 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::rotateConstrain
         }
 // 	} else if (rotationFinder != NULL) {
 // 		const helper::vector<defaulttype::Mat<3,3,Real> > & rotations = rotationFinder->getRotations();
-// 		for(unsigned int k = 0; k < systemSyze3; k++)	{
+// 		for(unsigned int k = 0; k < systemSize3; k++)	{
 // 			Rotation = rotations[k];
 // 			for (int j=0;j<3;j++) {
 // 				for (int i=0;i<3;i++) {
@@ -559,7 +559,7 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::rotateConstrain
     else
     {
         serr << "No rotation defined : use Identity !!";
-        for(unsigned int k = 0; k < systemSyze3; k++)
+        for(unsigned int k = 0; k < systemSize3; k++)
         {
             R[k*9] = R[k*9+4] = R[k*9+8] = 1.0f;
             R[k*9+1] = R[k*9+2] = R[k*9+3] = R[k*9+5] = R[k*9+6] = R[k*9+7] = 0.0f;
@@ -612,19 +612,19 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector>::ComputeResult(de
     }
 
     internalData.JRMinv.clear();
-    internalData.JRMinv.resize(nl,this->systemMatrix->rowSize());
+    internalData.JRMinv.resize(nl,this->currentGroup->systemMatrix->rowSize());
 
     //compute JRMinv = JR * Minv
 
     nl = 0;
     for (typename SparseMatrix<Real>::LineConstIterator jit1 = internalData.JR.begin(); jit1 != internalData.JR.end(); jit1++)
     {
-        for (unsigned c = 0; c<this->systemMatrix->rowSize(); c++)
+        for (unsigned c = 0; c<this->currentGroup->systemMatrix->rowSize(); c++)
         {
             Real v = 0.0;
             for (typename SparseMatrix<Real>::LElementConstIterator i1 = jit1->second.begin(); i1 != jit1->second.end(); i1++)
             {
-                v += this->systemMatrix->element(i1->first,c) * i1->second;
+                v += this->currentGroup->systemMatrix->element(i1->first,c) * i1->second;
             }
             internalData.JRMinv.add(nl,c,v);
         }

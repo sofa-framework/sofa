@@ -105,6 +105,8 @@ public:
     /// this constraint is holonomic
     bool isHolonomic() {return true;}
 
+    bool fixAllDOFs() const { return f_fixAll.getValue(); }
+
 protected :
 
     sofa::core::componentmodel::topology::BaseMeshTopology* topology;

@@ -96,10 +96,10 @@ public:
 
 
     /// Helper method to enumerate objects in the given list. The callback gets the pointer to node
-    template < class Visit, class Container, class Object >
-    void for_each(Visit* visitor, simulation::Node* node, const Container& list, void (Visit::*fn)(simulation::Node*, Object*))
+    template < class Visit, class VContext, class Container, class Object >
+    void for_each(Visit* visitor, VContext* ctx, const Container& list, void (Visit::*fn)(VContext*, Object*))
     {
-
+#if 0
         if (node->getLogTime())
         {
             const std::string category = getCategoryName();
@@ -116,13 +116,14 @@ public:
             }
         }
         else
+#endif
         {
             for (typename Container::iterator it=list.begin(); it != list.end(); ++it)
             {
                 if(testTags(*it))
                 {
                     debug_write_state_before(*it);
-                    (visitor->*fn)(node, *it);
+                    (visitor->*fn)(ctx, *it);
                     debug_write_state_after(*it);
                 }
             }
@@ -130,11 +131,11 @@ public:
     }
 
     /// Helper method to enumerate objects in the given list. The callback gets the pointer to node
-    template < class Visit, class Container, class Object >
-    Visitor::Result for_each_r(Visit* visitor, simulation::Node* node, const Container& list, Visitor::Result (Visit::*fn)(simulation::Node*, Object*))
+    template < class Visit, class VContext, class Container, class Object >
+    Visitor::Result for_each_r(Visit* visitor, VContext* ctx, const Container& list, Visitor::Result (Visit::*fn)(VContext*, Object*))
     {
-
         Visitor::Result res = Visitor::RESULT_CONTINUE;
+#if 0
         if (node->getLogTime())
         {
             const std::string category = getCategoryName();
@@ -152,14 +153,14 @@ public:
             }
         }
         else
+#endif
         {
-            //bool processObject;
             for (typename Container::iterator it=list.begin(); it != list.end(); ++it)
             {
                 if(testTags(*it))
                 {
                     debug_write_state_before(*it);
-                    res = (visitor->*fn)(node, *it);
+                    res = (visitor->*fn)(ctx, *it);
                     debug_write_state_after(*it);
                 }
             }

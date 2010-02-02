@@ -106,13 +106,13 @@ void PrecomputedLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(double mFact, 
 template<class TMatrix,class TVector>
 void PrecomputedLinearSolver<TMatrix,TVector>::solve (TMatrix& /*M*/, TVector& z, TVector& r)
 {
-    z = *this->systemMatrix * r;
+    z = *this->currentGroup->systemMatrix * r;
 }
 
 template<class TMatrix,class TVector>
 void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix()
 {
-    unsigned systemSyze = this->systemMatrix->rowSize();
+    unsigned systemSize = this->currentGroup->systemMatrix->rowSize();
     dt = this->getContext()->getDt();
 
     EulerImplicitSolver* EulerSolver;
@@ -121,13 +121,13 @@ void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix()
     if (EulerSolver) factInt = EulerSolver->getPositionIntegrationFactor(); // here, we compute a compliance
 
     std::stringstream ss;
-    ss << this->getContext()->getName() << "-" << systemSyze << "-" << dt << ".comp";
+    ss << this->getContext()->getName() << "-" << systemSize << "-" << dt << ".comp";
     std::ifstream compFileIn(ss.str().c_str(), std::ifstream::binary);
 
     if(compFileIn.good() && use_file.getValue())
     {
         cout << "file open : " << ss.str() << " compliance being loaded" << endl;
-        compFileIn.read((char*) (*this->systemMatrix)[0], systemSyze * systemSyze * sizeof(Real));
+        compFileIn.read((char*) (*this->currentGroup->systemMatrix)[0], systemSize * systemSize * sizeof(Real));
         compFileIn.close();
     }
     else
@@ -138,16 +138,16 @@ void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix()
         if (use_file.getValue())
         {
             std::ofstream compFileOut(ss.str().c_str(), std::fstream::out | std::fstream::binary);
-            compFileOut.write((char*)(*this->systemMatrix)[0], systemSyze * systemSyze*sizeof(Real));
+            compFileOut.write((char*)(*this->currentGroup->systemMatrix)[0], systemSize * systemSize*sizeof(Real));
             compFileOut.close();
         }
     }
 
-    for (unsigned int j=0; j<systemSyze; j++)
+    for (unsigned int j=0; j<systemSize; j++)
     {
-        for (unsigned i=0; i<systemSyze; i++)
+        for (unsigned i=0; i<systemSize; i++)
         {
-            this->systemMatrix->set(j,i,this->systemMatrix->element(j,i)/factInt);
+            this->currentGroup->systemMatrix->set(j,i,this->currentGroup->systemMatrix->element(j,i)/factInt);
         }
     }
 }
@@ -162,18 +162,18 @@ void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixWithCSparse()
     FullVector<double> r;
     FullVector<double> b;
 
-    unsigned systemSyze = this->systemMatrix->colSize();
+    unsigned systemSize = this->currentGroup->systemMatrix->colSize();
 
-    matSolv.resize(systemSyze,systemSyze);
-    r.resize(systemSyze);
-    b.resize(systemSyze);
+    matSolv.resize(systemSize,systemSize);
+    r.resize(systemSize);
+    b.resize(systemSize);
     SparseCholeskySolver<CompressedRowSparseMatrix<double>, FullVector<double> > solver;
 
-    for (unsigned int j=0; j<systemSyze; j++)
+    for (unsigned int j=0; j<systemSize; j++)
     {
-        for (unsigned int i=0; i<systemSyze; i++)
+        for (unsigned int i=0; i<systemSize; i++)
         {
-            if (this->systemMatrix->element(j,i)!=0) matSolv.set(j,i,(double)this->systemMatrix->element(j,i));
+            if (this->currentGroup->systemMatrix->element(j,i)!=0) matSolv.set(j,i,(double)this->currentGroup->systemMatrix->element(j,i));
         }
         b.set(j,0.0);
     }
@@ -181,19 +181,19 @@ void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixWithCSparse()
     std::cout << "Precomputing constraint correction LU decomposition " << std::endl;
     solver.invert(matSolv);
 
-    for (unsigned int j=0; j<systemSyze; j++)
+    for (unsigned int j=0; j<systemSize; j++)
     {
         std::cout.precision(2);
-        std::cout << "Precomputing constraint correction : " << std::fixed << (float)j/(float)systemSyze*100.0f << " %   " << '\xd';
+        std::cout << "Precomputing constraint correction : " << std::fixed << (float)j/(float)systemSize*100.0f << " %   " << '\xd';
         std::cout.flush();
 
         if (j>0) b.set(j-1,0.0);
         b.set(j,1.0);
 
         solver.solve(matSolv,r,b);
-        for (unsigned int i=0; i<systemSyze; i++)
+        for (unsigned int i=0; i<systemSize; i++)
         {
-            this->systemMatrix->set(j,i,r.element(i) * factInt);
+            this->currentGroup->systemMatrix->set(j,i,r.element(i) * factInt);
         }
     }
     std::cout << "Precomputing constraint correction : " << std::fixed << 100.0f << " %   " << '\xd';
@@ -220,11 +220,11 @@ void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrixWithSolver()
 // 	const VecDeriv& v0 = *mstate->getV();
 // 	unsigned dof_on_node = v0[0].size();
 // 	unsigned nbNodes = v0.size();
-// 	unsigned systemSyze = nbNodes*dof_on_node;
+// 	unsigned systemSize = nbNodes*dof_on_node;
 //
 // 	std::stringstream ss;
 // 	//ss << this->getContext()->getName() << "_CPP.comp";
-// 	ss << this->getContext()->getName() << "-" << systemSyze << "-" << dt << ".comp";
+// 	ss << this->getContext()->getName() << "-" << systemSize << "-" << dt << ".comp";
 // 	std::ifstream compFileIn(ss.str().c_str(), std::ifstream::binary);
 //
 // 	EulerImplicitSolver* EulerSolver;
@@ -344,7 +344,7 @@ void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrixWithSolver()
 // 			}
 // 			for (unsigned int v=0; v<nbNodes; v++) {
 // 				for (unsigned int j=0; j<dof_on_node; j++) {
-// 					this->systemMatrix->set(v*dof_on_node+j,f*dof_on_node+i,(Real)(fact * velocity[v][j]));
+// 					this->currentGroup->systemMatrix->set(v*dof_on_node+j,f*dof_on_node+i,(Real)(fact * velocity[v][j]));
 // 				}
 // 			}
 // 		}
@@ -408,17 +408,17 @@ void PrecomputedLinearSolver<TMatrix,TVector>::ComputeResult(defaulttype::BaseMa
     for (typename JMatrix::LineConstIterator jit1 = J.begin(); jit1 != J.end(); jit1++) nl++;
 
     internalData.JMinv.clear();
-    internalData.JMinv.resize(nl,this->systemMatrix->rowSize());
+    internalData.JMinv.resize(nl,this->currentGroup->systemMatrix->rowSize());
 
     nl = 0;
     for (typename JMatrix::LineConstIterator jit1 = J.begin(); jit1 != J.end(); jit1++)
     {
-        for (unsigned c = 0; c<this->systemMatrix->rowSize(); c++)
+        for (unsigned c = 0; c<this->currentGroup->systemMatrix->rowSize(); c++)
         {
             Real v = 0.0;
             for (typename JMatrix::LElementConstIterator i1 = jit1->second.begin(); i1 != jit1->second.end(); i1++)
             {
-                v += this->systemMatrix->element(i1->first,c) * i1->second;
+                v += this->currentGroup->systemMatrix->element(i1->first,c) * i1->second;
             }
             internalData.JMinv.add(nl,c,v);
         }

@@ -1332,7 +1332,7 @@ public:
         // debug: test
         if (verification.getValue())
         {
-            solve(*this->systemMatrix,*this->systemLHVector, *this->systemRHVector);
+            solve(*this->currentGroup->systemMatrix,*this->currentGroup->systemLHVector, *this->currentGroup->systemRHVector);
             return;
         }
 
@@ -1377,8 +1377,8 @@ public:
                 //// computation of DF
                 SubVector DF;
                 DF.resize(bsize);
-                DF += this->systemRHVector->asub(block,bsize) - _rh_buf.asub(block,bsize);
-                _rh_buf.asub(block,bsize) = this->systemRHVector->asub(block,bsize) ;
+                DF += this->currentGroup->systemRHVector->asub(block,bsize) - _rh_buf.asub(block,bsize);
+                _rh_buf.asub(block,bsize) = this->currentGroup->systemRHVector->asub(block,bsize) ;
                 ////
 
 
@@ -1401,7 +1401,7 @@ public:
                         // Un += DUacc
                         //_acc_result.asub(block,bsize)  += DU;		 // NON ! DU n'est ajouté que pour les blocks [current_block block[
                         // dans les calculs ultérieur.. pour les blocks [block N[ le calcul se dans le step 4 avec Vec_df
-                        // jusqu'à ce que current_block== block dans ce cas, DF étant déjà dans this->systemRHVector->asub(block,bsize) il est définitivement pris en compte
+                        // jusqu'à ce que current_block== block dans ce cas, DF étant déjà dans this->currentGroup->systemRHVector->asub(block,bsize) il est définitivement pris en compte
                         //std::cout<<"la force sur le block en entrée vient du block "<<block<<" et le block courant est"<<current_block<<" ... on remonte le déplacement engendré "<<DU<<std::endl;
                         while( block > current_block)
                         {
@@ -1471,14 +1471,14 @@ public:
 
             //// on inverse le dernier block
             //debug
-            //std::cout<<"Un = Kinv(n,n)*(accF + Fn) // accF="<<_acc_rh_current_block<<"   - Fn= "<< this->systemRHVector->asub(current_block,bsize)<<std::endl;
+            //std::cout<<"Un = Kinv(n,n)*(accF + Fn) // accF="<<_acc_rh_current_block<<"   - Fn= "<< this->currentGroup->systemRHVector->asub(current_block,bsize)<<std::endl;
             /// Un = Kinv(n,n)*(accF + Fn)
 
-            //_acc_result.asub(current_block,bsize) =  Minv.asub(current_block,current_block*bsize,bsize,bsize) * (  _acc_rh_current_block +  this->systemRHVector->asub(current_block,bsize) );
+            //_acc_result.asub(current_block,bsize) =  Minv.asub(current_block,current_block*bsize,bsize,bsize) * (  _acc_rh_current_block +  this->currentGroup->systemRHVector->asub(current_block,bsize) );
 
             /// Uacc = Kinv(n,n) * (accF+ Fn)
-            _acc_lh_current_block =  Minv.asub(current_block,current_block,bsize,bsize) *  this->systemRHVector->asub(current_block,bsize);
-            Vec_df[ current_block ] =  this->systemRHVector->asub(current_block,bsize);
+            _acc_lh_current_block =  Minv.asub(current_block,current_block,bsize,bsize) *  this->currentGroup->systemRHVector->asub(current_block,bsize);
+            Vec_df[ current_block ] =  this->currentGroup->systemRHVector->asub(current_block,bsize);
             //debug
             //std::cout<<"Uacc = Kinv("<<current_block<<","<<current_block<<")*Fn = "<<_acc_lh_current_block<<std::endl;
 
@@ -1497,13 +1497,13 @@ public:
 
                 // debug
                 SubVector Fn;
-                Fn =this->systemRHVector->asub(current_block,bsize);
+                Fn =this->currentGroup->systemRHVector->asub(current_block,bsize);
                 if (Fn.norm()>0.0)
                 {
-                    Vec_df[ current_block ] =  this->systemRHVector->asub(current_block,bsize);
+                    Vec_df[ current_block ] =  this->currentGroup->systemRHVector->asub(current_block,bsize);
                     //std::cout<<"non null force detected on block "<<current_block<<" : Fn= "<< Fn;
                     // Uacc += Kinv* Fn
-                    _acc_lh_current_block += Minv.asub(current_block,current_block,bsize,bsize) * this->systemRHVector->asub(current_block,bsize) ;
+                    _acc_lh_current_block += Minv.asub(current_block,current_block,bsize,bsize) * this->currentGroup->systemRHVector->asub(current_block,bsize) ;
                 }
 
 
@@ -1518,7 +1518,7 @@ public:
             //std::cout<<"VERIFY : current_block = "<<current_block<<"  must be 0"<<std::endl;
 
             //facc=f0;
-            _acc_rh_current_block = this->systemRHVector->asub(0,bsize);
+            _acc_rh_current_block = this->currentGroup->systemRHVector->asub(0,bsize);
 
 
             // debug
@@ -1528,11 +1528,11 @@ public:
                 serr<<"WARNING: Vec_df added on block 0... strange..."<<sendl;
 
 
-            //_acc_result.asub(0, bsize) += alpha_inv[0] * this->systemRHVector->asub(0,bsize);
-//			_rh_buf.asub(0,bsize)  =  this->systemRHVector->asub(0,bsize);
+            //_acc_result.asub(0, bsize) += alpha_inv[0] * this->currentGroup->systemRHVector->asub(0,bsize);
+//			_rh_buf.asub(0,bsize)  =  this->currentGroup->systemRHVector->asub(0,bsize);
 
             // accumulation of right hand term is reinitialized
-//			_acc_rh_current_block= this->systemRHVector->asub(0,bsize);
+//			_acc_rh_current_block= this->currentGroup->systemRHVector->asub(0,bsize);
         }
 
         ///////////////////////// step3 parcours de la structure pour remonter les forces /////////////////////////
@@ -1544,7 +1544,7 @@ public:
             // Fbuf = Fn
             //serr<<"Fbuf = Fn"<<sendl;
             // la contribution du block [current_block+1] est prise en compte dans le mouvement actuel : ne sert à rien ?? = _rh_buf n'est utilisé que pour calculer DF
-            //_rh_buf.asub((current_block+1),bsize)  =  this->systemRHVector->asub((current_block+1),bsize) ;
+            //_rh_buf.asub((current_block+1),bsize)  =  this->currentGroup->systemRHVector->asub((current_block+1),bsize) ;
 
             // Facc = Hn+1,n * Facc
             //serr<<"Facc = Hn+1,n * Facc"<<sendl;
@@ -1577,7 +1577,7 @@ public:
 
             // debug: Facc+=Fn
             SubVector toto;
-            toto =  this->systemRHVector->asub(current_block,bsize);
+            toto =  this->currentGroup->systemRHVector->asub(current_block,bsize);
             _acc_rh_current_block += toto;
             //std::cout<<"step3 : Facc+= F["<<current_block<<"] : result : Facc ="<<_acc_rh_current_block<<std::endl;
 
@@ -1648,7 +1648,7 @@ public:
             {
                 SubVector LH_block2;
                 LH_block2.resize(bsize);
-                LH_block2 = this->systemLHVector->asub(block,bsize);
+                LH_block2 = this->currentGroup->systemLHVector->asub(block,bsize);
                 //std::cout<< " solution ["<<block<<"] = "<<LH_block2<<std::endl;
 
                 SubVector delta_result ;
@@ -1665,9 +1665,9 @@ public:
             }
 
 
-            // apply the result on "this->systemLHVector"
+            // apply the result on "this->currentGroup->systemLHVector"
 
-            this->systemLHVector->asub(block,bsize) = LH_block;
+            this->currentGroup->systemLHVector->asub(block,bsize) = LH_block;
 
 
 
