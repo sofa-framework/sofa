@@ -82,6 +82,9 @@ public:
     /// Move an object from a node to another node
     virtual void moveObject(BaseObject* obj) = 0;
 
+    /// Test if the given node is a parent of this node.
+    virtual bool hasParent(const BaseNode* node) const = 0;
+
     /// Test if the given node is an ancestor of this node.
     /// An ancestor is a parent or (recursively) the parent of an ancestor.
     virtual bool hasAncestor(const BaseNode* node) const = 0;
