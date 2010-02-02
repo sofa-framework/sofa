@@ -57,14 +57,10 @@ public:
     typedef typename TMatrix::SubMatrixType SubMatrix;
 
     Data<bool> f_verbose;
-    Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
 
     BlockJacobiPreconditioner();
     void solve (Matrix& M, Vector& x, Vector& b);
     void invert(Matrix& M);
-
-private :
-    unsigned bsize;
 };
 
 } // namespace linearsolver

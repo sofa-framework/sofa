@@ -535,6 +535,17 @@ void DiagonalMass<DataTypes, MassType>::init()
     f_mass.setDestroyParameter( (void *) this );
 //    f_mass.endEdit();
 
+    if (this->mstate && f_mass.getValue().size() > 0 && f_mass.getValue().size() < (unsigned)this->mstate->getSize())
+    {
+        MassVector &masses= *f_mass.beginEdit();
+        unsigned int i = masses.size()-1;
+        unsigned int n = (unsigned)this->mstate->getSize();
+        while (masses.size() < n)
+            masses.push_back(masses[i]);
+        f_mass.endEdit();
+    }
+
+
     if ((f_mass.getValue().size()==0) && (_topology!=0))
     {
         reinit();
