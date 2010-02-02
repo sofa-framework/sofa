@@ -88,7 +88,9 @@ static void timerSyncCB(void*)
 
 void mycudaPrivateInit(int /*device*/)
 {
-    sofa::helper::AdvancedTimer::setSyncCallBack(timerSyncCB, NULL);
+    const char* sync = getenv("CUDA_TIMER_SYNC");
+    if (!sync || !*sync || atoi(sync))
+        sofa::helper::AdvancedTimer::setSyncCallBack(timerSyncCB, NULL);
     const char* verbose = getenv("CUDA_VERBOSE");
     if (verbose && *verbose)
         mycudaVerboseLevel = (MycudaVerboseLevel) atoi(verbose);

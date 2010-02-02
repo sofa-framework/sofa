@@ -237,11 +237,7 @@ simulation::Node* DefaultCollisionGroupManager::getIntegrationNode(core::Collisi
     else                     return NULL;
 }
 
-
-
-
-
-}// namespace collision
+} // namespace collision
 
 } // namespace component
 

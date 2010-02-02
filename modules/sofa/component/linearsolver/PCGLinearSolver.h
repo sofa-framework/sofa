@@ -27,7 +27,6 @@
 
 #include <sofa/core/componentmodel/behavior/LinearSolver.h>
 #include <sofa/component/linearsolver/MatrixLinearSolver.h>
-#include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/helper/map.h>
 
 //#define DISPLAY_TIME 200
@@ -42,11 +41,6 @@ namespace component
 
 namespace linearsolver
 {
-
-#ifdef DISPLAY_TIME
-#include <sofa/helper/system/thread/CTime.h>
-using sofa::helper::system::thread::CTime;
-#endif
 
 
 /// Linear system solver using the conjugate gradient iterative algorithm
@@ -73,27 +67,7 @@ public:
     Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
     std::vector<sofa::core::componentmodel::behavior::LinearSolver*> preconditioners;
 
-    PCGLinearSolver()
-        : f_maxIter( initData(&f_maxIter,(unsigned)25,"iterations","maximum number of iterations of the Conjugate Gradient solution") )
-        , f_tolerance( initData(&f_tolerance,1e-5,"tolerance","desired precision of the Conjugate Gradient Solution (ratio of current residual norm over initial residual norm)") )
-        , f_smallDenominatorThreshold( initData(&f_smallDenominatorThreshold,1e-5,"threshold","minimum value of the denominator in the conjugate Gradient solution") )
-        , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
-        , f_refresh( initData(&f_refresh,0,"refresh","Refresh iterations") )
-        , use_precond( initData(&use_precond,true,"use_precond","Use preconditioners") )
-        , f_preconditioners( initData(&f_preconditioners, "preconditioners", "If not empty: path to the solvers to use as preconditioners") )
-#ifdef DISPLAY_TIME
-        , display_time( initData(&display_time,false,"display_time","display time information") )
-#endif
-        , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
-    {
-        f_graph.setWidget("graph");
-        f_graph.setReadOnly(true);
-        iteration = 0;
-        usePrecond = true;
-#ifdef DISPLAY_TIME
-        timeStamp = 1.0 / (double)CTime::getRefTicksPerSec();
-#endif
-    }
+    PCGLinearSolver();
 
     void solve (Matrix& M, Vector& x, Vector& b);
     void init();
@@ -138,31 +112,10 @@ inline void PCGLinearSolver<TMatrix,TVector>::cgstep_alpha(Vector& x, Vector& r,
 }
 
 template<>
-inline void PCGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_beta(Vector& p, Vector& r, double beta)
-{
-    this->v_op(p,r,p,beta); // p = p*beta + r
-}
+inline void PCGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_beta(Vector& p, Vector& r, double beta);
 
 template<>
-inline void PCGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_alpha(Vector& x, Vector& r, Vector& p, Vector& q, double alpha)
-{
-#if 1 //SOFA_NO_VMULTIOP // unoptimized version
-    x.peq(p,alpha);                 // x = x + alpha p
-    r.peq(q,-alpha);                // r = r - alpha q
-#else // single-operation optimization
-    typedef core::componentmodel::behavior::BaseMechanicalState::VMultiOp VMultiOp;
-    VMultiOp ops;
-    ops.resize(2);
-    ops[0].first = (VecId)x;
-    ops[0].second.push_back(std::make_pair((VecId)x,1.0));
-    ops[0].second.push_back(std::make_pair((VecId)p,alpha));
-    ops[1].first = (VecId)r;
-    ops[1].second.push_back(std::make_pair((VecId)r,1.0));
-    ops[1].second.push_back(std::make_pair((VecId)q,-alpha));
-    simulation::tree::MechanicalVMultiOpVisitor vmop(ops);
-    vmop.execute(this->getContext());
-#endif
-}
+inline void PCGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_alpha(Vector& x, Vector& r, Vector& p, Vector& q, double alpha);
 
 } // namespace linearsolver
 

@@ -25,16 +25,18 @@
 // Author: Hadrien Courtecuisse
 //
 // Copyright: See COPYING file that comes with this distribution
+#include <sofa/core/objectmodel/BaseContext.h>
+#include <sofa/core/componentmodel/behavior/LinearSolver.h>
 #include <sofa/component/linearsolver/PCGLinearSolver.h>
 #include <sofa/component/linearsolver/NewMatMatrix.h>
 #include <sofa/component/linearsolver/FullMatrix.h>
 #include <sofa/component/linearsolver/SparseMatrix.h>
+#include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/helper/system/thread/CTime.h>
+#include <sofa/helper/AdvancedTimer.h>
+
 #include <sofa/core/ObjectFactory.h>
 #include <iostream>
-#include "sofa/helper/system/thread/CTime.h"
-#include <sofa/core/objectmodel/BaseContext.h>
-#include <sofa/core/componentmodel/behavior/LinearSolver.h>
-#include <sofa/helper/AdvancedTimer.h>
 
 namespace sofa
 {
@@ -53,6 +55,29 @@ using sofa::helper::system::thread::CTime;
 using sofa::helper::system::thread::ctime_t;
 using std::cerr;
 using std::endl;
+
+template<class TMatrix, class TVector>
+PCGLinearSolver<TMatrix,TVector>::PCGLinearSolver()
+    : f_maxIter( initData(&f_maxIter,(unsigned)25,"iterations","maximum number of iterations of the Conjugate Gradient solution") )
+    , f_tolerance( initData(&f_tolerance,1e-5,"tolerance","desired precision of the Conjugate Gradient Solution (ratio of current residual norm over initial residual norm)") )
+    , f_smallDenominatorThreshold( initData(&f_smallDenominatorThreshold,1e-5,"threshold","minimum value of the denominator in the conjugate Gradient solution") )
+    , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
+    , f_refresh( initData(&f_refresh,0,"refresh","Refresh iterations") )
+    , use_precond( initData(&use_precond,true,"use_precond","Use preconditioners") )
+    , f_preconditioners( initData(&f_preconditioners, "preconditioners", "If not empty: path to the solvers to use as preconditioners") )
+#ifdef DISPLAY_TIME
+    , display_time( initData(&display_time,false,"display_time","display time information") )
+#endif
+    , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
+{
+    f_graph.setWidget("graph");
+    f_graph.setReadOnly(true);
+    iteration = 0;
+    usePrecond = true;
+#ifdef DISPLAY_TIME
+    timeStamp = 1.0 / (double)CTime::getRefTicksPerSec();
+#endif
+}
 
 template<class TMatrix, class TVector>
 void PCGLinearSolver<TMatrix,TVector>::init()
@@ -131,6 +156,33 @@ void PCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(double mFact, double b
     time3 += (double) CTime::getTime() - t3;
 #endif
 
+}
+
+template<>
+inline void PCGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_beta(Vector& p, Vector& r, double beta)
+{
+    this->v_op(p,r,p,beta); // p = p*beta + r
+}
+
+template<>
+inline void PCGLinearSolver<component::linearsolver::GraphScatteredMatrix,component::linearsolver::GraphScatteredVector>::cgstep_alpha(Vector& x, Vector& r, Vector& p, Vector& q, double alpha)
+{
+#if 1 //SOFA_NO_VMULTIOP // unoptimized version
+    x.peq(p,alpha);                 // x = x + alpha p
+    r.peq(q,-alpha);                // r = r - alpha q
+#else // single-operation optimization
+    typedef core::componentmodel::behavior::BaseMechanicalState::VMultiOp VMultiOp;
+    VMultiOp ops;
+    ops.resize(2);
+    ops[0].first = (VecId)x;
+    ops[0].second.push_back(std::make_pair((VecId)x,1.0));
+    ops[0].second.push_back(std::make_pair((VecId)p,alpha));
+    ops[1].first = (VecId)r;
+    ops[1].second.push_back(std::make_pair((VecId)r,1.0));
+    ops[1].second.push_back(std::make_pair((VecId)q,-alpha));
+    simulation::tree::MechanicalVMultiOpVisitor vmop(ops);
+    vmop.execute(this->getContext());
+#endif
 }
 
 template<class TMatrix, class TVector>

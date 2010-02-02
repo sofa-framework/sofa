@@ -321,16 +321,16 @@ public:
     typedef NEWMAT::Matrix SubMatrixType;
     typedef NEWMAT::InvertedMatrix InvertedMatrix;
 
+    enum { BSIZE = LC };
+
 protected:
     std::vector< SubMatrixType > data;
     unsigned cSize;
 
 public:
-    int bandWidth;
 
     BlockDiagonalMatrix()
     {
-        bandWidth = LC-1;
         cSize = 0;
     }
 
@@ -482,32 +482,18 @@ public:
         return out;
     }
 
-    static const char* Name() { return "BlockDiagonalMatrix"; }
+    static const char* Name(); // { return "BlockDiagonalMatrix"; }
 };
 
-class BlockDiagonalMatrix3 : public BlockDiagonalMatrix<3>
-{
-public :
-    static const char* Name() { return "BlockDiagonalMatrix3"; }
-};
+typedef BlockDiagonalMatrix<3> BlockDiagonalMatrix3;
+typedef BlockDiagonalMatrix<6> BlockDiagonalMatrix6;
+typedef BlockDiagonalMatrix<9> BlockDiagonalMatrix9;
+typedef BlockDiagonalMatrix<12> BlockDiagonalMatrix12;
 
-class BlockDiagonalMatrix6 : public BlockDiagonalMatrix<6>
-{
-public :
-    static const char* Name() { return "BlockDiagonalMatrix6"; }
-};
-
-class BlockDiagonalMatrix9 : public BlockDiagonalMatrix<9>
-{
-public :
-    static const char* Name() { return "BlockDiagonalMatrix9"; }
-};
-
-class BlockDiagonalMatrix12 : public BlockDiagonalMatrix<12>
-{
-public :
-    static const char* Name() { return "BlockDiagonalMatrix12"; }
-};
+template<> inline const char* BlockDiagonalMatrix3::Name() { return "BlockDiagonalMatrix3"; }
+template<> inline const char* BlockDiagonalMatrix6::Name() { return "BlockDiagonalMatrix6"; }
+template<> inline const char* BlockDiagonalMatrix9::Name() { return "BlockDiagonalMatrix9"; }
+template<> inline const char* BlockDiagonalMatrix12::Name() { return "BlockDiagonalMatrix12"; }
 
 // trivial product and inverse operations for diagonal matrices
 

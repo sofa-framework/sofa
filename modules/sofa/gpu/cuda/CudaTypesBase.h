@@ -120,14 +120,19 @@ public :
         v[i] += (T)val;
     }
 
-    static std::string Name()
-    {
-        return "CudaBaseVector";
-    }
+    static const char* Name(); /* {
+			return "CudaBaseVector";
+            }*/
 
 private :
     CudaVector<T> v;
 };
+
+typedef CudaBaseVector<float> CudaBaseVectorf;
+typedef CudaBaseVector<double> CudaBaseVectord;
+
+template<> inline const char* CudaBaseVectorf::Name() { return "CudaBaseVectorf"; }
+template<> inline const char* CudaBaseVectord::Name() { return "CudaBaseVectord"; }
 
 template <class T>
 class CudaBaseMatrix : public BaseMatrix
@@ -204,7 +209,7 @@ public :
         m[i][j] += (T)v;
     }
 
-    static std::string Name();
+    static const char* Name();
 
     CudaBaseVector<Real> operator*(const CudaBaseVector<Real> & v) const
     {
@@ -231,12 +236,11 @@ private :
     CudaMatrix<T> m;
 };
 
-template <>
-inline std::string CudaBaseMatrix<float>::Name() { return "CudaBaseMatrixf"; }
+typedef CudaBaseMatrix<float> CudaBaseMatrixf;
+typedef CudaBaseMatrix<double> CudaBaseMatrixd;
 
-template <>
-inline std::string CudaBaseMatrix<double>::Name() { return "CudaBaseMatrixd"; }
-
+template<> inline const char* CudaBaseMatrixf::Name() { return "CudaBaseMatrixf"; }
+template<> inline const char* CudaBaseMatrixd::Name() { return "CudaBaseMatrixd"; }
 
 } // namespace cuda
 } // namespace gpu

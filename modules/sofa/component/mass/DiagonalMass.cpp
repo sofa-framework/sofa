@@ -97,6 +97,7 @@ void DiagonalMass<Rigid3dTypes, Rigid3dMass>::draw()
     RigidTypes::Vec3 gravityCenter;
     for (unsigned int i=0; i<x.size(); i++)
     {
+        if (masses[i].mass == 0) continue;
         const Quat& orient = x[i].getOrientation();
         //orient[3] = -orient[3];
         const RigidTypes::Vec3& center = x[i].getCenter();
@@ -151,15 +152,43 @@ void DiagonalMass<Rigid2dTypes, Rigid2dMass>::reinit()
 template <>
 void DiagonalMass<Rigid3dTypes, Rigid3dMass>::init()
 {
+    _topology = this->getContext()->getMeshTopology();
     if (!fileMass.getValue().empty()) load(fileMass.getFullPath().c_str());
     Inherited::init();
+    f_mass.setCreateFunction(MassPointCreationFunction<MassType>);
+    f_mass.setCreateParameter( (void *) this );
+    f_mass.setDestroyParameter( (void *) this );
+
+    if (this->mstate && f_mass.getValue().size() > 0 && f_mass.getValue().size() < (unsigned)this->mstate->getSize())
+    {
+        MassVector &masses= *f_mass.beginEdit();
+        unsigned int i = masses.size()-1;
+        unsigned int n = (unsigned)this->mstate->getSize();
+        while (masses.size() < n)
+            masses.push_back(masses[i]);
+        f_mass.endEdit();
+    }
 }
 
 template <>
 void DiagonalMass<Rigid2dTypes, Rigid2dMass>::init()
 {
+    _topology = this->getContext()->getMeshTopology();
     if (!fileMass.getValue().empty()) load(fileMass.getFullPath().c_str());
     Inherited::init();
+    f_mass.setCreateFunction(MassPointCreationFunction<MassType>);
+    f_mass.setCreateParameter( (void *) this );
+    f_mass.setDestroyParameter( (void *) this );
+
+    if (this->mstate && f_mass.getValue().size() > 0 && f_mass.getValue().size() < (unsigned)this->mstate->getSize())
+    {
+        MassVector &masses= *f_mass.beginEdit();
+        unsigned int i = masses.size()-1;
+        unsigned int n = (unsigned)this->mstate->getSize();
+        while (masses.size() < n)
+            masses.push_back(masses[i]);
+        f_mass.endEdit();
+    }
 }
 
 template <>
@@ -170,6 +199,7 @@ void DiagonalMass<Rigid2dTypes, Rigid2dMass>::draw()
     VecCoord& x = *mstate->getX();
     for (unsigned int i=0; i<x.size(); i++)
     {
+        if (masses[i].mass == 0) continue;
         Vec3d len;
         len[0] = len[1] = sqrt(masses[i].inertiaMatrix);
         len[2] = 0;
@@ -234,6 +264,7 @@ void DiagonalMass<Rigid3fTypes, Rigid3fMass>::draw()
     RigidTypes::Vec3 gravityCenter;
     for (unsigned int i=0; i<x.size(); i++)
     {
+        if (masses[i].mass == 0) continue;
         const Quat& orient = x[i].getOrientation();
         //orient[3] = -orient[3];
         const RigidTypes::Vec3& center = x[i].getCenter();
@@ -305,6 +336,7 @@ void DiagonalMass<Rigid2fTypes, Rigid2fMass>::draw()
     VecCoord& x = *mstate->getX();
     for (unsigned int i=0; i<x.size(); i++)
     {
+        if (masses[i].mass == 0) continue;
         Vec3d len;
         len[0] = len[1] = sqrt(masses[i].inertiaMatrix);
         len[2] = 0;
