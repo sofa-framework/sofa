@@ -237,15 +237,20 @@ public:
         return false;
     }
 
+    bool isMultiGroup() const
+    {
+        return multiGroup.getValue();
+    }
+
     virtual simulation::MultiNodeDataMap* getNodeMap()
     {
-        if (multiGroup.getValue()) return &this->nodeMap;
+        if (isMultiGroup()) return &this->nodeMap;
         else                       return NULL;
     }
 
     virtual simulation::MultiNodeDataMap* getWriteNodeMap()
     {
-        if (multiGroup.getValue()) return &this->writeNodeMap;
+        if (isMultiGroup()) return &this->writeNodeMap;
         else                       return NULL;
     }
 
@@ -253,13 +258,13 @@ public:
 
     int getNbGroups() const
     {
-        if (multiGroup.getValue()) return this->groups.size();
+        if (isMultiGroup()) return this->groups.size();
         else return 1;
     }
 
     void setGroup(int i)
     {
-        if (multiGroup.getValue() && (unsigned)i < this->groups.size())
+        if (isMultiGroup() && (unsigned)i < this->groups.size())
         {
             currentNode = groups[i];
             currentGroup = &(gData[currentNode]);
@@ -349,7 +354,7 @@ void MatrixLinearSolver<Matrix,Vector>::createGroups()
     writeNodeMap.clear();
     for (GroupDataMapIter it = gData.begin(), itend = gData.end(); it != itend; ++it)
         it->second.systemSize = 0;
-    if (multiGroup.getValue())
+    if (isMultiGroup())
     {
         for (unsigned int g=0; g<root->child.size(); ++g)
         {
