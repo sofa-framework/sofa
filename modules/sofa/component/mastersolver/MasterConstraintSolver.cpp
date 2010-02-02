@@ -36,6 +36,7 @@
 #include <sofa/core/ObjectFactory.h>
 
 #include <sofa/helper/system/thread/CTime.h>
+#include <sofa/helper/AdvancedTimer.h>
 
 #include <math.h>
 #include <iostream>
@@ -255,7 +256,9 @@ void MasterConstraintSolver::step ( double dt )
             serr<<"computeCollision is called"<<sendl;
 
         ////////////////// COLLISION DETECTION///////////////////////////////////////////////////////////////////////////////////////////
+        sofa::helper::AdvancedTimer::stepBegin("Collision");
         computeCollision();
+        sofa::helper::AdvancedTimer::stepEnd  ("Collision");
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         if ( displayTime.getValue() )
@@ -267,14 +270,18 @@ void MasterConstraintSolver::step ( double dt )
 
     // Update the BehaviorModels
     // Required to allow the RayPickInteractor interaction
+    sofa::helper::AdvancedTimer::stepBegin("BehaviorUpdate");
     simulation::BehaviorUpdatePositionVisitor(dt).execute(context);
+    sofa::helper::AdvancedTimer::stepEnd  ("BehaviorUpdate");
     if (debug)
         serr<<"Free Motion is called"<<sendl;
 
     ///////////////////////////////////////////// FREE MOTION /////////////////////////////////////////////////////////////
+    sofa::helper::AdvancedTimer::stepBegin("Free Motion");
     simulation::MechanicalBeginIntegrationVisitor(dt).execute(context);
     simulation::SolveVisitor(dt, true).execute(context);
     simulation::MechanicalPropagateFreePositionVisitor().execute(context);
+    sofa::helper::AdvancedTimer::stepEnd  ("Free Motion");
 
     //////// TODO : propagate velocity !!
 
@@ -300,7 +307,9 @@ void MasterConstraintSolver::step ( double dt )
             serr<<"computeCollision is called"<<sendl;
 
         ////////////////// COLLISION DETECTION///////////////////////////////////////////////////////////////////////////////////////////
+        sofa::helper::AdvancedTimer::stepBegin("Collision");
         computeCollision();
+        sofa::helper::AdvancedTimer::stepEnd  ("Collision");
         /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
         if ( displayTime.getValue() )
@@ -327,6 +336,7 @@ void MasterConstraintSolver::step ( double dt )
     unsigned int numConstraints = 0;
 
 
+    sofa::helper::AdvancedTimer::stepBegin("Accumulate Constraint");
     // mechanical action executed from root node to propagate the constraints
     simulation::MechanicalResetConstraintVisitor().execute(context);
     // calling applyConstraint
@@ -335,6 +345,9 @@ void MasterConstraintSolver::step ( double dt )
 
     // calling accumulateConstraint
     MechanicalAccumulateConstraint2().execute(context);
+    sofa::helper::AdvancedTimer::stepEnd  ("Accumulate Constraint");
+
+    sofa::helper::AdvancedTimer::valSet("numConstraints", numConstraints);
 
     if (debug)
         serr<<"   1. resize constraints : numConstraints="<< numConstraints<<sendl;
@@ -367,6 +380,7 @@ void MasterConstraintSolver::step ( double dt )
     if (debug)
         serr<<"   4. get Compliance "<<sendl;
 
+    sofa::helper::AdvancedTimer::stepBegin("Compliance");
     for (unsigned int i=0; i<constraintCorrections.size(); i++ )
     {
         core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
@@ -375,6 +389,7 @@ void MasterConstraintSolver::step ( double dt )
         else
             cc->getCompliance(CP1.getW());
     }
+    sofa::helper::AdvancedTimer::stepEnd  ("Compliance");
 
     if ( displayTime.getValue() )
     {
@@ -389,6 +404,7 @@ void MasterConstraintSolver::step ( double dt )
 
 
 
+    sofa::helper::AdvancedTimer::stepBegin("GaussSeidel");
     bool debugWithContact = false;
     if (debugWithContact)
     {
@@ -417,6 +433,7 @@ void MasterConstraintSolver::step ( double dt )
         gaussSeidelConstraint(numConstraints, CP1.getDfree()->ptr(), CP1.getW()->lptr(), CP1.getF()->ptr(), CP1.getD()->ptr(), CP1.getConstraintResolutions());
 
 
+    sofa::helper::AdvancedTimer::stepEnd  ("GaussSeidel");
 
 
 

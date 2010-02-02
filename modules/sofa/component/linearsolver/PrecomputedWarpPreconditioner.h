@@ -108,8 +108,8 @@ public:
 
     TMatrix * getSystemMatrixInv()
     {
-        if (!this->systemMatrix) this->systemMatrix = new TMatrix();
-        return this->systemMatrix;
+        if (!this->currentGroup->systemMatrix) this->currentGroup->systemMatrix = new TMatrix();
+        return this->currentGroup->systemMatrix;
     }
 
     /// Pre-construction check method called by ObjectFactory.

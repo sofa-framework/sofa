@@ -115,8 +115,8 @@ public:
 
     TMatrix * getSystemMatrixInv()
     {
-        if (!this->systemMatrix) this->systemMatrix = new TMatrix();
-        return this->systemMatrix;
+        if (!this->currentGroup->systemMatrix) this->currentGroup->systemMatrix = new TMatrix();
+        return this->currentGroup->systemMatrix;
     }
 
 protected :
@@ -130,7 +130,7 @@ private :
     double init_bFact;
     double init_kFact;
     bool first;
-    unsigned systemSyze;
+    unsigned systemSize;
     double dt;
     double factInt;
 

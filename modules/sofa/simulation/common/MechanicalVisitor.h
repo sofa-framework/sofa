@@ -54,6 +54,9 @@ using std::cerr;
 using std::endl;
 
 using namespace sofa::defaulttype;
+
+typedef std::map<core::objectmodel::BaseContext*, double> MultiNodeDataMap;
+
 /** Base class for easily creating new actions for mechanical simulation.
 
 During the first traversal (top-down), method processNodeTopDown(simulation::Node*) is applied to each simulation::Node. Each component attached to this node is processed using the appropriate method, prefixed by fwd.
@@ -65,11 +68,53 @@ The default behavior of the fwd* and bwd* is to do nothing. Derived actions typi
 */
 class SOFA_SIMULATION_COMMON_API MechanicalVisitor : public Visitor
 {
+public:
+    class VisitorContext
+    {
+    public:
+        simulation::Node* root; ///< root node from which the visitor was executed
+        simulation::Node* node; ///< current node
+        double* nodeData;       ///< double value associated with this subtree. Set to NULL if node-specific data is not in use
+    };
+
 protected:
     bool prefetching;
+    simulation::Node* root; ///< root node from which the visitor was executed
+    double* rootData; ///< data for root node
+    MultiNodeDataMap* nodeMap;
+
+    /// Temporary node -> double* map to sequential traversals requiring node-specific data
+    std::map<simulation::Node*, double*> tmpNodeDataMap;
+
+    virtual Result processNodeTopDown(simulation::Node* node, VisitorContext* ctx);
+    virtual void processNodeBottomUp(simulation::Node* node, VisitorContext* ctx);
+
 public:
 
-    MechanicalVisitor() : prefetching(false) {}
+    MechanicalVisitor() : prefetching(false), root(NULL), rootData(NULL), nodeMap(NULL) {}
+
+    MechanicalVisitor& setNodeMap(MultiNodeDataMap* m) { nodeMap = m; return *this; }
+
+    MultiNodeDataMap* getNodeMap() { return nodeMap; }
+
+    /// Return true if this visitor need to read the node-specific data if given
+    virtual bool readNodeData() const
+    { return false; }
+
+    /// Return true if this visitor need to write to the node-specific data if given
+    virtual bool writeNodeData() const
+    { return false; }
+
+    virtual void setNodeData(simulation::Node* /*node*/, double* nodeData, const double* parentData)
+    {
+        *nodeData = (parentData == NULL) ? 0.0 : *parentData;
+    }
+
+    virtual void addNodeData(simulation::Node* /*node*/, double* parentData, const double* nodeData)
+    {
+        if (parentData)
+            *parentData += *nodeData;
+    }
 
     //virtual void execute(core::objectmodel::BaseContext* node, bool doPrefetch) { Visitor::execute(node, doPrefetch); }
     //virtual void execute(core::objectmodel::BaseContext* node) { Visitor::execute(node, true); }
@@ -91,6 +136,10 @@ public:
     /// This method calls the fwd* methods during the forward traversal. You typically do not overload it.
     virtual Result processNodeTopDown(simulation::Node* node);
 
+    /// Parallel version of processNodeTopDown.
+    /// This method calls the fwd* methods during the forward traversal. You typically do not overload it.
+    virtual Result processNodeTopDown(simulation::Node* node, LocalStorage* stack);
+
     /// Process the OdeSolver
     virtual Result fwdOdeSolver(simulation::Node* /*node*/, core::componentmodel::behavior::OdeSolver* /*solver*/)
     {
@@ -98,14 +147,33 @@ public:
     }
 
     /// Process the OdeSolver
+    virtual Result fwdOdeSolver(VisitorContext* ctx, core::componentmodel::behavior::OdeSolver* solver)
+    {
+        return fwdOdeSolver(ctx->node, solver);
+    }
+
+    /// Process the ConstraintSolver
     virtual Result fwdConstraintSolver(simulation::Node* /*node*/, core::componentmodel::behavior::ConstraintSolver* /*solver*/)
     {
         return RESULT_CONTINUE;
     }
+
+    /// Process the ConstraintSolver
+    virtual Result fwdConstraintSolver(VisitorContext* ctx, core::componentmodel::behavior::ConstraintSolver* solver)
+    {
+        return fwdConstraintSolver(ctx->node, solver);
+    }
+
     /// Process the BaseMechanicalMapping
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
     {
         return RESULT_CONTINUE;
+    }
+
+    /// Process the BaseMechanicalMapping
+    virtual Result fwdMechanicalMapping(VisitorContext* ctx, core::componentmodel::behavior::BaseMechanicalMapping* map)
+    {
+        return fwdMechanicalMapping(ctx->node, map);
     }
 
     /// Process the BaseMechanicalState if it is mapped from the parent level
@@ -114,16 +182,34 @@ public:
         return RESULT_CONTINUE;
     }
 
+    /// Process the BaseMechanicalState if it is mapped from the parent level
+    virtual Result fwdMappedMechanicalState(VisitorContext* ctx, core::componentmodel::behavior::BaseMechanicalState* mm)
+    {
+        return fwdMappedMechanicalState(ctx->node, mm);
+    }
+
     /// Process the BaseMechanicalState if it is not mapped from the parent level
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/)
     {
         return RESULT_CONTINUE;
     }
 
+    /// Process the BaseMechanicalState if it is not mapped from the parent level
+    virtual Result fwdMechanicalState(VisitorContext* ctx, core::componentmodel::behavior::BaseMechanicalState* mm)
+    {
+        return fwdMechanicalState(ctx->node, mm);
+    }
+
     /// Process the BaseMass
     virtual Result fwdMass(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMass* /*mass*/)
     {
         return RESULT_CONTINUE;
+    }
+
+    /// Process the BaseMass
+    virtual Result fwdMass(VisitorContext* ctx, core::componentmodel::behavior::BaseMass* mass)
+    {
+        return fwdMass(ctx->node, mass);
     }
 
     /// Process all the BaseForceField
@@ -133,10 +219,22 @@ public:
     }
 
 
+    /// Process all the BaseForceField
+    virtual Result fwdForceField(VisitorContext* ctx, core::componentmodel::behavior::BaseForceField* ff)
+    {
+        return fwdForceField(ctx->node, ff);
+    }
+
     /// Process all the InteractionForceField
     virtual Result fwdInteractionForceField(simulation::Node* node, core::componentmodel::behavior::InteractionForceField* ff)
     {
         return fwdForceField(node, ff);
+    }
+
+    /// Process all the InteractionForceField
+    virtual Result fwdInteractionForceField(VisitorContext* ctx, core::componentmodel::behavior::InteractionForceField* ff)
+    {
+        return fwdInteractionForceField(ctx->node, ff);
     }
 
     /// Process all the BaseConstraint
@@ -145,16 +243,33 @@ public:
         return RESULT_CONTINUE;
     }
 
+    /// Process all the BaseConstraint
+    virtual Result fwdConstraint(VisitorContext* ctx, core::componentmodel::behavior::BaseConstraint* c)
+    {
+        return fwdConstraint(ctx->node, c);
+    }
+
     /// Process all the BaseLMConstraint
     virtual Result fwdLMConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseLMConstraint* /*c*/)
     {
         return RESULT_CONTINUE;
     }
 
+    virtual Result fwdLMConstraint(VisitorContext* ctx, core::componentmodel::behavior::BaseLMConstraint* c)
+    {
+        return fwdLMConstraint(ctx->node, c);
+    }
+
     /// Process all the InteractionConstraint
     virtual Result fwdInteractionConstraint(simulation::Node* node, core::componentmodel::behavior::InteractionConstraint* c)
     {
         return fwdConstraint(node, c);
+    }
+
+    /// Process all the InteractionConstraint
+    virtual Result fwdInteractionConstraint(VisitorContext* ctx, core::componentmodel::behavior::InteractionConstraint* c)
+    {
+        return fwdInteractionConstraint(ctx->node, c);
     }
 
     ///@}
@@ -171,34 +286,66 @@ public:
     /// This method calls the bwd* methods during the backward traversal. You typically do not overload it.
     virtual void processNodeBottomUp(simulation::Node* node);
 
+    /// Parallel version of processNodeBottomUp.
+    /// This method calls the bwd* methods during the backward traversal. You typically do not overload it.
+    virtual void processNodeBottomUp(simulation::Node* /*node*/, LocalStorage* stack);
+
     /// Process the BaseMechanicalState when it is not mapped from parent level
     virtual void bwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/)
     {}
+
+    /// Process the BaseMechanicalState when it is not mapped from parent level
+    virtual void bwdMechanicalState(VisitorContext* ctx, core::componentmodel::behavior::BaseMechanicalState* mm)
+    { bwdMechanicalState(ctx->node, mm); }
 
     /// Process the BaseMechanicalState when it is mapped from parent level
     virtual void bwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/)
     {}
 
+    /// Process the BaseMechanicalState when it is mapped from parent level
+    virtual void bwdMappedMechanicalState(VisitorContext* ctx, core::componentmodel::behavior::BaseMechanicalState* mm)
+    { bwdMappedMechanicalState(ctx->node, mm); }
+
     /// Process the BaseMechanicalMapping
     virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
     {}
+
+    /// Process the BaseMechanicalMapping
+    virtual void bwdMechanicalMapping(VisitorContext* ctx, core::componentmodel::behavior::BaseMechanicalMapping* map)
+    { bwdMechanicalMapping(ctx->node, map); }
 
     /// Process the OdeSolver
     virtual void bwdOdeSolver(simulation::Node* /*node*/, core::componentmodel::behavior::OdeSolver* /*solver*/)
     {}
 
+    /// Process the OdeSolver
+    virtual void bwdOdeSolver(VisitorContext* ctx, core::componentmodel::behavior::OdeSolver* solver)
+    { bwdOdeSolver(ctx->node, solver); }
+
     /// Process the ConstraintSolver
     virtual void bwdConstraintSolver(simulation::Node* /*node*/, core::componentmodel::behavior::ConstraintSolver* /*solver*/)
     {}
 
+    /// Process the ConstraintSolver
+    virtual void bwdConstraintSolver(VisitorContext* ctx, core::componentmodel::behavior::ConstraintSolver* solver)
+    { bwdConstraintSolver(ctx->node, solver); }
 
     /// Process all the BaseConstraint
     virtual void bwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* /*c*/)
     {}
 
+    /// Process all the BaseConstraint
+    virtual void bwdConstraint(VisitorContext* ctx, core::componentmodel::behavior::BaseConstraint* c)
+    { bwdConstraint(ctx->node, c); }
+
     /// Process all the BaseLMConstraint
     virtual void bwdLMConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseLMConstraint* /*c*/)
     {}
+
+    /// Process all the BaseLMConstraint
+    virtual void bwdLMConstraint(VisitorContext* ctx, core::componentmodel::behavior::BaseLMConstraint* c)
+    { bwdLMConstraint(ctx->node, c); }
+
     ///@}
 
 
@@ -229,6 +376,36 @@ public:
 protected:
     sofa::helper::vector< VecId > readVector;
     sofa::helper::vector< VecId > writeVector;
+#endif
+};
+
+/** Compute the total number of DOFs */
+class SOFA_SIMULATION_COMMON_API MechanicalGetDimensionVisitor : public MechanicalVisitor
+{
+public:
+    MechanicalGetDimensionVisitor(double* result)
+    {
+#ifdef SOFA_DUMP_VISITOR_INFO
+        setReadWriteVectors();
+#endif
+        rootData = result;
+    }
+
+    virtual Result fwdMechanicalState(VisitorContext* ctx, core::componentmodel::behavior::BaseMechanicalState* mm);
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalGetDimensionVisitor";}
+
+    virtual bool writeNodeData() const
+    {
+        return true;
+    }
+
+#ifdef SOFA_DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+    }
 #endif
 };
 
@@ -457,16 +634,15 @@ class SOFA_SIMULATION_COMMON_API MechanicalVDotVisitor : public MechanicalVisito
 public:
     VecId a;
     VecId b;
-    double* total;
-    MechanicalVDotVisitor(VecId a, VecId b, double* t) : a(a), b(b), total(t)
+    MechanicalVDotVisitor(VecId a, VecId b, double* t) : a(a), b(b) //, total(t)
     {
 #ifdef SOFA_DUMP_VISITOR_INFO
         setReadWriteVectors();
 #endif
+        rootData = t;
     }
 
-    /// Sequential code
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMechanicalState(VisitorContext* ctx, core::componentmodel::behavior::BaseMechanicalState* mm);
 
     /// Return a class name for this visitor
     /// Only used for debugging / profiling purposes
@@ -482,11 +658,10 @@ public:
     {
         return true;
     }
-    /// Parallel code
-    virtual Result processNodeTopDown(simulation::Node* node, LocalStorage* stack);
-
-    /// Parallel code
-    virtual void processNodeBottomUp(simulation::Node* /*node*/, LocalStorage* stack);
+    virtual bool writeNodeData() const
+    {
+        return true;
+    }
 
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()

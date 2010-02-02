@@ -33,6 +33,7 @@
 #endif
 
 #include <sofa/helper/system/gl.h>
+#include <sofa/helper/AdvancedTimer.h>
 
 #define VERBOSE(a) if (bVerbose.getValue()) a; else {}
 
@@ -109,6 +110,7 @@ void DefaultPipeline::doCollisionDetection(const sofa::helper::vector<core::Coll
 
     sofa::helper::vector<CollisionModel*> vectBoundingVolume;
     {
+        sofa::helper::AdvancedTimer::stepBegin("BBox");
         if (node) t0 = node->startTime();
 #ifdef SOFA_DUMP_VISITOR_INFO
         simulation::Visitor::printNode("ComputeBoundingTree");
@@ -132,6 +134,7 @@ void DefaultPipeline::doCollisionDetection(const sofa::helper::vector<core::Coll
             vectBoundingVolume.push_back ((*it)->getFirst());
             ++nActive;
         }
+        sofa::helper::AdvancedTimer::stepEnd("BBox");
         if (node) t0 = node->endTime(t0, "collision/bbox", this);
 #ifdef SOFA_DUMP_VISITOR_INFO
         simulation::Visitor::printCloseNode("ComputeBoundingTree");
@@ -145,11 +148,13 @@ void DefaultPipeline::doCollisionDetection(const sofa::helper::vector<core::Coll
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode("BroadPhase");
 #endif
+    sofa::helper::AdvancedTimer::stepBegin("BroadPhase");
     intersectionMethod->beginBroadPhase();
     broadPhaseDetection->beginBroadPhase();
     broadPhaseDetection->addCollisionModels(vectBoundingVolume);  // detection is done there
     broadPhaseDetection->endBroadPhase();
     intersectionMethod->endBroadPhase();
+    sofa::helper::AdvancedTimer::stepEnd  ("BroadPhase");
 
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode("BroadPhase");
@@ -164,6 +169,7 @@ void DefaultPipeline::doCollisionDetection(const sofa::helper::vector<core::Coll
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode("NarrowPhase");
 #endif
+    sofa::helper::AdvancedTimer::stepBegin("NarrowPhase");
     intersectionMethod->beginNarrowPhase();
     narrowPhaseDetection->beginNarrowPhase();
     sofa::helper::vector<std::pair<CollisionModel*, CollisionModel*> >& vectCMPair = broadPhaseDetection->getCollisionModelPairs();
@@ -171,6 +177,7 @@ void DefaultPipeline::doCollisionDetection(const sofa::helper::vector<core::Coll
     narrowPhaseDetection->addCollisionPairs(vectCMPair);
     narrowPhaseDetection->endNarrowPhase();
     intersectionMethod->endNarrowPhase();
+    sofa::helper::AdvancedTimer::stepEnd  ("NarrowPhase");
 
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printCloseNode("NarrowPhase");

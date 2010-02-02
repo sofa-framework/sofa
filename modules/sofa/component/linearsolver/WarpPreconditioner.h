@@ -198,7 +198,7 @@ private :
 
     bool first;
     bool _rotate;
-    unsigned systemSyze;
+    unsigned systemSize;
     bool usePrecond;
 
 };
