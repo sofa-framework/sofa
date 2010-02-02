@@ -36,8 +36,6 @@ namespace component
 namespace linearsolver
 {
 
-
-
 SOFA_DECL_CLASS(PrecomputedWarpPreconditioner)
 
 int PrecomputedWarpPreconditionerClass = core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm")
