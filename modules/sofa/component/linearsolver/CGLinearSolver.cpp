@@ -71,6 +71,15 @@ CGLinearSolver<TMatrix,TVector>::CGLinearSolver()
 }
 
 template<class TMatrix, class TVector>
+void CGLinearSolver<TMatrix,TVector>::resetSystem()
+{
+    f_graph.beginEdit()->clear();
+    f_graph.endEdit();
+
+    Inherit::resetSystem();
+}
+
+template<class TMatrix, class TVector>
 void CGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(double mFact, double bFact, double kFact)
 {
 #ifdef DISPLAY_TIME
@@ -115,9 +124,9 @@ void CGLinearSolver<TMatrix,TVector>::solve(Matrix& M, Vector& x, Vector& b)
     double normb2 = b.dot(b);
     double normb = sqrt(normb2);
     std::map < std::string, sofa::helper::vector<double> >& graph = *f_graph.beginEdit();
-    sofa::helper::vector<double>& graph_error = graph["Error"];
+    sofa::helper::vector<double>& graph_error = graph[(this->isMultiGroup()) ? this->currentNode->getName()+std::string("-Error") : std::string("Error")];
     graph_error.clear();
-    sofa::helper::vector<double>& graph_den = graph["Denominator"];
+    sofa::helper::vector<double>& graph_den = graph[(this->isMultiGroup()) ? this->currentNode->getName()+std::string("-Denominator") : std::string("Denominator")];
     graph_den.clear();
     graph_error.push_back(1);
     unsigned nb_iter;
@@ -263,8 +272,7 @@ inline void CGLinearSolver<component::linearsolver::GraphScatteredMatrix,compone
     ops[1].first = (VecId)r;
     ops[1].second.push_back(std::make_pair((VecId)r,1.0));
     ops[1].second.push_back(std::make_pair((VecId)q,-alpha));
-    simulation::MechanicalVMultiOpVisitor vmop(ops);
-    vmop.execute(this->getContext());
+    this->executeVisitor(simulation::MechanicalVMultiOpVisitor(ops));
 #endif
 }
 

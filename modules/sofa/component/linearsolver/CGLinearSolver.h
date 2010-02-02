@@ -74,10 +74,12 @@ protected:
     inline void cgstep_alpha(Vector& x, Vector& r, Vector& p, Vector& q, double alpha);
 
 public:
-    /// Solve Mx=b
-    void solve (Matrix& M, Vector& x, Vector& b);
+    void resetSystem();
 
     void setSystemMBKMatrix(double mFact, double bFact, double kFact);
+
+    /// Solve Mx=b
+    void solve (Matrix& M, Vector& x, Vector& b);
 
 };
 
