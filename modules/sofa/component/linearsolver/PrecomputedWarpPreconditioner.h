@@ -34,6 +34,8 @@
 #include <sofa/helper/map.h>
 #include <math.h>
 
+//#define VALIDATE_ALGORITM_PrecomputedWarpPreconditioner
+
 namespace sofa
 {
 
@@ -91,6 +93,11 @@ public:
     Data<int> init_MaxIter;
     Data<double> init_Tolerance;
     Data<double> init_Threshold;
+
+#ifdef VALIDATE_ALGORITM_PrecomputedWarpPreconditioner
+    TMatrix * realSystem;
+    TMatrix * invertSystem;
+#endif
 
     PrecomputedWarpPreconditioner();
 

@@ -53,6 +53,7 @@
 
 #ifdef SOFA_HAVE_CSPARSE
 #include <sofa/component/linearsolver/SparseCholeskySolver.h>
+#include <sofa/component/linearsolver/SparseLDLSolver.h>
 #include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
 #else
 #include <sofa/component/linearsolver/CholeskySolver.h>
@@ -98,8 +99,35 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::setSystemMBKMat
         init_bFact = bFact;
         init_kFact = kFact;
         Inherit::setSystemMBKMatrix(mFact,bFact,kFact);
+#ifdef VALIDATE_ALGORITM_PrecomputedWarpPreconditioner
+        for (unsigned j=0; j<this->systemMatrix->rowSize(); j++) printf("%f ",this->systemMatrix->element(j,j));
+        printf("\n");
+#endif
         loadMatrix();
     }
+
+#ifdef VALIDATE_ALGORITM_PrecomputedWarpPreconditioner
+    else
+    {
+        this->systemMatrix = realSystem;
+        Inherit::setSystemMBKMatrix(mFact,bFact,kFact);
+        this->systemMatrix = invertSystem;
+    }
+    printf("RealSystem(%d,%d) InvertSystem(%d,%d)\n",realSystem->rowSize(),realSystem->colSize(),invertSystem->rowSize(),invertSystem->colSize());
+    for (unsigned j=0; j<12; j++)
+    {
+        for (unsigned i=0; i<12; i++)
+        {
+            double mult_ij = 0.0;
+            for (unsigned k=0; k<invertSystem->rowSize(); k++)
+            {
+                mult_ij += realSystem->element(j,k) * invertSystem->element(k,i);
+            }
+            printf("%f ",mult_ij);
+        }
+        printf("\n");
+    }
+#endif
 
     Inherit::needInvert = usePrecond;
 }
@@ -147,6 +175,19 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::loadMatrix()
     unsigned systemSyze = this->systemMatrix->rowSize();
     dt = this->getContext()->getDt();
 
+#ifdef VALIDATE_ALGORITM_PrecomputedWarpPreconditioner
+    this->realSystem = new TMatrix();
+    this->realSystem->resize(systemSyze,systemSyze);
+    this->invertSystem = this->systemMatrix;
+    for (unsigned int j=0; j<systemSyze; j++)
+    {
+        for (unsigned i=0; i<systemSyze; i++)
+        {
+            this->realSystem->set(j,i,this->systemMatrix->element(j,i));
+        }
+    }
+#endif
+
     EulerImplicitSolver* EulerSolver;
     this->getContext()->get(EulerSolver);
     factInt = 1.0; // christian : it is not a compliance... but an admittance that is computed !
@@ -158,9 +199,22 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::loadMatrix()
 
     if(compFileIn.good() && use_file.getValue())
     {
+        FullVector<Real> checkSys;
+        checkSys.resize(systemSyze);
+        for (unsigned int j=0; j<systemSyze; j++) checkSys[j] = this->systemMatrix->element(0,j);
+
         cout << "file open : " << ss.str() << " compliance being loaded" << endl;
         compFileIn.read((char*) (*this->systemMatrix)[0], systemSyze * systemSyze * sizeof(Real));
         compFileIn.close();
+
+        double check = 0.0;
+        for (unsigned int j=0; j<systemSyze; j++) check += checkSys[j] * this->systemMatrix->element(j,0);
+
+        if (!((check>0.99) || (check<1.01)))
+        {
+            cout << "Warning it seem that the file " << ss << " is not the good systemInvert you should recompute it." << endl;
+        }
+
     }
     else
     {
@@ -182,7 +236,6 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::loadMatrix()
             this->systemMatrix->set(j,i,this->systemMatrix->element(j,i)/factInt);
         }
     }
-
 
     R.resize(3*systemSyze);
     T.resize(systemSyze);
@@ -208,7 +261,7 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector>::loadMatrixWithCS
     matSolv.resize(systemSyze,systemSyze);
     r.resize(systemSyze);
     b.resize(systemSyze);
-    SparseCholeskySolver<CompressedRowSparseMatrix<double>, FullVector<double> > solver;
+    SparseLDLSolver<CompressedRowSparseMatrix<double>, FullVector<double> > solver;
 
     for (unsigned int j=0; j<systemSyze; j++)
     {
@@ -234,7 +287,7 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector>::loadMatrixWithCS
         solver.solve(matSolv,r,b);
         for (unsigned int i=0; i<systemSyze; i++)
         {
-            this->systemMatrix->set(j,i,r.element(i) * factInt);
+            this->systemMatrix->set(j,i,r.element(i)*factInt);
         }
     }
     std::cout << "Precomputing constraint correction : " << std::fixed << 100.0f << " %   " << '\xd';
