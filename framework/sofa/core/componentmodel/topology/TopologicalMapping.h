@@ -99,7 +99,7 @@ public:
     /// Return true if this mapping is able to propagate topological changes from output to input model
     virtual bool propagateFromOutputToInputModel() { return false; }
 
-    /// return true if the output topology subdivide the input one. (the topological uses the Loc2GlobVec/Glob2LocMap/In2OutMap structs and share the same DOFs)
+    /// return true if the output topology subdivide the input one. (the topology uses the Loc2GlobVec/Glob2LocMap/In2OutMap structs and share the same DOFs)
     virtual bool isTheOutputTopologySubdividingTheInputOne() { return true;}
 
     /// Accessor to index maps :
