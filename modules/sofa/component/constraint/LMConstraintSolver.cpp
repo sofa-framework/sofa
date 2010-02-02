@@ -663,7 +663,7 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( ConstOrder Order
         case BaseLMConstraint::VEL: serr << "Velocity" << sendl; break;
         case BaseLMConstraint::POS: serr << "Position" << sendl; break;
         }
-        return false;
+//            return false;
     }
 
     if (f_printLog.getValue()) sout << "Gauss-Seidel done in " << iteration << " iterations "<<sendl;
