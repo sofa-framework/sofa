@@ -120,7 +120,7 @@ public:
     typedef vector<HexaID>			HexahedraAroundQuad;
     /// @}
 
-    BaseMeshTopology();
+    BaseMeshTopology()	;
     virtual void init();
 
     /// Load the topology from a file.
