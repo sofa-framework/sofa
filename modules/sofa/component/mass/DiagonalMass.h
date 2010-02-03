@@ -60,6 +60,16 @@ using namespace sofa::component::topology;
 
 // template<class Vec> void readVec1(Vec& vec, const char* str);
 
+template<class DataTypes, class TMassType>
+class DiagonalMassInternalData
+{
+public :
+
+    typedef sofa::component::topology::PointData<TMassType> VecMass;
+    typedef helper::vector<TMassType> MassVector;
+
+};
+
 template <class DataTypes, class TMassType>
 class DiagonalMass : public core::componentmodel::behavior::Mass<DataTypes>
 {
@@ -78,8 +88,8 @@ public:
     typedef Vec<3,MassType>                            Vec3;
     typedef StdVectorTypes< Vec3, Vec3, MassType >     GeometricalTypes ; /// assumes the geometry object type is 3D
 
-    typedef sofa::component::topology::PointData<MassType> VecMass;
-    typedef helper::vector<MassType> MassVector;
+
+
 
 
     typedef enum
@@ -92,7 +102,11 @@ public:
         TOPOLOGY_HEXAHEDRONSET=5
     } TopologyType;
 
+    typedef typename DiagonalMassInternalData<DataTypes,TMassType>::VecMass VecMass;
+    typedef typename DiagonalMassInternalData<DataTypes,TMassType>::MassVector MassVector;
+
     VecMass f_mass;
+
     /// the mass density used to compute the mass from a mesh topology and geometry
     Data< Real > m_massDensity;
 

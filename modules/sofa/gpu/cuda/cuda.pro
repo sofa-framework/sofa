@@ -156,7 +156,9 @@ HEADERS += \
 		CudaRasterizer.inl \
 		CudaLDIPenalityContactForceField.h \
 		CudaLDISimpleContactConstraint.h \
-		CudaComplianceMatrixUpdateManager.h
+		CudaComplianceMatrixUpdateManager.h \
+		CudaDiagonalMass.h \
+		CudaDiagonalMass.inl \
 		
 SOURCES += \
         CudaBTDLinearSolver.cpp  \
@@ -180,6 +182,7 @@ SOURCES += \
 		CudaLDISimpleContactConstraint.cpp \
 	CudaComplianceMatrixUpdateManager.cpp \
 	CudaTetrahedronCuttingManager.cpp \
+	CudaDiagonalMass.cpp 
 
 CUDA_SOURCES += \
 	   	CudaLCP.cu \
@@ -193,7 +196,8 @@ CUDA_SOURCES += \
 		CudaTetrahedronSuperTLEDForceField.cu \
 		CudaRasterizer.cu \
 		CudaLDIPenalityContactForceField.cu \
-	CudaComplianceMatrixUpdateManager.cu
+	CudaComplianceMatrixUpdateManager.cu \
+	CudaDiagonalMass.cu 
 		
 contains(DEFINES,SOFA_HAVE_BOOST){
 contains(DEFINES,SOFA_HAVE_CSPARSE){

@@ -26,6 +26,7 @@
 #define SOFA_COMPONENT_MASS_DIAGONALMASS_INL
 
 #include <sofa/component/mass/DiagonalMass.h>
+#include <sofa/core/componentmodel/behavior/Mass.inl>
 #include <sofa/helper/io/MassSpringLoader.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/defaulttype/RigidTypes.h>
