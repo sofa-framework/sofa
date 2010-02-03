@@ -49,41 +49,40 @@ class QwtDataAccess : public QwtData
 {
 protected:
     const T* data0;
-    const T** pdata;
 public:
     typedef vector_data_trait<T> trait;
     typedef typename trait::value_type value_type;
     typedef vector_data_trait<value_type> vtrait;
     typedef typename vtrait::value_type real_type;
-    QwtDataAccess() : data0(NULL) { pdata = &data0; }
-    QwtDataAccess(const QwtDataAccess<T>& c) : QwtData(c), data0(c.data0), pdata(c.pdata) {}
-    void setData(const T** p) { pdata = p; }
-    void setData(const T* p) { data0 = p; pdata = &data0; }
+    QwtDataAccess() : data0(NULL) {}
+    QwtDataAccess(const QwtDataAccess<T>& c) : QwtData(c), data0(c.data0) {}
+
+    void setData(const T* p) { data0 = p; }
     virtual QwtData* copy() const { return new QwtDataAccess<T>(*this); }
     virtual size_t size() const
     {
-        if (*pdata == NULL)
+        if (data0 == NULL)
             return 0;
         else
-            return trait::size(*(*pdata));
+            return trait::size(*(data0));
     }
     virtual double x (size_t i) const
     {
         if (i >= size())
             return 0.0;
-        else if (vtrait::size(*trait::get(*(*pdata), i)) < 2)
+        else if (vtrait::size(*trait::get(*(data0), i)) < 2)
             return (double)i;
         else
-            return (double)(*vtrait::get(*trait::get(*(*pdata), i), 0));
+            return (double)(*vtrait::get(*trait::get(*(data0), i), 0));
     }
     virtual double y (size_t i) const
     {
         if (i >= size())
             return 0.0;
-        else if (vtrait::size(*trait::get(*(*pdata), i)) < 2)
-            return (double)(*vtrait::get(*trait::get(*(*pdata), i), 0));
+        else if (vtrait::size(*trait::get(*(data0), i)) < 2)
+            return (double)(*vtrait::get(*trait::get(*(data0), i), 0));
         else
-            return (double)(*vtrait::get(*trait::get(*(*pdata), i), 1));
+            return (double)(*vtrait::get(*trait::get(*(data0), i), 1));
     }
 };
 
@@ -110,7 +109,7 @@ public:
     {
         if (Q3GroupBox* box = dynamic_cast<Q3GroupBox*>(parent)) box->setColumns(1);
 #ifdef SOFA_QT4
-        w = new Widget(QwtText("Graph"), parent);
+        w = new Widget(QwtText(""), parent);
 #else
         w = new Widget(parent, "Graph");
 #endif
@@ -122,9 +121,10 @@ public:
     void setReadOnly(bool /*readOnly*/)
     {
     }
-    void readFromData(const data_type& d)
+    void readFromData(const data_type& d0)
     {
-        currentData = d;
+        currentData = d0;
+        const data_type& d = currentData;
         int s = curve.size();
         int n = trait::size(d);
         for (int i=0; i<n; ++i)
@@ -138,7 +138,7 @@ public:
                 if (name && *name) s = name;
                 c = new Curve(s);
                 c->attach(w);
-                switch(i)
+                switch(i % 6)
                 {
                 case 0 : c->setPen(QPen(Qt::red)); break;
                 case 1 : c->setPen(QPen(Qt::green)); break;
@@ -169,17 +169,17 @@ public:
         }
         if (s != n)
         {
-            while (s > n)
+            for (int i=n; i < s; ++i)
             {
-                Curve* c = curve[s];
-                CurveData* cd = cdata[s];
+                Curve* c = curve[i];
+                CurveData* cd = cdata[i];
                 c->detach();
                 delete c;
                 delete cd;
-                --s;
             }
             curve.resize(n);
             cdata.resize(n);
+            s = n;
         }
         if (n > 0 && !rect.isNull())
         {

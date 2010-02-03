@@ -127,6 +127,14 @@ public:
     /// Ask the solver to no update the system matrix at the next iteration
     virtual void updateSystemMatrix() { frozen = false; }
 
+    /// Check if this solver handle multiple multiple independent integration groups, placed as child nodes in the scene graph.
+    ///
+    /// If this is the case, then when collisions occur, the CollisionGroupManager can simply group the interacting groups into new child nodes without creating a new solver to handle them.
+    virtual bool isMultiGroup() const
+    {
+        return false;
+    }
+
 protected:
 
     bool frozen;
