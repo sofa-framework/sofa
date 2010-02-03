@@ -57,7 +57,7 @@ public:
 
     QuadSetGeometryAlgorithms()
         : EdgeSetGeometryAlgorithms<DataTypes>()
-        , debugViewQuadIndices(core::objectmodel::Base::initData(&debugViewQuadIndices, (bool) false, "debugViewQuadIndices", "Debug : view Quad indices"))
+        , showQuadIndices(core::objectmodel::Base::initData(&showQuadIndices, (bool) false, "showQuadIndices", "Debug : view Quad indices"))
         , _draw(core::objectmodel::Base::initData(&_draw, false, "drawQuads","if true, draw the quads in the topology"))
     { }
 
@@ -107,7 +107,7 @@ public:
     virtual void draw();
 
 protected:
-    Data<bool> debugViewQuadIndices;
+    Data<bool> showQuadIndices;
     Data<bool> _draw;
 
 };

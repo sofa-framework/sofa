@@ -73,7 +73,7 @@ public:
 
     EdgeSetGeometryAlgorithms()
         : PointSetGeometryAlgorithms<DataTypes>()
-        , debugViewEdgeIndices(core::objectmodel::Base::initData(&debugViewEdgeIndices, (bool) false, "debugViewEdgeIndices", "Debug : view Edge indices"))
+        , showEdgeIndices(core::objectmodel::Base::initData(&showEdgeIndices, (bool) false, "showEdgeIndices", "Debug : view Edge indices"))
         , _draw(core::objectmodel::Base::initData(&_draw, false, "drawEdges","if true, draw the edges in the topology"))
     {
     }
@@ -133,7 +133,7 @@ public:
     virtual void draw();
 
 protected:
-    Data<bool> debugViewEdgeIndices;
+    Data<bool> showEdgeIndices;
     Data<bool> _draw;
 };
 

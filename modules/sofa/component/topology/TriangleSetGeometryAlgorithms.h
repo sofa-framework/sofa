@@ -61,7 +61,7 @@ public:
 
     TriangleSetGeometryAlgorithms()
         : EdgeSetGeometryAlgorithms<DataTypes>()
-        ,debugViewTriangleIndices (core::objectmodel::Base::initData(&debugViewTriangleIndices, (bool) false, "debugViewTriangleIndices", "Debug : view Triangle indices"))
+        ,showTriangleIndices (core::objectmodel::Base::initData(&showTriangleIndices, (bool) false, "showTriangleIndices", "Debug : view Triangle indices"))
         , _draw(core::objectmodel::Base::initData(&_draw, false, "drawTriangles","if true, draw the triangles in the topology"))
     {
     }
@@ -250,7 +250,7 @@ public:
     void writeMSHfile(const char *filename) const;
 
 protected:
-    Data<bool> debugViewTriangleIndices;
+    Data<bool> showTriangleIndices;
     Data<bool> _draw;
 
 };
