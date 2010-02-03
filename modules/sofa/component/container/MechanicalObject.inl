@@ -104,6 +104,21 @@ MechanicalObject<DataTypes>::MechanicalObject()
     this->addField(f_Vfree, "free_velocity");
     this->addField(f_X0,"rest_position");
 
+    f_X->setGroup("Vector");
+    f_V->setGroup("Vector");
+    f_F->setGroup("Vector");
+    f_externalF->setGroup("Vector");
+    f_Dx->setGroup("Vector");
+    f_Xfree->setGroup("Vector");
+    f_Vfree->setGroup("Vector");
+    f_X0->setGroup("Vector");
+
+    translation.setGroup("Transformation");
+    translation2.setGroup("Transformation");
+    rotation.setGroup("Transformation");
+    rotation2.setGroup("Transformation");
+    scale.setGroup("Transformation");
+
     //Desactivate the Filter. MechanicalObjects created during the collision response must not use the filter as it will be empty
     this->forceMask.activate(false);
 

@@ -72,6 +72,7 @@
 
 #ifdef SOFA_QT4
 #include <QWidget>
+#include <QDockWidget>
 #include <QStackedWidget>
 #include <QLayout>
 #include <Q3ListViewItem>
@@ -89,6 +90,8 @@
 #include <QButtonGroup>
 #include <QRadioButton>
 #include <QInputDialog>
+#include <Q3DockWindow>
+#include <Q3DockArea>
 #else
 #include <qwidget.h>
 #include <qwidgetstack.h>
@@ -109,6 +112,8 @@
 #include <qradiobutton.h>
 #include <qinputdialog.h>
 #include <qmime.h>
+#include <qdockwindow.h>
+#include <qdockarea.h>
 #endif
 
 
@@ -364,8 +369,16 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
 
     initRecentlyOpened();
     connect ( tabs, SIGNAL ( currentChanged ( QWidget* ) ), this, SLOT ( currentTabChanged ( QWidget* ) ) );
-    recorder = new QSofaRecorder(statusBar());
-    statusBar()->layout()->add(recorder);
+
+    //Create a Dock Window to receive the Sofa Recorder
+    QDockWindow *dockRecorder=new QDockWindow(this);
+    dockRecorder->setResizeEnabled(true);
+    this->moveDockWindow( dockRecorder, Qt::DockBottom);
+    this->leftDock() ->setAcceptDockWindow(dockRecorder,false);
+    this->rightDock()->setAcceptDockWindow(dockRecorder,false);
+
+    recorder = new QSofaRecorder(dockRecorder);
+    dockRecorder->setWidget(recorder);
 
     connect(startButton, SIGNAL(  toggled ( bool ) ), recorder, SLOT( TimerStart(bool) ) );
 

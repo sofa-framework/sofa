@@ -60,8 +60,8 @@ Base::Base()
     , f_printLog(initData(&f_printLog, false, "printLog", "if true, print logs at run-time"))
     , f_tags(initData( &f_tags, "tags", "list of the subsets the objet belongs to"))
 {
-    name.setGroup("Base");
-    f_printLog.setGroup("Base");
+    name.setParentClass("Base");
+    f_printLog.setParentClass("Base");
     sendl.setParent(this);
 }
 

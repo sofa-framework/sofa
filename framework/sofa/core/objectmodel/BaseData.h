@@ -61,7 +61,7 @@ public:
     class BaseInitData
     {
     public:
-        BaseInitData() : data(NULL), helpMsg(""), isDisplayed(true), isReadOnly(false), isPersistent(true), owner(NULL), name(""), group(""), widget("") {}
+        BaseInitData() : data(NULL), helpMsg(""), isDisplayed(true), isReadOnly(false), isPersistent(true), owner(NULL), name(""), parentClass(""), group(""), widget("") {}
         BaseData* data;
         const char* helpMsg;
         bool isDisplayed;
@@ -69,6 +69,7 @@ public:
         bool isPersistent;
         Base* owner;
         const char* name;
+        const char* parentClass;
         const char* group;
         const char* widget;
     };
@@ -123,6 +124,12 @@ public:
 
     /// @deprecated Set help message
     void setHelpMsg(const char* val) { help = val; }
+
+    /// Get parentClass
+    const char* getParentClass() const { return parentClass; }
+
+    /// Set group
+    void setParentClass(const char* val) { parentClass = val; }
 
     /// Get group
     const char* getGroup() const { return group; }
@@ -196,6 +203,8 @@ protected:
 
     /// Help message
     const char* help;
+    /// parent class
+    const char* parentClass;
     /// group
     const char* group;
     /// widget

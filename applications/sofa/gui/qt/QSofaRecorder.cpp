@@ -40,7 +40,7 @@ namespace qt
 
 QSofaRecorder::QSofaRecorder(QWidget* parent):QWidget(parent)
 {
-    QHBoxLayout* layout = new QHBoxLayout(this);
+    QHBoxLayout* layout = new QHBoxLayout(this,0,0);
     timerStep = new QTimer(parent);
 
     fpsLabel = new QLabel ( "9999.9 FPS", this );
@@ -87,7 +87,6 @@ QSofaRecorder::QSofaRecorder(QWidget* parent):QWidget(parent)
     finalTime->setMinimumSize ( finalTime->sizeHint() );
     layout->addWidget(finalTime);
 
-
     QToolTip::add(record               , tr( "Record" ) );
     QToolTip::add(backward      , tr( "Load Initial Time" ) );
     QToolTip::add(stepbackward  , tr( "Make one step backward" ) );
@@ -116,6 +115,8 @@ QSofaRecorder::QSofaRecorder(QWidget* parent):QWidget(parent)
     connect ( timeSlider, SIGNAL (sliderMoved (int) ),   this, SLOT( slot_sliderValue( int) ) );
     connect ( timeSlider, SIGNAL (valueChanged ( int ) ), this, SLOT( slot_sliderValue(int) ) );
     connect ( timerStep, SIGNAL( timeout() ), this, SLOT(slot_stepforward() ));
+
+    this->setMaximumHeight(timeRecord->height());
 
 }
 

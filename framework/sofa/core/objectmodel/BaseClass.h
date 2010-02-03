@@ -153,7 +153,7 @@ public:
         ::sofa::core::objectmodel::BaseData::BaseInitData res;          \
         this->initData0(field, res, name, help,                         \
                         isDisplayed, isReadOnly);                       \
-        res.group = GetClass()->className.c_str();                      \
+        res.parentClass = GetClass()->className.c_str();                      \
         return res;                                                     \
     }                                                                   \
     template<class SOFA_T> typename Data<SOFA_T>::InitData initData(    \
@@ -163,7 +163,7 @@ public:
         typename Data<SOFA_T>::InitData res;                            \
         this->initData0(field, res, value, name, help,                  \
                         isDisplayed, isReadOnly);                       \
-        res.group = GetClass()->className.c_str();                      \
+        res.parentClass = GetClass()->className.c_str();                      \
         return res;                                                     \
     }                                                                   \
     using Inherit1::sout;                                               \
