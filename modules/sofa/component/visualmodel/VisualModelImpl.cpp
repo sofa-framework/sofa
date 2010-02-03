@@ -159,6 +159,16 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
 
     addAlias(&f_useNormals, "normals");
     addAlias(&fileMesh, "filename");
+
+    field_vertices.setGroup("Vector");
+    field_vnormals.setGroup("Vector");
+    field_vtexcoords.setGroup("Vector");
+    field_triangles.setGroup("Vector");
+    field_quads.setGroup("Vector");
+
+    translation.setGroup("Transformation");
+    rotation.setGroup("Transformation");
+    scale.setGroup("Transformation");
 }
 
 VisualModelImpl::~VisualModelImpl()

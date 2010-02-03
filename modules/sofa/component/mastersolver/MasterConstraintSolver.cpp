@@ -228,11 +228,11 @@ MasterConstraintSolver::MasterConstraintSolver()
 
     _graphErrors.setWidget("graph");
     _graphErrors.setReadOnly(true);
-    _graphErrors.setGroup("BIG");
+    _graphErrors.setGroup("Graph");
 
     _graphConstraints.setWidget("graph");
     _graphConstraints.setReadOnly(true);
-    _graphErrors.setGroup("BIG");
+    _graphConstraints.setGroup("Graph");
 }
 
 MasterConstraintSolver::~MasterConstraintSolver()

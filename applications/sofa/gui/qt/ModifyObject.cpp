@@ -112,73 +112,56 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
     {
         const std::vector< std::pair<std::string, core::objectmodel::BaseData*> >& fields = node->getFields();
 
-        std::vector< QTabulationModifyObject* > propertyTabs;
-        std::vector< QTabulationModifyObject* > visualizationTabs;
+        std::map< std::string, std::vector<QTabulationModifyObject* > > groupTabulation;
 
-        enum TABTYPE {PROPERTYTAB, VISUALIZATIONTAB};
+        //If we operate on a Node, we have to ...
+        if(isNode)
+        {
+            if (dialogFlags_.REINIT_FLAG)
+            {
+                //add the widgets to apply some basic transformations
+                std::vector<QTabulationModifyObject* > &tabs=groupTabulation[std::string("Property")];
+                tabs.push_back(new QTabulationModifyObject(this,node, item_,1));
+
+                transformation = new QTransformationWidget(tabs.back(), QString("Transformation"));
+                tabs.back()->layout()->add( transformation );
+                tabs.back()->externalWidgetAddition(transformation->getNumWidgets());
+                connect( transformation, SIGNAL(TransformationDirty(bool)), buttonUpdate, SLOT( setEnabled(bool) ) );
+            }
+            //add the widgets to display the visual flags
+            {
+                std::vector<QTabulationModifyObject* > &tabs=groupTabulation[std::string("Visualization")];
+                tabs.push_back(new QTabulationModifyObject(this,node, item_,1));
+
+                displayFlag = new QDisplayFlagWidget(tabs.back(),dynamic_cast< simulation::Node *>(node),QString("Visualization Flags"));
+                tabs.back()->layout()->add( displayFlag );
+                tabs.back()->externalWidgetAddition(displayFlag->getNumWidgets());
+
+                connect(buttonUpdate,   SIGNAL(clicked() ),               displayFlag, SLOT( applyFlags() ) );
+                connect(buttonOk,       SIGNAL(clicked() ),               displayFlag, SLOT( applyFlags() ) );
+                connect(displayFlag,    SIGNAL( DisplayFlagDirty(bool) ), buttonUpdate, SLOT( setEnabled(bool) ) );
+            }
+        }
+
         for( std::vector< std::pair<std::string, core::objectmodel::BaseData*> >::const_iterator it = fields.begin(); it!=fields.end(); ++it)
         {
             core::objectmodel::BaseData* data=it->second;
 
             //For each Data of the current Object
             //We determine where it belongs:
-            TABTYPE type;
-            //Find if the name starts with show or draw
-            const std::string name = ((*it).first).substr(0,4);
-            if (name == "show" || name == "draw") type=VISUALIZATIONTAB;
-            else                                  type=PROPERTYTAB;
+            std::string currentGroup=data->getGroup();
+
+            if (currentGroup.empty()) currentGroup="Property";
+            else if (currentGroup == "Visualization" &&
+                    dynamic_cast< Data<int> * >( data ) &&
+                    ( (*it).first == "showVisualModels" || (*it).first == "showBehaviorModels" ||  (*it).first == "showCollisionModels" ||  (*it).first == "showBoundingCollisionModels" ||  (*it).first == "showMappings" ||  (*it).first == "showMechanicalMappings" ||  (*it).first == "showForceFields" ||  (*it).first == "showInteractionForceFields" ||  (*it).first == "showWireFrame" ||  (*it).first == "showNormals" ) )
+                continue;
 
             QTabulationModifyObject* currentTab=NULL;
-            switch(type)
-            {
-            case PROPERTYTAB:
-            {
-                if (propertyTabs.empty())
-                {
-                    propertyTabs.push_back(new QTabulationModifyObject(this,node, item_,propertyTabs.size()+1));
-                    if(dialogFlags_.REINIT_FLAG && isNode)
-                    {
-                        transformation = new QTransformationWidget(propertyTabs.back(), QString("Transformation"));
-                        propertyTabs.back()->layout()->add( transformation );
-                        propertyTabs.back()->externalWidgetAddition(transformation->getNumWidgets());
-                        connect( transformation, SIGNAL(TransformationDirty(bool)), buttonUpdate, SLOT( setEnabled(bool) ) );
-                    }
-                }
-                else if ( propertyTabs.back()->isFull() || data->getGroup() == std::string("BIG"))
-                {
-                    propertyTabs.push_back(new QTabulationModifyObject(this,node, item_,propertyTabs.size()+1));
-                    if ( data->getGroup() == std::string("BIG")) propertyTabs.back()->setFull();
-                }
-                currentTab = propertyTabs.back();
-                break;
-            }
-            case VISUALIZATIONTAB:
-            {
-                if (visualizationTabs.empty() )
-                {
-                    visualizationTabs.push_back(new QTabulationModifyObject(this,node, item_,visualizationTabs.size()+1));
-                    if (isNode)
-                    {
-                        displayFlag = new QDisplayFlagWidget(visualizationTabs.back(),dynamic_cast< simulation::Node *>(node),QString("Visualization Flags"));
-                        visualizationTabs.back()->layout()->add( displayFlag );
-                        visualizationTabs.back()->externalWidgetAddition(displayFlag->getNumWidgets());
 
-                        connect(buttonUpdate,   SIGNAL(clicked() ),          displayFlag, SLOT( applyFlags() ) );
-                        connect(buttonOk,       SIGNAL(clicked() ),          displayFlag, SLOT( applyFlags() ) );
-                        connect(displayFlag, SIGNAL( DisplayFlagDirty(bool) ), buttonUpdate, SLOT( setEnabled(bool) ) );
-                    }
-                }
-                else if ( visualizationTabs.back()->isFull())
-                {
-                    visualizationTabs.push_back(new QTabulationModifyObject(this,node, item_,visualizationTabs.size()+1));
-                }
-
-                currentTab = visualizationTabs.back();
-                if ( dynamic_cast< Data<int> * >( data ) &&
-                        ( (*it).first == "showVisualModels" || (*it).first == "showBehaviorModels" ||  (*it).first == "showCollisionModels" ||  (*it).first == "showBoundingCollisionModels" ||  (*it).first == "showMappings" ||  (*it).first == "showMechanicalMappings" ||  (*it).first == "showForceFields" ||  (*it).first == "showInteractionForceFields" ||  (*it).first == "showWireFrame" ||  (*it).first == "showNormals" ) ) continue;
-                break;
-            }
-            }
+            std::vector<QTabulationModifyObject* > &tabs=groupTabulation[currentGroup];
+            if (tabs.empty() || tabs.back()->isFull()) tabs.push_back(new QTabulationModifyObject(this,node, item_,tabs.size()+1));
+            currentTab = tabs.back();
 
             currentTab->addData(data, getFlags());
             connect(buttonUpdate,   SIGNAL(clicked() ),          currentTab, SLOT( updateDataValue() ) );
@@ -188,25 +171,36 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
             connect(currentTab, SIGNAL( TabDirty(bool) ), buttonUpdate, SLOT( setEnabled(bool) ) );
         }
 
-        //Add Property Tabs
-        for (unsigned int i=0; i<propertyTabs.size(); ++i)
         {
-            QString nameTab;
-            if (propertyTabs.size() == 1) nameTab="Property";
-            else                          nameTab=QString("Property ")+QString::number(propertyTabs[i]->getIndex()) + "/" + QString::number(propertyTabs.size());
-            dialogTab->addTab(propertyTabs[i],nameTab);
-            propertyTabs[i]->addStretch();
-        }
-        //Add Visualization Tabs
-        for (unsigned int i=0; i<visualizationTabs.size(); ++i)
-        {
-            QString nameTab;
-            if (visualizationTabs.size() == 1) nameTab="Visualization";
-            else                               nameTab=QString("Visualization ")+QString::number(visualizationTabs[i]->getIndex()) + "/" + QString::number(visualizationTabs.size());
-            dialogTab->addTab(visualizationTabs[i], nameTab);
-            visualizationTabs[i]->addStretch();
+            //Put first the Property Tab
+            const std::string groupName="Property";
+            std::vector<QTabulationModifyObject* > &tabsProperty=groupTabulation[groupName];
+            for (unsigned int i=0; i<tabsProperty.size(); ++i)
+            {
+                QString nameTab;
+                if (tabsProperty.size() == 1) nameTab=groupName.c_str();
+                else                  nameTab=QString(groupName.c_str())+ " " + QString::number(tabsProperty[i]->getIndex()) + "/" + QString::number(tabsProperty.size());
+                dialogTab->addTab(tabsProperty[i],nameTab);
+                tabsProperty[i]->addStretch();
+            }
+            groupTabulation.erase(groupName);
         }
 
+        std::map< std::string, std::vector<QTabulationModifyObject* > >::iterator it;
+        for (it=groupTabulation.begin(); it!=groupTabulation.end(); ++it)
+        {
+            const std::string &groupName=it->first;
+            std::vector<QTabulationModifyObject* > &tabs=it->second;
+
+            for (unsigned int i=0; i<tabs.size(); ++i)
+            {
+                QString nameTab;
+                if (tabs.size() == 1) nameTab=groupName.c_str();
+                else                  nameTab=QString(groupName.c_str())+ " " + QString::number(tabs[i]->getIndex()) + "/" + QString::number(tabs.size());
+                dialogTab->addTab(tabs[i],nameTab);
+                tabs[i]->addStretch();
+            }
+        }
 
         //Energy Widget
         if (simulation::Node* real_node = dynamic_cast< simulation::Node* >(node))
