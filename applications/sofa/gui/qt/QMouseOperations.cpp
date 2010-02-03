@@ -164,33 +164,17 @@ QInciseOperation::QInciseOperation()
 
 void QInciseOperation::setEnableBox(bool i)
 {
-    switch (i)
-    {
-    case true:
-        advancedOptions->setHidden(false);
-        break;
-    case false:
-        advancedOptions->setHidden(true);
-        break;
-    default:
-        break;
-    }
+    advancedOptions->setShown(i);
 }
 
 void QInciseOperation::setFinishIncision(bool i)
 {
-    if (i)
-        finishIncision = true;
-    else
-        finishIncision = false;
+    finishIncision = i;
 }
 
 void QInciseOperation::setkeepPoint(bool i)
 {
-    if (i)
-        keepPoint = true;
-    else
-        keepPoint = false;
+    keepPoint = i;
 }
 
 

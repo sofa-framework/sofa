@@ -460,7 +460,7 @@ void FrameDiagonalMass<DataTypes, MassType>::updateMass ( MassType& mass, const 
     for ( j=0; j<nbP; j++ )
     {
         JT.transpose ( J[j] );
-        JT*=vol[j] * volmass[j];
+        JT*=(Real)(vol[j] * volmass[j]);
         //*/ Without lumping
         JJT=JT*J[j];
         frameMass += JJT;
@@ -505,16 +505,16 @@ void FrameDiagonalMass<DataTypes, MassType>::rotateM( Mat66& M, const Mat66& M0,
 }
 
 template<class DataTypes, class MassType>
-void FrameDiagonalMass<DataTypes, MassType>::QtoR( Mat33& M, const Quat& q)
+void FrameDiagonalMass<DataTypes, MassType>::QtoR( Mat33& M, const sofa::helper::Quater<Real>& q)
 {
 // q to M
-    double xs = q[0]*2., ys = q[1]*2., zs = q[2]*2.;
-    double wx = q[3]*xs, wy = q[3]*ys, wz = q[3]*zs;
-    double xx = q[0]*xs, xy = q[0]*ys, xz = q[0]*zs;
-    double yy = q[1]*ys, yz = q[1]*zs, zz = q[2]*zs;
-    M[0][0] = 1.0 - (yy + zz); M[0][1]= xy - wz; M[0][2] = xz + wy;
-    M[1][0] = xy + wz; M[1][1] = 1.0 - (xx + zz); M[1][2] = yz - wx;
-    M[2][0] = xz - wy; M[2][1] = yz + wx; M[2][2] = 1.0 - (xx + yy);
+    Real xs = q[0]*(Real)2., ys = q[1]*(Real)2., zs = q[2]*(Real)2.;
+    Real wx = q[3]*xs, wy = q[3]*ys, wz = q[3]*zs;
+    Real xx = q[0]*xs, xy = q[0]*ys, xz = q[0]*zs;
+    Real yy = q[1]*ys, yz = q[1]*zs, zz = q[2]*zs;
+    M[0][0] = (Real)1.0 - (yy + zz); M[0][1]= xy - wz; M[0][2] = xz + wy;
+    M[1][0] = xy + wz; M[1][1] = (Real)1.0 - (xx + zz); M[1][2] = yz - wx;
+    M[2][0] = xz - wy; M[2][1] = yz + wx; M[2][2] = (Real)1.0 - (xx + yy);
 }
 
 

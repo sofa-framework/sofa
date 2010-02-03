@@ -378,11 +378,11 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                 {
                     if ((fromModel) && (noNewTriangles.getValue()==false))
                     {
-                        const sofa::helper::vector<Tetrahedron> &tetrahedronArray=fromModel->getTetrahedra();
+                        //const sofa::helper::vector<Tetrahedron> &tetrahedronArray=fromModel->getTetrahedra();
                         const sofa::helper::vector<unsigned int> &tab = ( static_cast< const TetrahedraAdded *>( *itBegin ) )->getArray();
 
                         sofa::helper::vector< TriangleID > triangles_to_remove;
-                        int nb_elems = toModel->getNbTriangles();
+                        //int nb_elems = toModel->getNbTriangles();
 
                         for (unsigned int i = 0; i < tab.size(); ++i)
                         {

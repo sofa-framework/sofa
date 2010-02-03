@@ -109,7 +109,7 @@ int DeformableOnRigidFrameMapping<BasicMapping>::addPoint(const Coord& /*c*/)
 }
 
 template <class BasicMapping>
-int DeformableOnRigidFrameMapping<BasicMapping>::addPoint(const Coord& c, int indexFrom)
+int DeformableOnRigidFrameMapping<BasicMapping>::addPoint(const Coord& /*c*/, int /*indexFrom*/)
 {
     std::cout<<"addPoint should be supress"<<std::endl;
     return 0;
@@ -169,13 +169,13 @@ const typename DataTypes::VecCoord* M_getX0(core::componentmodel::behavior::Mapp
     return NULL;
 }
 
-template <class BasicMapping>
+/*template <class BasicMapping>
 const typename DeformableOnRigidFrameMapping<BasicMapping>::VecCoord & DeformableOnRigidFrameMapping<BasicMapping>::getPoints()
 {
 
-    return VecCoord();
+        return VecCoord();
 }
-
+*/
 template <class BasicMapping>
 void DeformableOnRigidFrameMapping<BasicMapping>::apply( typename Out::VecCoord& out  , const typename In::VecCoord & inDeformed  , const typename InRoot::VecCoord * inRigid  )
 {
@@ -278,8 +278,8 @@ void DeformableOnRigidFrameMapping<BasicMapping>::applyJ( typename Out::VecDeriv
     {
         Deriv v,omega;//Vec3d
         out.resize(inDeformed.size());
-        unsigned int cptOut;
-        unsigned int val;
+        //unsigned int cptOut;
+        //unsigned int val;
 
 
         //switch (repartition.getValue().size())
