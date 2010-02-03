@@ -906,7 +906,7 @@ void Mesh::mergeVertices(float dist)
             new_pos_sum[new_p] += pos;
             new_pos_count[new_p] += 1;
             if (new_d2 > 0.0f)
-                new_pos[new_p] = new_pos_sum[new_p] / new_pos_count[new_p];
+                new_pos[new_p] = new_pos_sum[new_p] / (float)new_pos_count[new_p];
         }
         else
         {
@@ -938,7 +938,7 @@ void Mesh::mergeVertices(float dist)
                 sums[old2new_v[p0]] += getPT(p0);
             points_t.resize(new_nbp);
             for (int p = 0; p < new_nbp; ++p)
-                points_t[p] = sums[p] / new_pos_count[p];
+                points_t[p] = sums[p] / (float)new_pos_count[p];
         }
 
         if (getAttrib(MESH_POINTS_NORMAL))
@@ -964,8 +964,8 @@ void Mesh::mergeVertices(float dist)
             points_c.resize(new_nbp);
             for (int p = 0; p < new_nbp; ++p)
             {
-                Vec4f c = sums[p] / new_pos_count[p];
-                Vec4f cb;
+                Vec4f c = sums[p] / (float)new_pos_count[p];
+                Vec4b cb;
                 for (int i=0;i<4;++i)
                 {
                     int v = (int)(c[i]+0.5f);
