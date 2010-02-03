@@ -95,7 +95,9 @@ public:
     virtual Result fwdConstraint(simulation::Node* node, core::componentmodel::behavior::BaseConstraint* c)
     {
         ctime_t t0 = begin(node, c);
+//		  unsigned int temp = contactId;
         c->applyConstraint(contactId);
+//		  std::cout << node->getName() << " : " << contactId - temp << std::endl;
         end(node, c, t0);
         return RESULT_CONTINUE;
     }
@@ -199,6 +201,11 @@ public:
     Data<int> _maxIt;
     Data<bool> doCollisionsFirst;
     Data<bool> doubleBuffer;
+    Data<bool> scaleTolerance;
+    Data<bool> _allVerified;
+    Data<double> _sor;
+
+    Data<std::map < std::string, sofa::helper::vector<double> > > _graphErrors, _graphConstraints;
 
     ConstraintProblem *getConstraintProblem(void) {return (bufCP1 == true) ? &CP1 : &CP2;};
 

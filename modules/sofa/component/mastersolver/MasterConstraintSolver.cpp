@@ -39,8 +39,6 @@
 #include <sofa/helper/AdvancedTimer.h>
 
 #include <math.h>
-#include <iostream>
-#include <iomanip>
 
 #include <map>
 
@@ -73,6 +71,15 @@ ConstraintProblem::~ConstraintProblem()
     _d.clear();
     _W.clear();
     _force.clear();
+    // if not null delete the old constraintProblem
+    for(int i=0; i<_dim; i++)
+    {
+        if (_constraintsResolutions[i] != NULL)
+        {
+            delete _constraintsResolutions[i];
+            _constraintsResolutions[i] = NULL;
+        }
+    }
     _constraintsResolutions.clear(); // _constraintsResolutions.clear();
     delete(_timer);
 }
@@ -202,7 +209,6 @@ void ConstraintProblem::gaussSeidelConstraintTimed(double &timeout, int numItMax
     }
 
     std::cout<<"------  No convergence in gaussSeidelConstraint Timed before time criterion !: error = " << error <<" ------" <<std::endl;
-
 }
 
 
@@ -211,9 +217,22 @@ MasterConstraintSolver::MasterConstraintSolver()
      _tol( initData(&_tol, 0.00001, "tolerance", "Tolerance of the Gauss-Seidel")),
      _maxIt( initData(&_maxIt, 1000, "maxIterations", "Maximum number of iterations of the Gauss-Seidel")),
      doCollisionsFirst(initData(&doCollisionsFirst, false, "doCollisionsFirst","Compute the collisions first (to support penality-based contacts)")),
-     doubleBuffer( initData(&doubleBuffer, false, "doubleBuffer","Buffer the constraint problem in a double buffer to be accessible with an other thread"))
+     doubleBuffer( initData(&doubleBuffer, false, "doubleBuffer","Buffer the constraint problem in a double buffer to be accessible with an other thread")),
+     scaleTolerance( initData(&scaleTolerance, true, "scaleTolerance","Scale the error tolerance with the number of constraints")),
+     _allVerified( initData(&_allVerified, false, "allVerified","All contraints must be verified (each constraint's error < tolerance)")),
+     _sor( initData(&_sor, 1.0, "sor","Successive Over Relaxation parameter (0-2)")),
+     _graphErrors( initData(&_graphErrors,"graphErrors","Sum of the constraints' errors at each iteration")),
+     _graphConstraints( initData(&_graphConstraints,"graphConstraints","Graph of each constraint's error at the end of the resolution"))
 {
     bufCP1 = true;
+
+    _graphErrors.setWidget("graph");
+    _graphErrors.setReadOnly(true);
+    _graphErrors.setGroup("BIG");
+
+    _graphConstraints.setWidget("graph");
+    _graphConstraints.setReadOnly(true);
+    _graphErrors.setGroup("BIG");
 }
 
 MasterConstraintSolver::~MasterConstraintSolver()
@@ -285,7 +304,6 @@ void MasterConstraintSolver::step ( double dt )
 
     //////// TODO : propagate velocity !!
 
-
     ////////propagate acceleration ? //////
     core::componentmodel::behavior::BaseMechanicalState::VecId dx_id = core::componentmodel::behavior::BaseMechanicalState::VecId::dx();
     simulation::MechanicalVOpVisitor(dx_id).execute(context);
@@ -299,7 +317,6 @@ void MasterConstraintSolver::step ( double dt )
         sout<<" Free Motion                           " << ( (double) timer->getTime() - time)*timeScale <<" ms" <<sendl;
         time = (double) timer->getTime();
     }
-
 
     if (!doCollisionsFirst.getValue())
     {
@@ -328,7 +345,6 @@ void MasterConstraintSolver::step ( double dt )
         cc->resetContactForce();
     }
 
-
     //////////////////////////////////////CONSTRAINTS RESOLUTION//////////////////////////////////////////////////////////////////////
     if (debug)
         serr<<"constraints Matrix construction is called"<<sendl;
@@ -336,18 +352,16 @@ void MasterConstraintSolver::step ( double dt )
     unsigned int numConstraints = 0;
 
 
-    sofa::helper::AdvancedTimer::stepBegin("Accumulate Constraint");
-    // mechanical action executed from root node to propagate the constraints
+    sofa::helper::AdvancedTimer::stepBegin("Constraints definition");
+    // calling resetConstraint on LMConstraints and MechanicalStates
     simulation::MechanicalResetConstraintVisitor().execute(context);
-    // calling applyConstraint
-//	simulation::MechanicalAccumulateConstraint(numConstraints).execute(context);
+
+    // calling applyConstraint on each constraint
     MechanicalSetConstraint(numConstraints).execute(context);
-
-    // calling accumulateConstraint
-    MechanicalAccumulateConstraint2().execute(context);
-    sofa::helper::AdvancedTimer::stepEnd  ("Accumulate Constraint");
-
     sofa::helper::AdvancedTimer::valSet("numConstraints", numConstraints);
+
+    // calling accumulateConstraint on the mappings
+    MechanicalAccumulateConstraint2().execute(context);
 
     if (debug)
         serr<<"   1. resize constraints : numConstraints="<< numConstraints<<sendl;
@@ -356,9 +370,6 @@ void MasterConstraintSolver::step ( double dt )
         CP2.clear(numConstraints,this->_tol.getValue());
     else
         CP1.clear(numConstraints,this->_tol.getValue());
-
-
-
 
     if (debug)
         serr<<"   2. compute violation"<<sendl;
@@ -371,16 +382,18 @@ void MasterConstraintSolver::step ( double dt )
     /// calling getConstraintResolution: each constraint provides a method that is used to solve it during GS iterations
     if (debug)
         serr<<"   3. get resolution method for each constraint"<<sendl;
+
     if (doubleBuffer.getValue() && bufCP1)
         MechanicalGetConstraintResolutionVisitor(CP2.getConstraintResolutions()).execute(context);
     else
         MechanicalGetConstraintResolutionVisitor(CP1.getConstraintResolutions()).execute(context);
+    sofa::helper::AdvancedTimer::stepEnd  ("Constraints definition");
 
     /// calling getCompliance => getDelassusOperator(_W) = H*C*Ht
     if (debug)
         serr<<"   4. get Compliance "<<sendl;
 
-    sofa::helper::AdvancedTimer::stepBegin("Compliance");
+    sofa::helper::AdvancedTimer::stepBegin("Get Compliance");
     for (unsigned int i=0; i<constraintCorrections.size(); i++ )
     {
         core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
@@ -389,7 +402,8 @@ void MasterConstraintSolver::step ( double dt )
         else
             cc->getCompliance(CP1.getW());
     }
-    sofa::helper::AdvancedTimer::stepEnd  ("Compliance");
+
+    sofa::helper::AdvancedTimer::stepEnd  ("Get Compliance");
 
     if ( displayTime.getValue() )
     {
@@ -399,11 +413,6 @@ void MasterConstraintSolver::step ( double dt )
 
 /////////////////////////////////// debug with contact: compare results when only contacts are involved in the scene ////////////////
     ///   TO BE REMOVED  ///
-
-
-
-
-
     sofa::helper::AdvancedTimer::stepBegin("GaussSeidel");
     bool debugWithContact = false;
     if (debugWithContact)
@@ -432,10 +441,7 @@ void MasterConstraintSolver::step ( double dt )
     else
         gaussSeidelConstraint(numConstraints, CP1.getDfree()->ptr(), CP1.getW()->lptr(), CP1.getF()->ptr(), CP1.getD()->ptr(), CP1.getConstraintResolutions());
 
-
     sofa::helper::AdvancedTimer::stepEnd  ("GaussSeidel");
-
-
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     if ( displayTime.getValue() )
@@ -450,6 +456,7 @@ void MasterConstraintSolver::step ( double dt )
         sout<<"constraintCorrections motion is called"<<sendl;
 
     ///////////////////////////////////////CORRECTIVE MOTION //////////////////////////////////////////////////////////////////////////
+    sofa::helper::AdvancedTimer::stepBegin("Corrective Motion");
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
     {
         core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
@@ -458,7 +465,6 @@ void MasterConstraintSolver::step ( double dt )
         else
             cc->applyContactForce(CP1.getF());
     }
-
     simulation::MechanicalPropagateAndAddDxVisitor().execute(context);
     //simulation::MechanicalPropagatePositionAndVelocityVisitor().execute(context);
 
@@ -467,11 +473,13 @@ void MasterConstraintSolver::step ( double dt )
         core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
         cc->resetContactForce();
     }
+    sofa::helper::AdvancedTimer::stepEnd ("Corrective Motion");
 
     if ( displayTime.getValue() )
     {
         sout<<" ContactCorrections                    " <<( (double) timer->getTime() - time)*timeScale <<" ms" <<sendl;
         sout<<"  = Total                              " <<( (double) timer->getTime() - totaltime)*timeScale <<" ms" <<sendl;
+        sout<<" With : " << numConstraints << " constraints" << sendl;
         sout << "<<<<< End display MasterContactSolver time." << sendl;
     }
 
@@ -480,12 +488,7 @@ void MasterConstraintSolver::step ( double dt )
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-
-
-
     ////// in case of a double buffer we exchange buffer 1 and buffer 2: ////
-
-
 
     //////// debug double buffer
     //bool debugWithDoubleBuffer = true;
@@ -517,20 +520,15 @@ void MasterConstraintSolver::step ( double dt )
         bufCP1 = !bufCP1;
 // 		int a=getConstraintProblem()->getConstraintResolutions().size();
         //std::cerr<<"##"<<a<<"##"<<std::endl;
-
-
     }
-
-
-
-
-
 }
 
 void MasterConstraintSolver::gaussSeidelConstraint(int dim, double* dfree, double** w, double* force,
         double* d, std::vector<ConstraintResolution*>& res)
 {
-//	sout<<"------------------------------------ new iteration ---------------------------------"<<sendl;
+    if(!dim)
+        return;
+
     int i, j, k, l, nb;
 
     double errF[6];
@@ -539,6 +537,13 @@ void MasterConstraintSolver::gaussSeidelConstraint(int dim, double* dfree, doubl
     double tolerance = _tol.getValue();
     int numItMax = _maxIt.getValue();
     bool convergence = false;
+    double sor = _sor.getValue();
+    bool allVerified = _allVerified.getValue();
+    sofa::helper::vector<double> tempForces;
+    if(sor != 1.0) tempForces.resize(dim);
+
+    if(scaleTolerance.getValue() && !allVerified)
+        tolerance *= dim;
 
     for(i=0; i<dim; )
     {
@@ -546,8 +551,21 @@ void MasterConstraintSolver::gaussSeidelConstraint(int dim, double* dfree, doubl
         i += res[i]->nbLines;
     }
 
+    sofa::helper::vector<double>& graph_residuals = (*_graphErrors.beginEdit())["Error"];
+    graph_residuals.clear();
+
+    sofa::helper::vector<double> tabErrors;
+    tabErrors.resize(dim);
+
     for(i=0; i<numItMax; i++)
     {
+        bool constraintsAreVerified = true;
+        if(sor != 1.0)
+        {
+            for(j=0; j<dim; j++)
+                tempForces[j] = force[j];
+        }
+
         error=0.0;
         for(j=0; j<dim; ) // increment of j realized at the end of the loop
         {
@@ -570,33 +588,41 @@ void MasterConstraintSolver::gaussSeidelConstraint(int dim, double* dfree, doubl
             /*		if (i<3 && j<3)
             		{
             			std::cerr<<".............. iteration "<<i<< std::endl;
-
             			std::cerr<<"d ["<<j<<"]="<<d[j]<<"  - d ["<<j+1<<"]="<<d[j+1]<<"  - d ["<<j+2<<"]="<<d[j+2]<<std::endl;
-
             		}*/
             //////////////////////////////
 
             //3. the specific resolution of the constraint(s) is called
             res[j]->resolution(j, w, d, force);
 
-
             //4. the error is measured (displacement due to the new resolution (i.e. due to the new force))
+            double contraintError = 0.0;
             if(nb > 1)
             {
-                double terr = 0.0, terr2;
                 for(l=0; l<nb; l++)
                 {
-                    terr2=0;
+                    double lineError = 0.0;
                     for (int m=0; m<nb; m++)
                     {
-                        terr2 += w[j+l][j+m] * (force[j+m] - errF[m]);
+                        double dofError = w[j+l][j+m] * (force[j+m] - errF[m]);
+                        lineError += dofError * dofError;
                     }
-                    terr += terr2 * terr2;
+                    lineError = sqrt(lineError);
+                    if(lineError > tolerance)
+                        constraintsAreVerified = false;
+
+                    contraintError += lineError;
                 }
-                error += sqrt(terr);
             }
             else
-                error += fabs(w[j][j] * (force[j] - errF[0]));
+            {
+                contraintError = fabs(w[j][j] * (force[j] - errF[0]));
+                if(contraintError > tolerance)
+                    constraintsAreVerified = false;
+            }
+
+            error += contraintError;
+            tabErrors[j] = contraintError;
 
             j += nb;
         }
@@ -606,14 +632,27 @@ void MasterConstraintSolver::gaussSeidelConstraint(int dim, double* dfree, doubl
 //		{
 //			std::cerr<< std::setprecision(9)<<"FORCE and  DFREE at iteration "<<i<<": error"<<error<<std::endl;
 //			for(k=0; k<dim; k++)
-//			{
 //				std::cerr<< std::setprecision(9) <<force[k]<<"     "<< dfree[k] <<std::endl;
-//			}
-//
 //		}
 ////////////////////////////////
 
-        if(error < tolerance*(dim+1) && i>0) // do not stop at the first iteration (that is used for initial guess computation)
+        graph_residuals.push_back(error);
+
+        if(sor != 1.0)
+        {
+            for(j=0; j<dim; j++)
+                force[j] = sor * force[j] + (1-sor) * tempForces[j];
+        }
+
+        if(allVerified)
+        {
+            if(constraintsAreVerified)
+            {
+                convergence = true;
+                break;
+            }
+        }
+        else if(error < tolerance && i>0) // do not stop at the first iteration (that is used for initial guess computation)
         {
             convergence = true;
             break;
@@ -621,11 +660,11 @@ void MasterConstraintSolver::gaussSeidelConstraint(int dim, double* dfree, doubl
     }
 
     if(!convergence)
-        serr << "------  No convergence in gaussSeidelConstraint : error = " << error <<" ------" <<sendl;
+        serr << "No convergence in gaussSeidelConstraint : error = " << error << sendl;
     else if ( displayTime.getValue() )
         sout<<" Convergence after " << i+1 << " iterations " << sendl;
 
-
+    sofa::helper::AdvancedTimer::valSet("GS iterations", i+1);
 
     for(i=0; i<dim; )
     {
@@ -636,7 +675,22 @@ void MasterConstraintSolver::gaussSeidelConstraint(int dim, double* dfree, doubl
         i += t;
     }
 
+    _graphErrors.endEdit();
 
+    sofa::helper::vector<double>& graph_constraints = (*_graphConstraints.beginEdit())["Constraints"];
+    graph_constraints.clear();
+
+    for(j=0; j<dim; )
+    {
+        nb = res[j]->nbLines;
+
+        if(tabErrors[j])
+            graph_constraints.push_back(tabErrors[j]);
+
+        j += nb;
+    }
+
+    _graphConstraints.endEdit();
 }
 
 
