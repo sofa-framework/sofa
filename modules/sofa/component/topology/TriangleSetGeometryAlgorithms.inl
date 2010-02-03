@@ -2003,7 +2003,7 @@ void TriangleSetGeometryAlgorithms<DataTypes>::draw()
     EdgeSetGeometryAlgorithms<DataTypes>::draw();
 
     // Draw Triangles indices
-    if (debugViewTriangleIndices.getValue())
+    if (showTriangleIndices.getValue())
     {
         Mat<4,4, GLfloat> modelviewM;
         const VecCoord& coords = *(this->object->getX());

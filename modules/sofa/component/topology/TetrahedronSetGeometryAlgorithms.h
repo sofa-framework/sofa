@@ -65,10 +65,10 @@ public:
 
     TetrahedronSetGeometryAlgorithms()
         : TriangleSetGeometryAlgorithms<DataTypes>()
-        ,debugViewTetrahedraIndices (core::objectmodel::Base::initData(&debugViewTetrahedraIndices, (bool) false, "debugViewTetrahedraIndices", "Debug : view Tetrahedrons indices"))
+        ,showTetrahedraIndices (core::objectmodel::Base::initData(&showTetrahedraIndices, (bool) false, "showTetrahedraIndices", "Debug : view Tetrahedrons indices"))
         , _draw(core::objectmodel::Base::initData(&_draw, false, "drawTetrahedra","if true, draw the tetrahedra in the topology"))
     {
-        core::objectmodel::Base::addAlias(&debugViewTetrahedraIndices, "debugViewTetrasIndices");
+        core::objectmodel::Base::addAlias(&showTetrahedraIndices, "showTetrasIndices");
     }
 
     virtual ~TetrahedronSetGeometryAlgorithms() {}
@@ -119,7 +119,7 @@ public:
     bool checkNodeSequence(Tetra& tetra);
 
 protected:
-    Data<bool> debugViewTetrahedraIndices;
+    Data<bool> showTetrahedraIndices;
     Data<bool> _draw;
 };
 

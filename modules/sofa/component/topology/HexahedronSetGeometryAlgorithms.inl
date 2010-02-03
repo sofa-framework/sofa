@@ -464,7 +464,7 @@ void HexahedronSetGeometryAlgorithms<DataTypes>::draw()
     QuadSetGeometryAlgorithms<DataTypes>::draw();
 
     // Draw Hexa indices
-    if (debugViewHexaIndices.getValue())
+    if (showHexaIndices.getValue())
     {
         Mat<4,4, GLfloat> modelviewM;
         const VecCoord& coords = *(this->object->getX());

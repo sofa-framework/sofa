@@ -62,7 +62,7 @@ public:
 
     HexahedronSetGeometryAlgorithms()
         : QuadSetGeometryAlgorithms<DataTypes>()
-        , debugViewHexaIndices(core::objectmodel::Base::initData(&debugViewHexaIndices, (bool) false, "debugViewHexaIndices", "Debug : view Hexa indices"))
+        , showHexaIndices(core::objectmodel::Base::initData(&showHexaIndices, (bool) false, "showHexaIndices", "Debug : view Hexa indices"))
         , _draw(core::objectmodel::Base::initData(&_draw, false, "drawHexa","if true, draw the Hexahedron in the topology"))
     {}
 
@@ -130,7 +130,7 @@ public:
     virtual void draw();
 
 protected:
-    Data<bool> debugViewHexaIndices;
+    Data<bool> showHexaIndices;
     Data<bool> _draw;
 };
 

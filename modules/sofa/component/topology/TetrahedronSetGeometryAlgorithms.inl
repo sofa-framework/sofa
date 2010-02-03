@@ -510,7 +510,7 @@ void TetrahedronSetGeometryAlgorithms<DataTypes>::draw()
     TriangleSetGeometryAlgorithms<DataTypes>::draw();
 
     //Draw tetra indices
-    if (debugViewTetrahedraIndices.getValue())
+    if (showTetrahedraIndices.getValue())
     {
         Mat<4,4, GLfloat> modelviewM;
         const VecCoord& coords = *(this->object->getX());
