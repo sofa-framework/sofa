@@ -1,0 +1,20 @@
+ROOT base
+{
+        OFFSET  0.0  -2.0   0.0
+        CHANNELS 6 Xposition Yposition Zposition Xrotation Yrotation Zrotation
+
+                End Site
+                {
+                        OFFSET  0.0     0.0     1.0
+                }
+
+
+}
+
+MOTION
+Frames:   4
+Frame Time: 50
+0.0   1.0    9.5    0   0   0.0
+0.0   0.0    9.5    0   0   0.0
+0.0   -1.0    9.5    0   0   0.0
+
