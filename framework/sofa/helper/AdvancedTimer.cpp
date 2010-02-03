@@ -689,9 +689,9 @@ void TimerData::print()
             printTime(out, data.tmax);
             out << '\t';
             double mean = (double)data.ttotal / data.num;
-            printTime(out, mean);
+            printTime(out, (ctime_t)mean);
             out << '\t';
-            printTime(out, sqrt((double)data.ttotal2/data.num - mean*mean));
+            printTime(out, (ctime_t)(sqrt((double)data.ttotal2/data.num - mean*mean)));
             out << '\t';
             printTime(out, data.ttotal, (s == 0) ? 1 : nbIter);
             out << '\t';

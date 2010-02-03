@@ -794,7 +794,7 @@ public:
     void clear(int reserve=0);
 
     int addPointInTetra(const int index, const SReal* baryCoords);
-    int addPointOrientationInTetra ( const int tetraIndex, const Matrix3 baryCoorsOrient); // { return 0; }
+    virtual int addPointOrientationInTetra ( const int /*tetraIndex*/, const Matrix3 /*baryCoorsOrient*/) { return 0; }
 
     void init(const typename Out::VecCoord& out, const typename In::VecCoord& in);
 

@@ -186,7 +186,7 @@ private:
 
     void updateMass ( MassType& mass, const VMat36& J, const VD& vol, const VD& volmass );
     void rotateM( Mat66& M, const Mat66& M0, const Quat& q, const Quat& q0);
-    void QtoR( Mat33& M, const Quat& q);
+    void QtoR( Mat33& M, const sofa::helper::Quater<Real>& q);
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_MASS_FRAMEDIAGONALMASS_CPP)

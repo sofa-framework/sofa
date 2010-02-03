@@ -190,7 +190,7 @@ public:
 protected:
     class Loader;
     void load ( const char* filename );  /// SUPRESS ? ///
-    const VecCoord& getPoints();         /// SUPRESS ? ///
+    //const VecCoord& getPoints();         /// SUPRESS ? ///
     InRoot::Coord rootX;
 };
 

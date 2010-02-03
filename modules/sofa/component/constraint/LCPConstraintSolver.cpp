@@ -925,12 +925,12 @@ void LCPConstraintSolver::keepContactForcesValue()
 int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f)
 {
 
-    helper::system::thread::CTime timer;
+    //helper::system::thread::CTime timer;
     double time = 0.0;
     double timeScale = 1000.0 / (double)CTime::getTicksPerSec();
     if ( displayTime.getValue() )
     {
-        time = (double) timer.getTime();
+        time = (double) helper::system::thread::CTime::getTime();
     }
 
 
@@ -1251,12 +1251,12 @@ int LCPConstraintSolver::nlcp_gaussseidel_unbuilt(double *dfree, double *f)
 
 int LCPConstraintSolver::lcp_gaussseidel_unbuilt(double *dfree, double *f)
 {
-    helper::system::thread::CTime timer;
+    //helper::system::thread::CTime timer;
     double time = 0.0;
     double timeScale = 1.0;
     if ( displayTime.getValue() )
     {
-        time = (double) timer.getTime();
+        time = (double) helper::system::thread::CTime::getTime();
         timeScale = 1000.0 / (double)CTime::getTicksPerSec();
     }
 
@@ -1547,9 +1547,9 @@ void LCPConstraintSolver::draw()
                 simulation::getSimulation()->DrawUtility.drawArrow(
                     centerFine,centerFine+dirFineN*radius*2,
                     radius*2*0.03,
-                    defaulttype::Vec<4,float>(color.b[0] * (1.0f/255.0f),
-                            color.b[1] * (1.0f/255.0f),
-                            color.b[2] * (1.0f/255.0f),
+                    defaulttype::Vec<4,float>((float)(color.b[0]) * (1.0f/255.0f),
+                            (float)(color.b[1]) * (1.0f/255.0f),
+                            (float)(color.b[2]) * (1.0f/255.0f),
                             1.0f));
                 if (_mu > 1.0e-6)
                 {
@@ -1557,9 +1557,9 @@ void LCPConstraintSolver::draw()
                     simulation::getSimulation()->DrawUtility.drawArrow(
                         centerFine-dirFineT1*radius*_mu,centerFine+dirFineT1*radius*_mu,
                         radius*_mu*0.03,
-                        defaulttype::Vec<4,float>(color.b[0] * (1.0f/255.0f),
-                                color.b[1] * (1.0f/255.0f),
-                                color.b[2] * (1.0f/255.0f),
+                        defaulttype::Vec<4,float>((float)(color.b[0]) * (1.0f/255.0f),
+                                (float)(color.b[1]) * (1.0f/255.0f),
+                                (float)(color.b[2]) * (1.0f/255.0f),
                                 1.0f));
                     color.i = colors[colid + 4];
                     simulation::getSimulation()->DrawUtility.drawArrow(
