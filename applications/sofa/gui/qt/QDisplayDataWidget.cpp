@@ -2,18 +2,21 @@
 #include "DataWidget.h"
 #include "ModifyObject.h"
 #include "QMonitorTableWidget.h"
+
+
 #ifdef SOFA_QT4
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <Q3GroupBox>
 #include <QLabel>
+
 #else
 #include <qlayout.h>
 #include <qlabel.h>
 #include <qgroupbox.h>
 #endif
 
-
+#define TEXTSIZE_THRESHOLD 45
 
 namespace sofa
 {
@@ -76,6 +79,16 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
             setColumns(tableWidget->numColumnWidget());
             numWidgets_ += tableWidget->sizeWidget();
         }
+        else
+        {
+            QDataSimpleEdit* dataSimpleEdit = new QDataSimpleEdit(this,data_,data_->isReadOnly() && flags.READONLY_FLAG);
+            connect( dataSimpleEdit, SIGNAL( WidgetDirty(bool) ), this, SIGNAL (WidgetHasChanged(bool) ) );
+            connect( this, SIGNAL (WidgetUpdate() ), dataSimpleEdit, SLOT( UpdateWidget() ) );
+            connect( this, SIGNAL( DataUpdate() ), dataSimpleEdit, SLOT( UpdateData() ) );
+            numWidgets_ += dataSimpleEdit->sizeWidget();
+            setColumns(dataSimpleEdit->numColumnWidget());
+        }
+
     }
     else
     {
@@ -97,6 +110,69 @@ void QDisplayDataWidget::UpdateData()
 void QDisplayDataWidget::UpdateWidgets()
 {
     emit WidgetUpdate();
+}
+
+QDataSimpleEdit::QDataSimpleEdit(QWidget* parent, BaseData* data, bool readOnly):
+    QWidget(parent),
+    data_(data)
+{
+    if( data_ )
+    {
+        QString str  = QString( data_->getValueString().c_str() );
+        if( str.size() > TEXTSIZE_THRESHOLD )
+        {
+            innerWidget_.type = TEXTEDIT;
+            innerWidget_.widget.textEdit = new QTextEdit(parent);
+            connect(innerWidget_.widget.textEdit , SIGNAL( textChanged() ), this, SLOT ( setWidgetDirty() ) );
+            innerWidget_.widget.textEdit->setText(str);
+            innerWidget_.widget.textEdit->setReadOnly(readOnly);
+        }
+        else
+        {
+            innerWidget_.type = LINEEDIT;
+            innerWidget_.widget.lineEdit  = new QLineEdit(parent);
+            connect( innerWidget_.widget.lineEdit, SIGNAL(textChanged(const QString&)), this, SLOT( setWidgetDirty() ) );
+            innerWidget_.widget.lineEdit->setText(str);
+            innerWidget_.widget.lineEdit->setReadOnly(readOnly);
+        }
+    }
+}
+void QDataSimpleEdit::UpdateWidget()
+{
+    if(data_)
+    {
+        QString str = QString( data_->getValueString().c_str() );
+        if(innerWidget_.type == TEXTEDIT)
+        {
+            innerWidget_.widget.textEdit->setText(str);
+        }
+        else if(innerWidget_.type == LINEEDIT)
+        {
+            innerWidget_.widget.lineEdit->setText(str);
+        }
+    }
+}
+
+void QDataSimpleEdit::UpdateData()
+{
+    if(data_)
+    {
+        std::string value;
+        if( innerWidget_.type == TEXTEDIT)
+        {
+            value = innerWidget_.widget.textEdit->text().ascii();
+        }
+        else if( innerWidget_.type == LINEEDIT)
+        {
+            value = innerWidget_.widget.lineEdit->text().ascii();
+        }
+        data_->read(value);
+    }
+}
+
+void QDataSimpleEdit::setWidgetDirty(bool value)
+{
+    emit WidgetDirty(value);
 }
 
 

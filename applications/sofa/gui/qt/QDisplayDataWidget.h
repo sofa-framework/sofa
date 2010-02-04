@@ -3,11 +3,13 @@
 
 #ifdef SOFA_QT4
 #include <QWidget>
+#include <QLineEdit>
 #include <QTextEdit>
 #include <Q3GroupBox>
 #else
 #include <qwidget.h>
 #include <qtextedit.h>
+#include <qlineedit.h>
 #include <qgroupbox.h>
 #endif
 
@@ -57,6 +59,38 @@ protected:
     DataWidget* datawidget_;
     unsigned int numWidgets_;
 
+};
+
+
+
+class QDataSimpleEdit : public QWidget
+{
+    Q_OBJECT
+    typedef enum QEditType { TEXTEDIT, LINEEDIT } QEditType;
+    typedef union QEditWidgetPtr
+    {
+        QLineEdit* lineEdit;
+        QTextEdit* textEdit;
+    } QEditWidgetPtr;
+
+    typedef struct QSimpleEdit
+    {
+        QEditType type;
+        QEditWidgetPtr widget;
+    } QSimpleEdit;
+public :
+    QDataSimpleEdit(QWidget*, core::objectmodel::BaseData*, bool readonly);
+    unsigned int numColumnWidget() {return 2;}
+    unsigned int sizeWidget() {return 1;}
+public slots:
+    void UpdateData();
+    void UpdateWidget();
+    void setWidgetDirty(bool=true);
+signals :
+    void WidgetDirty(bool);
+protected:
+    QSimpleEdit innerWidget_;
+    core::objectmodel::BaseData* data_;
 };
 
 
