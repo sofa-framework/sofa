@@ -26,7 +26,6 @@
 #include <IHPDriver.h>
 
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/objectmodel/XitactEvent.h>
 //
 ////force feedback
 #include <sofa/component/controller/ForceFeedback.h>
