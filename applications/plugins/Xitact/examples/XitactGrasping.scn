@@ -85,9 +85,9 @@
     
 
     <Node name="VisuOfXitactBase">
-      <OglModel name="VM1" fileMesh="dt/cube_low_res.obj" scale="3" dy="15.0" />
-      <OglModel name="VM2" fileMesh="dt/cube_low_res.obj" scale="3"  />
-      <OglModel name="VM3" fileMesh="dt/cube_low_res.obj" scale="0.5" dz="-30" dy="23" />
+      <OglModel name="VM1" fileMesh="dt/cube_low_res.obj" scale="3"   dy="15.0" dz="30" />
+      <OglModel name="VM2" fileMesh="dt/cube_low_res.obj" scale="3"   dy="30.0" dz="30" />
+      <OglModel name="VM3" fileMesh="dt/cube_low_res.obj" scale="0.5" dy="38" />
       <RigidMapping object1="../.." object2="VM1" index="0"/>
       <RigidMapping object1="../.." object2="VM2" index="0"/>
       <RigidMapping object1="../.." object2="VM3" index="0"/>
@@ -99,9 +99,10 @@
       <RestShapeSpringsForceField points="0 1 2 3 4 5" stiffness="1000000 1000000 1000000 1000 1000000 1000000 " printLog="true"/>
       <UncoupledConstraintCorrection compliance="0.000001 0.000001 0.000001 0.001 0.000001 0.000001 " />
       <IHPDriver Scale="1000"/>
+      
 
       <Node name="Jaws">
-        <MechanicalObject name="GrasperDOFs" template="Rigid" position="0 0 0 0 0 0 1  0 0 0 0 0 0 1  0 0 0 0 0 0 1  0 0 0 0 0 0 1  0 0 0 0 0 0 1  0 0 0 0 0 0 1  0 0 0 0 0 0 1"/>
+        <MechanicalObject name="GrasperDOFs" template="Rigid" position="0 0 0 0 0 0 1  0 0 0 0 0 0 1  0 0 0 0 0 0 1  0 0 0 0 0 0 1  "/>
         <!--	<UniformMass mass="0.1 1  2.0 0 0  0 10.0 0  0 0 10.0"/>	-->
 
         <Node name="Tool1VM">
@@ -120,7 +121,7 @@
 
         <Node name="Grasp1_1VM">
           <OglModel name="VM" fileMesh="dt/mors1.trian" color="0.9 0.9 0.2 1.0" scale="1"  dy="25"/>
-          <RigidMapping object1="../.." object2="VM" index="3"/>
+          <RigidMapping object1="../.." object2="VM" index="2"/>
         </Node>
 
         <Node name="Grasp1_1CM">
@@ -130,12 +131,12 @@
           <Triangle group="1"/>
           <Line group="1"/>
           <Point group="1"/>
-          <RigidMapping object1="../.." object2="CM" index="3"/>
+          <RigidMapping object1="../.." object2="CM" index="2"/>
         </Node>
 
         <Node name="Grasp1_2VM">
           <OglModel name="VM" fileMesh="dt/mors2.trian" color="0.9 0.9 0.2 1.0" scale="1"   dy="25"/>
-          <RigidMapping object1="../.." object2="VM" index="4"/>
+          <RigidMapping object1="../.." object2="VM" index="3"/>
         </Node>
 
         <Node name="Grasp1_2CM">
@@ -145,7 +146,7 @@
           <Triangle group="1"/>
           <Line group="1"/>
           <Point group="1"/>
-          <RigidMapping object1="../.." object2="CM" index="4"/>
+          <RigidMapping object1="../.." object2="CM" index="3"/>
         </Node>
 
         <ArticulatedSystemMapping object1="Articulations" object2="Jaws/GrasperDOFs" rootModel="../bati"/>
@@ -155,7 +156,7 @@
 
       <Node name="articulationCenters">
         <Node name="articulationCenter1">
-          <ArticulationCenter parentIndex="0" childIndex="1" posOnParent="0 -30 0" posOnChild="0 0 0"/>
+          <ArticulationCenter parentIndex="0" childIndex="1" posOnParent="0 0 0" posOnChild="0 0 0"/>
           <Node name="articulations">
             <Articulation translation="0" rotation="1" rotationAxis="1 0 0" articulationIndex="0"/>
             <Articulation translation="0" rotation="1" rotationAxis="0 0 1" articulationIndex="1"/>
@@ -165,14 +166,14 @@
         </Node>
 
         <Node name="articulationCenter1_1">
-          <ArticulationCenter parentIndex="1" childIndex="3" posOnParent="0 0 0" posOnChild="0 0.0 0"/>
+          <ArticulationCenter parentIndex="1" childIndex="2" posOnParent="0 0 0" posOnChild="0 0.0 0"/>
           <Node name="articulations">
             <Articulation translation="0" rotation="1" rotationAxis="1 0 0" articulationIndex="4"/>
           </Node>
         </Node>
 
         <Node name="articulationCenter1_2">
-          <ArticulationCenter parentIndex="1" childIndex="4" posOnParent="0 0 0" posOnChild="0 0.0 0"/>
+          <ArticulationCenter parentIndex="1" childIndex="3" posOnParent="0 0 0" posOnChild="0 0.0 0"/>
           <Node name="articulations">
             <Articulation translation="0" rotation="1" rotationAxis="-1 0 0" articulationIndex="5"/>
           </Node>
