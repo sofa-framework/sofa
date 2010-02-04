@@ -585,7 +585,7 @@ void Node::executeVisitor(Visitor* action)
     }
     std::string infos = action->getInfos();
     if (!infos.empty())
-        std::cerr << "  : " << infos << std::endl;
+        std::cerr << "  : " << infos;
     std::cerr << std::endl;
     ++level;
 #endif

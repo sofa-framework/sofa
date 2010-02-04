@@ -82,9 +82,9 @@ void GraphScatteredMatrix::apply(GraphScatteredVector& res, GraphScatteredVector
 template<>
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::resetSystem()
 {
-    for (unsigned int g=0, nbg = getNbGroups(); g < nbg; ++g)
+    for (unsigned int g=0, nbg = isMultiSolve() ? 1 : getNbGroups(); g < nbg; ++g)
     {
-        setGroup(g);
+        if (!isMultiSolve()) setGroup(g);
         if (!currentGroup->systemMatrix) currentGroup->systemMatrix = new GraphScatteredMatrix(this);
         if (!currentGroup->systemRHVector) currentGroup->systemRHVector = new GraphScatteredVector(this,VecId());
         if (!currentGroup->systemLHVector) currentGroup->systemLHVector = new GraphScatteredVector(this,VecId());
@@ -112,9 +112,9 @@ void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::setSystemMBK
 {
     createGroups();
     resetSystem();
-    for (unsigned int g=0, nbg = getNbGroups(); g < nbg; ++g)
+    for (unsigned int g=0, nbg = isMultiSolve() ? 1 : getNbGroups(); g < nbg; ++g)
     {
-        setGroup(g);
+        if (!isMultiSolve()) setGroup(g);
         currentGroup->systemMatrix->setMBKFacts(mFact, bFact, kFact);
     }
 }
@@ -122,9 +122,9 @@ void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::setSystemMBK
 template<>
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::setSystemRHVector(VecId v)
 {
-    for (unsigned int g=0, nbg = getNbGroups(); g < nbg; ++g)
+    for (unsigned int g=0, nbg = isMultiSolve() ? 1 : getNbGroups(); g < nbg; ++g)
     {
-        setGroup(g);
+        if (!isMultiSolve()) setGroup(g);
         currentGroup->systemRHVector->set(v);
     }
 }
@@ -132,9 +132,9 @@ void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::setSystemRHV
 template<>
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::setSystemLHVector(VecId v)
 {
-    for (unsigned int g=0, nbg = getNbGroups(); g < nbg; ++g)
+    for (unsigned int g=0, nbg = isMultiSolve() ? 1 : getNbGroups(); g < nbg; ++g)
     {
-        setGroup(g);
+        if (!isMultiSolve()) setGroup(g);
         currentGroup->solutionVecId = v;
         currentGroup->systemLHVector->set(v);
     }
@@ -143,9 +143,9 @@ void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::setSystemLHV
 template<>
 void MatrixLinearSolver<GraphScatteredMatrix,GraphScatteredVector>::solveSystem()
 {
-    for (unsigned int g=0, nbg = getNbGroups(); g < nbg; ++g)
+    for (unsigned int g=0, nbg = isMultiSolve() ? 1 : getNbGroups(); g < nbg; ++g)
     {
-        setGroup(g);
+        if (!isMultiSolve()) setGroup(g);
         if (currentGroup->needInvert)
         {
             this->invert(*currentGroup->systemMatrix);
