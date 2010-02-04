@@ -78,6 +78,7 @@ public:
     DataPtr<bool> f_restRotations;
     Data<bool> recompute;
     Data<std::string> filePrefix;
+    Data<double> debugViewFrameScale;
     //Data<bool> newUnbuilt;
 
     PrecomputedConstraintCorrection(behavior::MechanicalState<DataTypes> *mm = NULL);

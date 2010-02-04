@@ -91,7 +91,7 @@ void PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::draw()
         q.fromMatrix(RotMat);
 
 
-        helper::gl::Axis::draw(x[i], q  , 10.0);
+        helper::gl::Axis::draw(x[i], q  , this->debugViewFrameScale.getValue());
 
     }
 }

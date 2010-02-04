@@ -79,6 +79,7 @@ PrecomputedConstraintCorrection<DataTypes>::PrecomputedConstraintCorrection(beha
     , f_restRotations(initDataPtr(&f_restRotations,&_restRotations,"restDeformations",""))
     , recompute(initData(&recompute, false, "recompute","if true, always recompute the compliance"))
     , filePrefix(initData(&filePrefix, "filePrefix","if not empty, the prefix used for the file containing the compliance matrix"))
+    , debugViewFrameScale(initData(&debugViewFrameScale, 1.0, "debugViewFrameScale","Scale on computed node's frame"))
     , mstate(mm)
     , invM(NULL)
     , appCompliance(NULL)
