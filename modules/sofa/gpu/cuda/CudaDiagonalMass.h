@@ -39,21 +39,23 @@ namespace mass
 using namespace sofa::gpu::cuda;
 using namespace sofa::component::linearsolver;
 
-// template<>
-// class DiagonalMassInternalData<CudaVec3Types,float> {
-// public :
-// 	typedef sofa::component::topology::PointData<float, CudaVector<float> > VecMass;
-// 	typedef CudaVector<float> MassVector;
-// };
-//
-// #ifdef SOFA_GPU_CUDA_DOUBLE
-// template<>
-// class DiagonalMassInternalData<CudaVec3dTypes,double> {
-// public :
-// 	typedef sofa::component::topology::PointData<double, CudaVector<double> > VecMass;
-// 	typedef CudaVector<double> MassVector;
-// };
-// #endif
+template<>
+class DiagonalMassInternalData<CudaVec3Types,float>
+{
+public :
+    typedef sofa::component::topology::PointData<float, CudaVector<float> > VecMass;
+    typedef CudaVector<float> MassVector;
+};
+
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template<>
+class DiagonalMassInternalData<CudaVec3dTypes,double>
+{
+public :
+    typedef sofa::component::topology::PointData<double, CudaVector<double> > VecMass;
+    typedef CudaVector<double> MassVector;
+};
+#endif
 
 
 template <>
@@ -62,8 +64,8 @@ void DiagonalMass<gpu::cuda::CudaVec3fTypes, float>::addMDx(VecDeriv& res, const
 template <>
 void DiagonalMass<gpu::cuda::CudaVec3fTypes, float>::accFromF(VecDeriv& a, const VecDeriv& f);
 
-// template<>
-// void DiagonalMass<gpu::cuda::CudaVec3fTypes, float>::addForce(VecDeriv& f, const VecCoord&, const VecDeriv&);
+template<>
+void DiagonalMass<gpu::cuda::CudaVec3fTypes, float>::addForce(VecDeriv& f, const VecCoord&, const VecDeriv&);
 
 template<>
 bool DiagonalMass<gpu::cuda::CudaVec3fTypes, float>::addBBox(double* minBBox, double* maxBBox);
@@ -78,8 +80,8 @@ void DiagonalMass<gpu::cuda::CudaVec3dTypes, double>::addMDx(VecDeriv& res, cons
 template <>
 void DiagonalMass<gpu::cuda::CudaVec3dTypes, double>::accFromF(VecDeriv& a, const VecDeriv& f);
 
-// template<>
-// void DiagonalMass<gpu::cuda::CudaVec3dTypes, double>::addForce(VecDeriv& f, const VecCoord&, const VecDeriv&);
+template<>
+void DiagonalMass<gpu::cuda::CudaVec3dTypes, double>::addForce(VecDeriv& f, const VecCoord&, const VecDeriv&);
 
 template<>
 bool DiagonalMass<gpu::cuda::CudaVec3dTypes, double>::addBBox(double* minBBox, double* maxBBox);

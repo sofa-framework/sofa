@@ -46,7 +46,11 @@ extern "C"
 
     void DiagonalMassCuda_accFromFf(unsigned int size, const void * mass, const void* f, void* a);
     void DiagonalMassCuda_accFromFd(unsigned int size, const void * mass, const void* f, void* a);
+
+    void DiagonalMassCuda_addForcef(unsigned int size, const void * mass,const void * g, const void* f);
+    void DiagonalMassCuda_addForced(unsigned int size, const void * mass,const void * g, const void* f);
 }
+
 
 }
 
@@ -61,34 +65,61 @@ namespace mass
 template<>
 void DiagonalMass<CudaVec3fTypes, float>::addMDx(VecDeriv& res, const VecDeriv& dx, double factor)
 {
-// 	DiagonalMassCuda_addMDxf(dx.size(),(float) factor, f_mass.getValue().deviceRead() , dx.deviceRead(), res.deviceWrite());
+    DiagonalMassCuda_addMDxf(dx.size(),(float) factor, f_mass.getValue().deviceRead() , dx.deviceRead(), res.deviceWrite());
+//     const MassVector &masses= f_mass.getValue();
+//     for (unsigned int i=0;i<dx.size();i++) {
+// 	res[i] += dx[i] * masses[i] * (Real)factor;
+//     }
 }
 
 template<>
 void DiagonalMass<CudaVec3fTypes, float>::accFromF(VecDeriv& a, const VecDeriv& f)
 {
-// 	DiagonalMassCuda_accFromFf(f.size(),  f_mass.getValue().deviceRead(), f.deviceRead(), a.deviceWrite());
+    DiagonalMassCuda_accFromFf(f.size(),  f_mass.getValue().deviceRead(), f.deviceRead(), a.deviceWrite());
+//     const MassVector &masses= f_mass.getValue();
+//     for (unsigned int i=0;i<f.size();i++) {
+//         a[i] = f[i] / masses[i];
+//     }
 }
 
-// template <>
-// void DiagonalMass<CudaVec3fTypes, float>::addForce(VecDeriv& f, const VecCoord&, const VecDeriv&) {
-//     // weight
+template <>
+void DiagonalMass<CudaVec3fTypes, float>::addForce(VecDeriv& f, const VecCoord& , const VecDeriv& )
+{
+    Vec3d g ( this->getContext()->getLocalGravity() );
+    const MassVector &masses= f_mass.getValue();
+    DiagonalMassCuda_addForcef(masses.size(),masses.deviceRead(),g.ptr(), f.deviceWrite());
+
+//     // gravity
 //     Vec3d g ( this->getContext()->getLocalGravity() );
-// 	Deriv theGravity;
-// 	DataTypes::set( theGravity, g[0], g[1], g[2]);
-// 	Deriv mg = theGravity * mass.getValue();
-// 	UniformMassCuda3f_addForce(f.size(), mg.ptr(), f.deviceWrite());
-// }
+//     Deriv theGravity;
+//     DataTypes::set ( theGravity, g[0], g[1], g[2]);
+//
+//     for (unsigned int i=0;i<masses.size();i++) {
+//         f[i] += theGravity*masses[i];
+//     }
+}
 
 template<>
 bool DiagonalMass<CudaVec3fTypes, float>::addBBox(double* minBBox, double* maxBBox)
 {
+//     const VecCoord& x = *this->mstate->getX();
+//     //if (!x.isHostValid()) return false; // Do not recompute bounding box if it requires to transfer data from device
+//     for (unsigned int i=0; i<x.size(); i++) {
+//         //const Coord& p = x[i];
+//         const Coord& p = x.getCached(i);
+//         for (int c=0;c<3;c++) {
+//             if (p[c] > maxBBox[c]) maxBBox[c] = p[c];
+//             if (p[c] < minBBox[c]) minBBox[c] = p[c];
+//         }
+//     }
+//     return true;
+
     const VecCoord& x = *this->mstate->getX();
-    //if (!x.isHostValid()) return false; // Do not recompute bounding box if it requires to transfer data from device
     for (unsigned int i=0; i<x.size(); i++)
     {
         //const Coord& p = x[i];
-        const Coord& p = x.getCached(i);
+        Real p[3] = {0.0, 0.0, 0.0};
+        DataTypes::get(p[0],p[1],p[2],x[i]);
         for (int c=0; c<3; c++)
         {
             if (p[c] > maxBBox[c]) maxBBox[c] = p[c];
@@ -104,34 +135,32 @@ bool DiagonalMass<CudaVec3fTypes, float>::addBBox(double* minBBox, double* maxBB
 template<>
 void DiagonalMass<CudaVec3dTypes, double>::addMDx(VecDeriv& res, const VecDeriv& dx, double factor)
 {
-// 	DiagonalMassCuda_addMDxd(dx.size(),(double) factor, f_mass.getValue().deviceRead() , dx.deviceRead(), res.deviceWrite());
+    DiagonalMassCuda_addMDxd(dx.size(),(double) factor, f_mass.getValue().deviceRead() , dx.deviceRead(), res.deviceWrite());
 }
 
 template<>
 void DiagonalMass<CudaVec3dTypes, double>::accFromF(VecDeriv& a, const VecDeriv& f)
 {
-// 	DiagonalMassCuda_accFromFd(f.size(),  f_mass.getValue().deviceRead(), f.deviceRead(), a.deviceWrite());
+    DiagonalMassCuda_accFromFd(f.size(),  f_mass.getValue().deviceRead(), f.deviceRead(), a.deviceWrite());
 }
 
-// template<>
-// void DiagonalMass<CudaVec3dTypes, double>::addForce(VecDeriv& f, const VecCoord&, const VecDeriv&) {
-// //     // weight
-// //     Vec3d g ( this->getContext()->getLocalGravity() );
-// // 	Deriv theGravity;
-// // 	DataTypes::set( theGravity, g[0], g[1], g[2]);
-// // 	Deriv mg = theGravity * mass.getValue();
-// // 	UniformMassCuda3d_addForce(f.size(), mg.ptr(), f.deviceWrite());
-// }
+template<>
+void DiagonalMass<CudaVec3dTypes, double>::addForce(VecDeriv& f, const VecCoord& , const VecDeriv& )
+{
+    Vec3d g ( this->getContext()->getLocalGravity() );
+    const MassVector &masses= f_mass.getValue();
+    DiagonalMassCuda_addForced(masses.size(),masses.deviceRead(),g.ptr(), f.deviceWrite());
+}
 
 template <>
 bool DiagonalMass<CudaVec3dTypes, double>::addBBox(double* minBBox, double* maxBBox)
 {
     const VecCoord& x = *this->mstate->getX();
-    //if (!x.isHostValid()) return false; // Do not recompute bounding box if it requires to transfer data from device
     for (unsigned int i=0; i<x.size(); i++)
     {
         //const Coord& p = x[i];
-        const Coord& p = x.getCached(i);
+        Real p[3] = {0.0, 0.0, 0.0};
+        DataTypes::get(p[0],p[1],p[2],x[i]);
         for (int c=0; c<3; c++)
         {
             if (p[c] > maxBBox[c]) maxBBox[c] = p[c];
