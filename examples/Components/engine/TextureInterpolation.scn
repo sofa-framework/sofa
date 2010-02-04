@@ -50,12 +50,12 @@
 			    min_value="0.0"
 			    max_value="10.0"
 			    manual_scale="1"
-			    debugViewStates="1"
+			    drawPotentiels="1"
 			    />
 
       <OglModel template="ExtVec3f" name="oglPotentiel"
 		texcoords="@EngineInterpolation.output_coordinates" 
-		texturename="textures/heatColor.bmp" />
+		texturename="textures/heatColor.bmp" useVBO="0" />
     </Node>
 
   </Node>

@@ -56,9 +56,13 @@ TextureInterpolation<DataTypes>::TextureInterpolation()
     , _minVal (initData (&_minVal, (Real)0, "min_value", "minimum value of state value for interpolation."))
     , _maxVal (initData (&_maxVal, (Real)0, "max_value", "maximum value of state value for interpolation."))
     , _changeScale (initData (&_changeScale, false, "manual_scale", "compute texture interpolation on manually scale defined above."))
-    ,_viewPotentiels (initData (&_viewPotentiels, (bool) false, "debugViewStates", "Debug: view state values."))
-    ,_ViewIndicesScale (initData(&_ViewIndicesScale, (float) 0.0001, "debugView_indiceScale", "Debug : scale of state values displayed."))
+    , drawPotentiels (initData (&drawPotentiels, (bool) false, "drawPotentiels", "Debug: view state values."))
+    , showIndicesScale (initData(&showIndicesScale, (float) 0.0001, "showIndicesScale", "Debug : scale of state values displayed."))
+    ,_vertexPloted (initData(&_vertexPloted, (unsigned int)0, "vertexPloted", "Vertex index of values display in graph for each iteration."))
+    ,f_graph( initData(&f_graph,"graph","Vertex state value per iteration") )
 {
+    f_graph.setWidget("graph");
+    f_graph.setReadOnly(true);
 }
 
 
@@ -74,6 +78,9 @@ void TextureInterpolation<DataTypes>::init()
 template <class DataTypes>
 void TextureInterpolation<DataTypes>::reinit()
 {
+    if (_vertexPloted.isDirty())
+        this->resetGraph();
+
     update();
 }
 
@@ -144,7 +151,48 @@ void TextureInterpolation<DataTypes>::update()
         outputs[i][1] = 0.0;
     }
 
+    this->updateGraph();
+
     _outputCoord.endEdit();
+}
+
+
+template <class DataTypes>
+void TextureInterpolation<DataTypes>::updateGraph()
+{
+    std::map < std::string, sofa::helper::vector<Real> >& graph = *f_graph.beginEdit();
+    const sofa::helper::vector <Coord>& realInputs = _inputField.getValue();
+
+    sofa::helper::vector<Real>& graph_val1 = graph["potential1"];
+    graph_val1.push_back( realInputs[ _vertexPloted.getValue()][0] +1); //+1 kick hack for scale resizing probleme with 0.000.. values.
+
+    if (realInputs[0].size() > 1) // Hack for 2D models
+    {
+        sofa::helper::vector<Real>& graph_val2 = graph["potential2"];
+        graph_val2.push_back( realInputs[ _vertexPloted.getValue() ][1] +1 );
+    }
+
+    f_graph.endEdit();
+}
+
+
+template <class DataTypes>
+void TextureInterpolation<DataTypes>::resetGraph()
+{
+    std::map < std::string, sofa::helper::vector<Real> >& graph = *f_graph.beginEdit();
+
+    sofa::helper::vector<Real>& graph_val1 = graph["potential1"];
+    graph_val1.clear();
+
+    Coord test;
+
+    if (test.size() > 1) // Hack for 2D models
+    {
+        sofa::helper::vector<Real>& graph_val2 = graph["potential2"];
+        graph_val2.clear();
+    }
+
+    f_graph.endEdit();
 }
 
 
@@ -156,7 +204,7 @@ void TextureInterpolation<DataTypes>::draw()
 
     glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S, GL_CLAMP);
 
-    if (_viewPotentiels.getValue())
+    if (drawPotentiels.getValue())
     {
         Mat<4,4, GLfloat> modelviewM;
         Vec<3, SReal> sceneMinBBox, sceneMaxBBox;
@@ -187,7 +235,6 @@ void TextureInterpolation<DataTypes>::draw()
                 potentiels[i] = realPotentiels[i][0];
         }
 
-
         if(potentiels.size() != coords.size())
         {
             std::cout << "Error: vector sizes differ" << std::endl;
@@ -196,13 +243,19 @@ void TextureInterpolation<DataTypes>::draw()
         unsigned int nbr = potentiels.size();
 
 
-        sofa::simulation::Node* context = dynamic_cast<sofa::simulation::Node*>(this->getContext());
+        sofa::simulation::Node* context = static_cast<sofa::simulation::Node*>(this->getContext());
         glColor3f(1.0,1.0,1.0);
         glDisable(GL_LIGHTING);
-        sofa::simulation::getSimulation()->computeBBox((sofa::simulation::Node*)context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
+        sofa::simulation::getSimulation()->computeBBox(context, sceneMinBBox.ptr(), sceneMaxBBox.ptr());
+
+        if (sceneMinBBox[0] > 10000000) // hack when BB is not found
+        {
+            sceneMaxBBox.assign(1);
+            sceneMinBBox.assign(0);
+        }
 
         // Recompute, in case Box has moved.
-        float scale = (sceneMaxBBox - sceneMinBBox).norm() * _ViewIndicesScale.getValue();
+        float scale = (sceneMaxBBox - sceneMinBBox).norm() * showIndicesScale.getValue();
 
         for (unsigned int i = 0; i<nbr; i++)
         {

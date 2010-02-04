@@ -34,6 +34,7 @@
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/component/component.h>
+#include <sofa/helper/map.h>
 
 namespace sofa
 {
@@ -109,8 +110,14 @@ protected:
     Data <bool> _changeScale;
 
     /// Data for interpolation scale:
-    Data <bool> _viewPotentiels;
-    Data<float> _ViewIndicesScale;
+    Data <bool> drawPotentiels;
+    Data <float> showIndicesScale;
+
+    Data <unsigned int> _vertexPloted;
+    Data <std::map < std::string, sofa::helper::vector<Real> > > f_graph;
+
+    void updateGraph();
+    void resetGraph();
 
 };
 
