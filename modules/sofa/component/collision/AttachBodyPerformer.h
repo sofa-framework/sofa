@@ -75,7 +75,7 @@ public:
 
 
 protected:
-    void start_partial(const BodyPicked& picked);
+    bool start_partial(const BodyPicked& picked);
     /*
     initialise MouseForceField according to template.
     StiffSpringForceField for Vec3
