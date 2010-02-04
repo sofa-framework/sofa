@@ -119,7 +119,7 @@ QDataSimpleEdit::QDataSimpleEdit(QWidget* parent, BaseData* data, bool readOnly)
     if( data_ )
     {
         QString str  = QString( data_->getValueString().c_str() );
-        if( str.size() > TEXTSIZE_THRESHOLD )
+        if( str.length() > TEXTSIZE_THRESHOLD )
         {
             innerWidget_.type = TEXTEDIT;
             innerWidget_.widget.textEdit = new QTextEdit(parent);
