@@ -62,6 +62,7 @@ Base::Base()
 {
     name.setParentClass("Base");
     f_printLog.setParentClass("Base");
+    f_tags.setParentClass("Base");
     sendl.setParent(this);
 }
 
