@@ -1,0 +1,22 @@
+
+************************************
+*         PluginXitact.txt        *
+************************************
+
+
+
+AUTHOR :
+ - C.Duriez
+
+
+
+
+LICENCE :
+ - None
+
+
+
+OTHER COMMENTS :
+link to XiRobot.lib has to be done manually 
+Do not forget to place XiRobot.dll in sofa/bin
+
