@@ -77,7 +77,7 @@ int initDevice(XiToolData& /*data*/)
 }
 
 IHPDriver::IHPDriver()
-    : Scale(initData(&Scale, 0.1, "Scale","Default scale applied to the Phantom Coordinates. "))
+    : Scale(initData(&Scale, 1.0, "Scale","Default scale applied to the Phantom Coordinates. "))
     , permanent(initData(&permanent, false, "permanent" , "Apply the force feedback permanently"))
 {
 
@@ -254,7 +254,7 @@ void IHPDriver::handleEvent(core::objectmodel::Event *event)
                 (*_mstate->getX0())[0].x() = thetaX;
                 (*_mstate->getX0())[1].x() = thetaZ;
                 (*_mstate->getX0())[2].x() = state.toolRoll;
-                (*_mstate->getX0())[3].x() = state.toolDepth;
+                (*_mstate->getX0())[3].x() = state.toolDepth*Scale.getValue();
                 (*_mstate->getX0())[4].x() =state.opening;
                 (*_mstate->getX0())[5].x() =state.opening;
             }
