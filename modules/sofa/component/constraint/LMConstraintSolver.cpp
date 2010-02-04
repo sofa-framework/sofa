@@ -27,6 +27,7 @@
 #include <sofa/core/componentmodel/behavior/LinearSolver.h>
 #include <sofa/component/linearsolver/FullMatrix.h>
 #include <sofa/component/linearsolver/FullVector.h>
+#include <sofa/simulation/common/AnimateBeginEvent.h>
 
 #include <sofa/defaulttype/Quat.h>
 
@@ -52,8 +53,12 @@ LMConstraintSolver::LMConstraintSolver():
     constraintPos( initData( &constraintPos, false, "constraintPos", "Constraint the position")),
     numIterations( initData( &numIterations, (unsigned int)25, "numIterations", "Number of iterations for Gauss-Seidel when solving the Constraints")),
     maxError( initData( &maxError, 0.0000001, "maxError", "Max error for Gauss-Seidel algorithm when solving the constraints")),
+    f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") ),
     A(NULL), c(NULL), Lambda(NULL)
 {
+    f_graph.setWidget("graph");
+    f_graph.setReadOnly(true);
+    this->f_listening.setValue(true);
 }
 
 
@@ -574,10 +579,23 @@ void LMConstraintSolver::buildRightHandTerm( ConstOrder Order, const helper::vec
     }
 }
 
+
 bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( ConstOrder Order, const helper::vector< core::componentmodel::behavior::BaseLMConstraint* > &LMConstraints, const MatrixEigen &A, VectorEigen c, VectorEigen &Lambda) const
 {
     if (f_printLog.getValue()) sout << "Using Gauss-Seidel solution"<<sendl;
 
+
+    std::string orderName;
+    switch (Order)
+    {
+    case BaseLMConstraint::ACC: orderName="Acceleration"; break;
+    case BaseLMConstraint::VEL: orderName="Velocity"; break;
+    case BaseLMConstraint::POS: orderName="Position"; break;
+    }
+
+    helper::vector<double> &vError=(*f_graph.beginEdit())["Error "+ orderName];
+    vError.push_back(c.sum());
+    f_graph.endEdit();
 
     const unsigned int numConstraint=A.rows();
     //-- Initialization of X, solution of the system
@@ -649,6 +667,11 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( ConstOrder Order
                 idxConstraint+=numConstraintToProcess;
             }
         }
+
+        helper::vector<double> &vError=(*f_graph.beginEdit())["Error "+ orderName];
+        vError.push_back(c.sum());
+        f_graph.endEdit();
+
         if (this->f_printLog.getValue())
         {
             if (f_printLog.getValue()) sout << "ITERATION " << iteration << " ENDED\n"<<sendl;
@@ -656,12 +679,9 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( ConstOrder Order
     }
     if (iteration == numIterations.getValue())
     {
-        serr << "no convergence in Gauss-Seidel for ";
-        switch (Order)
+        if (f_printLog.getValue())
         {
-        case BaseLMConstraint::ACC: serr << "Acceleration" << sendl; break;
-        case BaseLMConstraint::VEL: serr << "Velocity" << sendl; break;
-        case BaseLMConstraint::POS: serr << "Position" << sendl; break;
+            serr << "no convergence in Gauss-Seidel for " << orderName;
         }
 //            return false;
     }
@@ -760,6 +780,15 @@ void LMConstraintSolver::constraintStateCorrection(VecId Order, bool isPositionC
     }
 }
 
+
+void LMConstraintSolver::handleEvent(core::objectmodel::Event *e)
+{
+    if (dynamic_cast<sofa::simulation::AnimateBeginEvent*>(e))
+    {
+        f_graph.beginEdit()->clear();
+        f_graph.endEdit();
+    }
+}
 
 int LMConstraintSolverClass = core::RegisterObject("A Constraint Solver working specifically with LMConstraint based components")
         .add< LMConstraintSolver >();

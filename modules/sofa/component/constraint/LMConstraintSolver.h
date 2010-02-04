@@ -28,6 +28,7 @@
 #include <sofa/core/componentmodel/behavior/ConstraintSolver.h>
 #include <sofa/core/componentmodel/behavior/BaseLMConstraint.h>
 #include <sofa/core/componentmodel/behavior/BaseConstraintCorrection.h>
+#include <sofa/core/objectmodel/Event.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/component/component.h>
 
@@ -70,6 +71,7 @@ public:
     bool solveSystem(double dt, VecId);
     bool applyCorrection(double dt, VecId);
 
+    void handleEvent( core::objectmodel::Event *e);
 
 
 
@@ -78,6 +80,7 @@ public:
     Data<bool> constraintPos;
     Data<unsigned int> numIterations;
     Data<double> maxError;
+    mutable Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
 
 protected:
     /// Explore the graph, looking for LMConstraints: each LMConstraint can tell if they need State Propagation in order to compute the right hand term of the system
