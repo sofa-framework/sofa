@@ -82,13 +82,13 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
         else
         {
             QDataSimpleEdit* dataSimpleEdit = new QDataSimpleEdit(this,data_,data_->isReadOnly() && flags.READONLY_FLAG);
+
+            setColumns(dataSimpleEdit->numColumnWidget());
+            numWidgets_ += dataSimpleEdit->sizeWidget();
             connect( dataSimpleEdit, SIGNAL( WidgetDirty(bool) ), this, SIGNAL (WidgetHasChanged(bool) ) );
             connect( this, SIGNAL (WidgetUpdate() ), dataSimpleEdit, SLOT( UpdateWidget() ) );
             connect( this, SIGNAL( DataUpdate() ), dataSimpleEdit, SLOT( UpdateData() ) );
-            numWidgets_ += dataSimpleEdit->sizeWidget();
-            setColumns(dataSimpleEdit->numColumnWidget());
         }
-
     }
     else
     {

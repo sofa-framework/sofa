@@ -300,10 +300,12 @@ void ModifyObject::updateConsole()
             logWarningEdit->setReadOnly(true);
         }
 
-        logWarningEdit->setText(QString(node->getWarnings().c_str()));
-        logWarningEdit->moveCursor(Q3TextEdit::MoveEnd, false);
-        logWarningEdit->ensureCursorVisible();
-
+        if (dialogTab->currentPage() == warningTab)
+        {
+            logWarningEdit->setText(QString(node->getWarnings().c_str()));
+            logWarningEdit->moveCursor(Q3TextEdit::MoveEnd, false);
+            logWarningEdit->ensureCursorVisible();
+        }
     }
     //Console Outputs
     if ( !node->getOutputs().empty())
@@ -324,9 +326,12 @@ void ModifyObject::updateConsole()
             logOutputEdit->setReadOnly(true);
         }
 
-        logOutputEdit->setText(QString(node->getOutputs().c_str()));
-        logOutputEdit->moveCursor(Q3TextEdit::MoveEnd, false);
-        logOutputEdit->ensureCursorVisible();
+        if (dialogTab->currentPage() == outputTab)
+        {
+            logOutputEdit->setText(QString(node->getOutputs().c_str()));
+            logOutputEdit->moveCursor(Q3TextEdit::MoveEnd, false);
+            logOutputEdit->ensureCursorVisible();
+        }
     }
 }
 
@@ -394,6 +399,8 @@ void ModifyObject::updateTables()
         energy->step();
         if (dialogTab->currentPage() == energy) energy->updateVisualization();
     }
+
+    updateConsole();
 }
 
 
