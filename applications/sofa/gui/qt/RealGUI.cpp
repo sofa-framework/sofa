@@ -777,9 +777,11 @@ bool RealGUI::setViewer ( const char* name )
     if ( viewer->getScene() !=NULL )
     {
         simulation::getSimulation()->unload ( viewer->getScene() ); delete viewer->getScene() ;
+        if(visualGraph->getListener() != NULL )
+            simulation::getSimulation()->getVisualRoot()->removeListener(visualGraph->getListener());
 
-        simulationGraph->Clear(dynamic_cast<Node*>( simulation::getSimulation()->getContext()) );
-        visualGraph->Clear(dynamic_cast<Node*>( simulation::getSimulation()->getVisualRoot()) );
+        //  simulationGraph->Clear(dynamic_cast<Node*>( simulation::getSimulation()->getContext()) );
+        //  visualGraph->Clear(dynamic_cast<Node*>( simulation::getSimulation()->getVisualRoot()) );
     }
 
     // 	fileOpen(filename);
@@ -835,9 +837,8 @@ bool RealGUI::setViewer ( const char* name )
                 sofa::gui::qt::viewer::qtogre::QtOgreViewer::EnableViewer();
             }
 #endif
-
+    {}
     viewerName = name;
-
     addViewer();
 
     viewer->configureViewerTab(tabs);
