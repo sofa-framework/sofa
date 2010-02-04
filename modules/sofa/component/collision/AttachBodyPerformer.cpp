@@ -57,7 +57,7 @@ template class SOFA_COMPONENT_COLLISION_API  AttachBodyPerformer<defaulttype::Ri
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer<defaulttype::Vec3fTypes> >  AttachBodyPerformerVec3fClass("AttachBody",true);
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer<defaulttype::Rigid3fTypes> >  AttachBodyPerformerRigid3fClass("AttachBody",true);
 template <>
-void AttachBodyPerformer<defaulttype::Rigid3fTypes>::start_partial(const BodyPicked& picked)
+bool AttachBodyPerformer<defaulttype::Rigid3fTypes>::start_partial(const BodyPicked& picked)
 {
     core::componentmodel::behavior::MechanicalState<Rigid3fTypes>* mstateCollision=NULL;
 
@@ -80,6 +80,7 @@ void AttachBodyPerformer<defaulttype::Rigid3fTypes>::start_partial(const BodyPic
         jointspringforcefield->addTag(*it);
     mstateCollision->getContext()->addObject(jointspringforcefield);
 
+    return true;
 }
 
 #endif
@@ -88,7 +89,7 @@ helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPer
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, AttachBodyPerformer<defaulttype::Rigid3dTypes> >  AttachBodyPerformerRigid3dClass("AttachBody",true);
 
 template <>
-void AttachBodyPerformer<defaulttype::Rigid3dTypes>::start_partial(const BodyPicked& picked)
+bool AttachBodyPerformer<defaulttype::Rigid3dTypes>::start_partial(const BodyPicked& picked)
 {
     core::componentmodel::behavior::MechanicalState<Rigid3dTypes>* mstateCollision=NULL;
 
@@ -111,6 +112,7 @@ void AttachBodyPerformer<defaulttype::Rigid3dTypes>::start_partial(const BodyPic
 
     mstateCollision->getContext()->addObject(jointspringforcefield);
 
+    return true;
 }
 #endif
 

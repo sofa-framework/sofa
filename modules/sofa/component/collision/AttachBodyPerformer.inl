@@ -48,7 +48,7 @@ void AttachBodyPerformer<DataTypes>::start()
     BodyPicked picked=this->interactor->getBodyPicked();
     if (!picked.body && !picked.mstate) return;
 
-    start_partial(picked); //template specialized code is here
+    if (!start_partial(picked)) return; //template specialized code is here
 
     double distanceFromMouse=picked.rayLength;
     this->interactor->setDistanceFromMouse(distanceFromMouse);
@@ -114,7 +114,7 @@ AttachBodyPerformer<DataTypes>::~AttachBodyPerformer()
 }
 
 template <class DataTypes>
-void AttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& picked)
+bool AttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& picked)
 {
 
     core::componentmodel::behavior::MechanicalState<DataTypes>* mstateCollision=NULL;
@@ -125,7 +125,7 @@ void AttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& picked)
         if (!mapper)
         {
             this->interactor->serr << "Problem with Mouse Mapper creation : " << this->interactor->sendl;
-            return;
+            return false;
         }
         std::string name = "contactMouse";
         mstateCollision = mapper->createMapping(name.c_str());
@@ -136,6 +136,7 @@ void AttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& picked)
         typename DataTypes::Real r=0.0;
 
         index = mapper->addPoint(pointPicked, idx, r);
+        std::cerr << index << " ; " << pointPicked << " ! " << idx << " ! " << std::endl;
         mapper->update();
 
         if (mstateCollision->getContext() != picked.body->getContext())
@@ -161,7 +162,7 @@ void AttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& picked)
         if (!mstateCollision)
         {
             this->interactor->serr << "uncompatible MState during Mouse Interaction " << this->interactor->sendl;
-            return;
+            return false;
         }
     }
 
@@ -178,16 +179,17 @@ void AttachBodyPerformer<DataTypes>::start_partial(const BodyPicked& picked)
         stiffspringforcefield->addTag(*it);
 
     mstateCollision->getContext()->addObject(stiffspringforcefield);
+    return true;
 }
 
 #ifndef SOFA_FLOAT
 template<>
-void AttachBodyPerformer<defaulttype::Rigid3dTypes>::start_partial(const BodyPicked& picked);
+bool AttachBodyPerformer<defaulttype::Rigid3dTypes>::start_partial(const BodyPicked& picked);
 #endif
 
 #ifndef SOFA_DOUBLE
 template<>
-void AttachBodyPerformer<defaulttype::Rigid3fTypes>::start_partial(const BodyPicked& picked);
+bool AttachBodyPerformer<defaulttype::Rigid3fTypes>::start_partial(const BodyPicked& picked);
 #endif
 
 }
