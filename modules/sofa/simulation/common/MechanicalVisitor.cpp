@@ -564,31 +564,45 @@ Visitor::Result MechanicalVFreeVisitor::fwdMechanicalState(simulation::Node* nod
 }
 
 
-Visitor::Result MechanicalVOpVisitor::fwdMechanicalState(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalState* mm)
+Visitor::Result MechanicalVOpVisitor::fwdMechanicalState(VisitorContext* ctx, core::componentmodel::behavior::BaseMechanicalState* mm)
 {
+    simulation::Node* node = ctx->node;
+
     //cerr<<"    MechanicalVOpVisitor::fwdMechanicalState, model "<<mm->getName()<<endl;
     ctime_t t0 = beginProcess(node, mm);
-    mm->vOp(v,a,b,f);
+    mm->vOp(v,a,b,((ctx->nodeData && *ctx->nodeData != 1.0) ? *ctx->nodeData * f : f));
     endProcess(node, mm, t0);
     return RESULT_CONTINUE;
 }
-Visitor::Result MechanicalVOpVisitor::fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/)
+Visitor::Result MechanicalVOpVisitor::fwdMappedMechanicalState(VisitorContext* /*ctx*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/)
 {
     //cerr<<"    MechanicalVOpVisitor::fwdMappedMechanicalState, model "<<mm->getName()<<endl;
-    //mm->vOp(v,a,b,f);
+    //mm->vOp(v,a,b,((ctx->nodeData && *ctx->nodeData != 1.0) ? *ctx->nodeData * f : f));
     return RESULT_CONTINUE;
 }
 
-
-Visitor::Result MechanicalVMultiOpVisitor::fwdMechanicalState(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalState* mm)
+Visitor::Result MechanicalVMultiOpVisitor::fwdMechanicalState(VisitorContext* ctx, core::componentmodel::behavior::BaseMechanicalState* mm)
 {
+    simulation::Node* node = ctx->node;
     //cerr<<"    MechanicalVOpVisitor::fwdMechanicalState, model "<<mm->getName()<<endl;
     ctime_t t0 = beginProcess(node, mm);
-    mm->vMultiOp(ops);
+    if (ctx->nodeData && *ctx->nodeData != 1.0)
+    {
+        VMultiOp ops2 = ops;
+        const double fact = *ctx->nodeData;
+        for (VMultiOp::iterator it = ops2.begin(), itend = ops2.end(); it != itend; ++it)
+            for (unsigned int i = 1; i < it->second.size(); ++i)
+                it->second[i].second *= fact;
+        mm->vMultiOp(ops2);
+    }
+    else
+    {
+        mm->vMultiOp(ops);
+    }
     endProcess(node, mm, t0);
     return RESULT_CONTINUE;
 }
-Visitor::Result MechanicalVMultiOpVisitor::fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/)
+Visitor::Result MechanicalVMultiOpVisitor::fwdMappedMechanicalState(VisitorContext* /*ctx*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/)
 {
     //cerr<<"    MechanicalVOpVisitor::fwdMappedMechanicalState, model "<<mm->getName()<<endl;
     //mm->vMultiOp(ops);

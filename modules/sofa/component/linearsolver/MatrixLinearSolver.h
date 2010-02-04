@@ -108,9 +108,9 @@ public:
     /// Invert the system, this method is optional because it's call when solveSystem() is called for the first time
     virtual void invertSystem()
     {
-        for (unsigned int g=0, nbg = getNbGroups(); g < nbg; ++g)
+        for (unsigned int g=0, nbg = isMultiSolve() ? 1 : getNbGroups(); g < nbg; ++g)
         {
-            setGroup(g);
+            if (!isMultiSolve()) setGroup(g);
             if (currentGroup->needInvert)
             {
                 this->invert(*currentGroup->systemMatrix);
@@ -242,6 +242,12 @@ public:
         return multiGroup.getValue();
     }
 
+    /// Returns true if this implementation can handle all integration groups at once
+    virtual bool isMultiSolve() const
+    {
+        return false;
+    }
+
     virtual simulation::MultiNodeDataMap* getNodeMap()
     {
         if (isMultiGroup()) return &this->nodeMap;
@@ -264,6 +270,7 @@ public:
 
     void setGroup(int i)
     {
+        //serr << "setGroup("<<i<<")" << sendl;
         if (isMultiGroup() && (unsigned)i < this->groups.size())
         {
             currentNode = groups[i];
@@ -280,6 +287,22 @@ public:
             nodeMap.clear();
             writeNodeMap.clear();
         }
+    }
+
+    double multiv_dot(VecId a, VecId b, helper::vector<double>& res)
+    {
+        this->v_dot(a,b);
+        finish();
+        res.resize(groups.size());
+        for (unsigned int g=0; g<groups.size(); ++g)
+        {
+            simulation::MultiNodeDataMap::const_iterator it = writeNodeMap.find(groups[g]);
+            if (it == writeNodeMap.end())
+                res[g] = 0.0;
+            else
+                res[g] = it->second;
+        }
+        return result;
     }
 
 protected:
@@ -402,9 +425,9 @@ void MatrixLinearSolver<Matrix,Vector>::createGroups()
 template<class Matrix, class Vector>
 void MatrixLinearSolver<Matrix,Vector>::resetSystem()
 {
-    for (unsigned int g=0, nbg = getNbGroups(); g < nbg; ++g)
+    for (unsigned int g=0, nbg = isMultiSolve() ? 1 : getNbGroups(); g < nbg; ++g)
     {
-        setGroup(g);
+        if (!isMultiSolve()) setGroup(g);
         if (!frozen)
         {
             if (currentGroup->systemMatrix) currentGroup->systemMatrix->clear();
@@ -435,9 +458,9 @@ template<class Matrix, class Vector>
 void MatrixLinearSolver<Matrix,Vector>::setSystemMBKMatrix(double mFact, double bFact, double kFact)
 {
     createGroups();
-    for (unsigned int g=0, nbg = getNbGroups(); g < nbg; ++g)
+    for (unsigned int g=0, nbg = isMultiSolve() ? 1 : getNbGroups(); g < nbg; ++g)
     {
-        setGroup(g);
+        if (!isMultiSolve()) setGroup(g);
         if (!this->frozen)
         {
             unsigned int nbRow=0, nbCol=0;
@@ -455,9 +478,9 @@ void MatrixLinearSolver<Matrix,Vector>::setSystemMBKMatrix(double mFact, double 
 template<class Matrix, class Vector>
 void MatrixLinearSolver<Matrix,Vector>::setSystemRHVector(VecId v)
 {
-    for (unsigned int g=0, nbg = getNbGroups(); g < nbg; ++g)
+    for (unsigned int g=0, nbg = isMultiSolve() ? 1 : getNbGroups(); g < nbg; ++g)
     {
-        setGroup(g);
+        if (!isMultiSolve()) setGroup(g);
         unsigned int offset = 0;
         //MechanicalMultiVector2BaseVectorVisitor(v, systemRHVector, offset).execute( getContext() );
         this->multiVector2BaseVector(v, currentGroup->systemRHVector, offset);
@@ -467,9 +490,9 @@ void MatrixLinearSolver<Matrix,Vector>::setSystemRHVector(VecId v)
 template<class Matrix, class Vector>
 void MatrixLinearSolver<Matrix,Vector>::setSystemLHVector(VecId v)
 {
-    for (unsigned int g=0, nbg = getNbGroups(); g < nbg; ++g)
+    for (unsigned int g=0, nbg = isMultiSolve() ? 1 : getNbGroups(); g < nbg; ++g)
     {
-        setGroup(g);
+        if (!isMultiSolve()) setGroup(g);
         currentGroup->solutionVecId = v;
         unsigned int offset = 0;
         //MechanicalMultiVector2BaseVectorVisitor(v, systemLHVector, offset).execute( getContext() );
@@ -480,9 +503,9 @@ void MatrixLinearSolver<Matrix,Vector>::setSystemLHVector(VecId v)
 template<class Matrix, class Vector>
 void MatrixLinearSolver<Matrix,Vector>::solveSystem()
 {
-    for (unsigned int g=0, nbg = getNbGroups(); g < nbg; ++g)
+    for (unsigned int g=0, nbg = isMultiSolve() ? 1 : getNbGroups(); g < nbg; ++g)
     {
-        setGroup(g);
+        if (!isMultiSolve()) setGroup(g);
         if (currentGroup->needInvert)
         {
             this->invert(*currentGroup->systemMatrix);

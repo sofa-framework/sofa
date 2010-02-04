@@ -517,8 +517,8 @@ public:
 #endif
     }
 
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/);
+    virtual Result fwdMechanicalState(VisitorContext* ctx, core::componentmodel::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMappedMechanicalState(VisitorContext* ctx, core::componentmodel::behavior::BaseMechanicalState* mm);
 
     virtual const char* getClassName() const { return "MechanicalVOpVisitor";}
     virtual std::string getInfos() const
@@ -564,6 +564,10 @@ public:
     {
         return true;
     }
+    virtual bool readNodeData() const
+    {
+        return true;
+    }
 #ifdef SOFA_DUMP_VISITOR_INFO
     void setReadWriteVectors()
     {
@@ -593,14 +597,18 @@ public:
 #endif
     }
 
-    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
-    virtual Result fwdMappedMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* /*mm*/);
+    virtual Result fwdMechanicalState(VisitorContext* ctx, core::componentmodel::behavior::BaseMechanicalState* mm);
+    virtual Result fwdMappedMechanicalState(VisitorContext* ctx, core::componentmodel::behavior::BaseMechanicalState* mm);
 
     //virtual void processNodeBottomUp(simulation::Node* node);
 
     virtual const char* getClassName() const { return "MechanicalVMultiOpVisitor"; }
     /// Specify whether this action can be parallelized.
     virtual bool isThreadSafe() const
+    {
+        return true;
+    }
+    virtual bool readNodeData() const
     {
         return true;
     }
