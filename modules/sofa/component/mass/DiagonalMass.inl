@@ -59,9 +59,9 @@ void MassPointCreationFunction(int ,
     t=0;
 }
 
-template< class DataTypes, class MassType>
+template< class DataTypes, class MassType, class MassVector>
 inline void MassEdgeCreationFunction(const sofa::helper::vector<unsigned int> &edgeAdded,
-        void* param, vector<MassType> &masses)
+        void* param, MassVector &masses)
 {
     DiagonalMass<DataTypes, MassType> *dm= (DiagonalMass<DataTypes, MassType> *)param;
     if (dm->getMassTopologyType()==DiagonalMass<DataTypes, MassType>::TOPOLOGY_EDGESET)
@@ -88,9 +88,9 @@ inline void MassEdgeCreationFunction(const sofa::helper::vector<unsigned int> &e
     }
 }
 
-template< class DataTypes, class MassType>
+template< class DataTypes, class MassType, class MassVector>
 inline void MassEdgeDestroyFunction(const sofa::helper::vector<unsigned int> &edgeRemoved,
-        void* param, vector<MassType> &masses)
+        void* param, MassVector &masses)
 {
     DiagonalMass<DataTypes, MassType> *dm= (DiagonalMass<DataTypes, MassType> *)param;
     if (dm->getMassTopologyType()==DiagonalMass<DataTypes, MassType>::TOPOLOGY_EDGESET)
@@ -117,9 +117,9 @@ inline void MassEdgeDestroyFunction(const sofa::helper::vector<unsigned int> &ed
     }
 }
 
-template< class DataTypes, class MassType>
+template< class DataTypes, class MassType, class MassVector>
 inline void MassTriangleCreationFunction(const sofa::helper::vector<unsigned int> &triangleAdded,
-        void* param, vector<MassType> &masses)
+        void* param, MassVector &masses)
 {
     DiagonalMass<DataTypes, MassType> *dm= (DiagonalMass<DataTypes, MassType> *)param;
     if (dm->getMassTopologyType()==DiagonalMass<DataTypes, MassType>::TOPOLOGY_TRIANGLESET)
@@ -147,9 +147,9 @@ inline void MassTriangleCreationFunction(const sofa::helper::vector<unsigned int
     }
 }
 
-template< class DataTypes, class MassType>
+template< class DataTypes, class MassType, class MassVector>
 inline void MassTriangleDestroyFunction(const sofa::helper::vector<unsigned int> &triangleRemoved,
-        void* param, vector<MassType> &masses)
+        void* param, MassVector &masses)
 {
     DiagonalMass<DataTypes, MassType> *dm= (DiagonalMass<DataTypes, MassType> *)param;
     if (dm->getMassTopologyType()==DiagonalMass<DataTypes, MassType>::TOPOLOGY_TRIANGLESET)
@@ -181,9 +181,9 @@ inline void MassTriangleDestroyFunction(const sofa::helper::vector<unsigned int>
     }
 }
 
-template< class DataTypes, class MassType>
+template< class DataTypes, class MassType, class MassVector>
 inline void MassTetrahedronCreationFunction(const sofa::helper::vector<unsigned int> &tetrahedronAdded,
-        void* param, vector<MassType> &masses)
+        void* param, MassVector &masses)
 {
     DiagonalMass<DataTypes, MassType> *dm= (DiagonalMass<DataTypes, MassType> *)param;
     if (dm->getMassTopologyType()==DiagonalMass<DataTypes, MassType>::TOPOLOGY_TETRAHEDRONSET)
@@ -213,9 +213,9 @@ inline void MassTetrahedronCreationFunction(const sofa::helper::vector<unsigned 
     }
 }
 
-template< class DataTypes, class MassType>
+template< class DataTypes, class MassType, class MassVector>
 inline void MassTetrahedronDestroyFunction(const sofa::helper::vector<unsigned int> &tetrahedronRemoved,
-        void* param, vector<MassType> &masses)
+        void* param, MassVector &masses)
 {
     DiagonalMass<DataTypes, MassType> *dm= (DiagonalMass<DataTypes, MassType> *)param;
     if (dm->getMassTopologyType()==DiagonalMass<DataTypes, MassType>::TOPOLOGY_TETRAHEDRONSET)
@@ -525,12 +525,12 @@ void DiagonalMass<DataTypes, MassType>::init()
 
 //	VecMass& masses = *f_mass.beginEdit();
     f_mass.setCreateFunction(MassPointCreationFunction<MassType>);
-    f_mass.setCreateEdgeFunction(MassEdgeCreationFunction<DataTypes,MassType>);
-    f_mass.setDestroyEdgeFunction(MassEdgeDestroyFunction<DataTypes,MassType>);
-    f_mass.setCreateTriangleFunction(MassTriangleCreationFunction<DataTypes,MassType>);
-    f_mass.setDestroyTriangleFunction(MassTriangleDestroyFunction<DataTypes,MassType>);
-    f_mass.setCreateTetrahedronFunction(MassTetrahedronCreationFunction<DataTypes,MassType>);
-    f_mass.setDestroyTetrahedronFunction(MassTetrahedronDestroyFunction<DataTypes,MassType>);
+    f_mass.setCreateEdgeFunction(MassEdgeCreationFunction<DataTypes,MassType,MassVector>);
+    f_mass.setDestroyEdgeFunction(MassEdgeDestroyFunction<DataTypes,MassType,MassVector>);
+    f_mass.setCreateTriangleFunction(MassTriangleCreationFunction<DataTypes,MassType,MassVector>);
+    f_mass.setDestroyTriangleFunction(MassTriangleDestroyFunction<DataTypes,MassType,MassVector>);
+    f_mass.setCreateTetrahedronFunction(MassTetrahedronCreationFunction<DataTypes,MassType,MassVector>);
+    f_mass.setDestroyTetrahedronFunction(MassTetrahedronDestroyFunction<DataTypes,MassType,MassVector>);
 
     f_mass.setCreateParameter( (void *) this );
     f_mass.setDestroyParameter( (void *) this );

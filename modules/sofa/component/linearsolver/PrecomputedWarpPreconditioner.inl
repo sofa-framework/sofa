@@ -100,7 +100,7 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::setSystemMBKMat
         init_kFact = kFact;
         Inherit::setSystemMBKMatrix(mFact,bFact,kFact);
 #ifdef VALIDATE_ALGORITM_PrecomputedWarpPreconditioner
-        for (unsigned j=0; j<this->systemMatrix->rowSize(); j++) printf("%f ",this->systemMatrix->element(j,j));
+        for (unsigned j=0; j<this->currentGroup->systemMatrix->rowSize(); j++) printf("%f ",this->currentGroup->systemMatrix->element(j,j));
         printf("\n");
 #endif
         loadMatrix();
@@ -109,9 +109,9 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::setSystemMBKMat
 #ifdef VALIDATE_ALGORITM_PrecomputedWarpPreconditioner
     else
     {
-        this->systemMatrix = realSystem;
+        this->currentGroup->systemMatrix = realSystem;
         Inherit::setSystemMBKMatrix(mFact,bFact,kFact);
-        this->systemMatrix = invertSystem;
+        this->currentGroup->systemMatrix = invertSystem;
     }
     printf("RealSystem(%d,%d) InvertSystem(%d,%d)\n",realSystem->rowSize(),realSystem->colSize(),invertSystem->rowSize(),invertSystem->colSize());
     for (unsigned j=0; j<12; j++)
@@ -178,12 +178,12 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::loadMatrix()
 #ifdef VALIDATE_ALGORITM_PrecomputedWarpPreconditioner
     this->realSystem = new TMatrix();
     this->realSystem->resize(systemSize,systemSize);
-    this->invertSystem = this->systemMatrix;
+    this->invertSystem = this->currentGroup->systemMatrix;
     for (unsigned int j=0; j<systemSize; j++)
     {
         for (unsigned i=0; i<systemSize; i++)
         {
-            this->realSystem->set(j,i,this->systemMatrix->element(j,i));
+            this->realSystem->set(j,i,this->currentGroup->systemMatrix->element(j,i));
         }
     }
 #endif
