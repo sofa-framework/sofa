@@ -80,7 +80,7 @@ class QDataSimpleEdit : public QWidget
     } QSimpleEdit;
 public :
     QDataSimpleEdit(QWidget*, core::objectmodel::BaseData*, bool readonly);
-    unsigned int numColumnWidget() {return 2;}
+    unsigned int numColumnWidget() {return 3;}
     unsigned int sizeWidget() {return 1;}
 public slots:
     void UpdateData();
