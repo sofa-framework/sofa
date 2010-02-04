@@ -574,6 +574,10 @@ public:
     }
 };
 
+//class TagDataWidget : public TableDataWidget<std::map<unsigned int, std::string> >
+//{
+//  public
+//}
 
 ////////////////////////////////////////////////////////////////
 /// variable-sized vectors support
@@ -606,10 +610,14 @@ public:
     }
 };
 
+
+
+
 template<class T>
 class vector_data_trait < sofa::helper::vector<T> > : public vector_data_trait< std::vector<T> >
 {
 };
+
 
 // template<class T>
 // class vector_data_trait < sofa::component::topology::PointData<T> > //: public vector_data_trait < sofa::helper::vector<T> >
@@ -755,11 +763,75 @@ public:
         }
         if (i == 0) it->second = v;
     }
-    static void resize( int s, data_type& d)
+    static void resize( int /*s*/, data_type& /*d*/)
     {
         //d.resize(s);
     }
 };
+/*template<>
+class vector_data_trait< std::map<unsigned int, std::string> >
+{
+
+}
+*/
+
+//template<class T>
+//class vector_data_trait < std::set<T> >
+//{
+//public :
+//  typedef std::set<T> data_type;
+//  typedef T value_type;
+//  enum { NDIM = 1 };
+//  static int size(const data_type& d) { return d.size(); }
+//  static const char* header( const data_type& /*d*/, int /*i*/ =0)
+//  {
+//    return sofa::defaulttype::DataTypeInfo< value_type >::name();
+//  }
+//  static const value_type* get(const data_type& d, int i =0)
+//  {
+//    if ((unsigned)size(d) <= (unsigned)i  ) return NULL;
+//    typename data_type::const_iterator it = d.begin();
+//    while ( i > 0 && it != d.end() ){
+//      ++it;
+//      --i;
+//    }
+//    if( i == 0) return &(*it);
+//    else return NULL;
+//  }
+//  static void set( const value_type& v, data_type& d, int /*i*/ = 0)
+//  {
+//    typename data_type::iterator it;
+//    it = d.find(v);
+//    if( it == d.end() ){
+//      return;
+//    }
+//    else{
+//      (*it) = v;
+//    }
+//  }
+//
+//  static void resize( int s, data_type& d)
+//  {
+//    unsigned d_size = (unsigned)size(d);
+//    while( d_size  != (unsigned) s )
+//    {
+//      if( d_size  < (unsigned) s ){
+//        std::ostringstream oss;
+//        oss << d_size;
+//        d.insert( sofa::core::objectmodel::Tag(oss.str()) );
+//      }
+//      if( d_size  > (unsigned) s ){
+//        d.erase(--d.end());
+//      }
+//      d_size  = (unsigned) size(d);
+//    }
+//  }
+//
+//};
+//
+//template<class T>
+//class vector_data_trait < sofa::helper::set<T> > : public vector_data_trait < std::set<T> >
+//{};
 
 
 } // namespace qt
