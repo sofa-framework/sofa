@@ -68,6 +68,11 @@ public:
     typedef typename HexahedralFEMForceFieldT::VecElement VecElement;
     typedef typename HexahedralFEMForceFieldT::VecElementStiffness VecElementMass;
     typedef typename HexahedralFEMForceFieldT::ElementStiffness ElementMass;
+    typedef core::componentmodel::topology::BaseMeshTopology::index_type Index;
+    typedef typename HexahedralFEMForceFieldT::HexahedronInformation HexahedronInformation;
+    typedef typename HexahedralFEMForceFieldT::ElementStiffness ElementStiffness;
+    typedef typename HexahedralFEMForceFieldT::Element Element;
+
 
 
     HexahedralFEMForceFieldAndMass();
@@ -82,6 +87,8 @@ public:
     virtual  void addMDx(VecDeriv& f, const VecDeriv& dx, double factor = 1.0);
 
     virtual void addMToMatrix(defaulttype::BaseMatrix * matrix, double mFact, unsigned int &offset);
+
+    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset);
 
     virtual  void accFromF(VecDeriv& a, const VecDeriv& f);
 
