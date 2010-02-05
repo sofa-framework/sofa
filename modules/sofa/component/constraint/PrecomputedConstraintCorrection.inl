@@ -78,12 +78,15 @@ PrecomputedConstraintCorrection<DataTypes>::PrecomputedConstraintCorrection(beha
     , _restRotations(false)
     , f_restRotations(initDataPtr(&f_restRotations,&_restRotations,"restDeformations",""))
     , recompute(initData(&recompute, false, "recompute","if true, always recompute the compliance"))
-    , filePrefix(initData(&filePrefix, "filePrefix","if not empty, the prefix used for the file containing the compliance matrix"))
+//	, filePrefix(initData(&filePrefix, "filePrefix","if not empty, the prefix used for the file containing the compliance matrix"))
+    , f_fileCompliance(initData(&f_fileCompliance, "fileCompliance", "Precomputed compliance matrix data file"))
     , debugViewFrameScale(initData(&debugViewFrameScale, 1.0, "debugViewFrameScale","Scale on computed node's frame"))
     , mstate(mm)
     , invM(NULL)
     , appCompliance(NULL)
+    , nbRows(0), nbCols(0), dof_on_node(0), nbNodes(0)
 {
+    addAlias(&f_fileCompliance, "filePrefix");
 }
 
 template<class DataTypes>
@@ -101,7 +104,7 @@ PrecomputedConstraintCorrection<DataTypes>::~PrecomputedConstraintCorrection()
 template<class DataTypes>
 typename PrecomputedConstraintCorrection<DataTypes>::InverseStorage* PrecomputedConstraintCorrection<DataTypes>::getInverse(std::string name)
 {
-    std::map<std::string, InverseStorage>& registry = getInverseMap();
+    std::map< std::string, InverseStorage >& registry = getInverseMap();
     InverseStorage* m = &(registry[name]);
     ++m->nbref;
     return m;
@@ -111,7 +114,7 @@ template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::releaseInverse(std::string name, InverseStorage* inv)
 {
     if (inv == NULL) return;
-    std::map<std::string, InverseStorage>& registry = getInverseMap();
+    std::map< std::string, InverseStorage >& registry = getInverseMap();
     if (--inv->nbref == 0)
     {
         if (inv->data) delete[] inv->data;
@@ -121,6 +124,69 @@ void PrecomputedConstraintCorrection<DataTypes>::releaseInverse(std::string name
 
 
 struct ConstraintActivation { bool acc, vel, pos; };
+
+
+template<class DataTypes>
+std::string PrecomputedConstraintCorrection<DataTypes>::buildFileName()
+{
+    double dt = this->getContext()->getDt();
+    const std::string name = this->getContext()->getName();
+
+    std::stringstream ss;
+    ss << name << "-" << nbRows << "-" << dt <<".comp";
+
+    return ss.str();
+}
+
+
+
+template<class DataTypes>
+bool PrecomputedConstraintCorrection<DataTypes>::loadCompliance(std::string fileName)
+{
+    // Try to load from memory
+    sout << "Try to load compliance from memory " << fileName << std::endl;
+
+    invM = getInverse(fileName);
+    dimensionAppCompliance = nbRows;
+
+    if (invM->data == NULL)
+    {
+        // Try to load from file
+        sout << "Try to load compliance from : " << fileName << endl;
+
+        if ((sofa::helper::system::DataRepository.findFile(fileName)) && (recompute.getValue() == false))
+        {
+            invM->data = new Real[nbRows * nbCols];
+
+            std::ifstream compFileIn(fileName.c_str(), std::ifstream::binary);
+
+            sout << "File " << fileName << " found. Loading..." << endl;
+
+            compFileIn.read((char*)invM->data, nbCols * nbRows * sizeof(double));
+            compFileIn.close();
+
+            return true;
+        }
+
+        return false;
+    }
+
+    return true;
+}
+
+
+
+template<class DataTypes>
+void PrecomputedConstraintCorrection<DataTypes>::saveCompliance(const std::string fileName)
+{
+    std::cout << "saveCompliance in " << fileName << std::endl;
+
+    std::ofstream compFileOut(fileName.c_str(), std::fstream::out | std::fstream::binary);
+    compFileOut.write((char*)invM->data, nbCols * nbRows * sizeof(double));
+    compFileOut.close();
+}
+
+
 
 template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
@@ -132,270 +198,246 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
     nbNodes = v0.size();
 
-    if (nbNodes==0)
+    if (nbNodes == 0)
     {
-        serr<<"No degree of freedom" << sendl;
+        serr << "No degree of freedom" << sendl;
         return;
     }
+
     dof_on_node = v0[0].size();
 
-
-    nbRows = nbNodes*dof_on_node;
-    nbCols = nbNodes*dof_on_node;
-    sout << "size : " << nbRows << " " << nbCols << sendl;
-    //appCompliance = new Real[nbRows * nbCols];
-
+    nbRows = nbNodes * dof_on_node;
+    nbCols = nbNodes * dof_on_node;
 
     double dt = this->getContext()->getDt();
 
-    if (!filePrefix.getValue().empty())
-        invName = filePrefix.getValue();
-    else
-    {
-        std::stringstream ss;
-        ss << this->getContext()->getName() << "-" << nbRows << "-" << dt <<".comp";
-        invName = ss.str();
-    }
-    invM = getInverse(invName);
-    dimensionAppCompliance=nbRows;
+    invName = f_fileCompliance.getFullPath().empty() ? buildFileName() : f_fileCompliance.getFullPath();
 
-    if (invM->data == NULL)
+    if (!loadCompliance(invName))
     {
+        sout << "Compliance being built" << sendl;
+
+        // Buffer Allocation
         invM->data = new Real[nbRows * nbCols];
 
-        sout << "try to open : " << invName << endl;
-        if (sofa::helper::system::DataRepository.findFile(invName) && recompute.getValue()==false)
+        // for the intial computation, the gravity has to be put at 0
+        const Vec3d gravity = this->getContext()->getGravityInWorld();
+        const Vec3d gravity_zero(0.0,0.0,0.0);
+        this->getContext()->setGravityInWorld(gravity_zero);
+
+        CGImplicitSolver* odeSolver;
+        EulerImplicitSolver* eulerSolver;
+        CGLinearSolver< GraphScatteredMatrix, GraphScatteredVector >* cgLinearSolver;
+        core::componentmodel::behavior::LinearSolver* linearSolver;
+
+        this->getContext()->get(odeSolver);
+        this->getContext()->get(eulerSolver);
+        this->getContext()->get(cgLinearSolver);
+        this->getContext()->get(linearSolver);
+
+        simulation::Node *solvernode = NULL;
+
+        if (odeSolver)
         {
-            invName=sofa::helper::system::DataRepository.getFile(invName);
-            std::ifstream compFileIn(invName.c_str(), std::ifstream::binary);
-            sout << "file open : " << invName << " compliance being loaded" << endl;
-            //complianceLoaded = true;
-            compFileIn.read((char*)invM->data, nbCols * nbRows*sizeof(double));
-            compFileIn.close();
+            sout << "use CGImplicitSolver " << sendl;
+            solvernode = (simulation::Node*)odeSolver->getContext();
+        }
+        else if (eulerSolver && cgLinearSolver)
+        {
+            sout << "use EulerImplicitSolver & CGLinearSolver" << sendl;
+            solvernode = (simulation::Node*)eulerSolver->getContext();
+        }
+        else if (eulerSolver && linearSolver)
+        {
+            sout << "use EulerImplicitSolver & LinearSolver" << sendl;
+            solvernode = (simulation::Node*)eulerSolver->getContext();
+        }
+        else if(eulerSolver)
+        {
+            sout << "use EulerImplicitSolver" << sendl;
+            solvernode = (simulation::Node*)eulerSolver->getContext();
         }
         else
         {
-            sout << " compliance being built" << sendl;
-
-            // for the intial computation, the gravity has to be put at 0
-            const Vec3d gravity = this->getContext()->getGravityInWorld();
-            const Vec3d gravity_zero(0.0,0.0,0.0);
-            this->getContext()->setGravityInWorld(gravity_zero);
-
-            CGImplicitSolver* odeSolver;
-            EulerImplicitSolver* EulerSolver;
-            CGLinearSolver<GraphScatteredMatrix,GraphScatteredVector>* CGlinearSolver;
-            core::componentmodel::behavior::LinearSolver* linearSolver;
-
-            this->getContext()->get(odeSolver);
-            this->getContext()->get(EulerSolver);
-            this->getContext()->get(CGlinearSolver);
-            this->getContext()->get(linearSolver);
-
-            simulation::Node *solvernode=NULL;
-            if(odeSolver)
-            {
-                sout << "use CGImplicitSolver " << sendl;
-                solvernode=(simulation::Node*)odeSolver->getContext();
-            }
-            else if(EulerSolver && CGlinearSolver)
-            {
-                sout << "use EulerImplicitSolver &  CGLinearSolver" << sendl;
-                solvernode=(simulation::Node*)EulerSolver->getContext();
-            }
-            else if(EulerSolver && linearSolver)
-            {
-                sout << "use EulerImplicitSolver &  LinearSolver" << sendl;
-                solvernode=(simulation::Node*)EulerSolver->getContext();
-            }
-            else if(EulerSolver)
-            {
-                sout << "use EulerImplicitSolver" << sendl;
-                solvernode=(simulation::Node*)EulerSolver->getContext();
-            }
-            else
-            {
-                serr<<"PrecomputedContactCorrection must be associated with CGImplicitSolver or EulerImplicitSolver+LinearSolver for the precomputation\nNo Precomputation" << sendl;
-                return;
-            }
-
-#ifdef SOFA_HAVE_EIGEN2
-            helper::vector< sofa::component::constraint::LMConstraintSolver* > listLMConstraintSolver;
-            solvernode->get< sofa::component::constraint::LMConstraintSolver >(&listLMConstraintSolver, core::objectmodel::BaseContext::SearchDown);
-            helper::vector< ConstraintActivation > listConstraintActivation(listLMConstraintSolver.size());
-            for (unsigned int i=0; i<listLMConstraintSolver.size(); ++i)
-            {
-                listConstraintActivation[i].acc=listLMConstraintSolver[i]->constraintAcc.getValue();
-                listLMConstraintSolver[i]->constraintAcc.setValue(false);
-
-                listConstraintActivation[i].vel=listLMConstraintSolver[i]->constraintVel.getValue();
-                listLMConstraintSolver[i]->constraintVel.setValue(false);
-
-                listConstraintActivation[i].pos=listLMConstraintSolver[i]->constraintPos.getValue();
-                listLMConstraintSolver[i]->constraintPos.setValue(false);
-            }
-#endif
-
-
-            //complianceLoaded = true;
-            VecDeriv& force = *mstate->getExternalForces();
-            force.clear();
-            force.resize(nbNodes);
-            //v.clear();
-            //v.resize(v0.size());//computeDf
-
-
-            ///////////////////////// CHANGE THE PARAMETERS OF THE SOLVER /////////////////////////////////
-            double buf_tolerance=0, buf_threshold=0;
-            int	   buf_maxIter=0;
-            if(odeSolver)
-            {
-                buf_tolerance = (double) odeSolver->f_tolerance.getValue();
-                buf_maxIter   = (int) odeSolver->f_maxIter.getValue();
-                buf_threshold = (double) odeSolver->f_smallDenominatorThreshold.getValue();
-                odeSolver->f_tolerance.setValue(1e-20);
-                odeSolver->f_maxIter.setValue(5000);
-                odeSolver->f_smallDenominatorThreshold.setValue(1e-35);
-            }
-            else if(CGlinearSolver)
-            {
-                buf_tolerance = (double) CGlinearSolver->f_tolerance.getValue();
-                buf_maxIter   = (int) CGlinearSolver->f_maxIter.getValue();
-                buf_threshold = (double) CGlinearSolver->f_smallDenominatorThreshold.getValue();
-                CGlinearSolver->f_tolerance.setValue(1e-20);
-                CGlinearSolver->f_maxIter.setValue(5000);
-                CGlinearSolver->f_smallDenominatorThreshold.setValue(1e-35);
-            }
-            ///////////////////////////////////////////////////////////////////////////////////////////////
-
-            VecDeriv& velocity = *mstate->getV();
-            VecDeriv velocity0 = *mstate->getV();
-            VecCoord& pos=*mstate->getX();
-            VecCoord  pos0=*mstate->getX();
-
-
-            /// christian : it seems necessary to called the integration one time for initialization
-            /// (avoid to have a line of 0 at the top of the matrix)
-            if(EulerSolver)
-            {
-                //serr<<"EulerSolver"<<sendl;
-                EulerSolver->solve(dt, core::componentmodel::behavior::BaseMechanicalState::VecId::position(), core::componentmodel::behavior::BaseMechanicalState::VecId::velocity());
-            }
-            for(unsigned int f = 0 ; f < nbNodes ; f++)
-            {
-                std::cout.precision(2);
-                std::cout << "Precomputing constraint correction : " << std::fixed << (float)f/(float)nbNodes*100.0f << " %   " << '\xd';
-                std::cout.flush();
-                //  serr << "inverse cols node : " << f << sendl;
-                Deriv unitary_force;
-
-                for (unsigned int i=0; i<dof_on_node; i++)
-                {
-                    unitary_force.clear();
-                    //serr<<"dof n:"<<i<<sendl;
-                    unitary_force[i]=1.0;
-                    force[f] = unitary_force;
-                    ////// reset Position and Velocities ///////
-                    velocity.clear();
-                    velocity.resize(nbNodes);
-                    for (unsigned int n=0; n<nbNodes; n++)
-                        pos[n] = pos0[n];
-                    ////////////////////////////////////////////
-                    //serr<<"pos0 set"<<sendl;
-
-                    if(f*dof_on_node+i <2 )
-                    {
-                        EulerSolver->f_verbose.setValue(true);
-                        EulerSolver->f_printLog.setValue(true);
-                        serr<<"getF : "<<force<<sendl;
-                    }
-
-                    double fact = 1.0; // christian : it is not a compliance... but an admittance that is computed !
-                    if (EulerSolver)
-                        fact = EulerSolver->getPositionIntegrationFactor(); // here, we compute a compliance
-
-                    //odeSolver->computeContactForce(force);
-
-                    if(odeSolver)
-                    {
-                        //serr<<"odeSolver"<<sendl;
-                        odeSolver->solve(dt);
-                    }
-                    else if(EulerSolver)
-                    {
-                        //serr<<"EulerSolver"<<sendl;
-                        EulerSolver->solve(dt, core::componentmodel::behavior::BaseMechanicalState::VecId::position(), core::componentmodel::behavior::BaseMechanicalState::VecId::velocity());
-                        if (linearSolver)
-                            linearSolver->freezeSystemMatrix(); // do not recompute the matrix for the rest of the precomputation
-                    }
-
-                    //serr<<"solve reussi"<<sendl;
-
-                    velocity = *mstate->getV();
-                    fact /= unitary_force[i];
-
-                    if(f*dof_on_node+i < 2)
-                    {
-
-                        //EulerSolver->solve(dt, core::componentmodel::behavior::BaseMechanicalState::VecId::position(), core::componentmodel::behavior::BaseMechanicalState::VecId::velocity());
-                        EulerSolver->f_verbose.setValue(false);
-                        EulerSolver->f_printLog.setValue(false);
-                        serr<<"getV : "<<velocity<<sendl;
-                    }
-                    for (unsigned int v=0; v<nbNodes; v++)
-                    {
-
-                        for (unsigned int j=0; j<dof_on_node; j++)
-                        {
-                            invM->data[(v*dof_on_node+j)*nbCols + (f*dof_on_node+i) ] = (Real)(fact * velocity[v][j]);
-                        }
-                    }
-                    //serr<<"put in appComp"<<sendl;
-                }
-                unitary_force.clear();
-                force[f] = unitary_force;
-            }
-            if (linearSolver)
-                linearSolver->updateSystemMatrix(); // do not recompute the matrix for the rest of the precomputation
-
-            ///////////////////////// RESET PARAMETERS AT THEIR PREVIOUS VALUE /////////////////////////////////
-            // gravity is reset at its previous value
-            this->getContext()->setGravityInWorld(gravity);
-            if(odeSolver)
-            {
-                odeSolver->f_tolerance.setValue(buf_tolerance);
-                odeSolver->f_maxIter.setValue(buf_maxIter);
-                odeSolver->f_smallDenominatorThreshold.setValue(buf_threshold);
-            }
-            else if(CGlinearSolver)
-            {
-                CGlinearSolver->f_tolerance.setValue(buf_tolerance);
-                CGlinearSolver->f_maxIter.setValue(buf_maxIter);
-                CGlinearSolver->f_smallDenominatorThreshold.setValue(buf_threshold);
-            }
-            ///////////////////////////////////////////////////////////////////////////////////////////////
-            std::ofstream compFileOut(invName.c_str(), std::fstream::out | std::fstream::binary);
-            compFileOut.write((char*)invM->data, nbCols * nbRows*sizeof(double));
-            compFileOut.close();
-
-            //Reset the velocity
-            for (unsigned int i=0; i<velocity.size(); i++) velocity[i]=velocity0[i];
-            //Reset the position
-            for (unsigned int i=0; i<pos.size(); i++)      pos[i]=pos0[i];
-
-
-#ifdef SOFA_HAVE_EIGEN2
-            for (unsigned int i=0; i<listLMConstraintSolver.size(); ++i)
-            {
-                listLMConstraintSolver[i]->constraintAcc.setValue(listConstraintActivation[i].acc);
-                listLMConstraintSolver[i]->constraintVel.setValue(listConstraintActivation[i].vel);
-                listLMConstraintSolver[i]->constraintPos.setValue(listConstraintActivation[i].pos);
-            }
-#endif
-
+            serr << "PrecomputedContactCorrection must be associated with CGImplicitSolver or EulerImplicitSolver+LinearSolver for the precomputation\nNo Precomputation" << sendl;
+            return;
         }
+
+#ifdef SOFA_HAVE_EIGEN2
+        helper::vector< sofa::component::constraint::LMConstraintSolver* > listLMConstraintSolver;
+        solvernode->get< sofa::component::constraint::LMConstraintSolver >(&listLMConstraintSolver, core::objectmodel::BaseContext::SearchDown);
+        helper::vector< ConstraintActivation > listConstraintActivation(listLMConstraintSolver.size());
+        for (unsigned int i=0; i<listLMConstraintSolver.size(); ++i)
+        {
+            listConstraintActivation[i].acc=listLMConstraintSolver[i]->constraintAcc.getValue();
+            listLMConstraintSolver[i]->constraintAcc.setValue(false);
+
+            listConstraintActivation[i].vel=listLMConstraintSolver[i]->constraintVel.getValue();
+            listLMConstraintSolver[i]->constraintVel.setValue(false);
+
+            listConstraintActivation[i].pos=listLMConstraintSolver[i]->constraintPos.getValue();
+            listLMConstraintSolver[i]->constraintPos.setValue(false);
+        }
+#endif
+
+        //complianceLoaded = true;
+        VecDeriv& force = *mstate->getExternalForces();
+        force.clear();
+        force.resize(nbNodes);
+        //v.clear();
+        //v.resize(v0.size());//computeDf
+
+        ///////////////////////// CHANGE THE PARAMETERS OF THE SOLVER /////////////////////////////////
+        double buf_tolerance = 0, buf_threshold = 0;
+        int	   buf_maxIter = 0;
+
+        if (odeSolver)
+        {
+            buf_tolerance = (double) odeSolver->f_tolerance.getValue();
+            buf_maxIter   = (int) odeSolver->f_maxIter.getValue();
+            buf_threshold = (double) odeSolver->f_smallDenominatorThreshold.getValue();
+            odeSolver->f_tolerance.setValue(1e-20);
+            odeSolver->f_maxIter.setValue(5000);
+            odeSolver->f_smallDenominatorThreshold.setValue(1e-35);
+        }
+        else if (cgLinearSolver)
+        {
+            buf_tolerance = (double) cgLinearSolver->f_tolerance.getValue();
+            buf_maxIter   = (int) cgLinearSolver->f_maxIter.getValue();
+            buf_threshold = (double) cgLinearSolver->f_smallDenominatorThreshold.getValue();
+            cgLinearSolver->f_tolerance.setValue(1e-20);
+            cgLinearSolver->f_maxIter.setValue(5000);
+            cgLinearSolver->f_smallDenominatorThreshold.setValue(1e-35);
+        }
+        ///////////////////////////////////////////////////////////////////////////////////////////////
+
+        VecDeriv& velocity = *mstate->getV();
+        VecDeriv velocity0 = *mstate->getV();
+        VecCoord& pos = *mstate->getX();
+        VecCoord  pos0 = *mstate->getX();
+
+        /// christian : it seems necessary to called the integration one time for initialization
+        /// (avoid to have a line of 0 at the top of the matrix)
+        if (eulerSolver)
+        {
+            using core::componentmodel::behavior::BaseMechanicalState;
+            eulerSolver->solve(dt, BaseMechanicalState::VecId::position(), BaseMechanicalState::VecId::velocity());
+        }
+
+        for (unsigned int f = 0; f < nbNodes; f++)
+        {
+            std::cout.precision(2);
+            std::cout << "Precomputing constraint correction : " << std::fixed << (float)f/(float)nbNodes*100.0f << " %   " << '\xd';
+            std::cout.flush();
+            //  serr << "inverse cols node : " << f << sendl;
+            Deriv unitary_force;
+
+            for (unsigned int i = 0; i < dof_on_node; i++)
+            {
+                unitary_force.clear();
+                //serr<<"dof n:"<<i<<sendl;
+                unitary_force[i]=1.0;
+                force[f] = unitary_force;
+                ////// reset Position and Velocities ///////
+                velocity.clear();
+                velocity.resize(nbNodes);
+                for (unsigned int n=0; n<nbNodes; n++)
+                    pos[n] = pos0[n];
+                ////////////////////////////////////////////
+                //serr<<"pos0 set"<<sendl;
+
+                if (f*dof_on_node+i < 2)
+                {
+                    eulerSolver->f_verbose.setValue(true);
+                    eulerSolver->f_printLog.setValue(true);
+                    //	serr<<"getF : "<<force<<sendl;
+                }
+
+                double fact = 1.0; // christian : it is not a compliance... but an admittance that is computed !
+                if (eulerSolver)
+                    fact = eulerSolver->getPositionIntegrationFactor(); // here, we compute a compliance
+
+                //odeSolver->computeContactForce(force);
+
+                if(odeSolver)
+                {
+                    //serr<<"odeSolver"<<sendl;
+                    odeSolver->solve(dt);
+                }
+                else if(eulerSolver)
+                {
+                    using core::componentmodel::behavior::BaseMechanicalState;
+                    eulerSolver->solve(dt, BaseMechanicalState::VecId::position(), BaseMechanicalState::VecId::velocity());
+                    if (linearSolver)
+                        linearSolver->freezeSystemMatrix(); // do not recompute the matrix for the rest of the precomputation
+                }
+
+                //serr<<"solve reussi"<<sendl;
+
+                velocity = *mstate->getV();
+                fact /= unitary_force[i];
+
+                if (f*dof_on_node+i < 2)
+                {
+                    //eulerSolver->solve(dt, core::componentmodel::behavior::BaseMechanicalState::VecId::position(), core::componentmodel::behavior::BaseMechanicalState::VecId::velocity());
+                    eulerSolver->f_verbose.setValue(false);
+                    eulerSolver->f_printLog.setValue(false);
+                    //	serr<<"getV : "<<velocity<<sendl;
+                }
+
+                for (unsigned int v=0; v<nbNodes; v++)
+                {
+                    for (unsigned int j=0; j<dof_on_node; j++)
+                    {
+                        invM->data[(v*dof_on_node+j)*nbCols + (f*dof_on_node+i) ] = (Real)(fact * velocity[v][j]);
+                    }
+                }
+                //serr<<"put in appComp"<<sendl;
+            }
+            unitary_force.clear();
+            force[f] = unitary_force;
+        }
+        if (linearSolver)
+            linearSolver->updateSystemMatrix(); // do not recompute the matrix for the rest of the precomputation
+
+        ///////////////////////// RESET PARAMETERS AT THEIR PREVIOUS VALUE /////////////////////////////////
+        // gravity is reset at its previous value
+        this->getContext()->setGravityInWorld(gravity);
+        if (odeSolver)
+        {
+            odeSolver->f_tolerance.setValue(buf_tolerance);
+            odeSolver->f_maxIter.setValue(buf_maxIter);
+            odeSolver->f_smallDenominatorThreshold.setValue(buf_threshold);
+        }
+        else if (cgLinearSolver)
+        {
+            cgLinearSolver->f_tolerance.setValue(buf_tolerance);
+            cgLinearSolver->f_maxIter.setValue(buf_maxIter);
+            cgLinearSolver->f_smallDenominatorThreshold.setValue(buf_threshold);
+        }
+        ///////////////////////////////////////////////////////////////////////////////////////////////
+
+        saveCompliance(invName);
+
+        //Reset the velocity
+        for (unsigned int i=0; i<velocity.size(); i++)
+            velocity[i] = velocity0[i];
+        //Reset the position
+        for (unsigned int i=0; i<pos.size(); i++)
+            pos[i] = pos0[i];
+
+
+#ifdef SOFA_HAVE_EIGEN2
+        for (unsigned int i=0; i<listLMConstraintSolver.size(); ++i)
+        {
+            listLMConstraintSolver[i]->constraintAcc.setValue(listConstraintActivation[i].acc);
+            listLMConstraintSolver[i]->constraintVel.setValue(listConstraintActivation[i].vel);
+            listLMConstraintSolver[i]->constraintPos.setValue(listConstraintActivation[i].pos);
+        }
+#endif
     }
 
+    std::cout << "appCompliance = invM->data\n";
     appCompliance = invM->data;
 
     // Optimisation for the computation of W
@@ -404,21 +446,21 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
 
     ////  debug print 400 first row and column of the matrix
-    if (this->f_printLog.getValue())
-    {
-        sout << "Matrix compliance : nbCols ="<<nbCols<<"  nbRows ="<<nbRows ;
+    //if (this->f_printLog.getValue())
+    //{
+    //	sout << "Matrix compliance : nbCols = " << nbCols << "  nbRows =" << nbRows;
 
-        for (unsigned int i=0; i<20 && i<nbCols; i++)
-        {
-            sout << sendl;
-            for (unsigned int j=0; j<20 && j<nbCols; j++)
-            {
-                sout <<" \t "<< appCompliance[j*nbCols + i];
-            }
-        }
+    //	for (unsigned int i = 0; i < 20 && i < nbCols; i++)
+    //	{
+    //		sout << sendl;
+    //		for (unsigned int j = 0; j < 20 && j < nbCols; j++)
+    //		{
+    //			sout << " \t " << appCompliance[j*nbCols + i];
+    //		}
+    //	}
 
-        sout << sendl;
-    }
+    //	sout << sendl;
+    //}
     ////sout << "quit init "  << endl;
 
     //sout << "----------- Test Quaternions --------------" << sendl;
@@ -996,8 +1038,6 @@ void PrecomputedConstraintCorrection<defaulttype::Vec1fTypes>::rotateResponse();
 template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(double * f, std::list<int>& /*renumbering*/)
 {
-
-
     constraint_force = f;
     VecConst& constraints = *mstate->getC();
     localConstraintId = &(mstate->getConstraintId());
@@ -1038,16 +1078,15 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
         }
     }
 
-    unsigned int numNodes1 = constraint_dofs.size();
-    sout<< "numNodes : avant = "<<numNodes1;
+//	unsigned int numNodes1 = constraint_dofs.size();
+//	sout<< "numNodes : avant = "<<numNodes1;
     constraint_dofs.sort();
     constraint_dofs.unique();
-    unsigned int numNodes = constraint_dofs.size();
-    sout<< " apres = "<<numNodes<<sendl;
-    sout<< "numConstraints = "<< numConstraints<<sendl;
+//	unsigned int numNodes = constraint_dofs.size();
+//	sout<< " apres = "<<numNodes<<sendl;
+//	sout<< "numConstraints = "<< numConstraints<<sendl;
 
     id_to_localIndex.clear();
-
 
     for(unsigned int i=0; i<numConstraints; ++i)
     {
@@ -1073,28 +1112,22 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
 
             f[c] = 0.0;
             /*
-                ConstraintIterator itConstraint;
-                std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[i].data();
+            ConstraintIterator itConstraint;
+            std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[i].data();
 
-                for (itConstraint=iter.first;itConstraint!=iter.second;itConstraint++)
-                {
+            for (itConstraint=iter.first;itConstraint!=iter.second;itConstraint++)
+            {
+            	unsigned int dof = itConstraint->first;
+            	Deriv n = itConstraint->second;
+            	constraint_F[dof] +=n * fC;
 
-                        unsigned int dof = itConstraint->first;
-                        Deriv n = itConstraint->second;
-                        constraint_F[dof] +=n * fC;
+            	// TODO : remplacer pour faire + rapide !!
+            //	setConstraintDForce(&fC, (int)c, (int)c, true);
 
-
-
-
-                        // TODO : remplacer pour faire + rapide !!
-                        //setConstraintDForce(&fC, (int)c, (int)c, true);
-
-                }
-                */
+            }
+            */
         }
-
 #endif
-
     }
 
 
@@ -1105,10 +1138,8 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
     Deriv Vbuf;
     //int indexCurColConst, indexCurRowConst;
     it=0;
-
-
-
     //////////////////////////////////////////
+
     //std::vector<Deriv> sparseCompliance;
     _sparseCompliance.resize(constraint_dofs.size()*numConstraints);
     std::list<int>::iterator IterateurListe;
@@ -1143,9 +1174,6 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
         }
     }
 
-
-
-
     localW.resize(numConstraints,numConstraints);
 
     for(curRowConst = 0; curRowConst < numConstraints; curRowConst++)
@@ -1179,14 +1207,12 @@ void PrecomputedConstraintCorrection<DataTypes>::resetForUnbuiltResolution(doubl
         //Compliance matrix is symetric ?
         for(unsigned int curColConst = curRowConst+1; curColConst < numConstraints; curColConst++)
         {
-        int indexCurColConst = mstate->getConstraintId()[curColConst];
-        W[indexCurColConst][indexCurRowConst] = W[indexCurRowConst][indexCurColConst];
+        	int indexCurColConst = mstate->getConstraintId()[curColConst];
+        	W[indexCurColConst][indexCurRowConst] = W[indexCurRowConst][indexCurColConst];
         }
         */
     }
-
 #endif
-
 }
 
 template<class DataTypes>
