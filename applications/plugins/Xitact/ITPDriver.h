@@ -22,17 +22,18 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_IHPDRIVER_H
-#define SOFA_COMPONENT_IHPDRIVER_H
+#ifndef SOFA_COMPONENT_ITPDRIVER_H
+#define SOFA_COMPONENT_ITPDRIVER_H
 
-
+//Sensable include
+#include <sofa/helper/LCPcalc.h>
+#include <sofa/defaulttype/SolidTypes.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/core/componentmodel/behavior/BaseController.h>
 #include <sofa/component/visualModel/OglModel.h>
 #include <sofa/component/controller/Controller.h>
 #include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/defaulttype/SolidTypes.h>
 #include <sofa/defaulttype/Quat.h>
 #include "XiTrocarInterface.h"
 
@@ -63,7 +64,7 @@ typedef struct
     double forceScale;
     bool permanent_feedback;
 
-    // API IHP //
+    // API ITP //
     XiToolState hapticState;  // for the haptic loop
     XiToolState simuState;		 // for the simulation loop
     XiToolForce hapticForce;
@@ -73,9 +74,9 @@ typedef struct
 /**
 * Omni driver
 */
-class IHPDriver : public Controller
+class ITPDriver : public Controller
 {
-    //SOFA_CLASS(IHPDriver,sofa::component::controller::Controller);
+    //SOFA_CLASS(ITPDriver,sofa::component::controller::Controller);
 
 public:
     Data<double> Scale;
@@ -85,8 +86,8 @@ public:
 
     XiToolData	data;
 
-    IHPDriver();
-    virtual ~IHPDriver();
+    ITPDriver();
+    virtual ~ITPDriver();
 
     virtual void bwdInit();
     virtual void reset();
@@ -120,4 +121,4 @@ private:
 
 } // namespace sofa
 
-#endif // SOFA_COMPONENT_IHPDRIVER_H
+#endif // SOFA_COMPONENT_ITPDRIVER_H

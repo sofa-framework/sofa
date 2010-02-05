@@ -20,14 +20,19 @@ DEFINES += SOFA_BUILD_XITACTPLUGIN
 
 LIBS += $$SOFA_LIBS
 LIBS += $$SOFA_EXT_LIBS
+LIBS += -lXiRobot
 INCLUDEPATH += $$SOFA_DIR/extlibs/Xitact
 
 SOURCES = \
 initXitact.cpp \
-IHPDriver.cpp
+IHPDriver.cpp \
+ITPDriver.cpp
+
 
 HEADERS = \
-IHPDriver.h
+IHPDriver.h \
+ITPDriver.h
+
 
 README_FILE = PluginXitact.txt
 
