@@ -216,12 +216,18 @@ std::string SetDirectory::GetProcessFullPath(const char* filename)
 #elif defined (__APPLE__)
     if (!filename || filename[0]!='/')
     {
-        char path[4096];
-        unsigned int size;
-        _NSGetExecutablePath( path, &size );
-        //std::cout << "Current process path: "<<path<<std::endl;
-
-        return path;
+        char* path = new char[4096];
+        uint32_t size;
+        if ( _NSGetExecutablePath( path, &size ) != 0)
+        {
+            //realloc
+            delete [] path;
+            path = new char[size];
+            _NSGetExecutablePath( path, &size );
+        }
+        std::string finalPath(path);
+        delete [] path;
+        return finalPath;
     }
 #endif
 
