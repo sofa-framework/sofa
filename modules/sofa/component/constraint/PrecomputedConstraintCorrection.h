@@ -80,6 +80,7 @@ public:
     Data<std::string> filePrefix;
     Data<double> debugViewFrameScale;
     //Data<bool> newUnbuilt;
+    sofa::core::objectmodel::DataFileName f_fileCompliance;
 
     PrecomputedConstraintCorrection(behavior::MechanicalState<DataTypes> *mm = NULL);
 
@@ -145,6 +146,7 @@ public:
         int nbref;
         InverseStorage() : data(NULL), nbref(0) {}
     };
+
     std::string invName;
     InverseStorage* invM;
     Real* appCompliance;
@@ -204,6 +206,23 @@ public:
         return NULL;
     }
 
+protected:
+    /**
+     * @brief Load compliance matrix from memory or external file according to fileName.
+     *
+     * @return Loading success.
+     */
+    bool loadCompliance(std::string fileName);
+
+    /**
+     * @brief Save compliance matrix into a file.
+     */
+    void saveCompliance(const std::string fileName);
+
+    /**
+     * @brief Builds the compliance file name using the SOFA component internal data.
+     */
+    std::string buildFileName();
 };
 
 
