@@ -34,7 +34,10 @@
 #include <math.h>
 
 // include all headers included in taucs.h to fix errors on macx
+#ifndef WIN32
 #include <complex.h>
+#endif
+
 #include <assert.h>
 #include <float.h>
 #include <stdlib.h>
