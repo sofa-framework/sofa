@@ -23,7 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 
-#include <IHPDriver.h>
+#include <ITPDriver.h>
 
 #include <sofa/core/ObjectFactory.h>
 //#include <sofa/core/objectmodel/XitactEvent.h>
@@ -46,7 +46,6 @@
 
 
 
-
 namespace sofa
 {
 
@@ -64,7 +63,7 @@ using namespace sofa::defaulttype;
 
 static bool isInitialized = false;
 
-int initDevice(XiToolData& /*data*/)
+int initDeviceITP(XiToolData& /*data*/)
 {
     if (isInitialized) return 0;
     isInitialized = true;
@@ -76,7 +75,7 @@ int initDevice(XiToolData& /*data*/)
     return 0;
 }
 
-IHPDriver::IHPDriver()
+ITPDriver::ITPDriver()
     : Scale(initData(&Scale, 1.0, "Scale","Default scale applied to the Phantom Coordinates. "))
     , permanent(initData(&permanent, false, "permanent" , "Apply the force feedback permanently"))
     , indexTool(initData(&indexTool, (int)0,"toolIndex", "index of the tool to simulate (if more than 1). Index 0 correspond to first tool."))
@@ -87,19 +86,19 @@ IHPDriver::IHPDriver()
     noDevice = false;
 }
 
-IHPDriver::~IHPDriver()
+ITPDriver::~ITPDriver()
 {
 }
 
-void IHPDriver::cleanup()
+void ITPDriver::cleanup()
 {
-    sout << "IHPDriver::cleanup()" << sendl;
+    sout << "ITPDriver::cleanup()" << sendl;
 
     isInitialized = false;
 
 }
 
-void IHPDriver::setForceFeedback(ForceFeedback* ff)
+void ITPDriver::setForceFeedback(ForceFeedback* ff)
 {
     // the forcefeedback is already set
     if(data.forceFeedback == ff)
@@ -112,14 +111,13 @@ void IHPDriver::setForceFeedback(ForceFeedback* ff)
     data.forceFeedback = ff;
 };
 
-void IHPDriver::bwdInit()
+void ITPDriver::bwdInit()
 {
-
     simulation::Node *context = dynamic_cast<simulation::Node *>(this->getContext()); // access to current node
     if (dynamic_cast<core::componentmodel::behavior::MechanicalState<Vec1dTypes>*>(context->getMechanicalState()) == NULL)
     {
         this->f_printLog.setValue(true);
-        serr<<"ERROR : no MechanicalState<Vec1dTypes> defined... init of IHPDriver faild "<<sendl;
+        serr<<"ERROR : no MechanicalState<Vec1dTypes> defined... init of ITPDriver faild "<<sendl;
         this->_mstate = NULL;
         return ;
     }
@@ -129,7 +127,7 @@ void IHPDriver::bwdInit()
 
     }
 
-    //std::cout << "IHPDriver::init()" << std::endl;
+    //std::cout << "ITPDriver::init()" << std::endl;
 
     ForceFeedback *ff = context->get<ForceFeedback>();
 
@@ -144,20 +142,19 @@ void IHPDriver::bwdInit()
 
 
 
-    if(initDevice(data)==-1)
+    if(initDeviceITP(data)==-1)
     {
         noDevice=true;
         std::cout<<"WARNING NO DEVICE"<<std::endl;
     }
-    //std::cerr  << "IHPDriver::init() done" << std::endl;
-
+    //std::cerr  << "ITPDriver::init() done" << std::endl;
     xiTrocarAcquire();
-
+    int nbr = this->indexTool.getValue();
     char name[1024];
     char serial[16];
-    int nbr = this->indexTool.getValue();
     xiTrocarGetDeviceDescription(nbr, name);
     xiTrocarGetSerialNumber(nbr,serial );
+
     std::cout << "Tool: " << nbr << std::endl;
     std::cout << "name: " << name << std::endl;
     std::cout << "serial: " << serial << std::endl;
@@ -165,7 +162,7 @@ void IHPDriver::bwdInit()
 }
 
 
-void IHPDriver::setDataValue()
+void ITPDriver::setDataValue()
 {
     /*
     data.scale = Scale.getValue();
@@ -173,26 +170,26 @@ void IHPDriver::setDataValue()
     Quat q = orientationBase.getValue();
     q.normalize();
     orientationBase.setValue(q);
-    data.world_H_baseIHP.set( positionBase.getValue(), q		);
+    data.world_H_baseITP.set( positionBase.getValue(), q		);
     q=orientationTool.getValue();
     q.normalize();
-    data.endIHP_H_virtualTool.set(positionTool.getValue(), q);
+    data.endITP_H_virtualTool.set(positionTool.getValue(), q);
     data.permanent_feedback = permanent.getValue();
     */
 }
 
-void IHPDriver::reset()
+void ITPDriver::reset()
 {
     this->reinit();
 }
 
-void IHPDriver::reinitVisual()
+void ITPDriver::reinitVisual()
 {
 
 
 }
 
-void IHPDriver::reinit()
+void ITPDriver::reinit()
 {
     this->cleanup();
     this->bwdInit();
@@ -201,7 +198,7 @@ void IHPDriver::reinit()
 
 }
 
-void IHPDriver::handleEvent(core::objectmodel::Event *event)
+void ITPDriver::handleEvent(core::objectmodel::Event *event)
 {
     if (dynamic_cast<sofa::simulation::AnimateBeginEvent *>(event))
     {
@@ -290,16 +287,16 @@ void IHPDriver::handleEvent(core::objectmodel::Event *event)
 
 
     			/// COMPUTATION OF THE vituralTool 6D POSITION IN THE World COORDINATES
-    			SolidTypes<double>::Transform baseIHP_H_endIHP(data.deviceData.pos*data.scale, data.deviceData.quat);
-    			SolidTypes<double>::Transform world_H_virtualTool = data.world_H_baseIHP * baseIHP_H_endIHP * data.endIHP_H_virtualTool;
+    			SolidTypes<double>::Transform baseITP_H_endITP(data.deviceData.pos*data.scale, data.deviceData.quat);
+    			SolidTypes<double>::Transform world_H_virtualTool = data.world_H_baseITP * baseITP_H_endITP * data.endITP_H_virtualTool;
 
 
     			/// TODO : SHOULD INCLUDE VELOCITY !!
-    			sofa::core::objectmodel::XitactEvent IHPEvent(data.deviceData.id, world_H_virtualTool.getOrigin(), world_H_virtualTool.getOrientation() , data.deviceData.m_buttonState);
+    			sofa::core::objectmodel::XitactEvent ITPEvent(data.deviceData.id, world_H_virtualTool.getOrigin(), world_H_virtualTool.getOrientation() , data.deviceData.m_buttonState);
 
-    			this->getContext()->propagateEvent(&IHPEvent);
+    			this->getContext()->propagateEvent(&ITPEvent);
 
-    			if (moveIHPBase)
+    			if (moveITPBase)
     			{
     				std::cout<<" new positionBase = "<<positionBase_buf<<std::endl;
     				visu_base->applyTranslation(positionBase_buf[0] - positionBase.getValue()[0],
@@ -323,12 +320,12 @@ void IHPDriver::handleEvent(core::objectmodel::Event *event)
     		core::objectmodel::KeypressedEvent *kpe = dynamic_cast<core::objectmodel::KeypressedEvent *>(event);
     		if (kpe->getKey()=='Z' ||kpe->getKey()=='z' )
     		{
-    			moveIHPBase = !moveIHPBase;
+    			moveITPBase = !moveITPBase;
     			std::cout<<"key z detected "<<std::endl;
-    			visu.setValue(moveIHPBase);
+    			visu.setValue(moveITPBase);
 
 
-    			if(moveIHPBase)
+    			if(moveITPBase)
     			{
     				this->cleanup();
     				positionBase_buf = positionBase.getValue();
@@ -370,7 +367,7 @@ void IHPDriver::handleEvent(core::objectmodel::Event *event)
 
 
 
-Quat IHPDriver::fromGivenDirection( Vector3& dir,  Vector3& local_dir, Quat old_quat)
+Quat ITPDriver::fromGivenDirection( Vector3& dir,  Vector3& local_dir, Quat old_quat)
 {
     local_dir.normalize();
     Vector3 old_dir = old_quat.rotate(local_dir);
@@ -395,10 +392,10 @@ Quat IHPDriver::fromGivenDirection( Vector3& dir,  Vector3& local_dir, Quat old_
 
     return old_quat;
 }
-int IHPDriverClass = core::RegisterObject("Driver and Controller of IHP Xitact Device")
-        .add< IHPDriver >();
+int ITPDriverClass = core::RegisterObject("Driver and Controller of ITP Xitact Device")
+        .add< ITPDriver >();
 
-SOFA_DECL_CLASS(IHPDriver)
+SOFA_DECL_CLASS(ITPDriver)
 
 
 } // namespace controller
