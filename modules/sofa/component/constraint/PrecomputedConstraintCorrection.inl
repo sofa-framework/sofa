@@ -79,8 +79,8 @@ PrecomputedConstraintCorrection<DataTypes>::PrecomputedConstraintCorrection(beha
     , f_restRotations(initDataPtr(&f_restRotations,&_restRotations,"restDeformations",""))
     , recompute(initData(&recompute, false, "recompute","if true, always recompute the compliance"))
 //	, filePrefix(initData(&filePrefix, "filePrefix","if not empty, the prefix used for the file containing the compliance matrix"))
-    , f_fileCompliance(initData(&f_fileCompliance, "fileCompliance", "Precomputed compliance matrix data file"))
     , debugViewFrameScale(initData(&debugViewFrameScale, 1.0, "debugViewFrameScale","Scale on computed node's frame"))
+    , f_fileCompliance(initData(&f_fileCompliance, "fileCompliance", "Precomputed compliance matrix data file"))
     , mstate(mm)
     , invM(NULL)
     , appCompliance(NULL)
@@ -144,7 +144,7 @@ template<class DataTypes>
 bool PrecomputedConstraintCorrection<DataTypes>::loadCompliance(std::string fileName)
 {
     // Try to load from memory
-    sout << "Try to load compliance from memory " << fileName << std::endl;
+    sout << "Try to load compliance from memory " << fileName << sendl;
 
     invM = getInverse(fileName);
     dimensionAppCompliance = nbRows;
@@ -152,7 +152,7 @@ bool PrecomputedConstraintCorrection<DataTypes>::loadCompliance(std::string file
     if (invM->data == NULL)
     {
         // Try to load from file
-        sout << "Try to load compliance from : " << fileName << endl;
+        sout << "Try to load compliance from : " << fileName << sendl;
 
         if ((sofa::helper::system::DataRepository.findFile(fileName)) && (recompute.getValue() == false))
         {
@@ -160,7 +160,7 @@ bool PrecomputedConstraintCorrection<DataTypes>::loadCompliance(std::string file
 
             std::ifstream compFileIn(fileName.c_str(), std::ifstream::binary);
 
-            sout << "File " << fileName << " found. Loading..." << endl;
+            sout << "File " << fileName << " found. Loading..." << sendl;
 
             compFileIn.read((char*)invM->data, nbCols * nbRows * sizeof(double));
             compFileIn.close();
@@ -179,7 +179,7 @@ bool PrecomputedConstraintCorrection<DataTypes>::loadCompliance(std::string file
 template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::saveCompliance(const std::string fileName)
 {
-    std::cout << "saveCompliance in " << fileName << std::endl;
+    sout << "saveCompliance in " << fileName << sendl;
 
     std::ofstream compFileOut(fileName.c_str(), std::fstream::out | std::fstream::binary);
     compFileOut.write((char*)invM->data, nbCols * nbRows * sizeof(double));
