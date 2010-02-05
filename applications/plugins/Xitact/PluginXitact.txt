@@ -17,6 +17,7 @@ LICENCE :
 
 
 OTHER COMMENTS :
-link to XiRobot.lib has to be done manually 
-Do not forget to place XiRobot.dll in sofa/bin
-
+From the Xitact SDK:
+ - XiRobot.lib should be placed in Sofa/lib/win32/Common
+ - XiRobot.dll should be placed in Sofa/bin
+ - XiTrocarInterface.h should be placed in Sofa/include
