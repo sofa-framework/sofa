@@ -140,6 +140,50 @@ void CudaVisualModel< TDataTypes >::reinit()
 }
 
 template<class TDataTypes>
+void CudaVisualModel< TDataTypes >::handleTopologyChange()
+{
+    std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itBegin=topology->firstChange();
+    std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itEnd=topology->lastChange();
+
+    while( itBegin != itEnd )
+    {
+        core::componentmodel::topology::TopologyChangeType changeType = (*itBegin)->getChangeType();
+
+        switch( changeType )
+        {
+
+// 		case core::componentmodel::topology::TRIANGLESADDED:
+// 			{
+// 			  printf("TRIANGLESADDED\n");
+// 				needUpdateTopology = true;
+// 				break;
+// 			}
+
+        case core::componentmodel::topology::TRIANGLESREMOVED:
+        {
+            needUpdateTopology = true;
+            break;
+        }
+
+        case core::componentmodel::topology::QUADSADDED:
+        {
+            needUpdateTopology = true;
+            break;
+        }
+
+        case core::componentmodel::topology::QUADSREMOVED:
+        {
+            needUpdateTopology = true;
+            break;
+        }
+        default:
+            break;
+        }
+        ++itBegin;
+    }
+}
+
+template<class TDataTypes>
 void CudaVisualModel< TDataTypes >::updateTopology()
 {
     if (!topology || !state) return;

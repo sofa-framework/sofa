@@ -218,6 +218,7 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::loadMatrix()
     }
     else
     {
+        cout << "Precompute : " << ss.str() << " compliance" << endl;
         if (solverName.getValue().empty()) loadMatrixWithCSparse();
         else loadMatrixWithSolver();
 
