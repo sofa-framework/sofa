@@ -116,6 +116,7 @@ public:
     virtual void updateVisual();
     virtual void updateTopology();
     virtual void updateNormals();
+    virtual void handleTopologyChange();
 
     virtual std::string getTemplateName() const
     {
