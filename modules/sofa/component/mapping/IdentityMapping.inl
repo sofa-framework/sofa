@@ -159,6 +159,8 @@ extern void peq(defaulttype::RigidDeriv<N,real1>& dest, const defaulttype::Vec<N
 template <class BasicMapping>
 void IdentityMapping<BasicMapping>::apply( typename Out::VecCoord& out, const typename In::VecCoord& in )
 {
+
+
     //const unsigned int N = Coord::size() < InCoord::size() ? Coord::size() : InCoord::size();
     out.resize(in.size());
     for(unsigned int i=0; i<out.size(); i++)
@@ -173,6 +175,8 @@ void IdentityMapping<BasicMapping>::apply( typename Out::VecCoord& out, const ty
 template <class BasicMapping>
 void IdentityMapping<BasicMapping>::applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in )
 {
+
+
     //const unsigned int N = Deriv::size() < InDeriv::size() ? Deriv::size() : InDeriv::size();
     out.resize(in.size());
 
@@ -230,6 +234,8 @@ void IdentityMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const t
 template <class BaseMapping>
 void IdentityMapping<BaseMapping>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in )
 {
+
+
     unsigned int outSize = out.size();
     out.resize(in.size() + outSize); // we can accumulate in "out" constraints from several mappings
     //const unsigned int N = Deriv::size() < InDeriv::size() ? Deriv::size() : InDeriv::size();
@@ -246,6 +252,12 @@ void IdentityMapping<BaseMapping>::applyJT( typename In::VecConst& out, const ty
             o.add( indexIn, data);
         }
     }
+}
+
+template <class BaseMapping>
+void IdentityMapping<BaseMapping>::handleTopologyChange()
+{
+    if (stateTo->getSize() != stateFrom->getSize()) this->init();
 }
 
 } // namespace mapping

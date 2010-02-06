@@ -73,14 +73,17 @@ public:
     core::componentmodel::behavior::BaseMechanicalState::ParticleMask* maskTo;
     //enum { N=((int)Deriv::static_size < (int)InDeriv::static_size ? (int)Deriv::static_size : (int)InDeriv::static_size) };
 
+    core::componentmodel::behavior::BaseMechanicalState *stateFrom;
+    core::componentmodel::behavior::BaseMechanicalState *stateTo;
+
     IdentityMapping(In* from, Out* to)
         : Inherit(from, to)
     {
         maskFrom = NULL;
-        if (core::componentmodel::behavior::BaseMechanicalState *stateFrom = dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *>(from))
+        if ((stateFrom = dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *>(from)))
             maskFrom = &stateFrom->forceMask;
         maskTo = NULL;
-        if (core::componentmodel::behavior::BaseMechanicalState *stateTo = dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *>(to))
+        if ((stateTo = dynamic_cast< core::componentmodel::behavior::BaseMechanicalState *>(to)))
             maskTo = &stateTo->forceMask;
     }
 
@@ -101,6 +104,8 @@ public:
     void applyJT( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
 
     void applyJT( typename In::VecConst& out, const typename Out::VecConst& in );
+
+    virtual void handleTopologyChange();
 };
 
 using core::Mapping;
