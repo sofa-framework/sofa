@@ -61,23 +61,24 @@ BlockJacobiPreconditioner<TMatrix,TVector>::BlockJacobiPreconditioner()
 template<class TMatrix, class TVector>
 void BlockJacobiPreconditioner<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& r)
 {
-    M.mult(z,r);
+    M.mul(z,r);
 }
 
 template<class TMatrix, class TVector>
 void BlockJacobiPreconditioner<TMatrix,TVector>::invert(Matrix& M)
 {
-    M.i();
+    M.invert();
     if (f_verbose.getValue()) sout<<M<<sendl;
 }
 
 SOFA_DECL_CLASS(BlockJacobiPreconditioner)
 
-int BlockJacobiPreconditionerClass = core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm")
-        .add< BlockJacobiPreconditioner<BlockDiagonalMatrix3 ,FullVector<double> > >(true)
-        .add< BlockJacobiPreconditioner<BlockDiagonalMatrix6 ,FullVector<double> > >()
-        .add< BlockJacobiPreconditioner<BlockDiagonalMatrix9 ,FullVector<double> > >()
-        .add< BlockJacobiPreconditioner<BlockDiagonalMatrix12 ,FullVector<double> > >()
+int BlockJacobiPreconditionerClass = core::RegisterObject("Linear solver based on a NxN bloc diagonal matrix (i.e. block Jacobi preconditionner)")
+        .add< BlockJacobiPreconditioner<BlockDiagonalMatrix<3,double> ,FullVector<double> > >(true)
+        .add< BlockJacobiPreconditioner<BlockDiagonalMatrix<2,double> ,FullVector<double> > >()
+        .add< BlockJacobiPreconditioner<BlockDiagonalMatrix<6,double> ,FullVector<double> > >()
+        .add< BlockJacobiPreconditioner<BlockDiagonalMatrix<9,double> ,FullVector<double> > >()
+        .add< BlockJacobiPreconditioner<BlockDiagonalMatrix<12,double> ,FullVector<double> > >()
         ;
 
 } // namespace linearsolver
