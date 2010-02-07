@@ -183,7 +183,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::addForce (VecDeriv& f, con
 }
 
 template<class DataTypes>
-void TetrahedralCorotationalFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv& x)
+void TetrahedralCorotationalFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv& x, double kFactor, double /*bFactor*/)
 {
     switch(method)
     {
@@ -197,7 +197,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::addDForce (VecDeriv& v, co
             Index c = t[2];
             Index d = t[3];
 
-            applyStiffnessSmall( v,x, i, a,b,c,d );
+            applyStiffnessSmall( v,x, i, a,b,c,d, kFactor );
         }
         break;
     }
@@ -211,7 +211,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::addDForce (VecDeriv& v, co
             Index c = t[2];
             Index d = t[3];
 
-            applyStiffnessLarge( v,x, i, a,b,c,d );
+            applyStiffnessLarge( v,x, i, a,b,c,d, kFactor );
         }
         break;
     }
@@ -225,7 +225,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::addDForce (VecDeriv& v, co
             Index c = t[2];
             Index d = t[3];
 
-            applyStiffnessPolar( v,x, i, a,b,c,d );
+            applyStiffnessPolar( v,x, i, a,b,c,d, kFactor );
         }
         break;
     }
@@ -353,71 +353,36 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeMaterialStiffness(i
 {
 
     const VecReal& localStiffnessFactor = _localStiffnessFactor.getValue();
-    const Real youngModulus = (localStiffnessFactor.empty() ? 1.0f : localStiffnessFactor[i*localStiffnessFactor.size()/_topology->getNbTetrahedra()])*_youngModulus.getValue();
-    const Real poissonRatio = _poissonRatio.getValue();
 
     helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
 
-    tetrahedronInf[i].materialMatrix[0][0] = tetrahedronInf[i].materialMatrix[1][1] = tetrahedronInf[i].materialMatrix[2][2] = 1;
-    tetrahedronInf[i].materialMatrix[0][1] = tetrahedronInf[i].materialMatrix[0][2] = tetrahedronInf[i].materialMatrix[1][0]
-            = tetrahedronInf[i].materialMatrix[1][2] = tetrahedronInf[i].materialMatrix[2][0] =
-                    tetrahedronInf[i].materialMatrix[2][1] = poissonRatio/(1-poissonRatio);
-    tetrahedronInf[i].materialMatrix[0][3] = tetrahedronInf[i].materialMatrix[0][4] = tetrahedronInf[i].materialMatrix[0][5] = 0;
-    tetrahedronInf[i].materialMatrix[1][3] = tetrahedronInf[i].materialMatrix[1][4] = tetrahedronInf[i].materialMatrix[1][5] = 0;
-    tetrahedronInf[i].materialMatrix[2][3] = tetrahedronInf[i].materialMatrix[2][4] = tetrahedronInf[i].materialMatrix[2][5] = 0;
-    tetrahedronInf[i].materialMatrix[3][0] = tetrahedronInf[i].materialMatrix[3][1] = tetrahedronInf[i].materialMatrix[3][2] = tetrahedronInf[i].materialMatrix[3][4] = tetrahedronInf[i].materialMatrix[3][5] = 0;
-    tetrahedronInf[i].materialMatrix[4][0] = tetrahedronInf[i].materialMatrix[4][1] = tetrahedronInf[i].materialMatrix[4][2] = tetrahedronInf[i].materialMatrix[4][3] = tetrahedronInf[i].materialMatrix[4][5] = 0;
-    tetrahedronInf[i].materialMatrix[5][0] = tetrahedronInf[i].materialMatrix[5][1] = tetrahedronInf[i].materialMatrix[5][2] = tetrahedronInf[i].materialMatrix[5][3] = tetrahedronInf[i].materialMatrix[5][4] = 0;
-    tetrahedronInf[i].materialMatrix[3][3] = tetrahedronInf[i].materialMatrix[4][4] = tetrahedronInf[i].materialMatrix[5][5] = (1-2*poissonRatio)/(2*(1-poissonRatio));
-    tetrahedronInf[i].materialMatrix *= (youngModulus*(1-poissonRatio))/((1+poissonRatio)*(1-2*poissonRatio));
-
-    /*Real gamma = (youngModulus*poissonRatio) / ((1+poissonRatio)*(1-2*poissonRatio));
-    Real 		mu2 = youngModulus / (1+poissonRatio);
-    _materialsStiffnesses[i][0][3] = _materialsStiffnesses[i][0][4] =	_materialsStiffnesses[i][0][5] = 0;
-    _materialsStiffnesses[i][1][3] = _materialsStiffnesses[i][1][4] =	_materialsStiffnesses[i][1][5] = 0;
-    _materialsStiffnesses[i][2][3] = _materialsStiffnesses[i][2][4] =	_materialsStiffnesses[i][2][5] = 0;
-    _materialsStiffnesses[i][3][0] = _materialsStiffnesses[i][3][1] = _materialsStiffnesses[i][3][2] = _materialsStiffnesses[i][3][4] =	_materialsStiffnesses[i][3][5] = 0;
-    _materialsStiffnesses[i][4][0] = _materialsStiffnesses[i][4][1] = _materialsStiffnesses[i][4][2] = _materialsStiffnesses[i][4][3] =	_materialsStiffnesses[i][4][5] = 0;
-    _materialsStiffnesses[i][5][0] = _materialsStiffnesses[i][5][1] = _materialsStiffnesses[i][5][2] = _materialsStiffnesses[i][5][3] =	_materialsStiffnesses[i][5][4] = 0;
-    _materialsStiffnesses[i][0][0] = _materialsStiffnesses[i][1][1] = _materialsStiffnesses[i][2][2] = gamma+mu2;
-    _materialsStiffnesses[i][0][1] = _materialsStiffnesses[i][0][2] = _materialsStiffnesses[i][1][0]
-    			= _materialsStiffnesses[i][1][2] = _materialsStiffnesses[i][2][0] = _materialsStiffnesses[i][2][1] = gamma;
-    _materialsStiffnesses[i][3][3] = _materialsStiffnesses[i][4][4] = _materialsStiffnesses[i][5][5] =	mu2;*/
-
-    // divide by 36 times volumes of the element
-    const VecCoord *X0=this->mstate->getX0();
-
-    Coord A = (*X0)[b] - (*X0)[a];
-    Coord B = (*X0)[c] - (*X0)[a];
-    Coord C = (*X0)[d] - (*X0)[a];
-    Coord AB = cross(A, B);
-    Real volumes6 = fabs( dot( AB, C ) );
-    if (volumes6<0)
-    {
-        serr << "ERROR: Negative volume for tetra "<<i<<" <"<<a<<','<<b<<','<<c<<','<<d<<"> = "<<volumes6/6<<sendl;
-    }
-    tetrahedronInf[i].materialMatrix  /= volumes6;
+    computeMaterialStiffness(tetrahedronInf[i].materialMatrix, a, b, c, d, (localStiffnessFactor.empty() ? 1.0f : localStiffnessFactor[i*localStiffnessFactor.size()/_topology->getNbTetrahedra()]));
 
     tetrahedronInfo.endEdit();
 }
 
 template<class DataTypes>
-void TetrahedralCorotationalFEMForceField<DataTypes>::computeMaterialStiffness(MaterialStiffness& materialMatrix, Index&a, Index&b, Index&c, Index&d)
+void TetrahedralCorotationalFEMForceField<DataTypes>::computeMaterialStiffness(MaterialStiffness& materialMatrix, Index&a, Index&b, Index&c, Index&d, double localStiffnessFactor)
 {
 
     //const VecReal& localStiffnessFactor = _localStiffnessFactor.getValue();
-    const Real youngModulus = _youngModulus.getValue();
+    const Real youngModulus = _youngModulus.getValue()*localStiffnessFactor;
     const Real poissonRatio = _poissonRatio.getValue();
 
     materialMatrix[0][0] = materialMatrix[1][1] = materialMatrix[2][2] = 1;
-    materialMatrix[0][1] = materialMatrix[0][2] = materialMatrix[1][0] = materialMatrix[1][2] = materialMatrix[2][0] = materialMatrix[2][1] = poissonRatio/(1-poissonRatio);
+    materialMatrix[0][1] = materialMatrix[0][2] = materialMatrix[1][0] =
+            materialMatrix[1][2] = materialMatrix[2][0] = materialMatrix[2][1] = poissonRatio/(1-poissonRatio);
     materialMatrix[0][3] = materialMatrix[0][4] = materialMatrix[0][5] = 0;
     materialMatrix[1][3] = materialMatrix[1][4] = materialMatrix[1][5] = 0;
     materialMatrix[2][3] = materialMatrix[2][4] = materialMatrix[2][5] = 0;
-    materialMatrix[3][0] = materialMatrix[3][1] = materialMatrix[3][2] = materialMatrix[3][4] = materialMatrix[3][5] = 0;
-    materialMatrix[4][0] = materialMatrix[4][1] = materialMatrix[4][2] = materialMatrix[4][3] = materialMatrix[4][5] = 0;
-    materialMatrix[5][0] = materialMatrix[5][1] = materialMatrix[5][2] = materialMatrix[5][3] = materialMatrix[5][4] = 0;
-    materialMatrix[3][3] = materialMatrix[4][4] = materialMatrix[5][5] = (1-2*poissonRatio)/(2*(1-poissonRatio));
+    materialMatrix[3][0] = materialMatrix[3][1] = materialMatrix[3][2] =
+            materialMatrix[3][4] = materialMatrix[3][5] = 0;
+    materialMatrix[4][0] = materialMatrix[4][1] = materialMatrix[4][2] =
+            materialMatrix[4][3] = materialMatrix[4][5] = 0;
+    materialMatrix[5][0] = materialMatrix[5][1] = materialMatrix[5][2] =
+            materialMatrix[5][3] = materialMatrix[5][4] = 0;
+    materialMatrix[3][3] = materialMatrix[4][4] = materialMatrix[5][5] =
+            (1-2*poissonRatio)/(2*(1-poissonRatio));
     materialMatrix *= (youngModulus*(1-poissonRatio))/((1+poissonRatio)*(1-2*poissonRatio));
 
     // divide by 36 times volumes of the element
@@ -430,17 +395,25 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::computeMaterialStiffness(M
     Real volumes6 = fabs( dot( AB, C ) );
     if (volumes6<0)
     {
-        serr << "ERROR: Negative volume for tetra"<<a<<','<<b<<','<<c<<','<<d<<"> = "<<volumes6/6<<sendl;
+        serr << "ERROR: Negative volume for tetra "<<a<<','<<b<<','<<c<<','<<d<<"> = "<<volumes6/6<<sendl;
     }
     materialMatrix  /= volumes6;
+    /// @TODO: in TetrahedronFEMForceField, the stiffness matrix is divided by 6 compared to the code in TetrahedralCorotationalFEMForceField. Check which is the correct one...
+    //materialMatrix  /= volumes6*6;
 }
 
 template<class DataTypes>
 inline void TetrahedralCorotationalFEMForceField<DataTypes>::computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacement &J )
 {
+
+    // Unit of K = unit of youngModulus / unit of volume = Pa / m^3 = kg m^-4 s^-2
+    // Unit of J = m^2
+    // Unit of JKJt =  kg s^-2
+    // Unit of displacement = m
+    // Unit of force = kg m s^-2
+
 #if 0
     F = J*(K*(J.multTranspose(Depl)));
-
 #else
     /* We have these zeros
                                   K[0][3]   K[0][4]   K[0][5]
@@ -490,10 +463,10 @@ inline void TetrahedralCorotationalFEMForceField<DataTypes>::computeForce( Displ
             J[ 3][5]*Depl[ 3]+/*J[ 4][5]*Depl[ 4]*/ J[ 5][5]*Depl[ 5]+
             J[ 6][5]*Depl[ 6]+/*J[ 7][5]*Depl[ 7]*/ J[ 8][5]*Depl[ 8]+
             J[ 9][5]*Depl[ 9]+/*J[10][5]*Depl[10]*/ J[11][5]*Depl[11];
-//         serr<<"TetrahedralCorotationalFEMForceField<DataTypes>::computeForce, D = "<<Depl<<sendl;
-//         serr<<"TetrahedralCorotationalFEMForceField<DataTypes>::computeForce, JtD = "<<JtD<<sendl;
+//         serr<<"TetrahedronFEMForceField<DataTypes>::computeForce, D = "<<Depl<<sendl;
+//         serr<<"TetrahedronFEMForceField<DataTypes>::computeForce, JtD = "<<JtD<<sendl;
 
-    Vec<6,Real> KJtD;
+    VecNoInit<6,Real> KJtD;
     KJtD[0] =   K[0][0]*JtD[0]+  K[0][1]*JtD[1]+  K[0][2]*JtD[2]
             /*K[0][3]*JtD[3]+  K[0][4]*JtD[4]+  K[0][5]*JtD[5]*/;
     KJtD[1] =   K[1][0]*JtD[0]+  K[1][1]*JtD[1]+  K[1][2]*JtD[2]
@@ -506,6 +479,114 @@ inline void TetrahedralCorotationalFEMForceField<DataTypes>::computeForce( Displ
         /*K[4][3]*JtD[3]+*/K[4][4]*JtD[4] /*K[4][5]*JtD[5]*/;
     KJtD[5] = /*K[5][0]*JtD[0]+  K[5][1]*JtD[1]+  K[5][2]*JtD[2]+*/
         /*K[5][3]*JtD[3]+  K[5][4]*JtD[4]+*/K[5][5]*JtD[5]  ;
+
+    F[ 0] =   J[ 0][0]*KJtD[0]+/*J[ 0][1]*KJtD[1]+  J[ 0][2]*KJtD[2]+*/
+            J[ 0][3]*KJtD[3]+/*J[ 0][4]*KJtD[4]+*/J[ 0][5]*KJtD[5]  ;
+    F[ 1] = /*J[ 1][0]*KJtD[0]+*/J[ 1][1]*KJtD[1]+/*J[ 1][2]*KJtD[2]+*/
+            J[ 1][3]*KJtD[3]+  J[ 1][4]*KJtD[4] /*J[ 1][5]*KJtD[5]*/;
+    F[ 2] = /*J[ 2][0]*KJtD[0]+  J[ 2][1]*KJtD[1]+*/J[ 2][2]*KJtD[2]+
+            /*J[ 2][3]*KJtD[3]+*/J[ 2][4]*KJtD[4]+  J[ 2][5]*KJtD[5]  ;
+    F[ 3] =   J[ 3][0]*KJtD[0]+/*J[ 3][1]*KJtD[1]+  J[ 3][2]*KJtD[2]+*/
+            J[ 3][3]*KJtD[3]+/*J[ 3][4]*KJtD[4]+*/J[ 3][5]*KJtD[5]  ;
+    F[ 4] = /*J[ 4][0]*KJtD[0]+*/J[ 4][1]*KJtD[1]+/*J[ 4][2]*KJtD[2]+*/
+            J[ 4][3]*KJtD[3]+  J[ 4][4]*KJtD[4] /*J[ 4][5]*KJtD[5]*/;
+    F[ 5] = /*J[ 5][0]*KJtD[0]+  J[ 5][1]*KJtD[1]+*/J[ 5][2]*KJtD[2]+
+            /*J[ 5][3]*KJtD[3]+*/J[ 5][4]*KJtD[4]+  J[ 5][5]*KJtD[5]  ;
+    F[ 6] =   J[ 6][0]*KJtD[0]+/*J[ 6][1]*KJtD[1]+  J[ 6][2]*KJtD[2]+*/
+            J[ 6][3]*KJtD[3]+/*J[ 6][4]*KJtD[4]+*/J[ 6][5]*KJtD[5]  ;
+    F[ 7] = /*J[ 7][0]*KJtD[0]+*/J[ 7][1]*KJtD[1]+/*J[ 7][2]*KJtD[2]+*/
+            J[ 7][3]*KJtD[3]+  J[ 7][4]*KJtD[4] /*J[ 7][5]*KJtD[5]*/;
+    F[ 8] = /*J[ 8][0]*KJtD[0]+  J[ 8][1]*KJtD[1]+*/J[ 8][2]*KJtD[2]+
+            /*J[ 8][3]*KJtD[3]+*/J[ 8][4]*KJtD[4]+  J[ 8][5]*KJtD[5]  ;
+    F[ 9] =   J[ 9][0]*KJtD[0]+/*J[ 9][1]*KJtD[1]+  J[ 9][2]*KJtD[2]+*/
+            J[ 9][3]*KJtD[3]+/*J[ 9][4]*KJtD[4]+*/J[ 9][5]*KJtD[5]  ;
+    F[10] = /*J[10][0]*KJtD[0]+*/J[10][1]*KJtD[1]+/*J[10][2]*KJtD[2]+*/
+            J[10][3]*KJtD[3]+  J[10][4]*KJtD[4] /*J[10][5]*KJtD[5]*/;
+    F[11] = /*J[11][0]*KJtD[0]+  J[11][1]*KJtD[1]+*/J[11][2]*KJtD[2]+
+            /*J[11][3]*KJtD[3]+*/J[11][4]*KJtD[4]+  J[11][5]*KJtD[5]  ;
+#endif
+}
+
+template<class DataTypes>
+inline void TetrahedralCorotationalFEMForceField<DataTypes>::computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacement &J, double fact )
+{
+
+    // Unit of K = unit of youngModulus / unit of volume = Pa / m^3 = kg m^-4 s^-2
+    // Unit of J = m^2
+    // Unit of JKJt =  kg s^-2
+    // Unit of displacement = m
+    // Unit of force = kg m s^-2
+
+#if 0
+    F = J*(K*(J.multTranspose(Depl)));
+    F *= fact;
+#else
+    /* We have these zeros
+                                  K[0][3]   K[0][4]   K[0][5]
+                                  K[1][3]   K[1][4]   K[1][5]
+                                  K[2][3]   K[2][4]   K[2][5]
+    K[3][0]   K[3][1]   K[3][2]             K[3][4]   K[3][5]
+    K[4][0]   K[4][1]   K[4][2]   K[4][3]             K[4][5]
+    K[5][0]   K[5][1]   K[5][2]   K[5][3]   K[5][4]
+
+
+              J[0][1]   J[0][2]             J[0][4]
+    J[1][0]             J[1][2]                       J[1][5]
+    J[2][0]   J[2][1]             J[2][3]
+              J[3][1]   J[3][2]             J[3][4]
+    J[4][0]             J[4][2]                       J[4][5]
+    J[5][0]   J[5][1]             J[5][3]
+              J[6][1]   J[6][2]             J[6][4]
+    J[7][0]             J[7][2]                       J[7][5]
+    J[8][0]   J[8][1]             J[8][3]
+              J[9][1]   J[9][2]             J[9][4]
+    J[10][0]            J[10][2]                      J[10][5]
+    J[11][0]  J[11][1]            J[11][3]
+    */
+
+    VecNoInit<6,Real> JtD;
+    JtD[0] =   J[ 0][0]*Depl[ 0]+/*J[ 1][0]*Depl[ 1]+  J[ 2][0]*Depl[ 2]+*/
+            J[ 3][0]*Depl[ 3]+/*J[ 4][0]*Depl[ 4]+  J[ 5][0]*Depl[ 5]+*/
+            J[ 6][0]*Depl[ 6]+/*J[ 7][0]*Depl[ 7]+  J[ 8][0]*Depl[ 8]+*/
+            J[ 9][0]*Depl[ 9] /*J[10][0]*Depl[10]+  J[11][0]*Depl[11]*/;
+    JtD[1] = /*J[ 0][1]*Depl[ 0]+*/J[ 1][1]*Depl[ 1]+/*J[ 2][1]*Depl[ 2]+*/
+            /*J[ 3][1]*Depl[ 3]+*/J[ 4][1]*Depl[ 4]+/*J[ 5][1]*Depl[ 5]+*/
+            /*J[ 6][1]*Depl[ 6]+*/J[ 7][1]*Depl[ 7]+/*J[ 8][1]*Depl[ 8]+*/
+            /*J[ 9][1]*Depl[ 9]+*/J[10][1]*Depl[10] /*J[11][1]*Depl[11]*/;
+    JtD[2] = /*J[ 0][2]*Depl[ 0]+  J[ 1][2]*Depl[ 1]+*/J[ 2][2]*Depl[ 2]+
+            /*J[ 3][2]*Depl[ 3]+  J[ 4][2]*Depl[ 4]+*/J[ 5][2]*Depl[ 5]+
+            /*J[ 6][2]*Depl[ 6]+  J[ 7][2]*Depl[ 7]+*/J[ 8][2]*Depl[ 8]+
+            /*J[ 9][2]*Depl[ 9]+  J[10][2]*Depl[10]+*/J[11][2]*Depl[11]  ;
+    JtD[3] =   J[ 0][3]*Depl[ 0]+  J[ 1][3]*Depl[ 1]+/*J[ 2][3]*Depl[ 2]+*/
+            J[ 3][3]*Depl[ 3]+  J[ 4][3]*Depl[ 4]+/*J[ 5][3]*Depl[ 5]+*/
+            J[ 6][3]*Depl[ 6]+  J[ 7][3]*Depl[ 7]+/*J[ 8][3]*Depl[ 8]+*/
+            J[ 9][3]*Depl[ 9]+  J[10][3]*Depl[10] /*J[11][3]*Depl[11]*/;
+    JtD[4] = /*J[ 0][4]*Depl[ 0]+*/J[ 1][4]*Depl[ 1]+  J[ 2][4]*Depl[ 2]+
+            /*J[ 3][4]*Depl[ 3]+*/J[ 4][4]*Depl[ 4]+  J[ 5][4]*Depl[ 5]+
+            /*J[ 6][4]*Depl[ 6]+*/J[ 7][4]*Depl[ 7]+  J[ 8][4]*Depl[ 8]+
+            /*J[ 9][4]*Depl[ 9]+*/J[10][4]*Depl[10]+  J[11][4]*Depl[11]  ;
+    JtD[5] =   J[ 0][5]*Depl[ 0]+/*J[ 1][5]*Depl[ 1]*/ J[ 2][5]*Depl[ 2]+
+            J[ 3][5]*Depl[ 3]+/*J[ 4][5]*Depl[ 4]*/ J[ 5][5]*Depl[ 5]+
+            J[ 6][5]*Depl[ 6]+/*J[ 7][5]*Depl[ 7]*/ J[ 8][5]*Depl[ 8]+
+            J[ 9][5]*Depl[ 9]+/*J[10][5]*Depl[10]*/ J[11][5]*Depl[11];
+//         serr<<"TetrahedronFEMForceField<DataTypes>::computeForce, D = "<<Depl<<sendl;
+//         serr<<"TetrahedronFEMForceField<DataTypes>::computeForce, JtD = "<<JtD<<sendl;
+
+    VecNoInit<6,Real> KJtD;
+    KJtD[0] =   K[0][0]*JtD[0]+  K[0][1]*JtD[1]+  K[0][2]*JtD[2]
+            /*K[0][3]*JtD[3]+  K[0][4]*JtD[4]+  K[0][5]*JtD[5]*/;
+    KJtD[1] =   K[1][0]*JtD[0]+  K[1][1]*JtD[1]+  K[1][2]*JtD[2]
+            /*K[1][3]*JtD[3]+  K[1][4]*JtD[4]+  K[1][5]*JtD[5]*/;
+    KJtD[2] =   K[2][0]*JtD[0]+  K[2][1]*JtD[1]+  K[2][2]*JtD[2]
+            /*K[2][3]*JtD[3]+  K[2][4]*JtD[4]+  K[2][5]*JtD[5]*/;
+    KJtD[3] = /*K[3][0]*JtD[0]+  K[3][1]*JtD[1]+  K[3][2]*JtD[2]+*/
+        K[3][3]*JtD[3] /*K[3][4]*JtD[4]+  K[3][5]*JtD[5]*/;
+    KJtD[4] = /*K[4][0]*JtD[0]+  K[4][1]*JtD[1]+  K[4][2]*JtD[2]+*/
+        /*K[4][3]*JtD[3]+*/K[4][4]*JtD[4] /*K[4][5]*JtD[5]*/;
+    KJtD[5] = /*K[5][0]*JtD[0]+  K[5][1]*JtD[1]+  K[5][2]*JtD[2]+*/
+        /*K[5][3]*JtD[3]+  K[5][4]*JtD[4]+*/K[5][5]*JtD[5]  ;
+
+    KJtD *= fact;
 
     F[ 0] =   J[ 0][0]*KJtD[0]+/*J[ 0][1]*KJtD[1]+  J[ 0][2]*KJtD[2]+*/
             J[ 0][3]*KJtD[3]+/*J[ 0][4]*KJtD[4]+*/J[ 0][5]*KJtD[5]  ;
@@ -585,7 +666,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForceSmall( Vect
     // compute force on element
     Displacement F;
 
-    helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
+    const helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = tetrahedronInfo.getValue();
 
     if(!_assembling.getValue())
     {
@@ -655,12 +736,10 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForceSmall( Vect
     f[b] += Deriv( F[3], F[4], F[5] );
     f[c] += Deriv( F[6], F[7], F[8] );
     f[d] += Deriv( F[9], F[10], F[11] );
-
-    tetrahedronInfo.endEdit();
 }
 
 template<class DataTypes>
-void TetrahedralCorotationalFEMForceField<DataTypes>::applyStiffnessSmall( Vector& f, const Vector& x, int i, Index a, Index b, Index c, Index d )
+void TetrahedralCorotationalFEMForceField<DataTypes>::applyStiffnessSmall( Vector& f, const Vector& x, int i, Index a, Index b, Index c, Index d, double fact )
 {
     Displacement X;
 
@@ -682,16 +761,14 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::applyStiffnessSmall( Vecto
 
     Displacement F;
 
-    helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
+    const helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = tetrahedronInfo.getValue();
 
-    computeForce( F, X,tetrahedronInf[i].materialMatrix,tetrahedronInf[i].strainDisplacementMatrix);
+    computeForce( F, X,tetrahedronInf[i].materialMatrix,tetrahedronInf[i].strainDisplacementMatrix, fact);
 
     f[a] += Deriv( -F[0], -F[1],  -F[2] );
     f[b] += Deriv( -F[3], -F[4],  -F[5] );
     f[c] += Deriv( -F[6], -F[7],  -F[8] );
     f[d] += Deriv( -F[9], -F[10], -F[11] );
-
-    tetrahedronInfo.endEdit();
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -742,7 +819,7 @@ inline void TetrahedralCorotationalFEMForceField<DataTypes>::getElementRotation(
 template <class DataTypes>
 inline void TetrahedralCorotationalFEMForceField<DataTypes>::getRotation(Transformation& R, unsigned int nodeIdx)
 {
-    helper::vector<TetrahedronInformation>& tetraInf = *(tetrahedronInfo.beginEdit());
+    const helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetraInf = tetrahedronInfo.getValue();
     int numNeiTetra=_topology->getTetrahedraAroundVertex(nodeIdx).size();
     Transformation r;
     r.clear();
@@ -750,7 +827,7 @@ inline void TetrahedralCorotationalFEMForceField<DataTypes>::getRotation(Transfo
     for(int i=0; i<numNeiTetra; i++)
     {
         int tetraIdx=_topology->getTetrahedraAroundVertex(nodeIdx)[i];
-        TetrahedronInformation *tinfo = &tetraInf[tetraIdx];
+        const TetrahedronInformation *tinfo = &tetraInf[tetraIdx];
         Transformation r01,r21;
         r01=tinfo->initialTransformation;
         r21=tinfo->rotation*r01;
@@ -780,13 +857,12 @@ inline void TetrahedralCorotationalFEMForceField<DataTypes>::getRotation(Transfo
         R[1][i]=ey[i];
         R[2][i]=ez[i];
     }
-    tetrahedronInfo.endEdit();
 }
 
 template <class DataTypes>
 inline void TetrahedralCorotationalFEMForceField<DataTypes>::getElementStiffnessMatrix(Real* stiffness, unsigned int elementIndex)
 {
-    helper::vector<TetrahedronInformation>& tetraInf = *(tetrahedronInfo.beginEdit());
+    const helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetraInf = tetrahedronInfo.getValue();
     Transformation Rot;
     StiffnessMatrix JKJt,tmp;
     Rot[0][0]=Rot[1][1]=Rot[2][2]=1;
@@ -799,7 +875,6 @@ inline void TetrahedralCorotationalFEMForceField<DataTypes>::getElementStiffness
         for(int j=0; j<12; j++)
             stiffness[i*12+j]=JKJt(i,j);
     }
-    tetrahedronInfo.endEdit();
 }
 
 template <class DataTypes>
@@ -1014,9 +1089,9 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForceLarge( Vect
 }
 
 template<class DataTypes>
-void TetrahedralCorotationalFEMForceField<DataTypes>::applyStiffnessLarge( Vector& f, const Vector& x, int i, Index a, Index b, Index c, Index d )
+void TetrahedralCorotationalFEMForceField<DataTypes>::applyStiffnessLarge( Vector& f, const Vector& x, int i, Index a, Index b, Index c, Index d, double fact)
 {
-    helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
+    const helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = tetrahedronInfo.getValue();
 
     Transformation R_0_2;
     R_0_2.transpose(tetrahedronInf[i].rotation);
@@ -1048,7 +1123,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::applyStiffnessLarge( Vecto
 
     //serr<<"X : "<<X<<sendl;
 
-    computeForce( F, X,tetrahedronInf[i].materialMatrix, tetrahedronInf[i].strainDisplacementMatrix);
+    computeForce( F, X,tetrahedronInf[i].materialMatrix, tetrahedronInf[i].strainDisplacementMatrix, fact);
 
     //serr<<"F : "<<F<<sendl;
 
@@ -1056,8 +1131,6 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::applyStiffnessLarge( Vecto
     f[b] += tetrahedronInf[i].rotation * Deriv( -F[3], -F[4],  -F[5] );
     f[c] += tetrahedronInf[i].rotation * Deriv( -F[6], -F[7],  -F[8] );
     f[d] += tetrahedronInf[i].rotation * Deriv( -F[9], -F[10], -F[11] );
-
-    tetrahedronInfo.endEdit();
 }
 
 //////////////////////////////////////////////////////////////////////
@@ -1152,7 +1225,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::accumulateForcePolar( Vect
 }
 
 template<class DataTypes>
-void TetrahedralCorotationalFEMForceField<DataTypes>::applyStiffnessPolar( Vector& f, const Vector& x, int i, Index a, Index b, Index c, Index d )
+void TetrahedralCorotationalFEMForceField<DataTypes>::applyStiffnessPolar( Vector& f, const Vector& x, int i, Index a, Index b, Index c, Index d, double fact )
 {
     helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
 
@@ -1186,7 +1259,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::applyStiffnessPolar( Vecto
 
     //serr<<"X : "<<X<<sendl;
 
-    computeForce( F, X, tetrahedronInf[i].materialMatrix, tetrahedronInf[i].strainDisplacementMatrix);
+    computeForce( F, X, tetrahedronInf[i].materialMatrix, tetrahedronInf[i].strainDisplacementMatrix, fact);
 
     //serr<<"F : "<<F<<sendl;
 
@@ -1261,7 +1334,7 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::draw()
 
 
 template<class DataTypes>
-void TetrahedralCorotationalFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal /*k*/, unsigned int &offset)
+void TetrahedralCorotationalFEMForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset)
 {
     // Build Matrix Block for this ForceField
     unsigned int i,j,n1, n2, row, column, ROW, COLUMN;
@@ -1269,19 +1342,22 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::addKToMatrix(sofa::default
     Transformation Rot;
     StiffnessMatrix JKJt,tmp;
 
+    const helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = tetrahedronInfo.getValue();
+
     Index noeud1, noeud2;
 
     Rot[0][0]=Rot[1][1]=Rot[2][2]=1;
     Rot[0][1]=Rot[0][2]=0;
     Rot[1][0]=Rot[1][2]=0;
     Rot[2][0]=Rot[2][1]=0;
-
-    helper::vector<typename TetrahedralCorotationalFEMForceField<DataTypes>::TetrahedronInformation>& tetrahedronInf = *(tetrahedronInfo.beginEdit());
-
-    for(int IT=0 ; IT != _topology->getNbTetrahedra() ; ++IT)
+    const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra& tetras = _topology->getTetrahedra();
+    for(int IT=0 ; IT != (int)tetras.size() ; ++IT)
     {
-        computeStiffnessMatrix(JKJt,tmp,tetrahedronInf[IT].materialMatrix,tetrahedronInf[IT].strainDisplacementMatrix,Rot);
-        const Tetrahedron t=_topology->getTetrahedron(IT);
+        if (method == SMALL)
+            computeStiffnessMatrix(JKJt,tmp,tetrahedronInf[IT].materialMatrix,tetrahedronInf[IT].strainDisplacementMatrix,Rot);
+        else
+            computeStiffnessMatrix(JKJt,tmp,tetrahedronInf[IT].materialMatrix,tetrahedronInf[IT].strainDisplacementMatrix,tetrahedronInf[IT].rotation);
+        const Tetrahedron t=tetras[IT];
 
         // find index of node 1
         for (n1=0; n1<4; n1++)
@@ -1301,14 +1377,12 @@ void TetrahedralCorotationalFEMForceField<DataTypes>::addKToMatrix(sofa::default
                     {
                         COLUMN = offset+3*noeud2+j;
                         column = 3*n2+j;
-                        mat->add(ROW, COLUMN, tmp[row][column]);
+                        mat->add(ROW, COLUMN, - tmp[row][column]*k);
                     }
                 }
             }
         }
     }
-
-    tetrahedronInfo.endEdit();
 }
 
 } // namespace forcefield

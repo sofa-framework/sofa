@@ -1079,7 +1079,7 @@ inline void TetrahedronFEMForceField<DataTypes>::applyStiffnessPolar( Vector& f,
     f[a][2] -= _rotations[i][2][0] *  F[0] +  _rotations[i][2][1] * F[1] + _rotations[i][2][2] * F[2];
 
     f[b][0] -= _rotations[i][0][0] *  F[3] +  _rotations[i][0][1] * F[4] + _rotations[i][0][2] * F[5];
-    f[b][1] -=  _rotations[i][1][0] *  F[3] +  _rotations[i][1][1] * F[4] + _rotations[i][1][2] * F[5];
+    f[b][1] -= _rotations[i][1][0] *  F[3] +  _rotations[i][1][1] * F[4] + _rotations[i][1][2] * F[5];
     f[b][2] -= _rotations[i][2][0] *  F[3] +  _rotations[i][2][1] * F[4] + _rotations[i][2][2] * F[5];
 
     f[c][0] -= _rotations[i][0][0] *  F[6] +  _rotations[i][0][1] * F[7] + _rotations[i][0][2] * F[8];

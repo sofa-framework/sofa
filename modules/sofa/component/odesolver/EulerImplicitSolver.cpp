@@ -124,7 +124,7 @@ void EulerImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior:
     if( verbose )
         serr<<"EulerImplicitSolver, projected f0 = "<< b <<sendl;
 
-    sofa::helper::AdvancedTimer::stepEnd("ComputeRHTerm");
+    sofa::helper::AdvancedTimer::stepNext ("ComputeRHTerm", "MBKBuild");
 
     MultiMatrix matrix(this);
 
@@ -139,7 +139,7 @@ void EulerImplicitSolver::solve(double dt, sofa::core::componentmodel::behavior:
 #ifdef SOFA_DUMP_VISITOR_INFO
     simulation::Visitor::printNode("SystemSolution");
 #endif
-    sofa::helper::AdvancedTimer::stepBegin("MBKSolve");
+    sofa::helper::AdvancedTimer::stepNext ("MBKBuild", "MBKSolve");
     matrix.solve(x, b); //Call to ODE resolution.
     sofa::helper::AdvancedTimer::stepEnd  ("MBKSolve");
 #ifdef SOFA_DUMP_VISITOR_INFO

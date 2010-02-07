@@ -186,11 +186,11 @@ public:
 
     virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
 
-    virtual void addDForce (VecDeriv& df, const VecDeriv& dx);
+    virtual void addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
 
     virtual double getPotentialEnergy(const VecCoord& x);
 
-    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *, SReal, unsigned int &);
+    virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *m, SReal kFactor, unsigned int &offset);
 
     // handle topological changes
     virtual void handleTopologyChange();
@@ -214,25 +214,26 @@ protected:
     void computeStiffnessMatrix( StiffnessMatrix& S,StiffnessMatrix& SR,const MaterialStiffness &K, const StrainDisplacement &J, const Transformation& Rot );
 
     void computeMaterialStiffness(int i, Index&a, Index&b, Index&c, Index&d);
-    void computeMaterialStiffness(MaterialStiffness& materialMatrix, Index&a, Index&b, Index&c, Index&d);
+    void computeMaterialStiffness(MaterialStiffness& materialMatrix, Index&a, Index&b, Index&c, Index&d, double localStiffnessFactor=1);
 
     void computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacement &J );
+    void computeForce( Displacement &F, const Displacement &Depl, const MaterialStiffness &K, const StrainDisplacement &J, double fact );
 
     ////////////// small displacements method
     void initSmall(int i, Index&a, Index&b, Index&c, Index&d);
     void accumulateForceSmall( Vector& f, const Vector & p, Index elementIndex );
-    void applyStiffnessSmall( Vector& f, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3  );
+    void applyStiffnessSmall( Vector& f, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3, double fact=1.0 );
 
     ////////////// large displacements method
     void initLarge(int i, Index&a, Index&b, Index&c, Index&d);
     void computeRotationLarge( Transformation &r, const Vector &p, const Index &a, const Index &b, const Index &c);
     void accumulateForceLarge( Vector& f, const Vector & p, Index elementIndex );
-    void applyStiffnessLarge( Vector& f, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3 );
+    void applyStiffnessLarge( Vector& f, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3, double fact=1.0 );
 
     ////////////// polar decomposition method
     void initPolar(int i, Index&a, Index&b, Index&c, Index&d);
     void accumulateForcePolar( Vector& f, const Vector & p,Index elementIndex );
-    void applyStiffnessPolar( Vector& f, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3  );
+    void applyStiffnessPolar( Vector& f, const Vector& x, int i=0, Index a=0,Index b=1,Index c=2,Index d=3, double fact=1.0 );
 
     /// the callback function called when a tetrahedron is created
     static void CFTetrahedronCreationFunction (int , void* ,
