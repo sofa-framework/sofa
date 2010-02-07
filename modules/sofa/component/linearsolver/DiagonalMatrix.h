@@ -26,7 +26,8 @@
 #define SOFA_COMPONENT_LINEARSOLVER_DIAGONALMATRIX_H
 
 #include "MatrixExpr.h"
-#include "NewMatMatrix.h"
+//#include "NewMatMatrix.h"
+#include <sofa/component/linearsolver/matrix_bloc_traits.h>
 
 namespace sofa
 {
@@ -312,26 +313,32 @@ public:
 
 
 /// Simple full matrix container
-template<int LC>
+template<int LC, typename T = double>
 class BlockDiagonalMatrix : public defaulttype::BaseMatrix
 {
 public:
-    typedef double Real;
+    typedef T Real;
     typedef int Index;
-    typedef NEWMAT::Matrix SubMatrixType;
-    typedef NEWMAT::InvertedMatrix InvertedMatrix;
+    typedef defaulttype::Mat<LC,LC,Real> Bloc;
+    typedef matrix_bloc_traits<Bloc> traits;
 
     enum { BSIZE = LC };
 
+    typedef BlockDiagonalMatrix<LC,T> Expr;
+    typedef BlockDiagonalMatrix<LC,double> matrix_type;
+    enum { category = MATRIX_BAND };
+    enum { operand = 1 };
+
+
 protected:
-    std::vector< SubMatrixType > data;
+    std::vector< Bloc > data;
     unsigned cSize;
 
 public:
 
     BlockDiagonalMatrix()
+        : cSize(0)
     {
-        cSize = 0;
     }
 
     ~BlockDiagonalMatrix() {}
@@ -340,7 +347,7 @@ public:
     {
         cSize = nbRow;
         data.resize((cSize+LC-1) / LC);
-        for (unsigned i=0; i<data.size(); i++) data[i].ReSize(LC,LC);
+        //for (unsigned i=0;i<data.size();i++) data[i].ReSize(LC,LC);
     }
 
     unsigned rowSize(void) const
@@ -353,125 +360,170 @@ public:
         return cSize;
     }
 
+    unsigned rowBSize(void) const
+    {
+        return data.size();
+    }
+
+    unsigned colBSize(void) const
+    {
+        return data.size();
+    }
+
+    const Bloc& bloc(int i) const
+    {
+        return data[i];
+    }
+
+    const Bloc& bloc(int i, int j) const
+    {
+        static Bloc empty;
+        if (i != j)
+            return empty;
+        else
+            return bloc(i);
+    }
+
+    Bloc* wbloc(int i)
+    {
+        return &(data[i]);
+    }
+
+    Bloc* wbloc(int i, int j)
+    {
+        if (i != j)
+            return NULL;
+        else
+            return wbloc(i);
+    }
+
     Real element(int i, int j) const
     {
-        if (i/LC!=j/LC) return (Real)0;
-        return data[i/LC].element(i%LC,j%LC);
+        int bi=0, bj=0; traits::split_row_index(i, bi); traits::split_col_index(j, bj);
+        if (i != j) return 0;
+        else return traits::v(data[i], bi, bj);
     }
 
     void set(int i, int j, double v)
     {
-        if (i/LC==j/LC) data[i/LC].element(i%LC,j%LC) = (Real)v;
+        int bi=0, bj=0; traits::split_row_index(i, bi); traits::split_col_index(j, bj);
+        if (i == j) traits::v(data[i], bi, bj) = (Real)v;
+    }
+
+    void setB(int i, const Bloc& b)
+    {
+        data[i] = b;
+    }
+
+    void setB(int i, int j, const Bloc& b)
+    {
+        if (i == j)
+            setB(i, b);
     }
 
     void add(int i, int j, double v)
     {
-        if (i/LC==j/LC) data[i/LC].element(i%LC,j%LC) += (Real)v;
+        int bi=0, bj=0; traits::split_row_index(i, bi); traits::split_col_index(j, bj);
+        if (i == j) traits::v(data[i], bi, bj) += (Real)v;
+    }
+
+    void addB(int i, const Bloc& b)
+    {
+        data[i] += b;
+    }
+
+    void addB(int i, int j, const Bloc& b)
+    {
+        if (i == j)
+            addB(i, b);
+    }
+
+    void clear(int i, int j)
+    {
+        int bi=0, bj=0; traits::split_row_index(i, bi); traits::split_col_index(j, bj);
+        if (i == j) traits::v(data[i], bi, bj) = (Real)0;
+    }
+
+    void clearRow(int i)
+    {
+        int bi=0; traits::split_row_index(i, bi);
+        for (int bj=0; bj<LC; ++bj)
+            traits::v(data[i], bi, bj) = (Real)0;
+    }
+
+    void clearCol(int j)
+    {
+        int bj=0; traits::split_col_index(j, bj);
+        for (int bi=0; bi<LC; ++bi)
+            traits::v(data[j], bi, bj) = (Real)0;
+    }
+
+    void clearRowCol(int i)
+    {
+        int bi=0; traits::split_row_index(i, bi);
+        for (int bj=0; bj<LC; ++bj)
+            traits::v(data[i], bi, bj) = (Real)0;
+        for (int bj=0; bj<LC; ++bj)
+            traits::v(data[i], bj, bi) = (Real)0;
     }
 
     void clear()
     {
         for (unsigned b=0; b<data.size(); b++)
-            for (int j=0; j<LC; j++)
-                for (int i=0; i<LC; i++)
-                    data[b].element(i,j) = 0.0;;
+            traits::clear(data[b]);
     }
 
-    void clear(int i, int j)
+    void invert()
     {
-        if (i/LC==j/LC) data[i/LC].element(i%LC,j%LC) = 0.0;
+        for (unsigned b=0; b<data.size(); b++)
+        {
+            const Bloc m = data[b];
+            traits::invert(data[b], m);
+        }
     }
 
-    void clearRow(int i)
+    template<class Real2>
+    void mul(FullVector<Real2>& res, const FullVector<Real2>& v) const
     {
-        for (int j=0; j<LC; j++)
-            data[i/LC].element(i,j) = 0.0;;
+        res.resize(cSize);
+        int nblocs = cSize;
+        int szlast = 0;
+        traits::split_row_index(nblocs, szlast);
+        for (int b=0; b<nblocs; b++)
+        {
+            int i = b*LC;
+            for (int bj=0; bj<LC; bj++)
+            {
+                Real2 r = 0;
+                for (int bi=0; bi<LC; bi++)
+                {
+                    r += (Real2)(traits::v(data[b],bi,bj) * v[i+bi]);
+                }
+                res[i+bj] = r;
+            }
+        }
+        if (szlast)
+        {
+            int b = nblocs;
+            int i = b*LC;
+            for (int bj=0; bj<szlast; bj++)
+            {
+                Real2 r = 0;
+                for (int bi=0; bi<szlast; bi++)
+                {
+                    r += (Real2)(traits::v(data[b],bi,bj) * v[i+bi]);
+                }
+                res[i+bj] = r;
+            }
+        }
     }
-
-    void clearCol(int j)
-    {
-        for (int i=0; i<LC; i++)
-            data[j/LC].element(i,j) = 0.0;;
-
-    }
-
-    void clearRowCol(int i)
-    {
-        clearRow(i);
-        clearCol(i);
-    }
-
-    SubMatrixType sub(int l,int ,int ,int )
-    {
-        SubMatrixType m=data[l/LC];
-        return m;
-    }
-
-    void setSubMatrix(unsigned l,unsigned ,unsigned ,unsigned ,InvertedMatrix m)
-    {
-        data[l/LC] = m;
-    }
-
-    void i()
-    {
-        for (unsigned b=0; b<data.size(); b++) data[b] = data[b].i();
-    }
-
 
     template<class Real2>
     FullVector<Real2> operator*(const FullVector<Real2>& v) const
     {
         FullVector<Real2> res;
-        res.resize(cSize);
-        for (unsigned b=0; b<data.size()-1; b++)
-        {
-            for (int j=0; j<LC; j++)
-            {
-                res[b*LC+j] = 0;
-                for (int i=0; i<LC; i++)
-                {
-                    res[b*LC+j] += data[b].element(i,j) * v[b*LC+i];
-                }
-            }
-        }
-
-        int last_block = (data.size()-1)*LC;
-        for (int j=0; last_block+j<(int) cSize; j++)
-        {
-            res[last_block+j] = 0;
-            for (int i=0; i<LC; i++)
-            {
-                res[j] += data[data.size()-1].element(i,j) * v[last_block+i];
-            }
-        }
-
+        mul(res, v);
         return res;
-    }
-
-    template<class Real2>
-    void mult(FullVector<Real2>& res, const FullVector<Real2>& v)
-    {
-        for (unsigned b=0; b<data.size()-1; b++)
-        {
-            for (int j=0; j<LC; j++)
-            {
-                res[b*LC+j] = 0;
-                for (int i=0; i<LC; i++)
-                {
-                    res[b*LC+j] += data[b].element(i,j) * v[b*LC+i];
-                }
-            }
-        }
-
-        int last_block = (data.size()-1)*LC;
-        for (int j=0; last_block+j<(int) cSize; j++)
-        {
-            res[last_block+j] = 0;
-            for (int i=0; i<LC; i++)
-            {
-                res[last_block+j] += data[data.size()-1].element(i,j) * v[last_block+i];
-            }
-        }
     }
 
     friend std::ostream& operator << (std::ostream& out, const BlockDiagonalMatrix<LC>& v )
@@ -482,18 +534,18 @@ public:
         return out;
     }
 
-    static const char* Name(); // { return "BlockDiagonalMatrix"; }
+    static const char* Name()
+    {
+        static std::string name = std::string("BlockDiagonalMatrix") + std::string(traits::Name());
+        return name.c_str();
+    }
+
 };
 
 typedef BlockDiagonalMatrix<3> BlockDiagonalMatrix3;
 typedef BlockDiagonalMatrix<6> BlockDiagonalMatrix6;
 typedef BlockDiagonalMatrix<9> BlockDiagonalMatrix9;
 typedef BlockDiagonalMatrix<12> BlockDiagonalMatrix12;
-
-template<> inline const char* BlockDiagonalMatrix3::Name() { return "BlockDiagonalMatrix3"; }
-template<> inline const char* BlockDiagonalMatrix6::Name() { return "BlockDiagonalMatrix6"; }
-template<> inline const char* BlockDiagonalMatrix9::Name() { return "BlockDiagonalMatrix9"; }
-template<> inline const char* BlockDiagonalMatrix12::Name() { return "BlockDiagonalMatrix12"; }
 
 // trivial product and inverse operations for diagonal matrices
 

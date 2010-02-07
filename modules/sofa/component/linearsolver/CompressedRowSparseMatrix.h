@@ -27,6 +27,7 @@
 
 #include <sofa/defaulttype/BaseMatrix.h>
 #include <sofa/component/linearsolver/MatrixLinearSolver.h>
+#include <sofa/component/linearsolver/matrix_bloc_traits.h>
 #include "FullVector.h"
 #include <algorithm>
 
@@ -41,132 +42,6 @@ namespace linearsolver
 
 //#define SPARSEMATRIX_CHECK
 //#define SPARSEMATRIX_VERBOSE
-
-template<int TN> class bloc_index_func
-{
-public:
-    enum { N = TN };
-    static void split(int& index, int& modulo)
-    {
-        modulo = index % N;
-        index  = index / N;
-    }
-};
-
-template<> class bloc_index_func<1>
-{
-public:
-    enum { N = 1 };
-    static void split(int&, int&)
-    {
-    }
-};
-
-template<> class bloc_index_func<2>
-{
-public:
-    enum { N = 2 };
-    static void split(int& index, int& modulo)
-    {
-        modulo = index & 1;
-        index  = index >> 1;
-    }
-};
-
-template<> class bloc_index_func<4>
-{
-public:
-    enum { N = 2 };
-    static void split(int& index, int& modulo)
-    {
-        modulo = index & 3;
-        index  = index >> 2;
-    }
-};
-
-template<> class bloc_index_func<8>
-{
-public:
-    enum { N = 2 };
-    static void split(int& index, int& modulo)
-    {
-        modulo = index & 7;
-        index  = index >> 3;
-    }
-};
-
-template<class T>
-class matrix_bloc_traits;
-
-template <int L, int C, class real>
-class matrix_bloc_traits < defaulttype::Mat<L,C,real> >
-{
-public:
-    typedef defaulttype::Mat<L,C,real> Bloc;
-    typedef real Real;
-    enum { NL = L };
-    enum { NC = C };
-    static Real& v(Bloc& b, int row, int col) { return b[row][col]; }
-    static const Real& v(const Bloc& b, int row, int col) { return b[row][col]; }
-    static void clear(Bloc& b) { b.clear(); }
-    static bool empty(const Bloc& b)
-    {
-        for (int i=0; i<NL; ++i)
-            for (int j=0; j<NC; ++j)
-                if (b[i][j] != 0) return false;
-        return true;
-    }
-    static const char* Name();
-};
-
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<1,1,float > >::Name() { return "1f"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<1,1,double> >::Name() { return "1d"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<2,2,float > >::Name() { return "2f"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<2,2,double> >::Name() { return "2d"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<3,3,float > >::Name() { return "3f"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<3,3,double> >::Name() { return "3d"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<4,4,float > >::Name() { return "4f"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<4,4,double> >::Name() { return "4d"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<6,6,float > >::Name() { return "6f"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<6,6,double> >::Name() { return "6d"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<8,8,float > >::Name() { return "8f"; }
-template<> inline const char* matrix_bloc_traits<defaulttype::Mat<8,8,double> >::Name() { return "8d"; }
-
-template <>
-class matrix_bloc_traits < float >
-{
-public:
-    typedef float Bloc;
-    typedef float Real;
-    enum { NL = 1 };
-    enum { NC = 1 };
-    static Real& v(Bloc& b, int, int) { return b; }
-    static const Real& v(const Bloc& b, int, int) { return b; }
-    static void clear(Bloc& b) { b = 0; }
-    static bool empty(const Bloc& b)
-    {
-        return b == 0;
-    }
-    static const char* Name() { return "f"; }
-};
-
-template <>
-class matrix_bloc_traits < double >
-{
-public:
-    typedef double Bloc;
-    typedef double Real;
-    enum { NL = 1 };
-    enum { NC = 1 };
-    static Real& v(Bloc& b, int, int) { return b; }
-    static const Real& v(const Bloc& b, int, int) { return b; }
-    static void clear(Bloc& b) { b = 0; }
-    static bool empty(const Bloc& b)
-    {
-        return b == 0;
-    }
-    static const char* Name() { return "d"; }
-};
 
 template<typename TBloc, typename TVecBloc = helper::vector<TBloc>, typename TVecIndex = helper::vector<int> >
 class CompressedRowSparseMatrix : public defaulttype::BaseMatrix
