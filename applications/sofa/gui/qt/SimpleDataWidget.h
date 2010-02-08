@@ -156,8 +156,12 @@ protected:
     Container container;
     typedef data_widget_trait<data_type> helper;
 
+
 public:
-    SimpleDataWidget(QWidget* parent,const char* name, MyTData* d) : TDataWidget(parent,name,d) {}
+    typedef sofa::core::objectmodel::TData<T> MyTData;
+    SimpleDataWidget(QWidget* parent,const char* name, MyTData* d):
+        TDataWidget<T>(parent,name,d)
+    {}
     virtual bool createWidgets()
     {
         const data_type& d = Tdata->virtualGetValue();
