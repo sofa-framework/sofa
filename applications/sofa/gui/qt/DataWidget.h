@@ -198,10 +198,10 @@ public:
     }
 
     TDataWidget(QWidget* parent,const char* name, MyTData* d):
-        DataWidget(parent,name,d),data(d) {};
-    sofa::core::objectmodel::TData<T>* getData() const {return data;}
+        DataWidget(parent,name,d),Tdata(d) {};
+    sofa::core::objectmodel::TData<T>* getData() const {return Tdata;}
 protected:
-    MyTData* data;
+    MyTData* Tdata;
 };
 
 
@@ -210,25 +210,24 @@ typedef sofa::helper::Factory<std::string, DataWidget, DataWidget::CreatorArgume
 template< class T >
 class DefaultDataWidget : public TDataWidget<T>
 {
-    typedef sofa::core::objectmodel::TData<T> MyData;
 protected:
     typedef QLineEdit Widget;
     Widget* w;
 public:
-    DefaultDataWidget(QWidget* parent,const char* name, MyData* d) :
+    DefaultDataWidget(QWidget* parent,const char* name, MyTData* d) :
         TDataWidget(QWidget* parent,const char* name, MyTData* d),w(NULL)
     {}
     virtual bool createWidgets();
     virtual void readFromData()
     {
-        std::string s = data->getValueString();
+        std::string s = Tdata->getValueString();
         w->setText(QString(s.c_str()));
 
     }
     virtual void writeToData()
     {
         std::string s = w->text().ascii();
-        data->read(s);
+        Tdata->read(s);
     }
 };
 class QTableUpdater : virtual public Q3Table

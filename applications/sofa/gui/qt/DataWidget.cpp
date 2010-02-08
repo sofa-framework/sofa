@@ -27,7 +27,7 @@ bool DefaultDataWidget<T>::createWidgets()
 {
     w = new QLineEdit(this);
     if (w == NULL) return false;
-    std::string s = data->getValueString();
+    std::string s = Tdata->getValueString();
     w->setText(QString(s.c_str()));
     connect(w, SIGNAL( textChanged(const QString&) ), this, SLOT( setWidgetDirty() ));
     return true;
