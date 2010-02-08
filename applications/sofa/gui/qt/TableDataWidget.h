@@ -296,7 +296,7 @@ public:
     QSpinBox* wSize;
     QTableUpdater* wTable;
     QPushButtonUpdater* wDisplay;
-    DataWidget *widget;
+    DataWidget * widget;
 
     table_data_widget_container() : wSize(NULL), wTable(NULL), wDisplay(NULL), widget(NULL) {}
     int rows;
@@ -399,8 +399,8 @@ public:
         {
             if (!(FLAGS & TABLE_FIXEDSIZE))
             {
-                _widget->connect(wSize, SIGNAL( valueChanged(int) ), _widget, SLOT(setModified()) );
-                _widget->connect(wSize, SIGNAL( valueChanged(int) ), _widget, SLOT(update()) );
+                _widget->connect(wSize, SIGNAL( valueChanged(int) ), _widget, SLOT( setWidgetDirty() ));
+                _widget->connect(wSize, SIGNAL( valueChanged(int) ), _widget, SLOT(updateDataValue()) );
 
 
                 if( FLAGS & TABLE_HORIZONTAL)
@@ -412,11 +412,11 @@ public:
             {
                 wSize->setEnabled(false);
             }
-            _widget->connect(wTable, SIGNAL( valueChanged(int,int) ), _widget, SLOT(setModified()) );
+            _widget->connect(wTable, SIGNAL( valueChanged(int,int) ), _widget, SLOT(setWidgetDirty()) );
         }
         _widget->connect(wDisplay, SIGNAL( toggled(bool) ), wTable,   SLOT(setDisplayed(bool)));
         _widget->connect(wDisplay, SIGNAL( toggled(bool) ), wDisplay, SLOT(setDisplayed(bool)));
-        _widget->connect(wDisplay, SIGNAL( toggled(bool) ), _widget, SLOT(setDisplayed(bool)));
+        _widget->connect(wDisplay, SIGNAL( toggled(bool) ), _widget, SLOT( updateWidgetValue() ));
         return true;
     }
 
@@ -565,19 +565,9 @@ public:
     typedef SimpleDataWidget<T, table_data_widget_container< T , FLAGS > > Inherit;
     typedef sofa::core::objectmodel::TData<T> MyData;
 public:
-    TableDataWidget(MyData* d) : Inherit(d) {}
+    TableDataWidget(QWidget* parent,const char* name, MyData* d) : Inherit(parent,name,d) {}
     virtual unsigned int sizeWidget() {return 3;}
-    virtual void update()
-    {
-        const data_type& d = this->data->virtualGetValue();
-        this->container.processTableModifications(d);
-    }
 };
-
-//class TagDataWidget : public TableDataWidget<std::map<unsigned int, std::string> >
-//{
-//  public
-//}
 
 ////////////////////////////////////////////////////////////////
 /// variable-sized vectors support

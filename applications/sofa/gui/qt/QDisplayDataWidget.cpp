@@ -85,7 +85,7 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
 
             setColumns(dataSimpleEdit->numColumnWidget());
             numWidgets_ += dataSimpleEdit->sizeWidget();
-            connect( dataSimpleEdit, SIGNAL( WidgetDirty(bool) ), this, SIGNAL (WidgetHasChanged(bool) ) );
+            connect( dataSimpleEdit, SIGNAL( WidgetDirty(bool) ), this, SIGNAL (WidgetDirty(bool) ) );
             connect( this, SIGNAL (WidgetUpdate() ), dataSimpleEdit, SLOT( UpdateWidget() ) );
             connect( this, SIGNAL( DataUpdate() ), dataSimpleEdit, SLOT( UpdateData() ) );
         }
@@ -95,10 +95,10 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
         setColumns(datawidget_->numColumnWidget());
         //std::cout << "WIDGET created for data " << dwarg.data << " : " << dwarg.name << " : " << dwarg.data->getValueTypeString() << std::endl;
         numWidgets_+=datawidget_->sizeWidget();
-        connect(datawidget_,SIGNAL(requestChange(bool)), this, SIGNAL ( WidgetHasChanged(bool) ) );
-        connect(this, SIGNAL( WidgetUpdate() ), datawidget_, SLOT( updateWidget() ) );
-        connect(this, SIGNAL( DataUpdate() ), datawidget_, SLOT(updateData() ) );
-        connect(datawidget_,SIGNAL(dataParentNameChanged()),this,SIGNAL(DataParentNameChanged()) );
+        connect(datawidget_,SIGNAL(WidgetDirty(bool)), this, SIGNAL ( WidgetDirty(bool) ) );
+        connect(this, SIGNAL( WidgetUpdate() ), datawidget_, SLOT( updateWidgetValue() ) );
+        connect(this, SIGNAL( DataUpdate() ), datawidget_, SLOT(updateDataValue() ) );
+        connect(datawidget_,SIGNAL(DataOwnerDirty(bool)),this,SIGNAL(DataOwnerDirty(bool)) );
     }
 }
 

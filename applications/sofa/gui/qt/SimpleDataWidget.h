@@ -77,7 +77,7 @@ public:
     }
     static void connectChanged(Widget* w, DataWidget* datawidget)
     {
-        datawidget->connect(w, SIGNAL( textChanged(const QString&) ), datawidget, SLOT(setModified()));
+        datawidget->connect(w, SIGNAL( textChanged(const QString&) ), datawidget, SLOT(setWidgetDirty()));
     }
 };
 
@@ -148,48 +148,34 @@ public:
 
 /// This class manages the GUI of a BaseData, using the corresponding instance of data_widget_container
 template<class T, class Container = data_widget_container<T> >
-class SimpleDataWidget : public DataWidget
+class SimpleDataWidget : public TDataWidget<T>
 {
-public:
-    typedef sofa::core::objectmodel::TData<T> MyData;
+
 protected:
     typedef T data_type;
     Container container;
     typedef data_widget_trait<data_type> helper;
-    MyData* data;
-    int counter;
-
+    //MyData* data;
 public:
-    SimpleDataWidget(MyData* d) : DataWidget(d), data(d), counter(-1) {}
-    virtual bool createWidgets(QWidget* parent)
+    SimpleDataWidget(QWidget* parent,const char* name, MyTData* d) : TDataWidget(parent,name,d) {}
+    virtual bool createWidgets()
     {
-        const data_type& d = data->virtualGetValue();
-        if (!container.createWidgets(this, parent, d, this->readOnly))
+        const data_type& d = getData()->virtualGetValue();
+        if (!container.createWidgets(this, this->parentWidget(), d, this->isEnabled() ))
             return false;
         return true;
     }
     virtual void readFromData()
     {
         container.readFromData(data->virtualGetValue());
-        modified = false;
-        counter = data->getCounter();
     }
-    virtual bool isModified() { return modified; }
+
     virtual void writeToData()
     {
 
-        if (!modified) return;
         data_type d = data->virtualGetValue();
         container.writeToData(d);
         data->virtualSetValue(d);
-        counter = data->getCounter();
-    }
-    virtual void update()
-    {
-        if (!data->isCounterValid() || counter != data->getCounter())
-        {
-            readFromData();
-        }
     }
 };
 
@@ -218,7 +204,7 @@ public:
     }
     static void connectChanged(Widget* w, DataWidget* datawidget)
     {
-        datawidget->connect(w, SIGNAL( textChanged(const QString&) ), datawidget, SLOT(setModified()) );
+        datawidget->connect(w, SIGNAL( textChanged(const QString&) ), datawidget, SLOT(setWidgetDirty()) );
     }
 };
 
@@ -247,7 +233,7 @@ public:
     }
     static void connectChanged(Widget* w, DataWidget* datawidget)
     {
-        datawidget->connect(w, SIGNAL( toggled(bool) ), datawidget, SLOT(setModified()));
+        datawidget->connect(w, SIGNAL( toggled(bool) ), datawidget, SLOT(setWidgetDirty()));
     }
 };
 
@@ -278,7 +264,7 @@ public:
     }
     static void connectChanged(Widget* w, DataWidget* datawidget)
     {
-        datawidget->connect(w, SIGNAL( textChanged(const QString&) ), datawidget, SLOT(setModified()));
+        datawidget->connect(w, SIGNAL( textChanged(const QString&) ), datawidget, SLOT(setWidgetDirty()));
     }
 };
 
@@ -316,7 +302,7 @@ public:
     }
     static void connectChanged(Widget* w, DataWidget* datawidget)
     {
-        datawidget->connect(w, SIGNAL( valueChanged(int) ), datawidget, SLOT(setModified()));
+        datawidget->connect(w, SIGNAL( valueChanged(int) ), datawidget, SLOT(setWidgetDirty()));
     }
 };
 
