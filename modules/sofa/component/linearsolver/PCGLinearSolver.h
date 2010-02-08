@@ -29,7 +29,7 @@
 #include <sofa/component/linearsolver/MatrixLinearSolver.h>
 #include <sofa/helper/map.h>
 
-//#define DISPLAY_TIME 200
+//#define DISPLAY_TIME_PCGLinearSolver 200
 
 #include <math.h>
 
@@ -61,7 +61,7 @@ public:
     Data<int> f_refresh;
     Data<bool> use_precond;
     Data< helper::vector< std::string > > f_preconditioners;
-#ifdef DISPLAY_TIME
+#ifdef DISPLAY_TIME_PCGLinearSolver
     Data<bool> display_time;
 #endif
     Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
@@ -79,7 +79,7 @@ private :
     int iteration;
     bool usePrecond;
     bool first;
-#ifdef DISPLAY_TIME
+#ifdef DISPLAY_TIME_PCGLinearSolver
     double time1;
     double time2;
     double time3;

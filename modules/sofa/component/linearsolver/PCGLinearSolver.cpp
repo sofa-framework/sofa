@@ -65,7 +65,7 @@ PCGLinearSolver<TMatrix,TVector>::PCGLinearSolver()
     , f_refresh( initData(&f_refresh,0,"refresh","Refresh iterations") )
     , use_precond( initData(&use_precond,true,"use_precond","Use preconditioners") )
     , f_preconditioners( initData(&f_preconditioners, "preconditioners", "If not empty: path to the solvers to use as preconditioners") )
-#ifdef DISPLAY_TIME
+#ifdef DISPLAY_TIME_PCGLinearSolver
     , display_time( initData(&display_time,false,"display_time","display time information") )
 #endif
     , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
@@ -74,7 +74,7 @@ PCGLinearSolver<TMatrix,TVector>::PCGLinearSolver()
     f_graph.setReadOnly(true);
     iteration = 0;
     usePrecond = true;
-#ifdef DISPLAY_TIME
+#ifdef DISPLAY_TIME_PCGLinearSolver
     timeStamp = 1.0 / (double)CTime::getRefTicksPerSec();
 #endif
 }
@@ -113,7 +113,7 @@ void PCGLinearSolver<TMatrix,TVector>::init()
 
     sout<<"Found " << this->preconditioners.size() << " preconditioners"<<sendl;
 
-#ifdef DISPLAY_TIME
+#ifdef DISPLAY_TIME_PCGLinearSolver
     time3 = 0.0;
     time1 = 0.0;
     time2 = 0.0;
@@ -129,7 +129,7 @@ void PCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(double mFact, double b
 {
     Inherit::setSystemMBKMatrix(mFact,bFact,kFact);
 
-#ifdef DISPLAY_TIME
+#ifdef DISPLAY_TIME_PCGLinearSolver
     double t3 = (double) CTime::getTime();
 #endif
     usePrecond = use_precond.getValue();
@@ -152,7 +152,7 @@ void PCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(double mFact, double b
 
     }
 
-#ifdef DISPLAY_TIME
+#ifdef DISPLAY_TIME_PCGLinearSolver
     time3 += (double) CTime::getTime() - t3;
 #endif
 
@@ -219,7 +219,7 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
     unsigned nb_iter;
     const char* endcond = "iterations";
 
-#ifdef DISPLAY_TIME
+#ifdef DISPLAY_TIME_PCGLinearSolver
     double tmp3 = (double) CTime::getTime();
     double tmp2 = 0.0;
     double tmp = 0.0;
@@ -235,7 +235,7 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
         }
     }
 
-#ifdef DISPLAY_TIME
+#ifdef DISPLAY_TIME_PCGLinearSolver
     time4 += ((double) CTime::getTime() - tmp3);
     tmp3 = (double) CTime::getTime();
 #endif
@@ -253,13 +253,13 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
         {
             for (unsigned int i=0; i<this->preconditioners.size(); i++)
             {
-#ifdef DISPLAY_TIME
+#ifdef DISPLAY_TIME_PCGLinearSolver
                 tmp2 = (double) CTime::getTime();
 #endif
                 preconditioners[i]->setSystemLHVector(z);
                 preconditioners[i]->setSystemRHVector(r);
                 preconditioners[i]->solveSystem();
-#ifdef DISPLAY_TIME
+#ifdef DISPLAY_TIME_PCGLinearSolver
                 tmp += ((double) CTime::getTime() - tmp2);
 #endif
             }
@@ -338,17 +338,17 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
     }
     sofa::helper::AdvancedTimer::valSet("PCG iterations", nb_iter);
 
-#ifdef DISPLAY_TIME
+#ifdef DISPLAY_TIME_PCGLinearSolver
     time1 += ((double) CTime::getTime() - tmp3) - tmp;
     time2 += tmp;
 #endif
 
     f_graph.endEdit();
     // x is the solution of the system
-#ifdef DISPLAY_TIME
+#ifdef DISPLAY_TIME_PCGLinearSolver
     step_simu++;
     it_simu+=nb_iter-1;
-    if (display_time.getValue() && step_simu>DISPLAY_TIME)
+    if (display_time.getValue() && step_simu>DISPLAY_TIME_PCGLinearSolver)
     {
         time1 /= (double)((double)CTime::getRefTicksPerSec());
         time2 /= (double)((double)CTime::getRefTicksPerSec());
@@ -357,7 +357,7 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
 
         double total = time1+time2+time4+time3;
         double percen = 100.0/total;
-        cerr<<"\nPCGLinearSolver::solve nbiter = "<<it_simu<<" for " << DISPLAY_TIME << " steps. Total time = "<<total<<"\nCG =\t\t("<<time1<<"\t"<<(time1*percen)<<"%)\npreconditioner =("<<time2<<"\t"<<(time2*percen)<<"%)\nInvert =\t("<<time4<<"\t"<<(time4*percen)<<"%)\nbuild =\t\t("<<time3<<"\t"<<(time3*percen)<<"%)"<<endl;
+        cerr<<"\nPCGLinearSolver::solve nbiter = "<<it_simu<<" for " << DISPLAY_TIME_PCGLinearSolver << " steps. Total time = "<<total<<"\nCG =\t\t("<<time1<<"\t"<<(time1*percen)<<"%)\npreconditioner =("<<time2<<"\t"<<(time2*percen)<<"%)\nInvert =\t("<<time4<<"\t"<<(time4*percen)<<"%)\nbuild =\t\t("<<time3<<"\t"<<(time3*percen)<<"%)"<<endl;
 
         time1 = 0.0;
         time2 = 0.0;
