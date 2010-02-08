@@ -49,10 +49,10 @@ public slots:
     void UpdateData();              //QWidgets ---> BaseData
     void UpdateWidgets();           //BaseData ---> QWidget
 signals:
-    void WidgetHasChanged(bool);
+    void WidgetDirty(bool);
     void WidgetUpdate();
     void DataUpdate();
-    void DataParentNameChanged();
+    void DataOwnerDirty(bool);
 protected:
     core::objectmodel::BaseData* data_;
     QDisplayDataInfoWidget*  datainfowidget_;

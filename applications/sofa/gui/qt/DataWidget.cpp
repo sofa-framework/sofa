@@ -22,18 +22,14 @@ namespace qt
 {
 
 
-
-bool DefaultDataWidget::createWidgets(QWidget *parent)
+template <class T>
+bool DefaultDataWidget<T>::createWidgets()
 {
-    w = new QLineEdit(parent);
+    w = new QLineEdit(this);
     if (w == NULL) return false;
     std::string s = data->getValueString();
     w->setText(QString(s.c_str()));
-    counter = data->getCounter();
-    if (this->readOnly)
-        w->setEnabled(false);
-    else
-        connect(w, SIGNAL( textChanged(const QString&) ), this, SLOT( setModified() ));
+    connect(w, SIGNAL( textChanged(const QString&) ), this, SLOT( setWidgetDirty() ));
     return true;
 }
 

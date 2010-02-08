@@ -67,87 +67,78 @@ namespace gui
 namespace qt
 {
 
-class ModifyObject;
 class DataWidget : public QWidget
 {
     Q_OBJECT
 public slots:
-
-
-
-    void updateData()
+    void updateDataValue()
     {
-        if(modified)
+        if(dirty)
         {
             std::string previousName = baseData->getOwner()->getName();
             writeToData();
             updateVisibility();
             if(baseData->getOwner()->getName() != previousName)
             {
-                emit dataParentNameChanged();
+                emit DataOwnerDirty(true);
             }
         }
-        modified = false;
-        emit requestChange(modified);
+        dirty = false;
+        counter = baseData->getCounter();
     }
-    void updateWidget()
+    void updateWidgetValue()
     {
-        if(!modified)
+        /*
+        check that widget is not being edited
+        check that data has changed since last updateDataValue
+        eventually, updateWidget
+        */
+        if(!dirty)
         {
-            readFromData();
+            if(counter != baseData->getCounter())
+                readFromData();
         }
     }
-    void setDisplayed(bool b)
+    void setWidgetDirty(bool b=true)
     {
-        if(b)
-        {
-            readFromData();
-        }
+        dirty = b;
+        emit WidgetDirty(b);
     }
-    virtual void update()
-    {
-        readFromData();
-    }
-
 signals:
-    void requestChange(bool );
-    void dataParentNameChanged();
-
-protected:
-    core::objectmodel::BaseData* baseData;
-    QWidget* parent;
-    std::string name;
-    bool readOnly;
-    bool modified;
-protected slots:
-    void setModified()
-    {
-        modified = true; emit requestChange(modified);
-    }
-
+    void WidgetDirty(bool );
+    void DataOwnerDirty(bool );
 public:
     typedef core::objectmodel::BaseData MyData;
 
-    DataWidget(MyData* d) : baseData(d),  readOnly(false), modified(false) {}
-    virtual ~DataWidget() {}
-    void setReadOnly(bool b) { readOnly = b; }
-    void setParent(QWidget *p) { parent=p; }
-    void setName(std::string n) { name = n;};
-    core::objectmodel::BaseData* getBaseData() const { return baseData; }
-    virtual bool createWidgets(QWidget* parent) = 0;
-    virtual void readFromData() {};
-    virtual void writeToData() = 0;
-    virtual bool isModified() { return false; }
-    std::string getName() { return name;};
-
-
-    virtual void updateVisibility()
+    DataWidget(QWidget* parent,const char* name, MyData* d) :
+        QWidget(parent,name), baseData(d), dirty(false), counter(-1)
     {
-        parent->setShown(baseData->isDisplayed());
+    }
+    virtual ~DataWidget() {}
+    core::objectmodel::BaseData* getBaseData() const { return baseData; }
+    void updateVisibility()
+    {
+        parentWidget()->setShown(baseData->isDisplayed());
     };
+    bool isDirty() { return dirty; }
 
+    /*PUBLIC VIRTUALS */
+    virtual bool createWidgets() = 0;
     virtual unsigned int sizeWidget() {return 1;}
     virtual unsigned int numColumnWidget() {return 2;}
+    /*  */
+protected:
+    /* PROTECTED VIRTUALS */
+    virtual void readFromData() = 0;
+    virtual void writeToData() = 0;
+    /* */
+
+    core::objectmodel::BaseData* baseData;
+    bool dirty;
+    int counter;
+
+
+public:
     //
     // Factory related code
     //
@@ -164,12 +155,10 @@ public:
     static void create(T*& instance, const CreatorArgument& arg)
     {
         typename T::MyData* data = dynamic_cast<typename T::MyData*>(arg.data);
-        if (!data) return;
-        instance = new T(data);
-        instance->setReadOnly(arg.readOnly);
-        instance->setParent(arg.parent);
-        instance->setName(arg.name);
-        if (!instance->createWidgets(arg.parent))
+        if(!data) return;
+        instance = new T(arg.parent, arg.name.c_str(), data);
+        instance->setEnabled(arg.readOnly);
+        if ( !instance->createWidgets() )
         {
             delete instance;
             instance = NULL;
@@ -178,39 +167,70 @@ public:
     }
 };
 
+
+template<class T>
+class TDataWidget : public DataWidget
+{
+
+public:
+    typedef sofa::core::objectmodel::TData<T> MyTData;
+
+    template <class RealObject>
+    static void create( RealObject*& obj, CreatorArgument& arg)
+    {
+        RealObject::MyTData* realData = dynamic_cast< RealObject::MyTData* >(arg.data);
+        if (!realData) obj=NULL;
+        else
+        {
+            obj = new RealObject(arg.parent,arg.name.c_str(), realData);
+            obj->setEnabled(arg.readOnly);
+            if( !obj->createWidgets() )
+            {
+                delete obj;
+                obj = NULL;
+            }
+            else
+            {
+                obj->updateVisibility();
+            }
+        }
+
+    }
+
+
+
+    TDataWidget(QWidget* parent,const char* name, MyTData* d):
+        DataWidget(parent,name,d),data(d) {};
+    sofa::core::objectmodel::TData<T>* getData() const {return data;}
+protected:
+    MyTData* data;
+};
+
+
 typedef sofa::helper::Factory<std::string, DataWidget, DataWidget::CreatorArgument> DataWidgetFactory;
 
-
-class DefaultDataWidget : public DataWidget
+template< class T >
+class DefaultDataWidget : public TDataWidget<T>
 {
+    typedef sofa::core::objectmodel::TData<T> MyData;
 protected:
     typedef QLineEdit Widget;
-    MyData* data;
     Widget* w;
-    int counter;
-    bool modified;
 public:
-    DefaultDataWidget(MyData* d) : DataWidget(d), data(d), w(NULL), counter(-1), modified(false) {}
-    virtual bool createWidgets(QWidget* parent);
+    DefaultDataWidget(QWidget* parent,const char* name, MyData* d) :
+        TDataWidget(QWidget* parent,const char* name, MyTData* d),w(NULL)
+    {}
+    virtual bool createWidgets();
     virtual void readFromData()
     {
         std::string s = data->getValueString();
         w->setText(QString(s.c_str()));
-        modified = false;
-        counter = data->getCounter();
+
     }
-    virtual bool isModified() { return modified; }
     virtual void writeToData()
     {
-        if (!modified) return;
         std::string s = w->text().ascii();
         data->read(s);
-        counter = data->getCounter();
-    }
-    virtual void update()
-    {
-        if (counter != data->getCounter())
-            readFromData();
     }
 };
 class QTableUpdater : virtual public Q3Table

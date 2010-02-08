@@ -378,50 +378,50 @@ void QSofaListView::graphActivation(bool activate)
     std::list< BaseNode* > visualNodeToProcess;
     std::list< BaseNode* > nodeToChange;
     //Breadth First approach to activate all the nodes
-    if( attribute_ == SIMULATION )
-    {
-        while (!nodeToProcess.empty())
-        {
-            //We take the first element of the list
-            Node* n= (Node*)nodeToProcess.front();
-            nodeToProcess.pop_front();
-            nodeToChange.push_front(n);
-            if (!n->nodeInVisualGraph.empty())
-                visualNodeToProcess.push_front( n->nodeInVisualGraph );
 
-            //We add to the list of node to process all its children
-            std::copy(n->child.begin(), n->child.end(), std::back_inserter(nodeToProcess));
-            std::copy(n->childInVisualGraph.begin(), n->childInVisualGraph.end(), std::back_inserter(visualNodeToProcess));
-        }
-        {
-            ActivationFunctor activator(activate, graphListener_);
-            std::for_each(nodeToChange.begin(),nodeToChange.end(),activator);
-        }
-        if ( activate )
-        {
-            simulation::getSimulation()->init(object_.ptr.Node);
-        }
+    while (!nodeToProcess.empty())
+    {
+        //We take the first element of the list
+        Node* n= (Node*)nodeToProcess.front();
+        nodeToProcess.pop_front();
+        nodeToChange.push_front(n);
+        if (!n->nodeInVisualGraph.empty())
+            visualNodeToProcess.push_front( n->nodeInVisualGraph );
+
+        //We add to the list of node to process all its children
+        std::copy(n->child.begin(), n->child.end(), std::back_inserter(nodeToProcess));
+        std::copy(n->childInVisualGraph.begin(), n->childInVisualGraph.end(), std::back_inserter(visualNodeToProcess));
     }
-    if( attribute_ == VISUAL )
+    if( attribute_  == SIMULATION)
     {
-        while (!visualNodeToProcess.empty())
-        {
-            //We take the first element of the list
-            Node* n=(Node*)visualNodeToProcess.front();
-            visualNodeToProcess.pop_front();
+        ActivationFunctor activator(activate, graphListener_);
+        std::for_each(nodeToChange.begin(),nodeToChange.end(),activator);
 
-            nodeToChange.push_front(n);
-
-            //We add to the list of node to process all its children
-            core::objectmodel::BaseNode::Children children=n->getChildren();
-            std::copy(children.begin(), children.end(), std::back_inserter(visualNodeToProcess));
-        }
-        {
-            ActivationFunctor activator(activate, graphListener_);
-            std::for_each(nodeToChange.begin(),nodeToChange.end(),activator);
-        }
     }
 
+    nodeToChange.clear();
+    while (!visualNodeToProcess.empty())
+    {
+        //We take the first element of the list
+        Node* n=(Node*)visualNodeToProcess.front();
+        visualNodeToProcess.pop_front();
+
+        nodeToChange.push_front(n);
+
+        //We add to the list of node to process all its children
+        core::objectmodel::BaseNode::Children children=n->getChildren();
+        std::copy(children.begin(), children.end(), std::back_inserter(visualNodeToProcess));
+    }
+    if(attribute_ == VISUAL)
+    {
+
+        ActivationFunctor activator(activate, graphListener_);
+        std::for_each(nodeToChange.begin(),nodeToChange.end(),activator);
+    }
+    if( activate && attribute_ == SIMULATION)
+    {
+        simulation::getSimulation()->init(object_.ptr.Node);
+    }
 }
 
 void QSofaListView::SaveNode()
