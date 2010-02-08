@@ -155,7 +155,7 @@ protected:
     typedef T data_type;
     Container container;
     typedef data_widget_trait<data_type> helper;
-    //MyData* data;
+
 public:
     SimpleDataWidget(QWidget* parent,const char* name, MyTData* d) : TDataWidget(parent,name,d) {}
     virtual bool createWidgets()

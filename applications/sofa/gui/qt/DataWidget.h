@@ -178,8 +178,8 @@ public:
     template <class RealObject>
     static void create( RealObject*& obj, CreatorArgument& arg)
     {
-        RealObject::MyTData* realData = dynamic_cast< RealObject::MyTData* >(arg.data);
-        if (!realData) obj=NULL;
+        typename RealObject::MyTData* realData = dynamic_cast< typename RealObject::MyTData* >(arg.data);
+        if (!realData) obj = NULL;
         else
         {
             obj = new RealObject(arg.parent,arg.name.c_str(), realData);
@@ -196,8 +196,6 @@ public:
         }
 
     }
-
-
 
     TDataWidget(QWidget* parent,const char* name, MyTData* d):
         DataWidget(parent,name,d),data(d) {};
