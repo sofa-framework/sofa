@@ -75,15 +75,15 @@ __global__ void DiagonalMassCuda_accFromF_kernel(int size, const real * inv_mass
 }
 
 template<class real>
-__global__ void DiagonalMassCuda_addForce_kernel(int size, const real * mass, const CudaVec3<real> g, real* f)
+__global__ void DiagonalMassCuda_addForce_kernel(int size, const real * mass, real g_x, real g_y, real g_z, real* f)
 {
     int index = umul24(blockIdx.x,BSIZE)+threadIdx.x;
     int index3 = index * 3;
     if (index < size)
     {
-        f[index3+0] += mass[index] * g.x;
-        f[index3+1] += mass[index] * g.y;
-        f[index3+2] += mass[index] * g.z;
+        f[index3+0] += mass[index] * g_x;
+        f[index3+1] += mass[index] * g_y;
+        f[index3+2] += mass[index] * g_z;
     }
 }
 
@@ -109,7 +109,7 @@ void DiagonalMassCuda_addForcef(unsigned int size, const void * mass,const doubl
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    DiagonalMassCuda_addForce_kernel<float><<< grid, threads >>>(size,(const float *) mass, CudaVec3<float>::make(g[0],g[1],g[2]), (float*)f);
+    DiagonalMassCuda_addForce_kernel<float><<< grid, threads >>>(size,(const float *) mass, g[0],g[1],g[2], (float*)f);
 }
 
 
@@ -133,7 +133,7 @@ void DiagonalMassCuda_addForced(unsigned int size, const void * mass,const doubl
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
-    DiagonalMassCuda_addForce_kernel<double><<< grid, threads >>>(size,(const double *) mass, CudaVec3<double>::make(g[0],g[1],g[2]), (double*)f);
+    DiagonalMassCuda_addForce_kernel<double><<< grid, threads >>>(size,(const double *) mass, g[0],g[1],g[2], (double*)f);
 }
 #endif
 

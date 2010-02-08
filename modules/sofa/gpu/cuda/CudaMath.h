@@ -134,11 +134,11 @@ public:
     {
         CudaVec2<double> r; r.x = x; r.y = y; return r;
     }
-    static __inline__ __device__ __host__ CudaVec2<double> make(double2 v)
+    static __inline__ __device__ __host__ CudaVec2<double> make(const double2& v)
     {
         CudaVec2<double> r; r.x = v.x; r.y = v.y; return r;
     }
-    static __inline__ __device__ __host__ CudaVec2<double> make(double3 v)
+    static __inline__ __device__ __host__ CudaVec2<double> make(const double3& v)
     {
         CudaVec2<double> r; r.x = v.x; r.y = v.y; return r;
     }
@@ -157,11 +157,11 @@ public:
     {
         CudaVec3<double> r; r.x = v.x; r.y = v.y;  r.z = z; return r;
     }
-    static __inline__ __device__ __host__ CudaVec3<double> make(double3 v)
+    static __inline__ __device__ __host__ CudaVec3<double> make(const double3& v)
     {
         CudaVec3<double> r; r.x = v.x; r.y = v.y;  r.z = v.z; return r;
     }
-    static __inline__ __device__ __host__ CudaVec3<double> make(double4 v)
+    static __inline__ __device__ __host__ CudaVec3<double> make(const double4& v)
     {
         CudaVec3<double> r; r.x = v.x; r.y = v.y;  r.z = v.z; return r;
     }
@@ -176,11 +176,11 @@ public:
     {
         CudaVec4<double> r; r.x = x; r.y = y;  r.z = z; r.w = w; return r;
     }
-    static __inline__ __device__ __host__ CudaVec4<double> make(double3 v, Real w=0)
+    static __inline__ __device__ __host__ CudaVec4<double> make(const double3& v, Real w=0)
     {
         CudaVec4<double> r; r.x = v.x; r.y = v.y;  r.z = v.z; r.w = w; return r;
     }
-    static __inline__ __device__ __host__ CudaVec4<double> make(double4 v)
+    static __inline__ __device__ __host__ CudaVec4<double> make(const double4& v)
     {
         CudaVec4<double> r; r.x = v.x; r.y = v.y;  r.z = v.z; r.w = v.w; return r;
     }
