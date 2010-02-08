@@ -257,7 +257,7 @@ void IdentityMapping<BaseMapping>::applyJT( typename In::VecConst& out, const ty
 template <class BaseMapping>
 void IdentityMapping<BaseMapping>::handleTopologyChange()
 {
-    if (stateTo->getSize() != stateFrom->getSize()) this->init();
+    if ( stateTo && stateFrom && stateTo->getSize() != stateFrom->getSize()) this->init();
 }
 
 } // namespace mapping
