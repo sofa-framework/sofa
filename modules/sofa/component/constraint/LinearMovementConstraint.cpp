@@ -98,7 +98,7 @@ void LinearMovementConstraint<Rigid3dTypes>::projectPosition(VecCoord& x)
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
             x[*it].getCenter() = x0[*it].getCenter() + m.getVCenter() ;
-            x[*it].getOrientation() = prevOrientation.slerp2(nextOrientation, dt);
+            x[*it].getOrientation() = x0[*it].getOrientation() * prevOrientation.slerp2(nextOrientation, dt);
         }
     }
 }
@@ -160,7 +160,7 @@ void LinearMovementConstraint<Rigid3fTypes>::projectPosition(VecCoord& x)
         for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
         {
             x[*it].getCenter() = x0[*it].getCenter() + m.getVCenter() ;
-            x[*it].getOrientation() = prevOrientation.slerp2(nextOrientation, dt);
+            x[*it].getOrientation() = x0[*it].getOrientation() * prevOrientation.slerp2(nextOrientation, dt);
         }
     }
 }
