@@ -33,7 +33,6 @@
 #include <sofa/core/componentmodel/behavior/LinearSolver.h>
 #include <math.h>
 #include <sofa/helper/system/thread/CTime.h>
-#include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
 
 namespace sofa
 {
@@ -169,6 +168,8 @@ int SparseLDLSolverClass = core::RegisterObject("Linear system solver using the 
         .add< SparseLDLSolver< CompressedRowSparseMatrix<double>,FullVector<double> > >(true)
         .addAlias("SparseLDLSolverAlias")
         ;
+
+template class SOFA_COMPONENT_LINEARSOLVER_API SparseLDLSolver< CompressedRowSparseMatrix<double>,FullVector<double> >;
 
 } // namespace linearsolver
 
