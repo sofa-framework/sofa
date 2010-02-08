@@ -164,20 +164,20 @@ public:
     {}
     virtual bool createWidgets()
     {
-        const data_type& d = Tdata->virtualGetValue();
+        const data_type& d = getData()->virtualGetValue();
         if (!container.createWidgets(this, this->parentWidget(), d, this->isEnabled() ))
             return false;
         return true;
     }
     virtual void readFromData()
     {
-        container.readFromData(Tdata->virtualGetValue());
+        container.readFromData(getData()->virtualGetValue());
     }
 
     virtual void writeToData()
     {
 
-        data_type d = Tdata->virtualGetValue();
+        data_type d = getData()->virtualGetValue();
         container.writeToData(d);
         Tdata->virtualSetValue(d);
     }
