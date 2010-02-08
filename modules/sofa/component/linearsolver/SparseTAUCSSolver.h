@@ -55,7 +55,7 @@ namespace component
 namespace linearsolver
 {
 
-/// Linear system solver using the conjugate gradient iterative algorithm
+/// Direct linear solvers implemented with the TAUCS library
 template<class TMatrix, class TVector>
 class SparseTAUCSSolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector>
 {
@@ -72,7 +72,6 @@ public:
     Data<bool> f_symmetric;
 
     Data<bool> f_verbose;
-    Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
 
     SparseTAUCSSolver();
     ~SparseTAUCSSolver();

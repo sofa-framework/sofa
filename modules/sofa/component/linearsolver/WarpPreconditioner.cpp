@@ -169,7 +169,7 @@ void WarpPreconditioner<TDataTypes>::getRotations()
 
 SOFA_DECL_CLASS(WarpPreconditioner)
 
-int WarpPreconditionerClass = core::RegisterObject("")
+int WarpPreconditionerClass = core::RegisterObject("Linear system solver wrapping another (precomputed) linear solver by a per-node rotation matrix")
         .add< WarpPreconditioner< defaulttype::Vec3dTypes > >(true)
         .addAlias("WarpLinearSolver");
 ;

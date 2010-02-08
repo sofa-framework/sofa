@@ -60,82 +60,53 @@ using std::endl;
 template<class TMatrix, class TVector>
 SSORPreconditioner<TMatrix,TVector>::SSORPreconditioner()
     : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
-    , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
+    , f_omega( initData(&f_omega,1.0, "omega","Omega coefficient") )
 {
-    f_graph.setWidget("graph");
-    f_graph.setReadOnly(true);
 }
 
-/*
-// solve (D+U) * D^-1 * (D+L)
-template<class TMatrix, class TVector>
-void SSORPreconditioner<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& r) {
-	double t2 = CTime::getRefTime();
-
-	//Solve (D+U) * u3 = r;
-	for (int j=M.rowSize()-1;j>=0;j--) {
-		double temp = 0.0;
-		for (unsigned i=j+1;i<M.rowSize();i++) {
-			temp += u3[i] * M.element(i,j);
-		}
-		u3[j] = (r[j] - temp) / M.element(j,j);
-	}
-
-	//Solve D-1 * u2 = u3;
-	for (unsigned j=0;j<M.rowSize();j++) {
-		u2[j] = u3[j] * M.element(j,j);
-	}
-
-	//Solve (L+D) * z = u2
-	for (unsigned j=0;j<M.rowSize();j++) {
-		double temp = 0.0;
-		for (unsigned i=0;i<j;i++) {
-			temp += z[i] * M.element(i,j);
-		}
-		z[j] = (u2[j] - temp) / M.element(j,j);
-	}
-
-	printf("%f ",(CTime::getRefTime() - t2) / (double)CTime::getRefTicksPerSec());
-}
-*/
-
-// solve (D+U) * ( I + D^-1 * U)
+// solve (D+U) * D^-1 * ( D + U)
 template<class TMatrix, class TVector>
 void SSORPreconditioner<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& r)
 {
     //double t2 = CTime::getRefTime();
-
-    //Solve (D+U) * u3 = r;
-    for (int j=M.rowSize()-1; j>=0; j--)
+    const int n = M.rowSize();
+    const Real w = (Real)f_omega.getValue();
+    //Solve (D/w+u) * u3 = r;
+    for (int j=n-1; j>=0; j--)
     {
         double temp = 0.0;
-        for (unsigned i=j+1; i<M.rowSize(); i++)
+        for (int i=j+1; i<n; i++)
         {
             temp += z[i] * M.element(i,j);
         }
-        z[j] = (r[j] - temp) / M.element(j,j);
+        z[j] = (r[j] - temp) * w * inv_diag[j];
     }
 
-    //Solve (I + D^-1 * L) * z = u3
-    for (unsigned j=0; j<M.rowSize(); j++)
+    //Solve (I + w D^-1 * L) * z = u3
+    for (int j=0; j<n; j++)
     {
         double temp = 0.0;
-        for (unsigned i=0; i<j; i++)
+        for (int i=0; i<j; i++)
         {
-            temp += z[i] * M.element(i,j) / M.element(j,j);
+            temp += z[i] * M.element(i,j);
         }
-        z[j] = z[j] - temp;
+        z[j] = z[j] - temp * w * inv_diag[j];
         // we can reuse z because all values that we read are updated
     }
+
+    if (w != (Real)1.0)
+        for (unsigned j=0; j<M.rowSize(); j++)
+            z[j] *= 2-w;
 
 }
 
 template<>
 void SSORPreconditioner<SparseMatrix<double>, FullVector<double> >::solve (Matrix& M, Vector& z, Vector& r)
 {
-    int n = M.rowSize();
+    const int n = M.rowSize();
+    const Real w = (Real)f_omega.getValue();
 
-    //Solve (D+U) * t = r;
+    //Solve (D/w+U) * t = r;
     for (int j=n-1; j>=0; j--)
     {
         double temp = 0.0;
@@ -145,10 +116,10 @@ void SSORPreconditioner<SparseMatrix<double>, FullVector<double> >::solve (Matri
             double e = it->second;
             temp += z[i] * e;
         }
-        z[j] = (r[j] - temp) * inv_diag[j];
+        z[j] = (r[j] - temp) * w * inv_diag[j];
     }
 
-    //Solve (I + D^-1 * L) * z = t
+    //Solve (I + w * D^-1 * L) * z = t
     for (int j=0; j<n; j++)
     {
         double temp = 0.0;
@@ -158,19 +129,25 @@ void SSORPreconditioner<SparseMatrix<double>, FullVector<double> >::solve (Matri
             double e = it->second;
             temp += z[i] * e;
         }
-        z[j] -= temp * inv_diag[j];
+        z[j] -= temp * w * inv_diag[j];
         // we can reuse z because all values that we read are updated
     }
+
+    if (w != (Real)1.0)
+        for (unsigned j=0; j<M.rowSize(); j++)
+            z[j] *= 2-w;
 }
 
 template<>
 void SSORPreconditioner<CompressedRowSparseMatrix<double>, FullVector<double> >::solve (Matrix& M, Vector& z, Vector& r)
 {
-    int n = M.rowSize();
+    const int n = M.rowSize();
+    const Real w = (Real)f_omega.getValue();
+
     //const Matrix::VecIndex& rowIndex = M.getRowIndex();
     const Matrix::VecIndex& colsIndex = M.getColsIndex();
     const Matrix::VecBloc& colsValue = M.getColsValue();
-    //Solve (D+U) * t = r;
+    //Solve (D/w+U) * t = r;
     for (int j=n-1; j>=0; j--)
     {
         double temp = 0.0;
@@ -183,10 +160,10 @@ void SSORPreconditioner<CompressedRowSparseMatrix<double>, FullVector<double> >:
             double e = colsValue[xi];
             temp += z[i] * e;
         }
-        z[j] = (r[j] - temp) * inv_diag[j];
+        z[j] = (r[j] - temp) * w * inv_diag[j];
     }
 
-    //Solve (I + D^-1 * L) * z = t
+    //Solve (I + w D^-1 * L) * z = t
     for (int j=0; j<n; j++)
     {
         double temp = 0.0;
@@ -198,9 +175,13 @@ void SSORPreconditioner<CompressedRowSparseMatrix<double>, FullVector<double> >:
             double e = colsValue[xi];
             temp += z[i] * e;
         }
-        z[j] -= temp * inv_diag[j];
+        z[j] -= temp * w * inv_diag[j];
         // we can reuse z because all values that we read are updated
     }
+
+    if (w != (Real)1.0)
+        for (unsigned j=0; j<M.rowSize(); j++)
+            z[j] *= 2-w;
 }
 
 #define B 3
@@ -210,8 +191,10 @@ void SSORPreconditioner<CompressedRowSparseMatrix<double>, FullVector<double> >:
 template<>
 void SSORPreconditioner< CompressedRowSparseMatrix< defaulttype::Mat<B,B,Real> >, FullVector<Real> >::solve(Matrix& M, Vector& z, Vector& r)
 {
-    //int n = M.rowSize();
-    int nb = M.rowBSize();
+    //const int n = M.rowSize();
+    const int nb = M.rowBSize();
+    const Real w = (Real)f_omega.getValue();
+
     //const Matrix::VecIndex& rowIndex = M.getRowIndex();
     const typename Matrix::VecIndex& colsIndex = M.getColsIndex();
     const typename Matrix::VecBloc& colsValue = M.getColsValue();
@@ -251,7 +234,7 @@ void SSORPreconditioner< CompressedRowSparseMatrix< defaulttype::Mat<B,B,Real> >
                     int i = j0+i1;
                     temp[j1]+= z[i] * b[j1][i1];
                 }
-                z[j] = (r[j] - temp[j1]) * inv_diag[j];
+                z[j] = (r[j] - temp[j1]) * w * inv_diag[j];
             }
         }
     }
@@ -290,7 +273,7 @@ void SSORPreconditioner< CompressedRowSparseMatrix< defaulttype::Mat<B,B,Real> >
                     temp[j1] += z[i] * b[j1][i1];
                 }
                 // we can reuse z because all values that we read are updated
-                z[j] -= temp[j1] * inv_diag[j];
+                z[j] -= temp[j1] * w * inv_diag[j];
             }
         }
     }
@@ -311,7 +294,7 @@ void SSORPreconditioner<TMatrix,TVector>::invert(Matrix& M)
 
 SOFA_DECL_CLASS(SSORPreconditioner)
 
-int SSORPreconditionerClass = core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm")
+int SSORPreconditionerClass = core::RegisterObject("Linear system solver / preconditioner based on Symmetric Successive Over-Relaxation (SSOR). If the matrix is decomposed as $A = D + L + L^T$, this solver computes $(1/(2-w))(D/w+L)(D/w)^{-1}(D/w+L)^T x = b, or $(D+L)D^{-1}(D+L)^T x = b$ if $w=1$.")
 //.add< SSORPreconditioner<GraphScatteredMatrix,GraphScatteredVector> >(true)
         .add< SSORPreconditioner< SparseMatrix<double>, FullVector<double> > >()
         .add< SSORPreconditioner< CompressedRowSparseMatrix<double>, FullVector<double> > >(true)
@@ -321,8 +304,8 @@ int SSORPreconditionerClass = core::RegisterObject("Linear system solver using t
         .add< SSORPreconditioner<NewMatSymmetricMatrix,NewMatVector> >()
 //.add< SSORPreconditioner<NewMatSymmetricBandMatrix,NewMatVector> >()
         .add< SSORPreconditioner< FullMatrix<double>, FullVector<double> > >()
+        .addAlias("SSORLinearSolver")
         .addAlias("SSORSolver")
-        .addAlias("SSORConjugateGradient")
         ;
 
 } // namespace linearsolver

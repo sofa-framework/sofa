@@ -43,7 +43,7 @@ namespace component
 namespace linearsolver
 {
 
-/// Linear system solver using the conjugate gradient iterative algorithm
+/// Linear solver based on a NxN bloc diagonal matrix (i.e. block Jacobi preconditioner)
 template<class TMatrix, class TVector>
 class BlockJacobiPreconditioner : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector>
 {

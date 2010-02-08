@@ -67,7 +67,7 @@ public :
     FullMatrix<Real> JRMinv;
 };
 
-/// Linear system solver using the conjugate gradient iterative algorithm
+/// Linear system solver based on a precomputed inverse matrix, wrapped by a per-node rotation matrix
 template<class TDataTypes, class TMatrix, class TVector>
 class PrecomputedWarpPreconditioner : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector>
 {

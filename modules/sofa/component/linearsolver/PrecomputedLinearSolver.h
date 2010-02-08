@@ -66,7 +66,7 @@ public :
     FullMatrix<Real> JMinv;
 };
 
-/// Linear system solver using the conjugate gradient iterative algorithm
+/// Linear system solver based on a precomputed inverse matrix
 template<class TMatrix, class TVector>
 class PrecomputedLinearSolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector>
 {
@@ -83,7 +83,6 @@ public:
     Data<int> init_MaxIter;
     Data<double> init_Tolerance;
     Data<double> init_Threshold;
-    Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
 
     PrecomputedLinearSolver();
     void solve (TMatrix& M, TVector& x, TVector& b);

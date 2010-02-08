@@ -35,8 +35,6 @@
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/componentmodel/behavior/LinearSolver.h>
 #include <math.h>
-#include <sofa/helper/system/thread/CTime.h>
-
 
 namespace sofa
 {
@@ -51,24 +49,19 @@ using namespace sofa::defaulttype;
 using namespace sofa::core::componentmodel::behavior;
 using namespace sofa::simulation;
 using namespace sofa::core::objectmodel;
-using sofa::helper::system::thread::CTime;
-using sofa::helper::system::thread::ctime_t;
 using std::cerr;
 using std::endl;
 
 template<class TMatrix, class TVector>
 CholeskySolver<TMatrix,TVector>::CholeskySolver()
     : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
-    , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
 {
-    f_graph.setWidget("graph");
-    f_graph.setReadOnly(true);
 }
 
 
-//Factorisation : A = LL^t
-//A x = b <=> LL^t x = b
-//        <=> L u = b , L^t x = u
+/// Factorisation : A = LL^t
+/// A x = b <=> LL^t x = b
+///        <=> L u = b , L^t x = u
 template<class TMatrix, class TVector>
 void CholeskySolver<TMatrix,TVector>::solve (Matrix& /*M*/, Vector& z, Vector& r)
 {
@@ -186,15 +179,13 @@ void CholeskySolver<TMatrix,TVector>::invert(Matrix& M) {
 
 SOFA_DECL_CLASS(CholeskySolver)
 
-int CholeskySolverClass = core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm")
-//.add< CholeskySolver<GraphScatteredMatrix,GraphScatteredVector> >(true)
+int CholeskySolverClass = core::RegisterObject("Direct linear solver based on Cholesky factorization, for dense matrices")
         .add< CholeskySolver< SparseMatrix<double>, FullVector<double> > >(true)
 //.add< CholeskySolver<NewMatBandMatrix,NewMatVector> >(true)
 //.add< CholeskySolver<NewMatMatrix,NewMatVector> >()
         .add< CholeskySolver<NewMatSymmetricMatrix,NewMatVector> >()
 //.add< CholeskySolver<NewMatSymmetricBandMatrix,NewMatVector> >()
         .add< CholeskySolver< FullMatrix<double>, FullVector<double> > >()
-        .addAlias("CholeskySolverAlias")
         ;
 
 } // namespace linearsolver
@@ -202,4 +193,3 @@ int CholeskySolverClass = core::RegisterObject("Linear system solver using the c
 } // namespace component
 
 } // namespace sofa
-

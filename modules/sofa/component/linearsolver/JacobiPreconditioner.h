@@ -41,7 +41,7 @@ namespace component
 namespace linearsolver
 {
 
-/// Linear system solver using the conjugate gradient iterative algorithm
+/// Linear solver based on a diagonal matrix (i.e. Jacobi preconditioner)
 template<class TMatrix, class TVector>
 class JacobiPreconditioner : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector>
 {
@@ -53,7 +53,6 @@ public:
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
     typedef sofa::core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
     Data<bool> f_verbose;
-    Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
 
     JacobiPreconditioner();
     void solve (Matrix& M, Vector& x, Vector& b);

@@ -77,13 +77,10 @@ template<class TMatrix, class TVector>
 SparsePARDISOSolver<TMatrix,TVector>::SparsePARDISOSolver()
     : f_symmetric( initData(&f_symmetric,1,"symmetric","0 = nonsymmetric arbitrary matrix, 1 = symmetric matrix, 2 = symmetric positive definite, -1 = structurally symmetric matrix") )
     , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
-    , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
     , pardiso_initerr(1)
     , pardiso_mtype(0)
     , factorized(false)
 {
-    f_graph.setWidget("graph");
-    f_graph.setReadOnly(true);
 }
 
 template<class TMatrix, class TVector>
@@ -258,7 +255,7 @@ void SparsePARDISOSolver<TMatrix,TVector>::solve (Matrix& /*M*/, Vector& z, Vect
 
 SOFA_DECL_CLASS(SparsePARDISOSolver)
 
-int SparsePARDISOSolverClass = core::RegisterObject("Linear system solver using the PARDISO solvers library")
+int SparsePARDISOSolverClass = core::RegisterObject("Direct linear solvers implemented with the PARDISO library")
         .add< SparsePARDISOSolver< CompressedRowSparseMatrix<double>,FullVector<double> > >(true)
         .addAlias("PARDISOSolver")
         ;
