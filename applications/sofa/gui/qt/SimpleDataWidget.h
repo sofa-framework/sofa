@@ -160,22 +160,22 @@ public:
     SimpleDataWidget(QWidget* parent,const char* name, MyTData* d) : TDataWidget(parent,name,d) {}
     virtual bool createWidgets()
     {
-        const data_type& d = getData()->virtualGetValue();
+        const data_type& d = Tdata->virtualGetValue();
         if (!container.createWidgets(this, this->parentWidget(), d, this->isEnabled() ))
             return false;
         return true;
     }
     virtual void readFromData()
     {
-        container.readFromData(data->virtualGetValue());
+        container.readFromData(Tdata->virtualGetValue());
     }
 
     virtual void writeToData()
     {
 
-        data_type d = data->virtualGetValue();
+        data_type d = Tdata->virtualGetValue();
         container.writeToData(d);
-        data->virtualSetValue(d);
+        Tdata->virtualSetValue(d);
     }
 };
 
