@@ -43,7 +43,7 @@ namespace component
 namespace linearsolver
 {
 
-/// Linear system solver using the conjugate gradient iterative algorithm
+/// Direct linear solver based on Sparse LU factorization, implemented with the CSPARSE library
 template<class TMatrix, class TVector>
 class SparseLUSolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector>
 {
@@ -56,7 +56,6 @@ public:
     typedef sofa::core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
 
     Data<bool> f_verbose;
-    Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
     Data<double> f_tol;
 
     SparseLUSolver();

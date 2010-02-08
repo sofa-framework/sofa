@@ -52,11 +52,8 @@ using std::endl;
 template<class TMatrix, class TVector>
 SparseCholeskySolver<TMatrix,TVector>::SparseCholeskySolver()
     : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
-    , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
     , S(NULL), N(NULL), tmp(NULL)
 {
-    f_graph.setWidget("graph");
-    f_graph.setReadOnly(true);
 }
 
 template<class TMatrix, class TVector>
@@ -198,9 +195,8 @@ bool SparseCholeskySolver<TMatrix,TVector>::writeFile(std::ostream& out)
 
 SOFA_DECL_CLASS(SparseCholeskySolver)
 
-int SparseCholeskySolverClass = core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm")
+int SparseCholeskySolverClass = core::RegisterObject("Direct linear solver based on Sparse Cholesky factorization, implemented with the CSPARSE library")
         .add< SparseCholeskySolver< CompressedRowSparseMatrix<double>,FullVector<double> > >(true)
-        .addAlias("SparseCholeskySolverAlias")
         ;
 
 template class SOFA_COMPONENT_LINEARSOLVER_API SparseCholeskySolver< CompressedRowSparseMatrix<double>,FullVector<double> >;
@@ -210,4 +206,3 @@ template class SOFA_COMPONENT_LINEARSOLVER_API SparseCholeskySolver< CompressedR
 } // namespace component
 
 } // namespace sofa
-

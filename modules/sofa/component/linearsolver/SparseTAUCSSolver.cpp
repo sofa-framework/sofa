@@ -58,11 +58,8 @@ SparseTAUCSSolver<TMatrix,TVector>::SparseTAUCSSolver()
     : f_options( initData(&f_options,"options","TAUCS unified solver list of space-separated options") )
     , f_symmetric( initData(&f_symmetric,true,"symmetric","Consider the system matrix as symmetric") )
     , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
-    , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
     , factorization(NULL)
 {
-    f_graph.setWidget("graph");
-    f_graph.setReadOnly(true);
 }
 
 template<class TMatrix, class TVector>
@@ -169,7 +166,7 @@ void SparseTAUCSSolver<TMatrix,TVector>::solve (Matrix& /*M*/, Vector& z, Vector
 
 SOFA_DECL_CLASS(SparseTAUCSSolver)
 
-int SparseTAUCSSolverClass = core::RegisterObject("Linear system solver using the TAUCS sparse solvers library")
+int SparseTAUCSSolverClass = core::RegisterObject("Direct linear solvers implemented with the TAUCS library")
         .add< SparseTAUCSSolver< CompressedRowSparseMatrix<double>,FullVector<double> > >(true)
         .addAlias("TAUCSSolver")
         ;

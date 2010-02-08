@@ -42,7 +42,6 @@ namespace component
 namespace linearsolver
 {
 
-/// Linear system solver using the conjugate gradient iterative algorithm
 template<class TDataTypes>
 class WarpPreconditionerInternalData
 {
@@ -54,7 +53,7 @@ public:
     VecRotation R;
 };
 
-/// Linear system solver using the conjugate gradient iterative algorithm
+/// Linear system solver wrapping another (precomputed) linear solver by a per-node rotation matrix
 template<class TDataTypes>
 class WarpPreconditioner : public core::componentmodel::behavior::LinearSolver
 {

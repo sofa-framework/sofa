@@ -43,7 +43,12 @@ namespace component
 namespace linearsolver
 {
 
-/// Linear system solver using the conjugate gradient iterative algorithm
+/// Linear system solver / preconditioner based on Successive Over Relaxation (SSOR).
+///
+/// If the matrix is decomposed as $A = D + L + L^T$, this solver computes
+//       $(1/(2-w))(D/w+L)(D/w)^{-1}(D/w+L)^T x = b$
+//  , or $(D+L)D^{-1}(D+L)^T x = b$ if $w=1$
+
 template<class TMatrix, class TVector>
 class SSORPreconditioner : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector>
 {
@@ -52,11 +57,12 @@ public:
 
     typedef TMatrix Matrix;
     typedef TVector Vector;
+    typedef SReal Real;
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
     typedef sofa::core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
 
     Data<bool> f_verbose;
-    Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
+    Data<double> f_omega;
 
     SSORPreconditioner();
     void solve (Matrix& M, Vector& x, Vector& b);

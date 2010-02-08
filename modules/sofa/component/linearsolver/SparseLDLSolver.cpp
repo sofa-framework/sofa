@@ -55,11 +55,7 @@ using std::endl;
 template<class TMatrix, class TVector>
 SparseLDLSolver<TMatrix,TVector>::SparseLDLSolver()
     : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
-    , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
-    , f_tol( initData(&f_tol,0.001,"tolerance","tolerance of factorization") )
 {
-    f_graph.setWidget("graph");
-    f_graph.setReadOnly(true);
 }
 
 template<class TMatrix, class TVector>
@@ -164,9 +160,8 @@ bool SparseLDLSolver<TMatrix,TVector>::writeFile(std::ostream& out)
 
 SOFA_DECL_CLASS(SparseLDLSolver)
 
-int SparseLDLSolverClass = core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm")
+int SparseLDLSolverClass = core::RegisterObject("Direct linear solver based on Sparse LDL^T factorization, implemented with the CSPARSE library")
         .add< SparseLDLSolver< CompressedRowSparseMatrix<double>,FullVector<double> > >(true)
-        .addAlias("SparseLDLSolverAlias")
         ;
 
 template class SOFA_COMPONENT_LINEARSOLVER_API SparseLDLSolver< CompressedRowSparseMatrix<double>,FullVector<double> >;
@@ -176,4 +171,3 @@ template class SOFA_COMPONENT_LINEARSOLVER_API SparseLDLSolver< CompressedRowSpa
 } // namespace component
 
 } // namespace sofa
-

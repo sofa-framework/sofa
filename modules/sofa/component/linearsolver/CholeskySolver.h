@@ -43,7 +43,7 @@ namespace component
 namespace linearsolver
 {
 
-/// Linear system solver using the conjugate gradient iterative algorithm
+/// Direct linear solver based on Cholesky factorization, for dense matrices
 template<class TMatrix, class TVector>
 class SOFA_COMPONENT_LINEARSOLVER_API CholeskySolver : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector>
 {
@@ -56,7 +56,6 @@ public:
     typedef sofa::core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
 
     Data<bool> f_verbose;
-    Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
 
     CholeskySolver();
     void solve (Matrix& M, Vector& x, Vector& b);

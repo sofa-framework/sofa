@@ -56,12 +56,9 @@ using std::endl;
 template<class TMatrix, class TVector>
 SparseLUSolver<TMatrix,TVector>::SparseLUSolver()
     : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
-    , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
     , f_tol( initData(&f_tol,0.001,"tolerance","tolerance of factorization") )
     , S(NULL), N(NULL), tmp(NULL)
 {
-    f_graph.setWidget("graph");
-    f_graph.setReadOnly(true);
 }
 
 template<class TMatrix, class TVector>
@@ -120,9 +117,8 @@ void SparseLUSolver<TMatrix,TVector>::invert(Matrix& M)
 
 SOFA_DECL_CLASS(SparseLUSolver)
 
-int SparseLUSolverClass = core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm")
+int SparseLUSolverClass = core::RegisterObject("Direct linear solver based on Sparse LU factorization, implemented with the CSPARSE library")
         .add< SparseLUSolver< CompressedRowSparseMatrix<double>,FullVector<double> > >(true)
-        .addAlias("SparseLUSolverAlias")
         ;
 
 } // namespace linearsolver

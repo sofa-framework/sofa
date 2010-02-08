@@ -58,10 +58,7 @@ using std::endl;
 template<class TMatrix, class TVector>
 JacobiPreconditioner<TMatrix,TVector>::JacobiPreconditioner()
     : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
-    , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
 {
-    f_graph.setWidget("graph");
-    f_graph.setReadOnly(true);
 }
 
 /// Solve P^-1 Mx= P^-1 b
@@ -75,17 +72,17 @@ void JacobiPreconditioner<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector&
 
 SOFA_DECL_CLASS(JacobiPreconditioner)
 
-int JacobiPreconditionerClass = core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm")
+int JacobiPreconditionerClass = core::RegisterObject("Linear solver based on a diagonal matrix (i.e. Jacobi preconditioner)")
 //.add< JacobiPreconditioner<GraphScatteredMatrix,GraphScatteredVector> >(true)
+        .add< JacobiPreconditioner<DiagonalMatrix<double>, FullVector<double> > >(true)
         .add< JacobiPreconditioner< SparseMatrix<double>, FullVector<double> > >()
         .add< JacobiPreconditioner<NewMatBandMatrix,NewMatVector> >()
-        .add< JacobiPreconditioner<DiagonalMatrix<double>, FullVector<double> > >(true)
         .add< JacobiPreconditioner<NewMatMatrix,NewMatVector> >()
         .add< JacobiPreconditioner<NewMatSymmetricMatrix,NewMatVector> >()
         .add< JacobiPreconditioner<NewMatSymmetricBandMatrix,NewMatVector> >()
         .add< JacobiPreconditioner< FullMatrix<double>, FullVector<double> > >()
-        .addAlias("JCGSolver")
-        .addAlias("JConjugateGradient")
+        .addAlias("JacobiLinearSolver")
+        .addAlias("JacobiSolver")
         ;
 
 } // namespace linearsolver

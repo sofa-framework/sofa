@@ -38,7 +38,7 @@ namespace linearsolver
 
 SOFA_DECL_CLASS(PrecomputedWarpPreconditioner)
 
-int PrecomputedWarpPreconditionerClass = core::RegisterObject("Linear system solver using the conjugate gradient iterative algorithm")
+int PrecomputedWarpPreconditionerClass = core::RegisterObject("Linear system solver based on a precomputed inverse matrix, wrapped by a per-node rotation matrix")
 #ifndef SOFA_FLOAT
         .add< PrecomputedWarpPreconditioner< defaulttype::Vec3dTypes , FullMatrix<double>, FullVector<double> > >()
 #endif

@@ -78,11 +78,8 @@ PrecomputedLinearSolver<TMatrix,TVector>::PrecomputedLinearSolver()
     , init_MaxIter( initData(&init_MaxIter,5000,"init_MaxIter","Max Iter use to precompute the first matrix") )
     , init_Tolerance( initData(&init_Tolerance,1e-20,"init_Tolerance","Tolerance use to precompute the first matrix") )
     , init_Threshold( initData(&init_Threshold,1e-35,"init_Threshold","Threshold use to precompute the first matrix") )
-    , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
 
 {
-    f_graph.setWidget("graph");
-    f_graph.setReadOnly(true);
     first = true;
 }
 

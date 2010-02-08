@@ -73,12 +73,14 @@ void BlockJacobiPreconditioner<TMatrix,TVector>::invert(Matrix& M)
 
 SOFA_DECL_CLASS(BlockJacobiPreconditioner)
 
-int BlockJacobiPreconditionerClass = core::RegisterObject("Linear solver based on a NxN bloc diagonal matrix (i.e. block Jacobi preconditionner)")
+int BlockJacobiPreconditionerClass = core::RegisterObject("Linear solver based on a NxN bloc diagonal matrix (i.e. block Jacobi preconditioner)")
         .add< BlockJacobiPreconditioner<BlockDiagonalMatrix<3,double> ,FullVector<double> > >(true)
         .add< BlockJacobiPreconditioner<BlockDiagonalMatrix<2,double> ,FullVector<double> > >()
         .add< BlockJacobiPreconditioner<BlockDiagonalMatrix<6,double> ,FullVector<double> > >()
         .add< BlockJacobiPreconditioner<BlockDiagonalMatrix<9,double> ,FullVector<double> > >()
         .add< BlockJacobiPreconditioner<BlockDiagonalMatrix<12,double> ,FullVector<double> > >()
+        .addAlias("SparseJacobiLinearSolver")
+        .addAlias("SparseJacobiSolver")
         ;
 
 } // namespace linearsolver
