@@ -207,29 +207,29 @@ protected:
 
 typedef sofa::helper::Factory<std::string, DataWidget, DataWidget::CreatorArgument> DataWidgetFactory;
 
-template< class T >
-class DefaultDataWidget : public TDataWidget<T>
-{
-protected:
+/*  template< class T >
+  class DefaultDataWidget : public TDataWidget<T>
+  {
+  protected:
     typedef QLineEdit Widget;
     Widget* w;
-public:
+  public:
     DefaultDataWidget(QWidget* parent,const char* name, MyTData* d) :
         TDataWidget(QWidget* parent,const char* name, MyTData* d),w(NULL)
-    {}
+        {}
     virtual bool createWidgets();
     virtual void readFromData()
     {
-        std::string s = Tdata->getValueString();
-        w->setText(QString(s.c_str()));
+      std::string s = Tdata->getValueString();
+      w->setText(QString(s.c_str()));
 
     }
     virtual void writeToData()
     {
-        std::string s = w->text().ascii();
-        Tdata->read(s);
+      std::string s = w->text().ascii();
+      Tdata->read(s);
     }
-};
+  };*/
 class QTableUpdater : virtual public Q3Table
 {
     Q_OBJECT
