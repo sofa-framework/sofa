@@ -94,6 +94,9 @@ void mycudaPrivateInit(int /*device*/)
     const char* verbose = getenv("CUDA_VERBOSE");
     if (verbose && *verbose)
         mycudaVerboseLevel = (MycudaVerboseLevel) atoi(verbose);
+    const char* multiop = getenv("CUDA_MULTIOP");
+    if (multiop && *multiop)
+        mycudaMultiOpMax = atoi(multiop);
 }
 
 void mycudaLogError(const char* err, const char* src)
