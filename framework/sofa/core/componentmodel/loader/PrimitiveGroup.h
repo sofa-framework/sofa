@@ -43,7 +43,7 @@ namespace componentmodel
 namespace loader
 {
 
-class SOFA_CORE_API PrimitiveGroup
+class PrimitiveGroup
 {
 public:
     int p0, nbp;

@@ -43,7 +43,7 @@ namespace componentmodel
 namespace loader
 {
 
-class SOFA_CORE_API Material
+class Material
 {
 public:
     std::string 	name;		/* name of material */
