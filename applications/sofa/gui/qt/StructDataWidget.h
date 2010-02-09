@@ -505,29 +505,29 @@ class data_widget_container < CLASS > : public struct_data_widget_container < CL
 //#undef CLASS
 
 ////////////////////////////////////////////////////////////////
-/// sofa::helper::io::Mesh::Material support
+/// sofa::core::componentmodel::loader::Material support
 ////////////////////////////////////////////////////////////////
 
 template<>
-class struct_data_trait < sofa::helper::io::Mesh::Material >
+class struct_data_trait < sofa::core::componentmodel::loader::Material >
 {
 public:
-    typedef sofa::helper::io::Mesh::Material data_type;
+    typedef sofa::core::componentmodel::loader::Material data_type;
     enum { NVAR = 6 };
     static void set( data_type& /*d*/)
     {
     }
 };
 
-template<> STRUCT_DATA_VAR(sofa::helper::io::Mesh::Material, 0, "Name", "Name", std::string, name);
-template<> STRUCT_DATA_VAR_CHECK(sofa::helper::io::Mesh::Material, 1, "Ambient", "Amb", sofa::defaulttype::Vec4f, ambient, useAmbient);
-template<> STRUCT_DATA_VAR_CHECK(sofa::helper::io::Mesh::Material, 2, "Diffuse", "Diff", sofa::defaulttype::Vec4f, diffuse, useDiffuse);
-template<> STRUCT_DATA_VAR_CHECK(sofa::helper::io::Mesh::Material, 3, "Specular", "Spec", sofa::defaulttype::Vec4f, specular, useSpecular);
-template<> STRUCT_DATA_VAR_CHECK(sofa::helper::io::Mesh::Material, 4, "Emissive", "Emm", sofa::defaulttype::Vec4f, emissive, useEmissive);
-template<> STRUCT_DATA_VAR_CHECK(sofa::helper::io::Mesh::Material, 5, "Shininess", "Shin", float, shininess, useShininess);
+template<> STRUCT_DATA_VAR(sofa::core::componentmodel::loader::Material, 0, "Name", "Name", std::string, name);
+template<> STRUCT_DATA_VAR_CHECK(sofa::core::componentmodel::loader::Material, 1, "Ambient", "Amb", sofa::defaulttype::Vec4f, ambient, useAmbient);
+template<> STRUCT_DATA_VAR_CHECK(sofa::core::componentmodel::loader::Material, 2, "Diffuse", "Diff", sofa::defaulttype::Vec4f, diffuse, useDiffuse);
+template<> STRUCT_DATA_VAR_CHECK(sofa::core::componentmodel::loader::Material, 3, "Specular", "Spec", sofa::defaulttype::Vec4f, specular, useSpecular);
+template<> STRUCT_DATA_VAR_CHECK(sofa::core::componentmodel::loader::Material, 4, "Emissive", "Emm", sofa::defaulttype::Vec4f, emissive, useEmissive);
+template<> STRUCT_DATA_VAR_CHECK(sofa::core::componentmodel::loader::Material, 5, "Shininess", "Shin", float, shininess, useShininess);
 
 template<>
-class data_widget_container < sofa::helper::io::Mesh::Material > : public struct_data_widget_container < sofa::helper::io::Mesh::Material >
+class data_widget_container < sofa::core::componentmodel::loader::Material > : public struct_data_widget_container < sofa::core::componentmodel::loader::Material >
 {};
 
 } // namespace qt

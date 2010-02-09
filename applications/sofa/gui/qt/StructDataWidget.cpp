@@ -57,7 +57,7 @@ Creator<DataWidgetFactory, SimpleDataWidget< RigidDeriv<3,double> > > DWClass_Ri
 Creator<DataWidgetFactory, SimpleDataWidget< RigidMass<3,float> > > DWClass_RigidMass3f("default",true);
 Creator<DataWidgetFactory, SimpleDataWidget< RigidMass<3,double> > > DWClass_RigidMass3d("default",true);
 
-Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::io::Mesh::Material > > DWClass_MeshMaterial("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< sofa::core::componentmodel::loader::Material > > DWClass_MeshMaterial("default",true);
 
 } // namespace qt
 

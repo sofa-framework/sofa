@@ -68,7 +68,9 @@ HEADERS += \
           componentmodel/topology/Topology.h \
           componentmodel/loader/BaseLoader.h \
           componentmodel/loader/ImageLoader.h \
+          componentmodel/loader/Material.h \
           componentmodel/loader/MeshLoader.h \
+          componentmodel/loader/PrimitiveGroup.h \
           Mapping.h \
           Mapping.inl \
           objectmodel/Base.h \

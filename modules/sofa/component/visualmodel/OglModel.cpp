@@ -44,6 +44,7 @@ namespace visualmodel
 {
 
 using namespace sofa::defaulttype;
+using namespace sofa::core::componentmodel::loader;
 
 SOFA_DECL_CLASS(OglModel)
 
@@ -85,7 +86,7 @@ void OglModel::drawGroup(int ig, bool transparent)
     {
         g = this->groups.getValue()[ig];
     }
-    helper::io::Mesh::Material m;
+    Material m;
     if (g.materialId < 0)
         m = this->material.getValue();
     else

@@ -24,41 +24,51 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/system/config.h>
-#include <sofa/helper/io/Mesh.h>
-#include <sofa/helper/Factory.inl>
+
+#ifndef SOFA_CORE_COMPONENTMODEL_LOADER_PRIMITIVEGROUP_H_
+#define SOFA_CORE_COMPONENTMODEL_LOADER_PRIMITIVEGROUP_H_
+
+#include <sofa/core/core.h>
+#include <sofa/core/componentmodel/loader/Material.h>
 
 namespace sofa
 {
 
-namespace helper
+namespace core
 {
 
-template class Factory<std::string, io::Mesh, std::string>;
-
-namespace io
+namespace componentmodel
 {
 
-SOFA_LINK_CLASS(MeshOBJ)
-SOFA_LINK_CLASS(MeshTrian)
-
-Mesh* Mesh::Create(std::string filename)
+namespace loader
 {
-    std::string loader="default";
-    std::string::size_type p = filename.rfind('.');
-    if (p!=std::string::npos)
-        loader = std::string(filename, p+1);
-    return FactoryMesh::CreateObject(loader, filename);
-}
 
-Mesh* Mesh::Create(std::string loader, std::string filename)
+class SOFA_CORE_API PrimitiveGroup
 {
-    return FactoryMesh::CreateObject(loader, filename);
-}
+public:
+    int p0, nbp;
+    std::string materialName;
+    std::string groupName;
+    int materialId;
+    inline friend std::ostream& operator << (std::ostream& out, const PrimitiveGroup &g)
+    {
+        out << g.groupName << " " << g.materialName << " " << g.materialId << " " << g.p0 << " " << g.nbp;
+        return out;
+    }
+    inline friend std::istream& operator >> (std::istream& in, PrimitiveGroup &g)
+    {
+        in >> g.groupName >> g.materialName >> g.materialId >> g.p0 >> g.nbp;
+        return in;
+    }
+    PrimitiveGroup() : p0(0), nbp(0), materialId(-1) {}
+};
 
-} // namespace io
+} // namespace loader
 
-} // namespace helper
+} // namespace componentmodel
+
+} // namespace core
 
 } // namespace sofa
 
+#endif /* SOFA_CORE_COMPONENTMODEL_LOADER_PRIMITIVEGROUP_H_ */

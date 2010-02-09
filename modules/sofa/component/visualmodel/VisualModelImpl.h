@@ -35,6 +35,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/helper/io/Mesh.h>
 #include <sofa/component/component.h>
+#include <sofa/core/componentmodel/loader/PrimitiveGroup.h>
 
 #include <map>
 
@@ -48,6 +49,7 @@ namespace visualmodel
 {
 
 using namespace sofa::defaulttype;
+using namespace sofa::core::componentmodel::loader;
 
 
 class RigidMappedModel : public core::componentmodel::behavior::MappedModel< Rigid3fTypes >
@@ -188,7 +190,7 @@ protected:
     {}
 
 public:
-    Data< sofa::helper::io::Mesh::Material > material;
+    Data< Material > material;
     Data< bool > putOnlyTexCoords;
 
     class FaceGroup
@@ -212,7 +214,7 @@ public:
         }
     };
 
-    Data< helper::vector<sofa::helper::io::Mesh::Material> > materials;
+    Data< helper::vector<Material> > materials;
     Data< helper::vector<FaceGroup> > groups;
 
     VisualModelImpl();

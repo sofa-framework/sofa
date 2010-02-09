@@ -38,6 +38,7 @@ namespace io
 {
 
 using namespace sofa::defaulttype;
+using namespace sofa::core::componentmodel::loader;
 
 SOFA_DECL_CLASS(MeshOBJ)
 
@@ -67,7 +68,7 @@ void MeshOBJ::readOBJ (std::ifstream &file, const std::string &filename)
 
     std::string line;
 
-    FaceGroup curGroup;
+    PrimitiveGroup curGroup;
 
     while( std::getline(file,line) )
     {
@@ -110,10 +111,10 @@ void MeshOBJ::readOBJ (std::ifstream &file, const std::string &filename)
         else if (token == "usemtl" || token == "g")
         {
             // end of current group
-            curGroup.nbf = nbf - curGroup.f0;
-            if (curGroup.nbf > 0) groups.push_back(curGroup);
-            curGroup.f0 = nbf;
-            curGroup.nbf = 0;
+            curGroup.nbp = nbf - curGroup.p0;
+            if (curGroup.nbp > 0) groups.push_back(curGroup);
+            curGroup.p0 = nbf;
+            curGroup.nbp = 0;
             if (token == "usemtl")
             {
                 curGroup.materialId = -1;
@@ -194,8 +195,8 @@ void MeshOBJ::readOBJ (std::ifstream &file, const std::string &filename)
     }
 
     // end of current group
-    curGroup.nbf = nbf - curGroup.f0;
-    if (curGroup.nbf > 0) groups.push_back(curGroup);
+    curGroup.nbp = nbf - curGroup.p0;
+    if (curGroup.nbp > 0) groups.push_back(curGroup);
 
     // announce the model statistics
     // std::cout << " Vertices: " << vertices.size() << std::endl;
