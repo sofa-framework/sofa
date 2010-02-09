@@ -27,11 +27,13 @@
 #include "ImageQt.h"
 
 #include <sofa/helper/system/FileRepository.h>
+#include <sofa/helper/system/SetDirectory.h>
 
 #ifdef SOFA_QT4
 #include <QImage>
 #include <QList>
 #include <QImageReader>
+#include <QApplication>
 #else
 #include <qimage.h>
 #endif
@@ -56,6 +58,10 @@ public:
     ImageQtCreators()
     {
 #ifdef SOFA_QT4
+#ifdef WIN32
+        std::string plugdir = sofa::helper::system::SetDirectory::GetRelativeFromProcess("../tools/qt4win/plugins");
+        QCoreApplication::addLibraryPath ( QString(plugdir.c_str()) );
+#endif
         QList<QByteArray> formats = QImageReader::supportedImageFormats();
         for (QList<QByteArray>::const_iterator it = formats.begin(); it != formats.end(); ++it)
         {
