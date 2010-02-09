@@ -31,6 +31,8 @@
 #include <sofa/core/BehaviorModel.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 
+#include <sofa/component/collision/TriangleModel.h>
+
 #ifdef SOFA_DEV
 #include <sofa/component/collision/CuttingManager.h>
 #endif
@@ -41,7 +43,6 @@
 #include <sofa/component/container/MechanicalObject.h>
 #include <sofa/simulation/common/Node.h>
 
-/** a class to manage the handling of topological changes which have been requested from the Collision Model */
 
 namespace sofa
 {
@@ -50,7 +51,6 @@ namespace component
 {
 namespace collision
 {
-class TriangleModel;
 class TetrahedronModel;
 class SphereModel;
 }
@@ -64,6 +64,7 @@ namespace collision
 using namespace sofa::defaulttype;
 using namespace sofa::core::componentmodel::topology;
 
+/// a class to manage the handling of topological changes which have been requested from the Collision Model
 class TopologicalChangeManager
 {
 public:

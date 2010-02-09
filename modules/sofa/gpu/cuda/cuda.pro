@@ -76,6 +76,8 @@ HEADERS += mycuda.h \
            CudaCollisionDetection.h \
            CudaPointModel.h \
            CudaSphereModel.h \
+           CudaTriangleModel.h \
+           CudaTriangleModel.inl \
            CudaPenalityContactForceField.h \
            CudaPenalityContactForceField.inl \
            CudaSpatialGridContainer.h \
@@ -107,6 +109,7 @@ SOURCES += mycuda.cpp \
            CudaCollisionDetection.cpp \
 		   CudaSphereModel.cpp \
            CudaPointModel.cpp \
+           CudaTriangleModel.cpp \
            CudaPenalityContactForceField.cpp \
            CudaVisualModel.cpp \
            CudaTetrahedralVisualModel.cpp \
