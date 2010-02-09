@@ -26,7 +26,9 @@
 #define SOFA_CORE_COMPONENTMODEL_LOADER_MESHLOADER_H
 
 #include <sofa/core/componentmodel/loader/BaseLoader.h>
+#include <sofa/core/componentmodel/loader/PrimitiveGroup.h>
 #include <sofa/helper/fixed_array.h>
+
 
 namespace sofa
 {
@@ -66,6 +68,14 @@ protected:
     Data< helper::vector< helper::fixed_array<unsigned int,4> > > tetrahedra;
     Data< helper::vector< helper::fixed_array<unsigned int,8> > > hexahedra;
     // polygons in 3D ?
+
+    // Groups
+    Data< helper::vector< PrimitiveGroup > > edgesGroups;
+    Data< helper::vector< PrimitiveGroup > > trianglesGroups;
+    Data< helper::vector< PrimitiveGroup > > quadsGroups;
+    Data< helper::vector< PrimitiveGroup > > polygonsGroups;
+    Data< helper::vector< PrimitiveGroup > > tetrahedraGroups;
+    Data< helper::vector< PrimitiveGroup > > hexahedraGroups;
 
     Data< bool > triangulate;
     Data< bool > fillMState; ///< Must this mesh loader fill the mstate instead of manually or by using the topology

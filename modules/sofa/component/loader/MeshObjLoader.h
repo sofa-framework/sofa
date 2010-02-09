@@ -41,60 +41,12 @@ namespace loader
 //  using namespace sofa::helper::io;
 using sofa::defaulttype::Vec4f;
 
-
 class SOFA_COMPONENT_LOADER_API MeshObjLoader : public sofa::core::componentmodel::loader::MeshLoader
 {
 public:
+    enum FaceType { EDGE, TRIANGLE, QUAD };
+
     SOFA_CLASS(MeshObjLoader,sofa::core::componentmodel::loader::MeshLoader);
-
-    class SOFA_COMPONENT_LOADER_API Material
-    {
-    public:
-        std::string 	name;		/* name of material */
-        Vec4f  diffuse ;	/* diffuse component */
-        Vec4f  ambient ;	/* ambient component */
-        Vec4f  specular;	/* specular component */
-        Vec4f  emissive;	/* emmissive component */
-        float  shininess;	/* specular exponent */
-        bool   useDiffuse;
-        bool   useSpecular;
-        bool   useAmbient;
-        bool   useEmissive;
-        bool   useShininess;
-        bool   activated;
-
-        void setColor(float r, float g, float b, float a);
-
-        inline friend std::ostream& operator << (std::ostream& out, const Material& m )
-        {
-            out   << m.name         << " ";
-            out  << "Diffuse"       << " " <<  m.useDiffuse   << " " <<  m.diffuse      << " ";
-            out  << "Ambient"       << " " <<  m.useAmbient   << " " <<  m.ambient      << " ";
-            out  << "Specular"      << " " <<  m.useSpecular  << " " <<  m.specular     << " ";
-            out  << "Emissive"      << " " <<  m.useEmissive  << " " <<  m.emissive     << " ";
-            out  << "Shininess"     << " " <<  m.useShininess << " " <<  m.shininess ;
-            return out;
-        }
-        inline friend std::istream& operator >> (std::istream& in, Material &m )
-        {
-
-            std::string element;
-            in  >>  m.name ;
-            for (unsigned int i=0; i<5; ++i)
-            {
-                in  >>  element;
-                if      (element == std::string("Diffuse")   || element == std::string("diffuse")   ) { in  >>  m.useDiffuse   ; in >> m.diffuse;   }
-                else if (element == std::string("Ambient")   || element == std::string("ambient")   ) { in  >>  m.useAmbient   ; in >> m.ambient;   }
-                else if (element == std::string("Specular")  || element == std::string("specular")  ) { in  >>  m.useSpecular  ; in >> m.specular;  }
-                else if (element == std::string("Emissive")  || element == std::string("emissive")  ) { in  >>  m.useEmissive  ; in >> m.emissive;  }
-                else if (element == std::string("Shininess") || element == std::string("shininess") ) { in  >>  m.useShininess ; in >> m.shininess; }
-            }
-            return in;
-        }
-
-        Material();
-    };
-
 
     MeshObjLoader();
 
@@ -103,26 +55,22 @@ public:
     template <class T>
     static bool canCreate ( T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg )
     {
-        //std::cout << "MeshObjLoader::cancreate()" << std::endl;
-
-        //      std::cout << BaseLoader::m_filename << " is not an Gmsh file." << std::endl;
-
         return BaseLoader::canCreate (obj, context, arg);
     }
-
 
 protected:
 
     bool readOBJ (std::ifstream &file, const char* filename);
+    bool readMTL (const char* filename, helper::vector <sofa::core::componentmodel::loader::Material>& materials);
+    void addGroup (const sofa::core::componentmodel::loader::PrimitiveGroup& g);
 
-    bool readMTL (const char* filename, helper::vector <Material>& materials);
-
-    Material material;
+    sofa::core::componentmodel::loader::Material material;
     std::string textureName;
+    FaceType faceType;
 
 public:
 
-    Data <helper::vector <Material> > materials;
+    Data <helper::vector <sofa::core::componentmodel::loader::Material> > materials;
 
     Data <helper::vector <helper::vector <int> > > texturesList;
     Data< helper::vector<sofa::defaulttype::Vector2> > texCoords;
@@ -130,10 +78,7 @@ public:
     Data <helper::vector <helper::vector <int> > > normalsList; //TODO: check if it not the sames daata as normals and texCoords
     Data< helper::vector<sofa::defaulttype::Vector3> > normals;
 
-
-
-
-    virtual std::string type()                 { return "The format of this mesh is OBJ."; }
+    virtual std::string type() { return "The format of this mesh is OBJ."; }
 
     //    vector<Material>& getMaterialsArray() { return m_materials; }
 
