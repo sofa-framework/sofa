@@ -30,6 +30,7 @@
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/helper/Factory.h>
+#include <sofa/core/componentmodel/loader/PrimitiveGroup.h>
 //#include <sofa/core/objectmodel/Data.h>
 #include <sofa/helper/helper.h>
 
@@ -43,81 +44,14 @@ namespace io
 {
 
 using sofa::helper::vector;
+using sofa::core::componentmodel::loader::Material;
+using sofa::core::componentmodel::loader::PrimitiveGroup;
 using sofa::defaulttype::Vector3;
 
 using sofa::defaulttype::Vec4f;
 
 class SOFA_HELPER_API Mesh
 {
-public:
-
-    class SOFA_HELPER_API Material
-    {
-    public:
-        std::string 	name;		/* name of material */
-        Vec4f  diffuse ;	/* diffuse component */
-        Vec4f  ambient ;	/* ambient component */
-        Vec4f  specular;	/* specular component */
-        Vec4f  emissive;	/* emmissive component */
-        float  shininess;	/* specular exponent */
-        bool   useDiffuse;
-        bool   useSpecular;
-        bool   useAmbient;
-        bool   useEmissive;
-        bool   useShininess;
-        bool   activated;
-
-        void setColor(float r, float g, float b, float a);
-
-        inline friend std::ostream& operator << (std::ostream& out, const Material& m )
-        {
-            out   << m.name         << " ";
-            out  << "Diffuse"       << " " <<  m.useDiffuse   << " " <<  m.diffuse      << " ";
-            out  << "Ambient"       << " " <<  m.useAmbient   << " " <<  m.ambient      << " ";
-            out  << "Specular"      << " " <<  m.useSpecular  << " " <<  m.specular     << " ";
-            out  << "Emissive"      << " " <<  m.useEmissive  << " " <<  m.emissive     << " ";
-            out  << "Shininess"     << " " <<  m.useShininess << " " <<  m.shininess ;
-            return out;
-        }
-        inline friend std::istream& operator >> (std::istream& in, Material &m )
-        {
-
-            std::string element;
-            in  >>  m.name ;
-            for (unsigned int i=0; i<5; ++i)
-            {
-                in  >>  element;
-                if      (element == std::string("Diffuse")   || element == std::string("diffuse")   ) { in  >>  m.useDiffuse   ; in >> m.diffuse;   }
-                else if (element == std::string("Ambient")   || element == std::string("ambient")   ) { in  >>  m.useAmbient   ; in >> m.ambient;   }
-                else if (element == std::string("Specular")  || element == std::string("specular")  ) { in  >>  m.useSpecular  ; in >> m.specular;  }
-                else if (element == std::string("Emissive")  || element == std::string("emissive")  ) { in  >>  m.useEmissive  ; in >> m.emissive;  }
-                else if (element == std::string("Shininess") || element == std::string("shininess") ) { in  >>  m.useShininess ; in >> m.shininess; }
-            }
-            return in;
-        }
-
-        Material();
-    };
-
-    class SOFA_HELPER_API FaceGroup
-    {
-    public:
-        int f0, nbf;
-        std::string materialName;
-        std::string groupName;
-        int materialId;
-        inline friend std::ostream& operator << (std::ostream& out, const FaceGroup &g)
-        {
-            out << g.groupName << " " << g.materialName << " " << g.materialId << " " << g.f0 << " " << g.nbf;
-            return out;
-        }
-        inline friend std::istream& operator >> (std::istream& in, FaceGroup &g)
-        {
-            in >> g.groupName >> g.materialName >> g.materialId >> g.f0 >> g.nbf;
-            return in;
-        }
-        FaceGroup() : f0(0), nbf(0), materialId(-1) {}
-    };
 
 protected:
     vector<Vector3> vertices;
@@ -128,7 +62,7 @@ protected:
     Material material;
 
     std::vector<Material> materials;
-    std::vector<FaceGroup> groups;
+    std::vector<PrimitiveGroup> groups;
 
     std::string textureName;
 public:
@@ -148,7 +82,7 @@ public:
     const Material& getMaterial() {return material; }
 
     const std::vector<Material>& getMaterials() {return materials; }
-    const std::vector<FaceGroup>& getGroups() {return groups; }
+    const std::vector<PrimitiveGroup>& getGroups() {return groups; }
 
     std::string& getTextureName()
     {

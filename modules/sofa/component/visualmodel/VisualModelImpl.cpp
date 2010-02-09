@@ -63,6 +63,7 @@ namespace visualmodel
 
 using namespace sofa::defaulttype;
 using namespace sofa::core::componentmodel::topology;
+using namespace sofa::core::componentmodel::loader;
 
 void VisualModelImpl::parse(core::objectmodel::BaseObjectDescription* arg)
 {
@@ -178,16 +179,16 @@ VisualModelImpl::~VisualModelImpl()
 
 bool VisualModelImpl::hasTransparent()
 {
-    const helper::io::Mesh::Material& material = this->material.getValue();
+    const Material& material = this->material.getValue();
     helper::ReadAccessor< Data< helper::vector<FaceGroup> > > groups = this->groups;
-    helper::ReadAccessor< Data< helper::vector<helper::io::Mesh::Material> > > materials = this->materials;
+    helper::ReadAccessor< Data< helper::vector<Material> > > materials = this->materials;
     if (groups.empty())
         return (material.useDiffuse && material.diffuse[3] < 1.0);
     else
     {
         for (unsigned int i = 0; i < groups.size(); ++i)
         {
-            const helper::io::Mesh::Material& m = (groups[i].materialId == -1) ? material : materials[groups[i].materialId];
+            const Material& m = (groups[i].materialId == -1) ? material : materials[groups[i].materialId];
             if (m.useDiffuse && m.diffuse[3] < 1.0)
                 return true;
         }
@@ -197,16 +198,16 @@ bool VisualModelImpl::hasTransparent()
 
 bool VisualModelImpl::hasOpaque()
 {
-    const helper::io::Mesh::Material& material = this->material.getValue();
+    const Material& material = this->material.getValue();
     helper::ReadAccessor< Data< helper::vector<FaceGroup> > > groups = this->groups;
-    helper::ReadAccessor< Data< helper::vector<helper::io::Mesh::Material> > > materials = this->materials;
+    helper::ReadAccessor< Data< helper::vector<Material> > > materials = this->materials;
     if (groups.empty())
         return !(material.useDiffuse && material.diffuse[3] < 1.0);
     else
     {
         for (unsigned int i = 0; i < groups.size(); ++i)
         {
-            const helper::io::Mesh::Material& m = (groups[i].materialId == -1) ? material : materials[groups[i].materialId];
+            const Material& m = (groups[i].materialId == -1) ? material : materials[groups[i].materialId];
             if (!(m.useDiffuse && m.diffuse[3] < 1.0))
                 return true;
         }
@@ -242,11 +243,11 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
     const vector<Vector3> &normalsImport = objLoader.getNormals();
     const vector<Vector3> &texCoordsImport = objLoader.getTexCoords();
 
-    const helper::io::Mesh::Material &materialImport = objLoader.getMaterial();
+    const Material &materialImport = objLoader.getMaterial();
 
     if (!material.isSet() && materialImport.activated)
     {
-        helper::io::Mesh::Material M;
+        Material M;
         M = materialImport;
         material.setValue(M);
     }
@@ -254,7 +255,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
     if (!objLoader.getGroups().empty())
     {
         // get informations about the multiple materials
-        helper::WriteAccessor< Data< helper::vector<sofa::helper::io::Mesh::Material> > > materials = this->materials;
+        helper::WriteAccessor< Data< helper::vector<Material> > > materials = this->materials;
         helper::WriteAccessor< Data< helper::vector<FaceGroup> > > groups = this->groups;
         materials.resize(objLoader.getMaterials().size());
         for (unsigned i=0; i<materials.size(); ++i)
@@ -280,15 +281,15 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
         groups.resize(objLoader.getGroups().size());
         for (unsigned int ig = 0; ig < groups.size(); ig++)
         {
-            const helper::io::Mesh::FaceGroup& g0 = objLoader.getGroups()[ig];
+            const PrimitiveGroup& g0 = objLoader.getGroups()[ig];
             FaceGroup& g = groups[ig];
             g.materialName = g0.materialName;
             g.groupName = g0.groupName;
             g.materialId = g0.materialId;
-            g.t0 = facet2tq[g0.f0].first;
-            g.nbt = facet2tq[g0.f0+g0.nbf].first - g.t0;
-            g.q0 = facet2tq[g0.f0].second;
-            g.nbq = facet2tq[g0.f0+g0.nbf].second - g.q0;
+            g.t0 = facet2tq[g0.p0].first;
+            g.nbt = facet2tq[g0.p0+g0.nbp].first - g.t0;
+            g.q0 = facet2tq[g0.p0].second;
+            g.nbq = facet2tq[g0.p0+g0.nbp].second - g.q0;
             if (g.materialId == -1 && !g.materialName.empty())
                 serr << "face group " << ig << " name " << g.materialName << " uses missing material " << g.materialName << sendl;
 
@@ -758,7 +759,7 @@ void VisualModelImpl::flipFaces()
 
 void VisualModelImpl::setColor(float r, float g, float b, float a)
 {
-    helper::io::Mesh::Material M = material.getValue();
+    Material M = material.getValue();
     M.setColor(r,g,b,a);
     material.setValue(M);
 }
