@@ -22,11 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_TRIANGLEMODELINREGULARGRID_H
-#define SOFA_COMPONENT_COLLISION_TRIANGLEMODELINREGULARGRID_H
-
-#include <sofa/component/collision/TriangleModel.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include "CudaTypes.h"
+#include "CudaTriangleModel.h"
+#include <sofa/component/collision/TriangleModel.inl>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
@@ -37,29 +36,36 @@ namespace component
 namespace collision
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::core::componentmodel::topology;
+template class TTriangleModel<sofa::gpu::cuda::CudaVec3fTypes>;
+template class TTriangleModel<sofa::gpu::cuda::CudaVec3f1Types>;
+#ifdef SOFA_GPU_CUDA_DOUBLE
+template class TTriangleModel<sofa::gpu::cuda::CudaVec3dTypes>;
+template class TTriangleModel<sofa::gpu::cuda::CudaVec3d1Types>;
+#endif // SOFA_GPU_CUDA_DOUBLE
 
-class TriangleModelInRegularGrid : public TriangleModel
+} // namespace collision
+
+} // namespace component
+
+namespace gpu
 {
-public:
-    SOFA_CLASS(TriangleModelInRegularGrid, TriangleModel);
 
-    TriangleModelInRegularGrid();
-    ~TriangleModelInRegularGrid();
+namespace cuda
+{
 
-    virtual void init();
-    virtual void computeBoundingTree ( int maxDepth=0 );
+SOFA_DECL_CLASS(CudaTriangleModel)
 
-    sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
-    BaseMeshTopology* _higher_topo;
-    core::componentmodel::behavior::MechanicalState<Vec3Types>* _higher_mstate;
-};
+int TriangleModelCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
+        .add< component::collision::TTriangleModel<CudaVec3fTypes> >()
+        .add< component::collision::TTriangleModel<CudaVec3f1Types> >()
+#ifdef SOFA_GPU_CUDA_DOUBLE
+        .add< component::collision::TTriangleModel<CudaVec3dTypes> >()
+        .add< component::collision::TTriangleModel<CudaVec3d1Types> >()
+#endif // SOFA_GPU_CUDA_DOUBLE
+        ;
 
-}
+} // namespace cuda
 
-}
+} // namespace gpu
 
-}
-
-#endif
+} // namespace sofa

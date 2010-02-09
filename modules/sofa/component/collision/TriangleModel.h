@@ -30,7 +30,7 @@
 #include <sofa/component/container/MechanicalObject.h>
 #include <sofa/component/topology/TriangleData.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
-#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/VecTypes.h>
 #include <sofa/component/collision/PointModel.h>
 #include <map>
 
@@ -45,50 +45,59 @@ namespace collision
 
 using namespace sofa::defaulttype;
 
-class TriangleModel;
+template<class DataTypes>
+class TTriangleModel;
+
 class TriangleLocalMinDistanceFilter;
 
-class Triangle : public core::TCollisionElementIterator<TriangleModel>
+template<class TDataTypes>
+class TTriangle : public core::TCollisionElementIterator< TTriangleModel<TDataTypes> >
 {
 public:
-    Triangle(TriangleModel* model, int index);
-    Triangle() {};
-    explicit Triangle(core::CollisionElementIterator& i);
+    typedef TDataTypes DataTypes;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::Deriv Deriv;
+    typedef TTriangleModel<DataTypes> ParentModel;
 
-    const Vector3& p1() const;
-    const Vector3& p2() const;
-    const Vector3& p3() const;
+    TTriangle(ParentModel* model, int index);
+    TTriangle() {}
+    explicit TTriangle(core::CollisionElementIterator& i);
+
+    const Coord& p1() const;
+    const Coord& p2() const;
+    const Coord& p3() const;
     int p1Index() const;
     int p2Index() const;
     int p3Index() const;
 
-    const Vector3& p1Free() const;
-    const Vector3& p2Free() const;
-    const Vector3& p3Free() const;
+    const Coord& p1Free() const;
+    const Coord& p2Free() const;
+    const Coord& p3Free() const;
 
-    const Vector3& v1() const;
-    const Vector3& v2() const;
-    const Vector3& v3() const;
+    const Deriv& v1() const;
+    const Deriv& v2() const;
+    const Deriv& v3() const;
 
-    const Vector3& n() const;
-    Vector3& n();
+    const Deriv& n() const;
+    Deriv& n();
 
     int flags() const;
 };
 
-class SOFA_COMPONENT_COLLISION_API TriangleModel : public core::CollisionModel
+template<class TDataTypes>
+class TTriangleModel : public core::CollisionModel
 {
 public:
-    SOFA_CLASS(TriangleModel, core::CollisionModel);
+    SOFA_CLASS(SOFA_TEMPLATE(TTriangleModel, TDataTypes), core::CollisionModel);
 
-    typedef Vec3Types InDataTypes;
-    typedef Vec3Types DataTypes;
-    typedef DataTypes::VecCoord VecCoord;
-    typedef DataTypes::VecDeriv VecDeriv;
-    typedef DataTypes::Coord Coord;
-    typedef DataTypes::Deriv Deriv;
-    typedef Triangle Element;
-    friend class Triangle;
+    typedef TDataTypes DataTypes;
+    typedef DataTypes InDataTypes;
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::Deriv Deriv;
+    typedef TTriangle<DataTypes> Element;
+    friend class TTriangle<DataTypes>;
 
     enum TriangleFlag
     {
@@ -102,15 +111,15 @@ public:
         FLAG_EDGES   = FLAG_E12|FLAG_E23|FLAG_E31,
     };
 
-
     Data<bool> bothSide; // to activate collision on both side of the triangle model
 
 protected:
+#if 0
     struct TriangleInfo
     {
         //int i1,i2,i3;
         //int flags;
-        Vector3 normal;
+        Deriv normal;
 
         /// Output stream
         inline friend std::ostream& operator<< ( std::ostream& os, const TriangleInfo& ti )
@@ -124,8 +133,11 @@ protected:
             return in >> ti.normal;
         }
     };
+#endif
 
-    topology::TriangleData<TriangleInfo> elems;
+    //topology::TriangleData<TriangleInfo> elems;
+    VecDeriv normals;
+
     const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles* triangles;
 
     sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles mytriangles;
@@ -136,7 +148,7 @@ protected:
     int getTriangleFlags(int i);
     virtual void updateNormals();
 
-    core::componentmodel::behavior::MechanicalState<Vec3Types>* mstate;
+    core::componentmodel::behavior::MechanicalState<DataTypes>* mstate;
     Data<bool> computeNormals;
     int meshRevision;
 
@@ -148,7 +160,7 @@ protected:
 
 public:
 
-    TriangleModel();
+    TTriangleModel();
 
     virtual void init();
 
@@ -168,8 +180,8 @@ public:
 
     virtual void handleTopologyChange();
 
-    core::componentmodel::behavior::MechanicalState<Vec3Types>* getMechanicalState() { return mstate; }
-    const core::componentmodel::behavior::MechanicalState<Vec3Types>* getMechanicalState() const { return mstate; }
+    core::componentmodel::behavior::MechanicalState<DataTypes>* getMechanicalState() { return mstate; }
+    const core::componentmodel::behavior::MechanicalState<DataTypes>* getMechanicalState() const { return mstate; }
 
     const VecCoord& getX() const { return *(getMechanicalState()->getX()); }
     const sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles& getTriangles() const { return *triangles; }
@@ -186,36 +198,87 @@ public:
     //}
 
     void setFilter(TriangleLocalMinDistanceFilter * /*lmdFilter*/);
+
+
+    /// Pre-construction check method called by ObjectFactory.
+    /// Check that DataTypes matches the MechanicalState.
+    template<class T>
+    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    {
+        if (dynamic_cast<core::componentmodel::behavior::MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+            return false;
+        return BaseObject::canCreate(obj, context, arg);
+    }
+
+    virtual std::string getTemplateName() const
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const TTriangleModel<DataTypes>* = NULL)
+    {
+        return DataTypes::Name();
+    }
+
 };
 
-inline Triangle::Triangle(TriangleModel* model, int index)
-    : core::TCollisionElementIterator<TriangleModel>(model, index)
+template<class DataTypes>
+inline TTriangle<DataTypes>::TTriangle(ParentModel* model, int index)
+    : core::TCollisionElementIterator<ParentModel>(model, index)
 {}
 
-inline Triangle::Triangle(core::CollisionElementIterator& i)
-    : core::TCollisionElementIterator<TriangleModel>(static_cast<TriangleModel*>(i.getCollisionModel()), i.getIndex())
+template<class DataTypes>
+inline TTriangle<DataTypes>::TTriangle(core::CollisionElementIterator& i)
+    : core::TCollisionElementIterator<ParentModel>(static_cast<ParentModel*>(i.getCollisionModel()), i.getIndex())
 {}
 
-inline const Vector3& Triangle::p1() const { return (*model->mstate->getX())[(*(model->triangles))[index][0]]; }
-inline const Vector3& Triangle::p2() const { return (*model->mstate->getX())[(*(model->triangles))[index][1]]; }
-inline const Vector3& Triangle::p3() const { return (*model->mstate->getX())[(*(model->triangles))[index][2]]; }
+template<class DataTypes>
+inline const typename DataTypes::Coord& TTriangle<DataTypes>::p1() const { return (*this->model->mstate->getX())[(*(this->model->triangles))[this->index][0]]; }
+template<class DataTypes>
+inline const typename DataTypes::Coord& TTriangle<DataTypes>::p2() const { return (*this->model->mstate->getX())[(*(this->model->triangles))[this->index][1]]; }
+template<class DataTypes>
+inline const typename DataTypes::Coord& TTriangle<DataTypes>::p3() const { return (*this->model->mstate->getX())[(*(this->model->triangles))[this->index][2]]; }
 
-inline const Vector3& Triangle::p1Free() const { return (*model->mstate->getXfree())[(*(model->triangles))[index][0]]; }
-inline const Vector3& Triangle::p2Free() const { return (*model->mstate->getXfree())[(*(model->triangles))[index][1]]; }
-inline const Vector3& Triangle::p3Free() const { return (*model->mstate->getXfree())[(*(model->triangles))[index][2]]; }
+template<class DataTypes>
+inline const typename DataTypes::Coord& TTriangle<DataTypes>::p1Free() const { return (*this->model->mstate->getXfree())[(*(this->model->triangles))[this->index][0]]; }
+template<class DataTypes>
+inline const typename DataTypes::Coord& TTriangle<DataTypes>::p2Free() const { return (*this->model->mstate->getXfree())[(*(this->model->triangles))[this->index][1]]; }
+template<class DataTypes>
+inline const typename DataTypes::Coord& TTriangle<DataTypes>::p3Free() const { return (*this->model->mstate->getXfree())[(*(this->model->triangles))[this->index][2]]; }
 
-inline int Triangle::p1Index() const { return (*(model->triangles))[index][0]; }
-inline int Triangle::p2Index() const { return (*(model->triangles))[index][1]; }
-inline int Triangle::p3Index() const { return (*(model->triangles))[index][2]; }
+template<class DataTypes>
+inline int TTriangle<DataTypes>::p1Index() const { return (*(this->model->triangles))[this->index][0]; }
+template<class DataTypes>
+inline int TTriangle<DataTypes>::p2Index() const { return (*(this->model->triangles))[this->index][1]; }
+template<class DataTypes>
+inline int TTriangle<DataTypes>::p3Index() const { return (*(this->model->triangles))[this->index][2]; }
 
-inline const Vector3& Triangle::v1() const { return (*model->mstate->getV())[(*(model->triangles))[index][0]]; }
-inline const Vector3& Triangle::v2() const { return (*model->mstate->getV())[(*(model->triangles))[index][1]]; }
-inline const Vector3& Triangle::v3() const { return (*model->mstate->getV())[(*(model->triangles))[index][2]]; }
+template<class DataTypes>
+inline const typename DataTypes::Deriv& TTriangle<DataTypes>::v1() const { return (*this->model->mstate->getV())[(*(this->model->triangles))[this->index][0]]; }
+template<class DataTypes>
+inline const typename DataTypes::Deriv& TTriangle<DataTypes>::v2() const { return (*this->model->mstate->getV())[(*(this->model->triangles))[this->index][1]]; }
+template<class DataTypes>
+inline const typename DataTypes::Deriv& TTriangle<DataTypes>::v3() const { return (*this->model->mstate->getV())[(*(this->model->triangles))[this->index][2]]; }
 
-inline const Vector3& Triangle::n() const { return model->elems.getValue()[index].normal; }
-inline       Vector3& Triangle::n()       { return (*model->elems.beginEdit())[index].normal; }
+template<class DataTypes>
+inline const typename DataTypes::Deriv& TTriangle<DataTypes>::n() const { return this->model->normals[this->index]; }
+template<class DataTypes>
+inline       typename DataTypes::Deriv& TTriangle<DataTypes>::n()       { return this->model->normals[this->index]; }
 
-inline int            Triangle::flags() const { return model->getTriangleFlags(index); }
+template<class DataTypes>
+inline int TTriangle<DataTypes>::flags() const { return this->model->getTriangleFlags(this->index); }
+
+typedef TTriangleModel<Vec3Types> TriangleModel;
+typedef TTriangle<Vec3Types> Triangle;
+
+#if defined(WIN32) && !defined(SOFA_BUILD_COMPONENT_COLLISION)
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_COLLISION_API TTriangleModel<defaulttype::Vec3dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_COLLISION_API TTriangleModel<defaulttype::Vec3fTypes>;
+#endif
+#endif
 
 } // namespace collision
 

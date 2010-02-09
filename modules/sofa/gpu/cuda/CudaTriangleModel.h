@@ -22,44 +22,28 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_TRIANGLEMODELINREGULARGRID_H
-#define SOFA_COMPONENT_COLLISION_TRIANGLEMODELINREGULARGRID_H
+#ifndef SOFA_GPU_CUDA_CUDATRIANGLEMODEL_H
+#define SOFA_GPU_CUDA_CUDATRIANGLEMODEL_H
 
+#include "CudaTypes.h"
 #include <sofa/component/collision/TriangleModel.h>
-#include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 
 namespace sofa
 {
 
-namespace component
+namespace gpu
 {
 
-namespace collision
+namespace cuda
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::core::componentmodel::topology;
+typedef sofa::component::collision::TTriangleModel<CudaVec3fTypes> CudaTriangleModel;
+typedef sofa::component::collision::TTriangle<CudaVec3fTypes> CudaTriangle;
 
-class TriangleModelInRegularGrid : public TriangleModel
-{
-public:
-    SOFA_CLASS(TriangleModelInRegularGrid, TriangleModel);
+} // namespace cuda
 
-    TriangleModelInRegularGrid();
-    ~TriangleModelInRegularGrid();
+} // namespace gpu
 
-    virtual void init();
-    virtual void computeBoundingTree ( int maxDepth=0 );
-
-    sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
-    BaseMeshTopology* _higher_topo;
-    core::componentmodel::behavior::MechanicalState<Vec3Types>* _higher_mstate;
-};
-
-}
-
-}
-
-}
+} // namespace sofa
 
 #endif
