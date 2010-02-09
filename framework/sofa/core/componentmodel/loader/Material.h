@@ -28,7 +28,7 @@
 #ifndef SOFA_CORE_COMPONENTMODEL_LOADER_MATERIAL_H_
 #define SOFA_CORE_COMPONENTMODEL_LOADER_MATERIAL_H_
 
-#include <sofa/helper/helper.h>
+#include <sofa/core/core.h>
 #include <sofa/defaulttype/Vec.h>
 
 namespace sofa
