@@ -42,8 +42,9 @@
 #include <sofa/core/objectmodel/KeypressedEvent.h>
 #include <sofa/core/objectmodel/KeyreleasedEvent.h>
 #include <sofa/core/objectmodel/MouseEvent.h>
-//sensable namespace
-
+#include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 
 namespace sofa
@@ -61,16 +62,17 @@ using namespace sofa::defaulttype;
 
 
 
-static bool isInitialized = false;
+extern bool isInitialized;
 
 int initDeviceITP(XiToolData& /*data*/)
 {
     if (isInitialized) return 0;
     isInitialized = true;
 
-    xiSoftwareVendor("INRIA_Sophia");
-
-
+    const char* vendor = getenv("XITACT_VENDOR");
+    if (!vendor || !*vendor)
+        vendor = "INRIA_Sophia";
+    xiSoftwareVendor(vendor);
 
     return 0;
 }
