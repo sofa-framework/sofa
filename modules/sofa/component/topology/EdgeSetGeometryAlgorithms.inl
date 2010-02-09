@@ -371,7 +371,7 @@ template<class DataTypes>
 bool EdgeSetGeometryAlgorithms<DataTypes>::computeEdgePlaneIntersection (EdgeID edgeID, Vec<3,Real> pointOnPlane, Vec<3,Real> normalOfPlane, Vec<3,Real>& intersection)
 {
     const Edge &e = this->m_topology->getEdge(edgeID);
-    const VecCoord& p = *(this->object->getX0());
+    const VecCoord& p = *(this->object->getX());
 
     Vec<3,Real> p1,p2;
     p1[0]=p[e[0]][0]; p1[1]=p[e[0]][1]; p1[2]=p[e[0]][2];

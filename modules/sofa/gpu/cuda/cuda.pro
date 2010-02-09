@@ -90,6 +90,7 @@ HEADERS += mycuda.h \
            CudaParticleSource.inl \
            VolumetricContact.h \
            VolumetricContact.inl 
+
 SOURCES += mycuda.cpp \
            CudaBoxROI.cpp  \
            CudaMechanicalObject.cpp \
@@ -159,6 +160,7 @@ HEADERS += \
 		CudaRasterizer.inl \
 		CudaLDIPenalityContactForceField.h \
 		CudaLDISimpleContactConstraint.h \
+		CudaLDICuttingContactConstraint.h \
 		CudaComplianceMatrixUpdateManager.h \
 		CudaDiagonalMass.h \
 		CudaDiagonalMass.inl \
@@ -183,9 +185,10 @@ SOURCES += \
 		CudaRasterizer.cpp \
 		CudaLDIPenalityContactForceField.cpp \
 		CudaLDISimpleContactConstraint.cpp \
+		CudaLDICuttingContactConstraint.cpp \
 	CudaComplianceMatrixUpdateManager.cpp \
 	CudaTetrahedronCuttingManager.cpp \
-	CudaDiagonalMass.cpp 
+	CudaDiagonalMass.cpp \
 
 CUDA_SOURCES += \
 	   	CudaLCP.cu \

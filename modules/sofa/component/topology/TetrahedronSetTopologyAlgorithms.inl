@@ -77,7 +77,7 @@ void TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronsWithPla
         Edge theEdge=m_container->getEdge(intersectedEdgeID[i]);
         sofa::defaulttype::Vec<3,double> p;
         p[0]=intersectedPoints[i][0]; p[1]=intersectedPoints[i][1]; p[2]=intersectedPoints[i][2];
-        sofa::helper::vector< double > coef = m_geometryAlgorithms->computeRest2PointsBarycoefs(p, theEdge[0], theEdge[1]);
+        sofa::helper::vector< double > coef = m_geometryAlgorithms->compute2PointsBarycoefs(p, theEdge[0], theEdge[1]);
         sofa::helper::vector< unsigned int > ancestor;
         ancestor.push_back(theEdge[0]); ancestor.push_back(theEdge[1]);
 
@@ -200,7 +200,7 @@ int TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronWithPlane
 
         //construct subdivided tetrahedrons
         Tetra subTetra[2];
-        edgeDirec=this->m_geometryAlgorithms->computeRestEdgeDirection(intersectedEdgeID[0])*-1;
+        edgeDirec=this->m_geometryAlgorithms->computeEdgeDirection(intersectedEdgeID[0])*-1;
         Real dot=edgeDirec*planeNormal;
 
         //inspect the tetrahedron is already subdivided
@@ -339,28 +339,28 @@ int TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronWithPlane
             pointsID[0]=intersectedEdge[0][0];
             pointsID[1]=intersectedEdge[0][1];
             pointsID[2]=intersectedEdge[1][1];
-            edgeDirec=this->m_geometryAlgorithms->computeRestEdgeDirection(intersectedEdgeID[0])*-1;
+            edgeDirec=this->m_geometryAlgorithms->computeEdgeDirection(intersectedEdgeID[0])*-1;
         }
         else if(intersectedEdge[0][0]==intersectedEdge[1][1])
         {
             pointsID[0]=intersectedEdge[0][0];
             pointsID[1]=intersectedEdge[0][1];
             pointsID[2]=intersectedEdge[1][0];
-            edgeDirec=this->m_geometryAlgorithms->computeRestEdgeDirection(intersectedEdgeID[0])*-1;
+            edgeDirec=this->m_geometryAlgorithms->computeEdgeDirection(intersectedEdgeID[0])*-1;
         }
         else if(intersectedEdge[0][1]==intersectedEdge[1][0])
         {
             pointsID[0]=intersectedEdge[0][1];
             pointsID[1]=intersectedEdge[0][0];
             pointsID[2]=intersectedEdge[1][1];
-            edgeDirec=this->m_geometryAlgorithms->computeRestEdgeDirection(intersectedEdgeID[0]);
+            edgeDirec=this->m_geometryAlgorithms->computeEdgeDirection(intersectedEdgeID[0]);
         }
         else
         {
             pointsID[0]=intersectedEdge[0][1];
             pointsID[1]=intersectedEdge[0][0];
             pointsID[2]=intersectedEdge[1][0];
-            edgeDirec=this->m_geometryAlgorithms->computeRestEdgeDirection(intersectedEdgeID[0]);
+            edgeDirec=this->m_geometryAlgorithms->computeEdgeDirection(intersectedEdgeID[0]);
         }
 
         //find the point index of tetrahedron which are not included to the intersected edge
@@ -506,9 +506,9 @@ int TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronWithPlane
         if(DIVISION_STATE==1)
         {
             if(pointsID[0]==intersectedEdge[0][0])
-                edgeDirec=this->m_geometryAlgorithms->computeRestEdgeDirection(intersectedEdgeID[0])*-1;
+                edgeDirec=this->m_geometryAlgorithms->computeEdgeDirection(intersectedEdgeID[0])*-1;
             else
-                edgeDirec=this->m_geometryAlgorithms->computeRestEdgeDirection(intersectedEdgeID[0]);
+                edgeDirec=this->m_geometryAlgorithms->computeEdgeDirection(intersectedEdgeID[0]);
             for(int i=0; i<3; i++)
             {
                 for(int j=0; j<2; j++)
@@ -556,9 +556,9 @@ int TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronWithPlane
         {
             Coord edgeDirec;
             if(pointsID[0]==intersectedEdge[0][0])
-                edgeDirec=this->m_geometryAlgorithms->computeRestEdgeDirection(intersectedEdgeID[0])*-1;
+                edgeDirec=this->m_geometryAlgorithms->computeEdgeDirection(intersectedEdgeID[0])*-1;
             else
-                edgeDirec=this->m_geometryAlgorithms->computeRestEdgeDirection(intersectedEdgeID[0]);
+                edgeDirec=this->m_geometryAlgorithms->computeEdgeDirection(intersectedEdgeID[0]);
 
             int secondIntersectedEdgeIndex = 0, thirdIntersectedEdgeIndex = 0;
             int conectedIndex, nonConectedIndex;
@@ -790,7 +790,7 @@ int TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronWithPlane
         }
 
         Coord edgeDirec;
-        edgeDirec=this->m_geometryAlgorithms->computeRestEdgeDirection(intersectedEdgeID[0])*-1;
+        edgeDirec=this->m_geometryAlgorithms->computeEdgeDirection(intersectedEdgeID[0])*-1;
 
         //construct subdivided tetrahedrons
         Real dot=edgeDirec*planeNormal;
