@@ -160,6 +160,7 @@ protected:
     Data<bool> noNewTriangles;
     Data<bool> noInitialTriangles;
 
+    std::vector<unsigned int> addedTriangleIndex;
 };
 
 } // namespace topology

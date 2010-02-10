@@ -240,7 +240,9 @@ void TetrahedronSetTopologyModifier::removeTetrahedraProcess( const sofa::helper
                 sofa::helper::vector< unsigned int > &shell = m_container->m_tetrahedraAroundVertex[ t[j] ];
                 shell.erase(remove(shell.begin(), shell.end(), indices[i]), shell.end());
                 if(removeIsolatedVertices && shell.empty())
+                {
                     vertexToBeRemoved.push_back(t[j]);
+                }
             }
         }
 
@@ -516,7 +518,7 @@ void TetrahedronSetTopologyModifier::removeTetrahedra(sofa::helper::vector< unsi
     propagateTopologicalChanges();
 
     // now destroy the old tetrahedra.
-    removeTetrahedraProcess(  tetrahedra ,true);
+    removeTetrahedraProcess(tetrahedra ,true);
 
     m_container->checkTopology();
 

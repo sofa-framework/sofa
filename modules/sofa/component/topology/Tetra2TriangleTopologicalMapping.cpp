@@ -33,6 +33,7 @@
 #include <sofa/component/topology/TetrahedronSetTopologyContainer.h>
 #include <sofa/component/topology/TetrahedronSetTopologyModifier.h>
 #include <sofa/component/topology/TetrahedronSetTopologyChange.h>
+#include <sofa/component/topology/EdgeSetTopologyChange.h>
 
 #include <sofa/component/topology/PointSetTopologyChange.h>
 
@@ -146,7 +147,6 @@ void Tetra2TriangleTopologicalMapping::init()
                 Loc2GlobDataVec.endEdit();
             }
         }
-
     }
 }
 
@@ -275,6 +275,13 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                             toModel->getContext()->get(triangleMod);
                             triangleMod->removeTriangles(triangles_to_remove, true, false);
 
+                            for(int i=0; i<addedTriangleIndex.size(); i++)
+                            {
+                                if(addedTriangleIndex[i]==ind_k)
+                                    addedTriangleIndex[i]=0;
+                                if(addedTriangleIndex[i]>ind_k)
+                                    addedTriangleIndex[i]-=1;
+                            }
                         }
                         else
                         {
@@ -361,6 +368,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
                                 triangles_to_create.push_back(t);
                                 trianglesIndexList.push_back(nb_elems);
+                                //addedTriangleIndex.push_back(nb_elems);
                                 nb_elems+=1;
 
                                 Loc2GlobVec.push_back(tab[i]);
@@ -451,6 +459,14 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                                 toModel->getContext()->get(triangleMod);
                                 triangleMod->removeTriangles(triangle_to_remove, true, false);
 
+                                for(int i=0; i<addedTriangleIndex.size(); i++)
+                                {
+                                    if(addedTriangleIndex[i]==ind_k)
+                                        addedTriangleIndex[i]=0;
+                                    if(addedTriangleIndex[i]>ind_k)
+                                        addedTriangleIndex[i]-=1;
+                                }
+
                             }
                             else
                             {
@@ -512,6 +528,18 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                                         is_present = (ind_test == tab[k0]);
                                         k0+=1;
                                     }
+
+                                    int nb=0;
+                                    for(k0=0; k0<tab.size(); k0++)
+                                    {
+                                        if(ind_test==tab[k0])
+                                            nb++;
+                                        if(nb==2)
+                                        {
+                                            is_present=false;
+                                            break;
+                                        }
+                                    }
                                     if(!is_present)
                                     {
 
@@ -568,6 +596,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
 
                                         triangles_to_create.push_back(t);
                                         trianglesIndexList.push_back(nb_elems);
+
                                         nb_elems+=1;
 
                                         Loc2GlobVec.push_back(k);
@@ -576,6 +605,10 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                                         {
                                             sout << "INFO_print : Tetra2TriangleTopologicalMapping - fail to add triangle " << k << "which already exists" << sendl;
                                             Glob2LocMap.erase(Glob2LocMap.find(k));
+                                        }
+                                        else
+                                        {
+                                            addedTriangleIndex.push_back(nb_elems-1);
                                         }
                                         Glob2LocMap[k]=Loc2GlobVec.size()-1;
                                     }
@@ -591,6 +624,24 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                     break;
 
                 }
+
+                /*	case core::componentmodel::topology::EDGESADDED:
+                		{
+                			const EdgesAdded *ea=static_cast< const EdgesAdded * >( *itBegin );
+                			to_tstm->addEdgesProcess(ea->edgeArray);
+                			to_tstm->addEdgesWarning(ea->nEdges,ea->edgeArray,ea->edgeIndexArray);
+                			break;
+                		}
+
+                	case core::componentmodel::topology::POINTSADDED:
+                		{
+
+                			int nbAddedPoints = ( static_cast< const sofa::component::topology::PointsAdded * >( *itBegin ) )->getNbAddedVertices();
+                			to_tstm->addPointsProcess(nbAddedPoints);
+                			to_tstm->addPointsWarning(nbAddedPoints, true);
+
+                			break;
+                		}*/
 
                 case core::componentmodel::topology::POINTSREMOVED:
                 {
