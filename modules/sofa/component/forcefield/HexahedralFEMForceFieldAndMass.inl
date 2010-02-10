@@ -424,9 +424,10 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addMToMatrix(defaulttype::BaseMa
         for (n1=0; n1<8; n1++)
         {
             node1 = hexahedra[e][n1];
+            n2 = n1; /////////// WARNING Changed to compute only diag elements
 
             // find index of node 2
-            for (n2=0; n2<8; n2++)
+            //for (n2=0; n2<8; n2++) /////////// WARNING Changed to compute only diag elements
             {
                 node2 = hexahedra[e][n2];
 
@@ -440,51 +441,8 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addMToMatrix(defaulttype::BaseMa
         }
     }
 }
-/*
-template<class DataTypes>
-    void HexahedralFEMForceFieldAndMass<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset)
-{
-    // Build Matrix Block for this ForceField
-    int i,j,n1, n2, e;
 
-    typename VecElement::const_iterator it;
-
-    Index node1, node2;
-
-    for(it = _indexedElements->begin(), e=0 ; it != _indexedElements->end() ; ++it,++e)
-    {
-        const ElementStiffness &Ke = _elementStiffnesses.getValue()[e];
-//         const Transformation& Rt = _rotations[e];
-//         Transformation R; R.transpose(Rt);
-
-        // find index of node 1
-        for (n1=0; n1<8; n1++)
-        {
-#ifndef SOFA_NEW_HEXA
-            node1 = (*it)[_indices[n1]];
-#else
-            node1 = (*it)[n1];
-#endif
-            // find index of node 2
-            for (n2=0; n2<8; n2++)
-            {
-#ifndef SOFA_NEW_HEXA
-                node2 = (*it)[_indices[n2]];
-#else
-                node2 = (*it)[n2];
-#endif
-                Mat33 tmp = _rotations[e].multTranspose( Mat33(Coord(Ke[3*n1+0][3*n2+0],Ke[3*n1+0][3*n2+1],Ke[3*n1+0][3*n2+2]),
-                                     Coord(Ke[3*n1+1][3*n2+0],Ke[3*n1+1][3*n2+1],Ke[3*n1+1][3*n2+2]),
-									 Coord(Ke[3*n1+2][3*n2+0],Ke[3*n1+2][3*n2+1],Ke[3*n1+2][3*n2+2])) ) * _rotations[e];
-                for(i=0; i<3; i++)
-                    for (j=0; j<3; j++)
-                        mat->add(offset+3*node1+i, offset+3*node2+j, - tmp[i][j]*k);
-            }
-        }
-    }
-}
-*/
-
+///// WARNING this method only add diagonal elements in the given matrix !
 template<class DataTypes>
 void HexahedralFEMForceFieldAndMass<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset)
 {
@@ -505,13 +463,14 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addKToMatrix(sofa::defaulttype::
         // find index of node 1
         for (n1=0; n1<8; n1++)
         {
+            n2 = n1; /////////// WARNING Changed to compute only diag elements
 #ifndef SOFA_NEW_HEXA
             node1 = hexa[_indices[n1]];
 #else
             node1 = hexa[n1];
 #endif
             // find index of node 2
-            for (n2=0; n2<8; n2++)
+            //for (n2=0; n2<8; n2++) /////////// WARNING Changed to compute only diag elements
             {
 #ifndef SOFA_NEW_HEXA
                 node2 = hexa[_indices[n2]];
@@ -528,6 +487,64 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::addKToMatrix(sofa::defaulttype::
         }
     }
 }
+
+
+template<class DataTypes>
+void HexahedralFEMForceFieldAndMass<DataTypes>::addMBKToMatrix ( sofa::defaulttype::BaseMatrix * matrix,
+        double mFact, double /*bFact*/, double kFact, unsigned int &offset )
+{
+    int i, j, n1, n2;
+    Index node1, node2;
+
+    const VecElement& hexahedra = this->_topology->getHexahedra();
+
+    //typename VecElement::const_iterator it;
+    typename helper::vector<HexahedronInformation>::const_iterator it;
+
+    for ( unsigned int e = 0; e < hexahedra.size(); ++e )
+    {
+        const ElementMass &Me = _elementMasses.getValue() [e];
+        const Element hexa = hexahedra[e];
+        const ElementStiffness &Ke = it->stiffness;
+
+        // find index of node 1
+
+        for ( n1 = 0; n1 < 8; n1++ )
+        {
+            n2 = n1; /////////// WARNING Changed to compute only diag elements
+#ifndef SOFA_NEW_HEXA
+            node1 = hexa[_indices[n1]];
+#else
+            node1 = hexa[n1];
+#endif
+            // find index of node 2
+            //for (n2=0; n2<8; n2++) /////////// WARNING Changed to compute only diag elements
+            {
+#ifndef SOFA_NEW_HEXA
+                node2 = hexa[_indices[n2]];
+#else
+                node2 = hexa[n2];
+#endif
+                // add M to matrix
+                Mat33 tmp = Mat33 ( Coord ( Me[3*n1+0][3*n2+0], Me[3*n1+0][3*n2+1], Me[3*n1+0][3*n2+2] ),
+                        Coord ( Me[3*n1+1][3*n2+0], Me[3*n1+1][3*n2+1], Me[3*n1+1][3*n2+2] ),
+                        Coord ( Me[3*n1+2][3*n2+0], Me[3*n1+2][3*n2+1], Me[3*n1+2][3*n2+2] ) );
+                for ( i = 0; i < 3; i++ )
+                    for ( j = 0; j < 3; j++ )
+                        matrix->add ( offset + 3*node1 + i, offset + 3*node2 + j, tmp[i][j]*mFact );
+
+                // add K to matrix
+                tmp = it->rotation.multTranspose ( Mat33 ( Coord ( Ke[3*n1+0][3*n2+0], Ke[3*n1+0][3*n2+1], Ke[3*n1+0][3*n2+2] ),
+                        Coord ( Ke[3*n1+1][3*n2+0], Ke[3*n1+1][3*n2+1], Ke[3*n1+1][3*n2+2] ),
+                        Coord ( Ke[3*n1+2][3*n2+0], Ke[3*n1+2][3*n2+1], Ke[3*n1+2][3*n2+2] ) ) ) * it->rotation;
+                for ( i = 0; i < 3; i++ )
+                    for ( j = 0; j < 3; j++ )
+                        matrix->add ( offset + 3*node1 + i, offset + 3*node2 + j, - tmp[i][j]*kFact );
+            }
+        }
+    }
+}
+
 
 template<class DataTypes>
 void HexahedralFEMForceFieldAndMass<DataTypes>::accFromF(VecDeriv& /*a*/, const VecDeriv& /*f*/)
