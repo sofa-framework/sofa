@@ -87,7 +87,7 @@ void GroupFilterYoungModulus<DataTypes>::update()
     //read string and tokenize
     while(end != std::string::npos )
     {
-        std::string tempStr = strMap.substr(begin, end-1);
+        std::string tempStr = strMap.substr(begin, end);
         std::istringstream iss(tempStr);
         iss >> groupName >> youngModulus ;
         begin = end+1;
