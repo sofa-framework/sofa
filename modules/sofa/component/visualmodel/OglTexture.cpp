@@ -136,7 +136,7 @@ OglTexture2D::~OglTexture2D()
 
 void OglTexture2D::init()
 {
-    if (!texture2DFilename.getValue().empty())
+    if (!texture2DFilename.getFullPath().empty())
         img = helper::io::Image::Create(texture2DFilename.getFullPath().c_str());
     else
     {
@@ -170,7 +170,7 @@ void OglTexture2D::initVisual()
 
     if (!img)
     {
-        serr << "OglTexture2D: Error : OglTexture2D file " << texture2DFilename.getValue() << " not found." << sendl;
+        serr << "OglTexture2D: Error : OglTexture2D file " << texture2DFilename.getFullPath() << " not found." << sendl;
         return;
     }
 
