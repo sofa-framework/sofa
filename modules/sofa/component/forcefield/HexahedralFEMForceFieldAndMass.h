@@ -86,9 +86,15 @@ public:
     // -- Mass interface
     virtual  void addMDx(VecDeriv& f, const VecDeriv& dx, double factor = 1.0);
 
+    ///// WARNING this method only add diagonal elements in the given matrix !
     virtual void addMToMatrix(defaulttype::BaseMatrix * matrix, double mFact, unsigned int &offset);
 
+    ///// WARNING this method only add diagonal elements in the given matrix !
     virtual void addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset);
+
+    ///// WARNING this method only add diagonal elements in the given matrix !
+    virtual void addMBKToMatrix(sofa::defaulttype::BaseMatrix * matrix,
+            double mFact, double bFact, double kFact, unsigned int &offset);
 
     virtual  void accFromF(VecDeriv& a, const VecDeriv& f);
 
