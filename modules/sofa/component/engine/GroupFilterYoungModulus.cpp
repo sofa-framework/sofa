@@ -16,65 +16,50 @@
 * along with this library; if not, write to the Free Software Foundation,     *
 * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
 *******************************************************************************
-*                              SOFA :: Framework                              *
+*                               SOFA :: Modules                               *
 *                                                                             *
-* Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
-* H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
-* M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-
-#ifndef SOFA_CORE_COMPONENTMODEL_LOADER_PRIMITIVEGROUP_H_
-#define SOFA_CORE_COMPONENTMODEL_LOADER_PRIMITIVEGROUP_H_
-
-#include <sofa/core/core.h>
-#include <sofa/core/componentmodel/loader/Material.h>
+#define SOFA_COMPONENT_ENGINE_GROUPFILTERYOUNGMODULUS_CPP
+#include <sofa/component/engine/GroupFilterYoungModulus.inl>
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/core/ObjectFactory.h>
 
 namespace sofa
 {
 
-namespace core
+namespace component
 {
 
-namespace componentmodel
+namespace engine
 {
 
-namespace loader
-{
+using namespace sofa::defaulttype;
 
-class PrimitiveGroup
-{
-public:
-    int p0, nbp;
-    std::string materialName;
-    std::string groupName;
-    int materialId;
-    inline friend std::ostream& operator << (std::ostream& out, const PrimitiveGroup &g)
-    {
-        out << g.groupName << " " << g.materialName << " " << g.materialId << " " << g.p0 << " " << g.nbp;
-        return out;
-    }
-    inline friend std::istream& operator >> (std::istream& in, PrimitiveGroup &g)
-    {
-        in >> g.groupName >> g.materialName >> g.materialId >> g.p0 >> g.nbp;
-        return in;
-    }
+SOFA_DECL_CLASS(GroupFilterYoungModulus)
 
-    bool operator <(const PrimitiveGroup& p) const
-    {
-        return p0 < p.p0;
-    }
+int GroupFilterYoungModulusClass = core::RegisterObject("This class gives a vector of young modulus according of a list of defined groups")
+#ifndef SOFA_FLOAT
+        .add< GroupFilterYoungModulus<Vec3dTypes> >()
+#endif //SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+        .add< GroupFilterYoungModulus<Vec3fTypes> >()
+#endif //SOFA_DOUBLE
+        ;
+/*
+#ifndef SOFA_FLOAT
+template class SOFA_COMPONENT_ENGINE_API GroupFilterYoungModulus<Vec3dTypes>;
+#endif //SOFA_FLOAT
+#ifndef SOFA_DOUBLE
+template class SOFA_COMPONENT_ENGINE_API GroupFilterYoungModulus<Vec3fTypes>;
+#endif //SOFA_DOUBLE
+*/
 
-    PrimitiveGroup() : p0(0), nbp(0), materialId(-1) {}
-};
+} // namespace engine
 
-} // namespace loader
-
-} // namespace componentmodel
-
-} // namespace core
+} // namespace component
 
 } // namespace sofa
 
-#endif /* SOFA_CORE_COMPONENTMODEL_LOADER_PRIMITIVEGROUP_H_ */
