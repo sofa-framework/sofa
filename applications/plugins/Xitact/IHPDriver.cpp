@@ -82,15 +82,19 @@ IHPDriver::IHPDriver()
     : Scale(initData(&Scale, 1.0, "Scale","Default scale applied to the Phantom Coordinates. "))
     , permanent(initData(&permanent, false, "permanent" , "Apply the force feedback permanently"))
     , indexTool(initData(&indexTool, (int)0,"toolIndex", "index of the tool to simulate (if more than 1). Index 0 correspond to first tool."))
+    , showToolStates(initData(&showToolStates, false, "showToolStates" , "Display states and forces from the tool."))
+    , testFF(initData(&testFF, false, "testFF" , "If true will add force when closing handle. As if tool was entering an elastic body."))
 {
 
     this->f_listening.setValue(true);
     data.forceFeedback = new NullForceFeedback();
     noDevice = false;
+    graspElasticMode = false;
 }
 
 IHPDriver::~IHPDriver()
 {
+    xiTrocarRelease();
 }
 
 void IHPDriver::cleanup()
@@ -154,7 +158,6 @@ void IHPDriver::bwdInit()
     //std::cerr  << "IHPDriver::init() done" << std::endl;
 
     xiTrocarAcquire();
-
     char name[1024];
     char serial[16];
     int nbr = this->indexTool.getValue();
@@ -163,6 +166,7 @@ void IHPDriver::bwdInit()
     std::cout << "Tool: " << nbr << std::endl;
     std::cout << "name: " << name << std::endl;
     std::cout << "serial: " << serial << std::endl;
+
     xiTrocarRelease();
 }
 
@@ -200,7 +204,64 @@ void IHPDriver::reinit()
     this->bwdInit();
 
     this->reinitVisual();
+}
 
+
+void IHPDriver::updateForce()
+{
+    // Quick FF test. Add force when using handle. Like in documentation.
+    int tool = indexTool.getValue();
+    float graspReferencePoint[3] = { 0.0f, 0.0f, 0.0f };
+    float kForceScale = 100.0;
+    XiToolForce manualForce = { 0 };
+
+    // Checking either handle is open or not:
+    if ( (data.simuState.opening <= 0.1) && (!graspElasticMode)) //Activate
+    {
+        graspElasticMode = true;
+        for (unsigned int i = 0; i < 3; ++i)
+            graspReferencePoint[i] = data.simuState.trocarDir[i] * data.simuState.toolDepth;
+    }
+
+    if ( (data.simuState.opening > 0.1) && (graspElasticMode)) //Desactivate
+    {
+        graspElasticMode = false;
+        xiTrocarSetForce(tool, &manualForce);
+        xiTrocarFlushForces();
+    }
+
+    if (graspElasticMode)
+    {
+        for (unsigned int i = 0; i<3; ++i)
+            manualForce.tipForce[i] = (graspReferencePoint[i] - (data.simuState.trocarDir[i] * data.simuState.toolDepth)) * kForceScale;
+
+        if (showToolStates.getValue())
+        {
+            char toolID[16];
+            xiTrocarGetSerialNumber(tool,toolID);
+            std::cout << toolID << " => Forces = " << manualForce.tipForce[0] << " | " << manualForce.tipForce[1] << " | " << manualForce.tipForce[2] << std::endl;
+        }
+
+        manualForce.rollForce = 1.0f;
+        xiTrocarSetForce(tool, &manualForce);
+        xiTrocarFlushForces();
+    }
+}
+
+
+void IHPDriver::displayState()
+{
+    // simple function print the current device state to the screen.
+    char toolID[16];
+    xiTrocarGetSerialNumber(indexTool.getValue(),toolID);
+    XiToolState state = data.simuState;
+    std::cout << toolID
+            << " => X = " << state.trocarDir[0]
+            << ", Y = " << state.trocarDir[1]
+            << ", Z = " << state.trocarDir[2]
+            << ", Ins = " << state.toolDepth
+            << ", Roll(rad) = " << state.toolRoll
+            << ", Open = " << state.opening << std::endl;
 }
 
 void IHPDriver::handleEvent(core::objectmodel::Event *event)
@@ -225,6 +286,8 @@ void IHPDriver::handleEvent(core::objectmodel::Event *event)
         xiTrocarQueryStates();
         xiTrocarGetState(indexTool.getValue(), &state);
 
+        // saving informations in class structure.
+        data.simuState = state;
 
         Vector3 dir;
 
@@ -249,7 +312,11 @@ void IHPDriver::handleEvent(core::objectmodel::Event *event)
         }
 
 
+        if (showToolStates.getValue()) // print tool state
+            this->displayState();
 
+        if (testFF.getValue()) // try FF when closing handle
+            this->updateForce();
 
 
         if(_mstate)
@@ -274,7 +341,6 @@ void IHPDriver::handleEvent(core::objectmodel::Event *event)
         }
 
     }
-
 
 
     /*
@@ -369,6 +435,22 @@ void IHPDriver::handleEvent(core::objectmodel::Event *event)
 
     */
 }
+
+void IHPDriver::onKeyPressedEvent(core::objectmodel::KeypressedEvent *kpe)
+{
+    (void)kpe;
+
+
+}
+
+void IHPDriver::onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *kre)
+{
+    (void)kre;
+    //OmniVisu.setValue(false);
+
+}
+
+
 
 
 

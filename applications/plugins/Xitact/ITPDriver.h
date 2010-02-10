@@ -110,6 +110,14 @@ private:
     bool noDevice;
     Quat fromGivenDirection( Vector3& dir,  Vector3& local_dir, Quat old_quat);
 
+    XiToolState restState;
+
+    void mainButtonPushed();
+    void rightButtonPushed();
+    void leftButtonPushed();
+
+    void updateForce();
+
 
 
 
