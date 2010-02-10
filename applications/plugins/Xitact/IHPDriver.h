@@ -80,7 +80,9 @@ class IHPDriver : public Controller
 public:
     Data<double> Scale;
     Data<bool> permanent;
-    Data <int> indexTool;
+    Data<int> indexTool;
+    Data<bool> showToolStates;
+    Data<bool> testFF;
 
 
     XiToolData	data;
@@ -97,10 +99,17 @@ public:
 
     void setForceFeedback(ForceFeedback* ff);
 
+    void onKeyPressedEvent(core::objectmodel::KeypressedEvent *);
+    void onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *);
+
+    void updateForce();
+    void displayState();
 
 
     void setDataValue();
     void reinitVisual();
+
+
 
 private:
     sofa::core::componentmodel::behavior::MechanicalState<Vec1dTypes> *_mstate;
@@ -108,6 +117,8 @@ private:
     sofa::component::visualmodel::OglModel *visu_base, *visu_end;
     bool noDevice;
     Quat fromGivenDirection( Vector3& dir,  Vector3& local_dir, Quat old_quat);
+
+    bool graspElasticMode;
 
 
 

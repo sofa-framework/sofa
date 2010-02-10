@@ -105,6 +105,7 @@ void ITPDriver::setForceFeedback(ForceFeedback* ff)
     // the forcefeedback is already set
     if(data.forceFeedback == ff)
     {
+        std::cout << "the forcefeedback is already set"  << std::endl;
         return;
     }
 
@@ -160,6 +161,7 @@ void ITPDriver::bwdInit()
     std::cout << "Tool: " << nbr << std::endl;
     std::cout << "name: " << name << std::endl;
     std::cout << "serial: " << serial << std::endl;
+
     xiTrocarRelease();
 }
 
@@ -198,6 +200,25 @@ void ITPDriver::reinit()
 
     this->reinitVisual();
 
+    this->updateForce();
+
+}
+
+
+void ITPDriver::updateForce()
+{
+    std::cout << "updating manually force" << std::endl;
+
+    xiTrocarAcquire();
+    XiToolState state;
+    xiTrocarQueryStates();
+    xiTrocarGetState(indexTool.getValue(), &state);
+    XiToolForce manualForce = { 0 };
+
+    for (unsigned int i = 0; i<3; ++i)
+        manualForce.tipForce[i] = 10.0;
+
+    manualForce.rollForce = 1.0f;
 }
 
 void ITPDriver::handleEvent(core::objectmodel::Event *event)
@@ -221,7 +242,6 @@ void ITPDriver::handleEvent(core::objectmodel::Event *event)
 
         xiTrocarQueryStates();
         xiTrocarGetState(indexTool.getValue(), &state);
-
 
         Vector3 dir;
 
@@ -270,9 +290,19 @@ void ITPDriver::handleEvent(core::objectmodel::Event *event)
 
         }
 
+
+        // ITP button event handling
+        XiStateFlags stateFlag;
+        stateFlag = state.flags - restState.flags;
+
+        if (stateFlag == XI_ToolButtonMain)
+            this->mainButtonPushed();
+        else if (stateFlag == XI_ToolButtonLeft)
+            this->leftButtonPushed();
+        else if (stateFlag == XI_ToolButtonRight)
+            this->rightButtonPushed();
+
     }
-
-
 
     /*
     	//std::cout<<"NewEvent detected !!"<<std::endl;
@@ -394,6 +424,24 @@ Quat ITPDriver::fromGivenDirection( Vector3& dir,  Vector3& local_dir, Quat old_
 
     return old_quat;
 }
+
+
+void ITPDriver::mainButtonPushed()
+{
+    std::cout << "ITPDriver::mainButtonPushed() not yet implemented" << std::endl;
+}
+
+void ITPDriver::rightButtonPushed()
+{
+    std::cout << "ITPDriver::rightButtonPushed() not yet implemented" << std::endl;
+}
+
+void ITPDriver::leftButtonPushed()
+{
+    std::cout << "ITPDriver::leftButtonPushed() not yet implemented" << std::endl;
+}
+
+
 int ITPDriverClass = core::RegisterObject("Driver and Controller of ITP Xitact Device")
         .add< ITPDriver >();
 

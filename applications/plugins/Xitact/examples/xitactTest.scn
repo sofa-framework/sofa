@@ -29,7 +29,7 @@
       <!--	<UniformMass mass="10.0 1  2.0 0 0  0 10.0 0  0 0 10.0"/>	-->
       <RestShapeSpringsForceField points="0 1 2 3 4 5" stiffness="1000000 1000000 1000000 1000 1000000 1000000 " printLog="true"/>
       <UncoupledConstraintCorrection compliance="0.000001 0.000001 0.000001 0.001 0.000001 0.000001 " />
-      <IHPDriver />
+      <IHPDriver toolIndex="0"/>
 
       <Node name="Jaws">
         <MechanicalObject name="GrasperDOFs" template="Rigid" position="0 0 0 0 0 0 1  0 0 0 0 0 0 1  0 0 0 0 0 0 1  0 0 0 0 0 0 1  "/>
@@ -48,7 +48,7 @@
           <RigidMapping name="MM->CM mapping" object1="../.." index="1"/>
         </Node>
 
-   
+		<!-- broche N1 -->
         <Node name="Grasp1_1VM">
           <OglModel name="VM" fileMesh="dt/mors1.trian" color="0.9 0.9 0.2 1.0" scale="0.001"  dy="0.025"/>
           <RigidMapping object1="../.." object2="VM" index="2"/>
@@ -64,6 +64,7 @@
           <RigidMapping object1="../.." object2="CM" index="2"/>
         </Node>
 
+		<!-- broche N2 -->
         <Node name="Grasp1_2VM">
           <OglModel name="VM" fileMesh="dt/mors2.trian" color="0.9 0.9 0.2 1.0" scale="0.001"   dy="0.025"/>
           <RigidMapping object1="../.." object2="VM" index="3"/>
@@ -84,6 +85,7 @@
 
       <ArticulatedHierarchyContainer/>
 
+	  <!-- centre de rotation -->
       <Node name="articulationCenters">
         <Node name="articulationCenter1">
           <ArticulationCenter parentIndex="0" childIndex="1" posOnParent="0 0 0" posOnChild="0 0 0"/>
@@ -95,6 +97,7 @@
           </Node>
         </Node>
 
+		<!-- liaison manche et pince -->
         <Node name="articulationCenter1_1">
           <ArticulationCenter parentIndex="1" childIndex="2" posOnParent="0 0 0" posOnChild="0 0.0 0"/>
           <Node name="articulations">
@@ -108,7 +111,7 @@
             <Articulation translation="0" rotation="1" rotationAxis="-1 0 0" articulationIndex="5"/>
           </Node>
         </Node>
- 
+
       </Node>
 
     </Node>
