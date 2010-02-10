@@ -73,10 +73,15 @@ public:
 
     EdgeSetGeometryAlgorithms()
         : PointSetGeometryAlgorithms<DataTypes>()
-        , showEdgeIndices(core::objectmodel::Base::initData(&showEdgeIndices, (bool) false, "showEdgeIndices", "Debug : view Edge indices"))
-        , _draw(core::objectmodel::Base::initData(&_draw, false, "drawEdges","if true, draw the edges in the topology"))
+        , showEdgeIndices(core::objectmodel::Base::initData(&showEdgeIndices, (bool) false, "showEdgeIndices", "Debug : view Edge indices."))
+        , _draw(core::objectmodel::Base::initData(&_draw, false, "drawEdges","if true, draw the edges in the topology."))
+        , _drawColor(initData(&_drawColor, Vector3(0.4,1.0,0.3), "drawColorEdges", "RGB code color used to draw edges."))
     {
     }
+
+    //virtual void reinit();
+
+    virtual void draw();
 
     virtual ~EdgeSetGeometryAlgorithms() {}
 
@@ -130,11 +135,10 @@ public:
 
     void writeMSHfile(const char *filename) const;
 
-    virtual void draw();
-
 protected:
     Data<bool> showEdgeIndices;
     Data<bool> _draw;
+    Data<Vector3> _drawColor;
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_TOPOLOGY_EDGESETGEOMETRYALGORITHMS_CPP)

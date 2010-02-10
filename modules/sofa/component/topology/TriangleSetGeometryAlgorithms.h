@@ -63,6 +63,7 @@ public:
         : EdgeSetGeometryAlgorithms<DataTypes>()
         ,showTriangleIndices (core::objectmodel::Base::initData(&showTriangleIndices, (bool) false, "showTriangleIndices", "Debug : view Triangle indices"))
         , _draw(core::objectmodel::Base::initData(&_draw, false, "drawTriangles","if true, draw the triangles in the topology"))
+        , _drawColor(initData(&_drawColor, Vector3(0.2,1.0,1.0), "drawColorTriangles", "RGB code color used to draw edges."))
     {
     }
 
@@ -252,6 +253,7 @@ public:
 protected:
     Data<bool> showTriangleIndices;
     Data<bool> _draw;
+    Data<Vector3> _drawColor;
 
 };
 

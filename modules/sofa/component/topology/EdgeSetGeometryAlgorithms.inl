@@ -39,6 +39,13 @@ namespace topology
 {
 using namespace sofa::defaulttype;
 
+/*template<class DataTypes>
+ void EdgeSetGeometryAlgorithms< DataTypes>::reinit()
+ {
+    P
+ }
+*/
+
 template< class DataTypes>
 typename DataTypes::Real EdgeSetGeometryAlgorithms< DataTypes >::computeEdgeLength( const EdgeID i) const
 {
@@ -472,7 +479,8 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw()
     {
         Mat<4,4, GLfloat> modelviewM;
         const VecCoord& coords = *(this->object->getX());
-        glColor3f(1.0,0.0,1.0);
+        const Vector3& color = _drawColor.getValue();
+        glColor3f(color[0], color[1], color[2]);
         glDisable(GL_LIGHTING);
         float scale = PointSetGeometryAlgorithms<DataTypes>::PointIndicesScale;
 
@@ -534,7 +542,9 @@ void EdgeSetGeometryAlgorithms<DataTypes>::draw()
         if (!edgeArray.empty())
         {
             glDisable(GL_LIGHTING);
-            glColor3f(1.0,0.0,1.0);
+            const Vector3& color = _drawColor.getValue();
+            glColor3f(color[0], color[1], color[2]);
+
             const VecCoord& coords = *(this->object->getX());
 
             glBegin(GL_LINES);
