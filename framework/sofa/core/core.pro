@@ -3,6 +3,26 @@
 # Subdir relative project main directory: ./framework/sofa/core
 # Target is a library:  sofacore$$LIBSUFFIX
 
+SOFA_DIR = ../../..
+TEMPLATE = lib
+TARGET = sofacore
+
+include($${SOFA_DIR}/sofa.cfg)
+
+CONFIG += $$CONFIGLIBRARIES
+
+CONFIG -= staticlib
+CONFIG += dll
+
+LIBS += -lsofahelper$$LIBSUFFIX -lsofadefaulttype$$LIBSUFFIX
+LIBS += $$SOFA_EXT_LIBS
+
+DEFINES += SOFA_BUILD_CORE
+
+# Make sure there are no cross-dependencies
+INCLUDEPATH -= $$SOFA_DIR/modules
+INCLUDEPATH -= $$SOFA_DIR/applications
+
 HEADERS += \
           core.h \
           VecId.h \
@@ -103,7 +123,7 @@ HEADERS += \
           ObjectFactory.h \
           SofaLibrary.h \
           CategoryLibrary.h \
-          ComponentLibrary.h
+          ComponentLibrary.h 
 
 SOURCES +=  \
           objectmodel/Base.cpp \
@@ -157,22 +177,17 @@ SOURCES +=  \
           componentmodel/behavior/MixedInteractionConstraint.cpp \
           componentmodel/loader/MeshLoader.cpp 
 
-SOFA_DIR = ../../..
-TEMPLATE = lib
-TARGET = sofacore
+contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 
-include($${SOFA_DIR}/sofa.cfg)
+HEADERS += \
+ componentmodel/fem/BaseShapeFunction.h 
 
-CONFIG += $$CONFIGLIBRARIES
+SOURCES +=  \
+ componentmodel/fem/BaseShapeFunction.cpp 
+} # END SOFA_DEV
 
-CONFIG -= staticlib
-CONFIG += dll
 
-LIBS += -lsofahelper$$LIBSUFFIX -lsofadefaulttype$$LIBSUFFIX
-LIBS += $$SOFA_EXT_LIBS
+ 
 
-DEFINES += SOFA_BUILD_CORE
 
-# Make sure there are no cross-dependencies
-INCLUDEPATH -= $$SOFA_DIR/modules
-INCLUDEPATH -= $$SOFA_DIR/applications
+
