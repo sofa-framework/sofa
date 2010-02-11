@@ -189,6 +189,7 @@ SOURCES += \
 	CudaComplianceMatrixUpdateManager.cpp \
 	CudaTetrahedronCuttingManager.cpp \
 	CudaDiagonalMass.cpp \
+	CudaBilateralInteractionConstraint.cpp \
 
 CUDA_SOURCES += \
 	   	CudaLCP.cu \
