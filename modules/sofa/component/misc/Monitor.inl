@@ -75,6 +75,9 @@ Monitor<DataTypes>::Monitor()
     ,internalDt(0.0)
 {
     if (!f_listening.isSet()) f_listening.setValue(true);
+    monitoring.setGroup("Monitor");
+    monitoring.setReadOnly(true);
+
 }
 /////////////////////////// end Monitor ///////////////////////////////////
 

@@ -363,11 +363,13 @@ public:
         rows = 0;
         int dataRows = rhelper::size(d);
 
+
+
         if (dataRows > 0)
             cols = vhelper::size(*rhelper::get(d,0));
         else
             cols = vhelper::size(row_type());
-        wSize = new QSpinBox(0, INT_MAX, 1, parent);
+
         if (FLAGS & TABLE_HORIZONTAL)
             wTable = new QTableUpdater(cols, 0, parent);
         else
@@ -375,7 +377,15 @@ public:
 
         widget=_widget;
 
-        wDisplay = new QPushButtonUpdater( QString("Display the values"), parent);
+        QHBoxLayout* mainlayout = new QHBoxLayout(widget);
+        QVBoxLayout* vlayout = new QVBoxLayout();
+        wSize = new QSpinBox(0, INT_MAX, 1, widget);
+        wDisplay = new QPushButtonUpdater( QString("Display the values"), widget);
+        vlayout->addWidget(wDisplay);
+        vlayout->addWidget(wSize);
+
+        mainlayout->addLayout(vlayout);
+        mainlayout->addWidget(wTable);
         wDisplay->setToggleButton(true);
         wDisplay->setOn(dataRows < MAX_NUM_ELEM && dataRows != 0 );
         wDisplay->setAutoDefault(false);

@@ -1,12 +1,15 @@
 #ifndef SOFA_GUI_QT_DISPLAYDATAWIDGET_H
 #define SOFA_GUI_QT_DISPLAYDATAWIDGET_H
 
+#include "DataWidget.h"
 #ifdef SOFA_QT4
 #include <QWidget>
 #include <QLineEdit>
 #include <QTextEdit>
 #include <Q3GroupBox>
+#include <QSlider>
 #else
+#include <qslider.h>
 #include <qwidget.h>
 #include <qtextedit.h>
 #include <qlineedit.h>
@@ -63,7 +66,7 @@ protected:
 
 
 
-class QDataSimpleEdit : public QWidget
+class QDataSimpleEdit : public DataWidget
 {
     Q_OBJECT
     typedef enum QEditType { TEXTEDIT, LINEEDIT } QEditType;
@@ -79,19 +82,36 @@ class QDataSimpleEdit : public QWidget
         QEditWidgetPtr widget;
     } QSimpleEdit;
 public :
-    QDataSimpleEdit(QWidget*, core::objectmodel::BaseData*, bool readonly);
-    unsigned int numColumnWidget() {return 3;}
-    unsigned int sizeWidget() {return 1;}
-public slots:
-    void UpdateData();
-    void UpdateWidget();
-    void setWidgetDirty(bool=true);
-signals :
-    void WidgetDirty(bool);
+    QDataSimpleEdit(QWidget*, const char* name, core::objectmodel::BaseData*);
+    virtual unsigned int numColumnWidget() {return 3;}
+    virtual unsigned int sizeWidget() {return 1;}
+    virtual bool createWidgets();
 protected:
+    virtual void readFromData();
+    virtual void writeToData();
     QSimpleEdit innerWidget_;
-    core::objectmodel::BaseData* data_;
 };
+
+class QPoissonRatioWidget : public TDataWidget<double>
+{
+    Q_OBJECT
+public :
+    QPoissonRatioWidget(QWidget*, const char*, core::objectmodel::TData<double>*);
+    virtual bool createWidgets();
+
+protected slots :
+    void changeLineEditValue();
+    void changeSliderValue();
+
+protected:
+    virtual void readFromData();
+    virtual void writeToData();
+    QSlider* slider;
+    QLineEdit* lineEdit;
+
+};
+
+
 
 
 
