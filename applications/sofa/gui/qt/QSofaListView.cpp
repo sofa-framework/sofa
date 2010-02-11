@@ -552,7 +552,9 @@ void QSofaListView::HideDatas()
     if( object_.type == typeObject )
     {
         emit Lock(true);
+        Unfreeze();
         graphListener_->removeDatas(object_.ptr.Object);
+        Freeze();
         emit Lock(false);
     }
 }
@@ -562,7 +564,9 @@ void QSofaListView::ShowDatas()
     if ( object_.type == typeObject )
     {
         emit Lock(true);
+        Unfreeze();
         graphListener_->addDatas(object_.ptr.Object);
+        Freeze();
         emit Lock(false);
     }
 }
