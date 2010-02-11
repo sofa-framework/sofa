@@ -93,14 +93,14 @@ public:
 
 
     /// get Mechanical State 1 where the constraint will be expressed (can be a Mapped mechanical state)
-    virtual BaseMechanicalState* getConstrainedMechModel1() {return constrainedObject1;}
+    virtual BaseMechanicalState* getConstrainedMechModel1() const {return constrainedObject1;}
     /// get Mechanical State 2 where the constraint will be expressed (can be a Mapped mechanical state)
-    virtual BaseMechanicalState* getConstrainedMechModel2() {return constrainedObject2;}
+    virtual BaseMechanicalState* getConstrainedMechModel2() const {return constrainedObject2;}
 
     /// get Mechanical State 1 where the constraint will be solved
-    virtual BaseMechanicalState* getSimulatedMechModel1() {return simulatedObject1;}
+    virtual BaseMechanicalState* getSimulatedMechModel1() const {return simulatedObject1;}
     /// get Mechanical State 2 where the constraint will be solved
-    virtual BaseMechanicalState* getSimulatedMechModel2() {return simulatedObject2;}
+    virtual BaseMechanicalState* getSimulatedMechModel2() const {return simulatedObject2;}
 
 
     /// Pre-construction check method called by ObjectFactory.
@@ -155,8 +155,8 @@ public:
 protected:
     /// Insert in the Vector C (VecConst) of each constrainedObject the equation expressed using SparseVecDeriv
     /// Returns the index where the lines have been entered
-    unsigned int  registerEquationInJ1( SparseVecDeriv1 &C1);
-    unsigned int  registerEquationInJ2( SparseVecDeriv2 &C2);
+    unsigned int  registerEquationInJ1( const SparseVecDeriv1 &C1);
+    unsigned int  registerEquationInJ2( const SparseVecDeriv2 &C2);
 
     MechanicalState<DataTypes1> *constrainedObject1;
     MechanicalState<DataTypes2> *constrainedObject2;
