@@ -70,6 +70,7 @@ public:
 
     void removeTetra(sofa::helper::vector<TetraID>& ind_ta);
 
+    void subDivideTetrahedronsWithPlane(sofa::helper::vector< sofa::helper::vector<double> >& coefs, sofa::helper::vector<EdgeID>& intersectedEdgeID, Coord /*planePos*/, Coord planeNormal);
     void subDivideTetrahedronsWithPlane(sofa::helper::vector<Coord>& intersectedPoints, sofa::helper::vector<EdgeID>& intersectedEdgeID, Coord planePos, Coord planeNormal);
     int subDivideTetrahedronWithPlane(TetraID tetraIdx, sofa::helper::vector<EdgeID>& intersectedEdgeID, sofa::helper::vector<unsigned int>& intersectedPointID, Coord planeNormal, sofa::helper::vector<Tetra>& toBeAddedTetra);
 
@@ -79,6 +80,7 @@ private:
     TetrahedronSetTopologyModifier*						m_modifier;
     TetrahedronSetGeometryAlgorithms< DataTypes >*		m_geometryAlgorithms;
     unsigned int	m_intialNbPoints;
+    Real m_baryLimit;
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_TOPOLOGY_TETRAHEDRONSETTOPOLOGYALGORITHMS_CPP)
