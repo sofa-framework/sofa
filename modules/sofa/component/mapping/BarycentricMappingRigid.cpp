@@ -111,14 +111,14 @@ void BarycentricMapperTetrahedronSetTopology<defaulttype::Vec3dTypes, defaulttyp
     IPTR_BARCPP_INIT("out size = " << out.size() << endl);
 #endif
 
-    _container->getContext()->get ( _geomAlgo );
+    _fromContainer->getContext()->get ( _fromGeomAlgo );
     //initialTetraPos = in;
     //prevTetraRotation.resize(out.size());
     //initTetraRotation.resize(out.size());
     //initRigidOrientation.resize(out.size());
 
     int outside = 0;
-    const sofa::helper::vector<topology::Tetrahedron>& tetrahedra = this->topology->getTetrahedra();
+    const sofa::helper::vector<topology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
 
     sofa::helper::vector<Matrix3> bases;
     sofa::helper::vector<Vector3> centers;
@@ -206,7 +206,7 @@ void BarycentricMapperTetrahedronSetTopology<defaulttype::Vec3dTypes, defaulttyp
     //get number of point being mapped
     unsigned int nbPoints = map.getValue().size();
     out.resize (nbPoints);
-    const sofa::helper::vector<topology::Tetrahedron>& tetrahedra = this->topology->getTetrahedra();
+    const sofa::helper::vector<topology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
     //glPointPositions.resize( nbPoints );
     //for (int vt=0; vt < 4; vt++)
     //    glVertexPositions[vt].resize( nbPoints );
@@ -400,10 +400,10 @@ void BarycentricMapperTetrahedronSetTopology<defaulttype::Vec3dTypes, defaulttyp
 template <>
 void BarycentricMapperTetrahedronSetTopology<defaulttype::Vec3dTypes, defaulttype::Rigid3dTypes>::applyJT ( defaulttype::Vec3dTypes::VecDeriv& out, const defaulttype::Rigid3dTypes::VecDeriv& in )
 {
-    const sofa::helper::vector<topology::Tetrahedron>& tetrahedra = this->topology->getTetrahedra();
+    const sofa::helper::vector<topology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
 #ifdef SOFA_IP_TRACES
     IPTR_BARCPP_APPLYJT( "BarycentricMapperTetrahedronSetTopology::applyJT BEGIN " << endl);
-    //unsigned int nbTetra = this->topology->getTetrahedra().size();
+    //unsigned int nbTetra = this->fromTopology->getTetrahedra().size();
     //IPTR_BARCPP_APPLYJT( "  number of tetrahedra = " << nbTetra );
 #endif
     if ((!maskTo)||(maskTo&& !(maskTo->isInUse())) )
@@ -538,7 +538,7 @@ void BarycentricMapperTetrahedronSetTopology<defaulttype::Vec3dTypes, defaulttyp
     IPTR_BARCPP_APPLYJ( "Velocities: " << in << endl);
 #endif
     out.resize ( map.getValue().size() );
-    const sofa::helper::vector<topology::Tetrahedron>& tetrahedra = this->topology->getTetrahedra();
+    const sofa::helper::vector<topology::Tetrahedron>& tetrahedra = this->fromTopology->getTetrahedra();
 
 
     if ((!maskTo)||(maskTo&& !(maskTo->isInUse())) )
@@ -603,6 +603,539 @@ void BarycentricMapperTetrahedronSetTopology<defaulttype::Vec3dTypes, defaulttyp
 #endif
 } //applyJ
 
+
+template <>
+void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3dTypes, defaulttype::Rigid3dTypes>::handleTopologyChange()
+{
+
+    if ( this->fromTopology->firstChange() == this->fromTopology->lastChange() )
+        return;
+
+    std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itBegin = this->fromTopology->firstChange();
+    std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itEnd = this->fromTopology->lastChange();
+
+    for ( std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator changeIt = itBegin;
+            changeIt != itEnd; ++changeIt )
+    {
+        const core::componentmodel::topology::TopologyChangeType changeType = ( *changeIt )->getChangeType();
+        switch ( changeType )
+        {
+            //TODO: implementation of BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
+        case core::componentmodel::topology::ENDING_EVENT:       ///< To notify the end for the current sequence of topological change events
+        {
+            if(!_invalidIndex.empty())
+            {
+                helper::vector<MappingData>& mapData = *(map.beginEdit());
+
+                for ( std::set<int>::const_iterator iter = _invalidIndex.begin();
+                        iter != _invalidIndex.end(); ++iter )
+                {
+                    const int j = *iter;
+                    if ( mapData[j].in_index == -1 ) // compute new mapping
+                    {
+                        //	std::cout << "BarycentricMapperHexahedronSetTopology : new mapping" << std::endl;
+                        Vector3 coefs;
+                        defaulttype::Vec3dTypes::Coord pos;
+                        pos[0] = mapData[j].baryCoords[0];
+                        pos[1] = mapData[j].baryCoords[1];
+                        pos[2] = mapData[j].baryCoords[2];
+
+                        // find nearest cell and barycentric coords
+                        Real distance = 1e10;
+
+                        int index = _fromGeomAlgo->findNearestElementInRestPos ( pos, coefs, distance );
+
+                        if ( index != -1 )
+                        {
+                            mapData[j].baryCoords[0] = ( Real ) coefs[0];
+                            mapData[j].baryCoords[1] = ( Real ) coefs[1];
+                            mapData[j].baryCoords[2] = ( Real ) coefs[2];
+                            mapData[j].in_index = index;
+                        }
+                    }
+                }
+
+                map.endEdit();
+                _invalidIndex.clear();
+            }
+        }
+        break;
+        case core::componentmodel::topology::POINTSINDICESSWAP:  ///< For PointsIndicesSwap.
+            break;
+        case core::componentmodel::topology::POINTSADDED:        ///< For PointsAdded.
+            break;
+        case core::componentmodel::topology::POINTSREMOVED:      ///< For PointsRemoved.
+            break;
+        case core::componentmodel::topology::POINTSRENUMBERING:  ///< For PointsRenumbering.
+            break;
+        case core::componentmodel::topology::TRIANGLESADDED:  ///< For Triangles Added.
+            break;
+        case core::componentmodel::topology::TRIANGLESREMOVED:  ///< For Triangles Removed.
+            break;
+        case core::componentmodel::topology::HEXAHEDRAADDED:     ///< For HexahedraAdded.
+        {
+        }
+        break;
+        case core::componentmodel::topology::HEXAHEDRAREMOVED:   ///< For HexahedraRemoved.
+        {
+// std::cout << "BarycentricMapperHexahedronSetTopology() HEXAHEDRAREMOVED" << std::endl;
+            const unsigned int nbHexahedra = this->fromTopology->getNbHexahedra();
+
+            const sofa::helper::vector<unsigned int> &hexahedra = ( static_cast< const component::topology::HexahedraRemoved *> ( *changeIt ) )->getArray();
+//        sofa::helper::vector<unsigned int> hexahedra(tab);
+
+            for ( unsigned int i=0; i<hexahedra.size(); ++i )
+            {
+                // remove all references to the removed cubes from the mapping data
+                unsigned int cubeId = hexahedra[i];
+                for ( unsigned int j=0; j<map.getValue().size(); ++j )
+                {
+                    if ( map.getValue()[j].in_index == ( int ) cubeId ) // invalidate mapping
+                    {
+                        Vector3 coefs;
+                        coefs[0] = map.getValue()[j].baryCoords[0];
+                        coefs[1] = map.getValue()[j].baryCoords[1];
+                        coefs[2] = map.getValue()[j].baryCoords[2];
+
+                        defaulttype::Vec3dTypes::Coord restPos = _fromGeomAlgo->getRestPointPositionInHexahedron ( cubeId, coefs );
+
+                        helper::vector<MappingData>& vectorData = *(map.beginEdit());
+                        vectorData[j].in_index = -1;
+                        vectorData[j].baryCoords[0] = restPos[0];
+                        vectorData[j].baryCoords[1] = restPos[1];
+                        vectorData[j].baryCoords[2] = restPos[2];
+                        map.endEdit();
+
+                        _invalidIndex.insert(j);
+                    }
+                }
+            }
+
+            // renumber
+            unsigned int lastCubeId = nbHexahedra-1;
+            for ( unsigned int i=0; i<hexahedra.size(); ++i, --lastCubeId )
+            {
+                unsigned int cubeId = hexahedra[i];
+                for ( unsigned int j=0; j<map.getValue().size(); ++j )
+                {
+                    if ( map.getValue()[j].in_index == ( int ) lastCubeId )
+                    {
+                        helper::vector<MappingData>& vectorData = *(map.beginEdit());
+                        vectorData[j].in_index = cubeId;
+                        map.endEdit();
+                    }
+                }
+            }
+        }
+        break;
+        case core::componentmodel::topology::HEXAHEDRARENUMBERING: ///< For HexahedraRenumbering.
+            break;
+        default:
+            break;
+        }
+    }
+}
+
+
+
+template <>
+void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3fTypes, defaulttype::Rigid3fTypes>::handleTopologyChange()
+{
+
+    if ( this->fromTopology->firstChange() == this->fromTopology->lastChange() )
+        return;
+
+    std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itBegin = this->fromTopology->firstChange();
+    std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itEnd = this->fromTopology->lastChange();
+
+    for ( std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator changeIt = itBegin;
+            changeIt != itEnd; ++changeIt )
+    {
+        const core::componentmodel::topology::TopologyChangeType changeType = ( *changeIt )->getChangeType();
+        switch ( changeType )
+        {
+            //TODO: implementation of BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
+        case core::componentmodel::topology::ENDING_EVENT:       ///< To notify the end for the current sequence of topological change events
+        {
+            if(!_invalidIndex.empty())
+            {
+                helper::vector<MappingData>& mapData = *(map.beginEdit());
+
+                for ( std::set<int>::const_iterator iter = _invalidIndex.begin();
+                        iter != _invalidIndex.end(); ++iter )
+                {
+                    const int j = *iter;
+                    if ( mapData[j].in_index == -1 ) // compute new mapping
+                    {
+                        //	std::cout << "BarycentricMapperHexahedronSetTopology : new mapping" << std::endl;
+                        Vector3 coefs;
+                        defaulttype::Vec3fTypes::Coord pos;
+                        pos[0] = mapData[j].baryCoords[0];
+                        pos[1] = mapData[j].baryCoords[1];
+                        pos[2] = mapData[j].baryCoords[2];
+
+                        // find nearest cell and barycentric coords
+                        Real distance = 1e10;
+
+                        int index = _fromGeomAlgo->findNearestElementInRestPos ( pos, coefs, distance );
+
+                        if ( index != -1 )
+                        {
+                            mapData[j].baryCoords[0] = ( Real ) coefs[0];
+                            mapData[j].baryCoords[1] = ( Real ) coefs[1];
+                            mapData[j].baryCoords[2] = ( Real ) coefs[2];
+                            mapData[j].in_index = index;
+                        }
+                    }
+                }
+
+                map.endEdit();
+                _invalidIndex.clear();
+            }
+        }
+        break;
+        case core::componentmodel::topology::POINTSINDICESSWAP:  ///< For PointsIndicesSwap.
+            break;
+        case core::componentmodel::topology::POINTSADDED:        ///< For PointsAdded.
+            break;
+        case core::componentmodel::topology::POINTSREMOVED:      ///< For PointsRemoved.
+            break;
+        case core::componentmodel::topology::POINTSRENUMBERING:  ///< For PointsRenumbering.
+            break;
+        case core::componentmodel::topology::TRIANGLESADDED:  ///< For Triangles Added.
+            break;
+        case core::componentmodel::topology::TRIANGLESREMOVED:  ///< For Triangles Removed.
+            break;
+        case core::componentmodel::topology::HEXAHEDRAADDED:     ///< For HexahedraAdded.
+        {
+        }
+        break;
+        case core::componentmodel::topology::HEXAHEDRAREMOVED:   ///< For HexahedraRemoved.
+        {
+// std::cout << "BarycentricMapperHexahedronSetTopology() HEXAHEDRAREMOVED" << std::endl;
+            const unsigned int nbHexahedra = this->fromTopology->getNbHexahedra();
+
+            const sofa::helper::vector<unsigned int> &hexahedra = ( static_cast< const component::topology::HexahedraRemoved *> ( *changeIt ) )->getArray();
+//        sofa::helper::vector<unsigned int> hexahedra(tab);
+
+            for ( unsigned int i=0; i<hexahedra.size(); ++i )
+            {
+                // remove all references to the removed cubes from the mapping data
+                unsigned int cubeId = hexahedra[i];
+                for ( unsigned int j=0; j<map.getValue().size(); ++j )
+                {
+                    if ( map.getValue()[j].in_index == ( int ) cubeId ) // invalidate mapping
+                    {
+                        Vector3 coefs;
+                        coefs[0] = map.getValue()[j].baryCoords[0];
+                        coefs[1] = map.getValue()[j].baryCoords[1];
+                        coefs[2] = map.getValue()[j].baryCoords[2];
+
+                        defaulttype::Vec3fTypes::Coord restPos = _fromGeomAlgo->getRestPointPositionInHexahedron ( cubeId, coefs );
+
+                        helper::vector<MappingData>& vectorData = *(map.beginEdit());
+                        vectorData[j].in_index = -1;
+                        vectorData[j].baryCoords[0] = restPos[0];
+                        vectorData[j].baryCoords[1] = restPos[1];
+                        vectorData[j].baryCoords[2] = restPos[2];
+                        map.endEdit();
+
+                        _invalidIndex.insert(j);
+                    }
+                }
+            }
+
+            // renumber
+            unsigned int lastCubeId = nbHexahedra-1;
+            for ( unsigned int i=0; i<hexahedra.size(); ++i, --lastCubeId )
+            {
+                unsigned int cubeId = hexahedra[i];
+                for ( unsigned int j=0; j<map.getValue().size(); ++j )
+                {
+                    if ( map.getValue()[j].in_index == ( int ) lastCubeId )
+                    {
+                        helper::vector<MappingData>& vectorData = *(map.beginEdit());
+                        vectorData[j].in_index = cubeId;
+                        map.endEdit();
+                    }
+                }
+            }
+        }
+        break;
+        case core::componentmodel::topology::HEXAHEDRARENUMBERING: ///< For HexahedraRenumbering.
+            break;
+        default:
+            break;
+        }
+    }
+}
+
+
+template <>
+void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3dTypes, defaulttype::Rigid3fTypes>::handleTopologyChange()
+{
+
+    if ( this->fromTopology->firstChange() == this->fromTopology->lastChange() )
+        return;
+
+    std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itBegin = this->fromTopology->firstChange();
+    std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itEnd = this->fromTopology->lastChange();
+
+    for ( std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator changeIt = itBegin;
+            changeIt != itEnd; ++changeIt )
+    {
+        const core::componentmodel::topology::TopologyChangeType changeType = ( *changeIt )->getChangeType();
+        switch ( changeType )
+        {
+            //TODO: implementation of BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
+        case core::componentmodel::topology::ENDING_EVENT:       ///< To notify the end for the current sequence of topological change events
+        {
+            if(!_invalidIndex.empty())
+            {
+                helper::vector<MappingData>& mapData = *(map.beginEdit());
+
+                for ( std::set<int>::const_iterator iter = _invalidIndex.begin();
+                        iter != _invalidIndex.end(); ++iter )
+                {
+                    const int j = *iter;
+                    if ( mapData[j].in_index == -1 ) // compute new mapping
+                    {
+                        //	std::cout << "BarycentricMapperHexahedronSetTopology : new mapping" << std::endl;
+                        Vector3 coefs;
+                        defaulttype::Vec3dTypes::Coord pos;
+                        pos[0] = mapData[j].baryCoords[0];
+                        pos[1] = mapData[j].baryCoords[1];
+                        pos[2] = mapData[j].baryCoords[2];
+
+                        // find nearest cell and barycentric coords
+                        Real distance = 1e10;
+
+                        int index = _fromGeomAlgo->findNearestElementInRestPos ( pos, coefs, distance );
+
+                        if ( index != -1 )
+                        {
+                            mapData[j].baryCoords[0] = ( Real ) coefs[0];
+                            mapData[j].baryCoords[1] = ( Real ) coefs[1];
+                            mapData[j].baryCoords[2] = ( Real ) coefs[2];
+                            mapData[j].in_index = index;
+                        }
+                    }
+                }
+
+                map.endEdit();
+                _invalidIndex.clear();
+            }
+        }
+        break;
+        case core::componentmodel::topology::POINTSINDICESSWAP:  ///< For PointsIndicesSwap.
+            break;
+        case core::componentmodel::topology::POINTSADDED:        ///< For PointsAdded.
+            break;
+        case core::componentmodel::topology::POINTSREMOVED:      ///< For PointsRemoved.
+            break;
+        case core::componentmodel::topology::POINTSRENUMBERING:  ///< For PointsRenumbering.
+            break;
+        case core::componentmodel::topology::TRIANGLESADDED:  ///< For Triangles Added.
+            break;
+        case core::componentmodel::topology::TRIANGLESREMOVED:  ///< For Triangles Removed.
+            break;
+        case core::componentmodel::topology::HEXAHEDRAADDED:     ///< For HexahedraAdded.
+        {
+        }
+        break;
+        case core::componentmodel::topology::HEXAHEDRAREMOVED:   ///< For HexahedraRemoved.
+        {
+// std::cout << "BarycentricMapperHexahedronSetTopology() HEXAHEDRAREMOVED" << std::endl;
+            const unsigned int nbHexahedra = this->fromTopology->getNbHexahedra();
+
+            const sofa::helper::vector<unsigned int> &hexahedra = ( static_cast< const component::topology::HexahedraRemoved *> ( *changeIt ) )->getArray();
+//        sofa::helper::vector<unsigned int> hexahedra(tab);
+
+            for ( unsigned int i=0; i<hexahedra.size(); ++i )
+            {
+                // remove all references to the removed cubes from the mapping data
+                unsigned int cubeId = hexahedra[i];
+                for ( unsigned int j=0; j<map.getValue().size(); ++j )
+                {
+                    if ( map.getValue()[j].in_index == ( int ) cubeId ) // invalidate mapping
+                    {
+                        Vector3 coefs;
+                        coefs[0] = map.getValue()[j].baryCoords[0];
+                        coefs[1] = map.getValue()[j].baryCoords[1];
+                        coefs[2] = map.getValue()[j].baryCoords[2];
+
+                        defaulttype::Vec3dTypes::Coord restPos = _fromGeomAlgo->getRestPointPositionInHexahedron ( cubeId, coefs );
+
+                        helper::vector<MappingData>& vectorData = *(map.beginEdit());
+                        vectorData[j].in_index = -1;
+                        vectorData[j].baryCoords[0] = restPos[0];
+                        vectorData[j].baryCoords[1] = restPos[1];
+                        vectorData[j].baryCoords[2] = restPos[2];
+                        map.endEdit();
+
+                        _invalidIndex.insert(j);
+                    }
+                }
+            }
+
+            // renumber
+            unsigned int lastCubeId = nbHexahedra-1;
+            for ( unsigned int i=0; i<hexahedra.size(); ++i, --lastCubeId )
+            {
+                unsigned int cubeId = hexahedra[i];
+                for ( unsigned int j=0; j<map.getValue().size(); ++j )
+                {
+                    if ( map.getValue()[j].in_index == ( int ) lastCubeId )
+                    {
+                        helper::vector<MappingData>& vectorData = *(map.beginEdit());
+                        vectorData[j].in_index = cubeId;
+                        map.endEdit();
+                    }
+                }
+            }
+        }
+        break;
+        case core::componentmodel::topology::HEXAHEDRARENUMBERING: ///< For HexahedraRenumbering.
+            break;
+        default:
+            break;
+        }
+    }
+}
+
+
+
+template <>
+void BarycentricMapperHexahedronSetTopology<defaulttype::Vec3fTypes, defaulttype::Rigid3dTypes>::handleTopologyChange()
+{
+
+    if ( this->fromTopology->firstChange() == this->fromTopology->lastChange() )
+        return;
+
+    std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itBegin = this->fromTopology->firstChange();
+    std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator itEnd = this->fromTopology->lastChange();
+
+    for ( std::list<const core::componentmodel::topology::TopologyChange *>::const_iterator changeIt = itBegin;
+            changeIt != itEnd; ++changeIt )
+    {
+        const core::componentmodel::topology::TopologyChangeType changeType = ( *changeIt )->getChangeType();
+        switch ( changeType )
+        {
+            //TODO: implementation of BarycentricMapperHexahedronSetTopology<In,Out>::handleTopologyChange()
+        case core::componentmodel::topology::ENDING_EVENT:       ///< To notify the end for the current sequence of topological change events
+        {
+            if(!_invalidIndex.empty())
+            {
+                helper::vector<MappingData>& mapData = *(map.beginEdit());
+
+                for ( std::set<int>::const_iterator iter = _invalidIndex.begin();
+                        iter != _invalidIndex.end(); ++iter )
+                {
+                    const int j = *iter;
+                    if ( mapData[j].in_index == -1 ) // compute new mapping
+                    {
+                        //	std::cout << "BarycentricMapperHexahedronSetTopology : new mapping" << std::endl;
+                        Vector3 coefs;
+                        defaulttype::Vec3fTypes::Coord pos;
+                        pos[0] = mapData[j].baryCoords[0];
+                        pos[1] = mapData[j].baryCoords[1];
+                        pos[2] = mapData[j].baryCoords[2];
+
+                        // find nearest cell and barycentric coords
+                        Real distance = 1e10;
+
+                        int index = _fromGeomAlgo->findNearestElementInRestPos ( pos, coefs, distance );
+
+                        if ( index != -1 )
+                        {
+                            mapData[j].baryCoords[0] = ( Real ) coefs[0];
+                            mapData[j].baryCoords[1] = ( Real ) coefs[1];
+                            mapData[j].baryCoords[2] = ( Real ) coefs[2];
+                            mapData[j].in_index = index;
+                        }
+                    }
+                }
+
+                map.endEdit();
+                _invalidIndex.clear();
+            }
+        }
+        break;
+        case core::componentmodel::topology::POINTSINDICESSWAP:  ///< For PointsIndicesSwap.
+            break;
+        case core::componentmodel::topology::POINTSADDED:        ///< For PointsAdded.
+            break;
+        case core::componentmodel::topology::POINTSREMOVED:      ///< For PointsRemoved.
+            break;
+        case core::componentmodel::topology::POINTSRENUMBERING:  ///< For PointsRenumbering.
+            break;
+        case core::componentmodel::topology::TRIANGLESADDED:  ///< For Triangles Added.
+            break;
+        case core::componentmodel::topology::TRIANGLESREMOVED:  ///< For Triangles Removed.
+            break;
+        case core::componentmodel::topology::HEXAHEDRAADDED:     ///< For HexahedraAdded.
+        {
+        }
+        break;
+        case core::componentmodel::topology::HEXAHEDRAREMOVED:   ///< For HexahedraRemoved.
+        {
+// std::cout << "BarycentricMapperHexahedronSetTopology() HEXAHEDRAREMOVED" << std::endl;
+            const unsigned int nbHexahedra = this->fromTopology->getNbHexahedra();
+
+            const sofa::helper::vector<unsigned int> &hexahedra = ( static_cast< const component::topology::HexahedraRemoved *> ( *changeIt ) )->getArray();
+//        sofa::helper::vector<unsigned int> hexahedra(tab);
+
+            for ( unsigned int i=0; i<hexahedra.size(); ++i )
+            {
+                // remove all references to the removed cubes from the mapping data
+                unsigned int cubeId = hexahedra[i];
+                for ( unsigned int j=0; j<map.getValue().size(); ++j )
+                {
+                    if ( map.getValue()[j].in_index == ( int ) cubeId ) // invalidate mapping
+                    {
+                        Vector3 coefs;
+                        coefs[0] = map.getValue()[j].baryCoords[0];
+                        coefs[1] = map.getValue()[j].baryCoords[1];
+                        coefs[2] = map.getValue()[j].baryCoords[2];
+
+                        defaulttype::Vec3fTypes::Coord restPos = _fromGeomAlgo->getRestPointPositionInHexahedron ( cubeId, coefs );
+
+                        helper::vector<MappingData>& vectorData = *(map.beginEdit());
+                        vectorData[j].in_index = -1;
+                        vectorData[j].baryCoords[0] = restPos[0];
+                        vectorData[j].baryCoords[1] = restPos[1];
+                        vectorData[j].baryCoords[2] = restPos[2];
+                        map.endEdit();
+
+                        _invalidIndex.insert(j);
+                    }
+                }
+            }
+
+            // renumber
+            unsigned int lastCubeId = nbHexahedra-1;
+            for ( unsigned int i=0; i<hexahedra.size(); ++i, --lastCubeId )
+            {
+                unsigned int cubeId = hexahedra[i];
+                for ( unsigned int j=0; j<map.getValue().size(); ++j )
+                {
+                    if ( map.getValue()[j].in_index == ( int ) lastCubeId )
+                    {
+                        helper::vector<MappingData>& vectorData = *(map.beginEdit());
+                        vectorData[j].in_index = cubeId;
+                        map.endEdit();
+                    }
+                }
+            }
+        }
+        break;
+        case core::componentmodel::topology::HEXAHEDRARENUMBERING: ///< For HexahedraRenumbering.
+            break;
+        default:
+            break;
+        }
+    }
+}
 
 
 
