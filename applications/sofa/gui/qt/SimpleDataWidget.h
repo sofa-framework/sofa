@@ -382,7 +382,7 @@ public:
     ParentWidget* parent_w;
     fixed_vector_data_widget_container() {}
 
-    bool createWidgets(DataWidget * _widget, QWidget* parent, const data_type& d, bool readOnly)
+    bool createWidgets(DataWidget * _widget, QWidget* /*parent*/, const data_type& d, bool readOnly)
     {
         parent_w = createParentWidget(_widget,N);
         assert(parent_w != NULL);
@@ -437,7 +437,7 @@ public:
     Container w[L][C];
     fixed_grid_data_widget_container() {}
 
-    bool createWidgets(DataWidget * _widget, QWidget* parent, const data_type& d, bool readOnly)
+    bool createWidgets(DataWidget * _widget, QWidget* /*parent*/, const data_type& d, bool readOnly)
     {
 
         parent_w = createParentWidget(_widget,C);
