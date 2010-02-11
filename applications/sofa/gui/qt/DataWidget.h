@@ -33,6 +33,7 @@
 #include <sofa/core/objectmodel/BaseData.h>
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/helper/Factory.h>
+
 #ifdef SOFA_QT4
 #include <QDialog>
 #include <QLineEdit>
@@ -73,6 +74,9 @@ class DataWidget : public QWidget
 public slots:
     void updateDataValue()
     {
+        /* check that widget has been edited
+           emit DataOwnerDirty in case the name field has been modified
+        */
         if(dirty)
         {
             std::string previousName = baseData->getOwner()->getName();
@@ -125,7 +129,7 @@ public:
     /*PUBLIC VIRTUALS */
     virtual bool createWidgets() = 0;
     virtual unsigned int sizeWidget() {return 1;}
-    virtual unsigned int numColumnWidget() {return 2;}
+    virtual unsigned int numColumnWidget() {return 3;}
     /*  */
 protected:
     /* PROTECTED VIRTUALS */
@@ -183,7 +187,7 @@ public:
         else
         {
             obj = new RealObject(arg.parent,arg.name.c_str(), realData);
-            obj->setEnabled(arg.readOnly);
+            obj->setEnabled(!arg.readOnly);
             if( !obj->createWidgets() )
             {
                 delete obj;
@@ -207,29 +211,6 @@ protected:
 
 typedef sofa::helper::Factory<std::string, DataWidget, DataWidget::CreatorArgument> DataWidgetFactory;
 
-/*  template< class T >
-  class DefaultDataWidget : public TDataWidget<T>
-  {
-  protected:
-    typedef QLineEdit Widget;
-    Widget* w;
-  public:
-    DefaultDataWidget(QWidget* parent,const char* name, MyTData* d) :
-        TDataWidget(QWidget* parent,const char* name, MyTData* d),w(NULL)
-        {}
-    virtual bool createWidgets();
-    virtual void readFromData()
-    {
-      std::string s = Tdata->getValueString();
-      w->setText(QString(s.c_str()));
-
-    }
-    virtual void writeToData()
-    {
-      std::string s = w->text().ascii();
-      Tdata->read(s);
-    }
-  };*/
 class QTableUpdater : virtual public Q3Table
 {
     Q_OBJECT
@@ -275,7 +256,6 @@ public slots:
 
 };
 
-//     extern template class SOFA_SOFAGUIQT_API helper::Factory<std::string, DataWidget, DataWidget::CreatorArgument>;
 
 class QPushButtonUpdater: public QPushButton
 {
@@ -305,6 +285,13 @@ protected:
     unsigned int numLines_;
     QLineEdit *linkpath_edit;
 };
+
+#if defined WIN32 && !defined(SOFA_GUI_QT_DATAWIDGET_CPP)
+//delay load of the specialized Factory class. unique definition reside in the cpp file.
+extern template class SOFA_SOFAGUIQT_API helper::Factory<std::string, DataWidget, DataWidget::CreatorArgument>;
+#endif
+
+
 
 } // qt
 } // gui

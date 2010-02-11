@@ -1,3 +1,6 @@
+#ifndef SOFA_GUI_QT_DATAWIDGET_CPP
+#define SOFA_GUI_QT_DATAWIDGET_CPP
+
 #include "DataWidget.h"
 #include "ModifyObject.h"
 #include <sofa/helper/Factory.inl>
@@ -20,19 +23,6 @@ namespace gui
 {
 namespace qt
 {
-
-
-/*     template <class T>
-     bool DefaultDataWidget<T>::createWidgets()
-     {
-       w = new QLineEdit(this);
-       if (w == NULL) return false;
-       std::string s = Tdata->getValueString();
-       w->setText(QString(s.c_str()));
-       connect(w, SIGNAL( textChanged(const QString&) ), this, SLOT( setWidgetDirty() ));
-       return true;
-     }
-*/
 /*QDisplayDataInfoWidget definitions */
 
 QDisplayDataInfoWidget::QDisplayDataInfoWidget(QWidget* parent, const std::string& helper,
@@ -158,4 +148,4 @@ void QPushButtonUpdater::setDisplayed(bool b)
 }//gui
 }//sofa
 
-
+#endif // SOFA_GUI_QT_DATAWIDGET_CPP

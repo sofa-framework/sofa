@@ -169,6 +169,7 @@ public:
         , _assembling(core::objectmodel::BaseObject::initData(&_assembling,false,"computeGlobalMatrix",""))
     {
         this->addAlias(&_assembling, "assembling");
+        _poissonRatio.setWidget("poissonRatio");
     }
 
     void setPoissonRatio(Real val) { this->_poissonRatio.setValue(val); }

@@ -165,7 +165,7 @@ public:
     virtual bool createWidgets()
     {
         const data_type& d = this->getData()->virtualGetValue();
-        if (!container.createWidgets(this, this->parentWidget(), d, this->isEnabled() ))
+        if (!container.createWidgets(this, this->parentWidget(), d, ! (this->isEnabled()) ))
             return false;
         return true;
     }
@@ -384,7 +384,7 @@ public:
 
     bool createWidgets(DataWidget * _widget, QWidget* parent, const data_type& d, bool readOnly)
     {
-        parent_w = createParentWidget(parent,N);
+        parent_w = createParentWidget(_widget,N);
         assert(parent_w != NULL);
         for (int i=0; i<N; ++i)
             if (!w[i].createWidgets(_widget,
@@ -440,7 +440,7 @@ public:
     bool createWidgets(DataWidget * _widget, QWidget* parent, const data_type& d, bool readOnly)
     {
 
-        parent_w = createParentWidget(parent,C);
+        parent_w = createParentWidget(_widget,C);
         assert(parent_w);
         for (int y=0; y<L; ++y)
             for (int x=0; x<C; ++x)
