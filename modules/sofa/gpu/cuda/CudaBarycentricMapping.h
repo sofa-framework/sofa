@@ -118,7 +118,7 @@ protected:
 public:
     BarycentricMapperSparseGridTopology(topology::SparseGridTopology* fromTopology, topology::PointSetTopologyContainer* toTopology, core::componentmodel::behavior::BaseMechanicalState::ParticleMask *, core::componentmodel::behavior::BaseMechanicalState::ParticleMask *)
         : Inherit(fromTopology, toTopology)
-        , topology(topology), bHexa(true), bTrans(true)
+        , topology(fromTopology), bHexa(true), bTrans(true)
     {}
     void setMaskFrom(core::componentmodel::behavior::BaseMechanicalState::ParticleMask *) {}
     void setMaskTo  (core::componentmodel::behavior::BaseMechanicalState::ParticleMask *) {}
@@ -187,7 +187,7 @@ protected:
 public:
     BarycentricMapperMeshTopology(core::componentmodel::topology::BaseMeshTopology* fromTopology, topology::PointSetTopologyContainer* toTopology, core::componentmodel::behavior::BaseMechanicalState::ParticleMask *, core::componentmodel::behavior::BaseMechanicalState::ParticleMask *)
         : Inherit(fromTopology, toTopology)
-        , maxNIn(0), maxNOut(0), insize(0), size(0), topology(topology)
+        , maxNIn(0), maxNOut(0), insize(0), size(0), topology(fromTopology)
     {
         if (topology==NULL || topology->getNbHexahedra()==0) maxNIn = 4;
         else maxNIn = 8;
