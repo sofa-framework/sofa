@@ -35,7 +35,7 @@
 #include <sofa/defaulttype/SolidTypes.h>
 #include <sofa/defaulttype/Quat.h>
 #include "XiTrocarInterface.h"
-
+#include <sofa/component/controller/LCPForceFeedback.h>
 
 namespace sofa
 {
@@ -48,7 +48,7 @@ namespace visualModel { class OglModel; }
 namespace controller
 {
 
-class ForceFeedback;
+//class LCPForceFeedback;
 
 
 using namespace sofa::defaulttype;
@@ -56,7 +56,7 @@ using core::objectmodel::Data;
 
 typedef struct
 {
-    ForceFeedback* forceFeedback;
+    LCPForceFeedback<defaulttype::Vec1dTypes>* forceFeedback;
     simulation::Node *context;
 
     double scale;
@@ -97,10 +97,14 @@ public:
     void cleanup();
     //virtual void draw();
 
-    void setForceFeedback(ForceFeedback* ff);
+    void setForceFeedback(LCPForceFeedback<defaulttype::Vec1dTypes>* ff);
 
     void onKeyPressedEvent(core::objectmodel::KeypressedEvent *);
     void onKeyReleasedEvent(core::objectmodel::KeyreleasedEvent *);
+
+    void createCallBack();
+    void deleteCallBack();
+    void stateCallBack();
 
     void updateForce();
     void displayState();
@@ -108,6 +112,8 @@ public:
 
     void setDataValue();
     void reinitVisual();
+
+    double getScale () {return Scale.getValue();};
 
 
 
