@@ -52,6 +52,14 @@ class SOFA_SIMULATION_COMMON_API Visitor
 protected:
     bool prefetching;
 public:
+
+    class VisitorContext
+    {
+    public:
+        simulation::Node* root; ///< root node from which the visitor was executed
+        simulation::Node* node; ///< current node
+        double* nodeData;       ///< double value associated with this subtree. Set to NULL if node-specific data is not in use
+    };
 #ifdef SOFA_DUMP_VISITOR_INFO
     typedef sofa::helper::system::thread::CTime CTime;
 #endif
@@ -123,7 +131,9 @@ public:
                 if(testTags(*it))
                 {
                     debug_write_state_before(*it);
+                    ctime_t t=begin(ctx, *it);
                     (visitor->*fn)(ctx, *it);
+                    end(ctx, *it, t);
                     debug_write_state_after(*it);
                 }
             }
@@ -160,7 +170,9 @@ public:
                 if(testTags(*it))
                 {
                     debug_write_state_before(*it);
+                    ctime_t t=begin(ctx, *it);
                     res = (visitor->*fn)(ctx, *it);
+                    end(ctx, *it, t);
                     debug_write_state_after(*it);
                 }
             }
@@ -203,12 +215,19 @@ public:
     /// Alias for context->executeVisitor(this)
     virtual void execute(core::objectmodel::BaseContext* node, bool doPrefetch);
     virtual void execute(core::objectmodel::BaseContext* node) { execute(node, false); }
-    ctime_t begin(simulation::Node* node, core::objectmodel::BaseObject*
+    virtual ctime_t begin(simulation::Node* node, core::objectmodel::BaseObject*
+#ifdef SOFA_DUMP_VISITOR_INFO
+            obj
+#endif
+                         );
+    virtual void end(simulation::Node* node, core::objectmodel::BaseObject* obj, ctime_t t0);
+    ctime_t begin(simulation::Visitor::VisitorContext* node, core::objectmodel::BaseObject*
 #ifdef SOFA_DUMP_VISITOR_INFO
             obj
 #endif
                  );
-    void end(simulation::Node* node, core::objectmodel::BaseObject* obj, ctime_t t0);
+    void end(simulation::Visitor::VisitorContext* node, core::objectmodel::BaseObject* obj, ctime_t t0);
+
 
 
     /// Specify whether this visitor can be parallelized.

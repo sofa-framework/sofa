@@ -68,14 +68,6 @@ The default behavior of the fwd* and bwd* is to do nothing. Derived actions typi
 */
 class SOFA_SIMULATION_COMMON_API MechanicalVisitor : public Visitor
 {
-public:
-    class VisitorContext
-    {
-    public:
-        simulation::Node* root; ///< root node from which the visitor was executed
-        simulation::Node* node; ///< current node
-        double* nodeData;       ///< double value associated with this subtree. Set to NULL if node-specific data is not in use
-    };
 
 protected:
     bool prefetching;
@@ -361,8 +353,10 @@ public:
         return !map->isMechanical();
     }
 
-    ctime_t beginProcess(simulation::Node* node, core::objectmodel::BaseObject* obj);
-    void endProcess(simulation::Node* node, core::objectmodel::BaseObject* obj, ctime_t t0);
+#ifdef SOFA_DUMP_VISITOR_INFO
+    ctime_t begin(simulation::Node* node, core::objectmodel::BaseObject* obj);
+    void end(simulation::Node* node, core::objectmodel::BaseObject* obj, ctime_t t0);
+#endif
 
 #ifdef SOFA_DUMP_VISITOR_INFO
     virtual void setReadWriteVectors()=0;
@@ -1033,9 +1027,6 @@ public:
 
     MechanicalPropagatePositionVisitor(double time=0, VecId x = VecId::position(), bool m=true);
 
-    virtual Result processNodeTopDown(simulation::Node* node);
-    virtual void processNodeBottomUp(simulation::Node* node);
-
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
     virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c);
@@ -1091,9 +1082,6 @@ public:
 #endif
     bool ignoreMask;
 
-    virtual Result processNodeTopDown(simulation::Node* node);
-    virtual void processNodeBottomUp(simulation::Node* node);
-
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
     virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c);
@@ -1143,7 +1131,6 @@ public:
         setReadWriteVectors();
 #endif
     }
-    virtual Result processNodeTopDown(simulation::Node* node);
     virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
     virtual Result fwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
     virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c);
