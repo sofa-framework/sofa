@@ -93,3 +93,4 @@ const char* getModuleComponentList()
 
 SOFA_LINK_CLASS(IHPDriver)
 SOFA_LINK_CLASS(ITPDriver)
+//SOFA_LINK_CLASS(PaceMaker)

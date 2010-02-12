@@ -47,6 +47,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "PaceMaker.h"
+
+
 
 namespace sofa
 {
@@ -61,6 +64,101 @@ using namespace sofa::defaulttype;
 using namespace core::componentmodel::behavior;
 using namespace sofa::defaulttype;
 
+
+void UpdateForceFeedBack(void* toolData)
+{
+    XiToolData* myData = static_cast<XiToolData*>(toolData);
+
+    // Compute actual tool state:
+    Vector3 dir;
+
+    dir[0] = (double)myData->simuState.trocarDir[0];
+    dir[1] = (double)myData->simuState.trocarDir[1];
+    dir[2] = (double)myData->simuState.trocarDir[2];
+
+    double thetaX= asin(dir[2]);
+    double cx = cos(thetaX);
+    double thetaZ=0;
+
+    if (cx > 0.0001)
+    {
+        thetaZ = -asin(dir[0]/cx);
+    }
+    else
+    {
+//		this->f_printLog.setValue(true);
+        std::cerr<<"WARNING can not found the position thetaZ of the interface"<<std::endl;
+    }
+
+    // Call LCPForceFeedBack
+    sofa::helper::vector<sofa::defaulttype::Vector1 > currentState;
+    sofa::helper::vector<sofa::defaulttype::Vector1 > ForceBack;
+
+    currentState.resize(6);
+    //ForceBack.resize(6); //??
+    currentState[0] = thetaX;
+    currentState[0] = thetaZ;
+    currentState[0] = myData->simuState.toolRoll;
+    currentState[0] = myData->simuState.toolDepth * myData->scale;
+    currentState[0] = myData->simuState.opening;
+    currentState[0] = myData->simuState.opening;
+
+    myData->forceFeedback->computeForce(currentState, ForceBack);
+
+    //std::cout << "ForceBack: " << ForceBack << std::endl;
+
+    /*
+    z = [0 -sin(state[0]) cos(state[0])];
+    x= [1 0 0];
+    Mx = forces[0]; //couple calculé selon X
+    Mz = forces[1]; //couple calculé selon Z
+    if (toolDepth > 0 {
+        OP = trocarDir*toolDepth ;
+        forceX = Mz/dot(cross(z,OP),x) ;  => normalement devrait etre tjrs egal a Mz /
+    toolDepth
+        forceZ = Mx/dot(cross(x,OP),z) ;  => attention pas tjs egal à Mx /toolDepth car
+    x et OP non tjs perpendiculaires
+    }
+    tipForce = trocarDir*forces[3]+  // translation (signe ?)
+    forceX*x+ // force "crée" au bout de la pince par le moment Mz
+    forceZ*z; // force "crée" au bout de la pince par le moement Mx
+    */
+
+    double toolDpth = myData->simuState.toolDepth;
+    double forceX, forceZ; //Y?
+    Vector3 tipForce;
+
+    Vector3 z;
+    z[0] = 0;
+    z[1] = -sin(thetaX);
+    z[2] = cx;
+    Vector3 x;
+    x[0] = 1; x[1] = 0; x[2] = 0;
+    double Mx = ForceBack[0][0];
+    double Mz = ForceBack[1][0];
+
+    Vector3 OP;
+
+    if (toolDpth > 0.0)
+    {
+        OP = dir * toolDpth;
+        forceX = Mz/dot( cross(z,OP), x);
+        forceZ = Mx/dot( cross(x,OP), z);
+    }
+
+    tipForce = dir*ForceBack[3/*2?*/][0] + x * forceX + z *forceZ;
+
+    XiToolForce_ ff;
+    ff.tipForce[0] = tipForce[0]/1000; //???
+    ff.tipForce[1] = tipForce[1]/1000;
+    ff.tipForce[2] = tipForce[2]/1000;
+
+    xiTrocarSetForce(0, &ff);
+    xiTrocarFlushForces();
+
+//	std::cout << tipForce/1000 << std::endl;
+
+}
 
 
 bool isInitialized = false;
@@ -87,7 +185,7 @@ IHPDriver::IHPDriver()
 {
 
     this->f_listening.setValue(true);
-    data.forceFeedback = new NullForceFeedback();
+    //data.forceFeedback = new NullForceFeedback();
     noDevice = false;
     graspElasticMode = false;
 }
@@ -105,7 +203,7 @@ void IHPDriver::cleanup()
 
 }
 
-void IHPDriver::setForceFeedback(ForceFeedback* ff)
+void IHPDriver::setForceFeedback(LCPForceFeedback<defaulttype::Vec1dTypes>* ff)
 {
     // the forcefeedback is already set
     if(data.forceFeedback == ff)
@@ -137,13 +235,15 @@ void IHPDriver::bwdInit()
 
     //std::cout << "IHPDriver::init()" << std::endl;
 
-    ForceFeedback *ff = context->get<ForceFeedback>();
+    LCPForceFeedback<defaulttype::Vec1dTypes> *ff = context->get<LCPForceFeedback<defaulttype::Vec1dTypes>>();
 
     if(ff)
     {
         this->setForceFeedback(ff);
-        sout << "setForceFeedback(ff) ok" << sendl;
+        std::cout << "setForceFeedback(ff) ok" << std::endl;
     }
+    else
+        std::cout << " Error FF" << std::endl;
 
 
     setDataValue();
@@ -168,6 +268,10 @@ void IHPDriver::bwdInit()
     std::cout << "serial: " << serial << std::endl;
 
     xiTrocarRelease();
+
+    if (this->permanent.getValue() )
+        this->createCallBack();
+
 }
 
 
@@ -204,6 +308,8 @@ void IHPDriver::reinit()
     this->bwdInit();
 
     this->reinitVisual();
+    //this->updateForce();
+
 }
 
 
@@ -479,8 +585,40 @@ Quat IHPDriver::fromGivenDirection( Vector3& dir,  Vector3& local_dir, Quat old_
 
     return old_quat;
 }
+
+
+void IHPDriver::createCallBack()
+{
+    std::cout << "Creating CallBack thread" << std::endl;
+
+    sofa::component::controller::PaceMaker myPaceMaker(1000);
+    myPaceMaker.pToFunc = &UpdateForceFeedBack;
+    myPaceMaker.Pdata = &data;
+    myPaceMaker.createPace();
+
+    //This function create a thread calling stateCallBack() at a given frequence
+}
+
+
+void IHPDriver::deleteCallBack()
+{
+    //this function get FF at a given frequence
+}
+
+
+void IHPDriver::stateCallBack()
+{
+    // this function delete thread
+}
+
+
+
+
 int IHPDriverClass = core::RegisterObject("Driver and Controller of IHP Xitact Device")
         .add< IHPDriver >();
+
+
+
 
 SOFA_DECL_CLASS(IHPDriver)
 

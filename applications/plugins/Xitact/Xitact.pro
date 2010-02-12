@@ -26,12 +26,16 @@ INCLUDEPATH += $$SOFA_DIR/extlibs/Xitact
 SOURCES = \
 initXitact.cpp \
 IHPDriver.cpp \
-ITPDriver.cpp
+ITPDriver.cpp \
+Pulser.cpp \
+PaceMaker.cpp
 
 
 HEADERS = \
 IHPDriver.h \
-ITPDriver.h
+ITPDriver.h \
+Pulser.h \
+PaceMaker.h
 
 
 README_FILE = PluginXitact.txt
