@@ -180,12 +180,10 @@ SOURCES +=  \
 contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 
 HEADERS += \
- componentmodel/fem/BaseShapeFunction.h \
- componentmodel/fem/QuadratureFormular.h 
+ componentmodel/fem/BaseShapeFunction.h 
 
 SOURCES +=  \
- componentmodel/fem/BaseShapeFunction.cpp \
- componentmodel/fem/QuadratureFormular.cpp
+ componentmodel/fem/BaseShapeFunction.cpp 
   
 } # END SOFA_DEV
 
