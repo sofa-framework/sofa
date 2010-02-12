@@ -1489,7 +1489,7 @@ public:
 
 
     virtual void clear() {datasC.clear();}
-    virtual const std::vector< core::componentmodel::behavior::BaseLMConstraint *> &getConstraints() {return datasC;}
+    virtual const std::vector< core::componentmodel::behavior::BaseLMConstraint *> &getConstraints() const {return datasC;}
     virtual unsigned int numConstraint() {return datasC.size();}
 
     virtual void setOrder(core::componentmodel::behavior::BaseLMConstraint::ConstOrder i) {order=i;}
