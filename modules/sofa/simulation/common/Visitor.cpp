@@ -244,6 +244,20 @@ void Visitor::end(simulation::Node* node, core::objectmodel::BaseObject* obj, ct
 #endif
 }
 
+/// Optional helper method to call before handling an object if not using the for_each method.
+/// It currently takes care of time logging, but could be extended (step-by-step execution for instance)
+simulation::Node::ctime_t Visitor::begin(simulation::Visitor::VisitorContext* vc, core::objectmodel::BaseObject* obj)
+{
+    return begin(vc->node, obj);
+}
+
+/// Optional helper method to call after handling an object if not using the for_each method.
+/// It currently takes care of time logging, but could be extended (step-by-step execution for instance)
+void Visitor::end(simulation::Visitor::VisitorContext* vc, core::objectmodel::BaseObject* obj, ctime_t t0)
+{
+    end(vc->node, obj, t0);
+}
+
 #ifdef SOFA_VERBOSE_TRAVERSAL
 void Visitor::debug_write_state_before( core::objectmodel::BaseObject* obj )
 {
