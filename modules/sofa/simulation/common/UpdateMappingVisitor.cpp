@@ -31,7 +31,7 @@ namespace sofa
 namespace simulation
 {
 
-void UpdateMappingVisitor::processMapping(simulation::Node* n, core::BaseMapping* obj)
+void UpdateMappingVisitor::processMapping(simulation::Node* /*n*/, core::BaseMapping* obj)
 {
     obj->updateMapping();
 }
