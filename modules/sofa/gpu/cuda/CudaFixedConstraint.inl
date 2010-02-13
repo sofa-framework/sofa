@@ -219,7 +219,29 @@ void FixedConstraintInternalData<gpu::cuda::CudaVec3f1Types>::projectResponse(Ma
         FixedConstraintCuda3f1_projectResponseIndexed(data.cudaIndices.size(), data.cudaIndices.deviceRead(), dx.deviceWrite());
 }
 
+// Handle topological changes
+template <>
+void FixedConstraint<gpu::cuda::CudaVec3fTypes>::handleTopologyChange()
+{
+// 	std::list<const TopologyChange *>::const_iterator itBegin=topology->firstChange();
+// 	std::list<const TopologyChange *>::const_iterator itEnd=topology->lastChange();
+//
+// 	f_indices.beginEdit()->handleTopologyEvents(itBegin,itEnd,this->getMState()->getSize());
+    printf("WARNING handleTopologyChange<gpu::cuda::CudaVec3fTypes> not implemented\n");
+}
+
 #ifdef SOFA_GPU_CUDA_DOUBLE
+
+// Handle topological changes
+template <>
+void FixedConstraint<gpu::cuda::CudaVec3dTypes>::handleTopologyChange()
+{
+// 	std::list<const TopologyChange *>::const_iterator itBegin=topology->firstChange();
+// 	std::list<const TopologyChange *>::const_iterator itEnd=topology->lastChange();
+//
+// 	f_indices.beginEdit()->handleTopologyEvents(itBegin,itEnd,this->getMState()->getSize());
+    printf("WARNING handleTopologyChange<gpu::cuda::CudaVec3fTypes> not implemented\n");
+}
 
 template <>
 void FixedConstraintInternalData<gpu::cuda::CudaVec3dTypes>::projectResponse(Main* m, VecDeriv& dx)
