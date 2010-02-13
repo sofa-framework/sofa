@@ -173,6 +173,11 @@ protected:
     /// If it is empty then each vertex correspond to one normal
     ResizableExtVector<int> vertNormIdx;
 
+    virtual void internalDraw(bool /*transparent*/)
+    {}
+
+public:
+
 
 
     sofa::core::objectmodel::DataFileName fileMesh;
@@ -185,11 +190,6 @@ protected:
     Data< TexCoord >  translationTex;
 
     Vec3f bbox[2];
-
-    virtual void internalDraw(bool /*transparent*/)
-    {}
-
-public:
     Data< Material > material;
     Data< bool > putOnlyTexCoords;
 
