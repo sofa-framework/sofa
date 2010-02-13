@@ -64,6 +64,7 @@ public:
     static void projectResponse(Main* m, VecDeriv& dx);
 };
 
+
 // I know using macros is bad design but this is the only way not to repeat the code for all CUDA types
 #define CudaFixedConstraint_DeclMethods(T) \
     template<> void FixedConstraint< T >::init(); \
