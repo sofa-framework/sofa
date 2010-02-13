@@ -32,11 +32,13 @@ namespace helper
 
 
  */
-class SimpleTimer
+
+template<int nIter=100, int nStep=100>
+class TSimpleTimer
 {
 public:
 
-    enum {T_NSTEPS=100, T_NITERS=100};
+    enum {T_NSTEPS=nStep, T_NITERS=nIter};
 
     typedef sofa::helper::system::thread::ctime_t ctime_t;
     typedef sofa::helper::system::thread::CTime CTime;
@@ -53,7 +55,7 @@ public:
     int timer_nstep;
     const char* timer_lastname;
 
-    SimpleTimer()
+    TSimpleTimer()
     {
         timer_total = 0;
         timer_current = 0;
@@ -128,6 +130,8 @@ public:
         }
     }
 };
+
+typedef TSimpleTimer<> SimpleTimer;
 
 }
 
