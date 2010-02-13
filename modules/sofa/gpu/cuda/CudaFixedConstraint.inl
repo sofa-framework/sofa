@@ -227,7 +227,7 @@ void FixedConstraint<gpu::cuda::CudaVec3fTypes>::handleTopologyChange()
 // 	std::list<const TopologyChange *>::const_iterator itEnd=topology->lastChange();
 //
 // 	f_indices.beginEdit()->handleTopologyEvents(itBegin,itEnd,this->getMState()->getSize());
-    printf("WARNING handleTopologyChange<gpu::cuda::CudaVec3fTypes> not implemented\n");
+//printf("WARNING handleTopologyChange<gpu::cuda::CudaVec3fTypes> not implemented\n");
 }
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
@@ -240,7 +240,7 @@ void FixedConstraint<gpu::cuda::CudaVec3dTypes>::handleTopologyChange()
 // 	std::list<const TopologyChange *>::const_iterator itEnd=topology->lastChange();
 //
 // 	f_indices.beginEdit()->handleTopologyEvents(itBegin,itEnd,this->getMState()->getSize());
-    printf("WARNING handleTopologyChange<gpu::cuda::CudaVec3fTypes> not implemented\n");
+//printf("WARNING handleTopologyChange<gpu::cuda::CudaVec3dTypes> not implemented\n");
 }
 
 template <>
