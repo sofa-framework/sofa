@@ -206,15 +206,6 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::loadMatrix()
         cout << "file open : " << ss.str() << " compliance being loaded" << endl;
         compFileIn.read((char*) (*this->currentGroup->systemMatrix)[0], systemSize * systemSize * sizeof(Real));
         compFileIn.close();
-
-        double check = 0.0;
-        for (unsigned int j=0; j<systemSize; j++) check += checkSys[j] * this->currentGroup->systemMatrix->element(j,0);
-
-        if (!((check>0.99) || (check<1.01)))
-        {
-            cout << "Warning it seem that the file " << ss << " is not the good systemInvert you should recompute it." << endl;
-        }
-
     }
     else
     {
@@ -572,6 +563,8 @@ bool PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::addJMInvJt(defa
 {
     if (! _rotate) this->rotateConstraints();  //already rotate with Preconditionner
     _rotate = false;
+
+    if (J->colSize() == 0) return true;
 
     if (SparseMatrix<double>* j = dynamic_cast<SparseMatrix<double>*>(J))
     {
