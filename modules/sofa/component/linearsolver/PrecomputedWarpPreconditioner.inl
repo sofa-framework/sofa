@@ -262,7 +262,7 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector>::loadMatrixWithCS
     matSolv.resize(systemSize,systemSize);
     r.resize(systemSize);
     b.resize(systemSize);
-    SparseLDLSolver<CompressedRowSparseMatrix<double>, FullVector<double> > solver;
+    SparseCholeskySolver<CompressedRowSparseMatrix<double>, FullVector<double> > solver;
 
     for (unsigned int j=0; j<systemSize; j++)
     {
@@ -444,9 +444,6 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::loadMatrixWithS
 
             if (linearSolver && f*dof_on_node+i == 0) linearSolver->freezeSystemMatrix(); // do not recompute the matrix for the rest of the precomputation
 
-            //velocity = *mstate->getV();
-            double fact = factInt / unitary_force[i];
-
             if(f*dof_on_node+i < 2)
             {
                 EulerSolver->f_verbose.setValue(false);
@@ -457,7 +454,7 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::loadMatrixWithS
             {
                 for (unsigned int j=0; j<dof_on_node; j++)
                 {
-                    this->currentGroup->systemMatrix->set(v*dof_on_node+j,f*dof_on_node+i,(Real)(fact * velocity[v][j]));
+                    this->currentGroup->systemMatrix->set(v*dof_on_node+j,f*dof_on_node+i,(Real)(velocity[v][j]*factInt));
                 }
             }
         }

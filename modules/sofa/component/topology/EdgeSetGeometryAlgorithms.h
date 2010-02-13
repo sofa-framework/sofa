@@ -132,6 +132,7 @@ public:
     Coord compute2EdgesIntersection (const Coord edge1[2], const Coord edge2[2], bool& intersected);
 
     bool computeEdgePlaneIntersection (EdgeID edgeID, Vec<3,Real> pointOnPlane, Vec<3,Real> normalOfPlane, Vec<3,Real>& intersection);
+    bool computeRestEdgePlaneIntersection (EdgeID edgeID, Vec<3,Real> pointOnPlane, Vec<3,Real> normalOfPlane, Vec<3,Real>& intersection);
 
     void writeMSHfile(const char *filename) const;
 

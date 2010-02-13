@@ -187,6 +187,7 @@ SOURCES += \
 		CudaLDISimpleContactConstraint.cpp \
 		CudaLDICuttingContactConstraint.cpp \
 	CudaComplianceMatrixUpdateManager.cpp \
+	CudaConstantForceField.cpp \
 	CudaTetrahedronCuttingManager.cpp \
 	CudaDiagonalMass.cpp \
 	CudaBilateralInteractionConstraint.cpp \
