@@ -67,13 +67,13 @@ TopologicalChangeManager::~TopologicalChangeManager()
 {
 }
 
-void TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::collision::TriangleModel* model, const helper::vector<int>& indices) const
+int TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::collision::TriangleModel* model, const helper::vector<int>& indices) const
 {
     sofa::core::componentmodel::topology::BaseMeshTopology* topo_curr;
     topo_curr = model->getContext()->getMeshTopology();
 
     if(topo_curr == NULL)
-        return;
+        return 0;
 
     std::set< unsigned int > items;
 
@@ -153,6 +153,8 @@ void TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::col
     vitems.reserve(items.size());
     vitems.insert(vitems.end(), items.rbegin(), items.rend());
 
+    int res = vitems.size();
+
     sofa::core::componentmodel::topology::TopologyModifier* topoMod;
     topo_curr->getContext()->get(topoMod);
 
@@ -162,15 +164,17 @@ void TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::col
 
 
     topoMod->propagateTopologicalChanges();
+
+    return res;
 }
 
-void TopologicalChangeManager::removeItemsFromTetrahedronModel(sofa::component::collision::TetrahedronModel* model, const helper::vector<int>& indices) const
+int TopologicalChangeManager::removeItemsFromTetrahedronModel(sofa::component::collision::TetrahedronModel* model, const helper::vector<int>& indices) const
 {
     sofa::core::componentmodel::topology::BaseMeshTopology* topo_curr;
     topo_curr = model->getContext()->getMeshTopology();
 
     if(dynamic_cast<PointSetTopologyContainer*>(topo_curr) == NULL)
-        return;
+        return 0;
 
     std::set< unsigned int > items;
 
@@ -230,6 +234,8 @@ void TopologicalChangeManager::removeItemsFromTetrahedronModel(sofa::component::
     vitems.reserve(items.size());
     vitems.insert(vitems.end(), items.rbegin(), items.rend());
 
+    int res = vitems.size();
+
     sofa::core::componentmodel::topology::TopologyModifier* topoMod;
     topo_curr->getContext()->get(topoMod);
 
@@ -238,15 +244,17 @@ void TopologicalChangeManager::removeItemsFromTetrahedronModel(sofa::component::
     topoMod->notifyEndingEvent();
 
     topoMod->propagateTopologicalChanges();
+
+    return res;
 }
 
-void TopologicalChangeManager::removeItemsFromSphereModel(sofa::component::collision::SphereModel* model, const helper::vector<int>& indices) const
+int TopologicalChangeManager::removeItemsFromSphereModel(sofa::component::collision::SphereModel* model, const helper::vector<int>& indices) const
 {
     sofa::core::componentmodel::topology::BaseMeshTopology* topo_curr;
     topo_curr = model->getContext()->getMeshTopology();
 
     if(dynamic_cast<PointSetTopologyContainer*>(topo_curr) == NULL)
-        return;
+        return 0;
 
     std::set< unsigned int > items;
 
@@ -306,6 +314,8 @@ void TopologicalChangeManager::removeItemsFromSphereModel(sofa::component::colli
     vitems.reserve(items.size());
     vitems.insert(vitems.end(), items.rbegin(), items.rend());
 
+    int res = vitems.size();
+
     sofa::core::componentmodel::topology::TopologyModifier* topoMod;
     topo_curr->getContext()->get(topoMod);
 
@@ -314,38 +324,42 @@ void TopologicalChangeManager::removeItemsFromSphereModel(sofa::component::colli
     topoMod->notifyEndingEvent();
 
     topoMod->propagateTopologicalChanges();
+
+    return res;
 }
 
 // Handle Removing of topological element (from any type of topology)
-void TopologicalChangeManager::removeItemsFromCollisionModel(sofa::core::CollisionElementIterator elem2) const
+int TopologicalChangeManager::removeItemsFromCollisionModel(sofa::core::CollisionElementIterator elem2) const
 {
     helper::vector<int> id;
     id.push_back(elem2.getIndex());
-    removeItemsFromCollisionModel(elem2.getCollisionModel(), id);
+    return removeItemsFromCollisionModel(elem2.getCollisionModel(), id);
 }
 
-void TopologicalChangeManager::removeItemsFromCollisionModel(sofa::core::CollisionModel* model, const int& indices) const
+int TopologicalChangeManager::removeItemsFromCollisionModel(sofa::core::CollisionModel* model, const int& indices) const
 {
     helper::vector<int> id;
     id.push_back(indices);
-    removeItemsFromCollisionModel(model, id);
+    return removeItemsFromCollisionModel(model, id);
 }
 
 
-void TopologicalChangeManager::removeItemsFromCollisionModel(sofa::core::CollisionModel* model, const helper::vector<int>& indices) const
+int TopologicalChangeManager::removeItemsFromCollisionModel(sofa::core::CollisionModel* model, const helper::vector<int>& indices) const
 {
     if(dynamic_cast<TriangleModel*>(model)!= NULL)
     {
-        removeItemsFromTriangleModel(static_cast<TriangleModel*>(model), indices);
+        return removeItemsFromTriangleModel(static_cast<TriangleModel*>(model), indices);
     }
     else if(dynamic_cast<TetrahedronModel*>(model)!= NULL)
     {
-        removeItemsFromTetrahedronModel(static_cast<TetrahedronModel*>(model), indices);
+        return removeItemsFromTetrahedronModel(static_cast<TetrahedronModel*>(model), indices);
     }
     else if(dynamic_cast<SphereModel*>(model)!= NULL)
     {
-        removeItemsFromSphereModel(static_cast<SphereModel*>(model), indices);
+        return removeItemsFromSphereModel(static_cast<SphereModel*>(model), indices);
     }
+    else
+        return 0;
 }
 
 
