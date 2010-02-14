@@ -160,13 +160,15 @@ double ConstantForceField<defaulttype::Rigid2fTypes>::getPotentialEnergy(const V
 template<class DataTypes>
 void ConstantForceField<DataTypes>::draw()
 {
-    if (!this->getContext()->getShowForceFields()) return;  /// \todo put this in the parent class
+    double aSC = arrowSizeCoef.getValue();
+
+    if ((!this->getContext()->getShowForceFields() && (aSC==0)) || (aSC < 0.0)) return;  /// \todo put this in the parent class
     const VecIndex& indices = points.getValue();
     const VecDeriv& f = forces.getValue();
     const Deriv f_end = (f.empty()? force.getValue() : f[f.size()-1]);
     const VecCoord& x = *this->mstate->getX();
 
-    double aSC = arrowSizeCoef.getValue();
+
 
     if( fabs(aSC)<1.0e-10 )
     {
