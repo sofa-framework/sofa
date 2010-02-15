@@ -11,7 +11,15 @@ include($${SOFA_DIR}/sofa.cfg)
 DESTDIR = $$SOFA_DIR/lib/sofa-plugins
 
 #set configuration to dynamic library
-CONFIG += $$CONFIGLIBRARIES
+
+contains (DEFINES, SOFA_QT4) {	
+	CONFIG += $$CONFIGLIBRARIES qt 
+	QT += opengl qt3support xml
+}
+else{
+	CONFIG += $$CONFIGLIBRARIES qt
+	QT += opengl
+}
 CONFIG -= staticlib
 CONFIG += dll
 
@@ -20,14 +28,18 @@ CONFIG += dll
 DEFINES += SOFA_BUILD_PLUGINEXAMPLE
 
 LIBS += $$SOFA_LIBS
+LIBS += $$SOFA_GUI_LIBS
 LIBS += $$SOFA_EXT_LIBS
+
 INCLUDEPATH += $$SOFA_DIR/extlibs
 
 SOURCES = MyFakeComponent.cpp \
+		  MyFakeComponentDataWidgets.cpp \
           OtherFakeComponent.cpp \
 	      initPluginExample.cpp
 
 HEADERS = MyFakeComponent.h \
+		  MyFakeComponentDataWidgets.h \
           OtherFakeComponent.h \
 		  OtherFakeComponent.inl 
 		  
