@@ -68,7 +68,7 @@ namespace gui
 namespace qt
 {
 
-class DataWidget : public QWidget
+class SOFA_SOFAGUIQT_API DataWidget : public QWidget
 {
     Q_OBJECT
 public slots:
@@ -173,7 +173,7 @@ public:
 
 
 template<class T>
-class TDataWidget : public DataWidget
+class SOFA_SOFAGUIQT_API TDataWidget : public DataWidget
 {
 
 public:
@@ -286,7 +286,7 @@ protected:
     QLineEdit *linkpath_edit;
 };
 
-#if defined WIN32 && !defined(SOFA_GUI_QT_DATAWIDGET_CPP)
+#if defined(WIN32) && !defined(SOFA_GUI_QT_DATAWIDGET_CPP)
 //delay load of the specialized Factory class. unique definition reside in the cpp file.
 extern template class SOFA_SOFAGUIQT_API helper::Factory<std::string, DataWidget, DataWidget::CreatorArgument>;
 #endif
@@ -298,4 +298,6 @@ extern template class SOFA_SOFAGUIQT_API helper::Factory<std::string, DataWidget
 } // sofa
 
 #endif // SOFA_GUI_QT_DATAWIDGET_H
+
+
 

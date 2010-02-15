@@ -28,6 +28,8 @@
 #include "MyFakeComponent.h"
 #include <sofa/core/ObjectFactory.h>
 
+
+
 namespace sofa
 {
 
@@ -42,6 +44,7 @@ namespace behaviormodel
 MyFakeComponent::MyFakeComponent()
     : myData( initData(&myData,(unsigned)1,"myData","Example of data") )
 {
+    myData.setWidget("myData_widget");
 }
 
 
@@ -69,9 +72,6 @@ SOFA_DECL_CLASS(MyFakeComponent)
 int MyFakeComponentClass = core::RegisterObject("just an example of component")
         .add< MyFakeComponent >()
         ;
-
-
-
 
 }	//behaviormodel
 
