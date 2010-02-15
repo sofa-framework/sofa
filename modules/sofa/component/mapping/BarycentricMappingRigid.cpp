@@ -24,6 +24,7 @@
 ******************************************************************************/
 #define SOFA_COMPONENT_MAPPING_BARYCENTRICMAPPINGRIGID_CPP
 #include <sofa/component/mapping/BarycentricMapping.inl>
+#include <sofa/component/topology/HexahedronSetGeometryAlgorithms.inl>
 #include <sofa/defaulttype/VecTypes.h>
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/ObjectFactory.h>
@@ -31,6 +32,7 @@
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/Mapping.inl>
 #include <sofa/core/componentmodel/behavior/MechanicalMapping.inl>
+
 
 #include <sofa/helper/PolarDecompose.h>
 
