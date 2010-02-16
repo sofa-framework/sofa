@@ -70,9 +70,10 @@ MeshLoader::MeshLoader() : BaseLoader()
 }
 
 
-void MeshLoader::init()
+void MeshLoader::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
+//void MeshLoader::init()
 {
-    sout << "MeshLoader::init()" << sendl;
+    BaseLoader::parse(arg);
 
     if (canLoad())
         load(/*m_filename.getFullPath().c_str()*/);

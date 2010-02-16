@@ -51,7 +51,8 @@ public:
 
     virtual bool canLoad();
 
-    virtual void init();
+    //virtual void init();
+    virtual void parse ( sofa::core::objectmodel::BaseObjectDescription* arg );
 
 protected:
 
