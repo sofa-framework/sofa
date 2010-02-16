@@ -50,7 +50,7 @@ using namespace core::componentmodel::topology;
 
 template <class DataTypes> OscillatingTorsionPressureForceField<DataTypes>::~OscillatingTorsionPressureForceField()
 {
-    file.close();
+    //file.close();
 }
 // Handle topological changes
 template <class DataTypes> void  OscillatingTorsionPressureForceField<DataTypes>::handleTopologyChange()
@@ -66,7 +66,7 @@ template <class DataTypes> void OscillatingTorsionPressureForceField<DataTypes>:
 {
     //serr << "initializing OscillatingTorsionPressureForceField" << sendl;
     this->core::componentmodel::behavior::ForceField<DataTypes>::init();
-    file.open("testsofa.dat");
+    //file.open("testsofa.dat");
     // normalize axis:
     axis.setValue( axis.getValue() / axis.getValue().norm() );
 
@@ -134,7 +134,7 @@ void OscillatingTorsionPressureForceField<DataTypes>::addForce(VecDeriv& f, cons
 
 
     //double da = 360.0 / 6.2831853 * rotationAngle;
-    file <<this->getContext()->getTime() << " " << getAmplitude()*0.01 << " " << avgRotAngle << std::endl;
+//  file <<this->getContext()->getTime() << " " << getAmplitude()*0.01 << " " << avgRotAngle << std::endl;
 
 
     // calculate and apply penalty forces to ideal positions
