@@ -176,7 +176,6 @@ public:
 
     virtual void writeToData()
     {
-
         data_type d = this->getData()->virtualGetValue();
         container.writeToData(d);
         this->getData()->virtualSetValue(d);
@@ -382,9 +381,9 @@ public:
     ParentWidget* parent_w;
     fixed_vector_data_widget_container() {}
 
-    bool createWidgets(DataWidget * _widget, QWidget* /*parent*/, const data_type& d, bool readOnly)
+    bool createWidgets(DataWidget * _widget, QWidget* parent, const data_type& d, bool readOnly)
     {
-        parent_w = createParentWidget(_widget,N);
+        parent_w = createParentWidget(parent,N);
         assert(parent_w != NULL);
         for (int i=0; i<N; ++i)
             if (!w[i].createWidgets(_widget,
@@ -437,10 +436,10 @@ public:
     Container w[L][C];
     fixed_grid_data_widget_container() {}
 
-    bool createWidgets(DataWidget * _widget, QWidget* /*parent*/, const data_type& d, bool readOnly)
+    bool createWidgets(DataWidget * _widget, QWidget* parent, const data_type& d, bool readOnly)
     {
 
-        parent_w = createParentWidget(_widget,C);
+        parent_w = createParentWidget(parent,C);
         assert(parent_w);
         for (int y=0; y<L; ++y)
             for (int x=0; x<C; ++x)

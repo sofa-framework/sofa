@@ -16,7 +16,7 @@ namespace sofa
 {
 namespace helper
 {
-template class Factory<std::string, gui::qt::DataWidget, gui::qt::DataWidget::CreatorArgument>;
+template class SOFA_SOFAGUIQT_API Factory<std::string, sofa::gui::qt::DataWidget, sofa::gui::qt::DataWidget::CreatorArgument>;
 }
 using namespace core::objectmodel;
 namespace gui

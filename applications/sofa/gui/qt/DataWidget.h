@@ -286,11 +286,12 @@ protected:
     QLineEdit *linkpath_edit;
 };
 
+#ifdef SOFA_QT4
 #if defined(WIN32) && !defined(SOFA_GUI_QT_DATAWIDGET_CPP)
 //delay load of the specialized Factory class. unique definition reside in the cpp file.
 extern template class SOFA_SOFAGUIQT_API helper::Factory<std::string, DataWidget, DataWidget::CreatorArgument>;
 #endif
-
+#endif
 
 
 } // qt

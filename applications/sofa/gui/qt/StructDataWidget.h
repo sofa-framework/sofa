@@ -88,6 +88,7 @@ public:
     Container w;
     QCheckBox* check;
     struct_data_widget_container() : check(NULL) {}
+
     bool createWidgets(DataWidget * _widget, QWidget* parent, const data_type& d, bool readOnly)
     {
         if (!p.createWidgets(_widget, parent, d, readOnly))
@@ -119,7 +120,7 @@ public:
             {
                 if (!isChecked)
                     w.setReadOnly(true);
-                _widget->connect(check, SIGNAL( toggled(bool) ), _widget, SLOT( setModified() ));
+                _widget->connect(check, SIGNAL( toggled(bool) ), _widget, SLOT( setWidgetDirty() ));
                 if( w.parent_w)
                 {
                     _widget->connect(check, SIGNAL( toggled(bool) ), w.parent_w, SLOT( setEnabled(bool) ));
