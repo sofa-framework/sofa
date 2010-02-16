@@ -29,7 +29,7 @@
 #pragma once
 #endif
 #include <sofa/component/component.h>
-#include "HyperelasticMaterial.h"
+#include <sofa/component/fem/material/HyperelasticMaterial.h>
 #include <sofa/core/VisualModel.h>
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
@@ -74,178 +74,34 @@ class Ogden: public HyperelasticMaterial<DataTypes>
     typedef typename Eigen::SelfAdjointEigenSolver<Matrix<Real,3,3> >::MatrixType EigenMatrix;
     typedef typename Eigen::SelfAdjointEigenSolver<Matrix<Real,3,3> >::RealVectorType CoordEigen;
 #endif
-    typedef typename fem::HyperelasticMaterial<DataTypes>::triplet triplet;
-    typedef typename std::pair<Real,MatrixSym> MatrixCoeffPair;
 
-    class Term1:public HyperelasticMaterial<DataTypes>::HyperelasticMaterialTerm
+    virtual Real getStrainEnergy(typename HyperelasticMaterial<DataTypes>::StrainInformation *sinfo, const typename HyperelasticMaterial<DataTypes>::MaterialParameters &param)
     {
-    public:
-
-        Term1():HyperelasticMaterial<DataTypes>::HyperelasticMaterialTerm()
-        {
-            this->includeJFactor=true;
-            this->includeInvariantFactor=true;
-            this->hasConstantElasticityTensor=false;
-            this->numberExponentialTerm=0;
-        }
-
-        virtual Real MultiplyByCoeff(const typename HyperelasticMaterial<DataTypes>::StrainInformation *,const typename HyperelasticMaterial<DataTypes>::MaterialParameters &)
-        {
-            return 1;
-        }
-
-        virtual Real JFunction(const typename HyperelasticMaterial<DataTypes>::StrainInformation *sinfo,const typename HyperelasticMaterial<DataTypes>::MaterialParameters &param)
-        {
-            Real alpha1=param.parameterArray[2];
-            return (Real)(pow(sinfo->J,(Real)(-alpha1/3.0)));
-        }
-        virtual Real JFunctionDerivative(const typename HyperelasticMaterial<DataTypes>::StrainInformation *sinfo,const typename HyperelasticMaterial<DataTypes>::MaterialParameters &param)
-        {
-            Real alpha1=param.parameterArray[2];
-            return (Real)(-alpha1*pow(sinfo->J,(Real)((-alpha1-3.0)/3.0))/3.0);
-        }
-        virtual Real JFunctionSecondDerivative(const typename HyperelasticMaterial<DataTypes>::StrainInformation *sinfo,const typename HyperelasticMaterial<DataTypes>::MaterialParameters &param)
-        {
-            Real alpha1=param.parameterArray[2];
-            return (Real)(alpha1*(alpha1+3.0)*pow(sinfo->J,(Real)((-alpha1-6.0)/3.0))/9.0);
-        }
-
-        virtual Real InvariantFunction(const typename HyperelasticMaterial<DataTypes>::StrainInformation *sinfo,const  typename HyperelasticMaterial<DataTypes>::MaterialParameters &param)
-        {
+        MatrixSym C=sinfo->deformationTensor;
+        Real k0=param.parameterArray[0];
+        Real mu1=param.parameterArray[1];
+        Real alpha1=param.parameterArray[2];
+        Real fj= (Real)(pow(sinfo->J,(Real)(-alpha1/3.0)));
 #ifdef SOFA_HAVE_EIGEN2
-            Real alpha1=param.parameterArray[2];
-            Real mu1=param.parameterArray[1];
-            MatrixSym C=sinfo->deformationTensor;
+        EigenMatrix CEigen;
+        CEigen(0,0)=C[0]; CEigen(0,1)=C[1]; CEigen(1,0)=C[1]; CEigen(1,1)=C[2];
+        CEigen(1,2)=C[4]; CEigen(2,1)=C[4]; CEigen(2,0)=C[3]; CEigen(0,2)=C[3]; CEigen(2,2)=C[5];
+        Eigen::SelfAdjointEigenSolver<EigenMatrix> Vect(CEigen,true);
+        sinfo->Evalue=Vect.eigenvalues();
+        sinfo->Evect=Vect.eigenvectors();
+        Real val=pow(sinfo->Evalue[0],alpha1/(Real)2)+pow(sinfo->Evalue[1],alpha1/(Real)2)+pow(sinfo->Evalue[2],alpha1/(Real)2);
+        return (Real)fj*val*mu1/(alpha1*alpha1)+k0*log(sinfo->J)*log(sinfo->J)/(Real)2.0-(Real)3.0*mu1/(alpha1*alpha1);
 
-            EigenMatrix CEigen;
-            CEigen(0,0)=C[0]; CEigen(0,1)=C[1]; CEigen(1,0)=C[1]; CEigen(1,1)=C[2]; CEigen(1,2)=C[4]; CEigen(2,1)=C[4];
-            CEigen(2,0)=C[3]; CEigen(0,2)=C[3]; CEigen(2,2)=C[5];
-            Eigen::SelfAdjointEigenSolver<EigenMatrix> Vect(CEigen,true);
-            CoordEigen Evalue=Vect.eigenvalues();
 
-
-            Real val=pow(Evalue[0],alpha1/(Real)2)+pow(Evalue[1],alpha1/(Real)2)+pow(Evalue[2],alpha1/(Real)2);
-            return val*mu1/(alpha1*alpha1);
 #else
-            return 1; // function must return a value!
-#endif
-        }
-        virtual void InvariantFunctionSPKTensor(const typename HyperelasticMaterial<DataTypes>::StrainInformation *sinfo, const  typename HyperelasticMaterial<DataTypes>::MaterialParameters &param, MatrixSym &SPKTensor)
-        {
-#ifdef SOFA_HAVE_EIGEN2
-            Real alpha1=param.parameterArray[2];
-            Real mu1=param.parameterArray[1];
-            MatrixSym C=sinfo->deformationTensor;
-
-            EigenMatrix CEigen;
-            CEigen(0,0)=C[0]; CEigen(0,1)=C[1]; CEigen(1,0)=C[1]; CEigen(1,1)=C[2]; CEigen(1,2)=C[4]; CEigen(2,1)=C[4];
-            CEigen(2,0)=C[3]; CEigen(0,2)=C[3]; CEigen(2,2)=C[5];
-            Eigen::SelfAdjointEigenSolver<EigenMatrix> Vect(CEigen,true);
-            EigenMatrix Evect=Vect.eigenvectors();
-            CoordEigen Evalue=Vect.eigenvalues();
-
-            Matrix3 Pinverse;
-            Pinverse(0,0)=Evect(0,0); Pinverse(1,1)=Evect(1,1); Pinverse(2,2)=Evect(2,2); Pinverse(0,1)=Evect(1,0); Pinverse(1,0)=Evect(0,1); Pinverse(2,0)=Evect(0,2);
-            Pinverse(0,2)=Evect(2,0); Pinverse(2,1)=Evect(1,2); Pinverse(1,2)=Evect(2,1);
-            MatrixSym Dalpha_1=MatrixSym(pow(Evalue[0],(Real)(alpha1/2.0-1.0)),0,pow(Evalue[1],(Real)(alpha1/2.0-1)),0,0,pow(Evalue[2],(Real)(alpha1/2.0-1.0)));
-            MatrixSym Calpha_1; Matrix3 Ca;
-            Ca=Pinverse.transposed()*Dalpha_1.SymMatMultiply(Pinverse);
-            Calpha_1.Mat2Sym(Ca,Calpha_1);
-            SPKTensor=mu1/alpha1*Calpha_1;
+        return 1; // function must return a value!
 #endif
 
 
-        }
-        virtual void InvariantFunctionElasticityTensor(const typename HyperelasticMaterial<DataTypes>::StrainInformation *sinfo, const  typename HyperelasticMaterial<DataTypes>::MaterialParameters &param,
-                std::vector<triplet> &,
-                std::vector<MatrixCoeffPair> &matrixsecond)
-        {
-#ifdef SOFA_HAVE_EIGEN2
-            Real alpha1=param.parameterArray[2];
-            Real mu1=param.parameterArray[1];
-            MatrixSym C=sinfo->deformationTensor;
-            EigenMatrix CEigen;
-            CEigen(0,0)=C[0]; CEigen(0,1)=C[1]; CEigen(1,0)=C[1]; CEigen(1,1)=C[2]; CEigen(1,2)=C[4]; CEigen(2,1)=C[4];
-            CEigen(2,0)=C[3]; CEigen(0,2)=C[3]; CEigen(2,2)=C[5];
 
-            Eigen::SelfAdjointEigenSolver<EigenMatrix> Vect(CEigen,true);
-            EigenMatrix Evect=Vect.eigenvectors();
-            CoordEigen Evalue=Vect.eigenvalues();
-
-            Matrix3 Pinverse;
-            Pinverse(0,0)=Evect(0,0); Pinverse(1,1)=Evect(1,1); Pinverse(2,2)=Evect(2,2); Pinverse(0,1)=Evect(1,0); Pinverse(1,0)=Evect(0,1); Pinverse(2,0)=Evect(0,2);
-            Pinverse(0,2)=Evect(2,0); Pinverse(2,1)=Evect(1,2); Pinverse(1,2)=Evect(2,1);
-            MatrixSym Dalpha_2=MatrixSym(pow(Evalue[0],alpha1/(Real)4.0-(Real)1.0),0,pow(Evalue[1],alpha1/(Real)4.0-(Real)1.0),0,0,pow(Evalue[2],alpha1/(Real)4.0-(Real)1.0));
-            MatrixSym Calpha_2; Matrix3 Ca;
-            Ca=Pinverse.transposed()*Dalpha_2.SymMatMultiply(Pinverse);
-            Calpha_2.Mat2Sym(Ca,Calpha_2);
-            matrixsecond.push_back(pair<Real,MatrixSym>(mu1*(alpha1/(Real)2.0-(Real)1.0)/alpha1,Calpha_2));
-#endif
-        }
-    };
-
-    class Term2:public HyperelasticMaterial<DataTypes>::HyperelasticMaterialTerm
-    {
-    public:
-
-
-
-        Term2():HyperelasticMaterial<DataTypes>::HyperelasticMaterialTerm()
-        {
-
-            this->includeJFactor=true;
-            this->includeInvariantFactor=false;
-            this->hasConstantElasticityTensor=false;
-            this->numberExponentialTerm=0;
-        }
-
-        virtual Real MultiplyByCoeff(const typename HyperelasticMaterial<DataTypes>::StrainInformation *,const typename HyperelasticMaterial<DataTypes>::MaterialParameters &)
-        {
-            return 1;
-        }
-        virtual Real JFunction(const typename HyperelasticMaterial<DataTypes>::StrainInformation *sinfo,const typename HyperelasticMaterial<DataTypes>::MaterialParameters &param)
-        {
-            Real k0=param.parameterArray[0];
-            Real mu1=param.parameterArray[1];
-            Real alpha1=param.parameterArray[2];
-            //return k0*(J-1)*(J-1)/2-mu*(3/2+9/(20*8)+11*27/(1050*64));
-            return k0*log(sinfo->J)*log(sinfo->J)/(Real)2.0-(Real)3.0*mu1/(alpha1*alpha1);
-        }
-        virtual Real JFunctionDerivative(const typename HyperelasticMaterial<DataTypes>::StrainInformation *sinfo,const typename HyperelasticMaterial<DataTypes>::MaterialParameters &param)
-        {
-            Real k0=param.parameterArray[0];
-            //return k0*(J-1);
-            return k0*log(sinfo->J)/sinfo->J;
-        }
-        virtual Real JFunctionSecondDerivative(const typename HyperelasticMaterial<DataTypes>::StrainInformation *sinfo,const typename HyperelasticMaterial<DataTypes>::MaterialParameters &param)
-        {
-            Real k0=param.parameterArray[0];
-            //return k0;
-            return k0*(1-log(sinfo->J))/(sinfo->J*sinfo->J);
-        }
-
-        virtual Real InvariantFunction(const typename HyperelasticMaterial<DataTypes>::StrainInformation *,const  typename HyperelasticMaterial<DataTypes>::MaterialParameters &)
-        {
-            return 1;
-        }
-        virtual void InvariantFunctionSPKTensor(const typename HyperelasticMaterial<DataTypes>::StrainInformation *, const  typename HyperelasticMaterial<DataTypes>::MaterialParameters &, MatrixSym &SPKTensor)
-        {
-            SPKTensor.clear();
-        }
-        virtual void InvariantFunctionElasticityTensor(const typename HyperelasticMaterial<DataTypes>::StrainInformation *, const  typename HyperelasticMaterial<DataTypes>::MaterialParameters &,
-                std::vector<triplet> &,
-                std::vector<MatrixCoeffPair> & )
-        {
-        }
-    };
-
-
-public:
-    Ogden ()
-    {
-        this->materialTermArray.push_back(new Term1() );
-//	this->materialTermArray.push_back(new Term2());
     }
+
+
     virtual void deriveSPKTensor(typename HyperelasticMaterial<DataTypes>::StrainInformation *sinfo, const typename HyperelasticMaterial<DataTypes>::MaterialParameters &param,MatrixSym &SPKTensorGeneral)
     {
 #ifdef SOFA_HAVE_EIGEN2
@@ -346,11 +202,14 @@ public:
         MatrixSym _C;
         invertMatrix(_C,sinfo->deformationTensor);
 
+        MatrixSym CC;
+        CC=_C;
+        CC[1]+=_C[1]; CC[3]+=_C[3]; CC[4]+=_C[4];
         Matrix6 C_H_C;
         C_H_C[0][0]=_C[0]*_C[0]; C_H_C[1][1]=_C[1]*_C[1]+_C[0]*_C[2]; C_H_C[2][2]=_C[2]*_C[2]; C_H_C[3][3]=_C[3]*_C[3]+_C[0]*_C[5]; C_H_C[4][4]=_C[4]*_C[4]+_C[2]*_C[5];
         C_H_C[5][5]=_C[5]*_C[5];
         C_H_C[1][0]=_C[0]*_C[1]; C_H_C[0][1]=2*C_H_C[1][0];
-        C_H_C[2][0]=C_H_C[0][2]=_C[1]*_C[1]; C_H_C[5][0]=C_H_C[0][5]=_C[4]*_C[4];
+        C_H_C[2][0]=C_H_C[0][2]=_C[1]*_C[1]; C_H_C[5][0]=C_H_C[0][5]=_C[3]*_C[3];
         C_H_C[3][0]=_C[0]*_C[3]; C_H_C[0][3]=2*C_H_C[3][0]; C_H_C[4][0]=_C[1]*_C[3]; C_H_C[0][4]=2*C_H_C[4][0];
         C_H_C[1][2]=_C[2]*_C[1]; C_H_C[2][1]=2*C_H_C[1][2]; C_H_C[1][5]=_C[3]*_C[4]; C_H_C[5][1]=2*C_H_C[1][5];
         C_H_C[3][1]=C_H_C[1][3]=_C[0]*_C[4]+_C[1]*_C[3]; C_H_C[1][4]=C_H_C[4][1]=_C[1]*_C[4]+_C[2]*_C[3];
@@ -359,11 +218,18 @@ public:
         C_H_C[3][5]=_C[3]*_C[5]; C_H_C[5][3]=2*C_H_C[3][5];
         C_H_C[4][3]=C_H_C[3][4]=_C[3]*_C[4]+_C[5]*_C[1];
         C_H_C[4][5]=_C[4]*_C[5]; C_H_C[5][4]=2*C_H_C[4][5];
+        Matrix6 trC_HC_;
+        trC_HC_[0]=_C[0]*CC;
+        trC_HC_[1]=_C[1]*CC;
+        trC_HC_[2]=_C[2]*CC;
+        trC_HC_[3]=_C[3]*CC;
+        trC_HC_[4]=_C[4]*CC;
+        trC_HC_[5]=_C[5]*CC;
         Matrix6 Calpha_H_Calpha;
         Calpha_H_Calpha[0][0]=Calpha_2[0]*Calpha_2[0]; Calpha_H_Calpha[1][1]=Calpha_2[1]*Calpha_2[1]+Calpha_2[0]*Calpha_2[2]; Calpha_H_Calpha[2][2]=Calpha_2[2]*Calpha_2[2]; Calpha_H_Calpha[3][3]=Calpha_2[3]*Calpha_2[3]+Calpha_2[0]*Calpha_2[5]; Calpha_H_Calpha[4][4]=Calpha_2[4]*Calpha_2[4]+Calpha_2[2]*Calpha_2[5];
         Calpha_H_Calpha[5][5]=Calpha_2[5]*Calpha_2[5];
         Calpha_H_Calpha[1][0]=Calpha_2[0]*Calpha_2[1]; Calpha_H_Calpha[0][1]=2*Calpha_H_Calpha[1][0];
-        Calpha_H_Calpha[2][0]=Calpha_H_Calpha[0][2]=Calpha_2[1]*Calpha_2[1]; Calpha_H_Calpha[5][0]=Calpha_H_Calpha[0][5]=Calpha_2[4]*Calpha_2[4];
+        Calpha_H_Calpha[2][0]=Calpha_H_Calpha[0][2]=Calpha_2[1]*Calpha_2[1]; Calpha_H_Calpha[5][0]=Calpha_H_Calpha[0][5]=Calpha_2[3]*Calpha_2[3];
         Calpha_H_Calpha[3][0]=Calpha_2[0]*Calpha_2[3]; Calpha_H_Calpha[0][3]=2*Calpha_H_Calpha[3][0]; Calpha_H_Calpha[4][0]=Calpha_2[1]*Calpha_2[3]; Calpha_H_Calpha[0][4]=2*Calpha_H_Calpha[4][0];
         Calpha_H_Calpha[1][2]=Calpha_2[2]*Calpha_2[1]; Calpha_H_Calpha[2][1]=2*Calpha_H_Calpha[1][2]; Calpha_H_Calpha[1][5]=Calpha_2[3]*Calpha_2[4]; Calpha_H_Calpha[5][1]=2*Calpha_H_Calpha[1][5];
         Calpha_H_Calpha[3][1]=Calpha_H_Calpha[1][3]=Calpha_2[0]*Calpha_2[4]+Calpha_2[1]*Calpha_2[3]; Calpha_H_Calpha[1][4]=Calpha_H_Calpha[4][1]=Calpha_2[1]*Calpha_2[4]+Calpha_2[2]*Calpha_2[3];
@@ -372,32 +238,23 @@ public:
         Calpha_H_Calpha[3][5]=Calpha_2[3]*Calpha_2[5]; Calpha_H_Calpha[5][3]=2*Calpha_H_Calpha[3][5];
         Calpha_H_Calpha[4][3]=Calpha_H_Calpha[3][4]=Calpha_2[3]*Calpha_2[4]+Calpha_2[5]*Calpha_2[1];
         Calpha_H_Calpha[4][5]=Calpha_2[4]*Calpha_2[5]; Calpha_H_Calpha[5][4]=2*Calpha_H_Calpha[4][5];
-        Matrix6 trC_HC_;
-        trC_HC_[0]=_C[0]*_C;
-        trC_HC_[1]=_C[1]*_C;
-        trC_HC_[2]=_C[2]*_C;
-        trC_HC_[3]=_C[3]*_C;
-        trC_HC_[4]=_C[4]*_C;
-        trC_HC_[5]=_C[5]*_C;
         Matrix6 trCalpha_HC_;
-        trCalpha_HC_[0]=Calpha_1[0]*_C;
-        trCalpha_HC_[1]=Calpha_1[1]*_C;
-        trCalpha_HC_[2]=Calpha_1[2]*_C;
-        trCalpha_HC_[3]=Calpha_1[3]*_C;
-        trCalpha_HC_[4]=Calpha_1[4]*_C;
-        trCalpha_HC_[5]=Calpha_1[5]*_C;
-        Matrix6 trC_HCalpha=trCalpha_HC_.transposed();
-
-        /*Real _trHCalpha_1=inputTensor[0]*Calpha_1[0]+inputTensor[2]*Calpha_1[2]+inputTensor[5]*Calpha_1[5]
-        +2*inputTensor[1]*Calpha_1[1]+2*inputTensor[3]*Calpha_1[3]+2*inputTensor[4]*Calpha_1[4];
-        Real _trHC=inputTensor[0]*inversematrix[0]+inputTensor[2]*inversematrix[2]+inputTensor[5]*inversematrix[5]
-        +2*inputTensor[1]*inversematrix[1]+2*inputTensor[3]*inversematrix[3]+2*inputTensor[4]*inversematrix[4];
-        //C-1HC-1 convert to sym matrix
-        MatrixSym Firstmatrix;
-        Firstmatrix.Mat2Sym(inversematrix.SymMatMultiply(inputTensor.SymSymMultiply(inversematrix)),Firstmatrix);
-        MatrixSym Secondmatrix;
-        Secondmatrix.Mat2Sym(Calpha_2.SymMatMultiply(inputTensor.SymSymMultiply(Calpha_2)),Secondmatrix);*/
-
+        trCalpha_HC_[0]=Calpha_1[0]*CC;
+        trCalpha_HC_[1]=Calpha_1[1]*CC;
+        trCalpha_HC_[2]=Calpha_1[2]*CC;
+        trCalpha_HC_[3]=Calpha_1[3]*CC;
+        trCalpha_HC_[4]=Calpha_1[4]*CC;
+        trCalpha_HC_[5]=Calpha_1[5]*CC;
+        MatrixSym CCalpha_1;
+        CCalpha_1=Calpha_1;
+        CCalpha_1[1]+=Calpha_1[1]; CCalpha_1[3]+=Calpha_1[3]; CCalpha_1[4]+=Calpha_1[4];
+        Matrix6 trC_HCalpha;
+        trC_HCalpha[0]=_C[0]*CCalpha_1;
+        trC_HCalpha[1]=_C[1]*CCalpha_1;
+        trC_HCalpha[2]=_C[2]*CCalpha_1;
+        trC_HCalpha[3]=_C[3]*CCalpha_1;
+        trC_HCalpha[4]=_C[4]*CCalpha_1;
+        trC_HCalpha[5]=_C[5]*CCalpha_1;
 
         outputTensor=(Real)2.0*(mu1/alpha1*pow(sinfo->J,-alpha1/(Real)3.0)*((-alpha1/(Real)6.0)*(-(Real)1.0/(Real)3.0*trC_HC_*trCalpha+trCalpha_HC_)+(Real)1.0/(Real)3.0*C_H_C*trCalpha-(Real)1.0/(Real)3.0*trC_HCalpha*alpha1/(Real)2.0
                 +(alpha1/(Real)2.0-(Real)1)*Calpha_H_Calpha)+k0/(Real)2.0*trC_HC_-(Real)(k0*log(sinfo->J))*C_H_C);
