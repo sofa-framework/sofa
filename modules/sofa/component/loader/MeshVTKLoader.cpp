@@ -30,10 +30,6 @@
 #include <stdio.h>
 #include <sstream>
 
-#ifdef WIN32
-#define strcasecmp stricmp
-#endif
-
 namespace sofa
 {
 
@@ -473,7 +469,7 @@ bool MeshVTKLoader::XMLVTKReader::readFile(const char* filename)
     hVTKDocRoot = TiXmlHandle(pElem);
 
     //Endianness
-    const char* endiannessStrTemp = pElem->Attribute("byte_order");
+    //const char* endiannessStrTemp = pElem->Attribute("byte_order");
     // ??
 
     //read VTK data format type
@@ -534,7 +530,7 @@ MeshVTKLoader::BaseVTKReader::BaseVTKDataIO* MeshVTKLoader::XMLVTKReader::loadDa
 
 MeshVTKLoader::BaseVTKReader::BaseVTKDataIO* MeshVTKLoader::XMLVTKReader::loadDataArray(TiXmlElement* dataArrayElement, int size)
 {
-    return loadDataArray(dataArrayElement, 0, "");
+    return loadDataArray(dataArrayElement, size, "");
 }
 
 MeshVTKLoader::BaseVTKReader::BaseVTKDataIO* MeshVTKLoader::XMLVTKReader::loadDataArray(TiXmlElement* dataArrayElement, int size, std::string type)
@@ -588,7 +584,7 @@ bool MeshVTKLoader::XMLVTKReader::loadUnstructuredGrid(TiXmlHandle datasetFormat
 
     checkError(pieceElem);
     //for each "Piece" Node
-    for( pieceElem ; pieceElem; pieceElem=pieceElem->NextSiblingElement())
+    for( ; pieceElem; pieceElem=pieceElem->NextSiblingElement())
     {
         pieceElem->QueryIntAttribute("NumberOfPoints", &numberOfPoints);
         pieceElem->QueryIntAttribute("NumberOfCells", &numberOfCells);
@@ -600,7 +596,7 @@ bool MeshVTKLoader::XMLVTKReader::loadUnstructuredGrid(TiXmlHandle datasetFormat
         TiXmlElement* dataArrayElement;
         TiXmlNode* node = pieceElem->FirstChild();
 
-        for (node ; node ; node = node->NextSibling())
+        for ( ; node ; node = node->NextSibling())
         {
             std::string currentNodeName = std::string(node->Value());
             if (currentNodeName.compare("Points") == 0)
@@ -619,7 +615,7 @@ bool MeshVTKLoader::XMLVTKReader::loadUnstructuredGrid(TiXmlHandle datasetFormat
             {
                 /* Cells */
                 dataArrayNode = node->FirstChild("DataArray");
-                for (dataArrayNode ; dataArrayNode; dataArrayNode = dataArrayNode->NextSibling( "DataArray"))
+                for ( ; dataArrayNode; dataArrayNode = dataArrayNode->NextSibling( "DataArray"))
                 {
                     dataArrayElement = dataArrayNode->ToElement();
                     checkError(dataArrayElement);
@@ -649,7 +645,7 @@ bool MeshVTKLoader::XMLVTKReader::loadUnstructuredGrid(TiXmlHandle datasetFormat
             if (currentNodeName.compare("PointData") == 0)
             {
                 dataArrayNode = node->FirstChild("DataArray");
-                for (dataArrayNode ; dataArrayNode; dataArrayNode = dataArrayNode->NextSibling( "DataArray"))
+                for ( ; dataArrayNode; dataArrayNode = dataArrayNode->NextSibling( "DataArray"))
                 {
                     dataArrayElement = dataArrayNode->ToElement();
                     checkError(dataArrayElement);
@@ -665,7 +661,7 @@ bool MeshVTKLoader::XMLVTKReader::loadUnstructuredGrid(TiXmlHandle datasetFormat
             if (currentNodeName.compare("CellData") == 0)
             {
                 dataArrayNode = node->FirstChild("DataArray");
-                for (dataArrayNode ; dataArrayNode; dataArrayNode = dataArrayNode->NextSibling( "DataArray"))
+                for ( ; dataArrayNode; dataArrayNode = dataArrayNode->NextSibling( "DataArray"))
                 {
                     dataArrayElement = dataArrayNode->ToElement();
                     checkError(dataArrayElement);
@@ -683,31 +679,31 @@ bool MeshVTKLoader::XMLVTKReader::loadUnstructuredGrid(TiXmlHandle datasetFormat
     return true;
 }
 
-bool MeshVTKLoader::XMLVTKReader::loadPolydata(TiXmlHandle datasetFormatHandle)
+bool MeshVTKLoader::XMLVTKReader::loadPolydata(TiXmlHandle /* datasetFormatHandle */)
 {
     serr << "Polydata dataset not implemented yet" << sendl;
     return false;
 }
 
-bool MeshVTKLoader::XMLVTKReader::loadRectilinearGrid(TiXmlHandle datasetFormatHandle)
+bool MeshVTKLoader::XMLVTKReader::loadRectilinearGrid(TiXmlHandle /* datasetFormatHandle */)
 {
     serr << "RectilinearGrid dataset not implemented yet" << sendl;
     return false;
 }
 
-bool MeshVTKLoader::XMLVTKReader::loadStructuredGrid(TiXmlHandle datasetFormatHandle)
+bool MeshVTKLoader::XMLVTKReader::loadStructuredGrid(TiXmlHandle /* datasetFormatHandle */)
 {
     serr << "StructuredGrid dataset not implemented yet" << sendl;
     return false;
 }
 
-bool MeshVTKLoader::XMLVTKReader::loadStructuredPoints(TiXmlHandle datasetFormatHandle)
+bool MeshVTKLoader::XMLVTKReader::loadStructuredPoints(TiXmlHandle /*datasetFormatHandle */)
 {
     serr << "StructuredPoints dataset not implemented yet" << sendl;
     return false;
 }
 
-bool MeshVTKLoader::XMLVTKReader::loadImageData(TiXmlHandle datasetFormatHandle)
+bool MeshVTKLoader::XMLVTKReader::loadImageData(TiXmlHandle /* datasetFormatHandle */)
 {
     serr << "ImageData dataset not implemented yet" << sendl;
     return false;

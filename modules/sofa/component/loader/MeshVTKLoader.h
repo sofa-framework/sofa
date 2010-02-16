@@ -39,6 +39,10 @@ namespace component
 namespace loader
 {
 
+#ifdef WIN32
+#define strcasecmp stricmp
+#endif
+
 // Format doc: http://www.vtk.org/VTK/img/file-formats.pdf
 // http://www.cacr.caltech.edu/~slombey/asci/vtk/vtk_formats.simple.html
 class SOFA_COMPONENT_LOADER_API MeshVTKLoader : public sofa::core::componentmodel::loader::MeshLoader
