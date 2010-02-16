@@ -75,7 +75,7 @@ class Ogden: public HyperelasticMaterial<DataTypes>
     typedef typename Eigen::SelfAdjointEigenSolver<Matrix<Real,3,3> >::RealVectorType CoordEigen;
 #endif
 
-    virtual Real getStrainEnergy(typename HyperelasticMaterial<DataTypes>::StrainInformation *sinfo, const typename HyperelasticMaterial<DataTypes>::MaterialParameters &param)
+    virtual Real getStrainEnergy(  HyperelasticMaterial<DataTypes>::StrainInformation *sinfo, const   HyperelasticMaterial<DataTypes>::MaterialParameters &param)
     {
         MatrixSym C=sinfo->deformationTensor;
         Real k0=param.parameterArray[0];
@@ -102,7 +102,7 @@ class Ogden: public HyperelasticMaterial<DataTypes>
     }
 
 
-    virtual void deriveSPKTensor(typename HyperelasticMaterial<DataTypes>::StrainInformation *sinfo, const typename HyperelasticMaterial<DataTypes>::MaterialParameters &param,MatrixSym &SPKTensorGeneral)
+    virtual void deriveSPKTensor(  HyperelasticMaterial<DataTypes>::StrainInformation *sinfo, const   HyperelasticMaterial<DataTypes>::MaterialParameters &param,MatrixSym &SPKTensorGeneral)
     {
 #ifdef SOFA_HAVE_EIGEN2
         Real k0=param.parameterArray[0];
@@ -132,7 +132,7 @@ class Ogden: public HyperelasticMaterial<DataTypes>
     }
 
 
-    virtual void applyElasticityTensor(typename HyperelasticMaterial<DataTypes>::StrainInformation *sinfo, const typename HyperelasticMaterial<DataTypes>::MaterialParameters &param,const MatrixSym inputTensor, MatrixSym &outputTensor)
+    virtual void applyElasticityTensor(  HyperelasticMaterial<DataTypes>::StrainInformation *sinfo, const   HyperelasticMaterial<DataTypes>::MaterialParameters &param,const MatrixSym inputTensor, MatrixSym &outputTensor)
     {
 #ifdef SOFA_HAVE_EIGEN2
         Real k0=param.parameterArray[0];
@@ -173,7 +173,7 @@ class Ogden: public HyperelasticMaterial<DataTypes>
 #endif
 
     }
-    virtual void ElasticityTensor(typename HyperelasticMaterial<DataTypes>::StrainInformation *sinfo, const typename HyperelasticMaterial<DataTypes>::MaterialParameters &param, Matrix6 &outputTensor)
+    virtual void ElasticityTensor(  HyperelasticMaterial<DataTypes>::StrainInformation *sinfo, const   HyperelasticMaterial<DataTypes>::MaterialParameters &param, Matrix6 &outputTensor)
     {
 #ifdef SOFA_HAVE_EIGEN2
         Real k0=param.parameterArray[0];
