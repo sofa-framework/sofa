@@ -110,14 +110,14 @@ void OscillatingTorsionPressureForceField<DataTypes>::addForce(VecDeriv& f, cons
 
     Deriv force;
     Coord forceDir, deltaPos;
-    const VecCoord& x0 = *this->mstate->getX0();
+//  const VecCoord& x0 = *this->mstate->getX0();
     Real avgRotAngle = 0;
     Real totalDist = 0;
 
     typename topology::TriangleSubsetData<TrianglePressureInformation>::iterator it;
 
     // calculate average rotation angle:
-    for (int i=0; i<x.size(); i++) if (pointActive[i])
+    for (unsigned int i=0; i<x.size(); i++) if (pointActive[i])
         {
             vecFromCenter[i] = getVecFromRotAxis( x[i] );
             distFromCenter[i] = vecFromCenter[i].norm();
@@ -142,7 +142,7 @@ void OscillatingTorsionPressureForceField<DataTypes>::addForce(VecDeriv& f, cons
     Real avgError = 0, maxError = 0;
     int pointCnt = 0;
     Real appliedMoment = 0;
-    for (int i=0; i<x.size(); i++) if (pointActive[i])
+    for (unsigned int i=0; i<x.size(); i++) if (pointActive[i])
         {
             Coord idealPos = quat.rotate( origVecFromCenter[i] ) + origCenter[i];
             deltaPos = idealPos - x[i];
@@ -166,7 +166,7 @@ void OscillatingTorsionPressureForceField<DataTypes>::addForce(VecDeriv& f, cons
     // apply remaining moment
     //Real check = 0;
     Real remainingMoment = moment.getValue() * getAmplitude() - appliedMoment;
-    for (int i=0; i<x.size(); i++) if (pointActive[i])
+    for (unsigned int i=0; i<x.size(); i++) if (pointActive[i])
         {
             if (distFromCenter[i] > 1e-10)
             {
@@ -181,7 +181,7 @@ void OscillatingTorsionPressureForceField<DataTypes>::addForce(VecDeriv& f, cons
 
 
 template <class DataTypes>
-void OscillatingTorsionPressureForceField<DataTypes>::addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor)
+void OscillatingTorsionPressureForceField<DataTypes>::addDForce (VecDeriv& , const VecDeriv& , double , double )
 {
     /*for (int i=0; i<dx.size(); i++) if (pointActive[i])
     {
@@ -237,8 +237,8 @@ void OscillatingTorsionPressureForceField<DataTypes>::initTriangleInformation()
 
     // normalize value to moment 1
     Real totalMoment = 0;
-    for (int i=0; i<relMomentToApply.size(); i++) totalMoment += relMomentToApply[i];
-    for (int i=0; i<relMomentToApply.size(); i++) relMomentToApply[i] /= totalMoment;
+    for (unsigned int i=0; i<relMomentToApply.size(); i++) totalMoment += relMomentToApply[i];
+    for (unsigned int i=0; i<relMomentToApply.size(); i++) relMomentToApply[i] /= totalMoment;
 }
 
 
