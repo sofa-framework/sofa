@@ -47,8 +47,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "PaceMaker.h"
-
 
 
 namespace sofa
@@ -70,12 +68,18 @@ void UpdateForceFeedBack(void* toolData)
     XiToolData* myData = static_cast<XiToolData*>(toolData);
 
     // Compute actual tool state:
+    xiTrocarAcquire();
+    XiToolState state;
+
+    xiTrocarQueryStates();
+    xiTrocarGetState(myData->indexTool, &state);
+
     Vector3 dir;
+    dir[0] = (double)state.trocarDir[0];
+    dir[1] = (double)state.trocarDir[1];
+    dir[2] = (double)state.trocarDir[2];
 
-    dir[0] = (double)myData->simuState.trocarDir[0];
-    dir[1] = (double)myData->simuState.trocarDir[1];
-    dir[2] = (double)myData->simuState.trocarDir[2];
-
+    double toolDpth = state.toolDepth;
     double thetaX= asin(dir[2]);
     double cx = cos(thetaX);
     double thetaZ=0;
@@ -95,17 +99,15 @@ void UpdateForceFeedBack(void* toolData)
     sofa::helper::vector<sofa::defaulttype::Vector1 > ForceBack;
 
     currentState.resize(6);
-    //ForceBack.resize(6); //??
     currentState[0] = thetaX;
     currentState[0] = thetaZ;
-    currentState[0] = myData->simuState.toolRoll;
-    currentState[0] = myData->simuState.toolDepth * myData->scale;
-    currentState[0] = myData->simuState.opening;
-    currentState[0] = myData->simuState.opening;
+    currentState[0] = state.toolRoll;
+    currentState[0] = toolDpth * myData->scale;
+    currentState[0] = state.opening;
+    currentState[0] = state.opening;
 
     myData->forceFeedback->computeForce(currentState, ForceBack);
 
-    //std::cout << "ForceBack: " << ForceBack << std::endl;
 
     /*
     z = [0 -sin(state[0]) cos(state[0])];
@@ -124,7 +126,7 @@ void UpdateForceFeedBack(void* toolData)
     forceZ*z; // force "crée" au bout de la pince par le moement Mx
     */
 
-    double toolDpth = myData->simuState.toolDepth;
+
     double forceX, forceZ; //Y?
     Vector3 tipForce;
 
@@ -149,15 +151,20 @@ void UpdateForceFeedBack(void* toolData)
     tipForce = dir*ForceBack[3/*2?*/][0] + x * forceX + z *forceZ;
 
     XiToolForce_ ff;
-    ff.tipForce[0] = tipForce[0]/1000; //???
-    ff.tipForce[1] = tipForce[1]/1000;
-    ff.tipForce[2] = tipForce[2]/1000;
+    ff.tipForce[0] = (float)(tipForce[0] * myData->forceScale);
+    ff.tipForce[1] = (float)(tipForce[1] * myData->forceScale);
+    ff.tipForce[2] = (float)(tipForce[2] * myData->forceScale);
+
+    if ( (abs(ff.tipForce[0]) > FFthresholdX) || (abs(ff.tipForce[1]) > FFthresholdY) || (abs(ff.tipForce[2]) > FFthresholdZ) )
+    {
+        std::cout << "Error: Force FeedBack has reached a safety threshold! See header file IHPDriver.h." << std::endl;
+        std::cout << "F_X: " << ff.tipForce[0] << "F_Y: " << ff.tipForce[1] << "F_Z: " << ff.tipForce[2] << std::endl;
+        return;
+    }
+    ff.rollForce = 0.0f;
 
     xiTrocarSetForce(0, &ff);
     xiTrocarFlushForces();
-
-//	std::cout << tipForce/1000 << std::endl;
-
 }
 
 
@@ -178,12 +185,14 @@ int initDevice(XiToolData& /*data*/)
 
 IHPDriver::IHPDriver()
     : Scale(initData(&Scale, 1.0, "Scale","Default scale applied to the Phantom Coordinates. "))
+    , forceScale(initData(&forceScale, 0.0001, "forceScale","Default scale applied to the force feedback. "))
     , permanent(initData(&permanent, false, "permanent" , "Apply the force feedback permanently"))
     , indexTool(initData(&indexTool, (int)0,"toolIndex", "index of the tool to simulate (if more than 1). Index 0 correspond to first tool."))
     , showToolStates(initData(&showToolStates, false, "showToolStates" , "Display states and forces from the tool."))
     , testFF(initData(&testFF, false, "testFF" , "If true will add force when closing handle. As if tool was entering an elastic body."))
 {
-
+    myPaceMaker = NULL;
+    _mstate = NULL;
     this->f_listening.setValue(true);
     //data.forceFeedback = new NullForceFeedback();
     noDevice = false;
@@ -193,6 +202,10 @@ IHPDriver::IHPDriver()
 IHPDriver::~IHPDriver()
 {
     xiTrocarRelease();
+    this->deleteCallBack();
+//	if (data.forceFeedback)
+//		delete data.forceFeedback;
+
 }
 
 void IHPDriver::cleanup()
@@ -201,6 +214,8 @@ void IHPDriver::cleanup()
 
     isInitialized = false;
 
+    if (permanent.getValue())
+        this->deleteCallBack();
 }
 
 void IHPDriver::setForceFeedback(LCPForceFeedback<defaulttype::Vec1dTypes>* ff)
@@ -233,8 +248,6 @@ void IHPDriver::bwdInit()
 
     }
 
-    //std::cout << "IHPDriver::init()" << std::endl;
-
     LCPForceFeedback<defaulttype::Vec1dTypes> *ff = context->get<LCPForceFeedback<defaulttype::Vec1dTypes>>();
 
     if(ff)
@@ -266,8 +279,9 @@ void IHPDriver::bwdInit()
     std::cout << "Tool: " << nbr << std::endl;
     std::cout << "name: " << name << std::endl;
     std::cout << "serial: " << serial << std::endl;
-
     xiTrocarRelease();
+
+    data.indexTool = nbr;
 
     if (this->permanent.getValue() )
         this->createCallBack();
@@ -277,9 +291,11 @@ void IHPDriver::bwdInit()
 
 void IHPDriver::setDataValue()
 {
-    /*
+
     data.scale = Scale.getValue();
     data.forceScale = forceScale.getValue();
+    data.permanent_feedback = permanent.getValue();
+    /*
     Quat q = orientationBase.getValue();
     q.normalize();
     orientationBase.setValue(q);
@@ -287,7 +303,7 @@ void IHPDriver::setDataValue()
     q=orientationTool.getValue();
     q.normalize();
     data.endIHP_H_virtualTool.set(positionTool.getValue(), q);
-    data.permanent_feedback = permanent.getValue();
+
     */
 }
 
@@ -310,6 +326,10 @@ void IHPDriver::reinit()
     this->reinitVisual();
     //this->updateForce();
 
+    if (permanent.getValue()) //if checkBox is changed
+        this->createCallBack();
+    else
+        this->deleteCallBack();
 }
 
 
@@ -591,10 +611,13 @@ void IHPDriver::createCallBack()
 {
     std::cout << "Creating CallBack thread" << std::endl;
 
-    sofa::component::controller::PaceMaker myPaceMaker(1000);
-    myPaceMaker.pToFunc = &UpdateForceFeedBack;
-    myPaceMaker.Pdata = &data;
-    myPaceMaker.createPace();
+    if (myPaceMaker)
+        delete myPaceMaker;
+
+    myPaceMaker = new sofa::component::controller::PaceMaker(1000);
+    myPaceMaker->pToFunc = &UpdateForceFeedBack;
+    myPaceMaker->Pdata = &data;
+    myPaceMaker->createPace();
 
     //This function create a thread calling stateCallBack() at a given frequence
 }
@@ -602,7 +625,8 @@ void IHPDriver::createCallBack()
 
 void IHPDriver::deleteCallBack()
 {
-    //this function get FF at a given frequence
+    if (myPaceMaker)
+        delete myPaceMaker;
 }
 
 

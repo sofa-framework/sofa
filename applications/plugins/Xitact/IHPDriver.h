@@ -36,6 +36,7 @@
 #include <sofa/defaulttype/Quat.h>
 #include "XiTrocarInterface.h"
 #include <sofa/component/controller/LCPForceFeedback.h>
+#include "PaceMaker.h"
 
 namespace sofa
 {
@@ -48,17 +49,22 @@ namespace visualModel { class OglModel; }
 namespace controller
 {
 
-//class LCPForceFeedback;
-
-
 using namespace sofa::defaulttype;
 using core::objectmodel::Data;
+
+// Force FeedBack safety threshold, manually observed in Xitact example. Change it if needed.
+static float FFthresholdX = 30.0; //in Newtons
+static float FFthresholdY = 30.0;
+static float FFthresholdZ = 30.0;
+static float FFthresholdRoll;
+
 
 typedef struct
 {
     LCPForceFeedback<defaulttype::Vec1dTypes>* forceFeedback;
     simulation::Node *context;
 
+    int indexTool;
     double scale;
     double forceScale;
     bool permanent_feedback;
@@ -70,6 +76,7 @@ typedef struct
 
 } XiToolData;
 
+
 /**
 * Omni driver
 */
@@ -79,6 +86,7 @@ class IHPDriver : public Controller
 
 public:
     Data<double> Scale;
+    Data<double> forceScale;
     Data<bool> permanent;
     Data<int> indexTool;
     Data<bool> showToolStates;
@@ -125,6 +133,7 @@ private:
     Quat fromGivenDirection( Vector3& dir,  Vector3& local_dir, Quat old_quat);
 
     bool graspElasticMode;
+    sofa::component::controller::PaceMaker* myPaceMaker;
 
 
 
