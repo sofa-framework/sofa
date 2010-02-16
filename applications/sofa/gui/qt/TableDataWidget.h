@@ -363,7 +363,8 @@ public:
         rows = 0;
         int dataRows = rhelper::size(d);
 
-
+        wSize = new QSpinBox(0, INT_MAX, 1, parent);
+        wDisplay = new QPushButtonUpdater( QString("Display the values"), parent);
 
         if (dataRows > 0)
             cols = vhelper::size(*rhelper::get(d,0));
@@ -371,21 +372,15 @@ public:
             cols = vhelper::size(row_type());
 
         if (FLAGS & TABLE_HORIZONTAL)
-            wTable = new QTableUpdater(cols, 0, parent);
+            wTable = new QTableUpdater(cols, dataRows, parent);
         else
-            wTable = new QTableUpdater(0, cols, parent);
+            wTable = new QTableUpdater(dataRows, cols, parent);
 
         widget=_widget;
 
-        QHBoxLayout* mainlayout = new QHBoxLayout(widget);
-        QVBoxLayout* vlayout = new QVBoxLayout();
-        wSize = new QSpinBox(0, INT_MAX, 1, widget);
-        wDisplay = new QPushButtonUpdater( QString("Display the values"), widget);
-        vlayout->addWidget(wDisplay);
-        vlayout->addWidget(wSize);
 
-        mainlayout->addLayout(vlayout);
-        mainlayout->addWidget(wTable);
+
+
         wDisplay->setToggleButton(true);
         wDisplay->setOn(dataRows < MAX_NUM_ELEM && dataRows != 0 );
         wDisplay->setAutoDefault(false);
@@ -410,7 +405,7 @@ public:
             if (!(FLAGS & TABLE_FIXEDSIZE))
             {
                 _widget->connect(wSize, SIGNAL( valueChanged(int) ), _widget, SLOT( setWidgetDirty() ));
-                _widget->connect(wSize, SIGNAL( valueChanged(int) ), _widget, SLOT(updateDataValue()) );
+                //_widget->connect(wSize, SIGNAL( valueChanged(int) ), _widget, SLOT(updateDataValue()) );
 
 
                 if( FLAGS & TABLE_HORIZONTAL)
@@ -577,6 +572,7 @@ public:
 public:
     TableDataWidget(QWidget* parent,const char* name, MyData* d) : Inherit(parent,name,d) {}
     virtual unsigned int sizeWidget() {return 3;}
+    virtual unsigned int numColumnWidget() { return 1; }
 };
 
 ////////////////////////////////////////////////////////////////
@@ -768,70 +764,6 @@ public:
         //d.resize(s);
     }
 };
-/*template<>
-class vector_data_trait< std::map<unsigned int, std::string> >
-{
-
-}
-*/
-
-//template<class T>
-//class vector_data_trait < std::set<T> >
-//{
-//public :
-//  typedef std::set<T> data_type;
-//  typedef T value_type;
-//  enum { NDIM = 1 };
-//  static int size(const data_type& d) { return d.size(); }
-//  static const char* header( const data_type& /*d*/, int /*i*/ =0)
-//  {
-//    return sofa::defaulttype::DataTypeInfo< value_type >::name();
-//  }
-//  static const value_type* get(const data_type& d, int i =0)
-//  {
-//    if ((unsigned)size(d) <= (unsigned)i  ) return NULL;
-//    typename data_type::const_iterator it = d.begin();
-//    while ( i > 0 && it != d.end() ){
-//      ++it;
-//      --i;
-//    }
-//    if( i == 0) return &(*it);
-//    else return NULL;
-//  }
-//  static void set( const value_type& v, data_type& d, int /*i*/ = 0)
-//  {
-//    typename data_type::iterator it;
-//    it = d.find(v);
-//    if( it == d.end() ){
-//      return;
-//    }
-//    else{
-//      (*it) = v;
-//    }
-//  }
-//
-//  static void resize( int s, data_type& d)
-//  {
-//    unsigned d_size = (unsigned)size(d);
-//    while( d_size  != (unsigned) s )
-//    {
-//      if( d_size  < (unsigned) s ){
-//        std::ostringstream oss;
-//        oss << d_size;
-//        d.insert( sofa::core::objectmodel::Tag(oss.str()) );
-//      }
-//      if( d_size  > (unsigned) s ){
-//        d.erase(--d.end());
-//      }
-//      d_size  = (unsigned) size(d);
-//    }
-//  }
-//
-//};
-//
-//template<class T>
-//class vector_data_trait < sofa::helper::set<T> > : public vector_data_trait < std::set<T> >
-//{};
 
 
 } // namespace qt

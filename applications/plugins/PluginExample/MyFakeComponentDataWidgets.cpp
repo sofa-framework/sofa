@@ -103,3 +103,4 @@ void myDataWidget::change()
 } // qt
 } // gui
 } // sofa
+
