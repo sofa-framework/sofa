@@ -72,12 +72,11 @@ protected:
             : area(e.area)
         { }
     };
+    std::ofstream file;
 
 
-protected:
-
+public:
     TriangleSubsetData<TrianglePressureInformation> trianglePressureMap;
-
     sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
 
     Data<Real> moment;   // total moment/torque applied
@@ -89,6 +88,7 @@ protected:
     Data<Real> dmin;     // coordinates min of the plane for the vertex selection
     Data<Real> dmax;     // coordinates max of the plane for the vertex selection
 
+protected:
 
     std::vector<Real> relMomentToApply;   // estimated share of moment to apply to each point
     std::vector<bool> pointActive;        // true if moment is applied to specific point (surface)
@@ -121,7 +121,7 @@ public:
     virtual void init();
 
     virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
-    virtual void addDForce (VecDeriv& /*df*/, const VecDeriv& /*dx*/) {};
+    virtual void addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
     virtual double getPotentialEnergy(const VecCoord& x);
 
     // Handle topological changes
