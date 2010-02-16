@@ -443,6 +443,14 @@ void MasterConstraintSolver::step ( double dt )
 
     sofa::helper::AdvancedTimer::stepEnd  ("GaussSeidel");
 
+    if (debug)
+    {
+        if (doubleBuffer.getValue() && bufCP1)
+            helper::afficheLCP(CP2.getDfree()->ptr(), CP2.getW()->lptr(), CP2.getF()->ptr(),  numConstraints);
+        else
+            helper::afficheLCP(CP1.getDfree()->ptr(), CP1.getW()->lptr(), CP1.getF()->ptr(),  numConstraints);
+    }
+
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     if ( displayTime.getValue() )
     {
@@ -450,7 +458,7 @@ void MasterConstraintSolver::step ( double dt )
         time = (double) timer->getTime();
     }
 
-//	helper::afficheLCP(_dFree.ptr(), _W.lptr(), _force.ptr(),  numConstraints);
+//
 
     if (debug)
         sout<<"constraintCorrections motion is called"<<sendl;
