@@ -286,21 +286,10 @@ SofaGUI* RealGUI::CreateGUI ( const char* name, const std::vector<std::string>& 
 
 int RealGUI::mainLoop()
 {
-
-#ifdef SOFA_QT4
-    QString title = windowTitle();
-#else
-    QString title = caption();
-#endif
-
-    title.remove(QString("Sofa - "), true);
-    std::string title_str(title.ascii());
-
-    if ( (title_str.rfind(".simu") != std::string::npos) && sofa::helper::system::DataRepository.findFile (title_str) )
+    std::string filename=windowFilePath().ascii();
+    if (filename.size() > 5 && filename.substr(filename.size()-5) == ".simu")
     {
-        title_str = sofa::helper::system::DataRepository.getFile ( title_str );
-
-        fileOpenSimu(title_str.c_str() );
+        fileOpenSimu(filename);
     }
     return application->exec();
 }
@@ -677,7 +666,7 @@ void RealGUI::addViewer()
     viewer->getQWidget()->setMinimumSize ( QSize ( 0, 0 ) );
     viewer->getQWidget()->setMouseTracking ( TRUE );
 
-    viewer->setup();
+//            viewer->setup();
     viewer->configureViewerTab(tabs);
 
 
@@ -853,7 +842,7 @@ bool RealGUI::setViewer ( const char* name )
 
 void RealGUI::fileOpen ( std::string filename, bool temporaryFile )
 {
-    if (filename.substr(filename.size()-5) == ".simu")
+    if (filename.size() > 5 && filename.substr(filename.size()-5) == ".simu")
     {
         return fileOpenSimu(filename);
     }
