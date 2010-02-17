@@ -132,7 +132,12 @@ class Ogden: public HyperelasticMaterial<DataTypes>
     }
 
 
-    virtual void applyElasticityTensor(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param,const MatrixSym& /*inputTensor*/, MatrixSym& /*outputTensor*/)
+    virtual void applyElasticityTensor(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param,
+#ifndef SOFA_HAVE_EIGEN2
+            const MatrixSym& /*inputTensor*/, MatrixSym& /*outputTensor*/)
+#else
+            const MatrixSym& inputTensor, MatrixSym& outputTensor)
+#endif
     {
 #ifdef SOFA_HAVE_EIGEN2
         Real k0=param.parameterArray[0];

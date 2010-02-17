@@ -1536,7 +1536,6 @@ void TetrahedronFEMForceField<DataTypes>::draw()
         simulation::getSimulation()->DrawUtility.drawLines(points[2], 5, Vec<4,float>(0,0,1,1));
 
     }
-    simulation::getSimulation()->DrawUtility.setLightingEnabled(true);
 }
 
 
