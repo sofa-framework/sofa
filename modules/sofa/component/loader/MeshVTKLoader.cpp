@@ -204,16 +204,26 @@ bool MeshVTKLoader::setInputsMesh()
     else if (reader->inputCells && reader->inputCellTypes)
     {
         const int* inFP = (const int*) reader->inputCells->getData();
-        const int* offsets = (const int*) reader->inputCellOffsets->getData();
+        //offsets are not used if we have parsed with the legacy method
+        const int* offsets = (reader->inputCellOffsets == NULL) ? NULL : (const int*) reader->inputCellOffsets->getData();
+
         const unsigned char* dataT = (unsigned char*)(reader->inputCellTypes->getData());
 
         int nbf = reader->numberOfCells;
-        //int i = 0;
+        int i = 0;
         for (int c = 0; c < nbf; ++c)
         {
             int t = (int)dataT[c] - 48; //ASCII
-            int i = (c == 0) ? 0 : offsets[c-1];
-            int nv = inFP[i];
+            int nv;
+            if (offsets)
+            {
+                i = (c == 0) ? 0 : offsets[c-1];
+                nv = inFP[i];
+            }
+            else
+            {
+                nv = inFP[i]; ++i;
+            }
 
             //++i;
             switch (t)
@@ -263,6 +273,9 @@ bool MeshVTKLoader::setInputsMesh()
             default:
                 serr << "ERROR: unsupported cell type " << t << sendl;
             }
+
+            if (!offsets)
+                i += nv;
         }
     }
     if (reader->inputPoints) delete reader->inputPoints;
@@ -365,6 +378,7 @@ bool MeshVTKLoader::LegacyVTKReader::readFile(const char* filename)
     VTKDataIO<int>* inputPolygonsInt = NULL;
     VTKDataIO<int>* inputCellsInt = NULL;
     VTKDataIO<int>* inputCellTypesInt = NULL;
+
     int nbp = 0, nbf = 0;
     while(!inVTKFile.eof())
     {
