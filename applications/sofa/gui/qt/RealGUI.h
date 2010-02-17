@@ -67,6 +67,7 @@
 #include <QLibrary>
 #include <QTextBrowser>
 #include <QUrl>
+#include <QStatusBar>
 typedef Q3ListViewItem QListViewItem;
 typedef QStackedWidget QWidgetStack;
 typedef Q3PopupMenu QPopupMenu;
@@ -82,6 +83,7 @@ typedef QTextDrag Q3TextDrag;
 #include <qlibrary.h>
 #include <qtextbrowser.h>
 #include <qurl.h>
+#include <qstatusbar.h>
 #endif
 
 #ifdef SOFA_PML
@@ -307,12 +309,14 @@ public:
 
     virtual void execute(const sofa::component::collision::BodyPicked &body)
     {
+        core::objectmodel::BaseObject *objectPicked=NULL;
         if (body.body)
         {
             Q3ListViewItem* item=gui->simulationGraph->getListener()->items[body.body];
             gui->simulationGraph->ensureItemVisible(item);
             gui->simulationGraph->clearSelection();
             gui->simulationGraph->setSelected(item,true);
+            objectPicked=body.body;
         }
         else if (body.mstate)
         {
@@ -320,9 +324,24 @@ public:
             gui->simulationGraph->ensureItemVisible(item);
             gui->simulationGraph->clearSelection();
             gui->simulationGraph->setSelected(item,true);
+            objectPicked=body.mstate;
         }
         else
             gui->simulationGraph->clearSelection();
+
+        if (objectPicked)
+        {
+            QString messagePicking;
+            simulation::Node *n=static_cast<simulation::Node*>(objectPicked->getContext());
+            messagePicking=QString("Index ") + QString::number(body.indexCollisionElement)
+                    + QString(" of  ")
+                    + QString(n->getPathName().c_str())
+                    + QString("/") + QString(objectPicked->getName().c_str())
+                    + QString(" : ") + QString(objectPicked->getClassName().c_str());
+            if (!objectPicked->getTemplateName().empty())
+                messagePicking += QString("<") + QString(objectPicked->getTemplateName().c_str()) + QString(">");
+            gui->statusBar()->message(messagePicking,3000); //display message during 3 seconds
+        }
     }
 protected:
     RealGUI *gui;
