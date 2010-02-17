@@ -720,20 +720,51 @@ inline void TetrahedronFEMForceField<DataTypes>::computeRotationLarge( Transform
 template<class DataTypes>
 inline void TetrahedronFEMForceField<DataTypes>::getRotation(Transformation& R, unsigned int nodeIdx)
 {
+    /*
     if (!_rotationIdx.empty())
     {
-        Transformation R0t;
-        R0t.transpose(_initialRotations[_rotationIdx[nodeIdx]]);
-        R = _rotations[_rotationIdx[nodeIdx]] * R0t;
-        //R = _rotations[_rotationIdx[nodeIdx]];
+    Transformation R0t;
+    R0t.transpose(_initialRotations[_rotationIdx[nodeIdx]]);
+    R = _rotations[_rotationIdx[nodeIdx]] * R0t;
+    //R = _rotations[_rotationIdx[nodeIdx]];
     }
     else
     {
-        R[0][0] = 1.0 ; R[1][1] = 1.0 ; R[2][2] = 1.0 ;
-        R[0][1] = 0.0 ; R[0][2] = 0.0 ;
-        R[1][0] = 0.0 ; R[1][2] = 0.0 ;
-        R[2][0] = 0.0 ; R[2][1] = 0.0 ;
+    R[0][0] = 1.0 ; R[1][1] = 1.0 ;R[2][2] = 1.0 ;
+    R[0][1] = 0.0 ; R[0][2] = 0.0 ;
+    R[1][0] = 0.0 ; R[1][2] = 0.0 ;
+    R[2][0] = 0.0 ; R[2][1] = 0.0 ;
     }
+    */
+
+
+    BaseMeshTopology::TetrahedraAroundVertex liste_tetra = _mesh->getTetrahedraAroundVertex(nodeIdx);
+
+    R[0][0] = 0.0 ; R[0][1] = 0.0 ; R[0][2] = 0.0 ;
+    R[1][0] = 0.0 ; R[1][1] = 0.0 ;  R[1][2] = 0.0 ;
+    R[2][0] = 0.0 ; R[2][1] = 0.0 ; R[2][2] = 0.0 ;
+
+    unsigned int numTetra=liste_tetra.size();
+    for (unsigned int ti=0; ti<numTetra; ti++)
+    {
+        Transformation R0t;
+        R0t.transpose(_initialRotations[liste_tetra[ti]]);
+        R += _rotations[liste_tetra[ti]] * R0t;
+    }
+
+// on "moyenne"
+    R[0][0] = R[0][0]/numTetra ; R[0][1] = R[0][1]/numTetra ; R[0][2] = R[0][2]/numTetra ;
+    R[1][0] = R[1][0]/numTetra ; R[1][1] = R[1][1]/numTetra ; R[1][2] = R[1][2]/numTetra ;
+    R[2][0] = R[2][0]/numTetra ; R[2][1] = R[2][1]/numTetra ; R[2][2] = R[2][2]/numTetra ;
+
+    defaulttype::Mat<3,3,Real> S,Rmoy;
+
+
+    helper::polar_decomp(R, Rmoy, S);
+
+    R = Rmoy;
+
+
 }
 
 template<class DataTypes>
