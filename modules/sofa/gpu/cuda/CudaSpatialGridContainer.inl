@@ -105,7 +105,7 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TR
 }
 
 template<>
-void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3fTypes > >::kernel_updateGrid(int cellBits, int index0, float cellWidth, int nbPoints, void* particleIndex, void* particleHash, void* sortTmp, void* cells, void* cellGhost, const void* x)
+void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3fTypes > >::kernel_updateGrid(int cellBits, int index0, Real cellWidth, int nbPoints, void* particleIndex, void* particleHash, void* sortTmp, void* cells, void* cellGhost, const void* x)
 {
     gpu::cuda::SpatialGridContainer3f_computeHash(cellBits, cellWidth, nbPoints, particleIndex, particleHash, x);
 #ifdef SOFA_DEV
@@ -117,7 +117,7 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3fTypes > >::kernel_updat
 }
 
 template<>
-void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3f1Types > >::kernel_updateGrid(int cellBits, int index0, float cellWidth, int nbPoints, void* particleIndex, void* particleHash, void* sortTmp, void* cells, void* cellGhost, const void* x)
+void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3f1Types > >::kernel_updateGrid(int cellBits, int index0, Real cellWidth, int nbPoints, void* particleIndex, void* particleHash, void* sortTmp, void* cells, void* cellGhost, const void* x)
 {
     gpu::cuda::SpatialGridContainer3f1_computeHash(cellBits, cellWidth, nbPoints, particleIndex, particleHash, x);
 #ifdef SOFA_DEV
@@ -131,9 +131,9 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3f1Types > >::kernel_upda
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
 template<>
-void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3dTypes > >::kernel_updateGrid(int cellBits, int index0, float cellWidth, int nbPoints, void* particleIndex, void* particleHash, void* sortTmp, void* cells, void* cellGhost, const void* x)
+void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3dTypes > >::kernel_updateGrid(int /*cellBits*/, int /*index0*/, Real /*cellWidth*/, int /*nbPoints*/, void* /*particleIndex*/, void* /*particleHash*/, void* /*sortTmp*/, void* /*cells*/, void* /*cellGhost*/, const void* /*x*/)
 {
-    /// TODO
+    std::cerr << "TODO: SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVec3dTypes > >::kernel_updateGrid(int cellBits, int index0, Real cellWidth, int nbPoints, void* particleIndex, void* particleHash, void* sortTmp, void* cells, void* cellGhost, const void* x)"<<std::endl;
 }
 
 #endif // SOFA_GPU_CUDA_DOUBLE

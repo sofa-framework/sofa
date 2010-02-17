@@ -162,7 +162,7 @@ void ConstantForceField<DataTypes>::draw()
 {
     double aSC = arrowSizeCoef.getValue();
 
-    if ((!this->getContext()->getShowForceFields() && (aSC==0)) || (aSC < 0.0)) return;  /// \todo put this in the parent class
+    if ((!this->getContext()->getShowForceFields() && (aSC==0)) || (aSC < 0.0)) return;
     const VecIndex& indices = points.getValue();
     const VecDeriv& f = forces.getValue();
     const Deriv f_end = (f.empty()? force.getValue() : f[f.size()-1]);

@@ -27,14 +27,12 @@ SOURCES = \
 initXitact.cpp \
 IHPDriver.cpp \
 ITPDriver.cpp \
-Pulser.cpp \
 PaceMaker.cpp
 
 
 HEADERS = \
 IHPDriver.h \
 ITPDriver.h \
-Pulser.h \
 PaceMaker.h
 
 

@@ -857,7 +857,7 @@ public:
     Vec3r1() : dummy(0.0f) {}
     template<class real2>
     Vec3r1(const Vec<N,real2>& v): Inherit(v), dummy(0.0f) {}
-    Vec3r1(float x, float y, float z) : Inherit(x,y,z), dummy(0.0f) {}
+    Vec3r1(real x, real y, real z) : Inherit(x,y,z), dummy(0.0f) {}
 
     /// Fast constructor: no initialization
     explicit Vec3r1(NoInit n) : Inherit(n), dummy(0.0f)
@@ -1039,7 +1039,7 @@ public:
     }
 
 protected:
-    float dummy;
+    Real dummy;
 };
 
 typedef Vec3r1<float> Vec3f1;

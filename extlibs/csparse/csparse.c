@@ -64,9 +64,10 @@ static int cs_wclear (int mark, int lemax, int *w, int n)
 }
 
 /* keep off-diagonal entries; drop diagonal entries */
-static int cs_diag (int i, int j, double aij, void *other) 
-{ 
+static int cs_diag (int i, int j, double aij, void * other) 
+{
   return (i != j); 
+  (void)aij; (void)other; // unused parameters
 }
 
 /* p = amd(A+A') if symmetric is true, or amd(A'A) otherwise */
@@ -102,7 +103,7 @@ int *cs_amd ( const cs *A, int order )
     AT = cs_transpose (A, 0) ;		    /* compute A' */
     if (!AT) return (NULL) ;
     m = A->m ; n = A->n ;
-    dense = CS_MAX (16, 10 * sqrt ((double) n)) ;   /* find dense threshold */
+    dense = (int)CS_MAX (16, 10 * sqrt ((double) n)) ;   /* find dense threshold */
     dense = CS_MIN (n-2, dense) ;
     if (order == 0 && n == m)
     {
@@ -743,6 +744,7 @@ static int cs_rprune (int i, int j, double aij, void *other)
 {
     int *rr = (int *) other ;
     return (i >= rr [1] && i < rr [2]) ;
+	(void)j; (void)aij; // unused parameters
 }
 
 /* Given A, find coarse dmperm */
@@ -827,6 +829,7 @@ csd *cs_dmperm (const cs *A)
 static int cs_tol (int i, int j, double aij, void *tol)
 {
     return (fabs (aij) > *((double *) tol)) ;
+	(void)i; (void)j; // unused parameters
 }
 int cs_droptol (cs *A, double tol)
 {
@@ -836,6 +839,7 @@ int cs_droptol (cs *A, double tol)
 static int cs_nonzero (int i, int j, double aij, void *other)
 {
     return (aij != 0) ;
+	(void)i; (void)j; (void)other; // unused parameters
 }
 int cs_dropzeros (cs *A)
 {
@@ -1929,8 +1933,8 @@ cs *cs_triplet (const cs *T)
 /* sparse Cholesky update/downdate, L*L' + sigma*w*w' (sigma = +1 or -1) */
 int cs_updown (cs *L, int sigma, const cs *C, const int *parent)
 {
-    int p, f, j, *Lp, *Li, *Cp, *Ci ;
-    double *Lx, *Cx, alpha, beta = 1, delta, gamma, w1, w2, *w, n,  beta2 = 1 ;
+    int p, f, j, n, *Lp, *Li, *Cp, *Ci ;
+    double *Lx, *Cx, alpha, beta = 1, delta, gamma, w1, w2, *w,  beta2 = 1 ;
     if (!L || !C || !parent) return (0) ;
     Lp = L->p ; Li = L->i ; Lx = L->x ; n = L->n ;
     Cp = C->p ; Ci = C->i ; Cx = C->x ;
