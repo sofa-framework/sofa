@@ -15,9 +15,9 @@ register this new class in the DataWidgetFactory.
 The factory key is the Data widget property
 (see MyFakeComponent constructor)
 */
-helper::Creator<DataWidgetFactory,myDataWidget> DW_myData("myData_widget",false);
+helper::Creator<DataWidgetFactory,WidgetmyData> DW_myData("widget_myData",false);
 
-bool myDataWidget::createWidgets()
+bool WidgetmyData::createWidgets()
 {
     unsigned myData_value = getData()->virtualGetValue();
 
@@ -54,7 +54,7 @@ bool myDataWidget::createWidgets()
     return true;
 }
 
-void myDataWidget::readFromData()
+void WidgetmyData::readFromData()
 {
     qslider->setValue( (int)getData()->virtualGetValue() );
 
@@ -69,7 +69,7 @@ void myDataWidget::readFromData()
 
 }
 
-void myDataWidget::writeToData()
+void WidgetmyData::writeToData()
 {
     unsigned widget_value = (unsigned)qslider->value();
     getData()->virtualSetValue(widget_value);
@@ -84,7 +84,7 @@ void myDataWidget::writeToData()
 
 }
 
-void myDataWidget::change()
+void WidgetmyData::change()
 {
     QString label1_text("myData current value = ");
     label1_text.append(getData()->getValueString().c_str());

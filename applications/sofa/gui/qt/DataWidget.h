@@ -87,8 +87,10 @@ public slots:
                 emit DataOwnerDirty(true);
             }
         }
+
         dirty = false;
         counter = baseData->getCounter();
+
     }
     void updateWidgetValue()
     {
