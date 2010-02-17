@@ -24,11 +24,11 @@ namespace gui
 namespace qt
 {
 /* class used to override the widget representation of myData for the component MyFakeComponent */
-class myDataWidget : public TDataWidget<unsigned>
+class WidgetmyData : public TDataWidget<unsigned>
 {
     Q_OBJECT
 public :
-    myDataWidget(QWidget* parent, const char* name, core::objectmodel::TData<unsigned>* data):
+    WidgetmyData(QWidget* parent, const char* name, core::objectmodel::TData<unsigned>* data):
         TDataWidget<unsigned>(parent,name,data) {};
     virtual bool createWidgets();
 protected slots:

@@ -36,6 +36,7 @@
 #include "WFloatLineEdit.h"
 #include <limits.h>
 
+
 #if !defined(INFINITY)
 #define INFINITY 9.0e10
 #endif
@@ -111,15 +112,15 @@ public:
     Widget* w;
     ParentWidget* parent_w;
 
-    data_widget_container() : w(NULL),parent_w(NULL) {}
+    data_widget_container() : w(NULL),parent_w(NULL) {  }
 
     bool createWidgets(DataWidget * datawidget, QWidget* parent, const data_type& d, bool readOnly)
     {
         parent_w = createParentWidget(parent,1);
         assert(parent_w != NULL);
         w = helper::create(parent_w,d);
-
         if (w == NULL) return false;
+
         helper::readFromData(w, d);
         if (readOnly)
             w->setEnabled(false);
@@ -180,7 +181,11 @@ public:
         container.writeToData(d);
         this->getData()->virtualSetValue(d);
     }
+    virtual unsigned int numColumnWidget() { return 3; }
 };
+
+
+
 
 ////////////////////////////////////////////////////////////////
 /// std::string support
@@ -378,6 +383,7 @@ public:
     typedef Q3Grid ParentWidget;
     enum { N = vhelper::SIZE };
     Container w[N];
+
     ParentWidget* parent_w;
     fixed_vector_data_widget_container() {}
 
@@ -389,6 +395,7 @@ public:
             if (!w[i].createWidgets(_widget,
                     parent_w, *vhelper::get(d,i), readOnly))
                 return false;
+
         return true;
     }
     void setReadOnly(bool readOnly)
