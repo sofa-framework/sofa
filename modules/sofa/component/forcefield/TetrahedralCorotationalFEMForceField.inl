@@ -96,9 +96,7 @@ template <class DataTypes> void TetrahedralCorotationalFEMForceField<DataTypes>:
     std::list<const TopologyChange *>::const_iterator itBegin=_topology->firstChange();
     std::list<const TopologyChange *>::const_iterator itEnd=_topology->lastChange();
 
-
     tetrahedronInfo.handleTopologyEvents(itBegin,itEnd);
-
 }
 
 template <class DataTypes>
