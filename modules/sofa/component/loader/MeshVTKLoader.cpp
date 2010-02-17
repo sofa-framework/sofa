@@ -207,13 +207,13 @@ bool MeshVTKLoader::setInputsMesh()
         //offsets are not used if we have parsed with the legacy method
         const int* offsets = (reader->inputCellOffsets == NULL) ? NULL : (const int*) reader->inputCellOffsets->getData();
 
-        const unsigned char* dataT = (unsigned char*)(reader->inputCellTypes->getData());
+        const int* dataT = (int*)(reader->inputCellTypes->getData());
 
         int nbf = reader->numberOfCells;
         int i = 0;
         for (int c = 0; c < nbf; ++c)
         {
-            int t = (int)dataT[c] - 48; //ASCII
+            int t = dataT[c];// - 48; //ASCII
             int nv;
             if (offsets)
             {
@@ -225,7 +225,6 @@ bool MeshVTKLoader::setInputsMesh()
                 nv = inFP[i]; ++i;
             }
 
-            //++i;
             switch (t)
             {
             case 1: // VERTEX
@@ -417,7 +416,7 @@ bool MeshVTKLoader::LegacyVTKReader::readFile(const char* filename)
             inputCells = new VTKDataIO<int>;
             inputCellsInt = dynamic_cast<VTKDataIO<int>* > (inputCellsInt);
             if (!inputCells->read(inVTKFile, ni, binary)) return false;
-            nbf = n;
+            numberOfCells = nbf = n;
         }
         else if (kw == "CELL_TYPES")
         {
@@ -648,7 +647,7 @@ bool MeshVTKLoader::XMLVTKReader::loadUnstructuredGrid(TiXmlHandle datasetFormat
                     ///DA - types
                     if (currentDataArrayName.compare("types") == 0)
                     {
-                        inputCellTypes = loadDataArray(dataArrayElement, numberOfCells);
+                        inputCellTypes = loadDataArray(dataArrayElement, numberOfCells, "Int32");
                         checkError(inputCellTypes);
                     }
                 }
