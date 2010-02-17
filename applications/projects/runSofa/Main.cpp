@@ -152,7 +152,7 @@ int main(int argc, char** argv)
             mrulist.close();
         }
         else
-            fileName = "Demos/liver.scn";
+            fileName = "Tutorials/Basic/TutorialCollisionCubeObstacleSphere.scn";
 
         fileName = sofa::helper::system::DataRepository.getFile(fileName);
     }
