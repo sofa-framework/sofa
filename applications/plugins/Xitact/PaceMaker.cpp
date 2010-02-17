@@ -23,7 +23,7 @@ void PaceMaker::runclock()
     for(;;)
     {
         CLOCK = sofa::helper::system::thread::CTime::getRefTime()*time_scale;
-        Sleep(clockspeed);
+        Sleep((DWORD)clockspeed);
 
     }
 }
@@ -67,7 +67,7 @@ void stimulus(void* param)
         				Sleep(0.01);
         		}*/
 
-        Sleep(dt);
+        Sleep((DWORD)dt);
         time1 = nextTime;
         (*p)(myData);
 

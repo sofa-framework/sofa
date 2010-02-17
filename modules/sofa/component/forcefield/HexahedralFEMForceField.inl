@@ -177,7 +177,7 @@ void HexahedralFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv&
 {
     if( v.size()!=x.size() ) v.resize(x.size());
 
-    helper::vector<typename HexahedralFEMForceField<DataTypes>::HexahedronInformation>& hexahedronInf = *(hexahedronInfo.beginEdit());
+    const helper::vector<typename HexahedralFEMForceField<DataTypes>::HexahedronInformation>& hexahedronInf = hexahedronInfo.getValue();
 
     for(int i = 0 ; i<_topology->getNbHexahedra(); ++i)
     {
@@ -201,8 +201,6 @@ void HexahedralFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv&
         for(int w=0; w<8; ++w)
             v[_topology->getHexahedron(i)[w]] -= hexahedronInf[i].rotation * Deriv( F[w*3],  F[w*3+1],  F[w*3+2]  );
     }
-
-    hexahedronInfo.endEdit();
 }
 
 template <class DataTypes>

@@ -275,7 +275,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                             toModel->getContext()->get(triangleMod);
                             triangleMod->removeTriangles(triangles_to_remove, true, false);
 
-                            for(int i=0; i<addedTriangleIndex.size(); i++)
+                            for(unsigned int i=0; i<addedTriangleIndex.size(); i++)
                             {
                                 if(addedTriangleIndex[i]==ind_k)
                                     addedTriangleIndex[i]=0;
@@ -459,7 +459,7 @@ void Tetra2TriangleTopologicalMapping::updateTopologicalMappingTopDown()
                                 toModel->getContext()->get(triangleMod);
                                 triangleMod->removeTriangles(triangle_to_remove, true, false);
 
-                                for(int i=0; i<addedTriangleIndex.size(); i++)
+                                for(unsigned int i=0; i<addedTriangleIndex.size(); i++)
                                 {
                                     if(addedTriangleIndex[i]==ind_k)
                                         addedTriangleIndex[i]=0;

@@ -205,7 +205,7 @@ void CudaMasterContactSolver<real>::computeInitialGuess()
             {
                 for (int l=0; l<nbl; ++l)
                 {
-                    _f[c0 + c*nbl + l] = _previousForces[prevIndex + l];
+                    _f[c0 + c*nbl + l] = (real)_previousForces[prevIndex + l];
                     //std::cout << ' ' << _previousForces[prevIndex + l];
                 }
             }

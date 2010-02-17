@@ -289,7 +289,7 @@ void HexahedralFEMForceFieldAndMass<DataTypes>::computeLumpedMasses(  )
 template<class DataTypes>
 void HexahedralFEMForceFieldAndMass<DataTypes>::computeElementMasses(  )
 {
-    VecCoord& initialPoints = *this->mstate->getX0();
+    const VecCoord& initialPoints = *this->mstate->getX0();
 
     const VecElement& hexahedra = this->_topology->getHexahedra();
 

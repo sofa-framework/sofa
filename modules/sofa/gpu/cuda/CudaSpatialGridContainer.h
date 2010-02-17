@@ -118,7 +118,7 @@ protected:
     sofa::gpu::cuda::CudaVector< sofa::gpu::cuda::Vec3f1 > sortedPos;
     const VecCoord* lastX;
 
-    static void kernel_updateGrid(int cellBits, int index0, float cellWidth, int nbPoints, void* particleIndex, void* particleHash, void* sortTmp, void* cells, void* cellGhost, const void* x);
+    static void kernel_updateGrid(int cellBits, int index0, Real cellWidth, int nbPoints, void* particleIndex, void* particleHash, void* sortTmp, void* cells, void* cellGhost, const void* x);
     //static void kernel_reorderData(int nbPoints, const void* particleIndex, const void* particleHash, void* sorted, const void* x);
 
 };

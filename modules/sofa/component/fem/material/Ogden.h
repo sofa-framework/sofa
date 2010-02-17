@@ -75,6 +75,7 @@ class Ogden: public HyperelasticMaterial<DataTypes>
     typedef typename Eigen::SelfAdjointEigenSolver<Matrix<Real,3,3> >::RealVectorType CoordEigen;
 #endif
 
+#ifdef SOFA_HAVE_EIGEN2
     virtual Real getStrainEnergy(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param)
     {
         MatrixSym C=sinfo->deformationTensor;
@@ -82,7 +83,6 @@ class Ogden: public HyperelasticMaterial<DataTypes>
         Real mu1=param.parameterArray[1];
         Real alpha1=param.parameterArray[2];
         Real fj= (Real)(pow(sinfo->J,(Real)(-alpha1/3.0)));
-#ifdef SOFA_HAVE_EIGEN2
         EigenMatrix CEigen;
         CEigen(0,0)=C[0]; CEigen(0,1)=C[1]; CEigen(1,0)=C[1]; CEigen(1,1)=C[2];
         CEigen(1,2)=C[4]; CEigen(2,1)=C[4]; CEigen(2,0)=C[3]; CEigen(0,2)=C[3]; CEigen(2,2)=C[5];
@@ -91,20 +91,18 @@ class Ogden: public HyperelasticMaterial<DataTypes>
         sinfo->Evect=Vect.eigenvectors();
         Real val=pow(sinfo->Evalue[0],alpha1/(Real)2)+pow(sinfo->Evalue[1],alpha1/(Real)2)+pow(sinfo->Evalue[2],alpha1/(Real)2);
         return (Real)fj*val*mu1/(alpha1*alpha1)+k0*log(sinfo->J)*log(sinfo->J)/(Real)2.0-(Real)3.0*mu1/(alpha1*alpha1);
-
-
+    }
 #else
+    virtual Real getStrainEnergy(StrainInformation<DataTypes> *, const MaterialParameters<DataTypes> &)
+    {
         return 1; // function must return a value!
+    }
 #endif
 
 
-
-    }
-
-
+#ifdef SOFA_HAVE_EIGEN2
     virtual void deriveSPKTensor(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param,MatrixSym &SPKTensorGeneral)
     {
-#ifdef SOFA_HAVE_EIGEN2
         Real k0=param.parameterArray[0];
         Real mu1=param.parameterArray[1];
         Real alpha1=param.parameterArray[2];
@@ -128,18 +126,18 @@ class Ogden: public HyperelasticMaterial<DataTypes>
         MatrixSym inversematrix;
         invertMatrix(inversematrix,sinfo->deformationTensor);
         SPKTensorGeneral=mu1/alpha1*pow(sinfo->J,-alpha1/(Real)3.0)*(-(Real)1.0/(Real)3.0*inversematrix*trCalpha+Calpha_1)+k0*log(sinfo->J)*inversematrix;
-#endif
     }
-
-
-    virtual void applyElasticityTensor(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param,
-#ifndef SOFA_HAVE_EIGEN2
-            const MatrixSym& /*inputTensor*/, MatrixSym& /*outputTensor*/)
 #else
-            const MatrixSym& inputTensor, MatrixSym& outputTensor)
-#endif
+    virtual void deriveSPKTensor(StrainInformation<DataTypes> *, const MaterialParameters<DataTypes> &,MatrixSym &)
     {
+    }
+#endif
+
+
 #ifdef SOFA_HAVE_EIGEN2
+    virtual void applyElasticityTensor(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param,
+            const MatrixSym& inputTensor, MatrixSym& outputTensor)
+    {
         Real k0=param.parameterArray[0];
         Real mu1=param.parameterArray[1];
         Real alpha1=param.parameterArray[2];
@@ -175,12 +173,18 @@ class Ogden: public HyperelasticMaterial<DataTypes>
         Secondmatrix.Mat2Sym(Calpha_2.SymMatMultiply(inputTensor.SymSymMultiply(Calpha_2)),Secondmatrix);
         outputTensor=mu1/alpha1*pow(sinfo->J,-alpha1/(Real)3.0)*(_trHC*(-alpha1/(Real)6.0)*(-(Real)1.0/(Real)3.0*inversematrix*trCalpha+Calpha_1)+(Real)1.0/(Real)3.0*Firstmatrix*trCalpha-(Real)1.0/(Real)3.0*inversematrix*_trHCalpha_1*alpha1/(Real)2.0
                 +(alpha1/(Real)2.0-(Real)1)*Secondmatrix)+k0/(Real)2.0*_trHC*inversematrix-(Real)(k0*log(sinfo->J))*Firstmatrix;
-#endif
 
     }
+#else
+    virtual void applyElasticityTensor(StrainInformation<DataTypes> *, const MaterialParameters<DataTypes> &,
+            const MatrixSym&, MatrixSym&)
+    {
+    }
+#endif
+
+#ifdef SOFA_HAVE_EIGEN2
     virtual void ElasticityTensor(StrainInformation<DataTypes> *sinfo, const MaterialParameters<DataTypes> &param, Matrix6& outputTensor)
     {
-#ifdef SOFA_HAVE_EIGEN2
         Real k0=param.parameterArray[0];
         Real mu1=param.parameterArray[1];
         Real alpha1=param.parameterArray[2];
@@ -263,8 +267,12 @@ class Ogden: public HyperelasticMaterial<DataTypes>
 
         outputTensor=(Real)2.0*(mu1/alpha1*pow(sinfo->J,-alpha1/(Real)3.0)*((-alpha1/(Real)6.0)*(-(Real)1.0/(Real)3.0*trC_HC_*trCalpha+trCalpha_HC_)+(Real)1.0/(Real)3.0*C_H_C*trCalpha-(Real)1.0/(Real)3.0*trC_HCalpha*alpha1/(Real)2.0
                 +(alpha1/(Real)2.0-(Real)1)*Calpha_H_Calpha)+k0/(Real)2.0*trC_HC_-(Real)(k0*log(sinfo->J))*C_H_C);
-#endif
     }
+#else
+    virtual void ElasticityTensor(StrainInformation<DataTypes> *, const MaterialParameters<DataTypes> &, Matrix6&)
+    {
+    }
+#endif
 
 };
 

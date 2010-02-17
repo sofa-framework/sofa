@@ -90,8 +90,8 @@ void ParticlesRepulsionForceField<gpu::cuda::CudaVec3fTypes>::addDForce(VecDeriv
     GPURepulsion3f repulsion;
     repulsion.d = distance.getValue();
     repulsion.d2 = repulsion.d*repulsion.d;
-    repulsion.stiffness = stiffness.getValue()*kFactor;
-    repulsion.damping = damping.getValue()*bFactor;
+    repulsion.stiffness = (float)(stiffness.getValue()*kFactor);
+    repulsion.damping = (float)(damping.getValue()*bFactor);
     df.resize(dx.size());
     Grid::Grid* g = grid->getGrid();
     ParticlesRepulsionForceFieldCuda3f_addDForce(

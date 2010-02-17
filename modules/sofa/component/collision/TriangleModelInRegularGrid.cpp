@@ -1,6 +1,6 @@
 #include <sofa/component/collision/TriangleModelInRegularGrid.h>
 #include <sofa/component/collision/CubeModel.h>
-#include <sofa/component/collision/Triangle.h>
+#include <sofa/component/collision/TriangleModel.inl>
 #include <sofa/component/topology/TriangleData.inl>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/component/topology/RegularGridTopology.h>

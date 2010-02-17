@@ -25,7 +25,7 @@
 #include "CudaTypes.h"
 #include "CudaParticleSource.inl"
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/core/componentmodel/behavior/Constraint.h>
+#include <sofa/core/componentmodel/behavior/Constraint.inl>
 
 
 namespace sofa

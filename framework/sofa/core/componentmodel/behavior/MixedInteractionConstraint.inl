@@ -27,8 +27,8 @@
 #ifndef SOFA_CORE_COMPONENTMODEL_BEHAVIOR_MIXEDINTERACTIONCONSTRAINT_INL
 #define SOFA_CORE_COMPONENTMODEL_BEHAVIOR_MIXEDINTERACTIONCONSTRAINT_INL
 
-#include <sofa/core/objectmodel/DataPtr.h>
 #include "MixedInteractionConstraint.h"
+#include <sofa/core/componentmodel/behavior/Constraint.inl>
 
 namespace sofa
 {
