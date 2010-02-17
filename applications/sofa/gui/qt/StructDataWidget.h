@@ -540,7 +540,7 @@ class data_widget_container < sofa::core::componentmodel::loader::Material > : p
 {};
 
 template<>
-virtual unsigned int SimpleDataWidget< sofa::core::componentmodel::loader::Material >::numColumnWidget() { return 2; }
+unsigned int SimpleDataWidget< sofa::core::componentmodel::loader::Material >::numColumnWidget() { return 2; }
 
 } // namespace qt
 
