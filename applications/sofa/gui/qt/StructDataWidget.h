@@ -539,8 +539,8 @@ template<>
 class data_widget_container < sofa::core::componentmodel::loader::Material > : public struct_data_widget_container < sofa::core::componentmodel::loader::Material >
 {};
 
-template<>
-unsigned int SimpleDataWidget< sofa::core::componentmodel::loader::Material >::numColumnWidget() { return 2; }
+//      template<>
+//      unsigned int SimpleDataWidget< sofa::core::componentmodel::loader::Material >::numColumnWidget() { return 2; }
 
 } // namespace qt
 
