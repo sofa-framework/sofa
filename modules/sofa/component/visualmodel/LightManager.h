@@ -102,7 +102,7 @@ public:
     void postDrawScene(helper::gl::VisualParameters* vp);
 
 
-    void draw();
+    void drawVisual();
     void fwdDraw(Pass);
     void bwdDraw(Pass);
 
@@ -114,6 +114,8 @@ public:
 
     ///Remove all lights of the LightManager
     void clear();
+
+    void restoreDefaultLight();
 
     void handleEvent(sofa::core::objectmodel::Event* event);
 
