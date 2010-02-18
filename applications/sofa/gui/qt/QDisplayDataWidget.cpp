@@ -43,6 +43,8 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
     }
 
     setTitle(data_->getName().c_str());
+    setInsideMargin(4);
+    setInsideSpacing(2);
 
     const std::string label_text = data_->getHelp();
     if (label_text != "TODO")

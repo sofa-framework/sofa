@@ -29,6 +29,9 @@ QDisplayDataInfoWidget::QDisplayDataInfoWidget(QWidget* parent, const std::strin
         core::objectmodel::BaseData* d, bool modifiable):QWidget(parent), data(d), numLines_(1)
 {
     QHBoxLayout* layout = new QHBoxLayout(this);
+#ifdef SOFA_QT4
+    layout->setContentsMargins(0,0,0,0);
+#endif
     std::string final_str;
     formatHelperString(helper,final_str);
     std::string parentClass=data->getParentClass();
@@ -45,6 +48,7 @@ QDisplayDataInfoWidget::QDisplayDataInfoWidget(QWidget* parent, const std::strin
     {
         QLabel* helper_label = new QLabel(this);
         helper_label->setText(QString(final_str.c_str()));
+        helper_label->setMinimumWidth(20);
         layout->addWidget(helper_label);
         if (!parentClass.empty()) QToolTip::add(helper_label, ("Data from "+parentClass).c_str());
     }
