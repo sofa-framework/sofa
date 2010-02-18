@@ -68,7 +68,7 @@ LightManager::LightManager()
 
 LightManager::~LightManager()
 {
-
+    restoreDefaultLight();
 }
 
 void LightManager::init()
@@ -134,8 +134,6 @@ void LightManager::makeShadowMatrix(unsigned int i)
     glTranslatef(0.5f, 0.5f, 0.5f +( -0.006f) );
     glScalef(0.5f, 0.5f, 0.5f);
 
-
-
     glMultMatrixf(lp); // now multiply by the matrices we have retrieved before
     glMultMatrixf(lmv);
     sofa::defaulttype::Mat<4,4,float> model2;
@@ -200,6 +198,16 @@ void LightManager::makeShadowMatrix(unsigned int i)
 
 void LightManager::fwdDraw(Pass)
 {
+
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient.getValue().ptr());
+    unsigned int id = 0;
+    for (std::vector<Light*>::iterator itl = lights.begin(); itl != lights.end() ; itl++)
+    {
+        glEnable(GL_LIGHT0+id);
+        (*itl)->drawLight();
+        id++;
+    }
+
 #ifdef SOFA_HAVE_GLEW
     GLint lightFlag[MAX_NUMBER_OF_LIGHTS];
     GLint shadowTextureID[MAX_NUMBER_OF_LIGHTS];
@@ -260,23 +268,19 @@ void LightManager::bwdDraw(Pass)
         for(unsigned int i=0 ; i<shadowShaders.size() ; i++)
         {
             //shadowShaders[i]->stop();
-
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, 0);
         }
 #endif
+
+    for (unsigned int i=0 ; i<MAX_NUMBER_OF_LIGHTS ; i++)
+        glDisable(GL_LIGHT0+i);
+
 }
 
-void LightManager::draw()
+void LightManager::drawVisual()
 {
-    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambient.getValue().ptr());
-    unsigned int id = 0;
-    for (std::vector<Light*>::iterator itl = lights.begin(); itl != lights.end() ; itl++)
-    {
-        glEnable(GL_LIGHT0+id);
-        (*itl)->drawLight();
-        id++;
-    }
+
 }
 
 void LightManager::clear()
@@ -329,7 +333,45 @@ bool LightManager::drawScene(VisualParameters* /*vp*/)
 
 void LightManager::postDrawScene(VisualParameters* /*vp*/)
 {
+    restoreDefaultLight();
+}
 
+void LightManager::restoreDefaultLight()
+{
+    //restore default light
+    GLfloat	ambientLight[4];
+    GLfloat	diffuseLight[4];
+    GLfloat	specular[4];
+    GLfloat	lightPosition[4];
+
+    lightPosition[0] = -0.7f;
+    lightPosition[1] = 0.3f;
+    lightPosition[2] = 0.0f;
+    lightPosition[3] = 1.0f;
+
+    ambientLight[0] = 0.5f;
+    ambientLight[1] = 0.5f;
+    ambientLight[2] = 0.5f;
+    ambientLight[3] = 1.0f;
+
+    diffuseLight[0] = 0.9f;
+    diffuseLight[1] = 0.9f;
+    diffuseLight[2] = 0.9f;
+    diffuseLight[3] = 1.0f;
+
+    specular[0] = 1.0f;
+    specular[1] = 1.0f;
+    specular[2] = 1.0f;
+    specular[3] = 1.0f;
+
+    // Setup 'light 0'
+    glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
+    glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, specular);
+    glLightfv(GL_LIGHT0, GL_POSITION, lightPosition);
+    glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, 180);
+
+    glEnable(GL_LIGHT0);
 }
 
 void LightManager::handleEvent(sofa::core::objectmodel::Event* event)
