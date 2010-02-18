@@ -26,7 +26,7 @@
 #include <sofa/component/collision/RayTriangleIntersection.h>
 
 #include <sofa/component/collision/Sphere.h>
-#include <sofa/component/collision/Triangle.h>
+#include <sofa/component/collision/TriangleModel.inl>
 #include <sofa/component/collision/TriangleOctreeModel.h>
 #include <sofa/component/collision/CubeModel.h>
 #include <sofa/component/collision/Line.h>
@@ -43,11 +43,6 @@
 #include <sofa/helper/system/glut.h>
 
 #include <sofa/helper/system/thread/CTime.h>
-
-/* for debugging the collision method */
-#ifdef _WIN32
-#include <windows.h>
-#endif
 
 namespace sofa
 {
