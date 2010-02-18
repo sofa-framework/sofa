@@ -358,7 +358,7 @@ protected:
         int numberOfPoints, numberOfCells;
 
 
-        BaseVTKReader():inputPoints (NULL), inputPolygons(NULL), inputCells(NULL), inputCellTypes(NULL),
+        BaseVTKReader():inputPoints (NULL), inputPolygons(NULL), inputCells(NULL), inputCellOffsets(NULL), inputCellTypes(NULL),
             numberOfPoints(0),numberOfCells(0)
         {}
 
