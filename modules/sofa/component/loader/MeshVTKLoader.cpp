@@ -377,6 +377,7 @@ bool MeshVTKLoader::LegacyVTKReader::readFile(const char* filename)
     VTKDataIO<int>* inputPolygonsInt = NULL;
     VTKDataIO<int>* inputCellsInt = NULL;
     VTKDataIO<int>* inputCellTypesInt = NULL;
+    inputCellOffsets = NULL;
 
     int nbp = 0, nbf = 0;
     while(!inVTKFile.eof())
