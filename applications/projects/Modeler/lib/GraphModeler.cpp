@@ -117,21 +117,23 @@ BaseObject *GraphModeler::addComponent(GNode *parent, const ClassEntry* entry, c
     if (!templateName.empty()) description.setAttribute("template", templateName.c_str());
 
 
-    Creator* c;
-
+    Creator* c=NULL;
     if (entry->creatorMap.size() <= 1)
         c=entry->creatorMap.begin()->second;
     else
     {
         if (templateName.empty())
         {
+            if (entry->creatorMap.find(entry->defaultTemplate) == entry->creatorMap.end()) { std::cerr << "Error: No template specified" << std::endl; return object;}
+
             c=entry->creatorMap.find(entry->defaultTemplate)->second;
             templateUsed=entry->defaultTemplate;
         }
         else
+        {
             c=entry->creatorMap.find(templateName)->second;
+        }
     }
-
     if (c->canCreate(parent->getContext(), &description))
     {
         object = c->createInstance(parent->getContext(), NULL);
@@ -162,6 +164,7 @@ BaseObject *GraphModeler::addComponent(GNode *parent, const ClassEntry* entry, c
                 }
                 else
                 {
+                    //TODO: try to give the possibility to change the template by the correct detected one
                     const QString caption("Creation Impossible");
                     const QString warning=
                         QString("Your component won't be created: \n \t * <")
