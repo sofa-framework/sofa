@@ -179,6 +179,7 @@ int main(int argc, char** argv)
     {
         std::string stringWidth=dimension.substr(0,separator);
         std::string stringHeight=dimension.substr(separator+1);
+        //std::cout << "Setting dimension to " << stringWidth << " x " << stringHeight << std::endl;
         sofa::gui::GUIManager::SetDimension(atoi(stringWidth.c_str()), atoi(stringHeight.c_str()));
     }
 

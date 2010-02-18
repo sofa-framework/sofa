@@ -684,12 +684,13 @@ void RealGUI::addViewer()
     splitter_ptr->setOpaqueResize ( false );
 #ifdef SOFA_QT4
     splitter_ptr->setStretchFactor( 0, 0);
+    splitter_ptr->setStretchFactor( 1, 10);
     QList<int> list;
 #else
     QValueList<int> list;
 #endif
-    list.push_back ( 259 );
-    list.push_back ( 525 );
+    list.push_back ( 216 );
+    list.push_back ( 640 );
     splitter_ptr->setSizes ( list );
 
     viewer->getQWidget()->setFocus();
@@ -1082,7 +1083,23 @@ void RealGUI::Clear()
 
 void RealGUI::setDimension ( int w, int h )
 {
-    resize(w,h);
+    QSize winSize = size();
+    QSize viewSize = viewer->getQWidget()->size();
+    //viewer->getQWidget()->setMinimumSize ( QSize ( w, h ) );
+    //viewer->getQWidget()->setMaximumSize ( QSize ( w, h ) );
+    //viewer->getQWidget()->resize(w,h);
+#ifdef SOFA_QT4
+    QList<int> list;
+#else
+    QValueList<int> list;
+#endif
+    list.push_back ( 216 );
+    list.push_back ( w );
+    QSplitter *splitter_ptr = dynamic_cast<QSplitter *> ( splitter2 );
+    splitter_ptr->setSizes ( list );
+    layout()->update();
+    resize(winSize.width() - viewSize.width() + w, winSize.height() - viewSize.height() + h);
+    //std::cout << "Setting windows dimension to " << size().width() << " x " << size().height() << std::endl;
 }
 void RealGUI::setFullScreen ()
 {
@@ -1682,7 +1699,7 @@ void RealGUI::dumpState ( bool value )
 //
 void RealGUI::exportOBJ ( bool exportMTL )
 {
-    Node* root = simulation::getSimulation()->getVisualRoot();
+    Node* root = getScene();
     if ( !root ) return;
     std::string sceneFileName(this->windowFilePath ().ascii());
     std::ostringstream ofilename;
