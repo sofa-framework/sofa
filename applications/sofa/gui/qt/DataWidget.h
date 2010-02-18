@@ -288,12 +288,14 @@ protected:
     QLineEdit *linkpath_edit;
 };
 
+//MOC_SKIP_BEGIN
 #ifdef SOFA_QT4
 #if defined(WIN32) && !defined(SOFA_GUI_QT_DATAWIDGET_CPP)
 //delay load of the specialized Factory class. unique definition reside in the cpp file.
 extern template class SOFA_SOFAGUIQT_API helper::Factory<std::string, DataWidget, DataWidget::CreatorArgument>;
 #endif
 #endif
+//MOC_SKIP_END
 
 
 } // qt
@@ -301,6 +303,4 @@ extern template class SOFA_SOFAGUIQT_API helper::Factory<std::string, DataWidget
 } // sofa
 
 #endif // SOFA_GUI_QT_DATAWIDGET_H
-
-
 
