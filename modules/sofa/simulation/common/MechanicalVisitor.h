@@ -1113,6 +1113,46 @@ public:
 };
 
 
+/**
+ * @brief Visitor class used to set positions and velocities of the top level MechanicalStates of the hierarchy.
+ */
+class SOFA_SIMULATION_COMMON_API MechanicalSetPositionAndVelocityVisitor : public MechanicalVisitor
+{
+public:
+    double t;
+    VecId x;
+    VecId v;
+
+#ifdef SOFA_SUPPORT_MAPPED_MASS
+    // compute the acceleration created by the input velocity and the derivative of the mapping
+    VecId a;
+    MechanicalSetPositionAndVelocityVisitor(double time=0, VecId x = VecId::position(), VecId v = VecId::velocity(), VecId a = VecId::dx()); //
+#else
+    MechanicalSetPositionAndVelocityVisitor(double time=0, VecId x = VecId::position(), VecId v = VecId::velocity());
+#endif
+
+    virtual Result fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm);
+
+    /// Return a class name for this visitor
+    /// Only used for debugging / profiling purposes
+    virtual const char* getClassName() const { return "MechanicalPropagatePositionAndVelocityVisitor";}
+    virtual std::string getInfos() const { std::string name="x["+x.getName()+"] v["+v.getName()+"]"; return name; }
+
+    /// Specify whether this action can be parallelized.
+    virtual bool isThreadSafe() const
+    {
+        return true;
+    }
+#ifdef SOFA_DUMP_VISITOR_INFO
+    void setReadWriteVectors()
+    {
+        addReadVector(x);
+        addReadVector(v);
+    }
+#endif
+};
+
+
 /** Propagate free positions to all the levels of the hierarchy.
 At each level, the mappings form the parent to the child is applied.
 After the execution of this action, all the (mapped) degrees of freedom are consistent with the independent degrees of freedom.
