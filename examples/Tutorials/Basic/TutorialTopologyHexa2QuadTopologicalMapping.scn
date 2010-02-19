@@ -9,15 +9,22 @@
   <DefaultCollisionGroupManager name="Group"/>
 
   <Node name="Cube">
+    <Object type="MeshLoader" name="meshLoader" filename="mesh/nine_hexa.msh"/>
+
     <EulerImplicitSolver name="cg_odesolver" printLog="0"/>
     <CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09"/>
     <MechanicalObject template="Vec3d" name="Hexa"/>
     <UniformMass template="Vec3d" name="Mass" mass="0.25"/>
 
-    <RegularGridTopology name="grid" n="6 6 6" min="-10 -10 -10" max="10 10 10" p0="-10 -10 -10"/>
+    <include href="Objects/HexahedronSetTopology.xml" />
+<!--    <RegularGridTopology name="grid" n="6 6 6" min="-10 -10 -10" max="10 10 10" --
+  --    p0="-10 -10 -10"/>-->
+    
+
+
     <RegularGridSpringForceField template="Vec3d" name="FEM-bend"/>
     <HexahedronFEMForceField name="FEM" template="Vec3d"/>    
-    <FixedConstraint template="Vec3d" name="Fixed Dofs" indices="0 5 180 185" drawSize="0"/>
+    <FixedConstraint template="Vec3d" name="Fixed Dofs" indices="12 15 28 31" drawSize="0"/>
     
     <Node name="Q">
       <QuadSetTopologyContainer name="Container"/>
@@ -25,7 +32,7 @@
       <QuadSetTopologyAlgorithms template="Vec3d" name="TopoAlgo"/>
       <QuadSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"/>
 	
-      <Hexa2QuadTopologicalMapping name="default6" object1="../../grid" object2="Container"/>
+      <Hexa2QuadTopologicalMapping name="default6" object1="../../Container" object2="Container"/>
       <QuadularBendingSprings template="Vec3d" name="FEM-Bend" stiffness="3000" damping="1"/>
       <TriangleModel name="default7"/>
       

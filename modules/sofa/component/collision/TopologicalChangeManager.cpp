@@ -45,6 +45,8 @@
 
 #include <sofa/defaulttype/VecTypes.h>
 
+#include <sofa/component/topology/Hexa2TetraTopologicalMapping.h>
+
 namespace sofa
 {
 
@@ -93,6 +95,15 @@ int TopologicalChangeManager::removeItemsFromTriangleModel(sofa::component::coll
     }
     else
     {
+        //Quick HACK for Hexa2TetraMapping
+        sofa::component::topology::Hexa2TetraTopologicalMapping* badMapping;
+        model->getContext()->get(badMapping, sofa::core::objectmodel::BaseContext::SearchRoot);
+        if(badMapping) //stop process
+        {
+            std::cout << "WARNING: TopologicalChangeManager: Removing element is not handle by Hexa2TetraTopologicalMapping. Stopping process." << std::endl;
+            return 0;
+        }
+
         int nbt = topo_curr->getNbTriangles();
         for (unsigned int i=0; i<indices.size(); ++i)
         {
