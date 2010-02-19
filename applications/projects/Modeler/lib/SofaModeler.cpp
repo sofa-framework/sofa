@@ -134,12 +134,6 @@ SofaModeler::SofaModeler()
     dockRecorder->setFixedExtentWidth(520);
     QWidget *leftPartWidget = new QWidget( dockRecorder, "LibraryLayout");
     QVBoxLayout *leftPartLayout = new QVBoxLayout(leftPartWidget);
-    //----------------------------------------------------------------------
-    //Add the button to create GNode
-    QPushButton *GNodeButton = new QPushButton( leftPartWidget, "GNodeButton");
-    GNodeButton->setText("GNode");
-    leftPartLayout->addWidget(GNodeButton);
-    connect( GNodeButton, SIGNAL( pressed() ),  this, SLOT( pressedGNodeButton() ) );
 
     //----------------------------------------------------------------------
     //Add a Filter to the Library
@@ -163,6 +157,14 @@ SofaModeler::SofaModeler()
     QSofaLibrary *l = new QSofaLibrary(leftPartWidget); library = l;
 #endif
     leftPartLayout->addWidget(l);
+
+
+    //----------------------------------------------------------------------
+    //Add the button to create GNode
+    QPushButton *GNodeButton = new QPushButton( leftPartWidget, "GNodeButton");
+    GNodeButton->setText("GNode");
+    leftPartLayout->addWidget(GNodeButton);
+    connect( GNodeButton, SIGNAL( pressed() ),  this, SLOT( pressedGNodeButton() ) );
 
     dockRecorder->setWidget(leftPartWidget);
 
@@ -199,7 +201,7 @@ SofaModeler::SofaModeler()
 
     GraphSupport->resize(200,550);
 
-    this->centralWidget()->layout()->addWidget(GraphSupport);
+    this->centralWidget()->layout()->add(GraphSupport);
 
     //----------------------------------------------------------------------
     //Add plugin manager window. ->load external libs
