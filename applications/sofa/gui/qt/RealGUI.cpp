@@ -67,6 +67,8 @@
 #include <sofa/simulation/common/xml/XML.h>
 #include <sofa/simulation/common/InitVisitor.h>
 #include <sofa/simulation/common/UpdateContextVisitor.h>
+#include <sofa/simulation/common/DeleteVisitor.h>
+#include <sofa/simulation/common/DesactivatedNodeVisitor.h>
 
 #include <sofa/helper/system/FileRepository.h>
 
@@ -465,8 +467,10 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     connect(simulationGraph, SIGNAL( NodeRemoved() ), this, SLOT( Update() ) );
     connect(simulationGraph, SIGNAL( Lock(bool) ), this, SLOT( LockAnimation(bool) ) );
     connect(simulationGraph, SIGNAL( RequestSaving(sofa::simulation::Node*) ), this, SLOT( fileSaveAs(sofa::simulation::Node*) ) );
-    connect(simulationGraph, SIGNAL( currentActivated(bool) ), viewer->getQWidget(), SLOT( resetView() ) );
-    connect(simulationGraph, SIGNAL( currentActivated(bool) ), this, SLOT( Update() ) );
+    connect(simulationGraph, SIGNAL( RequestActivation(sofa::simulation::Node*, bool) ), this, SLOT( ActivateNode(sofa::simulation::Node*, bool) ) );
+    connect(visualGraph, SIGNAL( RequestActivation(sofa::simulation::Node*, bool) ) , this, SLOT( ActivateNode(sofa::simulation::Node*, bool) ) );
+    //connect(simulationGraph, SIGNAL( currentActivated(bool) ), viewer->getQWidget(), SLOT( resetView() ) );
+    //connect(simulationGraph, SIGNAL( currentActivated(bool) ), this, SLOT( Update() ) );
     connect(simulationGraph, SIGNAL( Updated() ), this, SLOT( redraw() ) );
     connect(simulationGraph, SIGNAL( NodeAdded() ), this, SLOT( Update() ) );
     connect(this, SIGNAL( newScene() ), simulationGraph, SLOT( CloseAllDialogs() ) );
@@ -2038,8 +2042,6 @@ void RealGUI::Update()
     statWidget->CreateStats(dynamic_cast<Node*>(simulation::getSimulation()->getContext()));
 }
 
-
-
 void RealGUI::NewRootNode(sofa::simulation::Node* root, const char* path)
 {
     if(path != NULL)
@@ -2066,6 +2068,64 @@ void RealGUI::LockAnimation(bool value)
     {
         playpauseGUI(animationState);
     }
+}
+
+void RealGUI::ActivateNode(sofa::simulation::Node* node, bool activate)
+{
+    QSofaListView* sofalistview = (QSofaListView*)sender();
+
+    if (activate) node->setActive(true);
+    simulation::DesactivationVisitor v(activate);
+    node->executeVisitor(&v);
+    using core::objectmodel::BaseNode;
+    std::list< BaseNode* > nodeToProcess;
+    nodeToProcess.push_front((BaseNode*)node);
+    std::list< BaseNode* > visualNodeToProcess;
+
+    std::list< BaseNode* > nodeToChange;
+    //Breadth First approach to activate all the nodes
+    while (!nodeToProcess.empty())
+    {
+        //We take the first element of the list
+        Node* n= (Node*)nodeToProcess.front();
+        nodeToProcess.pop_front();
+
+        nodeToChange.push_front(n);
+        if (!n->nodeInVisualGraph.empty()) visualNodeToProcess.push_front( n->nodeInVisualGraph );
+
+        //We add to the list of node to process all its children
+        std::copy(n->child.begin(), n->child.end(), std::back_inserter(nodeToProcess));
+        std::copy(n->childInVisualGraph.begin(), n->childInVisualGraph.end(), std::back_inserter(visualNodeToProcess));
+    }
+    {
+        ActivationFunctor activator( activate, sofalistview->getListener() );
+        std::for_each(nodeToChange.begin(),nodeToChange.end(),activator);
+    }
+
+    nodeToChange.clear();
+
+
+    while (!visualNodeToProcess.empty())
+    {
+        //We take the first element of the list
+        Node* n=(Node*)visualNodeToProcess.front();
+        visualNodeToProcess.pop_front();
+
+        nodeToChange.push_front(n);
+
+        //We add to the list of node to process all its children
+        core::objectmodel::BaseNode::Children children=n->getChildren();
+        std::copy(children.begin(), children.end(), std::back_inserter(visualNodeToProcess));
+    }
+    {
+        ActivationFunctor activator(activate, visualGraph->getListener() );
+        std::for_each(nodeToChange.begin(),nodeToChange.end(),activator);
+    }
+
+    if ( sofalistview == simulationGraph && activate ) simulation::getSimulation()->init(node);
+
+    Update();
+    // viewer->getQWidget()->resetView();
 }
 } // namespace qt
 

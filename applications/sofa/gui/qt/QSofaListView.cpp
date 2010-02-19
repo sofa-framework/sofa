@@ -5,7 +5,7 @@
 #include "GenGraphForm.h"
 #include <sofa/gui/qt/RealGUI.h>
 #include <sofa/simulation/common/DeleteVisitor.h>
-#include <sofa/simulation/common/DesactivatedNodeVisitor.h>
+
 #include <sofa/simulation/common/TransformationVisitor.h>
 
 
@@ -31,49 +31,7 @@ namespace qt
 typedef QPopupMenu Q3PopupMenu;
 #endif
 
-struct ActivationFunctor
-{
-    ActivationFunctor(bool act, GraphListenerQListView* l):active(act), listener(l)
-    {
-        pixmap_filename= std::string("textures/media-record.png");
-        if ( sofa::helper::system::DataRepository.findFile ( pixmap_filename ) )
-            pixmap_filename = sofa::helper::system::DataRepository.getFile ( pixmap_filename );
-    }
-    void operator()(core::objectmodel::BaseNode* n)
-    {
-        if (active)
-        {
-            //Find the corresponding node in the Qt Graph
-            Q3ListViewItem *item=listener->items[n];
-            //Remove the text
-            QString desact_text = item->text(0);
-            desact_text.remove(QString("Deactivated "), true);
-            item->setText(0,desact_text);
-            //Remove the icon
-            QPixmap *p = getPixmap(n);
-            item->setPixmap(0,*p);
-            item->setOpen(true);
-        }
-        else
-        {
-            //Find the corresponding node in the Qt Graph
-            Q3ListViewItem *item=listener->items[n];
-            //Remove the text
-            item->setText(0, QString("Deactivated ") + item->text(0));
-#ifdef SOFA_QT4
-            item->setPixmap(0,QPixmap::fromImage(QImage(pixmap_filename.c_str())));
-#else
-            item->setPixmap(0,QPixmap(QImage(pixmap_filename.c_str())));
-#endif
-            item->setOpen(false);
-        }
-    }
-protected:
-    std::string pixmap_filename;
-    bool active;
-    GraphListenerQListView* listener;
 
-};
 
 
 QSofaListView::QSofaListView(const SofaListViewAttribute& attribute,
@@ -160,7 +118,7 @@ void QSofaListView::Clear(Node* rootNode)
         {
             object_.ptr.Node = node;
             object_.type  = typeNode;
-            graphActivation(false);
+            emit RequestActivation(object_.ptr.Node, true);
         }
     }
 
@@ -353,75 +311,14 @@ void QSofaListView::RunSofaDoubleClicked(Q3ListViewItem* item)
 
 void QSofaListView::DesactivateNode()
 {
-    graphActivation(false);
+    emit RequestActivation(object_.ptr.Node,false);
     currentItem()->setOpen(false);
-    emit currentActivated(false);
+
 }
 
 void QSofaListView::ActivateNode()
 {
-    graphActivation(true);
-    emit currentActivated(true);
-}
-
-
-void QSofaListView::graphActivation(bool activate)
-{
-    assert(object_.type == typeNode);
-    if (activate) object_.ptr.Node->setActive(true);
-
-    simulation::DesactivationVisitor v(activate);
-    object_.ptr.Node->executeVisitor(&v);
-
-    std::list< BaseNode* > nodeToProcess;
-    nodeToProcess.push_front((BaseNode*)object_.ptr.Node);
-    std::list< BaseNode* > visualNodeToProcess;
-    std::list< BaseNode* > nodeToChange;
-    //Breadth First approach to activate all the nodes
-
-    while (!nodeToProcess.empty())
-    {
-        //We take the first element of the list
-        Node* n= (Node*)nodeToProcess.front();
-        nodeToProcess.pop_front();
-        nodeToChange.push_front(n);
-        if (!n->nodeInVisualGraph.empty())
-            visualNodeToProcess.push_front( n->nodeInVisualGraph );
-
-        //We add to the list of node to process all its children
-        std::copy(n->child.begin(), n->child.end(), std::back_inserter(nodeToProcess));
-        std::copy(n->childInVisualGraph.begin(), n->childInVisualGraph.end(), std::back_inserter(visualNodeToProcess));
-    }
-    if( attribute_  == SIMULATION)
-    {
-        ActivationFunctor activator(activate, graphListener_);
-        std::for_each(nodeToChange.begin(),nodeToChange.end(),activator);
-
-    }
-
-    nodeToChange.clear();
-    while (!visualNodeToProcess.empty())
-    {
-        //We take the first element of the list
-        Node* n=(Node*)visualNodeToProcess.front();
-        visualNodeToProcess.pop_front();
-
-        nodeToChange.push_front(n);
-
-        //We add to the list of node to process all its children
-        core::objectmodel::BaseNode::Children children=n->getChildren();
-        std::copy(children.begin(), children.end(), std::back_inserter(visualNodeToProcess));
-    }
-    if(attribute_ == VISUAL)
-    {
-
-        ActivationFunctor activator(activate, graphListener_);
-        std::for_each(nodeToChange.begin(),nodeToChange.end(),activator);
-    }
-    if( activate && attribute_ == SIMULATION)
-    {
-        simulation::getSimulation()->init(object_.ptr.Node);
-    }
+    emit RequestActivation(object_.ptr.Node,true);
 }
 
 void QSofaListView::SaveNode()
