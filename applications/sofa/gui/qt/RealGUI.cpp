@@ -1097,7 +1097,9 @@ void RealGUI::setDimension ( int w, int h )
     list.push_back ( w );
     QSplitter *splitter_ptr = dynamic_cast<QSplitter *> ( splitter2 );
     splitter_ptr->setSizes ( list );
+#ifdef SOFA_QT4
     layout()->update();
+#endif
     resize(winSize.width() - viewSize.width() + w, winSize.height() - viewSize.height() + h);
     //std::cout << "Setting windows dimension to " << size().width() << " x " << size().height() << std::endl;
 }
