@@ -68,6 +68,7 @@ void QSofaTreeLibrary::filter(const FilterQuery &f)
     numComponents=0;
     unsigned int numComponentDisplayed=0;
     unsigned int indexPage=0;
+    helper::vector<QTreeWidgetItem*> categoryDisplayed;
     //Look into all the categories
     for (unsigned int cat=0; cat<categories.size(); ++cat)
     {
@@ -120,8 +121,19 @@ void QSofaTreeLibrary::filter(const FilterQuery &f)
             setItemHidden(currentItem,false);
             numComponents+=numComponentDisplayedInCategory;
             indexPage++;
+            categoryDisplayed.push_back(currentItem);
         }
     }
+
+    if (indexPage <= 2 || numComponents < 15)
+    {
+        for (unsigned int i=0; i<categoryDisplayed.size(); ++i) categoryDisplayed[i]->setExpanded(true);
+    }
+    else if (indexPage == categories.size())
+    {
+        for (unsigned int i=0; i<categoryDisplayed.size(); ++i) categoryDisplayed[i]->setExpanded(false);
+    }
+
     headerItem()->setText(0,QString("Sofa Components"));
     headerItem()->setText(1, QString::number(numComponentDisplayed));
 }
