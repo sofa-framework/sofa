@@ -77,7 +77,6 @@ void QSofaLibrary::addCategory(CategoryLibrary *c)
 
 void QSofaLibrary::filter(const FilterQuery &f)
 {
-
     numComponents=0;
     unsigned int numComponentDisplayed=0;
     unsigned int indexPage=0;

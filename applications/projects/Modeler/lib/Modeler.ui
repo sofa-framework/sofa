@@ -8,8 +8,8 @@
       <rect>
         <x>0</x>
         <y>0</y>
-        <width>800</width>
-        <height>550</height>
+        <width>1000</width>
+        <height>600</height>
       </rect>
     </property>
     <property name="sizePolicy">
@@ -58,38 +58,6 @@
           </size>
         </property>
         <property name="readOnly">
-          <bool>true</bool>
-        </property>
-      </widget>
-      <widget class="QSplitter">
-        <property name="name">
-          <cstring>splitter2</cstring>
-        </property>
-        <property name="enabled">
-          <bool>true</bool>
-        </property>
-        <property name="sizePolicy">
-          <sizepolicy>
-            <hsizetype>7</hsizetype>
-            <vsizetype>7</vsizetype>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-          </sizepolicy>
-        </property>
-        <property name="paletteForegroundColor">
-          <color>
-            <red>0</red>
-            <green>0</green>
-            <blue>0</blue>
-          </color>
-        </property>
-        <property name="backgroundOrigin">
-          <enum>WidgetOrigin</enum>
-        </property>
-        <property name="orientation">
-          <enum>Horizontal</enum>
-        </property>
-        <property name="opaqueResize">
           <bool>true</bool>
         </property>
       </widget>
