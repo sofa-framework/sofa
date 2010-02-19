@@ -9,6 +9,7 @@
   <DefaultCollisionGroupManager name="Group"/>
 
   <Node name="Tetrahedrons Mesh">
+    <MeshLoader name="loader" filename="mesh/cylinder.msh" />
     <MechanicalObject template="Vec3d" name="Volume"/>
     <EulerImplicitSolver name="cg_odesolver" printLog="0"/>
     <CGLinearSolver template="GraphScattered" name="linear solver" iterations="25" tolerance="1e-09" threshold="1e-09"/>
