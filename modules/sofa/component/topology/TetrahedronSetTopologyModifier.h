@@ -59,8 +59,11 @@ class SOFA_COMPONENT_CONTAINER_API TetrahedronSetTopologyModifier : public Trian
 public:
     SOFA_CLASS(TetrahedronSetTopologyModifier,TriangleSetTopologyModifier);
 
+    Data< bool > removeIsolated; ///< Controlled DOF index.
+
     TetrahedronSetTopologyModifier()
         : TriangleSetTopologyModifier()
+        , removeIsolated( initData(&removeIsolated,true, "removeIsolated", "remove Isolated dof") )
     {}
 
     virtual ~TetrahedronSetTopologyModifier() {}
