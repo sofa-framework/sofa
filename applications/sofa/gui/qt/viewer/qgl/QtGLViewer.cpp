@@ -790,9 +790,27 @@ void QtGLViewer::viewAll()
 
     getSimulation()->computeBBox(groot, visualParameters.minBBox.ptr(), visualParameters.maxBBox.ptr());
     getSimulation()->computeBBox(getSimulation()->getVisualRoot(), visualParameters.minBBox.ptr(), visualParameters.maxBBox.ptr(),false);
-    sceneBBoxIsValid =  visualParameters.minBBox[0] <  visualParameters.maxBBox[0]
-            && visualParameters.minBBox[1] <  visualParameters.maxBBox[1]
-            && visualParameters.minBBox[2] <  visualParameters.maxBBox[2];
+
+    sceneBBoxIsValid =
+        visualParameters.minBBox[0]    <=  visualParameters.maxBBox[0]
+        && visualParameters.minBBox[1] <=  visualParameters.maxBBox[1]
+        && visualParameters.minBBox[2] <=  visualParameters.maxBBox[2];
+
+    if (visualParameters.minBBox[0] == visualParameters.maxBBox[0])
+    {
+        visualParameters.minBBox[0]=-1;
+        visualParameters.minBBox[0]= 1;
+    }
+    if (visualParameters.minBBox[1] == visualParameters.maxBBox[1])
+    {
+        visualParameters.minBBox[1]=-1;
+        visualParameters.minBBox[1]= 1;
+    }
+    if (visualParameters.minBBox[2] == visualParameters.maxBBox[2])
+    {
+        visualParameters.minBBox[2]=-1;
+        visualParameters.minBBox[2]= 1;
+    }
 
     if (sceneBBoxIsValid) QGLViewer::setSceneBoundingBox(   qglviewer::Vec(visualParameters.minBBox.ptr()),qglviewer::Vec(visualParameters.maxBBox.ptr()) );
 
