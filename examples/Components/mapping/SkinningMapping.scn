@@ -1,92 +1,33 @@
-<Node 	animate="0"
-	dt="0.01"
-	gravity="0 -9.81 0"
-	multiThreadSimulation="0"
-	name="root"
-	showBehaviorModels="1"
-	showBoundingCollisionModels="0"
-	showCollisionModels="1"
-	showForceFields="1"
-	showInteractionForceFields="0"
-	showMappings="0"
-	showMechanicalMappings="0"
-	showNormals="0"
-	showVisualModels="0"
-	showWireFrame="0"
-	time="0"
->
-		<Object type="BruteForceDetection"	/>
-		<Object type="DefaultContactManager"	/>
-		<Object type="DefaultPipeline"	/>
-		<Object type="MinProximityIntersection"	/>
-		<Node>
-			<Object type="EulerImplicit" name="cg_odesolver" printLog="false"/>
-			<Object type="CGLinearSolver" iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
-
-			<Object type="MechanicalObject" template="Rigid"
-				position="0 0 0 0 0 0 1 1 0 0 0 0 0 1 3 0 0 0 0 0 1 5 0 0 0 0 0 1 7 0 0 0 0 0 1"
-				name="DOFs"
-				velocity="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"
-			/>
-			<Object type="UniformMass" template="Rigid"
-				mass="1 1 [1 0 0,0 1 0,0 0 1]"
-				name="mass"
-			/>
-			<Object type="FixedConstraint" template="Rigid"
-				indices="0"
-				name="fixOrigin"
-			/>
-			<Node>
-				<Object type="MechanicalObject" template="Rigid"
-					position="0 0 0 0.707914 0 0 0.707914 -1 0 0 0.707914 0 0 0.707914 1 0 0 0.707914 0 0 0.707914 -1 0 0 0.707914 0 0 0.707914 1 0 0 0.707914 0 0 0.707914 -1 0 0 0.707914 0 0 0.707914 1 0 0 0.707914 0 0 0.707914 -1 0 0 0.707914 0 0 0.707914 1 0 0 0.707914 0 0 0.707914"
-					name="attaches"
-					velocity="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"
-				/>
-				<Object type="RigidRigidMapping" template="MechanicalMapping&lt;MechanicalState&lt;StdRigidTypes&lt;3,double&gt; &gt;,MechanicalState&lt;StdRigidTypes&lt;3,double&gt; &gt; &gt; &gt;"
-					repartition="1 2 2 2 2"
-				/>
-				<Object type="JointSpringForceField" template="Rigid" name="joint springs"
-					spring="BEGIN_SPRING 0 1  FREE_AXIS 0 0 0 0 1 0  KS_T 0.0 30000.0  KS_R 0.0 200000.0  KS_B 2000.0  KD 1.0  R_LIM_X -0.80 0.80  R_LIM_Y -1.57 1.57  R_LIM_Z 0.0 0.0  END_SPRING 
-							BEGIN_SPRING 2 3  FREE_AXIS 0 0 0 0 1 0  KS_T 0.0 30000.0  KS_R 0.0 200000.0  KS_B 2000.0  KD 1.0  R_LIM_X -0.80 0.80  R_LIM_Y -1.57 1.57  R_LIM_Z 0.0 0.0  END_SPRING 
-							BEGIN_SPRING 4 5  FREE_AXIS 0 0 0 0 1 0  KS_T 0.0 30000.0  KS_R 0.0 200000.0  KS_B 2000.0  KD 1.0  R_LIM_X -0.80 0.80  R_LIM_Y -1.57 1.57  R_LIM_Z 0.0 0.0  END_SPRING 
-							BEGIN_SPRING 6 7  FREE_AXIS 0 0 0 0 1 0  KS_T 0.0 30000.0  KS_R 0.0 200000.0  KS_B 2000.0  KD 1.0  R_LIM_X -0.80 0.80  R_LIM_Y -1.57 1.57  R_LIM_Z 0.0 0.0  END_SPRING "
-				/>
-			</Node>
-			<Node>
-				<Object type="MechanicalObject" template="Vec3d"
-					position="0 -0.5 -0.5 0 0.5 -0.5 0 0.5 0.5 0 -0.5 0.5 2 -0.5 -0.5 2 0.5 -0.5 2 0.5 0.5 2 -0.5 0.5 2 -0.5 -0.5 2 0.5 -0.5 2 0.5 0.5 2 -0.5 0.5 4 -0.5 -0.5 4 0.5 -0.5 4 0.5 0.5 4 -0.5 0.5 4 -0.5 -0.5 4 0.5 -0.5 4 0.5 0.5 4 -0.5 0.5 6 -0.5 -0.5 6 0.5 -0.5 6 0.5 0.5 6 -0.5 0.5 6 -0.5 -0.5 6 0.5 -0.5 6 0.5 0.5 6 -0.5 0.5 8 -0.5 -0.5 8 0.5 -0.5 8 0.5 0.5 8 -0.5 0.5"
-					velocity="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0"
-				/>
-				<Object type="MeshTopology"
-					lines="0 1 1 2 2 3 3 0 1 5 5 4 4 0 5 6 6 7 7 4 2 6 7 3 8 9 9 10 10 11 11 8 9 13 13 12 12 8 13 14 14 15 15 12 10 14 15 11 16 17 17 18 18 19 19 16 17 21 21 20 20 16 21 22 22 23 23 20 18 22 23 19 24 25 25 26 26 27 27 24 25 29 29 28 28 24 29 30 30 31 31 28 26 30 31 27"
-					triangles="3 1 0 3 2 1 3 6 2 3 7 6 7 5 6 7 4 5 4 1 5 4 0 1 5 1 2 2 6 5 4 7 3 4 3 0 11 9 8 11 10 9 11 14 10 11 15 14 15 13 14 15 12 13 12 9 13 12 8 9 13 9 10 10 14 13 12 15 11 12 11 8 19 17 16 19 18 17 19 22 18 19 23 22 23 21 22 23 20 21 20 17 21 20 16 17 21 17 18 18 22 21 20 23 19 20 19 16 27 25 24 27 26 25 27 30 26 27 31 30 31 29 30 31 28 29 28 25 29 28 24 25 29 25 26 26 30 29 28 31 27 28 27 24"
-				/>
-				<Object type="TriangleModel"	/>
-				<Object type="LineModel"		/>
-				<Object type="SkinningMapping" template="MechanicalMapping&lt;MechanicalState&lt;StdRigidTypes&lt;3,double&gt; &gt;,MechanicalState&lt;StdVectorTypes&lt;Vec&lt;3,double&gt;,Vec&lt;3,double&gt;,double&gt; &gt; &gt; &gt;"
-					coefs="[0.711454 0.237151 0.0374449 0.0139501 0.711454 0.237151 0.0374449 0.0139501 0.711454 0.237151 0.0374449 0.0139501 0.711454 0.237151 0.0374449 0.0139501 0.401408 0.401408 0.133803 0.0633803 0.401408 0.401408 0.133803 0.0633803 0.401408 0.401408 0.133803 0.0633803 0.401408 0.401408 0.133803 0.0633803 0.401408 0.401408 0.133803 0.0633803 0.401408 0.401408 0.133803 0.0633803 0.401408 0.401408 0.133803 0.0633803 0.401408 0.401408 0.133803 0.0633803 0.431818 0.431818 0.0681818 0.0681818 0.431818 0.431818 0.0681818 0.0681818 0.431818 0.431818 0.0681818 0.0681818 0.431818 0.431818 0.0681818 0.0681818 0.431818 0.431818 0.0681818 0.0681818 0.431818 0.431818 0.0681818 0.0681818 0.431818 0.431818 0.0681818 0.0681818 0.431818 0.431818 0.0681818 0.0681818 0.451117 0.451117 0.0712291 0.0265363 0.451117 0.451117 0.0712291 0.0265363 0.451117 0.451117 0.0712291 0.0265363 0.451117 0.451117 0.0712291 0.0265363 0.451117 0.451117 0.0712291 0.0265363 0.451117 0.451117 0.0712291 0.0265363 0.451117 0.451117 0.0712291 0.0265363 0.451117 0.451117 0.0712291 0.0265363 0.801911 0.126618 0.0471712 0.0243003 0.801911 0.126618 0.0471712 0.0243003 0.801911 0.126618 0.0471712 0.0243003 0.801911 0.126618 0.0471712 0.0243003]"
-					nbRefs="5"
-					repartition="0 1 2 3 0 1 2 3 0 1 2 3 0 1 2 3 1 2 0 3 1 2 0 3 1 2 0 3 1 2 0 3 1 2 0 3 1 2 0 3 1 2 0 3 1 2 0 3 2 3 1 4 2 3 1 4 2 3 1 4 2 3 1 4 2 3 1 4 2 3 1 4 2 3 1 4 2 3 1 4 3 4 2 1 3 4 2 1 3 4 2 1 3 4 2 1 3 4 2 1 3 4 2 1 3 4 2 1 3 4 2 1 4 3 2 1 4 3 2 1 4 3 2 1 4 3 2 1"
-				/>
-			</Node>
-			<Node name="Visu">
-				<Object type="OglModel">
-					<Attribute type="name">
-						<Data value="Visual"/>
-					</Attribute>
-					<Attribute type="position">
-						<Data value="0 -0.5 -0.5 0 0.5 -0.5 0 0.5 0.5 0 -0.5 0.5 2 -0.5 -0.5 2 0.5 -0.5 2 0.5 0.5 2 -0.5 0.5 2 -0.5 -0.5 2 0.5 -0.5 2 0.5 0.5 2 -0.5 0.5 4 -0.5 -0.5 4 0.5 -0.5 4 0.5 0.5 4 -0.5 0.5 4 -0.5 -0.5 4 0.5 -0.5 4 0.5 0.5 4 -0.5 0.5 6 -0.5 -0.5 6 0.5 -0.5 6 0.5 0.5 6 -0.5 0.5 6 -0.5 -0.5 6 0.5 -0.5 6 0.5 0.5 6 -0.5 0.5 8 -0.5 -0.5 8 0.5 -0.5 8 0.5 0.5 8 -0.5 0.5"/>
-					</Attribute>
-					<Attribute type="triangles">
-						<Data value="3 1 0 3 2 1 3 6 2 3 7 6 7 5 6 7 4 5 4 1 5 4 0 1 5 1 2 2 6 5 4 7 3 4 3 0 11 9 8 11 10 9 11 14 10 11 15 14 15 13 14 15 12 13 12 9 13 12 8 9 13 9 10 10 14 13 12 15 11 12 11 8 19 17 16 19 18 17 19 22 18 19 23 22 23 21 22 23 20 21 20 17 21 20 16 17 21 17 18 18 22 21 20 23 19 20 19 16 27 25 24 27 26 25 27 30 26 27 31 30 31 29 30 31 28 29 28 25 29 28 24 25 29 25 26 26 30 29 28 31 27 28 27 24"/>
-					</Attribute>
-				</Object>
-				<Object type="SkinningMapping" object1="../.."  object2="Visual"
-					coefs="[0.711454 0.237151 0.0374449 0.0139501 0.711454 0.237151 0.0374449 0.0139501 0.711454 0.237151 0.0374449 0.0139501 0.711454 0.237151 0.0374449 0.0139501 0.401408 0.401408 0.133803 0.0633803 0.401408 0.401408 0.133803 0.0633803 0.401408 0.401408 0.133803 0.0633803 0.401408 0.401408 0.133803 0.0633803 0.401408 0.401408 0.133803 0.0633803 0.401408 0.401408 0.133803 0.0633803 0.401408 0.401408 0.133803 0.0633803 0.401408 0.401408 0.133803 0.0633803 0.431818 0.431818 0.0681818 0.0681818 0.431818 0.431818 0.0681818 0.0681818 0.431818 0.431818 0.0681818 0.0681818 0.431818 0.431818 0.0681818 0.0681818 0.431818 0.431818 0.0681818 0.0681818 0.431818 0.431818 0.0681818 0.0681818 0.431818 0.431818 0.0681818 0.0681818 0.431818 0.431818 0.0681818 0.0681818 0.451117 0.451117 0.0712291 0.0265363 0.451117 0.451117 0.0712291 0.0265363 0.451117 0.451117 0.0712291 0.0265363 0.451117 0.451117 0.0712291 0.0265363 0.451117 0.451117 0.0712291 0.0265363 0.451117 0.451117 0.0712291 0.0265363 0.451117 0.451117 0.0712291 0.0265363 0.451117 0.451117 0.0712291 0.0265363 0.801911 0.126618 0.0471712 0.0243003 0.801911 0.126618 0.0471712 0.0243003 0.801911 0.126618 0.0471712 0.0243003 0.801911 0.126618 0.0471712 0.0243003]"
-					nbRefs="5"
-					repartition="0 1 2 3 0 1 2 3 0 1 2 3 0 1 2 3 1 2 0 3 1 2 0 3 1 2 0 3 1 2 0 3 1 2 0 3 1 2 0 3 1 2 0 3 1 2 0 3 2 3 1 4 2 3 1 4 2 3 1 4 2 3 1 4 2 3 1 4 2 3 1 4 2 3 1 4 2 3 1 4 3 4 2 1 3 4 2 1 3 4 2 1 3 4 2 1 3 4 2 1 3 4 2 1 3 4 2 1 3 4 2 1 4 3 2 1 4 3 2 1 4 3 2 1 4 3 2 1"
-				/>
-			</Node>
+<Node 	name="root" gravity="0 -9.81 0" dt="0.01" time="0" animate="0" showVisualModels="0" showBehaviorModels="1" showCollisionModels="1" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="0" showForceFields="1" showInteractionForceFields="0" showWireFrame="0" showNormals="0" multiThreadSimulation="0"  >
+	<BruteForceDetection name="default0" />
+	<DefaultContactManager name="default1" />
+	<DefaultPipeline name="default2" />
+	<MinProximityIntersection name="default3" />
+	<Node 	name="default4" gravity="0 -9.81 0"  >
+		<EulerImplicitSolver name="cg_odesolver"  printLog="0" />
+		<CGLinearSolver template="GraphScattered" name="linear solver"  iterations="25"  tolerance="1e-09"  threshold="1e-09" />
+		<MechanicalObject template="Rigid" name="DOFs"  restScale="1"  position="0 0 0 0 0 0 1 1 0 0 0 0 0 1 3 0 0 0 0 0 1 5 0 0 0 0 0 1 7 0 0 0 0 0 1"  velocity="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" />
+		<UniformMass template="Rigid" name="mass"  mass="1 1 [1 0 0,0 1 0,0 0 1]" />
+		<FixedConstraint template="Rigid" name="fixOrigin"  indices="0" />
+		<Node 	name="default5" gravity="0 -9.81 0"  >
+			<MechanicalObject template="Rigid" name="attaches"  restScale="1"  position="0 0 0 0.707914 0 0 0.707914 -1 0 0 0.707914 0 0 0.707914 1 0 0 0.707914 0 0 0.707914 -1 0 0 0.707914 0 0 0.707914 1 0 0 0.707914 0 0 0.707914 -1 0 0 0.707914 0 0 0.707914 1 0 0 0.707914 0 0 0.707914 -1 0 0 0.707914 0 0 0.707914 1 0 0 0.707914 0 0 0.707914"  velocity="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" />
+			<RigidRigidMapping template="MechanicalMapping&lt;Rigid,Rigid&gt;" name="default6"  repartition="1 2 2 2 2" />
+			<JointSpringForceField template="Rigid" name="joint springs"  spring="BEGIN_SPRING  0 1  FREE_AXIS 0 0 0 0 1 0  KS_T 0 30000  KS_R 0 200000  KD 1  R_LIM_X -0.8 0.8  R_LIM_Y -1.57 1.57  R_LIM_Z 0 0  END_SPRING
+ BEGIN_SPRING  2 3  FREE_AXIS 0 0 0 0 1 0  KS_T 0 30000  KS_R 0 200000  KD 1  R_LIM_X -0.8 0.8  R_LIM_Y -1.57 1.57  R_LIM_Z 0 0  END_SPRING
+ BEGIN_SPRING  4 5  FREE_AXIS 0 0 0 0 1 0  KS_T 0 30000  KS_R 0 200000  KD 1  R_LIM_X -0.8 0.8  R_LIM_Y -1.57 1.57  R_LIM_Z 0 0  END_SPRING
+ BEGIN_SPRING  6 7  FREE_AXIS 0 0 0 0 1 0  KS_T 0 30000  KS_R 0 200000  KD 1  R_LIM_X -0.8 0.8  R_LIM_Y -1.57 1.57  R_LIM_Z 0 0  END_SPRING
+" />
+		</Node>
+		<Node 	name="default7" gravity="0 -9.81 0"  >
+			<MechanicalObject template="Vec3d" name="default8"  restScale="1"  position="0 -0.5 -0.5 0 0.5 -0.5 0 0.5 0.5 0 -0.5 0.5 2 -0.5 -0.5 2 0.5 -0.5 2 0.5 0.5 2 -0.5 0.5 2 -0.5 -0.5 2 0.5 -0.5 2 0.5 0.5 2 -0.5 0.5 4 -0.5 -0.5 4 0.5 -0.5 4 0.5 0.5 4 -0.5 0.5 4 -0.5 -0.5 4 0.5 -0.5 4 0.5 0.5 4 -0.5 0.5 6 -0.5 -0.5 6 0.5 -0.5 6 0.5 0.5 6 -0.5 0.5 6 -0.5 -0.5 6 0.5 -0.5 6 0.5 0.5 6 -0.5 0.5 8 -0.5 -0.5 8 0.5 -0.5 8 0.5 0.5 8 -0.5 0.5"  velocity="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0" />
+			<MeshTopology name="default9"  edges="0 1  1 2  2 3  3 0  1 5  5 4  4 0  5 6  6 7  7 4  2 6  7 3  8 9  9 10  10 11  11 8  9 13  13 12  12 8  13 14  14 15  15 12  10 14  15 11  16 17  17 18  18 19  19 16  17 21  21 20  20 16  21 22  22 23  23 20  18 22  23 19  24 25  25 26  26 27  27 24  25 29  29 28  28 24  29 30  30 31  31 28  26 30  31 27 "  triangles="3 1 0  3 2 1  3 6 2  3 7 6  7 5 6  7 4 5  4 1 5  4 0 1  5 1 2  2 6 5  4 7 3  4 3 0  11 9 8  11 10 9  11 14 10  11 15 14  15 13 14  15 12 13  12 9 13  12 8 9  13 9 10  10 14 13  12 15 11  12 11 8  19 17 16  19 18 17  19 22 18  19 23 22  23 21 22  23 20 21  20 17 21  20 16 17  21 17 18  18 22 21  20 23 19  20 19 16  27 25 24  27 26 25  27 30 26  27 31 30  31 29 30  31 28 29  28 25 29  28 24 25  29 25 26  26 30 29  28 31 27  28 27 24 " />
+			<TTriangleModel template="Vec3d" name="default10" />
+			<LineModel name="default11" />
+			<SkinningMapping template="MechanicalMapping&lt;Rigid,Vec3d&gt;" name="default12"  repartition="0 1 2 3 0 1 2 3 0 1 2 3 0 1 2 3 1 2 0 3 1 2 0 3 1 2 0 3 1 2 0 3 1 2 0 3 1 2 0 3 1 2 0 3 1 2 0 3 2 3 1 4 2 3 1 4 2 3 1 4 2 3 1 4 2 3 1 4 2 3 1 4 2 3 1 4 2 3 1 4 3 4 2 1 3 4 2 1 3 4 2 1 3 4 2 1 3 4 2 1 3 4 2 1 3 4 2 1 3 4 2 1 4 3 2 1 4 3 2 1 4 3 2 1 4 3 2 1"  nbRefs="5"  interpolationType="1" />
+		</Node>
+		<Node 	name="Visu" gravity="0 -9.81 0"  >
+			<OglModel template="ExtVec3f" name="Visual"  position="0 -0.5 -0.5 0 0.5 -0.5 0 0.5 0.5 0 -0.5 0.5 2 -0.5 -0.5 2 0.5 -0.5 2 0.5 0.5 2 -0.5 0.5 2 -0.5 -0.5 2 0.5 -0.5 2 0.5 0.5 2 -0.5 0.5 4 -0.5 -0.5 4 0.5 -0.5 4 0.5 0.5 4 -0.5 0.5 4 -0.5 -0.5 4 0.5 -0.5 4 0.5 0.5 4 -0.5 0.5 6 -0.5 -0.5 6 0.5 -0.5 6 0.5 0.5 6 -0.5 0.5 6 -0.5 -0.5 6 0.5 -0.5 6 0.5 0.5 6 -0.5 0.5 8 -0.5 -0.5 8 0.5 -0.5 8 0.5 0.5 8 -0.5 0.5"  triangles="3 1 0  3 2 1  3 6 2  3 7 6  7 5 6  7 4 5  4 1 5  4 0 1  5 1 2  2 6 5  4 7 3  4 3 0  11 9 8  11 10 9  11 14 10  11 15 14  15 13 14  15 12 13  12 9 13  12 8 9  13 9 10  10 14 13  12 15 11  12 11 8  19 17 16  19 18 17  19 22 18  19 23 22  23 21 22  23 20 21  20 17 21  20 16 17  21 17 18  18 22 21  20 23 19  20 19 16  27 25 24  27 26 25  27 30 26  27 31 30  31 29 30  31 28 29  28 25 29  28 24 25  29 25 26  26 30 29  28 31 27  28 27 24 " />
+			<SkinningMapping template="Mapping&lt;Rigid,ExtVec3f&gt;" name="default20"  object1="../.."  object2="Visual"  repartition="0 1 2 3 0 1 2 3 0 1 2 3 0 1 2 3 1 2 0 3 1 2 0 3 1 2 0 3 1 2 0 3 1 2 0 3 1 2 0 3 1 2 0 3 1 2 0 3 2 3 1 4 2 3 1 4 2 3 1 4 2 3 1 4 2 3 1 4 2 3 1 4 2 3 1 4 2 3 1 4 3 4 2 1 3 4 2 1 3 4 2 1 3 4 2 1 3 4 2 1 3 4 2 1 3 4 2 1 3 4 2 1 4 3 2 1 4 3 2 1 4 3 2 1 4 3 2 1"  nbRefs="5"  interpolationType="1" />
 		</Node>
 	</Node>
-	
+</Node>
