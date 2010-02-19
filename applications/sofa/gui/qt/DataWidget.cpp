@@ -46,11 +46,22 @@ QDisplayDataInfoWidget::QDisplayDataInfoWidget(QWidget* parent, const std::strin
     }
     else
     {
+#ifndef SOFA_GUI_QT_NO_DATA_HELP
         QLabel* helper_label = new QLabel(this);
         helper_label->setText(QString(final_str.c_str()));
         helper_label->setMinimumWidth(20);
         layout->addWidget(helper_label);
         if (!parentClass.empty()) QToolTip::add(helper_label, ("Data from "+parentClass).c_str());
+#else
+        numLines_ = 0;
+        if (!final_str.empty() || !parentClass.empty())
+        {
+            if (!final_str.empty()) final_str += '\n';
+            final_str += "Data from ";
+            final_str += parentClass;
+            QToolTip::add(parent, final_str.c_str());
+        }
+#endif
     }
     if(modifiable || !data->getLinkPath().empty())
     {

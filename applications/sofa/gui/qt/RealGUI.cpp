@@ -26,7 +26,9 @@
 ******************************************************************************/
 #include <sofa/gui/qt/RealGUI.h>
 #include <sofa/gui/qt/ImageQt.h>
+#ifndef SOFA_GUI_QT_NO_RECORDER
 #include "QSofaRecorder.h"
+#endif
 #include "QSofaStatWidget.h"
 #include "GenGraphForm.h"
 #include "QSofaListView.h"
@@ -314,9 +316,21 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     : viewerName ( viewername ),
       viewer ( NULL ),
       simulationGraph(NULL),
+#ifndef SOFA_CLASSIC_SCENE_GRAPH
       visualGraph(NULL),
+#endif
       currentTab ( NULL ),
       tabInstrument (NULL),
+#ifndef SOFA_GUI_QT_NO_RECORDER
+      recorder(NULL),
+#else
+      fpsLabel(NULL),
+      timeLabel(NULL),
+#endif
+      statWidget(NULL),
+      timerStep(NULL),
+      backgroundImage(NULL),
+      left_stack(NULL),
       saveReloadFile(false)
 {
 
@@ -360,6 +374,7 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     connect ( tabs, SIGNAL ( currentChanged ( QWidget* ) ), this, SLOT ( currentTabChanged ( QWidget* ) ) );
 
     //Create a Dock Window to receive the Sofa Recorder
+#ifndef SOFA_GUI_QT_NO_RECORDER
     QDockWindow *dockRecorder=new QDockWindow(this);
     dockRecorder->setResizeEnabled(true);
     this->moveDockWindow( dockRecorder, Qt::DockBottom);
@@ -370,6 +385,18 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     dockRecorder->setWidget(recorder);
 
     connect(startButton, SIGNAL(  toggled ( bool ) ), recorder, SLOT( TimerStart(bool) ) );
+#else
+    //Status Bar Configuration
+    fpsLabel = new QLabel ( "9999.9 FPS", statusBar() );
+    fpsLabel->setMinimumSize ( fpsLabel->sizeHint() );
+    fpsLabel->clear();
+
+    timeLabel = new QLabel ( "Time: 999.9999 s", statusBar() );
+    timeLabel->setMinimumSize ( timeLabel->sizeHint() );
+    timeLabel->clear();
+    statusBar()->addWidget ( fpsLabel );
+    statusBar()->addWidget ( timeLabel );
+#endif
 
     statWidget = new QSofaStatWidget(TabStats);
     TabStats->layout()->add(statWidget);
@@ -419,10 +446,16 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
 #endif
     simulationGraph = new QSofaListView(SIMULATION,TabGraph,"SimuGraph");
     ((QVBoxLayout*)TabGraph->layout())->addWidget(simulationGraph);
+    connect ( ExportGraphButton, SIGNAL ( clicked() ), simulationGraph, SLOT ( Export() ) );
+#ifndef SOFA_CLASSIC_SCENE_GRAPH
     visualGraph = new QSofaListView(VISUAL,TabVisualGraph,"VisualGraph");
     ((QVBoxLayout*)TabVisualGraph->layout())->addWidget(visualGraph);
-    connect ( ExportGraphButton, SIGNAL ( clicked() ), simulationGraph, SLOT ( Export() ) );
     connect ( ExportVisualGraphButton, SIGNAL ( clicked() ), visualGraph, SLOT ( Export() ) );
+#else
+#ifdef SOFA_QT4
+    tabs->removeTab(tabs->indexOf(TabVisualGraph));
+#endif
+#endif
 
     //Center the application
     const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->primaryScreen());
@@ -438,8 +471,12 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     connect(simulationGraph, SIGNAL( NodeAdded() ), this, SLOT( Update() ) );
     connect(this, SIGNAL( newScene() ), simulationGraph, SLOT( CloseAllDialogs() ) );
     connect(this, SIGNAL( newStep() ), simulationGraph, SLOT( UpdateOpenedDialogs() ) );
-    connect( recorder, SIGNAL( RecordSimulation(bool) ), startButton, SLOT( setOn(bool) ) );
-    connect( recorder, SIGNAL( NewTime() ), viewer->getQWidget(), SLOT( update() ) );
+#ifndef SOFA_GUI_QT_NO_RECORDER
+    if (recorder)
+        connect( recorder, SIGNAL( RecordSimulation(bool) ), startButton, SLOT( setOn(bool) ) );
+    if (recorder)
+        connect( recorder, SIGNAL( NewTime() ), viewer->getQWidget(), SLOT( update() ) );
+#endif
     timerStep = new QTimer(this);
     connect ( timerStep, SIGNAL ( timeout() ), this, SLOT ( step() ) );
 
@@ -767,8 +804,10 @@ bool RealGUI::setViewer ( const char* name )
     if ( viewer->getScene() !=NULL )
     {
         simulation::getSimulation()->unload ( viewer->getScene() ); delete viewer->getScene() ;
+#ifndef SOFA_CLASSIC_SCENE_GRAPH
         if(visualGraph->getListener() != NULL )
             simulation::getSimulation()->getVisualRoot()->removeListener(visualGraph->getListener());
+#endif
 
         //  simulationGraph->Clear(dynamic_cast<Node*>( simulation::getSimulation()->getContext()) );
         //  visualGraph->Clear(dynamic_cast<Node*>( simulation::getSimulation()->getVisualRoot()) );
@@ -870,9 +909,10 @@ void RealGUI::fileOpen ( std::string filename, bool temporaryFile )
         viewer->getPickHandler()->reset();//activateRay(false);
 
         simulation::getSimulation()->unload ( viewer->getScene() ); delete viewer->getScene() ;
+#ifndef SOFA_CLASSIC_SCENE_GRAPH
         if(visualGraph->getListener() != NULL )
             simulation::getSimulation()->getVisualRoot()->removeListener(visualGraph->getListener());
-
+#endif
 
     }
     //Clear the list of modified dialog opened
@@ -906,8 +946,10 @@ void RealGUI::pmlOpen ( const char* filename, bool /*resetView*/ )
     if ( viewer->getScene() !=NULL )
     {
         simulation::getSimulation()->unload ( viewer->getScene() ); delete viewer->getScene() ;
+#ifndef SOFA_CLASSIC_SCENE_GRAPH
         if(visualGraph->getListener() != NULL )
             simulation::getSimulation()->getVisualRoot()->removeListener(visualGraph->getListener());
+#endif
 
     }
     GNode *simuNode = dynamic_cast< GNode *> (simulation::getSimulation()->load ( scene.c_str() ));
@@ -998,10 +1040,15 @@ void RealGUI::setScene ( Node* root, const char* filename, bool temporaryFile )
         dtEdit->setText ( QString::number ( root->getDt() ) );
 
         simulationGraph->Clear(root);
+#ifndef SOFA_CLASSIC_SCENE_GRAPH
         visualGraph->Clear(dynamic_cast<Node*>(simulation::getSimulation()->getVisualRoot()) );
+#endif
         statWidget->CreateStats(dynamic_cast<Node*>(simulation::getSimulation()->getContext()) );
-        recorder->Clear();
 
+#ifndef SOFA_GUI_QT_NO_RECORDER
+        if (recorder)
+            recorder->Clear();
+#endif
     }
 
 #ifdef SOFA_HAVE_CHAI3D
@@ -1073,9 +1120,15 @@ void RealGUI::Clear()
 #endif
     }
 
-    recorder->Clear();
+#ifndef SOFA_GUI_QT_NO_RECORDER
+    if (recorder)
+        recorder->Clear();
+#endif
+
     simulationGraph->Clear(dynamic_cast<Node*>(simulation::getSimulation()->getContext()));
+#ifndef SOFA_CLASSIC_SCENE_GRAPH
     visualGraph->Clear(dynamic_cast<Node*>(simulation::getSimulation()->getVisualRoot()));
+#endif
     statWidget->CreateStats(dynamic_cast<Node*>(simulation::getSimulation()->getContext()));
 
 
@@ -1183,7 +1236,11 @@ void RealGUI::fileOpenSimu ( std::string s )
             fileOpen(filename.c_str());
             this->setWindowFilePath(QString(filename.c_str()));
             dtEdit->setText(QString(dT.c_str()));
-            recorder->SetSimulation(initT,endT,writeName);
+#ifndef SOFA_GUI_QT_NO_RECORDER
+            if (recorder)
+                recorder->SetSimulation(initT,endT,writeName);
+#endif
+
         }
     }
 }
@@ -1314,7 +1371,10 @@ void RealGUI::editRecordDirectory()
     {
         record_directory = s.ascii();
         if (record_directory.at(record_directory.size()-1) != '/') record_directory+="/";
-        recorder->SetRecordDirectory(record_directory);
+#ifndef SOFA_GUI_QT_NO_RECORDER
+        if (recorder)
+            recorder->SetRecordDirectory(record_directory);
+#endif
     }
 
 }
@@ -1502,7 +1562,17 @@ void RealGUI::eventNewStep()
         int i = ( ( frameCounter/10 ) %10 );
         double fps = ( ( double ) timeTicks / ( curtime - beginTime[i] ) ) * ( frameCounter<100?frameCounter:100 );
 
-        recorder->setFPS(fps);
+#ifndef SOFA_GUI_QT_NO_RECORDER
+        if (recorder)
+            recorder->setFPS(fps);
+#else
+        if (fpsLabel)
+        {
+            char buf[100];
+            sprintf ( buf, "%.1f FPS", fps );
+            fpsLabel->setText ( buf );
+        }
+#endif
         beginTime[i] = curtime;
     }
 
@@ -1562,6 +1632,7 @@ void RealGUI::currentTabChanged ( QWidget* widget )
     {
         simulationGraph->Freeze();
     }
+#ifndef SOFA_CLASSIC_SCENE_GRAPH
     else if ( widget == TabVisualGraph )
     {
         visualGraph->Unfreeze( );
@@ -1571,6 +1642,7 @@ void RealGUI::currentTabChanged ( QWidget* widget )
         visualGraph->Freeze( );
 
     }
+#endif
     else if (widget == TabStats)
         statWidget->CreateStats(dynamic_cast<Node*>(simulation::getSimulation()->getContext()));
 
@@ -1581,7 +1653,19 @@ void RealGUI::currentTabChanged ( QWidget* widget )
 
 void RealGUI::eventNewTime()
 {
-    recorder->UpdateTime();
+#ifndef SOFA_GUI_QT_NO_RECORDER
+    if (recorder)
+        recorder->UpdateTime();
+#else
+    Node* root = getScene();
+    if (root && timeLabel)
+    {
+        double time = root->getTime();
+        char buf[100];
+        sprintf ( buf, "Time: %.3g s", time );
+        timeLabel->setText ( buf );
+    }
+#endif
 }
 
 
@@ -1620,9 +1704,13 @@ void RealGUI::resetScene()
         root->setTime(0.);
         eventNewTime();
         simulation::getSimulation()->reset ( root );
+#ifndef SOFA_CLASSIC_SCENE_GRAPH
         simulation::getSimulation()->reset ( simulation::getSimulation()->getVisualRoot() );
+#endif
         UpdateContextVisitor().execute(root);
+#ifndef SOFA_CLASSIC_SCENE_GRAPH
         UpdateContextVisitor().execute(simulation::getSimulation()->getVisualRoot());
+#endif
         emit newStep();
     }
 
@@ -1701,7 +1789,11 @@ void RealGUI::dumpState ( bool value )
 //
 void RealGUI::exportOBJ ( bool exportMTL )
 {
+#ifdef SOFA_CLASSIC_SCENE_GRAPH
     Node* root = getScene();
+#else
+    Node* root = simulation::getSimulation()->getVisualRoot();
+#endif
     if ( !root ) return;
     std::string sceneFileName(this->windowFilePath ().ascii());
     std::ostringstream ofilename;
@@ -1840,6 +1932,7 @@ void RealGUI::showhideElements(int FILTER, bool value)
             root->getContext()->setShowMechanicalMappings ( value );
             root->getContext()->setShowForceFields ( value );
             root->getContext()->setShowInteractionForceFields ( value );
+#ifndef SOFA_CLASSIC_SCENE_GRAPH
             sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowVisualModels ( value );
             sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowBehaviorModels ( value );
             sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowCollisionModels ( value );
@@ -1848,70 +1941,93 @@ void RealGUI::showhideElements(int FILTER, bool value)
             sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowMechanicalMappings ( value );
             sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowForceFields ( value );
             sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowInteractionForceFields ( value );
+#endif
             break;
         case  Node::VISUALMODELS:
         {
             root->getContext()->setShowVisualModels ( value );
+#ifndef SOFA_CLASSIC_SCENE_GRAPH
             sofa::simulation::getSimulation()->getVisualRoot()->setShowVisualModels( value);
+#endif
             break;
         }
         case  Node::BEHAVIORMODELS:
         {
             root->getContext()->setShowBehaviorModels ( value );
+#ifndef SOFA_CLASSIC_SCENE_GRAPH
             sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowBehaviorModels ( value );
+#endif
             break;
         }
         case  Node::COLLISIONMODELS:
         {
             root->getContext()->setShowCollisionModels ( value );
+#ifndef SOFA_CLASSIC_SCENE_GRAPH
             sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowCollisionModels ( value );
+#endif
             break;
         }
         case  Node::BOUNDINGCOLLISIONMODELS:
         {
             root->getContext()->setShowBoundingCollisionModels ( value );
+#ifndef SOFA_CLASSIC_SCENE_GRAPH
             sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowBoundingCollisionModels ( value );
+#endif
             break;
         }
         case  Node::MAPPINGS:
         {
             root->getContext()->setShowMappings ( value );
+#ifndef SOFA_CLASSIC_SCENE_GRAPH
             sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowMappings ( value );
+#endif
             break;
         }
         case  Node::MECHANICALMAPPINGS:
         {
             root->getContext()->setShowMechanicalMappings ( value );
+#ifndef SOFA_CLASSIC_SCENE_GRAPH
             sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowMechanicalMappings ( value );
+#endif
             break;
         }
         case  Node::FORCEFIELDS:
         {
             root->getContext()->setShowForceFields ( value );
+#ifndef SOFA_CLASSIC_SCENE_GRAPH
             sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowForceFields ( value );
+#endif
             break;
         }
         case  Node::INTERACTIONFORCEFIELDS:
         {
             root->getContext()->setShowInteractionForceFields ( value );
+#ifndef SOFA_CLASSIC_SCENE_GRAPH
             sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowWireFrame ( value );
+#endif
             break;
         }
         case  Node::WIREFRAME:
         {
             root->getContext()->setShowWireFrame ( value );
+#ifndef SOFA_CLASSIC_SCENE_GRAPH
             sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowWireFrame ( value );
+#endif
             break;
         }
         case  Node::NORMALS:
         {
             root->getContext()->setShowNormals ( value );
+#ifndef SOFA_CLASSIC_SCENE_GRAPH
             sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowNormals ( value );
+#endif
             break;
         }
         }
         sofa::simulation::getSimulation()->updateVisualContext ( root, (simulation::Node::VISUAL_FLAG) FILTER );
+#ifndef SOFA_CLASSIC_SCENE_GRAPH
         sofa::simulation::getSimulation()->updateVisualContext ( sofa::simulation::getSimulation()->getVisualRoot(), (simulation::Node::VISUAL_FLAG) FILTER );
+#endif
     }
     viewer->getQWidget()->update();
 }
