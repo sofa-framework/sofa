@@ -1,9 +1,9 @@
-<Node name="GridSpring">
+<Node name="Springs">
 	<Object type="EulerImplicitSolver" rayleighStiffness="0.01" />
 	<Object type="CGLinearSolver" iterations="25" threshold="0.00000001" />
 	<Object type="SparseGrid" n="6 6 6" filename="file"/> 
 	<Object type="MechanicalObject" translation="0 0 0" rotation="0 0 0" scale3d="1.0 1.0 1.0"/>
-	<Object type="UniformMass" totalmass="5" />
+	<Object type="UniformMass" totalmass="1" />
 	<Object type="MeshSpringForceField" name="Springs" stiffness="400" damping="4"/>
 	<Node name="VisualNode">
 		<Object type="OglModel" name="Visual" filename="file"  color="green"  />
