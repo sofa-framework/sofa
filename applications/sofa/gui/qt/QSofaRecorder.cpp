@@ -320,7 +320,7 @@ void QSofaRecorder::slot_playforward()
         }
         else
         {
-            loadSimulation();
+
             RealGUI::setPixmap("textures/media-playback-pause.png", playforward);
 
             timerStep->start ( 0 );
@@ -348,6 +348,7 @@ void QSofaRecorder::slot_forward()
     {
         setCurrentTime(getFinalTime());
         slot_sliderValue(timeSlider->maxValue());
+        loadSimulation();
     }
 
 
