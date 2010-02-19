@@ -225,7 +225,7 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
             nodes[n] = (((unsigned int)t)<pmap.size())?pmap[t]:0;
             //sout << "nodes[" << n << "] = " << nodes[n] << sendl;
         }
-
+        helper::fixed_array <unsigned int,8> hexa;
         switch (etype)
         {
         case 1: // Line
@@ -245,12 +245,17 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
             ++ntetrahedra;
             break;
         case 5: // Hexa
-            helper::fixed_array <unsigned int,8> hexa;
+
             for (unsigned int n=0; n<8; n++)
                 hexa[n] = nodes[n];
             addHexahedron(&my_hexahedra,hexa);
             ++ncubes;
             break;
+
+        default:
+            //if the type is not handled, skip rest of the line
+            std::string tmp;
+            std::getline(file, tmp);
         }
     }
 
