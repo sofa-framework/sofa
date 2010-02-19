@@ -9,6 +9,7 @@
   <DefaultCollisionGroupManager name="Group"/>
 
   <Node name="Cylinder Static Mesh">
+    <MeshLoader name="loader" filename="mesh/cylinder.msh" />
     <MechanicalObject name="DOFs" template="Vec3d" translation="0 0 0" rotation="0 90 0" scale="10"/>
     <FixedConstraint name="FixedConstraint" template="Vec3d" indices="0"/>
     <UniformMass name="Mass" template="Vec3d" totalmass="50"/>
@@ -40,6 +41,7 @@
   </Node>
 
   <Node name="Cylinder Dynamic Mesh">
+    <MeshLoader name="loader" filename="mesh/cylinder.msh" />
     <MechanicalObject name="DOFs" template="Vec3d" translation="0 0 10" rotation="0 90 0" scale="10"/>
     <FixedConstraint name="FixedConstraint" template="Vec3d" indices="0"/>
     <UniformMass name="Mass" template="Vec3d" totalmass="50"/>
