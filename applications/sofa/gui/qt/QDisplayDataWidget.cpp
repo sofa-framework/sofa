@@ -47,6 +47,7 @@ QDisplayDataWidget::QDisplayDataWidget(QWidget* parent,
     setInsideSpacing(2);
 
     const std::string label_text = data_->getHelp();
+
     if (label_text != "TODO")
     {
         datainfowidget_ = new QDisplayDataInfoWidget(this,label_text,data_,flags.LINKPATH_MODIFIABLE_FLAG);

@@ -113,7 +113,10 @@ using namespace sofa::filemanager::pml;
 #endif
 
 class QSofaListView;
+#ifndef SOFA_GUI_QT_NO_RECORDER
 class QSofaRecorder;
+#endif
+
 class QSofaStatWidget;
 
 class SOFA_SOFAGUIQT_API RealGUI : public ::GUI, public SofaGUI
@@ -146,7 +149,9 @@ public:
 
     sofa::gui::qt::viewer::SofaViewer* viewer;
     QSofaListView* simulationGraph;
+#ifndef SOFA_CLASSIC_SCENE_GRAPH
     QSofaListView* visualGraph;
+#endif
 
     RealGUI( const char* viewername, const std::vector<std::string>& options = std::vector<std::string>() );
     ~RealGUI();
@@ -248,7 +253,12 @@ protected:
 
     QWidget* currentTab;
     QWidget *tabInstrument;
+#ifndef SOFA_GUI_QT_NO_RECORDER
     QSofaRecorder* recorder;
+#else
+    QLabel* fpsLabel;
+    QLabel* timeLabel;
+#endif
     QSofaStatWidget* statWidget;
     QTimer* timerStep;
     WFloatLineEdit *background[3];
