@@ -59,6 +59,9 @@ template class  IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3dTyp
 template class  IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3dTypes>, MechanicalState<Vec3dTypes> > >;
 template class  IdentityMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<CudaVec3dTypes> > >;
 template class  IdentityMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<CudaVec3dTypes> > >;
+
+template class  IdentityMapping< Mapping< State<CudaVec3d1Types>, MappedModel<ExtVec3dTypes> > >;
+template class  IdentityMapping< Mapping< State<CudaVec3dTypes>, MappedModel<ExtVec3dTypes> > >;
 #endif
 
 // template class  IdentityMapping< Mapping< State<CudaVec3fTypes>, MappedModel<ExtVec3dTypes> > >;
@@ -109,6 +112,9 @@ int IdentityMappingCudaClass = core::RegisterObject("Supports GPU-side computati
         .add< IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3dTypes>, MechanicalState<Vec3dTypes> > > >()
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<CudaVec3dTypes> > > >()
         .add< IdentityMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<CudaVec3dTypes> > > >()
+
+        .add< IdentityMapping< Mapping< State<CudaVec3d1Types>, MappedModel<ExtVec3fTypes> > > >()
+        .add< IdentityMapping< Mapping< State<CudaVec3dTypes>, MappedModel<ExtVec3fTypes> > > >()
 #endif
 
 // .add< IdentityMapping< Mapping< State<CudaVec3fTypes>, MappedModel<ExtVec3dTypes> > > >()
