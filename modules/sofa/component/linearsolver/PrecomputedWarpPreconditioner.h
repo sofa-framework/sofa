@@ -87,6 +87,7 @@ public:
     typedef typename Coord::value_type Real;
     typedef MatNoInit<3, 3, Real> Transformation;
 
+    Data<bool> jmjt_twostep;
     Data<bool> f_verbose;
     Data<bool> use_file;
     Data <std::string> solverName;
