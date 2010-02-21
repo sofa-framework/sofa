@@ -124,18 +124,17 @@ int BarycentricMappingCudaClass = core::RegisterObject("Supports GPU-side comput
 #endif
 
 
-// #ifdef SOFA_GPU_CUDA_DOUBLE
-// .add< BarycentricMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<CudaVec3dTypes> > > >()
-// .add< BarycentricMapping< MechanicalMapping< MechanicalState<CudaVec3dTypes>, MechanicalState<CudaVec3fTypes> > > >()
-// .add< BarycentricMapping< MechanicalMapping< MechanicalState<CudaVec3dTypes>, MechanicalState<CudaVec3dTypes> > > >()
-// .add< BarycentricMapping< MechanicalMapping< MechanicalState<CudaVec3dTypes>, MechanicalState<Vec3fTypes> > > >()
-// .add< BarycentricMapping< MechanicalMapping< MechanicalState<CudaVec3dTypes>, MechanicalState<Vec3dTypes> > > >()
-// .add< BarycentricMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<CudaVec3dTypes> > > >()
-// .add< BarycentricMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<CudaVec3dTypes> > > >()
-//
-// .add< BarycentricMapping< Mapping< State<CudaVec3d1Types>, MappedModel<ExtVec3fTypes> > > >()
-// .add< BarycentricMapping< Mapping< State<CudaVec3dTypes>, MappedModel<ExtVec3fTypes> > > >()
-// #endif
+#ifdef SOFA_GPU_CUDA_DOUBLE
+        .add< BarycentricMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<CudaVec3dTypes> > > >()
+        .add< BarycentricMapping< MechanicalMapping< MechanicalState<CudaVec3dTypes>, MechanicalState<CudaVec3fTypes> > > >()
+        .add< BarycentricMapping< MechanicalMapping< MechanicalState<CudaVec3dTypes>, MechanicalState<CudaVec3dTypes> > > >()
+        .add< BarycentricMapping< MechanicalMapping< MechanicalState<CudaVec3dTypes>, MechanicalState<Vec3fTypes> > > >()
+        .add< BarycentricMapping< MechanicalMapping< MechanicalState<CudaVec3dTypes>, MechanicalState<Vec3dTypes> > > >()
+        .add< BarycentricMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<CudaVec3dTypes> > > >()
+        .add< BarycentricMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<CudaVec3dTypes> > > >()
+//.add< BarycentricMapping< Mapping< State<CudaVec3d1Types>, MappedModel<ExtVec3fTypes> > > >()
+//.add< BarycentricMapping< Mapping< State<CudaVec3dTypes>, MappedModel<ExtVec3fTypes> > > >()
+#endif
         ;
 
 } // namespace cuda
