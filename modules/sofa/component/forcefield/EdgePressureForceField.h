@@ -29,7 +29,7 @@
 #include <sofa/core/componentmodel/behavior/ForceField.h>
 #include <sofa/component/topology/EdgeSubsetData.h>
 #include <sofa/component/topology/EdgeSetGeometryAlgorithms.h>
-
+#include <sofa/component/topology/TriangleSetTopologyContainer.h>
 
 namespace sofa
 {
@@ -72,11 +72,12 @@ protected:
     EdgeSubsetData<EdgePressureInformation> edgePressureMap;
 
     sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
+    sofa::component::topology::TriangleSetTopologyContainer* _completeTopology;
     sofa::component::topology::EdgeSetGeometryAlgorithms<DataTypes>* edgeGeo;
 
     Data<Deriv> pressure;
 
-    Data<std::string> edgeList;
+    Data<helper::vector<int> > edgeList;
 
     /// the normal used to define the edge subjected to the pressure force.
     Data<Deriv> normal;
@@ -84,15 +85,19 @@ protected:
     Data<Real> dmin; // coordinates min of the plane for the vertex selection
     Data<Real> dmax;// coordinates max of the plane for the vertex selection
 
+    Data<Real> p_intensity; // pressure intensity on edge normal
+
 public:
 
     EdgePressureForceField():
         pressure(initData(&pressure, "pressure", "Pressure force per unit area"))
-        , edgeList(initData(&edgeList,std::string(""),"edgeList", "Indices of edges separated with commas where a pressure is applied"))
+        , edgeList(initData(&edgeList,"edgeList", "Indices of edges separated with commas where a pressure is applied"))
         , normal(initData(&normal,"normal", "Normal direction for the plane selection of edges"))
         , dmin(initData(&dmin,(Real)0.0, "dmin", "Minimum distance from the origin along the normal direction"))
         , dmax(initData(&dmax,(Real)0.0, "dmax", "Maximum distance from the origin along the normal direction"))
+        , p_intensity(initData(&p_intensity,(Real)1.0, "p_intensity", "pressure intensity on edge normal"))
     {
+        _completeTopology = NULL;
     }
 
     virtual ~EdgePressureForceField();

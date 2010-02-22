@@ -65,10 +65,11 @@ template <class DataTypes> void  EdgePressureForceField<DataTypes>::handleTopolo
 }
 template <class DataTypes> void EdgePressureForceField<DataTypes>::init()
 {
-    //serr << "initializing EdgePressureForceField" << sendl;
     this->core::componentmodel::behavior::ForceField<DataTypes>::init();
 
     _topology = this->getContext()->getMeshTopology();
+    this->getContext()->get(_completeTopology, core::objectmodel::BaseContext::SearchUp);
+
     this->getContext()->get(edgeGeo);
 
     assert(edgeGeo!=0);
@@ -79,11 +80,16 @@ template <class DataTypes> void EdgePressureForceField<DataTypes>::init()
         return;
     }
 
+    if(_completeTopology == NULL)
+    {
+        serr << "ERROR(EdgePressureForceField): assume that pressure vector is provdided otherwise TriangleSetTopology is required" << sendl;
+    }
+
     if (dmin.getValue()!=dmax.getValue())
     {
         selectEdgesAlongPlane();
     }
-    if (edgeList.getValue().length()>0)
+    if (edgeList.getValue().size()>0)
     {
         selectEdgesFromString();
     }
@@ -119,25 +125,118 @@ double EdgePressureForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x
 template<class DataTypes>
 void EdgePressureForceField<DataTypes>::initEdgeInformation()
 {
-    typename topology::EdgeSubsetData<EdgePressureInformation>::iterator it;
+    const VecCoord& x = *this->mstate->getX();
 
-    for(it=edgePressureMap.begin(); it!=edgePressureMap.end(); it++ )
+    if(pressure.getValue().norm() > 0)
     {
-        (*it).second.length=edgeGeo->computeRestEdgeLength((*it).first);
-        (*it).second.force=pressure.getValue()*(*it).second.length;
+        typename topology::EdgeSubsetData<EdgePressureInformation>::iterator it;
+
+        for(it=edgePressureMap.begin(); it!=edgePressureMap.end(); it++ )
+        {
+            (*it).second.length=edgeGeo->computeRestEdgeLength((*it).first);
+            (*it).second.force=pressure.getValue()*(*it).second.length;
+        }
     }
+    else // if no pressure is provided, assume that boundary edges received pressure along their normal
+    {
+
+        for(unsigned int i = 0; i < _topology->getNbEdges() ; i++)
+        {
+            Edge e = _topology->getEdge(i), f;
+
+            Vec3d tang, n1, n2;
+            n2 = Vec3d(0,0,1);
+            tang = x[e[1]] - x[e[0]]; tang.normalize();
+
+            Vec3d sum;
+            bool found = false;
+            unsigned int k = 0;
+            while ((!found) && (k < _completeTopology->getNbEdges()))
+            {
+                f = _completeTopology->getEdge(k);
+
+                Vec3d l1 = x[f[0]] - x[e[0]];
+                Vec3d l2 = x[f[1]] - x[e[1]];
+
+                if((l1.norm() < 1e-6) && (l2.norm() < 1e-6))
+                {
+                    found = true;
+                }
+                else
+                    k++;
+
+            }
+            TrianglesAroundEdge t_a_E = _completeTopology->getTrianglesAroundEdge(k);
+
+            if(t_a_E.size() == 1) // 2D cases
+            {
+                Triangle t = _completeTopology->getTriangle(t_a_E[0]);
+                Vec3d vert;
+
+
+                if((t[0] == e[0]) || (t[0] == e[1]))
+                {
+                    if((t[1] == e[0]) || (t[1] == e[1]))
+                        vert = x[t[2]];
+                    else
+                        vert = x[t[1]];
+                }
+                else
+                    vert = x[t[0]];
+
+                Vec3d tt = vert - x[e[0]];
+                n1 = n2.cross(tang);
+                if(n1*tt < 0)
+                {
+                    n1 = -n1;
+                }
+
+                EdgePressureInformation ei;
+                ei.length = edgeGeo->computeRestEdgeLength(i);
+                ei.force = n1 * ei.length * p_intensity.getValue();
+                edgePressureMap[i] = ei;
+            }
+
+        }
+    }
+
+    return;
 }
 
 
 template<class DataTypes>
 void EdgePressureForceField<DataTypes>::updateEdgeInformation()
 {
-    typename topology::EdgeSubsetData<EdgePressureInformation>::iterator it;
+    /*typename topology::EdgeSubsetData<EdgePressureInformation>::iterator it;
+
+    const VecCoord& x = *this->mstate->getX();
 
     for(it=edgePressureMap.begin(); it!=edgePressureMap.end(); it++ )
     {
-        (*it).second.force=pressure.getValue()*((*it).second.length);
-    }
+    	Vec3d p1 = x[_topology->getEdge((*it).first)[0]];
+    	Vec3d p2 = x[_topology->getEdge((*it).first)[1]];
+    	Vec3d orig(0,0,0);
+
+    	Vec3d tang = p2 - p1;
+    	tang.norm();
+
+    	Deriv myPressure;
+
+    	if( (p1[0] - orig[0]) * tang[1] > 0)
+    		myPressure[0] = tang[1];
+    	else
+    		myPressure[0] = - tang[1];
+
+    	if( (p1[1] - orig[1]) * tang[0] > 0)
+    		myPressure[1] = tang[0];
+    	else
+    		myPressure[1] = - tang[0];
+
+    	//(*it).second.force=pressure.getValue()*((*it).second.length);
+    	(*it).second.force=myPressure*((*it).second.length);
+
+    }*/
+    initEdgeInformation();
 }
 
 
@@ -169,34 +268,23 @@ void EdgePressureForceField<DataTypes>::selectEdgesAlongPlane()
 template <class DataTypes>
 void EdgePressureForceField<DataTypes>::selectEdgesFromString()
 {
-    std::string inputString=edgeList.getValue();
-    unsigned int i;
-    do
+    helper::vector<int> inputString=edgeList.getValue();
+    for (unsigned int i = 0; i < inputString.size(); i++)
     {
-        const char *str=inputString.c_str();
-        for(i=0; (i<inputString.length())&&(str[i]!=','); ++i) ;
         EdgePressureInformation t;
+        edgePressureMap[inputString[i]]=t;
 
-        if (i==inputString.length())
-        {
-            edgePressureMap[(unsigned int)atoi(str)]=t;
-            inputString+=i;
-        }
-        else
-        {
-            inputString[i]='\0';
-            edgePressureMap[(unsigned int)atoi(str)]=t;
-            inputString+=i+1;
-        }
     }
-    while (inputString.length()>0);
 
 }
 template<class DataTypes>
 void EdgePressureForceField<DataTypes>::draw()
 {
+
     if (!this->getContext()->getShowForceFields()) return;
     if (!this->mstate) return;
+
+
 
     if (this->getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -206,21 +294,33 @@ void EdgePressureForceField<DataTypes>::draw()
 
     glDisable(GL_LIGHTING);
 
-    glBegin(GL_LINES);
-    glColor4f(0,1,0,1);
-
     typename topology::EdgeSubsetData<EdgePressureInformation>::iterator it;
+
+    /*for(it=edgePressureMap.begin(); it!=edgePressureMap.end(); it++ )
+    {
+    	helper::gl::glVertexT(x[_topology->getEdge((*it).first)[0]]);
+    	helper::gl::glVertexT(x[_topology->getEdge((*it).first)[1]]);
+    }*/
+    glEnd();
+
+    glBegin(GL_LINES);
+    glColor4f(1,1,0,1);
 
     for(it=edgePressureMap.begin(); it!=edgePressureMap.end(); it++ )
     {
-        helper::gl::glVertexT(x[_topology->getEdge((*it).first)[0]]);
-        helper::gl::glVertexT(x[_topology->getEdge((*it).first)[1]]);
+        Vec3d p = (x[_topology->getEdge((*it).first)[0]] + x[_topology->getEdge((*it).first)[1]]) / 2.0;
+        helper::gl::glVertexT(p);
+
+        Vec3d f = (*it).second.force;
+        f.normalize();
+        f /= 5.0;
+        helper::gl::glVertexT(p + f);
     }
     glEnd();
 
-
     if (this->getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
 }
 
 } // namespace forcefield
