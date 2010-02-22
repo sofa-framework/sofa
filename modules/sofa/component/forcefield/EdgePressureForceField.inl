@@ -140,7 +140,7 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
     else // if no pressure is provided, assume that boundary edges received pressure along their normal
     {
 
-        for(unsigned int i = 0; i < _topology->getNbEdges() ; i++)
+        for(int i = 0; i < _topology->getNbEdges() ; i++)
         {
             Edge e = _topology->getEdge(i), f;
 
@@ -150,7 +150,7 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
 
             Vec3d sum;
             bool found = false;
-            unsigned int k = 0;
+            int k = 0;
             while ((!found) && (k < _completeTopology->getNbEdges()))
             {
                 f = _completeTopology->getEdge(k);
