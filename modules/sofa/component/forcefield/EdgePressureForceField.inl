@@ -139,7 +139,6 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
     }
     else // if no pressure is provided, assume that boundary edges received pressure along their normal
     {
-
         for(int i = 0; i < _topology->getNbEdges() ; i++)
         {
             Edge e = _topology->getEdge(i), f;
@@ -280,6 +279,8 @@ void EdgePressureForceField<DataTypes>::selectEdgesFromString()
 template<class DataTypes>
 void EdgePressureForceField<DataTypes>::draw()
 {
+
+    updateEdgeInformation();
 
     if (!this->getContext()->getShowForceFields()) return;
     if (!this->mstate) return;
