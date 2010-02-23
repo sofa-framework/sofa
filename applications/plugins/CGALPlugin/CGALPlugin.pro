@@ -27,11 +27,16 @@ INCLUDEPATH += $$SOFA_DIR/extlibs
 
 SOURCES = initCGALPlugin.cpp \
 		  MeshGenerationFromPolyhedron.cpp \
+		  Refine2DMesh.cpp \
 		  TriangularConvexHull3D.cpp
 
 HEADERS = \
 		  MeshGenerationFromPolyhedron.h \
-		  TriangularConvexHull3D.h
+		  MeshGenerationFromPolyhedron.inl \
+		  Refine2DMesh.h \
+		  Refine2DMesh.inl \
+		  TriangularConvexHull3D.h \
+		  TriangularConvexHull3D.inl
 		  
 README_FILE = CGALPlugin.txt
 
