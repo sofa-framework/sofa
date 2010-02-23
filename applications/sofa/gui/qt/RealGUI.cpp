@@ -468,7 +468,9 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     connect(simulationGraph, SIGNAL( Lock(bool) ), this, SLOT( LockAnimation(bool) ) );
     connect(simulationGraph, SIGNAL( RequestSaving(sofa::simulation::Node*) ), this, SLOT( fileSaveAs(sofa::simulation::Node*) ) );
     connect(simulationGraph, SIGNAL( RequestActivation(sofa::simulation::Node*, bool) ), this, SLOT( ActivateNode(sofa::simulation::Node*, bool) ) );
+#ifndef SOFA_CLASSIC_SCENE_GRAPH
     connect(visualGraph, SIGNAL( RequestActivation(sofa::simulation::Node*, bool) ) , this, SLOT( ActivateNode(sofa::simulation::Node*, bool) ) );
+#endif
     //connect(simulationGraph, SIGNAL( currentActivated(bool) ), viewer->getQWidget(), SLOT( resetView() ) );
     //connect(simulationGraph, SIGNAL( currentActivated(bool) ), this, SLOT( Update() ) );
     connect(simulationGraph, SIGNAL( Updated() ), this, SLOT( redraw() ) );
@@ -2080,7 +2082,9 @@ void RealGUI::ActivateNode(sofa::simulation::Node* node, bool activate)
     using core::objectmodel::BaseNode;
     std::list< BaseNode* > nodeToProcess;
     nodeToProcess.push_front((BaseNode*)node);
+#ifndef SOFA_CLASSIC_SCENE_GRAPH
     std::list< BaseNode* > visualNodeToProcess;
+#endif
 
     std::list< BaseNode* > nodeToChange;
     //Breadth First approach to activate all the nodes
@@ -2091,11 +2095,14 @@ void RealGUI::ActivateNode(sofa::simulation::Node* node, bool activate)
         nodeToProcess.pop_front();
 
         nodeToChange.push_front(n);
+#ifndef SOFA_CLASSIC_SCENE_GRAPH
         if (!n->nodeInVisualGraph.empty()) visualNodeToProcess.push_front( n->nodeInVisualGraph );
-
+#endif
         //We add to the list of node to process all its children
         std::copy(n->child.begin(), n->child.end(), std::back_inserter(nodeToProcess));
+#ifndef SOFA_CLASSIC_SCENE_GRAPH
         std::copy(n->childInVisualGraph.begin(), n->childInVisualGraph.end(), std::back_inserter(visualNodeToProcess));
+#endif
     }
     {
         ActivationFunctor activator( activate, sofalistview->getListener() );
@@ -2104,7 +2111,7 @@ void RealGUI::ActivateNode(sofa::simulation::Node* node, bool activate)
 
     nodeToChange.clear();
 
-
+#ifndef SOFA_CLASSIC_SCENE_GRAPH
     while (!visualNodeToProcess.empty())
     {
         //We take the first element of the list
@@ -2121,6 +2128,7 @@ void RealGUI::ActivateNode(sofa::simulation::Node* node, bool activate)
         ActivationFunctor activator(activate, visualGraph->getListener() );
         std::for_each(nodeToChange.begin(),nodeToChange.end(),activator);
     }
+#endif
 
     if ( sofalistview == simulationGraph && activate ) simulation::getSimulation()->init(node);
 
