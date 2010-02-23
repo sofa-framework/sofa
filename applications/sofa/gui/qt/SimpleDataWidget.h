@@ -260,6 +260,7 @@ public:
         Widget* w = new Widget(parent, "real");
         w->setMinFloatValue( (float)-INFINITY );
         w->setMaxFloatValue( (float)INFINITY );
+        w->setMinimumWidth(20);
         return w;
     }
     static void readFromData(Widget* w, const data_type& d)

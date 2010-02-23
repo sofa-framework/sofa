@@ -5,4 +5,4 @@ qmake -recursive -spec macx-xcode Sofa.pro
 
 # Generate a Makefile
 #qmake -recursive -spec macx-g++ Makefile Sofa.pro
-qmake -spec macx-g++
+qmake -recursive -spec macx-g++
