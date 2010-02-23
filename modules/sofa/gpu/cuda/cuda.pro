@@ -165,6 +165,7 @@ HEADERS += \
 		CudaDiagonalMass.h \
 		CudaDiagonalMass.inl \
 		
+		
 SOURCES += \
         CudaBTDLinearSolver.cpp  \
 	   	CudaLinearSolverConstraintCorrection.cpp \
@@ -191,6 +192,7 @@ SOURCES += \
 	CudaTetrahedronCuttingManager.cpp \
 	CudaDiagonalMass.cpp \
 	CudaBilateralInteractionConstraint.cpp \
+	CudaBoxStiffSpringForceField.cpp \
 
 CUDA_SOURCES += \
 	   	CudaLCP.cu \
