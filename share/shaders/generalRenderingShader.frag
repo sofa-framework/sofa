@@ -49,6 +49,7 @@ uniform vec2 scaleTexture;
 varying vec3 restPositionW, restNormalW;
 uniform float showDebug;
 uniform sampler2D planarTextureX, planarTextureY, planarTextureZ;
+uniform vec2 clipTextureX, clipTextureY, clipTextureZ; 
 #endif
 
 #if defined(BUMP_MAPPING)
@@ -269,11 +270,12 @@ void main()
 
 	//normal
 	vec3 n;
+	vec2 clipX, clipY, clipZ;
 	
 #ifdef TEXTURE_UNIT_0
 	color.rgb = texture2D(colorTexture,gl_TexCoord[0].st).rgb;
 #endif //TEXTURE_UNIT_0
-
+	
 #ifdef TRI_TEXTURING
 	// To compute unlit color and normal, only vPositionW and vNormalW should be used, so that it is independant of the current deformation
 	//XY = 1 0 0
@@ -289,13 +291,41 @@ void main()
 	coefs = coefs*coefs*coefs ;//pow(coefs,3.0);
 	coefs = max(vec3(0.0,0.0,0.0),coefs);
 	coefs /= dot(coefs,vec3(1.0,1.0,1.0)); // make sum = 1
+	
+	//get coordinate for color texture
+	float cctx = pos0.x;
+	float ccty = pos0.y;
+	float cctz = pos0.z;
+	
+	clipX = clipTextureX;
+	clipY = clipTextureY;
+	clipZ = clipTextureZ;
 
+	//optional : clip them to the specified bounds (other than [0 .. 1]) -> [clipTexture.x ... clipTexture.y]
+	//test if clipTexture is correct (i.e between 0 and 1)
+	if(clipX.x < 0)
+		clipX.x = 0;
+	if(clipY.x < 0)
+		clipY.x = 0;
+	if(clipZ.x < 0)
+		clipZ.x = 0;
+	if(clipX.y > 1 || clipX.y <= clipX.x)
+		clipX.y = 1;
+	if(clipY.y > 1 || clipY.y <= clipY.x)
+		clipY.y = 1;
+	if(clipZ.y > 1 || clipZ.y <= clipZ.x)
+		clipZ.y = 1;
+	
+	cctx = (clipX.x + (clipX.y - clipX.x)*cctx);
+	ccty = (clipY.x + (clipY.y - clipY.x)*ccty);
+	cctz = (clipZ.x + (clipZ.y - clipZ.x)*cctz);
+	
 	//XY -> Z
-	color += texture2D(planarTextureZ,vec2(pos0.x/scaleTexture.x,pos0.y/scaleTexture.y) ) * coefs.z;
+	color += texture2D(planarTextureZ,vec2(cctx/scaleTexture.x,ccty/scaleTexture.y) ) * coefs.z;
 	//XZ -> Y
-	color += texture2D(planarTextureY,vec2(pos0.x/scaleTexture.x,pos0.z/scaleTexture.y) ) * coefs.y;
+	color += texture2D(planarTextureY,vec2(cctx/scaleTexture.x,cctz/scaleTexture.y) ) * coefs.y;
 	//YZ -> X
-	color += texture2D(planarTextureX,vec2(pos0.y/scaleTexture.x,pos0.z/scaleTexture.y) ) * coefs.x;
+	color += texture2D(planarTextureX,vec2(ccty/scaleTexture.x,cctz/scaleTexture.y) ) * coefs.x;
 
 	color.rgb = showDebug * (vec3(1.0,1.0,1.0)-coefs) + (1.0-showDebug)*color.rgb;
 	color.a = diffuse.a;
@@ -327,15 +357,43 @@ void main()
 	vec3 bx = vec3(0.0,bumpCurrentNormal.z,-bumpCurrentNormal.y); 
 	vec3 by = vec3(-bumpCurrentNormal.z,0.0,bumpCurrentNormal.x); 
 	vec3 bz = vec3(bumpCurrentNormal.y,-bumpCurrentNormal.x,0.0); 
+	
+	float bctx = bumpCurrentPosition.x;
+	float bcty = bumpCurrentPosition.y;
+	float bctz = bumpCurrentPosition.z;
+	
+	clipX = clipTextureX;
+	clipY = clipTextureY;
+	clipZ = clipTextureZ;
+
+	//optional : clip them to the specified bounds (other than [0 .. 1]) -> [clipTexture.x ... clipTexture.y]
+	//test if clipTexture is correct (i.e between 0 and 1)
+	if(clipX.x < 0)
+		clipX.x = 0;
+	if(clipY.x < 0)
+		clipY.x = 0;
+	if(clipZ.x < 0)
+		clipZ.x = 0;
+	if(clipX.y > 1 || clipX.y <= clipX.x)
+		clipX.y = 1;
+	if(clipY.y > 1 || clipY.y <= clipY.x)
+		clipY.y = 1;
+	if(clipZ.y > 1 || clipZ.y <= clipZ.x)
+		clipZ.y = 1;
+
+	bctx = (clipX.x + (clipX.y - clipX.x)*bctx);
+	bcty = (clipY.x + (clipY.y - clipY.x)*bcty);
+	bctz = (clipZ.x + (clipZ.y - clipZ.x)*bctz);
+	
 	//XY -> Z
 	//color.g = pos0.y;
-	bump.yxw += texture2D(normalMap,vec2(bumpCurrentPosition.x/scaleTexture.x,bumpCurrentPosition.y/scaleTexture.y) ).xyz * bumpCoefs.z;
+	bump.yxw += texture2D(normalMap,vec2(bctx/scaleTexture.x,bcty/scaleTexture.y) ).xyz * bumpCoefs.z;
 	//XZ -> Y
 	//color.r = pos0.x;
-	bump.zxw += texture2D(normalMap,vec2(bumpCurrentPosition.x/scaleTexture.x,bumpCurrentPosition.z/scaleTexture.y) ).xyz * bumpCoefs.y;
+	bump.zxw += texture2D(normalMap,vec2(bctx/scaleTexture.x,bctz/scaleTexture.y) ).xyz * bumpCoefs.y;
 	//YZ -> X
 	//color.b = pos0.z;
-	bump.zyw += texture2D(normalMap,vec2(bumpCurrentPosition.y/scaleTexture.x,bumpCurrentPosition.z/scaleTexture.y) ).xyz * bumpCoefs.x;
+	bump.zyw += texture2D(normalMap,vec2(bcty/scaleTexture.x,bctz/scaleTexture.y) ).xyz * bumpCoefs.x;
 
 	bump *= bumpFactor;
 	bump.w += 1.0-bumpFactor;
@@ -448,8 +506,8 @@ void main()
 	
 	vec3 reflectVec = reflect(viewVectorW, normalW);
 	
-	if ((reflectVec.z)>0.0)
-	  color.rgb *= texture2D(planeTexture, reflectVec.xy*( altitude/reflectVec.z )+vec2(0.5,0.5)).rgb * specular.rgb ;
+	//if ((reflectVec.z)>0.0)
+	color.rgb = texture2D(planeTexture, reflectVec.xy*( altitude/reflectVec.z )+vec2(0.5,0.5)).rgb * specular.rgb ;
 
 	
 #endif //PLANE_ENVIRONMENT_MAPPING
