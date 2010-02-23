@@ -56,7 +56,7 @@ class BaseMaterial : public virtual core::objectmodel::BaseObject
 public:
     SOFA_CLASS(BaseMaterial,core::objectmodel::BaseObject);
 
-    BaseMaterial();
+    BaseMaterial() {}
     virtual ~BaseMaterial() {}
 
     virtual void computeStress (Vector3 & ,Vector3 &,unsigned int &) {}
