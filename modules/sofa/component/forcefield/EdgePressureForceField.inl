@@ -113,6 +113,8 @@ void EdgePressureForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& /*
         f[_topology->getEdge((*it).first)[1]]+=force;
 
     }
+
+    updateEdgeInformation();
 }
 
 template <class DataTypes>
@@ -279,22 +281,13 @@ void EdgePressureForceField<DataTypes>::selectEdgesFromString()
 template<class DataTypes>
 void EdgePressureForceField<DataTypes>::draw()
 {
+    double aSC = arrowSizeCoef.getValue();
 
-    updateEdgeInformation();
-
-    if (!this->getContext()->getShowForceFields()) return;
+    if ((!this->getContext()->getShowForceFields() && (aSC==0)) || (aSC < 0.0)) return;
     if (!this->mstate) return;
 
-
-
-    if (this->getContext()->getShowWireFrame())
-        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-
     const VecCoord& x = *this->mstate->getX();
-
     glDisable(GL_LIGHTING);
-
     typename topology::EdgeSubsetData<EdgePressureInformation>::iterator it;
 
     /*for(it=edgePressureMap.begin(); it!=edgePressureMap.end(); it++ )
@@ -313,8 +306,8 @@ void EdgePressureForceField<DataTypes>::draw()
         helper::gl::glVertexT(p);
 
         Vec3d f = (*it).second.force;
-        f.normalize();
-        f /= 5.0;
+        //f.normalize();
+        f *= aSC;
         helper::gl::glVertexT(p + f);
     }
     glEnd();
