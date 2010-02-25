@@ -195,6 +195,9 @@ bool MeshTopologyLoader::loadGmsh(std::ifstream &file, const int gmshFormat)
             case 5: // Hexa
                 nnodes = 8;
                 break;
+            case 15: // Point
+                nnodes = 1;
+                break;
             default:
                 std::cerr << "Elements of type 1, 2, 3, 4, 5, or 6 expected. Element of type " << etype << " found." << std::endl;
                 //fclose(file);
@@ -235,6 +238,10 @@ bool MeshTopologyLoader::loadGmsh(std::ifstream &file, const int gmshFormat)
             addCube(nodes[0], nodes[1], nodes[2], nodes[3],nodes[4], nodes[5], nodes[6], nodes[7]);
             ++ncubes;
             break;
+        default:
+            //if the type is not handled, skip rest of the line
+            std::string tmp;
+            std::getline(file, tmp);
         }
     }
 
