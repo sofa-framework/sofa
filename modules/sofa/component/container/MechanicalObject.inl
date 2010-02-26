@@ -291,8 +291,10 @@ MechanicalObject<DataTypes>::~MechanicalObject()
 template <class DataTypes>
 void MechanicalObject<DataTypes>::handleStateChange()
 {
-    std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itBegin=_topology->firstStateChange();
-    std::list<const sofa::core::componentmodel::topology::TopologyChange *>::const_iterator itEnd=_topology->lastStateChange();
+    using sofa::core::componentmodel::topology::TopologyChange;
+
+    std::list< const TopologyChange * >::const_iterator itBegin = _topology->firstStateChange();
+    std::list< const TopologyChange * >::const_iterator itEnd = _topology->lastStateChange();
 
     while( itBegin != itEnd )
     {
@@ -302,16 +304,18 @@ void MechanicalObject<DataTypes>::handleStateChange()
         {
         case core::componentmodel::topology::POINTSADDED:
         {
+            using sofa::helper::vector;
+
             unsigned int nbPoints = ( static_cast< const PointsAdded * >( *itBegin ) )->getNbAddedVertices();
-            sofa::helper::vector< sofa::helper::vector< unsigned int > > ancestors = ( static_cast< const PointsAdded * >( *itBegin ) )->ancestorsList;
-            sofa::helper::vector< sofa::helper::vector< double       > > coefs     = ( static_cast< const PointsAdded * >( *itBegin ) )->coefs;
+            vector< vector< unsigned int > > ancestors = ( static_cast< const PointsAdded * >( *itBegin ) )->ancestorsList;
+            vector< vector< double       > > coefs     = ( static_cast< const PointsAdded * >( *itBegin ) )->coefs;
 
             if (!ancestors.empty() )
             {
                 unsigned int prevSizeMechObj = getSize();
-                resize( prevSizeMechObj + nbPoints );
+                resize(prevSizeMechObj + nbPoints);
 
-                sofa::helper::vector< sofa::helper::vector< double > > coefs2;
+                vector< vector< double > > coefs2;
                 coefs2.resize(ancestors.size());
 
                 for (unsigned int i = 0; i < ancestors.size(); ++i)
@@ -321,7 +325,7 @@ void MechanicalObject<DataTypes>::handleStateChange()
                     for (unsigned int j = 0; j < ancestors[i].size(); ++j)
                     {
                         // constructng default coefs if none were defined
-                        if (coefs == (const sofa::helper::vector< sofa::helper::vector< double > >)0 || coefs[i].size() == 0)
+                        if (coefs == (const vector< vector< double > >)0 || coefs[i].size() == 0)
                             coefs2[i][j] = 1.0f / ancestors[i].size();
                         else
                             coefs2[i][j] = coefs[i][j];
@@ -332,6 +336,11 @@ void MechanicalObject<DataTypes>::handleStateChange()
                 {
                     computeWeightedValue( prevSizeMechObj + i, ancestors[i], coefs2[i] );
                 }
+            }
+            else
+            {
+                // No ancestors specified, resize DOFs vectors and set new values to the reset default value.
+                resize(getSize() + nbPoints);
             }
             break;
         }
@@ -352,10 +361,11 @@ void MechanicalObject<DataTypes>::handleStateChange()
         }
         case core::componentmodel::topology::POINTSMOVED:
         {
-            const sofa::helper::vector<unsigned int> indicesList = ( static_cast <const PointsMoved *> (*itBegin))->indicesList;
-            const sofa::helper::vector< sofa::helper::vector< unsigned int > > ancestors = ( static_cast< const PointsMoved * >( *itBegin ) )->ancestorsList;
-            const sofa::helper::vector< sofa::helper::vector< double > > coefs     = ( static_cast< const PointsMoved * >( *itBegin ) )->baryCoefsList;
+            using sofa::helper::vector;
 
+            const vector< unsigned int > indicesList = ( static_cast <const PointsMoved *> (*itBegin))->indicesList;
+            const vector< vector< unsigned int > > ancestors = ( static_cast< const PointsMoved * >( *itBegin ) )->ancestorsList;
+            const vector< vector< double > > coefs = ( static_cast< const PointsMoved * >( *itBegin ) )->baryCoefsList;
 
             if (ancestors.size() != indicesList.size() || ancestors.empty())
             {
@@ -363,9 +373,8 @@ void MechanicalObject<DataTypes>::handleStateChange()
                 break;
             }
 
-            sofa::helper::vector <sofa::helper::vector <double> > coefs2;
+            vector< vector < double > > coefs2;
             coefs2.resize (coefs.size());
-
 
             for (unsigned int i = 0; i<ancestors.size(); ++i)
             {
@@ -374,13 +383,12 @@ void MechanicalObject<DataTypes>::handleStateChange()
                 for (unsigned int j = 0; j < ancestors[i].size(); ++j)
                 {
                     // constructng default coefs if none were defined
-                    if (coefs == (const sofa::helper::vector< sofa::helper::vector< double > >)0 || coefs[i].size() == 0)
+                    if (coefs == (const vector< vector< double > >)0 || coefs[i].size() == 0)
                         coefs2[i][j] = 1.0f / ancestors[i].size();
                     else
                         coefs2[i][j] = coefs[i][j];
                 }
             }
-
 
             for (unsigned int i = 0; i < indicesList.size(); ++i)
             {
