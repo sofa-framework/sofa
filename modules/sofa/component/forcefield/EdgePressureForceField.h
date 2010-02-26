@@ -82,6 +82,7 @@ protected:
     Data<Real> dmax;// coordinates max of the plane for the vertex selection
     Data< double > arrowSizeCoef; // for drawing. The sign changes the direction, 0 doesn't draw arrow
     Data<Real> p_intensity; // pressure intensity on edge normal
+    Data<Coord> p_binormal; // binormal of the 2D plane
 
 public:
 
@@ -93,6 +94,7 @@ public:
         , dmax(initData(&dmax,(Real)0.0, "dmax", "Maximum distance from the origin along the normal direction"))
         , arrowSizeCoef(initData(&arrowSizeCoef,0.0, "arrowSizeCoef", "Size of the drawn arrows (0->no arrows, sign->direction of drawing"))
         , p_intensity(initData(&p_intensity,(Real)1.0, "p_intensity", "pressure intensity on edge normal"))
+        , p_binormal(initData(&p_binormal,"binormal", "Binormal of the 2D plane"))
     {
         _completeTopology = NULL;
     }
