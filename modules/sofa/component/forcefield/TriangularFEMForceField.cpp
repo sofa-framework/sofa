@@ -657,8 +657,8 @@ void TriangularFEMForceField<DataTypes>::computeMaterialStiffness(int i, Index &
 
     TriangleInformation *tinfo = &triangleInf[i];
 
-    Real y = (youngArray.size() > i ) ? youngArray[i] : youngArray[0] ;
-    Real p = (poissonArray.size() > i ) ? poissonArray[i] : poissonArray[0];
+    Real y = ((int)youngArray.size() > i ) ? youngArray[i] : youngArray[0] ;
+    Real p = ((int)poissonArray.size() > i ) ? poissonArray[i] : poissonArray[0];
 
     tinfo->materialMatrix[0][0] = 1;
     tinfo->materialMatrix[0][1] = p;//poissonArray[i];//f_poisson.getValue();
