@@ -68,6 +68,7 @@ template <class DataTypes> void EdgePressureForceField<DataTypes>::init()
     this->core::componentmodel::behavior::ForceField<DataTypes>::init();
 
     _topology = this->getContext()->getMeshTopology();
+    _completeTopology = NULL;
     this->getContext()->get(_completeTopology, core::objectmodel::BaseContext::SearchUp);
 
     this->getContext()->get(edgeGeo);
@@ -137,6 +138,23 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
         {
             (*it).second.length=edgeGeo->computeRestEdgeLength((*it).first);
             (*it).second.force=pressure.getValue()*(*it).second.length;
+        }
+    }
+    else if(p_binormal.isSet()) // binormal provided
+    {
+        Coord binormal = p_binormal.getValue();
+        binormal.normalize();
+        for(int i = 0; i < _topology->getNbEdges() ; i++)
+        {
+            Edge e = _topology->getEdge(i);
+
+            Coord tang = x[e[1]] - x[e[0]]; tang.normalize();
+            Coord normal = binormal.cross(tang);
+
+            EdgePressureInformation ei;
+            ei.length = edgeGeo->computeRestEdgeLength(i);
+            ei.force = normal * ei.length * p_intensity.getValue();
+            edgePressureMap[i] = ei;
         }
     }
     else // if no pressure is provided, assume that boundary edges received pressure along their normal
