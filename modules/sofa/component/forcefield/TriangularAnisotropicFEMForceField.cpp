@@ -67,7 +67,8 @@ SOFA_DECL_CLASS(TriangularAnisotropicFEMForceField)
 
 template <class DataTypes>
 TriangularAnisotropicFEMForceField<DataTypes>::TriangularAnisotropicFEMForceField()
-    : f_young2(initData(&f_young2,(Real)(0.5*Inherited::f_young.getValue()),"transverseYoungModulus","Young modulus along transverse direction"))
+    : //f_young2(initData(&f_young2,(Real)(0.5*Inherited::f_young.getValue()),"transverseYoungModulus","Young modulus along transverse direction"))
+    f_young2(initData(&f_young2,helper::vector<Real>(1,1000.0),"transverseYoungModulus","transverseYoungModulus","Young modulus along transverse direction"))
     , f_theta(initData(&f_theta,(Real)(0.0),"fiberAngle","Fiber angle in global reference frame (in degrees)"))
     , f_fiberCenter(initData(&f_fiberCenter,"fiberCenter","Concentric fiber center in global reference frame"))
     , showFiber(initData(&showFiber,true,"showFiber","Flag activating rendering of fiber directions within each triangle"))
@@ -118,7 +119,19 @@ void TriangularAnisotropicFEMForceField<DataTypes>::init()
 template <class DataTypes>void TriangularAnisotropicFEMForceField<DataTypes>::reinit()
 {
     localFiberDirection.beginEdit();
-    f_poisson2.setValue(Inherited::f_poisson.getValue()*(f_young2.getValue()/Inherited::f_young.getValue()));
+    //f_poisson2.setValue(Inherited::f_poisson.getValue()*(f_young2.getValue()/Inherited::f_young.getValue()));
+    helper::vector<Real> poiss2;
+    const helper::vector<Real> & youngArray = Inherited::f_young.getValue();
+    const helper::vector<Real> & young2Array = f_young2.getValue();
+    const helper::vector<Real> & poissonArray = Inherited::f_poisson.getValue();
+
+    for (unsigned int i = 0; i < poissonArray.size(); i++)
+    {
+        poiss2.push_back( poissonArray[i]*(young2Array[i]/youngArray[i]));
+    }
+
+    f_poisson2.setValue(poiss2);
+
     helper::vector<Deriv>& lfd = *(localFiberDirection.beginEdit());
     lfd.resize(_topology->getNbTriangles());
     localFiberDirection.endEdit();
@@ -166,10 +179,21 @@ void TriangularAnisotropicFEMForceField<DataTypes>::computeMaterialStiffness(int
 
     TriangleInformation *tinfo = &triangleInf[i];
 
-    Q11 = Inherited::f_young.getValue()/(1-Inherited::f_poisson.getValue()*f_poisson2.getValue());
+    /*Q11 = Inherited::f_young.getValue()/(1-Inherited::f_poisson.getValue()*f_poisson2.getValue());
     Q12 = Inherited::f_poisson.getValue()*f_young2.getValue()/(1-Inherited::f_poisson.getValue()*f_poisson2.getValue());
     Q22 = f_young2.getValue()/(1-Inherited::f_poisson.getValue()*f_poisson2.getValue());
-    Q66 = (Real)(Inherited::f_young.getValue() / (2.0*(1 + Inherited::f_poisson.getValue())));
+    Q66 = (Real)(Inherited::f_young.getValue() / (2.0*(1 + Inherited::f_poisson.getValue())));*/
+
+    const helper::vector<Real> & youngArray = Inherited::f_young.getValue();
+    const helper::vector<Real> & young2Array = f_young2.getValue();
+    const helper::vector<Real> & poissonArray = Inherited::f_poisson.getValue();
+    const helper::vector<Real> & poisson2Array = f_poisson2.getValue();
+
+    Q11 = youngArray[i] /(1-poissonArray[i]*poisson2Array[i]);
+    Q12 = poissonArray[i]*young2Array[i]/(1-poissonArray[i]*poisson2Array[i]);
+    Q22 = young2Array[i]/(1-poissonArray[i]*poisson2Array[i]);
+    Q66 = (Real)(youngArray[i] / (2.0*(1 + poissonArray[i])));
+
 
     //if (i >= (int) localFiberDirection.size())
     //	localFiberDirection.resize(i+1);
