@@ -204,17 +204,27 @@ public:
 
     int method;
     Data<std::string> f_method;
-    Data<Real> f_poisson;
-    Data<Real> f_young;
+    //Data<Real> f_poisson;
+    //Data<Real> f_young;
+    Data<helper::vector<Real> > f_poisson;
+    Data<helper::vector<Real> > f_young;
     Data<Real> f_damping;
     Data<bool> f_fracturable;
     Data<bool> showStressValue;
     Data<bool> showStressVector;
 
-    Real getPoisson() { return f_poisson.getValue(); }
-    void setPoisson(Real val) { f_poisson.setValue(val); }
-    Real getYoung() { return f_young.getValue(); }
-    void setYoung(Real val) { f_young.setValue(val); }
+    Real getPoisson() { return (f_poisson.getValue())[0]; }
+    void setPoisson(Real val)
+    {
+        helper::vector<Real> newP(1, val);
+        f_poisson.setValue(newP);
+    }
+    Real getYoung() { return (f_young.getValue())[0]; }
+    void setYoung(Real val)
+    {
+        helper::vector<Real> newY(1, val);
+        f_young.setValue(newY);
+    }
     Real getDamping() { return f_damping.getValue(); }
     void setDamping(Real val) { f_damping.setValue(val); }
     int  getMethod() { return method; }

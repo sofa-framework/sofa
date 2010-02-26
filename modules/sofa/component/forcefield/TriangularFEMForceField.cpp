@@ -168,8 +168,10 @@ template <class DataTypes>
 TriangularFEMForceField<DataTypes>::TriangularFEMForceField()
     : method(LARGE)
     , f_method(initData(&f_method,std::string("large"),"method","large: large displacements, small: small displacements"))
-    , f_poisson(initData(&f_poisson,(Real)0.3,"poissonRatio","Poisson ratio in Hooke's law"))
-    , f_young(initData(&f_young,(Real)1000.,"youngModulus","Young modulus in Hooke's law"))
+    //, f_poisson(initData(&f_poisson,(Real)0.3,"poissonRatio","Poisson ratio in Hooke's law"))
+    //, f_young(initData(&f_young,(Real)1000.,"youngModulus","Young modulus in Hooke's law"))
+    , f_poisson(initData(&f_poisson,helper::vector<Real>(1,0.45),"poissonRatio","Poisson ratio in Hooke's law (vector)"))
+    , f_young(initData(&f_young,helper::vector<Real>(1,1000.0),"youngModulus","Young modulus in Hooke's law (vector)"))
     , f_damping(initData(&f_damping,(Real)0.,"damping","Ratio damping/stiffness"))
     , f_fracturable(initData(&f_fracturable,false,"fracturable","the forcefield computes the next fracturable Edge"))
     , showStressValue(initData(&showStressValue,false,"showStressValue","Flag activating rendering of stress values as a color in each triangle"))
@@ -224,6 +226,7 @@ void TriangularFEMForceField<DataTypes>::init()
     lastFracturedEdgeIndex = -1;
 
     reinit();
+
 }
 
 // --------------------------------------------------------------------------------------
@@ -649,19 +652,26 @@ void TriangularFEMForceField<DataTypes>::computeMaterialStiffness(int i, Index &
 {
     helper::vector<TriangleInformation>& triangleInf = *(triangleInfo.beginEdit());
 
+    const helper::vector<Real> & youngArray = f_young.getValue();
+    const helper::vector<Real> & poissonArray = f_poisson.getValue();
+
     TriangleInformation *tinfo = &triangleInf[i];
 
+    Real y = (youngArray.size() > i ) ? youngArray[i] : youngArray[0] ;
+    Real p = (poissonArray.size() > i ) ? poissonArray[i] : poissonArray[0];
+
     tinfo->materialMatrix[0][0] = 1;
-    tinfo->materialMatrix[0][1] = f_poisson.getValue();
+    tinfo->materialMatrix[0][1] = p;//poissonArray[i];//f_poisson.getValue();
     tinfo->materialMatrix[0][2] = 0;
-    tinfo->materialMatrix[1][0] = f_poisson.getValue();
+    tinfo->materialMatrix[1][0] = p;//poissonArray[i];//f_poisson.getValue();
     tinfo->materialMatrix[1][1] = 1;
     tinfo->materialMatrix[1][2] = 0;
     tinfo->materialMatrix[2][0] = 0;
     tinfo->materialMatrix[2][1] = 0;
-    tinfo->materialMatrix[2][2] = 0.5f * (1 - f_poisson.getValue());
+    tinfo->materialMatrix[2][2] = 0.5f * (1 - p);//poissonArray[i]);
 
-    tinfo->materialMatrix *= (f_young.getValue() / (12 * (1 - f_poisson.getValue() * f_poisson.getValue())));
+    //tinfo->materialMatrix *= (f_young.getValue() / (12 * (1 - f_poisson.getValue() * f_poisson.getValue())));
+    tinfo->materialMatrix *= (y / (12 * (1 - p * p)));
 
     triangleInfo.endEdit();
 }
