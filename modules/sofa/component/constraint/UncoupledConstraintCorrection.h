@@ -67,7 +67,8 @@ public:
 
     virtual void init();
 
-
+    /// Handle Topological Changes.
+    void handleTopologyChange();
 
     /// Retrieve the associated MechanicalState
     behavior::MechanicalState<DataTypes>* getMState() { return mstate; }
@@ -122,7 +123,6 @@ protected:
 
 public:
     Data< VecReal > compliance;
-
 
 private:
     // new :  for non building the constraint system during solving process //
