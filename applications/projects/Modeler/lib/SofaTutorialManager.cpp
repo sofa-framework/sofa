@@ -166,13 +166,21 @@ void SofaTutorialManager::openHTML(const std::string &filename)
 {
     if (filename.empty())
     {
+#ifdef WIN32
+        static std::string defaultHTML("file:///"+sofa::helper::system::SetDirectory::GetProcessFullPath(sofa::helper::system::DataRepository.getFile( "Tutorials/Tutorials.html" ).c_str()));
+#else
         static std::string defaultHTML(sofa::helper::system::SetDirectory::GetProcessFullPath(sofa::helper::system::DataRepository.getFile( "Tutorials/Tutorials.html" ).c_str()));
+#endif
         openHTML(defaultHTML);
         return;
     }
 
 #ifdef SOFA_QT4
+#ifdef WIN32
+    descriptionPage->setSource(QUrl(QString("file:///")+QString(filename.c_str())));
+#else
     descriptionPage->setSource(QUrl(QString(filename.c_str())));
+#endif
 #else
     descriptionPage->mimeSourceFactory()->setFilePath(QString(filename.c_str()));
     descriptionPage->setSource(QString(filename.c_str()));
