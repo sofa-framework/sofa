@@ -740,19 +740,17 @@ void SofaModeler::runInSofa()
     // Run Sofa
     if (sofaBinary.empty())
     {
-// 	    changeSofaBinary();
-// 	    if (sofaBinary.empty()) return; //No binary found
-
-        //Set the default parameter: Sofa won't start if they are wrong
-
 #ifdef WIN32
-        argv << "runSofa.exe";
         sofaBinary = binPath + "runSofa.exe";
 #else
         sofaBinary = binPath + "runSofa";
-        argv << "runSofa";
 #endif
     }
+#ifdef WIN32
+    argv << "runSofa.exe";
+#else
+    argv << "runSofa";
+#endif
 
     argv << QString(filename.c_str());
     messageLaunch = QString("Use command: ")
