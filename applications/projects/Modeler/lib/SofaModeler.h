@@ -201,7 +201,9 @@ public slots:
 
     ///display the plugin manager window, to add/remove some external dynamic libraries
     void showPluginManager();
-
+protected slots:
+    void redirectStderr();
+    void redirectStdout();
 protected:
     //********************************************
     //Left Part
