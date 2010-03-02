@@ -186,7 +186,7 @@ void TutorialSelector::openAttribute(TiXmlElement* element,  Q3ListViewItem *ite
     }
     else if (typeElement == "Tutorial")
     {
-        static QImage imageScene(QString("/home/sofa-work/sofa-dev/trunk/Sofa/share/icons/SOFA.png"));
+        static QImage imageScene(QString(sofa::helper::system::DataRepository.getFirstPath().c_str()) + "/icons/SOFA.png");
         static QPixmap pixScene;
         if (imageScene.width() != 20)
         {

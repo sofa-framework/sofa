@@ -135,7 +135,7 @@ SofaModeler::SofaModeler()
     Q3DockWindow *dockRecorder=new Q3DockWindow(this);
     dockRecorder->setResizeEnabled(true);
     this->moveDockWindow( dockRecorder, Qt::DockLeft);
-    dockRecorder->setFixedExtentWidth(520);
+    dockRecorder->setFixedExtentWidth(400);
 
     QWidget *leftPartWidget = new QWidget( dockRecorder, "LibraryLayout");
     QVBoxLayout *leftPartLayout = new QVBoxLayout(leftPartWidget);
@@ -640,7 +640,7 @@ void SofaModeler::componentDraggedReception( std::string description, std::strin
     changeComponent(description );
     if (!graph) return;
     graph->setLastSelectedComponent(templateName, componentEntry);
-    if (tuto->isShown()) tuto->getGraph()->setLastSelectedComponent(templateName, componentEntry);
+    if (tuto && tuto->isShown()) tuto->getGraph()->setLastSelectedComponent(templateName, componentEntry);
     Q3TextDrag *dragging = new Q3TextDrag(QString("ComponentCreation"), (QWidget*) this->sender());
     dragging->setText(QString("ComponentCreation"));
     dragging->dragCopy();
