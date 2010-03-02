@@ -796,11 +796,11 @@ void SofaModeler::redirectStdout()
     {
         return;
     }
-    QByteArray data;
+    QString data;
     while(p->canReadLineStdout())
     {
         data = p->readLineStdout();
-        std::cout << QString(data).ascii() << std::endl;
+        std::cout << data.ascii() << std::endl;
     }
 
 }
@@ -812,11 +812,11 @@ void SofaModeler::redirectStderr()
     {
         return;
     }
-    QByteArray data;
+    QString data;
     while(p->canReadLineStderr())
     {
         data = p->readLineStderr();
-        std::cout << QString(data).ascii() << std::endl;
+        std::cout << data.ascii() << std::endl;
     }
 }
 
