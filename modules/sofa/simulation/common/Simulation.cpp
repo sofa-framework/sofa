@@ -147,6 +147,22 @@ void Simulation::init ( Node* root )
     getInstruments(root);
 }
 
+
+void Simulation::initNode( Node* node)
+{
+    if(!node)
+    {
+        return;
+    }
+    assert( getSimulation()->getContext() != NULL );
+    needToPrefetch = false;
+    node->execute<InitVisitor>();
+    node->execute<MechanicalPropagatePositionAndVelocityVisitor>();
+    node->execute<MechanicalPropagateFreePositionVisitor>();
+    node->execute<StoreResetStateVisitor>();
+    getInstruments(node);
+}
+
 void Simulation::getInstruments( Node *node)
 {
     InstrumentVisitor fetchInstrument;

@@ -57,6 +57,11 @@ public:
     /// Initialize the objects
     virtual void init(Node* root);
 
+    //Init a node without changing the context of the simulation.
+    virtual void initNode(Node* node);
+
+
+
     /// Find the list of nodes called "Instrument" and keep it in the vector instuments
     void getInstruments( Node *node);
 
