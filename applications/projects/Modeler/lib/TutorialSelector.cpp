@@ -73,7 +73,7 @@ TutorialSelector::TutorialSelector(const std::string &fileTutorial, QWidget* par
 
     init(fileTutorial);
 
-    this->setMaximumWidth(this->columnWidth(0)*1.1);
+    this->setMaximumWidth((int)(this->columnWidth(0)*1.1));
 }
 
 void TutorialSelector::init(const std::string &fileTutorial)
