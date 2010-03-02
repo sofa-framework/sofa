@@ -735,6 +735,7 @@ void SofaModeler::runInSofa()
     if (count > '9') count = '0';
 
     QString messageLaunch;
+    QStringList argv;
     //=======================================
     // Run Sofa
     if (sofaBinary.empty())
@@ -743,14 +744,17 @@ void SofaModeler::runInSofa()
 // 	    if (sofaBinary.empty()) return; //No binary found
 
         //Set the default parameter: Sofa won't start if they are wrong
+
 #ifdef WIN32
+        argv << "runSofa.exe";
         sofaBinary = binPath + "runSofa.exe";
 #else
         sofaBinary = binPath + "runSofa";
+        argv << "runSofa";
 #endif
     }
-    QStringList argv;
-    argv << QString(sofaBinary.c_str()) << QString(filename.c_str());
+
+    argv << QString(filename.c_str());
     messageLaunch = QString("Use command: ")
             + QString(sofaBinary.c_str())
             + QString(" ");
@@ -774,14 +778,46 @@ void SofaModeler::runInSofa()
 
     Q3Process *p = new Q3Process(argv, this);
     p->setName(filename.c_str());
+    p->setWorkingDirectory( QDir(binPath.c_str()) );
     connect(p, SIGNAL(processExited()), this, SLOT(sofaExited()));
     QDir dir(QString(sofa::helper::system::SetDirectory::GetParentDir(graph->getFilename().c_str()).c_str()));
-    p->setWorkingDirectory(dir);
-    p->setCommunication(0);
+    connect(p, SIGNAL( readyReadStdout () ), this , SLOT ( redirectStdout() ) );
+    connect(p, SIGNAL( readyReadStderr () ), this , SLOT ( redirectStderr() ) );
     p->start();
     mapSofa.insert(std::make_pair(tabGraph, p));
 
     statusBar()->message(messageLaunch,5000);
+}
+
+void SofaModeler::redirectStdout()
+{
+    Q3Process* p = ((Q3Process*) sender());
+    if( !p )
+    {
+        return;
+    }
+    QByteArray data;
+    while(p->canReadLineStdout())
+    {
+        data = p->readLineStdout();
+        std::cout << QString(data).ascii() << std::endl;
+    }
+
+}
+
+void SofaModeler::redirectStderr()
+{
+    Q3Process* p = ((Q3Process*) sender());
+    if( !p )
+    {
+        return;
+    }
+    QByteArray data;
+    while(p->canReadLineStderr())
+    {
+        data = p->readLineStderr();
+        std::cout << QString(data).ascii() << std::endl;
+    }
 }
 
 void SofaModeler::sofaExited()
