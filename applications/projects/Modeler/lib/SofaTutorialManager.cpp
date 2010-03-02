@@ -166,11 +166,7 @@ void SofaTutorialManager::openHTML(const std::string &filename)
 {
     if (filename.empty())
     {
-#ifdef WIN32
-        static std::string defaultHTML("file:///"+sofa::helper::system::SetDirectory::GetProcessFullPath(sofa::helper::system::DataRepository.getFile( "Tutorials/Tutorials.html" ).c_str()));
-#else
         static std::string defaultHTML(sofa::helper::system::SetDirectory::GetProcessFullPath(sofa::helper::system::DataRepository.getFile( "Tutorials/Tutorials.html" ).c_str()));
-#endif
         openHTML(defaultHTML);
         return;
     }
