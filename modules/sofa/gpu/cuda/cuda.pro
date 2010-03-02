@@ -163,7 +163,7 @@ HEADERS += \
 		CudaLDICuttingContactConstraint.h \
 		CudaComplianceMatrixUpdateManager.h \
 		CudaDiagonalMass.h \
-		CudaDiagonalMass.inl \
+		CudaDiagonalMass.inl 
 		
 		
 SOURCES += \
@@ -191,8 +191,7 @@ SOURCES += \
 	CudaConstantForceField.cpp \
 	CudaTetrahedronCuttingManager.cpp \
 	CudaDiagonalMass.cpp \
-	CudaBilateralInteractionConstraint.cpp \
-	CudaBoxStiffSpringForceField.cpp \
+	CudaBilateralInteractionConstraint.cpp 
 
 CUDA_SOURCES += \
 	   	CudaLCP.cu \
