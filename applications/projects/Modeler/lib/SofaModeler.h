@@ -32,6 +32,7 @@
 #include "Modeler.h"
 #include "GraphModeler.h"
 #include "FilterLibrary.h"
+#include "SofaTutorialManager.h"
 
 #include <map>
 #include <vector>
@@ -84,6 +85,7 @@ typedef sofa::core::ObjectFactory::ClassEntry ClassEntry;
 typedef sofa::core::ObjectFactory::Creator    Creator;
 
 using sofa::simulation::tree::GNode;
+
 
 
 class SofaModeler : public ::Modeler
@@ -157,8 +159,10 @@ public slots:
     /// Quit the Modeler
     void fileExit() {close();};
 
+    void openTutorial();
     /// Launch the current simulation into Sofa
     void runInSofa();
+    void runInSofa(const std::string &sceneFilename, GNode *groot);
     void sofaExited();
     void removeTemporaryFiles(const std::string &filename);
 
@@ -220,6 +224,7 @@ protected:
     /// Current opened Tab
     QWidget *tabGraph;
 
+    SofaTutorialManager *tuto;
 
     //********************************************
     /// Menu runSofa for the GUI

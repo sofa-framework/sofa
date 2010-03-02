@@ -107,7 +107,7 @@ GNode *GraphModeler::addGNode(GNode *parent, GNode *child, bool saveHistory)
 
 BaseObject *GraphModeler::addComponent(GNode *parent, const ClassEntry* entry, const std::string &templateName, bool saveHistory, bool displayWarning)
 {
-    BaseObject *object=NULL;;
+    BaseObject *object=NULL;
     if (!parent || !entry) return object;
 
     std::string templateUsed = templateName;
@@ -115,7 +115,6 @@ BaseObject *GraphModeler::addComponent(GNode *parent, const ClassEntry* entry, c
     xml::ObjectElement description("Default", entry->className.c_str() );
 
     if (!templateName.empty()) description.setAttribute("template", templateName.c_str());
-
 
     Creator* c=NULL;
     if (entry->creatorMap.size() <= 1)
@@ -807,6 +806,7 @@ void GraphModeler::modifyUnlock ( void *Id )
 
 void GraphModeler::editUndo()
 {
+    if (historyOperation.empty()) return;
     Operation o=historyOperation.back();
     historyOperation.pop_back();
 
@@ -819,6 +819,7 @@ void GraphModeler::editUndo()
 
 void GraphModeler::editRedo()
 {
+    if (historyUndoOperation.empty()) return;
     Operation o=historyUndoOperation.back();
     historyUndoOperation.pop_back();
 
@@ -827,7 +828,6 @@ void GraphModeler::editRedo()
 
     emit( redo(historyUndoOperation.size()));
     emit( undo(true));
-
 }
 
 

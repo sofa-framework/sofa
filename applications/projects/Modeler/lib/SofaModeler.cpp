@@ -94,6 +94,7 @@ SofaModeler::SofaModeler()
 {
     //index to add in temporary scenes created by the Modeler
     count='0';
+    int menuIndex=4;
     isPasteReady=false;
     editPasteAction->setEnabled(false);
 #ifdef SOFA_QT4
@@ -109,6 +110,11 @@ SofaModeler::SofaModeler()
     presetPath = examplePath + std::string("Objects/");
     std::string presetFile = std::string("config/preset.ini" );
     presetFile = sofa::helper::system::DataRepository.getFile ( presetFile );
+
+
+    Q3PopupMenu *openTutorial = new Q3PopupMenu(this);
+    this->menubar->insertItem(tr(QString("&Tutorials")), openTutorial, menuIndex++);
+    openTutorialAction->addTo(toolBar);
 
 
 
@@ -129,9 +135,8 @@ SofaModeler::SofaModeler()
     Q3DockWindow *dockRecorder=new Q3DockWindow(this);
     dockRecorder->setResizeEnabled(true);
     this->moveDockWindow( dockRecorder, Qt::DockLeft);
-//        this->topDock() ->setAcceptDockWindow(dockRecorder,false);
-//        this->bottomDock()->setAcceptDockWindow(dockRecorder,false);
     dockRecorder->setFixedExtentWidth(520);
+
     QWidget *leftPartWidget = new QWidget( dockRecorder, "LibraryLayout");
     QVBoxLayout *leftPartLayout = new QVBoxLayout(leftPartWidget);
 
@@ -209,7 +214,6 @@ SofaModeler::SofaModeler()
     this->connect( SofaPluginManager::getInstance()->buttonClose, SIGNAL(clicked() ),  this, SLOT( rebuildLibrary() ));
 
     library->build(exampleFiles);
-    int menuIndex=4;
 
     //----------------------------------------------------------------------
     // Create the Menus
@@ -331,6 +335,10 @@ SofaModeler::SofaModeler()
 
 
     connect( this->infoItem, SIGNAL(linkClicked( const QString &)), this, SLOT(fileOpen(const QString &)));
+
+    //----------------------------------------------------------------------
+    //Configure the Tutorials
+    tuto=0;
 };
 
 
@@ -632,6 +640,7 @@ void SofaModeler::componentDraggedReception( std::string description, std::strin
     changeComponent(description );
     if (!graph) return;
     graph->setLastSelectedComponent(templateName, componentEntry);
+    if (tuto->isShown()) tuto->getGraph()->setLastSelectedComponent(templateName, componentEntry);
     Q3TextDrag *dragging = new Q3TextDrag(QString("ComponentCreation"), (QWidget*) this->sender());
     dragging->setText(QString("ComponentCreation"));
     dragging->dragCopy();
@@ -715,21 +724,106 @@ void SofaModeler::dropEvent(QDropEvent* event)
     }
 }
 
+void SofaModeler::openTutorial()
+{
+    if (tuto)
+    {
+        if (tuto->isShown()) return;
+        delete tuto;
+    }
+
+    tuto=new SofaTutorialManager(this, "tutorial");
+    connect(tuto, SIGNAL(runInSofa(const std::string&, GNode*)), this, SLOT(runInSofa(const std::string&, GNode*)));
+
+    GraphModeler *graphTuto=tuto->getGraph();
+    graphTuto->setSofaLibrary(library);
+    graphTuto->setPreset(preset);
+#ifdef SOFA_QT4
+    connect(graphTuto, SIGNAL(currentChanged(Q3ListViewItem *)), this, SLOT(changeInformation(Q3ListViewItem *)));
+#else
+    connect(graphTuto, SIGNAL(currentChanged(QListViewItem *)), this, SLOT(changeInformation(QListViewItem *)));
+#endif
+
+    tuto->show();
+}
+
 void SofaModeler::runInSofa()
 {
     if (sceneTab->count() == 0) return;
     GNode* root=graph->getRoot();
+    runInSofa(graph->getFilename(), root);
+}
+void SofaModeler::runInSofa(	const std::string &sceneFilename, GNode* root)
+{
     if (!root) return;
     // Init the scene
     sofa::gui::GUIManager::Init("Modeler");
 
     //Saving the scene in a temporary file ==> doesn't modify the current GNode of the simulation
     std::string path;
-    if (graph->getFilename().empty()) path=presetPath;
-    else path = sofa::helper::system::SetDirectory::GetParentDir(graph->getFilename().c_str())+std::string("/");
+    if (sceneFilename.empty()) path=presetPath;
+    else path = sofa::helper::system::SetDirectory::GetParentDir(sceneFilename.c_str())+std::string("/");
 
-    std::string filename=path + std::string("temp") + (count++) + std::string(".scn");
+
+    std::string filename=path + std::string("temp") + (++count) + std::string(".scn");
     simulation::tree::getSimulation()->exportXML(root,filename.c_str(),true);
+    //Make a copy of the .view if it exists for the current viewer
+
+
+    const std::string &extension=sofa::helper::system::SetDirectory::GetExtension(sceneFilename.c_str());
+
+    std::cerr << sceneFilename << " : " << extension << std::endl;
+    if (!sceneFilename.empty() && !extension.empty())
+    {
+
+        std::string viewFile = sceneFilename;
+        std::cerr << "Entering " << viewFile << std::endl;
+        //Get the name of the viewer
+        std::string viewerName;
+        for (unsigned int i=0; i<listActionGUI.size(); ++i)
+        {
+            if (listActionGUI[i]->isOn())
+            {
+                viewerName = listActionGUI[i]->text().ascii();
+                if (viewerName == "default")
+                    viewerName = sofa::gui::GUIManager::GetValidGUIName();
+
+                if (viewerName == "qt") //default viewer: no extension
+                {
+                    viewerName.clear();
+                }
+                break;
+            }
+        }
+
+        std::string viewerExtension;
+        if (!viewerName.empty())
+            viewerExtension += "." + viewerName;
+        viewerExtension += ".view";
+
+        viewFile += viewerExtension;
+        std::cerr << "viewFile = " << viewFile << std::endl;
+        if ( sofa::helper::system::DataRepository.findFile ( viewFile ) )
+        {
+            std::ifstream originalViewFile(viewFile.c_str());
+            const std::string nameCopyViewFile(path + std::string("temp") + count + ".scn" + viewerExtension );
+            std::ofstream copyViewFile(nameCopyViewFile.c_str());
+            std::string line;
+            while (std::getline(originalViewFile, line)) copyViewFile << line << "\n";
+
+            copyViewFile.close();
+            originalViewFile.close();
+        }
+    }
+//    if ( !sofa::helper::system::DataRepository.findFile ( scenes ) )
+//      {
+//        std::string fileToBeCreated = sofa::helper::system::DataRepository.getFirstPath() + "/" + scenes;
+//
+//        std::ofstream ofile(fileToBeCreated.c_str());
+//        ofile << "";
+//        ofile.close();
+//      }
+
 
 
     if (count > '9') count = '0';
@@ -738,7 +832,7 @@ void SofaModeler::runInSofa()
     QStringList argv;
     //=======================================
     // Run Sofa
-    if (sofaBinary.empty())
+    if (sofaBinary.empty()) //If no specific binary is specified, we use runSofa
     {
 #ifdef WIN32
         sofaBinary = binPath + "runSofa.exe";
@@ -746,13 +840,9 @@ void SofaModeler::runInSofa()
         sofaBinary = binPath + "runSofa";
 #endif
     }
-#ifdef WIN32
-    argv << "runSofa.exe";
-#else
-    argv << "runSofa";
-#endif
 
-    argv << QString(filename.c_str());
+    argv << QString(sofaBinary.c_str()) << QString(filename.c_str());
+
     messageLaunch = QString("Use command: ")
             + QString(sofaBinary.c_str())
             + QString(" ");
@@ -778,7 +868,7 @@ void SofaModeler::runInSofa()
     p->setName(filename.c_str());
     p->setWorkingDirectory( QDir(binPath.c_str()) );
     connect(p, SIGNAL(processExited()), this, SLOT(sofaExited()));
-    QDir dir(QString(sofa::helper::system::SetDirectory::GetParentDir(graph->getFilename().c_str()).c_str()));
+    QDir dir(QString(sofa::helper::system::SetDirectory::GetParentDir(sceneFilename.c_str()).c_str()));
     connect(p, SIGNAL( readyReadStdout () ), this , SLOT ( redirectStdout() ) );
     connect(p, SIGNAL( readyReadStderr () ), this , SLOT ( redirectStderr() ) );
     p->start();
@@ -814,7 +904,7 @@ void SofaModeler::redirectStderr()
     while(p->canReadLineStderr())
     {
         data = p->readLineStderr();
-        std::cout << data.ascii() << std::endl;
+        std::cerr << data.ascii() << std::endl;
     }
 }
 

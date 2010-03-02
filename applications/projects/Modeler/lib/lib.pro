@@ -13,12 +13,16 @@ INCLUDEPATH += $$SOFA_DIR/extlibs
 
 SOURCES = SofaModeler.cpp \
           GraphModeler.cpp \
+          SofaTutorialManager.cpp \
+          TutorialSelector.cpp \
           AddPreset.cpp \
           FilterLibrary.cpp \
           ../../../sofa/gui/qt/SofaPluginManager.cpp 
 
 HEADERS = SofaModeler.h \
           GraphModeler.h \
+          SofaTutorialManager.h \
+          TutorialSelector.h \
           AddPreset.h \
           FilterLibrary.h \
           ../../../sofa/gui/qt/SofaPluginManager.h 
