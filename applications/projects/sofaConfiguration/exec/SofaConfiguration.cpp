@@ -31,14 +31,12 @@
 #include <QGroupBox>
 #include <QToolBox>
 #include <QSpacerItem>
-#include <QPushButton>
-#include <Q3Process>
+
 #else
 #include <qgroupbox.h>
 #include <qtoolbox.h>
 #include <qpushbutton.h>
-#include <qprocess.h>
-typedef QProcess Q3Process;
+
 #endif
 
 #include <map>
@@ -104,7 +102,7 @@ OptionConfigWidget::OptionConfigWidget(QWidget *parent, DEFINES &d):ConfigWidget
 
 
 
-SofaConfiguration::SofaConfiguration(std::string p, std::vector< DEFINES >& config):QMainWindow(),path(p),data(config)
+SofaConfiguration::SofaConfiguration(std::string path_, std::vector< DEFINES >& config):QMainWindow(),path(path_),data(config),saveButton(NULL)
 
 {
     resize(800, 600);
@@ -161,8 +159,8 @@ SofaConfiguration::SofaConfiguration(std::string p, std::vector< DEFINES >& conf
     }
     updateConditions();
 
-    QPushButton *button = new QPushButton(QString("Save and Update Configuration"),appli);
-    connect( button, SIGNAL(clicked()), this, SLOT(saveConfiguration()));
+    saveButton = new QPushButton(QString("Save and Update Configuration"),appli);
+    connect( saveButton, SIGNAL(clicked()), this, SLOT(saveConfiguration()));
     layout->addWidget(global);
 
 #ifdef WIN32
@@ -170,8 +168,7 @@ SofaConfiguration::SofaConfiguration(std::string p, std::vector< DEFINES >& conf
     layout->addWidget(projectVC);
 #endif
 
-    layout->addWidget(button);
-
+    layout->addWidget(saveButton);
     this->setCentralWidget(appli);
 }
 
@@ -358,27 +355,56 @@ void SofaConfiguration::saveConfiguration()
         }
 
     }
-#ifdef WIN32
-    QString cmd("cd /d \""+ QString(path.c_str())+ "\" && \""+QString(projectVC->text())+"\"");
-//                std::cerr << "Executing : " << cmd.ascii() << std::endl;
-    system(cmd.ascii());
-#elif defined (__APPLE__)
-    QString cmd("cd " + QString(path.c_str())+ " && sh Project\\ MacOS.sh");
-//                std::cerr << "Executing : " << cmd.ascii() << std::endl;
-    system(cmd.ascii());
-#else
     QStringList argv;
+#ifdef WIN32
+    argv << QString("cmd.exe");
+    argv << QString("/c");
+    argv << QString(QString(projectVC->text()) );
+#elif defined (__APPLE__)
+    argv << QString("sh");
+    argv << QString("Project\\ MacOS.sh");
+#else
 #if SOFA_QT4
     argv << QString("qmake-qt4");
 #else
     argv << QString("qmake");
 #endif
-    Q3Process *p = new Q3Process(argv,this);
-    p->setCommunication(0);
-    p->setWorkingDirectory(QDir(QString(path.c_str())));
-    p->start();
 #endif
+
+    p = new Q3Process(argv,this);
+    p->setWorkingDirectory(QDir(QString(path.c_str())));
+    connect( p, SIGNAL( readyReadStdout() ), this, SLOT( redirectStdOut() ) );
+    connect( p, SIGNAL( readyReadStderr() ), this, SLOT( redirectStdErr() ) );
+    connect( p, SIGNAL( processExited() ), this, SLOT( saveConfigurationDone() ) );
+    p->start();
+
+    this->saveButton->setEnabled(false);
+}
+
+void SofaConfiguration::saveConfigurationDone()
+{
+    saveButton->setEnabled(true);
     optionsModified.clear();
+}
+
+void SofaConfiguration::redirectStdErr()
+{
+    QByteArray data;
+    while(p->canReadLineStderr())
+    {
+        data = p->readLineStderr();
+        std::cerr << QString(data).ascii() << std::endl;
+    }
+}
+
+void SofaConfiguration::redirectStdOut()
+{
+    QByteArray data;
+    while(p->canReadLineStdout())
+    {
+        data = p->readLineStdout();
+        std::cout << QString(data).ascii() << std::endl;
+    }
 }
 
 void SofaConfiguration::processDirectory(const QString &dir)
