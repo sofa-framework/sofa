@@ -2079,6 +2079,9 @@ void RealGUI::ActivateNode(sofa::simulation::Node* node, bool activate)
     if (activate) node->setActive(true);
     simulation::DesactivationVisitor v(activate);
     node->executeVisitor(&v);
+
+
+
     using core::objectmodel::BaseNode;
     std::list< BaseNode* > nodeToProcess;
     nodeToProcess.push_front((BaseNode*)node);
@@ -2129,11 +2132,20 @@ void RealGUI::ActivateNode(sofa::simulation::Node* node, bool activate)
         std::for_each(nodeToChange.begin(),nodeToChange.end(),activator);
     }
 #endif
-
-    if ( sofalistview == simulationGraph && activate ) simulation::getSimulation()->init(node);
-
     Update();
-    // viewer->getQWidget()->resetView();
+
+    if ( sofalistview == simulationGraph && activate )
+    {
+        if ( node == simulation::getSimulation()->getContext() )
+        {
+            simulation::getSimulation()->init(node);
+
+        }
+        else
+        {
+            simulation::getSimulation()->initNode(node);
+        }
+    }
 }
 } // namespace qt
 
