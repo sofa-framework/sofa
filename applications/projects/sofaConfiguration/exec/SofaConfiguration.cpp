@@ -389,17 +389,17 @@ void SofaConfiguration::saveConfigurationDone()
 
 void SofaConfiguration::redirectStdErr()
 {
-    QByteArray data;
+    QString data;
     while(p->canReadLineStderr())
     {
         data = p->readLineStderr();
-        std::cerr << QString(data).ascii() << std::endl;
+        std::cerr << data.ascii() << std::endl;
     }
 }
 
 void SofaConfiguration::redirectStdOut()
 {
-    QByteArray data;
+    QString data;
     while(p->canReadLineStdout())
     {
         data = p->readLineStdout();
