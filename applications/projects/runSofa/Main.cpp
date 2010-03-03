@@ -25,6 +25,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <iostream>
+#include <sstream>
 #include <fstream>
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/simulation/common/xml/initXml.h>
@@ -92,6 +93,7 @@ int main(int argc, char** argv)
     bool        temporaryFile = false;
     std::string dimension="800x600";
     bool fullScreen = false;
+    int nbIterations=0;
 
     std::string gui = "";
     std::string simulationType = "tree";
@@ -106,6 +108,7 @@ int main(int argc, char** argv)
     .option(&startAnim,'a',"start","start the animation loop")
     .option(&printFactory,'p',"factory","print factory logs")
     .option(&gui,'g',"gui",gui_help.c_str())
+    .option(&nbIterations,'n',"nb_iterations","(only batch) Number of iterations of the simulation")
     .option(&simulationType,'s',"simu","select the type of simulation (bgl, tree)")
     .option(&plugins,'l',"load","load given plugins")
     .option(&loadRecent,'r',"recent","load most recently opened file")
@@ -137,6 +140,13 @@ int main(int argc, char** argv)
     for (unsigned int i=0; i<plugins.size(); i++)
         loadPlugin(plugins[i].c_str());
 
+    if(gui.compare("batch") == 0 && nbIterations > 0)
+    {
+        std::ostringstream oss ;
+        oss << "nbIterations=";
+        oss << nbIterations;
+        sofa::gui::GUIManager::AddGUIOption(oss.str().c_str());
+    }
 
     if (int err=sofa::gui::GUIManager::Init(argv[0],gui.c_str()))
         return err;
