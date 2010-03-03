@@ -68,15 +68,19 @@ namespace gui
 namespace qt
 {
 
+/**
+*\brief Abstract Interface of a qwidget which allows to edit a data.
+*/
+
 class SOFA_SOFAGUIQT_API DataWidget : public QWidget
 {
     Q_OBJECT
 public slots:
+    /// Checks that widget has been edited
+    /// emit DataOwnerDirty in case the name field has been modified
     void updateDataValue()
     {
-        /* check that widget has been edited
-           emit DataOwnerDirty in case the name field has been modified
-        */
+
         if(dirty)
         {
             std::string previousName = baseData->getOwner()->getName();
@@ -92,26 +96,32 @@ public slots:
         counter = baseData->getCounter();
 
     }
+    /// First checks that the widget is not currently being edited
+    /// checks that the data has changed since the last time the widget
+    /// has read the data value.
+    /// ultimately read the data value.
     void updateWidgetValue()
     {
-        /*
-        check that widget is not being edited
-        check that data has changed since last updateDataValue
-        eventually, updateWidget
-        */
         if(!dirty)
         {
             if(counter != baseData->getCounter())
                 readFromData();
         }
     }
+    /// You call this slot anytime you want to specify that the widget
+    /// value is out of sync with the underlying data value.
     void setWidgetDirty(bool b=true)
     {
         dirty = b;
         emit WidgetDirty(b);
     }
 signals:
+    /// Emitted each time setWidgetDirty is called. You can also emit
+    /// it if you want to tell the widget value is out of sync with
+    /// the underlying data value.
     void WidgetDirty(bool );
+    /// Currently this signal is used to reflect the changes of the
+    /// component name in the sofaListview.
     void DataOwnerDirty(bool );
 public:
     typedef core::objectmodel::BaseData MyData;
@@ -121,6 +131,8 @@ public:
     {
     }
     virtual ~DataWidget() {}
+
+    /// BaseData pointer accessor function.
     core::objectmodel::BaseData* getBaseData() const { return baseData; }
     void updateVisibility()
     {
@@ -128,16 +140,20 @@ public:
     };
     bool isDirty() { return dirty; }
 
-    /*PUBLIC VIRTUALS */
+    /// The implementation of this method holds the widget creation and the signal / slot
+    /// connections.
     virtual bool createWidgets() = 0;
+    /// Helper method to give a size.
     virtual unsigned int sizeWidget() {return 1;}
+    /// Helper method for colum.
     virtual unsigned int numColumnWidget() {return 3;}
-    /*  */
+
 protected:
-    /* PROTECTED VIRTUALS */
+    /// The implementation of this method tells how the widget reads the value of the data.
     virtual void readFromData() = 0;
+    /// The implementation of this methods needs to tell how the widget can write its value
+    /// in the data
     virtual void writeToData() = 0;
-    /* */
 
     core::objectmodel::BaseData* baseData;
     bool dirty;
@@ -174,6 +190,12 @@ public:
 };
 
 
+/**
+*\brief This class is basically the same as DataWidget, except that it
+* takes a template parameter so the actual type of Data can be retrieved
+* through the getData() accessor. In most cases you will need to derive
+* from this class to implement the edition of your data in the GUI.
+**/
 template<class T>
 class SOFA_SOFAGUIQT_API TDataWidget : public DataWidget
 {
@@ -205,6 +227,8 @@ public:
 
     TDataWidget(QWidget* parent,const char* name, MyTData* d):
         DataWidget(parent,name,d),Tdata(d) {};
+    /// Accessor function. Gives you the actual data instead
+    /// of a BaseData pointer of it like in getBaseData().
     sofa::core::objectmodel::TData<T>* getData() const {return Tdata;}
 protected:
     MyTData* Tdata;
