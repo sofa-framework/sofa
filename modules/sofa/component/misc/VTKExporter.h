@@ -34,6 +34,7 @@ public:
 private:
     sofa::core::componentmodel::topology::BaseMeshTopology* topology;
     sofa::core::componentmodel::behavior::BaseMechanicalState* mstate;
+    unsigned int stepCounter;
 
     std::ofstream* outfile;
 
@@ -55,6 +56,7 @@ public:
     Data<bool> writeHexas;
     Data<helper::vector<std::string> > dPointsDataFields;
     Data<helper::vector<std::string> > dCellsDataFields;
+    Data<unsigned int> exportEveryNbSteps;
 
     int nbFiles;
 
