@@ -86,6 +86,7 @@ SofaTutorialManager::SofaTutorialManager(QWidget* parent, const char* name):QMai
     QMenuBar *menuBar = this->menuBar();
     menuBar->setEnabled(true);
 
+
     runInSofaAction = new QAction(this);
     runInSofaAction->setText("Launch scene in Sofa");
     runInSofaAction->setAccel(QKeySequence(tr("Ctrl+R")));
@@ -147,7 +148,14 @@ void SofaTutorialManager::openTutorial(const std::string& filename)
 {
     if (filename.empty()) return;
 
-    std::string file(sofa::helper::system::SetDirectory::GetFileName(filename.c_str()));
+    graph->closeDialogs();
+
+    std::string file=filename;
+    const std::string &dirSofa = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str());
+    std::string::size_type found=filename.find(dirSofa);
+    if (found == 0) file = filename.substr(dirSofa.size()+1);
+
+//          std::string file(sofa::helper::system::SetDirectory::GetFileName(filename.c_str()));
     runInSofaAction->setText(QString("Launch ")+QString(file.c_str()) + QString(" in Sofa"));
 #ifndef SOFA_QT4
     buttonRunInSofa->setText(QString("Launch ")+QString(file.c_str()) + QString(" in Sofa"));
@@ -160,6 +168,7 @@ void SofaTutorialManager::openTutorial(const std::string& filename)
     GNode *root = dynamic_cast<GNode*> ( newXML->getObject() );
     graph->setRoot(root, false);
     graph->setFilename(filename);
+    selector->usingScene(filename);
 }
 
 void SofaTutorialManager::openHTML(const std::string &filename)

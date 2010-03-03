@@ -58,11 +58,11 @@ namespace qt
 TutorialSelector::TutorialSelector(const std::string &fileTutorial, QWidget* parent):Q3ListView(parent)
 {
 #ifdef SOFA_QT4
-    connect (this, SIGNAL(doubleClicked( Q3ListViewItem *, const QPoint &, int )),
-            this, SLOT( openTutorial( Q3ListViewItem *, const QPoint &, int )));
+    connect (this, SIGNAL(doubleClicked( Q3ListViewItem *)),
+            this, SLOT( openTutorial( Q3ListViewItem *)));
 #else
-    connect (this, SIGNAL(doubleClicked( QListViewItem *, const QPoint &, int )),
-            this, SLOT( openTutorial( QListViewItem *, const QPoint &, int )));
+    connect (this, SIGNAL(doubleClicked( QListViewItem * )),
+            this, SLOT( openTutorial( QListViewItem *)));
 #endif
     this->header()->hide();
     this->setSorting(-1);
@@ -220,13 +220,45 @@ void TutorialSelector::openAttribute(TiXmlElement* element,  Q3ListViewItem *ite
     }
 }
 
-void TutorialSelector::openTutorial( Q3ListViewItem *item, const QPoint &, int )
+void TutorialSelector::openTutorial( Q3ListViewItem *item )
 {
     if (itemToTutorial.find(item) != itemToTutorial.end())
     {
         const Tutorial &T=itemToTutorial[item];
         emit openTutorial(T.sceneFilename);
         emit openHTML(T.htmlFilename);
+    }
+}
+
+void TutorialSelector::usingScene(const std::string &filename)
+{
+    this->clearSelection();
+    std::map< Q3ListViewItem *, Tutorial>::const_iterator it;
+    for (it=itemToTutorial.begin(); it!=itemToTutorial.end(); ++it)
+    {
+        if (it->second.sceneFilename == filename)
+        {
+            this->setSelected(it->first,true);
+            break;
+        }
+    }
+}
+
+void TutorialSelector::keyPressEvent ( QKeyEvent * e )
+{
+    switch ( e->key() )
+    {
+    case Qt::Key_Return :
+    case Qt::Key_Enter :
+    {
+        if (this->currentItem()) openTutorial(this->currentItem());
+        break;
+    }
+    default:
+    {
+        Q3ListView::keyPressEvent(e);
+        break;
+    }
     }
 }
 

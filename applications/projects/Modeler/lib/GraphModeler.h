@@ -94,10 +94,10 @@ public:
         setSorting ( -1 );
 
 #ifdef SOFA_QT4
-        connect(this, SIGNAL(doubleClicked ( Q3ListViewItem *, const QPoint &, int )), this, SLOT( doubleClick(Q3ListViewItem *)));
+        connect(this, SIGNAL(doubleClicked ( Q3ListViewItem *)), this, SLOT( doubleClick(Q3ListViewItem *)));
         connect(this, SIGNAL(rightButtonClicked ( Q3ListViewItem *, const QPoint &, int )),  this, SLOT( rightClick(Q3ListViewItem *, const QPoint &, int )));
 #else
-        connect(this, SIGNAL(doubleClicked ( QListViewItem *, const QPoint &, int )), this, SLOT( doubleClick(QListViewItem *)));
+        connect(this, SIGNAL(doubleClicked ( QListViewItem * )), this, SLOT( doubleClick(QListViewItem *)));
         connect(this, SIGNAL(rightButtonClicked ( QListViewItem *, const QPoint &, int )),  this, SLOT( rightClick(QListViewItem *, const QPoint &, int )));
 #endif
         DialogAdd=NULL;

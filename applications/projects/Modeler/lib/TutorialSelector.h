@@ -30,8 +30,10 @@
 #ifdef SOFA_QT4
 #include <Q3ListView>
 #include <Q3ListViewItem>
+#include <QKeyEvent>
 #else
-#include "qlistview.h"
+#include <qlistview.h>
+#include <qevent.h>
 typedef QListView Q3ListView;
 typedef QListViewItem Q3ListViewItem;
 #endif
@@ -68,11 +70,14 @@ class TutorialSelector : public Q3ListView
     Q_OBJECT
 public:
     TutorialSelector(const std::string &fileTutorials, QWidget* parent = 0);
+
+    void keyPressEvent ( QKeyEvent * e );
+    void usingScene(const std::string &filename);
 public  slots:
 #ifdef SOFA_QT4
-    void openTutorial( Q3ListViewItem *, const QPoint &, int );
+    void openTutorial( Q3ListViewItem * );
 #else
-    void openTutorial( QListViewItem *, const QPoint &, int );
+    void openTutorial( QListViewItem * );
 #endif
 signals:
     void openTutorial(const std::string &filename);
