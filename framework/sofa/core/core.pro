@@ -180,8 +180,8 @@ SOURCES +=  \
 contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 
 HEADERS += \
- componentmodel/fem/BaseShapeFunction.h \
- componentmodel/fem/BaseFiniteElement.h 
+ componentmodel/fem/BaseShapeFunction.h 
+# componentmodel/fem/BaseFiniteElement.h 
 
 SOURCES +=  \
  componentmodel/fem/BaseShapeFunction.cpp 
