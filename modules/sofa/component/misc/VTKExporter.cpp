@@ -32,8 +32,9 @@ int VTKExporterClass = core::RegisterObject("Read State vectors from file at eac
         .add< VTKExporter >();
 
 VTKExporter::VTKExporter()
-    : vtkFilename( initData(&vtkFilename, "filename", "output VTK file name"))
-    , fileFormat( initData(&fileFormat, (bool) true, "fileFormat", "file format"))
+    : stepCounter(0), outfile(NULL)
+    , vtkFilename( initData(&vtkFilename, "filename", "output VTK file name"))
+    , fileFormat( initData(&fileFormat, (bool) true, "XMLformat", "XML format?"))
     , writeEdges( initData(&writeEdges, (bool) true, "edges", "write edge topology"))
     , writeTriangles( initData(&writeTriangles, (bool) false, "triangles", "write triangle topology"))
     , writeQuads( initData(&writeQuads, (bool) false, "quads", "write quad topology"))
@@ -41,6 +42,7 @@ VTKExporter::VTKExporter()
     , writeHexas( initData(&writeHexas, (bool) false, "hexas", "write hexa topology"))
     , dPointsDataFields( initData(&dPointsDataFields, "pointsDataFields", "Data to visualize (on points)"))
     , dCellsDataFields( initData(&dCellsDataFields, "cellsDataFields", "Data to visualize (on cells)"))
+    , exportEveryNbSteps( initData(&exportEveryNbSteps, (unsigned int)0, "exportEveryNumberOfSteps", "export file only at specified number of steps (0=disable)"))
 {
     // TODO Auto-generated constructor stub
 
@@ -854,6 +856,7 @@ void VTKExporter::handleEvent(sofa::core::objectmodel::Event *event)
 {
     if (sofa::core::objectmodel::KeypressedEvent* ev = dynamic_cast<sofa::core::objectmodel::KeypressedEvent*>(event))
     {
+        std::cout << "key pressed " << std::endl;
         switch(ev->getKey())
         {
 
@@ -873,12 +876,20 @@ void VTKExporter::handleEvent(sofa::core::objectmodel::Event *event)
     }
 
 
-    if ( /*simulation::AnimateBeginEvent* ev =*/  dynamic_cast<simulation::AnimateBeginEvent*>(event))
+    if ( /*simulation::AnimateEndEvent* ev =*/  dynamic_cast<simulation::AnimateEndEvent*>(event))
     {
-        if(fileFormat.getValue())
-            writeVTKXML();
-        else
-            writeVTKSimple();
+        unsigned int maxStep = exportEveryNbSteps.getValue();
+        if (maxStep == 0) return;
+
+        stepCounter++;
+        if(stepCounter > maxStep)
+        {
+            stepCounter = 0;
+            if(fileFormat.getValue())
+                writeVTKXML();
+            else
+                writeVTKSimple();
+        }
     }
 }
 
