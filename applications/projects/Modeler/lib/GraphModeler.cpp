@@ -1029,6 +1029,7 @@ void GraphModeler::closeDialogs()
     {
         delete it->second;
     }
+    map_modifyObjectWindow.clear();
 }
 
 /*****************************************************************************************************************/
