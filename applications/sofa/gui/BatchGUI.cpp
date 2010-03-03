@@ -27,6 +27,8 @@
 #include "BatchGUI.h"
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/helper/system/thread/CTime.h>
+#include <iostream>
+#include <sstream>
 
 namespace sofa
 {
@@ -34,8 +36,11 @@ namespace sofa
 namespace gui
 {
 
+const unsigned int BatchGUI::DEFAULT_NUMBER_OF_ITERATIONS = 1000;
+unsigned int BatchGUI::nbIter = BatchGUI::DEFAULT_NUMBER_OF_ITERATIONS;
+
 BatchGUI::BatchGUI()
-    : groot(NULL), nbIter(1000)
+    : groot(NULL)
 {
 }
 
@@ -58,7 +63,7 @@ int BatchGUI::mainLoop()
         sofa::simulation::Node::ctime_t tfreq = sofa::helper::system::thread::CTime::getTicksPerSec();
         sofa::simulation::Node::ctime_t rt = sofa::helper::system::thread::CTime::getRefTime();
         sofa::simulation::Node::ctime_t t = sofa::helper::system::thread::CTime::getFastTime();
-        for (int i=0; i<nbIter; i++)
+        for (unsigned int i=0; i<nbIter; i++)
         {
             sofa::simulation::getSimulation()->animate(groot);
             //As no visualization is done by the Batch GUI, these two lines are not necessary.
@@ -96,8 +101,26 @@ sofa::simulation::Node* BatchGUI::currentSimulation()
 }
 
 
-int BatchGUI::InitGUI(const char* /*name*/, const std::vector<std::string>& /*options*/)
+int BatchGUI::InitGUI(const char* /*name*/, const std::vector<std::string>& options)
 {
+    setNumIterations(DEFAULT_NUMBER_OF_ITERATIONS);
+
+    //parse options
+    for (unsigned int i=0 ; i<options.size() ; i++)
+    {
+        size_t cursor = 0;
+        std::string opt = options[i];
+        //Set number of iterations
+        //(option = "nbIterations=N where N is the number of iterations)
+        if ( (cursor = opt.find("nbIterations=")) != std::string::npos )
+        {
+            unsigned int nbIterations;
+            std::istringstream iss;
+            iss.str(opt.substr(cursor+std::string("nbIterations=").length(), std::string::npos));
+            iss >> nbIterations;
+            setNumIterations(nbIterations);
+        }
+    }
     return 0;
 }
 
