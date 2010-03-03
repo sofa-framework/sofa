@@ -38,6 +38,10 @@
 #ifndef SOFA_QT4
 #include <qpixmap.h>
 #endif
+
+#ifdef SOFA_GPU_CUDA
+#include <sofa/gpu/cuda/mycuda.h>
+#endif
 // ---------------------------------------------------------------------
 // ---
 // ---------------------------------------------------------------------
@@ -45,6 +49,11 @@
 int main(int argc, char** argv)
 {
     glutInit(&argc,argv);
+
+#ifdef SOFA_GPU_CUDA
+    sofa::gpu::cuda::mycudaInit();
+#endif
+
     QApplication* application = new QApplication(argc, argv);
     (void)application;
 
