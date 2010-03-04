@@ -57,6 +57,7 @@ public:
     Data<helper::vector<std::string> > dPointsDataFields;
     Data<helper::vector<std::string> > dCellsDataFields;
     Data<unsigned int> exportEveryNbSteps;
+    Data<bool> exportAtEnd;
 
     int nbFiles;
 
@@ -70,6 +71,7 @@ public:
     virtual ~VTKExporter();
 
     void init();
+    void cleanup();
 
     void handleEvent(sofa::core::objectmodel::Event *);
 };
