@@ -207,7 +207,7 @@ TriangularFEMForceField<DataTypes>::~TriangularFEMForceField()
 template <class DataTypes>
 void TriangularFEMForceField<DataTypes>::init()
 {
-    serr << "initializing TriangularFEMForceField" << sendl;
+    sout << "initializing TriangularFEMForceField" << sendl;
     this->Inherited::init();
 
     _topology = this->getContext()->getMeshTopology();
