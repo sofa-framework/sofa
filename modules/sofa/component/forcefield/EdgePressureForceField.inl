@@ -129,8 +129,9 @@ template<class DataTypes>
 void EdgePressureForceField<DataTypes>::initEdgeInformation()
 {
     const VecCoord& x = *this->mstate->getX();
+    const helper::vector<Real>& intensities = p_intensity.getValue();
 
-    if(pressure.getValue().norm() > 0)
+    if(pressure.getValue().norm() > 0 )
     {
         typename topology::EdgeSubsetData<EdgePressureInformation>::iterator it;
 
@@ -140,82 +141,89 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
             (*it).second.force=pressure.getValue()*(*it).second.length;
         }
     }
-    else if(p_binormal.isSet()) // binormal provided
+    else if (_topology && intensities.size() > 0)
     {
-        Coord binormal = p_binormal.getValue();
-        binormal.normalize();
-        for(int i = 0; i < _topology->getNbEdges() ; i++)
+        // binormal provided
+        if(p_binormal.isSet())
         {
-            Edge e = _topology->getEdge(i);
-
-            Coord tang = x[e[1]] - x[e[0]]; tang.normalize();
-            Coord normal = binormal.cross(tang);
-
-            EdgePressureInformation ei;
-            ei.length = edgeGeo->computeRestEdgeLength(i);
-            ei.force = normal * p_intensity.getValue() * ei.length ;
-            edgePressureMap[i] = ei;
-        }
-    }
-    else // if no pressure is provided, assume that boundary edges received pressure along their normal
-    {
-        for(int i = 0; i < _topology->getNbEdges() ; i++)
-        {
-            Edge e = _topology->getEdge(i), f;
-
-            Vec3d tang, n1, n2;
-            n2 = Vec3d(0,0,1);
-            tang = x[e[1]] - x[e[0]]; tang.normalize();
-
-            Vec3d sum;
-            bool found = false;
-            int k = 0;
-            while ((!found) && (k < _completeTopology->getNbEdges()))
+            Coord binormal = p_binormal.getValue();
+            binormal.normalize();
+            for(int i = 0; i < _topology->getNbEdges() ; i++)
             {
-                f = _completeTopology->getEdge(k);
+                Edge e = _topology->getEdge(i);
 
-                Vec3d l1 = x[f[0]] - x[e[0]];
-                Vec3d l2 = x[f[1]] - x[e[1]];
-
-                if((l1.norm() < 1e-6) && (l2.norm() < 1e-6))
-                {
-                    found = true;
-                }
-                else
-                    k++;
-
-            }
-
-            TrianglesAroundEdge t_a_E = _completeTopology->getTrianglesAroundEdge(k);
-            std::cout << "Triangle Around Edge : " << t_a_E.size() << std::endl;
-
-            if(t_a_E.size() == 1) // 2D cases
-            {
-                Triangle t = _completeTopology->getTriangle(t_a_E[0]);
-                Vec3d vert;
-
-
-                if((t[0] == e[0]) || (t[0] == e[1]))
-                {
-                    if((t[1] == e[0]) || (t[1] == e[1]))
-                        vert = x[t[2]];
-                    else
-                        vert = x[t[1]];
-                }
-                else
-                    vert = x[t[0]];
-
-                Vec3d tt = vert - x[e[0]];
-                n1 = n2.cross(tang);
-                if(n1*tt < 0)
-                {
-                    n1 = -n1;
-                }
+                Coord tang = x[e[1]] - x[e[0]]; tang.normalize();
+                Coord normal = binormal.cross(tang);
 
                 EdgePressureInformation ei;
+                Real intensity = (intensities.size() > 1 && intensities.size() < (unsigned int) i+1) ? intensities[i] : intensities[0];
                 ei.length = edgeGeo->computeRestEdgeLength(i);
-                ei.force = n1 * ei.length * p_intensity.getValue();
+                ei.force = normal * intensity * ei.length ;
                 edgePressureMap[i] = ei;
+            }
+        }
+        else
+            // if no pressure is provided, assume that boundary edges received pressure along their normal
+        {
+            for(int i = 0; i < _topology->getNbEdges() ; i++)
+            {
+                Edge e = _topology->getEdge(i), f;
+
+                Vec3d tang, n1, n2;
+                n2 = Vec3d(0,0,1);
+                tang = x[e[1]] - x[e[0]]; tang.normalize();
+
+                Vec3d sum;
+                bool found = false;
+                int k = 0;
+                while ((!found) && (k < _completeTopology->getNbEdges()))
+                {
+                    f = _completeTopology->getEdge(k);
+
+                    Vec3d l1 = x[f[0]] - x[e[0]];
+                    Vec3d l2 = x[f[1]] - x[e[1]];
+
+                    if((l1.norm() < 1e-6) && (l2.norm() < 1e-6))
+                    {
+                        found = true;
+                    }
+                    else
+                        k++;
+
+                }
+
+                TrianglesAroundEdge t_a_E = _completeTopology->getTrianglesAroundEdge(k);
+                std::cout << "Triangle Around Edge : " << t_a_E.size() << std::endl;
+
+                if(t_a_E.size() == 1) // 2D cases
+                {
+                    Triangle t = _completeTopology->getTriangle(t_a_E[0]);
+                    Vec3d vert;
+
+
+                    if((t[0] == e[0]) || (t[0] == e[1]))
+                    {
+                        if((t[1] == e[0]) || (t[1] == e[1]))
+                            vert = x[t[2]];
+                        else
+                            vert = x[t[1]];
+                    }
+                    else
+                        vert = x[t[0]];
+
+                    Vec3d tt = vert - x[e[0]];
+                    n1 = n2.cross(tang);
+                    if(n1*tt < 0)
+                    {
+                        n1 = -n1;
+                    }
+
+                    EdgePressureInformation ei;
+                    Real intensity = (intensities.size() > 1 && intensities.size() < (unsigned int) i+1) ? intensities[i] : intensities[0];
+                    ei.length = edgeGeo->computeRestEdgeLength(i);
+                    ei.force = n1 * ei.length * intensity;
+                    edgePressureMap[i] = ei;
+                }
             }
         }
     }
