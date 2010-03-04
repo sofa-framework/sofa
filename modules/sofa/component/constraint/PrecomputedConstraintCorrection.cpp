@@ -37,7 +37,7 @@ namespace constraint
 #ifndef SOFA_FLOAT
 
 template<>
-void PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::draw()
+SOFA_COMPONENT_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::draw()
 {
     if (!getContext()->getShowBehaviorModels() || !_rotations) return;
 
@@ -99,7 +99,7 @@ void PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::draw()
 
 
 template<>
-void PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>::rotateConstraints()
+SOFA_COMPONENT_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>::rotateConstraints()
 {
     VecCoord& x = *mstate->getX();
     VecConst& constraints = *mstate->getC();
@@ -139,14 +139,14 @@ void PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>::rotateConstrain
 
 
 template<>
-void PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>::rotateConstraints()
+SOFA_COMPONENT_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>::rotateConstraints()
 {
 }
 
 
 
 template<>
-void PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>::rotateResponse()
+SOFA_COMPONENT_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>::rotateResponse()
 {
 
     VecDeriv& dx = *mstate->getDx();
@@ -171,7 +171,7 @@ void PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>::rotateResponse(
 
 
 template<>
-void PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>::rotateResponse()
+SOFA_COMPONENT_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>::rotateResponse()
 {
 }
 
@@ -181,7 +181,7 @@ void PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>::rotateResponse()
 
 
 template<>
-void PrecomputedConstraintCorrection<defaulttype::Vec3fTypes>::rotateConstraints()
+SOFA_COMPONENT_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::Vec3fTypes>::rotateConstraints()
 {
     VecConst& constraints = *mstate->getC();
     unsigned int numConstraints = constraints.size();
@@ -254,7 +254,7 @@ void PrecomputedConstraintCorrection<defaulttype::Vec3fTypes>::rotateConstraints
 
 
 template<>
-void PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>::rotateConstraints()
+SOFA_COMPONENT_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>::rotateConstraints()
 {
     VecCoord& x = *mstate->getX();
     VecConst& constraints = *mstate->getC();
@@ -295,14 +295,14 @@ void PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>::rotateConstrain
 
 
 template<>
-void PrecomputedConstraintCorrection<defaulttype::Vec1fTypes>::rotateConstraints()
+SOFA_COMPONENT_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::Vec1fTypes>::rotateConstraints()
 {
 }
 
 
 
 template<>
-void PrecomputedConstraintCorrection<defaulttype::Vec3fTypes>::rotateResponse()
+SOFA_COMPONENT_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::Vec3fTypes>::rotateResponse()
 {
     simulation::Node *node = dynamic_cast<simulation::Node *>(getContext());
 
@@ -350,7 +350,7 @@ void PrecomputedConstraintCorrection<defaulttype::Vec3fTypes>::rotateResponse()
 
 
 template<>
-void PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>::rotateResponse()
+SOFA_COMPONENT_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>::rotateResponse()
 {
 
     VecDeriv& dx = *mstate->getDx();
@@ -375,7 +375,7 @@ void PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>::rotateResponse(
 
 
 template<>
-void PrecomputedConstraintCorrection<defaulttype::Vec1fTypes>::rotateResponse()
+SOFA_COMPONENT_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::Vec1fTypes>::rotateResponse()
 {
 }
 
@@ -386,7 +386,7 @@ using namespace sofa::defaulttype;
 
 SOFA_DECL_CLASS(PrecomputedConstraintCorrection)
 
-int ContactCorrectionClass = core::RegisterObject("Component computing contact forces within a simulated body using the compliance method.")
+int PrecomputedConstraintCorrectionClass = core::RegisterObject("Component computing contact forces within a simulated body using the compliance method.")
 #ifndef SOFA_FLOAT
         .add< PrecomputedConstraintCorrection<Vec3dTypes> >()
 //     .add< PrecomputedConstraintCorrection<Vec2dTypes> >()
