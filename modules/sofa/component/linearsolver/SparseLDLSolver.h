@@ -73,7 +73,7 @@ private :
     helper::vector<int> A_i,A_p, Li,Lp,Parent,Lnz,Flag,Pattern;
 };
 
-#if defined(WIN32) && !defined(SOFA_BUILD_COMPONENT_LINEARSOLVER)
+#if defined(WIN32) && !defined(SOFA_BUILD_COMPONENT_FEM)
 extern template class SOFA_COMPONENT_LINEARSOLVER_API SparseLDLSolver< CompressedRowSparseMatrix<double>,FullVector<double> >;
 #endif
 
