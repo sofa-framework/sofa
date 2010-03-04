@@ -106,12 +106,12 @@ protected:
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_CONSTRAINT_FIXEDTRANSLATIONCONSTRAINT_CPP)
 #ifndef SOFA_FLOAT
-extern template class SOFA_COMPONENT_CONSTRAINT_API FixedConstraint<defaulttype::Vec3dTypes>;
-extern template class SOFA_COMPONENT_CONSTRAINT_API FixedConstraint<defaulttype::Rigid3dTypes>;
+extern template class SOFA_COMPONENT_CONSTRAINT_API FixedTranslationConstraint<defaulttype::Vec3dTypes>;
+extern template class SOFA_COMPONENT_CONSTRAINT_API FixedTranslationConstraint<defaulttype::Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-extern template class SOFA_COMPONENT_CONSTRAINT_API FixedConstraint<defaulttype::Vec3fTypes>;
-extern template class SOFA_COMPONENT_CONSTRAINT_API FixedConstraint<defaulttype::Rigid3fTypes>;
+extern template class SOFA_COMPONENT_CONSTRAINT_API FixedTranslationConstraint<defaulttype::Vec3fTypes>;
+extern template class SOFA_COMPONENT_CONSTRAINT_API FixedTranslationConstraint<defaulttype::Rigid3fTypes>;
 #endif
 #endif
 
