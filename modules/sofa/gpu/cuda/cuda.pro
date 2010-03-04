@@ -53,6 +53,7 @@ HEADERS += mycuda.h \
            CudaUniformMass.inl \
            CudaFixedConstraint.h \
            CudaFixedConstraint.inl \
+           CudaFixedPlaneConstraint.inl \
            CudaSpringForceField.h \
            CudaSpringForceField.inl \
            CudaTetrahedronFEMForceField.h \
@@ -96,6 +97,9 @@ SOURCES += mycuda.cpp \
            CudaMechanicalObject.cpp \
            CudaUniformMass.cpp \
            CudaFixedConstraint.cpp \
+           CudaFixedPlaneConstraint.cpp \
+           CudaFixedTranslationConstraint.cpp \
+           CudaLinearMovementConstraint.cpp \
            CudaSpringForceField.cpp \
            CudaTetrahedronFEMForceField.cpp \
            CudaPlaneForceField.cpp \
