@@ -1523,6 +1523,48 @@ void PrecomputedConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(defa
 
 /////////////////////////////////////////////////////////////////////////////////
 
+
+#ifndef SOFA_FLOAT
+
+template<>
+void PrecomputedConstraintCorrection<defaulttype::Vec3dTypes>::draw();
+
+template<>
+void PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>::rotateConstraints();
+
+template<>
+void PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>::rotateConstraints();
+
+template<>
+void PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>::rotateResponse();
+
+template<>
+void PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>::rotateResponse();
+
+#endif
+
+#ifndef SOFA_DOUBLE
+
+template<>
+void PrecomputedConstraintCorrection<defaulttype::Vec3fTypes>::rotateConstraints();
+
+template<>
+void PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>::rotateConstraints();
+
+template<>
+void PrecomputedConstraintCorrection<defaulttype::Vec1fTypes>::rotateConstraints();
+
+template<>
+void PrecomputedConstraintCorrection<defaulttype::Vec3fTypes>::rotateResponse();
+
+template<>
+void PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>::rotateResponse();
+
+template<>
+void PrecomputedConstraintCorrection<defaulttype::Vec1fTypes>::rotateResponse();
+
+#endif
+
 } // namespace collision
 
 } // namespace component
