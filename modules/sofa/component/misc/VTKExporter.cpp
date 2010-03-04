@@ -43,6 +43,7 @@ VTKExporter::VTKExporter()
     , dPointsDataFields( initData(&dPointsDataFields, "pointsDataFields", "Data to visualize (on points)"))
     , dCellsDataFields( initData(&dCellsDataFields, "cellsDataFields", "Data to visualize (on cells)"))
     , exportEveryNbSteps( initData(&exportEveryNbSteps, (unsigned int)0, "exportEveryNumberOfSteps", "export file only at specified number of steps (0=disable)"))
+    , exportAtEnd( initData(&exportAtEnd, false, "exportAtEnd", "export file when the simulation is finished"))
 {
     // TODO Auto-generated constructor stub
 
@@ -893,6 +894,12 @@ void VTKExporter::handleEvent(sofa::core::objectmodel::Event *event)
     }
 }
 
+void VTKExporter::cleanup()
+{
+    if (exportAtEnd.getValue())
+        (fileFormat.getValue()) ? writeVTKXML() : writeVTKSimple();
+
+}
 
 }
 
