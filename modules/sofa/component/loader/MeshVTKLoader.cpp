@@ -547,7 +547,6 @@ MeshVTKLoader::BaseVTKReader::BaseVTKDataIO* MeshVTKLoader::XMLVTKReader::loadDa
 
 MeshVTKLoader::BaseVTKReader::BaseVTKDataIO* MeshVTKLoader::XMLVTKReader::loadDataArray(TiXmlElement* dataArrayElement, int size, std::string type)
 {
-    std::cout << "begin " << type << std::endl;
     //Type
     const char* typeStrTemp;
     if (type.empty())
