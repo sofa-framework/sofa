@@ -153,7 +153,7 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
 
             EdgePressureInformation ei;
             ei.length = edgeGeo->computeRestEdgeLength(i);
-            ei.force = normal * ei.length * p_intensity.getValue();
+            ei.force = normal * p_intensity.getValue() * ei.length ;
             edgePressureMap[i] = ei;
         }
     }
@@ -185,7 +185,9 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
                     k++;
 
             }
+
             TrianglesAroundEdge t_a_E = _completeTopology->getTrianglesAroundEdge(k);
+            std::cout << "Triangle Around Edge : " << t_a_E.size() << std::endl;
 
             if(t_a_E.size() == 1) // 2D cases
             {
@@ -215,7 +217,6 @@ void EdgePressureForceField<DataTypes>::initEdgeInformation()
                 ei.force = n1 * ei.length * p_intensity.getValue();
                 edgePressureMap[i] = ei;
             }
-
         }
     }
 
