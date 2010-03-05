@@ -220,7 +220,7 @@ public slots:
     //Used in Context Menu
     //refresh the visualization window
     void redraw();
-    void exportOBJ(bool exportMTL=true);
+    void exportOBJ(sofa::simulation::Node* node, bool exportMTL=true);
     void dumpState(bool);
     void displayComputationTime(bool);
     void setExportGnuplot(bool);

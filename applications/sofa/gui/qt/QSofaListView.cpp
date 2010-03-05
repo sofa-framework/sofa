@@ -270,6 +270,7 @@ void QSofaListView::RunSofaRightClicked( Q3ListViewItem *item,
         /*****************************************************************************************************************/
 
         contextMenu->insertItem ( "Save Node", this, SLOT ( SaveNode() ) );
+        contextMenu->insertItem ( "Export OBJ", this, SLOT ( exportOBJ() ) );
 
         if ( attribute_ == SIMULATION)
         {
@@ -330,6 +331,16 @@ void QSofaListView::SaveNode()
         emit RequestSaving(node);
         emit Lock(false);
 
+    }
+}
+void QSofaListView::exportOBJ()
+{
+    if( object_.ptr.Node != NULL)
+    {
+        emit Lock(true);
+        Node * node = object_.ptr.Node;
+        emit RequestExportOBJ(node,true);
+        emit Lock(false);
     }
 }
 void QSofaListView::RaiseAddObject()
