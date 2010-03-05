@@ -33,10 +33,11 @@
 #ifdef SOFA_QT4
 #include <QHBoxLayout>
 #include <QUrl>
-#include <QMenuBar>
+#include <Q3ToolBar>
 #else
 #include <qlayout.h>
 #include <qurl.h>
+typedef QToolBar Q3ToolBar
 #endif
 
 namespace sofa
@@ -48,7 +49,7 @@ namespace gui
 namespace qt
 {
 
-SofaTutorialManager::SofaTutorialManager(QWidget* parent, const char* name):QMainWindow(parent, name)
+SofaTutorialManager::SofaTutorialManager(QWidget* parent, const char* name):Q3MainWindow(parent, name), tutorialList(0)
 {
 
     QWidget *mainWidget = new QWidget(this);
@@ -57,15 +58,17 @@ SofaTutorialManager::SofaTutorialManager(QWidget* parent, const char* name):QMai
     this->setAcceptDrops(TRUE);
     this->setCaption(QString("Sofa Tutorials"));
 
-    std::string fileTutorials="config/tutorials.xml";
-    fileTutorials = sofa::helper::system::DataRepository.getFile( fileTutorials );
 
     //Create the tree containing the tutorials
-    selector = new TutorialSelector(fileTutorials, mainWidget);
+    selector = new TutorialSelector(mainWidget);
+
+    connect(selector, SIGNAL(openCategory(const std::string&)),
+            this, SLOT(openCategory(const std::string&)));
     connect(selector, SIGNAL(openTutorial(const std::string&)),
             this, SLOT(openTutorial(const std::string&)));
     connect(selector, SIGNAL(openHTML(const std::string&)),
             this, SLOT(openHTML(const std::string&)));
+
 
     //Create the HTML Browser to display the information
     descriptionPage = new QTextBrowser(mainWidget);
@@ -81,61 +84,37 @@ SofaTutorialManager::SofaTutorialManager(QWidget* parent, const char* name):QMai
     graph = new GraphModeler(mainWidget);
     graph->setAcceptDrops(true);
 
-#ifdef SOFA_QT4
-    //Create the Menu bar
-    QMenuBar *menuBar = this->menuBar();
-    menuBar->setEnabled(true);
-
-
-    runInSofaAction = new QAction(this);
-    runInSofaAction->setText("Launch scene in Sofa");
-    runInSofaAction->setAccel(QKeySequence(tr("Ctrl+R")));
-    menuBar->addAction(runInSofaAction);
-    connect(runInSofaAction, SIGNAL(activated()), this, SLOT(launchScene()));
-
-    QAction *undoAction = new QAction(this);
-    undoAction->setAccel(QKeySequence(tr("Ctrl+Z")));
-    menuBar->addAction(undoAction);
-    connect(undoAction, SIGNAL(activated()), graph, SLOT(editUndo()));
-
-
-    QAction *redoAction = new QAction(this);
-    redoAction->setAccel(QKeySequence(tr("Ctrl+Y")));
-    menuBar->addAction(redoAction);
-    connect(redoAction, SIGNAL(activated()), graph, SLOT(editRedo()));
-#else
-    QToolBar *toolBar = new QToolBar( QString(""), this, DockTop);
-    toolBar->setLabel(QString("Tools"));
-
-    buttonRunInSofa = new QPushButton(QString("Launch scene in Sofa"), toolBar);
-    connect(buttonRunInSofa, SIGNAL(clicked()), this, SLOT(launchScene()));
-
-    runInSofaAction = new QAction(this);
-    runInSofaAction->setText("Launch scene in Sofa");
-    runInSofaAction->setAccel(QKeySequence(tr("Ctrl+R")));
-    connect(runInSofaAction, SIGNAL(activated()), this, SLOT(launchScene()));
-
-    QAction *undoAction = new QAction(this);
-    undoAction->setAccel(QKeySequence(tr("Ctrl+Z")));
-    connect(undoAction, SIGNAL(activated()), graph, SLOT(editUndo()));
-
-
-    QAction *redoAction = new QAction(this);
-    redoAction->setAccel(QKeySequence(tr("Ctrl+Y")));
-    connect(redoAction, SIGNAL(activated()), graph, SLOT(editRedo()));
-#endif
-
-
     //Setup the layout
     mainLayout->addWidget(selector);
     mainLayout->addWidget(descriptionPage);
     mainLayout->addWidget(graph);
 
+
+    //Creation of a Tool Bar
+    Q3ToolBar *toolBar = new Q3ToolBar( this );
+    toolBar->setLabel(QString("Tools"));
+
+
+    //Set up the list of tutorials
+    selector->openCategory(QString("All Sofa Tutorials"));
+
+    //Add list of tutorials
+    tutorialList = new QComboBox(toolBar);
+    const std::list<std::string> &listTuto=selector->getCategories();
+    for (std::list<std::string>::const_reverse_iterator it=listTuto.rbegin(); it!=listTuto.rend(); ++it)
+    {
+        tutorialList->addItem(QString(it->c_str()));
+    }
+    connect(tutorialList, SIGNAL(activated(QString)), selector, SLOT(openCategory(QString)));
+
+    //Add button to launch a scene in Sofa
+    buttonRunInSofa = new QPushButton(QString("Launch scene in Sofa"), toolBar);
+    connect(buttonRunInSofa, SIGNAL(clicked()), this, SLOT(launchScene()));
+
+
+
     this->resize(1000,600);
     this->setPaletteBackgroundColor(QColor(255,180,120));
-    openHTML("");
-
-
     QString pathIcon=(sofa::helper::system::DataRepository.getFirstPath() + std::string( "/icons/SOFATUTORIALS.png" )).c_str();
 #ifdef SOFA_QT4
     this->setWindowIcon(QIcon(pathIcon));
@@ -144,22 +123,26 @@ SofaTutorialManager::SofaTutorialManager(QWidget* parent, const char* name):QMai
 #endif
 }
 
+
+
 void SofaTutorialManager::openTutorial(const std::string& filename)
 {
-    if (filename.empty()) return;
 
     graph->closeDialogs();
 
+    if (filename.empty())
+    {
+        graph->hide();
+        return;
+    }
+
+    graph->show();
     std::string file=filename;
     const std::string &dirSofa = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str());
     std::string::size_type found=filename.find(dirSofa);
     if (found == 0) file = filename.substr(dirSofa.size()+1);
 
-//          std::string file(sofa::helper::system::SetDirectory::GetFileName(filename.c_str()));
-    runInSofaAction->setText(QString("Launch ")+QString(file.c_str()) + QString(" in Sofa"));
-#ifndef SOFA_QT4
     buttonRunInSofa->setText(QString("Launch ")+QString(file.c_str()) + QString(" in Sofa"));
-#endif
 
     //Set the Graph
     xml::BaseElement* newXML = xml::loadFromFile ( filename.c_str() );
@@ -192,6 +175,14 @@ void SofaTutorialManager::openHTML(const std::string &filename)
 #endif
 }
 
+void SofaTutorialManager::openCategory(const std::string& filename)
+{
+
+#ifdef SOFA_QT4
+    if (tutorialList) tutorialList->setCurrentIndex(tutorialList->findText(QString(filename.c_str())));
+#endif
+}
+
 #ifdef SOFA_QT4
 void SofaTutorialManager::dynamicChangeOfScene( const QUrl& u)
 {
@@ -221,6 +212,34 @@ void SofaTutorialManager::dynamicChangeOfScene( const QString& u)
     }
 }
 
+void SofaTutorialManager::keyPressEvent ( QKeyEvent * e )
+{
+
+    if (e->state() == Qt::ControlButton )
+    {
+        switch(e->key())
+        {
+        case Qt::Key_R:
+        {
+            //Pressed CTRL+R
+            launchScene();
+            return;
+        }
+        case Qt::Key_Y:
+        {
+            graph->editRedo();
+            return;
+        }
+        case Qt::Key_Z:
+        {
+            graph->editUndo();
+            return;
+        }
+        default: ;
+        }
+    }
+    e->ignore();
+}
 
 void SofaTutorialManager::launchScene()
 {

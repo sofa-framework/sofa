@@ -114,8 +114,8 @@ SofaModeler::SofaModeler()
 
     Q3PopupMenu *openTutorial = new Q3PopupMenu(this);
     this->menubar->insertItem(tr(QString("&Tutorials")), openTutorial, menuIndex++);
+    openTutorialAction->addTo(openTutorial);
     openTutorialAction->addTo(toolBar);
-
 
 
     //Find all the scene files in examples directory

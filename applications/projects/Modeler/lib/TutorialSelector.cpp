@@ -55,29 +55,28 @@ namespace gui
 namespace qt
 {
 
-TutorialSelector::TutorialSelector(const std::string &fileTutorial, QWidget* parent):Q3ListView(parent)
+TutorialSelector::TutorialSelector(QWidget* parent):Q3ListView(parent)
 {
 #ifdef SOFA_QT4
     connect (this, SIGNAL(doubleClicked( Q3ListViewItem *)),
-            this, SLOT( openTutorial( Q3ListViewItem *)));
+            this, SLOT( changeRequested( Q3ListViewItem *)));
 #else
     connect (this, SIGNAL(doubleClicked( QListViewItem * )),
-            this, SLOT( openTutorial( QListViewItem *)));
+            this, SLOT( changeRequested( QListViewItem *)));
 #endif
     this->header()->hide();
     this->setSorting(-1);
 
-
     this->addColumn("Tutorials");
     this->setColumnWidthMode(0,Q3ListView::Maximum);
 
-    init(fileTutorial);
-
-    this->setMaximumWidth((int)(this->columnWidth(0)*1.1));
+    itemToCategory.insert(std::make_pair((Q3ListViewItem*)0, Category("All Sofa Tutorials", sofa::helper::system::DataRepository.getFile("Tutorials/Tutorials.xml"), sofa::helper::system::DataRepository.getFile("Tutorials/Tutorials.html"))));
 }
 
-void TutorialSelector::init(const std::string &fileTutorial)
+void TutorialSelector::loadTutorials(const std::string &fileTutorial)
 {
+    this->clear();
+    itemToTutorial.clear();
     //Open it using TinyXML
     TiXmlDocument doc(fileTutorial.c_str());
     doc.LoadFile();
@@ -92,6 +91,7 @@ void TutorialSelector::init(const std::string &fileTutorial)
     }
     openNode(node, 0, true);
 
+    this->setMaximumWidth((int)(this->columnWidth(0)*1.1));
 }
 
 void TutorialSelector::openNode(TiXmlNode *node, Q3ListViewItem *parent, bool isRoot)
@@ -106,7 +106,6 @@ void TutorialSelector::openNode(TiXmlNode *node, Q3ListViewItem *parent, bool is
         break;
 
     case TiXmlNode::ELEMENT:
-
         if (!isRoot)
         {
             if (!parent)
@@ -132,7 +131,6 @@ void TutorialSelector::openNode(TiXmlNode *node, Q3ListViewItem *parent, bool is
                 item->setOpen(false);
             }
         }
-
         openAttribute(node->ToElement(), item);
         break;
 
@@ -184,6 +182,38 @@ void TutorialSelector::openAttribute(TiXmlElement* element,  Q3ListViewItem *ite
         static QPixmap pixNode((const char**)iconnode_xpm);
         item->setPixmap(0, pixNode);
     }
+    else if (typeElement == "Category")
+    {
+        static QImage imageScene(QString(sofa::helper::system::DataRepository.getFirstPath().c_str()) + "/textures/media-seek-forward.png");
+        static QPixmap pixScene;
+        if (imageScene.width() != 20)
+        {
+            imageScene=imageScene.smoothScale(20,10);
+            pixScene.convertFromImage(imageScene);
+        }
+        item->setPixmap(0,pixScene);
+
+        Category C(item->text(0).ascii(), attributes["xml"], attributes["html"]);
+        if (C.htmlFilename.empty() && C.xmlFilename.size() >= 4)
+        {
+            std::string htmlFile=C.xmlFilename;
+            //Open Description
+            htmlFile = htmlFile.substr(0,htmlFile.size()-4);
+            htmlFile += ".html";
+
+            if ( sofa::helper::system::DataRepository.findFile (htmlFile) )
+                htmlFile = sofa::helper::system::DataRepository.getFile ( htmlFile );
+            else htmlFile.clear();
+
+            C.htmlFilename=htmlFile;
+        }
+        if (!C.xmlFilename.empty())
+        {
+            if ( sofa::helper::system::DataRepository.findFile (C.xmlFilename) )
+                C.xmlFilename = sofa::helper::system::DataRepository.getFile ( C.xmlFilename);
+        }
+        itemToCategory.insert(std::make_pair(item, C));
+    }
     else if (typeElement == "Tutorial")
     {
         static QImage imageScene(QString(sofa::helper::system::DataRepository.getFirstPath().c_str()) + "/icons/SOFA.png");
@@ -220,14 +250,46 @@ void TutorialSelector::openAttribute(TiXmlElement* element,  Q3ListViewItem *ite
     }
 }
 
-void TutorialSelector::openTutorial( Q3ListViewItem *item )
+void TutorialSelector::changeRequested( Q3ListViewItem *item )
 {
     if (itemToTutorial.find(item) != itemToTutorial.end())
     {
         const Tutorial &T=itemToTutorial[item];
-        emit openTutorial(T.sceneFilename);
-        emit openHTML(T.htmlFilename);
+        openTutorial(T);
     }
+    else if (itemToCategory.find(item) != itemToCategory.end())
+    {
+        const Category &C=itemToCategory[item];
+        openCategory(C);
+    }
+}
+
+void TutorialSelector::openCategory( QString name)
+{
+    std::map< Q3ListViewItem *, Category>::const_iterator it;
+    for (it=itemToCategory.begin(); it!=itemToCategory.end(); ++it)
+    {
+        if (it->second.name == name.ascii())
+        {
+            openCategory(it->second);
+            return;
+        }
+    }
+}
+
+void TutorialSelector::openTutorial( const Tutorial &T)
+{
+    emit openTutorial(T.sceneFilename);
+    emit openHTML(T.htmlFilename);
+}
+
+void TutorialSelector::openCategory( const Category &C)
+{
+    this->clear();
+    emit openTutorial("");
+    loadTutorials(C.xmlFilename);
+    emit openCategory(C.name);
+    emit openHTML(C.htmlFilename);
 }
 
 void TutorialSelector::usingScene(const std::string &filename)
@@ -238,10 +300,21 @@ void TutorialSelector::usingScene(const std::string &filename)
     {
         if (it->second.sceneFilename == filename)
         {
-            this->setSelected(it->first,true);
+            if (it->first) this->setSelected(it->first,true);
             break;
         }
     }
+}
+
+std::list< std::string >TutorialSelector::getCategories() const
+{
+    std::list<std::string> list;
+    std::map< Q3ListViewItem *, Category>::const_iterator it;
+    for (it=itemToCategory.begin(); it!=itemToCategory.end(); ++it)
+    {
+        list.push_back(it->second.name);
+    }
+    return list;
 }
 
 void TutorialSelector::keyPressEvent ( QKeyEvent * e )
@@ -251,7 +324,7 @@ void TutorialSelector::keyPressEvent ( QKeyEvent * e )
     case Qt::Key_Return :
     case Qt::Key_Enter :
     {
-        if (this->currentItem()) openTutorial(this->currentItem());
+        if (this->currentItem()) changeRequested(this->currentItem());
         break;
     }
     default:
