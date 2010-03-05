@@ -44,19 +44,19 @@ namespace sofa
 namespace helper
 {
 
-template <class T, class Alloc = std::allocator<T>, class MemoryManager = CPUMemoryManager<T> >
+template <class T, class MemoryManager = CPUMemoryManager<T> >
 class vector
 {
-
 
 
 };
 
 //classic vector (using CPUMemoryManager, same behavior as std::helper)
-template <class T, class Alloc >
-class vector<T, Alloc, CPUMemoryManager<T> > : public std::vector<T, Alloc >
+template <class T>
+class vector<T, CPUMemoryManager<T> > : public std::vector<T, std::allocator<T> >
 {
 public:
+    typedef std::allocator<T> Alloc;
     /// size_type
     typedef typename std::vector<T,Alloc>::size_type size_type;
     /// reference to a value (read-write)
@@ -89,7 +89,7 @@ public:
     vector(InputIterator first, InputIterator last): std::vector<T,Alloc>(first,last) {}
 #else /* __STL_MEMBER_TEMPLATES */
     /// Constructor
-    vector(typename vector<T,Alloc>::const_iterator first, typename vector<T,Alloc>::const_iterator last): std::vector<T,Alloc>(first,last) {}
+    vector(typename vector<T>::const_iterator first, typename vector<T>::const_iterator last): std::vector<T>(first,last) {}
 #endif /* __STL_MEMBER_TEMPLATES */
 
 
@@ -143,13 +143,13 @@ public:
     }
 
 /// Output stream
-    inline friend std::ostream& operator<< ( std::ostream& os, const vector<T,Alloc>& vec )
+    inline friend std::ostream& operator<< ( std::ostream& os, const vector<T>& vec )
     {
         return vec.write(os);
     }
 
 /// Input stream
-    inline friend std::istream& operator>> ( std::istream& in, vector<T,Alloc>& vec )
+    inline friend std::istream& operator>> ( std::istream& in, vector<T>& vec )
     {
         return vec.read(in);
     }
@@ -165,7 +165,7 @@ public:
 /// Input stream
 /// Specialization for reading vectors of int and unsigned int using "A-B" notation for all integers between A and B, optionnally specifying a step using "A-B-step" notation.
 template<>
-inline std::istream& vector<int, std::allocator<int> >::read( std::istream& in )
+inline std::istream& vector<int >::read( std::istream& in )
 {
     int t;
     this->clear();
@@ -224,7 +224,7 @@ inline std::istream& vector<int, std::allocator<int> >::read( std::istream& in )
 /// Output stream
 /// Specialization for writing vectors of unsigned char
 template<>
-inline std::ostream& vector<unsigned char, std::allocator<unsigned char> >::write(std::ostream& os) const
+inline std::ostream& vector<unsigned char >::write(std::ostream& os) const
 {
     if( this->size()>0 )
     {
@@ -237,7 +237,7 @@ inline std::ostream& vector<unsigned char, std::allocator<unsigned char> >::writ
 /// Inpu stream
 /// Specialization for writing vectors of unsigned char
 template<>
-inline std::istream&  vector<unsigned char, std::allocator<unsigned char> >::read(std::istream& in)
+inline std::istream&  vector<unsigned char >::read(std::istream& in)
 {
     int t;
     this->clear();
@@ -252,7 +252,7 @@ inline std::istream&  vector<unsigned char, std::allocator<unsigned char> >::rea
 /// Input stream
 /// Specialization for reading vectors of int and unsigned int using "A-B" notation for all integers between A and B
 template<>
-inline std::istream& vector<unsigned int, std::allocator<unsigned int> >::read( std::istream& in )
+inline std::istream& vector<unsigned int >::read( std::istream& in )
 {
     unsigned int t;
     this->clear();

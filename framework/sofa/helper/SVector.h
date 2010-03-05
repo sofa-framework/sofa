@@ -38,7 +38,7 @@ namespace helper
 //======================================================================
 template<
 class T,
-      class Alloc = std::allocator<T>
+      class Alloc = helper::CPUMemoryManager<T>
       >
 class SVector: public helper::vector<T,Alloc>
 {
