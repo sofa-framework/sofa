@@ -28,6 +28,7 @@
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/component/constraint/FixedTranslationConstraint.h>
 #include <sofa/helper/gl/template.h>
+#include <sofa/core/componentmodel/behavior/Constraint.inl>
 
 namespace sofa
 {
