@@ -54,15 +54,15 @@ class MemoryManager
     enum { MAX_DEVICES = 0 };
 
     static int numDevices();
-
     //
     static host_pointer hostAlloc(int n) { return new T[n]; }
     static void memsetHost(host_pointer hPointer, int value,size_t n) { memset((void*) hPointer, value, n); }
 
-    static void memcpyHostToDevice(int d, device_pointer dDestPointer, const host_pointer hSrcPointer, size_t n) { return ;}
-    static void memcpyDeviceToHost(int d, host_pointer hDestPointer, const device_pointer dSrcPointer , size_t n) { return ;}
-    static void memcpyDeviceToDevice(int dDest, int dSrc, device_pointer dDestPointer, const device_pointer dSrcPointer , size_t n) { return ;}
-    static void memsetDevice(int d, int value,size_t n) { return ;}
+    static device_pointer deviceAlloc(int d, int n);
+    static void memcpyHostToDevice(int d, device_pointer dDestPointer, const host_pointer hSrcPointer, size_t n);
+    static void memcpyDeviceToHost(int d, host_pointer hDestPointer, const device_pointer dSrcPointer , size_t n);
+    static void memcpyDeviceToDevice(int dDest, int dSrc, device_pointer dDestPointer, const device_pointer dSrcPointer , size_t n);
+    static void memsetDevice(int d, int value,size_t n);
 };
 
 //CPU MemoryManager
