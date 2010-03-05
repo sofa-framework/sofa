@@ -531,7 +531,7 @@ void CudaCollisionDetection::PointRigidTest::fillInfo(GPUTest* tests)
         test.result = gresults + e.firstIndex;
         test.result1 = gresults1 + e.firstIndex;
         test.result2 = gresults2 + e.firstIndex;
-        test.points = p1.deviceRead(elem1.i0());
+        test.points = p1.deviceReadAt(elem1.i0());
         test.radius = NULL;
         test.gridnx = g2.getNx();
         test.gridny = g2.getNy();
