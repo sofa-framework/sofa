@@ -1,0 +1,14 @@
+<Category name="Solvers">
+    <Group name="Static">
+      <Tutorial name="Static" scene="Tutorials/Basic/TutorialSolverStatic.scn"/>
+    </Group>
+    <Group name="Explicit">
+      <Tutorial name="Euler" scene="Tutorials/Basic/TutorialSolverExplicitEuler.scn"/>
+      <Tutorial name="Runge Kutta" scene="Tutorials/Basic/TutorialSolverExplicitRungeKutta.scn"/>
+      <Tutorial name="Central Difference" scene="Tutorials/Basic/TutorialSolverCentralDifference.scn"/>
+    </Group>
+    <Group name="Implicit">
+      <Tutorial name="Euler" scene="Tutorials/Basic/TutorialSolverImplicitEuler.scn"/>
+      <Tutorial name="Newmark" scene="Tutorials/Basic/TutorialSolverImplicitNewmark.scn"/>
+    </Group>
+</Category>

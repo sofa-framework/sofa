@@ -31,16 +31,21 @@
 #include "GraphModeler.h"
 
 #ifdef SOFA_QT4
-#include <QMainWindow>
+#include <Q3MainWindow>
 #include <QTextBrowser>
 #include <QAction>
+#include <QKeyEvent>
 #include <QUrl>
+#include <QComboBox>
 #else
 #include <qmainwindow.h>
 #include <qtextbrowser.h>
 #include <qaction.h>
 #include <qurl.h>
 #include <qpushbutton.h>
+#include <qevent.h>
+#include <qcombobox.h>
+typedef QMainWindow Q3MainWindow
 #endif
 
 
@@ -55,14 +60,17 @@ namespace qt
 
 
 
-class SofaTutorialManager : public QMainWindow
+class SofaTutorialManager : public Q3MainWindow
 {
     Q_OBJECT
 public:
     SofaTutorialManager(QWidget* parent = 0, const char* name = 0);
     GraphModeler *getGraph() {return graph;}
 
+    void keyPressEvent ( QKeyEvent * e );
+
 public slots:
+    void openCategory(const std::string &);
     void openTutorial(const std::string &filename);
     void openHTML(const std::string &filename);
     void launchScene();
@@ -77,10 +85,8 @@ protected:
     TutorialSelector *selector;
     GraphModeler *graph;
     QTextBrowser* descriptionPage;
-    QAction *runInSofaAction;
-#ifndef SOFA_QT4
     QPushButton *buttonRunInSofa;
-#endif
+    QComboBox *tutorialList;
 };
 
 }

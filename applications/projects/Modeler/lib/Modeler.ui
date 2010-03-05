@@ -196,10 +196,7 @@
         <iconset>image11</iconset>
       </property>
       <property name="text">
-        <string>Launch the Tutorials window</string>
-      </property>
-      <property name="menuText">
-        <string>&amp;Tutorials</string>
+        <string>Launch the Tutorials</string>
       </property>
     </action>
     <action>

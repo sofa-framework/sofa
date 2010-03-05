@@ -57,6 +57,16 @@ namespace qt
 
 class TutorialSelector : public Q3ListView
 {
+    struct Category
+    {
+        Category() {};
+        Category(const std::string &n, const std::string &xml, const std::string &html)
+            :name(n), xmlFilename(xml), htmlFilename(html) {};
+        std::string name;
+        std::string xmlFilename;
+        std::string htmlFilename;
+    };
+
     struct Tutorial
     {
         Tutorial() {};
@@ -69,25 +79,34 @@ class TutorialSelector : public Q3ListView
 
     Q_OBJECT
 public:
-    TutorialSelector(const std::string &fileTutorials, QWidget* parent = 0);
+    TutorialSelector( QWidget* parent = 0);
 
     void keyPressEvent ( QKeyEvent * e );
     void usingScene(const std::string &filename);
+    std::list< std::string > getCategories() const;
 public  slots:
+    void openCategory(QString);
+
 #ifdef SOFA_QT4
-    void openTutorial( Q3ListViewItem * );
+    void changeRequested( Q3ListViewItem * );
 #else
-    void openTutorial( QListViewItem * );
+    void changeRequested( QListViewItem * );
 #endif
 signals:
+    void openCategory(const std::string &name);
     void openTutorial(const std::string &filename);
     void openHTML(const std::string &filename);
 
 protected:
-    void init(const std::string &fileTutorials);
+
+    void openCategory(const Category&);
+    void openTutorial(const Tutorial&);
+
+    void loadTutorials(const std::string &fileTutorials);
     void openNode(TiXmlNode* node, Q3ListViewItem *parent=NULL, bool isRoot=false);
     void openAttribute(TiXmlElement* element,  Q3ListViewItem *item);
 
+    std::map< Q3ListViewItem *, Category> itemToCategory;
     std::map< Q3ListViewItem *, Tutorial> itemToTutorial;
 };
 
