@@ -36,6 +36,7 @@
 #include <typeinfo>
 
 #include <sofa/helper/helper.h>
+#include <sofa/helper/MemoryManager.h>
 
 namespace sofa
 {
@@ -43,23 +44,19 @@ namespace sofa
 namespace helper
 {
 
-void SOFA_HELPER_API vector_access_failure(const void* vec, unsigned size, unsigned i, const std::type_info& type);
+template <class T, class Alloc = std::allocator<T>, class MemoryManager = CPUMemoryManager<T> >
+class vector
+{
 
-//======================================================================
-/**	Same as std::vector, + range checking on operator[ ]
 
- Range checking can be turned of using compile option -DNDEBUG
-\author Francois Faure, 1999
-*/
-//======================================================================
-template<
-class T,
-      class Alloc = std::allocator<T>
-      >
-class vector: public std::vector<T,Alloc>
+
+};
+
+//classic vector (using CPUMemoryManager, same behavior as std::helper)
+template <class T, class Alloc >
+class vector<T, Alloc, CPUMemoryManager<T> > : public std::vector<T, Alloc >
 {
 public:
-
     /// size_type
     typedef typename std::vector<T,Alloc>::size_type size_type;
     /// reference to a value (read-write)
@@ -98,7 +95,7 @@ public:
 
 #ifndef SOFA_NO_VECTOR_ACCESS_FAILURE
 
-/// Read/write random access
+    /// Read/write random access
     reference operator[](size_type n)
     {
 #ifndef NDEBUG
@@ -109,7 +106,7 @@ public:
         return *(this->begin() + n);
     }
 
-/// Read-only random access
+    /// Read-only random access
     const_reference operator[](size_type n) const
     {
 #ifndef NDEBUG
@@ -162,8 +159,8 @@ public:
     {
         std::fill( this->begin(), this->end(), value );
     }
-
 };
+
 
 /// Input stream
 /// Specialization for reading vectors of int and unsigned int using "A-B" notation for all integers between A and B, optionnally specifying a step using "A-B-step" notation.
@@ -369,54 +366,10 @@ void removeIndex( std::vector<T,TT>& v, size_t index )
     v.pop_back();
 }
 
-//@}
-
 } // namespace helper
 
 } // namespace sofa
 
-/*
-/// Output stream
-template<class T, class Alloc>
-  std::ostream& operator<< ( std::ostream& os, const std::vector<T,Alloc>& vec )
-{
-  if( vec.size()>0 ){
-    for( unsigned int i=0; i<vec.size()-1; ++i ) os<<vec[i]<<" ";
-    os<<vec[vec.size()-1];
-  }
-  return os;
-}
-
-/// Input stream
-template<class T, class Alloc>
-    std::istream& operator>> ( std::istream& in, std::vector<T,Alloc>& vec )
-{
-  T t;
-  vec.clear();
-  while(in>>t){
-    vec.push_back(t);
-  }
-  if( in.rdstate() & std::ios_base::eofbit ) { in.clear(); }
-  return in;
-}
-
-/// Input a pair
-template<class T, class U>
-    std::istream& operator>> ( std::istream& in, std::pair<T,U>& pair )
-{
-  in>>pair.first>>pair.second;
-  return in;
-}
-
-/// Output a pair
-template<class T, class U>
-    std::ostream& operator<< ( std::ostream& out, const std::pair<T,U>& pair )
-{
-  out<<pair.first<<" "<<pair.second;
-  return out;
-}
-*/
-
-#endif
+#endif //SOFA_HELPER_VECTOR_H
 
 
