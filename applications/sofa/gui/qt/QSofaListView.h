@@ -80,6 +80,7 @@ signals:
     void Close();
     void Lock(bool);
     void RequestSaving(sofa::simulation::Node*);
+    void RequestExportOBJ(sofa::simulation::Node* node, bool exportMTL);
     void RequestActivation(sofa::simulation::Node*,bool);
     void RootNodeChanged(sofa::simulation::Node* newroot, const char* newpath);
     void NodeRemoved();
@@ -88,6 +89,7 @@ signals:
 
 protected slots:
     void SaveNode();
+    void exportOBJ();
     void collapseNode();
     void expandNode();
     void modifyUnlock(void* Id);

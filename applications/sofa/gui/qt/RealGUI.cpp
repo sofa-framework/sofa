@@ -467,9 +467,11 @@ RealGUI::RealGUI ( const char* viewername, const std::vector<std::string>& /*opt
     connect(simulationGraph, SIGNAL( NodeRemoved() ), this, SLOT( Update() ) );
     connect(simulationGraph, SIGNAL( Lock(bool) ), this, SLOT( LockAnimation(bool) ) );
     connect(simulationGraph, SIGNAL( RequestSaving(sofa::simulation::Node*) ), this, SLOT( fileSaveAs(sofa::simulation::Node*) ) );
+    connect(simulationGraph, SIGNAL( RequestExportOBJ(sofa::simulation::Node*, bool) ), this, SLOT( exportOBJ(sofa::simulation::Node*, bool) ) );
     connect(simulationGraph, SIGNAL( RequestActivation(sofa::simulation::Node*, bool) ), this, SLOT( ActivateNode(sofa::simulation::Node*, bool) ) );
 #ifndef SOFA_CLASSIC_SCENE_GRAPH
     connect(visualGraph, SIGNAL( RequestActivation(sofa::simulation::Node*, bool) ) , this, SLOT( ActivateNode(sofa::simulation::Node*, bool) ) );
+    connect(visualGraph, SIGNAL( RequestExportOBJ(sofa::simulation::Node*, bool) ), this, SLOT( exportOBJ(sofa::simulation::Node*, bool) ) );
 #endif
     //connect(simulationGraph, SIGNAL( currentActivated(bool) ), viewer->getQWidget(), SLOT( resetView() ) );
     //connect(simulationGraph, SIGNAL( currentActivated(bool) ), this, SLOT( Update() ) );
@@ -1538,7 +1540,11 @@ void RealGUI::step()
         if ( ( counter++ % CAPTURE_PERIOD ) ==0 )
 #endif
         {
-            exportOBJ ( false );
+#ifdef SOFA_CLASSIC_SCENE_GRAPH
+            exportOBJ ( getScene(), false );
+#else
+            exportOBJ ( getSimulation()->getVisualRoot(), false );
+#endif
             ++_animationOBJcounter;
         }
     }
@@ -1793,13 +1799,8 @@ void RealGUI::dumpState ( bool value )
 
 //*****************************************************************************************
 //
-void RealGUI::exportOBJ ( bool exportMTL )
+void RealGUI::exportOBJ (simulation::Node* root,  bool exportMTL )
 {
-#ifdef SOFA_CLASSIC_SCENE_GRAPH
-    Node* root = getScene();
-#else
-    Node* root = simulation::getSimulation()->getVisualRoot();
-#endif
     if ( !root ) return;
     std::string sceneFileName(this->windowFilePath ().ascii());
     std::ostringstream ofilename;
@@ -1843,7 +1844,11 @@ void RealGUI::keyPressEvent ( QKeyEvent * e )
     case Qt::Key_O:
         // --- export to OBJ
     {
-        exportOBJ();
+#ifdef SOFA_CLASSIC_SCENE_GRAPH
+        exportOBJ ( getScene() );
+#else
+        exportOBJ ( getSimulation()->getVisualRoot() );
+#endif
         break;
     }
     case Qt::Key_P:
