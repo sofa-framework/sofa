@@ -47,9 +47,9 @@ public:
     /// size_type
     typedef typename helper::vector<T,Alloc>::size_type size_type;
     /// reference to a value (read-write)
-    typedef typename helper::vector<T,Alloc>::reference reference;
+    //typedef typename helper::vector<T,Alloc>::reference reference;
     /// const reference to a value (read only)
-    typedef typename helper::vector<T,Alloc>::const_reference const_reference;
+    //typedef typename helper::vector<T,Alloc>::const_reference const_reference;
 
     /// Basic onstructor
     SVector() : helper::vector<T,Alloc>() {}

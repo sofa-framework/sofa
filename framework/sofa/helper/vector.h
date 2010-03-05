@@ -47,7 +47,7 @@ namespace helper
 template <class T, class MemoryManager = CPUMemoryManager<T> >
 class vector
 {
-
+    typedef unsigned int size_type;
 
 };
 
