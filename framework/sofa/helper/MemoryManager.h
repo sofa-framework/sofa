@@ -52,6 +52,7 @@ class MemoryManager
     typedef void* device_pointer;
 
     enum { MAX_DEVICES = 0 };
+    enum { BSIZE = 32 };
 
     static int numDevices();
     //
@@ -59,10 +60,11 @@ class MemoryManager
     static void memsetHost(host_pointer hPointer, int value,size_t n) { memset((void*) hPointer, value, n); }
 
     static device_pointer deviceAlloc(int d, int n);
+    static device_pointer deviceFree(const device_pointer dSrcPointer);
     static void memcpyHostToDevice(int d, device_pointer dDestPointer, const host_pointer hSrcPointer, size_t n);
     static void memcpyDeviceToHost(int d, host_pointer hDestPointer, const device_pointer dSrcPointer , size_t n);
     static void memcpyDeviceToDevice(int dDest, int dSrc, device_pointer dDestPointer, const device_pointer dSrcPointer , size_t n);
-    static void memsetDevice(int d, int value,size_t n);
+    static void memsetDevice(int d, device_pointer dDestPointer, T value,size_t n);
 };
 
 //CPU MemoryManager
@@ -71,12 +73,14 @@ class CPUMemoryManager : public MemoryManager<T>
 {
 public:
     enum { MAX_DEVICES = 0 };
+    enum { BSIZE = 1 };
 
     typedef T* host_pointer;
     typedef void* device_pointer;
 
     static int numDevices() { return 0 ; }
 
+    static host_pointer hostAlloc(int n) { return new T[n]; }
     static device_pointer deviceAlloc(int d, int n) { return NULL; }
     static void memcpyHostToDevice(int d, device_pointer dDestPointer, const host_pointer hSrcPointer, size_t n) { return ;}
     static void memcpyDeviceToHost(int d, host_pointer hDestPointer, const device_pointer dSrcPointer , size_t n) { return ;}

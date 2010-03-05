@@ -284,11 +284,12 @@ public:
         VSWAP ( bool     , bufferIsRegistered );
 #undef VSWAP
     }
-    const void* deviceRead ( int i=0 ) const
+    const void* deviceReadAt ( int i ) const
     {
         copyToDevice();
         return ( ( const T* ) devicePointer ) +i;
     }
+    const void* deviceRead ( ) const { return deviceReadAt(0); }
     void* deviceWrite ( int i=0 )
     {
         copyToDevice();
