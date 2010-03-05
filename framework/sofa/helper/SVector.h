@@ -37,13 +37,12 @@ namespace helper
 /// Same as helper::vector, + delimitors on serialization
 //======================================================================
 template<
-class T,
-      class Alloc = helper::CPUMemoryManager<T>
-      >
-class SVector: public helper::vector<T,Alloc>
+class T
+>
+class SVector: public helper::vector<T, helper::CPUMemoryManager<T> >
 {
 public:
-
+    typedef helper::CPUMemoryManager<T>  Alloc;
     /// size_type
     typedef typename helper::vector<T,Alloc>::size_type size_type;
     /// reference to a value (read-write)
@@ -76,7 +75,7 @@ public:
     SVector(InputIterator first, InputIterator last): helper::vector<T,Alloc>(first,last) {}
 #else /* __STL_MEMBER_TEMPLATES */
     /// Constructor
-    SVector(typename SVector<T,Alloc>::const_iterator first, typename SVector<T,Alloc>::const_iterator last): helper::vector<T,Alloc>(first,last) {}
+    SVector(typename SVector<T>::const_iterator first, typename SVector<T>::const_iterator last): helper::vector<T,Alloc>(first,last) {}
 #endif /* __STL_MEMBER_TEMPLATES */
 
 
@@ -122,13 +121,13 @@ public:
     }
 
 /// Output stream
-    inline friend std::ostream& operator<< ( std::ostream& os, const SVector<T,Alloc>& vec )
+    inline friend std::ostream& operator<< ( std::ostream& os, const SVector<T>& vec )
     {
         return vec.write(os);
     }
 
 /// Input stream
-    inline friend std::istream& operator>> ( std::istream& in, SVector<T,Alloc>& vec )
+    inline friend std::istream& operator>> ( std::istream& in, SVector<T>& vec )
     {
         return vec.read(in);
     }
