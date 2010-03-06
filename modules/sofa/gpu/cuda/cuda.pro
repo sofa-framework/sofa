@@ -122,7 +122,7 @@ SOURCES += mycuda.cpp \
            CudaSetTopology.cpp \
            CudaParticleSource.cpp \
            VolumetricContact.cpp \
-	   CudaMemoryManager.cpp 
+	   #CudaMemoryManager.cpp 
 
 CUDA_SOURCES += mycuda.cu \
            CudaMechanicalObject.cu \
@@ -147,6 +147,7 @@ contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 
 HEADERS += \
 	   	CudaLCP.h \
+			CudaMathRigid.h \
 	   	CudaMatrixUtils.h \
        	CudaMasterContactSolver.h \
 	   	CudaBTDLinearSolver.h \
