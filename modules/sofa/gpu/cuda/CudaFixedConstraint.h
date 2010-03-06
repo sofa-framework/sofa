@@ -64,6 +64,34 @@ public:
     static void projectResponse(Main* m, VecDeriv& dx);
 };
 
+#ifdef SOFA_DEV
+template <class real>
+class FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<3, real > >
+{
+public:
+    typedef FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<3, real> > Data;
+    typedef gpu::cuda::CudaRigidTypes<3, real> DataTypes;
+    typedef FixedConstraint<DataTypes> Main;
+    typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::Deriv Deriv;
+    typedef typename DataTypes::Real Real;
+    typedef typename Main::SetIndex SetIndex;
+
+    // min/max fixed indices for contiguous constraints
+    int minIndex;
+    int maxIndex;
+    // vector of indices for general case
+    gpu::cuda::CudaVector<int> cudaIndices;
+
+    static void init(Main* m);
+
+    static void addConstraint(Main* m, unsigned int index);
+
+    static void removeConstraint(Main* m, unsigned int index);
+
+    static void projectResponse(Main* m, VecDeriv& dx);
+};
+#endif // SOFA_DEV
 
 // I know using macros is bad design but this is the only way not to repeat the code for all CUDA types
 #define CudaFixedConstraint_DeclMethods(T) \
@@ -74,11 +102,17 @@ public:
 
 CudaFixedConstraint_DeclMethods(gpu::cuda::CudaVec3fTypes);
 CudaFixedConstraint_DeclMethods(gpu::cuda::CudaVec3f1Types);
+#ifdef SOFA_DEV
+CudaFixedConstraint_DeclMethods(gpu::cuda::CudaRigid3fTypes);
+#endif // SOFA_DEV
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
 CudaFixedConstraint_DeclMethods(gpu::cuda::CudaVec3dTypes);
 CudaFixedConstraint_DeclMethods(gpu::cuda::CudaVec3d1Types);
+#ifdef SOFA_DEV
+CudaFixedConstraint_DeclMethods(gpu::cuda::CudaRigid3dTypes);
+#endif // SOFA_DEV
 
 #endif // SOFA_GPU_CUDA_DOUBLE
 
