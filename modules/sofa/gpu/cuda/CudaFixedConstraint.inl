@@ -420,6 +420,20 @@ void FixedConstraintInternalData<gpu::cuda::CudaVec3d1Types>::projectResponse(Ma
         FixedConstraintCuda3d1_projectResponseIndexed(data.cudaIndices.size(), data.cudaIndices.deviceRead(), dx.deviceWrite());
 }
 
+#ifdef SOFA_DEV
+template <>
+void FixedConstraintInternalData<gpu::cuda::CudaRigid3dTypes>::projectResponse(Main* m, VecDeriv& dx)
+{
+    Data& data = m->data;
+    if (m->f_fixAll.getValue())
+        FixedConstraintCudaRigid3d_projectResponseContiguous(dx.size(), ((double*)dx.deviceWrite()));
+    else if (data.minIndex >= 0)
+        FixedConstraintCudaRigid3d_projectResponseContiguous(data.maxIndex-data.minIndex+1, ((double*)dx.deviceWrite())+6*data.minIndex);
+    else
+        FixedConstraintCudaRigid3d_projectResponseIndexed(data.cudaIndices.size(), data.cudaIndices.deviceRead(), dx.deviceWrite());
+}
+#endif // SOFA_DEV
+
 #endif // SOFA_GPU_CUDA_DOUBLE
 
 // I know using macros is bad design but this is the only way not to repeat the code for all CUDA types
