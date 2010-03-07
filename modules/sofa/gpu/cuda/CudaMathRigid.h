@@ -94,14 +94,26 @@ __device__ void operator+=(CudaRigidDeriv3<real>& a, CudaRigidDeriv3<real> b)
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
+struct rigidcoord3d
+{
+    double pos[3];
+    double rot[4];
+};
+
+struct rigidderiv3d
+{
+    double3 pos;
+    double3 rot;
+};
+
 template<>
-class CudaRigidCoord3<double> : public rigidcoord3
+class CudaRigidCoord3<double> : public rigidcoord3d
 {
 
 };
 
 template<>
-class CudaRigidDeriv3<double> : public rigidderiv3
+class CudaRigidDeriv3<double> : public rigidderiv3d
 {
 public:
     typedef double Real;
