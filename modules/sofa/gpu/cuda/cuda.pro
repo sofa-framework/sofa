@@ -53,7 +53,6 @@ HEADERS += mycuda.h \
            CudaUniformMass.inl \
            CudaFixedConstraint.h \
            CudaFixedConstraint.inl \
-           CudaFixedPlaneConstraint.inl \
            CudaSpringForceField.h \
            CudaSpringForceField.inl \
            CudaTetrahedronFEMForceField.h \
@@ -98,7 +97,6 @@ SOURCES += mycuda.cpp \
            CudaMechanicalObject.cpp \
            CudaUniformMass.cpp \
            CudaFixedConstraint.cpp \
-           CudaFixedPlaneConstraint.cpp \
            CudaFixedTranslationConstraint.cpp \
            CudaLinearMovementConstraint.cpp \
            CudaSpringForceField.cpp \
@@ -146,6 +144,8 @@ CUDA_SOURCES += mycuda.cu \
 contains(DEFINES,SOFA_DEV){ # BEGIN SOFA_DEV
 
 HEADERS += \
+           CudaFixedPlaneConstraint.h \
+           CudaFixedPlaneConstraint.inl \
 	   	CudaLCP.h \
 			CudaMathRigid.h \
 	   	CudaMatrixUtils.h \
@@ -175,6 +175,7 @@ HEADERS += \
 		
 SOURCES += \
         CudaBTDLinearSolver.cpp  \
+           CudaFixedPlaneConstraint.cpp \
 	   	CudaLinearSolverConstraintCorrection.cpp \
 	   	CudaRotationFinder.cpp \
 	   	CudaLCP.cpp \
@@ -201,6 +202,7 @@ SOURCES += \
 	CudaBilateralInteractionConstraint.cpp 
 
 CUDA_SOURCES += \
+           CudaFixedPlaneConstraint.cu \
 	   	CudaLCP.cu \
 	   	CudaMatrixUtils.cu \
        	CudaSpatialGridContainer.cu \
