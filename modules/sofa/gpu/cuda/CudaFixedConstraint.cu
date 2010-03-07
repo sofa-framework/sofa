@@ -61,7 +61,6 @@ extern "C"
 #endif // SOFA_DEV
 
 #endif // SOFA_GPU_CUDA_DOUBLE
-
 }
 
 //////////////////////
@@ -236,7 +235,7 @@ void FixedConstraintCuda3d1_projectResponseIndexed(unsigned int size, const void
 }
 
 #ifdef SOFA_DEV
-void FixedConstraintCudaRigid3f_projectResponseContiguous(unsigned int size, void* indices, void* dx)
+void FixedConstraintCudaRigid3d_projectResponseIndexed(unsigned int size, const void* indices, void* dx)
 {
     dim3 threads(BSIZE,1);
     dim3 grid((size+BSIZE-1)/BSIZE,1);
