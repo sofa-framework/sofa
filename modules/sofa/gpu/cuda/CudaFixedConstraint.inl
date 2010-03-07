@@ -203,8 +203,8 @@ void FixedConstraintInternalData< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal
 }
 
 #ifdef SOFA_DEV
-template<class real>
-void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<3, real> >::init(Main* m)
+template<int N, class real>
+void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::init(Main* m)
 {
     Data& data = m->data;
     data.minIndex = -1;
@@ -235,8 +235,8 @@ void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<3, real> >::init(Mai
     }
 }
 
-template<class real>
-void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<3, real> >::addConstraint(Main* m, unsigned int index)
+template<int N, class real>
+void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::addConstraint(Main* m, unsigned int index)
 {
     Data& data = m->data;
     //std::cout << "CudaFixedConstraint::addConstraint("<<index<<")\n";
@@ -282,8 +282,8 @@ void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<3, real> >::addConst
     }
 }
 
-template<class real>
-void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<3, real> >::removeConstraint(Main* m, unsigned int index)
+template<int N, class real>
+void FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> >::removeConstraint(Main* m, unsigned int index)
 {
     Data& data = m->data;
     removeValue(*m->f_indices.beginEdit(),index);
