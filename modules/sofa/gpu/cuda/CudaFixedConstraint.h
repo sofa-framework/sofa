@@ -65,12 +65,12 @@ public:
 };
 
 #ifdef SOFA_DEV
-template <class real>
-class FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<3, real > >
+template <int N, class real>
+class FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real > >
 {
 public:
-    typedef FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<3, real> > Data;
-    typedef gpu::cuda::CudaRigidTypes<3, real> DataTypes;
+    typedef FixedConstraintInternalData< gpu::cuda::CudaRigidTypes<N, real> > Data;
+    typedef gpu::cuda::CudaRigidTypes<N, real> DataTypes;
     typedef FixedConstraint<DataTypes> Main;
     typedef typename DataTypes::VecDeriv VecDeriv;
     typedef typename DataTypes::Deriv Deriv;
