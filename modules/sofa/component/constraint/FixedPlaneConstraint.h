@@ -41,6 +41,12 @@ namespace component
 namespace constraint
 {
 
+/// This class can be overriden if needed for additionnal storage within template specilizations.
+template <class DataTypes>
+class FixedPlaneConstraintInternalData
+{
+};
+
 template <class DataTypes>
 class FixedPlaneConstraint : public core::componentmodel::behavior::Constraint<DataTypes>
 {
@@ -56,6 +62,9 @@ public:
     typedef typename Coord::value_type   Real    ;
 
 protected:
+    FixedPlaneConstraintInternalData<DataTypes> data;
+    friend class FixedPlaneConstraintInternalData<DataTypes>;
+
     Data<SetIndex> indices; // the set of vertex indices
     /// direction on which the constraint applies
     Data<Coord> direction;
