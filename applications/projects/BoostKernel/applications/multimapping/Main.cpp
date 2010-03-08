@@ -27,6 +27,8 @@
 
 
 #include <sofa/helper/ArgumentParser.h>
+#include <sofa/gui/GUIManager.h>
+
 
 #include <sofa/component/contextobject/CoordinateSystem.h>
 #include <sofa/helper/system/FileRepository.h>
@@ -324,158 +326,21 @@ Node *createChainHybrid()
     SpringCollisionNode->addObject(mechaMappingSpring);
 
 
-    //************************************
-    //Torus FFD
-    Node* torusFFD = getSimulation()->newNode("FFD");
-    chain->addChild(torusFFD);
-
-
-    EulerImplicitSolver* solverFFD = new EulerImplicitSolver;
-    CGLinearSolverGraph* linearFFD = new CGLinearSolverGraph;
-    solverFFD->setName("Euler Implicit");
-    solverFFD->f_rayleighStiffness.setValue(0.01);
-    solverFFD->f_rayleighMass.setValue(1);
-
-    linearFFD->setName("Conjugate Gradient");
-    linearFFD->f_maxIter.setValue(20); //iteration maxi for the CG
-    linearFFD->f_smallDenominatorThreshold.setValue(0.000001);
-    linearFFD->f_tolerance.setValue(0.001);
-
-    torusFFD->addObject(solverFFD);
-    torusFFD->addObject(linearFFD);
-
-    MechanicalObject3* dofFFD = new MechanicalObject3; dofFFD->setName("FFD Object");
-    dofFFD->setTranslation(7.5,0,0);
-    dofFFD->setRotation(90,0,0);
-    torusFFD->addObject(dofFFD);
-
-    UniformMass3* uniMassFFD = new UniformMass3;
-    uniMassFFD->setTotalMass(5); //the whole object will have 5 as given mass
-    torusFFD->addObject(uniMassFFD);
-
-    RegularGridTopology* gridTopo = new RegularGridTopology(6,2,5); //dimension of the grid
-    gridTopo->setPos(
-        -2.5,2.5,  //Xmin, Xmax
-        -0.5,0.5,  //Ymin, Ymax
-        -2,2       //Zmin, Zmax
-    );
-    torusFFD->addObject(gridTopo);
-
-    RegularGridSpringForceField3* FFDFF = new RegularGridSpringForceField3;
-    FFDFF->setName("Springs FFD");
-    FFDFF->setStiffness(200);
-    FFDFF->setDamping(0);
-    torusFFD->addObject(FFDFF);
-
-    //Node VISUAL
-    Node* FFDVisualNode = getSimulation()->newNode("FFD Visu");
-    torusFFD->addChild(FFDVisualNode);
-
-
-    OglModel* visualFFD = new OglModel;
-    visualFFD->setName("visual");
-    visualFFD->load(sofa::helper::system::DataRepository.getFile("mesh/torus.obj"),"","");
-    visualFFD->setColor("yellow");
-    visualFFD->setTranslation(7.5,0,0);
-    FFDVisualNode->addObject(visualFFD);
-
-    BarycentricMapping3_to_Ext3* mappingFFD = new BarycentricMapping3_to_Ext3(dofFFD, visualFFD);
-    mappingFFD->setName("Mapping Visual");
-    FFDVisualNode->addObject(mappingFFD);
-
-
-    //Node COLLISION
-    Node* FFDCollisionNode = getSimulation()->newNode("FFD Collision");
-    torusFFD->addChild(FFDCollisionNode);
-
-    MeshLoader* loaderFFD_surf = new MeshLoader;
-    loaderFFD_surf->load(sofa::helper::system::DataRepository.getFile("mesh/torus_for_collision.obj").c_str());
-    FFDCollisionNode->addObject(loaderFFD_surf);
-
-    MeshTopology* meshTorusFFD_surf= new MeshTopology;
-    FFDCollisionNode->addObject(meshTorusFFD_surf);
-
-    MechanicalObject3* dofFFD_surf = new MechanicalObject3; dofFFD_surf->setName("Collision Object FFD");
-    dofFFD_surf->setTranslation(7.5,0,0);
-    FFDCollisionNode->addObject(dofFFD_surf);
-
-    TriangleModel* triangleFFD = new TriangleModel;  triangleFFD->setName("TriangleCollision FFD");
-    FFDCollisionNode->addObject(triangleFFD);
-
-    BarycentricMechanicalMapping3_to_3* mechaMappingFFD = new BarycentricMechanicalMapping3_to_3(dofFFD, dofFFD_surf);
-    FFDCollisionNode->addObject(mechaMappingFFD);
-
-    //************************************
-    //Torus Rigid
-    Node* torusRigid = getSimulation()->newNode("Rigid");
-    chain->addChild(torusRigid);
-
-    EulerImplicitSolver* solverRigid = new EulerImplicitSolver;
-    CGLinearSolverGraph* linearRigid = new CGLinearSolverGraph;
-    solverRigid->setName("Euler Implicit");
-    solverRigid->f_rayleighStiffness.setValue(0.01);
-    solverRigid->f_rayleighMass.setValue(1);
-
-    solverRigid->setName("Conjugate Gradient");
-    linearRigid->f_maxIter.setValue(20); //iteration maxi for the CG
-    linearRigid->f_smallDenominatorThreshold.setValue(0.000001);
-    linearRigid->f_tolerance.setValue(0.001);
-
-    torusRigid->addObject(solverRigid);
-    torusRigid->addObject(linearRigid);
-
-    MechanicalObjectRigid3* dofRigid = new MechanicalObjectRigid3; dofRigid->setName("Rigid Object");
-    dofRigid->setTranslation(10,0,0);
-    torusRigid->addObject(dofRigid);
-
-    UniformMassRigid3* uniMassRigid = new UniformMassRigid3;
-    uniMassRigid->setTotalMass(1); //the whole object will have 5 as given mass
-    torusRigid->addObject(uniMassRigid);
-
-    //Node VISUAL
-    Node* RigidVisualNode = getSimulation()->newNode("Rigid Visu");
-    torusRigid->addChild(RigidVisualNode);
-
-
-    OglModel* visualRigid = new OglModel;
-    visualRigid->setName("visual");
-    visualRigid->load(sofa::helper::system::DataRepository.getFile("mesh/torus.obj"),"","");
-    visualRigid->setColor("gray");
-    RigidVisualNode->addObject(visualRigid);
-
-    RigidMappingRigid3_to_Ext3* mappingRigid = new RigidMappingRigid3_to_Ext3(dofRigid, visualRigid);
-    mappingRigid->setName("Mapping Visual");
-    RigidVisualNode->addObject(mappingRigid);
-
-
-    //Node COLLISION
-    Node* RigidCollisionNode = getSimulation()->newNode("Rigid Collision");
-    torusRigid->addChild(RigidCollisionNode);
-
-
-    MeshLoader* loaderRigid_surf = new MeshLoader;
-    loaderRigid_surf->load(sofa::helper::system::DataRepository.getFile("mesh/torus_for_collision.obj").c_str());
-    RigidCollisionNode->addObject(loaderRigid_surf);
-
-    MeshTopology* meshTorusRigid_surf= new MeshTopology;
-    RigidCollisionNode->addObject(meshTorusRigid_surf);
-
-    MechanicalObject3* dofRigid_surf = new MechanicalObject3; dofRigid_surf->setName("Collision Object Rigid");
-    RigidCollisionNode->addObject(dofRigid_surf);
-
-    TriangleModel* triangleRigid = new TriangleModel;  triangleRigid->setName("TriangleCollision Rigid");
-    RigidCollisionNode->addObject(triangleRigid);
-
-    RigidMechanicalMappingRigid3_to_3* mechaMappingRigid = new RigidMechanicalMappingRigid3_to_3(dofRigid, dofRigid_surf);
-    RigidCollisionNode->addObject(mechaMappingRigid);
 
     Node* MultiParentsNode = getSimulation()->newNode("MultiParentsNode");
-    RigidCollisionNode->addChild(MultiParentsNode);
+    SpringCollisionNode->addChild(MultiParentsNode);
     FEMCollisionNode->addChild(MultiParentsNode);
+
+    MechanicalObject3* dofMultiMapping = new MechanicalObject3; dofMultiMapping->setName("Center Of Mass");
+    MultiParentsNode->addObject(dofMultiMapping);
+
+    //TODO: add MultiMapping and test
+
+
     std::cerr << "Testing MultiParents Addition:" << std::endl;
 
     PrintVisitor vis;
-    vis.execute(RigidCollisionNode);
+    vis.execute(SpringCollisionNode);
     std::cerr << "----------------------------------" << std::endl;
     vis.execute(FEMCollisionNode);
 
@@ -503,7 +368,7 @@ int main(int argc, char** argv)
     (argc,argv);
 
     sofa::simulation::setSimulation(new sofa::simulation::bgl::BglSimulation());
-    sofa::gui::SofaGUI::Init(argv[0]);
+    sofa::gui::GUIManager::Init(argv[0]);
 
     Node *root=createChainHybrid();
 
@@ -514,7 +379,7 @@ int main(int argc, char** argv)
 
     //=======================================
     // Run the main loop
-    sofa::gui::SofaGUI::MainLoop(root);
+    sofa::gui::GUIManager::MainLoop(root);
 
     return 0;
 }
