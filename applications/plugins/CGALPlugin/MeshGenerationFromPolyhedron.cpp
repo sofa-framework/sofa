@@ -6,6 +6,8 @@
  */
 #define CGALPLUGIN_MESHGENERATIONFROMPOLYHEDRON_CPP
 
+#define CGAL_MESH_3_VERBOSE
+
 #include <cgal_config.h>
 #include "MeshGenerationFromPolyhedron.inl"
 #include <sofa/core/ObjectFactory.h>
