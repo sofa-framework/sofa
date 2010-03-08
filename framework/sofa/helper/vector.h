@@ -65,7 +65,7 @@ public:
 protected:
     size_type     vectorSize;     ///< Current size of the vector
     size_type     allocSize;      ///< Allocated size
-    mutable void* devicePointer;  ///< Pointer to the data on the GPU side
+    mutable void* devicePointer[MemoryManager::MAX_DEVICES];  ///< Pointer to the data on the GPU side
     T*            hostPointer;    ///< Pointer to the data on the CPU side
     mutable bool  deviceIsValid;  ///< True if the data on the GPU is currently valid
     mutable bool  hostIsValid;    ///< True if the data on the CPU is currently valid
@@ -73,16 +73,20 @@ protected:
 public:
 
     vector()
-        : vectorSize ( 0 ), allocSize ( 0 ), devicePointer ( NULL ), hostPointer ( NULL ), deviceIsValid ( true ), hostIsValid ( true )
-    {}
-    vector ( size_type n )
-        : vectorSize ( 0 ), allocSize ( 0 ), devicePointer ( NULL ), hostPointer ( NULL ), deviceIsValid ( true ), hostIsValid ( true )
+        : vectorSize ( 0 ), allocSize ( 0 ), hostPointer ( NULL ), deviceIsValid ( true ), hostIsValid ( true )
     {
+        for (int d=0; d<MemoryManager::numDevices(); d++) devicePointer[d] = NULL;
+    }
+    vector ( size_type n )
+        : vectorSize ( 0 ), allocSize ( 0 ), hostPointer ( NULL ), deviceIsValid ( true ), hostIsValid ( true )
+    {
+        for (int d=0; d<MemoryManager::numDevices(); d++) devicePointer[d] = NULL;
         resize ( n );
     }
     vector ( const vector<T,MemoryManager >& v )
-        : vectorSize ( 0 ), allocSize ( 0 ), devicePointer ( NULL ), hostPointer ( NULL ), deviceIsValid ( true ), hostIsValid ( true )
+        : vectorSize ( 0 ), allocSize ( 0 ), hostPointer ( NULL ), deviceIsValid ( true ), hostIsValid ( true )
     {
+        for (int d=0; d<MemoryManager::numDevices(); d++) devicePointer[d] = NULL;
         *this = v;
     }
 
@@ -115,8 +119,12 @@ public:
 
     ~vector()
     {
-        if ( hostPointer!=NULL ) MemoryManager::freeHost ( hostPointer );
-        if ( devicePointer!=NULL ) MemoryManager::free ( devicePointer );
+        if ( hostPointer!=NULL ) MemoryManager::hostFree ( hostPointer );
+
+        for (int d=0; d<MemoryManager::numDevices(); d++)
+        {
+            if ( devicePointer[d]!=NULL ) MemoryManager::deviceFree( devicePointer[d] );
+        }
     }
 
     size_type size() const
@@ -134,17 +142,17 @@ public:
         return vectorSize==0;
     }
 
-    void reserve (size_type s)
+    void reserve (size_type s,size_type WARP_SIZE=MemoryManager::BSIZE)
     {
         if ( s <= allocSize ) return;
         allocSize = ( s>2*allocSize ) ?s:2*allocSize;
         // always allocate multiples of BSIZE values
-        allocSize = ( allocSize+MemoryManager::BSIZE-1 ) & (size_type)(-(long)MemoryManager::BSIZE);
+        allocSize = ( allocSize+WARP_SIZE-1 ) & (size_type)(-(long)WARP_SIZE);
 
         void* prevDevicePointer = devicePointer;
         //COMM : if (mycudaVerboseLevel>=LOG_INFO) std::cout << "CudaVector<"<<sofa::core::objectmodel::Base::className((T*)NULL)<<"> : reserve("<<s<<")"<<std::endl;
 
-        MemoryManager::deviceAlloc( &devicePointer, allocSize*sizeof ( T ) );
+        for (int d=0; d<MemoryManager::numDevices(); d++) MemoryManager::deviceAlloc(d, &devicePointer[d], allocSize*sizeof ( T ) );
 
         if ( vectorSize > 0 && deviceIsValid )
             MemoryManager::memcpyDeviceToDevice ( devicePointer, prevDevicePointer, vectorSize*sizeof ( T ) );
@@ -154,19 +162,19 @@ public:
 
         T* prevHostPointer = hostPointer;
         void* newHostPointer = NULL;
-        MemoryManager::mallocHost ( &newHostPointer, allocSize*sizeof ( T ) );
+        MemoryManager::hostAlloc( &newHostPointer, allocSize*sizeof ( T ) );
 
         hostPointer = (T*)newHostPointer;
         if ( vectorSize!=0 && hostIsValid )
             std::copy ( prevHostPointer, prevHostPointer+vectorSize, hostPointer );
         if ( prevHostPointer != NULL )
-            mycudaFreeHost ( prevHostPointer );
+            MemoryManager::hostFree( prevHostPointer );
     }
     /// resize the vector without calling constructors or destructors, and without synchronizing the device and host copy
-    void fastResize ( size_type s)
+    void fastResize ( size_type s,size_type WARP_SIZE=MemoryManager::BSIZE)
     {
         if ( s == vectorSize ) return;
-        reserve ( s,MemoryManager::BWARP_SIZE);
+        reserve ( s,WARP_SIZE);
         vectorSize = s;
         if ( !vectorSize )
         {
@@ -176,15 +184,15 @@ public:
         }
     }
     /// resize the vector discarding any old values, without calling constructors or destructors, and without synchronizing the device and host copy
-    void recreate( size_type s)
+    void recreate( size_type s,size_type WARP_SIZE=MemoryManager::BSIZE)
     {
         clear();
-        fastResize(s,MemoryManager::BWARP_SIZE);
+        fastResize(s,WARP_SIZE);
     }
 
     void memsetDevice(int v = 0)
     {
-        MemoryManager::memsetDevice(devicePointer, v, vectorSize*sizeof(T));
+        for (int d=0; d<MemoryManager::numDevices(); d++) MemoryManager::memsetDevice(d, devicePointer[d], v, vectorSize*sizeof(T));
         hostIsValid = false;
         deviceIsValid = true;
     }
@@ -196,22 +204,25 @@ public:
         deviceIsValid = false;
     }
 
-    void resize ( size_type s)
+    void resize ( size_type s,size_type WARP_SIZE=MemoryManager::BSIZE)
     {
         if ( s == vectorSize ) return;
-        reserve ( s,MemoryManager::BSIZE);
+        reserve ( s,WARP_SIZE);
         if ( s > vectorSize )
         {
             if (sofa::defaulttype::DataTypeInfo<T>::ZeroConstructor )   // can use memset instead of constructors
             {
                 if (hostIsValid)
-                    memset(hostPointer+vectorSize,0,(s-vectorSize)*sizeof(T));
+                    MemoryManager::memsetHost(hostPointer+vectorSize,0,(s-vectorSize)*sizeof(T));
                 if (deviceIsValid)
-                    mycudaMemset((T*)devicePointer+vectorSize, 0, (s-vectorSize)*sizeof(T));
+                {
+                    for (int d=0; d<MemoryManager::numDevices(); d++)
+                        MemoryManager::memsetDevice(d,(T*)devicePointer+vectorSize, 0, (s-vectorSize)*sizeof(T));
+                }
             }
             else
             {
-                MemoryManager::copyToHost();
+                copyToHost();
                 memset(hostPointer+vectorSize,0,(s-vectorSize)*sizeof(T));
                 // Call the constructor for the new elements
                 for ( size_type i = vectorSize; i < s; i++ )
@@ -227,14 +238,15 @@ public:
                     }
                     else
                     {
-                        mycudaMemcpyHostToDevice ( ( ( T* ) devicePointer ) +vectorSize, hostPointer+vectorSize, ( s-vectorSize ) *sizeof ( T ) );
+                        for (int d=0; d<MemoryManager::numDevices(); d++)
+                            MemoryManager::memcpyHostToDevice(d, ((T*) devicePointer ) +vectorSize, hostPointer+vectorSize, ( s-vectorSize ) *sizeof ( T ) );
                     }
                 }
             }
         }
         else if (s < vectorSize && !(defaulttype::DataTypeInfo<T>::SimpleCopy))     // need to call destructors
         {
-            MemoryManager::copyToHost();
+            copyToHost();
             // Call the destructor for the deleted elements
             for ( size_type i = s; i < vectorSize; i++ )
             {
@@ -255,7 +267,7 @@ public:
 #define VSWAP(type, var) { type t = var; var = v.var; v.var = t; }
         VSWAP ( size_type, vectorSize );
         VSWAP ( size_type, allocSize );
-        VSWAP ( void*    , devicePointer );
+        for (int d=0; d<MemoryManager::numDevices(); d++) VSWAP ( void*    , devicePointer[d] );
         VSWAP ( T*       , hostPointer );
         VSWAP ( bool     , deviceIsValid );
         VSWAP ( bool     , hostIsValid );
@@ -264,7 +276,7 @@ public:
 
     const void* deviceReadAt ( int i ) const
     {
-        MemoryManager::copyToDevice();
+        copyToDevice();
         return ( ( const T* ) devicePointer ) +i;
     }
 
@@ -272,20 +284,20 @@ public:
 
     void* deviceWrite ( int i=0 )
     {
-        MemoryManager::copyToDevice();
+        copyToDevice();
         hostIsValid = false;
         return ( ( T* ) devicePointer ) +i;
     }
 
     const T* hostRead ( int i=0 ) const
     {
-        MemoryManager::copyToHost();
+        copyToHost();
         return hostPointer+i;
     }
 
     T* hostWrite ( int i=0 )
     {
-        MemoryManager::copyToHost();
+        copyToHost();
         deviceIsValid = false;
         return hostPointer+i;
     }
@@ -303,7 +315,7 @@ public:
     void push_back ( const T& t )
     {
         size_type i = size();
-        MemoryManager::copyToHost();
+        copyToHost();
         deviceIsValid = false;
         fastResize ( i+1 );
         ::new ( hostPointer+i ) T ( t );
@@ -368,15 +380,50 @@ public:
         return in;
     }
 
-#ifdef NDEBUG
-    void checkIndex ( size_type,size_type ) const
+
+protected:
+    void copyToHost(int d = 0) const
     {
+        if ( hostIsValid ) return;
+//#ifndef NDEBUG
+        // COMM : if (mycudaVerboseLevel>=LOG_TRACE) {
+        // COMM :     std::cout << "CUDA: GPU->CPU copy of "<<sofa::core::objectmodel::Base::decodeTypeName ( typeid ( *this ) ) <<": "<<vectorSize*sizeof ( T ) <<" B"<<std::endl;
+        //sofa::helper::BackTrace::dump();
+        // COMM : }
+//#endif
+        MemoryManager::memcpyDeviceToHost (d, hostPointer, devicePointer, vectorSize*sizeof ( T ) );
+        hostIsValid = true;
     }
-#else
-    void checkIndex ( size_type x,size_type y) const
+
+    void copyToDevice(int d = 0) const
     {
-        assert (x<this->sizeX);
-        assert (y<this->sizeY);
+        if ( deviceIsValid ) return;
+//#ifndef NDEBUG
+        //COMM : if (mycudaVerboseLevel>=LOG_TRACE) std::cout << "CUDA: CPU->GPU copy of "<<sofa::core::objectmodel::Base::decodeTypeName ( typeid ( *this ) ) <<": "<<vectorSize*sizeof ( T ) <<" B"<<std::endl;
+//#endif
+        MemoryManager::memcpyHostToDevice (d, devicePointer, hostPointer, vectorSize*sizeof ( T ) );
+        deviceIsValid = true;
+    }
+
+    void copyToHostSingle(size_type i,int d = 0) const
+    {
+        if ( hostIsValid ) return;
+//#ifndef NDEBUG
+        //COMM : if (mycudaVerboseLevel>=LOG_TRACE) {
+        // COMM : std::cout << "CUDA: GPU->CPU single copy of "<<sofa::core::objectmodel::Base::decodeTypeName ( typeid ( *this ) ) <<": "<<sizeof ( T ) <<" B"<<std::endl;
+        //sofa::helper::BackTrace::dump();
+        //COMM : }
+//#endif
+        MemoryManager::memcpyDeviceToHost(d, ((T*)hostPointer)+i, ((const T*)devicePointer)+i, sizeof ( T ) );
+        //hostIsValid = true;
+    }
+
+#ifdef NDEBUG
+    void checkIndex ( size_type ) const {}
+#else
+    void checkIndex ( size_type i ) const
+    {
+        assert ( i<this->size() );
     }
 #endif
 };
@@ -409,8 +456,8 @@ public:
     /// Constructor
     vector<T, Alloc>& operator=(const std::vector<T, Alloc>& x)
     {
-        std::vector<T,Alloc>::operator = (x);
-        return (*this);
+        //std::vector<T,Alloc>::operator = (x);
+        return vector(x);
     }
 
 #ifdef __STL_MEMBER_TEMPLATES
