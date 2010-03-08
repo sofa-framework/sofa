@@ -67,7 +67,7 @@ bool BaseData::validParent(BaseData* parent)
     if (this->getValueTypeInfo()->ValidInfo() && parent->getValueTypeInfo()->ValidInfo())
         return true;
     // No conversion found
-    return false;
+    return true;
 }
 
 bool BaseData::setParent(BaseData* parent)
