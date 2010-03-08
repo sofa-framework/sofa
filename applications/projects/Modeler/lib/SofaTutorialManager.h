@@ -45,7 +45,7 @@
 #include <qpushbutton.h>
 #include <qevent.h>
 #include <qcombobox.h>
-typedef QMainWindow Q3MainWindow
+typedef QMainWindow Q3MainWindow;
 #endif
 
 

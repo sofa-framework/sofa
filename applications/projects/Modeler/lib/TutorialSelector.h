@@ -85,7 +85,7 @@ public:
     void usingScene(const std::string &filename);
     std::list< std::string > getCategories() const;
 public  slots:
-    void openCategory(QString);
+    void openCategory(const QString&);
 
 #ifdef SOFA_QT4
     void changeRequested( Q3ListViewItem * );
