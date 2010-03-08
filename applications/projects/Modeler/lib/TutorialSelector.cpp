@@ -264,7 +264,7 @@ void TutorialSelector::changeRequested( Q3ListViewItem *item )
     }
 }
 
-void TutorialSelector::openCategory( QString name)
+void TutorialSelector::openCategory( const QString &name)
 {
     std::map< Q3ListViewItem *, Category>::const_iterator it;
     for (it=itemToCategory.begin(); it!=itemToCategory.end(); ++it)

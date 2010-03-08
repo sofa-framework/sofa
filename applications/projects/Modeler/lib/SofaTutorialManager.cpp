@@ -37,7 +37,7 @@
 #else
 #include <qlayout.h>
 #include <qurl.h>
-typedef QToolBar Q3ToolBar
+typedef QToolBar Q3ToolBar;
 #endif
 
 namespace sofa
@@ -94,23 +94,26 @@ SofaTutorialManager::SofaTutorialManager(QWidget* parent, const char* name):Q3Ma
     Q3ToolBar *toolBar = new Q3ToolBar( this );
     toolBar->setLabel(QString("Tools"));
 
-
-    //Set up the list of tutorials
-    selector->openCategory(QString("All Sofa Tutorials"));
-
     //Add list of tutorials
     tutorialList = new QComboBox(toolBar);
-    const std::list<std::string> &listTuto=selector->getCategories();
-    for (std::list<std::string>::const_reverse_iterator it=listTuto.rbegin(); it!=listTuto.rend(); ++it)
-    {
-        tutorialList->addItem(QString(it->c_str()));
-    }
-    connect(tutorialList, SIGNAL(activated(QString)), selector, SLOT(openCategory(QString)));
 
     //Add button to launch a scene in Sofa
     buttonRunInSofa = new QPushButton(QString("Launch scene in Sofa"), toolBar);
     connect(buttonRunInSofa, SIGNAL(clicked()), this, SLOT(launchScene()));
 
+
+    //Set up the list of tutorials
+    selector->openCategory(QString("All Sofa Tutorials"));
+
+    const std::list<std::string> &listTuto=selector->getCategories();
+    for (std::list<std::string>::const_reverse_iterator it=listTuto.rbegin(); it!=listTuto.rend(); ++it)
+    {
+        tutorialList->insertItem(QString(it->c_str()));
+    }
+    connect(tutorialList, SIGNAL(activated(const QString&)), selector, SLOT(openCategory(const QString &)));
+
+    //Select All Sofa Tutorials as selected set
+    tutorialList->setCurrentItem(tutorialList->count()-1);
 
 
     this->resize(1000,600);
@@ -133,9 +136,10 @@ void SofaTutorialManager::openTutorial(const std::string& filename)
     if (filename.empty())
     {
         graph->hide();
+        buttonRunInSofa->hide();
         return;
     }
-
+    buttonRunInSofa->show();
     graph->show();
     std::string file=filename;
     const std::string &dirSofa = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str());
@@ -175,7 +179,11 @@ void SofaTutorialManager::openHTML(const std::string &filename)
 #endif
 }
 
-void SofaTutorialManager::openCategory(const std::string& filename)
+void SofaTutorialManager::openCategory(const std::string&
+#ifdef SOFA_QT4
+        filename
+#endif
+                                      )
 {
 
 #ifdef SOFA_QT4
