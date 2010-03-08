@@ -45,7 +45,7 @@ namespace sofa
 namespace defaulttype
 {
 template<class T>
-class DataTypeInfo;
+struct DataTypeInfo;
 }
 
 namespace helper
