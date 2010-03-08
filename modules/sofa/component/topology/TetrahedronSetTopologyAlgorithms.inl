@@ -159,6 +159,8 @@ void TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronsWithPla
     m_modifier->removeTetrahedra(toBeRemovedTetraIndex);
     m_modifier->notifyEndingEvent();
     m_modifier->propagateTopologicalChanges();
+
+    printf("NbCutElement=%d NbAddedElement=%d\n",toBeRemovedTetraIndex.size(),toBeAddedTetraIndex.size());
 }
 
 template<class DataTypes>
