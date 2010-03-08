@@ -268,7 +268,7 @@ void CudaVisualModel< TDataTypes >::updateNormals()
             quads.size(),
             nbVertex,
             quads.deviceRead(),
-            fnormals.deviceWrite(triangles.size()),
+            fnormals.deviceWriteAt(triangles.size()),
             x.deviceRead());
     if (nbVertex > 0)
         Kernels::calcVNormals(

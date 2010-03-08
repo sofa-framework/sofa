@@ -27,13 +27,20 @@
 #ifndef SOFA_DEFAULTTYPE_DATATYPEINFO_H
 #define SOFA_DEFAULTTYPE_DATATYPEINFO_H
 
+#include <vector>
 #include <sofa/helper/fixed_array.h>
-#include <sofa/helper/vector.h>
+//#include <sofa/helper/vector.h>
 #include <sofa/helper/set.h>
 #include <sstream>
 
 namespace sofa
 {
+
+namespace helper
+{
+template <class T, class MemoryManager >
+class vector;
+}
 
 namespace defaulttype
 {

@@ -29,6 +29,7 @@
 
 #include <sofa/helper/helper.h>
 #include <cstring>
+#include <sofa/helper/system/gl.h>
 
 namespace sofa
 {
@@ -52,21 +53,35 @@ public :
     //have to be changed according of the type of device
     typedef void* device_pointer;
 
+    typedef GLuint gl_buffer;
+
     enum { MAX_DEVICES = 0 };
     enum { BSIZE = 32 };
+    enum { SUPPORT_GL_BUFFER = 0 };
 
     static int numDevices();
     //
-    static void hostAlloc(void ** hPointer,int n) { *hPointer = new T[n]; }
+    static void hostAlloc(host_pointer* hPointer,int n) { *hPointer = new T[n/sizeof(T)]; }
     static void memsetHost(host_pointer hPointer, int value,size_t n) { memset((void*) hPointer, value, n); }
-    static device_pointer hostFree(const host_pointer hSrcPointer);
+    static void hostFree(const host_pointer hSrcPointer);
 
-    static void deviceAlloc(int d,void ** dPointer, int n);
-    static device_pointer deviceFree(const device_pointer dSrcPointer);
+    static void deviceAlloc(int d,device_pointer* dPointer, int n);
+    static void deviceFree(int d,const device_pointer dSrcPointer);
     static void memcpyHostToDevice(int d, device_pointer dDestPointer, const host_pointer hSrcPointer, size_t n);
     static void memcpyDeviceToHost(int d, host_pointer hDestPointer, const void * dSrcPointer , size_t n);
-    static void memcpyDeviceToDevice(int dDest, int dSrc, device_pointer dDestPointer, const device_pointer dSrcPointer , size_t n);
-    static void memsetDevice(int d, device_pointer dDestPointer, T value,size_t n);
+    static void memcpyDeviceToDevice(int d, device_pointer dDestPointer, const device_pointer dSrcPointer , size_t n);
+    static void memsetDevice(int d, device_pointer dDestPointer, int value,size_t n);
+
+    static int getBufferDevice();
+
+    static bool bufferAlloc(gl_buffer* bId, int n) { return false; }
+    static void bufferFree(const gl_buffer bId) {}
+
+    static bool bufferRegister(const gl_buffer bId) { return false; }
+    static void bufferUnregister(const gl_buffer bId) {}
+    static bool bufferMapToDevice(device_pointer* dDestPointer, const gl_buffer bSrcId) { return false; }
+    static void bufferUnmapToDevice(device_pointer dDestPointer, const gl_buffer bSrcId) {}
+
 };
 
 //CPU MemoryManager
