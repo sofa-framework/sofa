@@ -167,7 +167,7 @@ void SpatialGrid< SpatialGridTypes < gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TR
     //cells.recreate(nbCells+1);
     cellGhost.recreate(nbCells);
     //sortedPos.recreate(nbPoints);
-    kernel_updateGrid(cellBits, index0, cellWidth*2, nbPoints, cells.deviceWrite(index0), particleHash.deviceWrite(), sortTmp.deviceWrite(), cells.deviceWrite(), cellGhost.deviceWrite(), x.deviceRead());
+    kernel_updateGrid(cellBits, index0, cellWidth*2, nbPoints, cells.deviceWriteAt(index0), particleHash.deviceWrite(), sortTmp.deviceWrite(), cells.deviceWrite(), cellGhost.deviceWrite(), x.deviceRead());
     /*
         std::cout << nbPoints*8 << " entries in " << nbCells << " cells." << std::endl;
         int nfill = 0;

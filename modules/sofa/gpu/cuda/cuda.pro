@@ -119,8 +119,7 @@ SOURCES += mycuda.cpp \
            CudaTetrahedralVisualModel.cpp \
            CudaSetTopology.cpp \
            CudaParticleSource.cpp \
-           VolumetricContact.cpp \
-	   #CudaMemoryManager.cpp 
+           VolumetricContact.cpp 
 
 CUDA_SOURCES += mycuda.cu \
            CudaMechanicalObject.cu \

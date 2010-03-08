@@ -60,7 +60,7 @@ int mycudaInit(int)
     return 0;
 }
 
-void mycudaMalloc(void **devPtr, size_t)
+void mycudaMalloc(void **devPtr, size_t,int )
 {
     *devPtr = NULL;
 }
@@ -70,7 +70,7 @@ void mycudaMallocPitch(void **devPtr, size_t*, size_t, size_t)
     *devPtr = NULL;
 }
 
-void mycudaFree(void *)
+void mycudaFree(void *, int)
 {
 }
 
@@ -84,15 +84,15 @@ void mycudaFreeHost(void *hostPtr)
     free(hostPtr);
 }
 
-void mycudaMemcpyHostToDevice(void *, const void *, size_t)
+void mycudaMemcpyHostToDevice(void *, const void *, size_t, int)
 {
 }
 
-void mycudaMemcpyDeviceToDevice(void *, const void *, size_t)
+void mycudaMemcpyDeviceToDevice(void *, const void *, size_t,int )
 {
 }
 
-void mycudaMemcpyDeviceToHost(void *, const void *, size_t)
+void mycudaMemcpyDeviceToHost(void *, const void *, size_t,int )
 {
 }
 
@@ -125,6 +125,20 @@ void mycudaGLUnmapBufferObject(int)
 {
 }
 
+int mycudaGetnumDevices()
+{
+    return 0;
+}
+
+int mycudaGetBufferDevice()
+{
+    return 0;
+}
+
+void mycudaMemset(void *devPtr, int val, size_t size,int )
+{
+}
+
 #else
 
 bool cudaCheck(cudaError_t err, const char* src="?")
@@ -137,10 +151,10 @@ bool cudaCheck(cudaError_t err, const char* src="?")
 }
 
 bool cudaInitCalled = false;
+int deviceCount = 0;
 
 int mycudaInit(int device)
 {
-    int deviceCount = 0;
     cudaInitCalled = true;
     {
         const char* var = mygetenv("CUDA_MULTIOPS");
@@ -207,7 +221,7 @@ int mycudaGetMultiProcessorCount()
     return mycudaDeviceProp.multiProcessorCount;
 }
 
-void mycudaMalloc(void **devPtr, size_t size)
+void mycudaMalloc(void **devPtr, size_t size,int /*d*/)
 {
     if (!cudaInitCalled) mycudaInit();
     if (mycudaVerboseLevel>=LOG_INFO) myprintf("CUDA: malloc(%d).\n",size);
@@ -223,7 +237,7 @@ void mycudaMallocPitch(void **devPtr, size_t* pitch, size_t width, size_t height
     if (mycudaVerboseLevel>=LOG_TRACE) myprintf("CUDA: mallocPitch(%d,%d) -> 0x%x at pitch %d.\n",width,height, *devPtr, (int)*pitch);
 }
 
-void mycudaFree(void *devPtr)
+void mycudaFree(void *devPtr,int /*d*/)
 {
     if (mycudaVerboseLevel>=LOG_TRACE) myprintf("CUDA: free(0x%x).\n",devPtr);
     cudaCheck(cudaFree(devPtr),"cudaFree");
@@ -243,18 +257,18 @@ void mycudaFreeHost(void *hostPtr)
     cudaCheck(cudaFreeHost(hostPtr),"cudaFreeHost");
 }
 
-void mycudaMemcpyHostToDevice(void *dst, const void *src, size_t count)
+void mycudaMemcpyHostToDevice(void *dst, const void *src, size_t count,int /*d*/)
 {
     if (!cudaCheck(cudaMemcpy(dst, src, count, cudaMemcpyHostToDevice),"cudaMemcpyHostToDevice"))
         myprintf("in mycudaMemcpyHostToDevice(0x%x, 0x%x, %d)\n",dst,src,count);
 }
 
-void mycudaMemcpyDeviceToDevice(void *dst, const void *src, size_t count)
+void mycudaMemcpyDeviceToDevice(void *dst, const void *src, size_t count,int /*d*/		)
 {
     cudaCheck(cudaMemcpy(dst, src, count, cudaMemcpyDeviceToDevice),"cudaMemcpyDeviceToDevice");
 }
 
-void mycudaMemcpyDeviceToHost(void *dst, const void *src, size_t count)
+void mycudaMemcpyDeviceToHost(void *dst, const void *src, size_t count,int /*d*/)
 {
     cudaCheck(cudaMemcpy(dst, src, count, cudaMemcpyDeviceToHost),"cudaMemcpyDeviceToHost");
 }
@@ -274,7 +288,7 @@ void mycudaMemcpyDeviceToHost2D(void *dst, size_t dpitch, const void *src, size_
     cudaCheck(cudaMemcpy2D(dst, dpitch, src, spitch, width, height, cudaMemcpyDeviceToHost),"cudaMemcpyDeviceToHost2D");
 }
 
-void mycudaMemset(void *devPtr, int val, size_t size)
+void mycudaMemset(void *devPtr, int val, size_t size,int d)
 {
     cudaCheck(cudaMemset(devPtr, val,size),"mycudaMemset");
 }
@@ -290,6 +304,7 @@ void mycudaThreadSynchronize()
 void mycudaGLRegisterBufferObject(int id)
 {
     if (!cudaInitCalled) mycudaInit();
+    myprintf("mycudaGLRegisterBufferObject %d\n",id);
     cudaCheck(cudaGLRegisterBufferObject((GLuint)id),"cudaGLRegisterBufferObject");
 }
 
@@ -306,6 +321,17 @@ void mycudaGLMapBufferObject(void** ptr, int id)
 void mycudaGLUnmapBufferObject(int id)
 {
     cudaCheck(cudaGLUnmapBufferObject((GLuint)id),"cudaGLUnmapBufferObject");
+}
+
+int mycudaGetnumDevices()
+{
+    if (!cudaInitCalled) mycudaInit();
+    return deviceCount;
+}
+
+int mycudaGetBufferDevice()
+{
+    return 0;
 }
 
 #endif
