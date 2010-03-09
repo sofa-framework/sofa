@@ -96,7 +96,7 @@ void ReadTopologyCreator::addReadTopology(core::componentmodel::topology::BaseMe
         std::ostringstream ofilename;
         ofilename << sceneName << "_" << counterReadTopology << "_" << topology->getName()  << "_topology" << extension ;
 
-        rt->f_filename.setValue(ofilename.str());  rt->f_listening.setValue(false); //Desactivated only called by extern functions
+        rt->f_filename.setValue(ofilename.str());  rt->f_listening.setValue(false); //Deactivated only called by extern functions
         if (init) rt->init();
 
         ++counterReadTopology;

@@ -39,7 +39,7 @@
 #include <sofa/simulation/common/PropagateEventVisitor.h>
 #include <sofa/simulation/common/UpdateMappingEndEvent.h>
 #include <sofa/simulation/common/AnimateVisitor.h>
-#include <sofa/simulation/common/DesactivatedNodeVisitor.h>
+#include <sofa/simulation/common/DeactivatedNodeVisitor.h>
 #include <sofa/simulation/common/InitVisitor.h>
 #include <sofa/simulation/common/MechanicalVisitor.h>
 #include <sofa/simulation/common/VisualVisitor.h>
@@ -93,8 +93,8 @@ void Node::init()
 /// ReInitialize the components of this node and all the nodes which depend on it.
 void Node::reinit()
 {
-    sofa::simulation::DesactivationVisitor desactivate(isActive());
-    desactivate.execute( this );
+    sofa::simulation::DeactivationVisitor deactivate(isActive());
+    deactivate.execute( this );
 }
 
 /// Do one step forward in time

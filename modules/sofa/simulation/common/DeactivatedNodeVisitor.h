@@ -22,7 +22,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/simulation/common/DesactivatedNodeVisitor.h>
+#ifndef SOFA_SIMULATION_DeactivATEDNODEACTION_H
+#define SOFA_SIMULATION_DeactivATEDNODEACTION_H
+
+#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
+#pragma once
+#endif
+
+#include <sofa/simulation/common/Visitor.h>
 
 namespace sofa
 {
@@ -30,65 +37,34 @@ namespace sofa
 namespace simulation
 {
 
-Visitor::Result DesactivationVisitor::processNodeTopDown(simulation::Node* node)
+class SOFA_SIMULATION_COMMON_API DeactivationVisitor : public Visitor
 {
-    if (active)
-    {
-        for (simulation::Node::ChildIterator itChild = node->child.begin(); itChild != node->child.end(); ++itChild)
-        {
-            simulation::Node *child=*itChild;
-            child->setActive(active);
-        }
+public:
+    DeactivationVisitor(bool _active=false):active(_active)
+    {}
 
-        if (!node->nodeInVisualGraph.empty())
-        {
-            simulation::Node *visualNode=node->nodeInVisualGraph;
-            visualNode->setActive(active);
+    virtual Result processNodeTopDown(simulation::Node* node);
+    virtual void processNodeBottomUp(simulation::Node* node);
 
-            DesactivationVisitor activationVisitor(active);
-            visualNode->executeVisitor(&activationVisitor);
-        }
-        for (simulation::Node::ChildIterator itChild = node->childInVisualGraph.begin(); itChild != node->childInVisualGraph.end(); ++itChild)
-        {
-            simulation::Node *child=*itChild;
-            child->setActive(active);
 
-            DesactivationVisitor activationVisitor(active);
-            child->executeVisitor(&activationVisitor);
-        }
+    /// Specify whether this action can be parallelized.
+    virtual bool isThreadSafe() const { return true; }
 
-    }
-    return RESULT_CONTINUE;
-}
+    /// Return a category name for this action.
+    /// Only used for debugging / profiling purposes
+    virtual const char* getCategoryName() const { return "deactivatednode"; }
+    virtual const char* getClassName() const { return "DeactivationVisitor"; }
 
-void DesactivationVisitor::processNodeBottomUp(simulation::Node* node)
-{
-    if (!active)
-    {
-        node->is_activated.setValue(active);
 
-        if (!node->nodeInVisualGraph.empty())
-        {
-            simulation::Node *visualNode=node->nodeInVisualGraph;
-            DesactivationVisitor deactivationVisitor(active);
-            visualNode->executeVisitor(&deactivationVisitor);
-        }
-
-        for (simulation::Node::ChildIterator itChild = node->childInVisualGraph.begin(); itChild != node->childInVisualGraph.end(); ++itChild)
-        {
-            simulation::Node *child=*itChild;
-            child->setActive(active);
-
-            DesactivationVisitor deactivationVisitor(active);
-            child->executeVisitor(&deactivationVisitor);
-        }
-
-    }
-
-}
+    void setValue(bool _active) {active = _active;}
+    bool getValue()            {return active;}
+protected:
+    bool active;
+};
 
 
 } // namespace simulation
 
 } // namespace sofa
 
+#endif

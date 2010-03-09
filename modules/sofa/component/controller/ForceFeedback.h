@@ -54,7 +54,7 @@ public:
     simulation::Node *context;
 
     ForceFeedback():
-        f_activate(initData(&f_activate, false, "activate", "boolean to activate or desactivate the forcefeedback"))
+        f_activate(initData(&f_activate, false, "activate", "boolean to activate or deactivate the forcefeedback"))
     {
     }
 
