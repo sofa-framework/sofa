@@ -22,6 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#define SOFA_COMPONENT_CONSTRAINT_UNCOUPLEDCONSTRAINTCORRECTION_CPP
+
 #include "UncoupledConstraintCorrection.inl"
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/ObjectFactory.h>
@@ -31,29 +33,24 @@
 
 #include <sofa/component/linearsolver/FullMatrix.h>
 #include <sofa/component/mass/UniformMass.h>
+
 namespace sofa
 {
+
 namespace component
 {
+
 namespace constraint
 {
+
 using namespace sofa::defaulttype;
 
-
-
-
 template<>
-void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::init()
+SOFA_COMPONENT_CONSTRAINT_API void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::init()
 {
     mstate = dynamic_cast< behavior::MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
 
-
-
-
-
     double dt = this->getContext()->getDt();
-
-
 
     VecReal UsedComp;
 
@@ -92,16 +89,11 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::init()
     {
         sout<<"COMPLIANCE VALUE FOUND"<<sendl;
     }
-
-
 }
-
-//////////////////////////////////////
-
 
 
 template<>
-void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getCompliance(defaulttype::BaseMatrix*W)
+SOFA_COMPONENT_CONSTRAINT_API void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getCompliance(defaulttype::BaseMatrix*W)
 {
     const VecConst& constraints = *mstate->getC();
     Deriv weighedNormal;
@@ -111,7 +103,6 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getCompliance(defa
     // debug //
     //sofa::component::linearsolver::FullMatrix<double> Wnew;
     //Wnew.resize((int)W->rowSize(), (int) W->colSize())	;
-
 
     unsigned int numConstraints = constraints.size();
     //serr<<" numConstraints :"<<numConstraints;
@@ -124,14 +115,11 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getCompliance(defa
 
     for(unsigned int curRowConst=0; curRowConst < numConstraints; curRowConst++)
     {
-
-
         int indexCurRowConst = mstate->getConstraintId()[curRowConst];
 
 #ifdef DEBUG
         std::cout<<"constraint["<<curRowConst<<"] : index :  "<<indexCurRowConst<<std::endl;
 #endif
-
 
         ConstraintIterator itConstraint;
         std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[curRowConst].data();
@@ -143,10 +131,8 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getCompliance(defa
 #ifdef DEBUG
             std::cout<<"    [ "<<dof<<"]="<<n<<std::endl;
 #endif
-
             weighedNormal.getVCenter() = n.getVCenter(); // weighed normal
             weighedNormal.getVOrientation() = n.getVOrientation();
-
 
             // compliance * weighedNormal
             Comp_wN.getVCenter() = weighedNormal.getVCenter() * UsedComp[0];
@@ -190,11 +176,11 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getCompliance(defa
 #ifdef DEBUG
     //std::cout<<" Wnew = "<<Wnew<<std::endl;
 #endif
-
 }
 
+
 template<>
-void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getComplianceMatrix(defaulttype::BaseMatrix *m) const
+SOFA_COMPONENT_CONSTRAINT_API void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getComplianceMatrix(defaulttype::BaseMatrix *m) const
 {
     const VecReal &comp=compliance.getValue();
     const unsigned int dimension = defaulttype::DataTypeInfo<Deriv>::size();
@@ -225,19 +211,21 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getComplianceMatri
         m->set(d*6+5, d*6+5, comp[d*7+6]);
     }
 
-
-//        for (unsigned int l=0;l<s;++l)
-//        {
-//            for (unsigned int c=0;c<s;++c)
-//            {
-//                if (l==c) m->set(l,c,comp[l]);
-//                else      m->set(l,c,0);
-//            }
-//        }
+    /*for (unsigned int l=0;l<s;++l)
+    {
+    	for (unsigned int c=0;c<s;++c)
+    	{
+    		if (l==c)
+    			m->set(l,c,comp[l]);
+    		else
+    			m->set(l,c,0);
+    	}
+    }*/
 }
 
+
 template<>
-void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::applyContactForce(const defaulttype::BaseVector *f)
+SOFA_COMPONENT_CONSTRAINT_API void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::applyContactForce(const defaulttype::BaseVector *f)
 {
     VecDeriv& force = *mstate->getExternalForces();
     const VecConst& constraints = *mstate->getC();
@@ -269,13 +257,11 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::applyContactForce(
                 weighedNormal = itConstraint->second; // weighted normal
                 force[dof].getVCenter() += weighedNormal.getVCenter() * fC1;
                 force[dof].getVOrientation() += weighedNormal.getVOrientation() * fC1;
-
-
             }
         }
     }
-    // std::cout<<"force -- resultante: "<<force[0].getVCenter()<<"   -- moment: "<<force[0].getVOrientation()<<std::endl;
 
+//	std::cout<<"force -- resultante: "<<force[0].getVCenter()<<"   -- moment: "<<force[0].getVOrientation()<<std::endl;
 
     VecDeriv& dx = *mstate->getDx();
     VecCoord& x = *mstate->getX();
@@ -283,7 +269,7 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::applyContactForce(
     VecDeriv& v_free = *mstate->getVfree();
     VecCoord& x_free = *mstate->getXfree();
 
-// Euler integration... will be done in the "integrator" as soon as it exists !
+    // Euler integration... will be done in the "integrator" as soon as it exists !
     dx.resize(v.size());
 
     for (unsigned int i=0; i<dx.size(); i++)
@@ -300,23 +286,17 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::applyContactForce(
         v[i] += dx[i];
         dx[i] *= dt;
         x[i] += dx[i];
-
     }
-    //std::cout<<"dx -- resultante: "<<dx[0].getVCenter()<<"   -- moment: "<<dx[0].getVOrientation()<<std::endl;
 
-    //std::cout<<"UncoupledConstraintCorrection<defaulttype::Rigid3Types>: x= "<<x <<" \n        xfree = "<<x_free<<std::endl;
-
+//	std::cout<<"dx -- resultante: "<<dx[0].getVCenter()<<"   -- moment: "<<dx[0].getVOrientation()<<std::endl;
+//	std::cout<<"UncoupledConstraintCorrection<defaulttype::Rigid3Types>: x= "<<x <<" \n        xfree = "<<x_free<<std::endl;
 //	simulation::tree::MechanicalPropagateAndAddDxVisitor(dx).execute(this->getContext());
-
-
 ////////////////////////////////////////////////////////////////////
-
 }
 
 
-
 template<>
-void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::setConstraintDForce(double * df, int begin, int end, bool update)
+SOFA_COMPONENT_CONSTRAINT_API void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::setConstraintDForce(double * df, int begin, int end, bool update)
 {
     const VecConst& constraints = *mstate->getC();
     if (!update)
@@ -332,7 +312,6 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::setConstraintDForc
         std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[c].data();
         for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
         {
-
             Deriv n = itConstraint->second;
             unsigned int dof = itConstraint->first;
 
@@ -345,10 +324,8 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::setConstraintDForc
             DX.getVOrientation()[1] = compliance.getValue()[2]*wrench[0] +  compliance.getValue()[4]*wrench[1] + compliance.getValue()[5]*wrench[2] ;
             DX.getVOrientation()[2] = compliance.getValue()[3]*wrench[0] +  compliance.getValue()[5]*wrench[1] + compliance.getValue()[6]*wrench[2] ;
 
-
             constraint_disp[dof] = DX;
         }
-
     }
 }
 
@@ -356,9 +333,8 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::setConstraintDForc
 ///////////////////// ATTENTION : passer un indice début - fin (comme pour force et déplacement) pour calculer le block complet
 ///////////////////// et pas uniquement la diagonale.
 template<>
-void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, int begin, int end)
+SOFA_COMPONENT_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::getBlockDiagonalCompliance(defaulttype::BaseMatrix* W, int begin, int end)
 {
-
     //std::cout<<"UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getBlockDiagonalCompliance"<<std::endl;
 
     const VecConst& constraints = *mstate->getC();
@@ -382,7 +358,6 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getBlockDiagonalCo
         {
             weighedNormal = itConstraint1->second;
             unsigned int dof1 = itConstraint1->first;
-
 
             C_n.getVCenter() = weighedNormal.getVCenter() * compliance.getValue()[0];
             defaulttype::Vec3d wrench = weighedNormal.getVOrientation() ;
@@ -416,31 +391,20 @@ void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getBlockDiagonalCo
             }
         }
     }
-
 }
 
 
 SOFA_DECL_CLASS(UncoupledConstraintCorrection)
 
 int UncoupledConstraintCorrectionClass = core::RegisterObject("Component computing contact forces within a simulated body using the compliance method.")
-
-        .add< UncoupledConstraintCorrection<Vec1Types> >()
-        .add< UncoupledConstraintCorrection<Vec3Types> >()
-        .add< UncoupledConstraintCorrection<Rigid3Types> >()
+        .add< UncoupledConstraintCorrection< Vec1Types > >()
+        .add< UncoupledConstraintCorrection< Vec3Types > >()
+        .add< UncoupledConstraintCorrection< Rigid3Types > >()
         ;
 
-
-
-
-template class UncoupledConstraintCorrection<Vec1Types>;
-template class UncoupledConstraintCorrection<Vec3Types>;
-template class UncoupledConstraintCorrection<Rigid3Types>;
-
-
-
-
-
-
+template class SOFA_COMPONENT_CONSTRAINT_API UncoupledConstraintCorrection< Vec1Types >;
+template class SOFA_COMPONENT_CONSTRAINT_API UncoupledConstraintCorrection< Vec3Types >;
+template class SOFA_COMPONENT_CONSTRAINT_API UncoupledConstraintCorrection< Rigid3Types >;
 
 } // namespace constraint
 

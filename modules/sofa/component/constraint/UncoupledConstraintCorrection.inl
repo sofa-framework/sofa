@@ -610,6 +610,26 @@ void UncoupledConstraintCorrection<DataTypes>::getBlockDiagonalCompliance(defaul
     }
 }
 
+
+template<>
+void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::init();
+
+template<>
+void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::getCompliance(defaulttype::BaseMatrix * /*W*/);
+
+template<>
+void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::getComplianceMatrix(defaulttype::BaseMatrix * /*m*/) const;
+
+template<>
+void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::applyContactForce(const defaulttype::BaseVector * /*f*/);
+
+template<>
+void UncoupledConstraintCorrection< defaulttype::Rigid3Types >::setConstraintDForce(double * /*df*/, int /*begin*/, int /*end*/, bool /*update*/);
+
+template<>
+void UncoupledConstraintCorrection<defaulttype::Rigid3Types>::getBlockDiagonalCompliance(defaulttype::BaseMatrix * /*W*/, int /*begin*/, int /*end*/);
+
+
 } // namespace constraint
 
 } // namespace component

@@ -131,9 +131,26 @@ private:
     std::vector<int> id_to_localIndex;	// table that gives the local index of a constraint given its id
 
     //std::vector< std::vector<int> >  dof_constraint_table;   // table of indices of each point involved with each constraint
-
-
 };
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_CONSTRAINT_UNCOUPLEDCONSTRAINTCORRECTION_CPP)
+#ifndef SOFA_FLOAT
+extern template class SOFA_COMPONENT_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Vec3dTypes>;
+//extern template class SOFA_COMPONENT_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Vec2dTypes>;
+extern template class SOFA_COMPONENT_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Vec1Types>;
+//extern template class SOFA_COMPONENT_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Vec6dTypes>;
+extern template class SOFA_COMPONENT_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Rigid3dTypes>;
+//extern template class SOFA_COMPONENT_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Rigid2dTypes>;
+#endif
+#ifndef SOFA_DOUBLE
+extern template class SOFA_COMPONENT_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Vec3fTypes>;
+//extern template class SOFA_COMPONENT_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Vec2fTypes>;
+extern template class SOFA_COMPONENT_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Vec1fTypes>;
+//extern template class SOFA_COMPONENT_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Vec6fTypes>;
+extern template class SOFA_COMPONENT_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Rigid3fTypes>;
+//extern template class SOFA_COMPONENT_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Rigid2fTypes>;
+#endif
+#endif
 
 } // namespace collision
 
