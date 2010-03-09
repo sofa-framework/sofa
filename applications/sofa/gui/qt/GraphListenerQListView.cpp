@@ -203,13 +203,19 @@ void GraphListenerQListView::addChild(Node* parent, Node* child)
         else
         {
             //Node with multiple parent
-            Q3ListViewItem* item= createItem(items[parent]);
-            item->setDropEnabled(true);
-            QString name=QString("MultiNode ") + QString(child->getName().c_str());
-            item->setText(0, name);
-            nodeWithMultipleParents.insert(std::make_pair(items[child], item));
-            static QPixmap pixMultiNode((const char**)iconmultinode_xpm);
-            item->setPixmap(0, pixMultiNode);
+            Q3ListViewItem *nodeItem=items[child];
+            if (parent &&
+                parent != findObject(nodeItem->parent()) &&
+                !nodeWithMultipleParents.count(nodeItem))
+            {
+                Q3ListViewItem* item= createItem(items[parent]);
+                item->setDropEnabled(true);
+                QString name=QString("MultiNode ") + QString(child->getName().c_str());
+                item->setText(0, name);
+                nodeWithMultipleParents.insert(std::make_pair(items[child], item));
+                static QPixmap pixMultiNode((const char**)iconmultinode_xpm);
+                item->setPixmap(0, pixMultiNode);
+            }
         }
     }
     else
@@ -403,7 +409,7 @@ void GraphListenerQListView::unfreeze(Node* groot)
 {
     if (!items.count(groot)) return;
     frozen = false;
-//	addChild(NULL, groot);
+    addChild(NULL, groot);
 }
 
 /*****************************************************************************************************************/

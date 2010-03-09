@@ -180,11 +180,7 @@ signals:
     void updateDataWidgets();             // emitted eachtime updateValues is called to propagate the changes to the widgets.
     void objectUpdated();                 //update done
     void dialogClosed(void *);            //the current window has been closed: we give the Id of the current window
-#ifdef SOFA_QT4
     void nodeNameModification(Q3ListViewItem *);
-#else
-    void nodeNameModification(QListViewItem *);
-#endif
 protected slots:
     //update the tables of value at each step of the simulation
     void clearWarnings() {node->clearWarnings(); logWarningEdit->clear();}
