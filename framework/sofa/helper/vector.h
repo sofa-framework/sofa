@@ -47,6 +47,8 @@ namespace sofa
 namespace helper
 {
 
+void SOFA_HELPER_API vector_access_failure(const void* vec, unsigned size, unsigned i, const std::type_info& type);
+
 template <class T, class MemoryManager = CPUMemoryManager<T> >
 class vector
 {
