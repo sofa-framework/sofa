@@ -17,7 +17,7 @@ HEADERS += common.h \
            CollisionVisitor.h \  
            Colors.h \
            DeleteVisitor.h \
-           DesactivatedNodeVisitor.h \
+           DeactivatedNodeVisitor.h \
            ExportGnuplotVisitor.h \
            ExportOBJVisitor.h \
            FindByTypeVisitor.h \
@@ -69,7 +69,7 @@ SOURCES += Node.cpp \
            CleanupVisitor.cpp \
            CollisionVisitor.cpp \
            DeleteVisitor.cpp \
-           DesactivatedNodeVisitor.cpp \
+           DeactivatedNodeVisitor.cpp \
            ExportGnuplotVisitor.cpp \
            ExportOBJVisitor.cpp \
            InitVisitor.cpp \   

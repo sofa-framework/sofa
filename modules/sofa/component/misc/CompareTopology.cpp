@@ -360,7 +360,7 @@ void CompareTopologyCreator::addCompareTopology(sofa::core::componentmodel::topo
         std::ostringstream ofilename;
         ofilename << sceneName << "_" << counterCompareTopology << "_" << topology->getName()  << "_topology" << extension ;
 
-        ct->f_filename.setValue(ofilename.str());  ct->f_listening.setValue(false); //Desactivated only called by extern functions
+        ct->f_filename.setValue(ofilename.str());  ct->f_listening.setValue(false); //Deactivated only called by extern functions
         if (init) ct->init();
 
         ++counterCompareTopology;

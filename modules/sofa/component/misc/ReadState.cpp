@@ -99,7 +99,7 @@ void ReadStateCreator::addReadState(sofa::core::componentmodel::behavior::BaseMe
         std::ostringstream ofilename;
         ofilename << sceneName << "_" << counterReadState << "_" << ms->getName()  << "_mstate" << extension ;
 
-        rs->f_filename.setValue(ofilename.str());  rs->f_listening.setValue(false); //Desactivated only called by extern functions
+        rs->f_filename.setValue(ofilename.str());  rs->f_listening.setValue(false); //Deactivated only called by extern functions
         if (init) rs->init();
 
         ++counterReadState;

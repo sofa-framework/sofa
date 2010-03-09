@@ -73,7 +73,7 @@ PointModel::PointModel()
     : bothSide(initData(&bothSide, false, "bothSide", "activate collision on both side of the point model (when surface normals are defined on these points)") )
     , mstate(NULL)
     , computeNormals( initData(&computeNormals, false, "computeNormals", "activate computation of normal vectors (required for some collision detection algorithms)") )
-    , PointActiverEngine(initData(&PointActiverEngine,"PointActiverEngine", "path of a component PointActiver that activate or desactivate collision point during execution") )
+    , PointActiverEngine(initData(&PointActiverEngine,"PointActiverEngine", "path of a component PointActiver that activate or deactivate collision point during execution") )
     , m_lmdFilter( NULL )
 {
 }

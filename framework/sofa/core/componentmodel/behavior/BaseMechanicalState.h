@@ -192,14 +192,14 @@ public:
 
         /// Activate the mask. By default, the mask state is set to "DEFAULT".
         /// It means that if no component change the current state, the mask will be used.
-        /// If one component desactivate the filter, it won't be used at all during the time step, even if other components desire to use it.
+        /// If one component deactivate the filter, it won't be used at all during the time step, even if other components desire to use it.
         void setInUse(bool use)
         {
             if (inUse) inUse=use;
-            else if (!use)     inUse=false; //Desactivate if one component is not using it
+            else if (!use)     inUse=false; //Deactivate if one component is not using it
         }
-        /// Allows to desactivate the usage of the mask. Typically, it is used when it is needed to propagate at the end of the integration, the position and velocity.
-        /// Different from inUse, because a mask desactivated can be re-activated.
+        /// Allows to deactivate the usage of the mask. Typically, it is used when it is needed to propagate at the end of the integration, the position and velocity.
+        /// Different from inUse, because a mask deactivated can be re-activated.
         void activate(bool a)
         {
             activated = a;

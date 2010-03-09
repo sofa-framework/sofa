@@ -120,7 +120,7 @@ MechanicalObject<DataTypes>::MechanicalObject()
     rotation2.setGroup("Transformation");
     scale.setGroup("Transformation");
 
-    //Desactivate the Filter. MechanicalObjects created during the collision response must not use the filter as it will be empty
+    //Deactivate the Filter. MechanicalObjects created during the collision response must not use the filter as it will be empty
     this->forceMask.activate(false);
 
     f_X->init();

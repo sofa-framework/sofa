@@ -68,7 +68,7 @@
 #include <sofa/simulation/common/InitVisitor.h>
 #include <sofa/simulation/common/UpdateContextVisitor.h>
 #include <sofa/simulation/common/DeleteVisitor.h>
-#include <sofa/simulation/common/DesactivatedNodeVisitor.h>
+#include <sofa/simulation/common/DeactivatedNodeVisitor.h>
 
 #include <sofa/helper/system/FileRepository.h>
 
@@ -2082,7 +2082,7 @@ void RealGUI::ActivateNode(sofa::simulation::Node* node, bool activate)
     QSofaListView* sofalistview = (QSofaListView*)sender();
 
     if (activate) node->setActive(true);
-    simulation::DesactivationVisitor v(activate);
+    simulation::DeactivationVisitor v(activate);
     node->executeVisitor(&v);
 
 
