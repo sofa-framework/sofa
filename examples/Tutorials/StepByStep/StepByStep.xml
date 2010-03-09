@@ -20,4 +20,13 @@
       <Tutorial name="More Precise Model"         scene="Tutorials/StepByStep/FullObject/7_FullObject.scn"/>
       <Tutorial name="Different Modelization"     scene="Tutorials/StepByStep/FullObject/8_FullObject.scn"/>
     </Group>
+    <Group name="Topological mapping">
+      <Tutorial name="Objective"                  scene="Tutorials/StepByStep/FullObject/0_TopoMapping.scn"/>  
+      <Tutorial name="Volume mesh"                scene="Tutorials/StepByStep/FullObject/1_TopoMapping.scn"/>    
+      <Tutorial name="Embedding the Model"        scene="Tutorials/StepByStep/FullObject/2_TopoMapping.scn"/>    
+      <Tutorial name="Mapping to surface mesh"    scene="Tutorials/StepByStep/FullObject/3_TopoMapping.scn"/>    
+      <Tutorial name="Change mesh behavior"       scene="Tutorials/StepByStep/FullObject/4_TopoMapping.scn"/> 
+      <Tutorial name="Other mesh"                 scene="Tutorials/StepByStep/FullObject/5_TopoMapping.scn"/>
+      <Tutorial name="Same pipeline"              scene="Tutorials/StepByStep/FullObject/6_TopoMapping.scn"/>
+    </Group>
 </Category>
