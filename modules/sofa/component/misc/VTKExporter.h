@@ -38,12 +38,12 @@ private:
 
     std::ofstream* outfile;
 
-    void fetchDataFields(const helper::vector<std::string>& strData, helper::vector<std::string>& objects, helper::vector<std::string>& fields);
+    void fetchDataFields(const helper::vector<std::string>& strData, helper::vector<std::string>& objects, helper::vector<std::string>& fields, helper::vector<std::string>& names);
     void writeVTKSimple();
     void writeVTKXML();
     void writeParallelFile();
-    void writeData(const helper::vector<std::string>& objects, const helper::vector<std::string>& fields);
-    void writeDataArray(const helper::vector<std::string>& objects, const helper::vector<std::string>& fields);
+    void writeData(const helper::vector<std::string>& objects, const helper::vector<std::string>& fields, const helper::vector<std::string>& names);
+    void writeDataArray(const helper::vector<std::string>& objects, const helper::vector<std::string>& fields, const helper::vector<std::string>& names);
     std::string segmentString(std::string str, unsigned int n);
 
 public:
@@ -63,9 +63,11 @@ public:
 
     helper::vector<std::string> pointsDataObject;
     helper::vector<std::string> pointsDataField;
+    helper::vector<std::string> pointsDataName;
 
     helper::vector<std::string> cellsDataObject;
     helper::vector<std::string> cellsDataField;
+    helper::vector<std::string> cellsDataName;
 
     VTKExporter();
     virtual ~VTKExporter();

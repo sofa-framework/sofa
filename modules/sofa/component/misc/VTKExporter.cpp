@@ -45,8 +45,6 @@ VTKExporter::VTKExporter()
     , exportEveryNbSteps( initData(&exportEveryNbSteps, (unsigned int)0, "exportEveryNumberOfSteps", "export file only at specified number of steps (0=disable)"))
     , exportAtEnd( initData(&exportAtEnd, false, "exportAtEnd", "export file when the simulation is finished"))
 {
-    // TODO Auto-generated constructor stub
-
 }
 
 VTKExporter::~VTKExporter()
@@ -85,37 +83,49 @@ void VTKExporter::init()
 
     if (!pointsData.empty())
     {
-        fetchDataFields(pointsData, pointsDataObject, pointsDataField);
+        fetchDataFields(pointsData, pointsDataObject, pointsDataField, pointsDataName);
     }
     if (!cellsData.empty())
     {
-        fetchDataFields(cellsData, cellsDataObject, cellsDataField);
+        fetchDataFields(cellsData, cellsDataObject, cellsDataField, cellsDataName);
     }
 
 }
 
-void VTKExporter::fetchDataFields(const helper::vector<std::string>& strData, helper::vector<std::string>& objects, helper::vector<std::string>& fields)
+void VTKExporter::fetchDataFields(const helper::vector<std::string>& strData, helper::vector<std::string>& objects, helper::vector<std::string>& fields, helper::vector<std::string>& names)
 {
     for (unsigned int i=0 ; i<strData.size() ; i++)
     {
-        std::string objectName, dataFieldName;
-        std::string::size_type loc = strData[i].find_last_of('.');
+        std::string str = strData[i];
+        std::string name, objectName, dataFieldName;
+        std::string::size_type loc = str.find_first_of('=');
+        if (loc != std::string::npos)
+        {
+            name = str.substr(0,loc);
+            str = str.substr(loc+1);
+        }
+        if (str.at(0) == '@') // ignore @ prefix
+            str = str.substr(1);
+
+        loc = str.find_last_of('.');
         if ( loc != std::string::npos)
         {
-            objectName = strData[i].substr(0, loc);
-            dataFieldName = strData[i].substr(loc+1);
-
-            objects.push_back(objectName);
-            fields.push_back(dataFieldName);
+            objectName = str.substr(0, loc);
+            dataFieldName = str.substr(loc+1);
         }
         else
         {
             serr << "VTKExporter : error while parsing dataField names" << sendl;
+            continue;
         }
+        if (name.empty()) name = dataFieldName;
+        objects.push_back(objectName);
+        fields.push_back(dataFieldName);
+        names.push_back(name);
     }
 }
 
-void VTKExporter::writeData(const helper::vector<std::string>& objects, const helper::vector<std::string>& fields)
+void VTKExporter::writeData(const helper::vector<std::string>& objects, const helper::vector<std::string>& fields, const helper::vector<std::string>& names)
 {
     sofa::core::objectmodel::BaseContext* context = this->getContext();
 
@@ -180,7 +190,7 @@ void VTKExporter::writeData(const helper::vector<std::string>& objects, const he
             //if this is a scalar
             if (!line.empty())
             {
-                *outfile << "SCALARS" << " " << fields[i] << " ";
+                *outfile << "SCALARS" << " " << names[i] << " ";
             }
             else
             {
@@ -195,7 +205,7 @@ void VTKExporter::writeData(const helper::vector<std::string>& objects, const he
                     line = "double";
                     sizeSeg = 3;
                 }
-                *outfile << "VECTORS" << " " << fields[i] << " ";
+                *outfile << "VECTORS" << " " << names[i] << " ";
             }
             *outfile << line << std::endl;
             *outfile << segmentString(field->getValueString(),sizeSeg) << std::endl;
@@ -204,7 +214,7 @@ void VTKExporter::writeData(const helper::vector<std::string>& objects, const he
     }
 }
 
-void VTKExporter::writeDataArray(const helper::vector<std::string>& objects, const helper::vector<std::string>& fields)
+void VTKExporter::writeDataArray(const helper::vector<std::string>& objects, const helper::vector<std::string>& fields, const helper::vector<std::string>& names)
 {
     sofa::core::objectmodel::BaseContext* context = this->getContext();
 
@@ -279,7 +289,7 @@ void VTKExporter::writeDataArray(const helper::vector<std::string>& objects, con
                     sizeSeg = 3;
                 }
             }
-            *outfile << "        <DataArray type=\""<< type << "\" Name=\"" << fields[i];
+            *outfile << "        <DataArray type=\""<< type << "\" Name=\"" << names[i];
             if(sizeSeg > 1)
                 *outfile << "\" NumberOfComponents=\"" << sizeSeg;
             *outfile << "\" Format=\"ascii\">" << std::endl;
@@ -445,13 +455,13 @@ void VTKExporter::writeVTKSimple()
     if (!pointsData.empty())
     {
         *outfile << "POINT_DATA " << topology->getNbPoints() << std::endl;
-        writeData(pointsDataObject, pointsDataField);
+        writeData(pointsDataObject, pointsDataField, pointsDataName);
     }
 
     if (!cellsData.empty())
     {
         *outfile << "CELL_DATA " << numberOfCells << std::endl;
-        writeData(cellsDataObject, cellsDataField);
+        writeData(cellsDataObject, cellsDataField, cellsDataName);
     }
     outfile->close();
     sout << filename << " written" << sendl;
@@ -501,14 +511,14 @@ void VTKExporter::writeVTKXML()
     if (!pointsData.empty())
     {
         *outfile << "      <PointData>" << std::endl;
-        writeDataArray(pointsDataObject, pointsDataField);
+        writeDataArray(pointsDataObject, pointsDataField, pointsDataName);
         *outfile << "      </PointData>" << std::endl;
     }
     //write cell data
     if (!cellsData.empty())
     {
         *outfile << "      <CellData>" << std::endl;
-        writeDataArray(cellsDataObject, cellsDataField);
+        writeDataArray(cellsDataObject, cellsDataField, cellsDataName);
         *outfile << "      </CellData>" << std::endl;
     }
 
@@ -743,7 +753,7 @@ void VTKExporter::writeParallelFile()
                 }
 
                 *outfile << "    <PPointData>" << std::endl;
-                *outfile << "      <PDataArray type=\""<< type << "\" Name=\"" << pointsDataField[i];
+                *outfile << "      <PDataArray type=\""<< type << "\" Name=\"" << pointsDataName[i];
                 if(sizeSeg > 1)
                     *outfile << "\" NumberOfComponents=\"" << sizeSeg;
                 *outfile << "\"/>" << std::endl;
@@ -824,7 +834,7 @@ void VTKExporter::writeParallelFile()
                 }
 
                 *outfile << "    <PCellData>" << std::endl;
-                *outfile << "      <PDataArray type=\""<< type << "\" Name=\"" << cellsDataField[i];
+                *outfile << "      <PDataArray type=\""<< type << "\" Name=\"" << cellsDataName[i];
                 if(sizeSeg > 1)
                     *outfile << "\" NumberOfComponents=\"" << sizeSeg;
                 *outfile << "\"/>" << std::endl;
