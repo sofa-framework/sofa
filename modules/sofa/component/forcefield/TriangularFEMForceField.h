@@ -82,6 +82,9 @@ public:
     typedef sofa::core::componentmodel::topology::BaseMeshTopology::index_type Index;
     typedef sofa::core::componentmodel::topology::BaseMeshTopology::Triangle Element;
     typedef sofa::core::componentmodel::topology::BaseMeshTopology::SeqTriangles VecElement;
+    typedef sofa::core::componentmodel::topology::BaseMeshTopology::TrianglesAroundVertex TrianglesAroundVertex;
+
+    typedef sofa::helper::Quater<Real> Quat;
 
     static const int SMALL = 1;										    ///< Symbol of small displacements triangle solver
     static const int LARGE = 0;									    	///< Symbol of large displacements triangle solver
@@ -93,6 +96,7 @@ protected:
     typedef Mat<3, 3, Real> MaterialStiffness;						///< the matrix of material stiffness
     typedef sofa::helper::vector<MaterialStiffness> VecMaterialStiffness;    ///< a vector of material stiffness matrices
     typedef Mat<6, 3, Real> StrainDisplacement;						///< the strain-displacement matrix
+    typedef Mat<6, 6, Real> Stiffness;								///< the stiffness matrix
     typedef sofa::helper::vector<StrainDisplacement> VecStrainDisplacement;	///< a vector of strain-displacement matrices
     typedef Mat<3, 3, Real > Transformation;						///< matrix for rigid transformations like rotations
 
@@ -103,6 +107,9 @@ protected:
         MaterialStiffness materialMatrix;
         ///< the strain-displacement matrices vector
         StrainDisplacement strainDisplacementMatrix;
+        ///< the stiffness matrix
+        Stiffness stiffness;
+        Real area;
         // large displacement method
         helper::fixed_array<Coord,3> rotatedInitialElements;
         Transformation rotation;
@@ -159,6 +166,7 @@ protected:
 
         Coord meanStrainDirection;
         double sumEigenValues;
+        Transformation rotation;
 
         /// Output stream
         inline friend std::ostream& operator<< ( std::ostream& os, const VertexInformation& /*vi*/)
@@ -242,11 +250,16 @@ public:
     /// Compute current stress
     void computeStress(Vec<3,Real> &stress, Index elementIndex);
 
+    // Getting the rotation of the vertex by averaing the rotation of neighboring elements
+    void getRotation(Transformation& R, unsigned int nodeIdx);
+    void getRotations();
+
 protected :
 
     void computeDisplacementSmall(Displacement &D, Index elementIndex, const VecCoord &p);
     void computeDisplacementLarge(Displacement &D, Index elementIndex, const Transformation &R_2_0, const VecCoord &p);
-    void computeStrainDisplacement( StrainDisplacement &J, Coord a, Coord b, Coord c );
+    void computeStrainDisplacement(StrainDisplacement &J, Index elementIndex, Coord a, Coord b, Coord c );
+    void computeStiffness(StrainDisplacement &J, Stiffness &K, MaterialStiffness &D);
     void computeStrain(Vec<3,Real> &strain, const StrainDisplacement &J, const Displacement &D);
     void computeStress(Vec<3,Real> &stress, MaterialStiffness &K, Vec<3,Real> &strain);
     void computeForce(Displacement &F, Index elementIndex, const VecCoord &p);
