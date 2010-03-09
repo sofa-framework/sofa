@@ -98,17 +98,19 @@ protected slots:
     void Modify();
     void HideDatas();
     void ShowDatas();
-    void DesactivateNode();
+    void DeactivateNode();
     void ActivateNode();
     void loadObject ( std::string path, double dx, double dy, double dz,  double rx, double ry, double rz,double scale );
 #ifdef SOFA_QT4
     void updateMatchingObjectmodel(Q3ListViewItem* item);
     void RunSofaRightClicked( Q3ListViewItem *item, const QPoint& point, int index );
     void RunSofaDoubleClicked( Q3ListViewItem*);
+    void nodeNameModification( Q3ListViewItem*);
 #else
     void updateMatchingObjectmodel(QListViewItem* item);
     void RunSofaRightClicked( QListViewItem *item, const QPoint& point, int index );
     void RunSofaDoubleClicked( QListViewItem*);
+    void nodeNameModification( QListViewItem*);
 #endif
 protected:
     void collapseNode(Q3ListViewItem* item);

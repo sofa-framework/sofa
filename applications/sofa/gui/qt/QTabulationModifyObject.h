@@ -59,7 +59,11 @@ signals:
     void UpdateDatas();
     void UpdateDataWidgets();
     void TabDirty(bool);
-
+#ifdef SOFA_QT4
+    void nodeNameModification(Q3ListViewItem *);
+#else
+    void nodeNameModification(QListViewItem *);
+#endif
 protected:
     core::objectmodel::Base *object;
     Q3ListViewItem* item;

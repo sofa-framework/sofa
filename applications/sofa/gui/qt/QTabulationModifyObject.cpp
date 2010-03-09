@@ -41,16 +41,22 @@ void QTabulationModifyObject::addData(sofa::core::objectmodel::BaseData *data, c
 void QTabulationModifyObject::updateListViewItem()
 {
     if (dynamic_cast< simulation::Node *>(object))
+    {
         item->setText(0,object->getName().c_str());
+        emit nodeNameModification(item);
+    }
     else
     {
+        QString currentName = item->text(0);
+
         std::string name=item->text(0).ascii();
         std::string::size_type pos = name.find(' ');
         if (pos != std::string::npos)
             name = name.substr(0,pos);
         name += "  ";
         name += object->getName();
-        item->setText(0,name.c_str());
+        QString newName(name.c_str());
+        if (newName != currentName) item->setText(0,newName);
     }
 }
 

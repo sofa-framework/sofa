@@ -27,6 +27,7 @@
 
 #include <sofa/gui/qt/GraphListenerQListView.h>
 #include <sofa/simulation/common/Colors.h>
+#include "iconmultinode.xpm"
 #include "iconnode.xpm"
 #include "iconwarning.xpm"
 #include "icondata.xpm"
@@ -182,6 +183,7 @@ Q3ListViewItem* GraphListenerQListView::createItem(Q3ListViewItem* parent)
 /*****************************************************************************************************************/
 void GraphListenerQListView::addChild(Node* parent, Node* child)
 {
+
     if (frozen) return;
     if (items.count(child))
     {
@@ -197,6 +199,17 @@ void GraphListenerQListView::addChild(Node* parent, Node* child)
                 std::cerr << "Graph -> QT ERROR: Unknown parent node "<<parent->getName()<<std::endl;
                 return;
             }
+        }
+        else
+        {
+            //Node with multiple parent
+            Q3ListViewItem* item= createItem(items[parent]);
+            item->setDropEnabled(true);
+            QString name=QString("MultiNode ") + QString(child->getName().c_str());
+            item->setText(0, name);
+            nodeWithMultipleParents.insert(std::make_pair(items[child], item));
+            static QPixmap pixMultiNode((const char**)iconmultinode_xpm);
+            item->setPixmap(0, pixMultiNode);
         }
     }
     else
@@ -390,7 +403,7 @@ void GraphListenerQListView::unfreeze(Node* groot)
 {
     if (!items.count(groot)) return;
     frozen = false;
-    addChild(NULL, groot);
+//	addChild(NULL, groot);
 }
 
 /*****************************************************************************************************************/
@@ -405,8 +418,16 @@ core::objectmodel::Base* GraphListenerQListView::findObject(const Q3ListViewItem
             if ( ( *it ).second == item )
             {
                 base = (*it).first;
-                break;
+                return base;
             }
+        }
+    }
+    if (!base) //Can be a multi node
+    {
+        std::multimap<Q3ListViewItem *, Q3ListViewItem*>::iterator it;
+        for (it=nodeWithMultipleParents.begin(); it!=nodeWithMultipleParents.end(); ++it)
+        {
+            if (it->second == item) return findObject(it->first);
         }
     }
     return base;

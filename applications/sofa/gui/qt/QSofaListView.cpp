@@ -263,7 +263,7 @@ void QSofaListView::RunSofaRightClicked( Q3ListViewItem *item,
         contextMenu->insertSeparator ();
         /*****************************************************************************************************************/
         if (object_.ptr.Node->isActive())
-            contextMenu->insertItem ( "Desactivate", this, SLOT ( DesactivateNode() ) );
+            contextMenu->insertItem ( "Deactivate", this, SLOT ( DeactivateNode() ) );
         else
             contextMenu->insertItem ( "Activate", this, SLOT ( ActivateNode() ) );
         contextMenu->insertSeparator ();
@@ -309,8 +309,24 @@ void QSofaListView::RunSofaDoubleClicked(Q3ListViewItem* item)
 
 }
 
+/*****************************************************************************************************************/
+void QSofaListView::nodeNameModification(Q3ListViewItem *item)
+{
+    QString nameToUse=item->text(0);
+    std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator it;
+    core::objectmodel::Base *base=graphListener_->findObject(item);
 
-void QSofaListView::DesactivateNode()
+    graphListener_->items[base]->setText(0,nameToUse);
+
+    nameToUse=QString("MultiNode ")+nameToUse;
+    typedef std::multimap<Q3ListViewItem *, Q3ListViewItem*>::iterator ItemIterator;
+    std::pair<ItemIterator,ItemIterator> range=graphListener_->nodeWithMultipleParents.equal_range(graphListener_->items[base]);
+
+    for (ItemIterator it=range.first; it!=range.second; ++it) it->second->setText(0,nameToUse);
+}
+
+
+void QSofaListView::DeactivateNode()
 {
     emit RequestActivation(object_.ptr.Node,false);
     currentItem()->setOpen(false);
@@ -439,6 +455,11 @@ void QSofaListView::Modify()
         connect ( dialogModifyObject, SIGNAL( objectUpdated() ), this, SIGNAL( Updated() ));
         connect ( this, SIGNAL( Close() ), dialogModifyObject, SLOT( closeNow() ) );
         connect ( dialogModifyObject, SIGNAL( dialogClosed(void *) ) , this, SLOT( modifyUnlock(void *)));
+#ifdef SOFA_QT4
+        connect ( dialogModifyObject, SIGNAL( nodeNameModification(Q3ListViewItem*) ) , this, SLOT( nodeNameModification(Q3ListViewItem*) ));
+#else
+        connect ( dialogModifyObject, SIGNAL( nodeNameModification(QListViewItem*) ) , this, SLOT( nodeNameModification(QListViewItem*) ));
+#endif
         dialogModifyObject->show();
         dialogModifyObject->raise();
     }
