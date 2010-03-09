@@ -122,16 +122,26 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
                 //add the widgets to apply some basic transformations
                 std::vector<QTabulationModifyObject* > &tabs=groupTabulation[std::string("Property")];
                 tabs.push_back(new QTabulationModifyObject(this,node, item_,1));
-
+#ifdef SOFA_QT4
+                connect(tabs.back(), SIGNAL(nodeNameModification(Q3ListViewItem*)), this, SIGNAL(nodeNameModification(Q3ListViewItem*)));
+#else
+                connect(tabs.back(), SIGNAL(nodeNameModification(QListViewItem*)), this, SIGNAL(nodeNameModification(QListViewItem*)));
+#endif
                 transformation = new QTransformationWidget(tabs.back(), QString("Transformation"));
                 tabs.back()->layout()->add( transformation );
                 tabs.back()->externalWidgetAddition(transformation->getNumWidgets());
                 connect( transformation, SIGNAL(TransformationDirty(bool)), buttonUpdate, SLOT( setEnabled(bool) ) );
+
             }
             //add the widgets to display the visual flags
             {
                 std::vector<QTabulationModifyObject* > &tabs=groupTabulation[std::string("Visualization")];
                 tabs.push_back(new QTabulationModifyObject(this,node, item_,1));
+#ifdef SOFA_QT4
+                connect(tabs.back(), SIGNAL(nodeNameModification(Q3ListViewItem*)), this, SIGNAL(nodeNameModification(Q3ListViewItem*)));
+#else
+                connect(tabs.back(), SIGNAL(nodeNameModification(QListViewItem*)), this, SIGNAL(nodeNameModification(QListViewItem*)));
+#endif
 
                 displayFlag = new QDisplayFlagWidget(tabs.back(),dynamic_cast< simulation::Node *>(node),QString("Visualization Flags"));
                 tabs.back()->layout()->add( displayFlag );
@@ -239,7 +249,7 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
         connect( buttonUpdate,   SIGNAL( clicked() ), this, SLOT( updateValues() ) );
         connect( buttonOk,       SIGNAL( clicked() ), this, SLOT( accept() ) );
         connect( buttonCancel,   SIGNAL( clicked() ), this, SLOT( reject() ) );
-        resize( QSize(300, 130).expandedTo(minimumSizeHint()) );
+        resize( QSize(450, 130).expandedTo(minimumSizeHint()) );
     }
 }
 
@@ -380,13 +390,15 @@ void ModifyObject::updateValues()
 void ModifyObject::updateListViewItem()
 {
     Q3ListViewItem* parent = item_->parent();
+    QString currentName =parent->text(0);
     std::string name = parent->text(0).ascii();
     std::string::size_type pos = name.find(' ');
     if (pos != std::string::npos)
         name.resize(pos);
     name += "  ";
     name += data_->getOwner()->getName();
-    parent->setText(0,name.c_str());
+    QString newName(name.c_str());
+    if (newName != currentName) parent->setText(0,newName);
 }
 
 //**************************************************************************************************************************************

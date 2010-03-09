@@ -734,7 +734,7 @@ void RealGUI::addViewer()
 #else
     QValueList<int> list;
 #endif
-    list.push_back ( 216 );
+    list.push_back ( 250 );
     list.push_back ( 640 );
     splitter_ptr->setSizes ( list );
 
@@ -1154,7 +1154,7 @@ void RealGUI::setDimension ( int w, int h )
 #else
     QValueList<int> list;
 #endif
-    list.push_back ( 216 );
+    list.push_back ( 250 );
     list.push_back ( w );
     QSplitter *splitter_ptr = dynamic_cast<QSplitter *> ( splitter2 );
     splitter_ptr->setSizes ( list );

@@ -11,7 +11,7 @@
 #include <qtooltip.h>
 #endif
 
-#define SIZE_TEXT     75
+#define SIZE_TEXT     60
 namespace sofa
 {
 namespace helper

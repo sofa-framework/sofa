@@ -69,6 +69,8 @@ public:
     bool frozen;
     std::map<core::objectmodel::Base*, Q3ListViewItem* > items;
     std::map<core::objectmodel::BaseData*, Q3ListViewItem* > datas;
+    std::multimap<Q3ListViewItem *, Q3ListViewItem*> nodeWithMultipleParents;
+
     GraphListenerQListView(Q3ListView* w)
         : widget(w), frozen(false)
     {
