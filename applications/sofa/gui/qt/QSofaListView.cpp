@@ -310,17 +310,17 @@ void QSofaListView::RunSofaDoubleClicked(Q3ListViewItem* item)
 }
 
 /*****************************************************************************************************************/
-void QSofaListView::nodeNameModification(Q3ListViewItem *item)
+void QSofaListView::nodeNameModification(simulation::Node* node)
 {
-    QString nameToUse=item->text(0);
-    std::map<core::objectmodel::Base*, Q3ListViewItem* >::iterator it;
-    core::objectmodel::Base *base=graphListener_->findObject(item);
+    Q3ListViewItem *item=graphListener_->items[node];
 
-    graphListener_->items[base]->setText(0,nameToUse);
+    QString nameToUse=node->getName();
+    item->setText(0,nameToUse);
 
     nameToUse=QString("MultiNode ")+nameToUse;
+
     typedef std::multimap<Q3ListViewItem *, Q3ListViewItem*>::iterator ItemIterator;
-    std::pair<ItemIterator,ItemIterator> range=graphListener_->nodeWithMultipleParents.equal_range(graphListener_->items[base]);
+    std::pair<ItemIterator,ItemIterator> range=graphListener_->nodeWithMultipleParents.equal_range(item);
 
     for (ItemIterator it=range.first; it!=range.second; ++it) it->second->setText(0,nameToUse);
 }
@@ -455,11 +455,7 @@ void QSofaListView::Modify()
         connect ( dialogModifyObject, SIGNAL( objectUpdated() ), this, SIGNAL( Updated() ));
         connect ( this, SIGNAL( Close() ), dialogModifyObject, SLOT( closeNow() ) );
         connect ( dialogModifyObject, SIGNAL( dialogClosed(void *) ) , this, SLOT( modifyUnlock(void *)));
-#ifdef SOFA_QT4
-        connect ( dialogModifyObject, SIGNAL( nodeNameModification(Q3ListViewItem*) ) , this, SLOT( nodeNameModification(Q3ListViewItem*) ));
-#else
-        connect ( dialogModifyObject, SIGNAL( nodeNameModification(QListViewItem*) ) , this, SLOT( nodeNameModification(QListViewItem*) ));
-#endif
+        connect ( dialogModifyObject, SIGNAL( nodeNameModification(simulation::Node*) ) , this, SLOT( nodeNameModification(simulation::Node*) ));
         dialogModifyObject->show();
         dialogModifyObject->raise();
     }

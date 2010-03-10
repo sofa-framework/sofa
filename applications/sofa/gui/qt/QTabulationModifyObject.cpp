@@ -40,10 +40,10 @@ void QTabulationModifyObject::addData(sofa::core::objectmodel::BaseData *data, c
 
 void QTabulationModifyObject::updateListViewItem()
 {
-    if (dynamic_cast< simulation::Node *>(object))
+    if (simulation::Node *node=dynamic_cast< simulation::Node *>(object))
     {
         item->setText(0,object->getName().c_str());
-        emit nodeNameModification(item);
+        emit nodeNameModification(node);
     }
     else
     {

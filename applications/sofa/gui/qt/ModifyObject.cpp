@@ -122,11 +122,9 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
                 //add the widgets to apply some basic transformations
                 std::vector<QTabulationModifyObject* > &tabs=groupTabulation[std::string("Property")];
                 tabs.push_back(new QTabulationModifyObject(this,node, item_,1));
-#ifdef SOFA_QT4
-                connect(tabs.back(), SIGNAL(nodeNameModification(Q3ListViewItem*)), this, SIGNAL(nodeNameModification(Q3ListViewItem*)));
-#else
-                connect(tabs.back(), SIGNAL(nodeNameModification(QListViewItem*)), this, SIGNAL(nodeNameModification(QListViewItem*)));
-#endif
+
+                connect(tabs.back(), SIGNAL(nodeNameModification(simulation::Node *)), this, SIGNAL(nodeNameModification(simulation::Node *)));
+
                 transformation = new QTransformationWidget(tabs.back(), QString("Transformation"));
                 tabs.back()->layout()->add( transformation );
                 tabs.back()->externalWidgetAddition(transformation->getNumWidgets());
@@ -137,11 +135,8 @@ void ModifyObject::createDialog(core::objectmodel::Base* base)
             {
                 std::vector<QTabulationModifyObject* > &tabs=groupTabulation[std::string("Visualization")];
                 tabs.push_back(new QTabulationModifyObject(this,node, item_,1));
-#ifdef SOFA_QT4
-                connect(tabs.back(), SIGNAL(nodeNameModification(Q3ListViewItem*)), this, SIGNAL(nodeNameModification(Q3ListViewItem*)));
-#else
-                connect(tabs.back(), SIGNAL(nodeNameModification(QListViewItem*)), this, SIGNAL(nodeNameModification(QListViewItem*)));
-#endif
+
+                connect(tabs.back(), SIGNAL(nodeNameModification(simulation::Node *)), this, SIGNAL(nodeNameModification(simulation::Node *)));
 
                 displayFlag = new QDisplayFlagWidget(tabs.back(),dynamic_cast< simulation::Node *>(node),QString("Visualization Flags"));
                 tabs.back()->layout()->add( displayFlag );
