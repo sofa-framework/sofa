@@ -45,12 +45,17 @@ namespace engine
 using namespace sofa::helper;
 using namespace sofa::defaulttype;
 using namespace core::objectmodel;
+using namespace core::componentmodel::topology;
 
 template <class DataTypes>
 BoxROI<DataTypes>::BoxROI()
     : boxes( initData(&boxes, "box", "Box defined by xmin,ymin,zmin, xmax,ymax,zmax") )
     , f_X0( initData (&f_X0, "rest_position", "Rest position coordinates of the degrees of freedom") )
+    , f_edges(initData (&f_edges, "edges", "Edge Topology") )
+    , f_triangles(initData (&f_triangles, "triangles", "Triangle Topology") )
     , f_indices( initData(&f_indices,"indices","Indices of the points contained in the ROI") )
+    , f_edgesInBox( initData(&f_edgesInBox,"edgesInBox","Indices of the edges contained in the ROI") )
+    , f_trianglesInBox( initData(&f_trianglesInBox,"f_trianglesInBox","Indices of the triangles contained in the ROI") )
     , _drawSize( initData(&_drawSize,0.0,"drawSize","0 -> point based rendering") )
 {
     boxes.beginEdit()->push_back(Vec6(0,0,0,1,1,1));
@@ -77,8 +82,40 @@ void BoxROI<DataTypes>::init()
             }
         }
     }
+    if (!f_edges.isSet() || !f_triangles.isSet())
+    {
+        BaseMeshTopology* topology;
+        this->getContext()->get(topology);
+        if (topology)
+        {
+            if (!f_edges.isSet())
+            {
+                BaseData* eparent = topology->findField("edges");
+                if (eparent)
+                {
+                    f_edges.setParent(eparent);
+                    f_edges.setReadOnly(true);
+                }
+            }
+            if (!f_triangles.isSet())
+            {
+                BaseData* tparent = topology->findField("triangles");
+                if (tparent)
+                {
+                    f_triangles.setParent(tparent);
+                    f_triangles.setReadOnly(true);
+                }
+            }
+        }
+    }
+
     addInput(&f_X0);
+    addInput(&f_edges);
+    addInput(&f_triangles);
+
     addOutput(&f_indices);
+    addOutput(&f_edgesInBox);
+    addOutput(&f_trianglesInBox);
     setDirtyValue();
 }
 
@@ -86,6 +123,32 @@ template <class DataTypes>
 void BoxROI<DataTypes>::reinit()
 {
     update();
+}
+
+template <class DataTypes>
+bool BoxROI<DataTypes>::isPointInBox(const typename DataTypes::CPos& p, const Vec6& b)
+{
+    return ( p[0] >= b[0] && p[0] <= b[3] && p[1] >= b[1] && p[1] <= b[4] && p[2] >= b[2] && p[2] <= b[5] );
+}
+
+template <class DataTypes>
+bool BoxROI<DataTypes>::isPointInBox(const PointID& pid, const Vec6& b)
+{
+    const VecCoord* x0 = &f_X0.getValue();
+    CPos p =  DataTypes::getCPos((*x0)[pid]);
+    return ( isPointInBox(p,b) );
+}
+
+template <class DataTypes>
+bool BoxROI<DataTypes>::isEdgeInBox(const Edge& e, const Vec6& b)
+{
+    return (isPointInBox(e[0],b) || isPointInBox(e[1],b));
+}
+
+template <class DataTypes>
+bool BoxROI<DataTypes>::isTriangleInBox(const Triangle& t, const Vec6& b)
+{
+    return (isPointInBox(t[0],b) || isPointInBox(t[1],b) || isPointInBox(t[2],b) );
 }
 
 template <class DataTypes>
@@ -104,19 +167,24 @@ void BoxROI<DataTypes>::update()
 
     boxes.endEdit();
 
-    SetIndex& indices = *(f_indices.beginEdit());
+    helper::ReadAccessor< Data<helper::vector<BaseMeshTopology::Edge> > > edges = f_edges;
+    helper::ReadAccessor< Data<helper::vector<BaseMeshTopology::Triangle> > > triangles = f_triangles;
+
+    SetIndex& indices = *f_indices.beginEdit();
+    helper::WriteAccessor< Data<helper::vector<BaseMeshTopology::Edge> > > edgesInBox = f_edgesInBox;
+    helper::WriteAccessor< Data<helper::vector<BaseMeshTopology::Triangle> > > trianglesInBox = f_trianglesInBox;
+
     indices.clear();
+    edgesInBox.clear();
+    trianglesInBox.clear();
 
     const VecCoord* x0 = &f_X0.getValue();
 
     for( unsigned i=0; i<x0->size(); ++i )
     {
-        Real x=0.0,y=0.0,z=0.0;
-        DataTypes::get(x,y,z,(*x0)[i]);
         for (unsigned int bi=0; bi<vb.size(); ++bi)
         {
-            const Vec6& b=vb[bi];
-            if( x >= b[0] && x <= b[3] && y >= b[1] && y <= b[4] && z >= b[2] && z <= b[5] )
+            if (isPointInBox(i, vb[bi]))
             {
                 indices.push_back(i);
                 break;
@@ -124,7 +192,34 @@ void BoxROI<DataTypes>::update()
         }
     }
 
+    for(unsigned int i=0 ; i<edges.size() ; i++)
+    {
+        Edge e = edges[i];
+        for (unsigned int bi=0; bi<vb.size(); ++bi)
+        {
+            if (isEdgeInBox(e, vb[bi]))
+            {
+                edgesInBox.push_back(e);
+                break;
+            }
+        }
+    }
+
+    for(unsigned int i=0 ; i<triangles.size() ; i++)
+    {
+        Triangle t = triangles[i];
+        for (unsigned int bi=0; bi<vb.size(); ++bi)
+        {
+            if (isTriangleInBox(t, vb[bi]))
+            {
+                trianglesInBox.push_back(t);
+                break;
+            }
+        }
+    }
+
     f_indices.endEdit();
+
 }
 
 template <class DataTypes>

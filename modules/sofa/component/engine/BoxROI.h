@@ -46,7 +46,6 @@ namespace engine
 {
 
 using namespace core::componentmodel::behavior;
-using namespace core::componentmodel::topology;
 using namespace core::objectmodel;
 
 /**
@@ -58,10 +57,22 @@ class BoxROI : public core::DataEngine
 public:
     SOFA_CLASS(SOFA_TEMPLATE(BoxROI,DataTypes),core::DataEngine);
     typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;
     typedef defaulttype::Vec<6,Real> Vec6;
     typedef topology::PointSubset SetIndex;
+    typedef typename DataTypes::CPos CPos;
 
+    typedef defaulttype::Vec<3,Real> Point;
+    typedef unsigned int PointID;
+    typedef core::componentmodel::topology::BaseMeshTopology::Edge Edge;
+    typedef core::componentmodel::topology::BaseMeshTopology::Triangle Triangle;
+
+protected:
+    bool isPointInBox(const CPos& p, const Vec6& b);
+    bool isPointInBox(const PointID& pid, const Vec6& b);
+    bool isEdgeInBox(const Edge& e, const Vec6& b);
+    bool isTriangleInBox(const Triangle& t, const Vec6& b);
 public:
 
     BoxROI();
@@ -110,7 +121,11 @@ public:
 
     Data< helper::vector<Vec6> > boxes;
     Data<VecCoord> f_X0;
+    Data<helper::vector<Edge> > f_edges;
+    Data<helper::vector<Triangle> > f_triangles;
     Data<SetIndex> f_indices;
+    Data<helper::vector<Edge> > f_edgesInBox;
+    Data<helper::vector<Triangle> > f_trianglesInBox;
     Data<double> _drawSize;
 };
 
