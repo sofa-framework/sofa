@@ -119,13 +119,21 @@ public:
         return DataTypes::Name();
     }
 
+    //Input
     Data< helper::vector<Vec6> > boxes;
     Data<VecCoord> f_X0;
     Data<helper::vector<Edge> > f_edges;
     Data<helper::vector<Triangle> > f_triangles;
+
+    //Output
     Data<SetIndex> f_indices;
+    Data<SetIndex> f_edgeIndices;
+    Data<SetIndex> f_triangleIndices;
+    Data<VecCoord > f_pointsInBox;
     Data<helper::vector<Edge> > f_edgesInBox;
     Data<helper::vector<Triangle> > f_trianglesInBox;
+
+    //Parameter
     Data<double> _drawSize;
 };
 
