@@ -56,13 +56,15 @@ SofaMouseManager::SofaMouseManager()
     RegisterOperation("Fix")   .add< QFixOperation  >();
     RegisterOperation("Incise").add< QInciseOperation  >();
     RegisterOperation("Remove").add< QTopologyOperation  >();
-    RegisterOperation("Inject").add< QInjectOperation >();
     RegisterOperation("Suture").add< QAddSutureOperation >();
 }
 
-void SofaMouseManager::setPickHandler(PickHandler *picker)
+void SofaMouseManager::updateContent()
 {
-    pickHandler=picker;
+    LeftOperationCombo->clear();
+    MiddleOperationCombo->clear();
+    RightOperationCombo->clear();
+    mapIndexOperation.clear();
 
     if (mapIndexOperation.empty())
     {
@@ -74,14 +76,19 @@ void SofaMouseManager::setPickHandler(PickHandler *picker)
             LeftOperationCombo  ->insertItem(QString(OperationFactory::GetDescription(it->first).c_str()));
             MiddleOperationCombo->insertItem(QString(OperationFactory::GetDescription(it->first).c_str()));
             RightOperationCombo ->insertItem(QString(OperationFactory::GetDescription(it->first).c_str()));
-
-            if      (it->first == "Attach") LeftOperationCombo->setCurrentItem(idx);
-            else if (it->first == "Incise") MiddleOperationCombo->setCurrentItem(idx);
-            else if (it->first == "Remove") RightOperationCombo->setCurrentItem(idx);
+//
+//                  if      (it->first == "Attach") LeftOperationCombo->setCurrentItem(idx);
+//                  else if (it->first == "Incise") MiddleOperationCombo->setCurrentItem(idx);
+//                  else if (it->first == "Remove") RightOperationCombo->setCurrentItem(idx);
             mapIndexOperation.insert(std::make_pair(idx++, it->first));
         }
     }
+}
 
+void SofaMouseManager::setPickHandler(PickHandler *picker)
+{
+    pickHandler=picker;
+    updateContent();
     updateOperation(LEFT,   "Attach");
     updateOperation(MIDDLE, "Incise");
     updateOperation(RIGHT,  "Remove");
@@ -105,6 +112,8 @@ void SofaMouseManager::updateOperation( MOUSE_BUTTON button, const std::string &
     Operation *operation=pickHandler->changeOperation( button, id);
     QWidget* qoperation=dynamic_cast<QWidget*>(operation);
     if (!qoperation) return;
+
+    //TODO: change the text of the ComboBox if it is different from the current operation
 
     switch(button)
     {

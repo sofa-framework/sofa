@@ -291,7 +291,6 @@ SofaGUI* RealGUI::CreateGUI ( const char* name, const std::vector<std::string>& 
 int RealGUI::mainLoop()
 {
     if (windowFilePath().isNull()) return application->exec();
-
     std::string filename=windowFilePath().ascii();
     if (filename.size() > 5 && filename.substr(filename.size()-5) == ".simu")
     {
@@ -1396,6 +1395,7 @@ void RealGUI::showPluginManager()
 
 void RealGUI::showMouseManager()
 {
+    SofaMouseManager::getInstance()->updateContent();
     SofaMouseManager::getInstance()->show();
 }
 
