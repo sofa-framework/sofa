@@ -1249,7 +1249,7 @@ void TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideRestTetrahedronsWit
                 }
             }
         }
-        nbTobeAddedTetras+=subDivideTetrahedronWithPlane(intersectedTetras[i],intersectedEdgesInTetra[i],intersectedPointID, planeNormal, toBeAddedTetra);
+        nbTobeAddedTetras+=subDivideRestTetrahedronWithPlane(intersectedTetras[i],intersectedEdgesInTetra[i],intersectedPointID, planeNormal, toBeAddedTetra);
 
         //add the intersected tetrahedron to the to be removed tetrahedron list
         toBeRemovedTetraIndex.push_back(intersectedTetras[i]);
@@ -1357,7 +1357,7 @@ void TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideRestTetrahedronsWit
                 }
             }
         }
-        nbTobeAddedTetras+=subDivideTetrahedronWithPlane(intersectedTetras[i],intersectedEdgesInTetra[i],intersectedPointID, planeNormal, toBeAddedTetra);
+        nbTobeAddedTetras+=subDivideRestTetrahedronWithPlane(intersectedTetras[i],intersectedEdgesInTetra[i],intersectedPointID, planeNormal, toBeAddedTetra);
 
         //add the intersected tetrahedron to the to be removed tetrahedron list
         toBeRemovedTetraIndex.push_back(intersectedTetras[i]);
