@@ -54,8 +54,11 @@ BoxROI<DataTypes>::BoxROI()
     , f_edges(initData (&f_edges, "edges", "Edge Topology") )
     , f_triangles(initData (&f_triangles, "triangles", "Triangle Topology") )
     , f_indices( initData(&f_indices,"indices","Indices of the points contained in the ROI") )
-    , f_edgesInBox( initData(&f_edgesInBox,"edgesInBox","Indices of the edges contained in the ROI") )
-    , f_trianglesInBox( initData(&f_trianglesInBox,"f_trianglesInBox","Indices of the triangles contained in the ROI") )
+    , f_edgeIndices( initData(&f_edgeIndices,"edgeIndices","Indices of the edges contained in the ROI") )
+    , f_triangleIndices( initData(&f_triangleIndices,"triangleIndices","Indices of the triangles contained in the ROI") )
+    , f_pointsInBox( initData(&f_pointsInBox,"pointsInBox","Points contained in the ROI") )
+    , f_edgesInBox( initData(&f_edgesInBox,"edgesInBox","Edges contained in the ROI") )
+    , f_trianglesInBox( initData(&f_trianglesInBox,"f_trianglesInBox","Triangles contained in the ROI") )
     , _drawSize( initData(&_drawSize,0.0,"drawSize","0 -> point based rendering") )
 {
     boxes.beginEdit()->push_back(Vec6(0,0,0,1,1,1));
@@ -114,6 +117,9 @@ void BoxROI<DataTypes>::init()
     addInput(&f_triangles);
 
     addOutput(&f_indices);
+    addOutput(&f_edgeIndices);
+    addOutput(&f_triangleIndices);
+    addOutput(&f_pointsInBox);
     addOutput(&f_edgesInBox);
     addOutput(&f_trianglesInBox);
     setDirtyValue();
@@ -171,8 +177,12 @@ void BoxROI<DataTypes>::update()
     helper::ReadAccessor< Data<helper::vector<BaseMeshTopology::Triangle> > > triangles = f_triangles;
 
     SetIndex& indices = *f_indices.beginEdit();
+    SetIndex& edgeIndices = *f_edgeIndices.beginEdit();
+    SetIndex& triangleIndices = *f_triangleIndices.beginEdit();
+    helper::WriteAccessor< Data<VecCoord > > pointsInBox = f_pointsInBox;
     helper::WriteAccessor< Data<helper::vector<BaseMeshTopology::Edge> > > edgesInBox = f_edgesInBox;
     helper::WriteAccessor< Data<helper::vector<BaseMeshTopology::Triangle> > > trianglesInBox = f_trianglesInBox;
+
 
     indices.clear();
     edgesInBox.clear();
@@ -187,6 +197,7 @@ void BoxROI<DataTypes>::update()
             if (isPointInBox(i, vb[bi]))
             {
                 indices.push_back(i);
+                pointsInBox.push_back((*x0)[i]);
                 break;
             }
         }
@@ -199,6 +210,7 @@ void BoxROI<DataTypes>::update()
         {
             if (isEdgeInBox(e, vb[bi]))
             {
+                edgeIndices.push_back(i);
                 edgesInBox.push_back(e);
                 break;
             }
@@ -212,6 +224,7 @@ void BoxROI<DataTypes>::update()
         {
             if (isTriangleInBox(t, vb[bi]))
             {
+                triangleIndices.push_back(i);
                 trianglesInBox.push_back(t);
                 break;
             }
