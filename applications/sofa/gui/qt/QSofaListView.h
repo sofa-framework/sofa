@@ -105,13 +105,12 @@ protected slots:
     void updateMatchingObjectmodel(Q3ListViewItem* item);
     void RunSofaRightClicked( Q3ListViewItem *item, const QPoint& point, int index );
     void RunSofaDoubleClicked( Q3ListViewItem*);
-    void nodeNameModification( Q3ListViewItem*);
 #else
     void updateMatchingObjectmodel(QListViewItem* item);
     void RunSofaRightClicked( QListViewItem *item, const QPoint& point, int index );
     void RunSofaDoubleClicked( QListViewItem*);
-    void nodeNameModification( QListViewItem*);
 #endif
+    void nodeNameModification( simulation::Node*);
 protected:
     void collapseNode(Q3ListViewItem* item);
     void expandNode(Q3ListViewItem* item);
