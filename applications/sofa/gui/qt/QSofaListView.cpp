@@ -314,7 +314,7 @@ void QSofaListView::nodeNameModification(simulation::Node* node)
 {
     Q3ListViewItem *item=graphListener_->items[node];
 
-    QString nameToUse=node->getName();
+    QString nameToUse(node->getName().c_str());
     item->setText(0,nameToUse);
 
     nameToUse=QString("MultiNode ")+nameToUse;
