@@ -322,6 +322,7 @@ public:
             this->elems[i]*=(real)f;
     }
 
+
     /// Division by a scalar f.
     template<class real2>
     Vec<N,real> operator/(real2 f) const
