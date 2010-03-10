@@ -154,11 +154,44 @@ bool ImagePNG::load(std::string filename)
         color_type = png_get_color_type(PNG_reader, PNG_info);
         std::cout << "Converted PNG image "<<filename<<": "<<width<<"x"<<height<<"x"<<bit_depth*channels<<std::endl;
     }
-    init(width, height, channels*bit_depth);
+
+    Image::DataType dataType;
+    Image::ChannelFormat channelFormat;
+    switch (bit_depth)
+    {
+    case 8:
+        dataType = Image::UINT8;
+        break;
+    default:
+        std::cerr << "PNG: in " << filename << ", unsupported bit depth: " << bit_depth << std::endl;
+        return false;
+    }
+    switch (channels)
+    {
+    case 1:
+        channelFormat = Image::L;
+        break;
+    case 2:
+        channelFormat = Image::LA;
+        break;
+    case 3:
+        channelFormat = Image::RGB;
+        break;
+    case 4:
+        channelFormat = Image::RGBA;
+        break;
+    default:
+        std::cerr << "PNG: in " << filename << ", unsupported number of channels: " << channels << std::endl;
+        return false;
+    }
+
+    init(width, height, 1, 1, dataType, channelFormat);
     png_byte** PNG_rows = (png_byte**)malloc(height * sizeof(png_byte*));
 
+    unsigned char *data = getPixels();
+    unsigned lineSize = getLineSize(0);
     for (png_uint_32 row = 0; row < height; ++row)
-        PNG_rows[height - 1 - row] = getData()+row*getLineSize();
+        PNG_rows[height - 1 - row] = data+row*lineSize;
 
     png_read_image(PNG_reader, PNG_rows);
 
@@ -217,19 +250,20 @@ bool ImagePNG::save(std::string filename, int compression_level)
     width = getWidth();
     height = getHeight();
 
-    bit_depth = (getNbBits()<8)?getNbBits():8;
-    channels = (getNbBits()+7)/8;
+    bit_depth = getBytesPerChannel() * 8;
+    channels = getChannelCount();
     if (channels == 1)
         color_type = PNG_COLOR_TYPE_GRAY;
     else if (channels == 2)
         color_type = PNG_COLOR_TYPE_GRAY_ALPHA;
     else if (channels == 3)
         color_type = PNG_COLOR_TYPE_RGB;
-    else if (channels == 4)
-        color_type = PNG_COLOR_TYPE_RGB_ALPHA;
     else
+        color_type = PNG_COLOR_TYPE_RGB_ALPHA;
+
+    if (bit_depth != 8)
     {
-        std::cerr << "Unsupported bitdepth "<<getNbBits()<<" to write to PNG file "<<filename<<std::endl;
+        std::cerr << "Unsupported bitdepth "<< bit_depth <<" to write to PNG file "<<filename<<std::endl;
         png_destroy_write_struct(&PNG_writer, &PNG_info);
         fclose(file);
         return false;
@@ -249,8 +283,10 @@ bool ImagePNG::save(std::string filename, int compression_level)
 
     png_byte** PNG_rows = (png_byte**)malloc(height * sizeof(png_byte*));
 
+    unsigned char *data = getPixels();
+    unsigned lineSize = getLineSize(0);
     for (png_uint_32 row = 0; row < height; ++row)
-        PNG_rows[height - 1 - row] = getData()+row*getLineSize();
+        PNG_rows[height - 1 - row] = data+row*lineSize;
 
     png_set_rows(PNG_writer, PNG_info, PNG_rows);
 

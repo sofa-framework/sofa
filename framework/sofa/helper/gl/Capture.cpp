@@ -59,10 +59,10 @@ bool Capture::saveScreen(const std::string& filename, int compression_level)
 #endif
     GLint viewport[4];
     glGetIntegerv(GL_VIEWPORT,viewport);
-    img.init(viewport[2],viewport[3],24);
+    img.init(viewport[2], viewport[3], 1, 1, io::Image::UINT8, io::Image::RGB);
     glReadBuffer(GL_FRONT);
     glPixelStorei(GL_PACK_ALIGNMENT, 1);
-    glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_RGB, GL_UNSIGNED_BYTE, img.getData());
+    glReadPixels(viewport[0], viewport[1], viewport[2], viewport[3], GL_RGB, GL_UNSIGNED_BYTE, img.getPixels());
 
     if (!img.save(filename, compression_level)) return false;
     std::cout << "Saved "<<img.getWidth()<<"x"<<img.getHeight()<<" screen image to "<<filename<<std::endl;

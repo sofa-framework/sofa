@@ -24,11 +24,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_IO_IMAGERAW_H
-#define SOFA_HELPER_IO_IMAGERAW_H
+#ifndef SOFA_HELPER_IO_IMAGEBMP_H
+#define SOFA_HELPER_IO_IMAGEBMP_H
 
 #include <sofa/helper/io/Image.h>
 #include <string>
+#include <assert.h>
 
 #include <sofa/helper/system/config.h>
 #include <sofa/helper/helper.h>
@@ -42,28 +43,23 @@ namespace helper
 namespace io
 {
 
-class SOFA_HELPER_API ImageRAW : public Image
+//using namespace sofa::defaulttype;
+
+class SOFA_HELPER_API ImageDDS : public Image
 {
 public:
-    ImageRAW ();
-    virtual ~ImageRAW() {}
+    ImageDDS ()
+    {
+    }
 
-    void initHeader(unsigned hsize);
+    ImageDDS (const std::string &filename)
+    {
+        load(filename);
+    }
 
-    // header size in Bytes
-    unsigned getHeaderSize() const { return headerSize; }
-
-    unsigned char * getHeader()           { return header; }
-    const unsigned char * getHeader() const { return header; }
-
-    bool load(std::string filename);
-    bool save(std::string filename, int compression_level = -1);
-
-private:
-    unsigned headerSize;
-    unsigned char *header;
+    bool load(const std::string &filename);
+    bool save(const std::string &filename, int compression_level = -1);
 };
-
 
 } // namespace io
 
