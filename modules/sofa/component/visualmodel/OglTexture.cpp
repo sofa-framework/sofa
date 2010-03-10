@@ -147,12 +147,32 @@ void OglTexture2D::init()
 
         if (height > 0 && width > 0 && !textureData.empty() )
         {
+            helper::io::Image::ChannelFormat channels;
+            switch (nbb)
+            {
+            case 8:
+                channels = helper::io::Image::L;
+                break;
+            case 16:
+                channels = helper::io::Image::LA;
+                break;
+            case 24:
+                channels = helper::io::Image::RGB;
+                break;
+            case 32:
+                channels = helper::io::Image::RGBA;
+                break;
+            default:
+                std::cerr << "OglTexture2D::init: Unknown bpp " << nbb << std::endl;
+                return;
+            }
+
             //Init texture
             img = new helper::io::Image();
-            img->init(height, width, nbb);
+            img->init(height, width, 1, 1, helper::io::Image::UINT8, channels);
 
             //Make texture
-            unsigned char* data = img->getData();
+            unsigned char* data = img->getPixels();
 
             for(unsigned int i=0 ; i<textureData.size() && i < height*width*(nbb/8); i++)
                 data[i] = (unsigned char)textureData[i];

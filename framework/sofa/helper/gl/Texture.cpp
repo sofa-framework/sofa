@@ -26,6 +26,7 @@
 ******************************************************************************/
 #include <sofa/helper/gl/Texture.h>
 #include <assert.h>
+#include <stdio.h>
 
 namespace sofa
 {
@@ -38,21 +39,39 @@ namespace gl
 
 void Texture::init(void)
 {
+    if (image->getDataType() != io::Image::UINT8)
+    {
+        std::cerr << "sofa::helper::gl::Texture::init: DataType other than UINT8 hasn't been implemented yet." << std::endl;
+        return;
+    }
+    if (image->getChannelFormat() != io::Image::L &&
+        image->getChannelFormat() != io::Image::LA &&
+        image->getChannelFormat() != io::Image::RGB &&
+        image->getChannelFormat() != io::Image::RGBA)
+    {
+        std::cerr << "sofa::helper::gl::Texture::init: ChannelFormat other than L, RGB, and RGBA hasn't been implemented yet." << std::endl;
+        return;
+    }
+
     glGenTextures(1, &id); // Create The Texture
 //     std::cout << "Create "<<image->getWidth()<<"x"<<image->getHeight()<<" Texture "<<id<<std::endl;
     // Typical Texture Generation Using Data From The Bitmap
     glBindTexture(GL_TEXTURE_2D, id);
-    switch(image->getNbBits())
+    switch(image->getChannelFormat())
     {
-    case 32:
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, image->getWidth(), image->getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, image->getData());
+    case io::Image::RGBA:
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, image->getWidth(), image->getHeight(), 0, GL_RGBA, GL_UNSIGNED_BYTE, image->getPixels());
         break;
-    case 24:
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, image->getWidth(), image->getHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, image->getData());
+    case io::Image::RGB:
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, image->getWidth(), image->getHeight(), 0, GL_RGB, GL_UNSIGNED_BYTE, image->getPixels());
         break;
-    case 8:
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_INTENSITY, image->getWidth(), image->getHeight(), 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, image->getData());
+    case io::Image::LA:
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE8_ALPHA8, image->getWidth(), image->getHeight(), 0, GL_LUMINANCE_ALPHA, GL_UNSIGNED_BYTE, image->getPixels());
         break;
+    case io::Image::L:
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_LUMINANCE8, image->getWidth(), image->getHeight(), 0, GL_LUMINANCE, GL_UNSIGNED_BYTE, image->getPixels());
+        break;
+    default:;
     }
     if (linearInterpolation)
     {
@@ -63,7 +82,6 @@ void Texture::init(void)
     {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
     }
     if (repeat)
     {

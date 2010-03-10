@@ -90,12 +90,14 @@ bool ImageBMP::load(std::string filename)
     /* skip size of bitmap info header */
     fseek(file, 4, SEEK_CUR);
     /* get the width of the bitmap */
+    int width;
     if (fread(&width, sizeof(int), 1, file) != 1)
         std::cerr << "Error: fread can't read the width of the bitmap." << std::endl;
 
     if (width < 0) width = -width;
     //printf("Width of Bitmap: %d\n", texture->width);
     /* get the height of the bitmap */
+    int height;
     if (fread(&height, sizeof(int), 1, file) != 1)
         std::cerr << "Error: fread can't read the height of the bitmap." << std::endl;
 
@@ -123,13 +125,31 @@ bool ImageBMP::load(std::string filename)
         std::cerr << "Bits per Pixel not supported\n";
         return false;
     }
-    nbBits = biBitCount;
+    int nbBits = biBitCount;
     int nc = ((nbBits+7)/8);
     /* calculate the size of the image in bytes */
     biSizeImage = width * height * nc;
     // std::cout << "Size of the image data: " << biSizeImage << std::endl;
 //     std::cout << "ImageBMP "<<filename<<" "<<width<<"x"<<height<<"x"<<nbBits<<" = "<<biSizeImage<<" bytes"<<std::endl;
-    data = (unsigned char*) malloc(biSizeImage);
+
+    Image::ChannelFormat channels;
+    switch (nc)
+    {
+    case 4:
+        channels = Image::RGBA;
+        break;
+    case 3:
+        channels = Image::RGB;
+        break;
+    case 1:
+        channels = Image::L;
+        break;
+    default:
+        fprintf(stderr, "ImageBMP: Unsupported number of bits per pixel: %i\n", nc*8);
+        return false;
+    }
+    init(width, height, 1, 1, Image::UINT8, channels);
+    unsigned char *data = getPixels();
     /* seek to the actual data */
     fseek(file, bfOffBits, SEEK_SET);
 
@@ -197,9 +217,9 @@ bool ImageBMP::save(std::string filename, int)
         return false;
     }
 
-    unsigned long lineSizeIn = ((nbBits+7)/8)*width;
+    unsigned long lineSizeIn = getLineSize(0);
     unsigned long lineSizeOut = ((lineSizeIn+3)/4)*4;
-    unsigned long biSizeImage = lineSizeOut*height;
+    unsigned long biSizeImage = lineSizeOut*getHeight(0);
 
     // BITMAPFILEHEADER
     if (!fwriteW(file, (unsigned short)'B' | ((unsigned short)'M' << 8))) return false; // Type
@@ -209,11 +229,14 @@ bool ImageBMP::save(std::string filename, int)
     if (!fwriteDW(file, 14+40)) return false; // OffBits
 
     // BITMAPINFOHEADER
+    const unsigned width = getWidth(0);
+    const unsigned height = getHeight(0);
+    const unsigned int bytespp = getBytesPerPixel();
     if (!fwriteDW(file, 40)) return false; // Size
     if (!fwriteDW(file, width)) return false; // Width
     if (!fwriteDW(file, height)) return false; // Height
     if (!fwriteW(file, 1)) return false; // Planes
-    if (!fwriteW(file, nbBits)) return false; // BitCount
+    if (!fwriteW(file, bytespp*8)) return false; // BitCount
     if (!fwriteDW(file, 0)) return false; // Compression
     if (!fwriteDW(file, biSizeImage)) return false; // SizeImage
     if (!fwriteDW(file, 2825)) return false; // XPelsPerMeter
@@ -221,11 +244,12 @@ bool ImageBMP::save(std::string filename, int)
     if (!fwriteDW(file, 0)) return false; // ClrUsed
     if (!fwriteDW(file, 0)) return false; // ClrImportant
 
-    if(nbBits==24)
+    unsigned char *data = getPixels();
+    if(bytespp==3)
     {
         unsigned char temp;
         /* swap red and blue (rgb -> bgr) */
-        for (int i = 0; i < width*height*3; i += 3)
+        for (unsigned i = 0; i < width*height*3; i += 3)
         {
             temp = data[i];
             data[i] = data[i + 2];
@@ -238,16 +262,16 @@ bool ImageBMP::save(std::string filename, int)
     }
     else
     {
-        for (int y=0; y<height; y++)
+        for (unsigned y=0; y<height; y++)
         {
             if (!fwrite(data+y*lineSizeIn, lineSizeIn, 1, file)) return false;
             char buf[3]= {0,0,0};
             if (!fwrite(buf, lineSizeOut-lineSizeIn, 1, file)) return false;
         }
     }
-    if(nbBits==24)
+    if(bytespp==3)
     {
-        int i;
+        unsigned i;
         unsigned char temp;
         /* swap red and blue (bgr -> rgb) */
         for (i = 0; i < width*height*3; i += 3)

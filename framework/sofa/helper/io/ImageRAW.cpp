@@ -40,20 +40,12 @@ namespace io
 {
 
 ImageRAW::ImageRAW ()
-    : Image(),
-      depth(1),
-      headerSize(0)
+    : headerSize(0)
 {}
 
-void ImageRAW::init(int w, int h, int d, int nbb, int hsize)
+void ImageRAW::initHeader(unsigned hsize)
 {
-    clear();
-    width = w;
-    height = h;
-    depth = d;
     headerSize = hsize;
-    nbBits = nbb;
-    data = (unsigned char*) malloc(getDataSize());
     header = (unsigned char*) malloc(headerSize);
 }
 
@@ -73,7 +65,7 @@ bool ImageRAW::load(std::string filename)
     }
 
     // read header and ignore it as we don't know how to interpret it
-    for ( int i=0; i<headerSize; ++i )
+    for ( unsigned i=0; i<headerSize; ++i )
     {
         int c = getc ( file );
 
@@ -86,9 +78,10 @@ bool ImageRAW::load(std::string filename)
             header[i] = ( unsigned char ) c;
     }
 
-    const unsigned int numVoxels = getDataSize();
+    const unsigned int numVoxels = getImageSize();
 
     // get the voxels from the file
+    unsigned char *data = getPixels();
     for ( unsigned int i=0; i<numVoxels; ++i )
     {
         int c = getc ( file );
@@ -101,7 +94,6 @@ bool ImageRAW::load(std::string filename)
         else
             data[i] = ( unsigned char ) c;
     }
-
 
     fclose(file);
 
@@ -122,7 +114,8 @@ bool ImageRAW::save(std::string filename, int)
     if(headerSize > 0)
         if(!fwrite(header, headerSize, 1, file)) return false;
 
-    if (!fwrite(data, getDataSize(), 1, file)) return false;
+    unsigned char *data = getPixels();
+    if (!fwrite(data, getImageSize(), 1, file)) return false;
 
     fclose(file);
     return true;
