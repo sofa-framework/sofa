@@ -134,7 +134,10 @@ public:
     Data<helper::vector<Triangle> > f_trianglesInBox;
 
     //Parameter
-    Data<double> _drawSize;
+    Data<bool> p_drawBoxes;
+    Data<bool> p_drawPoints;
+    Data<bool> p_drawEdges;
+    Data<bool> p_drawTriangles;
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_ENGINE_BOXROI_CPP)

@@ -59,7 +59,10 @@ BoxROI<DataTypes>::BoxROI()
     , f_pointsInBox( initData(&f_pointsInBox,"pointsInBox","Points contained in the ROI") )
     , f_edgesInBox( initData(&f_edgesInBox,"edgesInBox","Edges contained in the ROI") )
     , f_trianglesInBox( initData(&f_trianglesInBox,"f_trianglesInBox","Triangles contained in the ROI") )
-    , _drawSize( initData(&_drawSize,0.0,"drawSize","0 -> point based rendering") )
+    , p_drawBoxes( initData(&p_drawBoxes,false,"drawBoxes","Draw Box(es)") )
+    , p_drawPoints( initData(&p_drawPoints,false,"drawPoints","Draw Points") )
+    , p_drawEdges( initData(&p_drawEdges,false,"drawEdges","Draw Edges") )
+    , p_drawTriangles( initData(&p_drawTriangles,false,"drawTriangle","Draw Triangles") )
 {
     boxes.beginEdit()->push_back(Vec6(0,0,0,1,1,1));
     boxes.endEdit();
@@ -148,13 +151,24 @@ bool BoxROI<DataTypes>::isPointInBox(const PointID& pid, const Vec6& b)
 template <class DataTypes>
 bool BoxROI<DataTypes>::isEdgeInBox(const Edge& e, const Vec6& b)
 {
-    return (isPointInBox(e[0],b) || isPointInBox(e[1],b));
+    const VecCoord* x0 = &f_X0.getValue();
+    CPos p0 =  DataTypes::getCPos((*x0)[e[0]]);
+    CPos p1 =  DataTypes::getCPos((*x0)[e[1]]);
+    CPos c = (p1+p0)*0.5;
+
+    return isPointInBox(c,b);
 }
 
 template <class DataTypes>
 bool BoxROI<DataTypes>::isTriangleInBox(const Triangle& t, const Vec6& b)
 {
-    return (isPointInBox(t[0],b) || isPointInBox(t[1],b) || isPointInBox(t[2],b) );
+    const VecCoord* x0 = &f_X0.getValue();
+    CPos p0 =  DataTypes::getCPos((*x0)[t[0]]);
+    CPos p1 =  DataTypes::getCPos((*x0)[t[1]]);
+    CPos p2 =  DataTypes::getCPos((*x0)[t[2]]);
+    CPos c = (p2+p1+p0)/3.0;
+
+    return (isPointInBox(c,b));
 }
 
 template <class DataTypes>
@@ -241,7 +255,9 @@ void BoxROI<DataTypes>::draw()
     if (!this->getContext()->getShowBehaviorModels())
         return;
 
-    if( _drawSize.getValue() == 0) // old classical drawing by points
+    const VecCoord* x0 = &f_X0.getValue();
+    glColor3f(0.0, 1.0, 1.0);
+    if( p_drawBoxes.getValue())
     {
         ///draw the boxes
         glBegin(GL_LINES);
@@ -279,6 +295,51 @@ void BoxROI<DataTypes>::draw()
             glVertex3d(Xmax,Ymin,Zmin);
             glVertex3d(Xmax,Ymax,Zmin);
             glVertex3d(Xmax,Ymax,Zmax);
+        }
+        glEnd();
+    }
+    if( p_drawPoints.getValue())
+    {
+        ///draw the boxes
+        glBegin(GL_POINTS);
+        glPointSize(5.0);
+        helper::ReadAccessor< Data<VecCoord > > pointsInBox = f_pointsInBox;
+        for (unsigned int i=0; i<pointsInBox.size() ; ++i)
+        {
+            CPos p = DataTypes::getCPos(pointsInBox[i]);
+            helper::gl::glVertexT(p);
+        }
+        glEnd();
+    }
+    if( p_drawEdges.getValue())
+    {
+        ///draw the boxes
+        glBegin(GL_LINES);
+        helper::ReadAccessor< Data<helper::vector<BaseMeshTopology::Edge> > > edgesInBox = f_edgesInBox;
+        for (unsigned int i=0; i<edgesInBox.size() ; ++i)
+        {
+            Edge e = edgesInBox[i];
+            for (unsigned int j=0 ; j<2 ; j++)
+            {
+                CPos p = DataTypes::getCPos((*x0)[e[j]]);
+                helper::gl::glVertexT(p);
+            }
+        }
+        glEnd();
+    }
+    if( p_drawTriangles.getValue())
+    {
+        ///draw the boxes
+        glBegin(GL_TRIANGLES);
+        helper::ReadAccessor< Data<helper::vector<BaseMeshTopology::Triangle> > > trianglesInBox = f_trianglesInBox;
+        for (unsigned int i=0; i<trianglesInBox.size() ; ++i)
+        {
+            Triangle t = trianglesInBox[i];
+            for (unsigned int j=0 ; j<3 ; j++)
+            {
+                CPos p = DataTypes::getCPos((*x0)[t[j]]);
+                helper::gl::glVertexT(p);
+            }
         }
         glEnd();
     }
