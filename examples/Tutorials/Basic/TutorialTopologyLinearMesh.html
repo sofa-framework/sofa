@@ -1,24 +1,29 @@
 <html>
 <head>
-<link href="../Objects/sofa_white.css" rel="stylesheet" type="text/css" />
+<link href="../../Objects/sofa_white.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 	<div id="contenu">		
 	        <center><img src="TutorialTopologyLinearMesh.scn_0001.png" width="500" name="TutorialTopologyLinearMesh" align="middle">
-		  <h3>Tutorial Topology Linear Mesh</h3></center>
-		<div id="orangeText">Description:</div>
-		<br>
-The aim of these tutorials is to understand, step by step, how SOFA works.
-<br>
-TODO: write this page: SOFA/examples/Tutorials/Tutorials.html
-
-<br>
-You can 
-<a href="Basic/TutorialBasicCube.scn" name="Changing Scene"> Change the Scene</a>
-<br>
-You can 
-<a href="Basic/TutorialBasicCube.html" name="Changing HTML"> Change the description HTML</a> to do step by step procedures
-<br>
-you can modify the graph, and drop objets from the Library of the Modeler
+		  <h3><div id="orangeText">Tutorial Topology Linear Mesh</div></h3></center>
+	<br>
+	<div id="orangeText">Goal</div>
+	<br>
+	The aim of this tutorial is to show the importance of topological component. Indeed, in this tutorial, two linear pendulums are represented, implying:
+	<ul>
+		<li>A mechanicalObject with geometry point positions.</li>
+		<li>A mass for gravity and fixed points.</li>
+		<li>A mesh spring forcefield to create springs between points</li>
+		<li>An ODE scheme and a linear solver to solve the system at each time step.</li>
+	</ul>
+        <br>
+	<div id="orangeText">Key points</div>
+	<br>
+	The only difference between the models is the MeshTopology component. In the first case, edges are defined. Thus, meshSpringForceField will know a list of edges where to create springs. On the other case, now springs are created.
+	<br>
+	<div id="orangeText">Results</div>
+	<br>
+	Thus, when simulate, the first model will act as a pendulum, whereas on the other case, points will just fall down as they are not attached together.
+</div>
 </body>
 </html>
