@@ -67,6 +67,7 @@ public:
     //Input
     Data<helper::vector<sofa::core::componentmodel::loader::PrimitiveGroup > > f_groups;
     Data<helper::vector<unsigned int> > f_primitives; //not mandatory
+    Data<helper::vector<int > > f_elementsGroup;
     //Output
     Data<helper::vector<Real> > f_youngModulus;
     //Parameters
