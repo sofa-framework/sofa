@@ -44,7 +44,7 @@ namespace behaviormodel
 MyFakeComponent::MyFakeComponent()
     : myData( initData(&myData,(unsigned)1,"myData","Example of data") )
 {
-    myData.setWidget("myData_widget");
+    myData.setWidget("widget_myData");
 }
 
 
