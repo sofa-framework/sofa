@@ -1,24 +1,48 @@
 <html>
 <head>
-<link href="../Objects/sofa_white.css" rel="stylesheet" type="text/css" />
+<link href="../../Objects/sofa_white.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 	<div id="contenu">		
 	        <center><img src="TutorialTopologyHexa2QuadTopologicalMapping.scn_0001.png" width="500" name="TutorialTopologyHexa2QuadTopologicalMapping" align="middle">
-		  <h3>Tutorial Topology Hexa2QuadTopologicalMapping</h3></center>
-		<div id="orangeText">Description:</div>
-		<br>
-The aim of these tutorials is to understand, step by step, how SOFA works.
-<br>
-TODO: write this page: SOFA/examples/Tutorials/Tutorials.html
-
-<br>
-You can 
-<a href="Basic/TutorialBasicCube.scn" name="Changing Scene"> Change the Scene</a>
-<br>
-You can 
-<a href="Basic/TutorialBasicCube.html" name="Changing HTML"> Change the description HTML</a> to do step by step procedures
-<br>
-you can modify the graph, and drop objets from the Library of the Modeler
+		  <h3><div id="orangeText">Tutorial Topology Hexa2QuadTopologicalMapping</div></h3></center>
+	<br>	
+	<div id="orangeText">Goal</div>
+	<br>
+	The aim of this tutorial is to show the interest of using a topological mapping between 3D volume mesh and 2D surface mesh. In this tutorial, a cube is represented , implying:
+	<ul>
+		<li>A mesh loader to read mesh file. (not necessary in regular mesh)</li>
+		<li>A mechanicalObject with geometry point positions.</li>
+		<li>A mass for gravity and fixed points.</li>
+		<li>A FEM forcefield to create interaction between points</li>
+		<li>An ODE scheme and a linear solver to solve the system at each time step.</li>
+		<li>Dynamic topological components.</li>
+		<li>A visual model which reproduce the current model geometry thanks to the identity mapping.</li>
+	</ul>
+        <br>
+	<div id="orangeText">Key points</div>
+	<br>
+	Under the first node representing the hexahedra, a second node is used to represent the quad topology.
+	<br>
+	This second representation won't reproduce all quads of the hexahedra topology, but only quads on mesh borders. I.e quads with only one adjacent hexahedron. This process is similar to the <a href="TutorialTopologyTetra2TriangleTopologicalMapping.html">Tetra2TriangleTopologicalMapping</a>.
+	<br>
+	Edges of hexahedra are represented in yellow in the simulation whereas the visual model is based on the quads. Thus, display the scene in wire frame to see hexahedra and quads (in green).
+	<br>
+	<br>
+	To create this mapping, the component <b>Hexa2QuadTopologicalMapping</b> is used. This component take an input topology (Data Object1) which is the container of the "upper" topology (hexahedron here) and has an output topology (Data Object2) which is the container of the above topology (quad here).
+	<br>
+	<div id="orangeText">Results</div>
+	<br>
+	As explain the visual model use the output topology (quads) to render the surface model.
+	<br>
+	you can try to use directly the quads created in the <b>HexahedronSetTopologyContainer</b> for the ogl model. The result will be a cube with quads displayed inside the volume.
+	<br>
+	<br>
+	Finally try to remove the <b>HexahedronFEMForceField</b> or <b>QuadularBendingSprings</b> component. The result will be a bad behavior of the cube.
+	<br>
+	<div id="orangeText">Additional results</div>
+	<br>
+	When deleting quads, the topological mapping is updated. Thus, hexahedron behind selected quad will be deleted as well. Then, the list of quads on border will be updated and the surface rendering also.
+</div>
 </body>
 </html>

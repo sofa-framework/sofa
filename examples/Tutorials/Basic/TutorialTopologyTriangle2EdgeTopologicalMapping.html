@@ -1,24 +1,49 @@
 <html>
 <head>
-<link href="../Objects/sofa_white.css" rel="stylesheet" type="text/css" />
+<link href="../../Objects/sofa_white.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 	<div id="contenu">		
 	        <center><img src="TutorialTopologyTriangle2EdgeTopologicalMapping.scn_0001.png" width="500" name="TutorialTopologyTriangle2EdgeTopologicalMapping" align="middle">
-		  <h3>TutorialTopology Triangle2EdgeTopologicalMapping</h3></center>
-		<div id="orangeText">Description:</div>
-		<br>
-The aim of these tutorials is to understand, step by step, how SOFA works.
-<br>
-TODO: write this page: SOFA/examples/Tutorials/Tutorials.html
-
-<br>
-You can 
-<a href="Basic/TutorialBasicCube.scn" name="Changing Scene"> Change the Scene</a>
-<br>
-You can 
-<a href="Basic/TutorialBasicCube.html" name="Changing HTML"> Change the description HTML</a> to do step by step procedures
-<br>
-you can modify the graph, and drop objets from the Library of the Modeler
+		  <h3><div id="orangeText">TutorialTopology Triangle2EdgeTopologicalMapping</div></h3></center>
+	<br>	
+	<div id="orangeText">Goal</div>
+	<br>
+	The aim of this tutorial is to show the interest of using a topological mapping between 2D surface mesh and 1D linear mesh. In this tutorial, a soft tissues is represented, implying:
+	<ul>
+		<li>A mesh loader to read mesh file.</li>
+		<li>A mechanicalObject with geometry point positions.</li>
+		<li>A mass for gravity and fixed points.</li>
+		<li>A FEM forcefield to create interaction between points</li>
+		<li>An ODE scheme and a linear solver to solve the system at each time step.</li>
+		<li>Dynamic topological components.</li>
+		<li>A visual model which reproduce the current model geometry thanks to the identity mapping.</li>
+	</ul>
+        <br>
+	<div id="orangeText">Key points</div>
+	<br>
+	Under the first node representing the triangulation, a second node is used to represent the linear topology.
+	<br>
+	This second representation won't reproduce all edges of the triangulation, but only edges on mesh borders. I.e edges with only one adjacent triangle. 
+	<br>
+	They are represented in green in the simulation.
+	<br>
+	<br>
+	To create this mapping, the component <b>Triangle2EdgeTopologicalMapping</b> is used. This component take an input topology (Data Object1) which is the container of the "upper" topology (triangulation here) and has an output topology (Data Object2) which is the container of the above topology (edges here).
+	
+	<br>
+	<div id="orangeText">Results</div>
+	<br>
+	In this simulation, both triangulation and edge mesh have spring forcefield to create interaction between points. Thus, when simulating the soft tissue won't stretch.
+	<br>
+	Try to remove the <b>TriangularBendingSprings</b> component. The result will be a tissue completely stretched.
+	<br>
+	<br>
+	Finally try to remove the <b>MeshSringForceField</b> component. The result will be a bad behavior of mesh borders.
+	<br>
+	<div id="orangeText">Additional results</div>
+	<br>
+	When deleting triangles, the topological mapping is updated and so is the list of border edges.
+</div>
 </body>
 </html>

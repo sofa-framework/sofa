@@ -16,13 +16,16 @@
     <MechanicalObject template="Vec3d" name="Hexa"/>
     <UniformMass template="Vec3d" name="Mass" mass="0.25"/>
 
-    <include href="Objects/HexahedronSetTopology.xml" />
+    <Object type="HexahedronSetTopologyContainer"  name="Container" />
+    <Object type="HexahedronSetTopologyModifier"   name="Modifier" />
+    <Object type="HexahedronSetTopologyAlgorithms" name="TopoAlgo"   template="Vec3d" />
+    <Object type="HexahedronSetGeometryAlgorithms" name="GeomAlgo"   template="Vec3d" drawHexa="1" drawColorHexahedra="1.0 1.0 0.3"/>/>    
+ 
 <!--    <RegularGridTopology name="grid" n="6 6 6" min="-10 -10 -10" max="10 10 10" 
       p0="-10 -10 -10"/>-->
     
 
 
-    <RegularGridSpringForceField template="Vec3d" name="FEM-bend"/>
     <HexahedronFEMForceField name="FEM" template="Vec3d"/>    
     <FixedConstraint template="Vec3d" name="Fixed Dofs" indices="12 15 28 31" drawSize="0"/>
     
@@ -37,7 +40,7 @@
       <TriangleModel name="default7"/>
       
       <Node name="Visu">
-	<OglModel template="ExtVec3f" name="Visual" material="Default Diffuse 1 0 0 1 1 Ambient 1 0 0 0.2 1 Specular 0 0 0 1 1 Emissive 0 0 0 1 1 Shininess 0 45"/>
+	<OglModel template="ExtVec3f" name="Visual" color="green"/>
 	<IdentityMapping template="Mapping&lt;Vec3d,ExtVec3f&gt;" name="default8" object1="../../../Hexa" object2="Visual"/>
       </Node>
     </Node>
