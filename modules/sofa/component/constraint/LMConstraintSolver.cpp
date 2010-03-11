@@ -32,6 +32,7 @@
 #include <sofa/defaulttype/Quat.h>
 
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/AdvancedTimer.h>
 
 #include <Eigen/LU>
 #include <Eigen/QR>
@@ -190,6 +191,13 @@ bool LMConstraintSolver::prepareStates(double /*dt*/, VecId Order)
         return false; //Nothing to solve
     }
 
+
+    if (Order==VecId::position())      sofa::helper::AdvancedTimer::valSet("numConstraintsPosition", numConstraint);
+    else if (Order==VecId::velocity()) sofa::helper::AdvancedTimer::valSet("numConstraintsVelocity", numConstraint);
+    else if (Order==VecId::dx())       sofa::helper::AdvancedTimer::valSet("numConstraintsAcceleration", numConstraint);
+
+
+
     if (f_printLog.getValue())
     {
         if (Order==VecId::dx())            sout << "Applying the constraint on the acceleration"<<sendl;
@@ -214,6 +222,7 @@ bool LMConstraintSolver::buildSystem(double /*dt*/, VecId id)
 #ifdef SOFA_DUMP_VISITOR_INFO
     sofa::simulation::Visitor::printNode("SystemCreation");
 #endif
+
     const helper::vector< BaseLMConstraint* > &LMConstraints=LMConstraintVisitor.getConstraints();
     //Informations to build the matrices
     //Dofs to be constrained
