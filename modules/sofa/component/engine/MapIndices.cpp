@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_ENGINE_POINTSFROMINDICES_CPP
-#include <sofa/component/engine/PointsFromIndices.inl>
+#define SOFA_COMPONENT_ENGINE_MAPINDICES_CPP
+#include <sofa/component/engine/MapIndices.inl>
 #include <sofa/core/componentmodel/behavior/Constraint.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
@@ -38,28 +38,23 @@ namespace component
 namespace engine
 {
 
-SOFA_DECL_CLASS(PointsFromIndices)
+SOFA_DECL_CLASS(MapIndices)
 
-int PointsFromIndicesClass = core::RegisterObject("Find the points given a list of indices")
-#ifndef SOFA_FLOAT
-        .add< PointsFromIndices<Vec3dTypes> >()
-// .add< PointsFromIndices<Rigid3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< PointsFromIndices<Vec3fTypes> >()
-// .add< PointsFromIndices<Rigid3fTypes> >()
-#endif //SOFA_DOUBLE
+int MapIndicesClass = core::RegisterObject("Apply a permutation to a set of indices")
+        .add< MapIndices<int> >()
+        .add< MapIndices<unsigned int> >()
+        .add< MapIndices< helper::fixed_array<unsigned int, 2> > >()
+        .add< MapIndices< helper::fixed_array<unsigned int, 3> > >()
+        .add< MapIndices< helper::fixed_array<unsigned int, 4> > >()
+        .add< MapIndices< helper::fixed_array<unsigned int, 8> > >()
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_ENGINE_API PointsFromIndices<Vec3dTypes>;
-// template class SOFA_COMPONENT_ENGINE_API PointsFromIndices<Rigid3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_ENGINE_API PointsFromIndices<Vec3fTypes>;
-// template class SOFA_COMPONENT_ENGINE_API PointsFromIndices<Rigid3fTypes>;
-#endif //SOFA_DOUBLE
-
+template class SOFA_COMPONENT_ENGINE_API MapIndices<int>;
+template class SOFA_COMPONENT_ENGINE_API MapIndices<unsigned int>;
+template class SOFA_COMPONENT_ENGINE_API MapIndices< helper::fixed_array<unsigned int, 2> >;
+template class SOFA_COMPONENT_ENGINE_API MapIndices< helper::fixed_array<unsigned int, 3> >;
+template class SOFA_COMPONENT_ENGINE_API MapIndices< helper::fixed_array<unsigned int, 4> >;
+template class SOFA_COMPONENT_ENGINE_API MapIndices< helper::fixed_array<unsigned int, 8> >;
 
 } // namespace constraint
 

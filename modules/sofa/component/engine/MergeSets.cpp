@@ -22,12 +22,9 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_ENGINE_POINTSFROMINDICES_CPP
-#include <sofa/component/engine/PointsFromIndices.inl>
-#include <sofa/core/componentmodel/behavior/Constraint.inl>
+#define SOFA_COMPONENT_ENGINE_MERGESETS_CPP
+#include <sofa/component/engine/MergeSets.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
 {
@@ -38,32 +35,22 @@ namespace component
 namespace engine
 {
 
-SOFA_DECL_CLASS(PointsFromIndices)
+SOFA_DECL_CLASS(MergeSets)
 
-int PointsFromIndicesClass = core::RegisterObject("Find the points given a list of indices")
-#ifndef SOFA_FLOAT
-        .add< PointsFromIndices<Vec3dTypes> >()
-// .add< PointsFromIndices<Rigid3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< PointsFromIndices<Vec3fTypes> >()
-// .add< PointsFromIndices<Rigid3fTypes> >()
-#endif //SOFA_DOUBLE
+int MergeSetsClass = core::RegisterObject("Merge two sets of indices using specified boolean operation")
+        .add< MergeSets<int> >(true)
+        .add< MergeSets<unsigned int> >()
+//.add< MergeSets<long long> >()
+//.add< MergeSets<unsigned long long> >()
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_ENGINE_API PointsFromIndices<Vec3dTypes>;
-// template class SOFA_COMPONENT_ENGINE_API PointsFromIndices<Rigid3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_ENGINE_API PointsFromIndices<Vec3fTypes>;
-// template class SOFA_COMPONENT_ENGINE_API PointsFromIndices<Rigid3fTypes>;
-#endif //SOFA_DOUBLE
-
+template class SOFA_COMPONENT_ENGINE_API MergeSets<int>;
+template class SOFA_COMPONENT_ENGINE_API MergeSets<unsigned int>;
+//template class SOFA_COMPONENT_ENGINE_API MergeSets<long long>;
+//template class SOFA_COMPONENT_ENGINE_API MergeSets<unsigned long long>;
 
 } // namespace constraint
 
 } // namespace component
 
 } // namespace sofa
-
