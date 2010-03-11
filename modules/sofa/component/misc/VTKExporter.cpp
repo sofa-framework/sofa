@@ -34,7 +34,8 @@ int VTKExporterClass = core::RegisterObject("Read State vectors from file at eac
 VTKExporter::VTKExporter()
     : stepCounter(0), outfile(NULL)
     , vtkFilename( initData(&vtkFilename, "filename", "output VTK file name"))
-    , fileFormat( initData(&fileFormat, (bool) true, "XMLformat", "XML format?"))
+    , fileFormat( initData(&fileFormat, (bool) true, "XMLformat", "Set to true to use XML format"))
+    , position( initData(&position, "position", "points position (will use points from topology or mechanical state if this is empty)"))
     , writeEdges( initData(&writeEdges, (bool) true, "edges", "write edge topology"))
     , writeTriangles( initData(&writeTriangles, (bool) false, "triangles", "write triangle topology"))
     , writeQuads( initData(&writeQuads, (bool) false, "quads", "write quad topology"))
@@ -340,6 +341,10 @@ void VTKExporter::writeVTKSimple()
     const helper::vector<std::string>& pointsData = dPointsDataFields.getValue();
     const helper::vector<std::string>& cellsData = dCellsDataFields.getValue();
 
+    helper::ReadAccessor<Data<defaulttype::Vec3Types::VecCoord> > pointsPos = position;
+
+    const int nbp = (!pointsPos.empty()) ? pointsPos.size() : topology->getNbPoints();
+
     //Write header
     *outfile << "# vtk DataFile Version 2.0" << std::endl;
 
@@ -353,9 +358,17 @@ void VTKExporter::writeVTKSimple()
 
     //write dataset (geometry, unstructured grid)
     *outfile << "DATASET " << "UNSTRUCTURED_GRID" << std::endl;
-    *outfile << "POINTS " << topology->getNbPoints() << " float" << std::endl;
+
+    *outfile << "POINTS " << nbp << " float" << std::endl;
     //write Points
-    if (mstate && mstate->getSize() == topology->getNbPoints())
+    if (!pointsPos.empty())
+    {
+        for (int i=0 ; i<nbp; i++)
+        {
+            *outfile << pointsPos[i] << std::endl;
+        }
+    }
+    else if (mstate && mstate->getSize() == nbp)
     {
         for (int i=0 ; i<mstate->getSize() ; i++)
         {
@@ -364,7 +377,7 @@ void VTKExporter::writeVTKSimple()
     }
     else
     {
-        for (int i=0 ; i<topology->getNbPoints() ; i++)
+        for (int i=0 ; i<nbp ; i++)
         {
             *outfile << topology->getPX(i) << " " << topology->getPY(i) << " " << topology->getPZ(i) << std::endl;
 //		std::cout << topology->getPX(i) << " " << topology->getPY(i) << " " << topology->getPZ(i) << std::endl;
@@ -454,7 +467,7 @@ void VTKExporter::writeVTKSimple()
     //write dataset attributes
     if (!pointsData.empty())
     {
-        *outfile << "POINT_DATA " << topology->getNbPoints() << std::endl;
+        *outfile << "POINT_DATA " << nbp << std::endl;
         writeData(pointsDataObject, pointsDataField, pointsDataName);
     }
 
@@ -486,6 +499,10 @@ void VTKExporter::writeVTKXML()
     const helper::vector<std::string>& pointsData = dPointsDataFields.getValue();
     const helper::vector<std::string>& cellsData = dCellsDataFields.getValue();
 
+    helper::ReadAccessor<Data<defaulttype::Vec3Types::VecCoord> > pointsPos = position;
+
+    const int nbp = (!pointsPos.empty()) ? pointsPos.size() : topology->getNbPoints();
+
     unsigned int numberOfCells;
     numberOfCells = ( (writeEdges.getValue()) ? topology->getNbEdges() : 0 )
             +( (writeTriangles.getValue()) ? topology->getNbTriangles() : 0 )
@@ -502,7 +519,7 @@ void VTKExporter::writeVTKXML()
     *outfile << "<VTKFile type=\"UnstructuredGrid\" version=\"0.1\" byte_order=\"BigEndian\">" << std::endl;
     *outfile << "  <UnstructuredGrid>" << std::endl;
     //write piece
-    *outfile << "    <Piece NumberOfPoints=\"" << topology->getNbPoints() << "\" NumberOfCells=\""<< numberOfCells << "\">" << std::endl;
+    *outfile << "    <Piece NumberOfPoints=\"" << nbp << "\" NumberOfCells=\""<< numberOfCells << "\">" << std::endl;
 
 
 
@@ -527,14 +544,14 @@ void VTKExporter::writeVTKXML()
     //write points
     *outfile << "      <Points>" << std::endl;
     *outfile << "        <DataArray type=\"Float32\" NumberOfComponents=\"3\" Format=\"ascii\">" << std::endl;
-    if (mstate && mstate->getSize() == topology->getNbPoints())
+    if (mstate && mstate->getSize() == nbp)
     {
         for (int i = 0; i < mstate->getSize(); i++)
             *outfile << "          " << mstate->getPX(i) << " " << mstate->getPY(i) << " " << mstate->getPZ(i) << std::endl;
     }
     else
     {
-        for (int i = 0; i < topology->getNbPoints(); i++)
+        for (int i = 0; i < nbp; i++)
             *outfile << "          " << topology->getPX(i) << " " << topology->getPY(i) << " " << topology->getPZ(i) << std::endl;
     }
     *outfile << "        </DataArray>" << std::endl;

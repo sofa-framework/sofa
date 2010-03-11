@@ -66,6 +66,9 @@ bool BaseData::validParent(BaseData* parent)
     // Check if automatic conversion is possible
     if (this->getValueTypeInfo()->ValidInfo() && parent->getValueTypeInfo()->ValidInfo())
         return true;
+    // Check if one of the data is a simple string
+    if (this->getValueTypeInfo()->name() == defaulttype::DataTypeInfo<std::string>::name() || parent->getValueTypeInfo()->name() == defaulttype::DataTypeInfo<std::string>::name())
+        return true;
     // No conversion found
     return true;
 }
@@ -128,6 +131,14 @@ bool BaseData::updateFromParentValue(const BaseData* parent)
 {
     const defaulttype::AbstractTypeInfo* dataInfo = this->getValueTypeInfo();
     const defaulttype::AbstractTypeInfo* parentInfo = parent->getValueTypeInfo();
+
+    // Check if one of the data is a simple string
+    if (this->getValueTypeInfo()->name() == defaulttype::DataTypeInfo<std::string>::name() || parent->getValueTypeInfo()->name() == defaulttype::DataTypeInfo<std::string>::name())
+    {
+        std::string text = parent->getValueString();
+        return this->read(text);
+    }
+
     // Check if automatic conversion is possible
     if (!dataInfo->ValidInfo() || !parentInfo->ValidInfo())
         return false; // No conversion found
