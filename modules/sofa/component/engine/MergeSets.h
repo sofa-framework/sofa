@@ -22,12 +22,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_ENGINE_POINTSFROMINDICES_CPP
-#include <sofa/component/engine/PointsFromIndices.inl>
-#include <sofa/core/componentmodel/behavior/Constraint.inl>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/defaulttype/RigidTypes.h>
+#ifndef SOFA_COMPONENT_ENGINE_MERGESETS_H
+#define SOFA_COMPONENT_ENGINE_MERGESETS_H
+
+#include <sofa/core/DataEngine.h>
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/component/component.h>
+
+#include <set>
 
 namespace sofa
 {
@@ -38,32 +40,47 @@ namespace component
 namespace engine
 {
 
-SOFA_DECL_CLASS(PointsFromIndices)
+/**
+ * This class merge 2 coordinate vectors.
+ */
+template <class T>
+class MergeSets : public core::DataEngine
+{
+public:
+    SOFA_CLASS(SOFA_TEMPLATE(MergeSets,T),core::DataEngine);
+    typedef T Index;
+    typedef sofa::helper::vector<T> VecIndex;
+    typedef std::set<T> SetIndex;
+public:
 
-int PointsFromIndicesClass = core::RegisterObject("Find the points given a list of indices")
-#ifndef SOFA_FLOAT
-        .add< PointsFromIndices<Vec3dTypes> >()
-// .add< PointsFromIndices<Rigid3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< PointsFromIndices<Vec3fTypes> >()
-// .add< PointsFromIndices<Rigid3fTypes> >()
-#endif //SOFA_DOUBLE
-        ;
+    MergeSets();
 
-#ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_ENGINE_API PointsFromIndices<Vec3dTypes>;
-// template class SOFA_COMPONENT_ENGINE_API PointsFromIndices<Rigid3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_ENGINE_API PointsFromIndices<Vec3fTypes>;
-// template class SOFA_COMPONENT_ENGINE_API PointsFromIndices<Rigid3fTypes>;
-#endif //SOFA_DOUBLE
+    virtual ~MergeSets();
 
+    void init();
 
-} // namespace constraint
+    void reinit();
+
+    void update();
+
+    Data<VecIndex> f_in1;
+    Data<VecIndex> f_in2;
+    Data<VecIndex> f_out;
+    Data<std::string> f_op;
+};
+
+#if defined(WIN32) && !defined(SOFA_COMPONENT_ENGINE_MERGESETS_CPP)
+#pragma warning(disable : 4231)
+template class SOFA_COMPONENT_ENGINE_API MergeSets<int>;
+template class SOFA_COMPONENT_ENGINE_API MergeSets<unsigned int>;
+//template class SOFA_COMPONENT_ENGINE_API MergeSets<long long>;
+//template class SOFA_COMPONENT_ENGINE_API MergeSets<unsigned long long>;
+#endif
+
+} // namespace engine
 
 } // namespace component
 
 } // namespace sofa
 
+#endif

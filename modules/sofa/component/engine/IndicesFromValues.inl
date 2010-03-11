@@ -22,12 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_ENGINE_POINTSFROMINDICES_CPP
-#include <sofa/component/engine/PointsFromIndices.inl>
-#include <sofa/core/componentmodel/behavior/Constraint.inl>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/defaulttype/RigidTypes.h>
+#ifndef SOFA_COMPONENT_ENGINE_INDICESFROMVALUES_INL
+#define SOFA_COMPONENT_ENGINE_INDICESFROMVALUES_INL
+
+#include <sofa/component/engine/IndicesFromValues.h>
+#include <sofa/helper/gl/template.h>
 
 namespace sofa
 {
@@ -38,32 +37,73 @@ namespace component
 namespace engine
 {
 
-SOFA_DECL_CLASS(PointsFromIndices)
+using namespace sofa::helper;
+using namespace sofa::defaulttype;
+using namespace core::objectmodel;
 
-int PointsFromIndicesClass = core::RegisterObject("Find the points given a list of indices")
-#ifndef SOFA_FLOAT
-        .add< PointsFromIndices<Vec3dTypes> >()
-// .add< PointsFromIndices<Rigid3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< PointsFromIndices<Vec3fTypes> >()
-// .add< PointsFromIndices<Rigid3fTypes> >()
-#endif //SOFA_DOUBLE
-        ;
+template <class T>
+IndicesFromValues<T>::IndicesFromValues()
+    : f_values( initData (&f_values, "values", "input values") )
+    , f_global( initData (&f_global, "global", "Global values, in which the input values are searched") )
+    , f_indices( initData(&f_indices, "indices","Output indices of the given values, searched in global") )
+{
+}
 
-#ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_ENGINE_API PointsFromIndices<Vec3dTypes>;
-// template class SOFA_COMPONENT_ENGINE_API PointsFromIndices<Rigid3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_ENGINE_API PointsFromIndices<Vec3fTypes>;
-// template class SOFA_COMPONENT_ENGINE_API PointsFromIndices<Rigid3fTypes>;
-#endif //SOFA_DOUBLE
+template <class T>
+IndicesFromValues<T>::~IndicesFromValues()
+{
+}
 
+template <class T>
+void IndicesFromValues<T>::init()
+{
+    addInput(&f_values);
+    addInput(&f_global);
+    addOutput(&f_indices);
+    setDirtyValue();
+}
 
-} // namespace constraint
+template <class T>
+void IndicesFromValues<T>::reinit()
+{
+    update();
+}
+
+template <class T>
+void IndicesFromValues<T>::update()
+{
+    cleanDirty();
+    helper::ReadAccessor<Data<VecValue> > global = f_global;
+    helper::ReadAccessor<Data<VecValue> > values = f_values;
+    helper::WriteAccessor<Data<VecIndex> > indices = f_indices;
+
+    indices.clear();
+    indices.reserve(values.size());
+    for (unsigned int i=0; i<values.size(); ++i)
+    {
+        const Value v = values[i];
+        int index=-1;
+        for (unsigned int j=0; j<global.size(); ++j)
+        {
+            //if (global[j] == v)
+            /// @TODO: add operator== to helper::fixed_array and defaulttype::RididCoord/Deriv
+            if (!(global[j] < v) && !(v < global[j]))
+            {
+                index = j;
+                break;
+            }
+        }
+        if (index >= 0)
+            indices.push_back(index);
+        else
+            serr << "Input value " << i <<" not found : " << v << sendl;
+    }
+}
+
+} // namespace engine
 
 } // namespace component
 
 } // namespace sofa
 
+#endif

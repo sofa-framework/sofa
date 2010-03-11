@@ -22,19 +22,16 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_MERGEPOINTS_H
-#define SOFA_COMPONENT_ENGINE_MERGEPOINTS_H
+#ifndef SOFA_COMPONENT_ENGINE_MAPINDICES_H
+#define SOFA_COMPONENT_ENGINE_MAPINDICES_H
 
-#if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
-#pragma once
-#endif
-
-#include <sofa/defaulttype/Vec.h>
 #include <sofa/core/DataEngine.h>
 #include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
-#include <sofa/component/topology/PointSubset.h>
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/RigidTypes.h>
+
+#include <sofa/component/component.h>
 
 namespace sofa
 {
@@ -50,21 +47,22 @@ using namespace core::componentmodel::topology;
 using namespace core::objectmodel;
 
 /**
- * This class merge 2 coordinate vectors.
+ * This class apply a permutation to a set of indices
  */
-template <class DataTypes>
-class MergePoints : public core::DataEngine
+template <class T>
+class MapIndices : public core::DataEngine
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(MergePoints,DataTypes),core::DataEngine);
-    typedef typename DataTypes::VecCoord VecCoord;
-    typedef topology::PointSubset SetIndex;
+    SOFA_CLASS(SOFA_TEMPLATE(MapIndices,T),core::DataEngine);
+    typedef T Value;
+    typedef sofa::helper::vector<T> VecValue;
+    typedef unsigned int Index;
+    typedef sofa::helper::vector<Index> VecIndex;
+    typedef std::map<Index, Index> MapIndex;
 
-public:
+    MapIndices();
 
-    MergePoints();
-
-    ~MergePoints() {}
+    virtual ~MapIndices();
 
     void init();
 
@@ -72,53 +70,31 @@ public:
 
     void update();
 
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    Data<VecValue> f_in;
+    Data<VecIndex> f_indices;
+    Data<VecValue> f_out;
+    Data<std::string> f_outStr;
+    Data<bool> f_transpose;
+
+    template<class V>
+    void applyIndex(V& v, const MapIndex& m)
     {
-        /*        if (dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
-                    return false;*/
-        return BaseObject::canCreate(obj, context, arg);
+        typename MapIndex::const_iterator it = m.find(v);
+        if (it != m.end())
+            v = it->second;
     }
 
-    /// Construction method called by ObjectFactory.
-    template<class T>
-    static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        core::objectmodel::BaseObject::create(obj, context, arg);
-        /*        if (context)
-                {
-                    obj->mstate = dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState());
-                }*/
-    }
-
-    virtual std::string getTemplateName() const
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const MergePoints<DataTypes>* = NULL)
-    {
-        return DataTypes::Name();
-    }
-
-    Data<VecCoord> f_X1;
-    Data<VecCoord> f_X2;
-    Data<SetIndex> f_indices1;
-    Data<SetIndex> f_indices2;
-    Data<VecCoord> f_points;
-    MechanicalState<DataTypes>* mstate;
+    void apply(Value& v, const MapIndex& m);
 };
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_ENGINE_MERGEPOINTS_CPP)
+#if defined(WIN32) && !defined(SOFA_COMPONENT_ENGINE_MAPINDICES_CPP)
 #pragma warning(disable : 4231)
-#ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_ENGINE_API MergePoints<defaulttype::Vec3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_ENGINE_API MergePoints<defaulttype::Vec3fTypes>;
-#endif //SOFA_DOUBLE
+template class SOFA_COMPONENT_ENGINE_API MapIndices<int>;
+template class SOFA_COMPONENT_ENGINE_API MapIndices<unsigned int>;
+template class SOFA_COMPONENT_ENGINE_API MapIndices< helper::fixed_array<unsigned int, 2> >;
+template class SOFA_COMPONENT_ENGINE_API MapIndices< helper::fixed_array<unsigned int, 3> >;
+template class SOFA_COMPONENT_ENGINE_API MapIndices< helper::fixed_array<unsigned int, 4> >;
+template class SOFA_COMPONENT_ENGINE_API MapIndices< helper::fixed_array<unsigned int, 8> >;
 #endif
 
 } // namespace engine
