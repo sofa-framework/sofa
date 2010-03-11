@@ -25,6 +25,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/componentmodel/behavior/ConstraintSolver.h>
+#include <sofa/helper/AdvancedTimer.h>
 
 namespace sofa
 {
@@ -46,14 +47,42 @@ ConstraintSolver::~ConstraintSolver()
 
 void ConstraintSolver::solveConstraint(double dt, VecId id)
 {
+    sofa::helper::AdvancedTimer::stepBegin("SolveConstraints");
     bool continueSolving=true;
+    sofa::helper::AdvancedTimer::stepBegin("SolveConstraints PrepareState");
     continueSolving=prepareStates(dt, id);
-    if (continueSolving) continueSolving=buildSystem(dt, id);
-    else return;
-    if (continueSolving) continueSolving=solveSystem(dt, id);
-    else return;
-    if (continueSolving) continueSolving=applyCorrection(dt, id);
-    else return;
+    sofa::helper::AdvancedTimer::stepEnd  ("SolveConstraints PrepareState");
+    if (continueSolving)
+    {
+        sofa::helper::AdvancedTimer::stepBegin("SolveConstraints BuildSystem");
+        continueSolving=buildSystem(dt, id);
+        sofa::helper::AdvancedTimer::stepEnd  ("SolveConstraints BuildSystem");
+    }
+    else
+    {
+        sofa::helper::AdvancedTimer::stepEnd  ("SolveConstraints");
+        return;
+    }
+    if (continueSolving)
+    {
+        sofa::helper::AdvancedTimer::stepBegin("SolveConstraints SolveSystem");
+        continueSolving=solveSystem(dt, id);
+        sofa::helper::AdvancedTimer::stepEnd  ("SolveConstraints SolveSystem");
+    }
+    else
+    {
+        sofa::helper::AdvancedTimer::stepEnd  ("SolveConstraints");
+        return;
+    }
+
+    if (continueSolving)
+    {
+        sofa::helper::AdvancedTimer::stepBegin("SolveConstraints ApplyCorrection");
+        continueSolving=applyCorrection(dt, id);
+        sofa::helper::AdvancedTimer::stepEnd  ("SolveConstraints ApplyCorrection");
+    }
+
+    sofa::helper::AdvancedTimer::stepEnd("SolveConstraints");
 }
 } // namespace behavior
 
