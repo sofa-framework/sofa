@@ -1,24 +1,46 @@
 <html>
 <head>
-<link href="../Objects/sofa_white.css" rel="stylesheet" type="text/css" />
+<link href="../../Objects/sofa_white.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 	<div id="contenu">		
 	        <center><img src="TutorialTopologyQuad2TriangleTopologicalMapping.scn_0001.png" width="500" name="TutorialTopologyQuad2TriangleTopologicalMapping" align="middle">
-		  <h3>Tutorial Topology Quad2TriangleTopologicalMapping</h3></center>
-		<div id="orangeText">Description:</div>
-		<br>
-The aim of these tutorials is to understand, step by step, how SOFA works.
-<br>
-TODO: write this page: SOFA/examples/Tutorials/Tutorials.html
-
-<br>
-You can 
-<a href="Basic/TutorialBasicCube.scn" name="Changing Scene"> Change the Scene</a>
-<br>
-You can 
-<a href="Basic/TutorialBasicCube.html" name="Changing HTML"> Change the description HTML</a> to do step by step procedures
-<br>
-you can modify the graph, and drop objets from the Library of the Modeler
+		  <h3><div id="orangeText">Tutorial Topology Quad2TriangleTopologicalMapping</div></h3></center>
+	<br>	
+	<div id="orangeText">Goal</div>
+	<br>
+	The aim of this tutorial is to show the interest of using a topological mapping between two 2D surface mesh. In this tutorial, a soft cube is represented, implying:
+	<ul>
+		<li>A mesh loader to read mesh file.</li>
+		<li>A mechanicalObject with geometry point positions.</li>
+		<li>A mass for gravity and fixed points.</li>
+		<li>A FEM forcefield to create interaction between points</li>
+		<li>An ODE scheme and a linear solver to solve the system at each time step.</li>
+		<li>Dynamic topological components.</li>
+		<li>A visual model which reproduce the current model geometry thanks to the identity mapping.</li>
+	</ul>
+        <br>
+	<div id="orangeText">Key points</div>
+	<br>
+	Under the first node representing the quad mesh, a second node is used to represent the triangle mesh.
+	<br>
+	This is not the same case as a topological mapping with different dimension. In this case, both topologies are 2D surfaces. Thus, the triangulation will split each quad into 2 adjacent triangles.
+	<br>
+	Triangle edges are represented in yellow in the simulation. Display the scene in wire frame to see the quads.
+	<br>
+	<br>
+	To create this mapping, the component <b>Quad2TriangleTopologicalMapping</b> is used. This component take an input topology (Data Object1) which is the container of the "upper" topology (quad here) and has an output topology (Data Object2) which is the container of the above topology (triangle here).
+	
+	<br>
+	<div id="orangeText">Results</div>
+	<br>
+	In this simulation, no forcefield is link to the quads, showing that the "above" topology can be used as based for the simulation. (useful when a more procise topology is wanted)
+	<br>
+	Try to remove the either <b>TriangularBendingSprings</b> or <b>TriangularFEMForceField</b>component. The result will be a tissue completely stretched.
+	<br>
+	<div id="orangeText">Additional results</div>
+	<br>
+	When deleting triangles, the topological mapping is updated and so is the list of quads.
+</div>
 </body>
 </html>

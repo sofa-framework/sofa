@@ -17,11 +17,11 @@
     <QuadSetTopologyContainer name="Container" />
     <QuadSetTopologyModifier name="Topology Modifier"/>
     <QuadSetTopologyAlgorithms template="Vec3d" name="TopoAlgo"/>
-    <QuadSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"/>
-    <QuadularBendingSprings name="FEM-Bend" template="Vec3d" stiffness="3000" damping="1"/>
+    <QuadSetGeometryAlgorithms template="Vec3d" name="GeomAlgo" />
+    <!--<QuadularBendingSprings name="FEM-Bend" template="Vec3d" stiffness="3000" damping="1"/>-->
 
     <DiagonalMass name="Mass" template="Vec3d" massDensity="0.5"/>
-    <FixedConstraint name="Fixed dof" template="Vec3d" indices="12 15"/>
+    <FixedConstraint name="Fixed dof" template="Vec3d" indices="4 5 6 7"/>
  
     <Node name="Visu">
       <OglModel name="Visual" template="ExtVec3f" color="green"/>
@@ -32,7 +32,7 @@
       <TriangleSetTopologyContainer name="Container"/>
       <TriangleSetTopologyModifier name="Topology Modifier"/>
       <TriangleSetTopologyAlgorithms name="TopoAlgo" template="Vec3d"/>
-      <TriangleSetGeometryAlgorithms name="GeomAlgo" template="Vec3d"/>
+      <TriangleSetGeometryAlgorithms name="GeomAlgo" template="Vec3d" drawEdges="1" drawColorEdges="1.0 1.0 0.3"/>
 
       <Quad2TriangleTopologicalMapping name="Topological Mapping" object1="../../Container" object2="Container"/>      
       <TriangularFEMForceField name="FEM" template="Vec3d" method="large" poissonRatio="0.3" youngModulus="1000"/>
