@@ -111,14 +111,14 @@ bool ImageRAW::save(std::string filename, int)
         return false;
     }
 
-    if(headerSize > 0)
-        if(!fwrite(header, headerSize, 1, file)) return false;
-
-    unsigned char *data = getPixels();
-    if (!fwrite(data, getImageSize(), 1, file)) return false;
-
+    bool isWriteOk = true;
+    if (headerSize > 0)
+    {
+        isWriteOk = isWriteOk && fwrite(header, headerSize, 1, file) == headerSize;
+    }
+    isWriteOk = isWriteOk && fwrite(getPixels(), getImageSize(), 1, file) == getImageSize();
     fclose(file);
-    return true;
+    return isWriteOk;
 }
 
 } // namespace io
