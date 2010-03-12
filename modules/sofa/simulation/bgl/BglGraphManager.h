@@ -39,6 +39,8 @@
 #ifndef SOFA_SIMULATION_BGL_BGLGRAPHMANAGER_H
 #define SOFA_SIMULATION_BGL_BGLGRAPHMANAGER_H
 
+#define BOOST_NO_HASH
+
 #include <sofa/simulation/bgl/bgl.h>
 #include <sofa/simulation/common/Node.h>
 #include <boost/graph/adjacency_list.hpp>
