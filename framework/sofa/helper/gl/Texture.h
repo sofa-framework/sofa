@@ -46,7 +46,7 @@ class SOFA_HELPER_API Texture
 {
 private:
     io::Image *image;
-    GLuint id;
+    GLuint id, target;
     bool repeat, linearInterpolation;
 public:
     Texture (io::Image *img, bool repeat = true, bool linearInterpolation = true)
@@ -54,6 +54,7 @@ public:
     {};
 
     io::Image* getImage(void);
+    GLuint getTarget() const { return target; }
     void   bind(void);
     void   unbind(void);
     void   init (void);

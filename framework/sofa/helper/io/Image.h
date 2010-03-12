@@ -45,17 +45,20 @@ class SOFA_HELPER_API Image
 public:
     enum DataType
     {
-        UINT8,
-        UINT16,
-        UINT32,
-        HALF,
-        FLOAT,
+        UNORM8,  // unsigned char normalized to the range [0, 1] by the GPU
+        UNORM16, // unsigned short normalized to the range [0, 1] by the GPU
+        UINT32,  // unsigned int
+        HALF,    // half float (10-bit mantissa, 5-bit exponent, 1-bit sign)
+        FLOAT,   // ordinary float
 
-        COMPRESSED_DXT1,
-        COMPRESSED_DXT3,
-        COMPRESSED_DXT5,
-        COMPRESSED_L,
-        COMPRESSED_LA,
+        UCOMPRESSED, // compressed UNORM8
+        // Compression schemes:
+        // L,LA: luminance-alpha texture compression (as is defined by OpenGL)
+        // R,RG: red-green texture compression (as is defined by OpenGL)
+        // RGB:  DXT1 texture compression (S3TC in OpenGL)
+        // RGBA: DXT5 texture compression (S3TC in OpenGL)
+        // BGR:  non-applicable
+        // BGRA: non-applicable
 
         COUNT_OF_DATA_TYPES
     };
@@ -64,15 +67,14 @@ public:
 
     enum ChannelFormat
     {
-        L,
-        LA,
-        R,
+        L,      // luminance
+        LA,     // luminance, alpha
+        R,      // red, green, blue, alpha...
         RG,
         RGB,
         RGBA,
         BGR,
         BGRA,
-        COMPRESSED,
 
         COUNT_OF_CHANNEL_FORMATS
     };
@@ -85,7 +87,8 @@ public:
         TEXTURE_3D,
         TEXTURE_CUBE,
 
-        TEXTURE_INVALID
+        COUNT_OF_TEXTURE_TYPES,
+        TEXTURE_INVALID = COUNT_OF_TEXTURE_TYPES
     };
 
     static const char *strFromTextureType[TEXTURE_INVALID+1];
