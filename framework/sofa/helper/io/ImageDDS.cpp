@@ -473,10 +473,15 @@ bool ImageDDS::save(const std::string &filename, int)
         return false;
     }
 
-    fwrite(&header, sizeof(DDSHeader), 1, file);
-    fwrite(getPixels(), getImageSize(), 1, file);
+    bool isWriteOk = true;
+    isWriteOk = isWriteOk && fwrite(&header, sizeof(DDSHeader), 1, file) == sizeof(DDSHeader);
+    isWriteOk = isWriteOk && fwrite(getPixels(), getImageSize(), 1, file) == getImageSize();
     fclose(file);
-    return true;
+    if (!isWriteOk)
+    {
+        std::cerr << "ImageDDS::save: Cannot write to file" << filename << std::endl;
+    }
+    return isWriteOk;
 }
 } // namespace io
 } // namespace helper
