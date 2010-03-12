@@ -170,8 +170,8 @@ TriangularFEMForceField<DataTypes>::TriangularFEMForceField()
     , f_method(initData(&f_method,std::string("large"),"method","large: large displacements, small: small displacements"))
     //, f_poisson(initData(&f_poisson,(Real)0.3,"poissonRatio","Poisson ratio in Hooke's law"))
     //, f_young(initData(&f_young,(Real)1000.,"youngModulus","Young modulus in Hooke's law"))
-    , f_poisson(initData(&f_poisson,helper::vector<Real>(1,0.45),"poissonRatio","Poisson ratio in Hooke's law (vector)"))
-    , f_young(initData(&f_young,helper::vector<Real>(1,1000.0),"youngModulus","Young modulus in Hooke's law (vector)"))
+    , f_poisson(initData(&f_poisson,helper::vector<Real>(1,static_cast<Real>(0.45)),"poissonRatio","Poisson ratio in Hooke's law (vector)"))
+    , f_young(initData(&f_young,helper::vector<Real>(1,static_cast<Real>(1000.0)),"youngModulus","Young modulus in Hooke's law (vector)"))
     , f_damping(initData(&f_damping,(Real)0.,"damping","Ratio damping/stiffness"))
     , f_fracturable(initData(&f_fracturable,false,"fracturable","the forcefield computes the next fracturable Edge"))
     , showStressValue(initData(&showStressValue,false,"showStressValue","Flag activating rendering of stress values as a color in each triangle"))
@@ -331,7 +331,7 @@ void TriangularFEMForceField<DataTypes>::getRotation(Transformation& R, unsigned
         r21=tinfo->rotation*r01;
         r+=r21;
     }
-    R=r/numNeiTri;
+    R=r/static_cast<Real>(numNeiTri);
 
     //orthogonalization
     Coord ex,ey,ez;
@@ -395,9 +395,9 @@ void TriangularFEMForceField<DataTypes>::getRotations()
     //averaging the rotation matrix
     for(int i=0; i<numPoint; i++)
     {
-        VertexInformation *vinfo= &vertexInf[i];
+        VertexInformation *vinfo=&vertexInf[i];
         int numNeiTri=_topology->getTrianglesAroundVertex(i).size();
-        vinfo->rotation/=numNeiTri;
+        vinfo->rotation/=static_cast<Real>(numNeiTri);
 
         //orthogonalization
         Coord ex,ey,ez;
@@ -563,7 +563,7 @@ void TriangularFEMForceField<DataTypes>::computeStrainDisplacement(StrainDisplac
     {
         Coord ab_cross_ac = cross(b-a, c-a);
         determinant = ab_cross_ac.norm();
-        triangleInf[elementIndex].area = 0.5*determinant;
+        triangleInf[elementIndex].area = determinant*0.5f;
 
         Real x13 = (a[0]-c[0]) / determinant;
         Real x21 = (b[0]-a[0]) / determinant;
@@ -599,7 +599,7 @@ void TriangularFEMForceField<DataTypes>::computeStrainDisplacement(StrainDisplac
     else
     {
         determinant = b[0] * c[1];
-        triangleInf[elementIndex].area = 0.5*determinant;
+        triangleInf[elementIndex].area = determinant*0.5f;
 
         Real x13 = -c[0] / determinant; // since a=(0,0)
         Real x21 = b[0] / determinant; // since a=(0,0)
@@ -794,9 +794,9 @@ void TriangularFEMForceField<DataTypes>::computeMaterialStiffness(int i, Index &
     tinfo->materialMatrix[1][2] = 0;
     tinfo->materialMatrix[2][0] = 0;
     tinfo->materialMatrix[2][1] = 0;
-    tinfo->materialMatrix[2][2] = 0.5 * (1 - p);//poissonArray[i]);
+    tinfo->materialMatrix[2][2] = (1.0f - p) * 0.5f;//poissonArray[i]);
 
-    tinfo->materialMatrix *= (y / (1.0 - p * p));
+    tinfo->materialMatrix *= (y / (1.0f - p * p));
 
     triangleInfo.endEdit();
 }
