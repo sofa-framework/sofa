@@ -160,7 +160,7 @@ void TetrahedronSetTopologyAlgorithms< DataTypes >::subDivideTetrahedronsWithPla
     m_modifier->notifyEndingEvent();
     m_modifier->propagateTopologicalChanges();
 
-    printf("NbCutElement=%lu NbAddedElement=%lu\n",toBeRemovedTetraIndex.size(),toBeAddedTetraIndex.size());
+    sout << "NbCutElement=" << toBeRemovedTetraIndex.size() << " NbAddedElement=" << toBeAddedTetraIndex.size() << sendl;
 }
 
 template<class DataTypes>
