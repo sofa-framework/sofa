@@ -160,7 +160,7 @@ bool ImagePNG::load(std::string filename)
     switch (bit_depth)
     {
     case 8:
-        dataType = Image::UINT8;
+        dataType = Image::UNORM8;
         break;
     default:
         std::cerr << "PNG: in " << filename << ", unsupported bit depth: " << bit_depth << std::endl;

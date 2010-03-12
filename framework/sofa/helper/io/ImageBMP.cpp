@@ -148,7 +148,7 @@ bool ImageBMP::load(std::string filename)
         fprintf(stderr, "ImageBMP: Unsupported number of bits per pixel: %i\n", nc*8);
         return false;
     }
-    init(width, height, 1, 1, Image::UINT8, channels);
+    init(width, height, 1, 1, Image::UNORM8, channels);
     unsigned char *data = getPixels();
     /* seek to the actual data */
     fseek(file, bfOffBits, SEEK_SET);

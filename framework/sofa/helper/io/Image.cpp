@@ -45,17 +45,13 @@ SOFA_LINK_CLASS(ImagePNG)
 
 const char *Image::strFromDataType[COUNT_OF_DATA_TYPES+1] =
 {
-    "UINT8",
-    "UINT16",
+    "UNORM8",
+    "UNORM16",
     "UINT32",
     "HALF",
     "FLOAT",
 
-    "COMPRESSED_DXT1",
-    "COMPRESSED_DXT3",
-    "COMPRESSED_DXT5",
-    "COMPRESSED_L",
-    "COMPRESSED_LA",
+    "UCOMPRESSED",
 
     "COUNT_OF_DATA_TYPES"
 };
@@ -70,7 +66,6 @@ const char *Image::strFromChannelFormat[COUNT_OF_CHANNEL_FORMATS+1] =
     "RGBA",
     "BGR",
     "BGRA",
-    "COMPRESSED",
 
     "COUNT_OF_CHANNEL_FORMATS"
 };
@@ -82,6 +77,78 @@ const char *Image::strFromTextureType[TEXTURE_INVALID+1] =
     "TEXTURE_CUBE",
 
     "TEXTURE_INVALID"
+};
+
+static unsigned tableBytes[Image::COUNT_OF_DATA_TYPES][Image::COUNT_OF_CHANNEL_FORMATS] =
+{
+    // Bytes per pixel
+    // UNORM8
+    {
+        1,  // L
+        2,  // LA
+        1,  // R
+        2,  // RG
+        3,  // RGB
+        4,  // RGBA
+        3,  // BGR
+        4   // BGRA
+    },
+    // UNORM16
+    {
+        2,  // L
+        4,  // LA
+        2,  // R
+        4,  // RG
+        6,  // RGB
+        8,  // RGBA
+        6,  // BGR
+        8   // BGRA
+    },
+    // UINT32
+    {
+        4,  // L
+        8,  // LA
+        4,  // R
+        8,  // RG
+        12, // RGB
+        16, // RGBA
+        12, // BGR
+        16  // BGRA
+    },
+    // HALF
+    {
+        2,  // L
+        4,  // LA
+        2,  // R
+        4,  // RG
+        6,  // RGB
+        8,  // RGBA
+        6,  // BGR
+        8   // BGRA
+    },
+    // FLOAT
+    {
+        4,  // L
+        8,  // LA
+        4,  // R
+        8,  // RG
+        12, // RGB
+        16, // RGBA
+        12, // BGR
+        16  // BGRA
+    },
+    // Bytes per block
+    // UCOMPRESSED
+    {
+        8,  // L
+        16, // LA
+        8,  // R
+        16, // RG
+        8,  // RGB
+        16, // RGBA
+        0,  // BGR
+        0   // BGRA
+    }
 };
 
 Image::Image()
@@ -114,100 +181,12 @@ unsigned Image::getDepth(unsigned mipmap) const
 
 unsigned Image::getBytesPerPixel() const
 {
-    static unsigned table[COUNT_OF_DATA_TYPES][COUNT_OF_CHANNEL_FORMATS] =
-    {
-        // UINT8
-        {
-            1,  // L
-            2,  // AL
-            1,  // R
-            2,  // RG
-            3,  // RGB
-            4,  // RGBA
-            3,  // BGR
-            4,  // BGRA
-            0   // COMPRESSED
-        },
-        // UINT16
-        {
-            2,  // L
-            4,  // AL
-            2,  // R
-            4,  // RG
-            6,  // RGB
-            8,  // RGBA
-            6,  // BGR
-            8,  // BGRA
-            0   // COMPRESSED
-        },
-        // UINT32
-        {
-            4,  // L
-            8,  // AL
-            4,  // R
-            8,  // RG
-            12, // RGB
-            16, // RGBA
-            12, // BGR
-            16, // BGRA
-            0   // COMPRESSED
-        },
-        // HALF
-        {
-            2,  // L
-            4,  // AL
-            2,  // R
-            4,  // RG
-            6,  // RGB
-            8,  // RGBA
-            6,  // BGR
-            8,  // BGRA
-            0   // COMPRESSED
-        },
-        // FLOAT
-        {
-            4,  // L
-            8,  // AL
-            4,  // R
-            8,  // RG
-            12, // RGB
-            16, // RGBA
-            12, // BGR
-            16, // BGRA
-            0   // COMPRESSED
-        },
-        // COMPRESSED_DXT1
-        { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-        // COMPRESSED_DXT3
-        { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-        // COMPRESSED_DXT5
-        { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-        // COMPRESSED_L
-        { 0, 0, 0, 0, 0, 0, 0, 0, 0 },
-        // COMPRESSED_LA
-        { 0, 0, 0, 0, 0, 0, 0, 0, 0 }
-    };
-
-    return table[dataType][channelFormat];
+    return dataType != UCOMPRESSED ? tableBytes[dataType][channelFormat] : 0;
 }
 
 unsigned Image::getBytesPerBlock() const
 {
-    static unsigned table[COUNT_OF_DATA_TYPES] =
-    {
-        0,  // UINT8
-        0,  // UINT16
-        0,  // UINT32
-        0,  // HALF
-        0,  // FLOAT
-        8,  // COMPRESSED_DXT1
-        16, // COMPRESSED_DXT3
-        16, // COMPRESSED_DXT5
-        8,  // COMPRESSED_L
-        16  // COMPRESSED_LA
-    };
-
-    return table[dataType];
+    return dataType == UCOMPRESSED ? tableBytes[UCOMPRESSED][channelFormat] : 0;
 }
 
 unsigned Image::getBytesPerChannel() const
@@ -220,31 +199,16 @@ unsigned Image::getChannelCount() const
     static unsigned table[COUNT_OF_CHANNEL_FORMATS] =
     {
         1,  // L
-        2,  // AL
+        2,  // LA
         1,  // R
         2,  // RG
         3,  // RGB
         4,  // RGBA
         3,  // BGR
-        4,  // BGRA
-        0   // COMPRESSED
+        4   // BGRA
     };
 
-    static unsigned compTable[COUNT_OF_DATA_TYPES] =
-    {
-        0,  // UINT8
-        0,  // UINT16
-        0,  // UINT32
-        0,  // HALF
-        0,  // FLOAT
-        3,  // COMPRESSED_DXT1
-        4,  // COMPRESSED_DXT3
-        4,  // COMPRESSED_DXT5
-        1,  // COMPRESSED_L
-        2   // COMPRESSED_LA
-    };
-
-    return (channelFormat == COMPRESSED)? compTable[dataType] : table[channelFormat];
+    return table[channelFormat];
 }
 
 unsigned Image::getMipmapCount() const
@@ -269,7 +233,7 @@ unsigned Image::getMipmapSize(unsigned mipmap) const
     unsigned height = getHeight(mipmap);
     unsigned depth = (getTextureType() == TEXTURE_CUBE)? 6 : getDepth(mipmap);
 
-    if (channelFormat == COMPRESSED)
+    if (dataType == UCOMPRESSED)
         return ((width + 3) >> 2) * ((height + 3) >> 2) * depth * getBytesPerBlock();
 
     return width * height * depth * getBytesPerPixel();
@@ -303,6 +267,9 @@ Image::ChannelFormat Image::getChannelFormat() const
 
 Image::TextureType Image::getTextureType() const
 {
+    if (dataType == UCOMPRESSED && channelFormat >= BGR)
+        return TEXTURE_INVALID;
+
     if (depth == 0 && width == height)
         return TEXTURE_CUBE;
     else if(depth > 1)
@@ -372,27 +339,27 @@ void Image::init(unsigned width, unsigned height, unsigned bpp)
     switch (bpp)
     {
     case 8:
-        type = UINT8;
+        type = UNORM8;
         channels = L;
         break;
     case 16:
-        type = UINT8;
+        type = UNORM8;
         channels = LA;
         break;
     case 24:
-        type = UINT8;
+        type = UNORM8;
         channels = RGB;
         break;
     case 32:
-        type = UINT8;
+        type = UNORM8;
         channels = RGBA;
         break;
     case 48:
-        type = UINT16;
+        type = UNORM16;
         channels = RGB;
         break;
     case 64:
-        type = UINT16;
+        type = UNORM16;
         channels = RGBA;
         break;
     case 96:

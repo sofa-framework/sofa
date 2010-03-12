@@ -169,7 +169,7 @@ void OglTexture2D::init()
 
             //Init texture
             img = new helper::io::Image();
-            img->init(height, width, 1, 1, helper::io::Image::UINT8, channels);
+            img->init(height, width, 1, 1, helper::io::Image::UNORM8, channels);
 
             //Make texture
             unsigned char* data = img->getPixels();
