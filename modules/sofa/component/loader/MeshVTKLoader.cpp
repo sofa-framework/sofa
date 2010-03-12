@@ -78,8 +78,6 @@ MeshVTKLoader::VTKFileType MeshVTKLoader::detectFileType(const char* filename)
         return MeshVTKLoader::LEGACY;
     else //default behavior if the first line is not correct ?
         return MeshVTKLoader::NONE;
-
-    inVTKFile.close();
 }
 
 bool MeshVTKLoader::load()
