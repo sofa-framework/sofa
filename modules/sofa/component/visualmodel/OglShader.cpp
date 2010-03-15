@@ -253,7 +253,7 @@ void OglShader::initVisual()
             for (unsigned int i=0 ; i<vertexFilenames.size() ; i++)
                 setGeometryOutputType(i, geometryOutputType.getValue());
         }
-#ifdef GL_MAX_GEOMETRY_OUTPUT_VERTICES_EXT
+
         GLint maxV;
         glGetIntegerv(GL_MAX_GEOMETRY_OUTPUT_VERTICES_EXT, &maxV);
         if (geometryVerticesOut.getValue() < 0 || geometryVerticesOut.getValue() > maxV)
@@ -261,7 +261,7 @@ void OglShader::initVisual()
             for (unsigned int i=0 ; i<vertexFilenames.size() ; i++)
                 geometryVerticesOut.setValue(3);
         }
-#endif
+
         if (geometryVerticesOut.getValue() >= 0)
         {
             for (unsigned int i=0 ; i<vertexFilenames.size() ; i++)
