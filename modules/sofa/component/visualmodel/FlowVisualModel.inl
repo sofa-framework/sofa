@@ -764,7 +764,11 @@ void FlowVisualModel<DataTypes>::drawTetra()
         for(it = tetrahedra.begin(), i=0; it != tetrahedra.end() ; it++, i++)
         {
 
+#ifdef GL_LINES_ADJACENCY_EXT
             glBegin(GL_LINES_ADJACENCY_EXT);
+#else
+            glBegin(GL_POINTS);
+#endif
 
             for (unsigned int j=0 ; j< 4 ; j++)
             {

@@ -154,7 +154,9 @@ bool GLSLShader::CompileShader(GLint target, const std::string& fileName, const 
     const char* stype = "";
     if (target == GL_VERTEX_SHADER_ARB) stype = "vertex";
     else if (target == GL_FRAGMENT_SHADER_ARB) stype = "fragment";
+#ifdef GL_GEOMETRY_SHADER_EXT
     else if (target == GL_GEOMETRY_SHADER_EXT) stype = "geometry";
+#endif
 
     shader = glCreateShaderObjectARB(target);
 
@@ -198,7 +200,12 @@ void GLSLShader::InitShaders(const std::string& strVertex, const std::string& st
     ready &= CompileShader( GL_VERTEX_SHADER_ARB, strVertex, header, m_hVertexShader );
     if (!strGeometry.empty())
     {
+#ifdef GL_GEOMETRY_SHADER_EXT
         ready &= CompileShader( GL_GEOMETRY_SHADER_EXT, strGeometry, header, m_hGeometryShader );
+#else
+        std::cerr << "SHADER ERROR: GL_GEOMETRY_SHADER_EXT not defined. Please use a recent version of GLEW.\n";
+        ready = false;
+#endif
     }
     ready &= CompileShader( GL_FRAGMENT_SHADER_ARB, strFragment, header, m_hFragmentShader );
 
@@ -213,17 +220,20 @@ void GLSLShader::InitShaders(const std::string& strVertex, const std::string& st
 
     // We attach each shader we just loaded to our program object
     glAttachObjectARB(m_hProgramObject, m_hVertexShader);
+#ifdef GL_GEOMETRY_SHADER_EXT
     if (m_hGeometryShader)
         glAttachObjectARB(m_hProgramObject, m_hGeometryShader);
+#endif
     glAttachObjectARB(m_hProgramObject, m_hFragmentShader);
 
+#ifdef GL_GEOMETRY_SHADER_EXT
     if (m_hGeometryShader)
     {
         if (geometry_input_type != -1) glProgramParameteriEXT(m_hProgramObject, GL_GEOMETRY_INPUT_TYPE_EXT, geometry_input_type );
         if (geometry_output_type != -1) glProgramParameteriEXT(m_hProgramObject, GL_GEOMETRY_OUTPUT_TYPE_EXT, geometry_output_type );
         if (geometry_vertices_out != -1) glProgramParameteriEXT(m_hProgramObject, GL_GEOMETRY_VERTICES_OUT_EXT, geometry_vertices_out );
     }
-
+#endif
     // Our last init function is to link our program object with OpenGL
     glLinkProgramARB(m_hProgramObject);
 
@@ -272,12 +282,14 @@ void GLSLShader::SetMatrix2(GLint variable, GLsizei count, GLboolean transpose, 
 void GLSLShader::SetMatrix3(GLint variable, GLsizei count, GLboolean transpose, const GLfloat *value) { if (variable!=-1) glUniformMatrix3fv(variable, count, transpose, value);   }
 void GLSLShader::SetMatrix4(GLint variable, GLsizei count, GLboolean transpose, const GLfloat *value) { if (variable!=-1) glUniformMatrix4fv(variable, count, transpose, value);   }
 
+#ifdef GL_VERSION_2_1
 void GLSLShader::SetMatrix2x3(GLint variable,GLsizei count,GLboolean transpose, const GLfloat *value) { if (variable!=-1) glUniformMatrix2x3fv(variable, count, transpose, value);   }
 void GLSLShader::SetMatrix3x2(GLint variable,GLsizei count,GLboolean transpose, const GLfloat *value) { if (variable!=-1) glUniformMatrix3x2fv(variable, count, transpose, value);   }
 void GLSLShader::SetMatrix2x4(GLint variable,GLsizei count,GLboolean transpose, const GLfloat *value) { if (variable!=-1) glUniformMatrix2x4fv(variable, count, transpose, value);   }
 void GLSLShader::SetMatrix4x2(GLint variable,GLsizei count,GLboolean transpose, const GLfloat *value) { if (variable!=-1) glUniformMatrix4x2fv(variable, count, transpose, value);   }
 void GLSLShader::SetMatrix3x4(GLint variable,GLsizei count,GLboolean transpose, const GLfloat *value) { if (variable!=-1) glUniformMatrix3x4fv(variable, count, transpose, value);   }
 void GLSLShader::SetMatrix4x3(GLint variable,GLsizei count,GLboolean transpose, const GLfloat *value) { if (variable!=-1) glUniformMatrix4x3fv(variable, count, transpose, value);   }
+#endif
 
 // These 2 functions turn on and off our shader
 void GLSLShader::TurnOn()	{ if (m_hProgramObject) glUseProgramObjectARB(m_hProgramObject); }

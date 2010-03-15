@@ -28,6 +28,14 @@
 #include <assert.h>
 #include <stdio.h>
 
+#if defined(SOFA_HAVE_GLEW) && defined(GL_VERSION_3_0) && defined(GL_ARB_texture_compression_rgtc)
+#define _GLEW(x) (x)
+#define _GLEWF(x) x
+#else
+#define _GLEW(x) 0
+#define _GLEWF(x)
+#endif
+
 namespace sofa
 {
 namespace helper
@@ -37,8 +45,8 @@ namespace gl
 static unsigned int targetTable[io::Image::COUNT_OF_TEXTURE_TYPES] =
 {
     GL_TEXTURE_2D,
-    GL_TEXTURE_3D,
-    GL_TEXTURE_CUBE_MAP
+    _GLEW(GL_TEXTURE_3D),
+    _GLEW(GL_TEXTURE_CUBE_MAP)
 };
 
 static unsigned int typeTable[io::Image::COUNT_OF_DATA_TYPES] =
@@ -46,7 +54,7 @@ static unsigned int typeTable[io::Image::COUNT_OF_DATA_TYPES] =
     GL_UNSIGNED_BYTE,     // UNORM8
     GL_UNSIGNED_SHORT,    // UNORM16
     GL_UNSIGNED_INT,      // UINT32
-    GL_HALF_FLOAT,        // HALF
+    _GLEW(GL_HALF_FLOAT), // HALF
     GL_FLOAT,             // FLOAT
     GL_UNSIGNED_BYTE      // UCOMPRESSED
 };
@@ -56,7 +64,7 @@ static unsigned int formatTable[io::Image::COUNT_OF_CHANNEL_FORMATS] =
     GL_LUMINANCE,       // L
     GL_LUMINANCE_ALPHA, // LA
     GL_RED,             // R
-    GL_RG,              // RG
+    _GLEW(GL_RG),       // RG
     GL_RGB,             // RGB
     GL_RGBA,            // RGBA
     GL_BGR,             // BGR
@@ -69,8 +77,8 @@ static unsigned int internalFormatTable[io::Image::COUNT_OF_DATA_TYPES][io::Imag
     {
         GL_LUMINANCE8,          // L
         GL_LUMINANCE8_ALPHA8,   // LA
-        GL_R8,                  // R
-        GL_RG8,                 // RG
+        _GLEW(GL_R8),           // R
+        _GLEW(GL_RG8),          // RG
         GL_RGB8,                // RGB
         GL_RGBA8,               // RGBA
         GL_RGB8,                // BGR
@@ -80,8 +88,8 @@ static unsigned int internalFormatTable[io::Image::COUNT_OF_DATA_TYPES][io::Imag
     {
         GL_LUMINANCE16,         // L
         GL_LUMINANCE16_ALPHA16, // LA
-        GL_R16,                 // R
-        GL_RG16,                // RG
+        _GLEW(GL_R16),          // R
+        _GLEW(GL_RG16),         // RG
         GL_RGB16,               // RGB
         GL_RGBA16,              // RGBA
         GL_RGB16,               // BGR
@@ -89,47 +97,47 @@ static unsigned int internalFormatTable[io::Image::COUNT_OF_DATA_TYPES][io::Imag
     },
     // UINT32
     {
-        GL_LUMINANCE32UI_EXT,        // L
-        GL_LUMINANCE_ALPHA32UI_EXT,  // LA
-        GL_R32UI,                    // R
-        GL_RG32UI,                   // RG
-        GL_RGB32UI,                  // RGB
-        GL_RGBA32UI,                 // RGBA
-        GL_RGB32UI,                  // BGR
-        GL_RGBA32UI                  // BGRA
+        _GLEW(GL_LUMINANCE32UI_EXT),       // L
+        _GLEW(GL_LUMINANCE_ALPHA32UI_EXT), // LA
+        _GLEW(GL_R32UI),                   // R
+        _GLEW(GL_RG32UI),                  // RG
+        _GLEW(GL_RGB32UI),                 // RGB
+        _GLEW(GL_RGBA32UI),                // RGBA
+        _GLEW(GL_RGB32UI),                 // BGR
+        _GLEW(GL_RGBA32UI)                 // BGRA
     },
     // HALF
     {
-        GL_LUMINANCE16F_ARB,        // L
-        GL_LUMINANCE_ALPHA16F_ARB,  // LA
-        GL_R16F,                    // R
-        GL_RG16F,                   // RG
-        GL_RGB16F,                  // RGB
-        GL_RGBA16F,                 // RGBA
-        GL_RGB16F,                  // BGR
-        GL_RGBA16F                  // BGRA
+        _GLEW(GL_LUMINANCE16F_ARB),        // L
+        _GLEW(GL_LUMINANCE_ALPHA16F_ARB),  // LA
+        _GLEW(GL_R16F),                    // R
+        _GLEW(GL_RG16F),                   // RG
+        _GLEW(GL_RGB16F),                  // RGB
+        _GLEW(GL_RGBA16F),                 // RGBA
+        _GLEW(GL_RGB16F),                  // BGR
+        _GLEW(GL_RGBA16F)                  // BGRA
     },
     // FLOAT
     {
-        GL_LUMINANCE32F_ARB,        // L
-        GL_LUMINANCE_ALPHA32F_ARB,  // LA
-        GL_R32F,                    // R
-        GL_RG32F,                   // RG
-        GL_RGB32F,                  // RGB
-        GL_RGBA32F,                 // RGBA
-        GL_RGB32F,                  // BGR
-        GL_RGBA32F                  // BGRA
+        _GLEW(GL_LUMINANCE32F_ARB),        // L
+        _GLEW(GL_LUMINANCE_ALPHA32F_ARB),  // LA
+        _GLEW(GL_R32F),                    // R
+        _GLEW(GL_RG32F),                   // RG
+        _GLEW(GL_RGB32F),                  // RGB
+        _GLEW(GL_RGBA32F),                 // RGBA
+        _GLEW(GL_RGB32F),                  // BGR
+        _GLEW(GL_RGBA32F)                  // BGRA
     },
     // UCOMPRESSED
     {
-        GL_COMPRESSED_LUMINANCE_LATC1_EXT,          // L
-        GL_COMPRESSED_LUMINANCE_ALPHA_LATC2_EXT,    // LA
-        GL_COMPRESSED_RED_RGTC1,                    // R
-        GL_COMPRESSED_RG_RGTC2,                     // RG
-        GL_COMPRESSED_RGB_S3TC_DXT1_EXT,            // RGB
-        GL_COMPRESSED_RGBA_S3TC_DXT5_EXT,           // RGBA
-        0,                                          // BGR
-        0                                           // BGRA
+        _GLEW(GL_COMPRESSED_LUMINANCE_LATC1_EXT),          // L
+        _GLEW(GL_COMPRESSED_LUMINANCE_ALPHA_LATC2_EXT),    // LA
+        _GLEW(GL_COMPRESSED_RED_RGTC1),                    // R
+        _GLEW(GL_COMPRESSED_RG_RGTC2),                     // RG
+        _GLEW(GL_COMPRESSED_RGB_S3TC_DXT1_EXT),            // RGB
+        _GLEW(GL_COMPRESSED_RGBA_S3TC_DXT5_EXT),           // RGBA
+        0,                                                 // BGR
+        0                                                  // BGRA
     }
 };
 
@@ -147,8 +155,12 @@ void Texture::init(void)
         return;
 
     case io::Image::TEXTURE_3D:
-        if (!GLEW_VERSION_1_2 &&
-            !GLEW_EXT_texture3D)
+#ifndef SOFA_HAVE_GLEW
+        std::cerr << "sofa::helper::gl::Texture::init: Cannot load a texture, the GLEW library is missing." << std::endl;
+        return;
+#endif
+        if (!_GLEW(GLEW_VERSION_1_2) &&
+            !_GLEW(GLEW_EXT_texture3D))
         {
             std::cerr << "sofa::helper::gl::Texture::init: Cannot load a texture, "
                     "either OpenGL 1.2 "
@@ -158,9 +170,13 @@ void Texture::init(void)
         break;
 
     case io::Image::TEXTURE_CUBE:
-        if (!GLEW_VERSION_1_3 &&
-            !GLEW_ARB_texture_cube_map &&
-            !GLEW_EXT_texture_cube_map)
+#ifndef SOFA_HAVE_GLEW
+        std::cerr << "sofa::helper::gl::Texture::init: Cannot load a texture, the GLEW library is missing." << std::endl;
+        return;
+#endif
+        if (!_GLEW(GLEW_VERSION_1_3) &&
+            !_GLEW(GLEW_ARB_texture_cube_map) &&
+            !_GLEW(GLEW_EXT_texture_cube_map))
         {
             std::cerr << "sofa::helper::gl::Texture::init: Cannot load a texture, "
                     "either OpenGL 1.3 "
@@ -176,9 +192,13 @@ void Texture::init(void)
     switch (image->getDataType())
     {
     case io::Image::UINT32:
+#ifndef SOFA_HAVE_GLEW
+        std::cerr << "sofa::helper::gl::Texture::init: Cannot load a texture, the GLEW library is missing." << std::endl;
+        return;
+#endif
         if (image->getChannelFormat() <= io::Image::LA)
         {
-            if (!GLEW_EXT_texture_integer)
+            if (!_GLEW(GLEW_EXT_texture_integer))
             {
                 std::cerr << "sofa::helper::gl::Texture::init: Cannot load a texture, "
                         "GL_EXT_texture_integer must be supported." << std::endl;
@@ -187,8 +207,8 @@ void Texture::init(void)
         }
         else
         {
-            if (!GLEW_VERSION_3_0 &&
-                !GLEW_EXT_texture_integer)
+            if (!_GLEW(GLEW_VERSION_3_0) &&
+                !_GLEW(GLEW_EXT_texture_integer))
             {
                 std::cerr << "sofa::helper::gl::Texture::init: Cannot load a texture, "
                         "either OpenGL 3.0 "
@@ -199,8 +219,12 @@ void Texture::init(void)
         break;
 
     case io::Image::HALF:
-        if (!GLEW_VERSION_3_0 &&
-            !GLEW_ARB_half_float_pixel)
+#ifndef SOFA_HAVE_GLEW
+        std::cerr << "sofa::helper::gl::Texture::init: Cannot load a texture, the GLEW library is missing." << std::endl;
+        return;
+#endif
+        if (!_GLEW(GLEW_VERSION_3_0) &&
+            !_GLEW(GLEW_ARB_half_float_pixel))
         {
             std::cerr << "sofa::helper::gl::Texture::init: Cannot load a texture, "
                     "either OpenGL 3.0 "
@@ -210,9 +234,13 @@ void Texture::init(void)
         /* Pass through. */
 
     case io::Image::FLOAT:
-        if (!GLEW_VERSION_3_0 &&
-            !GLEW_ARB_texture_float &&
-            !GLEW_ATI_texture_float)
+#ifndef SOFA_HAVE_GLEW
+        std::cerr << "sofa::helper::gl::Texture::init: Cannot load a texture, the GLEW library is missing." << std::endl;
+        return;
+#endif
+        if (!_GLEW(GLEW_VERSION_3_0) &&
+            !_GLEW(GLEW_ARB_texture_float) &&
+            !_GLEW(GLEW_ATI_texture_float))
         {
             std::cerr << "sofa::helper::gl::Texture::init: Cannot load a texture, "
                     "either OpenGL 3.0 "
@@ -223,11 +251,15 @@ void Texture::init(void)
         break;
 
     case io::Image::UCOMPRESSED:
+#ifndef SOFA_HAVE_GLEW
+        std::cerr << "sofa::helper::gl::Texture::init: Cannot load a texture, the GLEW library is missing." << std::endl;
+        return;
+#endif
         switch (image->getChannelFormat())
         {
         case io::Image::L:
         case io::Image::LA:
-            if (!GLEW_EXT_texture_compression_latc)
+            if (!_GLEW(GLEW_EXT_texture_compression_latc))
             {
                 std::cerr << "sofa::helper::gl::Texture::init: Cannot load a texture, "
                         "GL_EXT_texture_compression_latc must be supported." << std::endl;
@@ -237,9 +269,9 @@ void Texture::init(void)
 
         case io::Image::R:
         case io::Image::RG:
-            if (!GLEW_VERSION_3_0 &&
-                !GLEW_ARB_texture_compression_rgtc &&
-                !GLEW_EXT_texture_compression_rgtc)
+            if (!_GLEW(GLEW_VERSION_3_0) &&
+                !_GLEW(GLEW_ARB_texture_compression_rgtc) &&
+                !_GLEW(GLEW_EXT_texture_compression_rgtc))
             {
                 std::cerr << "sofa::helper::gl::Texture::init: Cannot load a texture, "
                         "either OpenGL 3.0 "
@@ -251,7 +283,7 @@ void Texture::init(void)
 
         case io::Image::RGB:
         case io::Image::RGBA:
-            if (!GLEW_EXT_texture_compression_s3tc)
+            if (!_GLEW(GLEW_EXT_texture_compression_s3tc))
             {
                 std::cerr << "sofa::helper::gl::Texture::init: Cannot load a texture, "
                         "GL_EXT_texture_compression_s3tc must be supported." << std::endl;
@@ -280,8 +312,8 @@ void Texture::init(void)
     case io::Image::TEXTURE_2D:
         if (image->getDataType() == io::Image::UCOMPRESSED)
             for (unsigned i = 0; i < mipmaps; i++)
-                glCompressedTexImage2D(target, i, internalFormat, image->getWidth(i), image->getHeight(i), 0,
-                        image->getMipmapSize(i), image->getMipmapPixels(i));
+                _GLEWF(glCompressedTexImage2D(target, i, internalFormat, image->getWidth(i), image->getHeight(i), 0,
+                        image->getMipmapSize(i), image->getMipmapPixels(i)));
         else
             for (unsigned i = 0; i < mipmaps; i++)
                 glTexImage2D(target, i, internalFormat, image->getWidth(i), image->getHeight(i), 0,
@@ -289,31 +321,31 @@ void Texture::init(void)
         break;
 
     case io::Image::TEXTURE_3D:
-        // 3D texture
+        // 3D textura
         if (image->getDataType() == io::Image::UCOMPRESSED)
             for (unsigned i = 0; i < mipmaps; i++)
-                glCompressedTexImage3D(target, i, internalFormat, image->getWidth(i), image->getHeight(i),
-                        image->getDepth(i), 0, image->getMipmapSize(i), image->getMipmapPixels(i));
+                _GLEWF(glCompressedTexImage3D(target, i, internalFormat, image->getWidth(i), image->getHeight(i),
+                        image->getDepth(i), 0, image->getMipmapSize(i), image->getMipmapPixels(i)));
         else
             for (unsigned i = 0; i < mipmaps; i++)
-                glTexImage3D(target, i, internalFormat, image->getWidth(i), image->getHeight(i),
-                        image->getDepth(i), 0, format, type, image->getMipmapPixels(i));
+                _GLEWF(glTexImage3D(target, i, internalFormat, image->getWidth(i), image->getHeight(i),
+                        image->getDepth(i), 0, format, type, image->getMipmapPixels(i)));
         break;
 
     case io::Image::TEXTURE_CUBE:
-        // Cubemap
+        // Cubemapa
         if (image->getDataType() == io::Image::UCOMPRESSED)
             for (unsigned j = 0; j < 6; j++)
                 for (unsigned i = 0; i < mipmaps; i++)
-                    glCompressedTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + j, i, internalFormat,
+                    _GLEWF(glCompressedTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + j, i, internalFormat,
                             image->getWidth(i), image->getHeight(i), 0, image->getMipmapSize(i) / 6,
-                            (image->getPixels())? image->getCubeMipmapPixels(j, i) : 0);
+                            (image->getPixels())? image->getCubeMipmapPixels(j, i) : 0));
         else
             for (unsigned j = 0; j < 6; j++)
                 for (unsigned i = 0; i < mipmaps; i++)
-                    glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + j, i, internalFormat,
+                    _GLEWF(glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + j, i, internalFormat,
                             image->getWidth(i), image->getHeight(i), 0, format, type,
-                            (image->getPixels())? image->getCubeMipmapPixels(j, i) : 0);
+                            (image->getPixels())? image->getCubeMipmapPixels(j, i) : 0));
         break;
 
     default:;
@@ -327,11 +359,11 @@ void Texture::init(void)
             glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(target, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-        if (GLEW_EXT_texture_filter_anisotropic)
+        if (_GLEW(GLEW_EXT_texture_filter_anisotropic))
         {
             GLint maxAniso;
-            glGetIntegerv(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT, &maxAniso);
-            glTexParameteri(target, GL_TEXTURE_MAX_ANISOTROPY_EXT, maxAniso);
+            glGetIntegerv(_GLEW(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT), &maxAniso);
+            glTexParameteri(target, _GLEW(GL_TEXTURE_MAX_ANISOTROPY_EXT), maxAniso);
         }
     }
     else
@@ -351,13 +383,13 @@ void Texture::init(void)
     }
     else
     {
-        if (GLEW_VERSION_1_2 ||
-            GLEW_EXT_texture_edge_clamp ||
-            GLEW_SGIS_texture_edge_clamp)
+        if (_GLEW(GLEW_VERSION_1_2) ||
+            _GLEW(GLEW_EXT_texture_edge_clamp) ||
+            _GLEW(GLEW_SGIS_texture_edge_clamp))
         {
-            glTexParameteri( target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-            glTexParameteri( target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
-            glTexParameteri( target, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE );
+            glTexParameteri( target, GL_TEXTURE_WRAP_S, _GLEW(GL_CLAMP_TO_EDGE) );
+            glTexParameteri( target, GL_TEXTURE_WRAP_T, _GLEW(GL_CLAMP_TO_EDGE) );
+            glTexParameteri( target, GL_TEXTURE_WRAP_R, _GLEW(GL_CLAMP_TO_EDGE) );
         }
         else
         {

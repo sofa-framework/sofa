@@ -33,7 +33,9 @@
 #include <sofa/helper/gl/VisualParameters.h>
 #include <sofa/component/component.h>
 
+#ifdef SOFA_HAVE_GLEW
 #include <sofa/helper/gl/FrameBufferObject.h>
+#endif
 
 namespace sofa
 {
@@ -70,7 +72,9 @@ protected:
     Data<bool> drawSource;
     Data<double> p_zNear, p_zFar;
 
+#ifdef SOFA_HAVE_GLEW
     helper::gl::FrameBufferObject shadowFBO;
+#endif
     GLuint debugVisualShadowTexture;
 
     GLfloat lightMatProj[16];
