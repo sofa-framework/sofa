@@ -95,7 +95,6 @@ void OglTetrahedralModel< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::dra
 
     glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
-#ifdef GL_LINES_ADJACENCY_EXT
     VecCoord& x = *nodes->getX();
 
     bool vbo = useVBO.getValue();
@@ -131,7 +130,7 @@ void OglTetrahedralModel< gpu::cuda::CudaVectorTypes<TCoord,TDeriv,TReal> >::dra
         glBindBuffer(GL_ARRAY_BUFFER, 0);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     }
-#endif
+
     glDisable(GL_BLEND);
     glDepthMask(GL_TRUE);
 }
