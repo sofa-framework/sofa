@@ -28,7 +28,7 @@
 #include <assert.h>
 #include <stdio.h>
 
-#ifdef SOFA_HAVE_GLEW
+#if defined(SOFA_HAVE_GLEW) && defined(GL_VERSION_3_0) && defined(GL_ARB_texture_compression_rgtc)
 #define _GLEW(x) (x)
 #define _GLEWF(x) x
 #else

@@ -111,7 +111,7 @@ public:
 
     void initVisual();
     void init();
-    void reinit() { };
+    void reinit() { }
 
     void bind();
     void unbind();
