@@ -361,7 +361,7 @@ void Texture::init(void)
 
         if (_GLEW(GLEW_EXT_texture_filter_anisotropic))
         {
-            int maxAniso;
+            GLint maxAniso;
             glGetIntegerv(_GLEW(GL_MAX_TEXTURE_MAX_ANISOTROPY_EXT), &maxAniso);
             glTexParameteri(target, _GLEW(GL_TEXTURE_MAX_ANISOTROPY_EXT), maxAniso);
         }
