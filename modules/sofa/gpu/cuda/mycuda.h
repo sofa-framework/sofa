@@ -28,6 +28,10 @@
 #include "gpucuda.h"
 #include <string.h>
 
+#ifdef SOFA_GPU_CUBLAS
+#include <cublas.h>
+#endif
+
 #if defined(__cplusplus)
 namespace sofa
 {

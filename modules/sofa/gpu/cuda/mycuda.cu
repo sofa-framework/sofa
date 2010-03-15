@@ -214,6 +214,10 @@ int mycudaInit(int device)
         mycudaPrivateInit(device);
         return 1;
     }
+
+#ifdef SOFA_GPU_CUBLAS
+    cublasInit();
+#endif
 }
 
 int mycudaGetMultiProcessorCount()
