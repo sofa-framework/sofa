@@ -46,7 +46,13 @@
 # include <windows.h>
 #endif
 
-#include <sofa/helper/system/glew.h>
+#if defined (SOFA_HAVE_GLEW)
+#include <GL/glew.h>
+#elif defined (__APPLE__)
+# include <OpenGL/gl.h>
+#else
+# include <GL/gl.h>
+#endif
 
 #include <stdio.h>
 #include <vector>

@@ -455,14 +455,18 @@ void QGLViewer::postDraw()
 	// Set neutral GL state
 	glDisable(GL_TEXTURE_1D);
 	glDisable(GL_TEXTURE_2D);
+#ifdef GL_TEXTURE_3D  // OpenGL 1.2 Only...
 	glDisable(GL_TEXTURE_3D);
+#endif
 
 	glDisable(GL_TEXTURE_GEN_Q);
 	glDisable(GL_TEXTURE_GEN_R);
 	glDisable(GL_TEXTURE_GEN_S);
 	glDisable(GL_TEXTURE_GEN_T);
 
+#ifdef GL_RESCALE_NORMAL  // OpenGL 1.2 Only...
 	glEnable(GL_RESCALE_NORMAL);
+#endif
 
 	glDisable(GL_COLOR_MATERIAL);
 	qglColor(foregroundColor());

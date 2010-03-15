@@ -69,7 +69,9 @@
 #endif
 
 // OpenGL includes - Included here and hence shared by all the files that need OpenGL headers.
-#include <sofa/helper/system/glew.h>
+#if defined (SOFA_HAVE_GLEW)
+#include <GL/glew.h>
+#endif
 #if QT_VERSION >= 0x040000
 # include <QGLWidget>
 #else

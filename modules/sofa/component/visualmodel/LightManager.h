@@ -44,7 +44,9 @@
 #include <sofa/core/objectmodel/Event.h>
 #include <sofa/defaulttype/Mat.h>
 
+#ifdef SOFA_HAVE_GLEW
 #include <sofa/component/visualmodel/OglShadowShader.h>
+#endif
 
 namespace sofa
 {
@@ -74,7 +76,10 @@ private:
     std::vector<defaulttype::Mat4x4f> lightProjectionMatrix;
     Data<bool> shadowEnabled;
     Data<defaulttype::Vec4f> ambient;
+#ifdef SOFA_HAVE_GLEW
+    //OglShadowShader* shadowShader;
     helper::vector<OglShadowShader*> shadowShaders;
+#endif
     void makeShadowMatrix(unsigned int i);
 
 public:

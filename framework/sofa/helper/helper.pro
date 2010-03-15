@@ -84,10 +84,7 @@ HEADERS += helper.h \
     proximity.h \
     SimpleTimer.h \
     AdvancedTimer.h \
-    io/ImageDDS.h \
-    system/wglew.h \
-    system/glxew.h \
-    system/glew.h
+    io/ImageDDS.h
 SOURCES += ArgumentParser.cpp \
     BackTrace.cpp \
     Factory.cpp \
@@ -130,12 +127,13 @@ SOURCES += ArgumentParser.cpp \
     vector.cpp \
     proximity.cpp \
     AdvancedTimer.cpp \
-    io/ImageDDS.cpp \
-    system/glew.c
-HEADERS += gl/FrameBufferObject.h \
-    gl/GLSLShader.h
-SOURCES += gl/FrameBufferObject.cpp \
-    gl/GLSLShader.cpp
+    io/ImageDDS.cpp
+contains(DEFINES,SOFA_HAVE_GLEW) { 
+    HEADERS += gl/FrameBufferObject.h \
+        gl/GLSLShader.h
+    SOURCES += gl/FrameBufferObject.cpp \
+        gl/GLSLShader.cpp
+}
 contains(DEFINES,SOFA_DEV) { # BEGIN SOFA_DEV
     HEADERS += DualQuat.inl \
         DualQuat.h

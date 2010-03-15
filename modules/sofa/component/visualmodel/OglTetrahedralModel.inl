@@ -86,6 +86,8 @@ void OglTetrahedralModel<DataTypes>::drawTransparent()
     //core::componentmodel::topology::BaseMeshTopology::SeqHexahedra::const_iterator it;
     core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra::const_iterator it;
 
+#ifdef GL_LINES_ADJACENCY_EXT
+
     const core::componentmodel::topology::BaseMeshTopology::SeqTetrahedra& vec = topo->getTetrahedra();
 
     VecCoord& x = *nodes->getX();
@@ -132,7 +134,9 @@ void OglTetrahedralModel<DataTypes>::drawTransparent()
     	}
     	glEnd();
     	*/
+#else
 
+#endif
     glDisable(GL_BLEND);
     glDepthMask(GL_TRUE);
 }

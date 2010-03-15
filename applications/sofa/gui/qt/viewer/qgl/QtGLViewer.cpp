@@ -50,7 +50,9 @@
 
 #include <sofa/helper/gl/glfont.h>
 #include <sofa/helper/gl/RAII.h>
+#ifdef SOFA_HAVE_GLEW
 #include <sofa/helper/gl/GLSLShader.h>
+#endif
 #include <sofa/helper/io/ImageBMP.h>
 
 #ifdef SOFA_DEV
@@ -257,7 +259,24 @@ void QtGLViewer::init(void)
         specref[3] = 1.0f;
 
         // Here we initialize our multi-texturing functions
+#ifdef SOFA_HAVE_GLEW
         glewInit();
+#endif
+#if 0
+        if (!GLEW_ARB_multitexture)
+            std::cerr << "Error: GL_ARB_multitexture not supported\n";
+
+        glActiveTextureARB        = (PFNGLACTIVETEXTUREARBPROC)        glewGetProcAddress("glActiveTextureARB");
+        glMultiTexCoord2fARB    = (PFNGLMULTITEXCOORD2FARBPROC)        glewGetProcAddress("glMultiTexCoord2fARB");
+
+        // Make sure our multi-texturing extensions were loaded correctly
+        if(!glActiveTextureARB || !glMultiTexCoord2fARB)
+        {
+            // Print an error message and quit.
+            //    MessageBox(g_hWnd, "Your current setup does not support multitexturing", "Error", MB_OK);
+            //PostQuitMessage(0);
+        }
+#endif
 
         _clearBuffer = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
         _lightModelTwoSides = false;
