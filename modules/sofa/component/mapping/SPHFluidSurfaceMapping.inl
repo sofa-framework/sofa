@@ -35,9 +35,7 @@
 #include <map>
 #include <list>
 
-#ifdef SOFA_HAVE_GLEW
 #include <sofa/component/visualmodel/OglShaderVisualModel.h>
-#endif
 
 namespace sofa
 {
@@ -348,7 +346,6 @@ void SPHFluidSurfaceMapping<In,Out>::apply( OutVecCoord& out, const InVecCoord& 
     //sout << out.size() << " points, "<<seqTriangles.size()<<" faces."<<sendl;
     if (firstApply)
     {
-#ifdef SOFA_HAVE_GLEW
         visualmodel::OglShaderVisualModel* oglsvm = dynamic_cast<visualmodel::OglShaderVisualModel*>(this->toModel);
 
         if(oglsvm)
@@ -361,7 +358,6 @@ void SPHFluidSurfaceMapping<In,Out>::apply( OutVecCoord& out, const InVecCoord& 
         }
 
         firstApply = false;
-#endif
     }
 }
 

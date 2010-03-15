@@ -107,9 +107,7 @@ void Light::initVisual()
     computeShadowMapSize();
     //Shadow part
     //Shadow texture init
-#ifdef SOFA_HAVE_GLEW
     shadowFBO.init(shadowTexWidth, shadowTexHeight);
-#endif
 }
 
 void Light::reinit()
@@ -137,17 +135,13 @@ void Light::preDrawShadow(helper::gl::VisualParameters* /* vp */)
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
 
-#ifdef SOFA_HAVE_GLEW
     shadowFBO.start();
-#endif
 }
 
 void Light::postDrawShadow()
 {
-#ifdef SOFA_HAVE_GLEW
     //Unbind fbo
     shadowFBO.stop();
-#endif
 
     glMatrixMode(GL_PROJECTION);
     glPopMatrix();
@@ -492,11 +486,7 @@ GLuint SpotLight::getShadowTexture()
 {
     //return debugVisualShadowTexture;
     //return shadowTexture;
-#ifdef SOFA_HAVE_GLEW
     return shadowFBO.getDepthTexture();
-#else
-    return 0;
-#endif
 }
 
 GLfloat* SpotLight::getProjectionMatrix()

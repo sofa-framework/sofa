@@ -22,9 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifdef SOFA_HAVE_GLEW
-#include <GL/glew.h>
-#endif
+#include <sofa/helper/system/glew.h>
 //#ifdef SOFA_HAVE_FLOWVR
 #include <flowvr/render/mesh.h>
 //#endif
@@ -434,8 +432,6 @@ void CudaDistanceGrid::calcCubeDistance(Real dim, int np)
 /// Compute distance field from given mesh
 void CudaDistanceGrid::calcDistance()
 {
-#ifdef SOFA_HAVE_GLEW
-
     if (GLEW_EXT_framebuffer_object && GLEW_ARB_vertex_buffer_object)
     {
         static GLuint fbid = 0;
@@ -477,11 +473,6 @@ void CudaDistanceGrid::calcDistance()
     {
         std::cerr << "ERROR: Unsupported OpenGL extensions EXT_framebuffer_object ARB_vertex_buffer_object" << std::endl;
     }
-
-#else
-    std::cerr << "ERROR: CudaDistanceGrid::calcDistance requires GLEW to access OpenGL extensions" << std::endl;
-
-#endif
 }
 
 CudaDistanceGrid* CudaDistanceGrid::loadShared(const std::string& filename, double scale, double sampling, int nx, int ny, int nz, Coord pmin, Coord pmax)
