@@ -40,7 +40,6 @@
 #include <math.h>
 #include <sofa/helper/system/thread/CTime.h>
 #include <sofa/component/forcefield/TetrahedronFEMForceField.h>
-#include <sofa/gpu/cuda/CudaTetrahedronFEMForceField.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/component/linearsolver/MatrixLinearSolver.h>
 #include <sofa/helper/system/thread/CTime.h>
