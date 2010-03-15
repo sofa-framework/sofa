@@ -89,7 +89,6 @@ public:
 
     virtual void updateBuffers();
 
-#ifdef SOFA_HAVE_GLEW
     void createVertexBuffer();
     void createTrianglesIndicesBuffer();
     void createQuadsIndicesBuffer();
@@ -99,7 +98,6 @@ public:
     void updateVertexBuffer();
     void updateTrianglesIndicesBuffer();
     void updateQuadsIndicesBuffer();
-#endif
 };
 
 typedef sofa::defaulttype::Vec<3,GLfloat> GLVec3f;

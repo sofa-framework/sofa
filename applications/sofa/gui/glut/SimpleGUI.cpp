@@ -229,8 +229,6 @@ void SimpleGUI::glut_idle()
 
 
 
-#ifdef SOFA_HAVE_GLEW
-
 // Shadow Mapping parameters
 
 // These store our width and height for the shadow texture
@@ -267,7 +265,6 @@ float g_mModelView[16] = {0};
 GLuint ShadowTextureMask;
 
 // End of Shadow Mapping Parameters
-#endif // SOFA_HAVE_GLEW
 
 // ---------------------------------------------------------
 // --- Constructor
@@ -420,11 +417,9 @@ void SimpleGUI::initializeGL(void)
         specref[2] = 1.0f;
         specref[3] = 1.0f;
         // Here we initialize our multi-texturing functions
-#ifdef SOFA_HAVE_GLEW
         glewInit();
         if (!GLEW_ARB_multitexture)
             std::cerr << "Error: GL_ARB_multitexture not supported\n";
-#endif
 
         _clearBuffer = GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT;
         _lightModelTwoSides = false;
@@ -471,7 +466,6 @@ void SimpleGUI::initializeGL(void)
         glEnable(GL_LIGHT0);
         //glEnable(GL_COLOR_MATERIAL);
 
-#ifdef SOFA_HAVE_GLEW
         // Here we allocate memory for our depth texture that will store our light's view
         CreateRenderTexture(g_DepthTexture, SHADOW_WIDTH, SHADOW_HEIGHT, GL_DEPTH_COMPONENT, GL_DEPTH_COMPONENT);
         CreateRenderTexture(ShadowTextureMask, SHADOW_MASK_SIZE, SHADOW_MASK_SIZE, GL_LUMINANCE, GL_LUMINANCE);
@@ -482,7 +476,6 @@ void SimpleGUI::initializeGL(void)
             g_Shader.InitShaders(sofa::helper::system::DataRepository.getFile("shaders/ShadowMappingPCF.vert"), sofa::helper::system::DataRepository.getFile("shaders/ShadowMappingPCF.frag"));
         }
         else
-#endif
         {
             printf("WARNING SimpleGUI : shadows are not supported !\n");
             _shadow = false;
@@ -630,7 +623,6 @@ void SimpleGUI::CreateRenderTexture(GLuint& textureID, int sizeX, int sizeY, int
 
 void SimpleGUI::ApplyShadowMap()
 {
-#ifdef SOFA_HAVE_GLEW
     // Let's turn our shaders on for doing shadow mapping on our world
     g_Shader.TurnOn();
 
@@ -696,7 +688,6 @@ void SimpleGUI::ApplyShadowMap()
 
     // Light expected, we need to turn our shader off since we are done
     g_Shader.TurnOff();
-#endif
 }
 
 // ---------------------------------------------------------
@@ -1136,7 +1127,6 @@ void SimpleGUI::DrawScene(void)
     _newQuat.buildRotationMatrix(_sceneTransform.rotation);
     calcProjection();
 
-#ifdef SOFA_HAVE_GLEW
     if (_shadow)
     {
         //glGetDoublev(GL_MODELVIEW_MATRIX,lastModelviewMatrix);
@@ -1324,7 +1314,6 @@ void SimpleGUI::DrawScene(void)
 
     }
     else
-#endif
     {
         if (_background==0)
             DrawLogo();

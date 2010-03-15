@@ -165,13 +165,6 @@ else {
   message( "|  PNG support: DISABLED")
 }
 
-contains(DEFINES,SOFA_HAVE_GLEW) {
-  message( "|  OpenGL Extensions support using GLEW: ENABLED")
-}
-else {
-  message( "|  OpenGL Extensions support using GLEW: DISABLED")
-}
-
 contains(DEFINES,SOFA_GPU_CUDA) {
   message( "|  GPU support using CUDA: ENABLED")
 }
