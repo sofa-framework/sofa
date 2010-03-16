@@ -63,9 +63,9 @@ void MultiMeshLoader::parse(core::objectmodel::BaseObjectDescription* arg)
 
 void MultiMeshLoader::pushMesh(const char* filename)
 {
-    int cptPoints = seqPoints.size();
+    currentMeshIndex = seqPoints.size();
     load(filename);
-    nbPointsPerMesh.push_back(seqPoints.size() - cptPoints);
+    nbPointsPerMesh.push_back(seqPoints.size() - currentMeshIndex);
 }
 
 
