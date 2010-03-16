@@ -32,36 +32,6 @@
     <property name="acceptDrops">
       <bool>true</bool>
     </property>
-    <vbox>
-      <property name="name">
-        <cstring>unnamed</cstring>
-      </property>
-      <property name="resizeMode">
-        <enum>FreeResize</enum>
-      </property>
-      <widget class="QTextBrowser">
-        <property name="name">
-          <cstring>infoItem</cstring>
-        </property>
-        <property name="sizePolicy">
-          <sizepolicy>
-            <hsizetype>3</hsizetype>
-            <vsizetype>3</vsizetype>
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-          </sizepolicy>
-        </property>
-        <property name="maximumSize">
-          <size>
-            <width>32767</width>
-            <height>150</height>
-          </size>
-        </property>
-        <property name="readOnly">
-          <bool>true</bool>
-        </property>
-      </widget>
-    </vbox>
   </widget>
   <menubar>
     <property name="name">
