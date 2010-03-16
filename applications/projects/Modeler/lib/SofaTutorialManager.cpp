@@ -89,6 +89,8 @@ SofaTutorialManager::SofaTutorialManager(QWidget* parent, const char* name):Q3Ma
     mainLayout->addWidget(descriptionPage);
     mainLayout->addWidget(graph);
 
+    connect(this, SIGNAL(undo()), graph, SIGNAL(undo()));
+    connect(this, SIGNAL(redo()), graph, SIGNAL(redo()));
 
     //Creation of a Tool Bar
     Q3ToolBar *toolBar = new Q3ToolBar( this );
@@ -235,12 +237,12 @@ void SofaTutorialManager::keyPressEvent ( QKeyEvent * e )
         }
         case Qt::Key_Y:
         {
-            graph->editRedo();
+            emit redo();
             return;
         }
         case Qt::Key_Z:
         {
-            graph->editUndo();
+            emit undo();
             return;
         }
         default: ;

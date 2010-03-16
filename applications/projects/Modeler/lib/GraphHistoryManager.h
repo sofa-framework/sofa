@@ -24,30 +24,15 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_SOFATUTORIALMANAGER_H
-#define SOFA_SOFATUTORIALMANAGER_H
+#ifndef SOFA_GRAPHHISTORYMANAGER_H
+#define SOFA_GRAPHHISTORYMANAGER_H
 
-#include "TutorialSelector.h"
-#include "GraphModeler.h"
 
-#ifdef SOFA_QT4
-#include <Q3MainWindow>
-#include <QTextBrowser>
-#include <QAction>
-#include <QKeyEvent>
-#include <QUrl>
-#include <QComboBox>
-#else
-#include <qmainwindow.h>
-#include <qtextbrowser.h>
-#include <qaction.h>
-#include <qurl.h>
-#include <qpushbutton.h>
-#include <qevent.h>
-#include <qcombobox.h>
-typedef QMainWindow Q3MainWindow;
-#endif
+#include <sofa/core/objectmodel/Base.h>
+#include <sofa/simulation/tree/GNode.h>
 
+#include <qobject.h>
+#include <vector>
 
 namespace sofa
 {
@@ -58,37 +43,65 @@ namespace gui
 namespace qt
 {
 
+using sofa::core::objectmodel::Base;
+using sofa::simulation::tree::GNode;
 
+class GraphModeler;
 
-class SofaTutorialManager : public Q3MainWindow
+class GraphHistoryManager: public QObject
 {
     Q_OBJECT
 public:
-    SofaTutorialManager(QWidget* parent = 0, const char* name = 0);
-    GraphModeler *getGraph() {return graph;}
+    //-----------------------------------------------------------------------------//
+    //Historic of actions: management of the undo/redo actions
+    ///Basic class storing information about the operation done
+    class Operation
+    {
+    public:
+        Operation() {};
+        enum op {DELETE_OBJECT,DELETE_GNODE, ADD_OBJECT,ADD_GNODE, NODE_MODIFICATION, COMPONENT_MODIFICATION};
+        Operation(Base* sofaComponent_,  op ID_): sofaComponent(sofaComponent_), above(NULL), ID(ID_)
+        {}
 
-    void keyPressEvent ( QKeyEvent * e );
+        Base* sofaComponent;
+        GNode* parent;
+        Base* above;
+        op ID;
+        std::string info;
+    };
+
+    GraphHistoryManager(GraphModeler *);
+    ~GraphHistoryManager();
+
+    bool isUndoEnabled() const {return !historyOperation.empty();}
+    bool isRedoEnabled() const {return !historyUndoOperation.empty();}
 
 public slots:
-    void openCategory(const std::string &);
-    void openTutorial(const std::string &filename);
-    void openHTML(const std::string &filename);
-    void launchScene();
-#ifdef SOFA_QT4
-    void dynamicChangeOfScene( const QUrl&);
-#else
-    void dynamicChangeOfScene( const QString&);
-#endif
-signals:
-    void runInSofa(const std::string& sceneFilename, GNode *root);
+    void operationPerformed(GraphHistoryManager::Operation&);
     void undo();
     void redo();
+    void graphClean();
+    void beginModification(sofa::core::objectmodel::Base* object);
+    void endModification(sofa::core::objectmodel::Base* object);
+signals:
+    void graphModified(bool);
+    void undoEnabled(bool);
+    void redoEnabled(bool);
+    void historyMessage(const std::string&);
 protected:
-    TutorialSelector *selector;
+    void clearHistoryUndo();
+    void clearHistory();
+
+    void undoOperation(Operation &);
+    std::string componentState(Base *base) const;
+    void setComponentState(Base *base, const std::string &datasStr);
+
+    std::vector< Operation > historyOperation;
+    std::vector< Operation > historyUndoOperation;
+
+    std::map<Base*, std::string> componentPriorModificationState;
+
     GraphModeler *graph;
-    QTextBrowser* descriptionPage;
-    QPushButton *buttonRunInSofa;
-    QComboBox *tutorialList;
 };
 
 }

@@ -30,6 +30,7 @@
 #include <deque>
 
 #include "AddPreset.h"
+#include "GraphHistoryManager.h"
 #include <sofa/core/SofaLibrary.h>
 
 #include <sofa/simulation/common/Simulation.h>
@@ -83,34 +84,11 @@ using sofa::core::SofaLibrary;
 
 class GraphModeler : public Q3ListView
 {
-
+    friend class GraphHistoryManager;
     Q_OBJECT
 public:
-    GraphModeler( QWidget* parent=0, const char* name=0, Qt::WFlags f = 0 ):Q3ListView(parent, name, f), graphListener(NULL)
-    {
-        graphListener = new GraphListenerQListView(this);
-        addColumn("Graph");
-        header()->hide();
-        setSorting ( -1 );
-
-#ifdef SOFA_QT4
-        connect(this, SIGNAL(doubleClicked ( Q3ListViewItem *)), this, SLOT( doubleClick(Q3ListViewItem *)));
-        connect(this, SIGNAL(rightButtonClicked ( Q3ListViewItem *, const QPoint &, int )),  this, SLOT( rightClick(Q3ListViewItem *, const QPoint &, int )));
-#else
-        connect(this, SIGNAL(doubleClicked ( QListViewItem * )), this, SLOT( doubleClick(QListViewItem *)));
-        connect(this, SIGNAL(rightButtonClicked ( QListViewItem *, const QPoint &, int )),  this, SLOT( rightClick(QListViewItem *, const QPoint &, int )));
-#endif
-        DialogAdd=NULL;
-    };
-
-    ~GraphModeler()
-    {
-        for (unsigned int i=0; i<historyOperation.size(); ++i) editUndo();
-        simulation::getSimulation()->unload(getRoot());
-        delete getRoot();
-        delete graphListener;
-        if (DialogAdd) delete DialogAdd;
-    }
+    GraphModeler( QWidget* parent=0, const char* name=0, Qt::WFlags f = 0 );
+    ~GraphModeler();
 
     /// Set the Sofa Resources: intern library to get the creators of the elements
     void setSofaLibrary( SofaLibrary *l) { sofaLibrary = l;}
@@ -135,9 +113,9 @@ public:
     void keyPressEvent ( QKeyEvent * e );
 
     /// Says if there is something to undo
-    bool isUndoEnabled() {return  historyOperation.size();}
+    bool isUndoEnabled() {return historyManager->isUndoEnabled();}
     /// Says if there is something to redo
-    bool isRedoEnabled() {return historyUndoOperation.size();}
+    bool isRedoEnabled() {return historyManager->isRedoEnabled();}
 
     /// Drag & Drop Management
     void dragEnterEvent( QDragEnterEvent* event);
@@ -149,13 +127,15 @@ public:
     /// expande all the nodes below the current one
     void expandNode(Q3ListViewItem* item);
     /// load a node as a child of the current one
-    GNode *loadNode(Q3ListViewItem* item, std::string filename="");
+    GNode *loadNode(Q3ListViewItem* item, std::string filename="", bool saveHistory=true);
+    /// Save the whole graphe
+    void save(const std::string &fileName);
     /// Save a node: call the GUI to get the file name
     void saveNode(Q3ListViewItem* item);
     /// Directly save a node
-    void saveNode(GNode* node, std::string file);
+    void saveNode(GNode* node, const std::string &file);
     /// Save a component
-    void saveComponent(BaseObject* object, std::string file);
+    void saveComponent(BaseObject* object, const std::string &file);
     /// Open the window to configure a component
     void openModifyObject(Q3ListViewItem *);
     /// Delete a componnent
@@ -167,14 +147,23 @@ public:
     /// Used to know what component is about to be created by a drag&drop
     void setLastSelectedComponent( const std::string& templateName, ClassEntry *entry) {lastSelectedComponent = std::make_pair(templateName, entry);}
 
+
 signals:
     void fileOpen(const QString&);
-    void undo(bool);
-    void redo(bool);
+
+    void operationPerformed(GraphHistoryManager::Operation &);
+    void undo();
+    void redo();
+    void graphClean();
+
+    void undoEnabled(bool);
+    void redoEnabled(bool);
+    void graphModified(bool);
+    void historyMessage(const std::string &);
 
 public slots:
-    void editUndo();
-    void editRedo();
+    void editUndo() {emit undo();}
+    void editRedo() {emit redo();};
 
     bool editCut(std::string path);
     bool editCopy(std::string path);
@@ -195,7 +184,7 @@ public slots:
     /// Context Menu Operation: loading a node as a child of the current one
     GNode *loadNode();
     /// Load a file given the node in which it will be added
-    GNode *loadNode(GNode*, std::string);
+    GNode *loadNode(GNode*, std::string, bool saveHistory=true);
     /// Context Menu Operation: loading a preset: open the window of configuration
     void loadPreset(std::string presetName);
     /// Context Menu Operation: loading a preset: actually creating the node, given its parameters (path to files, and initial position)
@@ -255,35 +244,7 @@ protected:
     //Store template + ClassEntry
     std::pair< std::string, ClassEntry* > lastSelectedComponent;
 
-    //-----------------------------------------------------------------------------//
-    //Historic of actions: management of the undo/redo actions
-    ///Basic class storing information about the operation done
-    class Operation
-    {
-    public:
-        Operation() {};
-        enum op {DELETE_OBJECT,DELETE_GNODE, ADD_OBJECT,ADD_GNODE};
-        Operation(Base* sofaComponent_,  op ID_): sofaComponent(sofaComponent_), above(NULL), ID(ID_)
-        {}
-
-        Base* sofaComponent;
-        GNode* parent;
-        Base* above;
-        op ID;
-        std::string info;
-    };
-
-
-    void storeHistory(Operation &o);
-    void processUndo(Operation &o);
-
-    void clearHistory();
-    void clearHistoryUndo();
-
-    std::vector< Operation > historyOperation;
-    std::vector< Operation > historyUndoOperation;
-    //-----------------------------------------------------------------------------//
-
+    GraphHistoryManager *historyManager;
 };
 
 }

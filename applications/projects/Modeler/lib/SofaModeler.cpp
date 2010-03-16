@@ -423,8 +423,10 @@ void SofaModeler::createTab()
     connect(graph, SIGNAL(currentChanged(QListViewItem *)), this, SLOT(changeInformation(QListViewItem *)));
 #endif
     connect(graph, SIGNAL( fileOpen(const QString&)), this, SLOT(fileOpen(const QString&)));
-    connect(graph, SIGNAL( undo(bool)), this, SLOT(updateUndo(bool)));
-    connect(graph, SIGNAL( redo(bool)), this, SLOT(updateRedo(bool)));
+    connect(graph, SIGNAL( undoEnabled(bool)), this, SLOT(setUndoEnabled(bool)));
+    connect(graph, SIGNAL( redoEnabled(bool)), this, SLOT(setRedoEnabled(bool)));
+    connect(graph, SIGNAL( graphModified(bool)), this, SLOT(graphModifiedNotification(bool)));
+    connect(graph, SIGNAL( historyMessage(const std::string&)), this, SLOT(displayHistoryMessage(const std::string &)));
 }
 
 void SofaModeler::closeTab()
@@ -573,12 +575,7 @@ void SofaModeler::fileSave()
 {
     if (sceneTab->count() == 0) return;
     if (graph->getFilename().empty()) fileSaveAs();
-    else 	                          fileSave(graph->getFilename());
-}
-
-void SofaModeler::fileSave(std::string filename)
-{
-    simulation::tree::getSimulation()->exportXML(graph->getRoot(), filename.c_str(), true);
+    else 	                          graph->save(graph->getFilename());
 }
 
 
@@ -595,7 +592,7 @@ void SofaModeler::fileSaveAs()
         std::string extension=sofa::helper::system::SetDirectory::GetExtension(s.ascii());
         if (extension.empty()) s+=QString(".scn");
 
-        fileSave ( s.ascii() );
+        graph->save( s.ascii() );
 //  	    if (graph->getFilename().empty())
 //  	      {
         std::string filename = s.ascii();
@@ -622,6 +619,27 @@ void SofaModeler::loadPreset(int id)
     }
     else std::cerr<<"Preset : " << presetFile << " Not found\n";
 }
+
+void SofaModeler::graphModifiedNotification(bool modified)
+{
+    GraphModeler *graph = (GraphModeler*) sender();
+    QString suffix;
+    if (modified) suffix = QString("*");
+
+    QString tabName;
+    if (graph->getFilename().empty()) tabName=QString("newScene.scn");
+    else tabName=QString(sofa::helper::system::SetDirectory::GetFileName(graph->getFilename().c_str()).c_str());
+    std::map<QWidget*, GraphModeler*>::iterator it;
+    for (it=mapGraph.begin(); it!=mapGraph.end(); ++it)
+    {
+        if (it->second == graph)
+        {
+            sceneTab->setTabLabel(it->first, tabName+suffix);
+            return;
+        }
+    }
+}
+
 
 void SofaModeler::changeInformation(Q3ListViewItem *item)
 {
@@ -767,9 +785,8 @@ void SofaModeler::runInSofa(	const std::string &sceneFilename, GNode* root)
 
     std::string filename=path + std::string("temp") + (++count) + std::string(".scn");
     simulation::tree::getSimulation()->exportXML(root,filename.c_str(),true);
+
     //Make a copy of the .view if it exists for the current viewer
-
-
     const std::string &extension=sofa::helper::system::SetDirectory::GetExtension(sceneFilename.c_str());
 
     if (!sceneFilename.empty() && !extension.empty())
@@ -800,7 +817,14 @@ void SofaModeler::runInSofa(	const std::string &sceneFilename, GNode* root)
         viewerExtension += ".view";
 
         viewFile += viewerExtension;
-        std::cerr << "viewFile = " << viewFile << std::endl;
+
+        if ( !sofa::helper::system::DataRepository.findFile ( viewFile ) )
+        {
+            viewFile = sceneFilename+".view";
+            viewerExtension = ".view";
+        }
+
+//        std::cerr << "viewFile = " << viewFile << std::endl;
         if ( sofa::helper::system::DataRepository.findFile ( viewFile ) )
         {
             std::ifstream originalViewFile(viewFile.c_str());
@@ -813,17 +837,6 @@ void SofaModeler::runInSofa(	const std::string &sceneFilename, GNode* root)
             originalViewFile.close();
         }
     }
-//    if ( !sofa::helper::system::DataRepository.findFile ( scenes ) )
-//      {
-//        std::string fileToBeCreated = sofa::helper::system::DataRepository.getFirstPath() + "/" + scenes;
-//
-//        std::ofstream ofile(fileToBeCreated.c_str());
-//        ofile << "";
-//        ofile.close();
-//      }
-
-
-
     if (count > '9') count = '0';
 
     QString messageLaunch;
@@ -1044,7 +1057,11 @@ void SofaModeler::showPluginManager()
     SofaPluginManager::getInstance()->show();
 }
 
-
+void SofaModeler::displayHistoryMessage(const std::string &m)
+{
+    QString messageLaunch(m.c_str());
+    statusBar()->message(messageLaunch,5000);
+}
 
 }
 }

@@ -103,7 +103,6 @@ public :
     /// Change the content of the description box. Happens when the user has clicked on a component
     void changeComponent(const std::string &description);
     void fileOpen(std::string filename);
-    void fileSave(std::string filename);
 
     /// Change the name of the main window
     void changeNameWindow(std::string filename);
@@ -115,9 +114,14 @@ signals:
 
 public slots:
     /// Change the state of the Undo button
-    void updateUndo(bool v) {this->editUndoAction->setEnabled(v);}
+    void setUndoEnabled(bool v) {this->editUndoAction->setEnabled(v);}
     /// Change the state of the Redo button
-    void updateRedo(bool v) {this->editRedoAction->setEnabled(v);}
+    void setRedoEnabled(bool v) {this->editRedoAction->setEnabled(v);}
+    /// Each time a graph component is modified, or is cleaned
+    void graphModifiedNotification(bool);
+    ///Each time an operation is done in a graph in relation with undo/redo
+    void displayHistoryMessage(const std::string &m);
+
     /// Change the content of the description box. Happens when the user has clicked on a component
 #ifdef SOFA_QT4
     void changeInformation(Q3ListViewItem *);
@@ -238,7 +242,7 @@ protected:
 
 
     /// Map between a tabulation from the modeler to an object of type GraphModeler
-    std::map<  const QWidget*, GraphModeler*> mapGraph;
+    std::map<  QWidget*, GraphModeler*> mapGraph;
     /// Map between a tabulation from the modeler to a Sofa Application
     std::multimap<  const QWidget*, Q3Process*> mapSofa;
     /// Map between an index of tabulation to the tabulation itself

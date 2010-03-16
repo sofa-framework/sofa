@@ -169,8 +169,8 @@ public:
     void readOnlyData(QWidget *widget, core::objectmodel::BaseData* data);
 
 public slots:
-    void reject   () {                 emit(dialogClosed(Id_)); deleteLater(); QDialog::reject();} //When closing a window, inform the parent.
-    void accept   () { updateValues(); emit(dialogClosed(Id_)); deleteLater(); QDialog::accept();} //if closing by using Ok button, update the values
+    void reject   ();
+    void accept   ();
     void closeNow () {emit(reject());} //called from outside to close the current widget
     virtual void closeEvent ( QCloseEvent * ) {emit(reject());}
     void updateTables();
@@ -181,6 +181,13 @@ signals:
     void objectUpdated();                 //update done
     void dialogClosed(void *);            //the current window has been closed: we give the Id of the current window
     void nodeNameModification(simulation::Node*);
+    void componentDirty(bool);
+
+    void beginObjectModification(sofa::core::objectmodel::Base* object);
+    void endObjectModification(sofa::core::objectmodel::Base* object);
+    void beginDataModification(sofa::core::objectmodel::BaseData* data);
+    void endDataModification(sofa::core::objectmodel::BaseData* data);
+
 protected slots:
     //update the tables of value at each step of the simulation
     void clearWarnings() {node->clearWarnings(); logWarningEdit->clear();}
