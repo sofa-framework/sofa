@@ -55,16 +55,16 @@ int BoxStiffSpringForceFieldClass = core::RegisterObject("Set Spring between the
 #endif
         ;
 #ifndef SOFA_FLOAT
-template class BoxStiffSpringForceField<Vec3dTypes>;
-template class BoxStiffSpringForceField<Vec2dTypes>;
-template class BoxStiffSpringForceField<Vec1dTypes>;
-template class BoxStiffSpringForceField<Vec6dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API BoxStiffSpringForceField<Vec3dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API BoxStiffSpringForceField<Vec2dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API BoxStiffSpringForceField<Vec1dTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API BoxStiffSpringForceField<Vec6dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class BoxStiffSpringForceField<Vec3fTypes>;
-template class BoxStiffSpringForceField<Vec2fTypes>;
-template class BoxStiffSpringForceField<Vec1fTypes>;
-template class BoxStiffSpringForceField<Vec6fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API BoxStiffSpringForceField<Vec3fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API BoxStiffSpringForceField<Vec2fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API BoxStiffSpringForceField<Vec1fTypes>;
+template class SOFA_COMPONENT_FORCEFIELD_API BoxStiffSpringForceField<Vec6fTypes>;
 #endif
 } // namespace forcefield
 

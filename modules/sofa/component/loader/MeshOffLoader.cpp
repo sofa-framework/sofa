@@ -78,7 +78,8 @@ bool MeshOffLoader::load()
 
 bool MeshOffLoader::readOFF (std::ifstream &file, const char* /* filename */ )
 {
-    sout << "MeshOffLoader::readOFF" << sendl;
+    if(f_printLog.getValue())
+        sout << "MeshOffLoader::readOFF" << sendl;
 
     helper::vector<sofa::defaulttype::Vector3>& my_positions = *(positions.beginEdit());
 
@@ -102,9 +103,14 @@ bool MeshOffLoader::readOFF (std::ifstream &file, const char* /* filename */ )
         std::istringstream values(line);
         values >> numberOfVertices >> numberOfFaces >> numberOfEdges;
     }
-    sout << "vertices = "<< numberOfVertices << sendl;
-    sout << "faces = "<< numberOfFaces << sendl;
-    sout << "edges = "<< numberOfEdges << sendl;
+
+    if(f_printLog.getValue())
+    {
+        sout << "vertices = "<< numberOfVertices << sendl;
+        sout << "faces = "<< numberOfFaces << sendl;
+        sout << "edges = "<< numberOfEdges << sendl;
+    }
+
 
     currentNumberOfVertices = 0;
 
