@@ -43,7 +43,7 @@ Visitor::Result MechanicalVisitor::processNodeTopDown(simulation::Node* node, Vi
         if(testTags(node->solver[i]))
         {
             debug_write_state_before(node->solver[i]);
-            ctime_t t=begin(node, node->solver[i]);
+            ctime_t t=begin(node, node->solver[i], "fwd");
             res = this->fwdOdeSolver(ctx, node->solver[i]);
             end(node, node->solver[i], t);
             debug_write_state_after(node->solver[i]);
@@ -69,7 +69,7 @@ Visitor::Result MechanicalVisitor::processNodeTopDown(simulation::Node* node, Vi
                 if(testTags(node->mechanicalMapping))
                 {
                     debug_write_state_before(node->mechanicalMapping);
-                    ctime_t t=begin(node, node->mechanicalMapping);
+                    ctime_t t=begin(node, node->mechanicalMapping, "fwd");
                     res = this->fwdMechanicalMapping(ctx, node->mechanicalMapping);
                     end(node, node->mechanicalMapping , t);
                     debug_write_state_after(node->mechanicalMapping);
@@ -78,7 +78,7 @@ Visitor::Result MechanicalVisitor::processNodeTopDown(simulation::Node* node, Vi
                 if(testTags(node->mechanicalState))
                 {
                     debug_write_state_before(node->mechanicalState);
-                    ctime_t t=begin(node, node->mechanicalState);
+                    ctime_t t=begin(node, node->mechanicalState, "fwd");
                     res2 = this->fwdMappedMechanicalState(ctx, node->mechanicalState);
                     end(node, node->mechanicalState, t);
                     debug_write_state_after(node->mechanicalState);
@@ -94,7 +94,7 @@ Visitor::Result MechanicalVisitor::processNodeTopDown(simulation::Node* node, Vi
                 {
                     //cerr<<"MechanicalVisitor::processNodeTopDown, node "<<node->getName()<<" is a no-map model"<<endl;
                     debug_write_state_before(node->mechanicalState);
-                    ctime_t t=begin(node, node->mechanicalState);
+                    ctime_t t=begin(node, node->mechanicalState, "fwd");
                     res = this->fwdMechanicalState(ctx, node->mechanicalState);
                     end(node, node->mechanicalState, t);
                     debug_write_state_after(node->mechanicalState);
@@ -109,7 +109,7 @@ Visitor::Result MechanicalVisitor::processNodeTopDown(simulation::Node* node, Vi
             if(testTags(node->mass))
             {
                 debug_write_state_before(node->mass);
-                ctime_t t=begin(node, node->mass);
+                ctime_t t=begin(node, node->mass, "fwd");
                 res = this->fwdMass(ctx, node->mass);
                 end(node, node->mass, t);
                 debug_write_state_after(node->mass);
@@ -153,10 +153,10 @@ void MechanicalVisitor::processNodeBottomUp(simulation::Node* node, VisitorConte
             {
                 if(testTags(node->mechanicalState))
                 {
-                    ctime_t t=begin(node, node->mechanicalState);
+                    ctime_t t=begin(node, node->mechanicalState, "bwd");
                     this->bwdMappedMechanicalState(ctx, node->mechanicalState);
                     end(node, node->mechanicalState, t);
-                    t=begin(node, node->mechanicalMapping);
+                    t=begin(node, node->mechanicalMapping, "bwd");
                     this->bwdMechanicalMapping(ctx, node->mechanicalMapping);
                     end(node, node->mechanicalMapping, t);
                 }
@@ -166,7 +166,7 @@ void MechanicalVisitor::processNodeBottomUp(simulation::Node* node, VisitorConte
         {
             if(testTags(node->mechanicalState))
             {
-                ctime_t t=begin(node, node->mechanicalState);
+                ctime_t t=begin(node, node->mechanicalState, "bwd");
                 this->bwdMechanicalState(ctx, node->mechanicalState);
                 end(node, node->mechanicalState, t);
             }
@@ -178,7 +178,7 @@ void MechanicalVisitor::processNodeBottomUp(simulation::Node* node, VisitorConte
     {
         if(testTags(node->solver[i]))
         {
-            ctime_t t=begin(node, node->solver[i]);
+            ctime_t t=begin(node, node->solver[i], "bwd");
             this->bwdOdeSolver(ctx, node->solver[i]);
             end(node, node->solver[i], t);
         }
@@ -428,7 +428,7 @@ void MechanicalVisitor::printWriteVectors(core::componentmodel::behavior::BaseMe
 
 void MechanicalVisitor::printReadVectors(simulation::Node* node, core::objectmodel::BaseObject* obj)
 {
-    if (!Visitor::printActivated) return;
+    if (!Visitor::printActivated || !Visitor::outputStateVector) return;
     if (readVector.size())
     {
         core::componentmodel::behavior::BaseMechanicalState *dof1, *dof2;
@@ -508,9 +508,9 @@ void MechanicalVisitor::printWriteVectors(simulation::Node* node, core::objectmo
 }
 
 
-simulation::Node::ctime_t MechanicalVisitor::begin(simulation::Node* node, core::objectmodel::BaseObject* obj)
+simulation::Node::ctime_t MechanicalVisitor::begin(simulation::Node* node, core::objectmodel::BaseObject* obj, const std::string &info)
 {
-    ctime_t t=Visitor::begin(node, obj);
+    ctime_t t=Visitor::begin(node, obj, info);
     printReadVectors(node, obj);
     return t;
 }
