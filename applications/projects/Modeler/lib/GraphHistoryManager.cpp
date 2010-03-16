@@ -89,23 +89,6 @@ void GraphHistoryManager::redo()
     emit graphModified(historyOperation.size());
 }
 
-struct UpdateOperations
-{
-    UpdateOperations(Base *previous, Base *current):previousPtr(previous), newPtr(current) {};
-
-    void operator()(GraphHistoryManager::Operation &operation)
-    {
-        if ((operation.ID==GraphHistoryManager::Operation::COMPONENT_MODIFICATION || operation.ID==GraphHistoryManager::Operation::NODE_MODIFICATION) &&
-            operation.sofaComponent == previousPtr)
-        {
-            operation.sofaComponent=newPtr;
-        }
-    }
-private:
-    const Base *previousPtr;
-    Base *newPtr;
-};
-
 void GraphHistoryManager::undoOperation(Operation &o)
 {
     std::string message;
