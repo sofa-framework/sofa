@@ -378,21 +378,25 @@ int main(int argc, char** argv)
 
     std::ifstream sofa_default((file+"/sofa-default.cfg").c_str());
     std::ifstream sofa_local((file+"/sofa-local.cfg").c_str());
+    std::ifstream sofa_extern((file+"/sofa-external.cfg").c_str());
 
     typedef std::vector<DEFINES> VecDEFINES;
     VecDEFINES  listOptions;
 
     parse(sofa_default, listOptions);
 
-    if (sofa_local.good())
-    {
-        //Set to false all the option
-        for (unsigned int i=0; i<listOptions.size(); ++i) listOptions[i].value=false;
-        parse(sofa_local, listOptions);
-    }
+    if (sofa_extern.good())
+
+        if (sofa_local.good())
+        {
+            //Set to false all the option
+            for (unsigned int i=0; i<listOptions.size(); ++i) listOptions[i].value=false;
+            parse(sofa_local, listOptions);
+        }
 
     sofa_default.close();
     sofa_local.close();
+    sofa_extern.close();
 
     QApplication* application;
     application = new QApplication(argc, argv);
