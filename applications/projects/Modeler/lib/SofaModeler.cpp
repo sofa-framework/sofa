@@ -38,21 +38,12 @@
 #define MAX_RECENTLY_OPENED 10
 
 
-#include <map>
-#include <set>
-#include <cstdio>
-
 
 //Automatically create and destroy all the components available: easy way to verify the default constructor and destructor
 //#define TEST_CREATION_COMPONENT
 
 #ifdef SOFA_QT4
 #include <QToolBox>
-#include <QSpacerItem>
-#include <QGridLayout>
-#include <QTextEdit>
-#include <Q3TextBrowser>
-#include <QLabel>
 #include <QApplication>
 #include <QMenuBar>
 #include <QMessageBox>
@@ -61,10 +52,10 @@
 #include <QDesktopWidget>
 #include <Q3DockWindow>
 #include <Q3DockArea>
+#include <QVBoxLayout>
 #else
 #include <qtoolbox.h>
 #include <qlayout.h>
-#include <qtextedit.h>
 #include <qtextbrowser.h>
 #include <qapplication.h>
 #include <qmenubar.h>
@@ -100,7 +91,6 @@ SofaModeler::SofaModeler()
 #ifdef SOFA_QT4
     fileMenu->removeAction(Action);
 #endif
-
 
     //----------------------------------------------------------------------
     //Get the different path needed
@@ -185,15 +175,26 @@ SofaModeler::SofaModeler()
     // Create the Right part of the GUI
     //----------------------------------------------------------------------
 
+    QVBoxLayout *mainLayout = new QVBoxLayout(this->centralWidget());
+
+    //----------------------------------------------------------------------
+    //Create the information widget
+    infoItem = new QTextBrowser(this->centralWidget());
+    infoItem->setMaximumHeight(175);
+#ifdef SOFA_QT4
+    connect( infoItem, SIGNAL(anchorClicked(const QUrl&)), this, SLOT(fileOpen(const QUrl&)));
+#else
+    connect( infoItem, SIGNAL(linkClicked( const QString &)), this, SLOT(fileOpen(const QString &)));
+#endif
+
+    mainLayout->addWidget(infoItem);
+
     //----------------------------------------------------------------------
     //Create the scene graph visualization
-    QWidget *GraphSupport = new QWidget(this->centralWidget());
-    QGridLayout* GraphLayout = new QGridLayout(GraphSupport, 1,1,5,2,"GraphLayout");
-    sceneTab = new QTabWidget(GraphSupport);
-    GraphLayout->addWidget(sceneTab,0,0);
+    sceneTab = new QTabWidget(this->centralWidget());
+    mainLayout->addWidget(sceneTab);
 
 #ifdef SOFA_QT4
-
     //option available only since Qt 4.5
 #if QT_VERSION >= 0x040500
     sceneTab->setTabsClosable(true);
@@ -201,12 +202,7 @@ SofaModeler::SofaModeler()
 #endif
 
 #endif
-
     connect( sceneTab, SIGNAL(currentChanged( QWidget*)), this, SLOT( changeCurrentScene( QWidget*)));
-
-    GraphSupport->resize(200,550);
-
-    this->centralWidget()->layout()->add(GraphSupport);
 
     //----------------------------------------------------------------------
     //Add plugin manager window. ->load external libs
@@ -333,12 +329,10 @@ SofaModeler::SofaModeler()
     const QRect screen = QApplication::desktop()->availableGeometry(QApplication::desktop()->primaryScreen());
     this->move(  ( screen.width()- this->width()  ) / 2,  ( screen.height() - this->height()) / 2  );
 
-
-    connect( this->infoItem, SIGNAL(linkClicked( const QString &)), this, SLOT(fileOpen(const QString &)));
-
     //----------------------------------------------------------------------
     //Configure the Tutorials
     tuto=0;
+    displayHelpModeler();
 };
 
 
@@ -352,9 +346,10 @@ void SofaModeler::rebuildLibrary()
 void SofaModeler::closeEvent( QCloseEvent *e)
 {
     const int numTab=sceneTab->count();
-    for (int i=0; i<numTab; ++i) closeTab();
-
-    e->accept();
+    bool closeProgram=true;
+    for (int i=numTab-1; i>=0; --i) closeProgram &=closeTab(i);
+    if  (closeProgram) e->accept();
+    else e->ignore();
 }
 
 void SofaModeler::fileNew( GNode* root)
@@ -397,6 +392,7 @@ void SofaModeler::newTab()
     {
         createTab();
     }
+    displayHelpModeler();
 }
 
 void SofaModeler::createTab()
@@ -435,14 +431,29 @@ void SofaModeler::closeTab()
     closeTab(tabGraph);
 }
 
-void SofaModeler::closeTab(int i)
+bool SofaModeler::closeTab(int i)
 {
-    if (i<0) return;
-    closeTab(sceneTab->page(i));
+    if (i<0) return true;
+    return closeTab(sceneTab->page(i));
 }
 
-void SofaModeler::closeTab(QWidget *curTab)
+bool SofaModeler::closeTab(QWidget *curTab)
 {
+    GraphModeler *mod = mapGraph[curTab];
+    if (mod->isUndoEnabled()) //means modifications have been performed
+    {
+
+        const QString caption("Unsaved Modifications Notification");
+        QString warning=QString("The current scene ")+ QString(sofa::helper::system::SetDirectory::GetFileName(mod->getFilename().c_str()).c_str()) + QString(" has been modified, do you want to save it?");
+        int response=QMessageBox::warning ( this, caption,warning,QMessageBox::No, QMessageBox::Ok,  QMessageBox::Cancel | QMessageBox::Default | QMessageBox::Escape);
+        if ( response == QMessageBox::Cancel )
+            return false;
+        else if (response == QMessageBox::Ok)
+        {
+            if (mod->getFilename().empty()) fileSaveAs();
+            else simulation::tree::getSimulation()->exportXML(mod->getRoot(), mod->getFilename().c_str(), true);
+        }
+    }
     //If the scene has been launch in Sofa
     if (mapSofa.size() &&
         mapSofa.find(curTab) != mapSofa.end())
@@ -468,7 +479,6 @@ void SofaModeler::closeTab(QWidget *curTab)
     mapWindow.erase(it->first);
 
     //Closing the Modify Dialog opened
-    GraphModeler *mod = mapGraph[curTab];
     if (dynamic_cast< GraphModeler* >(mod))
     {
         mod->closeDialogs();
@@ -479,7 +489,21 @@ void SofaModeler::closeTab(QWidget *curTab)
     sceneTab->removePage(curTab);
     mapGraph.erase(curTab);
     curTab->close();
+    return true;
 }
+
+#ifdef SOFA_QT4
+void SofaModeler::fileOpen(const QUrl &u)
+{
+    std::string path=u.path().ascii();
+#ifdef WIN32
+    path = path.substr(1);
+#endif
+    fileOpen(path);
+}
+
+#endif
+
 
 void SofaModeler::fileOpen(std::string filename)
 {
@@ -504,14 +528,14 @@ void SofaModeler::fileOpen(std::string filename)
             sceneTab->setCurrentPage( sceneTab->count()-1);
 
             graph->setFilename(filename);
-            sceneTab->setTabLabel(tabGraph, QString(sofa::helper::system::SetDirectory::GetFileName(filename.c_str()).c_str()));
-            sceneTab->setTabToolTip(tabGraph, QString(filename.c_str()));
+            changeTabName(graph,QString(sofa::helper::system::SetDirectory::GetFileName(filename.c_str()).c_str()));
 
             changeNameWindow(graph->getFilename());
 
             mapWindow.insert(std::make_pair(windowMenu->insertItem( graph->getFilename().c_str()), tabGraph));
         }
     }
+    displayHelpModeler();
 }
 
 void SofaModeler::fileRecentlyOpened(int id)
@@ -598,8 +622,7 @@ void SofaModeler::fileSaveAs()
         std::string filename = s.ascii();
         graph->setFilename(filename);
         changeNameWindow(filename);
-        sceneTab->setTabLabel(tabGraph, QString(sofa::helper::system::SetDirectory::GetFileName(filename.c_str()).c_str()));
-        sceneTab->setTabToolTip(tabGraph, QString(filename.c_str()));
+        changeTabName(graph, QString(sofa::helper::system::SetDirectory::GetFileName(filename.c_str()).c_str()));
         examplePath = sofa::helper::system::SetDirectory::GetParentDir(filename.c_str());
 //  	      }
 
@@ -620,6 +643,48 @@ void SofaModeler::loadPreset(int id)
     else std::cerr<<"Preset : " << presetFile << " Not found\n";
 }
 
+void SofaModeler::changeTabName(GraphModeler *graph, const QString &name, const QString &suffix)
+{
+    QWidget *tabGraph=0;
+    QString fullPath(graph->getFilename().c_str());
+    if (fullPath.isEmpty())
+    {
+        fullPath = QString(sofa::helper::system::DataRepository.getFile("config/newScene.scn").c_str());
+    }
+    //Update the name of the tab
+    {
+        std::map<QWidget*, GraphModeler*>::iterator it;
+
+
+        for (it=mapGraph.begin(); it!=mapGraph.end(); ++it)
+        {
+            if (it->second == graph)
+            {
+                sceneTab->setTabLabel(it->first, name+suffix);
+                sceneTab->setTabToolTip(tabGraph, fullPath+suffix);
+
+                tabGraph = it->first;
+                break;
+            }
+        }
+    }
+
+    if (!tabGraph) return;
+
+    //Update the Scene menu
+    {
+        std::map< int, QWidget *>::iterator it;
+        for (it=mapWindow.begin(); it!=mapWindow.end(); ++it)
+        {
+            if (it->second == tabGraph)
+            {
+                windowMenu->changeItem(it->first, fullPath + suffix);
+                break;
+            }
+        }
+    }
+}
+
 void SofaModeler::graphModifiedNotification(bool modified)
 {
     GraphModeler *graph = (GraphModeler*) sender();
@@ -629,22 +694,18 @@ void SofaModeler::graphModifiedNotification(bool modified)
     QString tabName;
     if (graph->getFilename().empty()) tabName=QString("newScene.scn");
     else tabName=QString(sofa::helper::system::SetDirectory::GetFileName(graph->getFilename().c_str()).c_str());
-    std::map<QWidget*, GraphModeler*>::iterator it;
-    for (it=mapGraph.begin(); it!=mapGraph.end(); ++it)
-    {
-        if (it->second == graph)
-        {
-            sceneTab->setTabLabel(it->first, tabName+suffix);
-            return;
-        }
-    }
+
+    changeTabName(graph, tabName, suffix);
 }
 
 
 void SofaModeler::changeInformation(Q3ListViewItem *item)
 {
-    if (!item) return;
-    if (item->childCount() != 0) return;
+    if (!item || item->childCount() != 0)
+    {
+        displayHelpModeler();
+        return;
+    }
     std::string nameObject = item->text(0).ascii();
     std::string::size_type end_name = nameObject.find(" ");
     if (end_name != std::string::npos) nameObject.resize(end_name);
@@ -1063,6 +1124,22 @@ void SofaModeler::displayHistoryMessage(const std::string &m)
     statusBar()->message(messageLaunch,5000);
 }
 
+void SofaModeler::displayHelpModeler()
+{
+    static std::string pathModelerHTML=sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + std::string( "/applications/projects/Modeler/Modeler.html" );
+#ifdef SOFA_QT4
+#ifdef WIN32
+    infoItem->setSource(QUrl(QString("file:///")+QString(pathModelerHTML.c_str())));
+#else
+    infoItem->setSource(QUrl(QString(pathModelerHTML.c_str())));
+#endif
+#else
+    infoItem->mimeSourceFactory()->setExtensionType("html", "text/utf8");;
+    infoItem->mimeSourceFactory()->setFilePath(QString(pathModelerHTML.c_str()));
+    infoItem->setSource(QString(pathModelerHTML.c_str()));
+#endif
+
+}
 }
 }
 }
