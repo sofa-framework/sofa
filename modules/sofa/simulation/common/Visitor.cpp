@@ -216,13 +216,18 @@ simulation::Node::ctime_t Visitor::begin(simulation::Node* node, core::objectmod
 #ifdef SOFA_DUMP_VISITOR_INFO
         obj
 #endif
+        , const std::string &
+#ifdef SOFA_DUMP_VISITOR_INFO
+        info
+#endif
                                         )
 {
 #ifdef SOFA_DUMP_VISITOR_INFO
     if (printActivated)
     {
         TRACE_ARGUMENT arg;
-        arg.push_back(std::make_pair("type",std::string(obj->getClassName())));
+        arg.push_back(std::make_pair(info,std::string(obj->getClassName())));
+
         std::ostringstream s; s << obj;
         arg.push_back(std::make_pair("ptr",s.str()));
         printNode("Component", obj->getName(), arg);
@@ -246,9 +251,9 @@ void Visitor::end(simulation::Node* node, core::objectmodel::BaseObject* obj, ct
 
 /// Optional helper method to call before handling an object if not using the for_each method.
 /// It currently takes care of time logging, but could be extended (step-by-step execution for instance)
-simulation::Node::ctime_t Visitor::begin(simulation::Visitor::VisitorContext* vc, core::objectmodel::BaseObject* obj)
+simulation::Node::ctime_t Visitor::begin(simulation::Visitor::VisitorContext* vc, core::objectmodel::BaseObject* obj, const std::string &info)
 {
-    return begin(vc->node, obj);
+    return begin(vc->node, obj, info);
 }
 
 /// Optional helper method to call after handling an object if not using the for_each method.

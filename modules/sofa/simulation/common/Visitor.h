@@ -219,12 +219,14 @@ public:
 #ifdef SOFA_DUMP_VISITOR_INFO
             obj
 #endif
+            , const std::string &typeInfo=std::string("type")
                          );
     virtual void end(simulation::Node* node, core::objectmodel::BaseObject* obj, ctime_t t0);
     ctime_t begin(simulation::Visitor::VisitorContext* node, core::objectmodel::BaseObject*
 #ifdef SOFA_DUMP_VISITOR_INFO
             obj
 #endif
+            , const std::string &typeInfo=std::string("type")
                  );
     void end(simulation::Visitor::VisitorContext* node, core::objectmodel::BaseObject* obj, ctime_t t0);
 

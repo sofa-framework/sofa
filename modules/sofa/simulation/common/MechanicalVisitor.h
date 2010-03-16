@@ -354,7 +354,7 @@ public:
     }
 
 #ifdef SOFA_DUMP_VISITOR_INFO
-    ctime_t begin(simulation::Node* node, core::objectmodel::BaseObject* obj);
+    ctime_t begin(simulation::Node* node, core::objectmodel::BaseObject* obj, const std::string &info=std::string("type"));
     void end(simulation::Node* node, core::objectmodel::BaseObject* obj, ctime_t t0);
 #endif
 
