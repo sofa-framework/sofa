@@ -66,6 +66,16 @@ public:
 
     void build(const std::vector< std::string >& examples=std::vector< std::string >());
     void filter(const FilterQuery &f);
+    void clear()
+    {
+        const int n=this->count();
+        for ( int i=n; i>=0; --i)
+        {
+            removeItem(item(i));
+        }
+        QToolBox::clear();
+        SofaLibrary::clear();
+    }
 
     LibraryContainer* getContainer() {return toolbox;};
 
