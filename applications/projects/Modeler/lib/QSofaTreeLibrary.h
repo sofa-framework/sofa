@@ -61,6 +61,7 @@ public:
 
     void build(const std::vector< std::string >& examples=std::vector< std::string >());
     void filter(const FilterQuery &f);
+    void clear() {QTreeWidget::clear(); SofaLibrary::clear();}
 
     LibraryContainer* getContainer() {return toolbox;};
 
