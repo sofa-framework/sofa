@@ -38,15 +38,19 @@ LIBS += -lsofacomponentmisc$$LIBSUFFIX
 LIBS += -lsofacomponent$$LIBSUFFIX
 LIBS += $$SOFA_EXT_LIBS
 
-HEADERS +=  OpenCLMemoryManager.h \
+HEADERS +=  OpenCLKernel.h \
+	    OpenCLManager.inl \
+	    OpenCLMechanicalObject.h \
+	    OpenCLMechanicalObject.inl \
+	    OpenCLMemoryManager.h \
 	    OpenCLMemoryManager.inl \
 	    OpenCLProgramParser.h \
 	    OpenCLProgram.h \
-	    OpenCLManager.h \
-	    OpenCLManager.inl \
-	    OpenCLKernel.h
+	    OpenCLVector.h \
+	    myopencl.h \
 
-SOURCES += 
+SOURCES += OpenCLMechanicalObject.cpp \
+	   myopencl.cpp 
 
 OPENCL_SOURCES += 
 
