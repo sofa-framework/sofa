@@ -386,13 +386,19 @@ int main(int argc, char** argv)
     parse(sofa_default, listOptions);
 
     if (sofa_extern.good())
+    {
+        //Set to false all the option
+        for (unsigned int i=0; i<listOptions.size(); ++i) listOptions[i].value=false;
+        parse(sofa_extern, listOptions);
+    }
 
-        if (sofa_local.good())
-        {
-            //Set to false all the option
-            for (unsigned int i=0; i<listOptions.size(); ++i) listOptions[i].value=false;
-            parse(sofa_local, listOptions);
-        }
+
+    if (sofa_local.good())
+    {
+        //Set to false all the option
+        for (unsigned int i=0; i<listOptions.size(); ++i) listOptions[i].value=false;
+        parse(sofa_local, listOptions);
+    }
 
     sofa_default.close();
     sofa_local.close();
