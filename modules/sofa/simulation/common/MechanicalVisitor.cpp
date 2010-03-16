@@ -43,7 +43,9 @@ Visitor::Result MechanicalVisitor::processNodeTopDown(simulation::Node* node, Vi
         if(testTags(node->solver[i]))
         {
             debug_write_state_before(node->solver[i]);
+            ctime_t t=begin(node, node->solver[i]);
             res = this->fwdOdeSolver(ctx, node->solver[i]);
+            end(node, node->solver[i], t);
             debug_write_state_after(node->solver[i]);
         }
     }
@@ -67,14 +69,18 @@ Visitor::Result MechanicalVisitor::processNodeTopDown(simulation::Node* node, Vi
                 if(testTags(node->mechanicalMapping))
                 {
                     debug_write_state_before(node->mechanicalMapping);
+                    ctime_t t=begin(node, node->mechanicalMapping);
                     res = this->fwdMechanicalMapping(ctx, node->mechanicalMapping);
+                    end(node, node->mechanicalMapping , t);
                     debug_write_state_after(node->mechanicalMapping);
                 }
 
                 if(testTags(node->mechanicalState))
                 {
                     debug_write_state_before(node->mechanicalState);
+                    ctime_t t=begin(node, node->mechanicalState);
                     res2 = this->fwdMappedMechanicalState(ctx, node->mechanicalState);
+                    end(node, node->mechanicalState, t);
                     debug_write_state_after(node->mechanicalState);
                 }
 
@@ -88,7 +94,9 @@ Visitor::Result MechanicalVisitor::processNodeTopDown(simulation::Node* node, Vi
                 {
                     //cerr<<"MechanicalVisitor::processNodeTopDown, node "<<node->getName()<<" is a no-map model"<<endl;
                     debug_write_state_before(node->mechanicalState);
+                    ctime_t t=begin(node, node->mechanicalState);
                     res = this->fwdMechanicalState(ctx, node->mechanicalState);
+                    end(node, node->mechanicalState, t);
                     debug_write_state_after(node->mechanicalState);
                 }
             }
@@ -101,7 +109,9 @@ Visitor::Result MechanicalVisitor::processNodeTopDown(simulation::Node* node, Vi
             if(testTags(node->mass))
             {
                 debug_write_state_before(node->mass);
+                ctime_t t=begin(node, node->mass);
                 res = this->fwdMass(ctx, node->mass);
+                end(node, node->mass, t);
                 debug_write_state_after(node->mass);
             }
         }
@@ -143,15 +153,23 @@ void MechanicalVisitor::processNodeBottomUp(simulation::Node* node, VisitorConte
             {
                 if(testTags(node->mechanicalState))
                 {
+                    ctime_t t=begin(node, node->mechanicalState);
                     this->bwdMappedMechanicalState(ctx, node->mechanicalState);
+                    end(node, node->mechanicalState, t);
+                    t=begin(node, node->mechanicalMapping);
                     this->bwdMechanicalMapping(ctx, node->mechanicalMapping);
+                    end(node, node->mechanicalMapping, t);
                 }
             }
         }
         else
         {
             if(testTags(node->mechanicalState))
+            {
+                ctime_t t=begin(node, node->mechanicalState);
                 this->bwdMechanicalState(ctx, node->mechanicalState);
+                end(node, node->mechanicalState, t);
+            }
         }
 
     }
@@ -159,7 +177,11 @@ void MechanicalVisitor::processNodeBottomUp(simulation::Node* node, VisitorConte
     for (unsigned i=0; i<node->solver.size(); i++ )
     {
         if(testTags(node->solver[i]))
+        {
+            ctime_t t=begin(node, node->solver[i]);
             this->bwdOdeSolver(ctx, node->solver[i]);
+            end(node, node->solver[i], t);
+        }
     }
     if (node == root)
     {

@@ -61,7 +61,7 @@ std::vector< Visitor::ctime_t  > Visitor::initNodeTime=std::vector< Visitor::cti
 bool Visitor::printActivated=false;
 bool Visitor::outputStateVector=false;
 unsigned int Visitor::firstIndexStateVector=0;
-int Visitor::rangeStateVector=2;
+int Visitor::rangeStateVector=1;
 
 std::ostream *Visitor::outputVisitor=NULL;
 
