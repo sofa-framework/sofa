@@ -279,21 +279,26 @@ void Texture::init(void)
                 return;
             }
         }
+#ifdef GLEW_VERSION_3_0
         else if (!GLEW_VERSION_3_0)
         {
             std::cerr << "sofa::helper::gl::Texture::init: Cannot load a texture, "
                     "OpenGL 3.0 is unsupported." << std::endl;
             return;
         }
+#endif
         break;
 
     case io::Image::HALF:
+#ifdef GLEW_VERSION_3_0
         if (!GLEW_VERSION_3_0)
         {
             std::cerr << "sofa::helper::gl::Texture::init: Cannot load a texture, "
                     "OpenGL 3.0 is unsupported." << std::endl;
             return;
         }
+#endif
+        break;
         /* Pass through. */
 
     case io::Image::FLOAT:
@@ -306,12 +311,14 @@ void Texture::init(void)
                 return;
             }
         }
+#ifdef GLEW_VERSION_3_0
         else if (!GLEW_VERSION_3_0)
         {
             std::cerr << "sofa::helper::gl::Texture::init: Cannot load a texture, "
                     "OpenGL 3.0 is unsupported." << std::endl;
             return;
         }
+#endif
         break;
 
     case io::Image::UCOMPRESSED:
@@ -329,12 +336,14 @@ void Texture::init(void)
 
         case io::Image::R:
         case io::Image::RG:
+#ifdef GLEW_VERSION_3_0
             if (!GLEW_VERSION_3_0)
             {
                 std::cerr << "sofa::helper::gl::Texture::init: Cannot load a texture, "
                         "OpenGL 3.0 is unsupported." << std::endl;
                 return;
             }
+#endif
             break;
 
         case io::Image::RGB:
