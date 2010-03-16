@@ -73,7 +73,6 @@ public:
         {
             removeItem(item(i));
         }
-        QToolBox::clear();
         SofaLibrary::clear();
     }
 
