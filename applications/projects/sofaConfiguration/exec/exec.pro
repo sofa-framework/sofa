@@ -40,5 +40,7 @@ macx {
 !macx : RC_FILE = sofa.rc
 
 SOURCES = Main.cpp \
-          ../gui/SofaConfiguration.cpp           
-HEADERS = ../gui/SofaConfiguration.h
+          ../lib/SofaConfiguration.cpp \
+          ../lib/ConfigurationParser.cpp    
+HEADERS = ../lib/SofaConfiguration.h \
+          ../lib/ConfigurationParser.h    

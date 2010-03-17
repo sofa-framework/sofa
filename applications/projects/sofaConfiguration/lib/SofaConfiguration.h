@@ -51,9 +51,9 @@
 typedef QProcess Q3Process;
 #endif
 
-#include <iostream>
 #include <set>
-#include <vector>
+
+#include "ConfigurationParser.h"
 
 namespace sofa
 {
@@ -63,66 +63,6 @@ namespace gui
 
 namespace qt
 {
-
-enum TYPE_CONDITION {OPTION,ARCHI};
-
-class CONDITION
-{
-public:
-    CONDITION(TYPE_CONDITION t, bool p, std::string o):type(t),presence(p),option(o)
-    {}
-    bool operator== (const CONDITION& other)
-    {
-        return type==other.type &&
-                presence == other.presence &&
-                option   == other.option;
-    }
-    bool operator!= (const CONDITION& other)
-    {
-        return type!=other.type ||
-                presence != other.presence ||
-                option   != other.option;
-    }
-    TYPE_CONDITION type;
-    bool presence;
-    std::string option;
-};
-
-
-class DEFINES
-{
-public:
-    DEFINES(bool b, std::string n, std::string d, std::string c, bool t):value(b),name(n),description(d), category(c), typeOption(t)
-    {
-    };
-
-    bool operator== (const DEFINES& other)
-    {
-        if (typeOption)
-            return name == other.name && category == other.category;
-        else
-        {
-            return name == other.name && category == other.category && description == other.description;
-        }
-    }
-
-
-    void addConditions(std::vector< CONDITION > c) {conditions=c;}
-
-    friend std::ostream& operator << (std::ostream& out, const DEFINES& val)
-    {
-        out << "[" << val.category << "] -> " << "(" << val.name << ", " << val.description << ")" << std::endl;
-        return out;
-    }
-
-    bool value;
-    std::string name;
-    std::string description;
-    std::string category;
-    std::vector< CONDITION > conditions;
-
-    bool typeOption;
-};
 
 
 class ConfigWidget: public QWidget
