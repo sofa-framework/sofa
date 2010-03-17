@@ -41,6 +41,7 @@
 
 #include <map>
 #include <algorithm>
+
 #include <fstream>
 
 
@@ -174,12 +175,12 @@ SofaConfiguration::SofaConfiguration(std::string path_, std::vector< DEFINES >& 
 
 bool SofaConfiguration::getValue(CONDITION &c)
 {
-    unsigned int i=0;
-    for (; i<options.size(); ++i)
+    for (unsigned int i=0; i<data.size(); ++i)
     {
-        if (options[i]->name() == c.option)
+        const DEFINES& def=data[i];
+        if (def.name == c.option)
         {
-            bool presence = options[i]->getValue();
+            bool presence = def.value;
             if (c.presence && presence) return true;
             if (!c.presence && !presence) return true;
             return false;
@@ -243,6 +244,7 @@ void SofaConfiguration::updateConditions()
 {
     for (unsigned int i=0; i<options.size(); ++i)
     {
+
         std::vector< CONDITION > &conditions=options[i]->option.conditions;
         for (unsigned int c=0; c<conditions.size(); ++c)
         {
