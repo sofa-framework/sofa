@@ -1,12 +1,17 @@
 #include "myopencl.h"
 #include <CL/cl.h>
+#include <iostream>
 
+//private data
 int _numDevices = 0;
-// cl_context _context = NULL;
+cl_context _context = NULL;
 cl_command_queue* _queues = NULL;
-// cl_device_id* _devices = NULL;
-// cl_int _error=CL_SUCCESS;
-//
+cl_device_id* _devices = NULL;
+cl_int _error=CL_SUCCESS;
+
+//private functions
+
+
 //
 // bool addQueue(cl_command_queue queue)
 // {
@@ -34,63 +39,127 @@ cl_command_queue* _queues = NULL;
 // 	return _context;
 // }
 //
-// void releaseContext()
-// {
-// 	if(context)clReleaseContext(_context);
-// }
-//
-// void releaseQueues()
-// {
-// 	for(int i=0;i<_numDevices;i++)
-// 		if(queue(i))clReleaseCommandQueue(queue(i));
-// }
-//
-// void releaseDevices()
-// {
-// 	if(_devices)delete(_devices);;
-// }
-//
-//
-// cl_context createContext(cl_device_type type)
-// {
-// 	if(_context)clReleaseContext(_context);
-// 	return (_context = clCreateContextFromType(0, type, NULL, NULL, &_error));
-// }
-//
-// void createDevices()
-// {
-// 	if(_devices)delete(_devices);
-// 	size_t devices_size;
-// 	clGetContextInfo(_context, CL_CONTEXT_DEVICES,0,NULL, &devices_size);		//compter le nombre de matériel
-// 	_numDevices = devices_size/sizeof(cl_device_id);
-// 	_devices = new cl_device_id[_numDevices];					//allouer un espace mémoire pour recueillir les matériels
-// 	clGetContextInfo(_context, CL_CONTEXT_DEVICES,devices_size,_devices, NULL);	//créer une liste de matériel
-//
-// }
-//
-// void createQueues()
-// {
-// 	if(_queues)releaseQueues();
-// 	_queues = new cl_command_queue[_numDevices];
-// 	for(int i=0;i<_numDevices;i++)
-// 		_queues[i] = clCreateCommandQueue(_context, _devices[i], 0, NULL);
-// }
-//
-//
-// /**
-//   * Return devices counting
-//   */
-// int numDevices()
-// {
-// 	return _numDevices;
-// }
-//
-// cl_int & error(){return _error;}
-//
-// void showError(std::string file, int line)
-// {
-// 	if(error()!=CL_SUCCESS)
-// 	{
-// 		std::cout << "Error (file '" << file << "' line " << line << "): " << error() << std::endl;
-// 	}
-// }
+
+void releaseContext()
+{
+    if(_context)clReleaseContext(_context);
+}
+
+
+void releaseQueues()
+{
+    for(int i=0; i<_numDevices; i++)
+        if(_queues[i])clReleaseCommandQueue(_queues[i]);
+}
+
+void releaseDevices()
+{
+    if(_devices)delete(_devices);;
+}
+
+
+cl_context createContext(cl_device_type type)
+{
+    if(_context)clReleaseContext(_context);
+    return (_context = clCreateContextFromType(0, type, NULL, NULL, &_error));
+}
+
+void createDevices()
+{
+    if(_devices)delete(_devices);
+    size_t devices_size;
+    clGetContextInfo(_context, CL_CONTEXT_DEVICES,0,NULL, &devices_size);		//compter le nombre de matériel
+    _numDevices = devices_size/sizeof(cl_device_id);
+    _devices = new cl_device_id[_numDevices];					//allouer un espace mémoire pour recueillir les matériels
+    clGetContextInfo(_context, CL_CONTEXT_DEVICES,devices_size,_devices, NULL);	//créer une liste de matériel
+
+}
+
+void createQueues()
+{
+    if(_queues)releaseQueues();
+    _queues = new cl_command_queue[_numDevices];
+    for(int i=0; i<_numDevices; i++)
+        _queues[i] = clCreateCommandQueue(_context, _devices[i], 0, NULL);
+}
+
+//opencl public functions
+
+int myopenclInit()
+{
+    createContext(CL_DEVICE_TYPE_GPU);
+    createDevices();
+    createQueues();
+    if(_error==CL_SUCCESS)return 1;
+    else return 0;
+}
+
+int myopenclClose()
+{
+    releaseQueues();
+    releaseDevices();
+    releaseQueues();
+    if(_error==CL_SUCCESS)return 1;
+    else return 0;
+}
+
+int myopenclGetnumDevices()
+{
+    return _numDevices;
+}
+
+cl_mem myopenclCreateBuffer(int n)
+{
+    return clCreateBuffer(_context,CL_MEM_READ_WRITE,n,NULL,&_error);
+}
+
+void myopenclReleaseBuffer(cl_mem p)
+{
+    _error = clReleaseMemObject(p);
+}
+
+void myopenclEnqueueWriteBuffer(int device,cl_mem dest,void* src,size_t n)
+{
+    _error = clEnqueueWriteBuffer(_queues[device], dest, CL_TRUE, 0, n, src,0,NULL,NULL);
+}
+
+
+void myopenclEnqueueReadBuffer(int device,void* dest,cl_mem src, size_t n)
+{
+    _error = clEnqueueReadBuffer(_queues[device], src, CL_TRUE, 0, n,dest,0,NULL,NULL);
+}
+
+void myopenclEnqueueCopyBuffer(int device, cl_mem dest, cl_mem src, size_t n)
+{
+    _error = clEnqueueCopyBuffer(_queues[device],dest,src,0,0, n,0,NULL,NULL);
+}
+
+cl_program myopenclProgramWithSource(std::string &s)
+{
+    const char* ps = s.c_str();
+    const size_t pz = s.size();
+    return clCreateProgramWithSource(_context, 1, &ps, &pz, &_error);
+}
+
+
+// information public functions
+
+int myopenclNumDevices()
+{
+    return _numDevices;
+}
+
+//error public functions
+
+cl_int & myopenclError()
+{
+    return _error;
+}
+
+void myopenclShowError(std::string file, int line)
+{
+    if(_error!=CL_SUCCESS)
+    {
+        std::cout << "Error (file '" << file << "' line " << line << "): " << _error << std::endl;
+    }
+}
