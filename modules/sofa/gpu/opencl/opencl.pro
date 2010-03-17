@@ -38,18 +38,36 @@ LIBS += -lsofacomponentmisc$$LIBSUFFIX
 LIBS += -lsofacomponent$$LIBSUFFIX
 LIBS += $$SOFA_EXT_LIBS
 
-HEADERS +=  OpenCLKernel.h \
+HEADERS +=  OpenCLFixedConstraint.h \
+	    OpenCLFixedConstraint.inl \
+	    OpenCLIdentityMapping.h \
+	    OpenCLIdentityMapping.inl \
+	    OpenCLKernel.h \
 	    OpenCLManager.inl \
 	    OpenCLMechanicalObject.h \
 	    OpenCLMechanicalObject.inl \
 	    OpenCLMemoryManager.h \
-	    OpenCLMemoryManager.inl \
 	    OpenCLProgramParser.h \
 	    OpenCLProgram.h \
+	    OpenCLPlaneForceField.h \
+	    OpenCLPlaneForceField.inl \
+	    OpenCLSphereForceField.h \
+	    OpenCLSphereForceField.inl \
+	    OpenCLUniformMass.h \
+	    OpenCLUniformMass.inl \
+	    OpenCLSpringForceField.h \
+	    OpenCLSpringForceField.inl \
 	    OpenCLVector.h \
 	    myopencl.h \
 
-SOURCES += OpenCLMechanicalObject.cpp \
+SOURCES += OpenCLBoxROI.cpp \
+	   OpenCLFixedConstraint.cpp \
+	   OpenCLIdentityMapping.cpp \
+	   OpenCLMechanicalObject.cpp \
+	   OpenCLSpringForceField.cpp \
+	   OpenCLPlaneForceField.cpp \
+	   OpenCLSphereForceField.cpp \
+	   OpenCLUniformMass.cpp \
 	   myopencl.cpp 
 
 OPENCL_SOURCES += 

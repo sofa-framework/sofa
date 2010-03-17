@@ -2,6 +2,15 @@
 #include <CL/cl.h>
 #include <iostream>
 
+#if defined(__cplusplus)
+namespace sofa
+{
+namespace gpu
+{
+namespace opencl
+{
+#endif
+
 //private data
 int _numDevices = 0;
 cl_context _context = NULL;
@@ -85,7 +94,7 @@ void createQueues()
 
 //opencl public functions
 
-int myopenclInit()
+int myopenclInit(int /*device*/)
 {
     createContext(CL_DEVICE_TYPE_GPU);
     createDevices();
@@ -108,30 +117,30 @@ int myopenclGetnumDevices()
     return _numDevices;
 }
 
-cl_mem myopenclCreateBuffer(int n)
+void myopenclCreateBuffer(int /*device*/,void ** dptr,int n)
 {
-    return clCreateBuffer(_context,CL_MEM_READ_WRITE,n,NULL,&_error);
+    *dptr = clCreateBuffer(_context,CL_MEM_READ_WRITE,n,NULL,&_error);
 }
 
-void myopenclReleaseBuffer(cl_mem p)
+void myopenclReleaseBuffer(int /*device*/,void * p)
 {
-    _error = clReleaseMemObject(p);
+    _error = clReleaseMemObject((cl_mem) p);
 }
 
-void myopenclEnqueueWriteBuffer(int device,cl_mem dest,void* src,size_t n)
+void myopenclEnqueueWriteBuffer(int device,void * ddest,const void* hsrc,size_t n)
 {
-    _error = clEnqueueWriteBuffer(_queues[device], dest, CL_TRUE, 0, n, src,0,NULL,NULL);
+    _error = clEnqueueWriteBuffer(_queues[device], (cl_mem) ddest, CL_TRUE, 0, n, hsrc,0,NULL,NULL);
 }
 
 
-void myopenclEnqueueReadBuffer(int device,void* dest,cl_mem src, size_t n)
+void myopenclEnqueueReadBuffer(int device,void* hdest,const void * dsrc, size_t n)
 {
-    _error = clEnqueueReadBuffer(_queues[device], src, CL_TRUE, 0, n,dest,0,NULL,NULL);
+    _error = clEnqueueReadBuffer(_queues[device], (cl_mem) dsrc, CL_TRUE, 0, n,hdest,0,NULL,NULL);
 }
 
-void myopenclEnqueueCopyBuffer(int device, cl_mem dest, cl_mem src, size_t n)
+void myopenclEnqueueCopyBuffer(int device, void* ddest,const void * dsrc, size_t n)
 {
-    _error = clEnqueueCopyBuffer(_queues[device],dest,src,0,0, n,0,NULL,NULL);
+    _error = clEnqueueCopyBuffer(_queues[device],(cl_mem)ddest,(cl_mem)dsrc,0,0, n,0,NULL,NULL);
 }
 
 cl_program myopenclProgramWithSource(std::string &s)
@@ -163,3 +172,9 @@ void myopenclShowError(std::string file, int line)
         std::cout << "Error (file '" << file << "' line " << line << "): " << _error << std::endl;
     }
 }
+
+#if defined(__cplusplus)
+}
+}
+}
+#endif

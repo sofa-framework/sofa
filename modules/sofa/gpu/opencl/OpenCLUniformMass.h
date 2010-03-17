@@ -22,28 +22,33 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_OPENCLMECHANICALOBJECT_INL
-#define SOFA_GPU_CUDA_OPENCLMECHANICALOBJECT_INL
+#ifndef SOFA_GPU_OPENCL_OPENCLUNIFORMMASS_H
+#define SOFA_GPU_OPENCL_OPENCLUNIFORMMASS_H
 
-#include "OpenCLMechanicalObject.h"
-#include <sofa/component/container/MechanicalObject.inl>
-#include <sofa/component/container/MappedObject.inl>
-
+#include "OpenCLTypes.h"
+#include <sofa/component/mass/UniformMass.h>
 
 namespace sofa
 {
 
-namespace gpu
+namespace component
 {
 
-namespace opencl
+namespace mass
 {
 
+template <>
+double UniformMass<gpu::opencl::OpenCLRigid3fTypes,sofa::defaulttype::Rigid3fMass>::getPotentialEnergy( const VecCoord& x );
 
-}
+template <>
+double UniformMass<gpu::opencl::OpenCLRigid3dTypes,sofa::defaulttype::Rigid3dMass>::getPotentialEnergy( const VecCoord& x );
+
+
+} // namespace mass
 
 } // namespace component
 
 } // namespace sofa
 
 #endif
+

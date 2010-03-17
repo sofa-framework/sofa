@@ -22,13 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_OPENCLMECHANICALOBJECT_INL
-#define SOFA_GPU_CUDA_OPENCLMECHANICALOBJECT_INL
+#ifndef SOFA_GPU_OPENCL_OPENCLPLANEFORCEFIELD_INL
+#define SOFA_GPU_OPENCL_OPENCLPLANEFORCEFIELD_INL
 
-#include "OpenCLMechanicalObject.h"
-#include <sofa/component/container/MechanicalObject.inl>
-#include <sofa/component/container/MappedObject.inl>
-
+#include "OpenCLPlaneForceField.h"
+#include <sofa/component/forcefield/PlaneForceField.inl>
 
 namespace sofa
 {
@@ -40,7 +38,18 @@ namespace opencl
 {
 
 
-}
+} // namespace opencl
+
+} // namespace gpu
+
+namespace component
+{
+
+namespace forcefield
+{
+
+
+} // namespace forcefield
 
 } // namespace component
 

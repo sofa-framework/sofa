@@ -38,7 +38,7 @@ public :
 
     static void hostAlloc(void ** hPointer,int n)
     {
-        *hPointer = new T[n/sizeof(T)];
+        *hPointer = (host_pointer) malloc(n);
     }
 
     static void memsetHost(host_pointer hPointer, int value,size_t n)
@@ -52,36 +52,36 @@ public :
     }
 
 
-    static void deviceAlloc(int,device_pointer* dPointer, int n)
+    static void deviceAlloc(int d,device_pointer* dPointer, int n)
     {
-        *dPointer = (device_pointer)myopenclCreateBuffer(n);
+        myopenclCreateBuffer(d,dPointer,n);
     }
 
-    static void deviceFree(int /*d*/,const device_pointer dSrcPointer)
+    static void deviceFree(int d,const device_pointer dSrcPointer)
     {
-        myopenclReleaseBuffer((cl_mem)dSrcPointer);
+        myopenclReleaseBuffer(d,dSrcPointer);
     }
 
     static void memcpyHostToDevice(int d, device_pointer dDestPointer, const host_pointer hSrcPointer, size_t n)
     {
-        myopenclEnqueueWriteBuffer(d,(cl_mem)dDestPointer,hSrcPointer,n);
+        myopenclEnqueueWriteBuffer(d,dDestPointer,hSrcPointer,n);
     }
 
     static void memcpyDeviceToHost(int d, host_pointer hDestPointer, const void * dSrcPointer , size_t n)
     {
-        myopenclEnqueueReadBuffer(d,hDestPointer,(cl_mem)dSrcPointer,n);
+        myopenclEnqueueReadBuffer(d,hDestPointer,dSrcPointer,n);
     }
 
     static void memcpyDeviceToDevice(int d, device_pointer dDestPointer, const device_pointer dSrcPointer , size_t n)
     {
-        myopenclEnqueueCopyBuffer(d, (cl_mem)dDestPointer, (cl_mem)dSrcPointer, n);
+        myopenclEnqueueCopyBuffer(d, dDestPointer, dSrcPointer, n);
     }
 
     static void memsetDevice(int d, device_pointer dDestPointer, int value, size_t n)
     {
         void* array = (void*) new T[n];
         memset(array, value, n);
-        myopenclEnqueueWriteBuffer(d,(cl_mem)dDestPointer,array,n);
+        myopenclEnqueueWriteBuffer(d,dDestPointer,array,n);
     }
 
 

@@ -23,32 +23,13 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include "OpenCLTypes.h"
-#include "OpenCLMechanicalObject.inl"
+#include "OpenCLFixedConstraint.inl"
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/component/container/MappedObject.inl>
+#include <sofa/defaulttype/Vec3Types.h>
+#include <sofa/defaulttype/RigidTypes.h>
 
 namespace sofa
 {
-
-namespace component
-{
-
-namespace container
-{
-// template specialization must be in the same namespace as original namespace for GCC 4.1
-// g++ 4.1 requires template instantiations to be declared on a parent namespace from the template class.
-
-template class MechanicalObject<gpu::opencl::OpenCLVec3fTypes>;
-template class MechanicalObject<gpu::opencl::OpenCLVec3f1Types>;
-template class MechanicalObject<gpu::opencl::OpenCLRigid3fTypes>;
-
-template class MechanicalObject<gpu::opencl::OpenCLVec3dTypes>;
-template class MechanicalObject<gpu::opencl::OpenCLVec3d1Types>;
-template class MechanicalObject<gpu::opencl::OpenCLRigid3dTypes>;
-
-}
-
-} // namespace component
 
 namespace gpu
 {
@@ -56,24 +37,20 @@ namespace gpu
 namespace opencl
 {
 
-SOFA_DECL_CLASS(OpenCLMechanicalObject)
 
-int MechanicalObjectOpenCLClass = core::RegisterObject("Supports GPU-side computations using OpenCL")
-        .add< component::container::MechanicalObject<OpenCLVec3fTypes> >()
-        .add< component::container::MechanicalObject<OpenCLVec3f1Types> >()
-        .add< component::container::MechanicalObject<OpenCLRigid3fTypes> >()
-        .add< component::container::MechanicalObject<OpenCLVec3dTypes> >()
-        .add< component::container::MechanicalObject<OpenCLVec3d1Types> >()
-        .add< component::container::MechanicalObject<OpenCLRigid3dTypes> >()
-        ;
+SOFA_DECL_CLASS(OpenCLFixedConstraint)
 
-int MappedObjectOpenCLClass = core::RegisterObject("Supports GPU-side computations using OpenCL")
-        .add< component::container::MappedObject<OpenCLVec3fTypes> >()
-        .add< component::container::MappedObject<OpenCLVec3f1Types> >()
-        .add< component::container::MappedObject<OpenCLRigid3fTypes> >()
-        .add< component::container::MappedObject<OpenCLVec3dTypes> >()
-        .add< component::container::MappedObject<OpenCLVec3d1Types> >()
-        .add< component::container::MappedObject<OpenCLRigid3dTypes> >()
+int FixedConstraintOpenCLClass = core::RegisterObject("Supports GPU-side computations using OPENCL")
+        .add< component::constraint::FixedConstraint<OpenCLVec3fTypes> >()
+        .add< component::constraint::FixedConstraint<OpenCLVec3f1Types> >()
+#ifdef SOFA_DEV
+        .add< component::constraint::FixedConstraint<OpenCLRigid3fTypes> >()
+#endif // SOFA_DEV
+        .add< component::constraint::FixedConstraint<OpenCLVec3dTypes> >()
+        .add< component::constraint::FixedConstraint<OpenCLVec3d1Types> >()
+#ifdef SOFA_DEV
+        .add< component::constraint::FixedConstraint<OpenCLRigid3dTypes> >()
+#endif // SOFA_DEV
         ;
 
 } // namespace opencl

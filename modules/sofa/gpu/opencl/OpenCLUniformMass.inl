@@ -22,13 +22,12 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_OPENCLMECHANICALOBJECT_INL
-#define SOFA_GPU_CUDA_OPENCLMECHANICALOBJECT_INL
+#ifndef SOFA_GPU_OPENCL_OPENCLUNIFORMMASS_INL
+#define SOFA_GPU_OPENCL_OPENCLUNIFORMMASS_INL
 
-#include "OpenCLMechanicalObject.h"
-#include <sofa/component/container/MechanicalObject.inl>
-#include <sofa/component/container/MappedObject.inl>
-
+#include "OpenCLUniformMass.h"
+#include <sofa/component/mass/UniformMass.inl>
+#include <sofa/helper/gl/Axis.h>
 
 namespace sofa
 {
@@ -40,7 +39,43 @@ namespace opencl
 {
 
 
+} // namespace OpenCL
+
+} // namespace gpu
+
+namespace component
+{
+
+namespace mass
+{
+
+template <>
+double UniformMass<gpu::opencl::OpenCLRigid3fTypes,sofa::defaulttype::Rigid3fMass>::getPotentialEnergy( const VecCoord& x )
+{
+    double e = 0;
+    // gravity
+    Vec3d g ( this->getContext()->getLocalGravity() );
+    for (unsigned int i=0; i<x.size(); i++)
+    {
+        e += g*mass.getValue().mass*x[i].getCenter();
+    }
+    return e;
 }
+
+template <>
+double UniformMass<gpu::opencl::OpenCLRigid3dTypes,sofa::defaulttype::Rigid3dMass>::getPotentialEnergy( const VecCoord& x )
+{
+    double e = 0;
+    // gravity
+    Vec3d g ( this->getContext()->getLocalGravity() );
+    for (unsigned int i=0; i<x.size(); i++)
+    {
+        e += g*mass.getValue().mass*x[i].getCenter();
+    }
+    return e;
+}
+
+} // namespace mass
 
 } // namespace component
 

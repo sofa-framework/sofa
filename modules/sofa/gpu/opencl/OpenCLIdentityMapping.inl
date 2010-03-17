@@ -22,13 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_OPENCLMECHANICALOBJECT_INL
-#define SOFA_GPU_CUDA_OPENCLMECHANICALOBJECT_INL
+#ifndef SOFA_GPU_OPENCL_OPENCLIDENTITYMAPPING_INL
+#define SOFA_GPU_OPENCL_OPENCLIDENTITYMAPPING_INL
 
-#include "OpenCLMechanicalObject.h"
-#include <sofa/component/container/MechanicalObject.inl>
-#include <sofa/component/container/MappedObject.inl>
-
+#include "OpenCLIdentityMapping.h"
+#include <sofa/component/mapping/IdentityMapping.inl>
 
 namespace sofa
 {
@@ -39,8 +37,18 @@ namespace gpu
 namespace opencl
 {
 
+} // namespace opencl
 
-}
+} // namespace gpu
+
+namespace component
+{
+
+namespace mapping
+{
+
+
+} // namespace mapping
 
 } // namespace component
 
