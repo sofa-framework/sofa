@@ -131,11 +131,11 @@ void GraphHistoryManager::undoOperation(Operation &o)
     case Operation::COMPONENT_MODIFICATION:
     {
         std::string previousState=componentState(o.sofaComponent);
-        setComponentState(o.sofaComponent, o.info);
+        const std::string &modifDone=setComponentState(o.sofaComponent, o.info);
         QString name=QString(o.sofaComponent->getClassName().c_str()) + QString(" ") + QString(o.sofaComponent->getName().c_str());
         graph->graphListener->items[o.sofaComponent]->setText(0, name);
         graph->setSelected(graph->graphListener->items[o.sofaComponent],true);
-        message=std::string("Undo Modifications on OBJECT ") + " (" + o.sofaComponent->getClassName() + ") " + o.sofaComponent->getName();
+        message=std::string("Undo Modifications on OBJECT ") + " (" + o.sofaComponent->getClassName() + ") " + o.sofaComponent->getName() + " | " + modifDone;
         emit historyMessage(message);
         o.info=previousState;
         break;
@@ -143,11 +143,11 @@ void GraphHistoryManager::undoOperation(Operation &o)
     case Operation::NODE_MODIFICATION:
     {
         std::string previousState=componentState(o.sofaComponent);
-        setComponentState(o.sofaComponent, o.info);
+        const std::string &modifDone=setComponentState(o.sofaComponent, o.info);
         QString name=QString(o.sofaComponent->getName().c_str());
         graph->graphListener->items[o.sofaComponent]->setText(0, name);
         graph->setSelected(graph->graphListener->items[o.sofaComponent],true);
-        message=std::string("Undo Modifications on NODE ") + o.sofaComponent->getName();
+        message=std::string("Undo Modifications on NODE ") + o.sofaComponent->getName() + " | " + modifDone;
         emit historyMessage(message);
         o.info=previousState;
         break;
@@ -164,27 +164,49 @@ std::string GraphHistoryManager::componentState(Base *base) const
     std::map<std::string, std::string*>::const_iterator it;
     for (it=datas.begin(); it!=datas.end(); ++it)
     {
-        out << it->first << "=\"" << *(it->second) << "\" ";
+        if (BaseData *d=base->findField(it->first))
+            out << it->first << "=\"" << d->getValueString() << "\" ";
     }
     return out.str();
 }
 
-void GraphHistoryManager::setComponentState(Base *base, const std::string &datasStr)
+std::string GraphHistoryManager::setComponentState(Base *base, const std::string &datasStr)
 {
+    std::string modifications;
     std::istringstream in(datasStr);
     while (!in.eof())
     {
-        std::string dataDef;
-        in >> dataDef;
-        std::string::size_type separator=dataDef.find('=');
-        if (separator != std::string::npos)
+        char k;
+        std::string dataName;
+        while (!in.eof())
         {
-            std::string name=dataDef.substr(0,separator);
-            std::string value=dataDef.substr(separator+2, dataDef.size()-separator-3);
-            BaseData *data=base->findField(name);
-            if (data) data->read(value);
+            in >> k;
+            if (k == '=') break;
+            dataName += k;
         }
+        std::string dataValue;
+        in >> k;//peeking the "
+        while (!in.eof())
+        {
+            k=in.get();
+            if (k == '\"') break;
+            dataValue += k;
+        }
+        if (in.eof()) break;
+        BaseData *data=base->findField(dataName);
+        if (data)
+        {
+            const std::string &currentValue = data->getValueString();
+            if (currentValue != dataValue)
+            {
+                data->read(dataValue);
+                modifications += data->getName() + ", ";
+            }
+        }
+
     }
+    if (!modifications.empty()) modifications=modifications.substr(0,modifications.size()-2);
+    return modifications;
 }
 
 void GraphHistoryManager::beginModification(sofa::core::objectmodel::Base* base)

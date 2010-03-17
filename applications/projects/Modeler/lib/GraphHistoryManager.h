@@ -94,7 +94,7 @@ protected:
 
     void undoOperation(Operation &);
     std::string componentState(Base *base) const;
-    void setComponentState(Base *base, const std::string &datasStr);
+    std::string setComponentState(Base *base, const std::string &datasStr);
 
     std::vector< Operation > historyOperation;
     std::vector< Operation > historyUndoOperation;
