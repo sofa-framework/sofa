@@ -3,7 +3,7 @@
 
 #include <string>
 #include "OpenCLProgramParser.h"
-#include "OpenCLManager.inl"
+#include "myopencl.h"
 #include <CL/cl.h>
 
 namespace sofa

@@ -26,7 +26,8 @@
 #define MYOPENCL_H
 
 #include "gpuopencl.h"
-#include <string.h>
+#include <string>
+#include <CL/cl.h>
 
 #if defined(__cplusplus)
 namespace sofa
@@ -38,29 +39,18 @@ namespace opencl
 #endif
 
 extern "C" {
-    /*	extern int _numDevices;
-    	extern cl_context _context;
-    	extern cl_command_queue* _queues;
-    	extern cl_device_id* _devices;
-    	extern cl_int _error;*/
-
 
     extern int myopenclInit(int device=-1);
     extern int myopenclGetnumDevices();
+    extern cl_mem myopenclCreateBuffer(int n);
+    extern void myopenclReleaseBuffer(cl_mem p);
+    extern void myopenclEnqueueWriteBuffer(int device,cl_mem dest,void* src,size_t n);
+    extern void myopenclEnqueueReadBuffer(int device,void* dest,cl_mem src, size_t n);
+    extern void myopenclEnqueueCopyBuffer(int device, cl_mem dest, cl_mem src, size_t n);
 
-// 	extern bool myaddQueue(cl_command_queue queue);
-// 	extern cl_command_queue myqueue(int i);
-// 	extern cl_device_id mydevice(int i);
-// 	extern cl_context mycontext();
-// 	extern void releaseContext();
-// 	extern void releaseQueues();
-// 	extern void releaseDevices();
-// 	extern cl_context createContext(cl_device_type type);
-// 	extern void createDevices();
-// 	extern void createQueues();
-// 	extern int numDevices();
-// 	extern cl_int & error();
-// 	extern void showError(std::string file, int line);
+    extern int myopenclNumDevices();
+    extern cl_int & myopenclError();
+    extern void myopenclShowError(std::string file, int line);
 }
 
 

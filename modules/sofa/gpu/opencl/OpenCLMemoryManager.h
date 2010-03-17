@@ -24,7 +24,7 @@ class OpenCLMemoryManager: public sofa::helper::MemoryManager<T>
 {
 public :
     typedef T* host_pointer;
-    typedef void* device_pointer;
+    typedef void* device_pointer; //device_pointer = cl_mem
     typedef GLuint gl_buffer;
 
     enum { MAX_DEVICES = 8 };
@@ -36,50 +36,58 @@ public :
         return 0;
     }
 
-    static void hostAlloc(void ** /*hPointer*/,int /*n*/)
+    static void hostAlloc(void ** hPointer,int n)
     {
-
+        *hPointer = new T[n/sizeof(T)];
     }
 
-    static void memsetHost(host_pointer /*hPointer*/, int /*value*/,size_t /*n*/)
+    static void memsetHost(host_pointer hPointer, int value,size_t n)
     {
-
+        memset((void*) hPointer, value, n);
     }
 
-    static void hostFree(const host_pointer /*hSrcPointer*/)
+    static void hostFree(const host_pointer hSrcPointer)
     {
-
+        free(hSrcPointer);
     }
 
-    static void deviceAlloc(int /*d*/,void ** /*dPointer*/, int /*n*/)
-    {
 
+    static void deviceAlloc(int,device_pointer* dPointer, int n)
+    {
+        *dPointer = (device_pointer)myopenclCreateBuffer(n);
     }
 
-    static void deviceFree(int /*d*/,const device_pointer /*dSrcPointer*/)
+    static void deviceFree(int /*d*/,const device_pointer dSrcPointer)
     {
-
+        myopenclReleaseBuffer((cl_mem)dSrcPointer);
     }
 
-    static void memcpyHostToDevice(int /*d*/, device_pointer /*dDestPointer*/, const host_pointer /*hSrcPointer*/, size_t /*n*/)
+    static void memcpyHostToDevice(int d, device_pointer dDestPointer, const host_pointer hSrcPointer, size_t n)
     {
-
+        myopenclEnqueueWriteBuffer(d,(cl_mem)dDestPointer,hSrcPointer,n);
     }
 
-    static void memcpyDeviceToHost(int /*d*/, host_pointer /*hDestPointer*/, const void * /*dSrcPointer*/ , size_t /*n*/)
+    static void memcpyDeviceToHost(int d, host_pointer hDestPointer, const void * dSrcPointer , size_t n)
     {
-
+        myopenclEnqueueReadBuffer(d,hDestPointer,(cl_mem)dSrcPointer,n);
     }
 
-    static void memcpyDeviceToDevice(int /*d*/, device_pointer /*dDestPointer*/, const device_pointer /*dSrcPointer*/ , size_t /*n*/)
+    static void memcpyDeviceToDevice(int d, device_pointer dDestPointer, const device_pointer dSrcPointer , size_t n)
     {
-
+        myopenclEnqueueCopyBuffer(d, (cl_mem)dDestPointer, (cl_mem)dSrcPointer, n);
     }
 
-    static void memsetDevice(int /*d*/, device_pointer /*dDestPointer*/, int /*value*/,size_t /*n*/)
+    static void memsetDevice(int d, device_pointer dDestPointer, int value, size_t n)
     {
-
+        void* array = (void*) new T[n];
+        memset(array, value, n);
+        myopenclEnqueueWriteBuffer(d,(cl_mem)dDestPointer,array,n);
     }
+
+
+
+
+
 
     static int getBufferDevice()
     {
