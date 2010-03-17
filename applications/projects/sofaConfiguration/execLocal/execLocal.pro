@@ -1,7 +1,7 @@
 SOFA_DIR=../../../..
 
 TEMPLATE = app
-TARGET = sofaConfiguration
+TARGET = sofaLocalConfiguration
 
 include($${SOFA_DIR}/sofa.cfg)
 
@@ -29,12 +29,12 @@ macx : {
 
 # The following is a workaround to get KDevelop to detect the name of the program to start
 unix {
-	!macx: QMAKE_POST_LINK = ln -sf sofaConfiguration$$SUFFIX $$DESTDIR/sofaConfiguration-latest
+	!macx: QMAKE_POST_LINK = ln -sf sofaLocalConfiguration$$SUFFIX $$DESTDIR/sofaLocalConfiguration-latest
 }
 
 # The following create enables to start Modeler from the command line as well as graphically
 macx {
-	QMAKE_POST_LINK = ln -sf sofaConfiguration.app/Contents/MacOS/sofaConfiguration$$SUFFIX $$DESTDIR/sofaConfiguration$$SUFFIX
+	QMAKE_POST_LINK = ln -sf sofaLocalConfiguration.app/Contents/MacOS/sofaLocalConfiguration$$SUFFIX $$DESTDIR/sofaLocalConfiguration$$SUFFIX
 }
 
 !macx : RC_FILE = sofa.rc
