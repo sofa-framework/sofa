@@ -23,7 +23,7 @@ void QTabulationModifyObject::addData(sofa::core::objectmodel::BaseData *data, c
 {
     if (  (!data->isDisplayed()) && flags.HIDE_FLAG ) return;
 
-
+    data->setDisplayed(true);
 
     const std::string name=data->getName();
     QDisplayDataWidget* displaydatawidget = new QDisplayDataWidget(this,data,flags);
