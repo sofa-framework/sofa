@@ -42,6 +42,8 @@
 #include <CoreFoundation/CoreFoundation.h>
 #endif
 
+
+
 #include "../gui/SofaConfiguration.h"
 
 #include <vector>
@@ -50,6 +52,7 @@
 
 
 #include <qapplication.h>
+#include <qfiledialog.h>
 #include <qpixmap.h>
 
 // ---------------------------------------------------------------------
@@ -376,6 +379,17 @@ int main(int argc, char** argv)
 
     // std::cerr << "Using " <<file << " as path for Sofa" << std::endl;
 
+    QApplication* application;
+    application = new QApplication(argc, argv);
+    QWidget test;
+
+    QString externFileQString = QFileDialog::getOpenFileName(
+            file.c_str(),
+            "Config (*.cfg)",
+            &test,
+            "open file dialog",
+            "Choose a file" );
+
     std::ifstream sofa_default((file+"/sofa-default.cfg").c_str());
     std::ifstream sofa_local((file+"/sofa-local.cfg").c_str());
 
@@ -383,7 +397,7 @@ int main(int argc, char** argv)
     VecDEFINES  listOptions;
 
     parse(sofa_default, listOptions);
-
+    sofa_default.close();
 
     if (sofa_local.good())
     {
@@ -391,12 +405,23 @@ int main(int argc, char** argv)
         for (unsigned int i=0; i<listOptions.size(); ++i) listOptions[i].value=false;
         parse(sofa_local, listOptions);
     }
-
-    sofa_default.close();
     sofa_local.close();
 
-    QApplication* application;
-    application = new QApplication(argc, argv);
+    const std::string externFile(externFileQString.ascii());
+
+    if (externFile != (file+"/sofa-default.cfg") && externFile != (file+"/sofa-local.cfg") )
+    {
+        std::ifstream sofa_extern(externFile.c_str());
+        if (sofa_extern.good())
+        {
+            //Set to false all the option
+            for (unsigned int i=0; i<listOptions.size(); ++i) listOptions[i].value=false;
+            parse(sofa_extern, listOptions);
+        }
+        sofa_extern.close();
+    }
+
+
 
     sofa::gui::qt::SofaConfiguration* config = new sofa::gui::qt::SofaConfiguration(file,listOptions);
     application->setMainWidget(config);
