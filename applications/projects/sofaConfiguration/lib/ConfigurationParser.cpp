@@ -76,13 +76,6 @@ void ConfigurationParser::removeComment(std::string &s)
 
 std::string currentCategory;
 
-
-struct classcompare
-{
-    bool operator() (const DEFINES& a, const DEFINES& b) const
-    {return a.name < b.name;}
-};
-
 void ConfigurationParser::processDescription(std::string &description, std::size_t pos)
 {
     description=description.substr(pos+10);

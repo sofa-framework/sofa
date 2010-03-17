@@ -29,7 +29,7 @@
 #ifndef SOFA_CONFIGURATIONPARSER_H
 #define SOFA_CONFIGURATIONPARSER_H
 
-
+#include <string>
 #include <iostream>
 #include <vector>
 #include <algorithm>
