@@ -47,10 +47,10 @@ class SOFA_HELPER_API Texture
 private:
     io::Image *image;
     GLuint id, target;
-    bool repeat, linearInterpolation;
+    bool repeat, linearInterpolation, generateMipmaps;
 public:
-    Texture (io::Image *img, bool repeat = true, bool linearInterpolation = true)
-        :image(img),id(0),repeat(repeat), linearInterpolation(linearInterpolation)
+    Texture (io::Image *img, bool repeat = true, bool linearInterpolation = true, bool generateMipmaps = false)
+        :image(img),id(0),repeat(repeat), linearInterpolation(linearInterpolation), generateMipmaps(generateMipmaps)
     {};
 
     io::Image* getImage(void);
