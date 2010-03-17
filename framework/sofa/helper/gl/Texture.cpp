@@ -28,38 +28,6 @@
 #include <assert.h>
 #include <stdio.h>
 
-// Rather than ifdef'ing like crazy, we'll use these handy macros which default
-// to zero when the respective features are unsupported.
-
-#if !defined(GLEW_VERSION_1_2)
-#define GLEW_VERSION_1_2 0
-#endif
-#if !defined(GLEW_VERSION_1_3)
-#define GLEW_VERSION_1_3 0
-#endif
-#if !defined(GLEW_VERSION_2_0)
-#define GLEW_VERSION_2_0 0
-#endif
-#if !defined(GLEW_VERSION_3_0)
-#define GLEW_VERSION_2_0 0
-#endif
-
-#if !defined(GLEW_ARB_texture_non_power_of_two)
-#define GLEW_ARB_texture_non_power_of_two 0
-#endif
-#if !defined(GLEW_EXT_texture_integer)
-#define GLEW_EXT_texture_integer 0
-#endif
-#if !defined(GLEW_EXT_texture_compression_latc)
-#define GLEW_EXT_texture_compression_latc 0
-#endif
-#if !defined(GLEW_EXT_texture_compression_s3tc)
-#define GLEW_EXT_texture_compression_s3tc 0
-#endif
-#if !defined(GLEW_ARB_texture_float)
-#define GLEW_ARB_texture_float 0
-#endif
-
 namespace sofa
 {
 namespace helper
@@ -230,8 +198,9 @@ void Texture::init(void)
         !isPowerOfTwo(image->getHeight()) ||
         (image->getDepth() != 0 && !isPowerOfTwo(image->getDepth())))
     {
-        if (!GLEW_VERSION_2_0 &&
-            !GLEW_ARB_texture_non_power_of_two)
+#if defined(GLEW_VERSION_2_0)
+        if (!GLEW_VERSION_2_0)
+#endif
         {
             std::cerr << "sofa::helper::gl::Texture::init: Cannot load a texture, "
                     "NPOT textures are not supported." << std::endl;
@@ -246,8 +215,9 @@ void Texture::init(void)
         return;
 
     case io::Image::TEXTURE_3D:
+#if defined(GLEW_VERSION_1_2)
         if (!GLEW_VERSION_1_2)
-
+#endif
         {
             std::cerr << "sofa::helper::gl::Texture::init: Cannot load a texture, "
                     "OpenGL 1.2 is unsupported." << std::endl;
@@ -256,7 +226,9 @@ void Texture::init(void)
         break;
 
     case io::Image::TEXTURE_CUBE:
+#if defined(GLEW_VERSION_1_3)
         if (!GLEW_VERSION_1_3)
+#endif
         {
             std::cerr << "sofa::helper::gl::Texture::init: Cannot load a texture, "
                     "OpenGL 1.3 is unsupported." << std::endl;
@@ -272,53 +244,58 @@ void Texture::init(void)
     case io::Image::UINT32:
         if (image->getChannelFormat() <= io::Image::LA)
         {
-            if (GLEW_EXT_texture_integer)
+#if defined(GLEW_EXT_texture_integer)
+            if (!GLEW_EXT_texture_integer)
+#endif
             {
                 std::cerr << "sofa::helper::gl::Texture::init: Cannot load a texture, "
                         "GL_EXT_texture_integer is unsupported." << std::endl;
                 return;
             }
         }
-#ifdef GLEW_VERSION_3_0
-        else if (!GLEW_VERSION_3_0)
-        {
-            std::cerr << "sofa::helper::gl::Texture::init: Cannot load a texture, "
-                    "OpenGL 3.0 is unsupported." << std::endl;
-            return;
-        }
+        else
+#if defined(GLEW_VERSION_3_0)
+            if (!GLEW_VERSION_3_0)
 #endif
+            {
+                std::cerr << "sofa::helper::gl::Texture::init: Cannot load a texture, "
+                        "OpenGL 3.0 is unsupported." << std::endl;
+                return;
+            }
         break;
 
     case io::Image::HALF:
-#ifdef GLEW_VERSION_3_0
+#if defined(GLEW_VERSION_3_0)
         if (!GLEW_VERSION_3_0)
+#endif
         {
             std::cerr << "sofa::helper::gl::Texture::init: Cannot load a texture, "
                     "OpenGL 3.0 is unsupported." << std::endl;
             return;
         }
-#endif
-        break;
-        /* Pass through. */
+        /* Pass through (no break!) */
 
     case io::Image::FLOAT:
         if (image->getChannelFormat() <= io::Image::LA)
         {
-            if (GLEW_ARB_texture_float)
+#if defined(GLEW_ARB_texture_float)
+            if (!GLEW_ARB_texture_float)
+#endif
             {
                 std::cerr << "sofa::helper::gl::Texture::init: Cannot load a texture, "
                         "GLEW_ARB_texture_float is unsupported." << std::endl;
                 return;
             }
         }
-#ifdef GLEW_VERSION_3_0
-        else if (!GLEW_VERSION_3_0)
-        {
-            std::cerr << "sofa::helper::gl::Texture::init: Cannot load a texture, "
-                    "OpenGL 3.0 is unsupported." << std::endl;
-            return;
-        }
+        else
+#if defined(GLEW_VERSION_3_0)
+            if (!GLEW_VERSION_3_0)
 #endif
+            {
+                std::cerr << "sofa::helper::gl::Texture::init: Cannot load a texture, "
+                        "OpenGL 3.0 is unsupported." << std::endl;
+                return;
+            }
         break;
 
     case io::Image::UCOMPRESSED:
@@ -326,7 +303,9 @@ void Texture::init(void)
         {
         case io::Image::L:
         case io::Image::LA:
+#if defined(GLEW_EXT_texture_compression_latc)
             if (!GLEW_EXT_texture_compression_latc)
+#endif
             {
                 std::cerr << "sofa::helper::gl::Texture::init: Cannot load a texture, "
                         "GL_EXT_texture_compression_latc is unsupported." << std::endl;
@@ -336,19 +315,21 @@ void Texture::init(void)
 
         case io::Image::R:
         case io::Image::RG:
-#ifdef GLEW_VERSION_3_0
+#if defined(GLEW_VERSION_3_0)
             if (!GLEW_VERSION_3_0)
+#endif
             {
                 std::cerr << "sofa::helper::gl::Texture::init: Cannot load a texture, "
                         "OpenGL 3.0 is unsupported." << std::endl;
                 return;
             }
-#endif
             break;
 
         case io::Image::RGB:
         case io::Image::RGBA:
+#if defined(GLEW_EXT_texture_compression_s3tc)
             if (!GLEW_EXT_texture_compression_s3tc)
+#endif
             {
                 std::cerr << "sofa::helper::gl::Texture::init: Cannot load a texture, "
                         "GL_EXT_texture_compression_s3tc is unsupported." << std::endl;
@@ -371,6 +352,13 @@ void Texture::init(void)
 
     glGenTextures(1, &id); // Create the texture.
     glBindTexture(target, id);
+
+#if defined(GLEW_VERSION_1_4)
+    if (GLEW_VERSION_1_4 && generateMipmaps)
+        glTexParameteri(target, GL_GENERATE_MIPMAP, GL_TRUE);
+    else
+#endif
+        generateMipmaps = false;
 
     switch (textureType)
     {
@@ -424,7 +412,7 @@ void Texture::init(void)
 
     if (linearInterpolation)
     {
-        if (mipmaps > 1)
+        if (generateMipmaps || mipmaps > 1)
             glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         else
             glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -441,7 +429,7 @@ void Texture::init(void)
     }
     else
     {
-        if (mipmaps > 1)
+        if (generateMipmaps || mipmaps > 1)
             glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
         else
             glTexParameteri(target, GL_TEXTURE_MIN_FILTER, GL_NEAREST);

@@ -151,7 +151,7 @@ bool ImageDDS::load(const std::string &filename)
 
     // Load the file header
     DDSHeader header;
-    if (fread(&header, sizeof(header), 1, file))
+    if (!fread(&header, sizeof(header), 1, file))
     {
         fclose(file);
         std::cerr << "ImageDDS::load: Cannot read the DDS header from " << filename << std::endl;
@@ -329,6 +329,11 @@ bool ImageDDS::load(const std::string &filename)
         std::cerr << "ImageDDS::load: Cannot read file " + filename + ", a part of the file is missing." << std::endl;
         return false; // "
     }
+
+    std::cout << "DDS image " << filename << ": Type: " << strFromTextureType[getTextureType()]
+            << ", Size: " << getWidth() << "x" << getHeight() << "x" << getDepth()
+            << ", Format: " << strFromDataType[getDataType()] << ", Channels: " << strFromChannelFormat[getChannelFormat()]
+            << ", Mipmaps: " << getMipmapCount() << std::endl;
 
     return true;
 }
