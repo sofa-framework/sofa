@@ -22,13 +22,11 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_GPU_CUDA_OPENCLMECHANICALOBJECT_INL
-#define SOFA_GPU_CUDA_OPENCLMECHANICALOBJECT_INL
+#ifndef SOFA_GPU_OPENCL_OPENCLFIXEDCONSTRAINT_INL
+#define SOFA_GPU_OPENCL_OPENCLFIXEDCONSTRAINT_INL
 
-#include "OpenCLMechanicalObject.h"
-#include <sofa/component/container/MechanicalObject.inl>
-#include <sofa/component/container/MappedObject.inl>
-
+#include "OpenCLFixedConstraint.h"
+#include <sofa/component/constraint/FixedConstraint.inl>
 
 namespace sofa
 {
@@ -40,7 +38,18 @@ namespace opencl
 {
 
 
-}
+} // namespace opencl
+
+} // namespace gpu
+
+namespace component
+{
+
+namespace constraint
+{
+
+
+} // namespace constraint
 
 } // namespace component
 

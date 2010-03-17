@@ -27,7 +27,6 @@
 
 #include "gpuopencl.h"
 #include <string>
-#include <CL/cl.h>
 
 #if defined(__cplusplus)
 namespace sofa
@@ -42,14 +41,14 @@ extern "C" {
 
     extern int myopenclInit(int device=-1);
     extern int myopenclGetnumDevices();
-    extern cl_mem myopenclCreateBuffer(int n);
-    extern void myopenclReleaseBuffer(cl_mem p);
-    extern void myopenclEnqueueWriteBuffer(int device,cl_mem dest,void* src,size_t n);
-    extern void myopenclEnqueueReadBuffer(int device,void* dest,cl_mem src, size_t n);
-    extern void myopenclEnqueueCopyBuffer(int device, cl_mem dest, cl_mem src, size_t n);
+    extern void myopenclCreateBuffer(int device,void ** dptr,int n);
+    extern void myopenclReleaseBuffer(int device,void * p);
+    extern void myopenclEnqueueWriteBuffer(int device,void * ddest,const void * hsrc,size_t n);
+    extern void myopenclEnqueueReadBuffer(int device,void * hdest,const void * dsrc, size_t n);
+    extern void myopenclEnqueueCopyBuffer(int device, void * ddest, const void * dsrc, size_t n);
 
     extern int myopenclNumDevices();
-    extern cl_int & myopenclError();
+    extern int & myopenclError();
     extern void myopenclShowError(std::string file, int line);
 }
 

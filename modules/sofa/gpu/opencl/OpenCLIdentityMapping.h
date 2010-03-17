@@ -22,10 +22,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
+#ifndef SOFA_GPU_OPENCL_OPENCLIDENTITYMAPPING_H
+#define SOFA_GPU_OPENCL_OPENCLIDENTITYMAPPING_H
+
 #include "OpenCLTypes.h"
-#include "OpenCLMechanicalObject.inl"
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/component/container/MappedObject.inl>
+#include <sofa/component/mapping/IdentityMapping.h>
+#include <sofa/core/componentmodel/behavior/MappedModel.h>
+#include <sofa/core/componentmodel/behavior/MechanicalState.h>
+#include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
 
 namespace sofa
 {
@@ -33,51 +37,13 @@ namespace sofa
 namespace component
 {
 
-namespace container
+namespace mapping
 {
-// template specialization must be in the same namespace as original namespace for GCC 4.1
-// g++ 4.1 requires template instantiations to be declared on a parent namespace from the template class.
 
-template class MechanicalObject<gpu::opencl::OpenCLVec3fTypes>;
-template class MechanicalObject<gpu::opencl::OpenCLVec3f1Types>;
-template class MechanicalObject<gpu::opencl::OpenCLRigid3fTypes>;
-
-template class MechanicalObject<gpu::opencl::OpenCLVec3dTypes>;
-template class MechanicalObject<gpu::opencl::OpenCLVec3d1Types>;
-template class MechanicalObject<gpu::opencl::OpenCLRigid3dTypes>;
-
-}
+} // namespace mapping
 
 } // namespace component
 
-namespace gpu
-{
-
-namespace opencl
-{
-
-SOFA_DECL_CLASS(OpenCLMechanicalObject)
-
-int MechanicalObjectOpenCLClass = core::RegisterObject("Supports GPU-side computations using OpenCL")
-        .add< component::container::MechanicalObject<OpenCLVec3fTypes> >()
-        .add< component::container::MechanicalObject<OpenCLVec3f1Types> >()
-        .add< component::container::MechanicalObject<OpenCLRigid3fTypes> >()
-        .add< component::container::MechanicalObject<OpenCLVec3dTypes> >()
-        .add< component::container::MechanicalObject<OpenCLVec3d1Types> >()
-        .add< component::container::MechanicalObject<OpenCLRigid3dTypes> >()
-        ;
-
-int MappedObjectOpenCLClass = core::RegisterObject("Supports GPU-side computations using OpenCL")
-        .add< component::container::MappedObject<OpenCLVec3fTypes> >()
-        .add< component::container::MappedObject<OpenCLVec3f1Types> >()
-        .add< component::container::MappedObject<OpenCLRigid3fTypes> >()
-        .add< component::container::MappedObject<OpenCLVec3dTypes> >()
-        .add< component::container::MappedObject<OpenCLVec3d1Types> >()
-        .add< component::container::MappedObject<OpenCLRigid3dTypes> >()
-        ;
-
-} // namespace opencl
-
-} // namespace gpu
-
 } // namespace sofa
+
+#endif
