@@ -385,7 +385,7 @@ int main(int argc, char** argv)
 
     QString externFileQString = QFileDialog::getOpenFileName(
             file.c_str(),
-            "Config (*.cfg)",
+            "Config (*.cfg);;All (*)",
             &test,
             "open file dialog",
             "Choose a file" );
@@ -398,14 +398,6 @@ int main(int argc, char** argv)
 
     parse(sofa_default, listOptions);
     sofa_default.close();
-
-    if (sofa_local.good())
-    {
-        //Set to false all the option
-        for (unsigned int i=0; i<listOptions.size(); ++i) listOptions[i].value=false;
-        parse(sofa_local, listOptions);
-    }
-    sofa_local.close();
 
     const std::string externFile(externFileQString.ascii());
 
@@ -420,6 +412,15 @@ int main(int argc, char** argv)
         }
         sofa_extern.close();
     }
+
+    if (sofa_local.good())
+    {
+        //Set to false all the option
+        for (unsigned int i=0; i<listOptions.size(); ++i) listOptions[i].value=false;
+        parse(sofa_local, listOptions);
+    }
+    sofa_local.close();
+
 
 
 
