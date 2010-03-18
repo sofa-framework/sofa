@@ -95,7 +95,7 @@ void ConstantForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, c
 
 
 template <class DataTypes>
-double ConstantForceField<DataTypes>::getPotentialEnergy(const VecCoord& x)
+double ConstantForceField<DataTypes>::getPotentialEnergy(const VecCoord& x) const
 {
     const VecIndex& indices = points.getValue();
     const VecDeriv& f = forces.getValue();
@@ -144,16 +144,16 @@ void ConstantForceField<DataTypes>::setForce(unsigned i, const Deriv& force)
 
 #ifndef SOFA_FLOAT
 template <>
-double ConstantForceField<defaulttype::Rigid3dTypes>::getPotentialEnergy(const VecCoord& );
+double ConstantForceField<defaulttype::Rigid3dTypes>::getPotentialEnergy(const VecCoord& ) const;
 template <>
-double ConstantForceField<defaulttype::Rigid2dTypes>::getPotentialEnergy(const VecCoord& );
+double ConstantForceField<defaulttype::Rigid2dTypes>::getPotentialEnergy(const VecCoord& ) const;
 #endif
 
 #ifndef SOFA_DOUBLE
 template <>
-double ConstantForceField<defaulttype::Rigid3fTypes>::getPotentialEnergy(const VecCoord& );
+double ConstantForceField<defaulttype::Rigid3fTypes>::getPotentialEnergy(const VecCoord& ) const;
 template <>
-double ConstantForceField<defaulttype::Rigid2fTypes>::getPotentialEnergy(const VecCoord& );
+double ConstantForceField<defaulttype::Rigid2fTypes>::getPotentialEnergy(const VecCoord& ) const;
 #endif
 
 

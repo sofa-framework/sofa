@@ -232,7 +232,7 @@ template <class DataTypes> void TriangularQuadraticSpringsForceField<DataTypes>:
 
 
 template <class DataTypes>
-double TriangularQuadraticSpringsForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/)
+double TriangularQuadraticSpringsForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/) const
 {
     serr<<"TriangularQuadraticSpringsForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;

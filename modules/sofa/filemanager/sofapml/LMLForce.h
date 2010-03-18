@@ -94,7 +94,7 @@ public :
     /// -- ForceField Inherits
     virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
     virtual void addDForce (VecDeriv& , const VecDeriv& ) {}
-    virtual double getPotentialEnergy(const VecCoord& ) {return 0;}
+    virtual double getPotentialEnergy(const VecCoord& ) const {return 0;}
 
     /// -- VisualModel interface
     void draw();

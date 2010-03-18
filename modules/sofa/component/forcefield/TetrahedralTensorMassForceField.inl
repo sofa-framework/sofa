@@ -334,7 +334,7 @@ template <class DataTypes> void TetrahedralTensorMassForceField<DataTypes>::init
 
 
 template <class DataTypes>
-double TetrahedralTensorMassForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/)
+double TetrahedralTensorMassForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/) const
 {
     serr<<"TetrahedralTensorMassForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;

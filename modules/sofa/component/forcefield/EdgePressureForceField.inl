@@ -119,7 +119,7 @@ void EdgePressureForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord& /*
 }
 
 template <class DataTypes>
-double EdgePressureForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/)
+double EdgePressureForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/) const
 {
     serr<<"EdgePressureForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;

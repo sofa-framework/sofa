@@ -148,7 +148,7 @@ void ConicalForceField<DataTypes>::updateStiffness( const VecCoord&  )
 }
 
 template <class DataTypes>
-double ConicalForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
+double ConicalForceField<DataTypes>::getPotentialEnergy(const VecCoord&) const
 {
     serr<<"ConicalForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;

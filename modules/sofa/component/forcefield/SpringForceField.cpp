@@ -30,7 +30,7 @@
 #include <sofa/core/componentmodel/behavior/PairInteractionForceField.inl>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/ObjectFactory.h>
+//#include <sofa/core/ObjectFactory.h>
 //#include <typeinfo>
 
 
@@ -43,26 +43,26 @@ namespace component
 namespace forcefield
 {
 
-SOFA_DECL_CLASS(SpringForceField)
+//SOFA_DECL_CLASS(SpringForceField)
 
 using namespace sofa::defaulttype;
 
 
 // Register in the Factory
-int SpringForceFieldClass = core::RegisterObject("Springs")
-#ifndef SOFA_FLOAT
-        .add< SpringForceField<Vec3dTypes> >()
-        .add< SpringForceField<Vec2dTypes> >()
-        .add< SpringForceField<Vec1dTypes> >()
-        .add< SpringForceField<Vec6dTypes> >()
-#endif
-#ifndef SOFA_DOUBLE
-        .add< SpringForceField<Vec3fTypes> >()
-        .add< SpringForceField<Vec2fTypes> >()
-        .add< SpringForceField<Vec1fTypes> >()
-        .add< SpringForceField<Vec6fTypes> >()
-#endif
-        ;
+//int SpringForceFieldClass = core::RegisterObject("Springs")
+//#ifndef SOFA_FLOAT
+//.add< SpringForceField<Vec3dTypes> >()
+//.add< SpringForceField<Vec2dTypes> >()
+//.add< SpringForceField<Vec1dTypes> >()
+//.add< SpringForceField<Vec6dTypes> >()
+//#endif
+//#ifndef SOFA_DOUBLE
+//.add< SpringForceField<Vec3fTypes> >()
+//.add< SpringForceField<Vec2fTypes> >()
+//.add< SpringForceField<Vec1fTypes> >()
+//.add< SpringForceField<Vec6fTypes> >()
+//#endif
+//;
 #ifndef SOFA_FLOAT
 template class SOFA_COMPONENT_FORCEFIELD_API SpringForceField<Vec3dTypes>;
 template class SOFA_COMPONENT_FORCEFIELD_API SpringForceField<Vec2dTypes>;

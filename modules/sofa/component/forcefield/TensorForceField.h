@@ -65,7 +65,7 @@ public:
 
     virtual void addDForce();
 
-    virtual double getPotentialEnergy();
+    virtual double getPotentialEnergy() const;
 
     void draw();
 

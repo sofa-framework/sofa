@@ -199,7 +199,7 @@ public:
 
     virtual void addDForce (VecDeriv& df, const VecDeriv& dx);
 
-    virtual double getPotentialEnergy(const VecCoord&) { return 0; }
+    virtual double getPotentialEnergy(const VecCoord&) const { return 0; }
 
     void addKToMatrix(sofa::defaulttype::BaseMatrix *mat, SReal k, unsigned int &offset);
 

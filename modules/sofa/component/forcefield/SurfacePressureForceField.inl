@@ -233,7 +233,7 @@ bool SurfacePressureForceField<DataTypes>::isInPressuredBox(const Coord &x) cons
 
 
 template <class DataTypes>
-double SurfacePressureForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/)
+double SurfacePressureForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/) const
 {
     serr << "TrianglePressureForceField::getPotentialEnergy-not-implemented !!!" << endl;
     return 0;

@@ -287,7 +287,7 @@ void HexahedronFEMForceField<DataTypes>::addDForce (VecDeriv& v, const VecDeriv&
 }
 
 template <class DataTypes>
-double HexahedronFEMForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
+double HexahedronFEMForceField<DataTypes>::getPotentialEnergy(const VecCoord&) const
 {
     serr<<"HexahedronFEMForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;

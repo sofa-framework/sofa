@@ -299,7 +299,7 @@ void FastTetrahedralCorotationalForceField<DataTypes>::computeQRRotation( Mat3x3
 
 
 template <class DataTypes>
-double FastTetrahedralCorotationalForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/)
+double FastTetrahedralCorotationalForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/) const
 {
     serr<<"FastTetrahedralCorotationalForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;

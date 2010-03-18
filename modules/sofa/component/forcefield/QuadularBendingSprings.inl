@@ -573,7 +573,7 @@ void QuadularBendingSprings<DataTypes>::init()
 }
 
 template <class DataTypes>
-double QuadularBendingSprings<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/)
+double QuadularBendingSprings<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/) const
 {
     serr<<"QuadularBendingSprings::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;

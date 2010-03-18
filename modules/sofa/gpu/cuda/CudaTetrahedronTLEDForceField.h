@@ -83,7 +83,7 @@ public:
     void reinit();
     void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/);
     void addDForce (VecDeriv& /*df*/, const VecDeriv& /*dx*/);
-    double getPotentialEnergy(const VecCoord&) { return 0.0; }
+    double getPotentialEnergy(const VecCoord&) const { return 0.0; }
 
     /// Compute lambda and mu based on the Young modulus and Poisson ratio
     void updateLameCoefficients();

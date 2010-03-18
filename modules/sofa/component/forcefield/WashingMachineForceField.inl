@@ -63,7 +63,7 @@ void WashingMachineForceField<DataTypes>::addDForce(VecDeriv& f1, const VecDeriv
 
 
 template <class DataTypes>
-double WashingMachineForceField<DataTypes>::getPotentialEnergy(const VecCoord&x)
+double WashingMachineForceField<DataTypes>::getPotentialEnergy(const VecCoord&x) const
 {
     double energy = 0.0;
     for(int i=0; i<6; ++i)

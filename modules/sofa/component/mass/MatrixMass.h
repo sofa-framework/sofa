@@ -105,9 +105,9 @@ public:
 
     void addGravityToV(double dt/*, defaulttype::BaseVector& v*/);
 
-    double getKineticEnergy(const VecDeriv& v);  ///< vMv/2 using dof->getV()
+    double getKineticEnergy(const VecDeriv& v) const;  ///< vMv/2 using dof->getV()
 
-    double getPotentialEnergy(const VecCoord& x);   ///< Mgx potential in a uniform gravity field, null at origin
+    double getPotentialEnergy(const VecCoord& x) const;   ///< Mgx potential in a uniform gravity field, null at origin
 
     /// Add Mass contribution to global Matrix assembling
     void addMToMatrix(defaulttype::BaseMatrix * mat, double mFact, unsigned int &offset);

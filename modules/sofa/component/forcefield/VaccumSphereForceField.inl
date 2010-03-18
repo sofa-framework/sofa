@@ -159,7 +159,7 @@ void VaccumSphereForceField<DataTypes>::updateStiffness( const VecCoord& x )
 }
 
 template <class DataTypes>
-double VaccumSphereForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
+double VaccumSphereForceField<DataTypes>::getPotentialEnergy(const VecCoord&) const
 {
     serr<<"VaccumSphereForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;

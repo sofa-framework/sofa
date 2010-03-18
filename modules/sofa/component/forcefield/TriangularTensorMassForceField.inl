@@ -329,7 +329,7 @@ template <class DataTypes> void TriangularTensorMassForceField<DataTypes>::init(
 
 
 template <class DataTypes>
-double TriangularTensorMassForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/)
+double TriangularTensorMassForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/) const
 {
     serr<<"TriangularTensorMassForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;

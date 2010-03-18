@@ -329,7 +329,7 @@ void DiagonalMass<DataTypes, MassType>::accFromF(VecDeriv& a, const VecDeriv& f)
 }
 
 template <class DataTypes, class MassType>
-double DiagonalMass<DataTypes, MassType>::getKineticEnergy( const VecDeriv& v )
+double DiagonalMass<DataTypes, MassType>::getKineticEnergy( const VecDeriv& v ) const
 {
 
     const MassVector &masses= f_mass.getValue();
@@ -342,7 +342,7 @@ double DiagonalMass<DataTypes, MassType>::getKineticEnergy( const VecDeriv& v )
 }
 
 template <class DataTypes, class MassType>
-double DiagonalMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord& x )
+double DiagonalMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord& x ) const
 {
 
     const MassVector &masses= f_mass.getValue();
@@ -696,9 +696,9 @@ template <>
     void* , vector<Rigid3dMass> &);*/
 
 template <>
-double DiagonalMass<Rigid3dTypes, Rigid3dMass>::getPotentialEnergy( const VecCoord& x );
+double DiagonalMass<Rigid3dTypes, Rigid3dMass>::getPotentialEnergy( const VecCoord& x ) const;
 template <>
-double DiagonalMass<Rigid2dTypes, Rigid2dMass>::getPotentialEnergy( const VecCoord& x );
+double DiagonalMass<Rigid2dTypes, Rigid2dMass>::getPotentialEnergy( const VecCoord& x ) const;
 template <>
 void DiagonalMass<Rigid3dTypes, Rigid3dMass>::draw();
 template <>
@@ -706,9 +706,9 @@ void DiagonalMass<Rigid2dTypes, Rigid2dMass>::draw();
 #endif
 #ifndef SOFA_DOUBLE
 template <>
-double DiagonalMass<Rigid3fTypes, Rigid3fMass>::getPotentialEnergy( const VecCoord& x );
+double DiagonalMass<Rigid3fTypes, Rigid3fMass>::getPotentialEnergy( const VecCoord& x ) const;
 template <>
-double DiagonalMass<Rigid2fTypes, Rigid2fMass>::getPotentialEnergy( const VecCoord& x );
+double DiagonalMass<Rigid2fTypes, Rigid2fMass>::getPotentialEnergy( const VecCoord& x ) const;
 
 template <>
 void DiagonalMass<Rigid3fTypes, Rigid3fMass>::draw();

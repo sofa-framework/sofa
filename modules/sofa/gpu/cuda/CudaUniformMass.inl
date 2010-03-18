@@ -157,7 +157,7 @@ bool UniformMass<gpu::cuda::CudaVec3f1Types, float>::addBBox(double* minBBox, do
 }
 
 template <>
-double UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::Rigid3fMass>::getPotentialEnergy( const VecCoord& x )
+double UniformMass<gpu::cuda::CudaRigid3fTypes,sofa::defaulttype::Rigid3fMass>::getPotentialEnergy( const VecCoord& x ) const
 {
     double e = 0;
     // gravity
@@ -290,7 +290,7 @@ bool UniformMass<gpu::cuda::CudaVec3d1Types, double>::addBBox(double* minBBox, d
 }
 
 template <>
-double UniformMass<gpu::cuda::CudaRigid3dTypes,sofa::defaulttype::Rigid3dMass>::getPotentialEnergy( const VecCoord& x )
+double UniformMass<gpu::cuda::CudaRigid3dTypes,sofa::defaulttype::Rigid3dMass>::getPotentialEnergy( const VecCoord& x ) const
 {
     double e = 0;
     // gravity

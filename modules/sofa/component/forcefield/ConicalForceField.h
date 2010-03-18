@@ -143,7 +143,7 @@ public:
 
     virtual void addDForce (VecDeriv& df, const VecDeriv& dx);
 
-    virtual double getPotentialEnergy(const VecCoord& x);
+    virtual double getPotentialEnergy(const VecCoord& x) const;
 
     virtual void updateStiffness( const VecCoord& x );
 

@@ -76,13 +76,13 @@ template class SOFA_COMPONENT_FORCEFIELD_API ConstantForceField<Rigid2fTypes>;
 
 #ifndef SOFA_FLOAT
 template <>
-double ConstantForceField<Rigid3dTypes>::getPotentialEnergy(const VecCoord& )
+double ConstantForceField<Rigid3dTypes>::getPotentialEnergy(const VecCoord& ) const
 {
     serr<<"ConstantForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
 }
 template <>
-double ConstantForceField<Rigid2dTypes>::getPotentialEnergy(const VecCoord& )
+double ConstantForceField<Rigid2dTypes>::getPotentialEnergy(const VecCoord& ) const
 {
     serr<<"ConstantForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
@@ -91,14 +91,14 @@ double ConstantForceField<Rigid2dTypes>::getPotentialEnergy(const VecCoord& )
 
 #ifndef SOFA_DOUBLE
 template <>
-double ConstantForceField<Rigid3fTypes>::getPotentialEnergy(const VecCoord& )
+double ConstantForceField<Rigid3fTypes>::getPotentialEnergy(const VecCoord& ) const
 {
     serr<<"ConstantForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
 }
 
 template <>
-double ConstantForceField<Rigid2fTypes>::getPotentialEnergy(const VecCoord& )
+double ConstantForceField<Rigid2fTypes>::getPotentialEnergy(const VecCoord& ) const
 {
     serr<<"ConstantForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;

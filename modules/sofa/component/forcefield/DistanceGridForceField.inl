@@ -381,7 +381,7 @@ void DistanceGridForceField<DataTypes>::addKToMatrix(sofa::defaulttype::BaseMatr
 }
 
 template <class DataTypes>
-double DistanceGridForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
+double DistanceGridForceField<DataTypes>::getPotentialEnergy(const VecCoord&) const
 {
     serr<<"DistanceGridForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
