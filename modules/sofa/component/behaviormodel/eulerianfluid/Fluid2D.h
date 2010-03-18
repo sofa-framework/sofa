@@ -44,10 +44,10 @@ namespace behaviormodel
 namespace eulerianfluid
 {
 
-class SOFA_COMPONENT_BEHAVIORMODEL_API Fluid2D : public sofa::core::BehaviorModel, public sofa::core::VisualModel
+class SOFA_COMPONENT_BEHAVIORMODEL_API Fluid2D : public sofa::core::BehaviorModel
 {
 public:
-    SOFA_CLASS2(Fluid2D, sofa::core::BehaviorModel, sofa::core::VisualModel);
+    SOFA_CLASS(Fluid2D, sofa::core::BehaviorModel);
 
     typedef Grid2D::real real;
     typedef Grid2D::vec2 vec2;
@@ -84,11 +84,9 @@ public:
 
     virtual void updatePosition(double dt);
 
-    virtual void drawVisual();
+    virtual void draw();
 
     virtual bool addBBox(double* minBBox, double* maxBBox);
-
-    virtual void initVisual() {}
 
     virtual void updateVisual();
 

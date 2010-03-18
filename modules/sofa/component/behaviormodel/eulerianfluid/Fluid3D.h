@@ -44,10 +44,10 @@ namespace behaviormodel
 namespace eulerianfluid
 {
 
-class SOFA_COMPONENT_BEHAVIORMODEL_API Fluid3D : public sofa::core::BehaviorModel, public sofa::core::VisualModel
+class SOFA_COMPONENT_BEHAVIORMODEL_API Fluid3D : public sofa::core::BehaviorModel
 {
 public:
-    SOFA_CLASS2(Fluid3D, sofa::core::BehaviorModel, sofa::core::VisualModel);
+    SOFA_CLASS(Fluid3D, sofa::core::BehaviorModel);
 
     typedef Grid3D::real real;
     typedef Grid3D::vec3 vec3;
@@ -88,11 +88,10 @@ public:
 
     virtual void updatePosition(double dt);
 
-    virtual void drawVisual();
+    virtual void draw();
 
     virtual void exportOBJ(std::string name, std::ostream* out, std::ostream* mtl, int& vindex, int& nindex, int& tindex);
 
-    virtual void initVisual() {}
 
     virtual void updateVisual();
 

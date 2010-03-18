@@ -100,8 +100,9 @@ void Fluid2D::updatePosition(double dt)
     Grid2D* p = fluid; fluid=fnext; fnext=p;
 }
 
-void Fluid2D::drawVisual()
+void Fluid2D::draw()
 {
+    updateVisual();
     glPushMatrix();
     glTranslatef(-(nx-1)*cellwidth/2,-(ny-1)*cellwidth/2,0.0f);
     glScalef(cellwidth,cellwidth,cellwidth);
