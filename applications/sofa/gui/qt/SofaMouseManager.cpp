@@ -76,13 +76,45 @@ void SofaMouseManager::updateContent()
             LeftOperationCombo  ->insertItem(QString(OperationFactory::GetDescription(it->first).c_str()));
             MiddleOperationCombo->insertItem(QString(OperationFactory::GetDescription(it->first).c_str()));
             RightOperationCombo ->insertItem(QString(OperationFactory::GetDescription(it->first).c_str()));
-//
-//                  if      (it->first == "Attach") LeftOperationCombo->setCurrentItem(idx);
-//                  else if (it->first == "Incise") MiddleOperationCombo->setCurrentItem(idx);
-//                  else if (it->first == "Remove") RightOperationCombo->setCurrentItem(idx);
+
             mapIndexOperation.insert(std::make_pair(idx++, it->first));
         }
     }
+
+
+    int idx;
+    const OperationFactory::RegisterStorage &registry = OperationFactory::getInstance()->registry;
+
+    idx=0;
+    for (OperationFactory::RegisterStorage::const_iterator it=registry.begin(); it!=registry.end(); ++it,++idx)
+    {
+        if (OperationFactory::GetDescription(it->first) == OperationFactory::GetDescription(usedOperations[LEFT]))
+        {
+            LeftOperationCombo->setCurrentIndex(idx);
+            break;
+        }
+    }
+
+    idx=0;
+    for (OperationFactory::RegisterStorage::const_iterator it=registry.begin(); it!=registry.end(); ++it,++idx)
+    {
+        if (OperationFactory::GetDescription(it->first) == OperationFactory::GetDescription(usedOperations[MIDDLE]))
+        {
+            MiddleOperationCombo->setCurrentIndex(idx);
+            break;
+        }
+    }
+
+    idx=0;
+    for (OperationFactory::RegisterStorage::const_iterator it=registry.begin(); it!=registry.end(); ++it,++idx)
+    {
+        if (OperationFactory::GetDescription(it->first) == OperationFactory::GetDescription(usedOperations[RIGHT]))
+        {
+            RightOperationCombo->setCurrentIndex(idx);
+            break;
+        }
+    }
+
 }
 
 void SofaMouseManager::setPickHandler(PickHandler *picker)
@@ -114,6 +146,8 @@ void SofaMouseManager::updateOperation( MOUSE_BUTTON button, const std::string &
     if (!qoperation) return;
 
     //TODO: change the text of the ComboBox if it is different from the current operation
+
+    usedOperations[button] = id;
 
     switch(button)
     {
