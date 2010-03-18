@@ -159,7 +159,7 @@ public:
 
     virtual ~TriangularBendingSprings();
 
-    virtual double getPotentialEnergy(const VecCoord& x);
+    virtual double getPotentialEnergy(const VecCoord& x) const;
 
     /// Searches triangle topology and creates the bending springs
     virtual void init();

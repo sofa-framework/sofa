@@ -76,7 +76,7 @@ public:
     virtual void accFromF() = 0;
 
     /// vMv/2
-    virtual double getKineticEnergy() = 0;
+    virtual double getKineticEnergy() const = 0 ;
 
     /// Add Mass contribution to global Matrix assembling
     ///

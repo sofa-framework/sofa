@@ -114,7 +114,7 @@ void ForceField<DataTypes>::addDForce(VecDeriv& df, const VecDeriv& dx, double k
 }
 
 template<class DataTypes>
-double ForceField<DataTypes>::getPotentialEnergy()
+double ForceField<DataTypes>::getPotentialEnergy() const
 {
     if (mstate)
         return getPotentialEnergy(*mstate->getX());

@@ -143,7 +143,7 @@ public:
 
     ~QuadularBendingSprings();
 
-    virtual double getPotentialEnergy(const VecCoord& x);
+    virtual double getPotentialEnergy(const VecCoord& x) const;
 
     /// Searches quad topology and creates the bending springs
     virtual void init();

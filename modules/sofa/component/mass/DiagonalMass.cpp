@@ -41,7 +41,7 @@ using namespace sofa::defaulttype;
 
 #ifndef SOFA_FLOAT
 template <>
-double DiagonalMass<Rigid3dTypes, Rigid3dMass>::getPotentialEnergy( const VecCoord& x )
+double DiagonalMass<Rigid3dTypes, Rigid3dMass>::getPotentialEnergy( const VecCoord& x ) const
 {
     double e = 0;
     const MassVector &masses= f_mass.getValue();
@@ -58,7 +58,7 @@ double DiagonalMass<Rigid3dTypes, Rigid3dMass>::getPotentialEnergy( const VecCoo
 }
 
 template <>
-double DiagonalMass<Rigid2dTypes, Rigid2dMass>::getPotentialEnergy( const VecCoord& x )
+double DiagonalMass<Rigid2dTypes, Rigid2dMass>::getPotentialEnergy( const VecCoord& x ) const
 {
     double e = 0;
     const MassVector &masses= f_mass.getValue();
@@ -215,7 +215,7 @@ void DiagonalMass<Rigid2dTypes, Rigid2dMass>::draw()
 #endif
 #ifndef SOFA_DOUBLE
 template <>
-double DiagonalMass<Rigid3fTypes, Rigid3fMass>::getPotentialEnergy( const VecCoord& x )
+double DiagonalMass<Rigid3fTypes, Rigid3fMass>::getPotentialEnergy( const VecCoord& x ) const
 {
     double e = 0;
     const MassVector &masses= f_mass.getValue();
@@ -232,7 +232,7 @@ double DiagonalMass<Rigid3fTypes, Rigid3fMass>::getPotentialEnergy( const VecCoo
 }
 
 template <>
-double DiagonalMass<Rigid2fTypes, Rigid2fMass>::getPotentialEnergy( const VecCoord& x )
+double DiagonalMass<Rigid2fTypes, Rigid2fMass>::getPotentialEnergy( const VecCoord& x ) const
 {
     double e = 0;
 

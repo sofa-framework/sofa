@@ -114,14 +114,14 @@ void MatrixMass<DataTypes, MassType>::accFromF(VecDeriv& , const VecDeriv& )
 }
 
 template <class DataTypes, class MassType>
-double MatrixMass<DataTypes, MassType>::getKineticEnergy( const VecDeriv&  )
+double MatrixMass<DataTypes, MassType>::getKineticEnergy( const VecDeriv&  ) const
 {
     serr<<"void MatrixMass<DataTypes, MassType>::getKineticEnergy not yet implemented"<<sendl;
     return 0;
 }
 
 template <class DataTypes, class MassType>
-double MatrixMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord&  )
+double MatrixMass<DataTypes, MassType>::getPotentialEnergy( const VecCoord&  ) const
 {
     serr<<"void MatrixMass<DataTypes, MassType>::getPotentialEnergy not yet implemented"<<sendl;
     return 0;

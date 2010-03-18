@@ -244,7 +244,7 @@ template <class DataTypes> void TriangularBiquadraticSpringsForceField<DataTypes
 
 
 template <class DataTypes>
-double TriangularBiquadraticSpringsForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/)
+double TriangularBiquadraticSpringsForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/) const
 {
     serr<<"TriangularBiquadraticSpringsForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;

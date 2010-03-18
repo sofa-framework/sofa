@@ -100,10 +100,10 @@ public:
 
     virtual  void addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v);
 
-    virtual double getKineticEnergy(const VecDeriv& /*v*/)  ///< vMv/2 using dof->getV()
+    virtual double getKineticEnergy(const VecDeriv& /*v*/)  const ///< vMv/2 using dof->getV()
     {serr<<"HexahedralFEMForceFieldAndMass<DataTypes>::getKineticEnergy not yet implemented"<<sendl; return 0;}
 
-    virtual double getPotentialEnergy(const VecCoord& /*x*/)   ///< Mgx potential in a uniform gravity field, null at origin
+    virtual double getPotentialEnergy(const VecCoord& /*x*/) const   ///< Mgx potential in a uniform gravity field, null at origin
     {serr<<"HexahedralFEMForceFieldAndMass<DataTypes>::getPotentialEnergy not yet implemented"<<sendl; return 0;}
 
     virtual void addDForce(VecDeriv& df, const VecDeriv& dx);

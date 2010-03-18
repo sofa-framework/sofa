@@ -69,17 +69,17 @@ namespace gpu
 namespace cuda
 {
 
-SOFA_DECL_CLASS(CudaSpringForceField)
+//SOFA_DECL_CLASS(CudaSpringForceField)
 SOFA_DECL_CLASS(CudaBoxStiffSpringForceField)
 
-int SpringForceFieldCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-        .add< component::forcefield::SpringForceField<CudaVec3fTypes> >()
-        .add< component::forcefield::SpringForceField<CudaVec3f1Types> >()
-#ifdef SOFA_GPU_CUDA_DOUBLE
-        .add< component::forcefield::SpringForceField<CudaVec3dTypes> >()
-        .add< component::forcefield::SpringForceField<CudaVec3d1Types> >()
-#endif // SOFA_GPU_CUDA_DOUBLE
-        ;
+//int SpringForceFieldCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
+//.add< component::forcefield::SpringForceField<CudaVec3fTypes> >()
+//.add< component::forcefield::SpringForceField<CudaVec3f1Types> >()
+//#ifdef SOFA_GPU_CUDA_DOUBLE
+//.add< component::forcefield::SpringForceField<CudaVec3dTypes> >()
+//.add< component::forcefield::SpringForceField<CudaVec3d1Types> >()
+//#endif // SOFA_GPU_CUDA_DOUBLE
+//;
 
 int StiffSpringForceFieldCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
         .add< component::forcefield::StiffSpringForceField<CudaVec3fTypes> >()

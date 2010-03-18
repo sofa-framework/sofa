@@ -133,7 +133,7 @@ void LennardJonesForceField<DataTypes>::addDForce(VecDeriv& f1, const VecDeriv& 
 }
 
 template <class DataTypes>
-double LennardJonesForceField<DataTypes>::getPotentialEnergy(const VecCoord& )
+double LennardJonesForceField<DataTypes>::getPotentialEnergy(const VecCoord& ) const
 {
     serr<<"LennardJonesForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;

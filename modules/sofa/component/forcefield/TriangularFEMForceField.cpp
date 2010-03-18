@@ -269,7 +269,7 @@ template <class DataTypes>void TriangularFEMForceField<DataTypes>::reinit()
 // ---
 // --------------------------------------------------------------------------------------
 template <class DataTypes>
-double TriangularFEMForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/)
+double TriangularFEMForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/) const
 {
     serr<<"TriangularFEMForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;

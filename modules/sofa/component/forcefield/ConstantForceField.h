@@ -77,7 +77,7 @@ public:
     virtual void addDForce (VecDeriv& , const VecDeriv& ) {}
 
 
-    virtual double getPotentialEnergy(const VecCoord& x);
+    virtual double getPotentialEnergy(const VecCoord& x) const;
 
     void draw();
     bool addBBox(double* minBBox, double* maxBBox);

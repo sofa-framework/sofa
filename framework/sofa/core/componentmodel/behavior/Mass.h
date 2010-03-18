@@ -107,14 +107,14 @@ public:
     ///
     /// This method retrieves the velocity vector and call the internal
     /// getKineticEnergy(const VecDeriv&) method implemented by the component.
-    virtual double getKineticEnergy();
+    virtual double getKineticEnergy() const;
 
     //virtual double getPotentialEnergy();
 
     /// vMv/2
     ///
     /// This method must be implemented by the component.
-    virtual double getKineticEnergy( const VecDeriv& v )=0;
+    virtual double getKineticEnergy( const VecDeriv& v ) const=0;
 
     /// Accumulate the contribution of M, B, and/or K matrices multiplied
     /// by the dx vector with the given coefficients.

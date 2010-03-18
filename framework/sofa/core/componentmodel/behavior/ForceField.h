@@ -127,7 +127,7 @@ public:
     /// This method retrieves the x vector from the MechanicalState and call
     /// the internal getPotentialEnergy(const VecCoord&) method implemented by
     /// the component.
-    virtual double getPotentialEnergy();
+    virtual double getPotentialEnergy() const;
 
     /// Given the current position and velocity states, update the current force
     /// vector by computing and adding the forces associated with this
@@ -183,7 +183,7 @@ public:
     ///
     /// This method must be implemented by the component, and is usually called
     /// by the generic ForceField::getPotentialEnergy() method.
-    virtual double getPotentialEnergy(const VecCoord& x) =0;
+    virtual double getPotentialEnergy(const VecCoord& x) const =0;
 
     /// @}
 

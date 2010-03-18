@@ -146,7 +146,7 @@ void PlaneForceField<DataTypes>::updateStiffness( const VecCoord& vx )
 
 
 template <class DataTypes>
-double PlaneForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
+double PlaneForceField<DataTypes>::getPotentialEnergy(const VecCoord&) const
 {
     serr<<"PlaneForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;

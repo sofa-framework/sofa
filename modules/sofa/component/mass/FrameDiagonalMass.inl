@@ -135,7 +135,7 @@ void FrameDiagonalMass<DataTypes, MassType>::accFromF ( VecDeriv& a, const VecDe
 }
 
 template <class DataTypes, class MassType>
-double FrameDiagonalMass<DataTypes, MassType>::getKineticEnergy ( const VecDeriv& v )
+double FrameDiagonalMass<DataTypes, MassType>::getKineticEnergy ( const VecDeriv& v ) const
 {
 
     const MassVector &masses= f_mass.getValue();
@@ -148,7 +148,7 @@ double FrameDiagonalMass<DataTypes, MassType>::getKineticEnergy ( const VecDeriv
 }
 
 template <class DataTypes, class MassType>
-double FrameDiagonalMass<DataTypes, MassType>::getPotentialEnergy ( const VecCoord& x )
+double FrameDiagonalMass<DataTypes, MassType>::getPotentialEnergy ( const VecCoord& x ) const
 {
     double e = 0;
     const MassVector &masses= f_mass.getValue();

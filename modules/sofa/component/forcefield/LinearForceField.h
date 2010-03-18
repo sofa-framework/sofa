@@ -94,7 +94,7 @@ public:
     /// Compute the force derivative
     virtual void addDForce (VecDeriv& , const VecDeriv& , const VecDeriv&);
 
-    virtual double getPotentialEnergy(const VecCoord& x);
+    virtual double getPotentialEnergy(const VecCoord& x) const;
 
 private :
     /// the key times surrounding the current simulation time (for interpolation)

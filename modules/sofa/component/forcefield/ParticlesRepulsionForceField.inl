@@ -177,7 +177,7 @@ void ParticlesRepulsionForceField<DataTypes>::addDForce(VecDeriv& df, const VecD
 }
 
 template <class DataTypes>
-double ParticlesRepulsionForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
+double ParticlesRepulsionForceField<DataTypes>::getPotentialEnergy(const VecCoord&) const
 {
     serr<<"ParticlesRepulsionForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;

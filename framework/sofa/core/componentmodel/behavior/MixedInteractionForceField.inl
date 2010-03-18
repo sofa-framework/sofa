@@ -133,7 +133,7 @@ void MixedInteractionForceField<DataTypes1, DataTypes2>::addDForce(VecDeriv1& df
 }
 
 template<class DataTypes1, class DataTypes2>
-double MixedInteractionForceField<DataTypes1, DataTypes2>::getPotentialEnergy()
+double MixedInteractionForceField<DataTypes1, DataTypes2>::getPotentialEnergy() const
 {
     if (mstate1 && mstate2)
         return getPotentialEnergy(*mstate1->getX(), *mstate2->getX());

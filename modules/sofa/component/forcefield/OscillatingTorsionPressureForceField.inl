@@ -191,7 +191,7 @@ void OscillatingTorsionPressureForceField<DataTypes>::addDForce (VecDeriv& , con
 
 
 template <class DataTypes>
-double OscillatingTorsionPressureForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/)
+double OscillatingTorsionPressureForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/) const
 {
     serr<<"OscillatingTorsionPressureForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;

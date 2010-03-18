@@ -116,7 +116,7 @@ public:
 
     virtual void addDForce(VecDeriv& df1, VecDeriv& df2, const VecDeriv& dx1, const VecDeriv& dx2, double kFactor, double bFactor);
 
-    virtual double getPotentialEnergy(const VecCoord&, const VecCoord&);
+    virtual double getPotentialEnergy(const VecCoord&, const VecCoord&) const;
 
     // -- tool grabing utility
     void grabPoint( const core::componentmodel::behavior::MechanicalState<defaulttype::Vec3Types> *tool,

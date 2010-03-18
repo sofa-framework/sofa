@@ -207,7 +207,7 @@ void TriangleFEMForceField<DataTypes>::addDForce(VecDeriv& df, const VecDeriv& d
 }
 
 template <class DataTypes>
-double TriangleFEMForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/)
+double TriangleFEMForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/) const
 {
     serr<<"TriangleFEMForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;

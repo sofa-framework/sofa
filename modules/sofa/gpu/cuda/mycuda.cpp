@@ -43,7 +43,7 @@ namespace cuda
 SOFA_LINK_CLASS(CudaBoxROI)
 SOFA_LINK_CLASS(CudaFixedConstraint)
 SOFA_LINK_CLASS(CudaMechanicalObject)
-SOFA_LINK_CLASS(CudaSpringForceField)
+//SOFA_LINK_CLASS(CudaSpringForceField)
 SOFA_LINK_CLASS(CudaUniformMass)
 SOFA_LINK_CLASS(CudaPlaneForceField)
 SOFA_LINK_CLASS(CudaSphereForceField)

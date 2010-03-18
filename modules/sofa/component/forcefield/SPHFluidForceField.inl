@@ -292,7 +292,7 @@ void SPHFluidForceField<DataTypes>::addDForce(VecDeriv& f1,  const VecDeriv& dx1
 }
 
 template <class DataTypes>
-double SPHFluidForceField<DataTypes>::getPotentialEnergy(const VecCoord&)
+double SPHFluidForceField<DataTypes>::getPotentialEnergy(const VecCoord&) const
 {
     serr<<"SPHFluidForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;

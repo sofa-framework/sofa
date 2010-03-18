@@ -315,7 +315,7 @@ void UniformMass<DataTypes, MassType>::addForce ( VecDeriv& vf, const VecCoord& 
 }
 
 template <class DataTypes, class MassType>
-double UniformMass<DataTypes, MassType>::getKineticEnergy ( const VecDeriv& vv )
+double UniformMass<DataTypes, MassType>::getKineticEnergy ( const VecDeriv& vv ) const
 {
     helper::ReadAccessor<VecDeriv> v = vv;
 
@@ -339,7 +339,7 @@ double UniformMass<DataTypes, MassType>::getKineticEnergy ( const VecDeriv& vv )
 }
 
 template <class DataTypes, class MassType>
-double UniformMass<DataTypes, MassType>::getPotentialEnergy ( const VecCoord& vx )
+double UniformMass<DataTypes, MassType>::getPotentialEnergy ( const VecCoord& vx ) const
 {
     helper::ReadAccessor<VecCoord> x = vx;
 
@@ -489,9 +489,9 @@ void UniformMass<Rigid3dTypes, Rigid3dMass>::draw();
 template <>
 void UniformMass<Rigid2dTypes, Rigid2dMass>::draw();
 template <>
-double UniformMass<Rigid3dTypes,Rigid3dMass>::getPotentialEnergy ( const VecCoord& x );
+double UniformMass<Rigid3dTypes,Rigid3dMass>::getPotentialEnergy ( const VecCoord& x ) const;
 template <>
-double UniformMass<Rigid2dTypes,Rigid2dMass>::getPotentialEnergy ( const VecCoord& x );
+double UniformMass<Rigid2dTypes,Rigid2dMass>::getPotentialEnergy ( const VecCoord& x ) const;
 template <>
 void UniformMass<Vec6dTypes,double>::draw();
 #endif
@@ -505,9 +505,9 @@ void UniformMass<Rigid3fTypes, Rigid3fMass>::draw();
 template <>
 void UniformMass<Rigid2fTypes, Rigid2fMass>::draw();
 template <>
-double UniformMass<Rigid3fTypes,Rigid3fMass>::getPotentialEnergy ( const VecCoord& x );
+double UniformMass<Rigid3fTypes,Rigid3fMass>::getPotentialEnergy ( const VecCoord& x ) const;
 template <>
-double UniformMass<Rigid2fTypes,Rigid2fMass>::getPotentialEnergy ( const VecCoord& x );
+double UniformMass<Rigid2fTypes,Rigid2fMass>::getPotentialEnergy ( const VecCoord& x ) const;
 template <>
 void UniformMass<Vec6fTypes,float>::draw();
 #endif

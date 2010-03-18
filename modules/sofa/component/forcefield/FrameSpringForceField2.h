@@ -164,12 +164,12 @@ public:
     void GetIntermediateFrame ( Coord& xi, const Coord& x1, const Coord& x2 );
     void updateForce ( VecDeriv& Force, VVMat66& K, const VecCoord& xi, const VVMat66& Kref );
 
-    virtual double getPotentialEnergy ( const VecCoord& /*x*/ )
+    virtual double getPotentialEnergy ( const VecCoord& /*x*/ ) const
     {
         return m_potentialEnergy;
     }
 
-    virtual double getPotentialEnergy ( const VecCoord&, const VecCoord& )
+    virtual double getPotentialEnergy ( const VecCoord&, const VecCoord& ) const
     {
         return m_potentialEnergy;
     }

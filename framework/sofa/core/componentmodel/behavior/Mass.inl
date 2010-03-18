@@ -70,7 +70,7 @@ void Mass<DataTypes>::accFromF()
 }
 
 template<class DataTypes>
-double Mass<DataTypes>::getKineticEnergy()
+double Mass<DataTypes>::getKineticEnergy() const
 {
     if (this->mstate)
         return getKineticEnergy(*this->mstate->getV());

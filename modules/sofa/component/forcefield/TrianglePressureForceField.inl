@@ -100,7 +100,7 @@ void TrianglePressureForceField<DataTypes>::addForce(VecDeriv& f, const VecCoord
 }
 
 template <class DataTypes>
-double TrianglePressureForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/)
+double TrianglePressureForceField<DataTypes>::getPotentialEnergy(const VecCoord& /*x*/) const
 {
     serr<<"TrianglePressureForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;

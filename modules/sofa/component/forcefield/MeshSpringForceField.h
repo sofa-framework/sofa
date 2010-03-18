@@ -93,7 +93,7 @@ public:
 
     virtual ~MeshSpringForceField();
 
-    virtual double getPotentialEnergy();
+    virtual double getPotentialEnergy() const;
 
 
     Real getStiffness() const { return linesStiffness.getValue(); }

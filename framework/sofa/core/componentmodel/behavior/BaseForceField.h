@@ -124,7 +124,7 @@ public:
     ///
     /// Used to extimate the total energy of the system by some
     /// post-stabilization techniques.
-    virtual double getPotentialEnergy() =0;
+    virtual double getPotentialEnergy() const=0;
 
     /// @}
 

@@ -155,7 +155,7 @@ void LinearForceField<DataTypes>::addDForce(VecDeriv& , const VecDeriv& , const 
 }// LinearForceField::addDForce
 
 template<class DataTypes>
-double LinearForceField<DataTypes>::getPotentialEnergy(const VecCoord& x)
+double LinearForceField<DataTypes>::getPotentialEnergy(const VecCoord& x) const
 {
     Real cT = (Real) this->getContext()->getTime();
     const VecIndex& indices = points.getValue();
@@ -178,16 +178,16 @@ double LinearForceField<DataTypes>::getPotentialEnergy(const VecCoord& x)
 
 #ifndef SOFA_FLOAT
 template <>
-double LinearForceField<defaulttype::Rigid3dTypes>::getPotentialEnergy(const VecCoord& );
+double LinearForceField<defaulttype::Rigid3dTypes>::getPotentialEnergy(const VecCoord& ) const;
 template <>
-double LinearForceField<defaulttype::Rigid2dTypes>::getPotentialEnergy(const VecCoord& );
+double LinearForceField<defaulttype::Rigid2dTypes>::getPotentialEnergy(const VecCoord& ) const;
 #endif
 
 #ifndef SOFA_DOUBLE
 template <>
-double LinearForceField<defaulttype::Rigid3fTypes>::getPotentialEnergy(const VecCoord& );
+double LinearForceField<defaulttype::Rigid3fTypes>::getPotentialEnergy(const VecCoord& ) const;
 template <>
-double LinearForceField<defaulttype::Rigid2fTypes>::getPotentialEnergy(const VecCoord& );
+double LinearForceField<defaulttype::Rigid2fTypes>::getPotentialEnergy(const VecCoord& ) const;
 #endif
 
 

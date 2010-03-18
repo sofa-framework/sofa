@@ -75,13 +75,13 @@ template class SOFA_COMPONENT_FORCEFIELD_API LinearForceField<Rigid3fTypes>;
 
 #ifndef SOFA_FLOAT
 template <>
-double LinearForceField<Rigid3dTypes>::getPotentialEnergy(const VecCoord& )
+double LinearForceField<Rigid3dTypes>::getPotentialEnergy(const VecCoord& ) const
 {
     serr<<"LinearForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
 }
 template <>
-double LinearForceField<Rigid2dTypes>::getPotentialEnergy(const VecCoord& )
+double LinearForceField<Rigid2dTypes>::getPotentialEnergy(const VecCoord& ) const
 {
     serr<<"LinearForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
@@ -90,14 +90,14 @@ double LinearForceField<Rigid2dTypes>::getPotentialEnergy(const VecCoord& )
 
 #ifndef SOFA_DOUBLE
 template <>
-double LinearForceField<Rigid3fTypes>::getPotentialEnergy(const VecCoord& )
+double LinearForceField<Rigid3fTypes>::getPotentialEnergy(const VecCoord& ) const
 {
     serr<<"LinearForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
 }
 
 template <>
-double LinearForceField<Rigid2fTypes>::getPotentialEnergy(const VecCoord& )
+double LinearForceField<Rigid2fTypes>::getPotentialEnergy(const VecCoord& ) const
 {
     serr<<"LinearForceField::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;

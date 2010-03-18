@@ -229,7 +229,7 @@ void PairInteractionForceField<DataTypes>::addDForce(VecDeriv& df1, VecDeriv& df
 }
 
 template<class DataTypes>
-double PairInteractionForceField<DataTypes>::getPotentialEnergy()
+double PairInteractionForceField<DataTypes>::getPotentialEnergy() const
 {
     if (mstate1 && mstate2)
         return getPotentialEnergy(*mstate1->getX(), *mstate2->getX());
