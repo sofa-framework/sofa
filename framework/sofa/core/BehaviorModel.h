@@ -57,6 +57,11 @@ public:
 
     /// Computation of a new simulation step.
     virtual void updatePosition(double dt) = 0;
+
+    virtual bool addBBox(double* /*minBBox*/, double* /*maxBBox*/)
+    {
+        return false;
+    }
 };
 
 } // namespace core

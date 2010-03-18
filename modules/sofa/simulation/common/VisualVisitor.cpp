@@ -197,7 +197,7 @@ void VisualComputeBBoxVisitor::processVisualModel(simulation::Node*, core::Visua
 }
 void VisualComputeBBoxVisitor::processBehaviorModel(simulation::Node*, core::BehaviorModel* bm)
 {
-// bm->addBBox(minBBox, maxBBox);
+    bm->addBBox(minBBox, maxBBox);
 }
 
 } // namespace simulation
