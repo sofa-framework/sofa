@@ -459,7 +459,6 @@ void Texture::init(void)
             glTexParameteri( target, GL_TEXTURE_WRAP_R, GL_CLAMP );
         }
     }
-    glBindTexture(target, 0);
 }
 
 void Texture::bind(void)
