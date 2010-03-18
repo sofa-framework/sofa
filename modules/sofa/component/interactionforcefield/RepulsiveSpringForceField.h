@@ -64,7 +64,7 @@ public:
     }
 
     virtual void addForce(VecDeriv& f1, VecDeriv& f2, const VecCoord& x1, const VecCoord& x2, const VecDeriv& v1, const VecDeriv& v2);
-    virtual double getPotentialEnergy();
+    virtual double getPotentialEnergy() const;
 };
 
 } // namespace interactionforcefield

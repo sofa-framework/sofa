@@ -145,7 +145,7 @@ public:
 
     virtual void addDForce(VecDeriv1& df1, VecDeriv2& df2, const VecDeriv1& dx1, const VecDeriv2& dx2);
 
-    virtual double getPotentialEnergy(const VecCoord1& x1, const VecCoord2& x2);
+    virtual double getPotentialEnergy(const VecCoord1& x1, const VecCoord2& x2) const;
 
     void reinit() {_update_pos_relative = true;}
 

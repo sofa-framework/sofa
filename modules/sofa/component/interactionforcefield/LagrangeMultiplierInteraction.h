@@ -115,7 +115,7 @@ public:
 
     virtual void addDForce(VecDeriv1& dViolation, VecDeriv2& df2, const VecDeriv1& dLambda, const VecDeriv2& dx2);
 
-    virtual double getPotentialEnergy(const VecCoord1& , const VecCoord2& ) { return 0.0;}
+    virtual double getPotentialEnergy(const VecCoord1& , const VecCoord2& ) const { return 0.0;}
 
     void init();
 
