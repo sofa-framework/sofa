@@ -225,7 +225,7 @@ void LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::addDForce(VecDeriv1&
 
 /*
 template <class DataTypes1, class DataTypes2>
-    double LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::getPotentialEnergy(const VecCoord1& x1 , const VecCoord2& x2 )
+    double LagrangeMultiplierInteraction<DataTypes1, DataTypes2>::getPotentialEnergy(const VecCoord1& x1 , const VecCoord2& x2 ) const
 {
     serr<<"LagrangeMultiplierInteraction::getPotentialEnergy-not-implemented !!!"<<sendl;
     return 0;
