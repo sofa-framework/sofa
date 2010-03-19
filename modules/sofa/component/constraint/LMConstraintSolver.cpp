@@ -54,11 +54,20 @@ LMConstraintSolver::LMConstraintSolver():
     constraintPos( initData( &constraintPos, false, "constraintPos", "Constraint the position")),
     numIterations( initData( &numIterations, (unsigned int)25, "numIterations", "Number of iterations for Gauss-Seidel when solving the Constraints")),
     maxError( initData( &maxError, 0.0000001, "maxError", "Max error for Gauss-Seidel algorithm when solving the constraints")),
-    f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") ),
+    graphGSError( initData(&graphGSError,"graphGSError","Graph of residuals at each iteration") ),
+    traceKineticEnergy( initData( &traceKineticEnergy, true, "traceKineticEnergy", "Trace the evolution of the Kinetic Energy throughout the solution of the system")),
+    graphKineticEnergy( initData(&graphKineticEnergy,"graphKineticEnergy","Graph of the cinetic energy of the system") ),
     A(NULL), c(NULL), Lambda(NULL)
 {
-    f_graph.setWidget("graph");
-    f_graph.setReadOnly(true);
+    graphGSError.setGroup("Statistics");
+    graphGSError.setWidget("graph");
+    graphGSError.setReadOnly(true);
+
+    graphKineticEnergy.setGroup("Statistics");
+    graphKineticEnergy.setWidget("graph");
+    graphKineticEnergy.setReadOnly(true);
+
+    traceKineticEnergy.setGroup("Statistics");
     this->f_listening.setValue(true);
 }
 
@@ -83,6 +92,8 @@ void LMConstraintSolver::init()
             constraintCorrections.insert(std::make_pair(constrainedDof, listConstraintCorrection[i]));
         }
     }
+
+    graphKineticEnergy.setDisplayed(traceKineticEnergy.getValue());
 }
 
 
@@ -589,7 +600,7 @@ void LMConstraintSolver::buildRightHandTerm( ConstOrder Order, const helper::vec
 }
 
 
-bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( ConstOrder Order, const helper::vector< core::componentmodel::behavior::BaseLMConstraint* > &LMConstraints, const MatrixEigen &A, VectorEigen c, VectorEigen &Lambda) const
+bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( ConstOrder Order, const helper::vector< core::componentmodel::behavior::BaseLMConstraint* > &LMConstraints, const MatrixEigen &A, VectorEigen c, VectorEigen &Lambda)
 {
     if (f_printLog.getValue()) sout << "Using Gauss-Seidel solution"<<sendl;
 
@@ -602,9 +613,12 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( ConstOrder Order
     case BaseLMConstraint::POS: orderName="Position"; break;
     }
 
-    helper::vector<double> &vError=(*f_graph.beginEdit())["Error "+ orderName];
+    helper::vector<double> &vError=(*graphGSError.beginEdit())["Error "+ orderName];
+
     vError.push_back(c.sum());
-    f_graph.endEdit();
+    graphGSError.endEdit();
+
+    VectorEigen LambdaPrevious=Lambda;
 
     const unsigned int numConstraint=A.rows();
     //-- Initialization of X, solution of the system
@@ -617,6 +631,7 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( ConstOrder Order
         VectorEigen LambdaCorrection;
         VectorEigen LambdaPreviousIteration;
         continueIteration=false;
+
 
         //Iterate on all the Constraint components
         for (unsigned int componentConstraint=0; componentConstraint<LMConstraints.size(); ++componentConstraint)
@@ -641,6 +656,7 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( ConstOrder Order
                 }
                 Lambda.block(idxConstraint,0,numConstraintToProcess,1) += LambdaCorrection;
                 bool activated=constraint->LagrangeMultiplierEvaluation(Lambda.data()+idxConstraint, constraintOrder[constraintEntry]);
+
                 if (activated)
                 {
                     c -= A.block(0,idxConstraint,numConstraint, numConstraintToProcess)*LambdaCorrection;
@@ -657,7 +673,6 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( ConstOrder Order
                     idxConstraint+=numConstraintToProcess;
                     continue;
                 }
-
                 //****************************************************************
                 if (this->f_printLog.getValue())
                 {
@@ -677,25 +692,38 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( ConstOrder Order
             }
         }
 
-        helper::vector<double> &vError=(*f_graph.beginEdit())["Error "+ orderName];
-        vError.push_back(c.sum());
-        f_graph.endEdit();
+        if (Order == BaseLMConstraint::VEL && traceKineticEnergy.getValue())
+        {
+            if (iteration == 0)
+            {
+                graphKineticEnergy.beginEdit()->clear();
+                graphKineticEnergy.endEdit();
+            }
+            VectorEigen LambdaSave=Lambda;
+            Lambda -= LambdaPrevious;
+            if (continueIteration) computeKineticEnergy();
+            Lambda = LambdaSave;
+        }
+
+        LambdaPrevious=Lambda;
+
+        helper::vector<double> &vError=(*graphGSError.beginEdit())["Error "+ orderName];
+        vError.push_back(c.norm());
+        graphGSError.endEdit();
 
         if (this->f_printLog.getValue())
         {
             if (f_printLog.getValue()) sout << "ITERATION " << iteration << " ENDED\n"<<sendl;
         }
     }
-    if (iteration == numIterations.getValue())
-    {
-        if (f_printLog.getValue())
-        {
-            serr << "no convergence in Gauss-Seidel for " << orderName;
-        }
-//            return false;
-    }
 
-    if (f_printLog.getValue()) sout << "Gauss-Seidel done in " << iteration << " iterations "<<sendl;
+    if (iteration == numIterations.getValue() && f_printLog.getValue())
+        serr << "no convergence in Gauss-Seidel for " << orderName;
+
+    if (f_printLog.getValue())
+        sout << "Gauss-Seidel done in " << iteration << " iterations "<<sendl;
+
+    if (Order == BaseLMConstraint::VEL && traceKineticEnergy.getValue()) return false;
     return true;
 }
 
@@ -790,14 +818,32 @@ void LMConstraintSolver::constraintStateCorrection(VecId Order, bool isPositionC
 }
 
 
+void LMConstraintSolver::computeKineticEnergy()
+{
+    helper::vector<double> &vError=(*graphKineticEnergy.beginEdit())["KineticEnergy"];
+
+    applyCorrection(0,VecId::velocity());
+    double kineticEnergy=0;
+    for (SetDof::const_iterator itDofs=setDofs.begin(); itDofs!=setDofs.end(); itDofs++)
+    {
+        const sofa::core::componentmodel::behavior::BaseMechanicalState* dofs=*itDofs;
+        const core::componentmodel::behavior::BaseMass *mass=dynamic_cast< core::componentmodel::behavior::BaseMass *>(dofs->getContext()->getMass());
+        if (mass) kineticEnergy += mass->getKineticEnergy();
+    }
+    vError.push_back(kineticEnergy);
+    graphKineticEnergy.endEdit();
+}
+
 void LMConstraintSolver::handleEvent(core::objectmodel::Event *e)
 {
     if (dynamic_cast<sofa::simulation::AnimateBeginEvent*>(e))
     {
-        f_graph.beginEdit()->clear();
-        f_graph.endEdit();
+        graphGSError.beginEdit()->clear();
+        graphGSError.endEdit();
     }
 }
+
+
 
 int LMConstraintSolverClass = core::RegisterObject("A Constraint Solver working specifically with LMConstraint based components")
         .add< LMConstraintSolver >();
