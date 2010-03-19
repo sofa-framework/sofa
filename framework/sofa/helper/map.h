@@ -42,6 +42,7 @@ template<class K, class T>
 std::ostream& operator<< ( std::ostream& o, const std::map<K,T>& m )
 {
     typename std::map<K,T>::const_iterator it=m.begin();
+    if (it == m.end()) return o;
     o << it->first << " " << it->second; it++;
     for ( ; it != m.end() ; ++it)
     {
