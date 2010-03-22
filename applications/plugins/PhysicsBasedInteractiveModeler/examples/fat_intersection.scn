@@ -1,0 +1,122 @@
+<Node name="root" dt="0.01" showBehaviorModels="0" showCollisionModels="0" showMappings="0" showForceFields="0" showWireFrame="1" gravity="0 -0.92 0.06">
+	<CollisionPipeline verbose="0" name="CollisionPipeline"/>
+	<BruteForceDetection name="N2" />
+	<CollisionResponse response="default" name="collision response"/>
+	<MinProximityIntersection name="Proximity" alarmDistance="0.6" contactDistance="0.48" />
+	<include href="Parameters.xml" />
+	
+	<Node>
+		<EulerImplicit name="cg_odesolver" printLog="false"  />
+		<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9"  />
+
+		<Node name="MuscleTriangularMesh" >	
+			<MeshLoader name="meshLoader" filename="mesh/victoria/miccai/01/muscle_v_t.obj" /> 
+			<Mesh name="mesh" />
+			<TransformEngine template="Vec3d" input_position="@[-2].vertices" rotationMatrix="@../../transform.rotationMat" translation="@../../transform.translation" scale="@../../transform.scale3d" />
+			<MechanicalObject name="mObject" position="@[-1].output_position" />
+			<TransformPlaneConstraint rotation="@../../transform.rotationQuat" translation="@../../transform.translation" scale="@../../transform.scale"
+						  plane="-200 -200 270   250 -200 270   250 200 270 200
+						  -200 -200 -400   250 -200 -400  250 200 -400 100
+						  -200 25 -75    250 25 -75  250 200 -75 550
+						  " />
+			<PlaneConstraint plane="@[-1].outPlane" />
+<!--			<Node > 
+				<OglModel name="VisualModel" color="green" />
+				<IdentityMapping object1="../.." object2="VisualModel" />
+			</Node>-->
+		</Node>
+
+
+<!--	<Node name="FatTriangularMesh" >
+		<MeshLoader name="meshLoader" filename="mesh/victoria/miccai/body_gras.obj" /> 
+		<Mesh name="mesh" />
+		<MechanicalObject name="mObject" scale="0.1"/>
+		<Node > 
+			<OglModel name="VisualModel" color="red" />
+			<IdentityMapping object1="../.." object2="VisualModel" />
+		</Node>
+	</Node>
+	
+	<Node name="a">
+		<ComputeMeshIntersection name="computeMeshIntersection" template="Vec3d" print_log="false" epsilon="0.00000000000000000001"
+					muscleLayerVertex="@../MuscleTriangularMesh/mObject.position" 
+					fatLayerVertex="@../FatTriangularMesh/mObject.position" 
+					muscleLayerTriangles="@../MuscleTriangularMesh/mesh.triangles"
+					fatLayerTriangles="@../FatTriangularMesh/mesh.triangles"/>
+		<Mesh name="mesh" points="@computeMeshIntersection.intersectionVertex" triangles="@computeMeshIntersection.intersectionTriangles" quads="@computeMeshIntersection.intersectionQuads"/>
+		<MechanicalObject name="mObject"/>
+		<Node > 
+			<OglModel name="VisualModel" color="grey" />
+			<IdentityMapping object1="../.." object2="VisualModel" />
+		</Node>
+ 	</Node> -->
+	
+		<Node name="bb">
+			<MeshLoader filename="mesh/victoria/miccai/01/intersection_t.obj" />
+			<Mesh name="mesh" />
+			<TransformEngine template="Vec3d" input_position="@[-2].vertices" rotationMatrix="@../../transform.rotationMat" translation="@../../transform.translation" scale="@../../transform.scale3d" />
+			<MechanicalObject name="mObject" position="@[-1].output_position" />
+<!--			<Node > 
+				<OglModel name="VisualModel" />
+				<IdentityMapping object1="../.." object2="VisualModel" />
+			</Node>-->
+		</Node>
+
+	
+		<Node name="FatTetraMesh" >
+			<MeshGenerationFromPolyhedron name="stuffing" inputPoints="@../bb/mObject.position" inputTriangles="@../bb/mesh.triangles"
+						      facetAngle="30" facetSize="0.5" facetApproximation="0.05"
+						      cellRatio="2" cellSize="0.5"
+						      odt="true" odt_max_it="200"
+						      perturb="true" exude_max_time="20"/>
+		
+			<TetrahedronSetTopologyContainer name="Container" points="@stuffing.outputPoints" tetras="@stuffing.outputTetras"/>
+			<TetrahedronSetTopologyModifier name="Modifier"/>
+			<TetrahedronSetTopologyAlgorithms template="Vec3d" name="TopoAlgo"/>
+			<TetrahedronSetGeometryAlgorithms template="Vec3d" name="GeomAlgo"/>
+			<MechanicalObject name="mObject"/>
+			<DiagonalMass massDensity="0.25" name="computed using mass density"  />
+			<TetrahedronFEMForceField name="FEM" youngModulus="25" poissonRatio="0.3" method="large" computeGlobalMatrix="false"/>
+			<Node > 
+				<MeshLoader name="meshLoader" filename="mesh/victoria/miccai/01/gras_t.obj" />
+				<Mesh name="mesh" />
+				<TransformEngine template="Vec3d" input_position="@[-2].vertices" rotationMatrix="@../../../transform.rotationMat" translation="@../../../transform.translation" scale="@../../../transform.scale3d" />
+				<OglModel name="VisualModel" color="blue" position="@[-1].output_position" triangles="@[-2].triangles"/>
+				<BarycentricMapping object1="../.." object2="VisualModel" />
+			</Node>
+			<Node name="test"> 
+				<MeshLoader name="meshLoader" filename="mesh/victoria/miccai/01/muscle_v_t.obj" /> 
+				<Mesh name="mesh" />
+				<TransformEngine template="Vec3d" input_position="@[-2].vertices" rotationMatrix="@../../../transform.rotationMat" translation="@../../../transform.translation" scale="@../../../transform.scale3d" />
+				<MechanicalObject name="mObject" position="@[-1].output_position" />
+				<Triangle/>
+				<Line />
+				<Point />
+				<BarycentricMapping object1="../.." object2="mObject" />
+				<Node > 
+					<OglModel name="VisualModel" color="green" />
+					<IdentityMapping object1="../.." object2="VisualModel" />
+				</Node>
+			</Node>
+		</Node>
+	
+		<VectorSpringForceField name="fixSpring" object2="FatTetraMesh/test" object1="MuscleTriangularMesh" stiffness="30"/> 
+	</Node>
+
+	<Node name="back" >
+		<MeshLoader name="meshLoader" filename="mesh/victoria/miccai/01/back.obj" />
+		<Mesh name="mesh" />
+		<TransformEngine template="Vec3d" input_position="@[-2].vertices" scale="@../transform.scale3d" />
+		<OglModel name="VisualModel" position="@[-1].output_position" triangles="@[-2].triangles"/>
+	</Node>
+	
+	<Node name="Uterus" >
+		<MeshLoader name="meshLoader" filename="mesh/victoria/miccai/01/uterus_d.obj"/>
+		<TriangleSetTopologyContainer />
+		<ProgressiveScaling filename="@../transform.output" template="Vec3d" scale="@../transform.scale" step="0.001" rest_position="@[-2].vertices" center="@../transform.center" axis="@../transform.axis" angle="@../transform.angle" />
+		<MechanicalObject position="@[-1].position"/>
+		<Triangle/>
+	</Node>
+	
+	
+</Node>

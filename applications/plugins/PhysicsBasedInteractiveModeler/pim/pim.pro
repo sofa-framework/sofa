@@ -30,6 +30,7 @@ DEFINES += SOFA_BUILD_PIM
 
 
 LIBS += $$SOFA_FRAMEWORK_LIBS
+LIBS += $$SOFA_LIBS
 LIBS += -lsofasimulation$$LIBSUFFIX
 LIBS += -lsofacomponentlinearsolver$$LIBSUFFIX
 LIBS += -lsofacomponentodesolver$$LIBSUFFIX
@@ -42,13 +43,18 @@ LIBS += -lsofacomponentbase$$LIBSUFFIX
 LIBS += -lsofacomponentmapping$$LIBSUFFIX
 LIBS += -lsofacomponentengine$$LIBSUFFIX
 LIBS += -lsofacomponentvisualmodel$$LIBSUFFIX
-#LIBS += -lpimguiqt$$LIBSUFFIX
-#LIBS += -lsofaguiqt$$LIBSUFFIX
+LIBS += -lCGALPlugin$$LIBSUFFIX
+LIBS += -lTriangularMeshRefiner$$LIBSUFFIX
+LIBS += -lsofagui$$LIBSUFFIX
+LIBS += -lsofaguimain$$LIBSUFFIX
+LIBS += -lsofaguimain$$LIBSUFFIX
 
 SOURCES = SculptBodyPerformer.cpp \
           ProgressiveScaling.cpp \
           PointsOnSurface.cpp \
-#          InsertEntryEachStep.cpp \
+          ComputeMeshIntersection.cpp \
+          Parameters.cpp \
+          TransformPlaneConstraint.cpp \
 
 HEADERS = SculptBodyPerformer.h \
           SculptBodyPerformer.inl \
@@ -56,5 +62,7 @@ HEADERS = SculptBodyPerformer.h \
           ProgressiveScaling.inl \
           PointsOnSurface.h \
           PointsOnSurface.inl \
-#          InsertEntryEachStep.h \
-#          InsertEntryEachStep.inl \
+          ComputeMeshIntersection.h \
+          ComputeMeshIntersection.inl \
+          Parameters.h \
+          TransformPlaneConstraint.h

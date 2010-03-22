@@ -22,12 +22,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define PLUGINS_PIM_PROGRESSIVESCALING_CPP
-#include "ProgressiveScaling.inl"
-#include <sofa/core/componentmodel/behavior/Constraint.inl>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/defaulttype/RigidTypes.h>
+#ifndef PLUGINS_PIM_PARAMETERS_H
+#define PLUGINS_PIM_PARAMETERS_H
+
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/core/DataEngine.h>
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/defaulttype/Mat.h>
+#include <sofa/helper/Quater.h>
 
 namespace plugins
 {
@@ -35,29 +37,44 @@ namespace plugins
 namespace pim
 {
 
-SOFA_DECL_CLASS(ProgressiveScaling)
+using namespace sofa::defaulttype;
 
-int ProgressiveScalingClass = sofa::core::RegisterObject("Progresive scaling")
-#ifndef SOFA_FLOAT
-        .add< ProgressiveScaling<Vec3dTypes> >()
-//.add< ProgressiveScaling<Rigid3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< ProgressiveScaling<Vec3fTypes> >()
-//.add< ProgressiveScaling<Rigid3fTypes> >()
-#endif //SOFA_DOUBLE
-        ;
+/**
+ *
+ */
+class Parameters : public sofa::core::DataEngine
+{
+public:
+    SOFA_CLASS(Parameters,sofa::core::objectmodel::BaseObject);
+    typedef Vec<16, double> Vec16;
 
-#ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<Vec3dTypes>;
-//template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<Rigid3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<Vec3fTypes>;
-//template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<Rigid3fTypes>;
-#endif //SOFA_DOUBLE
+    Parameters();
+
+    ~Parameters() {}
+
+    void init();
+
+    void update();
+
+    Data<Vec16> d_transformMatrix;
+    Data<Vec3d> d_translation;
+    Data<Vec3d> d_rotation;
+    Data<double> d_scale;
+    Data<Vec3d> d_scale3d;
+    Data<Mat3x3d> d_rotationMat;
+    Data<sofa::helper::Quater<double> > d_rotationQuat;
+    Data<Vec3d> d_center;
+    Data<Vec3d> d_axis;
+    Data<double> d_angle;
+    Data<std::string> d_uterus;
+    Data<std::string> d_output;
+    Data<std::string> d_muscleLayer;
+    Data<std::string> d_fatLayer;
+    Data<std::string> d_intersectionLayer;
+};
 
 } // namespace pim
 
 } // namespace plugins
 
+#endif

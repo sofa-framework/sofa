@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef PLUGINS_PIM_PROGRESSIVESCALING_H
-#define PLUGINS_PIM_PROGRESSIVESCALING_H
+#ifndef PLUGINS_PIM_COMPUTEMESHINTERSECTION_H
+#define PLUGINS_PIM_COMPUTEMESHINTERSECTION_H
 
 #if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
 #pragma once
@@ -35,6 +35,7 @@
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/component/topology/PointSubset.h>
+#include <sofa/component/topology/MeshTopology.h>
 
 namespace plugins
 {
@@ -45,67 +46,53 @@ namespace pim
 using namespace sofa::core::componentmodel::behavior;
 using namespace sofa::core::componentmodel::topology;
 using namespace sofa::core::objectmodel;
+using namespace sofa::component::topology;
 
 /**
- * This class apply a progresive scaling all over the points of a mechanical object.
+ * This class compute the intersection between two meshes
  */
 template <class DataTypes>
-class ProgressiveScaling : public sofa::core::DataEngine
+class ComputeMeshIntersection : public sofa::core::DataEngine
 {
 public:
+    typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::VecCoord VecCoord;
-    typedef typename DataTypes::Real Real;
-    typedef sofa::defaulttype::Vec<9,Real> Vec6;
+    typedef BaseMeshTopology::Triangle Triangle;
+    typedef BaseMeshTopology::Edge Edge;
+    typedef BaseMeshTopology::Quad Quad;
+    typedef vector<BaseMeshTopology::Triangle> VecTriangles;
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(ProgressiveScaling,DataTypes),sofa::core::DataEngine);
-    ProgressiveScaling();
+    SOFA_CLASS(SOFA_TEMPLATE(ComputeMeshIntersection,DataTypes),sofa::core::DataEngine);
 
-    ~ProgressiveScaling() {}
+    ComputeMeshIntersection();
+
+    ~ComputeMeshIntersection() {}
 
     void init();
 
-    void reinit();
-
-    void reset();
-
     void update();
 
-    void handleEvent(sofa::core::objectmodel::Event *event);
+    Data<VecCoord> d_muscleLayerVertex, d_fatLayerVertex, d_intersectionVertex;
+    Data<VecTriangles> d_muscleLayerTriangles, d_fatLayerTriangles, d_intersectionTriangles;
+    Data< vector<Quad> > d_intersectionQuads;
+    MeshTopology topology;
+    std::map<unsigned int, unsigned int> intersectionIndices;
+    Data<bool> d_print_log;
+    Data<double> d_epsilon;
+
+    void computeIntersectionLayerVertex();
+    void computeIntersectionLayerTriangles();
+    bool isIntersectionLayerTriangle(const Triangle& ft, Triangle& fi);
+    void closeMesh();
 
     void draw();
-
-    Data<VecCoord> f_X0;
-    Data<VecCoord> f_X;
-    VecCoord local_X0;
-    Data<double> from_scale, to_scale;
-
-    Data<double> d_scale;
-    Data<Vec3d> d_axis;
-    Data<Vec3d> d_center;
-    Data<double> d_angle;
-    Data<double> step;
-    Data<std::string> d_file_in;
-
-    Vector3 cm0;
-    double progressiveScale;
-
-    Data<Vector3> right_femoral_head;
-    Data<Vector3> left_femoral_head;
-    Vector3 scaling_center;
-    VecCoord uterus_position_from_scaling_center;
-    Vector3 rotation_center;
-    Data<double> rotation;
-    Quat quat;
-    Data< sofa::helper::vector<Vec6> > boxes;
-    Vector3 new_center;
-
 
     virtual std::string getTemplateName() const
     {
         return templateName(this);
     }
 
-    static std::string templateName(const ProgressiveScaling<DataTypes>* = NULL)
+    static std::string templateName(const ComputeMeshIntersection<DataTypes>* = NULL)
     {
         return DataTypes::Name();
     }
@@ -115,12 +102,10 @@ public:
 #if defined(WIN32) && !defined(SOFA_COMPONENT_ENGINE_PROGRESSIVESCALING_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<defaulttype::Vec3dTypes>;
-template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<defaulttype::Rigid3dTypes>;
+template class SOFA_COMPONENT_ENGINE_API ComputeMeshIntersection<defaulttype::Vec3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<defaulttype::Vec3fTypes>;
-template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<defaulttype::Rigid3fTypes>;
+template class SOFA_COMPONENT_ENGINE_API ComputeMeshIntersection<defaulttype::Vec3fTypes>;
 #endif //SOFA_DOUBLE
 #endif
 

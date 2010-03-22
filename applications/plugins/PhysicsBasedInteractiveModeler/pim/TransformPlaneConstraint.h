@@ -22,12 +22,13 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define PLUGINS_PIM_PROGRESSIVESCALING_CPP
-#include "ProgressiveScaling.inl"
-#include <sofa/core/componentmodel/behavior/Constraint.inl>
-#include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/defaulttype/RigidTypes.h>
+#ifndef PLUGINS_PIM_TRANSFORMPLANECONSTRAINT_H
+#define PLUGINS_PIM_TRANSFORMPLANECONSTRAINT_H
+
+#include <sofa/defaulttype/Vec.h>
+#include <sofa/core/DataEngine.h>
+#include <sofa/core/objectmodel/BaseObject.h>
+#include <sofa/helper/Quater.h>
 
 namespace plugins
 {
@@ -35,29 +36,33 @@ namespace plugins
 namespace pim
 {
 
-SOFA_DECL_CLASS(ProgressiveScaling)
+using namespace sofa::defaulttype;
 
-int ProgressiveScalingClass = sofa::core::RegisterObject("Progresive scaling")
-#ifndef SOFA_FLOAT
-        .add< ProgressiveScaling<Vec3dTypes> >()
-//.add< ProgressiveScaling<Rigid3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< ProgressiveScaling<Vec3fTypes> >()
-//.add< ProgressiveScaling<Rigid3fTypes> >()
-#endif //SOFA_DOUBLE
-        ;
+/**
+ *
+ */
+class TransformPlaneConstraint : public sofa::core::DataEngine
+{
+public:
+    SOFA_CLASS(TransformPlaneConstraint,sofa::core::objectmodel::BaseObject);
+    typedef Vec<10, double> Vec10;
 
-#ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<Vec3dTypes>;
-//template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<Rigid3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<Vec3fTypes>;
-//template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<Rigid3fTypes>;
-#endif //SOFA_DOUBLE
+    TransformPlaneConstraint();
+
+    ~TransformPlaneConstraint() {}
+
+    void init();
+
+    void update();
+
+    Data< sofa::helper::vector<Vec10> > d_planes, d_outPlanes;
+    Data<sofa::helper::Quater<double> > d_rotation;
+    Data<Vec3d> d_translation;
+    Data<double> d_scale;
+};
 
 } // namespace pim
 
 } // namespace plugins
 
+#endif

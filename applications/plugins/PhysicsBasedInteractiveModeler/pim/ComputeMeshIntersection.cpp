@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define PLUGINS_PIM_PROGRESSIVESCALING_CPP
-#include "ProgressiveScaling.inl"
+#define PLUGINS_PIM_COMPUTEMESHINTERSECTION_CPP
+#include "ComputeMeshIntersection.inl"
 #include <sofa/core/componentmodel/behavior/Constraint.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
@@ -35,26 +35,22 @@ namespace plugins
 namespace pim
 {
 
-SOFA_DECL_CLASS(ProgressiveScaling)
+SOFA_DECL_CLASS(ComputeMeshIntersection)
 
-int ProgressiveScalingClass = sofa::core::RegisterObject("Progresive scaling")
+int ComputeMeshIntersectionClass = sofa::core::RegisterObject("Compute Mesh Intersection")
 #ifndef SOFA_FLOAT
-        .add< ProgressiveScaling<Vec3dTypes> >()
-//.add< ProgressiveScaling<Rigid3dTypes> >()
+        .add< ComputeMeshIntersection<Vec3dTypes> >()
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-        .add< ProgressiveScaling<Vec3fTypes> >()
-//.add< ProgressiveScaling<Rigid3fTypes> >()
+        .add< ComputeMeshIntersection<Vec3fTypes> >()
 #endif //SOFA_DOUBLE
         ;
 
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<Vec3dTypes>;
-//template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<Rigid3dTypes>;
+template class SOFA_COMPONENT_ENGINE_API ComputeMeshIntersection<Vec3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<Vec3fTypes>;
-//template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<Rigid3fTypes>;
+template class SOFA_COMPONENT_ENGINE_API ComputeMeshIntersection<Vec3fTypes>;
 #endif //SOFA_DOUBLE
 
 } // namespace pim

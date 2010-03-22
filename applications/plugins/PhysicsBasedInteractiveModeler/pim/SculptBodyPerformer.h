@@ -39,8 +39,13 @@
 #include <sofa/component/mass/UniformMass.h>
 #include <sofa/component/constraint/FixedConstraint.h>
 #include <sofa/component/topology/PointSubset.h>
+#include "../../CGALPlugin/MeshGenerationFromPolyhedron.h"
+#include "../../TriangularMeshRefiner/TriangularMeshRefiner.h"
+#include <sofa/gui/PickHandler.h>
 #include <set>
 #include <map>
+#include <sofa/component/collision/MouseInteractor.h>
+#include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
 
 namespace plugins
 {
@@ -53,6 +58,7 @@ using sofa::component::linearsolver::GraphScatteredVector;
 using namespace sofa::component::collision;
 using namespace sofa;
 using namespace sofa::component;
+using namespace sofa::gui;
 
 class SculptBodyPerformerConfiguration
 {
@@ -74,6 +80,7 @@ class SculptBodyPerformer: public TInteractionPerformer<DataTypes>, public Sculp
     typedef typename DataTypes::Coord                                         Coord;
     typedef typename DataTypes::VecCoord VecCoord;
     typedef sofa::component::topology::PointSubset SetIndex;
+    typedef sofa::component::collision::RayModel MouseCollisionModel;
 
 public:
     SculptBodyPerformer(BaseMouseInteractor *i);
@@ -89,6 +96,8 @@ protected:
 
     void createMatterNode();
 
+    BodyPicked findCollisionUsingPipeline(const Vector3 origin, const Vector3 direction, const double maxLength);
+
     std::set<unsigned int> vertexNeighborhood, vertexInInfluenceZone, alreadyCheckedVertex, fixedPoints, drawFacets, fixedFacets;
     BodyPicked picked;
     void computeNeighborhood();
@@ -98,9 +107,11 @@ protected:
     sofa::component::topology::MeshTopology* fatMesh;
     std::set<unsigned int> modifiedVertex, triangleChecked, modified;
     misc::MeshTetraStuffing* meshStuffed;
+    cgal::MeshGenerationFromPolyhedron<DataTypes>* CGALmeshStuffed;
     sofa::core::componentmodel::topology::BaseMeshTopology* matterMesh;
 //        sofa::component::topology::TetrahedronSetTopologyContainer* matterMesh;
-    vector<defaulttype::Vec<3,SReal> > seqPoints;
+//        vector<defaulttype::Vec<3,SReal> > seqPoints;
+    VecCoord seqPoints;
     simulation::Node *addedMateriaNode, *root, *collisionNode, *SubsetNode, *springNode, *mergeNode, *fixedMateria, *visualFat, *subsetPoints, *matterNode, *dynamicMatterNode, *staticMatterNode, *sculptedPointsNode, *bodyNode, *sculptedPointsNode2;
     std::multimap<unsigned int, unsigned int> vertexMap;
     core::componentmodel::behavior::MechanicalState<DataTypes>* matterMstate;
@@ -110,6 +121,16 @@ protected:
     mass::UniformMass<defaulttype::Vec3dTypes,double>* matterMass;
 
     VecCoord surfacePoint;
+
+    TriangularMeshRefiner *tmr;
+
+    std::map<unsigned int, unsigned int> surfacePointMap;
+
+    bool is_connected(unsigned int pointIndex);
+
+    MouseCollisionModel *mouseCollision;
+    sofa::component::topology::TriangleSetGeometryAlgorithms< DataTypes >* m_triangleGeo;
+    bool first;
 };
 
 
