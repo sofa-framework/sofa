@@ -22,12 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define PLUGINS_PIM_PROGRESSIVESCALING_CPP
-#include "ProgressiveScaling.inl"
-#include <sofa/core/componentmodel/behavior/Constraint.inl>
+#include "TransformPlaneConstraint.h"
 #include <sofa/core/ObjectFactory.h>
-#include <sofa/defaulttype/Vec3Types.h>
-#include <sofa/defaulttype/RigidTypes.h>
 
 namespace plugins
 {
@@ -35,27 +31,62 @@ namespace plugins
 namespace pim
 {
 
-SOFA_DECL_CLASS(ProgressiveScaling)
+SOFA_DECL_CLASS(TransformPlaneConstraint)
 
-int ProgressiveScalingClass = sofa::core::RegisterObject("Progresive scaling")
-#ifndef SOFA_FLOAT
-        .add< ProgressiveScaling<Vec3dTypes> >()
-//.add< ProgressiveScaling<Rigid3dTypes> >()
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-        .add< ProgressiveScaling<Vec3fTypes> >()
-//.add< ProgressiveScaling<Rigid3fTypes> >()
-#endif //SOFA_DOUBLE
+int TransformPlaneConstraintClass = sofa::core::RegisterObject("")
+        .add< TransformPlaneConstraint >()
         ;
 
-#ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<Vec3dTypes>;
-//template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<Rigid3dTypes>;
-#endif //SOFA_FLOAT
-#ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<Vec3fTypes>;
-//template class SOFA_COMPONENT_ENGINE_API ProgressiveScaling<Rigid3fTypes>;
-#endif //SOFA_DOUBLE
+TransformPlaneConstraint::TransformPlaneConstraint():
+    d_planes(initData(&d_planes, "plane", "") )
+    , d_outPlanes(initData(&d_outPlanes, "outPlane", "") )
+    , d_rotation(initData(&d_rotation, "rotation", "") )
+    , d_translation(initData(&d_translation, "translation", "") )
+    , d_scale(initData(&d_scale, "scale", "") )
+{
+}
+
+void TransformPlaneConstraint::init()
+{
+    addInput(&d_planes);
+    addInput(&d_rotation);
+    addInput(&d_translation);
+    addInput(&d_scale);
+    addOutput(&d_outPlanes);
+
+    setDirtyValue();
+}
+
+void TransformPlaneConstraint::update()
+{
+    cleanDirty();
+
+    const sofa::helper::vector<Vec10>& planes = d_planes.getValue();
+    const sofa::helper::Quater<double>& rotation = d_rotation.getValue();
+    const Vec3d& translation = d_translation.getValue();
+    const double scale = d_scale.getValue();
+
+    sofa::helper::vector<Vec10>& outPlanes = (*d_outPlanes.beginEdit());
+
+    outPlanes.resize(planes.size());
+    Vec3d result, p;
+
+    for (unsigned int i=0; i<planes.size(); ++i)
+    {
+        for (unsigned int j=0; j<3; ++j)
+        {
+            p = Vec3d(planes[i][(j*3)], planes[i][(j*3)+1], planes[i][(j*3)+2]);
+            result = p*scale;
+            result = rotation.rotate(result);
+            result += translation;
+            outPlanes[i][(j*3)] = result[0];
+            outPlanes[i][(j*3)+1] = result[1];
+            outPlanes[i][(j*3)+2] = result[2];
+        }
+        outPlanes[i][9] = planes[i][9]*scale;
+    }
+    d_outPlanes.endEdit();
+}
 
 } // namespace pim
 

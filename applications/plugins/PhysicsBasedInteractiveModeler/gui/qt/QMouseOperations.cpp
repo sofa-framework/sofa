@@ -54,39 +54,58 @@ using namespace sofa::defaulttype;
 
 QSculptOperation::QSculptOperation()
 {
-    QGridLayout *layout=new QGridLayout(this,2,3);
-    QLabel *forceLabel=new QLabel(QString("Force"), this);
-    forceSlider=new QSlider(Qt::Horizontal, this);
-    forceValue=new QSpinBox(0,100,1,this);
-    forceValue->setEnabled(false);
 
-    layout->addWidget(forceLabel,1,0);
-    layout->addWidget(forceSlider,1,1);
-    layout->addWidget(forceValue,1,2);
+    //Building the GUI for Sculpt Operation
+    QVBoxLayout *layout=new QVBoxLayout(this);
 
+    options = new QGroupBox(QString("Options"),this);
+    VLayout = new QVBoxLayout(options);
+
+
+    QHBoxLayout *HLayout = new QHBoxLayout();
+    sculptRadioButton = new QRadioButton(QString("Sculpt"), options);
+    sculptRadioButton->setChecked(true);
+    fixRadioButton = new QRadioButton(QString("Fix"), options);
+
+    HLayout->addWidget(sculptRadioButton);
+    HLayout->addWidget(fixRadioButton);
+    VLayout->addLayout(HLayout);
+
+    QHBoxLayout *HLayout1 = new QHBoxLayout();
     QLabel *scaleLabel=new QLabel(QString("Scale"), this);
     scaleSlider=new QSlider(Qt::Horizontal, this);
     scaleValue=new QSpinBox(0,100,1,this);
-    scaleValue->setEnabled(false);
+    scaleValue->setEnabled(true);
 
-    layout->addWidget(scaleLabel,2,0);
-    layout->addWidget(scaleSlider,2,1);
-    layout->addWidget(scaleValue,2,2);
+    HLayout1->addWidget(scaleLabel);
+    HLayout1->addWidget(scaleSlider);
+    HLayout1->addWidget(scaleValue);
+    VLayout->addLayout(HLayout1);
 
-    sculptRadioButton = new QRadioButton(QString("Sculpt"), this);
-    sculptRadioButton->setChecked(true);
-    layout->addWidget(sculptRadioButton,0,0);
+    HLayout2 = new QHBoxLayout();
+    forceLabel=new QLabel(QString("Force"), this);
+    forceSlider=new QSlider(Qt::Horizontal, this);
+    forceValue=new QSpinBox(0,100,1,this);
+    forceValue->setEnabled(true);
 
-    fixRadioButton = new QRadioButton(QString("Fix"), this);
-    layout->addWidget(fixRadioButton,0,1);
+    HLayout2->addWidget(forceLabel);
+    HLayout2->addWidget(forceSlider);
+    HLayout2->addWidget(forceValue);
+    VLayout->addLayout(HLayout2);
 
-    animatePushButton = new QPushButton(QString("Animate"), this);
+    QHBoxLayout *HLayout3 = new QHBoxLayout();
+    animatePushButton = new QPushButton(QString("Animate"), options);
+    animatePushButton->setMaximumSize(75,30);
+
 #ifdef SOFA_QT4
     animatePushButton->setCheckable(true);
 #else
     animatePushButton->setToggleButton(true);
 #endif
-    layout->addWidget(animatePushButton,0,2);
+    HLayout3->addWidget(animatePushButton);
+    VLayout->addLayout(HLayout3);
+
+    layout->addWidget(options);
 
     connect(forceSlider,SIGNAL(valueChanged(int)), forceValue, SLOT(setValue(int)));
     connect(scaleSlider,SIGNAL(valueChanged(int)), scaleValue, SLOT(setValue(int)));
@@ -95,8 +114,28 @@ QSculptOperation::QSculptOperation()
     /* Add solver, mass and forcefield to simulate added materia */
     connect(animatePushButton,SIGNAL(toggled(bool)), this, SLOT(animate(bool)));
 
-    forceSlider->setValue(1);
-    scaleSlider->setValue(20);
+    connect(fixRadioButton,SIGNAL(toggled(bool)), this, SLOT(updateInterface(bool)));
+
+    forceSlider->setValue(10);
+    scaleSlider->setValue(70);
+}
+
+void QSculptOperation::updateInterface(bool checked)
+{
+    if (!checked)
+    {
+        forceLabel->setHidden(false);
+        forceSlider->setHidden(false);
+        forceValue->setHidden(false);
+        animatePushButton->setHidden(false);
+    }
+    else
+    {
+        forceLabel->setHidden(true);
+        forceSlider->setHidden(true);
+        forceValue->setHidden(true);
+        animatePushButton->setHidden(true);
+    }
 }
 
 double QSculptOperation::getForce() const

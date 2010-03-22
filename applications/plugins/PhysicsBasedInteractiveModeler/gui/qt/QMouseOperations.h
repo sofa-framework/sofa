@@ -31,12 +31,16 @@
 //#include <sofa/gui/qt/SofaMouseManager.h>
 #include <sofa/gui/PickHandler.h>
 #ifdef SOFA_QT4
+#include <QVBoxLayout>
+#include <QHBoxLayout>
 #include <QWidget>
 #include <QLineEdit>
 #include <QSpinBox>
 #include <QSlider>
 #include <QRadioButton>
 #include <QPushButton>
+#include <QGroupBox>
+#include <QLabel>
 #else
 #include <qwidget.h>
 #include <qlineedit.h>
@@ -44,6 +48,8 @@
 #include <qslider.h>
 #include <qradiobutton.h>
 #include <qpushbutton.h>
+#include <qgroupbox>
+#include <qlabel.h>
 #endif
 #include <iostream>
 
@@ -75,8 +81,12 @@ public:
 public slots:
     void setScale();
     void animate(bool checked);
+    void updateInterface(bool);
 
 protected:
+
+    QGroupBox *options;
+
     QSlider  *forceSlider;
     QSpinBox *forceValue;
 
@@ -87,6 +97,12 @@ protected:
     QRadioButton *fixRadioButton;
 
     QPushButton *animatePushButton;
+
+    QHBoxLayout *HLayout1;
+    QHBoxLayout *HLayout2;
+    QVBoxLayout *VLayout;
+
+    QLabel *forceLabel;
 };
 
 } // namespace qt
