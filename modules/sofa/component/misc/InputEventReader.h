@@ -31,6 +31,11 @@
 #include <sofa/core/objectmodel/MouseEvent.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 
+#ifdef __linux__
+#include <linux/input.h>
+#include <poll.h>
+#endif
+
 namespace sofa
 {
 
@@ -39,6 +44,11 @@ namespace component
 
 namespace misc
 {
+
+#ifndef __linux__
+struct input_event;
+#endif
+
 /**
  * @brief InputEventReader Class
  *
@@ -73,10 +83,15 @@ public:
 
 private:
 
-    sofa::core::objectmodel::DataFileName filename; ///< file in which the events are stored.
+    sofa::core::objectmodel::DataFileName filename; ///< file in which the events are read.
     Data<bool> inverseSense; ///< inverse the sense of the mouvement
     Data<bool> p_printEvent;
     Data<char> p_key1, p_key2;
+    Data<bool> p_writeEvents;
+    sofa::core::objectmodel::DataFileName p_outputFilename;
+    std::ifstream* inFile;
+    std::ofstream* outFile;
+
 //	Data<double> timeout;
     int fd; ///< desciptor to open and read the file.
 
@@ -93,6 +108,7 @@ private:
      * This method reads from file /dev/input/eventX and gets the mouse relative deplacements.
      */
     void getInputEvents();
+    void manageEvent(const input_event &ev);
 };
 
 } // namespace misc
