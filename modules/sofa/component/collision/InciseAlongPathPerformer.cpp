@@ -42,6 +42,9 @@ void InciseAlongPathPerformer::start()
 {
     startBody=this->interactor->getBodyPicked();
 
+    if (startBody.body == 0)
+        return;
+
     if (cpt == 0) // register first position of incision
     {
         firstIncisionBody = startBody;
