@@ -360,8 +360,8 @@ void DeformableOnRigidFrameMapping<BasicMapping>::applyJT( typename In::VecDeriv
     if (rootModel)
     {
         Deriv v,omega;
-        unsigned int val;
-        unsigned int cpt;
+//	unsigned int val;
+//	unsigned int cpt;
 //	const VecCoord& pts = this->getPoints();
 //        out.resize(in.size());
 
