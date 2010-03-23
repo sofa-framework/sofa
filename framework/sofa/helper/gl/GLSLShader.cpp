@@ -41,15 +41,6 @@ namespace gl
 
 bool GLSLShader::InitGLSL()
 {
-    GLenum err = glewInit();
-    if (GLEW_OK != err)
-    {
-        /* Problem: glewInit failed, something is seriously wrong. */
-        fprintf(stderr, "Error: %s\n", glewGetErrorString(err));
-        return false;
-    }
-//     fprintf(stdout, "GLSLShader: Using GLEW %s\n", glewGetString(GLEW_VERSION));
-
     // Make sure find the GL_ARB_shader_objects extension so we can use shaders.
     if(!GLEW_ARB_shader_objects)
     {
