@@ -56,7 +56,7 @@ LMConstraintSolver::LMConstraintSolver():
     maxError( initData( &maxError, 0.0000001, "maxError", "Max error for Gauss-Seidel algorithm when solving the constraints")),
     graphGSError( initData(&graphGSError,"graphGSError","Graph of residuals at each iteration") ),
     traceKineticEnergy( initData( &traceKineticEnergy, true, "traceKineticEnergy", "Trace the evolution of the Kinetic Energy throughout the solution of the system")),
-    graphKineticEnergy( initData(&graphKineticEnergy,"graphKineticEnergy","Graph of the cinetic energy of the system") ),
+    graphKineticEnergy( initData(&graphKineticEnergy,"graphKineticEnergy","Graph of the kinetic energy of the system") ),
     A(NULL), c(NULL), Lambda(NULL)
 {
     graphGSError.setGroup("Statistics");
