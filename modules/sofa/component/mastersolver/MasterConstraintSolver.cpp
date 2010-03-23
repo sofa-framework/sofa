@@ -629,6 +629,13 @@ void MasterConstraintSolver::gaussSeidelConstraint(int dim, double* dfree, doubl
                     constraintsAreVerified = false;
             }
 
+            if(res[j]->tolerance)
+            {
+                if(contraintError > res[j]->tolerance)
+                    constraintsAreVerified = false;
+                contraintError *= tolerance / res[j]->tolerance;
+            }
+
             error += contraintError;
             tabErrors[j] = contraintError;
 
