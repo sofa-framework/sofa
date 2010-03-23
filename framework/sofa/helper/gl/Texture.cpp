@@ -459,6 +459,13 @@ void Texture::init(void)
             glTexParameteri( target, GL_TEXTURE_WRAP_R, GL_CLAMP );
         }
     }
+
+#if defined(GLEW_ARB_seamless_cube_map)
+    // This is a global state so probably should be moved to a more appropriate location.
+    if (textureType == io::Image::TEXTURE_CUBE)
+        if (GLEW_ARB_seamless_cube_map)
+            glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+#endif
 }
 
 void Texture::bind(void)

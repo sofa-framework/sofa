@@ -67,6 +67,12 @@ protected:
     Data<unsigned int> proceduralTextureHeight;
     Data<unsigned int> proceduralTextureNbBits;
     Data<helper::vector<unsigned int> > proceduralTextureData;
+    sofa::core::objectmodel::DataFileName cubemapFilenamePosX;
+    sofa::core::objectmodel::DataFileName cubemapFilenamePosY;
+    sofa::core::objectmodel::DataFileName cubemapFilenamePosZ;
+    sofa::core::objectmodel::DataFileName cubemapFilenameNegX;
+    sofa::core::objectmodel::DataFileName cubemapFilenameNegY;
+    sofa::core::objectmodel::DataFileName cubemapFilenameNegZ;
 
     helper::gl::Texture* texture;
     helper::io::Image* img;

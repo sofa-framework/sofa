@@ -54,6 +54,13 @@ OglTexture::OglTexture()
     ,proceduralTextureHeight(initData(&proceduralTextureHeight, (unsigned int) 0, "proceduralTextureHeight", "Height of procedural Texture"))
     ,proceduralTextureNbBits(initData(&proceduralTextureNbBits, (unsigned int) 1, "proceduralTextureNbBits", "Nb bits per color"))
     ,proceduralTextureData(initData(&proceduralTextureData,  "proceduralTextureData", "Data of procedural Texture "))
+    ,cubemapFilenamePosX(initData(&cubemapFilenamePosX, (std::string) "", "cubemapFilenamePosX", "Texture filename of positive-X cubemap face"))
+    ,cubemapFilenamePosY(initData(&cubemapFilenamePosY, (std::string) "", "cubemapFilenamePosY", "Texture filename of positive-Y cubemap face"))
+    ,cubemapFilenamePosZ(initData(&cubemapFilenamePosZ, (std::string) "", "cubemapFilenamePosZ", "Texture filename of positive-Z cubemap face"))
+    ,cubemapFilenameNegX(initData(&cubemapFilenameNegX, (std::string) "", "cubemapFilenameNegX", "Texture filename of negative-X cubemap face"))
+    ,cubemapFilenameNegY(initData(&cubemapFilenameNegY, (std::string) "", "cubemapFilenameNegY", "Texture filename of negative-Y cubemap face"))
+    ,cubemapFilenameNegZ(initData(&cubemapFilenameNegZ, (std::string) "", "cubemapFilenameNegZ", "Texture filename of negative-Z cubemap face"))
+    ,img(0)
 {
 
 }
@@ -72,28 +79,100 @@ void OglTexture::init()
 {
     if (textureFilename.getFullPath().empty())
     {
-        unsigned int height = proceduralTextureHeight.getValue();
-        unsigned int width = proceduralTextureWidth.getValue();
-        helper::vector<unsigned int> textureData = proceduralTextureData.getValue();
-        unsigned int nbb = proceduralTextureNbBits.getValue();
-
-        if (height > 0 && width > 0 && !textureData.empty() )
+        if (cubemapFilenamePosX.getFullPath().empty() &&
+            cubemapFilenamePosY.getFullPath().empty() &&
+            cubemapFilenamePosZ.getFullPath().empty() &&
+            cubemapFilenameNegX.getFullPath().empty() &&
+            cubemapFilenameNegY.getFullPath().empty() &&
+            cubemapFilenameNegZ.getFullPath().empty())
         {
-            //Init texture
-            img = new helper::io::Image();
-            img->init(height, width, nbb);
+            // "Procedural" texture (actually inline texture data inside the scene file).
+            unsigned int height = proceduralTextureHeight.getValue();
+            unsigned int width = proceduralTextureWidth.getValue();
+            helper::vector<unsigned int> textureData = proceduralTextureData.getValue();
+            unsigned int nbb = proceduralTextureNbBits.getValue();
 
-            //Make texture
-            unsigned char* data = img->getPixels();
+            if (height > 0 && width > 0 && !textureData.empty() )
+            {
+                //Init texture
+                img = new helper::io::Image();
+                img->init(height, width, nbb);
 
-            for(unsigned int i=0 ; i<textureData.size() && i < height*width*(nbb/8); i++)
-                data[i] = (unsigned char)textureData[i];
+                //Make texture
+                unsigned char* data = img->getPixels();
 
-            for (unsigned int i=textureData.size() ; i<height*width*(nbb/8) ; i++)
-                data[i] = 0;
+                for(unsigned int i=0 ; i<textureData.size() && i < height*width*(nbb/8); i++)
+                    data[i] = (unsigned char)textureData[i];
+
+                for (unsigned int i=textureData.size() ; i<height*width*(nbb/8) ; i++)
+                    data[i] = 0;
+            }
+        }
+        else
+        {
+            // A cubemap with faces stored in separate files.
+            std::string filename[6] =
+            {
+                cubemapFilenamePosX.getFullPath(),
+                cubemapFilenameNegX.getFullPath(),
+                cubemapFilenamePosY.getFullPath(),
+                cubemapFilenameNegY.getFullPath(),
+                cubemapFilenamePosZ.getFullPath(),
+                cubemapFilenameNegZ.getFullPath()
+            };
+
+            if (img) delete img;
+            img = 0;
+            helper::io::Image *tmp = 0;
+
+            for (unsigned i = 0; i < 6; i++)
+                if (!filename[i].empty())
+                {
+                    if (tmp) delete tmp;
+                    tmp = helper::io::Image::Create(filename[i].c_str());
+
+                    if (tmp->getTextureType() != helper::io::Image::TEXTURE_2D)
+                    {
+                        std::cerr << "OglTexture: invalid texture type in " << filename[i] << std::endl;
+                        continue;
+                    }
+
+                    if (!img)
+                    {
+                        img = new helper::io::Image();
+                        img->init(tmp->getWidth(), tmp->getHeight(), 0, 1, tmp->getDataType(), tmp->getChannelFormat());
+                        memset(img->getPixels(), 0, img->getImageSize());
+                    }
+                    else
+                    {
+                        if (img->getWidth() != tmp->getWidth() ||
+                            img->getHeight() != tmp->getHeight())
+                        {
+                            std::cerr << "OglTexture: inconsistent cubemap dimensions in " << filename[i] << std::endl;
+                            continue;
+                        }
+
+                        if (img->getDataType() != tmp->getDataType())
+                        {
+                            std::cerr << "OglTexture: inconsistent cubemap datatype in " << filename[i] << std::endl;
+                            continue;
+                        }
+
+                        if (img->getChannelFormat() != tmp->getChannelFormat())
+                        {
+                            std::cerr << "OglTexture: inconsistent cubemap channel format in " << filename[i] << std::endl;
+                            continue;
+                        }
+                    }
+
+                    memcpy(img->getCubeMipmapPixels(i, 0), tmp->getPixels(), tmp->getImageSize());
+                }
+
+            if (tmp) delete tmp;
         }
     }
     else
+        // Ordinary texture.
         img = helper::io::Image::Create(textureFilename.getFullPath().c_str());
 
     OglShaderElement::init();
