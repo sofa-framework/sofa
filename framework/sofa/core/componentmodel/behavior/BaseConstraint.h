@@ -56,7 +56,7 @@ class ConstraintResolution
 {
 public:
     ConstraintResolution()
-        : nbLines(1) {}
+        : nbLines(1), tolerance(0.0) {}
 
     virtual ~ConstraintResolution() {}
 
@@ -69,6 +69,9 @@ public:
 
     /// Number of dof used by this particular constraint. To be modified in the object's constructor.
     unsigned char nbLines;
+
+    /// Custom tolerance, used for the convergence of this particular constraint instead of the global tolerance
+    double tolerance;
 };
 #endif // SOFA_DEV
 
