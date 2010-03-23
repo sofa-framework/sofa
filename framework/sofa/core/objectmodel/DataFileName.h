@@ -108,9 +108,9 @@ public:
         return ret;
     }
 
-    virtual const std::string& getRelativePath() { return getValue(); }
-    virtual const std::string& getFullPath() { return fullpath; }
-    virtual const std::string& getAbsolutePath() { return fullpath; }
+    virtual const std::string& getRelativePath() const { return getValue(); }
+    virtual const std::string& getFullPath() const { return fullpath; }
+    virtual const std::string& getAbsolutePath() const { return fullpath; }
 
 protected:
     void updatePath();
