@@ -28,6 +28,11 @@
 #include <sofa/core/componentmodel/behavior/BaseConstraintCorrection.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 
+#include <sofa/component/component.h>
+
+#include <sofa/defaulttype/VecTypes.h>
+#include <sofa/defaulttype/RigidTypes.h>
+
 
 namespace sofa
 {
@@ -137,7 +142,7 @@ private:
 #ifndef SOFA_FLOAT
 extern template class SOFA_COMPONENT_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Vec3dTypes>;
 //extern template class SOFA_COMPONENT_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Vec2dTypes>;
-extern template class SOFA_COMPONENT_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Vec1Types>;
+extern template class SOFA_COMPONENT_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Vec1dTypes>;
 //extern template class SOFA_COMPONENT_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Vec6dTypes>;
 extern template class SOFA_COMPONENT_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Rigid3dTypes>;
 //extern template class SOFA_COMPONENT_CONSTRAINT_API UncoupledConstraintCorrection<defaulttype::Rigid2dTypes>;
@@ -152,7 +157,7 @@ extern template class SOFA_COMPONENT_CONSTRAINT_API UncoupledConstraintCorrectio
 #endif
 #endif
 
-} // namespace collision
+} // namespace constraint
 
 } // namespace component
 

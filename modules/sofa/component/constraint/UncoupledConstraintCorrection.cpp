@@ -397,14 +397,40 @@ SOFA_COMPONENT_CONSTRAINT_API void UncoupledConstraintCorrection< defaulttype::R
 SOFA_DECL_CLASS(UncoupledConstraintCorrection)
 
 int UncoupledConstraintCorrectionClass = core::RegisterObject("Component computing contact forces within a simulated body using the compliance method.")
-        .add< UncoupledConstraintCorrection< Vec1Types > >()
-        .add< UncoupledConstraintCorrection< Vec3Types > >()
-        .add< UncoupledConstraintCorrection< Rigid3Types > >()
+#ifndef SOFA_FLOAT
+        .add< UncoupledConstraintCorrection< Vec1dTypes > >()
+//.add< UncoupledConstraintCorrection< Vec2dTypes > >()
+        .add< UncoupledConstraintCorrection< Vec3dTypes > >()
+//.add< UncoupledConstraintCorrection< Vec6dTypes > >()
+//.add< UncoupledConstraintCorrection< Rigid2dTypes > >()
+        .add< UncoupledConstraintCorrection< Rigid3dTypes > >()
+#endif
+#ifndef SOFA_DOUBLE
+        .add< UncoupledConstraintCorrection< Vec1fTypes > >()
+//.add< UncoupledConstraintCorrection< Vec2fTypes > >()
+        .add< UncoupledConstraintCorrection< Vec3fTypes > >()
+//.add< UncoupledConstraintCorrection< Vec6fTypes > >()
+//.add< UncoupledConstraintCorrection< Rigid2fTypes > >()
+        .add< UncoupledConstraintCorrection< Rigid3fTypes > >()
+#endif
         ;
 
-template class SOFA_COMPONENT_CONSTRAINT_API UncoupledConstraintCorrection< Vec1Types >;
-template class SOFA_COMPONENT_CONSTRAINT_API UncoupledConstraintCorrection< Vec3Types >;
-template class SOFA_COMPONENT_CONSTRAINT_API UncoupledConstraintCorrection< Rigid3Types >;
+#ifndef SOFA_FLOAT
+template class SOFA_COMPONENT_CONSTRAINT_API UncoupledConstraintCorrection< Vec1dTypes >;
+//template class SOFA_COMPONENT_CONSTRAINT_API UncoupledConstraintCorrection< Vec2dTypes >;
+template class SOFA_COMPONENT_CONSTRAINT_API UncoupledConstraintCorrection< Vec3dTypes >;
+//template class SOFA_COMPONENT_CONSTRAINT_API UncoupledConstraintCorrection< Vec6dTypes >;
+//template class SOFA_COMPONENT_CONSTRAINT_API UncoupledConstraintCorrection< Rigid2dTypes >;
+template class SOFA_COMPONENT_CONSTRAINT_API UncoupledConstraintCorrection< Rigid3dTypes >;
+#endif
+#ifndef SOFA_DOUBLE
+template class SOFA_COMPONENT_CONSTRAINT_API UncoupledConstraintCorrection< Vec1fTypes >;
+//template class SOFA_COMPONENT_CONSTRAINT_API UncoupledConstraintCorrection< Vec2fTypes >;
+template class SOFA_COMPONENT_CONSTRAINT_API UncoupledConstraintCorrection< Vec3fTypes >;
+//template class SOFA_COMPONENT_CONSTRAINT_API UncoupledConstraintCorrection< Vec6fTypes >;
+//template class SOFA_COMPONENT_CONSTRAINT_API UncoupledConstraintCorrection< Rigid2fTypes >;
+template class SOFA_COMPONENT_CONSTRAINT_API UncoupledConstraintCorrection< Rigid3fTypes >;
+#endif
 
 } // namespace constraint
 
