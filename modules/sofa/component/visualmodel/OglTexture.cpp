@@ -50,6 +50,9 @@ OglTexture::OglTexture()
     ,repeat(initData(&repeat, (bool) false, "repeat", "Repeat Texture ?"))
     ,linearInterpolation(initData(&linearInterpolation, (bool) true, "linearInterpolation", "Interpolate Texture ?"))
     ,generateMipmaps(initData(&generateMipmaps, (bool) false, "generateMipmaps", "Generate mipmaps ?"))
+    ,srgbColorspace(initData(&srgbColorspace, (bool) false, "srgbColorspace", "SRGB colorspace ?"))
+    ,minLod(initData(&minLod, (float) -1000, "minLod", "Minimum mipmap lod ?"))
+    ,maxLod(initData(&maxLod, (float)  1000, "maxLod", "Maximum mipmap lod ?"))
     ,proceduralTextureWidth(initData(&proceduralTextureWidth, (unsigned int) 0, "proceduralTextureWidth", "Width of procedural Texture"))
     ,proceduralTextureHeight(initData(&proceduralTextureHeight, (unsigned int) 0, "proceduralTextureHeight", "Height of procedural Texture"))
     ,proceduralTextureNbBits(initData(&proceduralTextureNbBits, (unsigned int) 1, "proceduralTextureNbBits", "Nb bits per color"))
@@ -196,7 +199,9 @@ void OglTexture::initVisual()
         return;
     }
 
-    texture = new helper::gl::Texture(img, repeat.getValue(), linearInterpolation.getValue(), generateMipmaps.getValue());
+    texture = new helper::gl::Texture(img, repeat.getValue(), linearInterpolation.getValue(),
+            generateMipmaps.getValue(), srgbColorspace.getValue(),
+            minLod.getValue(), maxLod.getValue());
     texture->init();
 
     setActiveTexture(textureUnit.getValue());
