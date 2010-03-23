@@ -33,6 +33,7 @@
 #include <sofa/defaulttype/RigidTypes.h>
 #include <sofa/core/objectmodel/DataFileName.h>
 #include <vector>
+#include <sofa/core/componentmodel/behavior/BaseMass.h>
 
 namespace sofa
 {
@@ -177,6 +178,13 @@ public:
      * @brief
      */
     void accumulateConstraint();
+
+    /**
+      * @brief
+      MAP the mass: this function recompute the rigid mass (gravity center position and inertia) of the object
+          based on its deformed shape
+      */
+    void recomputeRigidMass();
 
     //@}
 

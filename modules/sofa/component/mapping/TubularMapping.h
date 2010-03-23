@@ -81,7 +81,7 @@ public:
 
     virtual void applyJT ( typename In::VecDeriv& out, const typename Out::VecDeriv& in );
 
-    //void applyJT ( typename In::VecConst& out, const typename Out::VecConst& in );
+    void applyJT ( typename In::VecConst& out, const typename Out::VecConst& in );
 
     Data<unsigned int> m_nbPointsOnEachCircle; // number of points along the circles around each point of the input object (10 by default)
     Data<double> m_radius; // radius of the circles around each point of the input object (1 by default)

@@ -194,23 +194,66 @@ void TubularMapping<BasicMapping>::applyJT( typename In::VecDeriv& out, const ty
 
 }
 
-/*
+
 template <class BasicMapping>
-void TubularMapping<BasicMapping>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in )
+void TubularMapping<BasicMapping>::applyJT( typename In::VecConst& out, const typename Out::VecConst& in)
 {
-	sout << "INFO_print : pass HERE applyJT CONST !!!" << sendl;
+    // usefull for a Mechanical Mapping that propagates forces from the output DOFs to the input DOFs
 
-	Deriv v0;
-	v0[0] = (Real) (0.0); v0[1] = (Real) (0.0); v0[2] = (Real) (0.0);
+    //sout << "INFO_print : pass HERE applyJT !!!" << sendl;
 
-	for (unsigned int i=0; i<out.size(); i++)
-	{
-			out[i].getVCenter() = v0;
-			out[i].getVOrientation() = v0;
-			sout << "INFO_print : TubularMapping  DO moveJT point - i = " << i << sendl;
-	}
+    /*if(in.size() != rotatedPoints.size()){
+    	rotatedPoints.resize(in.size());
+    }
+    */
+
+    //std::cerr<< "INFO_print : pass HERE applyJT : numConstraint= " <<in.size()<<std::endl;
+
+    unsigned int N = m_nbPointsOnEachCircle.getValue();
+
+
+    int outSize = out.size();
+    out.resize(in.size() + outSize); // we can accumulate in "out" constraints from several mappings
+
+    //std::cerr<<"Resize ok"<<std::endl;
+    for(unsigned int i=0; i<in.size(); i++)
+    {
+        OutConstraintIterator itIn;
+        std::pair< OutConstraintIterator, OutConstraintIterator > iter=in[i].data();
+
+        //std::cerr<<"iter ok"<<std::endl;
+
+
+        for (itIn=iter.first; itIn!=iter.second; itIn++)
+        {
+            const unsigned int iIn = itIn->first;// index of the node
+            const Deriv f = (Deriv) itIn->second;
+            Deriv v, omega;
+
+            //std::cerr<<"calcul omega"<<std::endl;
+            v+=f;
+            omega += cross(rotatedPoints[iIn],f);
+
+            //std::cerr<<"omega ok"<<std::endl;
+
+            unsigned int Iout = iIn/N;
+
+            //std::cerr<<"io="<<io<<"  Iout="<<Iout<<std::endl;
+
+            InDeriv result(v, omega);
+
+            out[outSize+i].add(Iout, result);
+
+
+        }
+    }
+
+    //std::cerr<< " applyJT ended !!!" <<std::endl;
+
 }
-*/
+
+
+
 
 } // namespace mapping
 
