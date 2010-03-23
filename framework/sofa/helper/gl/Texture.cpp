@@ -183,6 +183,40 @@ static unsigned int internalFormatTable[io::Image::COUNT_OF_DATA_TYPES][io::Imag
     }
 };
 
+static unsigned int internalFormatTableSRGB[io::Image::COUNT_OF_DATA_TYPES][io::Image::COUNT_OF_CHANNEL_FORMATS] =
+{
+#if defined(GL_EXT_texture_sRGB)
+    // UNORM8
+    {
+        GL_SLUMINANCE8_EXT,          // L
+        GL_SLUMINANCE8_ALPHA8_EXT,   // LA
+        0, 0,                        // R, RG
+        GL_SRGB8_EXT,                // RGB
+        GL_SRGB8_ALPHA8_EXT,         // RGBA
+        GL_SRGB8_EXT,                // BGR
+        GL_SRGB8_ALPHA8_EXT          // BGRA
+    },
+#else
+    { 0 },
+#endif
+    // UNORM16
+    { 0 },
+    // UINT32
+    { 0 },
+    // HALF
+    { 0 },
+    // FLOAT
+    { 0 },
+    // UCOMPRESSED
+    {
+        0, 0, 0, 0,                  // L, LA, R, RG
+#if defined(GL_EXT_texture_sRGB)
+        GL_COMPRESSED_SRGB_S3TC_DXT1_EXT,      // RGB
+        GL_COMPRESSED_SRGB_ALPHA_S3TC_DXT5_EXT // RGBA
+#endif
+    }
+};
+
 static bool isPowerOfTwo(unsigned a)
 {
     return a > 0 && !(a & (a - 1));
@@ -345,10 +379,32 @@ void Texture::init(void)
     }
 
     target = targetTable[textureType];
-    unsigned internalFormat = internalFormatTable[image->getDataType()][image->getChannelFormat()];
     unsigned format = formatTable[image->getChannelFormat()];
     unsigned type = typeTable[image->getDataType()];
     unsigned mipmaps = image->getMipmapCount();
+    unsigned internalFormat = internalFormatTable[image->getDataType()][image->getChannelFormat()];
+
+    if (srgbColorspace)
+    {
+        unsigned internalFormatSRGB = internalFormatTableSRGB[image->getDataType()][image->getChannelFormat()];
+        if (internalFormatSRGB)
+        {
+#if defined(GLEW_EXT_texture_sRGB)
+            if (GLEW_EXT_texture_sRGB)
+                internalFormat = internalFormatSRGB;
+            else
+#endif
+            {
+                std::cerr << "sofa::helper::gl::Texture::init: SRGB colorspace is unsupported, "
+                        "GLEW_EXT_texture_srgb is missing." << std::endl;
+            }
+        }
+        else
+        {
+            std::cerr << "sofa::helper::gl::Texture::init: SRGB colorspace "
+                    "isn't supported with the given texture format." << std::endl;
+        }
+    }
 
     glGenTextures(1, &id); // Create the texture.
     glBindTexture(target, id);
@@ -465,6 +521,14 @@ void Texture::init(void)
     if (textureType == io::Image::TEXTURE_CUBE)
         if (GLEW_ARB_seamless_cube_map)
             glEnable(GL_TEXTURE_CUBE_MAP_SEAMLESS);
+#endif
+
+#if defined(GLEW_VERSION_1_2)
+    if (mipmaps > 1 && GLEW_VERSION_1_2)
+    {
+        glTexParameterf(target, GL_TEXTURE_MIN_LOD, minLod);
+        glTexParameterf(target, GL_TEXTURE_MAX_LOD, maxLod);
+    }
 #endif
 }
 

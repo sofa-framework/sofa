@@ -63,6 +63,9 @@ protected:
     Data<bool> repeat;
     Data<bool> linearInterpolation;
     Data<bool> generateMipmaps;
+    Data<bool> srgbColorspace;
+    Data<float> minLod;
+    Data<float> maxLod;
     Data<unsigned int> proceduralTextureWidth;
     Data<unsigned int> proceduralTextureHeight;
     Data<unsigned int> proceduralTextureNbBits;
