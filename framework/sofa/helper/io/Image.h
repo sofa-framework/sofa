@@ -119,6 +119,9 @@ public:
     unsigned char *get3DSliceMipmapPixels(unsigned slice, unsigned mipmap);
 
     void clear();
+
+    // Please note that depth=0 denotes a cubemap, depth=1 denotes a 2D texture,
+    // and depth>1 denotes a 3D texture.
     void init(unsigned width, unsigned height, unsigned depth, unsigned mipmaps,
             DataType dataType, ChannelFormat channelFormat);
 
