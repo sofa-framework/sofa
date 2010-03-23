@@ -405,7 +405,7 @@ void UncoupledConstraintCorrection<DataTypes>::applyContactForce(const defaultty
     VecDeriv& v = *mstate->getV();
     VecDeriv& v_free = *mstate->getVfree();
     VecCoord& x_free = *mstate->getXfree();
-    double dt = this->getContext()->getDt();
+    const double invDt = 1.0/this->getContext()->getDt();
 
 
     // Euler integration... will be done in the "integrator" as soon as it exists !
@@ -417,7 +417,7 @@ void UncoupledConstraintCorrection<DataTypes>::applyContactForce(const defaultty
         v[i] = v_free[i];
         dx[i] = force[i] * compliance.getValue()[i];
         x[i] += dx[i];
-        v[i] += dx[i]/dt;
+        v[i] += dx[i]*invDt;
     }
     //sout<<" dx on articulations"<<dx<<sendl;
 }
