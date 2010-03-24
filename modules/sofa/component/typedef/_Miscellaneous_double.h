@@ -38,35 +38,15 @@
 
 
 
-#include <sofa/component/engine/BoxROI.h>
 #include <sofa/component/misc/DevAngleCollisionMonitor.h>
 #include <sofa/component/misc/DevMonitorManager.h>
 #include <sofa/component/misc/DevTensionMonitor.h>
 #include <sofa/component/misc/EvalPointsDistance.h>
 #include <sofa/component/misc/EvalSurfaceDistance.h>
-#include <sofa/component/engine/ExtrudeSurface.h>
-#include <sofa/component/constraint/LinearSolverConstraintCorrection.h>
 #include <sofa/component/container/MappedObject.h>
-#include <sofa/component/engine/MergePoints.h>
-#include <sofa/component/engine/PlaneROI.h>
-#include <sofa/component/engine/PointsFromIndices.h>
-#include <sofa/component/constraint/PrecomputedConstraintCorrection.h>
-#include <sofa/component/engine/RandomPointDistributionInSurface.h>
+#include <sofa/component/misc/Monitor.h>
 #include <sofa/component/container/RotationFinder.h>
 #include <sofa/component/container/SpatialGridContainer.h>
-#include <sofa/component/engine/Spiral.h>
-#include <sofa/component/engine/TrianglesInBoxROI.h>
-#include <sofa/component/engine/TrianglesInPlaneROI.h>
-#include <sofa/component/engine/TrianglesInSphereROI.h>
-#include <sofa/component/constraint/UncoupledConstraintCorrection.h>
-#include <sofa/component/engine/Vertex2Frame.h>
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for BoxROI
-typedef sofa::component::engine::BoxROI<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > BoxROI3d;
-typedef sofa::component::engine::BoxROI<sofa::defaulttype::StdRigidTypes<3, double> > BoxROIRigid3d;
 
 
 
@@ -102,20 +82,6 @@ typedef sofa::component::misc::EvalSurfaceDistance<sofa::defaulttype::StdVectorT
 
 
 //---------------------------------------------------------------------------------------------
-//Typedef for ExtrudeSurface
-typedef sofa::component::engine::ExtrudeSurface<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > ExtrudeSurface3d;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for LinearSolverConstraintCorrection
-typedef sofa::component::constraint::LinearSolverConstraintCorrection<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > LinearSolverConstraintCorrection3d;
-typedef sofa::component::constraint::LinearSolverConstraintCorrection<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, double>, sofa::defaulttype::Vec<1, double>, double> > LinearSolverConstraintCorrection2d;
-typedef sofa::component::constraint::LinearSolverConstraintCorrection<sofa::defaulttype::StdRigidTypes<3, double> > LinearSolverConstraintCorrectionRigid3d;
-
-
-
-//---------------------------------------------------------------------------------------------
 //Typedef for MappedObject
 typedef sofa::component::container::MappedObject<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, double>, sofa::defaulttype::Vec<2, double>, double> > MappedObject1d;
 typedef sofa::component::container::MappedObject<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, double>, sofa::defaulttype::Vec<1, double>, double> > MappedObject2d;
@@ -127,36 +93,8 @@ typedef sofa::component::container::MappedObject<sofa::defaulttype::StdVectorTyp
 
 
 //---------------------------------------------------------------------------------------------
-//Typedef for MergePoints
-typedef sofa::component::engine::MergePoints<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > MergePoints3d;
-typedef sofa::component::engine::MergePoints<sofa::defaulttype::StdRigidTypes<3, double> > MergePointsRigid3d;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for PlaneROI
-typedef sofa::component::engine::PlaneROI<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > PlaneROI3d;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for PointsFromIndices
-typedef sofa::component::engine::PointsFromIndices<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > PointsFromIndices3d;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for PrecomputedConstraintCorrection
-typedef sofa::component::constraint::PrecomputedConstraintCorrection<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > PrecomputedConstraintCorrection3d;
-typedef sofa::component::constraint::PrecomputedConstraintCorrection<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, double>, sofa::defaulttype::Vec<1, double>, double> > PrecomputedConstraintCorrection2d;
-typedef sofa::component::constraint::PrecomputedConstraintCorrection<sofa::defaulttype::StdRigidTypes<3, double> > PrecomputedConstraintCorrectionRigid3d;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for RandomPointDistributionInSurface
-typedef sofa::component::engine::RandomPointDistributionInSurface<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > RandomPointDistributionInSurface3d;
-
+//Typedef for Monitor
+typedef sofa::component::misc::Monitor<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > Monitor3d;
 
 
 
@@ -172,81 +110,24 @@ typedef sofa::component::container::SpatialGridContainer<sofa::defaulttype::StdV
 
 
 
-//---------------------------------------------------------------------------------------------
-//Typedef for Spiral
-typedef sofa::component::engine::Spiral<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > Spiral3d;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for TrianglesInBoxROI
-typedef sofa::component::engine::TrianglesInBoxROI<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > TrianglesInBoxROI3d;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for TrianglesInPlaneROI
-typedef sofa::component::engine::TrianglesInPlaneROI<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > TrianglesInPlaneROI3d;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for TrianglesInSphereROI
-typedef sofa::component::engine::TrianglesInSphereROI<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > TrianglesInSphereROI3d;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for UncoupledConstraintCorrection
-typedef sofa::component::constraint::UncoupledConstraintCorrection<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, double>, sofa::defaulttype::Vec<1, double>, double> > UncoupledConstraintCorrection2d;
-typedef sofa::component::constraint::UncoupledConstraintCorrection<sofa::defaulttype::StdRigidTypes<3, double> > UncoupledConstraintCorrectionRigid3d;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for Vertex2Frame
-typedef sofa::component::engine::Vertex2Frame<sofa::defaulttype::StdRigidTypes<3, double> > Vertex2FrameRigid3d;
-
-
-
 
 
 #ifndef SOFA_FLOAT
-typedef BoxROI3d BoxROI3;
-typedef BoxROIRigid3d BoxROIRigid3;
 typedef DevAngleCollisionMonitorRigid3d DevAngleCollisionMonitorRigid3;
 typedef DevMonitorManager3d DevMonitorManager3;
 typedef DevTensionMonitorRigid3d DevTensionMonitorRigid3;
 typedef EvalPointsDistance3d EvalPointsDistance3;
 typedef EvalPointsDistanceRigid3d EvalPointsDistanceRigid3;
 typedef EvalSurfaceDistance3d EvalSurfaceDistance3;
-typedef ExtrudeSurface3d ExtrudeSurface3;
-typedef LinearSolverConstraintCorrection3d LinearSolverConstraintCorrection3;
-typedef LinearSolverConstraintCorrection2d LinearSolverConstraintCorrection2;
-typedef LinearSolverConstraintCorrectionRigid3d LinearSolverConstraintCorrectionRigid3;
 typedef MappedObject1d MappedObject1;
 typedef MappedObject2d MappedObject2;
 typedef MappedObject6d MappedObject6;
 typedef MappedObjectRigid3d MappedObjectRigid3;
 typedef MappedObjectRigid2d MappedObjectRigid2;
 typedef MappedObject3d MappedObject3;
-typedef MergePoints3d MergePoints3;
-typedef MergePointsRigid3d MergePointsRigid3;
-typedef PlaneROI3d PlaneROI3;
-typedef PointsFromIndices3d PointsFromIndices3;
-typedef PrecomputedConstraintCorrection3d PrecomputedConstraintCorrection3;
-typedef PrecomputedConstraintCorrection2d PrecomputedConstraintCorrection2;
-typedef PrecomputedConstraintCorrectionRigid3d PrecomputedConstraintCorrectionRigid3;
-typedef RandomPointDistributionInSurface3d RandomPointDistributionInSurface3;
+typedef Monitor3d Monitor3;
 typedef RotationFinder3d RotationFinder3;
 typedef SpatialGridContainer3d SpatialGridContainer3;
-typedef Spiral3d Spiral3;
-typedef TrianglesInBoxROI3d TrianglesInBoxROI3;
-typedef TrianglesInPlaneROI3d TrianglesInPlaneROI3;
-typedef TrianglesInSphereROI3d TrianglesInSphereROI3;
-typedef UncoupledConstraintCorrection2d UncoupledConstraintCorrection2;
-typedef UncoupledConstraintCorrectionRigid3d UncoupledConstraintCorrectionRigid3;
-typedef Vertex2FrameRigid3d Vertex2FrameRigid3;
 #endif
 
 #endif

@@ -47,6 +47,7 @@
 #include <sofa/component/mapping/CenterOfMassMapping.h>
 #include <sofa/component/mapping/CenterPointMechanicalMapping.h>
 #include <sofa/component/mapping/CurveMapping.h>
+#include <sofa/component/mapping/ExternalInterpolationMapping.h>
 #include <sofa/component/mapping/IdentityMapping.h>
 #include <sofa/component/mapping/LineSetSkinningMapping.h>
 #include <sofa/component/mapping/Mesh2PointMechanicalMapping.h>
@@ -67,6 +68,7 @@ typedef sofa::component::mapping::ArticulatedSystemMapping<sofa::core::component
 
 //---------------------------------------------------------------------------------------------
 //Typedef for BarycentricMapping
+typedef sofa::component::mapping::BarycentricMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> >, sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<3, float> > > > BarycentricMechanicalMapping3f_to_Rigid3f;
 typedef sofa::component::mapping::BarycentricMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> >, sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > BarycentricMechanicalMapping3f_to_3f;
 
 
@@ -93,6 +95,14 @@ typedef sofa::component::mapping::CenterPointMechanicalMapping<sofa::core::compo
 //---------------------------------------------------------------------------------------------
 //Typedef for CurveMapping
 typedef sofa::component::mapping::CurveMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> >, sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<3, float> > > > CurveMechanicalMapping3f_to_Rigid3f;
+
+
+
+//---------------------------------------------------------------------------------------------
+//Typedef for ExternalInterpolationMapping
+typedef sofa::component::mapping::ExternalInterpolationMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> >, sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > ExternalInterpolationMechanicalMapping3f_to_3f;
+typedef sofa::component::mapping::ExternalInterpolationMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> >, sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > > > ExternalInterpolationMechanicalMapping1f_to_1f;
+typedef sofa::component::mapping::ExternalInterpolationMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> >, sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > > > ExternalInterpolationMechanicalMapping2f_to_2f;
 
 
 
@@ -149,6 +159,8 @@ typedef sofa::component::mapping::SkinningMapping<sofa::core::componentmodel::be
 //---------------------------------------------------------------------------------------------
 //Typedef for SubsetMapping
 typedef sofa::component::mapping::SubsetMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> >, sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > SubsetMechanicalMapping3f_to_3f;
+typedef sofa::component::mapping::SubsetMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> >, sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > > > SubsetMechanicalMapping2f_to_2f;
+typedef sofa::component::mapping::SubsetMapping<sofa::core::componentmodel::behavior::MechanicalMapping<sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<3, float> >, sofa::core::componentmodel::behavior::MechanicalState<sofa::defaulttype::StdRigidTypes<3, float> > > > SubsetMechanicalMappingRigid3f_to_Rigid3f;
 
 
 
@@ -162,12 +174,16 @@ typedef sofa::component::mapping::TubularMapping<sofa::core::componentmodel::beh
 
 #ifdef SOFA_FLOAT
 typedef ArticulatedSystemMechanicalMapping2f_to_Rigid3f ArticulatedSystemMechanicalMapping2_to_Rigid3;
+typedef BarycentricMechanicalMapping3f_to_Rigid3f BarycentricMechanicalMapping3_to_Rigid3;
 typedef BarycentricMechanicalMapping3f_to_3f BarycentricMechanicalMapping3_to_3;
 typedef BeamLinearMechanicalMappingRigid3f_to_3f BeamLinearMechanicalMappingRigid3_to_3;
 typedef CenterOfMassMechanicalMappingRigid3f_to_3f CenterOfMassMechanicalMappingRigid3_to_3;
 typedef CenterOfMassMechanicalMappingRigid2f_to_1f CenterOfMassMechanicalMappingRigid2_to_1;
 typedef CenterPointMechanicalMechanicalMapping3f_to_3f CenterPointMechanicalMechanicalMapping3_to_3;
 typedef CurveMechanicalMapping3f_to_Rigid3f CurveMechanicalMapping3_to_Rigid3;
+typedef ExternalInterpolationMechanicalMapping3f_to_3f ExternalInterpolationMechanicalMapping3_to_3;
+typedef ExternalInterpolationMechanicalMapping1f_to_1f ExternalInterpolationMechanicalMapping1_to_1;
+typedef ExternalInterpolationMechanicalMapping2f_to_2f ExternalInterpolationMechanicalMapping2_to_2;
 typedef IdentityMechanicalMapping3f_to_3f IdentityMechanicalMapping3_to_3;
 typedef IdentityMechanicalMapping1f_to_1f IdentityMechanicalMapping1_to_1;
 typedef IdentityMechanicalMapping2f_to_2f IdentityMechanicalMapping2_to_2;
@@ -184,6 +200,8 @@ typedef RigidRigidMechanicalMappingRigid3f_to_Rigid3f RigidRigidMechanicalMappin
 typedef SimpleTesselatedTetraMechanicalMechanicalMapping3f_to_3f SimpleTesselatedTetraMechanicalMechanicalMapping3_to_3;
 typedef SkinningMechanicalMappingRigid3f_to_3f SkinningMechanicalMappingRigid3_to_3;
 typedef SubsetMechanicalMapping3f_to_3f SubsetMechanicalMapping3_to_3;
+typedef SubsetMechanicalMapping2f_to_2f SubsetMechanicalMapping2_to_2;
+typedef SubsetMechanicalMappingRigid3f_to_Rigid3f SubsetMechanicalMappingRigid3_to_Rigid3;
 typedef TubularMechanicalMappingRigid3f_to_3f TubularMechanicalMappingRigid3_to_3;
 #endif
 

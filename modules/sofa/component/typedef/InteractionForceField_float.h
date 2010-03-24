@@ -47,7 +47,6 @@
 #include <sofa/component/forcefield/QuadBendingSprings.h>
 #include <sofa/component/forcefield/RegularGridSpringForceField.h>
 #include <sofa/component/interactionforcefield/RepulsiveSpringForceField.h>
-#include <sofa/component/forcefield/SpringForceField.h>
 #include <sofa/component/forcefield/StiffSpringForceField.h>
 #include <sofa/component/forcefield/TriangleBendingSprings.h>
 #include <sofa/component/forcefield/VectorSpringForceField.h>
@@ -120,15 +119,6 @@ typedef sofa::component::interactionforcefield::RepulsiveSpringForceField<sofa::
 
 
 //---------------------------------------------------------------------------------------------
-//Typedef for SpringForceField
-typedef sofa::component::forcefield::SpringForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > SpringForceField3f;
-typedef sofa::component::forcefield::SpringForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > SpringForceField1f;
-typedef sofa::component::forcefield::SpringForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > SpringForceField2f;
-typedef sofa::component::forcefield::SpringForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, float>, sofa::defaulttype::Vec<6, float>, float> > SpringForceField6f;
-
-
-
-//---------------------------------------------------------------------------------------------
 //Typedef for StiffSpringForceField
 typedef sofa::component::forcefield::StiffSpringForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > StiffSpringForceField3f;
 typedef sofa::component::forcefield::StiffSpringForceField<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > StiffSpringForceField1f;
@@ -173,10 +163,6 @@ typedef RegularGridSpringForceField6f RegularGridSpringForceField6;
 typedef RepulsiveSpringForceField3f RepulsiveSpringForceField3;
 typedef RepulsiveSpringForceField1f RepulsiveSpringForceField1;
 typedef RepulsiveSpringForceField2f RepulsiveSpringForceField2;
-typedef SpringForceField3f SpringForceField3;
-typedef SpringForceField1f SpringForceField1;
-typedef SpringForceField2f SpringForceField2;
-typedef SpringForceField6f SpringForceField6;
 typedef StiffSpringForceField3f StiffSpringForceField3;
 typedef StiffSpringForceField1f StiffSpringForceField1;
 typedef StiffSpringForceField2f StiffSpringForceField2;

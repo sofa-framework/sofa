@@ -39,7 +39,6 @@
 
 
 #include <sofa/component/visualmodel/DrawV.h>
-#include <sofa/component/misc/Monitor.h>
 #include <sofa/component/visualmodel/OglModel.h>
 #include <sofa/component/visualmodel/OglShaderVisualModel.h>
 #include <sofa/component/visualmodel/OglTetrahedralModel.h>
@@ -50,12 +49,6 @@
 //---------------------------------------------------------------------------------------------
 //Typedef for DrawV
 typedef sofa::component::visualmodel::DrawV DrawVExt3f;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for Monitor
-typedef sofa::component::misc::Monitor<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > Monitor3f;
 
 
 
@@ -87,7 +80,6 @@ typedef sofa::component::visualmodel::VisualModelImpl VisualModelImplExt3f;
 
 #ifdef SOFA_FLOAT
 typedef DrawVExt3f DrawVExt3;
-typedef Monitor3f Monitor3;
 typedef OglModelExt3f OglModelExt3;
 typedef OglShaderVisualModelExt3f OglShaderVisualModelExt3;
 typedef OglTetrahedralModel3f OglTetrahedralModel3;

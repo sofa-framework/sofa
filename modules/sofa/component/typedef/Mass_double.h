@@ -41,6 +41,7 @@
 #include <sofa/component/mass/DiagonalMass.h>
 #include <sofa/component/forcefield/HexahedronFEMForceFieldAndMass.h>
 #include <sofa/component/mass/MatrixMass.h>
+#include <sofa/component/mass/MeshMatrixMass.h>
 #include <sofa/component/mass/UniformMass.h>
 
 
@@ -65,6 +66,15 @@ typedef sofa::component::forcefield::HexahedronFEMForceFieldAndMass<sofa::defaul
 //Typedef for MatrixMass
 typedef sofa::component::mass::MatrixMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double>, sofa::defaulttype::Mat<3, 3, double> > MatrixMass3d;
 typedef sofa::component::mass::MatrixMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, double>, sofa::defaulttype::Vec<2, double>, double>, sofa::defaulttype::Mat<2, 2, double> > MatrixMass1d;
+typedef sofa::component::mass::MatrixMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, double>, sofa::defaulttype::Vec<1, double>, double>, sofa::defaulttype::Mat<1, 1, double> > MatrixMass2d;
+
+
+
+//---------------------------------------------------------------------------------------------
+//Typedef for MeshMatrixMass
+typedef sofa::component::mass::MeshMatrixMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double>, double> MeshMatrixMass3d;
+typedef sofa::component::mass::MeshMatrixMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, double>, sofa::defaulttype::Vec<2, double>, double>, double> MeshMatrixMass1d;
+typedef sofa::component::mass::MeshMatrixMass<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, double>, sofa::defaulttype::Vec<1, double>, double>, double> MeshMatrixMass2d;
 
 
 
@@ -90,6 +100,10 @@ typedef DiagonalMassRigid2d DiagonalMassRigid2;
 typedef HexahedronFEMForceFieldAndMass3d HexahedronFEMForceFieldAndMass3;
 typedef MatrixMass3d MatrixMass3;
 typedef MatrixMass1d MatrixMass1;
+typedef MatrixMass2d MatrixMass2;
+typedef MeshMatrixMass3d MeshMatrixMass3;
+typedef MeshMatrixMass1d MeshMatrixMass1;
+typedef MeshMatrixMass2d MeshMatrixMass2;
 typedef UniformMass3d UniformMass3;
 typedef UniformMass1d UniformMass1;
 typedef UniformMass2d UniformMass2;
