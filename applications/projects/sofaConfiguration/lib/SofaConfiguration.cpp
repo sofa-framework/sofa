@@ -428,7 +428,7 @@ void SofaConfiguration::processDirectory(const QString &dir)
         QFileInfo fileInfo=listDirectories.at(j);
 #else
         *(d.entryInfoList());
-    QString filters="*.cpp *.h *.inl";
+    QString filters="*.h *.hpp *.cpp *.inl *.c *.cu *.cuh *.pro";
     d.setNameFilter(filters);
     QFileInfoListIterator itDir( listDirectories );
     while ( (itDir.current()) != 0 )
