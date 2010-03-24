@@ -47,7 +47,7 @@ class UnilateralConstraintResolution : public core::componentmodel::behavior::Co
 public:
     virtual void resolution(int line, double** w, double* d, double* force)
     {
-        std::cout<< "UnilateralConstraintResolution (without friction): verify resolution ! "<<std::endl;
+//		std::cout<< "UnilateralConstraintResolution (without friction): verify resolution ! "<<std::endl;
         if(d[line]<0)
             force[line] -= d[line] / w[line][line];
         else

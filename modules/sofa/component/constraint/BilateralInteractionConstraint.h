@@ -36,6 +36,7 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/VecTypes.h>
 
+#include <deque>
 
 namespace sofa
 {
@@ -49,17 +50,31 @@ namespace constraint
 class BilateralConstraintResolution : public core::componentmodel::behavior::ConstraintResolution
 {
 public:
+    BilateralConstraintResolution(std::deque<double>* vec=NULL) : _vec(vec) {}
     virtual void resolution(int line, double** w, double* d, double* force)
     {
         force[line] -= d[line] / w[line][line];
     }
+
+    virtual void init(int line, double** /*w*/, double* force)
+    {
+        if(_vec && _vec->size()) { force[line] = _vec->front(); _vec->pop_front(); }
+    }
+
+    void store(int line, double* force, bool /*convergence*/)
+    {
+        if(_vec) _vec->push_back(force[line]);
+    }
+
+protected:
+    std::deque<double>* _vec;
 };
 
 class BilateralConstraintResolution3Dof : public core::componentmodel::behavior::ConstraintResolution
 {
 public:
 
-    BilateralConstraintResolution3Dof() { nbLines=3; }
+    BilateralConstraintResolution3Dof(std::deque<double>* vec=NULL) : _vec(vec) { nbLines=3; }
     virtual void init(int line, double** w, double *force)
     {
         sofa::defaulttype::Mat<3,3,double> temp;
@@ -75,9 +90,12 @@ public:
 
         invertMatrix(invW, temp);
 
-        force[line  ] = 0.0;
-        force[line+1] = 0.0;
-        force[line+2] = 0.0;
+        if(_vec && _vec->size()>=3)
+        {
+            force[line] = _vec->front(); _vec->pop_front();
+            force[line+1] = _vec->front(); _vec->pop_front();
+            force[line+2] = _vec->front(); _vec->pop_front();
+        }
     }
 
     virtual void resolution(int line, double** /*w*/, double* d, double* force)
@@ -90,8 +108,19 @@ public:
         }
     }
 
+    void store(int line, double* force, bool /*convergence*/)
+    {
+        if(_vec)
+        {
+            _vec->push_back(force[line]);
+            _vec->push_back(force[line+1]);
+            _vec->push_back(force[line+2]);
+        }
+    }
+
 protected:
     sofa::defaulttype::Mat<3,3,double> invW;
+    std::deque<double>* _vec;
 };
 
 template<class DataTypes>
@@ -123,6 +152,8 @@ protected:
     Data<int> m2;
     Data<std::string> pathObject1;
     Data<std::string> pathObject2;
+
+    std::deque<double> prevForces;
 public:
 
     BilateralInteractionConstraint(MechanicalState* object1, MechanicalState* object2)

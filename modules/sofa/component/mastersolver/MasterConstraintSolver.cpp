@@ -701,6 +701,10 @@ void MasterConstraintSolver::gaussSeidelConstraint(int dim, double* dfree, doubl
 
         if(tabErrors[j])
             graph_constraints.push_back(tabErrors[j]);
+        else if(res[j]->tolerance)
+            graph_constraints.push_back(res[j]->tolerance);
+        else
+            graph_constraints.push_back(tolerance);
 
         j += nb;
     }

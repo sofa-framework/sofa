@@ -346,12 +346,12 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
                 ////////////////////////////////////////////
                 //serr<<"pos0 set"<<sendl;
 
-                if (f*dof_on_node+i < 2)
-                {
-                    eulerSolver->f_verbose.setValue(true);
-                    eulerSolver->f_printLog.setValue(true);
-                    //	serr<<"getF : "<<force<<sendl;
-                }
+                /*	if (f*dof_on_node+i < 2)
+                	{
+                		eulerSolver->f_verbose.setValue(true);
+                		eulerSolver->f_printLog.setValue(true);
+                	//	serr<<"getF : "<<force<<sendl;
+                	}*/
 
                 double fact = 1.0; // christian : it is not a compliance... but an admittance that is computed !
                 if (eulerSolver)
@@ -377,13 +377,13 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
                 velocity = *mstate->getV();
                 fact /= unitary_force[i];
 
-                if (f*dof_on_node+i < 2)
-                {
-                    //eulerSolver->solve(dt, core::componentmodel::behavior::BaseMechanicalState::VecId::position(), core::componentmodel::behavior::BaseMechanicalState::VecId::velocity());
-                    eulerSolver->f_verbose.setValue(false);
-                    eulerSolver->f_printLog.setValue(false);
-                    //	serr<<"getV : "<<velocity<<sendl;
-                }
+                /*	if (f*dof_on_node+i < 2)
+                	{
+                		//eulerSolver->solve(dt, core::componentmodel::behavior::BaseMechanicalState::VecId::position(), core::componentmodel::behavior::BaseMechanicalState::VecId::velocity());
+                		eulerSolver->f_verbose.setValue(false);
+                		eulerSolver->f_printLog.setValue(false);
+                	//	serr<<"getV : "<<velocity<<sendl;
+                	}*/
 
                 for (unsigned int v=0; v<nbNodes; v++)
                 {
