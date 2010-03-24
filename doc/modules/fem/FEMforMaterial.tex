@@ -18,6 +18,7 @@
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{textcomp}
+%\usepackage{mathaccent}
 
 \usepackage{listings}
 \lstset{language=C++,basicstyle=\scriptsize \color{green},identifierstyle=\color{orange},keywordstyle=[1]\color{blue},columns=fullflexible}
@@ -58,42 +59,160 @@
 \subsection{Equations for elastostatic: } 
 
 \paragraph{Governing equations and Boundary problem: }
+The set of equations on the boundery problem for elastostatic :
+\[
+\left\{
+\begin{array}{rl}
+ \text{div }\textbf{C.E} \left[ \textbf{u} \right] + \textbf{b} & =0 \\
+                                       \textbf{u} & = \textbf{\^{u}} \text{         on $\partial\Omega_1 $}\\
+           \textbf{C.E} \left[ \textbf{u} \right] &= \textbf{\^{s}}  \text{         on $\partial\Omega_2 $}
+\end{array}\right.
+\]
 \paragraph{Variational formulation: }
+Using the virtual displacement principe, this boundary problam is equivalent to a variational (weak) formulation problem :
+\[
+\left\{
+\begin{array}{l}
+\text {For every virtual displacement \textbf{u}$^*$ :} \\
+  \int_{\Omega}\textbf{E}\left(\textbf{u}^*\right) ^t .\textbf{C[E} \left( \textbf{u} \right) \textbf{]} .dV
+ -\int_{\Omega}\left[\textbf{u}^*\right]^t . \textbf{b} .dV
+ -\int_{\partial\Omega_2}\left[\textbf{u}^* \right]^t \textbf{\^{s}.n} .dS  =0 \\
+                                      
+ \textbf{u} \text{ and } \textbf{u}^*\subset \text{ a appropriate functional space.}
+\end{array}\right.
+\]
+Given a variational formulation in the integration formula, the aim of work in construction finite element is to be able to construct the stifness matrix :
+\[
+ K=\int_{\Omega}\textbf{E}\left(\textbf{u}^*\right) ^t .\textbf{C[E} \left( \textbf{u} \right) \textbf{]} .dV
+\]
+by filling in a double loop :
+\[
+\left\|
+\begin{array}{l}
+\text{for i=0 to nbDOFs} \\ 
+\hspace{1cm} \text{for j=0 to nbDOFs} \\
+\hspace{2cm} \text{K}_{ij} = \int_{\Omega} [...]^t .[...]dV  ;
+\end{array}
+\right.
+\]
 
-\subsection{Equations for elastodynamic: }
-
-\paragraph{Governing equations and Boundary problem: }
-\paragraph{Variational formulation: }
+%\subsection{Equations for elastodynamic: }
+%\paragraph{Governing equations and Boundary problem: }
+%\paragraph{Variational formulation: }
 
 \subsection{Interpolation: } 
-Given a variational formulation in the integration formula :
-\[
- \int_{\Omega} \left[\text{Integration Formula} \right]
-\]
-This integration can pass by the local integration :
-\[
- \int_{\Omega} \left[\text{Integration Formula} \right] =\sum_{K} \int_{K} \left[\text{Integration Formula} \right] 
-\]
-Where $K$ is an Element. Now, interpolation allow to numerically compute this integration. To do this, we must to define several concept of Finite Element and also several convention of structure information. 
-\paragraph{Conventions : } A Finite Element is a set of functions defined on a geometry elelemt which composed :
+To construct the stifness matrix, two components are needed to be defined in a generic elelemnt (master element): 
 \begin{itemize}
-\item A set of NbofDOF shape functions , usually polynomials.
-\item A set of Node to be defined, usually NbofDOF=NbofNode. 
-\end{itemize} 
-In the rigorous, the number of shape funtions is equal to the number of degree of freedom. But in pratic, many shape function are alike. For exemple on tetrahedron, Finite Element linear : we have 4 nodes, in the dimension R3, so totally 12 degree of freedom. But for these 4 node, there are 4 polynomial to be defined, the rest is alike. That's why we must define some convention for the data structure. \\
-For a displacement or a velocity field, there a two ways to presente by interpolation :
-\begin{itemize}
-\item Presentation by vector field : 
-               \[\textbf{u}=\sum_{i=0}^{nbNode-1} \textbf{u}_i * {\bf\phi}_i  \]
-\item Presentation by vector field : 
-               \[\textbf{u}=\sum_{i=0}^{nbofDOF-1} u_i * \phi_i  \]
-\end{itemize} 
-In general, on the dimension RdDIM, we have nbofDOF=nbNode x RdDIM. A velocity or distribution field has nbofDOF scalar, which can be presented in two ways : an array of one dimention or two dimension. In the case array one dimensions, there are two presentation, depending to the order of each placed scalar. In the case array two demensions, there are also two presentation :   [nbNode x RdDIM] or [RdDIM x nbNode]. This brief view just make seen the diversity of structure, that must make a unique convention for a computation process. 
-\paragraph{Conventions for scalar presentation : }
-In the case RdDIM where there are nbofNode nodes, a vectorial field has nbofDOF = nbNode x RdDIM  value. The presentation of these values is :
-               \[ \textbf{u}= u_0^0 u_1^0 u_2^0 ...  \]
-\subsection{Integration: }
+\item Interpolation function (usually polynomial).\footnote{when talking about defining a function, that its values on any point, and eventually its derivative values at any point }
+\item Quadrature formula (quadrature points and its weight). 
+\end{itemize}
+In litterature of numerical integration, quadrature points are usually given by its barycentric coordinates on element, and its weight. The quadrature formula is simply a set of quadrature poins, allowing to compute for any function :
+\[
+\int_{\Omega} fdV \approx \sum_{i=0}^{nbQP} qp[i].weight*f(qp[i])
+\]
+where $qp[i]$ is the i-th quadrature point, $nbQP$ is the number of quadrature points. Thus, defining a quadrature formular is simply defining a set of quadrature points, with some operator allowing to convert barycentric coordinate to cartesian coordinate and invert. 
+\begin{center}
+ \includegraphics[scale=0.5]{diagramToolsFEM}
+\end{center}
 
+The same things for the polynomials : the polynomials are defined in the master element (generic), so in relation with the barycentric coordinate. There for, to evaluating its values and its derivate values on a point, sometime a change basis coordinate is needed, and a storage of this change of basis help to compute the gradian easily. For example in the dimension RdDIM = 3, interpolation polynomials are defined in RdDIM+1=4 variables \footnote{barycentric coordinates has one more variable than cartesian coordinates in the simplex geometry, but there are a linear transformation invertible make equivalent to these two presentations}. On a simplex element (tetrahedron), a polynomial is function of barycentric coordinate : 
+\[
+\phi_i =p_i(\lambda_0 , \lambda_1 , \lambda_2 , \lambda_3)
+\]
+Barycentric coordinate and cartesian coordinate are related by a linear transform unique invertible : 
+\[
+\begin{array}{cc}
+\left[
+\begin{array}{lll}
+& & \\
+& & \\
+& & \\
+& & 
+\end{array}
+\right]
+\\
+\left[F\right]
+\end{array}
+\\
+\begin{array}{cc}
+\\
+\left[
+\begin{array}{l}
+x_0 \\
+x_1 \\
+x_2 
+\end{array}
+\right]
+\\
+X
+\end{array}
+=
+\begin{array}{cc}
+\left[
+\begin{array}{lllll}
+\lambda_0 \\
+\lambda_1 \\
+\lambda_2 \\
+\lambda_3 
+\end{array}
+\right]
+\\
+\lambda
+\end{array}
+\]
+\begin{center}
+\begin{pspicture}(-7,-2)(7,2)
+%\psline(-7,-2)(7,2)
+\rput(0,1.7){\Rnode{A}{\color{blue}A}}
+\rput(-1.2,-1.2){\Rnode{B}{\color{blue}B}}
+\rput(4.2,-1.4){\Rnode{C}{\color{blue}C}}
+\rput(0.2,0.2){\Rnode{D}{\color{blue}D}}
+
+\rput(1,0){\Rnode{x}{\color{red} \textbullet}}
+\rput(1,-0.5){\Rnode{P}{\color{red}P}}
+
+\psline[showpoints=true](0,1.5)(-1,-1)(4,-1.4)(0,1.5)
+\psline[showpoints=true, linestyle=dashed](0,0)(0,1.5)
+\psline[showpoints=true, linestyle=dashed](0,0)(-1,-1)
+\psline[showpoints=true, linestyle=dashed](0,0)(4,-1.4)
+\end{pspicture}
+\end{center}
+
+To have this transformation, it is not needed to fill the matrix F, but the computing can be done by the geometry calculus. For a tetrahedron ABCD, and any point, P, how to compute its barycentric coordinate {$\lambda_A, \lambda_B, \lambda_C, \lambda_D $} relatively to the tetrahedron ABCD:
+ \[
+\lambda_A=\frac{ \text{volume }ABCD }{ \text{volume }PBCD } =\frac{\frac{1}{6} PC* (BC \wedge CD) }{\frac{1}{6} AC* (BC \wedge CD) }
+\]
+To be remarked this presentation in brief term : 
+ \[
+\lambda_A=\frac{{\color{red}\overrightarrow{PC}} * {\color{blue}(\overrightarrow{BC} \wedge \overrightarrow{CD})} }{ {\color{blue}\overrightarrow{AC}*(\overrightarrow{BC} \wedge \overrightarrow{CD})} }={\color{red}\overrightarrow{PC}}*{\color{blue}\overrightarrow{T}}  \text{ , T is a constant vector}
+\]
+There for, it is easily to compute gradian of $\lambda_A$ : 
+ \[
+\overrightarrow{Grad} \lambda_A=\color{blue} \overrightarrow{T} =\frac{(\overrightarrow{BC} \wedge \overrightarrow{CD})}{\overrightarrow{AC}*(\overrightarrow{BC} \wedge \overrightarrow{CD})}
+\]
+Thus, to evaluate the value of $\phi_i$ at a point, there are two ways : 
+\begin{itemize}
+\item Giving directly the point in barycentric coordinate 
+\item Giving the point in cartesian coordinate, transforme it to barycentric coordinate . 
+\end{itemize}
+For all points X in space, we have :
+ \[
+\left[
+\begin{array}{rcl}
+\phi_i(X) &=& p_i(\left[F\right].X)  \\
+\overrightarrow{grad}\phi_i(X)&=& gradp_i .J_F.X 
+\end{array}
+\right.
+\]
+\subsection{Numeric integration: }
+There for any real function on the tetrahedron, the numerical integration can be computed by :
+ \[
+\begin{array}{rcl}
+\int_{K}\phi(x,y,z)dzdydz & = & \int_{\hat{K}}\phi(F(\lambda)) \parallel det(J_F) \parallel d\lambda_0d\lambda_1d\lambda_2d\lambda_3 \\
+ &  \approx & \left| det(J_F) \right| . \sum_{i=0}^{nbQP} qp[i].weight* \phi (qp[i])
+\end{array}
+\]
+Where $K$ is an arbitary element, $\hat{K}$ is a master element.
 \subsection{Auto-test : }
 These function on FEM are mostly linear transformation which is invertible. So we can verify all the computation, or pre-computation by the its inverted transformation. 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%  
