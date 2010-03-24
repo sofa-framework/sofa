@@ -127,7 +127,7 @@ void BeamFEMForceField<DataTypes>::reinit()
     initBeams( n );
     for (unsigned int i=0; i<n; ++i)
         reinitBeam(i);
-    serr<<"reinitBeam Ok"<<sendl;
+//        serr<<"reinitBeam Ok"<<sendl;
     sout << "BeamFEMForceField: init OK, "<<n<<" elements."<<sendl;
 }
 

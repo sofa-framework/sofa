@@ -1493,7 +1493,7 @@ void projection(LCP &fineLevel, LCP &coarseLevel, int nbContactsCoarse, const st
         else
             contact_is_projected[c1]= false;
 
-        std::cout<<"contact "<<c1<<" is in group "<< projectionTable[c1]<<std::endl;
+        //   std::cout<<"contact "<<c1<<" is in group "<< projectionTable[c1]<<std::endl;
     }
 
 
@@ -1968,7 +1968,7 @@ int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, doub
         else
             contact_is_projected[c1]= false;
 
-        std::cout<<"contact "<<c1<<" is in group "<< contact_group[c1]<<std::endl;
+        //      std::cout<<"contact "<<c1<<" is in group "<< contact_group[c1]<<std::endl;
     }
     std::cout<<"STEP 2, d = "<<std::endl;
     afficheResult(d,dim);
