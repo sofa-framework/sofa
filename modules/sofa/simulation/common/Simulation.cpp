@@ -134,8 +134,8 @@ void Simulation::exportXML ( Node* root, const char* fileName, bool compact )
 void Simulation::init ( Node* root )
 {
     //cerr<<"Simulation::init"<<endl;
-    setContext( root->getContext());
     if ( !root ) return;
+    setContext( root->getContext());
     needToPrefetch = false;
     root->execute<InitVisitor>();
     // Save reset state for later uses in reset()
