@@ -12,7 +12,7 @@
 	<!-- Direction -->
         <normal x="0.5" y="-1" z="0" />
         <colourDiffuse r="1" g="1" b="1" />
-        <colourSpecular r="0.5" g="0.5" b="0.5" />
+        <colourSpecular r="1" g="1" b="1" />
       </light>
     </node>
 
