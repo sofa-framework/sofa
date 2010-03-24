@@ -1,5 +1,11 @@
 #include "myopencl.h"
+
+#ifdef __APPLE__
+#include <cl.h>
+#else
 #include <CL/cl.h>
+#endif
+
 #include <iostream>
 
 #if defined(__cplusplus)
