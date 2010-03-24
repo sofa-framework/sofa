@@ -113,6 +113,8 @@ typedef CudaVec4<float> CudaVec4f;
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 
+#if CUDA_VERSION<3000
+
 class __align__(8) double3
 {
 public:
@@ -124,6 +126,8 @@ class __align__(16) double4
 public:
     double x, y, z, w;
 };
+
+#endif
 
 template<>
 class CudaVec2<double> : public double2
