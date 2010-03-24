@@ -46,9 +46,9 @@
 #include <sofa/component/mapping/BeamLinearMapping.h>
 #include <sofa/component/mapping/CenterOfMassMapping.h>
 #include <sofa/component/mapping/CenterPointMechanicalMapping.h>
+#include <sofa/component/mapping/ExternalInterpolationMapping.h>
 #include <sofa/component/mapping/IdentityMapping.h>
 #include <sofa/component/mapping/ImplicitSurfaceMapping.h>
-#include <sofa/component/mapping/LineSetSkinningMapping.h>
 #include <sofa/component/mapping/Mesh2PointMechanicalMapping.h>
 #include <sofa/component/mapping/RigidMapping.h>
 #include <sofa/component/mapping/RigidRigidMapping.h>
@@ -90,6 +90,15 @@ typedef sofa::component::mapping::CenterPointMechanicalMapping<sofa::core::Mappi
 
 
 //---------------------------------------------------------------------------------------------
+//Typedef for ExternalInterpolationMapping
+typedef sofa::component::mapping::ExternalInterpolationMapping<sofa::core::Mapping<sofa::core::componentmodel::behavior::State<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> >, sofa::core::componentmodel::behavior::MappedModel<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, double>, sofa::defaulttype::Vec<2, double>, double> > > > ExternalInterpolationMapping1f_to_1d;
+typedef sofa::component::mapping::ExternalInterpolationMapping<sofa::core::Mapping<sofa::core::componentmodel::behavior::State<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, double>, sofa::defaulttype::Vec<2, double>, double> >, sofa::core::componentmodel::behavior::MappedModel<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > > > ExternalInterpolationMapping1d_to_1f;
+typedef sofa::component::mapping::ExternalInterpolationMapping<sofa::core::Mapping<sofa::core::componentmodel::behavior::State<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> >, sofa::core::componentmodel::behavior::MappedModel<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > > > ExternalInterpolationMapping3f_to_3d;
+typedef sofa::component::mapping::ExternalInterpolationMapping<sofa::core::Mapping<sofa::core::componentmodel::behavior::State<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> >, sofa::core::componentmodel::behavior::MappedModel<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > ExternalInterpolationMapping3d_to_3f;
+
+
+
+//---------------------------------------------------------------------------------------------
 //Typedef for IdentityMapping
 typedef sofa::component::mapping::IdentityMapping<sofa::core::Mapping<sofa::core::componentmodel::behavior::State<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> >, sofa::core::componentmodel::behavior::MappedModel<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > > > IdentityMapping3f_to_3d;
 typedef sofa::component::mapping::IdentityMapping<sofa::core::Mapping<sofa::core::componentmodel::behavior::State<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> >, sofa::core::componentmodel::behavior::MappedModel<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > IdentityMapping3d_to_3f;
@@ -104,13 +113,6 @@ typedef sofa::component::mapping::IdentityMapping<sofa::core::Mapping<sofa::core
 //Typedef for ImplicitSurfaceMapping
 typedef sofa::component::mapping::ImplicitSurfaceMapping<sofa::core::componentmodel::behavior::State<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> >, sofa::core::componentmodel::behavior::MappedModel<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > > ImplicitSurfaceMapping3f_to_3d;
 typedef sofa::component::mapping::ImplicitSurfaceMapping<sofa::core::componentmodel::behavior::State<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> >, sofa::core::componentmodel::behavior::MappedModel<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > ImplicitSurfaceMapping3d_to_3f;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for LineSetSkinningMapping
-typedef sofa::component::mapping::LineSetSkinningMapping<sofa::core::Mapping<sofa::core::componentmodel::behavior::State<sofa::defaulttype::StdRigidTypes<3, double> >, sofa::core::componentmodel::behavior::MappedModel<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > LineSetSkinningMappingRigid3d_to_3f;
-typedef sofa::component::mapping::LineSetSkinningMapping<sofa::core::Mapping<sofa::core::componentmodel::behavior::State<sofa::defaulttype::StdRigidTypes<3, float> >, sofa::core::componentmodel::behavior::MappedModel<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > > > LineSetSkinningMappingRigid3f_to_3d;
 
 
 

@@ -38,14 +38,7 @@
 
 
 
-#include <sofa/component/misc/Monitor.h>
 #include <sofa/component/visualmodel/OglTetrahedralModel.h>
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for Monitor
-typedef sofa::component::misc::Monitor<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > Monitor3d;
 
 
 
@@ -58,7 +51,6 @@ typedef sofa::component::visualmodel::OglTetrahedralModel<sofa::defaulttype::Std
 
 
 #ifndef SOFA_FLOAT
-typedef Monitor3d Monitor3;
 typedef OglTetrahedralModel3d OglTetrahedralModel3;
 #endif
 

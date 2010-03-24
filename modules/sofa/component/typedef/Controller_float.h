@@ -39,6 +39,7 @@
 
 
 #include <sofa/component/controller/EdgeSetController.h>
+#include <sofa/component/controller/LCPForceFeedback.h>
 #include <sofa/component/controller/MechanicalStateController.h>
 
 
@@ -46,6 +47,13 @@
 //---------------------------------------------------------------------------------------------
 //Typedef for EdgeSetController
 typedef sofa::component::controller::EdgeSetController<sofa::defaulttype::StdRigidTypes<3, float> > EdgeSetControllerRigid3f;
+
+
+
+//---------------------------------------------------------------------------------------------
+//Typedef for LCPForceFeedback
+typedef sofa::component::controller::LCPForceFeedback<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, float>, sofa::defaulttype::Vec<1, float>, float> > LCPForceFeedback2f;
+typedef sofa::component::controller::LCPForceFeedback<sofa::defaulttype::StdRigidTypes<3, float> > LCPForceFeedbackRigid3f;
 
 
 
@@ -60,6 +68,8 @@ typedef sofa::component::controller::MechanicalStateController<sofa::defaulttype
 
 #ifdef SOFA_FLOAT
 typedef EdgeSetControllerRigid3f EdgeSetControllerRigid3;
+typedef LCPForceFeedback2f LCPForceFeedback2;
+typedef LCPForceFeedbackRigid3f LCPForceFeedbackRigid3;
 typedef MechanicalStateController2f MechanicalStateController2;
 typedef MechanicalStateControllerRigid3f MechanicalStateControllerRigid3;
 #endif

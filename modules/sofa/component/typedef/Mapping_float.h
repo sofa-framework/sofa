@@ -46,9 +46,9 @@
 #include <sofa/component/mapping/BeamLinearMapping.h>
 #include <sofa/component/mapping/CenterOfMassMapping.h>
 #include <sofa/component/mapping/CenterPointMechanicalMapping.h>
+#include <sofa/component/mapping/ExternalInterpolationMapping.h>
 #include <sofa/component/mapping/IdentityMapping.h>
 #include <sofa/component/mapping/ImplicitSurfaceMapping.h>
-#include <sofa/component/mapping/LineSetSkinningMapping.h>
 #include <sofa/component/mapping/Mesh2PointMechanicalMapping.h>
 #include <sofa/component/mapping/RigidMapping.h>
 #include <sofa/component/mapping/RigidRigidMapping.h>
@@ -89,6 +89,14 @@ typedef sofa::component::mapping::CenterPointMechanicalMapping<sofa::core::Mappi
 
 
 //---------------------------------------------------------------------------------------------
+//Typedef for ExternalInterpolationMapping
+typedef sofa::component::mapping::ExternalInterpolationMapping<sofa::core::Mapping<sofa::core::componentmodel::behavior::State<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> >, sofa::core::componentmodel::behavior::MappedModel<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, float>, sofa::defaulttype::Vec<2, float>, float> > > > ExternalInterpolationMapping1f_to_1f;
+typedef sofa::component::mapping::ExternalInterpolationMapping<sofa::core::Mapping<sofa::core::componentmodel::behavior::State<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> >, sofa::core::componentmodel::behavior::MappedModel<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > ExternalInterpolationMapping3f_to_3f;
+typedef sofa::component::mapping::ExternalInterpolationMapping<sofa::core::Mapping<sofa::core::componentmodel::behavior::State<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> >, sofa::core::componentmodel::behavior::MappedModel<sofa::defaulttype::ExtVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > ExternalInterpolationMapping3f_to_Ext3f;
+
+
+
+//---------------------------------------------------------------------------------------------
 //Typedef for IdentityMapping
 typedef sofa::component::mapping::IdentityMapping<sofa::core::Mapping<sofa::core::componentmodel::behavior::State<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> >, sofa::core::componentmodel::behavior::MappedModel<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > IdentityMapping3f_to_3f;
 typedef sofa::component::mapping::IdentityMapping<sofa::core::Mapping<sofa::core::componentmodel::behavior::State<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> >, sofa::core::componentmodel::behavior::MappedModel<sofa::defaulttype::ExtVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > IdentityMapping3f_to_Ext3f;
@@ -104,13 +112,6 @@ typedef sofa::component::mapping::IdentityMapping<sofa::core::Mapping<sofa::core
 //Typedef for ImplicitSurfaceMapping
 typedef sofa::component::mapping::ImplicitSurfaceMapping<sofa::core::componentmodel::behavior::State<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> >, sofa::core::componentmodel::behavior::MappedModel<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > ImplicitSurfaceMapping3f_to_3f;
 typedef sofa::component::mapping::ImplicitSurfaceMapping<sofa::core::componentmodel::behavior::State<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> >, sofa::core::componentmodel::behavior::MappedModel<sofa::defaulttype::ExtVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > ImplicitSurfaceMapping3f_to_Ext3f;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for LineSetSkinningMapping
-typedef sofa::component::mapping::LineSetSkinningMapping<sofa::core::Mapping<sofa::core::componentmodel::behavior::State<sofa::defaulttype::StdRigidTypes<3, float> >, sofa::core::componentmodel::behavior::MappedModel<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > LineSetSkinningMappingRigid3f_to_3f;
-typedef sofa::component::mapping::LineSetSkinningMapping<sofa::core::Mapping<sofa::core::componentmodel::behavior::State<sofa::defaulttype::StdRigidTypes<3, float> >, sofa::core::componentmodel::behavior::MappedModel<sofa::defaulttype::ExtVectorTypes<sofa::defaulttype::Vec<3, float>, sofa::defaulttype::Vec<3, float>, float> > > > LineSetSkinningMappingRigid3f_to_Ext3f;
 
 
 
@@ -180,6 +181,9 @@ typedef CenterOfMassMappingRigid3f_to_3f CenterOfMassMappingRigid3_to_3;
 typedef CenterOfMassMappingRigid3f_to_Ext3f CenterOfMassMappingRigid3_to_Ext3;
 typedef CenterPointMechanicalMapping3f_to_3f CenterPointMechanicalMapping3_to_3;
 typedef CenterPointMechanicalMapping3f_to_Ext3f CenterPointMechanicalMapping3_to_Ext3;
+typedef ExternalInterpolationMapping1f_to_1f ExternalInterpolationMapping1_to_1;
+typedef ExternalInterpolationMapping3f_to_3f ExternalInterpolationMapping3_to_3;
+typedef ExternalInterpolationMapping3f_to_Ext3f ExternalInterpolationMapping3_to_Ext3;
 typedef IdentityMapping3f_to_3f IdentityMapping3_to_3;
 typedef IdentityMapping3f_to_Ext3f IdentityMapping3_to_Ext3;
 typedef IdentityMappingRigid3f_to_Rigid3f IdentityMappingRigid3_to_Rigid3;
@@ -189,8 +193,6 @@ typedef IdentityMappingRigid3f_to_3f IdentityMappingRigid3_to_3;
 typedef IdentityMappingRigid3f_to_Ext3f IdentityMappingRigid3_to_Ext3;
 typedef ImplicitSurfaceMapping3f_to_3f ImplicitSurfaceMapping3_to_3;
 typedef ImplicitSurfaceMapping3f_to_Ext3f ImplicitSurfaceMapping3_to_Ext3;
-typedef LineSetSkinningMappingRigid3f_to_3f LineSetSkinningMappingRigid3_to_3;
-typedef LineSetSkinningMappingRigid3f_to_Ext3f LineSetSkinningMappingRigid3_to_Ext3;
 typedef Mesh2PointMechanicalMapping3f_to_3f Mesh2PointMechanicalMapping3_to_3;
 typedef Mesh2PointMechanicalMapping3f_to_Ext3f Mesh2PointMechanicalMapping3_to_Ext3;
 typedef RigidMappingRigid3f_to_3f RigidMappingRigid3_to_3;

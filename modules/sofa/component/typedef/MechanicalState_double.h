@@ -39,7 +39,6 @@
 
 
 #include <sofa/component/container/MechanicalObject.h>
-#include <sofa/component/collision/RayModel.h>
 #include <sofa/component/collision/SphereTreeModel.h>
 
 
@@ -52,12 +51,6 @@ typedef sofa::component::container::MechanicalObject<sofa::defaulttype::StdVecto
 typedef sofa::component::container::MechanicalObject<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, double>, sofa::defaulttype::Vec<6, double>, double> > MechanicalObject6d;
 typedef sofa::component::container::MechanicalObject<sofa::defaulttype::StdRigidTypes<3, double> > MechanicalObjectRigid3d;
 typedef sofa::component::container::MechanicalObject<sofa::defaulttype::StdRigidTypes<2, double> > MechanicalObjectRigid2d;
-
-
-
-//---------------------------------------------------------------------------------------------
-//Typedef for RayModel
-typedef sofa::component::collision::RayModel RayModel3d;
 
 
 
@@ -76,7 +69,6 @@ typedef MechanicalObject2d MechanicalObject2;
 typedef MechanicalObject6d MechanicalObject6;
 typedef MechanicalObjectRigid3d MechanicalObjectRigid3;
 typedef MechanicalObjectRigid2d MechanicalObjectRigid2;
-typedef RayModel3d RayModel3;
 typedef SphereTreeModel3d SphereTreeModel3;
 #endif
 
