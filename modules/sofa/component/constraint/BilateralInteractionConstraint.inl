@@ -128,11 +128,11 @@ void BilateralInteractionConstraint<DataTypes>::getConstraintId(long* id, unsign
 template<class DataTypes>
 void BilateralInteractionConstraint<DataTypes>::getConstraintResolution(std::vector<core::componentmodel::behavior::ConstraintResolution*>& resTab, unsigned int& offset)
 {
-//	resTab[offset] = new BilateralConstraintResolution3Dof();
-//	offset += 3;
+    resTab[offset] = new BilateralConstraintResolution3Dof();
+    offset += 3;
 
-    for(int i=0; i<3; i++)
-        resTab[offset++] = new BilateralConstraintResolution();
+//	for(int i=0; i<3; i++)
+//		resTab[offset++] = new BilateralConstraintResolution(); //&prevForces
 }
 
 template<class DataTypes>

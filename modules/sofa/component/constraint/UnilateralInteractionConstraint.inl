@@ -407,7 +407,8 @@ void UnilateralInteractionConstraint<DataTypes>::getConstraintResolution(std::ve
         Contact& c = contacts[i];
         if(c.mu > 0.0)
         {
-            resTab[offset] = new UnilateralConstraintResolutionWithFriction(c.mu, &prevForces);
+            resTab[offset] = new UnilateralConstraintResolutionWithFriction(c.mu);
+            //	resTab[offset] = new UnilateralConstraintResolutionWithFriction(c.mu, &prevForces);
             //	resTab[offset] = new UnilateralConstraintResolutionSticky(c.mu, c.delta);
             offset += 3;
         }
