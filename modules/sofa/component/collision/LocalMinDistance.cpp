@@ -252,7 +252,7 @@ int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* cont
         // -one point in common (auto-collision) => return false !
         // -no point in common but line are // => we can continue to test
 
-        std::cout<<"WARNING det is null"<<std::endl;
+        sout<<"WARNING det is null"<<sendl;
     }
 
     Vector3 P,Q,PQ;

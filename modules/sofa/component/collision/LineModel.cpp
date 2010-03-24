@@ -125,7 +125,7 @@ void LineModel::init()
     if (path.size()==0)
     {
         myActiver = new LineActiver();
-        std::cout<<"no Line Activer founded for LineModel "<<this->getName()<<std::endl;
+//		std::cout<<"no Line Activer found for LineModel "<<this->getName()<<std::endl;
     }
     else
     {
@@ -137,7 +137,7 @@ void LineModel::init()
             std::cout<<"wrong path for Line Activer for LineModel "<< this->getName() <<std::endl;
         }
         else
-            std::cout<<"Line Activer  founded !! for LineModel "<< this->getName() <<std::endl;
+            std::cout<<"Line Activer  found !! for LineModel "<< this->getName() <<std::endl;
     }
 
 }
@@ -525,7 +525,7 @@ bool LineModel::canCollideWithElement(int index, CollisionModel* model2, int ind
             if (index2==p11 || index2==p12)
                 return false;
         }
-        for (unsigned int i1=0; i1<EdgesAroundVertex11.size(); i1++)
+        for (unsigned int i1=0; i1<EdgesAroundVertex12.size(); i1++)
         {
             unsigned int e12 = EdgesAroundVertex12[i1];
             p11 = elems[e12].i1;
