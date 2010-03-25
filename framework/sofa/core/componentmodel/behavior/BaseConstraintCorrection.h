@@ -73,7 +73,9 @@ public:
         getCompliance(W); // par defaut si la methode cuda n'est pas implementé on resoud sur CPU
     }
 
-    virtual void applyContactForce(const defaulttype::BaseVector *f) = 0;
+    virtual void applyContactForce(const defaulttype::BaseVector *f) = 0; //=> new name: computeAndApplyMotionOfConstraintCorrection ?
+
+    virtual void applyPredictiveConstraintForce(const defaulttype::BaseVector *f) = 0;
 
     virtual void resetContactForce() = 0;
 

@@ -313,6 +313,45 @@ void LinearSolverConstraintCorrection<DataTypes>::applyContactForce(const defaul
     mstate->vFree(forceID);
 }
 
+
+template<class DataTypes>
+void LinearSolverConstraintCorrection<DataTypes>::applyPredictiveConstraintForce(const defaulttype::BaseVector *f)
+{
+    VecDeriv& force = *mstate->getExternalForces();
+
+    const unsigned int numDOFs = mstate->getSize();
+
+    force.clear();
+    force.resize(numDOFs);
+    for (unsigned int i=0; i< numDOFs; i++)
+        force[i] = Deriv();
+
+
+    const VecConst& constraints = *mstate->getC();
+    unsigned int numConstraints = constraints.size();
+
+    for(unsigned int c1 = 0; c1 < numConstraints; c1++)
+    {
+        int indexC1 = mstate->getConstraintId()[c1];
+        double fC1 = f->element(indexC1);
+        //sout << "fC("<<indexC1<<")="<<fC1<<sendl;
+        if (fC1 != 0.0)
+        {
+            ConstraintIterator itConstraint;
+            std::pair< ConstraintIterator, ConstraintIterator > iter=constraints[c1].data();
+            for (itConstraint=iter.first; itConstraint!=iter.second; itConstraint++)
+            {
+                unsigned int dof = itConstraint->first;
+                Deriv n = itConstraint->second;
+
+                //sout << "f("<<constraints[c1][i].index<<") += "<< (constraints[c1][i].data * fC1) << sendl;
+                force[dof] += n * fC1;
+            }
+        }
+    }
+}
+
+
 template<class DataTypes>
 void LinearSolverConstraintCorrection<DataTypes>::resetContactForce()
 {

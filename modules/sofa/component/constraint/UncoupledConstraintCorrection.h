@@ -86,6 +86,8 @@ public:
 
     virtual void applyContactForce(const defaulttype::BaseVector *f);
 
+    virtual void applyPredictiveConstraintForce(const defaulttype::BaseVector *f);
+
     virtual void resetContactForce();
 
 

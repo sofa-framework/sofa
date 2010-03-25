@@ -112,6 +112,9 @@ public:
     virtual void getComplianceMatrix(defaulttype::BaseMatrix* ) const;
 
     virtual void applyContactForce(const defaulttype::BaseVector *f);
+
+    virtual void applyPredictiveConstraintForce(const defaulttype::BaseVector *f);
+
     virtual void resetContactForce();
 
     // new API for non building the constraint system during solving process //

@@ -221,10 +221,11 @@ MasterConstraintSolver::MasterConstraintSolver()
      scaleTolerance( initData(&scaleTolerance, true, "scaleTolerance","Scale the error tolerance with the number of constraints")),
      _allVerified( initData(&_allVerified, false, "allVerified","All contraints must be verified (each constraint's error < tolerance)")),
      _sor( initData(&_sor, 1.0, "sor","Successive Over Relaxation parameter (0-2)")),
+     schemeCorrection( initData(&schemeCorrection, false, "schemeCorrection","Apply new scheme where compliance is progressively corrected")),
      _graphErrors( initData(&_graphErrors,"graphErrors","Sum of the constraints' errors at each iteration")),
      _graphConstraints( initData(&_graphConstraints,"graphConstraints","Graph of each constraint's error at the end of the resolution"))
 {
-    bufCP1 = true;
+    bufCP1 = false;
 
     _graphErrors.setWidget("graph");
     _graphErrors.setReadOnly(true);
@@ -233,6 +234,9 @@ MasterConstraintSolver::MasterConstraintSolver()
     _graphConstraints.setWidget("graph");
     _graphConstraints.setReadOnly(true);
     _graphConstraints.setGroup("Graph");
+
+    CP1.clear(0,_tol.getValue());
+    CP2.clear(0,_tol.getValue());
 }
 
 MasterConstraintSolver::~MasterConstraintSolver()
@@ -294,6 +298,37 @@ void MasterConstraintSolver::step ( double dt )
     sofa::helper::AdvancedTimer::stepEnd  ("BehaviorUpdate");
     if (debug)
         serr<<"Free Motion is called"<<sendl;
+
+
+    ////////////////// (optional) PREDICTIVE CONSTRAINT FORCES ///////////////////////////////////////////////////////////////////////////////////////////
+    // When scheme Correction is used, the constraint forces computed at the previous time-step
+    // are applied during the first motion, so which is no more a "free" motion but a "predictive" motion
+    ///////////
+    if(schemeCorrection.getValue())
+    {
+        for (unsigned int i=0; i<constraintCorrections.size(); i++ )
+        {
+            core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
+            if (doubleBuffer.getValue() && bufCP1)
+                cc->applyPredictiveConstraintForce(CP2.getF());
+            else
+                cc->applyPredictiveConstraintForce(CP1.getF());
+
+            cc->resetContactForce();
+        }
+    }
+
+
+    ///////////////////////////////////////////// FREE MOTION /////////////////////////////////////////////////////////////
+    if (doubleBuffer.getValue())
+    {
+        // SWAP BUFFER:
+
+        //std::cout<<"swap Buffer: size new ConstraintProblem = "<<numConstraints<< " size old buf Problem "<<getConstraintProblem()->getSize()<<std::endl;
+        bufCP1 = !bufCP1;
+        // int a=getConstraintProblem()->getConstraintResolutions().size();
+        //std::cerr<<"##"<<a<<"##"<<std::endl;
+    }
 
     ///////////////////////////////////////////// FREE MOTION /////////////////////////////////////////////////////////////
     sofa::helper::AdvancedTimer::stepBegin("Free Motion");
@@ -476,10 +511,14 @@ void MasterConstraintSolver::step ( double dt )
     simulation::MechanicalPropagateAndAddDxVisitor().execute(context);
     //simulation::MechanicalPropagatePositionAndVelocityVisitor().execute(context);
 
-    for (unsigned int i=0; i<constraintCorrections.size(); i++)
+
+    if(!schemeCorrection.getValue())
     {
-        core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
-        cc->resetContactForce();
+        for (unsigned int i=0; i<constraintCorrections.size(); i++)
+        {
+            core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
+            cc->resetContactForce();
+        }
     }
     sofa::helper::AdvancedTimer::stepEnd ("Corrective Motion");
 
@@ -520,15 +559,7 @@ void MasterConstraintSolver::step ( double dt )
     //////////////////////////////
 
 
-    if (doubleBuffer.getValue())
-    {
-        /// test:
 
-        //std::cout<<"swap Buffer: size new ConstraintProblem = "<<numConstraints<< " size old buf Problem "<<getConstraintProblem()->getSize()<<std::endl;
-        bufCP1 = !bufCP1;
-// 		int a=getConstraintProblem()->getConstraintResolutions().size();
-        //std::cerr<<"##"<<a<<"##"<<std::endl;
-    }
 }
 
 void MasterConstraintSolver::gaussSeidelConstraint(int dim, double* dfree, double** w, double* force,
