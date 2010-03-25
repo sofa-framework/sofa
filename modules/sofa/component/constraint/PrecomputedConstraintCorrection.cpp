@@ -99,7 +99,7 @@ SOFA_COMPONENT_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::
 
 
 template<>
-SOFA_COMPONENT_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>::rotateConstraints()
+SOFA_COMPONENT_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::Rigid3dTypes>::rotateConstraints(bool back)
 {
     VecCoord& x = *mstate->getX();
     VecConst& constraints = *mstate->getC();
@@ -124,9 +124,14 @@ SOFA_COMPONENT_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::
             else
                 q = x[localRowNodeIdx].getOrientation();
 
-
             Vec3d n_i = q.inverseRotate(n.getVCenter());
             Vec3d wn_i= q.inverseRotate(n.getVOrientation());
+            if(back)
+            {
+                n_i = q.rotate(n.getVCenter());
+                wn_i= q.rotate(n.getVOrientation());
+            }
+
 
             // on passe les normales du repere global au repere local
             n.getVCenter() = n_i;
@@ -139,7 +144,7 @@ SOFA_COMPONENT_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::
 
 
 template<>
-SOFA_COMPONENT_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>::rotateConstraints()
+SOFA_COMPONENT_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::Vec1dTypes>::rotateConstraints(bool /*back*/)
 {
 }
 
@@ -181,7 +186,7 @@ SOFA_COMPONENT_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::
 
 
 template<>
-SOFA_COMPONENT_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::Vec3fTypes>::rotateConstraints()
+SOFA_COMPONENT_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::Vec3fTypes>::rotateConstraints(bool back)
 {
     VecConst& constraints = *mstate->getC();
     unsigned int numConstraints = constraints.size();
@@ -233,7 +238,8 @@ SOFA_COMPONENT_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::
             {
                 Ri = rotationFinder->getRotations()[localRowNodeIdx];
             }
-            Ri.transpose();
+            if(!back)
+                Ri.transpose();
             // on passe les normales du repere global au repere local
             Deriv n_i = Ri * n;
             n.x() =  n_i.x();
@@ -254,7 +260,7 @@ SOFA_COMPONENT_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::
 
 
 template<>
-SOFA_COMPONENT_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>::rotateConstraints()
+SOFA_COMPONENT_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::Rigid3fTypes>::rotateConstraints(bool back)
 {
     VecCoord& x = *mstate->getX();
     VecConst& constraints = *mstate->getC();
@@ -281,8 +287,14 @@ SOFA_COMPONENT_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::
                 q = x[localRowNodeIdx].getOrientation();
 
 
-            Vec3d n_i = n.getVCenter();
-            Vec3d wn_i= n.getVOrientation();
+
+            Vec3d n_i = q.inverseRotate(n.getVCenter());
+            Vec3d wn_i= q.inverseRotate(n.getVOrientation());
+            if(back)
+            {
+                n_i = q.rotate(n.getVCenter());
+                wn_i= q.rotate(n.getVOrientation());
+            }
 
             // on passe les normales du repere global au repere local
             n.getVCenter() = n_i;
@@ -295,7 +307,7 @@ SOFA_COMPONENT_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::
 
 
 template<>
-SOFA_COMPONENT_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::Vec1fTypes>::rotateConstraints()
+SOFA_COMPONENT_CONSTRAINT_API void PrecomputedConstraintCorrection<defaulttype::Vec1fTypes>::rotateConstraints(bool /*back*/)
 {
 }
 

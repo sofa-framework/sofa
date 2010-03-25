@@ -204,6 +204,7 @@ public:
     Data<bool> scaleTolerance;
     Data<bool> _allVerified;
     Data<double> _sor;
+    Data<bool> schemeCorrection;
 
     Data<std::map < std::string, sofa::helper::vector<double> > > _graphErrors, _graphConstraints;
 

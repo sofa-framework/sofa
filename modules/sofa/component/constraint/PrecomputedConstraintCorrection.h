@@ -94,9 +94,9 @@ public:
     virtual void getCompliance(defaulttype::BaseMatrix* W);
     virtual void getComplianceMatrix(defaulttype::BaseMatrix* m) const;
     virtual void applyContactForce(const defaulttype::BaseVector *f);
+    virtual void applyPredictiveConstraintForce(const defaulttype::BaseVector *f);
 
-
-    virtual void rotateConstraints();
+    virtual void rotateConstraints(bool back);
     virtual void rotateResponse();
     virtual void resetContactForce();
 
