@@ -122,7 +122,6 @@ void ExternalInterpolationMapping<BaseMapping>::apply( typename Out::VecCoord& o
             out[i] += in[ table_indices[i][j] ]  * table_values[i][j];
         }
     }
-
 }
 
 template <class BaseMapping>
