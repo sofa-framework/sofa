@@ -181,6 +181,11 @@ void AddPreset::accept()
 //Open a file Dialog and set the path of the selected path in the text field.
 void AddPreset::fileOpen()
 {
+    if (sofa::helper::system::DataRepository.findFile(fileName))
+        fileName=sofa::helper::system::DataRepository.getFile(fileName);
+    else
+        fileName=sofa::helper::system::DataRepository.getFirstPath();
+
     QString s  = getOpenFileName(this, QString(fileName.c_str()), "Mesh File (*.msh *.mesh *.obj *.sph *.xs3 *.bvh *.rigid);;All (*)", "open file dialog",  "Choose a file to open" );
     const std::string SofaPath (sofa::helper::system::DataRepository.getFirstPath().c_str());
 

@@ -4,13 +4,12 @@ TARGET = chainHybrid
 
 include($${SOFA_DIR}/sofa.cfg)
 
-#Uncomment if you are compiling the boost kernel
-#DEFINES += SOFA_HAS_BOOST_KERNEL
 
 DESTDIR = $$SOFA_DIR/bin
 CONFIG += $$CONFIGPROJECTGUI
 LIBS += $$SOFA_GUI_LIBS
 LIBS += $$SOFA_LIBS
+LIBS += -lsofaobjectcreator$$LIBSUFFIX
 
 contains( DEFINES,SOFA_HAS_BOOST_KERNEL) { 
 LIBS += -lsofaBoostKernel$$LIBSUFFIX

@@ -25,145 +25,45 @@
  * Contact information: contact@sofa-framework.org                             *
  ******************************************************************************/
 
+#include "../../../../tutorials/objectCreator/ObjectCreator.h"
 
 #include <sofa/helper/ArgumentParser.h>
+#include <sofa/simulation/tree/TreeSimulation.h>
+#include <sofa/simulation/bgl/BglSimulation.h>
+#include <sofa/simulation/common/Node.h>
+
 #include <sofa/gui/GUIManager.h>
-
-
-#include <sofa/component/contextobject/CoordinateSystem.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <sofa/core/objectmodel/Context.h>
-#include <sofa/gui/SofaGUI.h>
 
-#include <sofa/component/constraint/FixedConstraint.h>
 
-#include <sofa/component/forcefield/ConstantForceField.h>
-#include <sofa/component/forcefield/JointSpringForceField.h>
-//Including components for collision detection
-#include <sofa/component/collision/DefaultPipeline.h>
-#include <sofa/component/collision/DefaultContactManager.h>
-#include <sofa/component/collision/BruteForceDetection.h>
-#include <sofa/component/collision/NewProximityIntersection.h>
-#include <sofa/component/collision/TriangleModel.h>
-
-//Including component for topological description of the objects
+#include <sofa/component/container/MeshLoader.h>
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/component/topology/RegularGridTopology.h>
-#include <sofa/component/topology/CubeTopology.h>
-#include <sofa/component/container/MeshLoader.h>
-
-//Including Solvers
-#include <sofa/component/odesolver/EulerImplicitSolver.h>
-#include <sofa/component/odesolver/EulerSolver.h>
-#include <sofa/component/linearsolver/CGLinearSolver.h>
-#include <sofa/component/linearsolver/MatrixLinearSolver.h>
-
-#include <sofa/component/visualmodel/OglModel.h>
-
-#include <sofa/simulation/common/PrintVisitor.h>
-#include <sofa/simulation/common/TransformationVisitor.h>
-#include <sofa/helper/system/glut.h>
-
-#include <sofa/helper/system/SetDirectory.h>
-
-#include <sofa/simulation/bgl/BglNode.h>
-#include <sofa/simulation/bgl/BglSimulation.h>
-#include <sofa/component/collision/BglCollisionGroupManager.h>
 #include <sofa/component/collision/SphereModel.h>
-
-
-using sofa::component::visualmodel::OglModel;
-
-using namespace sofa::simulation;
-using namespace sofa::component::forcefield;
-using namespace sofa::component::collision;
-using namespace sofa::component::topology;
-using sofa::component::container::MeshLoader;
-using sofa::component::odesolver::EulerImplicitSolver;
-using sofa::component::odesolver::EulerSolver;
-using sofa::component::linearsolver::CGLinearSolver;
-using sofa::component::linearsolver::GraphScatteredMatrix;
-using sofa::component::linearsolver::GraphScatteredVector;
-typedef CGLinearSolver<GraphScatteredMatrix,GraphScatteredVector> CGLinearSolverGraph;
-
+#include <sofa/component/topology/CubeTopology.h>
 
 //Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
 #include <sofa/component/typedef/Sofa_typedef.h>
+
 // ---------------------------------------------------------------------
 // ---
 // ---------------------------------------------------------------------
 
-Node* createRoot()
-{
-    Node* root = getSimulation()->newNode("root");
-    root->setGravityInWorld( Coord3(0,0,0) );
-    //Components for collision management
-    //------------------------------------
-    //--> adding collision pipeline
-    DefaultPipeline* collisionPipeline = new DefaultPipeline;
-    collisionPipeline->setName("Collision Pipeline");
-    root->addObject(collisionPipeline);
-
-    //--> adding collision detection system
-    BruteForceDetection* detection = new BruteForceDetection;
-    detection->setName("Detection");
-    root->addObject(detection);
-
-    //--> adding component to detection intersection of elements
-    NewProximityIntersection* detectionProximity = new NewProximityIntersection;
-    detectionProximity->setName("Proximity");
-    detectionProximity->setAlarmDistance(0.3);   //warning distance
-    detectionProximity->setContactDistance(0.2); //min distance before setting a spring to create a repulsion
-    root->addObject(detectionProximity);
-
-    //--> adding contact manager
-    DefaultContactManager* contactManager = new DefaultContactManager;
-    contactManager->setName("Contact Manager");
-    root->addObject(contactManager);
-
-    //--> adding component to handle groups of collision.
-    //BglCollisionGroupManager* collisionGroupManager = new BglCollisionGroupManager;
-    //collisionGroupManager->setName("Collision Group Manager");
-    //root->addObject(collisionGroupManager);
-
-    return root;
-}
+using namespace sofa::simulation;
+using namespace sofa::component::container;
+using namespace sofa::component::topology;
+using namespace sofa::component::collision;
 
 Node* createCube(double dx, double dy, double dz, bool implicit = false)
 {
     static int i = 1;
     std::ostringstream oss;
     oss << "cube_" << i++;
-    Node* cube_node = getSimulation()->newNode(oss.str());
+    std::string scheme="Implicit";
 
+    if (!implicit) scheme="Explicit";
 
-    if ( implicit )
-    {
-
-        EulerImplicitSolver* solver = new EulerImplicitSolver;
-        CGLinearSolverGraph* linear = new CGLinearSolverGraph;
-        solver->setName("Euler Implicit");
-        solver->f_rayleighStiffness.setValue(0.01);
-        solver->f_rayleighMass.setValue(1);
-
-        linear->setName("Conjugate Gradient");
-        linear->f_maxIter.setValue(20); //iteration maxi for the CG
-        linear->f_smallDenominatorThreshold.setValue(0.000001);
-        linear->f_tolerance.setValue(0.001);
-
-        cube_node->addObject(solver);
-        cube_node->addObject(linear);
-
-    }
-    else
-    {
-
-        EulerSolver* solver = new EulerSolver;
-        solver->setName("Euler Explicit");
-        solver->f_printLog.setValue(false);
-        cube_node->addObject(solver);
-
-    }
+    Node* cube_node =  sofa::ObjectCreator::CreateEulerSolverNode(oss.str(), scheme);
 
     MechanicalObject3* DOF = new MechanicalObject3;
     cube_node->addObject(DOF);
@@ -188,6 +88,8 @@ Node* createCube(double dx, double dy, double dz, bool implicit = false)
     uniMassCube->setTotalMass(1);
     cube_node->addObject(uniMassCube);
 
+    cube_node->setShowForceFields(true);
+
     return cube_node;
 }
 
@@ -206,7 +108,10 @@ int main( int argc, char** argv )
     sofa::simulation::setSimulation( new sofa::simulation::bgl::BglSimulation() );
     sofa::gui::GUIManager::Init(argv[0]);
 
-    Node *root= createRoot();
+    // The graph root node
+    Node* root = sofa::ObjectCreator::CreateRootWithCollisionPipeline("bgl");
+    root->setGravityInWorld( Coord3(0,0,0) );
+
 
 
     Node* cube1 = createCube( 0,0,0,   implicit  );
@@ -244,6 +149,8 @@ int main( int argc, char** argv )
     root->addChild( cube3 );
     root->addChild( cube4 );
 
+
+    MultiParentsNode->setShowCollisionModels(true);
 
 
 

@@ -10,6 +10,7 @@ DESTDIR = $$SOFA_DIR/bin
 CONFIG += $$CONFIGPROJECTGUI
 LIBS += $$SOFA_GUI_LIBS
 LIBS += $$SOFA_LIBS
+LIBS += -lsofaobjectcreator$$LIBSUFFIX
 
 # The following is a workaround to get KDevelop to detect the name of the program to start
 unix {
