@@ -46,6 +46,7 @@ MeshLoader::MeshLoader() : BaseLoader()
     , polygons(initData(&polygons,"polygons","Polygons of the mesh loaded"))
     , tetrahedra(initData(&tetrahedra,"tetrahedra","Tetrahedra of the mesh loaded"))
     , hexahedra(initData(&hexahedra,"hexahedra","Hexahedra of the mesh loaded"))
+    , normals(initData(&normals,"normals","Normals of the mesh loaded"))
     , edgesGroups(initData(&edgesGroups,"edgesGroups","Groups of Edges"))
     , trianglesGroups(initData(&trianglesGroups,"trianglesGroups","Groups of Triangles"))
     , quadsGroups(initData(&quadsGroups,"quadsGroups","Groups of Quads"))
@@ -67,6 +68,7 @@ MeshLoader::MeshLoader() : BaseLoader()
     polygons.setPersistent(false);
     tetrahedra.setPersistent(false);
     hexahedra.setPersistent(false);
+    normals.setPersistent(false);
 }
 
 
@@ -79,6 +81,8 @@ void MeshLoader::parse(sofa::core::objectmodel::BaseObjectDescription* arg)
         load(/*m_filename.getFullPath().c_str()*/);
     else
         sout << "Doing nothing" << sendl;
+
+    updateNormals();
 }
 
 
@@ -126,12 +130,63 @@ bool MeshLoader::canLoad()
     return true;
 }
 
-void addPosition(helper::vector<sofa::defaulttype::Vec<3,SReal> >* pPositions, const sofa::defaulttype::Vec<3,SReal> &p)
+void MeshLoader::updateNormals()
+{
+    helper::ReadAccessor<Data<helper::vector<sofa::defaulttype::Vec<3,SReal> > > > raPositions = positions;
+    helper::ReadAccessor<Data< helper::vector< helper::fixed_array <unsigned int,3> > > > raTriangles = triangles;
+    helper::ReadAccessor<Data< helper::vector< helper::fixed_array <unsigned int,4> > > > raQuads = quads;
+
+    helper::WriteAccessor<Data<helper::vector<sofa::defaulttype::Vec<3,SReal> > > > waNormals = normals;
+
+    //look if we already have loaded normals
+    if (waNormals.size() == raPositions.size())
+        return;
+
+    waNormals.resize(raPositions.size());
+
+    for (unsigned int i = 0; i < raTriangles.size() ; i++)
+    {
+        const sofa::defaulttype::Vec<3,SReal>  v1 = raPositions[raTriangles[i][0]];
+        const sofa::defaulttype::Vec<3,SReal>  v2 = raPositions[raTriangles[i][1]];
+        const sofa::defaulttype::Vec<3,SReal>  v3 = raPositions[raTriangles[i][2]];
+        sofa::defaulttype::Vec<3,SReal> n = cross(v2-v1, v3-v1);
+
+        n.normalize();
+        waNormals[raTriangles[i][0]] += n;
+        waNormals[raTriangles[i][1]] += n;
+        waNormals[raTriangles[i][2]] += n;
+
+    }
+    for (unsigned int i = 0; i < raQuads.size() ; i++)
+    {
+        const sofa::defaulttype::Vec<3,SReal> & v1 = raPositions[raQuads[i][0]];
+        const sofa::defaulttype::Vec<3,SReal> & v2 = raPositions[raQuads[i][1]];
+        const sofa::defaulttype::Vec<3,SReal> & v3 = raPositions[raQuads[i][2]];
+        const sofa::defaulttype::Vec<3,SReal> & v4 = raPositions[raQuads[i][3]];
+        sofa::defaulttype::Vec<3,SReal> n1 = cross(v2-v1, v4-v1);
+        sofa::defaulttype::Vec<3,SReal> n2 = cross(v3-v2, v1-v2);
+        sofa::defaulttype::Vec<3,SReal> n3 = cross(v4-v3, v2-v3);
+        sofa::defaulttype::Vec<3,SReal> n4 = cross(v1-v4, v3-v4);
+        n1.normalize(); n2.normalize(); n3.normalize(); n4.normalize();
+        waNormals[raQuads[i][0]] += n1;
+        waNormals[raQuads[i][1]] += n2;
+        waNormals[raQuads[i][2]] += n3;
+        waNormals[raQuads[i][3]] += n4;
+    }
+
+    for (unsigned int i = 0; i < waNormals.size(); i++)
+    {
+        waNormals[i].normalize();
+    }
+}
+
+
+void MeshLoader::addPosition(helper::vector<sofa::defaulttype::Vec<3,SReal> >* pPositions, const sofa::defaulttype::Vec<3,SReal> &p)
 {
     pPositions->push_back(p);
 }
 
-void addPosition(helper::vector<sofa::defaulttype::Vec<3,SReal> >* pPositions,  SReal x, SReal y, SReal z)
+void MeshLoader::addPosition(helper::vector<sofa::defaulttype::Vec<3,SReal> >* pPositions,  SReal x, SReal y, SReal z)
 {
     addPosition(pPositions, sofa::defaulttype::Vec<3,SReal>(x, y, z));
 }

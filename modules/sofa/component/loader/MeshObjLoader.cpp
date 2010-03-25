@@ -49,12 +49,10 @@ MeshObjLoader::MeshObjLoader(): MeshLoader()
     , texturesList(initData(&texturesList,"texturesList","List of textures corresponding to elements of the mesh loaded."))
     , texCoords(initData(&texCoords,"texcoords","Texcoords of the mesh loaded"))
     , normalsList(initData(&normalsList,"normalsList","List of normals of elements of the mesh loaded."))
-    , normals(initData(&normals,"normals","Normals of the mesh loaded"))
 {
     texturesList.setPersistent(false);
     texCoords.setPersistent(false);
     normalsList.setPersistent(false);
-    normals.setPersistent(false);
 }
 
 
@@ -113,7 +111,6 @@ void MeshObjLoader::addGroup (const PrimitiveGroup& g)
 bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
 {
     sout << "MeshObjLoader::readOBJ" << sendl;
-
 
     helper::vector<sofa::defaulttype::Vector3>& my_positions = *(positions.beginEdit());
     helper::vector<sofa::defaulttype::Vector2>& my_texCoords = *(texCoords.beginEdit());
