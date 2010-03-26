@@ -34,7 +34,7 @@
 
 #include <sofa/component/visualmodel/OglModel.h>
 #include <sofa/component/visualmodel/OglShader.h>
-#include <sofa/component/visualmodel/OglAttribute.inl>
+#include <sofa/component/visualmodel/OglAttribute.h>
 
 
 namespace sofa
@@ -45,6 +45,7 @@ namespace component
 
 namespace visualmodel
 {
+
 
 class SOFA_COMPONENT_VISUALMODEL_API OglShaderVisualModel : public OglModel
 {
