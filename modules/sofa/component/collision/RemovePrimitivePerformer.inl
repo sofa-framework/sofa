@@ -720,8 +720,14 @@ void RemovePrimitivePerformer<DataTypes>::draw()
             for (unsigned int j = 0; j<3; j++)
             {
                 Coord coordP = X[tri[j]];
-                glVertex3d(coordP[0], coordP[1], coordP[2]);
+                glVertex3d(coordP[0] * 1.001, coordP[1] * 1.001, coordP[2] * 1.001);
             }
+            for (unsigned int j = 0; j<3; j++)
+            {
+                Coord coordP = X[tri[j]];
+                glVertex3d(coordP[0] * 0.999, coordP[1] * 0.999, coordP[2] * 0.999);
+            }
+
             break;
         }
         default:
