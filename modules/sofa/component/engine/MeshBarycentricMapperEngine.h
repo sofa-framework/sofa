@@ -78,15 +78,15 @@ public:
 
     void draw();
 
-    void addPointInLine(const int /*lineIndex*/, const Real* /*baryCoords*/);
+    void addPointInLine(const int /*lineIndex*/, const SReal* /*baryCoords*/);
 
-    void addPointInTriangle(const int /*triangleIndex*/, const Real* /*baryCoords*/);
+    void addPointInTriangle(const int /*triangleIndex*/, const SReal* /*baryCoords*/);
 
-    void addPointInQuad(const int /*quadIndex*/, const Real* /*baryCoords*/);
+    void addPointInQuad(const int /*quadIndex*/, const SReal* /*baryCoords*/);
 
-    void addPointInTetra(const int /*tetraIndex*/, const Real* /*baryCoords*/, const unsigned int /*pointIndex*/);
+    void addPointInTetra(const int /*tetraIndex*/, const SReal* /*baryCoords*/, const unsigned int /*pointIndex*/);
 
-    void addPointInCube(const int /*cubeIndex*/, const Real* /*baryCoords*/);
+    void addPointInCube(const int /*cubeIndex*/, const SReal* /*baryCoords*/);
 
 
     virtual std::string getTemplateName() const
@@ -128,6 +128,7 @@ private:
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_ENGINE_MeshBarycentricMapperEngine_CPP)
 #pragma warning(disable : 4231)
+#pragma warning(disable : 4244)
 #ifndef SOFA_FLOAT
 template class SOFA_COMPONENT_ENGINE_API MeshBarycentricMapperEngine<defaulttype::Vec3dTypes>;
 #endif //SOFA_FLOAT

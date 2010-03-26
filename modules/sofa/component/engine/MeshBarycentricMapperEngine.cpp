@@ -57,6 +57,7 @@ template class SOFA_COMPONENT_ENGINE_API MeshBarycentricMapperEngine<Vec3fTypes>
 #endif //SOFA_DOUBLE
 
 
+
 } // namespace constraint
 
 } // namespace component
