@@ -192,6 +192,7 @@ public:
     Vec3f bbox[2];
     Data< Material > material;
     Data< bool > putOnlyTexCoords;
+    Data< bool > srgbTexturing;
 
     class FaceGroup
     {
