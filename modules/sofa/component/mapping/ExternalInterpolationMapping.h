@@ -72,9 +72,9 @@ public:
 
     ExternalInterpolationMapping(In* from, Out* to);
 
-    void clear(int reserve);
+    void clear(int /*reserve*/) {}
 
-    int addPoint(int index);
+    int addPoint(int /*index*/) {return 0;}
 
     void init();
 

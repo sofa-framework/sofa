@@ -184,7 +184,7 @@ public:
       MAP the mass: this function recompute the rigid mass (gravity center position and inertia) of the object
           based on its deformed shape
       */
-    void recomputeRigidMass();
+    void recomputeRigidMass() {}
 
     //@}
 
