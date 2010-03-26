@@ -27,15 +27,14 @@
 
 #include <sofa/component/misc/Monitor.h>
 #include <sofa/simulation/common/AnimateEndEvent.h>
-
+#include <sofa/simulation/common/Simulation.h>
 #include <sofa/defaulttype/DataTypeInfo.h>
 #include <sofa/core/objectmodel/Context.h>
-#include <sofa/helper/gl/template.h>
 #include <sofa/core/objectmodel/Data.h>
-#include <sofa/helper/gl/Axis.h>
 #include <fstream>
 #include <sofa/defaulttype/Vec.h>
 #include <cmath>
+#include <sofa/helper/gl/DrawManager.h>
 
 
 
@@ -55,29 +54,31 @@ using namespace std;
 ///////////////////////////// Monitor /////////////////////////////////////
 template <class DataTypes>
 Monitor<DataTypes>::Monitor()
-    : saveXToGnuplot ( initData ( &saveXToGnuplot, false, "ExportPositions", "export monitored positions as gnuplot file" ) )
-    , saveVToGnuplot ( initData ( &saveVToGnuplot, false, "ExportVelocities", "export monitored velocities as gnuplot file" ) )
-    , saveFToGnuplot ( initData ( &saveFToGnuplot, false, "ExportForces", "export monitored forces as gnuplot file" ) )
-    , monitoring( initData (&monitoring, "MonitoredParticles", "monitoring of desired particles"))
-    ,showPositions (initData (&showPositions, false, "showPositions", "see the monitored positions"))
-    ,positionsColor (initData (&positionsColor,Vector3 (1.0, 1.0, 0.0), "PositionsColor", "define the color of positions"))
-
-    ,showVelocities (initData (&showVelocities, false, "showVelocities", "see the monitored velocities"))
-    ,velocitiesColor(initData (&velocitiesColor,Vector3 (1.0, 1.0, 0.0), "VelocitiesColor", "define the color of velocities"))
-
-    ,showForces (initData (&showForces, false, "showForces", "see the monitored forces"))
-    ,forcesColor (initData (&forcesColor,Vector3 (1.0, 1.0, 0.0), "ForcesColor", "define the color of forces"))
+    : indices ( initData ( &indices, "indices", "MechanicalObject points indices to monitor" ) )
+    , saveXToGnuplot ( initData ( &saveXToGnuplot, false, "ExportPositions", "export Monitored positions as gnuplot file" ) )
+    , saveVToGnuplot ( initData ( &saveVToGnuplot, false, "ExportVelocities", "export Monitored velocities as gnuplot file" ) )
+    , saveFToGnuplot ( initData ( &saveFToGnuplot, false, "ExportForces", "export Monitored forces as gnuplot file" ) )
+    ,showPositions (initData (&showPositions, false, "showPositions", "see the Monitored positions"))
+    ,positionsColor (initData (&positionsColor, "PositionsColor", "define the color of positions"))
+    ,showVelocities (initData (&showVelocities, false, "showVelocities", "see the Monitored velocities"))
+    ,velocitiesColor(initData (&velocitiesColor, "VelocitiesColor", "define the color of velocities"))
+    ,showForces (initData (&showForces, false, "showForces", "see the Monitored forces"))
+    ,forcesColor (initData (&forcesColor, "ForcesColor", "define the color of forces"))
     ,showMinThreshold (initData (&showMinThreshold, 0.01 ,"showMinThreshold", "under this value, vectors are not represented"))
-    ,showTrajectories (initData (&showTrajectories, false ,"showTrajectories", "print the trajectory of monitored particles"))
+    ,showTrajectories (initData (&showTrajectories, false ,"showTrajectories", "print the trajectory of Monitored particles"))
     ,trajectoriesPrecision (initData (&trajectoriesPrecision, 0.1,"TrajectoriesPrecision", "set the dt between to save of positions"))
-    ,trajectoriesColor(initData (&trajectoriesColor,Vector3 (1.0, 1.0, 0.0), "TrajectoriesColor", "define the color of the trajectories"))
+    ,trajectoriesColor(initData (&trajectoriesColor, "TrajectoriesColor", "define the color of the trajectories"))
+    ,showSizeFactor(initData (&showSizeFactor, 1.0, "sizeFactor", "factor to multiply to arrows"))
     ,saveGnuplotX ( NULL ), saveGnuplotV ( NULL ), saveGnuplotF ( NULL )
+    ,X (NULL), V(NULL), F(NULL)
     ,internalDt(0.0)
 {
     if (!f_listening.isSet()) f_listening.setValue(true);
-    monitoring.setGroup("Monitor");
-    monitoring.setReadOnly(true);
 
+    positionsColor.setValue(defaulttype::Vector4(1.0,1.0,0.0,1.0));
+    velocitiesColor.setValue(defaulttype::Vector4(1.0,1.0,0.0,1.0));
+    forcesColor.setValue(defaulttype::Vector4(1.0,1.0,0.0,1.0));
+    trajectoriesColor.setValue(defaulttype::Vector4(1.0,1.0,0.0,1.0));
 }
 /////////////////////////// end Monitor ///////////////////////////////////
 
@@ -95,59 +96,27 @@ Monitor<DataTypes>::~Monitor()
 
 
 
-///////////////////////////// setIndPos ///////////////////////////////////
-template<class DataTypes>
-void Monitor<DataTypes>::setIndPos ( sofa::helper::vector < int > &_IdxPos )
-{
-    monitoring.beginEdit() -> setIndPos (_IdxPos);
-    monitoring.endEdit();
-}
-/////////////////////////// end setIndPos /////////////////////////////////
-
-
-
-///////////////////////////// setIndVels //////////////////////////////////
-template<class DataTypes>
-void Monitor<DataTypes>::setIndVels ( sofa::helper::vector < int > &_IdxVels )
-{
-    monitoring.beginEdit() -> setIndVels (_IdxVels);
-    monitoring.endEdit();
-}
-/////////////////////////// end setIndVels ////////////////////////////////
-
-
-
-//////////////////////////// setIndForces /////////////////////////////////
-template<class DataTypes>
-void Monitor<DataTypes>::setIndForces ( sofa::helper::vector < int > &_IdxForces )
-{
-    monitoring.beginEdit() -> setIndForces (_IdxForces);
-    monitoring.endEdit();
-}
-////////////////////////// end setIndForces ///////////////////////////////
-
-
 
 ////////////////////////////// init () ////////////////////////////////////
 template<class DataTypes>
 void Monitor<DataTypes>::init()
 {
-    MonitorData *data=monitoring.beginEdit();
-    mmodel =
-        dynamic_cast<core::componentmodel::behavior::MechanicalState<DataTypes>*>
-        ( this->getContext()->getMechanicalState() );
+    core::componentmodel::behavior::MechanicalState<DataTypes>* mmodel = dynamic_cast<core::componentmodel::behavior::MechanicalState<DataTypes>*>( this->getContext()->getMechanicalState() );
 
-    data ->setValues (mmodel -> getV(), mmodel -> getF(), mmodel -> getX());
-    sofa::helper::vector < int > initialPosIndices = data->getIndPos();
-    sofa::helper::vector < int > initialVelsIndices = data->getIndVels();
-    sofa::helper::vector < int > initialForcesIndices = data->getIndForces();
+    if(!mmodel)
+    {
+        serr<<"Monitor error : no MechanicalObject found"<<sendl;
+        return;
+    }
 
-    data->setIndPosInit (initialPosIndices);
-    data->setIndVelsInit (initialVelsIndices);
-    data->setIndForcesInit (initialForcesIndices);
+    X = mmodel->getX();
+    V = mmodel->getV();
+    F = mmodel->getF();
+
 
     initGnuplot ("./");
-    monitoring.endEdit();
+
+    savedPos.resize(indices.getValue().size());
 }
 ///////////////////////////// end init () /////////////////////////////////
 
@@ -157,21 +126,9 @@ void Monitor<DataTypes>::init()
 template<class DataTypes>
 void Monitor<DataTypes>::reset()
 {
-    MonitorData *data=monitoring.beginEdit();
-    data->clearVecIndices();
-    // data ->setValues (mmodel -> getV(), mmodel -> getF(), mmodel -> getX());
-    sofa::helper::vector < int > initialPosIndices = data->getIndPosInit();
-    sofa::helper::vector < int > initialVelsIndices = data->getIndVelsInit();
-    sofa::helper::vector < int > initialForcesIndices = data->getIndForcesInit();
-
-    data->setIndPos (initialPosIndices);
-    data->setIndVels (initialVelsIndices);
-    data->setIndForces (initialForcesIndices);
-
-    data->getSavePos()->clear();
     internalDt = 0.0;
-
-    monitoring.endEdit();
+    for(unsigned int i=0 ; i<indices.getValue().size() ; ++i)
+        savedPos[i].clear();
 }
 //////////////////////////// end reset () /////////////////////////////////
 
@@ -181,7 +138,7 @@ void Monitor<DataTypes>::reset()
 template<class DataTypes>
 void Monitor<DataTypes>::reinit()
 {
-    initGnuplot ( "./" );
+    init();
 }
 /////////////////////////// end reinit () /////////////////////////////////
 
@@ -192,122 +149,87 @@ void Monitor<DataTypes>::handleEvent( core::objectmodel::Event* ev )
 {
     if (dynamic_cast<sofa::simulation::AnimateEndEvent*>(ev))
     {
-        MonitorData *data=monitoring.beginEdit();
-
         if ( saveXToGnuplot.getValue() || saveVToGnuplot.getValue() || saveFToGnuplot.getValue() )
             exportGnuplot ( (Real) this ->getTime() );
-
 
         if (showTrajectories.getValue())
         {
             internalDt += this -> getContext()->getDt();
-            VecCoord instantPositions;
 
             if (trajectoriesPrecision.getValue() <= internalDt)
             {
                 internalDt = 0.0;
-                for (unsigned int i=0; i < data -> sizeIdxPos(); ++i)
+                for (unsigned int i=0; i < indices.getValue().size(); ++i)
                 {
-                    instantPositions.push_back(data ->getPos(i));
+                    savedPos[i].push_back( (*X)[indices.getValue()[i]] );
                 }
-                data-> getSavePos()->push_back(instantPositions);
             }
-
         }
-        monitoring.endEdit();
     }
-
 }
 
 /////////////////////////// draw () ////////////////////////////////////
 template<class DataTypes>
 void Monitor<DataTypes>::draw()
 {
-    MonitorData *data=monitoring.beginEdit();
-    glDisable(GL_LIGHTING);
+    sofa::simulation::getSimulation()->DrawUtility.setLightingEnabled(false);
     if (showPositions.getValue())
     {
-        glPointSize(5.0);
-        glBegin (GL_POINTS);
-        glColor3d ((*positionsColor.beginEdit())[0], (*positionsColor.beginEdit())[1], (*positionsColor.beginEdit())[2]);
-        for (unsigned int i=0; i < data -> sizeIdxPos(); ++i)
+        helper::vector<defaulttype::Vector3> points;
+        for (unsigned int i=0; i < indices.getValue().size(); ++i)
         {
-            Coord posvertex = data ->getPos(i);
-            glVertex3d (posvertex[0], posvertex[1], posvertex[2]);
+            Coord posvertex = (*X)[indices.getValue()[i]];
+            points.push_back(defaulttype::Vector3(posvertex[0],posvertex[1],posvertex[2]));
         }
-        glEnd ();
+        sofa::simulation::getSimulation()->DrawUtility.drawPoints(points, showSizeFactor.getValue()*2.0f, positionsColor.getValue());
+
     }
 
     if (showVelocities.getValue())
     {
-        const VecCoord* mechPos = data -> getMechPos();
-        for (unsigned int i=0; i < data -> sizeIdxVels(); i++)
+        for (unsigned int i=0; i < indices.getValue().size(); ++i)
         {
-            sofa::helper::vector <int> posOfVel = data -> getIndVels ();
+            Coord posVertex = (*X)[indices.getValue()[i]];
+            defaulttype::Vector3 p1(posVertex[0],posVertex[1],posVertex[2]);
+            Deriv velVertex = (*V)[indices.getValue()[i]];
+            defaulttype::Vector3 p2(showSizeFactor.getValue()*velVertex[0],showSizeFactor.getValue()*velVertex[1],showSizeFactor.getValue()*velVertex[2]);
 
-
-            Coord baseVelVertex = mechPos [0] [posOfVel[i]];
-            Deriv topVelVertex = data -> getVel(i);
-
-            if (vectorNorm(topVelVertex) > showMinThreshold.getValue())
-            {
-                for (unsigned short int j = 0; j < 3; ++j)
-                {
-                    topVelVertex[j] = baseVelVertex[j] + topVelVertex[j];
-                }
-
-                glColor3d ((*velocitiesColor.beginEdit())[0], (*velocitiesColor.beginEdit())[1], (*velocitiesColor.beginEdit())[2]);
-                helper::gl::Axis::draw(baseVelVertex, topVelVertex, 0.1);
-            }
+            if(p2.norm() > showMinThreshold.getValue())
+                sofa::simulation::getSimulation()->DrawUtility.drawArrow(p1, p1+p2, showSizeFactor.getValue()*p2.norm()/20.0, velocitiesColor.getValue());
         }
     }
 
-    if (showForces.getValue() && data -> getSizeVecForces())
+    if (showForces.getValue() && F->size()>0)
     {
-        const VecCoord* mechPos = data -> getMechPos();
-        for (unsigned int i=0; i < data -> sizeIdxForces(); ++i)
+        for (unsigned int i=0; i < indices.getValue().size(); ++i)
         {
-            sofa::helper::vector <int> posOfForces = data -> getIndForces ();
+            Coord posVertex = (*X)[indices.getValue()[i]];
+            defaulttype::Vector3 p1(posVertex[0],posVertex[1],posVertex[2]);
+            Deriv forceVertex = (*F)[indices.getValue()[i]];
+            defaulttype::Vector3 p2(showSizeFactor.getValue()*forceVertex[0],showSizeFactor.getValue()*forceVertex[1],showSizeFactor.getValue()*forceVertex[2]);
 
-            Coord baseVelVertex = mechPos [0] [posOfForces[i]];
-            Deriv topVelVertex = data -> getForce(i);
-            if (vectorNorm(topVelVertex) > showMinThreshold.getValue())
-            {
-                topVelVertex = baseVelVertex + topVelVertex;
-
-                glColor3d ((*forcesColor.beginEdit())[0], (*forcesColor.beginEdit())[1], (*forcesColor.beginEdit())[2]);
-                helper::gl::Axis::draw(baseVelVertex, topVelVertex, 0.2);
-            }
+            if(p2.norm() > showMinThreshold.getValue())
+                sofa::simulation::getSimulation()->DrawUtility.drawArrow(p1, p1+p2, showSizeFactor.getValue()*p2.norm()/20.0, forcesColor.getValue());
         }
     }
 
     if (showTrajectories.getValue())
     {
         internalDt += this -> getContext()->getDt();
-        VecCoord instantPositions;
-        const unsigned int instantPositionsSize =  (*data->getMechPos())[0].size();//instantPositions.size();
-
-        //printing those positions
-        glLineWidth (1);
-        glColor3d ((*trajectoriesColor.beginEdit())[0], (*trajectoriesColor.beginEdit())[1], (*trajectoriesColor.beginEdit())[2]);
-        glBegin (GL_LINES);
-        for (unsigned int i = 1; i < data->getSavePos()->size(); ++i)
+        for (unsigned int i=0; i < indices.getValue().size(); ++i)
         {
-            for (unsigned int j = 0; j < instantPositionsSize; ++j)
+            helper::vector<defaulttype::Vector3> points;
+            Coord point;
+            for (unsigned int j=0 ; j<savedPos[i].size() ; ++j)
             {
-                glVertex3d (((*data->getSavePos())[i-1][j][0]),
-                        ((*data->getSavePos())[i-1][j][1]),
-                        ((*data->getSavePos())[i-1][j][2]));
-
-                glVertex3d (((*data->getSavePos())[i][j][0]),
-                        ((*data->getSavePos())[i][j][1]),
-                        ((*data->getSavePos())[i][j][2]));
+                point = savedPos[i][j];
+                points.push_back(Vector3(point[0], point[1], point[2]));
+                if(j!=0)
+                    points.push_back(Vector3(point[0], point[1], point[2]));
             }
+            sofa::simulation::getSimulation()->DrawUtility.drawLines(points, showSizeFactor.getValue()*0.2, trajectoriesColor.getValue());
         }
-        glEnd();
-
     }
-    monitoring.endEdit();
 }
 /////////////////////////// end draw () ////////////////////////////////
 
@@ -328,16 +250,14 @@ void Monitor<DataTypes>::initGnuplot ( const std::string path )
             if ( saveGnuplotX != NULL ) delete saveGnuplotX;
             saveGnuplotX = new std::ofstream ( ( path + this->getName() +"_x.txt" ).c_str() );
             ( *saveGnuplotX ) << "# Gnuplot File : positions of "
-                    << monitoring.beginEdit()->sizeIdxPos() << " particle(s) monitored"
+                    << indices.getValue().size() << " particle(s) Monitored"
                     <<  endl;
             ( *saveGnuplotX ) << "# 1st Column : time, others : particle(s) number ";
 
-            sofa::helper::vector< int > posIdx = monitoring.beginEdit()->getIndPos();
-            for (unsigned int i = 0; i < posIdx.size(); i++)
-                ( *saveGnuplotX ) << posIdx.at(i) << " ";
+            for (unsigned int i = 0; i < indices.getValue().size(); i++)
+                ( *saveGnuplotX ) << indices.getValue()[i] << " ";
             ( *saveGnuplotX ) << endl;
 
-            monitoring.endEdit();
         }
 
         if ( saveVToGnuplot.getValue() )
@@ -346,17 +266,13 @@ void Monitor<DataTypes>::initGnuplot ( const std::string path )
 
             saveGnuplotV = new std::ofstream ( ( path + this->getName() +"_v.txt" ).c_str() );
             ( *saveGnuplotV ) << "# Gnuplot File : velocities of "
-                    << monitoring.beginEdit()->sizeIdxVels() << " particle(s) monitored"
+                    << indices.getValue().size() << " particle(s) Monitored"
                     <<  endl;
             ( *saveGnuplotV ) << "# 1st Column : time, others : particle(s) number ";
 
-            sofa::helper::vector< int > velsIdx = monitoring.beginEdit()->getIndVels();
-            for (unsigned int i = 0; i < velsIdx.size(); i++)
-                ( *saveGnuplotV ) << velsIdx.at(i) << " ";
+            for (unsigned int i = 0; i < indices.getValue().size(); i++)
+                ( *saveGnuplotV ) << indices.getValue()[i] << " ";
             ( *saveGnuplotV ) << endl;
-            monitoring.endEdit();
-
-
         }
 
 
@@ -366,15 +282,13 @@ void Monitor<DataTypes>::initGnuplot ( const std::string path )
             if ( saveGnuplotF != NULL ) delete saveGnuplotF;
             saveGnuplotF = new std::ofstream ( ( path + this->getName() +"_f.txt" ).c_str() );
             ( *saveGnuplotF ) << "# Gnuplot File : forces of "
-                    << monitoring.beginEdit()->sizeIdxForces() << " particle(s) monitored"
+                    << indices.getValue().size() << " particle(s) Monitored"
                     <<  endl;
             ( *saveGnuplotF ) << "# 1st Column : time, others : particle(s) number ";
 
-            sofa::helper::vector< int > forcesIdx = monitoring.beginEdit()->getIndForces();
-            for (unsigned int i = 0; i < forcesIdx.size(); i++)
-                ( *saveGnuplotF ) << forcesIdx.at(i) << " ";
+            for (unsigned int i = 0; i < indices.getValue().size(); i++)
+                ( *saveGnuplotF ) << indices.getValue()[i] << " ";
             ( *saveGnuplotF ) << endl;
-            monitoring.endEdit();
         }
 
     }
@@ -391,29 +305,26 @@ void Monitor<DataTypes>::exportGnuplot ( Real time )
     {
         ( *saveGnuplotX ) << time <<"\t" ;
 
-        for (unsigned int i = 0; i < monitoring.beginEdit()->sizeIdxPos(); i++)
-            ( *saveGnuplotX ) << monitoring.beginEdit() -> getPos(i) << "\t";
+        for (unsigned int i = 0; i < indices.getValue().size(); i++)
+            ( *saveGnuplotX ) << (*X)[indices.getValue()[i]] << "\t";
         ( *saveGnuplotX ) << endl;
-        monitoring.endEdit();
     }
-    if ( saveVToGnuplot.getValue() && monitoring.beginEdit()->getSizeVecVels() )
+    if ( saveVToGnuplot.getValue() && V->size()>0 )
     {
         ( *saveGnuplotV ) << time <<"\t";
 
-        for (unsigned int i = 0; i < monitoring.beginEdit()->sizeIdxVels(); i++)
-            ( *saveGnuplotV ) << monitoring.beginEdit() -> getVel(i) << "\t";
+        for (unsigned int i = 0; i < indices.getValue().size(); i++)
+            ( *saveGnuplotV ) << (*V)[indices.getValue()[i]] << "\t";
         ( *saveGnuplotV ) << endl;
-        monitoring.endEdit();
     }
 
-    if ( saveFToGnuplot.getValue() && monitoring.beginEdit()->getSizeVecForces())
+    if ( saveFToGnuplot.getValue() && F->size()>0)
     {
         ( *saveGnuplotF ) << time <<"\t";
 
-        for (unsigned int i = 0; i < monitoring.beginEdit()->sizeIdxForces(); i++)
-            ( *saveGnuplotF ) << monitoring.beginEdit() -> getForce (i) << "\t";
+        for (unsigned int i = 0; i < indices.getValue().size(); i++)
+            ( *saveGnuplotF ) << (*F)[indices.getValue()[i]] << "\t";
         ( *saveGnuplotF ) << endl;
-        monitoring.endEdit();
     }
 }
 ///////////////////////////////////////////////////////////////////////////
