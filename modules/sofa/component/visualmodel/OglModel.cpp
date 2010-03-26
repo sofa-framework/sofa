@@ -306,7 +306,7 @@ bool OglModel::loadTexture(const std::string& filename)
     helper::io::Image *img = helper::io::Image::Create(filename);
     if (!img)
         return false;
-    tex = new helper::gl::Texture(img);
+    tex = new helper::gl::Texture(img, true, true, false, srgbTexturing.getValue());
     return true;
 }
 
