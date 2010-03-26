@@ -1,46 +1,49 @@
+/******************************************************************************
+ *       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 4      *
+ *                (c) 2006-2009 MGH, INRIA, USTL, UJF, CNRS                    *
+ *                                                                             *
+ * This program is free software; you can redistribute it and/or modify it     *
+ * under the terms of the GNU General Public License as published by the Free  *
+ * Software Foundation; either version 2 of the License, or (at your option)   *
+ * any later version.                                                          *
+ *                                                                             *
+ * This program is distributed in the hope that it will be useful, but WITHOUT *
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for    *
+ * more details.                                                               *
+ *                                                                             *
+ * You should have received a copy of the GNU General Public License along     *
+ * with this program; if not, write to the Free Software Foundation, Inc., 51  *
+ * Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.                   *
+ *******************************************************************************
+ *                            SOFA :: Applications                             *
+ *                                                                             *
+ * Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
+ * H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
+ * M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
+ *                                                                             *
+ * Contact information: contact@sofa-framework.org                             *
+ ******************************************************************************/
+
+#include "../../../../tutorials/objectCreator/ObjectCreator.h"
 
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/gui/GUIManager.h>
 
 
-#include <sofa/component/contextobject/CoordinateSystem.h>
 #include <sofa/helper/system/FileRepository.h>
-#include <sofa/core/objectmodel/Context.h>
+#include <sofa/helper/system/SetDirectory.h>
 #include <sofa/gui/SofaGUI.h>
 
-//Including components for collision detection
-#include <sofa/component/collision/DefaultPipeline.h>
-#include <sofa/component/collision/DefaultContactManager.h>
-#include <sofa/component/collision/BruteForceDetection.h>
-#include <sofa/component/collision/NewProximityIntersection.h>
-#include <sofa/component/collision/TriangleModel.h>
 
 //Including component for topological description of the objects
 #include <sofa/component/topology/MeshTopology.h>
 #include <sofa/component/topology/RegularGridTopology.h>
 
-//Including Solvers
-#include <sofa/component/odesolver/EulerImplicitSolver.h>
-#include <sofa/component/odesolver/EulerSolver.h>
-#include <sofa/component/linearsolver/CGLinearSolver.h>
-#include <sofa/component/linearsolver/MatrixLinearSolver.h>
-
-
-
-#include <sofa/simulation/common/PrintVisitor.h>
-#include <sofa/simulation/common/TransformationVisitor.h>
-#include <sofa/helper/system/glut.h>
-
-#include <sofa/helper/system/SetDirectory.h>
-
 
 //SOFA_HAS_BOOST_KERNEL to define in chainHybrid.pro
 
-#include <sofa/simulation/bgl/BglNode.h>
 #include <sofa/simulation/bgl/BglSimulation.h>
-#include <sofa/component/collision/BglCollisionGroupManager.h>
-#include <sofa/component/collision/SphereModel.h>
-
 
 
 //Using double by default, if you have SOFA_FLOAT in use in you sofa-default.cfg, then it will be FLOAT.
@@ -49,72 +52,14 @@
 
 
 using sofa::component::visualmodel::OglModel;
-
 using namespace sofa::simulation;
 using namespace sofa::component::forcefield;
 using namespace sofa::component::collision;
 using namespace sofa::component::topology;
 using sofa::component::container::MeshLoader;
-using sofa::component::odesolver::EulerImplicitSolver;
-using sofa::component::odesolver::EulerSolver;
-using sofa::component::linearsolver::CGLinearSolver;
-using sofa::component::linearsolver::GraphScatteredMatrix;
-using sofa::component::linearsolver::GraphScatteredVector;
-typedef CGLinearSolver<GraphScatteredMatrix,GraphScatteredVector> CGLinearSolverGraph;
-
 // ---------------------------------------------------------------------
 // ---
 // ---------------------------------------------------------------------
-
-Node* createRoot()
-{
-    Node* root = getSimulation()->newNode("root");
-    root->setGravityInWorld( Coord3(0,0,0) );
-    //Components for collision management
-    //------------------------------------
-    //--> adding collision pipeline
-    DefaultPipeline* collisionPipeline = new DefaultPipeline;
-    collisionPipeline->setName("Collision Pipeline");
-    root->addObject(collisionPipeline);
-
-    //--> adding collision detection system
-    BruteForceDetection* detection = new BruteForceDetection;
-    detection->setName("Detection");
-    root->addObject(detection);
-
-    //--> adding component to detection intersection of elements
-    NewProximityIntersection* detectionProximity = new NewProximityIntersection;
-    detectionProximity->setName("Proximity");
-    detectionProximity->setAlarmDistance(0.3);   //warning distance
-    detectionProximity->setContactDistance(0.2); //min distance before setting a spring to create a repulsion
-    root->addObject(detectionProximity);
-
-    //--> adding contact manager
-    DefaultContactManager* contactManager = new DefaultContactManager;
-    contactManager->setName("Contact Manager");
-    root->addObject(contactManager);
-
-    EulerImplicitSolver* solver = new EulerImplicitSolver;
-    CGLinearSolverGraph* linear = new CGLinearSolverGraph;
-    solver->setName("Euler Implicit");
-    solver->f_rayleighStiffness.setValue(0.01);
-    solver->f_rayleighMass.setValue(1);
-
-    linear->setName("Conjugate Gradient");
-    linear->f_maxIter.setValue(20); //iteration maxi for the CG
-    linear->f_smallDenominatorThreshold.setValue(0.000001);
-    linear->f_tolerance.setValue(0.001);
-
-    root->addObject(solver);
-    root->addObject(linear);
-
-    //--> adding component to handle groups of collision.
-    //BglCollisionGroupManager* collisionGroupManager = new BglCollisionGroupManager;
-    //collisionGroupManager->setName("Collision Group Manager");
-    //root->addObject(collisionGroupManager);
-
-    return root;
-}
 
 Node* createRegularGrid(double x, double y, double z)
 {
@@ -122,25 +67,32 @@ Node* createRegularGrid(double x, double y, double z)
     std::ostringstream oss;
     oss << "regularGrid_" << i;
 
-    Node* node = getSimulation()->newNode(oss.str() );
+    Node* node = sofa::ObjectCreator::CreateEulerSolverNode(oss.str());
 
     RegularGridTopology* grid = new RegularGridTopology(3,3,3);
-    grid->setPos(-1.5+x,1.5+x,-1.5+y,1.5+y,-1.5+z,1.5+z);
+    grid->setPos(-1+x,1+x,-1+y,1+y,-1+z,1+z);
     MechanicalObject3* dof = new MechanicalObject3;
 
     UniformMass3* mass = new UniformMass3;
-    mass->setTotalMass(100);
+    mass->setTotalMass(10);
 
     HexahedronFEMForceField3* ff = new HexahedronFEMForceField3();
     ff->setYoungModulus(400);
     ff->setPoissonRatio(0.3);
-    ff->setMethod(0);
+    ff->setMethod(1);
 
     node->addObject(dof);
     node->addObject(mass);
     node->addObject(grid);
     node->addObject(ff);
 
+    const Deriv3 translation(x,y,z);
+
+    //Node VISUAL
+    Node* VisualNode = sofa::ObjectCreator::CreateVisualNodeVec3(dof,"mesh/ball.obj", "red", translation);
+    node->addChild(VisualNode);
+
+    node->setShowBehaviorModels(true);
     return node;
 }
 
@@ -158,11 +110,15 @@ int main(int argc, char** argv)
     sofa::simulation::setSimulation(new sofa::simulation::bgl::BglSimulation());
     sofa::gui::GUIManager::Init(argv[0]);
 
-    Node *root=createRoot();
-    Node* grid1 = createRegularGrid(-3,0,0);
-    Node* grid2 = createRegularGrid(3,0,0);
+    // The graph root node
+    Node* root = sofa::ObjectCreator::CreateRootWithCollisionPipeline("bgl");
+    root->setGravityInWorld( Coord3(0,0,0) );
+
+    Node* grid1 = createRegularGrid(-1.5,0,0);
+    Node* grid2 = createRegularGrid(1.5,0,0);
     root->addChild(grid1);
     root->addChild(grid2);
+
 
     MechanicalObject3* subsetDof = new MechanicalObject3;
     SubsetMultiMappingVec3d_to_Vec3d* subsetMultiMapping = new SubsetMultiMappingVec3d_to_Vec3d();
@@ -190,9 +146,7 @@ int main(int argc, char** argv)
     HexahedronFEMForceField3* ff = new HexahedronFEMForceField3();
     ff->setYoungModulus(400);
     ff->setPoissonRatio(0.3);
-    ff->setMethod(0);
-
-
+    ff->setMethod(1);
 
 
     Node* multiParentsNode = getSimulation()->newNode("MultiParents");
@@ -202,6 +156,7 @@ int main(int argc, char** argv)
 
     multiParentsNode->addObject(ff);
 
+    multiParentsNode->setShowForceFields(true);
 
 
     grid1->addChild(multiParentsNode);
