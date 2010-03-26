@@ -72,8 +72,6 @@ HEADERS += viewer/SofaViewer.h \
            QDataDescriptionWidget.h \
 		   QDisplayDataWidget.h \     
            QEnergyStatWidget.h \              
-		   QMonitorTableWidget.h \
-		   QMonitorTableWidget.inl \
            QTabulationModifyObject.h \
            QTransformationWidget.h \
            QMouseOperations.h \
@@ -101,7 +99,6 @@ SOURCES += Main.cpp \
            QDataDescriptionWidget.cpp \
 		   QDisplayDataWidget.cpp \
            QEnergyStatWidget.cpp \       
-		   QMonitorTableWidget.cpp \
 		   QMouseOperations.cpp \               
            QTabulationModifyObject.cpp \
            QTransformationWidget.cpp \
