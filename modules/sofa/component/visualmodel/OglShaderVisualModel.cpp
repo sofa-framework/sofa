@@ -40,6 +40,7 @@
 #include <sofa/component/topology/PointSetGeometryAlgorithms.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/defaulttype/VecTypes.h>
+#include <sofa/component/visualmodel/OglAttribute.inl>
 
 namespace sofa
 {
