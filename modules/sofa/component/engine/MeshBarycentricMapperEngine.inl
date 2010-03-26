@@ -334,25 +334,25 @@ void MeshBarycentricMapperEngine<DataTypes>::draw()
 }
 
 template <class DataTypes>
-void MeshBarycentricMapperEngine<DataTypes>::addPointInLine(const int /*lineIndex*/, const SReal* /*baryCoords*/)
+void MeshBarycentricMapperEngine<DataTypes>::addPointInLine(const int /*lineIndex*/, const Real* /*baryCoords*/)
 {
 
 }
 
 template <class DataTypes>
-void MeshBarycentricMapperEngine<DataTypes>::addPointInTriangle(const int /*triangleIndex*/, const SReal* /*baryCoords*/)
+void MeshBarycentricMapperEngine<DataTypes>::addPointInTriangle(const int /*triangleIndex*/, const Real* /*baryCoords*/)
 {
 
 }
 
 template <class DataTypes>
-void MeshBarycentricMapperEngine<DataTypes>::addPointInQuad(const int /*quadIndex*/, const SReal* /*baryCoords*/)
+void MeshBarycentricMapperEngine<DataTypes>::addPointInQuad(const int /*quadIndex*/, const Real* /*baryCoords*/)
 {
 
 }
 
 template <class DataTypes>
-void MeshBarycentricMapperEngine<DataTypes>::addPointInTetra(const int tetraIndex, const SReal* baryCoords, const unsigned int pointIndex)
+void MeshBarycentricMapperEngine<DataTypes>::addPointInTetra(const int tetraIndex, const Real* baryCoords, const unsigned int pointIndex)
 {
     if(tableElts==NULL|| baryPos==NULL)
         return;
@@ -391,7 +391,7 @@ void MeshBarycentricMapperEngine<DataTypes>::addPointInTetra(const int tetraInde
 }
 
 template <class DataTypes>
-void MeshBarycentricMapperEngine<DataTypes>::addPointInCube(const int /*cubeIndex*/, const SReal* /*baryCoords*/)
+void MeshBarycentricMapperEngine<DataTypes>::addPointInCube(const int /*cubeIndex*/, const Real* /*baryCoords*/)
 {
 
 }
