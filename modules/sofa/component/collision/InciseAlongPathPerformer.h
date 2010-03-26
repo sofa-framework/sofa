@@ -74,7 +74,7 @@ public:
 
     void execute();
 
-    void draw() {};
+    void draw();
 
     BodyPicked& getFirstIncisionBodyPicked() {return firstIncisionBody;}
 

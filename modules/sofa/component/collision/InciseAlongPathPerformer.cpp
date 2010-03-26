@@ -24,8 +24,10 @@
 ******************************************************************************/
 #include <sofa/component/collision/InciseAlongPathPerformer.h>
 #include <sofa/component/topology/TriangleSetGeometryAlgorithms.h>
+#include <sofa/component/topology/TriangleSetTopologyContainer.h>
 
 #include <sofa/helper/Factory.inl>
+#include <sofa/helper/system/glut.h>
 
 namespace sofa
 {
@@ -216,6 +218,84 @@ InciseAlongPathPerformer::~InciseAlongPathPerformer()
     this->interactor->setBodyPicked(firstIncisionBody);
 }
 
+void InciseAlongPathPerformer::draw()
+{
+    if (firstBody.body == NULL) return;
+
+    BodyPicked currentBody=this->interactor->getBodyPicked();
+
+    sofa::component::topology::TriangleSetGeometryAlgorithms<Vec3Types>* topoGeo;
+    firstBody.body->getContext()->get(topoGeo);
+
+    if (!topoGeo)
+        return;
+
+    sofa::component::topology::TriangleSetTopologyContainer* topoCon;
+    firstBody.body->getContext()->get(topoCon);
+
+    if (!topoCon)
+        return;
+
+    // Output declarations
+    sofa::helper::vector< sofa::core::componentmodel::topology::TopologyObjectType> topoPath_list;
+    sofa::helper::vector<unsigned int> indices_list;
+    sofa::helper::vector< Vec<3, double> > coords2_list;
+    sofa::defaulttype::Vec<3,double> pointA = firstBody.point;
+    sofa::defaulttype::Vec<3,double> pointB = currentBody.point;
+
+    sofa::helper::vector< Vec<3, double> > positions;
+    bool path_ok = topoGeo->computeIntersectedObjectsList(0, pointA, pointB, firstBody.indexCollisionElement, currentBody.indexCollisionElement, topoPath_list, indices_list, coords2_list);
+
+    if (!path_ok)
+        return;
+    std::cout << "tjs la" << std::endl;
+
+    if (!positions.empty())
+        positions.clear();
+
+    positions.resize(topoPath_list.size());
+    std::cout << positions.size() << std::endl;
+
+    for (unsigned int i=0; i<topoPath_list.size(); ++i)
+    {
+        if (topoPath_list[i] == sofa::core::componentmodel::topology::POINT)
+        {
+            positions[i] = topoGeo->getPointPosition(indices_list[i]);
+        }
+        else if (topoPath_list[i] == sofa::core::componentmodel::topology::EDGE)
+        {
+            sofa::core::componentmodel::topology::BaseMeshTopology::Edge theEdge = topoCon->getEdge(indices_list[i]);
+            const Vec<3, double> AB = topoGeo->getPointPosition(theEdge[1])- topoGeo->getPointPosition(theEdge[0]);
+            positions[i] = topoGeo->getPointPosition(theEdge[0]) + AB *coords2_list[i][0];
+        }
+        else if(topoPath_list[i] == sofa::core::componentmodel::topology::TRIANGLE)
+        {
+            sofa::core::componentmodel::topology::BaseMeshTopology::Triangle theTriangle = topoCon->getTriangle(indices_list[i]);
+
+            for (unsigned int j=0; j<3; ++j)
+                positions[i] += topoGeo->getPointPosition(theTriangle[j])*coords2_list[i][j];
+            positions[i] = positions[i]/3;
+        }
+    }
+
+    positions[0] = pointA;
+    positions[positions.size()-1] = pointB;
+
+    glDisable(GL_LIGHTING);
+    glColor3f(0.3,0.8,0.3);
+    glBegin(GL_LINES);
+
+    for (unsigned int i = 1; i<positions.size(); ++i)
+    {
+        glVertex3d(positions[i-1][0], positions[i-1][1], positions[i-1][2]);
+        glVertex3d(positions[i][0], positions[i][1], positions[i][2]);
+    }
+
+    glEnd();
+
+
+
+}
 
 
 }
