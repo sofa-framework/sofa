@@ -29,7 +29,9 @@
 
 #include <sofa/helper/ArgumentParser.h>
 #include <sofa/simulation/tree/TreeSimulation.h>
+#ifdef SOFA_DEV
 #include <sofa/simulation/bgl/BglSimulation.h>
+#endif
 #include <sofa/simulation/common/Node.h>
 
 #include <sofa/gui/GUIManager.h>
@@ -237,9 +239,11 @@ int main(int argc, char** argv)
     .option(&simulationType,'s',"simulation","type of the simulation(bgl,tree)")
     (argc,argv);
 
+#ifdef SOFA_DEV
     if (simulationType == "bgl")
         sofa::simulation::setSimulation(new sofa::simulation::bgl::BglSimulation());
     else
+#endif
         sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
 
     sofa::gui::GUIManager::Init(argv[0]);
