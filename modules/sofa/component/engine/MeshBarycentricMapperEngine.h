@@ -78,15 +78,15 @@ public:
 
     void draw();
 
-    void addPointInLine(const int /*lineIndex*/, const SReal* /*baryCoords*/);
+    void addPointInLine(const int /*lineIndex*/, const Real* /*baryCoords*/);
 
-    void addPointInTriangle(const int /*triangleIndex*/, const SReal* /*baryCoords*/);
+    void addPointInTriangle(const int /*triangleIndex*/, const Real* /*baryCoords*/);
 
-    void addPointInQuad(const int /*quadIndex*/, const SReal* /*baryCoords*/);
+    void addPointInQuad(const int /*quadIndex*/, const Real* /*baryCoords*/);
 
-    void addPointInTetra(const int /*tetraIndex*/, const SReal* /*baryCoords*/, const unsigned int /*pointIndex*/);
+    void addPointInTetra(const int /*tetraIndex*/, const Real* /*baryCoords*/, const unsigned int /*pointIndex*/);
 
-    void addPointInCube(const int /*cubeIndex*/, const SReal* /*baryCoords*/);
+    void addPointInCube(const int /*cubeIndex*/, const Real* /*baryCoords*/);
 
 
     virtual std::string getTemplateName() const
