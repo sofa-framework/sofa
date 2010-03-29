@@ -100,13 +100,13 @@ public:
     Data < bool > saveFToGnuplot;
 
     Data < bool > showPositions;
-    Data <defaulttype::Vector4> positionsColor;
+    Data <defaulttype::Vec4f> positionsColor;
 
     Data < bool > showVelocities;
-    Data< defaulttype::Vector4 > velocitiesColor;
+    Data< defaulttype::Vec4f > velocitiesColor;
 
     Data < bool > showForces;
-    Data< defaulttype::Vector4 > forcesColor;
+    Data< defaulttype::Vec4f > forcesColor;
 
     Data < double > showMinThreshold;
 
