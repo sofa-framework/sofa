@@ -495,7 +495,11 @@ bool SofaModeler::closeTab(QWidget *curTab)
 #ifdef SOFA_QT4
 void SofaModeler::fileOpen(const QUrl &u)
 {
+#ifdef WIN32
     std::string path=u.toString().ascii();
+#else
+    std::string path=u.path().ascii();
+#endif
     fileOpen(path);
 }
 
