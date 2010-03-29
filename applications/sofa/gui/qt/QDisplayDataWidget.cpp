@@ -1,6 +1,5 @@
 #include "QDisplayDataWidget.h"
 #include "ModifyObject.h"
-#include "QMonitorTableWidget.h"
 
 
 #ifdef SOFA_QT4
