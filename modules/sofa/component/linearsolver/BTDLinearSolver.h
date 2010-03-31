@@ -1208,7 +1208,7 @@ public:
             {
                 for (int mc=0; mc<Minv.colSize(); mc++)
                 {
-                    /*double toto=*/getMinvElement(mr,mc);
+                    getMinvElement(mr,mc);
                 }
             }
         }
@@ -1576,9 +1576,9 @@ public:
             current_block++;
 
             // debug: Facc+=Fn
-            SubVector toto;
-            toto =  this->currentGroup->systemRHVector->asub(current_block,bsize);
-            _acc_rh_current_block += toto;
+            SubVector subV;
+            subV =  this->currentGroup->systemRHVector->asub(current_block,bsize);
+            _acc_rh_current_block += subV;
             //std::cout<<"step3 : Facc+= F["<<current_block<<"] : result : Facc ="<<_acc_rh_current_block<<std::endl;
 
             // df of current block is now included in _acc_rh_current_block

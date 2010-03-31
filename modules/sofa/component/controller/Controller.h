@@ -53,6 +53,7 @@ class OmniEvent;
 class KeypressedEvent;
 class KeyreleasedEvent;
 class JoystickEvent;
+class XitactEvent;
 }
 }
 }
@@ -96,6 +97,12 @@ public:
     * @brief Omni event callback.
     */
     virtual void onOmniEvent(core::objectmodel::OmniEvent *) {};
+
+    /**
+    * @brief Xitact event callback.
+    */
+    virtual void onXitactEvent(core::objectmodel::OmniEvent *) {};
+
 
     /**
     * @brief Key Press event callback.
