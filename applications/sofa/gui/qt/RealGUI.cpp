@@ -1721,9 +1721,9 @@ void RealGUI::resetScene()
 #ifndef SOFA_CLASSIC_SCENE_GRAPH
         simulation::getSimulation()->reset ( simulation::getSimulation()->getVisualRoot() );
 #endif
-        UpdateContextVisitor().execute(root);
+        UpdateSimulationContextVisitor().execute(root);
 #ifndef SOFA_CLASSIC_SCENE_GRAPH
-        UpdateContextVisitor().execute(simulation::getSimulation()->getVisualRoot());
+        UpdateSimulationContextVisitor().execute(simulation::getSimulation()->getVisualRoot());
 #endif
         emit newStep();
     }
