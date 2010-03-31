@@ -389,14 +389,14 @@ void Texture::init(void)
         unsigned internalFormatSRGB = internalFormatTableSRGB[image->getDataType()][image->getChannelFormat()];
         if (internalFormatSRGB)
         {
-#if defined(GLEW_EXT_texture_sRGB)
-            if (GLEW_EXT_texture_sRGB)
+#if defined(GLEW_EXT_texture_sRGB) && defined(GLEW_ARB_framebuffer_sRGB)
+            if (GLEW_EXT_texture_sRGB && GLEW_ARB_framebuffer_sRGB)
                 internalFormat = internalFormatSRGB;
             else
 #endif
             {
                 std::cerr << "sofa::helper::gl::Texture::init: SRGB colorspace is unsupported, "
-                        "GLEW_EXT_texture_srgb is missing." << std::endl;
+                        "GLEW_EXT_texture_srgb or GLEW_ARB_framebuffer_sRGB is missing." << std::endl;
             }
         }
         else
@@ -524,7 +524,7 @@ void Texture::init(void)
 #endif
 
 #if defined(GLEW_VERSION_1_2)
-    if (mipmaps > 1 && GLEW_VERSION_1_2)
+    if ((generateMipmaps || mipmaps > 1) && GLEW_VERSION_1_2)
     {
         glTexParameterf(target, GL_TEXTURE_MIN_LOD, minLod);
         glTexParameterf(target, GL_TEXTURE_MAX_LOD, maxLod);
