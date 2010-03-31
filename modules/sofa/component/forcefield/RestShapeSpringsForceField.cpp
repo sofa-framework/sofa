@@ -55,7 +55,6 @@ void RestShapeSpringsForceField<Rigid3dTypes>::init()
 
         for (unsigned int i=0; i<(unsigned)this->mstate->getSize(); i++)
         {
-            //int &toto = i;
             indices.push_back(i);
         }
         points.setValue(indices);
@@ -133,7 +132,6 @@ void RestShapeSpringsForceField<Rigid3dTypes>::init()
 
             for (unsigned int i=0; i<points.getValue().size(); i++)
             {
-                //int &toto = i;
                 indices.push_back(i);
             }
             external_points.setValue(indices);
@@ -289,7 +287,6 @@ void RestShapeSpringsForceField<Rigid3fTypes>::init()
 
         for (unsigned int i=0; i<(unsigned)this->mstate->getSize(); i++)
         {
-            //int &toto = i;
             indices.push_back(i);
         }
         points.setValue(indices);
@@ -361,7 +358,6 @@ void RestShapeSpringsForceField<Rigid3fTypes>::init()
 
             for (unsigned int i=0; i<points.getValue().size(); i++)
             {
-                //int &toto = i;
                 indices.push_back(i);
             }
             external_points.setValue(indices);

@@ -174,7 +174,7 @@ void CurveMapping<BasicMapping>::init()
 
     	apply(xto, xfrom);
 
-    	catheterDataFile << "BeamModel_Name toto"
+       catheterDataFile << "BeamModel_Name modelName"
     			//write the name
     			 << endl
     			 << "Number_of_Nodes "
