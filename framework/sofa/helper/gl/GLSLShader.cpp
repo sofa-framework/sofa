@@ -113,41 +113,60 @@ std::string GLSLShader::LoadTextFile(const std::string& strFile)
     return strText;
 }
 
-std::string CombineHeaders(const std::string& header, const std::string& source)
+std::string CombineHeaders(std::string header, const std::string &shaderStage, std::string source)
 {
-    if (header.empty()) return source;
-    std::size_t spos = source.find_first_not_of("\n\r");
+    std::size_t spos = 0;
+
+    // Skip #version
     if (source.size() > spos + 8 && source.substr(spos,8) == std::string("#version"))
-    {
         spos = source.find('\n', spos+8);
-        if (spos != std::string::npos) spos = source.find_first_not_of("\n\r", spos);
-    }
+
+    // Skip #extension strings
     while (spos != std::string::npos && source.size() > spos + 10 && source.substr(spos,10) == std::string("#extension"))
-    {
         spos = source.find('\n', spos+10);
-        if (spos != std::string::npos) spos = source.find_first_not_of("\n\r", spos);
-    }
-    std::string res;
+
+    header += "#define " + shaderStage + '\n';
+
     if (spos == 0)
-        res = header + source;
+        source = header + source;
     else if (spos == std::string::npos)
-        res = source + "\n" + header;
+        source = source + "\n" + header;
     else
-        res = source.substr(0, spos) + header + source.substr(spos);
-    return res;
+        source = source.substr(0, spos) + header + source.substr(spos);
+    return source;
 }
 
 ///	This function compiles a shader and check the log
 bool GLSLShader::CompileShader(GLint target, const std::string& fileName, const std::string& header, GLhandleARB& shader)
 {
     std::string source = LoadTextFile(fileName);
-    if (!header.empty()) source = CombineHeaders(header, source);
+    std::string shaderStage;
+
     const char* stype = "";
-    if (target == GL_VERTEX_SHADER_ARB) stype = "vertex";
-    else if (target == GL_FRAGMENT_SHADER_ARB) stype = "fragment";
+    if (target == GL_VERTEX_SHADER_ARB)
+    {
+        stype = "vertex";
+        shaderStage = "VertexShader";
+    }
+    else if (target == GL_FRAGMENT_SHADER_ARB)
+    {
+        stype = "fragment";
+        shaderStage = "FragmentShader";
+    }
 #ifdef GL_GEOMETRY_SHADER_EXT
-    else if (target == GL_GEOMETRY_SHADER_EXT) stype = "geometry";
+    else if (target == GL_GEOMETRY_SHADER_EXT)
+    {
+        stype = "geometry";
+        shaderStage = "GeometryShader";
+    }
 #endif
+    else
+    {
+        std::cerr << "Unknown shader target, refusing to load the shader..." << std::endl;
+        return false;
+    }
+
+    source = CombineHeaders(header, shaderStage, source);
 
     shader = glCreateShaderObjectARB(target);
 
@@ -160,7 +179,7 @@ bool GLSLShader::CompileShader(GLint target, const std::string& fileName, const 
     GLint compiled = 0, length = 0, laux = 0;
     glGetObjectParameterivARB(shader, GL_OBJECT_COMPILE_STATUS_ARB, &compiled);
     if (!compiled) std::cerr << "ERROR: Compilation of "<<stype<<" shader failed:\n"<<src<<std::endl;
-//     else std::cout << "Compilation of "<<stype<<" shader OK" << std::endl;
+    //     else std::cout << "Compilation of "<<stype<<" shader OK" << std::endl;
     glGetObjectParameterivARB(shader, GL_OBJECT_INFO_LOG_LENGTH_ARB, &length);
     if (length > 1)
     {
