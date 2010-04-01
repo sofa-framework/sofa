@@ -117,8 +117,8 @@ bool MeshObjLoader::readOBJ (std::ifstream &file, const char* filename)
     helper::vector<sofa::defaulttype::Vector3>& my_normals   = *(normals.beginEdit());
 
     helper::vector<Material>& my_materials = *(materials.beginEdit());
-    helper::vector< helper::vector <int> >& my_normalsList = *(normalsList.beginEdit());
-    helper::vector< helper::vector <int> >& my_texturesList   = *(texturesList.beginEdit());
+    helper::SVector< helper::SVector <int> >& my_normalsList = *(normalsList.beginEdit());
+    helper::SVector< helper::SVector <int> >& my_texturesList   = *(texturesList.beginEdit());
     helper::vector<int> nodes, nIndices, tIndices;
 
     helper::vector<helper::fixed_array <unsigned int,2> >& my_edges = *(edges.beginEdit());
