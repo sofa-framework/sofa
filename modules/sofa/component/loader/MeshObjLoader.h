@@ -27,7 +27,7 @@
 
 #include <sofa/core/componentmodel/loader/MeshLoader.h>
 #include <sofa/component/component.h>
-
+#include <sofa/helper/SVector.h>
 namespace sofa
 {
 
@@ -72,10 +72,9 @@ public:
 
     Data <helper::vector <sofa::core::componentmodel::loader::Material> > materials;
 
-    Data <helper::vector <helper::vector <int> > > texturesList;
+    Data <helper::SVector <helper::SVector <int> > > texturesList;
     Data< helper::vector<sofa::defaulttype::Vector2> > texCoords;
-
-    Data <helper::vector <helper::vector <int> > > normalsList; //TODO: check if it not the sames daata as normals and texCoords
+    Data <helper::SVector<helper::SVector<int> > > normalsList; //TODO: check if it not the sames daata as normals and texCoords
 
     virtual std::string type() { return "The format of this mesh is OBJ."; }
 
