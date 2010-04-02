@@ -35,6 +35,7 @@
 #include <sofa/component/visualmodel/OglModel.h>
 #include <sofa/component/visualmodel/OglShader.h>
 #include <sofa/component/visualmodel/OglAttribute.h>
+#include <sofa/component/visualmodel/OglVariable.h>
 
 
 namespace sofa
@@ -64,6 +65,8 @@ public:
     // These attributes are public due to dynamic topologies updates.
     OglFloat3Attribute vrestpositions;
     OglFloat3Attribute vrestnormals;
+
+    OglMatrix4Variable modelMatrixUniform;
 
     OglShaderVisualModel();
     virtual ~OglShaderVisualModel();

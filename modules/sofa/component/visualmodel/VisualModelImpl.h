@@ -138,6 +138,8 @@ protected:
     typedef helper::fixed_array<int, 4> Quad;
     //typedef helper::fixed_array<int, 4> Tetrahedron;
 
+    typedef defaulttype::Mat<4,4, Real> Matrix4x4;
+
     //ResizableExtVector<Coord>* inputVertices;
 
     bool useTopology; ///< True if list of facets should be taken from the attached topology
@@ -185,6 +187,7 @@ public:
     Data< Vector3 > translation;
     Data< Vector3 > rotation;
     Data< Vector3 > scale;
+    Data<Matrix4x4 > modelMatrix;
 
     Data< TexCoord >  scaleTex;
     Data< TexCoord >  translationTex;
