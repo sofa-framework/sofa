@@ -80,6 +80,7 @@ void OglShaderVisualModel::init()
 
     if( shader)
     {
+        //add restPosition as Attribute
         vrestpositions.setContext( this->getContext());
         vrestpositions.setID( std::string("restPosition"));
         vrestpositions.setIndexShader( 0);
@@ -93,6 +94,7 @@ void OglShaderVisualModel::init()
         }
         vrestpositions.endEdit();
 
+        //add restNormal as Attribute
         vrestnormals.setContext( this->getContext());
         vrestnormals.setID( std::string("restNormal") );
         vrestnormals.setIndexShader( 0);
@@ -107,6 +109,20 @@ void OglShaderVisualModel::init()
 
         vrestnormals.endEdit();
 
+        //add Model Matrix as Uniform
+        modelMatrixUniform.setContext( this->getContext());
+        modelMatrixUniform.setID( std::string("modelMatrix") );
+        modelMatrixUniform.setIndexShader( 0);
+        modelMatrixUniform.init();
+        helper::vector<float> tempModelMatrixValue;
+
+        const Matrix4x4 &mat = modelMatrix.getValue();
+        for ( unsigned int i = 0; i < 4; i++ )
+            for ( unsigned int j = 0; j < 4; j++ )
+                tempModelMatrixValue.push_back(mat(i,j));
+
+        modelMatrixUniform.setValue(tempModelMatrixValue);
+        modelMatrixUniform.init();
     }
 
 }
@@ -121,6 +137,7 @@ void OglShaderVisualModel::initVisual()
         vrestpositions.initVisual();
         vrestnormals.initVisual();
 
+        modelMatrixUniform.initVisual();
     }
 }
 
