@@ -60,8 +60,6 @@
 #endif
 
 
-//#define DISPLAY_TIME
-
 namespace sofa
 {
 
@@ -137,33 +135,37 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::setSystemMBKMat
 template<class TDataTypes,class TMatrix,class TVector>
 void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::solve (TMatrix& /*M*/, TVector& z, TVector& r)
 {
-    /*	if (usePrecond) {
-    	  	unsigned int k = 0;
-    		unsigned int l = 0;
+    if (usePrecond)
+    {
+        unsigned int k = 0;
+        unsigned int l = 0;
 
-    		//Solve z = R^t * b
-    		while (l < this->currentGroup->systemMatrix->colSize()) {
-    			z[l+0] = R[k + 0] * r[l + 0] + R[k + 3] * r[l + 1] + R[k + 6] * r[l + 2];
-    			z[l+1] = R[k + 1] * r[l + 0] + R[k + 4] * r[l + 1] + R[k + 7] * r[l + 2];
-    			z[l+2] = R[k + 2] * r[l + 0] + R[k + 5] * r[l + 1] + R[k + 8] * r[l + 2];
-    			l+=3;
-    			k+=9;
-    		}
+        //Solve z = R^t * b
+        while (l < this->currentGroup->systemMatrix->colSize())
+        {
+            z[l+0] = R[k + 0] * r[l + 0] + R[k + 3] * r[l + 1] + R[k + 6] * r[l + 2];
+            z[l+1] = R[k + 1] * r[l + 0] + R[k + 4] * r[l + 1] + R[k + 7] * r[l + 2];
+            z[l+2] = R[k + 2] * r[l + 0] + R[k + 5] * r[l + 1] + R[k + 8] * r[l + 2];
+            l+=3;
+            k+=9;
+        }
 
-    		//Solve tmp = M^-1 * z
-    		T = *(this->currentGroup->systemMatrix) * z;
+        //Solve tmp = M^-1 * z
+        T = *(this->currentGroup->systemMatrix) * z;
 
-    		//Solve z = R * tmp
-    		k = 0;l = 0;
-    		while (l < this->currentGroup->systemMatrix->colSize()) {
-    			z[l+0] = R[k + 0] * T[l + 0] + R[k + 1] * T[l + 1] + R[k + 2] * T[l + 2];
-    			z[l+1] = R[k + 3] * T[l + 0] + R[k + 4] * T[l + 1] + R[k + 5] * T[l + 2];
-    			z[l+2] = R[k + 6] * T[l + 0] + R[k + 7] * T[l + 1] + R[k + 8] * T[l + 2];
-    			l+=3;
-    			k+=9;
-    		}
+        //Solve z = R * tmp
+        k = 0; l = 0;
+        while (l < this->currentGroup->systemMatrix->colSize())
+        {
+            z[l+0] = R[k + 0] * T[l + 0] + R[k + 1] * T[l + 1] + R[k + 2] * T[l + 2];
+            z[l+1] = R[k + 3] * T[l + 0] + R[k + 4] * T[l + 1] + R[k + 5] * T[l + 2];
+            z[l+2] = R[k + 6] * T[l + 0] + R[k + 7] * T[l + 1] + R[k + 8] * T[l + 2];
+            l+=3;
+            k+=9;
+        }
 
-    	} else */z = r;
+    }
+    else z = r;
 }
 
 template<class TDataTypes,class TMatrix,class TVector>

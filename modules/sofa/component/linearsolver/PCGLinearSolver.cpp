@@ -65,18 +65,12 @@ PCGLinearSolver<TMatrix,TVector>::PCGLinearSolver()
     , f_refresh( initData(&f_refresh,0,"refresh","Refresh iterations") )
     , use_precond( initData(&use_precond,true,"use_precond","Use preconditioners") )
     , f_preconditioners( initData(&f_preconditioners, "preconditioners", "If not empty: path to the solvers to use as preconditioners") )
-#ifdef DISPLAY_TIME_PCGLinearSolver
-    , display_time( initData(&display_time,false,"display_time","display time information") )
-#endif
     , f_graph( initData(&f_graph,"graph","Graph of residuals at each iteration") )
 {
     f_graph.setWidget("graph");
     f_graph.setReadOnly(true);
     iteration = 0;
     usePrecond = true;
-#ifdef DISPLAY_TIME_PCGLinearSolver
-    timeStamp = 1.0 / (double)CTime::getRefTicksPerSec();
-#endif
 }
 
 template<class TMatrix, class TVector>
@@ -96,10 +90,8 @@ void PCGLinearSolver<TMatrix,TVector>::init()
         {
             sofa::core::componentmodel::behavior::LinearSolver* s = NULL;
             c->get(s, precondNames[i]);
-            if (s)
-                solvers.push_back(s);
-            else
-                serr << "Solver \"" << precondNames[i] << "\" not found." << sendl;
+            if (s) solvers.push_back(s);
+            else serr << "Solver \"" << precondNames[i] << "\" not found." << sendl;
         }
     }
 
@@ -113,28 +105,22 @@ void PCGLinearSolver<TMatrix,TVector>::init()
 
     sout<<"Found " << this->preconditioners.size() << " preconditioners"<<sendl;
 
-#ifdef DISPLAY_TIME_PCGLinearSolver
-    time3 = 0.0;
-    time1 = 0.0;
-    time2 = 0.0;
-    time4 = 0.0;
-    step_simu=0;
-    it_simu=0;
-#endif
     first = true;
 }
 
 template<class TMatrix, class TVector>
 void PCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(double mFact, double bFact, double kFact)
 {
+    sofa::helper::AdvancedTimer::valSet("PCG::buildMBK", 1);
+    sofa::helper::AdvancedTimer::stepBegin("PCG::setSystemMBKMatrix");
+
     Inherit::setSystemMBKMatrix(mFact,bFact,kFact);
 
-#ifdef DISPLAY_TIME_PCGLinearSolver
-    double t3 = (double) CTime::getTime();
-#endif
+    sofa::helper::AdvancedTimer::stepEnd("PCG::setSystemMBKMatrix(Precond)");
+
     usePrecond = use_precond.getValue();
 
-    if (first || usePrecond)
+    if (first)   //We initialize all the preconditioners for the first step
     {
         first = false;
         if (iteration<=0)
@@ -149,12 +135,24 @@ void PCGLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(double mFact, double b
         {
             iteration--;
         }
+    }
+    else if (usePrecond)     // We use only the first precond in the list
+    {
+        sofa::helper::AdvancedTimer::valSet("PCG::PrecondBuildMBK", 1);
+        sofa::helper::AdvancedTimer::stepBegin("PCG::PrecondSetSystemMBKMatrix");
 
+        if (iteration<=0)
+        {
+            preconditioners[0]->setSystemMBKMatrix(mFact,bFact,kFact);
+            iteration = f_refresh.getValue();
+        }
+        else
+        {
+            iteration--;
+        }
+        sofa::helper::AdvancedTimer::stepEnd("PCG::PrecondSetSystemMBKMatrix");
     }
 
-#ifdef DISPLAY_TIME_PCGLinearSolver
-    time3 += (double) CTime::getTime() - t3;
-#endif
 
 }
 
@@ -202,8 +200,7 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
     // -- solve the system using a conjugate gradient solution
     double rho, rho_1=0, alpha, beta;
 
-    if( verbose )
-        cerr<<"PCGLinearSolver, b = "<< b <<endl;
+    if( verbose ) cerr<<"PCGLinearSolver, b = "<< b <<endl;
 
     x.clear();
     r = b; // initial residual
@@ -219,56 +216,32 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
     unsigned nb_iter;
     const char* endcond = "iterations";
 
-#ifdef DISPLAY_TIME_PCGLinearSolver
-    double tmp3 = (double) CTime::getTime();
-    double tmp2 = 0.0;
-    double tmp = 0.0;
-#endif
-
-    if (usePrecond)
-    {
-        for (unsigned int i=0; i<this->preconditioners.size(); i++)
-        {
-            preconditioners[i]->setSystemLHVector(z);
-            preconditioners[i]->setSystemRHVector(r);
-            preconditioners[i]->invertSystem();
-        }
-    }
-
-#ifdef DISPLAY_TIME_PCGLinearSolver
-    time4 += ((double) CTime::getTime() - tmp3);
-    tmp3 = (double) CTime::getTime();
-#endif
+    sofa::helper::AdvancedTimer::stepBegin("PCGLinearSolver::solve");
 
     for( nb_iter=1; nb_iter<=f_maxIter.getValue(); nb_iter++ )
     {
-
-#ifdef SOFA_DUMP_VISITOR_INFO
-        std::ostringstream comment;
-        comment << "Iteration : " << nb_iter;
-        simulation::Visitor::printComment(comment.str());
-#endif
-
         if (this->preconditioners.size()>0 && usePrecond)
         {
-            for (unsigned int i=0; i<this->preconditioners.size(); i++)
-            {
-#ifdef DISPLAY_TIME_PCGLinearSolver
-                tmp2 = (double) CTime::getTime();
-#endif
-                preconditioners[i]->setSystemLHVector(z);
-                preconditioners[i]->setSystemRHVector(r);
-                preconditioners[i]->solveSystem();
-#ifdef DISPLAY_TIME_PCGLinearSolver
-                tmp += ((double) CTime::getTime() - tmp2);
-#endif
-            }
+            sofa::helper::AdvancedTimer::stepEnd("PCGLinearSolver::solve");
+            sofa::helper::AdvancedTimer::stepBegin("PCGLinearSolver::apply Precond");
+
+// 			for (unsigned int i=0;i<this->preconditioners.size();i++) {
+// 				preconditioners[i]->setSystemLHVector(z);
+// 				preconditioners[i]->setSystemRHVector(r);
+// 				preconditioners[i]->solveSystem();
+// 			}
+
+            preconditioners[0]->setSystemLHVector(z);
+            preconditioners[0]->setSystemRHVector(r);
+            preconditioners[0]->solveSystem();
+
+            sofa::helper::AdvancedTimer::stepEnd("PCGLinearSolver::apply Precond");
+            sofa::helper::AdvancedTimer::stepBegin("PCGLinearSolver::solve");
         }
         else
         {
             z = r;
         }
-
 
         rho = r.dot(z);
 
@@ -292,37 +265,28 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
             cgstep_beta(p,z,beta);
         }
 
-        if( verbose )
-        {
-            cerr<<"p : "<<p<<endl;
-        }
+        if( verbose ) cerr<<"p : "<<p<<endl;
 
         // matrix-vector product
         q = M*p;
 
-        if( verbose )
-        {
-            cerr<<"q = M p : "<<q<<endl;
-        }
+        if( verbose ) cerr<<"q = M p : "<<q<<endl;
 
         double den = p.dot(q);
 
         graph_den.push_back(den);
 
-        if( fabs(den)<f_smallDenominatorThreshold.getValue() )
-        {
-            endcond = "threshold";
-            if( verbose )
-            {
-                cerr<<"PCGLinearSolver, den = "<<den<<", smallDenominatorThreshold = "<<f_smallDenominatorThreshold.getValue()<<endl;
-            }
-            break;
-        }
-
         alpha = rho/den;
         //x.peq(p,alpha);                 // x = x + alpha p
         //r.peq(q,-alpha);                // r = r - alpha q
         cgstep_alpha(x,r,p,q,alpha);
+
+        if( fabs(den)<f_smallDenominatorThreshold.getValue() )
+        {
+            endcond = "threshold";
+            if( verbose ) cerr<<"PCGLinearSolver, den = "<<den<<", smallDenominatorThreshold = "<<f_smallDenominatorThreshold.getValue()<<endl;
+            break;
+        }
 
         if( verbose )
         {
@@ -332,54 +296,21 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
         }
 
         rho_1 = rho;
-
-        //printf("%f\n",(CTime::getRefTime() - time1)  / (double)CTime::getRefTicksPerSec());
-
     }
+    sofa::helper::AdvancedTimer::stepEnd("PCGLinearSolver::solve");
     sofa::helper::AdvancedTimer::valSet("PCG iterations", nb_iter);
-
-#ifdef DISPLAY_TIME_PCGLinearSolver
-    time1 += ((double) CTime::getTime() - tmp3) - tmp;
-    time2 += tmp;
-#endif
 
     f_graph.endEdit();
     // x is the solution of the system
-#ifdef DISPLAY_TIME_PCGLinearSolver
-    step_simu++;
-    it_simu+=nb_iter-1;
-    if (display_time.getValue() && step_simu>DISPLAY_TIME_PCGLinearSolver)
-    {
-        time1 /= (double)((double)CTime::getRefTicksPerSec());
-        time2 /= (double)((double)CTime::getRefTicksPerSec());
-        time3 /= (double)((double)CTime::getRefTicksPerSec());
-        time4 /= (double)((double)CTime::getRefTicksPerSec());
 
-        double total = time1+time2+time4+time3;
-        double percen = 100.0/total;
-        cerr<<"\nPCGLinearSolver::solve nbiter = "<<it_simu<<" for " << DISPLAY_TIME_PCGLinearSolver << " steps. Total time = "<<total<<"\nCG =\t\t("<<time1<<"\t"<<(time1*percen)<<"%)\npreconditioner =("<<time2<<"\t"<<(time2*percen)<<"%)\nInvert =\t("<<time4<<"\t"<<(time4*percen)<<"%)\nbuild =\t\t("<<time3<<"\t"<<(time3*percen)<<"%)"<<endl;
+    if( printLog ) cerr<<"PCGLinearSolver::solve, nbiter = "<<nb_iter<<" stop because of "<<endcond<<endl;
 
-        time1 = 0.0;
-        time2 = 0.0;
-        time3 = 0.0;
-        time4 = 0.0;
-        step_simu=0;
-        it_simu=0;
-    }
-#endif
-    if( printLog )
-    {
-        cerr<<"PCGLinearSolver::solve, nbiter = "<<nb_iter<<" stop because of "<<endcond<<endl;
-    }
-    if( verbose )
-    {
-        cerr<<"PCGLinearSolver::solve, solution = "<<x<<endl;
-    }
+    if( verbose ) cerr<<"PCGLinearSolver::solve, solution = "<<x<<endl;
+
     this->deleteVector(&p);
     this->deleteVector(&q);
     this->deleteVector(&r);
     this->deleteVector(&z);
-
 }
 
 SOFA_DECL_CLASS(PCGLinearSolver)
