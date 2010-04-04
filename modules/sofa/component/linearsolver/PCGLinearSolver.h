@@ -29,8 +29,6 @@
 #include <sofa/component/linearsolver/MatrixLinearSolver.h>
 #include <sofa/helper/map.h>
 
-//#define DISPLAY_TIME_PCGLinearSolver 200
-
 #include <math.h>
 
 namespace sofa
@@ -61,9 +59,6 @@ public:
     Data<int> f_refresh;
     Data<bool> use_precond;
     Data< helper::vector< std::string > > f_preconditioners;
-#ifdef DISPLAY_TIME_PCGLinearSolver
-    Data<bool> display_time;
-#endif
     Data<std::map < std::string, sofa::helper::vector<double> > > f_graph;
     std::vector<sofa::core::componentmodel::behavior::LinearSolver*> preconditioners;
 
@@ -79,15 +74,7 @@ private :
     int iteration;
     bool usePrecond;
     bool first;
-#ifdef DISPLAY_TIME_PCGLinearSolver
-    double time1;
-    double time2;
-    double time3;
-    double time4;
-    double timeStamp;
-    int step_simu;
-    int it_simu;
-#endif
+
 protected:
     /// This method is separated from the rest to be able to use custom/optimized versions depending on the types of vectors.
     /// It computes: p = p*beta + r

@@ -745,6 +745,22 @@ inline void TetrahedronFEMForceField<DataTypes>::getRotation(Transformation& R, 
     R[2][0] = 0.0 ; R[2][1] = 0.0 ; R[2][2] = 0.0 ;
 
     unsigned int numTetra=liste_tetra.size();
+    if (numTetra==0)
+    {
+        if (!_rotationIdx.empty())
+        {
+            Transformation R0t;
+            R0t.transpose(_initialRotations[_rotationIdx[nodeIdx]]);
+            R = _rotations[_rotationIdx[nodeIdx]] * R0t;
+        }
+        else
+        {
+            R[0][0] = R[1][1] = R[2][2] = 1.0 ;
+            R[0][1] = R[0][2] = R[1][0] = R[1][2] = R[2][0] = R[2][1] = 0.0 ;
+        }
+        return;
+    }
+
     for (unsigned int ti=0; ti<numTetra; ti++)
     {
         Transformation R0t;
