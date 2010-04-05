@@ -53,7 +53,6 @@ WarpPreconditioner<DataTypes>::WarpPreconditioner()
     , solverName(initData(&solverName, std::string(""), "solverName", "Name of the solver/preconditioner to warp"))
     , realSolver(NULL), mstate(NULL), forceField(NULL)
 {
-    first = true;
 }
 
 
@@ -68,19 +67,19 @@ void WarpPreconditioner<DataTypes>::bwdInit()
 template<class DataTypes>
 void WarpPreconditioner<DataTypes>::setSystemMBKMatrix(double mFact, double bFact, double kFact)
 {
-    if (first && realSolver) realSolver->setSystemMBKMatrix(mFact, bFact, kFact);
+    if (realSolver) realSolver->setSystemMBKMatrix(mFact, bFact, kFact);
 }
 
 template<class DataTypes>
 void WarpPreconditioner<DataTypes>::resetSystem()
 {
-    if (first && realSolver) realSolver->resetSystem();
+    if (realSolver) realSolver->resetSystem();
 }
 
 template<class DataTypes>
 void WarpPreconditioner<DataTypes>::invertSystem()
 {
-    if (first && realSolver) realSolver->invertSystem();
+    if (realSolver) realSolver->invertSystem();
 }
 
 /// Set the linear system right-hand term vector, from the values contained in the (Mechanical/Physical)State objects
@@ -152,9 +151,6 @@ void WarpPreconditioner<DataTypes>::solveSystem()
     }
     else
         mstate->vOp(systemLHVId, rotatedLHVId);   // systemLH = rotatedLH
-
-    //std::cout << "<SOLVE" << std::endl;
-    first = false;
 }
 
 template<class TDataTypes>
