@@ -216,13 +216,10 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
     unsigned nb_iter;
     const char* endcond = "iterations";
 
-    sofa::helper::AdvancedTimer::stepBegin("PCGLinearSolver::solve");
-
     for( nb_iter=1; nb_iter<=f_maxIter.getValue(); nb_iter++ )
     {
         if (this->preconditioners.size()>0 && usePrecond)
         {
-            sofa::helper::AdvancedTimer::stepEnd("PCGLinearSolver::solve");
             sofa::helper::AdvancedTimer::stepBegin("PCGLinearSolver::apply Precond");
 
 // 			for (unsigned int i=0;i<this->preconditioners.size();i++) {
@@ -236,12 +233,13 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
             preconditioners[0]->solveSystem();
 
             sofa::helper::AdvancedTimer::stepEnd("PCGLinearSolver::apply Precond");
-            sofa::helper::AdvancedTimer::stepBegin("PCGLinearSolver::solve");
         }
         else
         {
             z = r;
         }
+
+        sofa::helper::AdvancedTimer::stepBegin("PCGLinearSolver::solve");
 
         rho = r.dot(z);
 
@@ -296,8 +294,10 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
         }
 
         rho_1 = rho;
+
+        sofa::helper::AdvancedTimer::stepEnd("PCGLinearSolver::solve");
     }
-    sofa::helper::AdvancedTimer::stepEnd("PCGLinearSolver::solve");
+
     sofa::helper::AdvancedTimer::valSet("PCG iterations", nb_iter);
 
     f_graph.endEdit();

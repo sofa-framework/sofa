@@ -195,7 +195,6 @@ private :
 
     void getRotations();
 
-    bool first;
     bool _rotate;
     unsigned systemSize;
     bool usePrecond;
