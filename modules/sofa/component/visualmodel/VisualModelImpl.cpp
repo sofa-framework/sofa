@@ -644,7 +644,6 @@ void VisualModelImpl::computeNormals()
             const Coord  v3 = vertices[triangles[i][2]];
             Coord n = cross(v2-v1, v3-v1);
 
-            n.normalize();
             normals[triangles[i][0]] += n;
             normals[triangles[i][1]] += n;
             normals[triangles[i][2]] += n;
@@ -660,7 +659,7 @@ void VisualModelImpl::computeNormals()
             Coord n2 = cross(v3-v2, v1-v2);
             Coord n3 = cross(v4-v3, v2-v3);
             Coord n4 = cross(v1-v4, v3-v4);
-            n1.normalize(); n2.normalize(); n3.normalize(); n4.normalize();
+
             normals[quads[i][0]] += n1;
             normals[quads[i][1]] += n2;
             normals[quads[i][2]] += n3;
@@ -690,7 +689,7 @@ void VisualModelImpl::computeNormals()
             const Coord & v2 = vertices[triangles[i][1]];
             const Coord & v3 = vertices[triangles[i][2]];
             Coord n = cross(v2-v1, v3-v1);
-            n.normalize();
+
             normals[vertNormIdx[triangles[i][0]]] += n;
             normals[vertNormIdx[triangles[i][1]]] += n;
             normals[vertNormIdx[triangles[i][2]]] += n;
@@ -706,7 +705,7 @@ void VisualModelImpl::computeNormals()
             Coord n2 = cross(v3-v2, v1-v2);
             Coord n3 = cross(v4-v3, v2-v3);
             Coord n4 = cross(v1-v4, v3-v4);
-            n1.normalize(); n2.normalize(); n3.normalize(); n4.normalize();
+
             normals[vertNormIdx[quads[i][0]]] += n1;
             normals[vertNormIdx[quads[i][1]]] += n2;
             normals[vertNormIdx[quads[i][2]]] += n3;
