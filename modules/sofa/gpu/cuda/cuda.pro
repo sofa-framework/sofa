@@ -152,6 +152,7 @@ HEADERS += \
 	   	CudaBTDLinearSolver.h \
 	   	CudaUnilateralInteractionConstraint.h \
 	   	CudaPrecomputedWarpPreconditioner.h \
+		CudaPrecomputedLinearSolver.h \
 		CudaWarpPreconditioner.h \
         CudaTetrahedronTLEDForceField.h \
        	CudaHexahedronFEMForceField.h \

@@ -100,15 +100,16 @@ void PrecomputedLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(double mFact, 
 
 //Solve x = R * M^-1 * R^t * b
 template<class TMatrix,class TVector>
-void PrecomputedLinearSolver<TMatrix,TVector>::solve (TMatrix& /*M*/, TVector& z, TVector& r)
+void PrecomputedLinearSolver<TMatrix,TVector>::solve (TMatrix& , TVector& z, TVector& r)
 {
-    z = *this->currentGroup->systemMatrix * r;
+    z = internalData.Minv * r;
 }
 
 template<class TMatrix,class TVector>
 void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix()
 {
     unsigned systemSize = this->currentGroup->systemMatrix->rowSize();
+    internalData.Minv.resize(systemSize,systemSize);
     dt = this->getContext()->getDt();
 
     EulerImplicitSolver* EulerSolver;
@@ -123,7 +124,7 @@ void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix()
     if(compFileIn.good() && use_file.getValue())
     {
         cout << "file open : " << ss.str() << " compliance being loaded" << endl;
-        compFileIn.read((char*) (*this->currentGroup->systemMatrix)[0], systemSize * systemSize * sizeof(Real));
+        compFileIn.read((char*) internalData.Minv[0], systemSize * systemSize * sizeof(Real));
         compFileIn.close();
     }
     else
@@ -134,7 +135,7 @@ void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix()
         if (use_file.getValue())
         {
             std::ofstream compFileOut(ss.str().c_str(), std::fstream::out | std::fstream::binary);
-            compFileOut.write((char*)(*this->currentGroup->systemMatrix)[0], systemSize * systemSize*sizeof(Real));
+            compFileOut.write((char*)internalData.Minv[0], systemSize * systemSize*sizeof(Real));
             compFileOut.close();
         }
     }
@@ -143,7 +144,7 @@ void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrix()
     {
         for (unsigned i=0; i<systemSize; i++)
         {
-            this->currentGroup->systemMatrix->set(j,i,this->currentGroup->systemMatrix->element(j,i)/factInt);
+            internalData.Minv.set(j,i,internalData.Minv.element(j,i)/factInt);
         }
     }
 }
@@ -158,7 +159,7 @@ void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixWithCSparse()
     FullVector<double> r;
     FullVector<double> b;
 
-    unsigned systemSize = this->currentGroup->systemMatrix->colSize();
+    unsigned systemSize = internalData.Minv.colSize();
 
     matSolv.resize(systemSize,systemSize);
     r.resize(systemSize);
@@ -169,7 +170,7 @@ void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixWithCSparse()
     {
         for (unsigned int i=0; i<systemSize; i++)
         {
-            if (this->currentGroup->systemMatrix->element(j,i)!=0) matSolv.set(j,i,(double)this->currentGroup->systemMatrix->element(j,i));
+            if (internalData.Minv.element(j,i)!=0) matSolv.set(j,i,internalData.Minv.element(j,i));
         }
         b.set(j,0.0);
     }
@@ -189,7 +190,7 @@ void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixWithCSparse()
         solver.solve(matSolv,r,b);
         for (unsigned int i=0; i<systemSize; i++)
         {
-            this->currentGroup->systemMatrix->set(j,i,r.element(i) * factInt);
+            internalData.Minv.set(j,i,r.element(i) * factInt);
         }
     }
     std::cout << "Precomputing constraint correction : " << std::fixed << 100.0f << " %   " << '\xd';
@@ -404,17 +405,17 @@ void PrecomputedLinearSolver<TMatrix,TVector>::ComputeResult(defaulttype::BaseMa
     for (typename JMatrix::LineConstIterator jit1 = J.begin(); jit1 != J.end(); jit1++) nl++;
 
     internalData.JMinv.clear();
-    internalData.JMinv.resize(nl,this->currentGroup->systemMatrix->rowSize());
+    internalData.JMinv.resize(nl,internalData.Minv.rowSize());
 
     nl = 0;
     for (typename JMatrix::LineConstIterator jit1 = J.begin(); jit1 != J.end(); jit1++)
     {
-        for (unsigned c = 0; c<this->currentGroup->systemMatrix->rowSize(); c++)
+        for (unsigned c = 0; c<internalData.Minv.rowSize(); c++)
         {
             Real v = 0.0;
             for (typename JMatrix::LElementConstIterator i1 = jit1->second.begin(); i1 != jit1->second.end(); i1++)
             {
-                v += this->currentGroup->systemMatrix->element(i1->first,c) * i1->second;
+                v += internalData.Minv.element(i1->first,c) * i1->second;
             }
             internalData.JMinv.add(nl,c,v);
         }

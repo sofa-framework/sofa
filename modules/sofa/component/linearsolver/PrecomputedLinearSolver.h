@@ -64,6 +64,7 @@ public :
     typedef typename TMatrix::Real Real;
 
     FullMatrix<Real> JMinv;
+    FullMatrix<Real> Minv;
 };
 
 /// Linear system solver based on a precomputed inverse matrix
@@ -112,10 +113,9 @@ public:
         return TMatrix::Name();
     }
 
-    TMatrix * getSystemMatrixInv()
+    BaseMatrix * getSystemMatrixInv()
     {
-        if (!this->currentGroup->systemMatrix) this->currentGroup->systemMatrix = new TMatrix();
-        return this->currentGroup->systemMatrix;
+        return &internalData.Minv;
     }
 
 protected :

@@ -34,8 +34,6 @@
 #include <sofa/helper/map.h>
 #include <math.h>
 
-//#define VALIDATE_ALGORITM_PrecomputedWarpPreconditioner
-
 namespace sofa
 {
 
@@ -65,6 +63,7 @@ public :
 
     SparseMatrix<Real> JR;
     FullMatrix<Real> JRMinv;
+    FullMatrix<Real> Minv;
 };
 
 /// Linear system solver based on a precomputed inverse matrix, wrapped by a per-node rotation matrix
@@ -95,11 +94,6 @@ public:
     Data<double> init_Tolerance;
     Data<double> init_Threshold;
 
-#ifdef VALIDATE_ALGORITM_PrecomputedWarpPreconditioner
-    TMatrix * realSystem;
-    TMatrix * invertSystem;
-#endif
-
     PrecomputedWarpPreconditioner();
 
     void solve (TMatrix& M, TVector& x, TVector& b);
@@ -107,10 +101,9 @@ public:
     void setSystemMBKMatrix(double mFact=0.0, double bFact=0.0, double kFact=0.0);
     bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact);
 
-    TMatrix * getSystemMatrixInv()
+    BaseMatrix * getSystemMatrixInv()
     {
-        if (!this->currentGroup->systemMatrix) this->currentGroup->systemMatrix = new TMatrix();
-        return this->currentGroup->systemMatrix;
+        return &internalData.Minv;
     }
 
     /// Pre-construction check method called by ObjectFactory.
