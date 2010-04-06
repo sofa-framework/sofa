@@ -38,7 +38,6 @@ namespace component
 
 namespace collision
 {
-
 #ifndef SOFA_DOUBLE
 template class SOFA_COMPONENT_COLLISION_API FixParticlePerformer<defaulttype::Vec3fTypes>;
 helper::Creator<InteractionPerformer::InteractionPerformerFactory, FixParticlePerformer<defaulttype::Vec3fTypes> >  FixParticlePerformerVec3fClass("FixParticle",true);
