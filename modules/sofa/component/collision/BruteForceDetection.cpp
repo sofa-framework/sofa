@@ -313,6 +313,7 @@ void BruteForceDetection::addCollisionPair(const std::pair<core::CollisionModel*
         {
             cm1 = root.first.first.getCollisionModel();
             cm2 = root.second.first.getCollisionModel();
+            if (!cm1 || !cm2) continue;
             intersector = intersectionMethod->findIntersector(cm1, cm2, swapModels);
             if (intersector == NULL)
             {
