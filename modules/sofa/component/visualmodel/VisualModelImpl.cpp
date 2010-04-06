@@ -137,11 +137,11 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
     :  useTopology(false), lastMeshRev(-1), useNormals(true), castShadow(true),
        f_useNormals      (initDataPtr(&f_useNormals, &useNormals, "useNormals", "True if normal smoothing groups should be read from file")),
        updateNormals     (initData   (&updateNormals, true, "updateNormals", "True if normals should be updated at each iteration")),
-       field_vertices    (initDataPtr(&field_vertices,&vertices,  "position",   "vertices of the model") ),
-       field_vnormals    (initDataPtr(&field_vnormals, &vnormals, "normal",   "normals of the model") ),
-       field_vtexcoords  (initDataPtr(&field_vtexcoords, &vtexcoords, "texcoords",  "coordinates of the texture") ),
-       field_triangles   (initDataPtr(&field_triangles, &triangles,"triangles" ,  "triangles of the model") ),
-       field_quads       (initDataPtr(&field_quads, &quads,   "quads",    "quads of the model") ),
+       field_vertices    (initData   (&field_vertices,  "position",   "vertices of the model") ),
+       field_vnormals    (initData   (&field_vnormals, "normal",   "normals of the model") ),
+       field_vtexcoords  (initData   (&field_vtexcoords, "texcoords",  "coordinates of the texture") ),
+       field_triangles   (initData   (&field_triangles, "triangles" ,  "triangles of the model") ),
+       field_quads       (initData   (&field_quads, "quads",    "quads of the model") ),
        fileMesh          (initData   (&fileMesh,    "fileMesh","Path to the model")),
        texturename       (initData   (&texturename, "texturename","Name of the Texture")),
        translation       (initData   (&translation, Vector3(), "translation", "Initial Translation of the object")),
@@ -155,8 +155,8 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
        materials(initData(&materials,"materials","List of materials")),
        groups(initData(&groups,"groups","Groups of triangles and quads using a given material"))
 {
-    inputVertices = &vertices;
-    inputNormals = &vnormals;
+    inputVertices = field_vertices.beginEdit();
+    //inputNormals = field_vnormals.beginEdit();
     _topology = 0;
 
     addAlias(&f_useNormals, "normals");
@@ -175,7 +175,13 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
 
 VisualModelImpl::~VisualModelImpl()
 {
-    if (inputVertices != &vertices) delete inputVertices;
+
+    if (inputVertices != &field_vertices.getValue())
+    {
+        delete inputVertices;
+        field_vertices.endEdit();
+    }
+
 }
 
 bool VisualModelImpl::hasTransparent()
@@ -329,11 +335,15 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
     }
 
     // Then we can create the final arrays
+    ResizableExtVector<Coord>& vertices = *(field_vertices.beginEdit());
+    ResizableExtVector<Coord>& vnormals = *(field_vnormals.beginEdit());
 
     vertices.resize(nbVOut);
     vnormals.resize(nbVOut);
 
     //if (tex)
+    ResizableExtVector<TexCoord>& vtexcoords = *(field_vtexcoords.beginEdit());
+
     vtexcoords.resize(nbVOut);
 
     if (vsplit)
@@ -381,7 +391,14 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
 
 //             sout << "Facets Import size : " << facetsImport.size() << sendl;
 
+
+    field_vertices.endEdit();
+    field_vnormals.endEdit();
+    field_vtexcoords.endEdit();
+
     // Then we create the triangles and quads
+    ResizableExtVector<Triangle>& triangles = *(field_triangles.beginEdit());
+    ResizableExtVector<Quad>& quads = *(field_quads.beginEdit());
 
     for (unsigned int i = 0; i < facetsImport.size(); i++)
     {
@@ -427,6 +444,9 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
     //for (unsigned int i = 0; i < triangles.size() ; i++)
     //    sout << "T"<<i<<": "<<triangles[i][0]<<" "<<triangles[i][1]<<" "<<triangles[i][2]<<sendl;
 
+    field_triangles.endEdit();
+    field_quads.endEdit();
+
     computeNormals();
     computeBBox();
 }
@@ -451,7 +471,7 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
     field_quads.updateIfDirty();
 
 
-    if (!filename.empty() && vertices.size() == 0)
+    if (!filename.empty() && (field_vertices.getValue()).size() == 0)
     {
         std::string meshFilename(filename);
         if (sofa::helper::system::DataRepository.findFile (meshFilename))
@@ -479,7 +499,7 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
     }
     else
     {
-        if (vertices.size() == 0)
+        if ((field_vertices.getValue()).size() == 0)
         {
             sout << "VisualModel: will use Topology."<<sendl;
             useTopology = true;
@@ -546,20 +566,24 @@ void VisualModelImpl::applyScale(const double sx, const double sy, const double 
 
 void VisualModelImpl::applyUVTranslation(const double dU, const double dV)
 {
+    ResizableExtVector<TexCoord>& vtexcoords = *(field_vtexcoords.beginEdit());
     for (unsigned int i = 0; i < vtexcoords.size(); i++)
     {
         vtexcoords[i][0] += (GLfloat) dU;
         vtexcoords[i][1] += (GLfloat) dV;
     }
+    field_vtexcoords.endEdit();
 }
 
 void VisualModelImpl::applyUVScale(const double scaleU, const double scaleV)
 {
+    ResizableExtVector<TexCoord>& vtexcoords = *(field_vtexcoords.beginEdit());
     for (unsigned int i = 0; i < vtexcoords.size(); i++)
     {
         vtexcoords[i][0] *= (GLfloat) scaleU;
         vtexcoords[i][1] *= (GLfloat) scaleV;
     }
+    field_vtexcoords.endEdit();
 }
 
 void VisualModelImpl::init()
@@ -595,15 +619,19 @@ void VisualModelImpl::init()
 
 void VisualModelImpl::computeNormals()
 {
-    if (!updateNormals.getValue() && vnormals.size() != vertices.size()) return;
+    if (!updateNormals.getValue() && (field_vnormals.getValue()).size() != (field_vertices.getValue()).size()) return;
+
+    const ResizableExtVector<Triangle>& triangles = field_triangles.getValue();
+    const ResizableExtVector<Quad>& quads = field_quads.getValue();
+    const ResizableExtVector<Coord>& vertices = field_vertices.getValue();
+
     if (vertNormIdx.empty())
     {
-        int nbn = vertices.size();
+        int nbn = (field_vertices.getValue()).size();
 // 		serr << "nb of visual vertices"<<nbn<<sendl;
 // 		serr << "nb of visual triangles"<<triangles.size()<<sendl;
 
-        ResizableExtVector<Coord>& normals = vnormals;
-
+        ResizableExtVector<Coord>& normals = *(field_vnormals.beginEdit());
         normals.resize(nbn);
         for (int i = 0; i < nbn; i++)
             normals[i].clear();
@@ -642,6 +670,7 @@ void VisualModelImpl::computeNormals()
         {
             normals[i].normalize();
         }
+        field_vnormals.endEdit();
     }
     else
     {
@@ -688,17 +717,21 @@ void VisualModelImpl::computeNormals()
         {
             normals[i].normalize();
         }
+        ResizableExtVector<Coord>& vnormals = *(field_vnormals.beginEdit());
         vnormals.resize(vertices.size());
         for (unsigned int i = 0; i < vertices.size(); i++)
         {
             vnormals[i] = normals[vertNormIdx[i]];
         }
+        field_vnormals.endEdit();
     }
+
+
 }
 
 void VisualModelImpl::computeBBox()
 {
-    const VecCoord& x = vertices;
+    const VecCoord& x = field_vertices.getValue();
     Vec3f minBBox(1e10,1e10,1e10);
     Vec3f maxBBox(-1e10,-1e10,-1e10);
     for (unsigned int i = 0; i < x.size(); i++)
@@ -737,6 +770,10 @@ bool VisualModelImpl::addBBox(double* minBBox, double* maxBBox)
 
 void VisualModelImpl::flipFaces()
 {
+    ResizableExtVector<Coord>& vnormals = *(field_vnormals.beginEdit());
+    ResizableExtVector<Triangle>& triangles = *(field_triangles.beginEdit());
+    ResizableExtVector<Quad>& quads = *(field_quads.beginEdit());
+
     for (unsigned int i = 0; i < triangles.size() ; i++)
     {
         int temp = triangles[i][1];
@@ -756,6 +793,10 @@ void VisualModelImpl::flipFaces()
     {
         vnormals[i] = -vnormals[i];
     }
+
+    field_vnormals.endEdit();
+    field_triangles.endEdit();
+    field_quads.endEdit();
 }
 
 void VisualModelImpl::setColor(float r, float g, float b, float a)
@@ -820,7 +861,7 @@ void VisualModelImpl::setColor(std::string color)
 void VisualModelImpl::updateVisual()
 {
     //sout << "VisualModelImpl::updateVisual()"<<sendl;
-    if (modified && (!vertices.empty() || useTopology))
+    if (modified && (!(field_vertices.getValue()).empty() || useTopology))
     {
         if (useTopology)
         {
@@ -864,15 +905,19 @@ void VisualModelImpl::computePositions()
     if (!vertPosIdx.empty())
     {
         // Need to transfer positions
-        for (unsigned int i=0 ; i < vertices.size(); ++i)
+        ResizableExtVector<Coord>& vertices = *(field_vertices.beginEdit());
+        for (unsigned int i=0 ; i < (field_vertices.getValue()).size(); ++i)
             vertices[i] = (*inputVertices)[vertPosIdx[i]];
+
+        field_vertices.endEdit();
     }
 }
 
 void VisualModelImpl::computeMesh()
 {
-    if (vertices.empty())
+    if ((field_vertices.getValue()).empty())
     {
+        ResizableExtVector<Coord>& vertices = *(field_vertices.beginEdit());
         if (_topology->hasPos())
         {
 
@@ -898,7 +943,6 @@ void VisualModelImpl::computeMesh()
                 vertices[i][1] = (Real)_topology->getPY(i);
                 vertices[i][2] = (Real)_topology->getPZ(i);
             }
-
         }
         else
         {
@@ -917,32 +961,39 @@ void VisualModelImpl::computeMesh()
                 }
             }
         }
+        field_vertices.endEdit();
     }
 
     lastMeshRev = _topology->getRevision();
     const vector<sofa::core::componentmodel::topology::BaseMeshTopology::Triangle>& inputTriangles = _topology->getTriangles();
     if (this->f_printLog.getValue())
         sout << "VisualModel: copying "<<inputTriangles.size()<<" triangles from topology."<<sendl;
-
+    ResizableExtVector<Triangle>& triangles = *(field_triangles.beginEdit());
     triangles.resize(inputTriangles.size());
 
     for (unsigned int i=0; i<triangles.size(); ++i)
     {
         triangles[i] = inputTriangles[i];
     }
+    field_triangles.endEdit();
 
     const vector<sofa::core::componentmodel::topology::BaseMeshTopology::Quad>& inputQuads = _topology->getQuads();
     if (this->f_printLog.getValue())
         sout << "VisualModel: copying "<<inputQuads.size()<<" quads from topology."<<sendl;
+    ResizableExtVector<Quad>& quads = *(field_quads.beginEdit());
     quads.resize(inputQuads.size());
     for (unsigned int i=0; i<quads.size(); ++i)
         quads[i] = inputQuads[i];
+    field_quads.endEdit();
 }
 
 void VisualModelImpl::handleTopologyChange()
 {
     if (!_topology) return;
     bool debug_mode = false;
+
+    ResizableExtVector<Triangle>& triangles = *(field_triangles.beginEdit());
+    ResizableExtVector<Quad>& quads = *(field_quads.beginEdit());
 
     std::list<const TopologyChange *>::const_iterator itBegin=_topology->firstChange();
     std::list<const TopologyChange *>::const_iterator itEnd=_topology->lastChange();
@@ -1356,6 +1407,8 @@ void VisualModelImpl::handleTopologyChange()
         ++itBegin;
     } // while( changeIt != last; )
 
+    field_triangles.endEdit();
+    field_quads.endEdit();
 
 }
 
@@ -1398,6 +1451,10 @@ void VisualModelImpl::exportOBJ(std::string name, std::ostream* out, std::ostrea
         *out << "usemtl "<<name<<'\n';
     }
     const ResizableExtVector<Coord>& x = *inputVertices;
+    const ResizableExtVector<Coord>& vnormals = field_vnormals.getValue();
+    const ResizableExtVector<TexCoord>& vtexcoords = field_vtexcoords.getValue();
+    const ResizableExtVector<Triangle>& triangles = field_triangles.getValue();
+    const ResizableExtVector<Quad>& quads = field_quads.getValue();
 
     int nbv = x.size();
 

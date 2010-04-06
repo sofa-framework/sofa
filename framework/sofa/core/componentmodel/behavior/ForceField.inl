@@ -27,8 +27,7 @@
 #ifndef SOFA_CORE_COMPONENTMODEL_BEHAVIOR_FORCEFIELD_INL
 #define SOFA_CORE_COMPONENTMODEL_BEHAVIOR_FORCEFIELD_INL
 
-#include <sofa/core/objectmodel/DataPtr.h>
-#include "ForceField.h"
+#include <sofa/core/componentmodel/behavior/ForceField.h>
 #include <iostream>
 namespace sofa
 {

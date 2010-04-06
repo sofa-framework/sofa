@@ -115,7 +115,8 @@ void OglShaderVisualModel::init()
         vrestpositions.init();
 
         ResizableExtVector<Coord>& vrestpos = * ( vrestpositions.beginEdit() );
-        vrestpos.resize ( vertices.size() );
+        const ResizableExtVector<Coord>& vertices = field_vertices.getValue();
+        vrestpos.resize (vertices.size() );
         for ( unsigned int i = 0; i < vertices.size(); i++ )
         {
             vrestpos[i] = vertices[i];
@@ -129,6 +130,7 @@ void OglShaderVisualModel::init()
         vrestnormals.init();
 
         ResizableExtVector<Coord>& vrestnorm = * ( vrestnormals.beginEdit() );
+        const ResizableExtVector<Coord>& vnormals = field_vnormals.getValue();
         vrestnorm.resize ( vnormals.size() );
         for ( unsigned int i = 0; i < vnormals.size(); i++ )
         {
@@ -222,6 +224,8 @@ void OglShaderVisualModel::fwdDraw(Pass pass)
 void OglShaderVisualModel::computeRestNormals()
 {
     const ResizableExtVector<Coord>& vrestpos = vrestpositions.getValue();
+    const ResizableExtVector<Triangle>& triangles = field_triangles.getValue();
+    const ResizableExtVector<Quad>& quads = field_quads.getValue();
     ResizableExtVector<Coord>& restNormals = * ( vrestnormals.beginEdit() );
 
     for (unsigned int i = 0; i < triangles.size() ; i++)

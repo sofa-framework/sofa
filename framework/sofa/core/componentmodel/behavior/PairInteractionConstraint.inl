@@ -27,8 +27,8 @@
 #ifndef SOFA_CORE_COMPONENTMODEL_BEHAVIOR_PAIRINTERACTIONCONSTRAINT_INL
 #define SOFA_CORE_COMPONENTMODEL_BEHAVIOR_PAIRINTERACTIONCONSTRAINT_INL
 
-#include <sofa/core/objectmodel/DataPtr.h>
-#include "PairInteractionConstraint.h"
+#include <sofa/core/componentmodel/behavior/PairInteractionConstraint.h>
+
 
 namespace sofa
 {

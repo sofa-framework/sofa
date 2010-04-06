@@ -49,15 +49,14 @@ int Fluid2DClass = core::RegisterObject("Eulerian 2D fluid")
         .addAuthor("Jeremie Allard")
         ;
 
-Fluid2D::Fluid2D()
-    : nx(16), ny(16), cellwidth(1.0f),
-      f_nx ( initDataPtr(&f_nx, &nx, "nx", "grid size along x axis") ),
-      f_ny ( initDataPtr(&f_ny, &ny, "ny", "grid size along y axis") ),
-      f_cellwidth ( initDataPtr(&f_cellwidth, &cellwidth, "cellwidth", "width of each cell") ),
-      f_height ( initData(&f_height, 5.0f, "height", "initial fluid height") ),
-      f_dir ( initData(&f_dir, vec2(0,1), "dir", "initial fluid surface normal") ),
-      f_tstart ( initData(&f_tstart, 0.0f, "tstart", "starting time for fluid source") ),
-      f_tstop ( initData(&f_tstop, 60.0f, "tstop", "stopping time for fluid source") )
+Fluid2D::Fluid2D():
+    f_nx ( initData(&f_nx, (int)16, "nx", "grid size along x axis") ),
+    f_ny ( initData(&f_ny, (int)16, "ny", "grid size along y axis") ),
+    f_cellwidth ( initData(&f_cellwidth, (real)1.0, "cellwidth", "width of each cell") ),
+    f_height ( initData(&f_height, 5.0f, "height", "initial fluid height") ),
+    f_dir ( initData(&f_dir, vec2(0,1), "dir", "initial fluid surface normal") ),
+    f_tstart ( initData(&f_tstart, 0.0f, "tstart", "starting time for fluid source") ),
+    f_tstop ( initData(&f_tstop, 60.0f, "tstop", "stopping time for fluid source") )
 {
     fluid = new Grid2D;
     fnext = new Grid2D;
@@ -73,9 +72,9 @@ Fluid2D::~Fluid2D()
 
 void Fluid2D::init()
 {
-    f_nx.beginEdit();
-    f_ny.beginEdit();
-    f_cellwidth.beginEdit();
+    int& nx = *f_nx.beginEdit();
+    int& ny = *f_ny.beginEdit();
+
     fluid->clear(nx,ny);
     fnext->clear(nx,ny);
     ftemp->clear(nx,ny);
@@ -87,6 +86,8 @@ void Fluid2D::init()
     }
     fluid->t = -f_tstart.getValue();
     fluid->tend = f_tstop.getValue() - f_tstart.getValue();
+    f_nx.endEdit();
+    f_ny.endEdit();
 }
 
 void Fluid2D::reset()
@@ -104,6 +105,10 @@ void Fluid2D::draw()
 {
     updateVisual();
     glPushMatrix();
+    const int& nx = f_nx.getValue();
+    const int& ny = f_ny.getValue();
+    const real& cellwidth = f_cellwidth.getValue();
+
     glTranslatef(-(nx-1)*cellwidth/2,-(ny-1)*cellwidth/2,0.0f);
     glScalef(cellwidth,cellwidth,cellwidth);
     //if (getContext()->getShowBehaviorModels())
@@ -213,6 +218,8 @@ void Fluid2D::updateVisual()
     facets.clear();
 
     const real* data = fluid->levelset;
+    const int& nx = f_nx.getValue();
+    const int& ny = f_ny.getValue();
 
     planes.resize(2*nx*ny);
     CubeData *P = &(planes[0]);
@@ -406,6 +413,10 @@ void Fluid2D::updateVisual()
 
 bool Fluid2D::addBBox(double* minBBox, double* maxBBox)
 {
+    const int& nx = f_nx.getValue();
+    const int& ny = f_ny.getValue();
+    const real& cellwidth = f_cellwidth.getValue();
+
     SReal size[3] = { (nx-1)*cellwidth, (ny-1)*cellwidth, cellwidth/2 };
     SReal pos[3] = { -size[0]/2, -size[1]/2, 0 };
     for (int c=0; c<3; c++)

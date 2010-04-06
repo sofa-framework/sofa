@@ -27,7 +27,6 @@
 #ifndef SOFA_CORE_COMPONENTMODEL_BEHAVIOR_MIXEDINTERACTIONFORCEFIELD_INL
 #define SOFA_CORE_COMPONENTMODEL_BEHAVIOR_MIXEDINTERACTIONFORCEFIELD_INL
 
-#include <sofa/core/objectmodel/DataPtr.h>
 #include "MixedInteractionForceField.h"
 
 namespace sofa

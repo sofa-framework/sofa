@@ -47,17 +47,16 @@ int Fluid3DClass = core::RegisterObject("Eulerian 3D fluid")
         .addAuthor("Jeremie Allard")
         ;
 
-Fluid3D::Fluid3D()
-    : nx(16), ny(16), nz(16), cellwidth(1.0f),
-      f_nx ( initDataPtr(&f_nx, &nx, "nx", "grid size along x axis") ),
-      f_ny ( initDataPtr(&f_ny, &ny, "ny", "grid size along y axis") ),
-      f_nz ( initDataPtr(&f_nz, &nz, "nz", "grid size along z axis") ),
-      f_cellwidth ( initDataPtr(&f_cellwidth, &cellwidth, "cellwidth", "width of each cell") ),
-      f_center ( initData(&f_center, vec3(0,0,0), "center", "position of grid center") ),
-      f_height ( initData(&f_height, 5.0f, "height", "initial fluid height") ),
-      f_dir ( initData(&f_dir, vec3(0,1,0), "dir", "initial fluid surface normal") ),
-      f_tstart ( initData(&f_tstart, 0.0f, "tstart", "starting time for fluid source") ),
-      f_tstop ( initData(&f_tstop, 60.0f, "tstop", "stopping time for fluid source") )
+Fluid3D::Fluid3D():
+    f_nx ( initData(&f_nx, (int)16, "nx", "grid size along x axis") ),
+    f_ny ( initData(&f_ny, (int)16, "ny", "grid size along y axis") ),
+    f_nz ( initData(&f_nz, (int)16, "nz", "grid size along z axis") ),
+    f_cellwidth ( initData(&f_cellwidth, (real)1.0, "cellwidth", "width of each cell") ),
+    f_center ( initData(&f_center, vec3(0,0,0), "center", "position of grid center") ),
+    f_height ( initData(&f_height, 5.0f, "height", "initial fluid height") ),
+    f_dir ( initData(&f_dir, vec3(0,1,0), "dir", "initial fluid surface normal") ),
+    f_tstart ( initData(&f_tstart, 0.0f, "tstart", "starting time for fluid source") ),
+    f_tstop ( initData(&f_tstop, 60.0f, "tstop", "stopping time for fluid source") )
 {
     fluid = new Grid3D;
     fnext = new Grid3D;
@@ -73,10 +72,10 @@ Fluid3D::~Fluid3D()
 
 void Fluid3D::init()
 {
-    f_nx.beginEdit();
-    f_ny.beginEdit();
-    f_nz.beginEdit();
-    f_cellwidth.beginEdit();
+    int& nx = *f_nx.beginEdit();
+    int& ny = *f_ny.beginEdit();
+    int& nz = *f_nz.beginEdit();
+
     fluid->clear(nx,ny,nz);
     fnext->clear(nx,ny,nz);
     ftemp->clear(nx,ny,nz);
@@ -88,6 +87,10 @@ void Fluid3D::init()
     }
     fluid->t = -f_tstart.getValue();
     fluid->tend = f_tstop.getValue() - f_tstart.getValue();
+
+    f_nx.endEdit();
+    f_ny.endEdit();
+    f_nz.endEdit();
 }
 
 void Fluid3D::reset()
@@ -97,7 +100,7 @@ void Fluid3D::reset()
 
 void Fluid3D::updatePosition(double dt)
 {
-    fnext->gravity = getContext()->getLocalGravity()/cellwidth;
+    fnext->gravity = getContext()->getLocalGravity()/f_cellwidth.getValue();
     fnext->step(fluid, ftemp, (real)dt);
     Grid3D* p = fluid; fluid=fnext; fnext=p;
 }
@@ -107,6 +110,10 @@ void Fluid3D::draw()
     updateVisual();
     glPushMatrix();
     vec3 center = f_center.getValue();
+    const int& nx = f_nx.getValue();
+    const int& ny = f_ny.getValue();
+    const int& nz = f_nz.getValue();
+    const real& cellwidth = f_cellwidth.getValue();
     glTranslatef(center[0]-(nx-1)*cellwidth/2,center[1]-(ny-1)*cellwidth/2,center[2]-(nz-1)*cellwidth/2);
     glScalef(cellwidth,cellwidth,cellwidth);
     //if (getContext()->getShowBehaviorModels())
@@ -224,13 +231,13 @@ void Fluid3D::draw()
 
 void Fluid3D::exportOBJ(std::string name, std::ostream* out, std::ostream* /*mtl*/, int& vindex, int& nindex, int& /*tindex*/)
 {
-    vec3 corner = f_center.getValue() - vec3((real)nx-1,(real)ny-1,(real)nz-1)*cellwidth/2;
+    vec3 corner = f_center.getValue() - vec3((real)f_nx.getValue()-1,(real)f_ny.getValue()-1,(real)f_nz.getValue()-1)*f_cellwidth.getValue()/2;
 
     *out << "g "<<name<<"\n";
 
     for(unsigned i=0; i<points.size(); ++i)
     {
-        vec3 p = points[i].p*cellwidth + corner;
+        vec3 p = points[i].p*f_cellwidth.getValue() + corner;
         *out << "v "<< std::fixed << p[0]<<' '<< std::fixed <<p[1]<<' '<< std::fixed <<p[2]<<'\n';
     }
 
@@ -255,6 +262,8 @@ void Fluid3D::updateVisual()
     facets.clear();
 
     const real* data = fluid->levelset;
+    const int& nx = f_nx.getValue();
+    const int& ny = f_ny.getValue();
 
     planes.resize(2*nx*ny);
     CubeData *P = &(planes[0]);
@@ -318,7 +327,7 @@ void Fluid3D::updateVisual()
             }
         }
     }
-    for (z=1; z<nz; z++)
+    for (z=1; z<f_nz.getValue(); z++)
     {
         i=0; data+=dz;
 
@@ -447,7 +456,8 @@ void Fluid3D::updateVisual()
 bool Fluid3D::addBBox(double* minBBox, double* maxBBox)
 {
     vec3 center = f_center.getValue();
-    SReal size[3] = { (nx-1)*cellwidth, (ny-1)*cellwidth, (nz-1)*cellwidth };
+    const real& cellwidth = f_cellwidth.getValue();
+    SReal size[3] = { (f_nx.getValue()-1)*cellwidth, (f_ny.getValue()-1)*cellwidth, (f_nz.getValue()-1)*cellwidth };
     SReal pos[3] = { center[0]-size[0]/2, center[1]-size[1]/2, center[2]-size[2]/2 };
     for (int c=0; c<3; c++)
     {

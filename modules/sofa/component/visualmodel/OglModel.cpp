@@ -73,6 +73,10 @@ OglModel::~OglModel()
 
 void OglModel::drawGroup(int ig, bool transparent)
 {
+
+    const ResizableExtVector<Triangle>& triangles = this->getTriangles();
+    const ResizableExtVector<Quad>& quads = this->getQuads();
+
     FaceGroup g;
     if (ig < 0)
     {
@@ -177,6 +181,10 @@ void OglModel::internalDraw(bool transparent)
     if (getContext()->getShowWireFrame())
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
+    const ResizableExtVector<Coord>& vertices = this->getVertices();
+    const ResizableExtVector<Coord>& vnormals = this->getVnormals();
+    const ResizableExtVector<TexCoord>& vtexcoords= this->getVtexcoords();
+
     glEnable(GL_LIGHTING);
 
     //Enable<GL_BLEND> blending;
@@ -185,14 +193,14 @@ void OglModel::internalDraw(bool transparent)
 
     if(VBOGenDone && useVBO.getValue())
     {
-#ifdef SOFA_HAVE_GLEW
+//#ifdef SOFA_HAVE_GLEW
         glBindBufferARB(GL_ARRAY_BUFFER, vbo);
 
         glVertexPointer(3, GL_FLOAT, 0, (char*)NULL + 0);
         glNormalPointer(GL_FLOAT, 0, (char*)NULL + (vertices.size()*sizeof(vertices[0])));
 
         glBindBufferARB(GL_ARRAY_BUFFER, 0);
-#endif
+//#endif
     }
     else
     {
@@ -211,11 +219,11 @@ void OglModel::internalDraw(bool transparent)
 
         if(VBOGenDone && useVBO.getValue())
         {
-#ifdef SOFA_HAVE_GLEW
+//#ifdef SOFA_HAVE_GLEW
             glBindBufferARB(GL_ARRAY_BUFFER, vbo);
             glTexCoordPointer(2, GL_FLOAT, 0, (char*)NULL + (vertices.size()*sizeof(vertices[0])) + (vnormals.size()*sizeof(vnormals[0])) );
             glBindBufferARB(GL_ARRAY_BUFFER, 0);
-#endif
+//#endif
         }
         else
         {
@@ -286,7 +294,7 @@ void OglModel::internalDraw(bool transparent)
             glPopMatrix();
         }
     }
-
+    field_vtexcoords.updateIfDirty();
 }
 
 bool OglModel::loadTexture(const std::string& filename)
@@ -356,6 +364,10 @@ void OglModel::createQuadsIndicesBuffer()
 void OglModel::initVertexBuffer()
 {
     unsigned int positionsBufferSize, normalsBufferSize, textureCoordsBufferSize = 0;
+    const ResizableExtVector<Coord>& vertices = this->getVertices();
+    const ResizableExtVector<Coord>& vnormals = this->getVnormals();
+    const ResizableExtVector<TexCoord>& vtexcoords= this->getVtexcoords();
+
     positionsBufferSize = (vertices.size()*sizeof(vertices[0]));
     normalsBufferSize = (vnormals.size()*sizeof(vnormals[0]));
     if (tex || putOnlyTexCoords.getValue())
@@ -379,6 +391,8 @@ void OglModel::initVertexBuffer()
 
 void OglModel::initTrianglesIndicesBuffer()
 {
+    const ResizableExtVector<Triangle>& triangles = this->getTriangles();
+
     glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
 
     glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER, triangles.size()*sizeof(triangles[0]), NULL, GL_DYNAMIC_DRAW);
@@ -389,6 +403,8 @@ void OglModel::initTrianglesIndicesBuffer()
 
 void OglModel::initQuadsIndicesBuffer()
 {
+    const ResizableExtVector<Quad>& quads = this->getQuads();
+
     glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
     glBufferDataARB(GL_ELEMENT_ARRAY_BUFFER, quads.size()*sizeof(quads[0]), NULL, GL_DYNAMIC_DRAW);
     updateQuadsIndicesBuffer();
@@ -397,6 +413,10 @@ void OglModel::initQuadsIndicesBuffer()
 
 void OglModel::updateVertexBuffer()
 {
+    const ResizableExtVector<Coord>& vertices = this->getVertices();
+    const ResizableExtVector<Coord>& vnormals = this->getVnormals();
+    const ResizableExtVector<TexCoord>& vtexcoords= this->getVtexcoords();
+
     unsigned int positionsBufferSize, normalsBufferSize, textureCoordsBufferSize = 0;
     positionsBufferSize = (vertices.size()*sizeof(vertices[0]));
     normalsBufferSize = (vnormals.size()*sizeof(vnormals[0]));
@@ -430,6 +450,7 @@ void OglModel::updateVertexBuffer()
 
 void OglModel::updateTrianglesIndicesBuffer()
 {
+    const ResizableExtVector<Triangle>& triangles = this->getTriangles();
     glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboTriangles);
     glBufferSubDataARB(GL_ELEMENT_ARRAY_BUFFER, 0, triangles.size()*sizeof(triangles[0]), &triangles[0]);
     glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -437,6 +458,7 @@ void OglModel::updateTrianglesIndicesBuffer()
 
 void OglModel::updateQuadsIndicesBuffer()
 {
+    const ResizableExtVector<Quad>& quads = this->getQuads();
     glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, iboQuads);
     glBufferSubDataARB(GL_ELEMENT_ARRAY_BUFFER, 0, quads.size()*sizeof(quads[0]), &quads[0]);
     glBindBufferARB(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -444,6 +466,10 @@ void OglModel::updateQuadsIndicesBuffer()
 #endif
 void OglModel::updateBuffers()
 {
+    const ResizableExtVector<Triangle>& triangles = this->getTriangles();
+    const ResizableExtVector<Quad>& quads = this->getQuads();
+    const ResizableExtVector<Coord>& vertices = this->getVertices();
+
     if (initDone)
     {
 #ifdef SOFA_HAVE_GLEW
