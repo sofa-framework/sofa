@@ -83,6 +83,10 @@ public:
     virtual void handleTopologyChange();
     void computeRestNormals();
 
+private:
+    virtual void pushTransformMatrix(float* matrix);
+    virtual void popTransformMatrix();
+
 
 };
 

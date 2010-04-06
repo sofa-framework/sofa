@@ -153,8 +153,7 @@ void OglModel::drawGroups(bool transparent)
     {
         float matrix[16];
         xforms[i].writeOpenGlMatrix(matrix);
-        glPushMatrix();
-        glMultMatrixf(matrix);
+        pushTransformMatrix(matrix);
 
         if (groups.empty())
             drawGroup(-1, transparent);
@@ -164,7 +163,7 @@ void OglModel::drawGroups(bool transparent)
                 drawGroup(i, transparent);
         }
 
-        glPopMatrix();
+        popTransformMatrix();
     }
 }
 
@@ -235,18 +234,7 @@ void OglModel::internalDraw(bool transparent)
         glBlendFunc(GL_ZERO, GL_ONE_MINUS_SRC_ALPHA);
         //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-
-        for (unsigned int i=0; i<xforms.size(); i++)
-        {
-            float matrix[16];
-            xforms[i].writeOpenGlMatrix(matrix);
-            glPushMatrix();
-            glMultMatrixf(matrix);
-
-            drawGroups(transparent);
-        }
-
-        glPopMatrix();
+        drawGroups(transparent);
 
         if (premultipliedAlpha.getValue())
             glBlendFunc(GL_ONE, GL_ONE);

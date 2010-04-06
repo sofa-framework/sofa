@@ -71,6 +71,34 @@ OglShaderVisualModel::~OglShaderVisualModel()
     // TODO Auto-generated destructor stub
 }
 
+void OglShaderVisualModel::pushTransformMatrix(float* matrix)
+{
+    OglModel::pushTransformMatrix(matrix);
+
+    helper::vector<float> tempModelMatrixValue;
+
+    for ( unsigned int i = 0; i < 16; i++ )
+        tempModelMatrixValue.push_back(matrix[i]);
+
+    modelMatrixUniform.setValue(tempModelMatrixValue);
+
+    if (shader)
+    {
+        shader->stop();
+        modelMatrixUniform.pushValue();
+        shader->start();
+    }
+}
+
+void OglShaderVisualModel::popTransformMatrix()
+{
+    OglModel::popTransformMatrix();
+
+    if (shader)
+        shader->stop();
+
+}
+
 void OglShaderVisualModel::init()
 {
     OglModel::init();
@@ -108,20 +136,11 @@ void OglShaderVisualModel::init()
         }
 
         vrestnormals.endEdit();
-
-        //add Model Matrix as Uniform
+//
+//    //add Model Matrix as Uniform
         modelMatrixUniform.setContext( this->getContext());
         modelMatrixUniform.setID( std::string("modelMatrix") );
         modelMatrixUniform.setIndexShader( 0);
-        modelMatrixUniform.init();
-        helper::vector<float> tempModelMatrixValue;
-
-        const Matrix4x4 &mat = modelMatrix.getValue();
-        for ( unsigned int i = 0; i < 4; i++ )
-            for ( unsigned int j = 0; j < 4; j++ )
-                tempModelMatrixValue.push_back(mat(i,j));
-
-        modelMatrixUniform.setValue(tempModelMatrixValue);
         modelMatrixUniform.init();
     }
 
@@ -136,8 +155,6 @@ void OglShaderVisualModel::initVisual()
     {
         vrestpositions.initVisual();
         vrestnormals.initVisual();
-
-        modelMatrixUniform.initVisual();
     }
 }
 
