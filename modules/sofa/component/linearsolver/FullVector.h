@@ -266,6 +266,8 @@ public:
         }
         return out;
     }
+
+    static const char* Name() { return "FullVector"; }
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_LINEARSOLVER_FULLVECTOR_CPP)

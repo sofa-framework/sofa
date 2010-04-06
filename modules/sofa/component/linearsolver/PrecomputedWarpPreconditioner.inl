@@ -74,7 +74,7 @@ using namespace sofa::component::linearsolver;
 
 template<class TDataTypes,class TMatrix,class TVector>
 PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector >::PrecomputedWarpPreconditioner()
-    : jmjt_twostep( initData(&jmjt_twostep,true,"jmjt_twostep","Dump system state at each iteration") )
+    : jmjt_twostep( initData(&jmjt_twostep,true,"jmjt_twostep","Use two step algorithm to compute JMinvJt") )
     , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
     , use_file( initData(&use_file,true,"use_file","Dump system matrix in a file") )
     , solverName(initData(&solverName, std::string(""), "solverName", "Name of the solver to use to precompute the first matrix"))
