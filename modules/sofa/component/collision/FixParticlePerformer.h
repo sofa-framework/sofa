@@ -27,10 +27,8 @@
 
 #include <sofa/component/collision/InteractionPerformer.h>
 
-
-
-#include <sofa/component/collision/BarycentricContactMapper.h>
 #include <sofa/component/forcefield/StiffSpringForceField.h>
+#include <sofa/component/collision/MouseInteractor.h>
 
 namespace sofa
 {
@@ -52,19 +50,19 @@ protected:
 template <class DataTypes>
 class FixParticlePerformer: public TInteractionPerformer<DataTypes>, public FixParticlePerformerConfiguration
 {
-    typedef sofa::component::collision::BaseContactMapper< DataTypes >        MouseContactMapper;
     typedef sofa::component::forcefield::StiffSpringForceField< DataTypes >   MouseForceField;
     typedef sofa::component::container::MechanicalObject< DataTypes >         MouseContainer;
+    typedef typename DataTypes::Coord Coord;
 public:
     FixParticlePerformer(BaseMouseInteractor *i);
-    ~FixParticlePerformer();
 
     void start();
     void execute();
     void draw();
 
 protected:
-    MouseContactMapper   *mapper;
+    MouseContainer* getFixationPoints(const BodyPicked &b, helper::vector<unsigned int> &points, typename DataTypes::Coord &fixPoint);
+
     std::vector< simulation::Node * > fixations;
 };
 
