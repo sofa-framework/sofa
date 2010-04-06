@@ -52,18 +52,16 @@ public:
     typedef Grid3D::real real;
     typedef Grid3D::vec3 vec3;
 protected:
-    int nx,ny,nz;
-    real cellwidth;
 
     Grid3D* fluid;
     Grid3D* fnext;
     Grid3D* ftemp;
 
 public:
-    sofa::core::objectmodel::DataPtr<int> f_nx;
-    sofa::core::objectmodel::DataPtr<int> f_ny;
-    sofa::core::objectmodel::DataPtr<int> f_nz;
-    sofa::core::objectmodel::DataPtr<real> f_cellwidth;
+    sofa::core::objectmodel::Data<int> f_nx;
+    sofa::core::objectmodel::Data<int> f_ny;
+    sofa::core::objectmodel::Data<int> f_nz;
+    sofa::core::objectmodel::Data<real> f_cellwidth;
     sofa::core::objectmodel::Data<vec3> f_center;
     sofa::core::objectmodel::Data<real> f_height;
     sofa::core::objectmodel::Data<vec3> f_dir;

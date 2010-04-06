@@ -53,17 +53,15 @@ public:
     typedef Grid2D::vec2 vec2;
     typedef Vec<3,real> vec3;
 protected:
-    int nx,ny;
-    real cellwidth;
 
     Grid2D* fluid;
     Grid2D* fnext;
     Grid2D* ftemp;
 
 public:
-    sofa::core::objectmodel::DataPtr<int> f_nx;
-    sofa::core::objectmodel::DataPtr<int> f_ny;
-    sofa::core::objectmodel::DataPtr<real> f_cellwidth;
+    sofa::core::objectmodel::Data<int> f_nx;
+    sofa::core::objectmodel::Data<int> f_ny;
+    sofa::core::objectmodel::Data<real> f_cellwidth;
     sofa::core::objectmodel::Data<real> f_height;
     sofa::core::objectmodel::Data<vec2> f_dir;
     sofa::core::objectmodel::Data<real> f_tstart;

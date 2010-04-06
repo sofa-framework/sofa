@@ -151,18 +151,18 @@ protected:
     Data<bool> updateNormals; ///< True if normals should be updated at each iteration
 
     /*     Data< ResizableExtVector<Coord> > vertices; */
-    DataPtr< ResizableExtVector<Coord> > field_vertices;
-    ResizableExtVector<Coord> vertices;
+    Data< ResizableExtVector<Coord> > field_vertices;
+    //ResizableExtVector<Coord> vertices;
 
-    DataPtr< ResizableExtVector<Coord> > field_vnormals;
-    ResizableExtVector<Coord> vnormals;
-    DataPtr< ResizableExtVector<TexCoord> > field_vtexcoords;
-    ResizableExtVector<TexCoord> vtexcoords;
+    Data< ResizableExtVector<Coord> > field_vnormals;
+    //ResizableExtVector<Coord> vnormals;
+    Data< ResizableExtVector<TexCoord> > field_vtexcoords;
+    //ResizableExtVector<TexCoord> vtexcoords;
 
-    DataPtr< ResizableExtVector<Triangle> > field_triangles;
-    ResizableExtVector<Triangle> triangles;
-    DataPtr< ResizableExtVector<Quad> > field_quads;
-    ResizableExtVector<Quad> quads;
+    Data< ResizableExtVector<Triangle> > field_triangles;
+    //ResizableExtVector<Triangle> triangles;
+    Data< ResizableExtVector<Quad> > field_quads;
+    //ResizableExtVector<Quad> quads;
 
     /// If vertices have multiple normals/texcoords, then we need to separate them
     /// This vector store which input position is used for each vertice
@@ -265,10 +265,52 @@ public:
     void setMesh(helper::io::Mesh &m, bool tex=false);
     bool isUsingTopology() const {return useTopology;};
 
-    ResizableExtVector<Coord> * getVertices() {return &vertices;}
-    void setVertices(ResizableExtVector<Coord> * x) {vertices = *x;}
-    ResizableExtVector<Triangle> * getTriangles() {return &triangles;}
-    void setTriangles(ResizableExtVector<Triangle> * t) {triangles = *t;}
+
+    const ResizableExtVector<Coord>& getVertices() {return field_vertices.getValue();}
+
+    const ResizableExtVector<Coord>& getVnormals() {return field_vnormals.getValue();}
+
+    const ResizableExtVector<TexCoord>& getVtexcoords() {return field_vtexcoords.getValue();}
+
+    const ResizableExtVector<Triangle>& getTriangles() {return field_triangles.getValue();}
+
+    const ResizableExtVector<Quad>& getQuads() {return field_quads.getValue();}
+
+    void setVertices(ResizableExtVector<Coord> * x)
+    {
+        ResizableExtVector<Coord>& vertices = *(field_vertices.beginEdit());
+        vertices = *x;
+        field_vertices.endEdit();
+    }
+
+    void setVnormals(ResizableExtVector<Coord> * vn)
+    {
+        ResizableExtVector<Coord>& vnormals = *(field_vnormals.beginEdit());
+        vnormals = *vn;
+        field_vnormals.endEdit();
+    }
+
+    void setVtexcoords(ResizableExtVector<TexCoord> * vt)
+    {
+        ResizableExtVector<TexCoord>& vtexcoords = *(field_vtexcoords.beginEdit());
+        vtexcoords = *vt;
+        field_vtexcoords.endEdit();
+    }
+
+    void setTriangles(ResizableExtVector<Triangle> * t)
+    {
+        ResizableExtVector<Triangle>& triangles = *(field_triangles.beginEdit());
+        triangles = *t;
+        field_triangles.endEdit();
+    }
+
+    void setQuads(ResizableExtVector<Quad> * q)
+    {
+        ResizableExtVector<Quad>& quads = *(field_quads.beginEdit());
+        quads = *q;
+        field_quads.endEdit();
+    }
+
 
     virtual void computePositions();
     virtual void computeMesh();
