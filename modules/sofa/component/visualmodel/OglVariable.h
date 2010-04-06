@@ -67,6 +67,7 @@ public:
     virtual void setValue( const DataTypes& v ) { value.setValue(v); }
     void init();
     void initVisual();
+    void pushValue() { initVisual(); }
     void reinit();
 };
 

@@ -147,7 +147,6 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
        translation       (initData   (&translation, Vector3(), "translation", "Initial Translation of the object")),
        rotation          (initData   (&rotation, Vector3(), "rotation", "Initial Rotation of the object")),
        scale             (initData   (&scale, Vector3(1.0,1.0,1.0), "scale3d", "Initial Scale of the object")),
-       modelMatrix       (initData   (&modelMatrix, "modelMatrix", "Transform Matrix of the object")),
        scaleTex          (initData   (&scaleTex, TexCoord(1.0,1.0), "scaleTex", "Scale of the texture")),
        translationTex    (initData   (&translationTex, TexCoord(1.0,1.0), "translationTex", "Translation of the texture")),
        material(initData(&material,"material","Material")), // tex(NULL)
@@ -172,10 +171,6 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
     translation.setGroup("Transformation");
     rotation.setGroup("Transformation");
     scale.setGroup("Transformation");
-
-    modelMatrix.setReadOnly(true);
-    modelMatrix.setGroup("Transformation");
-
 }
 
 VisualModelImpl::~VisualModelImpl()
@@ -518,10 +513,6 @@ void VisualModelImpl::applyTranslation(const double dx, const double dy, const d
     {
         x[i] += d;
     }
-
-    Matrix4x4 &mat = *modelMatrix.beginEdit();
-    mat.transformTranslation(Vector3(dx, dy,dz));
-    modelMatrix.endEdit();
     updateVisual();
 }
 
@@ -538,11 +529,6 @@ void VisualModelImpl::applyRotation(const Quat q)
     {
         x[i] = q.rotate(x[i]);
     }
-
-    Matrix4x4 &mat = *modelMatrix.beginEdit();
-    mat.transformRotation(q);
-    modelMatrix.endEdit();
-
     updateVisual();
 }
 
@@ -555,11 +541,6 @@ void VisualModelImpl::applyScale(const double sx, const double sy, const double 
         x[i][1] *= (GLfloat) sy;
         x[i][2] *= (GLfloat) sz;
     }
-
-    Matrix4x4 &mat = *modelMatrix.beginEdit();
-    mat.transformScale(Vector3(sx, sy,sz));
-    modelMatrix.endEdit();
-
     updateVisual();
 }
 
@@ -599,12 +580,6 @@ void VisualModelImpl::init()
     field_vtexcoords.beginEdit();
     field_triangles.beginEdit();
     field_quads.beginEdit();
-
-
-    //Set Model Matrix to Identity
-    Matrix4x4 &mat = *modelMatrix.beginEdit();
-    mat.identity();
-    modelMatrix.endEdit();
 
     applyScale(scale.getValue()[0], scale.getValue()[1], scale.getValue()[2]);
     applyRotation(rotation.getValue()[0],rotation.getValue()[1],rotation.getValue()[2]);

@@ -74,6 +74,10 @@ protected:
     void drawGroup(int ig, bool transparent);
     void drawGroups(bool transparent);
 
+    virtual void pushTransformMatrix(float* matrix) { glPushMatrix(); glMultMatrixf(matrix); }
+    virtual void popTransformMatrix() { glPopMatrix(); }
+
+
 public:
 
     OglModel();
