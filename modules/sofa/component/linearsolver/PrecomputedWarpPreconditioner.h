@@ -60,6 +60,7 @@ class PrecomputedWarpPreconditionerInternalData
 public :
     typedef typename TDataTypes::Coord Coord;
     typedef typename Coord::value_type Real;
+    typedef FullMatrix<Real> TBaseMatrix ;
 
     SparseMatrix<Real> JR;
     FullMatrix<Real> JRMinv;
@@ -82,6 +83,8 @@ public:
 
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
     typedef sofa::core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
+    typedef typename PrecomputedWarpPreconditionerInternalData<TDataTypes>::TBaseMatrix TBaseMatrix;
+
 
     typedef typename Coord::value_type Real;
     typedef MatNoInit<3, 3, Real> Transformation;
@@ -101,7 +104,7 @@ public:
     void setSystemMBKMatrix(double mFact=0.0, double bFact=0.0, double kFact=0.0);
     bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact);
 
-    BaseMatrix * getSystemMatrixInv()
+    TBaseMatrix * getSystemMatrixInv()
     {
         return &internalData.Minv;
     }

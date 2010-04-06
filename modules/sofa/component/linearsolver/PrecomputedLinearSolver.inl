@@ -71,7 +71,8 @@ using namespace sofa::component::linearsolver;
 
 template<class TMatrix,class TVector>
 PrecomputedLinearSolver<TMatrix,TVector>::PrecomputedLinearSolver()
-    : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
+    : jmjt_twostep( initData(&jmjt_twostep,true,"jmjt_twostep","Use two step algorithm to compute JMinvJt") )
+    , f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
     , use_file( initData(&use_file,true,"use_file","Dump system matrix in a file") )
     , solverName(initData(&solverName, std::string(""), "solverName", "Name of the solver to use to precompute the first matrix"))
     , init_MaxIter( initData(&init_MaxIter,5000,"init_MaxIter","Max Iter use to precompute the first matrix") )
@@ -80,6 +81,7 @@ PrecomputedLinearSolver<TMatrix,TVector>::PrecomputedLinearSolver()
 
 {
     first = true;
+    usePrecond = true;
 }
 
 template<class TMatrix,class TVector>
@@ -96,13 +98,16 @@ void PrecomputedLinearSolver<TMatrix,TVector>::setSystemMBKMatrix(double mFact, 
         loadMatrix();
         first = false;
     }
+
+    this->currentGroup->needInvert = usePrecond;
 }
 
 //Solve x = R * M^-1 * R^t * b
 template<class TMatrix,class TVector>
 void PrecomputedLinearSolver<TMatrix,TVector>::solve (TMatrix& , TVector& z, TVector& r)
 {
-    z = internalData.Minv * r;
+    if (usePrecond) z = internalData.Minv * r;
+    else z = r;
 }
 
 template<class TMatrix,class TVector>
@@ -170,7 +175,7 @@ void PrecomputedLinearSolver<TMatrix,TVector>::loadMatrixWithCSparse()
     {
         for (unsigned int i=0; i<systemSize; i++)
         {
-            if (internalData.Minv.element(j,i)!=0) matSolv.set(j,i,internalData.Minv.element(j,i));
+            if (this->currentGroup->systemMatrix->element(j,i)!=0) matSolv.set(j,i,this->currentGroup->systemMatrix->element(j,i));
         }
         b.set(j,0.0);
     }
@@ -209,7 +214,7 @@ void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrixWithSolver()
 //
 // 	cout << "Compute the initial invert matrix with solver" << endl;
 //
-// 	behavior::MechanicalState<DataTypes>* mstate = dynamic_cast< behavior::MechanicalState<DataTypes>* >(this->getContext()->getMechanicalState());
+// 	BaseMechanicalState* mstate = dynamic_cast< BaseMechanicalState* >(this->getContext()->getMechanicalState());
 // 	if (mstate==NULL) {
 // 		serr << "PrecomputedWarpPreconditioner can't find Mstate" << sendl;
 // 		return;
@@ -331,9 +336,6 @@ void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrixWithSolver()
 //
 // 			if (linearSolver && f*dof_on_node+i == 0) linearSolver->freezeSystemMatrix(); // do not recompute the matrix for the rest of the precomputation
 //
-// 			//velocity = *mstate->getV();
-// 			double fact = factInt / unitary_force[i];
-//
 // 			if(f*dof_on_node+i < 2) {
 // 				EulerSolver->f_verbose.setValue(false);
 // 				EulerSolver->f_printLog.setValue(false);
@@ -341,7 +343,7 @@ void PrecomputedLinearSolver<TMatrix,TVector >::loadMatrixWithSolver()
 // 			}
 // 			for (unsigned int v=0; v<nbNodes; v++) {
 // 				for (unsigned int j=0; j<dof_on_node; j++) {
-// 					this->currentGroup->systemMatrix->set(v*dof_on_node+j,f*dof_on_node+i,(Real)(fact * velocity[v][j]));
+// 					internalData.Minv.set(v*dof_on_node+j,f*dof_on_node+i,(Real)(velocity[v][j]*factInt));
 // 				}
 // 			}
 // 		}

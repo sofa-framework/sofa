@@ -62,6 +62,7 @@ class PrecomputedLinearSolverInternalData
 {
 public :
     typedef typename TMatrix::Real Real;
+    typedef FullMatrix<Real> TBaseMatrix ;
 
     FullMatrix<Real> JMinv;
     FullMatrix<Real> Minv;
@@ -77,7 +78,9 @@ public:
     typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
     typedef sofa::core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
     typedef typename TMatrix::Real Real;
+    typedef typename PrecomputedLinearSolverInternalData<TMatrix,TVector>::TBaseMatrix TBaseMatrix;
 
+    Data<bool> jmjt_twostep;
     Data<bool> f_verbose;
     Data<bool> use_file;
     Data <std::string> solverName;
@@ -110,10 +113,10 @@ public:
 
     static std::string templateName(const PrecomputedLinearSolver<TMatrix,TVector>* = NULL)
     {
-        return TMatrix::Name();
+        return TVector::Name();
     }
 
-    BaseMatrix * getSystemMatrixInv()
+    TBaseMatrix * getSystemMatrixInv()
     {
         return &internalData.Minv;
     }
@@ -129,6 +132,7 @@ private :
     double init_bFact;
     double init_kFact;
     bool first;
+    bool usePrecond;
     unsigned systemSize;
     double dt;
     double factInt;
