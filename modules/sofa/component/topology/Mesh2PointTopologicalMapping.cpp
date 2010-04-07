@@ -70,6 +70,12 @@ Mesh2PointTopologicalMapping::Mesh2PointTopologicalMapping ( In* from, Out* to )
       tetraBaryCoords ( initData ( &tetraBaryCoords, "tetraBaryCoords", "Coordinates for the points of the output topology created from the tetra of the input topology" ) ),
       hexaBaryCoords ( initData ( &hexaBaryCoords, "hexaBaryCoords", "Coordinates for the points of the output topology created from the hexa of the input topology" ) )
 {
+    pointBaryCoords.setGroup("BaryCoords");
+    edgeBaryCoords.setGroup("BaryCoords");
+    triangleBaryCoords.setGroup("BaryCoords");
+    quadBaryCoords.setGroup("BaryCoords");
+    tetraBaryCoords.setGroup("BaryCoords");
+    hexaBaryCoords.setGroup("BaryCoords");
 }
 
 void Mesh2PointTopologicalMapping::init()
