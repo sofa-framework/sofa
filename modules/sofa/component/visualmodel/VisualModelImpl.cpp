@@ -137,9 +137,13 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
     :  useTopology(false), lastMeshRev(-1), useNormals(true), castShadow(true),
        f_useNormals      (initDataPtr(&f_useNormals, &useNormals, "useNormals", "True if normal smoothing groups should be read from file")),
        updateNormals     (initData   (&updateNormals, true, "updateNormals", "True if normals should be updated at each iteration")),
+       computeTangents_  (initData   (&computeTangents_, false, "computeTangents", "True if tangents should be updated at each startup")),
+       updateTangents    (initData   (&updateTangents, true, "updateTangents", "True if tangents should be updated at each iteration")),
        field_vertices    (initData   (&field_vertices,  "position",   "vertices of the model") ),
        field_vnormals    (initData   (&field_vnormals, "normal",   "normals of the model") ),
        field_vtexcoords  (initData   (&field_vtexcoords, "texcoords",  "coordinates of the texture") ),
+       field_vtangents   (initData   (&field_vtangents, "tangents",  "tangents for normal mapping") ),
+       field_vbitangents (initData   (&field_vbitangents, "bitangents",  "tangents for normal mapping") ),
        field_triangles   (initData   (&field_triangles, "triangles" ,  "triangles of the model") ),
        field_quads       (initData   (&field_quads, "quads",    "quads of the model") ),
        fileMesh          (initData   (&fileMesh,    "fileMesh","Path to the model")),
@@ -165,6 +169,8 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
     field_vertices.setGroup("Vector");
     field_vnormals.setGroup("Vector");
     field_vtexcoords.setGroup("Vector");
+    field_vtangents.setGroup("Vector");
+    field_vbitangents.setGroup("Vector");
     field_triangles.setGroup("Vector");
     field_quads.setGroup("Vector");
 
@@ -448,6 +454,7 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
     field_quads.endEdit();
 
     computeNormals();
+    computeTangents();
     computeBBox();
 }
 
@@ -467,6 +474,8 @@ bool VisualModelImpl::load(const std::string& filename, const std::string& loade
     field_vertices.updateIfDirty();
     field_vnormals.updateIfDirty();
     field_vtexcoords.updateIfDirty();
+    field_vtangents.updateIfDirty();
+    field_vbitangents.updateIfDirty();
     field_triangles.updateIfDirty();
     field_quads.updateIfDirty();
 
@@ -602,6 +611,8 @@ void VisualModelImpl::init()
     field_vertices.beginEdit();
     field_vnormals.beginEdit();
     field_vtexcoords.beginEdit();
+    field_vtangents.beginEdit();
+    field_vbitangents.beginEdit();
     field_triangles.beginEdit();
     field_quads.beginEdit();
 
@@ -726,6 +737,77 @@ void VisualModelImpl::computeNormals()
     }
 
 
+}
+
+void VisualModelImpl::computeTangents()
+{
+    if (!computeTangents_.getValue() || !field_vtexcoords.getValue().size()) return;
+
+    const ResizableExtVector<Triangle>& triangles = field_triangles.getValue();
+    const ResizableExtVector<Quad>& quads = field_quads.getValue();
+    const ResizableExtVector<Coord>& vertices = field_vertices.getValue();
+    const ResizableExtVector<TexCoord>& texcoords = field_vtexcoords.getValue();
+    ResizableExtVector<Coord>& tangents = *(field_vtangents.beginEdit());
+    ResizableExtVector<Coord>& bitangents = *(field_vbitangents.beginEdit());
+
+    tangents.resize(vertices.size());
+    bitangents.resize(vertices.size());
+
+    for (unsigned i = 0; i < vertices.size(); i++)
+    {
+        tangents[i].clear();
+        bitangents[i].clear();
+    }
+
+    for (unsigned int i = 0; i < triangles.size() ; i++)
+    {
+        const Coord v1 = vertices[triangles[i][0]];
+        const Coord v2 = vertices[triangles[i][1]];
+        const Coord v3 = vertices[triangles[i][2]];
+        const TexCoord t1 = texcoords[triangles[i][0]];
+        const TexCoord t2 = texcoords[triangles[i][1]];
+        const TexCoord t3 = texcoords[triangles[i][2]];
+        Coord t = (v2 - v1) * (t3.y() - t1.y()) + (v3 - v1) * (t1.y() - t2.y());
+        Coord b = (v2 - v1) * (t3.x() - t1.x()) + (v3 - v1) * (t1.x() - t2.x());
+
+        tangents[triangles[i][0]] += t;
+        tangents[triangles[i][1]] += t;
+        tangents[triangles[i][2]] += t;
+        bitangents[triangles[i][0]] += b;
+        bitangents[triangles[i][1]] += b;
+        bitangents[triangles[i][2]] += b;
+    }
+
+    for (unsigned int i = 0; i < quads.size() ; i++)
+    {
+        const Coord & v1 = vertices[quads[i][0]];
+        const Coord & v2 = vertices[quads[i][1]];
+        const Coord & v3 = vertices[quads[i][2]];
+        const Coord & v4 = vertices[quads[i][3]];
+        const TexCoord t1 = texcoords[quads[i][0]];
+        const TexCoord t2 = texcoords[quads[i][1]];
+        const TexCoord t3 = texcoords[quads[i][2]];
+        const TexCoord t4 = texcoords[quads[i][3]];
+        Coord ta = (v2 - v1) * (t4.y() - t1.y()) + (v4 - v1) * (t1.y() - t2.y());
+        Coord ba = (v2 - v1) * (t4.x() - t1.x()) + (v4 - v1) * (t1.x() - t2.x());
+
+        Coord tb = (v3 - v2) * (t4.y() - t2.y()) + (v4 - v2) * (t2.y() - t3.y());
+        Coord bb = (v3 - v2) * (t4.x() - t2.x()) + (v4 - v2) * (t2.x() - t3.x());
+
+        tangents[quads[i][0]] += ta;
+        tangents[quads[i][1]] += ta + tb;
+        tangents[quads[i][2]] +=      tb;
+        tangents[quads[i][3]] += ta + tb;
+        bitangents[quads[i][0]] += ba;
+        bitangents[quads[i][1]] += ba + bb;
+        bitangents[quads[i][2]] +=      bb;
+        bitangents[quads[i][3]] += ba + bb;
+    }
+    for (unsigned int i = 0; i < vertices.size(); i++)
+    {
+        tangents[i].normalize();
+        bitangents[i].normalize();
+    }
 }
 
 void VisualModelImpl::computeBBox()
@@ -886,6 +968,8 @@ void VisualModelImpl::updateVisual()
         }
         computePositions();
         computeNormals();
+        if (updateTangents.getValue())
+            computeTangents();
         computeBBox();
         updateBuffers();
         modified = false;
@@ -894,6 +978,8 @@ void VisualModelImpl::updateVisual()
     field_vertices.updateIfDirty();
     field_vnormals.updateIfDirty();
     field_vtexcoords.updateIfDirty();
+    field_vtangents.updateIfDirty();
+    field_vbitangents.updateIfDirty();
     field_triangles.updateIfDirty();
     field_quads.updateIfDirty();
 }
