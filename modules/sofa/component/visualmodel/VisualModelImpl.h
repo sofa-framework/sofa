@@ -149,6 +149,8 @@ protected:
 
     DataPtr<bool> f_useNormals; ///< True if normals should be read from file
     Data<bool> updateNormals; ///< True if normals should be updated at each iteration
+    Data<bool> computeTangents_; ///< True if tangents should be computed at startup
+    Data<bool> updateTangents; ///< True if tangents should be updated at each iteration
 
     /*     Data< ResizableExtVector<Coord> > vertices; */
     Data< ResizableExtVector<Coord> > field_vertices;
@@ -158,6 +160,8 @@ protected:
     //ResizableExtVector<Coord> vnormals;
     Data< ResizableExtVector<TexCoord> > field_vtexcoords;
     //ResizableExtVector<TexCoord> vtexcoords;
+    Data< ResizableExtVector<Coord> > field_vtangents;
+    Data< ResizableExtVector<Coord> > field_vbitangents;
 
     Data< ResizableExtVector<Triangle> > field_triangles;
     //ResizableExtVector<Triangle> triangles;
@@ -315,6 +319,7 @@ public:
     virtual void computePositions();
     virtual void computeMesh();
     virtual void computeNormals();
+    virtual void computeTangents();
     virtual void computeBBox();
 
     virtual void updateBuffers() { };
