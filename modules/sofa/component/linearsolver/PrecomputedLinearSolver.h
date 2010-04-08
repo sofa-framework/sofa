@@ -83,7 +83,6 @@ public:
     Data<bool> jmjt_twostep;
     Data<bool> f_verbose;
     Data<bool> use_file;
-    Data <std::string> solverName;
     Data<int> init_MaxIter;
     Data<double> init_Tolerance;
     Data<double> init_Threshold;
@@ -94,7 +93,6 @@ public:
     void setSystemMBKMatrix(double mFact=0.0, double bFact=0.0, double kFact=0.0);
     void loadMatrix();
     void loadMatrixWithCSparse();
-    void loadMatrixWithSolver();
     bool addJMInvJt(defaulttype::BaseMatrix* result, defaulttype::BaseMatrix* J, double fact);
 
 
@@ -128,9 +126,6 @@ protected :
     PrecomputedLinearSolverInternalData<TMatrix,TVector> internalData;
 
 private :
-    double init_mFact;
-    double init_bFact;
-    double init_kFact;
     bool first;
     bool usePrecond;
     unsigned systemSize;
