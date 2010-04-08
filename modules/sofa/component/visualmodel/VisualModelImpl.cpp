@@ -137,7 +137,7 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
     :  useTopology(false), lastMeshRev(-1), useNormals(true), castShadow(true),
        f_useNormals      (initDataPtr(&f_useNormals, &useNormals, "useNormals", "True if normal smoothing groups should be read from file")),
        updateNormals     (initData   (&updateNormals, true, "updateNormals", "True if normals should be updated at each iteration")),
-       computeTangents_  (initData   (&computeTangents_, false, "computeTangents", "True if tangents should be updated at each startup")),
+       computeTangents_  (initData   (&computeTangents_, false, "computeTangents", "True if tangents should be computed at startup")),
        updateTangents    (initData   (&updateTangents, true, "updateTangents", "True if tangents should be updated at each iteration")),
        field_vertices    (initData   (&field_vertices,  "position",   "vertices of the model") ),
        field_vnormals    (initData   (&field_vnormals, "normal",   "normals of the model") ),
@@ -739,6 +739,22 @@ void VisualModelImpl::computeNormals()
 
 }
 
+VisualModelImpl::Coord VisualModelImpl::compTangent(const Coord &v1, const Coord &v2, const Coord &v3,
+        const TexCoord &t1, const TexCoord &t2, const TexCoord &t3)
+{
+    Coord v = (v2 - v1) * (t3.y() - t1.y()) + (v3 - v1) * (t1.y() - t2.y());
+    v.normalize();
+    return v;
+}
+
+VisualModelImpl::Coord VisualModelImpl::compBitangent(const Coord &v1, const Coord &v2, const Coord &v3,
+        const TexCoord &t1, const TexCoord &t2, const TexCoord &t3)
+{
+    Coord v = (v2 - v1) * (t3.x() - t1.x()) + (v3 - v1) * (t1.x() - t2.x());
+    v.normalize();
+    return v;
+}
+
 void VisualModelImpl::computeTangents()
 {
     if (!computeTangents_.getValue() || !field_vtexcoords.getValue().size()) return;
@@ -767,8 +783,8 @@ void VisualModelImpl::computeTangents()
         const TexCoord t1 = texcoords[triangles[i][0]];
         const TexCoord t2 = texcoords[triangles[i][1]];
         const TexCoord t3 = texcoords[triangles[i][2]];
-        Coord t = (v2 - v1) * (t3.y() - t1.y()) + (v3 - v1) * (t1.y() - t2.y());
-        Coord b = (v2 - v1) * (t3.x() - t1.x()) + (v3 - v1) * (t1.x() - t2.x());
+        Coord t = compTangent(v1, v2, v3, t1, t2, t3);
+        Coord b = compBitangent(v1, v2, v3, t1, t2, t3);
 
         tangents[triangles[i][0]] += t;
         tangents[triangles[i][1]] += t;
@@ -788,26 +804,36 @@ void VisualModelImpl::computeTangents()
         const TexCoord t2 = texcoords[quads[i][1]];
         const TexCoord t3 = texcoords[quads[i][2]];
         const TexCoord t4 = texcoords[quads[i][3]];
-        Coord ta = (v2 - v1) * (t4.y() - t1.y()) + (v4 - v1) * (t1.y() - t2.y());
-        Coord ba = (v2 - v1) * (t4.x() - t1.x()) + (v4 - v1) * (t1.x() - t2.x());
 
-        Coord tb = (v3 - v2) * (t4.y() - t2.y()) + (v4 - v2) * (t2.y() - t3.y());
-        Coord bb = (v3 - v2) * (t4.x() - t2.x()) + (v4 - v2) * (t2.x() - t3.x());
+        // Too many options how to split a quad into two triangles...
+        Coord t123 = compTangent  (v1, v2, v3, t1, t2, t3);
+        Coord b123 = compBitangent(v1, v2, v2, t1, t2, t3);
 
-        tangents[quads[i][0]] += ta;
-        tangents[quads[i][1]] += ta + tb;
-        tangents[quads[i][2]] +=      tb;
-        tangents[quads[i][3]] += ta + tb;
-        bitangents[quads[i][0]] += ba;
-        bitangents[quads[i][1]] += ba + bb;
-        bitangents[quads[i][2]] +=      bb;
-        bitangents[quads[i][3]] += ba + bb;
+        Coord t234 = compTangent  (v2, v3, v4, t2, t3, t4);
+        Coord b234 = compBitangent(v2, v3, v4, t2, t3, t4);
+
+        Coord t341 = compTangent  (v3, v4, v1, t3, t4, t1);
+        Coord b341 = compBitangent(v3, v4, v1, t3, t4, t1);
+
+        Coord t412 = compTangent  (v4, v1, v2, t4, t1, t2);
+        Coord b412 = compBitangent(v4, v1, v2, t4, t1, t2);
+
+        tangents  [quads[i][0]] += t123        + t341 + t412;
+        bitangents[quads[i][0]] += b123        + b341 + b412;
+        tangents  [quads[i][1]] += t123 + t234        + t412;
+        bitangents[quads[i][1]] += b123 + b234        + b412;
+        tangents  [quads[i][2]] += t123 + t234 + t341;
+        bitangents[quads[i][2]] += b123 + b234 + b341;
+        tangents  [quads[i][3]] +=        t234 + t341 + t412;
+        bitangents[quads[i][3]] +=        b234 + b341 + b412;
     }
     for (unsigned int i = 0; i < vertices.size(); i++)
     {
         tangents[i].normalize();
         bitangents[i].normalize();
     }
+    field_vtangents.endEdit();
+    field_vbitangents.endEdit();
 }
 
 void VisualModelImpl::computeBBox()
