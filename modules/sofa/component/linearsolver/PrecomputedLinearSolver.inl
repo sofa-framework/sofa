@@ -50,12 +50,9 @@
 #include <sofa/component/linearsolver/CGLinearSolver.h>
 #include <sofa/component/linearsolver/PCGLinearSolver.h>
 
-#ifdef SOFA_HAVE_CSPARSE
 #include <sofa/component/linearsolver/SparseCholeskySolver.h>
 #include <sofa/component/linearsolver/CompressedRowSparseMatrix.h>
-#else
 #include <sofa/component/linearsolver/CholeskySolver.h>
-#endif
 
 namespace sofa
 {
