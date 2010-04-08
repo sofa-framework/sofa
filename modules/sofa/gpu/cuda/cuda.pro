@@ -151,8 +151,7 @@ HEADERS += \
        	CudaMasterContactSolver.h \
 	   	CudaBTDLinearSolver.h \
 	   	CudaUnilateralInteractionConstraint.h \
-	   	CudaPrecomputedWarpPreconditioner.h \
-		CudaPrecomputedLinearSolver.h \
+	   	CudaPrecomputedWarpPreconditioner.h \		
 		CudaWarpPreconditioner.h \
         CudaTetrahedronTLEDForceField.h \
        	CudaHexahedronFEMForceField.h \
@@ -185,8 +184,7 @@ SOURCES += \
 	   	CudaUnilateralInteractionConstraint.cpp \
 	   	CudaPrecomputedWarpPreconditioner.cpp \
 		CudaWarpPreconditioner.cpp \
-		CudaPrecomputedLinearSolver.cpp \  	  	
-       	CudaHexahedronFEMForceField.cpp \
+		CudaHexahedronFEMForceField.cpp \
 		#CudaHexahedronGeodesicalDistance.cpp \
      	CudaTetrahedronTLEDForceField.cpp \
        	CudaHexahedronTLEDForceField.cpp \
@@ -219,14 +217,19 @@ CUDA_SOURCES += \
 	CudaComplianceMatrixUpdateManager.cu \
 	CudaDiagonalMass.cu 
 		
-contains(DEFINES,SOFA_HAVE_BOOST){
+
 contains(DEFINES,SOFA_HAVE_CSPARSE){
-HEADERS += \
-	   	CudaUpdatePrecomputedPreconditioner.h
-	   	
-SOURCES += \	
-		CudaUpdatePrecomputedPreconditioner.cpp
-}
+	HEADERS += \
+		  CudaPrecomputedLinearSolver.h			
+	SOURCES += \	
+		  CudaPrecomputedLinearSolver.cpp
+
+	contains(DEFINES,SOFA_HAVE_BOOST){
+		  HEADERS += \
+			    CudaUpdatePrecomputedPreconditioner.h				  
+		  SOURCES += \	
+			    CudaUpdatePrecomputedPreconditioner.cpp
+	}
 }
 
 contains(DEFINES,SOFA_HAVE_EIGEN2){
