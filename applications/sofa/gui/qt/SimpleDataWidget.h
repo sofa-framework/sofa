@@ -36,7 +36,7 @@
 #include "WFloatLineEdit.h"
 #include <limits.h>
 
-#include <sofa/component/fem/QuadratureFormular.h>
+//#include <sofa/component/fem/QuadratureFormular.h>
 
 
 #if !defined(INFINITY)
@@ -654,12 +654,12 @@ class data_widget_container < Quater<T> > : public fixed_vector_data_widget_cont
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*
-      template<class TDatatypes >
-      class vector_data_trait < typename sofa::component::fem::QuadratureFormular<TDatatypes>::QuadraturePoint >
+      template<typename TDataTypes, int N >
+      class vector_data_trait < sofa::component::fem::InternalQuadraturePoint<TDataTypes, N> >
       {
       public:
-        typedef typename sofa::component::fem::QuadratureFormular<TDatatypes>::QuadraturePoint data_type;
-        typedef TDatatypes DataTypes;
+    	typedef typename sofa::component::fem::InternalQuadraturePoint<TDataTypes, N> data_type;
+        typedef TDataTypes DataTypes;
     	typedef typename DataTypes::Coord Coord;
     	typedef typename DataTypes::VecCoord VecCoord;
     	typedef typename Coord::value_type value_type;
@@ -690,7 +690,7 @@ class data_widget_container < Quater<T> > : public fixed_vector_data_widget_cont
         {
         }
       };
-/*
+
       template<class TDatatype>
       class data_widget_container < sofa::component::fem::QuadratureFormular<TDatatype>::QuadraturePoint >
       : public fixed_vector_data_widget_container < sofa::component::fem::QuadratureFormular<TDatatype>::QuadraturePoint >

@@ -135,7 +135,12 @@ contains(DEFINES,SOFA_HAVE_GLEW) {
         gl/GLSLShader.cpp
 }
 contains(DEFINES,SOFA_DEV) { # BEGIN SOFA_DEV
-    HEADERS += DualQuat.inl \
-        DualQuat.h
-    SOURCES += DualQuat.cpp
+    HEADERS += \
+    	DualQuat.inl \
+        DualQuat.h \
+        Polynomial.h \
+        Polynomial.inl
+    SOURCES += \
+    	DualQuat.cpp \
+    	Polynomial.cpp
 }
