@@ -159,7 +159,7 @@ class SOFA_COMPONENT_MASTERSOLVER_API ConstraintProblem
 {
 private:
     LPtrFullMatrix<double> _W;
-    FullVector<double> _dFree, _force, _d;              // cf. These Duriez
+    FullVector<double> _dFree, _force, _d, _df;              // cf. These Duriez + _df for scheme correction
     std::vector<core::componentmodel::behavior::ConstraintResolution*> _constraintsResolutions;
     double _tol;
     int _dim;
@@ -175,6 +175,7 @@ public:
     inline FullVector<double>* getDfree(void) {return &_dFree;};
     inline FullVector<double>* getD(void) {return &_d;};
     inline FullVector<double>* getF(void) {return &_force;};
+    inline FullVector<double>* getdF(void) {return &_df;};
     inline std::vector<core::componentmodel::behavior::ConstraintResolution*>& getConstraintResolutions(void) {return _constraintsResolutions;};
     inline double *getTolerance(void) {return &_tol;};
 
@@ -211,13 +212,47 @@ public:
     ConstraintProblem *getConstraintProblem(void) {return (bufCP1 == true) ? &CP1 : &CP2;};
 
 private:
-    void gaussSeidelConstraint(int dim, double* dfree, double** w, double* force, double* d, std::vector<core::componentmodel::behavior::ConstraintResolution*>& res);
+    void launchCollisionDetection();
+    void freeMotion(simulation::Node *context, double &dt);
+    void setConstraintEquations(simulation::Node *context);
+    void correctiveMotion(simulation::Node *context);
+    void debugWithContact(int numConstraints);
+
+    ///  Specific procedures that are called for setting the constraints:
+
+    /// 1.calling resetConstraint & setConstraint & accumulateConstraint visitors
+    /// and resize the constraint problem that will be solved
+    void writeAndAccumulateAndCountConstraintDirections(simulation::Node *context, unsigned int &numConstraints);
+
+    /// 2.calling GetConstraintValueVisitor: each constraint provides its present violation
+    /// for a given state (by default: free_position TODO: add VecId to make this method more generic)
+    void getIndividualConstraintViolations(simulation::Node *context);
+
+    /// 3.calling getConstraintResolution: each constraint provides a method that is used to solve it during GS iterations
+    void getIndividualConstraintSolvingProcess(simulation::Node *context);
+
+    /// 4.calling getCompliance projected in the contact space => getDelassusOperator(_W) = H*C*Ht
+    void computeComplianceInConstraintSpace();
+
+
+    /// method for predictive scheme:
+    void computePredictiveForce(int dim, double* force, std::vector<core::componentmodel::behavior::ConstraintResolution*>& res);
+
+
+
+    void gaussSeidelConstraint(int dim, double* dfree, double** w, double* force, double* d, std::vector<core::componentmodel::behavior::ConstraintResolution*>& res, double* df);
 
     std::vector<core::componentmodel::behavior::BaseConstraintCorrection*> constraintCorrections;
 
 
     bool bufCP1;
     ConstraintProblem CP1, CP2;
+
+    CTime *timer;
+    double timeScale, time ;
+    bool debug;
+
+    unsigned int numConstraints;
 
 
 

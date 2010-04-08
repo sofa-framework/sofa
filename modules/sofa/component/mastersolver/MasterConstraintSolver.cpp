@@ -100,6 +100,7 @@ void ConstraintProblem::clear(int dim, const double &tol)
     _d.resize(dim);
     _W.resize(dim,dim);
     _force.resize(dim);
+    _df.resize(dim);
     _constraintsResolutions.resize(dim); // _constraintsResolutions.clear();
     this->_tol = tol;
     this->_dim = dim;
@@ -254,51 +255,36 @@ void MasterConstraintSolver::init()
     getContext()->get<core::componentmodel::behavior::BaseConstraintCorrection> ( &constraintCorrections, core::objectmodel::BaseContext::SearchDown );
 }
 
-void MasterConstraintSolver::step ( double dt )
+
+void MasterConstraintSolver::launchCollisionDetection()
 {
-    CTime *timer;
-    double time = 0.0, totaltime = 0.0;
-    double timeScale = 1.0 / (double)CTime::getTicksPerSec() * 1000;
+    if (debug)
+        serr<<"computeCollision is called"<<sendl;
+
+    ////////////////// COLLISION DETECTION///////////////////////////////////////////////////////////////////////////////////////////
+    sofa::helper::AdvancedTimer::stepBegin("Collision");
+    computeCollision();
+    sofa::helper::AdvancedTimer::stepEnd  ("Collision");
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
     if ( displayTime.getValue() )
     {
-        timer = new CTime();
+        sout<<" computeCollision " << ( (double) timer->getTime() - time)*timeScale <<" ms" <<sendl;
         time = (double) timer->getTime();
-        totaltime = time;
-        sout<<sendl;
     }
 
-    bool debug =this->f_printLog.getValue();
-    if (debug)
-        serr<<"MasterConstraintSolver::step is called"<<sendl;
-    simulation::Node *context = dynamic_cast<simulation::Node *>(this->getContext()); // access to current node
+}
 
 
-    if (doCollisionsFirst.getValue())
-    {
-        if (debug)
-            serr<<"computeCollision is called"<<sendl;
-
-        ////////////////// COLLISION DETECTION///////////////////////////////////////////////////////////////////////////////////////////
-        sofa::helper::AdvancedTimer::stepBegin("Collision");
-        computeCollision();
-        sofa::helper::AdvancedTimer::stepEnd  ("Collision");
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        if ( displayTime.getValue() )
-        {
-            sout<<" computeCollision " << ( (double) timer->getTime() - time)*timeScale <<" ms" <<sendl;
-            time = (double) timer->getTime();
-        }
-    }
-
-    // Update the BehaviorModels
-    // Required to allow the RayPickInteractor interaction
-    sofa::helper::AdvancedTimer::stepBegin("BehaviorUpdate");
-    simulation::BehaviorUpdatePositionVisitor(dt).execute(context);
-    sofa::helper::AdvancedTimer::stepEnd  ("BehaviorUpdate");
+void MasterConstraintSolver::freeMotion(simulation::Node *context, double &dt)
+{
     if (debug)
         serr<<"Free Motion is called"<<sendl;
 
+
+    ///////////////////////////////////////////// FREE MOTION /////////////////////////////////////////////////////////////
+    sofa::helper::AdvancedTimer::stepBegin("Free Motion");
+    simulation::MechanicalBeginIntegrationVisitor(dt).execute(context);
 
     ////////////////// (optional) PREDICTIVE CONSTRAINT FORCES ///////////////////////////////////////////////////////////////////////////////////////////
     // When scheme Correction is used, the constraint forces computed at the previous time-step
@@ -314,25 +300,9 @@ void MasterConstraintSolver::step ( double dt )
             else
                 cc->applyPredictiveConstraintForce(CP1.getF());
 
-            cc->resetContactForce();
         }
     }
 
-
-    ///////////////////////////////////////////// FREE MOTION /////////////////////////////////////////////////////////////
-    if (doubleBuffer.getValue())
-    {
-        // SWAP BUFFER:
-
-        //std::cout<<"swap Buffer: size new ConstraintProblem = "<<numConstraints<< " size old buf Problem "<<getConstraintProblem()->getSize()<<std::endl;
-        bufCP1 = !bufCP1;
-        // int a=getConstraintProblem()->getConstraintResolutions().size();
-        //std::cerr<<"##"<<a<<"##"<<std::endl;
-    }
-
-    ///////////////////////////////////////////// FREE MOTION /////////////////////////////////////////////////////////////
-    sofa::helper::AdvancedTimer::stepBegin("Free Motion");
-    simulation::MechanicalBeginIntegrationVisitor(dt).execute(context);
     simulation::SolveVisitor(dt, true).execute(context);
     simulation::MechanicalPropagateFreePositionVisitor().execute(context);
     sofa::helper::AdvancedTimer::stepEnd  ("Free Motion");
@@ -352,28 +322,10 @@ void MasterConstraintSolver::step ( double dt )
         sout<<" Free Motion                           " << ( (double) timer->getTime() - time)*timeScale <<" ms" <<sendl;
         time = (double) timer->getTime();
     }
+}
 
-    if (!doCollisionsFirst.getValue())
-    {
-        if (debug)
-            serr<<"computeCollision is called"<<sendl;
-
-        ////////////////// COLLISION DETECTION///////////////////////////////////////////////////////////////////////////////////////////
-        sofa::helper::AdvancedTimer::stepBegin("Collision");
-        computeCollision();
-        sofa::helper::AdvancedTimer::stepEnd  ("Collision");
-        /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-        if ( displayTime.getValue() )
-        {
-            sout<<" ComputeCollision                      " << ( (double) timer->getTime() - time)*timeScale <<" ms" <<sendl;
-            time = (double) timer->getTime();
-        }
-    }
-
-    //////////////// BEFORE APPLYING CONSTRAINT  : propagate position through mapping
-    simulation::MechanicalPropagatePositionVisitor().execute(context);
-
+void MasterConstraintSolver::setConstraintEquations(simulation::Node *context)
+{
     for (unsigned int i=0; i<constraintCorrections.size(); i++)
     {
         core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
@@ -382,12 +334,46 @@ void MasterConstraintSolver::step ( double dt )
 
     //////////////////////////////////////CONSTRAINTS RESOLUTION//////////////////////////////////////////////////////////////////////
     if (debug)
-        serr<<"constraints Matrix construction is called"<<sendl;
+        sout<<"constraints Matrix construction is called"<<sendl;
 
     unsigned int numConstraints = 0;
 
 
     sofa::helper::AdvancedTimer::stepBegin("Constraints definition");
+
+
+    if(!schemeCorrection.getValue())
+    {
+        /// calling resetConstraint & setConstraint & accumulateConstraint visitors
+        /// and resize the constraint problem that will be solved
+        writeAndAccumulateAndCountConstraintDirections(context, numConstraints);
+    }
+
+
+    /// calling GetConstraintValueVisitor: each constraint provides its present violation
+    /// for a given state (by default: free_position TODO: add VecId to make this method more generic)
+    getIndividualConstraintViolations(context);
+
+    if(!schemeCorrection.getValue())
+    {
+        /// calling getConstraintResolution: each constraint provides a method that is used to solve it during GS iterations
+        getIndividualConstraintSolvingProcess(context);
+    }
+
+    sofa::helper::AdvancedTimer::stepEnd  ("Constraints definition");
+
+    /// calling getCompliance projected in the contact space => getDelassusOperator(_W) = H*C*Ht
+    computeComplianceInConstraintSpace();
+
+    if ( displayTime.getValue() )
+    {
+        sout<<" Build problem in the constraint space " << ( (double) timer->getTime() - time)*timeScale<<" ms" <<sendl;
+        time = (double) timer->getTime();
+    }
+}
+
+void MasterConstraintSolver::writeAndAccumulateAndCountConstraintDirections(simulation::Node *context, unsigned int &numConstraints)
+{
     // calling resetConstraint on LMConstraints and MechanicalStates
     simulation::MechanicalResetConstraintVisitor().execute(context);
 
@@ -399,34 +385,45 @@ void MasterConstraintSolver::step ( double dt )
     MechanicalAccumulateConstraint2().execute(context);
 
     if (debug)
-        serr<<"   1. resize constraints : numConstraints="<< numConstraints<<sendl;
+        sout<<"   1. resize constraints : numConstraints="<< numConstraints<<sendl;
 
     if (doubleBuffer.getValue() && bufCP1)
         CP2.clear(numConstraints,this->_tol.getValue());
     else
         CP1.clear(numConstraints,this->_tol.getValue());
+}
 
+void MasterConstraintSolver::getIndividualConstraintViolations(simulation::Node *context)
+{
     if (debug)
-        serr<<"   2. compute violation"<<sendl;
+        sout<<"   2. compute violation"<<sendl;
     // calling getConstraintValue
     if (doubleBuffer.getValue() && bufCP1)
         constraint::MechanicalGetConstraintValueVisitor(CP2.getDfree()).execute(context);
     else
         constraint::MechanicalGetConstraintValueVisitor(CP1.getDfree()).execute(context);
 
+}
+
+void MasterConstraintSolver::getIndividualConstraintSolvingProcess(simulation::Node *context)
+{
     /// calling getConstraintResolution: each constraint provides a method that is used to solve it during GS iterations
     if (debug)
-        serr<<"   3. get resolution method for each constraint"<<sendl;
+        sout<<"   3. get resolution method for each constraint"<<sendl;
 
     if (doubleBuffer.getValue() && bufCP1)
         MechanicalGetConstraintResolutionVisitor(CP2.getConstraintResolutions()).execute(context);
     else
         MechanicalGetConstraintResolutionVisitor(CP1.getConstraintResolutions()).execute(context);
-    sofa::helper::AdvancedTimer::stepEnd  ("Constraints definition");
 
+
+}
+
+void MasterConstraintSolver::computeComplianceInConstraintSpace()
+{
     /// calling getCompliance => getDelassusOperator(_W) = H*C*Ht
     if (debug)
-        serr<<"   4. get Compliance "<<sendl;
+        sout<<"   4. get Compliance "<<sendl;
 
     sofa::helper::AdvancedTimer::stepBegin("Get Compliance");
     for (unsigned int i=0; i<constraintCorrections.size(); i++ )
@@ -440,74 +437,41 @@ void MasterConstraintSolver::step ( double dt )
 
     sofa::helper::AdvancedTimer::stepEnd  ("Get Compliance");
 
-    if ( displayTime.getValue() )
-    {
-        sout<<" Build problem in the constraint space " << ( (double) timer->getTime() - time)*timeScale<<" ms" <<sendl;
-        time = (double) timer->getTime();
-    }
+}
 
-/////////////////////////////////// debug with contact: compare results when only contacts are involved in the scene ////////////////
-    ///   TO BE REMOVED  ///
-    sofa::helper::AdvancedTimer::stepBegin("GaussSeidel");
-    bool debugWithContact = false;
-    if (debugWithContact)
-    {
-        double mu=0.8;
-        if (doubleBuffer.getValue() && bufCP1)
-        {
-            helper::nlcp_gaussseidel(numConstraints, CP2.getDfree()->ptr(), CP2.getW()->lptr(), CP2.getF()->ptr(), mu, _tol.getValue(), _maxIt.getValue(), false, debug);
-            CP2.getF()->clear();
-            CP2.getF()->resize(numConstraints);
-        }
-        else
-        {
-            helper::nlcp_gaussseidel(numConstraints, CP1.getDfree()->ptr(), CP1.getW()->lptr(), CP1.getF()->ptr(), mu, _tol.getValue(), _maxIt.getValue(), false, debug);
-            CP1.getF()->clear();
-            CP1.getF()->resize(numConstraints);
-        }
-    }
-    ///  END TO BE REMOVED  ///
-///////////////////////////////////////////////////
-
-    if (debug)
-        serr<<"Gauss-Seidel solver is called on problem of size"<<numConstraints<<sendl;
-    if (doubleBuffer.getValue() && bufCP1)
-        gaussSeidelConstraint(numConstraints, CP2.getDfree()->ptr(), CP2.getW()->lptr(), CP2.getF()->ptr(), CP2.getD()->ptr(), CP2.getConstraintResolutions());
-    else
-        gaussSeidelConstraint(numConstraints, CP1.getDfree()->ptr(), CP1.getW()->lptr(), CP1.getF()->ptr(), CP1.getD()->ptr(), CP1.getConstraintResolutions());
-
-    sofa::helper::AdvancedTimer::stepEnd  ("GaussSeidel");
-
-    if (debug)
-    {
-        if (doubleBuffer.getValue() && bufCP1)
-            helper::afficheLCP(CP2.getDfree()->ptr(), CP2.getW()->lptr(), CP2.getF()->ptr(),  numConstraints);
-        else
-            helper::afficheLCP(CP1.getDfree()->ptr(), CP1.getW()->lptr(), CP1.getF()->ptr(),  numConstraints);
-    }
-
-    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    if ( displayTime.getValue() )
-    {
-        sout<<" Solve with GaussSeidel                " <<( (double) timer->getTime() - time)*timeScale<<" ms" <<sendl;
-        time = (double) timer->getTime();
-    }
-
-//
+void MasterConstraintSolver::correctiveMotion(simulation::Node *context)
+{
 
     if (debug)
         sout<<"constraintCorrections motion is called"<<sendl;
 
-    ///////////////////////////////////////CORRECTIVE MOTION //////////////////////////////////////////////////////////////////////////
     sofa::helper::AdvancedTimer::stepBegin("Corrective Motion");
-    for (unsigned int i=0; i<constraintCorrections.size(); i++)
+
+    if(schemeCorrection.getValue())
     {
-        core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
-        if (doubleBuffer.getValue() && bufCP1)
-            cc->applyContactForce(CP2.getF());
-        else
-            cc->applyContactForce(CP1.getF());
+        // IF SCHEME CORRECTIVE=> correct the motion using dF
+        for (unsigned int i=0; i<constraintCorrections.size(); i++)
+        {
+            core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
+            if (doubleBuffer.getValue() && bufCP1)
+                cc->applyContactForce(CP2.getdF());
+            else
+                cc->applyContactForce(CP1.getdF());
+        }
     }
+    else
+    {
+        // ELSE => only correct the motion using F
+        for (unsigned int i=0; i<constraintCorrections.size(); i++)
+        {
+            core::componentmodel::behavior::BaseConstraintCorrection* cc = constraintCorrections[i];
+            if (doubleBuffer.getValue() && bufCP1)
+                cc->applyContactForce(CP2.getF());
+            else
+                cc->applyContactForce(CP1.getF());
+        }
+    }
+
     simulation::MechanicalPropagateAndAddDxVisitor().execute(context);
     //simulation::MechanicalPropagatePositionAndVelocityVisitor().execute(context);
 
@@ -521,12 +485,183 @@ void MasterConstraintSolver::step ( double dt )
         }
     }
     sofa::helper::AdvancedTimer::stepEnd ("Corrective Motion");
+}
+
+void MasterConstraintSolver::step ( double dt )
+{
+    time = 0.0;
+    double totaltime = 0.0;
+    timeScale = 1.0 / (double)CTime::getTicksPerSec() * 1000;
+    if ( displayTime.getValue() )
+    {
+        timer = new CTime();
+        time = (double) timer->getTime();
+        totaltime = time;
+        sout<<sendl;
+    }
+    if (doubleBuffer.getValue())
+    {
+        // SWAP BUFFER:
+        bufCP1 = !bufCP1;
+    }
+
+    debug =this->f_printLog.getValue();
+
+    if (debug)
+        sout<<"MasterConstraintSolver::step is called"<<sendl;
+    simulation::Node *context = dynamic_cast<simulation::Node *>(this->getContext()); // access to current node
+
+
+    if (doCollisionsFirst.getValue())
+    {
+        /// COLLISION
+        launchCollisionDetection();
+    }
+
+    // Update the BehaviorModels => to be removed ?
+    // Required to allow the RayPickInteractor interaction
+    sofa::helper::AdvancedTimer::stepBegin("BehaviorUpdate");
+    simulation::BehaviorUpdatePositionVisitor(dt).execute(context);
+    sofa::helper::AdvancedTimer::stepEnd  ("BehaviorUpdate");
+
+
+    if(schemeCorrection.getValue())
+    {
+        // Compute the predictive force:
+        numConstraints = 0;
+        //1. find the new constraint direction
+        writeAndAccumulateAndCountConstraintDirections(context, numConstraints);
+
+        //2 get the constraint solving process:
+        getIndividualConstraintSolvingProcess(context);
+
+        //3. use the stored forces to compute
+        if (debug)
+        {
+            if (doubleBuffer.getValue() && bufCP1)
+            {
+                computePredictiveForce(CP2.getSize(), CP2.getF()->ptr(), CP2.getConstraintResolutions());
+                std::cout<<"getF() after computePredictiveForce:"<<std::endl;
+                helper::afficheResult(CP2.getF()->ptr(),CP2.getSize());
+            }
+            else
+            {
+                computePredictiveForce(CP1.getSize(), CP1.getF()->ptr(), CP1.getConstraintResolutions());
+                std::cout<<"getF() after computePredictiveForce:"<<std::endl;
+                helper::afficheResult(CP1.getF()->ptr(),CP1.getSize());
+            }
+        }
+    }
+
+    if (debug)
+    {
+        if (doubleBuffer.getValue() && bufCP1)
+        {
+            (*CP2.getF())*=0.0;
+            computePredictiveForce(CP2.getSize(), CP2.getF()->ptr(), CP2.getConstraintResolutions());
+            std::cout<<"getF() after re-computePredictiveForce:"<<std::endl;
+            helper::afficheResult(CP2.getF()->ptr(),CP2.getSize());
+        }
+        else
+        {
+            (*CP1.getF())*=0.0;
+            computePredictiveForce(CP1.getSize(), CP1.getF()->ptr(), CP1.getConstraintResolutions());
+            std::cout<<"getF() after re-computePredictiveForce:"<<std::endl;
+            helper::afficheResult(CP1.getF()->ptr(),CP1.getSize());
+        }
+    }
+
+
+
+
+    /// FREE MOTION
+    freeMotion(context, dt);
+
+
+
+    if (!doCollisionsFirst.getValue())
+    {
+        /// COLLISION
+        launchCollisionDetection();
+    }
+
+    //////////////// BEFORE APPLYING CONSTRAINT  : propagate position through mapping
+    simulation::MechanicalPropagatePositionVisitor().execute(context);
+
+
+    /// CONSTRAINT SPACE & COMPLIANCE COMPUTATION
+    setConstraintEquations(context);
+
+    if (debug)
+    {
+        if (doubleBuffer.getValue() && bufCP1)
+        {
+            std::cout<<"getF() after setConstraintEquations:"<<std::endl;
+            helper::afficheResult(CP2.getF()->ptr(),CP2.getSize());
+        }
+        else
+        {
+            std::cout<<"getF() after setConstraintEquations:"<<std::endl;
+            helper::afficheResult(CP1.getF()->ptr(),CP1.getSize());
+        }
+    }
+
+
+
+
+    sofa::helper::AdvancedTimer::stepBegin("GaussSeidel");
+
+    if (doubleBuffer.getValue() && bufCP1)
+    {
+        if (debug)
+            sout<<"Gauss-Seidel solver is called on problem of size"<<CP2.getSize()<<sendl;
+        if(schemeCorrection.getValue())
+            (*CP2.getF())*=0.0;
+
+        gaussSeidelConstraint(CP2.getSize(), CP2.getDfree()->ptr(), CP2.getW()->lptr(), CP2.getF()->ptr(), CP2.getD()->ptr(), CP2.getConstraintResolutions(), CP2.getdF()->ptr());
+    }
+    else
+    {
+        if (debug)
+            sout<<"Gauss-Seidel solver is called on problem of size"<<CP2.getSize()<<sendl;
+        if(schemeCorrection.getValue())
+            (*CP1.getF())*=0.0;
+
+        gaussSeidelConstraint(CP1.getSize(), CP1.getDfree()->ptr(), CP1.getW()->lptr(), CP1.getF()->ptr(), CP1.getD()->ptr(), CP1.getConstraintResolutions(), CP1.getdF()->ptr());
+    }
+    sofa::helper::AdvancedTimer::stepEnd  ("GaussSeidel");
+
+    if (debug)
+    {
+        if (doubleBuffer.getValue() && bufCP1)
+            helper::afficheLCP(CP2.getDfree()->ptr(), CP2.getW()->lptr(), CP2.getF()->ptr(),  CP2.getSize());
+        else
+            helper::afficheLCP(CP1.getDfree()->ptr(), CP1.getW()->lptr(), CP1.getF()->ptr(),  CP1.getSize());
+    }
+
+    /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    if ( displayTime.getValue() )
+    {
+        sout<<" Solve with GaussSeidel                " <<( (double) timer->getTime() - time)*timeScale<<" ms" <<sendl;
+        time = (double) timer->getTime();
+    }
+
+
+
+    /// CORRECTIVE MOTION
+    correctiveMotion(context);
+
+
 
     if ( displayTime.getValue() )
     {
         sout<<" ContactCorrections                    " <<( (double) timer->getTime() - time)*timeScale <<" ms" <<sendl;
         sout<<"  = Total                              " <<( (double) timer->getTime() - totaltime)*timeScale <<" ms" <<sendl;
-        sout<<" With : " << numConstraints << " constraints" << sendl;
+        if (doubleBuffer.getValue() && bufCP1)
+            sout<<" With : " << CP2.getSize() << " constraints" << sendl;
+        else
+            sout<<" With : " << CP1.getSize() << " constraints" << sendl;
+
         sout << "<<<<< End display MasterContactSolver time." << sendl;
     }
 
@@ -534,36 +669,20 @@ void MasterConstraintSolver::step ( double dt )
     context->execute(&endVisitor);
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+}
 
-    ////// in case of a double buffer we exchange buffer 1 and buffer 2: ////
-
-    //////// debug double buffer
-    //bool debugWithDoubleBuffer = true;
-
-    //if(debugWithDoubleBuffer)
-    //{
-    //	double timeOut = 0.001;  //1ms
-
-    //	if (this->getConstraintProblem() != NULL)
-    //	{
-    //		//std::cout<<"new gauss Seidel Constraint timed called on the buf problem of size"<<this->getConstraintProblem()->getSize()<<std::endl;
-    //		//double before = (double) timer->getTime() ;
-    //		this->getConstraintProblem()->gaussSeidelConstraintTimed(timeOut, 1000);
-    //		//double after = (double) timer->getTime() ;
-    //		//std::cout<<"gauss Seidel Constraint answers in  "<<(after-before)*timeScale<<"  Msec"<<std::endl;
-    //	}
-    //	else
-    //		std::cout<<"this->getConstraintProblem() is null"<<std::endl;
-
-    //}
-    //////////////////////////////
-
-
+void MasterConstraintSolver::computePredictiveForce(int dim, double* force, std::vector<core::componentmodel::behavior::ConstraintResolution*>& res)
+{
+    for(int i=0; i<dim; )
+    {
+        res[i]->initForce(i, force);
+        i += res[i]->nbLines;
+    }
 
 }
 
 void MasterConstraintSolver::gaussSeidelConstraint(int dim, double* dfree, double** w, double* force,
-        double* d, std::vector<ConstraintResolution*>& res)
+        double* d, std::vector<ConstraintResolution*>& res, double* df=NULL)
 {
     if(!dim)
         return;
@@ -588,6 +707,24 @@ void MasterConstraintSolver::gaussSeidelConstraint(int dim, double* dfree, doubl
     {
         res[i]->init(i, w, force);
         i += res[i]->nbLines;
+    }
+
+
+
+    if(schemeCorrection.getValue())
+    {
+        std::cout<<"shemeCorrection => LCP before step 1"<<std::endl;
+        helper::afficheLCP(dfree, w, force,  dim);
+        ///////// scheme correction : step 1 => modification of dfree
+        for(j=0; j<dim; j++)
+        {
+            for(k=0; k<dim; k++)
+                dfree[j] -= w[j][k] * force[k];
+        }
+
+        ///////// scheme correction : step 2 => storage of force value
+        for(j=0; j<dim; j++)
+            df[j] = -force[j];
     }
 
     sofa::helper::vector<double>& graph_residuals = (*_graphErrors.beginEdit())["Error"];
@@ -721,6 +858,17 @@ void MasterConstraintSolver::gaussSeidelConstraint(int dim, double* dfree, doubl
         i += t;
     }
 
+    if(schemeCorrection.getValue())
+    {
+        ///////// scheme correction : step 3 => the corrective motion is only based on the diff of the force value: compute this diff
+        for(j=0; j<dim; j++)
+        {
+            df[j] += force[j];
+        }
+    }
+
+
+    ////////// DISPLAY A GRAPH WITH THE CONVERGENCE PERF ON THE GUI :
     _graphErrors.endEdit();
 
     sofa::helper::vector<double>& graph_constraints = (*_graphConstraints.beginEdit())["Constraints"];
@@ -739,8 +887,29 @@ void MasterConstraintSolver::gaussSeidelConstraint(int dim, double* dfree, doubl
 
         j += nb;
     }
-
     _graphConstraints.endEdit();
+}
+
+
+
+
+void MasterConstraintSolver::debugWithContact(int numConstraints)
+{
+
+    double mu=0.8;
+    if (doubleBuffer.getValue() && bufCP1)
+    {
+        helper::nlcp_gaussseidel(numConstraints, CP2.getDfree()->ptr(), CP2.getW()->lptr(), CP2.getF()->ptr(), mu, _tol.getValue(), _maxIt.getValue(), false, debug);
+        CP2.getF()->clear();
+        CP2.getF()->resize(numConstraints);
+    }
+    else
+    {
+        helper::nlcp_gaussseidel(numConstraints, CP1.getDfree()->ptr(), CP1.getW()->lptr(), CP1.getF()->ptr(), mu, _tol.getValue(), _maxIt.getValue(), false, debug);
+        CP1.getF()->clear();
+        CP1.getF()->resize(numConstraints);
+    }
+
 }
 
 

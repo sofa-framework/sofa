@@ -737,6 +737,15 @@ inline void TetrahedronFEMForceField<DataTypes>::getRotation(Transformation& R, 
     }
     */
 
+    if(method == SMALL)
+    {
+        R[0][0] = 1.0 ; R[1][1] = 1.0 ; R[2][2] = 1.0 ;
+        R[0][1] = 0.0 ; R[0][2] = 0.0 ;
+        R[1][0] = 0.0 ; R[1][2] = 0.0 ;
+        R[2][0] = 0.0 ; R[2][1] = 0.0 ;
+        serr<<"WARNING  getRotation called but no rotation comptued because case== SMALL"<<sendl;
+        return;
+    }
 
     BaseMeshTopology::TetrahedraAroundVertex liste_tetra = _mesh->getTetrahedraAroundVertex(nodeIdx);
 
