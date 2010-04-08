@@ -24,7 +24,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include "Polynomial.inl"
+#include "Polynomial_LD.inl"
 
 namespace sofa
 {
@@ -42,17 +42,17 @@ using namespace std;
 
 
 #ifdef SOFA_DOUBLE
-template class Monomial<double,1>;
-template class Monomial<double,2>;
-template class Monomial<double,3>;
-template class Monomial<double,4>;
-template class Monomial<double,5>;
+template class Monomial_LD<double,1>;
+template class Monomial_LD<double,2>;
+template class Monomial_LD<double,3>;
+template class Monomial_LD<double,4>;
+template class Monomial_LD<double,5>;
 
-template class Polynomial<double,1>;
-template class Polynomial<double,2>;
-template class Polynomial<double,3>;
-template class Polynomial<double,4>;
-template class Polynomial<double,5>;
+template class Polynomial_LD<double,1>;
+template class Polynomial_LD<double,2>;
+template class Polynomial_LD<double,3>;
+template class Polynomial_LD<double,4>;
+template class Polynomial_LD<double,5>;
 
 #endif
 
@@ -60,17 +60,17 @@ template class Polynomial<double,5>;
 
 #ifdef SOFA_FLOAT
 
-template class Monomial<float,1>;
-template class Monomial<float,2>;
-template class Monomial<float,3>;
-template class Monomial<float,4>;
-template class Monomial<float,5>;
+template class Monomial_LD<float,1>;
+template class Monomial_LD<float,2>;
+template class Monomial_LD<float,3>;
+template class Monomial_LD<float,4>;
+template class Monomial_LD<float,5>;
 
-template class Polynomial<float,1>;
-template class Polynomial<float,2>;
-template class Polynomial<float,3>;
-template class Polynomial<float,4>;
-template class Polynomial<float,5>;
+template class Polynomial_LD<float,1>;
+template class Polynomial_LD<float,2>;
+template class Polynomial_LD<float,3>;
+template class Polynomial_LD<float,4>;
+template class Polynomial_LD<float,5>;
 
 #endif
 
