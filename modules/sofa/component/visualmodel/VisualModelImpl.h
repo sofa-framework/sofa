@@ -276,6 +276,10 @@ public:
 
     const ResizableExtVector<TexCoord>& getVtexcoords() {return field_vtexcoords.getValue();}
 
+    const ResizableExtVector<Coord>& getVtangents() {return field_vtangents.getValue();}
+
+    const ResizableExtVector<Coord>& getVbitangents() {return field_vbitangents.getValue();}
+
     const ResizableExtVector<Triangle>& getTriangles() {return field_triangles.getValue();}
 
     const ResizableExtVector<Quad>& getQuads() {return field_quads.getValue();}
@@ -299,6 +303,20 @@ public:
         ResizableExtVector<TexCoord>& vtexcoords = *(field_vtexcoords.beginEdit());
         vtexcoords = *vt;
         field_vtexcoords.endEdit();
+    }
+
+    void setVtangents(ResizableExtVector<Coord> * v)
+    {
+        ResizableExtVector<Coord>& vec = *(field_vtangents.beginEdit());
+        vec = *v;
+        field_vtangents.endEdit();
+    }
+
+    void setVbitangents(ResizableExtVector<Coord> * v)
+    {
+        ResizableExtVector<Coord>& vec = *(field_vbitangents.beginEdit());
+        vec = *v;
+        field_vbitangents.endEdit();
     }
 
     void setTriangles(ResizableExtVector<Triangle> * t)
@@ -350,6 +368,12 @@ public:
     {
         return ExtVec3fMappedModel::templateName(p);
     }
+
+    static Coord compTangent(const Coord &v1, const Coord &v2, const Coord &v3,
+            const TexCoord &t1, const TexCoord &t2, const TexCoord &t3);
+
+    static Coord compBitangent(const Coord &v1, const Coord &v2, const Coord &v3,
+            const TexCoord &t1, const TexCoord &t2, const TexCoord &t3);
 };
 
 //typedef Vec<3,GLfloat> GLVec3f;

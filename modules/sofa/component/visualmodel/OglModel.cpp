@@ -184,6 +184,9 @@ void OglModel::internalDraw(bool transparent)
     const ResizableExtVector<Coord>& vertices = this->getVertices();
     const ResizableExtVector<Coord>& vnormals = this->getVnormals();
     const ResizableExtVector<TexCoord>& vtexcoords= this->getVtexcoords();
+    const ResizableExtVector<Coord>& vtangents= this->getVtangents();
+    const ResizableExtVector<Coord>& vbitangents= this->getVbitangents();
+    bool hasTangents = vtangents.size() && vbitangents.size();
 
     glEnable(GL_LIGHTING);
 
@@ -219,17 +222,49 @@ void OglModel::internalDraw(bool transparent)
 
         if(VBOGenDone && useVBO.getValue())
         {
-//#ifdef SOFA_HAVE_GLEW
             glBindBufferARB(GL_ARRAY_BUFFER, vbo);
             glTexCoordPointer(2, GL_FLOAT, 0, (char*)NULL + (vertices.size()*sizeof(vertices[0])) + (vnormals.size()*sizeof(vnormals[0])) );
             glBindBufferARB(GL_ARRAY_BUFFER, 0);
-//#endif
         }
         else
         {
             glTexCoordPointer(2, GL_FLOAT, 0, vtexcoords.getData());
         }
         glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+        if (hasTangents)
+        {
+            glClientActiveTexture(GL_TEXTURE1);
+            glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+            if(VBOGenDone && useVBO.getValue())
+            {
+                glBindBufferARB(GL_ARRAY_BUFFER, vbo);
+                glTexCoordPointer(3, GL_FLOAT, 0,
+                        (char*)NULL + (vertices.size()*sizeof(vertices[0])) +
+                        (vnormals.size()*sizeof(vnormals[0])) +
+                        (vtexcoords.size()*sizeof(vtexcoords[0])));
+                glBindBufferARB(GL_ARRAY_BUFFER, 0);
+            }
+            else
+                glTexCoordPointer(3, GL_FLOAT, 0, vtangents.getData());
+
+            glClientActiveTexture(GL_TEXTURE2);
+            glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+            if(VBOGenDone && useVBO.getValue())
+            {
+                glBindBufferARB(GL_ARRAY_BUFFER, vbo);
+                glTexCoordPointer(3, GL_FLOAT, 0,
+                        (char*)NULL + (vertices.size()*sizeof(vertices[0])) +
+                        (vnormals.size()*sizeof(vnormals[0])) +
+                        (vtexcoords.size()*sizeof(vtexcoords[0])) +
+                        (vtangents.size()*sizeof(vtangents[0])));
+                glBindBufferARB(GL_ARRAY_BUFFER, 0);
+            }
+            else
+                glTexCoordPointer(3, GL_FLOAT, 0, vbitangents.getData());
+
+            glClientActiveTexture(GL_TEXTURE0);
+        }
     }
 
     if (transparent)
@@ -258,6 +293,15 @@ void OglModel::internalDraw(bool transparent)
             tex->unbind();
         glDisableClientState(GL_TEXTURE_COORD_ARRAY);
         glDisable(GL_TEXTURE_2D);
+
+        if (hasTangents)
+        {
+            glClientActiveTexture(GL_TEXTURE1);
+            glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+            glClientActiveTexture(GL_TEXTURE2);
+            glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+            glClientActiveTexture(GL_TEXTURE0);
+        }
     }
     glDisableClientState(GL_NORMAL_ARRAY);
     glDisable(GL_LIGHTING);
@@ -363,17 +407,30 @@ void OglModel::createQuadsIndicesBuffer()
 
 void OglModel::initVertexBuffer()
 {
-    unsigned int positionsBufferSize, normalsBufferSize, textureCoordsBufferSize = 0;
+    unsigned positionsBufferSize, normalsBufferSize;
+    unsigned textureCoordsBufferSize = 0, tangentsBufferSize = 0, bitangentsBufferSize = 0;
     const ResizableExtVector<Coord>& vertices = this->getVertices();
     const ResizableExtVector<Coord>& vnormals = this->getVnormals();
     const ResizableExtVector<TexCoord>& vtexcoords= this->getVtexcoords();
+    const ResizableExtVector<Coord>& vtangents= this->getVtangents();
+    const ResizableExtVector<Coord>& vbitangents= this->getVbitangents();
+    bool hasTangents = vtangents.size() && vbitangents.size();
 
     positionsBufferSize = (vertices.size()*sizeof(vertices[0]));
     normalsBufferSize = (vnormals.size()*sizeof(vnormals[0]));
     if (tex || putOnlyTexCoords.getValue())
+    {
         textureCoordsBufferSize = vtexcoords.size() * sizeof(vtexcoords[0]);
 
-    unsigned int totalSize = positionsBufferSize + normalsBufferSize + textureCoordsBufferSize;
+        if (hasTangents)
+        {
+            tangentsBufferSize = vtangents.size() * sizeof(vtangents[0]);
+            bitangentsBufferSize = vbitangents.size() * sizeof(vbitangents[0]);
+        }
+    }
+
+    unsigned int totalSize = positionsBufferSize + normalsBufferSize + textureCoordsBufferSize +
+            tangentsBufferSize + bitangentsBufferSize;
 
     glBindBufferARB(GL_ARRAY_BUFFER, vbo);
     //Vertex Buffer creation
@@ -416,12 +473,25 @@ void OglModel::updateVertexBuffer()
     const ResizableExtVector<Coord>& vertices = this->getVertices();
     const ResizableExtVector<Coord>& vnormals = this->getVnormals();
     const ResizableExtVector<TexCoord>& vtexcoords= this->getVtexcoords();
+    const ResizableExtVector<Coord>& vtangents= this->getVtangents();
+    const ResizableExtVector<Coord>& vbitangents= this->getVbitangents();
+    bool hasTangents = vtangents.size() && vbitangents.size();
 
-    unsigned int positionsBufferSize, normalsBufferSize, textureCoordsBufferSize = 0;
+    unsigned positionsBufferSize, normalsBufferSize;
+    unsigned textureCoordsBufferSize = 0, tangentsBufferSize = 0, bitangentsBufferSize = 0;
+
     positionsBufferSize = (vertices.size()*sizeof(vertices[0]));
     normalsBufferSize = (vnormals.size()*sizeof(vnormals[0]));
     if (tex || putOnlyTexCoords.getValue())
+    {
         textureCoordsBufferSize = vtexcoords.size() * sizeof(vtexcoords[0]);
+
+        if (hasTangents)
+        {
+            tangentsBufferSize = vtangents.size() * sizeof(vtangents[0]);
+            bitangentsBufferSize = vbitangents.size() * sizeof(vbitangents[0]);
+        }
+    }
 
     glBindBufferARB(GL_ARRAY_BUFFER, vbo);
     //Positions
@@ -435,6 +505,7 @@ void OglModel::updateVertexBuffer()
             positionsBufferSize,
             normalsBufferSize,
             vnormals.getData());
+
     //Texture coords
     if(tex || putOnlyTexCoords.getValue())
     {
@@ -442,6 +513,19 @@ void OglModel::updateVertexBuffer()
                 positionsBufferSize + normalsBufferSize,
                 textureCoordsBufferSize,
                 vtexcoords.getData());
+
+        if (hasTangents)
+        {
+            glBufferSubDataARB(GL_ARRAY_BUFFER,
+                    positionsBufferSize + normalsBufferSize + textureCoordsBufferSize,
+                    tangentsBufferSize,
+                    vtangents.getData());
+
+            glBufferSubDataARB(GL_ARRAY_BUFFER,
+                    positionsBufferSize + normalsBufferSize + textureCoordsBufferSize + tangentsBufferSize,
+                    bitangentsBufferSize,
+                    vbitangents.getData());
+        }
     }
 
     glBindBufferARB(GL_ARRAY_BUFFER, 0);
