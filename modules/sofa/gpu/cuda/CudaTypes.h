@@ -139,6 +139,17 @@ public:
         deviceIsValid = false;
     }
 
+    void invalidateDevices()
+    {
+        hostIsValid = true;
+        deviceIsValid = false;
+    }
+
+    void invalidatehost()
+    {
+        hostIsValid = false;
+        deviceIsValid = true;
+    }
 
     void fastResize(size_type x,size_type y,size_type WARP_SIZE)
     {

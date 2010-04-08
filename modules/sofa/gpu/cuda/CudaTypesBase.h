@@ -232,6 +232,15 @@ public :
                 v.getCudaVector().deviceWrite());
     }
 
+    void invalidateDevices()
+    {
+        m.invalidateDevices();
+    }
+
+    void invalidatehost()
+    {
+        m.invalidatehost();
+    }
 
 private :
     CudaMatrix<T> m;
