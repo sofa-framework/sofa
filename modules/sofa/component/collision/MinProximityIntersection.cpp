@@ -213,7 +213,15 @@ int MinProximityIntersection::computeIntersection(Line& e1, Line& e2, OutputVect
 #endif
     detection->normal=PQ;
     detection->value = detection->normal.norm();
-    detection->normal /= detection->value;
+    if(detection->value>1e-15)
+    {
+        detection->normal /= detection->value;
+    }
+    else
+    {
+        serr<<"WARNING: null distance between contact detected"<<sendl;
+        detection->normal= Vector3(1,0,0);
+    }
     detection->value -= contactDist;
     return 1;
 }
@@ -335,7 +343,15 @@ int MinProximityIntersection::computeIntersection(Triangle& e2, Point& e1, Outpu
 #endif
     detection->normal = QP;
     detection->value = detection->normal.norm();
-    detection->normal /= detection->value;
+    if(detection->value>1e-15)
+    {
+        detection->normal /= detection->value;
+    }
+    else
+    {
+        serr<<"WARNING: null distance between contact detected"<<sendl;
+        detection->normal= Vector3(1,0,0);
+    }
     detection->value -= contactDist;
     return 1;
 }
@@ -426,7 +442,15 @@ int MinProximityIntersection::computeIntersection(Line& e2, Point& e1, OutputVec
 #endif
     detection->normal=QP;
     detection->value = detection->normal.norm();
-    detection->normal /= detection->value;
+    if(detection->value>1e-15)
+    {
+        detection->normal /= detection->value;
+    }
+    else
+    {
+        serr<<"WARNING: null distance between contact detected"<<sendl;
+        detection->normal= Vector3(1,0,0);
+    }
     detection->value -= contactDist;
     return 1;
 }
@@ -477,7 +501,15 @@ int MinProximityIntersection::computeIntersection(Point& e1, Point& e2, OutputVe
 #endif
     detection->normal=PQ;
     detection->value = detection->normal.norm();
-    detection->normal /= detection->value;
+    if(detection->value>1e-15)
+    {
+        detection->normal /= detection->value;
+    }
+    else
+    {
+        serr<<"WARNING: null distance between contact detected"<<sendl;
+        detection->normal= Vector3(1,0,0);
+    }
     detection->value -= contactDist;
     return 1;
 }
@@ -573,7 +605,15 @@ int MinProximityIntersection::computeIntersection(Triangle& e2, Sphere& e1, Outp
     detection->point[1]=P;
     detection->normal=QP;
     detection->value = detection->normal.norm();
-    detection->normal /= detection->value;
+    if(detection->value>1e-15)
+    {
+        detection->normal /= detection->value;
+    }
+    else
+    {
+        serr<<"WARNING: null distance between contact detected"<<sendl;
+        detection->normal= Vector3(1,0,0);
+    }
     detection->value -= contactDist;
     return 1;
 }
@@ -649,7 +689,15 @@ int MinProximityIntersection::computeIntersection(Line& e2, Sphere& e1, OutputVe
     detection->point[1]=P;
     detection->normal=QP;
     detection->value = detection->normal.norm();
-    detection->normal /= detection->value;
+    if(detection->value>1e-15)
+    {
+        detection->normal /= detection->value;
+    }
+    else
+    {
+        serr<<"WARNING: null distance between contact detected"<<sendl;
+        detection->normal= Vector3(1,0,0);
+    }
     detection->value -= contactDist;
     return 1;
 }
@@ -692,7 +740,15 @@ int MinProximityIntersection::computeIntersection(Sphere& e1, Point& e2, OutputV
     detection->point[1]=Q;
     detection->normal=PQ;
     detection->value = detection->normal.norm();
-    detection->normal /= detection->value;
+    if(detection->value>1e-15)
+    {
+        detection->normal /= detection->value;
+    }
+    else
+    {
+        serr<<"WARNING: null distance between contact detected"<<sendl;
+        detection->normal= Vector3(1,0,0);
+    }
     detection->value -= contactDist;
     return 1;
 }
