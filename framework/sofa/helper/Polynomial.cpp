@@ -47,13 +47,13 @@ template class Monomial<double,2>;
 template class Monomial<double,3>;
 template class Monomial<double,4>;
 template class Monomial<double,5>;
-/*
+
 template class Polynomial<double,1>;
 template class Polynomial<double,2>;
 template class Polynomial<double,3>;
 template class Polynomial<double,4>;
 template class Polynomial<double,5>;
-*/
+
 #endif
 
 
@@ -65,13 +65,13 @@ template class Monomial<float,2>;
 template class Monomial<float,3>;
 template class Monomial<float,4>;
 template class Monomial<float,5>;
-/*
+
 template class Polynomial<float,1>;
 template class Polynomial<float,2>;
 template class Polynomial<float,3>;
 template class Polynomial<float,4>;
 template class Polynomial<float,5>;
-*/
+
 #endif
 
 
