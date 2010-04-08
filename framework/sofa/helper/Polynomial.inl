@@ -336,309 +336,326 @@ Monomial< FReal, FN > & operator*(const FReal & alpha,Monomial< FReal, FN > & r)
 
 ///////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////
-/*
+
 ////////////////////////////////
 template<typename Real, unsigned int N>
 Polynomial<Real,N>::Polynomial()
 {
-	Monomial<Real,N> monomialnull;
-	listofTerms.push_back(monomialnull);
+    Monomial<Real,N> monomialnull;
+    listofTerms.push_back(monomialnull);
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
 Polynomial<Real,N>::Polynomial(const Polynomial<Real,N> & a)
 {
-	listofTerms=a.listofTerms;
+    listofTerms=a.listofTerms;
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
 Polynomial<Real,N>::Polynomial(const Monomial<Real,N> & a)
 {
-	listofTerms.push_back(a);
+    listofTerms.push_back(a);
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
 Polynomial<Real,N>::Polynomial(const unsigned int & nbofTerm,...)
 {
-	va_list vl;
-	va_start(vl,nbofTerm);
-	for (unsigned int iterm=0;iterm<nbofTerm;iterm++)
-	{
-		Monomial<Real,N> mi;
-		vector<int> powermonomiali(N,0);
+    va_list vl;
+    va_start(vl,nbofTerm);
+    for (unsigned int iterm=0; iterm<nbofTerm; iterm++)
+    {
+        Monomial<Real,N> mi;
+        vector<int> powermonomiali(N,0);
 
-		Real coefi=va_arg(vl,Real);
-		for(unsigned int jvar=0;jvar<N;jvar++)
-		{
-			powermonomiali[jvar]=va_arg(vl,int);
-			//mi.powers[jvar]=va_arg(vl,int);
-		}
-		mi.SetCoef(coefi);mi.SetPower(powermonomiali);
-		listofTerms.push_back(mi);
-	}
-	va_end(vl);
+        Real coefi=va_arg(vl,Real);
+        for(unsigned int jvar=0; jvar<N; jvar++)
+        {
+            powermonomiali[jvar]=va_arg(vl,int);
+            //mi.powers[jvar]=va_arg(vl,int);
+        }
+        mi.SetCoef(coefi); mi.SetPower(powermonomiali);
+        listofTerms.push_back(mi);
+    }
+    va_end(vl);
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
 int Polynomial<Real,N>::degree()
 {
-	int deg=0;
-	for(MonomialIterator it=listofTerms.begin();it != listofTerms.end();++it)
-	{
-		deg = ( (*it).degree() > deg ) ? (*it).degree() : deg;
-	}
-	return deg;
+    int deg=0;
+    for(MonomialIterator it=listofTerms.begin(); it != listofTerms.end(); ++it)
+    {
+        deg = ( (*it).degree() > deg ) ? (*it).degree() : deg;
+    }
+    return deg;
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
 bool Polynomial<Real,N>::operator ==(const Polynomial<Real,N> & b) const
 {
-	bool result=true;
-	if ( this->listofTerms.size() != b.listofTerms.size() )
-		result=false;
-	else
-	{
-		result = ( this->listofTerms == b.listofTerms ) ? result : false;
-	}
-	return result;
+    bool result=true;
+    if ( this->listofTerms.size() != b.listofTerms.size() )
+        result=false;
+    else
+    {
+        result = ( this->listofTerms == b.listofTerms ) ? result : false;
+    }
+    return result;
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
 Polynomial<Real,N>  & Polynomial<Real,N>::operator*=(const Real & alpha)
 {
-	for(MonomialIterator it=listofTerms.begin();it != listofTerms.end();++it)
-	{
-		(*it)*=alpha;
-	}
-	return *this;
+    for(MonomialIterator it=listofTerms.begin(); it != listofTerms.end(); ++it)
+    {
+        (*it)*=alpha;
+    }
+    return *this;
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
 Polynomial<Real,N>  & Polynomial<Real,N>::operator/=(const Real & alpha)
 {
-	for(MonomialIterator it=listofTerms.begin();it != listofTerms.end();++it)
-	{
-		//*it->operator/=(alpha);
-		(*it)/=alpha;
-	}
-	return *this;
+    for(MonomialIterator it=listofTerms.begin(); it != listofTerms.end(); ++it)
+    {
+        //*it->operator/=(alpha);
+        (*it)/=alpha;
+    }
+    return *this;
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
 Polynomial<Real,N>  & Polynomial<Real,N>::operator+=(const Monomial<Real,N> & b)
 {
-		bool added=false;
-		for(MonomialIterator ita=listofTerms.begin();ita != listofTerms.end();++ita)
-		{
-			if ( (*ita).isSamePowers(b) )
-			{
-				(*ita)+=b;
-				added=true;
-				break;
-			}
-		}
-		if (!added) listofTerms.push_back(b);
-	return *this;
+    bool added=false;
+    for(MonomialIterator ita=listofTerms.begin(); ita != listofTerms.end(); ++ita)
+    {
+        if ( (*ita).isSamePowers(b) )
+        {
+            (*ita)+=b;
+            added=true;
+            break;
+        }
+    }
+    if (!added) listofTerms.push_back(b);
+    return *this;
 }
 ////////////////////////////////
 ////////////////////////////////
 template<typename Real, unsigned int N>
 Polynomial<Real,N>  & Polynomial<Real,N>::operator+=(const Polynomial<Real,N> & b)
 {
-	for(MonomialConstIterator itb=b.listofTerms.begin();itb != b.listofTerms.end();++itb)
-	{
-		bool added=false;
-		for(MonomialIterator ita=listofTerms.begin();ita != listofTerms.end();++ita)
-		{
-			if ( (*ita).isSamePowers(*itb) )
-			{
-				(*ita)+=(*itb);
-				added=true;
-				break;
-			}
-		}
-		if (!added) listofTerms.push_back((*itb));
-	}
-	return *this;
+    for(MonomialConstIterator itb=b.listofTerms.begin(); itb != b.listofTerms.end(); ++itb)
+    {
+        bool added=false;
+        for(MonomialIterator ita=listofTerms.begin(); ita != listofTerms.end(); ++ita)
+        {
+            if ( (*ita).isSamePowers(*itb) )
+            {
+                (*ita)+=(*itb);
+                added=true;
+                break;
+            }
+        }
+        if (!added) listofTerms.push_back((*itb));
+    }
+    return *this;
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
 Polynomial<Real,N>  & Polynomial<Real,N>::operator-=(const Polynomial<Real,N> & b)
 {
-	for(MonomialConstIterator itb=b.listofTerms.begin();itb != b.listofTerms.end();++itb)
-	{
-		bool added=false;
-		for(MonomialIterator ita=listofTerms.begin();ita != listofTerms.end();++ita)
-		{
-			if ( (*ita).isSamePowers(*itb) )
-			{
-				(*ita)-=(*itb);
-				added=true;
-				break;
-			}
-		}
-		if (!added) listofTerms.push_back(-(*itb));
-	}
-	return *this;
+    for(MonomialConstIterator itb=b.listofTerms.begin(); itb != b.listofTerms.end(); ++itb)
+    {
+        bool added=false;
+        for(MonomialIterator ita=listofTerms.begin(); ita != listofTerms.end(); ++ita)
+        {
+            if ( (*ita).isSamePowers(*itb) )
+            {
+                (*ita)-=(*itb);
+                added=true;
+                break;
+            }
+        }
+        if (!added) listofTerms.push_back(-(*itb));
+    }
+    return *this;
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
 Polynomial<Real,N>  & Polynomial<Real,N>::operator*=(const Polynomial<Real,N> & b)
 {
-	MonomialIterator ita=listofTerms.begin();
-	while(ita != listofTerms.end())
-	{
-		for(MonomialConstIterator itb=b.listofTerms.begin();itb != b.listofTerms.end();++itb)
-		{
-			Monomial<Real,N> multipSimple=(*ita)*(*itb);
-			listofTerms.insert(ita,multipSimple);
-		}
-		ita=listofTerms.erase(ita);
-		//++ita;
-	}
-	return *this;
+    MonomialIterator ita=listofTerms.begin();
+    while(ita != listofTerms.end())
+    {
+        for(MonomialConstIterator itb=b.listofTerms.begin(); itb != b.listofTerms.end(); ++itb)
+        {
+            Monomial<Real,N> multipSimple=(*ita)*(*itb);
+            listofTerms.insert(ita,multipSimple);
+        }
+        ita=listofTerms.erase(ita);
+        //++ita;
+    }
+    return *this;
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
 Polynomial<Real,N> Polynomial<Real,N>::operator-() const
 {
-	Polynomial<Real,N> r(*this);
-	for(MonomialIterator it=r.listofTerms.begin();it != r.listofTerms.end();++it)
-	{
-		(*it).coef*=(Real) -1.;
-	}
-	return r;
+    Polynomial<Real,N> r(*this);
+    for(MonomialIterator it=r.listofTerms.begin(); it != r.listofTerms.end(); ++it)
+    {
+        (*it).coef*=(Real) -1.;
+    }
+    return r;
 }
 ////////////////////////////////
+
 template<typename Real, unsigned int N>
-Real Polynomial<Real,N>::operator()(const vector<Real> & x) const
+Real Polynomial<Real,N>::operator()(const sofa::helper::vector<Real> & x) const
 {
-	Real result=(Real) 0.;
-	for(MonomialConstIterator it=listofTerms.begin();it != listofTerms.end();++it)
-	{
-		result += (*it).operator()(x);
-	}
-	return result;
+    Real result=(Real) 0.;
+    for(MonomialConstIterator it=listofTerms.begin(); it != listofTerms.end(); ++it)
+    {
+        result += (*it).operator()(x);
+    }
+    return result;
 }
+
 ////////////////////////////////
 template<typename Real, unsigned int N>
 Real Polynomial<Real,N>::operator()(const RNpoint & x) const
 {
-	Real result=(Real) 0.;
-	for(MonomialConstIterator it=listofTerms.begin();it != listofTerms.end();++it)
-	{
-		result += (*it).operator()(x);
-	}
-	return result;
+    Real result=(Real) 0.;
+    for(MonomialConstIterator it=listofTerms.begin(); it != listofTerms.end(); ++it)
+    {
+        result += (*it).operator()(x);
+    }
+    return result;
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
-Real Polynomial<Real,N>::operator()(const vector<Real> & x,unsigned int iderive) const
+Real Polynomial<Real,N>::operator()(const sofa::helper::vector<Real> & x,unsigned int iderive) const
 {
-	Real result=(Real) 0.;
-	if (iderive >= N)
-	{
-		cout<<"WARNING : "<<iderive<<"-th derivative couldn't take place for the polynomial of:"<<N<<"-variables"<<endl
-				<<(*this)<<endl
-				<<"CONDITION: id_derivative = { 0,1... (NbVariable-1) }"<<endl<<endl;
-	}
-	else
-	{
-		if(iderive==0)
-		{
-			result=this->operator()(x);
-		}
-		else
-		{
-				for(MonomialConstIterator it=listofTerms.begin();it != listofTerms.end();++it)
-				{
-					result += (*it).operator()(x,iderive);
-				}
-		}
+    Real result=(Real) 0.;
+    if (iderive >= N)
+    {
+        cout<<"WARNING : "<<iderive<<"-th derivative couldn't take place for the polynomial of:"<<N<<"-variables"<<endl
+            <<(*this)<<endl
+            <<"CONDITION: id_derivative = { 0,1... (NbVariable-1) }"<<endl<<endl;
+    }
+    else
+    {
+        if(iderive==0)
+        {
+            result=this->operator()(x);
+        }
+        else
+        {
+            for(MonomialConstIterator it=listofTerms.begin(); it != listofTerms.end(); ++it)
+            {
+                result += (*it).operator()(x,iderive);
+            }
+        }
 
-	}
-	return result;
+    }
+    return result;
 }
+
 ////////////////////////////////
 template<typename Real, unsigned int N>
 Real Polynomial<Real,N>::operator()(const RNpoint & x,unsigned int iderive) const
 {
-	Real result=(Real) 0.;
-	if (iderive >= N)
-	{
-		cout<<"WARNING : "<<iderive<<"-th derivative couldn't take place for the polynomial of:"<<N<<"-variables"<<endl
-				<<(*this)<<endl
-				<<"CONDITION: id_derivative = { 0,1... (NbVariable-1) }"<<endl<<endl;
-	}
-	else
-	{
-		if(iderive==0)
-		{
-			result=this->operator()(x);
-		}
-		else
-		{
-				for(MonomialConstIterator it=listofTerms.begin();it != listofTerms.end();++it)
-				{
-					result += (*it).operator()(x,iderive);
-				}
-		}
+    Real result=(Real) 0.;
+    if (iderive >= N)
+    {
+        cout<<"WARNING : "<<iderive<<"-th derivative couldn't take place for the polynomial of:"<<N<<"-variables"<<endl
+            <<(*this)<<endl
+            <<"CONDITION: id_derivative = { 0,1... (NbVariable-1) }"<<endl<<endl;
+    }
+    else
+    {
+        if(iderive==0)
+        {
+            result=this->operator()(x);
+        }
+        else
+        {
+            for(MonomialConstIterator it=listofTerms.begin(); it != listofTerms.end(); ++it)
+            {
+                result += (*it).operator()(x,iderive);
+            }
+        }
 
-	}
-	return result;
+    }
+    return result;
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
 Polynomial<Real,N> Polynomial<Real,N>::d(const unsigned int & iderive) const
 {
-	Polynomial<Real,N> result(*this);
-	if (iderive >=N)
-	{
-		cout<<"WARNING : "<<iderive<<"-th derivative couldn't take place for the polynomial of:"<<"-variables"<<endl
-				<<result<<endl
-				<<"CONDITION: id_derivative = { 0,1... (NbVariable-1) }"<<endl<<endl;
-	}
-	else
-	{
-		for(MonomialIterator it=result.listofTerms.begin();it != result.listofTerms.end();++it)
-		{
-			(*it).coef*=(Real) (*it).powers[iderive];
-			if ((*it).powers[iderive] != 0)
-			{
-				((*it).powers[iderive])--;
-			}
-		}
-	}
-	return result;
+    Polynomial<Real,N> result(*this);
+    if (iderive >=N)
+    {
+        cout<<"WARNING : "<<iderive<<"-th derivative couldn't take place for the polynomial of:"<<"-variables"<<endl
+            <<result<<endl
+            <<"CONDITION: id_derivative = { 0,1... (NbVariable-1) }"<<endl<<endl;
+    }
+    else
+    {
+        for(MonomialIterator it=result.listofTerms.begin(); it != result.listofTerms.end(); ++it)
+        {
+            (*it).coef*=(Real) (*it).powers[iderive];
+            if ((*it).powers[iderive] != 0)
+            {
+                ((*it).powers[iderive])--;
+            }
+        }
+    }
+    return result;
 }
 ////////////////////////////////
 ////////////////////////////////
 template<typename Real, unsigned int N>
-void Polynomial<Real,N>::printToStream(ostream & stream) const
+void Polynomial<Real,N>::writeToStream(std::ostream & stream) const
 {
-	MonomialConstIterator it=listofTerms.begin();
-	stream<< *it;++it;
-	while(it != listofTerms.end() )
-	{
-		stream << "  +  "<<*it;
-		++it;
-	}
+    MonomialConstIterator it=listofTerms.begin();
+    stream<< *it; ++it;
+    while(it != listofTerms.end() )
+    {
+        stream << "  +  "<<*it;
+        ++it;
+    }
+}
+////////////////////////////////
+template<typename Real, unsigned int N>
+void Polynomial<Real,N>::readFromStream(std::istream & stream)
+{
+    listofTerms.clear();
+    Monomial<Real,N> tempo;
+
+    while (stream >> tempo)
+    {
+        listofTerms.push_back(tempo);
+    }
+
+    if( stream.rdstate() & std::ios_base::eofbit ) { stream.clear(); }
 }
 ////////////////////////////////
 template< typename FReal, unsigned int FN >
 Polynomial< FReal, FN > & operator*(const FReal & alpha, Polynomial< FReal, FN> & r)
 {
-	r *= alpha;
-	return r;
+    r *= alpha;
+    return r;
 }
 ////////////////////////////////
 template< typename FReal, unsigned int FN >
 Polynomial< FReal, FN > & operator*(const Monomial< FReal, FN >   & a, Polynomial< FReal, FN> & r)
 {
-	r *= a;
-	return r;
+    r *= a;
+    return r;
 }
-*/
+
 
 } // namespace helper
 

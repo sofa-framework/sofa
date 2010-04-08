@@ -165,7 +165,7 @@ public :
     typedef typename MonomialsList::iterator MonomialIterator;
     typedef sofa::defaulttype::Vec<N,Real> RNpoint;
 
-    sofa::helper::vector< Monomial<Real,N> > listofTerms;
+    std::list< Monomial<Real,N> > listofTerms;
 
     ///Default constructor
     Polynomial();
@@ -205,16 +205,17 @@ public :
     Polynomial<Real,N>  operator*(const Polynomial<Real,N> & a) {Polynomial<Real,N> r(*this); r*=a; return r;}
 
     ///Evaluating
-    //Real operator()(const sofa::defaulttype::Vec<N,Real> & x) const;
+    Real operator()(const sofa::helper::vector<Real> & x) const;
     Real operator()(const RNpoint & x) const;
     ///Evaluating derivative
-    //Real operator()(const sofa::defaulttype::Vec<N,Real> & x,unsigned int iderive) const;
+    Real operator()(const sofa::helper::vector<Real> & x,unsigned int iderive) const;
     Real operator()(const RNpoint & x,unsigned int iderive) const;
 
     ///Derivative operator alowing to write p1=p2.d(x);
     Polynomial<Real,N>  d(const unsigned int & ideriv) const;
 
-    void writeToStream(ostream & stream) const;
+    void writeToStream(std::ostream & stream) const;
+    void readFromStream(std::istream & stream);
 
     ///Comutativity of operator*(Real):
     ///Allowing to write p1=r*p2;   or   p1=p2*r;
