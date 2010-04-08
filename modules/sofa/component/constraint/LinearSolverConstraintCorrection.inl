@@ -344,11 +344,14 @@ void LinearSolverConstraintCorrection<DataTypes>::applyPredictiveConstraintForce
                 unsigned int dof = itConstraint->first;
                 Deriv n = itConstraint->second;
 
-                //sout << "f("<<constraints[c1][i].index<<") += "<< (constraints[c1][i].data * fC1) << sendl;
+
+
+                std::cout << "Predictive Force => f("<<itConstraint->first<<") += "<< (itConstraint->second * fC1) << std::endl;
                 force[dof] += n * fC1;
             }
         }
     }
+    std::cout<< "Predictive External Forces: "<< force<<std::endl;
 }
 
 

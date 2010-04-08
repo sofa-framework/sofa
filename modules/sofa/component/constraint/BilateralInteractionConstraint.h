@@ -61,6 +61,11 @@ public:
         if(_vec && _vec->size()) { force[line] = _vec->front(); _vec->pop_front(); }
     }
 
+    virtual void initForce(int line, double* force)
+    {
+        if(_vec && _vec->size()) { force[line] = _vec->front(); _vec->pop_front(); }
+    }
+
     void store(int line, double* force, bool /*convergence*/)
     {
         if(_vec) _vec->push_back(force[line]);
@@ -74,7 +79,7 @@ class BilateralConstraintResolution3Dof : public core::componentmodel::behavior:
 {
 public:
 
-    BilateralConstraintResolution3Dof(std::deque<double>* vec=NULL) : _vec(vec) { nbLines=3; }
+    BilateralConstraintResolution3Dof(std::vector<double>* vec=NULL) : _vec(vec) { nbLines=3; }
     virtual void init(int line, double** w, double *force)
     {
         sofa::defaulttype::Mat<3,3,double> temp;
@@ -90,11 +95,25 @@ public:
 
         invertMatrix(invW, temp);
 
+        std::cout<<"BilateralConstraintResolution3Dof Init"<<std::endl;
+
         if(_vec && _vec->size()>=3)
         {
-            force[line] = _vec->front(); _vec->pop_front();
-            force[line+1] = _vec->front(); _vec->pop_front();
-            force[line+2] = _vec->front(); _vec->pop_front();
+            force[line  ] = (*_vec)[0];
+            force[line+1] = (*_vec)[1];
+            force[line+2] = (*_vec)[2];
+            std::cout<<"init force :"<<force[line]<<" "<<force[line+1]<<" "<<force[line+2]<<std::endl;
+        }
+    }
+
+    virtual void initForce(int line, double* force)
+    {
+        if(_vec && _vec->size()>=3)
+        {
+            force[line  ] =  (*_vec)[0];
+            force[line+1] =  (*_vec)[1];
+            force[line+2] =  (*_vec)[2];
+            std::cout<<"init force :"<<force[line]<<" "<<force[line+1]<<" "<<force[line+2]<<std::endl;
         }
     }
 
@@ -110,17 +129,21 @@ public:
 
     void store(int line, double* force, bool /*convergence*/)
     {
+        std::cout<<"BilateralConstraintResolution3Dof Store"<<std::endl;
         if(_vec)
         {
-            _vec->push_back(force[line]);
-            _vec->push_back(force[line+1]);
-            _vec->push_back(force[line+2]);
+            _vec->clear();
+            _vec->resize(3);
+            (*_vec)[0] = force[line];
+            (*_vec)[1] = force[line+1];
+            (*_vec)[2] = force[line+2];
+            std::cout<<"store force :"<<force[line]<<" "<<force[line+1]<<" "<<force[line+2]<<std::endl;
         }
     }
 
 protected:
     sofa::defaulttype::Mat<3,3,double> invW;
-    std::deque<double>* _vec;
+    std::vector<double>* _vec;
 };
 
 template<class DataTypes>
@@ -153,7 +176,7 @@ protected:
     Data<std::string> pathObject1;
     Data<std::string> pathObject2;
 
-    std::deque<double> prevForces;
+    std::vector<double> prevForces;
 public:
 
     BilateralInteractionConstraint(MechanicalState* object1, MechanicalState* object2)
@@ -193,6 +216,8 @@ public:
     core::componentmodel::behavior::BaseMechanicalState* getMechModel2() { return object2; }
 
     virtual void init();
+    virtual void reinit() {init();}
+    virtual void reset() {init();}
 
     virtual void applyConstraint(unsigned int & /*constraintId*/);
 

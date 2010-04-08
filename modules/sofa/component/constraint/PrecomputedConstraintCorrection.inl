@@ -326,9 +326,11 @@ void PrecomputedConstraintCorrection<DataTypes>::bwdInit()
 
         for (unsigned int f = 0; f < nbNodes; f++)
         {
+            std::streamsize toto = std::cout.precision();
             std::cout.precision(2);
             std::cout << "Precomputing constraint correction : " << std::fixed << (float)f/(float)nbNodes*100.0f << " %   " << '\xd';
             std::cout.flush();
+            std::cout.precision(toto);
             //  serr << "inverse cols node : " << f << sendl;
             Deriv unitary_force;
 
@@ -626,7 +628,7 @@ void PrecomputedConstraintCorrection<DataTypes>::getCompliance(defaulttype::Base
 template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::applyContactForce(const defaulttype::BaseVector *f)
 {
-    VecDeriv& force = *mstate->getExternalForces();
+    VecDeriv& force = *mstate->getF();
     VecConst& constraints = *mstate->getC();
     unsigned int numConstraints = constraints.size();
 
@@ -872,12 +874,15 @@ void PrecomputedConstraintCorrection<DataTypes>::applyPredictiveConstraintForce(
     for (unsigned int i=0; i< numDOFs; i++)
         force[i] = Deriv();
 
-    if(this->_rotations)
-        this->rotateConstraints(true);
+//    if(this->_rotations){
+//
+//        this->rotateConstraints(true);
+//    }
 
     const VecConst& constraints = *mstate->getC();
     unsigned int numConstraints = constraints.size();
 
+    std::cout.precision(7);
     for(unsigned int c1 = 0; c1 < numConstraints; c1++)
     {
         int indexC1 = mstate->getConstraintId()[c1];
@@ -892,18 +897,21 @@ void PrecomputedConstraintCorrection<DataTypes>::applyPredictiveConstraintForce(
                 unsigned int dof = itConstraint->first;
                 Deriv n = itConstraint->second;
 
-                //sout << "f("<<constraints[c1][i].index<<") += "<< (constraints[c1][i].data * fC1) << sendl;
+                //std::cout << "Predictive Force => f("<<itConstraint->first<<") += "<< (itConstraint->second * fC1) << std::endl;
                 force[dof] += n * fC1;
             }
         }
     }
+
+    std::cout<< "Predictive External Forces: "<< force<<std::endl;
+
 }
 
 
 template<class DataTypes>
 void PrecomputedConstraintCorrection<DataTypes>::resetContactForce()
 {
-    VecDeriv& force = *mstate->getExternalForces();
+    VecDeriv& force = *mstate->getF();
     for( unsigned i=0; i<force.size(); ++i )
         force[i] = Deriv();
 }
