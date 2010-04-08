@@ -24,10 +24,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_HELPER_POLYNOMIAL_INL
-#define SOFA_HELPER_POLYNOMIAL_INL
+#ifndef SOFA_HELPER_POLYNOMIAL_LD_INL
+#define SOFA_HELPER_POLYNOMIAL_LD_INL
 
-#include "Polynomial.h"
+#include "Polynomial_LD.h"
 #include <sstream>
 #include <iterator>
 
@@ -47,7 +47,7 @@ using namespace std;
 ///////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////
 template<typename Real, unsigned int N>
-Monomial<Real,N>::Monomial()
+Monomial_LD<Real,N>::Monomial_LD()
 {
     coef=(Real) 0;
     for(unsigned int i=0; i<N; i++)
@@ -59,7 +59,7 @@ Monomial<Real,N>::Monomial()
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
-Monomial<Real,N>::Monomial(const Monomial<Real,N> & b)
+Monomial_LD<Real,N>::Monomial_LD(const Monomial_LD<Real,N> & b)
 {
     coef=b.coef;
     for(unsigned int i=0; i<N; i++)
@@ -70,7 +70,7 @@ Monomial<Real,N>::Monomial(const Monomial<Real,N> & b)
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
-Monomial<Real,N>::Monomial(const Real & m_coef, ...)
+Monomial_LD<Real,N>::Monomial_LD(const Real & m_coef, ...)
 {
     coef=m_coef;
     va_list vl;
@@ -85,7 +85,7 @@ Monomial<Real,N>::Monomial(const Real & m_coef, ...)
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
-Monomial<Real,N>& Monomial<Real,N>::operator=(const Monomial<Real,N> & b)
+Monomial_LD<Real,N>& Monomial_LD<Real,N>::operator=(const Monomial_LD<Real,N> & b)
 {
     coef=b.coef;
     for( unsigned int i=0; i<N; i++)
@@ -98,7 +98,7 @@ Monomial<Real,N>& Monomial<Real,N>::operator=(const Monomial<Real,N> & b)
 ////////////////////////////////
 
 template<typename Real, unsigned int N>
-void Monomial<Real,N>::Set(const Real & m_coef, ...)
+void Monomial_LD<Real,N>::Set(const Real & m_coef, ...)
 {
     coef=m_coef;
     va_list vl;
@@ -111,7 +111,7 @@ void Monomial<Real,N>::Set(const Real & m_coef, ...)
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
-int Monomial<Real,N>::degree()
+int Monomial_LD<Real,N>::degree()
 {
     int degree=0;
     for(unsigned int i=0; i<N; i++)
@@ -120,7 +120,7 @@ int Monomial<Real,N>::degree()
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
-bool Monomial<Real,N>::operator==(const Monomial<Real,N> & b) const
+bool Monomial_LD<Real,N>::operator==(const Monomial_LD<Real,N> & b) const
 {
     bool compare=true;
     if ((coef != b.coef) || (variables.size() != b.variables.size())) compare=false;
@@ -132,7 +132,7 @@ bool Monomial<Real,N>::operator==(const Monomial<Real,N> & b) const
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
-bool Monomial<Real,N>::isSamePowers(const Monomial<Real,N> & b) const
+bool Monomial_LD<Real,N>::isSamePowers(const Monomial_LD<Real,N> & b) const
 {
     bool compare=true;
     if ( variables.size() != b.variables.size() ) compare=false;
@@ -144,7 +144,7 @@ bool Monomial<Real,N>::isSamePowers(const Monomial<Real,N> & b) const
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
-Monomial<Real,N> & Monomial<Real,N>::operator+=(const Monomial<Real,N> & b)
+Monomial_LD<Real,N> & Monomial_LD<Real,N>::operator+=(const Monomial_LD<Real,N> & b)
 {
     if (this->isSamePowers(b))
     {
@@ -159,7 +159,7 @@ Monomial<Real,N> & Monomial<Real,N>::operator+=(const Monomial<Real,N> & b)
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
-Monomial<Real,N> & Monomial<Real,N>::operator-=(const Monomial<Real,N> & b)
+Monomial_LD<Real,N> & Monomial_LD<Real,N>::operator-=(const Monomial_LD<Real,N> & b)
 {
     if (this->isSamePowers(b))
     {
@@ -174,7 +174,7 @@ Monomial<Real,N> & Monomial<Real,N>::operator-=(const Monomial<Real,N> & b)
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
-Monomial<Real,N> & Monomial<Real,N>::operator*=(const Monomial<Real,N> & b)
+Monomial_LD<Real,N> & Monomial_LD<Real,N>::operator*=(const Monomial_LD<Real,N> & b)
 {
     coef*=b.coef;
     for(unsigned int i=0; i<N; i++)
@@ -183,7 +183,7 @@ Monomial<Real,N> & Monomial<Real,N>::operator*=(const Monomial<Real,N> & b)
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
-Real Monomial<Real,N>::operator()(const vector<Real> & x) const
+Real Monomial_LD<Real,N>::operator()(const vector<Real> & x) const
 {
     if (x.size()!= N) cout<<"WARNING : value assigned to the monome has not the good number of variable"<<endl;
     Real value= coef;
@@ -195,7 +195,7 @@ Real Monomial<Real,N>::operator()(const vector<Real> & x) const
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
-Real Monomial<Real,N>::operator()(const RNpoint & x) const
+Real Monomial_LD<Real,N>::operator()(const RNpoint & x) const
 {
     if (x.size()!= N) cout<<"WARNING : value assigned to the monome has not the good number of variable"<<endl;
     Real value= coef;
@@ -207,7 +207,7 @@ Real Monomial<Real,N>::operator()(const RNpoint & x) const
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
-Real Monomial<Real,N>::operator()(const vector<Real> & x,unsigned int ideriv) const
+Real Monomial_LD<Real,N>::operator()(const vector<Real> & x,unsigned int ideriv) const
 {
     //assert( (x.size()==N) && (ideriv < N) );
     if (x.size()!= N) cout<<"WARNING : value assigned to the monome has not the good number of variable"<<endl;
@@ -245,7 +245,7 @@ Real Monomial<Real,N>::operator()(const vector<Real> & x,unsigned int ideriv) co
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
-Real Monomial<Real,N>::operator()(const RNpoint & x,unsigned int ideriv) const
+Real Monomial_LD<Real,N>::operator()(const RNpoint & x,unsigned int ideriv) const
 {
     //assert( (x.size()==N) && (ideriv < N) );
     if (x.size()!= N) cout<<"WARNING : value assigned to the monome has not the good number of variable"<<endl;
@@ -283,9 +283,9 @@ Real Monomial<Real,N>::operator()(const RNpoint & x,unsigned int ideriv) const
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
-Monomial<Real,N> Monomial<Real,N>::d(const unsigned int & ideriv) const
+Monomial_LD<Real,N> Monomial_LD<Real,N>::d(const unsigned int & ideriv) const
 {
-    Monomial<Real,N> r(*this);
+    Monomial_LD<Real,N> r(*this);
     if (ideriv >= N)
     {
         cout<<"WARNING : "<<ideriv<<"-th derivative couldn't take place for the monomial of:"<<N<<"-variables"<<endl
@@ -304,14 +304,14 @@ Monomial<Real,N> Monomial<Real,N>::d(const unsigned int & ideriv) const
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
-void Monomial<Real,N>::writeToStream(ostream & stream) const
+void Monomial_LD<Real,N>::writeToStream(ostream & stream) const
 {
     stream<<coef<<"*"<<variables[0]<<"^"<<powers[0];
     for(unsigned int i=1; i<N; i++) stream<<"."<<variables[i]<<"^"<<powers[i];
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
-void Monomial<Real,N>::readFromStream(std::istream & stream)
+void Monomial_LD<Real,N>::readFromStream(std::istream & stream)
 {
 
     Real t_coef; int t_power; unsigned int counter=0;
@@ -327,8 +327,8 @@ void Monomial<Real,N>::readFromStream(std::istream & stream)
     if( stream.rdstate() & std::ios_base::eofbit ) { stream.clear(); }
 }
 
-template< typename FReal, unsigned int FN > //For comutativity of operator *: Monomial*Real || Real*Monomial.
-Monomial< FReal, FN > & operator*(const FReal & alpha,Monomial< FReal, FN > & r)
+template< typename FReal, unsigned int FN > //For comutativity of operator *: Monomial_LD*Real || Real*Monomial_LD.
+Monomial_LD< FReal, FN > & operator*(const FReal & alpha,Monomial_LD< FReal, FN > & r)
 {
     r *= alpha;
     return r;
@@ -339,32 +339,32 @@ Monomial< FReal, FN > & operator*(const FReal & alpha,Monomial< FReal, FN > & r)
 
 ////////////////////////////////
 template<typename Real, unsigned int N>
-Polynomial<Real,N>::Polynomial()
+Polynomial_LD<Real,N>::Polynomial_LD()
 {
-    Monomial<Real,N> monomialnull;
+    Monomial_LD<Real,N> monomialnull;
     listofTerms.push_back(monomialnull);
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
-Polynomial<Real,N>::Polynomial(const Polynomial<Real,N> & a)
+Polynomial_LD<Real,N>::Polynomial_LD(const Polynomial_LD<Real,N> & a)
 {
     listofTerms=a.listofTerms;
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
-Polynomial<Real,N>::Polynomial(const Monomial<Real,N> & a)
+Polynomial_LD<Real,N>::Polynomial_LD(const Monomial_LD<Real,N> & a)
 {
     listofTerms.push_back(a);
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
-Polynomial<Real,N>::Polynomial(const unsigned int & nbofTerm,...)
+Polynomial_LD<Real,N>::Polynomial_LD(const unsigned int & nbofTerm,...)
 {
     va_list vl;
     va_start(vl,nbofTerm);
     for (unsigned int iterm=0; iterm<nbofTerm; iterm++)
     {
-        Monomial<Real,N> mi;
+        Monomial_LD<Real,N> mi;
         vector<int> powermonomiali(N,0);
 
         Real coefi=va_arg(vl,Real);
@@ -380,7 +380,7 @@ Polynomial<Real,N>::Polynomial(const unsigned int & nbofTerm,...)
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
-int Polynomial<Real,N>::degree()
+int Polynomial_LD<Real,N>::degree()
 {
     int deg=0;
     for(MonomialIterator it=listofTerms.begin(); it != listofTerms.end(); ++it)
@@ -391,7 +391,7 @@ int Polynomial<Real,N>::degree()
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
-bool Polynomial<Real,N>::operator ==(const Polynomial<Real,N> & b) const
+bool Polynomial_LD<Real,N>::operator ==(const Polynomial_LD<Real,N> & b) const
 {
     bool result=true;
     if ( this->listofTerms.size() != b.listofTerms.size() )
@@ -404,7 +404,7 @@ bool Polynomial<Real,N>::operator ==(const Polynomial<Real,N> & b) const
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
-Polynomial<Real,N>  & Polynomial<Real,N>::operator*=(const Real & alpha)
+Polynomial_LD<Real,N>  & Polynomial_LD<Real,N>::operator*=(const Real & alpha)
 {
     for(MonomialIterator it=listofTerms.begin(); it != listofTerms.end(); ++it)
     {
@@ -414,7 +414,7 @@ Polynomial<Real,N>  & Polynomial<Real,N>::operator*=(const Real & alpha)
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
-Polynomial<Real,N>  & Polynomial<Real,N>::operator/=(const Real & alpha)
+Polynomial_LD<Real,N>  & Polynomial_LD<Real,N>::operator/=(const Real & alpha)
 {
     for(MonomialIterator it=listofTerms.begin(); it != listofTerms.end(); ++it)
     {
@@ -425,7 +425,7 @@ Polynomial<Real,N>  & Polynomial<Real,N>::operator/=(const Real & alpha)
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
-Polynomial<Real,N>  & Polynomial<Real,N>::operator+=(const Monomial<Real,N> & b)
+Polynomial_LD<Real,N>  & Polynomial_LD<Real,N>::operator+=(const Monomial_LD<Real,N> & b)
 {
     bool added=false;
     for(MonomialIterator ita=listofTerms.begin(); ita != listofTerms.end(); ++ita)
@@ -443,7 +443,7 @@ Polynomial<Real,N>  & Polynomial<Real,N>::operator+=(const Monomial<Real,N> & b)
 ////////////////////////////////
 ////////////////////////////////
 template<typename Real, unsigned int N>
-Polynomial<Real,N>  & Polynomial<Real,N>::operator+=(const Polynomial<Real,N> & b)
+Polynomial_LD<Real,N>  & Polynomial_LD<Real,N>::operator+=(const Polynomial_LD<Real,N> & b)
 {
     for(MonomialConstIterator itb=b.listofTerms.begin(); itb != b.listofTerms.end(); ++itb)
     {
@@ -463,7 +463,7 @@ Polynomial<Real,N>  & Polynomial<Real,N>::operator+=(const Polynomial<Real,N> & 
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
-Polynomial<Real,N>  & Polynomial<Real,N>::operator-=(const Polynomial<Real,N> & b)
+Polynomial_LD<Real,N>  & Polynomial_LD<Real,N>::operator-=(const Polynomial_LD<Real,N> & b)
 {
     for(MonomialConstIterator itb=b.listofTerms.begin(); itb != b.listofTerms.end(); ++itb)
     {
@@ -483,14 +483,14 @@ Polynomial<Real,N>  & Polynomial<Real,N>::operator-=(const Polynomial<Real,N> & 
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
-Polynomial<Real,N>  & Polynomial<Real,N>::operator*=(const Polynomial<Real,N> & b)
+Polynomial_LD<Real,N>  & Polynomial_LD<Real,N>::operator*=(const Polynomial_LD<Real,N> & b)
 {
     MonomialIterator ita=listofTerms.begin();
     while(ita != listofTerms.end())
     {
         for(MonomialConstIterator itb=b.listofTerms.begin(); itb != b.listofTerms.end(); ++itb)
         {
-            Monomial<Real,N> multipSimple=(*ita)*(*itb);
+            Monomial_LD<Real,N> multipSimple=(*ita)*(*itb);
             listofTerms.insert(ita,multipSimple);
         }
         ita=listofTerms.erase(ita);
@@ -500,9 +500,9 @@ Polynomial<Real,N>  & Polynomial<Real,N>::operator*=(const Polynomial<Real,N> & 
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
-Polynomial<Real,N> Polynomial<Real,N>::operator-() const
+Polynomial_LD<Real,N> Polynomial_LD<Real,N>::operator-() const
 {
-    Polynomial<Real,N> r(*this);
+    Polynomial_LD<Real,N> r(*this);
     for(MonomialIterator it=r.listofTerms.begin(); it != r.listofTerms.end(); ++it)
     {
         (*it).coef*=(Real) -1.;
@@ -512,7 +512,7 @@ Polynomial<Real,N> Polynomial<Real,N>::operator-() const
 ////////////////////////////////
 
 template<typename Real, unsigned int N>
-Real Polynomial<Real,N>::operator()(const sofa::helper::vector<Real> & x) const
+Real Polynomial_LD<Real,N>::operator()(const sofa::helper::vector<Real> & x) const
 {
     Real result=(Real) 0.;
     for(MonomialConstIterator it=listofTerms.begin(); it != listofTerms.end(); ++it)
@@ -524,7 +524,7 @@ Real Polynomial<Real,N>::operator()(const sofa::helper::vector<Real> & x) const
 
 ////////////////////////////////
 template<typename Real, unsigned int N>
-Real Polynomial<Real,N>::operator()(const RNpoint & x) const
+Real Polynomial_LD<Real,N>::operator()(const RNpoint & x) const
 {
     Real result=(Real) 0.;
     for(MonomialConstIterator it=listofTerms.begin(); it != listofTerms.end(); ++it)
@@ -535,7 +535,7 @@ Real Polynomial<Real,N>::operator()(const RNpoint & x) const
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
-Real Polynomial<Real,N>::operator()(const sofa::helper::vector<Real> & x,unsigned int iderive) const
+Real Polynomial_LD<Real,N>::operator()(const sofa::helper::vector<Real> & x,unsigned int iderive) const
 {
     Real result=(Real) 0.;
     if (iderive >= N)
@@ -564,7 +564,7 @@ Real Polynomial<Real,N>::operator()(const sofa::helper::vector<Real> & x,unsigne
 
 ////////////////////////////////
 template<typename Real, unsigned int N>
-Real Polynomial<Real,N>::operator()(const RNpoint & x,unsigned int iderive) const
+Real Polynomial_LD<Real,N>::operator()(const RNpoint & x,unsigned int iderive) const
 {
     Real result=(Real) 0.;
     if (iderive >= N)
@@ -592,9 +592,9 @@ Real Polynomial<Real,N>::operator()(const RNpoint & x,unsigned int iderive) cons
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
-Polynomial<Real,N> Polynomial<Real,N>::d(const unsigned int & iderive) const
+Polynomial_LD<Real,N> Polynomial_LD<Real,N>::d(const unsigned int & iderive) const
 {
-    Polynomial<Real,N> result(*this);
+    Polynomial_LD<Real,N> result(*this);
     if (iderive >=N)
     {
         cout<<"WARNING : "<<iderive<<"-th derivative couldn't take place for the polynomial of:"<<"-variables"<<endl
@@ -617,7 +617,7 @@ Polynomial<Real,N> Polynomial<Real,N>::d(const unsigned int & iderive) const
 ////////////////////////////////
 ////////////////////////////////
 template<typename Real, unsigned int N>
-void Polynomial<Real,N>::writeToStream(std::ostream & stream) const
+void Polynomial_LD<Real,N>::writeToStream(std::ostream & stream) const
 {
     MonomialConstIterator it=listofTerms.begin();
     stream<< *it; ++it;
@@ -629,10 +629,10 @@ void Polynomial<Real,N>::writeToStream(std::ostream & stream) const
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
-void Polynomial<Real,N>::readFromStream(std::istream & stream)
+void Polynomial_LD<Real,N>::readFromStream(std::istream & stream)
 {
     listofTerms.clear();
-    Monomial<Real,N> tempo;
+    Monomial_LD<Real,N> tempo;
 
     while (stream >> tempo)
     {
@@ -643,14 +643,14 @@ void Polynomial<Real,N>::readFromStream(std::istream & stream)
 }
 ////////////////////////////////
 template< typename FReal, unsigned int FN >
-Polynomial< FReal, FN > & operator*(const FReal & alpha, Polynomial< FReal, FN> & r)
+Polynomial_LD< FReal, FN > & operator*(const FReal & alpha, Polynomial_LD< FReal, FN> & r)
 {
     r *= alpha;
     return r;
 }
 ////////////////////////////////
 template< typename FReal, unsigned int FN >
-Polynomial< FReal, FN > & operator*(const Monomial< FReal, FN >   & a, Polynomial< FReal, FN> & r)
+Polynomial_LD< FReal, FN > & operator*(const Monomial_LD< FReal, FN >   & a, Polynomial_LD< FReal, FN> & r)
 {
     r *= a;
     return r;

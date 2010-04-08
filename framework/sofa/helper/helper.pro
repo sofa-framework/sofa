@@ -138,9 +138,9 @@ contains(DEFINES,SOFA_DEV) { # BEGIN SOFA_DEV
     HEADERS += \
     	DualQuat.inl \
         DualQuat.h \
-        Polynomial.h \
-        Polynomial.inl
+        Polynomial_LD.h \
+        Polynomial_LD.inl
     SOURCES += \
     	DualQuat.cpp \
-    	Polynomial.cpp
+    	Polynomial_LD.cpp
 }
