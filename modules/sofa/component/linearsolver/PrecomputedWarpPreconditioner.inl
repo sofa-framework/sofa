@@ -241,7 +241,7 @@ void PrecomputedWarpPreconditioner<TDataTypes,TMatrix,TVector>::loadMatrixWithCS
     std::cout.flush();
 
 #else
-    std::cout << "WARNING ; you don't have CS_parse solvername will be use" << std::endl;
+    std::cout << "WARNING ; you don't have CS_parse CG will be use, (if also can specify solverName to accelerate the precomputation" << std::endl;
     loadMatrixWithSolver();
 #endif
 }

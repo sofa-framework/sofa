@@ -67,8 +67,9 @@ using namespace sofa::defaulttype;
 template <class T>
 class CudaBaseVector : public BaseVector
 {
-
 public :
+    typedef T Real;
+
     CudaVector<T>& getCudaVector()
     {
         return v;
