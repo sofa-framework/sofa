@@ -36,7 +36,7 @@
 #include <stdarg.h>
 #include <iostream>
 #include <string>
-//#include <vector>
+#include <vector>
 #include <list>
 #include <cmath>
 
@@ -136,7 +136,7 @@ public :
     {m_monomial.writeToStream(out); return out;}
 
     template<typename FReal, unsigned int FN>
-    inline friend std::istream & operator <<(std::istream & in, Monomial_LD<FReal,FN> & m_monomial)
+    inline friend std::istream & operator >>(std::istream & in, Monomial_LD<FReal,FN> & m_monomial)
     {m_monomial.readFromStream(in); return in;}
 
     template<typename FReal, unsigned int FN> //For comutativity of operator *: Monomial_LD*Real || Real*Monomial_LD.
@@ -219,6 +219,14 @@ public :
     void writeToStream(std::ostream & stream) const;
     void readFromStream(std::istream & stream);
 
+    template<typename FReal, unsigned int FN>
+    inline friend ostream & operator<<(std::ostream & stream, const Polynomial_LD<FReal,FN> & m_polynomial )
+    {m_polynomial.writeToStream(stream); return stream;}
+
+    template<typename FReal, unsigned int FN>
+    inline friend istream & operator>>(std::istream & stream, Polynomial_LD<FReal,FN> & m_polynomial )
+    {m_polynomial.readFromStream(stream); return stream;}
+
     ///Comutativity of operator*(Real):
     ///Allowing to write p1=r*p2;   or   p1=p2*r;
     ///Polynomial_LD =  Polynomial_LD*Real || Real*Polynomial_LD.
@@ -231,29 +239,18 @@ public :
 
 protected :
 
-    ///The two sort will help to transform Linear presentation to the recurent one and reciprocal.
-    void LinearSort();  // don't forget to erase all null coef term
-    void RecurentSort();// don't forget to erase all null coef term
+    ///The sort must be done after each operation.
+    void Sort();  // don't forget to erase all null coef term
 };
-/*
+
 
 ////////////////////////////////
-template<typename FReal, unsigned int FN>
-inline ostream & operator <<(ostream & f, const Monomial_LD<FReal,FN> & m_monomial )
-{
-	m_monomial.printToStream(f);
-	return f;
-}
 
-template<typename FReal, unsigned int FN>
-inline ostream & operator<<(ostream & f, const Polynomial_LD<FReal,FN> & m_polynomial )
-{
-	m_polynomial.printToStream(f);
-	return f;
-}
+
 
 ///////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////
+/*
 template<class TDataTypes>
 void TestPolynomial()
 {

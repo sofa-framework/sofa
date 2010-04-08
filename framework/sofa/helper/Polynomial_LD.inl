@@ -27,7 +27,7 @@
 #ifndef SOFA_HELPER_POLYNOMIAL_LD_INL
 #define SOFA_HELPER_POLYNOMIAL_LD_INL
 
-#include "Polynomial_LD.h"
+#include <sofa/helper/Polynomial_LD.h>
 #include <sstream>
 #include <iterator>
 
@@ -54,7 +54,7 @@ Monomial_LD<Real,N>::Monomial_LD()
     {
         powers[i]=0;
         ostringstream oss; oss << 'l' << i ;
-        variables[i]=oss;
+        variables[i]=oss.str();
     }
 }
 ////////////////////////////////
@@ -79,7 +79,7 @@ Monomial_LD<Real,N>::Monomial_LD(const Real & m_coef, ...)
     {
         powers[i]=va_arg(vl,int);
         ostringstream oss; oss << 'l' << i ;
-        variables[i]=oss;
+        variables[i]=oss.str();
     }
     va_end(vl);
 }
