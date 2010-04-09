@@ -313,18 +313,15 @@ void Monomial_LD<Real,N>::writeToStream(ostream & stream) const
 template<typename Real, unsigned int N>
 void Monomial_LD<Real,N>::readFromStream(std::istream & stream)
 {
-
-    Real t_coef; int t_power; unsigned int counter=0;
+    Real t_coef; int t_power;
 
     if (stream >> t_coef ) coef=t_coef;
 
-    while ( (counter < N) && (stream >> t_power) )
+    for(unsigned int i=0; i<N; ++i)
     {
-        powers[counter]=t_power;
-        counter++;
+        if (stream >> t_power) powers[i]=t_power;
     }
-
-    if( stream.rdstate() & std::ios_base::eofbit ) { stream.clear(); }
+    //std::cout<<"Monomial : "<<*this<<std::endl;/////////////////////////////////////////////
 }
 
 template< typename FReal, unsigned int FN > //For comutativity of operator *: Monomial_LD*Real || Real*Monomial_LD.
@@ -342,24 +339,28 @@ template<typename Real, unsigned int N>
 Polynomial_LD<Real,N>::Polynomial_LD()
 {
     Monomial_LD<Real,N> monomialnull;
-    listofTerms.push_back(monomialnull);
+    listOfMonoMial.push_back(monomialnull);
+    nbOfMonomial=1;
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
 Polynomial_LD<Real,N>::Polynomial_LD(const Polynomial_LD<Real,N> & a)
 {
-    listofTerms=a.listofTerms;
+    listOfMonoMial=a.listOfMonoMial;
+    nbOfMonomial=a.nbOfMonomial;
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
 Polynomial_LD<Real,N>::Polynomial_LD(const Monomial_LD<Real,N> & a)
 {
-    listofTerms.push_back(a);
+    listOfMonoMial.push_back(a);
+    nbOfMonomial=1;
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
 Polynomial_LD<Real,N>::Polynomial_LD(const unsigned int & nbofTerm,...)
 {
+    nbOfMonomial=nbofTerm;
     va_list vl;
     va_start(vl,nbofTerm);
     for (unsigned int iterm=0; iterm<nbofTerm; iterm++)
@@ -374,7 +375,7 @@ Polynomial_LD<Real,N>::Polynomial_LD(const unsigned int & nbofTerm,...)
             //mi.powers[jvar]=va_arg(vl,int);
         }
         mi.SetCoef(coefi); mi.SetPower(powermonomiali);
-        listofTerms.push_back(mi);
+        listOfMonoMial.push_back(mi);
     }
     va_end(vl);
 }
@@ -383,7 +384,7 @@ template<typename Real, unsigned int N>
 int Polynomial_LD<Real,N>::degree()
 {
     int deg=0;
-    for(MonomialIterator it=listofTerms.begin(); it != listofTerms.end(); ++it)
+    for(MonomialIterator it=listOfMonoMial.begin(); it != listOfMonoMial.end(); ++it)
     {
         deg = ( (*it).degree() > deg ) ? (*it).degree() : deg;
     }
@@ -394,11 +395,11 @@ template<typename Real, unsigned int N>
 bool Polynomial_LD<Real,N>::operator ==(const Polynomial_LD<Real,N> & b) const
 {
     bool result=true;
-    if ( this->listofTerms.size() != b.listofTerms.size() )
+    if ( this->listOfMonoMial.size() != b.listOfMonoMial.size() )
         result=false;
     else
     {
-        result = ( this->listofTerms == b.listofTerms ) ? result : false;
+        result = ( this->listOfMonoMial == b.listOfMonoMial ) ? result : false;
     }
     return result;
 }
@@ -406,7 +407,7 @@ bool Polynomial_LD<Real,N>::operator ==(const Polynomial_LD<Real,N> & b) const
 template<typename Real, unsigned int N>
 Polynomial_LD<Real,N>  & Polynomial_LD<Real,N>::operator*=(const Real & alpha)
 {
-    for(MonomialIterator it=listofTerms.begin(); it != listofTerms.end(); ++it)
+    for(MonomialIterator it=listOfMonoMial.begin(); it != listOfMonoMial.end(); ++it)
     {
         (*it)*=alpha;
     }
@@ -416,7 +417,7 @@ Polynomial_LD<Real,N>  & Polynomial_LD<Real,N>::operator*=(const Real & alpha)
 template<typename Real, unsigned int N>
 Polynomial_LD<Real,N>  & Polynomial_LD<Real,N>::operator/=(const Real & alpha)
 {
-    for(MonomialIterator it=listofTerms.begin(); it != listofTerms.end(); ++it)
+    for(MonomialIterator it=listOfMonoMial.begin(); it != listOfMonoMial.end(); ++it)
     {
         //*it->operator/=(alpha);
         (*it)/=alpha;
@@ -428,7 +429,7 @@ template<typename Real, unsigned int N>
 Polynomial_LD<Real,N>  & Polynomial_LD<Real,N>::operator+=(const Monomial_LD<Real,N> & b)
 {
     bool added=false;
-    for(MonomialIterator ita=listofTerms.begin(); ita != listofTerms.end(); ++ita)
+    for(MonomialIterator ita=listOfMonoMial.begin(); ita != listOfMonoMial.end(); ++ita)
     {
         if ( (*ita).isSamePowers(b) )
         {
@@ -437,7 +438,7 @@ Polynomial_LD<Real,N>  & Polynomial_LD<Real,N>::operator+=(const Monomial_LD<Rea
             break;
         }
     }
-    if (!added) listofTerms.push_back(b);
+    if (!added) listOfMonoMial.push_back(b); nbOfMonomial++;
     return *this;
 }
 ////////////////////////////////
@@ -445,10 +446,10 @@ Polynomial_LD<Real,N>  & Polynomial_LD<Real,N>::operator+=(const Monomial_LD<Rea
 template<typename Real, unsigned int N>
 Polynomial_LD<Real,N>  & Polynomial_LD<Real,N>::operator+=(const Polynomial_LD<Real,N> & b)
 {
-    for(MonomialConstIterator itb=b.listofTerms.begin(); itb != b.listofTerms.end(); ++itb)
+    for(MonomialConstIterator itb=b.listOfMonoMial.begin(); itb != b.listOfMonoMial.end(); ++itb)
     {
         bool added=false;
-        for(MonomialIterator ita=listofTerms.begin(); ita != listofTerms.end(); ++ita)
+        for(MonomialIterator ita=listOfMonoMial.begin(); ita != listOfMonoMial.end(); ++ita)
         {
             if ( (*ita).isSamePowers(*itb) )
             {
@@ -457,7 +458,7 @@ Polynomial_LD<Real,N>  & Polynomial_LD<Real,N>::operator+=(const Polynomial_LD<R
                 break;
             }
         }
-        if (!added) listofTerms.push_back((*itb));
+        if (!added) listOfMonoMial.push_back((*itb)); nbOfMonomial++;
     }
     return *this;
 }
@@ -465,10 +466,10 @@ Polynomial_LD<Real,N>  & Polynomial_LD<Real,N>::operator+=(const Polynomial_LD<R
 template<typename Real, unsigned int N>
 Polynomial_LD<Real,N>  & Polynomial_LD<Real,N>::operator-=(const Polynomial_LD<Real,N> & b)
 {
-    for(MonomialConstIterator itb=b.listofTerms.begin(); itb != b.listofTerms.end(); ++itb)
+    for(MonomialConstIterator itb=b.listOfMonoMial.begin(); itb != b.listOfMonoMial.end(); ++itb)
     {
         bool added=false;
-        for(MonomialIterator ita=listofTerms.begin(); ita != listofTerms.end(); ++ita)
+        for(MonomialIterator ita=listOfMonoMial.begin(); ita != listOfMonoMial.end(); ++ita)
         {
             if ( (*ita).isSamePowers(*itb) )
             {
@@ -477,7 +478,7 @@ Polynomial_LD<Real,N>  & Polynomial_LD<Real,N>::operator-=(const Polynomial_LD<R
                 break;
             }
         }
-        if (!added) listofTerms.push_back(-(*itb));
+        if (!added) listOfMonoMial.push_back(-(*itb)); nbOfMonomial++;
     }
     return *this;
 }
@@ -485,15 +486,15 @@ Polynomial_LD<Real,N>  & Polynomial_LD<Real,N>::operator-=(const Polynomial_LD<R
 template<typename Real, unsigned int N>
 Polynomial_LD<Real,N>  & Polynomial_LD<Real,N>::operator*=(const Polynomial_LD<Real,N> & b)
 {
-    MonomialIterator ita=listofTerms.begin();
-    while(ita != listofTerms.end())
+    MonomialIterator ita=listOfMonoMial.begin();
+    while(ita != listOfMonoMial.end())
     {
-        for(MonomialConstIterator itb=b.listofTerms.begin(); itb != b.listofTerms.end(); ++itb)
+        for(MonomialConstIterator itb=b.listOfMonoMial.begin(); itb != b.listOfMonoMial.end(); ++itb)
         {
             Monomial_LD<Real,N> multipSimple=(*ita)*(*itb);
-            listofTerms.insert(ita,multipSimple);
+            listOfMonoMial.insert(ita,multipSimple); nbOfMonomial++;
         }
-        ita=listofTerms.erase(ita);
+        ita=listOfMonoMial.erase(ita);
         //++ita;
     }
     return *this;
@@ -503,7 +504,7 @@ template<typename Real, unsigned int N>
 Polynomial_LD<Real,N> Polynomial_LD<Real,N>::operator-() const
 {
     Polynomial_LD<Real,N> r(*this);
-    for(MonomialIterator it=r.listofTerms.begin(); it != r.listofTerms.end(); ++it)
+    for(MonomialIterator it=r.listOfMonoMial.begin(); it != r.listOfMonoMial.end(); ++it)
     {
         (*it).coef*=(Real) -1.;
     }
@@ -515,7 +516,7 @@ template<typename Real, unsigned int N>
 Real Polynomial_LD<Real,N>::operator()(const sofa::helper::vector<Real> & x) const
 {
     Real result=(Real) 0.;
-    for(MonomialConstIterator it=listofTerms.begin(); it != listofTerms.end(); ++it)
+    for(MonomialConstIterator it=listOfMonoMial.begin(); it != listOfMonoMial.end(); ++it)
     {
         result += (*it).operator()(x);
     }
@@ -527,7 +528,7 @@ template<typename Real, unsigned int N>
 Real Polynomial_LD<Real,N>::operator()(const RNpoint & x) const
 {
     Real result=(Real) 0.;
-    for(MonomialConstIterator it=listofTerms.begin(); it != listofTerms.end(); ++it)
+    for(MonomialConstIterator it=listOfMonoMial.begin(); it != listOfMonoMial.end(); ++it)
     {
         result += (*it).operator()(x);
     }
@@ -552,7 +553,7 @@ Real Polynomial_LD<Real,N>::operator()(const sofa::helper::vector<Real> & x,unsi
         }
         else
         {
-            for(MonomialConstIterator it=listofTerms.begin(); it != listofTerms.end(); ++it)
+            for(MonomialConstIterator it=listOfMonoMial.begin(); it != listOfMonoMial.end(); ++it)
             {
                 result += (*it).operator()(x,iderive);
             }
@@ -581,7 +582,7 @@ Real Polynomial_LD<Real,N>::operator()(const RNpoint & x,unsigned int iderive) c
         }
         else
         {
-            for(MonomialConstIterator it=listofTerms.begin(); it != listofTerms.end(); ++it)
+            for(MonomialConstIterator it=listOfMonoMial.begin(); it != listOfMonoMial.end(); ++it)
             {
                 result += (*it).operator()(x,iderive);
             }
@@ -603,7 +604,7 @@ Polynomial_LD<Real,N> Polynomial_LD<Real,N>::d(const unsigned int & iderive) con
     }
     else
     {
-        for(MonomialIterator it=result.listofTerms.begin(); it != result.listofTerms.end(); ++it)
+        for(MonomialIterator it=result.listOfMonoMial.begin(); it != result.listOfMonoMial.end(); ++it)
         {
             (*it).coef*=(Real) (*it).powers[iderive];
             if ((*it).powers[iderive] != 0)
@@ -617,29 +618,47 @@ Polynomial_LD<Real,N> Polynomial_LD<Real,N>::d(const unsigned int & iderive) con
 ////////////////////////////////
 ////////////////////////////////
 template<typename Real, unsigned int N>
+void Polynomial_LD<Real,N>::setnbOfMonomial(int m_nbofmonomial)
+{
+    listOfMonoMial.clear();
+    nbOfMonomial=m_nbofmonomial;
+    Monomial_LD<Real,N> monomialNULL;
+    listOfMonoMial.clear();
+    for(int i=0; i<nbOfMonomial; i++)
+    {
+        listOfMonoMial.push_back(monomialNULL);
+    }
+}
+////////////////////////////////
+template<typename Real, unsigned int N>
 void Polynomial_LD<Real,N>::writeToStream(std::ostream & stream) const
 {
-    MonomialConstIterator it=listofTerms.begin();
+    MonomialConstIterator it=listOfMonoMial.begin();
     stream<< *it; ++it;
-    while(it != listofTerms.end() )
+    while(it != listOfMonoMial.end() )
     {
         stream << "  +  "<<*it;
         ++it;
     }
+    stream<<std::endl;
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
 void Polynomial_LD<Real,N>::readFromStream(std::istream & stream)
 {
-    listofTerms.clear();
-    Monomial_LD<Real,N> tempo;
+    int nbofmonomialtempo;
 
-    while (stream >> tempo)
+    if (stream >> nbofmonomialtempo) nbOfMonomial=nbofmonomialtempo;
+
+    listOfMonoMial.resize(nbOfMonomial);
+    MonomialIterator it=listOfMonoMial.begin();
+    for(int monomialcounter=0; monomialcounter<nbOfMonomial; ++monomialcounter)
     {
-        listofTerms.push_back(tempo);
+        Monomial_LD<Real,N> tempo;
+        if (stream >> tempo) (*it)=tempo;
+        ++it;
     }
-
-    if( stream.rdstate() & std::ios_base::eofbit ) { stream.clear(); }
+    //std::cout<<"     Polynomial :"<<*this<<std::endl;/////////////////////////////////////////////
 }
 ////////////////////////////////
 template< typename FReal, unsigned int FN >
