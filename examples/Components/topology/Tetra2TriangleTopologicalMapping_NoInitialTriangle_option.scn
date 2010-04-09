@@ -17,6 +17,7 @@
 		<Object type="FixedConstraint" indices="0" />		
         	<Object type="TetrahedralCorotationalFEMForceField" name="FEM" youngModulus="60" poissonRatio="0.3" method="large" />
 
+		<Object type="TriangleSet"/>
 		<Node name="T">
 			<include href="Objects/TriangleSetTopology.xml" />
 			<Object type="Tetra2TriangleTopologicalMapping"
@@ -25,8 +26,7 @@
             		<Object type="TriangularFEMForceField" name="FEM" youngModulus="10" poissonRatio="0.3" method="large" /> 
 			<Object type="TriangularBendingSprings" name="FEM-Bend" stiffness="300" damping="1.0"/>		    
 			<Object type="TrianglePressureForceField" normal="0 0 1" dmin="0.9" dmax="1.1" pressure="0.4 0 0"/> 
-			<Object type="TriangleSet"/>
-
+			
 			<Node name="Visu">
 				<Object type="OglModel" name="Visual" color="blue" />
 				<Object type="IdentityMapping" object1="../../../Volume" object2="Visual" />
