@@ -67,6 +67,7 @@ public:
     typedef unsigned int PointID;
     typedef core::componentmodel::topology::BaseMeshTopology::Edge Edge;
     typedef core::componentmodel::topology::BaseMeshTopology::Triangle Triangle;
+    typedef core::componentmodel::topology::BaseMeshTopology::Tetra Tetra;
 
 protected:
     bool isPointInBox(const CPos& p, const Vec6& b);
@@ -94,14 +95,14 @@ public:
 
     /// Pre-construction check method called by ObjectFactory.
     /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        if (dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
-            return false;
-        return BaseObject::canCreate(obj, context, arg);
-    }
-
+    /*   template<class T>
+       static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+       {
+           if (dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
+               return false;
+           return BaseObject::canCreate(obj, context, arg);
+       }
+    */
     /// Construction method called by ObjectFactory.
     template<class T>
     static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
@@ -124,16 +125,20 @@ public:
     Data<VecCoord> f_X0;
     Data<helper::vector<Edge> > f_edges;
     Data<helper::vector<Triangle> > f_triangles;
+    Data<helper::vector<Tetra> > f_tetrahedra;
 
     //Output
     Data<SetIndex> f_indices;
     Data<SetIndex> f_edgeIndices;
     Data<SetIndex> f_triangleIndices;
     Data<VecCoord > f_pointsInBox;
+    Data<VecCoord > f_pointsOutBox;
     Data<helper::vector<Edge> > f_edgesInBox;
     Data<helper::vector<Triangle> > f_trianglesInBox;
+    Data<helper::vector<Triangle> > f_trianglesOutBox;
 
     //Parameter
+    Data<bool> p_subsetTopology;
     Data<bool> p_drawBoxes;
     Data<bool> p_drawPoints;
     Data<bool> p_drawEdges;

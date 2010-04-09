@@ -57,8 +57,11 @@ BoxROI<DataTypes>::BoxROI()
     , f_edgeIndices( initData(&f_edgeIndices,"edgeIndices","Indices of the edges contained in the ROI") )
     , f_triangleIndices( initData(&f_triangleIndices,"triangleIndices","Indices of the triangles contained in the ROI") )
     , f_pointsInBox( initData(&f_pointsInBox,"pointsInBox","Points contained in the ROI") )
+    , f_pointsOutBox( initData(&f_pointsOutBox,"pointsOutBox","Points out of the ROI") )
     , f_edgesInBox( initData(&f_edgesInBox,"edgesInBox","Edges contained in the ROI") )
     , f_trianglesInBox( initData(&f_trianglesInBox,"f_trianglesInBox","Triangles contained in the ROI") )
+    , f_trianglesOutBox( initData(&f_trianglesOutBox,"f_trianglesOutBox","Triangles out of the ROI") )
+    , p_subsetTopology( initData(&p_subsetTopology,false,"subsetTopology","Draw Triangles") )
     , p_drawBoxes( initData(&p_drawBoxes,false,"drawBoxes","Draw Box(es)") )
     , p_drawPoints( initData(&p_drawPoints,false,"drawPoints","Draw Points") )
     , p_drawEdges( initData(&p_drawEdges,false,"drawEdges","Draw Edges") )
@@ -74,42 +77,46 @@ BoxROI<DataTypes>::BoxROI()
 template <class DataTypes>
 void BoxROI<DataTypes>::init()
 {
-    if (!f_X0.isSet())
+
+    if (!p_subsetTopology.getValue())
     {
-        MechanicalState<DataTypes>* mstate;
-        this->getContext()->get(mstate);
-        if (mstate)
+        if (!f_X0.isSet())
         {
-            BaseData* parent = mstate->findField("rest_position");
-            if (parent)
+            MechanicalState<DataTypes>* mstate;
+            this->getContext()->get(mstate);
+            if (mstate)
             {
-                f_X0.setParent(parent);
-                f_X0.setReadOnly(true);
-            }
-        }
-    }
-    if (!f_edges.isSet() || !f_triangles.isSet())
-    {
-        BaseMeshTopology* topology;
-        this->getContext()->get(topology);
-        if (topology)
-        {
-            if (!f_edges.isSet())
-            {
-                BaseData* eparent = topology->findField("edges");
-                if (eparent)
+                BaseData* parent = mstate->findField("position");
+                if (parent)
                 {
-                    f_edges.setParent(eparent);
-                    f_edges.setReadOnly(true);
+                    f_X0.setParent(parent);
+                    f_X0.setReadOnly(true);
                 }
             }
-            if (!f_triangles.isSet())
+        }
+        if (!f_edges.isSet() || !f_triangles.isSet())
+        {
+            BaseMeshTopology* topology;
+            this->getContext()->get(topology);
+            if (topology)
             {
-                BaseData* tparent = topology->findField("triangles");
-                if (tparent)
+                if (!f_edges.isSet())
                 {
-                    f_triangles.setParent(tparent);
-                    f_triangles.setReadOnly(true);
+                    BaseData* eparent = topology->findField("edges");
+                    if (eparent)
+                    {
+                        f_edges.setParent(eparent);
+                        f_edges.setReadOnly(true);
+                    }
+                }
+                if (!f_triangles.isSet())
+                {
+                    BaseData* tparent = topology->findField("triangles");
+                    if (tparent)
+                    {
+                        f_triangles.setParent(tparent);
+                        f_triangles.setReadOnly(true);
+                    }
                 }
             }
         }
@@ -123,8 +130,10 @@ void BoxROI<DataTypes>::init()
     addOutput(&f_edgeIndices);
     addOutput(&f_triangleIndices);
     addOutput(&f_pointsInBox);
+    addOutput(&f_pointsOutBox);
     addOutput(&f_edgesInBox);
     addOutput(&f_trianglesInBox);
+    addOutput(&f_trianglesOutBox);
     setDirtyValue();
 }
 
@@ -194,27 +203,37 @@ void BoxROI<DataTypes>::update()
     SetIndex& edgeIndices = *f_edgeIndices.beginEdit();
     SetIndex& triangleIndices = *f_triangleIndices.beginEdit();
     helper::WriteAccessor< Data<VecCoord > > pointsInBox = f_pointsInBox;
+    helper::WriteAccessor< Data<VecCoord > > pointsOutBox = f_pointsOutBox;
     helper::WriteAccessor< Data<helper::vector<BaseMeshTopology::Edge> > > edgesInBox = f_edgesInBox;
     helper::WriteAccessor< Data<helper::vector<BaseMeshTopology::Triangle> > > trianglesInBox = f_trianglesInBox;
-
+    helper::WriteAccessor< Data<helper::vector<BaseMeshTopology::Triangle> > > trianglesOutBox = f_trianglesOutBox;
 
     indices.clear();
     edgesInBox.clear();
     trianglesInBox.clear();
+    trianglesOutBox.clear();
+    pointsOutBox.clear();
+    pointsInBox.clear();
+
 
     const VecCoord* x0 = &f_X0.getValue();
 
     for( unsigned i=0; i<x0->size(); ++i )
     {
+        bool inside = false;
         for (unsigned int bi=0; bi<vb.size(); ++bi)
         {
             if (isPointInBox(i, vb[bi]))
             {
                 indices.push_back(i);
                 pointsInBox.push_back((*x0)[i]);
+                inside = true;
                 break;
             }
         }
+
+        if (!inside && p_subsetTopology.getValue())
+            pointsOutBox.push_back((*x0)[i]);
     }
 
     for(unsigned int i=0 ; i<edges.size() ; i++)
@@ -242,10 +261,17 @@ void BoxROI<DataTypes>::update()
                 trianglesInBox.push_back(t);
                 break;
             }
+            else
+            {
+                if (p_subsetTopology.getValue())
+                    trianglesOutBox.push_back(t);
+            }
         }
     }
 
     f_indices.endEdit();
+    f_edgeIndices.endEdit();
+    f_triangleIndices.endEdit();
 
 }
 
