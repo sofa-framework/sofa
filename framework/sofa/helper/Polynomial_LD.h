@@ -167,7 +167,8 @@ public :
     typedef typename MonomialsList::iterator MonomialIterator;
     typedef sofa::defaulttype::Vec<N,Real> RNpoint;
 
-    std::list< Monomial_LD<Real,N> > listofTerms;
+    int nbOfMonomial;
+    std::list< Monomial_LD<Real,N> > listOfMonoMial;
 
     ///Default constructor
     Polynomial_LD();
@@ -181,7 +182,7 @@ public :
     Polynomial_LD(const unsigned int & nbofTerm,...);
 
     ///Assign operator
-    Polynomial_LD<Real,N> & operator=(const Polynomial_LD<Real,N> & b) {listofTerms=b.listofTerms; return *this;}
+    Polynomial_LD<Real,N> & operator=(const Polynomial_LD<Real,N> & b) {listOfMonoMial=b.listOfMonoMial; return *this;}
 
     int degree();
 
@@ -216,6 +217,7 @@ public :
     ///Derivative operator alowing to write p1=p2.d(x);
     Polynomial_LD<Real,N>  d(const unsigned int & ideriv) const;
 
+    void setnbOfMonomial(int m_nbofmonomial);
     void writeToStream(std::ostream & stream) const;
     void readFromStream(std::istream & stream);
 
