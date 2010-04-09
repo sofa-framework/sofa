@@ -1,0 +1,17 @@
+<Category name="Collision">
+  <Group name="Modelization">
+    <Tutorial name="Triangle based" scene="Tutorials/Collision/TutorialCollisionCubeObstacle.scn"/>
+    <Tutorial name="Spheres based" scene="Tutorials/Collision/TutorialCollisionCubeObstacleSphere.scn"/>
+  </Group>
+  <Group name="Multiple Objects">
+    <Tutorial name="Two Cubes"   scene="Tutorials/Collision/TutorialCollisionCubes.scn"/>
+    <Tutorial name="Static Collision Groups" scene="Tutorials/Collision/TutorialCollisionMultipleGroups.scn"/>
+    <Tutorial name="Dynamic Collision Groups" scene="Tutorials/Collision/TutorialCollisionDynamicGroups.scn"/>
+  </Group>
+  <Group name="Advanced Solvers">
+    <Tutorial name="Multiple Groups Solver" scene="Tutorials/Collision/TutorialCollisionMultipleGroupsSolver.scn"/>
+  </Group>
+  <Group name="Advanced Response">
+    <Tutorial name="Constraint based Collision Response" scene="Tutorials/Collision/TutorialCollisionUncoupledConstraints.scn"/>
+  </Group>
+</Category>
