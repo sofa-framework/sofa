@@ -21,12 +21,12 @@
       <Tutorial name="Different Modelization"     scene="Tutorials/StepByStep/FullObject/8_FullObject.scn"/>
     </Group>
     <Group name="Topological mapping">
-      <Tutorial name="Objective"                  scene="Tutorials/StepByStep/FullObject/0_TopoMapping.scn"/>  
-      <Tutorial name="Volume mesh"                scene="Tutorials/StepByStep/FullObject/1_TopoMapping.scn"/>    
-      <Tutorial name="Embedding the Model"        scene="Tutorials/StepByStep/FullObject/2_TopoMapping.scn"/>    
-      <Tutorial name="Mapping to surface mesh"    scene="Tutorials/StepByStep/FullObject/3_TopoMapping.scn"/>    
-      <Tutorial name="Change mesh behavior"       scene="Tutorials/StepByStep/FullObject/4_TopoMapping.scn"/> 
-      <Tutorial name="Other mesh"                 scene="Tutorials/StepByStep/FullObject/5_TopoMapping.scn"/>
-      <Tutorial name="Same pipeline"              scene="Tutorials/StepByStep/FullObject/6_TopoMapping.scn"/>
+      <Tutorial name="Objective"                  scene="Tutorials/StepByStep/TopologicalMapping/0_TopoMapping.scn"/>  
+      <Tutorial name="Volume mesh"                scene="Tutorials/StepByStep/TopologicalMapping/1_TopoMapping.scn"/>    
+      <Tutorial name="Embedding the Model"        scene="Tutorials/StepByStep/TopologicalMapping/2_TopoMapping.scn"/>    
+      <Tutorial name="Mapping to surface mesh"    scene="Tutorials/StepByStep/TopologicalMapping/3_TopoMapping.scn"/>    
+      <Tutorial name="Change mesh behavior"       scene="Tutorials/StepByStep/TopologicalMapping/4_TopoMapping.scn"/> 
+      <Tutorial name="Other mesh"                 scene="Tutorials/StepByStep/TopologicalMapping/5_TopoMapping.scn"/>
+      <Tutorial name="Same pipeline"              scene="Tutorials/StepByStep/TopologicalMapping/6_TopoMapping.scn"/>
     </Group>
 </Category>
