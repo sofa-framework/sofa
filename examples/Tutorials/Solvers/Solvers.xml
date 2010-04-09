@@ -1,6 +1,6 @@
 <Category name="Solvers">
     <Group name="Static">
-      <Tutorial name="Static" scene="Tutorials/Solvers/TutorialSolverStatic.scn"/>
+      <Tutorial name="Static" scene="Components/solver/StaticSolver.scn" html="Tutorials/Solvers/TutorialSolverStatic.html"/>
     </Group>
     <Group name="Explicit">
       <Tutorial name="Euler" scene="Tutorials/Solvers/TutorialSolverExplicitEuler.scn"/>
