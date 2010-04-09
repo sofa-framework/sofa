@@ -183,10 +183,10 @@ SofaModeler::SofaModeler()
     infoItem->setMaximumHeight(175);
 #ifdef SOFA_QT4
     connect( infoItem, SIGNAL(anchorClicked(const QUrl&)), this, SLOT(fileOpen(const QUrl&)));
+    infoItem->setOpenExternalLinks(true);
 #else
     connect( infoItem, SIGNAL(linkClicked( const QString &)), this, SLOT(fileOpen(const QString &)));
 #endif
-
     mainLayout->addWidget(infoItem);
 
     //----------------------------------------------------------------------
