@@ -1,0 +1,22 @@
+<Node name="root" dt="0.01" showVisualModels="1" showBehaviorModels="0" showCollisionModels="1" showMappings="0" showForceFields="0" showWireFrame="1" gravity="0 -1 0">
+	<MeshObjLoader name="meshLoader" filename="mesh/square.obj" />
+	
+	<Node>
+		<TriangleSetTopologyContainer src="@../meshLoader" />
+		<OglModel />
+	</Node>
+	
+	<Optimize2DMesh name="optimizer" inputPoints="@meshLoader.position" inputEdges="@meshLoader.edges"
+					seedPoints="10 10 0" regionPoints="0.1 0.2 0.0" regionTags="1"
+					refine="true" shapeCriteria="0.125" sizeCriteria="0.2"
+					sizes="0.1 0.1 0.1 0.01" kLipschitz="0.1"
+					optimize="true" lloydIteration="50" movingRatio="0.01"
+					viewTriangles="true" viewSeedPoints="false" viewRegionPoints="false"/>
+	
+	<Node>
+		<MechanicalObject position="@../optimizer.outputPoints" />
+		<TriangleSetTopologyContainer position="@../optimizer.outputPoints" triangles="@../optimizer.outputTriangles" />
+		<TriangleSetGeometryAlgorithms drawTriangles="false"/>
+	</Node>
+	
+</Node>
