@@ -157,7 +157,7 @@ protected :
  */
 
 template<typename Real, unsigned int N>
-class SOFA_HELPER_API Polynomial_LD
+class Polynomial_LD
 {
 
 public :
