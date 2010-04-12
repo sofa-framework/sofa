@@ -74,6 +74,7 @@ protected:
     bool isPointInBox(const PointID& pid, const Vec6& b);
     bool isEdgeInBox(const Edge& e, const Vec6& b);
     bool isTriangleInBox(const Triangle& t, const Vec6& b);
+    bool isTetrahedronInBox(const Tetra& t, const Vec6& b);
 public:
 
     BoxROI();
@@ -131,11 +132,14 @@ public:
     Data<SetIndex> f_indices;
     Data<SetIndex> f_edgeIndices;
     Data<SetIndex> f_triangleIndices;
+    Data<SetIndex> f_tetrahedronIndices;
     Data<VecCoord > f_pointsInBox;
     Data<VecCoord > f_pointsOutBox;
     Data<helper::vector<Edge> > f_edgesInBox;
     Data<helper::vector<Triangle> > f_trianglesInBox;
     Data<helper::vector<Triangle> > f_trianglesOutBox;
+    Data<helper::vector<Tetra> > f_tetrahedraInBox;
+    Data<helper::vector<Tetra> > f_tetrahedraOutBox;
 
     //Parameter
     Data<bool> p_subsetTopology;
@@ -143,6 +147,7 @@ public:
     Data<bool> p_drawPoints;
     Data<bool> p_drawEdges;
     Data<bool> p_drawTriangles;
+    Data<bool> p_drawTetrahedra;
 };
 
 #if defined(WIN32) && !defined(SOFA_COMPONENT_ENGINE_BOXROI_CPP)
