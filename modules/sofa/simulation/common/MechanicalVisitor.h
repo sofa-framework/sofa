@@ -1748,6 +1748,7 @@ public:
 #endif
     }
     virtual Result fwdOdeSolver(simulation::Node* node, core::componentmodel::behavior::OdeSolver* obj);
+    virtual Result fwdInteractionForceField(simulation::Node*, core::componentmodel::behavior::InteractionForceField* obj);
     virtual void bwdOdeSolver(simulation::Node* /*node*/, core::componentmodel::behavior::OdeSolver* /*obj*/)
     {
     }

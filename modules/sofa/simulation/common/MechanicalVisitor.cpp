@@ -550,6 +550,11 @@ Visitor::Result MechanicalIntegrationVisitor::fwdOdeSolver(simulation::Node* nod
     return RESULT_PRUNE;
 }
 
+Visitor::Result MechanicalIntegrationVisitor::fwdInteractionForceField(simulation::Node* node, core::componentmodel::behavior::InteractionForceField* obj)
+{
+    obj->addForce();
+    return RESULT_CONTINUE;
+}
 
 
 Visitor::Result  MechanicalVAvailVisitor::fwdMechanicalState(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalState* mm)
