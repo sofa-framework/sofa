@@ -80,7 +80,13 @@ public :
     static bool bufferRegister(const gl_buffer bId) { return false; }
     static void bufferUnregister(const gl_buffer bId) {}
     static bool bufferMapToDevice(device_pointer* dDestPointer, const gl_buffer bSrcId) { return false; }
-    static void bufferUnmapToDevice(device_pointer dDestPointer, const gl_buffer bSrcId) {}
+    static void bufferUnmapToDevice(device_pointer* dDestPointer, const gl_buffer bSrcId) {}
+
+    static device_pointer deviceOffset(device_pointer dPointer,size_t offset) {return (T*)dPointer+offset;}
+
+    static device_pointer null() {return NULL;}
+    static void null(const device_pointer *p) {*p=NULL;}
+    static bool isNull(device_pointer p) {return p==NULL;}
 
 };
 

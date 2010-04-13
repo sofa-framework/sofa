@@ -25,6 +25,13 @@
 #ifndef MYOPENCL_H
 #define MYOPENCL_H
 
+
+#ifdef __APPLE__
+#include <cl.h>
+#else
+#include <CL/cl.h>
+#endif
+
 #include "gpuopencl.h"
 #include <string>
 
@@ -37,19 +44,47 @@ namespace opencl
 {
 #endif
 
+
+
 extern "C" {
+
+
+    typedef struct _device_pointer
+    {
+        mutable cl_mem m;
+        size_t offset;
+        bool _null;
+        _device_pointer()
+        {
+            m = NULL;
+            offset = 0;
+            _null=true;
+        }
+    } _device_pointer;
+
 
     extern int myopenclInit(int device=-1);
     extern int myopenclGetnumDevices();
-    extern void myopenclCreateBuffer(int device,void ** dptr,int n);
-    extern void myopenclReleaseBuffer(int device,void * p);
-    extern void myopenclEnqueueWriteBuffer(int device,void * ddest,const void * hsrc,size_t n);
-    extern void myopenclEnqueueReadBuffer(int device,void * hdest,const void * dsrc, size_t n);
-    extern void myopenclEnqueueCopyBuffer(int device, void * ddest, const void * dsrc, size_t n);
+    extern void myopenclCreateBuffer(int device,cl_mem* dptr,int n);
+    extern void myopenclReleaseBuffer(int device,cl_mem p);
+    extern void myopenclEnqueueWriteBuffer(int device,cl_mem ddest,size_t offset,const void * hsrc,size_t n);
+    extern void myopenclEnqueueReadBuffer(int device,void * hdest,const cl_mem dsrc,size_t offset, size_t n);
+    extern void myopenclEnqueueCopyBuffer(int device, cl_mem ddest,size_t destOffset, const cl_mem dsrc,size_t srcOffset, size_t n);
+    extern void myopenclSetKernelArg(cl_kernel kernel, int num_arg,int size,void* arg);
+    extern void myopenclBuildProgram(void* p);
+    extern cl_program myopenclProgramWithSource(const char * s,const size_t size);
+    extern cl_kernel myopenclCreateKernel(void* p,const char * kernel_name);
+    extern void myopenclExecKernel(int device,cl_kernel kernel,unsigned int work_dim,const size_t *global_work_offset,const size_t *global_work_size,const size_t *local_work_size);
 
+
+    extern void myopenclMemsetDevice(int d, _device_pointer dDestPointer, int value, size_t n);
+    extern void* myopencldevice(int device);
     extern int myopenclNumDevices();
     extern int & myopenclError();
     extern void myopenclShowError(std::string file, int line);
+    extern std::string myopenclPath();
+
+    extern int myopenclMultiOpMax;
 }
 
 
