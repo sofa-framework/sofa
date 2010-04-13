@@ -32,11 +32,6 @@ namespace sofa
 namespace helper
 {
 
-// instanciate the classes
-//template class Quater<double>;
-//template class Quater<float>;
-
-
 using namespace sofa::defaulttype;
 using namespace std;
 

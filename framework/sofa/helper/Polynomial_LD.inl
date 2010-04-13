@@ -623,7 +623,6 @@ void Polynomial_LD<Real,N>::setnbOfMonomial(int m_nbofmonomial)
     listOfMonoMial.clear();
     nbOfMonomial=m_nbofmonomial;
     Monomial_LD<Real,N> monomialNULL;
-    listOfMonoMial.clear();
     for(int i=0; i<nbOfMonomial; i++)
     {
         listOfMonoMial.push_back(monomialNULL);
@@ -659,6 +658,14 @@ void Polynomial_LD<Real,N>::readFromStream(std::istream & stream)
         ++it;
     }
     //std::cout<<"     Polynomial :"<<*this<<std::endl;/////////////////////////////////////////////
+}
+////////////////////////////////
+template<typename Real, unsigned int N>
+std::string  Polynomial_LD<Real,N>::getString() const
+{
+    std::ostringstream toto;
+    toto<<(*this);
+    return toto.str();
 }
 ////////////////////////////////
 template< typename FReal, unsigned int FN >
