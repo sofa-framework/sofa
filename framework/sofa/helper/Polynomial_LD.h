@@ -33,12 +33,13 @@
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/defaulttype/Mat.h>
 #include <sofa/helper/vector.h>
-#include <stdarg.h>
 #include <iostream>
 #include <string>
 #include <vector>
 #include <list>
 #include <cmath>
+#include <cassert>
+#include <stdarg.h>
 
 namespace sofa
 {
@@ -84,11 +85,9 @@ public :
 
     Monomial_LD();
     Monomial_LD(const Monomial_LD<Real,N> & a);
-    Monomial_LD(const Real &,...);
     Monomial_LD<Real,N>& operator=(const Monomial_LD<Real,N> & b);
 
     ///Setting of Monomial_LD
-    void Set(const Real &,...);
     void SetCoef (const Real & m_coef) {coef=m_coef;}
     void SetPower(sofa::helper::vector<int> & m_powers)   {for(unsigned int i=0; i<N; i++) powers[i]=m_powers[i];}
     void SetPower(const int & numbervar,const int &powervalue) {powers[numbervar]=powervalue;}
@@ -177,10 +176,6 @@ public :
     Polynomial_LD(const Polynomial_LD<Real,N> & a);
     Polynomial_LD(const Monomial_LD<Real,N> & a);
 
-    ///constructor
-    /// \exemple Polynomial_LD<Real,2> p(5,Real,int, int,Real,int, int,Real,int, int,Real,int, int,Real,int, int)
-    Polynomial_LD(const unsigned int & nbofTerm,...);
-
     ///Assign operator
     Polynomial_LD<Real,N> & operator=(const Polynomial_LD<Real,N> & b) {listOfMonoMial=b.listOfMonoMial; return *this;}
 
@@ -228,7 +223,7 @@ public :
 
     template<typename FReal, unsigned int FN>
     inline friend std::istream & operator>>(std::istream & stream, Polynomial_LD<FReal,FN> & m_polynomial )
-    {m_polynomial.readFromStream(stream); return stream;}
+    {m_polynomial.readFromStream(stream); m_polynomial.sort(); return stream;}
 
     ///Comutativity of operator*(Real):
     ///Allowing to write p1=r*p2;   or   p1=p2*r;
@@ -240,10 +235,13 @@ public :
     template<typename FReal, unsigned int FN>
     friend Polynomial_LD<FReal,FN> & operator*(const Monomial_LD<FReal,FN>   & a, Polynomial_LD<FReal,FN> & r);
 
+    void sort();
 protected :
 
     ///The sort must be done after each constructor and each operation where monomials are inserted
-    void Sort();  // todo
+    void exchangeMonomial(unsigned int ithMono,unsigned  int jthMono);
+    void sortByVar(unsigned int idVar);
+    // todo
 };
 
 

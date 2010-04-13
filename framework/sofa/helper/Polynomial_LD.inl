@@ -53,7 +53,7 @@ Monomial_LD<Real,N>::Monomial_LD()
     for(unsigned int i=0; i<N; i++)
     {
         powers[i]=0;
-        ostringstream oss; oss << 'l' << i ;
+        ostringstream oss; oss << 't' << i ;
         variables[i]=oss.str();
     }
 }
@@ -70,21 +70,6 @@ Monomial_LD<Real,N>::Monomial_LD(const Monomial_LD<Real,N> & b)
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
-Monomial_LD<Real,N>::Monomial_LD(const Real & m_coef, ...)
-{
-    coef=m_coef;
-    va_list vl;
-    va_start(vl,m_coef);
-    for(unsigned int i=0; i<N; i++)
-    {
-        powers[i]=va_arg(vl,int);
-        ostringstream oss; oss << 'l' << i ;
-        variables[i]=oss.str();
-    }
-    va_end(vl);
-}
-////////////////////////////////
-template<typename Real, unsigned int N>
 Monomial_LD<Real,N>& Monomial_LD<Real,N>::operator=(const Monomial_LD<Real,N> & b)
 {
     coef=b.coef;
@@ -94,20 +79,6 @@ Monomial_LD<Real,N>& Monomial_LD<Real,N>::operator=(const Monomial_LD<Real,N> & 
         variables[i]=b.variables[i];
     }
     return *this;
-}
-////////////////////////////////
-
-template<typename Real, unsigned int N>
-void Monomial_LD<Real,N>::Set(const Real & m_coef, ...)
-{
-    coef=m_coef;
-    va_list vl;
-    va_start(vl,m_coef);
-    for(unsigned int i=0; i<N; i++)
-    {
-        powers[i]=va_arg(vl,int);
-    }
-    va_end(vl);
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
@@ -307,7 +278,7 @@ template<typename Real, unsigned int N>
 void Monomial_LD<Real,N>::writeToStream(ostream & stream) const
 {
     stream<<coef<<"*"<<variables[0]<<"^"<<powers[0];
-    for(unsigned int i=1; i<N; i++) stream<<"."<<variables[i]<<"^"<<powers[i];
+    for(unsigned int i=1; i<N; i++) stream<<"*"<<variables[i]<<"^"<<powers[i];
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
@@ -338,9 +309,9 @@ Monomial_LD< FReal, FN > & operator*(const FReal & alpha,Monomial_LD< FReal, FN 
 template<typename Real, unsigned int N>
 Polynomial_LD<Real,N>::Polynomial_LD()
 {
-    Monomial_LD<Real,N> monomialnull;
-    listOfMonoMial.push_back(monomialnull);
-    nbOfMonomial=1;
+    //Monomial_LD<Real,N> monomialnull;
+    //listOfMonoMial.push_back(monomialnull);
+    nbOfMonomial=0;
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
@@ -355,29 +326,6 @@ Polynomial_LD<Real,N>::Polynomial_LD(const Monomial_LD<Real,N> & a)
 {
     listOfMonoMial.push_back(a);
     nbOfMonomial=1;
-}
-////////////////////////////////
-template<typename Real, unsigned int N>
-Polynomial_LD<Real,N>::Polynomial_LD(const unsigned int & nbofTerm,...)
-{
-    nbOfMonomial=nbofTerm;
-    va_list vl;
-    va_start(vl,nbofTerm);
-    for (unsigned int iterm=0; iterm<nbofTerm; iterm++)
-    {
-        Monomial_LD<Real,N> mi;
-        vector<int> powermonomiali(N,0);
-
-        Real coefi=va_arg(vl,Real);
-        for(unsigned int jvar=0; jvar<N; jvar++)
-        {
-            powermonomiali[jvar]=va_arg(vl,int);
-            //mi.powers[jvar]=va_arg(vl,int);
-        }
-        mi.SetCoef(coefi); mi.SetPower(powermonomiali);
-        listOfMonoMial.push_back(mi);
-    }
-    va_end(vl);
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
@@ -439,6 +387,7 @@ Polynomial_LD<Real,N>  & Polynomial_LD<Real,N>::operator+=(const Monomial_LD<Rea
         }
     }
     if (!added) listOfMonoMial.push_back(b); nbOfMonomial++;
+    sort();
     return *this;
 }
 ////////////////////////////////
@@ -460,6 +409,7 @@ Polynomial_LD<Real,N>  & Polynomial_LD<Real,N>::operator+=(const Polynomial_LD<R
         }
         if (!added) listOfMonoMial.push_back((*itb)); nbOfMonomial++;
     }
+    sort();
     return *this;
 }
 ////////////////////////////////
@@ -480,6 +430,7 @@ Polynomial_LD<Real,N>  & Polynomial_LD<Real,N>::operator-=(const Polynomial_LD<R
         }
         if (!added) listOfMonoMial.push_back(-(*itb)); nbOfMonomial++;
     }
+    sort();
     return *this;
 }
 ////////////////////////////////
@@ -497,6 +448,7 @@ Polynomial_LD<Real,N>  & Polynomial_LD<Real,N>::operator*=(const Polynomial_LD<R
         ita=listOfMonoMial.erase(ita);
         //++ita;
     }
+    sort();
     return *this;
 }
 ////////////////////////////////
@@ -508,6 +460,7 @@ Polynomial_LD<Real,N> Polynomial_LD<Real,N>::operator-() const
     {
         (*it).coef*=(Real) -1.;
     }
+    r.sort();
     return r;
 }
 ////////////////////////////////
@@ -613,6 +566,7 @@ Polynomial_LD<Real,N> Polynomial_LD<Real,N>::d(const unsigned int & iderive) con
             }
         }
     }
+    result.sort();
     return result;
 }
 ////////////////////////////////
@@ -657,6 +611,7 @@ void Polynomial_LD<Real,N>::readFromStream(std::istream & stream)
         if (stream >> tempo) (*it)=tempo;
         ++it;
     }
+    this->sort();
     //std::cout<<"     Polynomial :"<<*this<<std::endl;/////////////////////////////////////////////
 }
 ////////////////////////////////
@@ -679,9 +634,63 @@ template< typename FReal, unsigned int FN >
 Polynomial_LD< FReal, FN > & operator*(const Monomial_LD< FReal, FN >   & a, Polynomial_LD< FReal, FN> & r)
 {
     r *= a;
+    r.sort();
     return r;
 }
-
+////////////////////////////////
+template<typename Real, unsigned int N>
+void Polynomial_LD<Real,N>::exchangeMonomial(unsigned int ithMono,unsigned  int jthMono)
+{
+    assert((ithMono<N) && (jthMono<N));
+    Monomial_LD<Real,N> tempo;
+    tempo=listOfMonoMial[ithMono];
+    listOfMonoMial[ithMono]=listOfMonoMial[jthMono];
+    listOfMonoMial[jthMono]=tempo;
+}
+////////////////////////////////
+template<typename Real, unsigned int N>
+void Polynomial_LD<Real,N>::sortByVar(unsigned int idVar)
+{
+    assert(idVar<N);
+    if(idVar==0) //First variable in Rd
+    {
+        for(unsigned int ith=0; ith<N-1; ith++)
+            for(unsigned int jth=ith+1; jth<N; jth++)
+            {
+                if (listOfMonoMial[ith].powers[idVar] < listOfMonoMial[ith].powers[idVar])
+                {
+                    exchangeMonomial(ith,jth);
+                    std::cout<<"====================================================== calling sortByVar here"<<std::endl;
+                }
+            }
+    }
+    else
+    {
+        for(unsigned int ith=0; ith<N-1; ith++)
+            for(unsigned int jth=ith+1; jth<N; jth++)
+            {
+                //Monomial_LD<Real,N> ithMono=listOfMonoMial[ith];
+                //Monomial_LD<Real,N> jthMono=listOfMonoMial[jth];
+                if (   (listOfMonoMial[ith].powers[idVar] < listOfMonoMial[ith].powers[idVar])
+                        && (listOfMonoMial[ith].powers[idVar-1] == listOfMonoMial[ith].powers[idVar-1])	)
+                {
+                    exchangeMonomial(ith,jth);
+                    std::cout<<"====================================================== calling sortByVar here"<<std::endl;
+                }
+            }
+    }
+}
+////////////////////////////////
+template<typename Real, unsigned int N>
+void Polynomial_LD<Real,N>::sort()
+{
+    std::cout<<*this<<"======== calling sort here"<<std::endl;
+    for(unsigned int ithVar=0; ithVar<N; ithVar++)
+    {
+        std::cout<<ithVar<<"====================================================== calling sort here"<<std::endl;
+        this->sortByVar(ithVar);
+    }
+}
 
 } // namespace helper
 
