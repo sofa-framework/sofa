@@ -37,8 +37,112 @@ namespace gpu
 namespace opencl
 {
 
+template<class DataTypes>
+class OpenCLKernelsMechanicalObject;
 
-}
+} // namespace opencl
+
+} // namespace gpu
+
+
+
+
+namespace component
+{
+
+namespace container
+{
+
+template<class TCoord, class TDeriv, class TReal>
+class MechanicalObjectInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> >
+{
+public:
+    typedef gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> DataTypes;
+    typedef MechanicalObject<DataTypes> Main;
+    typedef typename Main::VecId VecId;
+    typedef typename Main::VMultiOp VMultiOp;
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::VecDeriv VecDeriv;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::Deriv Deriv;
+    typedef typename DataTypes::Real Real;
+
+
+    typedef gpu::opencl::OpenCLKernelsMechanicalObject<DataTypes> Kernels;
+
+    /// Temporary storate for dot product operation
+    VecDeriv tmpdot;
+
+    template<class T>
+    class PrefetchOp : public T
+    {
+    public:
+        int id; ///< ID in multi-operation, or -1 if inactive
+        static helper::vector < Main* >& objects()
+        {
+            static helper::vector < Main* > v;
+            return v;
+        }
+        PrefetchOp() : id(-1) {}
+    };
+
+    struct VDot
+    {
+        VecId a;
+        VecId b;
+        int size;
+        double result;
+    };
+    PrefetchOp<VDot> preVDot;
+
+    struct VOp
+    {
+        VecId v;
+        VecId a;
+        VecId b;
+        double f;
+        int size;
+    };
+    PrefetchOp< helper::vector<VOp> > preVOp;
+
+    struct VResetForce
+    {
+        int size;
+    };
+    PrefetchOp< VResetForce > preVResetForce;
+
+    static void accumulateForce(Main* m, bool prefetch = false);
+    static void addDxToCollisionModel(Main* m, bool prefetch = false);
+    static void vAlloc(Main* m, VecId v);
+    static void vOp(Main* m, VecId v, VecId a, VecId b, double f, bool prefetch = false);
+    static void vMultiOp(Main* m, const VMultiOp& ops, bool prefetch = false);
+    static double vDot(Main* m, VecId a, VecId b, bool prefetch = false);
+    static void resetForce(Main* m, bool prefetch = false);
+};
+
+
+// I know using macros is bad design but this is the only way not to repeat the code for all OpenCL types
+#define OpenCLMechanicalObject_DeclMethods(T) \
+	template<> double MechanicalObject< T >::vDot(VecId a, VecId b);					\
+	template<> void MechanicalObject< T >::vOp(VecId v, VecId a, VecId b, double f);	\
+	template<> bool MechanicalObject< T >::canPrefetch() const;							\
+	template<> void MechanicalObject< T >::accumulateForce();							\
+	template <> void MechanicalObject< T >::addDxToCollisionModel();					\
+	template<> void MechanicalObject< T >::resetForce();								\
+	template<> void MechanicalObject< T >::vMultiOp(const VMultiOp& ops);				\
+//*/
+
+
+OpenCLMechanicalObject_DeclMethods(gpu::opencl::OpenCLVec3fTypes);
+OpenCLMechanicalObject_DeclMethods(gpu::opencl::OpenCLVec3f1Types);
+OpenCLMechanicalObject_DeclMethods(gpu::opencl::OpenCLVec3dTypes);
+OpenCLMechanicalObject_DeclMethods(gpu::opencl::OpenCLVec3d1Types);
+
+#undef OpenCLMechanicalObject_DeclMethods
+
+//*/
+
+} // namespace container
 
 } // namespace component
 

@@ -45,9 +45,10 @@ namespace cuda
 template <class T >
 class CudaMemoryManager : public sofa::helper::MemoryManager<T>
 {
+
 public :
     typedef T* host_pointer;
-    typedef void* device_pointer;
+    typedef /*mutable*/ void* device_pointer;
     typedef GLuint gl_buffer;
 
     enum { MAX_DEVICES = 8 };
@@ -138,9 +139,9 @@ public :
         mycudaGLUnregisterBufferObject(bId);
     }
 
-    static bool bufferMapToDevice(device_pointer* dDestPointer, const gl_buffer bSrcId)
+    static bool bufferMapToDevice(void* dDestPointer, const gl_buffer bSrcId)
     {
-        mycudaGLMapBufferObject(dDestPointer, bSrcId);
+        mycudaGLMapBufferObject((void**)dDestPointer, bSrcId);
         return true;
     }
 
@@ -149,6 +150,19 @@ public :
         mycudaGLUnmapBufferObject(bSrcId);
     }
 
+    static device_pointer deviceOffset(device_pointer dPointer,size_t offset)
+    {
+        return (T*)dPointer+offset;
+    }
+
+    static device_pointer null() {return NULL;}
+    static bool isNull(device_pointer p) {return p==NULL;}
+    //static void null(const device_pointer *p){*p=NULL;}
+    static void null(void *p)
+    {
+        void **d = (void**)p;
+        *d =NULL;
+    }
 };
 
 }
