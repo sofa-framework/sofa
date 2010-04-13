@@ -41,6 +41,8 @@ namespace qt
 using sofa::helper::Creator;
 using sofa::helper::fixed_array;
 using namespace sofa::defaulttype;
+using sofa::component::fem::QuadraturePoint;
+using sofa::helper::Polynomial_LD;
 
 SOFA_DECL_CLASS(SimpleDataWidget);
 
@@ -52,6 +54,12 @@ Creator<DataWidgetFactory, SimpleDataWidget<unsigned int> > DWClass_uint("defaul
 Creator<DataWidgetFactory, SimpleDataWidget<float> > DWClass_float("default",true);
 Creator<DataWidgetFactory, SimpleDataWidget<double> > DWClass_double("default",true);
 Creator<DataWidgetFactory, SimpleDataWidget<std::string> > DWClass_string("default",true);
+
+//Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::Polynomial_LD<double,5> > >DWClass_PolynomialLD5d("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::Polynomial_LD<double,4> > >DWClass_PolynomialLD4d("default",true);
+//<DataWidgetFactory, SimpleDataWidget< sofa::helper::Polynomial_LD<double,3> > >DWClass_PolynomialLD3d("default",true);
+//Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::Polynomial_LD<double,2> > >DWClass_PolynomialLD2d("default",true);
+//Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::Polynomial_LD<float, 5> > >DWClass_PolynomialLD5f("default",true);
 
 Creator<DataWidgetFactory, SimpleDataWidget< Vec<1,int> > > DWClass_Vec1i("default",true);
 Creator<DataWidgetFactory, SimpleDataWidget< Vec<1,unsigned int> > > DWClass_Vec1u("default",true);
@@ -92,6 +100,11 @@ Creator<DataWidgetFactory, SimpleDataWidget< fixed_array<unsigned int,8> > > DWC
 Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::Quater<float> > > DWClass_Quatf("default",true);
 Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::Quater<double> > > DWClass_Quatd("default",true);
 
+Creator<DataWidgetFactory, SimpleDataWidget< sofa::component::fem::QuadraturePoint< Vec3f > > >DWClass_QPf("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< sofa::component::fem::QuadraturePoint< Vec3d > > >DWClass_QPd("default",true);
+
+
+
 Creator<DataWidgetFactory, SimpleDataWidget< Mat<2,2,float> > > DWClass_Mat22f("default",true);
 Creator<DataWidgetFactory, SimpleDataWidget< Mat<2,2,double> > > DWClass_Mat22d("default",true);
 Creator<DataWidgetFactory, SimpleDataWidget< Mat<2,3,float> > > DWClass_Mat23f("default",true);
@@ -104,6 +117,8 @@ Creator<DataWidgetFactory, SimpleDataWidget< Mat<4,4,float> > > DWClass_Mat44f("
 Creator<DataWidgetFactory, SimpleDataWidget< Mat<4,4,double> > > DWClass_Mat44d("default",true);
 Creator<DataWidgetFactory, SimpleDataWidget< Mat<6,6,float> > > DWClass_Mat66f("default",true);
 Creator<DataWidgetFactory, SimpleDataWidget< Mat<6,6,double> > > DWClass_Mat66d("default",true);
+
+
 
 } // namespace qt
 

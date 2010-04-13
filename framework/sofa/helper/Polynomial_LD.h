@@ -162,13 +162,13 @@ class Polynomial_LD
 
 public :
 
-    typedef list< Monomial_LD<Real,N> > MonomialsList;
+    typedef sofa::helper::vector< Monomial_LD<Real,N> > MonomialsList;
     typedef typename MonomialsList::const_iterator MonomialConstIterator;
     typedef typename MonomialsList::iterator MonomialIterator;
     typedef sofa::defaulttype::Vec<N,Real> RNpoint;
 
     int nbOfMonomial;
-    std::list< Monomial_LD<Real,N> > listOfMonoMial;
+    sofa::helper::vector< Monomial_LD<Real,N> > listOfMonoMial;
 
     ///Default constructor
     Polynomial_LD();
@@ -220,13 +220,14 @@ public :
     void setnbOfMonomial(int m_nbofmonomial);
     void writeToStream(std::ostream & stream) const;
     void readFromStream(std::istream & stream);
+    std::string getString() const;
 
     template<typename FReal, unsigned int FN>
-    inline friend ostream & operator<<(std::ostream & stream, const Polynomial_LD<FReal,FN> & m_polynomial )
+    inline friend std::ostream & operator<<(std::ostream & stream, const Polynomial_LD<FReal,FN> & m_polynomial )
     {m_polynomial.writeToStream(stream); return stream;}
 
     template<typename FReal, unsigned int FN>
-    inline friend istream & operator>>(std::istream & stream, Polynomial_LD<FReal,FN> & m_polynomial )
+    inline friend std::istream & operator>>(std::istream & stream, Polynomial_LD<FReal,FN> & m_polynomial )
     {m_polynomial.readFromStream(stream); return stream;}
 
     ///Comutativity of operator*(Real):
@@ -241,81 +242,13 @@ public :
 
 protected :
 
-    ///The sort must be done after each operation.
-    void Sort();  // don't forget to erase all null coef term
+    ///The sort must be done after each constructor and each operation where monomials are inserted
+    void Sort();  // todo
 };
 
 
 ////////////////////////////////
 
-
-
-///////////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////////
-/*
-template<class TDataTypes>
-void TestPolynomial()
-{
-	typedef TDataTypes DataTypes;
-	typedef typename DataTypes::Coord Coord;
-	typedef typename Coord::value_type Real;
-
-
-	sofa::component::fem::Monomial_LD<Real,3> m;
-	sofa::component::fem::Monomial_LD<Real,3> m1(1.,1,2,3);
-	sofa::component::fem::Monomial_LD<Real,3> m2(2.,4,5,6);
-
-
-	m.Set(5.,8,6,9);m.SetCoef(5.);    m.SetPower(2,4);
-	if (m.isNULL()) cout<<"TRUE"<<endl; else cout<<"FALSE"<<endl;
-	m=m1;m.SetCoef(100.);
-	if (m.isNULL()) cout<<"TRUE"<<endl; else cout<<"FALSE"<<endl;
-
-
-
-	if (p1==p2) cout<<"(p1==p2) : TRUE"<<endl; else cout<<"(p1==p2) : FALSE"<<endl;
-	p1=p2;
-	if (p1==p2) cout<<"(p1==p2) : TRUE"<<endl; else cout<<"(p1==p2) : FALSE"<<endl;
-
-
-
-	//sofa::component::fem::Polynomial_LD<Real,3> p2=p.d(1);
-	//int * power = {1,4,5};
-	//vector<int> powers;powers.push_back(5);powers.push_back(10);powers.push_back(15);
-	vector<Real> x;x.push_back(2.);x.push_back(2.);x.push_back(5.);
-	//power[0]=1;power[1]=4;power[0]=5;////////////////////////////////////////
-	//p.SetCoef(100.);
-	//p.SetPower(powers);
-	//cout<<m<<"  "<<m.degree()<<endl;cout<<m1<<"  "<<m1.degree()<<endl;cout<<m2<<"  "<<m2.degree()<<endl;
-	//cout<<"===================================================="<<endl<<endl;
-	//m2=m1;
-	//m2.SetPower(2,3);
-	//m1=m2.d(2);
-	//cout<<"m2 :"<<m2<<endl;
-	//cout<<"m1 :"<<m1<<"  "<<m1.degree()<<"     "<<m1(x)<<"        "<<m1(2,x)<<endl;
-
-
-	sofa::component::fem::Monomial_LD<Real,3> mono(1.,2,4,8);
-	sofa::component::fem::Polynomial_LD<Real,3> p(mono);
-	sofa::component::fem::Polynomial_LD<Real,3> p1(3,-1.,1,1,1,2.,2,2,2,-3.,3,3,3);
-	//sofa::component::fem::Polynomial_LD<Real,3> p1(2,-1.,1,1,1,2.,2,2,2);
-	sofa::component::fem::Polynomial_LD<Real,3> p2(3,1.,1,2,3,4.,4,5,6,10.,10,20,30);
-
-	vector<Real> x;x.push_back(10.);x.push_back(1.);x.push_back(2.);
-
-	cout<<"p   :"<<p <<"   p.degree()   "<< p.degree()<<endl;
-	cout<<"p1  :"<<p1<<"   p1.degree()  "<< p1.degree()<<endl;
-	cout<<"p2  :"<<p2<<"   p2.degree()  "<< p2.degree()<<endl;
-	cout<<"================================================================="<<endl<<endl;
-
-	int iderive=2;
-	//p1 = p2.d(iderive);
-	cout<<"p1  :"<<p1<<"   p1.degree()  "<< p1.degree()<<endl
-			 <<"   evaluating  "<<p1(x)<<"  evaluating derivative     "<<p1(iderive,x)<<endl;
-
-
-}
-*/
 ///////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////
 
