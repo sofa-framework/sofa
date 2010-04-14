@@ -130,14 +130,6 @@ public :
     void writeToStream(std::ostream & ff) const;
     void readFromStream(std::istream & ff);
 
-    template<typename FReal, unsigned int FN>
-    inline friend std::ostream & operator <<(std::ostream & out,const Monomial_LD<FReal,FN> & m_monomial)
-    {m_monomial.writeToStream(out); return out;}
-
-    template<typename FReal, unsigned int FN>
-    inline friend std::istream & operator >>(std::istream & in, Monomial_LD<FReal,FN> & m_monomial)
-    {m_monomial.readFromStream(in); return in;}
-
     template<typename FReal, unsigned int FN> //For comutativity of operator *: Monomial_LD*Real || Real*Monomial_LD.
     friend Monomial_LD<FReal,FN> & operator*(const FReal & alpha,Monomial_LD<FReal,FN> & r);
 
@@ -217,14 +209,6 @@ public :
     void readFromStream(std::istream & stream);
     std::string getString() const;
 
-    template<typename FReal, unsigned int FN>
-    inline friend std::ostream & operator<<(std::ostream & stream, const Polynomial_LD<FReal,FN> & m_polynomial )
-    {m_polynomial.writeToStream(stream); return stream;}
-
-    template<typename FReal, unsigned int FN>
-    inline friend std::istream & operator>>(std::istream & stream, Polynomial_LD<FReal,FN> & m_polynomial )
-    {m_polynomial.readFromStream(stream); m_polynomial.sort(); return stream;}
-
     ///Comutativity of operator*(Real):
     ///Allowing to write p1=r*p2;   or   p1=p2*r;
     ///Polynomial_LD =  Polynomial_LD*Real || Real*Polynomial_LD.
@@ -241,12 +225,28 @@ protected :
     ///The sort must be done after each constructor and each operation where monomials are inserted
     void exchangeMonomial(unsigned int ithMono,unsigned  int jthMono);
     void sortByVar(unsigned int idVar);
+
     // todo
 };
+///////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////
+template<typename FReal, unsigned int FN>
+inline std::ostream & operator <<(std::ostream & out,const Monomial_LD<FReal,FN> & m_monomial)
+{m_monomial.writeToStream(out); return out;}
 
+template<typename FReal, unsigned int FN>
+inline std::istream & operator >>(std::istream & in, Monomial_LD<FReal,FN> & m_monomial)
+{m_monomial.readFromStream(in); return in;}
 
-////////////////////////////////
+///////////////////////////////////////////
 
+template<typename FReal, unsigned int FN>
+inline std::ostream & operator<<(std::ostream & stream, const Polynomial_LD<FReal,FN> & m_polynomial )
+{m_polynomial.writeToStream(stream); return stream;}
+
+template<typename FReal, unsigned int FN>
+inline std::istream & operator>>(std::istream & stream, Polynomial_LD<FReal,FN> & m_polynomial )
+{m_polynomial.readFromStream(stream); m_polynomial.sort(); return stream;}
 ///////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////
 

@@ -611,16 +611,16 @@ void Polynomial_LD<Real,N>::readFromStream(std::istream & stream)
         if (stream >> tempo) (*it)=tempo;
         ++it;
     }
-    this->sort();
+    sort();
     //std::cout<<"     Polynomial :"<<*this<<std::endl;/////////////////////////////////////////////
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
 std::string  Polynomial_LD<Real,N>::getString() const
 {
-    std::ostringstream toto;
-    toto<<(*this);
-    return toto.str();
+    std::ostringstream m_outstream;
+    m_outstream<<(*this);
+    return m_outstream.str();
 }
 ////////////////////////////////
 template< typename FReal, unsigned int FN >
@@ -651,31 +651,26 @@ void Polynomial_LD<Real,N>::exchangeMonomial(unsigned int ithMono,unsigned  int 
 template<typename Real, unsigned int N>
 void Polynomial_LD<Real,N>::sortByVar(unsigned int idVar)
 {
-    assert(idVar<N);
     if(idVar==0) //First variable in Rd
     {
-        for(unsigned int ith=0; ith<N-1; ith++)
-            for(unsigned int jth=ith+1; jth<N; jth++)
+        for(unsigned int ith=0; ith < listOfMonoMial.size()-1; ith++)
+            for(unsigned int jth=ith+1; jth < listOfMonoMial.size(); jth++)
             {
-                if (listOfMonoMial[ith].powers[idVar] < listOfMonoMial[ith].powers[idVar])
+                if (listOfMonoMial[ith].powers[idVar] < listOfMonoMial[jth].powers[idVar])
                 {
                     exchangeMonomial(ith,jth);
-                    std::cout<<"====================================================== calling sortByVar here"<<std::endl;
                 }
             }
     }
     else
     {
-        for(unsigned int ith=0; ith<N-1; ith++)
-            for(unsigned int jth=ith+1; jth<N; jth++)
+        for(unsigned int ith=0; ith<listOfMonoMial.size()-1; ith++)
+            for(unsigned int jth=ith+1; jth<listOfMonoMial.size(); jth++)
             {
-                //Monomial_LD<Real,N> ithMono=listOfMonoMial[ith];
-                //Monomial_LD<Real,N> jthMono=listOfMonoMial[jth];
-                if (   (listOfMonoMial[ith].powers[idVar] < listOfMonoMial[ith].powers[idVar])
+                if (   (listOfMonoMial[ith].powers[idVar] < listOfMonoMial[jth].powers[idVar])
                         && (listOfMonoMial[ith].powers[idVar-1] == listOfMonoMial[ith].powers[idVar-1])	)
                 {
                     exchangeMonomial(ith,jth);
-                    std::cout<<"====================================================== calling sortByVar here"<<std::endl;
                 }
             }
     }
@@ -684,11 +679,52 @@ void Polynomial_LD<Real,N>::sortByVar(unsigned int idVar)
 template<typename Real, unsigned int N>
 void Polynomial_LD<Real,N>::sort()
 {
-    std::cout<<*this<<"======== calling sort here"<<std::endl;
+    /*
+    MonomialIterator ita=listOfMonoMial.begin();
+    while(ita != listOfMonoMial.end())
+    {
+    	for(MonomialConstIterator itb=b.listOfMonoMial.begin();itb != b.listOfMonoMial.end();++itb)
+    	{
+    		Monomial_LD<Real,N> multipSimple=(*ita)*(*itb);
+    		listOfMonoMial.insert(ita,multipSimple);nbOfMonomial++;
+    	}
+    	ita=listOfMonoMial.erase(ita);
+    	//++ita;
+    }
+    */
+    std::cout<<"========================================================================="<<std::endl;
+
+    //fusion all monomials which differ only the coef
+
+    for(MonomialIterator ita=listOfMonoMial.begin(); ita != listOfMonoMial.end() ; ++ita)
+    {
+        MonomialIterator itb=ita; itb++;
+        if (itb==listOfMonoMial.end()) break;
+
+        while(itb!=listOfMonoMial.end())
+        {
+            if ((*ita).isSamePowers((*itb)))
+            {
+                (*ita).coef += (*itb).coef;
+                itb=listOfMonoMial.erase(itb); itb--;
+            }
+            ++itb;
+        }
+    }
+
+
+    //Eliminate all term null monomial
+    for(MonomialIterator ita=listOfMonoMial.begin(); ita != listOfMonoMial.end() ; ++ita)
+    {
+        if ((*ita).coef == 0)
+        {
+            ita=listOfMonoMial.erase(ita); ita--;
+        }
+    }
+
     for(unsigned int ithVar=0; ithVar<N; ithVar++)
     {
-        std::cout<<ithVar<<"====================================================== calling sort here"<<std::endl;
-        this->sortByVar(ithVar);
+        sortByVar(ithVar);
     }
 }
 
