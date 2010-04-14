@@ -387,12 +387,12 @@ void LineModel::updateFromTopology()
 
 void LineModel::draw(int index)
 {
-    Line t(this,index);
-    if (!t.activated)
+    Line l(this,index);
+    if (!l.activated())
         return;
     glBegin(GL_LINES);
-    helper::gl::glVertexT(t.p1());
-    helper::gl::glVertexT(t.p2());
+    helper::gl::glVertexT(l.p1());
+    helper::gl::glVertexT(l.p2());
     glEnd();
 }
 
@@ -413,11 +413,11 @@ void LineModel::draw()
         std::vector< Vector3 > points;
         for (int i=0; i<size; i++)
         {
-            Line t(this,i);
-            if(t.activated)
+            Line l(this,i);
+            if(l.activated())
             {
-                points.push_back(t.p1());
-                points.push_back(t.p2());
+                points.push_back(l.p1());
+                points.push_back(l.p2());
             }
         }
 
