@@ -42,7 +42,7 @@ int PrecomputedWarpPreconditionerClass = core::RegisterObject("Linear system sol
 #ifndef SOFA_FLOAT
         .add< PrecomputedWarpPreconditioner< defaulttype::Vec3dTypes , SparseMatrix<double>, FullVector<double> > >()
 #endif
-#ifndef SOFA_DOUBLES
+#ifndef SOFA_DOUBLE
         .add< PrecomputedWarpPreconditioner< defaulttype::Vec3fTypes , SparseMatrix<float>, FullVector<float> > >()
 #endif
         ;
