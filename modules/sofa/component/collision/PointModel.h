@@ -60,8 +60,7 @@ public:
 
     bool testLMD(const Vector3 &, double &, double &);
 
-    bool activated;
-
+    bool activated(core::CollisionModel *cm = 0) const;
 };
 
 class PointActiver
@@ -69,7 +68,7 @@ class PointActiver
 public:
     PointActiver() {}
     virtual ~PointActiver() {}
-    virtual bool activePoint(int /*index*/) {return true;}
+    virtual bool activePoint(int /*index*/, core::CollisionModel * /*cm*/ = 0) {return true;}
 };
 
 class SOFA_COMPONENT_COLLISION_API PointModel : public core::CollisionModel
@@ -146,14 +145,13 @@ protected:
 inline Point::Point(PointModel* model, int index)
     : core::TCollisionElementIterator<PointModel>(model, index)
 {
-    activated =model->myActiver->activePoint(index);
+
 }
 
 inline Point::Point(core::CollisionElementIterator& i)
     : core::TCollisionElementIterator<PointModel>(static_cast<PointModel*>(i.getCollisionModel()), i.getIndex())
 {
-    PointModel* CM = static_cast<PointModel*>(i.getCollisionModel());
-    activated = CM->myActiver->activePoint(i.getIndex());
+
 }
 
 inline const Vector3& Point::p() const { return (*model->mstate->getX())[index]; }
@@ -163,6 +161,11 @@ inline const Vector3& Point::pFree() const { return (*model->mstate->getXfree())
 inline const Vector3& Point::v() const { return (*model->mstate->getV())[index]; }
 
 inline Vector3 Point::n() const { return ((unsigned)index<model->normals.size()) ? model->normals[index] : Vector3(); }
+
+inline bool Point::activated(core::CollisionModel *cm) const
+{
+    return model->myActiver->activePoint(index, cm);
+}
 
 //bool Point::testLMD(const Vector3 &PQ, double &coneFactor, double &coneExtension);
 

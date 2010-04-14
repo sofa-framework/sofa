@@ -65,7 +65,7 @@ public:
     const Vector3& v1() const;
     const Vector3& v2() const;
 
-    bool activated;
+    bool activated(core::CollisionModel *cm = 0) const;
 
     // Return respectively the Vertex composing the neighbor Rigt and Left Triangle
 //	const Vector3* tRight() const;
@@ -77,7 +77,7 @@ class LineActiver
 public:
     LineActiver() {}
     virtual ~LineActiver() {}
-    virtual bool activeLine(int /*index*/) {return true;}
+    virtual bool activeLine(int /*index*/, core::CollisionModel * /*cm*/ = 0) {return true;}
 };
 
 class SOFA_COMPONENT_COLLISION_API LineModel : public core::CollisionModel
@@ -166,14 +166,14 @@ protected:
 inline Line::Line(LineModel* model, int index)
     : core::TCollisionElementIterator<LineModel>(model, index)
 {
-    activated =model->myActiver->activeLine(index);
+//	activated = model->myActiver->activeLine(index);
 }
 
 inline Line::Line(core::CollisionElementIterator& i)
     : core::TCollisionElementIterator<LineModel>(static_cast<LineModel*>(i.getCollisionModel()), i.getIndex())
 {
-    LineModel* CM = static_cast<LineModel*>(i.getCollisionModel());
-    activated = CM->myActiver->activeLine(i.getIndex());
+//	LineModel* CM = static_cast<LineModel*>(i.getCollisionModel());
+//	activated = CM->myActiver->activeLine(i.getIndex());
 }
 
 inline unsigned Line::i1() const { return model->elems[index].i1; }
@@ -187,6 +187,11 @@ inline const Vector3& Line::p2Free() const { return (*model->mstate->getXfree())
 
 inline const Vector3& Line::v1() const { return (*model->mstate->getV())[model->elems[index].i1]; }
 inline const Vector3& Line::v2() const { return (*model->mstate->getV())[model->elems[index].i2]; }
+
+inline bool Line::activated(core::CollisionModel *cm) const
+{
+    return model->myActiver->activeLine(index, cm);
+}
 
 //inline const Vector3* Line::tRight() const {
 //	if (model->elems[index].tRight != -1)

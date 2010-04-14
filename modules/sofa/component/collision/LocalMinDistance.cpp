@@ -123,9 +123,8 @@ int LocalMinDistance::computeIntersection(Cube&, Cube&, OutputVector* /*contacts
 
 bool LocalMinDistance::testIntersection(Line& e1, Line& e2)
 {
-    if(!e1.activated || !e2.activated)
+    if(!e1.activated(e2.getCollisionModel()) || !e2.activated(e1.getCollisionModel()))
     {
-
         return false;
     }
 
@@ -211,7 +210,7 @@ int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* cont
     //}
 
 
-    if(!e1.activated || !e2.activated)
+    if(!e1.activated(e2.getCollisionModel()) || !e2.activated(e1.getCollisionModel()))
     {
         if(debug)
             std::cout<<" not activated"<<std::endl;
@@ -338,7 +337,7 @@ int LocalMinDistance::computeIntersection(Line& e1, Line& e2, OutputVector* cont
 
 bool LocalMinDistance::testIntersection(Triangle& e2, Point& e1)
 {
-    if(!e1.activated)
+    if(!e1.activated(e2.getCollisionModel()))
         return false;
 
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
@@ -427,7 +426,7 @@ bool LocalMinDistance::testIntersection(Triangle& e2, Point& e1)
 
 int LocalMinDistance::computeIntersection(Triangle& e2, Point& e1, OutputVector* contacts)
 {
-    if(!e1.activated)
+    if(!e1.activated(e2.getCollisionModel()))
         return 0;
 
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
@@ -533,7 +532,7 @@ int LocalMinDistance::computeIntersection(Triangle& e2, Point& e1, OutputVector*
 bool LocalMinDistance::testIntersection(Line& e2, Point& e1)
 {
 
-    if(!e1.activated || !e2.activated)
+    if(!e1.activated(e2.getCollisionModel()) || !e2.activated(e1.getCollisionModel()))
         return false;
 
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
@@ -600,7 +599,7 @@ bool LocalMinDistance::testIntersection(Line& e2, Point& e1)
 
 int LocalMinDistance::computeIntersection(Line& e2, Point& e1, OutputVector* contacts)
 {
-    if(!e1.activated || !e2.activated)
+    if(!e1.activated(e2.getCollisionModel()) || !e2.activated(e1.getCollisionModel()))
         return 0;
 
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
@@ -702,7 +701,7 @@ int LocalMinDistance::computeIntersection(Line& e2, Point& e1, OutputVector* con
 
 bool LocalMinDistance::testIntersection(Point& e1, Point& e2)
 {
-    if(!e1.activated || !e2.activated)
+    if(!e1.activated(e2.getCollisionModel()) || !e2.activated(e1.getCollisionModel()))
         return 0;
 
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
@@ -750,7 +749,7 @@ bool LocalMinDistance::testIntersection(Point& e1, Point& e2)
 
 int LocalMinDistance::computeIntersection(Point& e1, Point& e2, OutputVector* contacts)
 {
-    if(!e1.activated || !e2.activated)
+    if(!e1.activated(e2.getCollisionModel()) || !e2.activated(e1.getCollisionModel()))
         return 0;
 
     const double alarmDist = getAlarmDistance() + e1.getProximity() + e2.getProximity();
@@ -924,7 +923,7 @@ bool LocalMinDistance::testIntersection(Line& e2, Sphere& e1)
 {
     return false;
 
-    if(!e2.activated)
+    if(!e2.activated(e1.getCollisionModel()))
         return false;
 
     const double alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
@@ -962,7 +961,7 @@ int LocalMinDistance::computeIntersection(Line& e2, Sphere& e1, OutputVector* co
 {
 
     return 0;
-    if(!e2.activated)
+    if(!e2.activated(e1.getCollisionModel()))
         return 0;
 
     const double alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
@@ -1010,7 +1009,7 @@ bool LocalMinDistance::testIntersection(Sphere& e1, Point& e2)
 {
     return false;
 
-    if( !e2.activated)
+    if( !e2.activated(e1.getCollisionModel()))
         return false;
 
     const double alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
@@ -1032,7 +1031,7 @@ int LocalMinDistance::computeIntersection(Sphere& e1, Point& e2, OutputVector* c
 {
     return 0;
 
-    if(!e2.activated)
+    if(!e2.activated(e1.getCollisionModel()))
         return 0;
 
     const double alarmDist = getAlarmDistance() + e1.r() + e1.getProximity() + e2.getProximity();
@@ -1137,8 +1136,8 @@ bool LocalMinDistance::testValidity(Point &p, const Vector3 &PQ)
     if (!filterIntersection.getValue())
         return true;
 
-    if (!p.activated)
-        std::cout<<"Problem testValidity on inactive point"<<std::endl;
+//	if (!p.activated)
+//		std::cout<<"Problem testValidity on inactive point"<<std::endl;
 
 
 
@@ -1231,8 +1230,8 @@ bool LocalMinDistance::testValidity(Line &l, const Vector3 &PQ)
     if (!filterIntersection.getValue())
         return true;
 
-    if (!l.activated)
-        std::cout<<"Problem testValidity on inactive point"<<std::endl;
+//	if (!l.activated)
+//		std::cout<<"Problem testValidity on inactive point"<<std::endl;
 
     LineModel *lM = l.getCollisionModel();
     bool bothSide_computation = lM->bothSide.getValue();

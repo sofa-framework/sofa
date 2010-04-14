@@ -130,17 +130,17 @@ void PointModel::init()
 
 void PointModel::draw(int index)
 {
-    Point t(this,index);
-    if (!t.activated)
+    Point p(this,index);
+    if (!p.activated())
         return;
     glBegin(GL_POINTS);
-    helper::gl::glVertexT(t.p());
+    helper::gl::glVertexT(p.p());
     glEnd();
     if ((unsigned)index < normals.size())
     {
         glBegin(GL_LINES);
-        helper::gl::glVertexT(t.p());
-        helper::gl::glVertexT(t.p()+normals[index]*0.1f);
+        helper::gl::glVertexT(p.p());
+        helper::gl::glVertexT(p.p()+normals[index]*0.1f);
         glEnd();
     }
 }
@@ -164,14 +164,14 @@ void PointModel::draw()
         std::vector< Vector3 > pointsL;
         for (int i = 0; i < size; i++)
         {
-            Point t(this,i);
-            if (t.activated)
+            Point p(this,i);
+            if (p.activated())
             {
-                pointsP.push_back(t.p());
+                pointsP.push_back(p.p());
                 if ((unsigned)i < normals.size())
                 {
-                    pointsL.push_back(t.p());
-                    pointsL.push_back(t.p()+normals[i]*0.1f);
+                    pointsL.push_back(p.p());
+                    pointsL.push_back(p.p()+normals[i]*0.1f);
                 }
             }
         }
