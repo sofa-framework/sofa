@@ -41,8 +41,6 @@ namespace qt
 using sofa::helper::Creator;
 using sofa::helper::fixed_array;
 using namespace sofa::defaulttype;
-using sofa::component::fem::QuadraturePoint;
-using sofa::helper::Polynomial_LD;
 
 SOFA_DECL_CLASS(SimpleDataWidget);
 
@@ -97,6 +95,10 @@ Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::Quater<float> > > DWC
 Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::Quater<double> > > DWClass_Quatd("default",true);
 
 #ifdef  SOFA_DEV
+
+using sofa::component::fem::QuadraturePoint;
+using sofa::helper::Polynomial_LD;
+
 Creator<DataWidgetFactory, SimpleDataWidget< sofa::component::fem::QuadraturePoint< Vec3f > > >DWClass_QPf("default",true);
 Creator<DataWidgetFactory, SimpleDataWidget< sofa::component::fem::QuadraturePoint< Vec3d > > >DWClass_QPd("default",true);
 //Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::Polynomial_LD<double,5> > >DWClass_PolynomialLD5d("default",true);
