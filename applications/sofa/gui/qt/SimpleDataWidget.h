@@ -36,9 +36,10 @@
 #include "WFloatLineEdit.h"
 #include <limits.h>
 
+#ifdef SOFA_DEV
 #include <sofa/component/fem/QuadratureFormular.h>
 #include <sofa/helper/Polynomial_LD.inl>
-
+#endif
 
 #if !defined(INFINITY)
 #define INFINITY 9.0e10
@@ -185,37 +186,6 @@ public:
         this->getData()->virtualSetValue(d);
     }
     virtual unsigned int numColumnWidget() { return 3; }
-};
-
-////////////////////////////////////////////////////////////////
-/// sofa::helper::Polynomial_LD support
-////////////////////////////////////////////////////////////////
-using sofa::helper::Polynomial_LD;
-
-template<typename Real, unsigned int N>
-class data_widget_trait < Polynomial_LD<Real,N> >
-{
-public:
-    typedef Polynomial_LD<Real,N> data_type;
-    typedef QLineEdit Widget;
-    static Widget* create(QWidget* parent, const data_type& )
-    {
-        Widget* w = new Widget(parent);
-        return w;
-    }
-    static void readFromData(Widget* w, const data_type& d)
-    {
-        unsigned int m_length=d.getString().length();
-        w->setMaxLength(m_length+2); w->setReadOnly(true);
-        w->setText(QString(d.getString().c_str()));
-    }
-    static void writeToData(Widget* , data_type& )
-    {
-    }
-    static void connectChanged(Widget* w, DataWidget* datawidget)
-    {
-        datawidget->connect(w, SIGNAL( textChanged(const QString&) ), datawidget, SLOT(setWidgetDirty()) );
-    }
 };
 
 ////////////////////////////////////////////////////////////////
@@ -673,7 +643,7 @@ public:
 template<class T>
 class data_widget_container < Quater<T> > : public fixed_vector_data_widget_container < Quater<T> >
 {};
-
+#ifdef SOFA_DEV
 
 ////////////////////////////////////////////////////////////////
 /// sofa::component::fem::QuadratureFormular support
@@ -719,6 +689,39 @@ class data_widget_container < QuadraturePoint<VecN > >
     : public fixed_vector_data_widget_container < QuadraturePoint<VecN > >
 {};
 
+
+////////////////////////////////////////////////////////////////
+/// sofa::helper::Polynomial_LD support
+////////////////////////////////////////////////////////////////
+using sofa::helper::Polynomial_LD;
+
+template<typename Real, unsigned int N>
+class data_widget_trait < Polynomial_LD<Real,N> >
+{
+public:
+    typedef Polynomial_LD<Real,N> data_type;
+    typedef QLineEdit Widget;
+    static Widget* create(QWidget* parent, const data_type& )
+    {
+        Widget* w = new Widget(parent);
+        return w;
+    }
+    static void readFromData(Widget* w, const data_type& d)
+    {
+        unsigned int m_length=d.getString().length();
+        w->setMaxLength(m_length+2); w->setReadOnly(true);
+        w->setText(QString(d.getString().c_str()));
+    }
+    static void writeToData(Widget* , data_type& )
+    {
+    }
+    static void connectChanged(Widget* w, DataWidget* datawidget)
+    {
+        datawidget->connect(w, SIGNAL( textChanged(const QString&) ), datawidget, SLOT(setWidgetDirty()) );
+    }
+};
+
+#endif
 ////////////////////////////////////////////////////////////////
 /// sofa::defaulttype::Mat support
 ////////////////////////////////////////////////////////////////
