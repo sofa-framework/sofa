@@ -94,18 +94,24 @@ Creator<DataWidgetFactory, SimpleDataWidget< fixed_array<unsigned int,8> > > DWC
 Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::Quater<float> > > DWClass_Quatf("default",true);
 Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::Quater<double> > > DWClass_Quatd("default",true);
 
-#ifdef  SOFA_DEV
+#ifdef SOFA_DEV
 
 using sofa::component::fem::QuadraturePoint;
 using sofa::helper::Polynomial_LD;
 
 Creator<DataWidgetFactory, SimpleDataWidget< sofa::component::fem::QuadraturePoint< Vec3f > > >DWClass_QPf("default",true);
 Creator<DataWidgetFactory, SimpleDataWidget< sofa::component::fem::QuadraturePoint< Vec3d > > >DWClass_QPd("default",true);
-//Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::Polynomial_LD<double,5> > >DWClass_PolynomialLD5d("default",true);
+
+Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::Polynomial_LD<double,5> > >DWClass_PolynomialLD5d("default",true);
 Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::Polynomial_LD<double,4> > >DWClass_PolynomialLD4d("default",true);
-//<DataWidgetFactory, SimpleDataWidget< sofa::helper::Polynomial_LD<double,3> > >DWClass_PolynomialLD3d("default",true);
-//Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::Polynomial_LD<double,2> > >DWClass_PolynomialLD2d("default",true);
-//Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::Polynomial_LD<float, 5> > >DWClass_PolynomialLD5f("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::Polynomial_LD<double,3> > >DWClass_PolynomialLD3d("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::Polynomial_LD<double,2> > >DWClass_PolynomialLD2d("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::Polynomial_LD<double,1> > >DWClass_PolynomialLD1d("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::Polynomial_LD<float ,5> > >DWClass_PolynomialLD5f("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::Polynomial_LD<float ,4> > >DWClass_PolynomialLD4f("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::Polynomial_LD<float ,3> > >DWClass_PolynomialLD3f("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::Polynomial_LD<float ,2> > >DWClass_PolynomialLD2f("default",true);
+Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::Polynomial_LD<float ,1> > >DWClass_PolynomialLD1f("default",true);
 #endif
 
 Creator<DataWidgetFactory, SimpleDataWidget< Mat<2,2,float> > > DWClass_Mat22f("default",true);
