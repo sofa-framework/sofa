@@ -74,8 +74,8 @@ public:
 
 protected:
 
-    Data<unsigned> myData;
-
+    Data<unsigned> customUnsignedData;
+    Data<unsigned> regularUnsignedData;
 private:
 
 };

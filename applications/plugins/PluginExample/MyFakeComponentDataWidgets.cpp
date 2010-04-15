@@ -28,12 +28,12 @@ bool CustomDataUnsignedWidget::createWidgets()
     qslider->setRange(0,100);
     qslider->setValue((int)myData_value);
 
-    QString label1_text("myData current value = ");
+    QString label1_text("Data current value = ");
     label1_text.append(getData()->getValueString().c_str());
     label1 = new QLabel(this);
     label1->setText( label1_text );
 
-    QString label2_text = "myData value after updating = ";
+    QString label2_text = "Data value after updating = ";
     label2_text.append( QString().setNum(qslider->value()) );
     label2 = new QLabel(this);
     label2->setText( label2_text );
