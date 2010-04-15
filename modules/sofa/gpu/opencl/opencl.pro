@@ -32,35 +32,29 @@ LIBS += -lsofacomponentmisc$$LIBSUFFIX
 LIBS += -lsofacomponent$$LIBSUFFIX
 LIBS += $$SOFA_EXT_LIBS
 
-
 include(0Core.pro)
 include(0MechanicalObject.pro)
 include(0MemoryManager.pro)
+include(0PlaneForceField.pro)
+include(0SphereForceField.pro)
+include(0SpringForceField.pro)
+
 include(tools/tools.pro)
 
-HEADERS += OpenCLFixedConstraint.h \
+
+HEADERS += OpenCLBoxROI.h \
+    OpenCLBoxROI.inl \
+    OpenCLFixedConstraint.h \
     OpenCLFixedConstraint.inl \
     OpenCLIdentityMapping.h \
     OpenCLIdentityMapping.inl \
-    OpenCLPlaneForceField.h \
-    OpenCLPlaneForceField.inl \
-    OpenCLSphereForceField.h \
-    OpenCLSphereForceField.inl \
     OpenCLUniformMass.h \
-    OpenCLUniformMass.inl \
-    OpenCLSpringForceField.h \
-	OpenCLSpringForceField.inl
+	OpenCLUniformMass.inl
 
 SOURCES += OpenCLBoxROI.cpp \
     OpenCLFixedConstraint.cpp \
     OpenCLIdentityMapping.cpp \
-    OpenCLSpringForceField.cpp \
-    OpenCLPlaneForceField.cpp \
-    OpenCLSphereForceField.cpp \
-	OpenCLUniformMass.cpp
+    OpenCLUniformMass.cpp
 
 include(kernels/kernels.pro)
-
-
-
 

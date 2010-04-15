@@ -27,6 +27,8 @@
 #include <sofa/component/forcefield/BoxStiffSpringForceField.inl>
 #include <sofa/core/ObjectFactory.h>
 
+#define DEBUG_TEXT(t) printf("\t%s\t %s %d\n",t,__FILE__,__LINE__);
+
 namespace sofa
 {
 
@@ -110,6 +112,69 @@ int BoxStiffSpringForceFieldOpenCLClass = core::RegisterObject("Supports GPU-sid
         .add< component::forcefield::BoxStiffSpringForceField<OpenCLVec3dTypes> >()
         .add< component::forcefield::BoxStiffSpringForceField<OpenCLVec3d1Types> >()
         ;
+
+
+
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////
+//            kernels
+
+//
+//
+//void SpringForceFieldOpenCL3f_addForce(unsigned int /*nbVertex*/, unsigned int /*nbSpringPerVertex*/, const _device_pointer /*springs*/, _device_pointer/*f*/, const _device_pointer/*x*/, const _device_pointer/*v*/){DEBUG_TEXT("no implemented");}
+//void SpringForceFieldOpenCL3f_addExternalForce(unsigned int /*nbVertex*/, unsigned int /*nbSpringPerVertex*/, const _device_pointer /*springs*/, _device_pointer/*f1*/, const _device_pointer/*x1*/, const _device_pointer/*v1*/, const _device_pointer/*x1*/, const _device_pointer/*v2*/){DEBUG_TEXT("no implemented");}
+//void StiffSpringForceFieldOpenCL3f_addForce(unsigned int /*nbVertex*/, unsigned int /*nbSpringPerVertex*/, const _device_pointer /*springs*/, _device_pointer/*f*/, const _device_pointer/*x*/, const _device_pointer/*v*/, _device_pointer/*dfdx*/){DEBUG_TEXT("no implemented");}
+//void StiffSpringForceFieldOpenCL3f_addExternalForce(unsigned int /*nbVertex*/, unsigned int /*nbSpringPerVertex*/, const _device_pointer /*springs*/, _device_pointer/*f1*/, const _device_pointer/*x1*/, const _device_pointer/*v1*/, const _device_pointer/*x1*/, const _device_pointer/*v2*/, _device_pointer/*dfdx*/){DEBUG_TEXT("no implemented");}
+//void StiffSpringForceFieldOpenCL3f_addDForce(unsigned int /*nbVertex*/, unsigned int /*nbSpringPerVertex*/, const _device_pointer /*springs*/, _device_pointer/*f*/, const _device_pointer/*dx*/, const _device_pointer/*x*/, const _device_pointer/*dfdx*/, double/*factor*/){DEBUG_TEXT("no implemented");}
+//void StiffSpringForceFieldOpenCL3f_addExternalDForce(unsigned int /*nbVertex*/, unsigned int /*nbSpringPerVertex*/, const _device_pointer /*springs*/, _device_pointer/*f1*/, const _device_pointer/*dx1*/, const _device_pointer/*x1*/, const _device_pointer/*dx2*/, const _device_pointer/*x1*/, const _device_pointer/*dfdx*/, double/*factor*/){DEBUG_TEXT("no implemented");}
+//
+//
+//
+//void MultiStiffSpringForceFieldOpenCL3f_addDForce(int /*n*/, SpringDForceOp* /*ops*/, double/*factor*/);
+//
+//void SpringForceFieldOpenCL3f1_addForce(unsigned int /*nbVertex*/, unsigned int /*nbSpringPerVertex*/, const _device_pointer /*springs*/, _device_pointer/*f*/, const _device_pointer/*x*/, const _device_pointer/*v*/){DEBUG_TEXT("no implemented");}
+//void SpringForceFieldOpenCL3f1_addExternalForce(unsigned int /*nbVertex*/, unsigned int /*nbSpringPerVertex*/, const _device_pointer /*springs*/, _device_pointer/*f1*/, const _device_pointer/*x1*/, const _device_pointer/*v1*/, const _device_pointer/*x1*/, const _device_pointer/*v2*/){DEBUG_TEXT("no implemented");}
+//void StiffSpringForceFieldOpenCL3f1_addForce(unsigned int /*nbVertex*/, unsigned int /*nbSpringPerVertex*/, const _device_pointer /*springs*/, _device_pointer/*f*/, const _device_pointer/*x*/, const _device_pointer/*v*/, _device_pointer/*dfdx*/){DEBUG_TEXT("no implemented");}
+//void StiffSpringForceFieldOpenCL3f1_addExternalForce(unsigned int /*nbVertex*/, unsigned int /*nbSpringPerVertex*/, const _device_pointer /*springs*/, _device_pointer/*f1*/, const _device_pointer/*x1*/, const _device_pointer/*v1*/, const _device_pointer/*x1*/, const _device_pointer/*v2*/, _device_pointer/*dfdx*/){DEBUG_TEXT("no implemented");}
+//void StiffSpringForceFieldOpenCL3f1_addDForce(unsigned int /*nbVertex*/, unsigned int /*nbSpringPerVertex*/, const _device_pointer /*springs*/, _device_pointer/*f*/, const _device_pointer/*dx*/, const _device_pointer/*x*/, const _device_pointer/*dfdx*/, double/*factor*/){DEBUG_TEXT("no implemented");}
+//void StiffSpringForceFieldOpenCL3f1_addExternalDForce(unsigned int /*nbVertex*/, unsigned int /*nbSpringPerVertex*/, const _device_pointer /*springs*/, _device_pointer/*f1*/, const _device_pointer/*dx1*/, const _device_pointer/*x1*/, const _device_pointer/*dx2*/, const _device_pointer/*x1*/, const _device_pointer/*dfdx*/, double/*factor*/){DEBUG_TEXT("no implemented");}
+//
+//
+//
+//void SpringForceFieldOpenCL3d_addForce(unsigned int /*nbVertex*/, unsigned int /*nbSpringPerVertex*/, const _device_pointer /*springs*/, _device_pointer/*f*/, const _device_pointer/*x*/, const _device_pointer/*v*/){DEBUG_TEXT("no implemented");}
+//void SpringForceFieldOpenCL3d_addExternalForce(unsigned int /*nbVertex*/, unsigned int /*nbSpringPerVertex*/, const _device_pointer /*springs*/, _device_pointer/*f1*/, const _device_pointer/*x1*/, const _device_pointer/*v1*/, const _device_pointer/*x1*/, const _device_pointer/*v2*/){DEBUG_TEXT("no implemented");}
+//void StiffSpringForceFieldOpenCL3d_addForce(unsigned int /*nbVertex*/, unsigned int /*nbSpringPerVertex*/, const _device_pointer /*springs*/, _device_pointer/*f*/, const _device_pointer/*x*/, const _device_pointer/*v*/, _device_pointer/*dfdx*/){DEBUG_TEXT("no implemented");}
+//void StiffSpringForceFieldOpenCL3d_addExternalForce(unsigned int /*nbVertex*/, unsigned int /*nbSpringPerVertex*/, const _device_pointer /*springs*/, _device_pointer/*f1*/, const _device_pointer/*x1*/, const _device_pointer/*v1*/, const _device_pointer/*x1*/, const _device_pointer/*v2*/, _device_pointer/*dfdx*/){DEBUG_TEXT("no implemented");}
+//void StiffSpringForceFieldOpenCL3d_addDForce(unsigned int /*nbVertex*/, unsigned int /*nbSpringPerVertex*/, const _device_pointer /*springs*/, _device_pointer/*f*/, const _device_pointer/*dx*/, const _device_pointer/*x*/, const _device_pointer/*dfdx*/, double/*factor*/){DEBUG_TEXT("no implemented");}
+//void StiffSpringForceFieldOpenCL3d_addExternalDForce(unsigned int /*nbVertex*/, unsigned int /*nbSpringPerVertex*/, const _device_pointer /*springs*/, _device_pointer/*f1*/, const _device_pointer/*dx1*/, const _device_pointer/*x1*/, const _device_pointer/*dx2*/, const _device_pointer/*x1*/, const _device_pointer/*dfdx*/, double/*factor*/){DEBUG_TEXT("no implemented");}
+//
+//void SpringForceFieldOpenCL3d1_addForce(unsigned int /*nbVertex*/, unsigned int /*nbSpringPerVertex*/, const _device_pointer /*springs*/, _device_pointer/*f*/, const _device_pointer/*x*/, const _device_pointer/*v*/){DEBUG_TEXT("no implemented");}
+//void SpringForceFieldOpenCL3d1_addExternalForce(unsigned int /*nbVertex*/, unsigned int /*nbSpringPerVertex*/, const _device_pointer /*springs*/, _device_pointer/*f1*/, const _device_pointer/*x1*/, const _device_pointer/*v1*/, const _device_pointer/*x1*/, const _device_pointer/*v2*/){DEBUG_TEXT("no implemented");}
+//void StiffSpringForceFieldOpenCL3d1_addForce(unsigned int /*nbVertex*/, unsigned int /*nbSpringPerVertex*/, const _device_pointer /*springs*/, _device_pointer/*f*/, const _device_pointer/*x*/, const _device_pointer/*v*/, _device_pointer/*dfdx*/){DEBUG_TEXT("no implemented");}
+//void StiffSpringForceFieldOpenCL3d1_addExternalForce(unsigned int /*nbVertex*/, unsigned int /*nbSpringPerVertex*/, const _device_pointer /*springs*/, _device_pointer/*f1*/, const _device_pointer/*x1*/, const _device_pointer/*v1*/, const _device_pointer/*x1*/, const _device_pointer/*v2*/, _device_pointer/*dfdx*/){DEBUG_TEXT("no implemented");}
+//void StiffSpringForceFieldOpenCL3d1_addDForce(unsigned int /*nbVertex*/, unsigned int /*nbSpringPerVertex*/, const _device_pointer /*springs*/, _device_pointer/*f*/, const _device_pointer/*dx*/, const _device_pointer/*x*/, const _device_pointer/*dfdx*/, double/*factor*/){DEBUG_TEXT("no implemented");}
+//void StiffSpringForceFieldOpenCL3d1_addExternalDForce(unsigned int /*nbVertex*/, unsigned int /*nbSpringPerVertex*/, const _device_pointer /*springs*/, _device_pointer/*f1*/, const _device_pointer/*dx1*/, const _device_pointer/*x1*/, const _device_pointer/*dx2*/, const _device_pointer/*x1*/, const _device_pointer/*dfdx*/, double/*factor*/){DEBUG_TEXT("no implemented");}
+//
+//
+//
+//
+//
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 } // namespace opencl

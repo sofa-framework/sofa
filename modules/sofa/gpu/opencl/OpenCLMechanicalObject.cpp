@@ -92,7 +92,7 @@ int MappedObjectOpenCLClass = core::RegisterObject("Supports GPU-side computatio
 sofa::helper::OpenCLProgram* MechanicalObjectOpenCLFloat_program;
 sofa::helper::OpenCLProgram* MechanicalObjectOpenCLDouble_program;
 
-void CreateProgramWithFloat()
+void MechanicalObject_CreateProgramWithFloat()
 {
     if(MechanicalObjectOpenCLFloat_program==NULL)
     {
@@ -111,7 +111,7 @@ void CreateProgramWithFloat()
     }
 }
 
-void CreateProgramWithDouble()
+void MechanicalObject_CreateProgramWithDouble()
 {
 
     if(MechanicalObjectOpenCLDouble_program==NULL)
@@ -135,10 +135,11 @@ void CreateProgramWithDouble()
 sofa::helper::OpenCLKernel * MechanicalObjectOpenCLVec3f_vOp_kernel;
 void MechanicalObjectOpenCLVec3f_vOp(size_t size, _device_pointer res, const _device_pointer a, const _device_pointer b, float f)
 {
+
     size*=3;
     DEBUG_TEXT( "MechanicalObjectOpenCLVec3f_vOp\t");
-//top(11);
-    CreateProgramWithFloat();
+
+    MechanicalObject_CreateProgramWithFloat();
     if(MechanicalObjectOpenCLVec3f_vOp_kernel==NULL)MechanicalObjectOpenCLVec3f_vOp_kernel
             = new sofa::helper::OpenCLKernel(MechanicalObjectOpenCLFloat_program,"Vec1t_vOp");
     MechanicalObjectOpenCLVec3f_vOp_kernel->setArg<_device_pointer>(0,&res);
@@ -150,11 +151,6 @@ void MechanicalObjectOpenCLVec3f_vOp(size_t size, _device_pointer res, const _de
     work_size[0]=size;
 
     MechanicalObjectOpenCLVec3f_vOp_kernel->execute(0,1,NULL,work_size,NULL);	//note: num_device = const = 0
-    /*top(11);
-    float ra[10];
-    myopenclEnqueueReadBuffer(0,ra,res.m,0,10);
-    top(12);
-    topLog();*/
 
 }
 
@@ -164,7 +160,7 @@ void MechanicalObjectOpenCLVec3d_vOp(size_t size, _device_pointer res, const _de
 {
     size*=3;
     DEBUG_TEXT( "MechanicalObjectOpenCLVec3d_vOp\t");
-    CreateProgramWithDouble();
+    MechanicalObject_CreateProgramWithDouble();
     if(MechanicalObjectOpenCLVec3d_vOp_kernel==NULL)MechanicalObjectOpenCLVec3d_vOp_kernel
             = new sofa::helper::OpenCLKernel(MechanicalObjectOpenCLDouble_program,"Vec1t_vOp");
     MechanicalObjectOpenCLVec3f_vOp_kernel->setArg<_device_pointer>(0,&res);
@@ -183,12 +179,13 @@ void MechanicalObjectOpenCLVec3d_vOp(size_t size, _device_pointer res, const _de
 sofa::helper::OpenCLKernel * MechanicalObjectOpenCLVec3f_vOp_v2_kernel;
 void MechanicalObjectOpenCLVec3f_vOp_v2(size_t size, _device_pointer res, const _device_pointer a, const _device_pointer b, float f)
 {
+
     size*=3;
     DEBUG_TEXT( "MechanicalObjectOpenCLVec3f_vOp_v2\t");
 
 
 
-    CreateProgramWithFloat();
+    MechanicalObject_CreateProgramWithFloat();
     if(MechanicalObjectOpenCLVec3f_vOp_v2_kernel==NULL)MechanicalObjectOpenCLVec3f_vOp_v2_kernel
             = new sofa::helper::OpenCLKernel(MechanicalObjectOpenCLFloat_program,"Vec1t_vOp_v2");
     MechanicalObjectOpenCLVec3f_vOp_v2_kernel->setArg<_device_pointer>(0,&res);
@@ -200,7 +197,6 @@ void MechanicalObjectOpenCLVec3f_vOp_v2(size_t size, _device_pointer res, const 
     work_size[0]=size/4+1;
 
     MechanicalObjectOpenCLVec3f_vOp_v2_kernel->execute(0,1,NULL,work_size,NULL);	//note: num_device = const = 0
-
 
 }
 
@@ -214,7 +210,7 @@ void MechanicalObjectOpenCLVec3f_vMEq(size_t size, _device_pointer res, float f)
     DEBUG_TEXT("MechanicalObjectOpenCLVec3f_vMEq");
 
 
-    CreateProgramWithFloat();
+    MechanicalObject_CreateProgramWithFloat();
     if(MechanicalObjectOpenCLVec3f_vMEq_kernel==NULL)MechanicalObjectOpenCLVec3f_vMEq_kernel
             = new sofa::helper::OpenCLKernel(MechanicalObjectOpenCLFloat_program,"Vec1t_vMEq");
 
@@ -236,7 +232,7 @@ void MechanicalObjectOpenCLVec3d_vMEq(size_t size, _device_pointer res, double f
 
 
 
-    CreateProgramWithDouble();
+    MechanicalObject_CreateProgramWithDouble();
     if(MechanicalObjectOpenCLVec3d_vMEq_kernel==NULL)MechanicalObjectOpenCLVec3d_vMEq_kernel
             = new sofa::helper::OpenCLKernel(MechanicalObjectOpenCLDouble_program,"Vec1t_vMEq");
     MechanicalObjectOpenCLVec3d_vMEq_kernel->setArg<cl_mem>(0,&(res.m));
@@ -261,7 +257,7 @@ void MechanicalObjectOpenCLVec3f_vMEq_v2(size_t size, _device_pointer res, float
 
     size*=3;
 
-    CreateProgramWithFloat();
+    MechanicalObject_CreateProgramWithFloat();
 
     if(MechanicalObjectOpenCLVec3f_vMEq_v2_kernel==NULL)MechanicalObjectOpenCLVec3f_vMEq_v2_kernel
             = new sofa::helper::OpenCLKernel(MechanicalObjectOpenCLFloat_program,"Vec1t_vMEq_v2");
@@ -297,7 +293,9 @@ void MechanicalObjectOpenCLVec3f_vClear(size_t size, _device_pointer res)
     size*=3;
     DEBUG_TEXT("MechanicalObjectOpenCLVec3f_vClear");
 
-    CreateProgramWithFloat();
+
+
+    MechanicalObject_CreateProgramWithFloat();
 
     if(MechanicalObjectOpenCLVec3f_vClear_kernel==NULL)MechanicalObjectOpenCLVec3f_vClear_kernel
             = new sofa::helper::OpenCLKernel(MechanicalObjectOpenCLFloat_program,"Vec1t_vClear");
@@ -309,6 +307,7 @@ void MechanicalObjectOpenCLVec3f_vClear(size_t size, _device_pointer res)
     work_size[0]=size/4;
 
     MechanicalObjectOpenCLVec3f_vClear_kernel->execute(0,1,NULL,work_size,NULL);	//note: num_device = const = 0*/
+
 
 }
 
@@ -364,7 +363,7 @@ void MechanicalObjectOpenCLVec3f_vEqBF(size_t size, _device_pointer res, const _
 {
     size*=3;
     DEBUG_TEXT("MechanicalObjectOpenCLVec3f_vEqBF");
-    CreateProgramWithFloat();
+    MechanicalObject_CreateProgramWithFloat();
 
 
     if(MechanicalObjectOpenCLVec3f_vEqBF_kernel==NULL)MechanicalObjectOpenCLVec3f_vEqBF_kernel
@@ -388,7 +387,7 @@ void MechanicalObjectOpenCLVec3f_vPEqBF(size_t size, _device_pointer res, const 
 {
     size*=3;
     DEBUG_TEXT("MechanicalObjectOpenCLVec3f_vPEqBF");
-    CreateProgramWithFloat();
+    MechanicalObject_CreateProgramWithFloat();
 
     if(MechanicalObjectOpenCLVec3f_vPEqBF_kernel==NULL)MechanicalObjectOpenCLVec3f_vPEqBF_kernel
             = new sofa::helper::OpenCLKernel(MechanicalObjectOpenCLFloat_program,"Vec1t_vPEqBF");
@@ -414,7 +413,7 @@ void MechanicalObjectOpenCLVec3f_vDot(size_t size, float* res, const _device_poi
     size*=3;
     DEBUG_TEXT("MechanicalObjectOpenCLVec3f_vDot");
 
-    CreateProgramWithFloat();
+    MechanicalObject_CreateProgramWithFloat();
 
     if(MechanicalObjectOpenCLVec3f_vDot_kernel==NULL)MechanicalObjectOpenCLVec3f_vDot_kernel
             = new sofa::helper::OpenCLKernel(MechanicalObjectOpenCLFloat_program,"Vec1t_vDot");
@@ -460,7 +459,7 @@ void MechanicalObjectOpenCLVec3f_vAdd(size_t size, _device_pointer res, const _d
 
 
 
-    CreateProgramWithFloat();
+    MechanicalObject_CreateProgramWithFloat();
     if(MechanicalObjectOpenCLVec3f_vAdd_kernel==NULL)MechanicalObjectOpenCLVec3f_vAdd_kernel
             = new sofa::helper::OpenCLKernel(MechanicalObjectOpenCLFloat_program,"Vec1t_vAdd");
     MechanicalObjectOpenCLVec3f_vAdd_kernel->setArg<cl_mem>(0,&(res.m));
@@ -482,7 +481,7 @@ void MechanicalObjectOpenCLVec3f_vPEq(size_t size, _device_pointer res, const _d
     DEBUG_TEXT("MechanicalObjectOpenCLVec3f_vPEq") ;
 
 
-    CreateProgramWithFloat();
+    MechanicalObject_CreateProgramWithFloat();
     if(MechanicalObjectOpenCLVec3f_vPEq_kernel==NULL)MechanicalObjectOpenCLVec3f_vPEq_kernel
             = new sofa::helper::OpenCLKernel(MechanicalObjectOpenCLFloat_program,"Vec1t_vPEq");
     MechanicalObjectOpenCLVec3f_vPEq_kernel->setArg<cl_mem>(0,&(res.m));
@@ -503,7 +502,7 @@ void MechanicalObjectOpenCLVec3f_vPEqBF2(size_t size, _device_pointer res1, cons
 
     size*=3;
 
-    CreateProgramWithFloat();
+    MechanicalObject_CreateProgramWithFloat();
 
 
     if(MechanicalObjectOpenCLVec3f_vPEqBF2_kernel==NULL)MechanicalObjectOpenCLVec3f_vPEqBF2_kernel
@@ -531,7 +530,7 @@ void MechanicalObjectOpenCLVec3f_vPEqBF2_v2(size_t size, _device_pointer res1, c
 
     size*=3;
 
-    CreateProgramWithFloat();
+    MechanicalObject_CreateProgramWithFloat();
 
 
     if(MechanicalObjectOpenCLVec3f_vPEqBF2_v2_kernel==NULL)MechanicalObjectOpenCLVec3f_vPEqBF2_v2_kernel
@@ -559,7 +558,7 @@ void MechanicalObjectOpenCLVec3f_vIntegrate(size_t size, const _device_pointer a
     DEBUG_TEXT("MechanicalObjectOpenCLVec3f_vIntegrate");
 
     size*=3;
-    CreateProgramWithFloat();
+    MechanicalObject_CreateProgramWithFloat();
 
 
     if(MechanicalObjectOpenCLVec3f_vIntegrate_kernel==NULL)MechanicalObjectOpenCLVec3f_vIntegrate_kernel

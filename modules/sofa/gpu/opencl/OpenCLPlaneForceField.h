@@ -37,10 +37,114 @@ namespace gpu
 namespace opencl
 {
 
-} // namespace forcefield
+template<class real>
+struct GPUPlane
+{
+    defaulttype::Vec<3,real> normal;
+    real d;
+    real stiffness;
+    real damping;
+};
 
-} // namespace component
+template<class real>
+struct PlaneDForceOp;
+
+} // namespace opencl
+
+} // namespace gpu
+
+namespace component
+{
+
+namespace forcefield
+{
+
+
+
+template<class TCoord, class TDeriv, class TReal>
+class PlaneForceFieldInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> >
+{
+public:
+    typedef TReal Real;
+    typedef gpu::opencl::PlaneDForceOp<Real> DForceOp;
+
+    gpu::opencl::GPUPlane<Real> plane;
+    gpu::opencl::OpenCLVector<Real> penetration;
+
+
+    int preDForceOpID;
+
+    static helper::vector<DForceOp>& opsDForce()
+    {
+        static helper::vector<DForceOp> v;
+        return v;
+    }
+
+    PlaneForceFieldInternalData()
+        : preDForceOpID(-1)
+    {}
+
+};
+
+template <>
+bool PlaneForceField<gpu::opencl::OpenCLVec3fTypes>::canPrefetch() const;
+
+template <>
+void PlaneForceField<gpu::opencl::OpenCLVec3fTypes>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
+
+template <>
+void PlaneForceField<gpu::opencl::OpenCLVec3fTypes>::addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
+
+template <>
+void PlaneForceField<gpu::opencl::OpenCLVec3f1Types>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
+
+template <>
+void PlaneForceField<gpu::opencl::OpenCLVec3f1Types>::addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
+
+
+
+template <>
+void PlaneForceField<gpu::opencl::OpenCLVec3dTypes>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
+
+template <>
+void PlaneForceField<gpu::opencl::OpenCLVec3dTypes>::addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
+
+template <>
+void PlaneForceField<gpu::opencl::OpenCLVec3d1Types>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
+
+template <>
+void PlaneForceField<gpu::opencl::OpenCLVec3d1Types>::addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
+
+
+
+
+}
+}
+
+
+
+
+
 
 } // namespace sofa
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 #endif

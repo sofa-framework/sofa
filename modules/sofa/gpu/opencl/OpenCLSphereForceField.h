@@ -37,9 +37,64 @@ namespace gpu
 namespace opencl
 {
 
+
+struct GPUSphere
+{
+    defaulttype::Vec3f center;
+    float r;
+    float stiffness;
+    float damping;
+};
+
+
+} // namespace opencl
+
+} // namespace gpu
+
+
+namespace component
+{
+
+namespace forcefield
+{
+
+template <>
+class SphereForceFieldInternalData<gpu::opencl::OpenCLVec3fTypes>
+{
+public:
+    gpu::opencl::GPUSphere sphere;
+    gpu::opencl::OpenCLVector<defaulttype::Vec4f> penetration;
+};
+
+template <>
+void SphereForceField<gpu::opencl::OpenCLVec3fTypes>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
+
+template <>
+void SphereForceField<gpu::opencl::OpenCLVec3fTypes>::addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
+
+template <>
+class SphereForceFieldInternalData<gpu::opencl::OpenCLVec3f1Types>
+{
+public:
+    gpu::opencl::GPUSphere sphere;
+    gpu::opencl::OpenCLVector<defaulttype::Vec4f> penetration;
+};
+
+template <>
+void SphereForceField<gpu::opencl::OpenCLVec3f1Types>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
+
+template <>
+void SphereForceField<gpu::opencl::OpenCLVec3f1Types>::addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
+
 } // namespace forcefield
 
 } // namespace component
+
+
+
+
+
+
 
 } // namespace sofa
 
