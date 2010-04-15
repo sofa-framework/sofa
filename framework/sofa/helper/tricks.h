@@ -61,15 +61,21 @@ public :
 
 
     RadioTrick();
+
+    ///Example RadioTrick m_radiobutton(4,"button0","button1","button2","button3");
     RadioTrick(int nbofRadioButton,...);
+
+    ///Copy
+    RadioTrick(const RadioTrick & m_radiotrick);
+    RadioTrick & operator=(const RadioTrick & m_radiotrick);
 
     RadioTrick(	sofa::helper::vector<std::string> m_textItems)
         : textItems(m_textItems) {selectedItem=0;}
 
     void setSelectedItem(unsigned int id_item);
     void setSelectedItem(const std::string &);
-    unsigned int getSelectedId();
-    std::string getSelectedItem();
+    unsigned int getSelectedId() const;
+    std::string getSelectedItem() const;
 
 
 
@@ -79,7 +85,8 @@ public :
     void readFromStream(std::istream & stream);
 
     void TestRadioTrick();
-private:
+
+protected:
 
     unsigned int selectedItem;
 
@@ -88,8 +95,7 @@ private:
     int isInButtonList(const std::string &);
 
     //interdiction copy
-    RadioTrick(const RadioTrick & b);
-    RadioTrick & operator=(const RadioTrick & b);
+
 
 };
 

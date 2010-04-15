@@ -679,23 +679,7 @@ void Polynomial_LD<Real,N>::sortByVar(unsigned int idVar)
 template<typename Real, unsigned int N>
 void Polynomial_LD<Real,N>::sort()
 {
-    /*
-    MonomialIterator ita=listOfMonoMial.begin();
-    while(ita != listOfMonoMial.end())
-    {
-    	for(MonomialConstIterator itb=b.listOfMonoMial.begin();itb != b.listOfMonoMial.end();++itb)
-    	{
-    		Monomial_LD<Real,N> multipSimple=(*ita)*(*itb);
-    		listOfMonoMial.insert(ita,multipSimple);nbOfMonomial++;
-    	}
-    	ita=listOfMonoMial.erase(ita);
-    	//++ita;
-    }
-    */
-    std::cout<<"========================================================================="<<std::endl;
-
     //fusion all monomials which differ only the coef
-
     for(MonomialIterator ita=listOfMonoMial.begin(); ita != listOfMonoMial.end() ; ++ita)
     {
         MonomialIterator itb=ita; itb++;
@@ -722,6 +706,7 @@ void Polynomial_LD<Real,N>::sort()
         }
     }
 
+    //Sorting monomial by variable degree
     for(unsigned int ithVar=0; ithVar<N; ithVar++)
     {
         sortByVar(ithVar);
