@@ -192,28 +192,27 @@ void AddPreset::fileOpen()
     if (s.isNull() ) return;
     fileName=std::string (s.ascii());
 
-    std::string::size_type loc = fileName.find( SofaPath, 0 );
-    if (loc==0) fileName = fileName.substr(SofaPath.size()+1);
-    else
+    std::string filePath = sofa::helper::system::FileRepository::relativeToPath(fileName,SofaPath);
+    if( filePath == fileName)
     {
         if (!relative.empty())
         {
-            loc = fileName.find( relative, 0 );
+            size_t loc = fileName.find( relative, 0 );
             fileName = fileName.substr(relative.size()+1);
         }
     }
 
     if (sender() == openFileButton0)
     {
-        openFilePath0->setText(QString(fileName.c_str()));
+        openFilePath0->setText(QString(filePath.c_str()));
     }
     else if (sender() == openFileButton1)
     {
-        openFilePath1->setText(QString(fileName.c_str()));
+        openFilePath1->setText(QString(filePath.c_str()));
     }
     else if (sender() == openFileButton2)
     {
-        openFilePath2->setText(QString(fileName.c_str()));
+        openFilePath2->setText(QString(filePath.c_str()));
     }
 }
 
