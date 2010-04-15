@@ -136,11 +136,13 @@ contains(DEFINES,SOFA_HAVE_GLEW) {
 }
 contains(DEFINES,SOFA_DEV) { # BEGIN SOFA_DEV
     HEADERS += \
+    	tricks.h \
     	DualQuat.inl \
         DualQuat.h \
         Polynomial_LD.h \
-        Polynomial_LD.inl
+        Polynomial_LD.inl 
     SOURCES += \
+    	tricks.cpp \
     	DualQuat.cpp \
     	Polynomial_LD.cpp
 }

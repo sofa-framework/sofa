@@ -181,7 +181,12 @@ inline const T round(const T& x)
     return (x<0?ceil(x-0.5):floor(x+0.5));
 }
 
-
+template<class T>
+inline T factorial (T Number)
+{
+    if (Number<=1) return 1;
+    return Number*factorial(Number-1);
+}
 
 //inline void printerror( const char* msg )
 //{
