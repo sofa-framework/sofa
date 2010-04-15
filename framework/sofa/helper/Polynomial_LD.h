@@ -225,8 +225,6 @@ protected :
     ///The sort must be done after each constructor and each operation where monomials are inserted
     void exchangeMonomial(unsigned int ithMono,unsigned  int jthMono);
     void sortByVar(unsigned int idVar);
-
-    // todo
 };
 ///////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////
