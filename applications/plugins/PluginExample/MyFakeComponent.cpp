@@ -42,9 +42,10 @@ namespace behaviormodel
 
 
 MyFakeComponent::MyFakeComponent()
-    : myData( initData(&myData,(unsigned)1,"myData","Example of data") )
+    : customUnsignedData( initData(&customUnsignedData,(unsigned)1,"Custom Unsigned Data","Example of unsigned data with custom widget") ),
+      regularUnsignedData( initData(&regularUnsignedData,(unsigned)1,"Unsigned Data","Example of unsigned data with standard widget") )
 {
-    myData.setWidget("widget_myData");
+    customUnsignedData.setWidget("widget_myData");
 }
 
 
