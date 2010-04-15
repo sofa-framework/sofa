@@ -39,6 +39,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <iostream>
+#include <algorithm>
 
 namespace sofa
 {
@@ -183,6 +184,28 @@ void FileRepository::print()
 {
     for (std::vector<std::string>::const_iterator it = vpath.begin(); it != vpath.end(); ++it)
         std::cout << *it << std::endl;
+}
+/*static*/
+std::string FileRepository::relativeToPath(std::string path, std::string refPath)
+{
+#ifdef WIN32
+
+    /*
+    WIN32 is a pain here because of mixed case formatting with randomly
+    picked slash and backslash to separate dirs.
+    */
+    std::replace(path.begin(),path.end(),'\\' , '/' );
+    std::replace(refPath.begin(),refPath.end(),'\\' , '/' );
+    std::transform(path.begin(), path.end(), path.begin(), ::tolower );
+    std::transform(refPath.begin(), refPath.end(), refPath.begin(), ::tolower );
+
+#endif
+    std::string::size_type loc = path.find( refPath, 0 );
+    if (loc==0) path = path.substr(refPath.size()+1);
+
+    return path;
+
+
 }
 
 } // namespace system

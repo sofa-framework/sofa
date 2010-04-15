@@ -58,6 +58,7 @@ HEADERS += viewer/SofaViewer.h \
            Main.h \
            RealGUI.h \
 		   DataWidget.h \
+		   DataFilenameWidget.h \
            DisplayFlagWidget.h \
            GraphDataWidget.h \
            ModifyObject.h \
@@ -68,7 +69,7 @@ HEADERS += viewer/SofaViewer.h \
            WFloatLineEdit.h \ 
            FileManagement.h \
            SofaPluginManager.h \
-           SofaMouseManager.h \		   
+           SofaMouseManager.h \	
            QDataDescriptionWidget.h \
 		   QDisplayDataWidget.h \     
            QEnergyStatWidget.h \              
@@ -86,6 +87,7 @@ SOURCES += Main.cpp \
            AddObject.cpp \
            RealGUI.cpp \
 		   DataWidget.cpp \ 
+		   DataFilenameWidget.cpp \
            DisplayFlagWidget.cpp \
            GraphDataWidget.cpp \  
            ModifyObject.cpp \

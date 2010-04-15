@@ -75,6 +75,11 @@ public:
     /// Get the first path into the set of paths
     std::string getFirstPath();
 
+    /// Returns a string such as refPath + string = path if path contains refPath.
+    /// Otherwise returns path.
+    /// Under WIN32 the method returns a lower cased unix formatted path.
+    static std::string relativeToPath(std::string path, std::string refPath);
+
     const std::vector< std::string > &getPaths() const {return vpath;};
 
     /// Find file using the stored set of paths.
@@ -99,6 +104,7 @@ public:
 
     /// Print the list of path to std::cout
     void print();
+
 
     /// OS-dependant character separing entries in list of paths.
     static char entrySeparator()
