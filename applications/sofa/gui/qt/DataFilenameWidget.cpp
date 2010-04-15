@@ -1,4 +1,4 @@
-#include <sofa/gui/qt/DataFileNameWidget.h>
+#include <sofa/gui/qt/DataFilenameWidget.h>
 #include <sofa/helper/Factory.h>
 
 #include <sofa/gui/qt/FileManagement.h> //static functions to manage opening/ saving of files
