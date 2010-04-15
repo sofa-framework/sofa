@@ -33,7 +33,7 @@
 #include <string>
 #include <iostream>
 #include <cstdarg>
-
+#include <sstream>
 
 
 
@@ -69,9 +69,6 @@ public :
     RadioTrick(const RadioTrick & m_radiotrick);
     RadioTrick & operator=(const RadioTrick & m_radiotrick);
 
-    RadioTrick(	sofa::helper::vector<std::string> m_textItems)
-        : textItems(m_textItems) {selectedItem=0;}
-
     void setSelectedItem(unsigned int id_item);
     void setSelectedItem(const std::string &);
     unsigned int getSelectedId() const;
@@ -92,10 +89,7 @@ protected:
 
     ///return the id_item of the string if found in string list button
     ///             -1    if not found
-    int isInButtonList(const std::string &);
-
-    //interdiction copy
-
+    int isInButtonList(const std::string & m_string);
 
 };
 

@@ -39,7 +39,7 @@
 #include <list>
 #include <cmath>
 #include <cassert>
-#include <stdarg.h>
+#include <cstdarg>
 
 namespace sofa
 {
