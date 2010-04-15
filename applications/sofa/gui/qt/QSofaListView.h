@@ -38,17 +38,22 @@ class GraphListenerQListView;
 
 
 enum ObjectModelType { typeNode, typeObject, typeData };
-typedef union ObjectModel
+typedef union ObjectModelPtr
 {
     sofa::simulation::Node* Node;
     core::objectmodel::BaseObject* Object;
     core::objectmodel::BaseData* Data;
-} ObjectModel;
-struct u_objectmodel
+} ObjectModelPtr;
+
+typedef struct ObjectModel
 {
+public:
     ObjectModelType type;
-    ObjectModel ptr;
-};
+    ObjectModelPtr ptr;
+    bool isNode()   { return type == typeNode;   }
+    bool isObject() { return type == typeObject; }
+    bool isData()   { return type == typeData;   }
+} ObjectModel;
 
 enum SofaListViewAttribute
 {
@@ -123,7 +128,7 @@ protected:
     GraphListenerQListView* graphListener_;
     std::vector< std::string > list_object;
     AddObject* AddObjectDialog_;
-    u_objectmodel object_;
+    ObjectModel object_;
     SofaListViewAttribute attribute_;
 
 };
