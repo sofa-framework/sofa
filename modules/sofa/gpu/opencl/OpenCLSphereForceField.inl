@@ -38,6 +38,16 @@ namespace opencl
 {
 
 
+extern "C"
+{
+    extern void SphereForceFieldOpenCL3f_addForce(unsigned int size, GPUSphere* sphere, _device_pointer penetration, _device_pointer f, const _device_pointer x, const _device_pointer v);
+    extern void SphereForceFieldOpenCL3f_addDForce(unsigned int size, GPUSphere* sphere, const _device_pointer penetration, _device_pointer f, const _device_pointer dx); //, const _device_pointer dfdx);
+
+    extern void SphereForceFieldOpenCL3f1_addForce(unsigned int size, GPUSphere* sphere, _device_pointer penetration, _device_pointer f, const _device_pointer x, const _device_pointer v);
+    extern void SphereForceFieldOpenCL3f1_addDForce(unsigned int size, GPUSphere* sphere, const _device_pointer penetration, _device_pointer f, const _device_pointer dx); //, const _device_pointer dfdx);
+}
+
+
 } // namespace opencl
 
 } // namespace gpu
@@ -48,6 +58,54 @@ namespace component
 namespace forcefield
 {
 
+
+using namespace gpu::opencl;
+
+
+template <>
+void SphereForceField<gpu::opencl::OpenCLVec3fTypes>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
+{
+    data.sphere.center = sphereCenter.getValue();
+    data.sphere.r = sphereRadius.getValue();
+    data.sphere.stiffness = stiffness.getValue();
+    data.sphere.damping = damping.getValue();
+    f.resize(x.size());
+    data.penetration.resize(x.size());
+    SphereForceFieldOpenCL3f_addForce(x.size(), &data.sphere, data.penetration.deviceWrite(), f.deviceWrite(), x.deviceRead(), v.deviceRead());
+}
+
+template <>
+void SphereForceField<gpu::opencl::OpenCLVec3fTypes>::addDForce(VecDeriv& df, const VecCoord& dx, double kFactor, double /*bFactor*/)
+{
+    df.resize(dx.size());
+    double stiff = data.sphere.stiffness;
+    data.sphere.stiffness *= kFactor;
+    SphereForceFieldOpenCL3f_addDForce(dx.size(), &data.sphere, data.penetration.deviceRead(), df.deviceWrite(), dx.deviceRead());
+    data.sphere.stiffness = stiff;
+}
+
+
+template <>
+void SphereForceField<gpu::opencl::OpenCLVec3f1Types>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
+{
+    data.sphere.center = sphereCenter.getValue();
+    data.sphere.r = sphereRadius.getValue();
+    data.sphere.stiffness = stiffness.getValue();
+    data.sphere.damping = damping.getValue();
+    f.resize(x.size());
+    data.penetration.resize(x.size());
+    SphereForceFieldOpenCL3f1_addForce(x.size(), &data.sphere, data.penetration.deviceWrite(), f.deviceWrite(), x.deviceRead(), v.deviceRead());
+}
+
+template <>
+void SphereForceField<gpu::opencl::OpenCLVec3f1Types>::addDForce(VecDeriv& df, const VecCoord& dx, double kFactor, double /*bFactor*/)
+{
+    df.resize(dx.size());
+    double stiff = data.sphere.stiffness;
+    data.sphere.stiffness *= kFactor;
+    SphereForceFieldOpenCL3f1_addDForce(dx.size(), &data.sphere, data.penetration.deviceRead(), df.deviceWrite(), dx.deviceRead());
+    data.sphere.stiffness = stiff;
+}
 
 } // namespace forcefield
 

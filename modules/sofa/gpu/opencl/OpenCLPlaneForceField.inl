@@ -37,6 +37,36 @@ namespace gpu
 namespace opencl
 {
 
+template<class real>
+struct PlaneDForceOp
+{
+    unsigned int size;
+    GPUPlane<real> plane;
+    /*const*/ _device_pointer penetration;
+    _device_pointer f;
+    /*const*/ _device_pointer dx;
+};
+
+extern "C"
+{
+
+    extern void PlaneForceFieldOpenCL3f_addForce(unsigned int size, GPUPlane<float>* plane, _device_pointer penetration, _device_pointer f, const _device_pointer x, const _device_pointer v);
+    extern void PlaneForceFieldOpenCL3f_addDForce(unsigned int size, GPUPlane<float>* plane, const _device_pointer penetration, _device_pointer f, const _device_pointer dx); //, const void* dfdx);
+
+    extern void MultiPlaneForceFieldOpenCL3f_addDForce(int n, PlaneDForceOp<float>* ops);
+
+    extern void PlaneForceFieldOpenCL3f1_addForce(unsigned int size, GPUPlane<float>* plane, _device_pointer penetration, _device_pointer f, const _device_pointer x, const _device_pointer v);
+    extern void PlaneForceFieldOpenCL3f1_addDForce(unsigned int size, GPUPlane<float>* plane, const _device_pointer penetration, _device_pointer f, const _device_pointer dx); //, const void* dfdx);
+
+
+    extern void PlaneForceFieldOpenCL3d_addForce(unsigned int size, GPUPlane<double>* plane, _device_pointer penetration, _device_pointer f, const _device_pointer x, const _device_pointer v);
+    extern void PlaneForceFieldOpenCL3d_addDForce(unsigned int size, GPUPlane<double>* plane, const _device_pointer penetration, _device_pointer f, const _device_pointer dx); //, const void* dfdx);
+
+    extern void PlaneForceFieldOpenCL3d1_addForce(unsigned int size, GPUPlane<double>* plane, _device_pointer penetration, _device_pointer f, const _device_pointer x, const _device_pointer v);
+    extern void PlaneForceFieldOpenCL3d1_addDForce(unsigned int size, GPUPlane<double>* plane, const _device_pointer penetration, _device_pointer f, const _device_pointer dx); //, const void* dfdx);
+
+
+}
 
 } // namespace opencl
 
@@ -47,6 +77,155 @@ namespace component
 
 namespace forcefield
 {
+
+
+using namespace gpu::opencl;
+
+template <>
+bool PlaneForceField<gpu::opencl::OpenCLVec3fTypes>::canPrefetch() const
+{
+    return myopenclMultiOpMax != 0;
+}
+
+
+template <>
+void PlaneForceField<gpu::opencl::OpenCLVec3fTypes>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
+{
+    if (this->isPrefetching()) return;
+    data.plane.normal = planeNormal.getValue();
+    data.plane.d = planeD.getValue();
+    data.plane.stiffness = stiffness.getValue();
+    data.plane.damping = damping.getValue();
+    f.resize(x.size());
+    data.penetration.resize(x.size());
+    PlaneForceFieldOpenCL3f_addForce(x.size(), &data.plane, data.penetration.deviceWrite(), f.deviceWrite(), x.deviceRead(), v.deviceRead());
+}
+
+template <>
+void PlaneForceField<gpu::opencl::OpenCLVec3fTypes>::addDForce(VecDeriv& df, const VecCoord& dx, double kFactor, double /*bFactor*/)
+{
+    df.resize(dx.size());
+    if (this->isPrefetching())
+    {
+        PlaneDForceOp<float> op;
+        op.size = dx.size();
+        op.plane = data.plane;
+        op.plane.stiffness *= (Real)kFactor;
+        op.penetration = data.penetration.deviceRead();
+        op.f = df.deviceWrite();
+        op.dx = dx.deviceRead();
+
+        data.preDForceOpID = data.opsDForce().size();
+        data.opsDForce().push_back(op);
+        return;
+    }
+    else if (data.preDForceOpID != -1)
+    {
+        helper::vector<PlaneDForceOp<float> >& ops = data.opsDForce();
+        if (!ops.empty())
+        {
+            if (ops.size() == 1)
+            {
+                // only one object -> use regular kernel
+                data.preDForceOpID = -1;
+            }
+            else
+            {
+                MultiPlaneForceFieldOpenCL3f_addDForce(ops.size(), &(ops[0]));
+            }
+            ops.clear();
+        }
+        if (data.preDForceOpID != -1)
+        {
+            data.preDForceOpID = -1;
+            return;
+        }
+    }
+    double stiff = data.plane.stiffness;
+    data.plane.stiffness *= (Real)kFactor;
+    PlaneForceFieldOpenCL3f_addDForce(dx.size(), &data.plane, data.penetration.deviceRead(), df.deviceWrite(), dx.deviceRead());
+    data.plane.stiffness = (Real)stiff;
+}
+
+
+
+
+template <>
+void PlaneForceField<gpu::opencl::OpenCLVec3f1Types>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
+{
+    data.plane.normal = planeNormal.getValue();
+    data.plane.d = planeD.getValue();
+    data.plane.stiffness = stiffness.getValue();
+    data.plane.damping = damping.getValue();
+    f.resize(x.size());
+    data.penetration.resize(x.size());
+    PlaneForceFieldOpenCL3f1_addForce(x.size(), &data.plane, data.penetration.deviceWrite(), f.deviceWrite(), x.deviceRead(), v.deviceRead());
+}
+
+template <>
+void PlaneForceField<gpu::opencl::OpenCLVec3f1Types>::addDForce(VecDeriv& df, const VecCoord& dx, double kFactor, double /*bFactor*/)
+{
+    df.resize(dx.size());
+    double stiff = data.plane.stiffness;
+    data.plane.stiffness *= (Real)kFactor;
+    PlaneForceFieldOpenCL3f1_addDForce(dx.size(), &data.plane, data.penetration.deviceRead(), df.deviceWrite(), dx.deviceRead());
+    data.plane.stiffness = (Real)stiff;
+}
+
+
+
+template <>
+void PlaneForceField<gpu::opencl::OpenCLVec3dTypes>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
+{
+    data.plane.normal = planeNormal.getValue();
+    data.plane.d = planeD.getValue();
+    data.plane.stiffness = stiffness.getValue();
+    data.plane.damping = damping.getValue();
+    f.resize(x.size());
+    data.penetration.resize(x.size());
+    PlaneForceFieldOpenCL3d_addForce(x.size(), &data.plane, data.penetration.deviceWrite(), f.deviceWrite(), x.deviceRead(), v.deviceRead());
+}
+
+template <>
+void PlaneForceField<gpu::opencl::OpenCLVec3dTypes>::addDForce(VecDeriv& df, const VecCoord& dx, double kFactor, double /*bFactor*/)
+{
+    df.resize(dx.size());
+    double stiff = data.plane.stiffness;
+    data.plane.stiffness *= (Real)kFactor;
+    PlaneForceFieldOpenCL3d_addDForce(dx.size(), &data.plane, data.penetration.deviceRead(), df.deviceWrite(), dx.deviceRead());
+    data.plane.stiffness = (Real)stiff;
+}
+
+
+template <>
+void PlaneForceField<gpu::opencl::OpenCLVec3d1Types>::addForce(VecDeriv& f, const VecCoord& x, const VecDeriv& v)
+{
+    data.plane.normal = planeNormal.getValue();
+    data.plane.d = planeD.getValue();
+    data.plane.stiffness = stiffness.getValue();
+    data.plane.damping = damping.getValue();
+    f.resize(x.size());
+    data.penetration.resize(x.size());
+    PlaneForceFieldOpenCL3d1_addForce(x.size(), &data.plane, data.penetration.deviceWrite(), f.deviceWrite(), x.deviceRead(), v.deviceRead());
+}
+
+template <>
+void PlaneForceField<gpu::opencl::OpenCLVec3d1Types>::addDForce(VecDeriv& df, const VecCoord& dx, double kFactor, double /*bFactor*/)
+{
+    df.resize(dx.size());
+    double stiff = data.plane.stiffness;
+    data.plane.stiffness *= (Real)kFactor;
+    PlaneForceFieldOpenCL3d1_addDForce(dx.size(), &data.plane, data.penetration.deviceRead(), df.deviceWrite(), dx.deviceRead());
+    data.plane.stiffness = (Real)stiff;
+}
+
+
+
+
+
+
+
+
 
 
 } // namespace forcefield

@@ -6,3 +6,4 @@ HEADERS +=OpenCLMechanicalObject.h \
 
 SOURCES += OpenCLMechanicalObject.cpp
 
+OTHER_FILES += kernels/OpenCLMechanicalObject.cl

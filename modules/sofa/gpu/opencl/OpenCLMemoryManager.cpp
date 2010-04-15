@@ -17,7 +17,6 @@ namespace gpu
 namespace opencl
 {
 
-#define DEBUG_TEXT(t) //printf("\t%s\t %s %d\n",t,__FILE__,__LINE__);
 
 
 
@@ -41,7 +40,7 @@ void OpenCLMemoryManager_memsetDevice(int d, _device_pointer a, int value, size_
 {
     unsigned int i;
     unsigned int offset;
-    DEBUG_TEXT("OpenCLMemoryManager_memsetDevice");
+
 //std::cout << a.m << " " << "\n" << "offset"<< a.offset << " "<< value << " " << size << "\n";
 
 //	top(0);

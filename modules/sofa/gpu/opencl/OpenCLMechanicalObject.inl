@@ -222,7 +222,7 @@ public:
     static void vClear(size_t size,  _device_pointer res)
     {   MechanicalObjectOpenCLVec3f_vClear(size, res); }
     static void vMEq(size_t size, _device_pointer res, float f)
-    {   MechanicalObjectOpenCLVec3f_vMEq_v2(size, res, f); }
+    {   MechanicalObjectOpenCLVec3f_vMEq(size, res, f); }
     static void vEqBF(size_t size, _device_pointer res, const _device_pointer b, float f)
     {   MechanicalObjectOpenCLVec3f_vEqBF(size, res, b, f); }
     static void vPEq(size_t size, _device_pointer res, const _device_pointer a)
@@ -232,11 +232,11 @@ public:
     static void vAdd(size_t size, _device_pointer res, const _device_pointer a, const _device_pointer b)
     {   MechanicalObjectOpenCLVec3f_vAdd(size, res, a, b); }
     static void vOp(size_t size, _device_pointer res, const _device_pointer a, const _device_pointer b, float f)
-    {   MechanicalObjectOpenCLVec3f_vOp_v2(size, res, a, b, f); }
+    {   MechanicalObjectOpenCLVec3f_vOp(size, res, a, b, f); }
     static void vIntegrate(size_t size, const _device_pointer a, _device_pointer v, _device_pointer x, float f_v_v, float f_v_a, float f_x_x, float f_x_v)
     {   MechanicalObjectOpenCLVec3f_vIntegrate(size, a, v, x, f_v_v, f_v_a, f_x_x, f_x_v); }
     static void vPEqBF2(size_t size, _device_pointer res1, const _device_pointer b1, float f1, _device_pointer res2, const _device_pointer b2, float f2)
-    {   MechanicalObjectOpenCLVec3f_vPEqBF2_v2(size, res1, b1, f1, res2, b2, f2); }
+    {   MechanicalObjectOpenCLVec3f_vPEqBF2(size, res1, b1, f1, res2, b2, f2); }
     static void vPEq4BF2(size_t size, _device_pointer res1, const _device_pointer b11, float f11, const _device_pointer b12, float f12, const _device_pointer b13, float f13, const _device_pointer b14, float f14,
             _device_pointer res2, const _device_pointer b21, float f21, const _device_pointer b22, float f22, const _device_pointer b23, float f23, const _device_pointer b24, float f24)
     {
