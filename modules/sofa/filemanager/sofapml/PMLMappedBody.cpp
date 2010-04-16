@@ -59,7 +59,8 @@ PMLMappedBody::PMLMappedBody(StructuralComponent* body, PMLBody* fromBody, GNode
     parentNode = parent;
     bodyRef = fromBody;
 
-    solverName = body->getProperties()->getString("solver");
+    odeSolverName = body->getProperties()->getString("odesolver");
+    linearSolverName = body->getProperties()->getString("linearsolver");
 
     //create the structure
     createMechanicalState(body);

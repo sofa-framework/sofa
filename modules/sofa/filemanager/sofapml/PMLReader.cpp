@@ -45,7 +45,7 @@
 #include "sofa/component/collision/DefaultPipeline.h"
 #include "sofa/component/collision/DefaultContactManager.h"
 #include "sofa/component/collision/NewProximityIntersection.h"
-#include "sofa/component/collision/DefaultCollisionGroupManager.h"
+#include "sofa/component/collision/TreeCollisionGroupManager.h"
 #include "sofa/component/collision/BruteForceDetection.h"
 #include "sofa/simulation/common/VisualVisitor.h"
 #include "sofa/simulation/common/Simulation.h"
@@ -148,7 +148,7 @@ void PMLReader::BuildStructure(GNode* root)
         mpi->setAlarmDistance(dmax/30);
         mpi->setContactDistance(dmax/40);
         DefaultContactManager * contactManager = new DefaultContactManager;
-        DefaultCollisionGroupManager * cgm = new DefaultCollisionGroupManager;
+        TreeCollisionGroupManager * cgm = new TreeCollisionGroupManager;
 
         root->addObject(ps);
         root->addObject(bfd);

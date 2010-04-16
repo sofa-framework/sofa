@@ -106,8 +106,11 @@ void LMLReader::BuildStructure(PMLReader * pmlreader)
     {
         //find forces and constraints in the loads list
         LMLConstraint<Vec3Types> *constraints = new LMLConstraint<Vec3Types>(loadsList, (*it)->AtomsToDOFsIndexes, (MechanicalState<Vec3Types>*)(*it)->getMechanicalState());
+        std::cout << "Looking for a constraint" << std::endl;
         if (constraints->getTargets().size() >0)
-            if( (*it)->isTypeOf() == "rigid")
+        {
+            std::cout << "  Constraint found " << std::endl;
+            if ( (*it)->isTypeOf() == "rigid")
             {
                 delete constraints;
                 FixedConstraint<RigidTypes> * fixedConstraint = new FixedConstraint<RigidTypes>;
@@ -118,6 +121,7 @@ void LMLReader::BuildStructure(PMLReader * pmlreader)
             }
             else
                 (*it)->getPointsNode()->addObject(constraints);
+        }
         else
             delete constraints;
 

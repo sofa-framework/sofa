@@ -44,6 +44,7 @@
 #include "PMLBody.h"
 #include "sofapml.h"
 
+#include "sofa/component/container/MechanicalObject.h"
 #include <map>
 
 
@@ -56,6 +57,7 @@ namespace filemanager
 namespace pml
 {
 using namespace std;
+using namespace sofa::component::container;
 
 class SOFA_BUILD_FILEMANAGER_PML_API PMLMappedBody: public PMLBody
 {

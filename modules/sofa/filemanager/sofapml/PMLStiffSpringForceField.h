@@ -65,6 +65,7 @@ namespace filemanager
 namespace pml
 {
 
+using namespace sofa::component::container;
 using namespace sofa::component::topology;
 using namespace sofa::component::collision;
 using namespace sofa::component::forcefield;
