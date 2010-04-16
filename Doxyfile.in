@@ -4,9 +4,9 @@
 # Project related configuration options
 #---------------------------------------------------------------------------
 DOXYFILE_ENCODING      = UTF-8
-PROJECT_NAME           = Sofa_framework
+PROJECT_NAME           = Sofa_@PACKAGE@
 PROJECT_NUMBER         = SVN
-OUTPUT_DIRECTORY       = doc/doxygen/framework
+OUTPUT_DIRECTORY       = @OUTPUT_DIR@/@PACKAGE@
 CREATE_SUBDIRS         = NO
 OUTPUT_LANGUAGE        = English
 BRIEF_MEMBER_DESC      = YES
@@ -82,11 +82,11 @@ WARN_IF_UNDOCUMENTED   = YES
 WARN_IF_DOC_ERROR      = YES
 WARN_NO_PARAMDOC       = NO
 WARN_FORMAT            = "$file:$line: $text"
-WARN_LOGFILE           = doc/doxygen/doxygen_framework.log
+WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = framework
+INPUT                  = @PACKAGE@
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          =
 RECURSIVE              = YES
@@ -222,8 +222,8 @@ SKIP_FUNCTION_MACROS   = YES
 #---------------------------------------------------------------------------
 # Configuration::additions related to external references
 #---------------------------------------------------------------------------
-TAGFILES               =
-GENERATE_TAGFILE       = doc/doxygen/sofa_framework.tag
+TAGFILES               = @TAGS@
+GENERATE_TAGFILE       = @OUTPUT_DIR@/@PACKAGE@.tag
 ALLEXTERNALS           = NO
 EXTERNAL_GROUPS        = YES
 PERL_PATH              = /usr/bin/perl
