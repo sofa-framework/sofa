@@ -24,10 +24,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef ADDOBECJT_H
-#define ADDOBECJT_H
+#ifndef ADDOBJECT_H
+#define ADDOBJECT_H
 
-#include <vector>
+
 #include "DialogAddObject.h"
 
 namespace sofa
@@ -38,6 +38,8 @@ namespace gui
 
 namespace qt
 {
+
+
 
 class AddObject : public DialogAddObject
 {
