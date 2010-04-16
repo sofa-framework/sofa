@@ -70,7 +70,7 @@ using namespace sofa::core::componentmodel::topology;
 using namespace sofa::defaulttype;
 template <class DataTypes>
 MechanicalObject<DataTypes>::MechanicalObject()
-    : x(new VecCoord), v(new VecDeriv), f(new VecDeriv), externalForces(new VecDeriv), dx(new VecDeriv), x0(new VecCoord),reset_position(NULL), v0(NULL), xfree(new VecCoord), vfree(new VecDeriv), c(new VecConst)
+    : x(new VecCoord), v(new VecDeriv), internalForces(new VecDeriv), externalForces(new VecDeriv), dx(new VecDeriv), x0(new VecCoord),reset_position(NULL), v0(NULL), xfree(new VecCoord), vfree(new VecDeriv), c(new VecConst)
     , translation(initData(&translation, Vector3(), "translation", "Translation of the DOFs"))
     , rotation(initData(&rotation, Vector3(), "rotation", "Rotation of the DOFs"))
     , scale(initData(&scale, Vector3(1.0,1.0,1.0), "scale3d", "Scale of the DOFs in 3 dimensions"))
@@ -96,6 +96,10 @@ MechanicalObject<DataTypes>::MechanicalObject()
     if (!restScale.isSet())
         restScale.setValue(1);
     initialized = false;
+
+    //set F to internal forces
+    f = internalForces;
+
     this->addField(f_X, "position");
     this->addField(f_V, "velocity");
     this->addField(f_F, "force");
@@ -134,15 +138,19 @@ MechanicalObject<DataTypes>::MechanicalObject()
 
 
     /*    x = new VecCoord;
-      v = new VecDeriv;*/
-    internalForces = f; // = new VecDeriv;
+          v = new VecDeriv;*/
     //dx = new VecDeriv;
 
     // default size is 1
     resize(1);
+
+    _forceId = VecId::force();
+
     setVecCoord(VecId::position().index, this->x);
     setVecDeriv(VecId::velocity().index, this->v);
-    setVecDeriv(VecId::force().index, this->f);
+    setVecDeriv(_forceId.index, this->f);
+    setVecDeriv(VecId::externalForce().index, this->externalForces );
+    setVecDeriv(VecId::internalForce().index, this->internalForces );
     setVecDeriv(VecId::dx().index, this->dx);
     setVecCoord(VecId::restPosition().index, this->x0);
     setVecCoord(VecId::freePosition().index, this->xfree);
@@ -276,11 +284,20 @@ MechanicalObject<DataTypes>::~MechanicalObject()
     if (v0!=NULL)
         delete v0;
     for (unsigned int i=0; i<vectorsCoord.size(); i++)
+    {
         if (vectorsCoord[i]!=NULL)
             delete vectorsCoord[i];
+    }
     for (unsigned int i=0; i<vectorsDeriv.size(); i++)
-        if (vectorsDeriv[i]!=NULL)
+    {
+        if (vectorsDeriv[i]!=NULL &&
+            vectorsDeriv[i] != internalForces &&
+            vectorsDeriv[i] != externalForces)
             delete vectorsDeriv[i];
+    }
+    delete internalForces;
+    delete externalForces;
+
     if( m_gnuplotFileV!=NULL )
         delete m_gnuplotFileV;
     if( m_gnuplotFileX!=NULL )
@@ -1107,8 +1124,6 @@ void MechanicalObject<DataTypes>::addVectorToState(VecId dest, defaulttype::Base
 
 }
 
-
-
 template <class DataTypes>
 void MechanicalObject<DataTypes>::addDxToCollisionModel()
 {
@@ -1445,16 +1460,15 @@ void MechanicalObject<DataTypes>::writeState( std::ostream& out )
 template <class DataTypes>
 void MechanicalObject<DataTypes>::beginIntegration(Real /*dt*/)
 {
-    this->f = this->internalForces;
+    _forceId = VecId::internalForce();
     this->forceMask.activate(false);
 }
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::endIntegration(Real /*dt*/)
 {
-    this->f = this->externalForces;
-
-    this->externalForces->clear();
+    _forceId = VecId::externalForce();
+    getVecDeriv(VecId::externalForce().index )->clear();
 
     this->forceMask.clear();
     //By default the mask is disabled, the user has to enable it to benefit from the speedup
@@ -1464,10 +1478,10 @@ void MechanicalObject<DataTypes>::endIntegration(Real /*dt*/)
 template <class DataTypes>
 void MechanicalObject<DataTypes>::accumulateForce()
 {
-    if (!this->externalForces->empty())
+    if (!getVecDeriv(VecId::externalForce().index)->empty())
     {
-        helper::WriteAccessor<VecDeriv> f = *this->f;
-        helper::ReadAccessor<VecDeriv> externalForces = *this->externalForces;
+        helper::WriteAccessor<VecDeriv> f = *getF();
+        helper::ReadAccessor<VecDeriv> externalForces = *getVecDeriv(VecId::externalForce().index);
 
         if (!this->forceMask.isInUse())
         {
@@ -1492,7 +1506,7 @@ template <class DataTypes>
 void MechanicalObject<DataTypes>::setVecCoord(unsigned int index, VecCoord* v)
 {
     if (index>=vectorsCoord.size())
-        vectorsCoord.resize(index+1);
+        vectorsCoord.resize(index+1,0);
     vectorsCoord[index] = v;
 }
 
@@ -1500,7 +1514,7 @@ template <class DataTypes>
 void MechanicalObject<DataTypes>::setVecDeriv(unsigned int index, VecDeriv* v)
 {
     if (index>=vectorsDeriv.size())
-        vectorsDeriv.resize(index+1);
+        vectorsDeriv.resize(index+1,0);
     vectorsDeriv[index] = v;
 }
 
@@ -1508,7 +1522,7 @@ template <class DataTypes>
 void MechanicalObject<DataTypes>::setVecConst(unsigned int index, VecConst* v)
 {
     if (index>=vectorsConst.size())
-        vectorsConst.resize(index+1);
+        vectorsConst.resize(index+1,0);
     vectorsConst[index] = v;
 }
 
@@ -1518,7 +1532,7 @@ typename MechanicalObject<DataTypes>::VecCoord* MechanicalObject<DataTypes>::get
 {
 
     if (index>=vectorsCoord.size())
-        vectorsCoord.resize(index+1);
+        vectorsCoord.resize(index+1,0);
     if (vectorsCoord[index]==NULL)
     {
         vectorsCoord[index] = new VecCoord;
@@ -1542,7 +1556,7 @@ template<class DataTypes>
 typename MechanicalObject<DataTypes>::VecDeriv* MechanicalObject<DataTypes>::getVecDeriv(unsigned int index)
 {
     if (index>=vectorsDeriv.size())
-        vectorsDeriv.resize(index+1);
+        vectorsDeriv.resize(index+1,0);
     if (vectorsDeriv[index]==NULL)
     {
         vectorsDeriv[index] = new VecDeriv;
@@ -1568,7 +1582,7 @@ template<class DataTypes>
 typename MechanicalObject<DataTypes>::VecConst* MechanicalObject<DataTypes>::getVecConst(unsigned int index)
 {
     if (index>=vectorsConst.size())
-        vectorsConst.resize(index+1);
+        vectorsConst.resize(index+1,0);
     if (vectorsConst[index]==NULL)
         vectorsConst[index] = new VecConst;
 
@@ -2170,7 +2184,7 @@ void MechanicalObject<DataTypes>::setF(VecId v)
 {
     if (v.type == VecId::V_DERIV)
     {
-        this->f = getVecDeriv(v.index);
+        this->_forceId = v;
     }
     else
     {

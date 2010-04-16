@@ -43,7 +43,7 @@ namespace core
 class VecId
 {
 public:
-    enum { V_FIRST_DYNAMIC_INDEX = 8 }; ///< This is the first index used for dynamically allocated vectors
+    enum { V_FIRST_DYNAMIC_INDEX = 9 }; ///< This is the first index used for dynamically allocated vectors
     enum Type
     {
         V_NULL=0,
@@ -62,9 +62,11 @@ public:
     static VecId velocity()      { return VecId(V_DERIV,0);}
     static VecId restVelocity()  { return VecId(V_DERIV,1);}
     static VecId force()         { return VecId(V_DERIV,3);}
-    static VecId dx()            { return VecId(V_DERIV,4);}
-    static VecId dforce()        { return VecId(V_DERIV,5);}
-    static VecId accFromFrame()  { return VecId(V_DERIV,6);}
+    static VecId internalForce() { return VecId(V_DERIV,4);}
+    static VecId externalForce() { return VecId(V_DERIV,5);}
+    static VecId dx()            { return VecId(V_DERIV,6);}
+    static VecId dforce()        { return VecId(V_DERIV,7);}
+    static VecId accFromFrame()  { return VecId(V_DERIV,8);}
     static VecId freePosition()  { return VecId(V_COORD,2);}
     static VecId freeVelocity()  { return VecId(V_DERIV,2);}
     static VecId holonomicC()    { return VecId(V_CONST,0);}
