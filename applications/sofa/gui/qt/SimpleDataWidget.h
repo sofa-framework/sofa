@@ -643,7 +643,6 @@ public:
 template<class T>
 class data_widget_container < Quater<T> > : public fixed_vector_data_widget_container < Quater<T> >
 {};
-#ifdef SOFA_DEV
 
 ////////////////////////////////////////////////////////////////
 /// sofa::component::fem::QuadratureFormular support
@@ -721,7 +720,6 @@ public:
     }
 };
 
-#endif
 ////////////////////////////////////////////////////////////////
 /// sofa::defaulttype::Mat support
 ////////////////////////////////////////////////////////////////

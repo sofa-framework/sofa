@@ -52,6 +52,7 @@ namespace helper
  * selected.
  *
  */
+
 class RadioTrick : public sofa::helper::vector<std::string>
 {
 public :
