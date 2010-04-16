@@ -34,7 +34,7 @@
 #include <sofa/component/forcefield/PenalityContactForceField.h>
 #endif
 #include <sofa/helper/Factory.h>
-#include <sofa/component/collision/BarycentricContactMapper.h>
+#include <sofa/component/collision/BaseContactMapper.h>
 
 
 namespace sofa
