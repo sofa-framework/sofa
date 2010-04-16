@@ -36,10 +36,9 @@
 #include "WFloatLineEdit.h"
 #include <limits.h>
 
-#ifdef SOFA_DEV
 #include <sofa/component/fem/QuadratureFormular.h>
 #include <sofa/helper/Polynomial_LD.inl>
-#endif
+
 
 #if !defined(INFINITY)
 #define INFINITY 9.0e10
