@@ -968,7 +968,7 @@ void RealGUI::pmlOpen ( const char* filename, bool /*resetView*/ )
         if ( !pmlreader ) pmlreader = new PMLReader;
         pmlreader->BuildStructure ( filename, simuNode );
         setScene ( simuNode, filename );
-        this->setWindowFilePath(filename.c_str());
+        this->setWindowFilePath(filename); //.c_str());
     }
 }
 
