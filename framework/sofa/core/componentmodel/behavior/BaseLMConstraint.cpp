@@ -36,7 +36,56 @@ namespace componentmodel
 
 namespace behavior
 {
+//------------------------------------------------------------------------
+//ConstraintGroup
 
+BaseLMConstraint::ConstraintGroup::ConstraintGroup( ConstOrder idConstraint):Order(idConstraint), active(true) {}
+
+void BaseLMConstraint::ConstraintGroup::addConstraint(  unsigned int idx, SReal c)
+{
+    equations.resize(equations.size()+1);
+    ConstraintEquation &eq=equations.back();
+    eq.idx = idx;
+    eq.correction=c;
+}
+
+/// Random Access to an equation
+const BaseLMConstraint::ConstraintEquation &
+BaseLMConstraint::ConstraintGroup::getConstraint(const unsigned int i) const
+{
+    EquationConstIterator it=equations.begin();
+    std::advance(it,i);
+    return *it;
+}
+
+BaseLMConstraint::ConstraintEquation &
+BaseLMConstraint::ConstraintGroup::getConstraint(const unsigned int i)
+{
+    EquationIterator it=equations.begin();
+    std::advance(it,i);
+    return *it;
+}
+
+/// Retrieve all the equations
+std::pair< BaseLMConstraint::ConstraintGroup::EquationConstIterator,BaseLMConstraint::ConstraintGroup::EquationConstIterator>
+BaseLMConstraint::ConstraintGroup::data() const
+{
+    return std::make_pair( equations.begin(), equations.end());
+}
+
+std::pair< BaseLMConstraint::ConstraintGroup::EquationIterator,BaseLMConstraint::ConstraintGroup::EquationIterator >
+BaseLMConstraint::ConstraintGroup::data()
+{
+    return std::make_pair( equations.begin(), equations.end());
+}
+
+
+
+
+
+
+
+//------------------------------------------------------------------------
 BaseLMConstraint::BaseLMConstraint():
     pathObject1( initData(&pathObject1,  "object1","First Object to constrain") ),
     pathObject2( initData(&pathObject2,  "object2","Second Object to constrain") )
@@ -60,23 +109,6 @@ BaseLMConstraint::ConstraintGroup* BaseLMConstraint::addGroupConstraint( ConstOr
     constraintOrder[id].push_back(c);
     return c;
 }
-
-void BaseLMConstraint::constraintTransmissionJ1(unsigned int entry)
-{
-    for (std::map< unsigned int,unsigned int >::iterator it=linesInSimulatedObject1.begin(); it!=linesInSimulatedObject1.end(); ++it)
-    {
-        it->second += entry;
-    }
-}
-
-void BaseLMConstraint::constraintTransmissionJ2(unsigned int entry)
-{
-    for (std::map< unsigned int,unsigned int >::iterator it=linesInSimulatedObject2.begin(); it!=linesInSimulatedObject2.end(); ++it)
-    {
-        it->second += entry;
-    }
-}
-
 
 void BaseLMConstraint::getCorrections(ConstOrder Order, helper::vector<SReal>& c)
 {
@@ -107,8 +139,6 @@ void BaseLMConstraint::resetConstraint()
         }
     }
     constraintOrder.clear();
-    linesInSimulatedObject1.clear();
-    linesInSimulatedObject2.clear();
 }
 
 }

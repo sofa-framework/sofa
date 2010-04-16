@@ -71,19 +71,6 @@ void DistanceLMConstraint<DataTypes>::reinit()
     updateRestLength();
 }
 
-
-template <class DataTypes>
-void DistanceLMConstraint<DataTypes>::addConstraint(unsigned int i1, unsigned int i2)
-{
-    SeqEdges &constraints = *(vecConstraint.beginEdit());
-    constraints.resize(constraints.size()+1);
-    constraints.back()[0] = i1;
-    constraints.back()[1] = i2;
-    vecConstraint.endEdit();
-
-}
-
-
 template <class DataTypes>
 double DistanceLMConstraint<DataTypes>::lengthEdge(const Edge &e, const VecCoord &x1, const VecCoord &x2) const
 {
@@ -124,7 +111,7 @@ typename DataTypes::Deriv DistanceLMConstraint<DataTypes>::getDirection(const Ed
 
 
 template<class DataTypes>
-void DistanceLMConstraint<DataTypes>::buildJacobian()
+void DistanceLMConstraint<DataTypes>::buildJacobian(unsigned int &constraintId)
 {
     const VecCoord &x1=*(this->constrainedObject1->getX());
     const VecCoord &x2=*(this->constrainedObject2->getX());
@@ -145,9 +132,10 @@ void DistanceLMConstraint<DataTypes>::buildJacobian()
         SparseVecDeriv V1; V1.add(idx1, V12);
         SparseVecDeriv V2; V2.add(idx2,-V12);
 
-        registeredConstraints.resize(registeredConstraints.size()+1);
-        registeredConstraints.back().first = registerEquationInJ1(V1);
-        registeredConstraints.back().second= registerEquationInJ2(V2);
+        registeredConstraints.push_back(constraintId);
+        registerEquationInJ1(constraintId,V1);
+        registerEquationInJ2(constraintId,V2);
+        constraintId++;
 
         this->constrainedObject1->forceMask.insertEntry(idx1);
         this->constrainedObject2->forceMask.insertEntry(idx2);
@@ -158,9 +146,9 @@ void DistanceLMConstraint<DataTypes>::buildJacobian()
 template<class DataTypes>
 void DistanceLMConstraint<DataTypes>::writeConstraintEquations(ConstOrder Order)
 {
+    typedef core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
     const VecCoord &x1=*(this->constrainedObject1->getX());
     const VecCoord &x2=*(this->constrainedObject2->getX());
-
     const SeqEdges &edges =  vecConstraint.getValue();
 
     if (registeredConstraints.empty()) return;
@@ -172,18 +160,14 @@ void DistanceLMConstraint<DataTypes>::writeConstraintEquations(ConstOrder Order)
         {
         case core::componentmodel::behavior::BaseLMConstraint::ACC :
         {
-            correction = this->constrainedObject1->getConstraintJacobianTimesVecDeriv(registeredConstraints[i].first,
-                    core::componentmodel::behavior::BaseMechanicalState::VecId::dx());
-            correction+= this->constrainedObject2->getConstraintJacobianTimesVecDeriv(registeredConstraints[i].second,
-                    core::componentmodel::behavior::BaseMechanicalState::VecId::dx());
+            correction = this->constrainedObject1->getConstraintJacobianTimesVecDeriv(registeredConstraints[i],VecId::dx());
+            correction+= this->constrainedObject2->getConstraintJacobianTimesVecDeriv(registeredConstraints[i],VecId::dx());
             break;
         }
         case core::componentmodel::behavior::BaseLMConstraint::VEL :
         {
-            correction = this->constrainedObject1->getConstraintJacobianTimesVecDeriv(registeredConstraints[i].first,
-                    core::componentmodel::behavior::BaseMechanicalState::VecId::velocity());
-            correction+= this->constrainedObject2->getConstraintJacobianTimesVecDeriv(registeredConstraints[i].second,
-                    core::componentmodel::behavior::BaseMechanicalState::VecId::velocity());
+            correction = this->constrainedObject1->getConstraintJacobianTimesVecDeriv(registeredConstraints[i],VecId::velocity());
+            correction+= this->constrainedObject2->getConstraintJacobianTimesVecDeriv(registeredConstraints[i],VecId::velocity());
             break;
         }
         case core::componentmodel::behavior::BaseLMConstraint::POS :
@@ -194,7 +178,7 @@ void DistanceLMConstraint<DataTypes>::writeConstraintEquations(ConstOrder Order)
             break;
         }
         };
-        constraint->addConstraint( registeredConstraints[i].first, registeredConstraints[i].second, -correction);
+        constraint->addConstraint( registeredConstraints[i], -correction);
     }
 }
 

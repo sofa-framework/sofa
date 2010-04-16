@@ -49,63 +49,23 @@ LMConstraint<DataTypes1,DataTypes2>::~LMConstraint()
 }
 
 template<class DataTypes1,class DataTypes2>
-unsigned int   LMConstraint<DataTypes1,DataTypes2>::registerEquationInJ1( const SparseVecDeriv1 &C1)
+void   LMConstraint<DataTypes1,DataTypes2>::registerEquationInJ1(unsigned int constraintId, const SparseVecDeriv1 &C1) const
 {
     //VecConst interface:
     //index where the direction will be found
-    unsigned int id=constrainedObject1->getCSize();
     constrainedObject1->getC()->push_back(C1);
-    linesInSimulatedObject1.insert(std::make_pair(id,id));
-    return id;
+    constrainedObject1->setConstraintId(constraintId);
 }
 
 template<class DataTypes1,class DataTypes2>
-unsigned int   LMConstraint<DataTypes1,DataTypes2>::registerEquationInJ2( const SparseVecDeriv2 &C2)
+void   LMConstraint<DataTypes1,DataTypes2>::registerEquationInJ2(unsigned int constraintId, const SparseVecDeriv2 &C2) const
 {
     //VecConst interface:
     //index where the direction will be found
-    unsigned int id=constrainedObject2->getCSize();
     constrainedObject2->getC()->push_back(C2);
-    linesInSimulatedObject2.insert(std::make_pair(id,id));
-    return id;
+    constrainedObject2->setConstraintId(constraintId);
 }
 
-template<class DataTypes1,class DataTypes2>
-void LMConstraint<DataTypes1,DataTypes2>::propagateJacobian()
-{
-    //Propagate the lines of the Jacobian through the mappings until we reach the simulated object
-    BaseMechanicalState *mstate;
-
-    mstate=constrainedObject1;
-
-    if(mstate)
-    {
-        mstate->forceMask.setInUse(this->useMask());
-        while (mstate != simulatedObject1)
-        {
-            core::componentmodel::behavior::BaseMechanicalMapping* mapping;
-            mstate->getContext()->get(mapping);
-            if (!mapping) break;
-            constraintTransmissionJ1( mapping->getMechFrom()->getCSize());
-            mstate = mapping->getMechFrom();
-        }
-    }
-
-    mstate=constrainedObject2;
-
-    if(mstate)
-    {
-        mstate->forceMask.setInUse(this->useMask());
-        while (mstate != simulatedObject2)
-        {
-            core::componentmodel::behavior::BaseMechanicalMapping* mapping;
-            mstate->getContext()->get(mapping);
-            if (!mapping) break;
-            constraintTransmissionJ2( mapping->getMechFrom()->getCSize());
-            mstate = mapping->getMechFrom();
-        }
-    }
-}
 
 
 template<class DataTypes1,class DataTypes2>
@@ -143,7 +103,7 @@ void LMConstraint<DataTypes1,DataTypes2>::init()
             core::componentmodel::behavior::BaseMechanicalMapping* mapping;
             simulatedObject1->getContext()->get(mapping);
             if (!mapping) break;
-            simulatedObject1 = mapping->getMechFrom();
+            simulatedObject1 = mapping->getMechFrom()[0];
         }
 
         simulatedObject2=constrainedObject2;
@@ -152,7 +112,7 @@ void LMConstraint<DataTypes1,DataTypes2>::init()
             core::componentmodel::behavior::BaseMechanicalMapping* mapping;
             simulatedObject2->getContext()->get(mapping);
             if (!mapping) break;
-            simulatedObject2 = mapping->getMechFrom();
+            simulatedObject2 = mapping->getMechFrom()[0];
         }
     }
 }

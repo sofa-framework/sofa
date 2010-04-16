@@ -22,7 +22,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/component/constraint/RotationLMConstraint.inl>
+#include <sofa/component/constraint/DOFBlockerLMConstraint.inl>
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/defaulttype/Vec3Types.h>
 #include <sofa/defaulttype/RigidTypes.h>
@@ -39,22 +39,22 @@ namespace constraint
 using namespace sofa::defaulttype;
 using namespace sofa::helper;
 
-SOFA_DECL_CLASS(RotationLMConstraint)
+SOFA_DECL_CLASS(DOFBlockerLMConstraint)
 
-int RotationLMConstraintClass = core::RegisterObject("Constrain the rotation of a given set of Rigid Bodies")
+int DOFBlockerLMConstraintClass = core::RegisterObject("Constrain the rotation of a given set of Rigid Bodies")
 #ifndef SOFA_FLOAT
-        .add< RotationLMConstraint<Rigid3dTypes> >()
+        .add< DOFBlockerLMConstraint<Rigid3dTypes> >()
 #endif
 #ifndef SOFA_DOUBLE
-        .add< RotationLMConstraint<Rigid3fTypes> >()
+        .add< DOFBlockerLMConstraint<Rigid3fTypes> >()
 #endif
         ;
 
 #ifndef SOFA_FLOAT
-template class RotationLMConstraint<Rigid3dTypes>;
+template class DOFBlockerLMConstraint<Rigid3dTypes>;
 #endif
 #ifndef SOFA_DOUBLE
-template class RotationLMConstraint<Rigid3fTypes>;
+template class DOFBlockerLMConstraint<Rigid3fTypes>;
 #endif
 
 
