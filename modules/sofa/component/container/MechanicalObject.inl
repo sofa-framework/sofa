@@ -2373,13 +2373,15 @@ std::list<core::componentmodel::behavior::BaseMechanicalState::ConstraintBlock> 
     typedef std::list<unsigned int> indices_t;
 
     unsigned int block_row = 0;
-    for(indices_t::const_iterator row = indices.begin();
-        row != indices.end(); ++row, ++block_row)
+    for(indices_t::const_iterator rowIt = indices.begin();
+        rowIt != indices.end(); ++rowIt, ++block_row)
     {
 
+        unsigned int row=getIdxConstraintFromId(*rowIt);
+
         // for all sparse data in the row
-        assert( *row < c->size() );
-        std::pair<ConstraintIterator,ConstraintIterator> range = (*c)[ *row ].data();
+        assert( row < c->size() );
+        std::pair<ConstraintIterator,ConstraintIterator> range = (*c)[ row ].data();
         ConstraintIterator chunk = range.first, last = range.second;
         for( ; chunk != last; ++chunk)
         {
@@ -2426,7 +2428,7 @@ template <class DataTypes>
 SReal MechanicalObject<DataTypes>::getConstraintJacobianTimesVecDeriv( unsigned int line, VecId id)
 {
     SReal result=0;
-    SparseVecDeriv &value=(*c)[line];
+    SparseVecDeriv &value=(*c)[getIdxConstraintFromId(line)];
 
     VecDeriv *data=NULL;
 
@@ -2561,6 +2563,14 @@ bool MechanicalObject<DataTypes>::pickParticles(double rayOx, double rayOy, doub
     }
     else
         return false;
+}
+
+template <class DataTypes>
+unsigned int  MechanicalObject<DataTypes>::getIdxConstraintFromId(unsigned int id) const
+{
+    for (unsigned int i=0; i<constraintId.size(); ++i) if (constraintId[i]==id) return i;
+    serr << "Constraint Equation " << id << " Was not found!" << sendl;
+    return 0;
 }
 
 //

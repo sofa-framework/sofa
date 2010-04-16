@@ -94,12 +94,8 @@ public:
     void reinit();
 
     // -- LMConstraint interface
-    void buildJacobian();
+    void buildJacobian(unsigned int &constraintId);
     void writeConstraintEquations(ConstOrder order);
-
-
-
-    void addConstraint(unsigned int i1, unsigned int i2);
 
     virtual void draw();
 
@@ -140,7 +136,7 @@ protected :
     // Base Components of the current context
     core::componentmodel::topology::BaseMeshTopology *topology;
 
-    helper::vector< std::pair< unsigned int, unsigned int> > registeredConstraints;
+    helper::vector<  unsigned int > registeredConstraints;
 
     // rest length pre-computated
     sofa::helper::vector< double > l0;

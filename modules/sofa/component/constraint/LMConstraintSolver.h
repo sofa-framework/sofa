@@ -104,7 +104,7 @@ protected:
     /// Solve the System using a projective Gauss-Seidel algorithm: compute the Lagrange Multipliers Lambda
     bool solveConstraintSystemUsingGaussSeidel(ConstOrder Order,
             const helper::vector< core::componentmodel::behavior::BaseLMConstraint* > &LMConstraints,
-            const MatrixEigen &A,
+            MatrixEigen &W,
             VectorEigen  c,
             VectorEigen &Lambda);
 
@@ -114,7 +114,7 @@ protected:
     /** Apply the correction to the state corresponding
      * @param id nature of the constraint, and correction to apply
      * @param dof MechanicalState to correct
-     * @param invM_Jtrans matrix M^-1.J^T to apply the correction from the independant dofs through the mapping
+     * @param invM_Ltrans matrix M^-1.L^T to apply the correction from the independant dofs through the mapping
      * @param c correction vector
      * @param propageVelocityChange need to propagate the correction done to the velocity for the position
      **/
@@ -145,7 +145,7 @@ protected:
     DofToMask dofUsed;
     DofToMatrix invMass_Ltrans;
 
-    MatrixEigen *A;
+    MatrixEigen *W;
     VectorEigen *c;
     VectorEigen *Lambda;
 

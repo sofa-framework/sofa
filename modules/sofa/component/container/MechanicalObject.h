@@ -125,6 +125,8 @@ protected:
     void setVecConst(unsigned int index, VecConst* v);
 
     /// @}
+    /// Given the numero of a constraint Equation, find the index in the VecConst C, where the constraint is actually stored
+    unsigned int getIdxConstraintFromId(unsigned int id) const;
 
     MechanicalObjectInternalData<DataTypes> data;
 

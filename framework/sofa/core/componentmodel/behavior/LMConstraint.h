@@ -84,14 +84,6 @@ public:
 
     virtual void init();
 
-
-    //Create the Jacobian for the Constrained Object
-    virtual void buildJacobian()=0;
-
-    //Propagate the Jacobian matrix through the mappings
-    virtual void propagateJacobian();
-
-
     /// get Mechanical State 1 where the constraint will be expressed (can be a Mapped mechanical state)
     virtual BaseMechanicalState* getConstrainedMechModel1() const {return constrainedObject1;}
     /// get Mechanical State 2 where the constraint will be expressed (can be a Mapped mechanical state)
@@ -155,8 +147,8 @@ public:
 protected:
     /// Insert in the Vector C (VecConst) of each constrainedObject the equation expressed using SparseVecDeriv
     /// Returns the index where the lines have been entered
-    unsigned int  registerEquationInJ1( const SparseVecDeriv1 &C1);
-    unsigned int  registerEquationInJ2( const SparseVecDeriv2 &C2);
+    void  registerEquationInJ1( unsigned int constraintId, const SparseVecDeriv1 &C1) const;
+    void  registerEquationInJ2( unsigned int constraintId, const SparseVecDeriv2 &C2) const;
 
     MechanicalState<DataTypes1> *constrainedObject1;
     MechanicalState<DataTypes2> *constrainedObject2;

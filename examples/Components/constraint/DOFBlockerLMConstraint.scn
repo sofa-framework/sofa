@@ -32,6 +32,6 @@
 			<RigidMapping template="MechanicalMapping&lt;Rigid,Vec3d&gt;" name="default22" />
 			<TriangleModel name="FrictionCoeff"  contactFriction="1" />
 		</Node>
-		<RotationLMConstraint template="Rigid" name="RotationConstraint"  rotationAxis="0 0 0 0 1 0 0 0 0 0 0 1"  factorAxis="1"  indices="0" />
+		<DOFBlockerLMConstraint template="Rigid" name="RotationConstraint"  rotationAxis="0 0 0 0 1 0 0 0 0 0 0 1"  factorAxis="1"  indices="0" />
 	</Node>
 </Node>

@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_CONSTRAINT_ROTATIONLMCONSTRAINT_H
-#define SOFA_COMPONENT_CONSTRAINT_ROTATIONLMCONSTRAINT_H
+#ifndef SOFA_COMPONENT_CONSTRAINT_DOFBLOCKERLMCONSTRAINT_H
+#define SOFA_COMPONENT_CONSTRAINT_DOFBLOCKERLMCONSTRAINT_H
 
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/core/componentmodel/behavior/LMConstraint.h>
@@ -43,7 +43,7 @@ namespace constraint
 using namespace sofa::core::componentmodel::topology;
 /// This class can be overridden if needed for additionnal storage within template specializations.
 template <class DataTypes>
-class RotationLMConstraintInternalData
+class DOFBlockerLMConstraintInternalData
 {
 };
 
@@ -53,10 +53,10 @@ class RotationLMConstraintInternalData
 /** Keep two particules at an initial distance
  */
 template <class DataTypes>
-class RotationLMConstraint :  public core::componentmodel::behavior::LMConstraint<DataTypes,DataTypes>
+class DOFBlockerLMConstraint :  public core::componentmodel::behavior::LMConstraint<DataTypes,DataTypes>
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(RotationLMConstraint,DataTypes),SOFA_TEMPLATE2(sofa::core::componentmodel::behavior::LMConstraint, DataTypes, DataTypes));
+    SOFA_CLASS(SOFA_TEMPLATE(DOFBlockerLMConstraint,DataTypes),SOFA_TEMPLATE2(sofa::core::componentmodel::behavior::LMConstraint, DataTypes, DataTypes));
 
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Coord Coord;
@@ -73,25 +73,25 @@ public:
     typedef core::componentmodel::behavior::BaseLMConstraint::ConstOrder ConstOrder;
 
 protected:
-    RotationLMConstraintInternalData<DataTypes> data;
-    friend class RotationLMConstraintInternalData<DataTypes>;
+    DOFBlockerLMConstraintInternalData<DataTypes> data;
+    friend class DOFBlockerLMConstraintInternalData<DataTypes>;
 
 public:
-    RotationLMConstraint( MechanicalState *dof):
+    DOFBlockerLMConstraint( MechanicalState *dof):
         core::componentmodel::behavior::LMConstraint<DataTypes,DataTypes>(dof,dof),
-        rotationAxis(core::objectmodel::Base::initData(&rotationAxis, "rotationAxis", "List of rotation axis to constrain")),
+        BlockedAxis(core::objectmodel::Base::initData(&BlockedAxis, "rotationAxis", "List of rotation axis to constrain")),
         factorAxis(core::objectmodel::Base::initData(&factorAxis, "factorAxis", "Factor to apply in order to block only a certain amount of rotation along the axis")),
         f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed")),
         showSizeAxis(core::objectmodel::Base::initData(&showSizeAxis,(SReal)1.0,"showSizeAxis","size of the vector used to display the constrained axis") )
     { };
-    RotationLMConstraint():
-        rotationAxis(core::objectmodel::Base::initData(&rotationAxis, "rotationAxis", "List of rotation axis to constrain")),
+    DOFBlockerLMConstraint():
+        BlockedAxis(core::objectmodel::Base::initData(&BlockedAxis, "rotationAxis", "List of rotation axis to constrain")),
         factorAxis(core::objectmodel::Base::initData(&factorAxis, "factorAxis", "Factor to apply in order to block only a certain amount of rotation along the axis")),
         f_indices(core::objectmodel::Base::initData(&f_indices, "indices", "List of the index of particles to be fixed")),
         showSizeAxis(core::objectmodel::Base::initData(&showSizeAxis,(SReal)1.0,"showSizeAxis","size of the vector used to display the constrained axis") )
     { };
 
-    ~RotationLMConstraint() {};
+    ~DOFBlockerLMConstraint() {};
 
     void clearConstraints();
     void addConstraint(unsigned int index);
@@ -105,7 +105,7 @@ public:
     void resetConstraint();
 
     // -- LMConstraint interface
-    void buildJacobian();
+    void buildJacobian(unsigned int &constraintId);
     void writeConstraintEquations(ConstOrder order);
 
 
@@ -115,7 +115,7 @@ public:
     {
         return templateName(this);
     }
-    static std::string templateName(const RotationLMConstraint<DataTypes>* = NULL)
+    static std::string templateName(const DOFBlockerLMConstraint<DataTypes>* = NULL)
     {
         return DataTypes::Name();
     }
@@ -129,7 +129,7 @@ public:
     }
     bool useMask() {return true;}
 
-    Data<helper::vector<Deriv> > rotationAxis;
+    Data<helper::vector<Deriv> > BlockedAxis;
     Data<helper::vector<SReal> > factorAxis;
     Data<SetIndex> f_indices;
 

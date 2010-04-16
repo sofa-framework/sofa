@@ -143,7 +143,7 @@ template <class DataTypes> void FixedLMConstraint<DataTypes>::handleTopologyChan
 
 
 template<class DataTypes>
-void FixedLMConstraint<DataTypes>::buildJacobian()
+void FixedLMConstraint<DataTypes>::buildJacobian(unsigned int &constraintId)
 {
     idxX.clear();
     idxY.clear();
@@ -155,16 +155,20 @@ void FixedLMConstraint<DataTypes>::buildJacobian()
         const unsigned int index=*it;
 
         //Constraint degree of freedom along X direction
+
         SparseVecDeriv VX; VX.add(index,X);
-        idxX.push_back(registerEquationInJ1(VX));
+        registerEquationInJ1(constraintId, VX);
+        idxX.push_back(constraintId++);
 
         //Constraint degree of freedom along X direction
         SparseVecDeriv VY; VY.add(index,Y);
-        idxY.push_back(registerEquationInJ1(VY));
+        registerEquationInJ1(constraintId, VY);
+        idxY.push_back(constraintId++);
 
         //Constraint degree of freedom along Z direction
         SparseVecDeriv VZ; VZ.add(index,Z);
-        idxZ.push_back(registerEquationInJ1(VZ));
+        registerEquationInJ1(constraintId, VZ);
+        idxZ.push_back(constraintId++);
 
         this->constrainedObject1->forceMask.insertEntry(index);
     }
@@ -175,6 +179,7 @@ template<class DataTypes>
 void FixedLMConstraint<DataTypes>::writeConstraintEquations(ConstOrder Order)
 {
 
+    typedef core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
     const SetIndexArray & indices = f_indices.getValue().getArray();
 
     unsigned int counter=0;
@@ -188,17 +193,17 @@ void FixedLMConstraint<DataTypes>::writeConstraintEquations(ConstOrder Order)
         {
         case core::componentmodel::behavior::BaseLMConstraint::ACC :
         {
-            correctionX =this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxX[counter],core::componentmodel::behavior::BaseMechanicalState::VecId::dx());
-            correctionY =this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxY[counter],core::componentmodel::behavior::BaseMechanicalState::VecId::dx());
-            correctionZ =this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxZ[counter],core::componentmodel::behavior::BaseMechanicalState::VecId::dx());
+            correctionX =this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxX[counter],VecId::dx());
+            correctionY =this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxY[counter],VecId::dx());
+            correctionZ =this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxZ[counter],VecId::dx());
 
             break;
         }
         case core::componentmodel::behavior::BaseLMConstraint::VEL :
         {
-            correctionX = this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxX[counter],core::componentmodel::behavior::BaseMechanicalState::VecId::velocity());
-            correctionY = this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxY[counter],core::componentmodel::behavior::BaseMechanicalState::VecId::velocity());
-            correctionZ = this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxZ[counter],core::componentmodel::behavior::BaseMechanicalState::VecId::velocity());
+            correctionX = this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxX[counter],VecId::velocity());
+            correctionY = this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxY[counter],VecId::velocity());
+            correctionZ = this->constrainedObject1->getConstraintJacobianTimesVecDeriv(idxZ[counter],VecId::velocity());
             break;
         }
         case core::componentmodel::behavior::BaseLMConstraint::POS :
