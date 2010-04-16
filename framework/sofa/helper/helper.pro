@@ -131,7 +131,6 @@ SOURCES += ArgumentParser.cpp \
     proximity.cpp \
     AdvancedTimer.cpp \
     io/ImageDDS.cpp \
-	tricks.cpp \
 	Polynomial_LD.cpp
 contains(DEFINES,SOFA_HAVE_GLEW) { 
     HEADERS += gl/FrameBufferObject.h \

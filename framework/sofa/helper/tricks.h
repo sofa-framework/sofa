@@ -52,34 +52,101 @@ namespace helper
  * selected.
  *
  */
-
-class RadioTrick : public sofa::helper::vector<std::string>
+template< typename T >
+class RadioTrick : public sofa::helper::vector<T>
 {
 public :
     typedef sofa::helper::vector<std::string> textItems;
 
-    RadioTrick();
+    RadioTrick() : textItems()
+    {
+        selectedItem=0;
+    }
+///////////////////////////////////////
+    RadioTrick(int nbofRadioButton,...)
+    {
+        textItems::resize(nbofRadioButton);
+        va_list vl;
+        va_start(vl,nbofRadioButton);
+        for(unsigned int i=0; i<textItems::size(); i++)
+        {
+            const char * tempochar=va_arg(vl,char *);
+            std::string  tempostring(tempochar);
+            textItems::operator[](i)=tempostring;
+        }
+        va_end(vl);
+        selectedItem=0;
+    }
+///////////////////////////////////////
+    RadioTrick(const RadioTrick & m_radiotrick) : textItems(m_radiotrick)
+    {
+        selectedItem=m_radiotrick.getSelectedId();
+    }
+///////////////////////////////////////
+    /*RadioTrick & RadioTrick::operator=(const RadioTrick & m_radiotrick)
+    {
+    	RadioTrick m_newRadioTrick(m_radiotrick);
+    	return m_newRadioTrick;
+    }*/
+///////////////////////////////////////
 
-    ///Example RadioTrick m_radiobutton(4,"button0","button1","button2","button3");
-    RadioTrick(int nbofRadioButton,...);
-
-    ///Copy
-    RadioTrick(const RadioTrick & m_radiotrick);
-    RadioTrick & operator=(const RadioTrick & m_radiotrick);
-
-    void setSelectedItem(unsigned int id_item);
-    void setSelectedItem(const std::string &);
-    unsigned int getSelectedId() const;
-    std::string getSelectedItem() const;
-
-
-
-    ///An other way to do the setSelectedItem() using a string for input
-    ///If the reading string is in string list, set the selected item to this
-    ///else push a warning.
-    void readFromStream(std::istream & stream);
-
-    void TestRadioTrick();
+///////////////////////////////////////
+    void setSelectedItem(unsigned int id_item)
+    {
+        if (id_item<textItems::size())
+            selectedItem=id_item;
+        std::cout<<"=============================checked number changed :"<<id_item<<std::endl;
+    }
+///////////////////////////////////////
+    void setSelectedItem(const std::string & m_string)
+    {
+        int id_stringinButtonList = isInButtonList(m_string);
+        if (id_stringinButtonList == -1)
+        {
+            std::cout<<"WARNING(RadioTrick) : \""<< m_string <<"\" is not a parameter in button list :\" "<<(*this)<<"\""<< std::endl;
+        }
+        else
+        {
+            setSelectedItem(id_stringinButtonList);
+        }
+    }
+///////////////////////////////////////
+    unsigned int getSelectedId() const
+    {
+        return selectedItem;
+    }
+///////////////////////////////////////
+    std::string  getSelectedItem() const
+    {
+        std::string checkedString;
+        checkedString = textItems::operator[](selectedItem);
+        return checkedString;
+    }
+///////////////////////////////////////
+    void readFromStream(std::istream & stream)
+    {
+        std::string tempostring;
+        stream >> tempostring;
+        int id_stringinButtonList = isInButtonList(tempostring);
+        if (id_stringinButtonList == -1)
+        {
+            std::cout<<"WARNING(RadioTrick) : \""<< tempostring <<"\" is not a parameter in button list :\" "<<(*this)<<"\""<< std::endl;
+        }
+        else
+        {
+            setSelectedItem(id_stringinButtonList);
+        }
+    }
+///////////////////////////////////////
+    void TestRadioTrick()
+    {
+        sofa::helper::RadioTrick m_radiotrick(3,"hello1","hello2","hello3");
+        std::cout<<"Radio button :"<<m_radiotrick<<"    selectedId :"<<m_radiotrick.getSelectedId()<<"   getSelectedItem() :"<<m_radiotrick.getSelectedItem()<<std::endl;
+        std::cin>>m_radiotrick;
+        std::cout<<"Radio button :"<<m_radiotrick<<"    selectedId :"<<m_radiotrick.getSelectedId()<<"   getSelectedItem() :"<<m_radiotrick.getSelectedItem()<<std::endl;
+    }
+//////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////
 
 protected:
 
@@ -87,12 +154,19 @@ protected:
 
     ///return the id_item of the string if found in string list button
     ///             -1    if not found
-    int isInButtonList(const std::string & m_string);
+    int isInButtonList(const std::string & tempostring)
+    {
+        for(unsigned int i=0; i<textItems::size(); i++)
+        {
+            if (textItems::operator[](i)==tempostring) return i;
+        }
+        return -1;
+    }
 
 };
 
-
-inline std::istream & operator >>(std::istream & in, RadioTrick & m_trick)
+template< typename T>
+inline std::istream & operator >>(std::istream & in, RadioTrick<T> & m_trick)
 {m_trick.readFromStream(in); return in;}
 
 ///////////////////////////////////////////////////////////////////////////////////
