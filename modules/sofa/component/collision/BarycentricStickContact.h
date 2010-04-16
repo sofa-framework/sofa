@@ -30,7 +30,8 @@
 #include <sofa/component/mapping/BarycentricMapping.h>
 #include <sofa/component/forcefield/VectorSpringForceField.h>
 #include <sofa/helper/Factory.h>
-#include <sofa/component/collision/BaseContactMapper.h>
+#include <sofa/component/collision/BarycentricContactMapper.h>
+#include <sofa/component/collision/IdentityContactMapper.h>
 
 
 namespace sofa

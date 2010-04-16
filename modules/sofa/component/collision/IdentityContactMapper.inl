@@ -22,9 +22,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_COLLISION_BARYCENTRICCONTACTMAPPER_CPP
-#include <sofa/component/collision/BarycentricContactMapper.inl>
-#include <sofa/helper/Factory.inl>
+#ifndef SOFA_COMPONENT_COLLISION_IDENTITYCONTACTMAPPER_INL
+#define SOFA_COMPONENT_COLLISION_IDENTITYCONTACTMAPPER_INL
+
+#include <sofa/component/collision/IdentityContactMapper.h>
+#include <sofa/simulation/common/Node.h>
+#include <sofa/simulation/common/Simulation.h>
+#include <sofa/simulation/common/DeleteVisitor.h>
+#include <iostream>
 
 namespace sofa
 {
@@ -35,21 +40,40 @@ namespace component
 namespace collision
 {
 
-using namespace defaulttype;
+template < class TCollisionModel, class DataTypes >
+void IdentityContactMapper<TCollisionModel,DataTypes>::cleanup()
+{
+    if (mapping!=NULL)
+    {
+        simulation::Node* parent = dynamic_cast<simulation::Node*>(model->getContext());
+        if (parent!=NULL)
+        {
+            simulation::Node* child = dynamic_cast<simulation::Node*>(mapping->getContext());
+            child->detachFromGraph();
+            child->execute<simulation::DeleteVisitor>();
+            delete child;
+            mapping = NULL;
+        }
+    }
+}
+template < class TCollisionModel, class DataTypes >
+typename IdentityContactMapper<TCollisionModel,DataTypes>::MMechanicalState* IdentityContactMapper<TCollisionModel,DataTypes>::createMapping(const char* name)
+{
+    if (model==NULL) return NULL;
+    simulation::Node* parent = dynamic_cast<simulation::Node*>(model->getContext());
+    if (parent==NULL)
+    {
+        std::cerr << "ERROR: IdentityContactMapper only works for scenegraph scenes.\n";
+        return NULL;
+    }
+    simulation::Node* child = simulation::getSimulation()->newNode(name);
+    parent->addChild(child); child->updateSimulationContext();
+    MMechanicalState* mstate = new MMechanicalObject; child->addObject(mstate);
+    mstate->useMask.setValue(true);
+    mapping = new MMapping(model->getMechanicalState(), mstate); child->addObject(mapping);
+    return mstate;
+}
 
-SOFA_DECL_CLASS(BarycentricContactMapper)
-
-ContactMapperCreator< ContactMapper<LineModel> > LineContactMapperClass("default",true);
-ContactMapperCreator< ContactMapper<TriangleModel> > TriangleContactMapperClass("default",true);
-ContactMapperCreator< ContactMapper<TetrahedronModel> > TetrahedronContactMapperClass("default",true);
-ContactMapperCreator< ContactMapper<RigidDistanceGridCollisionModel> > DistanceGridContactMapperClass("default", true);
-ContactMapperCreator< ContactMapper<FFDDistanceGridCollisionModel> > FFDDistanceGridContactMapperClass("default", true);
-
-template class SOFA_COMPONENT_COLLISION_API ContactMapper<LineModel>;
-template class SOFA_COMPONENT_COLLISION_API ContactMapper<TriangleModel>;
-template class SOFA_COMPONENT_COLLISION_API ContactMapper<TetrahedronModel>;
-template class SOFA_COMPONENT_COLLISION_API ContactMapper<RigidDistanceGridCollisionModel>;
-template class SOFA_COMPONENT_COLLISION_API ContactMapper<FFDDistanceGridCollisionModel>;
 
 } // namespace collision
 
@@ -57,3 +81,4 @@ template class SOFA_COMPONENT_COLLISION_API ContactMapper<FFDDistanceGridCollisi
 
 } // namespace sofa
 
+#endif
