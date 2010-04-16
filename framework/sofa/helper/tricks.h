@@ -58,9 +58,6 @@ class RadioTrick : public sofa::helper::vector<std::string>
 public :
     typedef sofa::helper::vector<std::string> textItems;
 
-
-
-
     RadioTrick();
 
     ///Example RadioTrick m_radiobutton(4,"button0","button1","button2","button3");
