@@ -77,7 +77,8 @@ PMLFemForceField::PMLFemForceField(StructuralComponent* body, GNode * parent)
     young = body->getProperties()->getDouble("young");
     poisson = body->getProperties()->getDouble("poisson");
     deformationType = body->getProperties()->getString("deformation");
-    solverName = body->getProperties()->getString("solver");
+    odeSolverName = body->getProperties()->getString("odesolver");
+    linearSolverName = body->getProperties()->getString("linearsolver");
 
     //create the structure
     createMechanicalState(body);

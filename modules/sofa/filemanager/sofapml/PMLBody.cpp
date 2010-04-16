@@ -35,8 +35,12 @@
 #include "PMLBody.h"
 #include "sofa/component/odesolver/CGImplicitSolver.h"
 #include "sofa/component/odesolver/EulerSolver.h"
+#include "sofa/component/odesolver/EulerImplicitSolver.h"
 #include "sofa/component/odesolver/StaticSolver.h"
 #include "sofa/component/odesolver/RungeKutta4Solver.h"
+#include "sofa/component/linearsolver/CGLinearSolver.h"
+#include "sofa/component/linearsolver/FullMatrix.h"
+#include "sofa/component/linearsolver/FullVector.h"
 
 namespace sofa
 {
@@ -58,7 +62,8 @@ PMLBody::PMLBody()
     topology=NULL;
     forcefield=NULL;
     mmodel=NULL;
-    solver = NULL;
+    odeSolver = NULL;
+    linearSolver = NULL;
 
     AtomsToDOFsIndexes.clear();
 }
@@ -68,18 +73,23 @@ PMLBody::~PMLBody()
     if(mass) delete mass;
     if(topology) delete topology;
     if(forcefield) delete forcefield;
-    if (solver) delete solver;
+    if (odeSolver) delete odeSolver;
+    if (linearSolver) delete linearSolver;
 }
 
 void PMLBody::createSolver()
 {
-    if(solverName == "Static") solver = new StaticSolver;
-    else if(solverName == "Euler") solver = new EulerSolver;
-    else if(solverName == "RungeKutta4") solver = new RungeKutta4Solver;
-    else if(solverName == "None") return;
-    else solver = new CGImplicitSolver;
+    if(odeSolverName == "Static") odeSolver = new StaticSolver;
+    else if(odeSolverName == "EulerImplicit") odeSolver = new EulerImplicitSolver;
+    else if(odeSolverName == "RungeKutta4") odeSolver = new RungeKutta4Solver;
+    else if(odeSolverName == "None") return;
+    else odeSolver = new  EulerSolver;
 
-    parentNode->addObject(solver);
+    if (linearSolverName == "CGImplicitSolver") linearSolver = new CGLinearSolver< FullMatrix<double>, FullVector<double> >;
+    else linearSolver = new CGLinearSolver< FullMatrix<double>, FullVector<double> >;
+
+    parentNode->addObject(linearSolver);
+    parentNode->addObject(odeSolver);
 }
 
 

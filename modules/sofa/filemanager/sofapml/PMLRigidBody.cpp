@@ -82,7 +82,8 @@ PMLRigidBody::PMLRigidBody(StructuralComponent* body, GNode * parent)
 
     initPosition(body->getProperties()->getString("position"));
     initVelocity(body->getProperties()->getString("velocity"));
-    solverName = body->getProperties()->getString("solver");
+    odeSolverName = body->getProperties()->getString("odesolver");
+    linearSolverName = body->getProperties()->getString("linearsolver");
 
     //create the structure
     createMass(body);

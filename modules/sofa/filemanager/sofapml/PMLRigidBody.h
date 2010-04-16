@@ -67,6 +67,8 @@ namespace pml
 
 using namespace sofa::defaulttype;
 using namespace std;
+using namespace sofa::component::container;
+
 
 class SOFA_BUILD_FILEMANAGER_PML_API PMLRigidBody: public PMLBody
 {

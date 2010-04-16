@@ -52,6 +52,7 @@
 #include "sofa/component/visualmodel/OglModel.h"
 #include "sofa/core/CollisionModel.h"
 #include <sofa/core/componentmodel/behavior/OdeSolver.h>
+#include <sofa/core/componentmodel/behavior/LinearSolver.h>
 
 #include "sofa/defaulttype/Vec3Types.h"
 #include <sofa/simulation/tree/GNode.h>
@@ -134,9 +135,10 @@ protected :
     BaseMass * mass;
     Topology * topology;
     ForceField<Vec3Types> * forcefield;
-    OdeSolver * solver;
+    OdeSolver * odeSolver;
+    LinearSolver * linearSolver;
 
-    std::string solverName;
+    std::string odeSolverName, linearSolverName;
 };
 
 }

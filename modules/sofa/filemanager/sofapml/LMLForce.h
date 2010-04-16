@@ -66,7 +66,7 @@ using namespace sofa::core::componentmodel::behavior;
 using namespace std;
 
 template<class DataTypes>
-class LMLForce : public ForceField<DataTypes>, public VisualModel
+class LMLForce : public ForceField<DataTypes> //, public VisualModel
 {
 public :
     ///template types
@@ -95,6 +95,8 @@ public :
     virtual void addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
     virtual void addDForce (VecDeriv& , const VecDeriv& ) {}
     virtual double getPotentialEnergy(const VecCoord& ) const {return 0;}
+
+    sofa::core::objectmodel::BaseClass* getClass() const { return NULL; }
 
     /// -- VisualModel interface
     void draw();

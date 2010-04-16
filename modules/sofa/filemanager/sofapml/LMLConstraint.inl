@@ -40,8 +40,8 @@ namespace pml
 
 
 template<class DataTypes>
-LMLConstraint<DataTypes>::LMLConstraint(Loads* loadsList, const map<unsigned int, unsigned int> &atomIndexToDOFIndex, MechanicalState<DataTypes> *mm)
-    : Constraint<DataTypes>(mm), atomToDOFIndexes(atomIndexToDOFIndex)
+LMLConstraint<DataTypes>::LMLConstraint(Loads* loadsList, const std::map<unsigned int, unsigned int> &atomIndexToDOFIndex, sofa::core::componentmodel::behavior::MechanicalState<DataTypes> *mm)
+    : sofa::core::componentmodel::behavior::Constraint<DataTypes>(mm), atomToDOFIndexes(atomIndexToDOFIndex)
 {
     mmodel = mm;
     loads = new Loads();
@@ -98,6 +98,7 @@ LMLConstraint<DataTypes>::LMLConstraint(Loads* loadsList, const map<unsigned int
 template<class DataTypes>
 LMLConstraint<DataTypes>*  LMLConstraint<DataTypes>::addConstraint(unsigned int index, Deriv trans)
 {
+    std::cout << "IPMAC Adding constraint " << index << std::endl;
     this->targets.push_back(index);
     trans.normalize();
     this->translations.push_back(trans);
@@ -148,6 +149,7 @@ void LMLConstraint<DataTypes>::projectResponse(VecDeriv& dx)
 {
     //VecCoord& x = *this->mmodel->getX();
     //dx.resize(x.size());
+    std::cout << "VecDeriv before = " << dx << std::endl;
     SReal time = this->getContext()->getTime();
     SReal prevTime = time - this->getContext()->getDt();
 
@@ -164,8 +166,10 @@ void LMLConstraint<DataTypes>::projectResponse(VecDeriv& dx)
         prevValTime = load->getValue(prevTime);
         for(unsigned int j=0 ; j<load->numberOfTargets(); j++)
         {
+            std::cout << "load = " << j << std::endl;
             if ( atomToDOFIndexes.find(load->getTarget(j)) != atomToDOFIndexes.end() )
             {
+                std::cout << "applying" << std::endl;
                 //Deriv dirVec(0,0,0);
                 if (load->getDirection().isXNull() && valTime != 0)
                     (*it3)[0]=0;	// fix targets on the X axe
@@ -174,10 +178,12 @@ void LMLConstraint<DataTypes>::projectResponse(VecDeriv& dx)
                 if (load->getDirection().isZNull() && valTime != 0)
                     (*it3)[2]=0;	// fix targets on the Z axe
 
+                std::cout << "valTime = " << valTime << std::endl;
                 if (valTime == 0)
                     (*it3) = Deriv(1,1,1);
                 else
                 {
+                    std::cout << "ELSE" << std::endl;
                     if (load->getDirection().isToward())
                     {
                         std::map<unsigned int, unsigned int>::const_iterator titi = atomToDOFIndexes.find(load->getDirection().getToward());
@@ -200,12 +206,13 @@ void LMLConstraint<DataTypes>::projectResponse(VecDeriv& dx)
             }
         }
     }
+    std::cout << "VecDeriv after = " << dx << std::endl;
 }
 
 template<class DataTypes>
 void LMLConstraint<DataTypes>::projectPosition(VecCoord& x)
 {
-    SReal time = getContext()->getTime();
+    /*SReal time = this->getContext()->getTime();
 
     std::vector<unsigned int>::iterator it1=targets.begin();
     VecDerivIterator it2=translations.begin();
@@ -215,22 +222,18 @@ void LMLConstraint<DataTypes>::projectPosition(VecCoord& x)
     for (unsigned int i=0 ; i<loads->numberOfLoads() ; i++)
     {
         load = loads->getLoad(i);
-        for(unsigned int j=0 ; j<load->numberOfTargets(); j++)
+        for(unsigned int j=0 ; j<load->numberOfTargets();j++)
         {
-            if ( atomToDOFIndexes.find(load->getTarget(j)) != atomToDOFIndexes.end() )
-            {
+            if ( atomToDOFIndexes.find(load->getTarget(j)) != atomToDOFIndexes.end() ) {
                 if ( (*it3)[0]==0.0 && (*it3)[1]==0.0 && (*it3)[2]==0.0)
                     *it3 = x[*it1];
                 if(  load->getDirection().isXNull() && load->getDirection().isYNull() && load->getDirection().isZNull() )
                     *it3 = x[*it1];
 
-                if (load->getValue(time) != 0.0)
-                {
-                    if (load->getDirection().isToward())
-                    {
+                if (load->getValue(time) != 0.0){
+                    if (load->getDirection().isToward()) {
                         std::map<unsigned int, unsigned int>::const_iterator titi = atomToDOFIndexes.find(load->getDirection().getToward());
-                        if (titi != atomToDOFIndexes.end())
-                        {
+                        if (titi != atomToDOFIndexes.end()){
                             (*it2) = (*mmodel->getX())[titi->second] - (*mmodel->getX())[*it1];
                             it2->normalize();
                         }
@@ -243,7 +246,7 @@ void LMLConstraint<DataTypes>::projectPosition(VecCoord& x)
                 it3++;
             }
         }
-    }
+    }*/
 }
 
 
@@ -253,36 +256,41 @@ template<class DataTypes>
 void LMLConstraint<DataTypes>::draw()
 {
 
-    if (!getContext()->getShowBehaviorModels()) return;
+    if (!this->getContext()->getShowBehaviorModels()) return;
 
     VecCoord& x = *mmodel->getX();
     glDisable (GL_LIGHTING);
     glColor4f (1,0.5,0.5,1);
 
-    glPointSize(10);
+    glPointSize(20);
 
     //for Fixed points, display a big red point
     glBegin (GL_POINTS);
     VecDerivIterator it2 = directionsNULLs.begin();
     for (std::vector<unsigned int>::const_iterator it = this->targets.begin(); it != this->targets.end(); ++it)
     {
+        //std::cout << "IP MAC its = " << (*it2)[0] << " " << (*it2)[1] << " " <<(*it2)[2] << " " <<std::endl;
         if ((*it2)[0]==0 && (*it2)[1]==0 && (*it2)[2]==0 )
+        {
+            //std::cout << "IPMAC draw constraint" << x[*it] << std::endl;
             helper::gl::glVertexT(x[*it]);
+        }
         it2++;
     }
     glEnd();
 
     //for translated points, display a little red segment with translation direction
-    glPointSize(1);
-    glBegin( GL_LINES );
+    glPointSize(10);
+    glBegin( GL_POINTS );
     VecDerivIterator it3 = translations.begin();
     it2 = directionsNULLs.begin();
     for (std::vector<unsigned int>::const_iterator it = this->targets.begin(); it != this->targets.end(); ++it)
     {
         if ((*it2)[0]==1 || (*it2)[1]==1 || (*it2)[2]==1 )
         {
+            //std::cout << "IPMAC draw constraint " << x[*it] << std::endl;
             helper::gl::glVertexT(x[*it]);
-            helper::gl::glVertexT(x[*it]+*it3);
+            //helper::gl::glVertexT(x[*it]+*it3);
         }
         it3++;
         it2++;

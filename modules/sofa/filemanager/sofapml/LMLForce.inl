@@ -101,7 +101,7 @@ template<class DataTypes>
 void LMLForce<DataTypes>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& /*v*/)
 {
     //for each points, update the force vector f
-    SReal time = getContext()->getTime();
+    SReal time = this->getContext()->getTime();
     f.resize(x.size());
     Load * load;
     std::vector<unsigned int>::iterator it1 = targets.begin();
@@ -159,7 +159,7 @@ template<class DataTypes>
 void LMLForce<DataTypes>::draw()
 {
     //display a little green segment with force direction
-    if (!getContext()->getShowForceFields()) return;
+    if (!this->getContext()->getShowForceFields()) return;
     VecCoord& x = *mmodel->getX();
     glDisable (GL_LIGHTING);
     glPointSize(10);

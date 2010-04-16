@@ -63,12 +63,12 @@ namespace filemanager
 namespace pml
 {
 
-using namespace sofa::core;
-using namespace sofa::core::componentmodel::behavior;
-using namespace std;
+//using namespace sofa::core;
+//using namespace sofa::core::componentmodel::behavior;
+//using namespace std;
 
 template<class DataTypes>
-class LMLConstraint : public Constraint<DataTypes>, public VisualModel
+class LMLConstraint : public sofa::core::componentmodel::behavior::Constraint<DataTypes> //, public sofa::core::VisualModel
 {
 public :
     ///template types
@@ -80,7 +80,7 @@ public :
     typedef typename DataTypes::Deriv Deriv;
 
     ///constructor
-    LMLConstraint(Loads* loadsList, const map<unsigned int, unsigned int> &atomIndexToDOFIndex, MechanicalState<DataTypes> *mm);
+    LMLConstraint(Loads* loadsList, const std::map<unsigned int, unsigned int> &atomIndexToDOFIndex, sofa::core::componentmodel::behavior::MechanicalState<DataTypes> *mm);
 
     ~LMLConstraint() { /*delete loads;*/}
 
@@ -96,6 +96,8 @@ public :
     virtual void projectVelocity(VecDeriv& ) {} ///< project dx to constrained space (dx models a velocity)
     virtual void projectPosition(VecCoord& x); ///< project x to constrained space (x models a position)
 
+    sofa::core::objectmodel::BaseClass* getClass() const { return NULL; }
+
     /// -- VisualModel interface
     void draw();
     void initTextures() { }
@@ -106,7 +108,7 @@ private:
     /// fix a point on the axe specified (0=x, 1=y, 2=z)
     void fixDOF(int index, int axe);
 
-    MechanicalState<DataTypes> * mmodel;
+    sofa::core::componentmodel::behavior::MechanicalState<DataTypes> * mmodel;
     /// the set of vertex targets
     std::vector<unsigned int> targets;
     /// list of translations
@@ -118,7 +120,7 @@ private:
     /// the lml loads
     Loads * loads;
     ///link between PML object indexes and sofa Dofs Indexes
-    map<unsigned int, unsigned int> atomToDOFIndexes;
+    std::map<unsigned int, unsigned int> atomToDOFIndexes;
 };
 
 #if defined(WIN32) && !defined(SOFA_BUILD_FILEMANAGER_PML)
