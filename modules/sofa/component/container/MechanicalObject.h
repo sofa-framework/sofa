@@ -165,7 +165,7 @@ public:
 
     virtual VecCoord* getX()  { f_X->beginEdit(); return x;  }
     virtual VecDeriv* getV()  { f_V->beginEdit(); return v;  }
-    virtual VecDeriv* getF()  { f_F->beginEdit(); return f;  }
+    virtual VecDeriv* getF()  { return getVecDeriv(_forceId.index);  }
     virtual VecDeriv* getExternalForces()  { f_externalF->beginEdit(); return externalForces;  }
     virtual VecDeriv* getDx() { f_Dx->beginEdit(); return dx; }
     virtual VecConst* getC() { return c;}
@@ -178,7 +178,7 @@ public:
     virtual const VecCoord* getX0()  const { return x0;  }
     virtual const VecDeriv* getV()  const { return v;  }
     virtual const VecDeriv* getV0()  const { return v0;  }
-    virtual const VecDeriv* getF()  const { return f;  }
+    virtual const VecDeriv* getF()  const { return getVecDeriv(_forceId.index) ;  }
     virtual const VecDeriv* getExternalForces()  const { return externalForces;  }
     virtual const VecDeriv* getDx() const { return dx; }
     virtual const VecConst* getC() const { return c; }
@@ -376,6 +376,8 @@ public:
 
     virtual void resetConstraint();
 
+    virtual sofa::core::VecId getForceId() const { return _forceId; }
+
 
     /// @}
 
@@ -398,7 +400,7 @@ public:
 
 protected:
     sofa::core::componentmodel::topology::BaseMeshTopology* _topology;
-
+    sofa::core::VecId _forceId;
 
 };
 
