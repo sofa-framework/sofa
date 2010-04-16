@@ -94,7 +94,6 @@ Creator<DataWidgetFactory, SimpleDataWidget< fixed_array<unsigned int,8> > > DWC
 Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::Quater<float> > > DWClass_Quatf("default",true);
 Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::Quater<double> > > DWClass_Quatd("default",true);
 
-#ifdef SOFA_DEV
 
 using sofa::component::fem::QuadraturePoint;
 using sofa::helper::Polynomial_LD;
@@ -112,7 +111,7 @@ Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::Polynomial_LD<float ,
 Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::Polynomial_LD<float ,3> > >DWClass_PolynomialLD3f("default",true);
 Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::Polynomial_LD<float ,2> > >DWClass_PolynomialLD2f("default",true);
 Creator<DataWidgetFactory, SimpleDataWidget< sofa::helper::Polynomial_LD<float ,1> > >DWClass_PolynomialLD1f("default",true);
-#endif
+
 
 Creator<DataWidgetFactory, SimpleDataWidget< Mat<2,2,float> > > DWClass_Mat22f("default",true);
 Creator<DataWidgetFactory, SimpleDataWidget< Mat<2,2,double> > > DWClass_Mat22d("default",true);
