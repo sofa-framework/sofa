@@ -53,9 +53,9 @@ ConstantForceField<DataTypes>::ConstantForceField()
     : points(initData(&points, "points", "points where the forces are applied"))
     , forces(initData(&forces, "forces", "applied forces at each point"))
     , force(initData(&force, "force", "applied force to all points if forces attribute is not specified"))
+    , totalForce(initData(&totalForce, "totalForce", "total force for all points, will be distributed uniformly over points"))
     , arrowSizeCoef(initData(&arrowSizeCoef,0.0, "arrowSizeCoef", "Size of the drawn arrows (0->no arrows, sign->direction of drawing"))
     , indexFromEnd(initData(&indexFromEnd,(bool)false,"indexFromEnd", "Concerned DOFs indices are numbered from the end of the MState DOFs vector"))
-    , totalForce(initData(&totalForce, "totalForce", "total force for all points, will be distributed uniformly over points"))
 {
 }
 
