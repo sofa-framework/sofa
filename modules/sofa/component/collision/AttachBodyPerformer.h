@@ -26,7 +26,7 @@
 #define SOFA_COMPONENT_COLLISION_ATTACHBODYPERFORMER_H
 
 #include "InteractionPerformer.h"
-#include "BarycentricContactMapper.h"
+#include "BaseContactMapper.h"
 #include <sofa/core/componentmodel/behavior/BaseForceField.h>
 
 namespace sofa

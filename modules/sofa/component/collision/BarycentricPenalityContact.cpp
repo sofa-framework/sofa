@@ -23,6 +23,7 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/component/collision/BarycentricPenalityContact.inl>
+#include <sofa/component/collision/BarycentricContactMapper.h>
 
 namespace sofa
 {
