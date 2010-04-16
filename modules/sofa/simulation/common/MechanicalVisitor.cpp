@@ -489,7 +489,10 @@ void MechanicalVisitor::printWriteVectors(simulation::Node* node, core::objectmo
         }
         else
         {
-            printWriteVectors(node->mechanicalState);
+            core::componentmodel::behavior::BaseMechanicalState* dof = node->mechanicalState;
+            if (dof == NULL)
+                node->getContext()->get(dof);
+            printWriteVectors(dof);
             return;
         }
 
