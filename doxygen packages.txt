@@ -1,0 +1,5 @@
+framework
+modules/sofa/simulation
+modules/sofa/component
+modules/sofa/gpu
+modules/sofa/filemanager
