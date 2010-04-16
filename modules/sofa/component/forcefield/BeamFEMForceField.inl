@@ -135,7 +135,7 @@ template <class DataTypes>
 void BeamFEMForceField<DataTypes>::reinitBeam(unsigned int i)
 {
 
-    double stiffness, length, radius, poisson;
+    double stiffness, length, radius, poisson, radiusInner;
     Index a = (*_indexedElements)[i][0];
     Index b = (*_indexedElements)[i][1];
 
@@ -156,13 +156,14 @@ void BeamFEMForceField<DataTypes>::reinitBeam(unsigned int i)
     //	radius = radiusContainer->getRadius(i) ;
     //else
     radius = _radius.getValue() ;
+    radiusInner = _radiusInner.getValue();
     //if (poissonContainer)
     //	poisson = poissonContainer->getPoisson(i) ;
     //else
     poisson = _poissonRatio.getValue() ;
 
 
-    setBeam(i, stiffness, length, poisson, radius );
+    setBeam(i, stiffness, length, poisson, radius, radiusInner);
 
     computeStiffness(i,a,b);
 
@@ -242,6 +243,7 @@ void BeamFEMForceField<DataTypes>::addForce (VecDeriv& f, const VecCoord& p, con
             accumulateForceLarge( f, p, i, a, b );
         }
     }
+    //std::cout << "F_beam = " << f << std::endl;
 
 
 
@@ -645,28 +647,34 @@ void BeamFEMForceField<DataTypes>::initBeams(unsigned int size)
 }
 
 template<class DataTypes>
-void BeamFEMForceField<DataTypes>::setBeam(unsigned int i, double E, double L, double nu, double r)
+void BeamFEMForceField<DataTypes>::setBeam(unsigned int i, double E, double L, double nu, double r, double rInner)
 {
     helper::vector<BeamInfo>& bd = *(beamsData.beginEdit());
-    bd[i].init(E,L,nu,r);
+    bd[i].init(E,L,nu,r,rInner);
     beamsData.endEdit();
     //_indexedElements = &_topology->getEdges();
 }
 
 template<class DataTypes>
-void BeamFEMForceField<DataTypes>::BeamInfo::init(double E, double L, double nu, double r)
+void BeamFEMForceField<DataTypes>::BeamInfo::init(double E, double L, double nu, double r, double rInner)
 {
     _E = E;
     _E0 = E;
     _nu = nu;
     _L = L;
     _r = r;
+    _rInner = rInner;
 
     _G=_E/(2.0*(1.0+_nu));
-    _Iz = M_PI*r*r*r*r/4;
+    _Iz = M_PI*(r*r*r*r - rInner*rInner*rInner*rInner)/4.0;
+
+    //_Iz = M_PI*(r*r*r*r)/4.0;
     _Iy = _Iz ;
     _J = _Iz+_Iy;
-    _A = M_PI*r*r;
+    _A = M_PI*(r*r - rInner*rInner);
+
+    //std::cout << "Iz = " << _Iz << std::endl;
+    //std::cout << "A = " << _A << std::endl;
 
     _Asy = 0.0;
     _Asz = 0.0;

@@ -96,6 +96,7 @@ protected:
         double _nu;//Poisson
         double _L; //length
         double _r; //radius of the section
+        double _rInner; //inner radius of the section if beam is hollow
         double _G; //shear modulus
         double _Iy;
         double _Iz; //Iz is the cross-section moment of inertia (assuming mass ratio = 1) about the z axis;
@@ -126,7 +127,7 @@ protected:
         Quat quat;
 
         //void localStiffness();
-        void init(double E, double L, double nu, double r);
+        void init(double E, double L, double nu, double r, double rInner);
         /// Output stream
         inline friend std::ostream& operator<< ( std::ostream& os, const BeamInfo& /*bi*/ )
         {
@@ -152,6 +153,7 @@ protected:
     Data<Real> _youngModulus;
     Data<bool> _timoshenko;
     Data<Real> _radius;
+    Data<Real> _radiusInner;
     Data< VecIndex > _list_segment;
     bool _partial_list_segment;
 
@@ -178,6 +180,7 @@ public:
         , _youngModulus(initData(&_youngModulus,(Real)5000,"youngModulus","Young Modulus"))
         , _timoshenko(initData(&_timoshenko,true,"timoshenko","use Timoshenko beam (non-null section shear area)"))
         , _radius(initData(&_radius,(Real)0.1,"radius","radius of the section"))
+        , _radiusInner(initData(&_radiusInner,(Real)0.0,"radiusInner","inner radius of the section for hollow beams"))
         , _list_segment(initData(&_list_segment,"listSegment", "apply the forcefield to a subset list of beam segments. If no segment defined, forcefield applies to the whole topology"))
         , _partial_list_segment(false)
         , _updateStiffnessMatrix(true)
@@ -205,7 +208,7 @@ public:
 
     void draw();
 
-    void setBeam(unsigned int i, double E, double L, double nu, double r);
+    void setBeam(unsigned int i, double E, double L, double nu, double r, double rInner);
     void initBeams(unsigned int size);
 
 protected:
