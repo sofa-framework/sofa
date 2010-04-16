@@ -140,7 +140,7 @@ public :
 ///////////////////////////////////////
     void TestRadioTrick()
     {
-        sofa::helper::RadioTrick m_radiotrick(3,"hello1","hello2","hello3");
+        sofa::helper::RadioTrick<std::string> m_radiotrick(3,"hello1","hello2","hello3");
         std::cout<<"Radio button :"<<m_radiotrick<<"    selectedId :"<<m_radiotrick.getSelectedId()<<"   getSelectedItem() :"<<m_radiotrick.getSelectedItem()<<std::endl;
         std::cin>>m_radiotrick;
         std::cout<<"Radio button :"<<m_radiotrick<<"    selectedId :"<<m_radiotrick.getSelectedId()<<"   getSelectedItem() :"<<m_radiotrick.getSelectedItem()<<std::endl;
@@ -171,7 +171,6 @@ inline std::istream & operator >>(std::istream & in, RadioTrick<T> & m_trick)
 
 ///////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////
-
 } // namespace helper
 
 } // namespace sofa
