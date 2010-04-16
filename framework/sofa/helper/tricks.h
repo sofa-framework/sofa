@@ -51,6 +51,8 @@ namespace helper
  * representing a list of choices, and a interger number indicating the choice
  * selected.
  *
+ * To have a RadioButton in GUI, it's just needed to use a Data<RadioTrick<std::string> >
+ *
  */
 template< typename T >
 class RadioTrick : public sofa::helper::vector<T>
@@ -63,7 +65,7 @@ public :
         selectedItem=0;
     }
 ///////////////////////////////////////
-    RadioTrick(int nbofRadioButton,...)
+    void setRadioNames(int nbofRadioButton,...)
     {
         textItems::resize(nbofRadioButton);
         va_list vl;
@@ -83,19 +85,16 @@ public :
         selectedItem=m_radiotrick.getSelectedId();
     }
 ///////////////////////////////////////
-    /*RadioTrick & RadioTrick::operator=(const RadioTrick & m_radiotrick)
+    /*RadioTrick & operator=(const RadioTrick & m_radiotrick);
     {
-    	RadioTrick m_newRadioTrick(m_radiotrick);
+    	RadioTrick m_newRadioTrick=m_radiotrick;
     	return m_newRadioTrick;
     }*/
-///////////////////////////////////////
-
 ///////////////////////////////////////
     void setSelectedItem(unsigned int id_item)
     {
         if (id_item<textItems::size())
             selectedItem=id_item;
-        std::cout<<"=============================checked number changed :"<<id_item<<std::endl;
     }
 ///////////////////////////////////////
     void setSelectedItem(const std::string & m_string)
