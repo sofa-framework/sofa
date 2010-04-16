@@ -139,13 +139,13 @@ public :
         mycudaGLUnregisterBufferObject(bId);
     }
 
-    static bool bufferMapToDevice(void* dDestPointer, const gl_buffer bSrcId)
+    static bool bufferMapToDevice(device_pointer * dDestPointer, const gl_buffer bSrcId)
     {
-        mycudaGLMapBufferObject((void**)dDestPointer, bSrcId);
+        mycudaGLMapBufferObject(dDestPointer, bSrcId);
         return true;
     }
 
-    static void bufferUnmapToDevice(device_pointer /*dDestPointer*/, const gl_buffer bSrcId)
+    static void bufferUnmapToDevice(device_pointer * /*dDestPointer*/, const gl_buffer bSrcId)
     {
         mycudaGLUnmapBufferObject(bSrcId);
     }
@@ -157,12 +157,6 @@ public :
 
     static device_pointer null() {return NULL;}
     static bool isNull(device_pointer p) {return p==NULL;}
-    //static void null(const device_pointer *p){*p=NULL;}
-    static void null(void *p)
-    {
-        void **d = (void**)p;
-        *d =NULL;
-    }
 };
 
 }
