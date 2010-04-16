@@ -22,9 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#define SOFA_COMPONENT_COLLISION_BARYCENTRICCONTACTMAPPER_CPP
-#include <sofa/component/collision/BarycentricContactMapper.inl>
-#include <sofa/helper/Factory.inl>
+#define SOFA_COMPONENT_COLLISION_IDENTITYCONTACTMAPPER_CPP
+#include <sofa/component/collision/IdentityContactMapper.inl>
 
 namespace sofa
 {
@@ -37,20 +36,15 @@ namespace collision
 
 using namespace defaulttype;
 
-SOFA_DECL_CLASS(BarycentricContactMapper)
+SOFA_DECL_CLASS(IdentityContactMapper)
 
-ContactMapperCreator< ContactMapper<LineModel> > LineContactMapperClass("default",true);
-ContactMapperCreator< ContactMapper<TriangleModel> > TriangleContactMapperClass("default",true);
-ContactMapperCreator< ContactMapper<TetrahedronModel> > TetrahedronContactMapperClass("default",true);
-ContactMapperCreator< ContactMapper<RigidDistanceGridCollisionModel> > DistanceGridContactMapperClass("default", true);
-ContactMapperCreator< ContactMapper<FFDDistanceGridCollisionModel> > FFDDistanceGridContactMapperClass("default", true);
+ContactMapperCreator< ContactMapper<SphereModel> > SphereContactMapperClass("default",true);
+ContactMapperCreator< ContactMapper<SphereTreeModel> > SphereTreeContactClass("default", true);
+ContactMapperCreator< ContactMapper<PointModel> > PointContactMapperClass("default",true);
 
-template class SOFA_COMPONENT_COLLISION_API ContactMapper<LineModel>;
-template class SOFA_COMPONENT_COLLISION_API ContactMapper<TriangleModel>;
-template class SOFA_COMPONENT_COLLISION_API ContactMapper<TetrahedronModel>;
-template class SOFA_COMPONENT_COLLISION_API ContactMapper<RigidDistanceGridCollisionModel>;
-template class SOFA_COMPONENT_COLLISION_API ContactMapper<FFDDistanceGridCollisionModel>;
-
+template class SOFA_COMPONENT_COLLISION_API ContactMapper<SphereModel>;
+template class SOFA_COMPONENT_COLLISION_API ContactMapper<SphereTreeModel>;
+template class SOFA_COMPONENT_COLLISION_API ContactMapper<PointModel>;
 } // namespace collision
 
 } // namespace component

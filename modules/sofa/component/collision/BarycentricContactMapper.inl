@@ -79,39 +79,6 @@ typename BarycentricContactMapper<TCollisionModel,DataTypes>::MMechanicalState* 
     return mstate;
 }
 
-template < class TCollisionModel, class DataTypes >
-void IdentityContactMapper<TCollisionModel,DataTypes>::cleanup()
-{
-    if (mapping!=NULL)
-    {
-        simulation::Node* parent = dynamic_cast<simulation::Node*>(model->getContext());
-        if (parent!=NULL)
-        {
-            simulation::Node* child = dynamic_cast<simulation::Node*>(mapping->getContext());
-            child->detachFromGraph();
-            child->execute<simulation::DeleteVisitor>();
-            delete child;
-            mapping = NULL;
-        }
-    }
-}
-template < class TCollisionModel, class DataTypes >
-typename IdentityContactMapper<TCollisionModel,DataTypes>::MMechanicalState* IdentityContactMapper<TCollisionModel,DataTypes>::createMapping(const char* name)
-{
-    if (model==NULL) return NULL;
-    simulation::Node* parent = dynamic_cast<simulation::Node*>(model->getContext());
-    if (parent==NULL)
-    {
-        std::cerr << "ERROR: IdentityContactMapper only works for scenegraph scenes.\n";
-        return NULL;
-    }
-    simulation::Node* child = simulation::getSimulation()->newNode(name);
-    parent->addChild(child); child->updateSimulationContext();
-    MMechanicalState* mstate = new MMechanicalObject; child->addObject(mstate);
-    mstate->useMask.setValue(true);
-    mapping = new MMapping(model->getMechanicalState(), mstate); child->addObject(mapping);
-    return mstate;
-}
 
 template < class TCollisionModel, class DataTypes >
 void RigidContactMapper<TCollisionModel,DataTypes>::cleanup()

@@ -27,6 +27,8 @@
 
 #include <sofa/component/collision/FrictionContact.h>
 #include <sofa/component/collision/DefaultContactManager.h>
+#include <sofa/component/collision/BarycentricContactMapper.h>
+#include <sofa/component/collision/IdentityContactMapper.h>
 #include <iostream>
 
 namespace sofa
