@@ -103,7 +103,7 @@ void LMConstraint<DataTypes1,DataTypes2>::init()
             core::componentmodel::behavior::BaseMechanicalMapping* mapping;
             simulatedObject1->getContext()->get(mapping);
             if (!mapping) break;
-            simulatedObject1 = mapping->getMechFrom()[0];
+            simulatedObject1 = mapping->getMechFrom();
         }
 
         simulatedObject2=constrainedObject2;
@@ -112,7 +112,7 @@ void LMConstraint<DataTypes1,DataTypes2>::init()
             core::componentmodel::behavior::BaseMechanicalMapping* mapping;
             simulatedObject2->getContext()->get(mapping);
             if (!mapping) break;
-            simulatedObject2 = mapping->getMechFrom()[0];
+            simulatedObject2 = mapping->getMechFrom();
         }
     }
 }
