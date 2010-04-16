@@ -151,7 +151,7 @@ public :
         DEBUG_TEXT("OpenCLMemoryManager::bufferUnregister");
     }
 
-    static bool bufferMapToDevice(void* dDestPointer, const gl_buffer /*bSrcId*/)
+    static bool bufferMapToDevice(device_pointer* dDestPointer, const gl_buffer /*bSrcId*/)
     {
         DEBUG_TEXT("OpenCLMemoryManager::bufferMapToDevice");
         device_pointer* d=(device_pointer*)dDestPointer;
@@ -159,7 +159,7 @@ public :
         return false;
     }
 
-    static void bufferUnmapToDevice(void*  dDestPointer, const gl_buffer /*bSrcId*/)
+    static void bufferUnmapToDevice(device_pointer*  dDestPointer, const gl_buffer /*bSrcId*/)
     {
         DEBUG_TEXT("OpenCLMemoryManager::bufferUnmapToDevice");
         device_pointer* d=(device_pointer*)dDestPointer;
@@ -177,21 +177,6 @@ public :
     static device_pointer null()
     {
         return device_pointer();
-    }
-
-    static void null(device_pointer *p)
-    {
-        p->m=NULL;
-        p->offset=0;
-        p->_null=true;
-    }
-
-    static void null(void* p)
-    {
-        device_pointer* d=(device_pointer*)p;
-        d->m=NULL;
-        d->offset=0;
-        d->_null=true;
     }
 
     static bool isNull(device_pointer p)

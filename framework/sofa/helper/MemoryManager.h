@@ -85,9 +85,7 @@ public :
     static device_pointer deviceOffset(device_pointer dPointer,size_t offset) {return (T*)dPointer+offset;}
 
     static device_pointer null() {return NULL;}
-    static void null(const device_pointer *p) {*p=NULL;}
     static bool isNull(device_pointer p) {return p==NULL;}
-
 };
 
 //CPU MemoryManager
