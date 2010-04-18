@@ -46,7 +46,7 @@ namespace misc
 {
 
 #ifndef __linux__
-struct input_event;
+struct input_event {};
 #endif
 
 /**
