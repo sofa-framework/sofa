@@ -8,7 +8,7 @@
       <Tutorial name="Central Difference" scene="Tutorials/Solvers/TutorialSolverCentralDifference.scn"/>
     </Group>
     <Group name="Implicit">
-      <Tutorial name="Euler" scene="Tutorials/Solvers/TutorialSolverImplicitEuler.scn"/>
-      <Tutorial name="Newmark" scene="Tutorials/Solvers/TutorialSolverImplicitNewmark.scn"/>
+	    <Tutorial name="Euler" scene="Components/solver/EulerImplicitSolver.scn" html="Tutorials/Solvers/TutorialSolverImplicitEuler.html"/>
+	    <Tutorial name="Newmark" scene="Components/solver/NewmarkImplicitSolver.scn" html="Tutorials/Solvers/TutorialSolverImplicitNewmark.html"/>
     </Group>
 </Category>
