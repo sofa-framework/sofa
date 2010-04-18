@@ -72,6 +72,7 @@ typedef struct
     // API IHP //
     XiToolState hapticState;  // for the haptic loop
     XiToolState simuState;		 // for the simulation loop
+    XiToolState restState;  // for initial haptic state
     XiToolForce hapticForce;
 
 } XiToolData;
@@ -89,6 +90,7 @@ public:
     Data<double> forceScale;
     Data<bool> permanent;
     Data<int> indexTool;
+    Data<double> graspThreshold;
     Data<bool> showToolStates;
     Data<bool> testFF;
 
@@ -123,7 +125,11 @@ public:
 
     double getScale () {return Scale.getValue();};
 
+    void rightButtonPushed();
+    void leftButtonPushed();
+    void graspClosed();
 
+    bool operation; // true = right, false = left
 
 private:
     sofa::core::componentmodel::behavior::MechanicalState<Vec1dTypes> *_mstate;

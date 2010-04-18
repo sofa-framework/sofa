@@ -483,19 +483,12 @@ Quat ITPDriver::fromGivenDirection( Vector3& dir,  Vector3& local_dir, Quat old_
 
 void ITPDriver::mainButtonPushed()
 {
-    /*if (!heartManager)
-    	return;
-
-    std::cout << "ITPDriver::mainButtonPushed() not yet implemented" << std::endl;
-
-    if (operation)
+    if (operation)//Right pedal operation
     {
-    	heartManager->burnTissues();
+        return;
     }
-    else
-    	heartManager->InjectPotential();
-
-    */
+    else //Left pedal operation
+        return;
 }
 
 void ITPDriver::rightButtonPushed()

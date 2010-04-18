@@ -188,6 +188,7 @@ IHPDriver::IHPDriver()
     , forceScale(initData(&forceScale, 0.0001, "forceScale","Default scale applied to the force feedback. "))
     , permanent(initData(&permanent, false, "permanent" , "Apply the force feedback permanently"))
     , indexTool(initData(&indexTool, (int)0,"toolIndex", "index of the tool to simulate (if more than 1). Index 0 correspond to first tool."))
+    , graspThreshold(initData(&graspThreshold, 0.2, "graspThreshold","Threshold value under which grasping will launch an event."))
     , showToolStates(initData(&showToolStates, false, "showToolStates" , "Display states and forces from the tool."))
     , testFF(initData(&testFF, false, "testFF" , "If true will add force when closing handle. As if tool was entering an elastic body."))
 {
@@ -276,9 +277,11 @@ void IHPDriver::bwdInit()
     int nbr = this->indexTool.getValue();
     xiTrocarGetDeviceDescription(nbr, name);
     xiTrocarGetSerialNumber(nbr,serial );
-    std::cout << "Tool: " << nbr << std::endl;
-    std::cout << "name: " << name << std::endl;
-    std::cout << "serial: " << serial << std::endl;
+    //std::cout << "Tool: " << nbr << std::endl;
+    //std::cout << "name: " << name << std::endl;
+    //std::cout << "serial: " << serial << std::endl;
+    xiTrocarQueryStates();
+    xiTrocarGetState(nbr, &data.restState);
     xiTrocarRelease();
 
     data.indexTool = nbr;
@@ -466,9 +469,18 @@ void IHPDriver::handleEvent(core::objectmodel::Event *event)
 
         }
 
+        // Button and grasp handling event
+        XiStateFlags stateFlag;
+        stateFlag = state.flags - data.restState.flags;
+        if (stateFlag == XI_ToolButtonLeft)
+            this->leftButtonPushed();
+        else if (stateFlag == XI_ToolButtonRight)
+            this->rightButtonPushed();
+
+        if (state.opening < graspThreshold.getValue())
+            this->graspClosed();
+
     }
-
-
     /*
     	//std::cout<<"NewEvent detected !!"<<std::endl;
 
@@ -609,8 +621,6 @@ Quat IHPDriver::fromGivenDirection( Vector3& dir,  Vector3& local_dir, Quat old_
 
 void IHPDriver::createCallBack()
 {
-    std::cout << "Creating CallBack thread" << std::endl;
-
     if (myPaceMaker)
         delete myPaceMaker;
 
@@ -635,7 +645,25 @@ void IHPDriver::stateCallBack()
     // this function delete thread
 }
 
+void IHPDriver::rightButtonPushed()
+{
+    this->operation = true;
+}
 
+void IHPDriver::leftButtonPushed()
+{
+    this->operation = false;
+}
+
+void IHPDriver::graspClosed()
+{
+    if (operation)//Right pedal operation
+    {
+        return;
+    }
+    else //Left pedal operation
+        return;
+}
 
 
 int IHPDriverClass = core::RegisterObject("Driver and Controller of IHP Xitact Device")
