@@ -37,6 +37,11 @@
 #include <sofa/defaulttype/Quat.h>
 #include "XiTrocarInterface.h"
 
+#include <sofa/gui/PickHandler.h>
+#include <sofa/component/collision/RayModel.h>
+//#include <sofa/component/collision/HeartSimulationManager.h>
+
+
 
 namespace sofa
 {
@@ -82,7 +87,8 @@ public:
     Data<double> Scale;
     Data<bool> permanent;
     Data <int> indexTool;
-
+    Data <sofa::defaulttype::Vec3d> direction;
+    Data <sofa::defaulttype::Vec3d> position;
 
     XiToolData	data;
 
@@ -94,15 +100,17 @@ public:
     void reinit();
 
     void cleanup();
-    //virtual void draw();
+    //void draw();
 
     void setForceFeedback(ForceFeedback* ff);
 
 
-
+    void updateForce();
     void setDataValue();
     void reinitVisual();
-
+    float graspReferencePoint[3];
+    bool contactReached;
+    float ToolD;
 private:
     sofa::core::componentmodel::behavior::MechanicalState<Vec1dTypes> *_mstate;
     void handleEvent(core::objectmodel::Event *);
@@ -116,7 +124,10 @@ private:
     void rightButtonPushed();
     void leftButtonPushed();
 
-    void updateForce();
+
+    //sofa::component::collision::HeartSimulationManager* heartManager;
+
+    bool operation; // true = right, false = left
 
 
 

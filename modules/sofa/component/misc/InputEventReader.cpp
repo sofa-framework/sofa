@@ -106,6 +106,9 @@ InputEventReader::~InputEventReader()
 
 void InputEventReader::manageEvent(const input_event &ev)
 {
+#ifndef __linux__
+    ev;
+#endif
 #ifdef __linux__
     if (p_printEvent.getValue())
         serr << "event type 0x" << std::hex << ev.type << std::dec << " code 0x" << std::hex << ev.code << std::dec << " value " << ev.value << sendl;
