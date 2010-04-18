@@ -197,7 +197,7 @@ void AddPreset::fileOpen()
     {
         if (!relative.empty())
         {
-            size_t loc = fileName.find( relative, 0 );
+            //size_t loc = fileName.find( relative, 0 );
             fileName = fileName.substr(relative.size()+1);
         }
     }
