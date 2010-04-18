@@ -107,7 +107,7 @@ InputEventReader::~InputEventReader()
 void InputEventReader::manageEvent(const input_event &ev)
 {
 #ifndef __linux__
-    ev;
+    (void)ev;
 #endif
 #ifdef __linux__
     if (p_printEvent.getValue())
