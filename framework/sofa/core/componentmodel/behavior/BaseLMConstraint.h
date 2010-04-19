@@ -90,16 +90,42 @@ public:
         * @param idx index of the equation
          * @param c  correction we need to apply in order to solve the constraint
          **/
-        void addConstraint(  unsigned int idx, SReal c);
+        void addConstraint(  unsigned int idx, SReal c)
+        {
+            equations.resize(equations.size()+1);
+            ConstraintEquation &eq=equations.back();
+            eq.idx = idx;
+            eq.correction=c;
+        }
+
 
 
         /// Random Access to an equation
-        const ConstraintEquation &getConstraint(const unsigned int i) const;
-        ConstraintEquation &getConstraint(const unsigned int i);
+        const ConstraintEquation &getConstraint(const unsigned int i) const
+        {
+            EquationConstIterator it=equations.begin();
+            std::advance(it,i);
+            return *it;
+        }
+
+        ConstraintEquation &getConstraint(const unsigned int i)
+        {
+            EquationIterator it=equations.begin();
+            std::advance(it,i);
+            return *it;
+        }
+
 
         /// Retrieve all the equations
-        std::pair< EquationConstIterator,EquationConstIterator> data() const;
-        std::pair< EquationIterator,EquationIterator > data();
+        std::pair< EquationConstIterator,EquationConstIterator> data() const
+        {
+            return std::make_pair( equations.begin(), equations.end());
+        }
+
+        std::pair< EquationIterator,EquationIterator > data()
+        {
+            return std::make_pair( equations.begin(), equations.end());
+        }
 
 
         /// Return the number of constraint contained in this group
