@@ -57,18 +57,21 @@ public:
     VecId() : type(V_NULL), index(0) { }
     bool isNull() const { return type==V_NULL; }
     static VecId null()          { return VecId(V_NULL, 0);}
+
     static VecId position()      { return VecId(V_COORD,0);}
     static VecId restPosition()  { return VecId(V_COORD,1);}
+    static VecId freePosition()  { return VecId(V_COORD,2);}
+
     static VecId velocity()      { return VecId(V_DERIV,0);}
     static VecId restVelocity()  { return VecId(V_DERIV,1);}
+    static VecId freeVelocity()  { return VecId(V_DERIV,2);}
     static VecId force()         { return VecId(V_DERIV,3);}
     static VecId internalForce() { return VecId(V_DERIV,4);}
     static VecId externalForce() { return VecId(V_DERIV,5);}
     static VecId dx()            { return VecId(V_DERIV,6);}
     static VecId dforce()        { return VecId(V_DERIV,7);}
     static VecId accFromFrame()  { return VecId(V_DERIV,8);}
-    static VecId freePosition()  { return VecId(V_COORD,2);}
-    static VecId freeVelocity()  { return VecId(V_DERIV,2);}
+
     static VecId holonomicC()    { return VecId(V_CONST,0);}
     static VecId nonHolonomicC() { return VecId(V_CONST,1);}
 
@@ -123,9 +126,15 @@ public:
                 break;
             case 3: result+= "force";
                 break;
-            case 4: result+= "dx";
+            case 4: result+= "internalForce";
                 break;
-            case 5: result+= "accFromFrame";
+            case 5: result+= "externalForce";
+                break;
+            case 6: result+= "dx";
+                break;
+            case 7: result+= "dforce";
+                break;
+            case 8: result+= "accFromFrame";
                 break;
             default:
                 std::ostringstream out;
@@ -142,7 +151,7 @@ public:
             {
             case 0: result+= "holonomic";
                 break;
-            case 1: result+= "nonHolonolmic";
+            case 1: result+= "nonHolonomic";
                 break;
                 std::ostringstream out;
                 out << index;
