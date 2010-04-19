@@ -27,6 +27,7 @@
 
 #include <sofa/gui/qt/SimpleDataWidget.h>
 #include <sofa/helper/Factory.inl>
+#include <sofa/core/objectmodel/Tag.h>
 #include <iostream>
 
 namespace sofa
@@ -125,7 +126,7 @@ Creator<DataWidgetFactory, SimpleDataWidget< Mat<4,4,float> > > DWClass_Mat44f("
 Creator<DataWidgetFactory, SimpleDataWidget< Mat<4,4,double> > > DWClass_Mat44d("default",true);
 Creator<DataWidgetFactory, SimpleDataWidget< Mat<6,6,float> > > DWClass_Mat66f("default",true);
 Creator<DataWidgetFactory, SimpleDataWidget< Mat<6,6,double> > > DWClass_Mat66d("default",true);
-
+Creator<DataWidgetFactory, SimpleDataWidget< sofa::core::objectmodel::TagSet > > DWClass_TagSet("default",true);
 
 
 } // namespace qt
