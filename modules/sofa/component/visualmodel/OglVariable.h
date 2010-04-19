@@ -61,14 +61,18 @@ public:
 protected:
     Data< DataTypes > value;
 public:
-    OglVariable();
-    virtual ~OglVariable();
+    OglVariable(): value(initData(&value, DataTypes(), "value", "Set Uniform Value"))
+    {
+        addAlias(&value, "values"); // some variable types hold multiple values, so we authorize both names for this attribute
+    }
+
+    virtual ~OglVariable() {}
 
     virtual void setValue( const DataTypes& v ) { value.setValue(v); }
-    void init();
-    void initVisual();
+    void init() { OglShaderElement::init(); }
+    void initVisual() { core::VisualModel::initVisual(); }
     void pushValue() { initVisual(); }
-    void reinit();
+    void reinit() { init();	initVisual(); }
 };
 
 /** SINGLE INT VARIABLE **/
