@@ -99,8 +99,6 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        if (dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL)
-            return false;
         return BaseObject::canCreate(obj, context, arg);
     }
 
