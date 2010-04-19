@@ -53,6 +53,7 @@
 #include <Q3DockWindow>
 #include <Q3DockArea>
 #include <QVBoxLayout>
+#include <QDesktopServices>
 #else
 #include <qtoolbox.h>
 #include <qlayout.h>
@@ -183,7 +184,7 @@ SofaModeler::SofaModeler()
     infoItem->setMaximumHeight(175);
 #ifdef SOFA_QT4
     connect( infoItem, SIGNAL(anchorClicked(const QUrl&)), this, SLOT(fileOpen(const QUrl&)));
-    infoItem->setOpenExternalLinks(true);
+    //infoItem->setOpenExternalLinks(true);
 #else
     connect( infoItem, SIGNAL(linkClicked( const QString &)), this, SLOT(fileOpen(const QString &)));
 #endif
@@ -495,12 +496,15 @@ bool SofaModeler::closeTab(QWidget *curTab)
 #ifdef SOFA_QT4
 void SofaModeler::fileOpen(const QUrl &u)
 {
-#ifdef WIN32
-    std::string path=u.toString().ascii();
-#else
-    std::string path=u.path().ascii();
-#endif
-    fileOpen(path);
+    if(u.toString().startsWith("http"))
+    {
+        QDesktopServices::openUrl(u);
+    }
+    else
+    {
+        std::string path=u.path().ascii();
+        fileOpen(path);
+    }
 }
 
 #endif
