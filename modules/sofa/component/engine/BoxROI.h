@@ -34,6 +34,7 @@
 #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/componentmodel/behavior/MechanicalState.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
+#include <sofa/core/componentmodel/loader/MeshLoader.h>
 #include <sofa/component/topology/PointSubset.h>
 
 namespace sofa
@@ -99,6 +100,12 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
+        core::componentmodel::loader::MeshLoader* loader = NULL;
+        context->get(loader);
+
+        if (dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL && loader == NULL)
+            return false;
+
         return BaseObject::canCreate(obj, context, arg);
     }
 

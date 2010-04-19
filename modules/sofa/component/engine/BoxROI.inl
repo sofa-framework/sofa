@@ -98,6 +98,20 @@ void BoxROI<DataTypes>::init()
                     f_X0.setReadOnly(true);
                 }
             }
+            else
+            {
+                core::componentmodel::loader::MeshLoader* loader = NULL;
+                this->getContext()->get(loader);
+                if (loader)
+                {
+                    BaseData* parent = loader->findField("position");
+                    if (parent)
+                    {
+                        f_X0.setParent(parent);
+                        f_X0.setReadOnly(true);
+                    }
+                }
+            }
         }
         if (!f_edges.isSet() || !f_triangles.isSet() || !f_tetrahedra.isSet())
         {
