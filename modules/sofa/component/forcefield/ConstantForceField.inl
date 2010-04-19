@@ -70,7 +70,7 @@ void ConstantForceField<DataTypes>::addForce(VecDeriv& f1, const VecCoord& p1, c
     if (totalForce.getValue()[0] != 0.0 || totalForce.getValue()[1] != 0.0 || totalForce.getValue()[2] != 0.0)
     {
         for (unsigned comp = 0; comp < totalForce.getValue().size(); comp++)
-            singleForce[comp] = (totalForce.getValue()[comp])/(double(points.getValue().size()));
+            singleForce[comp] = (totalForce.getValue()[comp])/(SReal(points.getValue().size()));
         //std::cout << "Setting forces for each node to = " << singleForce << std::endl;
     }
     else if (force.getValue()[0] != 0.0 || force.getValue()[1] != 0.0 || force.getValue()[2] != 0.0)
