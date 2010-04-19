@@ -184,7 +184,9 @@ SofaModeler::SofaModeler()
     infoItem->setMaximumHeight(175);
 #ifdef SOFA_QT4
     connect( infoItem, SIGNAL(anchorClicked(const QUrl&)), this, SLOT(fileOpen(const QUrl&)));
-    //infoItem->setOpenExternalLinks(true);
+#ifndef WIN32
+    infoItem->setOpenExternalLinks(true);
+#endif
 #else
     connect( infoItem, SIGNAL(linkClicked( const QString &)), this, SLOT(fileOpen(const QString &)));
 #endif
@@ -496,6 +498,7 @@ bool SofaModeler::closeTab(QWidget *curTab)
 #ifdef SOFA_QT4
 void SofaModeler::fileOpen(const QUrl &u)
 {
+#ifdef WIN32
     if(u.toString().startsWith("http"))
     {
         QDesktopServices::openUrl(u);
@@ -506,7 +509,11 @@ void SofaModeler::fileOpen(const QUrl &u)
         fileOpen(path);
     }
 }
-
+#else
+    std::string path=u.path().ascii();
+    fileOpen(path);
+#endif
+}
 #endif
 
 
