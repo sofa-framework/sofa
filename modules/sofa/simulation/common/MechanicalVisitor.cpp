@@ -540,6 +540,12 @@ Visitor::Result MechanicalIntegrationVisitor::fwdOdeSolver(simulation::Node* nod
     MechanicalBeginIntegrationVisitor beginVisitor(dt);
     node->execute(&beginVisitor);
 
+#ifdef SOFA_HAVE_EIGEN2
+    {
+        unsigned int constraintId=0;
+        MechanicalAccumulateConstraint(constraintId).execute(node);
+    }
+#endif
     //cerr<<"MechanicalIntegrationVisitor::fwdOdeSolver start solve obj"<<endl;
     obj->solve(dt);
 // 	cerr<<"MechanicalIntegrationVisitor::fwdOdeSolver endVisitor ok"<<endl;
@@ -1207,18 +1213,13 @@ MechanicalExpressJacobianVisitor::MechanicalExpressJacobianVisitor(simulation::N
 #ifdef SOFA_DUMP_VISITOR_INFO
     setReadWriteVectors();
 #endif
-    helper::vector<core::componentmodel::behavior::BaseLMConstraint*> listC;
-    n->get<core::componentmodel::behavior::BaseLMConstraint>(&listC, core::objectmodel::BaseContext::SearchDown);
-    for (unsigned int i=0; i<listC.size(); ++i)
-    {
-        // simulation::Node *node=(simulation::Node*) listC[i]->getContext();
-        listC[i]->buildJacobian();
-    }
-    for (unsigned int i=0; i<listC.size(); ++i)
-    {
-        // simulation::Node *node=(simulation::Node*) listC[i]->getContext();
-        listC[i]->propagateJacobian();
-    }
+    constraintId=0;
+}
+
+Visitor::Result MechanicalExpressJacobianVisitor::fwdLMConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseLMConstraint* c)
+{
+    c->buildJacobian(constraintId);
+    return RESULT_CONTINUE;
 }
 
 void MechanicalExpressJacobianVisitor::bwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map)
@@ -1252,6 +1253,11 @@ Visitor::Result MechanicalAccumulateConstraint::fwdConstraint(simulation::Node* 
     return RESULT_CONTINUE;
 }
 
+Visitor::Result MechanicalAccumulateConstraint::fwdLMConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseLMConstraint* c)
+{
+    c->buildJacobian(contactId);
+    return RESULT_CONTINUE;
+}
 void MechanicalAccumulateConstraint::bwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map)
 {
     map->accumulateConstraint();
