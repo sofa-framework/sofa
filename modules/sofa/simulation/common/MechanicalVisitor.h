@@ -1426,6 +1426,8 @@ class SOFA_SIMULATION_COMMON_API MechanicalExpressJacobianVisitor: public Mechan
 public:
     MechanicalExpressJacobianVisitor(simulation::Node* n);
     virtual void bwdMechanicalMapping(simulation::Node* node, core::componentmodel::behavior::BaseMechanicalMapping* map);
+    virtual Result fwdLMConstraint(simulation::Node* node, core::componentmodel::behavior::BaseLMConstraint* c);
+
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
     virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
     {
@@ -1440,6 +1442,8 @@ public:
     {
     }
 #endif
+protected:
+    unsigned int constraintId;
 };
 
 
@@ -1552,6 +1556,8 @@ public:
     }
 
     virtual Result fwdConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseConstraint* c);
+    virtual Result fwdLMConstraint(simulation::Node* /*node*/, core::componentmodel::behavior::BaseLMConstraint* c);
+
     virtual void bwdMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* map);
     // This visitor must go through all mechanical mappings, even if isMechanical flag is disabled
     virtual bool stopAtMechanicalMapping(simulation::Node* /*node*/, core::componentmodel::behavior::BaseMechanicalMapping* /*map*/)
