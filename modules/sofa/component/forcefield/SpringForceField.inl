@@ -108,7 +108,6 @@ bool SpringForceField<DataTypes>::load(const char *filename)
 template <class DataTypes>
 void SpringForceField<DataTypes>::reinit()
 {
-    serr << drawMode.getValue() << "!!!!!!!!!!!!!!!!!!!!!!!" << sendl;
     for (unsigned int i=0; i<springs.getValue().size(); ++i)
     {
         (*springs.beginEdit())[i].ks = (Real) ks.getValue();
