@@ -2,6 +2,7 @@
 #define OPENCLPROGRAM_H
 
 #include <string>
+#include <cstdio>
 #include "OpenCLProgramParser.h"
 #include "myopencl.h"
 #include <CL/cl.h>
