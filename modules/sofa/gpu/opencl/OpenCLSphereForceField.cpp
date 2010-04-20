@@ -75,7 +75,6 @@ void SphereForceField_CreateProgramWithFloat()
         SphereForceFieldOpenCLFloat_program->buildProgram();
         sofa::gpu::opencl::myopenclShowError(__FILE__,__LINE__);
         std::cout << SphereForceFieldOpenCLFloat_program->buildLog(0);
-        std::cout << SphereForceFieldOpenCLFloat_program->sourceLog();
     }
 }
 
