@@ -144,6 +144,8 @@ public:
     void setWidget(const char* val) { widget = val; }
 
     /// True if the value has been modified
+    /// If this data is linked, the value of this data will be considered as modified
+    /// (even if the parent's value has not been modified)
     bool isSet() const { return m_counter > 0; }
 
     /// True if the Data has to be displayed in the GUI
