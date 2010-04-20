@@ -61,6 +61,7 @@ HEADERS += viewer/SofaViewer.h \
 		   DataFilenameWidget.h \
            DisplayFlagWidget.h \
            GraphDataWidget.h \
+		   MaterialDataWidget.h \
            ModifyObject.h \
            SimpleDataWidget.h \
 		   SofaGUIQt.h \
@@ -91,6 +92,7 @@ SOURCES += Main.cpp \
 		   DataFilenameWidget.cpp \
            DisplayFlagWidget.cpp \
            GraphDataWidget.cpp \  
+		   MaterialDataWidget.cpp \
            ModifyObject.cpp \
            SimpleDataWidget.cpp \
            StructDataWidget.cpp \
