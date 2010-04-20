@@ -37,11 +37,76 @@ namespace component
 namespace mass
 {
 
+// -- Mass interface
+template <>
+void UniformMass<gpu::opencl::OpenCLVec3fTypes, float>::addMDx(VecDeriv& res, const VecDeriv& dx, double factor);
+
+template <>
+void UniformMass<gpu::opencl::OpenCLVec3fTypes, float>::accFromF(VecDeriv& a, const VecDeriv& f);
+
+template <>
+void UniformMass<gpu::opencl::OpenCLVec3fTypes, float>::addForce(VecDeriv& f, const VecCoord&, const VecDeriv&);
+
+template <>
+bool UniformMass<gpu::opencl::OpenCLVec3fTypes, float>::addBBox(double* minBBox, double* maxBBox);
+
 template <>
 double UniformMass<gpu::opencl::OpenCLRigid3fTypes,sofa::defaulttype::Rigid3fMass>::getPotentialEnergy( const VecCoord& x ) const;
 
 template <>
+double UniformMass<gpu::opencl::OpenCLRigid3fTypes,sofa::defaulttype::Rigid3fMass>::getElementMass(unsigned int ) const;
+
+template <>
+void UniformMass<gpu::opencl::OpenCLRigid3fTypes, Rigid3fMass>::draw();
+
+template <>
+void UniformMass<gpu::opencl::OpenCLVec3f1Types, float>::addMDx(VecDeriv& res, const VecDeriv& dx, double factor);
+
+template <>
+void UniformMass<gpu::opencl::OpenCLVec3f1Types, float>::accFromF(VecDeriv& a, const VecDeriv& f);
+
+template <>
+void UniformMass<gpu::opencl::OpenCLVec3f1Types, float>::addForce(VecDeriv& f, const VecCoord&, const VecDeriv&);
+
+template <>
+bool UniformMass<gpu::opencl::OpenCLVec3f1Types, float>::addBBox(double* minBBox, double* maxBBox);
+
+
+// -- Mass interface
+template <>
+void UniformMass<gpu::opencl::OpenCLVec3dTypes, double>::addMDx(VecDeriv& res, const VecDeriv& dx, double factor);
+
+template <>
+void UniformMass<gpu::opencl::OpenCLVec3dTypes, double>::accFromF(VecDeriv& a, const VecDeriv& f);
+
+template <>
+void UniformMass<gpu::opencl::OpenCLVec3dTypes, double>::addForce(VecDeriv& f, const VecCoord&, const VecDeriv&);
+
+template <>
+bool UniformMass<gpu::opencl::OpenCLVec3dTypes, double>::addBBox(double* minBBox, double* maxBBox);
+
+template <>
 double UniformMass<gpu::opencl::OpenCLRigid3dTypes,sofa::defaulttype::Rigid3dMass>::getPotentialEnergy( const VecCoord& x ) const;
+
+template <>
+double UniformMass<gpu::opencl::OpenCLRigid3dTypes,sofa::defaulttype::Rigid3dMass>::getElementMass(unsigned int ) const;
+
+template <>
+void UniformMass<gpu::opencl::OpenCLRigid3dTypes, Rigid3dMass>::draw();
+
+template <>
+void UniformMass<gpu::opencl::OpenCLVec3d1Types, double>::addMDx(VecDeriv& res, const VecDeriv& dx, double factor);
+
+template <>
+void UniformMass<gpu::opencl::OpenCLVec3d1Types, double>::accFromF(VecDeriv& a, const VecDeriv& f);
+
+template <>
+void UniformMass<gpu::opencl::OpenCLVec3d1Types, double>::addForce(VecDeriv& f, const VecCoord&, const VecDeriv&);
+
+template <>
+bool UniformMass<gpu::opencl::OpenCLVec3d1Types, double>::addBBox(double* minBBox, double* maxBBox);
+
+
 
 
 } // namespace mass

@@ -38,6 +38,26 @@ namespace gpu
 namespace opencl
 {
 
+extern "C"
+{
+    extern void UniformMassOpenCL3f_addMDx(unsigned int size, float mass, _device_pointer res, const _device_pointer dx);
+    extern void UniformMassOpenCL3f_accFromF(unsigned int size, float mass, _device_pointer a, const _device_pointer f);
+    extern void UniformMassOpenCL3f_addForce(unsigned int size, const float *mg, _device_pointer f);
+
+    extern void UniformMassOpenCL3f1_addMDx(unsigned int size, float mass, _device_pointer res, const _device_pointer dx);
+    extern void UniformMassOpenCL3f1_accFromF(unsigned int size, float mass, _device_pointer a, const _device_pointer f);
+    extern void UniformMassOpenCL3f1_addForce(unsigned int size, const float *mg, _device_pointer f);
+
+    extern void UniformMassOpenCL3d_addMDx(unsigned int size, double mass, _device_pointer res, const _device_pointer dx);
+    extern void UniformMassOpenCL3d_accFromF(unsigned int size, double mass, _device_pointer a, const _device_pointer f);
+    extern void UniformMassOpenCL3d_addForce(unsigned int size, const double *mg, _device_pointer f);
+
+    extern void UniformMassOpenCL3d1_addMDx(unsigned int size, double mass, _device_pointer res, const _device_pointer dx);
+    extern void UniformMassOpenCL3d1_accFromF(unsigned int size, double mass, _device_pointer a, const _device_pointer f);
+    extern void UniformMassOpenCL3d1_addForce(unsigned int size, const double *mg, _device_pointer f);
+
+
+}
 
 } // namespace OpenCL
 
@@ -49,8 +69,94 @@ namespace component
 namespace mass
 {
 
+
+using namespace gpu::opencl;
+
+// -- Mass interface
 template <>
-double UniformMass<gpu::opencl::OpenCLRigid3fTypes,sofa::defaulttype::Rigid3fMass>::getPotentialEnergy( const VecCoord& x )  const
+void UniformMass<OpenCLVec3fTypes, float>::addMDx(VecDeriv& res, const VecDeriv& dx, double factor)
+{
+    UniformMassOpenCL3f_addMDx(dx.size(), (float)(mass.getValue()*factor), res.deviceWrite(), dx.deviceRead());
+}
+
+template <>
+void UniformMass<OpenCLVec3fTypes, float>::accFromF(VecDeriv& a, const VecDeriv& f)
+{
+    UniformMassOpenCL3f_accFromF(f.size(), mass.getValue(), a.deviceWrite(), f.deviceRead());
+}
+
+template <>
+void UniformMass<OpenCLVec3fTypes, float>::addForce(VecDeriv& f, const VecCoord&, const VecDeriv&)
+{
+    // weight
+    Vec3d g ( this->getContext()->getLocalGravity() );
+    Deriv theGravity;
+    DataTypes::set( theGravity, g[0], g[1], g[2]);
+    Deriv mg = theGravity * mass.getValue();
+    UniformMassOpenCL3f_addForce(f.size(), mg.ptr(), f.deviceWrite());
+}
+
+template <>
+bool UniformMass<gpu::opencl::OpenCLVec3fTypes, float>::addBBox(double* minBBox, double* maxBBox)
+{
+    const VecCoord& x = *this->mstate->getX();
+    //if (!x.isHostValid()) return false; // Do not recompute bounding box if it requires to transfer data from device
+    for (unsigned int i=0; i<x.size(); i++)
+    {
+        //const Coord& p = x[i];
+        const Coord& p = x.getCached(i);
+        for (int c=0; c<3; c++)
+        {
+            if (p[c] > maxBBox[c]) maxBBox[c] = p[c];
+            if (p[c] < minBBox[c]) minBBox[c] = p[c];
+        }
+    }
+    return true;
+}
+
+template <>
+void UniformMass<OpenCLVec3f1Types, float>::addMDx(VecDeriv& res, const VecDeriv& dx, double factor)
+{
+    UniformMassOpenCL3f1_addMDx(dx.size(), (float)(mass.getValue()*factor), res.deviceWrite(), dx.deviceRead());
+}
+
+template <>
+void UniformMass<OpenCLVec3f1Types, float>::accFromF(VecDeriv& a, const VecDeriv& f)
+{
+    UniformMassOpenCL3f1_accFromF(f.size(), mass.getValue(), a.deviceWrite(), f.deviceRead());
+}
+
+template <>
+void UniformMass<OpenCLVec3f1Types, float>::addForce(VecDeriv& f, const VecCoord&, const VecDeriv&)
+{
+    // weight
+    Vec3d g ( this->getContext()->getLocalGravity() );
+    Deriv theGravity;
+    DataTypes::set( theGravity, g[0], g[1], g[2]);
+    Deriv mg = theGravity * mass.getValue();
+    UniformMassOpenCL3f1_addForce(f.size(), mg.ptr(), f.deviceWrite());
+}
+
+template <>
+bool UniformMass<gpu::opencl::OpenCLVec3f1Types, float>::addBBox(double* minBBox, double* maxBBox)
+{
+    const VecCoord& x = *this->mstate->getX();
+    //if (!x.isHostValid()) return false; // Do not recompute bounding box if it requires to transfer data from device
+    for (unsigned int i=0; i<x.size(); i++)
+    {
+        //const Coord& p = x[i];
+        const Coord& p = x.getCached(i);
+        for (int c=0; c<3; c++)
+        {
+            if (p[c] > maxBBox[c]) maxBBox[c] = p[c];
+            if (p[c] < minBBox[c]) minBBox[c] = p[c];
+        }
+    }
+    return true;
+}
+
+template <>
+double UniformMass<gpu::opencl::OpenCLRigid3fTypes,sofa::defaulttype::Rigid3fMass>::getPotentialEnergy( const VecCoord& x ) const
 {
     double e = 0;
     // gravity
@@ -63,7 +169,126 @@ double UniformMass<gpu::opencl::OpenCLRigid3fTypes,sofa::defaulttype::Rigid3fMas
 }
 
 template <>
-double UniformMass<gpu::opencl::OpenCLRigid3dTypes,sofa::defaulttype::Rigid3dMass>::getPotentialEnergy( const VecCoord& x )  const
+double UniformMass<gpu::opencl::OpenCLRigid3fTypes,sofa::defaulttype::Rigid3fMass>::getElementMass(unsigned int ) const
+{
+    return (double)(mass.getValue().mass);
+}
+
+template <>
+void UniformMass<gpu::opencl::OpenCLRigid3fTypes, Rigid3fMass>::draw()
+{
+    if (!getContext()->getShowBehaviorModels())
+        return;
+    const VecCoord& x = *mstate->getX();
+    defaulttype::Vec3d len;
+
+    // The moment of inertia of a box is:
+    //   m->_I(0,0) = M/REAL(12.0) * (ly*ly + lz*lz);
+    //   m->_I(1,1) = M/REAL(12.0) * (lx*lx + lz*lz);
+    //   m->_I(2,2) = M/REAL(12.0) * (lx*lx + ly*ly);
+    // So to get lx,ly,lz back we need to do
+    //   lx = sqrt(12/M * (m->_I(1,1)+m->_I(2,2)-m->_I(0,0)))
+    // Note that RigidMass inertiaMatrix is already divided by M
+    double m00 = mass.getValue().inertiaMatrix[0][0];
+    double m11 = mass.getValue().inertiaMatrix[1][1];
+    double m22 = mass.getValue().inertiaMatrix[2][2];
+    len[0] = sqrt(m11+m22-m00);
+    len[1] = sqrt(m00+m22-m11);
+    len[2] = sqrt(m00+m11-m22);
+
+    for (unsigned int i=0; i<x.size(); i++)
+    {
+        helper::gl::Axis::draw(x[i].getCenter(), x[i].getOrientation(), len);
+    }
+}
+
+
+
+// -- Mass interface
+template <>
+void UniformMass<OpenCLVec3dTypes, double>::addMDx(VecDeriv& res, const VecDeriv& dx, double factor)
+{
+    UniformMassOpenCL3d_addMDx(dx.size(), (double)(mass.getValue()*factor), res.deviceWrite(), dx.deviceRead());
+}
+
+template <>
+void UniformMass<OpenCLVec3dTypes, double>::accFromF(VecDeriv& a, const VecDeriv& f)
+{
+    UniformMassOpenCL3d_accFromF(f.size(), mass.getValue(), a.deviceWrite(), f.deviceRead());
+}
+
+template <>
+void UniformMass<OpenCLVec3dTypes, double>::addForce(VecDeriv& f, const VecCoord&, const VecDeriv&)
+{
+    // weight
+    Vec3d g ( this->getContext()->getLocalGravity() );
+    Deriv theGravity;
+    DataTypes::set( theGravity, g[0], g[1], g[2]);
+    Deriv mg = theGravity * mass.getValue();
+    UniformMassOpenCL3d_addForce(f.size(), mg.ptr(), f.deviceWrite());
+}
+
+template <>
+bool UniformMass<gpu::opencl::OpenCLVec3dTypes, double>::addBBox(double* minBBox, double* maxBBox)
+{
+    const VecCoord& x = *this->mstate->getX();
+    //if (!x.isHostValid()) return false; // Do not recompute bounding box if it requires to transfer data from device
+    for (unsigned int i=0; i<x.size(); i++)
+    {
+        //const Coord& p = x[i];
+        const Coord& p = x.getCached(i);
+        for (int c=0; c<3; c++)
+        {
+            if (p[c] > maxBBox[c]) maxBBox[c] = p[c];
+            if (p[c] < minBBox[c]) minBBox[c] = p[c];
+        }
+    }
+    return true;
+}
+
+template <>
+void UniformMass<OpenCLVec3d1Types, double>::addMDx(VecDeriv& res, const VecDeriv& dx, double factor)
+{
+    UniformMassOpenCL3d1_addMDx(dx.size(), (double)(mass.getValue()*factor), res.deviceWrite(), dx.deviceRead());
+}
+
+template <>
+void UniformMass<OpenCLVec3d1Types, double>::accFromF(VecDeriv& a, const VecDeriv& f)
+{
+    UniformMassOpenCL3d1_accFromF(f.size(), mass.getValue(), a.deviceWrite(), f.deviceRead());
+}
+
+template <>
+void UniformMass<OpenCLVec3d1Types, double>::addForce(VecDeriv& f, const VecCoord&, const VecDeriv&)
+{
+    // weight
+    Vec3d g ( this->getContext()->getLocalGravity() );
+    Deriv theGravity;
+    DataTypes::set( theGravity, g[0], g[1], g[2]);
+    Deriv mg = theGravity * mass.getValue();
+    UniformMassOpenCL3d1_addForce(f.size(), mg.ptr(), f.deviceWrite());
+}
+
+template <>
+bool UniformMass<gpu::opencl::OpenCLVec3d1Types, double>::addBBox(double* minBBox, double* maxBBox)
+{
+    const VecCoord& x = *this->mstate->getX();
+    //if (!x.isHostValid()) return false; // Do not recompute bounding box if it requires to transfer data from device
+    for (unsigned int i=0; i<x.size(); i++)
+    {
+        //const Coord& p = x[i];
+        const Coord& p = x.getCached(i);
+        for (int c=0; c<3; c++)
+        {
+            if (p[c] > maxBBox[c]) maxBBox[c] = p[c];
+            if (p[c] < minBBox[c]) minBBox[c] = p[c];
+        }
+    }
+    return true;
+}
+
+template <>
+double UniformMass<gpu::opencl::OpenCLRigid3dTypes,sofa::defaulttype::Rigid3dMass>::getPotentialEnergy( const VecCoord& x ) const
 {
     double e = 0;
     // gravity
@@ -74,6 +299,42 @@ double UniformMass<gpu::opencl::OpenCLRigid3dTypes,sofa::defaulttype::Rigid3dMas
     }
     return e;
 }
+
+template <>
+double UniformMass<gpu::opencl::OpenCLRigid3dTypes,sofa::defaulttype::Rigid3dMass>::getElementMass(unsigned int ) const
+{
+    return (double)(mass.getValue().mass);
+}
+
+template <>
+void UniformMass<gpu::opencl::OpenCLRigid3dTypes, Rigid3dMass>::draw()
+{
+    if (!getContext()->getShowBehaviorModels())
+        return;
+    const VecCoord& x = *mstate->getX();
+    defaulttype::Vec3d len;
+
+    // The moment of inertia of a box is:
+    //   m->_I(0,0) = M/REAL(12.0) * (ly*ly + lz*lz);
+    //   m->_I(1,1) = M/REAL(12.0) * (lx*lx + lz*lz);
+    //   m->_I(2,2) = M/REAL(12.0) * (lx*lx + ly*ly);
+    // So to get lx,ly,lz back we need to do
+    //   lx = sqrt(12/M * (m->_I(1,1)+m->_I(2,2)-m->_I(0,0)))
+    // Note that RigidMass inertiaMatrix is already divided by M
+    double m00 = mass.getValue().inertiaMatrix[0][0];
+    double m11 = mass.getValue().inertiaMatrix[1][1];
+    double m22 = mass.getValue().inertiaMatrix[2][2];
+    len[0] = sqrt(m11+m22-m00);
+    len[1] = sqrt(m00+m22-m11);
+    len[2] = sqrt(m00+m11-m22);
+
+    for (unsigned int i=0; i<x.size(); i++)
+    {
+        helper::gl::Axis::draw(x[i].getCenter(), x[i].getOrientation(), len);
+    }
+}
+
+
 
 } // namespace mass
 

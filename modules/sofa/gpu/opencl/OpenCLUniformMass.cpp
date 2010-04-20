@@ -26,6 +26,12 @@
 #include "OpenCLUniformMass.inl"
 #include <sofa/core/ObjectFactory.h>
 
+#include "OpenCLProgram.h"
+#include "OpenCLKernel.h"
+
+#define DEBUG_TEXT(t) //printf("\t%s\t %s %d\n",t,__FILE__,__LINE__);
+#define BSIZE 16
+
 namespace sofa
 {
 
@@ -46,8 +52,146 @@ int UniformMassOpenCLClass = core::RegisterObject("Supports GPU-side computation
         .add< component::mass::UniformMass<OpenCLRigid3dTypes,sofa::defaulttype::Rigid3dMass> >()
         ;
 
+
+
+
+
+
+
+///////////////////////////////////////
+//             kernels
+
+sofa::helper::OpenCLProgram* UniformMassOpenCLFloat_program;
+sofa::helper::OpenCLProgram* UniformMassOpenCLDouble_program;
+
+
+void UniformMass_CreateProgramWithFloat()
+{
+    if(UniformMassOpenCLFloat_program==NULL)
+    {
+
+        std::map<std::string, std::string> types;
+        types["Real"]="float";
+        types["Real4"]="float4";
+
+        UniformMassOpenCLFloat_program
+            = new sofa::helper::OpenCLProgram(sofa::helper::OpenCLProgram::loadSource("OpenCLUniformMass.cl"),&types);
+
+        UniformMassOpenCLFloat_program->buildProgram();
+        sofa::gpu::opencl::myopenclShowError(__FILE__,__LINE__);
+        std::cout << UniformMassOpenCLFloat_program->buildLog(0);
+    }
+}
+
+void UniformMass_CreateProgramWithDouble()
+{
+
+    if(UniformMassOpenCLDouble_program==NULL)
+    {
+
+        std::map<std::string, std::string> types;
+        types["Real"]="double";
+        types["Real4"]="double4";
+
+        UniformMassOpenCLDouble_program
+            = new sofa::helper::OpenCLProgram(sofa::helper::OpenCLProgram::loadSource("OpenCLUniformMass.cl"),&types);
+
+        UniformMassOpenCLDouble_program->buildProgram();
+
+    }
+}
+
+
+
+
+sofa::helper::OpenCLKernel * UniformMassOpenCL3f_addForce_kernel;
+void UniformMassOpenCL3f_addForce(unsigned int size, const float* mg, _device_pointer f)
+{
+    DEBUG_TEXT("UniformMassOpenCL3f_addForce");
+
+
+    UniformMass_CreateProgramWithFloat();
+    if(UniformMassOpenCL3f_addForce_kernel==NULL)UniformMassOpenCL3f_addForce_kernel
+            = new sofa::helper::OpenCLKernel(UniformMassOpenCLFloat_program,"UniformMass_addForce");
+
+
+    UniformMassOpenCL3f_addForce_kernel->setArg<float>(0,&mg[0]);
+    UniformMassOpenCL3f_addForce_kernel->setArg<float>(1,&mg[1]);
+    UniformMassOpenCL3f_addForce_kernel->setArg<float>(2,&mg[2]);
+    UniformMassOpenCL3f_addForce_kernel->setArg<_device_pointer>(3,&f);
+
+    size_t local_size[1];
+    local_size[0]=BSIZE;
+
+    size_t work_size[1];
+    work_size[0]=((size%BSIZE)==0)?size:BSIZE*(size/BSIZE+1);
+
+    //std::cout << __LINE__ << __FILE__ << " " << size << " " << nbSpringPerVertex << " " << springs.offset << " " << f.offset << " " <<  x.offset << " " <<  v.offset<< " " << dfdx.offset << "\n";
+    //std::cout << local_size[0] << " " << size << " " <<work_size[0] << "\n";
+
+    UniformMassOpenCL3f_addForce_kernel->execute(0,1,NULL,work_size,local_size);	//note: num_device = const = 0
+
+}
+
+sofa::helper::OpenCLKernel * UniformMassOpenCL3f_addMDX_kernel;
+void UniformMassOpenCL3f_addMDx(unsigned int size, float mass, _device_pointer res, const _device_pointer dx)
+{
+    DEBUG_TEXT("UniformMassOpenCL3f_addMDx");
+
+    UniformMass_CreateProgramWithFloat();
+    if(UniformMassOpenCL3f_addMDX_kernel==NULL)UniformMassOpenCL3f_addMDX_kernel
+            = new sofa::helper::OpenCLKernel(UniformMassOpenCLFloat_program,"UniformMass_addMDx");
+
+
+    UniformMassOpenCL3f_addMDX_kernel->setArg<float>(0,&mass);
+    UniformMassOpenCL3f_addMDX_kernel->setArg<_device_pointer>(1,&res);
+    UniformMassOpenCL3f_addMDX_kernel->setArg<_device_pointer>(2,&dx);
+
+    size_t local_size[1];
+    local_size[0]=BSIZE;
+
+    size_t work_size[1];
+    work_size[0]=((size%BSIZE)==0)?size:BSIZE*(size/BSIZE+1);
+
+    //std::cout << __LINE__ << __FILE__ << " " << size << " " <<res.offset << " " << dx.offset << "\n";
+    //std::cout << local_size[0] << " " << size << " " <<work_size[0] << "\n";
+
+    UniformMassOpenCL3f_addMDX_kernel->execute(0,1,NULL,work_size,local_size);	//note: num_device = const = 0
+
+}
+
+
+void UniformMassOpenCL3f_accFromF(unsigned int /*size*/, float /*mass*/, _device_pointer /*a*/, const _device_pointer /*f*/) {DEBUG_TEXT("no implemented"); exit(0);}
+
+void UniformMassOpenCL3f1_addMDx(unsigned int /*size*/, float /*mass*/, _device_pointer /*res*/, const _device_pointer /*dx*/) {DEBUG_TEXT("no implemented"); exit(0);}
+void UniformMassOpenCL3f1_accFromF(unsigned int /*size*/, float /*mass*/, _device_pointer /*a*/, const _device_pointer /*f*/) {DEBUG_TEXT("no implemented"); exit(0);}
+void UniformMassOpenCL3f1_addForce(unsigned int /*size*/, const float* /*mg*/, _device_pointer /*f*/) {DEBUG_TEXT("no implemented"); exit(0);}
+
+void UniformMassOpenCL3d_addMDx(unsigned int /*size*/, double /*mass*/, _device_pointer /*res*/, const _device_pointer /*dx*/) {DEBUG_TEXT("no implemented"); exit(0);}
+void UniformMassOpenCL3d_accFromF(unsigned int /*size*/, double /*mass*/, _device_pointer /*a*/, const _device_pointer /*f*/) {DEBUG_TEXT("no implemented"); exit(0);}
+void UniformMassOpenCL3d_addForce(unsigned int /*size*/, const double* /*mg*/, _device_pointer /*f*/) {DEBUG_TEXT("no implemented"); exit(0);}
+
+void UniformMassOpenCL3d1_addMDx(unsigned int /*size*/, double /*mass*/, _device_pointer /*res*/, const _device_pointer /*dx*/) {DEBUG_TEXT("no implemented"); exit(0);}
+void UniformMassOpenCL3d1_accFromF(unsigned int /*size*/, double /*mass*/, _device_pointer /*a*/, const _device_pointer /*f*/) {DEBUG_TEXT("no implemented"); exit(0);}
+void UniformMassOpenCL3d1_addForce(unsigned int /*size*/, const double* /*mg*/, _device_pointer /*f*/) {DEBUG_TEXT("no implemented"); exit(0);}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 } // namespace opencl
 
 } // namespace gpu
 
 } // namespace sofa
+
+#undef BSIZE
