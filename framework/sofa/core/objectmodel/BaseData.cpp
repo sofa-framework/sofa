@@ -90,6 +90,8 @@ bool BaseData::setParent(BaseData* parent)
         BaseData::setDirtyValue();
         if (!isCounterValid())
             update();
+
+        m_counter++;
     }
     return true;
 }
