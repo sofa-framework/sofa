@@ -29,6 +29,7 @@
 
 
 #include "DialogAddObject.h"
+#include <vector>
 
 namespace sofa
 {
@@ -46,7 +47,7 @@ class AddObject : public DialogAddObject
     Q_OBJECT
 public:
 
-    AddObject( std::vector< std::string > *list_object_, QWidget* parent, const char* name= 0, bool  modal= FALSE, Qt::WFlags f= 0 );
+    AddObject( std::vector<std::string> *list_object_, QWidget* parent, const char* name= 0, bool  modal= FALSE, Qt::WFlags f= 0 );
 
 
     void setPath(const std::string path);
