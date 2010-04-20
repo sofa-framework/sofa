@@ -33,26 +33,19 @@ LIBS += -lsofacomponent$$LIBSUFFIX
 LIBS += $$SOFA_EXT_LIBS
 
 include(0Core.pro)
-include(0UniformMass.pro)
+
+include(0BoxROI.pro)
+include(0FixedConstraint.pro)
+include(0IdentityMapping.pro)
 include(0MechanicalObject.pro)
 include(0MemoryManager.pro)
 include(0PlaneForceField.pro)
 include(0SphereForceField.pro)
 include(0SpringForceField.pro)
+include(0UniformMass.pro)
 
 include(tools/tools.pro)
 
-
-HEADERS += OpenCLBoxROI.h \
-    OpenCLBoxROI.inl \
-    OpenCLFixedConstraint.h \
-    OpenCLFixedConstraint.inl \
-    OpenCLIdentityMapping.h \
-	OpenCLIdentityMapping.inl
-
-SOURCES += OpenCLBoxROI.cpp \
-    OpenCLFixedConstraint.cpp \
-	OpenCLIdentityMapping.cpp
 
 include(kernels/kernels.pro)
 
