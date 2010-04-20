@@ -128,12 +128,14 @@ __kernel void Vec1t_vDot(
 
 
     int iter = RED_SIZE;
-    while(iter!=1)
+
+    do
     {
         iter /= 2;
         if(l_id<iter)l[l_id] += l[l_id+iter];
         barrier(CLK_LOCAL_MEM_FENCE);
     }
+    while(iter!=1);
 
     if(l_id==0)res[get_group_id(0)]=l[l_id];
 

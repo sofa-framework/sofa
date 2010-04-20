@@ -432,7 +432,7 @@ void MechanicalObjectOpenCLVec3f_vDot(size_t size, float* res, const _device_poi
     MechanicalObjectOpenCLVec3f_vDot_kernel->execute(0,1,NULL,work_size,local_size);	//note: num_device = const = 0
     OpenCLMemoryManager<float>::memcpyDeviceToHost(0,cputmp,tmp, (work_size[0]/RED_SIZE)*sizeof(float));
 
-    *res=0.1;
+    *res=0;
     for(unsigned int i=0; i< work_size[0]/RED_SIZE; i++)*res+=cputmp[i];
 
 }
