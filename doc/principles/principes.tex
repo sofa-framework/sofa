@@ -61,10 +61,10 @@
 
 
 \title{SOFA: a modular yet efficient physical simulation architecture}
-\author{Francois.Faure@imag.fr}
+\author{François Faure, EVASION}
 % \institute{ LJK, Grenoble }
 % \date{September, 2006}
-\date{}
+%\date{}
 
 \AtBeginSection[]{
 \begin{frame}
@@ -79,7 +79,13 @@
   \maketitle
 %\vspace{-28mm}
 \begin{center}
- \includegraphics[width=\linewidth]{logos.png}
+ %\includegraphics[width=\linewidth]{logos.png}
+\newcommand{\logoheight}{10mm}
+ \includegraphics[height=\logoheight]{inria-logo.png} \\ \vspace{10mm}~ \\
+ \includegraphics[height=\logoheight]{alcove-logo.jpg}
+ \includegraphics[height=\logoheight]{evasion-logo.png}
+ \includegraphics[height=\logoheight]{asclepios-logo.jpg}
+ \includegraphics[height=5mm]{moais-logo.png}
 \end{center}
 %\tableofcontents
 
@@ -107,7 +113,7 @@ Material, internal forces, contraints, contact detection and modeling, ODE solut
 \begin{frame}
 \frametitle{Simulation platforms}
 \begin{itemize}
-\item Current platforms (ODE, Havok, Novodex, etc.) provide:
+\item Current platforms (ODE, Havok, PhysX, etc.) provide:
 \begin{itemize}
 \item limited number of material types
 \item limited number of geometry types
@@ -115,7 +121,7 @@ Material, internal forces, contraints, contact detection and modeling, ODE solut
 \item no control on interaction modeling
 \item few (if any) control of the numerical models and methods.
 \item no control on the main loop
-\item few (if any) parallelism
+%\item few (if any) parallelism
 \end{itemize}
 \item We need much more !
 \begin{itemize}
@@ -177,9 +183,9 @@ A specialized program:
 \frametitle{Components}
 \begin{columns}
  \column[c]{0.5\linewidth}
-Data:
+%Data:
 \begin{itemize}
-\item<1-> sample points and associated values: $x,v,a,f$
+\item<1-> state vectors (DOF): $x,v,a,f$
 \item<1-> constraints: fixed points 
 \only<1> {\\ \em other: oscillator, collision plane, etc.}
 \item<2-> force field: tetrahedron FEM
@@ -199,8 +205,30 @@ Data:
 \end{columns}
 \end{frame}
 
+%-----------------------------------------
+\begin{frame}
+\frametitle{Operations}
 
+\begin{itemize}
+ \item The ODE solver sends visitors to apply operations
+ \item The visitors traverse the scene and apply virtual methods to the components
+ \item The methods read and write state vectors (identified by symbolic constants) in the DOF component
+ %\item State vectors are identified by symbolic constants 
+ \item Example: accumulate force
+  \begin{itemize}
+   \item A \texttt{ResetForceVisitor} recursively traverses the nodes of the scene (only one node here)
+  \begin{itemize}
+   \item All the \texttt{DOF} objects apply their \texttt{resetForce()} method
+  \end{itemize}
+   \item An \texttt{AccumulateForceVisitor} recursively traverses the nodes of the scene 
+  \begin{itemize}
+   \item All the \texttt{ForceField} objects apply their \texttt{addForce(  Forces, const Positions, const Velocities )} method
+  \end{itemize}
+   \item the final value of f is weight + tetra fem force + trian fem force
+  \end{itemize}
+\end{itemize}
 
+\end{frame}
 
 % %-----------------------------------------------
 % \begin{frame}[fragile]
@@ -228,28 +256,29 @@ Data:
 
 
 %%%===================================================================
-\section{Layered bodies}
+\section{Layered objects using node hierarchies}
 %%%===================================================================
 
 \begin{frame}
-\frametitle{Layered body }
+\frametitle{Layered object }
+Object embedded in a deformable grid
 \begin{columns}
 \column[c]{0.5\linewidth}
 \begin{itemize}
 \item<1-> independent DOFs (blue)
-\item<2-> visual samples (salmon)
-\item<3-> visual mapping 
+\item<2-> skin vertices (salmon)
+\item<3-> mapping 
 \item<4-> collision samples (green)
 \item<4-> collision mapping
 \item<5-> apply displacements
 \begin{enumerate}
-\item $v_{visual} = J_{visual} v$
-\item $v_{collision} = J_{collision} v_{visual}$
+\item $v_{skin} = J_{skin} v$
+\item $v_{collision} = J_{collision} v_{skin}$
 \end{enumerate}
 \item<6-> apply forces
 \begin{enumerate}
-\item $f_{visual} = J_{collision}^T f_{collision}$
-\item $f = J_{visual}^T f_{visual}$
+\item $f_{skin} = J_{collision}^T f_{collision}$
+\item $f = J_{skin}^T f_{skin}$
 \end{enumerate}
 \end{itemize}
 \column[c]{0.5\linewidth}
@@ -410,6 +439,7 @@ $$
 
 \begin{frame}
 \frametitle{Two bodies in contact}
+Example: 2-layer liver against 3-layer liver using a contact force.\\
 Use extended trees (Directed Acyclic Graphs) to model trees with loops.
 \begin{columns}
 \column{0.3\linewidth}
@@ -427,8 +457,8 @@ Use extended trees (Directed Acyclic Graphs) to model trees with loops.
  \only<2->{\includegraphics[width=0.9\linewidth]{livers-contact-tree-common.png}}
 \begin{itemize}
 \item<1-> Soft interactions: independent processing, no synchronization required\\
-\item<2-> Stiff interactions: unified implicit solution, synchronized objects\\
-\item<3-> Hard interaction constraints: work in progress  \begin{small}\textit{(Christian Duriez, ALCOVE)}\end{small}
+\item<2-> Stiff interactions: unified implicit solution with Conjugate Gradient, synchronized objects\\
+\item<3-> Hard interaction constraints: work in progress 
 \end{itemize}
 \end{frame}
 
@@ -454,7 +484,7 @@ Use extended trees (Directed Acyclic Graphs) to model trees with loops.
 %  \item each DOF component can be based on its own types (e.g. Vec3, Frame, etc. )
 %  \item symbolic values are used to represent global state vectors
 % \end{itemize}
- \item Action = graph traversal + global vector ids + call of abstract top-down and bottom up methods 
+ \item Operation = graph traversal + abstract methods + vector identificators
 % \begin{itemize}
 %  \item Displacements are propagated top-down
 %  \item Interactions forces are evaluated after displacement propagation
@@ -482,19 +512,19 @@ Use extended trees (Directed Acyclic Graphs) to model trees with loops.
 \end{frame}
 
 
-%-----------------------------------------------
-
-\begin{frame}
- \frametitle{Example: applying interaction forces}
-\begin{itemize}
- \item The solver triggers the appropriate action
-\item the action is propagated through the graph and calls the appropriate methods at each Contact node
-\end{itemize}
-\begin{center}
- \includegraphics[width=0.8\linewidth]{layered-contacts-action-applyInteractionForces.png}
-\end{center}
-
-\end{frame}
+% %-----------------------------------------------
+% 
+% \begin{frame}
+%  \frametitle{Example: applying interaction forces}
+% \begin{itemize}
+%  \item The solver triggers the appropriate action
+% \item the action is propagated through the graph and calls the appropriate methods at each Contact node
+% \end{itemize}
+% \begin{center}
+%  \includegraphics[width=0.8\linewidth]{layered-contacts-action-applyInteractionForces.png}
+% \end{center}
+% 
+% \end{frame}
 
 
 %-----------------------------------------------
