@@ -38,6 +38,7 @@
 
 #include <sofa/component/fem/QuadratureFormular.h>
 #include <sofa/helper/Polynomial_LD.inl>
+#include <sofa/helper/OptionsGroup.h>
 
 
 #if !defined(INFINITY)
@@ -753,6 +754,44 @@ public:
 template<int L, int C, class T>
 class data_widget_container < sofa::defaulttype::Mat<L, C, T> > : public fixed_grid_data_widget_container < sofa::defaulttype::Mat<L, C, T> >
 {};
+
+////////////////////////////////////////////////////////////////
+/// OptionsGroup support
+////////////////////////////////////////////////////////////////
+
+
+class RadioDataWidget : public TDataWidget<sofa::helper::OptionsGroup >
+{
+    Q_OBJECT
+public :
+
+    ///The class constructor takes a TData<RadioTrick> since it creates
+    ///a widget for a that particular data type.
+    RadioDataWidget(QWidget* parent, const char* name,
+            core::objectmodel::TData<sofa::helper::OptionsGroup >* m_data)
+        : TDataWidget<sofa::helper::OptionsGroup >(parent,name,m_data) {};
+
+    ///In this method we  create the widgets and perform the signal / slots connections.
+    virtual bool createWidgets();
+
+protected slots:
+
+    void setbuttonchekec(int id_checked);
+
+protected:
+    ///Implements how update the widgets knowing the data value.
+    virtual void readFromData();
+
+    ///Implements how to update the data, knowing the widget value.
+    virtual void writeToData();
+
+    QButtonGroup *buttonList;
+
+};
+
+
+
+
 
 } // namespace qt
 
