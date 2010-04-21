@@ -27,15 +27,14 @@
 #ifndef SOFA_HELPER_OPTIONSGROUP_H
 #define SOFA_HELPER_OPTIONSGROUP_H
 
-#include <sofa/helper/helper.h>
-
-#include <sofa/helper/vector.h>
+#include <vector>
 #include <string>
 #include <iostream>
 #include <cstdarg>
 #include <sstream>
-#include <vector>
 
+
+#include <sofa/helper/helper.h>
 
 namespace sofa
 {
@@ -53,12 +52,16 @@ namespace helper
  *
  */
 
-class SOFA_HELPER_API OptionsGroup : public std::vector<std::string>
+class SOFA_HELPER_API OptionsGroup //: public std::vector<std::string>
 {
 public :
-    typedef std::vector<std::string> textItems;
+//	typedef
+    std::vector<std::string> textItems;
 
     OptionsGroup();
+
+    ///Example OptionsGroup(4,"button0","button1","button2","button3");
+    OptionsGroup(int nbofRadioButton,...);
 
     ///Copy
     OptionsGroup(const OptionsGroup & m_radiotrick);
@@ -71,6 +74,8 @@ public :
     void setSelectedItem(const std::string &);
     unsigned int getSelectedId() const;
     std::string getSelectedItem() const;
+    std::string & operator[](unsigned int i) {return textItems[i];}
+    unsigned int size() {return textItems.size();}
 
 
     ///An other way to do the setSelectedItem() using a string for input

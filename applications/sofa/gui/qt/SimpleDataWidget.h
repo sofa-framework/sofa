@@ -792,7 +792,6 @@ protected:
 
 
 
-
 } // namespace qt
 
 } // namespace gui

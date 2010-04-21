@@ -132,8 +132,10 @@ Creator<DataWidgetFactory, SimpleDataWidget< sofa::core::objectmodel::TagSet > >
 ////////////////////////////////////////////////////////////////
 /// OptionsGroup support
 ////////////////////////////////////////////////////////////////
+
 //these functions must be written here for effect of writeToData
 Creator<DataWidgetFactory,RadioDataWidget> DWClass_OptionsGroup("default",true);
+
 bool RadioDataWidget::createWidgets()
 {
     buttonList=new QButtonGroup(this);
@@ -167,6 +169,7 @@ void RadioDataWidget::writeToData()
     m_radiotrick.setSelectedItem((unsigned int)buttonList->checkedId ());
     this->getData()->virtualSetValue(m_radiotrick);
 }
+
 
 
 
