@@ -37,6 +37,7 @@
 
 #include <sofa/component/collision/BarycentricContactMapper.h>
 #include <sofa/component/collision/IdentityContactMapper.h>
+#include <sofa/component/collision/RigidContactMapper.inl>
 
 
 namespace sofa

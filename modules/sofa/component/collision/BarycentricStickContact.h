@@ -31,6 +31,7 @@
 #include <sofa/component/forcefield/VectorSpringForceField.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/component/collision/BarycentricContactMapper.h>
+#include <sofa/component/collision/RigidContactMapper.inl>
 #include <sofa/component/collision/IdentityContactMapper.h>
 
 
