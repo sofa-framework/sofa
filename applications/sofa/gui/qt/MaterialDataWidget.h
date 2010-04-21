@@ -10,6 +10,7 @@
 #include <QPainter>
 #include <QStyle>
 #include <QCheckBox>
+#include <QComboBox>
 #include <QColor>
 #include <QPixmap>
 #include <QLineEdit>
@@ -90,8 +91,43 @@ protected:
     QCheckBox* _diffuseCheckBox;
     QCheckBox* _shininessCheckBox;
 };
+
+class VectorMaterialDataWidget : public TDataWidget< helper::vector<sofa::core::componentmodel::loader::Material> >
+{
+    typedef helper::vector<sofa::core::componentmodel::loader::Material> VectorMaterial;
+    Q_OBJECT
+public:
+    VectorMaterialDataWidget(QWidget* parent,
+            const char* name,
+            core::objectmodel::TData< helper::vector<sofa::core::componentmodel::loader::Material> >* data):
+        TDataWidget< helper::vector<sofa::core::componentmodel::loader::Material> >(parent,name,data),
+        _materialDataWidget(NULL),
+        _comboBox(NULL),
+        _currentMaterial(0,data->isDisplayed(),data->isReadOnly(),data->getOwner())
+    {
+
+    };
+
+    virtual bool createWidgets();
+    virtual unsigned int numColumnWidget() {return 1;}
+
+
+protected:
+    virtual void readFromData();
+    virtual void writeToData();
+
+    MaterialDataWidget* _materialDataWidget;
+    VectorMaterial _vectorEditedMaterial;
+    core::objectmodel::Data<sofa::core::componentmodel::loader::Material> _currentMaterial;
+    QComboBox* _comboBox;
+    int _currentMaterialPos;
+protected slots:
+    void changeMaterial( int );
+};
 }
 }
+
+
 }
 
 #endif MATERIAL_DATAWIDGET_H
