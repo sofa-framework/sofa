@@ -24,7 +24,7 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/helper/OptionsGroup.h>
+#include "OptionsGroup.h"
 
 
 namespace sofa
@@ -33,6 +33,7 @@ namespace sofa
 namespace helper
 {
 
+class OptionsGroup;
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 OptionsGroup::OptionsGroup() : textItems()
@@ -40,17 +41,32 @@ OptionsGroup::OptionsGroup() : textItems()
     selectedItem=0;
 }
 ///////////////////////////////////////
-OptionsGroup::OptionsGroup(const OptionsGroup & m_radiotrick) : textItems(m_radiotrick)
+OptionsGroup::OptionsGroup(int nbofRadioButton,...)
+{
+    textItems.resize(nbofRadioButton);
+    va_list vl;
+    va_start(vl,nbofRadioButton);
+    for(unsigned int i=0; i<textItems.size(); i++)
+    {
+        const char * tempochar=va_arg(vl,char *);
+        std::string  tempostring(tempochar);
+        textItems[i]=tempostring;
+    }
+    va_end(vl);
+    selectedItem=0;
+}
+///////////////////////////////////////
+OptionsGroup::OptionsGroup(const OptionsGroup & m_radiotrick) : textItems(m_radiotrick.textItems)
 {
     selectedItem=m_radiotrick.getSelectedId();
 }
 ///////////////////////////////////////
 OptionsGroup & OptionsGroup::operator=(const OptionsGroup & m_radiotrick)
 {
-    textItems::resize(m_radiotrick.size());
-    for(unsigned int i=0; i<textItems::size(); i++)
+    textItems.resize(m_radiotrick.textItems.size());
+    for(unsigned int i=0; i<textItems.size(); i++)
     {
-        textItems::operator[](i)=m_radiotrick[i];
+        textItems[i]=m_radiotrick.textItems[i];
     }
     selectedItem=m_radiotrick.selectedItem;
     return *this;
@@ -58,14 +74,14 @@ OptionsGroup & OptionsGroup::operator=(const OptionsGroup & m_radiotrick)
 ///////////////////////////////////////
 void OptionsGroup::setNames(int nbofRadioButton,...)
 {
-    textItems::resize(nbofRadioButton);
+    textItems.resize(nbofRadioButton);
     va_list vl;
     va_start(vl,nbofRadioButton);
-    for(unsigned int i=0; i<textItems::size(); i++)
+    for(unsigned int i=0; i<textItems.size(); i++)
     {
         const char * tempochar=va_arg(vl,char *);
         std::string  tempostring(tempochar);
-        textItems::operator[](i)=tempostring;
+        textItems[i]=tempostring;
     }
     va_end(vl);
     selectedItem=0;
@@ -73,16 +89,16 @@ void OptionsGroup::setNames(int nbofRadioButton,...)
 ///////////////////////////////////////
 int OptionsGroup::isInButtonList(const std::string & tempostring) const
 {
-    for(unsigned int i=0; i<textItems::size(); i++)
+    for(unsigned int i=0; i<textItems.size(); i++)
     {
-        if (textItems::operator[](i)==tempostring) return i;
+        if (textItems[i]==tempostring) return i;
     }
     return -1;
 }
 ///////////////////////////////////////
 void OptionsGroup::setSelectedItem(unsigned int id_item)
 {
-    if (id_item<textItems::size())
+    if (id_item<textItems.size())
         selectedItem=id_item;
     //std::cout<<"OptionsGroup:: ==============================setted :"<< this->selectedItem << std::endl;
 }
@@ -108,7 +124,7 @@ unsigned int OptionsGroup::getSelectedId() const
 std::string  OptionsGroup::getSelectedItem() const
 {
     std::string checkedString;
-    checkedString = textItems::operator[](selectedItem);
+    checkedString = textItems.operator[](selectedItem);
     return checkedString;
 }
 ///////////////////////////////////////
@@ -130,9 +146,9 @@ void OptionsGroup::readFromStream(std::istream & stream)
 void OptionsGroup::writeToStream(std::ostream & stream) const
 {
 
-    for(unsigned int i=0; i<textItems::size()-1; i++)
+    for(unsigned int i=0; i<textItems.size()-1; i++)
     {
-        std::string tempostring= textItems::operator[](i);
+        std::string tempostring= textItems.operator[](i);
         stream<< tempostring << " ";
     }
 }
