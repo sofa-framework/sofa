@@ -163,6 +163,7 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
     //inputNormals = field_vnormals.beginEdit();
     _topology = 0;
 
+    material.setDisplayed(false);
     addAlias(&f_useNormals, "normals");
     addAlias(&fileMesh, "filename");
 

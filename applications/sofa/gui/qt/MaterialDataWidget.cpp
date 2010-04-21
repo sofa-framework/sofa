@@ -9,8 +9,7 @@ namespace qt
 {
 
 helper::Creator<DataWidgetFactory,MaterialDataWidget> DWClass_MeshMaterial("default",true);
-
-
+helper::Creator<DataWidgetFactory,VectorMaterialDataWidget> DWClass_MeshVectorMaterial("default",true);
 RGBAColorPicker::RGBAColorPicker(QWidget* parent):QWidget(parent)
 {
 
@@ -263,6 +262,92 @@ void MaterialDataWidget::writeToData()
     material->useEmissive = _emissiveCheckBox->isChecked();
     material->useSpecular = _specularCheckBox->isChecked();
 
+
+    getData()->virtualEndEdit();
+
+}
+
+
+bool VectorMaterialDataWidget::createWidgets()
+{
+    if( getData()->virtualGetValue().empty() )
+    {
+        return false;
+    }
+    _comboBox = new QComboBox(this);
+    _materialDataWidget = new MaterialDataWidget(this,this->name(),&_currentMaterial);
+    _materialDataWidget->createWidgets();
+    QVBoxLayout* layout = new QVBoxLayout(this);
+    layout->add(_comboBox);
+    layout->add(_materialDataWidget);
+
+    connect( _comboBox, SIGNAL(activated(int)  ), this, SLOT( changeMaterial( int) ) );
+    connect( _materialDataWidget, SIGNAL( WidgetDirty(bool) ) ,this, SLOT( setWidgetDirty(bool) ) );
+    return true;
+}
+
+void VectorMaterialDataWidget::readFromData()
+{
+
+
+    VectorMaterial::const_iterator iter;
+    const VectorMaterial& vecMaterial = getData()->virtualGetValue();
+    if( vecMaterial.empty() )
+    {
+        return;
+    }
+    _comboBox->clear();
+    _vectorEditedMaterial.clear();
+    std::copy(vecMaterial.begin(), vecMaterial.end(), std::back_inserter(_vectorEditedMaterial) );
+    for( iter = _vectorEditedMaterial.begin(); iter != _vectorEditedMaterial.end(); iter++ )
+    {
+        _comboBox->insertItem ( QString( (*iter).name.c_str() ) );
+    }
+    _currentMaterialPos = 0;
+    _comboBox->setCurrentIndex(_currentMaterialPos);
+    _currentMaterial.setValue(_vectorEditedMaterial[_currentMaterialPos]);
+    _materialDataWidget->setData(&_currentMaterial);
+    _materialDataWidget->updateWidgetValue();
+}
+
+void VectorMaterialDataWidget::changeMaterial( int index )
+{
+    using namespace sofa::core::componentmodel::loader;
+
+    _materialDataWidget->updateDataValue();
+
+    Material mat(_currentMaterial.virtualGetValue() );
+
+
+    _comboBox->setItemText(_currentMaterialPos, QString(mat.name.c_str() ) );
+    _comboBox->update();
+
+    _vectorEditedMaterial[_currentMaterialPos] = mat;
+    _currentMaterialPos = index;
+    _currentMaterial.setValue(_vectorEditedMaterial[index]);
+
+    _materialDataWidget->setData(&_currentMaterial);
+
+    _materialDataWidget->updateWidgetValue();
+}
+
+void VectorMaterialDataWidget::writeToData()
+{
+    using namespace sofa::core::componentmodel::loader;
+
+    _materialDataWidget->updateDataValue();
+    Material mat(_currentMaterial.virtualGetValue() );
+    _vectorEditedMaterial[_currentMaterialPos] = mat;
+
+    for ( unsigned int i = 0; i < _vectorEditedMaterial.size(); i++)
+    {
+        _comboBox->setItemText(i, QString( _vectorEditedMaterial[i].name.c_str() ) );
+    }
+
+
+    VectorMaterial* vecMaterial = getData()->virtualBeginEdit();
+    assert(vecMaterial->size() == _vectorEditedMaterial.size() );
+    std::copy(_vectorEditedMaterial.begin(), _vectorEditedMaterial.end(), vecMaterial->begin() );
 
     getData()->virtualEndEdit();
 

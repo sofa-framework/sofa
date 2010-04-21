@@ -114,6 +114,23 @@ public:
         useShininess =  false;
         activated = false;
     }
+
+    Material(const Material& mat)
+    {
+        ambient =  mat.ambient;
+        diffuse =  mat.diffuse;
+        specular =  mat.specular;
+        emissive =  mat.emissive;
+
+        shininess =  mat.shininess;
+        name = mat.name;
+        useAmbient =  mat.useAmbient;
+        useDiffuse =  mat.useDiffuse ;
+        useSpecular =  mat.useSpecular ;
+        useEmissive =  mat.useEmissive;
+        useShininess =  mat.useShininess ;
+        activated = mat.activated;
+    }
 };
 
 } // namespace loader

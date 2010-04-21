@@ -136,6 +136,11 @@ public:
     }
     virtual ~DataWidget() {}
 
+    inline virtual void setData( MyData* d)
+    {
+        baseData = d;
+    }
+
     /// BaseData pointer accessor function.
     core::objectmodel::BaseData* getBaseData() const { return baseData; }
     void updateVisibility()
@@ -234,6 +239,10 @@ public:
     /// Accessor function. Gives you the actual data instead
     /// of a BaseData pointer of it like in getBaseData().
     sofa::core::objectmodel::TData<T>* getData() const {return Tdata;}
+    inline virtual void setData(MyTData* d)
+    {
+        Tdata = d;
+    }
 protected:
     MyTData* Tdata;
 };
