@@ -31,6 +31,7 @@
 #include <sofa/component/constraint/UnilateralInteractionConstraint.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/component/collision/BaseContactMapper.h>
+#include <sofa/component/collision/RigidContactMapper.inl>
 
 namespace sofa
 {

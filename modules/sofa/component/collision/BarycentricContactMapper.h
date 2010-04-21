@@ -174,138 +174,6 @@ public:
     }
 };
 
-/// Base class for all mappers using RigidMapping
-template < class TCollisionModel, class DataTypes >
-class RigidContactMapper : public BaseContactMapper<DataTypes>
-{
-public:
-    typedef typename DataTypes::Real Real;
-    typedef typename DataTypes::Coord Coord;
-    typedef TCollisionModel MCollisionModel;
-    typedef typename MCollisionModel::InDataTypes InDataTypes;
-    typedef core::componentmodel::behavior::MechanicalState<InDataTypes> InMechanicalState;
-    typedef core::componentmodel::behavior::MechanicalState<typename RigidContactMapper::DataTypes> MMechanicalState;
-    typedef component::container::MechanicalObject<typename RigidContactMapper::DataTypes> MMechanicalObject;
-    typedef mapping::RigidMapping< core::componentmodel::behavior::MechanicalMapping< InMechanicalState, MMechanicalState > > MMapping;
-    MCollisionModel* model;
-    simulation::Node* child;
-    MMapping* mapping;
-    MMechanicalState* outmodel;
-    int nbp;
-
-    RigidContactMapper()
-        : model(NULL), child(NULL), mapping(NULL), outmodel(NULL), nbp(0)
-    {
-    }
-
-    void setCollisionModel(MCollisionModel* model)
-    {
-        this->model = model;
-    }
-
-    void cleanup();
-
-    MMechanicalState* createMapping(const char* name="contactPoints");
-
-    void resize(int size)
-    {
-        if (mapping!=NULL)
-            mapping->clear(size);
-        if (outmodel!=NULL)
-            outmodel->resize(size);
-        nbp = 0;
-    }
-
-    int addPoint(const Coord& P, int index, Real&)
-    {
-        int i = nbp++;
-        if ((int)outmodel->getX()->size() <= i)
-            outmodel->resize(i+1);
-        if (mapping)
-        {
-            i = mapping->addPoint(P,index);
-        }
-        else
-        {
-            (*outmodel->getX())[i] = P;
-        }
-        return i;
-    }
-
-    void update()
-    {
-        if (mapping!=NULL)
-        {
-            mapping->updateMapping();
-        }
-    }
-
-    void updateXfree()
-    {
-        if (mapping!=NULL)
-        {
-            mapping->propagateXfree();
-        }
-    }
-
-};
-
-/// Mapper for RigidDistanceGridCollisionModel
-template <class DataTypes>
-class ContactMapper<RigidDistanceGridCollisionModel,DataTypes> : public RigidContactMapper<RigidDistanceGridCollisionModel,DataTypes>
-{
-public:
-    typedef typename DataTypes::Real Real;
-    typedef typename DataTypes::Coord Coord;
-    typedef RigidContactMapper<RigidDistanceGridCollisionModel,DataTypes> Inherit;
-    typedef typename Inherit::MMechanicalState MMechanicalState;
-    typedef typename Inherit::MCollisionModel MCollisionModel;
-    MMechanicalState* createMapping(const char* name="contactPoints");
-
-    int addPoint(const Coord& P, int index, Real& r)
-    {
-        Coord trans = this->model->getInitTranslation();
-        int i = Inherit::addPoint(P+trans, index, r);
-        if (!this->mapping)
-        {
-            MCollisionModel* model = this->model;
-            MMechanicalState* outmodel = this->outmodel;
-            typename DataTypes::Coord& x = (*outmodel->getX())[i];
-            typename DataTypes::Deriv& v = (*outmodel->getV())[i];
-            if (model->isTransformed(index))
-                x = model->getTranslation(index) + model->getRotation(index) * P;
-            else
-                x = P;
-            v = typename DataTypes::Deriv();
-
-            // estimating velocity
-            double gdt = model->getPrevDt(index);
-            if (gdt > 0.000001)
-            {
-                if (model->isTransformed(index))
-                {
-                    v = (x - (model->getPrevTranslation(index) + model->    getPrevRotation(index) * P)) * (1.0/gdt);
-                }
-                DistanceGrid* prevGrid = model->getPrevGrid(index);
-                //DistanceGrid* grid = model->getGrid(index);
-                //if (prevGrid != NULL && prevGrid != grid && prevGrid->inGrid(P))
-                {
-                    DistanceGrid::Coord coefs;
-                    int i = prevGrid->index(P, coefs);
-                    SReal d = prevGrid->interp(i,coefs);
-                    if (rabs(d) < 0.3) // todo : control threshold
-                    {
-                        DistanceGrid::Coord n = prevGrid->grad(i,coefs);
-                        v += n * (d  / ( n.norm() * gdt));
-                        //std::cout << "Estimated v at "<<P<<" = "<<v<<" using distance from previous model "<<d<<std::endl;
-                    }
-                }
-            }
-        }
-        return i;
-    }
-};
-
 /// Mapper for FFDDistanceGridCollisionModel
 template <class DataTypes>
 class ContactMapper<FFDDistanceGridCollisionModel,DataTypes> : public BarycentricContactMapper<FFDDistanceGridCollisionModel,DataTypes>
@@ -426,7 +294,7 @@ extern template class SOFA_COMPONENT_COLLISION_API ContactMapper<PointModel>;
 extern template class SOFA_COMPONENT_COLLISION_API ContactMapper<LineModel>;
 extern template class SOFA_COMPONENT_COLLISION_API ContactMapper<TriangleModel>;
 extern template class SOFA_COMPONENT_COLLISION_API ContactMapper<TetrahedronModel>;
-extern template class SOFA_COMPONENT_COLLISION_API ContactMapper<RigidDistanceGridCollisionModel>;
+//extern template class SOFA_COMPONENT_COLLISION_API ContactMapper<RigidDistanceGridCollisionModel>;
 extern template class SOFA_COMPONENT_COLLISION_API ContactMapper<FFDDistanceGridCollisionModel>;
 #endif
 

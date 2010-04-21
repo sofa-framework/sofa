@@ -68,7 +68,7 @@ public :
 
     OptionsGroup & operator=(const OptionsGroup & m_radiotrick);
 
-    ///Example OptionsGroup::set(4,"button0","button1","button2","button3");
+    ///Example OptionsGroup::setNames(4,"button0","button1","button2","button3");
     void setNames(int nbofRadioButton,...);
     void setSelectedItem(unsigned int id_item);
     void setSelectedItem(const std::string &);
