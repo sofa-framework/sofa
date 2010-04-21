@@ -169,7 +169,8 @@ public :
     Polynomial_LD(const Monomial_LD<Real,N> & a);
 
     ///Assign operator
-    Polynomial_LD<Real,N> & operator=(const Polynomial_LD<Real,N> & b) {listOfMonoMial=b.listOfMonoMial; return *this;}
+    Polynomial_LD<Real,N> & operator=(const Polynomial_LD<Real,N> & b)
+    {listOfMonoMial=b.listOfMonoMial; nbOfMonomial=b.nbOfMonomial; return *this;}
 
     int degree();
 
