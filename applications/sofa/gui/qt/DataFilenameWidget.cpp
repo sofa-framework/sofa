@@ -5,6 +5,10 @@
 #include <sofa/helper/system/SetDirectory.h>
 #include <sofa/helper/system/FileRepository.h>
 
+#ifndef SOFA_QT4
+#include <qlayout.h>
+#endif
+
 #include <algorithm>
 
 namespace sofa
