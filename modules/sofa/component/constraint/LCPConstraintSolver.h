@@ -304,6 +304,8 @@ public:
     Data < double > tol;
     Data < int > maxIt;
     Data < double > mu;
+    Data < double > minW;
+    Data < double > maxF;
     Data<bool> multi_grid;
     Data<int>  multi_grid_levels;
     Data<int>  merge_method;

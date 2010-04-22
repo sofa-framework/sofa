@@ -1233,7 +1233,7 @@ void LocalBlock33::New_GS_State(double &mu, double &dn, double &dt, double &ds, 
     // evaluation of the new contact force
     fn -= d[0]/w[0];
 
-    if (fn < 0)
+    if (fn <= 0)
     {
         fn=0; ft=0; fs=0;
         // if the force was previously not null -> update the state
@@ -2184,15 +2184,12 @@ int nlcp_multiGrid(int dim, double *dfree, double**W, double *f, double mu, doub
 
 }
 
-int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, double tol, int numItMax, bool useInitialF, bool verbose, std::vector<double>* residuals, std::vector<double>* violations)
+int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, double tol, int numItMax, bool useInitialF, bool verbose, double minW, double maxF, std::vector<double>* residuals, std::vector<double>* violations)
 
 {
-    double test = dim/3;
-    double zero = 0.0;
-    int numContacts =  (int) floor(test);
-    test = dim/3 - numContacts;
+    const int numContacts =  dim/3;
 
-    if (test>0.01)
+    if (dim % 3)
     {
         printf("\n WARNING dim should be dividable by 3 in nlcp_gaussseidel");
         return 0;
@@ -2209,6 +2206,7 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, do
 
     // previous value of the force and the displacment
     double f_1[3];
+    // double d_1b[3] = {0.0, 0.0, 0.0};
     double d_1[3];
 
     // allocation of the inverted system 3x3
@@ -2244,7 +2242,7 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, do
 
             // put the previous value of the contact force in a buffer and put the current value to 0
             f_1[0] = f[3*index1]; f_1[1] = f[3*index1+1]; f_1[2] = f[3*index1+2];
-            set3Dof(f,index1,zero,zero,zero); //		f[3*index] = 0.0; f[3*index+1] = 0.0; f[3*index+2] = 0.0;
+            set3Dof(f,index1,0.0,0.0,0.0); //		f[3*index] = 0.0; f[3*index+1] = 0.0; f[3*index+2] = 0.0;
 
             // computation of actual d due to contribution of other contacts
             dn=dfree[3*index1]; dt=dfree[3*index1+1]; ds=dfree[3*index1+2];
@@ -2254,22 +2252,42 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, do
                 dt += W[3*index1+1][i]*f[i];
                 ds += W[3*index1+2][i]*f[i];
             }
+            // if (maxF != 0.0)
+            // {
+            //     d_1b[0] = dn;
+            //     d_1b[1] = dt;
+            //     d_1b[2] = ds;
+            // }
             d_1[0] = dn + W[3*index1  ][3*index1  ]*f_1[0]+W[3*index1  ][3*index1+1]*f_1[1]+W[3*index1  ][3*index1+2]*f_1[2];
             d_1[1] = dt + W[3*index1+1][3*index1  ]*f_1[0]+W[3*index1+1][3*index1+1]*f_1[1]+W[3*index1+1][3*index1+2]*f_1[2];
             d_1[2] = ds + W[3*index1+2][3*index1  ]*f_1[0]+W[3*index1+2][3*index1+1]*f_1[1]+W[3*index1+2][3*index1+2]*f_1[2];
-
-            if(W33[index1]->computed==false)
+            if (minW != 0.0 && fabs(W[3*index1  ][3*index1  ]) <= minW)
             {
-                W33[index1]->compute(W[3*index1][3*index1],W[3*index1][3*index1+1],W[3*index1][3*index1+2],
-                        W[3*index1+1][3*index1+1], W[3*index1+1][3*index1+2],W[3*index1+2][3*index1+2]);
+                // constraint compliance is too small
+                if (it == 0) std::cout<<"NLCP WARNING: compliance too small for contact " << index1 << ": |" << std::scientific << W[3*index1  ][3*index1  ] << "| < " << minW << std::fixed << std::endl;
+
+                fn=0; ft=0; fs=0;
             }
+            else
+            {
+                if(W33[index1]->computed==false)
+                {
+                    W33[index1]->compute(W[3*index1][3*index1],W[3*index1][3*index1+1],W[3*index1][3*index1+2],
+                            W[3*index1+1][3*index1+1], W[3*index1+1][3*index1+2],W[3*index1+2][3*index1+2]);
+                }
 
-
-            fn=f_1[0]; ft=f_1[1]; fs=f_1[2];
-            W33[index1]->GS_State(mu,dn,dt,ds,fn,ft,fs);
-
-            //W33[index1]->BiPotential(mu,dn,dt,ds,fn,ft,fs);
-
+                fn=f_1[0]; ft=f_1[1]; fs=f_1[2];
+                W33[index1]->GS_State(mu,dn,dt,ds,fn,ft,fs);
+                //W33[index1]->BiPotential(mu,dn,dt,ds,fn,ft,fs);
+                // if (maxF != 0.0 && it >= 3 && fabs(fn) >= maxF)
+                // { // constraint force is too large
+                //     std::cout<<"NLCP WARNING: force too large for contact " << index1 << " at iteration " << it << ": |" << std::scientific << fn << "| > " << maxF << std::fixed << std::endl;
+                //     fn=0; ft=0; fs=0;
+                //     dn = d_1b[0];
+                //     dt = d_1b[1];
+                //     ds = d_1b[2];
+                // }
+            }
             error += absError(dn,dt,ds,d_1[0],d_1[1],d_1[2]);
 
 
@@ -2297,6 +2315,25 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, do
 
         if (error < tol*(numContacts+1))
         {
+
+
+            if (maxF != 0.0)
+            {
+                for (c1=0; c1<numContacts; c1++)
+                {
+                    // index of contact
+                    int index1 = c1;
+                    if (fabs(f[3*index1]) >= maxF)
+                    {
+                        // constraint force is too large
+                        std::cout<<"NLCP WARNING: force too large for contact " << index1 << " : |" << std::scientific << f[3*index1] << "| > " << maxF << std::fixed << std::endl;
+                        f[3*index1  ] = 0;
+                        f[3*index1+1] = 0;
+                        f[3*index1+2] = 0;
+                    }
+                }
+            }
+
             free(d);
             for (int i = 0; i < numContacts; i++)
                 delete W33[i];
@@ -2309,6 +2346,7 @@ int nlcp_gaussseidel(int dim, double *dfree, double**W, double *f, double mu, do
         }
     }
     sofa::helper::AdvancedTimer::valSet("GS iterations", it);
+
     free(d);
     for (int i = 0; i < numContacts; i++)
         delete W33[i];
@@ -2460,7 +2498,7 @@ int nlcp_gaussseidelTimed(int dim, double *dfree, double**W, double *f, double m
  * res[0..dim-1] = U
  * res[dim..2*dim-1] = F
  */
-void gaussSeidelLCP1(int dim, FemClipsReal * q, FemClipsReal ** M, FemClipsReal * res, double tol, int numItMax, std::vector<double>* residuals)
+void gaussSeidelLCP1(int dim, FemClipsReal * q, FemClipsReal ** M, FemClipsReal * res, double tol, int numItMax, double minW, double maxF, std::vector<double>* residuals)
 {
     int compteur;	// compteur de boucle
     int compteur2, compteur3;	// compteur de boucle
@@ -2483,9 +2521,20 @@ void gaussSeidelLCP1(int dim, FemClipsReal * q, FemClipsReal ** M, FemClipsReal 
             res[compteur2] -= M[compteur2][compteur2]* res[dim+compteur2];
             f_1 = res[dim+compteur2];
 
-            if (res[compteur2]<0)
+            if (minW != 0.0 && fabs(M[compteur2][compteur2]) <= minW)
+            {
+                // constraint compliance is too small
+                if (compteur == 0) std::cout<<"LCP WARNING: compliance too small for constraint " << compteur2 << ": |" << std::scientific << M[compteur2][compteur2] << "| < " << minW << std::fixed << std::endl;
+                res[dim+compteur2]=(FemClipsReal)0.0;
+            }
+            else if (res[compteur2]<0)
             {
                 res[dim+compteur2]=-res[compteur2]/M[compteur2][compteur2];
+                // if (maxF != 0.0 && compteur >= 3 && fabs(res[dim+compteur2]) >= maxF)
+                // { // constraint force is too large
+                //     std::cout<<"LCP WARNING: force too large for constraint " << compteur2 << " at iteration " << compteur << " : |" << std::scientific << res[dim+compteur2] << "| > " << maxF << std::fixed << std::endl;
+                //     res[dim+compteur2]=(FemClipsReal)0.0;
+                // }
             }
             else
             {
@@ -2505,6 +2554,19 @@ void gaussSeidelLCP1(int dim, FemClipsReal * q, FemClipsReal ** M, FemClipsReal 
 
     }
     sofa::helper::AdvancedTimer::valSet("GS iterations", (compteur < numItMax) ? compteur+1 : compteur);
+
+    if (maxF != 0.0)
+    {
+        for (compteur2=0; compteur2<dim; compteur2++)
+        {
+            if (fabs(res[dim+compteur2]) >= maxF)
+            {
+                // constraint force is too large
+                std::cout<<"LCP WARNING: force too large for constraint " << compteur2 << " : |" << std::scientific << res[dim+compteur2] << "| > " << maxF << std::fixed << std::endl;
+                res[dim+compteur2]=(FemClipsReal)0.0;
+            }
+        }
+    }
 
     for (compteur=0; compteur<dim; compteur++)
         res[compteur] = res[compteur+dim];

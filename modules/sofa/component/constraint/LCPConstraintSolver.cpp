@@ -144,6 +144,8 @@ bool LCPConstraintSolver::solveSystem(double /*dt*/, VecId)
 
         double _tol = tol.getValue();
         int _maxIt = maxIt.getValue();
+        double _minW = minW.getValue();
+        double _maxF = maxF.getValue();
         if (_mu > 0.0)
         {
 
@@ -194,7 +196,7 @@ bool LCPConstraintSolver::solveSystem(double /*dt*/, VecId)
                 graph_violations.clear();
                 sofa::helper::AdvancedTimer::stepBegin("NLCP GaussSeidel");
                 helper::nlcp_gaussseidel(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _mu, _tol, _maxIt, initial_guess.getValue(),
-                        this->f_printLog.getValue(), &graph_error, &graph_violations);
+                        this->f_printLog.getValue(), _minW, _maxF, &graph_error, &graph_violations);
                 sofa::helper::AdvancedTimer::stepEnd("NLCP GaussSeidel");
 
                 //std::cout << "errors: " << graph_error << std::endl;
@@ -209,7 +211,7 @@ bool LCPConstraintSolver::solveSystem(double /*dt*/, VecId)
             sofa::helper::vector<double>& graph_error = graph["Error"];
             graph_error.clear();
             sofa::helper::AdvancedTimer::stepBegin("LCP GaussSeidel");
-            helper::gaussSeidelLCP1(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _tol, _maxIt, &graph_error);
+            helper::gaussSeidelLCP1(_numConstraints, _dFree->ptr(), _W->lptr(), _result->ptr(), _tol, _maxIt, _minW, _maxF, &graph_error);
             sofa::helper::AdvancedTimer::stepEnd  ("LCP GaussSeidel");
             if (this->f_printLog.getValue()) helper::afficheLCP(_dFree->ptr(), _W->lptr(), _result->ptr(),_numConstraints);
         }
@@ -313,6 +315,8 @@ LCPConstraintSolver::LCPConstraintSolver()
     , tol( initData(&tol, 0.001, "tolerance", "residual error threshold for termination of the Gauss-Seidel algorithm"))
     , maxIt( initData(&maxIt, 1000, "maxIt", "maximal number of iterations of the Gauss-Seidel algorithm"))
     , mu( initData(&mu, 0.6, "mu", "Friction coefficient"))
+    , minW( initData(&minW, 0.0, "minW", "If not zero, constraints whose self-compliance (i.e. the corresponding value on the diagonal of W) is smaller than this threshold will be ignored"))
+    , maxF( initData(&maxF, 0.0, "maxF", "If not zero, constraints whose response force becomes larger than this threshold will be ignored"))
     , multi_grid(initData(&multi_grid, false, "multi_grid","activate multi_grid resolution (NOT STABLE YET)"))
     , multi_grid_levels(initData(&multi_grid_levels, 2, "multi_grid_levels","if multi_grid is active: how many levels to create (>=2)"))
     , merge_method( initData(&merge_method, 0, "merge_method","if multi_grid is active: which method to use to merge constraints (0 = compliance-based, 1 = spatial coordinates)"))
