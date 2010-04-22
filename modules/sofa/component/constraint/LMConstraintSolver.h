@@ -105,7 +105,7 @@ protected:
     bool solveConstraintSystemUsingGaussSeidel(ConstOrder Order,
             const helper::vector< core::componentmodel::behavior::BaseLMConstraint* > &LMConstraints,
             MatrixEigen &W,
-            VectorEigen  c,
+            VectorEigen &c,
             VectorEigen &Lambda);
 
     /// Compute Kinetic Energy

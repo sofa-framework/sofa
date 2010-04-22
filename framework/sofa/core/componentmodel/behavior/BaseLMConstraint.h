@@ -158,8 +158,9 @@ public:
     /// Called by MechanicalWriteLMConstaint: The Object will compute the constraints present in the current state, and create the ConstraintGroup related.
     virtual void writeConstraintEquations(ConstOrder id)=0;
 
-    /// Gives a response impulse for a given group of constraint: This way, we can modify the Lagrange Multipliers, and handle Unilateral constraint, and more complex solutions: return a boolean indicating if the constraint group is active or not
-    virtual void LagrangeMultiplierEvaluation(SReal * /*lambda*/, defaulttype::BaseMatrix* /*W*/,
+    /// Compute the new Lagrange Multiplier given a block of the compliance matrix W, and the current correction (left hand term) and previous Lagrange Multiplier
+    virtual void LagrangeMultiplierEvaluation(const SReal* /*W*/,
+            SReal* /*c*/, SReal* /*Lambda*/,
             core::componentmodel::behavior::BaseLMConstraint::ConstraintGroup * /*group*/) {};
 
     /// Interface to construct a group of constraint: Giving the order of these constraints, it returns a pointer to the structure
