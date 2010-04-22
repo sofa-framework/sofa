@@ -113,13 +113,14 @@ typedef struct f4
 sofa::helper::OpenCLKernel * SphereForceFieldOpenCL3f_addForce_kernel;
 void SphereForceFieldOpenCL3f_addForce(unsigned int size, GPUSphere* sphere, _device_pointer penetration, _device_pointer f, const _device_pointer x, const _device_pointer v)
 {
+    int BSIZE = gpu::opencl::OpenCLMemoryManager<float>::BSIZE;
     DEBUG_TEXT( "SphereForceFieldOpenCL3f_addForce");
     float4 sc(sphere->center.x(),sphere->center.y(),sphere->center.z(),0.0);
     float4 sd(sphere->r ,sphere->stiffness,sphere->damping,0.0);
 
     SphereForceField_CreateProgramWithFloat();
     if(SphereForceFieldOpenCL3f_addForce_kernel==NULL)SphereForceFieldOpenCL3f_addForce_kernel
-            = new sofa::helper::OpenCLKernel(SphereForceFieldOpenCLFloat_program,"addForce");
+            = new sofa::helper::OpenCLKernel(SphereForceFieldOpenCLFloat_program,"SphereForceField_3f_addForce_v2");
 
 
     SphereForceFieldOpenCL3f_addForce_kernel->setArg<float4>(0,&sc);
@@ -129,11 +130,13 @@ void SphereForceFieldOpenCL3f_addForce(unsigned int size, GPUSphere* sphere, _de
     SphereForceFieldOpenCL3f_addForce_kernel->setArg<_device_pointer>(4,&x);
     SphereForceFieldOpenCL3f_addForce_kernel->setArg<_device_pointer>(5,&v);
 
+    size_t local_size[1];
+    local_size[0]=BSIZE;
 
     size_t work_size[1];
-    work_size[0]=size;
+    work_size[0]=((size%BSIZE)==0)?size:BSIZE*(size/BSIZE+1);
 
-    SphereForceFieldOpenCL3f_addForce_kernel->execute(0,1,NULL,work_size,NULL);	//note: num_device = const = 0
+    SphereForceFieldOpenCL3f_addForce_kernel->execute(0,1,NULL,work_size,local_size);	//note: num_device = const = 0
 
 }
 
@@ -141,12 +144,13 @@ void SphereForceFieldOpenCL3f_addForce(unsigned int size, GPUSphere* sphere, _de
 sofa::helper::OpenCLKernel * SphereForceFieldOpenCL3f_addDForce_kernel;
 void SphereForceFieldOpenCL3f_addDForce(unsigned int size, GPUSphere* sphere, const _device_pointer penetration, _device_pointer f, const _device_pointer dx)
 {
+    int BSIZE = gpu::opencl::OpenCLMemoryManager<float>::BSIZE;
     DEBUG_TEXT( "SphereForceFieldOpenCL3f_addDForce");
     float4 sc(sphere->center.x(),sphere->center.y(),sphere->center.z(),0.0);
 
     SphereForceField_CreateProgramWithFloat();
     if(SphereForceFieldOpenCL3f_addDForce_kernel==NULL)SphereForceFieldOpenCL3f_addDForce_kernel
-            = new sofa::helper::OpenCLKernel(SphereForceFieldOpenCLFloat_program,"addDForce");
+            = new sofa::helper::OpenCLKernel(SphereForceFieldOpenCLFloat_program,"SphereForceField_3f_addDForce_v2");
 
 
     SphereForceFieldOpenCL3f_addDForce_kernel->setArg<float4>(0,&sc);
@@ -155,11 +159,13 @@ void SphereForceFieldOpenCL3f_addDForce(unsigned int size, GPUSphere* sphere, co
     SphereForceFieldOpenCL3f_addDForce_kernel->setArg<_device_pointer>(3,&f);
     SphereForceFieldOpenCL3f_addDForce_kernel->setArg<_device_pointer>(4,&dx);
 
+    size_t local_size[1];
+    local_size[0]=BSIZE;
 
     size_t work_size[1];
-    work_size[0]=size;
+    work_size[0]=((size%BSIZE)==0)?size:BSIZE*(size/BSIZE+1);
 
-    SphereForceFieldOpenCL3f_addDForce_kernel->execute(0,1,NULL,work_size,NULL);	//note: num_device = const = 0
+    SphereForceFieldOpenCL3f_addDForce_kernel->execute(0,1,NULL,work_size,local_size);	//note: num_device = const = 0
 
 }
 

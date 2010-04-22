@@ -21,7 +21,7 @@ namespace opencl
 
 
 sofa::helper::OpenCLProgram* OpenCLMemoryManager_program;
-void CreateProgram()
+void OpenCLMemoryManager_CreateProgram()
 {
     if(OpenCLMemoryManager_program==NULL)
     {
@@ -38,47 +38,35 @@ sofa::helper::OpenCLKernel * OpenCLMemoryManager_memsetDevice_kernel;
 
 void OpenCLMemoryManager_memsetDevice(int d, _device_pointer a, int value, size_t size)
 {
+    int BSIZE = gpu::opencl::OpenCLMemoryManager<float>::BSIZE;
     unsigned int i;
     unsigned int offset;
 
-//std::cout << a.m << " " << "\n" << "offset"<< a.offset << " "<< value << " " << size << "\n";
+    OpenCLMemoryManager_CreateProgram();
 
-//	top(0);
-    CreateProgram();
-//	top(1);
     if(OpenCLMemoryManager_memsetDevice_kernel==NULL)OpenCLMemoryManager_memsetDevice_kernel
-            = new sofa::helper::OpenCLKernel(OpenCLMemoryManager_program,"memset");
-//	top(2);
-
+            = new sofa::helper::OpenCLKernel(OpenCLMemoryManager_program,"MemoryManager_memset");
 
     i= value;
-    i= (i << 8) + value;
-    i= (i << 8) + value;
-    i= (i << 8) + value;
+    i= (i << 32) + value;
 
-    offset = a.offset/(4*sizeof(int));
+    offset = a.offset/(sizeof(int));
+    size = size/(sizeof(int));
 
 
     OpenCLMemoryManager_memsetDevice_kernel->setArg<cl_mem>(0,&(a.m));
-//	top(3);
+
     OpenCLMemoryManager_memsetDevice_kernel->setArg<unsigned int>(1,(unsigned int*)&(offset));
-//	top(4);
+
     OpenCLMemoryManager_memsetDevice_kernel->setArg<unsigned int>(2,(unsigned int*)&i);
-//	top(5);
+
+    size_t local_size[1];
+    local_size[0]=BSIZE;
+
     size_t work_size[1];
-    work_size[0]=size/(4*sizeof(int));
-//	top(6);
-    OpenCLMemoryManager_memsetDevice_kernel->execute(d,1,NULL,work_size,NULL);	//note: num_device = const = 0*/
+    work_size[0]=((size%BSIZE)==0)?size:BSIZE*(size/BSIZE+1);
 
-    /*myopenclMemsetDevice(d,a,value,size);
-
-    	top(7);
-    	float ra[10];
-    	myopenclEnqueueReadBuffer(d,ra,a.m,0,10);
-    	for(int j=0;j<10;j++)printf("%f\n",ra[j]);
-    	top(8);*/
-
-//	topLog();
+    OpenCLMemoryManager_memsetDevice_kernel->execute(d,1,NULL,work_size,local_size);
 
 }
 
