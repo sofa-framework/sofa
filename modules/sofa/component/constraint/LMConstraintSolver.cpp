@@ -598,12 +598,9 @@ void LMConstraintSolver::buildRightHandTerm( ConstOrder Order, const helper::vec
 }
 
 
-bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( ConstOrder Order, const helper::vector< core::componentmodel::behavior::BaseLMConstraint* > &LMConstraints, MatrixEigen &W, VectorEigen c, VectorEigen &Lambda)
+bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( ConstOrder Order, const helper::vector< core::componentmodel::behavior::BaseLMConstraint* > &LMConstraints, MatrixEigen &W, VectorEigen &c, VectorEigen &Lambda)
 {
     if (f_printLog.getValue()) sout << "Using Gauss-Seidel solution"<<sendl;
-
-
-//        serr << "W=\n" << W << "\n\n\n" << sendl;
 
     std::string orderName;
     switch (Order)
@@ -620,15 +617,14 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( ConstOrder Order
 
     VectorEigen LambdaPrevious=Lambda;
 
-    const unsigned int numConstraint=W.rows();
     //-- Initialization of X, solution of the system
     bool continueIteration=true;
     unsigned int iteration=0;
     double error=0;
+
     for (; iteration < numIterations.getValue() && continueIteration; ++iteration)
     {
         unsigned int idxConstraint=0;
-        VectorEigen LambdaCorrection;
         VectorEigen LambdaPreviousIteration;
         continueIteration=false;
 
@@ -645,35 +641,26 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( ConstOrder Order
                 //-------------------------------------
                 //Initialize the variables, and store X^(k-1) in previousIteration
                 unsigned int numConstraintToProcess=constraintOrder[constraintEntry]->getNumConstraint();
-                LambdaCorrection = VectorEigen(numConstraintToProcess);
-                error=0;
 
                 LambdaPreviousIteration = Lambda.block(idxConstraint,0,numConstraintToProcess,1);
+                //TODO CHANGE by reference
+                const MatrixEigen Wblock=W.block(idxConstraint,idxConstraint,numConstraintToProcess, numConstraintToProcess);
 
-                //Invert the diagonal block corresponding to the group of constraint and multiply it by the left hand term of the equation
-                LambdaCorrection = W.block(idxConstraint,idxConstraint,numConstraintToProcess, numConstraintToProcess).marked<Eigen::SelfAdjoint>().inverse()*c.block(idxConstraint,0,numConstraintToProcess,1);
+                constraint->LagrangeMultiplierEvaluation(Wblock.data(),c.data()+idxConstraint, Lambda.data()+idxConstraint,
+                        constraintOrder[constraintEntry]);
 
-
-                Lambda.block(idxConstraint,0,numConstraintToProcess,1) += LambdaCorrection;
-
-
-                FullMatrix<SReal> W_full(W.data(), numConstraint, numConstraint);
-                constraint->LagrangeMultiplierEvaluation(Lambda.data()+idxConstraint, &W_full, constraintOrder[constraintEntry]);
-
+                error=0;
                 if (constraintOrder[constraintEntry]->isActive())
                 {
-
-                    c -= W.block(0,idxConstraint,numConstraint, numConstraintToProcess)*LambdaCorrection;
-
-                    for (unsigned int i=0; i<numConstraintToProcess; ++i)
-                        error += pow(LambdaPreviousIteration(i)-Lambda(idxConstraint+i),2);
-                    error = sqrt(error);
+                    const VectorEigen& LambdaBlock=Lambda.block(idxConstraint,0,numConstraintToProcess,1);
+                    const MatrixEigen& LambdaBlockCorrection=(LambdaBlock-LambdaPreviousIteration);
+                    c -= W.block(0,idxConstraint,numConstraint, numConstraintToProcess)*LambdaBlockCorrection;
+                    error += LambdaBlockCorrection.norm();
                 }
                 else
                 {
-                    for (unsigned int i=0; i<numConstraintToProcess; ++i)
-                        Lambda(idxConstraint+i)=0;
-
+                    Lambda.block(idxConstraint,0,numConstraintToProcess,1).setZero();
+//                      Lambda.block(idxConstraint,0,numConstraintToProcess,1)=LambdaPreviousIteration;
                     idxConstraint+=numConstraintToProcess;
                     continue;
                 }
@@ -685,10 +672,9 @@ bool LMConstraintSolver::solveConstraintSystemUsingGaussSeidel( ConstOrder Order
 
                 //****************************************************************
                 //Update only if the error is higher than a threshold. If no "big changes" occured, we set: X[c]^(k) = X[c]^(k-1)
-                if (error < maxError.getValue())
+                if (error < maxError.getValue()/(SReal)numConstraintToProcess)
                 {
-                    for (unsigned int i=0; i<numConstraintToProcess; ++i)
-                        Lambda(idxConstraint+i)=LambdaPreviousIteration(i);
+                    Lambda.block(idxConstraint,0,numConstraintToProcess,1)=LambdaPreviousIteration;
                 }
                 else continueIteration=true;
 

@@ -28,6 +28,7 @@
 #include <sofa/core/componentmodel/behavior/BaseMass.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
 #include <sofa/core/componentmodel/behavior/LMConstraint.h>
+#include <sofa/component/linearsolver/LagrangeMultiplierComputation.h>
 #include <sofa/simulation/common/Node.h>
 namespace sofa
 {
@@ -72,6 +73,7 @@ public:
     typedef typename core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
     typedef core::componentmodel::behavior::BaseLMConstraint::ConstOrder ConstOrder;
 
+    typedef linearsolver::LagrangeMultiplierComputation::VectorEigen  VectorEigen;
 protected:
     DistanceLMConstraintInternalData<DataTypes> data;
     friend class DistanceLMConstraintInternalData<DataTypes>;
@@ -96,6 +98,16 @@ public:
     // -- LMConstraint interface
     void buildJacobian(unsigned int &constraintId);
     void writeConstraintEquations(ConstOrder order);
+
+
+    void LagrangeMultiplierEvaluation(const SReal* Wptr, SReal* cptr, SReal* LambdaInitptr,
+            core::componentmodel::behavior::BaseLMConstraint::ConstraintGroup * group)
+    {
+        const unsigned int numConstraintToProcess=group->getNumConstraint();
+        const VectorEigen &Lambda=linearsolver::LagrangeMultiplierComputation::ComputeLagrangeMultiplier(Wptr,cptr,LambdaInitptr,numConstraintToProcess);
+        Eigen::Map<VectorEigen> LambdaInit(LambdaInitptr, numConstraintToProcess);
+        LambdaInit = Lambda;
+    }
 
     virtual void draw();
 
