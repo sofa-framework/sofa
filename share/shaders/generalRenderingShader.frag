@@ -448,8 +448,8 @@ void main()
 	
 	vec3 reflectVec = reflect(viewVectorW, normalW);
 	
-	if ((reflectVec.z)>0.0)
-	  color.rgb *= texture2D(planeTexture, reflectVec.xy*( altitude/reflectVec.z )+vec2(0.5,0.5)).rgb * specular.rgb ;
+	//if ((reflectVec.z)>0.0)
+	  color.rgb += texture2D(planeTexture, reflectVec.xy*( altitude/reflectVec.z )+vec2(0.5,0.5)).rgb * specular.rgb ;
 
 	
 #endif //PLANE_ENVIRONMENT_MAPPING
