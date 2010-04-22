@@ -8,7 +8,7 @@
 #else
 #include <qlineedit.h>
 #include <qpushbutton.h>
-#include <qboxlayout.h>
+#include <qlayout.h>
 #endif
 
 #include <sofa/gui/qt/DataWidget.h>
