@@ -30,7 +30,6 @@
 #include "OpenCLKernel.h"
 
 #define DEBUG_TEXT(t) //printf("\t%s\t %s %d\n",t,__FILE__,__LINE__);
-#define BSIZE 16
 
 namespace sofa
 {
@@ -109,16 +108,16 @@ void UniformMassOpenCL3f_addForce(unsigned int size, const float* mg, _device_po
 {
     DEBUG_TEXT("UniformMassOpenCL3f_addForce");
 
-
+    int BSIZE = gpu::opencl::OpenCLMemoryManager<float>::BSIZE;
     UniformMass_CreateProgramWithFloat();
     if(UniformMassOpenCL3f_addForce_kernel==NULL)UniformMassOpenCL3f_addForce_kernel
-            = new sofa::helper::OpenCLKernel(UniformMassOpenCLFloat_program,"UniformMass_addForce");
+            = new sofa::helper::OpenCLKernel(UniformMassOpenCLFloat_program,"UniformMass_addForce_v2");
 
-
-    UniformMassOpenCL3f_addForce_kernel->setArg<float>(0,&mg[0]);
-    UniformMassOpenCL3f_addForce_kernel->setArg<float>(1,&mg[1]);
-    UniformMassOpenCL3f_addForce_kernel->setArg<float>(2,&mg[2]);
-    UniformMassOpenCL3f_addForce_kernel->setArg<_device_pointer>(3,&f);
+    UniformMassOpenCL3f_addForce_kernel->setArg<unsigned int>(0,&size);
+    UniformMassOpenCL3f_addForce_kernel->setArg<float>(1,&mg[0]);
+    UniformMassOpenCL3f_addForce_kernel->setArg<float>(2,&mg[1]);
+    UniformMassOpenCL3f_addForce_kernel->setArg<float>(3,&mg[2]);
+    UniformMassOpenCL3f_addForce_kernel->setArg<_device_pointer>(4,&f);
 
     size_t local_size[1];
     local_size[0]=BSIZE;
@@ -136,6 +135,7 @@ void UniformMassOpenCL3f_addForce(unsigned int size, const float* mg, _device_po
 sofa::helper::OpenCLKernel * UniformMassOpenCL3f_addMDX_kernel;
 void UniformMassOpenCL3f_addMDx(unsigned int size, float mass, _device_pointer res, const _device_pointer dx)
 {
+    int BSIZE = gpu::opencl::OpenCLMemoryManager<float>::BSIZE;
     DEBUG_TEXT("UniformMassOpenCL3f_addMDx");
 
     UniformMass_CreateProgramWithFloat();

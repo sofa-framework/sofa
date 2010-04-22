@@ -1,6 +1,6 @@
 
 
-__kernel void Vec1t_vMEq(
+__kernel void MechanicalObject_Vec1t_vMEq(
     __global Real* res,
     Real f
 )
@@ -29,7 +29,7 @@ __kernel void Vec1t_vMEq_v2(
 
 
 
-__kernel void Vec1t_vOp(
+__kernel void MechanicalObject_Vec1t_vOp(
     __global Real* res,
     __global const Real* a,
     __global const Real* b,
@@ -39,6 +39,7 @@ __kernel void Vec1t_vOp(
     int index = get_global_id(0);
 
     res[index] = a[index] + b[index] * f;
+
 }
 
 __kernel void Vec1t_vOp_v2(
@@ -155,7 +156,7 @@ __kernel void Vec1t_vAdd(
 }
 
 
-__kernel void Vec1t_vPEqBF2(
+__kernel void MechanicalObject_Vec1t_vPEqBF2(
     __global Real* res1,
     __global const Real* b1,
     Real f1,
@@ -193,7 +194,7 @@ __kernel void Vec1t_vPEqBF2_v2(
     res2[index+3] += b2[index+3] * f2;
 }
 
-__kernel void Vec1t_vIntegrate(
+__kernel void MechanicalObject_Vec1t_vIntegrate(
     __global const Real* a,
     __global Real* v,
     __global Real* x,
@@ -211,16 +212,13 @@ __kernel void Vec1t_vIntegrate(
 
 }
 
-__kernel void Vec1t_vClear(
+__kernel void MechanicalObject_Vec1t_vClear(
     __global Real* res
 )
 {
-    int index = get_global_id(0)*4;
+    int index = get_global_id(0);
 
     res[index] = 0.0;
-    res[index+1] = 0.0;
-    res[index+2] = 0.0;
-    res[index+3] = 0.0;
 }
 
 

@@ -169,11 +169,11 @@ void SpringForceField_CreateProgramWithDouble()
 
 
 
-#define BSIZE 16
 
 sofa::helper::OpenCLKernel * StiffSpringForceFieldOpenCL3f_addForce_kernel;
 void StiffSpringForceFieldOpenCL3f_addForce(unsigned int size, unsigned int nbSpringPerVertex, const _device_pointer springs, _device_pointer f, const _device_pointer x, const _device_pointer v, _device_pointer dfdx)
 {
+    int BSIZE = component::forcefield::SpringForceFieldInternalData<sofa::gpu::opencl::OpenCLVec3fTypes>::BSIZE;
     DEBUG_TEXT("StiffSpringForceFieldOpenCL3f_addForce");
 
     SpringForceField_CreateProgramWithFloat();
@@ -206,6 +206,7 @@ void StiffSpringForceFieldOpenCL3f_addForce(unsigned int size, unsigned int nbSp
 sofa::helper::OpenCLKernel * StiffSpringForceFieldOpenCL3f_addDForce_kernel;
 void StiffSpringForceFieldOpenCL3f_addDForce(unsigned int size, unsigned int nbSpringPerVertex, const _device_pointer springs, _device_pointer f, const _device_pointer dx, const _device_pointer x, const _device_pointer dfdx, float factor)
 {
+    int BSIZE = component::forcefield::SpringForceFieldInternalData<sofa::gpu::opencl::OpenCLVec3fTypes>::BSIZE;
     DEBUG_TEXT("StiffSpringForceFieldOpenCL3f_addDForce");
 
 
@@ -250,7 +251,6 @@ void StiffSpringForceFieldOpenCL3f_addDForce(unsigned int size, unsigned int nbS
 
 }
 
-#undef BSIZE
 
 void SpringForceFieldOpenCL3f_addForce(unsigned int /*nbVertex*/, unsigned int /*nbSpringPerVertex*/, const _device_pointer /*springs*/, _device_pointer/*f*/, const _device_pointer/*x*/, const _device_pointer/*v*/) {DEBUG_TEXT("no implemented"); exit(0);}
 void SpringForceFieldOpenCL3f_addExternalForce(unsigned int /*nbVertex*/, unsigned int /*nbSpringPerVertex*/, const _device_pointer /*springs*/, _device_pointer/*f1*/, const _device_pointer/*x1*/, const _device_pointer/*v1*/, const _device_pointer/*x1*/, const _device_pointer/*v2*/) {DEBUG_TEXT("no implemented"); exit(0);}

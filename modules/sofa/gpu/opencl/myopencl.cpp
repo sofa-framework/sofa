@@ -19,6 +19,7 @@ namespace opencl
 #endif
 
 
+
 //private data
 int _numDevices = 0;
 int myopenclMultiOpMax = 0;

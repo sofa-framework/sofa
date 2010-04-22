@@ -24,6 +24,7 @@
 ******************************************************************************/
 #include "OpenCLTypes.h"
 #include "myopencl.h"
+#include "OpenCLMemoryManager.h"
 #include "OpenCLProgram.h"
 #include "OpenCLKernel.h"
 #include "OpenCLMemoryManager.h"
@@ -132,46 +133,55 @@ void MechanicalObject_CreateProgramWithDouble()
 
 // vOp (2/4)
 
+
 sofa::helper::OpenCLKernel * MechanicalObjectOpenCLVec3f_vOp_kernel;
 void MechanicalObjectOpenCLVec3f_vOp(size_t size, _device_pointer res, const _device_pointer a, const _device_pointer b, float f)
 {
-
+    int BSIZE = gpu::opencl::OpenCLMemoryManager<float>::BSIZE;
     size*=3;
     DEBUG_TEXT( "MechanicalObjectOpenCLVec3f_vOp\t");
 
     MechanicalObject_CreateProgramWithFloat();
     if(MechanicalObjectOpenCLVec3f_vOp_kernel==NULL)MechanicalObjectOpenCLVec3f_vOp_kernel
-            = new sofa::helper::OpenCLKernel(MechanicalObjectOpenCLFloat_program,"Vec1t_vOp");
+            = new sofa::helper::OpenCLKernel(MechanicalObjectOpenCLFloat_program,"MechanicalObject_Vec1t_vOp");
     MechanicalObjectOpenCLVec3f_vOp_kernel->setArg<_device_pointer>(0,&res);
     MechanicalObjectOpenCLVec3f_vOp_kernel->setArg<_device_pointer>(1,&a);
     MechanicalObjectOpenCLVec3f_vOp_kernel->setArg<_device_pointer>(2,&b);
     MechanicalObjectOpenCLVec3f_vOp_kernel->setArg<float>(3,&f);
 
-    size_t work_size[1];
-    work_size[0]=size;
+    size_t local_size[1];
+    local_size[0]=BSIZE;
 
-    MechanicalObjectOpenCLVec3f_vOp_kernel->execute(0,1,NULL,work_size,NULL);	//note: num_device = const = 0
+    size_t work_size[1];
+    work_size[0]=((size%BSIZE)==0)?size:BSIZE*(size/BSIZE+1);
+
+    MechanicalObjectOpenCLVec3f_vOp_kernel->execute(0,1,NULL,work_size,local_size);	//note: num_device = const = 0
 
 }
+
 
 
 sofa::helper::OpenCLKernel * MechanicalObjectOpenCLVec3d_vOp_kernel;
 void MechanicalObjectOpenCLVec3d_vOp(size_t size, _device_pointer res, const _device_pointer a, const _device_pointer b, double f)
 {
     size*=3;
+    int BSIZE = gpu::opencl::OpenCLMemoryManager<float>::BSIZE;
     DEBUG_TEXT( "MechanicalObjectOpenCLVec3d_vOp\t");
     MechanicalObject_CreateProgramWithDouble();
     if(MechanicalObjectOpenCLVec3d_vOp_kernel==NULL)MechanicalObjectOpenCLVec3d_vOp_kernel
-            = new sofa::helper::OpenCLKernel(MechanicalObjectOpenCLDouble_program,"Vec1t_vOp");
+            = new sofa::helper::OpenCLKernel(MechanicalObjectOpenCLDouble_program,"MechanicalObject_Vec1t_vOp");
     MechanicalObjectOpenCLVec3f_vOp_kernel->setArg<_device_pointer>(0,&res);
     MechanicalObjectOpenCLVec3f_vOp_kernel->setArg<_device_pointer>(1,&a);
     MechanicalObjectOpenCLVec3f_vOp_kernel->setArg<_device_pointer>(2,&b);
     MechanicalObjectOpenCLVec3f_vOp_kernel->setArg<double>(3,&f);
 
-    size_t work_size[1];
-    work_size[0]=size;
+    size_t local_size[1];
+    local_size[0]=BSIZE;
 
-    MechanicalObjectOpenCLVec3d_vOp_kernel->execute(0,1,NULL,work_size,NULL);	//note: num_device = const = 0
+    size_t work_size[1];
+    work_size[0]=((size%BSIZE)==0)?size:BSIZE*(size/BSIZE+1);
+
+    MechanicalObjectOpenCLVec3d_vOp_kernel->execute(0,1,NULL,work_size,local_size);	//note: num_device = const = 0
 }
 
 // vOp2
@@ -206,21 +216,25 @@ void MechanicalObjectOpenCLVec3f_vOp_v2(size_t size, _device_pointer res, const 
 sofa::helper::OpenCLKernel * MechanicalObjectOpenCLVec3f_vMEq_kernel;
 void MechanicalObjectOpenCLVec3f_vMEq(size_t size, _device_pointer res, float f)
 {
+    int BSIZE = gpu::opencl::OpenCLMemoryManager<float>::BSIZE;
     size*=3;
     DEBUG_TEXT("MechanicalObjectOpenCLVec3f_vMEq");
 
 
     MechanicalObject_CreateProgramWithFloat();
     if(MechanicalObjectOpenCLVec3f_vMEq_kernel==NULL)MechanicalObjectOpenCLVec3f_vMEq_kernel
-            = new sofa::helper::OpenCLKernel(MechanicalObjectOpenCLFloat_program,"Vec1t_vMEq");
+            = new sofa::helper::OpenCLKernel(MechanicalObjectOpenCLFloat_program,"MechanicalObject_Vec1t_vMEq");
 
     MechanicalObjectOpenCLVec3f_vMEq_kernel->setArg<cl_mem>(0,&(res.m));
     MechanicalObjectOpenCLVec3f_vMEq_kernel->setArg<float>(1,&f);
 
-    size_t work_size[1];
-    work_size[0]=size;
+    size_t local_size[1];
+    local_size[0]=BSIZE;
 
-    MechanicalObjectOpenCLVec3f_vMEq_kernel->execute(0,1,NULL,work_size,NULL);	//note: num_device = const = 0
+    size_t work_size[1];
+    work_size[0]=((size%BSIZE)==0)?size:BSIZE*(size/BSIZE+1);
+
+    MechanicalObjectOpenCLVec3f_vMEq_kernel->execute(0,1,NULL,work_size,local_size);	//note: num_device = const = 0
 
 }
 
@@ -284,29 +298,29 @@ void MechanicalObjectOpenCLVec3f_vMEq_v2(size_t size, _device_pointer res, float
 
 
 // vClear (4/4)
-/// @note problem with result
 
 sofa::helper::OpenCLKernel * MechanicalObjectOpenCLVec3f_vClear_kernel;
 void MechanicalObjectOpenCLVec3f_vClear(size_t size, _device_pointer res)
 {
-
+    int BSIZE = gpu::opencl::OpenCLMemoryManager<float>::BSIZE;
     size*=3;
     DEBUG_TEXT("MechanicalObjectOpenCLVec3f_vClear");
-
-
 
     MechanicalObject_CreateProgramWithFloat();
 
     if(MechanicalObjectOpenCLVec3f_vClear_kernel==NULL)MechanicalObjectOpenCLVec3f_vClear_kernel
-            = new sofa::helper::OpenCLKernel(MechanicalObjectOpenCLFloat_program,"Vec1t_vClear");
+            = new sofa::helper::OpenCLKernel(MechanicalObjectOpenCLFloat_program,"MechanicalObject_Vec1t_vClear");
 
     MechanicalObjectOpenCLVec3f_vClear_kernel->setArg<cl_mem>(0,&(res.m));
 
 
-    size_t work_size[1];
-    work_size[0]=size/4;
+    size_t local_size[1];
+    local_size[0]=BSIZE;
 
-    MechanicalObjectOpenCLVec3f_vClear_kernel->execute(0,1,NULL,work_size,NULL);	//note: num_device = const = 0*/
+    size_t work_size[1];
+    work_size[0]=((size%BSIZE)==0)?size:BSIZE*(size/BSIZE+1);
+
+    MechanicalObjectOpenCLVec3f_vClear_kernel->execute(0,1,NULL,work_size,local_size);	//note: num_device = const = 0*/
 
 
 }
@@ -498,6 +512,7 @@ void MechanicalObjectOpenCLVec3f_vPEq(size_t size, _device_pointer res, const _d
 sofa::helper::OpenCLKernel * MechanicalObjectOpenCLVec3f_vPEqBF2_kernel;
 void MechanicalObjectOpenCLVec3f_vPEqBF2(size_t size, _device_pointer res1, const _device_pointer b1, float f1, _device_pointer res2, const _device_pointer b2, float f2)
 {
+    int BSIZE = gpu::opencl::OpenCLMemoryManager<float>::BSIZE;
     DEBUG_TEXT("MechanicalObjectOpenCLVec3f_vPEqBF2");
 
     size*=3;
@@ -506,7 +521,7 @@ void MechanicalObjectOpenCLVec3f_vPEqBF2(size_t size, _device_pointer res1, cons
 
 
     if(MechanicalObjectOpenCLVec3f_vPEqBF2_kernel==NULL)MechanicalObjectOpenCLVec3f_vPEqBF2_kernel
-            = new sofa::helper::OpenCLKernel(MechanicalObjectOpenCLFloat_program,"Vec1t_vPEqBF2");
+            = new sofa::helper::OpenCLKernel(MechanicalObjectOpenCLFloat_program,"MechanicalObject_Vec1t_vPEqBF2");
 
     MechanicalObjectOpenCLVec3f_vPEqBF2_kernel->setArg<cl_mem>(0,&(res1.m));
     MechanicalObjectOpenCLVec3f_vPEqBF2_kernel->setArg<cl_mem>(1,&(b1.m));
@@ -515,10 +530,13 @@ void MechanicalObjectOpenCLVec3f_vPEqBF2(size_t size, _device_pointer res1, cons
     MechanicalObjectOpenCLVec3f_vPEqBF2_kernel->setArg<cl_mem>(4,&(b2.m));
     MechanicalObjectOpenCLVec3f_vPEqBF2_kernel->setArg<float>(5,&f2);
 
-    size_t work_size[1];
-    work_size[0]=size;
+    size_t local_size[1];
+    local_size[0]=BSIZE;
 
-    MechanicalObjectOpenCLVec3f_vPEqBF2_kernel->execute(0,1,NULL,work_size,NULL);	//note: num_device = const = 0
+    size_t work_size[1];
+    work_size[0]=((size%BSIZE)==0)?size:BSIZE*(size/BSIZE+1);
+
+    MechanicalObjectOpenCLVec3f_vPEqBF2_kernel->execute(0,1,NULL,work_size,local_size);	//note: num_device = const = 0
 
 
 }
@@ -555,6 +573,7 @@ void MechanicalObjectOpenCLVec3f_vPEqBF2_v2(size_t size, _device_pointer res1, c
 sofa::helper::OpenCLKernel * MechanicalObjectOpenCLVec3f_vIntegrate_kernel;
 void MechanicalObjectOpenCLVec3f_vIntegrate(size_t size, const _device_pointer a, _device_pointer v, _device_pointer x, float f_v_v, float f_v_a, float f_x_x, float f_x_v)
 {
+    int BSIZE = gpu::opencl::OpenCLMemoryManager<float>::BSIZE;
     DEBUG_TEXT("MechanicalObjectOpenCLVec3f_vIntegrate");
 
     size*=3;
@@ -562,7 +581,7 @@ void MechanicalObjectOpenCLVec3f_vIntegrate(size_t size, const _device_pointer a
 
 
     if(MechanicalObjectOpenCLVec3f_vIntegrate_kernel==NULL)MechanicalObjectOpenCLVec3f_vIntegrate_kernel
-            = new sofa::helper::OpenCLKernel(MechanicalObjectOpenCLFloat_program,"Vec1t_vIntegrate");
+            = new sofa::helper::OpenCLKernel(MechanicalObjectOpenCLFloat_program,"MechanicalObject_Vec1t_vIntegrate");
 
     MechanicalObjectOpenCLVec3f_vIntegrate_kernel->setArg<cl_mem>(0,&(a.m));
     MechanicalObjectOpenCLVec3f_vIntegrate_kernel->setArg<cl_mem>(1,&(v.m));
@@ -572,11 +591,15 @@ void MechanicalObjectOpenCLVec3f_vIntegrate(size_t size, const _device_pointer a
     MechanicalObjectOpenCLVec3f_vIntegrate_kernel->setArg<float>(5,&f_x_x);
     MechanicalObjectOpenCLVec3f_vIntegrate_kernel->setArg<float>(6,&f_x_v);
 
+
+    size_t local_size[1];
+    local_size[0]=BSIZE;
+
     size_t work_size[1];
-    work_size[0]=size;
+    work_size[0]=((size%BSIZE)==0)?size:BSIZE*(size/BSIZE+1);
 
 
-    MechanicalObjectOpenCLVec3f_vIntegrate_kernel->execute(0,1,NULL,work_size,NULL);	//note: num_device = const = 0
+    MechanicalObjectOpenCLVec3f_vIntegrate_kernel->execute(0,1,NULL,work_size,local_size);	//note: num_device = const = 0
 
 }
 

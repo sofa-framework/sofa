@@ -112,13 +112,14 @@ typedef struct f4
 sofa::helper::OpenCLKernel * PlaneForceFieldOpenCL3f_addForce_kernel;
 void PlaneForceFieldOpenCL3f_addForce(unsigned int size, GPUPlane<float>* plane, _device_pointer penetration, _device_pointer f, const _device_pointer x, const _device_pointer v)
 {
+    int BSIZE = gpu::opencl::OpenCLMemoryManager<float>::BSIZE;
     DEBUG_TEXT( "PlaneForceFieldOpenCL3f_addForce");
     float4 pl(plane->normal.x(),plane->normal.y(),plane->normal.z(),0.0);
     float4 pd(plane->d ,plane->stiffness,plane->damping,0.0);
 
     PlaneForceField_CreateProgramWithFloat();
     if(PlaneForceFieldOpenCL3f_addForce_kernel==NULL)PlaneForceFieldOpenCL3f_addForce_kernel
-            = new sofa::helper::OpenCLKernel(PlaneForceFieldOpenCLFloat_program,"addForce");
+            = new sofa::helper::OpenCLKernel(PlaneForceFieldOpenCLFloat_program,"PlaneForceField_3f_addForce_v2");
 
 
     PlaneForceFieldOpenCL3f_addForce_kernel->setArg<float4>(0,&pl);
@@ -129,10 +130,14 @@ void PlaneForceFieldOpenCL3f_addForce(unsigned int size, GPUPlane<float>* plane,
     PlaneForceFieldOpenCL3f_addForce_kernel->setArg<_device_pointer>(5,&v);
 
 
-    size_t work_size[1];
-    work_size[0]=size;
+    size_t local_size[1];
+    local_size[0]=BSIZE;
 
-    PlaneForceFieldOpenCL3f_addForce_kernel->execute(0,1,NULL,work_size,NULL);	//note: num_device = const = 0
+    size_t work_size[1];
+    work_size[0]=((size%BSIZE)==0)?size:BSIZE*(size/BSIZE+1);
+
+
+    PlaneForceFieldOpenCL3f_addForce_kernel->execute(0,1,NULL,work_size,local_size);	//note: num_device = const = 0
 
 }
 
@@ -140,12 +145,13 @@ void PlaneForceFieldOpenCL3f_addForce(unsigned int size, GPUPlane<float>* plane,
 sofa::helper::OpenCLKernel * PlaneForceFieldOpenCL3f_addDForce_kernel;
 void PlaneForceFieldOpenCL3f_addDForce(unsigned int size, GPUPlane<float>* plane, const _device_pointer penetration, _device_pointer f, const _device_pointer dx)
 {
+    int BSIZE = gpu::opencl::OpenCLMemoryManager<float>::BSIZE;
     DEBUG_TEXT( "PlaneForceFieldOpenCL3f_addDForce");
     float4 pl(plane->normal.x(),plane->normal.y(),plane->normal.z(),0.0);
 
     PlaneForceField_CreateProgramWithFloat();
     if(PlaneForceFieldOpenCL3f_addDForce_kernel==NULL)PlaneForceFieldOpenCL3f_addDForce_kernel
-            = new sofa::helper::OpenCLKernel(PlaneForceFieldOpenCLFloat_program,"addDForce");
+            = new sofa::helper::OpenCLKernel(PlaneForceFieldOpenCLFloat_program,"PlaneForceField_3f_addDForce");
 
 
     PlaneForceFieldOpenCL3f_addDForce_kernel->setArg<float4>(0,&pl);
@@ -154,11 +160,13 @@ void PlaneForceFieldOpenCL3f_addDForce(unsigned int size, GPUPlane<float>* plane
     PlaneForceFieldOpenCL3f_addDForce_kernel->setArg<_device_pointer>(3,&f);
     PlaneForceFieldOpenCL3f_addDForce_kernel->setArg<_device_pointer>(4,&dx);
 
+    size_t local_size[1];
+    local_size[0]=BSIZE;
 
     size_t work_size[1];
-    work_size[0]=size;
+    work_size[0]=((size%BSIZE)==0)?size:BSIZE*(size/BSIZE+1);
 
-    PlaneForceFieldOpenCL3f_addDForce_kernel->execute(0,1,NULL,work_size,NULL);	//note: num_device = const = 0
+    PlaneForceFieldOpenCL3f_addDForce_kernel->execute(0,1,NULL,work_size,local_size);	//note: num_device = const = 0
 
 }
 
