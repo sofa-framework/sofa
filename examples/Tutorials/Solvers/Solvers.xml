@@ -3,7 +3,7 @@
       <Tutorial name="Static" scene="Components/solver/StaticSolver.scn" html="Tutorials/Solvers/TutorialSolverStatic.html"/>
     </Group>
     <Group name="Explicit">
-      <Tutorial name="Euler" scene="Tutorials/Solvers/TutorialSolverExplicitEuler.scn"/>
+      <Tutorial name="Euler" scene="Components/solver/ExplicitEulerSolver.scn" html="Tutorials/Solvers/TutorialSolverExplicitEuler.html"/>
       <Tutorial name="Runge Kutta" scene="Tutorials/Solvers/TutorialSolverExplicitRungeKutta.scn"/>
       <Tutorial name="Central Difference" scene="Tutorials/Solvers/TutorialSolverCentralDifference.scn"/>
     </Group>
