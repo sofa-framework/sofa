@@ -289,6 +289,8 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
 template<class TMatrix, class TVector>
 void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
 {
+    sofa::helper::AdvancedTimer::stepBegin("PCGLinearSolver::solve");
+
     Vector& r = *this->createVector();
     Vector& d = *this->createVector();
     Vector& q = *this->createVector();
@@ -301,9 +303,13 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
     cgstep_beta(r,b,-1);//for (int i=0; i<n; i++) r[i] = b[i] - r[i];
     if (this->preconditioners.size()>0 && usePrecond)
     {
+        sofa::helper::AdvancedTimer::stepEnd("PCGLinearSolver::solve");
+        sofa::helper::AdvancedTimer::stepBegin("PCGLinearSolver::apply Precond");
         preconditioners[0]->setSystemLHVector(d);
         preconditioners[0]->setSystemRHVector(r);
         preconditioners[0]->solveSystem();
+        sofa::helper::AdvancedTimer::stepEnd("PCGLinearSolver::apply Precond");
+        sofa::helper::AdvancedTimer::stepBegin("PCGLinearSolver::solve");
     }
     else
     {
@@ -342,14 +348,20 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
 
         if (this->preconditioners.size()>0 && usePrecond)
         {
+            sofa::helper::AdvancedTimer::stepEnd("PCGLinearSolver::solve");
+            sofa::helper::AdvancedTimer::stepBegin("PCGLinearSolver::apply Precond");
             preconditioners[0]->setSystemLHVector(s);
             preconditioners[0]->setSystemRHVector(r);
             preconditioners[0]->solveSystem();
+            sofa::helper::AdvancedTimer::stepEnd("PCGLinearSolver::apply Precond");
+            sofa::helper::AdvancedTimer::stepBegin("PCGLinearSolver::solve");
+
         }
         else
         {
             s = r;
         }
+
 
         double deltaOld = deltaNew;
         deltaNew = r.dot(s);
@@ -365,6 +377,7 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
     this->deleteVector(&q);
     this->deleteVector(&d);
     this->deleteVector(&s);
+    sofa::helper::AdvancedTimer::stepEnd("PCGLinearSolver::solve");
 }
 
 SOFA_DECL_CLASS(ShewchukPCGLinearSolver)
