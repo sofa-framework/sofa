@@ -23,10 +23,8 @@
 #else
 #include <qcolor.h>
 #include <qlayout.h>
-#include <qstyle.h>
-#include <qpainter.h>
-#include <qcombobox.h>
 #include <qcheckbox.h>
+#include <qcolordialog.h>
 #include <qcolordialog.h>
 #include <qpixmap.h>
 #include <qvalidator.h>
@@ -93,9 +91,10 @@ protected:
     QCheckBox* _shininessCheckBox;
 };
 
-class VectorMaterialDataWidget : public TDataWidget< helper::vector<sofa::core::componentmodel::loader::Material> >
+
+typedef helper::vector<sofa::core::componentmodel::loader::Material> VectorMaterial;
+class VectorMaterialDataWidget : public TDataWidget< VectorMaterial >
 {
-    typedef helper::vector<sofa::core::componentmodel::loader::Material> VectorMaterial;
     Q_OBJECT
 public:
     VectorMaterialDataWidget(QWidget* parent,
@@ -103,8 +102,8 @@ public:
             core::objectmodel::TData< helper::vector<sofa::core::componentmodel::loader::Material> >* data):
         TDataWidget< helper::vector<sofa::core::componentmodel::loader::Material> >(parent,name,data),
         _materialDataWidget(NULL),
-        _comboBox(NULL),
-        _currentMaterial(0,data->isDisplayed(),data->isReadOnly(),data->getOwner())
+        _currentMaterial(0,data->isDisplayed(),data->isReadOnly(),data->getOwner()),
+        _comboBox(NULL)
     {
 
     };
@@ -131,4 +130,5 @@ protected slots:
 
 }
 
-#endif MATERIAL_DATAWIDGET_H
+#endif
+

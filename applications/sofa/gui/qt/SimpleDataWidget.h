@@ -776,7 +776,7 @@ public :
 
 protected slots:
 
-    void setbuttonchekec(int id_checked);
+    void setbuttonchecked(int id_checked);
 
 protected:
     ///Implements how update the widgets knowing the data value.

@@ -146,15 +146,15 @@ bool RadioDataWidget::createWidgets()
     {
         std::string m_itemstring=m_radiotrick[i];
 
-        QRadioButton * m_radiobutton=new QRadioButton(QString::fromStdString(m_itemstring));
+        QRadioButton * m_radiobutton=new QRadioButton(QString(m_itemstring.c_str()), this);
         if (i==m_radiotrick.getSelectedId()) m_radiobutton->setChecked(true);
         layout->add(m_radiobutton);
-        buttonList->addButton(m_radiobutton,i);
+        buttonList->insert(m_radiobutton,i);
     }
-    connect(buttonList, SIGNAL(buttonClicked(int)), this, SLOT(setbuttonchekec(int))) ;
+    connect(buttonList, SIGNAL(clicked(int)), this, SLOT(setbuttonchecked(int))) ;
     return true;
 }
-void RadioDataWidget::setbuttonchekec(int id_checked)
+void RadioDataWidget::setbuttonchecked(int id_checked)
 {
     sofa::helper::OptionsGroup m_radiotrick = this->getData()->virtualGetValue();
     m_radiotrick.setSelectedItem((unsigned int)id_checked);
@@ -166,7 +166,7 @@ void RadioDataWidget::readFromData()
 void RadioDataWidget::writeToData()
 {
     sofa::helper::OptionsGroup m_radiotrick = this->getData()->virtualGetValue();
-    m_radiotrick.setSelectedItem((unsigned int)buttonList->checkedId ());
+    m_radiotrick.setSelectedItem((unsigned int)buttonList->selectedId ());
     this->getData()->virtualSetValue(m_radiotrick);
 }
 
