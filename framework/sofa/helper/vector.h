@@ -631,11 +631,12 @@ public:
     /// Constructor
     vector(const std::vector<T, Alloc>& x): std::vector<T,Alloc>(x) {}
     /// Constructor
-    /*vector<T, Alloc>& operator=(const std::vector<T, Alloc>& x)
+    vector<T, Alloc>& operator=(const std::vector<T, Alloc>& x)
     {
-    	//std::vector<T,Alloc>::operator = (x);
-    	return vector(x);
-    }*/
+        this->operator=(x); return *this;
+        //std::vector<T,Alloc>::operator = (x);
+        //return vector(x);
+    }
 
 #ifdef __STL_MEMBER_TEMPLATES
     /// Constructor
