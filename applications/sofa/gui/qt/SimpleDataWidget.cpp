@@ -149,9 +149,17 @@ bool RadioDataWidget::createWidgets()
         QRadioButton * m_radiobutton=new QRadioButton(QString(m_itemstring.c_str()), this);
         if (i==m_radiotrick.getSelectedId()) m_radiobutton->setChecked(true);
         layout->add(m_radiobutton);
+#ifdef SOFA_QT4
+        buttonList->addButton(m_radiobutton,i);
+#else
         buttonList->insert(m_radiobutton,i);
+#endif
     }
+#ifdef SOFA_QT4
+    connect(buttonList, SIGNAL(buttonClicked(int)), this, SLOT(setbuttonchecked(int))) ;
+#else
     connect(buttonList, SIGNAL(clicked(int)), this, SLOT(setbuttonchecked(int))) ;
+#endif
     return true;
 }
 void RadioDataWidget::setbuttonchecked(int id_checked)
@@ -166,7 +174,11 @@ void RadioDataWidget::readFromData()
 void RadioDataWidget::writeToData()
 {
     sofa::helper::OptionsGroup m_radiotrick = this->getData()->virtualGetValue();
+#ifdef SOFA_QT4
+    m_radiotrick.setSelectedItem((unsigned int)buttonList->checkedId ());
+#else
     m_radiotrick.setSelectedItem((unsigned int)buttonList->selectedId ());
+#endif
     this->getData()->virtualSetValue(m_radiotrick);
 }
 
