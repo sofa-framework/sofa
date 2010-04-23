@@ -23,9 +23,10 @@
 #else
 #include <qcolor.h>
 #include <qlayout.h>
+#include <qstyle.h>
+#include <qpainter.h>
+#include <qcombobox.h>
 #include <qcheckbox.h>
-#include <qcolordialog.h>
-#include <qgridlayout.h>
 #include <qcolordialog.h>
 #include <qpixmap.h>
 #include <qvalidator.h>
