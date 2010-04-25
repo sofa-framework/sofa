@@ -100,11 +100,12 @@ public:
     template<class T>
     static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
+        if (dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL) return false;
+
         core::componentmodel::loader::MeshLoader* loader = NULL;
         context->get(loader);
 
-        if (dynamic_cast<MechanicalState<DataTypes>*>(context->getMechanicalState()) == NULL && loader == NULL)
-            return false;
+        if (loader == NULL) return false;
 
         return BaseObject::canCreate(obj, context, arg);
     }

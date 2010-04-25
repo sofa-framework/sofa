@@ -52,7 +52,7 @@ public :
     typedef GLuint gl_buffer;
 
     enum { MAX_DEVICES = 8 };
-    enum { BSIZE = 32 };
+    enum { BSIZE = 64 };
     enum { SUPPORT_GL_BUFFER = 1 };
 
     static int numDevices()
