@@ -371,6 +371,7 @@ void ShewchukPCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vect
 
         iter++;
     }
+    sofa::helper::AdvancedTimer::valSet("PCG iterations", iter);
 
     f_graph.endEdit();
     this->deleteVector(&r);
