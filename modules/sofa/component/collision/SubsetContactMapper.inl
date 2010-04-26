@@ -22,10 +22,10 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_COLLISION_BARYCENTRICCONTACTMAPPER_INL
-#define SOFA_COMPONENT_COLLISION_BARYCENTRICCONTACTMAPPER_INL
+#ifndef SOFA_COMPONENT_COLLISION_SUBSETCONTACTMAPPER_INL
+#define SOFA_COMPONENT_COLLISION_SUBSETCONTACTMAPPER_INL
 
-#include <sofa/component/collision/BarycentricContactMapper.h>
+#include <sofa/component/collision/SubsetContactMapper.h>
 #include <sofa/simulation/common/Node.h>
 #include <sofa/simulation/common/Simulation.h>
 #include <sofa/simulation/common/DeleteVisitor.h>
@@ -41,49 +41,56 @@ namespace collision
 {
 
 template < class TCollisionModel, class DataTypes >
-void BarycentricContactMapper<TCollisionModel,DataTypes>::cleanup()
+void SubsetContactMapper<TCollisionModel,DataTypes>::cleanup()
 {
-    if (mapping!=NULL)
+    if (child!=NULL)
     {
-        simulation::Node* parent = dynamic_cast<simulation::Node*>(model->getContext());
-        if (parent!=NULL)
-        {
-            simulation::Node* child = dynamic_cast<simulation::Node*>(mapping->getContext());
-            child->detachFromGraph();
-            child->execute<simulation::DeleteVisitor>();
-            delete child;
-            mapping = NULL;
-        }
+        child->detachFromGraph();
+        child->execute<simulation::DeleteVisitor>();
+        delete child;
+        child = NULL;
     }
 }
 
 template < class TCollisionModel, class DataTypes >
-typename BarycentricContactMapper<TCollisionModel,DataTypes>::MMechanicalState* BarycentricContactMapper<TCollisionModel,DataTypes>::createMapping(const char* name)
+typename SubsetContactMapper<TCollisionModel,DataTypes>::MMechanicalState* SubsetContactMapper<TCollisionModel,DataTypes>::createMapping(const char* name)
 {
     if (model==NULL) return NULL;
-    simulation::Node* parent = dynamic_cast<simulation::Node*>(model->getContext());
-    if (parent==NULL)
+    InMechanicalState* instate = model->getMechanicalState();
+    if (instate!=NULL)
     {
-        std::cerr << "ERROR: BarycentricContactMapper only works for scenegraph scenes.\n";
-        return NULL;
+        simulation::Node* parent = dynamic_cast<simulation::Node*>(instate->getContext());
+        if (parent==NULL)
+        {
+            std::cerr << "ERROR: SubsetContactMapper only works for scenegraph scenes.\n";
+            return NULL;
+        }
+        child = simulation::getSimulation()->newNode(name);
+        parent->addChild(child); child->updateSimulationContext();
+        outmodel = new MMechanicalObject; child->addObject(outmodel);
+        outmodel->useMask.setValue(true);
+        mapping = new MMapping(instate, outmodel); child->addObject(mapping);
     }
-    simulation::Node* child = simulation::getSimulation()->newNode(name);
-    parent->addChild(child); child->updateContext();
-    MMechanicalState* mstate = new MMechanicalObject; child->addObject(mstate);
-    mstate->useMask.setValue(true);
-    //mapping = new MMapping(model->getMechanicalState(), mstate, model->getMeshTopology());
-    //mapper = mapping->getMapper();
-    mapper = new mapping::BarycentricMapperMeshTopology<InDataTypes, typename BarycentricContactMapper::DataTypes>(model->getMeshTopology(), NULL, &model->getMechanicalState()->forceMask, &mstate->forceMask);
-    mapping = new MMapping(model->getMechanicalState(), mstate, mapper);
-    child->addObject(mapping);
-    return mstate;
+    else
+    {
+        simulation::Node* parent = dynamic_cast<simulation::Node*>(model->getContext());
+        if (parent==NULL)
+        {
+            std::cerr << "ERROR: SubsetContactMapper only works for scenegraph scenes.\n";
+            return NULL;
+        }
+        child = simulation::getSimulation()->newNode(name);
+        parent->addChild(child); child->updateSimulationContext();
+        outmodel = new MMechanicalObject; child->addObject(outmodel);
+        outmodel->useMask.setValue(true);
+        mapping = NULL;
+    }
+    return outmodel;
 }
-
-
 } // namespace collision
 
 } // namespace component
 
 } // namespace sofa
 
-#endif
+#endif /* SOFA_COMPONENT_COLLISION_SUBSETCONTACTMAPPER_INL */
