@@ -32,7 +32,7 @@
 		</Node>
 	</Node>
 	
-	<OglViewport screenPosition="0 0" screenSize="250 250" cameraPosition="-0.887221 -2.93985 -13.9098" cameraOrientation="0.101682 -0.978843 -0.174841 0.030936" />
-	<OglViewport screenPosition="300 0" screenSize="400 400" cameraRigid="-0.556394 -3.36091 -6.69175 -0.0207405 -0.705349 -0.21101 -0.676408" />
+	<OglViewport screenPosition="0 0" screenSize="250 250" cameraPosition="-1 2.7 5" cameraOrientation="-0 -0 -0 1" />
+	<OglViewport screenPosition="300 0" screenSize="400 400" cameraRigid="-1 2.7 13 -0 -0 -0 1" />
 </Node>
 
