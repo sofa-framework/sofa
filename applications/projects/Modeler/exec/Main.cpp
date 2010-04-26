@@ -65,6 +65,8 @@ int main(int argc, char** argv)
     application->setMainWidget(sofaModeler);
     sofaModeler->show();
 
+    std::string binaryName=argv[0];
+    if (!binaryName.empty() && binaryName[binaryName.size()-1] == 'd') sofaModeler->setDebugBinary(true);
 
     QString pathIcon=(sofa::helper::system::DataRepository.getFirstPath() + std::string( "/icons/MODELER.png" )).c_str();
 #ifdef SOFA_QT4
