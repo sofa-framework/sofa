@@ -151,6 +151,20 @@ void FixedConstraint<DataTypes>::init()
     my_subset.setTestParameter( (void *) this );
     my_subset.setRemovalParameter( (void *) this );
 
+
+    unsigned int maxIndex=this->mstate->getSize();
+    for (topology::PointSubset::iterator it = my_subset.begin();  it != my_subset.end(); )
+    {
+        topology::PointSubset::iterator currentIterator=it;
+        const unsigned int index=*it;
+        it++;
+        if (index >= maxIndex)
+        {
+            serr << "Index " << index << " not valid!" << sendl;
+            removeConstraint(index);
+        }
+    }
+
 }
 
 template <class DataTypes>
