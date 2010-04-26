@@ -36,7 +36,6 @@
 
 
 
-
 namespace sofa
 {
 
@@ -192,9 +191,24 @@ void LinearMovementConstraint<DataTypes>::reset()
 
 
 template <class DataTypes>
-void LinearMovementConstraint<DataTypes>::projectResponse(VecDeriv& )
+void LinearMovementConstraint<DataTypes>::projectResponse(VecDeriv& dx)
 {
+    Real cT = (Real) this->getContext()->getTime();
+    if ((cT != currentTime) || !finished)
+    {
+        findKeyTimes();
+    }
 
+    if (finished && nextT != prevT)
+    {
+        const SetIndexArray & indices = m_indices.getValue().getArray();
+
+        //set the motion to the Dofs
+        for (SetIndexArray::const_iterator it = indices.begin(); it != indices.end(); ++it)
+        {
+            dx[*it] = Deriv();
+        }
+    }
 }
 
 template <class DataTypes>
