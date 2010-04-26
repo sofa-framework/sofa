@@ -9,7 +9,7 @@ iterations=100
 iniFile=verification.ini
 resetMode=0
 addMode=0
-
+defaultDirectory=1
 
 #----------------------------------------------------------------------------------------------
 #Interpreting the command line
@@ -18,60 +18,22 @@ addMode=0
 # -r : to save new references for the scenes: just record the positions of the dofs
 # -f : to specify the reference set of files. By default, we use "verification.ini"
 # -a : to add set of files to the reference set of files, and record them
-readIterations=0
-readFile=0
-readAddFiles=0
 
-for param in $*
+while [[ $# -gt 0 ]]
 do
-#-----------------------------------------------
-#read the -i option
-    if [[ $readIterations == 1 ]] 
-    then
-	readIterations=0
-	iterations=$param
-    fi
-    if [[ $param == -i ]] 
-    then
-	readIterations=1
-    fi
-#-----------------------------------------------
-#read the -f option
-    if [[ $readFile == 1 ]] 
-    then
-	readFile=0
-	iniFile=$param
-    fi  
-    if [[ $param == -f ]] 
-    then
-	readFile=1
-    fi
-
-
-#-----------------------------------------------
-#read the -a option
-    if [[ $readAddFiles == 1 ]] 
-    then
-	readAddFiles=0
-	addFiles=$param
-	addMode=1
+    case "$1" in
+    -i) iterations=$2 ; shift ;;
+    -f) iniFile=$2    ; shift ;;
+    -a) addFiles=$2
+        addMode=1
 	resetMode=1
-    fi
-    if [[ $param == -a ]] 
-    then
-	readAddFiles=1
-    fi
-
-#-----------------------------------------------
-#read the -r option
-    if [[ $param == -r ]] 
-    then
-	resetMode=1
-    fi
-    
+        shift ;;
+    -r) resetMode=1 ;;
+    -d) directory=$2 ; shift ;;
+    *) echo "Invalid argument $1"; exit 1 ;;
+    esac
+    shift
 done
-
-
 
 #----------------------------------------------------------------------------------------------
 #array containing only text
@@ -84,16 +46,22 @@ declare -i nerrors=0
 #the script performs a negative count of the error number
 
 #building the parameters passed to sofaVerification
-arguments=$(echo)
 arguments=$(echo -i $iterations)
-
 
 if [[ $resetMode == 1 ]] 
 then
-    arguments=$(echo $arguments "-r")
+    arguments=$(echo $arguments -r)
     echo Reseting the Verification of files
 else
     echo Run Verification with $iterations iterations: Set of files $iniFile
+fi
+
+if [[ -n $directory ]]
+then
+    arguments=$(echo $arguments -d $directory)
+    echo Using directory: $directory
+else
+    echo Using default directory
 fi
 
 #select the file containing the set of simulation to be processed
@@ -111,7 +79,7 @@ do
     if [[ $addMode == 1 ]] 
     then
 	#add mode, we have to add the list of files contained 
-	presence=$( cat $iniFile | grep $file )
+	presence=$(cat $iniFile | grep $file )
 	if [[ $presence != $file ]]
 	then
 	    #file not present
@@ -120,12 +88,12 @@ do
 	fi
     fi    
 
-    output=$( sofaVerificationd $file $arguments  2> /dev/null)
+    output=$(sofaVerificationd $file $arguments 2> /dev/null)
 
     #test if the scene did load
     if [[ $? != 0 ]]
     then
-	lineFormatation=$( echo "|  SegFault")
+	lineFormatation=$(echo "|  SegFault")
 	nerrors=$(($nerrors + 1))
     else
 	declare -i displayByDof=0

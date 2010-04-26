@@ -41,42 +41,56 @@
 #include <fstream>
 #include <ctime>
 
+using sofa::helper::system::DataRepository;
+using sofa::helper::system::SetDirectory;
+using sofa::simulation::tree::GNode;
+
 // ---------------------------------------------------------------------
 // ---
 // ---------------------------------------------------------------------
 
-void apply(std::vector<std::string> &files, unsigned int iterations,
-        bool reinit, bool useTopology)
+void apply(const std::string& directory, std::vector<std::string>& files,
+        unsigned int iterations, bool reinit, bool useTopology)
 {
-    std::cout << "******* Args ********" << std::endl;
-    std::cout << "files: " << files[0] << std::endl;
-    std::cout << "iterations: " << iterations << std::endl;
-    std::cout << "reinit: " << reinit << std::endl;
-    std::cout << "useTopology: " << useTopology << std::endl;
-    std::cout << "*********************" << std::endl;
+    std::cout
+            << "******* Args ********\n"
+                    << "files: "       << files[0]    << '\n'
+                    << "iterations: "  << iterations  << '\n'
+                    << "reinit: "      << reinit      << '\n'
+                    << "useTopology: " << useTopology << '\n'
+                    << "*********************"
+                    << std::endl;
 
-    using namespace sofa::helper::system;
-    sofa::simulation::tree::GNode* groot = NULL;
+    sofa::simulation::Simulation* simulation = sofa::simulation::getSimulation();
 
     //Launch the comparison for each scenes
     for (unsigned int i = 0; i < files.size(); ++i)
     {
-        groot
-            = dynamic_cast<sofa::simulation::tree::GNode*> (sofa::simulation::getSimulation()->load(
-                    files[i].c_str()));
-        sofa::simulation::tree::getSimulation()->init(groot);
 
+        const std::string& currentFile = files[i];
+        GNode* groot = dynamic_cast<GNode*> (simulation->load(currentFile.c_str()));
         if (groot == NULL)
         {
-            std::cerr << "CANNOT open " << files[i] << " !\n";
+            std::cerr << "CANNOT open " << currentFile << " !" << std::endl;
             continue;
         }
 
+        simulation->init(groot);
+
         //Filename where the simulation of the current scene will be saved (in Sofa/applications/projects/sofaVerification/simulation/)
-        std::string file = SetDirectory::GetParentDir(
-                sofa::helper::system::DataRepository.getFirstPath().c_str());
-        file += "/applications/projects/sofaVerification/simulation/";
-        file += SetDirectory::GetFileName(files[i].c_str());
+        std::string refFile;
+        if(directory.empty())
+        {
+            refFile += SetDirectory::GetParentDir(DataRepository.getFirstPath().c_str());
+            refFile += "/applications/projects/sofaVerification/simulation/";
+            refFile += SetDirectory::GetFileName(currentFile.c_str());
+        }
+        else
+        {
+            refFile += directory;
+            refFile += '/';
+            refFile += SetDirectory::GetFileName(currentFile.c_str());
+        }
 
         //If we initialize the system, we add only WriteState components, to store the reference states
         if (reinit)
@@ -86,7 +100,7 @@ void apply(std::vector<std::string> &files, unsigned int iterations,
                 sofa::component::misc::WriteTopologyCreator writeVisitor;
 
                 writeVisitor.setCreateInMapping(true);
-                writeVisitor.setSceneName(file);
+                writeVisitor.setSceneName(refFile);
                 writeVisitor.execute(groot);
 
                 sofa::component::misc::WriteTopologyActivator v_write(true);
@@ -97,7 +111,7 @@ void apply(std::vector<std::string> &files, unsigned int iterations,
                 sofa::component::misc::WriteStateCreator writeVisitor;
 
                 writeVisitor.setCreateInMapping(true);
-                writeVisitor.setSceneName(file);
+                writeVisitor.setSceneName(refFile);
                 writeVisitor.execute(groot);
 
                 sofa::component::misc::WriteStateActivator v_write(true);
@@ -112,7 +126,7 @@ void apply(std::vector<std::string> &files, unsigned int iterations,
                 //We add CompareTopology components: as it derives from the ReadTopology, we use the ReadTopologyActivator to enable them.
                 sofa::component::misc::CompareTopologyCreator compareVisitor;
                 compareVisitor.setCreateInMapping(true);
-                compareVisitor.setSceneName(file);
+                compareVisitor.setSceneName(refFile);
                 compareVisitor.execute(groot);
 
                 sofa::component::misc::ReadTopologyActivator v_read(true);
@@ -123,7 +137,7 @@ void apply(std::vector<std::string> &files, unsigned int iterations,
                 //We add CompareState components: as it derives from the ReadState, we use the ReadStateActivator to enable them.
                 sofa::component::misc::CompareStateCreator compareVisitor;
                 compareVisitor.setCreateInMapping(true);
-                compareVisitor.setSceneName(file);
+                compareVisitor.setSceneName(refFile);
                 compareVisitor.execute(groot);
 
                 sofa::component::misc::ReadStateActivator v_read(true);
@@ -131,19 +145,18 @@ void apply(std::vector<std::string> &files, unsigned int iterations,
             }
         }
 
+        //Do as many iterations as specified in entry of the program. At each step, the compare state will compare the computed states to the recorded states
+        std::cout << "Computing " << iterations << " for " << currentFile << std::endl;
+
         //Save the initial time
         clock_t curtime = clock();
-
-        //Do as many iterations as specified in entry of the program. At each step, the compare state will compare the computed states to the recorded states
-        std::cout << "Computing " << iterations << " for " << files[i] << std::endl;
         for (unsigned int i = 0; i < iterations; i++)
         {
-            sofa::simulation::getSimulation()->animate(groot);
+            simulation->animate(groot);
         }
-        double t = (clock() - curtime) / ((double) CLOCKS_PER_SEC);
+        double t = static_cast<double>(clock() - curtime) / CLOCKS_PER_SEC;
 
-        std::cout << "ITERATIONS " << iterations << " TIME " << t << " seconds"
-                << std::endl;
+        std::cout << "ITERATIONS " << iterations << " TIME " << t << " seconds" << std::endl;
 
         //We read the final error: the summation of all the error made at each time step
         if (!reinit)
@@ -152,9 +165,9 @@ void apply(std::vector<std::string> &files, unsigned int iterations,
             {
                 sofa::component::misc::CompareTopologyResult result;
                 result.execute(groot);
-                std::cout << "ERROR " << result.getTotalError() << "\n";
+                std::cout << "ERROR " << result.getTotalError() << std::endl;
 
-                const std::vector<unsigned int> listResult = result.getErrors();
+                const std::vector<unsigned int>& listResult = result.getErrors();
                 if (listResult.size() != 5)
                 {
                     std::cout
@@ -163,30 +176,32 @@ void apply(std::vector<std::string> &files, unsigned int iterations,
                     break;
                 }
 
-                std::cout << "ERROR by element type " << "\n";
-                std::cout << "EDGES " << listResult[0]
-                        / (double) result.getNumCompareTopology() << "\n";
-                std::cout << "TRIANGLES " << listResult[1]
-                        / (double) result.getNumCompareTopology() << "\n";
-                std::cout << "QUADS " << listResult[2]
-                        / (double) result.getNumCompareTopology() << "\n";
-                std::cout << "TETRAHEDRA " << listResult[3]
-                        / (double) result.getNumCompareTopology() << "\n";
-                std::cout << "HEXAHEDRA " << listResult[4]
-                        / (double) result.getNumCompareTopology() << "\n";
+                std::cout
+                        << "ERROR by element type " << '\n'
+                                << "EDGES "      << static_cast<double>(listResult[0])
+                                / result.getNumCompareTopology() << '\n'
+                                << "TRIANGLES "  << static_cast<double>(listResult[1])
+                                / result.getNumCompareTopology() << '\n'
+                                << "QUADS "      << static_cast<double>(listResult[2])
+                                / result.getNumCompareTopology() << '\n'
+                                << "TETRAHEDRA " << static_cast<double>(listResult[3])
+                                / result.getNumCompareTopology() << '\n'
+                                << "HEXAHEDRA "  << static_cast<double>(listResult[4])
+                                / result.getNumCompareTopology() << std::endl;
             }
             else
             {
                 sofa::component::misc::CompareStateResult result;
                 result.execute(groot);
-                std::cout << "ERROR " << result.getTotalError() << "\n";
-                std::cout << "ERRORBYDOF " << result.getErrorByDof()
-                        / (double) result.getNumCompareState() << "\n";
+                std::cout
+                        << "ERROR " << result.getTotalError() << '\n'
+                                << "ERRORBYDOF " << static_cast<double>(result.getErrorByDof())
+                                / result.getNumCompareState() << std::endl;
             }
         }
 
         //Clear and prepare for next scene
-        sofa::simulation::getSimulation()->unload(groot);
+        simulation->unload(groot);
         delete groot;
     }
 }
@@ -195,6 +210,7 @@ int main(int argc, char** argv)
 {
     sofa::helper::BackTrace::autodump();
 
+    std::string directory;
     std::string fileName;
     std::vector<std::string> files;
     unsigned int iterations = 100;
@@ -205,11 +221,12 @@ int main(int argc, char** argv)
 
     sofa::helper::parse(
         &files,
-        "This is a SOFA verification. "
+        "This is SOFA verification. "
         "To use it, specify in the command line a \".ini\" file containing "
         "the path to the scenes you want to test. ")
     .option(&reinit, 'r', "reinit", "Recreate the references state files")
     .option(&iterations, 'i', "iteration", "Number of iterations for testing")
+    .option(&directory, 'd', "directory", "The directory for reference files")
     .option(&topology, 't', "topology",
             "Specific mode to run tests on topology")(argc, argv);
 
@@ -220,28 +237,27 @@ int main(int argc, char** argv)
 
     files.clear();
 
-    sofa::helper::system::DataRepository.findFile(fileName);
+    DataRepository.findFile(fileName);
     std::string extension = fileName.substr(fileName.size() - 4);
-    std::cout << "Extension : " << extension << "\n";
-    if (extension == std::string(".ini"))
+    std::cout << "Extension : " << extension << std::endl;
+    if (extension.compare(".ini") == 0)
     {
         //Get the list of scenes to test
         std::ifstream end(fileName.c_str());
         std::string s;
         while (end >> s)
         {
-            sofa::helper::system::DataRepository.findFile(s);
+            DataRepository.findFile(s);
             files.push_back(s);
         }
-        end.close();
     }
     else
     {
         files.push_back(fileName);
     }
-    std::cout << "Files : " << files[0] << "\n";
+    std::cout << "Files : " << files[0] << std::endl;
 
-    apply(files, iterations, reinit, topology);
+    apply(directory, files, iterations, reinit, topology);
 
     return 0;
 }
