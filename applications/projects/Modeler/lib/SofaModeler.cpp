@@ -92,7 +92,7 @@ SofaModeler::SofaModeler()
 #ifdef SOFA_QT4
     fileMenu->removeAction(Action);
 #endif
-
+    setDebugBinary(false);
     //----------------------------------------------------------------------
     //Get the different path needed
     examplePath = sofa::helper::system::SetDirectory::GetParentDir(sofa::helper::system::DataRepository.getFirstPath().c_str()) + std::string( "/examples/" );
@@ -917,10 +917,12 @@ void SofaModeler::runInSofa(	const std::string &sceneFilename, GNode* root)
     // Run Sofa
     if (sofaBinary.empty()) //If no specific binary is specified, we use runSofa
     {
+        std::string binaryName="runSofa";
+        if (debug) binaryName+='d';
 #ifdef WIN32
-        sofaBinary = binPath + "runSofa.exe";
+        sofaBinary = binPath + binaryName + ".exe";
 #else
-        sofaBinary = binPath + "runSofa";
+        sofaBinary = binPath + binaryName;
 #endif
     }
 
