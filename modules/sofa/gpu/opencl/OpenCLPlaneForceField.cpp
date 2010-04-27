@@ -54,7 +54,6 @@ int PlaneForceFieldOpenCLClass = core::RegisterObject("Supports GPU-side computa
 //start kernel
 
 sofa::helper::OpenCLProgram* PlaneForceFieldOpenCLFloat_program;
-sofa::helper::OpenCLProgram* PlaneForceFieldOpenCLDouble_program;
 
 sofa::helper::OpenCLKernel * PlaneForceFieldOpenCL3f_addForce_kernel;
 sofa::helper::OpenCLKernel * PlaneForceFieldOpenCL3f_addDForce_kernel;
@@ -87,28 +86,6 @@ void PlaneForceField_CreateProgramWithFloat()
             = new sofa::helper::OpenCLKernel(PlaneForceFieldOpenCLFloat_program,"GenericParticleForceField_3f_addDForce_Plane");
     }
 }
-
-
-
-
-void PlaneForceField_CreateProgramWithDouble()
-{
-
-    if(PlaneForceFieldOpenCLDouble_program==NULL)
-    {
-
-        std::map<std::string, std::string> types;
-        types["Real"]="double";
-        types["Real4"]="double4";
-
-        PlaneForceFieldOpenCLDouble_program
-            = new sofa::helper::OpenCLProgram(sofa::helper::OpenCLProgram::loadSource("OpenCLPlaneForceField.cl"),&types);
-
-        PlaneForceFieldOpenCLDouble_program->buildProgram();
-
-    }
-}
-
 
 
 typedef struct f4
