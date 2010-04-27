@@ -5,35 +5,28 @@
 <body>
 	<div id="contenu">
 		
-		<center><h3>Topological Mapping (1/7)</h3></center>
+		<center><h3>Topological Mapping (6/7)</h3>
+		  <br><br>
+		  <img src="hexaMesh_01.png" width="300" name="TutorialTopologyTetra2TriangleTopologicalMapping" align="middle">
+		</center>
+
 		
 		<br><div id="orangeText">Description:</div><br>
-		The objective of this tutorial is to create a simulation with topological mapping between a volume and a surface mesh. We will use some of the most common Sofa components trying not to enter into all the details related to the template selection. This will be done in another tutorial.<br>
-                The starting point will be a scene with all the components needed to handle collisions in a scene, and a volume mesh with its corresponding dynamic topological container. For details concerning differences between static and dynamic topologies, refere to...
+		This step is not following the previous steps. Indeed, it shows a hexahedra mesh which has already mechanical behavior and could be also linked to surfacique mesh. 
 
 		<br><div id="orangeText">Components:</div><br>
-                This is how the collisions are performed in Sofa using these default components.<br>
-                <b>DefaultPipeline</b>: Launch all the operations to perform the collision detection and response
+                <ul>
+		  <li>. </li>
+		  <li>. </li>
+		  <li>. </li>
+		</ul>
 
-                <h4>Collision Detection:</h4> 
-                <ol> 
-                  <li><u>Broad Phase</u>: using "Axis Aligned Bounding Boxes" (AABB), we only keep potential colliding pair of objects</li>
-                  <li><u>Narrow Phase</u>: we use the geometrical primitives (spheres, triangles, lines, points) to test the distance between two objects. <br>
-                    we use the <b>BruteForceDetection</b> to select which primitives will be used, and the <b>MinProximityIntersection</b> to detect if a collision exists between two geometrical primitives</li>
-                </ol>
-                <h4>Collision Response:</h4>
-                <ol> 
-                  <li>with all the colliding primitives, we create an appropriate collision response: the <b>ContactManager</b> gives the information about what response we have to use. </li>
-                  <li>Components are created dynamically in the graph to create repulsive forces, or constraints. In this tutorial, we will create <b>PenalityContactForceField</b>. </li>        
-                </ol>
-                <br>
-               
-                Advanced collision detection and response are implemented with Sofa, so don't hesitate to experiment other examples.
 
-		<br><div id="orangeText">In Sofa:</div><br>
-                In this scene, we only have a <b>OglModel</b> corresponding to a pure visual representation of an object. Nothing happens.
+		<br><div id="orangeText">Results:</div><br>
+		<br>
+		<center><img src="hexaMesh_02.png" width="300" name="TutorialTopologyTetra2TriangleTopologicalMapping" align="middle">
 
-                <br><center><h3><a href="1_FullObject.scn">Next</a></center></h3>
+                <br><center><h3><a href="6_TopoMapping.scn">Next</a></center></h3>
 	</div>
 </body>
 </html>
