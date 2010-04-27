@@ -1,0 +1,66 @@
+<html>
+<head>
+<link href="../../Objects/sofa_white.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<div id="contenu">
+		
+		<center><h3>RungeKutta Solver</h3></center>
+		
+		<center>
+		<table border="0">
+		  <tr>
+			<td><img src="ExplicitEulerSolver_start.png" align="middle" width="300"></td>
+			<td><img src="ExplicitEulerSolver_stable.png" align="middle" width="300"></td>
+		  </tr>
+		  <tr>
+			<td align="center">Starting scene</td>
+			<td align="center">Normal simulation</td>
+		  </tr>
+		</table> 
+                </center>
+
+		<div id="orangeText">Description:</div>
+		<p>
+                Alike EulerSolver in Sofa, RungeKuttaSolver denote the ODE solver using the explicite integration scheme for computing of 
+		the dynamic system. This integration scheme explicitely resolve the system in relation to time : given the mechanical state
+		at time T<sub>n</sub>, compute the state at time T<sub>n+1</sub>=T<sub>n</sub> + dt. The difference in RungeKuttaSolver is this 
+		integration use a more sophisticated algorithm for the computation of the state at time T<sub>n+1</sub>. Therefore there are more stability
+		and can use the time step higher than the EulerSolver one. Otherwise, RungeKuttaSolver use a more general explicite method than EulerSolver.
+		</p>
+
+		<div id="orangeText">Recomanded use :</div>
+		<p>
+		As every Explicite Integration method, RungeKutta accumulate errors for each time step. Therefore two criteria must be 
+		controled when using it : 
+		</p>
+		<ul>
+                  <li>The time step dt.</li>
+                  <li>The dynamic of the system.</li>
+                </ul>
+		<p>
+		However, RungeKutta4 is certainly more stable than ExpliciteEuler : The convergence error in RungeKutta4 is in relation to o(dt<sup>4</sup>), 
+		but in ExpliciteEuler it's only o(dt). For this example, RungeKutta can resolve the system with dt=0.001, but not the ExplicitEuler (0.0001). 
+		<p>
+		<p>
+		Users can try several solvers with different parameters dt to have the idea of the solver's difference (also test the dependence of the solver 
+		according to the dynamic of the system by using [Shift + leftmouse]).
+		<p>
+
+		<div id="orangeText">Sofa keywords : </div>
+ 		<p>Runge Kutta, ExplicitEuler, ODE, numerical stability, numerical integration.</p>
+
+		<div id="orangeText">See also : </div>
+ 		<p id="orangeText">
+			<a href="TutorialSolverStatic.html">Static Solver, </a>
+			<a href="TutorialSolverExplicitEuler.html">Explicit Euler Solver, </a>
+			<a href=".html">Central Difference Solver, </a>
+			<a href="TutorialSolverImplicitEuler.html">Implicit Euler Solver, </a>
+			<a href="TutorialSolverImplicitNewmark.html">Implicit Newmark Solver.</a>
+		 </p>
+
+               
+
+	</div>
+</body>
+</html>
