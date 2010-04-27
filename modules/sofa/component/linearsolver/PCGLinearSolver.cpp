@@ -297,7 +297,7 @@ void PCGLinearSolver<TMatrix,TVector>::solve (Matrix& M, Vector& x, Vector& b)
 
         sofa::helper::AdvancedTimer::stepEnd("PCGLinearSolver::solve");
     }
-
+    sofa::helper::AdvancedTimer::stepEnd("PCGLinearSolver::solve");
     sofa::helper::AdvancedTimer::valSet("PCG iterations", nb_iter);
 
     f_graph.endEdit();
