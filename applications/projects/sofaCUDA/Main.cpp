@@ -157,8 +157,8 @@ int main(int argc, char** argv)
     a1::Community com = a1::System::join_community( ac, av);
     Core::Thread::get_current()->set_cpuset(0);
     Core::Thread::get_current()->set_cpu(0);
-#endif /* SOFA_SMP*/
     mycudaInit(atoi(nProcs.c_str()));
+#endif /* SOFA_SMP*/
 
 
     if (!files.empty()) fileName = files[0];
@@ -207,7 +207,9 @@ int main(int argc, char** argv)
     sofa::simulation::tree::getSimulation()->init(groot);
     if (!nbIter)
         sofa::gui::GUIManager::SetScene(groot,fileName.c_str());
+#ifdef SOFA_SMP
     Core::Thread::get_current()->set_cpuset(~0UL);
+#endif
 
     if (nbIter != 0)
     {
@@ -238,8 +240,10 @@ int main(int argc, char** argv)
             }
             t2 = CTime::getRefTime();
             getSimulation()->animate(groot);
+#ifdef SOFA_SMP
             if(i%20==0)
                 mycudaPrintMem();
+#endif
             std::cerr << "All Time: " << ((CTime::getRefTime()-t2)/(CTime::getRefTicksPerSec()/1000))*0.001 << " seconds " << std::endl;
             if (save)
             {
@@ -278,7 +282,9 @@ int main(int argc, char** argv)
         groot = dynamic_cast<GNode*>( sofa::gui::GUIManager::CurrentSimulation() );
     }
     if (groot!=NULL) getSimulation()->unload(groot);
+#ifdef SOFA_SMP
     a1::Sync();
+#endif
 
     return 0;
 }
