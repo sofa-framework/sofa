@@ -48,6 +48,9 @@ BaseObject::BaseObject()
     : Base()
     , f_listening(initData( &f_listening, false, "listening", "if true, handle the events, otherwise ignore the events"))
     , context_(NULL)
+#ifdef SOFA_SMP
+    ,partition_(NULL)
+#endif
 /*        , m_isListening(false)
         , m_printLog(false)*/
 {
@@ -266,6 +269,22 @@ void BaseObject::setContext(BaseContext* n)
     context_ = n;
 }
 
+#ifdef SOFA_SMP
+
+void BaseObject::setPartition(Iterative::IterativePartition* p)
+{
+    partition_=p;
+}
+Iterative::IterativePartition*  BaseObject::getPartition()
+{
+    if(partition_)
+        return partition_;
+    if(getContext()&&getContext()->is_partition())
+        return getContext()->getPartition();
+    return 0;
+}
+
+#endif
 const BaseContext* BaseObject::getContext() const
 {
     //return (context_==NULL)?BaseContext::getDefault():context_;
@@ -280,6 +299,10 @@ BaseContext* BaseObject::getContext()
 
 void BaseObject::init()
 {
+#ifdef SOFA_SMP
+    if(!context_||!context_->is_partition())
+        setPartition(new Iterative::IterativePartition());
+#endif
 }
 
 void BaseObject::bwdInit()

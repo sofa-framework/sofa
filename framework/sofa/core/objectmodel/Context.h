@@ -27,13 +27,17 @@
 #ifndef SOFA_CORE_OBJECTMODEL_CONTEXT_H
 #define SOFA_CORE_OBJECTMODEL_CONTEXT_H
 
-#include <sofa/core/objectmodel/BaseObject.h>
+// #include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/Data.h>
 
 #include <iostream>
 #include <map>
 
+#ifdef SOFA_SMP
+#include <IterativePartition.h>
+#include <AthapascanIterative.h>
+#endif
 
 
 namespace sofa
@@ -74,6 +78,9 @@ public:
     Data<int> showInteractionForceFields_;
     Data<int> showWireFrame_;
     Data<int> showNormals_;
+#ifdef SOFA_SMP
+    Data<int> showProcessorColor_;
+#endif
     Data<bool> multiThreadSimulation_;
 
     /// @name For multiresolution (UNSTABLE)
@@ -81,6 +88,13 @@ public:
     Data<int> currentLevel_;
     Data<int> coarsestLevel_;
     Data<int> finestLevel_;
+#ifdef SOFA_SMP
+    Data<int> processor;
+    Data<bool> gpuPrioritary;
+    Data<bool> is_partition_;
+    Iterative::IterativePartition *partition_;
+#endif
+
     /// @}
 
 
@@ -150,6 +164,11 @@ public:
 
     /// Display flags: Normals
     virtual bool getShowNormals() const;
+
+
+#ifdef SOFA_SMP
+    virtual bool getShowProcessorColor() const;
+#endif
 
     /// Multiresolution support (UNSTABLE)
     virtual int getCurrentLevel() const;
@@ -224,12 +243,22 @@ public:
     /// Display flags: Normals
     virtual void setShowNormals(bool val);
 
+#ifdef SOFA_SMP
+    virtual void setShowProcessorColor(bool val);
+#endif
     /// Multiresolution support (UNSTABLE) : Set the current level, return false if l >= coarsestLevel
     virtual bool setCurrentLevel(int l);
     /// Multiresolution support (UNSTABLE)
     virtual void setCoarsestLevel(int l);
     /// Multiresolution support (UNSTABLE)
     virtual void setFinestLevel(int l);
+#ifdef SOFA_SMP
+    inline bool is_partition()const {return is_partition_.getValue();}
+    inline Iterative::IterativePartition *getPartition()const {return partition_;}
+    /// Accessor to the object processor
+    int getProcessor() const;
+    void setProcessor(int);
+#endif
 
     /// @}
 

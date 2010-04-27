@@ -55,6 +55,7 @@ Mass<DataTypes>::~Mass()
 {
 }
 
+#ifndef SOFA_SMP
 template<class DataTypes>
 void Mass<DataTypes>::addMDx(double factor)
 {
@@ -69,6 +70,7 @@ void Mass<DataTypes>::accFromF()
         accFromF(*this->mstate->getDx(), *this->mstate->getF());
 }
 
+#endif
 template<class DataTypes>
 double Mass<DataTypes>::getKineticEnergy() const
 {
@@ -124,6 +126,63 @@ void Mass<DataTypes>::exportGnuplot(double time)
         (*m_gnuplotFileEnergy) << time <<"\t"<< this->getKineticEnergy() <<"\t"<< this->getPotentialEnergy() <<"\t"<< this->getPotentialEnergy()+this->getKineticEnergy()<< sendl;
     }
 }
+#ifdef SOFA_SMP
+
+template<class DataTypes>
+struct ParallelMassAccFromF
+{
+
+    void	operator()( Mass< DataTypes >*m,Shared_rw< typename  DataTypes::VecDeriv> _a,Shared_r< typename  DataTypes::VecDeriv> _f)
+    {
+        m->accFromF(_a.access(),_f.read());
+    }
+};
+template<class DataTypes>
+struct ParallelMassAddMDx
+{
+public:
+    void	operator()(Mass< DataTypes >*m,Shared_rw< typename DataTypes::VecDeriv> _res,Shared_r<  typename DataTypes::VecDeriv> _dx,double factor)
+    {
+        m->addMDx(_res.access(),_dx.read(),factor);
+    }
+};
+
+
+
+template<class DataTypes>
+struct ParallelMassAddMDxCPU
+{
+public:
+    void	operator()( Mass< DataTypes >* m,Shared_rw< typename DataTypes::VecDeriv> _res,Shared_r<  typename DataTypes::VecDeriv> _dx,double factor)
+    {
+        m->addMDxCPU(_res.access(),_dx.read(),factor);
+    }
+};
+
+
+template<class DataTypes>
+struct ParallelMassAccFromFCPU
+{
+
+    void	operator()( Mass< DataTypes >*m,Shared_rw< typename  DataTypes::VecDeriv> _a,Shared_r< typename  DataTypes::VecDeriv> _f)
+    {
+        m->accFromFCPU(_a.access(),_f.read());
+    }
+};
+template<class DataTypes>
+void Mass< DataTypes >::addMDx( double factor)
+{
+    Task<ParallelMassAddMDxCPU < DataTypes  > ,ParallelMassAddMDx < DataTypes > >(this,**this->mstate->getF(), **this->mstate->getDx(),factor);
+}
+
+template<class DataTypes>
+void Mass< DataTypes >::accFromF()
+{
+    Task<ParallelMassAccFromFCPU< DataTypes  >,ParallelMassAccFromF< DataTypes  > >(this,**this->mstate->getDx(), **this->mstate->getF());
+
+}
+
+#endif
 
 /// return the mass relative to the DOF #index
 template <class DataTypes>

@@ -80,6 +80,10 @@ void BarycentricPenalityContact<TCollisionModel1,TCollisionModel2,ResponseDataTy
         ff = new ResponseForceField(mstate1,mstate2);
         ff->setName( getName() );
         ff->init();
+#ifdef SOFA_SMP
+        ff->setPartition(mstate1->getPartition());
+#endif
+
     }
 
     int insize = outputs.size();

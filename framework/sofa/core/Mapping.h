@@ -98,6 +98,10 @@ public:
     /// This method must be reimplemented by all mappings.
     virtual void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) = 0;
 
+#ifdef SOFA_SMP
+    virtual void applyCPU( typename Out::VecCoord& out, const typename In::VecCoord& in );
+#endif
+
     /// Apply the mapping on derived (velocity, displacement) vectors.
     ///
     /// If the Mapping can be represented as a matrix J, this method computes
@@ -105,6 +109,9 @@ public:
     ///
     /// This method must be reimplemented by all mappings.
     virtual void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) = 0;
+#ifdef SOFA_SMP
+    virtual void applyJCPU( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
+#endif
 
     virtual void init();
 
@@ -145,9 +152,19 @@ public:
     template<class T>
     static void create(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
     {
-        obj = new T(
-            (arg?dynamic_cast<In*>(arg->findObject(arg->getAttribute("object1","../.."))):NULL),
-            (arg?dynamic_cast<Out*>(arg->findObject(arg->getAttribute("object2",".."))):NULL));
+#ifdef SOFA_SMP_NUMA
+        if(context&&context->getProcessor()!=-1)
+        {
+
+            obj = new(numa_alloc_onnode(sizeof(T),context->getProcessor()/2)) T(
+                (arg?dynamic_cast<In*>(arg->findObject(arg->getAttribute("object1","../.."))):NULL),
+                (arg?dynamic_cast<Out*>(arg->findObject(arg->getAttribute("object2",".."))):NULL));
+        }
+        else
+#endif
+            obj = new T(
+                (arg?dynamic_cast<In*>(arg->findObject(arg->getAttribute("object1","../.."))):NULL),
+                (arg?dynamic_cast<Out*>(arg->findObject(arg->getAttribute("object2",".."))):NULL));
         if (context) context->addObject(obj);
         if (arg)
         {

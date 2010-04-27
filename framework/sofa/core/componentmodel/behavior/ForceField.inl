@@ -62,6 +62,7 @@ void ForceField<DataTypes>::init()
     //serr<<"ForceField<DataTypes>::init() "<<getName()<<" done"<<sendl;
 }
 
+#ifndef SOFA_SMP
 template<class DataTypes>
 void ForceField<DataTypes>::addForce()
 {
@@ -85,6 +86,7 @@ void ForceField<DataTypes>::addDForceV(double kFactor, double bFactor)
     if (mstate)
         addDForce(*mstate->getF(), *mstate->getV(), kFactor, bFactor);
 }
+#endif
 template<class DataTypes>
 void ForceField<DataTypes>::addDForce(VecDeriv& /*df*/, const VecDeriv& /*dx*/)
 {
@@ -120,6 +122,62 @@ double ForceField<DataTypes>::getPotentialEnergy() const
     else return 0;
 }
 
+#ifdef SOFA_SMP
+template<class DataTypes>
+struct ParallelForceFieldAddForceCPU
+{
+    void	operator()(ForceField< DataTypes > *ff,Shared_rw< typename DataTypes::VecDeriv> _f,Shared_r< typename DataTypes::VecCoord> _x,Shared_r< typename DataTypes::VecDeriv> _v)
+    {
+        ff->addForceCPU(_f.access(),_x.read(),_v.read());
+    }
+};
+template<class DataTypes>
+
+struct ParallelForceFieldAddDForceCPU
+{
+    void	operator()(ForceField< DataTypes > *ff,Shared_rw<typename DataTypes::VecDeriv> _df,Shared_r<typename  DataTypes::VecDeriv> _dx,double kFactor, double bFactor)
+    {
+        ff->addDForceCPU(_df.access(),_dx.read(),kFactor,bFactor);
+    }
+};
+
+
+template<class DataTypes>
+struct ParallelForceFieldAddForce
+{
+    void    operator()(ForceField< DataTypes > *ff,Shared_rw< typename DataTypes::VecDeriv> _f,Shared_r< typename DataTypes::VecCoord> _x,Shared_r< typename DataTypes::VecDeriv> _v)
+    {
+        ff->addForce(_f.access(),_x.read(),_v.read());
+
+    }
+};
+template<class DataTypes>
+struct ParallelForceFieldAddDForce
+{
+    void    operator()(ForceField< DataTypes >*ff,Shared_rw<typename DataTypes::VecDeriv> _df,Shared_r<typename  DataTypes::VecDeriv> _dx,double kFactor, double bFactor)
+    {
+        ff->addDForce(_df.access(),_dx.read(),kFactor,bFactor);
+    }
+};
+
+
+template<class DataTypes>
+void ForceField< DataTypes >::addForce()
+{
+    Task<ParallelForceFieldAddForceCPU< DataTypes  > ,ParallelForceFieldAddForce< DataTypes  > >(this,**mstate->getF(), **mstate->getX(), **mstate->getV());
+}
+template<class DataTypes>
+void ForceField< DataTypes >::addDForce(double kFactor, double bFactor)
+{
+    Task<ParallelForceFieldAddDForceCPU< DataTypes  >,ParallelForceFieldAddDForce< DataTypes  > >(this,**mstate->getF(), **mstate->getDx(),kFactor,bFactor);
+}
+
+template<class DataTypes>
+void ForceField< DataTypes >::addDForceV(double kFactor, double bFactor)
+{
+    Task<ParallelForceFieldAddDForceCPU< DataTypes  > ,ParallelForceFieldAddDForce< DataTypes  > >(this,**mstate->getF(), **mstate->getV(),kFactor,bFactor);
+}
+#endif
 } // namespace behavior
 
 } // namespace componentmodel

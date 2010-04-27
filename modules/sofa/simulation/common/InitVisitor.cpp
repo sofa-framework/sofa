@@ -43,6 +43,13 @@ Visitor::Result InitVisitor::processNodeTopDown(simulation::Node* node)
     if (!rootNode) rootNode=node;
 
     node->initialize();
+#ifdef SOFA_SMP_NUMA
+    if(node->getProcessor()!=-1)
+    {
+        std::cerr<<"set prefered"<<node->getProcessor()/2<<std::endl;
+        numa_set_preferred(node->getProcessor()/2);
+    }
+#endif
 
 
     for(unsigned int i=0; i<node->object.size(); ++i)

@@ -1,0 +1,350 @@
+/******************************************************************************
+*       SOFA, Simulation Open-Framework Architecture, version 1.0 beta 3      *
+*                (c) 2006-2008 MGH, INRIA, USTL, UJF, CNRS                    *
+*                                                                             *
+* This library is free software; you can redistribute it and/or modify it     *
+* under the terms of the GNU Lesser General Public License as published by    *
+* the Free Software Foundation; either version 2.1 of the License, or (at     *
+* your option) any later version.                                             *
+*                                                                             *
+* This library is distributed in the hope that it will be useful, but WITHOUT *
+* ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or       *
+* FITNESS FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License *
+* for more details.                                                           *
+*                                                                             *
+* You should have received a copy of the GNU Lesser General Public License    *
+* along with this library; if not, write to the Free Software Foundation,     *
+* Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301 USA.          *
+*******************************************************************************
+*                               SOFA :: Modules                               *
+*                                                                             *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
+*                                                                             *
+* Contact information: contact@sofa-framework.org                             *
+******************************************************************************/
+#include <sofa/simulation/tree/SMPSimulation.h>
+#include <sofa/helper/system/SetDirectory.h>
+#include <sofa/helper/system/FileRepository.h>
+#include <sofa/simulation/common/PrintVisitor.h>
+#include <sofa/simulation/common/FindByTypeVisitor.h>
+#include <sofa/simulation/common/ExportGnuplotVisitor.h>
+#include <sofa/simulation/common/InitVisitor.h>
+#include <sofa/simulation/common/InstrumentVisitor.h>
+#include <sofa/simulation/common/AnimateVisitor.h>
+#include <sofa/simulation/common/MechanicalVisitor.h>
+#include <sofa/simulation/common/CollisionVisitor.h>
+#include <sofa/simulation/common/UpdateContextVisitor.h>
+#include <sofa/simulation/common/UpdateMappingVisitor.h>
+#include <sofa/simulation/common/ResetVisitor.h>
+#include <sofa/simulation/common/VisualVisitor.h>
+#include <sofa/simulation/common/DeleteVisitor.h>
+#include <sofa/simulation/common/ExportOBJVisitor.h>
+#include <sofa/simulation/common/WriteStateVisitor.h>
+#include <sofa/simulation/common/XMLPrintVisitor.h>
+#include <sofa/simulation/common/PropagateEventVisitor.h>
+#include <sofa/simulation/common/BehaviorUpdatePositionVisitor.h>
+#include <sofa/simulation/common/AnimateBeginEvent.h>
+#include <sofa/simulation/common/AnimateEndEvent.h>
+#include <sofa/simulation/common/UpdateMappingEndEvent.h>
+#include <sofa/core/ObjectFactory.h>
+#include <sofa/helper/system/PipeProcess.h>
+#include <athapascan-1>
+#include <Multigraph.inl>
+#include <Partitionner.h>
+#include <fstream>
+#include <string.h>
+#ifndef WIN32
+#include <locale.h>
+#endif
+#include <sofa/helper/system/thread/CTime.h>
+using
+sofa::helper::system::thread::CTime;
+using
+sofa::helper::system::thread::ctime_t;
+namespace sofa
+{
+
+namespace simulation
+{
+
+namespace tree
+{
+
+Node *_root=NULL;
+double _dt;
+struct doCollideTask
+{
+
+    void operator()()
+    {
+        _root->execute<CollisionVisitor>();
+
+    }
+};
+struct compileGraphTask
+{
+    static Iterative::Multigraph<MainLoopTask> *mg;
+    static  Iterative::Multigraph<MainLoopTask>*& getMultigraph()
+    {
+        static   Iterative::Multigraph<MainLoopTask> *mg=0;
+        return mg;
+    }
+    static void setMultigraph(Iterative::Multigraph<MainLoopTask>* _mg)
+    {
+        Iterative::Multigraph<MainLoopTask> *&mg=getMultigraph();
+        mg=_mg;
+    }
+    void operator()()
+    {
+
+        ctime_t  t0 = CTime::getRefTime ();
+        if(getMultigraph()&&!getMultigraph()->compiled)
+        {
+            Partitionner::Instance().doUpdateScheduling();
+            sofa::core::CallContext::ProcessorType etype=sofa::core::CallContext::getExecutionType();
+            sofa::core::CallContext::setExecutionType(sofa::core::CallContext::GRAPH_KAAPI);
+            getMultigraph()->compile();
+            std::cerr<<"graph compiled"<<std::endl;
+            sofa::core::CallContext::setExecutionType(etype);
+            getMultigraph()->compiled=true;
+            getMultigraph()->deployed=false;
+        }
+        ctime_t
+        t1 = CTime::getRefTime ();
+        std::cerr << "Compiling Time: " <<
+                ((t1 - t0) / (CTime::getRefTicksPerSec () / 1000)) * 0.001<< std::endl;
+
+    }
+};
+struct animateTask
+{
+    void operator()()
+    {
+        sofa::simulation::tree::SMPSimulation* simulation=dynamic_cast<SMPSimulation *>(sofa::simulation::tree::getSimulation());
+        simulation->generateTasks( _root);
+        a1::Fork<compileGraphTask>(a1::SetSite(2))();
+
+    }
+};
+
+struct collideTask
+{
+    void operator()()
+    {
+
+        a1::Fork<doCollideTask>()();
+
+    }
+};
+struct visuTask
+{
+    void operator()()
+    {
+        //ColisonBeginEvent!!
+        //_root->execute<CollisionVisitor>();
+    }
+};
+struct MainLoopTask
+{
+
+    void operator()()
+    {
+        a1::Fork<animateTask>(a1::SetStaticSched(1,1,Sched::PartitionTask::SUBGRAPH))();
+        a1::Fork<visuTask>()();
+
+    }
+};
+
+
+
+
+
+
+
+SMPSimulation::SMPSimulation():visualNode(NULL),
+    parallelCompile( initData( &parallelCompile, false, "parallelCompile", "Compile task graph in parallel"))
+
+
+{
+    changeListener=new common::ChangeListener();
+
+    multiGraph= new Iterative::Multigraph<MainLoopTask>();
+    multiGraph2= new Iterative::Multigraph<MainLoopTask>();
+    multiGraph2->deployed=true;
+    multiGraph->deployed=true;
+    multiGraph2->compiled=true;
+    multiGraph->compiled=true;
+}
+
+SMPSimulation::~SMPSimulation()
+{
+}
+void SMPSimulation::init( Node* root )
+{
+    Simulation::init(root);
+    changeListener->addChild ( NULL,  dynamic_cast< GNode *>(root) );
+}
+
+
+/// Create a new node
+Node* SMPSimulation::newNode(const std::string& name)
+{
+    return new GNode(name);
+}
+// Execute one timestep. If dt is 0, the dt parameter in the graph will be used
+void SMPSimulation::animate ( Node* root, double dt )
+{
+    if ( !root ) return;
+
+    _root=root;
+    _dt=dt;
+
+    double nextTime = root->getTime() + root->getDt();
+
+    {
+        AnimateBeginEvent ev ( dt );
+        PropagateEventVisitor act ( &ev );
+        root->execute ( act );
+    }
+
+    BehaviorUpdatePositionVisitor beh(_root->getDt());
+    _root->execute ( beh );
+    if (changeListener->changed()||nbSteps.getValue()<2)
+    {
+        if(!parallelCompile.getValue())
+        {
+            ctime_t  t0 = CTime::getRefTime ();
+            Partitionner::Instance().doUpdateScheduling();
+            ctime_t
+            t1 = CTime::getRefTime ();
+            std::cerr << "Compiling Time: " <<
+                    ((t1 - t0) / (CTime::getRefTicksPerSec () / 1000)) * 0.001 << " seconds, "<< std::endl;
+            sofa::core::CallContext::ProcessorType etype=sofa::core::CallContext::getExecutionType();
+            sofa::core::CallContext::setExecutionType(sofa::core::CallContext::GRAPH_KAAPI);
+            multiGraph->compile();
+            t1 = CTime::getRefTime ();
+            std::cout<< ((t1 - t0) / (CTime::getRefTicksPerSec () / 1000)) * 0.001 << " seconds, "<< std::endl;
+            sofa::core::CallContext::setExecutionType(etype);
+            multiGraph->deploy();
+            t1 = CTime::getRefTime ();
+            std::cout<< ((t1 - t0) / (CTime::getRefTicksPerSec () / 1000)) * 0.001 << " seconds, "<< std::endl;
+        }
+        else
+        {
+            compileGraphTask::setMultigraph(multiGraph2);
+            multiGraph2->compiled=false;
+            if(nbSteps.getValue()<2)
+            {
+                sofa::core::CallContext::ProcessorType etype=sofa::core::CallContext::getExecutionType();
+                sofa::core::CallContext::setExecutionType(sofa::core::CallContext::GRAPH_KAAPI);
+                Partitionner::Instance().doUpdateScheduling();
+                multiGraph->compile();
+                sofa::core::CallContext::setExecutionType(etype);
+                multiGraph->deploy();
+                multiGraph2->compiled=true;
+
+            }
+        }
+        changeListener->reset();
+
+
+    }
+    multiGraph->step();
+    if(1&&!multiGraph2->deployed)
+    {
+        std::swap(multiGraph2,multiGraph);
+        multiGraph->deploy();
+        multiGraph->deployed=true;
+    }
+
+    ctime_t  t0 = CTime::getRefTime ();
+    _root->execute<CollisionVisitor>();
+    ctime_t
+    t1 = CTime::getRefTime ();
+    std::cout << "Collision Time: " << ((t1 - t0) / (CTime::getRefTicksPerSec () / 1000)) * 0.001 << " seconds, "<< std::endl;
+    _root->setTime(nextTime);
+    _root->execute<VisualUpdateVisitor>();
+    _root->execute<UpdateSimulationContextVisitor>();
+    {
+        AnimateEndEvent ev ( dt );
+        PropagateEventVisitor act ( &ev );
+        root->execute ( act );
+    }
+    *(nbSteps.beginEdit()) = nbSteps.getValue() + 1;
+    nbSteps.endEdit();
+
+
+
+
+}
+void SMPSimulation::generateTasks ( Node* root, double dt )
+{
+    if ( !root ) return;
+    if ( root->getMultiThreadSimulation() )
+        return;
+
+    {
+        AnimateBeginEvent ev ( dt );
+        PropagateEventVisitor act ( &ev );
+        root->execute ( act );
+    }
+
+    //std::cout << "animate\n";
+    double startTime = root->getTime();
+    double mechanicalDt = dt/numMechSteps.getValue();
+    //double nextTime = root->getTime() + root->getDt();
+
+    // CHANGE to support MasterSolvers : CollisionVisitor is now activated within AnimateVisitor
+    //root->execute<CollisionVisitor>();
+
+    AnimateVisitor act;
+    act.setDt ( mechanicalDt );
+    BehaviorUpdatePositionVisitor beh(root->getDt());
+    for ( unsigned i=0; i<numMechSteps.getValue(); i++ )
+    {
+        root->execute ( act );
+        root->execute ( beh );
+        root->setTime ( startTime + (i+1)* act.getDt() );
+        root->execute<UpdateSimulationContextVisitor>();
+    }
+
+    {
+        AnimateEndEvent ev ( dt );
+        PropagateEventVisitor act ( &ev );
+        root->execute ( act );
+    }
+
+    root->execute<UpdateMappingVisitor>();
+    {
+        UpdateMappingEndEvent ev ( dt );
+        PropagateEventVisitor act ( &ev );
+        root->execute ( act );
+    }
+    root->execute<ParallelVisualUpdateVisitor>();
+    root->execute<ParallelCollisionVisitor>();
+}
+Node *SMPSimulation::getVisualRoot()
+{
+    if (visualNode) return visualNode;
+    else
+    {
+        visualNode= new GNode("VisualNode");
+        visualNode->addTag(core::objectmodel::Tag("Visual"));
+        return visualNode;
+    }
+}
+
+
+
+SOFA_DECL_CLASS ( SMPSimulation );
+// Register in the Factory
+int SMPSimulationClass = core::RegisterObject ( "Main simulation algorithm" ) .add< SMPSimulation >();
+
+
+
+} // namespace tree
+
+} // namespace simulation
+
+} // namespace sofa
+

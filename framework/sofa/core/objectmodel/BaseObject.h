@@ -31,11 +31,20 @@
 #pragma once
 #endif
 
+
 #include <sofa/core/objectmodel/Base.h>
 #include <sofa/core/objectmodel/BaseContext.h>
 #include <sofa/core/objectmodel/BaseObjectDescription.h>
+#ifdef SOFA_SMP
+#include <sofa/defaulttype/SharedTypes.h>
+#include <sofa/core/objectmodel/Context.h>
+#include <sofa/core/objectmodel/BaseObjectTasks.h>
 
 #include <sofa/helper/set.h>
+#endif
+#ifdef SOFA_SMP_NUMA
+#include <numa.h>
+#endif
 
 
 namespace sofa
@@ -70,6 +79,9 @@ class Event;
  *
  */
 class SOFA_CORE_API BaseObject : public virtual Base
+#ifdef SOFA_SMP
+    , public BaseObjectTasks
+#endif
 {
 public:
     SOFA_CLASS(BaseObject, Base);
@@ -85,6 +97,12 @@ public:
     const BaseContext* getContext() const;
 
     BaseContext* getContext();
+#ifdef SOFA_SMP
+    void setPartition(Iterative::IterativePartition* p);
+    Iterative::IterativePartition*  getPartition();
+    Iterative::IterativePartition*  prepareTask();
+
+#endif
     /// @}
 
     /// @name control
@@ -103,6 +121,7 @@ public:
     static void create(T*& obj, BaseContext* context, BaseObjectDescription* arg)
     {
         obj = new T;
+
         if (context) context->addObject(obj);
         if (arg) obj->parse(arg);
     }
@@ -181,6 +200,9 @@ public:
 
 protected:
     BaseContext* context_;
+#ifdef SOFA_SMP
+    Iterative::IterativePartition *partition_;
+#endif
 };
 
 } // namespace objectmodel

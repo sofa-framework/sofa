@@ -246,7 +246,11 @@ public:
     /// \li v = a + b
     /// \li v = b * f
     virtual void vOp(VecId v, VecId a = VecId::null(), VecId b = VecId::null(), double f=1.0) = 0; // {}
-
+#ifdef SOFA_SMP
+    virtual void vOp(VecId v, VecId a, VecId b, double f, a1::Shared<double> * fSh) = 0; // {}
+    virtual void vOpMEq(VecId v, VecId a = VecId::null(), a1::Shared<double> * fSh=NULL) = 0; // {}
+    virtual void vDot(a1::Shared<double> *result,VecId a, VecId b) = 0; //{ return 0; }
+#endif
     /// Data structure describing a set of linear operation on vectors
     /// \see vMultiOp
     typedef helper::vector< std::pair< VecId, helper::vector< std::pair< VecId, double > > > > VMultiOp;

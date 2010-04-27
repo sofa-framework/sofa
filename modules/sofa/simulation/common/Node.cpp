@@ -490,6 +490,9 @@ void Node::setDefaultVisualContextValue()
     if (showInteractionForceFields_.getValue() == -1)  showInteractionForceFields_.setValue(false);
     if (showWireFrame_.getValue() == -1)               showWireFrame_.setValue(false);
     if (showNormals_.getValue() == -1)                 showNormals_.setValue(false);
+#ifdef SOFA_SMP
+    if (showProcessorColor_.getValue() == -1)                 showProcessorColor_.setValue(false);
+#endif
 }
 
 void Node::initialize()

@@ -178,6 +178,13 @@ contains(DEFINES,SOFA_GPU_CUDA) {
 else {
   message( "|  GPU support using CUDA: DISABLED")
 }
+contains(DEFINES,SOFA_SMP) {
+  message( "|   Sofa-Parallel: ENABLED ")
+  message( "| KAAPI_DIR=$${KAAPI_DIR}")
+}
+else {
+  message( "|  Sofa-Parallel: DISABLED")
+}
 
 contains(DEFINES,SOFA_GPU_OPENCL) {
   message( "|  GPU support using OPENCL: ENABLED")
@@ -270,3 +277,19 @@ else {
 }
 
 message( "======================================")
+
+unix {
+  contains(DEFINES, SOFA_QT4):DOLLAR="\\$"
+  !contains(DEFINES, SOFA_QT4):DOLLAR="\$"
+  contains (DEFINES, SOFA_SMP) {
+    system(echo "export SOFA_DIR=$${PWD}" >config-Sofa-parallel.sh) 
+    system(echo "export KAAPI_DIR=$${KAAPI_DIR}" >>config-Sofa-parallel.sh) 
+    system(echo "export LD_LIBRARY_PATH=$${DOLLAR}SOFA_DIR/lib/linux:$${DOLLAR}KAAPI_DIR/lib:$${DOLLAR}LD_LIBRARY_PATH" >>config-Sofa-parallel.sh) 
+    system(echo "export PATH=$${DOLLAR}SOFA_DIR/bin:$${DOLLAR}KAAPI_DIR/bin:$${DOLLAR}PATH" >>config-Sofa-parallel.sh) 
+    contains (DEFINES, SOFA_GPU_CUDA) {
+      system(echo "export CUDA_DIR=$${CUDA_DIR}" >>config-Sofa-parallel.sh) 
+      system(echo "export LD_LIBRARY_PATH=$${DOLLAR}CUDA_DIR/lib:$${DOLLAR}CUDA_DIR/lib64:$${DOLLAR}LD_LIBRARY_PATH" >>config-Sofa-parallel.sh) 
+      system(echo "export PATH=$${DOLLAR}CUDA_DIR/bin:$${DOLLAR}PATH" >>config-Sofa-parallel.sh) 
+    }
+  }
+}

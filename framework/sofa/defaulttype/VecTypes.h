@@ -29,6 +29,9 @@
 
 #include <sofa/defaulttype/Vec.h>
 #include <sofa/core/objectmodel/BaseContext.h>
+#ifdef SOFA_SMP
+#include <sofa/defaulttype/SharedTypes.h>
+#endif /* SOFA_SMP */
 #include <sofa/helper/vector.h>
 #include <sofa/defaulttype/SparseConstraintTypes.h>
 #include <iostream>
@@ -51,9 +54,15 @@ public:
     typedef TCoord Coord;
     typedef TDeriv Deriv;
     typedef TReal Real;
+#ifndef SOFA_SMP
     typedef vector<Coord> VecCoord;
     typedef vector<Deriv> VecDeriv;
     typedef vector<Real> VecReal;
+#else /* SOFA_SMP */
+    typedef SharedVector<Coord> VecCoord;
+    typedef SharedVector<Deriv> VecDeriv;
+    typedef SharedVector<Real> VecReal;
+#endif /* SOFA_SMP */
 
     typedef Coord CPos;
     static const CPos& getCPos(const Coord& c) { return c; }
@@ -67,7 +76,11 @@ public:
     typedef SparseConstraint<Deriv> SparseVecDeriv;
 
     //! All the Constraints applied to a state Vector
+#ifndef SOFA_SMP
     typedef	vector<SparseVecDeriv> VecConst;
+#else /* SOFA_SMP */
+    typedef	SharedVector<SparseVecDeriv> VecConst;
+#endif /* SOFA_SMP */
 
     template<typename T>
     static void set(Coord& c, T x, T y, T z)
@@ -144,10 +157,29 @@ protected:
     size_type   maxsize;
     size_type   cursize;
     ExtVectorAllocator<T>* allocator;
+#ifdef SOFA_SMP
+    Shared<ExtVector<T> > * sharedData;
+#endif /* SOFA_SMP */
 public:
+#ifndef SOFA_SMP
     explicit ExtVector(ExtVectorAllocator<T>* alloc = NULL) : data(NULL), maxsize(0), cursize(0), allocator(alloc) {}
     ExtVector(int size, ExtVectorAllocator<T>* alloc) : data(NULL), maxsize(0), cursize(0), allocator(alloc) { resize(size); }
+#else /* SOFA_SMP */
+    explicit ExtVector(ExtVectorAllocator<T>* alloc = NULL) : data(NULL), maxsize(0), cursize(0), allocator(alloc) {init();}
+    ExtVector(int size, ExtVectorAllocator<T>* alloc) : data(NULL), maxsize(0), cursize(0), allocator(alloc) { init(); resize(size); }
+#endif /* SOFA_SMP */
     ~ExtVector() { if (allocator) allocator->close(data); }
+#ifdef SOFA_SMP
+    a1::Shared<ExtVector<T>  >& operator*() const {return *sharedData;}
+
+    void init()
+    {
+        sharedData=new Shared<ExtVector<T> >(this);
+    }
+
+#else
+    void init() {}
+#endif /* SOFA_SMP */
     void setAllocator(ExtVectorAllocator<T>* alloc)
     {
         if (alloc != allocator)
@@ -304,7 +336,11 @@ public:
     typedef SparseConstraint<Deriv> SparseVecDeriv;
 
     //! All the Constraints applied to a state Vector
+#ifndef SOFA_SMP
     typedef	vector<SparseVecDeriv> VecConst;
+#else /* SOFA_SMP */
+    typedef	SharedVector<SparseVecDeriv> VecConst;
+#endif /* SOFA_SMP */
 
     template<typename T>
     static void set(Coord& c, T x, T y, T z)

@@ -53,16 +53,27 @@ Context::Context()
     , showInteractionForceFields_ (initData(&showInteractionForceFields_, -1,"showInteractionForceFields","display Interaction Force Fields"))
     , showWireFrame_              (initData(&showWireFrame_,              -1,"showWireFrame","display in WireFrame"))
     , showNormals_                (initData(&showNormals_,                -1,"showNormals","display Normals"))
+#ifdef SOFA_SMP
+    , showProcessorColor_                (initData(&showProcessorColor_,                -1,"showProcessorColor","display Processor Color"))
+#endif
     , multiThreadSimulation_(initData(&multiThreadSimulation_,false,"multiThreadSimulation","Apply multithreaded simulation"))
     , currentLevel_(initData(&currentLevel_,0,"currentLevel","Current level of details"))
     , coarsestLevel_(initData(&coarsestLevel_,3,"coarsestLevel","Coarsest level of details"))
     , finestLevel_(initData(&finestLevel_,0,"finestLevel","Finest level of details"))
+#ifdef SOFA_SMP
+    ,  processor(initData(&processor,(int )-1,"processor","assigned processor"))
+    ,  gpuPrioritary(initData(&gpuPrioritary,false,"gpuPrioritary","node should be executed on GPU")),
+//  is_partition_(initData(&is_partition_,false,"partition","is a parallel partition"))
+    partition_(0)
+#endif
 {
     setPositionInWorld(objectmodel::BaseContext::getPositionInWorld());
     setGravityInWorld(objectmodel::BaseContext::getLocalGravity());
     setVelocityInWorld(objectmodel::BaseContext::getVelocityInWorld());
     setVelocityBasedLinearAccelerationInWorld(objectmodel::BaseContext::getVelocityBasedLinearAccelerationInWorld());
-
+#ifdef SOFA_SMP
+    is_partition_.setValue(false);
+#endif
     addAlias(&showVisualModels_,           "showAll"); addAlias(&showVisualModels_,           "showVisual");
 
     addAlias(&showBehaviorModels_,         "showAll"); addAlias(&showBehaviorModels_,         "showBehavior");
@@ -246,7 +257,14 @@ bool Context::getShowNormals() const
     if (showNormals_.getValue() < 0) return false;
     else return showNormals_.getValue()!= 0;
 }
-
+#ifdef SOFA_SMP
+/// Display flags: Normal
+bool Context::getShowProcessorColor() const
+{
+    if (showProcessorColor_.getValue() < 0) return false;
+    else return showProcessorColor_.getValue()!= 0;
+}
+#endif
 
 // Multiresolution
 
@@ -362,6 +380,12 @@ void Context::setShowNormals(bool val)
     showNormals_.setValue(val);
 }
 
+#ifdef SOFA_SMP
+void Context::setShowProcessorColor(bool val)
+{
+    showProcessorColor_.setValue(val);
+}
+#endif
 
 // Multiresolution
 
@@ -402,6 +426,16 @@ void Context::copyContext(const Context& c)
     copySimulationContext(c);
     copyVisualContext(c);
 }
+#ifdef SOFA_SMP
+int Context::getProcessor() const
+{
+    return processor.getValue();
+}
+void Context::setProcessor(int p)
+{
+    processor.setValue(p);
+}
+#endif
 
 
 void Context::copySimulationContext(const Context& c)
@@ -411,6 +445,10 @@ void Context::copySimulationContext(const Context& c)
     time_.setValue(c.time_.getValue());
     animate_.setValue(c.animate_.getValue());
     multiThreadSimulation_.setValue(c.multiThreadSimulation_.getValue());
+#ifdef SOFA_SMP
+    if(c.gpuPrioritary.getValue())
+        gpuPrioritary.setValue(true);
+#endif
 
     localFrame_ = c.localFrame_;
     spatialVelocityInWorld_ = c.spatialVelocityInWorld_;
@@ -420,6 +458,34 @@ void Context::copySimulationContext(const Context& c)
 // 	finestLevel_ = c.finestLevel_;
 // 	coarsestLevel_ = c.coarsestLevel_;
 // 	currentLevel_ = c.currentLevel_;
+#ifdef SOFA_SMP
+    if(!partition_)
+    {
+        if(processor.getValue()!=-1)
+            is_partition_.setValue(true);
+        if(is_partition())
+        {
+
+            partition_= new Iterative::IterativePartition();
+//          partition_->setCPU(processor.getValue());
+        }
+    }
+    if(processor.getValue()==-1&&c.processor.getValue()!=-1)
+    {
+        processor.setValue(c.processor.getValue());
+        is_partition_.setValue(true);
+    }
+    if(c.is_partition()&&!partition_)
+    {
+        partition_=c.getPartition();
+        is_partition_.setValue(true);
+    }
+    if((gpuPrioritary.getValue())&&partition_)
+    {
+        partition_->setGpuPrioritary();
+    }
+
+#endif
 
 }
 
@@ -435,6 +501,9 @@ void Context::copyVisualContext(const Context& c)
     showInteractionForceFields_.setValue(c.showInteractionForceFields_.getValue());
     showWireFrame_.setValue(c.showWireFrame_.getValue());
     showNormals_.setValue(c.showNormals_.getValue());
+#ifdef SOFA_SMP
+    showProcessorColor_.setValue(c.showProcessorColor_.getValue());
+#endif
 }
 
 

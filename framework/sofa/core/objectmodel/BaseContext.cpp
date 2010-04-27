@@ -63,6 +63,9 @@ BaseContext* BaseContext::getDefault()
 
 /// The Context is active
 bool BaseContext::isActive() const { return true;};
+#ifdef SOFA_SMP
+bool BaseContext::is_partition() const { return false;};
+#endif
 
 /// Gravity in the local coordinate system
 BaseContext::Vec3 BaseContext::getLocalGravity() const
@@ -101,6 +104,16 @@ bool BaseContext::getMultiThreadSimulation() const
 {
     return false;
 }
+#ifdef SOFA_SMP
+int BaseContext::getProcessor() const
+{
+    return -1;
+}
+Iterative::IterativePartition* BaseContext::getPartition() const
+{
+    return 0;
+}
+#endif
 
 /// Display flags: Collision Models
 bool BaseContext::getShowCollisionModels() const
@@ -161,6 +174,13 @@ bool BaseContext::getShowNormals() const
 {
     return false;
 }
+
+#ifdef SOFA_SMP
+bool BaseContext::getShowProcessorColor() const
+{
+    return false;
+}
+#endif
 
 /// Multiresolution
 int BaseContext::getCurrentLevel() const

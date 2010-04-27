@@ -433,12 +433,37 @@ void UniformMass<DataTypes, MassType>::draw()
         points.push_back ( p );
         gravityCenter += x[i];
     }
-    simulation::getSimulation()->DrawUtility.drawPoints ( points, 2, Vec<4,float> ( 1,1,1,1 ) );
+    Vec4f color(1,1,1,1);
+
+#ifdef SOFA_SMP
+    static float colorTab[][4]=
+    {
+        {1.0f,0.0f,0.0f,1.0f},
+        {1.0f,1.0f,0.0f,1.0f},
+        {0.0f,1.0f,0.0f,1.0f},
+        {0.0f,1.0f,1.0f,1.0f},
+        {0.0f,0.0f,1.0f,1.0f},
+        {0.5f,.5f,.5f,1.0f},
+        {0.5f,0.0f,0.0f,1.0f},
+        {.5f,.5f,0.0f,1.0f},
+        {0.0f,1.0f,0.0f,1.0f},
+        {0.0f,1.0f,1.0f,1.0f},
+        {0.0f,0.0f,1.0f,1.0f},
+        {0.5f,.5f,.5f,1.0f}
+    };
+    if(this->getContext()->getShowProcessorColor())
+    {
+        unsigned int proc=Core::Processor::get_current()->get_pid();
+        color = colorTab[proc%12];
+    }
+#endif
+    simulation::getSimulation()->DrawUtility.drawPoints ( points, 2, color);
+
     if ( showCenterOfGravity.getValue() )
     {
         points.clear();
         glBegin ( GL_LINES );
-        glColor4f ( 1,1,0,1 );
+        glColor4f (1,1,0,1 );
         gravityCenter /= x.size();
         for ( unsigned int i=0 ; i<Coord::static_size ; i++ )
         {

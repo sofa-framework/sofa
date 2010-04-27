@@ -30,6 +30,7 @@
 
 #include <sofa/core/ObjectFactory.h>
 #include <sofa/core/objectmodel/Context.h>
+#include <sofa/core/objectmodel/BaseObject.h>
 #include <sofa/simulation/common/Colors.h>
 
 namespace projects

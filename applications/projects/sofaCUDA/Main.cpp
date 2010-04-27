@@ -30,9 +30,12 @@
 #include <stdio.h>
 
 #include <sofa/gpu/cuda/mycuda.h>
-
-#include <sofa/simulation/common/xml/initXml.h>
+#include <sofa/helper/ArgumentParser.h>
+#ifdef SOFA_SMP
+#include <sofa/simulation/tree/SMPSimulation.h>
+#else
 #include <sofa/simulation/tree/TreeSimulation.h>
+#endif
 #include <sofa/simulation/tree/GNode.h>
 #include <sofa/component/init.h>
 #include <sofa/helper/Factory.h>
@@ -42,6 +45,11 @@
 #include <sofa/gui/SofaGUI.h>
 #include <sofa/gui/GUIManager.h>
 #include <sofa/helper/system/glut.h>
+#ifdef SOFA_SMP
+#include <athapascan-1>
+#endif /* SOFA_SMP */
+#include <sofa/simulation/common/xml/initXml.h>
+
 
 using sofa::helper::system::thread::CTime;
 using sofa::helper::system::thread::ctime_t;
@@ -55,34 +63,120 @@ using namespace sofa::gpu::cuda;
 
 int main(int argc, char** argv)
 {
-
     sofa::helper::BackTrace::autodump();
 
+    //glutInit(&argc,argv);
     sofa::gui::SofaGUI::SetProgramName(argv[0]);
+    std::string fileName ;
+    bool        startAnim = false;
+    bool        printFactory = false;
+    bool        loadRecent = false;
+    int iter=0;
+    int interval=0;
     std::string gui = sofa::gui::SofaGUI::GetGUIName();
-    sofa::gui::GUIManager::ListSupportedGUI('|');
-    //std::string fileName = "CUDA/beam10x10x46-spring-rk4-CUDA.scn";
+    std::vector<std::string> plugins;
+    std::vector<std::string> files;
+#ifdef SOFA_SMP
+    std::string nProcs="";
+    bool        disableStealing = false;
+    bool        affinity = false;
+    std::string cuda="";
+    bool	staticGpuPrioritary = false;
+    bool	dynamicGpuPrioritary = false;
+#endif
+    bool silent = false;
+    bool verbose = false;
+    sofa::gui::SofaGUI::SetProgramName(argv[0]);
+    std::string gui_help = "choose the UI (";
+    gui_help += sofa::gui::GUIManager::ListSupportedGUI('|');
+    gui_help += ")";
 
-    std::string fileName = "CUDA/quadSpringSphereCUDA.scn";
 
-    int nbIter = 0;
-    if (argc < 2 || argc > 3)
-    {
-        std::cerr << "Usage: "<<argv[0]<<" filename.scn [niterations]\n";
-        //return 1;
-    }
+    sofa::helper::parse(&files, "This is a SOFA application. Here are the command line arguments")
+    .option(&startAnim,'S',"start","start the animation loop")
+    .option(&printFactory,'p',"factory","print factory logs")
+    .option(&gui,'g',"gui",gui_help.c_str())
+    .option(&plugins,'l',"load","load given plugins")
+    .option(&loadRecent,'r',"recent","load most recently opened file")
+    .option(&silent,'s',"silent", "remove most CUDA log messages")
+    .option(&interval,'t',"interval", "remove most CUDA log messages")
+    .option(&verbose,'v',"verbose","display trace of CUDA calls")
+#ifdef SOFA_SMP
+    .option(&disableStealing,'d',"disableStealing","Disable Work Stealing")
+    .option(&affinity,'a',"affinity","Enable affinity base Work Stealing")
+    .option(&nProcs,'n',"nprocs","Number of processor")
+    .option(&cuda,'c',"cuda","Number of CUDA GPU to use")
+    .option(&iter,'i',"nbiter","Number of iterations")
+    .option(&staticGpuPrioritary,'o',"sgpuprio","Static gpu prioritary")
+    .option(&dynamicGpuPrioritary,'O',"dgpuprio","Dynamic gpu prioritary")
+#endif
+    (argc,argv);
+    if (silent && verbose)
+        mycudaVerboseLevel = LOG_INFO;
+    else if (silent)
+        mycudaVerboseLevel = LOG_ERR;
+    else if (verbose)
+        mycudaVerboseLevel = LOG_TRACE;
+
+
+    std::cerr<<"mycudaInit(0)"<<"\n";
+    std::cerr<<"apres mycudaInit(0)"<<"\n";
+#ifdef SOFA_SMP
+    int ac=0;
+    char **av=NULL;
+
+    Util::KaapiComponentManager::prop["util.globalid"]="0";
+    Util::KaapiComponentManager::prop["sched.strategy"]="I";
+    if(!disableStealing)
+        Util::KaapiComponentManager::prop["sched.stealing"]="true";
     else
     {
-        fileName = argv[1];
-        if (argc >=3) nbIter = atoi(argv[2]);
+        std::cout << "Work Stealing Disabled!" << std::endl;
+        Util::KaapiComponentManager::prop["sched.stealing"]="false";
+        Util::KaapiComponentManager::prop["community.cpuset"]="255";
     }
+    if(affinity)
+    {
+        Util::KaapiComponentManager::prop["sched.stealing"]="true";
+        Util::KaapiComponentManager::prop["sched.affinity"]="true";
+    }
+
+    if(cuda!="")
+        Util::KaapiComponentManager::prop["community.thread.gpu"]=cuda;
+
+    if(nProcs!="")
+        Util::KaapiComponentManager::prop["community.thread.poolsize"]=nProcs;
+    if(staticGpuPrioritary)
+        Util::KaapiComponentManager::prop["core.staticgpuprioritary"]="true";
+
+    if(dynamicGpuPrioritary)
+    {
+        Util::KaapiComponentManager::prop["core.dynamicgpuprioritary"]="true";
+        Util::KaapiComponentManager::prop["core.staticgpuprioritary"]="false";
+    }
+    a1::Community com = a1::System::join_community( ac, av);
+    Core::Thread::get_current()->set_cpuset(0);
+    Core::Thread::get_current()->set_cpu(0);
+#endif /* SOFA_SMP*/
+    mycudaInit(atoi(nProcs.c_str()));
+
+
+    if (!files.empty()) fileName = files[0];
+    //std::string fileName = "CUDA/beam10x10x46-spring-rk4-CUDA.scn";
+
+
+    int nbIter = iter;
 
     if (!nbIter)
         glutInit(&argc,argv);
 
     mycudaInit();
 
+#ifdef SOFA_SMP
+    sofa::simulation::setSimulation(new sofa::simulation::tree::SMPSimulation());
+#else
     sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
+#endif
     sofa::component::init();
     sofa::simulation::xml::initXml();
 
@@ -98,7 +192,7 @@ int main(int argc, char** argv)
     sofa::helper::system::DataRepository.findFile(fileName);
 
     GNode* groot = NULL;
-    ctime_t t0, t1;
+    ctime_t t0, t1,t2;
     CTime::getRefTime();
 
     if (!fileName.empty())
@@ -113,6 +207,7 @@ int main(int argc, char** argv)
     sofa::simulation::tree::getSimulation()->init(groot);
     if (!nbIter)
         sofa::gui::GUIManager::SetScene(groot,fileName.c_str());
+    Core::Thread::get_current()->set_cpuset(~0UL);
 
     if (nbIter != 0)
     {
@@ -141,13 +236,27 @@ int main(int argc, char** argv)
                 std::cout << '.' << std::flush;
                 ++n;
             }
+            t2 = CTime::getRefTime();
             getSimulation()->animate(groot);
+            if(i%20==0)
+                mycudaPrintMem();
+            std::cerr << "All Time: " << ((CTime::getRefTime()-t2)/(CTime::getRefTicksPerSec()/1000))*0.001 << " seconds " << std::endl;
+            if (save)
+            {
+                if(interval&&i%interval==1)
+                {
+                    std::ostringstream objname;
+                    objname<< fileName.substr(0,fileName.length()-4)<<"-"<<i<<"-scene.obj";
+                    std::cout << "Exporting to OBJ " << objname.str() << std::endl;
+                    getSimulation()->exportOBJ(groot, objname.str().c_str());
+                }
+            }
         }
 
         t1 = CTime::getRefTime();
         std::cout << std::endl;
         std::cout << nbIter << " iterations done." << std::endl;
-        std::cout << "Time: " << ((t1-t0)/(CTime::getRefTicksPerSec()/1000))*0.001 << " seconds, " << ((t1-t0)/(CTime::getRefTicksPerSec()/1000))/(double)nbIter <<" ms/it." << std::endl;
+        std::cerr << "Time: " << ((t1-t0)/(CTime::getRefTicksPerSec()/1000))*0.001 << " seconds, " << ((t1-t0)/(CTime::getRefTicksPerSec()/1000))/(double)nbIter <<" ms/it." << std::endl;
         std::string logname = fileName.substr(0,fileName.length()-4)+"-log.txt";
         std::ofstream flog(logname.c_str());
         flog << "Time: " << ((t1-t0)/(CTime::getRefTicksPerSec()/1000))*0.001 << " seconds, " << ((t1-t0)/(CTime::getRefTicksPerSec()/1000))/(double)nbIter <<" ms/it." << std::endl;
@@ -169,6 +278,7 @@ int main(int argc, char** argv)
         groot = dynamic_cast<GNode*>( sofa::gui::GUIManager::CurrentSimulation() );
     }
     if (groot!=NULL) getSimulation()->unload(groot);
+    a1::Sync();
 
     return 0;
 }

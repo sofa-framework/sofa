@@ -56,7 +56,16 @@
 #include <sofa/simulation/common/PropagateEventVisitor.h>
 #include <sofa/core/objectmodel/GLInitializedEvent.h>
 #endif // SOFA_HAVE_CHAI3D
-
+#ifdef SOFA_SMP
+#include <sofa/component/visualmodel/VisualModelImpl.h>
+#include <sofa/simulation/common/AnimateBeginEvent.h>
+#include <sofa/simulation/common/CollisionVisitor.h>
+#include <sofa/simulation/common/AnimateEndEvent.h>
+#include <sofa/simulation/common/PropagateEventVisitor.h>
+#include <sofa/simulation/common/VisualVisitor.h>
+#include <athapascan-1>
+#include "Multigraph.inl"
+#endif
 // define this if you want video and OBJ capture to be only done once per N iteration
 //#define CAPTURE_PERIOD 5
 
@@ -75,12 +84,90 @@ using std::endl;
 using namespace sofa::defaulttype;
 using namespace sofa::helper::gl;
 using sofa::simulation::getSimulation;
+#ifdef SOFA_SMP
+using namespace sofa::simulation;
+struct doCollideTask
+{
+    void operator()()
+    {
+//	std::cout << "Recording simulation with base name: " << writeSceneName << "\n";
+        // groot->execute<CollisionVisitor>();
+        SimpleGUI::instance->getScene()->execute<CollisionVisitor>();
+        AnimateBeginEvent ev ( 0.0 );
+        PropagateEventVisitor act ( &ev );
+        SimpleGUI::instance->getScene()->execute ( act );
+        //	sofa::simulation::tree::getSimulation()->animate(groot);
+
+    }
+};
+struct animateTask
+{
+    void operator()()
+    {
+//	std::cout << "Recording simulation with base name: " << writeSceneName << "\n";
+
+        getSimulation()->animate( SimpleGUI::instance->getScene());
+
+    }
+};
+
+struct collideTask
+{
+    void operator()()
+    {
+//	std::cout << "Recording simulation with base name: " << writeSceneName << "\n";
+
+        //   a1::Fork<doCollideTask>()();
+        //	sofa::simulation::tree::getSimulation()->animate(groot);
+
+    }
+};
+struct visuTask
+{
+    void operator()()
+    {
+//	std::cout << "Recording simulation with base name: " << writeSceneName << "\n";
+        AnimateEndEvent ev ( 0.0 );
+        PropagateEventVisitor act ( &ev );
+        SimpleGUI::instance->getScene()->execute ( act );
+        SimpleGUI::instance->getScene()->execute<VisualUpdateVisitor>();
+
+    }
+};
+struct MainLoopTask
+{
+
+    void operator()()
+    {
+//	std::cout << "Recording simulation with base name: " << writeSceneName << "\n";
+        Iterative::Fork<doCollideTask>()();
+        Iterative::Fork<animateTask >(a1::SetStaticSched(1,1,Sched::PartitionTask::SUBGRAPH))();
+        Iterative::Fork<visuTask>()();
 
 
+        //a1::Fork<collideTask>(a1::SetStaticSched(1,1,Sched::PartitionTask::SUBGRAPH))();
+
+
+
+    }
+};
+
+#endif
 SimpleGUI* SimpleGUI::instance = NULL;
 
 int SimpleGUI::mainLoop()
 {
+#ifdef SOFA_SMP
+    if(groot)
+    {
+        getScene()->execute<CollisionVisitor>();
+        a1::Sync();
+        mg=new Iterative::Multigraph<MainLoopTask>();
+        mg->compile();
+        mg->deploy();
+
+    }
+#endif
     glutMainLoop();
     return 0;
 }
@@ -2459,8 +2546,11 @@ void SimpleGUI::step()
     {
         if (_waitForRender) return;
         //groot->setLogTime(true);
-
+#ifdef SOFA_SMP
+        mg->step();
+#else
         getSimulation()->animate(groot);
+#endif
         getSimulation()->updateVisual(getSimulation()->getVisualRoot());
 
         if( m_dumpState )

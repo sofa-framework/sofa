@@ -26,6 +26,9 @@
 ******************************************************************************/
 #include "BatchGUI.h"
 #include <sofa/simulation/common/Simulation.h>
+#ifdef SOFA_SMP
+#include <athapascan-1>
+#endif
 #include <sofa/helper/system/thread/CTime.h>
 #include <iostream>
 #include <sstream>
