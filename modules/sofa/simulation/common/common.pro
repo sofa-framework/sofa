@@ -108,11 +108,23 @@ SOURCES += Node.cpp \
            xml/DataElement.cpp \
            xml/XML.cpp 
 
+
 SOFA_DIR =../../../..
 TEMPLATE = lib
 TARGET = sofasimulation
-
 include($${SOFA_DIR}/sofa.cfg)
+contains(DEFINES,SOFA_SMP){
+HEADERS +=  \
+           ChangeListener.h \
+           ParallelMechanicalVisitor.h \  
+           ParallelSolverImpl.h \
+
+SOURCES +=  \
+           ChangeListener.cpp \
+           ParallelMechanicalVisitor.cpp \
+           ParallelSolverImpl.cpp \
+}
+
 
 CONFIG += $$CONFIGLIBRARIES
 

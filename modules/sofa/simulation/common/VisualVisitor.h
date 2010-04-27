@@ -99,6 +99,15 @@ public:
     virtual Result processNodeTopDown(simulation::Node* node);
     virtual const char* getClassName() const { return "VisualInitVisitor"; }
 };
+#ifdef SOFA_SMP
+class SOFA_SIMULATION_COMMON_API ParallelVisualUpdateVisitor : public VisualVisitor
+{
+public:
+    virtual void processVisualModel(simulation::Node*, core::VisualModel* vm);
+    virtual const char* getClassName() const { return "ParallelVisualUpdateVisitor"; }
+};
+#endif
+
 
 class SOFA_SIMULATION_COMMON_API VisualComputeBBoxVisitor : public Visitor
 {

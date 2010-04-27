@@ -350,6 +350,11 @@ public:
 
     virtual void vFree(VecId v);
 
+#ifdef SOFA_SMP
+    virtual void vOp(VecId , VecId  = VecId::null(), VecId  = VecId::null(), double =1.0,a1::Shared<double> * =NULL);
+    virtual void vOpMEq(VecId , VecId  = VecId::null(),a1::Shared<double> * =NULL);
+    virtual void vDot(a1::Shared<double> *,VecId , VecId );
+#endif
     virtual void vOp(VecId v, VecId a = VecId::null(), VecId b = VecId::null(), double f=1.0);
 
     virtual void vMultiOp(const VMultiOp& ops);

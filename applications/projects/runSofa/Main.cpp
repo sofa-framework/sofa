@@ -33,7 +33,11 @@
 #ifdef SOFA_DEV
 #include <sofa/simulation/bgl/BglSimulation.h>
 #endif
+#ifdef SOFA_SMP
+#include <sofa/simulation/tree/SMPSimulation.h>
+#else
 #include <sofa/simulation/tree/TreeSimulation.h>
+#endif
 #include <sofa/component/init.h>
 #include <sofa/helper/Factory.h>
 #include <sofa/helper/BackTrace.h>
@@ -42,6 +46,9 @@
 #include <sofa/helper/system/gl.h>
 #include <sofa/helper/system/glut.h>
 #include <sofa/helper/system/atomic.h>
+#ifdef SOFA_SMP
+#include <athapascan-1>
+#endif /* SOFA_SMP */
 
 #ifdef SOFA_GPU_CUDA
 #include <sofa/gpu/cuda/mycuda.h>
@@ -99,6 +106,10 @@ int main(int argc, char** argv)
     std::string simulationType = "tree";
     std::vector<std::string> plugins;
     std::vector<std::string> files;
+#ifdef SOFA_SMP
+    std::string nProcs="";
+    bool        disableStealing = false;
+#endif
 
     std::string gui_help = "choose the UI (";
     gui_help += sofa::gui::GUIManager::ListSupportedGUI('|');
@@ -115,7 +126,24 @@ int main(int argc, char** argv)
     .option(&dimension,'d',"dimension","width and height of the viewer")
     .option(&fullScreen,'f',"fullScreen","start in full screen")
     .option(&temporaryFile,'t',"temporary","the loaded scene won't appear in history of opened files")
+#ifdef SOFA_SMP
+    .option(&disableStealing,'w',"disableStealing","Disable Work Stealing")
+    .option(&nProcs,'n',"nprocs","Number of processor")
+#endif
     (argc,argv);
+#ifdef SOFA_SMP
+    int ac=0;
+    char **av=NULL;
+
+    Util::KaapiComponentManager::prop["util.globalid"]="0";
+    Util::KaapiComponentManager::prop["sched.strategy"]="I";
+    if(!disableStealing)
+        Util::KaapiComponentManager::prop["sched.stealing"]="true";
+    if(nProcs!="")
+        Util::KaapiComponentManager::prop["community.thread.poolsize"]=nProcs;
+
+    a1::Community com = a1::System::join_community( ac, av);
+#endif /* SOFA_SMP */
 
     if(gui!="batch") glutInit(&argc,argv);
 #ifdef SOFA_GPU_CUDA
@@ -133,6 +161,11 @@ int main(int argc, char** argv)
         sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
     }
     sofa::component::init();
+#ifdef SOFA_SMP
+    sofa::simulation::setSimulation(new sofa::simulation::tree::SMPSimulation());
+#else
+    sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
+#endif
     sofa::simulation::xml::initXml();
 
     if (!files.empty()) fileName = files[0];

@@ -67,6 +67,7 @@ void Constraint<DataTypes>::init()
     mstate = dynamic_cast< MechanicalState<DataTypes>* >(getContext()->getMechanicalState());
 }
 
+#ifndef SOFA_SMP
 template<class DataTypes>
 void Constraint<DataTypes>::projectResponse()
 {
@@ -77,6 +78,7 @@ void Constraint<DataTypes>::projectResponse()
         projectResponse(*mstate->getDx());
     }
 }
+
 
 template<class DataTypes>
 void Constraint<DataTypes>::projectVelocity()
@@ -99,7 +101,6 @@ void Constraint<DataTypes>::projectPosition()
         projectPosition(*mstate->getX());
     }
 }
-
 template<class DataTypes>
 void Constraint<DataTypes>::projectFreeVelocity()
 {
@@ -122,6 +123,7 @@ void Constraint<DataTypes>::projectFreePosition()
     }
 }
 
+#endif
 template<class DataTypes>
 void Constraint<DataTypes>::applyConstraint(unsigned int &contactId)
 {
@@ -133,6 +135,110 @@ void Constraint<DataTypes>::applyConstraint(unsigned int &contactId)
     }
 }
 
+#ifdef SOFA_SMP
+
+template<class T>
+struct projectResponseTask
+{
+    void operator()(  void *c, Shared_rw< typename T::VecDeriv> dx)
+    {
+        ((T *)c)->T::projectResponse(dx.access());
+    }
+};
+
+template<class T>
+struct projectVelocityTask
+{
+    void operator()(  void *c, Shared_rw< typename T::VecDeriv> v)
+    {
+        ((T *)c)->T::projectVelocity(v.access());
+    }
+};
+
+template<class T>
+struct projectPositionTask
+{
+    void operator()(  void *c, Shared_rw< typename T::VecCoord> x)
+    {
+        ((T *)c)->T::projectPosition(x.access());
+    }
+};
+
+
+
+
+template<class DataTypes>
+struct projectResponseTask<Constraint< DataTypes > >
+{
+    void operator()(   Constraint<DataTypes>  *c, Shared_rw< typename DataTypes::VecDeriv> dx)
+    {
+        c->projectResponse(dx.access());
+
+
+    }
+};
+
+template<class DataTypes>
+struct projectVelocityTask<Constraint< DataTypes > >
+{
+    void operator()(   Constraint<DataTypes>  *c, Shared_rw< typename DataTypes::VecDeriv> v)
+    {
+        c->projectVelocity(v.access());
+
+
+    }
+};
+
+template<class DataTypes>
+struct projectPositionTask<Constraint< DataTypes > >
+{
+    void operator()(   Constraint<DataTypes>  *c, Shared_rw< typename DataTypes::VecCoord> x)
+    {
+        c->projectPosition(x.access());
+
+
+    }
+};
+
+template<class DataTypes>
+void Constraint<DataTypes>::projectResponse()
+{
+    if( !isActive() ) return;
+    if (mstate)
+        Task<projectResponseTask<Constraint< DataTypes > > >(this,**mstate->getDx());
+
+}
+template<class DataTypes>
+void Constraint<DataTypes>::projectVelocity()
+{
+    if( !isActive() ) return;
+    if (mstate)
+        Task<projectVelocityTask<Constraint< DataTypes > > >(this,**mstate->getV());
+}
+
+template<class DataTypes>
+void Constraint<DataTypes>::projectPosition()
+{
+    if( !isActive() ) return;
+    if (mstate)
+        Task<projectPositionTask<Constraint< DataTypes > > >(this,**mstate->getX());
+}
+template<class DataTypes>
+void Constraint<DataTypes>::projectFreeVelocity()
+{
+    if( !isActive() ) return;
+    if (mstate)
+        Task<projectVelocityTask<Constraint< DataTypes > > >(this,**mstate->getVfree());
+}
+
+template<class DataTypes>
+void Constraint<DataTypes>::projectFreePosition()
+{
+    if( !isActive() ) return;
+    if (mstate)
+        Task<projectPositionTask<Constraint< DataTypes > > >(this,**mstate->getXfree());
+}
+#endif
 } // namespace behavior
 
 } // namespace componentmodel

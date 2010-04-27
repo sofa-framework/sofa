@@ -569,6 +569,12 @@ void BglNode::updateVisualContext(VISUAL_FLAG FILTER)
                 fusionVisualContext(*(*it));
             }
             break;
+#ifdef SOFA_SMP
+        case PROCESSORCOLOR:
+            for (ParentIterator it=parents.begin(); it!=parents.end(); ++it)
+                showProcessorColor_.setValue((*it)->showProcessorColor_.getValue());
+            break;
+#endif
         }
     }
     simulation::Node::updateVisualContext(FILTER);

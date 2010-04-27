@@ -32,6 +32,9 @@
 #include <sofa/core/objectmodel/ClassInfo.h>
 #include <sofa/defaulttype/SolidTypes.h>
 #include <set>
+#ifdef SOFA_SMP
+#include <IterativePartition.h>
+#endif
 
 namespace sofa
 {
@@ -104,6 +107,9 @@ public:
 
     /// The Context is active
     virtual bool isActive() const;
+#ifdef SOFA_SMP
+    virtual bool is_partition() const;
+#endif
 
     /// State of the context
     virtual void setActive(bool) {};
@@ -149,6 +155,13 @@ public:
 
     /// Display flags: Normals
     virtual bool getShowNormals() const;
+
+#ifdef SOFA_SMP
+    virtual bool getShowProcessorColor() const;
+    virtual int  getProcessor() const;
+    virtual void  setProcessor(int) {}
+    virtual Iterative::IterativePartition*  getPartition() const;
+#endif
 
     /// Multiresolution support (UNSTABLE)
     virtual int getCurrentLevel() const;
@@ -396,6 +409,11 @@ public:
     /// Display flags: Normals
     virtual void setShowNormals(bool /*val*/)
     { }
+
+#ifdef SOFA_SMP
+    virtual void setShowProcessorColor(bool /*val*/)
+    { }
+#endif
 
     /// Multiresolution support (UNSTABLE) : Set the current level, return false if l >= coarsestLevel
     virtual bool setCurrentLevel(int )

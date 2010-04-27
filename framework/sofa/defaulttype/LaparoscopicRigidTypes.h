@@ -35,6 +35,10 @@
 #include <sofa/core/componentmodel/behavior/Mass.h>
 #include <sofa/helper/vector.h>
 #include <iostream>
+#ifdef SOFA_SMP
+#include <sofa/defaulttype/SharedTypes.h>
+#endif /* SOFA_SMP */
+#include <sofa/defaulttype/DataTypeInfo.h>
 
 namespace sofa
 {
@@ -42,7 +46,9 @@ namespace sofa
 namespace defaulttype
 {
 
+#ifndef SOFA_SMP
 using sofa::helper::vector;
+#endif /* SOFA_SMP */
 
 class LaparoscopicRigid3Types
 {
@@ -291,11 +297,22 @@ public:
     typedef SparseConstraint<Deriv> SparseVecDeriv;
 
     //! All the Constraints applied to a state Vector
+#ifndef SOFA_SMP
     typedef	vector<SparseVecDeriv> VecConst;
+#else /* SOFA_SMP */
+    typedef	SharedVector<SparseVecDeriv> VecConst;
+#endif /* SOFA_SMP */
+
+#ifndef SOFA_SMP
 
     typedef vector<Coord> VecCoord;
     typedef vector<Deriv> VecDeriv;
     typedef vector<Real> VecReal;
+#else /* SOFA_SMP */
+    typedef SharedVector<Coord> VecCoord;
+    typedef SharedVector<Deriv> VecDeriv;
+    typedef SharedVector<Real> VecReal;
+#endif /* SOFA_SMP */
 
     template<typename T>
     static void set(Coord& c, T x, T, T)

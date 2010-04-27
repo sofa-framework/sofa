@@ -1043,6 +1043,9 @@ void RealGUI::setScene ( Node* root, const char* filename, bool temporaryFile )
         displayFlag->setFlag(Node::INTERACTIONFORCEFIELDS,root->getContext()->getShowInteractionForceFields());
         displayFlag->setFlag(Node::WIREFRAME,root->getContext()->getShowWireFrame());
         displayFlag->setFlag(Node::NORMALS,root->getContext()->getShowNormals());
+#ifdef SOFA_SMP
+        displayFlag->setFlag(Node::PROCESSORCOLOR,root->getContext()->getShowProcessorColor());
+#endif
 
         //simulation::getSimulation()->updateVisualContext ( root );
         startButton->setOn ( root->getContext()->getAnimate() );
@@ -1945,6 +1948,9 @@ void RealGUI::showhideElements(int FILTER, bool value)
             root->getContext()->setShowMechanicalMappings ( value );
             root->getContext()->setShowForceFields ( value );
             root->getContext()->setShowInteractionForceFields ( value );
+#ifdef SOFA_SMP
+            root->getContext()->setShowProcessorColor ( value );
+#endif
 #ifndef SOFA_CLASSIC_SCENE_GRAPH
             sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowVisualModels ( value );
             sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowBehaviorModels ( value );
@@ -1954,6 +1960,9 @@ void RealGUI::showhideElements(int FILTER, bool value)
             sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowMechanicalMappings ( value );
             sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowForceFields ( value );
             sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowInteractionForceFields ( value );
+#ifdef SOFA_SMP
+            sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowProcessorColor ( value );
+#endif
 #endif
             break;
         case  Node::VISUALMODELS:
@@ -2036,6 +2045,14 @@ void RealGUI::showhideElements(int FILTER, bool value)
 #endif
             break;
         }
+#ifdef SOFA_SMP
+        case  Node::PROCESSORCOLOR:
+        {
+            root->getContext()->setShowProcessorColor ( value );
+            sofa::simulation::getSimulation()->getVisualRoot()->getContext()->setShowProcessorColor ( value );
+            break;
+        }
+#endif
         }
         sofa::simulation::getSimulation()->updateVisualContext ( root, (simulation::Node::VISUAL_FLAG) FILTER );
 #ifndef SOFA_CLASSIC_SCENE_GRAPH

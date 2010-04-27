@@ -27,6 +27,9 @@
 
 #include <sofa/simulation/common/Visitor.h>
 #include <sofa/core/componentmodel/collision/Pipeline.h>
+#ifdef SOFA_SMP
+#include <sofa/core/componentmodel/collision/ParallelPipeline.h>
+#endif
 
 namespace sofa
 {
@@ -73,6 +76,17 @@ public:
     virtual const char* getClassName() const { return "CollisionResponseVisitor"; }
 };
 
+#ifdef SOFA_SMP
+/// Compute collision reset, detection and response in one step
+class SOFA_SIMULATION_COMMON_API ParallelCollisionVisitor : public CollisionVisitor
+{
+public:
+    virtual void processCollisionPipeline(simulation::Node* node, core::componentmodel::collision::ParallelPipeline* obj);
+    virtual void processCollisionPipeline(simulation::Node* node, core::componentmodel::collision::Pipeline* obj);
+
+    virtual const char* getClassName() const { return "ParallelCollisionVisitor"; }
+};
+#endif
 
 } // namespace simulation
 

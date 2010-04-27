@@ -94,7 +94,13 @@ void Mapping<In,Out>::setModels(In* from, Out* to)
     this->fromModel = from;
     this->toModel = to;
 }
+template <class In, class Out>
+std::string Mapping<In,Out>::templateName(const Mapping<In, Out>* /*mapping*/)
+{
+    return std::string("Mapping<")+In::DataTypes::Name() + std::string(",") + Out::DataTypes::Name() + std::string(">");
+}
 
+#ifndef SOFA_SMP
 template <class In, class Out>
 void Mapping<In,Out>::updateMapping()
 {
@@ -112,13 +118,62 @@ void Mapping<In,Out>::updateMapping()
         applyJ(*this->toModel->getV(), *this->fromModel->getV());
     }
 }
+#else
 
-template <class In, class Out>
-std::string Mapping<In,Out>::templateName(const Mapping<In, Out>* /*mapping*/)
+
+template<class T>
+struct ParallelMappingApply
 {
-    return std::string("Mapping<")+In::DataTypes::Name() + std::string(",") + Out::DataTypes::Name() + std::string(">");
+    void operator()(void *m, Shared_rw< typename T::Out::VecCoord > out, Shared_r< typename T::In::VecCoord > in)
+    {
+        ((T *)m)->apply(out.access(), in.read());
+    }
+};
+
+template<class T>
+struct ParallelMappingApplyJ
+{
+    void operator()(void *m, Shared_rw< typename T::Out::VecDeriv> out, Shared_r<typename T::In::VecDeriv> in)
+    {
+        ((T *)m)->applyJ(out.access(), in.read());
+    }
+};
+template<class T>
+struct ParallelMappingApplyCPU
+{
+    void operator()(void *m, Shared_rw< typename T::Out::VecCoord > out, Shared_r< typename T::In::VecCoord > in)
+    {
+        ((T *)m)->applyCPU(out.access(), in.read());
+    }
+};
+
+template<class T>
+struct ParallelMappingApplyJCPU
+{
+    void operator()(void *m, Shared_rw< typename T::Out::VecDeriv> out, Shared_r<typename T::In::VecDeriv> in)
+    {
+        ((T *)m)->applyJCPU(out.access(), in.read());
+    }
+};
+
+
+template<class In, class Out>
+void sofa::core::Mapping< In,Out >::updateMapping()
+{
+    if (this->toModel == NULL || this->fromModel == NULL)
+        return;
+    if (this->toModel->getX()!=NULL && this->fromModel->getX()!=NULL)
+    {
+        Task<ParallelMappingApplyCPU< Mapping<In,Out > >,  ParallelMappingApply< Mapping<In,Out > > >(this,**(this->toModel->getX()), **(this->fromModel->getX()));
+    }
+    if (this->toModel->getV()!=NULL && this->fromModel->getV()!=NULL)
+    {
+        Task<ParallelMappingApplyJCPU< Mapping < In,Out > >,  ParallelMappingApplyJ< Mapping < In,Out > >  >(this,**this->toModel->getV(), **this->fromModel->getV());
+    }
+
 }
 
+#endif
 } // namespace core
 
 } // namespace sofa

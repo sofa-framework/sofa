@@ -153,12 +153,18 @@ VisualModelImpl::VisualModelImpl() //const std::string &name, std::string filena
        scale             (initData   (&scale, Vector3(1.0,1.0,1.0), "scale3d", "Initial Scale of the object")),
        scaleTex          (initData   (&scaleTex, TexCoord(1.0,1.0), "scaleTex", "Scale of the texture")),
        translationTex    (initData   (&translationTex, TexCoord(1.0,1.0), "translationTex", "Translation of the texture")),
+#ifdef SOFA_SMP
+       previousProcessorColor(false),
+#endif
        material(initData(&material,"material","Material")), // tex(NULL)
        putOnlyTexCoords(initData(&putOnlyTexCoords, (bool) false, "putOnlyTexCoords", "Give Texture Coordinates without the texture binding")),
        srgbTexturing(initData(&srgbTexturing, (bool) false, "srgbTexturing", "When sRGB rendering is enabled, is the texture in sRGB colorspace?")),
        materials(initData(&materials,"materials","List of materials")),
        groups(initData(&groups,"groups","Groups of triangles and quads using a given material"))
 {
+#ifdef SOFA_SMP
+    originalMaterial=material.getValue();
+#endif
     inputVertices = field_vertices.beginEdit();
     //inputNormals = field_vnormals.beginEdit();
     _topology = 0;
@@ -264,6 +270,9 @@ void VisualModelImpl::setMesh(helper::io::Mesh &objLoader, bool tex)
         Material M;
         M = materialImport;
         material.setValue(M);
+#ifdef SOFA_SMP
+        originalMaterial=M;
+#endif
     }
 
     if (!objLoader.getGroups().empty())
@@ -912,6 +921,9 @@ void VisualModelImpl::setColor(float r, float g, float b, float a)
     Material M = material.getValue();
     M.setColor(r,g,b,a);
     material.setValue(M);
+#ifdef SOFA_SMP
+    originalMaterial=M;
+#endif
 }
 
 static int hexval(char c)
@@ -966,8 +978,34 @@ void VisualModelImpl::setColor(std::string color)
     setColor(r,g,b,a);
 }
 
+#ifdef SOFA_SMP
+struct colors
+{
+    float r;
+    float g;
+    float b;
+};
+static colors colorTab[]=
+{
+    {1.0f,0.0f,0.0f},
+    {1.0f,1.0f,0.0f},
+    {0.0f,1.0f,0.0f},
+    {0.0f,1.0f,1.0f},
+    {0.0f,0.0f,1.0f},
+    {0.5f,.5f,.5f},
+    {0.5f,0.0f,0.0f},
+    {.5f,.5f,0.0f},
+    {0.0f,1.0f,0.0f},
+    {0.0f,1.0f,1.0f},
+    {0.0f,0.0f,1.0f},
+    {0.5f,.5f,.5f}
+};
+#endif
 void VisualModelImpl::updateVisual()
 {
+#ifdef SOFA_SMP
+    modified=true;
+#endif
     //sout << "VisualModelImpl::updateVisual()"<<sendl;
     if (modified && (!(field_vertices.getValue()).empty() || useTopology))
     {
@@ -1009,6 +1047,19 @@ void VisualModelImpl::updateVisual()
     field_vbitangents.updateIfDirty();
     field_triangles.updateIfDirty();
     field_quads.updateIfDirty();
+#ifdef SOFA_SMP
+
+    if(getContext()->getShowProcessorColor())
+    {
+        unsigned int proc=Core::Processor::get_current()->get_pid()%12;
+        this->setColor(colorTab[proc].r,colorTab[proc].g,colorTab[proc].b,1.0f);
+    }
+    if(previousProcessorColor&&!getContext()->getShowProcessorColor())
+    {
+        material.setValue(originalMaterial);
+    }
+    previousProcessorColor=getContext()->getShowProcessorColor();
+#endif
 }
 
 

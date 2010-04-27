@@ -189,7 +189,17 @@ SOURCES +=  \
 } # END SOFA_DEV
 
 
- 
+contains(DEFINES,SOFA_SMP){
+HEADERS +=  \
+          objectmodel/BaseObjectTasks.h \
+          ParallelCollisionModel.h \
+          componentmodel/behavior/ParallelMultiVector.h \
+          componentmodel/collision/ParallelPipeline.h \
+          componentmodel/collision/ParallelNarrowPhaseDetection.h
 
+SOURCES +=  \
+          componentmodel/collision/ParallelPipeline.cpp\
+          objectmodel/BaseObjectTasks.cpp 
+}
 
 

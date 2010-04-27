@@ -27,7 +27,9 @@
 
 #include <sofa/component/container/MechanicalObject.h>
 #include <sofa/core/componentmodel/topology/BaseMeshTopology.h>
-
+#ifdef SOFA_SMP
+#include <sofa/component/container/MechanicalObjectTasks.inl>
+#endif
 #include <sofa/component/topology/PointSetTopologyChange.h>
 
 #include <sofa/component/topology/RegularGridTopology.h>
@@ -159,6 +161,8 @@ MechanicalObject<DataTypes>::MechanicalObject()
     //setVecDeriv(VecId::acceleration().index, this->dx);
     /*    cerr<<"MechanicalObject<DataTypes>::MechanicalObject, x.size() = "<<x->size()<<endl;
       cerr<<"MechanicalObject<DataTypes>::MechanicalObject, v.size() = "<<v->size()<<endl;*/
+
+    // f = this->externalForces; // we are not doing an integration step, so f == external forces
 }
 
 template <class DataTypes>
@@ -610,6 +614,11 @@ void MechanicalObject<DataTypes>::renumberValues( const sofa::helper::vector< un
 template <class DataTypes>
 void MechanicalObject<DataTypes>::resize(const int size)
 {
+#ifdef SOFA_SMP_NUMA
+    if(this->getContext()->getProcessor()!=-1)
+        numa_set_preferred(this->getContext()->getProcessor()/2);
+#endif
+
     (*x).resize(size);
     if (initialized && x0!=NULL)
         (*x0).resize(size);
@@ -632,10 +641,20 @@ void MechanicalObject<DataTypes>::resize(const int size)
         vsize=size;
         for (unsigned int i=0; i<vectorsCoord.size(); i++)
             if (vectorsCoord[i]!=NULL && vectorsCoord[i]->size()!=0)
+            {
                 vectorsCoord[i]->resize(size);
+#ifdef SOFA_SMP
+                vectorsCoordSharedAllocated[i]=true;
+#endif
+            }
         for (unsigned int i=0; i<vectorsDeriv.size(); i++)
             if (vectorsDeriv[i]!=NULL && vectorsDeriv[i]->size()!=0)
+            {
                 vectorsDeriv[i]->resize(size);
+#ifdef SOFA_SMP
+                vectorsDerivSharedAllocated[i]=true;
+#endif
+            }
     }
 }
 
@@ -1137,6 +1156,11 @@ void MechanicalObject<DataTypes>::addDxToCollisionModel()
 template <class DataTypes>
 void MechanicalObject<DataTypes>::init()
 {
+    //std::cout << "MechanicalObject::init " << this->getName() << std::endl;
+#ifdef SOFA_SMP_NUMA
+    if(this->getContext()->getProcessor()!=-1)
+        numa_set_preferred(this->getContext()->getProcessor()/2);
+#endif
     _topology = this->getContext()->getMeshTopology();
 
     f_X->beginEdit();
@@ -1473,11 +1497,22 @@ void MechanicalObject<DataTypes>::endIntegration(Real /*dt*/)
     this->forceMask.clear();
     //By default the mask is disabled, the user has to enable it to benefit from the speedup
     this->forceMask.setInUse(this->useMask.getValue());
+#ifdef SOFA_SMP
+    Task<vClear<VecDeriv,Deriv> >  (this,**this->externalForces,0);
+#else
+    this->externalForces->clear();
+#endif
 }
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::accumulateForce()
 {
+#ifdef SOFA_SMP
+    Task < vPEq2 <  VecDeriv,
+         VecDeriv >
+         >(this,**f,
+                 **getVecDeriv(VecId::externalForce().index));
+#else
     if (!getVecDeriv(VecId::externalForce().index)->empty())
     {
         helper::WriteAccessor<VecDeriv> f = *getF();
@@ -1500,22 +1535,42 @@ void MechanicalObject<DataTypes>::accumulateForce()
             }
         }
     }
+#endif
 }
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::setVecCoord(unsigned int index, VecCoord* v)
 {
     if (index>=vectorsCoord.size())
+    {
         vectorsCoord.resize(index+1,0);
+#ifdef SOFA_SMP
+        vectorsCoordSharedAllocated.resize (index + 1);
+#endif
+
+    }
     vectorsCoord[index] = v;
+#ifdef SOFA_SMP
+    vectorsCoordSharedAllocated[index] = true;
+#endif
 }
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::setVecDeriv(unsigned int index, VecDeriv* v)
 {
     if (index>=vectorsDeriv.size())
+    {
         vectorsDeriv.resize(index+1,0);
+#ifdef SOFA_SMP
+        vectorsDerivSharedAllocated.resize (index + 1);
+#endif
+
+    }
     vectorsDeriv[index] = v;
+#ifdef SOFA_SMP
+    vectorsDerivSharedAllocated[index] = true;
+#endif
+
 }
 
 template <class DataTypes>
@@ -1531,13 +1586,26 @@ template<class DataTypes>
 typename MechanicalObject<DataTypes>::VecCoord* MechanicalObject<DataTypes>::getVecCoord(unsigned int index)
 {
 
+#ifdef SOFA_SMP_NUMA
+    if(this->getContext()->getProcessor()!=-1)
+        numa_set_preferred(this->getContext()->getProcessor()/2);
+#endif
     if (index>=vectorsCoord.size())
+    {
         vectorsCoord.resize(index+1,0);
+#ifdef SOFA_SMP
+        vectorsCoordSharedAllocated.resize (index + 1);
+#endif
+    }
     if (vectorsCoord[index]==NULL)
     {
         vectorsCoord[index] = new VecCoord;
+#ifdef SOFA_SMP
+        vectorsCoordSharedAllocated[index]=true;
+#endif
         if (f_reserve.getValue() > 0)
             vectorsCoord[index]->reserve(f_reserve.getValue());
+
     }
     return vectorsCoord[index];
 }
@@ -1555,15 +1623,26 @@ const typename MechanicalObject<DataTypes>::VecCoord* MechanicalObject<DataTypes
 template<class DataTypes>
 typename MechanicalObject<DataTypes>::VecDeriv* MechanicalObject<DataTypes>::getVecDeriv(unsigned int index)
 {
+#ifdef SOFA_SMP_NUMA
+    if(this->getContext()->getProcessor()!=-1)
+        numa_set_preferred(this->getContext()->getProcessor()/2);
+#endif
     if (index>=vectorsDeriv.size())
+    {
         vectorsDeriv.resize(index+1,0);
+#ifdef SOFA_SMP
+        vectorsDerivSharedAllocated.resize (index + 1);
+#endif
+    }
     if (vectorsDeriv[index]==NULL)
     {
         vectorsDeriv[index] = new VecDeriv;
+#ifdef SOFA_SMP
+        vectorsDerivSharedAllocated[index]=true;
+#endif
         if (f_reserve.getValue() > 0)
             vectorsDeriv[index]->reserve(f_reserve.getValue());
     }
-
     return vectorsDeriv[index];
 }
 
@@ -1606,13 +1685,21 @@ void MechanicalObject<DataTypes>::vAvail(VecId& v)
     if (v.type == VecId::V_COORD)
     {
         for (unsigned int i=v.index; i < vectorsCoord.size(); ++i)
-            if (vectorsCoord[i] && ! vectorsCoord[i]->empty())
+#ifdef SOFA_SMP
+            if (vectorsCoord[i] &&   vectorsCoordSharedAllocated[i])
+#else
+            if (vectorsCoord[i])
+#endif
                 v.index = i+1;
     }
     else if (v.type == VecId::V_DERIV)
     {
         for (unsigned int i=v.index; i < vectorsDeriv.size(); ++i)
-            if (vectorsDeriv[i] != NULL && ! (*vectorsDeriv[i]).empty())
+#ifdef SOFA_SMP
+            if (vectorsDeriv[i] != NULL &&vectorsDerivSharedAllocated[i])
+#else
+            if (vectorsDeriv[i] != NULL)
+#endif
                 v.index = i+1;
     }
 }
@@ -1620,15 +1707,28 @@ void MechanicalObject<DataTypes>::vAvail(VecId& v)
 template <class DataTypes>
 void MechanicalObject<DataTypes>::vAlloc(VecId v)
 {
+#ifdef SOFA_SMP_NUMA
+    if(this->getContext()->getProcessor()!=-1)
+        numa_set_preferred(this->getContext()->getProcessor()/2);
+#endif
     if (v.type == VecId::V_COORD && v.index >= VecId::V_FIRST_DYNAMIC_INDEX)
     {
         VecCoord* vec = getVecCoord(v.index);
         vec->resize(vsize);
+#ifdef SOFA_SMP
+        vectorsCoordSharedAllocated[v.index]=true;
+        Task < VecInitResize < VecCoord > >(this,**vec, this->vsize);
+#endif
     }
     else if (v.type == VecId::V_DERIV && v.index >= VecId::V_FIRST_DYNAMIC_INDEX)
     {
         VecDeriv* vec = getVecDeriv(v.index);
         vec->resize(vsize);
+#ifdef SOFA_SMP
+        vectorsDerivSharedAllocated[v.index]=true;
+        Task < VecInitResize < VecDeriv > >(this,**vec, this->vsize);
+#endif
+
     }
     else
     {
@@ -1644,11 +1744,19 @@ void MechanicalObject<DataTypes>::vFree(VecId v)
     if (v.type == VecId::V_COORD && v.index >= VecId::V_FIRST_DYNAMIC_INDEX)
     {
         VecCoord* vec = getVecCoord(v.index);
+//	  vec->resize(0);
         vec->resize(0);
+#ifdef SOFA_SMP
+        vectorsCoordSharedAllocated[v.index]=false;
+#endif
     }
     else if (v.type == VecId::V_DERIV && v.index >= VecId::V_FIRST_DYNAMIC_INDEX)
     {
         VecDeriv* vec = getVecDeriv(v.index);
+#ifdef SOFA_SMP
+        vectorsDerivSharedAllocated[v.index]=false;
+#endif
+        //  vec->resize(0);
         vec->resize(0);
     }
     else
@@ -1657,10 +1765,14 @@ void MechanicalObject<DataTypes>::vFree(VecId v)
         return;
     }
 }
-
+#ifndef SOFA_SMP
 template <class DataTypes>
 void MechanicalObject<DataTypes>::vOp(VecId v, VecId a, VecId b, double f)
 {
+#ifdef SOFA_SMP_NUMA
+    if(this->getContext()->getProcessor()!=-1)
+        numa_set_preferred(this->getContext()->getProcessor()/2);
+#endif
     if(v.isNull())
     {
         // ERROR
@@ -2001,7 +2113,7 @@ void MechanicalObject<DataTypes>::vOp(VecId v, VecId a, VecId b, double f)
         }
     }
 }
-
+#endif
 template <class DataTypes>
 void MechanicalObject<DataTypes>::vMultiOp(const VMultiOp& ops)
 {
@@ -2219,7 +2331,7 @@ void MechanicalObject<DataTypes>::setC(VecId v)
     }
 }
 
-
+#ifndef SOFA_SMP
 template <class DataTypes>
 void MechanicalObject<DataTypes>::printDOF( VecId v, std::ostream& out, int firstIndex, int range) const
 {
@@ -2254,7 +2366,7 @@ void MechanicalObject<DataTypes>::printDOF( VecId v, std::ostream& out, int firs
     else
         out<<"MechanicalObject<DataTypes>::printDOF, unknown v.type = "<<v.type<<std::endl;
 }
-
+#endif
 
 template <class DataTypes>
 unsigned MechanicalObject<DataTypes>::printDOFWithElapsedTime( VecId v,unsigned count, unsigned time, std::ostream& out)
@@ -2290,6 +2402,9 @@ unsigned MechanicalObject<DataTypes>::printDOFWithElapsedTime( VecId v,unsigned 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::resetForce()
 {
+#ifdef SOFA_SMP
+    Task<vClear<VecDeriv,Deriv> >  (this,**getF());
+#else
     helper::WriteAccessor<VecDeriv> f= *getF();
     if (!this->forceMask.isInUse())
     {
@@ -2306,15 +2421,20 @@ void MechanicalObject<DataTypes>::resetForce()
             f[(*it)] = Deriv();
         }
     }
+#endif
 }
 
 template <class DataTypes>
 void MechanicalObject<DataTypes>::resetAcc()
 {
 
+#ifdef SOFA_SMP
+    Task<vClear<VecDeriv,Deriv> >  (this,**getDx());
+#else
     helper::WriteAccessor<VecDeriv> a= *getDx();
     for( unsigned i=0; i<a.size(); ++i )
         a[i] = Deriv();
+#endif
 }
 
 
@@ -2527,6 +2647,624 @@ void MechanicalObject<DataTypes>::draw()
     }
 
 }
+#ifdef SOFA_SMP
+template < class DataTypes >
+void MechanicalObject < DataTypes >::vOpMEq (VecId v, VecId b,
+        a1::Shared <
+        double >*f)
+{
+
+    if (v.type == VecId::V_COORD)
+    {
+
+        if (b.type == VecId::V_COORD)
+        {
+
+
+            Task < vOpMinusEqualMult < DataTypes, VecCoord,
+                 VecCoord > >(this,**getVecCoord (v.index),
+                         **getVecCoord(b.index), *f);
+
+        }
+        else
+        {
+            Task < vOpMinusEqualMult < DataTypes, VecCoord,
+                 VecDeriv > >(this,**getVecCoord (v.index),
+                         **getVecDeriv (b.index), *f);
+
+        }
+    }
+    else if (b.type == VecId::V_DERIV)
+    {
+        Task < vOpMinusEqualMult < DataTypes, VecDeriv,
+             VecDeriv > >(this,**getVecDeriv (v.index),
+                     **getVecDeriv (b.index), *f);
+
+    }
+    else
+    {
+        // ERROR
+        //  std::cerr << "Invalid vOp operation ("<<v<<','<<a<<','<<b<<','<<f<<")\n";
+        return;
+    }
+
+
+}
+template < class DataTypes >
+void MechanicalObject < DataTypes >::vOp(VecId v, VecId a, VecId b , double f) { vOp(v,a,b,f,NULL);}
+
+template < class DataTypes >
+void MechanicalObject < DataTypes >::vOp (VecId v, VecId a,
+        VecId b, double f,
+        a1::Shared  < double >*fSh)
+{
+    if (v.isNull ())
+    {
+        // ERROR
+        std::cerr << "Invalid vOp operation (" << v << ',' << a << ','
+                << b << ',' << f << ")\n";
+        return;
+    }
+    if (a.isNull ())
+    {
+        if (b.isNull ())
+        {
+            // v = 0
+            if (v.type == VecId::V_COORD)
+            {
+                //VecCoord* vv = getVecCoord(v.index);
+                Task < vClear < VecDeriv,Deriv >
+                >(this,**getVecCoord (v.index), (unsigned) (this->vsize));
+
+                /*unsigned int vt=ExecutionGraph::add_operation("v=0");
+                   ExecutionGraph::read_var(vt,vv);
+                   ExecutionGraph::write_var(vt,vv); */
+
+
+
+
+            }
+            else
+            {
+                //  VecDeriv* vv = getVecDeriv(v.index);
+                Task < vClear < VecCoord,Coord >
+                >(this,**getVecDeriv (v.index), (unsigned) (this->vsize));
+                /*unsigned int vt=ExecutionGraph::add_operation("v=0");
+                   ExecutionGraph::read_var(vt,vv);
+                   ExecutionGraph::write_var(vt,vv);
+                   vv->resize(this->this->vsize);
+                   for (unsigned int i=0; i<vv->size(); i++)
+                   (*vv)[i] = Deriv();
+                 */
+            }
+
+        }
+        else
+        {
+            if (b.type != v.type)
+            {
+                // ERROR
+                std::cerr << "Invalid vOp operation (" << v << ',' << a
+                        << ',' << b << ',' << f << ")\n";
+                return;
+            }
+            if (v == b)
+            {
+                // v *= f
+                if (v.type == VecId::V_COORD)
+                {
+
+                    /*VecCoord* vv = getVecCoord(v.index);
+                       unsigned int vt=ExecutionGraph::add_operation("v*=f");
+                       ExecutionGraph::read_var(vt,vv);
+                       ExecutionGraph::write_var(vt,vv); */
+                    Task < vTEq < VecCoord, Real >
+                    >(this,**getVecCoord (v.index), f);
+                }
+                else
+                {
+                    /*            VecDeriv* vv = getVecDeriv(v.index);
+                       unsigned int vt=ExecutionGraph::add_operation("v*=f");
+                       ExecutionGraph::read_var(vt,vv);
+                       ExecutionGraph::write_var(vt,vv);
+                     */
+
+
+
+
+                    Task < vTEq < VecDeriv, Real >
+                    >(this,**getVecDeriv (v.index), f);
+
+
+
+
+
+                }
+            }
+            else
+            {
+                // v = b*f
+                if (v.type == VecId::V_COORD)
+                {
+                    Task < vEqBF < VecCoord,Real >
+                    >(this,**getVecCoord (b.index),
+                      **getVecCoord (v.index), f);
+                }
+                else
+                {
+                    Task < vEqBF < VecDeriv,Real >
+                    >(this,**getVecDeriv (b.index),
+                      **getVecDeriv (v.index), f);
+                }
+            }
+        }
+    }
+    else
+    {
+        if (a.type != v.type)
+        {
+            // ERROR
+            std::cerr << "Invalid vOp operation (" << v << ',' << a <<
+                    ',' << b << ',' << f << ")\n";
+            return;
+        }
+        if (b.isNull ())
+        {
+            // v = a
+            if (v.type == VecId::V_COORD)
+            {
+                Task < vAssign <
+                VecCoord > >(this,**getVecCoord (v.index),
+                        **getVecCoord (a.index));
+            }
+            else
+            {
+                Task < vAssign <
+                VecDeriv > >(this,**getVecDeriv (v.index),
+                        **getVecDeriv (a.index));
+            }
+        }
+        else
+        {
+            if (v == a)
+            {
+                if (f == 1.0 && !fSh)
+                {
+                    // v += b
+                    if (v.type == VecId::V_COORD)
+                    {
+
+                        if (b.type == VecId::V_COORD)
+                        {
+
+                            Task < vPEq < VecCoord,
+                                 VecCoord >
+                                 >(this,**getVecCoord (v.index),
+                                         **getVecCoord (b.index));
+
+                        }
+                        else
+                        {
+                            Task < vPEq < VecCoord,
+                                 VecDeriv >
+                                 >(this,**getVecCoord (v.index),
+                                         **getVecDeriv (b.index));
+
+                        }
+                    }
+                    else if (b.type == VecId::V_DERIV)
+                    {
+
+                        Task < vPEq <  VecDeriv,
+                             VecDeriv >
+                             >(this,**getVecDeriv (v.index),
+                                     **getVecDeriv (b.index));
+
+                    }
+                    else
+                    {
+                        // ERROR
+                        std::cerr << "Invalid vOp operation (" << v <<
+                                ',' << a << ',' << b << ',' << f << ")\n";
+                        return;
+                    }
+                }
+                else
+                {
+                    // v += b*f
+                    if (v.type == VecId::V_COORD)
+                    {
+                        if (b.type == VecId::V_COORD)
+                        {
+
+                            if (fSh)
+                            {
+                                Task < vPEqBF < DataTypes,
+                                     VecCoord,
+                                     VecCoord >
+                                     >(this,**getVecCoord (v.index),
+                                             **getVecCoord (b.index), *fSh, f);
+                            }
+                            else
+                            {
+                                Task < vPEqBF < DataTypes,
+                                     VecCoord,
+                                     VecCoord >
+                                     >(this,**getVecCoord (v.index),
+                                             **getVecCoord (b.index), f);
+                            }
+                        }
+                        else
+                        {
+                            if (fSh)
+                            {
+                                Task < vPEqBF < DataTypes, VecCoord, VecDeriv > >(this,**getVecCoord (v.index), **getVecDeriv (b.index), *fSh, f);
+                            }
+                            else
+                            {
+                                Task < vPEqBF < DataTypes,
+                                     VecCoord,
+                                     VecDeriv >
+                                     >(this,**getVecCoord (v.index),
+                                             **getVecDeriv (b.index), f);
+                            }
+                        }
+                    }
+                    else if (b.type == VecId::V_DERIV)
+                    {
+                        if (fSh)
+                        {
+                            Task < vPEqBF < DataTypes,
+                                 VecDeriv,
+                                 VecDeriv >
+                                 >(this,**getVecDeriv (v.index),
+                                         **getVecDeriv (b.index), *fSh, f);
+                        }
+                        else
+                        {
+                            Task < vPEqBF < DataTypes,
+                                 VecDeriv,
+                                 VecDeriv >
+                                 >(this,**getVecDeriv (v.index),
+                                         **getVecDeriv (b.index), f);
+                        }
+                    }
+                    else
+                    {
+                        // ERROR
+                        std::cerr << "Invalid vOp operation (" << v <<
+                                ',' << a << ',' << b << ',' << f << ")\n";
+                        return;
+                    }
+                }
+            }
+            else if (v == b)
+            {
+                if (f == 1.0 && !fSh)
+                {
+                    // v += a
+                    if (v.type == VecId::V_COORD)
+                    {
+
+                        if (a.type == VecId::V_COORD)
+                        {
+                            Task < vPEq < VecCoord,
+                                 VecCoord >
+                                 >(this,**getVecCoord (v.index),
+                                         **getVecCoord (a.index));
+
+                        }
+                        else
+                        {
+                            Task < vPEq <  VecCoord,
+                                 VecDeriv >
+                                 >(this,**getVecCoord (v.index),
+                                         **getVecDeriv (a.index));
+
+                        }
+                    }
+                    else if (a.type == VecId::V_DERIV)
+                    {
+                        Task<vPEq <VecCoord,VecDeriv> > (this,**getVecDeriv(v.index),**getVecDeriv(a.index));
+                    }
+                    else
+                    {
+                        // ERROR
+                        std::cerr << "Invalid vOp operation (" << v <<
+                                ',' << a << ',' << b << ',' << f << ")\n";
+                        return;
+                    }
+                }
+                else
+                {
+                    // v = a+v*f
+                    if (v.type == VecId::V_COORD)
+                    {
+                        if (fSh)
+                        {
+                            Task < vOpSumMult < DataTypes, VecCoord,
+                                 VecCoord >
+                                 >(this,**getVecCoord (v.index),
+                                         **getVecCoord (a.index), *fSh,
+                                         (Real) f);
+                        }
+                        else
+                        {
+                            Task < vOpSumMult < DataTypes, VecCoord,
+                                 VecCoord >
+                                 >(this,**getVecCoord (v.index),
+                                         **getVecCoord (a.index), (Real) f);
+                        }
+                    }
+                    else
+                    {
+                        if (fSh)
+                        {
+                            Task < vOpSumMult < DataTypes, VecDeriv,
+                                 VecDeriv >
+                                 >(this,**getVecDeriv (v.index),
+                                         **getVecDeriv (a.index), *fSh,
+                                         (Real) f);
+                        }
+                        else
+                        {
+                            Task < vOpSumMult < DataTypes, VecDeriv,
+                                 VecDeriv >
+                                 >(this,**getVecDeriv (v.index),
+                                         **getVecDeriv (a.index), (Real) f);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (f == 1.0 && !fSh)
+                {
+                    // v = a+b
+                    if (v.type == VecId::V_COORD)
+                    {
+                        if (b.type == VecId::V_COORD)
+                        {
+                            Task < vAdd < VecCoord,
+                                 VecCoord, VecCoord >
+                                 >(this,**getVecCoord (v.index),
+                                         **getVecCoord (a.index),
+                                         **getVecCoord (b.index));
+                        }
+                        else
+                        {
+                            Task < vAdd <  VecCoord,
+                                 VecCoord, VecDeriv >
+                                 >(this,**getVecCoord (v.index),
+                                         **getVecCoord (a.index),
+                                         **getVecDeriv (b.index));
+                        }
+                    }
+                    else if (b.type == VecId::V_DERIV)
+                    {
+                        Task < vAdd < VecDeriv,
+                             VecDeriv, VecDeriv >
+                             >(this,**getVecDeriv (v.index),
+                                     **getVecDeriv (a.index),
+                                     **getVecDeriv (b.index));
+                    }
+                    else
+                    {
+                        // ERROR
+                        std::cerr << "Invalid vOp operation (" << v <<
+                                ',' << a << ',' << b << ',' << f << ")\n";
+                        return;
+                    }
+                }
+                else
+                {
+                    // v = a+b*f
+                    if (v.type == VecId::V_COORD)
+                    {
+                        if (b.type == VecId::V_COORD)
+                        {
+                            Task < vOpVeqAplusBmultF < DataTypes,
+                                 VecCoord,
+                                 VecCoord >
+                                 >(this,**getVecCoord (v.index),
+                                         **getVecCoord (a.index),
+                                         **getVecCoord (b.index), (Real) f);
+                        }
+                        else
+                        {
+                            Task < vOpVeqAplusBmultF < DataTypes,
+                                 VecCoord,
+                                 VecDeriv >
+                                 >(this,**getVecCoord (v.index),
+                                         **getVecCoord (a.index),
+                                         **getVecDeriv (b.index), (Real) f);
+                        }
+                    }
+                    else if (b.type == VecId::V_DERIV)
+                    {
+                        Task < vOpVeqAplusBmultF < DataTypes,
+                             VecDeriv,
+                             VecDeriv >
+                             >(this,**getVecDeriv (v.index),
+                                     **getVecDeriv (a.index),
+                                     **getVecDeriv (b.index), (Real) f);
+                    }
+                    else
+                    {
+                        // ERROR
+                        std::cerr << "Invalid vOp operation (" << v <<
+                                ',' << a << ',' << b << ',' << f << ")\n";
+                        return;
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+
+template < class DataTypes >
+void MechanicalObject < DataTypes >::vDot ( a1::Shared  < double >*res,VecId a, VecId b)
+{
+//      double r = 0.0;
+    if (a.type == VecId::V_COORD && b.type == VecId::V_COORD)
+    {
+        if (a.index == b.index)
+        {
+            Task < vDotOp < DataTypes,
+                 VecCoord > >(this,**getVecCoord (a.index), *res);
+        }
+        else
+        {
+            Task < vDotOp < DataTypes,
+                 VecCoord > >(this,**getVecCoord (a.index),
+                         **getVecCoord (b.index), *res);
+        }
+    }
+    else if (a.type == VecId::V_DERIV && b.type == VecId::V_DERIV)
+    {
+        if (a.index == b.index)
+        {
+            Task < vDotOp < DataTypes,
+                 VecDeriv > >(this,**getVecDeriv (a.index), *res);
+        }
+        else
+        {
+            Task < vDotOp < DataTypes,
+                 VecDeriv > >(this,**getVecDeriv (a.index),
+                         **getVecDeriv (b.index), *res);
+        }
+    }
+    else
+    {
+        std::cerr << "Invalid dot operation (" << a << ',' << b << ")\n";
+    }
+    // return r;
+}
+
+//     template < class DataTypes >
+//       void MechanicalObject < DataTypes >::setX (VecId v)
+//     {
+//       if (v.type == VecId::V_COORD)
+// 	{
+//
+// 	  this->xSh = *getVecCoord (v.index);
+//
+// 	  this->x = getVecCoord (v.index);
+//
+// 	}
+//       else
+// 	{
+// 	  std::cerr << "Invalid setX operation (" << v << ")\n";
+// 	}
+//     }
+//
+//     template < class DataTypes >
+//       void ParallelMechanicalObject < DataTypes >::setXfree (VecId v)
+//     {
+//       if (v.type == VecId::V_COORD)
+// 	{
+// 	  this->xfreeSh = *getVecCoord (v.index);
+//
+// 	  this->xfree = getVecCoord (v.index);
+//
+// 	}
+//       else
+// 	{
+// 	  std::cerr << "Invalid setXfree operation (" << v << ")\n";
+// 	}
+//     }
+//
+//     template < class DataTypes >
+//       void ParallelMechanicalObject < DataTypes >::setVfree (VecId v)
+//     {
+//       if (v.type == VecId::V_DERIV)
+// 	{
+//
+// 	  this->vfreeSh = *getVecDeriv (v.index);
+//
+// 	  this->vfree = getVecDeriv (v.index);
+//
+// 	}
+//       else
+// 	{
+// 	  std::cerr << "Invalid setVfree operation (" << v << ")\n";
+// 	}
+//     }
+//
+//     template < class DataTypes >
+//       void ParallelMechanicalObject < DataTypes >::setV (VecId v)
+//     {
+//       if (v.type == VecId::V_DERIV)
+// 	{
+// 	  this->vSh = *getVecDeriv (v.index);
+//
+// 	  this->v = getVecDeriv (v.index);
+//
+// 	}
+//       else
+// 	{
+// 	  std::cerr << "Invalid setV operation (" << v << ")\n";
+// 	}
+//     }
+//
+//     template < class DataTypes >
+//       void ParallelMechanicalObject < DataTypes >::setF (VecId v)
+//     {
+//       if (v.type == VecId::V_DERIV)
+// 	{
+//
+// 	  this->fSh = *getVecDeriv (v.index);
+//
+// 	  this->f = getVecDeriv (v.index);
+//
+// 	}
+//       else
+// 	{
+// 	  std::cerr << "Invalid setF operation (" << v << ")\n";
+// 	}
+//     }
+//
+//     template < class DataTypes >
+//       void ParallelMechanicalObject < DataTypes >::setDx (VecId v)
+//     {
+//       if (v.type == VecId::V_DERIV)
+// 	{
+// 	  this->dxSh = *getVecDeriv (v.index);
+//
+//
+// 	  this->dx = getVecDeriv (v.index);
+//
+// 	}
+//       else
+// 	{
+// 	  std::cerr << "Invalid setDx operation (" << v << ")\n";
+// 	}
+//     }
+//
+//
+template < class DataTypes >
+void MechanicalObject < DataTypes >::printDOF (VecId v,
+        std::
+        ostream & out)
+{
+    if (v.type == VecId::V_COORD)
+    {
+        VecCoord & x = *getVecCoord (v.index);
+        Task < printDOFSh < VecCoord > >(this,*x);
+    }
+    else if (v.type == VecId::V_DERIV)
+    {
+        VecDeriv & x = *getVecDeriv (v.index);
+        Task < printDOFSh < VecDeriv > >(this,*x);
+    }
+    else
+        out << "ParallelMechanicalObject<DataTypes>::printDOF, unknown v.type = " <<
+            v.type << std::endl;
+
+}
+#endif
 
 
 /// Find mechanical particles hit by the given ray.
