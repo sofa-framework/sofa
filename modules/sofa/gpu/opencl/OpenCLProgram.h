@@ -18,8 +18,11 @@ class OpenCLProgram
 {
     cl_program _program;
 
-public:
+    std::string  _source,_inputs,_operation;
+    std::map<std::string,std::string> _types;
 
+public:
+    OpenCLProgram() {}
     OpenCLProgram(std::string * source) {createProgram(source);}
     OpenCLProgram(std::string *source,std::map<std::string,std::string> *types) {createProgram(source,types); }
     OpenCLProgram(std::string *source,std::string *operation)   {createProgram(source,operation);}
@@ -27,12 +30,45 @@ public:
 
     ~OpenCLProgram() {if(_program)clReleaseProgram((cl_program)_program); std::cout<<"end\n";}
 
-    void createProgram(std::string * s)
+
+    void setSource(std::string  s) {_source=s;}
+    void setInputs(std::string s) {_inputs=s;}
+
+
+    void addMacro(std::string name,std::string method)
     {
-        _program = sofa::gpu::opencl::myopenclProgramWithSource(s->c_str(), s->size());
+        if(_source.size()==0) {std::cout << "Error: no source\n"; exit(0);}
+
+        OpenCLProgramParser p(&_source,&method);
+        std::string s = p.replaceFunctions(name);
+
+        _source =s;
+        createProgram(&_source);
+        _source.clear();
+        _inputs.clear();
+        _operation.clear();
+        _types.clear();
     }
 
-    void createProgram(std::string *source,std::map<std::string,std::string> *types)
+    void addMacros(std::string* sources,std::string option)
+    {
+        OpenCLProgramParser p(&_source);
+        _source = p.replaceMacros(sources,option);
+    }
+
+    void setTypes(std::map<std::string,std::string> types) {_types=types;}
+
+    void createProgram()
+    {
+        if(_source.size()==0) {std::cout << "Error: no source\n"; exit(0);}
+        if(_types.size()>0)_source = createTypes(&_types) + _source;
+
+        std::cout << "\n--------------\nSOURCE\n---------------\n" << _source << "\n---------\n";
+
+        createProgram(&_source);
+    }
+
+    std::string createTypes(std::map<std::string,std::string> *types)
     {
         std::string s;
         std::map<std::string,std::string>::iterator it;
@@ -52,22 +88,34 @@ public:
             s += it->first;
             s += ";\n";
         }
+        return s;
+    }
 
+    void createProgram(std::string * s)
+    {
+        _program = sofa::gpu::opencl::myopenclProgramWithSource(s->c_str(), s->size());
+    }
+
+    void createProgram(std::string *source,std::map<std::string,std::string> *types)
+    {
+        std::string s;
+        std::map<std::string,std::string>::iterator it;
+
+        s = createTypes(types);
         s += *source;
-
         createProgram(&s);
     }
 
     void createProgram(std::string *source,std::string *operation)
     {
         OpenCLProgramParser p(source,operation);
-        createProgram(p.replaceFunctions());
+        createProgram(&p.replaceFunctions());
     }
 
     void createProgram(std::string *source,std::string *operation, std::map<std::string,std::string> *types)
     {
         OpenCLProgramParser p(source,operation);
-        createProgram(p.replaceFunctions(),types);
+        createProgram(&p.replaceFunctions(),types);
     }
 
     void* program() {return _program;}

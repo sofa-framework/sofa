@@ -1,3 +1,5 @@
+//obsolete
+
 #define BSIZE 32
 
 __kernel void PlaneForceField_3f_addForce
