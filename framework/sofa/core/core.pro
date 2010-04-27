@@ -184,7 +184,7 @@ HEADERS += \
 # componentmodel/fem/BaseFiniteElement.h 
 
 SOURCES +=  \
- componentmodel/fem/BaseShapeFunction.cpp 
+# componentmodel/fem/BaseShapeFunction.cpp 
   
 } # END SOFA_DEV
 
