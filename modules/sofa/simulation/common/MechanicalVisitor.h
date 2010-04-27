@@ -66,7 +66,7 @@ During the second traversal (bottom-up), method processNodeBottomUp(simulation::
 The default behavior of the fwd* and bwd* is to do nothing. Derived actions typically overload these methods to implement the desired processing.
 
 */
-class SOFA_SIMULATION_COMMON_API MechanicalVisitor : virtual public Visitor
+class SOFA_SIMULATION_COMMON_API MechanicalVisitor : public Visitor
 {
 
 protected:
