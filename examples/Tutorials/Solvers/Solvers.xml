@@ -4,7 +4,7 @@
     </Group>
     <Group name="Explicit">
       <Tutorial name="Euler" scene="Components/solver/ExplicitEulerSolver.scn" html="Tutorials/Solvers/TutorialSolverExplicitEuler.html"/>
-      <Tutorial name="Runge Kutta" scene="Tutorials/Solvers/TutorialSolverExplicitRungeKutta.scn"/>
+      <Tutorial name="Runge Kutta 4" scene="Components/solver/RungeKutta4Solver.scn" html="Tutorials/Solvers/TutorialSolverRungeKutta4.html"/>
       <Tutorial name="Central Difference" scene="Tutorials/Solvers/TutorialSolverCentralDifference.scn"/>
     </Group>
     <Group name="Implicit">
