@@ -3,4 +3,8 @@ HEADERS +=     OpenCLPlaneForceField.h \
 
 SOURCES +=  OpenCLPlaneForceField.cpp
 
-OTHER_FILES += kernels/OpenCLPlaneForceField.cl
+OTHER_FILES += kernels/OpenCLGenericParticleForceField.cl \
+		kernels/OpenCLGenericParticleForceField_Plane.macrocl
+
+#obsolete file
+#OTHER_FILES += kernels/OpenCLPlaneForceField.cl \

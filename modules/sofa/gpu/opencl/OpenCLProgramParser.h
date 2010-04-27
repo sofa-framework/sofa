@@ -18,12 +18,17 @@ public:
         _operation=*operation;
     }
 
+    OpenCLProgramParser(std::string *program)
+    {
+        _program=*program;
+    }
+
     // find args used by the fonction
-    void parseFonction()
+    void parseFonction(std::string name = "__OP__")
     {
         //find the name of the fonction
-        int begin = _operation.find("__OP__");
-        begin = _operation.find("(",begin+6);
+        int begin = _operation.find(name);
+        begin = _operation.find("(",begin+name.size());
         int end = _operation.find(")",begin);
 
         //find args of the fonction
@@ -51,10 +56,10 @@ public:
     }
 
     // find args used by the program for fonction
-    void parseProgram(int beginParser, int &beginFunction, int &endFunction)
+    void parseProgram(int beginParser, int &beginFunction, int &endFunction,std::string name = "__OP__")
     {
         //find the fonction
-        beginFunction = _program.find("__OP__",beginParser);
+        beginFunction = _program.find(name,beginParser);
         int beginArg = _program.find("(",beginFunction);
         endFunction = _program.find(")",beginFunction);
 
@@ -98,7 +103,7 @@ public:
             std::string first = (*it).first;
             std::string second = (*it).second;
             int n;
-            while((n=function.find(first)) != -1)function.replace(n,first.size(),second);
+            while((n=function.find(first)) != -1 && first.size()!=0) {function.replace(n,first.size(),second); std::cout << function <<"\n";}
         }
 
         //std::cout << "replaceArg\n" << function;
@@ -106,24 +111,77 @@ public:
     }
 
     //replace all functions by operations
-    std::string* replaceFunctions()
+    std::string replaceFunctions(std::string name = "__OP__")
     {
         int b=0,e;
         std::string s;
 
-        parseFonction();
+        parseFonction(name);
 
         //find all functions and replace them
-        parseProgram(b,b,e);
-        while(e!=0)
+        parseProgram(b,b,e,name);
+        while(e>0)
         {
             s = replaceArg();
             _program.replace(b,e-b,s);
-            parseProgram(b,b,e);
-            //std::cout << e;
+            parseProgram(b,b,e,name);
+
         }
 
-        return new std::string(_program);
+        return _program;
+    }
+
+    std::string parseFile(std::string* source,std::string option,int &begin)
+    {
+        int endTag,startMacro,endMacro,optionPos;
+        do
+        {
+            begin = source->find("<MACRO",begin)+1;
+            endTag = source->find(">",begin);
+            startMacro = source->find("_",endTag);
+            endMacro = source->find("</MACRO>",endTag);
+            optionPos = source->find(option,begin);
+
+            //test error
+            if(begin<=0 || endTag<0 || startMacro<0 || endMacro<0 || optionPos<0)
+                return std::string();
+
+
+            while(optionPos!=-1 && (source->at(optionPos-1)!= ' ' || (source->at(optionPos+option.size()) != ' ' &&  source->at(optionPos+option.size()) != '>')))
+            {
+                optionPos = source->find(option,optionPos+1);
+            }
+
+
+
+
+        }//if there is not the correct option in the MACRO also loop
+        while(optionPos<begin || optionPos>endTag);
+        return source->substr(startMacro,endMacro-startMacro);
+    }
+
+    std::string replaceMacros(std::string* source,std::string option)
+    {
+        int b=0;
+        std::string name;
+        bool macroExist = true;
+
+
+        //find all functions and replace them
+        while(macroExist)
+        {
+
+            _map.clear();
+            _operation = parseFile(source,option,b);
+            if(_operation.size()==0)macroExist=false;
+            else
+            {
+                name = _operation.substr(0,_operation.find("("));
+                replaceFunctions(name);
+            }
+        }
+
+        return _program;
     }
 
 };

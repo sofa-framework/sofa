@@ -56,26 +56,40 @@ int PlaneForceFieldOpenCLClass = core::RegisterObject("Supports GPU-side computa
 sofa::helper::OpenCLProgram* PlaneForceFieldOpenCLFloat_program;
 sofa::helper::OpenCLProgram* PlaneForceFieldOpenCLDouble_program;
 
+sofa::helper::OpenCLKernel * PlaneForceFieldOpenCL3f_addForce_kernel;
+sofa::helper::OpenCLKernel * PlaneForceFieldOpenCL3f_addDForce_kernel;
 
 void PlaneForceField_CreateProgramWithFloat()
 {
     if(PlaneForceFieldOpenCLFloat_program==NULL)
     {
-
-        std::map<std::string, std::string> types;
-        types["Real"]="float";
-        types["Real4"]="float4";
-
         std::cout << sofa::helper::OpenCLProgram::loadSource("OpenCLPlaneForceField.cl") << std::endl;
-        PlaneForceFieldOpenCLFloat_program
-            = new sofa::helper::OpenCLProgram(sofa::helper::OpenCLProgram::loadSource("OpenCLPlaneForceField.cl"),&types);
 
+        PlaneForceFieldOpenCLFloat_program
+            = new sofa::helper::OpenCLProgram();
+
+        PlaneForceFieldOpenCLFloat_program->setSource(*sofa::helper::OpenCLProgram::loadSource("OpenCLGenericParticleForceField.cl"));
+        std::string macros = *sofa::helper::OpenCLProgram::loadSource("OpenCLGenericParticleForceField_Plane.macrocl");
+        PlaneForceFieldOpenCLFloat_program->addMacros(&macros,"all");
+        PlaneForceFieldOpenCLFloat_program->addMacros(&macros,"float");
+        PlaneForceFieldOpenCLFloat_program->createProgram();
         PlaneForceFieldOpenCLFloat_program->buildProgram();
         sofa::gpu::opencl::myopenclShowError(__FILE__,__LINE__);
         std::cout << PlaneForceFieldOpenCLFloat_program->buildLog(0);
         //	std::cout << PlaneForceFieldOpenCLFloat_program->sourceLog();
+
+
+        //create kernels
+        PlaneForceFieldOpenCL3f_addForce_kernel
+            = new sofa::helper::OpenCLKernel(PlaneForceFieldOpenCLFloat_program,"GenericParticleForceField_3f_addForce_Plane");
+
+        PlaneForceFieldOpenCL3f_addDForce_kernel
+            = new sofa::helper::OpenCLKernel(PlaneForceFieldOpenCLFloat_program,"GenericParticleForceField_3f_addDForce_Plane");
     }
 }
+
+
+
 
 void PlaneForceField_CreateProgramWithDouble()
 {
@@ -109,7 +123,6 @@ typedef struct f4
     }
 } float4;
 
-sofa::helper::OpenCLKernel * PlaneForceFieldOpenCL3f_addForce_kernel;
 void PlaneForceFieldOpenCL3f_addForce(unsigned int size, GPUPlane<float>* plane, _device_pointer penetration, _device_pointer f, const _device_pointer x, const _device_pointer v)
 {
     int BSIZE = gpu::opencl::OpenCLMemoryManager<float>::BSIZE;
@@ -118,9 +131,6 @@ void PlaneForceFieldOpenCL3f_addForce(unsigned int size, GPUPlane<float>* plane,
     float4 pd(plane->d ,plane->stiffness,plane->damping,0.0);
 
     PlaneForceField_CreateProgramWithFloat();
-    if(PlaneForceFieldOpenCL3f_addForce_kernel==NULL)PlaneForceFieldOpenCL3f_addForce_kernel
-            = new sofa::helper::OpenCLKernel(PlaneForceFieldOpenCLFloat_program,"PlaneForceField_3f_addForce_v2");
-
 
     PlaneForceFieldOpenCL3f_addForce_kernel->setArg<float4>(0,&pl);
     PlaneForceFieldOpenCL3f_addForce_kernel->setArg<float4>(1,&pd);
@@ -142,7 +152,6 @@ void PlaneForceFieldOpenCL3f_addForce(unsigned int size, GPUPlane<float>* plane,
 }
 
 
-sofa::helper::OpenCLKernel * PlaneForceFieldOpenCL3f_addDForce_kernel;
 void PlaneForceFieldOpenCL3f_addDForce(unsigned int size, GPUPlane<float>* plane, const _device_pointer penetration, _device_pointer f, const _device_pointer dx)
 {
     int BSIZE = gpu::opencl::OpenCLMemoryManager<float>::BSIZE;
@@ -150,8 +159,7 @@ void PlaneForceFieldOpenCL3f_addDForce(unsigned int size, GPUPlane<float>* plane
     float4 pl(plane->normal.x(),plane->normal.y(),plane->normal.z(),0.0);
 
     PlaneForceField_CreateProgramWithFloat();
-    if(PlaneForceFieldOpenCL3f_addDForce_kernel==NULL)PlaneForceFieldOpenCL3f_addDForce_kernel
-            = new sofa::helper::OpenCLKernel(PlaneForceFieldOpenCLFloat_program,"PlaneForceField_3f_addDForce");
+
 
 
     PlaneForceFieldOpenCL3f_addDForce_kernel->setArg<float4>(0,&pl);
