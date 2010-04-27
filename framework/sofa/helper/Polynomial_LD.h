@@ -89,7 +89,7 @@ public :
 
     ///Setting of Monomial_LD
     void SetCoef (const Real & m_coef) {coef=m_coef;}
-    void SetPower(const sofa::helper::vector<int> & m_powers)   {for(unsigned int i=0; i<N; i++) powers[i]=m_powers[i];}
+    //void SetPower(const sofa::helper::vector<int> & m_powers)   {for(unsigned int i=0;i<N;i++) powers[i]=m_powers[i];}
     void SetPower(int numbervar,int powervalue) {powers[numbervar]=powervalue;}
 
     ///Return the total degree of monomial
