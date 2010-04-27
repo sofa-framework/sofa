@@ -15,33 +15,44 @@
                using the barycentric coordinates with respect to the parent cells. The parent cells are defined by the topology associated with the body points. 
 			   Many topologies components exist in Sofa to describe the organisation of a point set, like TetrahedronSetTopologyContainer, HexahedronSetTopologyContainer,  
 			   RegularGridTopology.	
-               The most common use of Barycentric Mapping in Sofa is to attach a visual model or a collision model to an underlying behaviour model.  			   
+               The most common use of Barycentric Mapping in Sofa is to attach a visual model or a collision model to an underlying behaviour model.  	
+                <br> 		   
 			   
-		<div id="orangeText">Barycentric Mapping as a visual mapping</div>   <br>    
+		<div id="orangeText">Barycentric Mapping as a visual mapping</div><br>    
                 In Sofa, a mapping is said to be visual when the communication between the parent and the child (or attached body) is one way only. 
                 Knowing the parent state vector, the child positions and velocities are updated according to the law that the mapping describes. 
-                For example a detailled visual model can be mapped to a coarse behaviour model. 				
-        <center>
-		  <table border="0">
-			<tr><td><img src="TutorialMappingBarycentric1.png" align="middle" width="200"></td></tr>
-			<tr><td align="center">Mapping of a visual model to a behaviour model with a barycentric mapping.</td></tr>
-		  </table>
-		</center>
+                For example a detailled visual model can be mapped to a coarse behaviour model. 
+
+		<center>
+		<table border="0">
+		  <tr>
+			<td align="center"><img src="TutorialMappingBarycentric1.png"  width="300"></td>
+		  </tr>
+		  <tr>
+			<td align="center">Mapping of a visual model to a behaviour model with a barycentric mapping.</td>
+		  </tr>
+		</table> 
+                </center>			
+                <br> 	
 
 		<div id="orangeText">Barycentric Mapping as a mechanical mapping</div><br>
                 In Sofa, a mapping is said to be mechanical when the communication between the parent and the child (or attached body) is two way. 
                 The child positions and velocities are updated according to the parent state vector and the mapping law like in a visual mapping, 
                 but on top of that, the interactions (or forces) computed at the level of the child are propagated back to the parent. 
-				For example a collision model can be attached to a behaviour model using a Barycentric Mapping.
-				The forces computed at the level of the collision layer (usually a coarser point set than the point set of the behaviour model) 
-				are propagated back to the behaviour model according to the barycentric weights. 
+		For example a collision model can be attached to a behaviour model using a Barycentric Mapping.
+		The forces computed at the level of the collision layer (usually a coarser point set than the point set of the behaviour model) 
+		are propagated back to the behaviour model according to the barycentric weights. 
 	    
 		<center>
-		  <table border="0">
-			<tr><td><img src="TutorialMappingBarycentric2.png" align="middle" width="200"></td></tr>
-			<tr><td align="center">Collision Model (yellow squares) mapped to the behaviour model (white dots) with a tetrahedral topology</td></tr>
-		  </table>
-		</center>
+		<table border="0">
+		  <tr>
+			<td align="center"><img src="TutorialMappingBarycentric2.png"  width="300"></td>
+		  </tr>
+		  <tr>
+			<td align="center">Collision Model (yellow squares) mapped to the behaviour model (white dots) with a tetrahedral topology</td>
+		  </tr>
+		</table> 
+                </center>
   
 
 	</div>
