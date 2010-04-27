@@ -3,4 +3,6 @@ HEADERS += OpenCLSphereForceField.h \
 
 SOURCES += OpenCLSphereForceField.cpp
 
-OTHER_FILES += kernels/OpenCLSphereForceField.cl
+OTHER_FILES += kernels/OpenCLGenericParticleForceField.cl \
+		kernels/OpenCLGenericParticleForceField_Sphere.macrocl \
+		kernels/OpenCLSphereForceField.cl
