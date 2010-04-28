@@ -101,12 +101,12 @@ int main(int argc, char** argv)
     .option(&silent,'s',"silent", "remove most CUDA log messages")
     .option(&interval,'t',"interval", "remove most CUDA log messages")
     .option(&verbose,'v',"verbose","display trace of CUDA calls")
+    .option(&iter,'i',"nbiter","Number of iterations")
 #ifdef SOFA_SMP
     .option(&disableStealing,'d',"disableStealing","Disable Work Stealing")
     .option(&affinity,'a',"affinity","Enable affinity base Work Stealing")
     .option(&nProcs,'n',"nprocs","Number of processor")
     .option(&cuda,'c',"cuda","Number of CUDA GPU to use")
-    .option(&iter,'i',"nbiter","Number of iterations")
     .option(&staticGpuPrioritary,'o',"sgpuprio","Static gpu prioritary")
     .option(&dynamicGpuPrioritary,'O',"dgpuprio","Dynamic gpu prioritary")
 #endif
@@ -260,7 +260,7 @@ int main(int argc, char** argv)
         t1 = CTime::getRefTime();
         std::cout << std::endl;
         std::cout << nbIter << " iterations done." << std::endl;
-        std::cerr << "Time: " << ((t1-t0)/(CTime::getRefTicksPerSec()/1000))*0.001 << " seconds, " << ((t1-t0)/(CTime::getRefTicksPerSec()/1000))/(double)nbIter <<" ms/it." << std::endl;
+        std::cout << "Time: " << ((t1-t0)/(CTime::getRefTicksPerSec()/1000))*0.001 << " seconds, " << ((t1-t0)/(CTime::getRefTicksPerSec()/1000))/(double)nbIter <<" ms/it." << std::endl;
         std::string logname = fileName.substr(0,fileName.length()-4)+"-log.txt";
         std::ofstream flog(logname.c_str());
         flog << "Time: " << ((t1-t0)/(CTime::getRefTicksPerSec()/1000))*0.001 << " seconds, " << ((t1-t0)/(CTime::getRefTicksPerSec()/1000))/(double)nbIter <<" ms/it." << std::endl;
