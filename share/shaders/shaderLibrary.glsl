@@ -24,6 +24,15 @@ vec3 Pow(vec3 x, vec3 y) { POW }
 vec4 Pow(vec4 x, vec4 y) { POW }
 
 ///////////////////////////////////////////////////////////////////////////////
+// Constrast adjustment.
+///////////////////////////////////////////////////////////////////////////////
+
+vec3 AdjustContrast(vec3 Color, vec2 ScaleBias)
+{
+    return (Color - ScaleBias.y) * ScaleBias.x + ScaleBias.y;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 // The brushed-metal normal computation.
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -53,15 +62,15 @@ vec3 BrushedMetalNormal(vec3 Normal, vec3 Position, vec3 Direction, float Roughn
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-// The Schlick-Fresnel specular lighting model
-// Good for: Skin rendering
+// The Fresnel reflection term.
+//   CookTorrance passes dot(Normal, View) to the Cosine parameter, whereas
+//   SchlickFresnel uses dot(View, Half).
 ///////////////////////////////////////////////////////////////////////////////
 
-/*float SchlickFresnel(float ViewDotHalf, float Reflectance)
+float Fresnel(float Cosine, float Reflectance)
 {
-    float Exponential = pow(1.0 - ViewDotHalf, 5.0);
-    return Exponential + (1.0 - Exponential) * Reflectance;
-}*/
+    return Reflectance + (1.0 - Reflectance) * pow(1.0 - Cosine, 5.0);
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // The Cook-Torrance specular lighting model with Lambert's diffuse lighting.
@@ -84,7 +93,7 @@ vec3 CookTorrance(vec3 Normal, vec3 LightDir, vec3 ViewDir,
     float G  = min(1.0, max(0.0, min(G1, G2)));
 
     // Compute the fresnel term
-    float F  = Reflectance + (1.0 - Reflectance) * pow(1.0 - NormalDotView, 5.0);
+    float F  = Fresnel(NormalDotView, Reflectance);
 
     // Compute the roughness term
     float R_2     = Roughness * Roughness;
@@ -198,6 +207,7 @@ uniform vec3 LightColor;
 uniform sampler2D DiffuseMap;
 uniform sampler2D NormalMap;
 uniform sampler3D NoiseMap;
+uniform samplerCube EnvMap;
 
 // Data from vertex shader
 varying vec3 Position;
@@ -211,43 +221,39 @@ varying vec3 LightDirection;
 vec3 mainFS()
 {
 #if defined(DistanceBasedCutting)
-    if (distance(Position, ClipOrigin) > ClipDistance)
-        discard;
-#endif
-
-    vec2 Texcoord = Texcoord;
-#if defined(ExponentialMapping)
-    Texcoord = fract(Texcoord);
-    Texcoord -= 0.5;
-    Texcoord = Pow(Texcoord, ExpScale);
-    Texcoord += 0.5;
+    if (distance(Position, ClipOrigin) > ClipDistance) discard;
 #endif
 
     // Copy and correct the input
     vec3 Ambient = AmbientColor;
     vec3 Diffuse  = DiffuseColor;
     vec3 Specular = SpecularColor;
+    vec2 Texcoord = Texcoord;
 
     vec3 Normal   = normalize(Normal);
     vec3 Tangent  = normalize(Tangent);
+    vec3 Bitangent = normalize(Bitangent);
     vec3 ViewDir  = normalize(ViewDirection);
     vec3 LightDir = normalize(LightDirection);
 
-    //Ambient = vec3(0.0);
-    //Diffuse = vec3(0.0);
-    //Specular = vec3(0.0);
+#if defined(ExponentialMapping)
+    Texcoord = Pow(fract(Texcoord) - 0.5, ExpScale) + 0.5;
+#endif
 
 #if defined(DiffuseMap_Present)
+    // Read the diffuse map
     vec3 DiffuseTexColor = texture2D(DiffuseMap, Texcoord).xyz;
 
+    // Adjust contrast if needed
 #if defined(DiffuseMap_AdjustContrast)
-    DiffuseTexColor = (DiffuseTexColor - DiffuseContrastScaleBias.y) * DiffuseContrastScaleBias.x + DiffuseContrastScaleBias.y;
-#endif    
+    DiffuseTexColor = AdjustContrast(DiffuseTexColor, DiffuseContrastScaleBias);
+#endif
 
     // Apply the diffuse map
     Diffuse *= DiffuseTexColor;
 #endif
 
+    // Apply the normal map and convert vectors to tangent space
 #if defined(NormalMap_Present)
     mat3 TBN = mat3(Tangent, Bitangent, Normal);
 
@@ -256,8 +262,8 @@ vec3 mainFS()
     LightDir = normalize(LightDir * TBN);
 #endif
 
-#if defined(Brush)
     // Apply the brushing term
+#if defined(Brush)
     Normal = BrushedMetalNormal(Normal, Position, BrushDirection, BrushRoughness, BrushDistance, BrushStrength, NoiseMap);
 #endif
 
@@ -266,6 +272,14 @@ vec3 mainFS()
 
     // Combine colors
     vec3 Final = Ambient * Diffuse + LightColor * Lighting;
+
+    // Apply environment mapping
+    // XXX This wouldn't work with normal mapping because all vectors must be in world space.
+#if defined(EnvMap_Present)
+    vec3 ReflVec = reflect(ViewDir, Normal);
+    vec3 EnvColor = textureCube(EnvMap, ReflVec).xyz;
+    Final = mix(Final, EnvColor, Fresnel(dot(Normal, ViewDir), SpecularReflectance));
+#endif
 
     return Final;
 }
