@@ -25,7 +25,7 @@
       <Tutorial name="Volume mesh"                scene="Tutorials/StepByStep/TopologicalMapping/1_TopoMapping.scn"/>    
       <Tutorial name="Embedding the Model"        scene="Tutorials/StepByStep/TopologicalMapping/2_TopoMapping.scn"/>    
       <Tutorial name="Mapping to surface mesh"    scene="Tutorials/StepByStep/TopologicalMapping/3_TopoMapping.scn"/>    
-      <Tutorial name="Change mesh behavior"       scene="Tutorials/StepByStep/TopologicalMapping/4_TopoMapping.scn"/> 
+      <Tutorial name="Change mesh behaviour"      scene="Tutorials/StepByStep/TopologicalMapping/4_TopoMapping.scn"/> 
       <Tutorial name="Other mesh"                 scene="Tutorials/StepByStep/TopologicalMapping/5_TopoMapping.scn"/>
       <Tutorial name="Same pipeline"              scene="Tutorials/StepByStep/TopologicalMapping/6_TopoMapping.scn"/>
     </Group>

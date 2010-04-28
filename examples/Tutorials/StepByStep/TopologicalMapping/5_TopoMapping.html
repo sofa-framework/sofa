@@ -14,15 +14,19 @@
 		<br><div id="orangeText">Description:</div><br>
 		This step is not following the previous steps. Indeed, it shows a hexahedra mesh which has already mechanical behavior and could be also linked to surfacique mesh. 
 
-		<br><div id="orangeText">Components:</div><br>
-                <ul>
-		  <li>. </li>
-		  <li>. </li>
-		  <li>. </li>
+		<br><div id="orangeText">Components:</div>
+        <ul>
+		  <li>ODE solver and a linear solver. </li>
+		  <li>A <b>mechanicalObject</b> with geometry point positions.</li>
+		  <li><b>RegularGridTopology</b> is used to create a 3D grid mesh. </li>
+		  <li><b>HexahedronFEMForcefield</b> is used to create tetrahedral finite element on this mechanical system.</li>
+		  <li><b>DiagonalMass</b> discribe a global mass of the mesh elemets.</li>
+		  <li><b>Constraint</b> components are used here to fix the four corners of the uper face of the cube.</li>		  
 		</ul>
 
 
 		<br><div id="orangeText">Results:</div><br>
+		This scene represente a 3D cube mesh under gravity. It is the same configuration as the step <i>"Embedding the Model"</i>. 
 		<br>
 		<center><img src="hexaMesh_02.png" width="300" name="TutorialTopologyTetra2TriangleTopologicalMapping" align="middle">
 
