@@ -33,6 +33,17 @@ vec3 AdjustContrast(vec3 Color, vec2 ScaleBias)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+// Sphere mapping.
+///////////////////////////////////////////////////////////////////////////////
+
+vec2 GenSphereMapCoords(vec3 ViewDir, vec3 Normal)
+{
+    vec3 ReflVec = reflect(ViewDir, Normal);
+    ReflVec.z += 1.0;
+    return 1.0 - (normalize(ReflVec).xy * 0.5 + 0.5);
+}
+
+///////////////////////////////////////////////////////////////////////////////
 // The brushed-metal normal computation.
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -183,6 +194,9 @@ uniform vec3 SpecularColor;
 uniform float SpecularRoughness;
 uniform float SpecularReflectance;
 
+// Material parameters for environment mapping
+uniform float EnvReflectance;
+
 // Material parameters for brushing
 uniform vec3 BrushDirection;
 uniform float BrushDistance;
@@ -208,6 +222,7 @@ uniform sampler2D DiffuseMap;
 uniform sampler2D NormalMap;
 uniform sampler3D NoiseMap;
 uniform samplerCube EnvMap;
+uniform sampler2D SphereMap;
 
 // Data from vertex shader
 varying vec3 Position;
@@ -278,7 +293,10 @@ vec3 mainFS()
 #if defined(EnvMap_Present)
     vec3 ReflVec = reflect(ViewDir, Normal);
     vec3 EnvColor = textureCube(EnvMap, ReflVec).xyz;
-    Final = mix(Final, EnvColor, Fresnel(dot(Normal, ViewDir), SpecularReflectance));
+    Final = mix(Final, EnvColor, Fresnel(dot(Normal, ViewDir), EnvReflectance));
+#elif defined(SphereMap_Present)
+    vec3 EnvColor = texture2D(SphereMap, GenSphereMapCoords(ViewDir, Normal)).xyz;
+    Final = mix(Final, EnvColor, Fresnel(dot(Normal, ViewDir), EnvReflectance));
 #endif
 
     return Final;
