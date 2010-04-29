@@ -166,8 +166,8 @@ void main()
 #endif
 
 #if defined(PlanarMapping)
-    Texcoord.x = dot(vec4(gl_Vertex.xyz, 1.0), PlaneS);
-    Texcoord.y = dot(vec4(gl_Vertex.xyz, 1.0), PlaneT);
+    Texcoord.x = dot(gl_Vertex.xyz, PlaneS.xyz) + PlaneS.w;
+    Texcoord.y = dot(gl_Vertex.xyz, PlaneT.xyz) + PlaneT.w;
 #else
     Texcoord  = gl_MultiTexCoord0.xy;
 #endif
@@ -252,7 +252,7 @@ vec3 mainFS()
     vec3 LightDir = normalize(LightDirection);
 
 #if defined(ExponentialMapping)
-    Texcoord = Pow(fract(Texcoord) - 0.5, ExpScale) + 0.5;
+    Texcoord = Pow(fract(Texcoord) * 2 - 1, ExpScale) * 0.5 + 0.5;
 #endif
 
 #if defined(DiffuseMap_Present)
