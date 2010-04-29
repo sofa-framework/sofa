@@ -61,6 +61,8 @@ namespace qt
 
 class TutorialSelector : public Q3ListView
 {
+
+
     struct Category
     {
         Category() {};
@@ -69,6 +71,9 @@ class TutorialSelector : public Q3ListView
         std::string name;
         std::string xmlFilename;
         std::string htmlFilename;
+        bool operator<(const Category& c) const  { return (name < c.name); }
+        bool operator!=(const Category& c) const  { return (name != c.name); }
+        bool operator==(const Category& c) const  { return (name == c.name); }
     };
 
     struct Tutorial
@@ -85,11 +90,16 @@ class TutorialSelector : public Q3ListView
         std::string name;
         std::string sceneFilename;
         std::string htmlFilename;
+        bool operator<(const Tutorial& t) const  { return (name < t.name); }
+        bool operator!=(const Tutorial& t) const  { return (name != t.name); }
+        bool operator==(const Tutorial& t) const  { return (name == t.name); }
     };
 
     Q_OBJECT
 public:
     TutorialSelector( QWidget* parent = 0);
+    void init();
+
 
     void keyPressEvent ( QKeyEvent * e );
     void usingScene(const std::string &filename);
@@ -118,6 +128,9 @@ protected:
 
     std::map< Q3ListViewItem *, Category> itemToCategory;
     std::map< Q3ListViewItem *, Tutorial> itemToTutorial;
+    std::multimap<Category, Tutorial> listTutoFromFile;
+
+    Category currentCategory;
 };
 
 }

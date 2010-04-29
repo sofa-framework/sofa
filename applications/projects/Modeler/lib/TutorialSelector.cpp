@@ -35,6 +35,8 @@
 
 #include <iostream>
 
+#include <sofa/helper/vector.h>
+
 #ifdef SOFA_QT4
 #include <Q3Header>
 #include <QImage>
@@ -71,10 +73,40 @@ TutorialSelector::TutorialSelector(QWidget* parent):Q3ListView(parent)
     itemToCategory.insert(std::make_pair((Q3ListViewItem*)0, Category("All Sofa Tutorials", sofa::helper::system::DataRepository.getFile("Tutorials/Tutorials.xml"), sofa::helper::system::DataRepository.getFile("Tutorials/Tutorials.html"))));
 }
 
+void TutorialSelector::init()
+{
+    openCategory(QString("All Sofa Tutorials"));
+
+    //Store all the categories we have for the software
+    helper::vector< Category > allCategories;
+    std::map< Q3ListViewItem *, Category>::const_iterator itCategory;
+    for (itCategory=itemToCategory.begin(); itCategory!=itemToCategory.end(); ++itCategory)
+    {
+        allCategories.push_back(itCategory->second);
+    }
+
+    //Associate a file loading a category to all its tutorials
+    listTutoFromFile.clear();
+    while (!allCategories.empty())
+    {
+        const Category& currentCategory=allCategories.back();
+
+        openCategory(currentCategory);
+        std::map< Q3ListViewItem *, Tutorial>::const_iterator itTuto;
+        for (itTuto=itemToTutorial.begin(); itTuto!=itemToTutorial.end(); ++itTuto)
+        {
+            listTutoFromFile.insert(std::make_pair(currentCategory, itTuto->second));
+        }
+
+        allCategories.pop_back();
+    }
+}
+
 void TutorialSelector::loadTutorials(const std::string &fileTutorial)
 {
     this->clear();
     itemToTutorial.clear();
+
     //Open it using TinyXML
     TiXmlDocument doc(fileTutorial.c_str());
     doc.LoadFile();
@@ -100,9 +132,6 @@ void TutorialSelector::openNode(TiXmlNode *node, Q3ListViewItem *parent, bool is
 
     switch (typeOfNode)
     {
-    case TiXmlNode::DOCUMENT:
-        break;
-
     case TiXmlNode::ELEMENT:
         if (!isRoot)
         {
@@ -130,18 +159,6 @@ void TutorialSelector::openNode(TiXmlNode *node, Q3ListViewItem *parent, bool is
             }
         }
         openAttribute(node->ToElement(), item);
-        break;
-
-    case TiXmlNode::COMMENT:
-        break;
-
-    case TiXmlNode::UNKNOWN:
-        break;
-
-    case TiXmlNode::TEXT:
-        break;
-
-    case TiXmlNode::DECLARATION:
         break;
     default:
         break;
@@ -283,23 +300,58 @@ void TutorialSelector::openTutorial( const Tutorial &T)
 
 void TutorialSelector::openCategory( const Category &C)
 {
-    this->clear();
     emit openTutorial("");
     loadTutorials(C.xmlFilename);
     emit openCategory(C.name);
     emit openHTML(C.htmlFilename);
+    currentCategory=C;
 }
 
 void TutorialSelector::usingScene(const std::string &filename)
 {
+    //Called by the exterior: a modification in the actual scene has been done.
+    //We want to find if this file is from one tutorial of a specific category
+    //If it is the case, we update the list
     this->clearSelection();
-    std::map< Q3ListViewItem *, Tutorial>::const_iterator it;
-    for (it=itemToTutorial.begin(); it!=itemToTutorial.end(); ++it)
+    std::multimap< Category, Tutorial >::const_iterator it;
+    for (it=listTutoFromFile.begin(); it!=listTutoFromFile.end(); ++it)
     {
-        if (it->second.sceneFilename == filename)
+        const Category &c=it->first;
+        const Tutorial &t=it->second;
+
+        //If we open a category
+        if (c.xmlFilename == filename)
         {
-            if (it->first) this->setSelected(it->first,true);
-            break;
+            if (currentCategory != c)
+            {
+                loadTutorials(c.xmlFilename); //update the list of tutorials corresponding
+                currentCategory = c;
+                emit openHTML(c.htmlFilename);
+            }
+
+            return;
+        }
+        else if (t.sceneFilename == filename) //If we open a tutorial
+        {
+            if (currentCategory != c)
+            {
+                loadTutorials(c.xmlFilename);
+                currentCategory = c;
+            }
+            emit openHTML(t.htmlFilename);
+
+            std::map< Q3ListViewItem *, Tutorial>::const_iterator it;
+            for (it=itemToTutorial.begin(); it!=itemToTutorial.end(); ++it)
+            {
+                //select in the list the current tutorial
+                if (it->second.sceneFilename == filename)
+                {
+                    if (it->first) this->setSelected(it->first,true);
+                    break;
+                }
+            }
+
+            return;
         }
     }
 }
@@ -307,10 +359,15 @@ void TutorialSelector::usingScene(const std::string &filename)
 std::list< std::string >TutorialSelector::getCategories() const
 {
     std::list<std::string> list;
-    std::map< Q3ListViewItem *, Category>::const_iterator it;
-    for (it=itemToCategory.begin(); it!=itemToCategory.end(); ++it)
+    std::multimap< Category, Tutorial>::const_iterator it;
+    std::string catName;
+    for (it=listTutoFromFile.begin(); it!=listTutoFromFile.end(); ++it)
     {
-        list.push_back(it->second.name);
+        if (catName != it->first.name)
+        {
+            catName=it->first.name;
+            list.push_back(catName);
+        }
     }
     return list;
 }
