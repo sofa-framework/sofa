@@ -152,7 +152,7 @@ protected :
  */
 
 template<typename Real, unsigned int N>
-class SOFA_HELPER_API Polynomial_LD
+class Polynomial_LD
 {
 
 public :
@@ -258,6 +258,23 @@ inline std::istream & operator>>(std::istream & stream, Polynomial_LD<FReal,FN> 
 ///////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////
 
+#if defined(WIN32) && !defined(SOFA_BUILD_HELPER)
+#ifdef SOFA_DOUBLE
+extern template class SOFA_HELPER_API Polynomial_LD<double,1>;
+extern template class SOFA_HELPER_API Polynomial_LD<double,2>;
+extern template class SOFA_HELPER_API Polynomial_LD<double,3>;
+extern template class SOFA_HELPER_API Polynomial_LD<double,4>;
+extern template class SOFA_HELPER_API Polynomial_LD<double,5>;
+#endif
+
+#ifdef SOFA_FLOAT
+extern template class SOFA_HELPER_API Polynomial_LD<float,1>;
+extern template class SOFA_HELPER_API Polynomial_LD<float,2>;
+extern template class SOFA_HELPER_API Polynomial_LD<float,3>;
+extern template class SOFA_HELPER_API Polynomial_LD<float,4>;
+extern template class SOFA_HELPER_API Polynomial_LD<float,5>;
+#endif
+#endif
 
 
 
