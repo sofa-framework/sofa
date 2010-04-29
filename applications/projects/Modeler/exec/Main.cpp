@@ -66,6 +66,10 @@ int main(int argc, char** argv)
     sofaModeler->show();
 
     std::string binaryName=argv[0];
+#ifdef WIN32
+    const std::string exe=".exe";
+    if (binaryName.size() > exe.size()) binaryName = binaryName.substr(0, binaryName.size()-exe.size());
+#endif
     if (!binaryName.empty() && binaryName[binaryName.size()-1] == 'd') sofaModeler->setDebugBinary(true);
 
     QString pathIcon=(sofa::helper::system::DataRepository.getFirstPath() + std::string( "/icons/MODELER.png" )).c_str();

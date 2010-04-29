@@ -322,9 +322,10 @@ SofaModeler::SofaModeler()
         ofile << "";
         ofile.close();
     }
-
+#ifdef SOFA_QT4
+    recentlyOpened->setTearOffEnabled(true);
+#endif
     connect( recentlyOpened, SIGNAL(activated(int)), this, SLOT(fileRecentlyOpened(int)));
-    updateRecentlyOpened("");
 
 
     //----------------------------------------------------------------------
@@ -524,14 +525,11 @@ void SofaModeler::fileOpen(std::string filename)
         openPath = sofa::helper::system::SetDirectory::GetParentDir(filename.c_str());
         GNode *root = NULL;
         xml::BaseElement* newXML=NULL;
-        if (!filename.empty())
-        {
-            sofa::helper::system::SetDirectory chdir ( filename );
-            newXML = xml::loadFromFile ( filename.c_str() );
-            if (newXML == NULL) return;
-            if (!newXML->init()) std::cerr<< "Objects initialization failed.\n";
-            root = dynamic_cast<GNode*> ( newXML->getObject() );
-        }
+        sofa::helper::system::SetDirectory chdir ( filename );
+        newXML = xml::loadFromFile ( filename.c_str() );
+        if (newXML == NULL) return;
+        if (!newXML->init()) std::cerr<< "Objects initialization failed.\n";
+        root = dynamic_cast<GNode*> ( newXML->getObject() );
         if (root)
         {
             createTab();
@@ -544,6 +542,7 @@ void SofaModeler::fileOpen(std::string filename)
             changeNameWindow(graph->getFilename());
 
             mapWindow.insert(std::make_pair(windowMenu->insertItem( graph->getFilename().c_str()), tabGraph));
+            updateRecentlyOpened(filename);
         }
     }
     displayHelpModeler();
@@ -556,39 +555,38 @@ void SofaModeler::fileRecentlyOpened(int id)
 
 void SofaModeler::updateRecentlyOpened(std::string fileLoaded)
 {
-
-#ifdef WIN32
-    for (unsigned int i=0; i<fileLoaded.size(); ++i)
+    if (!fileLoaded.empty())
     {
-        if (fileLoaded[i] == '\\') fileLoaded[i] = '/';
-    }
+        if (sofa::helper::system::DataRepository.findFile(fileLoaded))
+            fileLoaded = sofa::helper::system::DataRepository.getFile(fileLoaded);
+        else
+            return;
+#ifdef WIN32
+        //Remove all occurences of '\\' in the path
+        std::replace(fileLoaded.begin(), fileLoaded.end(), '\\', '/');
 #endif
+    }
+    //get the file containing the list of recently opened scenes
     std::string scenes ( "config/Modeler.ini" );
-
     scenes = sofa::helper::system::DataRepository.getFile ( scenes );
 
+    //Build the list of files
     std::vector< std::string > list_files;
+    //Insert the new file at the beginning of the vector
+    if (!fileLoaded.empty()) list_files.push_back(fileLoaded);
+
     std::ifstream end(scenes.c_str());
     std::string s;
     while( std::getline(end,s) )
-    {
-        if (strcmp(s.c_str(),fileLoaded.c_str()))
-            list_files.push_back(sofa::helper::system::DataRepository.getFile(s));
-    }
+        if (s != fileLoaded) list_files.push_back(sofa::helper::system::DataRepository.getFile(s));
     end.close();
 
+    //recentlyOpened->clear();
 
-    recentlyOpened->clear();
+    while (recentlyOpened->count()) recentlyOpened->removeItemAt(0);
 
     std::ofstream out;
     out.open(scenes.c_str(),std::ios::out);
-    if (sofa::helper::system::DataRepository.findFile(fileLoaded))
-    {
-        fileLoaded = sofa::helper::system::DataRepository.getFile(fileLoaded);
-        out << fileLoaded << "\n";
-
-        recentlyOpened->insertItem(QString(fileLoaded.c_str()));
-    }
     for (unsigned int i=0; i<list_files.size() && i<MAX_RECENTLY_OPENED; ++i)
     {
         recentlyOpened->insertItem(QString(list_files[i].c_str()));
@@ -784,7 +782,6 @@ void SofaModeler::changeNameWindow(std::string filename)
 #else
     setCaption ( str.c_str() );
 #endif
-    updateRecentlyOpened(filename);
 }
 
 void SofaModeler::dropEvent(QDropEvent* event)
