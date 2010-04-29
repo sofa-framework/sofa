@@ -105,7 +105,7 @@ SofaTutorialManager::SofaTutorialManager(QWidget* parent, const char* name):Q3Ma
 
 
     //Set up the list of tutorials
-    selector->openCategory(QString("All Sofa Tutorials"));
+    selector->init();
 
     const std::list<std::string> &listTuto=selector->getCategories();
     for (std::list<std::string>::const_reverse_iterator it=listTuto.rbegin(); it!=listTuto.rend(); ++it)
@@ -132,7 +132,6 @@ SofaTutorialManager::SofaTutorialManager(QWidget* parent, const char* name):Q3Ma
 
 void SofaTutorialManager::openTutorial(const std::string& filename)
 {
-
     graph->closeDialogs();
 
     if (filename.empty())
@@ -207,14 +206,10 @@ void SofaTutorialManager::dynamicChangeOfScene( const QString& u)
 #endif
     path  = sofa::helper::system::DataRepository.getFile(path);
     std::string extension=sofa::helper::system::SetDirectory::GetExtension(path.c_str());
+
     if (extension == "xml" || extension == "scn")
     {
         openTutorial(path);
-        std::string htmlLink=path.substr(0,path.size()-3)+"html";
-        if (sofa::helper::system::DataRepository.findFile(htmlLink))
-            openHTML(htmlLink);
-        else
-            openHTML("");
     }
     else if (extension == "html")
     {
