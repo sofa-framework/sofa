@@ -43,30 +43,25 @@ template class Monomial_LD<double,3>;
 template class Monomial_LD<double,4>;
 template class Monomial_LD<double,5>;
 
-template class Polynomial_LD<double,1>;
-template class Polynomial_LD<double,2>;
-template class Polynomial_LD<double,3>;
-template class Polynomial_LD<double,4>;
-template class Polynomial_LD<double,5>;
-
+template class SOFA_HELPER_API Polynomial_LD<double,1>;
+template class SOFA_HELPER_API Polynomial_LD<double,2>;
+template class SOFA_HELPER_API Polynomial_LD<double,3>;
+template class SOFA_HELPER_API Polynomial_LD<double,4>;
+template class SOFA_HELPER_API Polynomial_LD<double,5>;
 #endif
 
-
-
 #ifdef SOFA_FLOAT
-
 template class Monomial_LD<float,1>;
 template class Monomial_LD<float,2>;
 template class Monomial_LD<float,3>;
 template class Monomial_LD<float,4>;
 template class Monomial_LD<float,5>;
 
-template class Polynomial_LD<float,1>;
-template class Polynomial_LD<float,2>;
-template class Polynomial_LD<float,3>;
-template class Polynomial_LD<float,4>;
-template class Polynomial_LD<float,5>;
-
+template class SOFA_HELPER_API Polynomial_LD<float,1>;
+template class SOFA_HELPER_API Polynomial_LD<float,2>;
+template class SOFA_HELPER_API Polynomial_LD<float,3>;
+template class SOFA_HELPER_API Polynomial_LD<float,4>;
+template class SOFA_HELPER_API Polynomial_LD<float,5>;
 #endif
 
 
