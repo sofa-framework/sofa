@@ -52,14 +52,6 @@ using sofa::simulation::tree::GNode;
 void apply(const std::string& directory, std::vector<std::string>& files,
         unsigned int iterations, bool reinit, bool useTopology)
 {
-    std::cout
-            << "******* Args ********\n"
-                    << "files: "       << files[0]    << '\n'
-                    << "iterations: "  << iterations  << '\n'
-                    << "reinit: "      << reinit      << '\n'
-                    << "useTopology: " << useTopology << '\n'
-                    << "*********************"
-                    << std::endl;
 
     sofa::simulation::Simulation* simulation = sofa::simulation::getSimulation();
 
@@ -156,7 +148,7 @@ void apply(const std::string& directory, std::vector<std::string>& files,
         }
         double t = static_cast<double>(clock() - curtime) / CLOCKS_PER_SEC;
 
-        std::cout << "ITERATIONS " << iterations << " TIME " << t << " seconds" << std::endl;
+        std::cout << "ITERATIONS " << iterations << " TIME " << t << " seconds ";
 
         //We read the final error: the summation of all the error made at each time step
         if (!reinit)
@@ -165,40 +157,41 @@ void apply(const std::string& directory, std::vector<std::string>& files,
             {
                 sofa::component::misc::CompareTopologyResult result;
                 result.execute(groot);
-                std::cout << "ERROR " << result.getTotalError() << std::endl;
+                std::cout << "ERROR " << result.getTotalError() << ' ';
 
                 const std::vector<unsigned int>& listResult = result.getErrors();
                 if (listResult.size() != 5)
                 {
-                    std::cout
+                    std::cerr
                             << "ERROR while reading detail of errors by topological element."
                                     << std::endl;
                     break;
                 }
 
                 std::cout
-                        << "ERROR by element type " << '\n'
-                                << "EDGES "      << static_cast<double>(listResult[0])
-                                / result.getNumCompareTopology() << '\n'
-                                << "TRIANGLES "  << static_cast<double>(listResult[1])
-                                / result.getNumCompareTopology() << '\n'
-                                << "QUADS "      << static_cast<double>(listResult[2])
-                                / result.getNumCompareTopology() << '\n'
-                                << "TETRAHEDRA " << static_cast<double>(listResult[3])
-                                / result.getNumCompareTopology() << '\n'
-                                << "HEXAHEDRA "  << static_cast<double>(listResult[4])
-                                / result.getNumCompareTopology() << std::endl;
+                        << "ERROR by element type "
+                                << " EDGES "      << static_cast<double>(listResult[0])
+                                / result.getNumCompareTopology()
+                                << " TRIANGLES "  << static_cast<double>(listResult[1])
+                                / result.getNumCompareTopology()
+                                << " QUADS "      << static_cast<double>(listResult[2])
+                                / result.getNumCompareTopology()
+                                << " TETRAHEDRA " << static_cast<double>(listResult[3])
+                                / result.getNumCompareTopology()
+                                << " HEXAHEDRA "  << static_cast<double>(listResult[4])
+                                / result.getNumCompareTopology();
             }
             else
             {
                 sofa::component::misc::CompareStateResult result;
                 result.execute(groot);
                 std::cout
-                        << "ERROR " << result.getTotalError() << '\n'
-                                << "ERRORBYDOF " << static_cast<double>(result.getErrorByDof())
+                        << "ERROR " << result.getTotalError() << " ERRORBYDOF "
+                                << static_cast<double>(result.getErrorByDof())
                                 / result.getNumCompareState() << std::endl;
             }
         }
+        std::cout << std::endl;
 
         //Clear and prepare for next scene
         simulation->unload(groot);
@@ -211,8 +204,8 @@ int main(int argc, char** argv)
     sofa::helper::BackTrace::autodump();
 
     std::string directory;
-    std::string fileName;
-    std::vector<std::string> files;
+    std::vector<std::string> fileArguments;
+    std::vector<std::string> sceneFiles;
     unsigned int iterations = 100;
     bool reinit = false;
     bool topology = false;
@@ -220,7 +213,7 @@ int main(int argc, char** argv)
     sofa::simulation::setSimulation(new sofa::simulation::tree::TreeSimulation());
 
     sofa::helper::parse(
-        &files,
+        &fileArguments,
         "This is SOFA verification. "
         "To use it, specify in the command line a \".ini\" file containing "
         "the path to the scenes you want to test. ")
@@ -230,34 +223,46 @@ int main(int argc, char** argv)
     .option(&topology, 't', "topology",
             "Specific mode to run tests on topology")(argc, argv);
 
-    if (!files.empty())
+    for(size_t i = 0; i < fileArguments.size(); ++i)
     {
-        fileName = files[0];
-    }
+        std::string currentFile = fileArguments[i];
+        DataRepository.findFile(currentFile);
 
-    files.clear();
-
-    DataRepository.findFile(fileName);
-    std::string extension = fileName.substr(fileName.size() - 4);
-    std::cout << "Extension : " << extension << std::endl;
-    if (extension.compare(".ini") == 0)
-    {
-        //Get the list of scenes to test
-        std::ifstream end(fileName.c_str());
-        std::string s;
-        while (end >> s)
+        if (currentFile.compare(currentFile.size() - 4, 4, ".ini") == 0)
         {
-            DataRepository.findFile(s);
-            files.push_back(s);
+            //This is an ini file: get the list of scenes to test
+            std::ifstream iniFileStream(currentFile.c_str());
+            std::string currentScene;
+            while (iniFileStream >> currentScene)
+            {
+                DataRepository.findFile(currentScene);
+                sceneFiles.push_back(currentScene);
+            }
+        }
+        else
+        {
+            // this is supposed to be a scene file
+            sceneFiles.push_back(currentFile);
         }
     }
-    else
-    {
-        files.push_back(fileName);
-    }
-    std::cout << "Files : " << files[0] << std::endl;
 
-    apply(directory, files, iterations, reinit, topology);
+    std::cout
+            << "*********************************************************************\n"
+                    << "******* Arguments ***************************************************\n"
+                    << "iterations: "  << iterations << '\n'
+                    << "reinit: "      << reinit     << '\n'
+                    << "useTopology: " << topology   << '\n'
+                    << "files : "                    << '\n';
+    for(size_t i = 0; i < sceneFiles.size(); ++i)
+    {
+        std::cout << "  " << sceneFiles[i] << '\n';
+    }
+    std::cout
+            << "*********************************************************************\n"
+                    << "*********************************************************************"
+                    << std::endl;
+
+    apply(directory, sceneFiles, iterations, reinit, topology);
 
     return 0;
 }
