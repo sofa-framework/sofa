@@ -58,8 +58,22 @@ __kernel void UniformMass_addMDx(
     __global Real* dx
 )
 {
-    int index = get_global_id(0);
+    int index = get_group_id(0)*BSIZE*3 + get_local_id(0);
 
     res[index] += dx[index] * mass;
+    index+=BSIZE;
+    res[index] += dx[index] * mass;
+    index+=BSIZE;
+    res[index] += dx[index] * mass;
+}
 
+
+__kernel void UniformMass_accFromF(
+    Real inv_mass,
+    __global Real* a,
+    __global Real* f)
+{
+    int index = get_global_id(0);
+
+    a[index] = f[index] * inv_mass;
 }

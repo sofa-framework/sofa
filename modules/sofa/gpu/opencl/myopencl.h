@@ -35,6 +35,11 @@
 #include "gpuopencl.h"
 #include <string>
 
+
+#define ERROR_OFFSET(t) //{if(t.offset!=0){printf("Error Offset %s %d: %d\n",__FILE__,__LINE__,(int)t.offset);exit(-1);}}
+#define NOT_IMPLEMENTED() {printf("Not implemented %s %d\n",__FILE__,__LINE__);exit(-1);}
+
+
 #if defined(__cplusplus)
 namespace sofa
 {

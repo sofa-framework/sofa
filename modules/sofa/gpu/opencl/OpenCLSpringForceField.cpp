@@ -30,7 +30,7 @@
 #include "OpenCLProgram.h"
 #include "OpenCLKernel.h"
 
-#define DEBUG_TEXT(t) //printf("\t%s\t %s %d\n",t,__FILE__,__LINE__);
+#define DEBUG_TEXT(t)// printf("\t%s\t %s %d\n",t,__FILE__,__LINE__);
 
 namespace sofa
 {

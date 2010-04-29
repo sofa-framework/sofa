@@ -48,16 +48,16 @@ extern "C"
     extern void MechanicalObjectOpenCLVec3f_vAssign(size_t size, _device_pointer res, const _device_pointer a);
     extern void MechanicalObjectOpenCLVec3f_vClear(size_t size,  OpenCLMemoryManager<float>::device_pointer res);
     extern void MechanicalObjectOpenCLVec3f_vMEq(size_t size, _device_pointer res, float f);
-    extern void MechanicalObjectOpenCLVec3f_vMEq_v2(size_t size, _device_pointer res, float f);
+
     extern void MechanicalObjectOpenCLVec3f_vEqBF(size_t size, _device_pointer res, const _device_pointer b, float f);
     extern void MechanicalObjectOpenCLVec3f_vPEq(size_t size, _device_pointer res, const _device_pointer a);
     extern void MechanicalObjectOpenCLVec3f_vPEqBF(size_t size, _device_pointer res, const _device_pointer b, float f);
     extern void MechanicalObjectOpenCLVec3f_vAdd(size_t size, _device_pointer res, const _device_pointer a, const _device_pointer b);
     extern void MechanicalObjectOpenCLVec3f_vOp(size_t size, _device_pointer res, const _device_pointer a, const _device_pointer b, float f);
-    extern void MechanicalObjectOpenCLVec3f_vOp_v2(size_t size, _device_pointer res, const _device_pointer a, const _device_pointer b, float f);
+
     extern void MechanicalObjectOpenCLVec3f_vIntegrate(size_t size, const _device_pointer a, _device_pointer v, _device_pointer x, float f_v_v, float f_v_a, float f_x_x, float f_x_v);
     extern void MechanicalObjectOpenCLVec3f_vPEqBF2(size_t size, _device_pointer res1, const _device_pointer b1, float f1, _device_pointer res2, const _device_pointer b2, float f2);
-    extern void MechanicalObjectOpenCLVec3f_vPEqBF2_v2(size_t size, _device_pointer res1, const _device_pointer b1, float f1, _device_pointer res2, const _device_pointer b2, float f2);
+
     extern void MechanicalObjectOpenCLVec3f_vPEq4BF2(size_t size, _device_pointer res1, const _device_pointer b11, float f11, const _device_pointer b12, float f12, const _device_pointer b13, float f13, const _device_pointer b14, float f14,
             _device_pointer res2, const _device_pointer b21, float f21, const _device_pointer b22, float f22, const _device_pointer b23, float f23, const _device_pointer b24, float f24);
     extern void MechanicalObjectOpenCLVec3f_vOp2(size_t size, _device_pointer res1, const _device_pointer a1, const _device_pointer b1, float f1, _device_pointer res2, const _device_pointer a2, const _device_pointer b2, float f2);

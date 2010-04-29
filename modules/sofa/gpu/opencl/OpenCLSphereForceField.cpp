@@ -176,8 +176,8 @@ void SphereForceFieldOpenCL3f_addDForce(unsigned int size, GPUSphere* sphere, co
 
 
 
-void SphereForceFieldOpenCL3f1_addForce(unsigned int /*size*/, GPUSphere* /*sphere*/, _device_pointer /*penetration*/, _device_pointer /*f*/, const _device_pointer /*x*/, const _device_pointer /*v*/) {DEBUG_TEXT("no implemented");}
-void SphereForceFieldOpenCL3f1_addDForce(unsigned int /*size*/, GPUSphere* /*sphere*/, const _device_pointer /*penetration*/, _device_pointer /*f*/, const _device_pointer /*dx*/) {DEBUG_TEXT("no implemented");}
+void SphereForceFieldOpenCL3f1_addForce(unsigned int /*size*/, GPUSphere* /*sphere*/, _device_pointer /*penetration*/, _device_pointer /*f*/, const _device_pointer /*x*/, const _device_pointer /*v*/) {NOT_IMPLEMENTED();}
+void SphereForceFieldOpenCL3f1_addDForce(unsigned int /*size*/, GPUSphere* /*sphere*/, const _device_pointer /*penetration*/, _device_pointer /*f*/, const _device_pointer /*dx*/) {NOT_IMPLEMENTED();}
 } // namespace opencl
 
 } // namespace gpu

@@ -61,9 +61,10 @@ int UniformMassOpenCLClass = core::RegisterObject("Supports GPU-side computation
 //             kernels
 
 sofa::helper::OpenCLProgram* UniformMassOpenCLFloat_program;
-sofa::helper::OpenCLProgram* UniformMassOpenCLDouble_program;
 
-
+sofa::helper::OpenCLKernel * UniformMassOpenCL3f_addForce_kernel;
+sofa::helper::OpenCLKernel * UniformMassOpenCL3f_addMDX_kernel;
+sofa::helper::OpenCLKernel * UniformMassOpenCL3f_accFromF_kernel;
 void UniformMass_CreateProgramWithFloat()
 {
     if(UniformMassOpenCLFloat_program==NULL)
@@ -79,39 +80,27 @@ void UniformMass_CreateProgramWithFloat()
         UniformMassOpenCLFloat_program->buildProgram();
         sofa::gpu::opencl::myopenclShowError(__FILE__,__LINE__);
         std::cout << UniformMassOpenCLFloat_program->buildLog(0);
-    }
-}
 
-void UniformMass_CreateProgramWithDouble()
-{
+        UniformMassOpenCL3f_addForce_kernel
+            = new sofa::helper::OpenCLKernel(UniformMassOpenCLFloat_program,"UniformMass_addForce_v2");
 
-    if(UniformMassOpenCLDouble_program==NULL)
-    {
+        UniformMassOpenCL3f_addMDX_kernel
+            = new sofa::helper::OpenCLKernel(UniformMassOpenCLFloat_program,"UniformMass_addMDx");
 
-        std::map<std::string, std::string> types;
-        types["Real"]="double";
-        types["Real4"]="double4";
-
-        UniformMassOpenCLDouble_program
-            = new sofa::helper::OpenCLProgram(sofa::helper::OpenCLProgram::loadSource("OpenCLUniformMass.cl"),&types);
-
-        UniformMassOpenCLDouble_program->buildProgram();
+        UniformMassOpenCL3f_accFromF_kernel
+            = new sofa::helper::OpenCLKernel(UniformMassOpenCLFloat_program,"UniformMass_accFromF");
 
     }
 }
 
 
-
-
-sofa::helper::OpenCLKernel * UniformMassOpenCL3f_addForce_kernel;
 void UniformMassOpenCL3f_addForce(unsigned int size, const float* mg, _device_pointer f)
 {
     DEBUG_TEXT("UniformMassOpenCL3f_addForce");
+    ERROR_OFFSET(f);
 
     int BSIZE = gpu::opencl::OpenCLMemoryManager<float>::BSIZE;
     UniformMass_CreateProgramWithFloat();
-    if(UniformMassOpenCL3f_addForce_kernel==NULL)UniformMassOpenCL3f_addForce_kernel
-            = new sofa::helper::OpenCLKernel(UniformMassOpenCLFloat_program,"UniformMass_addForce_v2");
 
     UniformMassOpenCL3f_addForce_kernel->setArg<unsigned int>(0,&size);
     UniformMassOpenCL3f_addForce_kernel->setArg<float>(1,&mg[0]);
@@ -125,23 +114,21 @@ void UniformMassOpenCL3f_addForce(unsigned int size, const float* mg, _device_po
     size_t work_size[1];
     work_size[0]=((size%BSIZE)==0)?size:BSIZE*(size/BSIZE+1);
 
-    //std::cout << __LINE__ << __FILE__ << " " << size << " " << nbSpringPerVertex << " " << springs.offset << " " << f.offset << " " <<  x.offset << " " <<  v.offset<< " " << dfdx.offset << "\n";
-    //std::cout << local_size[0] << " " << size << " " <<work_size[0] << "\n";
-
     UniformMassOpenCL3f_addForce_kernel->execute(0,1,NULL,work_size,local_size);	//note: num_device = const = 0
 
 }
 
-sofa::helper::OpenCLKernel * UniformMassOpenCL3f_addMDX_kernel;
 void UniformMassOpenCL3f_addMDx(unsigned int size, float mass, _device_pointer res, const _device_pointer dx)
 {
-    int BSIZE = gpu::opencl::OpenCLMemoryManager<float>::BSIZE;
     DEBUG_TEXT("UniformMassOpenCL3f_addMDx");
+    ERROR_OFFSET(res)
+    ERROR_OFFSET(dx)
+//	size*=3;
+
+    int BSIZE = gpu::opencl::OpenCLMemoryManager<float>::BSIZE;
+
 
     UniformMass_CreateProgramWithFloat();
-    if(UniformMassOpenCL3f_addMDX_kernel==NULL)UniformMassOpenCL3f_addMDX_kernel
-            = new sofa::helper::OpenCLKernel(UniformMassOpenCLFloat_program,"UniformMass_addMDx");
-
 
     UniformMassOpenCL3f_addMDX_kernel->setArg<float>(0,&mass);
     UniformMassOpenCL3f_addMDX_kernel->setArg<_device_pointer>(1,&res);
@@ -153,27 +140,47 @@ void UniformMassOpenCL3f_addMDx(unsigned int size, float mass, _device_pointer r
     size_t work_size[1];
     work_size[0]=((size%BSIZE)==0)?size:BSIZE*(size/BSIZE+1);
 
-    //std::cout << __LINE__ << __FILE__ << " " << size << " " <<res.offset << " " << dx.offset << "\n";
-    //std::cout << local_size[0] << " " << size << " " <<work_size[0] << "\n";
-
     UniformMassOpenCL3f_addMDX_kernel->execute(0,1,NULL,work_size,local_size);	//note: num_device = const = 0
 
 }
 
+void UniformMassOpenCL3f_accFromF(unsigned int size, float mass, _device_pointer a, const _device_pointer f)
+{
+    DEBUG_TEXT("UniformMassOpenCL3f_accFromF");
+    ERROR_OFFSET(a)
+    ERROR_OFFSET(f)
 
-void UniformMassOpenCL3f_accFromF(unsigned int /*size*/, float /*mass*/, _device_pointer /*a*/, const _device_pointer /*f*/) {DEBUG_TEXT("no implemented"); exit(0);}
+    size*=3;
 
-void UniformMassOpenCL3f1_addMDx(unsigned int /*size*/, float /*mass*/, _device_pointer /*res*/, const _device_pointer /*dx*/) {DEBUG_TEXT("no implemented"); exit(0);}
-void UniformMassOpenCL3f1_accFromF(unsigned int /*size*/, float /*mass*/, _device_pointer /*a*/, const _device_pointer /*f*/) {DEBUG_TEXT("no implemented"); exit(0);}
-void UniformMassOpenCL3f1_addForce(unsigned int /*size*/, const float* /*mg*/, _device_pointer /*f*/) {DEBUG_TEXT("no implemented"); exit(0);}
+    int BSIZE = gpu::opencl::OpenCLMemoryManager<float>::BSIZE;
+    float inv_mass = 1.0/mass;
 
-void UniformMassOpenCL3d_addMDx(unsigned int /*size*/, double /*mass*/, _device_pointer /*res*/, const _device_pointer /*dx*/) {DEBUG_TEXT("no implemented"); exit(0);}
-void UniformMassOpenCL3d_accFromF(unsigned int /*size*/, double /*mass*/, _device_pointer /*a*/, const _device_pointer /*f*/) {DEBUG_TEXT("no implemented"); exit(0);}
-void UniformMassOpenCL3d_addForce(unsigned int /*size*/, const double* /*mg*/, _device_pointer /*f*/) {DEBUG_TEXT("no implemented"); exit(0);}
+    UniformMass_CreateProgramWithFloat();
 
-void UniformMassOpenCL3d1_addMDx(unsigned int /*size*/, double /*mass*/, _device_pointer /*res*/, const _device_pointer /*dx*/) {DEBUG_TEXT("no implemented"); exit(0);}
-void UniformMassOpenCL3d1_accFromF(unsigned int /*size*/, double /*mass*/, _device_pointer /*a*/, const _device_pointer /*f*/) {DEBUG_TEXT("no implemented"); exit(0);}
-void UniformMassOpenCL3d1_addForce(unsigned int /*size*/, const double* /*mg*/, _device_pointer /*f*/) {DEBUG_TEXT("no implemented"); exit(0);}
+    UniformMassOpenCL3f_accFromF_kernel->setArg<float>(0,&inv_mass);
+    UniformMassOpenCL3f_accFromF_kernel->setArg<_device_pointer>(1,&a);
+    UniformMassOpenCL3f_accFromF_kernel->setArg<_device_pointer>(2,&f);
+
+    size_t local_size[1];
+    local_size[0]=BSIZE;
+
+    size_t work_size[1];
+    work_size[0]=((size%BSIZE)==0)?size:BSIZE*(size/BSIZE+1);
+
+    UniformMassOpenCL3f_accFromF_kernel->execute(0,1,NULL,work_size,local_size);	//note: num_device = const = 0
+}
+
+void UniformMassOpenCL3f1_addMDx(unsigned int /*size*/, float /*mass*/, _device_pointer /*res*/, const _device_pointer /*dx*/) {NOT_IMPLEMENTED();}
+void UniformMassOpenCL3f1_accFromF(unsigned int /*size*/, float /*mass*/, _device_pointer /*a*/, const _device_pointer /*f*/) {NOT_IMPLEMENTED();}
+void UniformMassOpenCL3f1_addForce(unsigned int /*size*/, const float* /*mg*/, _device_pointer /*f*/) {NOT_IMPLEMENTED();}
+
+void UniformMassOpenCL3d_addMDx(unsigned int /*size*/, double /*mass*/, _device_pointer /*res*/, const _device_pointer /*dx*/) {NOT_IMPLEMENTED();}
+void UniformMassOpenCL3d_accFromF(unsigned int /*size*/, double /*mass*/, _device_pointer /*a*/, const _device_pointer /*f*/) {NOT_IMPLEMENTED();}
+void UniformMassOpenCL3d_addForce(unsigned int /*size*/, const double* /*mg*/, _device_pointer /*f*/) {NOT_IMPLEMENTED();}
+
+void UniformMassOpenCL3d1_addMDx(unsigned int /*size*/, double /*mass*/, _device_pointer /*res*/, const _device_pointer /*dx*/) {NOT_IMPLEMENTED();}
+void UniformMassOpenCL3d1_accFromF(unsigned int /*size*/, double /*mass*/, _device_pointer /*a*/, const _device_pointer /*f*/) {NOT_IMPLEMENTED();}
+void UniformMassOpenCL3d1_addForce(unsigned int /*size*/, const double* /*mg*/, _device_pointer /*f*/) {NOT_IMPLEMENTED();}
 
 
 
