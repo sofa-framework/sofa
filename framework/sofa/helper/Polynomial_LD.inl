@@ -178,21 +178,21 @@ Real Monomial_LD<Real,N>::operator()(const RNpoint & x) const
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
-Real Monomial_LD<Real,N>::operator()(const vector<Real> & x,unsigned int ideriv) const
+Real Monomial_LD<Real,N>::operator()(const vector<Real> & x,unsigned int idvar) const
 {
-    //assert( (x.size()==N) && (ideriv < N) );
+    //assert( (x.size()==N) && (idvar < N) );
     if (x.size()!= N) cout<<"WARNING : value assigned to the monome has not the good number of variable"<<endl;
     Real value= coef;
 
-    if (ideriv >= N)
+    if (idvar >= N)
     {
-        cout<<"WARNING : "<<ideriv<<"-th derivative couldn't take place for the monomial of:"<<N<<"-variables"<<endl
+        cout<<"WARNING : "<<idvar<<"-th derivative couldn't take place for the monomial of:"<<N<<"-variables"<<endl
             <<(*this)<<endl
             <<"CONDITION: id_derivative = { 0,1... (NbVariable-1) }"<<endl<<endl;
     }
     else
     {
-        if(ideriv==0)
+        if(idvar==0)
         {
             value=this->operator()(x);
         }
@@ -200,7 +200,7 @@ Real Monomial_LD<Real,N>::operator()(const vector<Real> & x,unsigned int ideriv)
         {
             for(unsigned int i=0; i<N; i++)
             {
-                if (i==ideriv)
+                if (i==idvar)
                 {
                     value*=(Real) powers[i];//derivate
                     value*=(Real) pow(x[i],(powers[i]-1));
@@ -216,21 +216,21 @@ Real Monomial_LD<Real,N>::operator()(const vector<Real> & x,unsigned int ideriv)
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
-Real Monomial_LD<Real,N>::operator()(const RNpoint & x,unsigned int ideriv) const
+Real Monomial_LD<Real,N>::operator()(const RNpoint & x,unsigned int idvar) const
 {
-    //assert( (x.size()==N) && (ideriv < N) );
+    //assert( (x.size()==N) && (idvar < N) );
     if (x.size()!= N) cout<<"WARNING : value assigned to the monome has not the good number of variable"<<endl;
     Real value= coef;
 
-    if (ideriv >= N)
+    if (idvar >= N)
     {
-        cout<<"WARNING : "<<ideriv<<"-th derivative couldn't take place for the monomial of:"<<N<<"-variables"<<endl
+        cout<<"WARNING : "<<idvar<<"-th derivative couldn't take place for the monomial of:"<<N<<"-variables"<<endl
             <<(*this)<<endl
             <<"CONDITION: id_derivative = { 0,1... (NbVariable-1) }"<<endl<<endl;
     }
     else
     {
-        if(ideriv==0)
+        if(idvar==0)
         {
             value=this->operator()(x);
         }
@@ -238,7 +238,7 @@ Real Monomial_LD<Real,N>::operator()(const RNpoint & x,unsigned int ideriv) cons
         {
             for(unsigned int i=0; i<N; i++)
             {
-                if (i==ideriv)
+                if (i==idvar)
                 {
                     value*=(Real) powers[i];//derivate
                     value*=(Real) pow(x[i],(powers[i]-1));
@@ -254,21 +254,21 @@ Real Monomial_LD<Real,N>::operator()(const RNpoint & x,unsigned int ideriv) cons
 }
 ////////////////////////////////
 template<typename Real, unsigned int N>
-Monomial_LD<Real,N> Monomial_LD<Real,N>::d(const unsigned int & ideriv) const
+Monomial_LD<Real,N> Monomial_LD<Real,N>::d(const unsigned int & idvar) const
 {
     Monomial_LD<Real,N> r(*this);
-    if (ideriv >= N)
+    if (idvar >= N)
     {
-        cout<<"WARNING : "<<ideriv<<"-th derivative couldn't take place for the monomial of:"<<N<<"-variables"<<endl
+        cout<<"WARNING : "<<idvar<<"-th derivative couldn't take place for the monomial of:"<<N<<"-variables"<<endl
             <<r<<endl
             <<"CONDITION: id_derivative = { 0,1... (NbVariable-1) }"<<endl<<endl;
     }
     else
     {
-        r.coef*=(Real) r.powers[ideriv];
-        if (powers[ideriv] != 0)
+        r.coef*=(Real) r.powers[idvar];
+        if (powers[idvar] != 0)
         {
-            (r.powers[ideriv])--;
+            (r.powers[idvar])--;
         }
     }
     return r;

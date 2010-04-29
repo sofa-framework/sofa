@@ -120,9 +120,13 @@ public :
     ///Evaluating value
     Real operator()(const sofa::helper::vector<Real> & x) const;
     Real operator()(const RNpoint & x) const;
-    ///Evaluating derivative value
-    Real operator()(const sofa::helper::vector<Real> & x,unsigned int ideriv) const;
-    Real operator()(const RNpoint & x,unsigned int ideriv) const;
+    ///Evaluating first partial derivative by idvar-th variable
+    Real operator()(const sofa::helper::vector<Real> & x,unsigned int idvar) const;
+    Real operator()(const RNpoint & x,unsigned int idvar) const;
+
+    ///Evaluating partial derivative hight order by idvar-th variable in ideriv-th order
+    Real operator()(const sofa::helper::vector<Real> & x,unsigned int idvar,unsigned int ideriv) const;//Todo
+    Real operator()(const RNpoint & x,unsigned int idvar,unsigned int ideriv) const;//Todo
 
     ///Derivative operator alowing to write p1=p2.d(x);
     Monomial_LD<Real,N> d(const unsigned int & ideriv) const;
@@ -148,7 +152,7 @@ protected :
  */
 
 template<typename Real, unsigned int N>
-class Polynomial_LD
+class SOFA_HELPER_API Polynomial_LD
 {
 
 public :
@@ -198,9 +202,13 @@ public :
     ///Evaluating
     Real operator()(const sofa::helper::vector<Real> & x) const;
     Real operator()(const RNpoint & x) const;
-    ///Evaluating derivative
-    Real operator()(const sofa::helper::vector<Real> & x,unsigned int iderive) const;
-    Real operator()(const RNpoint & x,unsigned int iderive) const;
+    ///Evaluating first partial derivative by idvar-th variable
+    Real operator()(const sofa::helper::vector<Real> & x,unsigned int idvar) const;
+    Real operator()(const RNpoint & x,unsigned int idvar) const;
+
+    ///Evaluating partial derivative hight order by idvar-th variable in ideriv-th order
+    Real operator()(const sofa::helper::vector<Real> & x,unsigned int idvar,unsigned int ideriv) const;//Todo
+    Real operator()(const RNpoint & x,unsigned int idvar,unsigned int ideriv) const;//Todo
 
     ///Derivative operator alowing to write p1=p2.d(x);
     Polynomial_LD<Real,N>  d(const unsigned int & ideriv) const;
@@ -221,6 +229,7 @@ public :
     friend Polynomial_LD<FReal,FN> & operator*(const Monomial_LD<FReal,FN>   & a, Polynomial_LD<FReal,FN> & r);
 
     void sort();
+    void testPolynomial_LD();
 protected :
 
     ///The sort must be done after each constructor and each operation where monomials are inserted
