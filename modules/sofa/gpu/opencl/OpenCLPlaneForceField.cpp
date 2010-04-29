@@ -157,17 +157,17 @@ void PlaneForceFieldOpenCL3f_addDForce(unsigned int size, GPUPlane<float>* plane
 
 
 
-void MultiPlaneForceFieldOpenCL3f_addDForce(int /*n*/, PlaneDForceOp<float>* /*ops*/) {DEBUG_TEXT("no implemented");}
+void MultiPlaneForceFieldOpenCL3f_addDForce(int /*n*/, PlaneDForceOp<float>* /*ops*/) {NOT_IMPLEMENTED();}
 
-void PlaneForceFieldOpenCL3f1_addForce(unsigned int /*size*/, GPUPlane<float>* /*plane*/, _device_pointer /*penetration*/, _device_pointer /*f*/, const _device_pointer /*x*/, const _device_pointer /*v*/) {DEBUG_TEXT("no implemented");}
-void PlaneForceFieldOpenCL3f1_addDForce(unsigned int /*size*/, GPUPlane<float>* /*plane*/, const _device_pointer /*penetration*/, _device_pointer /*f*/, const _device_pointer /*dx*/) {DEBUG_TEXT("no implemented");}
+void PlaneForceFieldOpenCL3f1_addForce(unsigned int /*size*/, GPUPlane<float>* /*plane*/, _device_pointer /*penetration*/, _device_pointer /*f*/, const _device_pointer /*x*/, const _device_pointer /*v*/) {NOT_IMPLEMENTED();}
+void PlaneForceFieldOpenCL3f1_addDForce(unsigned int /*size*/, GPUPlane<float>* /*plane*/, const _device_pointer /*penetration*/, _device_pointer /*f*/, const _device_pointer /*dx*/) {NOT_IMPLEMENTED();}
 
 
-void PlaneForceFieldOpenCL3d_addForce(unsigned int /*size*/, GPUPlane<double>* /*plane*/, _device_pointer /*penetration*/, _device_pointer /*f*/, const _device_pointer /*x*/, const _device_pointer /*v*/) {DEBUG_TEXT("no implemented");}
-void PlaneForceFieldOpenCL3d_addDForce(unsigned int /*size*/, GPUPlane<double>* /*plane*/, const _device_pointer /*penetration*/, _device_pointer /*f*/, const _device_pointer /*dx*/) {DEBUG_TEXT("no implemented");}
+void PlaneForceFieldOpenCL3d_addForce(unsigned int /*size*/, GPUPlane<double>* /*plane*/, _device_pointer /*penetration*/, _device_pointer /*f*/, const _device_pointer /*x*/, const _device_pointer /*v*/) {NOT_IMPLEMENTED();}
+void PlaneForceFieldOpenCL3d_addDForce(unsigned int /*size*/, GPUPlane<double>* /*plane*/, const _device_pointer /*penetration*/, _device_pointer /*f*/, const _device_pointer /*dx*/) {NOT_IMPLEMENTED();}
 
-void PlaneForceFieldOpenCL3d1_addForce(unsigned int /*size*/, GPUPlane<double>* /*plane*/, _device_pointer /*penetration*/, _device_pointer /*f*/, const _device_pointer /*x*/, const _device_pointer /*v*/) {DEBUG_TEXT("no implemented");}
-void PlaneForceFieldOpenCL3d1_addDForce(unsigned int /*size*/, GPUPlane<double>* /*plane*/, const _device_pointer /*penetration*/, _device_pointer /*f*/, const _device_pointer /*dx*/) {DEBUG_TEXT("no implemented");}
+void PlaneForceFieldOpenCL3d1_addForce(unsigned int /*size*/, GPUPlane<double>* /*plane*/, _device_pointer /*penetration*/, _device_pointer /*f*/, const _device_pointer /*x*/, const _device_pointer /*v*/) {NOT_IMPLEMENTED();}
+void PlaneForceFieldOpenCL3d1_addDForce(unsigned int /*size*/, GPUPlane<double>* /*plane*/, const _device_pointer /*penetration*/, _device_pointer /*f*/, const _device_pointer /*dx*/) {NOT_IMPLEMENTED();}
 
 
 } // namespace opencl

@@ -5,4 +5,6 @@ SOURCES += OpenCLSphereForceField.cpp
 
 OTHER_FILES += kernels/OpenCLGenericParticleForceField.cl \
 		kernels/OpenCLGenericParticleForceField_Sphere.macrocl \
-		kernels/OpenCLSphereForceField.cl
+
+#obsolete
+#		kernels/OpenCLSphereForceField.cl
