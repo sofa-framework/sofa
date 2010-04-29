@@ -506,7 +506,7 @@ void SofaModeler::fileOpen(const QUrl &u)
     }
     else
     {
-        std::string path=u.path().ascii();
+        std::string path=u.toString().ascii();
         fileOpen(path);
     }
 #else
