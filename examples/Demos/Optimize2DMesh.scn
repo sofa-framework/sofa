@@ -1,17 +1,19 @@
 <Node name="root" dt="0.01" showVisualModels="1" showBehaviorModels="0" showCollisionModels="1" showMappings="0" showForceFields="0" showWireFrame="1" gravity="0 -1 0">
-	<MeshObjLoader name="meshLoader" filename="mesh/square.obj" />
 	
-	<Node>
+	<MeshObjLoader name="meshLoader" filename="mesh/vesselBoundary.obj" />
+	
+	<!--<Node>
 		<TriangleSetTopologyContainer src="@../meshLoader" />
 		<OglModel />
-	</Node>
+	</Node>-->
 	
-	<Optimize2DMesh name="optimizer" inputPoints="@meshLoader.position" inputEdges="@meshLoader.edges"
-					seedPoints="10 10 0" regionPoints="0.1 0.2 0.0" regionTags="1"
-					refine="true" shapeCriteria="0.125" sizeCriteria="0.2"
-					sizes="0.1 0.1 0.1 0.01" kLipschitz="0.1"
-					optimize="true" lloydIteration="50" movingRatio="0.01"
-					viewTriangles="true" viewSeedPoints="false" viewRegionPoints="false"/>
+	<Optimize2DMesh name="optimizer"
+			inputPoints="@meshLoader.position" inputEdges="@meshLoader.edges"
+			seedPoints="0.01 0.01 0" regionPoints="0.0 0.0 0.0" regionTags="1"
+			refine="true" shapeCriteria="0.125"
+			sizePoints="0.0 0.0 0.0" sizes="5e-3 3.5e-4" kLipschitz="0.25"
+			optimize="true" lloydIteration="50"
+			viewTriangles="true" viewSeedPoints="true" viewRegionPoints="true"/>
 	
 	<Node>
 		<MechanicalObject position="@../optimizer.outputPoints" />
