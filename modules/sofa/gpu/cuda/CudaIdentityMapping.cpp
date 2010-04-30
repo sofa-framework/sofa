@@ -46,10 +46,14 @@ using namespace sofa::core::componentmodel::behavior;
 using namespace sofa::gpu::cuda;
 
 template class  IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<CudaVec3fTypes> > >;
+#ifndef SOFA_DOUBLE
 template class  IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<Vec3fTypes> > >;
-template class  IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<Vec3dTypes> > >;
 template class  IdentityMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<CudaVec3fTypes> > >;
+#endif
+#ifndef SOFA_FLOAT
+template class  IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<Vec3dTypes> > >;
 template class  IdentityMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<CudaVec3fTypes> > >;
+#endif
 
 #ifdef SOFA_GPU_CUDA_DOUBLE
 template class  IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<CudaVec3dTypes> > >;
@@ -57,8 +61,12 @@ template class  IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3dTyp
 template class  IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3dTypes>, MechanicalState<CudaVec3dTypes> > >;
 template class  IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3dTypes>, MechanicalState<Vec3fTypes> > >;
 template class  IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3dTypes>, MechanicalState<Vec3dTypes> > >;
-template class  IdentityMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<CudaVec3dTypes> > >;
+#ifndef SOFA_DOUBLE
 template class  IdentityMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<CudaVec3dTypes> > >;
+#endif
+#ifndef SOFA_FLOAT
+template class  IdentityMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<CudaVec3dTypes> > >;
+#endif
 
 template class  IdentityMapping< Mapping< State<CudaVec3d1Types>, MappedModel<ExtVec3dTypes> > >;
 template class  IdentityMapping< Mapping< State<CudaVec3dTypes>, MappedModel<ExtVec3dTypes> > >;
@@ -69,11 +77,15 @@ template class  IdentityMapping< Mapping< State<CudaVec3fTypes>, MappedModel<Ext
 template class  IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3f1Types>, MechanicalState<CudaVec3f1Types> > >;
 template class  IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3f1Types>, MechanicalState<Vec3dTypes> > >;
 template class  IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3f1Types>, MechanicalState<Vec3fTypes> > >;
+#ifndef SOFA_FLOAT
 template class  IdentityMapping< MechanicalMapping< MechanicalState<Vec3dTypes>, MechanicalState<CudaVec3f1Types> > >;
-template class  IdentityMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<CudaVec3f1Types> > >;
-template class  IdentityMapping< Mapping< State<CudaVec3f1Types>, MappedModel<CudaVec3f1Types> > >;
 template class  IdentityMapping< Mapping< State<CudaVec3f1Types>, MappedModel<Vec3dTypes> > >;
+#endif
+#ifndef SOFA_DOUBLE
+template class  IdentityMapping< MechanicalMapping< MechanicalState<Vec3fTypes>, MechanicalState<CudaVec3f1Types> > >;
 template class  IdentityMapping< Mapping< State<CudaVec3f1Types>, MappedModel<Vec3fTypes> > >;
+#endif
+template class  IdentityMapping< Mapping< State<CudaVec3f1Types>, MappedModel<CudaVec3f1Types> > >;
 // template class  IdentityMapping< Mapping< State<CudaVec3f1Types>, MappedModel<ExtVec3dTypes> > >;
 template class  IdentityMapping< Mapping< State<CudaVec3f1Types>, MappedModel<ExtVec3fTypes> > >;
 template class  IdentityMapping< MechanicalMapping< MechanicalState<CudaVec3f1Types>, MechanicalState<CudaVec3fTypes> > >;
