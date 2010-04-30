@@ -43,15 +43,13 @@ using namespace sofa::defaulttype;
 class SOFA_COMPONENT_CONTAINER_API RegularGridTopology : public GridTopology
 {
 public:
+    typedef Vec<3, int> Vec3i;
     SOFA_CLASS(RegularGridTopology,GridTopology);
 
     RegularGridTopology(int nx, int ny, int nz);
     RegularGridTopology();
 
-    virtual void init()
-    {
-        reinit();
-    }
+    virtual void init();
 
     virtual void reinit()
     {
@@ -112,6 +110,7 @@ protected:
     Data< Vector3 > min, max;
     /// Position of point 0
     Data< Vector3 > p0;
+    Data< double > _cellWidth; ///< if > 0 : dimension of each cell in the created grid
     /// Distance between points in the grid. Must be perpendicular to each other
     Vector3 dx,dy,dz;
     SReal inv_dx2, inv_dy2, inv_dz2;

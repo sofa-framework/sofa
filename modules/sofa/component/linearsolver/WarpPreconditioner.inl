@@ -73,7 +73,28 @@ void WarpPreconditioner<DataTypes>::bwdInit()
 template<class DataTypes>
 void WarpPreconditioner<DataTypes>::setSystemMBKMatrix(double mFact, double bFact, double kFact)
 {
-    if (first && realSolver) realSolver->setSystemMBKMatrix(mFact, bFact, kFact);
+    if (rotatedLHVId.isNull())
+    {
+        rotatedLHVId = VecId(VecId::V_DERIV, VecId::V_FIRST_DYNAMIC_INDEX);
+        mstate->vAvail(rotatedLHVId);
+        mstate->vAlloc(rotatedLHVId);
+        sout << "Allocated LH vector " << rotatedLHVId << sendl;
+    }
+    if (rotatedRHVId.isNull())
+    {
+        rotatedRHVId = VecId(VecId::V_DERIV, VecId::V_FIRST_DYNAMIC_INDEX);
+        mstate->vAvail(rotatedRHVId);
+        mstate->vAlloc(rotatedRHVId);
+        sout << "Allocated RH vector " << rotatedRHVId << sendl;
+    }
+
+    if (forceField) getRotations();
+
+    if (first && realSolver)
+    {
+        realSolver->setSystemMBKMatrix(mFact, bFact, kFact);
+        first=false;
+    }
 }
 
 template<class DataTypes>
@@ -114,51 +135,22 @@ void WarpPreconditioner<DataTypes>::solveSystem()
     if (!realSolver || !mstate) return;
     //std::cout << ">SOLVE" << std::endl;
 
-    if (rotatedLHVId.isNull())
-    {
-        rotatedLHVId = VecId(VecId::V_DERIV, VecId::V_FIRST_DYNAMIC_INDEX);
-        mstate->vAvail(rotatedLHVId);
-        mstate->vAlloc(rotatedLHVId);
-        sout << "Allocated LH vector " << rotatedLHVId << sendl;
-    }
-    if (rotatedRHVId.isNull())
-    {
-        rotatedRHVId = VecId(VecId::V_DERIV, VecId::V_FIRST_DYNAMIC_INDEX);
-        mstate->vAvail(rotatedRHVId);
-        mstate->vAlloc(rotatedRHVId);
-        sout << "Allocated RH vector " << rotatedRHVId << sendl;
-    }
-
-    if (forceField)
-        getRotations();
-
     if (forceField)
     {
-        helper::ReadAccessor <VecDeriv> v = *mstate->getVecDeriv(systemRHVId.index);
-        helper::WriteAccessor<VecDeriv> vR = *mstate->getVecDeriv(rotatedRHVId.index);
-        unsigned int size = v.size();
-        for (unsigned int i=0; i<size; ++i)
-            vR[i] = data.R[i].multTranspose(v[i]);              // rotatedRH = R^t * systemRH
+        helper::ReadAccessor <VecDeriv> rv = *mstate->getVecDeriv(systemRHVId.index);
+        helper::WriteAccessor<VecDeriv> rvR = *mstate->getVecDeriv(rotatedRHVId.index);
+        unsigned int size = rv.size();
+        for (unsigned int i=0; i<size; ++i) rvR[i] = data.R[i].multTranspose(rv[i]);            // rotatedRH = R^t * systemRH
+
+        realSolver->setSystemRHVector(rotatedRHVId);
+        realSolver->setSystemLHVector(rotatedLHVId);
+        realSolver->solveSystem();                     // rotatedLH = M^-1 * rotatedRH
+
+        helper::WriteAccessor<VecDeriv> lv = *mstate->getVecDeriv(systemLHVId.index);
+        helper::ReadAccessor <VecDeriv> lvR = *mstate->getVecDeriv(rotatedLHVId.index);
+        for (unsigned int i=0; i<size; ++i) lv[i] = data.R[i] * (lvR[i]); // systemLH = R * rotatedLH
     }
-    else
-        mstate->vOp(rotatedRHVId, systemRHVId);   // rotatedRH = systemRH
-
-    realSolver->setSystemRHVector(rotatedRHVId);
-    realSolver->setSystemLHVector(rotatedLHVId);
-    realSolver->solveSystem();                     // rotatedLH = M^-1 * rotatedRH
-
-    if (forceField)
-    {
-        helper::WriteAccessor<VecDeriv> v = *mstate->getVecDeriv(systemLHVId.index);
-        helper::ReadAccessor <VecDeriv> vR = *mstate->getVecDeriv(rotatedLHVId.index);
-        unsigned int size = v.size();
-        for (unsigned int i=0; i<size; ++i)
-            v[i] = data.R[i] * (vR[i]); // systemLH = R * rotatedLH
-    }
-    else
-        mstate->vOp(systemLHVId, rotatedLHVId);   // systemLH = rotatedLH
-
-    first=false;
+    else mstate->vOp(systemLHVId, systemRHVId);     // systemLH = rotatedLH
 }
 
 template<class TDataTypes>

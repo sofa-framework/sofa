@@ -25,7 +25,19 @@
 // Author: Hadrien Courtecuisse
 //
 // Copyright: See COPYING file that comes with this distribution
-#include "PrecomputedLinearSolver.inl"
+#ifndef SOFA_COMPONENT_LINEARSOLVER_JACOBIPRECONDITIONER_INL
+#define SOFA_COMPONENT_LINEARSOLVER_JACOBIPRECONDITIONER_INL
+
+#include <sofa/component/linearsolver/JacobiPreconditioner.h>
+#include <sofa/component/linearsolver/NewMatMatrix.h>
+#include <sofa/component/linearsolver/FullMatrix.h>
+#include <sofa/component/linearsolver/DiagonalMatrix.h>
+#include <sofa/component/linearsolver/SparseMatrix.h>
+#include <iostream>
+#include "sofa/helper/system/thread/CTime.h"
+#include <sofa/core/objectmodel/BaseContext.h>
+#include <sofa/core/componentmodel/behavior/LinearSolver.h>
+#include <sofa/helper/system/thread/CTime.h>
 
 namespace sofa
 {
@@ -36,14 +48,37 @@ namespace component
 namespace linearsolver
 {
 
-using namespace sofa::component::odesolver;
-using namespace sofa::component::linearsolver;
+using namespace sofa::defaulttype;
+using namespace sofa::core::componentmodel::behavior;
+using namespace sofa::simulation;
+using namespace sofa::core::objectmodel;
+using sofa::helper::system::thread::CTime;
+using sofa::helper::system::thread::ctime_t;
+using std::cerr;
+using std::endl;
 
-SOFA_DECL_CLASS(PrecomputedLinearSolver)
+template<class TMatrix, class TVector>
+JacobiPreconditioner<TMatrix,TVector>::JacobiPreconditioner()
+    : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
+{
+}
 
-int PrecomputedLinearSolverClass = core::RegisterObject("Linear system solver based on a precomputed inverse matrix")
-        .add< PrecomputedLinearSolver< SparseMatrix<double> , FullVector<double> > >()
-        ;
+/// Solve P^-1 Mx= P^-1 b
+// P[i][j] = M[i][j] ssi i=j
+//P^-1[i][j] = 1/M[i][j]
+template<class TMatrix, class TVector>
+void JacobiPreconditioner<TMatrix,TVector>::solve (Matrix& /*M*/, Vector& z, Vector& r)
+{
+    for (unsigned i=0; i<z.size(); i++) z.set(i,invDiag[i] * r[i]); //si i==j;
+}
+
+template<class TMatrix, class TVector>
+void JacobiPreconditioner<TMatrix,TVector>::setSystemMBKMatrix(double mFact, double bFact, double kFact)
+{
+    Inherit::setSystemMBKMatrix(mFact,bFact,kFact);
+    invDiag.resize(this->currentGroup->systemMatrix->colSize());
+    for (unsigned i=0; i<this->currentGroup->systemMatrix->colSize(); i++) invDiag.set(i,1.0 / this->currentGroup->systemMatrix->element(i,i)); //si i==j;
+}
 
 } // namespace linearsolver
 
@@ -51,3 +86,4 @@ int PrecomputedLinearSolverClass = core::RegisterObject("Linear system solver ba
 
 } // namespace sofa
 
+#endif
