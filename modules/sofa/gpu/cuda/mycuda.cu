@@ -139,7 +139,16 @@ void mycudaMemset(void *devPtr, int val, size_t size,int )
 {
 }
 
+void cuda_void_kernel()
+{
+}
+
 #else
+
+extern "C"
+{
+    void cuda_void_kernel();
+};
 
 bool cudaCheck(cudaError_t err, const char* src="?")
 {
@@ -337,6 +346,19 @@ int mycudaGetnumDevices()
 int mycudaGetBufferDevice()
 {
     return 0;
+}
+
+__global__ void cuda_debug_kernel()
+{
+}
+
+void cuda_void_kernel()
+{
+    myprintf("WARNING : cuda_void_kernel should only be use for debug\n");
+
+    dim3 threads(1,1);
+    dim3 grid(1,1);
+    cuda_debug_kernel<<< grid, threads >>>();
 }
 
 #endif

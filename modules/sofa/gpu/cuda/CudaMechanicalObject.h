@@ -27,6 +27,7 @@
 
 #include "CudaTypes.h"
 #include <sofa/component/container/MechanicalObject.h>
+#include <sofa/gpu/cuda/CudaTypesBase.h>
 
 namespace sofa
 {
@@ -115,6 +116,12 @@ public:
     static void vMultiOp(Main* m, const VMultiOp& ops, bool prefetch = false);
     static double vDot(Main* m, VecId a, VecId b, bool prefetch = false);
     static void resetForce(Main* m, bool prefetch = false);
+
+    static void loadInBaseVector(Main* m,defaulttype::BaseVector * dest, VecId src, unsigned int &offset);
+    static void loadInCudaBaseVector(Main* m,sofa::gpu::cuda::CudaBaseVector<Real> * dest, VecId src, unsigned int &offset);
+
+    static void addBaseVectorToState(Main* m, VecId dest, defaulttype::BaseVector *src, unsigned int &offset);
+    static void addCudaBaseVectorToState(Main* m, VecId dest, sofa::gpu::cuda::CudaBaseVector<Real> *src, unsigned int &offset);
 };
 
 // I know using macros is bad design but this is the only way not to repeat the code for all CUDA types
@@ -125,7 +132,9 @@ public:
     template<> void MechanicalObject< T >::vMultiOp(const VMultiOp& ops); \
     template<> double MechanicalObject< T >::vDot(VecId a, VecId b); \
     template<> void MechanicalObject< T >::resetForce(); \
-    template <> void MechanicalObject< T >::addDxToCollisionModel();
+    template<> void MechanicalObject< T >::addDxToCollisionModel(); \
+    template<> void MechanicalObject< T >::loadInBaseVector(defaulttype::BaseVector * dest, VecId src, unsigned int &offset); \
+    template<> void MechanicalObject< T >::addBaseVectorToState(VecId dest, defaulttype::BaseVector *src, unsigned int &offset);
 
 CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec3fTypes);
 CudaMechanicalObject_DeclMethods(gpu::cuda::CudaVec3f1Types);

@@ -74,6 +74,8 @@ extern "C" {
     extern int mycudaGetMultiProcessorCount();
     extern void mycudaPrivateInit(int device=-1);
 
+    extern void cuda_void_kernel();
+
 
     extern const char* mygetenv(const char* name);
 
