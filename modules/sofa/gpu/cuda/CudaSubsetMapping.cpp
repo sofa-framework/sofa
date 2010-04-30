@@ -44,24 +44,27 @@ using namespace sofa::core;
 using namespace sofa::core::componentmodel::behavior;
 using namespace sofa::gpu::cuda;
 
-#ifndef SOFA_FLOAT
-#endif
-#ifndef SOFA_DOUBLE
 template class SubsetMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<CudaVec3fTypes> > >;
-template class SubsetMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<Vec3fTypes> > >;
 template class SubsetMapping< Mapping< State<CudaVec3fTypes>, MappedModel<CudaVec3fTypes> > >;
-template class SubsetMapping< Mapping< State<CudaVec3fTypes>, MappedModel<Vec3fTypes> > >;
-template class SubsetMapping< Mapping< State<CudaVec3fTypes>, MappedModel<ExtVec3fTypes> > >;
 // template class SubsetMapping< Mapping< State<CudaVec3fTypes>, MappedModel<ExtVec3dTypes> > >;
+template class SubsetMapping< Mapping< State<CudaVec3fTypes>, MappedModel<ExtVec3fTypes> > >;
 template class SubsetMapping< MechanicalMapping< MechanicalState<CudaVec3f1Types>, MechanicalState<CudaVec3f1Types> > >;
 template class SubsetMapping< MechanicalMapping< MechanicalState<CudaVec3f1Types>, MechanicalState<CudaVec3fTypes> > >;
 template class SubsetMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<CudaVec3f1Types> > >;
-template class SubsetMapping< MechanicalMapping< MechanicalState<CudaVec3f1Types>, MechanicalState<Vec3fTypes> > >;
+
 template class SubsetMapping< Mapping< State<CudaVec3f1Types>, MappedModel<CudaVec3f1Types> > >;
 template class SubsetMapping< Mapping< State<CudaVec3f1Types>, MappedModel<CudaVec3fTypes> > >;
 template class SubsetMapping< Mapping< State<CudaVec3fTypes>, MappedModel<CudaVec3f1Types> > >;
-template class SubsetMapping< Mapping< State<CudaVec3f1Types>, MappedModel<Vec3fTypes> > >;
+
 template class SubsetMapping< Mapping< State<CudaVec3f1Types>, MappedModel<ExtVec3fTypes> > >;
+// template class SubsetMapping< Mapping< State<CudaVec3f1Types>, MappedModel<ExtVec3dTypes> > >;
+#ifndef SOFA_FLOAT
+#endif
+#ifndef SOFA_DOUBLE
+template class SubsetMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<Vec3fTypes> > >;
+template class SubsetMapping< Mapping< State<CudaVec3fTypes>, MappedModel<Vec3fTypes> > >;
+template class SubsetMapping< MechanicalMapping< MechanicalState<CudaVec3f1Types>, MechanicalState<Vec3fTypes> > >;
+template class SubsetMapping< Mapping< State<CudaVec3f1Types>, MappedModel<Vec3fTypes> > >;
 #endif
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
@@ -69,7 +72,6 @@ template class SubsetMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>
 template class SubsetMapping< Mapping< State<CudaVec3fTypes>, MappedModel<Vec3dTypes> > >;
 template class SubsetMapping< MechanicalMapping< MechanicalState<CudaVec3f1Types>, MechanicalState<Vec3dTypes> > >;
 template class SubsetMapping< Mapping< State<CudaVec3f1Types>, MappedModel<Vec3dTypes> > >;
-// template class SubsetMapping< Mapping< State<CudaVec3f1Types>, MappedModel<ExtVec3dTypes> > >;
 #endif
 #endif
 
@@ -90,24 +92,25 @@ using namespace sofa::component::mapping;
 SOFA_DECL_CLASS(CudaSubsetMapping)
 
 int SubsetMappingCudaClass = core::RegisterObject("Supports GPU-side computations using CUDA")
-#ifndef SOFA_FLOAT
-#endif
-#ifndef SOFA_DOUBLE
         .add< SubsetMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<CudaVec3fTypes> > > >()
-        .add< SubsetMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<Vec3fTypes> > > >()
         .add< SubsetMapping< Mapping< State<CudaVec3fTypes>, MappedModel<CudaVec3fTypes> > > >()
-        .add< SubsetMapping< Mapping< State<CudaVec3fTypes>, MappedModel<Vec3fTypes> > > >()
-        .add< SubsetMapping< Mapping< State<CudaVec3fTypes>, MappedModel<ExtVec3fTypes> > > >()
-// .add< SubsetMapping< Mapping< State<CudaVec3fTypes>, MappedModel<ExtVec3dTypes> > > >()
         .add< SubsetMapping< MechanicalMapping< MechanicalState<CudaVec3f1Types>, MechanicalState<CudaVec3f1Types> > > >()
         .add< SubsetMapping< MechanicalMapping< MechanicalState<CudaVec3f1Types>, MechanicalState<CudaVec3fTypes> > > >()
         .add< SubsetMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<CudaVec3f1Types> > > >()
-        .add< SubsetMapping< MechanicalMapping< MechanicalState<CudaVec3f1Types>, MechanicalState<Vec3fTypes> > > >()
         .add< SubsetMapping< Mapping< State<CudaVec3f1Types>, MappedModel<CudaVec3f1Types> > > >()
         .add< SubsetMapping< Mapping< State<CudaVec3f1Types>, MappedModel<CudaVec3fTypes> > > >()
         .add< SubsetMapping< Mapping< State<CudaVec3fTypes>, MappedModel<CudaVec3f1Types> > > >()
-        .add< SubsetMapping< Mapping< State<CudaVec3f1Types>, MappedModel<Vec3fTypes> > > >()
         .add< SubsetMapping< Mapping< State<CudaVec3f1Types>, MappedModel<ExtVec3fTypes> > > >()
+        .add< SubsetMapping< Mapping< State<CudaVec3fTypes>, MappedModel<ExtVec3fTypes> > > >()
+// .add< SubsetMapping< Mapping< State<CudaVec3fTypes>, MappedModel<ExtVec3dTypes> > > >()
+// .add< SubsetMapping< Mapping< State<CudaVec3f1Types>, MappedModel<ExtVec3dTypes> > > >()
+#ifndef SOFA_FLOAT
+#endif
+#ifndef SOFA_DOUBLE
+        .add< SubsetMapping< MechanicalMapping< MechanicalState<CudaVec3fTypes>, MechanicalState<Vec3fTypes> > > >()
+        .add< SubsetMapping< Mapping< State<CudaVec3fTypes>, MappedModel<Vec3fTypes> > > >()
+        .add< SubsetMapping< MechanicalMapping< MechanicalState<CudaVec3f1Types>, MechanicalState<Vec3fTypes> > > >()
+        .add< SubsetMapping< Mapping< State<CudaVec3f1Types>, MappedModel<Vec3fTypes> > > >()
 #endif
 #ifndef SOFA_FLOAT
 #ifndef SOFA_DOUBLE
@@ -115,7 +118,6 @@ int SubsetMappingCudaClass = core::RegisterObject("Supports GPU-side computation
         .add< SubsetMapping< Mapping< State<CudaVec3fTypes>, MappedModel<Vec3dTypes> > > >()
         .add< SubsetMapping< MechanicalMapping< MechanicalState<CudaVec3f1Types>, MechanicalState<Vec3dTypes> > > >()
         .add< SubsetMapping< Mapping< State<CudaVec3f1Types>, MappedModel<Vec3dTypes> > > >()
-// .add< SubsetMapping< Mapping< State<CudaVec3f1Types>, MappedModel<ExtVec3dTypes> > > >()
 #endif
 #endif
         ;
