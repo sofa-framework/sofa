@@ -23,6 +23,8 @@ vec2 Pow(vec2 x, vec2 y) { POW }
 vec3 Pow(vec3 x, vec3 y) { POW }
 vec4 Pow(vec4 x, vec4 y) { POW }
 
+#define Saturate(x) clamp(x, 0.0, 1.0)
+
 ///////////////////////////////////////////////////////////////////////////////
 // Constrast adjustment.
 ///////////////////////////////////////////////////////////////////////////////
@@ -80,6 +82,7 @@ vec3 BrushedMetalNormal(vec3 Normal, vec3 Position, vec3 Direction, float Roughn
 
 float Fresnel(float Cosine, float Reflectance)
 {
+    if (Cosine < 0.0) return 0.0;
     return Reflectance + (1.0 - Reflectance) * pow(1.0 - Cosine, 5.0);
 }
 
@@ -166,8 +169,8 @@ void main()
 #endif
 
 #if defined(PlanarMapping)
-    Texcoord.x = dot(vec4(gl_Vertex.xyz, 1.0), PlaneS);
-    Texcoord.y = dot(vec4(gl_Vertex.xyz, 1.0), PlaneT);
+    Texcoord.x = dot(gl_Vertex.xyz, PlaneS.xyz) + PlaneS.w;
+    Texcoord.y = dot(gl_Vertex.xyz, PlaneT.xyz) + PlaneT.w;
 #else
     Texcoord  = gl_MultiTexCoord0.xy;
 #endif
@@ -252,7 +255,7 @@ vec3 mainFS()
     vec3 LightDir = normalize(LightDirection);
 
 #if defined(ExponentialMapping)
-    Texcoord = Pow(fract(Texcoord) - 0.5, ExpScale) + 0.5;
+    Texcoord = Pow(fract(Texcoord) * -2 + 1, ExpScale) * -0.5 + 0.5;
 #endif
 
 #if defined(DiffuseMap_Present)
