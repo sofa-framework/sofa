@@ -56,6 +56,29 @@ public:
 
     JacobiPreconditioner();
     void solve (Matrix& M, Vector& x, Vector& b);
+    void setSystemMBKMatrix(double mFact, double bFact, double kFact);
+
+    /// Pre-construction check method called by ObjectFactory.
+    /// Check that DataTypes matches the MechanicalState.
+    template<class T>
+    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
+    {
+        return sofa::core::objectmodel::BaseObject::canCreate(obj, context, arg);
+    }
+
+    virtual std::string getTemplateName() const
+    {
+        return templateName(this);
+    }
+
+    static std::string templateName(const JacobiPreconditioner<TMatrix,TVector>* = NULL)
+    {
+        return TVector::Name();
+    }
+
+
+protected :
+    TVector invDiag;
 };
 
 } // namespace linearsolver

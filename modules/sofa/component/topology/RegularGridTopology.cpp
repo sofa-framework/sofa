@@ -78,15 +78,35 @@ RegularGridTopology::RegularGridTopology(int nx, int ny, int nz)
     : GridTopology(nx, ny, nz),
       min(initData(&min,Vector3(0.0f,0.0f,0.0f),"min", "Min")),
       max(initData(&max,Vector3(1.0f,1.0f,1.0f),"max", "Max")),
-      p0(initData(&p0,Vector3(0.0f,0.0f,0.0f),"p0", "p0"))
+      p0(initData(&p0,Vector3(0.0f,0.0f,0.0f),"p0", "p0")),
+      _cellWidth(initData(&_cellWidth, 0.0, "cellWidth","if > 0 : dimension of each cell in the created grid"))
+
 {
 }
 
 RegularGridTopology::RegularGridTopology()
     : min(initData(&min,Vector3(0.0f,0.0f,0.0f),"min", "Min")),
       max(initData(&max,Vector3(1.0f,1.0f,1.0f),"max", "Max")),
-      p0(initData(&p0,Vector3(0.0f,0.0f,0.0f),"p0", "p0"))
+      p0(initData(&p0,Vector3(0.0f,0.0f,0.0f),"p0", "p0")),
+      _cellWidth(initData(&_cellWidth, 0.0, "cellWidth","if > 0 : dimension of each cell in the created grid"))
 {
+}
+
+void RegularGridTopology::init()
+{
+    if (_cellWidth.getValue())
+    {
+        double w = _cellWidth.getValue();
+
+        Vec3i grid;
+        grid[0]= (int)ceil((max.getValue()[0]-min.getValue()[0]) / w)+1;
+        grid[1]= (int)ceil((max.getValue()[1]-min.getValue()[1]) / w)+1;
+        grid[2]= (int)ceil((max.getValue()[2]-min.getValue()[2]) / w)+1;
+        n.setValue(grid);
+        setSize();
+        sout << "Grid size: " << n.getValue() << sendl;
+    }
+    reinit();
 }
 
 void RegularGridTopology::setPos(SReal xmin, SReal xmax, SReal ymin, SReal ymax, SReal zmin, SReal zmax)

@@ -184,6 +184,7 @@ SOURCES += \
 	   	CudaUnilateralInteractionConstraint.cpp \
 	   	CudaPrecomputedWarpPreconditioner.cpp \
 		CudaWarpPreconditioner.cpp \
+		CudaJacobiPreconditioner.cpp \
 		CudaHexahedronFEMForceField.cpp \
 		#CudaHexahedronGeodesicalDistance.cpp \
      	CudaTetrahedronTLEDForceField.cpp \

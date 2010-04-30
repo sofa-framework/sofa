@@ -25,17 +25,8 @@
 // Author: Hadrien Courtecuisse
 //
 // Copyright: See COPYING file that comes with this distribution
-#include <sofa/component/linearsolver/JacobiPreconditioner.h>
-#include <sofa/component/linearsolver/NewMatMatrix.h>
-#include <sofa/component/linearsolver/FullMatrix.h>
-#include <sofa/component/linearsolver/DiagonalMatrix.h>
-#include <sofa/component/linearsolver/SparseMatrix.h>
+#include <sofa/component/linearsolver/JacobiPreconditioner.inl>
 #include <sofa/core/ObjectFactory.h>
-#include <iostream>
-#include "sofa/helper/system/thread/CTime.h"
-#include <sofa/core/objectmodel/BaseContext.h>
-#include <sofa/core/componentmodel/behavior/LinearSolver.h>
-#include <sofa/helper/system/thread/CTime.h>
 
 namespace sofa
 {
@@ -46,41 +37,17 @@ namespace component
 namespace linearsolver
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::core::componentmodel::behavior;
-using namespace sofa::simulation;
-using namespace sofa::core::objectmodel;
-using sofa::helper::system::thread::CTime;
-using sofa::helper::system::thread::ctime_t;
-using std::cerr;
-using std::endl;
-
-template<class TMatrix, class TVector>
-JacobiPreconditioner<TMatrix,TVector>::JacobiPreconditioner()
-    : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
-{
-}
-
-/// Solve P^-1 Mx= P^-1 b
-// P[i][j] = M[i][j] ssi i=j
-//P^-1[i][j] = 1/M[i][j]
-template<class TMatrix, class TVector>
-void JacobiPreconditioner<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& r)
-{
-    for (unsigned i=0; i<z.size(); i++) z.set(i,r.element(i) / M.element(i,i)); //si i==j;
-}
-
 SOFA_DECL_CLASS(JacobiPreconditioner)
 
 int JacobiPreconditionerClass = core::RegisterObject("Linear solver based on a diagonal matrix (i.e. Jacobi preconditioner)")
 //.add< JacobiPreconditioner<GraphScatteredMatrix,GraphScatteredVector> >(true)
-        .add< JacobiPreconditioner<DiagonalMatrix<double>, FullVector<double> > >(true)
-        .add< JacobiPreconditioner< SparseMatrix<double>, FullVector<double> > >()
-        .add< JacobiPreconditioner<NewMatBandMatrix,NewMatVector> >()
-        .add< JacobiPreconditioner<NewMatMatrix,NewMatVector> >()
-        .add< JacobiPreconditioner<NewMatSymmetricMatrix,NewMatVector> >()
-        .add< JacobiPreconditioner<NewMatSymmetricBandMatrix,NewMatVector> >()
-        .add< JacobiPreconditioner< FullMatrix<double>, FullVector<double> > >()
+        .add< JacobiPreconditioner<DiagonalMatrix<double>, FullVector<double> > >()
+        .add< JacobiPreconditioner<SparseMatrix<double>, FullVector<double> > >()
+// .add< JacobiPreconditioner<NewMatBandMatrix,NewMatVector> >()
+// .add< JacobiPreconditioner<NewMatMatrix,NewMatVector> >()
+// .add< JacobiPreconditioner<NewMatSymmetricMatrix,NewMatVector> >()
+// .add< JacobiPreconditioner<NewMatSymmetricBandMatrix,NewMatVector> >()
+        .add< JacobiPreconditioner<FullMatrix<double>, FullVector<double> > >()
         .addAlias("JacobiLinearSolver")
         .addAlias("JacobiSolver")
         ;
