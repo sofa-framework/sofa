@@ -118,14 +118,11 @@ public :
     Monomial_LD<Real,N> operator*(const Monomial_LD<Real,N> & a) {Monomial_LD<Real,N> r(*this); r*=a; return r;}
 
     ///Evaluating value
-    Real operator()(const sofa::helper::vector<Real> & x) const;
     Real operator()(const RNpoint & x) const;
     ///Evaluating first partial derivative by idvar-th variable
-    Real operator()(const sofa::helper::vector<Real> & x,unsigned int idvar) const;
     Real operator()(const RNpoint & x,unsigned int idvar) const;
 
     ///Evaluating partial derivative hight order by idvar-th variable in ideriv-th order
-    Real operator()(const sofa::helper::vector<Real> & x,unsigned int idvar,unsigned int ideriv) const;//Todo
     Real operator()(const RNpoint & x,unsigned int idvar,unsigned int ideriv) const;//Todo
 
     ///Derivative operator alowing to write p1=p2.d(x);
@@ -200,14 +197,11 @@ public :
     Polynomial_LD<Real,N>  operator*(const Polynomial_LD<Real,N> & a) {Polynomial_LD<Real,N> r(*this); r*=a; return r;}
 
     ///Evaluating
-    Real operator()(const sofa::helper::vector<Real> & x) const;
     Real operator()(const RNpoint & x) const;
     ///Evaluating first partial derivative by idvar-th variable
-    Real operator()(const sofa::helper::vector<Real> & x,unsigned int idvar) const;
     Real operator()(const RNpoint & x,unsigned int idvar) const;
 
     ///Evaluating partial derivative hight order by idvar-th variable in ideriv-th order
-    Real operator()(const sofa::helper::vector<Real> & x,unsigned int idvar,unsigned int ideriv) const;//Todo
     Real operator()(const RNpoint & x,unsigned int idvar,unsigned int ideriv) const;//Todo
 
     ///Derivative operator alowing to write p1=p2.d(x);

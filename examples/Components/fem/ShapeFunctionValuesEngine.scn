@@ -12,7 +12,10 @@
 		<EulerImplicit name="cg_odesolver" printLog="false"/>
 		<CGLinearSolver iterations="25" name="linear solver" tolerance="1.0e-9" threshold="1.0e-9" />
 		<!-- MECHANICAL OBJECT -->
-		<MechanicalObject template="Vec3d" name="CanonicalTetrahedron" position="0. 0. 0. 1. 0. 0. 0. 1. 0. 0. 0. 1"/>
+		<MechanicalObject template="Vec3d" name="CanonicalTetrahedron" position="0. 0. 0. 
+ 											 1. 0. 0. 
+											 0. 1. 0. 
+											 0. 0. 1"/>
 		<!-- MECHANICAL OBJECT 
 		<MechanicalObject template="Vec3d" name="CanonicalTetrahedron" position="0.1 0.3 0.7 1.5 0.3 0.5 0.4 1. 0.21 0.152 0. 1"/>-->
 		<!-- TOPOLOGIE -->
@@ -36,7 +39,7 @@
 		<TetrahedralCorotationalFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" method="large" />
 		
 		<!-- POLYNOMIAL INTERPOLATION -->
-		<InterpolationPolynomialOnTetra template="Vec3d" name="interpolationpolynomial" InputMeshName="TopoOneTetra" definitionMETHOD="LagrangeP2"/>
+		<InterpolationPolynomialOnTetra template="Vec3d" name="interpolationpolynomial" InputMeshName="TopoOneTetra" definitionMETHOD="LagrangeP1"/>
 		
 		<!-- POLYNOMIAL INTERPOLATION 
 		<InterpolationPolynomialOnTetra template="Vec3d" name="testPolynomial" InputMeshName="TopoOneTetra" 
