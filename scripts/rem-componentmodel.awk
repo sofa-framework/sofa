@@ -41,6 +41,18 @@ $1=="}" && $2=="//" && $3=="namespace" && $4=="componentmodel" {
 	next;
 }
 
+#parse "using namespace sofa::core::componentmodel;"
+$1=="using" && $2=="namespace" && $3=="sofa::core::componentmodel;" {
+	skipNextSpaceLine=1;
+	next;
+}
+
+#parse "using namespace core::componentmodel;"
+$1=="using" && $2=="namespace" && $3=="core::componentmodel;" {
+	skipNextSpaceLine=1;
+	next;
+}
+
 skipNext==1 {
 	skipNext=0; 
 }
