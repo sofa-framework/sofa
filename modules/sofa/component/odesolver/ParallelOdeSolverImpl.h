@@ -42,32 +42,35 @@ namespace odesolver
 {
 
 
-class ParallelOdeSolverImpl : virtual public component::odesolver::OdeSolverImpl, virtual public sofa::simulation::common::ParallelSolverImpl
+class ParallelOdeSolverImpl : public sofa::core::componentmodel::behavior::OdeSolver, virtual public sofa::simulation::common::ParallelSolverImpl
 {
 public:
     typedef sofa::core::componentmodel::behavior::ParallelMultiVector<ParallelOdeSolverImpl> MultiVector;
     typedef simulation::common::ParallelSolverImpl::VecId VecId;
-    /*      typedef sofa::core::componentmodel::behavior::MultiVector<OdeSolverImpl> MultiVector;
-        typedef sofa::core::componentmodel::behavior::MultiMatrix<OdeSolverImpl> MultiMatrix;
-        typedef sofa::core::componentmodel::behavior::MechanicalMatrix MechanicalMatrix;
+    /*
+    // typedef sofa::core::componentmodel::behavior::MultiVector<ParallelOdeSolverImpl> MultiVector;
+    typedef sofa::core::componentmodel::behavior::MultiMatrix<ParallelOdeSolverImpl> MultiMatrix;
+    typedef sofa::core::componentmodel::behavior::MechanicalMatrix MechanicalMatrix;
 
-        /// Propagate the given state (time, position and velocity) through all mappings
-        virtual void propagatePositionAndVelocity(double t, VecId x, VecId v);
-        /// Compute the acceleration corresponding to the given state (time, position and velocity)
-        virtual void computeAcc(double t, VecId a, VecId x, VecId v);
-        virtual void computeContactAcc(double t, VecId a, VecId x, VecId v);
+    ParallelOdeSolverImpl();
+    virtual void init();
+    /// Propagate the given state (time, position and velocity) through all mappings
+    virtual void propagatePositionAndVelocity(double t, VecId x, VecId v);
+    /// Compute the acceleration corresponding to the given state (time, position and velocity)
+    virtual void computeAcc(double t, VecId a, VecId x, VecId v);
+    virtual void computeContactAcc(double t, VecId a, VecId x, VecId v);
 
-        /// @name Matrix operations using LinearSolver components
-        /// @{
+    /// @name Matrix operations using LinearSolver components
+    /// @{
 
-        virtual void m_resetSystem();
-        virtual void m_setSystemMBKMatrix(double mFact, double bFact, double kFact);
-        virtual void m_setSystemRHVector(VecId v);
-        virtual void m_setSystemLHVector(VecId v);
-        virtual void m_solveSystem();
-        virtual void m_print( std::ostream& out );
+    virtual void m_resetSystem();
+    virtual void m_setSystemMBKMatrix(double mFact, double bFact, double kFact);
+    virtual void m_setSystemRHVector(VecId v);
+    virtual void m_setSystemLHVector(VecId v);
+    virtual void m_solveSystem();
+    virtual void m_print( std::ostream& out );
 
-        /// @} */
+    /// @} */
 };
 
 }
