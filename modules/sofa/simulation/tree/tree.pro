@@ -19,12 +19,13 @@ TEMPLATE = lib
 TARGET = sofatree
 
 include($${SOFA_DIR}/sofa.cfg)
+
 contains(DEFINES,SOFA_SMP){
-HEADERS +=  \
-	SMPSimulation.h
+HEADERS += \
+			SMPSimulation.h
 
-
-SOURCES += SMPSimulation.cpp
+SOURCES += \
+			SMPSimulation.cpp
 }
 
 CONFIG += $$CONFIGLIBRARIES

@@ -123,9 +123,7 @@ SOURCES +=  \
            ChangeListener.cpp \
            ParallelMechanicalVisitor.cpp \
            ParallelSolverImpl.cpp \
-
 }
-
 
 CONFIG += $$CONFIGLIBRARIES
 

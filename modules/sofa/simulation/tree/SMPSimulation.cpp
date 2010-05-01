@@ -50,7 +50,9 @@
 #include <sofa/helper/system/PipeProcess.h>
 #include <athapascan-1>
 #include <Multigraph.inl>
+#ifdef SOFA_SMP_WEIGHT
 #include <Partitionner.h>
+#endif
 #include <fstream>
 #include <string.h>
 #ifndef WIN32
@@ -81,6 +83,7 @@ struct doCollideTask
 
     }
 };
+#ifdef SOFA_SMP_WEIGHT
 struct compileGraphTask
 {
     static Iterative::Multigraph<MainLoopTask> *mg;
@@ -100,7 +103,6 @@ struct compileGraphTask
         ctime_t  t0 = CTime::getRefTime ();
         if(getMultigraph()&&!getMultigraph()->compiled)
         {
-            Partitionner::Instance().doUpdateScheduling();
             sofa::core::CallContext::ProcessorType etype=sofa::core::CallContext::getExecutionType();
             sofa::core::CallContext::setExecutionType(sofa::core::CallContext::GRAPH_KAAPI);
             getMultigraph()->compile();
@@ -116,13 +118,16 @@ struct compileGraphTask
 
     }
 };
+#endif
 struct animateTask
 {
     void operator()()
     {
         sofa::simulation::tree::SMPSimulation* simulation=dynamic_cast<SMPSimulation *>(sofa::simulation::tree::getSimulation());
         simulation->generateTasks( _root);
+#ifdef SOFA_SMP_WEIGHT
         a1::Fork<compileGraphTask>(a1::SetSite(2))();
+#endif
 
     }
 };
@@ -160,20 +165,23 @@ struct MainLoopTask
 
 
 
-
+#ifdef SOFA_SMP_WEIGHT
 SMPSimulation::SMPSimulation():visualNode(NULL),
     parallelCompile( initData( &parallelCompile, false, "parallelCompile", "Compile task graph in parallel"))
-
-
+#else
+SMPSimulation::SMPSimulation():visualNode(NULL)
+#endif
 {
     changeListener=new common::ChangeListener();
 
     multiGraph= new Iterative::Multigraph<MainLoopTask>();
+#ifdef SOFA_SMP_WEIGHT
     multiGraph2= new Iterative::Multigraph<MainLoopTask>();
     multiGraph2->deployed=true;
     multiGraph->deployed=true;
     multiGraph2->compiled=true;
     multiGraph->compiled=true;
+#endif
 }
 
 SMPSimulation::~SMPSimulation()
@@ -209,59 +217,26 @@ void SMPSimulation::animate ( Node* root, double dt )
 
     BehaviorUpdatePositionVisitor beh(_root->getDt());
     _root->execute ( beh );
+
     if (changeListener->changed()||nbSteps.getValue()<2)
     {
-        if(!parallelCompile.getValue())
-        {
-            ctime_t  t0 = CTime::getRefTime ();
-            Partitionner::Instance().doUpdateScheduling();
-            ctime_t
-            t1 = CTime::getRefTime ();
-            std::cerr << "Compiling Time: " <<
-                    ((t1 - t0) / (CTime::getRefTicksPerSec () / 1000)) * 0.001 << " seconds, "<< std::endl;
-            sofa::core::CallContext::ProcessorType etype=sofa::core::CallContext::getExecutionType();
-            sofa::core::CallContext::setExecutionType(sofa::core::CallContext::GRAPH_KAAPI);
-            multiGraph->compile();
-            t1 = CTime::getRefTime ();
-            std::cout<< ((t1 - t0) / (CTime::getRefTicksPerSec () / 1000)) * 0.001 << " seconds, "<< std::endl;
-            sofa::core::CallContext::setExecutionType(etype);
-            multiGraph->deploy();
-            t1 = CTime::getRefTime ();
-            std::cout<< ((t1 - t0) / (CTime::getRefTicksPerSec () / 1000)) * 0.001 << " seconds, "<< std::endl;
-        }
-        else
-        {
-            compileGraphTask::setMultigraph(multiGraph2);
-            multiGraph2->compiled=false;
-            if(nbSteps.getValue()<2)
-            {
-                sofa::core::CallContext::ProcessorType etype=sofa::core::CallContext::getExecutionType();
-                sofa::core::CallContext::setExecutionType(sofa::core::CallContext::GRAPH_KAAPI);
-                Partitionner::Instance().doUpdateScheduling();
-                multiGraph->compile();
-                sofa::core::CallContext::setExecutionType(etype);
-                multiGraph->deploy();
-                multiGraph2->compiled=true;
 
-            }
-        }
-        changeListener->reset();
+        sofa::core::CallContext::ProcessorType
+        etype=sofa::core::CallContext::getExecutionType();
+        sofa::core::CallContext::setExecutionType(sofa::core::CallContext::GRAPH_KAAPI);
 
+        multiGraph->compile();
 
-    }
-    multiGraph->step();
-    if(1&&!multiGraph2->deployed)
-    {
-        std::swap(multiGraph2,multiGraph);
+        sofa::core::CallContext::setExecutionType(etype);
+
         multiGraph->deploy();
-        multiGraph->deployed=true;
+
+        changeListener->reset();
     }
 
-    ctime_t  t0 = CTime::getRefTime ();
+    multiGraph->step();
     _root->execute<CollisionVisitor>();
-    ctime_t
-    t1 = CTime::getRefTime ();
-    std::cout << "Collision Time: " << ((t1 - t0) / (CTime::getRefTicksPerSec () / 1000)) * 0.001 << " seconds, "<< std::endl;
+
     _root->setTime(nextTime);
     _root->execute<VisualUpdateVisitor>();
     _root->execute<UpdateSimulationContextVisitor>();
@@ -272,9 +247,6 @@ void SMPSimulation::animate ( Node* root, double dt )
     }
     *(nbSteps.beginEdit()) = nbSteps.getValue() + 1;
     nbSteps.endEdit();
-
-
-
 
 }
 void SMPSimulation::generateTasks ( Node* root, double dt )
