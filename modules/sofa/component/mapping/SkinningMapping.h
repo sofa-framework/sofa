@@ -207,7 +207,11 @@ protected:
     Data<int /* = DistanceType*/> distanceType;
     bool computeWeights;
     VVD distances;
+#ifdef SOFA_DEV
+    GeoVecVecCoord distGradients;
+#else
     vector<vector<GeoCoord> > distGradients;
+#endif
 
     inline void computeInitPos();
     inline void computeDistances();

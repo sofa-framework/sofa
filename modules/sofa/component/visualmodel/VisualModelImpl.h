@@ -196,7 +196,7 @@ public:
     Vec3f bbox[2];
     Data< Material > material;
 #ifdef SOFA_SMP
-    helper::io::Mesh::Material originalMaterial;
+    sofa::core::componentmodel::loader::Material originalMaterial;
     bool previousProcessorColor;
 #endif
     Data< bool > putOnlyTexCoords;
