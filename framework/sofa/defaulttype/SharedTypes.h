@@ -62,8 +62,8 @@ struct sparseCumul
             result+=value;
             return;
         }
-        std::vector<unsigned int>::iterator i=value.index->begin();
-        std::vector<unsigned int>::iterator iend=value.index->end();
+        helper::vector<unsigned int>::iterator i=value.index->begin();
+        helper::vector<unsigned int>::iterator iend=value.index->end();
         for (; i!=iend; i++)
         {
 
@@ -75,17 +75,18 @@ struct sparseCumul
 
 
 
-template< class T, class Alloc = std::allocator<T> >
-class SharedVector: public helper::vector<T,Alloc>
+template< class T, class MemoryManager = helper::CPUMemoryManager<T> >
+class SharedVector: public helper::vector<T,MemoryManager>
 {
 public:
+    typedef helper::CPUMemoryManager<T> Alloc;
     typedef typename helper::vector<T,Alloc>::size_type size_type;
     /// reference to a value (read-write)
     typedef typename helper::vector<T,Alloc>::reference reference;
     /// const reference to a value (read only)
     typedef typename helper::vector<T,Alloc>::const_reference const_reference;
     typedef sparseCumul<vector<T> > CumulOperator;
-    std::vector<unsigned int > *index;
+    helper::vector<unsigned int > *index;
     Shared<vector<T,Alloc> > * sharedData;
     /// Basic onstructor
 
@@ -100,7 +101,7 @@ public:
     /// Constructor
     explicit SharedVector(size_type n): helper::vector<T,Alloc>(n),index(NULL),sharedData(new Shared<vector<T,Alloc> >(this)) {}
     /// Constructor
-    SharedVector(const std::vector<T, Alloc>& x): helper::vector<T,Alloc>(x),index(NULL),sharedData(new Shared<vector<T,Alloc> >(this)) {}
+    SharedVector(const helper::vector<T, Alloc>& x): helper::vector<T,Alloc>(x),index(NULL),sharedData(new Shared<vector<T,Alloc> >(this)) {}
     /// Constructor
     SharedVector(const SharedVector<T,Alloc> &cp): helper::vector<T,Alloc>(cp) {}
     SharedVector<T,Alloc> &operator=(const SharedVector<T,Alloc> &cp)
@@ -128,7 +129,7 @@ public:
     {
         if (!index)
         {
-            index=new std::vector<unsigned int >();
+            index=new helper::vector<unsigned int >();
 
         }
         for (unsigned int i=0; i<index->size(); i++)

@@ -18,40 +18,28 @@
 *******************************************************************************
 *                              SOFA :: Framework                              *
 *                                                                             *
-* Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
-* H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
-* M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/objectmodel/BaseContext.h>
+
+#include <sofa/core/CallContext.h>
 
 namespace sofa
 {
 
 namespace core
 {
-
-namespace objectmodel
+#ifndef SOFA_SMP
+Processor *Processor::get_current()
 {
-
-Iterative::IterativePartition* BaseObject::prepareTask()
-{
-    Iterative::IterativePartition *p=NULL;
-    sofa::core::objectmodel::Context *context=dynamic_cast<sofa::core::objectmodel::Context *>(this->getContext());
-    if(this->getPartition())
-    {
-        p=this->getPartition();
-    }
-    else if(context&&context->is_partition())
-    {
-        p=context->getPartition();
-    }
-    return p;
+    static Processor _current;
+    return &_current;
 }
 
-} // namespace objectmodel
+#endif
+CallContext::ProcessorType CallContext::executionType = CallContext::DEFAULT;
+
 
 } // namespace core
 

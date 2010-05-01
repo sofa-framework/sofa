@@ -482,7 +482,7 @@ void Context::copySimulationContext(const Context& c)
     }
     if((gpuPrioritary.getValue())&&partition_)
     {
-        partition_->setGpuPrioritary();
+        partition_->setGPUPrioritary();
     }
 
 #endif

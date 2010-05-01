@@ -45,11 +45,15 @@ template<class DataTypes1, class DataTypes2>
 MixedInteractionForceField<DataTypes1, DataTypes2>::MixedInteractionForceField(MechanicalState<DataTypes1> *mm1, MechanicalState<DataTypes2> *mm2)
     : mstate1(mm1), mstate2(mm2), mask1(NULL), mask2(NULL)
 {
+    if(mm1==0||mm2==0)
+        return;
 }
 
 template<class DataTypes1, class DataTypes2>
 MixedInteractionForceField<DataTypes1, DataTypes2>::~MixedInteractionForceField()
 {
+    if(mstate1==0||mstate2==0)
+        return;
 }
 
 template<class DataTypes1, class DataTypes2>
@@ -59,10 +63,8 @@ void MixedInteractionForceField<DataTypes1, DataTypes2>::init()
     this->mask1 = &mstate1->forceMask;
     this->mask2 = &mstate2->forceMask;
 }
+
 #ifdef SOFA_SMP
-
-
-
 template<class DataTypes1, class DataTypes2>
 struct ParallelMixedInteractionForceFieldAddForce
 {
@@ -75,26 +77,21 @@ struct ParallelMixedInteractionForceFieldAddForce
         typename DataTypes2::VecDeriv &f2= _f2.access();
         const typename DataTypes1::VecCoord &x1= _x1.read();
         const typename DataTypes2::VecCoord &x2= _x2.read();
-        ff->setValidGPUDForce(true);
-        ff->setValidCPUDForce(false);
 
         if(0&&x1.size()!=f1.size())
         {
             f1.resize(x1.size());
-//          f1.zero();
+            f1.zero();
         }
         if(0&&x2.size()!=f2.size())
         {
             f2.resize(x2.size());
-
             // f2.zero();
         }
         ff->addForce(f1,f2,x1,x2,_v1.read(),_v2.read());
     }
+
 };
-
-
-
 
 template<class DataTypes1, class DataTypes2>
 struct ParallelMixedInteractionForceFieldAddDForce
@@ -108,13 +105,6 @@ struct ParallelMixedInteractionForceFieldAddDForce
         typename DataTypes2::VecDeriv &df2= _df2.access();
         const typename DataTypes1::VecDeriv &dx1= _dx1.read();
         const typename DataTypes2::VecDeriv &dx2= _dx2.read();
-        if(!ff->isValidGPUDForce())
-        {
-            ff->copyDForceToGPU();
-            ff->setValidGPUDForce(true);
-            //ff->setValidCPUDForce(false);
-
-        }
         if(0&&dx1.size()!=df1.size())
         {
             df1.resize(dx1.size());
@@ -131,9 +121,6 @@ struct ParallelMixedInteractionForceFieldAddDForce
 };
 
 
-
-
-
 template<class DataTypes1, class DataTypes2>
 struct ParallelMixedInteractionForceFieldAddForceCPU
 {
@@ -146,8 +133,6 @@ struct ParallelMixedInteractionForceFieldAddForceCPU
         typename DataTypes2::VecDeriv &f2= _f2.access();
         const typename DataTypes1::VecCoord &x1= _x1.read();
         const typename DataTypes2::VecCoord &x2= _x2.read();
-        ff->setValidGPUDForce(false);
-        ff->setValidCPUDForce(true);
 
         if(0&&x1.size()!=f1.size())
         {
@@ -157,13 +142,10 @@ struct ParallelMixedInteractionForceFieldAddForceCPU
         {
             f2.resize(x2.size());
         }
-        ff->addForceCPU(f1,f2,x1,x2,_v1.read(),_v2.read());
+        ff->addForce(f1,f2,x1,x2,_v1.read(),_v2.read());
     }
 
 };
-
-
-
 
 template<class DataTypes1, class DataTypes2>
 struct ParallelMixedInteractionForceFieldAddDForceCPU
@@ -177,12 +159,6 @@ struct ParallelMixedInteractionForceFieldAddDForceCPU
         typename DataTypes2::VecDeriv &df2= _df2.access();
         const typename DataTypes1::VecDeriv &dx1= _dx1.read();
         const typename DataTypes2::VecDeriv &dx2= _dx2.read();
-        if(!ff->isValidCPUDForce())
-        {
-            ff->copyDForceToCPU();
-            //ff->setValidGPUDForce(false);
-            ff->setValidCPUDForce(true);
-        }
         if(0&&dx1.size()!=df1.size())
         {
             df1.resize(dx1.size());
@@ -193,13 +169,11 @@ struct ParallelMixedInteractionForceFieldAddDForceCPU
             df2.resize(dx2.size());
             //df2.zero();
         }
-
-
-
-        ff->addDForceCPU(df1,df2,dx1,dx2,1.0,bFactor);
+        ff->addDForce(df1,df2,dx1,dx2,1.0,bFactor);
     }
 
 };
+
 template<class DataTypes1, class DataTypes2>
 void MixedInteractionForceField<DataTypes1, DataTypes2>::addDForce(double kFactor, double bFactor)
 {
@@ -210,6 +184,7 @@ void MixedInteractionForceField<DataTypes1, DataTypes2>::addDForce(double kFacto
         Task<ParallelMixedInteractionForceFieldAddDForceCPU<DataTypes1, DataTypes2>,ParallelMixedInteractionForceFieldAddDForce< DataTypes1, DataTypes2> >(this,*df1,*df2,**mstate1->getDx(),**mstate2->getDx(),kFactor,bFactor);
     }
 }
+
 template<class DataTypes1, class DataTypes2>
 void MixedInteractionForceField<DataTypes1, DataTypes2>::addDForceV(double kFactor, double bFactor)
 {
@@ -220,10 +195,10 @@ void MixedInteractionForceField<DataTypes1, DataTypes2>::addDForceV(double kFact
         Task<ParallelMixedInteractionForceFieldAddDForceCPU<DataTypes1, DataTypes2>,ParallelMixedInteractionForceFieldAddDForce<DataTypes1, DataTypes2> >(this,*df1,*df2,**mstate1->getV(),**mstate2->getV(),kFactor,bFactor);
     }
 }
+
 template<class DataTypes1, class DataTypes2>
 void MixedInteractionForceField<DataTypes1, DataTypes2>::addForce()
 {
-
     if (mstate1 && mstate2)
     {
         VecDeriv1& f1 =*mstate1->getF();

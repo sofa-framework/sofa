@@ -126,12 +126,11 @@ void Mass<DataTypes>::exportGnuplot(double time)
         (*m_gnuplotFileEnergy) << time <<"\t"<< this->getKineticEnergy() <<"\t"<< this->getPotentialEnergy() <<"\t"<< this->getPotentialEnergy()+this->getKineticEnergy()<< sendl;
     }
 }
-#ifdef SOFA_SMP
 
+#ifdef SOFA_SMP
 template<class DataTypes>
 struct ParallelMassAccFromF
 {
-
     void	operator()( Mass< DataTypes >*m,Shared_rw< typename  DataTypes::VecDeriv> _a,Shared_r< typename  DataTypes::VecDeriv> _f)
     {
         m->accFromF(_a.access(),_f.read());
@@ -147,28 +146,26 @@ public:
     }
 };
 
-
-
 template<class DataTypes>
 struct ParallelMassAddMDxCPU
 {
 public:
     void	operator()( Mass< DataTypes >* m,Shared_rw< typename DataTypes::VecDeriv> _res,Shared_r<  typename DataTypes::VecDeriv> _dx,double factor)
     {
-        m->addMDxCPU(_res.access(),_dx.read(),factor);
+        m->addMDx(_res.access(),_dx.read(),factor);
     }
 };
-
 
 template<class DataTypes>
 struct ParallelMassAccFromFCPU
 {
-
     void	operator()( Mass< DataTypes >*m,Shared_rw< typename  DataTypes::VecDeriv> _a,Shared_r< typename  DataTypes::VecDeriv> _f)
     {
-        m->accFromFCPU(_a.access(),_f.read());
+        m->accFromF(_a.access(),_f.read());
     }
 };
+
+
 template<class DataTypes>
 void Mass< DataTypes >::addMDx( double factor)
 {
@@ -179,7 +176,6 @@ template<class DataTypes>
 void Mass< DataTypes >::accFromF()
 {
     Task<ParallelMassAccFromFCPU< DataTypes  >,ParallelMassAccFromF< DataTypes  > >(this,**this->mstate->getDx(), **this->mstate->getF());
-
 }
 
 #endif

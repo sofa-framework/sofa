@@ -23,6 +23,10 @@
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
 #include <sofa/core/ObjectFactory.h>
+#include <sofa/defaulttype/LaparoscopicRigidTypes.h>
+#ifdef SOFA_SMP
+#include <sofa/component/container/MechanicalObjectTasks.inl>
+#endif
 #define SOFA_COMPONENT_CONTAINER_MECHANICALOBJECT_CPP
 #include <sofa/component/container/MechanicalObject.inl>
 #include <sofa/helper/Quater.h>

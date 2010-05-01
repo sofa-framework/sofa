@@ -98,10 +98,6 @@ public:
     /// This method must be reimplemented by all mappings.
     virtual void apply( typename Out::VecCoord& out, const typename In::VecCoord& in ) = 0;
 
-#ifdef SOFA_SMP
-    virtual void applyCPU( typename Out::VecCoord& out, const typename In::VecCoord& in );
-#endif
-
     /// Apply the mapping on derived (velocity, displacement) vectors.
     ///
     /// If the Mapping can be represented as a matrix J, this method computes
@@ -109,9 +105,6 @@ public:
     ///
     /// This method must be reimplemented by all mappings.
     virtual void applyJ( typename Out::VecDeriv& out, const typename In::VecDeriv& in ) = 0;
-#ifdef SOFA_SMP
-    virtual void applyJCPU( typename Out::VecDeriv& out, const typename In::VecDeriv& in );
-#endif
 
     virtual void init();
 

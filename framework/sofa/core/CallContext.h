@@ -18,42 +18,90 @@
 *******************************************************************************
 *                              SOFA :: Framework                              *
 *                                                                             *
-* Authors: M. Adam, J. Allard, B. Andre, P-J. Bensoussan, S. Cotin, C. Duriez,*
-* H. Delingette, F. Falipou, F. Faure, S. Fonteneau, L. Heigeas, C. Mendoza,  *
-* M. Nesme, P. Neumann, J-P. de la Plata Alcade, F. Poyer and F. Roy          *
+* Authors: The SOFA Team and external contributors (see Authors.txt)          *
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#include <sofa/core/objectmodel/BaseObject.h>
-#include <sofa/core/objectmodel/BaseContext.h>
+#ifndef SOFA_CORE_CALLCONTEXT_H
+#define SOFA_CORE_CALLCONTEXT_H
+
+// using smaller header instead of athapascan-1 to try to make compilation faster...
+//#include <athapascan-1>
+#ifdef SOFA_SMP
+#include <kaapi_processor.h>
+#endif
+
+#include <sofa/core/core.h>
 
 namespace sofa
 {
 
 namespace core
 {
+#ifdef SOFA_SMP
+using namespace Core;
+#else
+class Processor
+{
+public:
+    enum  ProcessorType {GRAPH_KAAPI,CPU,GPU_CUDA,DEFAULT,VISITOR_SYNC};
+    static Processor *get_current();
+    inline ProcessorType get_proc_type() {return _proc_type;}
+    inline void set_proc_type(ProcessorType _p) {_proc_type=_p;}
+    inline unsigned get_pid()
+    {
+        return 0;
+    }
+    inline void set_pid(unsigned ) {}
+    Processor():_proc_type(DEFAULT) {}
+private:
+    ProcessorType _proc_type;
 
-namespace objectmodel
+
+};
+
+#endif
+class SOFA_CORE_API CallContext
 {
 
-Iterative::IterativePartition* BaseObject::prepareTask()
-{
-    Iterative::IterativePartition *p=NULL;
-    sofa::core::objectmodel::Context *context=dynamic_cast<sofa::core::objectmodel::Context *>(this->getContext());
-    if(this->getPartition())
+public:
+    enum  ProcessorType {GRAPH_KAAPI,CPU,GPU_CUDA,DEFAULT,VISITOR_SYNC};
+    /// Constructor
+    CallContext()
     {
-        p=this->getPartition();
-    }
-    else if(context&&context->is_partition())
-    {
-        p=context->getPartition();
-    }
-    return p;
-}
 
-} // namespace objectmodel
+    }
+    static ProcessorType  executionType;
+
+    static    inline ProcessorType getProcessorType()
+    {
+        return	(ProcessorType)Processor::get_current()->get_proc_type();
+    }
+    static    inline ProcessorType getExecutionType()
+    {
+        return	(ProcessorType)executionType;
+    }
+    static inline unsigned getProcessorId()
+    {
+        return	Processor::get_current()->get_pid();
+    }
+    static inline void setProcessorType(ProcessorType _type)
+    {
+        Processor::get_current()->set_proc_type((Processor::ProcessorType)_type);
+    }
+    static inline void setExecutionType(ProcessorType _type)
+    {
+        executionType=_type;
+    }
+    static inline void setProcessorId(unsigned id)
+    {
+        Processor::get_current()->set_pid(id);
+    }
+
+};
 
 } // namespace core
 
 } // namespace sofa
 
+#endif
