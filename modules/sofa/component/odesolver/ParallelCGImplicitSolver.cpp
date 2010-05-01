@@ -475,6 +475,11 @@ void ParallelCGImplicitSolver::solve(double dt)
     }
 }
 
+void ParallelCGImplicitSolver::propagatePositionAndVelocity(double t, VecId x, VecId v)
+{
+    simulation::MechanicalPropagatePositionAndVelocityVisitor(t,x,v).setTags(getTags()).execute( getContext() );
+}
+
 SOFA_DECL_CLASS(ParallelCGImplicit)
 
 int ParallelCGImplicitSolverClass = sofa::core::RegisterObject("Implicit time integration using the filtered conjugate gradient")

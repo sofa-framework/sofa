@@ -101,7 +101,7 @@ public:
 
 /** Perform a vector operation v=a+b*f
 */
-class ParallelMechanicalVOpVisitor : virtual public MechanicalVisitor, virtual public Visitor
+class ParallelMechanicalVOpVisitor : virtual public MechanicalVisitor
 {
 public:
     VecId v;

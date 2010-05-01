@@ -58,6 +58,9 @@ public:
     ParallelCGImplicitSolver();
     ~ParallelCGImplicitSolver();
 
+    /// Propagate the given state (time, position and velocity) through all mappings
+    virtual void propagatePositionAndVelocity(double t, VecId x, VecId v);
+
     void solve (double dt);
     void cgLoop( MultiVector &x, MultiVector &r,MultiVector& p,MultiVector &q,double &h,const bool verbose);
     Data<unsigned> f_maxIter;
