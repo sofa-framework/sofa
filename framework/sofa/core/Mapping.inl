@@ -143,7 +143,7 @@ struct ParallelMappingApplyCPU
 {
     void operator()(void *m, Shared_rw< typename T::Out::VecCoord > out, Shared_r< typename T::In::VecCoord > in)
     {
-        ((T *)m)->applyCPU(out.access(), in.read());
+        ((T *)m)->apply(out.access(), in.read());
     }
 };
 
@@ -152,7 +152,7 @@ struct ParallelMappingApplyJCPU
 {
     void operator()(void *m, Shared_rw< typename T::Out::VecDeriv> out, Shared_r<typename T::In::VecDeriv> in)
     {
-        ((T *)m)->applyJCPU(out.access(), in.read());
+        ((T *)m)->applyJ(out.access(), in.read());
     }
 };
 
@@ -170,7 +170,6 @@ void sofa::core::Mapping< In,Out >::updateMapping()
     {
         Task<ParallelMappingApplyJCPU< Mapping < In,Out > >,  ParallelMappingApplyJ< Mapping < In,Out > >  >(this,**this->toModel->getV(), **this->fromModel->getV());
     }
-
 }
 
 #endif

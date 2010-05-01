@@ -191,6 +191,7 @@ SOURCES +=  \
 
 contains(DEFINES,SOFA_SMP){
 HEADERS +=  \
+					CallContext.h \
           objectmodel/BaseObjectTasks.h \
           ParallelCollisionModel.h \
           componentmodel/behavior/ParallelMultiVector.h \
@@ -198,6 +199,7 @@ HEADERS +=  \
           componentmodel/collision/ParallelNarrowPhaseDetection.h
 
 SOURCES +=  \
+					CallContext.cpp \
           componentmodel/collision/ParallelPipeline.cpp\
           objectmodel/BaseObjectTasks.cpp 
 }

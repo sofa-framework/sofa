@@ -1498,7 +1498,7 @@ void MechanicalObject<DataTypes>::endIntegration(Real /*dt*/)
     //By default the mask is disabled, the user has to enable it to benefit from the speedup
     this->forceMask.setInUse(this->useMask.getValue());
 #ifdef SOFA_SMP
-    Task<vClear<VecDeriv,Deriv> >  (this,**this->externalForces,0);
+    BaseObject::Task<vClear<VecDeriv,Deriv> >  (this,**this->externalForces,0);
 #else
     this->externalForces->clear();
 #endif
@@ -1508,10 +1508,10 @@ template <class DataTypes>
 void MechanicalObject<DataTypes>::accumulateForce()
 {
 #ifdef SOFA_SMP
-    Task < vPEq2 <  VecDeriv,
-         VecDeriv >
-         >(this,**f,
-                 **getVecDeriv(VecId::externalForce().index));
+    BaseObject::Task < vPEq2 <  VecDeriv,
+               VecDeriv >
+               >(this,**f,
+                       **getVecDeriv(VecId::externalForce().index));
 #else
     if (!getVecDeriv(VecId::externalForce().index)->empty())
     {
@@ -1717,7 +1717,7 @@ void MechanicalObject<DataTypes>::vAlloc(VecId v)
         vec->resize(vsize);
 #ifdef SOFA_SMP
         vectorsCoordSharedAllocated[v.index]=true;
-        Task < VecInitResize < VecCoord > >(this,**vec, this->vsize);
+        BaseObject::Task< VecInitResize < VecCoord > >(this,**vec, this->vsize);
 #endif
     }
     else if (v.type == VecId::V_DERIV && v.index >= VecId::V_FIRST_DYNAMIC_INDEX)
@@ -1726,7 +1726,7 @@ void MechanicalObject<DataTypes>::vAlloc(VecId v)
         vec->resize(vsize);
 #ifdef SOFA_SMP
         vectorsDerivSharedAllocated[v.index]=true;
-        Task < VecInitResize < VecDeriv > >(this,**vec, this->vsize);
+        BaseObject::Task < VecInitResize < VecDeriv > >(this,**vec, this->vsize);
 #endif
 
     }
@@ -2403,7 +2403,7 @@ template <class DataTypes>
 void MechanicalObject<DataTypes>::resetForce()
 {
 #ifdef SOFA_SMP
-    Task<vClear<VecDeriv,Deriv> >  (this,**getF());
+    BaseObject::Task<vClear<VecDeriv,Deriv> >  (this,**getF());
 #else
     helper::WriteAccessor<VecDeriv> f= *getF();
     if (!this->forceMask.isInUse())
@@ -2429,7 +2429,7 @@ void MechanicalObject<DataTypes>::resetAcc()
 {
 
 #ifdef SOFA_SMP
-    Task<vClear<VecDeriv,Deriv> >  (this,**getDx());
+    BaseObject::Task<vClear<VecDeriv,Deriv> >  (this,**getDx());
 #else
     helper::WriteAccessor<VecDeriv> a= *getDx();
     for( unsigned i=0; i<a.size(); ++i )
@@ -2661,24 +2661,24 @@ void MechanicalObject < DataTypes >::vOpMEq (VecId v, VecId b,
         {
 
 
-            Task < vOpMinusEqualMult < DataTypes, VecCoord,
-                 VecCoord > >(this,**getVecCoord (v.index),
-                         **getVecCoord(b.index), *f);
+            BaseObject::Task < vOpMinusEqualMult < DataTypes, VecCoord,
+                       VecCoord > >(this,**getVecCoord (v.index),
+                               **getVecCoord(b.index), *f);
 
         }
         else
         {
-            Task < vOpMinusEqualMult < DataTypes, VecCoord,
-                 VecDeriv > >(this,**getVecCoord (v.index),
-                         **getVecDeriv (b.index), *f);
+            BaseObject::Task < vOpMinusEqualMult < DataTypes, VecCoord,
+                       VecDeriv > >(this,**getVecCoord (v.index),
+                               **getVecDeriv (b.index), *f);
 
         }
     }
     else if (b.type == VecId::V_DERIV)
     {
-        Task < vOpMinusEqualMult < DataTypes, VecDeriv,
-             VecDeriv > >(this,**getVecDeriv (v.index),
-                     **getVecDeriv (b.index), *f);
+        BaseObject::Task < vOpMinusEqualMult < DataTypes, VecDeriv,
+                   VecDeriv > >(this,**getVecDeriv (v.index),
+                           **getVecDeriv (b.index), *f);
 
     }
     else
@@ -2713,7 +2713,7 @@ void MechanicalObject < DataTypes >::vOp (VecId v, VecId a,
             if (v.type == VecId::V_COORD)
             {
                 //VecCoord* vv = getVecCoord(v.index);
-                Task < vClear < VecDeriv,Deriv >
+                BaseObject::Task < vClear < VecDeriv,Deriv >
                 >(this,**getVecCoord (v.index), (unsigned) (this->vsize));
 
                 /*unsigned int vt=ExecutionGraph::add_operation("v=0");
@@ -2727,7 +2727,7 @@ void MechanicalObject < DataTypes >::vOp (VecId v, VecId a,
             else
             {
                 //  VecDeriv* vv = getVecDeriv(v.index);
-                Task < vClear < VecCoord,Coord >
+                BaseObject::Task < vClear < VecCoord,Coord >
                 >(this,**getVecDeriv (v.index), (unsigned) (this->vsize));
                 /*unsigned int vt=ExecutionGraph::add_operation("v=0");
                    ExecutionGraph::read_var(vt,vv);
@@ -2758,7 +2758,7 @@ void MechanicalObject < DataTypes >::vOp (VecId v, VecId a,
                        unsigned int vt=ExecutionGraph::add_operation("v*=f");
                        ExecutionGraph::read_var(vt,vv);
                        ExecutionGraph::write_var(vt,vv); */
-                    Task < vTEq < VecCoord, Real >
+                    BaseObject::Task < vTEq < VecCoord, Real >
                     >(this,**getVecCoord (v.index), f);
                 }
                 else
@@ -2772,7 +2772,7 @@ void MechanicalObject < DataTypes >::vOp (VecId v, VecId a,
 
 
 
-                    Task < vTEq < VecDeriv, Real >
+                    BaseObject::Task < vTEq < VecDeriv, Real >
                     >(this,**getVecDeriv (v.index), f);
 
 
@@ -2786,13 +2786,13 @@ void MechanicalObject < DataTypes >::vOp (VecId v, VecId a,
                 // v = b*f
                 if (v.type == VecId::V_COORD)
                 {
-                    Task < vEqBF < VecCoord,Real >
+                    BaseObject::Task < vEqBF < VecCoord,Real >
                     >(this,**getVecCoord (b.index),
                       **getVecCoord (v.index), f);
                 }
                 else
                 {
-                    Task < vEqBF < VecDeriv,Real >
+                    BaseObject::Task < vEqBF < VecDeriv,Real >
                     >(this,**getVecDeriv (b.index),
                       **getVecDeriv (v.index), f);
                 }
@@ -2813,13 +2813,13 @@ void MechanicalObject < DataTypes >::vOp (VecId v, VecId a,
             // v = a
             if (v.type == VecId::V_COORD)
             {
-                Task < vAssign <
+                BaseObject::Task < vAssign <
                 VecCoord > >(this,**getVecCoord (v.index),
                         **getVecCoord (a.index));
             }
             else
             {
-                Task < vAssign <
+                BaseObject::Task < vAssign <
                 VecDeriv > >(this,**getVecDeriv (v.index),
                         **getVecDeriv (a.index));
             }
@@ -2837,28 +2837,28 @@ void MechanicalObject < DataTypes >::vOp (VecId v, VecId a,
                         if (b.type == VecId::V_COORD)
                         {
 
-                            Task < vPEq < VecCoord,
-                                 VecCoord >
-                                 >(this,**getVecCoord (v.index),
-                                         **getVecCoord (b.index));
+                            BaseObject::Task < vPEq < VecCoord,
+                                       VecCoord >
+                                       >(this,**getVecCoord (v.index),
+                                               **getVecCoord (b.index));
 
                         }
                         else
                         {
-                            Task < vPEq < VecCoord,
-                                 VecDeriv >
-                                 >(this,**getVecCoord (v.index),
-                                         **getVecDeriv (b.index));
+                            BaseObject::Task < vPEq < VecCoord,
+                                       VecDeriv >
+                                       >(this,**getVecCoord (v.index),
+                                               **getVecDeriv (b.index));
 
                         }
                     }
                     else if (b.type == VecId::V_DERIV)
                     {
 
-                        Task < vPEq <  VecDeriv,
-                             VecDeriv >
-                             >(this,**getVecDeriv (v.index),
-                                     **getVecDeriv (b.index));
+                        BaseObject::Task < vPEq <  VecDeriv,
+                                   VecDeriv >
+                                   >(this,**getVecDeriv (v.index),
+                                           **getVecDeriv (b.index));
 
                     }
                     else
@@ -2879,34 +2879,34 @@ void MechanicalObject < DataTypes >::vOp (VecId v, VecId a,
 
                             if (fSh)
                             {
-                                Task < vPEqBF < DataTypes,
-                                     VecCoord,
-                                     VecCoord >
-                                     >(this,**getVecCoord (v.index),
-                                             **getVecCoord (b.index), *fSh, f);
+                                BaseObject::Task < vPEqBF < DataTypes,
+                                           VecCoord,
+                                           VecCoord >
+                                           >(this,**getVecCoord (v.index),
+                                                   **getVecCoord (b.index), *fSh, f);
                             }
                             else
                             {
-                                Task < vPEqBF < DataTypes,
-                                     VecCoord,
-                                     VecCoord >
-                                     >(this,**getVecCoord (v.index),
-                                             **getVecCoord (b.index), f);
+                                BaseObject::Task < vPEqBF < DataTypes,
+                                           VecCoord,
+                                           VecCoord >
+                                           >(this,**getVecCoord (v.index),
+                                                   **getVecCoord (b.index), f);
                             }
                         }
                         else
                         {
                             if (fSh)
                             {
-                                Task < vPEqBF < DataTypes, VecCoord, VecDeriv > >(this,**getVecCoord (v.index), **getVecDeriv (b.index), *fSh, f);
+                                BaseObject::Task < vPEqBF < DataTypes, VecCoord, VecDeriv > >(this,**getVecCoord (v.index), **getVecDeriv (b.index), *fSh, f);
                             }
                             else
                             {
-                                Task < vPEqBF < DataTypes,
-                                     VecCoord,
-                                     VecDeriv >
-                                     >(this,**getVecCoord (v.index),
-                                             **getVecDeriv (b.index), f);
+                                BaseObject::Task < vPEqBF < DataTypes,
+                                           VecCoord,
+                                           VecDeriv >
+                                           >(this,**getVecCoord (v.index),
+                                                   **getVecDeriv (b.index), f);
                             }
                         }
                     }
@@ -2914,19 +2914,19 @@ void MechanicalObject < DataTypes >::vOp (VecId v, VecId a,
                     {
                         if (fSh)
                         {
-                            Task < vPEqBF < DataTypes,
-                                 VecDeriv,
-                                 VecDeriv >
-                                 >(this,**getVecDeriv (v.index),
-                                         **getVecDeriv (b.index), *fSh, f);
+                            BaseObject::Task < vPEqBF < DataTypes,
+                                       VecDeriv,
+                                       VecDeriv >
+                                       >(this,**getVecDeriv (v.index),
+                                               **getVecDeriv (b.index), *fSh, f);
                         }
                         else
                         {
-                            Task < vPEqBF < DataTypes,
-                                 VecDeriv,
-                                 VecDeriv >
-                                 >(this,**getVecDeriv (v.index),
-                                         **getVecDeriv (b.index), f);
+                            BaseObject::Task < vPEqBF < DataTypes,
+                                       VecDeriv,
+                                       VecDeriv >
+                                       >(this,**getVecDeriv (v.index),
+                                               **getVecDeriv (b.index), f);
                         }
                     }
                     else
@@ -2948,24 +2948,24 @@ void MechanicalObject < DataTypes >::vOp (VecId v, VecId a,
 
                         if (a.type == VecId::V_COORD)
                         {
-                            Task < vPEq < VecCoord,
-                                 VecCoord >
-                                 >(this,**getVecCoord (v.index),
-                                         **getVecCoord (a.index));
+                            BaseObject::Task < vPEq < VecCoord,
+                                       VecCoord >
+                                       >(this,**getVecCoord (v.index),
+                                               **getVecCoord (a.index));
 
                         }
                         else
                         {
-                            Task < vPEq <  VecCoord,
-                                 VecDeriv >
-                                 >(this,**getVecCoord (v.index),
-                                         **getVecDeriv (a.index));
+                            BaseObject::Task < vPEq <  VecCoord,
+                                       VecDeriv >
+                                       >(this,**getVecCoord (v.index),
+                                               **getVecDeriv (a.index));
 
                         }
                     }
                     else if (a.type == VecId::V_DERIV)
                     {
-                        Task<vPEq <VecCoord,VecDeriv> > (this,**getVecDeriv(v.index),**getVecDeriv(a.index));
+                        BaseObject::Task<vPEq <VecCoord,VecDeriv> > (this,**getVecDeriv(v.index),**getVecDeriv(a.index));
                     }
                     else
                     {
@@ -2982,36 +2982,36 @@ void MechanicalObject < DataTypes >::vOp (VecId v, VecId a,
                     {
                         if (fSh)
                         {
-                            Task < vOpSumMult < DataTypes, VecCoord,
-                                 VecCoord >
-                                 >(this,**getVecCoord (v.index),
-                                         **getVecCoord (a.index), *fSh,
-                                         (Real) f);
+                            BaseObject::Task < vOpSumMult < DataTypes, VecCoord,
+                                       VecCoord >
+                                       >(this,**getVecCoord (v.index),
+                                               **getVecCoord (a.index), *fSh,
+                                               (Real) f);
                         }
                         else
                         {
-                            Task < vOpSumMult < DataTypes, VecCoord,
-                                 VecCoord >
-                                 >(this,**getVecCoord (v.index),
-                                         **getVecCoord (a.index), (Real) f);
+                            BaseObject::Task < vOpSumMult < DataTypes, VecCoord,
+                                       VecCoord >
+                                       >(this,**getVecCoord (v.index),
+                                               **getVecCoord (a.index), (Real) f);
                         }
                     }
                     else
                     {
                         if (fSh)
                         {
-                            Task < vOpSumMult < DataTypes, VecDeriv,
-                                 VecDeriv >
-                                 >(this,**getVecDeriv (v.index),
-                                         **getVecDeriv (a.index), *fSh,
-                                         (Real) f);
+                            BaseObject::Task < vOpSumMult < DataTypes, VecDeriv,
+                                       VecDeriv >
+                                       >(this,**getVecDeriv (v.index),
+                                               **getVecDeriv (a.index), *fSh,
+                                               (Real) f);
                         }
                         else
                         {
-                            Task < vOpSumMult < DataTypes, VecDeriv,
-                                 VecDeriv >
-                                 >(this,**getVecDeriv (v.index),
-                                         **getVecDeriv (a.index), (Real) f);
+                            BaseObject::Task < vOpSumMult < DataTypes, VecDeriv,
+                                       VecDeriv >
+                                       >(this,**getVecDeriv (v.index),
+                                               **getVecDeriv (a.index), (Real) f);
                         }
                     }
                 }
@@ -3025,28 +3025,28 @@ void MechanicalObject < DataTypes >::vOp (VecId v, VecId a,
                     {
                         if (b.type == VecId::V_COORD)
                         {
-                            Task < vAdd < VecCoord,
-                                 VecCoord, VecCoord >
-                                 >(this,**getVecCoord (v.index),
-                                         **getVecCoord (a.index),
-                                         **getVecCoord (b.index));
+                            BaseObject::Task < vAdd < VecCoord,
+                                       VecCoord, VecCoord >
+                                       >(this,**getVecCoord (v.index),
+                                               **getVecCoord (a.index),
+                                               **getVecCoord (b.index));
                         }
                         else
                         {
-                            Task < vAdd <  VecCoord,
-                                 VecCoord, VecDeriv >
-                                 >(this,**getVecCoord (v.index),
-                                         **getVecCoord (a.index),
-                                         **getVecDeriv (b.index));
+                            BaseObject::Task < vAdd <  VecCoord,
+                                       VecCoord, VecDeriv >
+                                       >(this,**getVecCoord (v.index),
+                                               **getVecCoord (a.index),
+                                               **getVecDeriv (b.index));
                         }
                     }
                     else if (b.type == VecId::V_DERIV)
                     {
-                        Task < vAdd < VecDeriv,
-                             VecDeriv, VecDeriv >
-                             >(this,**getVecDeriv (v.index),
-                                     **getVecDeriv (a.index),
-                                     **getVecDeriv (b.index));
+                        BaseObject::Task < vAdd < VecDeriv,
+                                   VecDeriv, VecDeriv >
+                                   >(this,**getVecDeriv (v.index),
+                                           **getVecDeriv (a.index),
+                                           **getVecDeriv (b.index));
                     }
                     else
                     {
@@ -3063,31 +3063,31 @@ void MechanicalObject < DataTypes >::vOp (VecId v, VecId a,
                     {
                         if (b.type == VecId::V_COORD)
                         {
-                            Task < vOpVeqAplusBmultF < DataTypes,
-                                 VecCoord,
-                                 VecCoord >
-                                 >(this,**getVecCoord (v.index),
-                                         **getVecCoord (a.index),
-                                         **getVecCoord (b.index), (Real) f);
+                            BaseObject::Task < vOpVeqAplusBmultF < DataTypes,
+                                       VecCoord,
+                                       VecCoord >
+                                       >(this,**getVecCoord (v.index),
+                                               **getVecCoord (a.index),
+                                               **getVecCoord (b.index), (Real) f);
                         }
                         else
                         {
-                            Task < vOpVeqAplusBmultF < DataTypes,
-                                 VecCoord,
-                                 VecDeriv >
-                                 >(this,**getVecCoord (v.index),
-                                         **getVecCoord (a.index),
-                                         **getVecDeriv (b.index), (Real) f);
+                            BaseObject::Task < vOpVeqAplusBmultF < DataTypes,
+                                       VecCoord,
+                                       VecDeriv >
+                                       >(this,**getVecCoord (v.index),
+                                               **getVecCoord (a.index),
+                                               **getVecDeriv (b.index), (Real) f);
                         }
                     }
                     else if (b.type == VecId::V_DERIV)
                     {
-                        Task < vOpVeqAplusBmultF < DataTypes,
-                             VecDeriv,
-                             VecDeriv >
-                             >(this,**getVecDeriv (v.index),
-                                     **getVecDeriv (a.index),
-                                     **getVecDeriv (b.index), (Real) f);
+                        BaseObject::Task < vOpVeqAplusBmultF < DataTypes,
+                                   VecDeriv,
+                                   VecDeriv >
+                                   >(this,**getVecDeriv (v.index),
+                                           **getVecDeriv (a.index),
+                                           **getVecDeriv (b.index), (Real) f);
                     }
                     else
                     {
@@ -3112,28 +3112,28 @@ void MechanicalObject < DataTypes >::vDot ( a1::Shared  < double >*res,VecId a, 
     {
         if (a.index == b.index)
         {
-            Task < vDotOp < DataTypes,
-                 VecCoord > >(this,**getVecCoord (a.index), *res);
+            BaseObject::Task < vDotOp < DataTypes,
+                       VecCoord > >(this,**getVecCoord (a.index), *res);
         }
         else
         {
-            Task < vDotOp < DataTypes,
-                 VecCoord > >(this,**getVecCoord (a.index),
-                         **getVecCoord (b.index), *res);
+            BaseObject::Task < vDotOp < DataTypes,
+                       VecCoord > >(this,**getVecCoord (a.index),
+                               **getVecCoord (b.index), *res);
         }
     }
     else if (a.type == VecId::V_DERIV && b.type == VecId::V_DERIV)
     {
         if (a.index == b.index)
         {
-            Task < vDotOp < DataTypes,
-                 VecDeriv > >(this,**getVecDeriv (a.index), *res);
+            BaseObject::Task < vDotOp < DataTypes,
+                       VecDeriv > >(this,**getVecDeriv (a.index), *res);
         }
         else
         {
-            Task < vDotOp < DataTypes,
-                 VecDeriv > >(this,**getVecDeriv (a.index),
-                         **getVecDeriv (b.index), *res);
+            BaseObject::Task < vDotOp < DataTypes,
+                       VecDeriv > >(this,**getVecDeriv (a.index),
+                               **getVecDeriv (b.index), *res);
         }
     }
     else
@@ -3245,23 +3245,23 @@ void MechanicalObject < DataTypes >::vDot ( a1::Shared  < double >*res,VecId a, 
 //
 //
 template < class DataTypes >
-void MechanicalObject < DataTypes >::printDOF (VecId v,
+void MechanicalObject < DataTypes >::printDOF (VecId /*v*/,
         std::
-        ostream & out)
+        ostream & /*out*/, int /* firstIndex */, int /* range */) const
 {
-    if (v.type == VecId::V_COORD)
-    {
-        VecCoord & x = *getVecCoord (v.index);
-        Task < printDOFSh < VecCoord > >(this,*x);
-    }
-    else if (v.type == VecId::V_DERIV)
-    {
-        VecDeriv & x = *getVecDeriv (v.index);
-        Task < printDOFSh < VecDeriv > >(this,*x);
-    }
-    else
-        out << "ParallelMechanicalObject<DataTypes>::printDOF, unknown v.type = " <<
-            v.type << std::endl;
+// 	if (v.type == VecId::V_COORD)
+// 	{
+// 		VecCoord & x = *getVecCoord (v.index);
+// 		Task < printDOFSh < VecCoord > >(this,*x);
+// 	}
+// 	else if (v.type == VecId::V_DERIV)
+// 	{
+// 		VecDeriv & x = *getVecDeriv (v.index);
+// 		Task < printDOFSh < VecDeriv > >(this,*x);
+// 	}
+// 	else
+// 		out << "ParallelMechanicalObject<DataTypes>::printDOF, unknown v.type = " <<
+// 			v.type << std::endl;
 
 }
 #endif

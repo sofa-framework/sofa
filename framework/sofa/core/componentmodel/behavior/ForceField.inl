@@ -128,19 +128,18 @@ struct ParallelForceFieldAddForceCPU
 {
     void	operator()(ForceField< DataTypes > *ff,Shared_rw< typename DataTypes::VecDeriv> _f,Shared_r< typename DataTypes::VecCoord> _x,Shared_r< typename DataTypes::VecDeriv> _v)
     {
-        ff->addForceCPU(_f.access(),_x.read(),_v.read());
+        ff->addForce(_f.access(),_x.read(),_v.read());
     }
 };
-template<class DataTypes>
 
+template<class DataTypes>
 struct ParallelForceFieldAddDForceCPU
 {
     void	operator()(ForceField< DataTypes > *ff,Shared_rw<typename DataTypes::VecDeriv> _df,Shared_r<typename  DataTypes::VecDeriv> _dx,double kFactor, double bFactor)
     {
-        ff->addDForceCPU(_df.access(),_dx.read(),kFactor,bFactor);
+        ff->addDForce(_df.access(),_dx.read(),kFactor,bFactor);
     }
 };
-
 
 template<class DataTypes>
 struct ParallelForceFieldAddForce
@@ -148,9 +147,9 @@ struct ParallelForceFieldAddForce
     void    operator()(ForceField< DataTypes > *ff,Shared_rw< typename DataTypes::VecDeriv> _f,Shared_r< typename DataTypes::VecCoord> _x,Shared_r< typename DataTypes::VecDeriv> _v)
     {
         ff->addForce(_f.access(),_x.read(),_v.read());
-
     }
 };
+
 template<class DataTypes>
 struct ParallelForceFieldAddDForce
 {
@@ -160,12 +159,12 @@ struct ParallelForceFieldAddDForce
     }
 };
 
-
 template<class DataTypes>
 void ForceField< DataTypes >::addForce()
 {
     Task<ParallelForceFieldAddForceCPU< DataTypes  > ,ParallelForceFieldAddForce< DataTypes  > >(this,**mstate->getF(), **mstate->getX(), **mstate->getV());
 }
+
 template<class DataTypes>
 void ForceField< DataTypes >::addDForce(double kFactor, double bFactor)
 {

@@ -124,6 +124,11 @@ protected:
     void setVecDeriv(unsigned int index, VecDeriv* v);
     void setVecConst(unsigned int index, VecConst* v);
 
+#ifdef SOFA_SMP
+    sofa::helper::vector< bool > vectorsCoordSharedAllocated;
+    sofa::helper::vector< bool > vectorsDerivSharedAllocated;
+#endif
+
     /// @}
     /// Given the numero of a constraint Equation, find the index in the VecConst C, where the constraint is actually stored
     unsigned int getIdxConstraintFromId(unsigned int id) const;
