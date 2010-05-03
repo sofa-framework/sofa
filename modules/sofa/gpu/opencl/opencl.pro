@@ -47,6 +47,7 @@ include(0SpringForceField.pro)
 include(0UniformMass.pro)
 
 include(tools/tools.pro)
+include(oclRadixSort/oclRadixSort.pro)
 
 
 include(kernels/kernels.pro)

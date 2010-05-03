@@ -59,4 +59,37 @@ template class SpatialGrid< SpatialGridTypes< OpenCLVec3dTypes > >;
 
 } // namespace component
 
+namespace gpu
+{
+
+namespace opencl
+{
+
+int SpatialGridContainer_RadixSortTempStorage(unsigned int numElements)
+{
+    NOT_IMPLEMENTED();
+
+}
+
+void SpatialGridContainer_RadixSort(sofa::gpu::opencl::_device_pointer /*keys*/,
+        sofa::gpu::opencl::_device_pointer /*values*/,
+        sofa::gpu::opencl::_device_pointer /*temp*/,
+        unsigned int /*numElements*/,
+        unsigned int /*keyBits*/,
+        bool         /*flipBits*/)
+{
+    NOT_IMPLEMENTED();
+
+}
+
+void SpatialGridContainer3f_computeHash(int /*cellBits*/, float /*cellWidth*/, int /*nbPoints*/,gpu::opencl::_device_pointer /*particleIndex8*/,gpu::opencl::_device_pointer /*particleHash8*/, const gpu::opencl::_device_pointer /*x*/) {NOT_IMPLEMENTED();}
+void SpatialGridContainer3f1_computeHash(int /*cellBits*/, float /*cellWidth*/, int /*nbPoints*/,gpu::opencl::_device_pointer /*particleIndex8*/,gpu::opencl::_device_pointer /*particleHash8*/, const gpu::opencl::_device_pointer /*x*/) {NOT_IMPLEMENTED();}
+void SpatialGridContainer_findCellRange(int /*cellBits*/, int /*index0*/, float /*cellWidth*/, int /*nbPoints*/, const gpu::opencl::_device_pointer /*particleHash8*/,gpu::opencl::_device_pointer /*cellRange*/,gpu::opencl::_device_pointer /*cellGhost*/) {NOT_IMPLEMENTED();}
+//void SpatialGridContainer3f_reorderData(int nbPoints, const gpu::opencl::_device_pointer particleHash,gpu::opencl::_device_pointer sorted, const gpu::opencl::_device_pointer x){NOT_IMPLEMENTED();}
+//void SpatialGridContainer3f1_reorderData(int nbPoints, const gpu::opencl::_device_pointer particleHash,gpu::opencl::_device_pointer sorted, const gpu::opencl::_device_pointer x){NOT_IMPLEMENTED();}
+
+
+}	//opencl
+}	//gpu
+
 } // namespace sofa

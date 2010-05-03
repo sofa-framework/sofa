@@ -125,6 +125,11 @@ public:
         sofa::gpu::opencl::myopenclBuildProgram(_program);
     }
 
+    void buildProgram(char* flags)
+    {
+        sofa::gpu::opencl::myopenclBuildProgramWithFlags(_program, flags);
+    }
+
     /// fonction qui permet de copier le fichier vers un tableau de caractère
     static std::string* loadSource(const char *file_source)
     {

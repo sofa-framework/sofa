@@ -77,6 +77,7 @@ extern "C" {
     extern void myopenclEnqueueCopyBuffer(int device, cl_mem ddest,size_t destOffset, const cl_mem dsrc,size_t srcOffset, size_t n);
     extern void myopenclSetKernelArg(cl_kernel kernel, int num_arg,int size,void* arg);
     extern void myopenclBuildProgram(void* p);
+    extern void myopenclBuildProgramWithFlags(void* p,void *f);
     extern cl_program myopenclProgramWithSource(const char * s,const size_t size);
     extern cl_kernel myopenclCreateKernel(void* p,const char * kernel_name);
     extern void myopenclExecKernel(int device,cl_kernel kernel,unsigned int work_dim,const size_t *global_work_offset,const size_t *global_work_size,const size_t *local_work_size);
