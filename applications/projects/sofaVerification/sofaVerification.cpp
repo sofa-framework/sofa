@@ -232,9 +232,16 @@ int main(int argc, char** argv)
         {
             //This is an ini file: get the list of scenes to test
             std::ifstream iniFileStream(currentFile.c_str());
-            std::string currentScene;
-            while (iniFileStream >> currentScene)
+            while (not iniFileStream.eof())
             {
+                std::string line;
+                std::string currentScene;
+                // extracting the filename line by line because each line can contain
+                // extra data, ignored by this program but that may be useful for
+                // other tools.
+                getline(iniFileStream, line);
+                std::istringstream lineStream(line);
+                lineStream >> currentScene;
                 DataRepository.findFile(currentScene);
                 sceneFiles.push_back(currentScene);
             }
