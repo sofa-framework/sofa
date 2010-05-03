@@ -57,7 +57,6 @@ QComponentTreeLibrary::QComponentTreeLibrary(QWidget *parent, QTreeWidgetItem* c
 
 QComponentTreeLibrary::~QComponentTreeLibrary()
 {
-    setDisplayed(false);
     delete label;
     delete templates;
 }
