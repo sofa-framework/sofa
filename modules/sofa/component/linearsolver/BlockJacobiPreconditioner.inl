@@ -22,17 +22,22 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_LINEARSOLVER_BLOCKJACOBIPRECONDITIONER_H
-#define SOFA_COMPONENT_LINEARSOLVER_BLOCKJACOBIPRECONDITIONER_H
+// Author: Hadrien Courtecuisse
+//
+// Copyright: See COPYING file that comes with this distribution
+#ifndef SOFA_COMPONENT_LINEARSOLVER_BLOCKJACOBIPRECONDITIONER_INL
+#define SOFA_COMPONENT_LINEARSOLVER_BLOCKJACOBIPRECONDITIONER_INL
 
-#include <sofa/core/componentmodel/behavior/LinearSolver.h>
-#include <sofa/component/linearsolver/MatrixLinearSolver.h>
-#include <sofa/simulation/common/MechanicalVisitor.h>
-#include <sofa/component/linearsolver/SparseMatrix.h>
+#include <sofa/component/linearsolver/BlockJacobiPreconditioner.h>
 #include <sofa/component/linearsolver/FullMatrix.h>
-#include <sofa/helper/map.h>
-
+#include <sofa/component/linearsolver/SparseMatrix.h>
+#include <sofa/core/ObjectFactory.h>
+#include <iostream>
+#include "sofa/helper/system/thread/CTime.h"
+#include <sofa/core/objectmodel/BaseContext.h>
+#include <sofa/core/componentmodel/behavior/LinearSolver.h>
 #include <math.h>
+#include <sofa/component/linearsolver/DiagonalMatrix.h>
 
 namespace sofa
 {
@@ -43,52 +48,31 @@ namespace component
 namespace linearsolver
 {
 
-template<class TVector>
-class BlockJacibiPreconditionerInternalData
-{
-};
+using namespace sofa::defaulttype;
+using namespace sofa::core::componentmodel::behavior;
+using namespace sofa::simulation;
+using namespace sofa::core::objectmodel;
+using std::cerr;
+using std::endl;
 
-
-/// Linear solver based on a NxN bloc diagonal matrix (i.e. block Jacobi preconditioner)
 template<class TMatrix, class TVector>
-class BlockJacobiPreconditioner : public sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector>
+BlockJacobiPreconditioner<TMatrix,TVector>::BlockJacobiPreconditioner()
+    : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
 {
-public:
-    SOFA_CLASS(SOFA_TEMPLATE2(BlockJacobiPreconditioner,TMatrix,TVector),SOFA_TEMPLATE2(sofa::component::linearsolver::MatrixLinearSolver,TMatrix,TVector));
+}
 
-    typedef TMatrix Matrix;
-    typedef TVector Vector;
-    typedef sofa::component::linearsolver::MatrixLinearSolver<TMatrix,TVector> Inherit;
-    typedef sofa::core::componentmodel::behavior::BaseMechanicalState::VecId VecId;
-    typedef typename TMatrix::Bloc SubMatrix;
+template<class TMatrix, class TVector>
+void BlockJacobiPreconditioner<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& r)
+{
+    M.mul(z,r);
+}
 
-    Data<bool> f_verbose;
-
-    BlockJacobiPreconditioner();
-    void solve (Matrix& M, Vector& x, Vector& b);
-    void invert(Matrix& M);
-
-    BlockJacibiPreconditionerInternalData<TVector> internalData; //not use in CPU
-
-    /// Pre-construction check method called by ObjectFactory.
-    /// Check that DataTypes matches the MechanicalState.
-    template<class T>
-    static bool canCreate(T*& obj, core::objectmodel::BaseContext* context, core::objectmodel::BaseObjectDescription* arg)
-    {
-        return sofa::core::objectmodel::BaseObject::canCreate(obj, context, arg);
-    }
-
-    virtual std::string getTemplateName() const
-    {
-        return templateName(this);
-    }
-
-    static std::string templateName(const BlockJacobiPreconditioner<TMatrix,TVector>* = NULL)
-    {
-        return TVector::Name();
-    }
-
-};
+template<class TMatrix, class TVector>
+void BlockJacobiPreconditioner<TMatrix,TVector>::invert(Matrix& M)
+{
+    M.invert();
+    if (f_verbose.getValue()) sout<<M<<sendl;
+}
 
 } // namespace linearsolver
 

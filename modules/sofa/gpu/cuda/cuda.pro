@@ -151,6 +151,7 @@ HEADERS += \
        	CudaMasterContactSolver.h \
 	   	CudaBTDLinearSolver.h \
 	   	CudaUnilateralInteractionConstraint.h \
+		CudaBlockJacobiPreconditioner.h \
 	   	CudaPrecomputedWarpPreconditioner.h \		
 		CudaWarpPreconditioner.h \
         CudaTetrahedronTLEDForceField.h \
@@ -185,6 +186,7 @@ SOURCES += \
 	   	CudaPrecomputedWarpPreconditioner.cpp \
 		CudaWarpPreconditioner.cpp \
 		CudaJacobiPreconditioner.cpp \
+		CudaBlockJacobiPreconditioner.cpp \
 		CudaHexahedronFEMForceField.cpp \
 		#CudaHexahedronGeodesicalDistance.cpp \
      	CudaTetrahedronTLEDForceField.cpp \
