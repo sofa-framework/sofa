@@ -37,6 +37,7 @@ OglViewport::OglViewport()
     ,p_cameraRigid(initData(&p_cameraRigid, "cameraRigid", "Camera's rigid coord"))
     ,p_zNear(initData(&p_zNear, "zNear", "Camera's ZNear"))
     ,p_zFar(initData(&p_zFar, "zFar", "Camera's ZFar"))
+    ,p_fovy(initData(&p_fovy, (double) 60.0, "fovy", "Field of View (Y axis)"))
 {
     // TODO Auto-generated constructor stub
 
@@ -50,6 +51,16 @@ OglViewport::~OglViewport()
 
 void OglViewport::init()
 {
+    if (p_cameraRigid.isSet() || p_cameraRigid.getParent())
+    {
+        p_cameraPosition.setDisplayed(false);
+        p_cameraOrientation.setDisplayed(false);
+    }
+    else
+    {
+        p_cameraRigid.setDisplayed(false);
+    }
+
 
 }
 
@@ -73,7 +84,7 @@ void OglViewport::preDrawScene(helper::gl::VisualParameters* vp)
     //defaulttype::RigidCoord &rigidCamera = *p_cameraRigid.beginEdit();
 
     //Take the rigid if it is connected to something
-    if (p_cameraRigid.isSet() || p_cameraRigid.getParent())
+    if (p_cameraRigid.isDisplayed())
     {
         RigidCoord rcam = p_cameraRigid.getValue();
         cameraPosition =  rcam.getCenter() ;
@@ -99,7 +110,7 @@ void OglViewport::preDrawScene(helper::gl::VisualParameters* vp)
 
     double zNear=1e10, zFar=-1e10;
     //recompute zNear, zFar
-    if (!p_zNear.isSet() || !p_zFar.isSet())
+    if (fabs(p_zNear.getValue()) < 0.0001 || fabs(p_zFar.getValue()) < 0.0001)
     {
         for (int corner=0; corner<8; ++corner)
         {
@@ -144,12 +155,13 @@ void OglViewport::preDrawScene(helper::gl::VisualParameters* vp)
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
     glLoadIdentity();
-    gluPerspective(60.0,ratio,zNear, zFar);
+    gluPerspective(p_fovy.getValue(),ratio,zNear, zFar);
 
     glMatrixMode(GL_MODELVIEW);
     glPushMatrix();
     glLoadIdentity();
     helper::gl::glMultMatrix((SReal *)transform.rotation);
+
     helper::gl::glTranslate(transform.translation[0], transform.translation[1], transform.translation[2]);
 
     //gluLookAt(cameraPosition[0], cameraPosition[1], cameraPosition[2],0 ,0 ,0, cameraDirection[0], cameraDirection[1], cameraDirection[2]);
