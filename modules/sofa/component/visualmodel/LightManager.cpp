@@ -63,7 +63,9 @@ LightManager::LightManager()
     :shadowEnabled(initData(&shadowEnabled, (bool) false, "shadowEnabled", "Enable Shadow in the scene"))
     ,ambient(initData(&ambient, defaulttype::Vec4f(0.0f,0.0f,0.0f,0.0f), "ambient", "Ambient lights contribution"))
 {
-
+    //listen by default, in order to get the keys to activate shadows
+    if(!f_listening.isSet())
+        f_listening.setValue(true);
 }
 
 LightManager::~LightManager()
