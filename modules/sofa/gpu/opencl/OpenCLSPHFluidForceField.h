@@ -71,59 +71,59 @@ namespace component
 
 namespace forcefield
 {
-//
-//template <class TCoord, class TDeriv, class TReal>
-//class SPHFluidForceFieldInternalData< gpu::opencl::CudaVectorTypes<TCoord,TDeriv,TReal> >
-//{
-//public:
-//	typedef gpu::opencl::CudaVectorTypes<TCoord,TDeriv,TReal> DataTypes;
-//	typedef SPHFluidForceFieldInternalData<DataTypes> Data;
-//	typedef SPHFluidForceField<DataTypes> Main;
-//	typedef typename DataTypes::Real Real;
-//	gpu::opencl::GPUSPHFluid<Real> params;
-//	gpu::opencl::CudaVector<defaulttype::Vec4f> pos4;
-//
-//	void fillParams(Main* m, double kFactor=1.0, double bFactor=1.0)
-//	{
-//		Real h = m->particleRadius.getValue();
-//		params.h = h;
-//		params.h2 = h*h;
-//		params.stiffness = (Real)(kFactor*m->pressureStiffness.getValue());
-//		params.mass = m->particleMass.getValue();
-//		params.mass2 = params.mass*params.mass;
-//		params.density0 = m->density0.getValue();
-//		params.viscosity = (Real)(bFactor*m->viscosity.getValue());
-//		params.surfaceTension = (Real)(kFactor*m->surfaceTension.getValue());
-//
-//		params.CWd          = m->constWd(h);
-//		params.CgradWd      = m->constGradWd(h);
-//		params.CgradWp      = m->constGradWp(h);
-//		params.ClaplacianWv = m->constLaplacianWv(h);
-//		params.CgradWc      = m->constGradWc(h);
-//		params.ClaplacianWc = m->constLaplacianWc(h);
-//	}
-//
-//	void Kernels_computeDensity(int gsize, const void* cells, const void* cellGhost, void* pos4, const void* x);
-//	void Kernels_addForce(int gsize, const void* cells, const void* cellGhost, void* f, const void* pos4, const void* vel);
-//	void Kernels_addDForce(int gsize, const void* cells, const void* cellGhost, void* f, const void* pos4, const void* dx, const void* vel);
-//};
-//
-//
-//template <>
-//void SPHFluidForceField<gpu::opencl::CudaVec3fTypes>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
-//
-//template <>
-//void SPHFluidForceField<gpu::opencl::CudaVec3fTypes>::addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
-//
-//template <>
-//void SPHFluidForceField<gpu::opencl::CudaVec3fTypes>::draw();
-//
-//template <>
-//void SPHFluidForceField<gpu::opencl::CudaVec3dTypes>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
-//
-//template <>
-//void SPHFluidForceField<gpu::opencl::CudaVec3dTypes>::addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
-//
+
+template <class TCoord, class TDeriv, class TReal>
+class SPHFluidForceFieldInternalData< gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> >
+{
+public:
+    typedef gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> DataTypes;
+    typedef SPHFluidForceFieldInternalData<DataTypes> Data;
+    typedef SPHFluidForceField<DataTypes> Main;
+    typedef typename DataTypes::Real Real;
+    gpu::opencl::GPUSPHFluid<Real> params;
+    gpu::opencl::OpenCLVector<defaulttype::Vec4f> pos4;
+
+    void fillParams(Main* m, double kFactor=1.0, double bFactor=1.0)
+    {
+        Real h = m->particleRadius.getValue();
+        params.h = h;
+        params.h2 = h*h;
+        params.stiffness = (Real)(kFactor*m->pressureStiffness.getValue());
+        params.mass = m->particleMass.getValue();
+        params.mass2 = params.mass*params.mass;
+        params.density0 = m->density0.getValue();
+        params.viscosity = (Real)(bFactor*m->viscosity.getValue());
+        params.surfaceTension = (Real)(kFactor*m->surfaceTension.getValue());
+
+        params.CWd          = m->constWd(h);
+        params.CgradWd      = m->constGradWd(h);
+        params.CgradWp      = m->constGradWp(h);
+        params.ClaplacianWv = m->constLaplacianWv(h);
+        params.CgradWc      = m->constGradWc(h);
+        params.ClaplacianWc = m->constLaplacianWc(h);
+    }
+
+    void Kernels_computeDensity(int gsize, const gpu::opencl::_device_pointer cells, const gpu::opencl::_device_pointer cellGhost, gpu::opencl::_device_pointer pos4, const gpu::opencl::_device_pointer x);
+    void Kernels_addForce(int gsize, const gpu::opencl::_device_pointer cells, const gpu::opencl::_device_pointer cellGhost, gpu::opencl::_device_pointer f, const gpu::opencl::_device_pointer pos4, const gpu::opencl::_device_pointer vel);
+    void Kernels_addDForce(int gsize, const gpu::opencl::_device_pointer cells, const gpu::opencl::_device_pointer cellGhost, gpu::opencl::_device_pointer f, const gpu::opencl::_device_pointer pos4, const gpu::opencl::_device_pointer dx, const gpu::opencl::_device_pointer vel);
+};
+
+
+template <>
+void SPHFluidForceField<gpu::opencl::OpenCLVec3fTypes>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
+
+template <>
+void SPHFluidForceField<gpu::opencl::OpenCLVec3fTypes>::addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
+
+template <>
+void SPHFluidForceField<gpu::opencl::OpenCLVec3fTypes>::draw();
+
+template <>
+void SPHFluidForceField<gpu::opencl::OpenCLVec3dTypes>::addForce (VecDeriv& f, const VecCoord& x, const VecDeriv& v);
+
+template <>
+void SPHFluidForceField<gpu::opencl::OpenCLVec3dTypes>::addDForce (VecDeriv& df, const VecDeriv& dx, double kFactor, double bFactor);
+
 
 } // namespace forcefield
 

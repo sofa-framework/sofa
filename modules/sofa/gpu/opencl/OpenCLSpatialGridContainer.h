@@ -50,77 +50,78 @@ namespace component
 namespace container
 {
 
-//using namespace sofa::defaulttype;
-//
-//template<class TCoord, class TDeriv, class TReal>
-//class SpatialGrid< SpatialGridTypes < gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> > >
-//{
-//public:
-//	typedef SpatialGridTypes < gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> > DataTypes;
-//	typedef typename DataTypes::Real Real;
-//	typedef typename DataTypes::Coord Coord;
-//	typedef typename DataTypes::VecCoord VecCoord;
-//	typedef typename DataTypes::CellData CellData;
-//	typedef typename DataTypes::GridData GridData;
-//	//typedef typename DataTypes::NeighborListener NeighborListener;
-//	typedef typename DataTypes::ParticleField ParticleField;
-//
-//	enum {
-//		HASH_PX = 73856093,
-//		HASH_PY = 19349663,
-//		HASH_PZ = 83492791,
-//	};
-//
-//public:
-//	SpatialGrid(Real cellWidth);
-//
-//	void update(const VecCoord& x);
-//
-//	void draw();
-//
-//	template<class NeighborListener>
-//	void findNeighbors(NeighborListener* dest, Real dist);
-//
-//	void computeField(ParticleField* field, Real dist);
-//
-//	/// Change particles ordering inside a given cell have contiguous indices
-//	///
-//	/// Fill the old2new and new2old arrays giving the permutation to apply
-//	void reorderIndices(helper::vector<unsigned int>* old2new, helper::vector<unsigned int>* new2old);
-//	GridData data;
-//
-//	Real getCellWidth() const { return cellWidth; }
-//	Real getInvCellWidth() const { return invCellWidth; }
-//
-//	int getCellBits() const { return cellBits; }
-//	int getNbCells() const { return nbCells; }
-//
-//	int getCell(const Coord& c) const
-//	{
-//		return ( (helper::rfloor(c[0]*invCellWidth*0.5f) * HASH_PX) ^
-//				 (helper::rfloor(c[1]*invCellWidth*0.5f) * HASH_PY) ^
-//				 (helper::rfloor(c[2]*invCellWidth*0.5f) * HASH_PZ) ) & ((1 << cellBits)-1);
-//	}
-//
-//	//const sofa::gpu::opencl::OpenCLVector< unsigned int >& getParticleIndexVector() const { return particleIndex; }
-//	const sofa::gpu::opencl::OpenCLVector< int >& getCellsVector() const { return cells; }
-//	const sofa::gpu::opencl::OpenCLVector< int >& getCellGhostVector() const { return cellGhost; }
-//
-//protected:
-//	const Real cellWidth;
-//	const Real invCellWidth;
-//	int cellBits, nbCells;
-//	sofa::gpu::opencl::OpenCLVector< unsigned int > /*particleIndex,*/ particleHash, sortTmp;
-//	//sofa::gpu::opencl::OpenCLVector< int > cellRange;
-//	sofa::gpu::opencl::OpenCLVector< int > cells;
-//	sofa::gpu::opencl::OpenCLVector< int > cellGhost;
-//	sofa::gpu::opencl::OpenCLVector< sofa::gpu::opencl::Vec3f1 > sortedPos;
-//	const VecCoord* lastX;
-//
-//	static void kernel_updateGrid(int cellBits, int index0, Real cellWidth, int nbPoints, void* particleIndex, void* particleHash, void* sortTmp, void* cells, void* cellGhost, const void* x);
-//	//static void kernel_reorderData(int nbPoints, const void* particleIndex, const void* particleHash, void* sorted, const void* x);
-//
-//};
+using namespace sofa::defaulttype;
+
+template<class TCoord, class TDeriv, class TReal>
+class SpatialGrid< SpatialGridTypes < gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> > >
+{
+public:
+    typedef SpatialGridTypes < gpu::opencl::OpenCLVectorTypes<TCoord,TDeriv,TReal> > DataTypes;
+    typedef typename DataTypes::Real Real;
+    typedef typename DataTypes::Coord Coord;
+    typedef typename DataTypes::VecCoord VecCoord;
+    typedef typename DataTypes::CellData CellData;
+    typedef typename DataTypes::GridData GridData;
+    //typedef typename DataTypes::NeighborListener NeighborListener;
+    typedef typename DataTypes::ParticleField ParticleField;
+
+    enum
+    {
+        HASH_PX = 73856093,
+        HASH_PY = 19349663,
+        HASH_PZ = 83492791,
+    };
+
+public:
+    SpatialGrid(Real cellWidth);
+
+    void update(const VecCoord& x);
+
+    void draw();
+
+    template<class NeighborListener>
+    void findNeighbors(NeighborListener* dest, Real dist);
+
+    void computeField(ParticleField* field, Real dist);
+
+    /// Change particles ordering inside a given cell have contiguous indices
+    ///
+    /// Fill the old2new and new2old arrays giving the permutation to apply
+    void reorderIndices(helper::vector<unsigned int>* old2new, helper::vector<unsigned int>* new2old);
+    GridData data;
+
+    Real getCellWidth() const { return cellWidth; }
+    Real getInvCellWidth() const { return invCellWidth; }
+
+    int getCellBits() const { return cellBits; }
+    int getNbCells() const { return nbCells; }
+
+    int getCell(const Coord& c) const
+    {
+        return ( (helper::rfloor(c[0]*invCellWidth*0.5f) * HASH_PX) ^
+                (helper::rfloor(c[1]*invCellWidth*0.5f) * HASH_PY) ^
+                (helper::rfloor(c[2]*invCellWidth*0.5f) * HASH_PZ) ) & ((1 << cellBits)-1);
+    }
+
+    //const sofa::gpu::opencl::OpenCLVector< unsigned int >& getParticleIndexVector() const { return particleIndex; }
+    const sofa::gpu::opencl::OpenCLVector< int >& getCellsVector() const { return cells; }
+    const sofa::gpu::opencl::OpenCLVector< int >& getCellGhostVector() const { return cellGhost; }
+
+protected:
+    const Real cellWidth;
+    const Real invCellWidth;
+    int cellBits, nbCells;
+    sofa::gpu::opencl::OpenCLVector< unsigned int > /*particleIndex,*/ particleHash, sortTmp;
+    //sofa::gpu::opencl::OpenCLVector< int > cellRange;
+    sofa::gpu::opencl::OpenCLVector< int > cells;
+    sofa::gpu::opencl::OpenCLVector< int > cellGhost;
+    sofa::gpu::opencl::OpenCLVector< sofa::gpu::opencl::Vec3f1 > sortedPos;
+    const VecCoord* lastX;
+
+    static void kernel_updateGrid(int cellBits, int index0, Real cellWidth, int nbPoints, gpu::opencl::_device_pointer particleIndex, gpu::opencl::_device_pointer particleHash, gpu::opencl::_device_pointer sortTmp, gpu::opencl::_device_pointer cells, gpu::opencl::_device_pointer cellGhost, gpu::opencl::_device_pointer x);
+    //static void kernel_reorderData(int nbPoints, const gpu::opencl::_device_pointer particleIndex, const gpu::opencl::_device_pointer particleHash, gpu::opencl::_device_pointer sorted, const gpu::opencl::_device_pointer x);
+
+};
 
 } // namespace container
 

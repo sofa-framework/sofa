@@ -187,6 +187,14 @@ void myopenclBuildProgram(void * program)
     myopenclShowError(__FILE__, __LINE__);
 }
 
+void myopenclBuildProgramWithFlags(void * program, char * flags)
+{
+    DEBUG_TEXT("myopenclBuildProgram");
+    _error = clBuildProgram((cl_program)program,0,NULL,flags,NULL,NULL);
+
+    myopenclShowError(__FILE__, __LINE__);
+}
+
 void myopenclExecKernel(int device,cl_kernel kernel,unsigned int work_dim,const size_t *global_work_offset,const size_t *global_work_size,const size_t *local_work_size)
 {
     DEBUG_TEXT("myopenclExecKernel");
