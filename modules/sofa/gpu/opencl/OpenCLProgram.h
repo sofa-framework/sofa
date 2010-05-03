@@ -109,13 +109,15 @@ public:
     void createProgram(std::string *source,std::string *operation)
     {
         OpenCLProgramParser p(source,operation);
-        createProgram(&p.replaceFunctions());
+        std::string s = p.replaceFunctions();
+        createProgram(&s);
     }
 
     void createProgram(std::string *source,std::string *operation, std::map<std::string,std::string> *types)
     {
         OpenCLProgramParser p(source,operation);
-        createProgram(&p.replaceFunctions(),types);
+        std::string s = p.replaceFunctions();
+        createProgram(&s,types);
     }
 
     void* program() {return _program;}

@@ -32,7 +32,6 @@ class RadixSort
 public:
     RadixSort(
         unsigned int maxElements,
-        const char *path,
         const int ctaSize,
         bool keysOnly);
     RadixSort() {}
@@ -59,7 +58,6 @@ private:
     static const unsigned int bitStep = 4;
 
     unsigned int  mNumElements;     // Number of elements of temp storage allocated
-    unsigned int *mTempValues;      // Intermediate storage for values
 
     Scan scan;
 

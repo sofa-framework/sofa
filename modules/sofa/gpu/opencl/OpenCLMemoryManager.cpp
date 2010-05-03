@@ -48,7 +48,6 @@ void OpenCLMemoryManager_memsetDevice(int d, _device_pointer a, int value, size_
             = new sofa::helper::OpenCLKernel(OpenCLMemoryManager_program,"MemoryManager_memset");
 
     i= value;
-    i= (i << 32) + value;
 
     offset = a.offset/(sizeof(int));
     size = size/(sizeof(int));
