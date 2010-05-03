@@ -232,7 +232,7 @@ int main(int argc, char** argv)
         {
             //This is an ini file: get the list of scenes to test
             std::ifstream iniFileStream(currentFile.c_str());
-            while (not iniFileStream.eof())
+            while (!iniFileStream.eof())
             {
                 std::string line;
                 std::string currentScene;
