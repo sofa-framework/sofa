@@ -217,7 +217,7 @@ void StiffSpringForceFieldOpenCL3f_addDForce(unsigned int size, unsigned int nbS
     CudaSpringForceFieldInputTextures<float,CudaVec3<float> >::setDX((const CudaVec3<float>*)dx);
     size_t sizeBuffer = BSIZE*3*sizeof(float);
 #else
-    size_t sizeBuffer = BSIZE*6*sizeof(float);
+//	size_t sizeBuffer = BSIZE*6*sizeof(float);
 #endif
 
     SpringForceField_CreateProgramWithFloat();

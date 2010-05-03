@@ -21,11 +21,9 @@ extern double time1, time2, time3, time4;
 
 RadixSort::RadixSort(
     unsigned int maxElements,
-    const char* /*path*/,
     const int ctaSize,
     bool /*keysOnly = true*/) :
     mNumElements(0),
-    mTempValues(0),
     CTA_SIZE(ctaSize)
 
 {
@@ -42,12 +40,13 @@ RadixSort::RadixSort(
     sofa::gpu::opencl::OpenCLMemoryManager<unsigned int>::deviceAlloc(0,&mBlockOffsets,WARP_SIZE * numBlocks * sizeof(unsigned int));
 
 #ifdef MAC
-    char *flags = "-DMAC -cl-fast-relaxed-math";
+    char flags[] = {"-DMAC -cl-fast-relaxed-math"};
 #else
-    char *flags = "-cl-fast-relaxed-math";
+    char flags[] = {"-cl-fast-relaxed-math"};
 #endif
 
     cpProgram = new OpenCLProgram(OpenCLProgram::loadSource("oclRadixSort/RadixSort.cl"));
+    cpProgram->buildProgram(flags);
 
 
     ckRadixSortBlocksKeysOnly = new sofa::helper::OpenCLKernel(cpProgram,"radixSortBlocksKeysOnly");

@@ -35,8 +35,8 @@ class Scan
 {
 public:
     Scan(
-        unsigned int numElements,
-        const char *path);
+        unsigned int numElements
+    );
     Scan() {}
     ~Scan();
 

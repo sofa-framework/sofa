@@ -17,8 +17,8 @@
 #include "Scan.h"
 
 Scan::Scan(
-    unsigned int numElements,
-    const char* /*path*/) :
+    unsigned int numElements
+) :
     mNumElements(numElements)
 {
 
