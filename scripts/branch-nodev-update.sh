@@ -34,6 +34,15 @@ cd $6 || exit 1
 TMPD=$PWD
 cd -
 
+SVNV=`$SVN --version | head -1 | awk '{ print $3 }'`
+if [ ${SVNV:0:1} -gt 1 -o ${SVNV:2:1} -gt 5 ]; then
+echo SVN version 1.6+ "($SVNV)"
+COLRMSTATS="colrm 1 8"
+else
+echo SVN version 1.5 or less "($SVNV)"
+COLRMSTATS="colrm 1 7"
+fi
+
 #exit 0
 
 cd $SOURCE
@@ -43,14 +52,14 @@ echo ========== Clean Source Directory ==========
 echo
 
 $SVN revert -R .
-$SVN status --no-ignore | grep '^?' | colrm 1 7 | xargs -d '\n' rm -rf
+$SVN status --no-ignore | grep '^?' | $COLRMSTATS | xargs -d '\n' rm -rf
 
 echo
 echo ========== Update Source Directory to $SVN_REVB ==========
 echo
 
 $SVN update -r $SVN_REVB
-$SVN status --no-ignore | grep '^?' | colrm 1 7 | xargs -d '\n' rm -rf
+$SVN status --no-ignore | grep '^?' | $COLRMSTATS | xargs -d '\n' rm -rf
 
 echo
 echo ========== Filter Source Directory ==========
@@ -65,14 +74,14 @@ echo ========== Clean Branch Directory ==========
 echo
 
 $SVN revert -R .
-$SVN status --no-ignore | grep '^?' | colrm 1 7 | xargs -d '\n' rm -rf
+$SVN status --no-ignore | grep '^?' | $COLRMSTATS | xargs -d '\n' rm -rf
 
 echo
 echo ========== Update Branch Directory ==========
 echo
 
 $SVN update || read -p "Press Enter to continue, or Ctrl-C to cancel." || exit 1
-$SVN status --no-ignore | grep '^?' | colrm 1 7 | xargs -d '\n' rm -rf
+$SVN status --no-ignore | grep '^?' | $COLRMSTATS | xargs -d '\n' rm -rf
 
 echo
 echo ========== Merge r$SVN_REVA:$SVN_REVB, ignoring conflicts ==========
@@ -80,6 +89,16 @@ echo
 
 echo $SVN merge --accept theirs-full -r $SVN_REVA:$SVN_REVB $SVN_URL
 $SVN merge --accept theirs-full -r $SVN_REVA:$SVN_REVB $SVN_URL || read -p "Press Enter to continue, or Ctrl-C to cancel." || exit 1
+
+if [ ${SVNV:0:1} -gt 1 -o ${SVNV:2:1} -gt 5 ]; then
+
+echo
+echo '========== Deleting tree conflicts (SVN 1.6+) =========='
+echo
+
+$SVN status --no-ignore | grep '^!' | $COLRMSTATS | xargs -d '\n' $SVN revert -R
+
+fi
 
 echo
 echo ========== SVN copy all missing directories and files ==========
@@ -241,7 +260,7 @@ echo
 echo ========== MERGE complete ==========
 echo
 
-# Check concistency
+# Check consistency
 
 diff -qwrU3 -x '.svn' -x '*.bak' $SOURCE $DEST
 
