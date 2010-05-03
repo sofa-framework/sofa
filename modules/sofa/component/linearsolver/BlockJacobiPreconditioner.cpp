@@ -25,16 +25,7 @@
 // Author: Hadrien Courtecuisse
 //
 // Copyright: See COPYING file that comes with this distribution
-#include <sofa/component/linearsolver/BlockJacobiPreconditioner.h>
-#include <sofa/component/linearsolver/FullMatrix.h>
-#include <sofa/component/linearsolver/SparseMatrix.h>
-#include <sofa/core/ObjectFactory.h>
-#include <iostream>
-#include "sofa/helper/system/thread/CTime.h"
-#include <sofa/core/objectmodel/BaseContext.h>
-#include <sofa/core/componentmodel/behavior/LinearSolver.h>
-#include <math.h>
-#include <sofa/component/linearsolver/DiagonalMatrix.h>
+#include <sofa/component/linearsolver/BlockJacobiPreconditioner.inl>
 
 namespace sofa
 {
@@ -45,42 +36,14 @@ namespace component
 namespace linearsolver
 {
 
-using namespace sofa::defaulttype;
-using namespace sofa::core::componentmodel::behavior;
-using namespace sofa::simulation;
-using namespace sofa::core::objectmodel;
-using std::cerr;
-using std::endl;
-
-template<class TMatrix, class TVector>
-BlockJacobiPreconditioner<TMatrix,TVector>::BlockJacobiPreconditioner()
-    : f_verbose( initData(&f_verbose,false,"verbose","Dump system state at each iteration") )
-{
-}
-
-template<class TMatrix, class TVector>
-void BlockJacobiPreconditioner<TMatrix,TVector>::solve (Matrix& M, Vector& z, Vector& r)
-{
-    M.mul(z,r);
-}
-
-template<class TMatrix, class TVector>
-void BlockJacobiPreconditioner<TMatrix,TVector>::invert(Matrix& M)
-{
-    M.invert();
-    if (f_verbose.getValue()) sout<<M<<sendl;
-}
-
 SOFA_DECL_CLASS(BlockJacobiPreconditioner)
 
 int BlockJacobiPreconditionerClass = core::RegisterObject("Linear solver based on a NxN bloc diagonal matrix (i.e. block Jacobi preconditioner)")
-        .add< BlockJacobiPreconditioner<BlockDiagonalMatrix<3,double> ,FullVector<double> > >(true)
-        .add< BlockJacobiPreconditioner<BlockDiagonalMatrix<2,double> ,FullVector<double> > >()
-        .add< BlockJacobiPreconditioner<BlockDiagonalMatrix<6,double> ,FullVector<double> > >()
-        .add< BlockJacobiPreconditioner<BlockDiagonalMatrix<9,double> ,FullVector<double> > >()
-        .add< BlockJacobiPreconditioner<BlockDiagonalMatrix<12,double> ,FullVector<double> > >()
-        .addAlias("SparseJacobiLinearSolver")
-        .addAlias("SparseJacobiSolver")
+        .add< BlockJacobiPreconditioner<BlockDiagonalMatrix<3,double> ,FullVector<double> > >()
+// .add< BlockJacobiPreconditioner<BlockDiagonalMatrix<2,double> ,FullVector<double> > >()
+// .add< BlockJacobiPreconditioner<BlockDiagonalMatrix<6,double> ,FullVector<double> > >()
+// .add< BlockJacobiPreconditioner<BlockDiagonalMatrix<9,double> ,FullVector<double> > >()
+// .add< BlockJacobiPreconditioner<BlockDiagonalMatrix<12,double> ,FullVector<double> > >()
         ;
 
 } // namespace linearsolver
