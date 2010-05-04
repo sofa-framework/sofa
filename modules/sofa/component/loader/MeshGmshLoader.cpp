@@ -69,7 +69,15 @@ bool MeshGmshLoader::load()
         gmshFormat = 2;
         // 		std::cout << "Gmsh format 2.0" << std::endl;
         std::string line;
-        std::getline(file, line); // we don't care about this line
+        std::getline(file, line); // we don't care about this line (2 0 8)
+        // modifiacation of Phuoc
+        if(line.empty())
+        {
+            file >> cmd;
+            std::getline(file, line); // we don't care about this line (0 8)
+        }
+        // end of modification of Phuoc
+
         file >> cmd;
         if (cmd != "$EndMeshFormat") // it should end with $EndMeshFormat
         {
@@ -193,6 +201,9 @@ bool MeshGmshLoader::readGmsh(std::ifstream &file, const unsigned int gmshFormat
 
             switch (etype)
             {
+            case 15: //point
+                nnodes = 1;
+                break;
             case 1: // Line
                 nnodes = 2;
                 break;
