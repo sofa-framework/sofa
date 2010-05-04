@@ -1,5 +1,6 @@
 <Node name="Group"> 
-  <Object type="TriangleSetTopologyContainer"  name="Container" fileTopology="" tags=""/>
+  <!--<Object type="TriangleSetTopologyContainer"  name="Container" fileTopology="" tags=""/>-->
+  <Object type="TriangleSetTopologyContainer"  name="Container" fileTopology=""/>
   <Object type="TriangleSetTopologyModifier"   name="Modifier" />
   <Object type="TriangleSetTopologyAlgorithms" name="TopoAlgo"   template="Vec3d" />
   <Object type="TriangleSetGeometryAlgorithms" name="GeomAlgo"   template="Vec3d" />

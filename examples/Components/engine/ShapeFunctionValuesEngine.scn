@@ -17,7 +17,7 @@
 											 0. 1. 0. 
 											 0. 0. 1"/>
 		<!-- MECHANICAL OBJECT 
-		<MechanicalObject template="Vec3d" name="CanonicalTetrahedron" position="0.1 0.3 0.7 1.5 0.3 0.5 0.4 1. 0.21 0.152 0. 1"/>-->
+		<MechanicalObject template="Vec3d" name="CanonicalTetrahedron" position="0.5 0.5 0.5 1.7 0 0 0 1.5 0 0 0 2"/> -->
 		<!-- TOPOLOGIE -->
 		<TetrahedronSetTopologyContainer name="TopoOneTetra" tetrahedra="0 1 2 3 4" 
 								     triangles="1 2 3 
@@ -39,7 +39,7 @@
 		<TetrahedralCorotationalFEMForceField name="FEM" youngModulus="60" poissonRatio="0.3" method="large" />
 		
 		<!-- POLYNOMIAL INTERPOLATION -->
-		<InterpolationPolynomialOnTetra template="Vec3d" name="interpolationpolynomial" InputMeshName="TopoOneTetra" definitionMETHOD="LagrangeP1"/>
+		<InterpolationPolynomialOnTetra template="Vec3d" name="interpolationpolynomial" InputMeshName="TopoOneTetra" definitionMETHOD="LagrangeP2"/>
 		
 		<!-- POLYNOMIAL INTERPOLATION 
 		<InterpolationPolynomialOnTetra template="Vec3d" name="testPolynomial" InputMeshName="TopoOneTetra" 
@@ -51,6 +51,8 @@
 												   0.333 0.30 0.10 0.20 "/>-->
 		<!-- QUADRATURE FORMULE -->
 		<QuadratureFormular template="Vec3d" name="quadratureOnTetra" QuadraturePointsSet="1. 0.25 0.25 0.25"/>
+		<!-- QUADRATURE FORMULE
+		<QuadratureFormular template="Vec3d" name="quadratureOnTetra" QuadraturePointsSet="1. 0.10 0.20 0.30"/>  -->
 
 		<!--This shapefunctionvalues compute with the "input local", given by a list of barycentric points for each element-->
 		<ShapeFunctionValuesEngine template="Vec3d" name="ValuesLocalInput" valuesCompute="true" derivativesCompute="true" commputationMethod="Local" 
