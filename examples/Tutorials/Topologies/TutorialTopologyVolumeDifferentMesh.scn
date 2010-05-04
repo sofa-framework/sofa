@@ -48,7 +48,7 @@
     <EulerImplicitSolver name="cg_odesolver" printLog="0"/>
     <CGLinearSolver name="linear solver" template="GraphScattered" iterations="25" tolerance="1e-09" threshold="1e-09"/>
     
-    <TetrahedronSetTopologyContainer name="Topology Container" fileTopology="mesh/cylinder.msh"  drawTetras="0"/>
+    <TetrahedronSetTopologyContainer name="Topology Container" fileTopology="mesh/cylinder.msh" />
     <TetrahedronSetTopologyModifier name="Topology Modifier"/>
     <TetrahedronSetTopologyAlgorithms name="Topology Algorithms" template="Vec3d"/>
     <TetrahedronSetGeometryAlgorithms name="Geometry Algorithms" template="Vec3d"/>
