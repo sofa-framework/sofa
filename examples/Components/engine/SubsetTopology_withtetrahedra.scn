@@ -17,9 +17,9 @@
 		<Object type="FixedPlaneConstraint" direction="0 0 1" dmin="-0.1" dmax="0.1"/>
 		<Object type="FixedConstraint" indices="0" />		
         	<Object type="TetrahedralCorotationalFEMForceField" name="FEM" youngModulus="60" poissonRatio="0.3" method="large" />
-		<BoxROI template="Vec3d" box="0 0 0 0.3 0.3 0.5" tetrahedra="@Container.tetrahedra"
+		<SubsetTopology template="Vec3d" box="0 0 0 0.3 0.3 0.5" tetrahedra="@Container.tetrahedra"
 			drawTetrahedra="1" drawBoxes="1" rest_position="@Volume.position"
-			name="ROI" subsetTopology="1"/>
+			name="Subset" subsetTopology="1"/>
 
 		<Node name="T">
 			<include href="Objects/TriangleSetTopology.xml" />
