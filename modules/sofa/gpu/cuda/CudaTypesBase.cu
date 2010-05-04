@@ -106,14 +106,10 @@ void matrix_vector_productf(int n,const void * M,int mPitch,const void * r,void 
 
 void matrix_vector_productd(int n,const void * M,int mPitch,const void * r,void * z)
 {
-#if !defined(__CUDA_ARCH__) ||  __CUDA_ARCH__ < 130
-    myprintf("CUDA ERROR: double precision not supported.\n");
-#else
     dim3 threads(MAX_THREADS,1);
     dim3 grid(1,n);
 
     matrix_vector_product_kernel<double><<< grid, threads >>>(n,(const double*)M, mPitch,(const double*)r, (double*)z,MAX_THREADS/2);
-#endif
 }
 
 #if defined(__cplusplus) && CUDA_VERSION < 2000
