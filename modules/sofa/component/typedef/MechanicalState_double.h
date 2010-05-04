@@ -46,8 +46,8 @@
 //---------------------------------------------------------------------------------------------
 //Typedef for MechanicalObject
 typedef sofa::component::container::MechanicalObject<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<3, double>, sofa::defaulttype::Vec<3, double>, double> > MechanicalObject3d;
-typedef sofa::component::container::MechanicalObject<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, double>, sofa::defaulttype::Vec<2, double>, double> > MechanicalObject1d;
-typedef sofa::component::container::MechanicalObject<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, double>, sofa::defaulttype::Vec<1, double>, double> > MechanicalObject2d;
+typedef sofa::component::container::MechanicalObject<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<2, double>, sofa::defaulttype::Vec<2, double>, double> > MechanicalObject2d;
+typedef sofa::component::container::MechanicalObject<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<1, double>, sofa::defaulttype::Vec<1, double>, double> > MechanicalObject1d;
 typedef sofa::component::container::MechanicalObject<sofa::defaulttype::StdVectorTypes<sofa::defaulttype::Vec<6, double>, sofa::defaulttype::Vec<6, double>, double> > MechanicalObject6d;
 typedef sofa::component::container::MechanicalObject<sofa::defaulttype::StdRigidTypes<3, double> > MechanicalObjectRigid3d;
 typedef sofa::component::container::MechanicalObject<sofa::defaulttype::StdRigidTypes<2, double> > MechanicalObjectRigid2d;
@@ -64,8 +64,8 @@ typedef sofa::component::collision::SphereTreeModel SphereTreeModel3d;
 
 #ifndef SOFA_FLOAT
 typedef MechanicalObject3d MechanicalObject3;
-typedef MechanicalObject1d MechanicalObject1;
 typedef MechanicalObject2d MechanicalObject2;
+typedef MechanicalObject1d MechanicalObject1;
 typedef MechanicalObject6d MechanicalObject6;
 typedef MechanicalObjectRigid3d MechanicalObjectRigid3;
 typedef MechanicalObjectRigid2d MechanicalObjectRigid2;
