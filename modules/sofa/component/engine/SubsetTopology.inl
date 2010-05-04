@@ -22,14 +22,14 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_BOXROI_INL
-#define SOFA_COMPONENT_ENGINE_BOXROI_INL
+#ifndef SOFA_COMPONENT_ENGINE_SUBSETTOPOLOGY_INL
+#define SOFA_COMPONENT_ENGINE_SUBSETTOPOLOGY_INL
 
 #if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
 #pragma once
 #endif
 
-#include <sofa/component/engine/BoxROI.h>
+#include <sofa/component/engine/SubsetTopology.h>
 #include <sofa/helper/gl/template.h>
 #include <sofa/helper/gl/BasicShapes.h>
 
@@ -48,7 +48,7 @@ using namespace core::objectmodel;
 using namespace core::componentmodel::topology;
 
 template <class DataTypes>
-BoxROI<DataTypes>::BoxROI()
+SubsetTopology<DataTypes>::SubsetTopology()
     : boxes( initData(&boxes, "box", "Box defined by xmin,ymin,zmin, xmax,ymax,zmax") )
     , f_X0( initData (&f_X0, "rest_position", "Rest position coordinates of the degrees of freedom") )
     , f_edges(initData (&f_edges, "edges", "Edge Topology") )
@@ -59,9 +59,13 @@ BoxROI<DataTypes>::BoxROI()
     , f_triangleIndices( initData(&f_triangleIndices,"triangleIndices","Indices of the triangles contained in the ROI") )
     , f_tetrahedronIndices( initData(&f_tetrahedronIndices,"tetrahedronIndices","Indices of the tetrahedra contained in the ROI") )
     , f_pointsInBox( initData(&f_pointsInBox,"pointsInBox","Points contained in the ROI") )
+    , f_pointsOutBox( initData(&f_pointsOutBox,"pointsOutBox","Points out of the ROI") )
     , f_edgesInBox( initData(&f_edgesInBox,"edgesInBox","Edges contained in the ROI") )
     , f_trianglesInBox( initData(&f_trianglesInBox,"f_trianglesInBox","Triangles contained in the ROI") )
+    , f_trianglesOutBox( initData(&f_trianglesOutBox,"f_trianglesOutBox","Triangles out of the ROI") )
     , f_tetrahedraInBox( initData(&f_tetrahedraInBox,"f_tetrahedraInBox","Tetrahedra contained in the ROI") )
+    , f_tetrahedraOutBox( initData(&f_tetrahedraOutBox,"f_tetrahedraOutBox","Tetrahedra out of the ROI") )
+    , p_subsetTopology( initData(&p_subsetTopology,false,"subsetTopology","Draw Triangles") )
     , p_drawBoxes( initData(&p_drawBoxes,false,"drawBoxes","Draw Box(es)") )
     , p_drawPoints( initData(&p_drawPoints,false,"drawPoints","Draw Points") )
     , p_drawEdges( initData(&p_drawEdges,false,"drawEdges","Draw Edges") )
@@ -76,68 +80,71 @@ BoxROI<DataTypes>::BoxROI()
 }
 
 template <class DataTypes>
-void BoxROI<DataTypes>::init()
+void SubsetTopology<DataTypes>::init()
 {
 
-    if (!f_X0.isSet())
+    if (!p_subsetTopology.getValue())
     {
-        MechanicalState<DataTypes>* mstate;
-        this->getContext()->get(mstate);
-        if (mstate)
+        if (!f_X0.isSet())
         {
-            BaseData* parent = mstate->findField("rest_position");
-            if (parent)
+            MechanicalState<DataTypes>* mstate;
+            this->getContext()->get(mstate);
+            if (mstate)
             {
-                f_X0.setParent(parent);
-                f_X0.setReadOnly(true);
-            }
-        }
-        else
-        {
-            core::componentmodel::loader::MeshLoader* loader = NULL;
-            this->getContext()->get(loader);
-            if (loader)
-            {
-                BaseData* parent = loader->findField("position");
+                BaseData* parent = mstate->findField("position");
                 if (parent)
                 {
                     f_X0.setParent(parent);
                     f_X0.setReadOnly(true);
                 }
             }
+            else
+            {
+                core::componentmodel::loader::MeshLoader* loader = NULL;
+                this->getContext()->get(loader);
+                if (loader)
+                {
+                    BaseData* parent = loader->findField("position");
+                    if (parent)
+                    {
+                        f_X0.setParent(parent);
+                        f_X0.setReadOnly(true);
+                    }
+                }
+            }
         }
-    }
-    if (!f_edges.isSet() || !f_triangles.isSet() || !f_tetrahedra.isSet())
-    {
-        BaseMeshTopology* topology;
-        this->getContext()->get(topology);
-        if (topology)
+        if (!f_edges.isSet() || !f_triangles.isSet() || !f_tetrahedra.isSet())
         {
-            if (!f_edges.isSet())
+            BaseMeshTopology* topology;
+            this->getContext()->get(topology);
+            if (topology)
             {
-                BaseData* eparent = topology->findField("edges");
-                if (eparent)
+                if (!f_edges.isSet())
                 {
-                    f_edges.setParent(eparent);
-                    f_edges.setReadOnly(true);
+                    BaseData* eparent = topology->findField("edges");
+                    if (eparent)
+                    {
+                        f_edges.setParent(eparent);
+                        f_edges.setReadOnly(true);
+                    }
                 }
-            }
-            if (!f_triangles.isSet())
-            {
-                BaseData* tparent = topology->findField("triangles");
-                if (tparent)
+                if (!f_triangles.isSet())
                 {
-                    f_triangles.setParent(tparent);
-                    f_triangles.setReadOnly(true);
+                    BaseData* tparent = topology->findField("triangles");
+                    if (tparent)
+                    {
+                        f_triangles.setParent(tparent);
+                        f_triangles.setReadOnly(true);
+                    }
                 }
-            }
-            if (!f_tetrahedra.isSet())
-            {
-                BaseData* tparent = topology->findField("tetrahedra");
-                if (tparent)
+                if (!f_tetrahedra.isSet())
                 {
-                    f_tetrahedra.setParent(tparent);
-                    f_tetrahedra.setReadOnly(true);
+                    BaseData* tparent = topology->findField("tetrahedra");
+                    if (tparent)
+                    {
+                        f_tetrahedra.setParent(tparent);
+                        f_tetrahedra.setReadOnly(true);
+                    }
                 }
             }
         }
@@ -153,26 +160,29 @@ void BoxROI<DataTypes>::init()
     addOutput(&f_triangleIndices);
     addOutput(&f_tetrahedronIndices);
     addOutput(&f_pointsInBox);
+    addOutput(&f_pointsOutBox);
     addOutput(&f_edgesInBox);
     addOutput(&f_trianglesInBox);
+    addOutput(&f_trianglesOutBox);
     addOutput(&f_tetrahedraInBox);
+    addOutput(&f_tetrahedraOutBox);
     setDirtyValue();
 }
 
 template <class DataTypes>
-void BoxROI<DataTypes>::reinit()
+void SubsetTopology<DataTypes>::reinit()
 {
     update();
 }
 
 template <class DataTypes>
-bool BoxROI<DataTypes>::isPointInBox(const typename DataTypes::CPos& p, const Vec6& b)
+bool SubsetTopology<DataTypes>::isPointInBox(const typename DataTypes::CPos& p, const Vec6& b)
 {
     return ( p[0] >= b[0] && p[0] <= b[3] && p[1] >= b[1] && p[1] <= b[4] && p[2] >= b[2] && p[2] <= b[5] );
 }
 
 template <class DataTypes>
-bool BoxROI<DataTypes>::isPointInBox(const PointID& pid, const Vec6& b)
+bool SubsetTopology<DataTypes>::isPointInBox(const PointID& pid, const Vec6& b)
 {
     const VecCoord* x0 = &f_X0.getValue();
     CPos p =  DataTypes::getCPos((*x0)[pid]);
@@ -180,7 +190,7 @@ bool BoxROI<DataTypes>::isPointInBox(const PointID& pid, const Vec6& b)
 }
 
 template <class DataTypes>
-bool BoxROI<DataTypes>::isEdgeInBox(const Edge& e, const Vec6& b)
+bool SubsetTopology<DataTypes>::isEdgeInBox(const Edge& e, const Vec6& b)
 {
     const VecCoord* x0 = &f_X0.getValue();
     CPos p0 =  DataTypes::getCPos((*x0)[e[0]]);
@@ -191,7 +201,7 @@ bool BoxROI<DataTypes>::isEdgeInBox(const Edge& e, const Vec6& b)
 }
 
 template <class DataTypes>
-bool BoxROI<DataTypes>::isTriangleInBox(const Triangle& t, const Vec6& b)
+bool SubsetTopology<DataTypes>::isTriangleInBox(const Triangle& t, const Vec6& b)
 {
     const VecCoord* x0 = &f_X0.getValue();
     CPos p0 =  DataTypes::getCPos((*x0)[t[0]]);
@@ -203,7 +213,7 @@ bool BoxROI<DataTypes>::isTriangleInBox(const Triangle& t, const Vec6& b)
 }
 
 template <class DataTypes>
-bool BoxROI<DataTypes>::isTetrahedronInBox(const Tetra &t, const Vec6 &b)
+bool SubsetTopology<DataTypes>::isTetrahedronInBox(const Tetra &t, const Vec6 &b)
 {
     const VecCoord* x0 = &f_X0.getValue();
     CPos p0 =  DataTypes::getCPos((*x0)[t[0]]);
@@ -216,7 +226,7 @@ bool BoxROI<DataTypes>::isTetrahedronInBox(const Tetra &t, const Vec6 &b)
 }
 
 template <class DataTypes>
-void BoxROI<DataTypes>::update()
+void SubsetTopology<DataTypes>::update()
 {
     cleanDirty();
 
@@ -241,15 +251,21 @@ void BoxROI<DataTypes>::update()
     SetIndex& tetrahedronIndices = *f_tetrahedronIndices.beginEdit();
 
     helper::WriteAccessor< Data<VecCoord > > pointsInBox = f_pointsInBox;
+    helper::WriteAccessor< Data<VecCoord > > pointsOutBox = f_pointsOutBox;
     helper::WriteAccessor< Data<helper::vector<Edge> > > edgesInBox = f_edgesInBox;
     helper::WriteAccessor< Data<helper::vector<Triangle> > > trianglesInBox = f_trianglesInBox;
+    helper::WriteAccessor< Data<helper::vector<Triangle> > > trianglesOutBox = f_trianglesOutBox;
 
     helper::WriteAccessor< Data<helper::vector<Tetra> > > tetrahedraInBox = f_tetrahedraInBox;
+    helper::WriteAccessor< Data<helper::vector<Tetra> > > tetrahedraOutBox = f_tetrahedraOutBox;
 
     indices.clear();
     edgesInBox.clear();
     trianglesInBox.clear();
+    trianglesOutBox.clear();
     tetrahedraInBox.clear();
+    tetrahedraOutBox.clear();
+    pointsOutBox.clear();
     pointsInBox.clear();
 
 
@@ -257,15 +273,20 @@ void BoxROI<DataTypes>::update()
 
     for( unsigned i=0; i<x0->size(); ++i )
     {
+        bool inside = false;
         for (unsigned int bi=0; bi<vb.size(); ++bi)
         {
             if (isPointInBox(i, vb[bi]))
             {
                 indices.push_back(i);
                 pointsInBox.push_back((*x0)[i]);
+                inside = true;
                 break;
             }
         }
+
+        if (!inside && p_subsetTopology.getValue())
+            pointsOutBox.push_back((*x0)[i]);
     }
 
     for(unsigned int i=0 ; i<edges.size() ; i++)
@@ -293,6 +314,11 @@ void BoxROI<DataTypes>::update()
                 trianglesInBox.push_back(t);
                 break;
             }
+            else
+            {
+                if (p_subsetTopology.getValue())
+                    trianglesOutBox.push_back(t);
+            }
         }
     }
 
@@ -307,6 +333,11 @@ void BoxROI<DataTypes>::update()
                 tetrahedraInBox.push_back(t);
                 break;
             }
+            else
+            {
+                if (p_subsetTopology.getValue())
+                    tetrahedraOutBox.push_back(t);
+            }
         }
     }
 
@@ -318,7 +349,7 @@ void BoxROI<DataTypes>::update()
 }
 
 template <class DataTypes>
-void BoxROI<DataTypes>::draw()
+void SubsetTopology<DataTypes>::draw()
 {
     if (!this->getContext()->getShowBehaviorModels())
         return;
@@ -442,7 +473,7 @@ void BoxROI<DataTypes>::draw()
 }
 
 template <class DataTypes>
-bool BoxROI<DataTypes>::addBBox(double* minBBox, double* maxBBox)
+bool SubsetTopology<DataTypes>::addBBox(double* minBBox, double* maxBBox)
 {
     const helper::vector<Vec6>& vb=boxes.getValue();
     for (unsigned int bi=0; bi<vb.size(); ++bi)
