@@ -104,7 +104,6 @@ double LinearForceField<Rigid2fTypes>::getPotentialEnergy(const VecCoord& ) cons
 }
 #endif
 
-
 } // namespace forcefield
 
 } // namespace component

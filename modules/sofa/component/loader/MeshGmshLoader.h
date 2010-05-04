@@ -66,9 +66,8 @@ protected:
     bool readGmsh(std::ifstream &file, const unsigned int gmshFormat);
 
 
-public:
-    // Add specific Data here:
 
+public:
 
 };
 
