@@ -22,8 +22,8 @@
 *                                                                             *
 * Contact information: contact@sofa-framework.org                             *
 ******************************************************************************/
-#ifndef SOFA_COMPONENT_ENGINE_BOXROI_H
-#define SOFA_COMPONENT_ENGINE_BOXROI_H
+#ifndef SOFA_COMPONENT_ENGINE_SUBSETTOPOLOGY_H
+#define SOFA_COMPONENT_ENGINE_SUBSETTOPOLOGY_H
 
 #if !defined(__GNUC__) || (__GNUC__ > 3 || (_GNUC__ == 3 && __GNUC_MINOR__ > 3))
 #pragma once
@@ -53,10 +53,10 @@ using namespace core::objectmodel;
  * This class find all the points located inside a given box.
  */
 template <class DataTypes>
-class BoxROI : public core::DataEngine
+class SubsetTopology : public core::DataEngine
 {
 public:
-    SOFA_CLASS(SOFA_TEMPLATE(BoxROI,DataTypes),core::DataEngine);
+    SOFA_CLASS(SOFA_TEMPLATE(SubsetTopology,DataTypes),core::DataEngine);
     typedef typename DataTypes::VecCoord VecCoord;
     typedef typename DataTypes::Coord Coord;
     typedef typename DataTypes::Real Real;
@@ -78,9 +78,9 @@ protected:
     bool isTetrahedronInBox(const Tetra& t, const Vec6& b);
 public:
 
-    BoxROI();
+    SubsetTopology();
 
-    ~BoxROI() {}
+    ~SubsetTopology() {}
 
     void init();
 
@@ -122,7 +122,7 @@ public:
         return templateName(this);
     }
 
-    static std::string templateName(const BoxROI<DataTypes>* = NULL)
+    static std::string templateName(const SubsetTopology<DataTypes>* = NULL)
     {
         return DataTypes::Name();
     }
@@ -140,11 +140,15 @@ public:
     Data<SetIndex> f_triangleIndices;
     Data<SetIndex> f_tetrahedronIndices;
     Data<VecCoord > f_pointsInBox;
+    Data<VecCoord > f_pointsOutBox;
     Data<helper::vector<Edge> > f_edgesInBox;
     Data<helper::vector<Triangle> > f_trianglesInBox;
+    Data<helper::vector<Triangle> > f_trianglesOutBox;
     Data<helper::vector<Tetra> > f_tetrahedraInBox;
+    Data<helper::vector<Tetra> > f_tetrahedraOutBox;
 
     //Parameter
+    Data<bool> p_subsetTopology;
     Data<bool> p_drawBoxes;
     Data<bool> p_drawPoints;
     Data<bool> p_drawEdges;
@@ -152,13 +156,13 @@ public:
     Data<bool> p_drawTetrahedra;
 };
 
-#if defined(WIN32) && !defined(SOFA_COMPONENT_ENGINE_BOXROI_CPP)
+#if defined(WIN32) && !defined(SOFA_COMPONENT_ENGINE_SUBSETTOPOLOGY_CPP)
 #pragma warning(disable : 4231)
 #ifndef SOFA_FLOAT
-template class SOFA_COMPONENT_ENGINE_API BoxROI<defaulttype::Vec3dTypes>;
+template class SOFA_COMPONENT_ENGINE_API SubsetTopology<defaulttype::Vec3dTypes>;
 #endif //SOFA_FLOAT
 #ifndef SOFA_DOUBLE
-template class SOFA_COMPONENT_ENGINE_API BoxROI<defaulttype::Vec3fTypes>;
+template class SOFA_COMPONENT_ENGINE_API SubsetTopology<defaulttype::Vec3fTypes>;
 #endif //SOFA_DOUBLE
 #endif
 
