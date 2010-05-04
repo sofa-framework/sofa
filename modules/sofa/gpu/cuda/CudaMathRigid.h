@@ -117,16 +117,16 @@ class CudaRigidDeriv3<double> : public rigidderiv3d
 {
 public:
     typedef double Real;
-    static __inline__ __device__ __host__ CudaRigidDeriv3<double> make(Real x, Real y, Real z, Real rx, Real ry, Real rz)
+    static __inline__ __device__ CudaRigidDeriv3<double> make(Real x, Real y, Real z, Real rx, Real ry, Real rz)
     {
         CudaRigidDeriv3<double> r; r.pos.x = x; r.pos.y = y; r.pos.z = z; r.rot.x =
             rx; r.rot.y = ry, r.rot.z = rz; return r;
     }
-    static __inline__ __device__ __host__ CudaRigidDeriv3<double> make(CudaRigidDeriv3<double> v)
+    static __inline__ __device__ CudaRigidDeriv3<double> make(CudaRigidDeriv3<double> v)
     {
         CudaRigidDeriv3<double> r; r.pos.x = v.pos.x; r.pos.y = v.pos.y; r.pos.z = v.pos.z; r.rot.x = v.rot.x; r.rot.y = v.rot.y; r.rot.z = v.rot.z; return r;
     }
-    static __inline__ __device__ __host__ CudaRigidDeriv3<double> make(CudaVec3<double> pos, CudaVec3<double> rot)
+    static __inline__ __device__ CudaRigidDeriv3<double> make(CudaVec3<double> pos, CudaVec3<double> rot)
     {
         CudaRigidDeriv3<double> r; r.pos.x = pos.x; r.pos.y = pos.y; r.pos.z = pos.z; r.rot.x = rot.x; r.rot.y = rot.y; r.rot.z = rot.z; return r;
     }
