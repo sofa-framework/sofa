@@ -53,7 +53,15 @@ void SculptOperation::start()
 
     SculptBodyPerformerConfiguration *performerConfiguration=dynamic_cast<SculptBodyPerformerConfiguration*>(performer);
     performerConfiguration->setCheckedFix(isCheckedFix());
-    performerConfiguration->setForce(getForce()/500);
+    performerConfiguration->setCheckedInflate(isCheckedInflate());
+    performerConfiguration->setCheckedDeflate(isCheckedDeflate());
+    performerConfiguration->setForce(getForce()/50000);
+    SculptBodyPerformer<Vec3Types>* sculptPerformer=dynamic_cast<SculptBodyPerformer<Vec3Types>*>(performer);
+    sculptPerformer->start();
+
+    performerConfiguration->setMass(getMass());
+    performerConfiguration->setStiffness(getStiffness());
+    performerConfiguration->setDamping(getDamping());
 }
 
 void SculptOperation::end()
@@ -65,10 +73,6 @@ void SculptOperation::end()
     performerConfiguration->setCheckedFix(false);
     SculptBodyPerformer<Vec3Types>* sculptPerformer=dynamic_cast<SculptBodyPerformer<Vec3Types>*>(performer);
     sculptPerformer->end();
-    if (isAnimated())
-    {
-        sculptPerformer->animate(true);
-    }
 }
 
 void SculptOperation::wait()
@@ -86,11 +90,6 @@ void SculptOperation::wait()
 
 SculptOperation::~SculptOperation()
 {
-    if (performer != NULL)
-    {
-        pickHandle->getInteraction()->mouseInteractor->removeInteractionPerformer(performer);
-        delete performer; performer=NULL;
-    }
 }
 
 } // namespace gui

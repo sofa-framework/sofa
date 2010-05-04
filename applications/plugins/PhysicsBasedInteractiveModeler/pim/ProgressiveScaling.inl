@@ -193,9 +193,9 @@ void ProgressiveScaling<DataTypes>::handleEvent(sofa::core::objectmodel::Event *
 template <class DataTypes>
 void ProgressiveScaling<DataTypes>::draw()
 {
-    std::vector<  Vector3 > points;
-    points.push_back(scaling_center);
-    sofa::simulation::getSimulation()->DrawUtility.drawPoints(points, 20, Vec<4,float>(1,1,1,1));
+    /*    std::vector<  Vector3 > points;
+        points.push_back(scaling_center);
+        sofa::simulation::getSimulation()->DrawUtility.drawPoints(points, 20, Vec<4,float>(1,1,1,1));*/
 }
 
 } // namespace pim

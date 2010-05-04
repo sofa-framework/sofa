@@ -1,3 +1,5 @@
+######  PLUGIN TARGET
+TARGET = pim
 
 ######  GENERAL PLUGIN CONFIGURATION, you shouldn't have to modify it
 
@@ -28,7 +30,6 @@ else {
 TARGET = pim
 DEFINES += SOFA_BUILD_PIM
 
-
 LIBS += $$SOFA_FRAMEWORK_LIBS
 LIBS += $$SOFA_LIBS
 LIBS += -lsofasimulation$$LIBSUFFIX
@@ -44,25 +45,25 @@ LIBS += -lsofacomponentmapping$$LIBSUFFIX
 LIBS += -lsofacomponentengine$$LIBSUFFIX
 LIBS += -lsofacomponentvisualmodel$$LIBSUFFIX
 LIBS += -lCGALPlugin$$LIBSUFFIX
-LIBS += -lTriangularMeshRefiner$$LIBSUFFIX
+#LIBS += -lTriangularMeshRefiner$$LIBSUFFIX
 LIBS += -lsofagui$$LIBSUFFIX
 LIBS += -lsofaguimain$$LIBSUFFIX
 LIBS += -lsofaguimain$$LIBSUFFIX
 
-SOURCES = SculptBodyPerformer.cpp \
-          ProgressiveScaling.cpp \
-          PointsOnSurface.cpp \
+SOURCES = ProgressiveScaling.cpp \
           ComputeMeshIntersection.cpp \
           Parameters.cpp \
           TransformPlaneConstraint.cpp \
+          EventManager.cpp \
+          SculptBodyPerformer.cpp
 
 HEADERS = SculptBodyPerformer.h \
           SculptBodyPerformer.inl \
           ProgressiveScaling.h \
           ProgressiveScaling.inl \
-          PointsOnSurface.h \
-          PointsOnSurface.inl \
           ComputeMeshIntersection.h \
           ComputeMeshIntersection.inl \
           Parameters.h \
-          TransformPlaneConstraint.h
+          TransformPlaneConstraint.h \
+          EventManager.inl \
+          EventManager.h

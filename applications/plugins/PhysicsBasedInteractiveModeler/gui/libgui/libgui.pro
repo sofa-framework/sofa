@@ -12,6 +12,9 @@ CONFIG += $$CONFIGLIBRARIES
 CONFIG -= staticlib
 CONFIG += dll
 
+SOFA_CGAL_PATH = $$SOFA_DIR/extlibs/CGAL
+INCLUDEPATH += $$SOFA_CGAL_PATH/include
+
 LIBS += -lsofagui$$LIBSUFFIX
 LIBS += -lsofacomponentcollision$$LIBSUFFIX
 LIBS += -lpim

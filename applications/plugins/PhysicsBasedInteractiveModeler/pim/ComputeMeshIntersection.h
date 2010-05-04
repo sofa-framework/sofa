@@ -75,6 +75,8 @@ public:
     Data<VecCoord> d_muscleLayerVertex, d_fatLayerVertex, d_intersectionVertex;
     Data<VecTriangles> d_muscleLayerTriangles, d_fatLayerTriangles, d_intersectionTriangles;
     Data< vector<Quad> > d_intersectionQuads;
+    Data< vector<unsigned int> > d_index;
+
     MeshTopology topology;
     std::map<unsigned int, unsigned int> intersectionIndices;
     Data<bool> d_print_log;

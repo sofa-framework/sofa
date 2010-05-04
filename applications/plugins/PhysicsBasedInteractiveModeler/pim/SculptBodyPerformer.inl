@@ -25,21 +25,11 @@
 
 #include "SculptBodyPerformer.h"
 #include <sofa/component/collision/CubeModel.h>
-#include <sofa/simulation/common/Simulation.h>
-#include "PointsOnSurface.h"
 #include <sofa/component/mapping/BarycentricMapping.h>
+#include <sofa/component/mapping/IdentityMapping.h>
 #include <sofa/component/mapping/SubsetMapping.h>
-#include <sofa/component/container/MechanicalObject.h>
-#include <sofa/component/forcefield/StiffSpringForceField.h>
-#include <sofa/component/constraint/FixedConstraint.h>
-#include <sofa/component/forcefield/SpringForceField.h>
-#include <sofa/component/forcefield/TriangularFEMForceField.h>
-#include <sofa/component/visualmodel/OglModel.h>
 #include <sofa/component/engine/MergePoints.h>
-#include <sofa/core/componentmodel/behavior/MechanicalMapping.h>
-#include <sofa/core/componentmodel/behavior/MechanicalState.h>
-#include <sofa/core/BaseMapping.h>
-#include <sofa/component/collision/RayContact.h>
+#include <sofa/component/container/MeshLoader.h>
 
 namespace plugins
 {
@@ -57,55 +47,7 @@ using namespace sofa::core::componentmodel::behavior;
 using namespace sofa::core;
 
 
-
-template <class DataTypes>
-BodyPicked SculptBodyPerformer<DataTypes>::findCollisionUsingPipeline(const Vector3 origin, const Vector3 direction, const double maxLength)
-{
-    BodyPicked result;
-    MouseCollisionModel* mouseCollision = dynamic_cast<MouseCollisionModel*>(root->getChild("Mouse")->getObject("MouseCollisionModel"));
-
-    const std::set< sofa::component::collision::BaseRayContact*> &contacts = mouseCollision->getContacts();
-    for (std::set< sofa::component::collision::BaseRayContact*>::const_iterator it=contacts.begin(); it != contacts.end(); ++it)
-    {
-
-        const sofa::helper::vector<core::componentmodel::collision::DetectionOutput*>& output = (*it)->getDetectionOutputs();
-        sofa::core::CollisionModel *modelInCollision;
-        for (unsigned int i=0; i<output.size(); ++i)
-        {
-
-            if (output[i]->elem.first.getCollisionModel() == mouseCollision)
-            {
-                modelInCollision = output[i]->elem.second.getCollisionModel();
-                if (!modelInCollision->isSimulated()) continue;
-
-                const double d = (output[i]->point[1]-origin)*direction;
-                if (d<0.0 || d>maxLength) continue;
-                if (result.body == NULL || d < result.rayLength)
-                {
-                    result.body=modelInCollision;
-                    result.indexCollisionElement = output[i]->elem.second.getIndex();
-                    result.rayLength  = d;
-                }
-            }
-            else if (output[i]->elem.second.getCollisionModel() == mouseCollision)
-            {
-                modelInCollision = output[i]->elem.first.getCollisionModel();
-                if (!modelInCollision->isSimulated()) continue;
-
-                const double d = (output[i]->point[0]-origin)*direction;
-                if (d<0.0 || d>maxLength) continue;
-                if (result.body == NULL || d < result.rayLength)
-                {
-                    result.body=modelInCollision;
-                    result.indexCollisionElement = output[i]->elem.first.getIndex();
-                    result.rayLength  = d;
-                }
-            }
-        }
-    }
-    return result;
-}
-
+/// Computes the neigborhood of the picked point
 template <class DataTypes>
 void SculptBodyPerformer<DataTypes>::computeNeighborhood()
 {
@@ -125,690 +67,533 @@ void SculptBodyPerformer<DataTypes>::computeNeighborhood()
     }
 }
 
+/// Gets the nearest point from the picked collision element (Triangle)
+template <class DataTypes>
+unsigned int SculptBodyPerformer<DataTypes>::computeNearestVertexFromPickedPoint()
+{
+    const BaseMeshTopology::Triangle& pickedTriangle = picked.body->getMeshTopology()->getTriangle(picked.indexCollisionElement);
+    const typename DataTypes::VecCoord& X = *mstateCollision->getX();
+
+    unsigned int nearestVertexFromPickedPoint = pickedTriangle[0];
+    if ((X[nearestVertexFromPickedPoint] - picked.point).norm() > (X[pickedTriangle[1]] - picked.point).norm())
+    {
+        nearestVertexFromPickedPoint = pickedTriangle[1];
+    }
+    if ((X[nearestVertexFromPickedPoint] - picked.point).norm() > (X[pickedTriangle[2]] - picked.point).norm())
+    {
+        nearestVertexFromPickedPoint = pickedTriangle[2];
+    }
+    return nearestVertexFromPickedPoint;
+}
+
+/// Computes the normal of the point "index"
+template <class DataTypes>
+typename DataTypes::Coord SculptBodyPerformer<DataTypes>::computeNormal(const unsigned int& index)
+{
+    const typename DataTypes::VecCoord& X = *mstateCollision->getX();
+    const BaseMeshTopology::TrianglesAroundVertex& tav = picked.body->getMeshTopology()->getTrianglesAroundVertex(index);
+    Coord normal = Coord(0,0,0);
+
+    for (unsigned int j=0; j<tav.size(); ++j)
+    {
+        const BaseMeshTopology::Triangle& t = picked.body->getMeshTopology()->getTriangle(tav[j]);
+        const Coord p0 = X[t[0]];
+        const Coord p1 = X[t[1]];
+        const Coord p2 = X[t[2]];
+        normal += cross(p1-p0, p2-p0);
+    }
+    normal.normalize();
+    return normal;
+}
+
+/// Update the position of each vertex according to the corresponding action (inflate/deflate)
+template <class DataTypes>
+void SculptBodyPerformer<DataTypes>::updatePosition(const unsigned int& index, const typename DataTypes::Coord& normal, const double& W)
+{
+    typename DataTypes::VecCoord& X = *mstateCollision->getX();
+    if (checkedInflate)
+    {
+        X[index] += normal * W * (force);
+    }
+    else
+    {
+        if (checkedDeflate)
+        {
+            X[index] -= normal * W * (force);
+        }
+    }
+}
+
+/// Inflate/deflate from the picked point
+template <class DataTypes>
+void SculptBodyPerformer<DataTypes>::inflate()
+{
+    typename DataTypes::VecCoord& X = *mstateCollision->getX();
+
+    typename DataTypes::Real dist, W;
+
+    // Gets the diagonal of the bounding box
+    CubeModel* cModel = dynamic_cast<CubeModel*>(picked.body->getFirst());
+    Cube bbox = Cube(cModel,0);
+    typename DataTypes::Real bboxDiagonal = (typename DataTypes::Real)((bbox.minVect() - bbox.maxVect()).norm()/4);
+    // Compute the ratio to inflate/deflate
+    typename DataTypes::Real ratio = bboxDiagonal * (typename DataTypes::Real) (scale/99);
+
+    // Gets the nearest point from the picked collision element (Triangle)
+    unsigned int nearestVertexFromPickedPoint = computeNearestVertexFromPickedPoint();
+
+    vertexNeighborhood.insert(nearestVertexFromPickedPoint);
+    alreadyCheckedVertex.clear();
+    do
+    {
+        vertexInInfluenceZone.clear();
+        for( std::set<unsigned int>::const_iterator iter = vertexNeighborhood.begin(); iter != vertexNeighborhood.end(); ++iter )
+        {
+            dist = (X[*iter]-picked.point).norm();
+            if (dist < ratio)
+            {
+                vertexInInfluenceZone.insert(*iter);
+                W = pow(pow(1-dist/ratio,2),2)*(4*dist/ratio+1);
+                // Computes the normal of the point "index"
+                Coord normal = computeNormal(*iter);
+                // Update the position of each vertex according to the corresponding action (inflate/deflate)
+                updatePosition(*iter, normal, W);
+            }
+            alreadyCheckedVertex.insert(*iter);
+        }
+        computeNeighborhood();
+    }
+    while(!vertexInInfluenceZone.empty());
+}
+
+/// stops object movements removing the corresponding solver
+template <class DataTypes>
+void SculptBodyPerformer<DataTypes>::stopSimulation()
+{
+    root->getTreeObjects<sofa::core::componentmodel::behavior::OdeSolver>(&solvers);
+    root->getTreeObjects<sofa::component::linearsolver::CGLinearSolver<sofa::component::linearsolver::GraphScatteredMatrix,sofa::component::linearsolver::GraphScatteredVector> >(&linear);
+
+    for (unsigned int i=0; i<solvers.size(); ++i)
+    {
+        bc = solvers[i]->getContext();
+        bc->removeObject(solvers[i]);
+        bc->removeObject(linear[i]);
+    }
+}
+
+///save current state and mesh for intersect layers
+template <class DataTypes>
+void SculptBodyPerformer<DataTypes>::saveCurrentStateAndMesh()
+{
+    BaseMeshTopology* mesh = dynamic_cast<BaseMeshTopology*>(mstateCollision->getContext()->getTopology());
+    cmi = new ComputeMeshIntersection<DataTypes>();
+    cmi->d_muscleLayerVertex.setValue(*mstateCollision->getX());
+    cmi->d_muscleLayerTriangles.setValue(mesh->getTriangles());
+}
+
+/// action performed at the begining of the mouse interaction
+template <class DataTypes>
+void SculptBodyPerformer<DataTypes>::start()
+{
+    picked=this->interactor->getBodyPicked();
+    if (picked.body)
+    {
+        mstateCollision = dynamic_cast< core::componentmodel::behavior::MechanicalState<DataTypes>*  >(picked.body->getContext()->getMechanicalState());
+        if (!mstateCollision)
+        {
+            std::cerr << "uncompatible MState during Mouse Interaction " << std::endl;
+            return;
+        }
+
+        if (startSculpt)
+        {
+            //stop the simualtion to be able to sculpt
+            stopSimulation();
+
+            //save current state and mesh for intersection layers
+            saveCurrentStateAndMesh();
+
+            startSculpt=false;
+        }
+        // save state for undo operations
+//              eventManager.saveMechanicalState(mstateCollision);
+    }
+}
+
+/// action performed during the mouse interaction
 template <class DataTypes>
 void SculptBodyPerformer<DataTypes>::execute()
 {
     picked=this->interactor->getBodyPicked();
     if (picked.body)
     {
-        if (first)
-        {
-            tmr->surfaceThreshold.setValue(m_triangleGeo->computeTriangleArea(picked.indexCollisionElement)/2);
-            first = false;
-        }
         mstateCollision = dynamic_cast< core::componentmodel::behavior::MechanicalState<DataTypes>*  >(picked.body->getContext()->getMechanicalState());
-
         if (!mstateCollision)
         {
             std::cerr << "uncompatible MState during Mouse Interaction " << std::endl;
             return;
         }
-        typename DataTypes::VecCoord& X = *mstateCollision->getX();
-        const sofa::core::componentmodel::topology::BaseMeshTopology::Triangle& elem = picked.body->getMeshTopology()->getTriangle(picked.indexCollisionElement);
-
-        // gets the diagonal of the bounding box
-        CubeModel* cModel = dynamic_cast<CubeModel*>(picked.body->getFirst());
-        Cube bbox = Cube(cModel,0);
-        typename DataTypes::Real diagonal = (typename DataTypes::Real)((bbox.minVect() - bbox.maxVect()).norm()/4); //division by an integer, is it desired?
-        diagonal *= (typename DataTypes::Real) (scale/99); //idem here?
-        typename DataTypes::Real dist, W;
-
-        // gets the nearest point from the picked collision element (Triangle)
-        unsigned int nearest_point = elem[0];
-        if ((X[nearest_point] - picked.point).norm() > (X[elem[1]] - picked.point).norm())
-        {
-            nearest_point = elem[1];
-        }
-        if ((X[nearest_point] - picked.point).norm() > (X[elem[2]] - picked.point).norm())
-        {
-            nearest_point = elem[2];
-        }
-
-        alreadyCheckedVertex.clear();
-        vertexNeighborhood.insert(nearest_point);
-
-        do
-        {
-            vertexInInfluenceZone.clear();
-            for( std::set<unsigned int>::const_iterator iter = vertexNeighborhood.begin(); iter != vertexNeighborhood.end(); ++iter )
-            {
-//                      if (fixedPoints.find(*iter) == fixedPoints.end())
-                {
-                    dist = (X[*iter]-picked.point).norm();
-                    if (dist < diagonal)
-                    {
-                        vertexInInfluenceZone.insert(*iter);
-
-
-
-                        const sofa::core::componentmodel::topology::BaseMeshTopology::TrianglesAroundVertex& tav = picked.body->getMeshTopology()->getTrianglesAroundVertex(*iter);
-
-                        drawFacets.insert(tav.begin(), tav.end());
-
-                        if (fixedPoints.find(*iter) == fixedPoints.end())
-                        {
-                            if (!checkedFix)
-                            {
-                                Coord normal;
-
-                                // computes the normal of the point
-                                for (unsigned int i=0; i<tav.size(); ++i)
-                                {
-                                    const sofa::core::componentmodel::topology::BaseMeshTopology::Triangle& t = picked.body->getMeshTopology()->getTriangle(tav[i]);
-                                    const Coord p0 = X[t[0]];
-                                    const Coord p1 = X[t[1]];
-                                    const Coord p2 = X[t[2]];
-                                    normal += cross(p1-p0, p2-p0);
-                                }
-                                normal.normalize();
-
-                                // Wendland kernel
-                                W = pow(pow(1-dist/diagonal,2),2)*(4*dist/diagonal+1);
-                                if (force > 0)
-                                {
-                                    // computes new position
-                                    X[*iter] += normal*W*force;
-//                                       modifiedVertex.insert(*iter);
-
-                                    unsigned int ice = findCollisionUsingPipeline(picked.origin, picked.direction, 1000000).indexCollisionElement;
-
-                                    if (tmr->isSurfaceUpperThreshold(ice))
-                                    {
-//                                          tmr->detectionManager(picked.point,ice);
-                                    }
-
-                                    /*                                      if (W > 0.2)
-                                                                              modified.insert(*iter);*/
-                                }
-                            }
-                        }
-                    }
-                }
-
-                alreadyCheckedVertex.insert(*iter);
-            }
-            computeNeighborhood();
-        }
-        while(!vertexInInfluenceZone.empty());
-        sofa::core::BaseMapping *mapping;
-        mstateCollision->getContext()->get(mapping); assert(mapping);
-        if(mapping)
-            mapping->init();
-        if (checkedFix)
-        {
-            fixedPoints.insert(alreadyCheckedVertex.begin(), alreadyCheckedVertex.end());
-            fixedFacets.insert(drawFacets.begin(), drawFacets.end());
-        }
+        inflate();
     }
 }
 
 
+/// Tetra mesh generator
+template <class DataTypes>
+void SculptBodyPerformer<DataTypes>::createTetraVolume(BaseMeshTopology* mesh)
+{
+    cgal::MeshGenerationFromPolyhedron<DataTypes>* CGALmeshStuffed = new cgal::MeshGenerationFromPolyhedron<DataTypes>();
+    CGALmeshStuffed->f_X0.setValue(cmi->d_intersectionVertex.getValue());
+    CGALmeshStuffed->f_triangles.setValue(cmi->d_intersectionTriangles.getValue());
+    CGALmeshStuffed->facetAngle.setValue(30);
+    CGALmeshStuffed->facetSize.setValue(0.5);
+    CGALmeshStuffed->facetApproximation.setValue(0.05);
+    CGALmeshStuffed->cellRatio.setValue(2);
+    CGALmeshStuffed->cellSize.setValue(0.5);
+    CGALmeshStuffed->odt.setValue(true);
+    CGALmeshStuffed->odt_max_it.setValue(200);
+    CGALmeshStuffed->perturb.setValue(true);
+    CGALmeshStuffed->exude_max_time.setValue(20);
+    CGALmeshStuffed->init();
+    CGALmeshStuffed->update();
+
+    for (unsigned int i=0; i<CGALmeshStuffed->f_newX0.getValue().size(); ++i)
+    {
+        mesh->addPoint(CGALmeshStuffed->f_newX0.getValue()[i][0], CGALmeshStuffed->f_newX0.getValue()[i][1],
+                CGALmeshStuffed->f_newX0.getValue()[i][2]);
+    }
+
+    for (unsigned int i=0; i<CGALmeshStuffed->f_tetrahedra.getValue().size(); ++i)
+    {
+        mesh->addTetra(CGALmeshStuffed->f_tetrahedra.getValue()[i][0], CGALmeshStuffed->f_tetrahedra.getValue()[i][1],
+                CGALmeshStuffed->f_tetrahedra.getValue()[i][2], CGALmeshStuffed->f_tetrahedra.getValue()[i][3]);
+    }
+}
+
+///compute intersection between the original and the modified layers
+template <class DataTypes>
+void SculptBodyPerformer<DataTypes>::ComputeIntersectonLayer()
+{
+    BaseMeshTopology* mstateCollisionMesh = dynamic_cast<BaseMeshTopology*>(mstateCollision->getContext()->getTopology());
+    cmi->d_fatLayerVertex.setValue(*mstateCollision->getX());
+    cmi->d_fatLayerTriangles.setValue(mstateCollisionMesh->getTriangles());
+    cmi->init();
+    cmi->update();
+}
+
+///create the new collision model resulting from the union between the object and the fat
+template <class DataTypes>
+sofa::simulation::tree::GNode* SculptBodyPerformer<DataTypes>::createCollisionNode(sofa::simulation::tree::GNode* parentNode)
+{
+    sofa::simulation::tree::GNode* collisionNode = dynamic_cast<sofa::simulation::tree::GNode*>(mstateCollision->getContext());
+
+    parentNode->addChild(collisionNode);
+
+    MeshLoader* meshloader;
+    collisionNode->get(meshloader, sofa::core::objectmodel::BaseContext::SearchDown);
+    if (meshloader != NULL)
+    {
+        collisionNode->removeObject(meshloader);
+    }
+
+    BaseMeshTopology* mesh = collisionNode->getMeshTopology();
+    BaseMeshTopology::SeqTriangles triangles = mesh->getTriangles();
+
+    mesh->clear();
+
+    for (unsigned int i=0; i<(*mstateCollision->getX()).size(); ++i)
+    {
+        mesh->addPoint((*mstateCollision->getX())[i][0], (*mstateCollision->getX())[i][1],(*mstateCollision->getX())[i][2]);
+    }
+
+    for (unsigned int i=0; i<triangles.size(); ++i)
+    {
+        mesh->addTriangle(triangles[i][0], triangles[i][1],triangles[i][2]);
+    }
+
+    BaseMapping* mapping;
+    collisionNode->get(mapping, sofa::core::objectmodel::BaseContext::SearchDown);
+    collisionNode->removeObject(mapping);
+
+    BaseMapping* newMapping = new BarycentricMapping< MechanicalMapping<MechanicalState<Vec3Types>, MechanicalState<Vec3Types> > >(dynamic_cast<MechanicalState<Vec3Types>* >(parentNode->getMechanicalState()), dynamic_cast<MechanicalState<Vec3Types>*>(collisionNode->getMechanicalState()));
+    collisionNode->addObject(newMapping);
+
+    return collisionNode;
+}
+
+///create the new collision model resulting from the union between the object and the fat
+template <class DataTypes>
+void SculptBodyPerformer<DataTypes>::createVisualNode(sofa::simulation::tree::GNode* parentNode)
+{
+    OglModel* oglModel;
+    visualRoot->get(oglModel, sofa::core::objectmodel::BaseContext::SearchDown);
+
+    for (unsigned int i=0; i<(*mstateCollision->getX()).size(); ++i)
+    {
+        (*oglModel->getVecX())[i] = (*mstateCollision->getX())[i];
+    }
+
+    Mapping< State<Vec3dTypes>, MappedModel<ExtVec3fTypes> >* mapping;
+    visualRoot->get(mapping, sofa::core::objectmodel::BaseContext::SearchDown);
+
+    oglModel->getContext()->removeObject(mapping);
+
+    BaseMapping* newMapping = new IdentityMapping<Mapping<State<Vec3dTypes>, MappedModel<ExtVec3fTypes> > >(dynamic_cast<State<Vec3dTypes>*>(parentNode->getMechanicalState()), (MappedModel<ExtVec3fTypes>*)oglModel);
+
+    oglModel->getContext()->addObject(newMapping);
+}
+
+
+///allows to manage the object and the fat separately
+template <class DataTypes>
+sofa::simulation::tree::GNode* SculptBodyPerformer<DataTypes>::createSubsetMapping(sofa::simulation::tree::GNode* parentNode, MechanicalState<DataTypes>* subsetState,
+        BaseMeshTopology* subsetTopology, double m, double ymodulus, double damping)
+{
+    sofa::simulation::tree::GNode* node = new sofa::simulation::tree::GNode;
+    parentNode->addChild(node);
+
+    BaseMeshTopology* mesh = new TetrahedronSetTopologyContainer();
+
+    for (unsigned int i=0; i<(*subsetState->getX()).size(); ++i)
+    {
+        mesh->addPoint((*subsetState->getX())[i][0], (*subsetState->getX())[i][1], (*subsetState->getX())[i][2]);
+    }
+    for (int i=0; i<subsetTopology->getNbTetrahedra(); ++i)
+    {
+        mesh->addTetra(subsetTopology->getTetrahedron(i)[0], subsetTopology->getTetrahedron(i)[1], subsetTopology->getTetrahedron(i)[2], subsetTopology->getTetrahedron(i)[3]);
+    }
+
+    node->addObject(mesh);
+
+    sofa::component::container::MechanicalObject<DataTypes>* mstate = new sofa::component::container::MechanicalObject<DataTypes>();
+    mstate->setName("fat");
+    node->addObject(mstate);
+
+    TetrahedronSetGeometryAlgorithms<DataTypes>* tsga = new TetrahedronSetGeometryAlgorithms<DataTypes>();
+    node->addObject(tsga);
+
+    sofa::component::mass::DiagonalMass<DataTypes, double>* mass = new sofa::component::mass::DiagonalMass<DataTypes, double>();
+    mass->setMassDensity(m);
+    node->addObject(mass);
+
+    sofa::component::forcefield::TetrahedralCorotationalFEMForceField<DataTypes>* forcefield = new sofa::component::forcefield::TetrahedralCorotationalFEMForceField<DataTypes>();
+    forcefield->setYoungModulus(ymodulus);
+    forcefield->setPoissonRatio(damping);
+    forcefield->setComputeGlobalMatrix(false);
+    forcefield->setMethod(1);
+    node->addObject(forcefield);
+
+    BaseMapping* mapping = new SubsetMapping< MechanicalMapping<MechanicalState<Vec3Types>, MechanicalState<Vec3Types> > >(dynamic_cast<MechanicalState<Vec3Types>*>(parentNode->getMechanicalState()), (MechanicalState<Vec3Types>*)mstate);
+    node->addObject(mapping);
+
+    return node;
+}
+
+///create the contact surface to be able to fix the fat to the object
+template <class DataTypes>
+MechanicalState<DataTypes>* SculptBodyPerformer<DataTypes>::createContactSurfaceMapping(sofa::simulation::tree::GNode* parentNode)
+{
+    sofa::simulation::tree::GNode* node = new sofa::simulation::tree::GNode;
+    parentNode->addChild(node);
+
+    BaseMeshTopology* mesh = new MeshTopology();
+
+    for (unsigned int i=0; i<cmi->d_intersectionVertex.getValue().size(); i+=2)
+    {
+        mesh->addPoint(cmi->d_intersectionVertex.getValue()[i][0], cmi->d_intersectionVertex.getValue()[i][1], cmi->d_intersectionVertex.getValue()[i][2]);
+    }
+
+    for (unsigned int i=0; i<cmi->d_intersectionTriangles.getValue().size(); i+=2)
+    {
+        mesh->addTriangle(cmi->d_intersectionTriangles.getValue()[i][0]/2, cmi->d_intersectionTriangles.getValue()[i][1]/2, cmi->d_intersectionTriangles.getValue()[i][2]/2);
+    }
+
+    node->addObject(mesh);
+
+    sofa::component::container::MechanicalObject<DataTypes>* mstate = new sofa::component::container::MechanicalObject<DataTypes>();
+    node->addObject(mstate);
+
+    BaseMapping* mapping = new BarycentricMapping< MechanicalMapping<MechanicalState<Vec3Types>, MechanicalState<Vec3Types> > >(dynamic_cast<MechanicalState<Vec3Types>*>(parentNode->getMechanicalState()), (MechanicalState<Vec3Types>*)mstate);
+    node->addObject(mapping);
+
+    return mstate;
+}
+
+///create the new state compose by the object plus the fat
+template <class DataTypes>
+void SculptBodyPerformer<DataTypes>::CreateNewMechanicalState(MechanicalState<DataTypes>* fatmstate, BaseMeshTopology* fatMesh)
+{
+    //get state and topology of the sculpted object
+    sofa::simulation::tree::GNode* collisionNode = dynamic_cast<sofa::simulation::tree::GNode*>(mstateCollision->getContext());
+    sofa::simulation::tree::GNode* behaviorNode = dynamic_cast<sofa::simulation::tree::GNode*>(collisionNode->getParent());
+    MechanicalState<DataTypes>* objectMsState = dynamic_cast<MechanicalState<DataTypes>*>(behaviorNode->getMechanicalState());
+    BaseMeshTopology* objecTopology = dynamic_cast<BaseMeshTopology*>(behaviorNode->getMeshTopology());
+
+    root->removeChild(behaviorNode);
+    behaviorNode->removeChild(collisionNode);
+
+    sofa::simulation::tree::GNode* node = new sofa::simulation::tree::GNode;
+    root->addChild(node);
+
+    node->addObject(solvers[0]);
+    node->addObject(linear[0]);
+
+    //merge the points of the original object to the fat added
+    sofa::component::engine::MergePoints<DataTypes>* merge = new sofa::component::engine::MergePoints<DataTypes>();
+    merge->f_X1.setValue(*objectMsState->getX());
+    merge->f_X2.setValue(*fatmstate->getX());
+    merge->init();
+    merge->update();
+
+    //update the topology merging points and tetrahedra
+    BaseMeshTopology* mergedMesh = new MeshTopology();
+    for (unsigned int i=0; i<merge->f_points.getValue().size(); ++i)
+    {
+        mergedMesh->addPoint(merge->f_points.getValue()[i][0], merge->f_points.getValue()[i][1], merge->f_points.getValue()[i][2]);
+    }
+
+    for (int i=0; i<objecTopology->getNbTetrahedra(); ++i)
+    {
+        mergedMesh->addTetra(objecTopology->getTetrahedron(i)[0], objecTopology->getTetrahedron(i)[1], objecTopology->getTetrahedron(i)[2], objecTopology->getTetrahedron(i)[3]);
+    }
+    for (int i=0; i<fatMesh->getNbTetrahedra(); ++i)
+    {
+        mergedMesh->addTetra((*objectMsState->getX()).size()+fatMesh->getTetrahedron(i)[0], (*objectMsState->getX()).size()+fatMesh->getTetrahedron(i)[1], (*objectMsState->getX()).size()+fatMesh->getTetrahedron(i)[2], (*objectMsState->getX()).size()+ fatMesh->getTetrahedron(i)[3]);
+    }
+
+    node->addObject(mergedMesh);
+
+    //add mechanical state
+    sofa::component::container::MechanicalObject<DataTypes>* mstate = new sofa::component::container::MechanicalObject<DataTypes>();
+    node->addObject(mstate);
+    mstate->init();
+
+    FixedConstraint<DataTypes>* fc;
+    behaviorNode->get(fc, sofa::core::objectmodel::BaseContext::SearchDown);
+    if (fc != NULL)
+    {
+        behaviorNode->removeObject(fc);
+        node->addObject(fc);
+        fc->init();
+    }
+
+    //create collision node
+    createCollisionNode(node);
+
+    MeshLoader* meshloader;
+    behaviorNode->get(meshloader, sofa::core::objectmodel::BaseContext::SearchDown);
+    if (meshloader != NULL)
+    {
+        behaviorNode->removeObject(meshloader);
+    }
+
+    BaseMapping* mapping = new SubsetMapping< MechanicalMapping<MechanicalState<Vec3Types>, MechanicalState<Vec3Types> > >(dynamic_cast<MechanicalState<Vec3Types>*>(node->getMechanicalState()), dynamic_cast<MechanicalState<Vec3Types>*>(behaviorNode->getMechanicalState()));
+    behaviorNode->addObject(mapping);
+
+    resetForce(behaviorNode,0);
+
+    node->addChild(behaviorNode);
+
+    //create a subsetmapping for the added fat
+    sofa::simulation::tree::GNode* fatSubsetNode = createSubsetMapping(node, fatmstate, fatMesh, mass, stiffness, damping);
+
+    //create the contact surface mapped to the object
+    MechanicalState<DataTypes>* contactSurfaceObject = createContactSurfaceMapping(behaviorNode);
+
+    //create the contact surface mapped to the fat
+    MechanicalState<DataTypes>* contactSurfacefat = createContactSurfaceMapping(fatSubsetNode);
+
+    node->init();
+
+    //attach the object to the fat
+    StiffSpringForceField<DataTypes>* spring2 = new StiffSpringForceField<DataTypes>(contactSurfaceObject, contactSurfacefat, 0, 0);
+
+    for (unsigned int i=0; i<(*contactSurfaceObject->getX()).size(); ++i)
+    {
+        spring2->addSpring(i, i, 10, 0.01, 0);
+    }
+    node->addObject(spring2);
+    spring2->init();
+}
+
+///reset residual forces
+template <class DataTypes>
+void SculptBodyPerformer<DataTypes>::resetForce(core::objectmodel::BaseNode* node, int index)
+{
+    MechanicalState<DataTypes>* m = dynamic_cast<MechanicalState<DataTypes>*>(dynamic_cast<sofa::simulation::tree::GNode*>(node)->getMechanicalState());
+
+    for (unsigned int i=0; i<(*m->getF()).size(); ++i)
+    {
+        (*m->getF())[i] = Coord(0,0,0);
+    }
+
+    index++;
+
+    core::objectmodel::BaseNode::Children children=node->getChildren();
+    for (core::objectmodel::BaseNode::Children::iterator it=children.begin(); it!= children.end(); ++it)
+    {
+        resetForce(*it, index);
+    }
+}
+
+
+/// action performed at the end of the mouse interaction
 template <class DataTypes>
 void SculptBodyPerformer<DataTypes>::end()
 {
+}
+
+template <class DataTypes>
+void SculptBodyPerformer<DataTypes>::animate()
+{
+    picked=this->interactor->getBodyPicked();
     if (picked.body)
     {
-//               modified.clear();
-//               modifiedVertex.clear();
-
         mstateCollision = dynamic_cast< core::componentmodel::behavior::MechanicalState<DataTypes>*  >(picked.body->getContext()->getMechanicalState());
-
         if (!mstateCollision)
         {
             std::cerr << "uncompatible MState during Mouse Interaction " << std::endl;
             return;
         }
-        typename DataTypes::VecCoord& X = *mstateCollision->getX();
-        const sofa::core::componentmodel::topology::BaseMeshTopology::Triangle& elem = picked.body->getMeshTopology()->getTriangle(picked.indexCollisionElement);
 
-        // gets the diagonal of the bounding box
-        CubeModel* cModel = dynamic_cast<CubeModel*>(picked.body->getFirst());
-        Cube bbox = Cube(cModel,0);
-        typename DataTypes::Real diagonal = (typename DataTypes::Real)((bbox.minVect() - bbox.maxVect()).norm()/4); //division by an integer, is it desired?
-        diagonal *= (typename DataTypes::Real) (scale/99); //idem here?
-        typename DataTypes::Real dist, W;
-
-        // gets the nearest point from the picked collision element (Triangle)
-        unsigned int nearest_point = elem[0];
-        if ((X[nearest_point] - picked.point).norm() > (X[elem[1]] - picked.point).norm())
+        if (!solvers.empty())
         {
-            nearest_point = elem[1];
-        }
-        if ((X[nearest_point] - picked.point).norm() > (X[elem[2]] - picked.point).norm())
-        {
-            nearest_point = elem[2];
-        }
+            ComputeIntersectonLayer();
 
-        alreadyCheckedVertex.clear();
-        vertexNeighborhood.insert(nearest_point);
+            //create fat mesh and mechanical state
+            BaseMeshTopology* fatMesh = new MeshTopology();
+            createTetraVolume(fatMesh);
 
-        do
-        {
-            vertexInInfluenceZone.clear();
-            for( std::set<unsigned int>::const_iterator iter = vertexNeighborhood.begin(); iter != vertexNeighborhood.end(); ++iter )
+            sofa::component::container::MechanicalObject<DataTypes>* fatmstate = new sofa::component::container::MechanicalObject<DataTypes>();
+            fatmstate->resize(fatMesh->getNbPoints());
+
+            for (int i=0; i<fatMesh->getNbPoints(); ++i)
             {
-                vertexInInfluenceZone.insert(*iter);
-                dist = (X[*iter]-picked.point).norm();
-                if (dist < diagonal)
-                {
-                    W = pow(pow(1-dist/diagonal,2),2)*(4*dist/diagonal+1);
-                    modifiedVertex.insert(*iter);
-//                                  if (W > 0.2)
-                    {
-                        modified.insert(*iter);
-                    }
-                }
-                alreadyCheckedVertex.insert(*iter);
-            }
-            computeNeighborhood();
-        }
-        while(!vertexInInfluenceZone.empty());
-    }
-
-
-
-
-
-
-//           if (checkedFix) return;
-//           picked=this->interactor->getBodyPicked();
-//           if (picked.body)
-//           {
-//               typename DataTypes::VecCoord& X = *mstateCollision->getX();
-//               typename DataTypes::VecCoord& X0 = *mstateCollision->getX0();
-//
-//               fatMesh->clear();
-//               seqPoints.clear();
-//               triangleChecked.clear();
-//               vertexIndex = 0;
-//               vertexMap.clear();
-//
-//               for( std::set<unsigned int>::const_iterator iter = modifiedVertex.begin(); iter != modifiedVertex.end(); ++iter )
-//               {
-//                   fatMesh->addPoint(X[*iter][0], X[*iter][1], X[*iter][2]);
-//                   seqPoints.push_back(defaulttype::Vec<3,SReal>(X[*iter][0], X[*iter][1], X[*iter][2]));
-//                   vertexMap.insert(std::make_pair(*iter, vertexIndex));
-//                   vertexIndex++;
-//
-//                   fatMesh->addPoint(X0[*iter][0], X0[*iter][1], X0[*iter][2]);
-//                   seqPoints.push_back(defaulttype::Vec<3,SReal>(X0[*iter][0], X0[*iter][1], X0[*iter][2]));
-//                   vertexMap.insert(std::make_pair(*iter, vertexIndex));
-//                   vertexIndex++;
-//
-//                   surfacePoint.push_back(X0[*iter]);
-//
-//                   const sofa::core::componentmodel::topology::BaseMeshTopology::VerticesAroundVertex& vav = picked.body->getMeshTopology()->getVerticesAroundVertex(*iter);
-//
-//                   for (unsigned int i=0; i<vav.size(); ++i)
-//                   {
-//                       if (modifiedVertex.find(vav[i]) == modifiedVertex.end())
-//                       {
-//                           fatMesh->addPoint(X[vav[i]][0], X[vav[i]][1], X[vav[i]][2]);
-//                           seqPoints.push_back(defaulttype::Vec<3,SReal>(X[vav[i]][0], X[vav[i]][1], X[vav[i]][2]));
-//                           vertexMap.insert(std::make_pair(vav[i], vertexIndex));
-//                           vertexMap.insert(std::make_pair(vav[i], vertexIndex));
-//                           vertexIndex++;
-//
-//                           surfacePoint.push_back(X[vav[i]]);
-//                       }
-//                   }
-//               }
-//
-//               for( std::set<unsigned int>::const_iterator iter = modifiedVertex.begin(); iter != modifiedVertex.end(); ++iter )
-//               {
-//                   const sofa::core::componentmodel::topology::BaseMeshTopology::TrianglesAroundVertex& tav = picked.body->getMeshTopology()->getTrianglesAroundVertex(*iter);
-//
-//                   for (unsigned int i=0; i<tav.size(); ++i)
-//                   {
-//                       if (triangleChecked.insert(tav[i]).second == true)
-//                       {
-//                           const sofa::core::componentmodel::topology::BaseMeshTopology::Triangle& t = picked.body->getMeshTopology()->getTriangle(tav[i]);
-//                           std::multimap<unsigned int, unsigned int>::const_iterator it1 = vertexMap.find(t[0]);
-//                           std::multimap<unsigned int, unsigned int>::const_iterator it2 = vertexMap.find(t[1]);
-//                           std::multimap<unsigned int, unsigned int>::const_iterator it3 = vertexMap.find(t[2]);
-//
-//                           fatMesh->addTriangle(it1->second, it2->second, it3->second);
-//                           it1++;it2++;it3++;
-//                           fatMesh->addTriangle(it1->second, it3->second, it2->second);
-//                       }
-//                   }
-//               }
-//
-//               if (meshStuffed!=NULL)
-//               {
-// 	          delete (meshStuffed);
-//               }
-//
-// //               CGALmeshStuffed = new cgal::MeshGenerationFromPolyhedron<DataTypes>();
-// //               CGALmeshStuffed->f_X0.setValue(seqPoints);
-// //               CGALmeshStuffed->f_triangles.setValue(fatMesh->getTriangles());
-// //               CGALmeshStuffed->facetAngle.setValue(30);
-// //               CGALmeshStuffed->facetSize.setValue(0.5);
-// //               CGALmeshStuffed->facetApproximation.setValue(0.05);
-// //               CGALmeshStuffed->cellRatio.setValue(2);
-// //               CGALmeshStuffed->cellSize.setValue(0.5);
-// //               CGALmeshStuffed->odt.setValue(true);
-// //               CGALmeshStuffed->odt_max_it.setValue(200);
-// //               CGALmeshStuffed->perturb.setValue(true);
-// //               CGALmeshStuffed->exude_max_time.setValue(20);
-// //               CGALmeshStuffed->init();
-// //               CGALmeshStuffed->update();
-//
-//               meshStuffed = new misc::MeshTetraStuffing();
-//               meshStuffed->inputPoints.setValue(seqPoints);
-//               meshStuffed->inputTriangles.setValue(fatMesh->getTriangles());
-//               meshStuffed->bSnapPoints.setValue(true);
-//               meshStuffed->bSplitTetrahedra.setValue(true);
-//               meshStuffed->bDraw.setValue(true);
-//               meshStuffed->size.setValue(0.3);
-//               meshStuffed->alphaLong.setValue(0.3);
-//               meshStuffed->alphaShort.setValue(0.4);
-//               meshStuffed->init();
-//           }
-}
-
-template <class DataTypes>
-bool SculptBodyPerformer<DataTypes>::is_connected(unsigned int pointIndex)
-{
-    for (unsigned int i=0; i<CGALmeshStuffed->f_tetrahedra.getValue().size(); ++i)
-    {
-        if ((CGALmeshStuffed->f_tetrahedra.getValue()[i][0] == pointIndex) ||
-            (CGALmeshStuffed->f_tetrahedra.getValue()[i][1] == pointIndex) ||
-            (CGALmeshStuffed->f_tetrahedra.getValue()[i][2] == pointIndex) ||
-            (CGALmeshStuffed->f_tetrahedra.getValue()[i][3] == pointIndex)
-           )                 return true;
-    }
-    return false;
-}
-
-template <class DataTypes>
-void SculptBodyPerformer<DataTypes>::animate(bool checked)
-{
-
-    if (checkedFix) return;
-    picked=this->interactor->getBodyPicked();
-    if (picked.body)
-    {
-        typename DataTypes::VecCoord& X = *mstateCollision->getX();
-        typename DataTypes::VecCoord& X0 = *mstateCollision->getX0();
-
-        fatMesh->clear();
-        seqPoints.clear();
-        triangleChecked.clear();
-        vertexIndex = 0;
-        vertexMap.clear();
-
-        unsigned int i = 0;
-
-        for( std::set<unsigned int>::const_iterator iter = modifiedVertex.begin(); iter != modifiedVertex.end(); ++iter )
-        {
-            fatMesh->addPoint(X[*iter][0], X[*iter][1], X[*iter][2]);
-            seqPoints.push_back(defaulttype::Vec<3,SReal>(X[*iter][0], X[*iter][1], X[*iter][2]));
-            vertexMap.insert(std::make_pair(*iter, vertexIndex));
-            vertexIndex++;
-
-            fatMesh->addPoint(X0[*iter][0], X0[*iter][1], X0[*iter][2]);
-            seqPoints.push_back(defaulttype::Vec<3,SReal>(X0[*iter][0], X0[*iter][1], X0[*iter][2]));
-            vertexMap.insert(std::make_pair(*iter, vertexIndex));
-            vertexIndex++;
-
-            if (modified.find(*iter)!=modified.end())
-            {
-                std::cout << *iter;
-                surfacePoint.push_back(X0[*iter]);
-                surfacePointMap.insert(std::make_pair(i, *iter));
-                i++;
+                DataTypes::set((*fatmstate->getX())[i], fatMesh->getPX(i), fatMesh->getPY(i), fatMesh->getPZ(i));
             }
 
-            const sofa::core::componentmodel::topology::BaseMeshTopology::VerticesAroundVertex& vav = picked.body->getMeshTopology()->getVerticesAroundVertex(*iter);
+            //merge the existing state with the added fat
+            CreateNewMechanicalState(fatmstate, fatMesh);
 
-            for (unsigned int i=0; i<vav.size(); ++i)
-            {
-                if (modifiedVertex.find(vav[i]) == modifiedVertex.end())
-                {
-                    fatMesh->addPoint(X[vav[i]][0], X[vav[i]][1], X[vav[i]][2]);
-                    seqPoints.push_back(defaulttype::Vec<3,SReal>(X[vav[i]][0], X[vav[i]][1], X[vav[i]][2]));
-                    vertexMap.insert(std::make_pair(vav[i], vertexIndex));
-                    vertexMap.insert(std::make_pair(vav[i], vertexIndex));
-                    vertexIndex++;
+            solvers.clear();
 
-                    if (modified.find(vav[i])!=modified.end())
-                    {
-                        std::cout << vav[i] << std::endl;
-                        surfacePoint.push_back(X[vav[i]]);
-                        surfacePointMap.insert(std::make_pair(i, *iter));
-                        i++;
-                    }
-                }
-            }
+            startSculpt=true;
         }
-
-        for( std::set<unsigned int>::const_iterator iter = modifiedVertex.begin(); iter != modifiedVertex.end(); ++iter )
-        {
-            const sofa::core::componentmodel::topology::BaseMeshTopology::TrianglesAroundVertex& tav = picked.body->getMeshTopology()->getTrianglesAroundVertex(*iter);
-
-            for (unsigned int i=0; i<tav.size(); ++i)
-            {
-                if (triangleChecked.insert(tav[i]).second == true)
-                {
-                    const sofa::core::componentmodel::topology::BaseMeshTopology::Triangle& t = picked.body->getMeshTopology()->getTriangle(tav[i]);
-                    std::multimap<unsigned int, unsigned int>::const_iterator it1 = vertexMap.find(t[0]);
-                    std::multimap<unsigned int, unsigned int>::const_iterator it2 = vertexMap.find(t[1]);
-                    std::multimap<unsigned int, unsigned int>::const_iterator it3 = vertexMap.find(t[2]);
-
-                    fatMesh->addTriangle(it1->second, it2->second, it3->second);
-                    it1++; it2++; it3++;
-                    fatMesh->addTriangle(it1->second, it3->second, it2->second);
-                }
-            }
-        }
-
-        if (meshStuffed!=NULL)
-        {
-            delete (meshStuffed);
-        }
-
-        CGALmeshStuffed = new cgal::MeshGenerationFromPolyhedron<DataTypes>();
-        CGALmeshStuffed->f_X0.setValue(seqPoints);
-        CGALmeshStuffed->f_triangles.setValue(fatMesh->getTriangles());
-        CGALmeshStuffed->facetAngle.setValue(30);
-        CGALmeshStuffed->facetSize.setValue(0.5);
-        CGALmeshStuffed->facetApproximation.setValue(0.05);
-        CGALmeshStuffed->cellRatio.setValue(2);
-        CGALmeshStuffed->cellSize.setValue(0.5);
-        CGALmeshStuffed->odt.setValue(true);
-        CGALmeshStuffed->odt_max_it.setValue(200);
-        CGALmeshStuffed->perturb.setValue(true);
-        CGALmeshStuffed->exude_max_time.setValue(20);
-        CGALmeshStuffed->init();
-        CGALmeshStuffed->update();
-
-//               meshStuffed = new misc::MeshTetraStuffing();
-//               meshStuffed->inputPoints.setValue(seqPoints);
-//               meshStuffed->inputTriangles.setValue(fatMesh->getTriangles());
-//               meshStuffed->bSnapPoints.setValue(true);
-//               meshStuffed->bSplitTetrahedra.setValue(true);
-//               meshStuffed->bDraw.setValue(true);
-//               meshStuffed->size.setValue(0.30);
-//               meshStuffed->alphaLong.setValue(0.3);
-//               meshStuffed->alphaShort.setValue(0.4);
-//               meshStuffed->init();
-    }
-
-    if (checkedFix) return;
-    if (checked)
-    {
-
-/////////////////// Fill matter topology //////////////////////////
-        dynamicMatterNode = root->getChild("DynamicMatter");
-        matterMesh = dynamicMatterNode->getMeshTopology();
-        matterMesh->clear();
-//                for (unsigned int i=0; i<meshStuffed->outputPoints.getValue().size(); ++i)
-//                {
-//                    matterMesh->addPoint(meshStuffed->outputPoints.getValue()[i][0], meshStuffed->outputPoints.getValue()[i][1],
-//                    meshStuffed->outputPoints.getValue()[i][2]);
-//                }
-//                for (unsigned int i=0; i<meshStuffed->outputTetrahedra.getValue().size(); ++i)
-//                {
-//                    matterMesh->addTetra(meshStuffed->outputTetrahedra.getValue()[i][0], meshStuffed->outputTetrahedra.getValue()[i][1],
-//                    meshStuffed->outputTetrahedra.getValue()[i][2], meshStuffed->outputTetrahedra.getValue()[i][3]);
-//                }
-
-        for (unsigned int i=0; i<CGALmeshStuffed->f_newX0.getValue().size(); ++i)
-        {
-            matterMesh->addPoint(CGALmeshStuffed->f_newX0.getValue()[i][0], CGALmeshStuffed->f_newX0.getValue()[i][1],
-                    CGALmeshStuffed->f_newX0.getValue()[i][2]);
-        }
-
-        for (unsigned int i=0; i<CGALmeshStuffed->f_tetrahedra.getValue().size(); ++i)
-        {
-            matterMesh->addTetra(CGALmeshStuffed->f_tetrahedra.getValue()[i][0], CGALmeshStuffed->f_tetrahedra.getValue()[i][1],
-                    CGALmeshStuffed->f_tetrahedra.getValue()[i][2], CGALmeshStuffed->f_tetrahedra.getValue()[i][3]);
-        }
-
-//////////////////////////////////////////////////////////////////////
-
-/////////////////// Fill matter mstate //////////////////////////
-        matterMstate = dynamic_cast<core::componentmodel::behavior::MechanicalState<DataTypes>*>(dynamicMatterNode->getMechanicalState());
-        matterMstate->resize(0);
-        sculptedPointsNode2 = dynamicMatterNode->getChild("SculptedPoints");
-        dynamicMatterNode->removeChild(sculptedPointsNode2);
-        dynamicMatterNode->init();
-
-////////////////////////body//////////////////////////////////////
-        typename DataTypes::VecCoord& X = *mstateCollision->getX();
-        bodyNode = root->getChild("Body");
-        sculptedPointsNode = bodyNode->getChild("SculptedPoints");
-        MechanicalState<DataTypes>* modif = dynamic_cast<core::componentmodel::behavior::MechanicalState<DataTypes>*>(sculptedPointsNode->getMechanicalState());
-        typename DataTypes::VecCoord& modifX = *modif->getX();
-        typename DataTypes::VecCoord& modifX0 = *modif->getX0();
-
-        plugins::pim::PointsOnSurface<DataTypes>* pos2 = new plugins::pim::PointsOnSurface<DataTypes>();
-        pos2->radius.setValue(0.55);
-        pos2->f_surfacePoints.setValue(*matterMstate->getX());
-        pos2->f_setOfPoints.setValue(surfacePoint /**mstateCollision->getX()*/);
-        pos2->init();
-        pos2->update();
-
-        modif->resize(pos2->f_outputPoints.getValue().size());
-        for (unsigned int i=0; i<pos2->f_outputPoints.getValue().size(); ++i)
-        {
-            std::map<unsigned int, unsigned int>::const_iterator it = surfacePointMap.find(pos2->f_outputPoints.getValue()[i]);
-
-//                   modifX[i] = X[pos2->f_outputPoints.getValue()[i]];
-//                   modifX0[i] = X[pos2->f_outputPoints.getValue()[i]];
-
-            modifX[i] = X[it->second];
-            modifX0[i] = X[it->second];
-        }
-
-        BaseMapping * subSetMapping;
-        subSetMapping = new SubsetMapping< MechanicalMapping<MechanicalState<Vec3Types>, MechanicalState<Vec3Types> > >((MechanicalState<Vec3Types>*)mstateCollision, (MechanicalState<Vec3Types>*)modif);
-        sculptedPointsNode->addObject(subSetMapping);
-        subSetMapping->init();
-///////////////////////////////////////////////////////////////////////////
-
-/////Bary
-        BaseMapping * barycentricMapping;
-        MechanicalState<DataTypes>* mm = dynamic_cast<core::componentmodel::behavior::MechanicalState<DataTypes>*>(sculptedPointsNode2->getMechanicalState());
-        mm->resize(modifX.size());
-        typename DataTypes::VecCoord& mmX = *mm->getX();
-        typename DataTypes::VecCoord& mmX0 = *mm->getX0();
-
-        for (unsigned int i=0; i<modifX.size(); ++i)
-        {
-            mmX[i] = modifX[i];
-            mmX0[i] = modifX0[i];
-        }
-
-        barycentricMapping = new BarycentricMapping< MechanicalMapping<MechanicalState<Vec3Types>, MechanicalState<Vec3Types> > >((MechanicalState<Vec3Types>*)matterMstate, (MechanicalState<Vec3Types>*)mm);
-        sculptedPointsNode2->addObject(barycentricMapping);
-////////
-        dynamicMatterNode->addChild(sculptedPointsNode2);
-        sculptedPointsNode2->init();
-////////////////////////////////////////////////////////////////
-
-//////////////////////////set static points//////////////////////////
-        plugins::pim::PointsOnSurface<DataTypes>* pos = new plugins::pim::PointsOnSurface<DataTypes>();
-        pos->radius.setValue(0.35);
-        pos->f_surfacePoints.setValue(*mstateCollision->getX0()/*surfacePoint*/);
-        pos->f_setOfPoints.setValue(*matterMstate->getX());
-        pos->init();
-        pos->update();
-
-        staticMatterNode = root->getChild("StaticMatter");
-        MechanicalState<DataTypes>* SubsetMstate = dynamic_cast<core::componentmodel::behavior::MechanicalState<DataTypes>*>(staticMatterNode->getMechanicalState());
-        typename DataTypes::VecCoord& S = *SubsetMstate->getX();
-        S.resize(pos->f_outputPoints.getValue().size());
-        typename DataTypes::VecCoord& ST = *matterMstate->getX();
-        FixedConstraint<DataTypes>* fixConstraint = dynamic_cast<FixedConstraint<DataTypes>*>(staticMatterNode->getObject("fixConstraint"));
-        fixConstraint->removeConstraint(0);
-        for (unsigned int i=0; i<pos->f_outputPoints.getValue().size(); ++i)
-        {
-            if (is_connected(pos->f_outputPoints.getValue()[i]))
-            {
-                S[i] = ST[pos->f_outputPoints.getValue()[i]];
-                fixConstraint->addConstraint(i);
-            }
-        }
-        typename DataTypes::VecCoord& S0 = *SubsetMstate->getX0();
-        S0 = S;
-        staticMatterNode->init();
-//////////////////////////////////////////////////////////////////////
-
-/////////////////fix statics to dynamics//////////////////////////////////
-        StiffSpringForceField<DataTypes>* spring = dynamic_cast<StiffSpringForceField<DataTypes>*>(root->getObject("fixSpring"));
-        for(unsigned int i=0; i<S.size(); ++i)
-            spring->addSpring(i, pos->f_outputPoints.getValue()[i],spring->getStiffness(),spring->getDamping(),0.0);
-//////////////////////////////////////////////////////////////////////////
-
-/////////////////fix body to dynamic matter//////////////////////////////////
-        StiffSpringForceField<DataTypes>* spring2 = dynamic_cast<StiffSpringForceField<DataTypes>*>(root->getObject("fix2Spring"));
-        for(unsigned int i=0; i<mm->getX()->size(); ++i)
-            spring2->addSpring(i, i,spring->getStiffness(),spring->getDamping(),0.0);
-//////////////////////////////////////////////////////////////////////////
-
-    }
-    else
-    {
-//              root->removeChild(addedMateriaNode);
-//              root->removeChild(matterNode);
     }
 }
-
 
 template <class DataTypes>
 void SculptBodyPerformer<DataTypes>::draw()
 {
-    if (picked.body == NULL) return;
-    if (mstateCollision == NULL) return;
-    typename DataTypes::VecCoord& X = *mstateCollision->getX();
-    core::componentmodel::topology::BaseMeshTopology* topo = picked.body->getMeshTopology();
 
-    std::vector< Vector3 > points;
-    std::vector< Vec<3,int> > indices;
-    std::vector< Vector3 > normals;
-    int index=0;
-//////////////////////:: selected points :://////////////////////////
-
-    for( std::set<unsigned int>::const_iterator iter = drawFacets.begin(); iter != drawFacets.end(); ++iter )
-    {
-        const sofa::core::componentmodel::topology::BaseMeshTopology::Triangle& elem = topo->getTriangle(*iter);
-        if (alreadyCheckedVertex.find(elem[0]) != alreadyCheckedVertex.end() &&
-            alreadyCheckedVertex.find(elem[1]) != alreadyCheckedVertex.end() &&
-            alreadyCheckedVertex.find(elem[2]) != alreadyCheckedVertex.end())
-        {
-            TriangleModel* tModel = dynamic_cast<TriangleModel*>(picked.body);
-            collision::Triangle t(tModel,*iter);
-            normals.push_back(t.n());
-            points.push_back(X[elem[0]]);
-            points.push_back(X[elem[1]]);
-            points.push_back(X[elem[2]]);
-            indices.push_back(Vec<3,int>(index,index+1,index+2));
-            index+=3;
-        }
-    }
-    sofa::simulation::getSimulation()->DrawUtility.setLightingEnabled(true);
-//            simulation::getSimulation()->DrawUtility.drawTriangles(points, indices, normals, Vec<4,float>(1,0,1,0.5));
-    sofa::simulation::getSimulation()->DrawUtility.setLightingEnabled(false);
-
-
-//           for (unsigned int i=0; i < fatMesh->getNbTriangles(); ++i)
-//           {
-//               const sofa::core::componentmodel::topology::BaseMeshTopology::Triangle& elem = fatMesh->getTriangle(i);
-//
-// 		  Vector3 C(fatMesh->getPX(elem[0]), fatMesh->getPY(elem[0]), fatMesh->getPZ(elem[0]));
-// 		  Vector3 D(fatMesh->getPX(elem[1]), fatMesh->getPY(elem[1]), fatMesh->getPZ(elem[1]));
-// 		  Vector3 E(fatMesh->getPX(elem[2]), fatMesh->getPY(elem[2]), fatMesh->getPZ(elem[2]));
-//
-// 		  Vector3 A = D - C;
-// 		  Vector3 B = E - D;
-// 		  Vector3 n = A.cross(B);
-//
-// 		  n.normalize();
-//
-// 		  normals.push_back(n);
-//
-// 		  points.push_back(C);
-// 		  points.push_back(D);
-// 		  points.push_back(E);
-// 		  indices.push_back(Vec<3,int>(index,index+1,index+2));
-// 		  index+=3;
-//           }
-//                   sofa::simulation::getSimulation()->DrawUtility.setLightingEnabled(true);
-//                   simulation::getSimulation()->DrawUtility.drawTriangles(points, indices, normals, Vec<4,float>(1,0,1,0.5));
-//                   sofa::simulation::getSimulation()->DrawUtility.setLightingEnabled(false);
-//
-//
-//
-//           index=0;
-// 	  points.clear();
-//           for (int i=0; i < fatMesh->getNbPoints(); ++i)
-//           {
-//
-// 		  Vector3 A(fatMesh->getPX(i), fatMesh->getPY(i), fatMesh->getPZ(i));
-// 		  points.push_back(A);
-//           }
-//
-//                   sofa::simulation::getSimulation()->DrawUtility.setLightingEnabled(true);
-//                   simulation::getSimulation()->DrawUtility.drawPoints(points, 5, Vec<4,float>(1,0,0,1));
-//                   sofa::simulation::getSimulation()->DrawUtility.setLightingEnabled(false);
-
-    /*          glPointSize(5);
-              glColor4f(1,0,0,1);
-              glBegin(GL_POINTS);
-              for( std::set<unsigned int>::const_iterator iter = fixedPoints.begin(); iter != fixedPoints.end(); ++iter )
-              {
-                  glVertex3d(X[*iter][0],X[*iter][1],X[*iter][2]);
-              }
-              glEnd();*/
-
-//////////////////////:: fixed points :://////////////////////////
-
-    points.clear();
-    indices.clear();
-    normals.clear();
-    index=0;
-    for( std::set<unsigned int>::const_iterator iter = fixedFacets.begin(); iter != fixedFacets.end(); ++iter )
-    {
-        const sofa::core::componentmodel::topology::BaseMeshTopology::Triangle& elem = topo->getTriangle(*iter);
-        if (fixedPoints.find(elem[0]) != fixedPoints.end() &&
-            fixedPoints.find(elem[1]) != fixedPoints.end() &&
-            fixedPoints.find(elem[2]) != fixedPoints.end())
-        {
-            TriangleModel* tModel = dynamic_cast<TriangleModel*>(picked.body);
-            collision::Triangle t(tModel,*iter);
-            normals.push_back(t.n());
-            points.push_back(X[elem[0]]);
-            points.push_back(X[elem[1]]);
-            points.push_back(X[elem[2]]);
-            indices.push_back(Vec<3,int>(index,index+1,index+2));
-            index+=3;
-        }
-    }
-    sofa::simulation::getSimulation()->DrawUtility.setLightingEnabled(false);
-    simulation::getSimulation()->DrawUtility.drawTriangles(points, indices, normals, Vec<4,float>(0,0.5,0,1));
-    sofa::simulation::getSimulation()->DrawUtility.setLightingEnabled(false);
-
-
-    /*          glPointSize(5);
-              glColor4f(1,0,0,1);
-              glBegin(GL_POINTS);
-              for( std::set<unsigned int>::const_iterator iter = modifiedVertex.begin(); iter != modifiedVertex.end(); ++iter )
-              {
-                  glVertex3d(X[*iter][0],X[*iter][1],X[*iter][2]);
-              }
-              glEnd();*/
 }
 
 template <class DataTypes>
-SculptBodyPerformer<DataTypes>::SculptBodyPerformer(BaseMouseInteractor *i):TInteractionPerformer<DataTypes>(i), mstateCollision(NULL), vertexIndex(0), meshStuffed(NULL), matterMesh(NULL), matterMstate(NULL), matterFem(NULL), matterMass(NULL), tmr(NULL), first(true)
+SculptBodyPerformer<DataTypes>::SculptBodyPerformer(BaseMouseInteractor *i):TInteractionPerformer<DataTypes>(i), mstateCollision(NULL), startSculpt(true)
 {
     root = static_cast<simulation::Node*>(simulation::getSimulation()->getContext());
-    fatMesh = new sofa::component::topology::MeshTopology();
-    bodyNode = root->getChild("Body");
-    tmr = dynamic_cast<TriangularMeshRefiner*>(bodyNode->getObject("refiner"));
-    m_triangleGeo = dynamic_cast<sofa::component::topology::TriangleSetGeometryAlgorithms< DataTypes >* >(root->getChild("Body")->getObject("Geo"));
+    visualRoot = static_cast<simulation::Node*>(simulation::getSimulation()->getVisualRoot()->getContext());
+//           root->addObject(dynamic_cast<BaseObject*>(&eventManager));
 }
 
 #ifdef WIN32
