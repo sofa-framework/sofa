@@ -6,11 +6,12 @@
 	<div id="contenu">
 		
 		<center><h3>Creation of a Scene (5/9)</h3></center>
+		<center><img src="4_FullObject.png" width="300" name="FullObject" align="middle"></center>
 		
-		<br><div id="orangeText">Description:</div><br>
+		<br><div id="orangeText">Description</div><br>
 		It is time to use a visual model to represent our deformable object. Nevertheless, you must keep in mind that it will only be a visual representation. The computational work will be done on the particules you are not used to see.
 
-		<br><div id="orangeText">Components:</div><br>
+		<br><div id="orangeText">Key points</div><br>
                 We add a Node containing the Visual Model. Now to make the link between the deformation of the simulated particules, and a given visual model, we need a mapping. As we only need to update the positions of the visual model at each time step, we will use a Visual Mapping: <b>BarycentricMapping</b>.<br>
                 You need to take a good care to the template used for this components. Edit the mapping, and go to the tabulation "infos", you can read:<br>
                 <i>Template: Mapping  &lt;Vec3d, ExtVec3f &gt;</i><br>
@@ -19,10 +20,10 @@
                 To use it, simply find the correct templates, and specify the objects in relationship: "object1" and "object2". Here object1="../.." meaning, the mechanical object placed in the node above, object2="Objective", the name of the visual model.
                 
 
-		<br><div id="orangeText">In Sofa:</div><br>
+		<br><div id="orangeText">Result</div><br>
 		Now you should see a deformation not only of the particules of the grid, but, this deformation is propagated to the visual model which remains embedded all the time inside the grid.
 
-		<br><div id="orangeText">Experimenting:</div><br>
+		<br><div id="orangeText">Related</div><br>
                 As you may have noticed, the visual model is fully independant from the simulated model: We used the same model to create the deformable grid, as the visual model, but nothing stops you from using a different. Change the visual model or the model used in the <b>SparseGridTopology</b> and see the effect.<br>
                 To understand how the barycentric mapping  works, display the Visual Mappings debug information in the Sofa main application. You will see how each point of the visual model depends on some of the points of the mechanical model.
 

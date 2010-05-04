@@ -17,7 +17,7 @@
 		<Node 	name="CollisionNode" gravity="0 -9.81 0" showVisualModels="1" showBehaviorModels="1" showCollisionModels="1" showBoundingCollisionModels="0" showMappings="0" showMechanicalMappings="1" showForceFields="0" showInteractionForceFields="1" showWireFrame="0" showNormals="0"  >
 			<MeshTopology name="Mesh"  fileTopology="mesh/cube.obj" />
 			<MechanicalObject template="Vec3d" name="CollisionObject"  scale3d="6 6 6"  restScale="1" />
-			<SphereModel name="Spheres" />
+			<SphereModel name="Spheres" contactStiffness="1000"/>
 			<BarycentricMapping template="MechanicalMapping&lt;Vec3d,Vec3d&gt;" name="MechanicalMapping"  hexamap="0 " />
 		</Node>
 	</Node>

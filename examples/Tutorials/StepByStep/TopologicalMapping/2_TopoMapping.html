@@ -5,15 +5,14 @@
 <body>
 	<div id="contenu">
 		
-		<center><h3>Topological Mapping (3/7)</h3>
-		  <br><br>
-		  <img src="volumeModel_01.png" width="300" name="TutorialTopologyTetra2TriangleTopologicalMapping" align="middle">
+		<center><h3>Topological Mapping (3/7)</h3></center>		  
+		<center><img src="volumeModel_01.png"  width="300" name="TutorialTopologyTetra2TriangleTopologicalMapping" align="middle">
 		</center>
 		
-		<br><div id="orangeText">Description:</div><br>
+		<br><div id="orangeText">Description</div><br>
 		In this step we add a mechanical behavior to the tetrahedral mesh using ODE solver, finite element and mass. Thus, the cylinder can be deformed by the gravity or the user.
 
-		<br><div id="orangeText">Components:</div>
+		<br><div id="orangeText">Key points</div>
         <ul>
 		  <li><b>EulerImplicitSolver</b> component is used to solve the mechanical ODE system.</li>
 		  <li><b>CGLinearSolver</b> component is used to solve the linare system at each step of the ODE system.</li>
@@ -22,7 +21,7 @@
 		  <li><b>Constraint</b> components are used here to fix on extremity face of the cylinder.</li>		  
 		  </ul>
 
-		<br><div id="orangeText">Results:</div><br>
+		<br><div id="orangeText">Results</div><br>
 		Adding these components create a mechanical behavior for this cylinder. Thus, adding some gravity on the scene, we can see that the cylinder start to bend.
 		On this step, as there is no surface for visual model, we can see the finite elements.
 		<br><center><img src="volumeModel_02.png" width="300" name="TutorialTopologyTetra2TriangleTopologicalMapping" align="middle">
